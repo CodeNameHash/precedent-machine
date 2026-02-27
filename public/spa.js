@@ -1149,6 +1149,60 @@ function renderRecodeContext(dealId,ctx){
   return h;
 }
 
+function renderExceptionRecodeContext(exKey,ctx){
+  var ft=ctx.fullText;
+  var before=ft.substring(ctx.viewStart,ctx.selStart);
+  var selected=ft.substring(ctx.selStart,ctx.selEnd);
+  var after=ft.substring(ctx.selEnd,ctx.viewEnd);
+  var h='<div class="recode-context-text" data-ex-key="'+exKey+'" style="max-height:120px;font-size:10.5px">';
+  if(ctx.viewStart>0)h+='<span class="recode-ellipsis">&hellip; </span>';
+  h+='<span class="recode-ctx">'+esc(before)+'</span>';
+  h+='<span class="recode-sel">'+esc(selected)+'</span>';
+  h+='<span class="recode-ctx">'+esc(after)+'</span>';
+  if(ctx.viewEnd<ft.length)h+='<span class="recode-ellipsis"> &hellip;</span>';
+  h+='</div>';
+  h+='<div class="recode-sliders" style="padding:2px 0">';
+  h+='<div class="recode-slider-row"><label style="width:24px;font-size:8px">S</label><input type="range" class="recode-range" id="exslide-start-'+exKey+'" min="0" max="'+ctx.selEnd+'" value="'+ctx.selStart+'" oninput="updateExceptionSlider(\''+exKey+'\',\'start\',this.value)"></div>';
+  h+='<div class="recode-slider-row"><label style="width:24px;font-size:8px">E</label><input type="range" class="recode-range" id="exslide-end-'+exKey+'" min="'+ctx.selStart+'" max="'+ft.length+'" value="'+ctx.selEnd+'" oninput="updateExceptionSlider(\''+exKey+'\',\'end\',this.value)"></div>';
+  h+='</div>';
+  return h;
+}
+function updateExceptionSlider(exKey,which,val){
+  var ctx=_recodeCtx.exceptions[exKey];if(!ctx)return;
+  val=parseInt(val);
+  var ft=ctx.fullText;
+  if(which==="start"){
+    while(val>0&&ft[val]!==" ")val--;
+    if(ft[val]===" ")val++;
+    ctx.selStart=val;
+    var endSlider=document.getElementById("exslide-end-"+exKey);
+    if(endSlider)endSlider.min=val;
+  }else{
+    while(val<ft.length&&ft[val]!==" ")val++;
+    ctx.selEnd=val;
+    var startSlider=document.getElementById("exslide-start-"+exKey);
+    if(startSlider)startSlider.max=val;
+  }
+  // Recompute view window
+  var vStart=ctx.selStart,vEnd=ctx.selEnd,wb=0,wa=0;
+  while(vStart>0&&wb<50){vStart--;if(ft[vStart]===" ")wb++}
+  while(vEnd<ft.length&&wa<50){vEnd++;if(ft[vEnd]===" ")wa++}
+  ctx.viewStart=vStart;ctx.viewEnd=Math.min(vEnd,ft.length);
+  // Re-render text display
+  var container=document.querySelector('.recode-context-text[data-ex-key="'+exKey+'"]');
+  if(!container)return;
+  var before=ft.substring(ctx.viewStart,ctx.selStart);
+  var selected=ft.substring(ctx.selStart,ctx.selEnd);
+  var after=ft.substring(ctx.selEnd,ctx.viewEnd);
+  var h="";
+  if(ctx.viewStart>0)h+='<span class="recode-ellipsis">&hellip; </span>';
+  h+='<span class="recode-ctx">'+esc(before)+'</span>';
+  h+='<span class="recode-sel">'+esc(selected)+'</span>';
+  h+='<span class="recode-ctx">'+esc(after)+'</span>';
+  if(ctx.viewEnd<ft.length)h+='<span class="recode-ellipsis"> &hellip;</span>';
+  container.innerHTML=h;
+}
+
 // Store recode state per session
 var _recodeCtx={};
 function startInlineRecode(btn,cat,type,cols){
@@ -1231,14 +1285,37 @@ function startInlineRecode(btn,cat,type,cols){
     });
     lbl.innerHTML="";lbl.appendChild(sel);
   });
-  // Make exception sub-cells editable as textareas
-  card.querySelectorAll(".prong-sub-cell").forEach(function(cell){
-    var origText=cell.textContent.trim();
-    if(origText==="\u2014")return;
-    var ta=document.createElement("textarea");
-    ta.value=origText;
-    ta.style.cssText="width:100%;min-height:60px;padding:6px;border:1px solid var(--border);border-radius:4px;font:400 11px/1.55 var(--serif);color:var(--text3);resize:vertical;background:var(--bg)";
-    cell.innerHTML="";cell.appendChild(ta);
+  // Make exception sub-cells editable with sliders (like main provisions)
+  if(!_recodeCtx.exceptions)_recodeCtx.exceptions={};
+  card.querySelectorAll(".prong-sub-row").forEach(function(row){
+    var labelSel=row.querySelector(".prong-sub-label select");
+    var exLabel=labelSel?labelSel.value:row.querySelector(".prong-sub-label")?.textContent?.trim()||"";
+    var subCells=row.querySelectorAll(".prong-sub-cell");
+    subCells.forEach(function(cell,idx){
+      var origText=cell.textContent.trim();
+      if(origText==="\u2014"||!origText)return;
+      var d=deals[idx];if(!d)return;
+      var prov=PROVISIONS.find(function(p){return p.type===type&&p.dealId===d.id&&p.category===cat});
+      if(!prov)return;
+      // Find this exception text within the provision's full text
+      var fullText=prov.text;
+      var selStart=fullText.indexOf(origText);
+      if(selStart<0)selStart=0;
+      var selEnd=selStart>=0?selStart+origText.length:0;
+      // Build a context window around the exception
+      var vStart=selStart,vEnd=selEnd,wb=0,wa=0;
+      while(vStart>0&&wb<50){vStart--;if(fullText[vStart]===" ")wb++}
+      while(vEnd<fullText.length&&wa<50){vEnd++;if(fullText[vEnd]===" ")wa++}
+      var exCtx={fullText:fullText,selStart:selStart,selEnd:selEnd,viewStart:vStart,viewEnd:Math.min(vEnd,fullText.length)};
+      var exKey="ex-"+d.id+"-"+exLabel.replace(/[^a-zA-Z0-9]/g,"_");
+      _recodeCtx.exceptions[exKey]=exCtx;
+      // Render slider widget
+      var wrapper=document.createElement("div");
+      wrapper.className="recode-widget";
+      wrapper.style.cssText="padding:2px 0";
+      wrapper.innerHTML=renderExceptionRecodeContext(exKey,exCtx);
+      cell.innerHTML="";cell.appendChild(wrapper);
+    });
   });
 }
 
@@ -1357,29 +1434,29 @@ function saveInlineRecode(btn){
           });
         }
       });
-      // Save edited exception texts from textareas
-      card.querySelectorAll(".prong-sub-cell textarea").forEach(function(ta){
-        var newText=ta.value.trim();
-        var cell=ta.closest(".prong-sub-cell");
-        if(!cell||!newText)return;
-        // Find which deal this cell belongs to (by column index)
-        var row=cell.closest(".prong-sub-row");
-        if(!row)return;
-        var cells=Array.from(row.querySelectorAll(".prong-sub-cell"));
-        var cellIdx=cells.indexOf(cell);
-        if(cellIdx<0||cellIdx>=deals.length)return;
-        var d=deals[cellIdx];
-        var prov=PROVISIONS.find(function(p){return p.type===type&&p.dealId===d.id&&(p.category===origCat||p.category===newCat)});
-        if(prov&&IOC_PARSED_CACHE[prov.id]){
-          // Find the exception in the parsed cache by label from the row's label select
-          var labelSel=row.querySelector(".prong-sub-label select");
-          var lbl=labelSel?labelSel.value:null;
-          if(lbl){
-            var ex=IOC_PARSED_CACHE[prov.id].exceptions.find(function(e){return(e.canonicalLabel||e.label)===lbl});
-            if(ex)ex.text=newText;
+      // Save edited exception texts from slider selections
+      if(_recodeCtx.exceptions){
+        Object.keys(_recodeCtx.exceptions).forEach(function(exKey){
+          var exCtx=_recodeCtx.exceptions[exKey];
+          var newText=exCtx.fullText.substring(exCtx.selStart,exCtx.selEnd).trim();
+          if(!newText)return;
+          // Parse exKey to get deal id and label: "ex-DEALID-LABEL"
+          var parts=exKey.split("-");
+          var dealId=parts[1];
+          var prov=PROVISIONS.find(function(p){return p.type===type&&p.dealId===dealId&&(p.category===origCat||p.category===newCat)});
+          if(prov&&IOC_PARSED_CACHE[prov.id]){
+            // Find matching exception by checking which one's text overlaps with the original selection
+            var parsed=IOC_PARSED_CACHE[prov.id];
+            parsed.exceptions.forEach(function(ex){
+              // Check if this exception's text is within the context used for this slider
+              var origIdx=exCtx.fullText.indexOf(ex.text);
+              if(origIdx>=0){
+                ex.text=newText;
+              }
+            });
           }
-        }
-      });
+        });
+      }
     }
     deals.forEach(function(d){
       var prov=PROVISIONS.find(function(p){return p.type===type&&p.dealId===d.id&&(p.category===origCat||p.category===newCat)});
