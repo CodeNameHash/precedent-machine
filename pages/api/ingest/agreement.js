@@ -140,6 +140,7 @@ export default async function handler(req, res) {
     const typesToExtract = provision_types || Object.keys(PROVISION_TYPE_CONFIGS);
     const client = new Anthropic({ apiKey });
 
+    const extractStart = Date.now();
     const results = await Promise.all(typesToExtract.map(async (typeKey) => {
       const typeConfig = PROVISION_TYPE_CONFIGS[typeKey];
       if (!typeConfig) return { type: typeKey, error: 'Unknown provision type' };
@@ -269,7 +270,10 @@ Return ONLY valid JSON (no markdown, no backticks):
       }
     }));
 
+    const extractMs = Date.now() - extractStart;
+
     // 4. Deduplicate provisions across all types (preview mode only)
+    const dedupStart = Date.now();
     let deduplicatedCount = 0;
     if (preview) {
       const allProvs = [];
@@ -313,11 +317,20 @@ Return ONLY valid JSON (no markdown, no backticks):
       }
     }
 
+    const dedupMs = Date.now() - dedupStart;
+    const timing = {
+      extract_ms: extractMs,
+      dedup_ms: dedupMs,
+      total_ms: extractMs + dedupMs,
+      mode: 'legacy',
+    };
+
     return res.json({
       success: true,
       preview: !!preview,
       agreement_source_id: agreementSourceId,
       deduplicated_count: deduplicatedCount,
+      timing,
       results,
     });
   } catch (err) {

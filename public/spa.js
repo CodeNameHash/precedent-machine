@@ -41,6 +41,11 @@ var FALLBACK_PROVISION_TYPES = [
   {key:"COND", label:"Conditions to Closing"},
   {key:"TERMR", label:"Termination Rights"},
   {key:"TERMF", label:"Termination Fees"},
+  {key:"DEF", label:"Definitions"},
+  {key:"REP", label:"Representations & Warranties"},
+  {key:"COV", label:"Covenants"},
+  {key:"MISC", label:"Miscellaneous"},
+  {key:"STRUCT", label:"Deal Structure"},
 ];
 
 var FALLBACK_SUB_PROVISIONS = {
@@ -49,7 +54,12 @@ var FALLBACK_SUB_PROVISIONS = {
   ANTI:["Efforts Standard","Caps on Efforts: Anti-Hell or High Water","Caps on Efforts: Hell or High Water","Caps on Efforts: Burdensome Condition","Caps on Efforts: Definition of Burdensome Condition","Obligation to Litigate","Obligation Not to Litigate","Regulatory Approval Filing Deadline","Cooperation Obligations"],
   COND:["Regulatory Approval / HSR","No Legal Impediment","Accuracy of Target Representations","Accuracy of Acquirer Representations","Target Compliance with Covenants","Acquirer Compliance with Covenants","No MAE","Third-Party Consents","Stockholder Approval"],
   TERMR:["Mutual Termination","Outside Date","Outside Date Extension","Regulatory Failure","Breach by Target","Breach by Acquirer","Superior Proposal","Intervening Event","Failure of Conditions"],
-  TERMF:["Target Termination Fee","Reverse Termination Fee","Regulatory Break-Up Fee","Fee Amount","Fee Triggers","Expense Reimbursement","Fee as Percentage of Deal Value"]
+  TERMF:["Target Termination Fee","Reverse Termination Fee","Regulatory Break-Up Fee","Fee Amount","Fee Triggers","Expense Reimbursement","Fee as Percentage of Deal Value"],
+  DEF:["Material Adverse Effect","Governmental Entity","Knowledge","Subsidiary","Person","Business Day"],
+  REP:["Organization / Good Standing","Authority / No Conflicts","Financial Statements","No Undisclosed Liabilities","Absence of Changes","Litigation","Tax Matters","Employee Benefits","Environmental","Intellectual Property","Material Contracts"],
+  COV:["No Solicitation","Information Access","Reasonable Best Efforts","Financing Cooperation","Employee Matters","Indemnification","Public Announcements"],
+  MISC:["Notices","Severability","Entire Agreement","Amendment / Waiver","Governing Law","Jurisdiction","Counterparts"],
+  STRUCT:["Merger Consideration","Exchange Procedures","Treatment of Equity Awards","Closing Mechanics"]
 };
 
 var FAV_LEVELS=[
@@ -202,7 +212,7 @@ function formatValue(n){if(!n)return"N/A";var b=n/1e9;if(b>=1)return"$"+b.toFixe
 
 function mapDeal(d){return{id:d.id,acquirer:d.acquirer||"",target:d.target||"",value:d.value_usd?formatValue(d.value_usd):"N/A",sector:d.sector||"",date:d.announce_date||"",jurisdiction:d.jurisdiction||"Delaware",lawyers:d.metadata?.lawyers||{buyer:[],seller:[]},advisors:d.metadata?.advisors||{buyer:[],seller:[]},structure:d.structure||"",termFee:d.term_fee||""}}
 
-function mapProvision(p){return{id:p.id,dealId:p.deal_id,type:p.type||"",category:p.category||"",text:p.full_text||"",favorability:p.ai_favorability||"unrated",textHash:p.text_hash||null,categoryId:p.category_id||null,provisionTypeId:p.provision_type_id||null,parentId:p.parent_id||null}}
+function mapProvision(p){return{id:p.id,dealId:p.deal_id,type:p.type||"",category:p.category||"",text:p.full_text||"",favorability:p.ai_favorability||"unrated",textHash:p.text_hash||null,categoryId:p.category_id||null,provisionTypeId:p.provision_type_id||null,parentId:p.parent_id||null,displayTier:p.display_tier||2}}
 
 function showLoading(){var el=document.getElementById("content");if(el)el.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:200px;gap:10px;color:var(--text3)"><svg class="spinner" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg> Loading from database...</div>'}
 
@@ -366,7 +376,7 @@ function syncExceptionLabelsToDB(provId){
 // ═══════════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════════
-var state={provisionType:null,selectedDeals:["d1","d2","d3"],searchTerms:[],adminMode:false,compareResults:null,activeTab:"coded",askHistory:[],sidebarProvsCollapsed:JSON.parse(localStorage.getItem("sidebarProvsCollapsed")||"false"),sidebarDealsCollapsed:JSON.parse(localStorage.getItem("sidebarDealsCollapsed")||"false"),hiddenCategories:new Set(JSON.parse(localStorage.getItem("hiddenCategories")||"[]")),expandedProvisionType:null,reportTerms:JSON.parse(localStorage.getItem("reportTerms")||'["Value","Date","Buyer Counsel","Seller Counsel"]'),collapsedSections:new Set(),collapsedCards:new Set(),activeFilters:[{key:"law_firm",label:"Law Firm",active:false}],filterValues:{}};
+var state={provisionType:null,selectedDeals:["d1","d2","d3"],searchTerms:[],adminMode:false,compareResults:null,activeTab:"coded",askHistory:[],sidebarProvsCollapsed:JSON.parse(localStorage.getItem("sidebarProvsCollapsed")||"false"),sidebarDealsCollapsed:JSON.parse(localStorage.getItem("sidebarDealsCollapsed")||"false"),hiddenCategories:new Set(JSON.parse(localStorage.getItem("hiddenCategories")||"[]")),expandedProvisionType:null,reportTerms:JSON.parse(localStorage.getItem("reportTerms")||'["Value","Date","Buyer Counsel","Seller Counsel"]'),collapsedSections:new Set(),collapsedCards:new Set(),activeFilters:[{key:"law_firm",label:"Law Firm",active:false}],filterValues:{},tierFilter:"all",expandedTier3:new Set()};
 
 // ═══════════════════════════════════════════════════
 // HELPERS
@@ -808,7 +818,7 @@ function renderContent(){
   var types=state.provisionType?[state.provisionType]:PROVISION_TYPES.map(function(pt){return pt.key}).filter(function(t){return deals.some(function(d){return getProvs(t,d.id).length>0})});
   var typeName=state.provisionType?PROVISION_TYPES.find(function(pt){return pt.key===state.provisionType}).label:"All Provisions";
 
-  var h='<div class="content-header"><div class="provision-type-label">'+(state.provisionType||"COMPARISON")+'</div><div class="content-title">'+typeName+' &mdash; '+deals.length+' Deal Comparison</div><div class="content-subtitle">Each provision is broken into coded sub-provisions for side-by-side analysis.</div><div class="action-row">'+(!state.compareResults?'<button class="action-btn compare" onclick="runCompare()">&#9889; Summarize Differences</button>':'<button class="action-btn" onclick="clearCompare()" style="border-color:var(--gold);color:var(--gold)">&#10005; Clear Summary</button>')+'<button class="action-btn" onclick="setTab(\'report\')">Report</button><button class="action-btn" onclick="setTab(\'redline\')">Markup Draft</button></div><div class="view-tabs"><div class="view-tab '+(state.activeTab==="coded"?"active":"")+'" onclick="setTab(\'coded\')">Coded Comparison</div><div class="view-tab '+(state.activeTab==="fulltext"?"active":"")+'" onclick="setTab(\'fulltext\')">Full Text</div><div class="view-tab '+(state.activeTab==="report"?"active":"")+'" onclick="setTab(\'report\')">Report</div><div class="view-tab '+(state.activeTab==="redline"?"active":"")+'" onclick="setTab(\'redline\')">Redline</div></div></div>';
+  var h='<div class="content-header"><div class="provision-type-label">'+(state.provisionType||"COMPARISON")+'</div><div class="content-title">'+typeName+' &mdash; '+deals.length+' Deal Comparison</div><div class="content-subtitle">Each provision is broken into coded sub-provisions for side-by-side analysis.</div><div class="action-row">'+(!state.compareResults?'<button class="action-btn compare" onclick="runCompare()">&#9889; Summarize Differences</button>':'<button class="action-btn" onclick="clearCompare()" style="border-color:var(--gold);color:var(--gold)">&#10005; Clear Summary</button>')+'<button class="action-btn" onclick="setTab(\'report\')">Report</button><button class="action-btn" onclick="setTab(\'redline\')">Markup Draft</button></div><div class="view-tabs"><div class="view-tab '+(state.activeTab==="coded"?"active":"")+'" onclick="setTab(\'coded\')">Coded Comparison</div><div class="view-tab '+(state.activeTab==="fulltext"?"active":"")+'" onclick="setTab(\'fulltext\')">Full Text</div><div class="view-tab '+(state.activeTab==="report"?"active":"")+'" onclick="setTab(\'report\')">Report</div><div class="view-tab '+(state.activeTab==="redline"?"active":"")+'" onclick="setTab(\'redline\')">Redline</div></div><div style="display:flex;gap:4px;margin-top:10px;align-items:center"><span style="font-size:10px;color:var(--text4);text-transform:uppercase;letter-spacing:1px;margin-right:4px">Tier:</span><button class="tier-filter-btn '+(state.tierFilter==="all"?"active":"")+'" onclick="setTierFilter(\'all\')">All</button><button class="tier-filter-btn '+(state.tierFilter==="1"?"active":"")+'" onclick="setTierFilter(\'1\')">Core</button><button class="tier-filter-btn '+(state.tierFilter==="2"?"active":"")+'" onclick="setTierFilter(\'2\')">Supporting</button><button class="tier-filter-btn '+(state.tierFilter==="3"?"active":"")+'" onclick="setTierFilter(\'3\')">Reference</button></div></div>';
 
   if(state.adminMode){
     h+='<div class="admin-banner"><span>Admin mode &mdash; Recode sub-provisions or add new categories</span><div style="display:flex;gap:6px;flex-wrap:wrap">'+types.map(function(t){return '<button onclick="openAddCategory(\''+t+'\')">+ '+t+' Category</button>'}).join("")+'<button onclick="openTaxonomyEditor()">Edit Taxonomy</button><button onclick="window.location.href=\'/admin/agreements\'">Add Agreement(s)</button><button onclick="ingestFullAgreement(\''+state.selectedDeals[0]+'\')">Quick Ingest</button><button onclick="toggleAdmin()">Turn Off</button></div></div>';
@@ -824,7 +834,16 @@ function renderContent(){
 function setTab(t){state.activeTab=t;renderContent()}
 function clearCompare(){state.compareResults=null;renderContent()}
 function toggleSection(key){if(state.collapsedSections.has(key))state.collapsedSections.delete(key);else state.collapsedSections.add(key);renderContent()}
-function toggleCard(key){if(state.collapsedCards.has(key))state.collapsedCards.delete(key);else state.collapsedCards.add(key);renderContent()}
+function toggleCard(key){
+  // Handle tier-based default collapse: T2/T3 start collapsed (no entry = collapsed)
+  // When user clicks, we track explicit expanded state with "expanded-" prefix
+  if(state.collapsedCards.has(key)){state.collapsedCards.delete(key);state.collapsedCards.delete("expanded-"+key)}
+  else if(state.collapsedCards.has("expanded-"+key)){state.collapsedCards.delete("expanded-"+key);state.collapsedCards.add(key)}
+  else{state.collapsedCards.add("expanded-"+key)}
+  renderContent()
+}
+function setTierFilter(t){state.tierFilter=t;renderContent()}
+function toggleTier3(typeKey){if(state.expandedTier3.has(typeKey))state.expandedTier3.delete(typeKey);else state.expandedTier3.add(typeKey);renderContent()}
 
 // ═══════════════════════════════════════════════════
 // CODED VIEW
@@ -846,21 +865,56 @@ function renderDealInfoCards(deals){
   return h;
 }
 
+function getEffectiveTier(type,cat,deals){
+  // Determine tier from provisions data
+  var provs=[];
+  deals.forEach(function(d){
+    var p=PROVISIONS.find(function(pp){return pp.type===type&&pp.dealId===d.id&&pp.category===cat});
+    if(p)provs.push(p);
+  });
+  if(provs.length===0)return 2;
+  // Use the minimum tier (most important) among matching provisions
+  var tier=3;
+  provs.forEach(function(p){if(p.displayTier&&p.displayTier<tier)tier=p.displayTier});
+  return tier;
+}
+
 function renderCodedView(deals,cats,type){
   var cols=deals.length;
   var h='<div class="prongs-section">';
   h+=renderDealInfoCards(deals);
 
+  var tier3Cats=[];
   cats.forEach(function(cat){
     if(state.hiddenCategories.has(cat))return;
+    var effectiveTier=getEffectiveTier(type,cat,deals);
+
+    // Tier filtering
+    if(state.tierFilter!=="all"){
+      if(String(effectiveTier)!==state.tierFilter)return;
+    }
+
+    // Collect tier-3 for "show more" link if not explicitly expanded
+    if(effectiveTier===3&&state.tierFilter==="all"&&!state.expandedTier3.has(type)){
+      tier3Cats.push(cat);
+      return;
+    }
+
     var entries=deals.map(function(d){var prov=PROVISIONS.find(function(p){return p.type===type&&p.dealId===d.id&&p.category===cat});return{deal:d,prov:prov}});
     var present=entries.filter(function(e){return e.prov}).length;
     var tagClass="all",tagText="All "+present;
     if(present===0){tagClass="missing";tagText="None"}else if(present<deals.length){tagClass="varies";tagText=present+"/"+deals.length}
     var cmp=state.compareResults?.comparisons?.find(function(c){return c.category===cat});
 
-    var cardKey="card-"+type+"-"+cat;var cardCollapsed=state.collapsedCards.has(cardKey);var cardArrow=cardCollapsed?'&#9654;':'&#9660;';
-    h+='<div class="prong-card" id="card-'+esc(cat).replace(/\s+/g,"-").replace(/[^a-zA-Z0-9-]/g,"")+'"><div class="prong-header"><div style="cursor:pointer;display:flex;align-items:center;gap:6px" onclick="toggleCard(\''+esc(cardKey).replace(/'/g,"\\'")+'\')"><span style="font-size:9px;color:var(--text4)">'+cardArrow+'</span><span class="prong-name">'+esc(cat)+'</span></div><div style="display:flex;gap:8px;align-items:center"><span class="prong-tag '+tagClass+'">'+tagText+'</span>'+(state.adminMode?'<button class="admin-edit" onclick="startInlineRecode(this,\''+esc(cat).replace(/'/g,"\\'")+'\',\''+type+'\','+cols+')">Recode</button>':"")+'</div></div>';if(cardCollapsed){h+='</div>';return}h+='<div class="prong-body" style="grid-template-columns:repeat('+cols+',1fr)">';
+    // Default collapse by tier: T1 expanded, T2 collapsed, T3 collapsed
+    var cardKey="card-"+type+"-"+cat;
+    var cardCollapsed;
+    if(state.collapsedCards.has(cardKey)){cardCollapsed=true}
+    else if(effectiveTier>=2&&!state.collapsedCards.has("expanded-"+cardKey)){cardCollapsed=true}
+    else{cardCollapsed=false}
+    var cardArrow=cardCollapsed?'&#9654;':'&#9660;';
+    var tierBadge='<span class="tier-badge tier-'+effectiveTier+'" style="margin-left:4px">T'+effectiveTier+'</span>';
+    h+='<div class="prong-card" id="card-'+esc(cat).replace(/\s+/g,"-").replace(/[^a-zA-Z0-9-]/g,"")+'"><div class="prong-header"><div style="cursor:pointer;display:flex;align-items:center;gap:6px" onclick="toggleCard(\''+esc(cardKey).replace(/'/g,"\\'")+'\')"><span style="font-size:9px;color:var(--text4)">'+cardArrow+'</span><span class="prong-name">'+esc(cat)+'</span>'+tierBadge+'</div><div style="display:flex;gap:8px;align-items:center"><span class="prong-tag '+tagClass+'">'+tagText+'</span>'+(state.adminMode?'<button class="admin-edit" onclick="startInlineRecode(this,\''+esc(cat).replace(/'/g,"\\'")+'\',\''+type+'\','+cols+')">Recode</button>':"")+'</div></div>';if(cardCollapsed){h+='</div>';return}h+='<div class="prong-body" style="grid-template-columns:repeat('+cols+',1fr)">';
 
     // Parse IOC exceptions for sub-row rendering
     var parsedEntries=null;
@@ -910,6 +964,11 @@ function renderCodedView(deals,cats,type){
     if(cmp)h+='<div class="prong-analysis"><strong>'+esc(cmp.summary)+'</strong><br>'+(cmp.most_buyer_friendly?'Buyer-friendly: <strong>'+esc(cmp.most_buyer_friendly)+'</strong>. ':"")+(cmp.most_seller_friendly?'Seller-friendly: <strong>'+esc(cmp.most_seller_friendly)+'</strong>. ':"")+(cmp.market_position?'<span style="color:var(--gold);font-weight:600">Market: '+esc(cmp.market_position)+'</span>':"")+'</div>';
     h+='</div>';
   });
+
+  // Show "N reference provisions" link for tier-3 items
+  if(tier3Cats.length>0&&state.tierFilter==="all"&&!state.expandedTier3.has(type)){
+    h+='<div class="tier-show-more" onclick="toggleTier3(\''+type+'\')">Show '+tier3Cats.length+' reference provision'+(tier3Cats.length!==1?'s':'')+'</div>';
+  }
 
   if(state.compareResults)h+='<div style="padding:16px;background:var(--gold-light);border:1px solid var(--gold-border);border-radius:10px;margin-bottom:20px"><div style="font:600 14px var(--serif);margin-bottom:6px">AI Summary</div><div style="font-size:13px;color:var(--text2);line-height:1.6">'+esc(state.compareResults.overall_summary||"")+'</div>'+(state.compareResults.key_takeaway?'<div style="margin-top:8px;font-size:13px;color:var(--gold);font-weight:600">'+esc(state.compareResults.key_takeaway)+'</div>':"")+'</div>';
   h+='</div>';return h;

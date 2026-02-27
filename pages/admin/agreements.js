@@ -176,6 +176,11 @@ const PROVISION_TYPES = [
   { key: 'COND', label: 'Conditions to Closing' },
   { key: 'TERMR', label: 'Termination Rights' },
   { key: 'TERMF', label: 'Termination Fees' },
+  { key: 'DEF', label: 'Definitions' },
+  { key: 'REP', label: 'Representations & Warranties' },
+  { key: 'COV', label: 'Covenants' },
+  { key: 'MISC', label: 'Miscellaneous' },
+  { key: 'STRUCT', label: 'Deal Structure' },
 ];
 
 const FAV_LEVELS = [
@@ -207,6 +212,8 @@ export default function AddAgreements() {
   const [agreementSourceId, setAgreementSourceId] = useState(null);
   const [fullAgreementText, setFullAgreementText] = useState('');
   const [deduplicatedCount, setDeduplicatedCount] = useState(0);
+  const [extractionMode, setExtractionMode] = useState('segment'); // 'segment' | 'legacy'
+  const [timingData, setTimingData] = useState(null);
 
   // ─── Shared: extract text from current inputs ───
   const getAgreementText = async () => {
@@ -261,22 +268,25 @@ export default function AddAgreements() {
 
     // Extract provisions in preview mode
     setStep('extracting');
-    setProcessingMsg('Extracting provisions (this may take a minute)...');
-    const ingestData = await safeFetch('/api/ingest/agreement', {
+    const endpoint = extractionMode === 'segment' ? '/api/ingest/segment' : '/api/ingest/agreement';
+    setProcessingMsg(extractionMode === 'segment'
+      ? 'Parsing structure & extracting provisions...'
+      : 'Extracting provisions (this may take a minute)...');
+    const ingestBody = extractionMode === 'segment'
+      ? { full_text: fullText, title: titleStr, preview: true }
+      : { full_text: fullText, title: titleStr, provision_types: selectedTypes, preview: true };
+    const ingestData = await safeFetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        full_text: fullText,
-        title: titleStr,
-        provision_types: selectedTypes,
-        preview: true,
-      }),
+      body: JSON.stringify(ingestBody),
     });
+
+    if (ingestData.timing) setTimingData(ingestData.timing);
 
     const allProvs = [];
     (ingestData.results || []).forEach(r => {
       (r.provisions || []).forEach(p => {
-        allProvs.push({ ...p, _originalText: p.text, _id: Math.random().toString(36).substr(2, 9) });
+        allProvs.push({ ...p, _originalText: p.text, _id: Math.random().toString(36).substr(2, 9), display_tier: p.display_tier || 2 });
       });
     });
     setDeduplicatedCount(ingestData.deduplicated_count || 0);
@@ -368,23 +378,26 @@ export default function AddAgreements() {
       }
 
       setStep('extracting');
-      setProcessingMsg('Extracting provisions (this may take a minute)...');
+      const endpoint = extractionMode === 'segment' ? '/api/ingest/segment' : '/api/ingest/agreement';
+      setProcessingMsg(extractionMode === 'segment'
+        ? 'Parsing structure & extracting provisions...'
+        : 'Extracting provisions (this may take a minute)...');
+      const ingestBody = extractionMode === 'segment'
+        ? { full_text: fullText, title: titleStr, preview: true }
+        : { full_text: fullText, title: titleStr, provision_types: selectedTypes, preview: true };
 
-      const ingestData = await safeFetch('/api/ingest/agreement', {
+      const ingestData = await safeFetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          full_text: fullText,
-          title: titleStr,
-          provision_types: selectedTypes,
-          preview: true,
-        }),
+        body: JSON.stringify(ingestBody),
       });
+
+      if (ingestData.timing) setTimingData(ingestData.timing);
 
       const allProvs = [];
       (ingestData.results || []).forEach(r => {
         (r.provisions || []).forEach(p => {
-          allProvs.push({ ...p, _originalText: p.text, _id: Math.random().toString(36).substr(2, 9) });
+          allProvs.push({ ...p, _originalText: p.text, _id: Math.random().toString(36).substr(2, 9), display_tier: p.display_tier || 2 });
         });
       });
 
@@ -450,6 +463,8 @@ export default function AddAgreements() {
           metadata.user_corrected = true;
           metadata.original_ai_text = prov._originalText;
         }
+        if (timingData) metadata.ingestion_timing = timingData;
+        metadata.ingestion_mode = extractionMode;
         const resp = await fetch('/api/provisions', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -461,6 +476,7 @@ export default function AddAgreements() {
             ai_favorability: prov.favorability || 'neutral',
             agreement_source_id: agreementSourceId || null,
             ai_metadata: metadata,
+            display_tier: prov.display_tier || 2,
           }),
         });
         const data = await resp.json();
@@ -483,6 +499,7 @@ export default function AddAgreements() {
     setFiles([]); setPreviewProvisions([]); setDuplicateWarning(null);
     setError(null); setExtractedTextLength(0); setParseWarnings([]);
     setAgreementSourceId(null); setFullAgreementText(''); setDeduplicatedCount(0);
+    setTimingData(null);
   };
 
   // Group provisions by type
@@ -751,9 +768,42 @@ export default function AddAgreements() {
                     </>
                   )}
 
-                  {/* Provision type selection */}
+                  {/* Extraction mode toggle */}
                   {inputMode !== 'name' && (
                     <div style={{ marginTop: 16 }}>
+                      <label style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text4)', display: 'block', marginBottom: 6 }}>
+                        Extraction mode
+                      </label>
+                      <div style={{ display: 'flex', gap: 6 }}>
+                        <button
+                          onClick={() => setExtractionMode('segment')}
+                          className="filter-chip"
+                          style={{
+                            background: extractionMode === 'segment' ? 'var(--gold-light)' : 'var(--bg2)',
+                            borderColor: extractionMode === 'segment' ? 'var(--gold)' : 'var(--border2)',
+                            color: extractionMode === 'segment' ? 'var(--gold)' : 'var(--text4)',
+                          }}
+                        >
+                          Full parse (recommended)
+                        </button>
+                        <button
+                          onClick={() => setExtractionMode('legacy')}
+                          className="filter-chip"
+                          style={{
+                            background: extractionMode === 'legacy' ? 'var(--gold-light)' : 'var(--bg2)',
+                            borderColor: extractionMode === 'legacy' ? 'var(--gold)' : 'var(--border2)',
+                            color: extractionMode === 'legacy' ? 'var(--gold)' : 'var(--text4)',
+                          }}
+                        >
+                          Legacy search
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Provision type selection (legacy mode only) */}
+                  {inputMode !== 'name' && extractionMode === 'legacy' && (
+                    <div style={{ marginTop: 12 }}>
                       <label style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text4)', display: 'block', marginBottom: 6 }}>
                         Provision types to extract
                       </label>
@@ -812,7 +862,9 @@ export default function AddAgreements() {
                   Extracting Provisions
                 </div>
                 <div style={{ fontSize: 12, color: 'var(--text3)', lineHeight: 1.5 }}>
-                  AI is reading the agreement and identifying provisions across {selectedTypes.length} categories.
+                  {extractionMode === 'segment'
+                    ? 'Parsing agreement structure, classifying sections, and extracting provisions.'
+                    : `AI is reading the agreement and identifying provisions across ${selectedTypes.length} categories.`}
                   <br />This typically takes 30-90 seconds.
                 </div>
                 {extractedTextLength > 0 && (
@@ -1012,6 +1064,15 @@ export default function AddAgreements() {
                         {deduplicatedCount > 0 && ` (${deduplicatedCount} duplicate${deduplicatedCount !== 1 ? 's' : ''} removed)`}
                         {' '}Review, edit text, adjust favorability, or remove before saving.
                       </div>
+                      {timingData && (
+                        <div style={{ fontSize: 10, color: 'var(--text4)', marginTop: 4, fontFamily: 'var(--mono)' }}>
+                          {timingData.parse_ms != null && `Parsed: ${(timingData.parse_ms / 1000).toFixed(1)}s (${timingData.section_count} sections)`}
+                          {timingData.classify_ms != null && ` | Classified: ${(timingData.classify_ms / 1000).toFixed(1)}s`}
+                          {timingData.extract_ms != null && ` | Extracted: ${(timingData.extract_ms / 1000).toFixed(1)}s`}
+                          {timingData.total_ms != null && ` | Total: ${(timingData.total_ms / 1000).toFixed(1)}s`}
+                          {timingData.mode && ` (${timingData.mode})`}
+                        </div>
+                      )}
                     </div>
                     <div style={{ display: 'flex', gap: 8 }}>
                       <button onClick={() => { setStep('input'); setPreviewProvisions([]); }} className="action-btn" disabled={processing}>
@@ -1230,6 +1291,17 @@ function PreviewCard({ prov, onUpdate, onRemove, disabled, fullAgreementText }) 
       <div className="prong-header">
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <span className="prong-name">{prov.category}</span>
+          {/* Tier badge — clickable to cycle */}
+          <span
+            onClick={() => {
+              const next = prov.display_tier === 1 ? 2 : prov.display_tier === 2 ? 3 : 1;
+              onUpdate(prov._id, 'display_tier', next);
+            }}
+            className={`tier-badge tier-${prov.display_tier || 2}`}
+            title={`Tier ${prov.display_tier || 2} — click to change`}
+          >
+            T{prov.display_tier || 2}
+          </span>
           {prov.ai_suggested && (
             <span style={{
               fontSize: 9, padding: '2px 6px', borderRadius: 3,

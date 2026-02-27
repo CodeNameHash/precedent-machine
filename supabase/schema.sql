@@ -98,6 +98,7 @@ CREATE TABLE IF NOT EXISTS provisions (
   depth int NOT NULL DEFAULT 0,
   sort_order int NOT NULL DEFAULT 0,
   agreement_source_id uuid REFERENCES agreement_sources(id),
+  display_tier smallint DEFAULT 2,
   ai_metadata jsonb,
   created_at timestamptz DEFAULT now(),
   updated_at timestamptz DEFAULT now()
@@ -291,7 +292,12 @@ INSERT INTO provision_types (key, label) VALUES
   ('ANTI', 'Antitrust / Regulatory Efforts'),
   ('COND', 'Conditions to Closing'),
   ('TERMR', 'Termination Rights'),
-  ('TERMF', 'Termination Fees')
+  ('TERMF', 'Termination Fees'),
+  ('DEF', 'Definitions'),
+  ('REP', 'Representations & Warranties'),
+  ('COV', 'Covenants'),
+  ('MISC', 'Miscellaneous'),
+  ('STRUCT', 'Deal Structure')
 ON CONFLICT (key) DO NOTHING;
 
 -- Provision categories: MAE sub-provisions
@@ -379,3 +385,65 @@ INSERT INTO provision_categories (provision_type_id, label, sort_order) VALUES
   ((SELECT id FROM provision_types WHERE key = 'IOC'), 'Stockholder Rights Plans', 15),
   ((SELECT id FROM provision_types WHERE key = 'IOC'), 'Catch-All / General', 16)
 ON CONFLICT (provision_type_id, label, parent_id) DO NOTHING;
+
+-- Provision categories: Definitions
+INSERT INTO provision_categories (provision_type_id, label, sort_order) VALUES
+  ((SELECT id FROM provision_types WHERE key = 'DEF'), 'Material Adverse Effect', 1),
+  ((SELECT id FROM provision_types WHERE key = 'DEF'), 'Governmental Entity', 2),
+  ((SELECT id FROM provision_types WHERE key = 'DEF'), 'Knowledge', 3),
+  ((SELECT id FROM provision_types WHERE key = 'DEF'), 'Subsidiary', 4),
+  ((SELECT id FROM provision_types WHERE key = 'DEF'), 'Person', 5),
+  ((SELECT id FROM provision_types WHERE key = 'DEF'), 'Business Day', 6)
+ON CONFLICT (provision_type_id, label, parent_id) DO NOTHING;
+
+-- Provision categories: Representations & Warranties
+INSERT INTO provision_categories (provision_type_id, label, sort_order) VALUES
+  ((SELECT id FROM provision_types WHERE key = 'REP'), 'Organization / Good Standing', 1),
+  ((SELECT id FROM provision_types WHERE key = 'REP'), 'Authority / No Conflicts', 2),
+  ((SELECT id FROM provision_types WHERE key = 'REP'), 'Financial Statements', 3),
+  ((SELECT id FROM provision_types WHERE key = 'REP'), 'No Undisclosed Liabilities', 4),
+  ((SELECT id FROM provision_types WHERE key = 'REP'), 'Absence of Changes', 5),
+  ((SELECT id FROM provision_types WHERE key = 'REP'), 'Litigation', 6),
+  ((SELECT id FROM provision_types WHERE key = 'REP'), 'Tax Matters', 7),
+  ((SELECT id FROM provision_types WHERE key = 'REP'), 'Employee Benefits', 8),
+  ((SELECT id FROM provision_types WHERE key = 'REP'), 'Environmental', 9),
+  ((SELECT id FROM provision_types WHERE key = 'REP'), 'Intellectual Property', 10),
+  ((SELECT id FROM provision_types WHERE key = 'REP'), 'Material Contracts', 11)
+ON CONFLICT (provision_type_id, label, parent_id) DO NOTHING;
+
+-- Provision categories: Covenants
+INSERT INTO provision_categories (provision_type_id, label, sort_order) VALUES
+  ((SELECT id FROM provision_types WHERE key = 'COV'), 'No Solicitation', 1),
+  ((SELECT id FROM provision_types WHERE key = 'COV'), 'Information Access', 2),
+  ((SELECT id FROM provision_types WHERE key = 'COV'), 'Reasonable Best Efforts', 3),
+  ((SELECT id FROM provision_types WHERE key = 'COV'), 'Financing Cooperation', 4),
+  ((SELECT id FROM provision_types WHERE key = 'COV'), 'Employee Matters', 5),
+  ((SELECT id FROM provision_types WHERE key = 'COV'), 'Indemnification', 6),
+  ((SELECT id FROM provision_types WHERE key = 'COV'), 'Public Announcements', 7)
+ON CONFLICT (provision_type_id, label, parent_id) DO NOTHING;
+
+-- Provision categories: Miscellaneous
+INSERT INTO provision_categories (provision_type_id, label, sort_order) VALUES
+  ((SELECT id FROM provision_types WHERE key = 'MISC'), 'Notices', 1),
+  ((SELECT id FROM provision_types WHERE key = 'MISC'), 'Severability', 2),
+  ((SELECT id FROM provision_types WHERE key = 'MISC'), 'Entire Agreement', 3),
+  ((SELECT id FROM provision_types WHERE key = 'MISC'), 'Amendment / Waiver', 4),
+  ((SELECT id FROM provision_types WHERE key = 'MISC'), 'Governing Law', 5),
+  ((SELECT id FROM provision_types WHERE key = 'MISC'), 'Jurisdiction', 6),
+  ((SELECT id FROM provision_types WHERE key = 'MISC'), 'Counterparts', 7)
+ON CONFLICT (provision_type_id, label, parent_id) DO NOTHING;
+
+-- Provision categories: Deal Structure
+INSERT INTO provision_categories (provision_type_id, label, sort_order) VALUES
+  ((SELECT id FROM provision_types WHERE key = 'STRUCT'), 'Merger Consideration', 1),
+  ((SELECT id FROM provision_types WHERE key = 'STRUCT'), 'Exchange Procedures', 2),
+  ((SELECT id FROM provision_types WHERE key = 'STRUCT'), 'Treatment of Equity Awards', 3),
+  ((SELECT id FROM provision_types WHERE key = 'STRUCT'), 'Closing Mechanics', 4)
+ON CONFLICT (provision_type_id, label, parent_id) DO NOTHING;
+
+-- Backfill display tiers for existing provisions
+-- Core provisions (T1)
+UPDATE provisions SET display_tier = 1 WHERE type IN ('MAE', 'TERMR', 'TERMF', 'COND', 'ANTI');
+UPDATE provisions SET display_tier = 1 WHERE type = 'IOC' AND category = 'Ordinary Course Standard';
+-- Everything else defaults to T2
+UPDATE provisions SET display_tier = 2 WHERE display_tier IS NULL;

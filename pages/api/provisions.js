@@ -27,12 +27,12 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'POST') {
-    const { deal_id, provision_type_id, category_id, parent_id, type, category, full_text, prohibition, exceptions, ai_favorability, sort_order, agreement_source_id, ai_metadata } = req.body;
+    const { deal_id, provision_type_id, category_id, parent_id, type, category, full_text, prohibition, exceptions, ai_favorability, sort_order, agreement_source_id, ai_metadata, display_tier } = req.body;
     if (!full_text || !full_text.trim()) {
       return res.status(400).json({ error: 'full_text is required' });
     }
     const { data, error } = await sb.from('provisions')
-      .insert({ deal_id, provision_type_id, category_id, parent_id, type, category, full_text: full_text.trim(), prohibition, exceptions, ai_favorability, sort_order, agreement_source_id, ai_metadata })
+      .insert({ deal_id, provision_type_id, category_id, parent_id, type, category, full_text: full_text.trim(), prohibition, exceptions, ai_favorability, sort_order, agreement_source_id, ai_metadata, display_tier: display_tier || 2 })
       .select().single();
     if (error) return res.status(500).json({ error: error.message });
     return res.json({ provision: data });
