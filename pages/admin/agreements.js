@@ -20,89 +20,156 @@ const FAV_LEVELS = [
   { key: 'strong-seller', label: 'Strong Seller', color: '#C62828' },
 ];
 
-function esc(s) { return s ? s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : ''; }
-
 export default function AddAgreements() {
   const fileRef = useRef(null);
 
-  const [step, setStep] = useState(1); // 1=identify, 2=provide, 3=extract, 4=preview, 5=done
+  // step: input | extracting | preview | saving | done
+  const [step, setStep] = useState('input');
+  const [inputMode, setInputMode] = useState('upload'); // upload | paste | name
   const [description, setDescription] = useState('');
   const [pastedText, setPastedText] = useState('');
   const [files, setFiles] = useState([]);
-  const [inputMode, setInputMode] = useState('paste'); // paste | upload
   const [processing, setProcessing] = useState(false);
   const [processingMsg, setProcessingMsg] = useState('');
   const [dealInfo, setDealInfo] = useState(null);
   const [duplicateWarning, setDuplicateWarning] = useState(null);
   const [selectedTypes, setSelectedTypes] = useState(PROVISION_TYPES.map(t => t.key));
   const [previewProvisions, setPreviewProvisions] = useState([]);
-  const [previewResults, setPreviewResults] = useState(null);
   const [error, setError] = useState(null);
-  const [saveComplete, setSaveComplete] = useState(false);
+  const [extractedTextLength, setExtractedTextLength] = useState(0);
 
-  // Step 1: Find deal from description
-  const findDeal = async () => {
-    if (!description.trim()) return;
+  // ─── Main "Go" handler ───
+  const handleGo = async () => {
     setProcessing(true);
-    setProcessingMsg('Identifying deal...');
     setError(null);
     setDealInfo(null);
     setDuplicateWarning(null);
+    setPreviewProvisions([]);
+
     try {
-      const resp = await fetch('/api/admin/find-deal', {
+      let fullText = '';
+
+      // 1. Get agreement text based on input mode
+      if (inputMode === 'upload') {
+        if (!files.length) { setError('Select at least one file.'); setProcessing(false); return; }
+        setProcessingMsg('Parsing files...');
+
+        // Upload files to server for parsing
+        const formData = new FormData();
+        files.forEach(f => formData.append('files', f));
+        const parseResp = await fetch('/api/admin/parse-files', { method: 'POST', body: formData });
+        const parseData = await parseResp.json();
+        if (parseData.error) throw new Error(parseData.error);
+        fullText = parseData.text || '';
+        if (!fullText || fullText.length < 200) {
+          throw new Error(`Could not extract enough text from files (got ${fullText.length} chars). Try .txt or .html format.`);
+        }
+      } else if (inputMode === 'paste') {
+        fullText = pastedText;
+        if (!fullText || fullText.length < 500) {
+          setError('Need at least 500 characters of agreement text.'); setProcessing(false); return;
+        }
+      } else if (inputMode === 'name') {
+        // Name-only mode: just identify the deal, no provisions to extract yet
+        if (!description.trim()) { setError('Enter a deal name or description.'); setProcessing(false); return; }
+      }
+
+      setExtractedTextLength(fullText.length);
+
+      // 2. Identify the deal
+      setProcessingMsg('Identifying deal...');
+      const dealDesc = inputMode === 'name'
+        ? description.trim()
+        : (description.trim() || fullText.substring(0, 3000));
+
+      const findResp = await fetch('/api/admin/find-deal', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ description: description.trim() }),
+        body: JSON.stringify({ description: dealDesc }),
       });
-      const data = await resp.json();
-      if (data.error) throw new Error(data.error);
-      setDealInfo(data.deal);
-      if (data.duplicate) setDuplicateWarning(data.duplicate);
-      setStep(2);
+      const findData = await findResp.json();
+      if (findData.error) throw new Error(findData.error);
+      setDealInfo(findData.deal);
+      if (findData.duplicate) setDuplicateWarning(findData.duplicate);
+
+      // 3. If name-only mode, stop here — need agreement text still
+      if (inputMode === 'name') {
+        setStep('needtext');
+        setProcessing(false);
+        setProcessingMsg('');
+        return;
+      }
+
+      // 4. Extract provisions in preview mode
+      setStep('extracting');
+      setProcessingMsg('Extracting provisions (this may take a minute)...');
+
+      const ingestResp = await fetch('/api/ingest/agreement', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          full_text: fullText,
+          title: `${findData.deal?.acquirer || 'Unknown'} / ${findData.deal?.target || 'Unknown'} Merger Agreement`,
+          provision_types: selectedTypes,
+          preview: true,
+        }),
+      });
+
+      if (!ingestResp.ok) {
+        const errText = await ingestResp.text();
+        throw new Error(errText.length > 200 ? errText.substring(0, 200) : errText);
+      }
+
+      const ingestData = await ingestResp.json();
+      if (ingestData.error) throw new Error(ingestData.error);
+
+      const allProvs = [];
+      (ingestData.results || []).forEach(r => {
+        (r.provisions || []).forEach(p => {
+          allProvs.push({ ...p, _id: Math.random().toString(36).substr(2, 9) });
+        });
+      });
+
+      setPreviewProvisions(allProvs);
+      setStep('preview');
     } catch (err) {
       setError(err.message);
+      setStep('input');
     }
     setProcessing(false);
     setProcessingMsg('');
   };
 
-  // Handle file upload
-  const handleFiles = (e) => {
-    setFiles(prev => [...prev, ...Array.from(e.target.files)]);
-  };
-
-  // Step 3: Extract provisions (preview mode)
-  const extractProvisions = async () => {
+  // Handle "Go" from needtext step (deal identified, now have text)
+  const handleGoWithText = async () => {
     setProcessing(true);
     setError(null);
-    setPreviewProvisions([]);
-
-    // Get agreement text
-    let fullText = '';
-    if (inputMode === 'paste') {
-      fullText = pastedText;
-    } else if (inputMode === 'upload' && files.length > 0) {
-      setProcessingMsg('Reading files...');
-      for (const file of files) {
-        const text = await file.text();
-        fullText += text + '\n\n';
-      }
-    }
-
-    if (!fullText || fullText.length < 500) {
-      setError('Agreement text too short. Need at least 500 characters.');
-      setProcessing(false);
-      return;
-    }
-
-    // Extract in preview mode (no DB save)
-    const totalTypes = selectedTypes.length;
-    let completed = 0;
-    setProcessingMsg(`Extracting provisions (0/${totalTypes} types)...`);
-    setStep(3);
 
     try {
-      const resp = await fetch('/api/ingest/agreement', {
+      let fullText = '';
+      if (inputMode === 'paste' || pastedText) {
+        fullText = pastedText;
+      } else if (files.length > 0) {
+        setProcessingMsg('Parsing files...');
+        const formData = new FormData();
+        files.forEach(f => formData.append('files', f));
+        const parseResp = await fetch('/api/admin/parse-files', { method: 'POST', body: formData });
+        const parseData = await parseResp.json();
+        if (parseData.error) throw new Error(parseData.error);
+        fullText = parseData.text || '';
+      }
+
+      if (!fullText || fullText.length < 500) {
+        setError('Need at least 500 characters of agreement text.');
+        setProcessing(false);
+        return;
+      }
+
+      setExtractedTextLength(fullText.length);
+      setStep('extracting');
+      setProcessingMsg('Extracting provisions (this may take a minute)...');
+
+      const ingestResp = await fetch('/api/ingest/agreement', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -112,23 +179,27 @@ export default function AddAgreements() {
           preview: true,
         }),
       });
-      const data = await resp.json();
-      if (data.error) throw new Error(data.error);
 
-      // Collect all provisions from results
+      if (!ingestResp.ok) {
+        const errText = await ingestResp.text();
+        throw new Error(errText.length > 200 ? errText.substring(0, 200) : errText);
+      }
+
+      const ingestData = await ingestResp.json();
+      if (ingestData.error) throw new Error(ingestData.error);
+
       const allProvs = [];
-      (data.results || []).forEach(r => {
+      (ingestData.results || []).forEach(r => {
         (r.provisions || []).forEach(p => {
           allProvs.push({ ...p, _id: Math.random().toString(36).substr(2, 9) });
         });
       });
 
       setPreviewProvisions(allProvs);
-      setPreviewResults(data.results);
-      setStep(4);
+      setStep('preview');
     } catch (err) {
       setError(err.message);
-      setStep(2);
+      setStep('needtext');
     }
     setProcessing(false);
     setProcessingMsg('');
@@ -145,16 +216,16 @@ export default function AddAgreements() {
     setPreviewProvisions(prev => prev.filter(p => p._id !== id));
   }, []);
 
-  // Step 5: Save to database
+  // Save to database
   const saveToDatabase = async () => {
     setProcessing(true);
     setProcessingMsg('Creating deal...');
     setError(null);
+    setStep('saving');
 
     try {
       let dealId = dealInfo?.id;
 
-      // Create deal if needed
       if (!dealId && dealInfo) {
         const dealResp = await fetch('/api/deals', {
           method: 'POST',
@@ -174,12 +245,11 @@ export default function AddAgreements() {
 
       if (!dealId) throw new Error('No deal identified');
 
-      // Save each provision
       const total = previewProvisions.length;
       let saved = 0;
-      setProcessingMsg(`Saving provisions (0/${total})...`);
 
       for (const prov of previewProvisions) {
+        setProcessingMsg(`Saving provisions (${saved + 1}/${total})...`);
         const resp = await fetch('/api/provisions', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -193,26 +263,36 @@ export default function AddAgreements() {
           }),
         });
         const data = await resp.json();
-        if (data.error) console.warn('Failed to save provision:', data.error);
+        if (data.error) console.warn('Failed to save:', data.error);
         saved++;
-        setProcessingMsg(`Saving provisions (${saved}/${total})...`);
       }
 
-      setSaveComplete(true);
-      setStep(5);
+      setStep('done');
     } catch (err) {
       setError(err.message);
+      setStep('preview');
     }
     setProcessing(false);
     setProcessingMsg('');
   };
 
-  // Group provisions by type for preview
+  // Reset everything
+  const reset = () => {
+    setStep('input'); setDealInfo(null); setDescription(''); setPastedText('');
+    setFiles([]); setPreviewProvisions([]); setDuplicateWarning(null);
+    setError(null); setExtractedTextLength(0);
+  };
+
+  // Group provisions by type
   const groupedProvisions = {};
   previewProvisions.forEach(p => {
     if (!groupedProvisions[p.type]) groupedProvisions[p.type] = [];
     groupedProvisions[p.type].push(p);
   });
+
+  const hasInput = inputMode === 'upload' ? files.length > 0
+    : inputMode === 'paste' ? pastedText.length >= 500
+    : description.trim().length > 0;
 
   return (
     <>
@@ -239,48 +319,19 @@ export default function AddAgreements() {
           </div>
         </div>
 
-        {/* Steps indicator */}
-        <div style={{
-          padding: '14px 28px',
-          borderBottom: '1px solid var(--border)',
-          background: 'var(--bg2)',
-          display: 'flex',
-          gap: '24px',
-          alignItems: 'center',
-        }}>
-          {[
-            { n: 1, label: 'Identify Deal' },
-            { n: 2, label: 'Provide Agreement' },
-            { n: 3, label: 'Extract' },
-            { n: 4, label: 'Preview & Edit' },
-            { n: 5, label: 'Saved' },
-          ].map((s, i) => (
-            <div key={s.n} style={{
-              display: 'flex', alignItems: 'center', gap: '8px',
-              color: step >= s.n ? 'var(--gold)' : 'var(--text5)',
-              fontWeight: step === s.n ? 600 : 400,
-              fontSize: '12px',
-              fontFamily: 'var(--sans)',
-            }}>
-              <div style={{
-                width: 22, height: 22, borderRadius: '50%',
-                background: step > s.n ? 'var(--gold)' : step === s.n ? 'var(--text)' : 'var(--bg)',
-                color: step >= s.n ? '#fff' : 'var(--text5)',
-                border: step === s.n ? 'none' : '1px solid var(--border)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: '10px', fontWeight: 700,
-              }}>
-                {step > s.n ? '\u2713' : s.n}
-              </div>
-              {s.label}
-              {i < 4 && <span style={{ color: 'var(--border)', marginLeft: '12px' }}>\u2014</span>}
-            </div>
-          ))}
-        </div>
-
         {/* Content */}
         <div style={{ flex: 1, overflowY: 'auto', background: 'var(--bg)' }}>
-          <div style={{ maxWidth: 780, margin: '0 auto', padding: '28px' }}>
+          <div style={{ maxWidth: 800, margin: '0 auto', padding: '28px' }}>
+
+            {/* Page title */}
+            <div style={{ marginBottom: 20 }}>
+              <div style={{ font: '700 22px var(--serif)', color: 'var(--text)', marginBottom: 4 }}>
+                Add Agreement
+              </div>
+              <div style={{ fontSize: 13, color: 'var(--text3)', lineHeight: 1.5 }}>
+                Upload a merger agreement file, paste text, or enter a deal name. AI extracts provisions for review before saving.
+              </div>
+            </div>
 
             {/* Error banner */}
             {error && (
@@ -292,12 +343,12 @@ export default function AddAgreements() {
               }}>
                 <span>{error}</span>
                 <button onClick={() => setError(null)} style={{
-                  background: 'none', border: 'none', color: 'var(--red)', cursor: 'pointer', fontSize: 14,
+                  background: 'none', border: 'none', color: 'var(--red)', cursor: 'pointer', fontSize: 16,
                 }}>&times;</button>
               </div>
             )}
 
-            {/* Processing overlay */}
+            {/* Processing banner */}
             {processing && (
               <div style={{
                 padding: '14px 20px', marginBottom: 16, borderRadius: 8,
@@ -312,31 +363,157 @@ export default function AddAgreements() {
               </div>
             )}
 
-            {/* ═══ STEP 1: Identify Deal ═══ */}
-            {step >= 1 && (
+            {/* ═══ INPUT STEP ═══ */}
+            {step === 'input' && (
               <div style={{
                 background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 10,
-                marginBottom: 16, overflow: 'hidden',
+                overflow: 'hidden',
               }}>
+                {/* Input mode tabs */}
                 <div style={{
-                  padding: '10px 16px', background: 'var(--bg3)', borderBottom: '1px solid var(--border)',
-                  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                  display: 'flex', borderBottom: '1px solid var(--border)',
                 }}>
-                  <span style={{ font: '600 13px var(--serif)', color: 'var(--text)' }}>
-                    1. Identify the Deal
-                  </span>
-                  {dealInfo && step > 1 && (
-                    <button onClick={() => { setStep(1); setDealInfo(null); setDuplicateWarning(null); }} style={{
-                      background: 'none', border: 'none', color: 'var(--gold)', cursor: 'pointer',
-                      fontSize: 11, fontWeight: 600,
-                    }}>Change</button>
-                  )}
+                  {[
+                    { key: 'upload', label: 'Upload File' },
+                    { key: 'paste', label: 'Paste Text' },
+                    { key: 'name', label: 'Deal Name' },
+                  ].map(m => (
+                    <button key={m.key} onClick={() => setInputMode(m.key)} className="view-tab" style={{
+                      borderBottomColor: inputMode === m.key ? 'var(--gold)' : 'transparent',
+                      color: inputMode === m.key ? 'var(--text)' : 'var(--text3)',
+                      fontWeight: inputMode === m.key ? 600 : 400,
+                      padding: '10px 20px',
+                    }}>
+                      {m.label}
+                    </button>
+                  ))}
                 </div>
-                <div style={{ padding: 16 }}>
-                  {!dealInfo ? (
+
+                <div style={{ padding: 20 }}>
+                  {/* Upload mode */}
+                  {inputMode === 'upload' && (
+                    <>
+                      <div
+                        onClick={() => fileRef.current?.click()}
+                        onDragOver={e => { e.preventDefault(); e.currentTarget.style.borderColor = 'var(--gold)'; }}
+                        onDragLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; }}
+                        onDrop={e => {
+                          e.preventDefault();
+                          e.currentTarget.style.borderColor = 'var(--border)';
+                          const dt = e.dataTransfer;
+                          if (dt.files.length) setFiles(prev => [...prev, ...Array.from(dt.files)]);
+                        }}
+                        style={{
+                          border: '2px dashed var(--border)', borderRadius: 8,
+                          padding: '32px 16px', textAlign: 'center', cursor: 'pointer',
+                          transition: 'border-color 0.15s',
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--gold)'}
+                        onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}
+                      >
+                        <div style={{ fontSize: 28, color: 'var(--text4)', marginBottom: 6 }}>+</div>
+                        <div style={{ font: '500 13px var(--sans)', color: 'var(--text2)' }}>
+                          Drop files here or click to browse
+                        </div>
+                        <div style={{ fontSize: 11, color: 'var(--text4)', marginTop: 4 }}>
+                          ZIP, HTML, TXT, DOCX — or a ZIP containing multiple agreements
+                        </div>
+                      </div>
+                      <input ref={fileRef} type="file" multiple
+                        accept=".txt,.html,.htm,.zip,.doc,.docx"
+                        onChange={e => { setFiles(prev => [...prev, ...Array.from(e.target.files)]); e.target.value = ''; }}
+                        style={{ display: 'none' }}
+                      />
+                      {files.length > 0 && (
+                        <div style={{ marginTop: 12 }}>
+                          {files.map((f, i) => (
+                            <div key={i} style={{
+                              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                              padding: '7px 12px', borderRadius: 6, background: 'var(--bg)',
+                              border: '1px solid var(--border)', marginBottom: 4, fontSize: 12,
+                            }}>
+                              <span style={{ color: 'var(--text2)', fontWeight: 500 }}>{f.name}</span>
+                              <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                                <span style={{ fontSize: 10, color: 'var(--text4)' }}>
+                                  {f.size > 1024 * 1024 ? (f.size / (1024 * 1024)).toFixed(1) + ' MB' : (f.size / 1024).toFixed(0) + ' KB'}
+                                </span>
+                                <button onClick={() => setFiles(prev => prev.filter((_, j) => j !== i))} style={{
+                                  background: 'none', border: 'none', color: 'var(--red)', cursor: 'pointer', fontSize: 11,
+                                }}>Remove</button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {/* Optional deal description hint */}
+                      <div style={{ marginTop: 14 }}>
+                        <label style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text4)', display: 'block', marginBottom: 4 }}>
+                          Deal description (optional — helps identify the deal)
+                        </label>
+                        <input
+                          value={description}
+                          onChange={e => setDescription(e.target.value)}
+                          placeholder="e.g. Broadcom / VMware merger"
+                          style={{
+                            width: '100%', padding: '8px 12px', borderRadius: 6,
+                            border: '1px solid var(--border)', background: 'var(--bg)',
+                            font: '400 12px var(--sans)', color: 'var(--text)', outline: 'none',
+                          }}
+                          onFocus={e => e.target.style.borderColor = 'var(--gold)'}
+                          onBlur={e => e.target.style.borderColor = 'var(--border)'}
+                        />
+                      </div>
+                    </>
+                  )}
+
+                  {/* Paste mode */}
+                  {inputMode === 'paste' && (
+                    <>
+                      <div style={{ marginBottom: 12 }}>
+                        <label style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text4)', display: 'block', marginBottom: 4 }}>
+                          Deal description (optional)
+                        </label>
+                        <input
+                          value={description}
+                          onChange={e => setDescription(e.target.value)}
+                          placeholder="e.g. Broadcom / VMware merger"
+                          style={{
+                            width: '100%', padding: '8px 12px', borderRadius: 6,
+                            border: '1px solid var(--border)', background: 'var(--bg)',
+                            font: '400 12px var(--sans)', color: 'var(--text)', outline: 'none',
+                          }}
+                          onFocus={e => e.target.style.borderColor = 'var(--gold)'}
+                          onBlur={e => e.target.style.borderColor = 'var(--border)'}
+                        />
+                      </div>
+                      <textarea
+                        value={pastedText}
+                        onChange={e => setPastedText(e.target.value)}
+                        rows={12}
+                        placeholder="Paste the full merger agreement text here..."
+                        style={{
+                          width: '100%', padding: '12px 14px', borderRadius: 6,
+                          border: '1px solid var(--border)', background: 'var(--bg)',
+                          font: '400 12px/1.7 var(--serif)', color: 'var(--text2)',
+                          resize: 'vertical', outline: 'none', minHeight: 180,
+                        }}
+                        onFocus={e => e.target.style.borderColor = 'var(--gold)'}
+                        onBlur={e => e.target.style.borderColor = 'var(--border)'}
+                      />
+                      {pastedText && (
+                        <div style={{ fontSize: 10, color: 'var(--text4)', marginTop: 4 }}>
+                          {pastedText.length.toLocaleString()} characters &middot; ~{pastedText.split(/\s+/).filter(Boolean).length.toLocaleString()} words
+                          {pastedText.length < 500 && <span style={{ color: 'var(--red)' }}> &middot; Need {500 - pastedText.length} more characters</span>}
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                  {/* Name mode */}
+                  {inputMode === 'name' && (
                     <>
                       <p style={{ fontSize: 12, color: 'var(--text3)', marginBottom: 12, lineHeight: 1.5 }}>
-                        Describe the M&A deal. AI will identify the acquirer, target, and deal details.
+                        Describe the deal. AI will identify it. You can then upload or paste the agreement text.
                       </p>
                       <textarea
                         value={description}
@@ -351,261 +528,286 @@ export default function AddAgreements() {
                         onFocus={e => e.target.style.borderColor = 'var(--gold)'}
                         onBlur={e => e.target.style.borderColor = 'var(--border)'}
                       />
-                      <div style={{ marginTop: 12, display: 'flex', gap: 8 }}>
-                        <button
-                          onClick={findDeal}
-                          disabled={processing || !description.trim()}
-                          className="save-btn"
-                          style={{ opacity: (!description.trim() || processing) ? 0.4 : 1 }}
-                        >
-                          {processing ? 'Searching...' : 'Find Deal'}
-                        </button>
-                      </div>
                     </>
-                  ) : (
-                    <div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                        <div>
-                          <div style={{ font: '700 16px var(--serif)', color: 'var(--text)', marginBottom: 4 }}>
-                            {dealInfo.acquirer} / {dealInfo.target}
-                          </div>
-                          <div style={{ display: 'flex', gap: 16, fontSize: 11, color: 'var(--text3)', flexWrap: 'wrap' }}>
-                            {dealInfo.value_usd && <span>Value: ${(dealInfo.value_usd / 1e9).toFixed(1)}B</span>}
-                            {dealInfo.sector && <span>Sector: {dealInfo.sector}</span>}
-                            {dealInfo.announce_date && <span>Date: {dealInfo.announce_date}</span>}
-                            {dealInfo.jurisdiction && <span>Jurisdiction: {dealInfo.jurisdiction}</span>}
-                          </div>
+                  )}
+
+                  {/* Provision type selection */}
+                  {inputMode !== 'name' && (
+                    <div style={{ marginTop: 16 }}>
+                      <label style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text4)', display: 'block', marginBottom: 6 }}>
+                        Provision types to extract
+                      </label>
+                      <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
+                        {PROVISION_TYPES.map(t => (
+                          <button key={t.key}
+                            onClick={() => setSelectedTypes(prev =>
+                              prev.includes(t.key) ? prev.filter(x => x !== t.key) : [...prev, t.key]
+                            )}
+                            className="filter-chip"
+                            style={{
+                              background: selectedTypes.includes(t.key) ? 'var(--gold-light)' : 'var(--bg2)',
+                              borderColor: selectedTypes.includes(t.key) ? 'var(--gold)' : 'var(--border2)',
+                              color: selectedTypes.includes(t.key) ? 'var(--gold)' : 'var(--text4)',
+                            }}
+                          >
+                            {t.key}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* ═══ GO BUTTON ═══ */}
+                  <div style={{ marginTop: 20 }}>
+                    <button
+                      onClick={handleGo}
+                      disabled={processing || !hasInput}
+                      style={{
+                        width: '100%', padding: '14px 24px', borderRadius: 8,
+                        background: 'var(--gold)', color: '#fff', border: 'none',
+                        font: '700 14px var(--sans)', cursor: 'pointer',
+                        opacity: (processing || !hasInput) ? 0.4 : 1,
+                        transition: 'opacity 0.15s',
+                      }}
+                    >
+                      {processing ? (processingMsg || 'Processing...') : (
+                        inputMode === 'name' ? 'Find Deal' : 'Extract Provisions'
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ═══ EXTRACTING STEP ═══ */}
+            {step === 'extracting' && (
+              <div style={{
+                background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 10,
+                padding: '48px 20px', textAlign: 'center',
+              }}>
+                <svg className="spinner" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" strokeWidth="2" style={{ marginBottom: 14 }}>
+                  <path d="M21 12a9 9 0 11-6.219-8.56" />
+                </svg>
+                <div style={{ font: '600 15px var(--serif)', color: 'var(--text)', marginBottom: 6 }}>
+                  Extracting Provisions
+                </div>
+                <div style={{ fontSize: 12, color: 'var(--text3)', lineHeight: 1.5 }}>
+                  AI is reading the agreement and identifying provisions across {selectedTypes.length} categories.
+                  <br />This typically takes 30-90 seconds.
+                </div>
+                {extractedTextLength > 0 && (
+                  <div style={{ fontSize: 10, color: 'var(--text4)', marginTop: 8 }}>
+                    Analyzing {extractedTextLength.toLocaleString()} characters of agreement text
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* ═══ NEEDTEXT STEP (deal identified, now need agreement text) ═══ */}
+            {step === 'needtext' && (
+              <>
+                {/* Deal info card */}
+                {dealInfo && (
+                  <div style={{
+                    background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 10,
+                    padding: '14px 16px', marginBottom: 16,
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <div>
+                        <div style={{ font: '700 15px var(--serif)', color: 'var(--text)', marginBottom: 4 }}>
+                          {dealInfo.acquirer} / {dealInfo.target}
                         </div>
+                        <div style={{ display: 'flex', gap: 16, fontSize: 11, color: 'var(--text3)', flexWrap: 'wrap' }}>
+                          {dealInfo.value_usd && <span>Value: ${(dealInfo.value_usd / 1e9).toFixed(1)}B</span>}
+                          {dealInfo.sector && <span>Sector: {dealInfo.sector}</span>}
+                          {dealInfo.announce_date && <span>Date: {dealInfo.announce_date}</span>}
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', gap: 6 }}>
                         {dealInfo.id && (
                           <span style={{
                             fontSize: 9, fontWeight: 700, padding: '3px 8px', borderRadius: 4,
                             background: 'var(--green-bg)', color: 'var(--green)',
                             textTransform: 'uppercase', letterSpacing: '0.5px',
-                          }}>Existing Deal</span>
+                          }}>Existing</span>
                         )}
+                        <button onClick={() => { setStep('input'); setDealInfo(null); }} style={{
+                          background: 'none', border: 'none', color: 'var(--gold)', cursor: 'pointer', fontSize: 11, fontWeight: 600,
+                        }}>Change</button>
                       </div>
-                      {duplicateWarning && (
-                        <div style={{
-                          marginTop: 10, padding: '8px 12px', borderRadius: 6,
-                          background: 'var(--yellow-bg)', border: '1px solid #FFE082',
-                          fontSize: 11, color: 'var(--yellow)',
-                        }}>
-                          {duplicateWarning.message}
-                        </div>
-                      )}
                     </div>
-                  )}
-                </div>
-              </div>
-            )}
+                    {duplicateWarning && (
+                      <div style={{
+                        marginTop: 8, padding: '6px 10px', borderRadius: 5,
+                        background: 'var(--yellow-bg)', border: '1px solid #FFE082',
+                        fontSize: 11, color: 'var(--yellow)',
+                      }}>{duplicateWarning.message}</div>
+                    )}
+                  </div>
+                )}
 
-            {/* ═══ STEP 2: Provide Agreement Text ═══ */}
-            {step >= 2 && step < 5 && (
-              <div style={{
-                background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 10,
-                marginBottom: 16, overflow: 'hidden',
-                opacity: step < 2 ? 0.4 : 1, pointerEvents: step < 2 ? 'none' : 'auto',
-              }}>
+                {/* Now provide agreement text */}
                 <div style={{
-                  padding: '10px 16px', background: 'var(--bg3)', borderBottom: '1px solid var(--border)',
-                  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                  background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 10,
+                  overflow: 'hidden',
                 }}>
-                  <span style={{ font: '600 13px var(--serif)', color: 'var(--text)' }}>
-                    2. Provide Agreement Text
-                  </span>
-                  {step > 2 && (
-                    <button onClick={() => setStep(2)} style={{
-                      background: 'none', border: 'none', color: 'var(--gold)', cursor: 'pointer',
-                      fontSize: 11, fontWeight: 600,
-                    }}>Change</button>
-                  )}
-                </div>
-                <div style={{ padding: 16 }}>
-                  {/* Input mode toggle */}
-                  <div style={{ display: 'flex', gap: 6, marginBottom: 14 }}>
-                    {[
-                      { key: 'paste', label: 'Paste Text' },
-                      { key: 'upload', label: 'Upload File' },
-                    ].map(m => (
-                      <button key={m.key} onClick={() => setInputMode(m.key)} className="action-btn" style={{
-                        background: inputMode === m.key ? 'var(--text)' : 'var(--bg2)',
-                        color: inputMode === m.key ? '#fff' : 'var(--text3)',
-                        borderColor: inputMode === m.key ? 'var(--text)' : 'var(--border2)',
-                      }}>
-                        {m.label}
-                      </button>
-                    ))}
+                  <div style={{
+                    padding: '10px 16px', background: 'var(--bg3)', borderBottom: '1px solid var(--border)',
+                  }}>
+                    <span style={{ font: '600 13px var(--serif)', color: 'var(--text)' }}>
+                      Provide Agreement Text
+                    </span>
                   </div>
-
-                  {inputMode === 'paste' && (
-                    <>
-                      <textarea
-                        value={pastedText}
-                        onChange={e => setPastedText(e.target.value)}
-                        rows={10}
-                        placeholder="Paste the full merger agreement text here..."
-                        style={{
-                          width: '100%', padding: '12px 14px', borderRadius: 6,
-                          border: '1px solid var(--border)', background: 'var(--bg)',
-                          font: '400 12px/1.7 var(--serif)', color: 'var(--text2)',
-                          resize: 'vertical', outline: 'none', minHeight: 140,
-                        }}
-                        onFocus={e => e.target.style.borderColor = 'var(--gold)'}
-                        onBlur={e => e.target.style.borderColor = 'var(--border)'}
-                      />
-                      {pastedText && (
-                        <div style={{ fontSize: 10, color: 'var(--text4)', marginTop: 4 }}>
-                          {pastedText.length.toLocaleString()} characters &middot; ~{pastedText.split(/\s+/).filter(Boolean).length.toLocaleString()} words
-                        </div>
-                      )}
-                    </>
-                  )}
-
-                  {inputMode === 'upload' && (
-                    <>
-                      <div
-                        onClick={() => fileRef.current?.click()}
-                        style={{
-                          border: '2px dashed var(--border)',
-                          borderRadius: 8, padding: '28px 16px', textAlign: 'center',
-                          cursor: 'pointer', transition: 'border-color 0.15s',
-                        }}
-                        onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--gold)'}
-                        onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}
-                      >
-                        <div style={{ fontSize: 24, color: 'var(--text4)', marginBottom: 4 }}>+</div>
-                        <div style={{ fontSize: 12, color: 'var(--text3)' }}>Click to select files</div>
-                        <div style={{ fontSize: 10, color: 'var(--text5)', marginTop: 2 }}>TXT, HTML, ZIP</div>
-                      </div>
-                      <input ref={fileRef} type="file" multiple accept=".txt,.html,.htm,.zip"
-                        onChange={handleFiles} style={{ display: 'none' }} />
-                      {files.length > 0 && (
-                        <div style={{ marginTop: 10 }}>
-                          {files.map((f, i) => (
-                            <div key={i} style={{
-                              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                              padding: '6px 12px', borderRadius: 6, background: 'var(--bg)',
-                              border: '1px solid var(--border)', marginBottom: 4,
-                              fontSize: 12, color: 'var(--text2)',
-                            }}>
-                              <span>{f.name}</span>
-                              <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                                <span style={{ fontSize: 10, color: 'var(--text4)' }}>{(f.size / 1024).toFixed(0)} KB</span>
-                                <button onClick={() => setFiles(prev => prev.filter((_, j) => j !== i))}
-                                  style={{ background: 'none', border: 'none', color: 'var(--red)', cursor: 'pointer', fontSize: 11 }}>
-                                  Remove
-                                </button>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </>
-                  )}
-
-                  {/* Provision type selection */}
-                  <div style={{ marginTop: 16 }}>
-                    <div style={{
-                      fontSize: 10, textTransform: 'uppercase', letterSpacing: '1px',
-                      color: 'var(--text4)', marginBottom: 8, fontWeight: 600,
-                    }}>
-                      Provision Types to Extract
+                  <div style={{ padding: 20 }}>
+                    <div style={{ display: 'flex', gap: 6, marginBottom: 14 }}>
+                      <button onClick={() => setInputMode('upload')} className="action-btn" style={{
+                        background: inputMode !== 'paste' ? 'var(--text)' : 'var(--bg2)',
+                        color: inputMode !== 'paste' ? '#fff' : 'var(--text3)',
+                        borderColor: inputMode !== 'paste' ? 'var(--text)' : 'var(--border2)',
+                      }}>Upload File</button>
+                      <button onClick={() => setInputMode('paste')} className="action-btn" style={{
+                        background: inputMode === 'paste' ? 'var(--text)' : 'var(--bg2)',
+                        color: inputMode === 'paste' ? '#fff' : 'var(--text3)',
+                        borderColor: inputMode === 'paste' ? 'var(--text)' : 'var(--border2)',
+                      }}>Paste Text</button>
                     </div>
-                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                      {PROVISION_TYPES.map(t => (
-                        <button key={t.key}
-                          onClick={() => setSelectedTypes(prev =>
-                            prev.includes(t.key) ? prev.filter(x => x !== t.key) : [...prev, t.key]
-                          )}
-                          className="filter-chip"
+
+                    {inputMode === 'paste' ? (
+                      <>
+                        <textarea
+                          value={pastedText}
+                          onChange={e => setPastedText(e.target.value)}
+                          rows={10}
+                          placeholder="Paste the full merger agreement text here..."
                           style={{
-                            background: selectedTypes.includes(t.key) ? 'var(--gold-light)' : 'var(--bg2)',
-                            borderColor: selectedTypes.includes(t.key) ? 'var(--gold)' : 'var(--border2)',
-                            color: selectedTypes.includes(t.key) ? 'var(--gold)' : 'var(--text4)',
+                            width: '100%', padding: '12px 14px', borderRadius: 6,
+                            border: '1px solid var(--border)', background: 'var(--bg)',
+                            font: '400 12px/1.7 var(--serif)', color: 'var(--text2)',
+                            resize: 'vertical', outline: 'none', minHeight: 140,
                           }}
+                        />
+                        {pastedText && (
+                          <div style={{ fontSize: 10, color: 'var(--text4)', marginTop: 4 }}>
+                            {pastedText.length.toLocaleString()} characters
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        <div
+                          onClick={() => fileRef.current?.click()}
+                          style={{
+                            border: '2px dashed var(--border)', borderRadius: 8,
+                            padding: '28px 16px', textAlign: 'center', cursor: 'pointer',
+                          }}
+                          onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--gold)'}
+                          onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}
                         >
-                          {t.key}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+                          <div style={{ fontSize: 24, color: 'var(--text4)', marginBottom: 4 }}>+</div>
+                          <div style={{ fontSize: 12, color: 'var(--text3)' }}>Click to select files</div>
+                          <div style={{ fontSize: 10, color: 'var(--text5)', marginTop: 2 }}>ZIP, HTML, TXT, DOCX</div>
+                        </div>
+                        <input ref={fileRef} type="file" multiple accept=".txt,.html,.htm,.zip,.doc,.docx"
+                          onChange={e => { setFiles(prev => [...prev, ...Array.from(e.target.files)]); e.target.value = ''; }}
+                          style={{ display: 'none' }}
+                        />
+                        {files.length > 0 && (
+                          <div style={{ marginTop: 8 }}>
+                            {files.map((f, i) => (
+                              <div key={i} style={{
+                                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                                padding: '6px 12px', borderRadius: 6, background: 'var(--bg)',
+                                border: '1px solid var(--border)', marginBottom: 4, fontSize: 12,
+                              }}>
+                                <span>{f.name}</span>
+                                <button onClick={() => setFiles(prev => prev.filter((_, j) => j !== i))} style={{
+                                  background: 'none', border: 'none', color: 'var(--red)', cursor: 'pointer', fontSize: 11,
+                                }}>Remove</button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </>
+                    )}
 
-                  {/* GO BUTTON */}
-                  {step === 2 && (
+                    {/* Provision types */}
+                    <div style={{ marginTop: 14 }}>
+                      <label style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text4)', display: 'block', marginBottom: 6 }}>
+                        Provision types to extract
+                      </label>
+                      <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
+                        {PROVISION_TYPES.map(t => (
+                          <button key={t.key}
+                            onClick={() => setSelectedTypes(prev =>
+                              prev.includes(t.key) ? prev.filter(x => x !== t.key) : [...prev, t.key]
+                            )}
+                            className="filter-chip"
+                            style={{
+                              background: selectedTypes.includes(t.key) ? 'var(--gold-light)' : 'var(--bg2)',
+                              borderColor: selectedTypes.includes(t.key) ? 'var(--gold)' : 'var(--border2)',
+                              color: selectedTypes.includes(t.key) ? 'var(--gold)' : 'var(--text4)',
+                            }}
+                          >{t.key}</button>
+                        ))}
+                      </div>
+                    </div>
+
                     <div style={{ marginTop: 20 }}>
                       <button
-                        onClick={extractProvisions}
+                        onClick={handleGoWithText}
                         disabled={processing || (inputMode === 'paste' ? pastedText.length < 500 : files.length === 0)}
-                        className="action-btn compare"
                         style={{
-                          padding: '12px 24px', fontSize: 14, fontWeight: 700,
-                          width: '100%', justifyContent: 'center',
+                          width: '100%', padding: '14px 24px', borderRadius: 8,
+                          background: 'var(--gold)', color: '#fff', border: 'none',
+                          font: '700 14px var(--sans)', cursor: 'pointer',
                           opacity: (processing || (inputMode === 'paste' ? pastedText.length < 500 : files.length === 0)) ? 0.4 : 1,
                         }}
                       >
                         Extract Provisions
                       </button>
-                      {inputMode === 'paste' && pastedText.length > 0 && pastedText.length < 500 && (
-                        <div style={{ fontSize: 10, color: 'var(--text4)', marginTop: 4, textAlign: 'center' }}>
-                          Need at least 500 characters ({500 - pastedText.length} more)
-                        </div>
-                      )}
                     </div>
-                  )}
+                  </div>
                 </div>
-              </div>
+              </>
             )}
 
-            {/* ═══ STEP 3: Extracting (loading) ═══ */}
-            {step === 3 && processing && (
-              <div style={{
-                background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 10,
-                padding: '40px 20px', textAlign: 'center',
-              }}>
-                <svg className="spinner" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" strokeWidth="2" style={{ marginBottom: 12 }}>
-                  <path d="M21 12a9 9 0 11-6.219-8.56" />
-                </svg>
-                <div style={{ font: '600 14px var(--serif)', color: 'var(--text)', marginBottom: 4 }}>
-                  Extracting Provisions
-                </div>
-                <div style={{ fontSize: 12, color: 'var(--text3)' }}>
-                  AI is reading the agreement and identifying provisions. This may take a minute...
-                </div>
-              </div>
-            )}
-
-            {/* ═══ STEP 4: Preview & Edit ═══ */}
-            {step === 4 && (
+            {/* ═══ PREVIEW STEP ═══ */}
+            {(step === 'preview' || step === 'saving') && (
               <>
-                {/* Summary bar */}
+                {/* Deal + summary bar */}
                 <div style={{
                   background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 10,
                   padding: '14px 16px', marginBottom: 16,
-                  display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8,
                 }}>
-                  <div>
-                    <div style={{ font: '600 14px var(--serif)', color: 'var(--text)', marginBottom: 2 }}>
-                      Preview: {previewProvisions.length} provisions extracted
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 10 }}>
+                    <div>
+                      {dealInfo && (
+                        <div style={{ font: '700 15px var(--serif)', color: 'var(--text)', marginBottom: 4 }}>
+                          {dealInfo.acquirer} / {dealInfo.target}
+                          {dealInfo.id && <span style={{ fontSize: 9, fontWeight: 700, padding: '2px 6px', borderRadius: 3, background: 'var(--green-bg)', color: 'var(--green)', marginLeft: 8, verticalAlign: 'middle' }}>EXISTING</span>}
+                        </div>
+                      )}
+                      <div style={{ fontSize: 12, color: 'var(--text3)' }}>
+                        {previewProvisions.length} provisions extracted across {Object.keys(groupedProvisions).length} categories.
+                        Review, edit text, adjust favorability, or remove before saving.
+                      </div>
                     </div>
-                    <div style={{ fontSize: 11, color: 'var(--text3)' }}>
-                      Review, edit, or remove provisions before saving. Click favorability badges to change ratings.
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <button onClick={() => { setStep('input'); setPreviewProvisions([]); }} className="action-btn" disabled={processing}>
+                        Start Over
+                      </button>
+                      <button
+                        onClick={saveToDatabase}
+                        disabled={processing || previewProvisions.length === 0}
+                        className="save-btn"
+                        style={{
+                          padding: '10px 20px', fontSize: 13,
+                          opacity: (processing || previewProvisions.length === 0) ? 0.4 : 1,
+                        }}
+                      >
+                        {step === 'saving' ? (processingMsg || 'Saving...') : 'Confirm & Save'}
+                      </button>
                     </div>
-                  </div>
-                  <div style={{ display: 'flex', gap: 8 }}>
-                    <button onClick={() => setStep(2)} className="action-btn">
-                      Back
-                    </button>
-                    <button
-                      onClick={saveToDatabase}
-                      disabled={processing || previewProvisions.length === 0}
-                      className="save-btn"
-                      style={{
-                        padding: '10px 24px', fontSize: 13,
-                        opacity: (processing || previewProvisions.length === 0) ? 0.4 : 1,
-                      }}
-                    >
-                      Confirm &amp; Save to Database
-                    </button>
                   </div>
                 </div>
 
@@ -621,66 +823,56 @@ export default function AddAgreements() {
                           {provs.length} provision{provs.length !== 1 ? 's' : ''}
                         </span>
                       </div>
-
                       {provs.map(prov => (
-                        <PreviewProvisionCard
-                          key={prov._id}
-                          prov={prov}
-                          onUpdate={updateProvision}
-                          onRemove={removeProvision}
-                        />
+                        <PreviewCard key={prov._id} prov={prov} onUpdate={updateProvision} onRemove={removeProvision} disabled={processing} />
                       ))}
                     </div>
                   );
                 })}
 
-                {/* Bottom save button */}
+                {/* Bottom save */}
                 {previewProvisions.length > 0 && (
                   <div style={{ marginTop: 8, marginBottom: 40 }}>
                     <button
                       onClick={saveToDatabase}
                       disabled={processing}
                       className="save-btn"
-                      style={{
-                        padding: '12px 24px', fontSize: 13, width: '100%',
-                        opacity: processing ? 0.4 : 1,
-                      }}
+                      style={{ width: '100%', padding: '14px', fontSize: 14, opacity: processing ? 0.4 : 1 }}
                     >
-                      Confirm &amp; Save {previewProvisions.length} Provisions to Database
+                      {step === 'saving' ? (processingMsg || 'Saving...') : `Confirm & Save ${previewProvisions.length} Provisions`}
                     </button>
                   </div>
                 )}
               </>
             )}
 
-            {/* ═══ STEP 5: Done ═══ */}
-            {step === 5 && (
+            {/* ═══ DONE STEP ═══ */}
+            {step === 'done' && (
               <div style={{
                 background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 10,
-                padding: '40px 20px', textAlign: 'center',
+                padding: '48px 20px', textAlign: 'center',
               }}>
-                <div style={{ fontSize: 32, color: 'var(--green)', marginBottom: 8 }}>{'\u2713'}</div>
+                <div style={{ fontSize: 36, color: 'var(--green)', marginBottom: 10 }}>{'\u2713'}</div>
                 <div style={{ font: '700 18px var(--serif)', color: 'var(--text)', marginBottom: 6 }}>
                   Agreement Saved
                 </div>
-                <div style={{ fontSize: 13, color: 'var(--text3)', marginBottom: 20 }}>
-                  {previewProvisions.length} provisions from {dealInfo?.acquirer} / {dealInfo?.target} have been saved to the database.
+                <div style={{ fontSize: 13, color: 'var(--text3)', marginBottom: 24 }}>
+                  {previewProvisions.length} provisions from{' '}
+                  <strong>{dealInfo?.acquirer} / {dealInfo?.target}</strong>{' '}
+                  saved to database.
                 </div>
                 <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
                   <a href="/" style={{ textDecoration: 'none' }}>
-                    <button className="action-btn compare">View in Comparison Tool</button>
+                    <button className="action-btn compare" style={{ padding: '10px 20px' }}>
+                      View in Comparison Tool
+                    </button>
                   </a>
-                  <button onClick={() => {
-                    setStep(1); setDealInfo(null); setDescription(''); setPastedText('');
-                    setFiles([]); setPreviewProvisions([]); setPreviewResults(null);
-                    setSaveComplete(false); setDuplicateWarning(null); setError(null);
-                  }} className="action-btn">
-                    Add Another Agreement
+                  <button onClick={reset} className="action-btn" style={{ padding: '10px 20px' }}>
+                    Add Another
                   </button>
                 </div>
               </div>
             )}
-
           </div>
         </div>
       </div>
@@ -691,15 +883,15 @@ export default function AddAgreements() {
 // ═══════════════════════════════════════════════════
 // Preview Provision Card
 // ═══════════════════════════════════════════════════
-function PreviewProvisionCard({ prov, onUpdate, onRemove }) {
+function PreviewCard({ prov, onUpdate, onRemove, disabled }) {
   const [editing, setEditing] = useState(false);
   const [editText, setEditText] = useState(prov.text);
-  const [showFavPicker, setShowFavPicker] = useState(false);
+  const [showFav, setShowFav] = useState(false);
 
-  const favLevel = FAV_LEVELS.find(f => f.key === prov.favorability);
+  const fav = FAV_LEVELS.find(f => f.key === prov.favorability);
 
   return (
-    <div className="prong-card" style={{ marginBottom: 10 }}>
+    <div className="prong-card" style={{ marginBottom: 8, opacity: disabled ? 0.6 : 1, pointerEvents: disabled ? 'none' : 'auto' }}>
       <div className="prong-header">
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <span className="prong-name">{prov.category}</span>
@@ -712,15 +904,13 @@ function PreviewProvisionCard({ prov, onUpdate, onRemove }) {
           )}
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          {/* Favorability badge */}
+          {/* Fav badge */}
           <div style={{ position: 'relative' }}>
-            <span
-              className={`fav-badge ${prov.favorability || 'unrated'}`}
-              onClick={() => setShowFavPicker(!showFavPicker)}
-            >
-              {favLevel ? favLevel.label : 'Rate'}
+            <span className={`fav-badge ${prov.favorability || 'unrated'}`}
+              onClick={() => setShowFav(!showFav)}>
+              {fav ? fav.label : 'Rate'}
             </span>
-            {showFavPicker && (
+            {showFav && (
               <div style={{
                 position: 'absolute', top: '100%', right: 0, marginTop: 4,
                 background: 'var(--bg2)', border: '1px solid var(--border)',
@@ -728,36 +918,22 @@ function PreviewProvisionCard({ prov, onUpdate, onRemove }) {
                 padding: 4, minWidth: 160, zIndex: 10,
               }}>
                 {FAV_LEVELS.map(f => (
-                  <div key={f.key} className="fav-option" onClick={() => {
-                    onUpdate(prov._id, 'favorability', f.key);
-                    setShowFavPicker(false);
-                  }}>
+                  <div key={f.key} className="fav-option" onClick={() => { onUpdate(prov._id, 'favorability', f.key); setShowFav(false); }}>
                     <div className="fav-dot" style={{ background: f.color }} />
                     {f.label}
                   </div>
                 ))}
-                <div className="fav-option" onClick={() => {
-                  onUpdate(prov._id, 'favorability', 'unrated');
-                  setShowFavPicker(false);
-                }} style={{ color: 'var(--text4)' }}>Clear</div>
+                <div className="fav-option" onClick={() => { onUpdate(prov._id, 'favorability', 'unrated'); setShowFav(false); }}
+                  style={{ color: 'var(--text4)' }}>Clear</div>
               </div>
             )}
           </div>
-
-          {/* Edit button */}
           <button onClick={() => {
-            if (editing) {
-              onUpdate(prov._id, 'text', editText);
-              setEditing(false);
-            } else {
-              setEditText(prov.text);
-              setEditing(true);
-            }
+            if (editing) { onUpdate(prov._id, 'text', editText); setEditing(false); }
+            else { setEditText(prov.text); setEditing(true); }
           }} className="admin-edit" style={{ opacity: 1, color: editing ? 'var(--green)' : 'var(--gold)' }}>
             {editing ? 'Save' : 'Edit'}
           </button>
-
-          {/* Remove button */}
           <button onClick={() => onRemove(prov._id)} className="admin-edit" style={{ opacity: 1, color: 'var(--red)' }}>
             Remove
           </button>
@@ -765,20 +941,14 @@ function PreviewProvisionCard({ prov, onUpdate, onRemove }) {
       </div>
       <div style={{ padding: '12px 16px' }}>
         {editing ? (
-          <textarea
-            value={editText}
-            onChange={e => setEditText(e.target.value)}
-            style={{
-              width: '100%', minHeight: 100, padding: '10px 12px', borderRadius: 6,
-              border: '1px solid var(--gold)', background: 'var(--bg)',
-              font: '400 12px/1.65 var(--serif)', color: 'var(--text2)',
-              resize: 'vertical', outline: 'none',
-            }}
-          />
+          <textarea value={editText} onChange={e => setEditText(e.target.value)} style={{
+            width: '100%', minHeight: 100, padding: '10px 12px', borderRadius: 6,
+            border: '1px solid var(--gold)', background: 'var(--bg)',
+            font: '400 12px/1.65 var(--serif)', color: 'var(--text2)',
+            resize: 'vertical', outline: 'none',
+          }} />
         ) : (
-          <div className="prong-text">
-            {prov.text}
-          </div>
+          <div className="prong-text">{prov.text}</div>
         )}
         {prov.reason && (
           <div style={{

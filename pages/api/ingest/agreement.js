@@ -2,7 +2,10 @@ import Anthropic from '@anthropic-ai/sdk';
 import { getServiceSupabase } from '../../../lib/supabase';
 import crypto from 'crypto';
 
-export const config = { maxDuration: 120 };
+export const config = {
+  maxDuration: 120,
+  api: { bodyParser: { sizeLimit: '12mb' } },
+};
 
 const PROVISION_TYPE_CONFIGS = {
   ANTI: {
