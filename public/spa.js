@@ -497,14 +497,6 @@ function renderContent(){
     h+='<div class="admin-banner"><span>Admin mode &mdash; Recode sub-provisions or add new categories</span><div style="display:flex;gap:6px">'+types.map(function(t){return '<button onclick="openAddCategory(\''+t+'\')">+ '+t+' Category</button>'}).join("")+'<button onclick="toggleAdmin()">Turn Off</button></div></div>';
   }
 
-  // Category filter chips
-  var allCats=[];types.forEach(function(type){getCatsForType(type).forEach(function(c){if(allCats.indexOf(c)<0)allCats.push(c)})});
-  if(allCats.length>0){
-    h+='<div style="padding:10px 28px 0;display:flex;gap:6px;flex-wrap:wrap;align-items:center"><span class="filter-label">Categories</span>';
-    allCats.forEach(function(c){var vis=!state.hiddenCategories.has(c);h+='<button class="filter-chip'+(vis?" active":"")+'" onclick="toggleCategoryVisibility(\''+esc(c).replace(/'/g,"\\'")+'\')">'+esc(c)+'</button>'});
-    h+='</div>';
-  }
-
   if(state.activeTab==="coded"){types.forEach(function(type){var cats=getCatsForType(type);if(types.length>1)h+='<div class="prongs-section" style="padding-bottom:0"><div class="provision-section-divider"><span>'+(PROVISION_TYPES.find(function(pt){return pt.key===type})?.label||type)+'</span></div></div>';h+=renderCodedView(deals,cats,type)})}
   else if(state.activeTab==="fulltext"){h+=renderFullTextView(deals,types)}
   else if(state.activeTab==="report"){h+=renderReportView(deals,types)}
@@ -548,7 +540,7 @@ function renderCodedView(deals,cats,type){
     if(present===0){tagClass="missing";tagText="None"}else if(present<deals.length){tagClass="varies";tagText=present+"/"+deals.length}
     var cmp=state.compareResults?.comparisons?.find(function(c){return c.category===cat});
 
-    h+='<div class="prong-card"><div class="prong-header"><div><span class="prong-name">'+esc(cat)+'</span></div><div style="display:flex;gap:8px;align-items:center"><span class="prong-tag '+tagClass+'">'+tagText+'</span>'+(state.adminMode?'<button class="admin-edit" onclick="openTextSelector(\''+esc(cat).replace(/'/g,"\\'")+'\',\''+type+'\')">Recode</button>':"")+'</div></div><div class="prong-body" style="grid-template-columns:repeat('+cols+',1fr)">';
+    h+='<div class="prong-card" id="card-'+esc(cat).replace(/\s+/g,"-").replace(/[^a-zA-Z0-9-]/g,"")+'"><div class="prong-header"><div><span class="prong-name">'+esc(cat)+'</span></div><div style="display:flex;gap:8px;align-items:center"><span class="prong-tag '+tagClass+'">'+tagText+'</span>'+(state.adminMode?'<button class="admin-edit" onclick="startInlineRecode(this,\''+esc(cat).replace(/'/g,"\\'")+'\',\''+type+'\','+cols+')">Recode</button>':"")+'</div></div><div class="prong-body" style="grid-template-columns:repeat('+cols+',1fr)">';
 
     // Parse IOC exceptions for sub-row rendering
     var parsedEntries=null;
@@ -564,7 +556,7 @@ function renderCodedView(deals,cats,type){
       }else{
         displayText=e.prov?annotateText(e.prov.text,e.prov.id,state.searchTerms):'<span class="absent">Not present</span>';
       }
-      h+='<div class="prong-cell"'+(e.prov?' data-prov-id="'+e.prov.id+'"':'')+'><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><div class="prong-deal-label">'+esc(e.deal.acquirer)+'/'+esc(e.deal.target)+'</div>'+(e.prov?renderFavBadge(e.prov.id,fav):"")+'</div><div class="prong-text">'+displayText+'</div></div>';
+      h+='<div class="prong-cell"'+(e.prov?' data-prov-id="'+e.prov.id+'"':'')+'><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><div class="prong-deal-label">'+esc(e.deal.acquirer)+'/'+esc(e.deal.target)+'</div><div style="display:flex;gap:4px;align-items:center">'+(e.prov&&state.adminMode?'<button class="ann-add-btn" onclick="event.stopPropagation();promptAnnotation(\''+e.prov.id+'\',this)" title="Add annotation">+ Ann</button>':'')+(e.prov?renderFavBadge(e.prov.id,fav):"")+'</div></div><div class="prong-text">'+displayText+'</div></div>';
     });
     h+='</div>';
 
@@ -790,78 +782,66 @@ function saveRecode(origCat,type){
 }
 
 // ═══════════════════════════════════════════════════
-// TEXT SELECTOR (replaces raw recode for admin)
+// INLINE RECODE (replaces modal — edits text in place)
 // ═══════════════════════════════════════════════════
-function openTextSelector(cat,type){
-  var modal=document.getElementById("recode-modal");var body=document.getElementById("recode-body");
+function startInlineRecode(btn,cat,type,cols){
+  var card=btn.closest(".prong-card");if(!card)return;
   var deals=state.selectedDeals.map(getDeal).filter(Boolean);
-  var h='<div class="recode-field"><label>Sub-Provision Category</label><select id="recode-cat">'+getCatsForType(type).map(function(c){return'<option '+(c===cat?"selected":"")+'>'+esc(c)+'</option>'}).join("")+'</select></div>';
-  h+='<div style="font-size:11px;color:var(--text3);margin-bottom:12px">Select text in each deal below to define the provision boundaries. Drag to highlight the relevant passage.</div>';
-  deals.forEach(function(d){
-    var allProvs=PROVISIONS.filter(function(p){return p.type===type&&p.dealId===d.id});
-    var fullText=allProvs.map(function(p){return p.text}).join(" ");
-    var currentProv=PROVISIONS.find(function(p){return p.type===type&&p.dealId===d.id&&p.category===cat});
-    var displayText=fullText||"(No provisions found for this deal)";
-    // Highlight current selection if exists
-    if(currentProv&&fullText){
-      var idx=fullText.indexOf(currentProv.text);
-      if(idx>=0){
-        displayText=esc(fullText.substring(0,idx))+'<span class="text-selection-highlight">'+esc(fullText.substring(idx,idx+currentProv.text.length))+'</span>'+esc(fullText.substring(idx+currentProv.text.length));
-      }else{displayText=esc(fullText)}
-    }else{displayText=esc(displayText)}
-    h+='<div class="recode-field"><label>'+esc(dealLabel(d))+'</label><div class="text-selector-text" data-deal-id="'+d.id+'" data-type="'+type+'" data-full-text="'+esc(fullText).replace(/"/g,"&quot;")+'">'+displayText+'</div><input type="hidden" id="sel-start-'+d.id+'" value=""><input type="hidden" id="sel-end-'+d.id+'" value=""></div>';
+  // Replace prong-text divs with textareas
+  var cells=card.querySelectorAll(".prong-cell");
+  cells.forEach(function(cell,idx){
+    var d=deals[idx];if(!d)return;
+    var prov=PROVISIONS.find(function(p){return p.type===type&&p.dealId===d.id&&p.category===cat});
+    var textDiv=cell.querySelector(".prong-text");
+    if(!textDiv)return;
+    var ta=document.createElement("textarea");
+    ta.className="inline-recode-ta";
+    ta.setAttribute("data-deal-id",d.id);
+    ta.value=prov?prov.text:"";
+    textDiv.replaceWith(ta);
+    ta.style.height=ta.scrollHeight+"px";
+    ta.addEventListener("input",function(){ta.style.height="auto";ta.style.height=ta.scrollHeight+"px"});
   });
-  h+='<div style="display:flex;gap:8px;margin-top:16px"><button class="save-btn" onclick="saveTextSelection(\''+esc(cat).replace(/'/g,"\\'")+'\',\''+type+'\')">Save Selection</button><button class="action-btn" onclick="document.getElementById(\'recode-modal\').style.display=\'none\'">Cancel</button></div>';
-  body.innerHTML=h;modal.style.display="flex";
-  // Attach mouseup listener for text selection
-  body.querySelectorAll(".text-selector-text").forEach(function(el){
-    el.addEventListener("mouseup",function(){
-      var sel=window.getSelection();
-      if(!sel.rangeCount||sel.isCollapsed)return;
-      var range=sel.getRangeAt(0);
-      // Calculate offset relative to this text container
-      var container=el;
-      var fullText=el.getAttribute("data-full-text");
-      var dealId=el.getAttribute("data-deal-id");
-      // Get selected text and find offsets in fullText
-      var selectedText=sel.toString().trim();
-      if(!selectedText)return;
-      var startIdx=fullText.indexOf(selectedText);
-      if(startIdx<0)return;
-      document.getElementById("sel-start-"+dealId).value=startIdx;
-      document.getElementById("sel-end-"+dealId).value=startIdx+selectedText.length;
-      applyTextHighlight(dealId,fullText,startIdx,startIdx+selectedText.length);
+  // Also make exception sub-cells editable
+  var subRows=card.querySelectorAll(".prong-sub-row");
+  subRows.forEach(function(row){
+    var subCells=row.querySelectorAll(".prong-sub-cell");
+    subCells.forEach(function(sc,idx){
+      var d=deals[idx];if(!d)return;
+      var ta=document.createElement("textarea");
+      ta.className="inline-recode-sub-ta";
+      ta.setAttribute("data-deal-id",d.id);
+      ta.setAttribute("data-sub-label",row.querySelector(".prong-sub-label")?.textContent||"");
+      ta.value=sc.textContent==="\u2014"?"":sc.textContent;
+      sc.replaceWith(ta);
+      ta.style.height=Math.max(ta.scrollHeight,40)+"px";
+      ta.addEventListener("input",function(){ta.style.height="auto";ta.style.height=ta.scrollHeight+"px"});
     });
   });
+  // Swap Recode button for Save / Cancel
+  btn.outerHTML='<button class="admin-edit" style="color:var(--green);opacity:1" onclick="saveInlineRecode(this,\''+esc(cat).replace(/'/g,"\\'")+'\',\''+type+'\')">Save</button><button class="admin-edit" style="opacity:1" onclick="cancelInlineRecode()">Cancel</button>';
 }
-function applyTextHighlight(dealId,fullText,start,end){
-  var el=document.querySelector('.text-selector-text[data-deal-id="'+dealId+'"]');
-  if(!el)return;
-  el.innerHTML=esc(fullText.substring(0,start))+'<span class="text-selection-highlight">'+esc(fullText.substring(start,end))+'</span>'+esc(fullText.substring(end));
-}
-function saveTextSelection(origCat,type){
-  var newCat=document.getElementById("recode-cat").value;var deals=state.selectedDeals.map(getDeal).filter(Boolean);
-  deals.forEach(function(d){
-    var startEl=document.getElementById("sel-start-"+d.id);
-    var endEl=document.getElementById("sel-end-"+d.id);
-    var allProvs=PROVISIONS.filter(function(p){return p.type===type&&p.dealId===d.id});
-    var fullText=allProvs.map(function(p){return p.text}).join(" ");
-    var nt="";
-    if(startEl&&endEl&&startEl.value!==""&&endEl.value!==""){
-      nt=fullText.substring(parseInt(startEl.value),parseInt(endEl.value));
-    }
-    if(!nt){
-      // Fall back to existing text if no selection made
-      var existing=PROVISIONS.find(function(p){return p.type===type&&p.dealId===d.id&&p.category===origCat});
-      if(existing)nt=existing.text;
-    }
-    if(!nt)return;
-    var ex=PROVISIONS.findIndex(function(p){return p.type===type&&p.dealId===d.id&&p.category===origCat});
-    if(ex>=0){PROVISIONS[ex].category=newCat;PROVISIONS[ex].text=nt;PROVISIONS[ex].isGold=true}else{PROVISIONS.push({id:"p_"+Date.now()+"_"+d.id,dealId:d.id,type:type,category:newCat,text:nt,isGold:true,favorability:"unrated"})}
-    goldStandards.push({dealId:d.id,type:type,category:newCat,text:nt,correctedAt:new Date().toISOString()});
+function saveInlineRecode(btn,cat,type){
+  var card=btn.closest(".prong-card");if(!card)return;
+  var deals=state.selectedDeals.map(getDeal).filter(Boolean);
+  card.querySelectorAll(".inline-recode-ta").forEach(function(ta){
+    var did=ta.getAttribute("data-deal-id");
+    var nt=ta.value.trim();if(!nt)return;
+    var ex=PROVISIONS.findIndex(function(p){return p.type===type&&p.dealId===did&&p.category===cat});
+    if(ex>=0){PROVISIONS[ex].text=nt;PROVISIONS[ex].isGold=true}
+    else{PROVISIONS.push({id:"p_"+Date.now()+"_"+did,dealId:did,type:type,category:cat,text:nt,isGold:true,favorability:"unrated"})}
+    goldStandards.push({dealId:did,type:type,category:cat,text:nt,correctedAt:new Date().toISOString()});
   });
-  saveGold();document.getElementById("recode-modal").style.display="none";state.compareResults=null;renderContent();
+  // Clear IOC parse cache for affected provisions so sub-rows re-parse
+  if(type==="IOC"){
+    deals.forEach(function(d){
+      var prov=PROVISIONS.find(function(p){return p.type===type&&p.dealId===d.id&&p.category===cat});
+      if(prov)delete IOC_PARSED_CACHE[prov.id];
+    });
+  }
+  saveGold();state.compareResults=null;renderContent();
 }
+function cancelInlineRecode(){renderContent()}
 
 // ═══════════════════════════════════════════════════
 // ANNOTATION CREATION (admin)
@@ -904,6 +884,30 @@ function openNewAnnotationPopover(provId,phrase,startOffset,endOffset,evt){
   if(top+300>window.innerHeight)top=rect.top-310;
   pop.style.top=Math.max(0,top)+"px";pop.style.left=Math.max(0,left)+"px";pop.style.display="block";
   setTimeout(function(){var dismiss=function(e){if(!pop.contains(e.target)){pop.style.display="none";document.removeEventListener("click",dismiss)}};document.addEventListener("click",dismiss)},10);
+}
+function promptAnnotation(provId,btn){
+  var prov=PROVISIONS.find(function(p){return p.id===provId});if(!prov)return;
+  var pop=document.getElementById("ann-popover");
+  var h='<div style="font:600 12px var(--sans);margin-bottom:8px">New Annotation</div>';
+  h+='<div class="ann-edit-form" style="border-top:none;padding-top:0;margin-top:0">';
+  h+='<label>Phrase (select text or type)</label><input type="text" id="new-ann-phrase" placeholder="Enter or paste phrase from provision..." style="width:100%;padding:6px 8px;border:1px solid var(--border);border-radius:5px;font-size:11px;font-family:var(--serif);background:var(--bg);outline:none;margin-bottom:4px">';
+  h+='<label>Favorability</label><select id="new-ann-fav">';
+  FAV_LEVELS.forEach(function(f){h+='<option value="'+f.key+'">'+f.label+'</option>'});
+  h+='</select>';
+  h+='<label>Note</label><textarea id="new-ann-note" placeholder="Add annotation note..."></textarea>';
+  h+='<button class="ann-save-btn" onclick="submitAnnotationFromBtn(\''+provId+'\')">Create</button>';
+  h+='</div>';
+  pop.innerHTML=h;
+  var rect=btn.getBoundingClientRect();
+  pop.style.top=(rect.bottom+6)+"px";pop.style.left=Math.min(rect.left,window.innerWidth-330)+"px";pop.style.display="block";
+  setTimeout(function(){document.getElementById("new-ann-phrase").focus();var dismiss=function(e){if(!pop.contains(e.target)&&e.target!==btn){pop.style.display="none";document.removeEventListener("click",dismiss)}};document.addEventListener("click",dismiss)},10);
+}
+function submitAnnotationFromBtn(provId){
+  var phrase=document.getElementById("new-ann-phrase").value.trim();if(!phrase)return;
+  var prov=PROVISIONS.find(function(p){return p.id===provId});if(!prov)return;
+  var startIdx=prov.text.indexOf(phrase);
+  if(startIdx<0){alert("Phrase not found in provision text. Copy it exactly.");return}
+  createAnnotation(provId,phrase,startIdx,startIdx+phrase.length);
 }
 function createAnnotation(provId,phrase,startOffset,endOffset){
   var fav=document.getElementById("new-ann-fav").value;
