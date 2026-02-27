@@ -278,7 +278,39 @@ function esc(s){return s?s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>
 function getDeal(id){return DEALS.find(function(d){return d.id===id})}
 function dealLabel(d){return d.acquirer+" / "+d.target}
 function getProvs(type,did){return PROVISIONS.filter(function(p){return p.type===type&&p.dealId===did})}
-function highlightText(t,terms){if(!terms||!terms.length)return esc(t);var rx=new RegExp("("+terms.map(function(t){return t.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}).join("|")+")","gi");return esc(t).replace(rx,'<span class="hl">$1</span>')}
+
+// Parse "$61B" / "$68.7B" / "$100,000,000" / "$500M" to numeric
+function parseDollarStr(s){
+  if(!s)return 0;var c=s.replace(/[$,\s]/g,"");
+  var m=c.match(/([\d.]+)\s*(B|billion|M|million)?/i);if(!m)return 0;
+  var n=parseFloat(m[1]);if(!n)return 0;
+  if(m[2]){var u=m[2].charAt(0).toUpperCase();if(u==="B")n*=1e9;else if(u==="M")n*=1e6}
+  else if(n>999)n=n; // already raw number like 100000000
+  return n;
+}
+function getDealValueNum(dealId){var d=getDeal(dealId);if(!d||!d.value)return 0;return parseDollarStr(d.value)}
+
+// Inject blue % badges after dollar amounts in escaped HTML
+function addDollarPcts(html,dealId){
+  var dv=getDealValueNum(dealId);if(!dv)return html;
+  var dealValStr=getDeal(dealId).value;
+  return html.replace(/\$([\d,]+(?:\.\d+)?)/g,function(match,numPart){
+    var num=parseDollarStr(match);
+    if(num<1e6||num>=dv)return match;
+    var pct=num/dv*100;
+    var pctStr=pct<0.1?"&lt;0.1":pct<1?pct.toFixed(2):pct.toFixed(1);
+    var rawPct=pct<0.1?"<0.1":pct<1?pct.toFixed(2):pct.toFixed(1);
+    return match+'<span class="dollar-pct" title="'+match.replace(/"/g,"")+" / "+esc(dealValStr)+" = "+rawPct+'%">'+pctStr+'%</span>';
+  });
+}
+
+function highlightText(t,terms,dealId){
+  var out=esc(t);
+  if(dealId)out=addDollarPcts(out,dealId);
+  if(!terms||!terms.length)return out;
+  var rx=new RegExp("("+terms.map(function(t){return t.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}).join("|")+")","gi");
+  return out.replace(rx,'<span class="hl">$1</span>');
+}
 function getCatsForType(t){return SUB_PROVISIONS[t]||[]}
 function getCoverage(type,did){var provs=getProvs(type,did);var cats=getCatsForType(type);var present=new Set(provs.map(function(p){return p.category}));var covered=cats.filter(function(c){return present.has(c)}).length;return{pct:cats.length?Math.round(covered/cats.length*100):0,coded:covered,total:cats.length}}
 
@@ -286,8 +318,11 @@ function getCoverage(type,did){var provs=getProvs(type,did);var cats=getCatsForT
 // ANNOTATION RENDERING
 // ═══════════════════════════════════════════════════
 function annotateText(text,provisionId,terms){
+  // Resolve dealId for dollar % calculations
+  var prov=PROVISIONS.find(function(p){return p.id===provisionId});
+  var dealId=prov?prov.dealId:null;
   var anns=ANNOTATIONS_CACHE[provisionId];
-  if(!anns||!anns.length)return highlightText(text,terms);
+  if(!anns||!anns.length)return highlightText(text,terms,dealId);
   // Build regions with validated offsets
   var regions=[];
   anns.forEach(function(a){
@@ -308,16 +343,16 @@ function annotateText(text,provisionId,terms){
   regions.forEach(function(r){
     if(r.start>=lastEnd){clean.push(r);lastEnd=r.end}
   });
-  if(!clean.length)return highlightText(text,terms);
+  if(!clean.length)return highlightText(text,terms,dealId);
   // Walk text producing HTML
   var html="";var pos=0;
   clean.forEach(function(r){
-    if(r.start>pos)html+=highlightText(text.substring(pos,r.start),terms);
+    if(r.start>pos)html+=highlightText(text.substring(pos,r.start),terms,dealId);
     var favClass=r.ann.favorability||"neutral";
-    html+='<span class="ann-phrase '+esc(favClass)+'" onclick="openAnnotationPopover(\''+r.ann.id+'\',event)">'+highlightText(text.substring(r.start,r.end),terms)+'</span>';
+    html+='<span class="ann-phrase '+esc(favClass)+'" onclick="openAnnotationPopover(\''+r.ann.id+'\',event)">'+highlightText(text.substring(r.start,r.end),terms,dealId)+'</span>';
     pos=r.end;
   });
-  if(pos<text.length)html+=highlightText(text.substring(pos),terms);
+  if(pos<text.length)html+=highlightText(text.substring(pos),terms,dealId);
   return html;
 }
 
@@ -580,7 +615,7 @@ function renderCodedView(deals,cats,type){
             if(pe){
               match=pe.exceptions.find(function(ex){return(ex.canonicalLabel||ex.label)===lbl});
             }
-            h+='<div class="prong-sub-cell">'+(match?highlightText(match.text,state.searchTerms):'\u2014')+'</div>';
+            h+='<div class="prong-sub-cell">'+(match?highlightText(match.text,state.searchTerms,e.deal.id):'\u2014')+'</div>';
           });
           h+='</div>';
         });
@@ -650,7 +685,7 @@ function toggleReportTerm(key){
 }
 function renderReportView(deals,types){
   var h='<div style="padding:20px 28px">';
-  h+='<div style="font:700 20px var(--serif);margin-bottom:4px">Precedent Comparison Report</div><div style="font-size:11px;color:var(--text4);margin-bottom:20px">'+new Date().toISOString().split("T")[0]+' &mdash; '+deals.length+' deals</div>';
+  h+='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px"><div><div style="font:700 20px var(--serif)">Precedent Comparison Report</div><div style="font-size:11px;color:var(--text4);margin-top:4px">'+new Date().toISOString().split("T")[0]+' &mdash; '+deals.length+' deals</div></div><div class="report-export-btns" style="display:flex;gap:6px"><button class="action-btn" onclick="exportReportPDF()">Print / PDF</button><button class="action-btn" onclick="exportReportWord()">Export Word</button></div></div>';
 
   // Toggle chips for report terms
   h+='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;align-items:center"><span class="filter-label">Deal Terms</span>';
@@ -678,8 +713,27 @@ function renderReportView(deals,types){
     cats.forEach(function(cat){
       if(state.hiddenCategories.has(cat))return;
       h+='<tr><td class="sub-prov-label">'+esc(cat)+'</td>';
-      deals.forEach(function(d){var prov=PROVISIONS.find(function(p){return p.type===type&&p.dealId===d.id&&p.category===cat});if(prov){var fav=getProvFav(prov.id);var fl=FAV_LEVELS.find(function(f){return f.key===fav});h+='<td>'+annotateText(prov.text,prov.id,[])+(fl?' <span style="font-size:9px;color:'+fl.color+';font-weight:600;font-family:var(--sans)">['+fl.label+']</span>':"")+'</td>'}else h+='<td style="color:var(--text5);font-style:italic">Not present</td>'});
+      var catParsed=[];
+      deals.forEach(function(d){var prov=PROVISIONS.find(function(p){return p.type===type&&p.dealId===d.id&&p.category===cat});if(prov){var fav=getProvFav(prov.id);var fl=FAV_LEVELS.find(function(f){return f.key===fav});
+        // For IOC, show base text (before exceptions) in main row
+        var displayText=prov.text;
+        if(type==="IOC"){var parsed=parseIOCExceptions(prov.id,prov.text);catParsed.push(parsed);if(parsed.exceptions.length>0)displayText=parsed.base}else{catParsed.push(null)}
+        h+='<td>'+highlightText(displayText,[],d.id)+(fl?' <span style="font-size:9px;color:'+fl.color+';font-weight:600;font-family:var(--sans)">['+fl.label+']</span>':"")+'</td>'}else{catParsed.push(null);h+='<td style="color:var(--text5);font-style:italic">Not present</td>'}});
       h+='</tr>';
+      // IOC exception sub-rows in report
+      if(type==="IOC"){
+        var allLabels=[];
+        catParsed.forEach(function(pe){if(!pe)return;pe.exceptions.forEach(function(ex){var lbl=ex.canonicalLabel||ex.label;if(allLabels.indexOf(lbl)<0)allLabels.push(lbl)})});
+        allLabels.forEach(function(lbl){
+          h+='<tr class="report-sub-row"><td class="sub-prov-label" style="padding-left:24px;font-size:10px;color:var(--blue);font-weight:500">&nbsp;&nbsp;'+esc(lbl)+'</td>';
+          deals.forEach(function(d,idx){
+            var pe=catParsed[idx];var match=null;
+            if(pe){match=pe.exceptions.find(function(ex){return(ex.canonicalLabel||ex.label)===lbl})}
+            h+='<td style="font-size:10.5px;color:var(--text3)">'+(match?highlightText(match.text,[],d.id):'\u2014')+'</td>';
+          });
+          h+='</tr>';
+        });
+      }
     });
     h+='</tbody></table>';
   });
@@ -687,6 +741,55 @@ function renderReportView(deals,types){
   if(state.compareResults)h+='<div style="padding:16px;background:var(--gold-light);border:1px solid var(--gold-border);border-radius:10px;margin:20px 0"><div style="font:600 14px var(--serif);margin-bottom:6px">AI Analysis</div><div style="font-size:13px;color:var(--text2);line-height:1.6">'+esc(state.compareResults.overall_summary||"")+'</div></div>';
   else h+='<div style="padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;margin:20px 0;font-size:12px;color:var(--text3)">Click "Summarize Differences" to add AI analysis to this report.</div>';
   h+='</div>';return h;
+}
+
+function exportReportPDF(){
+  // Grab the report content and open a print-friendly window
+  var content=document.getElementById("content");
+  var reportHtml=content.querySelector('[style*="padding:20px 28px"]');
+  if(!reportHtml){window.print();return}
+  var win=window.open("","_blank");
+  win.document.write('<!DOCTYPE html><html><head><title>Precedent Comparison Report</title>');
+  win.document.write('<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">');
+  win.document.write('<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:"Source Sans 3",sans-serif;color:#1a1a1a;padding:30px;font-size:11px}');
+  win.document.write('table{width:100%;border-collapse:collapse;margin-bottom:20px;table-layout:fixed}th,td{border:1px solid #ddd;padding:8px 10px;text-align:left;vertical-align:top;word-wrap:break-word;overflow-wrap:break-word}');
+  win.document.write('th{background:#f5f3ee;font-size:9px;text-transform:uppercase;letter-spacing:0.8px;color:#B8956A;font-weight:600}');
+  win.document.write('td{font-family:"Source Serif 4",serif;font-size:10.5px;line-height:1.5}');
+  win.document.write('td.sub-prov-label{font-family:"Source Sans 3",sans-serif;font-weight:600;background:#faf8f5;white-space:nowrap;width:150px}');
+  win.document.write('.dollar-pct{color:#1565C0;font-size:8px;font-weight:600;font-family:"Source Sans 3",sans-serif;margin-left:1px}');
+  win.document.write('.report-export-btns,.filter-chip,.filter-label,.action-btn{display:none!important}');
+  win.document.write('.ann-phrase{text-decoration:none}');
+  win.document.write('</style></head><body>');
+  win.document.write(reportHtml.innerHTML);
+  win.document.write('</body></html>');
+  win.document.close();
+  setTimeout(function(){win.print()},400);
+}
+
+function exportReportWord(){
+  var content=document.getElementById("content");
+  var reportHtml=content.querySelector('[style*="padding:20px 28px"]');
+  if(!reportHtml)return;
+  var html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">';
+  html+='<head><meta charset="utf-8"><style>';
+  html+='body{font-family:Calibri,sans-serif;font-size:10pt;color:#1a1a1a}';
+  html+='table{width:100%;border-collapse:collapse;margin-bottom:16pt}';
+  html+='th,td{border:1px solid #ccc;padding:5pt 8pt;vertical-align:top}';
+  html+='th{background:#f0eeea;font-size:8pt;text-transform:uppercase;letter-spacing:0.5pt;color:#B8956A;font-weight:bold}';
+  html+='td{font-family:Cambria,serif;font-size:9.5pt;line-height:1.4}';
+  html+='td.sub-prov-label{font-family:Calibri,sans-serif;font-weight:bold;background:#faf8f5}';
+  html+='.dollar-pct{color:#1565C0;font-size:7.5pt;font-weight:bold;font-family:Calibri,sans-serif}';
+  html+='.report-export-btns,.filter-chip,.filter-label,.action-btn{display:none}';
+  html+='.ann-phrase{text-decoration:none}';
+  html+='</style></head><body>';
+  html+=reportHtml.innerHTML;
+  html+='</body></html>';
+  var blob=new Blob([html],{type:"application/msword"});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement("a");
+  a.href=url;a.download="Precedent_Report_"+new Date().toISOString().split("T")[0]+".doc";
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 // ═══════════════════════════════════════════════════
