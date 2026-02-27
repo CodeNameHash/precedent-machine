@@ -55,23 +55,43 @@ async function extractTextFromBuffer(name, buf) {
 
   // PDF — send to server-side parser
   if (lc.endsWith('.pdf')) {
-    // Chunked base64 encoding (handles large files without stack overflow)
     const bytes = new Uint8Array(buf);
+    if (bytes.length < 100) {
+      throw new Error(`[${name}] File too small to be a valid PDF (${bytes.length} bytes)`);
+    }
+    if (bytes.length > 30 * 1024 * 1024) {
+      throw new Error(`[${name}] PDF too large (${(bytes.length / 1024 / 1024).toFixed(1)}MB, max 30MB)`);
+    }
+
+    // Chunked base64 encoding (handles large files without stack overflow)
     const chunks = [];
     for (let i = 0; i < bytes.length; i += 8192) {
       chunks.push(String.fromCharCode.apply(null, bytes.subarray(i, i + 8192)));
     }
     const b64 = btoa(chunks.join(''));
 
-    const resp = await fetch('/api/admin/parse-pdf', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ data: b64 }),
-    });
+    let resp;
+    try {
+      resp = await fetch('/api/admin/parse-pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: b64 }),
+      });
+    } catch (fetchErr) {
+      throw new Error(`[${name}] Network error sending PDF to parser: ${fetchErr.message}`);
+    }
+
     const respText = await resp.text();
+    if (!respText || respText.trim().length === 0) {
+      throw new Error(`[${name}] Server returned empty response (status ${resp.status}). PDF may be too large or server crashed.`);
+    }
+
     let data;
     try { data = JSON.parse(respText); } catch {
-      throw new Error(`[${name}] Server returned non-JSON: ${respText.substring(0, 120)}`);
+      if (respText.toLowerCase().includes('limit')) {
+        throw new Error(`[${name}] PDF too large for server (${(bytes.length / 1024 / 1024).toFixed(1)}MB)`);
+      }
+      throw new Error(`[${name}] PDF parse server error (status ${resp.status}): ${respText.substring(0, 150)}`);
     }
     if (data.error) throw new Error(`[${name}] ${data.error}`);
     if (!data.text || data.text.trim().length === 0) {

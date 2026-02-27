@@ -1,7 +1,8 @@
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
 
 export const config = {
-  api: { bodyParser: { sizeLimit: '20mb' } },
+  maxDuration: 60,
+  api: { bodyParser: { sizeLimit: '50mb' } },
 };
 
 export default async function handler(req, res) {
