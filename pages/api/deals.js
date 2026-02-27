@@ -7,19 +7,23 @@ export default async function handler(req, res) {
   if (req.method === 'GET') {
     const { id } = req.query;
     if (id) {
-      const { data, error } = await sb.from('deals').select('*').eq('id', id).single();
+      const { data, error } = await sb.from('deals')
+        .select('*, agreement_type:agreement_types(key, label)')
+        .eq('id', id).single();
       if (error) return res.status(404).json({ error: error.message });
       return res.json({ deal: data });
     }
-    const { data, error } = await sb.from('deals').select('*').order('announce_date', { ascending: false });
+    const { data, error } = await sb.from('deals')
+      .select('*, agreement_type:agreement_types(key, label)')
+      .order('announce_date', { ascending: false });
     if (error) return res.status(500).json({ error: error.message });
     return res.json({ deals: data });
   }
 
   if (req.method === 'POST') {
-    const { acquirer, target, value_usd, announce_date, sector, metadata, created_by } = req.body;
+    const { acquirer, target, value_usd, announce_date, sector, jurisdiction, structure, term_fee, agreement_type_id, metadata, created_by } = req.body;
     const { data, error } = await sb.from('deals')
-      .insert({ acquirer, target, value_usd, announce_date, sector, metadata, created_by })
+      .insert({ acquirer, target, value_usd, announce_date, sector, jurisdiction, structure, term_fee, agreement_type_id, metadata, created_by })
       .select().single();
     if (error) return res.status(500).json({ error: error.message });
     return res.json({ deal: data });

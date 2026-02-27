@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════════════════
-// DATA
+// DATA — Hardcoded fallback + API fetch on load
 // ═══════════════════════════════════════════════════
-var DEALS = [
+var FALLBACK_DEALS = [
   { id:"d1", acquirer:"Broadcom Inc.", target:"VMware, Inc.", value:"$61B", sector:"Technology", date:"2022-05-26", jurisdiction:"Delaware",
     lawyers:{buyer:["Wachtell Lipton"],seller:["Gibson Dunn"]}, advisors:{buyer:["Silver Lake"],seller:["Goldman Sachs","J.P. Morgan"]},
     structure:"Reverse triangular merger", termFee:"$1.5B / $1.5B" },
@@ -34,18 +34,15 @@ var DEALS = [
     structure:"Bank merger", termFee:"$1.38B each" },
 ];
 
-var PROVISION_TYPES = [
+var FALLBACK_PROVISION_TYPES = [
   {key:"MAE", label:"Material Adverse Effect"},
   {key:"IOC", label:"Interim Operating Covenants"},
 ];
 
-var SUB_PROVISIONS = {
+var FALLBACK_SUB_PROVISIONS = {
   MAE:["Base Definition","General Economic / Market Conditions","Changes in Law / GAAP","Industry Conditions","War / Terrorism","Acts of God / Pandemic","Failure to Meet Projections","Announcement / Pendency Effects","Actions at Parent Request","Disproportionate Impact Qualifier","Changes in Stock Price","Customer / Supplier Relationships"],
-  IOC:["M&A / Acquisitions","Dividends / Distributions","Equity Issuances","Indebtedness","Capital Expenditures","Employee Compensation","Material Contracts","Accounting / Tax Changes","Ordinary Course Standard"]
+  IOC:["Ordinary Course Standard","M&A / Acquisitions","Dividends / Distributions","Equity Issuances","Indebtedness","Capital Expenditures","Employee Compensation","Material Contracts","Accounting / Tax Changes","Charter / Organizational Amendments","Stock Repurchases / Splits","Labor Agreements","Litigation Settlements","Liquidation / Dissolution","Stockholder Rights Plans","Catch-All / General"]
 };
-var savedCats=JSON.parse(localStorage.getItem("customSubProvisions")||"null");
-if(savedCats)SUB_PROVISIONS=savedCats;
-function saveCats(){localStorage.setItem("customSubProvisions",JSON.stringify(SUB_PROVISIONS))}
 
 var FAV_LEVELS=[
   {key:"strong-buyer",label:"Strong Buyer",color:"#1565C0"},
@@ -55,8 +52,7 @@ var FAV_LEVELS=[
   {key:"strong-seller",label:"Strong Seller",color:"#C62828"},
 ];
 
-var PROVISIONS = [
-  // Broadcom/VMware MAE
+var FALLBACK_PROVISIONS = [
   {id:"p1",dealId:"d1",type:"MAE",category:"Base Definition",text:'"Company Material Adverse Effect" means any change, effect, event, occurrence, state of facts or development that, individually or in the aggregate, has had or would reasonably be expected to have a material adverse effect on the business, financial condition, assets, liabilities or results of operations of the Company and its Subsidiaries, taken as a whole; provided, however, that none of the following shall be deemed to constitute, and none of the following shall be taken into account in determining whether there has been, a Company Material Adverse Effect:',favorability:"neutral"},
   {id:"p2",dealId:"d1",type:"MAE",category:"General Economic / Market Conditions",text:'changes in general economic or political conditions or the financial, credit, debt, securities or other capital markets, in each case, in the United States or elsewhere in the world, including changes in interest rates, exchange rates and price of any security or market index',favorability:"mod-seller"},
   {id:"p3",dealId:"d1",type:"MAE",category:"Changes in Law / GAAP",text:'any changes in applicable Law or GAAP (or authoritative interpretations thereof) or changes in regulatory accounting requirements applicable to the industries in which the Company operates, in each case, after the date of this Agreement',favorability:"neutral"},
@@ -67,8 +63,6 @@ var PROVISIONS = [
   {id:"p8",dealId:"d1",type:"MAE",category:"Announcement / Pendency Effects",text:'the announcement or pendency of the Merger or the other transactions contemplated hereby, including the impact thereof on relationships with customers, suppliers, distributors, partners, employees, Governmental Authorities or others having business dealings with the Company',favorability:"mod-seller"},
   {id:"p9",dealId:"d1",type:"MAE",category:"Actions at Parent Request",text:'any action taken or omitted to be taken at the express written request or with the prior written consent of Parent or as expressly required by this Agreement',favorability:"mod-seller"},
   {id:"p10",dealId:"d1",type:"MAE",category:"Disproportionate Impact Qualifier",text:'except, in the case of clauses (a) through (f) above, to the extent that the Company and its Subsidiaries, taken as a whole, are disproportionately affected thereby relative to other participants in the industries in which the Company and its Subsidiaries operate (in which case, only the incremental disproportionate impact may be taken into account)',favorability:"neutral"},
-
-  // Pfizer/Seagen MAE
   {id:"p11",dealId:"d3",type:"MAE",category:"Base Definition",text:'"Company Material Adverse Effect" means any change, effect, event, occurrence, state of facts or development that, individually or in the aggregate, has had or would reasonably be expected to have a material adverse effect on the business, results of operations or financial condition of the Company and its Subsidiaries, taken as a whole; provided, however, that none of the following (or the results thereof) shall be deemed to constitute, and none of the following (or the results thereof) shall be taken into account in determining whether there has been, a Company Material Adverse Effect:',favorability:"neutral"},
   {id:"p12",dealId:"d3",type:"MAE",category:"General Economic / Market Conditions",text:'changes in general economic conditions or the financial or securities markets generally (including changes in interest rates or exchange rates)',favorability:"neutral"},
   {id:"p13",dealId:"d3",type:"MAE",category:"Changes in Law / GAAP",text:'changes in applicable Law or GAAP (or authoritative interpretation thereof) after the date hereof',favorability:"mod-buyer"},
@@ -79,8 +73,6 @@ var PROVISIONS = [
   {id:"p18",dealId:"d3",type:"MAE",category:"Announcement / Pendency Effects",text:'any effects arising from the announcement, pendency, or anticipated consummation of the Merger, including the impact thereof on relationships, contractual or otherwise, with customers, suppliers, distributors, partners, employees, or Governmental Authorities, or the identity of Parent or its Affiliates',favorability:"mod-seller"},
   {id:"p19",dealId:"d3",type:"MAE",category:"Actions at Parent Request",text:'any action taken or omitted to be taken by the Company at the written request or with the prior written consent of Parent or as expressly required by this Agreement or the transactions contemplated hereby',favorability:"mod-seller"},
   {id:"p20",dealId:"d3",type:"MAE",category:"Disproportionate Impact Qualifier",text:'except, in the case of clauses (a) through (f) above, to the extent such changes have a disproportionate adverse effect on the Company and its Subsidiaries, taken as a whole, relative to other similarly situated companies in the pharmaceutical and biotechnology industries (in which case only the incremental disproportionate impact may be taken into account)',favorability:"neutral"},
-
-  // Microsoft/Activision MAE
   {id:"p21",dealId:"d2",type:"MAE",category:"Base Definition",text:'"Company Material Adverse Effect" means any change, effect, event, occurrence, state of facts or development that, individually or in the aggregate, has had or would reasonably be expected to have a material adverse effect on the business, financial condition, assets or results of operations of the Company and its Subsidiaries, taken as a whole; provided, however, that in no event shall any of the following, alone or in combination, be deemed to constitute, or be taken into account in determining whether there has been or would reasonably be expected to be, a Company Material Adverse Effect:',favorability:"neutral"},
   {id:"p22",dealId:"d2",type:"MAE",category:"General Economic / Market Conditions",text:'changes in general economic, regulatory or political conditions or the financial, credit or securities markets generally, including changes in interest rates or exchange rates',favorability:"neutral"},
   {id:"p23",dealId:"d2",type:"MAE",category:"Changes in Law / GAAP",text:'changes in Law or GAAP (or interpretation thereof) after the date hereof',favorability:"mod-buyer"},
@@ -92,31 +84,181 @@ var PROVISIONS = [
   {id:"p29",dealId:"d2",type:"MAE",category:"Actions at Parent Request",text:'any action taken or omitted to be taken by the Company at the express written request or with the prior written consent of Parent or as expressly required by this Agreement or the transactions contemplated hereby',favorability:"mod-seller"},
   {id:"p30",dealId:"d2",type:"MAE",category:"Disproportionate Impact Qualifier",text:'except, in the case of clauses (a) through (f) above, to the extent that such change disproportionately adversely affects the Company and its Subsidiaries, taken as a whole, relative to other participants in the industries in which the Company and its Subsidiaries operate (in which case only the incremental disproportionate impact may be taken into account)',favorability:"neutral"},
   {id:"p31",dealId:"d2",type:"MAE",category:"Changes in Stock Price",text:'any decline in the market price or trading volume of Company Common Stock (provided that the underlying facts and circumstances giving rise to or contributing to such decline may be taken into account in determining whether a Company Material Adverse Effect has occurred to the extent not otherwise excluded)',favorability:"mod-seller"},
-
-  // Broadcom/VMware IOC
   {id:"p40",dealId:"d1",type:"IOC",category:"M&A / Acquisitions",text:'shall not acquire or agree to acquire, by merging or consolidating with, by purchasing an equity interest in or a material portion of the assets of, or by any other manner, any business or any corporation, partnership, association or other business organization or division thereof, or otherwise acquire or agree to acquire any assets, in each case with a value in excess of $100,000,000 individually or $250,000,000 in the aggregate',favorability:"mod-buyer"},
   {id:"p41",dealId:"d1",type:"IOC",category:"Dividends / Distributions",text:'shall not declare, set aside, make or pay any dividends or other distributions, whether payable in cash, stock, property or otherwise, with respect to any of its capital stock, other than (i) regular quarterly cash dividends not exceeding $0.46 per share consistent with the existing dividend policy and (ii) dividends by a direct or indirect wholly owned Subsidiary to its parent',favorability:"neutral"},
   {id:"p42",dealId:"d1",type:"IOC",category:"Equity Issuances",text:'shall not issue, sell, pledge, dispose of, grant, transfer, encumber, or authorize the issuance, sale, pledge, disposition, grant, transfer or encumbrance of, any shares of capital stock or securities convertible or exchangeable into or exercisable for any shares of such capital stock, except (i) issuance upon exercise of outstanding Company Options or settlement of Company RSUs, and (ii) issuances under the Company ESPP in the ordinary course',favorability:"mod-buyer"},
   {id:"p43",dealId:"d1",type:"IOC",category:"Indebtedness",text:'shall not incur any indebtedness for borrowed money or issue any debt securities or assume, guarantee or endorse the obligations of any Person for borrowed money, in each case in excess of $500,000,000 in the aggregate, except (i) under existing credit facilities in the ordinary course, (ii) intercompany indebtedness, or (iii) letters of credit in the ordinary course',favorability:"neutral"},
   {id:"p44",dealId:"d1",type:"IOC",category:"Capital Expenditures",text:'shall not make or commit to make capital expenditures in excess of 110% of the amount set forth in the Company capital expenditure budget provided to Parent prior to the date hereof for the applicable period',favorability:"mod-buyer"},
   {id:"p45",dealId:"d1",type:"IOC",category:"Employee Compensation",text:'shall not (i) increase compensation or benefits of any current or former director, officer or employee except (A) in the ordinary course consistent with past practice for non-officer employees, (B) as required by applicable Law, or (C) as required by any existing Company Benefit Plan; (ii) grant any equity awards except in the ordinary course consistent with past practice; or (iii) adopt, enter into, materially amend or terminate any Company Benefit Plan',favorability:"mod-buyer"},
-
-  // Pfizer/Seagen IOC
   {id:"p50",dealId:"d3",type:"IOC",category:"M&A / Acquisitions",text:'shall not acquire or agree to acquire, by merging or consolidating with, by purchasing an equity interest in or a portion of the assets of, or by any other manner, any business or any Person or division thereof, except for acquisitions of assets (other than equity interests) in the ordinary course of business not exceeding $50,000,000 individually or $150,000,000 in the aggregate',favorability:"mod-buyer"},
   {id:"p51",dealId:"d3",type:"IOC",category:"Dividends / Distributions",text:'shall not declare, set aside, make or pay any dividends or distributions except (i) regular quarterly cash dividends consistent with past practice not exceeding the per-share amount of the most recent quarterly dividend prior to the date hereof, and (ii) dividends by wholly owned Subsidiaries to their parent',favorability:"neutral"},
   {id:"p52",dealId:"d3",type:"IOC",category:"Equity Issuances",text:'shall not issue, sell, grant, pledge or otherwise encumber any shares of capital stock or securities convertible or exchangeable therefor, except (i) upon the exercise or settlement of Company equity awards outstanding on the date hereof, (ii) under the ESPP consistent with past practice, or (iii) in connection with tax withholding obligations arising from settlement of equity awards',favorability:"neutral"},
   {id:"p53",dealId:"d3",type:"IOC",category:"Indebtedness",text:'shall not incur, assume, guarantee or otherwise become liable for any indebtedness for borrowed money, other than (i) borrowings under existing credit facilities in the ordinary course not to exceed $100,000,000, (ii) intercompany indebtedness, and (iii) letters of credit in the ordinary course',favorability:"mod-buyer"},
   {id:"p54",dealId:"d3",type:"IOC",category:"Capital Expenditures",text:'shall not make or commit to make capital expenditures other than (i) in the ordinary course consistent with existing plans and budget, and (ii) any individual expenditure not in excess of $25,000,000 or aggregate expenditures not in excess of $75,000,000 in excess of such budget',favorability:"mod-buyer"},
   {id:"p55",dealId:"d3",type:"IOC",category:"Employee Compensation",text:'shall not (i) increase compensation except (A) annual merit increases in the ordinary course not exceeding 5% for non-officer employees, (B) as required by applicable Law or existing plans, or (C) new hires below VP level at compensation consistent with past practice; (ii) grant any equity awards; or (iii) adopt or materially amend any Company Benefit Plan',favorability:"mod-buyer"},
-
-  // Microsoft/Activision IOC
   {id:"p60",dealId:"d2",type:"IOC",category:"M&A / Acquisitions",text:'shall not acquire or agree to acquire, by merging or consolidating with, by purchasing an equity interest in or a material portion of the assets of, or by any other manner, any business or any Person or division thereof, except for (i) purchases of assets in the ordinary course not exceeding $50,000,000 individually and (ii) transactions solely between the Company and wholly owned Subsidiaries or solely between wholly owned Subsidiaries',favorability:"mod-buyer"},
   {id:"p61",dealId:"d2",type:"IOC",category:"Dividends / Distributions",text:'shall not declare, set aside, make or pay any dividend or other distribution with respect to any capital stock, other than (i) regular quarterly cash dividends not exceeding $0.47 per share consistent with the existing dividend policy and (ii) dividends by a direct or indirect wholly owned Subsidiary to its parent',favorability:"neutral"},
   {id:"p62",dealId:"d2",type:"IOC",category:"Equity Issuances",text:'shall not issue, sell, grant, pledge, dispose of or encumber any shares of capital stock or securities convertible or exercisable therefor, except (i) pursuant to outstanding Company equity awards, (ii) under the ESPP consistent with past practice, or (iii) in connection with tax withholding obligations',favorability:"neutral"},
   {id:"p63",dealId:"d2",type:"IOC",category:"Indebtedness",text:'shall not incur any indebtedness for borrowed money or issue any debt securities, except (i) borrowings under existing credit facilities in the ordinary course not exceeding $100,000,000, (ii) intercompany indebtedness in the ordinary course, and (iii) letters of credit, performance bonds or surety bonds in the ordinary course',favorability:"neutral"},
   {id:"p64",dealId:"d2",type:"IOC",category:"Capital Expenditures",text:'shall not make or commit to make capital expenditures in excess of the amounts set forth in the Company Disclosure Letter for the applicable period (plus a 10% variance)',favorability:"mod-buyer"},
   {id:"p65",dealId:"d2",type:"IOC",category:"Employee Compensation",text:'shall not (i) increase compensation or benefits except (A) in the ordinary course consistent with past practice for non-director/officer employees, (B) as required by applicable Law, or (C) as required by existing Company Benefit Plans; (ii) grant equity awards except annual grants in the ordinary course; or (iii) adopt, enter into, materially amend or terminate any material Company Benefit Plan',favorability:"mod-buyer"},
+  // Twitter/Musk Section 6.1 IOC provisions
+  {id:"p70",dealId:"d6",type:"IOC",category:"Ordinary Course Standard",text:'From the date of this Agreement until the earlier of the Effective Time and the termination of this Agreement in accordance with Article IX, except as set forth in Section 6.1 of the Company Disclosure Letter, as required by applicable Law, or as otherwise expressly contemplated by this Agreement, the Company shall, and shall cause each of its Subsidiaries to, use commercially reasonable efforts to conduct its business in the ordinary course of business consistent with past practice in all material respects and, to the extent consistent therewith, use commercially reasonable efforts to preserve substantially intact its current business organization, to keep available the services of its current officers and key employees, and to preserve its relationships with customers, suppliers, licensors, licensees, distributors and others having business dealings with it.',favorability:"neutral"},
+  {id:"p71",dealId:"d6",type:"IOC",category:"Charter / Organizational Amendments",text:'shall not amend or otherwise change the Company Certificate of Incorporation, the Company Bylaws, or the equivalent organizational documents of any Subsidiary, except as required by applicable Law',favorability:"mod-buyer"},
+  {id:"p72",dealId:"d6",type:"IOC",category:"Stock Repurchases / Splits",text:'shall not split, combine, subdivide or reclassify any shares of capital stock of the Company or any Subsidiary, or repurchase, redeem or otherwise acquire any shares of capital stock, except (i) for the acquisition of shares of Company Common Stock from holders of Company Stock Awards in full or partial payment of any taxes payable by such holders upon the exercise, settlement or vesting thereof, and (ii) as required by existing Company Benefit Plans in effect on the date hereof',favorability:"mod-buyer"},
+  {id:"p73",dealId:"d6",type:"IOC",category:"Equity Issuances",text:'shall not issue, sell, pledge, dispose of, grant, transfer, encumber, or authorize the issuance, sale, pledge, disposition, grant, transfer or encumbrance of any shares of capital stock or voting securities, or any securities convertible into or exchangeable for any such shares of capital stock or voting securities, or any rights, warrants or options to acquire any such shares, voting securities or convertible or exchangeable securities, except (i) the issuance of shares of Company Common Stock upon the exercise or settlement of Company Stock Awards, (ii) issuances in the ordinary course under the Company ESPP',favorability:"mod-buyer"},
+  {id:"p74",dealId:"d6",type:"IOC",category:"Dividends / Distributions",text:'shall not declare, set aside, make or pay any dividend or other distribution, whether payable in cash, stock, property or otherwise, with respect to any of its capital stock, other than dividends by a direct or indirect wholly owned Subsidiary to its parent or another wholly owned Subsidiary',favorability:"mod-buyer"},
+  {id:"p75",dealId:"d6",type:"IOC",category:"Employee Compensation",text:'shall not (i) grant or increase any severance, change in control, retention or termination pay to, or enter into any new severance, change in control, retention or termination agreement with, any current or former employee, officer, director or individual independent contractor, other than in the ordinary course consistent with past practice for employees who are not officers or directors; (ii) increase the compensation or benefits payable or to become payable to any current or former employee, officer, director or individual independent contractor, except for increases in the ordinary course consistent with past practice for non-officer employees; (iii) establish, adopt, enter into, amend or terminate any Company Benefit Plan or any arrangement that would have been a Company Benefit Plan had it been entered into prior to the date hereof, except as required by applicable Law or the terms of any Company Benefit Plan as in effect on the date hereof',favorability:"mod-buyer"},
+  {id:"p76",dealId:"d6",type:"IOC",category:"Equity Issuances",text:'shall not grant any equity or equity-based awards to any current or former employee, officer, director or individual independent contractor, except for grants of Company RSUs in the ordinary course of business consistent with past practice to newly hired or promoted non-officer employees',favorability:"mod-buyer"},
+  {id:"p77",dealId:"d6",type:"IOC",category:"Labor Agreements",text:'shall not recognize any labor union or enter into any collective bargaining agreement or other labor union contract applicable to the employees of the Company or any Subsidiary, except as required by applicable Law',favorability:"mod-buyer"},
+  {id:"p78",dealId:"d6",type:"IOC",category:"M&A / Acquisitions",text:'shall not acquire or agree to acquire (including by merger, consolidation, or acquisition of stock or assets or any other business combination) any corporation, partnership, other business organization or any division thereof or any material amount of assets, in each case in excess of $100,000,000 individually or $250,000,000 in the aggregate, other than purchases of equipment and other assets in the ordinary course of business consistent with past practice',favorability:"mod-buyer"},
+  {id:"p79",dealId:"d6",type:"IOC",category:"Indebtedness",text:'shall not incur any indebtedness for borrowed money or guarantee any such indebtedness, or issue or sell any debt securities or options, warrants, calls or other rights to acquire any debt securities, except (i) indebtedness incurred under existing credit facilities in the ordinary course not exceeding $500,000,000 in aggregate principal amount at any time outstanding, (ii) intercompany indebtedness among the Company and its wholly owned Subsidiaries, and (iii) letters of credit, bank guarantees, surety bonds, performance bonds or similar instruments issued in the ordinary course',favorability:"neutral"},
+  {id:"p80",dealId:"d6",type:"IOC",category:"Material Contracts",text:'shall not enter into, modify or amend in any material respect, or terminate or waive any material right under, any Material Contract or any Contract that would have been a Material Contract had it been entered into prior to the date hereof, other than in the ordinary course of business consistent with past practice',favorability:"mod-buyer"},
+  {id:"p81",dealId:"d6",type:"IOC",category:"Accounting / Tax Changes",text:'shall not make any change in financial accounting methods, principles or practices materially affecting the consolidated assets, liabilities or results of operations of the Company, except insofar as may have been required by a change in GAAP or Regulation S-X under the Securities Act',favorability:"neutral"},
+  {id:"p82",dealId:"d6",type:"IOC",category:"Accounting / Tax Changes",text:'shall not make, change or revoke any material Tax election, change an annual Tax accounting period, adopt or change any material Tax accounting method, file any material amended Tax Return, enter into any closing agreement with respect to a material amount of Taxes, settle any material Tax claim or assessment, or surrender any right to claim a material refund of Taxes, except in the ordinary course of business consistent with past practice',favorability:"mod-buyer"},
+  {id:"p83",dealId:"d6",type:"IOC",category:"Liquidation / Dissolution",text:'shall not adopt a plan of complete or partial liquidation, dissolution, restructuring, recapitalization or other reorganization of the Company or any of its material Subsidiaries (other than the Merger)',favorability:"mod-buyer"},
+  {id:"p84",dealId:"d6",type:"IOC",category:"Litigation Settlements",text:'shall not settle, or offer or propose to settle, any Action, other than settlements that (i) involve only the payment of monetary damages not in excess of $50,000,000 individually or $100,000,000 in the aggregate (net of insurance) and (ii) do not involve the imposition of injunctive or other non-monetary relief on the Company or any of its Subsidiaries',favorability:"mod-buyer"},
+  {id:"p85",dealId:"d6",type:"IOC",category:"Stockholder Rights Plans",text:'shall not adopt or implement a stockholder rights plan or any similar arrangement',favorability:"strong-buyer"},
+  {id:"p86",dealId:"d6",type:"IOC",category:"Catch-All / General",text:'shall not authorize any of, or agree, resolve or commit to do any of, the foregoing actions',favorability:"neutral"},
+  {id:"p87",dealId:"d6",type:"IOC",category:"Capital Expenditures",text:'shall not make or commit to make capital expenditures in excess of 110% of the amounts set forth in the Company capital expenditure budget made available to Parent prior to the date hereof for the applicable period, other than capital expenditures reasonably necessary to respond to any emergency or natural disaster',favorability:"mod-buyer"},
 ];
+
+// Mutable data — starts as fallback, replaced by API data on load
+var DEALS = FALLBACK_DEALS.slice();
+var PROVISION_TYPES = FALLBACK_PROVISION_TYPES.slice();
+var SUB_PROVISIONS = JSON.parse(JSON.stringify(FALLBACK_SUB_PROVISIONS));
+var PROVISIONS = FALLBACK_PROVISIONS.slice();
+var _dataSource = "fallback";
+
+var savedCats=JSON.parse(localStorage.getItem("customSubProvisions")||"null");
+if(savedCats)SUB_PROVISIONS=savedCats;
+function saveCats(){localStorage.setItem("customSubProvisions",JSON.stringify(SUB_PROVISIONS))}
+
+var ANNOTATIONS_CACHE={};
+var IOC_PARSED_CACHE={};
+
+function parseIOCExceptions(provId,text){
+  if(IOC_PARSED_CACHE[provId])return IOC_PARSED_CACHE[provId];
+  if(!text){IOC_PARSED_CACHE[provId]={base:text,exceptions:[]};return IOC_PARSED_CACHE[provId]}
+  // Split on exception markers
+  var splitRx=/\b(except(?:\s+that)?|other\s+than|provided[\s,]+however[\s,]+that)\b/i;
+  var parts=text.split(splitRx);
+  var base=parts[0].trim();
+  // Recombine remainder after the first exception marker
+  var remainder="";
+  for(var i=1;i<parts.length;i++){
+    if(splitRx.test(parts[i]))remainder+=(remainder?" ":"")+parts[i];
+    else remainder+=" "+parts[i];
+  }
+  remainder=remainder.trim();
+  if(!remainder){IOC_PARSED_CACHE[provId]={base:base||text,exceptions:[]};return IOC_PARSED_CACHE[provId]}
+  // Split numbered sub-exceptions: (i), (ii), (iii), (A), (B), (1), (2), etc.
+  var numRx=/\((?:i{1,3}v?|v(?:i{0,3})|x(?:i{0,3})|[A-C]|\d{1,2})\)\s*/gi;
+  var excParts=remainder.split(numRx).filter(function(s){return s&&s.trim()});
+  var exceptions=[];
+  if(excParts.length>1){
+    excParts.forEach(function(ep,idx){
+      var cleaned=ep.replace(/^[\s,;]+|[\s,;]+$/g,"").replace(/\s+and\s*$/i,"").replace(/^\s*and\s+/i,"");
+      if(cleaned.length>10)exceptions.push({label:"Exception "+(idx+1),text:cleaned,canonicalLabel:null});
+    });
+  }else if(remainder.length>10){
+    exceptions.push({label:"Exception 1",text:remainder.replace(/^[\s,;]+|[\s,;]+$/g,""),canonicalLabel:null});
+  }
+  IOC_PARSED_CACHE[provId]={base:base||text,exceptions:exceptions};
+  return IOC_PARSED_CACHE[provId];
+}
+
+function labelIOCExceptions(provId,text){
+  var parsed=parseIOCExceptions(provId,text);
+  if(!parsed.exceptions.length)return;
+  // Skip if already labeled
+  if(parsed.exceptions[0].canonicalLabel)return;
+  fetch("/api/ai/parse-ioc",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({exceptions:parsed.exceptions.map(function(e){return{label:e.label,text:e.text}}),provisionCategory:PROVISIONS.find(function(p){return p.id===provId})?.category||""})}).then(function(r){return r.json()}).then(function(data){
+    if(data.labeled_exceptions&&data.labeled_exceptions.length){
+      data.labeled_exceptions.forEach(function(le,i){
+        if(i<parsed.exceptions.length&&le.canonicalLabel)parsed.exceptions[i].canonicalLabel=le.canonicalLabel;
+      });
+      renderContent();
+    }
+  }).catch(function(e){console.warn("IOC label failed:",e.message)});
+}
+
+// ═══════════════════════════════════════════════════
+// API LOADING — fetch from Supabase, fallback to hardcoded
+// ═══════════════════════════════════════════════════
+function formatValue(n){if(!n)return"N/A";var b=n/1e9;if(b>=1)return"$"+b.toFixed(b%1===0?0:1)+"B";var m=n/1e6;return"$"+m.toFixed(0)+"M"}
+
+function mapDeal(d){return{id:d.id,acquirer:d.acquirer||"",target:d.target||"",value:d.value_usd?formatValue(d.value_usd):"N/A",sector:d.sector||"",date:d.announce_date||"",jurisdiction:d.jurisdiction||"Delaware",lawyers:d.metadata?.lawyers||{buyer:[],seller:[]},advisors:d.metadata?.advisors||{buyer:[],seller:[]},structure:d.structure||"",termFee:d.term_fee||""}}
+
+function mapProvision(p){return{id:p.id,dealId:p.deal_id,type:p.type||"",category:p.category||"",text:p.full_text||"",favorability:p.ai_favorability||"unrated",textHash:p.text_hash||null,categoryId:p.category_id||null,provisionTypeId:p.provision_type_id||null,parentId:p.parent_id||null}}
+
+function showLoading(){var el=document.getElementById("content");if(el)el.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:200px;gap:10px;color:var(--text3)"><svg class="spinner" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg> Loading from database...</div>'}
+
+async function loadFromAPI(){
+  try{
+    showLoading();
+    var results=await Promise.all([
+      fetch("/api/deals").then(function(r){return r.json()}),
+      fetch("/api/provisions").then(function(r){return r.json()}),
+      fetch("/api/provision-types").then(function(r){return r.json()})
+    ]);
+    var dealsResp=results[0],provsResp=results[1],typesResp=results[2];
+
+    if(dealsResp.deals&&dealsResp.deals.length>0){
+      DEALS=dealsResp.deals.map(mapDeal);
+      _dataSource="supabase";
+      console.log("[Precedent Machine] Loaded "+DEALS.length+" deals from Supabase");
+    }else{
+      console.warn("[Precedent Machine] No deals from API, using fallback");
+      DEALS=FALLBACK_DEALS.slice();
+    }
+
+    if(provsResp.provisions&&provsResp.provisions.length>0){
+      PROVISIONS=provsResp.provisions.map(mapProvision);
+      console.log("[Precedent Machine] Loaded "+PROVISIONS.length+" provisions from Supabase");
+    }else{
+      console.warn("[Precedent Machine] No provisions from API, using fallback");
+      PROVISIONS=FALLBACK_PROVISIONS.slice();
+    }
+
+    if(typesResp.provision_types&&typesResp.provision_types.length>0){
+      PROVISION_TYPES=typesResp.provision_types.map(function(t){return{key:t.key,label:t.label}});
+    }else{
+      PROVISION_TYPES=FALLBACK_PROVISION_TYPES.slice();
+    }
+
+    if(typesResp.provision_categories&&typesResp.provision_categories.length>0){
+      var newSubs={};
+      PROVISION_TYPES.forEach(function(pt){newSubs[pt.key]=[]});
+      typesResp.provision_categories.forEach(function(c){
+        var typeKey=c.provision_type?.key;
+        if(typeKey&&newSubs[typeKey])newSubs[typeKey].push(c.label);
+      });
+      var hasCats=Object.keys(newSubs).some(function(k){return newSubs[k].length>0});
+      if(hasCats)SUB_PROVISIONS=newSubs;
+    }
+
+    // Re-apply localStorage custom categories on top of API data
+    var saved=JSON.parse(localStorage.getItem("customSubProvisions")||"null");
+    if(saved)SUB_PROVISIONS=saved;
+
+    // Update default selected deals to first 3
+    if(DEALS.length>=3)state.selectedDeals=[DEALS[0].id,DEALS[1].id,DEALS[2].id];
+    else state.selectedDeals=DEALS.map(function(d){return d.id});
+
+  }catch(e){
+    console.warn("[Precedent Machine] API fetch failed, using fallback data:",e.message);
+    DEALS=FALLBACK_DEALS.slice();
+    PROVISIONS=FALLBACK_PROVISIONS.slice();
+    PROVISION_TYPES=FALLBACK_PROVISION_TYPES.slice();
+    SUB_PROVISIONS=JSON.parse(JSON.stringify(FALLBACK_SUB_PROVISIONS));
+    _dataSource="fallback";
+  }
+  renderSidebar();renderContent();
+  loadAnnotations();
+  // Fire-and-forget IOC exception labeling
+  PROVISIONS.forEach(function(p){if(p.type==="IOC"&&p.text)labelIOCExceptions(p.id,p.text)});
+}
 
 var goldStandards=JSON.parse(localStorage.getItem("goldStandards")||"[]");
 function saveGold(){localStorage.setItem("goldStandards",JSON.stringify(goldStandards))}
@@ -127,7 +269,7 @@ function getProvFav(pid){return favOverrides[pid]||PROVISIONS.find(function(p){r
 // ═══════════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════════
-var state={provisionType:null,selectedDeals:["d1","d2","d3"],searchTerms:[],adminMode:false,compareResults:null,activeTab:"coded",askHistory:[]};
+var state={provisionType:null,selectedDeals:["d1","d2","d3"],searchTerms:[],adminMode:false,compareResults:null,activeTab:"coded",askHistory:[],sidebarProvsCollapsed:JSON.parse(localStorage.getItem("sidebarProvsCollapsed")||"false"),sidebarDealsCollapsed:JSON.parse(localStorage.getItem("sidebarDealsCollapsed")||"false"),hiddenCategories:new Set(JSON.parse(localStorage.getItem("hiddenCategories")||"[]"))};
 
 // ═══════════════════════════════════════════════════
 // HELPERS
@@ -139,6 +281,134 @@ function getProvs(type,did){return PROVISIONS.filter(function(p){return p.type==
 function highlightText(t,terms){if(!terms||!terms.length)return esc(t);var rx=new RegExp("("+terms.map(function(t){return t.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}).join("|")+")","gi");return esc(t).replace(rx,'<span class="hl">$1</span>')}
 function getCatsForType(t){return SUB_PROVISIONS[t]||[]}
 function getCoverage(type,did){var provs=getProvs(type,did);var cats=getCatsForType(type);var present=new Set(provs.map(function(p){return p.category}));var covered=cats.filter(function(c){return present.has(c)}).length;return{pct:cats.length?Math.round(covered/cats.length*100):0,coded:covered,total:cats.length}}
+
+// ═══════════════════════════════════════════════════
+// ANNOTATION RENDERING
+// ═══════════════════════════════════════════════════
+function annotateText(text,provisionId,terms){
+  var anns=ANNOTATIONS_CACHE[provisionId];
+  if(!anns||!anns.length)return highlightText(text,terms);
+  // Build regions with validated offsets
+  var regions=[];
+  anns.forEach(function(a){
+    var s=a.start_offset,e=a.end_offset;
+    // Validate offsets match phrase
+    if(typeof s==="number"&&typeof e==="number"&&s>=0&&e<=text.length&&text.substring(s,e)===a.phrase){
+      regions.push({start:s,end:e,ann:a});
+    }else{
+      // Fallback: find phrase in text
+      var idx=text.indexOf(a.phrase);
+      if(idx>=0)regions.push({start:idx,end:idx+a.phrase.length,ann:a});
+    }
+  });
+  // Sort by start, remove overlaps (first wins)
+  regions.sort(function(a,b){return a.start-b.start});
+  var clean=[];
+  var lastEnd=0;
+  regions.forEach(function(r){
+    if(r.start>=lastEnd){clean.push(r);lastEnd=r.end}
+  });
+  if(!clean.length)return highlightText(text,terms);
+  // Walk text producing HTML
+  var html="";var pos=0;
+  clean.forEach(function(r){
+    if(r.start>pos)html+=highlightText(text.substring(pos,r.start),terms);
+    var favClass=r.ann.favorability||"neutral";
+    html+='<span class="ann-phrase '+esc(favClass)+'" onclick="openAnnotationPopover(\''+r.ann.id+'\',event)">'+highlightText(text.substring(r.start,r.end),terms)+'</span>';
+    pos=r.end;
+  });
+  if(pos<text.length)html+=highlightText(text.substring(pos),terms);
+  return html;
+}
+
+function findAnnotation(annId){
+  for(var pid in ANNOTATIONS_CACHE){
+    var list=ANNOTATIONS_CACHE[pid];
+    for(var i=0;i<list.length;i++){if(list[i].id===annId)return list[i]}
+  }
+  return null;
+}
+
+function openAnnotationPopover(annId,event){
+  event.stopPropagation();
+  var ann=findAnnotation(annId);if(!ann)return;
+  var pop=document.getElementById("ann-popover");
+  var lv=FAV_LEVELS.find(function(f){return f.key===ann.favorability})||{label:"Unknown",color:"#757575"};
+  var h='<div class="ann-phrase-quote">'+esc(ann.phrase)+'</div>';
+  h+='<div class="ann-fav-row"><div class="ann-fav-dot" style="background:'+lv.color+'"></div><span class="ann-fav-label" style="color:'+lv.color+'">'+lv.label+'</span></div>';
+  h+='<div class="ann-tags">';
+  if(ann.is_ai_generated)h+='<span class="ann-tag ai">AI</span>';
+  if(ann.verified_by)h+='<span class="ann-tag verified">Verified</span>';
+  if(!ann.is_ai_generated&&!ann.verified_by)h+='<span class="ann-tag admin">Manual</span>';
+  h+='</div>';
+  if(ann.note)h+='<div class="ann-note">'+esc(ann.note)+'</div>';
+  h+='<div class="ann-meta">'+(ann.verified_by_name?'Verified by '+esc(ann.verified_by_name)+' · ':'')+(ann.created_at?new Date(ann.created_at).toLocaleDateString():"")+'</div>';
+  // Admin edit form
+  if(state.adminMode){
+    h+='<div class="ann-edit-form"><label>Favorability</label><select id="ann-edit-fav">';
+    FAV_LEVELS.forEach(function(f){h+='<option value="'+f.key+'"'+(f.key===ann.favorability?' selected':'')+'>'+f.label+'</option>'});
+    h+='</select><label>Note</label><textarea id="ann-edit-note">'+(ann.note?esc(ann.note):"")+'</textarea>';
+    h+='<button class="ann-save-btn" onclick="saveAnnotationEdit(\''+annId+'\')">Save Override</button></div>';
+  }
+  pop.innerHTML=h;
+  // Position below clicked phrase
+  var rect=event.target.getBoundingClientRect();
+  var top=rect.bottom+6;var left=rect.left;
+  if(left+320>window.innerWidth)left=window.innerWidth-330;
+  if(top+300>window.innerHeight)top=rect.top-310;
+  pop.style.top=Math.max(0,top)+"px";
+  pop.style.left=Math.max(0,left)+"px";
+  pop.style.display="block";
+  // Click-outside dismissal
+  setTimeout(function(){
+    var dismiss=function(e){if(!pop.contains(e.target)&&!e.target.classList.contains("ann-phrase")){closeAnnotationPopover();document.removeEventListener("click",dismiss)}};
+    document.addEventListener("click",dismiss);
+  },10);
+}
+
+function closeAnnotationPopover(){document.getElementById("ann-popover").style.display="none"}
+
+function saveAnnotationEdit(annId){
+  var ann=findAnnotation(annId);if(!ann)return;
+  var newFav=document.getElementById("ann-edit-fav").value;
+  var newNote=document.getElementById("ann-edit-note").value.trim();
+  // POST new annotation as override
+  fetch("/api/annotations",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+    provision_id:ann.provision_id,phrase:ann.phrase,start_offset:ann.start_offset,end_offset:ann.end_offset,
+    favorability:newFav,note:newNote||ann.note,is_ai_generated:false,overrides_id:ann.id
+  })}).then(function(r){return r.json()}).then(function(data){
+    if(data.annotation){
+      // Update cache in place — replace old annotation with new one
+      var list=ANNOTATIONS_CACHE[ann.provision_id];
+      if(list){
+        var idx=list.findIndex(function(a){return a.id===annId});
+        if(idx>=0)list[idx]=data.annotation;else list.push(data.annotation);
+      }
+      closeAnnotationPopover();renderContent();
+    }
+  }).catch(function(e){console.error("Failed to save annotation override:",e)});
+}
+
+function loadAnnotations(){
+  if(_dataSource==="fallback")return;
+  var provIds=PROVISIONS.map(function(p){return p.id}).filter(function(id){return typeof id==="string"&&id.length>5});
+  if(!provIds.length)return;
+  // Batch in groups of 50
+  var batches=[];
+  for(var i=0;i<provIds.length;i+=50){batches.push(provIds.slice(i,i+50))}
+  var done=0;
+  batches.forEach(function(batch){
+    fetch("/api/annotations?provision_ids="+batch.join(",")).then(function(r){return r.json()}).then(function(data){
+      if(data.annotations_by_provision){
+        Object.keys(data.annotations_by_provision).forEach(function(pid){
+          ANNOTATIONS_CACHE[pid]=data.annotations_by_provision[pid];
+        });
+      }
+    }).catch(function(e){console.warn("Annotations batch fetch failed:",e.message)}).finally(function(){
+      done++;if(done===batches.length)renderContent();
+    });
+  });
+}
 
 // ═══════════════════════════════════════════════════
 // SEARCH
@@ -164,19 +434,36 @@ function applyFilter(f){if(f.toUpperCase().includes("MAE"))selectProvisionType("
 // ═══════════════════════════════════════════════════
 function renderSidebar(){
   var el=document.getElementById("sidebar");
-  var h='<div class="sidebar-header">Provisions <span style="font-size:10px;color:var(--text5);text-transform:none;letter-spacing:0;cursor:pointer" onclick="selectProvisionType(null)">show all</span></div>';
-  h+='<div class="prov-item '+(state.provisionType===null?"selected":"")+'" onclick="selectProvisionType(null)"><div class="prov-type" style="color:var(--text3)">ALL</div><div class="prov-title">All Provisions</div><div class="prov-deal">Compare all provision types side by side</div></div>';
-  PROVISION_TYPES.forEach(function(pt){
-    var a=state.provisionType===pt.key;
-    h+='<div class="prov-item '+(a?"selected":"")+'" onclick="selectProvisionType(\''+pt.key+'\')"><div class="prov-type">'+pt.key+'</div><div class="prov-title">'+pt.label+'</div><div class="prov-deal">'+getCatsForType(pt.key).length+' sub-provisions &middot; '+new Set(PROVISIONS.filter(function(p){return p.type===pt.key}).map(function(p){return p.dealId})).size+' deals coded</div></div>';
-  });
-  h+='<div class="sidebar-header">Deals <span style="font-size:10px;color:var(--gold);text-transform:none;letter-spacing:0">'+state.selectedDeals.length+' selected</span></div>';
-  DEALS.forEach(function(d){
-    var ck=state.selectedDeals.includes(d.id);
-    var hp=state.provisionType?PROVISIONS.some(function(p){return p.dealId===d.id&&p.type===state.provisionType}):PROVISIONS.some(function(p){return p.dealId===d.id});
-    h+='<div class="deal-item" onclick="toggleDeal(\''+d.id+'\')" style="'+(hp?"":"opacity:0.4")+'"><div class="deal-check '+(ck?"checked":"")+'">&#10003;</div><div class="deal-info"><div class="deal-name">'+esc(dealLabel(d))+'</div><div class="deal-meta">'+d.value+' &middot; '+d.sector+' &middot; '+d.date.slice(0,4)+'</div>'+(d.lawyers?'<div class="deal-meta" style="margin-top:1px;font-size:9.5px">'+esc((d.lawyers.buyer||[]).concat(d.lawyers.seller||[]).slice(0,2).join(", "))+'</div>':"")+'</div></div>';
-  });
+  var provArrow=state.sidebarProvsCollapsed?'&#9654;':'&#9660;';
+  var dealArrow=state.sidebarDealsCollapsed?'&#9654;':'&#9660;';
+  var h='<div class="sidebar-header"><span><span class="sidebar-toggle" onclick="toggleSidebarSection(\'provs\')">'+provArrow+'</span> Provisions</span><span style="font-size:10px;color:var(--text5);text-transform:none;letter-spacing:0;cursor:pointer" onclick="selectProvisionType(null)">show all</span></div>';
+  if(!state.sidebarProvsCollapsed){
+    h+='<div class="prov-item '+(state.provisionType===null?"selected":"")+'" onclick="selectProvisionType(null)"><div class="prov-type" style="color:var(--text3)">ALL</div><div class="prov-title">All Provisions</div><div class="prov-deal">Compare all provision types side by side</div></div>';
+    PROVISION_TYPES.forEach(function(pt){
+      var a=state.provisionType===pt.key;
+      h+='<div class="prov-item '+(a?"selected":"")+'" onclick="selectProvisionType(\''+pt.key+'\')"><div class="prov-type">'+pt.key+'</div><div class="prov-title">'+pt.label+'</div><div class="prov-deal">'+getCatsForType(pt.key).length+' sub-provisions &middot; '+new Set(PROVISIONS.filter(function(p){return p.type===pt.key}).map(function(p){return p.dealId})).size+' deals coded</div></div>';
+    });
+  }
+  h+='<div class="sidebar-header"><span><span class="sidebar-toggle" onclick="toggleSidebarSection(\'deals\')">'+dealArrow+'</span> Deals</span><span style="font-size:10px;color:var(--gold);text-transform:none;letter-spacing:0">'+state.selectedDeals.length+' selected</span></div>';
+  if(!state.sidebarDealsCollapsed){
+    DEALS.forEach(function(d){
+      var ck=state.selectedDeals.includes(d.id);
+      var hp=state.provisionType?PROVISIONS.some(function(p){return p.dealId===d.id&&p.type===state.provisionType}):PROVISIONS.some(function(p){return p.dealId===d.id});
+      h+='<div class="deal-item" onclick="toggleDeal(\''+d.id+'\')" style="'+(hp?"":"opacity:0.4")+'"><div class="deal-check '+(ck?"checked":"")+'">&#10003;</div><div class="deal-info"><div class="deal-name">'+esc(dealLabel(d))+'</div><div class="deal-meta">'+d.value+' &middot; '+d.sector+' &middot; '+d.date.slice(0,4)+'</div>'+(d.lawyers?'<div class="deal-meta" style="margin-top:1px;font-size:9.5px">'+esc((d.lawyers.buyer||[]).concat(d.lawyers.seller||[]).slice(0,2).join(", "))+'</div>':"")+'</div></div>';
+    });
+  }
   el.innerHTML=h;
+}
+function toggleSidebarSection(section){
+  if(section==='provs'){state.sidebarProvsCollapsed=!state.sidebarProvsCollapsed;localStorage.setItem("sidebarProvsCollapsed",JSON.stringify(state.sidebarProvsCollapsed))}
+  else{state.sidebarDealsCollapsed=!state.sidebarDealsCollapsed;localStorage.setItem("sidebarDealsCollapsed",JSON.stringify(state.sidebarDealsCollapsed))}
+  renderSidebar();
+}
+function toggleCategoryVisibility(cat){
+  if(state.hiddenCategories.has(cat))state.hiddenCategories.delete(cat);
+  else state.hiddenCategories.add(cat);
+  localStorage.setItem("hiddenCategories",JSON.stringify(Array.from(state.hiddenCategories)));
+  renderContent();
 }
 function selectProvisionType(t){state.provisionType=t;state.compareResults=null;state.activeTab="coded";renderSidebar();renderContent()}
 function toggleDeal(id){var i=state.selectedDeals.indexOf(id);if(i>=0)state.selectedDeals.splice(i,1);else state.selectedDeals.push(id);state.compareResults=null;renderSidebar();renderContent()}
@@ -195,6 +482,14 @@ function renderContent(){
 
   if(state.adminMode){
     h+='<div class="admin-banner"><span>Admin mode &mdash; Recode sub-provisions or add new categories</span><div style="display:flex;gap:6px">'+types.map(function(t){return '<button onclick="openAddCategory(\''+t+'\')">+ '+t+' Category</button>'}).join("")+'<button onclick="toggleAdmin()">Turn Off</button></div></div>';
+  }
+
+  // Category filter chips
+  var allCats=[];types.forEach(function(type){getCatsForType(type).forEach(function(c){if(allCats.indexOf(c)<0)allCats.push(c)})});
+  if(allCats.length>0){
+    h+='<div style="padding:10px 28px 0;display:flex;gap:6px;flex-wrap:wrap;align-items:center"><span class="filter-label">Categories</span>';
+    allCats.forEach(function(c){var vis=!state.hiddenCategories.has(c);h+='<button class="filter-chip'+(vis?" active":"")+'" onclick="toggleCategoryVisibility(\''+esc(c).replace(/'/g,"\\'")+'\')">'+esc(c)+'</button>'});
+    h+='</div>';
   }
 
   if(state.activeTab==="coded"){types.forEach(function(type){var cats=getCatsForType(type);if(types.length>1)h+='<div class="prongs-section" style="padding-bottom:0"><div class="provision-section-divider"><span>'+(PROVISION_TYPES.find(function(pt){return pt.key===type})?.label||type)+'</span><span class="coverage-info">'+cats.length+' sub-provisions</span></div></div>';h+=renderCodedView(deals,cats,type)})}
@@ -217,6 +512,7 @@ function renderCodedView(deals,cats,type){
   h+='</div>';
 
   cats.forEach(function(cat){
+    if(state.hiddenCategories.has(cat))return;
     var entries=deals.map(function(d){var prov=PROVISIONS.find(function(p){return p.type===type&&p.dealId===d.id&&p.category===cat});return{deal:d,prov:prov}});
     var present=entries.filter(function(e){return e.prov}).length;
     var tagClass="all",tagText="All "+present;
@@ -224,11 +520,52 @@ function renderCodedView(deals,cats,type){
     var cmp=state.compareResults?.comparisons?.find(function(c){return c.category===cat});
 
     h+='<div class="prong-card"><div class="prong-header"><div><span class="prong-name">'+esc(cat)+'</span></div><div style="display:flex;gap:8px;align-items:center"><span class="prong-tag '+tagClass+'">'+tagText+'</span>'+(state.adminMode?'<button class="admin-edit" onclick="openRecode(\''+esc(cat).replace(/'/g,"\\'")+'\',\''+type+'\')">Recode</button>':"")+'</div></div><div class="prong-body" style="grid-template-columns:repeat('+cols+',1fr)">';
-    entries.forEach(function(e){
+
+    // Parse IOC exceptions for sub-row rendering
+    var parsedEntries=null;
+    if(type==="IOC"){
+      parsedEntries=entries.map(function(e){return e.prov?parseIOCExceptions(e.prov.id,e.prov.text):null});
+    }
+
+    entries.forEach(function(e,idx){
       var fav=e.prov?getProvFav(e.prov.id):null;
-      h+='<div class="prong-cell"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><div class="prong-deal-label">'+esc(e.deal.acquirer)+'/'+esc(e.deal.target)+'</div>'+(e.prov?renderFavBadge(e.prov.id,fav):"")+'</div><div class="prong-text">'+(e.prov?highlightText(e.prov.text,state.searchTerms):'<span class="absent">Not present</span>')+'</div></div>';
+      var displayText;
+      if(type==="IOC"&&parsedEntries&&parsedEntries[idx]&&parsedEntries[idx].exceptions.length>0){
+        displayText=annotateText(parsedEntries[idx].base,e.prov.id,state.searchTerms);
+      }else{
+        displayText=e.prov?annotateText(e.prov.text,e.prov.id,state.searchTerms):'<span class="absent">Not present</span>';
+      }
+      h+='<div class="prong-cell"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><div class="prong-deal-label">'+esc(e.deal.acquirer)+'/'+esc(e.deal.target)+'</div>'+(e.prov?renderFavBadge(e.prov.id,fav):"")+'</div><div class="prong-text">'+displayText+'</div></div>';
     });
     h+='</div>';
+
+    // IOC exception sub-rows
+    if(type==="IOC"&&parsedEntries){
+      // Collect union of canonical labels across all deals for this category
+      var allLabels=[];
+      parsedEntries.forEach(function(pe){
+        if(!pe)return;
+        pe.exceptions.forEach(function(ex){
+          var lbl=ex.canonicalLabel||ex.label;
+          if(allLabels.indexOf(lbl)<0)allLabels.push(lbl);
+        });
+      });
+      if(allLabels.length>0){
+        allLabels.forEach(function(lbl){
+          h+='<div class="prong-sub-row" style="grid-template-columns:repeat('+cols+',1fr)"><div class="prong-sub-label">'+esc(lbl)+'</div>';
+          entries.forEach(function(e,idx){
+            var pe=parsedEntries[idx];
+            var match=null;
+            if(pe){
+              match=pe.exceptions.find(function(ex){return(ex.canonicalLabel||ex.label)===lbl});
+            }
+            h+='<div class="prong-sub-cell">'+(match?highlightText(match.text,state.searchTerms):'\u2014')+'</div>';
+          });
+          h+='</div>';
+        });
+      }
+    }
+
     if(cmp)h+='<div class="prong-analysis"><strong>'+esc(cmp.summary)+'</strong><br>'+(cmp.most_buyer_friendly?'Buyer-friendly: <strong>'+esc(cmp.most_buyer_friendly)+'</strong>. ':"")+(cmp.most_seller_friendly?'Seller-friendly: <strong>'+esc(cmp.most_seller_friendly)+'</strong>. ':"")+(cmp.market_position?'<span style="color:var(--gold);font-weight:600">Market: '+esc(cmp.market_position)+'</span>':"")+'</div>';
     h+='</div>';
   });
@@ -257,7 +594,7 @@ function renderFullTextView(deals,types){
   var h='<div style="padding:20px 28px">';
   types.forEach(function(type){if(types.length>1)h+='<div class="provision-section-divider" style="margin-bottom:16px"><span>'+(PROVISION_TYPES.find(function(pt){return pt.key===type})?.label||type)+'</span></div>';
     deals.forEach(function(d){var provs=PROVISIONS.filter(function(p){return p.type===type&&p.dealId===d.id});if(!provs.length)return;var c=getCoverage(type,d.id);var cls=c.pct>=90?"full":c.pct>=50?"partial":"low";
-      h+='<div style="margin-bottom:24px"><div class="full-text-label"><span>'+esc(dealLabel(d))+' &mdash; '+type+'</span><span style="font-size:10px;color:var(--text3);text-transform:none;letter-spacing:0">Coverage: '+c.pct+'% ('+c.coded+'/'+c.total+')</span></div><div class="coverage-bar" style="margin-bottom:8px"><div class="coverage-fill '+cls+'" style="width:'+c.pct+'%"></div></div><div class="full-text">'+provs.map(function(p){return'<span class="coded" title="'+esc(p.category)+'">'+highlightText(p.text,state.searchTerms)+'</span>'}).join("; ")+'</div></div>'})});
+      h+='<div style="margin-bottom:24px"><div class="full-text-label"><span>'+esc(dealLabel(d))+' &mdash; '+type+'</span><span style="font-size:10px;color:var(--text3);text-transform:none;letter-spacing:0">Coverage: '+c.pct+'% ('+c.coded+'/'+c.total+')</span></div><div class="coverage-bar" style="margin-bottom:8px"><div class="coverage-fill '+cls+'" style="width:'+c.pct+'%"></div></div><div class="full-text">'+provs.map(function(p){return'<span class="coded" title="'+esc(p.category)+'">'+annotateText(p.text,p.id,state.searchTerms)+'</span>'}).join("; ")+'</div></div>'})});
   h+='</div>';return h;
 }
 
@@ -283,8 +620,9 @@ function renderReportView(deals,types){
     deals.forEach(function(d){h+='<th>'+esc(d.acquirer)+'/'+esc(d.target)+'</th>'});
     h+='</tr></thead><tbody>';
     cats.forEach(function(cat){
+      if(state.hiddenCategories.has(cat))return;
       h+='<tr><td class="sub-prov-label">'+esc(cat)+'</td>';
-      deals.forEach(function(d){var prov=PROVISIONS.find(function(p){return p.type===type&&p.dealId===d.id&&p.category===cat});if(prov){var fav=getProvFav(prov.id);var fl=FAV_LEVELS.find(function(f){return f.key===fav});h+='<td>'+esc(prov.text)+(fl?' <span style="font-size:9px;color:'+fl.color+';font-weight:600;font-family:var(--sans)">['+fl.label+']</span>':"")+'</td>'}else h+='<td style="color:var(--text5);font-style:italic">Not present</td>'});
+      deals.forEach(function(d){var prov=PROVISIONS.find(function(p){return p.type===type&&p.dealId===d.id&&p.category===cat});if(prov){var fav=getProvFav(prov.id);var fl=FAV_LEVELS.find(function(f){return f.key===fav});h+='<td>'+annotateText(prov.text,prov.id,[])+(fl?' <span style="font-size:9px;color:'+fl.color+';font-weight:600;font-family:var(--sans)">['+fl.label+']</span>':"")+'</td>'}else h+='<td style="color:var(--text5);font-style:italic">Not present</td>'});
       h+='</tr>';
     });
     h+='</tbody></table>';
@@ -384,5 +722,6 @@ function sendAsk(){
   });
 }
 
-// INIT
+// INIT — render fallback immediately, then try API
 renderSidebar();renderContent();
+loadFromAPI();

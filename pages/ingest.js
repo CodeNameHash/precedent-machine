@@ -117,6 +117,7 @@ export default function Ingest() {
 
       // 2. Create provisions
       let created = 0;
+      const createdProvisions = [];
       for (const prov of provisions) {
         if (!prov.full_text.trim()) continue;
         const provResp = await fetch('/api/provisions', {
@@ -132,8 +133,31 @@ export default function Ingest() {
         });
         const provData = await provResp.json();
         if (provData.error) throw new Error(provData.error);
+        createdProvisions.push({ id: provData.provision.id, text: prov.full_text.trim(), type: prov.type, category: prov.category.trim() || null });
         created++;
       }
+
+      // 3. Fire-and-forget AI annotation for each provision
+      createdProvisions.forEach(cp => {
+        fetch('/api/ai/annotate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ provision_id: cp.id, text: cp.text, type: cp.type, category: cp.category }),
+        }).then(r => r.json()).then(data => {
+          if (data.annotations && data.annotations.length > 0) {
+            data.annotations.forEach(ann => {
+              fetch('/api/annotations', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  provision_id: cp.id, phrase: ann.phrase, start_offset: ann.start_offset,
+                  end_offset: ann.end_offset, favorability: ann.favorability, note: ann.note, is_ai_generated: true,
+                }),
+              }).catch(e => console.error('Failed to save annotation:', e));
+            });
+          }
+        }).catch(e => console.error('AI annotate failed for provision:', cp.id, e));
+      });
 
       addToast(`Deal created with ${created} provision${created !== 1 ? 's' : ''}`, 'success');
       setStep(3);

@@ -65,6 +65,7 @@ export default function PrecedentApp() {
 </div>
 
 <div id="fav-dropdown" class="fav-dropdown" style="display:none"></div>
+<div id="ann-popover" class="ann-popover" style="display:none"></div>
           `,
         }}
       />
