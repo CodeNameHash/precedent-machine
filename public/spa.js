@@ -506,7 +506,7 @@ function toggleCategoryVisibility(cat){
   if(state.hiddenCategories.has(cat))state.hiddenCategories.delete(cat);
   else state.hiddenCategories.add(cat);
   localStorage.setItem("hiddenCategories",JSON.stringify(Array.from(state.hiddenCategories)));
-  renderContent();
+  renderSidebar();renderContent();
 }
 function selectProvisionType(t){
   if(t===null){state.provisionType=null;state.expandedProvisionType=null;}
@@ -885,66 +885,165 @@ function saveRecode(origCat,type){
 }
 
 // ═══════════════════════════════════════════════════
-// INLINE RECODE (replaces modal — edits text in place)
+// INLINE RECODE (context + sliders + category dropdown)
 // ═══════════════════════════════════════════════════
+function getContextForProv(dealId,type,provText){
+  // Build full context from all provisions of this type for this deal
+  var allProvs=PROVISIONS.filter(function(p){return p.type===type&&p.dealId===dealId}).map(function(p){return p.text});
+  var fullText=allProvs.join(" ");
+  if(!provText||!fullText)return{fullText:fullText||"",start:0,end:0};
+  var idx=fullText.indexOf(provText);
+  if(idx<0)return{fullText:fullText,start:0,end:0};
+  // Expand context ~100 words before and after
+  var ctxStart=idx,ctxEnd=idx+provText.length;
+  var wordsBefore=0,wordsAfter=0;
+  while(ctxStart>0&&wordsBefore<100){ctxStart--;if(fullText[ctxStart]===" ")wordsBefore++}
+  while(ctxEnd<fullText.length&&wordsAfter<100){ctxEnd++;if(fullText[ctxEnd]===" ")wordsAfter++}
+  return{fullText:fullText,ctxStart:ctxStart,ctxEnd:Math.min(ctxEnd,fullText.length),selStart:idx,selEnd:idx+provText.length};
+}
+
+function renderRecodeContext(dealId,ctx){
+  var ft=ctx.fullText;
+  var before=ft.substring(ctx.ctxStart,ctx.selStart);
+  var selected=ft.substring(ctx.selStart,ctx.selEnd);
+  var after=ft.substring(ctx.selEnd,ctx.ctxEnd);
+  var h='<div class="recode-context-text" data-deal-id="'+dealId+'" data-ctx-start="'+ctx.ctxStart+'" data-ctx-end="'+ctx.ctxEnd+'" data-full-length="'+ft.length+'">';
+  if(ctx.ctxStart>0)h+='<span class="recode-ellipsis">&hellip; </span>';
+  h+='<span class="recode-ctx">'+esc(before)+'</span>';
+  h+='<span class="recode-sel" id="rsel-'+dealId+'">'+esc(selected)+'</span>';
+  h+='<span class="recode-ctx">'+esc(after)+'</span>';
+  if(ctx.ctxEnd<ft.length)h+='<span class="recode-ellipsis"> &hellip;</span>';
+  h+='</div>';
+  // Range sliders for start and end
+  h+='<div class="recode-sliders">';
+  h+='<div class="recode-slider-row"><label>Start</label><input type="range" class="recode-range" id="rslide-start-'+dealId+'" min="'+ctx.ctxStart+'" max="'+ctx.selEnd+'" value="'+ctx.selStart+'" oninput="updateRecodeSlider(\''+dealId+'\',\'start\',this.value)"></div>';
+  h+='<div class="recode-slider-row"><label>End</label><input type="range" class="recode-range" id="rslide-end-'+dealId+'" min="'+ctx.selStart+'" max="'+ctx.ctxEnd+'" value="'+ctx.selEnd+'" oninput="updateRecodeSlider(\''+dealId+'\',\'end\',this.value)"></div>';
+  h+='</div>';
+  return h;
+}
+
+// Store recode state per session
+var _recodeCtx={};
 function startInlineRecode(btn,cat,type,cols){
   var card=btn.closest(".prong-card");if(!card)return;
   var deals=state.selectedDeals.map(getDeal).filter(Boolean);
-  // Replace prong-text divs with textareas
+  _recodeCtx={type:type,origCat:cat,deals:{}};
+
+  // Replace header buttons with category dropdown + save/cancel
+  var headerRight=btn.parentElement;
+  var cats=getCatsForType(type);
+  var ddHtml='<select id="recode-cat-dd" class="recode-cat-select">';
+  cats.forEach(function(c){ddHtml+='<option value="'+esc(c)+'"'+(c===cat?' selected':'')+'>'+esc(c)+'</option>'});
+  ddHtml+='<option value="__add_new__">+ Add new category&hellip;</option></select>';
+  headerRight.innerHTML=ddHtml+'<button class="admin-edit" style="color:var(--green);opacity:1" onclick="saveInlineRecode(this)">Save</button><button class="admin-edit" style="opacity:1" onclick="cancelInlineRecode()">Cancel</button>';
+  // Handle "Add new" selection
+  document.getElementById("recode-cat-dd").addEventListener("change",function(){
+    if(this.value==="__add_new__"){
+      var newName=prompt("New category name:");
+      if(!newName||!newName.trim()){this.value=cat;return}
+      newName=newName.trim();
+      // AI duplicate check
+      checkNewCatDuplicate(newName,type,this,cat);
+    }
+  });
+
+  // Replace each cell's prong-text with context + sliders
   var cells=card.querySelectorAll(".prong-cell");
   cells.forEach(function(cell,idx){
     var d=deals[idx];if(!d)return;
     var prov=PROVISIONS.find(function(p){return p.type===type&&p.dealId===d.id&&p.category===cat});
     var textDiv=cell.querySelector(".prong-text");
     if(!textDiv)return;
-    var ta=document.createElement("textarea");
-    ta.className="inline-recode-ta";
-    ta.setAttribute("data-deal-id",d.id);
-    ta.value=prov?prov.text:"";
-    textDiv.replaceWith(ta);
-    ta.style.height=ta.scrollHeight+"px";
-    ta.addEventListener("input",function(){ta.style.height="auto";ta.style.height=ta.scrollHeight+"px"});
+    var ctx=getContextForProv(d.id,type,prov?prov.text:"");
+    _recodeCtx.deals[d.id]=ctx;
+    var wrapper=document.createElement("div");
+    wrapper.className="recode-widget";
+    wrapper.innerHTML=renderRecodeContext(d.id,ctx);
+    textDiv.replaceWith(wrapper);
   });
-  // Also make exception sub-cells editable
-  var subRows=card.querySelectorAll(".prong-sub-row");
-  subRows.forEach(function(row){
-    var subCells=row.querySelectorAll(".prong-sub-cell");
-    subCells.forEach(function(sc,idx){
-      var d=deals[idx];if(!d)return;
-      var ta=document.createElement("textarea");
-      ta.className="inline-recode-sub-ta";
-      ta.setAttribute("data-deal-id",d.id);
-      ta.setAttribute("data-sub-label",row.querySelector(".prong-sub-label")?.textContent||"");
-      ta.value=sc.textContent==="\u2014"?"":sc.textContent;
-      sc.replaceWith(ta);
-      ta.style.height=Math.max(ta.scrollHeight,40)+"px";
-      ta.addEventListener("input",function(){ta.style.height="auto";ta.style.height=ta.scrollHeight+"px"});
-    });
-  });
-  // Swap Recode button for Save / Cancel
-  btn.outerHTML='<button class="admin-edit" style="color:var(--green);opacity:1" onclick="saveInlineRecode(this,\''+esc(cat).replace(/'/g,"\\'")+'\',\''+type+'\')">Save</button><button class="admin-edit" style="opacity:1" onclick="cancelInlineRecode()">Cancel</button>';
+  // Hide exception sub-rows during recode
+  card.querySelectorAll(".prong-sub-row").forEach(function(r){r.style.display="none"});
 }
-function saveInlineRecode(btn,cat,type){
-  var card=btn.closest(".prong-card");if(!card)return;
-  var deals=state.selectedDeals.map(getDeal).filter(Boolean);
-  card.querySelectorAll(".inline-recode-ta").forEach(function(ta){
-    var did=ta.getAttribute("data-deal-id");
-    var nt=ta.value.trim();if(!nt)return;
-    var ex=PROVISIONS.findIndex(function(p){return p.type===type&&p.dealId===did&&p.category===cat});
-    if(ex>=0){PROVISIONS[ex].text=nt;PROVISIONS[ex].isGold=true}
-    else{PROVISIONS.push({id:"p_"+Date.now()+"_"+did,dealId:did,type:type,category:cat,text:nt,isGold:true,favorability:"unrated"})}
-    goldStandards.push({dealId:did,type:type,category:cat,text:nt,correctedAt:new Date().toISOString()});
+
+function checkNewCatDuplicate(newName,type,selectEl,fallbackCat){
+  var existing=getCatsForType(type);
+  if(existing.includes(newName)){alert("Already exists.");selectEl.value=fallbackCat;return}
+  fetch("/api/ai/check-duplicate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({newCategory:newName,existingCategories:existing,provisionType:type})}).then(function(r){return r.json()}).then(function(data){
+    if(data.is_duplicate&&(data.confidence==="medium"||data.confidence==="high")){
+      if(!confirm("\""+newName+"\" may overlap with \""+data.similar_to+"\" ("+data.confidence+").\n\n"+data.explanation+"\n\nAdd anyway?")){selectEl.value=fallbackCat;return}
+    }
+    // Add the new option and select it
+    var opt=document.createElement("option");opt.value=newName;opt.textContent=newName;
+    selectEl.insertBefore(opt,selectEl.querySelector('option[value="__add_new__"]'));
+    selectEl.value=newName;
+    SUB_PROVISIONS[type].push(newName);saveCats();
+  }).catch(function(){
+    var opt=document.createElement("option");opt.value=newName;opt.textContent=newName;
+    selectEl.insertBefore(opt,selectEl.querySelector('option[value="__add_new__"]'));
+    selectEl.value=newName;
+    SUB_PROVISIONS[type].push(newName);saveCats();
   });
-  // Clear IOC parse cache for affected provisions so sub-rows re-parse
+}
+
+function updateRecodeSlider(dealId,which,val){
+  var ctx=_recodeCtx.deals[dealId];if(!ctx)return;
+  val=parseInt(val);
+  // Snap to word boundaries
+  var ft=ctx.fullText;
+  if(which==="start"){
+    while(val>ctx.ctxStart&&ft[val]!==" ")val--;
+    if(ft[val]===" ")val++;
+    ctx.selStart=val;
+    // Keep end slider min in sync
+    var endSlider=document.getElementById("rslide-end-"+dealId);
+    if(endSlider)endSlider.min=val;
+  }else{
+    while(val<ctx.ctxEnd&&ft[val]!==" ")val++;
+    ctx.selEnd=val;
+    var startSlider=document.getElementById("rslide-start-"+dealId);
+    if(startSlider)startSlider.max=val;
+  }
+  // Re-render the text display
+  var container=document.querySelector('.recode-context-text[data-deal-id="'+dealId+'"]');
+  if(!container)return;
+  var before=ft.substring(ctx.ctxStart,ctx.selStart);
+  var selected=ft.substring(ctx.selStart,ctx.selEnd);
+  var after=ft.substring(ctx.selEnd,ctx.ctxEnd);
+  var h="";
+  if(ctx.ctxStart>0)h+='<span class="recode-ellipsis">&hellip; </span>';
+  h+='<span class="recode-ctx">'+esc(before)+'</span>';
+  h+='<span class="recode-sel" id="rsel-'+dealId+'">'+esc(selected)+'</span>';
+  h+='<span class="recode-ctx">'+esc(after)+'</span>';
+  if(ctx.ctxEnd<ft.length)h+='<span class="recode-ellipsis"> &hellip;</span>';
+  container.innerHTML=h;
+}
+
+function saveInlineRecode(btn){
+  var card=btn.closest(".prong-card");if(!card)return;
+  var newCat=document.getElementById("recode-cat-dd")?.value||_recodeCtx.origCat;
+  if(newCat==="__add_new__")newCat=_recodeCtx.origCat;
+  var type=_recodeCtx.type;
+  var origCat=_recodeCtx.origCat;
+  var deals=state.selectedDeals.map(getDeal).filter(Boolean);
+  deals.forEach(function(d){
+    var ctx=_recodeCtx.deals[d.id];if(!ctx)return;
+    var nt=ctx.fullText.substring(ctx.selStart,ctx.selEnd).trim();
+    if(!nt)return;
+    var ex=PROVISIONS.findIndex(function(p){return p.type===type&&p.dealId===d.id&&p.category===origCat});
+    if(ex>=0){PROVISIONS[ex].category=newCat;PROVISIONS[ex].text=nt;PROVISIONS[ex].isGold=true}
+    else{PROVISIONS.push({id:"p_"+Date.now()+"_"+d.id,dealId:d.id,type:type,category:newCat,text:nt,isGold:true,favorability:"unrated"})}
+    goldStandards.push({dealId:d.id,type:type,category:newCat,text:nt,correctedAt:new Date().toISOString()});
+  });
   if(type==="IOC"){
     deals.forEach(function(d){
-      var prov=PROVISIONS.find(function(p){return p.type===type&&p.dealId===d.id&&p.category===cat});
+      var prov=PROVISIONS.find(function(p){return p.type===type&&p.dealId===d.id&&(p.category===origCat||p.category===newCat)});
       if(prov)delete IOC_PARSED_CACHE[prov.id];
     });
   }
+  _recodeCtx={};
   saveGold();state.compareResults=null;renderContent();
 }
-function cancelInlineRecode(){renderContent()}
+function cancelInlineRecode(){_recodeCtx={};renderContent()}
 
 // ═══════════════════════════════════════════════════
 // ANNOTATION CREATION (admin)
