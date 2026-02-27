@@ -50,20 +50,29 @@ async function extractTextFromBuffer(name, buf) {
     return stripHtml(new TextDecoder().decode(buf));
   }
 
-  // PDF — use pdfjs-dist
+  // PDF — send to server-side parser
   if (lc.endsWith('.pdf')) {
     try {
-      const pdfjsLib = await import('pdfjs-dist');
-      pdfjsLib.GlobalWorkerOptions.workerSrc =
-        `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
-      const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(buf) }).promise;
-      const pages = [];
-      for (let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const content = await page.getTextContent();
-        pages.push(content.items.map(item => item.str).join(' '));
+      // Chunked base64 encoding (handles large files)
+      const bytes = new Uint8Array(buf);
+      const chunks = [];
+      for (let i = 0; i < bytes.length; i += 8192) {
+        chunks.push(String.fromCharCode.apply(null, bytes.subarray(i, i + 8192)));
       }
-      return pages.join('\n\n');
+      const b64 = btoa(chunks.join(''));
+      const resp = await fetch('/api/admin/parse-pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: b64 }),
+      });
+      const text = await resp.text();
+      let data;
+      try { data = JSON.parse(text); } catch {
+        console.warn('PDF parse response not JSON:', text.substring(0, 100));
+        return '';
+      }
+      if (data.error) { console.warn('PDF parse error:', data.error); return ''; }
+      return data.text || '';
     } catch (err) {
       console.warn('PDF parse failed for', name, err);
       return '';
