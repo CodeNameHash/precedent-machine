@@ -185,6 +185,7 @@ textarea::placeholder,input::placeholder{color:#bbb}
 .report-table td:last-child{border-right:none}
 .report-table tr:last-child td{border-bottom:none}
 .report-table td.sub-prov-label{font:600 11.5px var(--sans);color:var(--text);background:var(--bg3);white-space:nowrap}
+.report-table colgroup col:first-child{width:150px}
 
 .fav-dropdown{position:fixed;z-index:1100;background:var(--bg2);border:1px solid var(--border);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,0.12);padding:4px;min-width:160px}
 .fav-option{padding:6px 10px;font-size:11px;border-radius:4px;cursor:pointer;display:flex;align-items:center;gap:6px}
@@ -210,8 +211,15 @@ textarea::placeholder,input::placeholder{color:#bbb}
 
 .sidebar-toggle{cursor:pointer;font-size:9px;display:inline-block;margin-right:4px;color:var(--text4);transition:color 0.15s}
 .sidebar-toggle:hover{color:var(--gold)}
+.sidebar-cat-item{padding:5px 16px 5px 40px;font-size:11px;color:var(--text2);cursor:pointer;border-bottom:1px solid #F0EEEA;display:flex;align-items:center;gap:6px;transition:background 0.1s}
+.sidebar-cat-item:hover{background:var(--bg)}
+.sidebar-cat-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0}
+.sidebar-cat-item.hidden-cat{opacity:0.4;text-decoration:line-through}
 
-.prong-sub-row{display:grid;border-top:1px dashed var(--border)}
-.prong-sub-label{grid-column:1/-1;padding:4px 16px;font:600 10px var(--sans);text-transform:uppercase;letter-spacing:0.5px;color:var(--gold);background:var(--bg4)}
+.text-selector-text{font:400 12px/1.7 var(--serif);color:var(--text2);padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;max-height:200px;overflow-y:auto;user-select:text;cursor:text;white-space:pre-wrap}
+.text-selection-highlight{background:rgba(184,149,106,0.3);text-decoration:underline;text-decoration-color:var(--gold);text-underline-offset:2px}
+
+.prong-sub-row{display:grid;border-top:1px dashed var(--border);background:#F8FAFD}
+.prong-sub-label{grid-column:1/-1;padding:4px 16px;font:600 10px var(--sans);text-transform:uppercase;letter-spacing:0.5px;color:var(--blue);background:#EBF2FB;border-left:3px solid var(--blue)}
 .prong-sub-cell{padding:8px 16px;border-right:1px solid #F0EEEA;font:400 11px/1.55 var(--serif);color:var(--text3)}
 .prong-sub-cell:last-child{border-right:none}

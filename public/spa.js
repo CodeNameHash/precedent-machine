@@ -269,7 +269,7 @@ function getProvFav(pid){return favOverrides[pid]||PROVISIONS.find(function(p){r
 // ═══════════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════════
-var state={provisionType:null,selectedDeals:["d1","d2","d3"],searchTerms:[],adminMode:false,compareResults:null,activeTab:"coded",askHistory:[],sidebarProvsCollapsed:JSON.parse(localStorage.getItem("sidebarProvsCollapsed")||"false"),sidebarDealsCollapsed:JSON.parse(localStorage.getItem("sidebarDealsCollapsed")||"false"),hiddenCategories:new Set(JSON.parse(localStorage.getItem("hiddenCategories")||"[]"))};
+var state={provisionType:null,selectedDeals:["d1","d2","d3"],searchTerms:[],adminMode:false,compareResults:null,activeTab:"coded",askHistory:[],sidebarProvsCollapsed:JSON.parse(localStorage.getItem("sidebarProvsCollapsed")||"false"),sidebarDealsCollapsed:JSON.parse(localStorage.getItem("sidebarDealsCollapsed")||"false"),hiddenCategories:new Set(JSON.parse(localStorage.getItem("hiddenCategories")||"[]")),expandedProvisionType:null,reportTerms:JSON.parse(localStorage.getItem("reportTerms")||'["Value","Date","Buyer Counsel","Seller Counsel"]')};
 
 // ═══════════════════════════════════════════════════
 // HELPERS
@@ -441,7 +441,15 @@ function renderSidebar(){
     h+='<div class="prov-item '+(state.provisionType===null?"selected":"")+'" onclick="selectProvisionType(null)"><div class="prov-type" style="color:var(--text3)">ALL</div><div class="prov-title">All Provisions</div><div class="prov-deal">Compare all provision types side by side</div></div>';
     PROVISION_TYPES.forEach(function(pt){
       var a=state.provisionType===pt.key;
-      h+='<div class="prov-item '+(a?"selected":"")+'" onclick="selectProvisionType(\''+pt.key+'\')"><div class="prov-type">'+pt.key+'</div><div class="prov-title">'+pt.label+'</div><div class="prov-deal">'+getCatsForType(pt.key).length+' sub-provisions &middot; '+new Set(PROVISIONS.filter(function(p){return p.type===pt.key}).map(function(p){return p.dealId})).size+' deals coded</div></div>';
+      var expanded=state.expandedProvisionType===pt.key;
+      var arrow=expanded?'&#9660;':'&#9654;';
+      h+='<div class="prov-item '+(a?"selected":"")+'" onclick="selectProvisionType(\''+pt.key+'\')"><div class="prov-type"><span style="font-size:8px;margin-right:4px">'+arrow+'</span>'+pt.key+'</div><div class="prov-title">'+pt.label+'</div><div class="prov-deal">'+getCatsForType(pt.key).length+' sub-provisions &middot; '+new Set(PROVISIONS.filter(function(p){return p.type===pt.key}).map(function(p){return p.dealId})).size+' deals coded</div></div>';
+      if(expanded){
+        getCatsForType(pt.key).forEach(function(cat){
+          var hidden=state.hiddenCategories.has(cat);
+          h+='<div class="sidebar-cat-item'+(hidden?" hidden-cat":"")+'" onclick="event.stopPropagation();toggleCategoryVisibility(\''+esc(cat).replace(/'/g,"\\'")+'\')"><span class="sidebar-cat-dot"></span>'+esc(cat)+'</div>';
+        });
+      }
     });
   }
   h+='<div class="sidebar-header"><span><span class="sidebar-toggle" onclick="toggleSidebarSection(\'deals\')">'+dealArrow+'</span> Deals</span><span style="font-size:10px;color:var(--gold);text-transform:none;letter-spacing:0">'+state.selectedDeals.length+' selected</span></div>';
@@ -465,7 +473,12 @@ function toggleCategoryVisibility(cat){
   localStorage.setItem("hiddenCategories",JSON.stringify(Array.from(state.hiddenCategories)));
   renderContent();
 }
-function selectProvisionType(t){state.provisionType=t;state.compareResults=null;state.activeTab="coded";renderSidebar();renderContent()}
+function selectProvisionType(t){
+  if(t===null){state.provisionType=null;state.expandedProvisionType=null;}
+  else if(state.provisionType===t){state.expandedProvisionType=state.expandedProvisionType===t?null:t;}
+  else{state.provisionType=t;state.expandedProvisionType=t;}
+  state.compareResults=null;state.activeTab="coded";renderSidebar();renderContent();
+}
 function toggleDeal(id){var i=state.selectedDeals.indexOf(id);if(i>=0)state.selectedDeals.splice(i,1);else state.selectedDeals.push(id);state.compareResults=null;renderSidebar();renderContent()}
 
 // ═══════════════════════════════════════════════════
@@ -492,11 +505,12 @@ function renderContent(){
     h+='</div>';
   }
 
-  if(state.activeTab==="coded"){types.forEach(function(type){var cats=getCatsForType(type);if(types.length>1)h+='<div class="prongs-section" style="padding-bottom:0"><div class="provision-section-divider"><span>'+(PROVISION_TYPES.find(function(pt){return pt.key===type})?.label||type)+'</span><span class="coverage-info">'+cats.length+' sub-provisions</span></div></div>';h+=renderCodedView(deals,cats,type)})}
+  if(state.activeTab==="coded"){types.forEach(function(type){var cats=getCatsForType(type);if(types.length>1)h+='<div class="prongs-section" style="padding-bottom:0"><div class="provision-section-divider"><span>'+(PROVISION_TYPES.find(function(pt){return pt.key===type})?.label||type)+'</span></div></div>';h+=renderCodedView(deals,cats,type)})}
   else if(state.activeTab==="fulltext"){h+=renderFullTextView(deals,types)}
   else if(state.activeTab==="report"){h+=renderReportView(deals,types)}
   else if(state.activeTab==="redline"){h+=renderRedlineView(deals)}
   el.innerHTML=h;
+  if(state.adminMode)enableAnnotationCreation();
 }
 function setTab(t){state.activeTab=t;renderContent()}
 function clearCompare(){state.compareResults=null;renderContent()}
@@ -504,12 +518,27 @@ function clearCompare(){state.compareResults=null;renderContent()}
 // ═══════════════════════════════════════════════════
 // CODED VIEW
 // ═══════════════════════════════════════════════════
+function renderDealInfoCards(deals){
+  var h='<div style="display:grid;grid-template-columns:repeat('+deals.length+',1fr);gap:12px;margin-bottom:16px">';
+  deals.forEach(function(d){
+    h+='<div class="deal-info-card" style="padding:10px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:8px">';
+    h+='<div style="font:600 12px var(--serif);color:var(--text);margin-bottom:6px">'+esc(dealLabel(d))+'</div>';
+    h+='<div style="font-size:10px;color:var(--text3);line-height:1.7">';
+    if(d.value)h+='<div><span style="color:var(--text4)">Value:</span> '+esc(d.value)+'</div>';
+    if(d.date)h+='<div><span style="color:var(--text4)">Date:</span> '+esc(d.date)+'</div>';
+    if(d.sector)h+='<div><span style="color:var(--text4)">Sector:</span> '+esc(d.sector)+'</div>';
+    if(d.lawyers&&d.lawyers.buyer&&d.lawyers.buyer.length)h+='<div><span style="color:var(--text4)">Buyer Counsel:</span> '+esc(d.lawyers.buyer.join(", "))+'</div>';
+    if(d.lawyers&&d.lawyers.seller&&d.lawyers.seller.length)h+='<div><span style="color:var(--text4)">Seller Counsel:</span> '+esc(d.lawyers.seller.join(", "))+'</div>';
+    h+='</div></div>';
+  });
+  h+='</div>';
+  return h;
+}
+
 function renderCodedView(deals,cats,type){
   var cols=deals.length;
   var h='<div class="prongs-section">';
-  h+='<div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap">';
-  deals.forEach(function(d){var c=getCoverage(type,d.id);var cls=c.pct>=90?"full":c.pct>=50?"partial":"low";h+='<div style="flex:1;min-width:130px;padding:8px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:6px"><div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--gold);margin-bottom:2px">'+esc(d.acquirer)+'/'+esc(d.target)+'</div><div style="font-size:11px;color:var(--text2)">Coverage: '+c.coded+'/'+c.total+' ('+c.pct+'%)</div><div class="coverage-bar"><div class="coverage-fill '+cls+'" style="width:'+c.pct+'%"></div></div></div>'});
-  h+='</div>';
+  h+=renderDealInfoCards(deals);
 
   cats.forEach(function(cat){
     if(state.hiddenCategories.has(cat))return;
@@ -519,7 +548,7 @@ function renderCodedView(deals,cats,type){
     if(present===0){tagClass="missing";tagText="None"}else if(present<deals.length){tagClass="varies";tagText=present+"/"+deals.length}
     var cmp=state.compareResults?.comparisons?.find(function(c){return c.category===cat});
 
-    h+='<div class="prong-card"><div class="prong-header"><div><span class="prong-name">'+esc(cat)+'</span></div><div style="display:flex;gap:8px;align-items:center"><span class="prong-tag '+tagClass+'">'+tagText+'</span>'+(state.adminMode?'<button class="admin-edit" onclick="openRecode(\''+esc(cat).replace(/'/g,"\\'")+'\',\''+type+'\')">Recode</button>':"")+'</div></div><div class="prong-body" style="grid-template-columns:repeat('+cols+',1fr)">';
+    h+='<div class="prong-card"><div class="prong-header"><div><span class="prong-name">'+esc(cat)+'</span></div><div style="display:flex;gap:8px;align-items:center"><span class="prong-tag '+tagClass+'">'+tagText+'</span>'+(state.adminMode?'<button class="admin-edit" onclick="openTextSelector(\''+esc(cat).replace(/'/g,"\\'")+'\',\''+type+'\')">Recode</button>':"")+'</div></div><div class="prong-body" style="grid-template-columns:repeat('+cols+',1fr)">';
 
     // Parse IOC exceptions for sub-row rendering
     var parsedEntries=null;
@@ -535,7 +564,7 @@ function renderCodedView(deals,cats,type){
       }else{
         displayText=e.prov?annotateText(e.prov.text,e.prov.id,state.searchTerms):'<span class="absent">Not present</span>';
       }
-      h+='<div class="prong-cell"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><div class="prong-deal-label">'+esc(e.deal.acquirer)+'/'+esc(e.deal.target)+'</div>'+(e.prov?renderFavBadge(e.prov.id,fav):"")+'</div><div class="prong-text">'+displayText+'</div></div>';
+      h+='<div class="prong-cell"'+(e.prov?' data-prov-id="'+e.prov.id+'"':'')+'><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><div class="prong-deal-label">'+esc(e.deal.acquirer)+'/'+esc(e.deal.target)+'</div>'+(e.prov?renderFavBadge(e.prov.id,fav):"")+'</div><div class="prong-text">'+displayText+'</div></div>';
     });
     h+='</div>';
 
@@ -592,31 +621,66 @@ function setFav(pid,lv){favOverrides[pid]=lv;saveFav();document.getElementById("
 // ═══════════════════════════════════════════════════
 function renderFullTextView(deals,types){
   var h='<div style="padding:20px 28px">';
-  types.forEach(function(type){if(types.length>1)h+='<div class="provision-section-divider" style="margin-bottom:16px"><span>'+(PROVISION_TYPES.find(function(pt){return pt.key===type})?.label||type)+'</span></div>';
-    deals.forEach(function(d){var provs=PROVISIONS.filter(function(p){return p.type===type&&p.dealId===d.id});if(!provs.length)return;var c=getCoverage(type,d.id);var cls=c.pct>=90?"full":c.pct>=50?"partial":"low";
-      h+='<div style="margin-bottom:24px"><div class="full-text-label"><span>'+esc(dealLabel(d))+' &mdash; '+type+'</span><span style="font-size:10px;color:var(--text3);text-transform:none;letter-spacing:0">Coverage: '+c.pct+'% ('+c.coded+'/'+c.total+')</span></div><div class="coverage-bar" style="margin-bottom:8px"><div class="coverage-fill '+cls+'" style="width:'+c.pct+'%"></div></div><div class="full-text">'+provs.map(function(p){return'<span class="coded" title="'+esc(p.category)+'">'+annotateText(p.text,p.id,state.searchTerms)+'</span>'}).join("; ")+'</div></div>'})});
+  // Deal info headers
+  h+=renderDealInfoCards(deals);
+  types.forEach(function(type){
+    if(types.length>1)h+='<div class="provision-section-divider" style="margin-bottom:16px"><span>'+(PROVISION_TYPES.find(function(pt){return pt.key===type})?.label||type)+'</span></div>';
+    h+='<div class="fulltext-grid" style="display:grid;grid-template-columns:repeat('+deals.length+',1fr);gap:16px;margin-bottom:24px">';
+    deals.forEach(function(d){
+      var provs=PROVISIONS.filter(function(p){return p.type===type&&p.dealId===d.id});
+      h+='<div><div class="full-text-label"><span>'+esc(dealLabel(d))+'</span></div><div class="full-text">'+(provs.length?provs.map(function(p){return'<span class="coded" title="'+esc(p.category)+'">'+annotateText(p.text,p.id,state.searchTerms)+'</span>'}).join("; "):'<span style="color:var(--text5);font-style:italic">No provisions coded</span>')+'</div></div>';
+    });
+    h+='</div>';
+  });
   h+='</div>';return h;
 }
 
 // ═══════════════════════════════════════════════════
 // REPORT VIEW
 // ═══════════════════════════════════════════════════
+var REPORT_TERMS=[
+  {key:"Value",fn:function(d){return d.value}},
+  {key:"Date",fn:function(d){return d.date}},
+  {key:"Sector",fn:function(d){return d.sector}},
+  {key:"Structure",fn:function(d){return d.structure||""}},
+  {key:"Buyer Counsel",fn:function(d){return(d.lawyers?.buyer||[]).join(", ")}},
+  {key:"Seller Counsel",fn:function(d){return(d.lawyers?.seller||[]).join(", ")}},
+  {key:"Buyer Advisors",fn:function(d){return(d.advisors?.buyer||[]).join(", ")||"\u2014"}},
+  {key:"Seller Advisors",fn:function(d){return(d.advisors?.seller||[]).join(", ")}},
+  {key:"Term. Fee",fn:function(d){return d.termFee||""}},
+  {key:"Jurisdiction",fn:function(d){return d.jurisdiction||""}}
+];
+function toggleReportTerm(key){
+  var idx=state.reportTerms.indexOf(key);
+  if(idx>=0)state.reportTerms.splice(idx,1);else state.reportTerms.push(key);
+  localStorage.setItem("reportTerms",JSON.stringify(state.reportTerms));
+  renderContent();
+}
 function renderReportView(deals,types){
   var h='<div style="padding:20px 28px">';
   h+='<div style="font:700 20px var(--serif);margin-bottom:4px">Precedent Comparison Report</div><div style="font-size:11px;color:var(--text4);margin-bottom:20px">'+new Date().toISOString().split("T")[0]+' &mdash; '+deals.length+' deals</div>';
 
-  h+='<div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text4);margin-bottom:8px">Deal Overview</div><table class="report-table"><thead><tr><th style="width:130px">Deal</th>';
+  // Toggle chips for report terms
+  h+='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;align-items:center"><span class="filter-label">Deal Terms</span>';
+  REPORT_TERMS.forEach(function(rt){var on=state.reportTerms.indexOf(rt.key)>=0;h+='<button class="filter-chip'+(on?" active":"")+'" onclick="toggleReportTerm(\''+esc(rt.key).replace(/'/g,"\\'")+'\')">'+esc(rt.key)+'</button>'});
+  h+='</div>';
+
+  h+='<div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text4);margin-bottom:8px">Deal Overview</div><table class="report-table"><colgroup><col style="width:150px">';
+  deals.forEach(function(){h+='<col>'});
+  h+='</colgroup><thead><tr><th>Deal</th>';
   deals.forEach(function(d){h+='<th>'+esc(d.acquirer)+'/'+esc(d.target)+'</th>'});
   h+='</tr></thead><tbody>';
-  [["Value",function(d){return d.value}],["Date",function(d){return d.date}],["Structure",function(d){return d.structure||""}],["Buyer Counsel",function(d){return(d.lawyers?.buyer||[]).join(", ")}],["Seller Counsel",function(d){return(d.lawyers?.seller||[]).join(", ")}],["Buyer Advisors",function(d){return(d.advisors?.buyer||[]).join(", ")||"\u2014"}],["Seller Advisors",function(d){return(d.advisors?.seller||[]).join(", ")}],["Term. Fee",function(d){return d.termFee||""}]].forEach(function(row){
-    var label=row[0],fn=row[1];
-    h+='<tr><td class="sub-prov-label">'+label+'</td>';deals.forEach(function(d){h+='<td>'+esc(fn(d)||"\u2014")+'</td>'});h+='</tr>';
+  REPORT_TERMS.forEach(function(rt){
+    if(state.reportTerms.indexOf(rt.key)<0)return;
+    h+='<tr><td class="sub-prov-label">'+esc(rt.key)+'</td>';deals.forEach(function(d){h+='<td>'+esc(rt.fn(d)||"\u2014")+'</td>'});h+='</tr>';
   });
   h+='</tbody></table>';
 
   types.forEach(function(type){
     var cats=getCatsForType(type);
-    h+='<div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--gold);margin:24px 0 8px;font-weight:700">'+(PROVISION_TYPES.find(function(pt){return pt.key===type})?.label||type)+'</div><table class="report-table"><thead><tr><th style="width:150px">Sub-Provision</th>';
+    h+='<div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--gold);margin:24px 0 8px;font-weight:700">'+(PROVISION_TYPES.find(function(pt){return pt.key===type})?.label||type)+'</div><table class="report-table"><colgroup><col style="width:150px">';
+    deals.forEach(function(){h+='<col>'});
+    h+='</colgroup><thead><tr><th>Sub-Provision</th>';
     deals.forEach(function(d){h+='<th>'+esc(d.acquirer)+'/'+esc(d.target)+'</th>'});
     h+='</tr></thead><tbody>';
     cats.forEach(function(cat){
@@ -659,12 +723,22 @@ function runCompare(){
   var deals=state.selectedDeals.map(getDeal).filter(Boolean);
   var types=state.provisionType?[state.provisionType]:PROVISION_TYPES.map(function(pt){return pt.key});
   var allProngs=[];
-  types.forEach(function(type){getCatsForType(type).forEach(function(cat){var entries=deals.map(function(d){var prov=PROVISIONS.find(function(p){return p.type===type&&p.dealId===d.id&&p.category===cat});return{dealId:d.id,text:prov?prov.text:"[NOT PRESENT]"}});allProngs.push({category:cat,entries:entries})})});
-  state.compareResults={comparisons:[],overall_summary:"Analyzing...",key_takeaway:""};renderContent();
+  types.forEach(function(type){getCatsForType(type).forEach(function(cat){var entries=deals.map(function(d){var prov=PROVISIONS.find(function(p){return p.type===type&&p.dealId===d.id&&p.category===cat});return{dealId:d.id,text:prov?prov.text.substring(0,500):"[NOT PRESENT]"}});allProngs.push({category:cat,entries:entries})})});
+  state.compareResults={comparisons:[],overall_summary:"Analyzing...",key_takeaway:""};
+  // Disable compare button with loading state
+  var cmpBtn=document.querySelector('.action-btn.compare');
+  if(cmpBtn){cmpBtn.disabled=true;cmpBtn.textContent="Analyzing...";}
+  renderContent();
   var ptl=state.provisionType?PROVISION_TYPES.find(function(pt){return pt.key===state.provisionType}).label:"All Provisions";
-  fetch("/api/compare",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({provisionType:ptl,prongs:allProngs,deals:deals})}).then(function(resp){return resp.json()}).then(function(data){
+  var controller=new AbortController();
+  var timeout=setTimeout(function(){controller.abort()},55000);
+  fetch("/api/compare",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({provisionType:ptl,prongs:allProngs,deals:deals}),signal:controller.signal}).then(function(resp){return resp.json()}).then(function(data){
     state.compareResults=data;
-  }).catch(function(e){state.compareResults={overall_summary:"Error: "+e.message+". Ensure API endpoints are deployed.",comparisons:[]}}).finally(function(){
+  }).catch(function(e){
+    var msg=e.name==="AbortError"?"Request timed out. Try comparing fewer provisions or deals.":"Error: "+e.message+". Ensure API endpoints are deployed.";
+    state.compareResults={overall_summary:msg,comparisons:[],key_takeaway:""};
+  }).finally(function(){
+    clearTimeout(timeout);
     renderContent();
   });
 }
@@ -679,7 +753,25 @@ function openAddCategory(type){
   body.innerHTML='<div style="font-size:12px;color:var(--text3);margin-bottom:14px">Adding a new sub-provision category under <strong>'+(PROVISION_TYPES.find(function(pt){return pt.key===type})?.label||type)+'</strong>.</div><div class="recode-field"><label>New Category Name</label><input type="text" id="new-cat-name" placeholder="e.g. Government Contracts"></div><div style="display:flex;gap:8px;margin-top:16px"><button class="save-btn" onclick="saveNewCategory(\''+type+'\')">Add Category</button><button class="action-btn" onclick="document.getElementById(\'add-cat-modal\').style.display=\'none\'">Cancel</button></div><div style="margin-top:16px;font-size:11px;color:var(--text3)"><strong>Current ('+type+'):</strong><br>'+cats.map(function(c,i){return(i+1)+'. '+esc(c)}).join("<br>")+'</div>';
   modal.style.display="flex";setTimeout(function(){document.getElementById("new-cat-name").focus()},100);
 }
-function saveNewCategory(type){var nm=document.getElementById("new-cat-name")?.value?.trim();if(!nm)return;if(getCatsForType(type).includes(nm)){alert("Already exists.");return}SUB_PROVISIONS[type].push(nm);saveCats();document.getElementById("add-cat-modal").style.display="none";renderContent()}
+function saveNewCategory(type){
+  var nm=document.getElementById("new-cat-name")?.value?.trim();if(!nm)return;
+  if(getCatsForType(type).includes(nm)){alert("Already exists.");return}
+  var existing=getCatsForType(type);
+  // AI duplicate check
+  var btn=document.querySelector('#add-cat-body .save-btn');
+  if(btn){btn.disabled=true;btn.textContent="Checking...";}
+  fetch("/api/ai/check-duplicate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({newCategory:nm,existingCategories:existing,provisionType:type})}).then(function(r){return r.json()}).then(function(data){
+    if(data.is_duplicate&&(data.confidence==="medium"||data.confidence==="high")){
+      var msg="This category may overlap with \""+data.similar_to+"\" ("+data.confidence+" confidence).\n\n"+data.explanation+"\n\nAdd anyway?";
+      if(!confirm(msg)){if(btn){btn.disabled=false;btn.textContent="Add Category";}return}
+    }
+    SUB_PROVISIONS[type].push(nm);saveCats();document.getElementById("add-cat-modal").style.display="none";renderContent();
+  }).catch(function(e){
+    // On API failure, add anyway
+    console.warn("Duplicate check failed:",e.message);
+    SUB_PROVISIONS[type].push(nm);saveCats();document.getElementById("add-cat-modal").style.display="none";renderContent();
+  });
+}
 
 function openRecode(cat,type){
   var modal=document.getElementById("recode-modal");var body=document.getElementById("recode-body");var cats=getCatsForType(type);
@@ -695,6 +787,143 @@ function saveRecode(origCat,type){
     if(ex>=0){PROVISIONS[ex].category=newCat;PROVISIONS[ex].text=nt;PROVISIONS[ex].isGold=true}else if(nt){PROVISIONS.push({id:"p_"+Date.now()+"_"+d.id,dealId:d.id,type:type,category:newCat,text:nt,isGold:true,favorability:"unrated"})}
     goldStandards.push({dealId:d.id,type:type,category:newCat,text:nt,correctedAt:new Date().toISOString()})});
   saveGold();document.getElementById("recode-modal").style.display="none";state.compareResults=null;renderContent();
+}
+
+// ═══════════════════════════════════════════════════
+// TEXT SELECTOR (replaces raw recode for admin)
+// ═══════════════════════════════════════════════════
+function openTextSelector(cat,type){
+  var modal=document.getElementById("recode-modal");var body=document.getElementById("recode-body");
+  var deals=state.selectedDeals.map(getDeal).filter(Boolean);
+  var h='<div class="recode-field"><label>Sub-Provision Category</label><select id="recode-cat">'+getCatsForType(type).map(function(c){return'<option '+(c===cat?"selected":"")+'>'+esc(c)+'</option>'}).join("")+'</select></div>';
+  h+='<div style="font-size:11px;color:var(--text3);margin-bottom:12px">Select text in each deal below to define the provision boundaries. Drag to highlight the relevant passage.</div>';
+  deals.forEach(function(d){
+    var allProvs=PROVISIONS.filter(function(p){return p.type===type&&p.dealId===d.id});
+    var fullText=allProvs.map(function(p){return p.text}).join(" ");
+    var currentProv=PROVISIONS.find(function(p){return p.type===type&&p.dealId===d.id&&p.category===cat});
+    var displayText=fullText||"(No provisions found for this deal)";
+    // Highlight current selection if exists
+    if(currentProv&&fullText){
+      var idx=fullText.indexOf(currentProv.text);
+      if(idx>=0){
+        displayText=esc(fullText.substring(0,idx))+'<span class="text-selection-highlight">'+esc(fullText.substring(idx,idx+currentProv.text.length))+'</span>'+esc(fullText.substring(idx+currentProv.text.length));
+      }else{displayText=esc(fullText)}
+    }else{displayText=esc(displayText)}
+    h+='<div class="recode-field"><label>'+esc(dealLabel(d))+'</label><div class="text-selector-text" data-deal-id="'+d.id+'" data-type="'+type+'" data-full-text="'+esc(fullText).replace(/"/g,"&quot;")+'">'+displayText+'</div><input type="hidden" id="sel-start-'+d.id+'" value=""><input type="hidden" id="sel-end-'+d.id+'" value=""></div>';
+  });
+  h+='<div style="display:flex;gap:8px;margin-top:16px"><button class="save-btn" onclick="saveTextSelection(\''+esc(cat).replace(/'/g,"\\'")+'\',\''+type+'\')">Save Selection</button><button class="action-btn" onclick="document.getElementById(\'recode-modal\').style.display=\'none\'">Cancel</button></div>';
+  body.innerHTML=h;modal.style.display="flex";
+  // Attach mouseup listener for text selection
+  body.querySelectorAll(".text-selector-text").forEach(function(el){
+    el.addEventListener("mouseup",function(){
+      var sel=window.getSelection();
+      if(!sel.rangeCount||sel.isCollapsed)return;
+      var range=sel.getRangeAt(0);
+      // Calculate offset relative to this text container
+      var container=el;
+      var fullText=el.getAttribute("data-full-text");
+      var dealId=el.getAttribute("data-deal-id");
+      // Get selected text and find offsets in fullText
+      var selectedText=sel.toString().trim();
+      if(!selectedText)return;
+      var startIdx=fullText.indexOf(selectedText);
+      if(startIdx<0)return;
+      document.getElementById("sel-start-"+dealId).value=startIdx;
+      document.getElementById("sel-end-"+dealId).value=startIdx+selectedText.length;
+      applyTextHighlight(dealId,fullText,startIdx,startIdx+selectedText.length);
+    });
+  });
+}
+function applyTextHighlight(dealId,fullText,start,end){
+  var el=document.querySelector('.text-selector-text[data-deal-id="'+dealId+'"]');
+  if(!el)return;
+  el.innerHTML=esc(fullText.substring(0,start))+'<span class="text-selection-highlight">'+esc(fullText.substring(start,end))+'</span>'+esc(fullText.substring(end));
+}
+function saveTextSelection(origCat,type){
+  var newCat=document.getElementById("recode-cat").value;var deals=state.selectedDeals.map(getDeal).filter(Boolean);
+  deals.forEach(function(d){
+    var startEl=document.getElementById("sel-start-"+d.id);
+    var endEl=document.getElementById("sel-end-"+d.id);
+    var allProvs=PROVISIONS.filter(function(p){return p.type===type&&p.dealId===d.id});
+    var fullText=allProvs.map(function(p){return p.text}).join(" ");
+    var nt="";
+    if(startEl&&endEl&&startEl.value!==""&&endEl.value!==""){
+      nt=fullText.substring(parseInt(startEl.value),parseInt(endEl.value));
+    }
+    if(!nt){
+      // Fall back to existing text if no selection made
+      var existing=PROVISIONS.find(function(p){return p.type===type&&p.dealId===d.id&&p.category===origCat});
+      if(existing)nt=existing.text;
+    }
+    if(!nt)return;
+    var ex=PROVISIONS.findIndex(function(p){return p.type===type&&p.dealId===d.id&&p.category===origCat});
+    if(ex>=0){PROVISIONS[ex].category=newCat;PROVISIONS[ex].text=nt;PROVISIONS[ex].isGold=true}else{PROVISIONS.push({id:"p_"+Date.now()+"_"+d.id,dealId:d.id,type:type,category:newCat,text:nt,isGold:true,favorability:"unrated"})}
+    goldStandards.push({dealId:d.id,type:type,category:newCat,text:nt,correctedAt:new Date().toISOString()});
+  });
+  saveGold();document.getElementById("recode-modal").style.display="none";state.compareResults=null;renderContent();
+}
+
+// ═══════════════════════════════════════════════════
+// ANNOTATION CREATION (admin)
+// ═══════════════════════════════════════════════════
+function enableAnnotationCreation(){
+  if(!state.adminMode)return;
+  document.querySelectorAll(".prong-text").forEach(function(el){
+    el.addEventListener("mouseup",function(evt){
+      var sel=window.getSelection();
+      if(!sel.rangeCount||sel.isCollapsed)return;
+      var selectedText=sel.toString().trim();
+      if(!selectedText||selectedText.length<3)return;
+      var cell=el.closest(".prong-cell");
+      if(!cell)return;
+      var provId=cell.getAttribute("data-prov-id");
+      if(!provId)return;
+      // Find the provision text to calculate offsets
+      var prov=PROVISIONS.find(function(p){return p.id===provId});
+      if(!prov)return;
+      var startIdx=prov.text.indexOf(selectedText);
+      if(startIdx<0)return;
+      openNewAnnotationPopover(provId,selectedText,startIdx,startIdx+selectedText.length,evt);
+    });
+  });
+}
+function openNewAnnotationPopover(provId,phrase,startOffset,endOffset,evt){
+  var pop=document.getElementById("ann-popover");
+  var h='<div class="ann-phrase-quote">'+esc(phrase)+'</div>';
+  h+='<div class="ann-edit-form" style="border-top:none;padding-top:0;margin-top:0">';
+  h+='<label>Favorability</label><select id="new-ann-fav">';
+  FAV_LEVELS.forEach(function(f){h+='<option value="'+f.key+'">'+f.label+'</option>'});
+  h+='</select>';
+  h+='<label>Note</label><textarea id="new-ann-note" placeholder="Add annotation note..."></textarea>';
+  h+='<button class="ann-save-btn" onclick="createAnnotation(\''+provId+'\',\''+esc(phrase).replace(/'/g,"\\'")+'\','+startOffset+','+endOffset+')">Create Annotation</button>';
+  h+='</div>';
+  pop.innerHTML=h;
+  var rect=evt.target.getBoundingClientRect();
+  var top=rect.bottom+6;var left=rect.left;
+  if(left+320>window.innerWidth)left=window.innerWidth-330;
+  if(top+300>window.innerHeight)top=rect.top-310;
+  pop.style.top=Math.max(0,top)+"px";pop.style.left=Math.max(0,left)+"px";pop.style.display="block";
+  setTimeout(function(){var dismiss=function(e){if(!pop.contains(e.target)){pop.style.display="none";document.removeEventListener("click",dismiss)}};document.addEventListener("click",dismiss)},10);
+}
+function createAnnotation(provId,phrase,startOffset,endOffset){
+  var fav=document.getElementById("new-ann-fav").value;
+  var note=document.getElementById("new-ann-note").value.trim();
+  var payload={provision_id:provId,phrase:phrase,start_offset:startOffset,end_offset:endOffset,favorability:fav,note:note,is_ai_generated:false};
+  fetch("/api/annotations",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}).then(function(r){return r.json()}).then(function(data){
+    if(data.annotation){
+      if(!ANNOTATIONS_CACHE[provId])ANNOTATIONS_CACHE[provId]=[];
+      ANNOTATIONS_CACHE[provId].push(data.annotation);
+    }
+    document.getElementById("ann-popover").style.display="none";
+    renderContent();
+  }).catch(function(e){
+    // Fallback: store locally
+    var localAnn={id:"local_"+Date.now(),provision_id:provId,phrase:phrase,start_offset:startOffset,end_offset:endOffset,favorability:fav,note:note,is_ai_generated:false,created_at:new Date().toISOString()};
+    if(!ANNOTATIONS_CACHE[provId])ANNOTATIONS_CACHE[provId]=[];
+    ANNOTATIONS_CACHE[provId].push(localAnn);
+    document.getElementById("ann-popover").style.display="none";
+    renderContent();
+  });
 }
 
 // ═══════════════════════════════════════════════════

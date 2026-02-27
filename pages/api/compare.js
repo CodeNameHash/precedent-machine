@@ -1,5 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 
+export const config = { maxDuration: 60 };
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only' });
 
@@ -14,7 +16,10 @@ export default async function handler(req, res) {
 
     const dealLabels = deals.map(d => `${d.acquirer}/${d.target}`);
     const prongText = prongs.map(p => {
-      const entries = p.entries.map((e, i) => `  ${dealLabels[i] || e.dealId}: ${e.text}`).join('\n');
+      const entries = p.entries.map((e, i) => {
+        const txt = (e.text || '').substring(0, 500);
+        return `  ${dealLabels[i] || e.dealId}: ${txt}`;
+      }).join('\n');
       return `[${p.category}]\n${entries}`;
     }).join('\n\n');
 

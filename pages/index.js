@@ -55,7 +55,7 @@ export default function PrecedentApp() {
 </div>
 
 <div class="modal-bg recode-modal" id="recode-modal" style="display:none" onclick="if(event.target===this)this.style.display='none'">
-  <div class="modal"><div class="modal-header"><span style="font:600 14px var(--serif)">Recode Sub-Provision</span><button class="close-btn" onclick="document.getElementById('recode-modal').style.display='none'">&#10005;</button></div>
+  <div class="modal"><div class="modal-header"><span style="font:600 14px var(--serif)">Select Provision Text</span><button class="close-btn" onclick="document.getElementById('recode-modal').style.display='none'">&#10005;</button></div>
   <div class="modal-body" id="recode-body"></div></div>
 </div>
 
