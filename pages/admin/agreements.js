@@ -36,37 +36,42 @@ function stripHtml(html) {
     .trim();
 }
 
-async function extractTextFromFile(file) {
-  const name = file.name.toLowerCase();
-  const buf = await file.arrayBuffer();
+// Extract text from a single buffer given its filename
+async function extractTextFromBuffer(name, buf) {
+  const lc = name.toLowerCase();
 
   // Plain text
-  if (name.endsWith('.txt')) {
+  if (lc.endsWith('.txt') || lc.endsWith('.text')) {
     return new TextDecoder().decode(buf);
   }
 
   // HTML
-  if (name.endsWith('.html') || name.endsWith('.htm')) {
+  if (lc.endsWith('.html') || lc.endsWith('.htm')) {
     return stripHtml(new TextDecoder().decode(buf));
   }
 
-  // ZIP — extract all .txt/.html inside
-  if (name.endsWith('.zip')) {
-    const zip = await JSZip.loadAsync(buf);
-    const texts = [];
-    for (const [entryName, entry] of Object.entries(zip.files)) {
-      if (entry.dir) continue;
-      const lc = entryName.toLowerCase();
-      if (lc.endsWith('.txt') || lc.endsWith('.html') || lc.endsWith('.htm')) {
-        const content = await entry.async('string');
-        texts.push(lc.endsWith('.html') || lc.endsWith('.htm') ? stripHtml(content) : content);
+  // PDF — use pdfjs-dist
+  if (lc.endsWith('.pdf')) {
+    try {
+      const pdfjsLib = await import('pdfjs-dist');
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
+      const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(buf) }).promise;
+      const pages = [];
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        pages.push(content.items.map(item => item.str).join(' '));
       }
+      return pages.join('\n\n');
+    } catch (err) {
+      console.warn('PDF parse failed for', name, err);
+      return '';
     }
-    return texts.join('\n\n---\n\n');
   }
 
-  // DOCX — extract text from word/document.xml
-  if (name.endsWith('.docx') || name.endsWith('.doc')) {
+  // DOCX / DOC — extract text from word/document.xml inside the zip
+  if (lc.endsWith('.docx') || lc.endsWith('.doc')) {
     try {
       const zip = await JSZip.loadAsync(buf);
       const docXml = zip.file('word/document.xml');
@@ -79,12 +84,46 @@ async function extractTextFromFile(file) {
           .replace(/\n{3,}/g, '\n\n')
           .trim();
       }
-    } catch { /* fall through */ }
+    } catch { /* not a valid docx */ }
     return '';
   }
 
+  // ZIP — extract supported files from inside
+  if (lc.endsWith('.zip')) {
+    const zip = await JSZip.loadAsync(buf);
+    const texts = [];
+    for (const [entryName, entry] of Object.entries(zip.files)) {
+      if (entry.dir) continue;
+      const entryLc = entryName.toLowerCase();
+      // Skip unsupported / hidden files
+      if (entryLc.startsWith('__macosx') || entryLc.startsWith('.')) continue;
+      const supported = ['.txt', '.html', '.htm', '.pdf', '.doc', '.docx'];
+      if (!supported.some(ext => entryLc.endsWith(ext))) continue;
+      try {
+        const entryBuf = await entry.async('arraybuffer');
+        const text = await extractTextFromBuffer(entryName, entryBuf);
+        if (text && text.trim().length > 20) texts.push(text.trim());
+      } catch (err) {
+        console.warn('Failed to extract', entryName, err);
+      }
+    }
+    return texts.join('\n\n---\n\n');
+  }
+
   // Fallback: try as text
-  return new TextDecoder().decode(buf);
+  try {
+    const text = new TextDecoder().decode(buf);
+    // Only return if it looks like actual text (not binary)
+    if (text.length > 0 && !/[\x00-\x08\x0E-\x1F]/.test(text.substring(0, 500))) {
+      return text;
+    }
+  } catch { /* not decodable */ }
+  return '';
+}
+
+async function extractTextFromFile(file) {
+  const buf = await file.arrayBuffer();
+  return extractTextFromBuffer(file.name, buf);
 }
 
 async function extractTextFromFiles(files) {
@@ -138,7 +177,7 @@ export default function AddAgreements() {
       setProcessingMsg('Reading files...');
       const text = await extractTextFromFiles(files);
       if (!text || text.length < 200) {
-        throw new Error(`Could not extract enough text from files (got ${text.length} chars). Ensure the ZIP contains .txt or .html files.`);
+        throw new Error(`Could not extract enough text from files (got ${text.length} chars). Ensure files contain readable text (PDF, DOCX, HTML, or TXT).`);
       }
       return text;
     } else if (inputMode === 'paste') {
@@ -485,11 +524,11 @@ export default function AddAgreements() {
                           Drop files here or click to browse
                         </div>
                         <div style={{ fontSize: 11, color: 'var(--text4)', marginTop: 4 }}>
-                          ZIP, HTML, TXT, DOCX — or a ZIP containing multiple agreements
+                          ZIP, PDF, HTML, TXT, DOCX — or a ZIP containing multiple agreements
                         </div>
                       </div>
                       <input ref={fileRef} type="file" multiple
-                        accept=".txt,.html,.htm,.zip,.doc,.docx"
+                        accept=".txt,.html,.htm,.zip,.doc,.docx,.pdf"
                         onChange={e => { setFiles(prev => [...prev, ...Array.from(e.target.files)]); e.target.value = ''; }}
                         style={{ display: 'none' }}
                       />
@@ -774,9 +813,9 @@ export default function AddAgreements() {
                         >
                           <div style={{ fontSize: 24, color: 'var(--text4)', marginBottom: 4 }}>+</div>
                           <div style={{ fontSize: 12, color: 'var(--text3)' }}>Click to select files</div>
-                          <div style={{ fontSize: 10, color: 'var(--text5)', marginTop: 2 }}>ZIP, HTML, TXT, DOCX</div>
+                          <div style={{ fontSize: 10, color: 'var(--text5)', marginTop: 2 }}>ZIP, PDF, HTML, TXT, DOCX</div>
                         </div>
-                        <input ref={fileRef} type="file" multiple accept=".txt,.html,.htm,.zip,.doc,.docx"
+                        <input ref={fileRef} type="file" multiple accept=".txt,.html,.htm,.zip,.doc,.docx,.pdf"
                           onChange={e => { setFiles(prev => [...prev, ...Array.from(e.target.files)]); e.target.value = ''; }}
                           style={{ display: 'none' }}
                         />
