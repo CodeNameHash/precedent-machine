@@ -30,11 +30,13 @@ export default function PrecedentApp() {
 
 <div class="search-section">
   <div class="search-row">
-    <div class="search-wrap">
+    <div class="search-wrap" style="position:relative">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input id="q" placeholder="Search provisions or deals..." oninput="onInput()" onkeydown="if(event.key==='Enter')doSearch()">
+      <input id="q" placeholder="Search provisions or deals..." oninput="onInput()" onkeydown="handleSearchKey(event)" autocomplete="off">
       <button onclick="clearQ()" style="background:none;border:none;color:var(--text4);cursor:pointer;display:none" id="q-clear">&#10005;</button>
+      <div id="search-ac" class="search-autocomplete" style="display:none"></div>
     </div>
+    <div id="search-chips" style="display:inline-flex;flex-wrap:wrap;align-items:center;gap:2px;margin-left:4px"></div>
     <button class="search-btn" onclick="doSearch()" id="search-go">Search</button>
   </div>
   <div class="filters-row" id="filters-row"><span class="filter-label">Filters:</span><span id="suggested-filters"></span></div>

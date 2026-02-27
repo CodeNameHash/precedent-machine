@@ -12,10 +12,10 @@ ON CONFLICT (key) DO NOTHING;
 -- Antitrust sub-provisions
 INSERT INTO provision_categories (provision_type_id, label, sort_order) VALUES
   ((SELECT id FROM provision_types WHERE key = 'ANTI'), 'Efforts Standard', 1),
-  ((SELECT id FROM provision_types WHERE key = 'ANTI'), 'Anti-Hell or High Water', 2),
-  ((SELECT id FROM provision_types WHERE key = 'ANTI'), 'Hell or High Water', 3),
-  ((SELECT id FROM provision_types WHERE key = 'ANTI'), 'Burdensome Condition', 4),
-  ((SELECT id FROM provision_types WHERE key = 'ANTI'), 'Definition of Burdensome Condition', 5),
+  ((SELECT id FROM provision_types WHERE key = 'ANTI'), 'Caps on Efforts: Anti-Hell or High Water', 2),
+  ((SELECT id FROM provision_types WHERE key = 'ANTI'), 'Caps on Efforts: Hell or High Water', 3),
+  ((SELECT id FROM provision_types WHERE key = 'ANTI'), 'Caps on Efforts: Burdensome Condition', 4),
+  ((SELECT id FROM provision_types WHERE key = 'ANTI'), 'Caps on Efforts: Definition of Burdensome Condition', 5),
   ((SELECT id FROM provision_types WHERE key = 'ANTI'), 'Obligation to Litigate', 6),
   ((SELECT id FROM provision_types WHERE key = 'ANTI'), 'Obligation Not to Litigate', 7),
   ((SELECT id FROM provision_types WHERE key = 'ANTI'), 'Regulatory Approval Filing Deadline', 8),

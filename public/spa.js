@@ -46,7 +46,7 @@ var FALLBACK_PROVISION_TYPES = [
 var FALLBACK_SUB_PROVISIONS = {
   MAE:["Base Definition","General Economic / Market Conditions","Changes in Law / GAAP","Industry Conditions","War / Terrorism","Acts of God / Pandemic","Failure to Meet Projections","Announcement / Pendency Effects","Actions at Parent Request","Disproportionate Impact Qualifier","Changes in Stock Price","Customer / Supplier Relationships"],
   IOC:["Ordinary Course Standard","M&A / Acquisitions","Dividends / Distributions","Equity Issuances","Indebtedness","Capital Expenditures","Employee Compensation","Material Contracts","Accounting / Tax Changes","Charter / Organizational Amendments","Stock Repurchases / Splits","Labor Agreements","Litigation Settlements","Liquidation / Dissolution","Stockholder Rights Plans","Catch-All / General"],
-  ANTI:["Efforts Standard","Anti-Hell or High Water","Hell or High Water","Burdensome Condition","Definition of Burdensome Condition","Obligation to Litigate","Obligation Not to Litigate","Regulatory Approval Filing Deadline","Cooperation Obligations"],
+  ANTI:["Efforts Standard","Caps on Efforts: Anti-Hell or High Water","Caps on Efforts: Hell or High Water","Caps on Efforts: Burdensome Condition","Caps on Efforts: Definition of Burdensome Condition","Obligation to Litigate","Obligation Not to Litigate","Regulatory Approval Filing Deadline","Cooperation Obligations"],
   COND:["Regulatory Approval / HSR","No Legal Impediment","Accuracy of Target Representations","Accuracy of Acquirer Representations","Target Compliance with Covenants","Acquirer Compliance with Covenants","No MAE","Third-Party Consents","Stockholder Approval"],
   TERMR:["Mutual Termination","Outside Date","Outside Date Extension","Regulatory Failure","Breach by Target","Breach by Acquirer","Superior Proposal","Intervening Event","Failure of Conditions"],
   TERMF:["Target Termination Fee","Reverse Termination Fee","Regulatory Break-Up Fee","Fee Amount","Fee Triggers","Expense Reimbursement","Fee as Percentage of Deal Value"]
@@ -456,8 +456,100 @@ function loadAnnotations(){
 // ═══════════════════════════════════════════════════
 // SEARCH
 // ═══════════════════════════════════════════════════
-function onInput(){var q=document.getElementById("q").value;document.getElementById("q-clear").style.display=q?"block":"none";state.searchTerms=q.toLowerCase().split(/\s+/).filter(function(t){return t.length>2});renderSidebar()}
-function clearQ(){document.getElementById("q").value="";document.getElementById("q-clear").style.display="none";state.searchTerms=[];renderSidebar()}
+// Search selections stored here
+var searchSelections=[];
+function onInput(){
+  var q=document.getElementById("q").value;
+  document.getElementById("q-clear").style.display=q?"block":"none";
+  state.searchTerms=q.toLowerCase().split(/\s+/).filter(function(t){return t.length>2});
+  showAutocomplete(q);
+  renderSidebar();
+}
+function clearQ(){document.getElementById("q").value="";document.getElementById("q-clear").style.display="none";state.searchTerms=[];searchSelections=[];document.getElementById("search-chips").innerHTML="";hideAutocomplete();renderSidebar();renderContent()}
+function handleSearchKey(event){
+  if(event.key==="Enter"){hideAutocomplete();doSearch()}
+  else if(event.key==="Escape"){hideAutocomplete()}
+}
+function showAutocomplete(query){
+  var ac=document.getElementById("search-ac");if(!ac)return;
+  if(!query||query.length<2){ac.style.display="none";return}
+  var q=query.toLowerCase();
+  var results=[];
+  // Match deals
+  DEALS.forEach(function(d){var label=dealLabel(d);if(label.toLowerCase().indexOf(q)>=0||d.sector.toLowerCase().indexOf(q)>=0)results.push({type:"deal",label:label,id:d.id,meta:d.value+" · "+d.sector})});
+  // Match provision types
+  PROVISION_TYPES.forEach(function(pt){if(pt.label.toLowerCase().indexOf(q)>=0||pt.key.toLowerCase().indexOf(q)>=0)results.push({type:"provision",label:pt.label,id:pt.key,meta:getCatsForType(pt.key).length+" sub-provisions"})});
+  // Match categories
+  PROVISION_TYPES.forEach(function(pt){getCatsForType(pt.key).forEach(function(cat){if(cat.toLowerCase().indexOf(q)>=0)results.push({type:"category",label:cat,id:pt.key+":"+cat,meta:pt.label})})});
+  // Match firms
+  var firms=new Set();DEALS.forEach(function(d){if(d.lawyers){(d.lawyers.buyer||[]).forEach(function(f){if(f.toLowerCase().indexOf(q)>=0)firms.add(f)});(d.lawyers.seller||[]).forEach(function(f){if(f.toLowerCase().indexOf(q)>=0)firms.add(f)})}});
+  firms.forEach(function(f){results.push({type:"firm",label:f,id:"firm:"+f,meta:"Law Firm"})});
+  if(!results.length){ac.style.display="none";return}
+  results=results.slice(0,8);
+  var h="";
+  results.forEach(function(r,i){
+    h+='<div class="search-ac-item" onclick="selectSearchResult('+i+')" data-idx="'+i+'"><span class="search-ac-type">'+r.type+'</span><span style="flex:1;min-width:0">'+esc(r.label)+'</span><span style="font-size:10px;color:var(--text4)">'+esc(r.meta)+'</span></div>';
+  });
+  ac.innerHTML=h;ac.style.display="block";
+  ac._results=results;
+}
+function hideAutocomplete(){var ac=document.getElementById("search-ac");if(ac)ac.style.display="none"}
+function selectSearchResult(idx){
+  var ac=document.getElementById("search-ac");if(!ac||!ac._results)return;
+  var r=ac._results[idx];
+  hideAutocomplete();document.getElementById("q").value="";document.getElementById("q-clear").style.display="none";
+  // Add to selections
+  if(!searchSelections.find(function(s){return s.id===r.id})){
+    searchSelections.push(r);
+    applySearchSelections();
+    renderSearchChips();
+  }
+}
+function removeSearchSelection(idx){
+  searchSelections.splice(idx,1);
+  applySearchSelections();
+  renderSearchChips();
+}
+function renderSearchChips(){
+  var el=document.getElementById("search-chips");if(!el)return;
+  var h="";
+  searchSelections.forEach(function(s,i){
+    h+='<span class="search-chip"><span class="search-ac-type">'+s.type+'</span>'+esc(s.label)+'<button onclick="removeSearchSelection('+i+')">&#10005;</button></span>';
+  });
+  el.innerHTML=h;
+}
+function applySearchSelections(){
+  // Apply search selections additively
+  if(!searchSelections.length){state.searchTerms=[];state.provisionType=null;renderSidebar();renderContent();return}
+  var dealFilters=searchSelections.filter(function(s){return s.type==="deal"});
+  var provFilters=searchSelections.filter(function(s){return s.type==="provision"});
+  var catFilters=searchSelections.filter(function(s){return s.type==="category"});
+  var firmFilters=searchSelections.filter(function(s){return s.type==="firm"});
+  // Apply deal selections
+  if(dealFilters.length){
+    // Add selected deals on top of existing
+    dealFilters.forEach(function(df){if(state.selectedDeals.indexOf(df.id)<0)state.selectedDeals.push(df.id)});
+  }
+  // Apply firm filters
+  if(firmFilters.length){
+    firmFilters.forEach(function(ff){
+      var firmName=ff.label;
+      if(!state.filterValues.law_firm)state.filterValues.law_firm=[];
+      if(state.filterValues.law_firm.indexOf(firmName)<0)state.filterValues.law_firm.push(firmName);
+      // Ensure law_firm filter is active
+      var lf=state.activeFilters.find(function(af){return af.key==="law_firm"});
+      if(!lf)state.activeFilters.push({key:"law_firm",label:"Law Firm",active:true});
+      else lf.active=true;
+    });
+  }
+  // Apply provision type
+  if(provFilters.length){state.provisionType=provFilters[provFilters.length-1].id}
+  // Search terms from category selections
+  if(catFilters.length){state.searchTerms=catFilters.map(function(c){return c.label.toLowerCase()})}
+  renderSidebar();renderContent();
+}
+// Click outside to close autocomplete
+document.addEventListener("click",function(e){if(!e.target.closest(".search-wrap"))hideAutocomplete()});
 function doSearch(){
   var q=document.getElementById("q").value.trim();if(!q)return;
   var btn=document.getElementById("search-go");btn.disabled=true;btn.textContent="...";
@@ -486,7 +578,7 @@ function renderSidebar(){
       var a=state.provisionType===pt.key;
       var expanded=state.expandedProvisionType===pt.key;
       var arrow=expanded?'&#9660;':'&#9654;';
-      h+='<div class="prov-item '+(a?"selected":"")+'" onclick="selectProvisionType(\''+pt.key+'\')"><div class="prov-type"><span style="font-size:8px;margin-right:4px">'+arrow+'</span>'+pt.key+'</div><div class="prov-title">'+pt.label+'</div><div class="prov-deal">'+getCatsForType(pt.key).length+' sub-provisions &middot; '+new Set(PROVISIONS.filter(function(p){return p.type===pt.key}).map(function(p){return p.dealId})).size+' deals coded</div></div>';
+      h+='<div class="prov-item '+(a?"selected":"")+'" onclick="selectProvisionType(\''+pt.key+'\')"><div class="prov-type"><span style="font-size:8px;margin-right:4px">'+arrow+'</span>'+pt.label.toUpperCase()+'</div><div class="prov-title">'+pt.label+'</div><div class="prov-deal">'+getCatsForType(pt.key).length+' sub-provisions &middot; '+new Set(PROVISIONS.filter(function(p){return p.type===pt.key}).map(function(p){return p.dealId})).size+' deals coded</div></div>';
       if(expanded){
         getCatsForType(pt.key).forEach(function(cat){
           var hidden=state.hiddenCategories.has(cat);
@@ -497,10 +589,13 @@ function renderSidebar(){
   }
   h+='<div class="sidebar-header"><span><span class="sidebar-toggle" onclick="toggleSidebarSection(\'deals\')">'+dealArrow+'</span> Deals</span><span style="font-size:10px;color:var(--gold);text-transform:none;letter-spacing:0">'+state.selectedDeals.length+' selected</span></div>';
   if(!state.sidebarDealsCollapsed){
+    var sidebarFilteredIds=getFilteredDealIds();
     DEALS.forEach(function(d){
       var ck=state.selectedDeals.includes(d.id);
       var hp=state.provisionType?PROVISIONS.some(function(p){return p.dealId===d.id&&p.type===state.provisionType}):PROVISIONS.some(function(p){return p.dealId===d.id});
-      h+='<div class="deal-item" onclick="toggleDeal(\''+d.id+'\')" style="'+(hp?"":"opacity:0.4")+'"><div class="deal-check '+(ck?"checked":"")+'">&#10003;</div><div class="deal-info"><div class="deal-name">'+esc(dealLabel(d))+'</div><div class="deal-meta">'+d.value+' &middot; '+d.sector+' &middot; '+d.date.slice(0,4)+'</div>'+(d.lawyers?'<div class="deal-meta" style="margin-top:1px;font-size:9.5px">'+esc((d.lawyers.buyer||[]).concat(d.lawyers.seller||[]).slice(0,2).join(", "))+'</div>':"")+'</div></div>';
+      var filteredOut=sidebarFilteredIds&&sidebarFilteredIds.indexOf(d.id)<0;
+      if(filteredOut&&!ck)return; // Hide unselected deals that don't match filters
+      h+='<div class="deal-item" onclick="toggleDeal(\''+d.id+'\')" style="'+(hp&&!filteredOut?"":"opacity:0.4")+'"><div class="deal-check '+(ck?"checked":"")+'">&#10003;</div><div class="deal-info"><div class="deal-name">'+esc(dealLabel(d))+'</div><div class="deal-meta">'+d.value+' &middot; '+d.sector+' &middot; '+d.date.slice(0,4)+'</div>'+(d.lawyers?'<div class="deal-meta" style="margin-top:1px;font-size:9.5px">'+esc((d.lawyers.buyer||[]).concat(d.lawyers.seller||[]).slice(0,2).join(", "))+'</div>':"")+'</div></div>';
     });
   }
   // Filters section
@@ -512,11 +607,17 @@ function renderSidebar(){
     if(af.active){
       var vals=getFilterValues(af.key);
       var sel=state.filterValues[af.key]||[];
+      var filteredIds=getFilteredDealIds();
       vals.forEach(function(v){
         var checked=sel.indexOf(v)>=0;
-        h+='<div class="sidebar-cat-item" style="padding-left:32px;font-size:11px;color:'+(checked?'var(--gold)':'var(--text3)')+';font-weight:'+(checked?'600':'400')+'" onclick="event.stopPropagation();toggleFilterValue(\''+af.key+"','"+esc(v).replace(/'/g,"\\'")+'\')">';
+        var countStr="";
+        if(!checked){var cnt=getFilterCountForValue(af.key,v);if(cnt>=0)countStr=' <span style="font-size:9px;color:var(--text5);font-weight:400">('+cnt+')</span>'}
+        // If filters are active and this value's deals don't intersect filtered set, dim it
+        var dimmed=false;
+        if(filteredIds&&!checked){var def=getFilterDef(af.key);if(def){var matchDeals=DEALS.filter(function(d){return def.extract(d).indexOf(v)>=0}).map(function(d){return d.id});dimmed=!matchDeals.some(function(did){return filteredIds.indexOf(did)>=0})}}
+        h+='<div class="sidebar-cat-item" style="padding-left:32px;font-size:11px;color:'+(checked?'var(--gold)':dimmed?'var(--text5)':'var(--text3)')+';font-weight:'+(checked?'600':'400')+';opacity:'+(dimmed?'0.5':'1')+'" onclick="event.stopPropagation();toggleFilterValue(\''+af.key+"','"+esc(v).replace(/'/g,"\\'")+'\')">';
         h+='<span style="display:inline-block;width:12px;height:12px;border:1.5px solid '+(checked?'var(--gold)':'#ccc')+';border-radius:2px;margin-right:6px;text-align:center;line-height:12px;font-size:8px;flex-shrink:0;background:'+(checked?'var(--gold)':'transparent')+';color:'+(checked?'#fff':'transparent')+'">&#10003;</span>';
-        h+=esc(v)+'</div>';
+        h+=esc(v)+countStr+'</div>';
       });
     }
   });
@@ -561,18 +662,34 @@ var AVAILABLE_FILTERS=[
 function getFilterDef(key){return AVAILABLE_FILTERS.find(function(f){return f.key===key})}
 function getFilterValues(key){var def=getFilterDef(key);if(!def)return[];var vals=new Set();DEALS.forEach(function(d){def.extract(d).forEach(function(v){if(v)vals.add(v)})});return Array.from(vals).sort()}
 function toggleFilter(key){var f=state.activeFilters.find(function(af){return af.key===key});if(f)f.active=!f.active;else{var def=getFilterDef(key);if(def)state.activeFilters.push({key:key,label:def.label,active:true})}renderSidebar()}
-function toggleFilterValue(filterKey,val){if(!state.filterValues[filterKey])state.filterValues[filterKey]=[];var arr=state.filterValues[filterKey];var idx=arr.indexOf(val);if(idx>=0)arr.splice(idx,1);else arr.push(val);applyFilters();renderSidebar();renderContent()}
-function applyFilters(){
-  // Filter deals based on active filter selections
+function toggleFilterValue(filterKey,val){if(!state.filterValues[filterKey])state.filterValues[filterKey]=[];var arr=state.filterValues[filterKey];var idx=arr.indexOf(val);if(idx>=0)arr.splice(idx,1);else arr.push(val);renderSidebar();renderContent()}
+function getFilteredDealIds(){
+  // Compute filtered deal ids based on all active filter selections (AND across filters)
+  var filtered=DEALS.map(function(d){return d.id});
+  var hasAnyFilter=false;
+  state.activeFilters.forEach(function(af){
+    var sel=state.filterValues[af.key];
+    if(!sel||!sel.length)return;
+    hasAnyFilter=true;
+    var def=getFilterDef(af.key);if(!def)return;
+    filtered=filtered.filter(function(did){var d=getDeal(did);if(!d)return false;var vals=def.extract(d);return sel.some(function(s){return vals.indexOf(s)>=0})});
+  });
+  return hasAnyFilter?filtered:null; // null means no filters active
+}
+function getFilterCountForValue(filterKey,val){
+  // Count how many additional deals would match if this value were added
+  var currentSel=(state.filterValues[filterKey]||[]).slice();
+  if(currentSel.indexOf(val)>=0)return-1; // already selected
+  currentSel.push(val);
+  // Compute what would match with this value added
   var filtered=DEALS.map(function(d){return d.id});
   state.activeFilters.forEach(function(af){
-    if(!af.active)return;
-    var sel=state.filterValues[af.key];
+    var sel=af.key===filterKey?currentSel:state.filterValues[af.key];
     if(!sel||!sel.length)return;
     var def=getFilterDef(af.key);if(!def)return;
     filtered=filtered.filter(function(did){var d=getDeal(did);if(!d)return false;var vals=def.extract(d);return sel.some(function(s){return vals.indexOf(s)>=0})});
   });
-  state.selectedDeals=filtered;
+  return filtered.length;
 }
 function addNewFilter(){
   var unused=AVAILABLE_FILTERS.filter(function(af){return!state.activeFilters.some(function(f){return f.key===af.key})});
@@ -593,14 +710,19 @@ function addNewFilter(){
 function renderContent(){
   var el=document.getElementById("content");
   if(!state.selectedDeals.length){el.innerHTML='<div class="empty"><h3>No deals selected</h3><p>Check deals in the sidebar</p></div>';return}
-  var deals=state.selectedDeals.map(getDeal).filter(Boolean);
+  // Apply filters additively on top of deal selection
+  var filteredIds=getFilteredDealIds();
+  var effectiveDeals=state.selectedDeals;
+  if(filteredIds)effectiveDeals=state.selectedDeals.filter(function(did){return filteredIds.indexOf(did)>=0});
+  if(!effectiveDeals.length){el.innerHTML='<div class="empty"><h3>No deals match filters</h3><p>Adjust filter selections in the sidebar</p></div>';return}
+  var deals=effectiveDeals.map(getDeal).filter(Boolean);
   var types=state.provisionType?[state.provisionType]:PROVISION_TYPES.map(function(pt){return pt.key}).filter(function(t){return deals.some(function(d){return getProvs(t,d.id).length>0})});
   var typeName=state.provisionType?PROVISION_TYPES.find(function(pt){return pt.key===state.provisionType}).label:"All Provisions";
 
   var h='<div class="content-header"><div class="provision-type-label">'+(state.provisionType||"COMPARISON")+'</div><div class="content-title">'+typeName+' &mdash; '+deals.length+' Deal Comparison</div><div class="content-subtitle">Each provision is broken into coded sub-provisions for side-by-side analysis.</div><div class="action-row">'+(!state.compareResults?'<button class="action-btn compare" onclick="runCompare()">&#9889; Summarize Differences</button>':'<button class="action-btn" onclick="clearCompare()" style="border-color:var(--gold);color:var(--gold)">&#10005; Clear Summary</button>')+'<button class="action-btn" onclick="setTab(\'report\')">Report</button><button class="action-btn" onclick="setTab(\'redline\')">Markup Draft</button></div><div class="view-tabs"><div class="view-tab '+(state.activeTab==="coded"?"active":"")+'" onclick="setTab(\'coded\')">Coded Comparison</div><div class="view-tab '+(state.activeTab==="fulltext"?"active":"")+'" onclick="setTab(\'fulltext\')">Full Text</div><div class="view-tab '+(state.activeTab==="report"?"active":"")+'" onclick="setTab(\'report\')">Report</div><div class="view-tab '+(state.activeTab==="redline"?"active":"")+'" onclick="setTab(\'redline\')">Redline</div></div></div>';
 
   if(state.adminMode){
-    h+='<div class="admin-banner"><span>Admin mode &mdash; Recode sub-provisions or add new categories</span><div style="display:flex;gap:6px;flex-wrap:wrap">'+types.map(function(t){return '<button onclick="openAddCategory(\''+t+'\')">+ '+t+' Category</button>'}).join("")+'<button onclick="ingestFullAgreement(\''+state.selectedDeals[0]+'\')">Ingest Agreement</button><button onclick="toggleAdmin()">Turn Off</button></div></div>';
+    h+='<div class="admin-banner"><span>Admin mode &mdash; Recode sub-provisions or add new categories</span><div style="display:flex;gap:6px;flex-wrap:wrap">'+types.map(function(t){return '<button onclick="openAddCategory(\''+t+'\')">+ '+t+' Category</button>'}).join("")+'<button onclick="openTaxonomyEditor()">Edit Taxonomy</button><button onclick="window.location.href=\'/admin/agreements\'">Add Agreement(s)</button><button onclick="ingestFullAgreement(\''+state.selectedDeals[0]+'\')">Quick Ingest</button><button onclick="toggleAdmin()">Turn Off</button></div></div>';
   }
 
   if(state.activeTab==="coded"){types.forEach(function(type){var cats=getCatsForType(type);var secKey="sec-"+type;var secCollapsed=state.collapsedSections.has(secKey);var secArrow=secCollapsed?'&#9654;':'&#9660;';h+='<div class="prongs-section" style="padding-bottom:0"><div class="provision-section-divider" style="cursor:pointer" onclick="toggleSection(\''+secKey+'\')"><span>'+secArrow+' '+(PROVISION_TYPES.find(function(pt){return pt.key===type})?.label||type)+'</span><span style="font-size:10px;color:var(--text4);text-transform:none;letter-spacing:0;font-weight:400">'+cats.filter(function(c){return!state.hiddenCategories.has(c)}).length+' sub-provisions</span></div></div>';if(!secCollapsed)h+=renderCodedView(deals,cats,type)})}
@@ -826,7 +948,7 @@ function exportReportPDF(){
   win.document.write('<!DOCTYPE html><html><head><title>Precedent Comparison Report</title>');
   win.document.write('<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">');
   win.document.write('<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:"Source Sans 3",sans-serif;color:#1a1a1a;padding:30px;font-size:11px}');
-  win.document.write('table{width:100%;border-collapse:collapse;margin-bottom:20px;table-layout:fixed}th,td{border:1px solid #ddd;padding:8px 10px;text-align:left;vertical-align:top;word-wrap:break-word;overflow-wrap:break-word;max-width:0}');
+  win.document.write('table{width:100%;border-collapse:collapse;margin-bottom:20px;table-layout:fixed}th,td{border:1px solid #ddd;padding:8px 10px;text-align:left;vertical-align:top;word-wrap:break-word;overflow-wrap:break-word;max-width:0;overflow:hidden}');
   win.document.write('th{background:#f5f3ee;font-size:9px;text-transform:uppercase;letter-spacing:0.8px;color:#B8956A;font-weight:600}');
   win.document.write('td{font-family:"Source Serif 4",serif;font-size:10.5px;line-height:1.5}');
   win.document.write('td.sub-prov-label{font-family:"Source Sans 3",sans-serif;font-weight:600;background:#faf8f5;width:150px;word-wrap:break-word;overflow-wrap:break-word}');
@@ -1065,17 +1187,49 @@ function startInlineRecode(btn,cat,type,cols){
     wrapper.innerHTML=renderRecodeContext(d.id,ctx);
     textDiv.replaceWith(wrapper);
   });
-  // Make exception sub-row labels editable instead of hiding them
+  // Make exception sub-row labels editable with dropdown instead of hiding them
+  // Collect all known canonical labels from IOC parsing for this type
+  var knownExLabels=new Set();
+  Object.keys(IOC_PARSED_CACHE).forEach(function(pid){var pe=IOC_PARSED_CACHE[pid];if(pe&&pe.exceptions){pe.exceptions.forEach(function(ex){if(ex.canonicalLabel)knownExLabels.add(ex.canonicalLabel);knownExLabels.add(ex.label)})}});
   card.querySelectorAll(".prong-sub-label").forEach(function(lbl){
-    var origText=lbl.textContent;
-    var input=document.createElement("input");
-    input.type="text";input.value=origText;
-    input.className="recode-cat-select";
-    input.style.cssText="width:100%;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--blue);background:#EBF2FB;border:1px solid var(--blue);padding:3px 8px";
-    input.setAttribute("data-orig-label",origText);
+    var origText=lbl.textContent.trim();
+    var sel=document.createElement("select");
+    sel.className="recode-cat-select";
+    sel.style.cssText="width:100%;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--blue);background:#EBF2FB;border:1px solid var(--blue);padding:3px 8px";
+    sel.setAttribute("data-orig-label",origText);
+    // Add known labels as options
+    var allOpts=Array.from(knownExLabels);
+    if(allOpts.indexOf(origText)<0)allOpts.unshift(origText);
+    allOpts.forEach(function(opt){var o=document.createElement("option");o.value=opt;o.textContent=opt;if(opt===origText)o.selected=true;sel.appendChild(o)});
+    // Add "Add new" option
+    var addOpt=document.createElement("option");addOpt.value="__add_new__";addOpt.textContent="+ Add new label\u2026";sel.appendChild(addOpt);
     _recodeCtx.exceptionLabels[origText]=origText;
-    input.addEventListener("change",function(){_recodeCtx.exceptionLabels[origText]=this.value.trim()||origText});
-    lbl.innerHTML="";lbl.appendChild(input);
+    sel.addEventListener("change",function(){
+      if(this.value==="__add_new__"){
+        var newName=prompt("New exception label:");
+        if(!newName||!newName.trim()){this.value=origText;return}
+        newName=newName.trim();
+        // AI duplicate check
+        var existingLabels=Array.from(knownExLabels);
+        fetch("/api/ai/check-duplicate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({newCategory:newName,existingCategories:existingLabels,provisionType:"IOC Exception"})}).then(function(r){return r.json()}).then(function(data){
+          if(data.is_duplicate&&(data.confidence==="medium"||data.confidence==="high")){
+            if(!confirm("\""+newName+"\" may overlap with \""+data.similar_to+"\" ("+data.confidence+").\n\n"+data.explanation+"\n\nAdd anyway?")){sel.value=origText;return}
+          }
+          var o=document.createElement("option");o.value=newName;o.textContent=newName;
+          sel.insertBefore(o,sel.querySelector('option[value="__add_new__"]'));
+          sel.value=newName;knownExLabels.add(newName);
+          _recodeCtx.exceptionLabels[origText]=newName;
+        }).catch(function(){
+          var o=document.createElement("option");o.value=newName;o.textContent=newName;
+          sel.insertBefore(o,sel.querySelector('option[value="__add_new__"]'));
+          sel.value=newName;knownExLabels.add(newName);
+          _recodeCtx.exceptionLabels[origText]=newName;
+        });
+      }else{
+        _recodeCtx.exceptionLabels[origText]=this.value;
+      }
+    });
+    lbl.innerHTML="";lbl.appendChild(sel);
   });
   // Make exception sub-cells editable as textareas
   card.querySelectorAll(".prong-sub-cell").forEach(function(cell){
@@ -1187,6 +1341,46 @@ function saveInlineRecode(btn){
     goldStandards.push({dealId:d.id,type:type,category:newCat,text:nt,correctedAt:new Date().toISOString()});
   });
   if(type==="IOC"){
+    // Save exception label and text edits
+    var card=btn.closest(".prong-card");
+    if(card&&_recodeCtx.exceptionLabels){
+      // Update canonical labels in IOC_PARSED_CACHE
+      deals.forEach(function(d){
+        var prov=PROVISIONS.find(function(p){return p.type===type&&p.dealId===d.id&&(p.category===origCat||p.category===newCat)});
+        if(prov&&IOC_PARSED_CACHE[prov.id]){
+          var parsed=IOC_PARSED_CACHE[prov.id];
+          parsed.exceptions.forEach(function(ex){
+            var origLbl=ex.canonicalLabel||ex.label;
+            if(_recodeCtx.exceptionLabels[origLbl]&&_recodeCtx.exceptionLabels[origLbl]!==origLbl){
+              ex.canonicalLabel=_recodeCtx.exceptionLabels[origLbl];
+            }
+          });
+        }
+      });
+      // Save edited exception texts from textareas
+      card.querySelectorAll(".prong-sub-cell textarea").forEach(function(ta){
+        var newText=ta.value.trim();
+        var cell=ta.closest(".prong-sub-cell");
+        if(!cell||!newText)return;
+        // Find which deal this cell belongs to (by column index)
+        var row=cell.closest(".prong-sub-row");
+        if(!row)return;
+        var cells=Array.from(row.querySelectorAll(".prong-sub-cell"));
+        var cellIdx=cells.indexOf(cell);
+        if(cellIdx<0||cellIdx>=deals.length)return;
+        var d=deals[cellIdx];
+        var prov=PROVISIONS.find(function(p){return p.type===type&&p.dealId===d.id&&(p.category===origCat||p.category===newCat)});
+        if(prov&&IOC_PARSED_CACHE[prov.id]){
+          // Find the exception in the parsed cache by label from the row's label select
+          var labelSel=row.querySelector(".prong-sub-label select");
+          var lbl=labelSel?labelSel.value:null;
+          if(lbl){
+            var ex=IOC_PARSED_CACHE[prov.id].exceptions.find(function(e){return(e.canonicalLabel||e.label)===lbl});
+            if(ex)ex.text=newText;
+          }
+        }
+      });
+    }
     deals.forEach(function(d){
       var prov=PROVISIONS.find(function(p){return p.type===type&&p.dealId===d.id&&(p.category===origCat||p.category===newCat)});
       if(prov)delete IOC_PARSED_CACHE[prov.id];
@@ -1222,26 +1416,36 @@ function enableAnnotationCreation(){
   });
 }
 function openNewAnnotationPopover(provId,phrase,startOffset,endOffset,evt){
-  var pop=document.getElementById("ann-popover");
-  var h='<div class="ann-phrase-quote">'+esc(phrase)+'</div>';
+  // Remove any existing inline annotation panels
+  document.querySelectorAll(".ann-inline").forEach(function(el){el.remove()});
+  var h='<div class="ann-phrase-quote" style="font:italic 12px/1.5 var(--serif);color:var(--text2);padding:8px 10px;background:var(--bg);border-left:3px solid var(--gold);border-radius:0 6px 6px 0;margin-bottom:10px">'+esc(phrase)+'</div>';
   h+='<div class="ann-edit-form" style="border-top:none;padding-top:0;margin-top:0">';
   h+='<label>Favorability</label><select id="new-ann-fav">';
   FAV_LEVELS.forEach(function(f){h+='<option value="'+f.key+'">'+f.label+'</option>'});
   h+='</select>';
   h+='<label>Note</label><textarea id="new-ann-note" placeholder="Add annotation note..."></textarea>';
-  h+='<button class="ann-save-btn" onclick="createAnnotation(\''+provId+'\',\''+esc(phrase).replace(/'/g,"\\'")+'\','+startOffset+','+endOffset+')">Create Annotation</button>';
+  h+='<div style="display:flex;gap:6px;margin-top:8px"><button class="ann-save-btn" onclick="createAnnotation(\''+provId+'\',\''+esc(phrase).replace(/'/g,"\\'")+'\','+startOffset+','+endOffset+')">Create Annotation</button><button style="padding:5px 12px;border-radius:5px;background:var(--bg);border:1px solid var(--border);font-size:11px;cursor:pointer" onclick="this.closest(\'.ann-inline\').remove()">Cancel</button></div>';
   h+='</div>';
-  pop.innerHTML=h;
-  var rect=evt.target.getBoundingClientRect();
-  var top=rect.bottom+6;var left=rect.left;
-  if(left+320>window.innerWidth)left=window.innerWidth-330;
-  if(top+300>window.innerHeight)top=rect.top-310;
-  pop.style.top=Math.max(0,top)+"px";pop.style.left=Math.max(0,left)+"px";pop.style.display="block";
-  setTimeout(function(){var dismiss=function(e){if(!pop.contains(e.target)){pop.style.display="none";document.removeEventListener("click",dismiss)}};document.addEventListener("click",dismiss)},10);
+  // Insert inline below the prong-cell that contains this provision
+  var cell=evt.target.closest(".prong-cell");
+  if(cell){
+    var panel=document.createElement("div");
+    panel.className="ann-inline";
+    panel.innerHTML=h;
+    var textDiv=cell.querySelector(".prong-text")||cell.querySelector(".recode-widget");
+    if(textDiv)textDiv.after(panel);else cell.appendChild(panel);
+  }else{
+    // Fallback to popup if no cell found
+    var pop=document.getElementById("ann-popover");
+    pop.innerHTML=h;
+    var rect=evt.target.getBoundingClientRect();
+    pop.style.top=Math.max(0,rect.bottom+6)+"px";pop.style.left=Math.max(0,Math.min(rect.left,window.innerWidth-330))+"px";pop.style.display="block";
+  }
 }
 function promptAnnotation(provId,btn){
   var prov=PROVISIONS.find(function(p){return p.id===provId});if(!prov)return;
-  var pop=document.getElementById("ann-popover");
+  // Remove any existing inline annotation panels
+  document.querySelectorAll(".ann-inline").forEach(function(el){el.remove()});
   var h='<div style="font:600 12px var(--sans);margin-bottom:8px">New Annotation</div>';
   h+='<div class="ann-edit-form" style="border-top:none;padding-top:0;margin-top:0">';
   h+='<label>Phrase (select text or type)</label><input type="text" id="new-ann-phrase" placeholder="Enter or paste phrase from provision..." style="width:100%;padding:6px 8px;border:1px solid var(--border);border-radius:5px;font-size:11px;font-family:var(--serif);background:var(--bg);outline:none;margin-bottom:4px">';
@@ -1249,12 +1453,18 @@ function promptAnnotation(provId,btn){
   FAV_LEVELS.forEach(function(f){h+='<option value="'+f.key+'">'+f.label+'</option>'});
   h+='</select>';
   h+='<label>Note</label><textarea id="new-ann-note" placeholder="Add annotation note..."></textarea>';
-  h+='<button class="ann-save-btn" onclick="submitAnnotationFromBtn(\''+provId+'\')">Create</button>';
+  h+='<div style="display:flex;gap:6px;margin-top:8px"><button class="ann-save-btn" onclick="submitAnnotationFromBtn(\''+provId+'\')">Create</button><button style="padding:5px 12px;border-radius:5px;background:var(--bg);border:1px solid var(--border);font-size:11px;cursor:pointer" onclick="this.closest(\'.ann-inline\').remove()">Cancel</button></div>';
   h+='</div>';
-  pop.innerHTML=h;
-  var rect=btn.getBoundingClientRect();
-  pop.style.top=(rect.bottom+6)+"px";pop.style.left=Math.min(rect.left,window.innerWidth-330)+"px";pop.style.display="block";
-  setTimeout(function(){document.getElementById("new-ann-phrase").focus();var dismiss=function(e){if(!pop.contains(e.target)&&e.target!==btn){pop.style.display="none";document.removeEventListener("click",dismiss)}};document.addEventListener("click",dismiss)},10);
+  // Insert inline below the prong-cell
+  var cell=btn.closest(".prong-cell");
+  if(cell){
+    var panel=document.createElement("div");
+    panel.className="ann-inline";
+    panel.innerHTML=h;
+    var textDiv=cell.querySelector(".prong-text")||cell.querySelector(".recode-widget");
+    if(textDiv)textDiv.after(panel);else cell.appendChild(panel);
+    setTimeout(function(){var inp=document.getElementById("new-ann-phrase");if(inp)inp.focus()},50);
+  }
 }
 function submitAnnotationFromBtn(provId){
   var phrase=document.getElementById("new-ann-phrase").value.trim();if(!phrase)return;
@@ -1307,6 +1517,74 @@ function sendAsk(){
   }).finally(function(){
     msgs.scrollTop=msgs.scrollHeight;document.getElementById("ask-go").disabled=false;
   });
+}
+
+// ═══════════════════════════════════════════════════
+// TAXONOMY EDITOR
+// ═══════════════════════════════════════════════════
+function openTaxonomyEditor(){
+  var modal=document.getElementById("recode-modal");var body=document.getElementById("recode-body");
+  var h='<div style="margin-bottom:16px"><div style="font:600 14px var(--serif);margin-bottom:4px">Taxonomy Editor</div><div style="font-size:11px;color:var(--text3);line-height:1.5">Organize provision types and their sub-categories. Changes are saved to local storage and persist across sessions. When connected to Supabase, categories sync with the database. Use "Caps on Efforts:" prefix to group related sub-categories.</div></div>';
+  h+='<div style="font-size:10px;color:var(--text4);margin-bottom:8px">Select provision type:</div>';
+  h+='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">';
+  PROVISION_TYPES.forEach(function(pt){
+    h+='<button class="filter-chip" onclick="renderTaxonomyType(\''+pt.key+'\')" id="tax-btn-'+pt.key+'">'+esc(pt.label)+'</button>';
+  });
+  h+='</div><div id="tax-editor-body"></div>';
+  body.innerHTML=h;
+  modal.querySelector(".modal-header span").textContent="Edit Taxonomy";
+  modal.style.display="flex";
+  renderTaxonomyType(PROVISION_TYPES[0].key);
+}
+function renderTaxonomyType(typeKey){
+  var body=document.getElementById("tax-editor-body");if(!body)return;
+  // Highlight active button
+  PROVISION_TYPES.forEach(function(pt){var btn=document.getElementById("tax-btn-"+pt.key);if(btn)btn.className="filter-chip"+(pt.key===typeKey?" active":"")});
+  var cats=getCatsForType(typeKey);
+  var h='<div style="font-size:11px;font-weight:600;margin-bottom:8px">'+(PROVISION_TYPES.find(function(pt){return pt.key===typeKey})?.label||typeKey)+' — '+cats.length+' categories</div>';
+  h+='<div style="max-height:300px;overflow-y:auto;border:1px solid var(--border);border-radius:6px">';
+  cats.forEach(function(cat,i){
+    h+='<div style="display:flex;align-items:center;gap:8px;padding:6px 12px;border-bottom:1px solid #F0EEEA;font-size:11px">';
+    h+='<span style="color:var(--text4);width:20px;flex-shrink:0">'+(i+1)+'.</span>';
+    h+='<span style="flex:1;color:var(--text)">'+esc(cat)+'</span>';
+    h+='<button style="background:none;border:none;font-size:10px;color:var(--gold);cursor:pointer" onclick="renameTaxonomyCat(\''+typeKey+'\','+i+')">Rename</button>';
+    h+='<button style="background:none;border:none;font-size:10px;color:var(--red);cursor:pointer" onclick="removeTaxonomyCat(\''+typeKey+'\','+i+')">Remove</button>';
+    if(i>0)h+='<button style="background:none;border:none;font-size:10px;color:var(--text4);cursor:pointer" onclick="moveTaxonomyCat(\''+typeKey+'\','+i+',-1)">&#9650;</button>';
+    if(i<cats.length-1)h+='<button style="background:none;border:none;font-size:10px;color:var(--text4);cursor:pointer" onclick="moveTaxonomyCat(\''+typeKey+'\','+i+',1)">&#9660;</button>';
+    h+='</div>';
+  });
+  h+='</div>';
+  h+='<div style="display:flex;gap:8px;margin-top:12px"><input type="text" id="tax-new-cat" placeholder="New category name..." style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:5px;font-size:11px;outline:none"><button class="save-btn" style="font-size:11px;padding:5px 14px" onclick="addTaxonomyCat(\''+typeKey+'\')">Add</button></div>';
+  h+='<div style="margin-top:12px;padding:10px;background:var(--bg);border-radius:6px;font-size:10px;color:var(--text3);line-height:1.6"><strong>How persistence works:</strong> Categories are stored in localStorage and persist across browser sessions. When Supabase is connected, they sync to the provision_categories table. AI ingestion uses these categories to classify extracted provisions. As more agreements are ingested, AI learns from existing classifications to improve accuracy.</div>';
+  body.innerHTML=h;
+}
+function renameTaxonomyCat(typeKey,idx){
+  var cats=getCatsForType(typeKey);var old=cats[idx];
+  var newName=prompt("Rename \""+old+"\" to:",old);
+  if(!newName||!newName.trim()||newName.trim()===old)return;
+  SUB_PROVISIONS[typeKey][idx]=newName.trim();
+  // Update any provisions with this category
+  PROVISIONS.forEach(function(p){if(p.type===typeKey&&p.category===old)p.category=newName.trim()});
+  saveCats();renderTaxonomyType(typeKey);renderContent();
+}
+function removeTaxonomyCat(typeKey,idx){
+  var cats=getCatsForType(typeKey);
+  if(!confirm("Remove \""+cats[idx]+"\"? Provisions using this category will be uncategorized."))return;
+  SUB_PROVISIONS[typeKey].splice(idx,1);
+  saveCats();renderTaxonomyType(typeKey);renderContent();
+}
+function moveTaxonomyCat(typeKey,idx,dir){
+  var cats=SUB_PROVISIONS[typeKey];var newIdx=idx+dir;
+  if(newIdx<0||newIdx>=cats.length)return;
+  var tmp=cats[idx];cats[idx]=cats[newIdx];cats[newIdx]=tmp;
+  saveCats();renderTaxonomyType(typeKey);
+}
+function addTaxonomyCat(typeKey){
+  var inp=document.getElementById("tax-new-cat");if(!inp)return;
+  var nm=inp.value.trim();if(!nm)return;
+  if(getCatsForType(typeKey).includes(nm)){alert("Already exists.");return}
+  SUB_PROVISIONS[typeKey].push(nm);
+  saveCats();inp.value="";renderTaxonomyType(typeKey);renderContent();
 }
 
 // INIT — render fallback immediately, then try API

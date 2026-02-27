@@ -114,6 +114,7 @@ textarea::placeholder,input::placeholder{color:#bbb}
 .ann-phrase.strong-seller{text-decoration-color:#C62828}
 
 .ann-popover{position:fixed;z-index:1200;background:var(--bg2);border:1px solid var(--border);border-radius:10px;box-shadow:0 12px 36px rgba(0,0,0,0.15);width:320px;max-height:420px;overflow-y:auto;padding:14px;font-size:12px}
+.ann-inline{background:var(--bg2);border:1px solid var(--gold-border);border-radius:8px;padding:12px;margin-top:8px;font-size:12px;animation:fadeIn 0.2s}
 .ann-popover .ann-phrase-quote{font:italic 12px/1.5 var(--serif);color:var(--text2);padding:8px 10px;background:var(--bg);border-left:3px solid var(--gold);border-radius:0 6px 6px 0;margin-bottom:10px}
 .ann-popover .ann-fav-row{display:flex;align-items:center;gap:6px;margin-bottom:8px}
 .ann-popover .ann-fav-dot{width:8px;height:8px;border-radius:50%}
@@ -181,12 +182,12 @@ textarea::placeholder,input::placeholder{color:#bbb}
 .save-btn:hover{background:#a17e52}
 
 .report-table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--bg2);margin-bottom:20px;table-layout:fixed}
-.report-table th{padding:10px 14px;font:600 9px var(--sans);text-transform:uppercase;letter-spacing:1px;color:var(--gold);background:var(--bg3);border-bottom:1px solid var(--border);text-align:left;border-right:1px solid var(--border);word-wrap:break-word;overflow-wrap:break-word}
+.report-table th{padding:10px 14px;font:600 9px var(--sans);text-transform:uppercase;letter-spacing:1px;color:var(--gold);background:var(--bg3);border-bottom:1px solid var(--border);text-align:left;border-right:1px solid var(--border);word-wrap:break-word;overflow-wrap:break-word;max-width:0;overflow:hidden}
 .report-table th:last-child{border-right:none}
-.report-table td{padding:10px 14px;font:400 11.5px/1.6 var(--serif);color:var(--text2);border-bottom:1px solid #F0EEEA;border-right:1px solid #F0EEEA;vertical-align:top;word-wrap:break-word;overflow-wrap:break-word}
+.report-table td{padding:10px 14px;font:400 11.5px/1.6 var(--serif);color:var(--text2);border-bottom:1px solid #F0EEEA;border-right:1px solid #F0EEEA;vertical-align:top;word-wrap:break-word;overflow-wrap:break-word;max-width:0;overflow:hidden;text-overflow:ellipsis}
 .report-table td:last-child{border-right:none}
 .report-table tr:last-child td{border-bottom:none}
-.report-table td.sub-prov-label{font:600 11.5px var(--sans);color:var(--text);background:var(--bg3);white-space:nowrap}
+.report-table td.sub-prov-label{font:600 11.5px var(--sans);color:var(--text);background:var(--bg3);white-space:normal;word-wrap:break-word;overflow-wrap:break-word}
 .report-table colgroup col:first-child{width:150px}
 
 .fav-dropdown{position:fixed;z-index:1100;background:var(--bg2);border:1px solid var(--border);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,0.12);padding:4px;min-width:160px}
@@ -240,6 +241,15 @@ textarea::placeholder,input::placeholder{color:#bbb}
 
 .dollar-pct{display:inline;margin-left:2px;font:600 9px var(--sans);color:var(--blue);cursor:default;letter-spacing:0.2px}
 .dollar-pct:hover{text-decoration:underline}
+
+.search-autocomplete{position:absolute;z-index:1100;background:var(--bg2);border:1px solid var(--border);border-radius:0 0 8px 8px;box-shadow:0 8px 24px rgba(0,0,0,0.1);max-height:260px;overflow-y:auto;left:0;right:0;top:100%}
+.search-ac-item{padding:8px 14px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:8px;border-bottom:1px solid #F0EEEA}
+.search-ac-item:hover{background:var(--bg)}
+.search-ac-item:last-child{border-bottom:none}
+.search-ac-type{font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:var(--text4);background:var(--bg);padding:1px 6px;border-radius:3px;flex-shrink:0}
+.search-chip{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:5px;background:var(--gold-light);border:1px solid var(--gold-border);font-size:11px;color:var(--gold);font-weight:500;margin-right:4px}
+.search-chip button{background:none;border:none;color:var(--text4);font-size:10px;cursor:pointer;padding:0 2px}
+.search-chip button:hover{color:var(--red)}
 
 .prong-sub-row{display:grid;border-top:1px dashed var(--border);background:#F8FAFD}
 .prong-sub-label{grid-column:1/-1;padding:4px 16px;font:600 10px var(--sans);text-transform:uppercase;letter-spacing:0.5px;color:var(--blue);background:#EBF2FB;border-left:3px solid var(--blue)}
