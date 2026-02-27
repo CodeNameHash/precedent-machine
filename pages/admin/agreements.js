@@ -1,7 +1,100 @@
 import { useState, useRef, useCallback } from 'react';
 import Head from 'next/head';
+import JSZip from 'jszip';
 
 AddAgreements.noLayout = true;
+
+// ─── Safe fetch helper: always returns JSON or throws ───
+async function safeFetch(url, opts) {
+  const resp = await fetch(url, opts);
+  const text = await resp.text();
+  let data;
+  try { data = JSON.parse(text); } catch {
+    throw new Error(text.length > 200 ? text.substring(0, 200) + '...' : text);
+  }
+  if (!resp.ok) throw new Error(data.error || `HTTP ${resp.status}`);
+  return data;
+}
+
+// ─── Client-side file text extraction ───
+function stripHtml(html) {
+  return html
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/p>/gi, '\n\n')
+    .replace(/<\/div>/gi, '\n')
+    .replace(/<\/li>/gi, '\n')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
+async function extractTextFromFile(file) {
+  const name = file.name.toLowerCase();
+  const buf = await file.arrayBuffer();
+
+  // Plain text
+  if (name.endsWith('.txt')) {
+    return new TextDecoder().decode(buf);
+  }
+
+  // HTML
+  if (name.endsWith('.html') || name.endsWith('.htm')) {
+    return stripHtml(new TextDecoder().decode(buf));
+  }
+
+  // ZIP — extract all .txt/.html inside
+  if (name.endsWith('.zip')) {
+    const zip = await JSZip.loadAsync(buf);
+    const texts = [];
+    for (const [entryName, entry] of Object.entries(zip.files)) {
+      if (entry.dir) continue;
+      const lc = entryName.toLowerCase();
+      if (lc.endsWith('.txt') || lc.endsWith('.html') || lc.endsWith('.htm')) {
+        const content = await entry.async('string');
+        texts.push(lc.endsWith('.html') || lc.endsWith('.htm') ? stripHtml(content) : content);
+      }
+    }
+    return texts.join('\n\n---\n\n');
+  }
+
+  // DOCX — extract text from word/document.xml
+  if (name.endsWith('.docx') || name.endsWith('.doc')) {
+    try {
+      const zip = await JSZip.loadAsync(buf);
+      const docXml = zip.file('word/document.xml');
+      if (docXml) {
+        const xml = await docXml.async('string');
+        return xml
+          .replace(/<w:br[^>]*\/>/gi, '\n')
+          .replace(/<\/w:p>/gi, '\n')
+          .replace(/<[^>]+>/g, '')
+          .replace(/\n{3,}/g, '\n\n')
+          .trim();
+      }
+    } catch { /* fall through */ }
+    return '';
+  }
+
+  // Fallback: try as text
+  return new TextDecoder().decode(buf);
+}
+
+async function extractTextFromFiles(files) {
+  const texts = [];
+  for (const file of files) {
+    const text = await extractTextFromFile(file);
+    if (text) texts.push(text);
+  }
+  return texts.join('\n\n');
+}
 
 const PROVISION_TYPES = [
   { key: 'MAE', label: 'Material Adverse Effect' },
@@ -38,6 +131,60 @@ export default function AddAgreements() {
   const [error, setError] = useState(null);
   const [extractedTextLength, setExtractedTextLength] = useState(0);
 
+  // ─── Shared: extract text from current inputs ───
+  const getAgreementText = async () => {
+    if (inputMode === 'upload') {
+      if (!files.length) throw new Error('Select at least one file.');
+      setProcessingMsg('Reading files...');
+      const text = await extractTextFromFiles(files);
+      if (!text || text.length < 200) {
+        throw new Error(`Could not extract enough text from files (got ${text.length} chars). Ensure the ZIP contains .txt or .html files.`);
+      }
+      return text;
+    } else if (inputMode === 'paste') {
+      if (!pastedText || pastedText.length < 500) throw new Error('Need at least 500 characters of agreement text.');
+      return pastedText;
+    }
+    return '';
+  };
+
+  // ─── Shared: identify deal then extract provisions ───
+  const identifyAndExtract = async (fullText) => {
+    // Identify deal
+    setProcessingMsg('Identifying deal...');
+    const dealDesc = description.trim() || fullText.substring(0, 3000);
+    const findData = await safeFetch('/api/admin/find-deal', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ description: dealDesc }),
+    });
+    setDealInfo(findData.deal);
+    if (findData.duplicate) setDuplicateWarning(findData.duplicate);
+
+    // Extract provisions in preview mode
+    setStep('extracting');
+    setProcessingMsg('Extracting provisions (this may take a minute)...');
+    const ingestData = await safeFetch('/api/ingest/agreement', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        full_text: fullText,
+        title: `${findData.deal?.acquirer || 'Unknown'} / ${findData.deal?.target || 'Unknown'} Merger Agreement`,
+        provision_types: selectedTypes,
+        preview: true,
+      }),
+    });
+
+    const allProvs = [];
+    (ingestData.results || []).forEach(r => {
+      (r.provisions || []).forEach(p => {
+        allProvs.push({ ...p, _id: Math.random().toString(36).substr(2, 9) });
+      });
+    });
+    setPreviewProvisions(allProvs);
+    setStep('preview');
+  };
+
   // ─── Main "Go" handler ───
   const handleGo = async () => {
     setProcessing(true);
@@ -47,94 +194,31 @@ export default function AddAgreements() {
     setPreviewProvisions([]);
 
     try {
-      let fullText = '';
-
-      // 1. Get agreement text based on input mode
-      if (inputMode === 'upload') {
-        if (!files.length) { setError('Select at least one file.'); setProcessing(false); return; }
-        setProcessingMsg('Parsing files...');
-
-        // Upload files to server for parsing
-        const formData = new FormData();
-        files.forEach(f => formData.append('files', f));
-        const parseResp = await fetch('/api/admin/parse-files', { method: 'POST', body: formData });
-        const parseData = await parseResp.json();
-        if (parseData.error) throw new Error(parseData.error);
-        fullText = parseData.text || '';
-        if (!fullText || fullText.length < 200) {
-          throw new Error(`Could not extract enough text from files (got ${fullText.length} chars). Try .txt or .html format.`);
-        }
-      } else if (inputMode === 'paste') {
-        fullText = pastedText;
-        if (!fullText || fullText.length < 500) {
-          setError('Need at least 500 characters of agreement text.'); setProcessing(false); return;
-        }
-      } else if (inputMode === 'name') {
-        // Name-only mode: just identify the deal, no provisions to extract yet
-        if (!description.trim()) { setError('Enter a deal name or description.'); setProcessing(false); return; }
-      }
-
-      setExtractedTextLength(fullText.length);
-
-      // 2. Identify the deal
-      setProcessingMsg('Identifying deal...');
-      const dealDesc = inputMode === 'name'
-        ? description.trim()
-        : (description.trim() || fullText.substring(0, 3000));
-
-      const findResp = await fetch('/api/admin/find-deal', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ description: dealDesc }),
-      });
-      const findData = await findResp.json();
-      if (findData.error) throw new Error(findData.error);
-      setDealInfo(findData.deal);
-      if (findData.duplicate) setDuplicateWarning(findData.duplicate);
-
-      // 3. If name-only mode, stop here — need agreement text still
+      // Name-only mode: just identify the deal, prompt for text next
       if (inputMode === 'name') {
+        if (!description.trim()) { setError('Enter a deal name or description.'); setProcessing(false); return; }
+        setProcessingMsg('Identifying deal...');
+        const findData = await safeFetch('/api/admin/find-deal', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ description: description.trim() }),
+        });
+        setDealInfo(findData.deal);
+        if (findData.duplicate) setDuplicateWarning(findData.duplicate);
         setStep('needtext');
         setProcessing(false);
         setProcessingMsg('');
         return;
       }
 
-      // 4. Extract provisions in preview mode
-      setStep('extracting');
-      setProcessingMsg('Extracting provisions (this may take a minute)...');
-
-      const ingestResp = await fetch('/api/ingest/agreement', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          full_text: fullText,
-          title: `${findData.deal?.acquirer || 'Unknown'} / ${findData.deal?.target || 'Unknown'} Merger Agreement`,
-          provision_types: selectedTypes,
-          preview: true,
-        }),
-      });
-
-      if (!ingestResp.ok) {
-        const errText = await ingestResp.text();
-        throw new Error(errText.length > 200 ? errText.substring(0, 200) : errText);
-      }
-
-      const ingestData = await ingestResp.json();
-      if (ingestData.error) throw new Error(ingestData.error);
-
-      const allProvs = [];
-      (ingestData.results || []).forEach(r => {
-        (r.provisions || []).forEach(p => {
-          allProvs.push({ ...p, _id: Math.random().toString(36).substr(2, 9) });
-        });
-      });
-
-      setPreviewProvisions(allProvs);
-      setStep('preview');
+      // Upload / paste mode: get text, identify deal, extract provisions
+      const fullText = await getAgreementText();
+      setExtractedTextLength(fullText.length);
+      await identifyAndExtract(fullText);
     } catch (err) {
       setError(err.message);
-      setStep('input');
+      if (step === 'extracting') setStep('input');
+      else setStep('input');
     }
     setProcessing(false);
     setProcessingMsg('');
@@ -147,16 +231,11 @@ export default function AddAgreements() {
 
     try {
       let fullText = '';
-      if (inputMode === 'paste' || pastedText) {
+      if (pastedText) {
         fullText = pastedText;
       } else if (files.length > 0) {
-        setProcessingMsg('Parsing files...');
-        const formData = new FormData();
-        files.forEach(f => formData.append('files', f));
-        const parseResp = await fetch('/api/admin/parse-files', { method: 'POST', body: formData });
-        const parseData = await parseResp.json();
-        if (parseData.error) throw new Error(parseData.error);
-        fullText = parseData.text || '';
+        setProcessingMsg('Reading files...');
+        fullText = await extractTextFromFiles(files);
       }
 
       if (!fullText || fullText.length < 500) {
@@ -169,7 +248,7 @@ export default function AddAgreements() {
       setStep('extracting');
       setProcessingMsg('Extracting provisions (this may take a minute)...');
 
-      const ingestResp = await fetch('/api/ingest/agreement', {
+      const ingestData = await safeFetch('/api/ingest/agreement', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -179,14 +258,6 @@ export default function AddAgreements() {
           preview: true,
         }),
       });
-
-      if (!ingestResp.ok) {
-        const errText = await ingestResp.text();
-        throw new Error(errText.length > 200 ? errText.substring(0, 200) : errText);
-      }
-
-      const ingestData = await ingestResp.json();
-      if (ingestData.error) throw new Error(ingestData.error);
 
       const allProvs = [];
       (ingestData.results || []).forEach(r => {
@@ -227,7 +298,7 @@ export default function AddAgreements() {
       let dealId = dealInfo?.id;
 
       if (!dealId && dealInfo) {
-        const dealResp = await fetch('/api/deals', {
+        const dealData = await safeFetch('/api/deals', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -238,8 +309,6 @@ export default function AddAgreements() {
             sector: dealInfo.sector || null,
           }),
         });
-        const dealData = await dealResp.json();
-        if (dealData.error) throw new Error(dealData.error);
         dealId = dealData.deal.id;
       }
 
