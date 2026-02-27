@@ -1,6 +1,6 @@
 import { getServiceSupabase } from '../../lib/supabase';
 
-const IMMUTABLE_FIELDS = ['full_text', 'deal_id'];
+const IMMUTABLE_FIELDS = ['deal_id'];
 
 export default async function handler(req, res) {
   const sb = getServiceSupabase();
@@ -45,6 +45,13 @@ export default async function handler(req, res) {
       return res.status(403).json({
         error: `Cannot modify immutable field(s): ${blocked.join(', ')}. Provision text is locked after creation. Use annotations to enrich.`,
       });
+    }
+    // Merge ai_metadata instead of overwriting
+    if (updates.ai_metadata) {
+      const { data: existing } = await sb.from('provisions').select('ai_metadata').eq('id', id).single();
+      if (existing && existing.ai_metadata) {
+        updates.ai_metadata = { ...existing.ai_metadata, ...updates.ai_metadata };
+      }
     }
     const { data, error } = await sb.from('provisions').update(updates).eq('id', id).select().single();
     if (error) return res.status(500).json({ error: error.message });

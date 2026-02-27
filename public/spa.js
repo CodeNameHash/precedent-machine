@@ -140,7 +140,10 @@ var _dataSource = "fallback";
 
 var savedCats=JSON.parse(localStorage.getItem("customSubProvisions")||"null");
 if(savedCats)SUB_PROVISIONS=savedCats;
-function saveCats(){localStorage.setItem("customSubProvisions",JSON.stringify(SUB_PROVISIONS))}
+function saveCats(){
+  localStorage.setItem("customSubProvisions",JSON.stringify(SUB_PROVISIONS));
+  // Sync is handled per-action via saveCatToDB / deleteCatFromDB / renameCatInDB
+}
 
 var ANNOTATIONS_CACHE={};
 var IOC_PARSED_CACHE={};
@@ -186,6 +189,7 @@ function labelIOCExceptions(provId,text){
       data.labeled_exceptions.forEach(function(le,i){
         if(i<parsed.exceptions.length&&le.canonicalLabel)parsed.exceptions[i].canonicalLabel=le.canonicalLabel;
       });
+      syncExceptionLabelsToDB(provId);
       renderContent();
     }
   }).catch(function(e){console.warn("IOC label failed:",e.message)});
@@ -223,6 +227,22 @@ async function loadFromAPI(){
 
     if(provsResp.provisions&&provsResp.provisions.length>0){
       PROVISIONS=provsResp.provisions.map(mapProvision);
+      // DB is authoritative for favorability — populate favOverrides from DB values
+      favOverrides={};
+      PROVISIONS.forEach(function(p){
+        if(p.favorability&&p.favorability!=="unrated")favOverrides[p.id]=p.favorability;
+      });
+      saveFav();
+      // Restore IOC exception canonical labels from ai_metadata
+      provsResp.provisions.forEach(function(p){
+        if(p.type==="IOC"&&p.ai_metadata&&p.ai_metadata.exception_labels){
+          var parsed=parseIOCExceptions(p.id,p.full_text||"");
+          var labels=p.ai_metadata.exception_labels;
+          parsed.exceptions.forEach(function(ex,i){
+            if(labels[i])ex.canonicalLabel=labels[i];
+          });
+        }
+      });
       console.log("[Precedent Machine] Loaded "+PROVISIONS.length+" provisions from Supabase");
     }else{
       console.warn("[Precedent Machine] No provisions from API, using fallback");
@@ -238,17 +258,23 @@ async function loadFromAPI(){
     if(typesResp.provision_categories&&typesResp.provision_categories.length>0){
       var newSubs={};
       PROVISION_TYPES.forEach(function(pt){newSubs[pt.key]=[]});
+      _catDbIds={};
       typesResp.provision_categories.forEach(function(c){
         var typeKey=c.provision_type?.key;
-        if(typeKey&&newSubs[typeKey])newSubs[typeKey].push(c.label);
+        if(typeKey&&newSubs[typeKey]){
+          newSubs[typeKey].push(c.label);
+          _catDbIds[typeKey+":"+c.label]=c.id;
+        }
       });
       var hasCats=Object.keys(newSubs).some(function(k){return newSubs[k].length>0});
-      if(hasCats)SUB_PROVISIONS=newSubs;
+      if(hasCats){SUB_PROVISIONS=newSubs;localStorage.setItem("customSubProvisions",JSON.stringify(SUB_PROVISIONS))}
     }
 
-    // Re-apply localStorage custom categories on top of API data
-    var saved=JSON.parse(localStorage.getItem("customSubProvisions")||"null");
-    if(saved)SUB_PROVISIONS=saved;
+    // Only use localStorage as fallback if DB had no categories
+    if(!Object.keys(_catDbIds).length){
+      var saved=JSON.parse(localStorage.getItem("customSubProvisions")||"null");
+      if(saved)SUB_PROVISIONS=saved;
+    }
 
     // Update default selected deals to first 3
     if(DEALS.length>=3)state.selectedDeals=[DEALS[0].id,DEALS[1].id,DEALS[2].id];
@@ -273,6 +299,69 @@ function saveGold(){localStorage.setItem("goldStandards",JSON.stringify(goldStan
 var favOverrides=JSON.parse(localStorage.getItem("favOverrides")||"{}");
 function saveFav(){localStorage.setItem("favOverrides",JSON.stringify(favOverrides))}
 function getProvFav(pid){return favOverrides[pid]||PROVISIONS.find(function(p){return p.id===pid})?.favorability||"unrated"}
+
+// ═══════════════════════════════════════════════════
+// DB SYNC HELPERS
+// ═══════════════════════════════════════════════════
+function syncProvisionToDB(provId,updates){
+  // PATCH provision in Supabase
+  if(!provId||provId.toString().startsWith("p_")||provId.toString().startsWith("p"))return; // skip fallback IDs
+  fetch("/api/provisions",{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify(Object.assign({id:provId},updates))}).then(function(r){return r.json()}).then(function(data){
+    if(data.error)console.warn("DB sync failed for provision "+provId+":",data.error);
+    else console.log("[DB] Provision "+provId+" synced");
+  }).catch(function(e){console.warn("DB sync error:",e.message)});
+}
+function createProvisionInDB(prov,callback){
+  fetch("/api/provisions",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+    deal_id:prov.dealId,type:prov.type,category:prov.category,full_text:prov.text,ai_favorability:prov.favorability||"unrated"
+  })}).then(function(r){return r.json()}).then(function(data){
+    if(data.provision){
+      console.log("[DB] Created provision "+data.provision.id);
+      if(callback)callback(data.provision);
+    }else{console.warn("DB create failed:",data.error)}
+  }).catch(function(e){console.warn("DB create error:",e.message)});
+}
+function syncFavToDB(provId,fav){
+  syncProvisionToDB(provId,{ai_favorability:fav});
+}
+function saveCatToDB(typeKey,label){
+  fetch("/api/provision-types",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+    provision_type_key:typeKey,label:label
+  })}).then(function(r){return r.json()}).then(function(data){
+    if(data.category)console.log("[DB] Category saved:",data.category.label);
+    else console.warn("[DB] Category save failed:",data.error);
+  }).catch(function(e){console.warn("[DB] Category save error:",e.message)});
+}
+function renameCatInDB(catId,newLabel){
+  if(!catId)return;
+  fetch("/api/provision-types",{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+    id:catId,label:newLabel
+  })}).then(function(r){return r.json()}).then(function(data){
+    if(data.category)console.log("[DB] Category renamed:",data.category.label);
+    else console.warn("[DB] Category rename failed:",data.error);
+  }).catch(function(e){console.warn("[DB] Category rename error:",e.message)});
+}
+function deleteCatFromDB(catId){
+  if(!catId)return;
+  fetch("/api/provision-types",{method:"DELETE",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+    id:catId
+  })}).then(function(r){return r.json()}).then(function(data){
+    if(data.success)console.log("[DB] Category deleted");
+    else console.warn("[DB] Category delete failed:",data.error);
+  }).catch(function(e){console.warn("[DB] Category delete error:",e.message)});
+}
+// Track category DB IDs: map of "typeKey:label" -> DB id
+var _catDbIds={};
+function getCatDbId(typeKey,label){return _catDbIds[typeKey+":"+label]||null}
+
+// Persist IOC exception canonical labels to ai_metadata
+function syncExceptionLabelsToDB(provId){
+  if(!provId||provId.toString().startsWith("p_")||provId.toString().startsWith("p"))return;
+  var parsed=IOC_PARSED_CACHE[provId];
+  if(!parsed||!parsed.exceptions.length)return;
+  var labels=parsed.exceptions.map(function(ex){return ex.canonicalLabel||ex.label});
+  syncProvisionToDB(provId,{ai_metadata:{exception_labels:labels}});
+}
 
 // ═══════════════════════════════════════════════════
 // STATE
@@ -837,7 +926,7 @@ function openFavPicker(pid,el){
   dd.innerHTML=FAV_LEVELS.map(function(f){return'<div class="fav-option" onclick="setFav(\''+pid+'\',\''+f.key+'\')"><div class="fav-dot" style="background:'+f.color+'"></div>'+f.label+'</div>'}).join("")+'<div class="fav-option" onclick="setFav(\''+pid+'\',\'unrated\')" style="color:var(--text4)">Clear</div>';
   setTimeout(function(){var cl=function(e){if(!dd.contains(e.target)){dd.style.display="none";document.removeEventListener("click",cl)}};document.addEventListener("click",cl)},10);
 }
-function setFav(pid,lv){favOverrides[pid]=lv;saveFav();document.getElementById("fav-dropdown").style.display="none";renderContent()}
+function setFav(pid,lv){favOverrides[pid]=lv;saveFav();syncFavToDB(pid,lv);document.getElementById("fav-dropdown").style.display="none";renderContent()}
 
 // ═══════════════════════════════════════════════════
 // FULL TEXT VIEW
@@ -1076,11 +1165,11 @@ function saveNewCategory(type){
       var msg="This category may overlap with \""+data.similar_to+"\" ("+data.confidence+" confidence).\n\n"+data.explanation+"\n\nAdd anyway?";
       if(!confirm(msg)){if(btn){btn.disabled=false;btn.textContent="Add Category";}return}
     }
-    SUB_PROVISIONS[type].push(nm);saveCats();document.getElementById("add-cat-modal").style.display="none";renderContent();
+    SUB_PROVISIONS[type].push(nm);saveCats();saveCatToDB(type,nm);document.getElementById("add-cat-modal").style.display="none";renderContent();
   }).catch(function(e){
     // On API failure, add anyway
     console.warn("Duplicate check failed:",e.message);
-    SUB_PROVISIONS[type].push(nm);saveCats();document.getElementById("add-cat-modal").style.display="none";renderContent();
+    SUB_PROVISIONS[type].push(nm);saveCats();saveCatToDB(type,nm);document.getElementById("add-cat-modal").style.display="none";renderContent();
   });
 }
 
@@ -1095,7 +1184,18 @@ function openRecode(cat,type){
 function saveRecode(origCat,type){
   var newCat=document.getElementById("recode-cat").value;var deals=state.selectedDeals.map(getDeal).filter(Boolean);
   deals.forEach(function(d){var ta=document.getElementById("recode-"+d.id);if(!ta)return;var nt=ta.value.trim();var ex=PROVISIONS.findIndex(function(p){return p.type===type&&p.dealId===d.id&&p.category===origCat});
-    if(ex>=0){PROVISIONS[ex].category=newCat;PROVISIONS[ex].text=nt;PROVISIONS[ex].isGold=true}else if(nt){PROVISIONS.push({id:"p_"+Date.now()+"_"+d.id,dealId:d.id,type:type,category:newCat,text:nt,isGold:true,favorability:"unrated"})}
+    if(ex>=0){
+      var provId=PROVISIONS[ex].id;
+      PROVISIONS[ex].category=newCat;PROVISIONS[ex].text=nt;PROVISIONS[ex].isGold=true;
+      syncProvisionToDB(provId,{full_text:nt,category:newCat});
+    }else if(nt){
+      var newProv={id:"p_"+Date.now()+"_"+d.id,dealId:d.id,type:type,category:newCat,text:nt,isGold:true,favorability:"unrated"};
+      PROVISIONS.push(newProv);
+      createProvisionInDB(newProv,function(dbProv){
+        var idx=PROVISIONS.findIndex(function(p){return p.id===newProv.id});
+        if(idx>=0)PROVISIONS[idx].id=dbProv.id;
+      });
+    }
     goldStandards.push({dealId:d.id,type:type,category:newCat,text:nt,correctedAt:new Date().toISOString()})});
   saveGold();document.getElementById("recode-modal").style.display="none";state.compareResults=null;renderContent();
 }
@@ -1330,12 +1430,12 @@ function checkNewCatDuplicate(newName,type,selectEl,fallbackCat){
     var opt=document.createElement("option");opt.value=newName;opt.textContent=newName;
     selectEl.insertBefore(opt,selectEl.querySelector('option[value="__add_new__"]'));
     selectEl.value=newName;
-    SUB_PROVISIONS[type].push(newName);saveCats();
+    SUB_PROVISIONS[type].push(newName);saveCats();saveCatToDB(type,newName);
   }).catch(function(){
     var opt=document.createElement("option");opt.value=newName;opt.textContent=newName;
     selectEl.insertBefore(opt,selectEl.querySelector('option[value="__add_new__"]'));
     selectEl.value=newName;
-    SUB_PROVISIONS[type].push(newName);saveCats();
+    SUB_PROVISIONS[type].push(newName);saveCats();saveCatToDB(type,newName);
   });
 }
 
@@ -1413,8 +1513,21 @@ function saveInlineRecode(btn){
     var nt=ctx.fullText.substring(ctx.selStart,ctx.selEnd).trim();
     if(!nt)return;
     var ex=PROVISIONS.findIndex(function(p){return p.type===type&&p.dealId===d.id&&p.category===origCat});
-    if(ex>=0){PROVISIONS[ex].category=newCat;PROVISIONS[ex].text=nt;PROVISIONS[ex].isGold=true}
-    else{PROVISIONS.push({id:"p_"+Date.now()+"_"+d.id,dealId:d.id,type:type,category:newCat,text:nt,isGold:true,favorability:"unrated"})}
+    if(ex>=0){
+      var provId=PROVISIONS[ex].id;
+      PROVISIONS[ex].category=newCat;PROVISIONS[ex].text=nt;PROVISIONS[ex].isGold=true;
+      // Push text + category change to DB
+      syncProvisionToDB(provId,{full_text:nt,category:newCat});
+    }else{
+      var newProv={id:"p_"+Date.now()+"_"+d.id,dealId:d.id,type:type,category:newCat,text:nt,isGold:true,favorability:"unrated"};
+      PROVISIONS.push(newProv);
+      // Create in DB
+      createProvisionInDB(newProv,function(dbProv){
+        // Replace temp ID with real DB ID
+        var idx=PROVISIONS.findIndex(function(p){return p.id===newProv.id});
+        if(idx>=0)PROVISIONS[idx].id=dbProv.id;
+      });
+    }
     goldStandards.push({dealId:d.id,type:type,category:newCat,text:nt,correctedAt:new Date().toISOString()});
   });
   if(type==="IOC"){
@@ -1458,9 +1571,13 @@ function saveInlineRecode(btn){
         });
       }
     }
+    // Persist exception labels to DB before clearing cache
     deals.forEach(function(d){
       var prov=PROVISIONS.find(function(p){return p.type===type&&p.dealId===d.id&&(p.category===origCat||p.category===newCat)});
-      if(prov)delete IOC_PARSED_CACHE[prov.id];
+      if(prov){
+        syncExceptionLabelsToDB(prov.id);
+        delete IOC_PARSED_CACHE[prov.id];
+      }
     });
   }
   _recodeCtx={};
@@ -1639,21 +1756,39 @@ function renameTaxonomyCat(typeKey,idx){
   var cats=getCatsForType(typeKey);var old=cats[idx];
   var newName=prompt("Rename \""+old+"\" to:",old);
   if(!newName||!newName.trim()||newName.trim()===old)return;
+  var dbId=getCatDbId(typeKey,old);
   SUB_PROVISIONS[typeKey][idx]=newName.trim();
   // Update any provisions with this category
-  PROVISIONS.forEach(function(p){if(p.type===typeKey&&p.category===old)p.category=newName.trim()});
+  PROVISIONS.forEach(function(p){
+    if(p.type===typeKey&&p.category===old){
+      p.category=newName.trim();
+      syncProvisionToDB(p.id,{category:newName.trim()});
+    }
+  });
+  // Update category in DB
+  if(dbId){renameCatInDB(dbId,newName.trim());_catDbIds[typeKey+":"+newName.trim()]=dbId;delete _catDbIds[typeKey+":"+old]}
   saveCats();renderTaxonomyType(typeKey);renderContent();
 }
 function removeTaxonomyCat(typeKey,idx){
   var cats=getCatsForType(typeKey);
   if(!confirm("Remove \""+cats[idx]+"\"? Provisions using this category will be uncategorized."))return;
+  var dbId=getCatDbId(typeKey,cats[idx]);
+  delete _catDbIds[typeKey+":"+cats[idx]];
   SUB_PROVISIONS[typeKey].splice(idx,1);
+  if(dbId)deleteCatFromDB(dbId);
   saveCats();renderTaxonomyType(typeKey);renderContent();
 }
 function moveTaxonomyCat(typeKey,idx,dir){
   var cats=SUB_PROVISIONS[typeKey];var newIdx=idx+dir;
   if(newIdx<0||newIdx>=cats.length)return;
   var tmp=cats[idx];cats[idx]=cats[newIdx];cats[newIdx]=tmp;
+  // Update sort orders in DB
+  var dbId1=getCatDbId(typeKey,cats[idx]);
+  var dbId2=getCatDbId(typeKey,cats[newIdx]);
+  if(dbId1)renameCatInDB(dbId1,cats[idx]); // triggers sort_order won't change via rename, use PATCH
+  // Actually update sort_order via direct PATCH
+  if(dbId1){fetch("/api/provision-types",{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:dbId1,sort_order:idx+1})}).catch(function(){})}
+  if(dbId2){fetch("/api/provision-types",{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:dbId2,sort_order:newIdx+1})}).catch(function(){})}
   saveCats();renderTaxonomyType(typeKey);
 }
 function addTaxonomyCat(typeKey){
@@ -1661,6 +1796,7 @@ function addTaxonomyCat(typeKey){
   var nm=inp.value.trim();if(!nm)return;
   if(getCatsForType(typeKey).includes(nm)){alert("Already exists.");return}
   SUB_PROVISIONS[typeKey].push(nm);
+  saveCatToDB(typeKey,nm);
   saveCats();inp.value="";renderTaxonomyType(typeKey);renderContent();
 }
 
