@@ -1,5 +1,8 @@
 import { getServiceSupabase } from '../../lib/supabase';
 
+// Fields that are immutable once a provision is created
+const IMMUTABLE_FIELDS = ['full_text', 'deal_id'];
+
 export default async function handler(req, res) {
   const sb = getServiceSupabase();
   if (!sb) return res.status(500).json({ error: 'Supabase not configured' });
@@ -23,8 +26,11 @@ export default async function handler(req, res) {
 
   if (req.method === 'POST') {
     const { deal_id, type, category, full_text, prohibition, exceptions, ai_favorability } = req.body;
+    if (!full_text || !full_text.trim()) {
+      return res.status(400).json({ error: 'full_text is required' });
+    }
     const { data, error } = await sb.from('provisions')
-      .insert({ deal_id, type, category, full_text, prohibition, exceptions, ai_favorability })
+      .insert({ deal_id, type, category, full_text: full_text.trim(), prohibition, exceptions, ai_favorability })
       .select().single();
     if (error) return res.status(500).json({ error: error.message });
     return res.json({ provision: data });
@@ -32,6 +38,15 @@ export default async function handler(req, res) {
 
   if (req.method === 'PATCH') {
     const { id, ...updates } = req.body;
+
+    // Enforce immutability: reject any attempt to modify locked fields
+    const blocked = IMMUTABLE_FIELDS.filter(f => f in updates);
+    if (blocked.length > 0) {
+      return res.status(403).json({
+        error: `Cannot modify immutable field(s): ${blocked.join(', ')}. Provision text is locked after creation. Use annotations to enrich.`,
+      });
+    }
+
     const { data, error } = await sb.from('provisions').update(updates).eq('id', id).select().single();
     if (error) return res.status(500).json({ error: error.message });
     return res.json({ provision: data });

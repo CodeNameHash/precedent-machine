@@ -5,6 +5,7 @@ import { useUser } from '../lib/useUser';
 
 const navItems = [
   { href: '/', label: 'Dashboard', icon: '◈' },
+  { href: '/ingest', label: 'Ingest', icon: '⊕' },
   { href: '/deals', label: 'Deals', icon: '◆' },
   { href: '/provisions', label: 'Provisions', icon: '§' },
   { href: '/compare', label: 'Compare', icon: '⇔' },
