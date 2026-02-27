@@ -101,7 +101,6 @@ textarea::placeholder,input::placeholder{color:#bbb}
 .prong-text{font:400 12px/1.65 var(--serif);color:var(--text2)}
 .prong-text .hl{background:#FFF9C4;padding:0 2px;border-radius:2px}
 .prong-text .absent{color:var(--text5);font-style:italic}
-.prong-text .pct-ann{color:var(--gold);font-weight:600;font-size:10px;font-family:var(--sans)}
 .collapse-arrow{display:inline-block;transition:transform 0.2s;font-size:10px;color:var(--text4);margin-right:6px}
 .collapse-arrow.open{transform:rotate(90deg)}
 
@@ -109,6 +108,28 @@ textarea::placeholder,input::placeholder{color:#bbb}
 .ioc-exception-section{margin-top:8px;padding-top:8px;border-top:1px dashed var(--border)}
 .ioc-exception-label{font-size:9px;text-transform:uppercase;letter-spacing:0.8px;color:var(--blue);font-weight:600;margin-bottom:3px}
 .ioc-exception-text{font:400 11.5px/1.6 var(--serif);color:var(--text2);padding-left:10px;border-left:2px solid var(--blue-bg)}
+
+/* Tooltip for % of deal */
+.pct-deal{color:#7B61FF;font-weight:600;font-size:10px;font-family:var(--sans);position:relative;cursor:default;border-bottom:1px dotted #7B61FF}
+.pct-deal .pct-tip{display:none;position:absolute;bottom:120%;left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:5px 10px;border-radius:5px;font:400 10.5px/1.4 var(--mono);white-space:nowrap;z-index:100;pointer-events:none;box-shadow:0 2px 8px rgba(0,0,0,0.2)}
+.pct-deal .pct-tip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:#1a1a1a}
+.pct-deal:hover .pct-tip{display:block}
+
+/* Coverage tooltip (admin) */
+.cov-card{position:relative;cursor:default}
+.cov-tip{display:none;position:absolute;top:100%;left:0;right:0;background:#1a1a1a;color:#eee;padding:10px 12px;border-radius:6px;font:400 11px/1.5 var(--mono);z-index:100;box-shadow:0 4px 16px rgba(0,0,0,0.3);margin-top:4px;white-space:pre-wrap;max-height:200px;overflow-y:auto}
+.cov-card:hover .cov-tip{display:block}
+
+/* Exception alignment grid */
+.exc-align-grid{display:grid;border-top:1px dashed var(--border);margin-top:8px;padding-top:8px}
+.exc-align-row{display:contents}
+.exc-align-cell{padding:3px 0 6px;border-bottom:1px dotted #F0EEEA}
+.exc-align-cell:last-child{border-bottom:none}
+
+/* Original text toggle */
+.orig-toggle{font-size:10px;color:var(--blue);cursor:pointer;background:none;border:1px solid var(--blue-bg);padding:2px 8px;border-radius:4px;margin-left:8px}
+.orig-toggle:hover{background:var(--blue-bg)}
+.orig-full-text{font:400 11.5px/1.6 var(--serif);color:var(--text2);padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:6px;margin-top:6px;white-space:pre-wrap}
 
 .fav-badge{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:3px;font-size:9px;font-weight:600;letter-spacing:0.3px;cursor:pointer;user-select:none;white-space:nowrap}
 .fav-badge.strong-buyer{background:#E3F2FD;color:#1565C0}
@@ -233,7 +254,7 @@ const DEALS=[
 const PROVISION_TYPES=[{key:"MAE",label:"Material Adverse Effect"},{key:"IOC",label:"Interim Operating Covenants"}];
 let SUB_PROVISIONS={
   MAE:["Base Definition","General Economic / Market Conditions","Changes in Law / GAAP","Industry Conditions","War / Terrorism","Acts of God / Pandemic","Failure to Meet Projections","Announcement / Pendency Effects","Actions at Parent Request","Disproportionate Impact Qualifier","Changes in Stock Price","Customer / Supplier Relationships"],
-  IOC:["M&A / Acquisitions","Dividends / Distributions","Equity Issuances","Indebtedness","Capital Expenditures","Employee Compensation","Material Contracts","Accounting / Tax Changes","Ordinary Course Standard"]
+  IOC:["M&A / Acquisitions","Dividends / Distributions","Equity Issuances","Indebtedness","Capital Expenditures","Employee Compensation","Material Contracts","Liens / Encumbrances","Settlements / Litigation","Accounting / Tax Changes","Organizational Documents","Insurance","Affiliate Transactions","Ordinary Course Standard"]
 };
 const sc=JSON.parse(localStorage.getItem("customSubProvisions")||"null");if(sc)SUB_PROVISIONS=sc;
 function saveCats(){localStorage.setItem("customSubProvisions",JSON.stringify(SUB_PROVISIONS))}
@@ -302,12 +323,52 @@ let IOC_PROVISIONS=[
   {id:"i23",dealId:"d2",category:"Indebtedness",prohibition:"shall not incur any indebtedness for borrowed money or issue any debt securities or assume, guarantee or endorse the obligations of any Person",exceptions:[{label:"Existing facilities",text:"borrowings under existing credit facilities in the ordinary course not exceeding $100,000,000"},{label:"Intercompany",text:"intercompany indebtedness in the ordinary course"},{label:"Letters of credit / bonds",text:"letters of credit, performance bonds or surety bonds in the ordinary course"}],favorability:"neutral"},
   {id:"i24",dealId:"d2",category:"Capital Expenditures",prohibition:"shall not make or commit to make capital expenditures",exceptions:[{label:"Disclosure schedule + variance",text:"amounts set forth in the Company Disclosure Letter for the applicable period (plus a 10% variance)"}],favorability:"mod-buyer"},
   {id:"i25",dealId:"d2",category:"Employee Compensation",prohibition:"shall not (i) increase compensation or benefits; (ii) grant equity awards; or (iii) adopt, enter into, materially amend or terminate any material Company Benefit Plan",exceptions:[{label:"OC non-officers",text:"in the ordinary course consistent with past practice for non-director/officer employees"},{label:"Legal requirements",text:"as required by applicable Law"},{label:"Existing plans",text:"as required by existing Company Benefit Plans"},{label:"Annual equity grants",text:"annual grants in the ordinary course consistent with past practice"}],favorability:"mod-buyer"},
+
+  // ── Material Contracts ──
+  {id:"i30",dealId:"d1",category:"Material Contracts",prohibition:"shall not enter into, amend, modify or terminate any Contract that would be a Company Material Contract, or waive, release or assign any material rights, claims or benefits thereunder",exceptions:[{label:"Ordinary course",text:"in the ordinary course of business consistent with past practice"},{label:"Expiring contracts",text:"renewals or replacements of expiring Contracts on terms not materially less favorable"},{label:"Parent consent",text:"with the prior written consent of Parent (not to be unreasonably withheld)"}],favorability:"mod-buyer"},
+  {id:"i31",dealId:"d3",category:"Material Contracts",prohibition:"shall not enter into, amend, modify, terminate, waive or assign any Material Contract or any Contract that if entered into prior to the date hereof would have been a Material Contract",exceptions:[{label:"Ordinary course",text:"in the ordinary course of business consistent with past practice"},{label:"Clinical/regulatory",text:"clinical trial agreements and regulatory submissions in the ordinary course"},{label:"Parent consent",text:"with the prior written consent of Parent"}],favorability:"mod-buyer"},
+  {id:"i32",dealId:"d2",category:"Material Contracts",prohibition:"shall not (i) enter into any Contract that would constitute a Company Material Contract; (ii) amend, modify, terminate (other than expiration) or waive any rights under any Company Material Contract",exceptions:[{label:"Ordinary course",text:"in the ordinary course of business consistent with past practice"},{label:"Licensing agreements",text:"licensing agreements for IP in the ordinary course not exceeding $10,000,000 annually"},{label:"Parent consent",text:"with the prior written consent of Parent (not to be unreasonably withheld, conditioned or delayed)"}],favorability:"mod-buyer"},
+
+  // ── Liens / Encumbrances ──
+  {id:"i33",dealId:"d1",category:"Liens / Encumbrances",prohibition:"shall not create, incur, assume or suffer to exist any Lien on any material properties or assets of the Company or any Subsidiary, other than Permitted Liens",exceptions:[{label:"Permitted Liens",text:"Liens for current Taxes not yet due, mechanics' liens, zoning and similar restrictions, and other Liens that would not, individually or in the aggregate, reasonably be expected to be material"},{label:"Existing facilities",text:"Liens securing indebtedness under existing credit facilities"}],favorability:"neutral"},
+  {id:"i34",dealId:"d3",category:"Liens / Encumbrances",prohibition:"shall not create, incur or assume any Lien on any material asset of the Company or any Subsidiary other than Permitted Liens",exceptions:[{label:"Permitted Liens",text:"statutory Liens for Taxes not yet delinquent, mechanics' and materialmen's liens, and other customary Permitted Liens"},{label:"IP licenses",text:"non-exclusive licenses of Intellectual Property granted in the ordinary course of business"}],favorability:"neutral"},
+  {id:"i35",dealId:"d2",category:"Liens / Encumbrances",prohibition:"shall not create, incur, assume or permit to exist any Lien on any material property or assets of the Company or its Subsidiaries, other than Permitted Liens",exceptions:[{label:"Permitted Liens",text:"Liens for Taxes not yet due and payable, mechanics' and similar liens arising in the ordinary course, and zoning, building codes and similar restrictions"},{label:"Existing credit facility",text:"Liens securing obligations under the Company's existing revolving credit facility"}],favorability:"neutral"},
+
+  // ── Settlements / Litigation ──
+  {id:"i36",dealId:"d1",category:"Settlements / Litigation",prohibition:"shall not (i) commence any Action other than in the ordinary course of business or (ii) settle, pay, discharge or satisfy any Action",exceptions:[{label:"Monetary-only settlements",text:"settlements involving only monetary damages not exceeding $50,000,000 individually or $100,000,000 in the aggregate and that do not involve injunctive or equitable relief"},{label:"Insurance-covered",text:"settlements fully covered by insurance"}],favorability:"mod-buyer"},
+  {id:"i37",dealId:"d3",category:"Settlements / Litigation",prohibition:"shall not settle, pay, discharge or compromise any Action or release any material claim or waive any material right",exceptions:[{label:"Monetary-only settlements",text:"settlements involving only the payment of monetary damages not in excess of $25,000,000 individually or $75,000,000 in the aggregate"},{label:"No admission of wrongdoing",text:"settlements that do not involve any admission of criminal wrongdoing or impose injunctive or equitable relief on the Company"}],favorability:"mod-buyer"},
+  {id:"i38",dealId:"d2",category:"Settlements / Litigation",prohibition:"shall not (i) commence, settle or compromise any material Action or (ii) waive, release or assign any material claims or rights",exceptions:[{label:"Monetary-only settlements",text:"settlements involving only the payment of money damages not exceeding $25,000,000 individually and without admission of wrongdoing"},{label:"Ordinary course collections",text:"commencement of Actions for routine collection of debts in the ordinary course"}],favorability:"mod-buyer"},
+
+  // ── Accounting / Tax Changes ──
+  {id:"i39",dealId:"d1",category:"Accounting / Tax Changes",prohibition:"shall not (i) make, change or revoke any material Tax election; (ii) settle or compromise any material Tax claim; (iii) file any material amended Tax Return; or (iv) change any method of accounting or accounting practice, principle or policy",exceptions:[{label:"Required by GAAP/Law",text:"changes required by GAAP or applicable Law"},{label:"OC Tax elections",text:"Tax elections made in the ordinary course consistent with past practice"}],favorability:"mod-buyer"},
+  {id:"i40",dealId:"d3",category:"Accounting / Tax Changes",prohibition:"shall not change its accounting methods, principles or practices or make, change or revoke any material Tax election, amend any material Tax Return, or settle any material Tax claim or assessment",exceptions:[{label:"Required by GAAP",text:"as required by changes in GAAP or Regulation S-X"},{label:"Tax advisor recommendation",text:"changes recommended by the Company's independent auditors or tax advisors in the ordinary course"}],favorability:"mod-buyer"},
+  {id:"i41",dealId:"d2",category:"Accounting / Tax Changes",prohibition:"shall not make any change to its methods of accounting or accounting practices or policies in effect as of the date hereof, or make, change or revoke any material Tax election or settle any material Tax claim",exceptions:[{label:"Required by GAAP/Law",text:"changes required by GAAP, applicable Law, or a Governmental Authority"},{label:"OC estimated payments",text:"estimated Tax payments in the ordinary course"}],favorability:"neutral"},
+
+  // ── Organizational Documents ──
+  {id:"i42",dealId:"d1",category:"Organizational Documents",prohibition:"shall not adopt or propose any change in the Company Certificate of Incorporation or the Company Bylaws or comparable organizational documents of any material Subsidiary",exceptions:[{label:"De minimis/subsidiary",text:"ministerial or administrative changes to organizational documents of non-material Subsidiaries"}],favorability:"mod-buyer"},
+  {id:"i43",dealId:"d3",category:"Organizational Documents",prohibition:"shall not amend, waive or otherwise change the certificate of incorporation, bylaws or other comparable organizational documents of the Company or any Subsidiary",exceptions:[{label:"Subsidiary/OC",text:"changes to organizational documents of wholly-owned Subsidiaries that are ministerial in nature"}],favorability:"mod-buyer"},
+  {id:"i44",dealId:"d2",category:"Organizational Documents",prohibition:"shall not amend or propose to amend the Company's certificate of incorporation or bylaws or the comparable organizational or governing documents of any material Subsidiary",exceptions:[{label:"Immaterial changes",text:"immaterial administrative or ministerial amendments to organizational documents of Subsidiaries that are not adverse to Parent"}],favorability:"mod-buyer"},
+
+  // ── Insurance ──
+  {id:"i45",dealId:"d1",category:"Insurance",prohibition:"shall not cancel, terminate, fail to renew, or materially amend or modify any material insurance policy",exceptions:[{label:"Replacement coverage",text:"replacement policies providing substantially comparable coverage at comparable premiums"}],favorability:"neutral"},
+  {id:"i46",dealId:"d3",category:"Insurance",prohibition:"shall not allow any material insurance policy to lapse or terminate, or cancel, reduce or materially modify the coverage under any material insurance policy",exceptions:[{label:"Replacement coverage",text:"replacement policies providing coverage at least as favorable in the aggregate on commercially reasonable terms"}],favorability:"neutral"},
+  {id:"i47",dealId:"d2",category:"Insurance",prohibition:"shall not materially reduce or cancel or allow to lapse any material insurance coverage",exceptions:[{label:"Comparable replacement",text:"replacement policies with comparable or more favorable coverage"}],favorability:"neutral"},
+
+  // ── Affiliate Transactions ──
+  {id:"i48",dealId:"d1",category:"Affiliate Transactions",prohibition:"shall not enter into or amend any transaction or Contract with any Affiliate of the Company (other than wholly owned Subsidiaries)",exceptions:[{label:"Existing agreements",text:"transactions under existing agreements in effect on the date hereof"},{label:"Compensation/benefits",text:"compensation and benefit arrangements permitted under other interim operating covenants"}],favorability:"mod-buyer"},
+  {id:"i49",dealId:"d3",category:"Affiliate Transactions",prohibition:"shall not enter into any transaction with any officer, director or Affiliate of the Company (other than a wholly owned Subsidiary)",exceptions:[{label:"Compensation/OC",text:"compensation and benefit arrangements permitted under Section 5.1 or transactions in the ordinary course on arm's-length terms"}],favorability:"mod-buyer"},
+  {id:"i50",dealId:"d2",category:"Affiliate Transactions",prohibition:"shall not enter into, amend or modify any transaction or Contract with any Affiliate (other than wholly owned Subsidiaries) other than on arm's-length terms",exceptions:[{label:"Compensation/OC",text:"compensation, benefit or indemnification arrangements permitted by other provisions of this Section 5.1"},{label:"Intercompany",text:"transactions solely between the Company and wholly owned Subsidiaries or solely between wholly owned Subsidiaries"}],favorability:"neutral"},
+
+  // ── Ordinary Course Standard ──
+  {id:"i51",dealId:"d1",category:"Ordinary Course Standard",prohibition:'the Company shall, and shall cause each of its Subsidiaries to, conduct its business in all material respects in the ordinary course of business consistent with past practice and use commercially reasonable efforts to maintain and preserve intact its business organization, assets and properties and relationships with customers, suppliers, partners, licensors, licensees, distributors, officers, employees and Governmental Authorities',exceptions:[],favorability:"neutral"},
+  {id:"i52",dealId:"d3",category:"Ordinary Course Standard",prohibition:'the Company shall, and shall cause its Subsidiaries to, use commercially reasonable efforts to carry on the business of the Company and its Subsidiaries in all material respects in the ordinary course of business and to preserve substantially intact its present business organization, keep available the services of its current officers and key employees and maintain existing relations with customers, suppliers, distributors, licensors, licensees and Governmental Authorities',exceptions:[],favorability:"neutral"},
+  {id:"i53",dealId:"d2",category:"Ordinary Course Standard",prohibition:'from the date of this Agreement until the Effective Time, except as otherwise contemplated by this Agreement or as set forth in the Company Disclosure Letter, the Company shall, and shall cause its Subsidiaries to, conduct their respective businesses in all material respects in the ordinary course of business consistent with past practice and shall use commercially reasonable efforts to preserve substantially intact the business organization of the Company and its Subsidiaries and maintain existing relations and goodwill with Governmental Authorities, customers, suppliers, licensors, licensees, creditors, employees and business associates',exceptions:[],favorability:"neutral"},
 ];
 
 // Full provision texts for coverage calculation (admin feature)
 const FULL_TEXTS={
   MAE:{d1:{charCount:2800},d2:{charCount:3100},d3:{charCount:2650}},
-  IOC:{d1:{charCount:3400},d2:{charCount:3200},d3:{charCount:2900}}
+  IOC:{d1:{charCount:8200},d2:{charCount:7800},d3:{charCount:7400}}
 };
 
 let goldStandards=JSON.parse(localStorage.getItem("goldStandards")||"[]");
@@ -319,7 +380,7 @@ function getProvFav(pid){return favOverrides[pid]||(MAE_PROVISIONS.find(p=>p.id=
 // ═══════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════
-let state={provisionType:null,selectedDeals:["d1","d2","d3"],searchTerms:[],adminMode:false,compareResults:null,activeTab:"coded",askHistory:[],collapsed:{},sectionCollapsed:{}};
+let state={provisionType:null,selectedDeals:["d1","d2","d3"],searchTerms:[],adminMode:false,compareResults:null,activeTab:"coded",askHistory:[],collapsed:{},sectionCollapsed:{},iocShowOriginal:{}};
 
 // ═══════════════════════════════════════
 // HELPERS
@@ -339,12 +400,14 @@ function annotateDollars(html, dealId){
     const u=(unit||"").toLowerCase();
     if(u==="billion"||u==="b")val*=1e9;
     else if(u==="million"||u==="m")val*=1e6;
-    else if(val>=1e6)val=val; // raw number like 100,000,000
-    else return match; // too small to be meaningful
+    else if(val>=1e6)val=val;
+    else return match;
     const pct=(val/deal.valueNum*100);
     if(pct<0.001||pct>100)return match;
     const pctStr=pct<1?pct.toFixed(2):pct.toFixed(1);
-    return `${match} <span class="pct-ann">(${pctStr}% of deal)</span>`;
+    const valFmt=val>=1e9?`$${(val/1e9).toFixed(1)}B`:val>=1e6?`$${(val/1e6).toFixed(0)}M`:`$${val.toLocaleString()}`;
+    const dealFmt=deal.valueNum>=1e9?`$${(deal.valueNum/1e9).toFixed(1)}B`:`$${(deal.valueNum/1e6).toFixed(0)}M`;
+    return `${match} <span class="pct-deal">(${pctStr}%)<span class="pct-tip">${valFmt} ÷ ${dealFmt} deal value = ${pctStr}%</span></span>`;
   });
 }
 
@@ -422,7 +485,20 @@ function clearCompare(){state.compareResults=null;renderContent()}
 function renderAdminCoverage(deals,type){
   let h=`<div style="padding:0 28px 12px;display:flex;gap:12px;flex-wrap:wrap">`;
   deals.forEach(d=>{const c=getTextCoverage(type,d.id);if(!c)return;const cls=c.pct>=90?"full":c.pct>=60?"partial":"low";
-    h+=`<div style="flex:1;min-width:130px;padding:8px 12px;background:var(--yellow-bg);border:1px solid #FFE082;border-radius:6px"><div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--yellow);margin-bottom:2px">${esc(d.acquirer)}/${esc(d.target)}</div><div style="font-size:11px;color:var(--text2)">Text coverage: ~${c.pct}%</div><div class="coverage-bar"><div class="coverage-fill ${cls}" style="width:${c.pct}%"></div></div></div>`});
+    // Build list of uncovered categories
+    const cats=getCatsForType(type);
+    let coveredCats=[],missingCats=[];
+    cats.forEach(cat=>{
+      let found=false;
+      if(type==="MAE"){found=!!MAE_PROVISIONS.find(p=>p.dealId===d.id&&p.category===cat)}
+      else{found=!!IOC_PROVISIONS.find(p=>p.dealId===d.id&&p.category===cat)}
+      if(found)coveredCats.push(cat);else missingCats.push(cat);
+    });
+    const tipLines=[];
+    if(missingCats.length)tipLines.push("⚠ NOT CODED:\n"+missingCats.map(c=>"  • "+c).join("\n"));
+    tipLines.push("\n✓ Coded: "+c.coded+" chars / "+c.total+" total");
+    if(c.pct<90)tipLines.push("Gap: ~"+(c.total-c.coded)+" chars uncoded\n(May include boilerplate, chapeau, numbering)");
+    h+=`<div class="cov-card" style="flex:1;min-width:130px;padding:8px 12px;background:var(--yellow-bg);border:1px solid #FFE082;border-radius:6px"><div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--yellow);margin-bottom:2px">${esc(d.acquirer)}/${esc(d.target)}</div><div style="font-size:11px;color:var(--text2)">Text coverage: ~${c.pct}%</div><div class="coverage-bar"><div class="coverage-fill ${cls}" style="width:${c.pct}%"></div></div><div class="cov-tip">${esc(tipLines.join("\n"))}</div></div>`});
   h+=`</div>`;return h;
 }
 
@@ -453,6 +529,7 @@ function renderMAECodedView(deals){
 // ═══════════════════════════════════════
 // IOC CODED VIEW (prohibition + exceptions)
 // ═══════════════════════════════════════
+function toggleIOCOriginal(cat){state.iocShowOriginal[cat]=!state.iocShowOriginal[cat];renderContent()}
 function renderIOCCodedView(deals){
   const cats=getCatsForType("IOC"),cols=deals.length;
   let h=`<div class="prongs-section">`;
@@ -462,25 +539,56 @@ function renderIOCCodedView(deals){
     const present=entries.filter(e=>e.prov).length;
     let tc="all",tt=`${present}/${deals.length}`;if(present===0){tc="missing";tt="None"}else if(present===deals.length){tc="all";tt="All"}
     const cmp=state.compareResults?.comparisons?.find(c=>c.category===cat);
+    const showOrig=!!state.iocShowOriginal[cat];
 
-    h+=`<div class="prong-card"><div class="prong-header" onclick="toggleCollapse('${key}')"><div><span class="collapse-arrow ${open?"open":""}">&#9654;</span><span class="prong-name">${esc(cat)}</span></div><div style="display:flex;gap:8px;align-items:center"><span class="prong-tag ${tc}">${tt}</span>${state.adminMode?`<button class="admin-edit" onclick="event.stopPropagation()">Recode</button>`:""}</div></div>`;
+    h+=`<div class="prong-card"><div class="prong-header" onclick="toggleCollapse('${key}')"><div><span class="collapse-arrow ${open?"open":""}">&#9654;</span><span class="prong-name">${esc(cat)}</span><button class="orig-toggle" onclick="event.stopPropagation();toggleIOCOriginal('${esc(cat)}')">${showOrig?"Structured":"Original"}</button></div><div style="display:flex;gap:8px;align-items:center"><span class="prong-tag ${tc}">${tt}</span>${state.adminMode?`<button class="admin-edit" onclick="event.stopPropagation()">Recode</button>`:""}</div></div>`;
 
     h+=`<div class="prong-body ${open?"":"collapsed"}" style="grid-template-columns:repeat(${cols},1fr)">`;
-    entries.forEach(e=>{
-      const fav=e.prov?getProvFav(e.prov.id):null;
-      h+=`<div class="prong-cell"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><div class="prong-deal-label">${esc(e.deal.acquirer)}/${esc(e.deal.target)}</div>${e.prov?renderFavBadge(e.prov.id,fav):""}</div>`;
-      if(e.prov){
-        h+=`<div class="prong-text" style="font-weight:500;color:var(--text)">${annotateDollars(highlightText(e.prov.prohibition,state.searchTerms),e.deal.id)}</div>`;
-        if(e.prov.exceptions.length){
-          h+=`<div class="ioc-exception-section">`;
-          e.prov.exceptions.forEach(ex=>{
-            h+=`<div style="margin-bottom:6px"><div class="ioc-exception-label">${esc(ex.label)}</div><div class="ioc-exception-text">${annotateDollars(highlightText(ex.text,state.searchTerms),e.deal.id)}</div></div>`;
-          });
-          h+=`</div>`;
-        }
-      }else{h+=`<div class="prong-text"><span class="absent">Not present</span></div>`}
-      h+=`</div>`;
-    });
+
+    if(showOrig){
+      // ─── Original (non-broken-out) view ───
+      entries.forEach(e=>{
+        const fav=e.prov?getProvFav(e.prov.id):null;
+        h+=`<div class="prong-cell"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><div class="prong-deal-label">${esc(e.deal.acquirer)}/${esc(e.deal.target)}</div>${e.prov?renderFavBadge(e.prov.id,fav):""}</div>`;
+        if(e.prov){
+          let fullText=e.prov.prohibition;
+          if(e.prov.exceptions.length){
+            fullText+="; provided, however, that the foregoing shall not prevent the Company from: "+e.prov.exceptions.map((ex,i)=>`(${String.fromCharCode(97+i)}) ${ex.text}`).join("; ");
+          }
+          h+=`<div class="prong-text">${annotateDollars(highlightText(fullText,state.searchTerms),e.deal.id)}</div>`;
+        }else{h+=`<div class="prong-text"><span class="absent">Not present</span></div>`}
+        h+=`</div>`;
+      });
+    }else{
+      // ─── Structured view with aligned exceptions ───
+      // Prohibition row
+      entries.forEach(e=>{
+        const fav=e.prov?getProvFav(e.prov.id):null;
+        h+=`<div class="prong-cell"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><div class="prong-deal-label">${esc(e.deal.acquirer)}/${esc(e.deal.target)}</div>${e.prov?renderFavBadge(e.prov.id,fav):""}</div>`;
+        if(e.prov){
+          h+=`<div class="prong-text" style="font-weight:500;color:var(--text)">${annotateDollars(highlightText(e.prov.prohibition,state.searchTerms),e.deal.id)}</div>`;
+          // Collect all unique exception labels across all deals for this category
+          const allLabels=[];
+          entries.forEach(en=>{if(en.prov)en.prov.exceptions.forEach(ex=>{if(!allLabels.includes(ex.label))allLabels.push(ex.label)})});
+          if(allLabels.length){
+            h+=`<div class="ioc-exception-section">`;
+            allLabels.forEach(label=>{
+              const ex=e.prov.exceptions.find(x=>x.label===label);
+              h+=`<div style="margin-bottom:6px"><div class="ioc-exception-label">${esc(label)}</div>`;
+              if(ex){
+                h+=`<div class="ioc-exception-text">${annotateDollars(highlightText(ex.text,state.searchTerms),e.deal.id)}</div>`;
+              }else{
+                h+=`<div class="ioc-exception-text" style="color:var(--text5);font-style:italic;border-left-color:#eee">Not included</div>`;
+              }
+              h+=`</div>`;
+            });
+            h+=`</div>`;
+          }
+        }else{h+=`<div class="prong-text"><span class="absent">Not present</span></div>`}
+        h+=`</div>`;
+      });
+    }
+
     h+=`</div>`;
     if(cmp&&open)h+=`<div class="prong-analysis"><strong>${esc(cmp.summary)}</strong></div>`;
     h+=`</div>`;
