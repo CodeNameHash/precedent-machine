@@ -36,6 +36,9 @@ function stripHtml(html) {
     .trim();
 }
 
+// Collects warnings during file parsing so we can show them
+let _parseWarnings = [];
+
 // Extract text from a single buffer given its filename
 async function extractTextFromBuffer(name, buf) {
   const lc = name.toLowerCase();
@@ -52,69 +55,83 @@ async function extractTextFromBuffer(name, buf) {
 
   // PDF — send to server-side parser
   if (lc.endsWith('.pdf')) {
-    try {
-      // Chunked base64 encoding (handles large files)
-      const bytes = new Uint8Array(buf);
-      const chunks = [];
-      for (let i = 0; i < bytes.length; i += 8192) {
-        chunks.push(String.fromCharCode.apply(null, bytes.subarray(i, i + 8192)));
-      }
-      const b64 = btoa(chunks.join(''));
-      const resp = await fetch('/api/admin/parse-pdf', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data: b64 }),
-      });
-      const text = await resp.text();
-      let data;
-      try { data = JSON.parse(text); } catch {
-        console.warn('PDF parse response not JSON:', text.substring(0, 100));
-        return '';
-      }
-      if (data.error) { console.warn('PDF parse error:', data.error); return ''; }
-      return data.text || '';
-    } catch (err) {
-      console.warn('PDF parse failed for', name, err);
+    // Chunked base64 encoding (handles large files without stack overflow)
+    const bytes = new Uint8Array(buf);
+    const chunks = [];
+    for (let i = 0; i < bytes.length; i += 8192) {
+      chunks.push(String.fromCharCode.apply(null, bytes.subarray(i, i + 8192)));
+    }
+    const b64 = btoa(chunks.join(''));
+
+    const resp = await fetch('/api/admin/parse-pdf', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ data: b64 }),
+    });
+    const respText = await resp.text();
+    let data;
+    try { data = JSON.parse(respText); } catch {
+      throw new Error(`[${name}] Server returned non-JSON: ${respText.substring(0, 120)}`);
+    }
+    if (data.error) throw new Error(`[${name}] ${data.error}`);
+    if (!data.text || data.text.trim().length === 0) {
+      _parseWarnings.push(`${name}: PDF has ${data.pages || '?'} pages but no extractable text (may be scanned/image-based)`);
       return '';
     }
+    return data.text;
   }
 
   // DOCX / DOC — extract text from word/document.xml inside the zip
   if (lc.endsWith('.docx') || lc.endsWith('.doc')) {
-    try {
-      const zip = await JSZip.loadAsync(buf);
-      const docXml = zip.file('word/document.xml');
-      if (docXml) {
-        const xml = await docXml.async('string');
-        return xml
-          .replace(/<w:br[^>]*\/>/gi, '\n')
-          .replace(/<\/w:p>/gi, '\n')
-          .replace(/<[^>]+>/g, '')
-          .replace(/\n{3,}/g, '\n\n')
-          .trim();
-      }
-    } catch { /* not a valid docx */ }
-    return '';
+    let zip;
+    try { zip = await JSZip.loadAsync(buf); } catch {
+      throw new Error(`[${name}] Not a valid DOCX file`);
+    }
+    const docXml = zip.file('word/document.xml');
+    if (!docXml) {
+      // Might be old .doc binary format
+      _parseWarnings.push(`${name}: Old .doc format not supported — save as .docx`);
+      return '';
+    }
+    const xml = await docXml.async('string');
+    return xml
+      .replace(/<w:br[^>]*\/>/gi, '\n')
+      .replace(/<\/w:p>/gi, '\n')
+      .replace(/<[^>]+>/g, '')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
   }
 
   // ZIP — extract supported files from inside
   if (lc.endsWith('.zip')) {
-    const zip = await JSZip.loadAsync(buf);
+    let zip;
+    try { zip = await JSZip.loadAsync(buf); } catch {
+      throw new Error(`[${name}] Not a valid ZIP file`);
+    }
+    const entries = Object.entries(zip.files);
+    const supported = ['.txt', '.html', '.htm', '.pdf', '.doc', '.docx'];
     const texts = [];
-    for (const [entryName, entry] of Object.entries(zip.files)) {
+    let processed = 0;
+
+    for (const [entryName, entry] of entries) {
       if (entry.dir) continue;
       const entryLc = entryName.toLowerCase();
-      // Skip unsupported / hidden files
-      if (entryLc.startsWith('__macosx') || entryLc.startsWith('.')) continue;
-      const supported = ['.txt', '.html', '.htm', '.pdf', '.doc', '.docx'];
+      if (entryLc.startsWith('__macosx') || entryName.startsWith('.') || entryName.includes('/._')) continue;
       if (!supported.some(ext => entryLc.endsWith(ext))) continue;
+
       try {
         const entryBuf = await entry.async('arraybuffer');
         const text = await extractTextFromBuffer(entryName, entryBuf);
+        processed++;
         if (text && text.trim().length > 20) texts.push(text.trim());
       } catch (err) {
-        console.warn('Failed to extract', entryName, err);
+        _parseWarnings.push(`${entryName}: ${err.message}`);
       }
+    }
+
+    if (processed === 0) {
+      const allNames = entries.filter(([,e]) => !e.dir).map(([n]) => n);
+      throw new Error(`ZIP contains no supported files. Found: ${allNames.slice(0, 5).join(', ')}${allNames.length > 5 ? '...' : ''}`);
     }
     return texts.join('\n\n---\n\n');
   }
@@ -122,11 +139,11 @@ async function extractTextFromBuffer(name, buf) {
   // Fallback: try as text
   try {
     const text = new TextDecoder().decode(buf);
-    // Only return if it looks like actual text (not binary)
     if (text.length > 0 && !/[\x00-\x08\x0E-\x1F]/.test(text.substring(0, 500))) {
       return text;
     }
   } catch { /* not decodable */ }
+  _parseWarnings.push(`${name}: Unrecognized file format`);
   return '';
 }
 
@@ -135,13 +152,20 @@ async function extractTextFromFile(file) {
   return extractTextFromBuffer(file.name, buf);
 }
 
-async function extractTextFromFiles(files) {
+async function extractTextFromFiles(fileList, onStatus) {
+  _parseWarnings = [];
   const texts = [];
-  for (const file of files) {
-    const text = await extractTextFromFile(file);
-    if (text) texts.push(text);
+  for (let i = 0; i < fileList.length; i++) {
+    const file = fileList[i];
+    if (onStatus) onStatus(`Reading ${file.name} (${i + 1}/${fileList.length})...`);
+    try {
+      const text = await extractTextFromFile(file);
+      if (text) texts.push(text);
+    } catch (err) {
+      _parseWarnings.push(err.message);
+    }
   }
-  return texts.join('\n\n');
+  return { text: texts.join('\n\n'), warnings: _parseWarnings.slice() };
 }
 
 const PROVISION_TYPES = [
@@ -178,17 +202,22 @@ export default function AddAgreements() {
   const [previewProvisions, setPreviewProvisions] = useState([]);
   const [error, setError] = useState(null);
   const [extractedTextLength, setExtractedTextLength] = useState(0);
+  const [parseWarnings, setParseWarnings] = useState([]);
 
   // ─── Shared: extract text from current inputs ───
   const getAgreementText = async () => {
     if (inputMode === 'upload') {
       if (!files.length) throw new Error('Select at least one file.');
       setProcessingMsg('Reading files...');
-      const text = await extractTextFromFiles(files);
-      if (!text || text.length < 200) {
-        throw new Error(`Could not extract enough text from files (got ${text.length} chars). Ensure files contain readable text (PDF, DOCX, HTML, or TXT).`);
+      const result = await extractTextFromFiles(files, (msg) => setProcessingMsg(msg));
+      if (result.warnings.length) setParseWarnings(result.warnings);
+      if (!result.text || result.text.length < 200) {
+        const warnMsg = result.warnings.length
+          ? '\n\nFile issues:\n• ' + result.warnings.join('\n• ')
+          : '';
+        throw new Error(`Could not extract enough text from files (got ${result.text.length} chars). Ensure files contain readable text (PDF, DOCX, HTML, or TXT).${warnMsg}`);
       }
-      return text;
+      return result.text;
     } else if (inputMode === 'paste') {
       if (!pastedText || pastedText.length < 500) throw new Error('Need at least 500 characters of agreement text.');
       return pastedText;
@@ -279,15 +308,22 @@ export default function AddAgreements() {
 
     try {
       let fullText = '';
+      let fileWarnings = [];
       if (pastedText) {
         fullText = pastedText;
       } else if (files.length > 0) {
         setProcessingMsg('Reading files...');
-        fullText = await extractTextFromFiles(files);
+        const result = await extractTextFromFiles(files, (msg) => setProcessingMsg(msg));
+        fullText = result.text;
+        fileWarnings = result.warnings;
+        if (fileWarnings.length) setParseWarnings(fileWarnings);
       }
 
       if (!fullText || fullText.length < 500) {
-        setError('Need at least 500 characters of agreement text.');
+        const warnMsg = fileWarnings.length
+          ? '\n\nFile issues:\n• ' + fileWarnings.join('\n• ')
+          : '';
+        setError(`Need at least 500 characters of agreement text.${warnMsg}`);
         setProcessing(false);
         return;
       }
@@ -397,7 +433,7 @@ export default function AddAgreements() {
   const reset = () => {
     setStep('input'); setDealInfo(null); setDescription(''); setPastedText('');
     setFiles([]); setPreviewProvisions([]); setDuplicateWarning(null);
-    setError(null); setExtractedTextLength(0);
+    setError(null); setExtractedTextLength(0); setParseWarnings([]);
   };
 
   // Group provisions by type
@@ -456,11 +492,28 @@ export default function AddAgreements() {
                 padding: '10px 16px', marginBottom: 16, borderRadius: 8,
                 background: 'var(--red-bg)', border: '1px solid #FFCDD2',
                 fontSize: 12, color: 'var(--red)',
-                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start',
               }}>
-                <span>{error}</span>
+                <span style={{ whiteSpace: 'pre-wrap' }}>{error}</span>
                 <button onClick={() => setError(null)} style={{
                   background: 'none', border: 'none', color: 'var(--red)', cursor: 'pointer', fontSize: 16,
+                }}>&times;</button>
+              </div>
+            )}
+
+            {/* Parse warnings banner */}
+            {parseWarnings.length > 0 && !error && (
+              <div style={{
+                padding: '10px 16px', marginBottom: 16, borderRadius: 8,
+                background: '#FFF8E1', border: '1px solid #FFE082',
+                fontSize: 12, color: '#F57F17',
+                display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start',
+              }}>
+                <div style={{ whiteSpace: 'pre-wrap' }}>
+                  <strong>File warnings:</strong>{'\n'}{'• ' + parseWarnings.join('\n• ')}
+                </div>
+                <button onClick={() => setParseWarnings([])} style={{
+                  background: 'none', border: 'none', color: '#F57F17', cursor: 'pointer', fontSize: 16,
                 }}>&times;</button>
               </div>
             )}
