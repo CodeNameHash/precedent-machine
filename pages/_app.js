@@ -8,11 +8,11 @@ import { useEffect } from 'react';
 function PrecedentMachine({ Component, pageProps }) {
   const router = useRouter();
   const isLogin = router.pathname === '/login';
+  const noLayout = Component.noLayout || isLogin;
 
   // Global keyboard shortcuts
   useEffect(() => {
     const handler = (e) => {
-      // Escape to close modals (handled by individual components via this event)
       if (e.key === 'Escape') {
         document.dispatchEvent(new CustomEvent('pm:escape'));
       }
@@ -24,7 +24,7 @@ function PrecedentMachine({ Component, pageProps }) {
   return (
     <UserProvider>
       <ToastProvider>
-        {isLogin ? (
+        {noLayout ? (
           <Component {...pageProps} />
         ) : (
           <Layout>
