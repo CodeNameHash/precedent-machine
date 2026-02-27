@@ -69,41 +69,46 @@ const PROVISION_TYPE_CONFIGS = {
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only' });
 
-  const { deal_id, full_text, title, source_url, filing_date, provision_types } = req.body;
-  if (!deal_id || !full_text) {
-    return res.status(400).json({ error: 'deal_id and full_text are required' });
+  const { deal_id, full_text, title, source_url, filing_date, provision_types, preview } = req.body;
+  if (!full_text) {
+    return res.status(400).json({ error: 'full_text is required' });
+  }
+  if (!preview && !deal_id) {
+    return res.status(400).json({ error: 'deal_id is required when not in preview mode' });
   }
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) return res.status(500).json({ error: 'ANTHROPIC_API_KEY not configured' });
 
   const sb = getServiceSupabase();
-  if (!sb) return res.status(500).json({ error: 'Supabase not configured' });
+  if (!sb && !preview) return res.status(500).json({ error: 'Supabase not configured' });
 
   try {
-    // 1. Store full agreement text
-    const textHash = crypto.createHash('sha256').update(full_text).digest('hex');
+    let agreementSourceId = null;
 
-    // Check for duplicate
-    const { data: existing } = await sb.from('agreement_sources')
-      .select('id').eq('text_hash', textHash).single();
+    // 1. Store full agreement text (skip in preview mode)
+    if (!preview) {
+      const textHash = crypto.createHash('sha256').update(full_text).digest('hex');
 
-    let agreementSourceId;
-    if (existing) {
-      agreementSourceId = existing.id;
-    } else {
-      const { data: srcData, error: srcError } = await sb.from('agreement_sources')
-        .insert({
-          title: title || 'Merger Agreement',
-          full_text,
-          text_hash: textHash,
-          source_url: source_url || null,
-          filing_date: filing_date || null,
-          metadata: { ingested_at: new Date().toISOString(), char_count: full_text.length },
-        })
-        .select().single();
-      if (srcError) return res.status(500).json({ error: 'Failed to store agreement: ' + srcError.message });
-      agreementSourceId = srcData.id;
+      const { data: existing } = await sb.from('agreement_sources')
+        .select('id').eq('text_hash', textHash).single();
+
+      if (existing) {
+        agreementSourceId = existing.id;
+      } else {
+        const { data: srcData, error: srcError } = await sb.from('agreement_sources')
+          .insert({
+            title: title || 'Merger Agreement',
+            full_text,
+            text_hash: textHash,
+            source_url: source_url || null,
+            filing_date: filing_date || null,
+            metadata: { ingested_at: new Date().toISOString(), char_count: full_text.length },
+          })
+          .select().single();
+        if (srcError) return res.status(500).json({ error: 'Failed to store agreement: ' + srcError.message });
+        agreementSourceId = srcData.id;
+      }
     }
 
     // 2. Extract provisions using AI
@@ -166,39 +171,53 @@ Return ONLY valid JSON (no markdown, no backticks):
         continue;
       }
 
-      // 3. Create provision records
+      // 3. Create provision records (or return for preview)
       const provisions = parsed.provisions || [];
       const suggested = parsed.ai_suggested_categories || [];
       let created = 0;
+      const allProvisions = [];
 
       for (const prov of [...provisions, ...suggested]) {
         if (!prov.text || prov.text.length < 20) continue;
 
-        const { data, error } = await sb.from('provisions')
-          .insert({
-            deal_id,
+        if (preview) {
+          // In preview mode, just collect provisions without saving
+          allProvisions.push({
             type: typeKey,
             category: prov.category,
-            full_text: prov.text.trim(),
-            ai_favorability: prov.favorability || 'neutral',
-            agreement_source_id: agreementSourceId,
-            ai_metadata: prov.reason ? { ai_suggested: true, reason: prov.reason } : { ai_extracted: true },
-          })
-          .select().single();
-
-        if (!error && data) {
+            text: prov.text.trim(),
+            favorability: prov.favorability || 'neutral',
+            ai_suggested: !!prov.reason,
+            reason: prov.reason || null,
+          });
           created++;
-          // Fire-and-forget AI annotation
-          fetch(`${req.headers.origin || 'http://localhost:3000'}/api/ai/annotate`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              provision_id: data.id,
-              text: prov.text.trim(),
+        } else {
+          const { data, error } = await sb.from('provisions')
+            .insert({
+              deal_id,
               type: typeKey,
               category: prov.category,
-            }),
-          }).catch(() => {});
+              full_text: prov.text.trim(),
+              ai_favorability: prov.favorability || 'neutral',
+              agreement_source_id: agreementSourceId,
+              ai_metadata: prov.reason ? { ai_suggested: true, reason: prov.reason } : { ai_extracted: true },
+            })
+            .select().single();
+
+          if (!error && data) {
+            created++;
+            // Fire-and-forget AI annotation
+            fetch(`${req.headers.origin || 'http://localhost:3000'}/api/ai/annotate`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                provision_id: data.id,
+                text: prov.text.trim(),
+                type: typeKey,
+                category: prov.category,
+              }),
+            }).catch(() => {});
+          }
         }
       }
 
@@ -208,11 +227,13 @@ Return ONLY valid JSON (no markdown, no backticks):
         extracted: provisions.length,
         suggested: suggested.length,
         created,
+        provisions: preview ? allProvisions : undefined,
       });
     }
 
     return res.json({
       success: true,
+      preview: !!preview,
       agreement_source_id: agreementSourceId,
       results,
     });
