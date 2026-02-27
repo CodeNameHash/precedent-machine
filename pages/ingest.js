@@ -4,7 +4,7 @@ import { useUser } from '../lib/useUser';
 import { useToast } from '../lib/useToast';
 import { Breadcrumbs } from '../components/UI';
 
-const PROVISION_TYPES = ['MAE', 'IOC'];
+const PROVISION_TYPES = ['MAE', 'IOC', 'ANTI', 'COND', 'TERMR', 'TERMF'];
 
 function ProvisionEntry({ index, provision, onChange, onRemove, canRemove }) {
   return (

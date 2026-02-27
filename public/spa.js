@@ -37,11 +37,19 @@ var FALLBACK_DEALS = [
 var FALLBACK_PROVISION_TYPES = [
   {key:"MAE", label:"Material Adverse Effect"},
   {key:"IOC", label:"Interim Operating Covenants"},
+  {key:"ANTI", label:"Antitrust / Regulatory Efforts"},
+  {key:"COND", label:"Conditions to Closing"},
+  {key:"TERMR", label:"Termination Rights"},
+  {key:"TERMF", label:"Termination Fees"},
 ];
 
 var FALLBACK_SUB_PROVISIONS = {
   MAE:["Base Definition","General Economic / Market Conditions","Changes in Law / GAAP","Industry Conditions","War / Terrorism","Acts of God / Pandemic","Failure to Meet Projections","Announcement / Pendency Effects","Actions at Parent Request","Disproportionate Impact Qualifier","Changes in Stock Price","Customer / Supplier Relationships"],
-  IOC:["Ordinary Course Standard","M&A / Acquisitions","Dividends / Distributions","Equity Issuances","Indebtedness","Capital Expenditures","Employee Compensation","Material Contracts","Accounting / Tax Changes","Charter / Organizational Amendments","Stock Repurchases / Splits","Labor Agreements","Litigation Settlements","Liquidation / Dissolution","Stockholder Rights Plans","Catch-All / General"]
+  IOC:["Ordinary Course Standard","M&A / Acquisitions","Dividends / Distributions","Equity Issuances","Indebtedness","Capital Expenditures","Employee Compensation","Material Contracts","Accounting / Tax Changes","Charter / Organizational Amendments","Stock Repurchases / Splits","Labor Agreements","Litigation Settlements","Liquidation / Dissolution","Stockholder Rights Plans","Catch-All / General"],
+  ANTI:["Efforts Standard","Anti-Hell or High Water","Hell or High Water","Burdensome Condition","Definition of Burdensome Condition","Obligation to Litigate","Obligation Not to Litigate","Regulatory Approval Filing Deadline","Cooperation Obligations"],
+  COND:["Regulatory Approval / HSR","No Legal Impediment","Accuracy of Target Representations","Accuracy of Acquirer Representations","Target Compliance with Covenants","Acquirer Compliance with Covenants","No MAE","Third-Party Consents","Stockholder Approval"],
+  TERMR:["Mutual Termination","Outside Date","Outside Date Extension","Regulatory Failure","Breach by Target","Breach by Acquirer","Superior Proposal","Intervening Event","Failure of Conditions"],
+  TERMF:["Target Termination Fee","Reverse Termination Fee","Regulatory Break-Up Fee","Fee Amount","Fee Triggers","Expense Reimbursement","Fee as Percentage of Deal Value"]
 };
 
 var FAV_LEVELS=[
@@ -269,7 +277,7 @@ function getProvFav(pid){return favOverrides[pid]||PROVISIONS.find(function(p){r
 // ═══════════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════════
-var state={provisionType:null,selectedDeals:["d1","d2","d3"],searchTerms:[],adminMode:false,compareResults:null,activeTab:"coded",askHistory:[],sidebarProvsCollapsed:JSON.parse(localStorage.getItem("sidebarProvsCollapsed")||"false"),sidebarDealsCollapsed:JSON.parse(localStorage.getItem("sidebarDealsCollapsed")||"false"),hiddenCategories:new Set(JSON.parse(localStorage.getItem("hiddenCategories")||"[]")),expandedProvisionType:null,reportTerms:JSON.parse(localStorage.getItem("reportTerms")||'["Value","Date","Buyer Counsel","Seller Counsel"]')};
+var state={provisionType:null,selectedDeals:["d1","d2","d3"],searchTerms:[],adminMode:false,compareResults:null,activeTab:"coded",askHistory:[],sidebarProvsCollapsed:JSON.parse(localStorage.getItem("sidebarProvsCollapsed")||"false"),sidebarDealsCollapsed:JSON.parse(localStorage.getItem("sidebarDealsCollapsed")||"false"),hiddenCategories:new Set(JSON.parse(localStorage.getItem("hiddenCategories")||"[]")),expandedProvisionType:null,reportTerms:JSON.parse(localStorage.getItem("reportTerms")||'["Value","Date","Buyer Counsel","Seller Counsel"]'),collapsedSections:new Set(),collapsedCards:new Set(),activeFilters:[{key:"law_firm",label:"Law Firm",active:false}],filterValues:{}};
 
 // ═══════════════════════════════════════════════════
 // HELPERS
@@ -471,7 +479,7 @@ function renderSidebar(){
   var el=document.getElementById("sidebar");
   var provArrow=state.sidebarProvsCollapsed?'&#9654;':'&#9660;';
   var dealArrow=state.sidebarDealsCollapsed?'&#9654;':'&#9660;';
-  var h='<div class="sidebar-header"><span><span class="sidebar-toggle" onclick="toggleSidebarSection(\'provs\')">'+provArrow+'</span> Provisions</span><span style="font-size:10px;color:var(--text5);text-transform:none;letter-spacing:0;cursor:pointer" onclick="selectProvisionType(null)">show all</span></div>';
+  var h='<div class="sidebar-header"><span><span class="sidebar-toggle" onclick="toggleSidebarSection(\'provs\')">'+provArrow+'</span> Provisions</span><span style="font-size:10px;color:var(--text5);text-transform:none;letter-spacing:0;cursor:pointer" onclick="showAllCategories()">show all</span></div>';
   if(!state.sidebarProvsCollapsed){
     h+='<div class="prov-item '+(state.provisionType===null?"selected":"")+'" onclick="selectProvisionType(null)"><div class="prov-type" style="color:var(--text3)">ALL</div><div class="prov-title">All Provisions</div><div class="prov-deal">Compare all provision types side by side</div></div>';
     PROVISION_TYPES.forEach(function(pt){
@@ -495,12 +503,35 @@ function renderSidebar(){
       h+='<div class="deal-item" onclick="toggleDeal(\''+d.id+'\')" style="'+(hp?"":"opacity:0.4")+'"><div class="deal-check '+(ck?"checked":"")+'">&#10003;</div><div class="deal-info"><div class="deal-name">'+esc(dealLabel(d))+'</div><div class="deal-meta">'+d.value+' &middot; '+d.sector+' &middot; '+d.date.slice(0,4)+'</div>'+(d.lawyers?'<div class="deal-meta" style="margin-top:1px;font-size:9.5px">'+esc((d.lawyers.buyer||[]).concat(d.lawyers.seller||[]).slice(0,2).join(", "))+'</div>':"")+'</div></div>';
     });
   }
+  // Filters section
+  h+='<div class="sidebar-header"><span>Filters</span><span style="font-size:10px;color:var(--gold);text-transform:none;letter-spacing:0;cursor:pointer" onclick="addNewFilter()">+ add filter</span></div>';
+  state.activeFilters.forEach(function(af){
+    var def=getFilterDef(af.key);if(!def)return;
+    var filterArrow=af.active?'&#9660;':'&#9654;';
+    h+='<div class="prov-item" style="padding:8px 16px" onclick="toggleFilter(\''+af.key+'\')"><div class="prov-type" style="color:var(--text3)"><span style="font-size:8px;margin-right:4px">'+filterArrow+'</span>'+esc(af.label)+'</div></div>';
+    if(af.active){
+      var vals=getFilterValues(af.key);
+      var sel=state.filterValues[af.key]||[];
+      vals.forEach(function(v){
+        var checked=sel.indexOf(v)>=0;
+        h+='<div class="sidebar-cat-item" style="padding-left:32px;font-size:11px;color:'+(checked?'var(--gold)':'var(--text3)')+';font-weight:'+(checked?'600':'400')+'" onclick="event.stopPropagation();toggleFilterValue(\''+af.key+"','"+esc(v).replace(/'/g,"\\'")+'\')">';
+        h+='<span style="display:inline-block;width:12px;height:12px;border:1.5px solid '+(checked?'var(--gold)':'#ccc')+';border-radius:2px;margin-right:6px;text-align:center;line-height:12px;font-size:8px;flex-shrink:0;background:'+(checked?'var(--gold)':'transparent')+';color:'+(checked?'#fff':'transparent')+'">&#10003;</span>';
+        h+=esc(v)+'</div>';
+      });
+    }
+  });
   el.innerHTML=h;
 }
 function toggleSidebarSection(section){
   if(section==='provs'){state.sidebarProvsCollapsed=!state.sidebarProvsCollapsed;localStorage.setItem("sidebarProvsCollapsed",JSON.stringify(state.sidebarProvsCollapsed))}
   else{state.sidebarDealsCollapsed=!state.sidebarDealsCollapsed;localStorage.setItem("sidebarDealsCollapsed",JSON.stringify(state.sidebarDealsCollapsed))}
   renderSidebar();
+}
+function showAllCategories(){
+  state.hiddenCategories.clear();
+  localStorage.setItem("hiddenCategories","[]");
+  state.provisionType=null;state.expandedProvisionType=null;
+  renderSidebar();renderContent();
 }
 function toggleCategoryVisibility(cat){
   if(state.hiddenCategories.has(cat))state.hiddenCategories.delete(cat);
@@ -517,6 +548,46 @@ function selectProvisionType(t){
 function toggleDeal(id){var i=state.selectedDeals.indexOf(id);if(i>=0)state.selectedDeals.splice(i,1);else state.selectedDeals.push(id);state.compareResults=null;renderSidebar();renderContent()}
 
 // ═══════════════════════════════════════════════════
+// FILTERS (extensible)
+// ═══════════════════════════════════════════════════
+var AVAILABLE_FILTERS=[
+  {key:"law_firm",label:"Law Firm",extract:function(d){var firms=[];if(d.lawyers){if(d.lawyers.buyer)firms=firms.concat(d.lawyers.buyer);if(d.lawyers.seller)firms=firms.concat(d.lawyers.seller)}return firms}},
+  {key:"sector",label:"Sector",extract:function(d){return d.sector?[d.sector]:[]}},
+  {key:"jurisdiction",label:"Jurisdiction",extract:function(d){return d.jurisdiction?[d.jurisdiction]:[]}},
+  {key:"year",label:"Year",extract:function(d){return d.date?[d.date.slice(0,4)]:[]}},
+  {key:"advisor",label:"Advisor",extract:function(d){var a=[];if(d.advisors){if(d.advisors.buyer)a=a.concat(d.advisors.buyer);if(d.advisors.seller)a=a.concat(d.advisors.seller)}return a}},
+  {key:"structure",label:"Structure",extract:function(d){return d.structure?[d.structure]:[]}},
+];
+function getFilterDef(key){return AVAILABLE_FILTERS.find(function(f){return f.key===key})}
+function getFilterValues(key){var def=getFilterDef(key);if(!def)return[];var vals=new Set();DEALS.forEach(function(d){def.extract(d).forEach(function(v){if(v)vals.add(v)})});return Array.from(vals).sort()}
+function toggleFilter(key){var f=state.activeFilters.find(function(af){return af.key===key});if(f)f.active=!f.active;else{var def=getFilterDef(key);if(def)state.activeFilters.push({key:key,label:def.label,active:true})}renderSidebar()}
+function toggleFilterValue(filterKey,val){if(!state.filterValues[filterKey])state.filterValues[filterKey]=[];var arr=state.filterValues[filterKey];var idx=arr.indexOf(val);if(idx>=0)arr.splice(idx,1);else arr.push(val);applyFilters();renderSidebar();renderContent()}
+function applyFilters(){
+  // Filter deals based on active filter selections
+  var filtered=DEALS.map(function(d){return d.id});
+  state.activeFilters.forEach(function(af){
+    if(!af.active)return;
+    var sel=state.filterValues[af.key];
+    if(!sel||!sel.length)return;
+    var def=getFilterDef(af.key);if(!def)return;
+    filtered=filtered.filter(function(did){var d=getDeal(did);if(!d)return false;var vals=def.extract(d);return sel.some(function(s){return vals.indexOf(s)>=0})});
+  });
+  state.selectedDeals=filtered;
+}
+function addNewFilter(){
+  var unused=AVAILABLE_FILTERS.filter(function(af){return!state.activeFilters.some(function(f){return f.key===af.key})});
+  if(!unused.length){alert("All available filters are already added.");return}
+  var opts=unused.map(function(f,i){return(i+1)+". "+f.label}).join("\n");
+  var choice=prompt("Add filter:\n"+opts+"\n\nEnter number:");
+  if(!choice)return;
+  var idx=parseInt(choice)-1;
+  if(idx>=0&&idx<unused.length){
+    state.activeFilters.push({key:unused[idx].key,label:unused[idx].label,active:true});
+    renderSidebar();
+  }
+}
+
+// ═══════════════════════════════════════════════════
 // CONTENT
 // ═══════════════════════════════════════════════════
 function renderContent(){
@@ -529,10 +600,10 @@ function renderContent(){
   var h='<div class="content-header"><div class="provision-type-label">'+(state.provisionType||"COMPARISON")+'</div><div class="content-title">'+typeName+' &mdash; '+deals.length+' Deal Comparison</div><div class="content-subtitle">Each provision is broken into coded sub-provisions for side-by-side analysis.</div><div class="action-row">'+(!state.compareResults?'<button class="action-btn compare" onclick="runCompare()">&#9889; Summarize Differences</button>':'<button class="action-btn" onclick="clearCompare()" style="border-color:var(--gold);color:var(--gold)">&#10005; Clear Summary</button>')+'<button class="action-btn" onclick="setTab(\'report\')">Report</button><button class="action-btn" onclick="setTab(\'redline\')">Markup Draft</button></div><div class="view-tabs"><div class="view-tab '+(state.activeTab==="coded"?"active":"")+'" onclick="setTab(\'coded\')">Coded Comparison</div><div class="view-tab '+(state.activeTab==="fulltext"?"active":"")+'" onclick="setTab(\'fulltext\')">Full Text</div><div class="view-tab '+(state.activeTab==="report"?"active":"")+'" onclick="setTab(\'report\')">Report</div><div class="view-tab '+(state.activeTab==="redline"?"active":"")+'" onclick="setTab(\'redline\')">Redline</div></div></div>';
 
   if(state.adminMode){
-    h+='<div class="admin-banner"><span>Admin mode &mdash; Recode sub-provisions or add new categories</span><div style="display:flex;gap:6px">'+types.map(function(t){return '<button onclick="openAddCategory(\''+t+'\')">+ '+t+' Category</button>'}).join("")+'<button onclick="toggleAdmin()">Turn Off</button></div></div>';
+    h+='<div class="admin-banner"><span>Admin mode &mdash; Recode sub-provisions or add new categories</span><div style="display:flex;gap:6px;flex-wrap:wrap">'+types.map(function(t){return '<button onclick="openAddCategory(\''+t+'\')">+ '+t+' Category</button>'}).join("")+'<button onclick="ingestFullAgreement(\''+state.selectedDeals[0]+'\')">Ingest Agreement</button><button onclick="toggleAdmin()">Turn Off</button></div></div>';
   }
 
-  if(state.activeTab==="coded"){types.forEach(function(type){var cats=getCatsForType(type);if(types.length>1)h+='<div class="prongs-section" style="padding-bottom:0"><div class="provision-section-divider"><span>'+(PROVISION_TYPES.find(function(pt){return pt.key===type})?.label||type)+'</span></div></div>';h+=renderCodedView(deals,cats,type)})}
+  if(state.activeTab==="coded"){types.forEach(function(type){var cats=getCatsForType(type);var secKey="sec-"+type;var secCollapsed=state.collapsedSections.has(secKey);var secArrow=secCollapsed?'&#9654;':'&#9660;';h+='<div class="prongs-section" style="padding-bottom:0"><div class="provision-section-divider" style="cursor:pointer" onclick="toggleSection(\''+secKey+'\')"><span>'+secArrow+' '+(PROVISION_TYPES.find(function(pt){return pt.key===type})?.label||type)+'</span><span style="font-size:10px;color:var(--text4);text-transform:none;letter-spacing:0;font-weight:400">'+cats.filter(function(c){return!state.hiddenCategories.has(c)}).length+' sub-provisions</span></div></div>';if(!secCollapsed)h+=renderCodedView(deals,cats,type)})}
   else if(state.activeTab==="fulltext"){h+=renderFullTextView(deals,types)}
   else if(state.activeTab==="report"){h+=renderReportView(deals,types)}
   else if(state.activeTab==="redline"){h+=renderRedlineView(deals)}
@@ -541,6 +612,8 @@ function renderContent(){
 }
 function setTab(t){state.activeTab=t;renderContent()}
 function clearCompare(){state.compareResults=null;renderContent()}
+function toggleSection(key){if(state.collapsedSections.has(key))state.collapsedSections.delete(key);else state.collapsedSections.add(key);renderContent()}
+function toggleCard(key){if(state.collapsedCards.has(key))state.collapsedCards.delete(key);else state.collapsedCards.add(key);renderContent()}
 
 // ═══════════════════════════════════════════════════
 // CODED VIEW
@@ -575,7 +648,8 @@ function renderCodedView(deals,cats,type){
     if(present===0){tagClass="missing";tagText="None"}else if(present<deals.length){tagClass="varies";tagText=present+"/"+deals.length}
     var cmp=state.compareResults?.comparisons?.find(function(c){return c.category===cat});
 
-    h+='<div class="prong-card" id="card-'+esc(cat).replace(/\s+/g,"-").replace(/[^a-zA-Z0-9-]/g,"")+'"><div class="prong-header"><div><span class="prong-name">'+esc(cat)+'</span></div><div style="display:flex;gap:8px;align-items:center"><span class="prong-tag '+tagClass+'">'+tagText+'</span>'+(state.adminMode?'<button class="admin-edit" onclick="startInlineRecode(this,\''+esc(cat).replace(/'/g,"\\'")+'\',\''+type+'\','+cols+')">Recode</button>':"")+'</div></div><div class="prong-body" style="grid-template-columns:repeat('+cols+',1fr)">';
+    var cardKey="card-"+type+"-"+cat;var cardCollapsed=state.collapsedCards.has(cardKey);var cardArrow=cardCollapsed?'&#9654;':'&#9660;';
+    h+='<div class="prong-card" id="card-'+esc(cat).replace(/\s+/g,"-").replace(/[^a-zA-Z0-9-]/g,"")+'"><div class="prong-header"><div style="cursor:pointer;display:flex;align-items:center;gap:6px" onclick="toggleCard(\''+esc(cardKey).replace(/'/g,"\\'")+'\')"><span style="font-size:9px;color:var(--text4)">'+cardArrow+'</span><span class="prong-name">'+esc(cat)+'</span></div><div style="display:flex;gap:8px;align-items:center"><span class="prong-tag '+tagClass+'">'+tagText+'</span>'+(state.adminMode?'<button class="admin-edit" onclick="startInlineRecode(this,\''+esc(cat).replace(/'/g,"\\'")+'\',\''+type+'\','+cols+')">Recode</button>':"")+'</div></div>';if(cardCollapsed){h+='</div>';return}h+='<div class="prong-body" style="grid-template-columns:repeat('+cols+',1fr)">';
 
     // Parse IOC exceptions for sub-row rendering
     var parsedEntries=null;
@@ -752,10 +826,10 @@ function exportReportPDF(){
   win.document.write('<!DOCTYPE html><html><head><title>Precedent Comparison Report</title>');
   win.document.write('<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">');
   win.document.write('<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:"Source Sans 3",sans-serif;color:#1a1a1a;padding:30px;font-size:11px}');
-  win.document.write('table{width:100%;border-collapse:collapse;margin-bottom:20px;table-layout:fixed}th,td{border:1px solid #ddd;padding:8px 10px;text-align:left;vertical-align:top;word-wrap:break-word;overflow-wrap:break-word}');
+  win.document.write('table{width:100%;border-collapse:collapse;margin-bottom:20px;table-layout:fixed}th,td{border:1px solid #ddd;padding:8px 10px;text-align:left;vertical-align:top;word-wrap:break-word;overflow-wrap:break-word;max-width:0}');
   win.document.write('th{background:#f5f3ee;font-size:9px;text-transform:uppercase;letter-spacing:0.8px;color:#B8956A;font-weight:600}');
   win.document.write('td{font-family:"Source Serif 4",serif;font-size:10.5px;line-height:1.5}');
-  win.document.write('td.sub-prov-label{font-family:"Source Sans 3",sans-serif;font-weight:600;background:#faf8f5;white-space:nowrap;width:150px}');
+  win.document.write('td.sub-prov-label{font-family:"Source Sans 3",sans-serif;font-weight:600;background:#faf8f5;width:150px;word-wrap:break-word;overflow-wrap:break-word}');
   win.document.write('.dollar-pct{color:#1565C0;font-size:8px;font-weight:600;font-family:"Source Sans 3",sans-serif;margin-left:1px}');
   win.document.write('.report-export-btns,.filter-chip,.filter-label,.action-btn{display:none!important}');
   win.document.write('.ann-phrase{text-decoration:none}');
@@ -773,8 +847,8 @@ function exportReportWord(){
   var html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">';
   html+='<head><meta charset="utf-8"><style>';
   html+='body{font-family:Calibri,sans-serif;font-size:10pt;color:#1a1a1a}';
-  html+='table{width:100%;border-collapse:collapse;margin-bottom:16pt}';
-  html+='th,td{border:1px solid #ccc;padding:5pt 8pt;vertical-align:top}';
+  html+='table{width:100%;border-collapse:collapse;margin-bottom:16pt;table-layout:fixed}';
+  html+='th,td{border:1px solid #ccc;padding:5pt 8pt;vertical-align:top;word-wrap:break-word;overflow-wrap:break-word}';
   html+='th{background:#f0eeea;font-size:8pt;text-transform:uppercase;letter-spacing:0.5pt;color:#B8956A;font-weight:bold}';
   html+='td{font-family:Cambria,serif;font-size:9.5pt;line-height:1.4}';
   html+='td.sub-prov-label{font-family:Calibri,sans-serif;font-weight:bold;background:#faf8f5}';
@@ -843,6 +917,26 @@ function runCompare(){
 // ═══════════════════════════════════════════════════
 function toggleAdmin(){state.adminMode=!state.adminMode;document.getElementById("admin-btn").classList.toggle("active",state.adminMode);renderContent()}
 
+function ingestFullAgreement(dealId){
+  var d=getDeal(dealId);if(!d)return;
+  var text=prompt("Paste the full merger agreement text for "+dealLabel(d)+":\n\n(This can be very long — paste the entire agreement)");
+  if(!text||text.length<500){alert("Agreement text too short. Need the full text.");return}
+  var btn=event.target;btn.disabled=true;btn.textContent="Ingesting...";
+  fetch("/api/ingest/agreement",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+    deal_id:dealId,full_text:text,title:dealLabel(d)+" Merger Agreement",
+    provision_types:PROVISION_TYPES.map(function(pt){return pt.key})
+  })}).then(function(r){return r.json()}).then(function(data){
+    if(data.error){alert("Error: "+data.error);btn.disabled=false;btn.textContent="Ingest Agreement";return}
+    var msg="Ingest complete for "+dealLabel(d)+":\\n";
+    (data.results||[]).forEach(function(r){
+      msg+=r.label+": "+r.created+" provisions created\\n";
+    });
+    alert(msg);
+    // Reload data
+    loadFromAPI();
+  }).catch(function(e){alert("Failed: "+e.message)}).finally(function(){btn.disabled=false;btn.textContent="Ingest Agreement"});
+}
+
 function openAddCategory(type){
   var modal=document.getElementById("add-cat-modal");var body=document.getElementById("add-cat-body");var cats=getCatsForType(type);
   body.innerHTML='<div style="font-size:12px;color:var(--text3);margin-bottom:14px">Adding a new sub-provision category under <strong>'+(PROVISION_TYPES.find(function(pt){return pt.key===type})?.label||type)+'</strong>.</div><div class="recode-field"><label>New Category Name</label><input type="text" id="new-cat-name" placeholder="e.g. Government Contracts"></div><div style="display:flex;gap:8px;margin-top:16px"><button class="save-btn" onclick="saveNewCategory(\''+type+'\')">Add Category</button><button class="action-btn" onclick="document.getElementById(\'add-cat-modal\').style.display=\'none\'">Cancel</button></div><div style="margin-top:16px;font-size:11px;color:var(--text3)"><strong>Current ('+type+'):</strong><br>'+cats.map(function(c,i){return(i+1)+'. '+esc(c)}).join("<br>")+'</div>';
@@ -891,34 +985,45 @@ function getContextForProv(dealId,type,provText){
   // Build full context from all provisions of this type for this deal
   var allProvs=PROVISIONS.filter(function(p){return p.type===type&&p.dealId===dealId}).map(function(p){return p.text});
   var fullText=allProvs.join(" ");
-  if(!provText||!fullText)return{fullText:fullText||"",start:0,end:0};
+  if(!provText||!fullText)return{fullText:fullText||"",selStart:0,selEnd:0,viewStart:0,viewEnd:Math.min(fullText.length,2000)};
   var idx=fullText.indexOf(provText);
-  if(idx<0)return{fullText:fullText,start:0,end:0};
-  // Expand context ~100 words before and after
-  var ctxStart=idx,ctxEnd=idx+provText.length;
+  if(idx<0)return{fullText:fullText,selStart:0,selEnd:0,viewStart:0,viewEnd:Math.min(fullText.length,2000)};
+  // View window: ~100 words before and after selection
+  var viewStart=idx,viewEnd=idx+provText.length;
   var wordsBefore=0,wordsAfter=0;
-  while(ctxStart>0&&wordsBefore<100){ctxStart--;if(fullText[ctxStart]===" ")wordsBefore++}
-  while(ctxEnd<fullText.length&&wordsAfter<100){ctxEnd++;if(fullText[ctxEnd]===" ")wordsAfter++}
-  return{fullText:fullText,ctxStart:ctxStart,ctxEnd:Math.min(ctxEnd,fullText.length),selStart:idx,selEnd:idx+provText.length};
+  while(viewStart>0&&wordsBefore<100){viewStart--;if(fullText[viewStart]===" ")wordsBefore++}
+  while(viewEnd<fullText.length&&wordsAfter<100){viewEnd++;if(fullText[viewEnd]===" ")wordsAfter++}
+  return{fullText:fullText,selStart:idx,selEnd:idx+provText.length,viewStart:viewStart,viewEnd:Math.min(viewEnd,fullText.length)};
+}
+
+function computeViewWindow(ctx){
+  // Ensure the view window covers the selection plus ~100 words each side
+  var ft=ctx.fullText;
+  var vStart=ctx.selStart,vEnd=ctx.selEnd;
+  var wb=0,wa=0;
+  while(vStart>0&&wb<100){vStart--;if(ft[vStart]===" ")wb++}
+  while(vEnd<ft.length&&wa<100){vEnd++;if(ft[vEnd]===" ")wa++}
+  ctx.viewStart=vStart;ctx.viewEnd=Math.min(vEnd,ft.length);
 }
 
 function renderRecodeContext(dealId,ctx){
   var ft=ctx.fullText;
-  var before=ft.substring(ctx.ctxStart,ctx.selStart);
+  var before=ft.substring(ctx.viewStart,ctx.selStart);
   var selected=ft.substring(ctx.selStart,ctx.selEnd);
-  var after=ft.substring(ctx.selEnd,ctx.ctxEnd);
-  var h='<div class="recode-context-text" data-deal-id="'+dealId+'" data-ctx-start="'+ctx.ctxStart+'" data-ctx-end="'+ctx.ctxEnd+'" data-full-length="'+ft.length+'">';
-  if(ctx.ctxStart>0)h+='<span class="recode-ellipsis">&hellip; </span>';
+  var after=ft.substring(ctx.selEnd,ctx.viewEnd);
+  var h='<div class="recode-context-text" data-deal-id="'+dealId+'">';
+  if(ctx.viewStart>0)h+='<span class="recode-ellipsis">&hellip; </span>';
   h+='<span class="recode-ctx">'+esc(before)+'</span>';
   h+='<span class="recode-sel" id="rsel-'+dealId+'">'+esc(selected)+'</span>';
   h+='<span class="recode-ctx">'+esc(after)+'</span>';
-  if(ctx.ctxEnd<ft.length)h+='<span class="recode-ellipsis"> &hellip;</span>';
+  if(ctx.viewEnd<ft.length)h+='<span class="recode-ellipsis"> &hellip;</span>';
   h+='</div>';
-  // Range sliders for start and end
+  // Range sliders spanning entire fullText, not just view window
   h+='<div class="recode-sliders">';
-  h+='<div class="recode-slider-row"><label>Start</label><input type="range" class="recode-range" id="rslide-start-'+dealId+'" min="'+ctx.ctxStart+'" max="'+ctx.selEnd+'" value="'+ctx.selStart+'" oninput="updateRecodeSlider(\''+dealId+'\',\'start\',this.value)"></div>';
-  h+='<div class="recode-slider-row"><label>End</label><input type="range" class="recode-range" id="rslide-end-'+dealId+'" min="'+ctx.selStart+'" max="'+ctx.ctxEnd+'" value="'+ctx.selEnd+'" oninput="updateRecodeSlider(\''+dealId+'\',\'end\',this.value)"></div>';
+  h+='<div class="recode-slider-row"><label>Start</label><input type="range" class="recode-range" id="rslide-start-'+dealId+'" min="0" max="'+ctx.selEnd+'" value="'+ctx.selStart+'" oninput="updateRecodeSlider(\''+dealId+'\',\'start\',this.value)"></div>';
+  h+='<div class="recode-slider-row"><label>End</label><input type="range" class="recode-range" id="rslide-end-'+dealId+'" min="'+ctx.selStart+'" max="'+ft.length+'" value="'+ctx.selEnd+'" oninput="updateRecodeSlider(\''+dealId+'\',\'end\',this.value)"></div>';
   h+='</div>';
+  h+='<div style="display:flex;gap:6px;margin-top:4px"><button class="admin-edit" style="opacity:1;font-size:10px;color:var(--red)" onclick="resetRecodeSelection(\''+dealId+'\')">Reset Selection</button>'+(state.adminMode?'<button class="ann-add-btn" onclick="event.stopPropagation();recodeAnnotation(\''+dealId+'\')" title="Add annotation from selection">+ Ann</button>':'')+'</div>';
   return h;
 }
 
@@ -927,7 +1032,7 @@ var _recodeCtx={};
 function startInlineRecode(btn,cat,type,cols){
   var card=btn.closest(".prong-card");if(!card)return;
   var deals=state.selectedDeals.map(getDeal).filter(Boolean);
-  _recodeCtx={type:type,origCat:cat,deals:{}};
+  _recodeCtx={type:type,origCat:cat,deals:{},exceptionLabels:{}};
 
   // Replace header buttons with category dropdown + save/cancel
   var headerRight=btn.parentElement;
@@ -942,7 +1047,6 @@ function startInlineRecode(btn,cat,type,cols){
       var newName=prompt("New category name:");
       if(!newName||!newName.trim()){this.value=cat;return}
       newName=newName.trim();
-      // AI duplicate check
       checkNewCatDuplicate(newName,type,this,cat);
     }
   });
@@ -961,8 +1065,27 @@ function startInlineRecode(btn,cat,type,cols){
     wrapper.innerHTML=renderRecodeContext(d.id,ctx);
     textDiv.replaceWith(wrapper);
   });
-  // Hide exception sub-rows during recode
-  card.querySelectorAll(".prong-sub-row").forEach(function(r){r.style.display="none"});
+  // Make exception sub-row labels editable instead of hiding them
+  card.querySelectorAll(".prong-sub-label").forEach(function(lbl){
+    var origText=lbl.textContent;
+    var input=document.createElement("input");
+    input.type="text";input.value=origText;
+    input.className="recode-cat-select";
+    input.style.cssText="width:100%;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--blue);background:#EBF2FB;border:1px solid var(--blue);padding:3px 8px";
+    input.setAttribute("data-orig-label",origText);
+    _recodeCtx.exceptionLabels[origText]=origText;
+    input.addEventListener("change",function(){_recodeCtx.exceptionLabels[origText]=this.value.trim()||origText});
+    lbl.innerHTML="";lbl.appendChild(input);
+  });
+  // Make exception sub-cells editable as textareas
+  card.querySelectorAll(".prong-sub-cell").forEach(function(cell){
+    var origText=cell.textContent.trim();
+    if(origText==="\u2014")return;
+    var ta=document.createElement("textarea");
+    ta.value=origText;
+    ta.style.cssText="width:100%;min-height:60px;padding:6px;border:1px solid var(--border);border-radius:4px;font:400 11px/1.55 var(--serif);color:var(--text3);resize:vertical;background:var(--bg)";
+    cell.innerHTML="";cell.appendChild(ta);
+  });
 }
 
 function checkNewCatDuplicate(newName,type,selectEl,fallbackCat){
@@ -988,34 +1111,63 @@ function checkNewCatDuplicate(newName,type,selectEl,fallbackCat){
 function updateRecodeSlider(dealId,which,val){
   var ctx=_recodeCtx.deals[dealId];if(!ctx)return;
   val=parseInt(val);
-  // Snap to word boundaries
   var ft=ctx.fullText;
+  // Snap to word boundaries
   if(which==="start"){
-    while(val>ctx.ctxStart&&ft[val]!==" ")val--;
+    while(val>0&&ft[val]!==" ")val--;
     if(ft[val]===" ")val++;
     ctx.selStart=val;
-    // Keep end slider min in sync
     var endSlider=document.getElementById("rslide-end-"+dealId);
     if(endSlider)endSlider.min=val;
   }else{
-    while(val<ctx.ctxEnd&&ft[val]!==" ")val++;
+    while(val<ft.length&&ft[val]!==" ")val++;
     ctx.selEnd=val;
     var startSlider=document.getElementById("rslide-start-"+dealId);
     if(startSlider)startSlider.max=val;
   }
+  // Recompute dynamic view window around new selection
+  computeViewWindow(ctx);
   // Re-render the text display
   var container=document.querySelector('.recode-context-text[data-deal-id="'+dealId+'"]');
   if(!container)return;
-  var before=ft.substring(ctx.ctxStart,ctx.selStart);
+  var before=ft.substring(ctx.viewStart,ctx.selStart);
   var selected=ft.substring(ctx.selStart,ctx.selEnd);
-  var after=ft.substring(ctx.selEnd,ctx.ctxEnd);
+  var after=ft.substring(ctx.selEnd,ctx.viewEnd);
   var h="";
-  if(ctx.ctxStart>0)h+='<span class="recode-ellipsis">&hellip; </span>';
+  if(ctx.viewStart>0)h+='<span class="recode-ellipsis">&hellip; </span>';
   h+='<span class="recode-ctx">'+esc(before)+'</span>';
   h+='<span class="recode-sel" id="rsel-'+dealId+'">'+esc(selected)+'</span>';
   h+='<span class="recode-ctx">'+esc(after)+'</span>';
-  if(ctx.ctxEnd<ft.length)h+='<span class="recode-ellipsis"> &hellip;</span>';
+  if(ctx.viewEnd<ft.length)h+='<span class="recode-ellipsis"> &hellip;</span>';
   container.innerHTML=h;
+}
+
+function resetRecodeSelection(dealId){
+  var ctx=_recodeCtx.deals[dealId];if(!ctx)return;
+  // Clear selection to nothing, show full text in view
+  ctx.selStart=0;ctx.selEnd=0;
+  ctx.viewStart=0;ctx.viewEnd=Math.min(ctx.fullText.length,3000);
+  // Re-render context and sliders
+  var widget=document.querySelector('.recode-context-text[data-deal-id="'+dealId+'"]');
+  if(widget){
+    var parent=widget.parentElement;
+    parent.innerHTML=renderRecodeContext(dealId,ctx);
+  }
+}
+
+function recodeAnnotation(dealId){
+  var ctx=_recodeCtx.deals[dealId];if(!ctx)return;
+  var selected=ctx.fullText.substring(ctx.selStart,ctx.selEnd).trim();
+  if(!selected||selected.length<3){alert("Select some text first using the sliders.");return}
+  // Find the provision for this deal
+  var prov=PROVISIONS.find(function(p){return p.type===_recodeCtx.type&&p.dealId===dealId&&p.category===_recodeCtx.origCat});
+  if(!prov){alert("No provision found for annotation.");return}
+  var startIdx=prov.text.indexOf(selected);
+  if(startIdx<0){alert("Selected text not found in provision. Try a shorter selection.");return}
+  // Open annotation popover
+  var btn=document.querySelector('.recode-context-text[data-deal-id="'+dealId+'"]');
+  var evt={target:btn,stopPropagation:function(){}};
+  openNewAnnotationPopover(prov.id,selected,startIdx,startIdx+selected.length,evt);
 }
 
 function saveInlineRecode(btn){

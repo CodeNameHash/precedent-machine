@@ -245,3 +245,6 @@ textarea::placeholder,input::placeholder{color:#bbb}
 .prong-sub-label{grid-column:1/-1;padding:4px 16px;font:600 10px var(--sans);text-transform:uppercase;letter-spacing:0.5px;color:var(--blue);background:#EBF2FB;border-left:3px solid var(--blue)}
 .prong-sub-cell{padding:8px 16px;border-right:1px solid #F0EEEA;font:400 11px/1.55 var(--serif);color:var(--text3)}
 .prong-sub-cell:last-child{border-right:none}
+
+.provision-section-divider:hover{background:var(--bg4)}
+.prong-header>div:first-child:hover .prong-name{color:var(--gold)}
