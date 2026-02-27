@@ -3,8 +3,8 @@ import { getServiceSupabase } from '../../../lib/supabase';
 import crypto from 'crypto';
 
 export const config = {
-  maxDuration: 120,
-  api: { bodyParser: { sizeLimit: '12mb' } },
+  maxDuration: 300,
+  api: { bodyParser: { sizeLimit: '50mb' } },
 };
 
 const PROVISION_TYPE_CONFIGS = {
@@ -114,32 +114,68 @@ export default async function handler(req, res) {
       }
     }
 
-    // 2. Extract provisions using AI
+    // 2. Fetch calibration examples from existing provisions
+    const calibrationByType = {};
+    if (sb) {
+      const typesToExtract = provision_types || Object.keys(PROVISION_TYPE_CONFIGS);
+      await Promise.all(typesToExtract.map(async (typeKey) => {
+        const { data: examples } = await sb.from('provisions')
+          .select('type, category, full_text, ai_favorability, ai_metadata')
+          .eq('type', typeKey)
+          .order('created_at', { ascending: false })
+          .limit(3);
+        if (examples && examples.length > 0) {
+          // Prefer user-corrected examples
+          examples.sort((a, b) => {
+            const aCorrected = a.ai_metadata?.user_corrected ? 0 : 1;
+            const bCorrected = b.ai_metadata?.user_corrected ? 0 : 1;
+            return aCorrected - bCorrected;
+          });
+          calibrationByType[typeKey] = examples;
+        }
+      }));
+    }
+
+    // 3. Extract provisions using AI — all types in parallel
     const typesToExtract = provision_types || Object.keys(PROVISION_TYPE_CONFIGS);
     const client = new Anthropic({ apiKey });
-    const results = [];
 
-    for (const typeKey of typesToExtract) {
-      const config = PROVISION_TYPE_CONFIGS[typeKey];
-      if (!config) continue;
+    const results = await Promise.all(typesToExtract.map(async (typeKey) => {
+      const typeConfig = PROVISION_TYPE_CONFIGS[typeKey];
+      if (!typeConfig) return { type: typeKey, error: 'Unknown provision type' };
 
       // Truncate text intelligently - find relevant sections
-      const textForAI = truncateToRelevantSections(full_text, config.searchTerms, 15000);
+      const textForAI = truncateToRelevantSections(full_text, typeConfig.searchTerms, 80000);
 
-      const resp = await client.messages.create({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 8000,
-        messages: [{
-          role: 'user',
-          content: `You are a senior M&A attorney extracting "${config.label}" provisions from a merger agreement.
+      // Build calibration section
+      let calibrationSection = '';
+      const examples = calibrationByType[typeKey];
+      if (examples && examples.length > 0) {
+        calibrationSection = `\nCALIBRATION EXAMPLES — These are correctly extracted provisions from other agreements.
+Use them to understand the expected length and detail level:\n`;
+        for (const ex of examples) {
+          const exText = ex.full_text.length > 500 ? ex.full_text.substring(0, 500) + '...' : ex.full_text;
+          calibrationSection += `\nCategory: "${ex.category}"\nExample: "${exText}"\nFavorability: ${ex.ai_favorability || 'neutral'}\n`;
+        }
+        calibrationSection += '\nMatch this level of detail. Extract the FULL provision text, not just the heading.\n';
+      }
+
+      try {
+        const resp = await client.messages.create({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 8000,
+          messages: [{
+            role: 'user',
+            content: `You are a senior M&A attorney extracting "${typeConfig.label}" provisions from a merger agreement.
 
 AGREEMENT TEXT (may be truncated to relevant sections):
 ${textForAI}
-
+${calibrationSection}
 Extract each sub-provision category. For each, copy the EXACT text from the agreement (verbatim, word-for-word).
+Include the COMPLETE text of each provision, not just the title or first sentence. Provisions often span multiple paragraphs.
 
 Categories to look for:
-${config.categories.map((c, i) => `${i + 1}. ${c}`).join('\n')}
+${typeConfig.categories.map((c, i) => `${i + 1}. ${c}`).join('\n')}
 
 For each category found in the agreement text, provide the exact verbatim text. If a category is not present, omit it.
 
@@ -161,83 +197,127 @@ Return ONLY valid JSON (no markdown, no backticks):
     }
   ]
 }`
-        }],
-      });
+          }],
+        });
 
-      const raw = resp.content.map(c => c.text || '').join('');
-      const clean = raw.replace(/```json|```/g, '').trim();
-      let parsed;
-      try {
-        parsed = JSON.parse(clean);
-      } catch {
-        results.push({ type: typeKey, error: 'Failed to parse AI response', raw: clean.substring(0, 200) });
-        continue;
-      }
+        const raw = resp.content.map(c => c.text || '').join('');
+        const clean = raw.replace(/```json|```/g, '').trim();
+        let parsed;
+        try {
+          parsed = JSON.parse(clean);
+        } catch {
+          return { type: typeKey, error: 'Failed to parse AI response', raw: clean.substring(0, 200) };
+        }
 
-      // 3. Create provision records (or return for preview)
-      const provisions = parsed.provisions || [];
-      const suggested = parsed.ai_suggested_categories || [];
-      let created = 0;
-      const allProvisions = [];
+        const provisions = parsed.provisions || [];
+        const suggested = parsed.ai_suggested_categories || [];
+        let created = 0;
+        const allProvisions = [];
 
-      for (const prov of [...provisions, ...suggested]) {
-        if (!prov.text || prov.text.length < 20) continue;
+        for (const prov of [...provisions, ...suggested]) {
+          if (!prov.text || prov.text.length < 20) continue;
 
-        if (preview) {
-          // In preview mode, just collect provisions without saving
-          allProvisions.push({
-            type: typeKey,
-            category: prov.category,
-            text: prov.text.trim(),
-            favorability: prov.favorability || 'neutral',
-            ai_suggested: !!prov.reason,
-            reason: prov.reason || null,
-          });
-          created++;
-        } else {
-          const { data, error } = await sb.from('provisions')
-            .insert({
-              deal_id,
+          if (preview) {
+            allProvisions.push({
               type: typeKey,
               category: prov.category,
-              full_text: prov.text.trim(),
-              ai_favorability: prov.favorability || 'neutral',
-              agreement_source_id: agreementSourceId,
-              ai_metadata: prov.reason ? { ai_suggested: true, reason: prov.reason } : { ai_extracted: true },
-            })
-            .select().single();
-
-          if (!error && data) {
+              text: prov.text.trim(),
+              favorability: prov.favorability || 'neutral',
+              ai_suggested: !!prov.reason,
+              reason: prov.reason || null,
+            });
             created++;
-            // Fire-and-forget AI annotation
-            fetch(`${req.headers.origin || 'http://localhost:3000'}/api/ai/annotate`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                provision_id: data.id,
-                text: prov.text.trim(),
+          } else {
+            const { data, error } = await sb.from('provisions')
+              .insert({
+                deal_id,
                 type: typeKey,
                 category: prov.category,
-              }),
-            }).catch(() => {});
+                full_text: prov.text.trim(),
+                ai_favorability: prov.favorability || 'neutral',
+                agreement_source_id: agreementSourceId,
+                ai_metadata: prov.reason ? { ai_suggested: true, reason: prov.reason } : { ai_extracted: true },
+              })
+              .select().single();
+
+            if (!error && data) {
+              created++;
+              fetch(`${req.headers.origin || 'http://localhost:3000'}/api/ai/annotate`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  provision_id: data.id,
+                  text: prov.text.trim(),
+                  type: typeKey,
+                  category: prov.category,
+                }),
+              }).catch(() => {});
+            }
+          }
+        }
+
+        return {
+          type: typeKey,
+          label: typeConfig.label,
+          extracted: provisions.length,
+          suggested: suggested.length,
+          created,
+          provisions: preview ? allProvisions : undefined,
+        };
+      } catch (err) {
+        return { type: typeKey, error: err.message };
+      }
+    }));
+
+    // 4. Deduplicate provisions across all types (preview mode only)
+    let deduplicatedCount = 0;
+    if (preview) {
+      const allProvs = [];
+      for (const r of results) {
+        if (r.provisions) {
+          for (const p of r.provisions) {
+            allProvs.push({ ...p, _resultType: r.type });
           }
         }
       }
 
-      results.push({
-        type: typeKey,
-        label: config.label,
-        extracted: provisions.length,
-        suggested: suggested.length,
-        created,
-        provisions: preview ? allProvisions : undefined,
-      });
+      // Mark duplicates: if >70% of shorter text appears in longer text
+      const isDuplicate = new Set();
+      for (let i = 0; i < allProvs.length; i++) {
+        if (isDuplicate.has(i)) continue;
+        for (let j = i + 1; j < allProvs.length; j++) {
+          if (isDuplicate.has(j)) continue;
+          const a = allProvs[i].text.replace(/\s+/g, ' ').trim();
+          const b = allProvs[j].text.replace(/\s+/g, ' ').trim();
+          const shorter = a.length <= b.length ? a : b;
+          const longer = a.length > b.length ? a : b;
+          const checkLen = Math.floor(shorter.length * 0.7);
+          if (checkLen > 20 && longer.includes(shorter.substring(0, checkLen))) {
+            // Keep the longer version, discard the shorter
+            const discardIdx = a.length <= b.length ? i : j;
+            isDuplicate.add(discardIdx);
+            deduplicatedCount++;
+          }
+        }
+      }
+
+      // Rebuild results without duplicates
+      if (deduplicatedCount > 0) {
+        const kept = allProvs.filter((_, idx) => !isDuplicate.has(idx));
+        for (const r of results) {
+          if (r.provisions) {
+            r.provisions = kept.filter(p => p._resultType === r.type).map(({ _resultType, ...p }) => p);
+            r.created = r.provisions.length;
+          }
+        }
+      }
     }
 
     return res.json({
       success: true,
       preview: !!preview,
       agreement_source_id: agreementSourceId,
+      deduplicated_count: deduplicatedCount,
       results,
     });
   } catch (err) {
@@ -246,17 +326,19 @@ Return ONLY valid JSON (no markdown, no backticks):
 }
 
 function truncateToRelevantSections(text, searchTerms, maxChars) {
+  // If full text is under 100k chars, skip truncation entirely
+  if (text.length <= 100000) return text;
   if (text.length <= maxChars) return text;
 
-  // Find sections that contain search terms
+  // Find sections that contain search terms with wider windows
   const lower = text.toLowerCase();
   const windows = [];
 
   searchTerms.forEach(term => {
     let idx = 0;
     while ((idx = lower.indexOf(term.toLowerCase(), idx)) !== -1) {
-      const start = Math.max(0, idx - 2000);
-      const end = Math.min(text.length, idx + 3000);
+      const start = Math.max(0, idx - 5000);
+      const end = Math.min(text.length, idx + 8000);
       windows.push({ start, end, term });
       idx += term.length;
     }

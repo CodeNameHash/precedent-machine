@@ -204,6 +204,9 @@ export default function AddAgreements() {
   const [error, setError] = useState(null);
   const [extractedTextLength, setExtractedTextLength] = useState(0);
   const [parseWarnings, setParseWarnings] = useState([]);
+  const [agreementSourceId, setAgreementSourceId] = useState(null);
+  const [fullAgreementText, setFullAgreementText] = useState('');
+  const [deduplicatedCount, setDeduplicatedCount] = useState(0);
 
   // ─── Shared: extract text from current inputs ───
   const getAgreementText = async () => {
@@ -228,6 +231,9 @@ export default function AddAgreements() {
 
   // ─── Shared: identify deal then extract provisions ───
   const identifyAndExtract = async (fullText) => {
+    // Store the full agreement text for the text selector
+    setFullAgreementText(fullText);
+
     // Identify deal
     setProcessingMsg('Identifying deal...');
     const dealDesc = description.trim() || fullText.substring(0, 3000);
@@ -239,6 +245,20 @@ export default function AddAgreements() {
     setDealInfo(findData.deal);
     if (findData.duplicate) setDuplicateWarning(findData.duplicate);
 
+    // Store full agreement text in agreement_sources
+    setProcessingMsg('Storing agreement text...');
+    const titleStr = `${findData.deal?.acquirer || 'Unknown'} / ${findData.deal?.target || 'Unknown'} Merger Agreement`;
+    try {
+      const storeData = await safeFetch('/api/admin/store-agreement', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ full_text: fullText, title: titleStr }),
+      });
+      setAgreementSourceId(storeData.id);
+    } catch (err) {
+      console.warn('Failed to store agreement source:', err.message);
+    }
+
     // Extract provisions in preview mode
     setStep('extracting');
     setProcessingMsg('Extracting provisions (this may take a minute)...');
@@ -247,7 +267,7 @@ export default function AddAgreements() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         full_text: fullText,
-        title: `${findData.deal?.acquirer || 'Unknown'} / ${findData.deal?.target || 'Unknown'} Merger Agreement`,
+        title: titleStr,
         provision_types: selectedTypes,
         preview: true,
       }),
@@ -256,9 +276,10 @@ export default function AddAgreements() {
     const allProvs = [];
     (ingestData.results || []).forEach(r => {
       (r.provisions || []).forEach(p => {
-        allProvs.push({ ...p, _id: Math.random().toString(36).substr(2, 9) });
+        allProvs.push({ ...p, _originalText: p.text, _id: Math.random().toString(36).substr(2, 9) });
       });
     });
+    setDeduplicatedCount(ingestData.deduplicated_count || 0);
     setPreviewProvisions(allProvs);
     setStep('preview');
   };
@@ -330,6 +351,22 @@ export default function AddAgreements() {
       }
 
       setExtractedTextLength(fullText.length);
+      setFullAgreementText(fullText);
+
+      // Store full agreement text in agreement_sources
+      setProcessingMsg('Storing agreement text...');
+      const titleStr = `${dealInfo?.acquirer || 'Unknown'} / ${dealInfo?.target || 'Unknown'} Merger Agreement`;
+      try {
+        const storeData = await safeFetch('/api/admin/store-agreement', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ full_text: fullText, title: titleStr }),
+        });
+        setAgreementSourceId(storeData.id);
+      } catch (err) {
+        console.warn('Failed to store agreement source:', err.message);
+      }
+
       setStep('extracting');
       setProcessingMsg('Extracting provisions (this may take a minute)...');
 
@@ -338,7 +375,7 @@ export default function AddAgreements() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           full_text: fullText,
-          title: `${dealInfo?.acquirer || 'Unknown'} / ${dealInfo?.target || 'Unknown'} Merger Agreement`,
+          title: titleStr,
           provision_types: selectedTypes,
           preview: true,
         }),
@@ -347,10 +384,11 @@ export default function AddAgreements() {
       const allProvs = [];
       (ingestData.results || []).forEach(r => {
         (r.provisions || []).forEach(p => {
-          allProvs.push({ ...p, _id: Math.random().toString(36).substr(2, 9) });
+          allProvs.push({ ...p, _originalText: p.text, _id: Math.random().toString(36).substr(2, 9) });
         });
       });
 
+      setDeduplicatedCount(ingestData.deduplicated_count || 0);
       setPreviewProvisions(allProvs);
       setStep('preview');
     } catch (err) {
@@ -404,6 +442,14 @@ export default function AddAgreements() {
 
       for (const prov of previewProvisions) {
         setProcessingMsg(`Saving provisions (${saved + 1}/${total})...`);
+        const userCorrected = prov._originalText && prov.text !== prov._originalText;
+        const metadata = prov.ai_suggested
+          ? { ai_suggested: true, reason: prov.reason }
+          : { ai_extracted: true };
+        if (userCorrected) {
+          metadata.user_corrected = true;
+          metadata.original_ai_text = prov._originalText;
+        }
         const resp = await fetch('/api/provisions', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -413,7 +459,8 @@ export default function AddAgreements() {
             category: prov.category,
             full_text: prov.text,
             ai_favorability: prov.favorability || 'neutral',
-            ai_metadata: prov.ai_suggested ? { ai_suggested: true, reason: prov.reason } : { ai_extracted: true },
+            agreement_source_id: agreementSourceId || null,
+            ai_metadata: metadata,
           }),
         });
         const data = await resp.json();
@@ -435,6 +482,7 @@ export default function AddAgreements() {
     setStep('input'); setDealInfo(null); setDescription(''); setPastedText('');
     setFiles([]); setPreviewProvisions([]); setDuplicateWarning(null);
     setError(null); setExtractedTextLength(0); setParseWarnings([]);
+    setAgreementSourceId(null); setFullAgreementText(''); setDeduplicatedCount(0);
   };
 
   // Group provisions by type
@@ -961,7 +1009,8 @@ export default function AddAgreements() {
                       )}
                       <div style={{ fontSize: 12, color: 'var(--text3)' }}>
                         {previewProvisions.length} provisions extracted across {Object.keys(groupedProvisions).length} categories.
-                        Review, edit text, adjust favorability, or remove before saving.
+                        {deduplicatedCount > 0 && ` (${deduplicatedCount} duplicate${deduplicatedCount !== 1 ? 's' : ''} removed)`}
+                        {' '}Review, edit text, adjust favorability, or remove before saving.
                       </div>
                     </div>
                     <div style={{ display: 'flex', gap: 8 }}>
@@ -996,7 +1045,7 @@ export default function AddAgreements() {
                         </span>
                       </div>
                       {provs.map(prov => (
-                        <PreviewCard key={prov._id} prov={prov} onUpdate={updateProvision} onRemove={removeProvision} disabled={processing} />
+                        <PreviewCard key={prov._id} prov={prov} onUpdate={updateProvision} onRemove={removeProvision} disabled={processing} fullAgreementText={fullAgreementText} />
                       ))}
                     </div>
                   );
@@ -1053,12 +1102,126 @@ export default function AddAgreements() {
 }
 
 // ═══════════════════════════════════════════════════
+// Text Selector Panel — select provision text from full agreement
+// ═══════════════════════════════════════════════════
+function TextSelectorPanel({ fullText, currentText, onSelect, onClose }) {
+  const containerRef = useRef(null);
+  const [selectedText, setSelectedText] = useState('');
+
+  // Find where the current provision text appears in the full agreement
+  const highlightStart = fullText.indexOf(currentText);
+  const highlightEnd = highlightStart >= 0 ? highlightStart + currentText.length : -1;
+
+  // Scroll to the highlighted text on mount
+  const scrollToHighlight = useCallback((node) => {
+    if (node) {
+      const mark = node.querySelector('.text-sel-highlight');
+      if (mark) {
+        setTimeout(() => mark.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+      }
+    }
+  }, []);
+
+  const handleMouseUp = () => {
+    const sel = window.getSelection();
+    if (sel && sel.toString().trim().length > 10) {
+      setSelectedText(sel.toString().trim());
+    }
+  };
+
+  // Render full text with current provision highlighted
+  const renderText = () => {
+    if (highlightStart < 0) {
+      return <span>{fullText}</span>;
+    }
+    return (
+      <>
+        <span>{fullText.substring(0, highlightStart)}</span>
+        <span className="text-sel-highlight recode-sel">{fullText.substring(highlightStart, highlightEnd)}</span>
+        <span>{fullText.substring(highlightEnd)}</span>
+      </>
+    );
+  };
+
+  return (
+    <div style={{
+      position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+      background: 'rgba(0,0,0,0.5)', zIndex: 100,
+      display: 'flex', justifyContent: 'center', alignItems: 'center',
+    }} onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+      <div style={{
+        width: '90vw', maxWidth: 900, height: '85vh',
+        background: 'var(--bg2)', borderRadius: 12,
+        border: '1px solid var(--border)',
+        display: 'flex', flexDirection: 'column',
+        boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
+      }}>
+        {/* Header */}
+        <div style={{
+          padding: '12px 16px', borderBottom: '1px solid var(--border)',
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+        }}>
+          <div>
+            <div style={{ font: '600 14px var(--serif)', color: 'var(--text)' }}>
+              Select Provision Text
+            </div>
+            <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 2 }}>
+              Current text is highlighted in gold. Drag to select new text, then click "Apply Selection".
+            </div>
+          </div>
+          <button onClick={onClose} style={{
+            background: 'none', border: 'none', fontSize: 20, color: 'var(--text3)',
+            cursor: 'pointer', padding: '0 4px',
+          }}>&times;</button>
+        </div>
+
+        {/* Selection bar */}
+        {selectedText && (
+          <div style={{
+            padding: '8px 16px', borderBottom: '1px solid var(--border)',
+            background: 'var(--gold-light)', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+          }}>
+            <div style={{ fontSize: 11, color: 'var(--gold)', fontWeight: 600 }}>
+              {selectedText.length.toLocaleString()} chars selected
+            </div>
+            <div style={{ display: 'flex', gap: 6 }}>
+              <button onClick={() => setSelectedText('')} style={{
+                padding: '4px 10px', borderRadius: 4, border: '1px solid var(--border)',
+                background: 'var(--bg2)', fontSize: 11, cursor: 'pointer', color: 'var(--text3)',
+              }}>Clear</button>
+              <button onClick={() => { onSelect(selectedText); onClose(); }} style={{
+                padding: '4px 12px', borderRadius: 4, border: 'none',
+                background: 'var(--gold)', color: '#fff', fontSize: 11, fontWeight: 600, cursor: 'pointer',
+              }}>Apply Selection</button>
+            </div>
+          </div>
+        )}
+
+        {/* Scrollable text body */}
+        <div
+          ref={(node) => { containerRef.current = node; scrollToHighlight(node); }}
+          onMouseUp={handleMouseUp}
+          style={{
+            flex: 1, overflowY: 'auto', padding: '16px 20px',
+            font: '400 12px/1.75 var(--serif)', color: 'var(--text2)',
+            whiteSpace: 'pre-wrap', userSelect: 'text', cursor: 'text',
+          }}
+        >
+          {renderText()}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════
 // Preview Provision Card
 // ═══════════════════════════════════════════════════
-function PreviewCard({ prov, onUpdate, onRemove, disabled }) {
+function PreviewCard({ prov, onUpdate, onRemove, disabled, fullAgreementText }) {
   const [editing, setEditing] = useState(false);
   const [editText, setEditText] = useState(prov.text);
   const [showFav, setShowFav] = useState(false);
+  const [showTextSelector, setShowTextSelector] = useState(false);
 
   const fav = FAV_LEVELS.find(f => f.key === prov.favorability);
 
@@ -1100,6 +1263,11 @@ function PreviewCard({ prov, onUpdate, onRemove, disabled }) {
               </div>
             )}
           </div>
+          {fullAgreementText && (
+            <button onClick={() => setShowTextSelector(true)} className="admin-edit" style={{ opacity: 1, color: 'var(--blue, #1976D2)' }}>
+              Select from text
+            </button>
+          )}
           <button onClick={() => {
             if (editing) { onUpdate(prov._id, 'text', editText); setEditing(false); }
             else { setEditText(prov.text); setEditing(true); }
@@ -1132,6 +1300,17 @@ function PreviewCard({ prov, onUpdate, onRemove, disabled }) {
           </div>
         )}
       </div>
+      {showTextSelector && fullAgreementText && (
+        <TextSelectorPanel
+          fullText={fullAgreementText}
+          currentText={prov.text}
+          onSelect={(newText) => {
+            onUpdate(prov._id, 'text', newText);
+            setEditText(newText);
+          }}
+          onClose={() => setShowTextSelector(false)}
+        />
+      )}
     </div>
   );
 }
