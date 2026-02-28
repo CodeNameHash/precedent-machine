@@ -617,7 +617,8 @@ async function runWithConcurrency(tasks, maxConcurrent = 8) {
 function splitDefinitions(sectionText) {
   // Match "TERM" means / "TERM" shall mean / "TERM" has the meaning / "TERM" shall have the meaning
   // Handles both curly quotes (\u201c \u201d) and straight quotes
-  const defPattern = /[\u201c"]([^\u201d"]+)[\u201d"]\s+(?:means?|shall\s+mean|has\s+the\s+meaning|shall\s+have\s+the\s+meaning)/g;
+  // Allows up to 40 chars of qualifier between term and "means" (e.g. "affiliate" of any Person means)
+  const defPattern = /[\u201c"]([^\u201d"]+)[\u201d"][^\u201c"\n]{0,40}?\b(?:means?|shall\s+mean|has\s+the\s+meaning|shall\s+have\s+the\s+meaning)\b/g;
 
   const matches = [];
   let m;
