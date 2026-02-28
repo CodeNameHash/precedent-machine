@@ -676,111 +676,79 @@ function parseDocument(rawText) {
     });
   }
 
-  // Step 3b: Auto-split definitions sections
+  // Step 3b: Flag definitions sections (kept as one section)
   let definitionTerms = 0;
-  const defTermPattern = /\n\s*\u201c([^\u201d]+)\u201d\s+(?:means?|shall\s+mean|has\s+the\s+meaning|shall\s+have\s+the\s+meaning)/;
-  const defTermPatternGlobal = /\n\s*\u201c([^\u201d]+)\u201d\s+(?:means?|shall\s+mean|has\s+the\s+meaning|shall\s+have\s+the\s+meaning)/g;
-  // Also try straight quotes
-  const defTermPatternStraight = /\n\s*"([^"]+)"\s+(?:means?|shall\s+mean|has\s+the\s+meaning|shall\s+have\s+the\s+meaning)/;
-  const defTermPatternStraightGlobal = /\n\s*"([^"]+)"\s+(?:means?|shall\s+mean|has\s+the\s+meaning|shall\s+have\s+the\s+meaning)/g;
-
-  for (let si = 0; si < sections.length; si++) {
-    const sec = sections[si];
-    if (!/definition/i.test(sec.title)) continue;
-
-    // Try curly quotes first, then straight quotes
-    let usePattern = defTermPatternGlobal;
-    let testMatch = sec.text.match(defTermPattern);
-    if (!testMatch) {
-      usePattern = defTermPatternStraightGlobal;
-      testMatch = sec.text.match(defTermPatternStraight);
-    }
-    if (!testMatch) continue;
-
-    // Find all defined term boundaries
-    usePattern.lastIndex = 0;
-    const termMatches = [];
-    let tm;
-    while ((tm = usePattern.exec(sec.text)) !== null) {
-      termMatches.push({ index: tm.index + 1, term: tm[1] }); // +1 to skip the leading \n
-    }
-
-    if (termMatches.length < 3) continue; // not worth splitting for very few terms
-
-    const subSections = [];
-
-    // Preamble: text before the first defined term
-    if (termMatches[0].index > 0) {
-      const preambleText = sec.text.substring(0, termMatches[0].index).trim();
-      if (preambleText.length > 20) {
-        subSections.push({
-          number: sec.number,
-          heading: sec.heading,
-          title: sec.title + ' (Preamble)',
-          text: preambleText,
-          charCount: preambleText.length,
-          absStart: sec.absStart,
-          isDefinition: true,
-          subKey: '_preamble',
-        });
+  const defTermPatternCount = /[\u201c"][^\u201d"]+[\u201d"]\s+(?:means?|shall\s+mean|has\s+the\s+meaning|shall\s+have\s+the\s+meaning)/g;
+  for (const sec of sections) {
+    if (/definition/i.test(sec.title)) {
+      const matches = sec.text.match(defTermPatternCount);
+      if (matches) {
+        sec.isDefinition = true;
+        definitionTerms = matches.length;
       }
     }
-
-    // Each defined term
-    for (let ti = 0; ti < termMatches.length; ti++) {
-      const start = termMatches[ti].index;
-      const end = ti + 1 < termMatches.length ? termMatches[ti + 1].index : sec.text.length;
-      const termText = sec.text.substring(start, end).trim();
-
-      subSections.push({
-        number: sec.number,
-        heading: sec.heading,
-        title: termMatches[ti].term,
-        text: termText,
-        charCount: termText.length,
-        absStart: sec.absStart + start,
-        isDefinition: true,
-        subKey: termMatches[ti].term,
-      });
-    }
-
-    definitionTerms += termMatches.length;
-
-    // Replace the single definitions section with the sub-sections
-    sections.splice(si, 1, ...subSections);
-    si += subSections.length - 1; // adjust index
   }
 
   // Step 4: Find ARTICLE boundaries for context
-  const articleRe = /\bARTICLE\s+(?:([IVXLC]+)|(\d+))\b([^\n]*)/gi;
-  const articles = [];
+  // Use case-sensitive regex — real headings are all-caps "ARTICLE", cross-refs use "Article"
+  const articleRe = /\bARTICLE\s+(?:([IVXLC]+)|(\d+))\b([^\n]*)/g;
+  const articleCandidates = [];
   while ((m = articleRe.exec(body)) !== null) {
-    if (isHeading(body, m.index)) {
-      const roman = m[1];
-      const arabic = m[2];
-      const num = arabic ? parseInt(arabic) : romanToInt(roman);
-      let title = (m[3] || '').replace(/^[\s.\-\u2014:;]+/, '').trim();
+    const roman = m[1];
+    const arabic = m[2];
+    const num = arabic ? parseInt(arabic) : romanToInt(roman);
+    const inlineTitle = (m[3] || '').replace(/^[\s.\-\u2014:;]+/, '').trim();
 
-      // EDGAR often puts article title on the next line — grab it if inline is empty
-      if (!title) {
-        const afterMatch = body.substring(m.index + m[0].length);
-        const nextLineMatch = afterMatch.match(/^\s*\n\s*([^\n]+)/);
-        if (nextLineMatch) {
-          const nextLine = nextLineMatch[1].trim();
-          // Accept if it looks like a title (not a Section heading or blank)
-          if (nextLine.length > 2 && !/^(?:SECTION|Section)\s+\d/i.test(nextLine)) {
-            title = nextLine.replace(/^[\s.\-\u2014:;]+/, '').trim();
-          }
+    // Check if this is a real heading or inline cross-reference
+    // In EDGAR docs, real ARTICLE headings may appear after ". " at end of prev section
+    const lookback = body.substring(Math.max(0, m.index - 100), m.index);
+    const lastNL = lookback.lastIndexOf('\n');
+    const gap = lastNL !== -1 ? lookback.substring(lastNL + 1) : lookback;
+    const gapTrimmed = gap.trim();
+
+    const isAfterBlank = gapTrimmed.length === 0 || gapTrimmed.length <= 5;
+    const isAfterSentenceEnd = /[.;:!?]["'\u201d\u2019)]*\s*$/.test(gap);
+    const isXref = XREF_SIGNALS.test(lookback);
+
+    if (!isAfterBlank && !isAfterSentenceEnd) continue;
+    if (isXref) continue;
+
+    // Reject if inline text looks like body continuation (commas, "of", "shall", etc.)
+    if (inlineTitle && /^[,;]/.test(inlineTitle)) continue;
+    if (inlineTitle && /^(?:of|shall|and|or|to|the|is|are|was|were|has|have|had)\s/i.test(inlineTitle)) continue;
+
+    articleCandidates.push({ index: m.index, num, heading: m[0].trim(), inlineTitle });
+  }
+
+  // Sequential dedup: keep only the first occurrence of each article number, in order
+  const articles = [];
+  const seenArticles = new Set();
+  let lastArtNum = 0;
+  for (const ac of articleCandidates) {
+    if (seenArticles.has(ac.num)) continue;
+    if (ac.num < lastArtNum) continue; // out of order — skip
+    seenArticles.add(ac.num);
+    lastArtNum = ac.num;
+
+    // Extract title: try inline, then next line
+    let title = ac.inlineTitle;
+    if (!title || title.length < 3) {
+      const afterMatch = body.substring(ac.index + ac.heading.length);
+      const nextLineMatch = afterMatch.match(/^\s*\n\s*([^\n]+)/);
+      if (nextLineMatch) {
+        const nextLine = nextLineMatch[1].trim();
+        if (nextLine.length > 2 && !/^(?:SECTION|Section)\s+\d/i.test(nextLine)) {
+          title = nextLine.replace(/^[\s.\-\u2014:;]+/, '').trim();
         }
       }
-
-      articles.push({
-        number: num,
-        heading: m[0].trim(),
-        title,
-        absIndex: bodyStart + m.index,
-      });
     }
+
+    articles.push({
+      number: ac.num,
+      heading: ac.heading,
+      title: title || '',
+      absIndex: bodyStart + ac.index,
+    });
   }
 
   // Associate sections with their parent article
