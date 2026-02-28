@@ -3,7 +3,7 @@ import { getServiceSupabase } from '../../../lib/supabase';
 import crypto from 'crypto';
 
 export const config = {
-  maxDuration: 600,
+  maxDuration: 300,
   api: { bodyParser: { sizeLimit: '50mb' } },
 };
 
