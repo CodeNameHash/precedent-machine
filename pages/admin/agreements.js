@@ -219,6 +219,7 @@ export default function AddAgreements() {
   const [collapsedArticles, setCollapsedArticles] = useState(new Set());
   const [collapsedPreviewCards, setCollapsedPreviewCards] = useState(new Set());
   const [collapsedPreviewTypes, setCollapsedPreviewTypes] = useState(new Set());
+  const [collapsedPreviewSections, setCollapsedPreviewSections] = useState(new Set());
   const [timingData, setTimingData] = useState(null);
   const [diagnosticsData, setDiagnosticsData] = useState(null);
   const [reviewOpen, setReviewOpen] = useState(false);
@@ -1522,24 +1523,114 @@ export default function AddAgreements() {
                           </span>
                         </span>
                       </div>
-                      {!typeCollapsed && provs.map(prov => (
-                        <PreviewCard
-                          key={prov._id}
-                          prov={prov}
-                          onUpdate={updateProvision}
-                          onRemove={removeProvision}
-                          disabled={processing}
-                          fullAgreementText={fullAgreementText}
-                          collapsed={collapsedPreviewCards.has(prov._id)}
-                          onToggleCollapse={() => {
-                            setCollapsedPreviewCards(prev => {
-                              const next = new Set(prev);
-                              if (next.has(prov._id)) next.delete(prov._id); else next.add(prov._id);
-                              return next;
-                            });
-                          }}
-                        />
-                      ))}
+                      {!typeCollapsed && (() => {
+                        const hasSections = provs.some(p => p._sectionHeading);
+                        if (!hasSections) {
+                          return provs.map(prov => (
+                            <PreviewCard
+                              key={prov._id}
+                              prov={prov}
+                              onUpdate={updateProvision}
+                              onRemove={removeProvision}
+                              disabled={processing}
+                              fullAgreementText={fullAgreementText}
+                              collapsed={collapsedPreviewCards.has(prov._id)}
+                              onToggleCollapse={() => {
+                                setCollapsedPreviewCards(prev => {
+                                  const next = new Set(prev);
+                                  if (next.has(prov._id)) next.delete(prov._id); else next.add(prov._id);
+                                  return next;
+                                });
+                              }}
+                            />
+                          ));
+                        }
+                        // Group provisions by _sectionHeading
+                        const groups = [];
+                        const seen = new Map();
+                        provs.forEach(prov => {
+                          const key = prov._sectionHeading || '__ungrouped__';
+                          if (!seen.has(key)) {
+                            const group = { heading: prov._sectionHeading, provs: [] };
+                            seen.set(key, group);
+                            groups.push(group);
+                          }
+                          seen.get(key).provs.push(prov);
+                        });
+                        return groups.map(group => {
+                          if (!group.heading) {
+                            return group.provs.map(prov => (
+                              <PreviewCard
+                                key={prov._id}
+                                prov={prov}
+                                onUpdate={updateProvision}
+                                onRemove={removeProvision}
+                                disabled={processing}
+                                fullAgreementText={fullAgreementText}
+                                collapsed={collapsedPreviewCards.has(prov._id)}
+                                onToggleCollapse={() => {
+                                  setCollapsedPreviewCards(prev => {
+                                    const next = new Set(prev);
+                                    if (next.has(prov._id)) next.delete(prov._id); else next.add(prov._id);
+                                    return next;
+                                  });
+                                }}
+                              />
+                            ));
+                          }
+                          const sectionKey = `${typeKey}::${group.heading}`;
+                          const sectionCollapsed = collapsedPreviewSections.has(sectionKey);
+                          return (
+                            <div key={sectionKey} style={{ marginLeft: 16, marginBottom: 12 }}>
+                              <div
+                                onClick={() => {
+                                  setCollapsedPreviewSections(prev => {
+                                    const next = new Set(prev);
+                                    if (next.has(sectionKey)) next.delete(sectionKey); else next.add(sectionKey);
+                                    return next;
+                                  });
+                                }}
+                                style={{
+                                  cursor: 'pointer', userSelect: 'none',
+                                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                  padding: '6px 0', borderBottom: '1px solid var(--border)',
+                                  marginBottom: 8,
+                                }}
+                              >
+                                <span style={{ font: '600 13px var(--serif)', color: 'var(--text2)' }}>
+                                  {group.heading}
+                                </span>
+                                <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                  <span style={{ fontSize: 10, color: 'var(--text4)', fontWeight: 400 }}>
+                                    {group.provs.length} sub-clause{group.provs.length !== 1 ? 's' : ''}
+                                  </span>
+                                  <span style={{ fontSize: 11, color: 'var(--text3)' }}>
+                                    {sectionCollapsed ? '\u25B8' : '\u25BE'}
+                                  </span>
+                                </span>
+                              </div>
+                              {!sectionCollapsed && group.provs.map(prov => (
+                                <PreviewCard
+                                  key={prov._id}
+                                  prov={prov}
+                                  onUpdate={updateProvision}
+                                  onRemove={removeProvision}
+                                  disabled={processing}
+                                  fullAgreementText={fullAgreementText}
+                                  collapsed={collapsedPreviewCards.has(prov._id)}
+                                  onToggleCollapse={() => {
+                                    setCollapsedPreviewCards(prev => {
+                                      const next = new Set(prev);
+                                      if (next.has(prov._id)) next.delete(prov._id); else next.add(prov._id);
+                                      return next;
+                                    });
+                                  }}
+                                />
+                              ))}
+                            </div>
+                          );
+                        });
+                      })()}
                     </div>
                   );
                 })}

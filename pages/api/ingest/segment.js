@@ -800,19 +800,28 @@ async function extractSubProvisions(classifiedSections, client, calibrationByTyp
       }
     } else if (PRE_SPLIT_TYPES.has(s.provision_type) || s._isNoSolicit) {
       const split = splitBySubClauses(s.text, s.provision_type, s.display_tier);
+      // Derive section heading for nested preview grouping
+      const sectionHeading = s.number && s.category
+        ? `${s.number}: ${s.category}`
+        : s.category || s.number || null;
       if (split) {
-        split.forEach(p => { p.startChar = s.startChar; });
+        split.forEach(p => {
+          p.startChar = s.startChar;
+          if (sectionHeading) p._sectionHeading = sectionHeading;
+        });
         results.push(...split);
       } else {
         // No sub-clauses found — keep as single provision
-        results.push({
+        const prov = {
           type: s.provision_type,
           category: s.category,
           text: s.text,
           favorability: 'neutral',
           display_tier: s.display_tier,
           startChar: s.startChar,
-        });
+        };
+        if (sectionHeading) prov._sectionHeading = sectionHeading;
+        results.push(prov);
       }
     } else {
       aiSections.push(s);
@@ -1311,14 +1320,16 @@ export default async function handler(req, res) {
       resultsByType[p.type].extracted++;
       resultsByType[p.type].created++;
       if (preview) {
-        resultsByType[p.type].provisions.push({
+        const provEntry = {
           type: p.type,
           category: p.category,
           text: p.text,
           favorability: p.favorability || 'neutral',
           display_tier: p.display_tier || 2,
           sort_order: p.sort_order,
-        });
+        };
+        if (p._sectionHeading) provEntry._sectionHeading = p._sectionHeading;
+        resultsByType[p.type].provisions.push(provEntry);
       }
     });
 
