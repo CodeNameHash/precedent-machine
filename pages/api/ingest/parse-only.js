@@ -62,7 +62,7 @@ function removeRepeatedHeaders(text) {
 // Clean section text — rejoin lines broken by EDGAR 80-char wrapping
 // and strip embedded page artifacts within section body
 function cleanSectionText(text) {
-  return text
+  let cleaned = text
     // Remove standalone page numbers embedded within section text
     .replace(/\n\s*(?:[A-Z]-?)?\d{1,4}\s*\n/g, '\n')
     // Remove dash-wrapped page numbers (-5-, -42-)
@@ -70,6 +70,61 @@ function cleanSectionText(text) {
     // Collapse 3+ blank lines to 2
     .replace(/\n{3,}/g, '\n\n')
     .trim();
+
+  // Rejoin lines broken mid-sentence by EDGAR 80-char wrapping
+  cleaned = rejoinEdgarLines(cleaned);
+
+  return cleaned;
+}
+
+// Rejoin lines that were broken mid-sentence by EDGAR's ~80-char wrapping.
+// Heuristic: if a line doesn't end with terminal punctuation and the next
+// line continues naturally (no structural element), join them with a space.
+function rejoinEdgarLines(text) {
+  const lines = text.split('\n');
+  const result = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const currTrimmed = lines[i].trim();
+
+    // First line or blank line — push as-is
+    if (result.length === 0 || currTrimmed.length === 0) {
+      result.push(lines[i]);
+      continue;
+    }
+
+    const prevLine = result[result.length - 1];
+    const prevTrimmed = prevLine.trimEnd();
+
+    // Don't join if prev line is short (intentional break, not EDGAR wrap)
+    if (prevTrimmed.length < 40) {
+      result.push(lines[i]);
+      continue;
+    }
+
+    // Don't join if prev line ends with terminal punctuation (.;:!?)
+    // possibly followed by closing quotes/parens
+    if (/[.;:!?][\u201d"\)\]]*\s*$/.test(prevTrimmed)) {
+      result.push(lines[i]);
+      continue;
+    }
+
+    // Don't join if current line starts with structural elements
+    if (/^\s*\([a-z]\)\s/.test(lines[i]) ||          // (a) subclause
+        /^\s*\(\d+\)\s/.test(lines[i]) ||              // (1) numbered item
+        /^\s*\([ivxlc]+\)\s/i.test(lines[i]) ||        // (i) roman numeral item
+        /^\s*(?:SECTION|Section|ARTICLE|Article)\s/i.test(lines[i]) ||
+        /^\s*[A-Z][A-Z\s]{5,}[A-Z]\s*$/.test(lines[i]) ||  // ALL-CAPS heading
+        /^\s*\d+\.\d{1,2}\s/.test(lines[i])) {         // bare section number
+      result.push(lines[i]);
+      continue;
+    }
+
+    // Join: this line is a continuation of the previous (EDGAR-wrapped)
+    result[result.length - 1] = prevTrimmed + ' ' + currTrimmed;
+  }
+
+  return result.join('\n');
 }
 
 // ─── TOC Detection ───
@@ -495,9 +550,45 @@ function parseDocument(rawText) {
     if (tocSet) {
       const inToc = tocSet.has(c.number);
       if (inToc) {
-        rawHeadings.push(c);
-        lastArticle = art;
-        lastSection = sec;
+        // Verify this isn't a cross-reference that mentions a TOC section number
+        const afterText = body.substring(c.index + c.fullMatch.length, c.index + c.fullMatch.length + 200);
+
+        // Quick rejection: ", Section" or "and/or Section" after the number → cross-ref list
+        const isCrossRefList = /^\s*[,]\s*(?:Section|SECTION)/i.test(afterText) ||
+                               /^\s*(?:and|or)\s+(?:Section|SECTION)/i.test(afterText);
+
+        if (isCrossRefList) {
+          continue; // definitely a cross-reference, skip
+        }
+
+        // If we have a TOC title for this section, verify body text matches
+        let titleVerified = true; // default: accept if no title to check
+        if (tocTitles[c.number]) {
+          const tocTitle = tocTitles[c.number];
+          // Strip leading punctuation/whitespace (e.g., ". " after "SECTION 7.01.")
+          const firstChars = afterText.replace(/^[.\s\-\u2014:;,]+/, '').substring(0, tocTitle.length + 30);
+          const normalizedToc = tocTitle.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim();
+          const normalizedBody = firstChars.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim();
+          const tocWords = normalizedToc.split(/\s+/).slice(0, 3);
+          const bodyWords = normalizedBody.split(/\s+/).slice(0, 3);
+          titleVerified = tocWords.length > 0 && tocWords.every((w, idx) => bodyWords[idx] === w);
+        }
+
+        if (titleVerified) {
+          rawHeadings.push(c);
+          lastArticle = art;
+          lastSection = sec;
+          continue;
+        }
+
+        // Title didn't match — only accept if next sequential within same article
+        // (don't allow article jumps without title confirmation)
+        const isNextInArticle = art === lastArticle && sec === lastSection + 1;
+        if (isFirstCandidate || isNextInArticle) {
+          rawHeadings.push(c);
+          lastArticle = art;
+          lastSection = sec;
+        }
         continue;
       }
       // Not in TOC — only accept if sequential
