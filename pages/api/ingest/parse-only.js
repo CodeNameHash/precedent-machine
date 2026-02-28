@@ -73,12 +73,88 @@ function cleanSectionText(text) {
 }
 
 // ─── TOC Detection ───
-// Detects Table of Contents by finding lines with "Section X.XX" that end
-// with a page number (preceded by leader dots or multiple spaces).
-// If 5+ such lines cluster together in the first half of the doc, that's a TOC.
+// Two strategies:
+// 1. Primary: Find explicit "TABLE OF CONTENTS" / "Table of Contents" header,
+//    extract section numbers from that block, find where body starts after it.
+// 2. Fallback: Cluster "Section X.XX" lines that end with page numbers.
 
 function detectTOC(fullText) {
-  // Find ALL "Section X.XX" occurrences
+  // ── Strategy 1: Explicit "Table of Contents" header ──
+  const tocHeaderMatch = fullText.match(/(?:^|\n)\s*(TABLE\s+OF\s+CONTENTS|Table\s+of\s+Contents)\s*\n/im);
+  if (tocHeaderMatch) {
+    const tocBlockStart = tocHeaderMatch.index + tocHeaderMatch[0].length;
+
+    // Find where the TOC block ends: look for preamble, recitals, or
+    // ARTICLE I body heading (preceded by substantive text, not a TOC line).
+    // The body typically starts with "AGREEMENT AND PLAN", "This Agreement",
+    // "PREAMBLE", "RECITALS", or the first ARTICLE with body text following.
+    const afterHeader = fullText.substring(tocBlockStart);
+    const bodySignals = [
+      /\n\s*(AGREEMENT\s+AND\s+PLAN\s+OF\s+MERGER)/i,
+      /\n\s*(This\s+Agreement\s+and\s+Plan)/i,
+      /\n\s*(PREAMBLE)/i,
+      /\n\s*(RECITALS)/i,
+      /\n\s*(NOW,?\s+THEREFORE)/i,
+    ];
+
+    let tocBlockEnd = afterHeader.length;
+    for (const sig of bodySignals) {
+      const sm = afterHeader.match(sig);
+      if (sm && sm.index < tocBlockEnd) {
+        tocBlockEnd = sm.index;
+      }
+    }
+
+    // Also check: if we see "ARTICLE I" or "Section 1" followed by substantial
+    // text (>200 chars before next Section), that's body, not TOC
+    const artBodyMatch = afterHeader.match(/\n\s*ARTICLE\s+(?:I|1)\b/i);
+    if (artBodyMatch) {
+      // Look ahead: is there a long paragraph after this ARTICLE heading?
+      const afterArt = afterHeader.substring(artBodyMatch.index + artBodyMatch[0].length);
+      const nextSection = afterArt.match(/(?:SECTION|Section)\s+\d+\.\d{1,2}\b/);
+      if (nextSection && nextSection.index > 200) {
+        // Substantial text before next section → this is body ARTICLE, not TOC
+        if (artBodyMatch.index < tocBlockEnd) {
+          tocBlockEnd = artBodyMatch.index;
+        }
+      }
+    }
+
+    const tocBlock = afterHeader.substring(0, tocBlockEnd);
+
+    // Extract section numbers from the TOC block
+    // Match both "SECTION X.XX" and bare "X.XX" patterns
+    const entries = [];
+    const seen = new Set();
+    const sectionRe = /(?:SECTION|Section)\s+(\d+\.\d{1,2})\b/g;
+    let m;
+    while ((m = sectionRe.exec(tocBlock)) !== null) {
+      if (!seen.has(m[1])) {
+        entries.push(m[1]);
+        seen.add(m[1]);
+      }
+    }
+    // Also try bare "X.XX" at start of line (for formats like "1.1  The Merger")
+    if (entries.length < 5) {
+      const bareRe = /(?:^|\n)\s*(\d+\.\d{1,2})\b/g;
+      while ((m = bareRe.exec(tocBlock)) !== null) {
+        if (!seen.has(m[1])) {
+          entries.push(m[1]);
+          seen.add(m[1]);
+        }
+      }
+    }
+
+    // Body starts after the TOC block
+    const bodyStart = tocBlockStart + tocBlockEnd;
+
+    if (entries.length >= 3) {
+      return { found: true, entries, bodyStart };
+    }
+    // If too few entries found, the header might be misleading — fall through
+  }
+
+  // ── Strategy 2: Cluster Section lines ending with page numbers ──
   const sectionRe = /(?:SECTION|Section)\s+(\d+\.\d{1,2})\b/g;
   const allMatches = [];
   let m;
@@ -91,23 +167,16 @@ function detectTOC(fullText) {
   }
 
   if (allMatches.length < 8) {
-    // Not enough matches to have both TOC + body
     return { found: false, entries: [], bodyStart: findBodyStartFallback(fullText) };
   }
 
   // For each match, check if its line ends with a page number
-  // TOC lines: "Section 1.01   Definitions.......................3"
-  // Body lines: "Section 1.01   Definitions. As used in this Agreement..."
   const tocFlags = allMatches.map(match => {
     const lineEnd = fullText.indexOf('\n', match.index);
     const line = fullText.substring(match.index, lineEnd === -1 ? fullText.length : lineEnd);
-    // Ends with: dots or whitespace gap then 1-4 digit number
-    // Lenient: 2+ dots or 2+ whitespace chars (EDGAR can produce irregular spacing)
     return /(?:\.{2,}|[\s\t]{2,})\d{1,4}\s*$/.test(line);
   });
 
-  // Find the first cluster of TOC-flagged lines
-  // A cluster = consecutive matches where most are TOC-flagged
   let tocStart = -1;
   let tocEnd = -1;
   let runStart = -1;
@@ -123,23 +192,17 @@ function detectTOC(fullText) {
         tocEnd = i - 1;
         break;
       }
-      // Allow small gaps (1-2 non-TOC lines within a TOC block, e.g. ARTICLE headers)
       if (runCount > 0 && i - runStart - runCount <= 2) {
-        continue; // keep the run going
+        continue;
       }
       runStart = -1;
       runCount = 0;
     }
   }
-  // Check final run
   if (runCount >= 5 && tocStart === -1) {
     tocStart = runStart;
     tocEnd = allMatches.length - 1;
-    // But make sure there are body sections after this — otherwise it's all body
-    // A real TOC must be followed by body sections
     if (tocEnd === allMatches.length - 1) {
-      // All matches are TOC? That can't be right. Only treat first portion as TOC.
-      // Find where the TOC cluster really ends by looking at the flags
       for (let i = runStart; i < tocFlags.length; i++) {
         if (!tocFlags[i] && i > runStart + 4) {
           tocEnd = i - 1;
@@ -153,12 +216,10 @@ function detectTOC(fullText) {
     return { found: false, entries: [], bodyStart: findBodyStartFallback(fullText) };
   }
 
-  // Validate: TOC should be in the first 40% of the document
   if (allMatches[tocStart].index > fullText.length * 0.4) {
     return { found: false, entries: [], bodyStart: findBodyStartFallback(fullText) };
   }
 
-  // Extract TOC entries (unique section numbers)
   const entries = [];
   const seen = new Set();
   for (let i = tocStart; i <= tocEnd; i++) {
@@ -168,20 +229,15 @@ function detectTOC(fullText) {
     }
   }
 
-  // Body starts after the last TOC entry's line
   const lastTocMatch = allMatches[tocEnd];
   const lastTocLineEnd = fullText.indexOf('\n', lastTocMatch.index);
   let bodyStart = lastTocLineEnd !== -1 ? lastTocLineEnd + 1 : lastTocMatch.endIndex;
 
-  // Skip blank lines and look for first real content after TOC
   const afterToc = fullText.substring(bodyStart);
-
-  // Look for ARTICLE heading, preamble, or first Section heading
   const artMatch = afterToc.match(/^\s*ARTICLE\s+(?:[IVXLC]+|\d+)\b/im);
   const preambleMatch = afterToc.match(/(^|\n)\s*(This\s+Agreement|AGREEMENT\s+AND\s+PLAN)/i);
   const firstSection = afterToc.match(/(^|\n)\s*(?:SECTION|Section)\s+\d+\.\d{1,2}\b/);
 
-  // Use whichever comes first
   const candidates = [];
   if (artMatch) candidates.push(artMatch.index);
   if (preambleMatch) candidates.push(preambleMatch.index);
@@ -195,12 +251,17 @@ function detectTOC(fullText) {
 }
 
 function findBodyStartFallback(fullText) {
-  // Try explicit "TABLE OF CONTENTS" header
+  // Try explicit "TABLE OF CONTENTS" header → skip to first ARTICLE
   const tocHeader = fullText.match(/TABLE\s+OF\s+CONTENTS/i);
   if (tocHeader) {
     const afterToc = fullText.substring(tocHeader.index);
-    const artMatch = afterToc.match(/\n\s*ARTICLE\s+(?:[IVXLC]+|\d+)\b/i);
-    if (artMatch) return tocHeader.index + artMatch.index + 1;
+    // Look for body signals after the TOC header
+    const bodySignals = [
+      afterToc.match(/\n\s*(AGREEMENT\s+AND\s+PLAN)/i),
+      afterToc.match(/\n\s*(PREAMBLE)/i),
+      afterToc.match(/\n\s*ARTICLE\s+(?:[IVXLC]+|\d+)\b/i),
+    ].filter(Boolean).map(m => m.index);
+    if (bodySignals.length > 0) return tocHeader.index + Math.min(...bodySignals) + 1;
   }
   // Try first ARTICLE heading
   const firstArt = fullText.match(/\n\s*ARTICLE\s+(?:[IVXLC]+|\d+)\b/i);
@@ -298,35 +359,50 @@ function detectGaps(sections) {
 
 // ─── Find body start in cleaned text ───
 // After EDGAR cleanup shifts character positions, re-locate where the body
-// starts by searching for the first ARTICLE or Section heading.
+// starts by searching for body signals after the TOC area.
 function findBodyStartInCleanedText(cleanedText, tocEntries) {
   if (!tocEntries || tocEntries.length === 0) return 0;
 
-  // Strategy: find the first "Section X.XX" or "ARTICLE" that appears as a
-  // real heading (not a TOC line). A TOC line ends with dots+pagenum; a body
-  // heading is followed by substantive text.
-  const sectionRe = /(?:SECTION|Section)\s+(\d+\.\d{1,2})\b/g;
-  const tocSet = new Set(tocEntries);
-  let m;
-  while ((m = sectionRe.exec(cleanedText)) !== null) {
-    if (!tocSet.has(m[1])) continue;
-    // Check if this line looks like a TOC line (ends with dots + page number)
-    const lineEnd = cleanedText.indexOf('\n', m.index);
-    const line = cleanedText.substring(m.index, lineEnd === -1 ? cleanedText.length : lineEnd);
-    if (/(?:\.{2,}|[\s\t]{2,})\d{1,4}\s*$/.test(line)) continue; // TOC line, skip
+  // If there's a "Table of Contents" header in cleaned text, skip past it
+  const tocHeader = cleanedText.match(/(?:^|\n)\s*(?:TABLE\s+OF\s+CONTENTS|Table\s+of\s+Contents)\s*\n/im);
+  const searchFrom = tocHeader ? tocHeader.index + tocHeader[0].length : 0;
+  const afterTocHeader = cleanedText.substring(searchFrom);
 
-    // This is a body heading — find start of its line or preceding ARTICLE
-    const before = cleanedText.substring(Math.max(0, m.index - 200), m.index);
-    const artMatch = before.match(/\n\s*(ARTICLE\s+(?:[IVXLC]+|\d+)\b[^\n]*)\s*$/i);
-    if (artMatch) {
-      return m.index - (before.length - before.lastIndexOf('\n')) + 1;
-    }
-    // Start at beginning of this heading's line
-    const lineStart = cleanedText.lastIndexOf('\n', m.index);
-    return lineStart === -1 ? 0 : lineStart + 1;
+  // Look for body start signals
+  const bodySignals = [
+    afterTocHeader.match(/\n\s*(AGREEMENT\s+AND\s+PLAN\s+OF\s+MERGER)/i),
+    afterTocHeader.match(/\n\s*(PREAMBLE)/i),
+    afterTocHeader.match(/\n\s*(RECITALS)/i),
+    afterTocHeader.match(/\n\s*(NOW,?\s+THEREFORE)/i),
+    afterTocHeader.match(/\n\s*(This\s+Agreement\s+and\s+Plan)/i),
+  ].filter(Boolean);
+
+  if (bodySignals.length > 0) {
+    const earliest = Math.min(...bodySignals.map(m => m.index));
+    return searchFrom + earliest + 1;
   }
 
-  // Fallback: look for first ARTICLE heading
+  // Find first Section heading that's followed by substantial text (not a TOC line)
+  const tocSet = new Set(tocEntries);
+  const sectionRe = /(?:SECTION|Section)\s+(\d+\.\d{1,2})\b/g;
+  let m;
+  while ((m = sectionRe.exec(afterTocHeader)) !== null) {
+    if (!tocSet.has(m[1])) continue;
+    // Check: is the next 200 chars after this heading substantive text?
+    const after = afterTocHeader.substring(m.index + m[0].length, m.index + m[0].length + 200);
+    if (after.length > 100 && !/(?:SECTION|Section)\s+\d+\.\d{1,2}/.test(after.substring(0, 80))) {
+      // Body heading — go back to start of line or preceding ARTICLE
+      const before = afterTocHeader.substring(Math.max(0, m.index - 200), m.index);
+      const artMatch = before.match(/\n\s*(ARTICLE\s+(?:[IVXLC]+|\d+)\b[^\n]*)\s*$/i);
+      if (artMatch) {
+        return searchFrom + m.index - (before.length - before.lastIndexOf('\n')) + 1;
+      }
+      const lineStart = afterTocHeader.lastIndexOf('\n', m.index);
+      return searchFrom + (lineStart === -1 ? 0 : lineStart + 1);
+    }
+  }
+
+  // Fallback: first ARTICLE heading
   const artFirst = cleanedText.match(/\n\s*ARTICLE\s+(?:[IVXLC]+|\d+)\b/i);
   if (artFirst) return artFirst.index + 1;
   return 0;
