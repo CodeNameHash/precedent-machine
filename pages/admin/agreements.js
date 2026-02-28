@@ -212,7 +212,9 @@ export default function AddAgreements() {
   const [agreementSourceId, setAgreementSourceId] = useState(null);
   const [fullAgreementText, setFullAgreementText] = useState('');
   const [deduplicatedCount, setDeduplicatedCount] = useState(0);
-  const [extractionMode, setExtractionMode] = useState('segment'); // 'segment' | 'legacy'
+  const [extractionMode, setExtractionMode] = useState('segment'); // 'segment' | 'legacy' | 'parse-only'
+  const [parsedSections, setParsedSections] = useState([]);
+  const [parseOnlyData, setParseOnlyData] = useState(null);
   const [timingData, setTimingData] = useState(null);
   const [diagnosticsData, setDiagnosticsData] = useState(null);
   const [reviewOpen, setReviewOpen] = useState(false);
@@ -316,6 +318,8 @@ export default function AddAgreements() {
     setDealInfo(null);
     setDuplicateWarning(null);
     setPreviewProvisions([]);
+    setParsedSections([]);
+    setParseOnlyData(null);
 
     try {
       // Name-only mode: just identify the deal, prompt for text next
@@ -335,10 +339,25 @@ export default function AddAgreements() {
         return;
       }
 
-      // Upload / paste mode: get text, identify deal, extract provisions
+      // Upload / paste mode: get text
       const fullText = await getAgreementText();
       setExtractedTextLength(fullText.length);
-      await identifyAndExtract(fullText);
+
+      if (extractionMode === 'parse-only') {
+        setFullAgreementText(fullText);
+        setStep('extracting');
+        setProcessingMsg('Parsing document structure...');
+        const data = await safeFetch('/api/ingest/parse-only', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ full_text: fullText }),
+        });
+        setParsedSections(data.sections || []);
+        setParseOnlyData({ toc: data.toc, gaps: data.gaps, diagnostics: data.diagnostics, articles: data.articles });
+        setStep('parse-preview');
+      } else {
+        await identifyAndExtract(fullText);
+      }
     } catch (err) {
       setError(err.message);
       if (step === 'extracting') setStep('input');
@@ -519,6 +538,7 @@ export default function AddAgreements() {
     setAgreementSourceId(null); setFullAgreementText(''); setDeduplicatedCount(0);
     setTimingData(null); setDiagnosticsData(null); setReviewOpen(false); setReviewHistory([]);
     setUndoStack([]); setReviewInput('');
+    setParsedSections([]); setParseOnlyData(null);
   };
 
   // Execute review actions from AI
@@ -918,6 +938,17 @@ export default function AddAgreements() {
                         >
                           Legacy search
                         </button>
+                        <button
+                          onClick={() => setExtractionMode('parse-only')}
+                          className="filter-chip"
+                          style={{
+                            background: extractionMode === 'parse-only' ? 'var(--gold-light)' : 'var(--bg2)',
+                            borderColor: extractionMode === 'parse-only' ? 'var(--gold)' : 'var(--border2)',
+                            color: extractionMode === 'parse-only' ? 'var(--gold)' : 'var(--text4)',
+                          }}
+                        >
+                          Parse only
+                        </button>
                       </div>
                     </div>
                   )}
@@ -962,7 +993,9 @@ export default function AddAgreements() {
                       }}
                     >
                       {processing ? (processingMsg || 'Processing...') : (
-                        inputMode === 'name' ? 'Find Deal' : 'Extract Provisions'
+                        inputMode === 'name' ? 'Find Deal' :
+                        extractionMode === 'parse-only' ? 'Parse Structure' :
+                        'Extract Provisions'
                       )}
                     </button>
                   </div>
@@ -983,10 +1016,12 @@ export default function AddAgreements() {
                   Extracting Provisions
                 </div>
                 <div style={{ fontSize: 12, color: 'var(--text3)', lineHeight: 1.5 }}>
-                  {extractionMode === 'segment'
+                  {extractionMode === 'parse-only'
+                    ? 'Detecting table of contents, splitting sections...'
+                    : extractionMode === 'segment'
                     ? 'Parsing agreement structure, classifying sections, and extracting provisions.'
                     : `AI is reading the agreement and identifying provisions across ${selectedTypes.length} categories.`}
-                  <br />This typically takes 30-90 seconds.
+                  {extractionMode !== 'parse-only' && <><br />This typically takes 30-90 seconds.</>}
                 </div>
                 {extractedTextLength > 0 && (
                   <div style={{ fontSize: 10, color: 'var(--text4)', marginTop: 8 }}>
@@ -994,6 +1029,99 @@ export default function AddAgreements() {
                   </div>
                 )}
               </div>
+            )}
+
+            {/* ═══ PARSE-PREVIEW STEP (parse-only results) ═══ */}
+            {step === 'parse-preview' && (
+              <>
+                {/* Summary bar */}
+                <div style={{
+                  background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 10,
+                  padding: '14px 16px', marginBottom: 16,
+                }}>
+                  <div style={{ font: '700 15px var(--serif)', color: 'var(--text)', marginBottom: 4 }}>
+                    Parsed Structure
+                  </div>
+                  <div style={{ fontSize: 12, color: 'var(--text3)' }}>
+                    {parsedSections.length} sections found
+                    {parseOnlyData?.articles?.length > 0 && ` across ${parseOnlyData.articles.length} articles`}.
+                    {' '}Sections shown in document order.
+                  </div>
+                  {parseOnlyData?.diagnostics && (
+                    <div style={{ fontSize: 10, color: 'var(--text4)', marginTop: 4, fontFamily: 'var(--mono)' }}>
+                      Body starts at char {parseOnlyData.diagnostics.bodyStart.toLocaleString()}
+                      {' | '}{parseOnlyData.diagnostics.bodyChars.toLocaleString()} body chars
+                      {' | '}{parseOnlyData.diagnostics.totalChars.toLocaleString()} total chars
+                    </div>
+                  )}
+                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 8 }}>
+                    {parseOnlyData?.toc && (
+                      <span style={{
+                        fontSize: 10, fontWeight: 600, padding: '2px 8px', borderRadius: 4,
+                        background: parseOnlyData.toc.found ? 'var(--green-bg)' : 'var(--yellow-bg)',
+                        color: parseOnlyData.toc.found ? 'var(--green)' : 'var(--yellow)',
+                      }}>
+                        TOC: {parseOnlyData.toc.found ? `${parseOnlyData.toc.totalEntries} entries` : 'not detected'}
+                      </span>
+                    )}
+                    {parseOnlyData?.toc?.found && (
+                      <span style={{
+                        fontSize: 10, fontWeight: 600, padding: '2px 8px', borderRadius: 4,
+                        background: parseOnlyData.toc.missing.length === 0 ? 'var(--green-bg)' : 'var(--yellow-bg)',
+                        color: parseOnlyData.toc.missing.length === 0 ? 'var(--green)' : 'var(--yellow)',
+                      }}>
+                        Matched: {parseOnlyData.toc.matched}/{parseOnlyData.toc.totalEntries}
+                      </span>
+                    )}
+                    {parseOnlyData?.toc?.missing?.length > 0 && (
+                      <span style={{
+                        fontSize: 10, fontWeight: 600, padding: '2px 8px', borderRadius: 4,
+                        background: 'var(--red-bg)', color: 'var(--red)',
+                      }}>
+                        Missing: {parseOnlyData.toc.missing.join(', ')}
+                      </span>
+                    )}
+                    {parseOnlyData?.gaps?.length > 0 && (
+                      <span style={{
+                        fontSize: 10, fontWeight: 600, padding: '2px 8px', borderRadius: 4,
+                        background: 'var(--yellow-bg)', color: 'var(--yellow)',
+                      }}>
+                        Gaps: {parseOnlyData.gaps.map(g => g.label).join(', ')}
+                      </span>
+                    )}
+                  </div>
+                  <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+                    <button onClick={() => { setStep('input'); setParsedSections([]); setParseOnlyData(null); }} className="action-btn">
+                      Start Over
+                    </button>
+                  </div>
+                </div>
+
+                {/* Section cards in document order, grouped by article */}
+                {(() => {
+                  let currentArticle = null;
+                  return parsedSections.map((section, idx) => {
+                    const nodes = [];
+                    if (section.articleNumber && section.articleNumber !== currentArticle) {
+                      currentArticle = section.articleNumber;
+                      nodes.push(
+                        <div key={`art-${section.articleNumber}`} className="provision-section-divider">
+                          {section.articleHeading || `Article ${section.articleNumber}`}
+                          {section.articleTitle && (
+                            <span style={{ fontSize: 10, color: 'var(--text3)', textTransform: 'none', letterSpacing: 0, fontWeight: 400, marginLeft: 8 }}>
+                              {section.articleTitle}
+                            </span>
+                          )}
+                        </div>
+                      );
+                    }
+                    nodes.push(
+                      <ParseSectionCard key={`${section.number}-${idx}`} section={section} />
+                    );
+                    return nodes;
+                  });
+                })()}
+              </>
             )}
 
             {/* ═══ NEEDTEXT STEP (deal identified, now need agreement text) ═══ */}
@@ -1569,6 +1697,54 @@ function TextSelectorPanel({ fullText, currentText, onSelect, onClose }) {
 // ═══════════════════════════════════════════════════
 // Preview Provision Card
 // ═══════════════════════════════════════════════════
+function ParseSectionCard({ section }) {
+  const [expanded, setExpanded] = useState(false);
+  const previewText = section.text.split('\n').slice(0, 3).join('\n');
+
+  return (
+    <div className="prong-card" style={{ marginBottom: 6 }}>
+      <div
+        className="prong-header"
+        onClick={() => setExpanded(!expanded)}
+        style={{ cursor: 'pointer' }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+          <span style={{
+            fontFamily: 'var(--mono)', fontSize: 11, fontWeight: 700,
+            color: 'var(--gold)', flexShrink: 0,
+          }}>
+            {section.number}
+          </span>
+          <span className="prong-name" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {section.title || section.heading}
+          </span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
+          <span style={{ fontSize: 10, color: 'var(--text4)', fontFamily: 'var(--mono)' }}>
+            {section.charCount.toLocaleString()} chars
+          </span>
+          <span style={{ fontSize: 12, color: 'var(--text3)', userSelect: 'none' }}>
+            {expanded ? '\u25B4' : '\u25BE'}
+          </span>
+        </div>
+      </div>
+      <div style={{ padding: '8px 16px 12px' }}>
+        {expanded ? (
+          <div className="prong-text" style={{ whiteSpace: 'pre-wrap', maxHeight: 500, overflow: 'auto' }}>
+            {section.text}
+          </div>
+        ) : (
+          <div className="prong-text" style={{ color: 'var(--text4)', fontSize: 11 }}>
+            {previewText.length < section.text.length
+              ? previewText + '...'
+              : previewText}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function PreviewCard({ prov, onUpdate, onRemove, disabled, fullAgreementText }) {
   const [editing, setEditing] = useState(false);
   const [editText, setEditText] = useState(prov.text);
