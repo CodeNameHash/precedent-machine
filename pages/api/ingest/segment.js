@@ -676,13 +676,85 @@ function splitDefinitions(sectionText) {
   return provisions.length > 0 ? provisions : null;
 }
 
+// ─── Regex-based sub-clause splitting for COND, IOC, ANTI, NOSOL ───
+// Splits sections with (a), (b), (c) sub-clause markers into individual provisions.
+function splitBySubClauses(sectionText, type, displayTier) {
+  // Find (a), (b), (c) etc. at start of lines (allow leading whitespace)
+  const clausePattern = /(?:^|\n)\s*\(([a-z])\)\s/g;
+  const matches = [];
+  let m;
+  while ((m = clausePattern.exec(sectionText)) !== null) {
+    const offset = sectionText[m.index] === '\n' ? 1 : 0;
+    matches.push({ index: m.index + offset, letter: m[1] });
+  }
+
+  if (matches.length < 2) return null; // Need at least 2 sub-clauses to split
+
+  const provisions = [];
+
+  // Preamble before first sub-clause
+  if (matches[0].index > 50) {
+    const preamble = sectionText.substring(0, matches[0].index).trim();
+    if (preamble.length > 30) {
+      provisions.push({
+        type,
+        category: 'General / Preamble',
+        text: preamble,
+        favorability: 'neutral',
+        display_tier: displayTier,
+      });
+    }
+  }
+
+  // Each sub-clause: from this marker to the next (or end)
+  for (let i = 0; i < matches.length; i++) {
+    const start = matches[i].index;
+    const end = i + 1 < matches.length ? matches[i + 1].index : sectionText.length;
+    const text = sectionText.substring(start, end).trim();
+    if (text.length < 20) continue;
+
+    const category = extractSubClauseCategory(text);
+
+    provisions.push({
+      type,
+      category,
+      text,
+      favorability: 'neutral',
+      display_tier: displayTier,
+    });
+  }
+
+  return provisions.length > 0 ? provisions : null;
+}
+
+// Extract a category name from the first meaningful phrase of a sub-clause
+function extractSubClauseCategory(text) {
+  // Remove (a)/(b) prefix
+  const stripped = text.replace(/^\s*\([a-z]\)\s*/, '').trim();
+  // Take first line
+  const firstLine = stripped.split('\n')[0].trim();
+
+  // Pattern 1: Capitalised title with period ("Organization and Good Standing. The Company...")
+  const titleMatch = firstLine.match(/^([A-Z][^.]{3,60})\./);
+  if (titleMatch) return titleMatch[1].trim();
+
+  // Pattern 2: First sentence or meaningful phrase (up to 80 chars)
+  const sentenceMatch = firstLine.match(/^(.{10,80}?)[.;]/);
+  if (sentenceMatch) return sentenceMatch[1].trim();
+
+  // Pattern 3: Truncate at word boundary
+  const excerpt = firstLine.substring(0, 60);
+  const lastSpace = excerpt.lastIndexOf(' ');
+  return lastSpace > 15 ? excerpt.substring(0, lastSpace) : excerpt;
+}
+
 // ─── Phase 4: Extract sub-provisions — three-tier universal extraction ───
 async function extractSubProvisions(classifiedSections, client, calibrationByType) {
   const results = [];
 
-  // Intercept DEF sections — split with regex instead of AI
-  const defSections = [];
-  const nonDefSections = [];
+  // Intercept DEF, COND, IOC, ANTI, NOSOL — split with regex instead of AI
+  const PRE_SPLIT_TYPES = new Set(['DEF', 'COND', 'IOC', 'ANTI']);
+  const aiSections = [];
   for (const s of classifiedSections) {
     if (s.provision_type === 'DEF') {
       const split = splitDefinitions(s.text);
@@ -690,7 +762,6 @@ async function extractSubProvisions(classifiedSections, client, calibrationByTyp
         split.forEach(p => { p.startChar = s.startChar; });
         results.push(...split);
       } else {
-        // Regex found nothing — keep as single provision
         results.push({
           type: 'DEF',
           category: s.category,
@@ -700,16 +771,31 @@ async function extractSubProvisions(classifiedSections, client, calibrationByTyp
           startChar: s.startChar,
         });
       }
-      defSections.push(s);
+    } else if (PRE_SPLIT_TYPES.has(s.provision_type) || s._isNoSolicit) {
+      const split = splitBySubClauses(s.text, s.provision_type, s.display_tier);
+      if (split) {
+        split.forEach(p => { p.startChar = s.startChar; });
+        results.push(...split);
+      } else {
+        // No sub-clauses found — keep as single provision
+        results.push({
+          type: s.provision_type,
+          category: s.category,
+          text: s.text,
+          favorability: 'neutral',
+          display_tier: s.display_tier,
+          startChar: s.startChar,
+        });
+      }
     } else {
-      nonDefSections.push(s);
+      aiSections.push(s);
     }
   }
 
-  // Split remaining (non-DEF) into three tiers by complexity
-  const highSections = nonDefSections.filter(s => s.complexity === 'high');
-  const mediumSections = nonDefSections.filter(s => s.complexity === 'medium');
-  const lowSections = nonDefSections.filter(s => s.complexity !== 'high' && s.complexity !== 'medium');
+  // Split remaining (non-pre-split) into three tiers by complexity
+  const highSections = aiSections.filter(s => s.complexity === 'high');
+  const mediumSections = aiSections.filter(s => s.complexity === 'medium');
+  const lowSections = aiSections.filter(s => s.complexity !== 'high' && s.complexity !== 'medium');
 
   // ─── Tier 1 (high): Full sub-extraction per category ───
   const highTasks = highSections.map((section) => async () => {
