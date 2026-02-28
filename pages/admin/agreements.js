@@ -215,6 +215,7 @@ export default function AddAgreements() {
   const [extractionMode, setExtractionMode] = useState('segment'); // 'segment' | 'legacy' | 'parse-only'
   const [parsedSections, setParsedSections] = useState([]);
   const [parseOnlyData, setParseOnlyData] = useState(null);
+  const [splitUndoMap, setSplitUndoMap] = useState({}); // { parentNumber: originalSection }
   const [timingData, setTimingData] = useState(null);
   const [diagnosticsData, setDiagnosticsData] = useState(null);
   const [reviewOpen, setReviewOpen] = useState(false);
@@ -538,7 +539,57 @@ export default function AddAgreements() {
     setAgreementSourceId(null); setFullAgreementText(''); setDeduplicatedCount(0);
     setTimingData(null); setDiagnosticsData(null); setReviewOpen(false); setReviewHistory([]);
     setUndoStack([]); setReviewInput('');
-    setParsedSections([]); setParseOnlyData(null);
+    setParsedSections([]); setParseOnlyData(null); setSplitUndoMap({});
+  };
+
+  // Split a parsed section by (a)/(b)/(c) subclauses
+  const handleSplit = (sectionIndex, section) => {
+    const subItems = section.text.split(/\n\s*(?=\([a-z]\)\s)/);
+    if (subItems.length < 2) return;
+
+    // Save original for undo
+    setSplitUndoMap(prev => ({ ...prev, [section.number]: section }));
+
+    const newSections = subItems.map((text, i) => {
+      const labelMatch = text.match(/^\(([a-z])\)\s/);
+      const label = labelMatch ? `(${labelMatch[1]})` : '(preamble)';
+      return {
+        ...section,
+        number: i === 0 && !labelMatch ? section.number : `${section.number}${label}`,
+        title: i === 0 && !labelMatch ? section.title + ' (preamble)' : `${section.title} ${label}`,
+        text: text.trim(),
+        charCount: text.trim().length,
+        isSplit: true,
+        parentNumber: section.number,
+      };
+    });
+
+    setParsedSections(prev => {
+      const next = [...prev];
+      next.splice(sectionIndex, 1, ...newSections);
+      return next;
+    });
+  };
+
+  // Rejoin split subclauses back into original section
+  const handleRejoin = (parentNumber) => {
+    const original = splitUndoMap[parentNumber];
+    if (!original) return;
+
+    setParsedSections(prev => {
+      const firstIdx = prev.findIndex(s => s.parentNumber === parentNumber);
+      const count = prev.filter(s => s.parentNumber === parentNumber).length;
+      if (firstIdx === -1) return prev;
+      const next = [...prev];
+      next.splice(firstIdx, count, original);
+      return next;
+    });
+
+    setSplitUndoMap(prev => {
+      const next = { ...prev };
+      delete next[parentNumber];
+      return next;
+    });
   };
 
   // Execute review actions from AI
@@ -1052,6 +1103,8 @@ export default function AddAgreements() {
                       Body starts at char {parseOnlyData.diagnostics.bodyStart.toLocaleString()}
                       {' | '}{parseOnlyData.diagnostics.bodyChars.toLocaleString()} body chars
                       {' | '}{parseOnlyData.diagnostics.totalChars.toLocaleString()} total chars
+                      {parseOnlyData.diagnostics.truncatedChars > 0 && ` | ${parseOnlyData.diagnostics.truncatedChars.toLocaleString()} truncated`}
+                      {parseOnlyData.diagnostics.definitionTerms > 0 && ` | ${parseOnlyData.diagnostics.definitionTerms} defined terms`}
                     </div>
                   )}
                   <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 8 }}>
@@ -1116,7 +1169,12 @@ export default function AddAgreements() {
                       );
                     }
                     nodes.push(
-                      <ParseSectionCard key={`${section.number}-${idx}`} section={section} />
+                      <ParseSectionCard
+                        key={`${section.number}-${idx}`}
+                        section={section}
+                        onSplit={() => handleSplit(idx, section)}
+                        onRejoin={() => handleRejoin(section.parentNumber)}
+                      />
                     );
                     return nodes;
                   });
@@ -1697,12 +1755,19 @@ function TextSelectorPanel({ fullText, currentText, onSelect, onClose }) {
 // ═══════════════════════════════════════════════════
 // Preview Provision Card
 // ═══════════════════════════════════════════════════
-function ParseSectionCard({ section }) {
+function ParseSectionCard({ section, onSplit, onRejoin }) {
   const [expanded, setExpanded] = useState(false);
   const previewText = section.text.split('\n').slice(0, 3).join('\n');
 
+  // Detect if section has 3+ (a)/(b)/(c) subclauses — show Split button
+  const subclauseCount = (section.text.match(/\n\s*\([a-z]\)\s/g) || []).length;
+  const canSplit = !section.isSplit && !section.isDefinition && subclauseCount >= 3;
+
   return (
-    <div className="prong-card" style={{ marginBottom: 6 }}>
+    <div className="prong-card" style={{
+      marginBottom: 6,
+      borderLeft: section.isDefinition ? '3px solid var(--gold)' : section.isSplit ? '3px solid var(--blue, #5B9BD5)' : undefined,
+    }}>
       <div
         className="prong-header"
         onClick={() => setExpanded(!expanded)}
@@ -1715,11 +1780,44 @@ function ParseSectionCard({ section }) {
           }}>
             {section.number}
           </span>
+          {section.isDefinition && (
+            <span style={{
+              fontSize: 9, fontWeight: 600, padding: '1px 5px', borderRadius: 3,
+              background: 'var(--gold-light, #FFF8E1)', color: 'var(--gold)',
+            }}>DEF</span>
+          )}
+          {section.isSplit && (
+            <span style={{
+              fontSize: 9, fontWeight: 600, padding: '1px 5px', borderRadius: 3,
+              background: 'var(--blue-bg, #E3F2FD)', color: 'var(--blue, #5B9BD5)',
+            }}>SPLIT</span>
+          )}
           <span className="prong-name" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {section.title || section.heading}
           </span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
+          {canSplit && (
+            <button
+              onClick={(e) => { e.stopPropagation(); onSplit && onSplit(); }}
+              style={{
+                fontSize: 9, fontWeight: 600, padding: '2px 8px', borderRadius: 4,
+                background: 'none', border: '1px solid var(--border2)', color: 'var(--text3)',
+                cursor: 'pointer',
+              }}
+              title={`Split into ${subclauseCount} subclauses`}
+            >Split ({subclauseCount})</button>
+          )}
+          {section.isSplit && (
+            <button
+              onClick={(e) => { e.stopPropagation(); onRejoin && onRejoin(); }}
+              style={{
+                fontSize: 9, fontWeight: 600, padding: '2px 8px', borderRadius: 4,
+                background: 'none', border: '1px solid var(--border2)', color: 'var(--text3)',
+                cursor: 'pointer',
+              }}
+            >Rejoin</button>
+          )}
           <span style={{ fontSize: 10, color: 'var(--text4)', fontFamily: 'var(--mono)' }}>
             {section.charCount.toLocaleString()} chars
           </span>

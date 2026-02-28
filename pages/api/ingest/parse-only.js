@@ -178,6 +178,22 @@ function romanToInt(str) {
   return result;
 }
 
+// ─── Signature Page / Exhibit Truncation ───
+function findBodyEnd(fullText, bodyStart) {
+  const afterBody = fullText.substring(bodyStart);
+
+  // Look for signature page indicators
+  const sigPattern = /\n\s*(IN WITNESS WHEREOF|\[Signature\s+Page)/i;
+  const sigMatch = afterBody.match(sigPattern);
+
+  if (!sigMatch) return { bodyEnd: fullText.length, truncatedChars: 0 };
+
+  // Signature page found — truncate here
+  const bodyEnd = bodyStart + sigMatch.index;
+
+  return { bodyEnd, truncatedChars: fullText.length - bodyEnd };
+}
+
 // ─── Gap Detection ───
 function detectGaps(sections) {
   const byArticle = {};
@@ -214,15 +230,19 @@ function parseDocument(fullText) {
   // Step 1: Detect and skip TOC
   const toc = detectTOC(fullText);
   const bodyStart = toc.bodyStart;
-  const body = fullText.substring(bodyStart);
 
-  // Step 2: Find all section headings in the body
+  // Step 1b: Truncate at signature pages / exhibits
+  const { bodyEnd, truncatedChars } = findBodyEnd(fullText, bodyStart);
+  const body = fullText.substring(bodyStart, bodyEnd);
+
+  // Step 2: Find all section headings in the body (two-pass approach)
+  // Pass 1: Collect all candidates that pass isHeading()
   const sectionPattern = /(?:SECTION|Section)\s+(\d+\.\d{1,2})\b/g;
-  const headings = [];
+  const candidates = [];
   let m;
   while ((m = sectionPattern.exec(body)) !== null) {
     if (isHeading(body, m.index)) {
-      headings.push({
+      candidates.push({
         index: m.index,
         absIndex: bodyStart + m.index,
         number: m[1],
@@ -232,13 +252,13 @@ function parseDocument(fullText) {
   }
 
   // Fallback: try bare "X.XX Title" format if too few Section matches
-  if (headings.length < 5) {
+  if (candidates.length < 5) {
     const barePattern = /(?:^|\n)\s*(\d+\.\d{1,2})\s+[A-Z]/g;
     while ((m = barePattern.exec(body)) !== null) {
       const num = m[1];
-      if (!headings.some(h => h.number === num && Math.abs(h.index - m.index) < 20)) {
+      if (!candidates.some(h => h.number === num && Math.abs(h.index - m.index) < 20)) {
         const offset = m[0].startsWith('\n') ? 1 : 0;
-        headings.push({
+        candidates.push({
           index: m.index + offset,
           absIndex: bodyStart + m.index + offset,
           number: num,
@@ -246,7 +266,44 @@ function parseDocument(fullText) {
         });
       }
     }
-    headings.sort((a, b) => a.index - b.index);
+  }
+  candidates.sort((a, b) => a.index - b.index);
+
+  // Pass 2: Sequential validation — filter out cross-references
+  const headings = [];
+  let lastArticle = -1;
+  let lastSection = -1;
+  for (const c of candidates) {
+    const parts = c.number.match(/(\d+)\.(\d{1,2})/);
+    if (!parts) continue;
+    const art = parseInt(parts[1], 10);
+    const sec = parseInt(parts[2], 10);
+
+    // Check if this is the next expected section or a new article
+    const isNextInArticle = art === lastArticle && sec === lastSection + 1;
+    const isNewArticle = art > lastArticle;
+    const isFirstCandidate = headings.length === 0;
+
+    // Check character immediately before "Section" (ignoring whitespace)
+    let precededByBreak = false;
+    if (!isNextInArticle && !isNewArticle && !isFirstCandidate) {
+      const before = body.substring(Math.max(0, c.index - 20), c.index);
+      const trimmed = before.trimEnd();
+      if (trimmed.length > 0) {
+        const lastChar = trimmed[trimmed.length - 1];
+        // Period, digit (page number), or colon indicates a structural break
+        precededByBreak = /[.\d:]/.test(lastChar);
+      } else {
+        precededByBreak = true; // whitespace-only before = start of block
+      }
+    }
+
+    if (isFirstCandidate || isNextInArticle || isNewArticle || precededByBreak) {
+      headings.push(c);
+      lastArticle = art;
+      lastSection = sec;
+    }
+    // else: skip — likely a cross-reference
   }
 
   // Step 3: Build sections by splitting between consecutive headings
@@ -268,6 +325,81 @@ function parseDocument(fullText) {
       charCount: text.length,
       absStart: headings[i].absIndex,
     });
+  }
+
+  // Step 3b: Auto-split definitions sections
+  let definitionTerms = 0;
+  const defTermPattern = /\n\s*\u201c([^\u201d]+)\u201d\s+(?:means?|shall\s+mean|has\s+the\s+meaning|shall\s+have\s+the\s+meaning)/;
+  const defTermPatternGlobal = /\n\s*\u201c([^\u201d]+)\u201d\s+(?:means?|shall\s+mean|has\s+the\s+meaning|shall\s+have\s+the\s+meaning)/g;
+  // Also try straight quotes
+  const defTermPatternStraight = /\n\s*"([^"]+)"\s+(?:means?|shall\s+mean|has\s+the\s+meaning|shall\s+have\s+the\s+meaning)/;
+  const defTermPatternStraightGlobal = /\n\s*"([^"]+)"\s+(?:means?|shall\s+mean|has\s+the\s+meaning|shall\s+have\s+the\s+meaning)/g;
+
+  for (let si = 0; si < sections.length; si++) {
+    const sec = sections[si];
+    if (!/definition/i.test(sec.title)) continue;
+
+    // Try curly quotes first, then straight quotes
+    let usePattern = defTermPatternGlobal;
+    let testMatch = sec.text.match(defTermPattern);
+    if (!testMatch) {
+      usePattern = defTermPatternStraightGlobal;
+      testMatch = sec.text.match(defTermPatternStraight);
+    }
+    if (!testMatch) continue;
+
+    // Find all defined term boundaries
+    usePattern.lastIndex = 0;
+    const termMatches = [];
+    let tm;
+    while ((tm = usePattern.exec(sec.text)) !== null) {
+      termMatches.push({ index: tm.index + 1, term: tm[1] }); // +1 to skip the leading \n
+    }
+
+    if (termMatches.length < 3) continue; // not worth splitting for very few terms
+
+    const subSections = [];
+
+    // Preamble: text before the first defined term
+    if (termMatches[0].index > 0) {
+      const preambleText = sec.text.substring(0, termMatches[0].index).trim();
+      if (preambleText.length > 20) {
+        subSections.push({
+          number: sec.number,
+          heading: sec.heading,
+          title: sec.title + ' (Preamble)',
+          text: preambleText,
+          charCount: preambleText.length,
+          absStart: sec.absStart,
+          isDefinition: true,
+          subKey: '_preamble',
+        });
+      }
+    }
+
+    // Each defined term
+    for (let ti = 0; ti < termMatches.length; ti++) {
+      const start = termMatches[ti].index;
+      const end = ti + 1 < termMatches.length ? termMatches[ti + 1].index : sec.text.length;
+      const termText = sec.text.substring(start, end).trim();
+
+      subSections.push({
+        number: sec.number,
+        heading: sec.heading,
+        title: termMatches[ti].term,
+        text: termText,
+        charCount: termText.length,
+        absStart: sec.absStart + start,
+        isDefinition: true,
+        subKey: termMatches[ti].term,
+      });
+    }
+
+    definitionTerms += termMatches.length;
+
+    // Replace the single definitions section with the sub-sections
+    sections.splice(si, 1, ...subSections);
+    si += subSections.length - 1; // adjust index
   }
 
   // Step 4: Find ARTICLE boundaries for context
@@ -335,9 +467,12 @@ function parseDocument(fullText) {
     diagnostics: {
       totalChars: fullText.length,
       bodyStart,
-      bodyChars: fullText.length - bodyStart,
+      bodyEnd,
+      bodyChars: bodyEnd - bodyStart,
+      truncatedChars,
       sectionCount: sections.length,
       articleCount: articles.length,
+      definitionTerms,
     },
   };
 }
