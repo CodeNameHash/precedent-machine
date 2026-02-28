@@ -99,88 +99,212 @@ const PROVISION_TYPE_CONFIGS = {
   },
 };
 
+// Cross-reference signal words — if these appear before a Section/Article
+// reference on the same line, it's a cross-ref not a heading
+const XREF_SIGNALS = /(?:in|under|pursuant\s+to|of|set\s+forth\s+in|described\s+in|defined\s+in|referenced\s+in|subject\s+to|accordance\s+with|provided\s+in|specified\s+in|required\s+by|referred\s+to\s+in)\s+$/i;
+
+// ─── TOC Parser ───
+function parseTOC(fullText) {
+  // Look for TABLE OF CONTENTS in first 15% of text
+  const searchRegion = fullText.substring(0, Math.floor(fullText.length * 0.15));
+  const tocMatch = searchRegion.match(/TABLE\s+OF\s+CONTENTS/i);
+  if (!tocMatch) return null;
+
+  const tocStart = tocMatch.index + tocMatch[0].length;
+
+  // Find where TOC ends — look for first real ARTICLE heading in body
+  // (TOC entries reference articles but the body starts with the actual heading)
+  const afterToc = fullText.substring(tocStart);
+  const bodyStartMatch = afterToc.match(/\n\s*(ARTICLE\s+(?:[IVXLC]+|\d+))\s*\n/i);
+  const tocEnd = bodyStartMatch ? tocStart + bodyStartMatch.index : tocStart + 5000;
+  const tocText = fullText.substring(tocStart, Math.min(tocEnd, fullText.length));
+
+  const entries = [];
+  const lines = tocText.split('\n');
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.length < 3) continue;
+
+    // Match article entries: ARTICLE I, ARTICLE 1, etc.
+    const artMatch = trimmed.match(/^(ARTICLE\s+(?:[IVXLC]+|\d+))\s*[.\-—\s]+\s*(.+?)(?:\s*\.{2,}\s*\d+|\s+\d+)?\s*$/i);
+    if (artMatch) {
+      entries.push({
+        number: artMatch[1].trim(),
+        title: artMatch[2].replace(/\.+\s*\d*\s*$/, '').trim(),
+        level: 'article',
+      });
+      continue;
+    }
+
+    // Match section entries: Section 1.1, 1.1, SECTION 1.01, etc.
+    const secMatch = trimmed.match(/^(?:(?:SECTION|Section)\s+)?(\d+\.\d+[a-z]?)\s*[.\-—\s]+\s*(.+?)(?:\s*\.{2,}\s*\d+|\s+\d+)?\s*$/i);
+    if (secMatch) {
+      entries.push({
+        number: secMatch[1].trim(),
+        title: secMatch[2].replace(/\.+\s*\d*\s*$/, '').trim(),
+        level: 'section',
+      });
+    }
+  }
+
+  return entries.length >= 5 ? { entries, tocEndPos: tocEnd } : null;
+}
+
+// ─── Check if a match is a cross-reference (not a real heading) ───
+function isCrossReference(fullText, matchIndex) {
+  // Find start of the line this match is on
+  const lineStart = fullText.lastIndexOf('\n', matchIndex - 1) + 1;
+  const textBeforeOnLine = fullText.substring(lineStart, matchIndex);
+
+  // If there are >10 non-whitespace chars before the match on this line,
+  // it's mid-sentence, not a heading
+  const stripped = textBeforeOnLine.replace(/^\s+/, '');
+  if (stripped.length > 10) return true;
+
+  // Check for cross-reference signal words in preceding text
+  if (XREF_SIGNALS.test(textBeforeOnLine)) return true;
+
+  return false;
+}
+
 // ─── Phase 1: Structural parsing (deterministic regex, no AI) ───
 function parseStructure(fullText) {
   const sections = [];
 
-  // Extract definitions first
-  const defRegex = /"([^"]{3,80})"\s+(?:means|shall\s+mean|has\s+the\s+meaning)/gi;
-  let defMatch;
-  while ((defMatch = defRegex.exec(fullText)) !== null) {
-    const defName = defMatch[1];
-    const startChar = defMatch.index;
-    // Find end of definition — next defined term or double newline or next section heading
-    const afterDef = fullText.substring(startChar);
-    // Look for the next definition or section boundary
-    const nextBoundary = afterDef.search(/\n\s*"[^"]{3,80}"\s+(?:means|shall\s+mean|has\s+the\s+meaning)|\n\s*(?:ARTICLE|SECTION)\s+/i);
-    const endChar = nextBoundary > 0 ? startChar + nextBoundary : Math.min(startChar + 5000, fullText.length);
-    sections.push({
-      heading: defName,
-      text: fullText.substring(startChar, endChar).trim(),
-      level: 'definition',
-      startChar,
-      endChar,
-    });
-  }
+  // Try TOC-guided parsing first
+  const toc = parseTOC(fullText);
 
-  // Detect article boundaries
-  const articleRegex = /^[ \t]*(ARTICLE\s+(?:[IVXLC]+|\d+))\b[^\n]*/gmi;
-  const articles = [];
-  let artMatch;
-  while ((artMatch = articleRegex.exec(fullText)) !== null) {
-    articles.push({ heading: artMatch[0].trim(), startChar: artMatch.index });
-  }
+  if (toc) {
+    // TOC-guided mode: use TOC entries to find section boundaries in body
+    const bodyStart = toc.tocEndPos;
+    const bodyText = fullText.substring(bodyStart);
 
-  // Detect section boundaries
-  const sectionRegex = /^[ \t]*(?:(?:SECTION|Section)\s+)?(\d+\.\d+)\b[^\n]*/gm;
-  const sectionMatches = [];
-  let secMatch;
-  while ((secMatch = sectionRegex.exec(fullText)) !== null) {
-    sectionMatches.push({ heading: secMatch[0].trim(), startChar: secMatch.index });
-  }
+    const boundaries = [];
 
-  // Build section entries from section boundaries
-  for (let i = 0; i < sectionMatches.length; i++) {
-    const start = sectionMatches[i].startChar;
-    const end = i + 1 < sectionMatches.length
-      ? sectionMatches[i + 1].startChar
-      : (articles.length > 0 ? findNextArticleAfter(articles, start, fullText.length) : fullText.length);
-    const text = fullText.substring(start, end).trim();
-    if (text.length < 20) continue;
-    sections.push({
-      heading: sectionMatches[i].heading,
-      text,
-      level: 'section',
-      startChar: start,
-      endChar: end,
-    });
-  }
+    for (const entry of toc.entries) {
+      // Build regex to find this heading in the body
+      const escaped = entry.number.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      let pattern;
+      if (entry.level === 'article') {
+        pattern = new RegExp(`^[ \\t]*${escaped}\\b[^\\n]*`, 'mi');
+      } else {
+        pattern = new RegExp(`^[ \\t]*(?:(?:SECTION|Section)\\s+)?${escaped}\\b[^\\n]*`, 'mi');
+      }
 
-  // Add article-level entries for articles without sub-sections
-  for (let i = 0; i < articles.length; i++) {
-    const artStart = articles[i].startChar;
-    const artEnd = i + 1 < articles.length ? articles[i + 1].startChar : fullText.length;
-    const hasSections = sectionMatches.some(s => s.startChar >= artStart && s.startChar < artEnd);
-    if (!hasSections) {
-      const text = fullText.substring(artStart, artEnd).trim();
-      if (text.length >= 20) {
-        sections.push({
-          heading: articles[i].heading,
-          text,
-          level: 'article',
-          startChar: artStart,
-          endChar: artEnd,
+      const match = pattern.exec(bodyText);
+      if (match) {
+        boundaries.push({
+          heading: match[0].trim(),
+          startChar: bodyStart + match.index,
+          level: entry.level,
+          tocTitle: entry.title,
         });
+      }
+    }
+
+    // Sort boundaries by position and build sections
+    boundaries.sort((a, b) => a.startChar - b.startChar);
+    for (let i = 0; i < boundaries.length; i++) {
+      const start = boundaries[i].startChar;
+      const end = i + 1 < boundaries.length ? boundaries[i + 1].startChar : fullText.length;
+      const text = fullText.substring(start, end).trim();
+      if (text.length < 20) continue;
+      sections.push({
+        heading: boundaries[i].heading,
+        text,
+        level: boundaries[i].level,
+        startChar: start,
+        endChar: end,
+      });
+    }
+  }
+
+  // If TOC didn't produce enough sections, use regex with cross-ref filtering
+  if (sections.length < 5) {
+    sections.length = 0;
+
+    // Extract definitions
+    const defRegex = /"([^"]{3,80})"\s+(?:means|shall\s+mean|has\s+the\s+meaning)/gi;
+    let defMatch;
+    while ((defMatch = defRegex.exec(fullText)) !== null) {
+      const defName = defMatch[1];
+      const startChar = defMatch.index;
+      const afterDef = fullText.substring(startChar);
+      const nextBoundary = afterDef.search(/\n\s*"[^"]{3,80}"\s+(?:means|shall\s+mean|has\s+the\s+meaning)|\n\s*(?:ARTICLE|SECTION)\s+/i);
+      const endChar = nextBoundary > 0 ? startChar + nextBoundary : Math.min(startChar + 5000, fullText.length);
+      sections.push({
+        heading: defName,
+        text: fullText.substring(startChar, endChar).trim(),
+        level: 'definition',
+        startChar,
+        endChar,
+      });
+    }
+
+    // Detect article boundaries with cross-ref filtering
+    const articleRegex = /ARTICLE\s+(?:[IVXLC]+|\d+)\b[^\n]*/gmi;
+    const articles = [];
+    let artMatch;
+    while ((artMatch = articleRegex.exec(fullText)) !== null) {
+      if (!isCrossReference(fullText, artMatch.index)) {
+        articles.push({ heading: artMatch[0].trim(), startChar: artMatch.index });
+      }
+    }
+
+    // Detect section boundaries with cross-ref filtering
+    const sectionRegex = /(?:(?:SECTION|Section)\s+)?(\d+\.\d+[a-z]?)\b[^\n]*/gm;
+    const sectionMatches = [];
+    let secMatch;
+    while ((secMatch = sectionRegex.exec(fullText)) !== null) {
+      if (!isCrossReference(fullText, secMatch.index)) {
+        sectionMatches.push({ heading: secMatch[0].trim(), startChar: secMatch.index });
+      }
+    }
+
+    // Build section entries from section boundaries
+    for (let i = 0; i < sectionMatches.length; i++) {
+      const start = sectionMatches[i].startChar;
+      const end = i + 1 < sectionMatches.length
+        ? sectionMatches[i + 1].startChar
+        : (articles.length > 0 ? findNextArticleAfter(articles, start, fullText.length) : fullText.length);
+      const text = fullText.substring(start, end).trim();
+      if (text.length < 20) continue;
+      sections.push({
+        heading: sectionMatches[i].heading,
+        text,
+        level: 'section',
+        startChar: start,
+        endChar: end,
+      });
+    }
+
+    // Add article-level entries for articles without sub-sections
+    for (let i = 0; i < articles.length; i++) {
+      const artStart = articles[i].startChar;
+      const artEnd = i + 1 < articles.length ? articles[i + 1].startChar : fullText.length;
+      const hasSections = sectionMatches.some(s => s.startChar >= artStart && s.startChar < artEnd);
+      if (!hasSections) {
+        const text = fullText.substring(artStart, artEnd).trim();
+        if (text.length >= 20) {
+          sections.push({
+            heading: articles[i].heading,
+            text,
+            level: 'article',
+            startChar: artStart,
+            endChar: artEnd,
+          });
+        }
       }
     }
   }
 
-  // Fallback: if <5 sections detected, split on double-newlines
+  // Fallback: if still <5 sections, split on double-newlines
   if (sections.length < 5) {
     sections.length = 0;
     const chunks = fullText.split(/\n\s*\n/);
     let offset = 0;
-    chunks.forEach((chunk, i) => {
+    chunks.forEach((chunk) => {
       const trimmed = chunk.trim();
       if (trimmed.length >= 50) {
         sections.push({
@@ -191,15 +315,13 @@ function parseStructure(fullText) {
           endChar: offset + chunk.length,
         });
       }
-      offset += chunk.length + 2; // account for the \n\n split
+      offset += chunk.length + 2;
     });
   }
 
-  // Sort by position
+  // Sort by position in document
   sections.sort((a, b) => a.startChar - b.startChar);
 
-  // Deduplicate overlapping definitions that are contained within sections
-  // Keep definitions that are standalone (not overlapping with a section)
   return sections;
 }
 
@@ -211,7 +333,7 @@ function findNextArticleAfter(articles, pos, fallback) {
 }
 
 // ─── Phase 2: Classify sections via single AI call ───
-async function classifySections(sections, client) {
+async function classifySections(sections, client, rules) {
   // Build compact payload: index, heading, first 300 chars
   const sectionSummaries = sections.map((s, idx) => ({
     idx,
@@ -263,7 +385,7 @@ Rules:
 - Use the exact provision_type keys: ${allTypes.join(', ')}
 - For sections that don't clearly fit, use MISC
 - needs_sub_extraction=true for: MAE sections (have carve-outs), IOC sections (have restriction lists), COND sections (have multiple conditions), TERMR/TERMF sections (have multiple triggers/fees)
-- needs_sub_extraction=false for: simple single-topic sections, definitions, miscellaneous, most REP/COV/STRUCT sections`
+- needs_sub_extraction=false for: simple single-topic sections, definitions, miscellaneous, most REP/COV/STRUCT sections${rules && rules.length > 0 ? '\n\nLEARNED RULES (from prior review sessions):\n' + rules.filter(r => r.scope === 'classify' || r.scope === 'parse').map(r => '- ' + r.rule).join('\n') : ''}`
       }],
     });
 
@@ -319,6 +441,7 @@ async function extractSubProvisions(classifiedSections, client, calibrationByTyp
         text: section.text,
         favorability: 'neutral',
         display_tier: section.display_tier,
+        startChar: section.startChar,
       });
       return;
     }
@@ -376,6 +499,7 @@ Return ONLY valid JSON (no markdown, no backticks):
             text: prov.text.trim(),
             favorability: prov.favorability || 'neutral',
             display_tier: section.display_tier,
+            startChar: section.startChar,
           });
         });
       } catch {
@@ -386,6 +510,7 @@ Return ONLY valid JSON (no markdown, no backticks):
           text: section.text,
           favorability: 'neutral',
           display_tier: section.display_tier,
+          startChar: section.startChar,
         });
       }
     } catch (err) {
@@ -395,6 +520,7 @@ Return ONLY valid JSON (no markdown, no backticks):
         text: section.text,
         favorability: 'neutral',
         display_tier: section.display_tier,
+        startChar: section.startChar,
         error: err.message,
       });
     }
@@ -444,6 +570,7 @@ Return ONLY valid JSON array (no markdown, no backticks):
           text: s.text,
           favorability: fr?.favorability || 'neutral',
           display_tier: s.display_tier,
+          startChar: s.startChar,
         });
       });
     } catch {
@@ -455,6 +582,7 @@ Return ONLY valid JSON array (no markdown, no backticks):
           text: s.text,
           favorability: 'neutral',
           display_tier: s.display_tier,
+          startChar: s.startChar,
         });
       });
     }
@@ -492,7 +620,7 @@ function mergeAndDedup(allProvisions) {
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only' });
 
-  const { deal_id, full_text, title, source_url, filing_date, preview } = req.body;
+  const { deal_id, full_text, title, source_url, filing_date, preview, rules } = req.body;
   if (!full_text) {
     return res.status(400).json({ error: 'full_text is required' });
   }
@@ -567,7 +695,7 @@ export default async function handler(req, res) {
 
     // Phase 2: Classify sections
     const classifyStart = Date.now();
-    const classifiedSections = await classifySections(sections, client);
+    const classifiedSections = await classifySections(sections, client, rules);
     timing.classify_ms = Date.now() - classifyStart;
 
     // Phase 3: Extract sub-provisions
@@ -581,6 +709,10 @@ export default async function handler(req, res) {
     timing.dedup_ms = Date.now() - dedupStart;
     timing.total_ms = Date.now() - totalStart;
     timing.mode = 'segment';
+
+    // Assign sort_order based on document position
+    kept.sort((a, b) => (a.startChar || 0) - (b.startChar || 0));
+    kept.forEach((p, idx) => { p.sort_order = idx; });
 
     // Group results by type for response
     const resultsByType = {};
@@ -604,6 +736,7 @@ export default async function handler(req, res) {
           text: p.text,
           favorability: p.favorability || 'neutral',
           display_tier: p.display_tier || 2,
+          sort_order: p.sort_order,
         });
       }
     });
@@ -617,6 +750,7 @@ export default async function handler(req, res) {
             type: prov.type,
             category: prov.category,
             full_text: prov.text.trim(),
+            sort_order: prov.sort_order,
             ai_favorability: prov.favorability || 'neutral',
             display_tier: prov.display_tier || 2,
             agreement_source_id: agreementSourceId,

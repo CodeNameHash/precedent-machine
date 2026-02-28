@@ -214,6 +214,18 @@ export default function AddAgreements() {
   const [deduplicatedCount, setDeduplicatedCount] = useState(0);
   const [extractionMode, setExtractionMode] = useState('segment'); // 'segment' | 'legacy'
   const [timingData, setTimingData] = useState(null);
+  const [reviewOpen, setReviewOpen] = useState(false);
+  const [reviewHistory, setReviewHistory] = useState([]);
+  const [reviewInput, setReviewInput] = useState('');
+  const [reviewLoading, setReviewLoading] = useState(false);
+  const [reviewRules, setReviewRules] = useState(() => {
+    if (typeof window !== 'undefined') {
+      try { return JSON.parse(localStorage.getItem('importRules') || '[]'); } catch { return []; }
+    }
+    return [];
+  });
+  const [undoStack, setUndoStack] = useState([]);
+  const reviewEndRef = useRef(null);
 
   // ─── Shared: extract text from current inputs ───
   const getAgreementText = async () => {
@@ -273,7 +285,7 @@ export default function AddAgreements() {
       ? 'Parsing structure & extracting provisions...'
       : 'Extracting provisions (this may take a minute)...');
     const ingestBody = extractionMode === 'segment'
-      ? { full_text: fullText, title: titleStr, preview: true }
+      ? { full_text: fullText, title: titleStr, preview: true, rules: reviewRules.length > 0 ? reviewRules : undefined }
       : { full_text: fullText, title: titleStr, provision_types: selectedTypes, preview: true };
     const ingestData = await safeFetch(endpoint, {
       method: 'POST',
@@ -286,9 +298,10 @@ export default function AddAgreements() {
     const allProvs = [];
     (ingestData.results || []).forEach(r => {
       (r.provisions || []).forEach(p => {
-        allProvs.push({ ...p, _originalText: p.text, _id: Math.random().toString(36).substr(2, 9), display_tier: p.display_tier || 2 });
+        allProvs.push({ ...p, _originalText: p.text, _id: Math.random().toString(36).substr(2, 9), display_tier: p.display_tier || 2, sort_order: p.sort_order ?? 999 });
       });
     });
+    allProvs.sort((a, b) => (a.sort_order ?? 999) - (b.sort_order ?? 999));
     setDeduplicatedCount(ingestData.deduplicated_count || 0);
     setPreviewProvisions(allProvs);
     setStep('preview');
@@ -383,7 +396,7 @@ export default function AddAgreements() {
         ? 'Parsing structure & extracting provisions...'
         : 'Extracting provisions (this may take a minute)...');
       const ingestBody = extractionMode === 'segment'
-        ? { full_text: fullText, title: titleStr, preview: true }
+        ? { full_text: fullText, title: titleStr, preview: true, rules: reviewRules.length > 0 ? reviewRules : undefined }
         : { full_text: fullText, title: titleStr, provision_types: selectedTypes, preview: true };
 
       const ingestData = await safeFetch(endpoint, {
@@ -397,9 +410,10 @@ export default function AddAgreements() {
       const allProvs = [];
       (ingestData.results || []).forEach(r => {
         (r.provisions || []).forEach(p => {
-          allProvs.push({ ...p, _originalText: p.text, _id: Math.random().toString(36).substr(2, 9), display_tier: p.display_tier || 2 });
+          allProvs.push({ ...p, _originalText: p.text, _id: Math.random().toString(36).substr(2, 9), display_tier: p.display_tier || 2, sort_order: p.sort_order ?? 999 });
         });
       });
+      allProvs.sort((a, b) => (a.sort_order ?? 999) - (b.sort_order ?? 999));
 
       setDeduplicatedCount(ingestData.deduplicated_count || 0);
       setPreviewProvisions(allProvs);
@@ -477,6 +491,7 @@ export default function AddAgreements() {
             agreement_source_id: agreementSourceId || null,
             ai_metadata: metadata,
             display_tier: prov.display_tier || 2,
+            sort_order: prov.sort_order ?? 0,
           }),
         });
         const data = await resp.json();
@@ -499,7 +514,110 @@ export default function AddAgreements() {
     setFiles([]); setPreviewProvisions([]); setDuplicateWarning(null);
     setError(null); setExtractedTextLength(0); setParseWarnings([]);
     setAgreementSourceId(null); setFullAgreementText(''); setDeduplicatedCount(0);
-    setTimingData(null);
+    setTimingData(null); setReviewOpen(false); setReviewHistory([]);
+    setUndoStack([]); setReviewInput('');
+  };
+
+  // Execute review actions from AI
+  const executeReviewActions = useCallback((actions) => {
+    if (!actions || actions.length === 0) return { updates: 0, removes: 0, adds: 0 };
+    // Save current state for undo
+    setUndoStack(prev => [...prev, [...previewProvisions]]);
+    let updates = 0, removes = 0, adds = 0;
+    setPreviewProvisions(prev => {
+      let next = [...prev];
+      for (const act of actions) {
+        if (act.action === 'update' && act.id && act.field && act.value !== undefined) {
+          next = next.map(p => p._id === act.id ? { ...p, [act.field]: act.value } : p);
+          updates++;
+        } else if (act.action === 'remove' && act.id) {
+          next = next.filter(p => p._id !== act.id);
+          removes++;
+        } else if (act.action === 'add' && act.provision) {
+          const newProv = {
+            ...act.provision,
+            _id: Math.random().toString(36).substr(2, 9),
+            _originalText: act.provision.text,
+            display_tier: act.provision.display_tier || 2,
+            sort_order: next.length,
+          };
+          next.push(newProv);
+          adds++;
+        }
+      }
+      return next;
+    });
+    return { updates, removes, adds };
+  }, [previewProvisions]);
+
+  // Undo last action batch
+  const undoLastReview = useCallback(() => {
+    setUndoStack(prev => {
+      if (prev.length === 0) return prev;
+      const last = prev[prev.length - 1];
+      setPreviewProvisions(last);
+      return prev.slice(0, -1);
+    });
+  }, []);
+
+  // Send review message
+  const sendReviewMessage = async () => {
+    const msg = reviewInput.trim();
+    if (!msg || reviewLoading) return;
+    setReviewInput('');
+    setReviewLoading(true);
+
+    const newHistory = [...reviewHistory, { role: 'user', content: msg }];
+    setReviewHistory(newHistory);
+
+    try {
+      const resp = await safeFetch('/api/ingest/review', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: msg,
+          provisions: previewProvisions,
+          agreement_text: fullAgreementText,
+          history: newHistory,
+          rules: reviewRules,
+        }),
+      });
+
+      let actionSummary = '';
+      if (resp.actions && resp.actions.length > 0) {
+        const counts = executeReviewActions(resp.actions);
+        const parts = [];
+        if (counts.updates > 0) parts.push(`updated ${counts.updates}`);
+        if (counts.removes > 0) parts.push(`removed ${counts.removes}`);
+        if (counts.adds > 0) parts.push(`added ${counts.adds}`);
+        actionSummary = parts.length > 0 ? `\n\n_Actions: ${parts.join(', ')}_` : '';
+      }
+
+      if (resp.rules && resp.rules.length > 0) {
+        const updated = [...reviewRules, ...resp.rules];
+        setReviewRules(updated);
+        try { localStorage.setItem('importRules', JSON.stringify(updated)); } catch {}
+      }
+
+      setReviewHistory(prev => [...prev, {
+        role: 'assistant',
+        content: resp.message + actionSummary,
+        actions: resp.actions,
+        rules: resp.rules,
+      }]);
+    } catch (err) {
+      setReviewHistory(prev => [...prev, { role: 'assistant', content: `Error: ${err.message}` }]);
+    }
+
+    setReviewLoading(false);
+    setTimeout(() => reviewEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
+  };
+
+  // Delete a saved rule
+  const deleteRule = (idx) => {
+    const updated = reviewRules.filter((_, i) => i !== idx);
+    setReviewRules(updated);
+    try { localStorage.setItem('importRules', JSON.stringify(updated)); } catch {}
   };
 
   // Group provisions by type
@@ -1079,6 +1197,14 @@ export default function AddAgreements() {
                         Start Over
                       </button>
                       <button
+                        onClick={() => setReviewOpen(true)}
+                        disabled={processing}
+                        className="action-btn compare"
+                        style={{ padding: '10px 16px', fontSize: 13 }}
+                      >
+                        Review with AI
+                      </button>
+                      <button
                         onClick={saveToDatabase}
                         disabled={processing || previewProvisions.length === 0}
                         className="save-btn"
@@ -1158,6 +1284,130 @@ export default function AddAgreements() {
           </div>
         </div>
       </div>
+
+      {/* ═══ REVIEW PANEL (slide-out) ═══ */}
+      {reviewOpen && (
+        <div className="review-panel">
+          <div className="review-panel-header">
+            <div>
+              <div style={{ font: '600 14px var(--serif)', color: 'var(--text)' }}>Review Import</div>
+              <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 2 }}>
+                {previewProvisions.length} provisions &middot; Ask the AI to fix issues
+              </div>
+            </div>
+            <button onClick={() => setReviewOpen(false)} style={{
+              background: 'none', border: 'none', fontSize: 20, color: 'var(--text3)',
+              cursor: 'pointer', padding: '0 4px',
+            }}>&times;</button>
+          </div>
+
+          {/* Rules bar */}
+          {reviewRules.length > 0 && (
+            <div className="review-rules-bar">
+              <div style={{ fontSize: 10, color: 'var(--text4)', marginBottom: 4, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                Learned Rules ({reviewRules.length})
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                {reviewRules.map((r, i) => (
+                  <span key={i} className="review-rule">
+                    {r.rule.length > 60 ? r.rule.substring(0, 60) + '...' : r.rule}
+                    <button onClick={() => deleteRule(i)} style={{
+                      background: 'none', border: 'none', color: 'var(--text4)',
+                      cursor: 'pointer', padding: '0 0 0 4px', fontSize: 12, lineHeight: 1,
+                    }}>&times;</button>
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Chat messages */}
+          <div className="review-messages">
+            {reviewHistory.length === 0 && (
+              <div style={{ padding: '20px 16px', textAlign: 'center', color: 'var(--text4)', fontSize: 12 }}>
+                Ask the AI to review your import. Try:<br/>
+                <em>"What provisions did you miss?"</em><br/>
+                <em>"Reclassify the governing law provision as MISC"</em><br/>
+                <em>"The no-solicitation should be COV, not IOC"</em>
+              </div>
+            )}
+            {reviewHistory.map((msg, i) => (
+              <div key={i} className={`review-msg review-msg-${msg.role}`}>
+                <div className="review-msg-bubble">
+                  {msg.content}
+                </div>
+                {msg.role === 'assistant' && msg.actions && msg.actions.length > 0 && (
+                  <div style={{ display: 'flex', gap: 4, marginTop: 4, flexWrap: 'wrap' }}>
+                    {msg.actions.map((a, j) => (
+                      <span key={j} className={`review-action review-action-${a.action}`}>
+                        {a.action === 'update' ? `Updated ${a.field}` : a.action === 'remove' ? 'Removed' : 'Added'}{a.action === 'update' ? `: ${(a.value || '').toString().substring(0, 30)}` : ''}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                {msg.role === 'assistant' && msg.rules && msg.rules.length > 0 && (
+                  <div style={{ marginTop: 4 }}>
+                    {msg.rules.map((r, j) => (
+                      <span key={j} className="review-rule" style={{ marginRight: 4 }}>
+                        New rule: {r.rule.substring(0, 50)}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+            {reviewLoading && (
+              <div className="review-msg review-msg-assistant">
+                <div className="review-msg-bubble" style={{ color: 'var(--text4)' }}>Thinking...</div>
+              </div>
+            )}
+            <div ref={reviewEndRef} />
+          </div>
+
+          {/* Undo bar */}
+          {undoStack.length > 0 && (
+            <div style={{
+              padding: '6px 16px', borderTop: '1px solid var(--border)',
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            }}>
+              <span style={{ fontSize: 11, color: 'var(--text4)' }}>{undoStack.length} action batch{undoStack.length !== 1 ? 'es' : ''}</span>
+              <button onClick={undoLastReview} className="action-btn" style={{ padding: '4px 10px', fontSize: 11 }}>
+                Undo Last
+              </button>
+            </div>
+          )}
+
+          {/* Input */}
+          <div className="review-input-bar">
+            <textarea
+              value={reviewInput}
+              onChange={e => setReviewInput(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendReviewMessage(); } }}
+              placeholder="Ask the AI to review or fix provisions..."
+              rows={2}
+              style={{
+                flex: 1, padding: '8px 12px', borderRadius: 6,
+                border: '1px solid var(--border)', background: 'var(--bg)',
+                font: '400 12px/1.5 var(--serif)', color: 'var(--text)',
+                resize: 'none', outline: 'none',
+              }}
+            />
+            <button
+              onClick={sendReviewMessage}
+              disabled={reviewLoading || !reviewInput.trim()}
+              style={{
+                padding: '8px 16px', borderRadius: 6, border: 'none',
+                background: 'var(--gold)', color: '#fff',
+                font: '600 12px var(--sans)', cursor: 'pointer',
+                opacity: (reviewLoading || !reviewInput.trim()) ? 0.4 : 1,
+                alignSelf: 'flex-end',
+              }}
+            >
+              Send
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }
