@@ -122,25 +122,32 @@ function detectTOC(fullText) {
 
     const tocBlock = afterHeader.substring(0, tocBlockEnd);
 
-    // Extract section numbers from the TOC block
-    // Match both "SECTION X.XX" and bare "X.XX" patterns
+    // Extract section numbers AND titles from the TOC block
+    // Match both "SECTION X.XX  Title" and bare "X.XX  Title" patterns
     const entries = [];
+    const tocTitles = {}; // { "1.01": "Definitions", ... }
     const seen = new Set();
-    const sectionRe = /(?:SECTION|Section)\s+(\d+\.\d{1,2})\b/g;
+    // Match: SECTION 1.01.  Title  or  SECTION 1.01  Title  (with optional trailing page num)
+    const sectionRe = /(?:SECTION|Section)\s+(\d+\.\d{1,2})\.?\s+([^\n]+)/g;
     let m;
     while ((m = sectionRe.exec(tocBlock)) !== null) {
       if (!seen.has(m[1])) {
         entries.push(m[1]);
         seen.add(m[1]);
+        // Clean the title: strip trailing page number, dots, whitespace
+        const title = m[2].replace(/[\s.]*\d{1,4}\s*$/, '').trim();
+        if (title.length > 0) tocTitles[m[1]] = title;
       }
     }
-    // Also try bare "X.XX" at start of line (for formats like "1.1  The Merger")
+    // Also try bare "X.XX  Title" at start of line (for formats like "1.1  The Merger")
     if (entries.length < 5) {
-      const bareRe = /(?:^|\n)\s*(\d+\.\d{1,2})\b/g;
+      const bareRe = /(?:^|\n)\s*(\d+\.\d{1,2})\s+([^\n]+)/g;
       while ((m = bareRe.exec(tocBlock)) !== null) {
         if (!seen.has(m[1])) {
           entries.push(m[1]);
           seen.add(m[1]);
+          const title = m[2].replace(/[\s.]*\d{1,4}\s*$/, '').trim();
+          if (title.length > 0) tocTitles[m[1]] = title;
         }
       }
     }
@@ -149,25 +156,26 @@ function detectTOC(fullText) {
     const bodyStart = tocBlockStart + tocBlockEnd;
 
     if (entries.length >= 3) {
-      return { found: true, entries, bodyStart };
+      return { found: true, entries, tocTitles, bodyStart };
     }
     // If too few entries found, the header might be misleading — fall through
   }
 
   // ── Strategy 2: Cluster Section lines ending with page numbers ──
-  const sectionRe = /(?:SECTION|Section)\s+(\d+\.\d{1,2})\b/g;
+  const sectionRe2 = /(?:SECTION|Section)\s+(\d+\.\d{1,2})\.?\s*([^\n]*)/g;
   const allMatches = [];
   let m;
-  while ((m = sectionRe.exec(fullText)) !== null) {
+  while ((m = sectionRe2.exec(fullText)) !== null) {
     allMatches.push({
       index: m.index,
       endIndex: m.index + m[0].length,
       number: m[1],
+      rawTitle: m[2] || '',
     });
   }
 
   if (allMatches.length < 8) {
-    return { found: false, entries: [], bodyStart: findBodyStartFallback(fullText) };
+    return { found: false, entries: [], tocTitles: {}, bodyStart: findBodyStartFallback(fullText) };
   }
 
   // For each match, check if its line ends with a page number
@@ -213,19 +221,22 @@ function detectTOC(fullText) {
   }
 
   if (tocStart === -1 || tocEnd === -1) {
-    return { found: false, entries: [], bodyStart: findBodyStartFallback(fullText) };
+    return { found: false, entries: [], tocTitles: {}, bodyStart: findBodyStartFallback(fullText) };
   }
 
   if (allMatches[tocStart].index > fullText.length * 0.4) {
-    return { found: false, entries: [], bodyStart: findBodyStartFallback(fullText) };
+    return { found: false, entries: [], tocTitles: {}, bodyStart: findBodyStartFallback(fullText) };
   }
 
   const entries = [];
+  const tocTitles = {};
   const seen = new Set();
   for (let i = tocStart; i <= tocEnd; i++) {
     if (!seen.has(allMatches[i].number)) {
       entries.push(allMatches[i].number);
       seen.add(allMatches[i].number);
+      const title = allMatches[i].rawTitle.replace(/[\s.]*\d{1,4}\s*$/, '').trim();
+      if (title.length > 0) tocTitles[allMatches[i].number] = title;
     }
   }
 
@@ -247,7 +258,7 @@ function detectTOC(fullText) {
     bodyStart += Math.min(...candidates);
   }
 
-  return { found: true, entries, bodyStart };
+  return { found: true, entries, tocTitles, bodyStart };
 }
 
 function findBodyStartFallback(fullText) {
@@ -466,7 +477,8 @@ function parseDocument(rawText) {
 
   // Pass 2: TOC-aware validation — use TOC as ground truth when available
   const tocSet = toc.found ? new Set(toc.entries) : null;
-  const headings = [];
+  const tocTitles = toc.tocTitles || {};
+  let rawHeadings = [];
   let lastArticle = -1;
   let lastSection = -1;
   for (const c of candidates) {
@@ -474,28 +486,28 @@ function parseDocument(rawText) {
     if (!parts) continue;
     const art = parseInt(parts[1], 10);
     const sec = parseInt(parts[2], 10);
+    c._art = art;
+    c._sec = sec;
 
-    const isFirstCandidate = headings.length === 0;
+    const isFirstCandidate = rawHeadings.length === 0;
 
     // If TOC exists, use it as primary validator
     if (tocSet) {
       const inToc = tocSet.has(c.number);
-      // Accept: it's in the TOC (it's a real section heading)
       if (inToc) {
-        headings.push(c);
+        rawHeadings.push(c);
         lastArticle = art;
         lastSection = sec;
         continue;
       }
-      // Not in TOC — only accept if sequential (could be a subsection not listed in TOC)
+      // Not in TOC — only accept if sequential
       const isNextInArticle = art === lastArticle && sec === lastSection + 1;
       const isNewArticle = art > lastArticle;
       if (isFirstCandidate || isNextInArticle || isNewArticle) {
-        headings.push(c);
+        rawHeadings.push(c);
         lastArticle = art;
         lastSection = sec;
       }
-      // else: not in TOC and breaks sequence → cross-reference, skip
       continue;
     }
 
@@ -503,7 +515,6 @@ function parseDocument(rawText) {
     const isNextInArticle = art === lastArticle && sec === lastSection + 1;
     const isNewArticle = art > lastArticle;
 
-    // Check character immediately before "Section" (ignoring whitespace)
     let precededByBreak = false;
     if (!isNextInArticle && !isNewArticle && !isFirstCandidate) {
       const before = body.substring(Math.max(0, c.index - 20), c.index);
@@ -517,10 +528,32 @@ function parseDocument(rawText) {
     }
 
     if (isFirstCandidate || isNextInArticle || isNewArticle || precededByBreak) {
-      headings.push(c);
+      rawHeadings.push(c);
       lastArticle = art;
       lastSection = sec;
     }
+  }
+
+  // Pass 3: Sequence anomaly detection
+  // If we see 5.01 → 6.01 → 5.02, the 6.01 is a false split (cross-reference).
+  // Detect: a heading that jumps to a different article and then the next heading
+  // returns to the previous article's sequence.
+  const headings = [];
+  for (let i = 0; i < rawHeadings.length; i++) {
+    const curr = rawHeadings[i];
+    const prev = i > 0 ? rawHeadings[i - 1] : null;
+    const next = i + 1 < rawHeadings.length ? rawHeadings[i + 1] : null;
+
+    if (prev && next) {
+      const jumpedAway = curr._art !== prev._art && curr._art !== next._art;
+      const nextResumes = next._art === prev._art;
+      if (jumpedAway && nextResumes) {
+        // This heading jumps to a different article and the sequence resumes after
+        // it — it's almost certainly a cross-reference, not a real heading
+        continue; // skip it
+      }
+    }
+    headings.push(curr);
   }
 
   // Step 3: Build sections by splitting between consecutive headings
@@ -533,7 +566,11 @@ function parseDocument(rawText) {
 
     const text = cleanSectionText(rawSectionText);
     const headingLine = text.split('\n')[0].substring(0, 200).trim();
-    const title = extractTitle(headingLine);
+    let title = extractTitle(headingLine);
+
+    // Use TOC title if available — more reliable than parsing from body text
+    const tocTitle = tocTitles[headings[i].number];
+    if (tocTitle) title = tocTitle;
 
     sections.push({
       number: headings[i].number,
@@ -542,6 +579,7 @@ function parseDocument(rawText) {
       text,
       charCount: text.length,
       absStart: headings[i].absIndex,
+      tocTitle: tocTitle || null, // include for diagnostics
     });
   }
 
