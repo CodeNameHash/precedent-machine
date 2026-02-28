@@ -357,7 +357,9 @@ export default function AddAgreements() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ full_text: fullText }),
         });
-        setParsedSections(data.sections || []);
+        const { sections: autoSplit, undoMap } = autoSplitSections(data.sections || []);
+        setParsedSections(autoSplit);
+        setSplitUndoMap(prev => ({ ...prev, ...undoMap }));
         setParseOnlyData({ toc: data.toc, gaps: data.gaps, diagnostics: data.diagnostics, articles: data.articles });
         setStep('parse-preview');
       } else {
@@ -611,6 +613,93 @@ export default function AddAgreements() {
       next.splice(sectionIndex, 1);
       return next;
     });
+  };
+
+  // Auto-split sections matching pre-split provision types (DEF, IOC, COND, ANTI, no-solicit)
+  const AUTO_SPLIT_TITLE_PATTERNS = [
+    /interim\s+operat|conduct\s+of\s+(?:the\s+)?business|conduct\s+prior/i,
+    /antitrust|regulatory\s+(?:efforts|approval|matters)|HSR|hell\s+or\s+high/i,
+    /conditions?\s+(?:to|of|precedent)|conditions?\s+(?:to\s+)?closing/i,
+    /no[\s-]*(?:solicitation|shop)|(?:non|no)[\s-]*solicit/i,
+  ];
+
+  const autoSplitSections = (sections) => {
+    const result = [];
+    const undoMap = {};
+
+    for (const section of sections) {
+      const title = section.title || section.heading || '';
+
+      // Definitions: split by defined terms
+      if (section.isDefinition) {
+        const defPattern = /[\u201c"]([^\u201d"]+)[\u201d"][^\u201c"\n]{0,40}?\b(?:means?|shall\s+mean|has\s+the\s+meaning|shall\s+have\s+the\s+meaning)\b/g;
+        const matches = [];
+        let m;
+        while ((m = defPattern.exec(section.text)) !== null) {
+          const before = section.text.substring(Math.max(0, m.index - 200), m.index);
+          const lastNL = before.lastIndexOf('\n');
+          if (lastNL !== -1) {
+            const sinceLine = before.substring(lastNL + 1);
+            if (sinceLine.replace(/\s/g, '').length > 20) continue;
+          } else if (m.index > 20) {
+            const trimmedBefore = before.trimEnd();
+            if (trimmedBefore.length > 0 && !/[.;:!?)\]]$/.test(trimmedBefore)) continue;
+          }
+          matches.push({ index: m.index, term: m[1].trim() });
+        }
+        if (matches.length >= 2) {
+          undoMap[section.number] = section;
+          const subs = [];
+          // Preamble
+          if (matches[0].index > 50) {
+            const pre = section.text.substring(0, matches[0].index).trim();
+            if (pre.length > 30) {
+              subs.push({
+                ...section, number: section.number, title: section.title + ' (preamble)',
+                text: pre, charCount: pre.length, isSplit: true, parentNumber: section.number,
+              });
+            }
+          }
+          for (let i = 0; i < matches.length; i++) {
+            const start = matches[i].index;
+            const end = i + 1 < matches.length ? matches[i + 1].index : section.text.length;
+            const text = section.text.substring(start, end).trim();
+            if (text.length < 20) continue;
+            subs.push({
+              ...section, number: `${section.number} "${matches[i].term}"`,
+              title: matches[i].term, text, charCount: text.length,
+              isSplit: true, parentNumber: section.number,
+            });
+          }
+          if (subs.length > 0) { result.push(...subs); continue; }
+        }
+        result.push(section);
+        continue;
+      }
+
+      // IOC, COND, ANTI, no-solicit: split by (a)/(b)/(c)
+      const matchesPattern = AUTO_SPLIT_TITLE_PATTERNS.some(p => p.test(title));
+      if (!matchesPattern) { result.push(section); continue; }
+
+      const subItems = section.text.split(/\n\s*(?=\([a-z]\)\s)/);
+      if (subItems.length < 3) { result.push(section); continue; }
+
+      undoMap[section.number] = section;
+      const newSections = subItems.map((text, i) => {
+        const labelMatch = text.match(/^\(([a-z])\)\s/);
+        const label = labelMatch ? `(${labelMatch[1]})` : '(preamble)';
+        return {
+          ...section,
+          number: i === 0 && !labelMatch ? section.number : `${section.number}${label}`,
+          title: i === 0 && !labelMatch ? section.title + ' (preamble)' : `${section.title} ${label}`,
+          text: text.trim(), charCount: text.trim().length,
+          isSplit: true, parentNumber: section.number,
+        };
+      });
+      result.push(...newSections);
+    }
+
+    return { sections: result, undoMap };
   };
 
   // Execute review actions from AI
@@ -1174,13 +1263,15 @@ export default function AddAgreements() {
                 {/* Section cards in document order, grouped by article */}
                 {(() => {
                   let currentArticle = null;
+                  const renderedParents = new Set();
                   return parsedSections.map((section, idx) => {
                     const nodes = [];
                     if (section.articleNumber && section.articleNumber !== currentArticle) {
                       currentArticle = section.articleNumber;
                       const artNum = section.articleNumber;
                       const isCollapsed = collapsedArticles.has(artNum);
-                      const artSectionCount = parsedSections.filter(s => s.articleNumber === artNum).length;
+                      const artSectionCount = parsedSections.filter(s => s.articleNumber === artNum && !s.isSplit).length
+                        + new Set(parsedSections.filter(s => s.articleNumber === artNum && s.isSplit).map(s => s.parentNumber)).size;
                       nodes.push(
                         <div
                           key={`art-${artNum}`}
@@ -1214,16 +1305,78 @@ export default function AddAgreements() {
                       );
                     }
                     if (!collapsedArticles.has(section.articleNumber)) {
-                      nodes.push(
-                        <ParseSectionCard
-                          key={`${section.number}-${idx}`}
-                          section={section}
-                          sectionIndex={idx}
-                          onSplit={() => handleSplit(idx, section)}
-                          onRejoin={() => handleRejoin(section.parentNumber)}
-                          onMerge={() => handleMerge(idx)}
-                        />
-                      );
+                      // Auto-split sections: render parent header + indented children
+                      if (section.isSplit && section.parentNumber && !renderedParents.has(section.parentNumber)) {
+                        renderedParents.add(section.parentNumber);
+                        const siblings = parsedSections.filter(s => s.parentNumber === section.parentNumber);
+                        const parent = splitUndoMap[section.parentNumber];
+                        const parentTitle = parent ? `${parent.number} ${parent.title}` : section.parentNumber;
+                        const sectionKey = `parse::${section.parentNumber}`;
+                        const sectionCollapsed = collapsedPreviewSections.has(sectionKey);
+                        nodes.push(
+                          <div key={`parent-${section.parentNumber}`} style={{ marginBottom: 6 }}>
+                            <div
+                              className="prong-card"
+                              onClick={() => {
+                                setCollapsedPreviewSections(prev => {
+                                  const next = new Set(prev);
+                                  if (next.has(sectionKey)) next.delete(sectionKey); else next.add(sectionKey);
+                                  return next;
+                                });
+                              }}
+                              style={{ cursor: 'pointer', userSelect: 'none', marginBottom: 0 }}
+                            >
+                              <div className="prong-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+                                  <span style={{ fontFamily: 'var(--mono)', fontSize: 11, fontWeight: 700, color: 'var(--gold)', flexShrink: 0 }}>
+                                    {section.parentNumber}
+                                  </span>
+                                  <span style={{ fontSize: 9, fontWeight: 600, padding: '1px 5px', borderRadius: 3, background: 'var(--blue-bg, #E3F2FD)', color: 'var(--blue, #5B9BD5)' }}>
+                                    {siblings.length} sub-clauses
+                                  </span>
+                                  <span className="prong-name" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', font: '600 13px var(--serif)', color: 'var(--text2)' }}>
+                                    {parent?.title || section.title?.replace(/\s*\(.*$/, '')}
+                                  </span>
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
+                                  <button
+                                    onClick={(e) => { e.stopPropagation(); handleRejoin(section.parentNumber); }}
+                                    style={{ fontSize: 9, fontWeight: 600, padding: '2px 8px', borderRadius: 4, background: 'none', border: '1px solid var(--border2)', color: 'var(--text3)', cursor: 'pointer' }}
+                                  >Rejoin</button>
+                                  <span style={{ fontSize: 12, color: 'var(--text3)' }}>
+                                    {sectionCollapsed ? '\u25B8' : '\u25BE'}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                            {!sectionCollapsed && siblings.map((sub, si) => {
+                              const subIdx = parsedSections.indexOf(sub);
+                              return (
+                                <div key={`${sub.number}-${si}`} style={{ marginLeft: 20 }}>
+                                  <ParseSectionCard
+                                    section={sub}
+                                    sectionIndex={subIdx}
+                                    onSplit={() => {}}
+                                    onRejoin={() => {}}
+                                    onMerge={() => {}}
+                                  />
+                                </div>
+                              );
+                            })}
+                          </div>
+                        );
+                      } else if (!section.isSplit) {
+                        nodes.push(
+                          <ParseSectionCard
+                            key={`${section.number}-${idx}`}
+                            section={section}
+                            sectionIndex={idx}
+                            onSplit={() => handleSplit(idx, section)}
+                            onRejoin={() => handleRejoin(section.parentNumber)}
+                            onMerge={() => handleMerge(idx)}
+                          />
+                        );
+                      }
                     }
                     return nodes;
                   });
