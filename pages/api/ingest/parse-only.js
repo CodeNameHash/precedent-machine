@@ -18,8 +18,9 @@ function cleanEdgarText(text) {
     .replace(/\u00A0/g, ' ')
     .replace(/&nbsp;/gi, ' ')
     .replace(/&#160;/g, ' ')
-    // Standalone page numbers on their own line (1-4 digits, optional A-/B- prefix)
+    // Standalone page numbers: plain (42), prefixed (A-37), or dash-wrapped (-5-)
     .replace(/^\s*(?:[A-Z]-?)?\d{1,4}\s*$/gm, '')
+    .replace(/^\s*-\s*\d{1,4}\s*-\s*$/gm, '')
     // Standalone lowercase roman numeral page numbers
     .replace(/^\s*(?:i{1,3}|iv|vi{0,3}|ix|xi{0,3})\s*$/gm, '')
     // Lines of underscores, equals, dashes (decorative separators, 10+ chars)
@@ -64,6 +65,8 @@ function cleanSectionText(text) {
   return text
     // Remove standalone page numbers embedded within section text
     .replace(/\n\s*(?:[A-Z]-?)?\d{1,4}\s*\n/g, '\n')
+    // Remove dash-wrapped page numbers (-5-, -42-)
+    .replace(/\n\s*-\s*\d{1,4}\s*-\s*\n/g, '\n')
     // Collapse 3+ blank lines to 2
     .replace(/\n{3,}/g, '\n\n')
     .trim();
@@ -293,17 +296,61 @@ function detectGaps(sections) {
   return gaps;
 }
 
+// ─── Find body start in cleaned text ───
+// After EDGAR cleanup shifts character positions, re-locate where the body
+// starts by searching for the first ARTICLE or Section heading.
+function findBodyStartInCleanedText(cleanedText, tocEntries) {
+  if (!tocEntries || tocEntries.length === 0) return 0;
+
+  // Strategy: find the first "Section X.XX" or "ARTICLE" that appears as a
+  // real heading (not a TOC line). A TOC line ends with dots+pagenum; a body
+  // heading is followed by substantive text.
+  const sectionRe = /(?:SECTION|Section)\s+(\d+\.\d{1,2})\b/g;
+  const tocSet = new Set(tocEntries);
+  let m;
+  while ((m = sectionRe.exec(cleanedText)) !== null) {
+    if (!tocSet.has(m[1])) continue;
+    // Check if this line looks like a TOC line (ends with dots + page number)
+    const lineEnd = cleanedText.indexOf('\n', m.index);
+    const line = cleanedText.substring(m.index, lineEnd === -1 ? cleanedText.length : lineEnd);
+    if (/(?:\.{2,}|[\s\t]{2,})\d{1,4}\s*$/.test(line)) continue; // TOC line, skip
+
+    // This is a body heading — find start of its line or preceding ARTICLE
+    const before = cleanedText.substring(Math.max(0, m.index - 200), m.index);
+    const artMatch = before.match(/\n\s*(ARTICLE\s+(?:[IVXLC]+|\d+)\b[^\n]*)\s*$/i);
+    if (artMatch) {
+      return m.index - (before.length - before.lastIndexOf('\n')) + 1;
+    }
+    // Start at beginning of this heading's line
+    const lineStart = cleanedText.lastIndexOf('\n', m.index);
+    return lineStart === -1 ? 0 : lineStart + 1;
+  }
+
+  // Fallback: look for first ARTICLE heading
+  const artFirst = cleanedText.match(/\n\s*ARTICLE\s+(?:[IVXLC]+|\d+)\b/i);
+  if (artFirst) return artFirst.index + 1;
+  return 0;
+}
+
 // ─── Main Parser ───
 function parseDocument(rawText) {
-  // Step 0: Clean EDGAR formatting artifacts
+  // Step 1: Detect TOC on RAW text (before cleanup strips page numbers)
+  const tocRaw = detectTOC(rawText);
+
+  // Step 2: Clean EDGAR formatting artifacts
   const fullText = removeRepeatedHeaders(cleanEdgarText(rawText));
   const charsRemoved = rawText.length - fullText.length;
 
-  // Step 1: Detect and skip TOC
-  const toc = detectTOC(fullText);
-  const bodyStart = toc.bodyStart;
+  // Step 3: Find body start in cleaned text
+  // If TOC was found, re-locate bodyStart since char positions shifted
+  const bodyStart = tocRaw.found
+    ? findBodyStartInCleanedText(fullText, tocRaw.entries)
+    : findBodyStartFallback(fullText);
 
-  // Step 1b: Truncate at signature pages / exhibits
+  // Use TOC entries from raw detection (section numbers are stable)
+  const toc = { ...tocRaw, bodyStart };
+
+  // Step 3b: Truncate at signature pages / exhibits
   const { bodyEnd, truncatedChars } = findBodyEnd(fullText, bodyStart);
   const body = fullText.substring(bodyStart, bodyEnd);
 

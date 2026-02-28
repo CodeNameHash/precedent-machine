@@ -592,6 +592,23 @@ export default function AddAgreements() {
     });
   };
 
+  // Merge a section with the previous one
+  const handleMerge = (sectionIndex) => {
+    if (sectionIndex < 1) return;
+    setParsedSections(prev => {
+      const next = [...prev];
+      const target = next[sectionIndex - 1];
+      const source = next[sectionIndex];
+      next[sectionIndex - 1] = {
+        ...target,
+        text: target.text + '\n\n' + source.text,
+        charCount: target.text.length + 2 + source.text.length,
+      };
+      next.splice(sectionIndex, 1);
+      return next;
+    });
+  };
+
   // Execute review actions from AI
   const executeReviewActions = useCallback((actions) => {
     if (!actions || actions.length === 0) return { updates: 0, removes: 0, adds: 0 };
@@ -1172,8 +1189,10 @@ export default function AddAgreements() {
                       <ParseSectionCard
                         key={`${section.number}-${idx}`}
                         section={section}
+                        sectionIndex={idx}
                         onSplit={() => handleSplit(idx, section)}
                         onRejoin={() => handleRejoin(section.parentNumber)}
+                        onMerge={() => handleMerge(idx)}
                       />
                     );
                     return nodes;
@@ -1755,7 +1774,7 @@ function TextSelectorPanel({ fullText, currentText, onSelect, onClose }) {
 // ═══════════════════════════════════════════════════
 // Preview Provision Card
 // ═══════════════════════════════════════════════════
-function ParseSectionCard({ section, onSplit, onRejoin }) {
+function ParseSectionCard({ section, sectionIndex, onSplit, onRejoin, onMerge }) {
   const [expanded, setExpanded] = useState(false);
   const previewText = section.text.split('\n').slice(0, 3).join('\n');
 
@@ -1797,6 +1816,17 @@ function ParseSectionCard({ section, onSplit, onRejoin }) {
           </span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
+          {sectionIndex > 0 && (
+            <button
+              onClick={(e) => { e.stopPropagation(); onMerge && onMerge(); }}
+              style={{
+                fontSize: 9, fontWeight: 600, padding: '2px 8px', borderRadius: 4,
+                background: 'none', border: '1px solid var(--border2)', color: 'var(--text4)',
+                cursor: 'pointer',
+              }}
+              title="Merge with previous section"
+            >Merge ↑</button>
+          )}
           {canSplit && (
             <button
               onClick={(e) => { e.stopPropagation(); onSplit && onSplit(); }}
