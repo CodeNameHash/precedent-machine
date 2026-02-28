@@ -360,107 +360,224 @@ function recoverGaps(gaps, fullText, sections, bodyStart) {
   return recovered;
 }
 
-// ─── Phase 3: Classify sections via AI with expanded context + complexity tiers ───
-async function classifySections(sections, client, rules) {
-  // Build payload with expanded preview: 1500 chars + tail for long sections
-  const sectionSummaries = sections.map((s, idx) => {
-    const summary = {
-      idx,
+// ─── Extract section title from heading ───
+// "Section 5.01. Conduct of Business" → "Conduct of Business"
+// "SECTION 1.01     Definitions" → "Definitions"
+function extractTitle(heading) {
+  return heading
+    .replace(/^(?:SECTION|Section)\s+\d+\.\d{1,2}\b\s*/, '')
+    .replace(/^[.\-—:;\s]+/, '')
+    .trim();
+}
+
+// ─── Keyword-based type mapping from section titles ───
+const TITLE_TYPE_MAP = [
+  { pattern: /material\s+adverse\s+effect|MAE/i, type: 'MAE', tier: 1 },
+  { pattern: /interim\s+operat|conduct\s+of\s+(?:the\s+)?business|conduct\s+prior/i, type: 'IOC', tier: 1 },
+  { pattern: /antitrust|regulatory\s+(?:efforts|approval|matters)|HSR|hell\s+or\s+high/i, type: 'ANTI', tier: 1 },
+  { pattern: /conditions?\s+(?:to|of|precedent)|conditions?\s+(?:to\s+)?closing/i, type: 'COND', tier: 1 },
+  { pattern: /termination\s+(?:rights|of\s+agreement|by)|right\s+to\s+terminat/i, type: 'TERMR', tier: 1 },
+  { pattern: /termination\s+fee|break[\s-]*up\s+fee|reverse.*fee|expense\s+reimburse/i, type: 'TERMF', tier: 1 },
+  { pattern: /no[\s-]*(?:solicitation|shop)|(?:non|no)[\s-]*solicit/i, type: 'COV', tier: 2 },
+  { pattern: /represent\w*\s+and\s+warrant|representations/i, type: 'REP', tier: 2 },
+  { pattern: /(?:^|\b)covenants?\b/i, type: 'COV', tier: 2 },
+  { pattern: /definition/i, type: 'DEF', tier: 3 },
+  { pattern: /merger\s+(?:consideration|sub)|exchange\s+(?:ratio|procedures)|closing\s+(?:mechanics|date)/i, type: 'STRUCT', tier: 2 },
+  { pattern: /(?:the\s+)?merger\b/i, type: 'STRUCT', tier: 2 },
+  { pattern: /equity\s+awards?|stock\s+options?|RSU/i, type: 'STRUCT', tier: 2 },
+  { pattern: /financing\s+(?:cooperation|efforts)/i, type: 'COV', tier: 2 },
+  { pattern: /(?:reasonable\s+)?best\s+efforts/i, type: 'COV', tier: 2 },
+  { pattern: /indemnif/i, type: 'COV', tier: 2 },
+  { pattern: /employee\s+(?:matters|benefits)/i, type: 'COV', tier: 2 },
+  { pattern: /information\s+(?:access|rights)|access\s+to\s+information/i, type: 'COV', tier: 2 },
+  { pattern: /notices?\b/i, type: 'MISC', tier: 3 },
+  { pattern: /governing\s+law/i, type: 'MISC', tier: 3 },
+  { pattern: /severab|entire\s+agreement|amendment|waiver|counterpart|jurisdict/i, type: 'MISC', tier: 3 },
+  { pattern: /public\s+announcement|press\s+release/i, type: 'COV', tier: 2 },
+  { pattern: /organiz\w+.*(?:standing|good)|good\s+standing/i, type: 'REP', tier: 2 },
+  { pattern: /authority|no\s+conflict/i, type: 'REP', tier: 2 },
+  { pattern: /financial\s+statement/i, type: 'REP', tier: 2 },
+  { pattern: /undisclosed\s+liabilit/i, type: 'REP', tier: 2 },
+  { pattern: /absence\s+of\s+(?:certain\s+)?change/i, type: 'REP', tier: 2 },
+  { pattern: /litigat|legal\s+proceed/i, type: 'REP', tier: 2 },
+  { pattern: /\btax\b/i, type: 'REP', tier: 2 },
+  { pattern: /employee\s+benefit|ERISA/i, type: 'REP', tier: 2 },
+  { pattern: /environment/i, type: 'REP', tier: 2 },
+  { pattern: /intellectual\s+property/i, type: 'REP', tier: 2 },
+  { pattern: /material\s+contract/i, type: 'REP', tier: 2 },
+  { pattern: /insurance/i, type: 'REP', tier: 2 },
+  { pattern: /compliance\s+with\s+law/i, type: 'REP', tier: 2 },
+  { pattern: /(?:real\s+)?property/i, type: 'REP', tier: 2 },
+  { pattern: /stockholder.*(?:vote|approv)|(?:vote|approv).*stockholder/i, type: 'COND', tier: 1 },
+];
+
+// ─── Pre-classify sections deterministically from headings + DB catalog ───
+function preClassify(sections, dbCatalog) {
+  return sections.map(s => {
+    const title = extractTitle(s.heading);
+    s.extractedTitle = title;
+
+    // Try keyword-based matching first
+    for (const rule of TITLE_TYPE_MAP) {
+      if (rule.pattern.test(title)) {
+        s.preType = rule.type;
+        s.preTier = rule.tier;
+        s.preCategory = title || 'General';
+        break;
+      }
+    }
+
+    // If no keyword match, try DB catalog cross-reference
+    if (!s.preType && dbCatalog && dbCatalog.length > 0) {
+      const titleLower = title.toLowerCase();
+      if (titleLower.length >= 3) {
+        for (const entry of dbCatalog) {
+          const catLower = entry.category.toLowerCase();
+          if (titleLower.includes(catLower) || catLower.includes(titleLower)) {
+            s.preType = entry.type;
+            s.preTier = entry.display_tier || 2;
+            s.preCategory = entry.category;
+            break;
+          }
+        }
+      }
+    }
+
+    // Count (a)/(b)/(c) sub-items to detect complexity
+    s.subItemCount = (s.text.match(/\n\s*\([a-z]{1,3}\)\s/gi) || []).length;
+
+    return s;
+  });
+}
+
+// ─── Phase 3: Classify sections — heading-first, AI for ambiguous ───
+async function classifySections(sections, client, rules, dbCatalog) {
+  // Step 1: Pre-classify deterministically from headings + DB
+  const preSections = preClassify(sections, dbCatalog);
+
+  // Step 2: Separate resolved (heading matched) vs ambiguous (needs AI)
+  const resolved = [];
+  const ambiguous = [];
+  preSections.forEach((s, idx) => {
+    if (s.preType) {
+      let complexity = 'low';
+      if (['MAE', 'IOC'].includes(s.preType) || (s.subItemCount >= 5 && s.text.length > 3000)) {
+        complexity = 'high';
+      } else if (s.subItemCount >= 3 || s.text.length > 3000) {
+        complexity = 'medium';
+      }
+      resolved.push({
+        ...s,
+        provision_type: s.preType,
+        category: s.preCategory || s.extractedTitle,
+        display_tier: s.preTier,
+        complexity,
+        _idx: idx,
+        _preClassified: true,
+      });
+    } else {
+      ambiguous.push({ ...s, _idx: idx });
+    }
+  });
+
+  // Step 3: Send only ambiguous sections to AI
+  if (ambiguous.length > 0) {
+    const allTypes = Object.keys(PROVISION_TYPE_CONFIGS);
+    const typeList = allTypes.map(k => `${k} (${PROVISION_TYPE_CONFIGS[k].label})`).join(', ');
+
+    const sectionSummaries = ambiguous.map(s => ({
+      idx: s._idx,
       heading: s.heading.substring(0, 120),
+      title: s.extractedTitle,
       preview: s.text.substring(0, 1500),
       level: s.level,
       charCount: s.text.length,
-    };
-    // Add tail context for long sections (catches conclusion/carve-out language)
-    if (s.text.length > 3000) {
-      summary.tail = s.text.substring(s.text.length - 500);
+      subItemCount: s.subItemCount,
+      ...(s.text.length > 3000 ? { tail: s.text.substring(s.text.length - 500) } : {}),
+    }));
+
+    const batchSize = 100;
+    const batches = [];
+    for (let i = 0; i < sectionSummaries.length; i += batchSize) {
+      batches.push(sectionSummaries.slice(i, i + batchSize));
     }
-    return summary;
-  });
 
-  const allTypes = Object.keys(PROVISION_TYPE_CONFIGS);
-  const typeList = allTypes.map(k => `${k} (${PROVISION_TYPE_CONFIGS[k].label})`).join(', ');
+    const allClassifications = [];
 
-  // Batch into groups of 100 (larger previews = fewer per batch)
-  const batchSize = 100;
-  const batches = [];
-  for (let i = 0; i < sectionSummaries.length; i += batchSize) {
-    batches.push(sectionSummaries.slice(i, i + batchSize));
-  }
-
-  const allClassifications = [];
-
-  await Promise.all(batches.map(async (batch) => {
-    const resp = await client.messages.create({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 16000,
-      messages: [{
-        role: 'user',
-        content: `You are a senior M&A attorney classifying sections of a merger agreement.
+    await Promise.all(batches.map(async (batch) => {
+      const resp = await client.messages.create({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 16000,
+        messages: [{
+          role: 'user',
+          content: `You are a senior M&A attorney classifying sections of a merger agreement.
 
 For each section below, classify it into one of these provision types: ${typeList}
 
-Assign a COMPLEXITY level to determine extraction depth:
-- "high": MAE carve-out sections, IOC restriction lists, COND condition lists, TERMR/TERMF trigger/fee lists — these have detailed sub-provisions that need individual extraction
-- "medium": REP articles with multiple sub-representations (Tax, IP, Environmental, etc.), COV articles with multiple covenants (No-Shop, Efforts, Financing Cooperation), STRUCT sections with multiple deal terms, DEF sections with multiple defined terms, AND any section >3000 chars that contains sub-numbered items like (a), (b), (i), (ii)
-- "low": Single-topic sections <2000 chars, individual definitions, simple miscellaneous boilerplate, notices, governing law
+Assign a COMPLEXITY level:
+- "high": MAE carve-out sections, IOC restriction lists, COND condition lists, TERMR/TERMF trigger/fee lists, or sections with subItemCount >= 5 and charCount > 3000
+- "medium": Sections with subItemCount >= 3, or charCount > 3000 with sub-numbered items
+- "low": Single-topic sections, simple boilerplate
 
-IMPORTANT: A section titled "Representations and Warranties of the Company" that contains sub-sections (e.g., 4.1 Organization, 4.2 Authority, 4.3 Financial Statements) MUST be classified as "medium" complexity. Same for Covenants articles with multiple sub-covenants.
-
-Display tiers: 1=Core (MAE, termination, conditions, antitrust, key IOC), 2=Supporting (reps, covenants, deal structure), 3=Reference (definitions, miscellaneous boilerplate).
+Display tiers: 1=Core, 2=Supporting, 3=Reference.
+Use the section "title" field as the primary category name when descriptive.
 
 SECTIONS:
 ${JSON.stringify(batch)}
 
 Return ONLY valid JSON array (no markdown, no backticks):
-[{
-  "idx": 0,
-  "provision_type": "MAE",
-  "category": "specific sub-category name",
-  "display_tier": 1,
-  "complexity": "high"
-}]
+[{ "idx": 0, "provision_type": "MAE", "category": "category name", "display_tier": 1, "complexity": "high" }]
 
 Rules:
 - Every section must appear in the output
-- Use the exact provision_type keys: ${allTypes.join(', ')}
-- For sections that don't clearly fit, use MISC
-- complexity must be one of: "high", "medium", "low"
-- When a "tail" field is present, use it along with "preview" to understand the full scope of the section${rules && rules.length > 0 ? '\n\nLEARNED RULES (from prior review sessions):\n' + rules.filter(r => r.scope === 'classify' || r.scope === 'parse').map(r => '- ' + r.rule).join('\n') : ''}`
-      }],
-    });
-
-    const raw = resp.content.map(c => c.text || '').join('');
-    const clean = raw.replace(/```json|```/g, '').trim();
-    try {
-      const parsed = JSON.parse(clean);
-      allClassifications.push(...parsed);
-    } catch {
-      batch.forEach(s => {
-        allClassifications.push({
-          idx: s.idx,
-          provision_type: 'MISC',
-          category: 'Unclassified',
-          display_tier: 3,
-          complexity: 'low',
-        });
+- Use exact provision_type keys: ${allTypes.join(', ')}
+- For unclear sections, use MISC
+- complexity must be "high", "medium", or "low"${rules && rules.length > 0 ? '\n\nLEARNED RULES:\n' + rules.filter(r => r.scope === 'classify' || r.scope === 'parse').map(r => '- ' + r.rule).join('\n') : ''}`
+        }],
       });
+
+      const raw = resp.content.map(c => c.text || '').join('');
+      const clean = raw.replace(/```json|```/g, '').trim();
+      try {
+        const parsed = JSON.parse(clean);
+        allClassifications.push(...parsed);
+      } catch {
+        batch.forEach(s => {
+          allClassifications.push({
+            idx: s.idx,
+            provision_type: 'MISC',
+            category: s.title || 'Unclassified',
+            display_tier: 3,
+            complexity: s.subItemCount >= 3 ? 'medium' : 'low',
+          });
+        });
+      }
+    }));
+
+    for (const cls of allClassifications) {
+      const section = ambiguous.find(a => a._idx === cls.idx);
+      if (section) {
+        // Auto-upgrade complexity based on sub-item count
+        let complexity = cls.complexity || 'low';
+        if (section.subItemCount >= 5 && complexity === 'low') complexity = 'high';
+        else if (section.subItemCount >= 3 && complexity === 'low') complexity = 'medium';
+        resolved.push({
+          ...section,
+          provision_type: cls.provision_type || 'MISC',
+          category: cls.category || section.extractedTitle || 'Unclassified',
+          display_tier: cls.display_tier || 3,
+          complexity,
+        });
+      }
     }
-  }));
+  }
 
-  // Map classifications back to sections
-  const classifiedSections = sections.map((s, idx) => {
-    const cls = allClassifications.find(c => c.idx === idx);
-    return {
-      ...s,
-      provision_type: cls?.provision_type || 'MISC',
-      category: cls?.category || 'Unclassified',
-      display_tier: cls?.display_tier || 3,
-      complexity: cls?.complexity || 'low',
-    };
+  // Step 4: Sort back into document order and clean up temp fields
+  resolved.sort((a, b) => a.startChar - b.startChar);
+  return resolved.map(s => {
+    const { _idx, preType, preTier, preCategory, extractedTitle, subItemCount, ...rest } = s;
+    return rest; // _preClassified is kept for diagnostics, stripped later
   });
-
-  return classifiedSections;
 }
 
 // ─── Concurrency limiter ───
@@ -844,25 +961,43 @@ export default async function handler(req, res) {
       }
     }
 
-    // Fetch calibration examples
+    // Fetch calibration examples + category catalog for cross-referencing
     const calibrationByType = {};
+    let dbCatalog = [];
     if (sb) {
       const typeKeys = Object.keys(PROVISION_TYPE_CONFIGS);
-      await Promise.all(typeKeys.map(async (typeKey) => {
-        const { data: examples } = await sb.from('provisions')
-          .select('type, category, full_text, ai_favorability, ai_metadata')
-          .eq('type', typeKey)
-          .order('created_at', { ascending: false })
-          .limit(3);
-        if (examples && examples.length > 0) {
-          examples.sort((a, b) => {
-            const aCorrected = a.ai_metadata?.user_corrected ? 0 : 1;
-            const bCorrected = b.ai_metadata?.user_corrected ? 0 : 1;
-            return aCorrected - bCorrected;
-          });
-          calibrationByType[typeKey] = examples;
-        }
-      }));
+      const [, catalogResult] = await Promise.all([
+        // Calibration examples per type
+        Promise.all(typeKeys.map(async (typeKey) => {
+          const { data: examples } = await sb.from('provisions')
+            .select('type, category, full_text, ai_favorability, ai_metadata')
+            .eq('type', typeKey)
+            .order('created_at', { ascending: false })
+            .limit(3);
+          if (examples && examples.length > 0) {
+            examples.sort((a, b) => {
+              const aCorrected = a.ai_metadata?.user_corrected ? 0 : 1;
+              const bCorrected = b.ai_metadata?.user_corrected ? 0 : 1;
+              return aCorrected - bCorrected;
+            });
+            calibrationByType[typeKey] = examples;
+          }
+        })),
+        // Distinct (type, category) pairs for heading cross-reference
+        sb.from('provisions')
+          .select('type, category, display_tier')
+          .limit(500),
+      ]);
+      if (catalogResult.data) {
+        // Deduplicate by type+category
+        const seen = new Set();
+        dbCatalog = catalogResult.data.filter(r => {
+          const key = `${r.type}:${r.category}`;
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+      }
     }
 
     const client = new Anthropic({ apiKey });
@@ -888,7 +1023,7 @@ export default async function handler(req, res) {
 
     // Phase 3: Classify sections
     const classifyStart = Date.now();
-    const classifiedSections = await classifySections(sections, client, rules);
+    const classifiedSections = await classifySections(sections, client, rules, dbCatalog);
     timing.classify_ms = Date.now() - classifyStart;
 
     // Track section breakdown by complexity
@@ -896,6 +1031,13 @@ export default async function handler(req, res) {
       high: classifiedSections.filter(s => s.complexity === 'high').length,
       medium: classifiedSections.filter(s => s.complexity === 'medium').length,
       low: classifiedSections.filter(s => s.complexity !== 'high' && s.complexity !== 'medium').length,
+    };
+    // Count how many had heading-based vs AI classification
+    const preClassifiedCount = classifiedSections.filter(s => s._preClassified).length;
+    diagnostics.classification = {
+      total: sections.length,
+      headingBased: preClassifiedCount,
+      aiClassified: sections.length - preClassifiedCount,
     };
 
     // Phase 4: Extract sub-provisions
