@@ -14,6 +14,8 @@ function cleanEdgarText(text) {
     .replace(/\f/g, '\n')
     // Zero-width / invisible Unicode characters (BOM, ZWSP, ZWNJ, ZWJ, word joiner, LRM, RLM)
     .replace(/[\uFEFF\u200B\u200C\u200D\u2060\u200E\u200F]/g, '')
+    // Unicode replacement character (encoding errors) → space
+    .replace(/\uFFFD/g, ' ')
     // Non-breaking spaces → regular spaces
     .replace(/\u00A0/g, ' ')
     .replace(/&nbsp;/gi, ' ')
@@ -757,10 +759,25 @@ function parseDocument(rawText) {
       const roman = m[1];
       const arabic = m[2];
       const num = arabic ? parseInt(arabic) : romanToInt(roman);
+      let title = (m[3] || '').replace(/^[\s.\-\u2014:;]+/, '').trim();
+
+      // EDGAR often puts article title on the next line — grab it if inline is empty
+      if (!title) {
+        const afterMatch = body.substring(m.index + m[0].length);
+        const nextLineMatch = afterMatch.match(/^\s*\n\s*([^\n]+)/);
+        if (nextLineMatch) {
+          const nextLine = nextLineMatch[1].trim();
+          // Accept if it looks like a title (not a Section heading or blank)
+          if (nextLine.length > 2 && !/^(?:SECTION|Section)\s+\d/i.test(nextLine)) {
+            title = nextLine.replace(/^[\s.\-\u2014:;]+/, '').trim();
+          }
+        }
+      }
+
       articles.push({
         number: num,
         heading: m[0].trim(),
-        title: (m[3] || '').replace(/^[\s.\-\u2014:;]+/, '').trim(),
+        title,
         absIndex: bodyStart + m.index,
       });
     }

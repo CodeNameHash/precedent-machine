@@ -216,6 +216,7 @@ export default function AddAgreements() {
   const [parsedSections, setParsedSections] = useState([]);
   const [parseOnlyData, setParseOnlyData] = useState(null);
   const [splitUndoMap, setSplitUndoMap] = useState({}); // { parentNumber: originalSection }
+  const [collapsedArticles, setCollapsedArticles] = useState(new Set());
   const [timingData, setTimingData] = useState(null);
   const [diagnosticsData, setDiagnosticsData] = useState(null);
   const [reviewOpen, setReviewOpen] = useState(false);
@@ -1174,27 +1175,53 @@ export default function AddAgreements() {
                     const nodes = [];
                     if (section.articleNumber && section.articleNumber !== currentArticle) {
                       currentArticle = section.articleNumber;
+                      const artNum = section.articleNumber;
+                      const isCollapsed = collapsedArticles.has(artNum);
+                      const artSectionCount = parsedSections.filter(s => s.articleNumber === artNum).length;
                       nodes.push(
-                        <div key={`art-${section.articleNumber}`} className="provision-section-divider">
-                          {section.articleHeading || `Article ${section.articleNumber}`}
-                          {section.articleTitle && (
-                            <span style={{ fontSize: 10, color: 'var(--text3)', textTransform: 'none', letterSpacing: 0, fontWeight: 400, marginLeft: 8 }}>
-                              {section.articleTitle}
+                        <div
+                          key={`art-${artNum}`}
+                          className="provision-section-divider"
+                          onClick={() => {
+                            setCollapsedArticles(prev => {
+                              const next = new Set(prev);
+                              if (next.has(artNum)) next.delete(artNum); else next.add(artNum);
+                              return next;
+                            });
+                          }}
+                          style={{ cursor: 'pointer', userSelect: 'none', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+                        >
+                          <span>
+                            {section.articleHeading || `Article ${artNum}`}
+                            {section.articleTitle && (
+                              <span style={{ fontSize: 10, color: 'var(--text3)', textTransform: 'none', letterSpacing: 0, fontWeight: 400, marginLeft: 8 }}>
+                                {section.articleTitle}
+                              </span>
+                            )}
+                          </span>
+                          <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <span style={{ fontSize: 10, color: 'var(--text4)', fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>
+                              {artSectionCount} {artSectionCount === 1 ? 'section' : 'sections'}
                             </span>
-                          )}
+                            <span style={{ fontSize: 11, color: 'var(--text3)' }}>
+                              {isCollapsed ? '\u25B8' : '\u25BE'}
+                            </span>
+                          </span>
                         </div>
                       );
                     }
-                    nodes.push(
-                      <ParseSectionCard
-                        key={`${section.number}-${idx}`}
-                        section={section}
-                        sectionIndex={idx}
-                        onSplit={() => handleSplit(idx, section)}
-                        onRejoin={() => handleRejoin(section.parentNumber)}
-                        onMerge={() => handleMerge(idx)}
-                      />
-                    );
+                    if (!collapsedArticles.has(section.articleNumber)) {
+                      nodes.push(
+                        <ParseSectionCard
+                          key={`${section.number}-${idx}`}
+                          section={section}
+                          sectionIndex={idx}
+                          onSplit={() => handleSplit(idx, section)}
+                          onRejoin={() => handleRejoin(section.parentNumber)}
+                          onMerge={() => handleMerge(idx)}
+                        />
+                      );
+                    }
                     return nodes;
                   });
                 })()}
