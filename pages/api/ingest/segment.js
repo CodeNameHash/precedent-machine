@@ -696,7 +696,7 @@ function splitDefinitions(sectionText) {
 // ─── Regex-based sub-clause splitting for COND, IOC, ANTI, NOSOL ───
 // Splits sections with (a), (b), (c) sub-clause markers into individual provisions.
 function splitBySubClauses(sectionText, type, displayTier) {
-  // Find (a), (b), (c) etc. at start of lines (allow leading whitespace)
+  // Find (a), (b), (c) etc. at start of lines OR inline after ". "
   const clausePattern = /(?:^|\n)\s*\(([a-z])\)\s/g;
   const matches = [];
   let m;
@@ -704,6 +704,16 @@ function splitBySubClauses(sectionText, type, displayTier) {
     const offset = sectionText[m.index] === '\n' ? 1 : 0;
     matches.push({ index: m.index + offset, letter: m[1] });
   }
+
+  // Also find (a) inline after ". " (common when heading and first clause share a line)
+  const inlinePattern = /\.\s+\(([a-z])\)\s/g;
+  while ((m = inlinePattern.exec(sectionText)) !== null) {
+    const pos = m.index + m[0].indexOf('(');
+    // Skip if already found at this position (±5 chars)
+    if (matches.some(x => Math.abs(x.index - pos) < 5)) continue;
+    matches.push({ index: pos, letter: m[1] });
+  }
+  matches.sort((a, b) => a.index - b.index);
 
   if (matches.length < 2) return null; // Need at least 2 sub-clauses to split
 

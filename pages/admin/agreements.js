@@ -217,6 +217,8 @@ export default function AddAgreements() {
   const [parseOnlyData, setParseOnlyData] = useState(null);
   const [splitUndoMap, setSplitUndoMap] = useState({}); // { parentNumber: originalSection }
   const [collapsedArticles, setCollapsedArticles] = useState(new Set());
+  const [collapsedPreviewCards, setCollapsedPreviewCards] = useState(new Set());
+  const [collapsedPreviewTypes, setCollapsedPreviewTypes] = useState(new Set());
   const [timingData, setTimingData] = useState(null);
   const [diagnosticsData, setDiagnosticsData] = useState(null);
   const [reviewOpen, setReviewOpen] = useState(false);
@@ -1496,16 +1498,47 @@ export default function AddAgreements() {
                 {Object.keys(groupedProvisions).map(typeKey => {
                   const provs = groupedProvisions[typeKey];
                   const typeLabel = PROVISION_TYPES.find(t => t.key === typeKey)?.label || typeKey;
+                  const typeCollapsed = collapsedPreviewTypes.has(typeKey);
                   return (
                     <div key={typeKey} style={{ marginBottom: 20 }}>
-                      <div className="provision-section-divider">
-                        {typeLabel}
-                        <span style={{ fontSize: 10, color: 'var(--text3)', textTransform: 'none', letterSpacing: 0, fontWeight: 400 }}>
-                          {provs.length} provision{provs.length !== 1 ? 's' : ''}
+                      <div
+                        className="provision-section-divider"
+                        onClick={() => {
+                          setCollapsedPreviewTypes(prev => {
+                            const next = new Set(prev);
+                            if (next.has(typeKey)) next.delete(typeKey); else next.add(typeKey);
+                            return next;
+                          });
+                        }}
+                        style={{ cursor: 'pointer', userSelect: 'none', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+                      >
+                        <span>{typeLabel}</span>
+                        <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <span style={{ fontSize: 10, color: 'var(--text4)', fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>
+                            {provs.length} provision{provs.length !== 1 ? 's' : ''}
+                          </span>
+                          <span style={{ fontSize: 11, color: 'var(--text3)' }}>
+                            {typeCollapsed ? '\u25B8' : '\u25BE'}
+                          </span>
                         </span>
                       </div>
-                      {provs.map(prov => (
-                        <PreviewCard key={prov._id} prov={prov} onUpdate={updateProvision} onRemove={removeProvision} disabled={processing} fullAgreementText={fullAgreementText} />
+                      {!typeCollapsed && provs.map(prov => (
+                        <PreviewCard
+                          key={prov._id}
+                          prov={prov}
+                          onUpdate={updateProvision}
+                          onRemove={removeProvision}
+                          disabled={processing}
+                          fullAgreementText={fullAgreementText}
+                          collapsed={collapsedPreviewCards.has(prov._id)}
+                          onToggleCollapse={() => {
+                            setCollapsedPreviewCards(prev => {
+                              const next = new Set(prev);
+                              if (next.has(prov._id)) next.delete(prov._id); else next.add(prov._id);
+                              return next;
+                            });
+                          }}
+                        />
                       ))}
                     </div>
                   );
@@ -1900,7 +1933,7 @@ function ParseSectionCard({ section, sectionIndex, onSplit, onRejoin, onMerge })
   );
 }
 
-function PreviewCard({ prov, onUpdate, onRemove, disabled, fullAgreementText }) {
+function PreviewCard({ prov, onUpdate, onRemove, disabled, fullAgreementText, collapsed, onToggleCollapse }) {
   const [editing, setEditing] = useState(false);
   const [editText, setEditText] = useState(prov.text);
   const [showFav, setShowFav] = useState(false);
@@ -1911,7 +1944,8 @@ function PreviewCard({ prov, onUpdate, onRemove, disabled, fullAgreementText }) 
   return (
     <div className="prong-card" style={{ marginBottom: 8, opacity: disabled ? 0.6 : 1, pointerEvents: disabled ? 'none' : 'auto' }}>
       <div className="prong-header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }} onClick={onToggleCollapse}>
+          <span style={{ fontSize: 9, color: 'var(--text4)' }}>{collapsed ? '\u25B8' : '\u25BE'}</span>
           <span className="prong-name">{prov.category}</span>
           {/* Tier badge — clickable to cycle */}
           <span
@@ -1973,27 +2007,29 @@ function PreviewCard({ prov, onUpdate, onRemove, disabled, fullAgreementText }) 
           </button>
         </div>
       </div>
-      <div style={{ padding: '12px 16px' }}>
-        {editing ? (
-          <textarea value={editText} onChange={e => setEditText(e.target.value)} style={{
-            width: '100%', minHeight: 100, padding: '10px 12px', borderRadius: 6,
-            border: '1px solid var(--gold)', background: 'var(--bg)',
-            font: '400 12px/1.65 var(--serif)', color: 'var(--text2)',
-            resize: 'vertical', outline: 'none',
-          }} />
-        ) : (
-          <div className="prong-text">{prov.text}</div>
-        )}
-        {prov.reason && (
-          <div style={{
-            marginTop: 8, padding: '6px 10px', borderRadius: 5,
-            background: 'var(--blue-bg)', fontSize: 11, color: 'var(--blue)',
-            borderLeft: '3px solid var(--blue)',
-          }}>
-            AI rationale: {prov.reason}
-          </div>
-        )}
-      </div>
+      {!collapsed && (
+        <div style={{ padding: '12px 16px' }}>
+          {editing ? (
+            <textarea value={editText} onChange={e => setEditText(e.target.value)} style={{
+              width: '100%', minHeight: 100, padding: '10px 12px', borderRadius: 6,
+              border: '1px solid var(--gold)', background: 'var(--bg)',
+              font: '400 12px/1.65 var(--serif)', color: 'var(--text2)',
+              resize: 'vertical', outline: 'none',
+            }} />
+          ) : (
+            <div className="prong-text">{prov.text}</div>
+          )}
+          {prov.reason && (
+            <div style={{
+              marginTop: 8, padding: '6px 10px', borderRadius: 5,
+              background: 'var(--blue-bg)', fontSize: 11, color: 'var(--blue)',
+              borderLeft: '3px solid var(--blue)',
+            }}>
+              AI rationale: {prov.reason}
+            </div>
+          )}
+        </div>
+      )}
       {showTextSelector && fullAgreementText && (
         <TextSelectorPanel
           fullText={fullAgreementText}
