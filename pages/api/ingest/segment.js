@@ -1,5 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { getServiceSupabase } from '../../../lib/supabase';
+import { cleanEdgarText, removeRepeatedHeaders, cleanSectionText } from '../../../lib/edgar-cleanup';
 import crypto from 'crypto';
 
 export const config = {
@@ -198,7 +199,8 @@ function parseStructure(fullText) {
   for (let i = 0; i < headings.length; i++) {
     const start = headings[i].index;
     const end = i + 1 < headings.length ? headings[i + 1].index : body.length;
-    const text = body.substring(start, end).trim();
+    const rawText = body.substring(start, end).trim();
+    const text = cleanSectionText(rawText);
     // Grab the heading line
     const headingLine = text.split('\n')[0].substring(0, 200).trim();
     if (text.length < 20) continue;
@@ -386,7 +388,7 @@ const TITLE_TYPE_MAP = [
   { pattern: /(?:the\s+)?merger\b/i, type: 'STRUCT', tier: 2 },
   { pattern: /equity\s+awards?|stock\s+options?|RSU/i, type: 'STRUCT', tier: 2 },
   { pattern: /financing\s+(?:cooperation|efforts)/i, type: 'COV', tier: 2 },
-  { pattern: /(?:reasonable\s+)?best\s+efforts/i, type: 'COV', tier: 2 },
+  { pattern: /(?:reasonable\s+)?best\s+efforts/i, type: 'ANTI', tier: 1 },
   { pattern: /indemnif/i, type: 'COV', tier: 2 },
   { pattern: /employee\s+(?:matters|benefits)/i, type: 'COV', tier: 2 },
   { pattern: /information\s+(?:access|rights)|access\s+to\s+information/i, type: 'COV', tier: 2 },
@@ -409,6 +411,17 @@ const TITLE_TYPE_MAP = [
   { pattern: /compliance\s+with\s+law/i, type: 'REP', tier: 2 },
   { pattern: /(?:real\s+)?property/i, type: 'REP', tier: 2 },
   { pattern: /stockholder.*(?:vote|approv)|(?:vote|approv).*stockholder/i, type: 'COND', tier: 1 },
+];
+
+// ─── No-Solicitation sub-categories for high-complexity extraction ───
+const NOSOL_CATEGORIES = [
+  'No-Solicitation Standard',
+  'Window-Shop / Go-Shop',
+  'Superior Proposal Definition',
+  'Fiduciary Out / Exception',
+  'Match Right / Negotiation Period',
+  'Notice Requirements',
+  'Board Recommendation Change',
 ];
 
 // ─── Pre-classify sections deterministically from headings + DB catalog ───
@@ -443,6 +456,11 @@ function preClassify(sections, dbCatalog) {
       }
     }
 
+    // Flag no-solicit sections for high-complexity extraction
+    if (s.preType === 'COV' && /no[\s-]*(?:solicitation|shop)|(?:non|no)[\s-]*solicit/i.test(title)) {
+      s._isNoSolicit = true;
+    }
+
     // Count (a)/(b)/(c) sub-items to detect complexity
     s.subItemCount = (s.text.match(/\n\s*\([a-z]{1,3}\)\s/gi) || []).length;
 
@@ -461,7 +479,7 @@ async function classifySections(sections, client, rules, dbCatalog) {
   preSections.forEach((s, idx) => {
     if (s.preType) {
       let complexity = 'low';
-      if (['MAE', 'IOC'].includes(s.preType) || (s.subItemCount >= 5 && s.text.length > 3000)) {
+      if (['MAE', 'IOC', 'ANTI'].includes(s.preType) || s._isNoSolicit || (s.subItemCount >= 5 && s.text.length > 3000)) {
         complexity = 'high';
       } else if (s.subItemCount >= 3 || s.text.length > 3000) {
         complexity = 'medium';
@@ -594,18 +612,110 @@ async function runWithConcurrency(tasks, maxConcurrent = 8) {
   return results;
 }
 
+// ─── Regex-based definition splitting ───
+// Splits a definitions section into individual defined terms without AI.
+function splitDefinitions(sectionText) {
+  // Match "TERM" means / "TERM" shall mean / "TERM" has the meaning / "TERM" shall have the meaning
+  // Handles both curly quotes (\u201c \u201d) and straight quotes
+  const defPattern = /[\u201c"]([^\u201d"]+)[\u201d"]\s+(?:means?|shall\s+mean|has\s+the\s+meaning|shall\s+have\s+the\s+meaning)/g;
+
+  const matches = [];
+  let m;
+  while ((m = defPattern.exec(sectionText)) !== null) {
+    // Schema validation: candidate must be near start of a line (< 20 chars of
+    // non-whitespace since last newline) or after sentence-ending punctuation —
+    // rejects false matches where "means" appears mid-paragraph within a definition
+    const before = sectionText.substring(Math.max(0, m.index - 200), m.index);
+    const lastNL = before.lastIndexOf('\n');
+    if (lastNL !== -1) {
+      const sinceLine = before.substring(lastNL + 1);
+      const nonWS = sinceLine.replace(/\s/g, '').length;
+      if (nonWS > 20) continue; // too much content since last newline — mid-paragraph
+    } else if (m.index > 20) {
+      // No newline found in lookback — check if after sentence-ending punctuation
+      const trimmedBefore = before.trimEnd();
+      if (trimmedBefore.length > 0 && !/[.;:!?)\]]$/.test(trimmedBefore)) continue;
+    }
+    matches.push({ index: m.index, term: m[1].trim() });
+  }
+
+  if (matches.length === 0) return null;
+
+  const provisions = [];
+
+  // Preamble before first definition
+  if (matches[0].index > 50) {
+    const preamble = sectionText.substring(0, matches[0].index).trim();
+    if (preamble.length > 30) {
+      provisions.push({
+        type: 'DEF',
+        category: 'General / Preamble',
+        text: preamble,
+        favorability: 'neutral',
+        display_tier: 3,
+      });
+    }
+  }
+
+  // Each definition: from this match to the next match (or end)
+  for (let i = 0; i < matches.length; i++) {
+    const start = matches[i].index;
+    const end = i + 1 < matches.length ? matches[i + 1].index : sectionText.length;
+    const text = sectionText.substring(start, end).trim();
+    if (text.length < 20) continue;
+    provisions.push({
+      type: 'DEF',
+      category: matches[i].term,
+      text,
+      favorability: 'neutral',
+      display_tier: 3,
+    });
+  }
+
+  return provisions.length > 0 ? provisions : null;
+}
+
 // ─── Phase 4: Extract sub-provisions — three-tier universal extraction ───
 async function extractSubProvisions(classifiedSections, client, calibrationByType) {
   const results = [];
 
-  // Split into three tiers by complexity
-  const highSections = classifiedSections.filter(s => s.complexity === 'high');
-  const mediumSections = classifiedSections.filter(s => s.complexity === 'medium');
-  const lowSections = classifiedSections.filter(s => s.complexity !== 'high' && s.complexity !== 'medium');
+  // Intercept DEF sections — split with regex instead of AI
+  const defSections = [];
+  const nonDefSections = [];
+  for (const s of classifiedSections) {
+    if (s.provision_type === 'DEF') {
+      const split = splitDefinitions(s.text);
+      if (split) {
+        split.forEach(p => { p.startChar = s.startChar; });
+        results.push(...split);
+      } else {
+        // Regex found nothing — keep as single provision
+        results.push({
+          type: 'DEF',
+          category: s.category,
+          text: s.text,
+          favorability: 'neutral',
+          display_tier: s.display_tier,
+          startChar: s.startChar,
+        });
+      }
+      defSections.push(s);
+    } else {
+      nonDefSections.push(s);
+    }
+  }
+
+  // Split remaining (non-DEF) into three tiers by complexity
+  const highSections = nonDefSections.filter(s => s.complexity === 'high');
+  const mediumSections = nonDefSections.filter(s => s.complexity === 'medium');
+  const lowSections = nonDefSections.filter(s => s.complexity !== 'high' && s.complexity !== 'medium');
 
   // ─── Tier 1 (high): Full sub-extraction per category ───
   const highTasks = highSections.map((section) => async () => {
-    const typeConfig = PROVISION_TYPE_CONFIGS[section.provision_type];
+    // Use NOSOL_CATEGORIES for no-solicit sections instead of generic COV categories
+    const typeConfig = section._isNoSolicit
+      ? { label: 'No-Solicitation', categories: NOSOL_CATEGORIES }
+      : PROVISION_TYPE_CONFIGS[section.provision_type];
     if (!typeConfig) {
       results.push({
         type: section.provision_type,
@@ -1003,9 +1113,12 @@ export default async function handler(req, res) {
     const client = new Anthropic({ apiKey });
     const diagnostics = {};
 
+    // Phase 0: Clean EDGAR formatting artifacts
+    const cleanedText = removeRepeatedHeaders(cleanEdgarText(full_text));
+
     // Phase 1: Parse structure
     const parseStart = Date.now();
-    const { sections, coverage } = parseStructure(full_text);
+    const { sections, coverage } = parseStructure(cleanedText);
     timing.parse_ms = Date.now() - parseStart;
     timing.section_count = sections.length;
     diagnostics.coverage = coverage;
@@ -1013,7 +1126,7 @@ export default async function handler(req, res) {
     // Phase 2: Detect and recover gaps
     const gapStart = Date.now();
     const gaps = detectGaps(sections);
-    const recovered = recoverGaps(gaps, full_text, sections, coverage.bodyStart || 0);
+    const recovered = recoverGaps(gaps, cleanedText, sections, coverage.bodyStart || 0);
     if (recovered.length > 0) {
       sections.push(...recovered);
       sections.sort((a, b) => a.startChar - b.startChar);
@@ -1052,15 +1165,20 @@ export default async function handler(req, res) {
 
     // Phase 6: Verify completeness
     const verifyStart = Date.now();
-    const completenessWarnings = verifyCompleteness(kept, full_text);
+    const completenessWarnings = verifyCompleteness(kept, cleanedText);
     timing.verify_ms = Date.now() - verifyStart;
     diagnostics.completeness = completenessWarnings;
 
     timing.total_ms = Date.now() - totalStart;
     timing.mode = 'segment';
 
-    // Assign sort_order based on document position
-    kept.sort((a, b) => (a.startChar || 0) - (b.startChar || 0));
+    // Assign sort_order — DEF provisions go to end, everything else by document position
+    kept.sort((a, b) => {
+      const aDef = a.type === 'DEF' ? 1 : 0;
+      const bDef = b.type === 'DEF' ? 1 : 0;
+      if (aDef !== bDef) return aDef - bDef;
+      return (a.startChar || 0) - (b.startChar || 0);
+    });
     kept.forEach((p, idx) => { p.sort_order = idx; });
 
     // Group results by type for response
