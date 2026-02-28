@@ -2,6 +2,73 @@ export const config = {
   api: { bodyParser: { sizeLimit: '50mb' } },
 };
 
+// ─── EDGAR Text Cleanup ───
+// Strips formatting artifacts from Edgarized PDF/Word documents:
+// form feeds, page numbers, repeated headers, excessive whitespace, etc.
+
+function cleanEdgarText(text) {
+  return text
+    // EDGAR SGML tags (<PAGE>, <S>, <C>, etc.)
+    .replace(/<\/?(?:PAGE|S|C|FN|TABLE|CAPTION)>/gi, '')
+    // Form feed characters
+    .replace(/\f/g, '\n')
+    // Zero-width / invisible Unicode characters (BOM, ZWSP, ZWNJ, ZWJ, word joiner, LRM, RLM)
+    .replace(/[\uFEFF\u200B\u200C\u200D\u2060\u200E\u200F]/g, '')
+    // Non-breaking spaces → regular spaces
+    .replace(/\u00A0/g, ' ')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&#160;/g, ' ')
+    // Standalone page numbers on their own line (1-4 digits, optional A-/B- prefix)
+    .replace(/^\s*(?:[A-Z]-?)?\d{1,4}\s*$/gm, '')
+    // Standalone lowercase roman numeral page numbers
+    .replace(/^\s*(?:i{1,3}|iv|vi{0,3}|ix|xi{0,3})\s*$/gm, '')
+    // Lines of underscores, equals, dashes (decorative separators, 10+ chars)
+    .replace(/^\s*[_=\-]{10,}\s*$/gm, '')
+    // Leader dot remnants (....3)
+    .replace(/\.{4,}\s*\d{1,4}\s*$/gm, '')
+    // Excessive blank lines → max 2 consecutive
+    .replace(/\n{4,}/g, '\n\n\n')
+    // Trailing whitespace on each line
+    .replace(/[ \t]+$/gm, '')
+    .trim();
+}
+
+function removeRepeatedHeaders(text) {
+  const lines = text.split('\n');
+  const lineCounts = {};
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (trimmed.length < 3 || trimmed.length > 80) continue;
+    lineCounts[trimmed] = (lineCounts[trimmed] || 0) + 1;
+  }
+
+  const repeatedHeaders = new Set();
+  for (const [line, count] of Object.entries(lineCounts)) {
+    if (count < 3) continue;
+    const upperRatio = line.replace(/[^A-Z]/g, '').length / line.length;
+    const isAllCaps = upperRatio > 0.6 && line.length < 60;
+    const isPageNum = /^\s*(?:[A-Z]-?)?\d{1,4}\s*$/.test(line);
+    if (isAllCaps || isPageNum) {
+      repeatedHeaders.add(line);
+    }
+  }
+
+  if (repeatedHeaders.size === 0) return text;
+  return lines.filter(line => !repeatedHeaders.has(line.trim())).join('\n');
+}
+
+// Clean section text — rejoin lines broken by EDGAR 80-char wrapping
+// and strip embedded page artifacts within section body
+function cleanSectionText(text) {
+  return text
+    // Remove standalone page numbers embedded within section text
+    .replace(/\n\s*(?:[A-Z]-?)?\d{1,4}\s*\n/g, '\n')
+    // Collapse 3+ blank lines to 2
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
 // ─── TOC Detection ───
 // Detects Table of Contents by finding lines with "Section X.XX" that end
 // with a page number (preceded by leader dots or multiple spaces).
@@ -31,8 +98,9 @@ function detectTOC(fullText) {
   const tocFlags = allMatches.map(match => {
     const lineEnd = fullText.indexOf('\n', match.index);
     const line = fullText.substring(match.index, lineEnd === -1 ? fullText.length : lineEnd);
-    // Ends with: (3+ dots or 3+ spaces) then 1-4 digit number
-    return /(?:\.{3,}|[\s\t]{3,})\d{1,4}\s*$/.test(line);
+    // Ends with: dots or whitespace gap then 1-4 digit number
+    // Lenient: 2+ dots or 2+ whitespace chars (EDGAR can produce irregular spacing)
+    return /(?:\.{2,}|[\s\t]{2,})\d{1,4}\s*$/.test(line);
   });
 
   // Find the first cluster of TOC-flagged lines
@@ -226,7 +294,11 @@ function detectGaps(sections) {
 }
 
 // ─── Main Parser ───
-function parseDocument(fullText) {
+function parseDocument(rawText) {
+  // Step 0: Clean EDGAR formatting artifacts
+  const fullText = removeRepeatedHeaders(cleanEdgarText(rawText));
+  const charsRemoved = rawText.length - fullText.length;
+
   // Step 1: Detect and skip TOC
   const toc = detectTOC(fullText);
   const bodyStart = toc.bodyStart;
@@ -269,7 +341,8 @@ function parseDocument(fullText) {
   }
   candidates.sort((a, b) => a.index - b.index);
 
-  // Pass 2: Sequential validation — filter out cross-references
+  // Pass 2: TOC-aware validation — use TOC as ground truth when available
+  const tocSet = toc.found ? new Set(toc.entries) : null;
   const headings = [];
   let lastArticle = -1;
   let lastSection = -1;
@@ -279,10 +352,33 @@ function parseDocument(fullText) {
     const art = parseInt(parts[1], 10);
     const sec = parseInt(parts[2], 10);
 
-    // Check if this is the next expected section or a new article
+    const isFirstCandidate = headings.length === 0;
+
+    // If TOC exists, use it as primary validator
+    if (tocSet) {
+      const inToc = tocSet.has(c.number);
+      // Accept: it's in the TOC (it's a real section heading)
+      if (inToc) {
+        headings.push(c);
+        lastArticle = art;
+        lastSection = sec;
+        continue;
+      }
+      // Not in TOC — only accept if sequential (could be a subsection not listed in TOC)
+      const isNextInArticle = art === lastArticle && sec === lastSection + 1;
+      const isNewArticle = art > lastArticle;
+      if (isFirstCandidate || isNextInArticle || isNewArticle) {
+        headings.push(c);
+        lastArticle = art;
+        lastSection = sec;
+      }
+      // else: not in TOC and breaks sequence → cross-reference, skip
+      continue;
+    }
+
+    // No TOC — fall back to sequential + context validation
     const isNextInArticle = art === lastArticle && sec === lastSection + 1;
     const isNewArticle = art > lastArticle;
-    const isFirstCandidate = headings.length === 0;
 
     // Check character immediately before "Section" (ignoring whitespace)
     let precededByBreak = false;
@@ -291,10 +387,9 @@ function parseDocument(fullText) {
       const trimmed = before.trimEnd();
       if (trimmed.length > 0) {
         const lastChar = trimmed[trimmed.length - 1];
-        // Period, digit (page number), or colon indicates a structural break
         precededByBreak = /[.\d:]/.test(lastChar);
       } else {
-        precededByBreak = true; // whitespace-only before = start of block
+        precededByBreak = true;
       }
     }
 
@@ -303,7 +398,6 @@ function parseDocument(fullText) {
       lastArticle = art;
       lastSection = sec;
     }
-    // else: skip — likely a cross-reference
   }
 
   // Step 3: Build sections by splitting between consecutive headings
@@ -311,9 +405,10 @@ function parseDocument(fullText) {
   for (let i = 0; i < headings.length; i++) {
     const start = headings[i].index;
     const end = i + 1 < headings.length ? headings[i + 1].index : body.length;
-    const text = body.substring(start, end).trim();
-    if (text.length < 20) continue;
+    const rawSectionText = body.substring(start, end).trim();
+    if (rawSectionText.length < 20) continue;
 
+    const text = cleanSectionText(rawSectionText);
     const headingLine = text.split('\n')[0].substring(0, 200).trim();
     const title = extractTitle(headingLine);
 
@@ -465,7 +560,8 @@ function parseDocument(fullText) {
     toc: tocComparison,
     gaps,
     diagnostics: {
-      totalChars: fullText.length,
+      totalChars: rawText.length,
+      cleanedChars: charsRemoved,
       bodyStart,
       bodyEnd,
       bodyChars: bodyEnd - bodyStart,

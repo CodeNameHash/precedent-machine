@@ -1100,9 +1100,9 @@ export default function AddAgreements() {
                   </div>
                   {parseOnlyData?.diagnostics && (
                     <div style={{ fontSize: 10, color: 'var(--text4)', marginTop: 4, fontFamily: 'var(--mono)' }}>
-                      Body starts at char {parseOnlyData.diagnostics.bodyStart.toLocaleString()}
+                      {parseOnlyData.diagnostics.totalChars.toLocaleString()} total chars
+                      {parseOnlyData.diagnostics.cleanedChars > 0 && ` | ${parseOnlyData.diagnostics.cleanedChars.toLocaleString()} EDGAR artifacts removed`}
                       {' | '}{parseOnlyData.diagnostics.bodyChars.toLocaleString()} body chars
-                      {' | '}{parseOnlyData.diagnostics.totalChars.toLocaleString()} total chars
                       {parseOnlyData.diagnostics.truncatedChars > 0 && ` | ${parseOnlyData.diagnostics.truncatedChars.toLocaleString()} truncated`}
                       {parseOnlyData.diagnostics.definitionTerms > 0 && ` | ${parseOnlyData.diagnostics.definitionTerms} defined terms`}
                     </div>
