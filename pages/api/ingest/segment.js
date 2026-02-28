@@ -99,115 +99,99 @@ const PROVISION_TYPE_CONFIGS = {
   },
 };
 
-// Cross-reference signal words — if these appear before a Section/Article
-// reference on the same line, it's a cross-ref not a heading
-const XREF_SIGNALS = /(?:in|under|pursuant\s+to|of|set\s+forth\s+in|described\s+in|defined\s+in|referenced\s+in|subject\s+to|accordance\s+with|provided\s+in|specified\s+in|required\s+by|referred\s+to\s+in)\s+$/i;
+// ─── Phase 1: Structural parsing — detect delimiter pattern, split on it ───
 
-// ─── TOC Parser ───
-function parseTOC(fullText) {
-  // Look for TABLE OF CONTENTS in first 25% of text (SEC filings often have preamble)
-  const searchRegion = fullText.substring(0, Math.floor(fullText.length * 0.25));
-  const tocMatch = searchRegion.match(/TABLE\s+OF\s+CONTENTS/i);
-  if (!tocMatch) return null;
-
-  const tocStart = tocMatch.index + tocMatch[0].length;
-
-  // Find where TOC ends — look for first real ARTICLE heading in body
-  // (TOC entries reference articles but the body starts with the actual heading)
-  const afterToc = fullText.substring(tocStart);
-  const bodyStartMatch = afterToc.match(/\n\s*(ARTICLE\s+(?:[IVXLC]+|\d+))\s*\n/i);
-  const tocEnd = bodyStartMatch ? tocStart + bodyStartMatch.index : tocStart + 5000;
-  const tocText = fullText.substring(tocStart, Math.min(tocEnd, fullText.length));
-
-  const entries = [];
-  const lines = tocText.split('\n');
-
-  for (const line of lines) {
-    const trimmed = line.trim();
-    if (!trimmed || trimmed.length < 3) continue;
-
-    // Match article entries: ARTICLE I, ARTICLE 1, etc.
-    const artMatch = trimmed.match(/^(ARTICLE\s+(?:[IVXLC]+|\d+))\s*[.\-—\s]+\s*(.+?)(?:\s*\.{2,}\s*\d+|\s+\d+)?\s*$/i);
-    if (artMatch) {
-      entries.push({
-        number: artMatch[1].trim(),
-        title: artMatch[2].replace(/\.+\s*\d*\s*$/, '').trim(),
-        level: 'article',
-      });
-      continue;
+// Detect where the agreement body starts (skip TOC, preamble, recitals)
+function findBodyStart(fullText) {
+  // Look for TABLE OF CONTENTS and skip past it
+  const tocMatch = fullText.match(/TABLE\s+OF\s+CONTENTS/i);
+  if (tocMatch) {
+    // Body starts at the first ARTICLE heading after the TOC
+    const afterToc = fullText.substring(tocMatch.index);
+    const bodyMatch = afterToc.match(/\n\s*(ARTICLE\s+(?:[IVXLC]+|\d+))\s*\n/i);
+    if (bodyMatch) {
+      return tocMatch.index + bodyMatch.index + 1; // +1 to skip the \n
     }
+  }
+  // No TOC — look for first ARTICLE heading
+  const firstArt = fullText.match(/\n\s*(ARTICLE\s+(?:[IVXLC]+|\d+))\s*\n/i);
+  if (firstArt) return firstArt.index + 1;
+  // No articles — start from the beginning
+  return 0;
+}
 
-    // Match section entries: Section 1.1, 1.1, SECTION 1.01, etc.
-    const secMatch = trimmed.match(/^(?:(?:SECTION|Section)\s+)?(\d+\.\d{1,2}[a-z]?)\s*[.\-—\s]+\s*(.+?)(?:\s*\.{2,}\s*\d+|\s+\d+)?\s*$/i);
-    if (secMatch) {
-      entries.push({
-        number: secMatch[1].trim(),
-        title: secMatch[2].replace(/\.+\s*\d*\s*$/, '').trim(),
-        level: 'section',
-      });
+// Auto-detect the section delimiter pattern used in this document
+function detectDelimiterPattern(fullText, bodyStart) {
+  const body = fullText.substring(bodyStart);
+
+  // Candidate patterns — test each at line-start positions only
+  const candidates = [
+    { label: 'Section X.XX', regex: /^\s*Section\s+\d+\.\d{1,2}/gm },
+    { label: 'SECTION X.XX', regex: /^\s*SECTION\s+\d+\.\d{1,2}/gm },
+    { label: 'X.XX bare',    regex: /^\s*\d+\.\d{1,2}\s+[A-Z]/gm },
+  ];
+
+  let best = null;
+  let bestCount = 0;
+
+  for (const c of candidates) {
+    const matches = body.match(c.regex);
+    const count = matches ? matches.length : 0;
+    if (count > bestCount) {
+      best = c;
+      bestCount = count;
     }
   }
 
-  return entries.length >= 3 ? { entries, tocEndPos: tocEnd } : null;
+  // Need at least 5 matches to be confident this is the delimiter
+  if (bestCount >= 5) return best;
+  return null;
 }
 
-// ─── Check if a match is a cross-reference (not a real heading) ───
-function isCrossReference(fullText, matchIndex) {
-  // Find start of the line this match is on
-  const lineStart = fullText.lastIndexOf('\n', matchIndex - 1) + 1;
-  const textBeforeOnLine = fullText.substring(lineStart, matchIndex);
-
-  // Check for cross-reference signal words first — strongest signal
-  if (XREF_SIGNALS.test(textBeforeOnLine)) return true;
-
-  // If match is near line start (only whitespace before), it's a heading
-  const stripped = textBeforeOnLine.replace(/^\s+/, '');
-  if (stripped.length === 0) return false;
-
-  // If there are >25 non-whitespace chars before the match on this line,
-  // it's mid-sentence, not a heading (raised from 10 to avoid filtering indented headings)
-  if (stripped.length > 25) return true;
-
-  return false;
-}
-
-// ─── Phase 1: Structural parsing (deterministic regex, no AI) ───
 function parseStructure(fullText) {
+  const bodyStart = findBodyStart(fullText);
+
+  // Step 1: Detect section delimiter pattern
+  const delimiter = detectDelimiterPattern(fullText, bodyStart);
+
+  // Step 2: Find all ARTICLE boundaries in the body
+  const articleRegex = /^\s*ARTICLE\s+(?:[IVXLC]+|\d+)\b[^\n]*/gmi;
+  const articles = [];
+  let artMatch;
+  // Only search in body (after TOC)
+  const bodyText = fullText.substring(bodyStart);
+  while ((artMatch = articleRegex.exec(bodyText)) !== null) {
+    articles.push({
+      heading: artMatch[0].trim(),
+      startChar: bodyStart + artMatch.index,
+    });
+  }
+
+  // Step 3: Find all section boundaries using the detected delimiter
   const sections = [];
 
-  // Try TOC-guided parsing first
-  const toc = parseTOC(fullText);
-
-  if (toc) {
-    // TOC-guided mode: use TOC entries to find section boundaries in body
-    const bodyStart = toc.tocEndPos;
-    const bodyText = fullText.substring(bodyStart);
-
-    const boundaries = [];
-
-    for (const entry of toc.entries) {
-      // Build regex to find this heading in the body
-      const escaped = entry.number.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      let pattern;
-      if (entry.level === 'article') {
-        pattern = new RegExp(`^[ \\t]*${escaped}\\b[^\\n]*`, 'mi');
-      } else {
-        pattern = new RegExp(`^[ \\t]*(?:(?:SECTION|Section)\\s+)?${escaped}\\b[^\\n]*`, 'mi');
-      }
-
-      const match = pattern.exec(bodyText);
-      if (match) {
-        boundaries.push({
-          heading: match[0].trim(),
-          startChar: bodyStart + match.index,
-          level: entry.level,
-          tocTitle: entry.title,
-        });
-      }
+  if (delimiter) {
+    // Build the actual splitting regex — line-anchored version of what was detected
+    let splitRegex;
+    if (delimiter.label === 'Section X.XX') {
+      splitRegex = /^\s*Section\s+(\d+\.\d{1,2})\b[^\n]*/gm;
+    } else if (delimiter.label === 'SECTION X.XX') {
+      splitRegex = /^\s*SECTION\s+(\d+\.\d{1,2})\b[^\n]*/gm;
+    } else {
+      splitRegex = /^\s*(\d+\.\d{1,2})\s+[A-Z][^\n]*/gm;
     }
 
-    // Sort boundaries by position and build sections
-    boundaries.sort((a, b) => a.startChar - b.startChar);
+    const boundaries = [];
+    let secMatch;
+    while ((secMatch = splitRegex.exec(bodyText)) !== null) {
+      boundaries.push({
+        heading: secMatch[0].trim(),
+        startChar: bodyStart + secMatch.index,
+        number: secMatch[1],
+      });
+    }
+
+    // Build sections between consecutive boundaries
     for (let i = 0; i < boundaries.length; i++) {
       const start = boundaries[i].startChar;
       const end = i + 1 < boundaries.length ? boundaries[i + 1].startChar : fullText.length;
@@ -216,98 +200,41 @@ function parseStructure(fullText) {
       sections.push({
         heading: boundaries[i].heading,
         text,
-        level: boundaries[i].level,
-        startChar: start,
-        endChar: end,
-      });
-    }
-  }
-
-  // If TOC didn't produce enough sections, use regex with cross-ref filtering
-  if (sections.length < 5) {
-    sections.length = 0;
-
-    // Extract definitions
-    const defRegex = /"([^"]{3,80})"\s+(?:means|shall\s+mean|has\s+the\s+meaning)/gi;
-    let defMatch;
-    while ((defMatch = defRegex.exec(fullText)) !== null) {
-      const defName = defMatch[1];
-      const startChar = defMatch.index;
-      const afterDef = fullText.substring(startChar);
-      const nextBoundary = afterDef.search(/\n\s*"[^"]{3,80}"\s+(?:means|shall\s+mean|has\s+the\s+meaning)|\n\s*(?:ARTICLE|SECTION)\s+/i);
-      const endChar = nextBoundary > 0 ? startChar + nextBoundary : Math.min(startChar + 5000, fullText.length);
-      sections.push({
-        heading: defName,
-        text: fullText.substring(startChar, endChar).trim(),
-        level: 'definition',
-        startChar,
-        endChar,
-      });
-    }
-
-    // Detect article boundaries with cross-ref filtering
-    const articleRegex = /ARTICLE\s+(?:[IVXLC]+|\d+)\b[^\n]*/gmi;
-    const articles = [];
-    let artMatch;
-    while ((artMatch = articleRegex.exec(fullText)) !== null) {
-      if (!isCrossReference(fullText, artMatch.index)) {
-        articles.push({ heading: artMatch[0].trim(), startChar: artMatch.index });
-      }
-    }
-
-    // Detect section boundaries with cross-ref filtering
-    const sectionRegex = /(?:(?:SECTION|Section)\s+)?(\d+\.\d{1,2}[a-z]?)\b[^\n]*/gm;
-    const sectionMatches = [];
-    let secMatch;
-    while ((secMatch = sectionRegex.exec(fullText)) !== null) {
-      if (!isCrossReference(fullText, secMatch.index)) {
-        sectionMatches.push({ heading: secMatch[0].trim(), startChar: secMatch.index });
-      }
-    }
-
-    // Build section entries from section boundaries
-    for (let i = 0; i < sectionMatches.length; i++) {
-      const start = sectionMatches[i].startChar;
-      const end = i + 1 < sectionMatches.length
-        ? sectionMatches[i + 1].startChar
-        : (articles.length > 0 ? findNextArticleAfter(articles, start, fullText.length) : fullText.length);
-      const text = fullText.substring(start, end).trim();
-      if (text.length < 20) continue;
-      sections.push({
-        heading: sectionMatches[i].heading,
-        text,
         level: 'section',
         startChar: start,
         endChar: end,
+        number: boundaries[i].number,
       });
     }
+  }
 
-    // Add article-level entries for articles without sub-sections
-    for (let i = 0; i < articles.length; i++) {
-      const artStart = articles[i].startChar;
-      const artEnd = i + 1 < articles.length ? articles[i + 1].startChar : fullText.length;
-      const hasSections = sectionMatches.some(s => s.startChar >= artStart && s.startChar < artEnd);
-      if (!hasSections) {
-        const text = fullText.substring(artStart, artEnd).trim();
-        if (text.length >= 20) {
-          sections.push({
-            heading: articles[i].heading,
-            text,
-            level: 'article',
-            startChar: artStart,
-            endChar: artEnd,
-          });
-        }
+  // Step 4: For articles that have no sub-sections, add the article itself
+  for (let i = 0; i < articles.length; i++) {
+    const artStart = articles[i].startChar;
+    const artEnd = i + 1 < articles.length ? articles[i + 1].startChar : fullText.length;
+    const hasSections = sections.some(s => s.startChar >= artStart && s.startChar < artEnd);
+    if (!hasSections) {
+      const text = fullText.substring(artStart, artEnd).trim();
+      if (text.length >= 20) {
+        sections.push({
+          heading: articles[i].heading,
+          text,
+          level: 'article',
+          startChar: artStart,
+          endChar: artEnd,
+        });
       }
     }
   }
 
-  // Fallback: if still <5 sections, split on double-newlines
-  if (sections.length < 5) {
+  // Step 5: Fallback if no delimiter detected and no sections found
+  if (sections.length < 3) {
     sections.length = 0;
-    const chunks = fullText.split(/\n\s*\n/);
-    let offset = 0;
-    chunks.forEach((chunk) => {
+    // Fall back to splitting on double-newlines in the body
+    const body = fullText.substring(bodyStart);
+    const chunks = body.split(/\n\s*\n/);
+    let offset = bodyStart;
+    for (const chunk of chunks) {
       const trimmed = chunk.trim();
       if (trimmed.length >= 50) {
         sections.push({
@@ -319,85 +246,31 @@ function parseStructure(fullText) {
         });
       }
       offset += chunk.length + 2;
-    });
-  }
-
-  // 1e: Split large article-level chunks that lack sub-sections
-  const expanded = [];
-  for (const sec of sections) {
-    if (sec.level === 'article' && sec.text.length > 3000) {
-      const subs = splitArticleIntoParagraphs(sec);
-      if (subs.length > 1) {
-        expanded.push(...subs);
-        continue;
-      }
     }
-    expanded.push(sec);
   }
 
-  // Sort by position in document
-  expanded.sort((a, b) => a.startChar - b.startChar);
+  // Sort by document position
+  sections.sort((a, b) => a.startChar - b.startChar);
 
-  // 1f: Coverage tracking
-  const coveredChars = expanded.reduce((sum, s) => sum + (s.endChar - s.startChar), 0);
+  // Coverage tracking
+  const coveredChars = sections.reduce((sum, s) => sum + (s.endChar - s.startChar), 0);
   const coverage = {
     totalChars: fullText.length,
     coveredChars: Math.min(coveredChars, fullText.length),
     coveragePct: Math.round((Math.min(coveredChars, fullText.length) / fullText.length) * 100),
-    sectionCount: expanded.length,
+    sectionCount: sections.length,
+    bodyStart,
+    delimiterPattern: delimiter?.label || 'fallback',
   };
 
-  return { sections: expanded, coverage };
-}
-
-// ─── Split large article chunks on paragraph markers ───
-function splitArticleIntoParagraphs(section) {
-  const text = section.text;
-  // Match paragraph-level markers: (a), (b), (i), (ii), (1), (2), etc.
-  const paraRegex = /\n\s*\((?:[a-z]{1,3}|[ivxlc]+|\d{1,2})\)\s/gi;
-  const splits = [];
-  let match;
-  while ((match = paraRegex.exec(text)) !== null) {
-    splits.push(match.index);
-  }
-  if (splits.length < 2) return [section];
-
-  const results = [];
-  // Include preamble before first marker if substantial
-  if (splits[0] > 100) {
-    results.push({
-      heading: section.heading + ' (preamble)',
-      text: text.substring(0, splits[0]).trim(),
-      level: 'paragraph',
-      startChar: section.startChar,
-      endChar: section.startChar + splits[0],
-    });
-  }
-
-  for (let i = 0; i < splits.length; i++) {
-    const start = splits[i];
-    const end = i + 1 < splits.length ? splits[i + 1] : text.length;
-    const chunk = text.substring(start, end).trim();
-    if (chunk.length < 20) continue;
-    const label = chunk.match(/^\(([^)]+)\)/)?.[1] || String(i + 1);
-    results.push({
-      heading: section.heading + ` (${label})`,
-      text: chunk,
-      level: 'paragraph',
-      startChar: section.startChar + start,
-      endChar: section.startChar + end,
-    });
-  }
-
-  return results.length > 1 ? results : [section];
+  return { sections, coverage };
 }
 
 // ─── Phase 2: Gap detection and recovery ───
 function detectGaps(sections) {
-  // Extract all section numbers, group by article
   const byArticle = {};
   for (const s of sections) {
-    const numMatch = s.heading.match(/(\d+)\.(\d{1,2})/);
+    const numMatch = (s.number || s.heading).match(/(\d+)\.(\d{1,2})/);
     if (!numMatch) continue;
     const art = parseInt(numMatch[1], 10);
     const sec = parseInt(numMatch[2], 10);
@@ -406,25 +279,22 @@ function detectGaps(sections) {
   }
 
   const gaps = [];
-
-  // Find sequential gaps within each article
   for (const [artStr, secSet] of Object.entries(byArticle)) {
     const art = parseInt(artStr, 10);
     const nums = Array.from(secSet).sort((a, b) => a - b);
     if (nums.length < 2) continue;
+    // Detect if document uses zero-padded format (e.g. 1.01 vs 1.1)
+    const usesZeroPad = nums.some(n => {
+      const found = sections.find(s => {
+        const m = (s.number || s.heading).match(/(\d+)\.(\d{1,2})/);
+        return m && parseInt(m[1]) === art && parseInt(m[2]) === n;
+      });
+      return found && (found.number || found.heading).match(/\.\d{2}/);
+    });
     for (let i = 0; i < nums.length - 1; i++) {
       for (let missing = nums[i] + 1; missing < nums[i + 1]; missing++) {
-        gaps.push({ article: art, section: missing, label: `${art}.${String(missing).padStart(nums[0] > 9 ? 2 : 1, '0')}` });
-      }
-    }
-  }
-
-  // Detect missing article numbers
-  const artNums = Object.keys(byArticle).map(Number).sort((a, b) => a - b);
-  if (artNums.length >= 2) {
-    for (let i = 0; i < artNums.length - 1; i++) {
-      for (let missing = artNums[i] + 1; missing < artNums[i + 1]; missing++) {
-        gaps.push({ article: missing, section: null, label: `Article ${missing}` });
+        const label = usesZeroPad ? `${art}.${String(missing).padStart(2, '0')}` : `${art}.${missing}`;
+        gaps.push({ article: art, section: missing, label });
       }
     }
   }
@@ -432,75 +302,47 @@ function detectGaps(sections) {
   return gaps;
 }
 
-function recoverGaps(gaps, fullText, sections) {
+function recoverGaps(gaps, fullText, sections, bodyStart) {
   const recovered = [];
 
   for (const gap of gaps) {
-    let pattern;
-    if (gap.section != null) {
-      // Look for the missing section number
-      const secNum = `${gap.article}.${String(gap.section).padStart(gap.label.includes('.0') ? 2 : 1, '0')}`;
-      pattern = new RegExp(`(?:(?:SECTION|Section)\\s+)?${secNum.replace('.', '\\.')}\\b[^\\n]*`, 'gm');
-    } else {
-      // Look for a missing article
-      pattern = new RegExp(`ARTICLE\\s+${romanize(gap.article) || gap.article}\\b[^\\n]*`, 'gmi');
-    }
+    const escapedNum = gap.label.replace('.', '\\.');
+    const pattern = new RegExp(`^\\s*(?:(?:SECTION|Section)\\s+)?${escapedNum}\\b[^\\n]*`, 'gm');
 
     let match;
-    while ((match = pattern.exec(fullText)) !== null) {
-      // Skip if this is a cross-reference
-      if (isCrossReference(fullText, match.index)) continue;
+    const body = fullText.substring(bodyStart);
+    while ((match = pattern.exec(body)) !== null) {
+      const absPos = bodyStart + match.index;
 
-      // Skip if this position is already covered by an existing section
-      const alreadyCovered = sections.some(s => match.index >= s.startChar && match.index < s.endChar);
+      // Skip if already covered by an existing section
+      const alreadyCovered = sections.some(s => absPos >= s.startChar && absPos < s.endChar);
       if (alreadyCovered) continue;
 
-      // Find the end: next known section boundary or +5000 chars
-      let endChar = Math.min(match.index + 5000, fullText.length);
+      // Find end: next known boundary
+      let endChar = Math.min(absPos + 5000, fullText.length);
       for (const s of sections) {
-        if (s.startChar > match.index && s.startChar < endChar) {
+        if (s.startChar > absPos && s.startChar < endChar) {
           endChar = s.startChar;
         }
       }
 
-      const text = fullText.substring(match.index, endChar).trim();
+      const text = fullText.substring(absPos, endChar).trim();
       if (text.length < 30) continue;
 
       recovered.push({
         heading: match[0].trim(),
         text,
-        level: gap.section != null ? 'section' : 'article',
-        startChar: match.index,
+        level: 'section',
+        startChar: absPos,
         endChar: endChar,
+        number: gap.label,
         recovered: true,
       });
-      break; // Only recover the first non-xref match per gap
+      break;
     }
   }
 
   return recovered;
-}
-
-// Convert integer to Roman numeral (for article gap detection)
-function romanize(num) {
-  if (num < 1 || num > 50) return null;
-  const vals = [50, 40, 10, 9, 5, 4, 1];
-  const syms = ['L', 'XL', 'X', 'IX', 'V', 'IV', 'I'];
-  let result = '';
-  for (let i = 0; i < vals.length; i++) {
-    while (num >= vals[i]) {
-      result += syms[i];
-      num -= vals[i];
-    }
-  }
-  return result;
-}
-
-function findNextArticleAfter(articles, pos, fallback) {
-  for (const a of articles) {
-    if (a.startChar > pos) return a.startChar;
-  }
-  return fallback;
 }
 
 // ─── Phase 3: Classify sections via AI with expanded context + complexity tiers ───
@@ -1021,7 +863,7 @@ export default async function handler(req, res) {
     // Phase 2: Detect and recover gaps
     const gapStart = Date.now();
     const gaps = detectGaps(sections);
-    const recovered = recoverGaps(gaps, full_text, sections);
+    const recovered = recoverGaps(gaps, full_text, sections, coverage.bodyStart || 0);
     if (recovered.length > 0) {
       sections.push(...recovered);
       sections.sort((a, b) => a.startChar - b.startChar);
