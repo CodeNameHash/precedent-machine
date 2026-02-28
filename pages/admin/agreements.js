@@ -214,6 +214,7 @@ export default function AddAgreements() {
   const [deduplicatedCount, setDeduplicatedCount] = useState(0);
   const [extractionMode, setExtractionMode] = useState('segment'); // 'segment' | 'legacy'
   const [timingData, setTimingData] = useState(null);
+  const [diagnosticsData, setDiagnosticsData] = useState(null);
   const [reviewOpen, setReviewOpen] = useState(false);
   const [reviewHistory, setReviewHistory] = useState([]);
   const [reviewInput, setReviewInput] = useState('');
@@ -294,6 +295,7 @@ export default function AddAgreements() {
     });
 
     if (ingestData.timing) setTimingData(ingestData.timing);
+    if (ingestData.diagnostics) setDiagnosticsData(ingestData.diagnostics);
 
     const allProvs = [];
     (ingestData.results || []).forEach(r => {
@@ -406,6 +408,7 @@ export default function AddAgreements() {
       });
 
       if (ingestData.timing) setTimingData(ingestData.timing);
+      if (ingestData.diagnostics) setDiagnosticsData(ingestData.diagnostics);
 
       const allProvs = [];
       (ingestData.results || []).forEach(r => {
@@ -514,7 +517,7 @@ export default function AddAgreements() {
     setFiles([]); setPreviewProvisions([]); setDuplicateWarning(null);
     setError(null); setExtractedTextLength(0); setParseWarnings([]);
     setAgreementSourceId(null); setFullAgreementText(''); setDeduplicatedCount(0);
-    setTimingData(null); setReviewOpen(false); setReviewHistory([]);
+    setTimingData(null); setDiagnosticsData(null); setReviewOpen(false); setReviewHistory([]);
     setUndoStack([]); setReviewInput('');
   };
 
@@ -1189,6 +1192,44 @@ export default function AddAgreements() {
                           {timingData.extract_ms != null && ` | Extracted: ${(timingData.extract_ms / 1000).toFixed(1)}s`}
                           {timingData.total_ms != null && ` | Total: ${(timingData.total_ms / 1000).toFixed(1)}s`}
                           {timingData.mode && ` (${timingData.mode})`}
+                        </div>
+                      )}
+                      {diagnosticsData && (
+                        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 6, alignItems: 'center' }}>
+                          {diagnosticsData.coverage && (
+                            <span style={{
+                              fontSize: 10, fontWeight: 600, padding: '2px 8px', borderRadius: 4,
+                              background: diagnosticsData.coverage.coveragePct >= 95 ? 'var(--green-bg)' : diagnosticsData.coverage.coveragePct >= 80 ? 'var(--yellow-bg)' : 'var(--red-bg)',
+                              color: diagnosticsData.coverage.coveragePct >= 95 ? 'var(--green)' : diagnosticsData.coverage.coveragePct >= 80 ? 'var(--yellow)' : 'var(--red)',
+                            }}>
+                              Coverage: {diagnosticsData.coverage.coveragePct}%
+                            </span>
+                          )}
+                          {diagnosticsData.gaps && (diagnosticsData.gaps.detected > 0 || diagnosticsData.gaps.recovered > 0) && (
+                            <span style={{
+                              fontSize: 10, fontWeight: 600, padding: '2px 8px', borderRadius: 4,
+                              background: diagnosticsData.gaps.detected === diagnosticsData.gaps.recovered ? 'var(--green-bg)' : 'var(--yellow-bg)',
+                              color: diagnosticsData.gaps.detected === diagnosticsData.gaps.recovered ? 'var(--green)' : 'var(--yellow)',
+                            }}>
+                              Gaps: {diagnosticsData.gaps.detected} detected, {diagnosticsData.gaps.recovered} recovered
+                            </span>
+                          )}
+                          {diagnosticsData.sectionBreakdown && (
+                            <span style={{
+                              fontSize: 10, padding: '2px 8px', borderRadius: 4,
+                              background: 'var(--bg3)', color: 'var(--text3)',
+                            }}>
+                              Extraction: {diagnosticsData.sectionBreakdown.high} full + {diagnosticsData.sectionBreakdown.medium} structured + {diagnosticsData.sectionBreakdown.low} basic
+                            </span>
+                          )}
+                          {diagnosticsData.completeness && diagnosticsData.completeness.length > 0 && diagnosticsData.completeness.map((w, i) => (
+                            <span key={i} style={{
+                              fontSize: 10, fontWeight: 600, padding: '2px 8px', borderRadius: 4,
+                              background: 'var(--yellow-bg)', color: 'var(--yellow)',
+                            }}>
+                              {w.label}: {w.found}/{w.expected} found
+                            </span>
+                          ))}
                         </div>
                       )}
                     </div>

@@ -3,7 +3,7 @@ import { getServiceSupabase } from '../../../lib/supabase';
 import crypto from 'crypto';
 
 export const config = {
-  maxDuration: 300,
+  maxDuration: 600,
   api: { bodyParser: { sizeLimit: '50mb' } },
 };
 
@@ -105,8 +105,8 @@ const XREF_SIGNALS = /(?:in|under|pursuant\s+to|of|set\s+forth\s+in|described\s+
 
 // ─── TOC Parser ───
 function parseTOC(fullText) {
-  // Look for TABLE OF CONTENTS in first 15% of text
-  const searchRegion = fullText.substring(0, Math.floor(fullText.length * 0.15));
+  // Look for TABLE OF CONTENTS in first 25% of text (SEC filings often have preamble)
+  const searchRegion = fullText.substring(0, Math.floor(fullText.length * 0.25));
   const tocMatch = searchRegion.match(/TABLE\s+OF\s+CONTENTS/i);
   if (!tocMatch) return null;
 
@@ -138,7 +138,7 @@ function parseTOC(fullText) {
     }
 
     // Match section entries: Section 1.1, 1.1, SECTION 1.01, etc.
-    const secMatch = trimmed.match(/^(?:(?:SECTION|Section)\s+)?(\d+\.\d+[a-z]?)\s*[.\-—\s]+\s*(.+?)(?:\s*\.{2,}\s*\d+|\s+\d+)?\s*$/i);
+    const secMatch = trimmed.match(/^(?:(?:SECTION|Section)\s+)?(\d+\.\d{1,2}[a-z]?)\s*[.\-—\s]+\s*(.+?)(?:\s*\.{2,}\s*\d+|\s+\d+)?\s*$/i);
     if (secMatch) {
       entries.push({
         number: secMatch[1].trim(),
@@ -148,7 +148,7 @@ function parseTOC(fullText) {
     }
   }
 
-  return entries.length >= 5 ? { entries, tocEndPos: tocEnd } : null;
+  return entries.length >= 3 ? { entries, tocEndPos: tocEnd } : null;
 }
 
 // ─── Check if a match is a cross-reference (not a real heading) ───
@@ -157,13 +157,16 @@ function isCrossReference(fullText, matchIndex) {
   const lineStart = fullText.lastIndexOf('\n', matchIndex - 1) + 1;
   const textBeforeOnLine = fullText.substring(lineStart, matchIndex);
 
-  // If there are >10 non-whitespace chars before the match on this line,
-  // it's mid-sentence, not a heading
-  const stripped = textBeforeOnLine.replace(/^\s+/, '');
-  if (stripped.length > 10) return true;
-
-  // Check for cross-reference signal words in preceding text
+  // Check for cross-reference signal words first — strongest signal
   if (XREF_SIGNALS.test(textBeforeOnLine)) return true;
+
+  // If match is near line start (only whitespace before), it's a heading
+  const stripped = textBeforeOnLine.replace(/^\s+/, '');
+  if (stripped.length === 0) return false;
+
+  // If there are >25 non-whitespace chars before the match on this line,
+  // it's mid-sentence, not a heading (raised from 10 to avoid filtering indented headings)
+  if (stripped.length > 25) return true;
 
   return false;
 }
@@ -253,7 +256,7 @@ function parseStructure(fullText) {
     }
 
     // Detect section boundaries with cross-ref filtering
-    const sectionRegex = /(?:(?:SECTION|Section)\s+)?(\d+\.\d+[a-z]?)\b[^\n]*/gm;
+    const sectionRegex = /(?:(?:SECTION|Section)\s+)?(\d+\.\d{1,2}[a-z]?)\b[^\n]*/gm;
     const sectionMatches = [];
     let secMatch;
     while ((secMatch = sectionRegex.exec(fullText)) !== null) {
@@ -319,10 +322,178 @@ function parseStructure(fullText) {
     });
   }
 
-  // Sort by position in document
-  sections.sort((a, b) => a.startChar - b.startChar);
+  // 1e: Split large article-level chunks that lack sub-sections
+  const expanded = [];
+  for (const sec of sections) {
+    if (sec.level === 'article' && sec.text.length > 3000) {
+      const subs = splitArticleIntoParagraphs(sec);
+      if (subs.length > 1) {
+        expanded.push(...subs);
+        continue;
+      }
+    }
+    expanded.push(sec);
+  }
 
-  return sections;
+  // Sort by position in document
+  expanded.sort((a, b) => a.startChar - b.startChar);
+
+  // 1f: Coverage tracking
+  const coveredChars = expanded.reduce((sum, s) => sum + (s.endChar - s.startChar), 0);
+  const coverage = {
+    totalChars: fullText.length,
+    coveredChars: Math.min(coveredChars, fullText.length),
+    coveragePct: Math.round((Math.min(coveredChars, fullText.length) / fullText.length) * 100),
+    sectionCount: expanded.length,
+  };
+
+  return { sections: expanded, coverage };
+}
+
+// ─── Split large article chunks on paragraph markers ───
+function splitArticleIntoParagraphs(section) {
+  const text = section.text;
+  // Match paragraph-level markers: (a), (b), (i), (ii), (1), (2), etc.
+  const paraRegex = /\n\s*\((?:[a-z]{1,3}|[ivxlc]+|\d{1,2})\)\s/gi;
+  const splits = [];
+  let match;
+  while ((match = paraRegex.exec(text)) !== null) {
+    splits.push(match.index);
+  }
+  if (splits.length < 2) return [section];
+
+  const results = [];
+  // Include preamble before first marker if substantial
+  if (splits[0] > 100) {
+    results.push({
+      heading: section.heading + ' (preamble)',
+      text: text.substring(0, splits[0]).trim(),
+      level: 'paragraph',
+      startChar: section.startChar,
+      endChar: section.startChar + splits[0],
+    });
+  }
+
+  for (let i = 0; i < splits.length; i++) {
+    const start = splits[i];
+    const end = i + 1 < splits.length ? splits[i + 1] : text.length;
+    const chunk = text.substring(start, end).trim();
+    if (chunk.length < 20) continue;
+    const label = chunk.match(/^\(([^)]+)\)/)?.[1] || String(i + 1);
+    results.push({
+      heading: section.heading + ` (${label})`,
+      text: chunk,
+      level: 'paragraph',
+      startChar: section.startChar + start,
+      endChar: section.startChar + end,
+    });
+  }
+
+  return results.length > 1 ? results : [section];
+}
+
+// ─── Phase 2: Gap detection and recovery ───
+function detectGaps(sections) {
+  // Extract all section numbers, group by article
+  const byArticle = {};
+  for (const s of sections) {
+    const numMatch = s.heading.match(/(\d+)\.(\d{1,2})/);
+    if (!numMatch) continue;
+    const art = parseInt(numMatch[1], 10);
+    const sec = parseInt(numMatch[2], 10);
+    if (!byArticle[art]) byArticle[art] = new Set();
+    byArticle[art].add(sec);
+  }
+
+  const gaps = [];
+
+  // Find sequential gaps within each article
+  for (const [artStr, secSet] of Object.entries(byArticle)) {
+    const art = parseInt(artStr, 10);
+    const nums = Array.from(secSet).sort((a, b) => a - b);
+    if (nums.length < 2) continue;
+    for (let i = 0; i < nums.length - 1; i++) {
+      for (let missing = nums[i] + 1; missing < nums[i + 1]; missing++) {
+        gaps.push({ article: art, section: missing, label: `${art}.${String(missing).padStart(nums[0] > 9 ? 2 : 1, '0')}` });
+      }
+    }
+  }
+
+  // Detect missing article numbers
+  const artNums = Object.keys(byArticle).map(Number).sort((a, b) => a - b);
+  if (artNums.length >= 2) {
+    for (let i = 0; i < artNums.length - 1; i++) {
+      for (let missing = artNums[i] + 1; missing < artNums[i + 1]; missing++) {
+        gaps.push({ article: missing, section: null, label: `Article ${missing}` });
+      }
+    }
+  }
+
+  return gaps;
+}
+
+function recoverGaps(gaps, fullText, sections) {
+  const recovered = [];
+
+  for (const gap of gaps) {
+    let pattern;
+    if (gap.section != null) {
+      // Look for the missing section number
+      const secNum = `${gap.article}.${String(gap.section).padStart(gap.label.includes('.0') ? 2 : 1, '0')}`;
+      pattern = new RegExp(`(?:(?:SECTION|Section)\\s+)?${secNum.replace('.', '\\.')}\\b[^\\n]*`, 'gm');
+    } else {
+      // Look for a missing article
+      pattern = new RegExp(`ARTICLE\\s+${romanize(gap.article) || gap.article}\\b[^\\n]*`, 'gmi');
+    }
+
+    let match;
+    while ((match = pattern.exec(fullText)) !== null) {
+      // Skip if this is a cross-reference
+      if (isCrossReference(fullText, match.index)) continue;
+
+      // Skip if this position is already covered by an existing section
+      const alreadyCovered = sections.some(s => match.index >= s.startChar && match.index < s.endChar);
+      if (alreadyCovered) continue;
+
+      // Find the end: next known section boundary or +5000 chars
+      let endChar = Math.min(match.index + 5000, fullText.length);
+      for (const s of sections) {
+        if (s.startChar > match.index && s.startChar < endChar) {
+          endChar = s.startChar;
+        }
+      }
+
+      const text = fullText.substring(match.index, endChar).trim();
+      if (text.length < 30) continue;
+
+      recovered.push({
+        heading: match[0].trim(),
+        text,
+        level: gap.section != null ? 'section' : 'article',
+        startChar: match.index,
+        endChar: endChar,
+        recovered: true,
+      });
+      break; // Only recover the first non-xref match per gap
+    }
+  }
+
+  return recovered;
+}
+
+// Convert integer to Roman numeral (for article gap detection)
+function romanize(num) {
+  if (num < 1 || num > 50) return null;
+  const vals = [50, 40, 10, 9, 5, 4, 1];
+  const syms = ['L', 'XL', 'X', 'IX', 'V', 'IV', 'I'];
+  let result = '';
+  for (let i = 0; i < vals.length; i++) {
+    while (num >= vals[i]) {
+      result += syms[i];
+      num -= vals[i];
+    }
+  }
+  return result;
 }
 
 function findNextArticleAfter(articles, pos, fallback) {
@@ -332,21 +503,29 @@ function findNextArticleAfter(articles, pos, fallback) {
   return fallback;
 }
 
-// ─── Phase 2: Classify sections via single AI call ───
+// ─── Phase 3: Classify sections via AI with expanded context + complexity tiers ───
 async function classifySections(sections, client, rules) {
-  // Build compact payload: index, heading, first 300 chars
-  const sectionSummaries = sections.map((s, idx) => ({
-    idx,
-    heading: s.heading.substring(0, 120),
-    preview: s.text.substring(0, 300),
-    level: s.level,
-  }));
+  // Build payload with expanded preview: 1500 chars + tail for long sections
+  const sectionSummaries = sections.map((s, idx) => {
+    const summary = {
+      idx,
+      heading: s.heading.substring(0, 120),
+      preview: s.text.substring(0, 1500),
+      level: s.level,
+      charCount: s.text.length,
+    };
+    // Add tail context for long sections (catches conclusion/carve-out language)
+    if (s.text.length > 3000) {
+      summary.tail = s.text.substring(s.text.length - 500);
+    }
+    return summary;
+  });
 
   const allTypes = Object.keys(PROVISION_TYPE_CONFIGS);
   const typeList = allTypes.map(k => `${k} (${PROVISION_TYPE_CONFIGS[k].label})`).join(', ');
 
-  // Batch into groups of 150 if needed
-  const batchSize = 150;
+  // Batch into groups of 100 (larger previews = fewer per batch)
+  const batchSize = 100;
   const batches = [];
   for (let i = 0; i < sectionSummaries.length; i += batchSize) {
     batches.push(sectionSummaries.slice(i, i + batchSize));
@@ -364,7 +543,12 @@ async function classifySections(sections, client, rules) {
 
 For each section below, classify it into one of these provision types: ${typeList}
 
-Sections that contain multiple sub-provisions (like MAE carve-outs, IOC restriction lists, conditions lists, termination triggers) need sub-extraction. Simple sections (notices, governing law, single representations) do not.
+Assign a COMPLEXITY level to determine extraction depth:
+- "high": MAE carve-out sections, IOC restriction lists, COND condition lists, TERMR/TERMF trigger/fee lists — these have detailed sub-provisions that need individual extraction
+- "medium": REP articles with multiple sub-representations (Tax, IP, Environmental, etc.), COV articles with multiple covenants (No-Shop, Efforts, Financing Cooperation), STRUCT sections with multiple deal terms, DEF sections with multiple defined terms, AND any section >3000 chars that contains sub-numbered items like (a), (b), (i), (ii)
+- "low": Single-topic sections <2000 chars, individual definitions, simple miscellaneous boilerplate, notices, governing law
+
+IMPORTANT: A section titled "Representations and Warranties of the Company" that contains sub-sections (e.g., 4.1 Organization, 4.2 Authority, 4.3 Financial Statements) MUST be classified as "medium" complexity. Same for Covenants articles with multiple sub-covenants.
 
 Display tiers: 1=Core (MAE, termination, conditions, antitrust, key IOC), 2=Supporting (reps, covenants, deal structure), 3=Reference (definitions, miscellaneous boilerplate).
 
@@ -377,15 +561,15 @@ Return ONLY valid JSON array (no markdown, no backticks):
   "provision_type": "MAE",
   "category": "specific sub-category name",
   "display_tier": 1,
-  "needs_sub_extraction": true
+  "complexity": "high"
 }]
 
 Rules:
 - Every section must appear in the output
 - Use the exact provision_type keys: ${allTypes.join(', ')}
 - For sections that don't clearly fit, use MISC
-- needs_sub_extraction=true for: MAE sections (have carve-outs), IOC sections (have restriction lists), COND sections (have multiple conditions), TERMR/TERMF sections (have multiple triggers/fees)
-- needs_sub_extraction=false for: simple single-topic sections, definitions, miscellaneous, most REP/COV/STRUCT sections${rules && rules.length > 0 ? '\n\nLEARNED RULES (from prior review sessions):\n' + rules.filter(r => r.scope === 'classify' || r.scope === 'parse').map(r => '- ' + r.rule).join('\n') : ''}`
+- complexity must be one of: "high", "medium", "low"
+- When a "tail" field is present, use it along with "preview" to understand the full scope of the section${rules && rules.length > 0 ? '\n\nLEARNED RULES (from prior review sessions):\n' + rules.filter(r => r.scope === 'classify' || r.scope === 'parse').map(r => '- ' + r.rule).join('\n') : ''}`
       }],
     });
 
@@ -395,14 +579,13 @@ Rules:
       const parsed = JSON.parse(clean);
       allClassifications.push(...parsed);
     } catch {
-      // If parse fails, default all sections in batch to MISC
       batch.forEach(s => {
         allClassifications.push({
           idx: s.idx,
           provision_type: 'MISC',
           category: 'Unclassified',
           display_tier: 3,
-          needs_sub_extraction: false,
+          complexity: 'low',
         });
       });
     }
@@ -416,23 +599,38 @@ Rules:
       provision_type: cls?.provision_type || 'MISC',
       category: cls?.category || 'Unclassified',
       display_tier: cls?.display_tier || 3,
-      needs_sub_extraction: cls?.needs_sub_extraction || false,
+      complexity: cls?.complexity || 'low',
     };
   });
 
   return classifiedSections;
 }
 
-// ─── Phase 3: Extract sub-provisions where needed ───
+// ─── Concurrency limiter ───
+async function runWithConcurrency(tasks, maxConcurrent = 8) {
+  const results = [];
+  let idx = 0;
+  const workers = Array.from({ length: Math.min(maxConcurrent, tasks.length) }, async () => {
+    while (idx < tasks.length) {
+      const i = idx++;
+      results[i] = await tasks[i]();
+    }
+  });
+  await Promise.all(workers);
+  return results;
+}
+
+// ─── Phase 4: Extract sub-provisions — three-tier universal extraction ───
 async function extractSubProvisions(classifiedSections, client, calibrationByType) {
   const results = [];
 
-  // Split into two tracks
-  const needsExtraction = classifiedSections.filter(s => s.needs_sub_extraction);
-  const simpleSections = classifiedSections.filter(s => !s.needs_sub_extraction);
+  // Split into three tiers by complexity
+  const highSections = classifiedSections.filter(s => s.complexity === 'high');
+  const mediumSections = classifiedSections.filter(s => s.complexity === 'medium');
+  const lowSections = classifiedSections.filter(s => s.complexity !== 'high' && s.complexity !== 'medium');
 
-  // Track A: Sub-extraction for complex sections
-  const extractionPromises = needsExtraction.map(async (section) => {
+  // ─── Tier 1 (high): Full sub-extraction per category ───
+  const highTasks = highSections.map((section) => async () => {
     const typeConfig = PROVISION_TYPE_CONFIGS[section.provision_type];
     if (!typeConfig) {
       results.push({
@@ -446,7 +644,6 @@ async function extractSubProvisions(classifiedSections, client, calibrationByTyp
       return;
     }
 
-    // Build calibration section from existing examples
     let calibrationSection = '';
     const examples = calibrationByType[section.provision_type];
     if (examples && examples.length > 0) {
@@ -503,7 +700,6 @@ Return ONLY valid JSON (no markdown, no backticks):
           });
         });
       } catch {
-        // Fallback: use the whole section text
         results.push({
           type: section.provision_type,
           category: section.category,
@@ -526,19 +722,112 @@ Return ONLY valid JSON (no markdown, no backticks):
     }
   });
 
-  // Track B: Batch favorability assessment for simple sections
+  // ─── Tier 2 (medium): Structured sub-extraction for REP, COV, STRUCT, multi-DEF ───
+  const mediumTasks = mediumSections.map((section) => async () => {
+    const typeConfig = PROVISION_TYPE_CONFIGS[section.provision_type];
+    const typeLabel = typeConfig?.label || section.provision_type;
+
+    try {
+      const resp = await client.messages.create({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 12000,
+        messages: [{
+          role: 'user',
+          content: `You are a senior M&A attorney splitting a "${typeLabel}" section into its individual sub-provisions.
+
+SECTION TEXT:
+${section.text}
+
+This section contains multiple sub-provisions. Split it into individual provisions by their internal numbering or headings (e.g., Section 4.1 Organization, Section 4.2 Authority, (a) Tax Matters, (b) Environmental, etc.).
+
+For each sub-provision:
+1. Identify its specific sub-category name (e.g., "Organization / Good Standing", "Tax Matters", "No Solicitation")
+2. Copy the EXACT verbatim text
+3. Rate its favorability from the buyer's perspective
+
+Return ONLY valid JSON (no markdown, no backticks):
+{
+  "provisions": [
+    {
+      "category": "specific sub-category name",
+      "text": "exact verbatim text from agreement",
+      "favorability": "strong-buyer|mod-buyer|neutral|mod-seller|strong-seller"
+    }
+  ]
+}
+
+Rules:
+- Extract EVERY sub-provision, not just the first few
+- Each provision should be the complete text of that sub-section
+- Use descriptive category names that identify the specific topic
+- Do NOT combine multiple sub-provisions into one`
+        }],
+      });
+
+      const raw = resp.content.map(c => c.text || '').join('');
+      const clean = raw.replace(/```json|```/g, '').trim();
+      try {
+        const parsed = JSON.parse(clean);
+        const provs = parsed.provisions || [];
+        if (provs.length > 0) {
+          provs.forEach(prov => {
+            if (!prov.text || prov.text.length < 20) return;
+            results.push({
+              type: section.provision_type,
+              category: prov.category,
+              text: prov.text.trim(),
+              favorability: prov.favorability || 'neutral',
+              display_tier: section.display_tier,
+              startChar: section.startChar,
+            });
+          });
+        } else {
+          // No provisions extracted — use whole section
+          results.push({
+            type: section.provision_type,
+            category: section.category,
+            text: section.text,
+            favorability: 'neutral',
+            display_tier: section.display_tier,
+            startChar: section.startChar,
+          });
+        }
+      } catch {
+        results.push({
+          type: section.provision_type,
+          category: section.category,
+          text: section.text,
+          favorability: 'neutral',
+          display_tier: section.display_tier,
+          startChar: section.startChar,
+        });
+      }
+    } catch (err) {
+      results.push({
+        type: section.provision_type,
+        category: section.category,
+        text: section.text,
+        favorability: 'neutral',
+        display_tier: section.display_tier,
+        startChar: section.startChar,
+        error: err.message,
+      });
+    }
+  });
+
+  // ─── Tier 3 (low): Batch favorability assessment ───
   const favBatchSize = 15;
   const favBatches = [];
-  for (let i = 0; i < simpleSections.length; i += favBatchSize) {
-    favBatches.push(simpleSections.slice(i, i + favBatchSize));
+  for (let i = 0; i < lowSections.length; i += favBatchSize) {
+    favBatches.push(lowSections.slice(i, i + favBatchSize));
   }
 
-  const favPromises = favBatches.map(async (batch) => {
+  const lowTasks = favBatches.map((batch) => async () => {
     const batchPayload = batch.map((s, i) => ({
       i,
       type: s.provision_type,
       category: s.category,
-      text: s.text.substring(0, 500),
+      text: s.text.length <= 3000 ? s.text : s.text.substring(0, 1500),
     }));
 
     try {
@@ -574,7 +863,6 @@ Return ONLY valid JSON array (no markdown, no backticks):
         });
       });
     } catch {
-      // On error, add sections with neutral favorability
       batch.forEach(s => {
         results.push({
           type: s.provision_type,
@@ -588,25 +876,27 @@ Return ONLY valid JSON array (no markdown, no backticks):
     }
   });
 
-  // Run both tracks in parallel
-  await Promise.all([...extractionPromises, ...favPromises]);
+  // Run all tiers with concurrency limiter
+  await runWithConcurrency([...highTasks, ...mediumTasks, ...lowTasks], 8);
 
   return results;
 }
 
-// ─── Phase 4: Dedup (reused from agreement.js) ───
+// ─── Phase 5: Dedup — type-aware with higher thresholds ───
 function mergeAndDedup(allProvisions) {
   const isDuplicate = new Set();
   for (let i = 0; i < allProvisions.length; i++) {
     if (isDuplicate.has(i)) continue;
     for (let j = i + 1; j < allProvisions.length; j++) {
       if (isDuplicate.has(j)) continue;
+      // Only dedup within the same provision type
+      if (allProvisions[i].type !== allProvisions[j].type) continue;
       const a = allProvisions[i].text.replace(/\s+/g, ' ').trim();
       const b = allProvisions[j].text.replace(/\s+/g, ' ').trim();
       const shorter = a.length <= b.length ? a : b;
       const longer = a.length > b.length ? a : b;
-      const checkLen = Math.floor(shorter.length * 0.7);
-      if (checkLen > 20 && longer.includes(shorter.substring(0, checkLen))) {
+      const checkLen = Math.floor(shorter.length * 0.8);
+      if (checkLen > 50 && longer.includes(shorter.substring(0, checkLen))) {
         const discardIdx = a.length <= b.length ? i : j;
         isDuplicate.add(discardIdx);
       }
@@ -616,6 +906,39 @@ function mergeAndDedup(allProvisions) {
   return { kept, deduplicatedCount: isDuplicate.size };
 }
 
+
+// ─── Phase 6: Verify completeness against standard M&A provisions ───
+function verifyCompleteness(provisions, fullText) {
+  const checklist = [
+    { type: 'STRUCT', keywords: ['consideration', 'per share', 'merger sub'], minProvisions: 1 },
+    { type: 'COND', keywords: ['conditions', 'closing'], minProvisions: 2 },
+    { type: 'TERMR', keywords: ['terminate', 'termination'], minProvisions: 1 },
+    { type: 'TERMF', keywords: ['termination fee', 'break-up'], minProvisions: 1 },
+    { type: 'REP', keywords: ['represents and warrants'], minProvisions: 3 },
+    { type: 'COV', keywords: ['covenant', 'shall', 'shall not'], minProvisions: 2 },
+  ];
+
+  const warnings = [];
+  const lowerText = fullText.toLowerCase();
+
+  for (const check of checklist) {
+    const count = provisions.filter(p => p.type === check.type).length;
+    if (count < check.minProvisions) {
+      const keywordsFound = check.keywords.some(kw => lowerText.includes(kw.toLowerCase()));
+      if (keywordsFound) {
+        warnings.push({
+          type: check.type,
+          label: PROVISION_TYPE_CONFIGS[check.type]?.label || check.type,
+          expected: check.minProvisions,
+          found: count,
+          message: `Expected at least ${check.minProvisions} ${PROVISION_TYPE_CONFIGS[check.type]?.label || check.type} provision(s) but found ${count}. Keywords like "${check.keywords[0]}" appear in the agreement text.`,
+        });
+      }
+    }
+  }
+
+  return warnings;
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only' });
@@ -686,27 +1009,54 @@ export default async function handler(req, res) {
     }
 
     const client = new Anthropic({ apiKey });
+    const diagnostics = {};
 
     // Phase 1: Parse structure
     const parseStart = Date.now();
-    const sections = parseStructure(full_text);
+    const { sections, coverage } = parseStructure(full_text);
     timing.parse_ms = Date.now() - parseStart;
     timing.section_count = sections.length;
+    diagnostics.coverage = coverage;
 
-    // Phase 2: Classify sections
+    // Phase 2: Detect and recover gaps
+    const gapStart = Date.now();
+    const gaps = detectGaps(sections);
+    const recovered = recoverGaps(gaps, full_text, sections);
+    if (recovered.length > 0) {
+      sections.push(...recovered);
+      sections.sort((a, b) => a.startChar - b.startChar);
+    }
+    timing.gap_ms = Date.now() - gapStart;
+    diagnostics.gaps = { detected: gaps.length, recovered: recovered.length };
+
+    // Phase 3: Classify sections
     const classifyStart = Date.now();
     const classifiedSections = await classifySections(sections, client, rules);
     timing.classify_ms = Date.now() - classifyStart;
 
-    // Phase 3: Extract sub-provisions
+    // Track section breakdown by complexity
+    diagnostics.sectionBreakdown = {
+      high: classifiedSections.filter(s => s.complexity === 'high').length,
+      medium: classifiedSections.filter(s => s.complexity === 'medium').length,
+      low: classifiedSections.filter(s => s.complexity !== 'high' && s.complexity !== 'medium').length,
+    };
+
+    // Phase 4: Extract sub-provisions
     const extractStart = Date.now();
     const allProvisions = await extractSubProvisions(classifiedSections, client, calibrationByType);
     timing.extract_ms = Date.now() - extractStart;
 
-    // Phase 4: Dedup
+    // Phase 5: Dedup
     const dedupStart = Date.now();
     const { kept, deduplicatedCount } = mergeAndDedup(allProvisions);
     timing.dedup_ms = Date.now() - dedupStart;
+
+    // Phase 6: Verify completeness
+    const verifyStart = Date.now();
+    const completenessWarnings = verifyCompleteness(kept, full_text);
+    timing.verify_ms = Date.now() - verifyStart;
+    diagnostics.completeness = completenessWarnings;
+
     timing.total_ms = Date.now() - totalStart;
     timing.mode = 'segment';
 
@@ -768,6 +1118,7 @@ export default async function handler(req, res) {
       agreement_source_id: agreementSourceId,
       deduplicated_count: deduplicatedCount,
       timing,
+      diagnostics,
       results,
     });
   } catch (err) {
