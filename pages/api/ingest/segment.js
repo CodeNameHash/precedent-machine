@@ -106,14 +106,31 @@ const PROVISION_TYPE_CONFIGS = {
 const XREF_SIGNALS = /(?:in|under|of|to|pursuant\s+to|set\s+forth\s+in|described\s+in|defined\s+in|referenced\s+in|subject\s+to|accordance\s+with|provided\s+in|specified\s+in|required\s+by|referred\s+to\s+in|see|per)\s*$/i;
 
 // Find where agreement body starts — skip past TABLE OF CONTENTS
+// TOC entries have "SECTION X.XX." on its own line (just the number).
+// Real body sections have body text on the same line: "SECTION X.XX. Title. Body text..."
 function findBodyStart(fullText) {
   const tocMatch = fullText.match(/TABLE\s+OF\s+CONTENTS/i);
   if (tocMatch) {
-    // Find the first ARTICLE heading after the TOC (allow title on same line)
     const afterToc = fullText.substring(tocMatch.index);
-    const bodyMatch = afterToc.match(/\n\s*ARTICLE\s+(?:[IVXLC]+|\d+)\b/i);
-    if (bodyMatch) {
-      return tocMatch.index + bodyMatch.index + 1;
+
+    // Collect all SECTION heading positions after TOC marker
+    const secPattern = /(?:SECTION|Section)\s+\d+\.\d{1,2}\b/g;
+    let sm;
+    while ((sm = secPattern.exec(afterToc)) !== null) {
+      // Check if the heading line has body text (not just a TOC stub)
+      const restOfLine = afterToc.substring(sm.index).match(/[^\n]+/);
+      if (!restOfLine) continue;
+      const afterNum = restOfLine[0].replace(/^(?:SECTION|Section)\s+\d+\.\d{1,2}\b\s*\.?\s*/, '');
+      if (afterNum.length > 30) {
+        // Real section found — find the preceding ARTICLE heading
+        const before = afterToc.substring(0, sm.index);
+        const artPattern = /\n\s*ARTICLE\s+(?:[IVXLC]+|\d+)\b/gi;
+        let lastArtIdx = -1;
+        let am;
+        while ((am = artPattern.exec(before)) !== null) lastArtIdx = am.index;
+        if (lastArtIdx >= 0) return tocMatch.index + lastArtIdx + 1;
+        return tocMatch.index + sm.index;
+      }
     }
   }
   // No TOC — look for first ARTICLE heading anywhere
