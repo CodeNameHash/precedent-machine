@@ -1,65 +1,44 @@
 // ═══════════════════════════════════════════════════
 // DATA — Hardcoded fallback + API fetch on load
 // ═══════════════════════════════════════════════════
-var FALLBACK_DEALS = [
-  { id:"d1", acquirer:"Broadcom Inc.", target:"VMware, Inc.", value:"$61B", sector:"Technology", date:"2022-05-26", jurisdiction:"Delaware",
-    lawyers:{buyer:["Wachtell Lipton"],seller:["Gibson Dunn"]}, advisors:{buyer:["Silver Lake"],seller:["Goldman Sachs","J.P. Morgan"]},
-    structure:"Reverse triangular merger", termFee:"$1.5B / $1.5B" },
-  { id:"d2", acquirer:"Microsoft", target:"Activision Blizzard", value:"$68.7B", sector:"Technology/Gaming", date:"2022-01-18", jurisdiction:"Delaware",
-    lawyers:{buyer:["Simpson Thacher"],seller:["Skadden Arps"]}, advisors:{buyer:["Goldman Sachs"],seller:["Allen & Company"]},
-    structure:"Reverse triangular merger", termFee:"$2.5B / $3.0B" },
-  { id:"d3", acquirer:"Pfizer", target:"Seagen", value:"$43B", sector:"Biopharma", date:"2023-03-13", jurisdiction:"Delaware",
-    lawyers:{buyer:["Wachtell Lipton"],seller:["Cravath Swaine"]}, advisors:{buyer:["Guggenheim"],seller:["Centerview","Goldman Sachs"]},
-    structure:"Reverse triangular merger", termFee:"$1.25B / $2.2B" },
-  { id:"d4", acquirer:"Amgen", target:"Horizon Therapeutics", value:"$28.3B", sector:"Biopharma", date:"2022-12-12", jurisdiction:"Delaware",
-    lawyers:{buyer:["Sullivan & Cromwell"],seller:["Cooley"]}, advisors:{buyer:["Morgan Stanley"],seller:["Goldman Sachs","Centerview"]},
-    structure:"Reverse triangular merger", termFee:"$750M / $1.8B" },
-  { id:"d5", acquirer:"Adobe", target:"Figma", value:"$20B", sector:"Technology", date:"2022-09-15", jurisdiction:"Delaware",
-    lawyers:{buyer:["Cravath Swaine"],seller:["Fenwick & West"]}, advisors:{buyer:[],seller:["Qatalyst Partners"]},
-    structure:"Merger (terminated)", termFee:"$1B reverse" },
-  { id:"d6", acquirer:"X Holdings (Musk)", target:"Twitter", value:"$44B", sector:"Technology", date:"2022-04-25", jurisdiction:"Delaware",
-    lawyers:{buyer:["Skadden Arps"],seller:["Wilson Sonsini"]}, advisors:{buyer:["Morgan Stanley"],seller:["Goldman Sachs","J.P. Morgan"]},
-    structure:"Single-step merger", termFee:"$1B each" },
-  { id:"d7", acquirer:"Merck", target:"Prometheus Biosciences", value:"$10.8B", sector:"Biopharma", date:"2023-04-16", jurisdiction:"Delaware",
-    lawyers:{buyer:["Davis Polk"],seller:["Cooley"]}, advisors:{buyer:[],seller:["Goldman Sachs"]},
-    structure:"Reverse triangular merger", termFee:"$350M (Co)" },
-  { id:"d8", acquirer:"Cisco", target:"Splunk", value:"$28B", sector:"Technology", date:"2023-09-21", jurisdiction:"Delaware",
-    lawyers:{buyer:["Simpson Thacher"],seller:["Latham & Watkins"]}, advisors:{buyer:["Barclays"],seller:["Morgan Stanley","Goldman Sachs"]},
-    structure:"Reverse triangular merger", termFee:"$1.48B / $2.0B" },
-  { id:"d9", acquirer:"Exxon Mobil", target:"Pioneer Natural Resources", value:"$59.5B", sector:"Energy", date:"2023-10-11", jurisdiction:"Delaware",
-    lawyers:{buyer:["Davis Polk"],seller:["Gibson Dunn"]}, advisors:{buyer:[],seller:["Evercore"]},
-    structure:"All-stock merger", termFee:"N/A" },
-  { id:"d10", acquirer:"Capital One", target:"Discover Financial", value:"$35.3B", sector:"Financial Services", date:"2024-02-19", jurisdiction:"Delaware",
-    lawyers:{buyer:["Wachtell Lipton"],seller:["Sullivan & Cromwell"]}, advisors:{buyer:["Centerview"],seller:["Morgan Stanley"]},
-    structure:"Bank merger", termFee:"$1.38B each" },
-];
+var FALLBACK_DEALS = [];
 
 var FALLBACK_PROVISION_TYPES = [
   {key:"MAE", label:"Material Adverse Effect"},
+  {key:"STRUCT", label:"Merger Structure & Mechanics"},
+  {key:"CONSID", label:"Consideration & Securities Treatment"},
+  {key:"REP-T", label:"Representations & Warranties (Target)"},
+  {key:"REP-B", label:"Representations & Warranties (Buyer)"},
   {key:"IOC", label:"Interim Operating Covenants"},
+  {key:"NOSOL", label:"No-Solicitation / No-Shop"},
   {key:"ANTI", label:"Antitrust / Regulatory Efforts"},
-  {key:"COND", label:"Conditions to Closing"},
+  {key:"COND-M", label:"Conditions to Closing (Mutual)"},
+  {key:"COND-B", label:"Conditions to Closing (Buyer)"},
+  {key:"COND-S", label:"Conditions to Closing (Seller)"},
   {key:"TERMR", label:"Termination Rights"},
-  {key:"TERMF", label:"Termination Fees"},
+  {key:"TERMF", label:"Termination Fees & Expenses"},
+  {key:"COV", label:"Other Covenants"},
   {key:"DEF", label:"Definitions"},
-  {key:"REP", label:"Representations & Warranties"},
-  {key:"COV", label:"Covenants"},
   {key:"MISC", label:"Miscellaneous"},
-  {key:"STRUCT", label:"Deal Structure"},
 ];
 
 var FALLBACK_SUB_PROVISIONS = {
-  MAE:["Base Definition","General Economic / Market Conditions","Changes in Law / GAAP","Industry Conditions","War / Terrorism","Acts of God / Pandemic","Failure to Meet Projections","Announcement / Pendency Effects","Actions at Parent Request","Disproportionate Impact Qualifier","Changes in Stock Price","Customer / Supplier Relationships"],
-  IOC:["Ordinary Course Standard","M&A / Acquisitions","Dividends / Distributions","Equity Issuances","Indebtedness","Capital Expenditures","Employee Compensation","Material Contracts","Accounting / Tax Changes","Charter / Organizational Amendments","Stock Repurchases / Splits","Labor Agreements","Litigation Settlements","Liquidation / Dissolution","Stockholder Rights Plans","Catch-All / General"],
-  ANTI:["Efforts Standard","Caps on Efforts: Anti-Hell or High Water","Caps on Efforts: Hell or High Water","Caps on Efforts: Burdensome Condition","Caps on Efforts: Definition of Burdensome Condition","Obligation to Litigate","Obligation Not to Litigate","Regulatory Approval Filing Deadline","Cooperation Obligations"],
-  COND:["Regulatory Approval / HSR","No Legal Impediment","Accuracy of Target Representations","Accuracy of Acquirer Representations","Target Compliance with Covenants","Acquirer Compliance with Covenants","No MAE","Third-Party Consents","Stockholder Approval"],
-  TERMR:["Mutual Termination","Outside Date","Outside Date Extension","Regulatory Failure","Breach by Target","Breach by Acquirer","Superior Proposal","Intervening Event","Failure of Conditions"],
-  TERMF:["Target Termination Fee","Reverse Termination Fee","Regulatory Break-Up Fee","Fee Amount","Fee Triggers","Expense Reimbursement","Fee as Percentage of Deal Value"],
-  DEF:["Material Adverse Effect","Governmental Entity","Knowledge","Subsidiary","Person","Business Day"],
-  REP:["Organization / Good Standing","Authority / No Conflicts","Financial Statements","No Undisclosed Liabilities","Absence of Changes","Litigation","Tax Matters","Employee Benefits","Environmental","Intellectual Property","Material Contracts"],
-  COV:["No Solicitation","Information Access","Reasonable Best Efforts","Financing Cooperation","Employee Matters","Indemnification","Public Announcements"],
-  MISC:["Notices","Severability","Entire Agreement","Amendment / Waiver","Governing Law","Jurisdiction","Counterparts"],
-  STRUCT:["Merger Consideration","Exchange Procedures","Treatment of Equity Awards","Closing Mechanics"]
+  MAE:["Material Adverse Effect","MAE Carve-Outs","MAE Disproportionate Impact"],
+  STRUCT:["The Merger","Closing","Effective Time","Effects of the Merger","Certificate of Incorporation / Bylaws","Directors and Officers","Subsequent Actions"],
+  CONSID:["Conversion of Shares / Effect on Capital Stock","Exchange of Certificates / Payment Mechanics","Treatment of Equity Awards / Stock Plans","Dissenting / Appraisal Rights","Withholding Rights","Anti-Dilution Adjustments"],
+  "REP-T":["Organization; Qualification; Standing","Capitalization; Subsidiaries","Authority; Enforceability","No Conflict; Required Filings and Consents","SEC Documents; Financial Statements","Absence of Certain Changes or Events","Litigation; Legal Proceedings","Compliance with Laws; Permits; Licenses","Employee Benefit Plans; ERISA","Labor Matters; Relations","Taxes; Tax Returns","Material Contracts","Intellectual Property","Real Property; Personal Property; Title","Environmental Matters","Insurance","Brokers; Finders","Anti-Corruption; Sanctions","Data Privacy; Information Security; Cybersecurity","Takeover Statutes; Anti-Takeover","Opinion of Financial Advisor","Related Party / Affiliate / Interested-Party Transactions","Information Supplied / Proxy Statement","No Other Representations or Warranties"],
+  "REP-B":["Organization; Qualification; Standing","Authority; Enforceability","No Conflict; Required Filings and Consents","Litigation; Legal Proceedings","Brokers; Finders","Sufficient / Available Funds; Financing","Merger Sub; No Prior Activities","Information Supplied / Proxy Statement","No Other Representations or Warranties"],
+  IOC:["Ordinary Course Obligation","Charter / Bylaws Amendments","Mergers, Acquisitions, Dispositions","Issuance of Securities","Share Repurchases","Dividends and Distributions","Stock Splits / Reclassifications","Indebtedness","Liens and Encumbrances","Capital Expenditures","Compensation and Benefits","Hiring and Termination","Settlement of Claims","Tax Elections and Filings","Accounting Changes","Material Contracts","Intellectual Property","Insurance Policies","Real Property","Waiver of Rights","Affiliate Transactions","Commitments"],
+  NOSOL:["Solicitation Prohibition","Cease Existing Discussions","Exceptions / Fiduciary Out","Superior Proposal Definition","Acquisition Proposal Definition","Notice to Counterparty","Disclosure of Terms","Matching Rights","Negotiation Period","Subsequent Matching / Amendment Rights","Change of Recommendation","Intervening Event","Go-Shop / Window Shop","Enforcement of Standstills","Provision of Information to Bidder","Confidentiality Agreement Requirement"],
+  ANTI:["HSR / Regulatory Filings","Standard of Efforts","Cooperation","Information to Regulators","Burden Cap / Divestiture Limits","No Inconsistent Action","Foreign Regulatory Approvals","Interim Compliance","Notification of Developments","Litigation Against Regulators","Consultation Rights","Timing Agreements"],
+  "COND-M":["No Legal Impediment","Regulatory Approvals","Stockholder Approval","Form S-4 Effectiveness","Stock Exchange Listing"],
+  "COND-B":["Accuracy of Target Reps","Target Covenant Compliance","No Target MAE","Officer's Certificate (Target)","Dissenting Shares Threshold"],
+  "COND-S":["Accuracy of Buyer Reps","Buyer Covenant Compliance","Officer's Certificate (Buyer)","Availability of Funds"],
+  TERMR:["Mutual Termination","Outside Date","Outside Date Extension","Legal Impediment","Stockholder Vote Failure","Target Breach","Buyer Breach","Superior Proposal","Change of Recommendation"],
+  TERMF:["Company Termination Fee","Reverse Termination Fee","Expense Reimbursement","Tail Provision","Effect of Termination","Sole and Exclusive Remedy"],
+  COV:["Access to Information; Confidentiality","Proxy Statement Preparation","Stockholders Meeting","Public Announcements; Disclosure","Indemnification; D&O Insurance","Employee Matters; Benefits","Takeover Laws","Notification of Certain Matters","Stockholder / Transaction Litigation","Rule 16b-3 / Section 16 Matters","Director Resignations","Financing; Financing Cooperation","Stock Exchange Delisting; Deregistration","Further Assurances","Tax Matters","Treatment of Existing Indebtedness / Notes"],
+  DEF:["Material Adverse Effect","MAE Carve-Outs","MAE Disproportionate Impact","Superior Proposal","Acquisition Proposal","Intervening Event","Knowledge","Ordinary Course of Business","Burdensome Condition","Willful Breach","Subsidiary","Affiliate","Person","Representatives","Lien","Permitted Liens","Contract","Material Contract","Indebtedness","Business Day","Merger Consideration","Company Equity Awards","Dissenting Shares","Governmental Authority","Law","Company Benefit Plan","Tax / Taxes","General Definitions Section","Interpretation / Construction"],
+  MISC:["No Survival / Nonsurvival","Notices","Entire Agreement","Governing Law","Jurisdiction; Venue","Waiver of Jury Trial","Assignment; Successors","Severability","Counterparts","Specific Performance; Enforcement","Third-Party Beneficiaries","Amendment; Modification","Waiver; Extension","Expenses","Rules of Construction; Interpretation"]
 };
 
 var FAV_LEVELS=[
@@ -70,76 +49,7 @@ var FAV_LEVELS=[
   {key:"strong-seller",label:"Strong Seller",color:"#C62828"},
 ];
 
-var FALLBACK_PROVISIONS = [
-  {id:"p1",dealId:"d1",type:"MAE",category:"Base Definition",text:'"Company Material Adverse Effect" means any change, effect, event, occurrence, state of facts or development that, individually or in the aggregate, has had or would reasonably be expected to have a material adverse effect on the business, financial condition, assets, liabilities or results of operations of the Company and its Subsidiaries, taken as a whole; provided, however, that none of the following shall be deemed to constitute, and none of the following shall be taken into account in determining whether there has been, a Company Material Adverse Effect:',favorability:"neutral"},
-  {id:"p2",dealId:"d1",type:"MAE",category:"General Economic / Market Conditions",text:'changes in general economic or political conditions or the financial, credit, debt, securities or other capital markets, in each case, in the United States or elsewhere in the world, including changes in interest rates, exchange rates and price of any security or market index',favorability:"mod-seller"},
-  {id:"p3",dealId:"d1",type:"MAE",category:"Changes in Law / GAAP",text:'any changes in applicable Law or GAAP (or authoritative interpretations thereof) or changes in regulatory accounting requirements applicable to the industries in which the Company operates, in each case, after the date of this Agreement',favorability:"neutral"},
-  {id:"p4",dealId:"d1",type:"MAE",category:"Industry Conditions",text:'changes in conditions generally affecting the industries in which the Company or any of its Subsidiaries operates',favorability:"mod-seller"},
-  {id:"p5",dealId:"d1",type:"MAE",category:"War / Terrorism",text:'acts of war (whether or not declared), armed hostilities, sabotage, terrorism, or any escalation or worsening thereof',favorability:"neutral"},
-  {id:"p6",dealId:"d1",type:"MAE",category:"Acts of God / Pandemic",text:'earthquakes, floods, hurricanes, tsunamis, tornadoes, wildfires or other natural disasters, weather conditions, pandemic, epidemic or disease outbreak (including COVID-19 or any COVID-19 Measures) or other force majeure events',favorability:"mod-seller"},
-  {id:"p7",dealId:"d1",type:"MAE",category:"Failure to Meet Projections",text:'any failure by the Company to meet any projections, forecasts or estimates of revenue, earnings or other financial performance or results of operations (it being understood that the facts or occurrences giving rise to or contributing to such failure that are not otherwise excluded from the definition of Company Material Adverse Effect may be taken into account in determining whether there has been a Company Material Adverse Effect)',favorability:"neutral"},
-  {id:"p8",dealId:"d1",type:"MAE",category:"Announcement / Pendency Effects",text:'the announcement or pendency of the Merger or the other transactions contemplated hereby, including the impact thereof on relationships with customers, suppliers, distributors, partners, employees, Governmental Authorities or others having business dealings with the Company',favorability:"mod-seller"},
-  {id:"p9",dealId:"d1",type:"MAE",category:"Actions at Parent Request",text:'any action taken or omitted to be taken at the express written request or with the prior written consent of Parent or as expressly required by this Agreement',favorability:"mod-seller"},
-  {id:"p10",dealId:"d1",type:"MAE",category:"Disproportionate Impact Qualifier",text:'except, in the case of clauses (a) through (f) above, to the extent that the Company and its Subsidiaries, taken as a whole, are disproportionately affected thereby relative to other participants in the industries in which the Company and its Subsidiaries operate (in which case, only the incremental disproportionate impact may be taken into account)',favorability:"neutral"},
-  {id:"p11",dealId:"d3",type:"MAE",category:"Base Definition",text:'"Company Material Adverse Effect" means any change, effect, event, occurrence, state of facts or development that, individually or in the aggregate, has had or would reasonably be expected to have a material adverse effect on the business, results of operations or financial condition of the Company and its Subsidiaries, taken as a whole; provided, however, that none of the following (or the results thereof) shall be deemed to constitute, and none of the following (or the results thereof) shall be taken into account in determining whether there has been, a Company Material Adverse Effect:',favorability:"neutral"},
-  {id:"p12",dealId:"d3",type:"MAE",category:"General Economic / Market Conditions",text:'changes in general economic conditions or the financial or securities markets generally (including changes in interest rates or exchange rates)',favorability:"neutral"},
-  {id:"p13",dealId:"d3",type:"MAE",category:"Changes in Law / GAAP",text:'changes in applicable Law or GAAP (or authoritative interpretation thereof) after the date hereof',favorability:"mod-buyer"},
-  {id:"p14",dealId:"d3",type:"MAE",category:"Industry Conditions",text:'changes in conditions generally affecting the pharmaceutical or biotechnology industries',favorability:"neutral"},
-  {id:"p15",dealId:"d3",type:"MAE",category:"War / Terrorism",text:'acts of war (whether or not declared), armed hostilities, sabotage, terrorism, or any escalation or worsening thereof',favorability:"neutral"},
-  {id:"p16",dealId:"d3",type:"MAE",category:"Acts of God / Pandemic",text:'earthquakes, floods, hurricanes, tsunamis, tornadoes, or other natural disasters, pandemic, epidemic or disease outbreak (including COVID-19 or any COVID-19 Measures), or other force majeure events',favorability:"mod-seller"},
-  {id:"p17",dealId:"d3",type:"MAE",category:"Failure to Meet Projections",text:'the failure of the Company to meet any internal or published projections, forecasts or estimates of revenue, earnings or other financial performance or results of operations for any period (it being understood that the underlying causes of such failure may be considered in determining whether a Company Material Adverse Effect has occurred to the extent not otherwise excluded hereby)',favorability:"neutral"},
-  {id:"p18",dealId:"d3",type:"MAE",category:"Announcement / Pendency Effects",text:'any effects arising from the announcement, pendency, or anticipated consummation of the Merger, including the impact thereof on relationships, contractual or otherwise, with customers, suppliers, distributors, partners, employees, or Governmental Authorities, or the identity of Parent or its Affiliates',favorability:"mod-seller"},
-  {id:"p19",dealId:"d3",type:"MAE",category:"Actions at Parent Request",text:'any action taken or omitted to be taken by the Company at the written request or with the prior written consent of Parent or as expressly required by this Agreement or the transactions contemplated hereby',favorability:"mod-seller"},
-  {id:"p20",dealId:"d3",type:"MAE",category:"Disproportionate Impact Qualifier",text:'except, in the case of clauses (a) through (f) above, to the extent such changes have a disproportionate adverse effect on the Company and its Subsidiaries, taken as a whole, relative to other similarly situated companies in the pharmaceutical and biotechnology industries (in which case only the incremental disproportionate impact may be taken into account)',favorability:"neutral"},
-  {id:"p21",dealId:"d2",type:"MAE",category:"Base Definition",text:'"Company Material Adverse Effect" means any change, effect, event, occurrence, state of facts or development that, individually or in the aggregate, has had or would reasonably be expected to have a material adverse effect on the business, financial condition, assets or results of operations of the Company and its Subsidiaries, taken as a whole; provided, however, that in no event shall any of the following, alone or in combination, be deemed to constitute, or be taken into account in determining whether there has been or would reasonably be expected to be, a Company Material Adverse Effect:',favorability:"neutral"},
-  {id:"p22",dealId:"d2",type:"MAE",category:"General Economic / Market Conditions",text:'changes in general economic, regulatory or political conditions or the financial, credit or securities markets generally, including changes in interest rates or exchange rates',favorability:"neutral"},
-  {id:"p23",dealId:"d2",type:"MAE",category:"Changes in Law / GAAP",text:'changes in Law or GAAP (or interpretation thereof) after the date hereof',favorability:"mod-buyer"},
-  {id:"p24",dealId:"d2",type:"MAE",category:"Industry Conditions",text:'changes in conditions generally affecting the interactive entertainment industry',favorability:"neutral"},
-  {id:"p25",dealId:"d2",type:"MAE",category:"War / Terrorism",text:'acts of war (whether or not declared), sabotage, terrorism, or any escalation or worsening thereof, or the outbreak or escalation of hostilities',favorability:"neutral"},
-  {id:"p26",dealId:"d2",type:"MAE",category:"Acts of God / Pandemic",text:'any earthquake, hurricane, tsunami, tornado, flood, mudslide, wildfire, or other natural disaster, epidemic, pandemic or disease outbreak (including COVID-19 or any COVID-19 Measures), or any other force majeure event',favorability:"mod-seller"},
-  {id:"p27",dealId:"d2",type:"MAE",category:"Failure to Meet Projections",text:'any failure by the Company to meet any internal or published projections, estimates or forecasts of revenue, earnings or other financial performance or results of operations for any period (provided that the underlying facts and circumstances giving rise to such failure may be taken into account in determining whether a Company Material Adverse Effect has occurred or would reasonably be expected to occur to the extent not otherwise excluded)',favorability:"neutral"},
-  {id:"p28",dealId:"d2",type:"MAE",category:"Announcement / Pendency Effects",text:'the announcement, pendency or consummation of the transactions contemplated by this Agreement, including the impact thereof on relationships, contractual or otherwise, with customers, suppliers, partners, licensors, licensees, distributors, employees or Governmental Authorities, or the identity of Parent or its Affiliates',favorability:"strong-seller"},
-  {id:"p29",dealId:"d2",type:"MAE",category:"Actions at Parent Request",text:'any action taken or omitted to be taken by the Company at the express written request or with the prior written consent of Parent or as expressly required by this Agreement or the transactions contemplated hereby',favorability:"mod-seller"},
-  {id:"p30",dealId:"d2",type:"MAE",category:"Disproportionate Impact Qualifier",text:'except, in the case of clauses (a) through (f) above, to the extent that such change disproportionately adversely affects the Company and its Subsidiaries, taken as a whole, relative to other participants in the industries in which the Company and its Subsidiaries operate (in which case only the incremental disproportionate impact may be taken into account)',favorability:"neutral"},
-  {id:"p31",dealId:"d2",type:"MAE",category:"Changes in Stock Price",text:'any decline in the market price or trading volume of Company Common Stock (provided that the underlying facts and circumstances giving rise to or contributing to such decline may be taken into account in determining whether a Company Material Adverse Effect has occurred to the extent not otherwise excluded)',favorability:"mod-seller"},
-  {id:"p40",dealId:"d1",type:"IOC",category:"M&A / Acquisitions",text:'shall not acquire or agree to acquire, by merging or consolidating with, by purchasing an equity interest in or a material portion of the assets of, or by any other manner, any business or any corporation, partnership, association or other business organization or division thereof, or otherwise acquire or agree to acquire any assets, in each case with a value in excess of $100,000,000 individually or $250,000,000 in the aggregate',favorability:"mod-buyer"},
-  {id:"p41",dealId:"d1",type:"IOC",category:"Dividends / Distributions",text:'shall not declare, set aside, make or pay any dividends or other distributions, whether payable in cash, stock, property or otherwise, with respect to any of its capital stock, other than (i) regular quarterly cash dividends not exceeding $0.46 per share consistent with the existing dividend policy and (ii) dividends by a direct or indirect wholly owned Subsidiary to its parent',favorability:"neutral"},
-  {id:"p42",dealId:"d1",type:"IOC",category:"Equity Issuances",text:'shall not issue, sell, pledge, dispose of, grant, transfer, encumber, or authorize the issuance, sale, pledge, disposition, grant, transfer or encumbrance of, any shares of capital stock or securities convertible or exchangeable into or exercisable for any shares of such capital stock, except (i) issuance upon exercise of outstanding Company Options or settlement of Company RSUs, and (ii) issuances under the Company ESPP in the ordinary course',favorability:"mod-buyer"},
-  {id:"p43",dealId:"d1",type:"IOC",category:"Indebtedness",text:'shall not incur any indebtedness for borrowed money or issue any debt securities or assume, guarantee or endorse the obligations of any Person for borrowed money, in each case in excess of $500,000,000 in the aggregate, except (i) under existing credit facilities in the ordinary course, (ii) intercompany indebtedness, or (iii) letters of credit in the ordinary course',favorability:"neutral"},
-  {id:"p44",dealId:"d1",type:"IOC",category:"Capital Expenditures",text:'shall not make or commit to make capital expenditures in excess of 110% of the amount set forth in the Company capital expenditure budget provided to Parent prior to the date hereof for the applicable period',favorability:"mod-buyer"},
-  {id:"p45",dealId:"d1",type:"IOC",category:"Employee Compensation",text:'shall not (i) increase compensation or benefits of any current or former director, officer or employee except (A) in the ordinary course consistent with past practice for non-officer employees, (B) as required by applicable Law, or (C) as required by any existing Company Benefit Plan; (ii) grant any equity awards except in the ordinary course consistent with past practice; or (iii) adopt, enter into, materially amend or terminate any Company Benefit Plan',favorability:"mod-buyer"},
-  {id:"p50",dealId:"d3",type:"IOC",category:"M&A / Acquisitions",text:'shall not acquire or agree to acquire, by merging or consolidating with, by purchasing an equity interest in or a portion of the assets of, or by any other manner, any business or any Person or division thereof, except for acquisitions of assets (other than equity interests) in the ordinary course of business not exceeding $50,000,000 individually or $150,000,000 in the aggregate',favorability:"mod-buyer"},
-  {id:"p51",dealId:"d3",type:"IOC",category:"Dividends / Distributions",text:'shall not declare, set aside, make or pay any dividends or distributions except (i) regular quarterly cash dividends consistent with past practice not exceeding the per-share amount of the most recent quarterly dividend prior to the date hereof, and (ii) dividends by wholly owned Subsidiaries to their parent',favorability:"neutral"},
-  {id:"p52",dealId:"d3",type:"IOC",category:"Equity Issuances",text:'shall not issue, sell, grant, pledge or otherwise encumber any shares of capital stock or securities convertible or exchangeable therefor, except (i) upon the exercise or settlement of Company equity awards outstanding on the date hereof, (ii) under the ESPP consistent with past practice, or (iii) in connection with tax withholding obligations arising from settlement of equity awards',favorability:"neutral"},
-  {id:"p53",dealId:"d3",type:"IOC",category:"Indebtedness",text:'shall not incur, assume, guarantee or otherwise become liable for any indebtedness for borrowed money, other than (i) borrowings under existing credit facilities in the ordinary course not to exceed $100,000,000, (ii) intercompany indebtedness, and (iii) letters of credit in the ordinary course',favorability:"mod-buyer"},
-  {id:"p54",dealId:"d3",type:"IOC",category:"Capital Expenditures",text:'shall not make or commit to make capital expenditures other than (i) in the ordinary course consistent with existing plans and budget, and (ii) any individual expenditure not in excess of $25,000,000 or aggregate expenditures not in excess of $75,000,000 in excess of such budget',favorability:"mod-buyer"},
-  {id:"p55",dealId:"d3",type:"IOC",category:"Employee Compensation",text:'shall not (i) increase compensation except (A) annual merit increases in the ordinary course not exceeding 5% for non-officer employees, (B) as required by applicable Law or existing plans, or (C) new hires below VP level at compensation consistent with past practice; (ii) grant any equity awards; or (iii) adopt or materially amend any Company Benefit Plan',favorability:"mod-buyer"},
-  {id:"p60",dealId:"d2",type:"IOC",category:"M&A / Acquisitions",text:'shall not acquire or agree to acquire, by merging or consolidating with, by purchasing an equity interest in or a material portion of the assets of, or by any other manner, any business or any Person or division thereof, except for (i) purchases of assets in the ordinary course not exceeding $50,000,000 individually and (ii) transactions solely between the Company and wholly owned Subsidiaries or solely between wholly owned Subsidiaries',favorability:"mod-buyer"},
-  {id:"p61",dealId:"d2",type:"IOC",category:"Dividends / Distributions",text:'shall not declare, set aside, make or pay any dividend or other distribution with respect to any capital stock, other than (i) regular quarterly cash dividends not exceeding $0.47 per share consistent with the existing dividend policy and (ii) dividends by a direct or indirect wholly owned Subsidiary to its parent',favorability:"neutral"},
-  {id:"p62",dealId:"d2",type:"IOC",category:"Equity Issuances",text:'shall not issue, sell, grant, pledge, dispose of or encumber any shares of capital stock or securities convertible or exercisable therefor, except (i) pursuant to outstanding Company equity awards, (ii) under the ESPP consistent with past practice, or (iii) in connection with tax withholding obligations',favorability:"neutral"},
-  {id:"p63",dealId:"d2",type:"IOC",category:"Indebtedness",text:'shall not incur any indebtedness for borrowed money or issue any debt securities, except (i) borrowings under existing credit facilities in the ordinary course not exceeding $100,000,000, (ii) intercompany indebtedness in the ordinary course, and (iii) letters of credit, performance bonds or surety bonds in the ordinary course',favorability:"neutral"},
-  {id:"p64",dealId:"d2",type:"IOC",category:"Capital Expenditures",text:'shall not make or commit to make capital expenditures in excess of the amounts set forth in the Company Disclosure Letter for the applicable period (plus a 10% variance)',favorability:"mod-buyer"},
-  {id:"p65",dealId:"d2",type:"IOC",category:"Employee Compensation",text:'shall not (i) increase compensation or benefits except (A) in the ordinary course consistent with past practice for non-director/officer employees, (B) as required by applicable Law, or (C) as required by existing Company Benefit Plans; (ii) grant equity awards except annual grants in the ordinary course; or (iii) adopt, enter into, materially amend or terminate any material Company Benefit Plan',favorability:"mod-buyer"},
-  // Twitter/Musk Section 6.1 IOC provisions
-  {id:"p70",dealId:"d6",type:"IOC",category:"Ordinary Course Standard",text:'From the date of this Agreement until the earlier of the Effective Time and the termination of this Agreement in accordance with Article IX, except as set forth in Section 6.1 of the Company Disclosure Letter, as required by applicable Law, or as otherwise expressly contemplated by this Agreement, the Company shall, and shall cause each of its Subsidiaries to, use commercially reasonable efforts to conduct its business in the ordinary course of business consistent with past practice in all material respects and, to the extent consistent therewith, use commercially reasonable efforts to preserve substantially intact its current business organization, to keep available the services of its current officers and key employees, and to preserve its relationships with customers, suppliers, licensors, licensees, distributors and others having business dealings with it.',favorability:"neutral"},
-  {id:"p71",dealId:"d6",type:"IOC",category:"Charter / Organizational Amendments",text:'shall not amend or otherwise change the Company Certificate of Incorporation, the Company Bylaws, or the equivalent organizational documents of any Subsidiary, except as required by applicable Law',favorability:"mod-buyer"},
-  {id:"p72",dealId:"d6",type:"IOC",category:"Stock Repurchases / Splits",text:'shall not split, combine, subdivide or reclassify any shares of capital stock of the Company or any Subsidiary, or repurchase, redeem or otherwise acquire any shares of capital stock, except (i) for the acquisition of shares of Company Common Stock from holders of Company Stock Awards in full or partial payment of any taxes payable by such holders upon the exercise, settlement or vesting thereof, and (ii) as required by existing Company Benefit Plans in effect on the date hereof',favorability:"mod-buyer"},
-  {id:"p73",dealId:"d6",type:"IOC",category:"Equity Issuances",text:'shall not issue, sell, pledge, dispose of, grant, transfer, encumber, or authorize the issuance, sale, pledge, disposition, grant, transfer or encumbrance of any shares of capital stock or voting securities, or any securities convertible into or exchangeable for any such shares of capital stock or voting securities, or any rights, warrants or options to acquire any such shares, voting securities or convertible or exchangeable securities, except (i) the issuance of shares of Company Common Stock upon the exercise or settlement of Company Stock Awards, (ii) issuances in the ordinary course under the Company ESPP',favorability:"mod-buyer"},
-  {id:"p74",dealId:"d6",type:"IOC",category:"Dividends / Distributions",text:'shall not declare, set aside, make or pay any dividend or other distribution, whether payable in cash, stock, property or otherwise, with respect to any of its capital stock, other than dividends by a direct or indirect wholly owned Subsidiary to its parent or another wholly owned Subsidiary',favorability:"mod-buyer"},
-  {id:"p75",dealId:"d6",type:"IOC",category:"Employee Compensation",text:'shall not (i) grant or increase any severance, change in control, retention or termination pay to, or enter into any new severance, change in control, retention or termination agreement with, any current or former employee, officer, director or individual independent contractor, other than in the ordinary course consistent with past practice for employees who are not officers or directors; (ii) increase the compensation or benefits payable or to become payable to any current or former employee, officer, director or individual independent contractor, except for increases in the ordinary course consistent with past practice for non-officer employees; (iii) establish, adopt, enter into, amend or terminate any Company Benefit Plan or any arrangement that would have been a Company Benefit Plan had it been entered into prior to the date hereof, except as required by applicable Law or the terms of any Company Benefit Plan as in effect on the date hereof',favorability:"mod-buyer"},
-  {id:"p76",dealId:"d6",type:"IOC",category:"Equity Issuances",text:'shall not grant any equity or equity-based awards to any current or former employee, officer, director or individual independent contractor, except for grants of Company RSUs in the ordinary course of business consistent with past practice to newly hired or promoted non-officer employees',favorability:"mod-buyer"},
-  {id:"p77",dealId:"d6",type:"IOC",category:"Labor Agreements",text:'shall not recognize any labor union or enter into any collective bargaining agreement or other labor union contract applicable to the employees of the Company or any Subsidiary, except as required by applicable Law',favorability:"mod-buyer"},
-  {id:"p78",dealId:"d6",type:"IOC",category:"M&A / Acquisitions",text:'shall not acquire or agree to acquire (including by merger, consolidation, or acquisition of stock or assets or any other business combination) any corporation, partnership, other business organization or any division thereof or any material amount of assets, in each case in excess of $100,000,000 individually or $250,000,000 in the aggregate, other than purchases of equipment and other assets in the ordinary course of business consistent with past practice',favorability:"mod-buyer"},
-  {id:"p79",dealId:"d6",type:"IOC",category:"Indebtedness",text:'shall not incur any indebtedness for borrowed money or guarantee any such indebtedness, or issue or sell any debt securities or options, warrants, calls or other rights to acquire any debt securities, except (i) indebtedness incurred under existing credit facilities in the ordinary course not exceeding $500,000,000 in aggregate principal amount at any time outstanding, (ii) intercompany indebtedness among the Company and its wholly owned Subsidiaries, and (iii) letters of credit, bank guarantees, surety bonds, performance bonds or similar instruments issued in the ordinary course',favorability:"neutral"},
-  {id:"p80",dealId:"d6",type:"IOC",category:"Material Contracts",text:'shall not enter into, modify or amend in any material respect, or terminate or waive any material right under, any Material Contract or any Contract that would have been a Material Contract had it been entered into prior to the date hereof, other than in the ordinary course of business consistent with past practice',favorability:"mod-buyer"},
-  {id:"p81",dealId:"d6",type:"IOC",category:"Accounting / Tax Changes",text:'shall not make any change in financial accounting methods, principles or practices materially affecting the consolidated assets, liabilities or results of operations of the Company, except insofar as may have been required by a change in GAAP or Regulation S-X under the Securities Act',favorability:"neutral"},
-  {id:"p82",dealId:"d6",type:"IOC",category:"Accounting / Tax Changes",text:'shall not make, change or revoke any material Tax election, change an annual Tax accounting period, adopt or change any material Tax accounting method, file any material amended Tax Return, enter into any closing agreement with respect to a material amount of Taxes, settle any material Tax claim or assessment, or surrender any right to claim a material refund of Taxes, except in the ordinary course of business consistent with past practice',favorability:"mod-buyer"},
-  {id:"p83",dealId:"d6",type:"IOC",category:"Liquidation / Dissolution",text:'shall not adopt a plan of complete or partial liquidation, dissolution, restructuring, recapitalization or other reorganization of the Company or any of its material Subsidiaries (other than the Merger)',favorability:"mod-buyer"},
-  {id:"p84",dealId:"d6",type:"IOC",category:"Litigation Settlements",text:'shall not settle, or offer or propose to settle, any Action, other than settlements that (i) involve only the payment of monetary damages not in excess of $50,000,000 individually or $100,000,000 in the aggregate (net of insurance) and (ii) do not involve the imposition of injunctive or other non-monetary relief on the Company or any of its Subsidiaries',favorability:"mod-buyer"},
-  {id:"p85",dealId:"d6",type:"IOC",category:"Stockholder Rights Plans",text:'shall not adopt or implement a stockholder rights plan or any similar arrangement',favorability:"strong-buyer"},
-  {id:"p86",dealId:"d6",type:"IOC",category:"Catch-All / General",text:'shall not authorize any of, or agree, resolve or commit to do any of, the foregoing actions',favorability:"neutral"},
-  {id:"p87",dealId:"d6",type:"IOC",category:"Capital Expenditures",text:'shall not make or commit to make capital expenditures in excess of 110% of the amounts set forth in the Company capital expenditure budget made available to Parent prior to the date hereof for the applicable period, other than capital expenditures reasonably necessary to respond to any emergency or natural disaster',favorability:"mod-buyer"},
-];
+var FALLBACK_PROVISIONS = [];
 
 // Mutable data — starts as fallback, replaced by API data on load
 var DEALS = FALLBACK_DEALS.slice();
@@ -210,9 +120,10 @@ function labelIOCExceptions(provId,text){
 // ═══════════════════════════════════════════════════
 function formatValue(n){if(!n)return"N/A";var b=n/1e9;if(b>=1)return"$"+b.toFixed(b%1===0?0:1)+"B";var m=n/1e6;return"$"+m.toFixed(0)+"M"}
 
-function mapDeal(d){return{id:d.id,acquirer:d.acquirer||"",target:d.target||"",value:d.value_usd?formatValue(d.value_usd):"N/A",sector:d.sector||"",date:d.announce_date||"",jurisdiction:d.jurisdiction||"Delaware",lawyers:d.metadata?.lawyers||{buyer:[],seller:[]},advisors:d.metadata?.advisors||{buyer:[],seller:[]},structure:d.structure||"",termFee:d.term_fee||""}}
+function mapDeal(d){return{id:d.id,acquirer:d.acquirer||"",target:d.target||"",value:d.value_usd?formatValue(d.value_usd):"N/A",sector:d.sector||"",date:d.announce_date||"",jurisdiction:d.metadata?.jurisdiction||"Delaware",lawyers:d.metadata?.lawyers||{buyer:[],seller:[]},advisors:d.metadata?.advisors||{buyer:[],seller:[]},structure:d.metadata?.structure||"",termFee:d.metadata?.term_fee||""}}
 
-function mapProvision(p){return{id:p.id,dealId:p.deal_id,type:p.type||"",category:p.category||"",text:p.full_text||"",favorability:p.ai_favorability||"unrated",textHash:p.text_hash||null,categoryId:p.category_id||null,provisionTypeId:p.provision_type_id||null,parentId:p.parent_id||null,displayTier:p.display_tier||2}}
+var TIER_BY_TYPE={"MAE":1,"NOSOL":1,"ANTI":1,"COND-M":1,"COND-B":1,"COND-S":1,"TERMR":1,"TERMF":1,"STRUCT":2,"CONSID":2,"REP-T":2,"REP-B":2,"IOC":2,"COV":2,"DEF":3,"MISC":3};
+function mapProvision(p){return{id:p.id,dealId:p.deal_id,type:p.type||"",category:p.category||"",text:p.full_text||"",favorability:p.ai_favorability||"unrated",displayTier:p.display_tier||TIER_BY_TYPE[p.type]||2}}
 
 function showLoading(){var el=document.getElementById("content");if(el)el.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:200px;gap:10px;color:var(--text3)"><svg class="spinner" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg> Loading from database...</div>'}
 
@@ -220,11 +131,10 @@ async function loadFromAPI(){
   try{
     showLoading();
     var results=await Promise.all([
-      fetch("/api/deals").then(function(r){return r.json()}),
-      fetch("/api/provisions").then(function(r){return r.json()}),
-      fetch("/api/provision-types").then(function(r){return r.json()})
+      fetch("/api/deals").then(function(r){return r.json()}).catch(function(){return{}}),
+      fetch("/api/provisions").then(function(r){return r.json()}).catch(function(){return{}})
     ]);
-    var dealsResp=results[0],provsResp=results[1],typesResp=results[2];
+    var dealsResp=results[0],provsResp=results[1];
 
     if(dealsResp.deals&&dealsResp.deals.length>0){
       DEALS=dealsResp.deals.map(mapDeal);
@@ -243,48 +153,14 @@ async function loadFromAPI(){
         if(p.favorability&&p.favorability!=="unrated")favOverrides[p.id]=p.favorability;
       });
       saveFav();
-      // Restore IOC exception canonical labels from ai_metadata
-      provsResp.provisions.forEach(function(p){
-        if(p.type==="IOC"&&p.ai_metadata&&p.ai_metadata.exception_labels){
-          var parsed=parseIOCExceptions(p.id,p.full_text||"");
-          var labels=p.ai_metadata.exception_labels;
-          parsed.exceptions.forEach(function(ex,i){
-            if(labels[i])ex.canonicalLabel=labels[i];
-          });
-        }
-      });
       console.log("[Precedent Machine] Loaded "+PROVISIONS.length+" provisions from Supabase");
     }else{
       console.warn("[Precedent Machine] No provisions from API, using fallback");
       PROVISIONS=FALLBACK_PROVISIONS.slice();
     }
 
-    if(typesResp.provision_types&&typesResp.provision_types.length>0){
-      PROVISION_TYPES=typesResp.provision_types.map(function(t){return{key:t.key,label:t.label}});
-    }else{
-      PROVISION_TYPES=FALLBACK_PROVISION_TYPES.slice();
-    }
-
-    if(typesResp.provision_categories&&typesResp.provision_categories.length>0){
-      var newSubs={};
-      PROVISION_TYPES.forEach(function(pt){newSubs[pt.key]=[]});
-      _catDbIds={};
-      typesResp.provision_categories.forEach(function(c){
-        var typeKey=c.provision_type?.key;
-        if(typeKey&&newSubs[typeKey]){
-          newSubs[typeKey].push(c.label);
-          _catDbIds[typeKey+":"+c.label]=c.id;
-        }
-      });
-      var hasCats=Object.keys(newSubs).some(function(k){return newSubs[k].length>0});
-      if(hasCats){SUB_PROVISIONS=newSubs;localStorage.setItem("customSubProvisions",JSON.stringify(SUB_PROVISIONS))}
-    }
-
-    // Only use localStorage as fallback if DB had no categories
-    if(!Object.keys(_catDbIds).length){
-      var saved=JSON.parse(localStorage.getItem("customSubProvisions")||"null");
-      if(saved)SUB_PROVISIONS=saved;
-    }
+    // Always use fallback provision types (rubric-aligned)
+    PROVISION_TYPES=FALLBACK_PROVISION_TYPES.slice();
 
     // Update default selected deals to first 3
     if(DEALS.length>=3)state.selectedDeals=[DEALS[0].id,DEALS[1].id,DEALS[2].id];

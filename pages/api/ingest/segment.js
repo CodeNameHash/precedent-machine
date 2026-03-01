@@ -12,91 +12,126 @@ export const config = {
 const PROVISION_TYPE_CONFIGS = {
   MAE: {
     label: 'Material Adverse Effect',
-    categories: [
-      'Base Definition', 'General Economic / Market Conditions', 'Changes in Law / GAAP',
-      'Industry Conditions', 'War / Terrorism', 'Acts of God / Pandemic',
-      'Failure to Meet Projections', 'Announcement / Pendency Effects',
-      'Actions at Parent Request', 'Disproportionate Impact Qualifier',
-      'Changes in Stock Price', 'Customer / Supplier Relationships'
-    ],
+    categories: ['Material Adverse Effect', 'MAE Carve-Outs', 'MAE Disproportionate Impact'],
+  },
+  STRUCT: {
+    label: 'Merger Structure & Mechanics',
+    categories: ['The Merger', 'Closing', 'Effective Time', 'Effects of the Merger',
+      'Certificate of Incorporation / Bylaws', 'Directors and Officers', 'Subsequent Actions'],
+  },
+  CONSID: {
+    label: 'Consideration & Securities Treatment',
+    categories: ['Conversion of Shares / Effect on Capital Stock', 'Exchange of Certificates / Payment Mechanics',
+      'Treatment of Equity Awards / Stock Plans', 'Dissenting / Appraisal Rights',
+      'Withholding Rights', 'Anti-Dilution Adjustments'],
+  },
+  'REP-T': {
+    label: 'Representations & Warranties (Target)',
+    categories: ['Organization; Qualification; Standing', 'Capitalization; Subsidiaries',
+      'Authority; Enforceability', 'No Conflict; Required Filings and Consents',
+      'SEC Documents; Financial Statements', 'Absence of Certain Changes or Events',
+      'No Undisclosed Liabilities', 'Litigation; Legal Proceedings',
+      'Compliance with Laws; Permits; Licenses', 'Employee Benefit Plans; ERISA',
+      'Labor Matters; Relations', 'Taxes; Tax Returns', 'Material Contracts',
+      'Intellectual Property', 'Real Property; Personal Property; Title',
+      'Environmental Matters', 'Insurance', 'Brokers; Finders',
+      'Anti-Corruption; Sanctions', 'Data Privacy; Information Security; Cybersecurity',
+      'Takeover Statutes; Anti-Takeover', 'Opinion of Financial Advisor',
+      'Related Party / Affiliate / Interested-Party Transactions',
+      'Information Supplied / Proxy Statement', 'No Other Representations or Warranties'],
+  },
+  'REP-B': {
+    label: 'Representations & Warranties (Buyer)',
+    categories: ['Organization; Qualification; Standing', 'Authority; Enforceability',
+      'No Conflict; Required Filings and Consents', 'Litigation; Legal Proceedings',
+      'Brokers; Finders', 'Sufficient / Available Funds; Financing',
+      'Merger Sub; No Prior Activities', 'Information Supplied / Proxy Statement',
+      'No Other Representations or Warranties'],
   },
   IOC: {
     label: 'Interim Operating Covenants',
-    categories: [
-      'Ordinary Course Standard', 'M&A / Acquisitions', 'Dividends / Distributions',
-      'Equity Issuances', 'Indebtedness', 'Capital Expenditures', 'Employee Compensation',
-      'Material Contracts', 'Accounting / Tax Changes', 'Charter / Organizational Amendments',
-      'Stock Repurchases / Splits', 'Labor Agreements', 'Litigation Settlements',
-      'Liquidation / Dissolution', 'Stockholder Rights Plans', 'Catch-All / General'
-    ],
+    categories: ['Ordinary Course Obligation', 'Charter / Bylaws Amendments',
+      'Mergers, Acquisitions, Dispositions', 'Issuance of Securities', 'Share Repurchases',
+      'Dividends and Distributions', 'Stock Splits / Reclassifications', 'Indebtedness',
+      'Liens and Encumbrances', 'Capital Expenditures', 'Compensation and Benefits',
+      'Hiring and Termination', 'Settlement of Claims', 'Tax Elections and Filings',
+      'Accounting Changes', 'Material Contracts', 'Intellectual Property',
+      'Insurance Policies', 'Real Property', 'Waiver of Rights',
+      'Affiliate Transactions', 'Commitments'],
+  },
+  NOSOL: {
+    label: 'No-Solicitation / No-Shop',
+    categories: ['Solicitation Prohibition', 'Cease Existing Discussions',
+      'Exceptions / Fiduciary Out', 'Superior Proposal Definition',
+      'Acquisition Proposal Definition', 'Notice to Counterparty', 'Disclosure of Terms',
+      'Matching Rights', 'Negotiation Period', 'Subsequent Matching / Amendment Rights',
+      'Change of Recommendation', 'Intervening Event', 'Go-Shop / Window Shop',
+      'Enforcement of Standstills', 'Provision of Information to Bidder',
+      'Confidentiality Agreement Requirement'],
   },
   ANTI: {
     label: 'Antitrust / Regulatory Efforts',
-    categories: [
-      'Efforts Standard', 'Anti-Hell or High Water', 'Hell or High Water',
-      'Burdensome Condition', 'Definition of Burdensome Condition',
-      'Obligation to Litigate', 'Obligation Not to Litigate',
-      'Regulatory Approval Filing Deadline', 'Cooperation Obligations'
-    ],
+    categories: ['HSR / Regulatory Filings', 'Standard of Efforts', 'Cooperation',
+      'Information to Regulators', 'Burden Cap / Divestiture Limits',
+      'No Inconsistent Action', 'Foreign Regulatory Approvals', 'Interim Compliance',
+      'Notification of Developments', 'Litigation Against Regulators',
+      'Consultation Rights', 'Timing Agreements'],
   },
-  COND: {
-    label: 'Conditions to Closing',
-    categories: [
-      'Regulatory Approval / HSR', 'No Legal Impediment',
-      'Accuracy of Target Representations', 'Accuracy of Acquirer Representations',
-      'Target Compliance with Covenants', 'Acquirer Compliance with Covenants',
-      'No MAE', 'Third-Party Consents', 'Stockholder Approval'
-    ],
+  'COND-M': {
+    label: 'Conditions to Closing (Mutual)',
+    categories: ['No Legal Impediment', 'Regulatory Approvals', 'Stockholder Approval',
+      'Form S-4 Effectiveness', 'Stock Exchange Listing'],
+  },
+  'COND-B': {
+    label: 'Conditions to Closing (Buyer)',
+    categories: ['Accuracy of Target Reps', 'Target Covenant Compliance',
+      'No Target MAE', "Officer's Certificate (Target)", 'Dissenting Shares Threshold'],
+  },
+  'COND-S': {
+    label: 'Conditions to Closing (Seller)',
+    categories: ['Accuracy of Buyer Reps', 'Buyer Covenant Compliance',
+      "Officer's Certificate (Buyer)", 'Availability of Funds'],
   },
   TERMR: {
     label: 'Termination Rights',
-    categories: [
-      'Mutual Termination', 'Outside Date', 'Outside Date Extension',
-      'Regulatory Failure', 'Breach by Target', 'Breach by Acquirer',
-      'Superior Proposal', 'Intervening Event', 'Failure of Conditions'
-    ],
+    categories: ['Mutual Termination', 'Outside Date', 'Outside Date Extension',
+      'Legal Impediment', 'Stockholder Vote Failure', 'Target Breach', 'Buyer Breach',
+      'Superior Proposal', 'Change of Recommendation'],
   },
   TERMF: {
-    label: 'Termination Fees',
-    categories: [
-      'Target Termination Fee', 'Reverse Termination Fee', 'Regulatory Break-Up Fee',
-      'Fee Amount', 'Fee Triggers', 'Expense Reimbursement', 'Fee as Percentage of Deal Value'
-    ],
+    label: 'Termination Fees & Expenses',
+    categories: ['Company Termination Fee', 'Reverse Termination Fee',
+      'Expense Reimbursement', 'Tail Provision', 'Effect of Termination',
+      'Sole and Exclusive Remedy'],
+  },
+  COV: {
+    label: 'Other Covenants',
+    categories: ['Access to Information; Confidentiality', 'Proxy Statement Preparation',
+      'Stockholders Meeting', 'Public Announcements; Disclosure',
+      'Indemnification; D&O Insurance', 'Employee Matters; Benefits', 'Takeover Laws',
+      'Notification of Certain Matters', 'Stockholder / Transaction Litigation',
+      'Rule 16b-3 / Section 16 Matters', 'Director Resignations',
+      'Financing; Financing Cooperation', 'Stock Exchange Delisting; Deregistration',
+      'Further Assurances', 'Tax Matters', 'Treatment of Existing Indebtedness / Notes'],
   },
   DEF: {
     label: 'Definitions',
-    categories: [
-      'Material Adverse Effect', 'Governmental Entity', 'Knowledge',
-      'Subsidiary', 'Person', 'Business Day'
-    ],
-  },
-  REP: {
-    label: 'Representations & Warranties',
-    categories: [
-      'Organization / Good Standing', 'Authority / No Conflicts', 'Financial Statements',
-      'No Undisclosed Liabilities', 'Absence of Changes', 'Litigation',
-      'Tax Matters', 'Employee Benefits', 'Environmental', 'Intellectual Property', 'Material Contracts'
-    ],
-  },
-  COV: {
-    label: 'Covenants',
-    categories: [
-      'No Solicitation', 'Information Access', 'Reasonable Best Efforts',
-      'Financing Cooperation', 'Employee Matters', 'Indemnification', 'Public Announcements'
-    ],
+    categories: ['Material Adverse Effect', 'MAE Carve-Outs', 'MAE Disproportionate Impact',
+      'Superior Proposal', 'Acquisition Proposal', 'Intervening Event', 'Knowledge',
+      'Ordinary Course of Business', 'Burdensome Condition', 'Willful Breach',
+      'Subsidiary', 'Affiliate', 'Person', 'Representatives', 'Lien', 'Permitted Liens',
+      'Contract', 'Material Contract', 'Indebtedness', 'Business Day',
+      'Merger Consideration', 'Company Equity Awards', 'Dissenting Shares',
+      'Governmental Authority', 'Law', 'Company Benefit Plan', 'Tax / Taxes',
+      'General Definitions Section', 'Interpretation / Construction'],
   },
   MISC: {
     label: 'Miscellaneous',
-    categories: [
-      'Notices', 'Severability', 'Entire Agreement', 'Amendment / Waiver',
-      'Governing Law', 'Jurisdiction', 'Counterparts'
-    ],
-  },
-  STRUCT: {
-    label: 'Deal Structure',
-    categories: [
-      'Merger Consideration', 'Exchange Procedures', 'Treatment of Equity Awards', 'Closing Mechanics'
-    ],
+    categories: ['No Survival / Nonsurvival', 'Notices', 'Entire Agreement', 'Governing Law',
+      'Jurisdiction; Venue', 'Waiver of Jury Trial', 'Assignment; Successors',
+      'Severability', 'Counterparts', 'Specific Performance; Enforcement',
+      'Third-Party Beneficiaries', 'Amendment; Modification', 'Waiver; Extension',
+      'Expenses', 'Rules of Construction; Interpretation'],
   },
 };
 
@@ -392,18 +427,22 @@ function extractTitle(heading) {
 // ─── Keyword-based type mapping from section titles ───
 const TITLE_TYPE_MAP = [
   { pattern: /material\s+adverse\s+effect|MAE/i, type: 'MAE', tier: 1 },
-  { pattern: /interim\s+operat|conduct\s+of\s+(?:the\s+)?business|conduct\s+prior/i, type: 'IOC', tier: 1 },
+  { pattern: /interim\s+operat|conduct\s+of\s+(?:the\s+)?business|conduct\s+prior/i, type: 'IOC', tier: 2 },
   { pattern: /antitrust|regulatory\s+(?:efforts|approval|matters)|HSR|hell\s+or\s+high/i, type: 'ANTI', tier: 1 },
-  { pattern: /conditions?\s+(?:to|of|precedent)|conditions?\s+(?:to\s+)?closing/i, type: 'COND', tier: 1 },
+  { pattern: /no[\s-]*(?:solicitation|shop)|(?:non|no)[\s-]*solicit/i, type: 'NOSOL', tier: 1 },
+  { pattern: /conditions?\s+(?:to|of|precedent)|conditions?\s+(?:to\s+)?closing/i, type: 'COND-M', tier: 1 },
   { pattern: /termination\s+(?:rights|of\s+agreement|by)|right\s+to\s+terminat/i, type: 'TERMR', tier: 1 },
   { pattern: /termination\s+fee|break[\s-]*up\s+fee|reverse.*fee|expense\s+reimburse/i, type: 'TERMF', tier: 1 },
-  { pattern: /no[\s-]*(?:solicitation|shop)|(?:non|no)[\s-]*solicit/i, type: 'COV', tier: 2 },
-  { pattern: /represent\w*\s+and\s+warrant|representations/i, type: 'REP', tier: 2 },
+  { pattern: /represent\w*\s+and\s+warrant|representations/i, type: 'REP-T', tier: 2 },
   { pattern: /(?:^|\b)covenants?\b/i, type: 'COV', tier: 2 },
   { pattern: /definition/i, type: 'DEF', tier: 3 },
-  { pattern: /merger\s+(?:consideration|sub)|exchange\s+(?:ratio|procedures)|closing\s+(?:mechanics|date)/i, type: 'STRUCT', tier: 2 },
+  { pattern: /conversion\s+of\s+shares|effect\s+on\s+capital\s+stock|merger\s+consideration|exchange\s+(?:ratio|procedures|of\s+certificates)|payment\s+(?:mechanics|procedures)/i, type: 'CONSID', tier: 2 },
+  { pattern: /equity\s+awards?|stock\s+options?|RSU|stock\s+plans?/i, type: 'CONSID', tier: 2 },
+  { pattern: /dissenting|appraisal\s+rights/i, type: 'CONSID', tier: 2 },
+  { pattern: /withholding/i, type: 'CONSID', tier: 2 },
+  { pattern: /merger\s+sub|closing\s+(?:mechanics|date)/i, type: 'STRUCT', tier: 2 },
   { pattern: /(?:the\s+)?merger\b/i, type: 'STRUCT', tier: 2 },
-  { pattern: /equity\s+awards?|stock\s+options?|RSU/i, type: 'STRUCT', tier: 2 },
+  { pattern: /effective\s+time/i, type: 'STRUCT', tier: 2 },
   { pattern: /financing\s+(?:cooperation|efforts)/i, type: 'COV', tier: 2 },
   { pattern: /(?:reasonable\s+)?best\s+efforts/i, type: 'ANTI', tier: 1 },
   { pattern: /indemnif/i, type: 'COV', tier: 2 },
@@ -412,33 +451,23 @@ const TITLE_TYPE_MAP = [
   { pattern: /notices?\b/i, type: 'MISC', tier: 3 },
   { pattern: /governing\s+law/i, type: 'MISC', tier: 3 },
   { pattern: /severab|entire\s+agreement|amendment|waiver|counterpart|jurisdict/i, type: 'MISC', tier: 3 },
+  { pattern: /specific\s+performance/i, type: 'MISC', tier: 3 },
+  { pattern: /third[\s-]*party\s+beneficiar/i, type: 'MISC', tier: 3 },
   { pattern: /public\s+announcement|press\s+release/i, type: 'COV', tier: 2 },
-  { pattern: /organiz\w+.*(?:standing|good)|good\s+standing/i, type: 'REP', tier: 2 },
-  { pattern: /authority|no\s+conflict/i, type: 'REP', tier: 2 },
-  { pattern: /financial\s+statement/i, type: 'REP', tier: 2 },
-  { pattern: /undisclosed\s+liabilit/i, type: 'REP', tier: 2 },
-  { pattern: /absence\s+of\s+(?:certain\s+)?change/i, type: 'REP', tier: 2 },
-  { pattern: /litigat|legal\s+proceed/i, type: 'REP', tier: 2 },
-  { pattern: /\btax\b/i, type: 'REP', tier: 2 },
-  { pattern: /employee\s+benefit|ERISA/i, type: 'REP', tier: 2 },
-  { pattern: /environment/i, type: 'REP', tier: 2 },
-  { pattern: /intellectual\s+property/i, type: 'REP', tier: 2 },
-  { pattern: /material\s+contract/i, type: 'REP', tier: 2 },
-  { pattern: /insurance/i, type: 'REP', tier: 2 },
-  { pattern: /compliance\s+with\s+law/i, type: 'REP', tier: 2 },
-  { pattern: /(?:real\s+)?property/i, type: 'REP', tier: 2 },
-  { pattern: /stockholder.*(?:vote|approv)|(?:vote|approv).*stockholder/i, type: 'COND', tier: 1 },
+  { pattern: /proxy\s+statement/i, type: 'COV', tier: 2 },
+  { pattern: /stockholder.*(?:vote|approv)|(?:vote|approv).*stockholder/i, type: 'COND-M', tier: 1 },
+  { pattern: /stockholder.*meeting/i, type: 'COV', tier: 2 },
 ];
 
 // ─── No-Solicitation sub-categories for high-complexity extraction ───
 const NOSOL_CATEGORIES = [
-  'No-Solicitation Standard',
-  'Window-Shop / Go-Shop',
-  'Superior Proposal Definition',
-  'Fiduciary Out / Exception',
-  'Match Right / Negotiation Period',
-  'Notice Requirements',
-  'Board Recommendation Change',
+  'Solicitation Prohibition', 'Cease Existing Discussions',
+  'Exceptions / Fiduciary Out', 'Superior Proposal Definition',
+  'Acquisition Proposal Definition', 'Notice to Counterparty', 'Disclosure of Terms',
+  'Matching Rights', 'Negotiation Period', 'Subsequent Matching / Amendment Rights',
+  'Change of Recommendation', 'Intervening Event', 'Go-Shop / Window Shop',
+  'Enforcement of Standstills', 'Provision of Information to Bidder',
+  'Confidentiality Agreement Requirement',
 ];
 
 // ─── Pre-classify sections deterministically from headings + DB catalog ───
@@ -474,7 +503,9 @@ function preClassify(sections, dbCatalog) {
     }
 
     // Flag no-solicit sections for high-complexity extraction
-    if (s.preType === 'COV' && /no[\s-]*(?:solicitation|shop)|(?:non|no)[\s-]*solicit/i.test(title)) {
+    if (s.preType === 'NOSOL' || (s.preType === 'COV' && /no[\s-]*(?:solicitation|shop)|(?:non|no)[\s-]*solicit/i.test(title))) {
+      s.preType = 'NOSOL';
+      s.preTier = 1;
       s._isNoSolicit = true;
     }
 
@@ -780,7 +811,7 @@ async function extractSubProvisions(classifiedSections, client, calibrationByTyp
   const results = [];
 
   // Intercept DEF, COND, IOC, ANTI, NOSOL — split with regex instead of AI
-  const PRE_SPLIT_TYPES = new Set(['DEF', 'COND', 'IOC', 'ANTI']);
+  const PRE_SPLIT_TYPES = new Set(['DEF', 'COND-M', 'COND-B', 'COND-S', 'IOC', 'ANTI', 'NOSOL']);
   const aiSections = [];
   for (const s of classifiedSections) {
     if (s.provision_type === 'DEF') {
