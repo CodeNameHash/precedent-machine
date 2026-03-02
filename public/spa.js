@@ -10,13 +10,16 @@ var FALLBACK_PROVISION_TYPES = [
   {key:"CONSID", label:"Consideration & Securities Treatment"},
   {key:"REP-T", label:"Representations & Warranties (Target)"},
   {key:"REP-B", label:"Representations & Warranties (Buyer)"},
-  {key:"IOC", label:"Interim Operating Covenants"},
+  {key:"IOC-T", label:"Interim Operating Covenants (Target)"},
+  {key:"IOC-B", label:"Interim Operating Covenants (Buyer)"},
   {key:"NOSOL", label:"No-Solicitation / No-Shop"},
   {key:"ANTI", label:"Antitrust / Regulatory Efforts"},
   {key:"COND-M", label:"Conditions to Closing (Mutual)"},
   {key:"COND-B", label:"Conditions to Closing (Buyer)"},
   {key:"COND-S", label:"Conditions to Closing (Seller)"},
-  {key:"TERMR", label:"Termination Rights"},
+  {key:"TERMR-M", label:"Termination Rights (Mutual)"},
+  {key:"TERMR-B", label:"Termination Rights (Buyer)"},
+  {key:"TERMR-T", label:"Termination Rights (Target)"},
   {key:"TERMF", label:"Termination Fees & Expenses"},
   {key:"COV", label:"Other Covenants"},
   {key:"DEF", label:"Definitions"},
@@ -30,13 +33,16 @@ var FALLBACK_SUB_PROVISIONS = {
   CONSID:["Conversion of Shares / Effect on Capital Stock","Exchange of Certificates / Payment Mechanics","Treatment of Equity Awards / Stock Plans","Dissenting / Appraisal Rights","Withholding Rights","Anti-Dilution Adjustments"],
   "REP-T":["Organization; Qualification; Standing","Capitalization; Subsidiaries","Authority; Enforceability","No Conflict; Required Filings and Consents","SEC Documents; Financial Statements","Absence of Certain Changes or Events","Litigation; Legal Proceedings","Compliance with Laws; Permits; Licenses","Employee Benefit Plans; ERISA","Labor Matters; Relations","Taxes; Tax Returns","Material Contracts","Intellectual Property","Real Property; Personal Property; Title","Environmental Matters","Insurance","Brokers; Finders","Anti-Corruption; Sanctions","Data Privacy; Information Security; Cybersecurity","Takeover Statutes; Anti-Takeover","Opinion of Financial Advisor","Related Party / Affiliate / Interested-Party Transactions","Information Supplied / Proxy Statement","No Other Representations or Warranties"],
   "REP-B":["Organization; Qualification; Standing","Authority; Enforceability","No Conflict; Required Filings and Consents","Litigation; Legal Proceedings","Brokers; Finders","Sufficient / Available Funds; Financing","Merger Sub; No Prior Activities","Information Supplied / Proxy Statement","No Other Representations or Warranties"],
-  IOC:["Ordinary Course Obligation","Charter / Bylaws Amendments","Mergers, Acquisitions, Dispositions","Issuance of Securities","Share Repurchases","Dividends and Distributions","Stock Splits / Reclassifications","Indebtedness","Liens and Encumbrances","Capital Expenditures","Compensation and Benefits","Hiring and Termination","Settlement of Claims","Tax Elections and Filings","Accounting Changes","Material Contracts","Intellectual Property","Insurance Policies","Real Property","Waiver of Rights","Affiliate Transactions","Commitments"],
+  "IOC-T":["Ordinary Course Obligation","Charter / Bylaws Amendments","Mergers, Acquisitions, Dispositions","Issuance of Securities","Share Repurchases","Dividends and Distributions","Stock Splits / Reclassifications","Indebtedness","Liens and Encumbrances","Capital Expenditures","Compensation and Benefits","Hiring and Termination","Settlement of Claims","Tax Elections and Filings","Accounting Changes","Material Contracts","Intellectual Property","Insurance Policies","Real Property","Waiver of Rights","Affiliate Transactions","Commitments"],
+  "IOC-B":["Ordinary Course Obligation","Financing","No Inconsistent Action","Merger Sub Operations"],
   NOSOL:["Solicitation Prohibition","Cease Existing Discussions","Exceptions / Fiduciary Out","Superior Proposal Definition","Acquisition Proposal Definition","Notice to Counterparty","Disclosure of Terms","Matching Rights","Negotiation Period","Subsequent Matching / Amendment Rights","Change of Recommendation","Intervening Event","Go-Shop / Window Shop","Enforcement of Standstills","Provision of Information to Bidder","Confidentiality Agreement Requirement"],
   ANTI:["HSR / Regulatory Filings","Standard of Efforts","Cooperation","Information to Regulators","Burden Cap / Divestiture Limits","No Inconsistent Action","Foreign Regulatory Approvals","Interim Compliance","Notification of Developments","Litigation Against Regulators","Consultation Rights","Timing Agreements"],
   "COND-M":["No Legal Impediment","Regulatory Approvals","Stockholder Approval","Form S-4 Effectiveness","Stock Exchange Listing"],
   "COND-B":["Accuracy of Target Reps","Target Covenant Compliance","No Target MAE","Officer's Certificate (Target)","Dissenting Shares Threshold"],
   "COND-S":["Accuracy of Buyer Reps","Buyer Covenant Compliance","Officer's Certificate (Buyer)","Availability of Funds"],
-  TERMR:["Mutual Termination","Outside Date","Outside Date Extension","Legal Impediment","Stockholder Vote Failure","Target Breach","Buyer Breach","Superior Proposal","Change of Recommendation"],
+  "TERMR-M":["Mutual Termination","Outside Date","Outside Date Extension","Legal Impediment","Stockholder Vote Failure"],
+  "TERMR-B":["Target Breach","Failure of Target Conditions","No Target MAE"],
+  "TERMR-T":["Buyer Breach","Superior Proposal","Change of Recommendation","Failure of Buyer Conditions"],
   TERMF:["Company Termination Fee","Reverse Termination Fee","Expense Reimbursement","Tail Provision","Effect of Termination","Sole and Exclusive Remedy"],
   COV:["Access to Information; Confidentiality","Proxy Statement Preparation","Stockholders Meeting","Public Announcements; Disclosure","Indemnification; D&O Insurance","Employee Matters; Benefits","Takeover Laws","Notification of Certain Matters","Stockholder / Transaction Litigation","Rule 16b-3 / Section 16 Matters","Director Resignations","Financing; Financing Cooperation","Stock Exchange Delisting; Deregistration","Further Assurances","Tax Matters","Treatment of Existing Indebtedness / Notes"],
   DEF:["Superior Proposal","Acquisition Proposal","Intervening Event","Knowledge","Ordinary Course of Business","Burdensome Condition","Willful Breach","Subsidiary","Affiliate","Person","Representatives","Lien","Permitted Liens","Contract","Material Contract","Indebtedness","Business Day","Merger Consideration","Company Equity Awards","Dissenting Shares","Governmental Authority","Law","Company Benefit Plan","Tax / Taxes","General Definitions Section","Interpretation / Construction"],
@@ -145,6 +151,20 @@ function parseMAECarveOuts(provId,text){
   return MAE_PARSED_CACHE[provId];
 }
 
+function labelMAECarveOuts(provId,text){
+  var parsed=parseMAECarveOuts(provId,text);
+  if(!parsed.carveouts.length)return;
+  if(parsed.carveouts[0].canonicalLabel)return;
+  fetch("/api/ai/parse-mae",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({carveouts:parsed.carveouts.map(function(c){return{label:c.label,text:c.text}})})}).then(function(r){return r.json()}).then(function(data){
+    if(data.labeled_carveouts&&data.labeled_carveouts.length){
+      data.labeled_carveouts.forEach(function(lc,i){
+        if(i<parsed.carveouts.length&&lc.canonicalLabel)parsed.carveouts[i].canonicalLabel=lc.canonicalLabel;
+      });
+      renderContent();
+    }
+  }).catch(function(e){console.warn("MAE label failed:",e.message)});
+}
+
 // ═══════════════════════════════════════════════════
 // API LOADING — fetch from Supabase, fallback to hardcoded
 // ═══════════════════════════════════════════════════
@@ -152,8 +172,7 @@ function formatValue(n){if(!n)return"N/A";var b=n/1e9;if(b>=1)return"$"+b.toFixe
 
 function mapDeal(d){return{id:d.id,acquirer:d.acquirer||"",target:d.target||"",value:d.value_usd?formatValue(d.value_usd):"N/A",sector:d.sector||"",date:d.announce_date||"",jurisdiction:d.metadata?.jurisdiction||"Delaware",lawyers:d.metadata?.lawyers||{buyer:[],seller:[]},advisors:d.metadata?.advisors||{buyer:[],seller:[]},structure:d.metadata?.structure||"",termFee:d.metadata?.term_fee||""}}
 
-var TIER_BY_TYPE={"MAE":1,"NOSOL":1,"ANTI":1,"COND-M":1,"COND-B":1,"COND-S":1,"TERMR":1,"TERMF":1,"STRUCT":2,"CONSID":2,"REP-T":2,"REP-B":2,"IOC":2,"COV":2,"DEF":3,"MISC":3};
-function mapProvision(p){return{id:p.id,dealId:p.deal_id,type:p.type||"",category:p.category||"",text:p.full_text||"",favorability:p.ai_favorability||"unrated",displayTier:p.display_tier||TIER_BY_TYPE[p.type]||2}}
+function mapProvision(p){return{id:p.id,dealId:p.deal_id,type:p.type||"",category:p.category||"",text:p.full_text||"",favorability:p.ai_favorability||"unrated"}}
 
 function showLoading(){var el=document.getElementById("content");if(el)el.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:200px;gap:10px;color:var(--text3)"><svg class="spinner" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg> Loading from database...</div>'}
 
@@ -207,7 +226,10 @@ async function loadFromAPI(){
   renderSidebar();renderContent();
   loadAnnotations();
   // Fire-and-forget IOC exception labeling
-  PROVISIONS.forEach(function(p){if(p.type==="IOC"&&p.text)labelIOCExceptions(p.id,p.text)});
+  PROVISIONS.forEach(function(p){
+    if((p.type==="IOC-T"||p.type==="IOC-B")&&p.text)labelIOCExceptions(p.id,p.text);
+    if((p.type==="MAE-T"||p.type==="MAE-B")&&p.category==="MAE Carve-Outs"&&p.text)labelMAECarveOuts(p.id,p.text);
+  });
 }
 
 var goldStandards=JSON.parse(localStorage.getItem("goldStandards")||"[]");
@@ -282,7 +304,7 @@ function syncExceptionLabelsToDB(provId){
 // ═══════════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════════
-var state={provisionType:null,selectedDeals:["d1","d2","d3"],searchTerms:[],adminMode:false,compareResults:null,activeTab:"coded",askHistory:[],sidebarProvsCollapsed:JSON.parse(localStorage.getItem("sidebarProvsCollapsed")||"false"),sidebarDealsCollapsed:JSON.parse(localStorage.getItem("sidebarDealsCollapsed")||"false"),hiddenCategories:new Set(JSON.parse(localStorage.getItem("hiddenCategories")||"[]")),expandedProvisionType:null,reportTerms:JSON.parse(localStorage.getItem("reportTerms")||'["Value","Date","Buyer Counsel","Seller Counsel"]'),collapsedSections:new Set(),collapsedCards:new Set(),activeFilters:[{key:"law_firm",label:"Law Firm",active:false}],filterValues:{},tierFilter:"all",expandedTier3:new Set()};
+var state={provisionType:null,selectedDeals:["d1","d2","d3"],searchTerms:[],adminMode:false,compareResults:null,activeTab:"coded",askHistory:[],sidebarProvsCollapsed:JSON.parse(localStorage.getItem("sidebarProvsCollapsed")||"false"),sidebarDealsCollapsed:JSON.parse(localStorage.getItem("sidebarDealsCollapsed")||"false"),hiddenCategories:new Set(JSON.parse(localStorage.getItem("hiddenCategories")||"[]")),expandedProvisionType:null,reportTerms:JSON.parse(localStorage.getItem("reportTerms")||'["Value","Date","Buyer Counsel","Seller Counsel"]'),collapsedSections:new Set(),collapsedCards:new Set(),activeFilters:[{key:"law_firm",label:"Law Firm",active:false}],filterValues:{},allCollapsed:false};
 
 // ═══════════════════════════════════════════════════
 // HELPERS
@@ -567,7 +589,7 @@ function doSearch(){
     btn.disabled=false;btn.textContent="Search";
   });
 }
-function applyFilter(f){if(f.toUpperCase().includes("MAE"))selectProvisionType("MAE");else if(f.toUpperCase().includes("COVENANT")||f.toUpperCase().includes("IOC"))selectProvisionType("IOC");var sd=DEALS.find(function(d){return d.sector.toLowerCase().includes(f.toLowerCase())});if(sd){state.selectedDeals=DEALS.filter(function(d){return d.sector===sd.sector}).map(function(d){return d.id});renderSidebar();renderContent()}}
+function applyFilter(f){if(f.toUpperCase().includes("MAE"))selectProvisionType("MAE");else if(f.toUpperCase().includes("COVENANT")||f.toUpperCase().includes("IOC"))selectProvisionType("IOC-T");var sd=DEALS.find(function(d){return d.sector.toLowerCase().includes(f.toLowerCase())});if(sd){state.selectedDeals=DEALS.filter(function(d){return d.sector===sd.sector}).map(function(d){return d.id});renderSidebar();renderContent()}}
 
 // ═══════════════════════════════════════════════════
 // SIDEBAR
@@ -724,7 +746,8 @@ function renderContent(){
   var types=state.provisionType?[state.provisionType]:PROVISION_TYPES.map(function(pt){return pt.key}).filter(function(t){return deals.some(function(d){return getProvs(t,d.id).length>0})});
   var typeName=state.provisionType?PROVISION_TYPES.find(function(pt){return pt.key===state.provisionType}).label:"All Provisions";
 
-  var h='<div class="content-header"><div class="provision-type-label">'+(state.provisionType||"COMPARISON")+'</div><div class="content-title">'+typeName+' &mdash; '+deals.length+' Deal Comparison</div><div class="content-subtitle">Each provision is broken into coded sub-provisions for side-by-side analysis.</div><div class="action-row">'+(!state.compareResults?'<button class="action-btn compare" onclick="runCompare()">&#9889; Summarize Differences</button>':'<button class="action-btn" onclick="clearCompare()" style="border-color:var(--gold);color:var(--gold)">&#10005; Clear Summary</button>')+'<button class="action-btn" onclick="setTab(\'report\')">Report</button><button class="action-btn" onclick="setTab(\'redline\')">Markup Draft</button></div><div class="view-tabs"><div class="view-tab '+(state.activeTab==="coded"?"active":"")+'" onclick="setTab(\'coded\')">Coded Comparison</div><div class="view-tab '+(state.activeTab==="fulltext"?"active":"")+'" onclick="setTab(\'fulltext\')">Full Text</div><div class="view-tab '+(state.activeTab==="report"?"active":"")+'" onclick="setTab(\'report\')">Report</div><div class="view-tab '+(state.activeTab==="redline"?"active":"")+'" onclick="setTab(\'redline\')">Redline</div></div><div style="display:flex;gap:4px;margin-top:10px;align-items:center"><span style="font-size:10px;color:var(--text4);text-transform:uppercase;letter-spacing:1px;margin-right:4px">Tier:</span><button class="tier-filter-btn '+(state.tierFilter==="all"?"active":"")+'" onclick="setTierFilter(\'all\')">All</button><button class="tier-filter-btn '+(state.tierFilter==="1"?"active":"")+'" onclick="setTierFilter(\'1\')">Core</button><button class="tier-filter-btn '+(state.tierFilter==="2"?"active":"")+'" onclick="setTierFilter(\'2\')">Supporting</button><button class="tier-filter-btn '+(state.tierFilter==="3"?"active":"")+'" onclick="setTierFilter(\'3\')">Reference</button></div></div>';
+  var collapseLabel=state.allCollapsed?"Expand all":"Collapse all";
+  var h='<div class="content-header"><div class="provision-type-label">'+(state.provisionType||"COMPARISON")+'</div><div class="content-title">'+typeName+' &mdash; '+deals.length+' Deal Comparison</div><div class="action-row"><a class="collapse-all-link" onclick="collapseAll()">'+collapseLabel+'</a></div><div class="view-tabs"><div class="view-tab '+(state.activeTab==="coded"?"active":"")+'" onclick="setTab(\'coded\')">Coded Comparison</div><div class="view-tab '+(state.activeTab==="fulltext"?"active":"")+'" onclick="setTab(\'fulltext\')">Full Text</div><div class="view-tab '+(state.activeTab==="report"?"active":"")+'" onclick="setTab(\'report\')">Report</div><div class="view-tab '+(state.activeTab==="redline"?"active":"")+'" onclick="setTab(\'redline\')">Redline</div></div></div>';
 
   if(state.adminMode){
     h+='<div class="admin-banner"><span>Admin mode &mdash; Recode sub-provisions or add new categories</span><div style="display:flex;gap:6px;flex-wrap:wrap">'+types.map(function(t){return '<button onclick="openAddCategory(\''+t+'\')">+ '+t+' Category</button>'}).join("")+'<button onclick="openTaxonomyEditor()">Edit Taxonomy</button><button onclick="window.location.href=\'/admin/agreements\'">Add Agreement(s)</button><button onclick="ingestFullAgreement(\''+state.selectedDeals[0]+'\')">Quick Ingest</button><button onclick="toggleAdmin()">Turn Off</button></div></div>';
@@ -741,15 +764,17 @@ function setTab(t){state.activeTab=t;renderContent()}
 function clearCompare(){state.compareResults=null;renderContent()}
 function toggleSection(key){if(state.collapsedSections.has(key))state.collapsedSections.delete(key);else state.collapsedSections.add(key);renderContent()}
 function toggleCard(key){
-  // Handle tier-based default collapse: T2/T3 start collapsed (no entry = collapsed)
-  // When user clicks, we track explicit expanded state with "expanded-" prefix
-  if(state.collapsedCards.has(key)){state.collapsedCards.delete(key);state.collapsedCards.delete("expanded-"+key)}
-  else if(state.collapsedCards.has("expanded-"+key)){state.collapsedCards.delete("expanded-"+key);state.collapsedCards.add(key)}
-  else{state.collapsedCards.add("expanded-"+key)}
+  if(state.allCollapsed){
+    // In collapsed-all mode, clicking toggles explicit expand
+    if(state.collapsedCards.has("expanded-"+key)){state.collapsedCards.delete("expanded-"+key)}
+    else{state.collapsedCards.add("expanded-"+key)}
+  }else{
+    if(state.collapsedCards.has(key)){state.collapsedCards.delete(key)}
+    else{state.collapsedCards.add(key)}
+  }
   renderContent()
 }
-function setTierFilter(t){state.tierFilter=t;renderContent()}
-function toggleTier3(typeKey){if(state.expandedTier3.has(typeKey))state.expandedTier3.delete(typeKey);else state.expandedTier3.add(typeKey);renderContent()}
+function collapseAll(){state.allCollapsed=!state.allCollapsed;state.collapsedCards.clear();renderContent()}
 
 // ═══════════════════════════════════════════════════
 // CODED VIEW
@@ -771,40 +796,13 @@ function renderDealInfoCards(deals){
   return h;
 }
 
-function getEffectiveTier(type,cat,deals){
-  // Determine tier from provisions data
-  var provs=[];
-  deals.forEach(function(d){
-    var p=PROVISIONS.find(function(pp){return pp.type===type&&pp.dealId===d.id&&pp.category===cat});
-    if(p)provs.push(p);
-  });
-  if(provs.length===0)return 2;
-  // Use the minimum tier (most important) among matching provisions
-  var tier=3;
-  provs.forEach(function(p){if(p.displayTier&&p.displayTier<tier)tier=p.displayTier});
-  return tier;
-}
-
 function renderCodedView(deals,cats,type){
   var cols=deals.length;
   var h='<div class="prongs-section">';
   h+=renderDealInfoCards(deals);
 
-  var tier3Cats=[];
   cats.forEach(function(cat){
     if(state.hiddenCategories.has(cat))return;
-    var effectiveTier=getEffectiveTier(type,cat,deals);
-
-    // Tier filtering
-    if(state.tierFilter!=="all"){
-      if(String(effectiveTier)!==state.tierFilter)return;
-    }
-
-    // Collect tier-3 for "show more" link if not explicitly expanded
-    if(effectiveTier===3&&state.tierFilter==="all"&&!state.expandedTier3.has(type)){
-      tier3Cats.push(cat);
-      return;
-    }
 
     var entries=deals.map(function(d){var prov=PROVISIONS.find(function(p){return p.type===type&&p.dealId===d.id&&p.category===cat});return{deal:d,prov:prov}});
     var present=entries.filter(function(e){return e.prov}).length;
@@ -812,19 +810,14 @@ function renderCodedView(deals,cats,type){
     if(present===0){tagClass="missing";tagText="None"}else if(present<deals.length){tagClass="varies";tagText=present+"/"+deals.length}
     var cmp=state.compareResults?.comparisons?.find(function(c){return c.category===cat});
 
-    // Default collapse by tier: T1 expanded, T2 collapsed, T3 collapsed
     var cardKey="card-"+type+"-"+cat;
-    var cardCollapsed;
-    if(state.collapsedCards.has(cardKey)){cardCollapsed=true}
-    else if(effectiveTier>=2&&!state.collapsedCards.has("expanded-"+cardKey)){cardCollapsed=true}
-    else{cardCollapsed=false}
+    var cardCollapsed=state.collapsedCards.has(cardKey)||(state.allCollapsed&&!state.collapsedCards.has("expanded-"+cardKey));
     var cardArrow=cardCollapsed?'&#9654;':'&#9660;';
-    var tierBadge='<span class="tier-badge tier-'+effectiveTier+'" style="margin-left:4px">T'+effectiveTier+'</span>';
-    h+='<div class="prong-card" id="card-'+esc(cat).replace(/\s+/g,"-").replace(/[^a-zA-Z0-9-]/g,"")+'"><div class="prong-header"><div style="cursor:pointer;display:flex;align-items:center;gap:6px" onclick="toggleCard(\''+esc(cardKey).replace(/'/g,"\\'")+'\')"><span style="font-size:9px;color:var(--text4)">'+cardArrow+'</span><span class="prong-name">'+esc(cat)+'</span>'+tierBadge+'</div><div style="display:flex;gap:8px;align-items:center"><span class="prong-tag '+tagClass+'">'+tagText+'</span>'+(state.adminMode?'<button class="admin-edit" onclick="startInlineRecode(this,\''+esc(cat).replace(/'/g,"\\'")+'\',\''+type+'\','+cols+')">Recode</button>':"")+'</div></div>';if(cardCollapsed){h+='</div>';return}h+='<div class="prong-body" style="grid-template-columns:repeat('+cols+',1fr)">';
+    h+='<div class="prong-card" id="card-'+esc(cat).replace(/\s+/g,"-").replace(/[^a-zA-Z0-9-]/g,"")+'"><div class="prong-header"><div style="cursor:pointer;display:flex;align-items:center;gap:6px" onclick="toggleCard(\''+esc(cardKey).replace(/'/g,"\\'")+'\')"><span style="font-size:9px;color:var(--text4)">'+cardArrow+'</span><span class="prong-name">'+esc(cat)+'</span></div><div style="display:flex;gap:8px;align-items:center"><span class="prong-tag '+tagClass+'">'+tagText+'</span>'+(state.adminMode?'<button class="admin-edit" onclick="startInlineRecode(this,\''+esc(cat).replace(/'/g,"\\'")+'\',\''+type+'\','+cols+')">Recode</button>':"")+'</div></div>';if(cardCollapsed){h+='</div>';return}h+='<div class="prong-body" style="grid-template-columns:repeat('+cols+',1fr)">';
 
     // Parse IOC exceptions for sub-row rendering
     var parsedEntries=null;
-    if(type==="IOC"){
+    if(type==="IOC-T"||type==="IOC-B"){
       parsedEntries=entries.map(function(e){return e.prov?parseIOCExceptions(e.prov.id,e.prov.text):null});
     }
 
@@ -838,19 +831,34 @@ function renderCodedView(deals,cats,type){
     entries.forEach(function(e,idx){
       var fav=e.prov?getProvFav(e.prov.id):null;
       var displayText;
-      if(type==="IOC"&&parsedEntries&&parsedEntries[idx]&&parsedEntries[idx].exceptions.length>0){
+      if((type==="IOC-T"||type==="IOC-B")&&parsedEntries&&parsedEntries[idx]&&parsedEntries[idx].exceptions.length>0){
         displayText=annotateText(parsedEntries[idx].base,e.prov.id,state.searchTerms);
       }else if(isMAECarveOut&&maeParsedEntries&&maeParsedEntries[idx]&&maeParsedEntries[idx].carveouts.length>0){
         displayText=annotateText(maeParsedEntries[idx].base,e.prov.id,state.searchTerms);
       }else{
         displayText=e.prov?annotateText(e.prov.text,e.prov.id,state.searchTerms):'<span class="absent">Not present</span>';
       }
-      h+='<div class="prong-cell"'+(e.prov?' data-prov-id="'+e.prov.id+'"':'')+'><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><div class="prong-deal-label">'+esc(e.deal.acquirer)+'/'+esc(e.deal.target)+'</div><div style="display:flex;gap:4px;align-items:center">'+(e.prov&&state.adminMode?'<button class="ann-add-btn" onclick="event.stopPropagation();promptAnnotation(\''+e.prov.id+'\',this)" title="Add annotation">+ Ann</button>':'')+(e.prov?renderFavBadge(e.prov.id,fav):"")+'</div></div><div class="prong-text">'+displayText+'</div></div>';
+      // Extract summary chips for ANTI and TERMF
+      var summaryHtml="";
+      if(e.prov&&type==="ANTI"){
+        var effortsRx=/\b((?:reasonable\s+)?best\s+efforts|commercially\s+reasonable\s+efforts|reasonable\s+efforts)\b/i;
+        var efMatch=e.prov.text.match(effortsRx);
+        if(efMatch)summaryHtml+='<span class="summary-chip efforts">'+esc(efMatch[0])+'</span>';
+        var burdenRx=/(?:hell[\s-]*or[\s-]*high[\s-]*water)/i;
+        var buMatch=e.prov.text.match(burdenRx);
+        if(buMatch)summaryHtml+='<span class="summary-chip burden">Hell or High Water</span>';
+      }
+      if(e.prov&&type==="TERMF"){
+        var feeRx=/\$[\d,]+(?:\.\d+)?\s*(?:million|billion)?/gi;
+        var feeMatches=e.prov.text.match(feeRx);
+        if(feeMatches){feeMatches.forEach(function(fm){summaryHtml+='<span class="summary-chip fee">'+esc(fm)+'</span>'})}
+      }
+      h+='<div class="prong-cell"'+(e.prov?' data-prov-id="'+e.prov.id+'"':'')+'><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><div class="prong-deal-label">'+esc(e.deal.acquirer)+'/'+esc(e.deal.target)+'</div><div style="display:flex;gap:4px;align-items:center">'+(e.prov&&state.adminMode?'<button class="ann-add-btn" onclick="event.stopPropagation();promptAnnotation(\''+e.prov.id+'\',this)" title="Add annotation">+ Ann</button>':'')+(e.prov?renderFavBadge(e.prov.id,fav):"")+'</div></div>'+(summaryHtml?'<div class="summary-chips">'+summaryHtml+'</div>':'')+'<div class="prong-text">'+displayText+'</div></div>';
     });
     h+='</div>';
 
     // IOC exception sub-rows
-    if(type==="IOC"&&parsedEntries){
+    if((type==="IOC-T"||type==="IOC-B")&&parsedEntries){
       // Collect union of canonical labels across all deals for this category
       var allLabels=[];
       parsedEntries.forEach(function(pe){
@@ -876,34 +884,34 @@ function renderCodedView(deals,cats,type){
       }
     }
 
-    // MAE carve-out sub-rows
+    // MAE carve-out sub-rows — align by canonical label across deals
     if(isMAECarveOut&&maeParsedEntries){
-      // Find max number of carve-outs across all deals
-      var maxCarveOuts=0;
+      // Collect union of canonical labels across all deals
+      var allMaeLabels=[];
       maeParsedEntries.forEach(function(pe){
-        if(pe&&pe.carveouts.length>maxCarveOuts)maxCarveOuts=pe.carveouts.length;
+        if(!pe)return;
+        pe.carveouts.forEach(function(co){
+          var lbl=co.canonicalLabel||co.label;
+          if(allMaeLabels.indexOf(lbl)<0)allMaeLabels.push(lbl);
+        });
       });
-      if(maxCarveOuts>0){
-        for(var ci=0;ci<maxCarveOuts;ci++){
-          h+='<div class="prong-sub-row" style="grid-template-columns:repeat('+cols+',1fr)"><div class="prong-sub-label">('+(ci+1)+')</div>';
+      if(allMaeLabels.length>0){
+        allMaeLabels.forEach(function(lbl){
+          h+='<div class="prong-sub-row" style="grid-template-columns:repeat('+cols+',1fr)"><div class="prong-sub-label">'+esc(lbl)+'</div>';
           entries.forEach(function(e,idx){
             var pe=maeParsedEntries[idx];
-            var match=(pe&&ci<pe.carveouts.length)?pe.carveouts[ci]:null;
+            var match=null;
+            if(pe){match=pe.carveouts.find(function(co){return(co.canonicalLabel||co.label)===lbl})}
             h+='<div class="prong-sub-cell">'+(match?highlightText(match.text,state.searchTerms,e.deal.id):'\u2014')+'</div>';
           });
           h+='</div>';
-        }
+        });
       }
     }
 
     if(cmp)h+='<div class="prong-analysis"><strong>'+esc(cmp.summary)+'</strong><br>'+(cmp.most_buyer_friendly?'Buyer-friendly: <strong>'+esc(cmp.most_buyer_friendly)+'</strong>. ':"")+(cmp.most_seller_friendly?'Seller-friendly: <strong>'+esc(cmp.most_seller_friendly)+'</strong>. ':"")+(cmp.market_position?'<span style="color:var(--gold);font-weight:600">Market: '+esc(cmp.market_position)+'</span>':"")+'</div>';
     h+='</div>';
   });
-
-  // Show "N reference provisions" link for tier-3 items
-  if(tier3Cats.length>0&&state.tierFilter==="all"&&!state.expandedTier3.has(type)){
-    h+='<div class="tier-show-more" onclick="toggleTier3(\''+type+'\')">Show '+tier3Cats.length+' reference provision'+(tier3Cats.length!==1?'s':'')+'</div>';
-  }
 
   if(state.compareResults)h+='<div style="padding:16px;background:var(--gold-light);border:1px solid var(--gold-border);border-radius:10px;margin-bottom:20px"><div style="font:600 14px var(--serif);margin-bottom:6px">AI Summary</div><div style="font-size:13px;color:var(--text2);line-height:1.6">'+esc(state.compareResults.overall_summary||"")+'</div>'+(state.compareResults.key_takeaway?'<div style="margin-top:8px;font-size:13px;color:var(--gold);font-weight:600">'+esc(state.compareResults.key_takeaway)+'</div>':"")+'</div>';
   h+='</div>';return h;
@@ -996,11 +1004,11 @@ function renderReportView(deals,types){
       deals.forEach(function(d){var prov=PROVISIONS.find(function(p){return p.type===type&&p.dealId===d.id&&p.category===cat});if(prov){var fav=getProvFav(prov.id);var fl=FAV_LEVELS.find(function(f){return f.key===fav});
         // For IOC, show base text (before exceptions) in main row
         var displayText=prov.text;
-        if(type==="IOC"){var parsed=parseIOCExceptions(prov.id,prov.text);catParsed.push(parsed);if(parsed.exceptions.length>0)displayText=parsed.base}else{catParsed.push(null)}
+        if(type==="IOC-T"||type==="IOC-B"){var parsed=parseIOCExceptions(prov.id,prov.text);catParsed.push(parsed);if(parsed.exceptions&&parsed.exceptions.length>0)displayText=parsed.base}else{catParsed.push(null)}
         h+='<td>'+highlightText(displayText,[],d.id)+(fl?' <span style="font-size:9px;color:'+fl.color+';font-weight:600;font-family:var(--sans)">['+fl.label+']</span>':"")+'</td>'}else{catParsed.push(null);h+='<td style="color:var(--text5);font-style:italic">Not present</td>'}});
       h+='</tr>';
       // IOC exception sub-rows in report
-      if(type==="IOC"){
+      if(type==="IOC-T"||type==="IOC-B"){
         var allLabels=[];
         catParsed.forEach(function(pe){if(!pe)return;pe.exceptions.forEach(function(ex){var lbl=ex.canonicalLabel||ex.label;if(allLabels.indexOf(lbl)<0)allLabels.push(lbl)})});
         allLabels.forEach(function(lbl){
@@ -1524,7 +1532,7 @@ function saveInlineRecode(btn){
     }
     goldStandards.push({dealId:d.id,type:type,category:newCat,text:nt,correctedAt:new Date().toISOString()});
   });
-  if(type==="IOC"){
+  if(type==="IOC-T"||type==="IOC-B"){
     // Save exception label and text edits
     var card=btn.closest(".prong-card");
     if(card&&_recodeCtx.exceptionLabels){

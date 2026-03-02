@@ -48,8 +48,8 @@ const PROVISION_TYPE_CONFIGS = {
       'Merger Sub; No Prior Activities', 'Information Supplied / Proxy Statement',
       'No Other Representations or Warranties'],
   },
-  IOC: {
-    label: 'Interim Operating Covenants',
+  'IOC-T': {
+    label: 'Interim Operating Covenants (Target)',
     categories: ['Ordinary Course Obligation', 'Charter / Bylaws Amendments',
       'Mergers, Acquisitions, Dispositions', 'Issuance of Securities', 'Share Repurchases',
       'Dividends and Distributions', 'Stock Splits / Reclassifications', 'Indebtedness',
@@ -58,6 +58,11 @@ const PROVISION_TYPE_CONFIGS = {
       'Accounting Changes', 'Material Contracts', 'Intellectual Property',
       'Insurance Policies', 'Real Property', 'Waiver of Rights',
       'Affiliate Transactions', 'Commitments'],
+  },
+  'IOC-B': {
+    label: 'Interim Operating Covenants (Buyer)',
+    categories: ['Ordinary Course Obligation', 'Financing', 'No Inconsistent Action',
+      'Merger Sub Operations'],
   },
   NOSOL: {
     label: 'No-Solicitation / No-Shop',
@@ -92,11 +97,19 @@ const PROVISION_TYPE_CONFIGS = {
     categories: ['Accuracy of Buyer Reps', 'Buyer Covenant Compliance',
       "Officer's Certificate (Buyer)", 'Availability of Funds'],
   },
-  TERMR: {
-    label: 'Termination Rights',
+  'TERMR-M': {
+    label: 'Termination Rights (Mutual)',
     categories: ['Mutual Termination', 'Outside Date', 'Outside Date Extension',
-      'Legal Impediment', 'Stockholder Vote Failure', 'Target Breach', 'Buyer Breach',
-      'Superior Proposal', 'Change of Recommendation'],
+      'Legal Impediment', 'Stockholder Vote Failure'],
+  },
+  'TERMR-B': {
+    label: 'Termination Rights (Buyer)',
+    categories: ['Target Breach', 'Failure of Target Conditions', 'No Target MAE'],
+  },
+  'TERMR-T': {
+    label: 'Termination Rights (Target)',
+    categories: ['Buyer Breach', 'Superior Proposal', 'Change of Recommendation',
+      'Failure of Buyer Conditions'],
   },
   TERMF: {
     label: 'Termination Fees & Expenses',
@@ -427,11 +440,14 @@ function extractTitle(heading) {
 // ─── Keyword-based type mapping from section titles ───
 const TITLE_TYPE_MAP = [
   { pattern: /material\s+adverse\s+effect|MAE/i, type: 'MAE', tier: 1 },
-  { pattern: /interim\s+operat|conduct\s+of\s+(?:the\s+)?business|conduct\s+prior/i, type: 'IOC', tier: 2 },
+  { pattern: /interim\s+operat|conduct\s+of\s+(?:the\s+)?business|conduct\s+prior/i, type: 'IOC-T', tier: 2 },
+  { pattern: /conduct\s+of\s+(?:the\s+)?(?:buyer|parent|acqui(?:ror|rer))\s+business/i, type: 'IOC-B', tier: 2 },
   { pattern: /antitrust|regulatory\s+(?:efforts|approval|matters)|HSR|hell\s+or\s+high/i, type: 'ANTI', tier: 1 },
   { pattern: /no[\s-]*(?:solicitation|shop)|(?:non|no)[\s-]*solicit/i, type: 'NOSOL', tier: 1 },
   { pattern: /conditions?\s+(?:to|of|precedent)|conditions?\s+(?:to\s+)?closing/i, type: 'COND-M', tier: 1 },
-  { pattern: /termination\s+(?:rights|of\s+agreement|by)|right\s+to\s+terminat/i, type: 'TERMR', tier: 1 },
+  { pattern: /termination\s+(?:rights|of\s+agreement)|right\s+to\s+terminat/i, type: 'TERMR-M', tier: 1 },
+  { pattern: /termination\s+by\s+(?:the\s+)?(?:buyer|parent|acqui)/i, type: 'TERMR-B', tier: 1 },
+  { pattern: /termination\s+by\s+(?:the\s+)?(?:company|target|seller)/i, type: 'TERMR-T', tier: 1 },
   { pattern: /termination\s+fee|break[\s-]*up\s+fee|reverse.*fee|expense\s+reimburse/i, type: 'TERMF', tier: 1 },
   { pattern: /represent\w*\s+and\s+warrant|representations/i, type: 'REP-T', tier: 2 },
   { pattern: /(?:^|\b)covenants?\b/i, type: 'COV', tier: 2 },
@@ -527,7 +543,7 @@ async function classifySections(sections, client, rules, dbCatalog) {
   preSections.forEach((s, idx) => {
     if (s.preType) {
       let complexity = 'low';
-      if (['MAE', 'IOC', 'ANTI'].includes(s.preType) || s._isNoSolicit || (s.subItemCount >= 5 && s.text.length > 3000)) {
+      if (['MAE', 'IOC-T', 'IOC-B', 'ANTI'].includes(s.preType) || s._isNoSolicit || (s.subItemCount >= 5 && s.text.length > 3000)) {
         complexity = 'high';
       } else if (s.subItemCount >= 3 || s.text.length > 3000) {
         complexity = 'medium';
@@ -806,12 +822,54 @@ function extractSubClauseCategory(text) {
   return lastSpace > 15 ? excerpt.substring(0, lastSpace) : excerpt;
 }
 
+// ─── Extract embedded definitions from provision text ───
+// Looks for "TERM" means... patterns within provision text and extracts them as DEF provisions
+function extractEmbeddedDefinitions(text, startChar) {
+  const defs = [];
+  // Key terms to look for
+  const keyTerms = [
+    'Superior Proposal', 'Acquisition Proposal', 'Intervening Event',
+    'Company Adverse Recommendation Change', 'Competing Proposal',
+    'Burdensome Condition', 'Willful Breach', 'Willful and Material Breach',
+  ];
+  for (const term of keyTerms) {
+    // Match "TERM" means / "TERM" shall mean etc.
+    const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const pattern = new RegExp(`[\u201c"]${escaped}[\u201d"][^\\n]{0,40}?\\b(?:means?|shall\\s+mean|has\\s+the\\s+meaning|shall\\s+have\\s+the\\s+meaning)\\b`, 'i');
+    const match = pattern.exec(text);
+    if (!match) continue;
+    // Find the end of this definition (next defined term or paragraph break)
+    const defStart = match.index;
+    // Look for the next defined term start or double newline
+    let defEnd = text.length;
+    const nextDefPattern = /[\u201c"]([A-Z][^\u201d"]{2,40})[\u201d"][^\n]{0,40}?\b(?:means?|shall\s+mean|has\s+the\s+meaning)\b/g;
+    nextDefPattern.lastIndex = defStart + match[0].length;
+    const nextMatch = nextDefPattern.exec(text);
+    if (nextMatch) defEnd = nextMatch.index;
+    // Also check for double newline
+    const dblNewline = text.indexOf('\n\n', defStart + match[0].length);
+    if (dblNewline > 0 && dblNewline < defEnd) defEnd = dblNewline;
+    const defText = text.substring(defStart, defEnd).trim();
+    if (defText.length > 20) {
+      defs.push({
+        type: 'DEF',
+        category: term,
+        text: defText,
+        favorability: 'neutral',
+        display_tier: 3,
+        startChar: startChar + defStart,
+      });
+    }
+  }
+  return defs;
+}
+
 // ─── Phase 4: Extract sub-provisions — three-tier universal extraction ───
 async function extractSubProvisions(classifiedSections, client, calibrationByType) {
   const results = [];
 
   // Intercept DEF, COND, IOC, ANTI, NOSOL — split with regex instead of AI
-  const PRE_SPLIT_TYPES = new Set(['DEF', 'COND-M', 'COND-B', 'COND-S', 'IOC', 'ANTI', 'NOSOL']);
+  const PRE_SPLIT_TYPES = new Set(['DEF', 'COND-M', 'COND-B', 'COND-S', 'IOC-T', 'IOC-B']);
   const aiSections = [];
   for (const s of classifiedSections) {
     if (s.provision_type === 'DEF') {
@@ -829,7 +887,69 @@ async function extractSubProvisions(classifiedSections, client, calibrationByTyp
           startChar: s.startChar,
         });
       }
-    } else if (PRE_SPLIT_TYPES.has(s.provision_type) || s._isNoSolicit) {
+    } else if (s.provision_type === 'TERMF') {
+      // TERMF: keep as one big section, extract fee amounts + triggers as metadata
+      const termfProv = {
+        type: 'TERMF',
+        category: s.category || 'Termination Fees & Expenses',
+        text: s.text,
+        favorability: 'neutral',
+        display_tier: s.display_tier,
+        startChar: s.startChar,
+      };
+      // Extract fee amounts
+      const fees = [];
+      const feePattern = /(?:company|target|seller|parent|buyer|reverse)\s+(?:termination\s+)?fee[^.]*?\$[\d,]+(?:\.\d+)?(?:\s*(?:million|billion))?/gi;
+      let feeMatch;
+      while ((feeMatch = feePattern.exec(s.text)) !== null) {
+        fees.push(feeMatch[0].trim());
+      }
+      // Also look for standalone dollar amounts near "fee" keywords
+      if (fees.length === 0) {
+        const dollarPattern = /\$[\d,]+(?:\.\d+)?(?:\s*(?:million|billion))?/gi;
+        while ((feeMatch = dollarPattern.exec(s.text)) !== null) {
+          fees.push(feeMatch[0].trim());
+        }
+      }
+      termfProv.ai_metadata = { fee_amounts: fees };
+      results.push(termfProv);
+      // Also extract embedded definitions
+      const termfDefs = extractEmbeddedDefinitions(s.text, s.startChar);
+      results.push(...termfDefs);
+    } else if (s.provision_type === 'NOSOL' || s._isNoSolicit) {
+      // NOSOL: keep as one big provision, but extract embedded definitions
+      results.push({
+        type: 'NOSOL',
+        category: s.category || 'No-Solicitation / No-Shop',
+        text: s.text,
+        favorability: 'neutral',
+        display_tier: s.display_tier,
+        startChar: s.startChar,
+      });
+      // Extract "Superior Proposal" and "Acquisition Proposal" definitions
+      const embeddedDefs = extractEmbeddedDefinitions(s.text, s.startChar);
+      results.push(...embeddedDefs);
+    } else if (s.provision_type === 'ANTI') {
+      // ANTI: keep as one big provision, extract efforts standard + burden cap
+      const antiProv = {
+        type: 'ANTI',
+        category: s.category || 'Antitrust / Regulatory Efforts',
+        text: s.text,
+        favorability: 'neutral',
+        display_tier: s.display_tier,
+        startChar: s.startChar,
+      };
+      // Extract efforts standard and burden cap as ai_metadata
+      const effortsMatch = s.text.match(/\b((?:reasonable\s+)?best\s+efforts|commercially\s+reasonable\s+efforts|reasonable\s+efforts)\b/i);
+      const burdenMatch = s.text.match(/(?:burden(?:some)?(?:\s+condition)?|hell[\s-]*or[\s-]*high[\s-]*water|divestiture|hold[\s-]*separate)[^.]*\./i);
+      antiProv.ai_metadata = {};
+      if (effortsMatch) antiProv.ai_metadata.efforts_standard = effortsMatch[0].trim();
+      if (burdenMatch) antiProv.ai_metadata.burden_cap = burdenMatch[0].trim();
+      results.push(antiProv);
+      // Also extract embedded definitions
+      const antiDefs = extractEmbeddedDefinitions(s.text, s.startChar);
+      results.push(...antiDefs);
+    } else if (PRE_SPLIT_TYPES.has(s.provision_type)) {
       const split = splitBySubClauses(s.text, s.provision_type, s.display_tier);
       // Derive section heading for nested preview grouping
       const sectionHeading = s.number && s.category
@@ -1150,7 +1270,7 @@ function verifyCompleteness(provisions, fullText) {
   const checklist = [
     { type: 'STRUCT', keywords: ['consideration', 'per share', 'merger sub'], minProvisions: 1 },
     { type: 'COND', keywords: ['conditions', 'closing'], minProvisions: 2 },
-    { type: 'TERMR', keywords: ['terminate', 'termination'], minProvisions: 1 },
+    { type: 'TERMR-M', keywords: ['terminate', 'termination'], minProvisions: 1 },
     { type: 'TERMF', keywords: ['termination fee', 'break-up'], minProvisions: 1 },
     { type: 'REP', keywords: ['represents and warrants'], minProvisions: 3 },
     { type: 'COV', keywords: ['covenant', 'shall', 'shall not'], minProvisions: 2 },

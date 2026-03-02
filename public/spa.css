@@ -259,15 +259,13 @@ textarea::placeholder,input::placeholder{color:#bbb}
 .provision-section-divider:hover{background:var(--bg4)}
 .prong-header>div:first-child:hover .prong-name{color:var(--gold)}
 
-.tier-badge{display:inline-flex;align-items:center;justify-content:center;padding:1px 6px;border-radius:3px;font:700 9px var(--sans);letter-spacing:0.3px;cursor:pointer;user-select:none}
-.tier-badge.tier-1{background:#FFF8E1;color:#F57F17;border:1px solid #FFE082}
-.tier-badge.tier-2{background:var(--bg);color:var(--text3);border:1px solid var(--border2)}
-.tier-badge.tier-3{background:#F5F5F5;color:var(--text5);border:1px solid #E0E0E0}
-.tier-filter-btn{padding:5px 11px;border-radius:6px;border:1px solid var(--border2);background:var(--bg2);color:var(--text3);font-size:11px;cursor:pointer}
-.tier-filter-btn:hover{border-color:var(--gold);color:var(--gold)}
-.tier-filter-btn.active{background:var(--gold-light);border-color:var(--gold);color:var(--gold)}
-.tier-show-more{padding:6px 16px;font-size:11px;color:var(--text4);cursor:pointer;text-align:center;border-top:1px dashed var(--border)}
-.tier-show-more:hover{color:var(--gold);background:var(--bg)}
+.collapse-all-link{font-size:11px;color:var(--gold);cursor:pointer;text-decoration:none;letter-spacing:0;font-weight:500}
+.collapse-all-link:hover{text-decoration:underline}
+.summary-chips{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px}
+.summary-chip{display:inline-flex;align-items:center;padding:2px 8px;border-radius:4px;font:600 10px var(--sans);letter-spacing:0.3px}
+.summary-chip.efforts{background:#E3F2FD;color:#1565C0;border:1px solid #90CAF9}
+.summary-chip.burden{background:#FFF3E0;color:#E65100;border:1px solid #FFCC80}
+.summary-chip.fee{background:#F3E5F5;color:#7B1FA2;border:1px solid #CE93D8}
 
 /* ─── Review Panel ─── */
 .review-panel{position:fixed;top:0;right:0;width:420px;max-width:90vw;height:100vh;background:var(--bg2);border-left:1px solid var(--border);box-shadow:-8px 0 30px rgba(0,0,0,0.08);z-index:50;display:flex;flex-direction:column}

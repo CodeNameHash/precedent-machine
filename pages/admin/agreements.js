@@ -171,10 +171,13 @@ async function extractTextFromFiles(fileList, onStatus) {
 
 const PROVISION_TYPES = [
   { key: 'MAE', label: 'Material Adverse Effect' },
-  { key: 'IOC', label: 'Interim Operating Covenants' },
+  { key: 'IOC-T', label: 'Interim Operating Covenants (Target)' },
+  { key: 'IOC-B', label: 'Interim Operating Covenants (Buyer)' },
   { key: 'ANTI', label: 'Antitrust / Regulatory Efforts' },
   { key: 'COND', label: 'Conditions to Closing' },
-  { key: 'TERMR', label: 'Termination Rights' },
+  { key: 'TERMR-M', label: 'Termination Rights (Mutual)' },
+  { key: 'TERMR-B', label: 'Termination Rights (Buyer)' },
+  { key: 'TERMR-T', label: 'Termination Rights (Target)' },
   { key: 'TERMF', label: 'Termination Fees' },
   { key: 'DEF', label: 'Definitions' },
   { key: 'REP', label: 'Representations & Warranties' },
