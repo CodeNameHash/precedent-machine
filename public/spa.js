@@ -4,7 +4,8 @@
 var FALLBACK_DEALS = [];
 
 var FALLBACK_PROVISION_TYPES = [
-  {key:"MAE", label:"Material Adverse Effect"},
+  {key:"MAE-T", label:"Material Adverse Effect (Target)"},
+  {key:"MAE-B", label:"Material Adverse Effect (Buyer)"},
   {key:"STRUCT", label:"Merger Structure & Mechanics"},
   {key:"CONSID", label:"Consideration & Securities Treatment"},
   {key:"REP-T", label:"Representations & Warranties (Target)"},
@@ -23,7 +24,8 @@ var FALLBACK_PROVISION_TYPES = [
 ];
 
 var FALLBACK_SUB_PROVISIONS = {
-  MAE:["Material Adverse Effect","Material Adverse Effect (Target)","Material Adverse Effect (Buyer)","MAE Carve-Outs","MAE Carve-Outs (Target)","MAE Carve-Outs (Buyer)","MAE Disproportionate Impact","MAE Disproportionate Impact (Target)","MAE Disproportionate Impact (Buyer)"],
+  "MAE-T":["Material Adverse Effect","MAE Carve-Outs","MAE Disproportionate Impact"],
+  "MAE-B":["Material Adverse Effect","MAE Carve-Outs","MAE Disproportionate Impact"],
   STRUCT:["The Merger","Closing","Effective Time","Effects of the Merger","Certificate of Incorporation / Bylaws","Directors and Officers","Subsequent Actions"],
   CONSID:["Conversion of Shares / Effect on Capital Stock","Exchange of Certificates / Payment Mechanics","Treatment of Equity Awards / Stock Plans","Dissenting / Appraisal Rights","Withholding Rights","Anti-Dilution Adjustments"],
   "REP-T":["Organization; Qualification; Standing","Capitalization; Subsidiaries","Authority; Enforceability","No Conflict; Required Filings and Consents","SEC Documents; Financial Statements","Absence of Certain Changes or Events","Litigation; Legal Proceedings","Compliance with Laws; Permits; Licenses","Employee Benefit Plans; ERISA","Labor Matters; Relations","Taxes; Tax Returns","Material Contracts","Intellectual Property","Real Property; Personal Property; Title","Environmental Matters","Insurance","Brokers; Finders","Anti-Corruption; Sanctions","Data Privacy; Information Security; Cybersecurity","Takeover Statutes; Anti-Takeover","Opinion of Financial Advisor","Related Party / Affiliate / Interested-Party Transactions","Information Supplied / Proxy Statement","No Other Representations or Warranties"],
@@ -37,7 +39,7 @@ var FALLBACK_SUB_PROVISIONS = {
   TERMR:["Mutual Termination","Outside Date","Outside Date Extension","Legal Impediment","Stockholder Vote Failure","Target Breach","Buyer Breach","Superior Proposal","Change of Recommendation"],
   TERMF:["Company Termination Fee","Reverse Termination Fee","Expense Reimbursement","Tail Provision","Effect of Termination","Sole and Exclusive Remedy"],
   COV:["Access to Information; Confidentiality","Proxy Statement Preparation","Stockholders Meeting","Public Announcements; Disclosure","Indemnification; D&O Insurance","Employee Matters; Benefits","Takeover Laws","Notification of Certain Matters","Stockholder / Transaction Litigation","Rule 16b-3 / Section 16 Matters","Director Resignations","Financing; Financing Cooperation","Stock Exchange Delisting; Deregistration","Further Assurances","Tax Matters","Treatment of Existing Indebtedness / Notes"],
-  DEF:["Material Adverse Effect","MAE Carve-Outs","MAE Disproportionate Impact","Superior Proposal","Acquisition Proposal","Intervening Event","Knowledge","Ordinary Course of Business","Burdensome Condition","Willful Breach","Subsidiary","Affiliate","Person","Representatives","Lien","Permitted Liens","Contract","Material Contract","Indebtedness","Business Day","Merger Consideration","Company Equity Awards","Dissenting Shares","Governmental Authority","Law","Company Benefit Plan","Tax / Taxes","General Definitions Section","Interpretation / Construction"],
+  DEF:["Superior Proposal","Acquisition Proposal","Intervening Event","Knowledge","Ordinary Course of Business","Burdensome Condition","Willful Breach","Subsidiary","Affiliate","Person","Representatives","Lien","Permitted Liens","Contract","Material Contract","Indebtedness","Business Day","Merger Consideration","Company Equity Awards","Dissenting Shares","Governmental Authority","Law","Company Benefit Plan","Tax / Taxes","General Definitions Section","Interpretation / Construction"],
   MISC:["No Survival / Nonsurvival","Notices","Entire Agreement","Governing Law","Jurisdiction; Venue","Waiver of Jury Trial","Assignment; Successors","Severability","Counterparts","Specific Performance; Enforcement","Third-Party Beneficiaries","Amendment; Modification","Waiver; Extension","Expenses","Rules of Construction; Interpretation"]
 };
 
@@ -113,6 +115,34 @@ function labelIOCExceptions(provId,text){
       renderContent();
     }
   }).catch(function(e){console.warn("IOC label failed:",e.message)});
+}
+
+var MAE_PARSED_CACHE={};
+
+function parseMAECarveOuts(provId,text){
+  if(MAE_PARSED_CACHE[provId])return MAE_PARSED_CACHE[provId];
+  if(!text){MAE_PARSED_CACHE[provId]={base:text,carveouts:[]};return MAE_PARSED_CACHE[provId]}
+  // Split on numbered sub-clauses: (i), (ii), (iii), (a), (b), (c), (A), (B), (1), (2), etc.
+  var numRx=/\((?:i{1,3}v?|v(?:i{0,3})|x(?:i{0,3})|[a-z]|[A-Z]|\d{1,2})\)\s*/g;
+  // Find first match to separate preamble from numbered items
+  var firstMatch=numRx.exec(text);
+  if(!firstMatch){MAE_PARSED_CACHE[provId]={base:text,carveouts:[]};return MAE_PARSED_CACHE[provId]}
+  var base=text.substring(0,firstMatch.index).replace(/[\s,;:]+$/,"").trim();
+  var numberedPart=text.substring(firstMatch.index);
+  // Reset and split
+  numRx.lastIndex=0;
+  var parts=numberedPart.split(numRx).filter(function(s){return s&&s.trim()});
+  var carveouts=[];
+  if(parts.length>1){
+    parts.forEach(function(p,idx){
+      var cleaned=p.replace(/^[\s,;]+|[\s,;]+$/g,"").replace(/\s+and\s*$/i,"").replace(/^\s*and\s+/i,"");
+      if(cleaned.length>10)carveouts.push({label:"("+(idx+1)+")",text:cleaned,canonicalLabel:null});
+    });
+  }else if(parts.length===1&&parts[0].trim().length>10){
+    carveouts.push({label:"(1)",text:parts[0].trim(),canonicalLabel:null});
+  }
+  MAE_PARSED_CACHE[provId]={base:base||text,carveouts:carveouts};
+  return MAE_PARSED_CACHE[provId];
 }
 
 // ═══════════════════════════════════════════════════
@@ -798,11 +828,20 @@ function renderCodedView(deals,cats,type){
       parsedEntries=entries.map(function(e){return e.prov?parseIOCExceptions(e.prov.id,e.prov.text):null});
     }
 
+    // Parse MAE carve-outs for sub-row rendering
+    var maeParsedEntries=null;
+    var isMAECarveOut=(type==="MAE-T"||type==="MAE-B")&&cat==="MAE Carve-Outs";
+    if(isMAECarveOut){
+      maeParsedEntries=entries.map(function(e){return e.prov?parseMAECarveOuts(e.prov.id,e.prov.text):null});
+    }
+
     entries.forEach(function(e,idx){
       var fav=e.prov?getProvFav(e.prov.id):null;
       var displayText;
       if(type==="IOC"&&parsedEntries&&parsedEntries[idx]&&parsedEntries[idx].exceptions.length>0){
         displayText=annotateText(parsedEntries[idx].base,e.prov.id,state.searchTerms);
+      }else if(isMAECarveOut&&maeParsedEntries&&maeParsedEntries[idx]&&maeParsedEntries[idx].carveouts.length>0){
+        displayText=annotateText(maeParsedEntries[idx].base,e.prov.id,state.searchTerms);
       }else{
         displayText=e.prov?annotateText(e.prov.text,e.prov.id,state.searchTerms):'<span class="absent">Not present</span>';
       }
@@ -834,6 +873,26 @@ function renderCodedView(deals,cats,type){
           });
           h+='</div>';
         });
+      }
+    }
+
+    // MAE carve-out sub-rows
+    if(isMAECarveOut&&maeParsedEntries){
+      // Find max number of carve-outs across all deals
+      var maxCarveOuts=0;
+      maeParsedEntries.forEach(function(pe){
+        if(pe&&pe.carveouts.length>maxCarveOuts)maxCarveOuts=pe.carveouts.length;
+      });
+      if(maxCarveOuts>0){
+        for(var ci=0;ci<maxCarveOuts;ci++){
+          h+='<div class="prong-sub-row" style="grid-template-columns:repeat('+cols+',1fr)"><div class="prong-sub-label">('+(ci+1)+')</div>';
+          entries.forEach(function(e,idx){
+            var pe=maeParsedEntries[idx];
+            var match=(pe&&ci<pe.carveouts.length)?pe.carveouts[ci]:null;
+            h+='<div class="prong-sub-cell">'+(match?highlightText(match.text,state.searchTerms,e.deal.id):'\u2014')+'</div>';
+          });
+          h+='</div>';
+        }
       }
     }
 

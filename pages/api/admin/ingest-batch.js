@@ -295,7 +295,7 @@ const RUBRIC_CODES = {
 
 // Display tier assignments
 const TIER_MAP = {
-  MAE: 1, NOSOL: 1, ANTI: 1, 'COND-M': 1, 'COND-B': 1, 'COND-S': 1, TERMR: 1, TERMF: 1,
+  'MAE-T': 1, 'MAE-B': 1, NOSOL: 1, ANTI: 1, 'COND-M': 1, 'COND-B': 1, 'COND-S': 1, TERMR: 1, TERMF: 1,
   STRUCT: 2, CONSID: 2, 'REP-T': 2, 'REP-B': 2, IOC: 2, COV: 2,
   DEF: 3, MISC: 3,
 };
@@ -757,20 +757,18 @@ function extractMAEFromDefs(defProvisions) {
       continue;
     }
 
-    // Determine target vs buyer vs general
-    var isTarget = /\b(?:Company|Target)\s+Material/i.test(p.category);
+    // Determine target vs buyer — default generic MAE to Target
     var isBuyer = /\b(?:Parent|Buyer|Acquirer|Purchaser)\s+Material/i.test(p.category);
-    // For "Regulatory Material Adverse Effect" etc., no suffix
-    var suffix = isTarget ? ' (Target)' : isBuyer ? ' (Buyer)' : '';
+    var maeType = isBuyer ? 'MAE-B' : 'MAE-T';
 
     var split = splitMAEText(p.text);
 
-    maeProvisions.push({ type: 'MAE', text: split.core, category: 'Material Adverse Effect' + suffix });
+    maeProvisions.push({ type: maeType, text: split.core, category: 'Material Adverse Effect' });
     if (split.carveouts) {
-      maeProvisions.push({ type: 'MAE', text: split.carveouts, category: 'MAE Carve-Outs' + suffix });
+      maeProvisions.push({ type: maeType, text: split.carveouts, category: 'MAE Carve-Outs' });
     }
     if (split.disproportionate) {
-      maeProvisions.push({ type: 'MAE', text: split.disproportionate, category: 'MAE Disproportionate Impact' + suffix });
+      maeProvisions.push({ type: maeType, text: split.disproportionate, category: 'MAE Disproportionate Impact' });
     }
   }
 
@@ -1205,13 +1203,15 @@ Rules:
       // Also split any MAE provisions from heading classification (standalone MAE sections)
       if (provisionsByType['MAE']) {
         for (var mp of provisionsByType['MAE']) {
+          var hIsBuyer = /\b(?:Parent|Buyer|Acquirer|Purchaser)\s+Material/i.test(mp.category || mp.text.substring(0, 200));
+          var hType = hIsBuyer ? 'MAE-B' : 'MAE-T';
           if (/Material\s+Adverse[\s\S]{0,80}(?:means|shall\s+mean)/i.test(mp.text.substring(0, 300))) {
             var split = splitMAEText(mp.text);
-            preCategorizedMAE.push({ type: 'MAE', text: split.core, category: 'Material Adverse Effect' });
-            if (split.carveouts) preCategorizedMAE.push({ type: 'MAE', text: split.carveouts, category: 'MAE Carve-Outs' });
-            if (split.disproportionate) preCategorizedMAE.push({ type: 'MAE', text: split.disproportionate, category: 'MAE Disproportionate Impact' });
+            preCategorizedMAE.push({ type: hType, text: split.core, category: 'Material Adverse Effect' });
+            if (split.carveouts) preCategorizedMAE.push({ type: hType, text: split.carveouts, category: 'MAE Carve-Outs' });
+            if (split.disproportionate) preCategorizedMAE.push({ type: hType, text: split.disproportionate, category: 'MAE Disproportionate Impact' });
           } else {
-            preCategorizedMAE.push(mp);
+            preCategorizedMAE.push({ ...mp, type: hType });
           }
         }
         delete provisionsByType['MAE'];
@@ -1240,20 +1240,19 @@ Rules:
           var mDefEnd = mNextDef > 0 ? mDefStart + maeMatch[0].length + mNextDef : mDefStart + 8000;
           var mDefText = plainText.substring(mDefStart, Math.min(mDefEnd, mDefStart + 8000)).trim();
 
-          var mIsTarget = /\b(?:Company|Target)\s+Material/i.test(maeTerm);
           var mIsBuyer = /\b(?:Parent|Buyer|Acquirer|Purchaser)\s+Material/i.test(maeTerm);
-          var mSuffix = mIsTarget ? ' (Target)' : mIsBuyer ? ' (Buyer)' : '';
+          var mType = mIsBuyer ? 'MAE-B' : 'MAE-T';
 
           // Skip short cross-references ("has the meaning set forth in Section X")
           if (mDefText.length < 150 && /has\s+the\s+meaning\s+(?:set\s+forth|ascribed)/i.test(mDefText)) {
-            preCategorizedMAE.push({ type: 'MAE', text: mDefText, category: 'Material Adverse Effect' + mSuffix });
+            preCategorizedMAE.push({ type: mType, text: mDefText, category: 'Material Adverse Effect' });
             continue;
           }
 
           var mSplit = splitMAEText(mDefText);
-          preCategorizedMAE.push({ type: 'MAE', text: mSplit.core, category: 'Material Adverse Effect' + mSuffix });
-          if (mSplit.carveouts) preCategorizedMAE.push({ type: 'MAE', text: mSplit.carveouts, category: 'MAE Carve-Outs' + mSuffix });
-          if (mSplit.disproportionate) preCategorizedMAE.push({ type: 'MAE', text: mSplit.disproportionate, category: 'MAE Disproportionate Impact' + mSuffix });
+          preCategorizedMAE.push({ type: mType, text: mSplit.core, category: 'Material Adverse Effect' });
+          if (mSplit.carveouts) preCategorizedMAE.push({ type: mType, text: mSplit.carveouts, category: 'MAE Carve-Outs' });
+          if (mSplit.disproportionate) preCategorizedMAE.push({ type: mType, text: mSplit.disproportionate, category: 'MAE Disproportionate Impact' });
         }
         if (preCategorizedMAE.length > 0) {
           console.log(`[batch]   Fulltext scan found ${preCategorizedMAE.length} MAE provisions`);
