@@ -332,11 +332,16 @@ function stripHtml(html) {
 // ═══════════════════════════════════════════════════
 // Structural parsing — reuse patterns from segment.js
 // ═══════════════════════════════════════════════════
-const XREF_SIGNALS = /(?:in|under|of|to|pursuant\s+to|set\s+forth\s+in|described\s+in|defined\s+in|referenced\s+in|subject\s+to|accordance\s+with|provided\s+in|specified\s+in|required\s+by|referred\s+to\s+in|see|per)\s*$/i;
+const XREF_SIGNALS = /(?:in|under|of|to|by|on|at|from|with|for|this|that|such|each|any|said|the|pursuant\s+to|set\s+forth\s+in|described\s+in|defined\s+in|referenced\s+in|subject\s+to|accordance\s+with|provided\s+in|specified\s+in|required\s+by|referred\s+to\s+in|contemplated\s+by|governed\s+by|listed\s+on|added\s+to|purposes\s+of|see|per|except\s+as\s+(?:set\s+forth|provided|described)\s+in)\s*$/i;
 
 function findBodyStart(fullText) {
+  // Prefer preamble end marker — most reliable across all agreement formats
+  var preambleEnd = fullText.match(/(?:agree\s+as\s+follows|hereby\s+agree\s*(?:s\s*)?as\s+follows)\s*:?\s*\n/i);
+  if (preambleEnd) return preambleEnd.index + preambleEnd[0].length;
+
+  // TOC-based detection: find first real section after TOC (only trust TOC in first 30%)
   var tocMatch = fullText.match(/TABLE\s+OF\s+CONTENTS/i);
-  if (tocMatch) {
+  if (tocMatch && tocMatch.index < fullText.length * 0.3) {
     var afterToc = fullText.substring(tocMatch.index);
     var secPattern = /(?:SECTION|Section)\s+\d+\.\d{1,2}\b/g;
     var sm;
@@ -355,45 +360,65 @@ function findBodyStart(fullText) {
       }
     }
   }
+
+  // Look for first standalone ARTICLE heading (not a cross-reference)
+  var artRx = /\n\s*(ARTICLE\s+(?:[IVXLC]+|\d+))\s*[\n\r]/gi;
+  var artMatch = artRx.exec(fullText);
+  if (artMatch) return artMatch.index + 1;
+
+  // Fallback: first ARTICLE reference (even if inline)
   var firstArt = fullText.match(/\n\s*ARTICLE\s+(?:[IVXLC]+|\d+)\b/i);
   if (firstArt) return firstArt.index + 1;
+
   return 0;
 }
 
 function isHeading(text, matchIndex) {
+  var immediateBefore = text.substring(Math.max(0, matchIndex - 40), matchIndex);
+  // Reject cross-references like "pursuant to Section 3.01"
+  if (XREF_SIGNALS.test(immediateBefore)) return false;
   var lookback = text.substring(Math.max(0, matchIndex - 80), matchIndex);
   var lastNL = lookback.lastIndexOf('\n');
   if (lastNL !== -1) {
     var gap = lookback.substring(lastNL + 1);
-    if (gap.trim().length === 0) return true;
-    if (gap.trim().length <= 5) return true;
+    if (gap.trim().length <= 10) return true;
   } else if (matchIndex <= 80) {
     return true;
   }
-  var immediateBefore = text.substring(Math.max(0, matchIndex - 40), matchIndex);
-  if (XREF_SIGNALS.test(immediateBefore)) return false;
   return false;
+}
+
+function findSignatureCutoff(text) {
+  // Find "IN WITNESS WHEREOF" — marks end of agreement body, before exhibits/annexes
+  var sigMatch = text.match(/IN\s+WITNESS\s+WHEREOF/i);
+  if (sigMatch) return sigMatch.index;
+  // Fallback: look for signature page bracket notation
+  var bracketSig = text.match(/\[Signature\s+Page/i);
+  if (bracketSig) return bracketSig.index;
+  return text.length;
 }
 
 function parseStructure(fullText) {
   var bodyStart = findBodyStart(fullText);
-  var body = fullText.substring(bodyStart);
+  var sigCutoff = findSignatureCutoff(fullText);
+  // Truncate text between body start and signature page (exclude exhibits/annexes)
+  var body = fullText.substring(bodyStart, sigCutoff);
   var sectionPattern = /(?:SECTION|Section)\s+(\d+\.\d{1,2})\b/g;
   var allMatches = [];
   var m;
   while ((m = sectionPattern.exec(body)) !== null) {
     allMatches.push({ index: m.index, absIndex: bodyStart + m.index, number: m[1], fullMatch: m[0] });
   }
-  if (allMatches.length < 5) {
-    var barePattern = /(?:^|\n)\s*(\d+\.\d{1,2})\s+[A-Z]/g;
-    while ((m = barePattern.exec(body)) !== null) {
-      var num = m[1];
-      if (!allMatches.some(a => a.number === num && Math.abs(a.index - m.index) < 20)) {
-        allMatches.push({ index: m.index + (m[0].startsWith('\n') ? 1 : 0), absIndex: bodyStart + m.index + (m[0].startsWith('\n') ? 1 : 0), number: num, fullMatch: m[0].trim() });
-      }
+  // Also detect bare numbered headings like "1.1 The Merger." (used by some agreements)
+  var barePattern = /(?:^|\n)\s*(\d+\.\d{1,2})\s+[A-Z]/gm;
+  while ((m = barePattern.exec(body)) !== null) {
+    var num = m[1];
+    var pos = m.index + (m[0].startsWith('\n') ? 1 : 0);
+    if (!allMatches.some(a => a.number === num && Math.abs(a.index - pos) < 50)) {
+      allMatches.push({ index: pos, absIndex: bodyStart + pos, number: num, fullMatch: m[0].trim() });
     }
-    allMatches.sort((a, b) => a.index - b.index);
   }
+  allMatches.sort((a, b) => a.index - b.index);
   var headings = allMatches.filter(match => isHeading(body, match.index));
   var sections = [];
   for (var i = 0; i < headings.length; i++) {
@@ -403,16 +428,22 @@ function parseStructure(fullText) {
     var text = cleanSectionText(rawText);
     var headingLine = text.split('\n')[0].substring(0, 200).trim();
     if (text.length < 20) continue;
+    // Filter out cross-reference fragments posing as section headings
+    var afterNum = headingLine.replace(/^(?:SECTION|Section)\s+\d+\.\d{1,2}\s*/, '').replace(/^\d+\.\d{1,2}\s*/, '');
+    afterNum = afterNum.replace(/^\([a-z]+\)\s*(\([ivx]+\)\s*)?/, '').trim();
+    if (/^[,;]/.test(afterNum) || (afterNum.length > 0 && afterNum.length < 3 && !/[A-Z]/.test(afterNum))) continue;
     sections.push({ heading: headingLine, text, level: 'section', startChar: bodyStart + start, endChar: bodyStart + end, number: headings[i].number });
   }
-  // Find ARTICLE boundaries
-  var articleRegex = /ARTICLE\s+(?:[IVXLC]+|\d+)\b[^\n]*/gi;
+  // Find ARTICLE boundaries — includes "ARTICLE I" and "SECTION 1 - TITLE" formats
+  var articleRegex = /(?:ARTICLE\s+(?:[IVXLC]+|\d+)|SECTION\s+\d+\s*[-–—]\s*[A-Z])[^\n]*/gi;
   var articles = [];
   var artMatch;
   while ((artMatch = articleRegex.exec(body)) !== null) {
-    if (isHeading(body, artMatch.index)) {
-      articles.push({ heading: artMatch[0].trim(), startChar: bodyStart + artMatch.index });
-    }
+    if (!isHeading(body, artMatch.index)) continue;
+    // Reject cross-references like "Article IV, and following..." — real headings don't start with comma/lowercase after number
+    var afterNumber = artMatch[0].replace(/^(?:ARTICLE|Article)\s+(?:[IVXLC]+|\d+)\s*/i, '').replace(/^SECTION\s+\d+\s*[-–—]\s*/i, '');
+    if (/^[,;]/.test(afterNumber)) continue;
+    articles.push({ heading: artMatch[0].trim(), startChar: bodyStart + artMatch.index });
   }
   for (var ai = 0; ai < articles.length; ai++) {
     var artStart = articles[ai].startChar;
@@ -440,13 +471,43 @@ function parseStructure(fullText) {
   sections.sort((a, b) => a.startChar - b.startChar);
 
   // Attach article context to each section
-  for (var si = 0; si < sections.length; si++) {
-    for (var aj = articles.length - 1; aj >= 0; aj--) {
-      if (sections[si].startChar >= articles[aj].startChar) {
-        sections[si]._articleHeading = articles[aj].heading;
-        break;
+  if (articles.length > 0) {
+    for (var si = 0; si < sections.length; si++) {
+      for (var aj = articles.length - 1; aj >= 0; aj--) {
+        if (sections[si].startChar >= articles[aj].startChar) {
+          sections[si]._articleHeading = articles[aj].heading;
+          break;
+        }
       }
     }
+  } else {
+    // No standalone ARTICLE headings found — infer from TOC and section numbers
+    // Parse TOC: non-SECTION lines before the body are article titles
+    var tocText = fullText.substring(0, bodyStart);
+    var tocArticles = {};
+    var tocLines = tocText.split('\n');
+    var lastNonSection = '';
+    for (var tl of tocLines) {
+      var trimLine = tl.trim();
+      if (!trimLine) continue;
+      var secNum = trimLine.match(/^SECTION\s+(\d+)\.\d{1,2}\b/i);
+      if (secNum) {
+        var artNum = secNum[1];
+        if (!tocArticles[artNum] && lastNonSection) {
+          tocArticles[artNum] = lastNonSection;
+        }
+      } else if (trimLine.length > 3 && trimLine.length < 80 && !/^\d+$/.test(trimLine) && !/^Page/.test(trimLine)) {
+        lastNonSection = trimLine;
+      }
+    }
+    // Attach inferred article heading to sections based on number prefix
+    for (var si = 0; si < sections.length; si++) {
+      var numMatch = sections[si].heading.match(/(?:SECTION|Section)\s+(\d+)\.\d/i);
+      if (numMatch && tocArticles[numMatch[1]]) {
+        sections[si]._articleHeading = tocArticles[numMatch[1]];
+      }
+    }
+    console.log('[batch]   Inferred article titles from TOC:', JSON.stringify(tocArticles));
   }
 
   return { sections, articles, bodyStart };
@@ -458,7 +519,10 @@ function parseStructure(fullText) {
 function extractTitle(heading) {
   return heading
     .replace(/^(?:SECTION|Section)\s+\d+\.\d{1,2}\b\s*/, '')
+    .replace(/^\d+\.\d{1,2}\s+/, '')
     .replace(/^[.\-—:;\s]+/, '')
+    .replace(/\.\s+[A-Z(][\s\S]*$/, '')  // truncate at first sentence boundary or sub-clause
+    .replace(/\.\s*$/, '')
     .trim();
 }
 
@@ -495,6 +559,7 @@ function resolveArticleType(articleHeading, sectionTitle) {
 
 // Keyword-based type mapping (section title level)
 var TITLE_TYPE_MAP = [
+  { pattern: /absence\s+of\s+(?:certain\s+)?changes/i, type: 'REP-T', tier: 2 },
   { pattern: /material\s+adverse\s+effect|MAE/i, type: 'MAE', tier: 1 },
   { pattern: /interim\s+operat|conduct\s+of\s+(?:the\s+)?business|conduct\s+prior/i, type: 'IOC', tier: 2 },
   { pattern: /antitrust|regulatory\s+(?:efforts|approval|matters)|HSR|hell\s+or\s+high/i, type: 'ANTI', tier: 1 },
@@ -502,7 +567,7 @@ var TITLE_TYPE_MAP = [
   { pattern: /termination\s+(?:rights|of\s+agreement|by)|right\s+to\s+terminat/i, type: 'TERMR', tier: 1 },
   { pattern: /termination\s+fee|break[\s-]*up\s+fee|reverse.*fee/i, type: 'TERMF', tier: 1 },
   { pattern: /effect\s+of\s+termination/i, type: 'TERMF', tier: 1 },
-  { pattern: /definition/i, type: 'DEF', tier: 3 },
+  { pattern: /definition|defined\s+term|terms\s+defined|interpretation/i, type: 'DEF', tier: 3 },
   { pattern: /conversion\s+of\s+shares|effect\s+on\s+capital\s+stock|merger\s+consideration|exchange\s+(?:ratio|procedures|of\s+certificates)|payment\s+(?:mechanics|procedures)/i, type: 'CONSID', tier: 2 },
   { pattern: /equity\s+awards?|stock\s+options?|RSU|stock\s+plans?/i, type: 'CONSID', tier: 2 },
   { pattern: /dissenting|appraisal\s+rights/i, type: 'CONSID', tier: 2 },
@@ -618,6 +683,149 @@ function splitBySubClauses(sectionText) {
 }
 
 // ═══════════════════════════════════════════════════
+// MAE extraction — pull MAE definitions from DEF, split into core/carve-outs/disproportionate
+// ═══════════════════════════════════════════════════
+function splitMAEText(text) {
+  // Find the carve-out boundary — where exceptions to the MAE definition begin
+  // "that" is optional — some agreements use "provided, however, no event..." without "that"
+  var carveoutPatterns = [
+    /[;,]\s*provided,?\s*(?:however,?\s*)?(?:that\s+)?(?:none|any|no|in\s+the\s+case)\s/i,
+    /,\s*excluding\s+any\s+(?:effect|change|event|development)/i,
+    /[;,]\s*(?:shall\s+not|will\s+not)\s+(?:include|be\s+deemed)/i,
+    /[;,]\s*provided,?\s*(?:however,?\s*)?that\b/i,
+    /[;,]\s*provided,?\s*(?:however)?\s*,/i,
+  ];
+
+  var carveoutIdx = -1;
+  for (var pat of carveoutPatterns) {
+    var m = pat.exec(text);
+    if (m) { carveoutIdx = m.index; break; }
+  }
+
+  if (carveoutIdx === -1) {
+    return { core: text, carveouts: null, disproportionate: null };
+  }
+
+  var core = text.substring(0, carveoutIdx).trim();
+  var afterCore = text.substring(carveoutIdx);
+
+  // Look for disproportionate impact qualifier
+  if (!/disproportionate/i.test(afterCore)) {
+    return { core, carveouts: afterCore.trim(), disproportionate: null };
+  }
+
+  // Find "disproportionate" position, then look backwards for clause boundary
+  var dispropIdx = afterCore.search(/\bdisproportionate\b/i);
+  var dispropStart = -1;
+
+  if (dispropIdx > 50) {
+    var lookback = afterCore.substring(Math.max(0, dispropIdx - 600), dispropIdx);
+    var lastExcept = Math.max(lookback.lastIndexOf('except'), lookback.lastIndexOf('Except'));
+    // Find last "provided further" or "provided, however" (not the first carve-out "provided")
+    var pfIdx = -1;
+    var pfRx = /provided,?\s*(?:further|however|that)/gi;
+    var pfm;
+    while ((pfm = pfRx.exec(lookback)) !== null) pfIdx = pfm.index;
+    var keywordPos = Math.max(lastExcept, pfIdx);
+    if (keywordPos >= 0) {
+      var beforeKeyword = lookback.substring(0, keywordPos);
+      var pIdx = Math.max(beforeKeyword.lastIndexOf(';'), beforeKeyword.lastIndexOf(','));
+      var splitPos = pIdx >= 0 ? pIdx : keywordPos;
+      dispropStart = Math.max(0, dispropIdx - 600) + splitPos;
+    }
+  }
+
+  if (dispropStart > 50) {
+    return {
+      core,
+      carveouts: afterCore.substring(0, dispropStart).trim(),
+      disproportionate: afterCore.substring(dispropStart).trim(),
+    };
+  }
+
+  return { core, carveouts: afterCore.trim(), disproportionate: null };
+}
+
+function extractMAEFromDefs(defProvisions) {
+  var maeProvisions = [];
+  var remaining = [];
+  var MAE_PATTERN = /Material\s+Adverse\s+(?:Effect|Change)/i;
+
+  for (var p of defProvisions) {
+    if (!MAE_PATTERN.test(p.category)) {
+      remaining.push(p);
+      continue;
+    }
+
+    // Determine target vs buyer vs general
+    var isTarget = /\b(?:Company|Target)\s+Material/i.test(p.category);
+    var isBuyer = /\b(?:Parent|Buyer|Acquirer|Purchaser)\s+Material/i.test(p.category);
+    // For "Regulatory Material Adverse Effect" etc., no suffix
+    var suffix = isTarget ? ' (Target)' : isBuyer ? ' (Buyer)' : '';
+
+    var split = splitMAEText(p.text);
+
+    maeProvisions.push({ type: 'MAE', text: split.core, category: 'Material Adverse Effect' + suffix });
+    if (split.carveouts) {
+      maeProvisions.push({ type: 'MAE', text: split.carveouts, category: 'MAE Carve-Outs' + suffix });
+    }
+    if (split.disproportionate) {
+      maeProvisions.push({ type: 'MAE', text: split.disproportionate, category: 'MAE Disproportionate Impact' + suffix });
+    }
+  }
+
+  return { maeProvisions, remaining };
+}
+
+// ═══════════════════════════════════════════════════
+// Category normalization — fuzzy match AI output to rubric labels
+// ═══════════════════════════════════════════════════
+function normalizeStr(s) {
+  return s.replace(/[.\s;:,]+$/g, '').replace(/\s+/g, ' ').trim().toLowerCase();
+}
+
+function stripSectionPrefix(s) {
+  // Remove "Section 6.6 " or "6.6 " prefixes and trailing periods
+  return s.replace(/^(?:SECTION|Section)\s+\d+\.\d{1,2}\s*/i, '').replace(/^\d+\.\d{1,2}\s+/, '').replace(/\.\s*$/, '').trim();
+}
+
+function matchClosestLabel(aiOutput, codes) {
+  // First try raw, then try with section prefix stripped
+  var candidates = [aiOutput, stripSectionPrefix(aiOutput)];
+  for (var candidate of candidates) {
+    var normalized = normalizeStr(candidate);
+    if (!normalized) continue;
+    // Try exact match (case-insensitive, stripped periods)
+    for (var c of codes) {
+      if (normalizeStr(c.label) === normalized) return c.label;
+      if (normalizeStr(c.code) === normalized) return c.label;
+    }
+    // Try substring match — if AI output contains a label or vice versa
+    for (var c of codes) {
+      var normLabel = normalizeStr(c.label);
+      if (normalized.includes(normLabel) || normLabel.includes(normalized)) {
+        if (normalized.length > 5 || normLabel.length < 30) return c.label;
+      }
+    }
+  }
+  // Try word overlap scoring (with stripped version)
+  var stripped = normalizeStr(stripSectionPrefix(aiOutput));
+  var bestScore = 0;
+  var bestLabel = stripSectionPrefix(aiOutput) || aiOutput;
+  var aiWords = stripped.split(/[\s;,/]+/).filter(w => w.length > 2);
+  for (var c of codes) {
+    var labelWords = normalizeStr(c.label).split(/[\s;,/]+/).filter(w => w.length > 2);
+    var overlap = aiWords.filter(w => labelWords.some(lw => lw.includes(w) || w.includes(lw))).length;
+    var score = overlap / Math.max(aiWords.length, labelWords.length, 1);
+    if (score > bestScore && score >= 0.4) {
+      bestScore = score;
+      bestLabel = c.label;
+    }
+  }
+  return bestLabel;
+}
+
+// ═══════════════════════════════════════════════════
 // AI Classification — assign rubric code to provision
 // ═══════════════════════════════════════════════════
 async function classifyProvisions(provisions, type, client) {
@@ -684,21 +892,25 @@ Rules:
           if (isMultiCode && cls.codes && cls.codes.length > 0) {
             // Multi-code: create one row per code
             for (var code of cls.codes) {
-              var codeEntry = codes.find(c => c.code === code);
+              var codeEntry = codes.find(c => c.code === code) || codes.find(c => c.label === code);
               allResults.push({
                 ...prov,
-                category: codeEntry ? codeEntry.label : code,
-                ai_metadata: { rubric_code: code, multi_code: true },
+                category: codeEntry ? codeEntry.label : matchClosestLabel(code, codes),
+                ai_metadata: { rubric_code: codeEntry ? codeEntry.code : code, multi_code: true },
               });
             }
           } else {
             var codeVal = cls.code || 'UNKNOWN';
-            var entry = codes.find(c => c.code === codeVal);
-            allResults.push({
-              ...prov,
-              category: entry ? entry.label : (codeVal === 'UNKNOWN' ? 'UNKNOWN: ' + (prov.category || extractTitle(prov.text.substring(0, 80))) : codeVal),
-              ai_metadata: { rubric_code: codeVal },
-            });
+            var entry = codes.find(c => c.code === codeVal) || codes.find(c => c.label === codeVal);
+            if (entry) {
+              allResults.push({ ...prov, category: entry.label, ai_metadata: { rubric_code: entry.code } });
+            } else if (codeVal === 'UNKNOWN') {
+              allResults.push({ ...prov, category: 'UNKNOWN: ' + (prov.category || extractTitle(prov.text.substring(0, 80))), ai_metadata: { rubric_code: 'UNKNOWN' } });
+            } else {
+              // AI returned something non-standard — try fuzzy match
+              var matched = matchClosestLabel(codeVal, codes);
+              allResults.push({ ...prov, category: matched, ai_metadata: { rubric_code: codeVal } });
+            }
           }
         }
       } catch {
@@ -772,11 +984,14 @@ export default async function handler(req, res) {
   var results = [];
 
   try {
-    // ── Step 1: Clear existing data ──
+    // ── Step 1: Clear existing data (respect FK order: annotations → provisions → deals) ──
     console.log('[batch] Clearing existing data...');
-    await sb.from('provisions').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-    try { await sb.from('agreement_sources').delete().neq('id', '00000000-0000-0000-0000-000000000000'); } catch {}
-    await sb.from('deals').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+    var annDel = await sb.from('annotations').delete().neq('id', '00000000-0000-0000-0000-000000000000').select('id');
+    console.log('[batch] Annotations:', annDel.error ? 'SKIP (' + annDel.error.message + ')' : (annDel.data ? annDel.data.length + ' deleted' : '0'));
+    var provDel = await sb.from('provisions').delete().neq('id', '00000000-0000-0000-0000-000000000000').select('id');
+    console.log('[batch] Provisions:', provDel.error ? 'ERROR: ' + provDel.error.message : (provDel.data ? provDel.data.length + ' deleted' : '0'));
+    var dealDel = await sb.from('deals').delete().neq('id', '00000000-0000-0000-0000-000000000000').select('id');
+    console.log('[batch] Deals:', dealDel.error ? 'ERROR: ' + dealDel.error.message : (dealDel.data ? dealDel.data.length + ' deleted' : '0'));
     console.log('[batch] Cleared.');
 
     // ── Step 2: Process each deal sequentially ──
@@ -808,10 +1023,22 @@ export default async function handler(req, res) {
         .eq('target', config.target);
       if (existingDeals && existingDeals.length > 0) {
         dealId = existingDeals[0].id;
-        // Delete old provisions for this deal
-        await sb.from('provisions').delete().eq('deal_id', dealId);
+        // Delete old annotations+provisions for this deal (respect FK order)
+        var { data: oldProvs } = await sb.from('provisions').select('id').eq('deal_id', dealId);
+        if (oldProvs && oldProvs.length > 0) {
+          var oldIds = oldProvs.map(p => p.id);
+          for (var bi = 0; bi < oldIds.length; bi += 100) {
+            var batch = oldIds.slice(bi, bi + 100);
+            await sb.from('annotations').delete().in('provision_id', batch);
+          }
+          await sb.from('provisions').delete().eq('deal_id', dealId);
+        }
         // Delete any extra duplicates
         for (var di = 1; di < existingDeals.length; di++) {
+          var { data: dupProvs } = await sb.from('provisions').select('id').eq('deal_id', existingDeals[di].id);
+          if (dupProvs && dupProvs.length > 0) {
+            await sb.from('annotations').delete().in('provision_id', dupProvs.map(p => p.id));
+          }
           await sb.from('provisions').delete().eq('deal_id', existingDeals[di].id);
           await sb.from('deals').delete().eq('id', existingDeals[di].id);
         }
@@ -964,8 +1191,86 @@ Rules:
         }
       }
 
+      // Extract MAE definitions from DEF provisions before AI classification
+      var preCategorizedMAE = [];
+      if (provisionsByType['DEF']) {
+        var maeResult = extractMAEFromDefs(provisionsByType['DEF']);
+        provisionsByType['DEF'] = maeResult.remaining;
+        if (maeResult.maeProvisions.length > 0) {
+          preCategorizedMAE.push(...maeResult.maeProvisions);
+          console.log(`[batch]   Extracted ${maeResult.maeProvisions.length} MAE provisions from definitions`);
+        }
+      }
+
+      // Also split any MAE provisions from heading classification (standalone MAE sections)
+      if (provisionsByType['MAE']) {
+        for (var mp of provisionsByType['MAE']) {
+          if (/Material\s+Adverse[\s\S]{0,80}(?:means|shall\s+mean)/i.test(mp.text.substring(0, 300))) {
+            var split = splitMAEText(mp.text);
+            preCategorizedMAE.push({ type: 'MAE', text: split.core, category: 'Material Adverse Effect' });
+            if (split.carveouts) preCategorizedMAE.push({ type: 'MAE', text: split.carveouts, category: 'MAE Carve-Outs' });
+            if (split.disproportionate) preCategorizedMAE.push({ type: 'MAE', text: split.disproportionate, category: 'MAE Disproportionate Impact' });
+          } else {
+            preCategorizedMAE.push(mp);
+          }
+        }
+        delete provisionsByType['MAE'];
+      }
+
+      // Fallback: scan full text for MAE definitions not captured by section parsing
+      // This handles agreements where definitions section isn't identified by heading
+      if (preCategorizedMAE.length === 0) {
+        console.log('[batch]   No MAE from DEF/heading — running fulltext MAE scan');
+        var maeDefRx = /[""\u201c]([^""\u201d]*?Material\s+Adverse\s+(?:Effect|Change)[^""\u201d]*)[""\u201d][^""\u201c\n]{0,60}?\b(?:means?|shall\s+mean|has\s+the\s+meaning|shall\s+have\s+the\s+meaning)\b/gi;
+        var maeMatch;
+        while ((maeMatch = maeDefRx.exec(plainText)) !== null) {
+          var maeTerm = maeMatch[1].replace(/\s+/g, ' ').trim();
+          // Verify this is a standalone definition (not mid-sentence reference)
+          var mBefore = plainText.substring(Math.max(0, maeMatch.index - 200), maeMatch.index);
+          var mLastNL = mBefore.lastIndexOf('\n');
+          if (mLastNL !== -1) {
+            var mSinceLine = mBefore.substring(mLastNL + 1);
+            var mNonWS = mSinceLine.replace(/\s/g, '').length;
+            if (mNonWS > 20) continue; // mid-sentence reference, skip
+          }
+          // Find end of this definition (next defined term or 8000 chars)
+          var mDefStart = maeMatch.index;
+          var mRest = plainText.substring(mDefStart + maeMatch[0].length);
+          var mNextDef = mRest.search(/\n\s*[""\u201c][A-Z][^""\u201d]{2,60}[""\u201d]\s*(?:means?|shall\s+mean|has\s+the\s+meaning)/);
+          var mDefEnd = mNextDef > 0 ? mDefStart + maeMatch[0].length + mNextDef : mDefStart + 8000;
+          var mDefText = plainText.substring(mDefStart, Math.min(mDefEnd, mDefStart + 8000)).trim();
+
+          var mIsTarget = /\b(?:Company|Target)\s+Material/i.test(maeTerm);
+          var mIsBuyer = /\b(?:Parent|Buyer|Acquirer|Purchaser)\s+Material/i.test(maeTerm);
+          var mSuffix = mIsTarget ? ' (Target)' : mIsBuyer ? ' (Buyer)' : '';
+
+          // Skip short cross-references ("has the meaning set forth in Section X")
+          if (mDefText.length < 150 && /has\s+the\s+meaning\s+(?:set\s+forth|ascribed)/i.test(mDefText)) {
+            preCategorizedMAE.push({ type: 'MAE', text: mDefText, category: 'Material Adverse Effect' + mSuffix });
+            continue;
+          }
+
+          var mSplit = splitMAEText(mDefText);
+          preCategorizedMAE.push({ type: 'MAE', text: mSplit.core, category: 'Material Adverse Effect' + mSuffix });
+          if (mSplit.carveouts) preCategorizedMAE.push({ type: 'MAE', text: mSplit.carveouts, category: 'MAE Carve-Outs' + mSuffix });
+          if (mSplit.disproportionate) preCategorizedMAE.push({ type: 'MAE', text: mSplit.disproportionate, category: 'MAE Disproportionate Impact' + mSuffix });
+        }
+        if (preCategorizedMAE.length > 0) {
+          console.log(`[batch]   Fulltext scan found ${preCategorizedMAE.length} MAE provisions`);
+        }
+      }
+
+      if (preCategorizedMAE.length > 0) {
+        console.log(`[batch]   ${preCategorizedMAE.length} total MAE provisions (pre-categorized, skipping AI)`);
+      }
+
       // AI classify each type's provisions against rubric codes (parallel by type)
       var allProvisions = [];
+      // Add pre-categorized MAE provisions (already have rubric labels, skip AI)
+      for (var mp of preCategorizedMAE) {
+        var rubricCode = mp.category.startsWith('MAE Carve-Outs') ? 'DEF-MAE-CARVEOUT' : mp.category.startsWith('MAE Disproportionate') ? 'DEF-MAE-DISPROP' : 'DEF-MAE';
+        allProvisions.push({ ...mp, ai_metadata: { rubric_code: rubricCode } });
+      }
       var classifyTasks = Object.entries(provisionsByType).map(([type, provs]) => async () => {
         var classified = await classifyProvisions(provs, type, client);
         return classified.map(p => ({ ...p, type }));
@@ -985,6 +1290,21 @@ Rules:
         var bDef = b.type === 'DEF' ? 1 : 0;
         return aDef - bDef;
       });
+
+      // Clean up categories before insert
+      for (var ci = 0; ci < dedupedProvisions.length; ci++) {
+        var cat = dedupedProvisions[ci].category || '';
+        // Strip section number prefixes from categories like "6.6 Indemnification."
+        cat = cat.replace(/^\d+\.\d{1,2}\s+/, '');
+        // Strip trailing periods (but not from UNKNOWN: entries which may need the context)
+        if (!cat.startsWith('UNKNOWN:')) cat = cat.replace(/\.\s*$/, '');
+        // Clean up UNKNOWN: entries too
+        if (cat.startsWith('UNKNOWN: ')) {
+          var unknownTitle = cat.substring(9).replace(/^\d+\.\d{1,2}\s+/, '').replace(/\.\s*$/, '').trim();
+          cat = 'UNKNOWN: ' + (unknownTitle || 'Unclassified');
+        }
+        dedupedProvisions[ci].category = cat || 'General';
+      }
 
       // Insert provisions in batches of 50
       var insertBatchSize = 50;

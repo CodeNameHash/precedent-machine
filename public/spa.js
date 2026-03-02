@@ -23,7 +23,7 @@ var FALLBACK_PROVISION_TYPES = [
 ];
 
 var FALLBACK_SUB_PROVISIONS = {
-  MAE:["Material Adverse Effect","MAE Carve-Outs","MAE Disproportionate Impact"],
+  MAE:["Material Adverse Effect","Material Adverse Effect (Target)","Material Adverse Effect (Buyer)","MAE Carve-Outs","MAE Carve-Outs (Target)","MAE Carve-Outs (Buyer)","MAE Disproportionate Impact","MAE Disproportionate Impact (Target)","MAE Disproportionate Impact (Buyer)"],
   STRUCT:["The Merger","Closing","Effective Time","Effects of the Merger","Certificate of Incorporation / Bylaws","Directors and Officers","Subsequent Actions"],
   CONSID:["Conversion of Shares / Effect on Capital Stock","Exchange of Certificates / Payment Mechanics","Treatment of Equity Awards / Stock Plans","Dissenting / Appraisal Rights","Withholding Rights","Anti-Dilution Adjustments"],
   "REP-T":["Organization; Qualification; Standing","Capitalization; Subsidiaries","Authority; Enforceability","No Conflict; Required Filings and Consents","SEC Documents; Financial Statements","Absence of Certain Changes or Events","Litigation; Legal Proceedings","Compliance with Laws; Permits; Licenses","Employee Benefit Plans; ERISA","Labor Matters; Relations","Taxes; Tax Returns","Material Contracts","Intellectual Property","Real Property; Personal Property; Title","Environmental Matters","Insurance","Brokers; Finders","Anti-Corruption; Sanctions","Data Privacy; Information Security; Cybersecurity","Takeover Statutes; Anti-Takeover","Opinion of Financial Advisor","Related Party / Affiliate / Interested-Party Transactions","Information Supplied / Proxy Statement","No Other Representations or Warranties"],
