@@ -79,18 +79,28 @@ var IOC_PARSED_CACHE={};
 function parseIOCExceptions(provId,text){
   if(IOC_PARSED_CACHE[provId])return IOC_PARSED_CACHE[provId];
   if(!text){IOC_PARSED_CACHE[provId]={base:text,exceptions:[]};return IOC_PARSED_CACHE[provId]}
-  // Split on exception markers
-  var splitRx=/\b(except(?:\s+that)?|other\s+than|provided[\s,]+however[\s,]+that)\b/i;
-  var parts=text.split(splitRx);
-  var base=parts[0].trim();
-  // Recombine remainder after the first exception marker
-  var remainder="";
-  for(var i=1;i<parts.length;i++){
-    if(splitRx.test(parts[i]))remainder+=(remainder?" ":"")+parts[i];
-    else remainder+=" "+parts[i];
+  // Find exception markers: "except that", "other than", "provided, however, that"
+  var splitRx=/\b(except(?:\s+that)?|other\s+than|provided[\s,]+however[\s,]+that)\b/gi;
+  var firstMatch=splitRx.exec(text);
+  if(!firstMatch){IOC_PARSED_CACHE[provId]={base:text,exceptions:[]};return IOC_PARSED_CACHE[provId]}
+  // If the exception marker is in the first 15% of the text (or base < 50 real chars),
+  // it's a leading qualifier, not an exception section — skip it and look for later markers
+  var baseCandidate=text.substring(0,firstMatch.index).replace(/^\s*\([a-z]\)\s*/i,"").trim();
+  var markerPos=firstMatch.index;
+  if(baseCandidate.length<50){
+    // Leading qualifier — look for a LATER exception marker after the numbered items
+    var laterMatch=splitRx.exec(text);
+    if(laterMatch&&laterMatch.index>text.length*0.3){
+      markerPos=laterMatch.index;
+    }else{
+      // No good split point — show full text, no exception splitting
+      IOC_PARSED_CACHE[provId]={base:text,exceptions:[]};
+      return IOC_PARSED_CACHE[provId];
+    }
   }
-  remainder=remainder.trim();
-  if(!remainder){IOC_PARSED_CACHE[provId]={base:base||text,exceptions:[]};return IOC_PARSED_CACHE[provId]}
+  var base=text.substring(0,markerPos).trim();
+  var remainder=text.substring(markerPos).trim();
+  if(!remainder||remainder.length<15){IOC_PARSED_CACHE[provId]={base:base||text,exceptions:[]};return IOC_PARSED_CACHE[provId]}
   // Split numbered sub-exceptions: (i), (ii), (iii), (A), (B), (1), (2), etc.
   var numRx=/\((?:i{1,3}v?|v(?:i{0,3})|x(?:i{0,3})|[A-C]|\d{1,2})\)\s*/gi;
   var excParts=remainder.split(numRx).filter(function(s){return s&&s.trim()});
@@ -600,12 +610,17 @@ function renderSidebar(){
   var dealArrow=state.sidebarDealsCollapsed?'&#9654;':'&#9660;';
   var h='<div class="sidebar-header"><span><span class="sidebar-toggle" onclick="toggleSidebarSection(\'provs\')">'+provArrow+'</span> Provisions</span><span style="font-size:10px;color:var(--text5);text-transform:none;letter-spacing:0;cursor:pointer" onclick="showAllCategories()">show all</span></div>';
   if(!state.sidebarProvsCollapsed){
-    h+='<div class="prov-item '+(state.provisionType===null?"selected":"")+'" onclick="selectProvisionType(null)"><div class="prov-type" style="color:var(--text3)">ALL</div><div class="prov-title">All Provisions</div><div class="prov-deal">Compare all provision types side by side</div></div>';
+    h+='<div class="prov-item '+(state.provisionType===null?"selected":"")+'" onclick="selectProvisionType(null)"><div class="prov-title">All Provisions</div><div class="prov-deal">'+PROVISION_TYPES.length+' types &middot; '+PROVISIONS.length+' coded</div></div>';
     PROVISION_TYPES.forEach(function(pt){
       var a=state.provisionType===pt.key;
       var expanded=state.expandedProvisionType===pt.key;
       var arrow=expanded?'&#9660;':'&#9654;';
-      h+='<div class="prov-item '+(a?"selected":"")+'" onclick="selectProvisionType(\''+pt.key+'\')"><div class="prov-type"><span style="font-size:8px;margin-right:4px">'+arrow+'</span>'+pt.label.toUpperCase()+'</div><div class="prov-title">'+pt.label+'</div><div class="prov-deal">'+getCatsForType(pt.key).length+' sub-provisions &middot; '+new Set(PROVISIONS.filter(function(p){return p.type===pt.key}).map(function(p){return p.dealId})).size+' deals coded</div></div>';
+      var dealCount=new Set(PROVISIONS.filter(function(p){return p.type===pt.key}).map(function(p){return p.dealId})).size;
+      var secCollapsed=state.collapsedSections.has("sec-"+pt.key);
+      h+='<div class="prov-item '+(a?"selected":"")+'" onclick="selectProvisionType(\''+pt.key+'\')">';
+      h+='<div style="display:flex;justify-content:space-between;align-items:center"><div class="prov-title"><span style="font-size:8px;margin-right:4px;color:var(--text4)">'+arrow+'</span>'+esc(pt.label)+'</div>';
+      h+='<span class="sidebar-toggle-vis" onclick="event.stopPropagation();toggleSectionFromSidebar(\''+pt.key+'\')" title="'+(secCollapsed?"Show":"Hide")+' in main view" style="font-size:9px;color:'+(secCollapsed?"var(--text5)":"var(--gold)")+'">'+(secCollapsed?"show":"hide")+'</span></div>';
+      h+='<div class="prov-deal">'+getCatsForType(pt.key).length+' sub-provisions &middot; '+dealCount+' deals</div></div>';
       if(expanded){
         getCatsForType(pt.key).forEach(function(cat){
           var hidden=state.hiddenCategories.has(cat);
@@ -746,14 +761,18 @@ function renderContent(){
   var types=state.provisionType?[state.provisionType]:PROVISION_TYPES.map(function(pt){return pt.key}).filter(function(t){return deals.some(function(d){return getProvs(t,d.id).length>0})});
   var typeName=state.provisionType?PROVISION_TYPES.find(function(pt){return pt.key===state.provisionType}).label:"All Provisions";
 
-  var collapseLabel=state.allCollapsed?"Expand all":"Collapse all";
-  var h='<div class="content-header"><div class="provision-type-label">'+(state.provisionType||"COMPARISON")+'</div><div class="content-title">'+typeName+' &mdash; '+deals.length+' Deal Comparison</div><div class="action-row"><a class="collapse-all-link" onclick="collapseAll()">'+collapseLabel+'</a></div><div class="view-tabs"><div class="view-tab '+(state.activeTab==="coded"?"active":"")+'" onclick="setTab(\'coded\')">Coded Comparison</div><div class="view-tab '+(state.activeTab==="fulltext"?"active":"")+'" onclick="setTab(\'fulltext\')">Full Text</div><div class="view-tab '+(state.activeTab==="report"?"active":"")+'" onclick="setTab(\'report\')">Report</div><div class="view-tab '+(state.activeTab==="redline"?"active":"")+'" onclick="setTab(\'redline\')">Redline</div></div></div>';
+  var h='<div class="content-header"><div class="provision-type-label">'+(state.provisionType||"COMPARISON")+'</div><div class="content-title">'+typeName+' &mdash; '+deals.length+' Deal Comparison</div><div class="view-tabs"><div class="view-tab '+(state.activeTab==="coded"?"active":"")+'" onclick="setTab(\'coded\')">Coded Comparison</div><div class="view-tab '+(state.activeTab==="fulltext"?"active":"")+'" onclick="setTab(\'fulltext\')">Full Text</div><div class="view-tab '+(state.activeTab==="report"?"active":"")+'" onclick="setTab(\'report\')">Report</div><div class="view-tab '+(state.activeTab==="redline"?"active":"")+'" onclick="setTab(\'redline\')">Redline</div></div></div>';
 
   if(state.adminMode){
     h+='<div class="admin-banner"><span>Admin mode &mdash; Recode sub-provisions or add new categories</span><div style="display:flex;gap:6px;flex-wrap:wrap">'+types.map(function(t){return '<button onclick="openAddCategory(\''+t+'\')">+ '+t+' Category</button>'}).join("")+'<button onclick="openTaxonomyEditor()">Edit Taxonomy</button><button onclick="window.location.href=\'/admin/agreements\'">Add Agreement(s)</button><button onclick="ingestFullAgreement(\''+state.selectedDeals[0]+'\')">Quick Ingest</button><button onclick="toggleAdmin()">Turn Off</button></div></div>';
   }
 
-  if(state.activeTab==="coded"){types.forEach(function(type){var cats=getCatsForType(type);var secKey="sec-"+type;var secCollapsed=state.collapsedSections.has(secKey);var secArrow=secCollapsed?'&#9654;':'&#9660;';h+='<div class="prongs-section" style="padding-bottom:0"><div class="provision-section-divider" style="cursor:pointer" onclick="toggleSection(\''+secKey+'\')"><span>'+secArrow+' '+(PROVISION_TYPES.find(function(pt){return pt.key===type})?.label||type)+'</span><span style="font-size:10px;color:var(--text4);text-transform:none;letter-spacing:0;font-weight:400">'+cats.filter(function(c){return!state.hiddenCategories.has(c)}).length+' sub-provisions</span></div></div>';if(!secCollapsed)h+=renderCodedView(deals,cats,type)})}
+  if(state.activeTab==="coded"){
+    // Sticky deal column headers
+    h+=renderStickyDealHeaders(deals);
+    var collapseLabel=state.allCollapsed?"Expand all":"Collapse all";
+    types.forEach(function(type){var cats=getCatsForType(type);var secKey="sec-"+type;var secCollapsed=state.collapsedSections.has(secKey);var secArrow=secCollapsed?'&#9654;':'&#9660;';h+='<div class="prongs-section" style="padding-bottom:0"><div class="provision-section-divider" style="cursor:pointer" onclick="toggleSection(\''+secKey+'\')"><span>'+secArrow+' '+(PROVISION_TYPES.find(function(pt){return pt.key===type})?.label||type)+'</span><div style="display:flex;gap:12px;align-items:center"><a class="collapse-all-link" onclick="event.stopPropagation();collapseAll()">'+collapseLabel+'</a><span style="font-size:10px;color:var(--text4);text-transform:none;letter-spacing:0;font-weight:400">'+cats.filter(function(c){return!state.hiddenCategories.has(c)}).length+' sub-provisions</span></div></div></div>';if(!secCollapsed)h+=renderCodedView(deals,cats,type)})
+  }
   else if(state.activeTab==="fulltext"){h+=renderFullTextView(deals,types)}
   else if(state.activeTab==="report"){h+=renderReportView(deals,types)}
   else if(state.activeTab==="redline"){h+=renderRedlineView(deals)}
@@ -762,7 +781,8 @@ function renderContent(){
 }
 function setTab(t){state.activeTab=t;renderContent()}
 function clearCompare(){state.compareResults=null;renderContent()}
-function toggleSection(key){if(state.collapsedSections.has(key))state.collapsedSections.delete(key);else state.collapsedSections.add(key);renderContent()}
+function toggleSection(key){if(state.collapsedSections.has(key))state.collapsedSections.delete(key);else state.collapsedSections.add(key);renderContent();renderSidebar()}
+function toggleSectionFromSidebar(typeKey){var key="sec-"+typeKey;if(state.collapsedSections.has(key))state.collapsedSections.delete(key);else state.collapsedSections.add(key);renderSidebar();renderContent()}
 function toggleCard(key){
   if(state.allCollapsed){
     // In collapsed-all mode, clicking toggles explicit expand
@@ -774,11 +794,29 @@ function toggleCard(key){
   }
   renderContent()
 }
-function collapseAll(){state.allCollapsed=!state.allCollapsed;state.collapsedCards.clear();renderContent()}
+function collapseAll(){
+  state.allCollapsed=!state.allCollapsed;
+  state.collapsedCards.clear();
+  // Also collapse/expand all major sections
+  if(state.allCollapsed){
+    PROVISION_TYPES.forEach(function(pt){state.collapsedSections.add("sec-"+pt.key)});
+  }else{
+    state.collapsedSections.clear();
+  }
+  renderContent();
+}
 
 // ═══════════════════════════════════════════════════
 // CODED VIEW
 // ═══════════════════════════════════════════════════
+function renderStickyDealHeaders(deals){
+  var h='<div class="sticky-deal-headers"><div class="sticky-deal-grid" style="grid-template-columns:repeat('+deals.length+',1fr)">';
+  deals.forEach(function(d){
+    h+='<div class="sticky-deal-col"><div class="sticky-deal-name">'+esc(dealLabel(d))+'</div><div class="sticky-deal-meta">'+[d.value,d.date?d.date.slice(0,4):"",d.sector].filter(Boolean).join(" &middot; ")+'</div></div>';
+  });
+  h+='</div></div>';
+  return h;
+}
 function renderDealInfoCards(deals){
   var h='<div style="display:grid;grid-template-columns:repeat('+deals.length+',1fr);gap:12px;margin-bottom:16px">';
   deals.forEach(function(d){
@@ -799,12 +837,24 @@ function renderDealInfoCards(deals){
 function renderCodedView(deals,cats,type){
   var cols=deals.length;
   var h='<div class="prongs-section">';
-  h+=renderDealInfoCards(deals);
 
   cats.forEach(function(cat){
     if(state.hiddenCategories.has(cat))return;
 
-    var entries=deals.map(function(d){var prov=PROVISIONS.find(function(p){return p.type===type&&p.dealId===d.id&&p.category===cat});return{deal:d,prov:prov}});
+    var entries=deals.map(function(d){
+      var matchingProvs=PROVISIONS.filter(function(p){return p.type===type&&p.dealId===d.id&&p.category===cat});
+      var prov=null;
+      if(matchingProvs.length===1){prov=matchingProvs[0]}
+      else if(matchingProvs.length>1){
+        // Merge multiple provisions with same type+deal+category (e.g. nested MAE defs)
+        var merged={id:matchingProvs[0].id,dealId:d.id,type:type,category:cat,favorability:matchingProvs[0].favorability};
+        merged.text=matchingProvs.map(function(mp){return mp.text}).join("\n\n");
+        merged._merged=true;
+        merged._sourceIds=matchingProvs.map(function(mp){return mp.id});
+        prov=merged;
+      }
+      return{deal:d,prov:prov};
+    });
     var present=entries.filter(function(e){return e.prov}).length;
     var tagClass="all",tagText="All "+present;
     if(present===0){tagClass="missing";tagText="None"}else if(present<deals.length){tagClass="varies";tagText=present+"/"+deals.length}
@@ -853,7 +903,7 @@ function renderCodedView(deals,cats,type){
         var feeMatches=e.prov.text.match(feeRx);
         if(feeMatches){feeMatches.forEach(function(fm){summaryHtml+='<span class="summary-chip fee">'+esc(fm)+'</span>'})}
       }
-      h+='<div class="prong-cell"'+(e.prov?' data-prov-id="'+e.prov.id+'"':'')+'><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><div class="prong-deal-label">'+esc(e.deal.acquirer)+'/'+esc(e.deal.target)+'</div><div style="display:flex;gap:4px;align-items:center">'+(e.prov&&state.adminMode?'<button class="ann-add-btn" onclick="event.stopPropagation();promptAnnotation(\''+e.prov.id+'\',this)" title="Add annotation">+ Ann</button>':'')+(e.prov?renderFavBadge(e.prov.id,fav):"")+'</div></div>'+(summaryHtml?'<div class="summary-chips">'+summaryHtml+'</div>':'')+'<div class="prong-text">'+displayText+'</div></div>';
+      h+='<div class="prong-cell"'+(e.prov?' data-prov-id="'+e.prov.id+'"':'')+'>'+(e.prov?'<div style="display:flex;justify-content:flex-end;margin-bottom:2px"><div style="display:flex;gap:4px;align-items:center">'+(state.adminMode?'<button class="ann-add-btn" onclick="event.stopPropagation();promptAnnotation(\''+e.prov.id+'\',this)" title="Add annotation">+ Ann</button>':'')+renderFavBadge(e.prov.id,fav)+'</div></div>':'')+(summaryHtml?'<div class="summary-chips">'+summaryHtml+'</div>':'')+'<div class="prong-text">'+displayText+'</div></div>';
     });
     h+='</div>';
 

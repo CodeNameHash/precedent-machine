@@ -261,6 +261,11 @@ textarea::placeholder,input::placeholder{color:#bbb}
 
 .collapse-all-link{font-size:11px;color:var(--gold);cursor:pointer;text-decoration:none;letter-spacing:0;font-weight:500}
 .collapse-all-link:hover{text-decoration:underline}
+.sticky-deal-headers{position:sticky;top:0;z-index:10;background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 28px;margin:0 -28px}
+.sticky-deal-grid{display:grid;gap:12px}
+.sticky-deal-col{padding:6px 0}
+.sticky-deal-name{font:600 12px var(--serif);color:var(--text)}
+.sticky-deal-meta{font-size:10px;color:var(--text4);margin-top:2px}
 .summary-chips{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px}
 .summary-chip{display:inline-flex;align-items:center;padding:2px 8px;border-radius:4px;font:600 10px var(--sans);letter-spacing:0.3px}
 .summary-chip.efforts{background:#E3F2FD;color:#1565C0;border:1px solid #90CAF9}
