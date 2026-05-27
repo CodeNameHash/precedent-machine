@@ -232,10 +232,23 @@ export default async function handler(req, res) {
       newProvisions.push(...split);
     }
 
+    // Find misclassified provisions for dry_run reporting too
+    const misclassifiedProvs = [];
+    for (const sec of condSections) {
+      const prefix = sec.text.substring(0, 80).replace(/[%_]/g, '');
+      const { data: misclassified } = await sb.from('provisions')
+        .select('id, type, category')
+        .eq('deal_id', did)
+        .not('type', 'like', 'COND%')
+        .ilike('full_text', `${prefix}%`);
+      if (misclassified) misclassifiedProvs.push(...misclassified);
+    }
+
     if (dry_run) {
       results.push({
         deal: dealLabel,
-        old_count: provs?.length || 0,
+        old_cond_count: provs?.length || 0,
+        misclassified: misclassifiedProvs.map(p => ({ id: p.id, current_type: p.type, category: p.category })),
         new_count: newProvisions.length,
         sections_found: condSections.map(s => ({ number: s.number, type: s.condType, heading: s.heading.substring(0, 100) })),
         new_provisions: newProvisions.map(p => ({ type: p.type, category: p.category, text_preview: p.text.substring(0, 120) })),
@@ -243,9 +256,25 @@ export default async function handler(req, res) {
       continue;
     }
 
-    // Delete old COND provisions
-    if (provs?.length) {
-      const oldIds = provs.map(p => p.id);
+    // Delete old COND provisions (typed as COND%)
+    const oldIds = (provs || []).map(p => p.id);
+
+    // Also find misclassified provisions by matching text prefixes from found sections
+    for (const sec of condSections) {
+      const prefix = sec.text.substring(0, 80).replace(/[%_]/g, '');
+      const { data: misclassified } = await sb.from('provisions')
+        .select('id')
+        .eq('deal_id', did)
+        .not('type', 'like', 'COND%')
+        .ilike('full_text', `${prefix}%`);
+      if (misclassified) {
+        for (const m of misclassified) {
+          if (!oldIds.includes(m.id)) oldIds.push(m.id);
+        }
+      }
+    }
+
+    if (oldIds.length) {
       await sb.from('annotations').delete().in('provision_id', oldIds);
       await sb.from('provisions').delete().in('id', oldIds);
     }
