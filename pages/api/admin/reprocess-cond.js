@@ -1,5 +1,4 @@
 import { getServiceSupabase } from '../../../lib/supabase';
-import { cleanEdgarText, removeRepeatedHeaders } from '../../../lib/edgar-cleanup';
 
 export const config = {
   maxDuration: 60,
@@ -25,8 +24,7 @@ const COND_CATEGORY_PATTERNS = {
     { pattern: /(?:covenants?\s+and\s+agreements?\s+(?:of\s+)?(?:the\s+)?(?:company|target|seller))/i, category: 'Target Covenant Compliance' },
     { pattern: /no\s+(?:company|target|seller)?\s*(?:material\s+adverse|MAE)/i, category: 'No Target MAE' },
     { pattern: /(?:material\s+adverse)\s+(?:effect|change)/i, category: 'No Target MAE' },
-    { pattern: /(?:absence|no)\s+(?:of\s+)?(?:a\s+)?(?:company|target)?\s*(?:material\s+adverse)/i, category: 'No Target MAE' },
-    { pattern: /officer[''’]?s?\s+certificate|(?:company|target|seller)\s+(?:shall\s+have\s+)?(?:delivered|furnished).*certificate/i, category: "Officer's Certificate (Target)" },
+    { pattern: /officer[''']?s?\s+certificate|(?:company|target|seller)\s+(?:shall\s+have\s+)?(?:delivered|furnished).*certificate/i, category: "Officer's Certificate (Target)" },
     { pattern: /dissenting\s+(?:shares?|stockholder)|appraisal\s+(?:shares?|rights?).*(?:threshold|exceed|not\s+more)/i, category: 'Dissenting Shares Threshold' },
   ],
   'COND-S': [
@@ -35,7 +33,7 @@ const COND_CATEGORY_PATTERNS = {
     { pattern: /(?:buyer|parent|acqui(?:ror|rer))\s+(?:shall\s+have\s+)?(?:performed|complied)/i, category: 'Buyer Covenant Compliance' },
     { pattern: /(?:performance|compliance)\s+(?:of|by)\s+(?:the\s+)?(?:buyer|parent|acqui(?:ror|rer))/i, category: 'Buyer Covenant Compliance' },
     { pattern: /(?:covenants?\s+and\s+agreements?\s+(?:of\s+)?(?:the\s+)?(?:buyer|parent|acqui))/i, category: 'Buyer Covenant Compliance' },
-    { pattern: /officer[''’]?s?\s+certificate|(?:buyer|parent|acqui)\s+(?:shall\s+have\s+)?(?:delivered|furnished).*certificate/i, category: "Officer's Certificate (Buyer)" },
+    { pattern: /officer[''']?s?\s+certificate|(?:buyer|parent|acqui)\s+(?:shall\s+have\s+)?(?:delivered|furnished).*certificate/i, category: "Officer's Certificate (Buyer)" },
     { pattern: /(?:availability|sufficiency)\s+(?:of\s+)?(?:funds|financing)/i, category: 'Availability of Funds' },
     { pattern: /(?:funds?|financing)\s+(?:shall\s+be\s+)?(?:available|sufficient)/i, category: 'Availability of Funds' },
   ],
@@ -67,25 +65,25 @@ function extractSubClauseCategory(text) {
   return lastSpace > 15 ? excerpt.substring(0, lastSpace) : excerpt;
 }
 
-function classifyCondType(sectionText) {
-  const header = sectionText.substring(0, 300).toLowerCase();
+function classifyCondType(text) {
+  const header = text.substring(0, 400).toLowerCase();
   if (/(?:obligations?\s+of\s+)?(?:the\s+)?(?:each|both|all)\s+part/i.test(header)) return 'COND-M';
-  if (/(?:obligations?\s+of\s+)?(?:the\s+)?(?:buyer|parent|acqui(?:ror|rer)|investor)/i.test(header)) return 'COND-B';
+  if (/(?:obligations?\s+of\s+)?(?:the\s+)?(?:buyer|parent|acqui(?:ror|rer)|investor|merger\s+sub)/i.test(header)) return 'COND-B';
   if (/(?:obligations?\s+of\s+)?(?:the\s+)?(?:company|target|seller)/i.test(header)) return 'COND-S';
   if (/mutual/i.test(header)) return 'COND-M';
   return 'COND-M';
 }
 
-function splitCondSection(sectionText, condType) {
+function splitCondProvision(text, condType) {
   const clausePattern = /(?:^|\n)\s*\(([a-z])\)\s/g;
   const matches = [];
   let m;
-  while ((m = clausePattern.exec(sectionText)) !== null) {
-    const offset = sectionText[m.index] === '\n' ? 1 : 0;
+  while ((m = clausePattern.exec(text)) !== null) {
+    const offset = text[m.index] === '\n' ? 1 : 0;
     matches.push({ index: m.index + offset, letter: m[1] });
   }
   const inlinePattern = /\.\s+\(([a-z])\)\s/g;
-  while ((m = inlinePattern.exec(sectionText)) !== null) {
+  while ((m = inlinePattern.exec(text)) !== null) {
     const pos = m.index + m[0].indexOf('(');
     if (matches.some(x => Math.abs(x.index - pos) < 5)) continue;
     matches.push({ index: pos, letter: m[1] });
@@ -93,25 +91,25 @@ function splitCondSection(sectionText, condType) {
   matches.sort((a, b) => a.index - b.index);
 
   if (matches.length < 2) {
-    const cat = mapCondCategory(sectionText, condType) || extractSubClauseCategory(sectionText);
-    return [{ type: condType, category: cat, text: sectionText.trim(), favorability: 'neutral' }];
+    const cat = mapCondCategory(text, condType) || extractSubClauseCategory(text);
+    return [{ type: condType, category: cat, text: text.trim() }];
   }
 
   const provisions = [];
   if (matches[0].index > 50) {
-    const preamble = sectionText.substring(0, matches[0].index).trim();
+    const preamble = text.substring(0, matches[0].index).trim();
     if (preamble.length > 30) {
-      provisions.push({ type: condType, category: 'General / Preamble', text: preamble, favorability: 'neutral' });
+      provisions.push({ type: condType, category: 'General / Preamble', text: preamble });
     }
   }
 
   for (let i = 0; i < matches.length; i++) {
     const start = matches[i].index;
-    const end = i + 1 < matches.length ? matches[i + 1].index : sectionText.length;
-    const text = sectionText.substring(start, end).trim();
-    if (text.length < 20) continue;
-    const category = mapCondCategory(text, condType) || extractSubClauseCategory(text);
-    provisions.push({ type: condType, category, text, favorability: 'neutral' });
+    const end = i + 1 < matches.length ? matches[i + 1].index : text.length;
+    const clauseText = text.substring(start, end).trim();
+    if (clauseText.length < 20) continue;
+    const category = mapCondCategory(clauseText, condType) || extractSubClauseCategory(clauseText);
+    provisions.push({ type: condType, category, text: clauseText });
   }
 
   return provisions;
@@ -128,7 +126,7 @@ export default async function handler(req, res) {
   const dealIds = deal_id ? [deal_id] : [];
 
   if (!dealIds.length) {
-    const { data: deals } = await sb.from('deals').select('id, acquirer, target');
+    const { data: deals } = await sb.from('deals').select('id');
     if (deals) dealIds.push(...deals.map(d => d.id));
   }
 
@@ -136,150 +134,71 @@ export default async function handler(req, res) {
     const { data: deal } = await sb.from('deals').select('acquirer, target').eq('id', did).single();
     const dealLabel = deal ? `${deal.acquirer}/${deal.target}` : did;
 
-    const { data: provs } = await sb.from('provisions')
-      .select('id, agreement_source_id')
+    // Find existing COND provisions
+    const { data: condProvs } = await sb.from('provisions')
+      .select('id, type, category, full_text')
       .eq('deal_id', did)
       .like('type', 'COND%');
 
-    const sourceIds = [...new Set((provs || []).map(p => p.agreement_source_id).filter(Boolean))];
+    // Find misclassified provisions — search ALL provisions for condition-related text
+    const { data: allProvs } = await sb.from('provisions')
+      .select('id, type, category, full_text')
+      .eq('deal_id', did);
 
-    let fullText = null;
-    if (sourceIds.length > 0) {
-      const { data: src } = await sb.from('agreement_sources')
-        .select('full_text')
-        .eq('id', sourceIds[0])
-        .single();
-      if (src) fullText = src.full_text;
-    }
+    const misclassified = (allProvs || []).filter(p => {
+      if (p.type.startsWith('COND')) return false;
+      const header = (p.full_text || '').substring(0, 300).toLowerCase();
+      return /(?:conditions?\s+to\s+(?:the\s+)?(?:obligations?|closing|each|parties)|(?:additional\s+)?conditions?\s+(?:to\s+)?(?:the\s+)?obligations?)/i.test(header);
+    });
 
-    if (!fullText) {
-      const { data: allProvs } = await sb.from('provisions')
-        .select('agreement_source_id')
-        .eq('deal_id', did)
-        .not('agreement_source_id', 'is', null)
-        .limit(1);
-      if (allProvs?.length) {
-        const { data: src } = await sb.from('agreement_sources')
-          .select('full_text')
-          .eq('id', allProvs[0].agreement_source_id)
-          .single();
-        if (src) fullText = src.full_text;
-      }
-    }
+    // Combine: both correctly typed COND provisions AND misclassified ones
+    const oldProvisions = [...(condProvs || []), ...misclassified];
 
-    if (!fullText) {
-      results.push({ deal: dealLabel, error: 'No agreement source text found', old_count: provs?.length || 0 });
+    if (oldProvisions.length === 0) {
+      results.push({ deal: dealLabel, message: 'No COND or condition-related provisions found', old_count: 0, new_count: 0 });
       continue;
     }
 
-    const cleaned = removeRepeatedHeaders(cleanEdgarText(fullText));
-
-    // Find all COND-related article/sections
-    const condSections = [];
-    // Pattern: find "conditions" sections by heading
-    const sectionPattern = /(?:SECTION|Section)\s+(\d+\.\d{1,2})\b([^\n]*)/g;
-    let sm;
-    while ((sm = sectionPattern.exec(cleaned)) !== null) {
-      const heading = sm[0] + sm.input.substring(sm.index + sm[0].length).split('\n')[0];
-      if (/conditions?\s+(?:to|of|precedent)|conditions?\s+(?:to\s+)?closing|conditions?\s+(?:to\s+)?(?:the\s+)?(?:obligations?|parties)/i.test(heading)) {
-        // Find the end of this section (next SECTION heading or ARTICLE heading)
-        const afterMatch = cleaned.substring(sm.index);
-        const nextSection = afterMatch.match(/\n\s*(?:SECTION|Section)\s+\d+\.\d{1,2}\b/);
-        const nextArticle = afterMatch.match(/\n\s*ARTICLE\s+(?:[IVXLC]+|\d+)\b/i);
-
-        let endOffset = afterMatch.length;
-        if (nextSection && nextSection.index > 10) endOffset = Math.min(endOffset, nextSection.index);
-        if (nextArticle && nextArticle.index > 10) endOffset = Math.min(endOffset, nextArticle.index);
-
-        const sectionText = afterMatch.substring(0, endOffset).trim();
-        const condType = classifyCondType(sectionText);
-
-        condSections.push({
-          number: sm[1],
-          heading: heading.trim(),
-          text: sectionText,
-          condType,
-        });
-      }
-    }
-
-    // Also try article-level detection for agreements without "SECTION" headings
-    if (condSections.length === 0) {
-      const artPattern = /\n\s*ARTICLE\s+(?:[IVXLC]+|\d+)\b[^\n]*conditions?[^\n]*/gi;
-      let am;
-      while ((am = artPattern.exec(cleaned)) !== null) {
-        const afterArt = cleaned.substring(am.index);
-        const nextArt = afterArt.substring(10).match(/\n\s*ARTICLE\s+(?:[IVXLC]+|\d+)\b/i);
-        const endOffset = nextArt ? nextArt.index + 10 : afterArt.length;
-        const articleText = afterArt.substring(0, endOffset).trim();
-
-        // Split the article into sub-sections by "Section X.XX" or numbered headings
-        const subSections = articleText.split(/(?=(?:SECTION|Section)\s+\d+\.\d{1,2}\b)/);
-        for (const sub of subSections) {
-          if (sub.length < 50) continue;
-          if (/conditions?\s+(?:to|of|precedent)|obligations?\s+/i.test(sub.substring(0, 300))) {
-            const condType = classifyCondType(sub);
-            condSections.push({ heading: sub.substring(0, 100).trim(), text: sub.trim(), condType });
-          }
-        }
-      }
-    }
-
-    // Split each COND section into sub-provisions
+    // Re-process each provision: fix type, split sub-clauses, assign canonical categories
     const newProvisions = [];
-    for (const sec of condSections) {
-      const split = splitCondSection(sec.text, sec.condType);
+    for (const prov of oldProvisions) {
+      const correctType = classifyCondType(prov.full_text);
+      const split = splitCondProvision(prov.full_text, correctType);
       newProvisions.push(...split);
-    }
-
-    // Find misclassified provisions for dry_run reporting too
-    const misclassifiedProvs = [];
-    for (const sec of condSections) {
-      const prefix = sec.text.substring(0, 80).replace(/[%_]/g, '');
-      const { data: misclassified } = await sb.from('provisions')
-        .select('id, type, category')
-        .eq('deal_id', did)
-        .not('type', 'like', 'COND%')
-        .ilike('full_text', `${prefix}%`);
-      if (misclassified) misclassifiedProvs.push(...misclassified);
     }
 
     if (dry_run) {
       results.push({
         deal: dealLabel,
-        old_cond_count: provs?.length || 0,
-        misclassified: misclassifiedProvs.map(p => ({ id: p.id, current_type: p.type, category: p.category })),
+        old_provisions: oldProvisions.map(p => ({
+          id: p.id,
+          type: p.type,
+          category: p.category,
+          text_preview: (p.full_text || '').substring(0, 100),
+        })),
+        misclassified: misclassified.map(p => ({
+          id: p.id,
+          current_type: p.type,
+          category: p.category,
+          correct_type: classifyCondType(p.full_text),
+        })),
+        new_provisions: newProvisions.map(p => ({
+          type: p.type,
+          category: p.category,
+          text_preview: p.text.substring(0, 120),
+        })),
+        old_count: oldProvisions.length,
         new_count: newProvisions.length,
-        sections_found: condSections.map(s => ({ number: s.number, type: s.condType, heading: s.heading.substring(0, 100) })),
-        new_provisions: newProvisions.map(p => ({ type: p.type, category: p.category, text_preview: p.text.substring(0, 120) })),
       });
       continue;
     }
 
-    // Delete old COND provisions (typed as COND%)
-    const oldIds = (provs || []).map(p => p.id);
+    // Delete old provisions and their annotations
+    const oldIds = oldProvisions.map(p => p.id);
+    await sb.from('annotations').delete().in('provision_id', oldIds);
+    await sb.from('provisions').delete().in('id', oldIds);
 
-    // Also find misclassified provisions by matching text prefixes from found sections
-    for (const sec of condSections) {
-      const prefix = sec.text.substring(0, 80).replace(/[%_]/g, '');
-      const { data: misclassified } = await sb.from('provisions')
-        .select('id')
-        .eq('deal_id', did)
-        .not('type', 'like', 'COND%')
-        .ilike('full_text', `${prefix}%`);
-      if (misclassified) {
-        for (const m of misclassified) {
-          if (!oldIds.includes(m.id)) oldIds.push(m.id);
-        }
-      }
-    }
-
-    if (oldIds.length) {
-      await sb.from('annotations').delete().in('provision_id', oldIds);
-      await sb.from('provisions').delete().in('id', oldIds);
-    }
-
-    // Insert new COND provisions
+    // Insert new provisions
     const inserted = [];
     for (const p of newProvisions) {
       const { data, error } = await sb.from('provisions')
@@ -288,9 +207,8 @@ export default async function handler(req, res) {
           type: p.type,
           category: p.category,
           full_text: p.text,
-          ai_favorability: p.favorability || 'neutral',
+          ai_favorability: 'neutral',
           display_tier: 1,
-          agreement_source_id: sourceIds[0] || null,
         })
         .select('id, type, category')
         .single();
@@ -300,9 +218,8 @@ export default async function handler(req, res) {
 
     results.push({
       deal: dealLabel,
-      old_count: provs?.length || 0,
-      deleted: provs?.length || 0,
-      sections_found: condSections.length,
+      old_count: oldProvisions.length,
+      deleted: oldIds.length,
       new_count: inserted.length,
       provisions: inserted.map(p => ({ id: p.id, type: p.type, category: p.category })),
     });
