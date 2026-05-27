@@ -17,8 +17,23 @@ export default function DealDetail() {
     </div>
   );
 
-  const maeProvs = provisions.filter(p => p.type === 'MAE');
-  const iocProvs = provisions.filter(p => p.type === 'IOC');
+  const provsByType = {};
+  provisions.forEach(p => {
+    const t = p.type || 'Other';
+    if (!provsByType[t]) provsByType[t] = [];
+    provsByType[t].push(p);
+  });
+
+  const TYPE_LABELS = {
+    'MAE-T': 'Material Adverse Effect (Target)', 'MAE-B': 'Material Adverse Effect (Buyer)',
+    'MAE': 'Material Adverse Effect',
+    'IOC-T': 'Interim Operating Covenants (Target)', 'IOC-B': 'Interim Operating Covenants (Buyer)',
+    'COND-M': 'Conditions to Closing (Mutual)', 'COND-B': 'Conditions to Closing (Buyer)', 'COND-S': 'Conditions to Closing (Seller)',
+    'NOSOL': 'No-Solicitation / No-Shop', 'ANTI': 'Antitrust / Regulatory',
+    'TERMR-M': 'Termination Rights (Mutual)', 'TERMR-B': 'Termination Rights (Buyer)', 'TERMR-T': 'Termination Rights (Target)',
+    'TERMF': 'Termination Fees', 'REP-T': 'Representations (Target)', 'REP-B': 'Representations (Buyer)',
+    'COV': 'Other Covenants', 'DEF': 'Definitions', 'STRUCT': 'Structure & Mechanics', 'CONSID': 'Consideration',
+  };
 
   return (
     <div className="space-y-6 max-w-4xl">
@@ -45,32 +60,30 @@ export default function DealDetail() {
         <EmptyState title="No provisions" description="No provisions have been added to this deal yet." />
       ) : (
         <>
-          {[{ label: 'MAE Provisions', provs: maeProvs }, { label: 'IOC Provisions', provs: iocProvs }].map(({ label, provs }) => (
-            provs.length > 0 && (
-              <div key={label} className="space-y-3">
-                <h2 className="font-display text-lg text-ink">{label}</h2>
-                <div className="space-y-2">
-                  {provs.map(p => (
-                    <Link key={p.id} href={`/provisions/${p.id}`}
-                      className="block bg-white border border-border rounded-lg shadow-sm p-4 hover:border-accent transition-colors">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-xs font-ui text-inkLight">{p.category || 'Uncategorized'}</span>
-                        {p.ai_favorability && (
-                          <span className={`text-[10px] font-ui px-1.5 py-0.5 rounded capitalize ${
-                            p.ai_favorability.toLowerCase() === 'buyer' ? 'bg-buyer/10 text-buyer'
-                            : p.ai_favorability.toLowerCase() === 'seller' ? 'bg-seller/10 text-seller'
-                            : 'bg-gray-100 text-inkLight'
-                          }`}>{p.ai_favorability}</span>
-                        )}
-                      </div>
-                      <p className="font-body text-sm text-ink leading-relaxed line-clamp-3">
-                        {p.full_text || '—'}
-                      </p>
-                    </Link>
-                  ))}
-                </div>
+          {Object.entries(provsByType).map(([type, provs]) => (
+            <div key={type} className="space-y-3">
+              <h2 className="font-display text-lg text-ink">{TYPE_LABELS[type] || type}</h2>
+              <div className="space-y-2">
+                {provs.map(p => (
+                  <Link key={p.id} href={`/provisions/${p.id}`}
+                    className="block bg-white border border-border rounded-lg shadow-sm p-4 hover:border-accent transition-colors">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-xs font-ui text-inkLight">{p.category || 'Uncategorized'}</span>
+                      {p.ai_favorability && (
+                        <span className={`text-[10px] font-ui px-1.5 py-0.5 rounded capitalize ${
+                          p.ai_favorability.toLowerCase() === 'buyer' ? 'bg-buyer/10 text-buyer'
+                          : p.ai_favorability.toLowerCase() === 'seller' ? 'bg-seller/10 text-seller'
+                          : 'bg-gray-100 text-inkLight'
+                        }`}>{p.ai_favorability}</span>
+                      )}
+                    </div>
+                    <p className="font-body text-sm text-ink leading-relaxed line-clamp-3">
+                      {p.full_text || '—'}
+                    </p>
+                  </Link>
+                ))}
               </div>
-            )
+            </div>
           ))}
         </>
       )}

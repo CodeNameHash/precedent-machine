@@ -272,7 +272,11 @@ export default function Compare() {
       ) : loadingProvisions ? (
         <SkeletonCard />
       ) : (
-        ['MAE', 'IOC'].map(type => {
+        (() => {
+          const allTypes = [...new Set(
+            selectedIds.flatMap(did => (filteredByDeal[did] || []).map(p => p.type))
+          )].sort();
+          return allTypes.map(type => {
           const hasAny = selectedIds.some(did => (filteredByDeal[did] || []).some(p => p.type === type));
           if (!hasAny) return null;
 
@@ -331,7 +335,8 @@ export default function Compare() {
               </div>
             </div>
           );
-        })
+        });
+        })()
       )}
     </div>
   );

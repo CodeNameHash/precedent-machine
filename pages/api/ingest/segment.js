@@ -444,7 +444,9 @@ const TITLE_TYPE_MAP = [
   { pattern: /conduct\s+of\s+(?:the\s+)?(?:buyer|parent|acqui(?:ror|rer))\s+business/i, type: 'IOC-B', tier: 2 },
   { pattern: /antitrust|regulatory\s+(?:efforts|approval|matters)|HSR|hell\s+or\s+high/i, type: 'ANTI', tier: 1 },
   { pattern: /no[\s-]*(?:solicitation|shop)|(?:non|no)[\s-]*solicit/i, type: 'NOSOL', tier: 1 },
-  { pattern: /conditions?\s+(?:to|of|precedent)|conditions?\s+(?:to\s+)?closing/i, type: 'COND-M', tier: 1 },
+  { pattern: /conditions?\s+(?:to\s+)?(?:the\s+)?(?:obligations?\s+of\s+)?(?:the\s+)?(?:buyer|parent|acqui(?:ror|rer)|investor)/i, type: 'COND-B', tier: 1 },
+  { pattern: /conditions?\s+(?:to\s+)?(?:the\s+)?(?:obligations?\s+of\s+)?(?:the\s+)?(?:company|target|seller)/i, type: 'COND-S', tier: 1 },
+  { pattern: /conditions?\s+(?:to|of|precedent)|conditions?\s+(?:to\s+)?closing|conditions?\s+(?:to\s+)?(?:the\s+)?(?:obligations?\s+of\s+)?(?:the\s+)?(?:each|both|all)\s+part/i, type: 'COND-M', tier: 1 },
   { pattern: /termination\s+(?:rights|of\s+agreement)|right\s+to\s+terminat/i, type: 'TERMR-M', tier: 1 },
   { pattern: /termination\s+by\s+(?:the\s+)?(?:buyer|parent|acqui)/i, type: 'TERMR-B', tier: 1 },
   { pattern: /termination\s+by\s+(?:the\s+)?(?:company|target|seller)/i, type: 'TERMR-T', tier: 1 },
@@ -787,7 +789,9 @@ function splitBySubClauses(sectionText, type, displayTier) {
     const text = sectionText.substring(start, end).trim();
     if (text.length < 20) continue;
 
-    const category = extractSubClauseCategory(text);
+    const isCondType = type.startsWith('COND-');
+    const category = (isCondType && mapCondCategory(text, type))
+      || extractSubClauseCategory(text);
 
     provisions.push({
       type,
@@ -820,6 +824,57 @@ function extractSubClauseCategory(text) {
   const excerpt = firstLine.substring(0, 60);
   const lastSpace = excerpt.lastIndexOf(' ');
   return lastSpace > 15 ? excerpt.substring(0, lastSpace) : excerpt;
+}
+
+// ─── Map COND sub-clause text to canonical rubric categories ───
+const COND_CATEGORY_PATTERNS = {
+  'COND-M': [
+    { pattern: /no\s+(?:legal\s+)?(?:impediment|injunction|order|restraint|prohibition)/i, category: 'No Legal Impediment' },
+    { pattern: /(?:regulatory|antitrust|HSR|hart[\s-]*scott|competition)\s+(?:approval|clearance|filing|waiting)/i, category: 'Regulatory Approvals' },
+    { pattern: /regulatory\s+(?:condition|requirement)/i, category: 'Regulatory Approvals' },
+    { pattern: /(?:stockholder|shareholder|requisite\s+(?:company|vote))\s+(?:approval|vote|consent|adoption)/i, category: 'Stockholder Approval' },
+    { pattern: /(?:adoption|approval)\s+(?:of|by)\s+(?:the\s+)?(?:stockholder|shareholder|company\s+stockholder)/i, category: 'Stockholder Approval' },
+    { pattern: /(?:S-4|registration\s+statement|form\s+S)\s+(?:effective|declared|shall\s+have)/i, category: 'Form S-4 Effectiveness' },
+    { pattern: /(?:stock\s+exchange|NYSE|NASDAQ|listing)\s+(?:listing|approval|accepted)/i, category: 'Stock Exchange Listing' },
+    { pattern: /(?:shares|stock)\s+(?:shall\s+have\s+been\s+)?(?:authorized|approved)\s+for\s+listing/i, category: 'Stock Exchange Listing' },
+  ],
+  'COND-B': [
+    { pattern: /(?:accuracy|true|correct)\s+(?:of|in\s+all)\s+(?:the\s+)?(?:representations|company\s+rep|target\s+rep)/i, category: 'Accuracy of Target Reps' },
+    { pattern: /representations\s+and\s+warranties\s+(?:of\s+)?(?:the\s+)?(?:company|target|seller)/i, category: 'Accuracy of Target Reps' },
+    { pattern: /(?:company|target|seller)\s+(?:shall\s+have\s+)?(?:performed|complied|compliance)/i, category: 'Target Covenant Compliance' },
+    { pattern: /(?:performance|compliance)\s+(?:of|by)\s+(?:the\s+)?(?:company|target|seller)/i, category: 'Target Covenant Compliance' },
+    { pattern: /(?:covenants?\s+and\s+agreements?\s+(?:of\s+)?(?:the\s+)?(?:company|target|seller))/i, category: 'Target Covenant Compliance' },
+    { pattern: /no\s+(?:company|target|seller)?\s*(?:material\s+adverse|MAE)/i, category: 'No Target MAE' },
+    { pattern: /(?:material\s+adverse)\s+(?:effect|change)\s+(?:shall\s+(?:not\s+)?have\s+occurred|with\s+respect\s+to\s+(?:the\s+)?(?:company|target))/i, category: 'No Target MAE' },
+    { pattern: /(?:absence|no)\s+(?:of\s+)?(?:a\s+)?(?:company|target)?\s*(?:material\s+adverse)/i, category: 'No Target MAE' },
+    { pattern: /officer[’']?s?\s+certificate|(?:company|target|seller)\s+(?:shall\s+have\s+)?(?:delivered|furnished).*certificate/i, category: "Officer's Certificate (Target)" },
+    { pattern: /dissenting\s+(?:shares?|stockholder)|appraisal\s+(?:shares?|rights?).*(?:threshold|exceed|not\s+more)/i, category: 'Dissenting Shares Threshold' },
+  ],
+  'COND-S': [
+    { pattern: /(?:accuracy|true|correct)\s+(?:of|in\s+all)\s+(?:the\s+)?(?:representations|buyer\s+rep|parent\s+rep|acqui)/i, category: 'Accuracy of Buyer Reps' },
+    { pattern: /representations\s+and\s+warranties\s+(?:of\s+)?(?:the\s+)?(?:buyer|parent|acqui(?:ror|rer))/i, category: 'Accuracy of Buyer Reps' },
+    { pattern: /(?:buyer|parent|acqui(?:ror|rer))\s+(?:shall\s+have\s+)?(?:performed|complied|compliance)/i, category: 'Buyer Covenant Compliance' },
+    { pattern: /(?:performance|compliance)\s+(?:of|by)\s+(?:the\s+)?(?:buyer|parent|acqui(?:ror|rer))/i, category: 'Buyer Covenant Compliance' },
+    { pattern: /(?:covenants?\s+and\s+agreements?\s+(?:of\s+)?(?:the\s+)?(?:buyer|parent|acqui))/i, category: 'Buyer Covenant Compliance' },
+    { pattern: /officer[’']?s?\s+certificate|(?:buyer|parent|acqui)\s+(?:shall\s+have\s+)?(?:delivered|furnished).*certificate/i, category: "Officer's Certificate (Buyer)" },
+    { pattern: /(?:availability|sufficiency)\s+(?:of\s+)?(?:funds|financing)/i, category: 'Availability of Funds' },
+    { pattern: /(?:funds?|financing)\s+(?:shall\s+be\s+)?(?:available|sufficient)/i, category: 'Availability of Funds' },
+  ],
+};
+
+function mapCondCategory(text, condType) {
+  const patterns = COND_CATEGORY_PATTERNS[condType];
+  if (!patterns) return null;
+  for (const { pattern, category } of patterns) {
+    if (pattern.test(text)) return category;
+  }
+  // Fallback: also check mutual patterns for any COND type
+  if (condType !== 'COND-M') {
+    for (const { pattern, category } of COND_CATEGORY_PATTERNS['COND-M']) {
+      if (pattern.test(text)) return category;
+    }
+  }
+  return null;
 }
 
 // ─── Extract embedded definitions from provision text ───
