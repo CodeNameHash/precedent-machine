@@ -8,6 +8,7 @@ const navItems = [
   { href: '/ingest', label: 'Ingest', icon: '⊕' },
   { href: '/deals', label: 'Deals', icon: '◆' },
   { href: '/provisions', label: 'Provisions', icon: '§' },
+  { href: '/review', label: 'Review', icon: '◎' },
   { href: '/compare', label: 'Compare', icon: '⇔' },
   { href: '/frankenstein', label: 'Frankenstein', icon: '⚡' },
   { href: '/admin', label: 'Admin', icon: '⚙' },
