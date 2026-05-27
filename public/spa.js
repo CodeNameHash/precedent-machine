@@ -23,7 +23,7 @@ var FALLBACK_PROVISION_TYPES = [
   {key:"TERMF", label:"Termination Fees & Expenses"},
   {key:"COV", label:"Other Covenants"},
   {key:"DEF", label:"Definitions"},
-  {key:"MISC", label:"Miscellaneous"},
+  {key:"MISC", label:"Miscellaneous / Boilerplate"},
 ];
 
 var FALLBACK_SUB_PROVISIONS = {
