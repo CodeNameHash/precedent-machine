@@ -214,6 +214,7 @@ export default async function handler(req, res) {
 
     // Insert new provisions
     const inserted = [];
+    const errors = [];
     for (const p of newProvisions) {
       const { data, error } = await sb.from('provisions')
         .insert({
@@ -227,7 +228,7 @@ export default async function handler(req, res) {
         .select('id, type, category')
         .single();
       if (data) inserted.push(data);
-      if (error) console.warn(`Insert failed for ${p.category}:`, error.message);
+      if (error) errors.push({ category: p.category, error: error.message, code: error.code, details: error.details });
     }
 
     results.push({
@@ -236,6 +237,7 @@ export default async function handler(req, res) {
       deleted: oldIds.length,
       new_count: inserted.length,
       provisions: inserted.map(p => ({ id: p.id, type: p.type, category: p.category })),
+      ...(errors.length > 0 ? { errors } : {}),
     });
   }
 
