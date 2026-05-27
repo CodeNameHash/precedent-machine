@@ -444,8 +444,8 @@ const TITLE_TYPE_MAP = [
   { pattern: /conduct\s+of\s+(?:the\s+)?(?:buyer|parent|acqui(?:ror|rer))\s+business/i, type: 'IOC-B', tier: 2 },
   { pattern: /antitrust|regulatory\s+(?:efforts|approval|matters)|HSR|hell\s+or\s+high/i, type: 'ANTI', tier: 1 },
   { pattern: /no[\s-]*(?:solicitation|shop)|(?:non|no)[\s-]*solicit/i, type: 'NOSOL', tier: 1 },
-  { pattern: /conditions?\s+(?:to\s+)?(?:the\s+)?(?:obligations?\s+of\s+)?(?:the\s+)?(?:buyer|parent|acqui(?:ror|rer)|investor)/i, type: 'COND-B', tier: 1 },
   { pattern: /conditions?\s+(?:to\s+)?(?:the\s+)?(?:obligations?\s+of\s+)?(?:the\s+)?(?:company|target|seller)/i, type: 'COND-S', tier: 1 },
+  { pattern: /conditions?\s+(?:to\s+)?(?:the\s+)?(?:obligations?\s+of\s+)?(?:the\s+)?(?:buyer|parent|acqui(?:ror|rer)|investor)/i, type: 'COND-B', tier: 1 },
   { pattern: /conditions?\s+(?:to|of|precedent)|conditions?\s+(?:to\s+)?closing|conditions?\s+(?:to\s+)?(?:the\s+)?(?:obligations?\s+of\s+)?(?:the\s+)?(?:each|both|all)\s+part/i, type: 'COND-M', tier: 1 },
   { pattern: /termination\s+(?:rights|of\s+agreement)|right\s+to\s+terminat/i, type: 'TERMR-M', tier: 1 },
   { pattern: /termination\s+by\s+(?:the\s+)?(?:buyer|parent|acqui)/i, type: 'TERMR-B', tier: 1 },
@@ -745,20 +745,21 @@ function splitDefinitions(sectionText) {
 // ─── Regex-based sub-clause splitting for COND, IOC, ANTI, NOSOL ───
 // Splits sections with (a), (b), (c) sub-clause markers into individual provisions.
 function splitBySubClauses(sectionText, type, displayTier) {
-  // Find (a), (b), (c) etc. at start of lines OR inline after ". "
-  const clausePattern = /(?:^|\n)\s*\(([a-z])\)\s/g;
+  const romanNumerals = new Set(['i','ii','iii','iv','v','vi','vii','viii','ix','x','xi','xii']);
+  const isCondType = type.startsWith('COND-');
+  const clausePattern = /(?:^|\n)\s*\(([a-z]+)\)\s/g;
   const matches = [];
   let m;
   while ((m = clausePattern.exec(sectionText)) !== null) {
+    if (isCondType && romanNumerals.has(m[1])) continue;
     const offset = sectionText[m.index] === '\n' ? 1 : 0;
     matches.push({ index: m.index + offset, letter: m[1] });
   }
 
-  // Also find (a) inline after ". " (common when heading and first clause share a line)
-  const inlinePattern = /\.\s+\(([a-z])\)\s/g;
+  const inlinePattern = /\.\s+\(([a-z]+)\)\s/g;
   while ((m = inlinePattern.exec(sectionText)) !== null) {
+    if (isCondType && romanNumerals.has(m[1])) continue;
     const pos = m.index + m[0].indexOf('(');
-    // Skip if already found at this position (±5 chars)
     if (matches.some(x => Math.abs(x.index - pos) < 5)) continue;
     matches.push({ index: pos, letter: m[1] });
   }

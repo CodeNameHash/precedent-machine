@@ -66,24 +66,32 @@ function extractSubClauseCategory(text) {
 }
 
 function classifyCondType(text) {
-  const header = text.substring(0, 400).toLowerCase();
+  // Only look at the heading line, not body text which may mention other parties
+  const firstLine = text.split('\n')[0].substring(0, 200).toLowerCase();
+  // Also check up to the first sub-clause marker
+  const toParen = text.substring(0, text.indexOf('(a)') > 0 ? text.indexOf('(a)') : 200).toLowerCase();
+  const header = firstLine + ' ' + toParen;
   if (/(?:obligations?\s+of\s+)?(?:the\s+)?(?:each|both|all)\s+part/i.test(header)) return 'COND-M';
-  if (/(?:obligations?\s+of\s+)?(?:the\s+)?(?:buyer|parent|acqui(?:ror|rer)|investor|merger\s+sub)/i.test(header)) return 'COND-B';
   if (/(?:obligations?\s+of\s+)?(?:the\s+)?(?:company|target|seller)/i.test(header)) return 'COND-S';
+  if (/(?:obligations?\s+of\s+)?(?:the\s+)?(?:buyer|parent|acqui(?:ror|rer)|investor|merger\s+sub)/i.test(header)) return 'COND-B';
   if (/mutual/i.test(header)) return 'COND-M';
   return 'COND-M';
 }
 
 function splitCondProvision(text, condType) {
-  const clausePattern = /(?:^|\n)\s*\(([a-z])\)\s/g;
+  // Skip roman numeral markers (i, ii, iii, iv, v, vi, vii, viii, ix, x, xi, xii)
+  const romanNumerals = new Set(['i','ii','iii','iv','v','vi','vii','viii','ix','x','xi','xii']);
+  const clausePattern = /(?:^|\n)\s*\(([a-z]+)\)\s/g;
   const matches = [];
   let m;
   while ((m = clausePattern.exec(text)) !== null) {
+    if (romanNumerals.has(m[1])) continue;
     const offset = text[m.index] === '\n' ? 1 : 0;
     matches.push({ index: m.index + offset, letter: m[1] });
   }
-  const inlinePattern = /\.\s+\(([a-z])\)\s/g;
+  const inlinePattern = /\.\s+\(([a-z]+)\)\s/g;
   while ((m = inlinePattern.exec(text)) !== null) {
+    if (romanNumerals.has(m[1])) continue;
     const pos = m.index + m[0].indexOf('(');
     if (matches.some(x => Math.abs(x.index - pos) < 5)) continue;
     matches.push({ index: pos, letter: m[1] });
