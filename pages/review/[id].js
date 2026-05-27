@@ -24,15 +24,15 @@ const TYPE_LABELS = {
   'TERMR-B': 'Termination Rights (Buyer)',
   'TERMR-T': 'Termination Rights (Target)',
   'TERMR': 'Termination Rights',
-  'TERMF': 'Termination Fees',
-  'REP-T': 'Representations (Target)',
-  'REP-B': 'Representations (Buyer)',
-  'REP': 'Representations',
+  'TERMF': 'Termination Fees & Expenses',
+  'REP-T': 'Representations & Warranties (Target)',
+  'REP-B': 'Representations & Warranties (Buyer)',
+  'REP': 'Representations & Warranties',
   'COV': 'Other Covenants',
   'DEF': 'Definitions',
   'STRUCT': 'Structure & Mechanics',
   'CONSID': 'Consideration',
-  'MISC': 'Miscellaneous',
+  'MISC': 'Miscellaneous / Boilerplate',
 };
 
 function typeLabel(code) {
@@ -41,35 +41,35 @@ function typeLabel(code) {
 
 /* ── Provision Type Colors (pastel backgrounds for highlights) ── */
 const TYPE_COLORS = {
-  'MAE':    { bg: 'bg-red-50',     border: 'border-red-200',    text: 'text-red-800',    dot: 'bg-red-400' },
-  'MAE-T':  { bg: 'bg-red-50',     border: 'border-red-200',    text: 'text-red-800',    dot: 'bg-red-400' },
-  'MAE-B':  { bg: 'bg-red-50',     border: 'border-red-200',    text: 'text-red-800',    dot: 'bg-red-400' },
-  'IOC':    { bg: 'bg-amber-50',   border: 'border-amber-200',  text: 'text-amber-800',  dot: 'bg-amber-400' },
-  'IOC-T':  { bg: 'bg-amber-50',   border: 'border-amber-200',  text: 'text-amber-800',  dot: 'bg-amber-400' },
-  'IOC-B':  { bg: 'bg-amber-50',   border: 'border-amber-200',  text: 'text-amber-800',  dot: 'bg-amber-400' },
-  'COND':   { bg: 'bg-blue-50',    border: 'border-blue-200',   text: 'text-blue-800',   dot: 'bg-blue-400' },
-  'COND-M': { bg: 'bg-blue-50',    border: 'border-blue-200',   text: 'text-blue-800',   dot: 'bg-blue-400' },
-  'COND-B': { bg: 'bg-sky-50',     border: 'border-sky-200',    text: 'text-sky-800',    dot: 'bg-sky-400' },
-  'COND-S': { bg: 'bg-indigo-50',  border: 'border-indigo-200', text: 'text-indigo-800', dot: 'bg-indigo-400' },
-  'NOSOL':  { bg: 'bg-purple-50',  border: 'border-purple-200', text: 'text-purple-800', dot: 'bg-purple-400' },
-  'ANTI':   { bg: 'bg-teal-50',    border: 'border-teal-200',   text: 'text-teal-800',   dot: 'bg-teal-400' },
-  'TERMR':  { bg: 'bg-orange-50',  border: 'border-orange-200', text: 'text-orange-800', dot: 'bg-orange-400' },
-  'TERMR-M':{ bg: 'bg-orange-50',  border: 'border-orange-200', text: 'text-orange-800', dot: 'bg-orange-400' },
-  'TERMR-B':{ bg: 'bg-orange-50',  border: 'border-orange-200', text: 'text-orange-800', dot: 'bg-orange-400' },
-  'TERMR-T':{ bg: 'bg-orange-50',  border: 'border-orange-200', text: 'text-orange-800', dot: 'bg-orange-400' },
-  'TERMF':  { bg: 'bg-rose-50',    border: 'border-rose-200',   text: 'text-rose-800',   dot: 'bg-rose-400' },
-  'REP':    { bg: 'bg-emerald-50', border: 'border-emerald-200',text: 'text-emerald-800',dot: 'bg-emerald-400' },
-  'REP-T':  { bg: 'bg-emerald-50', border: 'border-emerald-200',text: 'text-emerald-800',dot: 'bg-emerald-400' },
-  'REP-B':  { bg: 'bg-green-50',   border: 'border-green-200',  text: 'text-green-800',  dot: 'bg-green-400' },
-  'COV':    { bg: 'bg-cyan-50',    border: 'border-cyan-200',   text: 'text-cyan-800',   dot: 'bg-cyan-400' },
-  'DEF':    { bg: 'bg-gray-50',    border: 'border-gray-200',   text: 'text-gray-700',   dot: 'bg-gray-400' },
-  'STRUCT': { bg: 'bg-violet-50',  border: 'border-violet-200', text: 'text-violet-800', dot: 'bg-violet-400' },
-  'CONSID': { bg: 'bg-lime-50',    border: 'border-lime-200',   text: 'text-lime-800',   dot: 'bg-lime-400' },
-  'MISC':   { bg: 'bg-stone-50',   border: 'border-stone-200',  text: 'text-stone-700',  dot: 'bg-stone-400' },
+  'MAE':    { bg: 'bg-red-50',     border: 'border-red-200',    text: 'text-red-800',    dot: 'bg-red-400',    hex: '#fef2f2' },
+  'MAE-T':  { bg: 'bg-red-50',     border: 'border-red-200',    text: 'text-red-800',    dot: 'bg-red-400',    hex: '#fef2f2' },
+  'MAE-B':  { bg: 'bg-red-50',     border: 'border-red-200',    text: 'text-red-800',    dot: 'bg-red-400',    hex: '#fef2f2' },
+  'IOC':    { bg: 'bg-amber-50',   border: 'border-amber-200',  text: 'text-amber-800',  dot: 'bg-amber-400',  hex: '#fffbeb' },
+  'IOC-T':  { bg: 'bg-amber-50',   border: 'border-amber-200',  text: 'text-amber-800',  dot: 'bg-amber-400',  hex: '#fffbeb' },
+  'IOC-B':  { bg: 'bg-amber-50',   border: 'border-amber-200',  text: 'text-amber-800',  dot: 'bg-amber-400',  hex: '#fffbeb' },
+  'COND':   { bg: 'bg-blue-50',    border: 'border-blue-200',   text: 'text-blue-800',   dot: 'bg-blue-400',   hex: '#eff6ff' },
+  'COND-M': { bg: 'bg-blue-50',    border: 'border-blue-200',   text: 'text-blue-800',   dot: 'bg-blue-400',   hex: '#eff6ff' },
+  'COND-B': { bg: 'bg-sky-50',     border: 'border-sky-200',    text: 'text-sky-800',    dot: 'bg-sky-400',    hex: '#f0f9ff' },
+  'COND-S': { bg: 'bg-indigo-50',  border: 'border-indigo-200', text: 'text-indigo-800', dot: 'bg-indigo-400', hex: '#eef2ff' },
+  'NOSOL':  { bg: 'bg-purple-50',  border: 'border-purple-200', text: 'text-purple-800', dot: 'bg-purple-400', hex: '#faf5ff' },
+  'ANTI':   { bg: 'bg-teal-50',    border: 'border-teal-200',   text: 'text-teal-800',   dot: 'bg-teal-400',   hex: '#f0fdfa' },
+  'TERMR':  { bg: 'bg-orange-50',  border: 'border-orange-200', text: 'text-orange-800', dot: 'bg-orange-400', hex: '#fff7ed' },
+  'TERMR-M':{ bg: 'bg-orange-50',  border: 'border-orange-200', text: 'text-orange-800', dot: 'bg-orange-400', hex: '#fff7ed' },
+  'TERMR-B':{ bg: 'bg-orange-50',  border: 'border-orange-200', text: 'text-orange-800', dot: 'bg-orange-400', hex: '#fff7ed' },
+  'TERMR-T':{ bg: 'bg-orange-50',  border: 'border-orange-200', text: 'text-orange-800', dot: 'bg-orange-400', hex: '#fff7ed' },
+  'TERMF':  { bg: 'bg-rose-50',    border: 'border-rose-200',   text: 'text-rose-800',   dot: 'bg-rose-400',   hex: '#fff1f2' },
+  'REP':    { bg: 'bg-emerald-50', border: 'border-emerald-200',text: 'text-emerald-800',dot: 'bg-emerald-400',hex: '#ecfdf5' },
+  'REP-T':  { bg: 'bg-emerald-50', border: 'border-emerald-200',text: 'text-emerald-800',dot: 'bg-emerald-400',hex: '#ecfdf5' },
+  'REP-B':  { bg: 'bg-green-50',   border: 'border-green-200',  text: 'text-green-800',  dot: 'bg-green-400',  hex: '#f0fdf4' },
+  'COV':    { bg: 'bg-cyan-50',    border: 'border-cyan-200',   text: 'text-cyan-800',   dot: 'bg-cyan-400',   hex: '#ecfeff' },
+  'DEF':    { bg: 'bg-gray-50',    border: 'border-gray-200',   text: 'text-gray-700',   dot: 'bg-gray-400',   hex: '#f9fafb' },
+  'STRUCT': { bg: 'bg-violet-50',  border: 'border-violet-200', text: 'text-violet-800', dot: 'bg-violet-400', hex: '#f5f3ff' },
+  'CONSID': { bg: 'bg-lime-50',    border: 'border-lime-200',   text: 'text-lime-800',   dot: 'bg-lime-400',   hex: '#f7fee7' },
+  'MISC':   { bg: 'bg-stone-50',   border: 'border-stone-200',  text: 'text-stone-700',  dot: 'bg-stone-400',  hex: '#fafaf9' },
 };
 
 function typeColor(code) {
-  return TYPE_COLORS[code] || { bg: 'bg-gray-50', border: 'border-gray-200', text: 'text-gray-700', dot: 'bg-gray-400' };
+  return TYPE_COLORS[code] || { bg: 'bg-gray-50', border: 'border-gray-200', text: 'text-gray-700', dot: 'bg-gray-400', hex: '#f9fafb' };
 }
 
 const FAV_LABELS = {
@@ -110,14 +110,69 @@ function getFeatures(provision) {
   return [];
 }
 
+/* ── Parse structured content from provision text ── */
+function parseProvisionText(text) {
+  if (!text) return { header: '', subclauses: [], exceptions: [] };
+
+  const lines = text.split(/\n/);
+  let header = '';
+  const subclauses = [];
+  const exceptions = [];
+  let inExceptions = false;
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+
+    // Detect exception/carve-out lines
+    const isException = /^(\((?:[ivxlcdm]+|[a-z]|\d+)\)|[-*]|•|except|provided|other than|excluding|notwithstanding)/i.test(trimmed);
+    const isSubclause = /^(\([A-Z]\)|\(\d+\)|Section\s)/i.test(trimmed);
+
+    if (!header && !isException && !isSubclause) {
+      header = trimmed;
+    } else if (isException || inExceptions) {
+      inExceptions = true;
+      exceptions.push(trimmed);
+    } else if (isSubclause) {
+      subclauses.push(trimmed);
+    } else if (header) {
+      // Additional text after header, before exceptions
+      subclauses.push(trimmed);
+    }
+  }
+
+  // If no structured content found, use first sentence as header
+  if (!header && text.length > 0) {
+    const firstSentence = text.match(/^[^.!?]+[.!?]/);
+    header = firstSentence ? firstSentence[0] : text.substring(0, 200);
+  }
+
+  return { header, subclauses, exceptions };
+}
+
 /* ═══════════════════════════════════════════════════════════
-   LEFT SIDEBAR
+   LEFT SIDEBAR — now acts as a FILTER, not a scroller
    ═══════════════════════════════════════════════════════════ */
-function Sidebar({ provsByType, provisions, activeId, onSelect, typeLabelsMap }) {
+function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelectProvision, activeProvId }) {
   const [collapsed, setCollapsed] = useState({});
+  const [allCollapsed, setAllCollapsed] = useState(false);
 
   const toggleType = (type) => {
     setCollapsed(prev => ({ ...prev, [type]: !prev[type] }));
+  };
+
+  const handleCollapseAll = () => {
+    if (allCollapsed) {
+      // Expand all
+      setCollapsed({});
+      setAllCollapsed(false);
+    } else {
+      // Collapse all
+      const newCollapsed = {};
+      Object.keys(provsByType).forEach(type => { newCollapsed[type] = true; });
+      setCollapsed(newCollapsed);
+      setAllCollapsed(true);
+    }
   };
 
   const stats = useMemo(() => {
@@ -131,27 +186,56 @@ function Sidebar({ provsByType, provisions, activeId, onSelect, typeLabelsMap })
     <div className="w-[280px] shrink-0 bg-white border-r border-border flex flex-col h-full overflow-hidden">
       {/* Provisions Navigation */}
       <div className="flex-1 overflow-y-auto py-4 px-3">
-        <h3 className="font-ui text-[10px] font-medium text-inkFaint uppercase tracking-wider px-2 mb-3">
-          Provisions
-        </h3>
+        <div className="flex items-center justify-between px-2 mb-3">
+          <h3 className="font-ui text-[10px] font-medium text-inkFaint uppercase tracking-wider">
+            Provisions
+          </h3>
+          <button
+            onClick={handleCollapseAll}
+            className="text-[10px] font-ui text-accent hover:text-accent/80 transition-colors"
+          >
+            {allCollapsed ? 'Expand All' : 'Collapse All'}
+          </button>
+        </div>
+
         <div className="space-y-1">
+          {/* "All" filter button */}
+          <button
+            onClick={() => onFilterType(null)}
+            className={`w-full flex items-center gap-2 px-2 py-1.5 rounded text-sm font-ui transition-colors ${
+              activeFilter === null
+                ? 'bg-accent/10 text-accent font-medium'
+                : 'text-inkMid hover:bg-bg hover:text-ink'
+            }`}
+          >
+            <span className="w-2 h-2 rounded-full shrink-0 bg-inkFaint" />
+            <span className="font-medium">All Provisions</span>
+            <span className="text-inkFaint text-xs ml-auto">({provisions.length})</span>
+          </button>
+
           {Object.entries(provsByType).map(([type, provs]) => {
             const isCollapsed = collapsed[type];
             const tc = typeColor(type);
+            const isActiveFilter = activeFilter === type;
             return (
               <div key={type}>
                 <button
-                  onClick={() => toggleType(type)}
-                  className="w-full flex items-center justify-between px-2 py-1.5 rounded text-sm font-ui hover:bg-bg transition-colors group"
+                  onClick={() => onFilterType(type)}
+                  className={`w-full flex items-center justify-between px-2 py-1.5 rounded text-sm font-ui transition-colors group ${
+                    isActiveFilter ? 'bg-accent/10' : 'hover:bg-bg'
+                  }`}
                 >
                   <span className="flex items-center gap-2 min-w-0">
                     <span className={`w-2 h-2 rounded-full shrink-0 ${tc.dot}`} />
-                    <span className="text-ink font-medium truncate">{type}</span>
+                    <span className={`font-medium truncate ${isActiveFilter ? 'text-accent' : 'text-ink'}`}>
+                      {typeLabel(type)}
+                    </span>
                     <span className="text-inkFaint text-xs">({provs.length})</span>
                   </span>
                   <svg
                     width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5"
-                    className={`text-inkFaint transition-transform ${isCollapsed ? '' : 'rotate-90'}`}
+                    className={`text-inkFaint transition-transform shrink-0 ${isCollapsed ? '' : 'rotate-90'}`}
+                    onClick={(e) => { e.stopPropagation(); toggleType(type); }}
                   >
                     <path d="M4 2l4 4-4 4" />
                   </svg>
@@ -161,11 +245,11 @@ function Sidebar({ provsByType, provisions, activeId, onSelect, typeLabelsMap })
                     {provs.map(p => {
                       const status = getProvisionStatus(p);
                       const st = STATUS[status];
-                      const isActive = p.id === activeId;
+                      const isActive = p.id === activeProvId;
                       return (
                         <button
                           key={p.id}
-                          onClick={() => onSelect(p.id)}
+                          onClick={() => onSelectProvision(p.id)}
                           className={`w-full text-left flex items-center gap-2 px-2 py-1 rounded text-xs font-ui transition-colors ${
                             isActive
                               ? 'bg-accent/10 text-accent font-medium'
@@ -205,6 +289,173 @@ function Sidebar({ provsByType, provisions, activeId, onSelect, typeLabelsMap })
           </span>
           <span className="text-amber-600 font-medium">{stats.flagged}</span>
         </div>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PROVISION CARD — structured display with formatting
+   ═══════════════════════════════════════════════════════════ */
+function ProvisionCard({ provision, onEdit }) {
+  const tc = typeColor(provision.type);
+  const fav = favBadge(provision.ai_favorability);
+  const status = getProvisionStatus(provision);
+  const st = STATUS[status];
+  const features = getFeatures(provision);
+  const parsed = useMemo(() => parseProvisionText(provision.full_text), [provision.full_text]);
+
+  return (
+    <div
+      id={`prov-${provision.id}`}
+      onClick={() => onEdit(provision)}
+      className={`bg-white border rounded-lg shadow-sm p-4 cursor-pointer hover:border-accent transition-colors ${tc.border}`}
+    >
+      {/* Header row: type badge + category + status */}
+      <div className="flex items-center gap-2 mb-2 flex-wrap">
+        <span className={`w-1.5 h-1.5 rounded-full ${st.dot}`} />
+        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-ui font-medium ${tc.bg} ${tc.text} ${tc.border} border`}>
+          {typeLabel(provision.type)}
+        </span>
+        <span className="text-xs font-ui font-medium text-inkMid">{provision.category || 'General'}</span>
+        <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-ui font-medium ${fav.cls}`}>
+          {fav.label}
+        </span>
+      </div>
+
+      {/* Structured provision content */}
+      <div className="space-y-2">
+        {/* Main concept/obligation as header */}
+        {parsed.header && (
+          <p className="font-body text-sm text-ink leading-relaxed font-medium">
+            {parsed.header.length > 300 ? parsed.header.substring(0, 300) + '...' : parsed.header}
+          </p>
+        )}
+
+        {/* Sub-clauses as indented items */}
+        {parsed.subclauses.length > 0 && (
+          <div className="ml-3 space-y-1">
+            {parsed.subclauses.slice(0, 5).map((sc, i) => (
+              <p key={i} className="font-body text-xs text-inkMid leading-relaxed flex items-start gap-1.5">
+                <span className="text-inkFaint mt-0.5 shrink-0">--</span>
+                <span>{sc.length > 200 ? sc.substring(0, 200) + '...' : sc}</span>
+              </p>
+            ))}
+            {parsed.subclauses.length > 5 && (
+              <p className="text-[10px] font-ui text-inkFaint italic">
+                +{parsed.subclauses.length - 5} more sub-clauses
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Exceptions/carve-outs as bulleted list */}
+        {parsed.exceptions.length > 0 && (
+          <div className="ml-3 mt-1 pl-3 border-l-2 border-amber-200 bg-amber-50/50 rounded-r py-1">
+            <p className="text-[10px] font-ui font-medium text-amber-700 uppercase tracking-wider mb-1">
+              Exceptions / Carve-outs
+            </p>
+            <ul className="space-y-0.5">
+              {parsed.exceptions.slice(0, 4).map((ex, i) => (
+                <li key={i} className="font-body text-xs text-inkMid leading-relaxed flex items-start gap-1.5">
+                  <span className="text-amber-500 mt-0.5 shrink-0">&bull;</span>
+                  <span>{ex.length > 200 ? ex.substring(0, 200) + '...' : ex}</span>
+                </li>
+              ))}
+              {parsed.exceptions.length > 4 && (
+                <li className="text-[10px] font-ui text-inkFaint italic ml-4">
+                  +{parsed.exceptions.length - 4} more exceptions
+                </li>
+              )}
+            </ul>
+          </div>
+        )}
+
+        {/* Fallback: if no structured content, show raw text */}
+        {!parsed.header && parsed.subclauses.length === 0 && parsed.exceptions.length === 0 && provision.full_text && (
+          <p className="font-body text-sm text-ink leading-relaxed line-clamp-3">
+            {provision.full_text}
+          </p>
+        )}
+      </div>
+
+      {/* Features as chips */}
+      {features.length > 0 && (
+        <div className="flex flex-wrap gap-1 mt-2">
+          {features.map((f, i) => (
+            <span key={i} className="text-[10px] font-ui px-2 py-0.5 rounded bg-bg text-inkMid border border-border">
+              {f}
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FULL DOCUMENT VIEW — reconstructed from provisions
+   ═══════════════════════════════════════════════════════════ */
+function FullDocumentView({ provisions, onEditProvision }) {
+  // Sort provisions by sort_order, then by id as fallback
+  const sorted = useMemo(() => {
+    return [...provisions].sort((a, b) => {
+      if (a.sort_order != null && b.sort_order != null) return a.sort_order - b.sort_order;
+      if (a.sort_order != null) return -1;
+      if (b.sort_order != null) return 1;
+      // Group by type as fallback
+      const typeOrder = Object.keys(TYPE_LABELS);
+      const ai = typeOrder.indexOf(a.type);
+      const bi = typeOrder.indexOf(b.type);
+      if (ai !== bi) return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
+      return (a.id || '').localeCompare(b.id || '');
+    });
+  }, [provisions]);
+
+  if (sorted.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-inkFaint font-ui">No provisions to display.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-white border border-border rounded-lg shadow-sm p-6 md:p-8">
+      <div className="space-y-0">
+        {sorted.map((p, idx) => {
+          const tc = typeColor(p.type);
+          const fav = favBadge(p.ai_favorability);
+          return (
+            <div
+              key={p.id}
+              className={`relative border-l-3 pl-4 py-3 cursor-pointer hover:opacity-90 transition-opacity ${tc.border}`}
+              style={{ backgroundColor: tc.hex || '#f9fafb', borderLeftWidth: '3px' }}
+              onClick={() => onEditProvision(p)}
+            >
+              {/* Floating label */}
+              <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-ui font-medium border ${tc.border} ${tc.bg} ${tc.text}`}>
+                  {typeLabel(p.type)}
+                </span>
+                <span className="text-[10px] font-ui text-inkMid">{p.category || 'General'}</span>
+                <span className={`inline-block px-1.5 py-0.5 rounded text-[9px] font-ui font-medium ${fav.cls}`}>
+                  {fav.label}
+                </span>
+              </div>
+
+              {/* Provision text */}
+              <p className="font-body text-[14px] text-ink leading-relaxed whitespace-pre-wrap">
+                {p.full_text || '(no text)'}
+              </p>
+
+              {/* Separator between provisions */}
+              {idx < sorted.length - 1 && (
+                <div className="absolute bottom-0 left-4 right-0 border-b border-border/50" />
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -268,7 +519,7 @@ function ProvisionLabel({ provision, isExpanded, onToggle, onEdit }) {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   HIGHLIGHTED DOCUMENT RENDERER
+   HIGHLIGHTED DOCUMENT RENDERER (for agreement source text)
    ═══════════════════════════════════════════════════════════ */
 function DocumentRenderer({
   sourceText,
@@ -368,15 +619,13 @@ function DocumentRenderer({
     if (!definitionTerms || definitionTerms.length === 0) return text;
 
     const parts = [];
-    let remaining = text;
     let partIdx = 0;
 
     for (const def of definitionTerms) {
       const termLower = def.term.toLowerCase();
       let searchFrom = 0;
-      let newRemaining = '';
       let lastEnd = 0;
-      const rLower = remaining.toLowerCase();
+      const rLower = text.toLowerCase();
 
       // eslint-disable-next-line no-constant-condition
       while (true) {
@@ -391,7 +640,7 @@ function DocumentRenderer({
         }
         // Push text before match
         if (idx > lastEnd) {
-          parts.push(<span key={`${keyPrefix}-${partIdx++}`}>{remaining.slice(lastEnd, idx)}</span>);
+          parts.push(<span key={`${keyPrefix}-${partIdx++}`}>{text.slice(lastEnd, idx)}</span>);
         }
         // Push the defined term with hover
         parts.push(
@@ -401,15 +650,15 @@ function DocumentRenderer({
             onMouseEnter={(e) => onDefHover(def, e)}
             onMouseLeave={onDefLeave}
           >
-            {remaining.slice(idx, idx + def.term.length)}
+            {text.slice(idx, idx + def.term.length)}
           </span>
         );
         lastEnd = idx + def.term.length;
         searchFrom = lastEnd;
       }
       if (parts.length > 0) {
-        if (lastEnd < remaining.length) {
-          parts.push(<span key={`${keyPrefix}-${partIdx++}`}>{remaining.slice(lastEnd)}</span>);
+        if (lastEnd < text.length) {
+          parts.push(<span key={`${keyPrefix}-${partIdx++}`}>{text.slice(lastEnd)}</span>);
         }
         return <>{parts}</>;
       }
@@ -796,7 +1045,19 @@ export default function ReviewPage() {
     }));
   }, [rawProvisions, statusOverrides]);
 
-  /* ── Group provisions by type ── */
+  /* ── Sidebar filter state ── */
+  const [activeFilter, setActiveFilter] = useState(null);
+
+  /* ── Tab state: "provisions" or "document" ── */
+  const [activeTab, setActiveTab] = useState('provisions');
+
+  /* ── Filtered provisions based on sidebar selection ── */
+  const filteredProvisions = useMemo(() => {
+    if (activeFilter === null) return provisions;
+    return provisions.filter(p => p.type === activeFilter);
+  }, [provisions, activeFilter]);
+
+  /* ── Group provisions by type (all, not filtered) ── */
   const provsByType = useMemo(() => {
     const groups = {};
     provisions.forEach(p => {
@@ -806,6 +1067,17 @@ export default function ReviewPage() {
     });
     return groups;
   }, [provisions]);
+
+  /* ── Group filtered provisions by type ── */
+  const filteredProvsByType = useMemo(() => {
+    const groups = {};
+    filteredProvisions.forEach(p => {
+      const t = p.type || 'Other';
+      if (!groups[t]) groups[t] = [];
+      groups[t].push(p);
+    });
+    return groups;
+  }, [filteredProvisions]);
 
   /* ── Extract definition terms from DEF provisions ── */
   const definitionTerms = useMemo(() => {
@@ -842,19 +1114,20 @@ export default function ReviewPage() {
     };
   }, [editingProvision]);
 
-  /* ── Scroll to provision ── */
-  const scrollToProvision = useCallback((provId) => {
-    const el = provisionRefs.current[provId];
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-    setExpandedLabel(provId);
+  /* ── Sidebar filter handler ── */
+  const handleFilterType = useCallback((type) => {
+    setActiveFilter(type);
   }, []);
 
-  /* ── Sidebar provision click ── */
-  const handleSidebarSelect = useCallback((provId) => {
-    scrollToProvision(provId);
-  }, [scrollToProvision]);
+  /* ── Sidebar provision click — select & open edit panel ── */
+  const handleSidebarSelectProvision = useCallback((provId) => {
+    const prov = provisions.find(p => p.id === provId);
+    if (prov) {
+      setEditingProvision(prov);
+      // Also filter to that provision's type for context
+      setActiveFilter(prov.type);
+    }
+  }, [provisions]);
 
   /* ── Edit provision ── */
   const handleEditProvision = useCallback((provision) => {
@@ -1037,8 +1310,10 @@ export default function ReviewPage() {
           <Sidebar
             provsByType={provsByType}
             provisions={provisions}
-            activeId={editingProvision?.id}
-            onSelect={handleSidebarSelect}
+            activeFilter={activeFilter}
+            onFilterType={handleFilterType}
+            onSelectProvision={handleSidebarSelectProvision}
+            activeProvId={editingProvision?.id}
           />
         )}
 
@@ -1058,68 +1333,122 @@ export default function ReviewPage() {
               </div>
             </div>
 
-            {/* Agreement Content */}
-            {hasSource ? (
-              <div className="bg-white border border-border rounded-lg shadow-sm p-6 md:p-8">
-                <DocumentRenderer
-                  sourceText={agreementSource.full_text}
-                  provisions={provisions}
-                  expandedLabel={expandedLabel}
-                  onToggleLabel={handleToggleLabel}
-                  onEditProvision={handleEditProvision}
-                  onTextSelect={setTextSelection}
-                  provisionRefs={provisionRefs}
-                  definitionTerms={definitionTerms}
-                  hoveredDef={hoveredDef}
-                  onDefHover={handleDefHover}
-                  onDefLeave={handleDefLeave}
-                />
-              </div>
-            ) : provisions.length > 0 ? (
-              /* No source text but have provisions -- show provisions as cards */
-              <div className="space-y-4">
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-                  <p className="text-sm font-ui text-amber-800">
-                    Agreement source text not available -- upload via Admin to enable full document review mode.
-                    Showing extracted provisions below.
-                  </p>
-                </div>
-                {Object.entries(provsByType).map(([type, provs]) => (
-                  <div key={type} className="space-y-2">
-                    <h2 className="font-display text-lg text-ink flex items-center gap-2">
-                      <span className={`w-2.5 h-2.5 rounded-full ${typeColor(type).dot}`} />
-                      {typeLabel(type)}
-                      <span className="text-sm font-ui text-inkFaint font-normal">({provs.length})</span>
-                    </h2>
-                    {provs.map(p => {
-                      const tc = typeColor(p.type);
-                      const fav = favBadge(p.ai_favorability);
-                      const status = getProvisionStatus(p);
-                      const st = STATUS[status];
-                      return (
-                        <div
-                          key={p.id}
-                          id={`prov-${p.id}`}
-                          ref={el => { if (provisionRefs.current) provisionRefs.current[p.id] = el; }}
-                          onClick={() => handleEditProvision(p)}
-                          className={`bg-white border border-border rounded-lg shadow-sm p-4 cursor-pointer hover:border-accent transition-colors ${tc.bg}`}
-                        >
-                          <div className="flex items-center gap-2 mb-2 flex-wrap">
-                            <span className={`w-1.5 h-1.5 rounded-full ${st.dot}`} />
-                            <span className="text-xs font-ui font-medium text-inkMid">{p.category || 'General'}</span>
-                            <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-ui font-medium ${fav.cls}`}>
-                              {fav.label}
-                            </span>
-                          </div>
-                          <p className="font-body text-sm text-ink leading-relaxed line-clamp-3">
-                            {p.full_text || '--'}
-                          </p>
-                        </div>
-                      );
-                    })}
+            {/* Tab System */}
+            {provisions.length > 0 && (
+              <div className="flex items-center gap-1 mb-4 border-b border-border">
+                <button
+                  onClick={() => setActiveTab('provisions')}
+                  className={`px-4 py-2 text-sm font-ui transition-colors border-b-2 -mb-px ${
+                    activeTab === 'provisions'
+                      ? 'border-accent text-accent font-medium'
+                      : 'border-transparent text-inkLight hover:text-ink'
+                  }`}
+                >
+                  Provisions
+                </button>
+                <button
+                  onClick={() => setActiveTab('document')}
+                  className={`px-4 py-2 text-sm font-ui transition-colors border-b-2 -mb-px ${
+                    activeTab === 'document'
+                      ? 'border-accent text-accent font-medium'
+                      : 'border-transparent text-inkLight hover:text-ink'
+                  }`}
+                >
+                  Full Document
+                </button>
+                {hasSource && (
+                  <button
+                    onClick={() => setActiveTab('source')}
+                    className={`px-4 py-2 text-sm font-ui transition-colors border-b-2 -mb-px ${
+                      activeTab === 'source'
+                        ? 'border-accent text-accent font-medium'
+                        : 'border-transparent text-inkLight hover:text-ink'
+                    }`}
+                  >
+                    Source Text
+                  </button>
+                )}
+
+                {/* Filter indicator */}
+                {activeFilter && (
+                  <div className="ml-auto flex items-center gap-2">
+                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-ui font-medium border ${typeColor(activeFilter).border} ${typeColor(activeFilter).bg} ${typeColor(activeFilter).text}`}>
+                      Filtered: {typeLabel(activeFilter)}
+                    </span>
+                    <button
+                      onClick={() => setActiveFilter(null)}
+                      className="text-[10px] font-ui text-inkFaint hover:text-ink"
+                    >
+                      Clear
+                    </button>
                   </div>
-                ))}
+                )}
               </div>
+            )}
+
+            {/* Tab Content */}
+            {provisions.length > 0 ? (
+              <>
+                {/* Provisions Tab (card view) */}
+                {activeTab === 'provisions' && (
+                  <div className="space-y-4">
+                    {Object.entries(filteredProvsByType).map(([type, provs]) => (
+                      <div key={type} className="space-y-2">
+                        <h2 className="font-display text-lg text-ink flex items-center gap-2">
+                          <span className={`w-2.5 h-2.5 rounded-full ${typeColor(type).dot}`} />
+                          {typeLabel(type)}
+                          <span className="text-sm font-ui text-inkFaint font-normal">({provs.length})</span>
+                        </h2>
+                        {provs.map(p => (
+                          <ProvisionCard
+                            key={p.id}
+                            provision={p}
+                            onEdit={handleEditProvision}
+                          />
+                        ))}
+                      </div>
+                    ))}
+                    {filteredProvisions.length === 0 && (
+                      <div className="text-center py-12">
+                        <p className="text-inkFaint font-ui">No provisions match this filter.</p>
+                        <button
+                          onClick={() => setActiveFilter(null)}
+                          className="text-accent text-sm font-ui hover:underline mt-2"
+                        >
+                          Show all provisions
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Full Document Tab (reconstructed from provisions) */}
+                {activeTab === 'document' && (
+                  <FullDocumentView
+                    provisions={filteredProvisions}
+                    onEditProvision={handleEditProvision}
+                  />
+                )}
+
+                {/* Source Text Tab (only if available) */}
+                {activeTab === 'source' && hasSource && (
+                  <div className="bg-white border border-border rounded-lg shadow-sm p-6 md:p-8">
+                    <DocumentRenderer
+                      sourceText={agreementSource.full_text}
+                      provisions={filteredProvisions}
+                      expandedLabel={expandedLabel}
+                      onToggleLabel={handleToggleLabel}
+                      onEditProvision={handleEditProvision}
+                      onTextSelect={setTextSelection}
+                      provisionRefs={provisionRefs}
+                      definitionTerms={definitionTerms}
+                      hoveredDef={hoveredDef}
+                      onDefHover={handleDefHover}
+                      onDefLeave={handleDefLeave}
+                    />
+                  </div>
+                )}
+              </>
             ) : (
               <EmptyState
                 icon="+"
