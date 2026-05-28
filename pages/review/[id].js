@@ -313,7 +313,41 @@ function parseProvisionText(text) {
 /* ── Detect "General / Preamble" provisions ── */
 function isPreambleProvision(provision) {
   const cat = (provision?.category || '').toLowerCase().trim();
-  return cat === 'general / preamble' || cat === 'general/preamble' || cat === 'preamble';
+  if (!cat) return false;
+  if (cat === 'preamble') return true;
+  // Match "general / preamble", "general/preamble", "general preamble" etc.
+  return /^general\s*\/?\s*preamble$/i.test(cat);
+}
+
+/* ── Split a list of provisions into [preamble, rest] for category views.
+ *    Returns the first preamble provision (if any) and all remaining ones. */
+function splitPreamble(provisions) {
+  if (!Array.isArray(provisions) || provisions.length === 0) {
+    return { preamble: null, rest: provisions || [] };
+  }
+  const idx = provisions.findIndex(isPreambleProvision);
+  if (idx < 0) return { preamble: null, rest: provisions };
+  const preamble = provisions[idx];
+  const rest = provisions.filter((_, i) => i !== idx);
+  return { preamble, rest };
+}
+
+/* ── Section-wide shared features — hidden on non-preamble provisions in
+ *    section-style types (e.g. IOC) where the preamble carries them once. */
+const SHARED_FEATURE_KEYS_BY_TYPE = {
+  IOC: new Set([
+    'requiredByLawCarveout',
+    'pandemicCarveout',
+    'covidCarveout',
+    'ordinaryCourseCarveout',
+    'materialityQualifier',
+  ]),
+};
+
+function isSharedFeature(featureKey, typeKey) {
+  const set = SHARED_FEATURE_KEYS_BY_TYPE[typeKey];
+  if (!set) return false;
+  return set.has(featureKey);
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -547,6 +581,62 @@ function isEmptyValue(raw) {
   return false;
 }
 
+/* ── Detect tiered bring-down feature values. ── */
+function isBringDownTiers(featureKey, value) {
+  if (featureKey !== 'bringDownTiers') return false;
+  return Array.isArray(value) && value.length > 0 && value.every(
+    (v) => v && typeof v === 'object' && !Array.isArray(v),
+  );
+}
+
+/* ── Render a tiered bring-down value as a compact inline table. ── */
+function BringDownTiersTable({ tiers }) {
+  if (!Array.isArray(tiers) || tiers.length === 0) return null;
+  return (
+    <div className="mt-1 overflow-x-auto">
+      <table className="min-w-full text-[11px] font-ui border border-border rounded">
+        <thead className="bg-bg/60">
+          <tr>
+            <th className="px-2 py-1 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">
+              Reps Covered
+            </th>
+            <th className="px-2 py-1 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">
+              Standard
+            </th>
+            <th className="px-2 py-1 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">
+              Exceptions
+            </th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border">
+          {tiers.map((t, i) => {
+            const reps = t.reps_covered || t.repsCovered || '';
+            const stdCode = t.standard || t.standardCode || null;
+            const stdLabel = t.standard_label || t.standardLabel || stdCode || '';
+            const exceptions = t.exceptions || '';
+            return (
+              <tr key={i} className="align-top">
+                <td className="px-2 py-1 text-ink whitespace-pre-wrap break-words">
+                  {reps || <span className="text-inkFaint/70 italic">—</span>}
+                </td>
+                <td className="px-2 py-1 text-ink">
+                  <div className="flex items-baseline gap-1.5 flex-wrap">
+                    {stdCode ? <CodeBadge code={stdCode} /> : null}
+                    <span>{stdLabel || (stdCode ? '' : '—')}</span>
+                  </div>
+                </td>
+                <td className="px-2 py-1 text-inkMid whitespace-pre-wrap break-words">
+                  {exceptions || <span className="text-inkFaint/70 italic">—</span>}
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 function StructuredFeatures({ provision }) {
   const features = getStructuredFeatures(provision) || {};
   const exceptionLikeKeys = new Set(['permittedExceptions', 'carveOuts', 'carveOutsList']);
@@ -559,16 +649,27 @@ function StructuredFeatures({ provision }) {
   const extraKeys = Object.keys(features).filter((k) => !schemaKeys.includes(k));
   const allKeys = [...schemaKeys, ...extraKeys];
 
+  // On non-preamble provisions in section-style types, hide section-wide
+  // shared fields (they're carried once on the preamble entry).
+  const hideShared = !isPreambleProvision(provision);
+
   const renderable = [];
   const exceptionsFields = [];
 
   for (const k of allKeys) {
+    if (hideShared && isSharedFeature(k, provision.type)) continue;
     const raw = features[k];
 
     // Tagged or plain LIST (e.g. permittedExceptions, carveOuts) — render in
     // exception/carve-out section regardless of contents (even when empty).
     if (exceptionLikeKeys.has(k) || isListTaxonomyKey(k)) {
       exceptionsFields.push({ key: k, items: Array.isArray(raw) ? raw : [] });
+      continue;
+    }
+
+    // Tiered bring-down: render as inline table cell (full row width).
+    if (isBringDownTiers(k, raw)) {
+      renderable.push({ key: k, value: null, raw, empty: false, tiers: raw });
       continue;
     }
 
@@ -593,11 +694,16 @@ function StructuredFeatures({ provision }) {
         Structured Summary
       </p>
       <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5">
-        {renderable.map(({ key, value, raw, empty }) => (
-          <div key={key} className="text-xs font-ui flex flex-col">
+        {renderable.map(({ key, value, raw, empty, tiers }) => (
+          <div
+            key={key}
+            className={`text-xs font-ui flex flex-col ${tiers ? 'sm:col-span-2' : ''}`}
+          >
             <dt className="text-inkFaint">{humanizeKey(key)}</dt>
             <dd className={empty ? 'text-inkFaint/70 italic' : 'text-ink'}>
-              {empty ? (
+              {tiers ? (
+                <BringDownTiersTable tiers={tiers} />
+              ) : empty ? (
                 <span>None</span>
               ) : isTaggedItem(raw) ? (
                 <TaggedValue featureKey={key} value={raw} />
@@ -2426,30 +2532,48 @@ export default function ReviewPage() {
                       </div>
                     )}
 
-                    {Object.entries(filteredProvsByType).map(([type, provs]) => (
-                      <div key={type} className="space-y-2">
-                        <h2 className="font-display text-lg text-ink flex items-center gap-2">
-                          <span className={`w-2.5 h-2.5 rounded-full ${typeColor(type).dot}`} />
-                          {typeLabel(type)}
-                          <span className="text-sm font-ui text-inkFaint font-normal">({provs.length})</span>
-                        </h2>
-                        {provisionView === 'table' ? (
-                          <ProvisionTable
-                            provisions={provs}
-                            type={type}
-                            onSelectProvision={handleEditProvision}
-                          />
-                        ) : (
-                          provs.map(p => (
-                            <ProvisionCard
-                              key={p.id}
-                              provision={p}
-                              onEdit={handleEditProvision}
-                            />
-                          ))
-                        )}
-                      </div>
-                    ))}
+                    {Object.entries(filteredProvsByType).map(([type, provs]) => {
+                      const { preamble, rest } = splitPreamble(provs);
+                      return (
+                        <div key={type} className="space-y-2">
+                          <h2 className="font-display text-lg text-ink flex items-center gap-2">
+                            <span className={`w-2.5 h-2.5 rounded-full ${typeColor(type).dot}`} />
+                            {typeLabel(type)}
+                            <span className="text-sm font-ui text-inkFaint font-normal">({provs.length})</span>
+                          </h2>
+                          {provisionView === 'table' ? (
+                            <div className="space-y-3">
+                              {preamble && (
+                                <div className="space-y-1">
+                                  <h3 className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+                                    Section Overview
+                                  </h3>
+                                  <ProvisionCard
+                                    provision={preamble}
+                                    onEdit={handleEditProvision}
+                                  />
+                                </div>
+                              )}
+                              {rest.length > 0 && (
+                                <ProvisionTable
+                                  provisions={rest}
+                                  type={type}
+                                  onSelectProvision={handleEditProvision}
+                                />
+                              )}
+                            </div>
+                          ) : (
+                            provs.map(p => (
+                              <ProvisionCard
+                                key={p.id}
+                                provision={p}
+                                onEdit={handleEditProvision}
+                              />
+                            ))
+                          )}
+                        </div>
+                      );
+                    })}
                     {filteredProvisions.length === 0 && (
                       <div className="text-center py-12">
                         <p className="text-inkFaint font-ui">No provisions match this filter.</p>
