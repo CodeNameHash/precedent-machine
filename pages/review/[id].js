@@ -455,6 +455,64 @@ function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelect
    directly from ai_metadata.features. Falls back gracefully
    for older provisions that lack this payload.
    ═══════════════════════════════════════════════════════════ */
+/* Small inline badge for a canonical taxonomy code (e.g. "WHOLLY_OWNED_SUB"). */
+function CodeBadge({ code }) {
+  if (!code) return null;
+  return (
+    <span className="inline-flex items-center font-ui font-medium text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200 whitespace-nowrap">
+      {code}
+    </span>
+  );
+}
+
+/* Render a single tagged item as: [CODE] Canonical label
+ *                                  "original verbatim text" (italic gray) */
+function TaggedItem({ featureKey, item }) {
+  if (!isTaggedItem(item)) {
+    // Backward compat: legacy free-text string
+    return (
+      <span className="font-body text-xs text-inkMid leading-relaxed">
+        {typeof item === 'string' ? item : JSON.stringify(item)}
+      </span>
+    );
+  }
+  const label = resolveTaggedLabel(featureKey, item);
+  return (
+    <div className="flex flex-col gap-0.5">
+      <div className="flex items-baseline gap-1.5 flex-wrap">
+        <CodeBadge code={item.code} />
+        <span className="text-xs font-ui font-semibold text-ink">{label}</span>
+      </div>
+      {item.text && (
+        <p className="font-body text-[11px] text-inkFaint italic leading-relaxed pl-1">
+          &ldquo;{item.text}&rdquo;
+        </p>
+      )}
+    </div>
+  );
+}
+
+/* Render a single (non-list) tagged value inline. Falls back to text. */
+function TaggedValue({ featureKey, value }) {
+  if (isTaggedItem(value)) {
+    const label = resolveTaggedLabel(featureKey, value);
+    return (
+      <span className="inline-flex flex-col gap-0.5">
+        <span className="inline-flex items-baseline gap-1.5 flex-wrap">
+          <CodeBadge code={value.code} />
+          <span className="text-ink">{label}</span>
+        </span>
+        {value.text && (
+          <span className="font-body text-[11px] text-inkFaint italic leading-relaxed">
+            &ldquo;{value.text}&rdquo;
+          </span>
+        )}
+      </span>
+    );
+  }
+  return <span className="text-ink">{String(value)}</span>;
+}
+
 function StructuredFeatures({ provision }) {
   const features = getStructuredFeatures(provision);
   if (!features) return null;
@@ -462,26 +520,37 @@ function StructuredFeatures({ provision }) {
   const keys = getOrderedFeatureKeys(provision.type, features);
   const renderable = [];
   const exceptionLikeKeys = new Set(['permittedExceptions', 'carveOuts', 'carveOutsList']);
-  let exceptionsField = null;
+  const exceptionsFields = [];
 
   for (const k of keys) {
     const raw = features[k];
-    const value = formatFeatureValue(raw);
-    if (value === null || value === undefined || value === '' || value === 'No') {
-      // Skip booleans that are false and empties — keeps the panel tight.
-      // (Booleans that are true become "Yes" and are shown.)
-      if (typeof raw === 'boolean' && raw === false) continue;
-      if (Array.isArray(raw) && raw.length === 0) continue;
-      if (raw === null || raw === undefined || raw === '') continue;
-    }
-    if (exceptionLikeKeys.has(k) && Array.isArray(raw) && raw.length > 0) {
-      exceptionsField = { key: k, items: raw };
+
+    // Skip clearly-empty values up-front.
+    if (raw === null || raw === undefined || raw === '') continue;
+    if (Array.isArray(raw) && raw.length === 0) continue;
+    if (typeof raw === 'boolean' && raw === false) continue;
+
+    // Tagged LIST (e.g. permittedExceptions, carveOuts) — render in
+    // exception/carve-out section regardless of feature key.
+    if (Array.isArray(raw) && (exceptionLikeKeys.has(k) || isListTaxonomyKey(k))) {
+      exceptionsFields.push({ key: k, items: raw });
       continue;
     }
-    renderable.push({ key: k, value });
+
+    // Backward-compat: a plain list of strings under an exception-like key.
+    if (exceptionLikeKeys.has(k) && Array.isArray(raw)) {
+      exceptionsFields.push({ key: k, items: raw });
+      continue;
+    }
+
+    const value = formatFeatureValue(raw);
+    if (value === null || value === undefined || value === '' || value === 'No') {
+      continue;
+    }
+    renderable.push({ key: k, value, raw });
   }
 
-  if (renderable.length === 0 && !exceptionsField) return null;
+  if (renderable.length === 0 && exceptionsFields.length === 0) return null;
 
   return (
     <div className="bg-bg/40 border border-border rounded-md p-3 space-y-2">
@@ -489,11 +558,13 @@ function StructuredFeatures({ provision }) {
         Structured Features
       </p>
       <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5">
-        {renderable.map(({ key, value }) => (
+        {renderable.map(({ key, value, raw }) => (
           <div key={key} className="text-xs font-ui flex flex-col">
             <dt className="text-inkFaint">{humanizeKey(key)}</dt>
             <dd className="text-ink">
-              {Array.isArray(value) ? (
+              {isTaggedItem(raw) ? (
+                <TaggedValue featureKey={key} value={raw} />
+              ) : Array.isArray(value) ? (
                 <ul className="list-disc list-inside space-y-0.5">
                   {value.map((v, i) => (
                     <li key={i} className="text-inkMid">{String(v)}</li>
@@ -506,21 +577,26 @@ function StructuredFeatures({ provision }) {
           </div>
         ))}
       </dl>
-      {exceptionsField && (
-        <div className="mt-2 pl-3 border-l-2 border-amber-200 bg-amber-50/40 rounded-r py-1.5 pr-2">
+      {exceptionsFields.map((field) => (
+        <div
+          key={field.key}
+          className="mt-2 pl-3 border-l-2 border-amber-200 bg-amber-50/40 rounded-r py-1.5 pr-2"
+        >
           <p className="text-[10px] font-ui font-medium text-amber-700 uppercase tracking-wider mb-1">
-            {humanizeKey(exceptionsField.key)}
+            {humanizeKey(field.key)}
           </p>
-          <ul className="space-y-0.5">
-            {exceptionsField.items.map((ex, i) => (
-              <li key={i} className="font-body text-xs text-inkMid leading-relaxed flex items-start gap-1.5">
-                <span className="text-amber-500 mt-0.5 shrink-0">&bull;</span>
-                <span>{typeof ex === 'string' ? ex : JSON.stringify(ex)}</span>
+          <ul className="space-y-1.5">
+            {field.items.map((ex, i) => (
+              <li key={i} className="flex items-start gap-1.5">
+                <span className="text-amber-500 mt-1 shrink-0">&bull;</span>
+                <div className="flex-1 min-w-0">
+                  <TaggedItem featureKey={field.key} item={ex} />
+                </div>
               </li>
             ))}
           </ul>
         </div>
-      )}
+      ))}
     </div>
   );
 }
