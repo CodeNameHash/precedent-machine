@@ -111,6 +111,10 @@ function getFeatures(provision) {
 }
 
 /* ── Parse structured content from provision text ── */
+// Conservative exception detection: only treat a line as an exception if it
+// BEGINS with one of these markers. Bullets/list markers alone are not enough.
+const EXCEPTION_PREFIX_RE = /^(except\b|other than\b|provided that\b|provided,\s*however,?\s*that\b|notwithstanding\b)/i;
+
 function parseProvisionText(text) {
   if (!text) return { header: '', subclauses: [], exceptions: [] };
 
@@ -119,25 +123,31 @@ function parseProvisionText(text) {
   const subclauses = [];
   const exceptions = [];
   let inExceptions = false;
+  let substantiveCharsSoFar = 0;
 
   for (const line of lines) {
     const trimmed = line.trim();
     if (!trimmed) continue;
 
-    // Detect exception/carve-out lines
-    const isException = /^(\((?:[ivxlcdm]+|[a-z]|\d+)\)|[-*]|•|except|provided|other than|excluding|notwithstanding)/i.test(trimmed);
     const isSubclause = /^(\([A-Z]\)|\(\d+\)|Section\s)/i.test(trimmed);
+    // Only treat as an exception if it begins with one of the explicit markers
+    // AND we already have substantive provision text (at least 50 chars).
+    const startsWithExceptionMarker = EXCEPTION_PREFIX_RE.test(trimmed);
+    const isException = startsWithExceptionMarker && substantiveCharsSoFar >= 50;
 
     if (!header && !isException && !isSubclause) {
       header = trimmed;
+      substantiveCharsSoFar += trimmed.length;
     } else if (isException || inExceptions) {
       inExceptions = true;
       exceptions.push(trimmed);
     } else if (isSubclause) {
       subclauses.push(trimmed);
+      substantiveCharsSoFar += trimmed.length;
     } else if (header) {
       // Additional text after header, before exceptions
       subclauses.push(trimmed);
+      substantiveCharsSoFar += trimmed.length;
     }
   }
 
@@ -148,6 +158,12 @@ function parseProvisionText(text) {
   }
 
   return { header, subclauses, exceptions };
+}
+
+/* ── Detect "General / Preamble" provisions ── */
+function isPreambleProvision(provision) {
+  const cat = (provision?.category || '').toLowerCase().trim();
+  return cat === 'general / preamble' || cat === 'general/preamble' || cat === 'preamble';
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -303,7 +319,11 @@ function ProvisionCard({ provision, onEdit }) {
   const status = getProvisionStatus(provision);
   const st = STATUS[status];
   const features = getFeatures(provision);
-  const parsed = useMemo(() => parseProvisionText(provision.full_text), [provision.full_text]);
+  const isPreamble = isPreambleProvision(provision);
+  const parsed = useMemo(
+    () => (isPreamble ? { header: '', subclauses: [], exceptions: [] } : parseProvisionText(provision.full_text)),
+    [provision.full_text, isPreamble]
+  );
 
   return (
     <div
@@ -325,57 +345,68 @@ function ProvisionCard({ provision, onEdit }) {
 
       {/* Structured provision content */}
       <div className="space-y-2">
-        {/* Main concept/obligation as header */}
-        {parsed.header && (
-          <p className="font-body text-sm text-ink leading-relaxed font-medium">
-            {parsed.header.length > 300 ? parsed.header.substring(0, 300) + '...' : parsed.header}
-          </p>
-        )}
-
-        {/* Sub-clauses as indented items */}
-        {parsed.subclauses.length > 0 && (
-          <div className="ml-3 space-y-1">
-            {parsed.subclauses.slice(0, 5).map((sc, i) => (
-              <p key={i} className="font-body text-xs text-inkMid leading-relaxed flex items-start gap-1.5">
-                <span className="text-inkFaint mt-0.5 shrink-0">--</span>
-                <span>{sc.length > 200 ? sc.substring(0, 200) + '...' : sc}</span>
-              </p>
-            ))}
-            {parsed.subclauses.length > 5 && (
-              <p className="text-[10px] font-ui text-inkFaint italic">
-                +{parsed.subclauses.length - 5} more sub-clauses
+        {/* General / Preamble: show full text untruncated and unparsed */}
+        {isPreamble ? (
+          provision.full_text && (
+            <p className="font-body text-sm text-ink leading-relaxed whitespace-pre-wrap">
+              {provision.full_text}
+            </p>
+          )
+        ) : (
+          <>
+            {/* Main concept/obligation as header */}
+            {parsed.header && (
+              <p className="font-body text-sm text-ink leading-relaxed font-medium">
+                {parsed.header.length > 300 ? parsed.header.substring(0, 300) + '...' : parsed.header}
               </p>
             )}
-          </div>
-        )}
 
-        {/* Exceptions/carve-outs as bulleted list */}
-        {parsed.exceptions.length > 0 && (
-          <div className="ml-3 mt-1 pl-3 border-l-2 border-amber-200 bg-amber-50/50 rounded-r py-1">
-            <p className="text-[10px] font-ui font-medium text-amber-700 uppercase tracking-wider mb-1">
-              Exceptions / Carve-outs
-            </p>
-            <ul className="space-y-0.5">
-              {parsed.exceptions.slice(0, 4).map((ex, i) => (
-                <li key={i} className="font-body text-xs text-inkMid leading-relaxed flex items-start gap-1.5">
-                  <span className="text-amber-500 mt-0.5 shrink-0">&bull;</span>
-                  <span>{ex.length > 200 ? ex.substring(0, 200) + '...' : ex}</span>
-                </li>
-              ))}
-              {parsed.exceptions.length > 4 && (
-                <li className="text-[10px] font-ui text-inkFaint italic ml-4">
-                  +{parsed.exceptions.length - 4} more exceptions
-                </li>
-              )}
-            </ul>
-          </div>
-        )}
+            {/* Sub-clauses as indented items */}
+            {parsed.subclauses.length > 0 && (
+              <div className="ml-3 space-y-1">
+                {parsed.subclauses.slice(0, 5).map((sc, i) => (
+                  <p key={i} className="font-body text-xs text-inkMid leading-relaxed flex items-start gap-1.5">
+                    <span className="text-inkFaint mt-0.5 shrink-0">--</span>
+                    <span>{sc.length > 200 ? sc.substring(0, 200) + '...' : sc}</span>
+                  </p>
+                ))}
+                {parsed.subclauses.length > 5 && (
+                  <p className="text-[10px] font-ui text-inkFaint italic">
+                    +{parsed.subclauses.length - 5} more sub-clauses
+                  </p>
+                )}
+              </div>
+            )}
 
-        {/* Fallback: if no structured content, show raw text */}
-        {!parsed.header && parsed.subclauses.length === 0 && parsed.exceptions.length === 0 && provision.full_text && (
-          <p className="font-body text-sm text-ink leading-relaxed line-clamp-3">
-            {provision.full_text}
-          </p>
+            {/* Exceptions/carve-outs as bulleted list — only when genuine exceptions exist */}
+            {parsed.exceptions.length > 0 && (
+              <div className="ml-3 mt-1 pl-3 border-l-2 border-amber-200 bg-amber-50/50 rounded-r py-1">
+                <p className="text-[10px] font-ui font-medium text-amber-700 uppercase tracking-wider mb-1">
+                  Exceptions / Carve-outs
+                </p>
+                <ul className="space-y-0.5">
+                  {parsed.exceptions.slice(0, 4).map((ex, i) => (
+                    <li key={i} className="font-body text-xs text-inkMid leading-relaxed flex items-start gap-1.5">
+                      <span className="text-amber-500 mt-0.5 shrink-0">&bull;</span>
+                      <span>{ex.length > 200 ? ex.substring(0, 200) + '...' : ex}</span>
+                    </li>
+                  ))}
+                  {parsed.exceptions.length > 4 && (
+                    <li className="text-[10px] font-ui text-inkFaint italic ml-4">
+                      +{parsed.exceptions.length - 4} more exceptions
+                    </li>
+                  )}
+                </ul>
+              </div>
+            )}
+
+            {/* Fallback: if no structured content, show raw text */}
+            {!parsed.header && parsed.subclauses.length === 0 && parsed.exceptions.length === 0 && provision.full_text && (
+              <p className="font-body text-sm text-ink leading-relaxed line-clamp-3">
+                {provision.full_text}
+              </p>
+            )}
+          </>
         )}
       </div>
 
@@ -746,6 +777,7 @@ function EditPanel({
   const [editType, setEditType] = useState(provision?.type || '');
   const [editCategory, setEditCategory] = useState(provision?.category || '');
   const [editFav, setEditFav] = useState(provision?.ai_favorability || 'neutral');
+  const [editFullText, setEditFullText] = useState(provision?.full_text || '');
   const [features, setFeatures] = useState([]);
   const [newFeature, setNewFeature] = useState('');
   const [saving, setSaving] = useState(false);
@@ -755,6 +787,7 @@ function EditPanel({
       setEditType(provision.type || '');
       setEditCategory(provision.category || '');
       setEditFav(provision.ai_favorability || 'neutral');
+      setEditFullText(provision.full_text || '');
       setFeatures(getFeatures(provision));
     }
   }, [provision]);
@@ -767,14 +800,21 @@ function EditPanel({
   }, [editType, allCategories]);
 
   const handleSave = async () => {
+    if (!provision?.id) return;
     setSaving(true);
-    await onSave({
-      id: provision.id,
-      type: editType,
-      category: editCategory,
-      ai_favorability: editFav,
-    });
-    setSaving(false);
+    try {
+      await onSave({
+        id: provision.id,
+        type: editType,
+        category: editCategory,
+        ai_favorability: editFav,
+        full_text: editFullText,
+      });
+    } catch {
+      // parent already surfaced a toast; keep panel open so the user can retry
+    } finally {
+      setSaving(false);
+    }
   };
 
   const addFeature = () => {
@@ -869,21 +909,19 @@ function EditPanel({
           </div>
         </div>
 
-        {/* Text Preview */}
+        {/* Provision Text (editable) */}
         <div className="space-y-2">
           <h4 className="font-ui text-xs font-medium text-inkFaint uppercase tracking-wider">Provision Text</h4>
-          <div className={`p-3 rounded border ${tc.border} ${tc.bg} max-h-48 overflow-y-auto`}>
-            <p className="font-body text-xs text-ink leading-relaxed whitespace-pre-wrap">
-              {provision.full_text ? (
-                provision.full_text.length > 500
-                  ? provision.full_text.substring(0, 500) + '...'
-                  : provision.full_text
-              ) : '(no text)'}
-            </p>
-          </div>
+          <textarea
+            value={editFullText}
+            onChange={e => setEditFullText(e.target.value)}
+            rows={10}
+            className={`w-full p-3 rounded border ${tc.border} ${tc.bg} font-body text-xs text-ink leading-relaxed whitespace-pre-wrap focus:outline-none focus:ring-1 focus:ring-accent resize-y`}
+            placeholder="(no text)"
+          />
           <p className="text-[10px] font-ui text-inkFaint">
-            {provision.full_text ? `${provision.full_text.length} characters` : ''}
-            {' '}-- Select text in the document to adjust boundaries
+            {`${editFullText.length} characters`}
+            {' '}-- Edit text directly, or select text in the document to adjust boundaries
           </p>
         </div>
 
@@ -1159,6 +1197,10 @@ export default function ReviewPage() {
 
   /* ── Save edits ── */
   const handleSaveProvision = useCallback(async (updates) => {
+    if (!updates || !updates.id) {
+      addToast('Error: missing provision id', 'error');
+      throw new Error('missing provision id');
+    }
     try {
       const resp = await fetch('/api/provisions', {
         method: 'PATCH',
@@ -1166,12 +1208,15 @@ export default function ReviewPage() {
         body: JSON.stringify(updates),
       });
       const data = await resp.json();
-      if (data.error) throw new Error(data.error);
+      if (!resp.ok || data.error) {
+        throw new Error(data.error || `HTTP ${resp.status}`);
+      }
       addToast('Provision updated', 'success');
-      refetchProvs();
+      await refetchProvs();
       setEditingProvision(null);
     } catch (err) {
       addToast(`Error: ${err.message}`, 'error');
+      throw err;
     }
   }, [addToast, refetchProvs]);
 

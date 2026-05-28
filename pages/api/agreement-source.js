@@ -7,31 +7,35 @@ export default async function handler(req, res) {
   if (req.method === 'GET') {
     const { deal_id, id } = req.query;
 
-    // Fetch by agreement_source ID directly
-    if (id) {
-      const { data, error } = await sb.from('agreement_sources')
-        .select('id, title, full_text, metadata')
-        .eq('id', id).single();
-      if (error) return res.status(404).json({ error: error.message });
-      return res.json({ agreement_source: data });
-    }
+    // Fetch by deal_id — read from deals.metadata.full_text
+    if (deal_id || id) {
+      const targetId = deal_id || id;
+      const { data: deal, error } = await sb.from('deals')
+        .select('id, metadata')
+        .eq('id', targetId)
+        .single();
 
-    // Fetch by deal_id — find agreement_source_id from provisions linked to this deal
-    if (deal_id) {
-      const { data: provs, error: provErr } = await sb.from('provisions')
-        .select('agreement_source_id')
-        .eq('deal_id', deal_id)
-        .not('agreement_source_id', 'is', null)
-        .limit(1);
-      if (provErr || !provs || provs.length === 0) {
+      if (error || !deal) {
         return res.json({ agreement_source: null });
       }
-      const srcId = provs[0].agreement_source_id;
-      const { data, error } = await sb.from('agreement_sources')
-        .select('id, title, full_text, metadata')
-        .eq('id', srcId).single();
-      if (error) return res.json({ agreement_source: null });
-      return res.json({ agreement_source: data });
+
+      const meta = deal.metadata || {};
+      if (!meta.full_text) {
+        return res.json({ agreement_source: null });
+      }
+
+      return res.json({
+        agreement_source: {
+          id: deal.id,
+          title: meta.agreement_title || 'Agreement',
+          full_text: meta.full_text,
+          metadata: {
+            char_count: meta.char_count,
+            ingested_at: meta.ingested_at,
+            pipeline: meta.pipeline,
+          },
+        },
+      });
     }
 
     return res.status(400).json({ error: 'id or deal_id required' });

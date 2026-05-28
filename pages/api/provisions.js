@@ -1,6 +1,6 @@
 import { getServiceSupabase } from '../../lib/supabase';
 
-const IMMUTABLE_FIELDS = ['deal_id', 'full_text'];
+const IMMUTABLE_FIELDS = ['deal_id'];
 
 export default async function handler(req, res) {
   const sb = getServiceSupabase();
@@ -47,10 +47,19 @@ export default async function handler(req, res) {
       });
     }
     // Only allow updating columns that exist in the DB
-    const allowedFields = ['type', 'category', 'prohibition', 'exceptions', 'ai_favorability'];
+    const allowedFields = ['type', 'category', 'prohibition', 'exceptions', 'ai_favorability', 'full_text'];
     const safeUpdates = {};
     for (const key of allowedFields) {
       if (key in updates) safeUpdates[key] = updates[key];
+    }
+    if ('full_text' in safeUpdates) {
+      if (typeof safeUpdates.full_text !== 'string' || !safeUpdates.full_text.trim()) {
+        return res.status(400).json({ error: 'full_text cannot be empty' });
+      }
+      safeUpdates.full_text = safeUpdates.full_text.trim();
+    }
+    if (!id) {
+      return res.status(400).json({ error: 'id is required for PATCH' });
     }
     const { data, error } = await sb.from('provisions').update(safeUpdates).eq('id', id).select().single();
     if (error) return res.status(500).json({ error: error.message });
