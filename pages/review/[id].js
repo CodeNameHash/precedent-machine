@@ -99,15 +99,103 @@ function getProvisionStatus(p) {
   return 'unreviewed';
 }
 
-/* ── Parse features from ai_metadata ── */
+/* ── Parse ai_metadata (handles string-vs-object payloads) ── */
+function getAiMetadata(provision) {
+  if (!provision || !provision.ai_metadata) return null;
+  if (typeof provision.ai_metadata === 'string') {
+    try { return JSON.parse(provision.ai_metadata); } catch { return null; }
+  }
+  return provision.ai_metadata;
+}
+
+/* ── Parse structured features object from ai_metadata ── */
+function getStructuredFeatures(provision) {
+  const meta = getAiMetadata(provision);
+  if (!meta || !meta.features) return null;
+  const feats = meta.features;
+  // Treat empty object as "no features"
+  if (typeof feats !== 'object' || Array.isArray(feats)) return null;
+  const keys = Object.keys(feats);
+  if (keys.length === 0) return null;
+  return feats;
+}
+
+/* ── Parse features from ai_metadata (flat chip list for backward-compat) ── */
 function getFeatures(provision) {
-  if (!provision.ai_metadata) return [];
-  const meta = typeof provision.ai_metadata === 'string'
-    ? (() => { try { return JSON.parse(provision.ai_metadata); } catch { return {}; } })()
-    : provision.ai_metadata;
+  const meta = getAiMetadata(provision);
+  if (!meta) return [];
   if (meta.key_terms) return meta.key_terms;
-  if (meta.features) return Object.entries(meta.features).map(([k, v]) => `${k}: ${v}`);
+  if (meta.features && typeof meta.features === 'object' && !Array.isArray(meta.features)) {
+    return Object.entries(meta.features)
+      .filter(([, v]) => {
+        if (v === null || v === undefined || v === '' || v === false) return false;
+        if (Array.isArray(v) && v.length === 0) return false;
+        return true;
+      })
+      .map(([k, v]) => {
+        if (Array.isArray(v)) return `${k}: ${v.length} item${v.length === 1 ? '' : 's'}`;
+        if (typeof v === 'boolean') return k;
+        return `${k}: ${v}`;
+      });
+  }
   return [];
+}
+
+/* ── Friendly label conversion (camelCase / snake_case → Title Case) ── */
+function humanizeKey(key) {
+  return String(key)
+    .replace(/[_-]+/g, ' ')
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/\b\w/g, (c) => c.toUpperCase())
+    .trim();
+}
+
+function formatFeatureValue(v) {
+  if (v === null || v === undefined) return null;
+  if (typeof v === 'boolean') return v ? 'Yes' : 'No';
+  if (Array.isArray(v)) return v;
+  return String(v);
+}
+
+/* ── Per-type field display order — drives StructuredFeatures layout ── */
+const FEATURE_DISPLAY_ORDER = {
+  IOC: [
+    'mainObligation', 'consentStandard', 'dollarThreshold', 'effortsStandard',
+    'materialityQualifier', 'scheduleReference',
+    'ordinaryCourseCarveout', 'requiredByLawCarveout', 'pandemicCarveout',
+    'permittedExceptions', 'crossReferences',
+  ],
+  'COND-M': ['mainCondition', 'bringDownStandard', 'tieredBringDown', 'tiers', 'certificationRequired', 'dollarThreshold', 'scheduleReference'],
+  'COND-B': ['mainCondition', 'bringDownStandard', 'tieredBringDown', 'tiers', 'maeConditionStandalone', 'certificationRequired', 'dollarThreshold', 'dissentingSharesThreshold', 'scheduleReference'],
+  'COND-S': ['mainCondition', 'bringDownStandard', 'tieredBringDown', 'tiers', 'fundsCondition', 'certificationRequired', 'dollarThreshold', 'scheduleReference'],
+  COND: ['mainCondition'],
+  NOSOL: ['mainConcept', 'noticePeriod', 'matchingPeriod', 'subsequentMatching', 'subsequentMatchingPeriod', 'goShopWindow', 'informationRights', 'confidentialityRequired', 'fiduciaryOutStandard', 'fiduciaryCarveoutThreshold', 'superiorProposalPercentage', 'interveningEventProvision', 'standstillWaiver', 'dontAskDontWaive'],
+  ANTI: ['mainConcept', 'effortsStandard', 'hellOrHighWater', 'divestitureCap', 'divestitureCapDescription', 'litigationObligation', 'partyControlsStrategy', 'filingDeadline', 'foreignFilingsRequired', 'interimOperatingRestrictions', 'pullAndRefileRight', 'burdensomConditionDefined'],
+  TERMR: ['mainConcept', 'partyWhoCanTerminate', 'terminationTriggers', 'curePeriod', 'outsideDate', 'outsideDateMonths', 'extensionAvailable', 'extensionPeriod', 'extensionTrigger', 'superiorProposalTermination', 'faultBasedExclusion', 'tickingFee'],
+  TERMF: ['mainConcept', 'triggerEvents', 'feeAmount', 'feePercentage', 'reverseFeeAmount', 'reverseFeePercentage', 'tailPeriod', 'soleRemedy', 'willfulBreachException', 'expenseReimbursement', 'expenseReimbursementCap', 'nakedNoVoteFee'],
+  DEF: ['mainConcept', 'canonicalTerm', 'definitionText', 'carveOuts', 'carveOutsList', 'disproportionateImpactClause', 'disproportionateImpact', 'disproportionateImpactScope', 'knowledgeStandard', 'knowledgePersons', 'ordinaryCourseQualifier', 'pandemicCarveout', 'cyberSecurityCarveout', 'superiorProposalPercentage', 'acquisitionProposalPercentage', 'willfulBreachDefinition', 'crossReferences'],
+  STRUCT: ['mainConcept', 'mergerForm', 'survivingEntity', 'closingConditionsPrecedent'],
+  CONSID: ['mainConcept', 'considerationType', 'perShareAmount', 'exchangeRatio', 'equityAwardTreatment', 'appraisalRightsAvailable', 'withholdingProvision', 'proration'],
+  'REP-T': ['mainConcept', 'bringDownStandard', 'materialityQualifier', 'knowledgeQualifier', 'survivalPeriod', 'scheduleReference', 'crossReferences'],
+  'REP-B': ['mainConcept', 'bringDownStandard', 'materialityQualifier', 'knowledgeQualifier', 'solvencyRepIncluded', 'financingRepIncluded', 'crossReferences'],
+  COV: ['mainConcept', 'accessScope', 'indemnificationPeriod', 'employeeBenefitPeriod', 'financingCooperation', 'cvrIncluded'],
+  MISC: ['mainConcept', 'governingLaw', 'jurisdictionExclusive', 'juryWaiver', 'specificPerformance', 'thirdPartyBeneficiaryExceptions'],
+};
+
+function getOrderedFeatureKeys(typeKey, featuresObj) {
+  const order = FEATURE_DISPLAY_ORDER[typeKey] || [];
+  const seen = new Set();
+  const ordered = [];
+  for (const k of order) {
+    if (k in featuresObj) {
+      ordered.push(k);
+      seen.add(k);
+    }
+  }
+  for (const k of Object.keys(featuresObj)) {
+    if (!seen.has(k)) ordered.push(k);
+  }
+  return ordered;
 }
 
 /* ── Parse structured content from provision text ── */
@@ -334,6 +422,81 @@ function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelect
 }
 
 /* ═══════════════════════════════════════════════════════════
+   STRUCTURED FEATURES — renders the type-specific schema
+   directly from ai_metadata.features. Falls back gracefully
+   for older provisions that lack this payload.
+   ═══════════════════════════════════════════════════════════ */
+function StructuredFeatures({ provision }) {
+  const features = getStructuredFeatures(provision);
+  if (!features) return null;
+
+  const keys = getOrderedFeatureKeys(provision.type, features);
+  const renderable = [];
+  const exceptionLikeKeys = new Set(['permittedExceptions', 'carveOuts', 'carveOutsList']);
+  let exceptionsField = null;
+
+  for (const k of keys) {
+    const raw = features[k];
+    const value = formatFeatureValue(raw);
+    if (value === null || value === undefined || value === '' || value === 'No') {
+      // Skip booleans that are false and empties — keeps the panel tight.
+      // (Booleans that are true become "Yes" and are shown.)
+      if (typeof raw === 'boolean' && raw === false) continue;
+      if (Array.isArray(raw) && raw.length === 0) continue;
+      if (raw === null || raw === undefined || raw === '') continue;
+    }
+    if (exceptionLikeKeys.has(k) && Array.isArray(raw) && raw.length > 0) {
+      exceptionsField = { key: k, items: raw };
+      continue;
+    }
+    renderable.push({ key: k, value });
+  }
+
+  if (renderable.length === 0 && !exceptionsField) return null;
+
+  return (
+    <div className="bg-bg/40 border border-border rounded-md p-3 space-y-2">
+      <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+        Structured Features
+      </p>
+      <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5">
+        {renderable.map(({ key, value }) => (
+          <div key={key} className="text-xs font-ui flex flex-col">
+            <dt className="text-inkFaint">{humanizeKey(key)}</dt>
+            <dd className="text-ink">
+              {Array.isArray(value) ? (
+                <ul className="list-disc list-inside space-y-0.5">
+                  {value.map((v, i) => (
+                    <li key={i} className="text-inkMid">{String(v)}</li>
+                  ))}
+                </ul>
+              ) : (
+                <span className="text-ink">{value}</span>
+              )}
+            </dd>
+          </div>
+        ))}
+      </dl>
+      {exceptionsField && (
+        <div className="mt-2 pl-3 border-l-2 border-amber-200 bg-amber-50/40 rounded-r py-1.5 pr-2">
+          <p className="text-[10px] font-ui font-medium text-amber-700 uppercase tracking-wider mb-1">
+            {humanizeKey(exceptionsField.key)}
+          </p>
+          <ul className="space-y-0.5">
+            {exceptionsField.items.map((ex, i) => (
+              <li key={i} className="font-body text-xs text-inkMid leading-relaxed flex items-start gap-1.5">
+                <span className="text-amber-500 mt-0.5 shrink-0">&bull;</span>
+                <span>{typeof ex === 'string' ? ex : JSON.stringify(ex)}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
    PROVISION CARD — structured display with formatting
    ═══════════════════════════════════════════════════════════ */
 function ProvisionCard({ provision, onEdit }) {
@@ -341,12 +504,14 @@ function ProvisionCard({ provision, onEdit }) {
   const fav = favBadge(provision.ai_favorability);
   const status = getProvisionStatus(provision);
   const st = STATUS[status];
+  const structured = getStructuredFeatures(provision);
   const features = getFeatures(provision);
   const isPreamble = isPreambleProvision(provision);
   const parsed = useMemo(
-    () => (isPreamble ? { header: '', subclauses: [], exceptions: [] } : parseProvisionText(provision.full_text)),
-    [provision.full_text, isPreamble]
+    () => (isPreamble || structured ? { header: '', subclauses: [], exceptions: [] } : parseProvisionText(provision.full_text)),
+    [provision.full_text, isPreamble, structured]
   );
+  const [showFullText, setShowFullText] = useState(false);
 
   return (
     <div
@@ -375,8 +540,32 @@ function ProvisionCard({ provision, onEdit }) {
               {provision.full_text}
             </p>
           )
+        ) : structured ? (
+          <>
+            {/* New structured-features rendering path */}
+            <StructuredFeatures provision={provision} />
+
+            {/* Full text collapsed below */}
+            {provision.full_text && (
+              <div>
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); setShowFullText((v) => !v); }}
+                  className="text-[10px] font-ui text-inkFaint hover:text-ink uppercase tracking-wider"
+                >
+                  {showFullText ? 'Hide Full Text' : 'Show Full Text'}
+                </button>
+                {showFullText && (
+                  <p className="font-body text-xs text-inkMid leading-relaxed whitespace-pre-wrap mt-1 p-2 bg-bg/40 rounded border border-border">
+                    {provision.full_text}
+                  </p>
+                )}
+              </div>
+            )}
+          </>
         ) : (
           <>
+            {/* Legacy text-parsing fallback for older provisions */}
             {/* Main concept/obligation as header */}
             {parsed.header && (
               <p className="font-body text-sm text-ink leading-relaxed font-medium">
@@ -433,8 +622,8 @@ function ProvisionCard({ provision, onEdit }) {
         )}
       </div>
 
-      {/* Features as chips */}
-      {features.length > 0 && (
+      {/* Features as chips (legacy path — only shown when structured panel is absent) */}
+      {!structured && features.length > 0 && (
         <div className="flex flex-wrap gap-1 mt-2">
           {features.map((f, i) => (
             <span key={i} className="text-[10px] font-ui px-2 py-0.5 rounded bg-bg text-inkMid border border-border">
