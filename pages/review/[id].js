@@ -779,7 +779,6 @@ function ProvisionCard({ provision, onEdit }) {
   const fav = favBadge(provision.ai_favorability);
   const status = getProvisionStatus(provision);
   const st = STATUS[status];
-  const isPreamble = isPreambleProvision(provision);
   const [showFullText, setShowFullText] = useState(false);
 
   return (
@@ -800,11 +799,12 @@ function ProvisionCard({ provision, onEdit }) {
         </span>
       </div>
 
-      {/* Structured summary ALWAYS at the top (skipped for preamble entries) */}
+      {/* Structured summary ALWAYS at the top.
+          For preamble entries, this surfaces section-wide shared fields
+          (e.g. ordinaryCourseCarveout, requiredByLawCarveout) that are
+          hidden on the non-preamble provisions of the same section. */}
       <div className="space-y-2">
-        {!isPreamble && (
-          <StructuredFeatures provision={provision} />
-        )}
+        <StructuredFeatures provision={provision} />
 
         {/* Full text below — collapsible, default collapsed */}
         <div>
