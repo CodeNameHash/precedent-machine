@@ -14,6 +14,7 @@ import {
   isListTaxonomyKey,
   labelForCode,
 } from '../../lib/taxonomy';
+import { getFeaturesForType } from '../../lib/rubric';
 
 /* ── Type & Category Labels ── */
 const TYPE_LABELS = {
@@ -226,6 +227,27 @@ function getOrderedFeatureKeys(typeKey, featuresObj) {
     }
   }
   for (const k of Object.keys(featuresObj)) {
+    if (!seen.has(k)) ordered.push(k);
+  }
+  return ordered;
+}
+
+/* ── Return the expected feature schema keys for a provision type
+ *    (drawn from the rubric FEATURES, ordered by FEATURE_DISPLAY_ORDER
+ *    when available, otherwise by the rubric's own order). */
+function getFeatureSchema(typeKey) {
+  const schema = getFeaturesForType(typeKey) || [];
+  const schemaKeys = schema.map((f) => f.key);
+  const order = FEATURE_DISPLAY_ORDER[typeKey] || [];
+  const seen = new Set();
+  const ordered = [];
+  for (const k of order) {
+    if (schemaKeys.includes(k)) {
+      ordered.push(k);
+      seen.add(k);
+    }
+  }
+  for (const k of schemaKeys) {
     if (!seen.has(k)) ordered.push(k);
   }
   return ordered;
@@ -517,41 +539,50 @@ function TaggedValue({ featureKey, value }) {
   return <span className="text-ink">{String(value)}</span>;
 }
 
-function StructuredFeatures({ provision }) {
-  const features = getStructuredFeatures(provision);
-  if (!features) return null;
+/* Returns true when a feature value is considered "empty" for display. */
+function isEmptyValue(raw) {
+  if (raw === null || raw === undefined) return true;
+  if (raw === '') return true;
+  if (Array.isArray(raw) && raw.length === 0) return true;
+  return false;
+}
 
-  const keys = getOrderedFeatureKeys(provision.type, features);
-  const renderable = [];
+function StructuredFeatures({ provision }) {
+  const features = getStructuredFeatures(provision) || {};
   const exceptionLikeKeys = new Set(['permittedExceptions', 'carveOuts', 'carveOutsList']);
+
+  // Schema keys for the provision type — always shown, with "—" if missing.
+  const schemaKeys = getFeatureSchema(provision.type);
+
+  // Merge in any extra keys actually present in the data that aren't in the
+  // schema (forward-compat / legacy data).
+  const extraKeys = Object.keys(features).filter((k) => !schemaKeys.includes(k));
+  const allKeys = [...schemaKeys, ...extraKeys];
+
+  const renderable = [];
   const exceptionsFields = [];
 
-  for (const k of keys) {
+  for (const k of allKeys) {
     const raw = features[k];
 
-    // Skip clearly-empty values up-front.
-    if (raw === null || raw === undefined || raw === '') continue;
-    if (Array.isArray(raw) && raw.length === 0) continue;
-    if (typeof raw === 'boolean' && raw === false) continue;
-
-    // Tagged LIST (e.g. permittedExceptions, carveOuts) — render in
-    // exception/carve-out section regardless of feature key.
-    if (Array.isArray(raw) && (exceptionLikeKeys.has(k) || isListTaxonomyKey(k))) {
-      exceptionsFields.push({ key: k, items: raw });
+    // Tagged or plain LIST (e.g. permittedExceptions, carveOuts) — render in
+    // exception/carve-out section regardless of contents (even when empty).
+    if (exceptionLikeKeys.has(k) || isListTaxonomyKey(k)) {
+      exceptionsFields.push({ key: k, items: Array.isArray(raw) ? raw : [] });
       continue;
     }
 
-    // Backward-compat: a plain list of strings under an exception-like key.
-    if (exceptionLikeKeys.has(k) && Array.isArray(raw)) {
-      exceptionsFields.push({ key: k, items: raw });
+    if (isEmptyValue(raw)) {
+      renderable.push({ key: k, value: null, raw: null, empty: true });
       continue;
     }
 
     const value = formatFeatureValue(raw);
-    if (value === null || value === undefined || value === '' || value === 'No') {
+    if (value === null || value === undefined || value === '') {
+      renderable.push({ key: k, value: null, raw: null, empty: true });
       continue;
     }
-    renderable.push({ key: k, value, raw });
+    renderable.push({ key: k, value, raw, empty: false });
   }
 
   if (renderable.length === 0 && exceptionsFields.length === 0) return null;
@@ -559,14 +590,16 @@ function StructuredFeatures({ provision }) {
   return (
     <div className="bg-bg/40 border border-border rounded-md p-3 space-y-2">
       <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
-        Structured Features
+        Structured Summary
       </p>
       <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5">
-        {renderable.map(({ key, value, raw }) => (
+        {renderable.map(({ key, value, raw, empty }) => (
           <div key={key} className="text-xs font-ui flex flex-col">
             <dt className="text-inkFaint">{humanizeKey(key)}</dt>
-            <dd className="text-ink">
-              {isTaggedItem(raw) ? (
+            <dd className={empty ? 'text-inkFaint/70 italic' : 'text-ink'}>
+              {empty ? (
+                <span>None</span>
+              ) : isTaggedItem(raw) ? (
                 <TaggedValue featureKey={key} value={raw} />
               ) : Array.isArray(value) ? (
                 <ul className="list-disc list-inside space-y-0.5">
@@ -589,16 +622,20 @@ function StructuredFeatures({ provision }) {
           <p className="text-[10px] font-ui font-medium text-amber-700 uppercase tracking-wider mb-1">
             {humanizeKey(field.key)}
           </p>
-          <ul className="space-y-1.5">
-            {field.items.map((ex, i) => (
-              <li key={i} className="flex items-start gap-1.5">
-                <span className="text-amber-500 mt-1 shrink-0">&bull;</span>
-                <div className="flex-1 min-w-0">
-                  <TaggedItem featureKey={field.key} item={ex} />
-                </div>
-              </li>
-            ))}
-          </ul>
+          {field.items.length === 0 ? (
+            <p className="text-[11px] font-ui text-inkFaint/70 italic">None</p>
+          ) : (
+            <ul className="space-y-1.5">
+              {field.items.map((ex, i) => (
+                <li key={i} className="flex items-start gap-1.5">
+                  <span className="text-amber-500 mt-1 shrink-0">&bull;</span>
+                  <div className="flex-1 min-w-0">
+                    <TaggedItem featureKey={field.key} item={ex} />
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       ))}
     </div>
@@ -636,10 +673,8 @@ function ProvisionCard({ provision, onEdit }) {
   const fav = favBadge(provision.ai_favorability);
   const status = getProvisionStatus(provision);
   const st = STATUS[status];
-  const structured = getStructuredFeatures(provision);
-  const features = getFeatures(provision);
   const isPreamble = isPreambleProvision(provision);
-  const [showStructured, setShowStructured] = useState(false);
+  const [showFullText, setShowFullText] = useState(false);
 
   return (
     <div
@@ -659,45 +694,133 @@ function ProvisionCard({ provision, onEdit }) {
         </span>
       </div>
 
-      {/* Full text shown by default; structured summary is opt-in */}
+      {/* Structured summary ALWAYS at the top (skipped for preamble entries) */}
       <div className="space-y-2">
-        {provision.full_text ? (
-          <p className="font-body text-sm text-ink leading-relaxed whitespace-pre-wrap">
-            {renderFullTextWithRefs(provision.full_text)}
-          </p>
-        ) : (
-          <p className="font-ui text-xs text-inkFaint italic">No text available.</p>
-        )}
-
-        {/* Structured summary appears below the text when toggled on */}
-        {!isPreamble && structured && showStructured && (
+        {!isPreamble && (
           <StructuredFeatures provision={provision} />
         )}
-      </div>
 
-      {/* Legacy features chips (only when no structured panel exists) */}
-      {!structured && features.length > 0 && (
-        <div className="flex flex-wrap gap-1 mt-2">
-          {features.map((f, i) => (
-            <span key={i} className="text-[10px] font-ui px-2 py-0.5 rounded bg-bg text-inkMid border border-border">
-              {f}
-            </span>
-          ))}
-        </div>
-      )}
-
-      {/* Small unobtrusive toggle at the bottom — only when structured features exist */}
-      {!isPreamble && structured && (
-        <div className="mt-3 pt-2 border-t border-border/60 flex justify-end">
+        {/* Full text below — collapsible, default collapsed */}
+        <div>
           <button
             type="button"
-            onClick={(e) => { e.stopPropagation(); setShowStructured((v) => !v); }}
-            className="text-[10px] font-ui text-inkFaint hover:text-ink uppercase tracking-wider"
+            onClick={(e) => { e.stopPropagation(); setShowFullText((v) => !v); }}
+            className="text-[10px] font-ui text-inkFaint hover:text-ink uppercase tracking-wider flex items-center gap-1"
           >
-            {showStructured ? 'Hide Structured Summary' : 'Show Structured Summary'}
+            <span>{showFullText ? '−' : '+'}</span>
+            {showFullText ? 'Hide Full Text' : 'Show Full Text'}
           </button>
+          {showFullText && (
+            <div className="mt-2">
+              {provision.full_text ? (
+                <p className="font-body text-sm text-ink leading-relaxed whitespace-pre-wrap">
+                  {renderFullTextWithRefs(provision.full_text)}
+                </p>
+              ) : (
+                <p className="font-ui text-xs text-inkFaint italic">No text available.</p>
+              )}
+            </div>
+          )}
         </div>
-      )}
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PROVISION TABLE — tabular view of all provisions of one type.
+   Each row is a provision; columns are the type's feature keys.
+   ═══════════════════════════════════════════════════════════ */
+function formatCellValue(featureKey, raw) {
+  if (raw === null || raw === undefined || raw === '') return null;
+  if (Array.isArray(raw)) {
+    if (raw.length === 0) return null;
+    // Render list of items (tagged items show their label/code; plain strings as-is)
+    return raw
+      .map((item) => {
+        if (isTaggedItem(item)) {
+          const label = resolveTaggedLabel(featureKey, item);
+          return label || item.code;
+        }
+        return String(item);
+      })
+      .join('; ');
+  }
+  if (isTaggedItem(raw)) {
+    return resolveTaggedLabel(featureKey, raw) || raw.code;
+  }
+  const v = formatFeatureValue(raw);
+  if (v === null || v === undefined || v === '') return null;
+  return String(v);
+}
+
+function ProvisionTable({ provisions, type, onSelectProvision }) {
+  const schemaKeys = getFeatureSchema(type);
+  // If no schema, fall back to whatever keys exist in the data.
+  let columns = schemaKeys;
+  if (columns.length === 0) {
+    const allKeys = new Set();
+    provisions.forEach((p) => {
+      const feats = getStructuredFeatures(p);
+      if (feats) Object.keys(feats).forEach((k) => allKeys.add(k));
+    });
+    columns = Array.from(allKeys);
+  }
+
+  return (
+    <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="min-w-full text-xs font-ui">
+          <thead className="bg-bg/60 border-b border-border">
+            <tr>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap sticky left-0 bg-bg/60 z-10">
+                Category
+              </th>
+              {columns.map((k) => (
+                <th
+                  key={k}
+                  className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap"
+                >
+                  {humanizeKey(k)}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {provisions.map((p) => {
+              const features = getStructuredFeatures(p) || {};
+              return (
+                <tr key={p.id} className="hover:bg-bg/40 transition-colors">
+                  <td className="px-3 py-2 align-top whitespace-nowrap sticky left-0 bg-white z-10">
+                    <button
+                      type="button"
+                      onClick={() => onSelectProvision && onSelectProvision(p)}
+                      className="text-left text-accent hover:underline font-medium"
+                    >
+                      {p.category || 'General'}
+                    </button>
+                  </td>
+                  {columns.map((k) => {
+                    const cell = formatCellValue(k, features[k]);
+                    return (
+                      <td
+                        key={k}
+                        className={`px-3 py-2 align-top max-w-[260px] ${
+                          cell === null ? 'text-inkFaint/70 italic' : 'text-ink'
+                        }`}
+                      >
+                        <div className="whitespace-pre-wrap break-words">
+                          {cell === null ? '—' : cell}
+                        </div>
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
@@ -1877,6 +2000,9 @@ export default function ReviewPage() {
   /* ── Tab state: "provisions" or "document" ── */
   const [activeTab, setActiveTab] = useState('provisions');
 
+  /* ── Provisions sub-view: "cards" or "table" ── */
+  const [provisionView, setProvisionView] = useState('table');
+
   /* ── Filtered provisions based on sidebar selection ── */
   const filteredProvisions = useMemo(() => {
     // Single-provision view wins over type filter
@@ -1954,6 +2080,9 @@ export default function ReviewPage() {
   const handleFilterType = useCallback((type) => {
     setActiveFilter(type);
     setSelectedProvId(null); // clear single-provision view when changing type filter
+    // When clicking a category title, default to the Table view so the user
+    // sees all provisions of that type as rows side-by-side.
+    if (type !== null) setProvisionView('table');
   }, []);
 
   /* ── Sidebar provision click — show ONLY that provision in the main view ── */
@@ -1961,6 +2090,9 @@ export default function ReviewPage() {
     setSelectedProvId(provId);
     const prov = provisions.find(p => p.id === provId);
     if (prov) setActiveFilter(prov.type);
+    // Single-provision selection should use the card view so the user can
+    // see the full structured summary + collapsible text for that one item.
+    setProvisionView('cards');
   }, [provisions]);
 
   /* ── Edit provision ── */
@@ -2261,9 +2393,39 @@ export default function ReviewPage() {
             {/* Tab Content */}
             {provisions.length > 0 ? (
               <>
-                {/* Provisions Tab (card view) */}
+                {/* Provisions Tab */}
                 {activeTab === 'provisions' && (
                   <div className="space-y-4">
+                    {/* Cards | Table view toggle */}
+                    {filteredProvisions.length > 0 && (
+                      <div className="flex items-center justify-end gap-1">
+                        <div className="inline-flex border border-border rounded overflow-hidden">
+                          <button
+                            type="button"
+                            onClick={() => setProvisionView('cards')}
+                            className={`px-3 py-1 text-[11px] font-ui transition-colors ${
+                              provisionView === 'cards'
+                                ? 'bg-accent text-white'
+                                : 'bg-white text-inkMid hover:bg-bg'
+                            }`}
+                          >
+                            Cards
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setProvisionView('table')}
+                            className={`px-3 py-1 text-[11px] font-ui transition-colors border-l border-border ${
+                              provisionView === 'table'
+                                ? 'bg-accent text-white'
+                                : 'bg-white text-inkMid hover:bg-bg'
+                            }`}
+                          >
+                            Table
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
                     {Object.entries(filteredProvsByType).map(([type, provs]) => (
                       <div key={type} className="space-y-2">
                         <h2 className="font-display text-lg text-ink flex items-center gap-2">
@@ -2271,13 +2433,21 @@ export default function ReviewPage() {
                           {typeLabel(type)}
                           <span className="text-sm font-ui text-inkFaint font-normal">({provs.length})</span>
                         </h2>
-                        {provs.map(p => (
-                          <ProvisionCard
-                            key={p.id}
-                            provision={p}
-                            onEdit={handleEditProvision}
+                        {provisionView === 'table' ? (
+                          <ProvisionTable
+                            provisions={provs}
+                            type={type}
+                            onSelectProvision={handleEditProvision}
                           />
-                        ))}
+                        ) : (
+                          provs.map(p => (
+                            <ProvisionCard
+                              key={p.id}
+                              provision={p}
+                              onEdit={handleEditProvision}
+                            />
+                          ))
+                        )}
                       </div>
                     ))}
                     {filteredProvisions.length === 0 && (
