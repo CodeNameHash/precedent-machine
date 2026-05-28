@@ -397,17 +397,39 @@ function ProvisionCard({ provision, onEdit }) {
    FULL DOCUMENT VIEW — reconstructed from provisions
    ═══════════════════════════════════════════════════════════ */
 function FullDocumentView({ provisions, onEditProvision }) {
-  // Sort provisions by sort_order, then by id as fallback
+  // Sort provisions in agreement order: sort_order first, then by section
+  // number (e.g. "1.01" < "1.02" < "2.01"), then by startChar / id.
+  // No grouping by type — render top-to-bottom like reading on EDGAR.
   const sorted = useMemo(() => {
+    const parseSectionNum = (s) => {
+      if (!s) return [Infinity, Infinity];
+      const m = String(s).match(/(\d+)\.(\d+)/);
+      if (!m) return [Infinity, Infinity];
+      return [parseInt(m[1], 10), parseInt(m[2], 10)];
+    };
+
     return [...provisions].sort((a, b) => {
-      if (a.sort_order != null && b.sort_order != null) return a.sort_order - b.sort_order;
+      // 1. sort_order (most reliable)
+      if (a.sort_order != null && b.sort_order != null) {
+        return a.sort_order - b.sort_order;
+      }
       if (a.sort_order != null) return -1;
       if (b.sort_order != null) return 1;
-      // Group by type as fallback
-      const typeOrder = Object.keys(TYPE_LABELS);
-      const ai = typeOrder.indexOf(a.type);
-      const bi = typeOrder.indexOf(b.type);
-      if (ai !== bi) return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
+
+      // 2. Section number (e.g. "1.01" vs "1.02")
+      const aSec = a.section_number || a.sectionNumber;
+      const bSec = b.section_number || b.sectionNumber;
+      const [aMaj, aMin] = parseSectionNum(aSec);
+      const [bMaj, bMin] = parseSectionNum(bSec);
+      if (aMaj !== bMaj) return aMaj - bMaj;
+      if (aMin !== bMin) return aMin - bMin;
+
+      // 3. Character position in source
+      const aStart = a.start_char ?? a.startChar ?? Infinity;
+      const bStart = b.start_char ?? b.startChar ?? Infinity;
+      if (aStart !== bStart) return aStart - bStart;
+
+      // 4. Stable fallback
       return (a.id || '').localeCompare(b.id || '');
     });
   }, [provisions]);
