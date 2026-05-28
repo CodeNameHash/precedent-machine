@@ -32,3 +32,16 @@ body {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* ─── Full Document view typography ─── */
+.doc-ref {
+  font-weight: 600;
+  color: #8B5A2B;
+}
+.doc-defined {
+  font-weight: 600;
+  font-style: italic;
+}
+.doc-toc {
+  font-family: 'DM Sans', sans-serif;
+}

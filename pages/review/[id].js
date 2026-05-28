@@ -6,6 +6,10 @@ import { useUser } from '../../lib/useUser';
 import { useToast } from '../../lib/useToast';
 import { Breadcrumbs, SkeletonCard, EmptyState } from '../../components/UI';
 import {
+  parseFormattedDocument,
+  stripFormattingMarkers,
+} from '../../lib/parser-v2/format-renderer';
+import {
   taxonomyForFeatureKey,
   isListTaxonomyKey,
   labelForCode,
@@ -778,17 +782,35 @@ function FullDocumentView({
     onConfirmReselect(text);
   };
 
-  // Build highlight regions by mapping each provision to a span in the raw
-  // source. Prefer explicit start_char/end_char if present; otherwise locate
-  // the provision's full_text via indexOf (exact, then 120-char head chunk).
+  // Detect whether the stored text uses our formatting markers. If so we
+  // render structured blocks; otherwise we fall back to the legacy <pre>
+  // rendering for older deals ingested before formatting was added.
+  const isFormatted = useMemo(
+    () => !!sourceText && sourceText.includes('[[') && sourceText.includes(']]'),
+    [sourceText]
+  );
+
+  // Plain text version of the source (no markers). Used to locate provision
+  // text via indexOf without the markers throwing off positions.
+  const plainText = useMemo(
+    () => (sourceText ? (isFormatted ? stripFormattingMarkers(sourceText) : sourceText) : ''),
+    [sourceText, isFormatted]
+  );
+
+  // Parsed block structure (only used when isFormatted).
+  const blocks = useMemo(
+    () => (isFormatted ? parseFormattedDocument(sourceText) : []),
+    [sourceText, isFormatted]
+  );
+
+  // Build highlight regions as offsets into the plain (marker-stripped) text.
+  // Both the structured renderer and the legacy <pre> rely on these.
   const regions = useMemo(() => {
-    if (!sourceText) return [];
+    if (!plainText) return [];
     const found = [];
-    const lowerSource = sourceText.toLowerCase();
+    const lowerSource = plainText.toLowerCase();
     const usedRanges = [];
 
-    // Stable order so later searches advance past earlier matches when
-    // provision bodies repeat similar phrasing.
     const ordered = [...provisions].sort((a, b) => {
       const aStart = a.start_char ?? a.startChar ?? a.sort_order ?? Infinity;
       const bStart = b.start_char ?? b.startChar ?? b.sort_order ?? Infinity;
@@ -796,22 +818,24 @@ function FullDocumentView({
     });
 
     ordered.forEach(p => {
-      // 1. Use explicit positions if available
-      const explicitStart = p.start_char ?? p.startChar;
-      const explicitEnd = p.end_char ?? p.endChar;
-      if (
-        Number.isFinite(explicitStart) &&
-        Number.isFinite(explicitEnd) &&
-        explicitStart >= 0 &&
-        explicitEnd <= sourceText.length &&
-        explicitEnd > explicitStart
-      ) {
-        found.push({ start: explicitStart, end: explicitEnd, provision: p });
-        usedRanges.push([explicitStart, explicitEnd]);
-        return;
+      // Use explicit positions only when not formatted — explicit indices
+      // refer to the original raw text, not the marker-stripped form.
+      if (!isFormatted) {
+        const explicitStart = p.start_char ?? p.startChar;
+        const explicitEnd = p.end_char ?? p.endChar;
+        if (
+          Number.isFinite(explicitStart) &&
+          Number.isFinite(explicitEnd) &&
+          explicitStart >= 0 &&
+          explicitEnd <= plainText.length &&
+          explicitEnd > explicitStart
+        ) {
+          found.push({ start: explicitStart, end: explicitEnd, provision: p });
+          usedRanges.push([explicitStart, explicitEnd]);
+          return;
+        }
       }
 
-      // 2. Locate provision text in source
       const pText = (p.full_text || '').trim();
       if (!pText) return;
 
@@ -822,19 +846,15 @@ function FullDocumentView({
       const tryFind = (needle, from) =>
         lowerSource.indexOf(needle.toLowerCase(), from);
 
-      // 2a. Exact match, advancing past earlier hits
       let idx = tryFind(pText, searchFrom);
       let matchLen = pText.length;
-
-      // 2b. Try from start if needed
       if (idx < 0) idx = tryFind(pText, 0);
 
-      // 2c. Head-chunk fallback (handles minor whitespace drift)
       if (idx < 0 && pText.length > 120) {
         const chunk = pText.substring(0, 120);
         idx = tryFind(chunk, searchFrom);
         if (idx < 0) idx = tryFind(chunk, 0);
-        if (idx >= 0) matchLen = Math.min(pText.length, sourceText.length - idx);
+        if (idx >= 0) matchLen = Math.min(pText.length, plainText.length - idx);
       }
 
       if (idx >= 0) {
@@ -843,7 +863,6 @@ function FullDocumentView({
       }
     });
 
-    // Sort by start position; drop overlapping later matches (earlier wins)
     found.sort((a, b) => a.start - b.start || a.end - b.end);
     const deduped = [];
     for (const r of found) {
@@ -851,7 +870,7 @@ function FullDocumentView({
       if (!last || r.start >= last.end) deduped.push(r);
     }
     return deduped;
-  }, [sourceText, provisions]);
+  }, [plainText, provisions, isFormatted]);
 
   if (!sourceText) {
     return (
@@ -866,24 +885,256 @@ function FullDocumentView({
     );
   }
 
-  // Build alternating segments: plain text + highlighted provision spans
+  // Build alternating segments for the legacy <pre> renderer (used when the
+  // stored text does not contain formatting markers — i.e. older ingests).
   const segments = [];
-  let cursor = 0;
-  regions.forEach((r, i) => {
-    if (r.start > cursor) {
-      segments.push({ type: 'text', content: sourceText.slice(cursor, r.start), key: `t-${i}` });
-    }
-    segments.push({
-      type: 'highlight',
-      content: sourceText.slice(r.start, r.end),
-      provision: r.provision,
-      key: `h-${r.provision.id || i}`,
+  if (!isFormatted) {
+    let cursor = 0;
+    regions.forEach((r, i) => {
+      if (r.start > cursor) {
+        segments.push({ type: 'text', content: plainText.slice(cursor, r.start), key: `t-${i}` });
+      }
+      segments.push({
+        type: 'highlight',
+        content: plainText.slice(r.start, r.end),
+        provision: r.provision,
+        key: `h-${r.provision.id || i}`,
+      });
+      cursor = r.end;
     });
-    cursor = r.end;
-  });
-  if (cursor < sourceText.length) {
-    segments.push({ type: 'text', content: sourceText.slice(cursor), key: 'tail' });
+    if (cursor < plainText.length) {
+      segments.push({ type: 'text', content: plainText.slice(cursor), key: 'tail' });
+    }
   }
+
+  // Render helper for highlighted text within a block.
+  const renderHighlightedText = (rawText, blockOffset) => {
+    // blockOffset is the offset of rawText within plainText. Find regions that
+    // intersect [blockOffset, blockOffset + rawText.length) and split.
+    if (!rawText) return null;
+    const end = blockOffset + rawText.length;
+    const local = regions.filter(r => r.start < end && r.end > blockOffset);
+    if (local.length === 0) return rawText;
+
+    const out = [];
+    let cur = blockOffset;
+    local.forEach((r, idx) => {
+      const s = Math.max(r.start, blockOffset);
+      const e = Math.min(r.end, end);
+      if (s > cur) out.push(<span key={`pt-${idx}`}>{plainText.slice(cur, s)}</span>);
+      const p = r.provision;
+      const tc = typeColor(p.type);
+      const isHovered = hoveredProvId === p.id;
+      out.push(
+        <span
+          key={`ph-${p.id || idx}`}
+          id={`prov-${p.id}`}
+          onClick={(ev) => { ev.stopPropagation(); onEditProvision(p); }}
+          onMouseEnter={() => onHoverProv && onHoverProv(p.id)}
+          onMouseLeave={() => onHoverProv && onHoverProv(null)}
+          className="relative cursor-pointer transition-colors rounded-sm"
+          style={{
+            backgroundColor: tc.hex || '#f9fafb',
+            boxShadow: isHovered
+              ? 'inset 3px 0 0 rgba(0,0,0,0.35)'
+              : `inset 2px 0 0 ${tc.hex || '#e5e7eb'}`,
+            paddingLeft: '3px',
+            paddingRight: '2px',
+          }}
+          title={`${typeLabel(p.type)} -- ${p.category || 'General'}`}
+        >
+          {plainText.slice(s, e)}
+        </span>
+      );
+      cur = e;
+    });
+    if (cur < end) out.push(<span key="pt-end">{plainText.slice(cur, end)}</span>);
+    return out;
+  };
+
+  // Walk parsed blocks and compute the running offset of each block's plain
+  // text content within `plainText`. Used so we know where in the global
+  // offset space each block's inline content lives, so we can intersect with
+  // provision regions for highlighting.
+  const renderInlineTokens = (inlineTokens, startOffset) => {
+    if (!inlineTokens) return null;
+    const out = [];
+    let off = startOffset;
+    inlineTokens.forEach((tok, i) => {
+      const t = tok.text || '';
+      if (tok.type === 'ref') {
+        out.push(<span key={`r-${i}`} className="doc-ref">{renderHighlightedText(t, off)}</span>);
+      } else if (tok.type === 'defined') {
+        out.push(<span key={`d-${i}`} className="doc-defined">{renderHighlightedText(t, off)}</span>);
+      } else {
+        out.push(<span key={`t-${i}`}>{renderHighlightedText(t, off)}</span>);
+      }
+      off += t.length;
+    });
+    return out;
+  };
+
+  // Walk blocks producing React nodes and tracking the offset into plainText.
+  const renderBlocks = (blockList) => {
+    const nodes = [];
+    let cursor = 0;
+    // The plainText has identical leading content to each block in order; we
+    // sync up by searching for each block's leading characters from `cursor`.
+    // This is robust against whitespace differences between blocks and the
+    // joined plain text.
+
+    const blockPlainLen = (b) => {
+      if (b.type === 'paragraph' || b.type === 'section') {
+        return (b.inline || []).reduce((s, t) => s + (t.text || '').length, 0)
+          + (b.type === 'section' ? (b.number.length + b.title.length + 4) : 0);
+      }
+      if (b.type === 'article') return b.number.length + b.title.length + 1;
+      if (b.type === 'article_title') return b.text.length;
+      if (b.type === 'center') return b.text.length;
+      if (b.type === 'toc') return 0; // handled separately
+      return 0;
+    };
+
+    blockList.forEach((b, i) => {
+      if (b.type === 'article') {
+        nodes.push(
+          <div key={`a-${i}`} className="doc-article">
+            <div className="text-center font-display text-xl font-bold mt-10 mb-1 tracking-wider">
+              {b.number}
+            </div>
+            {b.title && (
+              <div className="text-center font-display text-lg mb-6 italic">
+                {b.title}
+              </div>
+            )}
+          </div>
+        );
+        // Advance cursor past this block's plain text (best-effort).
+        const consume = `${b.number}${b.title ? '\n' + b.title : ''}`;
+        const idx = plainText.indexOf(consume, cursor);
+        if (idx >= 0) cursor = idx + consume.length;
+      } else if (b.type === 'article_title') {
+        nodes.push(
+          <div key={`at-${i}`} className="text-center font-display text-lg mb-6 italic">
+            {b.text}
+          </div>
+        );
+        const idx = plainText.indexOf(b.text, cursor);
+        if (idx >= 0) cursor = idx + b.text.length;
+      } else if (b.type === 'center') {
+        nodes.push(
+          <div key={`c-${i}`} className="text-center font-display text-2xl mt-8 mb-6 tracking-wide">
+            {b.text}
+          </div>
+        );
+        const idx = plainText.indexOf(b.text, cursor);
+        if (idx >= 0) cursor = idx + b.text.length;
+      } else if (b.type === 'toc') {
+        nodes.push(
+          <div key={`toc-${i}`} className="doc-toc my-8 p-5 bg-bg/50 rounded-lg border border-border text-sm">
+            {b.children.map((c, j) => {
+              if (c.type === 'toc_heading') {
+                return (
+                  <div key={j} className="text-center font-display text-xl font-bold mb-4 tracking-wider">
+                    {c.text}
+                  </div>
+                );
+              }
+              if (c.type === 'toc_article') {
+                return (
+                  <div key={j} className="mt-4 mb-1 text-center font-display font-bold">
+                    {c.number}{c.title ? ` -- ${c.title}` : ''}
+                  </div>
+                );
+              }
+              if (c.type === 'toc_entry') {
+                return (
+                  <div key={j} className="flex items-baseline gap-2 py-0.5">
+                    <span className="text-inkMid">{c.number}.</span>
+                    <span className="flex-1 truncate">{c.title}</span>
+                    {c.page && (
+                      <>
+                        <span className="flex-1 border-b border-dotted border-inkFaint/40 mx-1 mb-1" />
+                        <span className="text-inkMid tabular-nums">{c.page}</span>
+                      </>
+                    )}
+                  </div>
+                );
+              }
+              if (c.type === 'toc_text') {
+                return (
+                  <div key={j} className="text-inkMid my-2">
+                    {renderInlineTokens(c.inline, 0)}
+                  </div>
+                );
+              }
+              return null;
+            })}
+          </div>
+        );
+        // Advance past the TOC region. The TOC blocks in plainText end before
+        // the body preamble ("This AGREEMENT...") or the first body ARTICLE.
+        const tocStart = plainText.indexOf('TABLE OF CONTENTS', cursor);
+        if (tocStart >= 0) {
+          const candidates = [
+            plainText.indexOf('This AGREEMENT', tocStart + 'TABLE OF CONTENTS'.length),
+            plainText.indexOf('ARTICLE I\n', tocStart + 'TABLE OF CONTENTS'.length),
+            plainText.indexOf('WHEREAS', tocStart + 'TABLE OF CONTENTS'.length),
+          ].filter(x => x > 0);
+          cursor = candidates.length > 0
+            ? Math.min(...candidates)
+            : tocStart + 'TABLE OF CONTENTS'.length;
+        }
+      } else if (b.type === 'section') {
+        // Find offset of section heading in plainText
+        const headingStr = `${b.number} ${b.title}`.trim();
+        // Sync cursor on the section number
+        const idx = plainText.indexOf(b.number, cursor);
+        if (idx >= 0) cursor = idx;
+        const sectionStart = cursor;
+        // Section body inline text starts after "number title. " (roughly)
+        // We render headings as their own styled elements then body inline.
+        // Compute inlineStart = offset where the inline text begins.
+        // In plainText, the section likely reads: "SECTION X.XX. Title. body..."
+        // Skip past number + title in plainText:
+        const numLen = b.number.length;
+        let inlineStart = sectionStart + numLen;
+        // skip whitespace + title + ". " sequence
+        const after = plainText.substring(inlineStart);
+        const titleIdx = b.title ? after.indexOf(b.title) : -1;
+        if (titleIdx >= 0) {
+          inlineStart += titleIdx + b.title.length;
+          // skip optional ". "
+          while (inlineStart < plainText.length && /[. \n]/.test(plainText[inlineStart])) {
+            inlineStart++;
+          }
+        }
+        cursor = inlineStart;
+        const inlineLen = (b.inline || []).reduce((s, t) => s + (t.text || '').length, 0);
+        nodes.push(
+          <p key={`s-${i}`} className="my-3 leading-relaxed">
+            <span className="font-bold font-display">{b.number} </span>
+            {b.title && <span className="font-bold">{b.title}. </span>}
+            {renderInlineTokens(b.inline, cursor)}
+          </p>
+        );
+        cursor += inlineLen;
+      } else if (b.type === 'paragraph') {
+        const text = (b.inline || []).map(t => t.text || '').join('');
+        const idx = text ? plainText.indexOf(text.substring(0, Math.min(80, text.length)), cursor) : -1;
+        if (idx >= 0) cursor = idx;
+        const inlineStart = cursor;
+        nodes.push(
+          <p key={`p-${i}`} className="my-3 leading-relaxed">
+            {renderInlineTokens(b.inline, inlineStart)}
+          </p>
+        );
+        cursor += text.length;
+      }
+    });
+
+    return nodes;
+  };
 
   return (
     <div className="bg-white border border-border rounded-lg shadow-sm">
@@ -918,54 +1169,63 @@ function FullDocumentView({
         </div>
       </div>
 
-      {/* Document body — preserves whitespace like the original filing */}
-      <div ref={containerRef} className="p-6 md:p-10 max-h-[80vh] overflow-y-auto">
-        <pre
-          className="text-[14px] text-ink leading-[1.7] whitespace-pre-wrap break-words m-0"
-          style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}
-        >
-          {segments.map(seg => {
-            if (seg.type === 'text') {
-              return <span key={seg.key}>{seg.content}</span>;
-            }
-            const p = seg.provision;
-            const tc = typeColor(p.type);
-            const fav = favBadge(p.ai_favorability);
-            const isHovered = hoveredProvId === p.id;
-            return (
-              <span
-                key={seg.key}
-                id={`prov-${p.id}`}
-                onClick={(e) => { e.stopPropagation(); onEditProvision(p); }}
-                onMouseEnter={() => onHoverProv && onHoverProv(p.id)}
-                onMouseLeave={() => onHoverProv && onHoverProv(null)}
-                className="relative cursor-pointer transition-colors rounded-sm"
-                style={{
-                  backgroundColor: tc.hex || '#f9fafb',
-                  boxShadow: isHovered
-                    ? 'inset 3px 0 0 rgba(0,0,0,0.35)'
-                    : `inset 2px 0 0 ${tc.hex || '#e5e7eb'}`,
-                  paddingLeft: '4px',
-                  paddingRight: '2px',
-                }}
-                title={`${typeLabel(p.type)} -- ${p.category || 'General'}`}
-              >
-                {isHovered && (
-                  <span
-                    className={`absolute z-20 -top-6 left-0 inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-ui font-medium border whitespace-nowrap shadow-sm ${tc.border} ${tc.bg} ${tc.text}`}
-                    style={{ fontFamily: 'inherit' }}
-                  >
-                    <span>{typeLabel(p.type)}</span>
-                    <span className="text-inkFaint">&middot;</span>
-                    <span>{p.category || 'General'}</span>
-                    <span className={`ml-1 px-1 rounded ${fav.cls}`}>{fav.label}</span>
-                  </span>
-                )}
-                {seg.content}
-              </span>
-            );
-          })}
-        </pre>
+      {/* Document body */}
+      <div ref={containerRef} className="p-6 md:p-12 max-h-[80vh] overflow-y-auto">
+        {isFormatted ? (
+          <div
+            className="max-w-3xl mx-auto text-[15px] text-ink leading-[1.75]"
+            style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}
+          >
+            {renderBlocks(blocks)}
+          </div>
+        ) : (
+          <pre
+            className="text-[14px] text-ink leading-[1.7] whitespace-pre-wrap break-words m-0"
+            style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}
+          >
+            {segments.map(seg => {
+              if (seg.type === 'text') {
+                return <span key={seg.key}>{seg.content}</span>;
+              }
+              const p = seg.provision;
+              const tc = typeColor(p.type);
+              const fav = favBadge(p.ai_favorability);
+              const isHovered = hoveredProvId === p.id;
+              return (
+                <span
+                  key={seg.key}
+                  id={`prov-${p.id}`}
+                  onClick={(e) => { e.stopPropagation(); onEditProvision(p); }}
+                  onMouseEnter={() => onHoverProv && onHoverProv(p.id)}
+                  onMouseLeave={() => onHoverProv && onHoverProv(null)}
+                  className="relative cursor-pointer transition-colors rounded-sm"
+                  style={{
+                    backgroundColor: tc.hex || '#f9fafb',
+                    boxShadow: isHovered
+                      ? 'inset 3px 0 0 rgba(0,0,0,0.35)'
+                      : `inset 2px 0 0 ${tc.hex || '#e5e7eb'}`,
+                    paddingLeft: '4px',
+                    paddingRight: '2px',
+                  }}
+                  title={`${typeLabel(p.type)} -- ${p.category || 'General'}`}
+                >
+                  {isHovered && (
+                    <span
+                      className={`absolute z-20 -top-6 left-0 inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-ui font-medium border whitespace-nowrap shadow-sm ${tc.border} ${tc.bg} ${tc.text}`}
+                      style={{ fontFamily: 'inherit' }}
+                    >
+                      <span>{typeLabel(p.type)}</span>
+                      <span className="text-inkFaint">&middot;</span>
+                      <span>{p.category || 'General'}</span>
+                      <span className={`ml-1 px-1 rounded ${fav.cls}`}>{fav.label}</span>
+                    </span>
+                  )}
+                  {seg.content}
+                </span>
+              );
+            })}
+          </pre>
+        )}
       </div>
 
       {/* Floating "Use This Text" button while re-selecting */}
