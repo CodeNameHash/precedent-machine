@@ -1513,6 +1513,45 @@ export default function ReviewPage() {
     setEditingProvision(null);
   }, [addToast]);
 
+  /* ── Re-select Text: enter mode ── */
+  const handleReselectText = useCallback((provision) => {
+    if (!provision || !provision.id) return;
+    const label = `${typeLabel(provision.type)} -- ${provision.category || 'General'}`;
+    setReselectingProvId(provision.id);
+    setReselectingProvLabel(label);
+    setEditingProvision(null);
+    setActiveTab('document');
+  }, []);
+
+  /* ── Re-select Text: exit mode ── */
+  const handleCancelReselect = useCallback(() => {
+    setReselectingProvId(null);
+    setReselectingProvLabel('');
+  }, []);
+
+  /* ── Re-select Text: confirm with new text ── */
+  const handleConfirmReselect = useCallback(async (newText) => {
+    const provId = reselectingProvId;
+    if (!provId || !newText || !newText.trim()) return;
+    try {
+      const resp = await fetch('/api/provisions', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: provId, full_text: newText }),
+      });
+      const data = await resp.json();
+      if (!resp.ok || data.error) {
+        throw new Error(data.error || `HTTP ${resp.status}`);
+      }
+      addToast('Provision text updated', 'success');
+      await refetchProvs();
+      setReselectingProvId(null);
+      setReselectingProvLabel('');
+    } catch (err) {
+      addToast(`Error: ${err.message}`, 'error');
+    }
+  }, [reselectingProvId, addToast, refetchProvs]);
+
   /* ── Create Provision from Selection ── */
   const handleCreateProvision = useCallback(async (text) => {
     if (!id) return;
@@ -1746,6 +1785,10 @@ export default function ReviewPage() {
                     onEditProvision={handleEditProvision}
                     hoveredProvId={hoveredProvId}
                     onHoverProv={setHoveredProvId}
+                    isReselecting={!!reselectingProvId}
+                    reselectingProvLabel={reselectingProvLabel}
+                    onConfirmReselect={handleConfirmReselect}
+                    onCancelReselect={handleCancelReselect}
                   />
                 )}
               </>
@@ -1776,15 +1819,18 @@ export default function ReviewPage() {
             onFlag={handleFlag}
             onDelete={handleDelete}
             onProposeCode={handleProposeCode}
+            onReselectText={handleReselectText}
           />
         )}
       </div>
 
-      {/* Floating Create Provision Button */}
-      <CreateProvisionButton
-        selection={textSelection}
-        onCreateProvision={handleCreateProvision}
-      />
+      {/* Floating Create Provision Button (hidden while re-selecting text) */}
+      {!reselectingProvId && (
+        <CreateProvisionButton
+          selection={textSelection}
+          onCreateProvision={handleCreateProvision}
+        />
+      )}
 
       {/* Definition Tooltip */}
       <DefinitionTooltip def={hoveredDef} position={defPosition} />
