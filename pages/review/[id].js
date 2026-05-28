@@ -170,11 +170,25 @@ function isPreambleProvision(provision) {
    LEFT SIDEBAR — now acts as a FILTER, not a scroller
    ═══════════════════════════════════════════════════════════ */
 function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelectProvision, activeProvId }) {
-  const [collapsed, setCollapsed] = useState({});
-  const [allCollapsed, setAllCollapsed] = useState(false);
+  // Default to all categories collapsed
+  const [collapsed, setCollapsed] = useState(() => {
+    const init = {};
+    Object.keys(provsByType).forEach(type => { init[type] = true; });
+    return init;
+  });
+  const [allCollapsed, setAllCollapsed] = useState(true);
 
   const toggleType = (type) => {
     setCollapsed(prev => ({ ...prev, [type]: !prev[type] }));
+  };
+
+  // When user clicks the category row, both filter AND expand it
+  const handleCategoryClick = (type) => {
+    onFilterType(type);
+    // Expand it if currently collapsed
+    if (collapsed[type]) {
+      setCollapsed(prev => ({ ...prev, [type]: false }));
+    }
   };
 
   const handleCollapseAll = () => {
@@ -235,27 +249,29 @@ function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelect
             const isActiveFilter = activeFilter === type;
             return (
               <div key={type}>
-                <button
-                  onClick={() => onFilterType(type)}
-                  className={`w-full flex items-center justify-between px-2 py-1.5 rounded text-sm font-ui transition-colors group ${
+                <div
+                  className={`w-full flex items-center justify-between px-2 py-1.5 rounded text-sm font-ui transition-colors group cursor-pointer ${
                     isActiveFilter ? 'bg-accent/10' : 'hover:bg-bg'
                   }`}
+                  onClick={() => handleCategoryClick(type)}
                 >
                   <span className="flex items-center gap-2 min-w-0">
+                    {/* +/- toggle button — click to just expand/collapse without filtering */}
+                    <button
+                      type="button"
+                      onClick={(e) => { e.stopPropagation(); toggleType(type); }}
+                      className="w-5 h-5 flex items-center justify-center rounded text-inkFaint hover:text-ink hover:bg-bg shrink-0 font-mono text-sm leading-none"
+                      aria-label={isCollapsed ? 'Expand' : 'Collapse'}
+                    >
+                      {isCollapsed ? '+' : '–'}
+                    </button>
                     <span className={`w-2 h-2 rounded-full shrink-0 ${tc.dot}`} />
                     <span className={`font-medium truncate ${isActiveFilter ? 'text-accent' : 'text-ink'}`}>
                       {typeLabel(type)}
                     </span>
                     <span className="text-inkFaint text-xs">({provs.length})</span>
                   </span>
-                  <svg
-                    width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5"
-                    className={`text-inkFaint transition-transform shrink-0 ${isCollapsed ? '' : 'rotate-90'}`}
-                    onClick={(e) => { e.stopPropagation(); toggleType(type); }}
-                  >
-                    <path d="M4 2l4 4-4 4" />
-                  </svg>
-                </button>
+                </div>
                 {!isCollapsed && (
                   <div className="ml-4 mt-0.5 space-y-0.5">
                     {provs.map(p => {
@@ -425,90 +441,188 @@ function ProvisionCard({ provision, onEdit }) {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   FULL DOCUMENT VIEW — reconstructed from provisions
+   FULL DOCUMENT VIEW — renders raw agreement text with
+   provision-position highlight overlays. Reads like EDGAR.
    ═══════════════════════════════════════════════════════════ */
-function FullDocumentView({ provisions, onEditProvision }) {
-  // Sort provisions in agreement order: sort_order first, then by section
-  // number (e.g. "1.01" < "1.02" < "2.01"), then by startChar / id.
-  // No grouping by type — render top-to-bottom like reading on EDGAR.
-  const sorted = useMemo(() => {
-    const parseSectionNum = (s) => {
-      if (!s) return [Infinity, Infinity];
-      const m = String(s).match(/(\d+)\.(\d+)/);
-      if (!m) return [Infinity, Infinity];
-      return [parseInt(m[1], 10), parseInt(m[2], 10)];
-    };
+function FullDocumentView({
+  sourceText,
+  title,
+  provisions,
+  onEditProvision,
+  hoveredProvId,
+  onHoverProv,
+}) {
+  // Build highlight regions by mapping each provision to a span in the raw
+  // source. Prefer explicit start_char/end_char if present; otherwise locate
+  // the provision's full_text via indexOf (exact, then 120-char head chunk).
+  const regions = useMemo(() => {
+    if (!sourceText) return [];
+    const found = [];
+    const lowerSource = sourceText.toLowerCase();
+    const usedRanges = [];
 
-    return [...provisions].sort((a, b) => {
-      // 1. sort_order (most reliable)
-      if (a.sort_order != null && b.sort_order != null) {
-        return a.sort_order - b.sort_order;
-      }
-      if (a.sort_order != null) return -1;
-      if (b.sort_order != null) return 1;
-
-      // 2. Section number (e.g. "1.01" vs "1.02")
-      const aSec = a.section_number || a.sectionNumber;
-      const bSec = b.section_number || b.sectionNumber;
-      const [aMaj, aMin] = parseSectionNum(aSec);
-      const [bMaj, bMin] = parseSectionNum(bSec);
-      if (aMaj !== bMaj) return aMaj - bMaj;
-      if (aMin !== bMin) return aMin - bMin;
-
-      // 3. Character position in source
-      const aStart = a.start_char ?? a.startChar ?? Infinity;
-      const bStart = b.start_char ?? b.startChar ?? Infinity;
-      if (aStart !== bStart) return aStart - bStart;
-
-      // 4. Stable fallback
-      return (a.id || '').localeCompare(b.id || '');
+    // Stable order so later searches advance past earlier matches when
+    // provision bodies repeat similar phrasing.
+    const ordered = [...provisions].sort((a, b) => {
+      const aStart = a.start_char ?? a.startChar ?? a.sort_order ?? Infinity;
+      const bStart = b.start_char ?? b.startChar ?? b.sort_order ?? Infinity;
+      return aStart - bStart;
     });
-  }, [provisions]);
 
-  if (sorted.length === 0) {
+    ordered.forEach(p => {
+      // 1. Use explicit positions if available
+      const explicitStart = p.start_char ?? p.startChar;
+      const explicitEnd = p.end_char ?? p.endChar;
+      if (
+        Number.isFinite(explicitStart) &&
+        Number.isFinite(explicitEnd) &&
+        explicitStart >= 0 &&
+        explicitEnd <= sourceText.length &&
+        explicitEnd > explicitStart
+      ) {
+        found.push({ start: explicitStart, end: explicitEnd, provision: p });
+        usedRanges.push([explicitStart, explicitEnd]);
+        return;
+      }
+
+      // 2. Locate provision text in source
+      const pText = (p.full_text || '').trim();
+      if (!pText) return;
+
+      const searchFrom = usedRanges.length
+        ? Math.max(...usedRanges.map(r => r[1]))
+        : 0;
+
+      const tryFind = (needle, from) =>
+        lowerSource.indexOf(needle.toLowerCase(), from);
+
+      // 2a. Exact match, advancing past earlier hits
+      let idx = tryFind(pText, searchFrom);
+      let matchLen = pText.length;
+
+      // 2b. Try from start if needed
+      if (idx < 0) idx = tryFind(pText, 0);
+
+      // 2c. Head-chunk fallback (handles minor whitespace drift)
+      if (idx < 0 && pText.length > 120) {
+        const chunk = pText.substring(0, 120);
+        idx = tryFind(chunk, searchFrom);
+        if (idx < 0) idx = tryFind(chunk, 0);
+        if (idx >= 0) matchLen = Math.min(pText.length, sourceText.length - idx);
+      }
+
+      if (idx >= 0) {
+        found.push({ start: idx, end: idx + matchLen, provision: p });
+        usedRanges.push([idx, idx + matchLen]);
+      }
+    });
+
+    // Sort by start position; drop overlapping later matches (earlier wins)
+    found.sort((a, b) => a.start - b.start || a.end - b.end);
+    const deduped = [];
+    for (const r of found) {
+      const last = deduped[deduped.length - 1];
+      if (!last || r.start >= last.end) deduped.push(r);
+    }
+    return deduped;
+  }, [sourceText, provisions]);
+
+  if (!sourceText) {
     return (
-      <div className="text-center py-12">
-        <p className="text-inkFaint font-ui">No provisions to display.</p>
+      <div className="bg-white border border-border rounded-lg shadow-sm p-8 text-center">
+        <p className="text-inkFaint font-ui text-sm">
+          No raw agreement text stored for this deal.
+        </p>
+        <p className="text-inkFaint font-ui text-xs mt-2">
+          Re-ingest the agreement to populate the Full Document view.
+        </p>
       </div>
     );
   }
 
+  // Build alternating segments: plain text + highlighted provision spans
+  const segments = [];
+  let cursor = 0;
+  regions.forEach((r, i) => {
+    if (r.start > cursor) {
+      segments.push({ type: 'text', content: sourceText.slice(cursor, r.start), key: `t-${i}` });
+    }
+    segments.push({
+      type: 'highlight',
+      content: sourceText.slice(r.start, r.end),
+      provision: r.provision,
+      key: `h-${r.provision.id || i}`,
+    });
+    cursor = r.end;
+  });
+  if (cursor < sourceText.length) {
+    segments.push({ type: 'text', content: sourceText.slice(cursor), key: 'tail' });
+  }
+
   return (
-    <div className="bg-white border border-border rounded-lg shadow-sm p-6 md:p-8">
-      <div className="space-y-0">
-        {sorted.map((p, idx) => {
-          const tc = typeColor(p.type);
-          const fav = favBadge(p.ai_favorability);
-          return (
-            <div
-              key={p.id}
-              className={`relative border-l-3 pl-4 py-3 cursor-pointer hover:opacity-90 transition-opacity ${tc.border}`}
-              style={{ backgroundColor: tc.hex || '#f9fafb', borderLeftWidth: '3px' }}
-              onClick={() => onEditProvision(p)}
-            >
-              {/* Floating label */}
-              <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-ui font-medium border ${tc.border} ${tc.bg} ${tc.text}`}>
-                  {typeLabel(p.type)}
-                </span>
-                <span className="text-[10px] font-ui text-inkMid">{p.category || 'General'}</span>
-                <span className={`inline-block px-1.5 py-0.5 rounded text-[9px] font-ui font-medium ${fav.cls}`}>
-                  {fav.label}
-                </span>
-              </div>
+    <div className="bg-white border border-border rounded-lg shadow-sm">
+      {/* Document header bar (EDGAR-style) */}
+      <div className="border-b border-border px-6 py-3 flex items-center justify-between bg-bg/40">
+        <div>
+          <p className="font-ui text-[10px] uppercase tracking-wider text-inkFaint">
+            Agreement
+          </p>
+          <p className="font-display text-sm text-ink">{title || 'Agreement'}</p>
+        </div>
+        <div className="text-[10px] font-ui text-inkFaint">
+          {regions.length} of {provisions.length} provisions highlighted &middot;{' '}
+          {sourceText.length.toLocaleString()} chars
+        </div>
+      </div>
 
-              {/* Provision text */}
-              <p className="font-body text-[14px] text-ink leading-relaxed whitespace-pre-wrap">
-                {p.full_text || '(no text)'}
-              </p>
-
-              {/* Separator between provisions */}
-              {idx < sorted.length - 1 && (
-                <div className="absolute bottom-0 left-4 right-0 border-b border-border/50" />
-              )}
-            </div>
-          );
-        })}
+      {/* Document body — preserves whitespace like the original filing */}
+      <div className="p-6 md:p-10 max-h-[80vh] overflow-y-auto">
+        <pre
+          className="text-[14px] text-ink leading-[1.7] whitespace-pre-wrap break-words m-0"
+          style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}
+        >
+          {segments.map(seg => {
+            if (seg.type === 'text') {
+              return <span key={seg.key}>{seg.content}</span>;
+            }
+            const p = seg.provision;
+            const tc = typeColor(p.type);
+            const fav = favBadge(p.ai_favorability);
+            const isHovered = hoveredProvId === p.id;
+            return (
+              <span
+                key={seg.key}
+                id={`prov-${p.id}`}
+                onClick={(e) => { e.stopPropagation(); onEditProvision(p); }}
+                onMouseEnter={() => onHoverProv && onHoverProv(p.id)}
+                onMouseLeave={() => onHoverProv && onHoverProv(null)}
+                className="relative cursor-pointer transition-colors rounded-sm"
+                style={{
+                  backgroundColor: tc.hex || '#f9fafb',
+                  boxShadow: isHovered
+                    ? 'inset 3px 0 0 rgba(0,0,0,0.35)'
+                    : `inset 2px 0 0 ${tc.hex || '#e5e7eb'}`,
+                  paddingLeft: '4px',
+                  paddingRight: '2px',
+                }}
+                title={`${typeLabel(p.type)} -- ${p.category || 'General'}`}
+              >
+                {isHovered && (
+                  <span
+                    className={`absolute z-20 -top-6 left-0 inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-ui font-medium border whitespace-nowrap shadow-sm ${tc.border} ${tc.bg} ${tc.text}`}
+                    style={{ fontFamily: 'inherit' }}
+                  >
+                    <span>{typeLabel(p.type)}</span>
+                    <span className="text-inkFaint">&middot;</span>
+                    <span>{p.category || 'General'}</span>
+                    <span className={`ml-1 px-1 rounded ${fav.cls}`}>{fav.label}</span>
+                  </span>
+                )}
+                {seg.content}
+              </span>
+            );
+          })}
+        </pre>
       </div>
     </div>
   );
@@ -1107,15 +1221,22 @@ export default function ReviewPage() {
 
   /* ── Sidebar filter state ── */
   const [activeFilter, setActiveFilter] = useState(null);
+  // When set, sidebar single-provision click filters the main view to just that one provision
+  const [selectedProvId, setSelectedProvId] = useState(null);
 
   /* ── Tab state: "provisions" or "document" ── */
   const [activeTab, setActiveTab] = useState('provisions');
 
   /* ── Filtered provisions based on sidebar selection ── */
   const filteredProvisions = useMemo(() => {
+    // Single-provision view wins over type filter
+    if (selectedProvId) {
+      const one = provisions.find(p => p.id === selectedProvId);
+      return one ? [one] : [];
+    }
     if (activeFilter === null) return provisions;
     return provisions.filter(p => p.type === activeFilter);
-  }, [provisions, activeFilter]);
+  }, [provisions, activeFilter, selectedProvId]);
 
   /* ── Group provisions by type (all, not filtered) ── */
   const provsByType = useMemo(() => {
@@ -1157,6 +1278,7 @@ export default function ReviewPage() {
   const [hoveredDef, setHoveredDef] = useState(null);
   const [defPosition, setDefPosition] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [hoveredProvId, setHoveredProvId] = useState(null);
   const provisionRefs = useRef({});
 
   // Close expanded label when clicking outside
@@ -1177,16 +1299,14 @@ export default function ReviewPage() {
   /* ── Sidebar filter handler ── */
   const handleFilterType = useCallback((type) => {
     setActiveFilter(type);
+    setSelectedProvId(null); // clear single-provision view when changing type filter
   }, []);
 
-  /* ── Sidebar provision click — select & open edit panel ── */
+  /* ── Sidebar provision click — show ONLY that provision in the main view ── */
   const handleSidebarSelectProvision = useCallback((provId) => {
+    setSelectedProvId(provId);
     const prov = provisions.find(p => p.id === provId);
-    if (prov) {
-      setEditingProvision(prov);
-      // Also filter to that provision's type for context
-      setActiveFilter(prov.type);
-    }
+    if (prov) setActiveFilter(prov.type);
   }, [provisions]);
 
   /* ── Edit provision ── */
@@ -1420,21 +1540,13 @@ export default function ReviewPage() {
                       ? 'border-accent text-accent font-medium'
                       : 'border-transparent text-inkLight hover:text-ink'
                   }`}
+                  title={hasSource ? 'Raw agreement text with provision highlights' : 'Raw text not stored yet — re-ingest to populate'}
                 >
                   Full Document
+                  {!hasSource && (
+                    <span className="ml-1.5 text-[10px] text-inkFaint">(no raw text)</span>
+                  )}
                 </button>
-                {hasSource && (
-                  <button
-                    onClick={() => setActiveTab('source')}
-                    className={`px-4 py-2 text-sm font-ui transition-colors border-b-2 -mb-px ${
-                      activeTab === 'source'
-                        ? 'border-accent text-accent font-medium'
-                        : 'border-transparent text-inkLight hover:text-ink'
-                    }`}
-                  >
-                    Source Text
-                  </button>
-                )}
 
                 {/* Filter indicator */}
                 {activeFilter && (
@@ -1443,7 +1555,7 @@ export default function ReviewPage() {
                       Filtered: {typeLabel(activeFilter)}
                     </span>
                     <button
-                      onClick={() => setActiveFilter(null)}
+                      onClick={() => { setActiveFilter(null); setSelectedProvId(null); }}
                       className="text-[10px] font-ui text-inkFaint hover:text-ink"
                     >
                       Clear
@@ -1479,7 +1591,7 @@ export default function ReviewPage() {
                       <div className="text-center py-12">
                         <p className="text-inkFaint font-ui">No provisions match this filter.</p>
                         <button
-                          onClick={() => setActiveFilter(null)}
+                          onClick={() => { setActiveFilter(null); setSelectedProvId(null); }}
                           className="text-accent text-sm font-ui hover:underline mt-2"
                         >
                           Show all provisions
@@ -1489,31 +1601,16 @@ export default function ReviewPage() {
                   </div>
                 )}
 
-                {/* Full Document Tab (reconstructed from provisions) */}
+                {/* Full Document Tab — raw agreement text with highlighted provisions */}
                 {activeTab === 'document' && (
                   <FullDocumentView
+                    sourceText={hasSource ? agreementSource.full_text : null}
+                    title={hasSource ? agreementSource.title : null}
                     provisions={filteredProvisions}
                     onEditProvision={handleEditProvision}
+                    hoveredProvId={hoveredProvId}
+                    onHoverProv={setHoveredProvId}
                   />
-                )}
-
-                {/* Source Text Tab (only if available) */}
-                {activeTab === 'source' && hasSource && (
-                  <div className="bg-white border border-border rounded-lg shadow-sm p-6 md:p-8">
-                    <DocumentRenderer
-                      sourceText={agreementSource.full_text}
-                      provisions={filteredProvisions}
-                      expandedLabel={expandedLabel}
-                      onToggleLabel={handleToggleLabel}
-                      onEditProvision={handleEditProvision}
-                      onTextSelect={setTextSelection}
-                      provisionRefs={provisionRefs}
-                      definitionTerms={definitionTerms}
-                      hoveredDef={hoveredDef}
-                      onDefHover={handleDefHover}
-                      onDefLeave={handleDefLeave}
-                    />
-                  </div>
                 )}
               </>
             ) : (
