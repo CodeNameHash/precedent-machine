@@ -43,6 +43,7 @@ const TYPE_LABELS = {
   'STRUCT': 'Structure & Mechanics',
   'CONSID': 'Consideration',
   'MISC': 'Miscellaneous / Boilerplate',
+  'OTHER': 'Other Provisions',
 };
 
 function typeLabel(code) {
@@ -76,7 +77,38 @@ const TYPE_COLORS = {
   'STRUCT': { bg: 'bg-violet-50',  border: 'border-violet-200', text: 'text-violet-800', dot: 'bg-violet-400', hex: '#f5f3ff' },
   'CONSID': { bg: 'bg-lime-50',    border: 'border-lime-200',   text: 'text-lime-800',   dot: 'bg-lime-400',   hex: '#f7fee7' },
   'MISC':   { bg: 'bg-stone-50',   border: 'border-stone-200',  text: 'text-stone-700',  dot: 'bg-stone-400',  hex: '#fafaf9' },
+  'OTHER':  { bg: 'bg-gray-50',    border: 'border-gray-200',   text: 'text-gray-700',   dot: 'bg-gray-400',   hex: '#f9fafb' },
 };
+
+/* ── Sidebar grouping — parent groups with optional sub-types ── */
+const SIDEBAR_GROUPS = [
+  { label: 'Structure & Mechanics', types: ['STRUCT'] },
+  { label: 'Consideration', types: ['CONSID'] },
+  { label: 'Representations', children: [
+    { label: 'Company / Target', type: 'REP-T' },
+    { label: 'Buyer / Parent', type: 'REP-B' },
+  ]},
+  { label: 'Interim Operating Covenants', types: ['IOC', 'IOC-T', 'IOC-B'] },
+  { label: 'No-Solicitation / No-Shop', types: ['NOSOL'] },
+  { label: 'Antitrust / Regulatory', types: ['ANTI'] },
+  { label: 'Conditions to Closing', children: [
+    { label: 'Mutual', type: 'COND-M' },
+    { label: 'Buyer', type: 'COND-B' },
+    { label: 'Seller', type: 'COND-S' },
+    { label: 'Modifiers', type: 'COND' },
+  ]},
+  { label: 'Termination Rights', children: [
+    { label: 'Mutual', type: 'TERMR-M' },
+    { label: 'Buyer', type: 'TERMR-B' },
+    { label: 'Target', type: 'TERMR-T' },
+    { label: 'Unclassified', type: 'TERMR' },
+  ]},
+  { label: 'Termination Fees', types: ['TERMF'] },
+  { label: 'Other Covenants', types: ['COV'] },
+  { label: 'Definitions', types: ['DEF'] },
+  { label: 'Miscellaneous / Boilerplate', types: ['MISC'] },
+  { label: 'Other', types: ['OTHER'] },
+];
 
 function typeColor(code) {
   return TYPE_COLORS[code] || { bg: 'bg-gray-50', border: 'border-gray-200', text: 'text-gray-700', dot: 'bg-gray-400', hex: '#f9fafb' };
@@ -246,6 +278,7 @@ const FEATURE_DISPLAY_ORDER = {
   'REP-B': ['mainConcept', 'linkedBringDownStandard', 'bringDownStandard', 'materialityQualifier', 'knowledgeQualifier', 'solvencyRepIncluded', 'financingRepIncluded', 'crossReferences'],
   COV: ['mainConcept', 'accessScope', 'indemnificationPeriod', 'employeeBenefitPeriod', 'financingCooperation', 'cvrIncluded'],
   MISC: ['mainConcept', 'governingLaw', 'jurisdictionExclusive', 'juryWaiver', 'specificPerformance', 'thirdPartyBeneficiaryExceptions'],
+  OTHER: ['mainConcept', 'summary', 'crossReferences'],
 };
 
 function getOrderedFeatureKeys(typeKey, featuresObj) {
@@ -386,37 +419,58 @@ function isSharedFeature(featureKey, typeKey) {
    LEFT SIDEBAR — now acts as a FILTER, not a scroller
    ═══════════════════════════════════════════════════════════ */
 function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelectProvision, activeProvId }) {
-  // Default to all categories collapsed
-  const [collapsed, setCollapsed] = useState(() => {
+  // Build the visible group structure — skip groups (and child types) with 0 provisions.
+  const visibleGroups = useMemo(() => {
+    return SIDEBAR_GROUPS
+      .map((g) => {
+        if (g.children && g.children.length > 0) {
+          const presentChildren = g.children
+            .map((c) => ({ ...c, provs: provsByType[c.type] || [] }))
+            .filter((c) => c.provs.length > 0);
+          const total = presentChildren.reduce((acc, c) => acc + c.provs.length, 0);
+          return { label: g.label, children: presentChildren, types: presentChildren.map((c) => c.type), total };
+        }
+        const types = (g.types || []).filter((t) => (provsByType[t] || []).length > 0);
+        const total = types.reduce((acc, t) => acc + (provsByType[t] || []).length, 0);
+        // For a single-type flat group, collect the provisions list for direct expansion.
+        const provs = types.length === 1 ? (provsByType[types[0]] || []) : [];
+        return { label: g.label, types, total, provs, singleType: types.length === 1 ? types[0] : null };
+      })
+      .filter((g) => g.total > 0);
+  }, [provsByType]);
+
+  // Track collapsed state per parent group label and per child type code.
+  const [collapsedGroups, setCollapsedGroups] = useState(() => {
     const init = {};
-    Object.keys(provsByType).forEach(type => { init[type] = true; });
+    SIDEBAR_GROUPS.forEach((g) => { init[g.label] = true; });
+    return init;
+  });
+  const [collapsedTypes, setCollapsedTypes] = useState(() => {
+    const init = {};
+    Object.keys(provsByType).forEach((t) => { init[t] = true; });
     return init;
   });
   const [allCollapsed, setAllCollapsed] = useState(true);
 
-  const toggleType = (type) => {
-    setCollapsed(prev => ({ ...prev, [type]: !prev[type] }));
+  const toggleGroup = (label) => {
+    setCollapsedGroups((prev) => ({ ...prev, [label]: !prev[label] }));
   };
-
-  // When user clicks the category row, both filter AND expand it
-  const handleCategoryClick = (type) => {
-    onFilterType(type);
-    // Expand it if currently collapsed
-    if (collapsed[type]) {
-      setCollapsed(prev => ({ ...prev, [type]: false }));
-    }
+  const toggleType = (type) => {
+    setCollapsedTypes((prev) => ({ ...prev, [type]: !prev[type] }));
   };
 
   const handleCollapseAll = () => {
     if (allCollapsed) {
-      // Expand all
-      setCollapsed({});
+      setCollapsedGroups({});
+      setCollapsedTypes({});
       setAllCollapsed(false);
     } else {
-      // Collapse all
-      const newCollapsed = {};
-      Object.keys(provsByType).forEach(type => { newCollapsed[type] = true; });
-      setCollapsed(newCollapsed);
+      const groupsInit = {};
+      SIDEBAR_GROUPS.forEach((g) => { groupsInit[g.label] = true; });
+      const typesInit = {};
+      Object.keys(provsByType).forEach((t) => { typesInit[t] = true; });
+      setCollapsedGroups(groupsInit);
+      setCollapsedTypes(typesInit);
       setAllCollapsed(true);
     }
   };
@@ -427,6 +481,31 @@ function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelect
     const flagged = provisions.filter(p => getProvisionStatus(p) === 'flagged').length;
     return { total, approved, flagged };
   }, [provisions]);
+
+  // Render the per-provision list under a type.
+  const renderProvList = (provs) => (
+    <div className="ml-4 mt-0.5 space-y-0.5">
+      {provs.map(p => {
+        const status = getProvisionStatus(p);
+        const st = STATUS[status];
+        const isActive = p.id === activeProvId;
+        return (
+          <button
+            key={p.id}
+            onClick={() => onSelectProvision(p.id)}
+            className={`w-full text-left flex items-center gap-2 px-2 py-1 rounded text-xs font-ui transition-colors ${
+              isActive
+                ? 'bg-accent/10 text-accent font-medium'
+                : 'text-inkMid hover:bg-bg hover:text-ink'
+            }`}
+          >
+            <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${st.dot}`} />
+            <span className="truncate">{p.category || 'General'}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
 
   return (
     <div className="w-[280px] shrink-0 bg-white border-r border-border flex flex-col h-full overflow-hidden">
@@ -459,56 +538,97 @@ function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelect
             <span className="text-inkFaint text-xs ml-auto">({provisions.length})</span>
           </button>
 
-          {Object.entries(provsByType).map(([type, provs]) => {
-            const isCollapsed = collapsed[type];
-            const tc = typeColor(type);
-            const isActiveFilter = activeFilter === type;
+          {visibleGroups.map((group) => {
+            const groupCollapsed = collapsedGroups[group.label] !== false;
+            const hasChildren = Array.isArray(group.children) && group.children.length > 0;
+            // For groups with children, parent is a non-clickable heading.
+            // For flat groups (single or multi-type), parent IS clickable as a filter.
+            const isFlatGroup = !hasChildren;
+            // Determine active state for flat groups: any of its types are active.
+            const isActiveFilter = isFlatGroup && group.types.includes(activeFilter);
+            // Aggregate dot color: use first child/type's color.
+            const repType = hasChildren ? group.children[0].type : group.types[0];
+            const tc = typeColor(repType);
+
             return (
-              <div key={type}>
+              <div key={group.label}>
+                {/* Parent group heading */}
                 <div
-                  className={`w-full flex items-center justify-between px-2 py-1.5 rounded text-sm font-ui transition-colors group cursor-pointer ${
-                    isActiveFilter ? 'bg-accent/10' : 'hover:bg-bg'
+                  className={`w-full flex items-center justify-between px-2 py-1.5 rounded text-sm font-ui transition-colors ${
+                    isActiveFilter ? 'bg-accent/10' : (isFlatGroup ? 'hover:bg-bg cursor-pointer' : '')
                   }`}
-                  onClick={() => handleCategoryClick(type)}
+                  onClick={isFlatGroup ? () => {
+                    // Filter to this group's first/only type, and expand it.
+                    onFilterType(group.singleType || group.types[0]);
+                    if (groupCollapsed) {
+                      setCollapsedGroups((prev) => ({ ...prev, [group.label]: false }));
+                    }
+                  } : undefined}
                 >
                   <span className="flex items-center gap-2 min-w-0">
-                    {/* +/- toggle button — click to just expand/collapse without filtering */}
                     <button
                       type="button"
-                      onClick={(e) => { e.stopPropagation(); toggleType(type); }}
+                      onClick={(e) => { e.stopPropagation(); toggleGroup(group.label); }}
                       className="w-5 h-5 flex items-center justify-center rounded text-inkFaint hover:text-ink hover:bg-bg shrink-0 font-mono text-sm leading-none"
-                      aria-label={isCollapsed ? 'Expand' : 'Collapse'}
+                      aria-label={groupCollapsed ? 'Expand' : 'Collapse'}
                     >
-                      {isCollapsed ? '+' : '–'}
+                      {groupCollapsed ? '+' : '–'}
                     </button>
                     <span className={`w-2 h-2 rounded-full shrink-0 ${tc.dot}`} />
                     <span className={`font-medium truncate ${isActiveFilter ? 'text-accent' : 'text-ink'}`}>
-                      {typeLabel(type)}
+                      {group.label}
                     </span>
-                    <span className="text-inkFaint text-xs">({provs.length})</span>
+                    <span className="text-inkFaint text-xs">({group.total})</span>
                   </span>
                 </div>
-                {!isCollapsed && (
-                  <div className="ml-4 mt-0.5 space-y-0.5">
-                    {provs.map(p => {
-                      const status = getProvisionStatus(p);
-                      const st = STATUS[status];
-                      const isActive = p.id === activeProvId;
-                      return (
-                        <button
-                          key={p.id}
-                          onClick={() => onSelectProvision(p.id)}
-                          className={`w-full text-left flex items-center gap-2 px-2 py-1 rounded text-xs font-ui transition-colors ${
-                            isActive
-                              ? 'bg-accent/10 text-accent font-medium'
-                              : 'text-inkMid hover:bg-bg hover:text-ink'
-                          }`}
-                        >
-                          <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${st.dot}`} />
-                          <span className="truncate">{p.category || 'General'}</span>
-                        </button>
-                      );
-                    })}
+
+                {/* Group expanded content */}
+                {!groupCollapsed && (
+                  <div>
+                    {hasChildren ? (
+                      <div className="ml-4 mt-0.5 space-y-0.5">
+                        {group.children.map((child) => {
+                          const childCollapsed = collapsedTypes[child.type] !== false;
+                          const childActive = activeFilter === child.type;
+                          const ctc = typeColor(child.type);
+                          return (
+                            <div key={child.type}>
+                              <div
+                                className={`w-full flex items-center justify-between px-2 py-1 rounded text-xs font-ui transition-colors cursor-pointer ${
+                                  childActive ? 'bg-accent/10' : 'hover:bg-bg'
+                                }`}
+                                onClick={() => {
+                                  onFilterType(child.type);
+                                  if (childCollapsed) {
+                                    setCollapsedTypes((prev) => ({ ...prev, [child.type]: false }));
+                                  }
+                                }}
+                              >
+                                <span className="flex items-center gap-2 min-w-0">
+                                  <button
+                                    type="button"
+                                    onClick={(e) => { e.stopPropagation(); toggleType(child.type); }}
+                                    className="w-4 h-4 flex items-center justify-center rounded text-inkFaint hover:text-ink hover:bg-bg shrink-0 font-mono text-xs leading-none"
+                                    aria-label={childCollapsed ? 'Expand' : 'Collapse'}
+                                  >
+                                    {childCollapsed ? '+' : '–'}
+                                  </button>
+                                  <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${ctc.dot}`} />
+                                  <span className={`truncate ${childActive ? 'text-accent font-medium' : 'text-inkMid'}`}>
+                                    {child.label}
+                                  </span>
+                                  <span className="text-inkFaint">({child.provs.length})</span>
+                                </span>
+                              </div>
+                              {!childCollapsed && renderProvList(child.provs)}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      // Flat group: directly render its provisions list.
+                      renderProvList(group.provs)
+                    )}
                   </div>
                 )}
               </div>
@@ -811,7 +931,7 @@ function ProvisionCard({ provision, onEdit }) {
   const fav = favBadge(provision.ai_favorability);
   const status = getProvisionStatus(provision);
   const st = STATUS[status];
-  const [showFullText, setShowFullText] = useState(false);
+  const [showStructured, setShowStructured] = useState(false);
 
   return (
     <div
@@ -831,32 +951,32 @@ function ProvisionCard({ provision, onEdit }) {
         </span>
       </div>
 
-      {/* Structured summary ALWAYS at the top.
-          For preamble entries, this surfaces section-wide shared fields
-          (e.g. ordinaryCourseCarveout, requiredByLawCarveout) that are
-          hidden on the non-preamble provisions of the same section. */}
+      {/* Full text ALWAYS visible at the top.
+          The structured summary lives below behind a small toggle. */}
       <div className="space-y-2">
-        <StructuredFeatures provision={provision} />
+        <div>
+          {provision.full_text ? (
+            <p className="font-body text-sm text-ink leading-relaxed whitespace-pre-wrap">
+              {renderFullTextWithRefs(provision.full_text)}
+            </p>
+          ) : (
+            <p className="font-ui text-xs text-inkFaint italic">No text available.</p>
+          )}
+        </div>
 
-        {/* Full text below — collapsible, default collapsed */}
+        {/* Structured summary — collapsible, default collapsed, toggle at bottom */}
         <div>
           <button
             type="button"
-            onClick={(e) => { e.stopPropagation(); setShowFullText((v) => !v); }}
+            onClick={(e) => { e.stopPropagation(); setShowStructured((v) => !v); }}
             className="text-[10px] font-ui text-inkFaint hover:text-ink uppercase tracking-wider flex items-center gap-1"
           >
-            <span>{showFullText ? '−' : '+'}</span>
-            {showFullText ? 'Hide Full Text' : 'Show Full Text'}
+            <span>{showStructured ? '−' : '+'}</span>
+            {showStructured ? 'Hide Structured Summary' : 'Show Structured Summary'}
           </button>
-          {showFullText && (
+          {showStructured && (
             <div className="mt-2">
-              {provision.full_text ? (
-                <p className="font-body text-sm text-ink leading-relaxed whitespace-pre-wrap">
-                  {renderFullTextWithRefs(provision.full_text)}
-                </p>
-              ) : (
-                <p className="font-ui text-xs text-inkFaint italic">No text available.</p>
-              )}
+              <StructuredFeatures provision={provision} />
             </div>
           )}
         </div>
