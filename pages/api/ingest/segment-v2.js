@@ -13,7 +13,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import { getServiceSupabase } from '../../../lib/supabase';
 
 // Parser v2 modules (CommonJS)
-const { parseStructure, cleanText } = require('../../../lib/parser-v2/structural');
+const { parseStructure, cleanText, displayCleanText } = require('../../../lib/parser-v2/structural');
 const { classifySections } = require('../../../lib/parser-v2/classify');
 const { extractProvisions } = require('../../../lib/parser-v2/extract');
 const { validateProvisions } = require('../../../lib/parser-v2/validate');
@@ -98,7 +98,10 @@ export default async function handler(req, res) {
     let storeResult = null;
     if (!preview) {
       const storeStart = Date.now();
-      storeResult = await storeProvisions(deal_id, finalProvisions, full_text, title, sb);
+      // Store the display-cleaned version of the agreement text so the Full
+      // Document view renders without EDGAR artifacts, page numbers, etc.
+      const displayText = displayCleanText(full_text);
+      storeResult = await storeProvisions(deal_id, finalProvisions, displayText, title, sb);
       timing.store = Date.now() - storeStart;
     }
 
