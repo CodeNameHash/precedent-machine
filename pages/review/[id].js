@@ -451,7 +451,75 @@ function FullDocumentView({
   onEditProvision,
   hoveredProvId,
   onHoverProv,
+  reselectingProvLabel,
+  isReselecting,
+  onConfirmReselect,
+  onCancelReselect,
 }) {
+  const containerRef = useRef(null);
+  const [reselectSelection, setReselectSelection] = useState(null);
+
+  // Track selection while in re-select mode
+  useEffect(() => {
+    if (!isReselecting) {
+      setReselectSelection(null);
+      return undefined;
+    }
+
+    const handleSelectionChange = () => {
+      const sel = typeof window !== 'undefined' ? window.getSelection() : null;
+      if (!sel || sel.isCollapsed) {
+        setReselectSelection(null);
+        return;
+      }
+      const text = sel.toString();
+      if (!text || !text.trim()) {
+        setReselectSelection(null);
+        return;
+      }
+      // Must be inside our document container
+      if (!containerRef.current || !sel.anchorNode || !containerRef.current.contains(sel.anchorNode)) {
+        return;
+      }
+      try {
+        const range = sel.getRangeAt(0);
+        const rect = range.getBoundingClientRect();
+        setReselectSelection({ text, rect });
+      } catch {
+        setReselectSelection(null);
+      }
+    };
+
+    const handleKey = (e) => {
+      if (e.key === 'Escape') {
+        if (typeof window !== 'undefined') {
+          const sel = window.getSelection();
+          if (sel) sel.removeAllRanges();
+        }
+        setReselectSelection(null);
+        if (onCancelReselect) onCancelReselect();
+      }
+    };
+
+    document.addEventListener('selectionchange', handleSelectionChange);
+    document.addEventListener('keydown', handleKey);
+    return () => {
+      document.removeEventListener('selectionchange', handleSelectionChange);
+      document.removeEventListener('keydown', handleKey);
+    };
+  }, [isReselecting, onCancelReselect]);
+
+  const handleConfirmReselect = () => {
+    if (!reselectSelection || !onConfirmReselect) return;
+    const text = reselectSelection.text;
+    if (typeof window !== 'undefined') {
+      const sel = window.getSelection();
+      if (sel) sel.removeAllRanges();
+    }
+    setReselectSelection(null);
+    onConfirmReselect(text);
+  };
+
   // Build highlight regions by mapping each provision to a span in the raw
   // source. Prefer explicit start_char/end_char if present; otherwise locate
   // the provision's full_text via indexOf (exact, then 120-char head chunk).
@@ -561,6 +629,23 @@ function FullDocumentView({
 
   return (
     <div className="bg-white border border-border rounded-lg shadow-sm">
+      {/* Re-select banner */}
+      {isReselecting && (
+        <div className="border-b border-amber-200 bg-amber-50 px-6 py-3 flex items-center justify-between gap-3">
+          <div className="text-xs font-ui text-amber-800">
+            Select the correct text for <span className="font-semibold">{reselectingProvLabel || 'provision'}</span>{' '}
+            -- click and drag to highlight, then click &quot;Use Selection&quot;.
+          </div>
+          <button
+            type="button"
+            onClick={onCancelReselect}
+            className="px-2 py-1 text-[11px] font-ui border border-amber-300 text-amber-800 rounded hover:bg-amber-100 transition-colors"
+          >
+            Cancel
+          </button>
+        </div>
+      )}
+
       {/* Document header bar (EDGAR-style) */}
       <div className="border-b border-border px-6 py-3 flex items-center justify-between bg-bg/40">
         <div>
@@ -576,7 +661,7 @@ function FullDocumentView({
       </div>
 
       {/* Document body — preserves whitespace like the original filing */}
-      <div className="p-6 md:p-10 max-h-[80vh] overflow-y-auto">
+      <div ref={containerRef} className="p-6 md:p-10 max-h-[80vh] overflow-y-auto">
         <pre
           className="text-[14px] text-ink leading-[1.7] whitespace-pre-wrap break-words m-0"
           style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}
@@ -624,6 +709,32 @@ function FullDocumentView({
           })}
         </pre>
       </div>
+
+      {/* Floating "Use This Text" button while re-selecting */}
+      {isReselecting && reselectSelection && reselectSelection.rect && (
+        <div
+          style={{
+            position: 'fixed',
+            top: reselectSelection.rect.bottom + 8,
+            left: Math.max(
+              8,
+              reselectSelection.rect.left + (reselectSelection.rect.width / 2) - 80
+            ),
+            zIndex: 60,
+          }}
+          className="animate-slide-up"
+        >
+          <button
+            onMouseDown={(e) => { e.preventDefault(); handleConfirmReselect(); }}
+            className="px-4 py-2 text-xs font-ui bg-accent text-white rounded-lg shadow-lg hover:bg-accent/90 transition-colors flex items-center gap-1.5"
+          >
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M2 6l3 3 5-6" />
+            </svg>
+            Use This Text
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -887,22 +998,24 @@ function EditPanel({
   onFlag,
   onDelete,
   onProposeCode,
+  onReselectText,
 }) {
   const [editType, setEditType] = useState(provision?.type || '');
   const [editCategory, setEditCategory] = useState(provision?.category || '');
   const [editFav, setEditFav] = useState(provision?.ai_favorability || 'neutral');
-  const [editFullText, setEditFullText] = useState(provision?.full_text || '');
   const [features, setFeatures] = useState([]);
   const [newFeature, setNewFeature] = useState('');
   const [reason, setReason] = useState('');
   const [saving, setSaving] = useState(false);
+
+  // Read-only display value (always reflects the current provision text)
+  const currentFullText = provision?.full_text || '';
 
   useEffect(() => {
     if (provision) {
       setEditType(provision.type || '');
       setEditCategory(provision.category || '');
       setEditFav(provision.ai_favorability || 'neutral');
-      setEditFullText(provision.full_text || '');
       setFeatures(getFeatures(provision));
       setReason('');
     }
@@ -924,7 +1037,6 @@ function EditPanel({
         type: editType,
         category: editCategory,
         ai_favorability: editFav,
-        full_text: editFullText,
         reason: reason.trim() || undefined,
       });
     } catch {
@@ -1026,20 +1138,26 @@ function EditPanel({
           </div>
         </div>
 
-        {/* Provision Text (editable) */}
+        {/* Provision Text (read-only — boundary changes via Re-select Text) */}
         <div className="space-y-2">
           <h4 className="font-ui text-xs font-medium text-inkFaint uppercase tracking-wider">Provision Text</h4>
-          <textarea
-            value={editFullText}
-            onChange={e => setEditFullText(e.target.value)}
-            rows={10}
-            className={`w-full p-3 rounded border ${tc.border} ${tc.bg} font-body text-xs text-ink leading-relaxed whitespace-pre-wrap focus:outline-none focus:ring-1 focus:ring-accent resize-y`}
-            placeholder="(no text)"
-          />
+          <label className="block text-xs font-ui text-inkLight mb-1">Current text</label>
+          <div
+            className={`w-full p-3 rounded border ${tc.border} ${tc.bg} font-body text-xs text-ink leading-relaxed whitespace-pre-wrap max-h-[280px] overflow-y-auto`}
+          >
+            {currentFullText || <span className="italic text-inkFaint">(no text)</span>}
+          </div>
           <p className="text-[10px] font-ui text-inkFaint">
-            {`${editFullText.length} characters`}
-            {' '}-- Edit text directly, or select text in the document to adjust boundaries
+            {`${currentFullText.length} characters`}
+            {' '}-- text is read-only to keep it aligned with the agreement source
           </p>
+          <button
+            type="button"
+            onClick={() => onReselectText && onReselectText(provision)}
+            className="w-full px-3 py-1.5 text-xs font-ui border border-accent/40 text-accent rounded hover:bg-accent/5 transition-colors"
+          >
+            Re-select Text from Document
+          </button>
         </div>
 
         {/* Features */}
@@ -1294,6 +1412,10 @@ export default function ReviewPage() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [hoveredProvId, setHoveredProvId] = useState(null);
   const provisionRefs = useRef({});
+
+  /* ── Re-select Text mode ── */
+  const [reselectingProvId, setReselectingProvId] = useState(null);
+  const [reselectingProvLabel, setReselectingProvLabel] = useState('');
 
   // Close expanded label when clicking outside
   useEffect(() => {
