@@ -496,8 +496,31 @@ function StructuredFeatures({ provision }) {
   );
 }
 
+/* ── Render full provision text with section refs bolded ── */
+const SECTION_REF_RE = /\b(Section\s+\d+(?:\.\d+)*[A-Za-z]?|Article\s+(?:[IVXLCDM]+|\d+))\b/g;
+
+function renderFullTextWithRefs(text) {
+  if (!text) return null;
+  const parts = [];
+  let lastIdx = 0;
+  let m;
+  let i = 0;
+  SECTION_REF_RE.lastIndex = 0;
+  while ((m = SECTION_REF_RE.exec(text)) !== null) {
+    if (m.index > lastIdx) {
+      parts.push(text.slice(lastIdx, m.index));
+    }
+    parts.push(<strong key={`ref-${i++}`}>{m[0]}</strong>);
+    lastIdx = m.index + m[0].length;
+  }
+  if (lastIdx < text.length) {
+    parts.push(text.slice(lastIdx));
+  }
+  return parts;
+}
+
 /* ═══════════════════════════════════════════════════════════
-   PROVISION CARD — structured display with formatting
+   PROVISION CARD — full text by default, structured summary opt-in
    ═══════════════════════════════════════════════════════════ */
 function ProvisionCard({ provision, onEdit }) {
   const tc = typeColor(provision.type);
@@ -507,11 +530,7 @@ function ProvisionCard({ provision, onEdit }) {
   const structured = getStructuredFeatures(provision);
   const features = getFeatures(provision);
   const isPreamble = isPreambleProvision(provision);
-  const parsed = useMemo(
-    () => (isPreamble || structured ? { header: '', subclauses: [], exceptions: [] } : parseProvisionText(provision.full_text)),
-    [provision.full_text, isPreamble, structured]
-  );
-  const [showFullText, setShowFullText] = useState(false);
+  const [showStructured, setShowStructured] = useState(false);
 
   return (
     <div
@@ -531,98 +550,23 @@ function ProvisionCard({ provision, onEdit }) {
         </span>
       </div>
 
-      {/* Structured provision content */}
+      {/* Full text shown by default; structured summary is opt-in */}
       <div className="space-y-2">
-        {/* General / Preamble: show full text untruncated and unparsed */}
-        {isPreamble ? (
-          provision.full_text && (
-            <p className="font-body text-sm text-ink leading-relaxed whitespace-pre-wrap">
-              {provision.full_text}
-            </p>
-          )
-        ) : structured ? (
-          <>
-            {/* New structured-features rendering path */}
-            <StructuredFeatures provision={provision} />
-
-            {/* Full text collapsed below */}
-            {provision.full_text && (
-              <div>
-                <button
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); setShowFullText((v) => !v); }}
-                  className="text-[10px] font-ui text-inkFaint hover:text-ink uppercase tracking-wider"
-                >
-                  {showFullText ? 'Hide Full Text' : 'Show Full Text'}
-                </button>
-                {showFullText && (
-                  <p className="font-body text-xs text-inkMid leading-relaxed whitespace-pre-wrap mt-1 p-2 bg-bg/40 rounded border border-border">
-                    {provision.full_text}
-                  </p>
-                )}
-              </div>
-            )}
-          </>
+        {provision.full_text ? (
+          <p className="font-body text-sm text-ink leading-relaxed whitespace-pre-wrap">
+            {renderFullTextWithRefs(provision.full_text)}
+          </p>
         ) : (
-          <>
-            {/* Legacy text-parsing fallback for older provisions */}
-            {/* Main concept/obligation as header */}
-            {parsed.header && (
-              <p className="font-body text-sm text-ink leading-relaxed font-medium">
-                {parsed.header.length > 300 ? parsed.header.substring(0, 300) + '...' : parsed.header}
-              </p>
-            )}
+          <p className="font-ui text-xs text-inkFaint italic">No text available.</p>
+        )}
 
-            {/* Sub-clauses as indented items */}
-            {parsed.subclauses.length > 0 && (
-              <div className="ml-3 space-y-1">
-                {parsed.subclauses.slice(0, 5).map((sc, i) => (
-                  <p key={i} className="font-body text-xs text-inkMid leading-relaxed flex items-start gap-1.5">
-                    <span className="text-inkFaint mt-0.5 shrink-0">--</span>
-                    <span>{sc.length > 200 ? sc.substring(0, 200) + '...' : sc}</span>
-                  </p>
-                ))}
-                {parsed.subclauses.length > 5 && (
-                  <p className="text-[10px] font-ui text-inkFaint italic">
-                    +{parsed.subclauses.length - 5} more sub-clauses
-                  </p>
-                )}
-              </div>
-            )}
-
-            {/* Exceptions/carve-outs as bulleted list — only when genuine exceptions exist */}
-            {parsed.exceptions.length > 0 && (
-              <div className="ml-3 mt-1 pl-3 border-l-2 border-amber-200 bg-amber-50/50 rounded-r py-1">
-                <p className="text-[10px] font-ui font-medium text-amber-700 uppercase tracking-wider mb-1">
-                  Exceptions / Carve-outs
-                </p>
-                <ul className="space-y-0.5">
-                  {parsed.exceptions.slice(0, 4).map((ex, i) => (
-                    <li key={i} className="font-body text-xs text-inkMid leading-relaxed flex items-start gap-1.5">
-                      <span className="text-amber-500 mt-0.5 shrink-0">&bull;</span>
-                      <span>{ex.length > 200 ? ex.substring(0, 200) + '...' : ex}</span>
-                    </li>
-                  ))}
-                  {parsed.exceptions.length > 4 && (
-                    <li className="text-[10px] font-ui text-inkFaint italic ml-4">
-                      +{parsed.exceptions.length - 4} more exceptions
-                    </li>
-                  )}
-                </ul>
-              </div>
-            )}
-
-            {/* Fallback: if no structured content, show raw text */}
-            {!parsed.header && parsed.subclauses.length === 0 && parsed.exceptions.length === 0 && provision.full_text && (
-              <p className="font-body text-sm text-ink leading-relaxed line-clamp-3">
-                {provision.full_text}
-              </p>
-            )}
-          </>
+        {/* Structured summary appears below the text when toggled on */}
+        {!isPreamble && structured && showStructured && (
+          <StructuredFeatures provision={provision} />
         )}
       </div>
 
-      {/* Features as chips (legacy path — only shown when structured panel is absent) */}
+      {/* Legacy features chips (only when no structured panel exists) */}
       {!structured && features.length > 0 && (
         <div className="flex flex-wrap gap-1 mt-2">
           {features.map((f, i) => (
@@ -630,6 +574,19 @@ function ProvisionCard({ provision, onEdit }) {
               {f}
             </span>
           ))}
+        </div>
+      )}
+
+      {/* Small unobtrusive toggle at the bottom — only when structured features exist */}
+      {!isPreamble && structured && (
+        <div className="mt-3 pt-2 border-t border-border/60 flex justify-end">
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); setShowStructured((v) => !v); }}
+            className="text-[10px] font-ui text-inkFaint hover:text-ink uppercase tracking-wider"
+          >
+            {showStructured ? 'Hide Structured Summary' : 'Show Structured Summary'}
+          </button>
         </div>
       )}
     </div>
