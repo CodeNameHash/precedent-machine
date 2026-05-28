@@ -14,9 +14,9 @@ import {
   isListTaxonomyKey,
   labelForCode,
 } from '../../lib/taxonomy';
-import { getFeaturesForType } from '../../lib/rubric';
+import { getFeaturesForType, PROVISION_TYPES } from '../../lib/rubric';
 
-/* ── Type & Category Labels ── */
+/* ── Type & Term Labels ── */
 const TYPE_LABELS = {
   'MAE-T': 'Material Adverse Effect (Target)',
   'MAE-B': 'Material Adverse Effect (Buyer)',
@@ -240,7 +240,15 @@ function resolveTaggedLabel(featureKey, item) {
 }
 
 /* ── Friendly label conversion (camelCase / snake_case → Title Case) ── */
+// Feature keys whose human-readable label should override the default
+// camelCase humanization. Keeps the underlying data key intact (e.g.
+// `mainConcept` in the rubric / DB) while presenting "Provision" in the UI.
+const HUMANIZE_KEY_OVERRIDES = {
+  mainConcept: 'Provision',
+};
+
 function humanizeKey(key) {
+  if (HUMANIZE_KEY_OVERRIDES[key]) return HUMANIZE_KEY_OVERRIDES[key];
   return String(key)
     .replace(/[_-]+/g, ' ')
     .replace(/([a-z])([A-Z])/g, '$1 $2')
@@ -1014,6 +1022,11 @@ function formatCellValue(featureKey, raw) {
 
 function ProvisionTable({ provisions, type, onSelectProvision }) {
   const schemaKeys = getFeatureSchema(type);
+  // For multi-code provision types (NOSOL, ANTI), the table is simplified:
+  // just Term + Provision (mainConcept). Full features remain available via
+  // the card view when the user drills into a specific provision.
+  const isMultiCode =
+    PROVISION_TYPES.find((t) => t.key === type)?.classificationMode === 'multi';
   // If no schema, fall back to whatever keys exist in the data.
   let columns = schemaKeys;
   if (columns.length === 0) {
@@ -1024,6 +1037,9 @@ function ProvisionTable({ provisions, type, onSelectProvision }) {
     });
     columns = Array.from(allKeys);
   }
+  if (isMultiCode) {
+    columns = ['mainConcept'];
+  }
 
   return (
     <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
@@ -1032,7 +1048,7 @@ function ProvisionTable({ provisions, type, onSelectProvision }) {
           <thead className="bg-bg/60 border-b border-border">
             <tr>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap sticky left-0 bg-bg/60 z-10">
-                Category
+                Term
               </th>
               {columns.map((k) => (
                 <th
@@ -2015,14 +2031,14 @@ function EditPanel({
           </div>
 
           <div>
-            <label className="block text-xs font-ui text-inkLight mb-1">Category</label>
+            <label className="block text-xs font-ui text-inkLight mb-1">Term</label>
             {filteredCategories.length > 0 ? (
               <select
                 value={editCategory}
                 onChange={e => setEditCategory(e.target.value)}
                 className="w-full border border-border rounded px-3 py-1.5 text-sm font-ui focus:outline-none focus:ring-1 focus:ring-accent bg-white"
               >
-                <option value="">Select category...</option>
+                <option value="">Select term...</option>
                 {filteredCategories.map(c => (
                   <option key={c.id} value={c.label}>{c.label}</option>
                 ))}
@@ -2031,7 +2047,7 @@ function EditPanel({
               <input
                 value={editCategory}
                 onChange={e => setEditCategory(e.target.value)}
-                placeholder="Category name"
+                placeholder="Term name"
                 className="w-full border border-border rounded px-3 py-1.5 text-sm font-ui focus:outline-none focus:ring-1 focus:ring-accent"
               />
             )}

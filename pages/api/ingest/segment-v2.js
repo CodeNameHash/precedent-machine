@@ -87,8 +87,10 @@ export default async function handler(req, res) {
     timing.extract = Date.now() - extractStart;
 
     // ── Phase 4: Validate ──
+    // Pass the classified sections so the validator can backfill any orphans
+    // as OTHER provisions, guaranteeing 100% coverage of the agreement.
     const validateStart = Date.now();
-    const validation = validateProvisions(provisions, cleaned);
+    const validation = validateProvisions(provisions, cleaned, sectionsForExtract);
     timing.validate = Date.now() - validateStart;
 
     // Use the validated provisions (which have status flags)
