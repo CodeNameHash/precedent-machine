@@ -5,6 +5,11 @@ import { useDeal, useProvisions } from '../../lib/useSupabaseData';
 import { useUser } from '../../lib/useUser';
 import { useToast } from '../../lib/useToast';
 import { Breadcrumbs, SkeletonCard, EmptyState } from '../../components/UI';
+import {
+  taxonomyForFeatureKey,
+  isListTaxonomyKey,
+  labelForCode,
+} from '../../lib/taxonomy';
 
 /* ── Type & Category Labels ── */
 const TYPE_LABELS = {
@@ -135,10 +140,34 @@ function getFeatures(provision) {
       .map(([k, v]) => {
         if (Array.isArray(v)) return `${k}: ${v.length} item${v.length === 1 ? '' : 's'}`;
         if (typeof v === 'boolean') return k;
+        if (v && typeof v === 'object' && 'code' in v) {
+          return `${k}: ${v.label || v.code}`;
+        }
         return `${k}: ${v}`;
       });
   }
   return [];
+}
+
+/* ── Tagged-item helpers ──
+ * A "tagged item" is a {code, label, text} object produced by the parser
+ * when it maps a free-text exception/qualifier to a canonical taxonomy code.
+ */
+function isTaggedItem(v) {
+  return (
+    v &&
+    typeof v === 'object' &&
+    !Array.isArray(v) &&
+    typeof v.code === 'string' &&
+    v.code.length > 0
+  );
+}
+
+function resolveTaggedLabel(featureKey, item) {
+  if (!isTaggedItem(item)) return null;
+  if (item.label && typeof item.label === 'string') return item.label;
+  const dict = taxonomyForFeatureKey(featureKey);
+  return labelForCode(item.code, dict || {}) || item.code;
 }
 
 /* ── Friendly label conversion (camelCase / snake_case → Title Case) ── */
