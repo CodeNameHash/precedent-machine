@@ -129,7 +129,14 @@ function parseProvisionText(text) {
     const trimmed = line.trim();
     if (!trimmed) continue;
 
-    const isSubclause = /^(\([A-Z]\)|\(\d+\)|Section\s)/i.test(trimmed);
+    // Subclause markers: "(A)", "(1)", or a leading "Section X.XX" cross-reference.
+    // BUT: do not treat the provision's own leading "SECTION X.XX. Title."
+    // heading as a subclause — that's the natural prefix of the provision body
+    // and belongs in the header. We only treat "Section ..." as a subclause
+    // once we already have header text captured.
+    const isSubclause =
+      /^(\([A-Z]\)|\(\d+\))/i.test(trimmed) ||
+      (!!header && /^Section\s/i.test(trimmed));
     // Only treat as an exception if it begins with one of the explicit markers
     // AND we already have substantive provision text (at least 50 chars).
     const startsWithExceptionMarker = EXCEPTION_PREFIX_RE.test(trimmed);
