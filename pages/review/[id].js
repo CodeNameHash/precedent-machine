@@ -276,7 +276,7 @@ const FEATURE_DISPLAY_ORDER = {
   'COND-S': ['mainCondition', 'bringDownStandard', 'tieredBringDown', 'tiers', 'fundsCondition', 'certificationRequired', 'dollarThreshold', 'scheduleReference'],
   COND: ['mainCondition'],
   NOSOL: ['mainConcept', 'noticePeriod', 'matchingPeriod', 'subsequentMatching', 'subsequentMatchingPeriod', 'goShopWindow', 'informationRights', 'confidentialityRequired', 'fiduciaryOutStandard', 'fiduciaryCarveoutThreshold', 'superiorProposalPercentage', 'interveningEventProvision', 'standstillWaiver', 'dontAskDontWaive'],
-  ANTI: ['mainConcept', 'effortsStandard', 'hellOrHighWater', 'divestitureCap', 'divestitureCapDescription', 'litigationObligation', 'partyControlsStrategy', 'filingDeadline', 'foreignFilingsRequired', 'interimOperatingRestrictions', 'pullAndRefileRight', 'burdensomConditionDefined'],
+  ANTI: ['mainConcept', 'effortsStandard', 'hellOrHighWater', 'divestitureCap', 'divestitureCapDescription', 'burdenCap', 'litigationObligation', 'filingDeadline', 'appliesToParty', 'partyControlsStrategy', 'foreignFilingsRequired', 'interimOperatingRestrictions', 'pullAndRefileRight', 'burdensomConditionDefined'],
   TERMR: ['mainConcept', 'partyWhoCanTerminate', 'terminationTriggers', 'curePeriod', 'outsideDate', 'outsideDateMonths', 'extensionAvailable', 'extensionPeriod', 'extensionTrigger', 'superiorProposalTermination', 'faultBasedExclusion', 'tickingFee'],
   TERMF: ['mainConcept', 'triggerEvents', 'feeAmount', 'feePercentage', 'reverseFeeAmount', 'reverseFeePercentage', 'tailPeriod', 'soleRemedy', 'willfulBreachException', 'expenseReimbursement', 'expenseReimbursementCap', 'nakedNoVoteFee'],
   DEF: ['mainConcept', 'canonicalTerm', 'definitionText', 'carveOuts', 'carveOutsList', 'disproportionateImpactClause', 'disproportionateImpact', 'disproportionateImpactScope', 'knowledgeStandard', 'knowledgePersons', 'ordinaryCourseQualifier', 'pandemicCarveout', 'cyberSecurityCarveout', 'superiorProposalPercentage', 'acquisitionProposalPercentage', 'willfulBreachDefinition', 'crossReferences'],
@@ -307,11 +307,15 @@ function getOrderedFeatureKeys(typeKey, featuresObj) {
 
 /* ── Return the expected feature schema keys for a provision type
  *    (drawn from the rubric FEATURES, ordered by FEATURE_DISPLAY_ORDER
- *    when available, otherwise by the rubric's own order). */
-function getFeatureSchema(typeKey) {
-  const schema = getFeaturesForType(typeKey) || [];
+ *    when available, otherwise by the rubric's own order).
+ *
+ *    If `code` is supplied AND the rubric has a code-specific feature schema
+ *    (e.g. TERMR-OUTSIDE), use that more-specific schema so per-code provisions
+ *    only display fields that actually apply to them. */
+function getFeatureSchema(typeKey, code) {
+  const schema = getFeaturesForType(typeKey, code) || [];
   const schemaKeys = schema.map((f) => f.key);
-  const order = FEATURE_DISPLAY_ORDER[typeKey] || [];
+  const order = FEATURE_DISPLAY_ORDER[code] || FEATURE_DISPLAY_ORDER[typeKey] || [];
   const seen = new Set();
   const ordered = [];
   for (const k of order) {
@@ -802,7 +806,9 @@ function StructuredFeatures({ provision }) {
   const exceptionLikeKeys = new Set(['permittedExceptions', 'carveOuts', 'carveOutsList']);
 
   // Schema keys for the provision type — always shown, with "—" if missing.
-  const schemaKeys = getFeatureSchema(provision.type);
+  // Pass the canonical code so code-specific schemas (e.g. TERMR-OUTSIDE)
+  // narrow the displayed fields appropriately.
+  const schemaKeys = getFeatureSchema(provision.type, provision.code);
 
   // Merge in any extra keys actually present in the data that aren't in the
   // schema (forward-compat / legacy data).
