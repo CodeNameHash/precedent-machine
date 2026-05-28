@@ -82,6 +82,38 @@ function typeColor(code) {
   return TYPE_COLORS[code] || { bg: 'bg-gray-50', border: 'border-gray-200', text: 'text-gray-700', dot: 'bg-gray-400', hex: '#f9fafb' };
 }
 
+/* Group provisions by type preserving document-order insertion, then enforce
+   Mutual → Buyer → Target ordering for the TERMR party-specific groups. */
+function groupProvisionsByType(provs) {
+  const groups = {};
+  provs.forEach(p => {
+    const t = p.type || 'Other';
+    if (!groups[t]) groups[t] = [];
+    groups[t].push(p);
+  });
+
+  const termrOrder = ['TERMR-M', 'TERMR-B', 'TERMR-T'];
+  const presentTermrKeys = termrOrder.filter(k => groups[k]);
+  if (presentTermrKeys.length < 2) return groups;
+
+  // Rebuild map: keep original key order, but the first time any TERMR-M/B/T
+  // key is encountered, emit all present TERMR party-specific groups in
+  // Mutual → Buyer → Target order.
+  const ordered = {};
+  let termrEmitted = false;
+  for (const [key, val] of Object.entries(groups)) {
+    if (termrOrder.includes(key)) {
+      if (!termrEmitted) {
+        for (const tk of presentTermrKeys) ordered[tk] = groups[tk];
+        termrEmitted = true;
+      }
+      continue;
+    }
+    ordered[key] = val;
+  }
+  return ordered;
+}
+
 const FAV_LABELS = {
   'strong-buyer': { label: 'Strong Buyer', cls: 'bg-buyer/10 text-buyer' },
   'mod-buyer':    { label: 'Mod. Buyer',   cls: 'bg-buyer/10 text-buyer' },
@@ -2120,27 +2152,14 @@ export default function ReviewPage() {
     return provisions.filter(p => p.type === activeFilter);
   }, [provisions, activeFilter, selectedProvId]);
 
-  /* ── Group provisions by type (all, not filtered) ── */
-  const provsByType = useMemo(() => {
-    const groups = {};
-    provisions.forEach(p => {
-      const t = p.type || 'Other';
-      if (!groups[t]) groups[t] = [];
-      groups[t].push(p);
-    });
-    return groups;
-  }, [provisions]);
+  /* ── Group provisions by type (all, not filtered) ──
+     Preserves natural insertion order (which mirrors document order) but
+     enforces TERMR-M → TERMR-B → TERMR-T ordering for the three party-specific
+     termination-rights groups so the sidebar reads Mutual → Buyer → Target. */
+  const provsByType = useMemo(() => groupProvisionsByType(provisions), [provisions]);
 
   /* ── Group filtered provisions by type ── */
-  const filteredProvsByType = useMemo(() => {
-    const groups = {};
-    filteredProvisions.forEach(p => {
-      const t = p.type || 'Other';
-      if (!groups[t]) groups[t] = [];
-      groups[t].push(p);
-    });
-    return groups;
-  }, [filteredProvisions]);
+  const filteredProvsByType = useMemo(() => groupProvisionsByType(filteredProvisions), [filteredProvisions]);
 
   /* ── Extract definition terms from DEF provisions ── */
   const definitionTerms = useMemo(() => {
