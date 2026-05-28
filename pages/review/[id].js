@@ -242,8 +242,8 @@ const FEATURE_DISPLAY_ORDER = {
   DEF: ['mainConcept', 'canonicalTerm', 'definitionText', 'carveOuts', 'carveOutsList', 'disproportionateImpactClause', 'disproportionateImpact', 'disproportionateImpactScope', 'knowledgeStandard', 'knowledgePersons', 'ordinaryCourseQualifier', 'pandemicCarveout', 'cyberSecurityCarveout', 'superiorProposalPercentage', 'acquisitionProposalPercentage', 'willfulBreachDefinition', 'crossReferences'],
   STRUCT: ['mainConcept', 'mergerForm', 'survivingEntity', 'closingConditionsPrecedent'],
   CONSID: ['mainConcept', 'considerationType', 'perShareAmount', 'exchangeRatio', 'equityAwardTreatment', 'outstandingInstruments', 'instrumentTreatments', 'vestingAcceleration', 'cutoffDate', 'cutoffTreatment', 'cashOutAmount', 'optionSpread', 'performanceTreatment', 'espp_treatment', 'parachuteCap', 'doubleTrigger', 'appraisalRightsAvailable', 'withholdingProvision', 'proration'],
-  'REP-T': ['mainConcept', 'bringDownStandard', 'materialityQualifier', 'knowledgeQualifier', 'survivalPeriod', 'scheduleReference', 'crossReferences'],
-  'REP-B': ['mainConcept', 'bringDownStandard', 'materialityQualifier', 'knowledgeQualifier', 'solvencyRepIncluded', 'financingRepIncluded', 'crossReferences'],
+  'REP-T': ['mainConcept', 'linkedBringDownStandard', 'bringDownStandard', 'materialityQualifier', 'knowledgeQualifier', 'survivalPeriod', 'scheduleReference', 'crossReferences'],
+  'REP-B': ['mainConcept', 'linkedBringDownStandard', 'bringDownStandard', 'materialityQualifier', 'knowledgeQualifier', 'solvencyRepIncluded', 'financingRepIncluded', 'crossReferences'],
   COV: ['mainConcept', 'accessScope', 'indemnificationPeriod', 'employeeBenefitPeriod', 'financingCooperation', 'cvrIncluded'],
   MISC: ['mainConcept', 'governingLaw', 'jurisdictionExclusive', 'juryWaiver', 'specificPerformance', 'thirdPartyBeneficiaryExceptions'],
 };
@@ -939,7 +939,25 @@ function ProvisionTable({ provisions, type, onSelectProvision }) {
                     </button>
                   </td>
                   {columns.map((k) => {
-                    const cell = formatCellValue(k, features[k]);
+                    const raw = features[k];
+                    // Tagged value (single object) — render code badge + label
+                    // so taxonomy-mapped features like linkedBringDownStandard
+                    // are visually comparable across rows at a glance.
+                    if (isTaggedItem(raw)) {
+                      const label = resolveTaggedLabel(k, raw) || raw.code;
+                      return (
+                        <td
+                          key={k}
+                          className="px-3 py-2 align-top max-w-[260px] text-ink"
+                        >
+                          <div className="flex items-baseline gap-1.5 flex-wrap">
+                            <CodeBadge code={raw.code} />
+                            <span>{label}</span>
+                          </div>
+                        </td>
+                      );
+                    }
+                    const cell = formatCellValue(k, raw);
                     return (
                       <td
                         key={k}
