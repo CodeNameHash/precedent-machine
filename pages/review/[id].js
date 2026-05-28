@@ -894,6 +894,7 @@ function EditPanel({
   const [editFullText, setEditFullText] = useState(provision?.full_text || '');
   const [features, setFeatures] = useState([]);
   const [newFeature, setNewFeature] = useState('');
+  const [reason, setReason] = useState('');
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -903,6 +904,7 @@ function EditPanel({
       setEditFav(provision.ai_favorability || 'neutral');
       setEditFullText(provision.full_text || '');
       setFeatures(getFeatures(provision));
+      setReason('');
     }
   }, [provision]);
 
@@ -923,6 +925,7 @@ function EditPanel({
         category: editCategory,
         ai_favorability: editFav,
         full_text: editFullText,
+        reason: reason.trim() || undefined,
       });
     } catch {
       // parent already surfaced a toast; keep panel open so the user can retry
@@ -1071,6 +1074,17 @@ function EditPanel({
               Add
             </button>
           </div>
+        </div>
+
+        {/* Correction Reason (optional, fuels the learning system) */}
+        <div className="space-y-2">
+          <h4 className="font-ui text-xs font-medium text-inkFaint uppercase tracking-wider">Why this change?</h4>
+          <input
+            value={reason}
+            onChange={e => setReason(e.target.value)}
+            placeholder="Optional — helps train future suggestions"
+            className="w-full border border-border rounded px-3 py-1.5 text-xs font-ui focus:outline-none focus:ring-1 focus:ring-accent"
+          />
         </div>
 
         {/* Related Definitions */}

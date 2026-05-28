@@ -1,6 +1,19 @@
 import { getServiceSupabase } from '../../lib/supabase';
+import { diffCorrectionType, logCorrection } from './corrections';
 
 const IMMUTABLE_FIELDS = ['deal_id'];
+
+// Fields snapshotted into before/after for correction logging
+const TRACKED_FIELDS = ['type', 'category', 'full_text', 'ai_favorability', 'prohibition', 'exceptions'];
+
+function snapshot(provision) {
+  if (!provision) return null;
+  const snap = {};
+  for (const k of TRACKED_FIELDS) {
+    if (k in provision) snap[k] = provision[k];
+  }
+  return snap;
+}
 
 export default async function handler(req, res) {
   const sb = getServiceSupabase();
@@ -39,7 +52,9 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'PATCH') {
-    const { id, ...updates } = req.body;
+    // Extract correction-logging metadata before processing updates
+    const { id, reason, user_id, ...updates } = req.body;
+
     const blocked = IMMUTABLE_FIELDS.filter(f => f in updates);
     if (blocked.length > 0) {
       return res.status(403).json({
@@ -61,8 +76,46 @@ export default async function handler(req, res) {
     if (!id) {
       return res.status(400).json({ error: 'id is required for PATCH' });
     }
+
+    // Capture the "before" state for correction logging — best effort.
+    let beforeRow = null;
+    try {
+      const { data: pre } = await sb.from('provisions').select('*').eq('id', id).single();
+      beforeRow = pre || null;
+    } catch (err) {
+      console.warn('[provisions PATCH] failed to fetch before-state:', err?.message || err);
+    }
+
     const { data, error } = await sb.from('provisions').update(safeUpdates).eq('id', id).select().single();
     if (error) return res.status(500).json({ error: error.message });
+
+    // Log the correction (best-effort, never fails the PATCH).
+    try {
+      const before = snapshot(beforeRow);
+      const after = snapshot(data);
+      const correction_type = diffCorrectionType(before, after);
+      if (correction_type) {
+        await logCorrection(sb, {
+          provision_id: id,
+          deal_id: data?.deal_id || beforeRow?.deal_id || null,
+          correction_type,
+          before,
+          after,
+          context: {
+            // Original AI classification (the state before user touched it).
+            // Useful for future learning: "what did the model originally say?"
+            original_ai_type: beforeRow?.type || null,
+            original_ai_category: beforeRow?.category || null,
+            original_ai_favorability: beforeRow?.ai_favorability || null,
+          },
+          reason: reason || null,
+          user_id: user_id || null,
+        });
+      }
+    } catch (err) {
+      console.warn('[provisions PATCH] correction logging failed:', err?.message || err);
+    }
+
     return res.json({ provision: data });
   }
 
