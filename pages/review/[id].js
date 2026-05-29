@@ -1997,6 +1997,336 @@ function IocPreambleSection({ affirmative, generalExceptions, onEdit }) {
   );
 }
 
+/* ── Employee Benefits summary box (Bringdown-style). Shown above the COV
+ *    Employee Benefits provisions on the Other Covenants page. Reads the
+ *    standards the provision sets for each comp/benefit item (base salary,
+ *    bonus, benefits, severance, LTI, …) and lists each populated row.
+ *    Returns null when no relevant features are present so the box stays
+ *    out of the way for other COV types. */
+const EMPLOYEE_BENEFITS_ROWS = [
+  { label: 'Base Salary',          itemCodes: ['BASE_SALARY'],
+    keys: ['baseSalaryStandard', 'baseSalary'] },
+  { label: 'Bonus',                itemCodes: ['TARGET_BONUS', 'ANNUAL_BONUS_PAID'],
+    keys: ['bonusStandard', 'targetBonusStandard'] },
+  { label: 'Benefits',             itemCodes: ['HEALTH_WELFARE', 'RETIREMENT', 'OTHER_BENEFITS'],
+    keys: ['benefitsStandard', 'healthWelfareStandard'] },
+  { label: 'Severance',            itemCodes: ['SEVERANCE'],
+    keys: ['severanceStandard'] },
+  { label: 'Long-Term Incentive',  itemCodes: ['LONG_TERM_INCENTIVE', 'EQUITY_AWARDS'],
+    keys: ['ltiStandard', 'longTermIncentiveStandard'] },
+];
+
+function isEmployeeBenefitsProvision(p) {
+  if (!p) return false;
+  const cat = String(p?.category || '').toLowerCase();
+  if (!cat) return false;
+  return /employee[^a-z]*benefits|benefits[^a-z]*continuation|employee\s+matters|continuing\s+employees/i.test(cat);
+}
+
+function buildEmployeeBenefitsSummary(covProvisions) {
+  const ebProvs = (covProvisions || []).filter(isEmployeeBenefitsProvision);
+  if (ebProvs.length === 0) return null;
+  const rows = [];
+  for (const spec of EMPLOYEE_BENEFITS_ROWS) {
+    let standardText = null;
+    let source = null;
+    for (const p of ebProvs) {
+      const f = getStructuredFeatures(p) || {};
+      // 1. Explicit per-key feature (most reliable when present).
+      for (const k of spec.keys) {
+        const v = f[k];
+        if (v === null || v === undefined || v === '' || v === false) continue;
+        if (isTaggedItem(v)) {
+          standardText = resolveTaggedLabel(k, v) || v.code;
+        } else {
+          standardText = String(v);
+        }
+        source = p;
+        break;
+      }
+      if (standardText) break;
+      // 2. compensationItems array (the canonical shape).
+      const items = Array.isArray(f.compensationItems) ? f.compensationItems : [];
+      for (const item of items) {
+        if (!item || typeof item !== 'object') continue;
+        const itemCode = String(item.item || item.code || '').toUpperCase();
+        if (!spec.itemCodes.includes(itemCode)) continue;
+        const std = item.standard_label || item.standardLabel || item.standard_code || item.standardCode;
+        if (std) {
+          standardText = String(std);
+          source = p;
+          break;
+        }
+      }
+      if (standardText) break;
+    }
+    if (standardText) rows.push({ label: spec.label, value: standardText, source });
+  }
+  if (rows.length === 0) return null;
+  return { rows, ebProvs };
+}
+
+function EmployeeBenefitsTreatmentTable({ summary, onSelectProvision }) {
+  if (!summary) return null;
+  const { rows } = summary;
+  return (
+    <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+      <div className="px-3 py-2 bg-bg/60 border-b border-border">
+        <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+          Employee Benefits Treatment
+        </p>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="min-w-full text-xs font-ui">
+          <thead className="bg-bg/60 border-b border-border">
+            <tr>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider w-[200px]">Item</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Standard</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {rows.map((row, i) => (
+              <tr key={i} className="hover:bg-bg/40 transition-colors align-top">
+                <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">{row.label}</td>
+                <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
+                  {row.source && onSelectProvision ? (
+                    <button
+                      type="button"
+                      onClick={() => onSelectProvision(row.source)}
+                      className="text-left text-ink hover:underline"
+                    >
+                      {row.value}
+                    </button>
+                  ) : (
+                    <span>{row.value}</span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+/* ── IOC Affirmative Covenants table (Bringdown-style box)
+ *    Shows one row per known affirmative-covenant sub-code in this IOC
+ *    section: Ordinary Course, Preservation of Relationships, Maintain
+ *    Business Organization, etc. Falls back to category match if no codes
+ *    are present. Returns null when nothing matches. */
+const IOC_AFFIRMATIVE_BUCKETS = [
+  {
+    code: 'IOC-ORDINARY',
+    name: 'Ordinary Course Obligation',
+    catRe: /ordinary\s+course/i,
+  },
+  {
+    code: 'IOC-PRESERVE',
+    name: 'Preservation of Business Relationships',
+    catRe: /(?:preservation|preserve).*relationship/i,
+  },
+  {
+    code: 'IOC-MAINTAIN',
+    name: 'Maintain Business Organization & Material Assets',
+    catRe: /maintain.*(?:business|organization|assets)/i,
+  },
+  {
+    code: 'IOC-NOACTION',
+    name: 'General No-Action Restriction',
+    catRe: /no\s+action/i,
+  },
+  {
+    code: 'IOC-NEWLINE',
+    name: 'No New Lines of Business',
+    catRe: /new\s+lines?\s+of\s+business/i,
+  },
+];
+
+function findIocAffirmativeMatches(iocProvisions) {
+  if (!Array.isArray(iocProvisions) || iocProvisions.length === 0) return [];
+  const used = new Set();
+  const matches = [];
+  for (const bucket of IOC_AFFIRMATIVE_BUCKETS) {
+    let hit = null;
+    for (const p of iocProvisions) {
+      if (used.has(p.id)) continue;
+      const meta = getAiMetadata(p) || {};
+      const code = String(meta.code || p.code || '');
+      if (code === bucket.code) { hit = p; break; }
+    }
+    if (!hit) {
+      for (const p of iocProvisions) {
+        if (used.has(p.id)) continue;
+        const cat = String(p?.category || '');
+        if (bucket.catRe.test(cat)) { hit = p; break; }
+      }
+    }
+    if (hit) {
+      used.add(hit.id);
+      matches.push({ bucket, provision: hit });
+    }
+  }
+  return matches;
+}
+
+function IocAffirmativeCovenantsTable({ iocProvisions, onSelectProvision }) {
+  const matches = useMemo(
+    () => findIocAffirmativeMatches(iocProvisions),
+    [iocProvisions],
+  );
+  if (matches.length === 0) return null;
+
+  const textFor = (provision) => {
+    const features = getStructuredFeatures(provision) || {};
+    if (typeof features.mainConcept === 'string' && features.mainConcept.trim()) {
+      return features.mainConcept.trim();
+    }
+    if (isTaggedItem(features.mainConcept)) {
+      const lbl = resolveTaggedLabel('mainConcept', features.mainConcept);
+      if (lbl) return lbl;
+    }
+    const t = provision.full_text || provision.text || '';
+    if (!t) return '';
+    // Truncate long text to a reasonable summary length.
+    const trimmed = t.trim();
+    return trimmed.length > 320 ? `${trimmed.slice(0, 320).trim()}…` : trimmed;
+  };
+
+  return (
+    <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+      <div className="px-3 py-2 bg-bg/60 border-b border-border">
+        <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+          Affirmative Covenants
+        </p>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="min-w-full text-xs font-ui">
+          <thead className="bg-bg/60 border-b border-border">
+            <tr>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[260px]">Covenant</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Summary</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {matches.map(({ bucket, provision }) => (
+              <tr key={bucket.code} className="hover:bg-bg/40 transition-colors align-top">
+                <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">
+                  <button
+                    type="button"
+                    onClick={() => onSelectProvision && onSelectProvision(provision)}
+                    className="text-left text-accent hover:underline font-medium"
+                  >
+                    {bucket.name}
+                  </button>
+                </td>
+                <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
+                  {textFor(provision) || <span className="text-inkFaint/70 italic">—</span>}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+/* ── IOC General Exceptions table (Bringdown-style box)
+ *    Renders the section-wide permittedExceptions (scope=preamble) and/or
+ *    the items extracted from the consolidated General Exceptions provision.
+ *    Returns null when nothing meaningful is available. */
+function IocGeneralExceptionsTable({ iocProvisions, generalExceptionsProv, onSelectProvision }) {
+  const rows = useMemo(() => {
+    const out = [];
+
+    // 1. Pull permittedExceptions from any IOC provision where scope === 'preamble'
+    //    (canonical section-wide carve-outs). Fall back to any permittedExceptions
+    //    when no scoped version exists.
+    const seenLabels = new Set();
+    const addException = (label, source) => {
+      if (!label) return;
+      const key = String(label).toLowerCase().trim();
+      if (!key || seenLabels.has(key)) return;
+      seenLabels.add(key);
+      out.push({ label: String(label), source });
+    };
+
+    const scoped = [];
+    const unscoped = [];
+    for (const p of iocProvisions || []) {
+      const f = getStructuredFeatures(p) || {};
+      const list = Array.isArray(f.permittedExceptions) ? f.permittedExceptions : [];
+      for (const item of list) {
+        const scope = item && typeof item === 'object' ? item.scope : null;
+        if (scope === 'preamble') scoped.push({ item, source: p });
+        else unscoped.push({ item, source: p });
+      }
+    }
+    const exceptionItems = scoped.length > 0 ? scoped : unscoped;
+    for (const { item, source } of exceptionItems) {
+      if (isTaggedItem(item)) {
+        const lbl = resolveTaggedLabel('permittedExceptions', item) || item.code;
+        addException(lbl, source);
+      } else if (typeof item === 'string' && item.trim()) {
+        addException(item.trim(), source);
+      }
+    }
+
+    // 2. If we have a consolidated General Exceptions provision, also pull
+    //    its split items as additional rows (they're usually the most useful).
+    if (generalExceptionsProv) {
+      const text = generalExceptionsProv.full_text || generalExceptionsProv.text || '';
+      const items = text ? splitGeneralExceptionsItems(text) : [];
+      for (const t of items) addException(t, generalExceptionsProv);
+    }
+
+    return out;
+  }, [iocProvisions, generalExceptionsProv]);
+
+  if (rows.length === 0) return null;
+
+  return (
+    <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+      <div className="px-3 py-2 bg-bg/60 border-b border-border">
+        <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+          General Exceptions
+        </p>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="min-w-full text-xs font-ui">
+          <thead className="bg-bg/60 border-b border-border">
+            <tr>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider w-12">#</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Exception</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {rows.map((row, i) => (
+              <tr key={i} className="hover:bg-bg/40 transition-colors align-top">
+                <td className="px-3 py-2 text-inkFaint whitespace-nowrap">{i + 1}</td>
+                <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
+                  {row.source && onSelectProvision ? (
+                    <button
+                      type="button"
+                      onClick={() => onSelectProvision(row.source)}
+                      className="text-left text-ink hover:underline"
+                    >
+                      {row.label}
+                    </button>
+                  ) : (
+                    <span>{row.label}</span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
 /* ═══════════════════════════════════════════════════════════
    CATEGORY OVERVIEW — section overview line per provision +
    collapsible full-text view shown ABOVE the summary table on
@@ -2134,14 +2464,19 @@ const HIDDEN_TABLE_COLUMNS = {
   // Also hide crossReferences per user request.
   'REP-T': ['mainConcept', 'crossReferences', 'linkedBringDownStandard'],
   'REP-B': ['mainConcept', 'crossReferences', 'linkedBringDownStandard'],
-  COND: ['certificationRequired', 'dollarThreshold', 'scheduleReference', 'bringDownTiers'],
-  'COND-M': ['certificationRequired', 'dollarThreshold', 'scheduleReference', 'bringDownTiers'],
-  'COND-B': ['certificationRequired', 'dollarThreshold', 'scheduleReference', 'bringDownTiers'],
-  'COND-S': ['certificationRequired', 'dollarThreshold', 'scheduleReference', 'bringDownTiers'],
-  TERMR: ['terminationTriggers', 'restraintFinality', 'restraintScope', 'voteFailureContext', 'voteThreshold'],
-  'TERMR-M': ['terminationTriggers', 'restraintFinality', 'restraintScope', 'voteFailureContext', 'voteThreshold'],
-  'TERMR-B': ['terminationTriggers', 'restraintFinality', 'restraintScope', 'voteFailureContext', 'voteThreshold'],
-  'TERMR-T': ['terminationTriggers', 'restraintFinality', 'restraintScope', 'voteFailureContext', 'voteThreshold'],
+  COND: ['certificationRequired', 'dollarThreshold', 'scheduleReference', 'bringDownTiers', 'maeConditionStandalone', 'maeStandaloneCondition', 'dissentingSharesThreshold', 'dissentingShares', 'dissentingSharesPct'],
+  'COND-M': ['certificationRequired', 'dollarThreshold', 'scheduleReference', 'bringDownTiers', 'maeConditionStandalone', 'maeStandaloneCondition', 'dissentingSharesThreshold', 'dissentingShares', 'dissentingSharesPct'],
+  'COND-B': ['certificationRequired', 'dollarThreshold', 'scheduleReference', 'bringDownTiers', 'maeConditionStandalone', 'maeStandaloneCondition', 'dissentingSharesThreshold', 'dissentingShares', 'dissentingSharesPct'],
+  'COND-S': ['certificationRequired', 'dollarThreshold', 'scheduleReference', 'bringDownTiers', 'maeConditionStandalone', 'maeStandaloneCondition', 'dissentingSharesThreshold', 'dissentingShares', 'dissentingSharesPct'],
+  // TERMR family — strip the table down to just the provision name + a
+  // single "Term" cell (synthesized below for TERMR-OUTSIDE rows). Every
+  // other column is hidden — the per-provision drill-in still shows the
+  // full structured feature set.
+  TERMR: ['terminationTriggers', 'curePeriod', 'partyWhoCanTerminate', 'faultBasedExclusion', 'tickingFee', 'superiorProposalTermination', 'restraintFinality', 'restraintScope', 'voteFailureContext', 'voteThreshold', 'outsideDate', 'outsideDateMonths', 'extensionAvailable', 'extensionPeriod', 'extensionTrigger', 'extensionConsentParty'],
+  'TERMR-M': ['terminationTriggers', 'curePeriod', 'partyWhoCanTerminate', 'faultBasedExclusion', 'tickingFee', 'superiorProposalTermination', 'restraintFinality', 'restraintScope', 'voteFailureContext', 'voteThreshold', 'outsideDate', 'outsideDateMonths', 'extensionAvailable', 'extensionPeriod', 'extensionTrigger', 'extensionConsentParty'],
+  'TERMR-B': ['terminationTriggers', 'curePeriod', 'partyWhoCanTerminate', 'faultBasedExclusion', 'tickingFee', 'superiorProposalTermination', 'restraintFinality', 'restraintScope', 'voteFailureContext', 'voteThreshold', 'outsideDate', 'outsideDateMonths', 'extensionAvailable', 'extensionPeriod', 'extensionTrigger', 'extensionConsentParty'],
+  'TERMR-T': ['terminationTriggers', 'curePeriod', 'partyWhoCanTerminate', 'faultBasedExclusion', 'tickingFee', 'superiorProposalTermination', 'restraintFinality', 'restraintScope', 'voteFailureContext', 'voteThreshold', 'outsideDate', 'outsideDateMonths', 'extensionAvailable', 'extensionPeriod', 'extensionTrigger', 'extensionConsentParty'],
+  COV: ['financingCooperation', 'cvrIncluded'],
 };
 
 // voteThreshold is only relevant on TERMR-VOTE rows — keep it visible there
@@ -2240,14 +2575,18 @@ function StructTable({ provisions, onSelectProvision }) {
                 </button>
               </td>
               <td className="px-3 py-2 text-ink">
-                <dl className="space-y-1">
-                  {cells.map(({ key, raw }) => (
-                    <div key={key} className="flex flex-col">
-                      <dt className="text-[10px] text-inkFaint uppercase tracking-wider">{humanizeKey(key)}</dt>
-                      <dd>{renderFeatureCell(key, raw)}</dd>
-                    </div>
-                  ))}
-                </dl>
+                {cells.length === 1 ? (
+                  <div>{renderFeatureCell(cells[0].key, cells[0].raw)}</div>
+                ) : (
+                  <dl className="space-y-1">
+                    {cells.map(({ key, raw }) => (
+                      <div key={key} className="flex flex-col">
+                        <dt className="text-[10px] text-inkFaint uppercase tracking-wider">{humanizeKey(key)}</dt>
+                        <dd>{renderFeatureCell(key, raw)}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                )}
               </td>
             </tr>
           ))}
@@ -2330,13 +2669,36 @@ function buildEquityRows(equityProvisions) {
     const treatments = Array.isArray(f.instrumentTreatments) ? f.instrumentTreatments : [];
 
     // (a) instrumentType already populated (typical post-expander case).
+    // Use THIS row's own treatment — prefer the singular `equityAwardTreatment`
+    // when present, otherwise find a parallel treatment that matches this
+    // instrument's code, otherwise (only as a last resort) treatments[0].
+    // Picking treatments[0] blindly is what caused fully-accelerated rows to
+    // be mis-labeled "Partially Accelerated" when the array also contained
+    // a different instrument's treatment.
     if (isTaggedItem(f.instrumentType)) {
+      const myCode = String(f.instrumentType.code || '').toUpperCase();
+      let myTreatment = null;
+      if (isTaggedItem(f.equityAwardTreatment)) {
+        myTreatment = f.equityAwardTreatment;
+      } else if (insts.length > 0) {
+        // Try to match by instrument code in the parallel array.
+        const idx = insts.findIndex(
+          (inst) => isTaggedItem(inst) && String(inst.code || '').toUpperCase() === myCode,
+        );
+        if (idx >= 0 && idx < treatments.length) {
+          myTreatment = treatments[idx];
+        }
+      }
+      if (myTreatment === null && treatments.length === 1) {
+        // Only one treatment in the array → safe to use it.
+        myTreatment = treatments[0];
+      }
       rows.push({
         key: `${p.id}-single`,
         provision: p,
         instrument: f.instrumentType,
         outstandingCount: f.outstandingCount ?? null,
-        treatment: treatments[0] ?? null,
+        treatment: myTreatment,
         vesting: f.vestingAcceleration ?? null,
         cashOut: f.cashOutAmount ?? f.optionSpread ?? null,
         cutoff: f.cutoffDate ?? null,
@@ -2344,7 +2706,8 @@ function buildEquityRows(equityProvisions) {
       continue;
     }
 
-    // (b) parallel arrays of instruments + treatments.
+    // (b) parallel arrays of instruments + treatments — each row picks its
+    // OWN treatment by index (the parallel-array contract).
     if (insts.length > 0) {
       insts.forEach((inst, i) => {
         rows.push({
@@ -2570,6 +2933,51 @@ function ConsidTable({ provisions, onSelectProvision }) {
     if (heroPerShare && heroConsidType) break;
   }
 
+  // Detect CVR presence — used to rewrite the displayed consideration type
+  // as "Cash and a CVR" when the deal pays a mix of cash + CVR. We look at
+  // the consideration type code/label, any provision flagged as CVR, and
+  // the raw text as a final fallback. Be defensive: only override the label
+  // when we have strong evidence of CVR + cash.
+  const detectCvr = () => {
+    for (const p of provisions) {
+      const f = getStructuredFeatures(p) || {};
+      const ct = f.considerationType;
+      if (isTaggedItem(ct)) {
+        const codeStr = String(ct.code || '').toLowerCase();
+        const lblStr = String(ct.label || '').toLowerCase();
+        if (codeStr.includes('cvr') || lblStr.includes('cvr') || lblStr.includes('contingent value')) return true;
+      } else if (typeof ct === 'string' && /cvr|contingent\s+value/i.test(ct)) {
+        return true;
+      }
+      if (f.cvrIncluded === true) return true;
+      const meta = getAiMetadata(p) || {};
+      const code = String(meta.code || p.code || '').toUpperCase();
+      if (code.includes('CVR')) return true;
+      const cat = String(p?.category || '').toLowerCase();
+      if (cat.includes('cvr') || cat.includes('contingent value right')) return true;
+    }
+    return false;
+  };
+  const detectCash = () => {
+    for (const p of provisions) {
+      const f = getStructuredFeatures(p) || {};
+      const ct = f.considerationType;
+      if (isTaggedItem(ct)) {
+        const codeStr = String(ct.code || '').toLowerCase();
+        const lblStr = String(ct.label || '').toLowerCase();
+        if (codeStr.includes('cash') || lblStr.includes('cash')) return true;
+      } else if (typeof ct === 'string' && /cash/i.test(ct)) {
+        return true;
+      }
+    }
+    return false;
+  };
+  const hasCvr = detectCvr();
+  const hasCash = hasCvr ? detectCash() : false;
+  if (hasCvr && hasCash) {
+    heroConsidType = 'Cash and a CVR';
+  }
+
   // Find appraisalRightsAvailable across all CONSID provisions (first non-null).
   let appraisalAvailable = null;
   for (const p of provisions) {
@@ -2602,9 +3010,12 @@ function ConsidTable({ provisions, onSelectProvision }) {
       {(heroPriceText || heroConsidType || appraisalAvailable !== null) && (
         <div className="bg-white border-2 border-lime-300 rounded-lg shadow-sm px-5 py-4">
           {heroPriceText && (
-            <div className="font-display text-3xl font-semibold text-ink leading-tight">
+            <div
+              className="font-display font-semibold text-ink leading-tight"
+              style={{ fontSize: '30px' }}
+            >
               {heroPriceText}
-              <span className="text-base font-ui font-normal text-inkMid ml-2">per share</span>
+              <span className="text-sm font-ui font-normal text-inkMid ml-2">per share</span>
             </div>
           )}
           {heroConsidType && (
@@ -2821,17 +3232,50 @@ const CATEGORY_SUMMARY_FEATURES = {
     { label: 'Intervening Event Termination',         keys: ['interveningEventTermination', 'interveningEventProvision'] },
     { label: 'Force the Vote',                        keys: ['forceTheVote', 'forceTheVoteDetails'] },
   ],
-  // ANTI — efforts standard, burden cap, divestiture limits, etc.
+  // ANTI — Standard of Efforts + Burden Cap are the two headline rows.
+  // (The remaining feature columns still appear on the per-provision
+  // drill-in / edit panel — this is just the cross-deal summary view.)
   ANTI: [
-    { label: 'Efforts Standard',     keys: ['effortsStandard'] },
-    { label: 'Hell-or-High-Water',   keys: ['hellOrHighWater'] },
-    { label: 'Divestiture Cap',      keys: ['divestitureCap', 'divestitureCapDescription'] },
-    { label: 'Burden Cap',           keys: ['burdenCap'] },
-    { label: 'Controlling Party',    keys: ['controllingParty'] },
-    { label: 'Applies To Party',     keys: ['appliesToParty'] },
-    { label: 'Filing Deadline',      keys: ['filingDeadline'] },
+    { label: 'Standard of Efforts', keys: ['effortsStandard'] },
+    { label: 'Burden Cap',          keys: ['burdenCap', 'divestitureCap', 'divestitureCapDescription'] },
+  ],
+  // MISC — boilerplate / governance terms. Rendered as an antitrust-style
+  // 2-column summary table (label | value), with the underlying MISC
+  // provisions listed below as clickable links.
+  MISC: [
+    { label: 'Governing Law',              keys: ['governingLaw'] },
+    { label: 'Jurisdiction',               keys: ['jurisdictionExclusive', 'jurisdiction'] },
+    { label: 'Jury Trial Waiver',          keys: ['juryWaiver'] },
+    { label: 'Specific Performance',       keys: ['specificPerformance'] },
+    { label: 'Third-Party Beneficiaries',  keys: ['thirdPartyBeneficiaryExceptions', 'thirdPartyBeneficiaries'] },
+    { label: 'Notices Address',            keys: ['noticesAddress'] },
+    { label: 'Amendments Requirement',     keys: ['amendmentsRequirement'] },
+    { label: 'Waiver Standard',            keys: ['waiverStandard'] },
+    { label: 'Severability',               keys: ['severability'] },
+    { label: 'Counterparts / Electronic',  keys: ['counterparts'] },
   ],
 };
+
+// Heuristic: detect ANTI provisions that are really takeover-statute
+// "no inconsistent action" boilerplate. These get pulled out of the main
+// ANTI summary table and rendered separately below.
+function isTakeoverStatuteProvision(p) {
+  if (!p) return false;
+  const cat = String(p?.category || '').toLowerCase();
+  if (!cat) return false;
+  if (/takeover\s+statute/i.test(cat)) return true;
+  if (/state\s+takeover/i.test(cat)) return true;
+  // "No Inconsistent Action" can mean (a) ANTI-NOACTION (a real antitrust
+  // covenant) or (b) state takeover statute carveout. Disambiguate by
+  // looking for the takeover/state-statute reference in the full text.
+  if (/no\s+inconsistent\s+action/i.test(cat)) {
+    const text = String(p?.full_text || '').toLowerCase();
+    if (/takeover\s+statute|state\s+takeover|moratorium\s+statute|business\s+combination\s+statute/.test(text)) {
+      return true;
+    }
+  }
+  return false;
+}
 
 // Pull the first non-empty value across `provisions` for any of `keys`.
 function pickFirstNonEmpty(provisions, keys) {
@@ -2865,7 +3309,10 @@ function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision }) {
       <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
         <div className="px-3 py-2 bg-bg/60 border-b border-border">
           <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
-            {type === 'NOSOL' ? 'No-Solicitation Summary' : 'Antitrust Summary'}
+            {type === 'NOSOL' ? 'No-Solicitation Summary'
+              : type === 'ANTI' ? 'Antitrust Summary'
+              : type === 'MISC' ? 'Boilerplate Summary'
+              : `${type} Summary`}
           </p>
         </div>
         <div className="overflow-x-auto">
@@ -3023,16 +3470,66 @@ function isCatchAllRepsCovered(reps) {
   return false;
 }
 
+// Pull a dollar/threshold value from a tier and/or its source provision.
+// Tries tier.dollarThreshold, tier.threshold, then features.dollarThreshold,
+// then scans the provision's full_text for the first currency value as a
+// last-resort fallback.
+function pickTierThreshold(tier, sourceProv) {
+  if (tier) {
+    const v = tier.dollarThreshold ?? tier.threshold ?? tier.dollar_threshold;
+    if (v !== null && v !== undefined && v !== '') return String(v);
+  }
+  if (sourceProv) {
+    const f = getStructuredFeatures(sourceProv) || {};
+    const dt = f.dollarThreshold;
+    if (dt !== null && dt !== undefined && dt !== '') return String(dt);
+    const text = String(sourceProv.full_text || '');
+    if (text) {
+      const m = text.match(/\$\s?[\d,]+(?:\.\d+)?(?:\s?(?:million|billion|thousand))?/i);
+      if (m) return m[0];
+    }
+  }
+  return null;
+}
+
+// Find the names of the REP provisions a tier covers. Uses the
+// `linkedBringDownStandard` stamp left on each REP by linkBringDownToReps,
+// matching tier.standard / tier.standardCode. Falls back to free-text
+// section-number matching against tier.reps_covered.
+function findCoveredRepNames(tier, repProvisions) {
+  if (!Array.isArray(repProvisions) || repProvisions.length === 0) return [];
+  const tierStdCode = (
+    tier?.standard ||
+    tier?.standardCode ||
+    tier?.standard_code ||
+    ''
+  );
+  const names = [];
+  if (tierStdCode) {
+    for (const rep of repProvisions) {
+      const f = getStructuredFeatures(rep) || {};
+      const stamp = f.linkedBringDownStandard;
+      const stampCode = isTaggedItem(stamp) ? stamp.code : stamp;
+      if (stampCode && String(stampCode) === String(tierStdCode)) {
+        const nm = rep.category || '';
+        if (nm) names.push(nm);
+      }
+    }
+  }
+  return names;
+}
+
 function BringdownTable({ provisions, repsType }) {
   // Find the matching COND-B-REP / COND-S-REP provision.
   const condProvs = (provisions || []).filter((p) => isCondRepProvision(p, repsType));
-  // Gather tiers from any matching provisions.
+  // Gather tiers from any matching provisions — remember which provision
+  // each tier came from so we can pull thresholds / text as a fallback.
   const tiers = [];
   for (const cp of condProvs) {
     const f = getStructuredFeatures(cp) || {};
     if (Array.isArray(f.bringDownTiers)) {
       for (const t of f.bringDownTiers) {
-        if (t && typeof t === 'object') tiers.push(t);
+        if (t && typeof t === 'object') tiers.push({ tier: t, source: cp });
       }
     }
   }
@@ -3043,24 +3540,36 @@ function BringdownTable({ provisions, repsType }) {
   // tier whose reps_covered matches isCatchAllRepsCovered. If none match,
   // assume the LAST tier is the catch-all (drafters typically state the
   // general standard last, after enumerating higher-standard exceptions).
-  let generalIdx = tiers.findIndex((t) => isCatchAllRepsCovered(t.reps_covered || t.repsCovered));
+  let generalIdx = tiers.findIndex(({ tier: t }) => isCatchAllRepsCovered(t.reps_covered || t.repsCovered));
   if (generalIdx < 0) generalIdx = tiers.length - 1;
-  const generalTier = tiers[generalIdx];
-  const higherTiers = tiers.filter((_, i) => i !== generalIdx);
-
-  // Group higher tiers by their standard label so we can show them as
-  // "Higher Standards" with each label heading a list of covered reps.
-  const higherByStandard = new Map();
-  for (const t of higherTiers) {
-    const stdLabel = t.standard_label || t.standardLabel || t.standard || t.standardCode || '(unspecified standard)';
-    const reps = t.reps_covered || t.repsCovered || '';
-    const arr = higherByStandard.get(stdLabel) || [];
-    if (reps) arr.push(reps);
-    higherByStandard.set(stdLabel, arr);
-  }
+  const generalEntry = tiers[generalIdx];
+  const higherEntries = tiers.filter((_, i) => i !== generalIdx);
 
   const tierStdLabel = (t) =>
     t.standard_label || t.standardLabel || t.standard || t.standardCode || '(unspecified)';
+
+  // REP provisions in this category — used to enumerate which reps each
+  // higher-standard tier covers (via the linkedBringDownStandard stamp).
+  const repProvs = (provisions || []).filter((p) => p.type === repsType);
+
+  // Group higher tier entries by standard label so all reps under the same
+  // standard render together. Each entry contributes its reps_covered text
+  // + any matched REP provision names.
+  const higherByStandard = new Map();
+  for (const entry of higherEntries) {
+    const { tier: t, source } = entry;
+    const stdLabel = tierStdLabel(t);
+    const reps = t.reps_covered || t.repsCovered || '';
+    const matchedNames = findCoveredRepNames(t, repProvs);
+    const threshold = pickTierThreshold(t, source);
+    const bucket = higherByStandard.get(stdLabel) || { reps: [], names: new Set(), thresholds: new Set() };
+    if (reps) bucket.reps.push(reps);
+    for (const nm of matchedNames) bucket.names.add(nm);
+    if (threshold) bucket.thresholds.add(threshold);
+    higherByStandard.set(stdLabel, bucket);
+  }
+
+  const generalThreshold = generalEntry ? pickTierThreshold(generalEntry.tier, generalEntry.source) : null;
 
   return (
     <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
@@ -3069,53 +3578,70 @@ function BringdownTable({ provisions, repsType }) {
           Bringdown Standards
         </p>
       </div>
-      <div className="px-4 py-3 space-y-3 text-xs font-ui">
-        {generalTier && (
-          <div>
-            <div className="text-[10px] font-medium text-inkFaint uppercase tracking-wider mb-0.5">
-              General Standard
-            </div>
-            <div className="text-sm text-ink leading-relaxed">
-              {tierStdLabel(generalTier)}
-            </div>
-            {(generalTier.exceptions || generalTier.reps_covered) && (
-              <div className="text-[11px] text-inkMid mt-0.5">
-                {generalTier.reps_covered && (
-                  <span className="italic">{generalTier.reps_covered}</span>
-                )}
-                {generalTier.exceptions && (
-                  <span>{generalTier.reps_covered ? ' — ' : ''}{generalTier.exceptions}</span>
-                )}
-              </div>
-            )}
-          </div>
-        )}
-
-        {higherByStandard.size > 0 && (
-          <div className="pt-2 border-t border-border">
-            <div className="text-[10px] font-medium text-inkFaint uppercase tracking-wider mb-1">
-              Higher Standards (specific reps)
-            </div>
-            <div className="space-y-2">
-              {Array.from(higherByStandard.entries()).map(([stdLabel, repsList]) => (
-                <div key={stdLabel}>
-                  <div className="text-sm text-ink font-medium">{stdLabel}:</div>
-                  {repsList.length > 0 ? (
-                    <ul className="list-disc list-inside text-[11px] text-inkMid mt-0.5 space-y-0.5">
-                      {repsList.map((reps, i) => (
-                        <li key={i} className="whitespace-pre-wrap">{reps}</li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <div className="text-[11px] text-inkFaint italic mt-0.5">
-                      (no specific reps listed)
+      <div className="overflow-x-auto">
+        <table className="min-w-full text-xs font-ui">
+          <thead className="bg-bg/60 border-b border-border">
+            <tr>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[200px]">Tier</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Standard</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[140px]">Threshold</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {generalEntry && (
+              <tr className="align-top">
+                <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">
+                  General Standard
+                </td>
+                <td className="px-3 py-2 text-ink">
+                  <div className="text-sm leading-relaxed">{tierStdLabel(generalEntry.tier)}</div>
+                  {(generalEntry.tier.exceptions || generalEntry.tier.reps_covered) && (
+                    <div className="text-[11px] text-inkMid mt-0.5">
+                      {generalEntry.tier.reps_covered && (
+                        <span className="italic">{generalEntry.tier.reps_covered}</span>
+                      )}
+                      {generalEntry.tier.exceptions && (
+                        <span>{generalEntry.tier.reps_covered ? ' — ' : ''}{generalEntry.tier.exceptions}</span>
+                      )}
                     </div>
                   )}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+                </td>
+                <td className="px-3 py-2 text-ink whitespace-nowrap">
+                  {generalThreshold || <span className="text-inkFaint/70 italic">—</span>}
+                </td>
+              </tr>
+            )}
+            {Array.from(higherByStandard.entries()).map(([stdLabel, bucket]) => {
+              const nameList = Array.from(bucket.names);
+              const thresholdText = bucket.thresholds.size > 0 ? Array.from(bucket.thresholds).join(' / ') : null;
+              return (
+                <tr key={stdLabel} className="align-top">
+                  <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">
+                    Higher Standard
+                  </td>
+                  <td className="px-3 py-2 text-ink">
+                    <div className="text-sm leading-relaxed font-medium">{stdLabel}</div>
+                    {nameList.length > 0 && (
+                      <div className="text-[11px] text-inkMid mt-0.5">
+                        {nameList.join(', ')}
+                      </div>
+                    )}
+                    {nameList.length === 0 && bucket.reps.length > 0 && (
+                      <ul className="list-disc list-inside text-[11px] text-inkMid mt-0.5 space-y-0.5">
+                        {bucket.reps.map((reps, i) => (
+                          <li key={i} className="whitespace-pre-wrap">{reps}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </td>
+                  <td className="px-3 py-2 text-ink whitespace-nowrap">
+                    {thresholdText || <span className="text-inkFaint/70 italic">—</span>}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
     </div>
   );
@@ -3156,6 +3682,65 @@ function DefinitionsList({ provisions, onSelectProvision }) {
   );
 }
 
+// Synthesize a concise "Term" cell for a TERMR-OUTSIDE provision. Pulls the
+// outside-date date / month-count and any extension fields and composes:
+//   "<outsideDate or N months> · Extensions: <period> by <trigger> (consent: <party>)"
+// or "(none)" if no extension is available. Returns a plain string (no JSX).
+// Returns null for non-OUTSIDE TERMR rows.
+function buildTermrOutsideTermText(provision) {
+  if (!provision) return null;
+  const meta = getAiMetadata(provision) || {};
+  const code = String(meta.code || provision.code || '');
+  if (code !== 'TERMR-OUTSIDE') return null;
+  const f = getStructuredFeatures(provision) || {};
+
+  const labelOf = (key, v) => {
+    if (v === null || v === undefined || v === '' || v === false) return null;
+    if (isTaggedItem(v)) return resolveTaggedLabel(key, v) || v.code;
+    if (Array.isArray(v)) {
+      const parts = v
+        .map((item) => (isTaggedItem(item) ? (resolveTaggedLabel(key, item) || item.code) : String(item)))
+        .filter(Boolean);
+      return parts.length > 0 ? parts.join(', ') : null;
+    }
+    return String(v);
+  };
+
+  // Compose the date portion: prefer an explicit outsideDate; else the month-count.
+  const datePart = (() => {
+    if (f.outsideDate) return String(f.outsideDate);
+    if (f.outsideDateMonths !== null && f.outsideDateMonths !== undefined && f.outsideDateMonths !== '') {
+      return `${f.outsideDateMonths} months`;
+    }
+    return null;
+  })();
+
+  const extAvailable = f.extensionAvailable;
+  const extAvailableTruthy = extAvailable === true || extAvailable === 'true' || extAvailable === 'yes';
+  const extAvailableFalsy = extAvailable === false || extAvailable === 'false' || extAvailable === 'no';
+
+  const extPeriod = labelOf('extensionPeriod', f.extensionPeriod);
+  const extTrigger = labelOf('extensionTrigger', f.extensionTrigger);
+  const extParty = labelOf('extensionConsentParty', f.extensionConsentParty);
+  const anyExtField = extPeriod || extTrigger || extParty;
+
+  let extPart;
+  if (extAvailableFalsy && !anyExtField) {
+    extPart = 'Extensions: (none)';
+  } else if (!extAvailableTruthy && !anyExtField) {
+    extPart = null;
+  } else {
+    const bits = [];
+    if (extPeriod) bits.push(extPeriod);
+    if (extTrigger) bits.push(`by ${extTrigger}`);
+    if (extParty) bits.push(`(consent: ${extParty})`);
+    extPart = `Extensions: ${bits.length > 0 ? bits.join(' ') : 'available'}`;
+  }
+
+  if (!datePart && !extPart) return null;
+  return [datePart, extPart].filter(Boolean).join(' · ');
+}
+
 function ProvisionTable({ provisions, type, onSelectProvision }) {
   // STRUCT and CONSID get specialized layouts — see dedicated components above.
   if (type === 'STRUCT') {
@@ -3164,14 +3749,67 @@ function ProvisionTable({ provisions, type, onSelectProvision }) {
   if (type === 'CONSID') {
     return <ConsidTable provisions={provisions} onSelectProvision={onSelectProvision} />;
   }
-  // NOSOL / ANTI: render in the same Term/Details format as StructTable —
+  // NOSOL: render in the same Term/Details format as StructTable —
   // each provision is one row; the Details cell stacks the relevant feature
   // labels/values from the type's FEATURE_DISPLAY_ORDER (skipping empties).
-  if (type === 'NOSOL' || type === 'ANTI') {
+  if (type === 'NOSOL') {
     return (
       <MultiCodeStructLikeTable
         provisions={provisions}
         type={type}
+        onSelectProvision={onSelectProvision}
+      />
+    );
+  }
+  // ANTI: 2-row summary table (Standard of Efforts + Burden Cap), then a
+  // separate "Other" section for takeover-statute "no inconsistent action"
+  // provisions that were mis-classified into ANTI.
+  if (type === 'ANTI') {
+    const takeoverProvs = provisions.filter(isTakeoverStatuteProvision);
+    const mainProvs = provisions.filter((p) => !isTakeoverStatuteProvision(p));
+    return (
+      <div className="space-y-3">
+        <CategoryFeatureSummaryTable
+          provisions={mainProvs}
+          type="ANTI"
+          onSelectProvision={onSelectProvision}
+        />
+        {takeoverProvs.length > 0 && (
+          <div className="space-y-2">
+            <h4 className="text-xs font-ui font-semibold text-inkMid uppercase tracking-wider">
+              Other
+            </h4>
+            <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+              <ul className="divide-y divide-border">
+                {takeoverProvs.map((p) => (
+                  <li key={p.id} className="px-3 py-2">
+                    <button
+                      type="button"
+                      onClick={() => onSelectProvision && onSelectProvision(p)}
+                      className="text-left text-accent hover:underline font-medium text-xs font-ui"
+                    >
+                      Takeover Statutes
+                    </button>
+                    <p className="text-[11px] text-inkMid font-ui mt-0.5">
+                      {p.category || ''}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+  // MISC: render as a 2-column antitrust-style summary table. Below the
+  // table, list each MISC provision as a clickable link (the
+  // CategoryFeatureSummaryTable already does this).
+  if (type === 'MISC') {
+    return (
+      <CategoryFeatureSummaryTable
+        provisions={provisions}
+        type="MISC"
         onSelectProvision={onSelectProvision}
       />
     );
@@ -3275,6 +3913,19 @@ function ProvisionTable({ provisions, type, onSelectProvision }) {
                   </td>
                   {columns.map((k) => {
                     const raw = features[k];
+                    // TERMR-OUTSIDE — synthesize the "Term" cell (mainConcept)
+                    // from outside-date + extension fields into a single
+                    // readable string. Other cells render normally.
+                    if (isTermrFamily && k === 'mainConcept') {
+                      const synth = buildTermrOutsideTermText(p);
+                      if (synth) {
+                        return (
+                          <td key={k} className="px-3 py-2 align-top max-w-[420px] text-ink">
+                            <div className="whitespace-pre-wrap break-words">{synth}</div>
+                          </td>
+                        );
+                      }
+                    }
                     // Tagged value (single object) — render JUST the resolved
                     // label (the canonical phrase) without the code badge.
                     // The code badge is redundant noise for table cells
@@ -5668,6 +6319,15 @@ export default function ReviewPage() {
                         iocAffirmative = buckets.affirmative;
                         iocGeneralExceptions = buckets.generalExceptions;
                         rest = buckets.rest;
+                        // Also pull the per-bucket affirmative covenant sub-codes
+                        // (IOC-ORDINARY / IOC-PRESERVE / IOC-MAINTAIN / etc.)
+                        // out of the main table — they're shown in the
+                        // Affirmative Covenants box above.
+                        const affMatches = findIocAffirmativeMatches(rest);
+                        const pulledIds = new Set(affMatches.map((m) => m.provision.id));
+                        if (pulledIds.size > 0) {
+                          rest = rest.filter((p) => !pulledIds.has(p.id));
+                        }
                       }
                       return (
                         <div key={type} className="space-y-2">
@@ -5689,11 +6349,17 @@ export default function ReviewPage() {
                                   onEdit={handleEditProvision}
                                 />
                               )}
-                              {isIocType && (iocAffirmative || iocGeneralExceptions) && (
-                                <IocPreambleSection
-                                  affirmative={iocAffirmative}
-                                  generalExceptions={iocGeneralExceptions}
-                                  onEdit={handleEditProvision}
+                              {isIocType && (
+                                <IocAffirmativeCovenantsTable
+                                  iocProvisions={provs}
+                                  onSelectProvision={handleEditProvision}
+                                />
+                              )}
+                              {isIocType && (
+                                <IocGeneralExceptionsTable
+                                  iocProvisions={provs}
+                                  generalExceptionsProv={iocGeneralExceptions}
+                                  onSelectProvision={handleEditProvision}
                                 />
                               )}
                               {(type === 'REP-T' || type === 'REP-B') && (
@@ -5714,13 +6380,24 @@ export default function ReviewPage() {
                               )}
                             </div>
                           ) : (
-                            provs.map(p => (
-                              <ProvisionCard
-                                key={p.id}
-                                provision={p}
-                                onEdit={handleEditProvision}
-                              />
-                            ))
+                            <div className="space-y-3">
+                              {type === 'COV' && (() => {
+                                const ebSummary = buildEmployeeBenefitsSummary(provs);
+                                return ebSummary ? (
+                                  <EmployeeBenefitsTreatmentTable
+                                    summary={ebSummary}
+                                    onSelectProvision={handleEditProvision}
+                                  />
+                                ) : null;
+                              })()}
+                              {provs.map(p => (
+                                <ProvisionCard
+                                  key={p.id}
+                                  provision={p}
+                                  onEdit={handleEditProvision}
+                                />
+                              ))}
+                            </div>
                           )}
                         </div>
                       );
