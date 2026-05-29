@@ -5237,18 +5237,30 @@ function DocumentRenderer({
    Supported types: text, boolean, enum, tagged, list, list-tagged,
    currency, percentage, duration, object, tiers (and unknown → JSON).
    ═══════════════════════════════════════════════════════════ */
+// Constant marker for the "Other / not applicable" escape hatch. We store
+// the picker selection as this sentinel and emit a free-text payload only
+// when the user explicitly opts into it. We deliberately do NOT silently
+// fall back to text when a taxonomy is available — the user has to choose.
+const EDIT_OTHER_CODE = '__OTHER__';
+
 function FeatureFieldEditor({ field, value, onChange }) {
   const label = humanizeKey(field.key);
   const taxonomy = taxonomyForFeatureKey(field.key);
   const taxonomyEntries = taxonomy ? Object.entries(taxonomy) : null;
 
-  // Decide effective input type:
-  //  - rubric "tagged"/"list-tagged" types use the tagged-item UI
-  //  - other keys with a taxonomy fall back to a tagged dropdown anyway
+  // Decide effective input type. Editor enforcement rules:
+  //   1. If the field key has a taxonomy dictionary, ALWAYS render a picker
+  //      (single or list). Free text is only available via an explicit
+  //      "Other / not applicable" escape hatch.
+  //   2. If the rubric declares type: 'enum' with options:[...], render a
+  //      <select> of those options. Same Other escape hatch.
+  //   3. Otherwise honor the rubric type.
   let effType = field.type || 'text';
-  if (taxonomy && (effType === 'list' || isListTaxonomyKey(field.key))) {
+  if (taxonomy && (effType === 'list' || effType === 'list-tagged' || isListTaxonomyKey(field.key))) {
     effType = 'list-tagged';
-  } else if (taxonomy && effType === 'text') {
+  } else if (taxonomy) {
+    // single tagged. Covers type: 'text' on a taxonomy-backed key too — the
+    // editor must force the picker, even if the legacy schema says text.
     effType = 'tagged';
   }
 
@@ -5257,6 +5269,80 @@ function FeatureFieldEditor({ field, value, onChange }) {
       {label}
     </label>
   );
+
+  // ── Helper renderer: code picker + Other escape hatch ────────────────
+  // Used by both the single-tagged and list-tagged paths. `current` is the
+  // current item ({code,label,text} or null). `onPick` is called with the
+  // next item (or null when cleared).
+  const renderTaggedPicker = (current, onPick, opts = {}) => {
+    const small = !!opts.small;
+    const inputCls = small
+      ? 'w-full border border-border rounded px-1.5 py-0.5 text-[11px] font-ui focus:outline-none focus:ring-1 focus:ring-accent bg-white'
+      : 'w-full border border-border rounded px-2 py-1 text-xs font-ui focus:outline-none focus:ring-1 focus:ring-accent bg-white';
+    const txtCls = small
+      ? 'flex-1 border border-border rounded px-1.5 py-0.5 text-[11px] font-ui focus:outline-none focus:ring-1 focus:ring-accent'
+      : 'w-full border border-border rounded px-2 py-1 text-xs font-ui focus:outline-none focus:ring-1 focus:ring-accent';
+
+    const item = current && typeof current === 'object'
+      ? current
+      : { code: '', label: '', text: '' };
+
+    // Has the user opted into Other-mode for this row? We detect it from
+    // the stored item: code === EDIT_OTHER_CODE OR (code is empty but text
+    // is non-empty AND not a known dictionary code).
+    const hasKnownCode = !!(item.code && taxonomy && taxonomy[item.code]);
+    const isOther = item.code === EDIT_OTHER_CODE || (!hasKnownCode && !!item.text);
+
+    const pickValue = isOther ? EDIT_OTHER_CODE : (item.code || '');
+
+    return (
+      <div className="space-y-1">
+        <select
+          value={pickValue}
+          onChange={(e) => {
+            const choice = e.target.value;
+            if (choice === '') {
+              // cleared — drop the item
+              onPick(null);
+              return;
+            }
+            if (choice === EDIT_OTHER_CODE) {
+              onPick({ ...item, code: EDIT_OTHER_CODE, label: 'Other / not applicable' });
+              return;
+            }
+            // a real dictionary code
+            onPick({ ...item, code: choice, label: (taxonomy && taxonomy[choice]) || '' });
+          }}
+          className={inputCls}
+        >
+          <option value="">-- select code --</option>
+          {taxonomyEntries && taxonomyEntries.map(([code, lbl]) => (
+            <option key={code} value={code}>{code} -- {lbl}</option>
+          ))}
+          <option value={EDIT_OTHER_CODE}>-- Other / not applicable (free text) --</option>
+        </select>
+        {isOther && (
+          <p className="text-[10px] font-ui text-amber-700 italic">
+            Other selected. This value will not be comparable across deals.
+          </p>
+        )}
+        <input
+          value={item.text || ''}
+          onChange={(e) => {
+            const text = e.target.value;
+            // Preserve current code/Other selection.
+            const nextCode = item.code || (text ? EDIT_OTHER_CODE : '');
+            const nextLabel = nextCode === EDIT_OTHER_CODE
+              ? 'Other / not applicable'
+              : (taxonomy && taxonomy[nextCode]) || item.label || '';
+            onPick(text || nextCode ? { ...item, code: nextCode, label: nextLabel, text } : null);
+          }}
+          placeholder="Verbatim text from agreement..."
+          className={txtCls}
+        />
+      </div>
+    );
+  };
 
   // Boolean
   if (effType === 'boolean') {
@@ -5276,67 +5362,80 @@ function FeatureFieldEditor({ field, value, onChange }) {
     );
   }
 
-  // Enum
+  // Enum (no taxonomy, plain options[]) — render select w/ Other escape hatch.
   if (effType === 'enum' && Array.isArray(field.options)) {
+    const isKnown = field.options.includes(value);
+    const isOther = !isKnown && value != null && value !== '';
+    const pickValue = isOther ? EDIT_OTHER_CODE : (value == null ? '' : String(value));
     return (
-      <div>
+      <div className="space-y-1">
         {labelEl}
         <select
-          value={value == null ? '' : String(value)}
-          onChange={(e) => onChange(e.target.value || null)}
+          value={pickValue}
+          onChange={(e) => {
+            const choice = e.target.value;
+            if (choice === '') return onChange(null);
+            if (choice === EDIT_OTHER_CODE) {
+              onChange(typeof value === 'string' ? value : '');
+              return;
+            }
+            onChange(choice);
+          }}
           className="w-full border border-border rounded px-2 py-1 text-xs font-ui focus:outline-none focus:ring-1 focus:ring-accent bg-white"
         >
           <option value="">--</option>
           {field.options.map((opt) => (
             <option key={opt} value={opt}>{opt}</option>
           ))}
+          <option value={EDIT_OTHER_CODE}>-- Other / not applicable (free text) --</option>
         </select>
+        {isOther && (
+          <>
+            <p className="text-[10px] font-ui text-amber-700 italic">
+              Other selected. This value will not be comparable across deals.
+            </p>
+            <input
+              value={value == null ? '' : String(value)}
+              onChange={(e) => onChange(e.target.value === '' ? null : e.target.value)}
+              placeholder="Free-text value..."
+              className="w-full border border-border rounded px-2 py-1 text-xs font-ui focus:outline-none focus:ring-1 focus:ring-accent"
+            />
+          </>
+        )}
       </div>
     );
   }
 
-  // Single tagged value: { code, label, text }
+  // Single tagged value: { code, label, text } — taxonomy-enforced picker.
   if (effType === 'tagged') {
     const item = isTaggedItem(value)
       ? value
-      : (value ? { code: '', label: '', text: String(value) } : { code: '', label: '', text: '' });
+      : (value && typeof value === 'string'
+        ? { code: EDIT_OTHER_CODE, label: 'Other / not applicable', text: value }
+        : { code: '', label: '', text: '' });
     return (
       <div>
         {labelEl}
-        <div className="space-y-1">
-          {taxonomyEntries && (
-            <select
-              value={item.code || ''}
+        {taxonomyEntries
+          ? renderTaggedPicker(item, (next) => onChange(next), { small: false })
+          : (
+            // No taxonomy in scope — fall back to plain text input but with
+            // the tagged shape so the rest of the renderer is consistent.
+            <input
+              value={item.text || ''}
               onChange={(e) => {
-                const code = e.target.value;
-                const lbl = code && taxonomy ? (taxonomy[code] || '') : '';
-                const next = { ...item, code, label: lbl };
-                onChange((code || item.text) ? next : null);
+                const text = e.target.value;
+                onChange(text ? { code: '', label: '', text } : null);
               }}
-              className="w-full border border-border rounded px-2 py-1 text-xs font-ui focus:outline-none focus:ring-1 focus:ring-accent bg-white"
-            >
-              <option value="">-- select code --</option>
-              {taxonomyEntries.map(([code, lbl]) => (
-                <option key={code} value={code}>{code} -- {lbl}</option>
-              ))}
-            </select>
+              placeholder="Verbatim text from agreement..."
+              className="w-full border border-border rounded px-2 py-1 text-xs font-ui focus:outline-none focus:ring-1 focus:ring-accent"
+            />
           )}
-          <input
-            value={item.text || ''}
-            onChange={(e) => {
-              const text = e.target.value;
-              const next = { ...item, text };
-              onChange((text || item.code) ? next : null);
-            }}
-            placeholder="Verbatim text from agreement..."
-            className="w-full border border-border rounded px-2 py-1 text-xs font-ui focus:outline-none focus:ring-1 focus:ring-accent"
-          />
-        </div>
       </div>
     );
   }
 
-  // List of tagged items
+  // List of tagged items — each item gets its own picker.
   if (effType === 'list-tagged') {
     const items = Array.isArray(value) ? value : [];
     const update = (idx, next) => {
@@ -5356,39 +5455,29 @@ function FeatureFieldEditor({ field, value, onChange }) {
           {items.map((it, idx) => {
             const itemObj = isTaggedItem(it)
               ? it
-              : { code: '', label: '', text: typeof it === 'string' ? it : '' };
+              : (typeof it === 'string'
+                ? { code: EDIT_OTHER_CODE, label: 'Other / not applicable', text: it }
+                : { code: '', label: '', text: '' });
             return (
               <div key={idx} className="border border-border rounded p-1.5 space-y-1 bg-white">
-                {taxonomyEntries && (
-                  <select
-                    value={itemObj.code || ''}
-                    onChange={(e) => {
-                      const code = e.target.value;
-                      const lbl = code && taxonomy ? (taxonomy[code] || '') : '';
-                      update(idx, { ...itemObj, code, label: lbl });
-                    }}
-                    className="w-full border border-border rounded px-1.5 py-0.5 text-[11px] font-ui focus:outline-none focus:ring-1 focus:ring-accent bg-white"
-                  >
-                    <option value="">-- select code --</option>
-                    {taxonomyEntries.map(([code, lbl]) => (
-                      <option key={code} value={code}>{code} -- {lbl}</option>
-                    ))}
-                  </select>
-                )}
-                <div className="flex gap-1">
-                  <input
-                    value={itemObj.text || ''}
-                    onChange={(e) => update(idx, { ...itemObj, text: e.target.value })}
-                    placeholder="Verbatim text..."
-                    className="flex-1 border border-border rounded px-1.5 py-0.5 text-[11px] font-ui focus:outline-none focus:ring-1 focus:ring-accent"
-                  />
+                {taxonomyEntries
+                  ? renderTaggedPicker(itemObj, (next) => update(idx, next), { small: true })
+                  : (
+                    <input
+                      value={itemObj.text || ''}
+                      onChange={(e) => update(idx, { ...itemObj, text: e.target.value })}
+                      placeholder="Verbatim text..."
+                      className="w-full border border-border rounded px-1.5 py-0.5 text-[11px] font-ui focus:outline-none focus:ring-1 focus:ring-accent"
+                    />
+                  )}
+                <div className="flex justify-end">
                   <button
                     type="button"
                     onClick={() => update(idx, null)}
                     className="px-1.5 py-0.5 text-[11px] font-ui text-inkFaint hover:text-seller border border-border rounded"
                     title="Remove"
                   >
-                    x
+                    Remove
                   </button>
                 </div>
               </div>
