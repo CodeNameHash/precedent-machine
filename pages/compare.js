@@ -1188,6 +1188,8 @@ function SummaryMatrix({
 
 function SummaryCell({ hit }) {
   const text = formatFeatureValue(hit.value);
+  const evidence = getCitableTextFromValue(hit.value);
+  const [showQuote, setShowQuote] = useState(false);
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
       <div
@@ -1200,7 +1202,44 @@ function SummaryCell({ hit }) {
         }}
       >
         {text || <span style={{ fontStyle: 'italic', color: 'var(--ink-faint)' }}>(empty)</span>}
+        {evidence && (
+          <button
+            type="button"
+            onClick={() => setShowQuote((s) => !s)}
+            title={evidence}
+            style={{
+              marginLeft: 6,
+              fontSize: 10,
+              color: 'var(--ink-faint)',
+              background: 'transparent',
+              border: '1px solid var(--line)',
+              borderRadius: 3,
+              padding: '0 4px',
+              cursor: 'pointer',
+              verticalAlign: 'middle',
+            }}
+          >
+            quote
+          </button>
+        )}
       </div>
+      {evidence && showQuote && (
+        <div
+          style={{
+            fontFamily: 'var(--font-serif)',
+            fontStyle: 'italic',
+            fontSize: 11.5,
+            color: '#92400e',
+            background: '#fffbeb',
+            border: '1px solid #fde68a',
+            borderRadius: 3,
+            padding: '4px 6px',
+            lineHeight: 1.4,
+          }}
+        >
+          &ldquo;{evidence}&rdquo;
+        </div>
+      )}
       <div
         style={{
           fontFamily: 'var(--font-mono)',
@@ -1701,7 +1740,21 @@ function formatFeatureValue(v) {
       .join(', ');
   }
   if (typeof v === 'object') {
+    // Citable wrapper { value, text } — render the value only here; the
+    // SummaryCell shows the supporting quote on hover. Tagged items have
+    // `code` and prefer the label.
+    if ('value' in v && !('code' in v)) {
+      return formatFeatureValue(v.value);
+    }
     return v.text || v.label || v.code || JSON.stringify(v);
   }
   return String(v);
+}
+
+function getCitableTextFromValue(v) {
+  if (!v || typeof v !== 'object' || Array.isArray(v)) return null;
+  if ('value' in v && !('code' in v) && typeof v.text === 'string' && v.text.trim()) {
+    return v.text.trim();
+  }
+  return null;
 }

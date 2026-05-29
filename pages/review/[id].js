@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef, useContext, createContext } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { useDeal, useProvisions } from '../../lib/useSupabaseData';
@@ -362,9 +362,82 @@ function humanizeKey(key) {
 
 function formatFeatureValue(v) {
   if (v === null || v === undefined) return null;
+  // Citable shape { value, text } — unwrap to the inner value. Tagged items
+  // have `code` so they're distinguished from citable wraps.
+  if (isCitableValue(v)) return formatFeatureValue(v.value);
   if (typeof v === 'boolean') return v ? 'Yes' : 'No';
   if (Array.isArray(v)) return v;
   return String(v);
+}
+
+/* ── Stage 5: Citation / evidence helpers ──
+ *
+ * A "citable" value is the parser's { value, text } wrapper for a boolean /
+ * enum / number that carries a verbatim source quote. Tagged items
+ * ({ code, label, text }) are distinct: they have a `code` field. The
+ * EvidenceContext lets any nested renderer pop the quote into the full-doc
+ * view without prop-drilling. */
+function isCitableValue(v) {
+  return (
+    v != null &&
+    typeof v === 'object' &&
+    !Array.isArray(v) &&
+    'value' in v &&
+    !('code' in v)
+  );
+}
+
+function getCitableValue(v) {
+  return isCitableValue(v) ? v.value : v;
+}
+
+function getCitableText(v) {
+  if (!isCitableValue(v)) return null;
+  const t = v.text;
+  if (typeof t !== 'string') return null;
+  return t.trim() || null;
+}
+
+const EvidenceContext = createContext({ showEvidence: null });
+
+function useShowEvidence() {
+  const ctx = useContext(EvidenceContext);
+  return ctx && typeof ctx.showEvidence === 'function' ? ctx.showEvidence : null;
+}
+
+/* ── EvidenceQuote: the small italic block rendered beneath a citable value.
+ *    Clicking jumps to the Full Document tab and highlights the quote.
+ *    Renders an italic "(no evidence captured)" placeholder when text is empty. */
+function EvidenceQuote({ text, dense }) {
+  const showEvidence = useShowEvidence();
+  const trimmed = (text || '').trim();
+  if (!trimmed) {
+    return (
+      <span className={`block ${dense ? 'text-[10px]' : 'text-[11px]'} font-ui italic text-inkFaint/70 mt-0.5`}>
+        (no evidence captured)
+      </span>
+    );
+  }
+  const handleClick = () => {
+    if (showEvidence) showEvidence(trimmed);
+  };
+  const cls = `block ${dense ? 'text-[10px]' : 'text-[11px]'} font-ui italic mt-0.5 ${
+    showEvidence
+      ? 'text-amber-700 hover:text-amber-900 cursor-pointer hover:underline decoration-dotted'
+      : 'text-amber-700'
+  }`;
+  // Keep quotes from blowing up the cell width
+  const display = trimmed.length > 240 ? trimmed.slice(0, 237) + '…' : trimmed;
+  return (
+    <span
+      className={cls}
+      onClick={showEvidence ? handleClick : undefined}
+      title={showEvidence ? 'Click to view in document' : trimmed}
+    >
+      &ldquo;{display}&rdquo;
+      {showEvidence ? <span className="not-italic text-amber-500 ml-1">&rarr;</span> : null}
+    </span>
+  );
 }
 
 /* ── Per-type field display order — drives StructuredFeatures layout ── */
@@ -1080,6 +1153,13 @@ function isEmptyValue(raw) {
   if (raw === null || raw === undefined) return true;
   if (raw === '') return true;
   if (Array.isArray(raw) && raw.length === 0) return true;
+  // Citable shape — empty if the inner value is empty AND there is no quote.
+  if (isCitableValue(raw)) {
+    const inner = getCitableValue(raw);
+    const hasInner = !(inner === null || inner === undefined || inner === '');
+    if (hasInner) return false;
+    return !getCitableText(raw);
+  }
   return false;
 }
 
@@ -1368,7 +1448,10 @@ function StructuredFeatures({ provision }) {
                   ))}
                 </ul>
               ) : (
-                <span className="text-ink">{value}</span>
+                <>
+                  <span className="text-ink">{value}</span>
+                  {isCitableValue(raw) ? <EvidenceQuote text={getCitableText(raw)} /> : null}
+                </>
               )}
             </dd>
           </div>
@@ -2722,6 +2805,11 @@ function getHiddenColumnsForType(type) {
 
 function formatCellValue(featureKey, raw) {
   if (raw === null || raw === undefined || raw === '') return null;
+  // Citable wrapper — operate on the unwrapped value.
+  if (isCitableValue(raw)) {
+    raw = getCitableValue(raw);
+    if (raw === null || raw === undefined || raw === '') return null;
+  }
   if (Array.isArray(raw)) {
     if (raw.length === 0) return null;
     // Render list of items (tagged items show their label/code; plain strings as-is)
@@ -2751,6 +2839,20 @@ function renderFeatureCell(featureKey, raw) {
       <div className="flex items-baseline gap-1.5 flex-wrap">
         <CodeBadge code={raw.code} />
         <span>{label}</span>
+      </div>
+    );
+  }
+  // Citable value — render the inner value normally, then the quote beneath.
+  if (isCitableValue(raw)) {
+    const inner = getCitableValue(raw);
+    const evidence = getCitableText(raw);
+    const cell = formatCellValue(featureKey, inner);
+    return (
+      <div className="whitespace-pre-wrap break-words">
+        <span className={cell === null ? 'text-inkFaint/70 italic' : ''}>
+          {cell === null ? '—' : cell}
+        </span>
+        <EvidenceQuote text={evidence} />
       </div>
     );
   }
@@ -4411,9 +4513,123 @@ function FullDocumentView({
   isReselecting,
   onConfirmReselect,
   onCancelReselect,
+  highlightedQuote,
+  highlightedQuoteNonce,
 }) {
   const containerRef = useRef(null);
   const [reselectSelection, setReselectSelection] = useState(null);
+
+  /* ── Stage 5: evidence-quote highlight overlay.
+   *    When `highlightedQuote` is set, scan the DOM after render for the
+   *    quote text (case-insensitive, whitespace-tolerant), wrap the first
+   *    match in a transient yellow span, scroll it into view, and remove
+   *    the overlay after a few seconds. */
+  useEffect(() => {
+    if (!highlightedQuote || !containerRef.current) return undefined;
+    const root = containerRef.current;
+    const target = String(highlightedQuote).trim();
+    if (!target) return undefined;
+
+    // Use whitespace-tolerant matching by working off a normalized version
+    // of each text node's data and remembering original offsets.
+    const normalize = (s) => s.replace(/\s+/g, ' ').trim();
+    const needle = normalize(target);
+    if (!needle) return undefined;
+    const needleLower = needle.toLowerCase();
+
+    // Find the FIRST text-node range containing the needle. For simplicity
+    // we restrict to per-text-node matches (covers ~99% of quotes which are
+    // short, in-paragraph excerpts). A more elaborate cross-node match is
+    // possible but not worth the complexity here.
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+    let foundNode = null;
+    let foundIdx = -1;
+    let n;
+    while ((n = walker.nextNode())) {
+      const nodeText = n.data;
+      if (!nodeText) continue;
+      const normalized = normalize(nodeText).toLowerCase();
+      const idx = normalized.indexOf(needleLower);
+      if (idx >= 0) {
+        // Map normalized index back to raw index (best-effort).
+        // Walk nodeText, skipping consecutive whitespace, until we've
+        // consumed `idx` normalized characters.
+        let normPos = 0;
+        let rawPos = 0;
+        let prevSpace = true;
+        while (rawPos < nodeText.length && normPos < idx) {
+          const ch = nodeText[rawPos];
+          if (/\s/.test(ch)) {
+            if (!prevSpace) { normPos++; prevSpace = true; }
+          } else {
+            normPos++;
+            prevSpace = false;
+          }
+          rawPos++;
+        }
+        // Now find end position by consuming needle length normalized chars.
+        let endRaw = rawPos;
+        let consumed = 0;
+        prevSpace = true;
+        while (endRaw < nodeText.length && consumed < needle.length) {
+          const ch = nodeText[endRaw];
+          if (/\s/.test(ch)) {
+            if (!prevSpace) { consumed++; prevSpace = true; }
+          } else {
+            consumed++;
+            prevSpace = false;
+          }
+          endRaw++;
+        }
+        if (endRaw > rawPos) {
+          foundNode = n;
+          foundIdx = rawPos;
+          // Stash end position via closure
+          n.__hlEnd = endRaw;
+          break;
+        }
+      }
+    }
+
+    if (!foundNode) return undefined;
+
+    let span;
+    try {
+      const range = document.createRange();
+      range.setStart(foundNode, foundIdx);
+      range.setEnd(foundNode, foundNode.__hlEnd);
+      span = document.createElement('span');
+      span.className = 'bg-yellow-200 ring-1 ring-yellow-400 rounded px-0.5';
+      span.dataset.evidenceHighlight = '1';
+      range.surroundContents(span);
+      // Scroll into view
+      span.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Pulse animation via inline style transition
+      span.style.transition = 'background-color 1.6s ease-out';
+      setTimeout(() => {
+        if (span && span.style) {
+          // Keep some highlight but soften after pulse
+          span.style.backgroundColor = '';
+        }
+      }, 1800);
+    } catch {
+      // Range surroundContents can throw if the range crosses element
+      // boundaries — silently skip in that rare case.
+    }
+
+    return () => {
+      // Cleanup: unwrap the span on unmount or when the quote changes.
+      if (span && span.parentNode) {
+        const parent = span.parentNode;
+        while (span.firstChild) parent.insertBefore(span.firstChild, span);
+        parent.removeChild(span);
+        parent.normalize();
+      }
+    };
+    // Re-run when the quote changes OR when the same quote is re-clicked
+    // (nonce bump forces re-mount of the highlight even if quote is identical).
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [highlightedQuote, highlightedQuoteNonce, sourceText]);
 
   // Track selection while in re-select mode
   useEffect(() => {
@@ -5430,6 +5646,45 @@ function FeatureFieldEditor({ field, value, onChange }) {
   const taxonomy = taxonomyForFeatureKey(field.key);
   const taxonomyEntries = taxonomy ? Object.entries(taxonomy) : null;
 
+  // Citable fields are edited as { value, text }. The picker / input below
+  // edits the INNER value; we add a dedicated evidence textarea beneath. We
+  // delegate to a recursive editor by unwrapping the value, swapping in a
+  // wrapping onChange that re-builds { value, text }.
+  if (field.citable && !taxonomy) {
+    const wrapped = isCitableValue(value) ? value : { value: value ?? null, text: '' };
+    const innerField = { ...field, citable: false };
+    const onInnerChange = (next) => {
+      if (next === null && !wrapped.text) {
+        onChange(null);
+        return;
+      }
+      onChange({ value: next, text: wrapped.text || '' });
+    };
+    const onTextChange = (e) => {
+      const text = e.target.value;
+      if (text === '' && (wrapped.value === null || wrapped.value === undefined)) {
+        onChange(null);
+        return;
+      }
+      onChange({ value: wrapped.value ?? null, text });
+    };
+    return (
+      <div className="space-y-1">
+        <FeatureFieldEditor field={innerField} value={wrapped.value} onChange={onInnerChange} />
+        <label className="block text-[10px] font-ui text-amber-700 italic">
+          Evidence (verbatim quote from the agreement)
+        </label>
+        <textarea
+          value={wrapped.text || ''}
+          onChange={onTextChange}
+          rows={2}
+          placeholder="Paste the supporting sentence here..."
+          className="w-full border border-amber-200 rounded px-2 py-1 text-[11px] font-ui bg-amber-50/40 focus:outline-none focus:ring-1 focus:ring-amber-400"
+        />
+      </div>
+    );
+  }
+
   // Decide effective input type. Editor enforcement rules:
   //   1. If the field key has a taxonomy dictionary, ALWAYS render a picker
   //      (single or list). Free text is only available via an explicit
@@ -6239,6 +6494,18 @@ export default function ReviewPage() {
   /* ── Tab state: "provisions" or "document" ── */
   const [activeTab, setActiveTab] = useState('provisions');
 
+  /* ── Stage 5: highlight a verbatim quote in the Full Document tab.
+   *    Set by EvidenceQuote click; consumed by FullDocumentView. */
+  const [highlightedQuote, setHighlightedQuote] = useState(null);
+  const [highlightedQuoteNonce, setHighlightedQuoteNonce] = useState(0);
+  const showEvidence = useCallback((quote) => {
+    if (!quote || typeof quote !== 'string') return;
+    setHighlightedQuote(quote);
+    setHighlightedQuoteNonce((n) => n + 1);
+    setActiveTab('document');
+  }, []);
+  const evidenceCtxValue = useMemo(() => ({ showEvidence }), [showEvidence]);
+
   /* ── Provisions sub-view: "cards" or "table" ── */
   const [provisionView, setProvisionView] = useState('table');
 
@@ -6572,6 +6839,7 @@ export default function ReviewPage() {
   const hasSource = agreementSource && agreementSource.full_text;
 
   return (
+    <EvidenceContext.Provider value={evidenceCtxValue}>
     <div className="h-screen bg-bg flex flex-col overflow-hidden">
       {/* Top Bar */}
       <header
@@ -6988,6 +7256,8 @@ export default function ReviewPage() {
                     reselectingProvLabel={reselectingProvLabel}
                     onConfirmReselect={handleConfirmReselect}
                     onCancelReselect={handleCancelReselect}
+                    highlightedQuote={highlightedQuote}
+                    highlightedQuoteNonce={highlightedQuoteNonce}
                   />
                 )}
               </>
@@ -7034,5 +7304,6 @@ export default function ReviewPage() {
       {/* Definition Tooltip */}
       <DefinitionTooltip def={hoveredDef} position={defPosition} />
     </div>
+    </EvidenceContext.Provider>
   );
 }
