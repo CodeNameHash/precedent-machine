@@ -435,10 +435,23 @@ function splitPreamble(provisions) {
  *    and "General Exceptions" provisions out of the main IOC table. These
  *    appear in a dedicated section above the table of negative restrictions. */
 function isIocAffirmative(p) {
-  return !!p && (p.code === 'IOC-AFFIRMATIVE' || (typeof p.category === 'string' && /^affirmative covenants$/i.test(p.category.trim())));
+  if (!p) return false;
+  const meta = getAiMetadata(p) || {};
+  const code = meta.code || p.code || '';
+  if (code === 'IOC-AFFIRMATIVE' || code === 'IOC-OTHER-AFFIRMATIVE') return true;
+  const cat = typeof p.category === 'string' ? p.category.trim() : '';
+  // Match: "Affirmative Covenants", "Other Affirmative Obligations",
+  // "[PROPOSED] Affirmative ...", and similar variants.
+  return /affirmative\s+(covenants?|obligations?)/i.test(cat);
 }
 function isIocGeneralExceptions(p) {
-  return !!p && (p.code === 'IOC-GENERAL-EXCEPTIONS' || (typeof p.category === 'string' && /^general exceptions$/i.test(p.category.trim())));
+  if (!p) return false;
+  const meta = getAiMetadata(p) || {};
+  const code = meta.code || p.code || '';
+  if (code === 'IOC-GENERAL-EXCEPTIONS' || code === 'IOC-EXCEPTIONS') return true;
+  const cat = typeof p.category === 'string' ? p.category.trim() : '';
+  // Match: "General Exceptions", "[PROPOSED] General Exceptions", etc.
+  return /general\s+exceptions?/i.test(cat);
 }
 function splitIocPreambleBuckets(provisions) {
   if (!Array.isArray(provisions) || provisions.length === 0) {
@@ -2077,9 +2090,12 @@ function isConsidConvertProvision(p) {
   const meta = getAiMetadata(p) || {};
   if (meta.code === 'CONSID-CONVERT') return true;
   const cat = String(p?.category || '').toLowerCase();
-  if (!cat) return false;
-  if (cat.includes('conversion of shares')) return true;
-  if (cat.includes('effect on capital stock')) return true;
+  if (cat) {
+    if (cat.includes('conversion of shares')) return true;
+    if (cat.includes('effect on capital stock')) return true;
+    if (cat.includes('merger consideration')) return true;
+    if (cat.includes('treatment of capital stock')) return true;
+  }
   return false;
 }
 
@@ -2132,7 +2148,15 @@ function ConsidTable({ provisions, onSelectProvision }) {
   // provision (the "Conversion of Shares" / "Effect on Capital Stock" row).
   // This ensures the headline per-share consideration is visible at the top
   // of the Equity Treatment table even when no equity awards are present.
-  const convertProv = provisions.find(isConsidConvertProvision);
+  // Fallback chain: explicit CONSID-CONVERT detection → any non-equity CONSID
+  // provision carrying a perShareAmount → first non-equity CONSID provision.
+  let convertProv = provisions.find(isConsidConvertProvision);
+  if (!convertProv) {
+    convertProv = otherProvisions.find((p) => {
+      const f = getStructuredFeatures(p) || {};
+      return f.perShareAmount || f.considerationType;
+    }) || otherProvisions[0] || null;
+  }
   const commonStockRow = buildCommonStockRow(convertProv);
   if (commonStockRow) {
     // Avoid duplicate if an equity row already covers Common Stock somehow.
@@ -4407,12 +4431,22 @@ export default function ReviewPage() {
                       // Only show a preamble card for section-style types that
                       // have a meaningful structured preamble (e.g. IOC, REP-*,
                       // NOSOL, ANTI). Termination / Definitions / Misc / Other
-                      // sections skip the card and render the table directly —
-                      // in that case keep the preamble row inside the table so
-                      // it isn't dropped.
+                      // sections skip the preamble entirely — the preamble
+                      // provision is suppressed from the table as well so it
+                      // doesn't show up as a contentless "General / Preamble"
+                      // row.
                       const showPreambleCard =
                         !!preamble && !SKIP_PREAMBLE_CARD_TYPES.has(type);
-                      let rest = showPreambleCard ? restAfterSplit : provs;
+                      let rest;
+                      if (showPreambleCard) {
+                        rest = restAfterSplit;
+                      } else if (SKIP_PREAMBLE_CARD_TYPES.has(type)) {
+                        // Drop ALL preamble provisions (there may be more than
+                        // one) from the table for these section types.
+                        rest = provs.filter((p) => !isPreambleProvision(p));
+                      } else {
+                        rest = provs;
+                      }
                       // For IOC: pull the consolidated "Affirmative Covenants"
                       // and "General Exceptions" provisions out of the main
                       // table and render them in a dedicated section above.
