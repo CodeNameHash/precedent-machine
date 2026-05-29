@@ -254,6 +254,9 @@ function CompareBody({ deals }) {
   const [activeFilter, setActiveFilter] = useState({ kind: 'all' });
   const [activeRowKey, setActiveRowKey] = useState(null);
   const [collapsedGroups, setCollapsedGroups] = useState({});
+  // View mode at the top of the main pane: 'summary' (feature matrix) or
+  // 'provisions' (one row per comparable provision, with snippet cells).
+  const [viewMode, setViewMode] = useState('summary');
 
   // Reset selected row when the filter changes (keeps detail in sync).
   useEffect(() => {
@@ -376,6 +379,9 @@ function CompareBody({ deals }) {
           activeFilter={activeFilter}
           countsByType={countsByType}
           visibleRows={visibleRows}
+          viewMode={viewMode}
+          onChangeViewMode={setViewMode}
+          showTabs={!activeRow}
         />
 
         {activeRow ? (
@@ -383,6 +389,16 @@ function CompareBody({ deals }) {
             row={activeRow}
             deals={deals}
             onClose={() => setActiveRowKey(null)}
+          />
+        ) : viewMode === 'summary' ? (
+          <SummaryView
+            deals={deals}
+            dealProvisions={dealProvisions}
+            activeFilter={activeFilter}
+            rowsByGroup={rowsByGroup}
+            rowsByType={rowsByType}
+            allRows={allRows}
+            onSelectRow={(key) => setActiveRowKey(key)}
           />
         ) : (
           <CompareTable
@@ -623,7 +639,7 @@ function ProvisionSideItem({ row, deals, active, onClick }) {
 }
 
 /* ─── Header above main pane ─────────────────────────────── */
-function FilterHeader({ activeFilter, countsByType, visibleRows }) {
+function FilterHeader({ activeFilter, countsByType, visibleRows, viewMode, onChangeViewMode, showTabs }) {
   let label = 'All Provisions';
   let color = 'var(--accent)';
   let sub = `${visibleRows.length} comparable row${visibleRows.length === 1 ? '' : 's'}`;
@@ -647,15 +663,559 @@ function FilterHeader({ activeFilter, countsByType, visibleRows }) {
 
   return (
     <div
-      className="rec-type-head"
-      style={{ margin: 0, padding: '14px 22px', borderBottom: '1px solid var(--line)', flexShrink: 0 }}
+      style={{
+        padding: '14px 22px 0',
+        borderBottom: '1px solid var(--line)',
+        flexShrink: 0,
+        background: 'var(--surface)',
+      }}
     >
-      <span className="th-dot" style={{ background: color }} />
-      <h2>{label}</h2>
-      <span className="ct">{sub}</span>
-      <span className="rule" />
+      <div className="rec-type-head" style={{ margin: 0 }}>
+        <span className="th-dot" style={{ background: color }} />
+        <h2>{label}</h2>
+        <span className="ct">{sub}</span>
+        <span className="rule" />
+      </div>
+      {showTabs && (
+        <div style={{ display: 'flex', gap: 0, marginTop: 10 }}>
+          <ViewTab
+            label="Summary"
+            active={viewMode === 'summary'}
+            onClick={() => onChangeViewMode('summary')}
+          />
+          <ViewTab
+            label="Provisions"
+            active={viewMode === 'provisions'}
+            onClick={() => onChangeViewMode('provisions')}
+          />
+        </div>
+      )}
     </div>
   );
+}
+
+function ViewTab({ label, active, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        border: 'none',
+        background: 'transparent',
+        padding: '8px 14px 10px',
+        fontFamily: 'var(--font-mono)',
+        fontSize: 11,
+        letterSpacing: '.10em',
+        textTransform: 'uppercase',
+        color: active ? 'var(--accent-deep)' : 'var(--ink-faint)',
+        fontWeight: active ? 700 : 500,
+        cursor: 'pointer',
+        borderBottom: active ? '2px solid var(--accent)' : '2px solid transparent',
+        marginBottom: -1,
+      }}
+    >
+      {label}
+    </button>
+  );
+}
+
+/* ─── Summary view: feature × deal matrix ────────────────── */
+
+// Canonical feature lists for high-value provision types. These mirror the
+// review-page CATEGORY_SUMMARY_FEATURES + a hand-curated extension for the
+// other types. Order = display order. If a type isn't in this map, we fall
+// back to "auto" mode: pull every feature key that has data in any deal.
+const SUMMARY_FEATURE_SPECS = {
+  NOSOL: [
+    { label: 'Fiduciary Out — Engagement', keys: ['fiduciaryEngageStandard', 'fiduciaryOutStandard'] },
+    { label: 'Fiduciary Out — Final',      keys: ['fiduciaryFinalStandard', 'fiduciaryOutStandard'] },
+    { label: 'Notice Period',              keys: ['noticePeriod'] },
+    { label: 'Notice Content',             keys: ['noticeContent'] },
+    { label: 'Matching Period',            keys: ['matchingPeriod'] },
+    { label: 'Intervening Event Termination', keys: ['interveningEventTermination', 'interveningEventProvision'] },
+    { label: 'Force the Vote',             keys: ['forceTheVote', 'forceTheVoteDetails'] },
+  ],
+  ANTI: [
+    { label: 'Efforts Standard',     keys: ['effortsStandard'] },
+    { label: 'Hell-or-High-Water',   keys: ['hellOrHighWater'] },
+    { label: 'Divestiture Cap',      keys: ['divestitureCap', 'divestitureCapDescription'] },
+    { label: 'Burden Cap',           keys: ['burdenCap'] },
+    { label: 'Controlling Party',    keys: ['controllingParty'] },
+    { label: 'Applies To Party',     keys: ['appliesToParty'] },
+    { label: 'Filing Deadline',      keys: ['filingDeadline'] },
+  ],
+  CONSID: [
+    { label: 'Headline Price',       keys: ['headlinePrice', 'pricePerShare'] },
+    { label: 'Consideration Type',   keys: ['considerationType'] },
+    { label: 'Exchange Ratio',       keys: ['exchangeRatio'] },
+    { label: 'Cash Portion',         keys: ['cashAmount', 'cashConsideration'] },
+    { label: 'Stock Portion',        keys: ['stockConsideration'] },
+    { label: 'Equity Treatment',     keys: ['instrumentTreatments', 'equityTreatment'] },
+    { label: 'Appraisal Rights',     keys: ['appraisalRights', 'dissentersRights'] },
+  ],
+  STRUCT: [
+    { label: 'Merger Form',          keys: ['mergerForm'] },
+    { label: 'Surviving Entity',     keys: ['survivingEntity'] },
+    { label: 'Closing Location',     keys: ['closingLocation'] },
+    { label: 'Closing Timing',       keys: ['closingTiming'] },
+    { label: 'Main Concept',         keys: ['mainConcept'] },
+  ],
+  'COND-M': [
+    { label: 'Stockholder Approval', keys: ['stockholderApproval', 'shareholderApproval'] },
+    { label: 'No Injunctions',       keys: ['noInjunctions', 'noLegalRestraints'] },
+    { label: 'Regulatory Approvals', keys: ['regulatoryApprovals', 'requiredApprovals'] },
+    { label: 'HSR Clearance',        keys: ['hsrClearance', 'antitrustClearance'] },
+  ],
+  'COND-B': [
+    { label: 'Reps Bring-Down',      keys: ['bringDownTiers', 'repBringDown'] },
+    { label: 'Performance of Covenants', keys: ['covenantPerformance'] },
+    { label: 'No MAE',               keys: ['noMae', 'maeStandard'] },
+    { label: 'Officer Certificate',  keys: ['officerCertificate'] },
+    { label: 'Required Consents',    keys: ['requiredConsents'] },
+  ],
+  'COND-S': [
+    { label: 'Reps Bring-Down',      keys: ['bringDownTiers', 'repBringDown'] },
+    { label: 'Performance of Covenants', keys: ['covenantPerformance'] },
+    { label: 'Officer Certificate',  keys: ['officerCertificate'] },
+  ],
+  'TERMR-M': [
+    { label: 'Outside Date',         keys: ['outsideDate'] },
+    { label: 'Mutual Written Consent', keys: ['mutualConsent'] },
+    { label: 'Final Order',          keys: ['finalOrder', 'permanentInjunction'] },
+    { label: 'No Stockholder Approval', keys: ['noStockholderApproval'] },
+  ],
+  'TERMR-B': [
+    { label: 'Target Breach',        keys: ['targetBreach', 'breachStandard'] },
+    { label: 'Cure Period',          keys: ['curePeriod'] },
+    { label: 'Change of Recommendation', keys: ['changeOfRecommendation', 'corTrigger'] },
+    { label: 'Superior Proposal',    keys: ['superiorProposal'] },
+  ],
+  'TERMR-T': [
+    { label: 'Buyer Breach',         keys: ['buyerBreach', 'breachStandard'] },
+    { label: 'Cure Period',          keys: ['curePeriod'] },
+    { label: 'Superior Proposal',    keys: ['superiorProposal'] },
+    { label: 'Financing Failure',    keys: ['financingFailure'] },
+  ],
+  TERMF: [
+    { label: 'Trigger',              keys: ['trigger', 'feeTrigger'] },
+    { label: 'Amount',               keys: ['feeAmount', 'amount'] },
+    { label: '% of Deal Value',      keys: ['percentOfDealValue'] },
+    { label: 'Reverse Term Fee',     keys: ['reverseTerminationFee'] },
+    { label: 'Tail Period',          keys: ['tailPeriod'] },
+  ],
+  IOC: [
+    { label: 'Consent Standard',     keys: ['consentStandard'] },
+    { label: 'Efforts Standard',     keys: ['effortsStandard'] },
+    { label: 'Materiality Qualifier', keys: ['materialityQualifier'] },
+    { label: 'Ordinary Course Carveout', keys: ['ordinaryCourseCarveout'] },
+    { label: 'Required by Law Carveout', keys: ['requiredByLawCarveout'] },
+    { label: 'Pandemic Carveout',    keys: ['pandemicCarveout'] },
+    { label: 'Permitted Exceptions', keys: ['permittedExceptions'] },
+  ],
+};
+// Aliases — these types share the same canonical features as a base type.
+SUMMARY_FEATURE_SPECS['IOC-T'] = SUMMARY_FEATURE_SPECS.IOC;
+SUMMARY_FEATURE_SPECS['IOC-B'] = SUMMARY_FEATURE_SPECS.IOC;
+
+function isEmptyVal(v) {
+  if (v == null) return true;
+  if (typeof v === 'string') return v.trim() === '';
+  if (Array.isArray(v)) return v.length === 0;
+  if (typeof v === 'object') return Object.keys(v).length === 0;
+  return false;
+}
+
+// Pull a feature value for a deal: first non-empty match across `keys` across
+// any provision of `types` in that deal.
+function pickFeatureValue(provisions, types, keys) {
+  const typeSet = new Set(types);
+  for (const p of provisions) {
+    if (!typeSet.has(p.type)) continue;
+    const f = p.features || {};
+    for (const k of keys) {
+      if (!isEmptyVal(f[k])) return { value: f[k], key: k, provision: p };
+    }
+  }
+  return null;
+}
+
+function SummaryView({
+  deals,
+  dealProvisions,
+  activeFilter,
+  rowsByGroup,
+  rowsByType,
+  allRows,
+  onSelectRow,
+}) {
+  // Determine which type(s) we're summarizing.
+  const activeTypes = useMemo(() => {
+    if (activeFilter.kind === 'type') return [activeFilter.type];
+    if (activeFilter.kind === 'group') {
+      const g = SIDEBAR_GROUPS.find((x) => x.label === activeFilter.label);
+      if (!g) return [];
+      return g.children ? g.children.map((c) => c.type) : g.types || [];
+    }
+    if (activeFilter.kind === 'all') {
+      // Across the whole document, show the same group-level summary by
+      // stacking each group's matrix below the next.
+      return null; // sentinel — render group-by-group
+    }
+    return [];
+  }, [activeFilter]);
+
+  // Pull each deal's provisions array once.
+  const perDealProvs = useMemo(
+    () => deals.map((_, i) => dealProvisions[i]?.provisions || []),
+    [deals, dealProvisions]
+  );
+
+  if (activeTypes === null) {
+    // ALL view: render group-by-group summary stacks.
+    const visibleGroups = SIDEBAR_GROUPS.filter((g) => {
+      const rows = rowsByGroup[g.label] || [];
+      return rows.length > 0;
+    });
+    return (
+      <div style={{ flex: 1, overflow: 'auto', padding: '14px 22px 80px' }}>
+        {visibleGroups.map((g) => {
+          const types = g.children ? g.children.map((c) => c.type) : g.types || [];
+          return (
+            <SummaryMatrix
+              key={g.label}
+              title={g.label}
+              color={typeHex(types[0] || 'OTHER')}
+              types={types}
+              deals={deals}
+              perDealProvs={perDealProvs}
+              rowsForTypes={types.flatMap((t) => rowsByType[t] || [])}
+              onSelectRow={onSelectRow}
+              compact
+            />
+          );
+        })}
+      </div>
+    );
+  }
+
+  if (activeTypes.length === 0) {
+    return (
+      <div style={{ padding: 40, color: 'var(--ink-faint)', fontSize: 13 }}>
+        Nothing to summarize.
+      </div>
+    );
+  }
+
+  // Single type or group: one matrix, full-height.
+  const rows =
+    activeFilter.kind === 'type'
+      ? rowsByType[activeFilter.type] || []
+      : (rowsByGroup[activeFilter.label] || []);
+  const title =
+    activeFilter.kind === 'type'
+      ? activeFilter.label || activeFilter.type
+      : activeFilter.label;
+  const color = typeHex(activeTypes[0]);
+
+  return (
+    <div style={{ flex: 1, overflow: 'auto', padding: '14px 22px 80px' }}>
+      <SummaryMatrix
+        title={title}
+        color={color}
+        types={activeTypes}
+        deals={deals}
+        perDealProvs={perDealProvs}
+        rowsForTypes={rows}
+        onSelectRow={onSelectRow}
+      />
+    </div>
+  );
+}
+
+function SummaryMatrix({
+  title,
+  color,
+  types,
+  deals,
+  perDealProvs,
+  rowsForTypes,
+  onSelectRow,
+  compact,
+}) {
+  // Build the feature row list: union of (a) any explicit spec entries for the
+  // active types, and (b) any auto-discovered feature keys that have data in
+  // at least one deal but aren't already in the spec.
+  const featureRows = useMemo(() => {
+    const out = [];
+    const seenKeys = new Set();
+    // Explicit spec entries first, in the order they appear in the type's spec.
+    for (const t of types) {
+      const spec = SUMMARY_FEATURE_SPECS[t] || [];
+      for (const row of spec) {
+        const sig = row.label;
+        if (seenKeys.has(sig)) continue;
+        seenKeys.add(sig);
+        out.push({ label: row.label, keys: row.keys });
+      }
+    }
+    // Auto-discovered keys: union of feature keys across deals for the active
+    // types, excluding ones already covered by the spec keys.
+    const specKeys = new Set();
+    for (const row of out) for (const k of row.keys) specKeys.add(k);
+    const autoKeys = new Set();
+    for (const provs of perDealProvs) {
+      for (const p of provs) {
+        if (!types.includes(p.type)) continue;
+        const f = p.features || {};
+        for (const k of Object.keys(f)) {
+          if (specKeys.has(k)) continue;
+          if (isEmptyVal(f[k])) continue;
+          autoKeys.add(k);
+        }
+      }
+    }
+    for (const k of [...autoKeys].sort()) {
+      out.push({ label: humanizeKey(k), keys: [k], auto: true });
+    }
+    return out;
+  }, [types, perDealProvs]);
+
+  // For each (row, deal) compute the cell value.
+  const cells = useMemo(() => {
+    return featureRows.map((row) => {
+      const perDeal = perDealProvs.map((provs) => pickFeatureValue(provs, types, row.keys));
+      const presentCount = perDeal.filter(Boolean).length;
+      return { row, perDeal, presentCount };
+    });
+  }, [featureRows, perDealProvs, types]);
+
+  // Drop rows where no deal has data — keeps the matrix tight.
+  const populated = cells.filter((c) => c.presentCount > 0);
+
+  return (
+    <section style={{ marginBottom: 28 }}>
+      <header
+        style={{
+          display: 'flex',
+          alignItems: 'baseline',
+          gap: 10,
+          marginBottom: 8,
+          paddingBottom: 6,
+          borderBottom: '1px solid var(--line-soft)',
+        }}
+      >
+        <span style={{ width: 9, height: 9, borderRadius: '50%', background: color }} />
+        <h3
+          style={{
+            fontFamily: 'var(--font-serif)',
+            fontSize: compact ? 15 : 18,
+            fontWeight: 500,
+            letterSpacing: '-.01em',
+            color: 'var(--ink)',
+            margin: 0,
+          }}
+        >
+          {title}
+        </h3>
+        <span
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: 10,
+            letterSpacing: '.12em',
+            textTransform: 'uppercase',
+            color: 'var(--ink-faint)',
+          }}
+        >
+          {populated.length} feature{populated.length === 1 ? '' : 's'}
+        </span>
+      </header>
+
+      {populated.length === 0 ? (
+        <div
+          style={{
+            padding: '12px 14px',
+            color: 'var(--ink-faint)',
+            fontStyle: 'italic',
+            fontSize: 12.5,
+            border: '1px solid var(--line-soft)',
+            borderRadius: 8,
+            background: 'var(--surface)',
+          }}
+        >
+          No structured features extracted for {title} in the selected deals.
+        </div>
+      ) : (
+        <div
+          style={{
+            border: '1px solid var(--line)',
+            borderRadius: 8,
+            overflow: 'hidden',
+            background: 'var(--surface)',
+          }}
+        >
+          <table
+            style={{
+              width: '100%',
+              borderCollapse: 'separate',
+              borderSpacing: 0,
+              fontSize: 12.5,
+              tableLayout: 'fixed',
+            }}
+          >
+            <colgroup>
+              <col style={{ width: 220 }} />
+              {deals.map((d) => (
+                <col key={d.id} />
+              ))}
+            </colgroup>
+            <thead>
+              <tr>
+                <th style={hdrCellStyle()}>Feature</th>
+                {deals.map((d) => (
+                  <th key={d.id} style={hdrCellStyle()}>
+                    <div
+                      style={{
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: 9.5,
+                        letterSpacing: '.14em',
+                        textTransform: 'uppercase',
+                        color: 'var(--ink-faint)',
+                      }}
+                    >
+                      {d.agreement_type || 'Acquisition'}
+                    </div>
+                    <div
+                      style={{
+                        fontFamily: 'var(--font-serif)',
+                        fontSize: 13,
+                        fontWeight: 500,
+                        color: 'var(--ink)',
+                        marginTop: 2,
+                      }}
+                    >
+                      {d.acquirer}{' '}
+                      <span style={{ color: 'var(--ink-faint)', fontStyle: 'italic' }}>/</span>{' '}
+                      {d.target}
+                    </div>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {populated.map(({ row, perDeal }) => (
+                <tr key={row.label}>
+                  <td
+                    style={{
+                      padding: '8px 12px',
+                      borderBottom: '1px solid var(--line-soft)',
+                      verticalAlign: 'top',
+                      background: 'var(--surface)',
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontWeight: 600,
+                        color: 'var(--ink)',
+                        fontSize: 12.5,
+                        lineHeight: 1.3,
+                      }}
+                    >
+                      {row.label}
+                    </div>
+                    {row.auto && (
+                      <div
+                        style={{
+                          fontFamily: 'var(--font-mono)',
+                          fontSize: 9.5,
+                          color: 'var(--ink-faint)',
+                          letterSpacing: '.06em',
+                          marginTop: 2,
+                        }}
+                      >
+                        {row.keys[0]}
+                      </div>
+                    )}
+                  </td>
+                  {perDeal.map((hit, i) => (
+                    <td
+                      key={i}
+                      style={{
+                        padding: '8px 12px',
+                        borderBottom: '1px solid var(--line-soft)',
+                        borderLeft: '1px solid var(--line-soft)',
+                        verticalAlign: 'top',
+                        background: 'var(--surface)',
+                        cursor: hit ? 'pointer' : 'default',
+                      }}
+                      onClick={() => {
+                        if (hit && onSelectRow) {
+                          // Open side-by-side detail for the row that owns this
+                          // provision so the user can see the full text.
+                          const key = rowKeyFor(hit.provision);
+                          onSelectRow(key);
+                        }
+                      }}
+                    >
+                      {hit ? (
+                        <SummaryCell hit={hit} />
+                      ) : (
+                        <span style={{ color: 'var(--ink-faint)', fontStyle: 'italic' }}>—</span>
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
+  );
+}
+
+function SummaryCell({ hit }) {
+  const text = formatFeatureValue(hit.value);
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+      <div
+        style={{
+          fontFamily: 'var(--font-serif)',
+          fontSize: 12.5,
+          lineHeight: 1.45,
+          color: 'var(--ink)',
+          wordBreak: 'break-word',
+        }}
+      >
+        {text || <span style={{ fontStyle: 'italic', color: 'var(--ink-faint)' }}>(empty)</span>}
+      </div>
+      <div
+        style={{
+          fontFamily: 'var(--font-mono)',
+          fontSize: 9.5,
+          color: 'var(--ink-faint)',
+          letterSpacing: '.04em',
+        }}
+        title={hit.provision.category}
+      >
+        from {hit.provision.category || hit.provision.type}
+      </div>
+    </div>
+  );
+}
+
+const HUMANIZE_OVERRIDES = {
+  mae: 'MAE',
+  hsr: 'HSR',
+  ip: 'IP',
+};
+function humanizeKey(k) {
+  if (!k) return '';
+  return String(k)
+    .replace(/[_-]+/g, ' ')
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .toLowerCase()
+    .split(' ')
+    .map((w) => HUMANIZE_OVERRIDES[w] || (w[0] || '').toUpperCase() + w.slice(1))
+    .join(' ');
 }
 
 /* ─── Default table view: rows × deals ───────────────────── */
