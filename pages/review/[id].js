@@ -5401,10 +5401,10 @@ export default function ReviewPage() {
   const hasSource = agreementSource && agreementSource.full_text;
 
   return (
-    <div className="min-h-screen bg-bg flex flex-col">
+    <div className="h-screen bg-bg flex flex-col overflow-hidden">
       {/* Top Bar */}
       <header
-        className="sticky top-0 z-50 bg-surface border-b border-line flex items-center justify-between shrink-0"
+        className="bg-surface border-b border-line flex items-center justify-between shrink-0"
         style={{ height: 56, padding: '0 22px' }}
       >
         <div className="flex items-center gap-4">
