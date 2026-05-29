@@ -427,6 +427,19 @@ function isSharedFeature(featureKey, typeKey) {
   return set.has(featureKey);
 }
 
+/* ── Types that should NOT show a "Section Preamble" card above their
+ *    summary table. These sections either have no meaningful structured
+ *    preamble (Termination Rights / Termination Fee), are flat lists
+ *    (Definitions, Misc, Other), or have their own structural layout. */
+const SKIP_PREAMBLE_CARD_TYPES = new Set([
+  'TERMR', 'TERMR-M', 'TERMR-B', 'TERMR-T',
+  'TERMF',
+  'DEF',
+  'MISC',
+  'STRUCT',
+  'OTHER',
+]);
+
 /* ═══════════════════════════════════════════════════════════
    LEFT SIDEBAR — now acts as a FILTER, not a scroller
    ═══════════════════════════════════════════════════════════ */
@@ -1049,6 +1062,180 @@ function ProvisionCard({ provision, onEdit }) {
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PREAMBLE CARD — compact card shown ABOVE the summary table on
+   category pages. Shows a focused structured summary of the
+   section preamble (visible by default) and a collapsible full
+   text (hidden by default).
+   ═══════════════════════════════════════════════════════════ */
+
+// Render the IOC preamble's positiveObligations + exceptions as two
+// simple lists. Returns null if there's nothing meaningful to show.
+function IocPreambleSummary({ features }) {
+  if (!features) return null;
+
+  // positiveObligations may be a list of strings or tagged items.
+  const limbsRaw = Array.isArray(features.positiveObligations)
+    ? features.positiveObligations
+    : [];
+
+  // Exceptions / carve-outs aggregated from the standard IOC carveout
+  // fields. Each entry is { label, value? } so we render boolean carveouts
+  // as a bullet and "permittedExceptions" items as their resolved labels.
+  const exceptionEntries = [];
+
+  const pushBoolCarveout = (key, label) => {
+    const v = features[key];
+    if (v === true) {
+      exceptionEntries.push({ key, label });
+      return;
+    }
+    if (isTaggedItem(v)) {
+      const resolved = resolveTaggedLabel(key, v) || v.code;
+      exceptionEntries.push({ key, label: `${label}: ${resolved}` });
+      return;
+    }
+    if (typeof v === 'string' && v.trim()) {
+      exceptionEntries.push({ key, label: `${label}: ${v.trim()}` });
+    }
+  };
+
+  pushBoolCarveout('requiredByLawCarveout', 'Required by law');
+  pushBoolCarveout('ordinaryCourseCarveout', 'Ordinary course of business');
+  pushBoolCarveout('pandemicCarveout', 'Pandemic measures');
+  pushBoolCarveout('covidCarveout', 'COVID measures');
+
+  const permitted = Array.isArray(features.permittedExceptions)
+    ? features.permittedExceptions
+    : [];
+  for (const item of permitted) {
+    if (isTaggedItem(item)) {
+      const lbl = resolveTaggedLabel('permittedExceptions', item) || item.code;
+      exceptionEntries.push({ key: 'permittedExceptions', label: lbl, item });
+    } else if (typeof item === 'string' && item.trim()) {
+      exceptionEntries.push({ key: 'permittedExceptions', label: item.trim() });
+    }
+  }
+
+  if (limbsRaw.length === 0 && exceptionEntries.length === 0) return null;
+
+  const renderLimb = (limb) => {
+    if (isTaggedItem(limb)) {
+      const lbl = resolveTaggedLabel('positiveObligations', limb) || limb.code;
+      return lbl;
+    }
+    return String(limb);
+  };
+
+  return (
+    <div className="bg-bg/40 border border-border rounded-md p-3 space-y-3">
+      <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+        Structured Summary
+      </p>
+
+      {limbsRaw.length > 0 && (
+        <div>
+          <p className="text-xs font-ui font-medium text-inkMid mb-1">
+            Positive Obligations:
+          </p>
+          <ol className="list-decimal list-inside space-y-0.5 text-xs font-ui text-ink">
+            {limbsRaw.map((limb, i) => (
+              <li key={i}>{renderLimb(limb)}</li>
+            ))}
+          </ol>
+        </div>
+      )}
+
+      {exceptionEntries.length > 0 && (
+        <div className="pl-3 border-l-2 border-amber-200 bg-amber-50/40 rounded-r py-1.5 pr-2">
+          <p className="text-[10px] font-ui font-medium text-amber-700 uppercase tracking-wider mb-1">
+            Exceptions / Carve-outs
+          </p>
+          <ul className="space-y-1">
+            {exceptionEntries.map((ex, i) => (
+              <li key={i} className="flex items-start gap-1.5 text-xs font-ui">
+                <span className="text-amber-500 mt-0.5 shrink-0">&bull;</span>
+                <span className="text-ink">{ex.label}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function PreambleCard({ provision, onEdit }) {
+  const [showFullText, setShowFullText] = useState(false);
+  const tc = typeColor(provision.type);
+  const features = getStructuredFeatures(provision) || {};
+
+  // For IOC preambles, render a focused summary (limbs + exceptions only).
+  // For other section types, fall back to the generic StructuredFeatures.
+  const isIocPreamble =
+    provision.type === 'IOC' ||
+    provision.type === 'IOC-T' ||
+    provision.type === 'IOC-B';
+
+  const summary = isIocPreamble ? (
+    <IocPreambleSummary features={features} />
+  ) : (
+    <StructuredFeatures provision={provision} />
+  );
+
+  return (
+    <div
+      className={`bg-white border rounded-lg shadow-sm p-4 ${tc.border}`}
+    >
+      <div className="flex items-center justify-between gap-2 mb-3 flex-wrap">
+        <h3 className="text-xs font-ui font-semibold text-ink uppercase tracking-wider">
+          Section Preamble
+        </h3>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); setShowFullText((v) => !v); }}
+            className="px-2 py-1 text-[11px] font-ui border border-border rounded hover:bg-bg transition-colors text-inkMid flex items-center gap-1"
+          >
+            <span>{showFullText ? '−' : '+'}</span>
+            {showFullText ? 'Hide Full Text' : 'Show Full Text'}
+          </button>
+          {onEdit && (
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); onEdit(provision); }}
+              className="px-2 py-1 text-[11px] font-ui border border-border rounded hover:bg-bg transition-colors text-inkMid"
+            >
+              Edit
+            </button>
+          )}
+        </div>
+      </div>
+
+      {summary || (
+        <p className="text-xs font-ui text-inkFaint italic">
+          No structured summary available.
+        </p>
+      )}
+
+      {showFullText && (
+        <div className="mt-3 pt-3 border-t border-border">
+          <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider mb-1">
+            Full Text
+          </p>
+          {provision.full_text ? (
+            <p className="font-body text-sm text-ink leading-relaxed whitespace-pre-wrap">
+              {renderFullTextWithRefs(provision.full_text)}
+            </p>
+          ) : (
+            <p className="font-ui text-xs text-inkFaint italic">No text available.</p>
+          )}
+        </div>
+      )}
     </div>
   );
 }
@@ -3436,12 +3623,16 @@ export default function ReviewPage() {
                             String(a.category || '').localeCompare(String(b.category || ''), undefined, { sensitivity: 'base' })
                           )
                         : provsRaw;
-                      const { preamble, rest } = splitPreamble(provs);
-                      // Show category overview header only when the user is viewing
-                      // a single category (i.e. a sidebar filter is active) and in
-                      // table view. The overview lists each provision's mainConcept
-                      // and has a collapsible "Show Full Provision Texts" button.
-                      const isCategoryView = !!activeFilter && provisionView === 'table' && !selectedProvId;
+                      const { preamble, rest: restAfterSplit } = splitPreamble(provs);
+                      // Only show a preamble card for section-style types that
+                      // have a meaningful structured preamble (e.g. IOC, REP-*,
+                      // NOSOL, ANTI). Termination / Definitions / Misc / Other
+                      // sections skip the card and render the table directly —
+                      // in that case keep the preamble row inside the table so
+                      // it isn't dropped.
+                      const showPreambleCard =
+                        !!preamble && !SKIP_PREAMBLE_CARD_TYPES.has(type);
+                      const rest = showPreambleCard ? restAfterSplit : provs;
                       return (
                         <div key={type} className="space-y-2">
                           <h2 className="font-display text-lg text-ink flex items-center gap-2">
@@ -3451,22 +3642,11 @@ export default function ReviewPage() {
                           </h2>
                           {provisionView === 'table' ? (
                             <div className="space-y-3">
-                              {isCategoryView && rest.length > 0 && (
-                                <CategoryOverview
-                                  provisions={rest}
-                                  onSelectProvision={handleEditProvision}
+                              {showPreambleCard && (
+                                <PreambleCard
+                                  provision={preamble}
+                                  onEdit={handleEditProvision}
                                 />
-                              )}
-                              {preamble && (
-                                <div className="space-y-1">
-                                  <h3 className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
-                                    Preamble
-                                  </h3>
-                                  <ProvisionCard
-                                    provision={preamble}
-                                    onEdit={handleEditProvision}
-                                  />
-                                </div>
                               )}
                               {rest.length > 0 && (
                                 <ProvisionTable
