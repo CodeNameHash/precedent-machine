@@ -28,8 +28,11 @@ export default function Layout({ children }) {
   }, []);
 
   return (
-    <div className="min-h-screen bg-bg">
-      <header className="sticky top-0 z-50 bg-white border-b border-border px-4 md:px-6 py-3 flex items-center justify-between">
+    <div className="min-h-screen bg-paper">
+      <header
+        className="sticky top-0 z-50 bg-surface border-b border-line flex items-center justify-between"
+        style={{ height: 56, padding: '0 22px' }}
+      >
         <div className="flex items-center gap-3">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -42,15 +45,17 @@ export default function Layout({ children }) {
                 : <path d="M3 5h14M3 10h14M3 15h14" />}
             </svg>
           </button>
-          <Link href="/" className="font-display text-lg font-bold tracking-widest text-ink">
-            PRECEDENT MACHINE
+          <Link href="/" className="rec-wordmark">
+            <span className="mark" />
+            Recital
+            <span className="tag">Precedent</span>
           </Link>
         </div>
         <div className="flex items-center gap-4">
           {user && (
             <>
-              <span className="text-sm text-inkLight font-ui hidden sm:inline">{user.name}</span>
-              <button onClick={logout} className="text-xs text-inkFaint hover:text-ink font-ui transition-colors">
+              <span className="text-sm text-inkLight hidden sm:inline">{user.name}</span>
+              <button onClick={logout} className="text-xs text-inkFaint hover:text-ink transition-colors">
                 Sign out
               </button>
             </>
@@ -64,9 +69,9 @@ export default function Layout({ children }) {
         )}
 
         <aside className={`
-          fixed md:sticky top-[57px] z-40 md:z-auto
-          w-56 shrink-0 border-r border-border bg-white
-          min-h-[calc(100vh-57px)] py-6 px-4
+          fixed md:sticky top-[56px] z-40 md:z-auto
+          w-56 shrink-0 border-r border-line bg-surface
+          min-h-[calc(100vh-56px)] py-6 px-4
           transition-transform duration-200 ease-in-out
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
         `}>
@@ -74,8 +79,8 @@ export default function Layout({ children }) {
             {navItems.map((item) => {
               const active = item.href === '/' ? router.pathname === '/' : router.pathname.startsWith(item.href);
               return (
-                <Link key={item.href} href={item.href} className={`flex items-center gap-2.5 px-3 py-2 rounded text-sm font-ui transition-colors ${
-                  active ? 'bg-bg text-ink font-medium' : 'text-inkLight hover:text-ink hover:bg-bg'
+                <Link key={item.href} href={item.href} className={`flex items-center gap-2.5 px-3 py-2 rounded text-sm transition-colors ${
+                  active ? 'bg-accentDim text-accentDeep font-semibold' : 'text-inkLight hover:text-ink hover:bg-paper'
                 }`}>
                   <span className="text-xs opacity-60 w-4 text-center">{item.icon}</span>
                   {item.label}
