@@ -1452,6 +1452,113 @@ function PreambleCard({ provision, onEdit }) {
 }
 
 /* ═══════════════════════════════════════════════════════════
+   IOC PREAMBLE SECTION — top-of-page panel showing the
+   consolidated "Affirmative Covenants" and "General Exceptions"
+   provisions side-by-side. These come BEFORE the table of
+   enumerated negative restrictions.
+   ═══════════════════════════════════════════════════════════ */
+function IocBucketCard({ provision, title, onEdit }) {
+  const [showFullText, setShowFullText] = useState(false);
+  if (!provision) return null;
+  const features = getStructuredFeatures(provision) || {};
+  const limbs = Array.isArray(features.affirmativeLimbs) ? features.affirmativeLimbs : [];
+
+  const renderLimb = (limb) => {
+    if (limb && typeof limb === 'object' && (limb.obligation_label || limb.text)) {
+      return limb.obligation_label || limb.text;
+    }
+    if (isTaggedItem(limb)) {
+      const lbl = resolveTaggedLabel('affirmativeLimbs', limb) || limb.code;
+      return lbl;
+    }
+    return String(limb);
+  };
+
+  return (
+    <div className="bg-white border border-border rounded-lg shadow-sm p-4">
+      <div className="flex items-center justify-between gap-2 mb-3 flex-wrap">
+        <h4 className="text-xs font-ui font-semibold text-ink uppercase tracking-wider">
+          {title}
+        </h4>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); setShowFullText((v) => !v); }}
+            className="px-2 py-1 text-[11px] font-ui border border-border rounded hover:bg-bg transition-colors text-inkMid flex items-center gap-1"
+          >
+            <span>{showFullText ? '−' : '+'}</span>
+            {showFullText ? 'Hide Full Text' : 'Show Full Text'}
+          </button>
+          {onEdit && (
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); onEdit(provision); }}
+              className="px-2 py-1 text-[11px] font-ui border border-border rounded hover:bg-bg transition-colors text-inkMid"
+            >
+              Edit
+            </button>
+          )}
+        </div>
+      </div>
+
+      {limbs.length > 0 ? (
+        <ol className="list-decimal list-inside space-y-1 text-xs font-ui text-ink">
+          {limbs.map((limb, i) => (
+            <li key={i}>{renderLimb(limb)}</li>
+          ))}
+        </ol>
+      ) : (
+        <p className="font-body text-sm text-ink leading-relaxed whitespace-pre-wrap">
+          {provision.full_text || provision.text || ''}
+        </p>
+      )}
+
+      {showFullText && (
+        <div className="mt-3 pt-3 border-t border-border">
+          <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider mb-1">
+            Full Text
+          </p>
+          {provision.full_text ? (
+            <p className="font-body text-sm text-ink leading-relaxed whitespace-pre-wrap">
+              {renderFullTextWithRefs(provision.full_text)}
+            </p>
+          ) : (
+            <p className="font-ui text-xs text-inkFaint italic">No text available.</p>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function IocPreambleSection({ affirmative, generalExceptions, onEdit }) {
+  if (!affirmative && !generalExceptions) return null;
+  return (
+    <div className="space-y-2">
+      <h3 className="text-xs font-ui font-semibold text-inkMid uppercase tracking-wider">
+        Affirmative Covenants &amp; Section-Wide Exceptions
+      </h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {affirmative && (
+          <IocBucketCard
+            provision={affirmative}
+            title="Affirmative Covenants"
+            onEdit={onEdit}
+          />
+        )}
+        {generalExceptions && (
+          <IocBucketCard
+            provision={generalExceptions}
+            title="General Exceptions"
+            onEdit={onEdit}
+          />
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
    CATEGORY OVERVIEW — section overview line per provision +
    collapsible full-text view shown ABOVE the summary table on
    category pages.
