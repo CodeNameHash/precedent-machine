@@ -537,8 +537,15 @@ function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelect
 
   const handleCollapseAll = () => {
     if (allCollapsed) {
-      setCollapsedGroups({});
-      setCollapsedTypes({});
+      // Expand all: set EVERY group/type to explicit false. The renderer
+      // treats undefined as collapsed (collapsedGroups[label] !== false),
+      // so leaving the maps empty would not actually expand anything.
+      const groupsInit = {};
+      SIDEBAR_GROUPS.forEach((g) => { groupsInit[g.label] = false; });
+      const typesInit = {};
+      Object.keys(provsByType).forEach((t) => { typesInit[t] = false; });
+      setCollapsedGroups(groupsInit);
+      setCollapsedTypes(typesInit);
       setAllCollapsed(false);
     } else {
       const groupsInit = {};
@@ -1081,8 +1088,12 @@ function ProvisionCard({ provision, onEdit }) {
 function IocPreambleSummary({ features }) {
   if (!features) return null;
 
-  // positiveObligations may be a list of strings or tagged items.
-  const limbsRaw = Array.isArray(features.positiveObligations)
+  // Limbs may come from the legacy positiveObligations (AI-extracted) or
+  // the newer affirmativeLimbs (regex-extracted from the consolidated
+  // "Affirmative Covenants" provision). Both render as a numbered list.
+  const limbsRaw = Array.isArray(features.affirmativeLimbs) && features.affirmativeLimbs.length > 0
+    ? features.affirmativeLimbs
+    : Array.isArray(features.positiveObligations)
     ? features.positiveObligations
     : [];
 
@@ -1127,6 +1138,10 @@ function IocPreambleSummary({ features }) {
   if (limbsRaw.length === 0 && exceptionEntries.length === 0) return null;
 
   const renderLimb = (limb) => {
+    // affirmativeLimbs shape: { obligation_code, obligation_label, text }
+    if (limb && typeof limb === 'object' && (limb.obligation_label || limb.text)) {
+      return limb.obligation_label || limb.text;
+    }
     if (isTaggedItem(limb)) {
       const lbl = resolveTaggedLabel('positiveObligations', limb) || limb.code;
       return lbl;
