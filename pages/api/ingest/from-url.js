@@ -32,18 +32,38 @@ export const config = {
   api: { bodyParser: { sizeLimit: '50mb' } },
 };
 
+// SEC EDGAR requires a User-Agent in the format "Name email@domain.com" and
+// blocks generic ones with 403. Env-overridable; defaults to the project owner.
+const SEC_UA =
+  process.env.SEC_USER_AGENT ||
+  'Precedent Machine bengoodchild@gmail.com';
+
 function fetchUrl(url) {
   return new Promise((resolve, reject) => {
     const client = url.startsWith('https') ? https : http;
     const req = client.get(
       url,
-      { headers: { 'User-Agent': 'PrecedentMachine/1.0 (legal research)' } },
+      {
+        headers: {
+          'User-Agent': SEC_UA,
+          Accept:
+            'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+          'Accept-Language': 'en-US,en;q=0.9',
+          'Accept-Encoding': 'identity',
+        },
+      },
       (res) => {
         if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
-          return fetchUrl(res.headers.location).then(resolve).catch(reject);
+          // Resolve relative redirects against the current URL.
+          const next = new URL(res.headers.location, url).toString();
+          return fetchUrl(next).then(resolve).catch(reject);
         }
         if (res.statusCode !== 200) {
-          return reject(new Error(`HTTP ${res.statusCode} fetching ${url}`));
+          return reject(
+            new Error(
+              `HTTP ${res.statusCode} fetching ${url} — SEC EDGAR requires a User-Agent in the form "Name email@domain". Set the SEC_USER_AGENT env var if you need to override the default.`
+            )
+          );
         }
         let data = '';
         res.on('data', (c) => (data += c));
