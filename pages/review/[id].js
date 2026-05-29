@@ -265,11 +265,12 @@ function formatFeatureValue(v) {
 
 /* ── Per-type field display order — drives StructuredFeatures layout ── */
 const FEATURE_DISPLAY_ORDER = {
+  // IOC table — drop the redundant 'mainObligation' column (category column
+  // already conveys the obligation) and lead with permittedExceptions so the
+  // most-compared field is first.
   IOC: [
-    'mainObligation', 'consentStandard', 'dollarThreshold', 'effortsStandard',
-    'materialityQualifier', 'scheduleReference',
-    'ordinaryCourseCarveout', 'requiredByLawCarveout', 'pandemicCarveout',
-    'permittedExceptions', 'crossReferences',
+    'permittedExceptions', 'consentStandard', 'dollarThreshold', 'effortsStandard',
+    'crossReferences',
   ],
   'COND-M': ['mainCondition', 'bringDownStandard', 'tieredBringDown', 'tiers', 'certificationRequired', 'dollarThreshold', 'scheduleReference'],
   'COND-B': ['mainCondition', 'bringDownStandard', 'tieredBringDown', 'tiers', 'maeConditionStandalone', 'certificationRequired', 'dollarThreshold', 'dissentingSharesThreshold', 'scheduleReference'],
@@ -285,8 +286,8 @@ const FEATURE_DISPLAY_ORDER = {
   DEF: ['mainConcept', 'canonicalTerm', 'definitionText', 'carveOuts', 'carveOutsList', 'disproportionateImpactClause', 'disproportionateImpact', 'disproportionateImpactScope', 'knowledgeStandard', 'knowledgePersons', 'ordinaryCourseQualifier', 'pandemicCarveout', 'cyberSecurityCarveout', 'superiorProposalPercentage', 'acquisitionProposalPercentage', 'willfulBreachDefinition', 'crossReferences'],
   STRUCT: ['mainConcept', 'mergerForm', 'survivingEntity', 'closingConditionsPrecedent'],
   CONSID: ['mainConcept', 'considerationType', 'perShareAmount', 'exchangeRatio', 'equityAwardTreatment', 'outstandingInstruments', 'instrumentTreatments', 'vestingAcceleration', 'cutoffDate', 'cutoffTreatment', 'cashOutAmount', 'optionSpread', 'performanceTreatment', 'espp_treatment', 'parachuteCap', 'doubleTrigger', 'appraisalRightsAvailable', 'withholdingProvision', 'proration'],
-  'REP-T': ['mainConcept', 'linkedBringDownStandard', 'bringDownStandard', 'materialityQualifier', 'knowledgeQualifier', 'survivalPeriod', 'scheduleReference', 'crossReferences'],
-  'REP-B': ['mainConcept', 'linkedBringDownStandard', 'bringDownStandard', 'materialityQualifier', 'knowledgeQualifier', 'solvencyRepIncluded', 'financingRepIncluded', 'crossReferences'],
+  'REP-T': ['linkedBringDownStandard', 'materialityQualifier', 'knowledgeQualifier', 'survivalPeriod', 'scheduleReference', 'crossReferences'],
+  'REP-B': ['linkedBringDownStandard', 'materialityQualifier', 'knowledgeQualifier', 'solvencyRepIncluded', 'financingRepIncluded', 'crossReferences'],
   COV: ['mainConcept', 'accessScope', 'indemnificationPeriod', 'employeeBenefitPeriod', 'financingCooperation', 'cvrIncluded'],
   MISC: ['mainConcept', 'governingLaw', 'jurisdictionExclusive', 'juryWaiver', 'specificPerformance', 'thirdPartyBeneficiaryExceptions'],
   OTHER: ['mainConcept', 'summary', 'crossReferences'],
@@ -1760,9 +1761,10 @@ function ProvisionTable({ provisions, type, onSelectProvision }) {
                   </td>
                   {columns.map((k) => {
                     const raw = features[k];
-                    // Tagged value (single object) — render code badge + label
-                    // so taxonomy-mapped features like linkedBringDownStandard
-                    // are visually comparable across rows at a glance.
+                    // Tagged value (single object) — render JUST the resolved
+                    // label (the canonical phrase) without the code badge.
+                    // The code badge is redundant noise for table cells
+                    // where the label already communicates the standard.
                     if (isTaggedItem(raw)) {
                       const label = resolveTaggedLabel(k, raw) || raw.code;
                       return (
@@ -1770,10 +1772,7 @@ function ProvisionTable({ provisions, type, onSelectProvision }) {
                           key={k}
                           className="px-3 py-2 align-top max-w-[260px] text-ink"
                         >
-                          <div className="flex items-baseline gap-1.5 flex-wrap">
-                            <CodeBadge code={raw.code} />
-                            <span>{label}</span>
-                          </div>
+                          <span>{label}</span>
                         </td>
                       );
                     }
