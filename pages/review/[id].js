@@ -597,6 +597,7 @@ function isSharedFeature(featureKey, typeKey) {
 const SKIP_PREAMBLE_CARD_TYPES = new Set([
   'TERMR', 'TERMR-M', 'TERMR-B', 'TERMR-T',
   'TERMF',
+  'COND', 'COND-M', 'COND-B', 'COND-S',
   'DEF',
   'MISC',
   'STRUCT',
@@ -4128,6 +4129,289 @@ function DocumentRenderer({
 }
 
 /* ═══════════════════════════════════════════════════════════
+   FEATURE FIELD EDITOR
+   Renders an editable input matched to a rubric feature schema entry.
+   Supported types: text, boolean, enum, tagged, list, list-tagged,
+   currency, percentage, duration, object, tiers (and unknown → JSON).
+   ═══════════════════════════════════════════════════════════ */
+function FeatureFieldEditor({ field, value, onChange }) {
+  const label = humanizeKey(field.key);
+  const taxonomy = taxonomyForFeatureKey(field.key);
+  const taxonomyEntries = taxonomy ? Object.entries(taxonomy) : null;
+
+  // Decide effective input type:
+  //  - rubric "tagged"/"list-tagged" types use the tagged-item UI
+  //  - other keys with a taxonomy fall back to a tagged dropdown anyway
+  let effType = field.type || 'text';
+  if (taxonomy && (effType === 'list' || isListTaxonomyKey(field.key))) {
+    effType = 'list-tagged';
+  } else if (taxonomy && effType === 'text') {
+    effType = 'tagged';
+  }
+
+  const labelEl = (
+    <label className="block text-[11px] font-ui text-inkLight mb-0.5" title={field.label || label}>
+      {label}
+    </label>
+  );
+
+  // Boolean
+  if (effType === 'boolean') {
+    const checked = value === true;
+    return (
+      <div>
+        <label className="flex items-center gap-2 text-xs font-ui text-ink cursor-pointer">
+          <input
+            type="checkbox"
+            checked={checked}
+            onChange={(e) => onChange(e.target.checked)}
+            className="rounded border-border focus:ring-1 focus:ring-accent"
+          />
+          <span title={field.label || label}>{label}</span>
+        </label>
+      </div>
+    );
+  }
+
+  // Enum
+  if (effType === 'enum' && Array.isArray(field.options)) {
+    return (
+      <div>
+        {labelEl}
+        <select
+          value={value == null ? '' : String(value)}
+          onChange={(e) => onChange(e.target.value || null)}
+          className="w-full border border-border rounded px-2 py-1 text-xs font-ui focus:outline-none focus:ring-1 focus:ring-accent bg-white"
+        >
+          <option value="">--</option>
+          {field.options.map((opt) => (
+            <option key={opt} value={opt}>{opt}</option>
+          ))}
+        </select>
+      </div>
+    );
+  }
+
+  // Single tagged value: { code, label, text }
+  if (effType === 'tagged') {
+    const item = isTaggedItem(value)
+      ? value
+      : (value ? { code: '', label: '', text: String(value) } : { code: '', label: '', text: '' });
+    return (
+      <div>
+        {labelEl}
+        <div className="space-y-1">
+          {taxonomyEntries && (
+            <select
+              value={item.code || ''}
+              onChange={(e) => {
+                const code = e.target.value;
+                const lbl = code && taxonomy ? (taxonomy[code] || '') : '';
+                const next = { ...item, code, label: lbl };
+                onChange((code || item.text) ? next : null);
+              }}
+              className="w-full border border-border rounded px-2 py-1 text-xs font-ui focus:outline-none focus:ring-1 focus:ring-accent bg-white"
+            >
+              <option value="">-- select code --</option>
+              {taxonomyEntries.map(([code, lbl]) => (
+                <option key={code} value={code}>{code} -- {lbl}</option>
+              ))}
+            </select>
+          )}
+          <input
+            value={item.text || ''}
+            onChange={(e) => {
+              const text = e.target.value;
+              const next = { ...item, text };
+              onChange((text || item.code) ? next : null);
+            }}
+            placeholder="Verbatim text from agreement..."
+            className="w-full border border-border rounded px-2 py-1 text-xs font-ui focus:outline-none focus:ring-1 focus:ring-accent"
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // List of tagged items
+  if (effType === 'list-tagged') {
+    const items = Array.isArray(value) ? value : [];
+    const update = (idx, next) => {
+      const copy = items.slice();
+      if (next === null) copy.splice(idx, 1);
+      else copy[idx] = next;
+      onChange(copy);
+    };
+    const add = () => onChange([...items, { code: '', label: '', text: '' }]);
+    return (
+      <div>
+        {labelEl}
+        <div className="space-y-1.5">
+          {items.length === 0 && (
+            <p className="text-[11px] font-ui text-inkFaint italic">None</p>
+          )}
+          {items.map((it, idx) => {
+            const itemObj = isTaggedItem(it)
+              ? it
+              : { code: '', label: '', text: typeof it === 'string' ? it : '' };
+            return (
+              <div key={idx} className="border border-border rounded p-1.5 space-y-1 bg-white">
+                {taxonomyEntries && (
+                  <select
+                    value={itemObj.code || ''}
+                    onChange={(e) => {
+                      const code = e.target.value;
+                      const lbl = code && taxonomy ? (taxonomy[code] || '') : '';
+                      update(idx, { ...itemObj, code, label: lbl });
+                    }}
+                    className="w-full border border-border rounded px-1.5 py-0.5 text-[11px] font-ui focus:outline-none focus:ring-1 focus:ring-accent bg-white"
+                  >
+                    <option value="">-- select code --</option>
+                    {taxonomyEntries.map(([code, lbl]) => (
+                      <option key={code} value={code}>{code} -- {lbl}</option>
+                    ))}
+                  </select>
+                )}
+                <div className="flex gap-1">
+                  <input
+                    value={itemObj.text || ''}
+                    onChange={(e) => update(idx, { ...itemObj, text: e.target.value })}
+                    placeholder="Verbatim text..."
+                    className="flex-1 border border-border rounded px-1.5 py-0.5 text-[11px] font-ui focus:outline-none focus:ring-1 focus:ring-accent"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => update(idx, null)}
+                    className="px-1.5 py-0.5 text-[11px] font-ui text-inkFaint hover:text-seller border border-border rounded"
+                    title="Remove"
+                  >
+                    x
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+          <button
+            type="button"
+            onClick={add}
+            className="w-full px-2 py-1 text-[11px] font-ui border border-dashed border-border text-inkMid rounded hover:bg-bg/50 transition-colors"
+          >
+            + Add item
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Plain list (strings)
+  if (effType === 'list') {
+    const items = Array.isArray(value) ? value : [];
+    const update = (idx, next) => {
+      const copy = items.slice();
+      if (next === null) copy.splice(idx, 1);
+      else copy[idx] = next;
+      onChange(copy);
+    };
+    return (
+      <div>
+        {labelEl}
+        <div className="space-y-1">
+          {items.length === 0 && (
+            <p className="text-[11px] font-ui text-inkFaint italic">None</p>
+          )}
+          {items.map((it, idx) => (
+            <div key={idx} className="flex gap-1">
+              <input
+                value={typeof it === 'string' ? it : (it == null ? '' : JSON.stringify(it))}
+                onChange={(e) => update(idx, e.target.value)}
+                className="flex-1 border border-border rounded px-2 py-1 text-xs font-ui focus:outline-none focus:ring-1 focus:ring-accent"
+              />
+              <button
+                type="button"
+                onClick={() => update(idx, null)}
+                className="px-1.5 py-0.5 text-[11px] font-ui text-inkFaint hover:text-seller border border-border rounded"
+                title="Remove"
+              >
+                x
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={() => onChange([...items, ''])}
+            className="w-full px-2 py-1 text-[11px] font-ui border border-dashed border-border text-inkMid rounded hover:bg-bg/50 transition-colors"
+          >
+            + Add item
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Currency / percentage / duration
+  if (effType === 'currency' || effType === 'percentage' || effType === 'duration') {
+    const placeholder = effType === 'currency' ? 'e.g. $25,000,000'
+      : effType === 'percentage' ? 'e.g. 5%'
+      : 'e.g. 30 days';
+    return (
+      <div>
+        {labelEl}
+        <input
+          value={value == null ? '' : String(value)}
+          onChange={(e) => {
+            const v = e.target.value;
+            onChange(v === '' ? null : v);
+          }}
+          placeholder={placeholder}
+          className="w-full border border-border rounded px-2 py-1 text-xs font-ui focus:outline-none focus:ring-1 focus:ring-accent"
+        />
+      </div>
+    );
+  }
+
+  // Object / tiers / unknown structured: JSON textarea fallback
+  if (effType === 'object' || effType === 'tiers' || (value && typeof value === 'object')) {
+    const display = value == null ? '' : JSON.stringify(value, null, 2);
+    return (
+      <div>
+        {labelEl}
+        <textarea
+          value={display}
+          onChange={(e) => {
+            const t = e.target.value;
+            if (t.trim() === '') { onChange(null); return; }
+            try {
+              onChange(JSON.parse(t));
+            } catch {
+              // Preserve in-progress invalid JSON as a string so the user can fix it.
+              onChange(t);
+            }
+          }}
+          rows={4}
+          className="w-full border border-border rounded px-2 py-1 text-[11px] font-mono focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder="JSON value"
+        />
+      </div>
+    );
+  }
+
+  // Default: plain text
+  return (
+    <div>
+      {labelEl}
+      <input
+        value={value == null ? '' : String(value)}
+        onChange={(e) => {
+          const v = e.target.value;
+          onChange(v === '' ? null : v);
+        }}
+        className="w-full border border-border rounded px-2 py-1 text-xs font-ui focus:outline-none focus:ring-1 focus:ring-accent"
+      />
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
    EDIT PANEL (slide-in from right)
    ═══════════════════════════════════════════════════════════ */
 function EditPanel({
@@ -4149,6 +4433,10 @@ function EditPanel({
   const [newFeature, setNewFeature] = useState('');
   const [reason, setReason] = useState('');
   const [saving, setSaving] = useState(false);
+  // Structured (schema-driven) feature edits — keyed by feature key.
+  const [editedFeatures, setEditedFeatures] = useState({});
+  // Initial structured features snapshot, used for dirty detection.
+  const [initialFeatures, setInitialFeatures] = useState({});
 
   // Read-only display value (always reflects the current provision text)
   const currentFullText = provision?.full_text || '';
@@ -4160,8 +4448,52 @@ function EditPanel({
       setEditFav(provision.ai_favorability || 'neutral');
       setFeatures(getFeatures(provision));
       setReason('');
+      const structured = getStructuredFeatures(provision) || {};
+      // Deep clone via JSON so subsequent mutations don't reach back into
+      // the raw provision payload.
+      const cloned = JSON.parse(JSON.stringify(structured));
+      setEditedFeatures(cloned);
+      setInitialFeatures(JSON.parse(JSON.stringify(structured)));
     }
   }, [provision]);
+
+  // Schema-driven feature list for the active type/code.
+  const featureSchema = useMemo(() => {
+    if (!provision) return [];
+    return getFeaturesForType(editType || provision.type, provision.code) || [];
+  }, [editType, provision]);
+
+  // Dedupe by key — some rubric entries (e.g. IOC permittedExceptions) appear
+  // twice with different scopes; the editor only needs one row per key.
+  const dedupedSchema = useMemo(() => {
+    const seen = new Set();
+    const out = [];
+    for (const f of featureSchema) {
+      if (!f || !f.key || seen.has(f.key)) continue;
+      seen.add(f.key);
+      out.push(f);
+    }
+    return out;
+  }, [featureSchema]);
+
+  const featuresDirty = useMemo(() => {
+    return JSON.stringify(editedFeatures || {}) !== JSON.stringify(initialFeatures || {});
+  }, [editedFeatures, initialFeatures]);
+
+  const classificationDirty = useMemo(() => {
+    if (!provision) return false;
+    return (
+      (provision.type || '') !== editType ||
+      (provision.category || '') !== editCategory ||
+      (provision.ai_favorability || 'neutral') !== editFav
+    );
+  }, [provision, editType, editCategory, editFav]);
+
+  const isDirty = featuresDirty || classificationDirty;
+
+  const setFeatureValue = (key, value) => {
+    setEditedFeatures((prev) => ({ ...prev, [key]: value }));
+  };
 
   const filteredCategories = useMemo(() => {
     if (!editType || !allCategories) return [];
@@ -4174,13 +4506,19 @@ function EditPanel({
     if (!provision?.id) return;
     setSaving(true);
     try {
-      await onSave({
+      const payload = {
         id: provision.id,
         type: editType,
         category: editCategory,
         ai_favorability: editFav,
         reason: reason.trim() || undefined,
-      });
+      };
+      if (featuresDirty) {
+        // Only ship the features sub-object — the API merges it into the
+        // existing ai_metadata so other keys (rubric_code, etc.) are preserved.
+        payload.ai_metadata = { features: editedFeatures };
+      }
+      await onSave(payload);
     } catch {
       // parent already surfaced a toast; keep panel open so the user can retry
     } finally {
@@ -4302,9 +4640,26 @@ function EditPanel({
           </button>
         </div>
 
-        {/* Features */}
+        {/* Structured Summary (schema-driven editable fields) */}
+        {dedupedSchema.length > 0 && (
+          <div className="space-y-2">
+            <h4 className="font-ui text-xs font-medium text-inkFaint uppercase tracking-wider">Structured Summary</h4>
+            <div className="space-y-2">
+              {dedupedSchema.map((field) => (
+                <FeatureFieldEditor
+                  key={field.key}
+                  field={field}
+                  value={editedFeatures[field.key]}
+                  onChange={(v) => setFeatureValue(field.key, v)}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Features (legacy free-text chips for forward-compat / non-schema fields) */}
         <div className="space-y-2">
-          <h4 className="font-ui text-xs font-medium text-inkFaint uppercase tracking-wider">Features</h4>
+          <h4 className="font-ui text-xs font-medium text-inkFaint uppercase tracking-wider">Tags</h4>
           <div className="flex flex-wrap gap-1">
             {features.map((f, i) => (
               <span key={i} className="inline-flex items-center gap-1 text-[10px] font-ui px-2 py-0.5 rounded bg-bg text-inkMid border border-border">
@@ -4323,7 +4678,7 @@ function EditPanel({
               list={`feature-keys-${provision.id}`}
               value={newFeature}
               onChange={e => setNewFeature(e.target.value)}
-              placeholder="Add feature..."
+              placeholder="Add tag..."
               className="flex-1 border border-border rounded px-2 py-1 text-xs font-ui focus:outline-none focus:ring-1 focus:ring-accent"
               onKeyDown={e => e.key === 'Enter' && addFeature()}
             />
@@ -4369,8 +4724,9 @@ function EditPanel({
         <div className="flex gap-2">
           <button
             onClick={handleSave}
-            disabled={saving}
-            className="flex-1 px-3 py-2 text-sm font-ui bg-accent text-white rounded hover:bg-accent/90 disabled:opacity-40 transition-colors"
+            disabled={saving || !isDirty}
+            className="flex-1 px-3 py-2 text-sm font-ui bg-accent text-white rounded hover:bg-accent/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            title={!isDirty ? 'No changes to save' : undefined}
           >
             {saving ? 'Saving...' : 'Save Changes'}
           </button>
@@ -4512,6 +4868,34 @@ export default function ReviewPage() {
   /* ── Provisions sub-view: "cards" or "table" ── */
   const [provisionView, setProvisionView] = useState('table');
 
+  // Stable type sort order derived from SIDEBAR_GROUPS so the main view
+  // mirrors the sidebar layout (Structure → Consideration → Reps → IOC → ...).
+  const TYPE_SORT_ORDER = useMemo(() => {
+    const order = new Map();
+    let idx = 0;
+    for (const g of SIDEBAR_GROUPS) {
+      if (Array.isArray(g.children)) {
+        for (const child of g.children) {
+          if (child && child.type && !order.has(child.type)) order.set(child.type, idx++);
+        }
+      } else if (Array.isArray(g.types)) {
+        for (const t of g.types) {
+          if (!order.has(t)) order.set(t, idx++);
+        }
+      }
+    }
+    return order;
+  }, []);
+
+  const sortByTypeOrder = useCallback((arr) => {
+    return [...arr].sort((a, b) => {
+      const aIdx = TYPE_SORT_ORDER.has(a.type) ? TYPE_SORT_ORDER.get(a.type) : 9999;
+      const bIdx = TYPE_SORT_ORDER.has(b.type) ? TYPE_SORT_ORDER.get(b.type) : 9999;
+      if (aIdx !== bIdx) return aIdx - bIdx;
+      return 0;
+    });
+  }, [TYPE_SORT_ORDER]);
+
   /* ── Filtered provisions based on sidebar selection ── */
   const filteredProvisions = useMemo(() => {
     // Single-provision view wins over type filter
@@ -4519,10 +4903,13 @@ export default function ReviewPage() {
       const one = provisions.find(p => p.id === selectedProvId);
       return one ? [one] : [];
     }
-    if (activeFilter === null) return provisions;
+    if (activeFilter === null) {
+      // "All Provisions" — render in sidebar order so the page mirrors the nav.
+      return sortByTypeOrder(provisions);
+    }
     const filterTypes = Array.isArray(activeFilter) ? activeFilter : [activeFilter];
-    return provisions.filter(p => filterTypes.includes(p.type));
-  }, [provisions, activeFilter, selectedProvId]);
+    return sortByTypeOrder(provisions.filter(p => filterTypes.includes(p.type)));
+  }, [provisions, activeFilter, selectedProvId, sortByTypeOrder]);
 
   /* ── Group provisions by type (all, not filtered) ──
      Preserves natural insertion order (which mirrors document order) but
@@ -4594,7 +4981,13 @@ export default function ReviewPage() {
   const handleSidebarSelectProvision = useCallback((provId) => {
     setSelectedProvId(provId);
     const prov = provisions.find(p => p.id === provId);
-    if (prov) setActiveFilter(prov.type);
+    if (prov) {
+      setActiveFilter(prov.type);
+      // Auto-open the right edit panel so a single sidebar click on a
+      // provision swaps the right-side toolbar to the editor for that item.
+      setEditingProvision(prov);
+      setExpandedLabel(null);
+    }
     // Single-provision selection should use the card view so the user can
     // see the full structured summary + collapsible text for that one item.
     setProvisionView('cards');

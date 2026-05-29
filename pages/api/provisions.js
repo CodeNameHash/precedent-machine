@@ -12,6 +12,16 @@ function snapshot(provision) {
   for (const k of TRACKED_FIELDS) {
     if (k in provision) snap[k] = provision[k];
   }
+  // Hoist ai_metadata.features into snap.features so diffCorrectionType
+  // (which looks for a top-level "features" key) can detect feature edits.
+  const meta = provision && provision.ai_metadata;
+  let parsed = meta;
+  if (typeof meta === 'string') {
+    try { parsed = JSON.parse(meta); } catch { parsed = null; }
+  }
+  if (parsed && typeof parsed === 'object' && parsed.features) {
+    snap.features = parsed.features;
+  }
   return snap;
 }
 
@@ -62,7 +72,7 @@ export default async function handler(req, res) {
       });
     }
     // Only allow updating columns that exist in the DB
-    const allowedFields = ['type', 'category', 'prohibition', 'exceptions', 'ai_favorability', 'full_text'];
+    const allowedFields = ['type', 'category', 'prohibition', 'exceptions', 'ai_favorability', 'full_text', 'ai_metadata'];
     const safeUpdates = {};
     for (const key of allowedFields) {
       if (key in updates) safeUpdates[key] = updates[key];
@@ -84,6 +94,27 @@ export default async function handler(req, res) {
       beforeRow = pre || null;
     } catch (err) {
       console.warn('[provisions PATCH] failed to fetch before-state:', err?.message || err);
+    }
+
+    // Merge ai_metadata against the existing row so feature edits don't blow
+    // away other metadata (rubric_code, ingestion flags, etc.).
+    if ('ai_metadata' in safeUpdates && safeUpdates.ai_metadata && typeof safeUpdates.ai_metadata === 'object') {
+      let existingMeta = beforeRow ? beforeRow.ai_metadata : null;
+      if (typeof existingMeta === 'string') {
+        try { existingMeta = JSON.parse(existingMeta); } catch { existingMeta = null; }
+      }
+      const baseMeta = (existingMeta && typeof existingMeta === 'object' && !Array.isArray(existingMeta)) ? existingMeta : {};
+      const incoming = safeUpdates.ai_metadata;
+      const mergedFeatures = {
+        ...((baseMeta.features && typeof baseMeta.features === 'object' && !Array.isArray(baseMeta.features)) ? baseMeta.features : {}),
+        ...((incoming.features && typeof incoming.features === 'object' && !Array.isArray(incoming.features)) ? incoming.features : {}),
+      };
+      safeUpdates.ai_metadata = {
+        ...baseMeta,
+        ...incoming,
+        features: mergedFeatures,
+        user_corrected: true,
+      };
     }
 
     const { data, error } = await sb.from('provisions').update(safeUpdates).eq('id', id).select().single();
