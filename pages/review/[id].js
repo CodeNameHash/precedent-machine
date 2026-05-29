@@ -2587,13 +2587,23 @@ function ConsidTable({ provisions, onSelectProvision }) {
                 {otherProvisions.map((p) => {
                   const features = getStructuredFeatures(p) || {};
                   return (
-                    <tr key={p.id} className="hover:bg-bg/40 transition-colors">
+                    <tr key={p.id} className="hover:bg-paper transition-colors">
                       <td className="px-3 py-2 align-top whitespace-nowrap sticky left-0 bg-white z-10">
                         <button
                           type="button"
                           onClick={() => onSelectProvision && onSelectProvision(p)}
-                          className="text-left text-accent hover:underline font-medium"
+                          className="text-left text-accentDeep hover:underline font-semibold inline-flex items-center gap-2"
                         >
+                          <span
+                            style={{
+                              display: 'inline-block',
+                              width: 7,
+                              height: 7,
+                              borderRadius: 2,
+                              background: typeHex(p.type),
+                              flexShrink: 0,
+                            }}
+                          />
                           {p.category || 'General'}
                         </button>
                       </td>
@@ -3039,13 +3049,23 @@ function ProvisionTable({ provisions, type, onSelectProvision }) {
             {provisions.map((p) => {
               const features = getStructuredFeatures(p) || {};
               return (
-                <tr key={p.id} className="hover:bg-bg/40 transition-colors">
+                <tr key={p.id} className="hover:bg-paper transition-colors">
                   <td className="px-3 py-2 align-top whitespace-nowrap sticky left-0 bg-white z-10">
                     <button
                       type="button"
                       onClick={() => onSelectProvision && onSelectProvision(p)}
-                      className="text-left text-accent hover:underline font-medium"
+                      className="text-left text-accentDeep hover:underline font-semibold inline-flex items-center gap-2"
                     >
+                      <span
+                        style={{
+                          display: 'inline-block',
+                          width: 7,
+                          height: 7,
+                          borderRadius: 2,
+                          background: typeHex(p.type),
+                          flexShrink: 0,
+                        }}
+                      />
                       {p.category || 'General'}
                     </button>
                   </td>
@@ -3468,13 +3488,13 @@ function FullDocumentView({
         (r.end - r.start) < (best.end - best.start) ? r : best
       );
       const p = innermost.provision;
-      const tc = typeColor(p.type);
+      const tHex = typeHex(p.type);
       const isHovered = hoveredProvId === p.id;
       // When this slice is covered by multiple regions, show a faint
       // gutter-stack indicator to hint at nesting depth.
       const stackBorders = covering.length > 1
-        ? `inset ${2 + (covering.length - 1) * 2}px 0 0 ${tc.hex || '#e5e7eb'}`
-        : `inset 2px 0 0 ${tc.hex || '#e5e7eb'}`;
+        ? `inset ${2 + (covering.length - 1) * 2}px 0 0 ${tHex}`
+        : `inset 2px 0 0 ${tHex}`;
       out.push(
         <span
           key={`ph-${segStart}-${p.id || i}`}
@@ -3484,10 +3504,10 @@ function FullDocumentView({
           onMouseLeave={() => onHoverProv && onHoverProv(null)}
           className="relative cursor-pointer transition-colors rounded-sm"
           style={{
-            backgroundColor: tc.hex || '#f9fafb',
-            boxShadow: isHovered
-              ? 'inset 3px 0 0 rgba(0,0,0,0.35)'
-              : stackBorders,
+            backgroundColor: isHovered
+              ? 'color-mix(in srgb, var(--accent) 22%, transparent)'
+              : 'var(--accent-soft)',
+            boxShadow: stackBorders,
             paddingLeft: '3px',
             paddingRight: '2px',
           }}
@@ -3770,27 +3790,27 @@ function FullDocumentView({
         {isFormatted ? (
           <div
             className="max-w-3xl mx-auto text-[15px] text-ink leading-[1.75]"
-            style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}
+            style={{ fontFamily: 'var(--font-serif)' }}
           >
             {renderBlocks(blocks)}
           </div>
         ) : (
           <pre
             className="text-[14px] text-ink leading-[1.7] whitespace-pre-wrap break-words m-0"
-            style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}
+            style={{ fontFamily: 'var(--font-serif)' }}
           >
             {segments.map(seg => {
               if (seg.type === 'text') {
                 return <span key={seg.key}>{seg.content}</span>;
               }
               const p = seg.provision;
-              const tc = typeColor(p.type);
+              const tHex = typeHex(p.type);
               const fav = favBadge(p.ai_favorability);
               const isHovered = hoveredProvId === p.id;
               const layers = seg.layers || 1;
               const stackBorders = layers > 1
-                ? `inset ${2 + (layers - 1) * 2}px 0 0 ${tc.hex || '#e5e7eb'}`
-                : `inset 2px 0 0 ${tc.hex || '#e5e7eb'}`;
+                ? `inset ${2 + (layers - 1) * 2}px 0 0 ${tHex}`
+                : `inset 2px 0 0 ${tHex}`;
               return (
                 <span
                   key={seg.key}
@@ -3800,10 +3820,10 @@ function FullDocumentView({
                   onMouseLeave={() => onHoverProv && onHoverProv(null)}
                   className="relative cursor-pointer transition-colors rounded-sm"
                   style={{
-                    backgroundColor: tc.hex || '#f9fafb',
-                    boxShadow: isHovered
-                      ? 'inset 3px 0 0 rgba(0,0,0,0.35)'
-                      : stackBorders,
+                    backgroundColor: isHovered
+                      ? 'color-mix(in srgb, var(--accent) 22%, transparent)'
+                      : 'var(--accent-soft)',
+                    boxShadow: stackBorders,
                     paddingLeft: '4px',
                     paddingRight: '2px',
                   }}
@@ -4864,7 +4884,7 @@ export default function ReviewPage() {
         <div className="flex-1 overflow-y-auto">
           <div style={{ maxWidth: 880, margin: '0 auto', padding: '34px 40px 120px' }}>
             {/* Deal Header */}
-            <div className="mb-[26px]">
+            <div style={{ marginBottom: 26 }}>
               <div className="rec-deal-eyebrow">
                 {deal.agreement_type || 'Merger Agreement'}
                 {deal.announce_date && (

@@ -36,6 +36,23 @@
   --seller:  #9A3326;
   --neutral: #8A8782;
 
+  /* RGB triplets — power Tailwind's "/opacity" modifier
+     (used by classes like bg-buyer/10, text-seller/30). */
+  --paper-rgb:    250 250 249;
+  --paper-2-rgb:  242 242 240;
+  --surface-rgb:  255 255 255;
+  --ink-rgb:       26  26  24;
+  --ink-mid-rgb:   68  66  62;
+  --ink-light-rgb:109 107 102;
+  --ink-faint-rgb:166 163 157;
+  --line-rgb:     232 231 227;
+  --line-soft-rgb:241 240 238;
+  --accent-rgb:    27  63 160;
+  --accent-deep-rgb:20 46 120;
+  --buyer-rgb:     47 107  67;
+  --seller-rgb:   154  51  38;
+  --neutral-rgb:  138 135 130;
+
   /* provision-type colors */
   --type-struct:   #7459A6;
   --type-consid:   #2F8B7E;

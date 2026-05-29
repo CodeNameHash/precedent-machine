@@ -7,26 +7,27 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Map legacy class names → Recital tokens so existing class
-        // references (bg-bg, text-ink, border-border, etc.) keep working.
-        bg: 'var(--paper)',
-        paper: 'var(--paper)',
-        paper2: 'var(--paper-2)',
-        surface: 'var(--surface)',
-        white: '#FFFFFF',
-        ink: 'var(--ink)',
-        inkMid: 'var(--ink-mid)',
-        inkLight: 'var(--ink-light)',
-        inkFaint: 'var(--ink-faint)',
-        border: 'var(--line)',
-        line: 'var(--line)',
-        lineSoft: 'var(--line-soft)',
-        accent: 'var(--accent)',
-        accentDeep: 'var(--accent-deep)',
+        // Map legacy class names → Recital tokens. Colors use the
+        // `rgb(var(--*-rgb) / <alpha-value>)` form so Tailwind's
+        // /opacity modifiers (e.g. bg-buyer/10) keep working.
+        bg:        'rgb(var(--paper-rgb) / <alpha-value>)',
+        paper:     'rgb(var(--paper-rgb) / <alpha-value>)',
+        paper2:    'rgb(var(--paper-2-rgb) / <alpha-value>)',
+        surface:   'rgb(var(--surface-rgb) / <alpha-value>)',
+        white:     '#FFFFFF',
+        ink:       'rgb(var(--ink-rgb) / <alpha-value>)',
+        inkMid:    'rgb(var(--ink-mid-rgb) / <alpha-value>)',
+        inkLight:  'rgb(var(--ink-light-rgb) / <alpha-value>)',
+        inkFaint:  'rgb(var(--ink-faint-rgb) / <alpha-value>)',
+        border:    'rgb(var(--line-rgb) / <alpha-value>)',
+        line:      'rgb(var(--line-rgb) / <alpha-value>)',
+        lineSoft:  'rgb(var(--line-soft-rgb) / <alpha-value>)',
+        accent:    'rgb(var(--accent-rgb) / <alpha-value>)',
+        accentDeep:'rgb(var(--accent-deep-rgb) / <alpha-value>)',
         accentDim: 'var(--accent-soft)',
-        buyer: 'var(--buyer)',
-        seller: 'var(--seller)',
-        neutral: 'var(--neutral)',
+        buyer:     'rgb(var(--buyer-rgb) / <alpha-value>)',
+        seller:    'rgb(var(--seller-rgb) / <alpha-value>)',
+        neutral:   'rgb(var(--neutral-rgb) / <alpha-value>)',
       },
       fontFamily: {
         // 'display' and 'body' historically meant serif/legal-feel; in the
