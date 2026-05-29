@@ -667,11 +667,21 @@ function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelect
           {visibleGroups.map((group) => {
             const groupCollapsed = collapsedGroups[group.label] !== false;
             const hasChildren = Array.isArray(group.children) && group.children.length > 0;
-            // For groups with children, parent is a non-clickable heading.
-            // For flat groups (single or multi-type), parent IS clickable as a filter.
             const isFlatGroup = !hasChildren;
-            // Determine active state for flat groups: any of its types are active.
-            const isActiveFilter = isFlatGroup && group.types.includes(activeFilter);
+            // Determine the active filter's type set so we can detect when
+            // the user has clicked this parent's combined view.
+            const activeTypeSet = activeFilter === null
+              ? []
+              : (Array.isArray(activeFilter) ? activeFilter : [activeFilter]);
+            // A group is the active filter when its full type set equals the
+            // active filter's type set (so parent-combined and single-child
+            // clicks render distinct active states).
+            const groupTypes = hasChildren
+              ? group.children.map((c) => c.type)
+              : group.types;
+            const groupTypeKey = [...groupTypes].sort().join(',');
+            const activeTypeKey = [...activeTypeSet].sort().join(',');
+            const isActiveFilter = groupTypeKey === activeTypeKey && activeTypeSet.length > 0;
             // Aggregate dot color: use first child/type's color.
             const repType = hasChildren ? group.children[0].type : group.types[0];
             const tc = typeColor(repType);
@@ -681,23 +691,33 @@ function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelect
             // heading is not itself a drop target (the children handle it).
             const flatDropType = isFlatGroup ? (group.singleType || group.types[0]) : null;
             const isParentDropTarget = !!dragProvId && flatDropType && dropTargetType === flatDropType;
+            // Parent groups with children get a combined-filter click handler
+            // that passes all child types as an array.
+            const parentClickHandler = isFlatGroup
+              ? () => {
+                  onFilterType(group.singleType || group.types[0]);
+                  if (groupCollapsed) {
+                    setCollapsedGroups((prev) => ({ ...prev, [group.label]: false }));
+                  }
+                }
+              : () => {
+                  onFilterType(group.children.map((c) => c.type));
+                  if (groupCollapsed) {
+                    setCollapsedGroups((prev) => ({ ...prev, [group.label]: false }));
+                  }
+                };
             return (
               <div key={group.label}>
                 {/* Parent group heading */}
                 <div
-                  className={`w-full flex items-center justify-between px-2 py-1.5 rounded text-sm font-ui transition-colors ${
-                    isActiveFilter ? 'bg-accent/10' : (isFlatGroup ? 'hover:bg-bg cursor-pointer' : '')
+                  className={`w-full flex items-center justify-between px-2 py-1.5 rounded text-sm font-ui transition-colors cursor-pointer ${
+                    isActiveFilter ? 'bg-accent/10' : 'hover:bg-bg'
                   } ${isParentDropTarget ? 'ring-2 ring-accent ring-offset-1' : ''}`}
-                  onClick={isFlatGroup ? () => {
-                    // Filter to this group's first/only type, and expand it.
-                    onFilterType(group.singleType || group.types[0]);
-                    if (groupCollapsed) {
-                      setCollapsedGroups((prev) => ({ ...prev, [group.label]: false }));
-                    }
-                  } : undefined}
+                  onClick={parentClickHandler}
                   onDragOver={flatDropType ? (e) => handleDragOver(e, flatDropType) : undefined}
                   onDragLeave={flatDropType ? () => handleDragLeave(flatDropType) : undefined}
                   onDrop={flatDropType ? (e) => handleDrop(e, flatDropType) : undefined}
+                  title={hasChildren ? `Show all ${group.label.toLowerCase()} combined` : undefined}
                 >
                   <span className="flex items-center gap-2 min-w-0">
                     <button
@@ -2157,6 +2177,143 @@ function ConsidTable({ provisions, onSelectProvision }) {
   );
 }
 
+/* ═══════════════════════════════════════════════════════════
+   STRUCTURED SUMMARY VIEW — used for multi-code types (NOSOL,
+   ANTI) where each provision is its own concept and the
+   row-based table format leaves most cells empty. Renders each
+   provision as a card with label/value rows for the same
+   features the table would show, plus a collapsible text body.
+   ═══════════════════════════════════════════════════════════ */
+function StructuredSummaryCard({ provision, type, onSelectProvision }) {
+  const [showText, setShowText] = useState(false);
+  const features = getStructuredFeatures(provision) || {};
+  // Honor the same column list the table would use (FEATURE_DISPLAY_ORDER +
+  // hidden-column denylist), so the summary and the table show the same set.
+  const explicit = FEATURE_DISPLAY_ORDER[type];
+  let keys = Array.isArray(explicit) && explicit.length > 0
+    ? explicit.slice()
+    : Object.keys(features);
+  const hidden = getHiddenColumnsForType(type);
+  if (hidden.size > 0) keys = keys.filter((k) => !hidden.has(k));
+
+  // Build rows, skipping empty values for a clean summary.
+  const rows = [];
+  for (const k of keys) {
+    const raw = features[k];
+    if (raw === null || raw === undefined || raw === '') continue;
+    if (Array.isArray(raw) && raw.length === 0) continue;
+    if (raw === false) continue;
+    rows.push({ key: k, raw });
+  }
+
+  return (
+    <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+      <div className="px-4 py-3 border-b border-border bg-bg/40 flex items-center justify-between gap-2">
+        <button
+          type="button"
+          onClick={() => onSelectProvision && onSelectProvision(provision)}
+          className="text-left font-display text-base text-accent hover:underline font-medium"
+        >
+          {provision.category || 'General'}
+        </button>
+        {provision.code && (
+          <span className="shrink-0">
+            <CodeBadge code={provision.code} />
+          </span>
+        )}
+      </div>
+      {rows.length > 0 ? (
+        <dl className="px-4 py-3 space-y-2">
+          {rows.map(({ key, raw }) => {
+            // Tagged single value → humanized badge
+            if (isTaggedItem(raw)) {
+              return (
+                <div key={key} className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
+                  <dt className="font-ui text-[11px] text-inkFaint uppercase tracking-wider sm:w-48 shrink-0">
+                    {humanizeKey(key)}
+                  </dt>
+                  <dd className="text-sm text-ink">
+                    <CodeBadge code={raw.code} />
+                  </dd>
+                </div>
+              );
+            }
+            // List value → bulleted list (humanized badges for tagged items)
+            if (Array.isArray(raw)) {
+              return (
+                <div key={key} className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
+                  <dt className="font-ui text-[11px] text-inkFaint uppercase tracking-wider sm:w-48 shrink-0">
+                    {humanizeKey(key)}
+                  </dt>
+                  <dd className="text-sm text-ink flex-1">
+                    <ul className="list-disc list-inside space-y-0.5">
+                      {raw.map((item, idx) => (
+                        <li key={idx} className="leading-relaxed">
+                          {isTaggedItem(item) ? (
+                            <CodeBadge code={item.code} />
+                          ) : (
+                            <span>{String(item)}</span>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  </dd>
+                </div>
+              );
+            }
+            // Scalar value
+            const val = formatFeatureValue(raw);
+            if (val === null || val === undefined || val === '') return null;
+            return (
+              <div key={key} className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
+                <dt className="font-ui text-[11px] text-inkFaint uppercase tracking-wider sm:w-48 shrink-0">
+                  {humanizeKey(key)}
+                </dt>
+                <dd className="text-sm text-ink whitespace-pre-wrap break-words flex-1">
+                  {Array.isArray(val) ? val.join('; ') : String(val)}
+                </dd>
+              </div>
+            );
+          })}
+        </dl>
+      ) : (
+        <div className="px-4 py-3 text-xs font-ui text-inkFaint italic">
+          No structured features extracted for this provision.
+        </div>
+      )}
+      <div className="border-t border-border px-4 py-2 bg-bg/20">
+        <button
+          type="button"
+          onClick={() => setShowText((s) => !s)}
+          className="text-[11px] font-ui text-accent hover:text-accent/80"
+        >
+          {showText ? '− Hide Text' : '+ Show Text'}
+        </button>
+        {showText && provision.full_text && (
+          <div className="mt-2 text-xs font-body text-inkMid whitespace-pre-wrap leading-relaxed">
+            {provision.full_text}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function StructuredSummaryView({ provisions, type, onSelectProvision }) {
+  return (
+    <div className="space-y-3">
+      {provisions.map((p) => (
+        <StructuredSummaryCard
+          key={p.id}
+          provision={p}
+          type={type}
+          onSelectProvision={onSelectProvision}
+        />
+      ))}
+    </div>
+  );
+}
+
 function ProvisionTable({ provisions, type, onSelectProvision }) {
   // STRUCT and CONSID get specialized layouts — see dedicated components above.
   if (type === 'STRUCT') {
@@ -2164,6 +2321,17 @@ function ProvisionTable({ provisions, type, onSelectProvision }) {
   }
   if (type === 'CONSID') {
     return <ConsidTable provisions={provisions} onSelectProvision={onSelectProvision} />;
+  }
+  // NOSOL / ANTI: the multi-code table is mostly-empty cells; show a per-
+  // provision structured summary instead so each row reads cleanly.
+  if (type === 'NOSOL' || type === 'ANTI') {
+    return (
+      <StructuredSummaryView
+        provisions={provisions}
+        type={type}
+        onSelectProvision={onSelectProvision}
+      />
+    );
   }
 
   const schemaKeys = getFeatureSchema(type);
@@ -3703,7 +3871,8 @@ export default function ReviewPage() {
       return one ? [one] : [];
     }
     if (activeFilter === null) return provisions;
-    return provisions.filter(p => p.type === activeFilter);
+    const filterTypes = Array.isArray(activeFilter) ? activeFilter : [activeFilter];
+    return provisions.filter(p => filterTypes.includes(p.type));
   }, [provisions, activeFilter, selectedProvId]);
 
   /* ── Group provisions by type (all, not filtered) ──
@@ -3755,13 +3924,21 @@ export default function ReviewPage() {
     };
   }, [editingProvision]);
 
-  /* ── Sidebar filter handler ── */
+  /* ── Sidebar filter handler — accepts a single type, an array of types
+   *     (for parent-group "show all children combined" clicks), or null
+   *     to clear the filter. */
   const handleFilterType = useCallback((type) => {
-    setActiveFilter(type);
+    // Normalize: empty array → null; single-element array → string
+    let next = type;
+    if (Array.isArray(type)) {
+      if (type.length === 0) next = null;
+      else if (type.length === 1) next = type[0];
+    }
+    setActiveFilter(next);
     setSelectedProvId(null); // clear single-provision view when changing type filter
     // When clicking a category title, default to the Table view so the user
     // sees all provisions of that type as rows side-by-side.
-    if (type !== null) setProvisionView('table');
+    if (next !== null) setProvisionView('table');
   }, []);
 
   /* ── Sidebar provision click — show ONLY that provision in the main view ── */
@@ -4074,19 +4251,39 @@ export default function ReviewPage() {
                 </button>
 
                 {/* Filter indicator */}
-                {activeFilter && (
-                  <div className="ml-auto flex items-center gap-2">
-                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-ui font-medium border ${typeColor(activeFilter).border} ${typeColor(activeFilter).bg} ${typeColor(activeFilter).text}`}>
-                      Filtered: {typeLabel(activeFilter)}
-                    </span>
-                    <button
-                      onClick={() => { setActiveFilter(null); setSelectedProvId(null); }}
-                      className="text-[10px] font-ui text-inkFaint hover:text-ink"
-                    >
-                      Clear
-                    </button>
-                  </div>
-                )}
+                {activeFilter && (() => {
+                  const isMulti = Array.isArray(activeFilter);
+                  const repType = isMulti ? activeFilter[0] : activeFilter;
+                  // For multi-type filters, find the parent SIDEBAR_GROUPS entry
+                  // that matches the type set so we can show its label + "(all)".
+                  let label;
+                  if (isMulti) {
+                    const sorted = [...activeFilter].sort().join(',');
+                    const match = SIDEBAR_GROUPS.find((g) => {
+                      const childTypes = g.children
+                        ? g.children.map((c) => c.type)
+                        : (g.types || []);
+                      return [...childTypes].sort().join(',') === sorted;
+                    });
+                    label = match ? `${match.label} (all)` : activeFilter.map(typeLabel).join(' + ');
+                  } else {
+                    label = typeLabel(activeFilter);
+                  }
+                  const tc = typeColor(repType);
+                  return (
+                    <div className="ml-auto flex items-center gap-2">
+                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-ui font-medium border ${tc.border} ${tc.bg} ${tc.text}`}>
+                        Filtered: {label}
+                      </span>
+                      <button
+                        onClick={() => { setActiveFilter(null); setSelectedProvId(null); }}
+                        className="text-[10px] font-ui text-inkFaint hover:text-ink"
+                      >
+                        Clear
+                      </button>
+                    </div>
+                  );
+                })()}
               </div>
             )}
 
