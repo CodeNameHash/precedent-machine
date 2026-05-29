@@ -276,7 +276,20 @@ const FEATURE_DISPLAY_ORDER = {
   'COND-B': ['mainCondition', 'bringDownStandard', 'tieredBringDown', 'tiers', 'maeConditionStandalone', 'certificationRequired', 'dollarThreshold', 'dissentingSharesThreshold', 'scheduleReference'],
   'COND-S': ['mainCondition', 'bringDownStandard', 'tieredBringDown', 'tiers', 'fundsCondition', 'certificationRequired', 'dollarThreshold', 'scheduleReference'],
   COND: ['mainCondition'],
-  NOSOL: ['mainConcept', 'noticePeriod', 'matchingPeriod', 'subsequentMatching', 'subsequentMatchingPeriod', 'goShopWindow', 'informationRights', 'confidentialityRequired', 'fiduciaryOutStandard', 'fiduciaryCarveoutThreshold', 'superiorProposalPercentage', 'interveningEventProvision', 'standstillWaiver', 'dontAskDontWaive'],
+  // NOSOL table — 5 most-compared deal-protection terms only.
+  // Everything else (info rights, go-shop, standstill, percentages, etc.)
+  // still lives on each provision's structured summary; it's just hidden
+  // from the category-level matrix to keep cross-deal comparison clean.
+  NOSOL: [
+    'fiduciaryEngageStandard',
+    'fiduciaryFinalStandard',
+    'noticePeriod',
+    'noticeContent',
+    'matchingPeriod',
+    'interveningEventTermination',
+    'forceTheVote',
+    'forceTheVoteDetails',
+  ],
   // Canonical ANTI display order: effortsStandard first (the headline), then
   // the burden cap / divestiture limit fields, then No Inconsistent Action
   // (appliesToParty), then everything else (filing, cooperation/control, etc.).
