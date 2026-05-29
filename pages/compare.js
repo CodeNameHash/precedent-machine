@@ -824,13 +824,27 @@ function isEmptyVal(v) {
   return false;
 }
 
+// Features are stored at provision.ai_metadata.features (which may be a JSON
+// string). Returns {} when there's nothing — never null.
+function readFeatures(provision) {
+  if (!provision) return {};
+  let meta = provision.ai_metadata;
+  if (typeof meta === 'string') {
+    try { meta = JSON.parse(meta); } catch { return {}; }
+  }
+  if (!meta || typeof meta !== 'object') return {};
+  const f = meta.features;
+  if (!f || typeof f !== 'object' || Array.isArray(f)) return {};
+  return f;
+}
+
 // Pull a feature value for a deal: first non-empty match across `keys` across
 // any provision of `types` in that deal.
 function pickFeatureValue(provisions, types, keys) {
   const typeSet = new Set(types);
   for (const p of provisions) {
     if (!typeSet.has(p.type)) continue;
-    const f = p.features || {};
+    const f = readFeatures(p);
     for (const k of keys) {
       if (!isEmptyVal(f[k])) return { value: f[k], key: k, provision: p };
     }
@@ -965,7 +979,7 @@ function SummaryMatrix({
     for (const provs of perDealProvs) {
       for (const p of provs) {
         if (!types.includes(p.type)) continue;
-        const f = p.features || {};
+        const f = readFeatures(p);
         for (const k of Object.keys(f)) {
           if (specKeys.has(k)) continue;
           if (isEmptyVal(f[k])) continue;
@@ -1567,9 +1581,10 @@ function DetailCard({ deal, provision, rowType, onOpenInReview }) {
               {provision.full_text}
             </div>
           )}
-          {provision.features && Object.keys(provision.features || {}).length > 0 && (
-            <FeaturesBlock features={provision.features} />
-          )}
+          {(() => {
+            const f = readFeatures(provision);
+            return Object.keys(f).length > 0 ? <FeaturesBlock features={f} /> : null;
+          })()}
           <button
             onClick={onOpenInReview}
             style={{
