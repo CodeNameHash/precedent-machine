@@ -3450,6 +3450,102 @@ function StructuredSummaryView({ provisions, type, onSelectProvision }) {
  *    Scans every provision in the category and picks the FIRST non-empty
  *    value for each canonical feature in CATEGORY_SUMMARY_FEATURES. Below
  *    the table, lists the underlying provisions as small clickable links. */
+// ── Stage 2: per-sub-code mini-table specs ──
+// Mirrors the CATEGORY_SUMMARY_FEATURES shape but keyed by canonical code
+// (e.g. 'CONSID-CVR'). Each sub-code ships with a 3-row spec ready to drop
+// into the existing CategoryFeatureSummaryTable render path.
+const SUBCODE_SUMMARY_FEATURES = {
+  'CONSID-CVR': [
+    { label: 'Triggers',     keys: ['triggers'] },
+    { label: 'Milestones',   keys: ['milestones'] },
+    { label: 'Max Payment',  keys: ['maxPayment'] },
+    { label: 'Term',         keys: ['term'] },
+    { label: 'Transferable', keys: ['transferable'] },
+  ],
+  'CONSID-COLLAR': [
+    { label: 'Collar Type',  keys: ['collarType'] },
+    { label: 'Upper Bound',  keys: ['upperBound'] },
+    { label: 'Lower Bound',  keys: ['lowerBound'] },
+    { label: 'Language',     keys: ['language'] },
+  ],
+  'CONSID-TICKING': [
+    { label: 'Rate',         keys: ['rate'] },
+    { label: 'Start Date',   keys: ['startDate'] },
+    { label: 'Formula',      keys: ['escalationFormula'] },
+  ],
+  'CONSID-EXCHANGE-RATIO': [
+    { label: 'Ratio Type',   keys: ['ratioType'] },
+    { label: 'Value',        keys: ['value'] },
+  ],
+  'CONSID-WALKAWAY': [
+    { label: 'Holder',       keys: ['holder', 'marketOutHolder'] },
+    { label: 'Threshold',    keys: ['threshold'] },
+  ],
+  'COV-APPRAISAL': [
+    { label: 'Parent Info Rights',                 keys: ['parentInfoRights'] },
+    { label: 'Parent Participation / Control',     keys: ['parentParticipationOrControl'] },
+    { label: 'Settlement Consent',                 keys: ['settlementConsent'] },
+    { label: 'Payment Consent',                    keys: ['paymentConsent'] },
+  ],
+  'COV-PAYAGENT': [
+    { label: 'Company Consent Required',           keys: ['companyConsent'] },
+    { label: 'Transfer-Agent Exception',           keys: ['transferAgentException'] },
+    { label: 'Other Agent Formulation',            keys: ['otherAgentFormulation'] },
+  ],
+  'COV-MARKETING': [
+    { label: 'Period (Business Days)',             keys: ['periodBusinessDays'] },
+    { label: 'Commencement Trigger',               keys: ['commencement'] },
+  ],
+  'COV-PROXY': [
+    { label: 'Proxy Filing Deadline',              keys: ['proxyFilingDeadline'] },
+    { label: 'Special Meeting Deadline',           keys: ['specialMeetingDeadline'] },
+    { label: 'Meeting Delay Permitted',            keys: ['meetingDelayPermitted'] },
+    { label: 'Meeting Delay Conditions',           keys: ['meetingDelayConditions'] },
+  ],
+  'COV-DO': [
+    { label: 'Insurance Cap',                      keys: ['insuranceCap'] },
+    { label: 'Advancement of Expenses',            keys: ['advancementOfExpenses'] },
+    { label: 'Notification Consequences',          keys: ['notificationConsequences'] },
+    { label: 'Additional Terms',                   keys: ['additionalTerms'] },
+  ],
+  'TERMF-RTF-ANTI': [
+    { label: 'Triggers',                           keys: ['triggers'] },
+    { label: 'Amount',                             keys: ['amount'] },
+    { label: 'Sole Remedy',                        keys: ['soleRemedy'] },
+    { label: 'Exceptions',                         keys: ['exceptions'] },
+    { label: 'Specific Performance Barred',        keys: ['specificPerformanceBar'] },
+  ],
+  'TERMF-REIMBURSE': [
+    { label: 'Triggers',                           keys: ['triggers'] },
+    { label: 'Cap',                                keys: ['cap'] },
+  ],
+  'REP-B-FUNDS': [
+    { label: 'Scope',                              keys: ['scope'] },
+    { label: 'Covers Merger Consideration',        keys: ['coversMergerConsideration'] },
+    { label: 'Covers Reverse Termination Fee',     keys: ['coversReverseTermFee'] },
+    { label: 'Covers Expenses',                    keys: ['coversExpenses'] },
+  ],
+  'REP-B-SOLVENCY': [
+    { label: 'Language',                           keys: ['language', 'solvencyRepDetails'] },
+  ],
+  'REP-B-ANTIRELIANCE': [
+    { label: 'Language',                           keys: ['language', 'antiRelianceRepText'] },
+  ],
+  'REP-T-SUFFICIENCY': [
+    { label: 'Language',                           keys: ['language'] },
+  ],
+  'REP-T-TOP-CUSTOMERS': [
+    { label: 'Definition',                         keys: ['definition', 'topCustomersSuppliersDefinition'] },
+    { label: 'Coverage',                           keys: ['coverage'] },
+  ],
+  'REP-T-MATERIAL-CONTRACTS': [
+    { label: 'Buckets',                            keys: ['materialContractsBuckets'] },
+    { label: 'Per-Bucket Dollar Thresholds',       keys: ['materialContractsDollarThresholds'] },
+    { label: 'Redactions Permitted',               keys: ['materialContractsRedactionsPermitted'] },
+    { label: 'Permitted Redactions',               keys: ['permittedRedactionsDefinition'] },
+  ],
+};
+
 const CATEGORY_SUMMARY_FEATURES = {
   // NOSOL — 5 most-compared deal-protection terms (user's canonical list,
   // with fallback keys present in the live data).
