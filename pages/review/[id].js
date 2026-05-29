@@ -485,8 +485,13 @@ const FEATURE_DISPLAY_ORDER = {
   DEF: ['sourceSection', 'inlineDefinition'],
   STRUCT: ['mainConcept', 'mergerForm', 'survivingEntity', 'closingConditionsPrecedent'],
   CONSID: ['mainConcept', 'considerationType', 'perShareAmount', 'exchangeRatio', 'equityAwardTreatment', 'outstandingInstruments', 'instrumentTreatments', 'vestingAcceleration', 'cutoffDate', 'cutoffTreatment', 'cashOutAmount', 'optionSpread', 'performanceTreatment', 'espp_treatment', 'parachuteCap', 'doubleTrigger', 'appraisalRightsAvailable', 'withholdingProvision', 'proration'],
-  'REP-T': ['materialityQualifier', 'knowledgeQualifier', 'survivalPeriod', 'scheduleReference'],
-  'REP-B': ['materialityQualifier', 'knowledgeQualifier', 'solvencyRepIncluded', 'financingRepIncluded'],
+  // PW diligence cleanup: REP-T / REP-B per-row table shows ONLY these four
+  // columns. Specific-rep items (Sufficient Funds, Solvency, Anti-Reliance,
+  // Top Customers definition, Material Contracts buckets, etc.) live ONLY on
+  // (a) the individual provision card drill-in, (b) the ExpectedRepsTable
+  // present/not-present checklist, and (c) the respective sub-code mini-table.
+  'REP-T': ['materialityQualifier', 'knowledgeQualifier', 'survivalPeriod', 'dollarThreshold'],
+  'REP-B': ['materialityQualifier', 'knowledgeQualifier', 'survivalPeriod', 'dollarThreshold'],
   COV: ['mainConcept', 'accessScope', 'indemnificationPeriod', 'employeeBenefitPeriod', 'financingCooperation', 'cvrIncluded'],
   MISC: ['mainConcept', 'governingLaw', 'jurisdictionExclusive', 'juryWaiver', 'specificPerformance', 'thirdPartyBeneficiaryExceptions'],
   OTHER: ['mainConcept', 'summary', 'crossReferences'],
@@ -3652,29 +3657,341 @@ const SUBCODE_SUMMARY_FEATURES = {
   ],
 };
 
+// ─── MAE carveout codes (kept in sync with lib/taxonomy.js MAE_CARVEOUT_META).
+// Used by the MAE summary rows to look up a carveout by code inside any
+// `features.carveouts` list (DEF or REP-T provision) and render Present /
+// Not present uniformly.
+const MAE_CARVEOUT_LABELS = {
+  ECONOMY_GENERAL: 'General economic conditions',
+  INDUSTRY_GENERAL: 'Industry-wide conditions',
+  FINANCIAL_MARKETS: 'Financial / capital / credit market conditions',
+  ACTS_OF_WAR_TERRORISM: 'Acts of war, armed hostilities, or terrorism',
+  NATURAL_DISASTERS: 'Natural disasters or acts of God',
+  PANDEMIC: 'Pandemic / epidemic / public health crisis',
+  ANNOUNCEMENT_OR_PENDENCY: 'Announcement or pendency of the transaction',
+  COMPLIANCE_WITH_AGREEMENT: 'Compliance with the terms of this Agreement',
+  ACTIONS_REQUESTED_BY_PARENT: 'Actions taken at the request or with consent of Parent',
+  CHANGE_IN_LAW: 'Changes in applicable law or regulation',
+  CHANGE_IN_GAAP: 'Changes in GAAP or accounting principles',
+  STOCK_PRICE_CHANGES: 'Changes in trading price or volume of stock',
+  FAILURE_TO_MEET_PROJECTIONS: 'Failure to meet internal projections or forecasts',
+  PRICING_MFN: 'Most-favored-nation pricing actions',
+  EXECUTIVE_ACTION: 'Executive orders / sanctions / tariffs',
+  TARIFFS: 'Tariffs / trade barriers',
+  GOVERNMENT_SHUTDOWNS: 'Government shutdowns / civil unrest',
+  CLINICAL_RESULTS: 'Clinical trial results (life sciences)',
+  FDA_DISCUSSIONS: 'FDA discussions or correspondence (life sciences)',
+  FDA_APPROVALS_COMPETITOR_ENTRY: 'FDA approvals of competitor products / competitor entry',
+  SUPPLY_CHAIN: 'Supply chain disruptions',
+  PRICING_REIMBURSEMENT: 'Pricing / reimbursement changes (healthcare)',
+  MEDICAL_ORGS_STATEMENTS: 'Statements by medical / scientific organizations',
+  PATENTS_EXCLUSIVITY: 'Patent expirations / loss of exclusivity',
+  PARENT_ACTIONS_OR_INACTION: 'Acts or omissions of Parent / Buyer',
+  EMPLOYEE_DEPARTURES: 'Loss of employees or executive departures',
+  OTHER: 'Other carve-out',
+};
+
+// Scan a provision list's `carveouts` (and `disproportionateImpactCarveouts` /
+// `nonDisproportionateImpactCarveouts` if present) for an entry with the given
+// code. Returns the first matching tagged item, or null if none.
+function findCarveoutByCode(provisions, code) {
+  if (!provisions || provisions.length === 0) return null;
+  const codeUpper = String(code).toUpperCase();
+  for (const p of provisions) {
+    const f = getStructuredFeatures(p) || {};
+    const lists = [
+      f.carveouts,
+      f.carveOuts,
+      f.carveOutsList,
+      f.disproportionateImpactCarveouts,
+      f.nonDisproportionateImpactCarveouts,
+    ];
+    for (const list of lists) {
+      if (!Array.isArray(list)) continue;
+      for (const item of list) {
+        if (isTaggedItem(item) && String(item.code).toUpperCase() === codeUpper) {
+          return { value: { code: item.code, label: item.label || MAE_CARVEOUT_LABELS[codeUpper] || item.code, text: item.text }, key: 'carveouts', provision: p };
+        }
+        // Tolerate string-only entries that look like the code label.
+        if (typeof item === 'string') {
+          const lbl = MAE_CARVEOUT_LABELS[codeUpper];
+          if (lbl && item.toLowerCase().includes(lbl.split('/')[0].trim().toLowerCase().slice(0, 12))) {
+            return { value: { code: codeUpper, label: lbl, text: item }, key: 'carveouts', provision: p };
+          }
+        }
+      }
+    }
+  }
+  return null;
+}
+
 const CATEGORY_SUMMARY_FEATURES = {
-  // NOSOL — 5 most-compared deal-protection terms (user's canonical list,
-  // with fallback keys present in the live data).
+  // ─── NOSOL — Paul Weiss diligence checklist q120–q140 ───────────────────
   NOSOL: [
+    // Preserve the existing 7 fiduciary-out / notice / matching rows at the top.
     { label: 'Fiduciary Out — Engagement Standard', keys: ['fiduciaryEngageStandard', 'fiduciaryOutStandard'] },
     { label: 'Fiduciary Out — Final Determination',  keys: ['fiduciaryFinalStandard', 'fiduciaryOutStandard'] },
     { label: 'Notice Period',                         keys: ['noticePeriod'] },
     { label: 'Notice Content',                        keys: ['noticeContent'] },
-    { label: 'Matching Period',                       keys: ['matchingPeriod'] },
+    { label: 'Matching Period',                       keys: ['matchingPeriod', 'initialMatchPeriodDays'] },
     { label: 'Intervening Event Termination',         keys: ['interveningEventTermination', 'interveningEventProvision'] },
     { label: 'Force the Vote',                        keys: ['forceTheVote', 'forceTheVoteDetails'] },
+    // Go-shop
+    { label: 'Go-Shop Present',                       keys: ['goShopPresent'] },
+    { label: 'Go-Shop Period (days)',                 keys: ['goShopPeriodDays', 'goShopWindow'] },
+    { label: 'Go-Shop Excluded Parties',              keys: ['goShopExcludedParties'] },
+    { label: 'Extended Negotiating Period (days)',    keys: ['extendedNegotiatingPeriodDays'] },
+    // Waivers
+    { label: 'Standstill Waiver Permitted',           keys: ['standstillWaiverPermitted', 'standstillWaiver'] },
+    { label: 'Anti-Clubbing Waiver Permitted',        keys: ['antiClubbingWaiverPermitted'] },
+    // Info required for alternative proposals
+    { label: 'Info Required — Bidder Identity',       keys: ['infoRequiredBidderIdentity'] },
+    { label: 'Info Required — Communications & Drafts', keys: ['infoRequiredCommunicationsDrafts'] },
+    { label: 'Info Required — Financing Papers',      keys: ['infoRequiredFinancingPapers'] },
+    // Definitions
+    { label: 'Acceptable Confidentiality Agreement Definition', keys: ['acceptableConfidentialityAgreementDefinition'] },
+    { label: 'Acquisition Transaction Definition',    keys: ['acquisitionTransactionDefinition'] },
+    { label: 'Acquisition Transaction % Threshold',   keys: ['acquisitionTransactionPctThreshold'] },
+    // Board change / superior-proposal / company termination
+    { label: 'Board Change for Intervening Event',    keys: ['boardChangeForInterveningEvent'] },
+    { label: 'Intervening Event Definition',          keys: ['interveningEventDefinition'] },
+    { label: 'Board Change for Superior Proposal',    keys: ['boardChangeForSuperiorProposal'] },
+    { label: 'Board Change Standard',                 keys: ['boardChangeStandard'] },
+    { label: 'Company Termination for Superior Proposal', keys: ['companyTerminationForSuperior'] },
+    { label: 'Company Termination Conditions',        keys: ['companyTerminationForSuperiorConditions'] },
+    // Representative breach + match periods + parent termination
+    { label: 'Representative Breach Deemed Company Breach', keys: ['representativeBreachIsCompanyBreach'] },
+    { label: 'Representatives Standard',              keys: ['representativesStandard'] },
+    { label: 'Initial Match Period (business days)',  keys: ['initialMatchPeriodDays', 'matchingPeriod'] },
+    { label: 'Subsequent Match Period (business days)', keys: ['subsequentMatchPeriodDays', 'subsequentMatchingPeriod'] },
+    { label: 'Parent Termination Right for Nonsolicit Breach', keys: ['parentTerminationRightForNonsolicitBreach'] },
   ],
-  // ANTI — Standard of Efforts + Burden Cap are the two headline rows.
-  // (The remaining feature columns still appear on the per-provision
-  // drill-in / edit panel — this is just the cross-deal summary view.)
+
+  // ─── ANTI — Paul Weiss diligence checklist q68–q91 + q82–q83 ────────────
   ANTI: [
-    { label: 'Standard of Efforts', keys: ['effortsStandard'] },
-    { label: 'Burden Cap',          keys: ['burdenCap', 'divestitureCap', 'divestitureCapDescription'] },
+    // Preserve existing Standard of Efforts + Burden Cap headline rows.
+    { label: 'Standard of Efforts',                   keys: ['effortsStandard'] },
+    { label: 'Burden Cap',                            keys: ['burdenCap', 'divestitureCap', 'divestitureCapDescription'] },
+    // Strategy / filings
+    { label: 'Regulatory Strategy Control',           keys: ['regulatoryStrategyControl', 'controllingParty'] },
+    { label: 'HSR Filing Deadline (business days)',   keys: ['hsrFilingDeadlineBusinessDays'] },
+    { label: 'Other Regulatory Filing Deadlines',     keys: ['otherRegulatoryFilingDeadlines', 'filingDeadline'] },
+    { label: 'Substantial Compliance Deadline (days)', keys: ['substantialComplianceDeadlineDays'] },
+    // Pull-and-refile + timing agreements
+    { label: 'Pull-and-Refile — Company Consent Required', keys: ['pullAndRefileCompanyConsent'] },
+    { label: 'Refile Cap Without Company Consent',    keys: ['refileCapWithoutConsent'] },
+    { label: 'Timing Agreements Prohibited',          keys: ['timingAgreementsProhibited'] },
+    // Clear-skies
+    { label: 'Clear-Skies — Company',                 keys: ['clearSkiesCompany'] },
+    { label: 'Clear-Skies — Company Scope',           keys: ['clearSkiesCompanyScope'] },
+    { label: 'Clear-Skies — Parent',                  keys: ['clearSkiesParent'] },
+    { label: 'Clear-Skies — Parent Scope',            keys: ['clearSkiesParentScope'] },
+    // Remedy + litigation obligations
+    { label: 'Parent Remedy Obligation',              keys: ['parentRemedyObligation'] },
+    { label: 'Efforts Standard Differs by Remedy',    keys: ['effortsStandardDiffersByRemedy'] },
+    { label: 'Parent Litigation Obligation',          keys: ['parentLitigationObligation', 'litigationObligation'] },
+    // Burdensome condition rows (q82–q83)
+    { label: 'Burdensome Condition Present (Closing Condition)', keys: ['burdensomeConditionPresent', 'burdensomConditionDefined'] },
+    { label: 'Burdensome Condition Scope',            keys: ['burdensomeConditionScope'] },
+    { label: 'Burdensome Condition in Termination Triggers', keys: ['burdensomeConditionInTerminationTriggers'] },
+    // Law/orders termination right (mirrored from TERMR)
+    { label: 'Law/Orders Termination Right Present',  keys: ['lawOrderTerminationPresent'] },
+    { label: 'Law/Orders Termination Scope',          keys: ['lawOrderTerminationScope'] },
+    { label: 'Final and Nonappealable Required',      keys: ['finalAndNonappealableRequired'] },
+    { label: 'Terminating Party Breach Carveout',     keys: ['terminationCarveoutForOwnBreach'] },
+    // Cooperation / filings
+    { label: 'Regulatory Closing Conditions / Required Filings', keys: ['foreignFilingsRequired', 'regulatoryClosingConditions'] },
+    { label: 'Springing Regulatory Conditions',       keys: ['springingRegulatoryConditions'] },
+    { label: 'Regulatory Info / Cooperation Covenant Scope', keys: ['regulatoryCooperationScope', 'controllingParty'] },
+    { label: 'Regulatory Cooperation Covenant Carveout', keys: ['regulatoryCooperationCarveout'] },
   ],
-  // MISC — boilerplate / governance terms. Rendered as an antitrust-style
-  // 2-column summary table (label | value), with the underlying MISC
-  // provisions listed below as clickable links.
+
+  // ─── TERMR — Paul Weiss diligence checklist q83–q99 ─────────────────────
+  TERMR: [
+    { label: 'Outside Date',                          keys: ['outsideDate'] },
+    { label: 'Outside Date (months)',                 keys: ['outsideDateMonths'] },
+    { label: 'Extension Structure Present',           keys: ['outsideDateExtension', 'extensionAvailable'] },
+    { label: 'Extension Party',                       keys: ['extensionParty', 'extensionConsentParty'] },
+    { label: 'Extension Mutual or Unilateral',        keys: ['extensionMutualOrUnilateral'] },
+    { label: 'Extension Period',                      keys: ['extensionPeriod'] },
+    { label: 'Extension Max Exercises',               keys: ['extensionMaxExercises'] },
+    { label: 'Extension Trigger',                     keys: ['extensionTrigger', 'extensionConditions', 'outsideDateExtensionConditions'] },
+    { label: 'Closing Deadline After Conditions Satisfied (days)', keys: ['mutualClosingDeadlineAfterConditionsDays'] },
+    { label: 'Closing Timing Provisions',             keys: ['closingTimingProvisions', 'closingTiming'] },
+    { label: 'Government Proceeding Closing Condition Present', keys: ['governmentProceedingConditionPresent'] },
+    { label: 'Absence of Enjoining Law/Order Condition Present', keys: ['absenceOfEnjoiningOrderPresent'] },
+    { label: 'Absence-of-Enjoining-Order Details',    keys: ['absenceOfEnjoiningOrderDetails'] },
+    { label: 'Law/Orders Termination Right Present',  keys: ['lawOrderTerminationPresent'] },
+    { label: 'Law/Orders Termination Scope',          keys: ['lawOrderTerminationScope'] },
+    { label: 'Final and Nonappealable Required',      keys: ['finalAndNonappealableRequired', 'restraintFinality'] },
+    { label: 'Termination Carveout for Own Breach',   keys: ['terminationCarveoutForOwnBreach', 'faultBasedExclusion'] },
+    { label: 'Lost Premium Damages Pursuit',          keys: ['lostPremiumDamagesPursuit'] },
+    { label: 'Lost Premium Damages Conditions',       keys: ['lostPremiumDamagesConditions'] },
+    { label: 'Market-Out / Walkaway Holder',          keys: ['marketOutHolder', 'holder'] },
+    { label: 'Party Who Can Terminate',               keys: ['partyWhoCanTerminate'] },
+    { label: 'Termination Triggers',                  keys: ['terminationTriggers', 'triggerEvents'] },
+    { label: 'Cure Period',                           keys: ['curePeriod', 'cureDays'] },
+    { label: 'Tender Offer Minimum Condition',        keys: ['tenderOfferMinimumCondition'] },
+    { label: 'Vote Threshold',                        keys: ['voteThreshold'] },
+  ],
+
+  // ─── TERMF — Paul Weiss diligence checklist q141–q152 + q198–q200 ──────
+  TERMF: [
+    { label: 'Company Termination Fee Amount',        keys: ['feeAmount', 'companyTerminationFee'] },
+    { label: 'Fee % of Equity Value',                 keys: ['terminationFeePercentEquityValue', 'feePercentage'] },
+    { label: 'Fee Trigger Events',                    keys: ['triggerEvents'] },
+    { label: 'Fee / Reimbursement on Naked No-Vote',  keys: ['nakedNoVoteFeePresent', 'nakedNoVoteFee'] },
+    { label: 'Naked No-Vote Fee Amount',              keys: ['nakedNoVoteFeeAmount'] },
+    { label: 'Tail Fee — End-Date Trigger',           keys: ['tailFeeTriggerEndDate'] },
+    { label: 'Tail Fee — Naked No-Vote Trigger',      keys: ['tailFeeTriggerNakedNoVote'] },
+    { label: 'Tail Fee — Alt Announced During Pendency', keys: ['tailFeeTriggerAltAnnouncedDuringPendency'] },
+    { label: 'Tail Fee — Consummated During Tail',    keys: ['tailFeeTriggerConsummatedDuringTail'] },
+    { label: 'Tail Period (months)',                  keys: ['tailPeriod'] },
+    { label: 'Termination Fee Sole Remedy',           keys: ['feeSoleAndExclusiveRemedy', 'soleRemedy', 'soleAndExclusiveRemedy'] },
+    { label: 'Exceptions to Sole Remedy',             keys: ['feeSoleRemedyExceptions', 'willfulBreachException'] },
+    { label: 'Remedy Bar After Termination Fee',      keys: ['remedyBarAfterFee'] },
+    { label: 'Antitrust RTF Present',                 keys: ['reverseFeeAmount', 'reverseTerminationFee'] },
+    { label: 'Antitrust RTF Triggers',                keys: ['triggers'] },
+    { label: 'Antitrust RTF Amount',                  keys: ['reverseFeeAmount', 'amount'] },
+    { label: 'Antitrust RTF Sole Remedy',             keys: ['soleRemedy'] },
+    { label: 'Antitrust RTF Exceptions',              keys: ['exceptions'] },
+    { label: 'Acquirer Expense Reimbursement Obligation', keys: ['expenseReimbursement'] },
+    { label: 'Acquirer Expense Reimbursement Triggers', keys: ['triggers'] },
+    { label: 'Acquirer Expense Reimbursement Cap',    keys: ['expenseReimbursementCap', 'cap'] },
+  ],
+
+  // ─── MAE — Paul Weiss diligence checklist q20–q37 ───────────────────────
+  // Rows are scanned across the supplied provisions (typically the REP-T or
+  // DEF "Material Adverse Effect" definition). Carveout rows resolve via
+  // findCarveoutByCode against features.carveouts (taxonomy MAE_CARVEOUT_CODES).
+  MAE: [
+    { label: 'Disproportionate Impact Carveouts',     keys: ['disproportionateImpactCarveouts'] },
+    { label: 'Non-Disproportionate Impact Carveouts', keys: ['nonDisproportionateImpactCarveouts'] },
+    { label: 'Prevent / Delay Prong Present',         keys: ['preventDelayProng'] },
+    { label: 'Reps Including Prevent / Delay Prong',  keys: ['preventDelayRepsCovered'] },
+    { label: 'All Carveouts (canonical list)',        keys: ['carveouts', 'carveOuts', 'carveOutsList'] },
+    { label: 'Pricing MFNs Carveout',                 keys: [], maeCode: 'PRICING_MFN' },
+    { label: 'Executive Action Carveout',             keys: [], maeCode: 'EXECUTIVE_ACTION' },
+    { label: 'Tariffs Carveout',                      keys: [], maeCode: 'TARIFFS' },
+    { label: 'Government Shutdowns Carveout',         keys: [], maeCode: 'GOVERNMENT_SHUTDOWNS' },
+    { label: 'Clinical Results Carveout',             keys: [], maeCode: 'CLINICAL_RESULTS' },
+    { label: 'FDA Discussions Carveout',              keys: [], maeCode: 'FDA_DISCUSSIONS' },
+    { label: 'FDA Approvals / Competitor Entry Carveout', keys: [], maeCode: 'FDA_APPROVALS_COMPETITOR_ENTRY' },
+    { label: 'Supply Chain / Manufacturing Carveout', keys: [], maeCode: 'SUPPLY_CHAIN' },
+    { label: 'Pricing / Reimbursement Developments Carveout', keys: [], maeCode: 'PRICING_REIMBURSEMENT' },
+    { label: 'Medical Organizations / Regulators Carveout', keys: [], maeCode: 'MEDICAL_ORGS_STATEMENTS' },
+    { label: 'Patents / Exclusivity Carveout',        keys: [], maeCode: 'PATENTS_EXCLUSIVITY' },
+    { label: 'Parent Actions / Inaction Carveout',    keys: [], maeCode: 'PARENT_ACTIONS_OR_INACTION' },
+    { label: 'Employee Departures Carveout',          keys: [], maeCode: 'EMPLOYEE_DEPARTURES' },
+    { label: 'Pandemic Carveout',                     keys: ['pandemicCarveout'], maeCode: 'PANDEMIC' },
+    { label: 'Other Carveouts',                       keys: [], maeCode: 'OTHER' },
+  ],
+
+  // ─── COND-M / COND-B / COND-S — Paul Weiss q41–q43, q82, q88–q99 ───────
+  'COND-M': [
+    { label: 'Main Condition',                        keys: ['mainCondition', 'mainConcept'] },
+    { label: 'Burdensome Condition Present',          keys: ['burdensomeConditionPresent'] },
+    { label: 'Burdensome Condition Scope',            keys: ['burdensomeConditionScope'] },
+    { label: 'Stockholder Approval Required',         keys: ['stockholderApprovalRequired', 'stockholderApproval'] },
+    { label: 'Regulatory Approvals Required',         keys: ['regulatoryApprovals', 'requiredApprovals'] },
+    { label: 'HSR Clearance',                         keys: ['hsrClearance', 'antitrustClearance'] },
+    { label: 'MAE as Closing Condition',              keys: ['maeConditionStandalone', 'maeStandaloneCondition'] },
+    { label: 'Materiality Scrape Present',            keys: ['materialityScrapePresent', 'materialityScrape'] },
+    { label: 'Materiality Scrape Language',           keys: ['materialityScrapeLanguage'] },
+    { label: 'Government Proceeding Condition',       keys: ['governmentProceedingConditionPresent'] },
+    { label: 'Absence of Enjoining Order Present',    keys: ['absenceOfEnjoiningOrderPresent'] },
+    { label: 'Absence of Enjoining Order Details',    keys: ['absenceOfEnjoiningOrderDetails'] },
+    { label: 'Closing Deadline After Conditions (days)', keys: ['mutualClosingDeadlineAfterConditionsDays'] },
+    { label: 'Bring-Down Standard',                   keys: ['bringDownStandard', 'bringDownTiers'] },
+    { label: 'Cure Periods',                          keys: ['curePeriod', 'cureDays'] },
+    { label: 'Officer Certification Required',        keys: ['certificationRequired'] },
+    { label: 'Tender Offer Minimum Condition',        keys: ['tenderOfferMinimumCondition'] },
+    { label: 'Dollar Threshold',                      keys: ['dollarThreshold'] },
+    { label: 'Schedule Reference',                    keys: ['scheduleReference'] },
+  ],
+  'COND-B': [
+    { label: 'Main Condition',                        keys: ['mainCondition', 'mainConcept'] },
+    { label: 'Burdensome Condition Present',          keys: ['burdensomeConditionPresent'] },
+    { label: 'Burdensome Condition Scope',            keys: ['burdensomeConditionScope'] },
+    { label: 'Reps Bring-Down',                       keys: ['bringDownTiers', 'bringDownStandard'] },
+    { label: 'MAE as Closing Condition',              keys: ['maeConditionStandalone'] },
+    { label: 'Materiality Scrape Present',            keys: ['materialityScrapePresent', 'materialityScrape'] },
+    { label: 'Materiality Scrape Language',           keys: ['materialityScrapeLanguage'] },
+    { label: 'Government Proceeding Condition',       keys: ['governmentProceedingConditionPresent'] },
+    { label: 'Absence of Enjoining Order Present',    keys: ['absenceOfEnjoiningOrderPresent'] },
+    { label: 'Absence of Enjoining Order Details',    keys: ['absenceOfEnjoiningOrderDetails'] },
+    { label: 'Closing Deadline After Conditions (days)', keys: ['mutualClosingDeadlineAfterConditionsDays'] },
+    { label: 'Dissenting Shares Threshold',           keys: ['dissentingSharesThreshold'] },
+    { label: 'Cure Periods',                          keys: ['curePeriod', 'cureDays'] },
+    { label: 'Officer Certification Required',        keys: ['certificationRequired'] },
+    { label: 'Dollar Threshold',                      keys: ['dollarThreshold'] },
+    { label: 'Schedule Reference',                    keys: ['scheduleReference'] },
+  ],
+  'COND-S': [
+    { label: 'Main Condition',                        keys: ['mainCondition', 'mainConcept'] },
+    { label: 'Burdensome Condition Present',          keys: ['burdensomeConditionPresent'] },
+    { label: 'Burdensome Condition Scope',            keys: ['burdensomeConditionScope'] },
+    { label: 'Reps Bring-Down',                       keys: ['bringDownTiers', 'bringDownStandard'] },
+    { label: 'Funds Availability as Condition',       keys: ['fundsCondition'] },
+    { label: 'Materiality Scrape Present',            keys: ['materialityScrapePresent', 'materialityScrape'] },
+    { label: 'Materiality Scrape Language',           keys: ['materialityScrapeLanguage'] },
+    { label: 'Government Proceeding Condition',       keys: ['governmentProceedingConditionPresent'] },
+    { label: 'Absence of Enjoining Order Present',    keys: ['absenceOfEnjoiningOrderPresent'] },
+    { label: 'Absence of Enjoining Order Details',    keys: ['absenceOfEnjoiningOrderDetails'] },
+    { label: 'Closing Deadline After Conditions (days)', keys: ['mutualClosingDeadlineAfterConditionsDays'] },
+    { label: 'Cure Periods',                          keys: ['curePeriod', 'cureDays'] },
+    { label: 'Officer Certification Required',        keys: ['certificationRequired'] },
+    { label: 'Dollar Threshold',                      keys: ['dollarThreshold'] },
+    { label: 'Schedule Reference',                    keys: ['scheduleReference'] },
+  ],
+
+  // ─── IOC — Paul Weiss q100–q114 ────────────────────────────────────────
+  IOC: [
+    { label: 'Affirmative IOC Scope',                 keys: ['positiveObligations', 'affirmativeLimbs'] },
+    { label: 'Efforts Standard for Company IOCs',     keys: ['effortsStandard'] },
+    { label: 'Company IOC Exceptions',                keys: ['permittedExceptions'] },
+    { label: 'Ordinary Course / Past Practice Defined', keys: ['ordinaryCourseCarveout'] },
+    { label: 'Target IOC Buckets',                    keys: ['dollarThresholdsByCategory'] },
+    { label: 'Lead-In Allows Action After No Response', keys: ['leadInAllowsActionAfterNoResponse'] },
+    { label: 'Lead-In Period (days)',                 keys: ['leadInPeriodDays'] },
+    { label: 'Settlement Restrictions Cap',           keys: ['interimSettlementCap'] },
+    { label: 'Settlement Cap — Non-Payment Excluded', keys: ['interimSettlementNonPaymentExcluded'] },
+    { label: 'New / Amended Contracts Scope',         keys: ['interimNewContractsScope'] },
+    { label: 'Per-Category Dollar Thresholds',        keys: ['dollarThresholdsByCategory', 'dollarThreshold'] },
+    { label: 'Salary / Bonus Increase Exceptions',    keys: ['salaryIncreaseExceptions', 'bonusIncreaseExceptions'] },
+    { label: 'New Hire Exceptions',                   keys: ['newHireExceptions'] },
+    { label: 'Retention Bonus Restrictions',          keys: ['retentionBonusRestrictions'] },
+    { label: 'Benefit Plan Restrictions',             keys: ['benefitPlanRestrictions'] },
+    { label: 'Equity Award Restrictions',             keys: ['equityAwardRestrictions'] },
+    { label: 'Materiality Qualifier (section-wide)',  keys: ['materialityQualifier'] },
+    { label: 'Required-by-Law Carveout',              keys: ['requiredByLawCarveout'] },
+    { label: 'Pandemic / COVID Carveout',             keys: ['pandemicCarveout'] },
+    { label: 'Schedule Reference',                    keys: ['scheduleReference'] },
+    { label: 'Parent / Buyer IOC Buckets',            keys: ['parentBuyerIocBuckets'] },
+  ],
+
+  // ─── COV — Paul Weiss q115–q119 ────────────────────────────────────────
+  COV: [
+    { label: 'TSA Contemplated',                      keys: ['tsaContemplated'] },
+    { label: 'Financing Cooperation Present',         keys: ['financingCooperationPresent', 'financingCooperation'] },
+    { label: 'Financing Cooperation Scope',           keys: ['financingCooperationScope'] },
+    { label: 'Financing Cooperation Breach is Condition', keys: ['financingCooperationBreachIsCondition'] },
+    { label: 'Public Statements — Parent Recommendation Carveout', keys: ['publicStatementsCarveoutParent'] },
+    { label: 'Public Statements — Company Carveout',  keys: ['publicStatementsCarveoutCompany'] },
+    { label: 'Public Statements — Joint Approval',    keys: ['publicStatementsJointApproval'] },
+    { label: 'Covenant Compliance Closing Standard',  keys: ['covenantComplianceStandard'] },
+    { label: 'D&O Insurance Cap',                     keys: ['insuranceCap'] },
+    { label: 'D&O Indemnification Tail Period',       keys: ['indemnificationPeriod'] },
+    { label: 'D&O Advancement of Expenses',           keys: ['advancementOfExpenses'] },
+    { label: 'D&O Notification Consequences',         keys: ['notificationConsequences'] },
+    { label: 'Employee Benefit Continuation Period',  keys: ['employeeBenefitPeriod'] },
+    { label: 'CVR Agreement Included',                keys: ['cvrIncluded'] },
+    { label: 'Access Scope',                          keys: ['accessScope'] },
+  ],
+
+  // ─── MISC — preserve existing 10 rows, then PW q163–q184 ────────────────
   MISC: [
+    // Existing 10 boilerplate rows preserved at the top.
     { label: 'Governing Law',              keys: ['governingLaw'] },
     { label: 'Jurisdiction',               keys: ['jurisdictionExclusive', 'jurisdiction'] },
     { label: 'Jury Trial Waiver',          keys: ['juryWaiver'] },
@@ -3685,8 +4002,39 @@ const CATEGORY_SUMMARY_FEATURES = {
     { label: 'Waiver Standard',            keys: ['waiverStandard'] },
     { label: 'Severability',               keys: ['severability'] },
     { label: 'Counterparts / Electronic',  keys: ['counterparts'] },
+    // PW q163–q184 additions
+    { label: 'Termination Exception for Bad Behavior', keys: ['terminationExceptionForBadBehavior'] },
+    { label: 'Lost Premium Damages Pursuit', keys: ['lostPremiumDamagesPursuit'] },
+    { label: 'Fee / Expense Allocation',   keys: ['feeExpenseAllocation'] },
+    { label: 'Mutual Specific Performance Right', keys: ['specificPerformanceMutual'] },
+    { label: 'Company Right to Force Parent to Close', keys: ['companyRightToForceClose'] },
+    { label: 'Company Force-Close Conditions', keys: ['companyForceCloseConditions'] },
+    { label: 'Limitations on Specific Performance', keys: ['specificPerformanceLimitations'] },
+    { label: 'Bond / Security Required for SP', keys: ['bondSecurityRequiredForSP'] },
+    { label: 'Willful Breach Definition',  keys: ['willfulBreachDefinition'] },
+    { label: 'Willful Breach Requires Actual Knowledge', keys: ['willfulBreachRequiresActualKnowledge'] },
+    { label: 'Willful Breach Covers Omissions', keys: ['willfulBreachCoversOmissions'] },
+    { label: 'Willful Breach Limited to Material', keys: ['willfulBreachLimitedToMaterial'] },
+    { label: 'Reps Survival Present',      keys: ['repsSurvivalPresent'] },
+    { label: 'Reps Survival Duration',     keys: ['repsSurvivalDuration'] },
+    { label: 'Reps Survival Exceptions',   keys: ['repsSurvivalExceptions'] },
+    { label: 'Parent Assignment Right',    keys: ['parentAssignmentRight'] },
+    { label: 'Parent Assignment Conditions', keys: ['parentAssignmentConditions'] },
+    { label: 'Company Consent for Assignment', keys: ['companyConsentForAssignment'] },
+    { label: 'Assignment Exceptions',      keys: ['assignmentExceptions'] },
+    { label: 'Assignment Restrictions',    keys: ['assignmentRestrictions'] },
+    { label: 'No Excuse Post-Closing Present', keys: ['noExcusePostClosingPresent'] },
+    { label: 'No Setoff Present',          keys: ['noSetoffPresent'] },
   ],
 };
+
+// Aliases so the dispatcher can pass the parent-type spec for sub-codes.
+CATEGORY_SUMMARY_FEATURES['COND'] = CATEGORY_SUMMARY_FEATURES['COND-M'];
+CATEGORY_SUMMARY_FEATURES['IOC-T'] = CATEGORY_SUMMARY_FEATURES['IOC'];
+CATEGORY_SUMMARY_FEATURES['IOC-B'] = CATEGORY_SUMMARY_FEATURES['IOC'];
+CATEGORY_SUMMARY_FEATURES['TERMR-M'] = CATEGORY_SUMMARY_FEATURES['TERMR'];
+CATEGORY_SUMMARY_FEATURES['TERMR-B'] = CATEGORY_SUMMARY_FEATURES['TERMR'];
+CATEGORY_SUMMARY_FEATURES['TERMR-T'] = CATEGORY_SUMMARY_FEATURES['TERMR'];
 
 // Heuristic: detect ANTI provisions that are really takeover-statute
 // "no inconsistent action" boilerplate. These get pulled out of the main
@@ -3723,28 +4071,94 @@ function pickFirstNonEmpty(provisions, keys) {
   return null;
 }
 
+// Render a single row's value cell. Returns either a React node (for italic
+// "Not present" placeholder, list count+snippet, or tagged label) or a string.
+function renderSummaryRowValue(hit, featureKeyForLookup) {
+  if (hit === null || hit === undefined) {
+    return (
+      <span className="italic text-inkFaint">Not present in this agreement</span>
+    );
+  }
+  let v = hit.value;
+  const key = hit.key || featureKeyForLookup;
+
+  // Unwrap citable wrapper.
+  if (isCitableValue(v)) v = getCitableValue(v);
+
+  // Tagged single value → show the resolved label.
+  if (isTaggedItem(v)) {
+    const label = resolveTaggedLabel(key, v) || v.label || v.code;
+    return <span>{label}</span>;
+  }
+
+  // List value → "N items · first, second, third…"
+  if (Array.isArray(v)) {
+    if (v.length === 0) {
+      return <span className="italic text-inkFaint">Not present in this agreement</span>;
+    }
+    const labels = v.map((item) => {
+      if (isTaggedItem(item)) return resolveTaggedLabel(key, item) || item.label || item.code;
+      if (item && typeof item === 'object') {
+        return String(item.label || item.text || item.obligation || JSON.stringify(item)).trim();
+      }
+      return String(item);
+    }).filter(Boolean);
+    const snippet = labels.slice(0, 3).join(', ');
+    const more = labels.length > 3 ? '…' : '';
+    const count = `${labels.length} item${labels.length === 1 ? '' : 's'}`;
+    return <span>{count} · {snippet}{more}</span>;
+  }
+
+  // Boolean / scalar.
+  if (typeof v === 'boolean') return <span>{v ? 'Yes' : 'No'}</span>;
+  if (v === null || v === undefined || v === '') {
+    return <span className="italic text-inkFaint">Not present in this agreement</span>;
+  }
+  return <span>{String(v)}</span>;
+}
+
 function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision }) {
   const spec = CATEGORY_SUMMARY_FEATURES[type] || [];
-  const rows = spec.map((row) => ({
-    label: row.label,
-    hit: pickFirstNonEmpty(provisions, row.keys),
-  }));
-  const populated = rows.filter((r) => r.hit !== null);
+
+  // For each spec row, resolve its hit. MAE rows with `maeCode` resolve via
+  // findCarveoutByCode against features.carveouts (taxonomy-tagged list).
+  const rows = spec.map((row) => {
+    let hit = null;
+    if (row.maeCode) {
+      hit = findCarveoutByCode(provisions, row.maeCode);
+      if (!hit && row.keys && row.keys.length > 0) {
+        hit = pickFirstNonEmpty(provisions, row.keys);
+      }
+    } else if (row.keys && row.keys.length > 0) {
+      hit = pickFirstNonEmpty(provisions, row.keys);
+    }
+    return { label: row.label, hit, lookupKey: (row.keys && row.keys[0]) || row.maeCode || null };
+  });
 
   // Sort the provision links by category for stable display.
   const sortedProvs = [...provisions].sort((a, b) =>
     String(a.category || '').localeCompare(String(b.category || ''), undefined, { sensitivity: 'base' })
   );
 
+  const titleLabel = (() => {
+    if (type === 'NOSOL') return 'No-Solicitation Summary';
+    if (type === 'ANTI')  return 'Antitrust Summary';
+    if (type === 'MISC')  return 'Boilerplate Summary';
+    if (type === 'MAE')   return 'Material Adverse Effect Summary';
+    if (type === 'TERMR' || type === 'TERMR-M' || type === 'TERMR-B' || type === 'TERMR-T') return 'Termination Rights Summary';
+    if (type === 'TERMF') return 'Termination Fee Summary';
+    if (type === 'COV')   return 'Covenants Summary';
+    if (type === 'IOC' || type === 'IOC-T' || type === 'IOC-B') return 'Interim Operating Covenants Summary';
+    if (type === 'COND' || type === 'COND-M' || type === 'COND-B' || type === 'COND-S') return 'Closing Conditions Summary';
+    return `${type} Summary`;
+  })();
+
   return (
     <div className="space-y-3">
       <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
         <div className="px-3 py-2 bg-bg/60 border-b border-border">
           <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
-            {type === 'NOSOL' ? 'No-Solicitation Summary'
-              : type === 'ANTI' ? 'Antitrust Summary'
-              : type === 'MISC' ? 'Boilerplate Summary'
-              : `${type} Summary`}
+            {titleLabel}
           </p>
         </div>
         <div className="overflow-x-auto">
@@ -3756,28 +4170,23 @@ function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision }) {
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {populated.length === 0 ? (
+              {rows.length === 0 ? (
                 <tr>
                   <td colSpan={2} className="px-3 py-3 text-xs font-ui italic text-inkFaint">
-                    No structured summary features extracted for this section.
+                    No structured summary features defined for this section.
                   </td>
                 </tr>
               ) : (
-                populated.map((row) => {
-                  const v = row.hit.value;
-                  const display = formatFeatureValue(v);
-                  const text = Array.isArray(display) ? display.join('; ') : (display ?? String(v));
-                  return (
-                    <tr key={row.label} className="hover:bg-bg/40 transition-colors">
-                      <td className="px-3 py-2 align-top text-ink font-medium whitespace-nowrap">
-                        {row.label}
-                      </td>
-                      <td className="px-3 py-2 align-top text-ink whitespace-pre-wrap break-words">
-                        {text}
-                      </td>
-                    </tr>
-                  );
-                })
+                rows.map((row) => (
+                  <tr key={row.label} className="hover:bg-bg/40 transition-colors">
+                    <td className="px-3 py-2 align-top text-ink font-medium whitespace-nowrap">
+                      {row.label}
+                    </td>
+                    <td className="px-3 py-2 align-top text-ink whitespace-pre-wrap break-words">
+                      {renderSummaryRowValue(row.hit, row.lookupKey)}
+                    </td>
+                  </tr>
+                ))
               )}
             </tbody>
           </table>
@@ -4247,6 +4656,33 @@ function buildTermrOutsideTermText(provision) {
   return [datePart, extPart].filter(Boolean).join(' · ');
 }
 
+/* ─── MAE DEFINITION SUMMARY — renders the PW MAE checklist (q20–q37) at
+ *     the top of the REP-T page. Pulls features from any REP-T provision
+ *     whose category matches /material\s+adverse\s+effect/i OR any DEF
+ *     provision similarly matched. If neither found, renders the full spec
+ *     with all-"Not present" rows. */
+function isMaeDefinitionProvision(p) {
+  if (!p) return false;
+  const cat = String(p?.category || '');
+  if (/material\s+adverse\s+effect/i.test(cat)) return true;
+  // ai_metadata.code may carry MAE-DEF or similar sub-codes
+  const meta = getAiMetadata(p) || {};
+  const code = String(meta.code || p?.code || '');
+  if (/MAE/i.test(code) && /(DEF|MATERIAL|ADVERSE)/i.test(code)) return true;
+  return false;
+}
+
+function MaeDefinitionSummary({ allProvisions, onSelectProvision }) {
+  const maeProvs = (allProvisions || []).filter(isMaeDefinitionProvision);
+  return (
+    <CategoryFeatureSummaryTable
+      provisions={maeProvs}
+      type="MAE"
+      onSelectProvision={onSelectProvision}
+    />
+  );
+}
+
 function ProvisionTable({ provisions, type, onSelectProvision }) {
   // STRUCT and CONSID get specialized layouts — see dedicated components above.
   if (type === 'STRUCT') {
@@ -4316,6 +4752,56 @@ function ProvisionTable({ provisions, type, onSelectProvision }) {
       <CategoryFeatureSummaryTable
         provisions={provisions}
         type="MISC"
+        onSelectProvision={onSelectProvision}
+      />
+    );
+  }
+
+  // ── PW diligence checklist — every PW question is a row in the per-type
+  //    summary table. Missing rows render an explicit "Not present in this
+  //    agreement" italic placeholder so the user can see at one glance what
+  //    is populated vs. missing across the full 201-column PW spec.
+  if (type === 'TERMR' || type === 'TERMR-M' || type === 'TERMR-B' || type === 'TERMR-T') {
+    return (
+      <CategoryFeatureSummaryTable
+        provisions={provisions}
+        type="TERMR"
+        onSelectProvision={onSelectProvision}
+      />
+    );
+  }
+  if (type === 'TERMF') {
+    return (
+      <CategoryFeatureSummaryTable
+        provisions={provisions}
+        type="TERMF"
+        onSelectProvision={onSelectProvision}
+      />
+    );
+  }
+  if (type === 'COND' || type === 'COND-M' || type === 'COND-B' || type === 'COND-S') {
+    return (
+      <CategoryFeatureSummaryTable
+        provisions={provisions}
+        type={CATEGORY_SUMMARY_FEATURES[type] ? type : 'COND-M'}
+        onSelectProvision={onSelectProvision}
+      />
+    );
+  }
+  if (type === 'IOC' || type === 'IOC-T' || type === 'IOC-B') {
+    return (
+      <CategoryFeatureSummaryTable
+        provisions={provisions}
+        type="IOC"
+        onSelectProvision={onSelectProvision}
+      />
+    );
+  }
+  if (type === 'COV') {
+    return (
+      <CategoryFeatureSummaryTable
+        provisions={provisions}
+        type="COV"
         onSelectProvision={onSelectProvision}
       />
     );
@@ -7164,10 +7650,12 @@ export default function ReviewPage() {
                             <span className="ct">{provs.length}</span>
                             <span className="rule" />
                           </div>
-                          {/* COV (Other Covenants) has no useful summary
-                              table — every covenant is too different to
-                              compare side-by-side. Always render as cards. */}
-                          {(type !== 'COV' && provisionView === 'table') ? (
+                          {/* COV (Other Covenants) renders the PW diligence
+                              summary table in 'table' view (via
+                              CategoryFeatureSummaryTable inside ProvisionTable);
+                              cards view continues to render the per-provision
+                              ProvisionCard stack unchanged. */}
+                          {(provisionView === 'table') ? (
                             <div className="space-y-3">
                               {showPreambleCard && (
                                 <PreambleCard
@@ -7190,6 +7678,12 @@ export default function ReviewPage() {
                               )}
                               {(type === 'REP-T' || type === 'REP-B') && (
                                 <BringdownTable provisions={provisions} repsType={type} />
+                              )}
+                              {type === 'REP-T' && (
+                                <MaeDefinitionSummary
+                                  allProvisions={provisions}
+                                  onSelectProvision={handleEditProvision}
+                                />
                               )}
                               {rest.length > 0 && type === 'DEF' && (
                                 <DefinitionsList
