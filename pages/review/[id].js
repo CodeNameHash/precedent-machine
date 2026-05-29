@@ -2411,6 +2411,130 @@ function StructuredSummaryView({ provisions, type, onSelectProvision }) {
   );
 }
 
+/* ── Per-category aggregated 2-column summary table for NOSOL and ANTI.
+ *    Scans every provision in the category and picks the FIRST non-empty
+ *    value for each canonical feature in CATEGORY_SUMMARY_FEATURES. Below
+ *    the table, lists the underlying provisions as small clickable links. */
+const CATEGORY_SUMMARY_FEATURES = {
+  // NOSOL — 5 most-compared deal-protection terms (user's canonical list,
+  // with fallback keys present in the live data).
+  NOSOL: [
+    { label: 'Fiduciary Out — Engagement Standard', keys: ['fiduciaryEngageStandard', 'fiduciaryOutStandard'] },
+    { label: 'Fiduciary Out — Final Determination',  keys: ['fiduciaryFinalStandard', 'fiduciaryOutStandard'] },
+    { label: 'Notice Period',                         keys: ['noticePeriod'] },
+    { label: 'Notice Content',                        keys: ['noticeContent'] },
+    { label: 'Matching Period',                       keys: ['matchingPeriod'] },
+    { label: 'Intervening Event Termination',         keys: ['interveningEventTermination', 'interveningEventProvision'] },
+    { label: 'Force the Vote',                        keys: ['forceTheVote', 'forceTheVoteDetails'] },
+  ],
+  // ANTI — efforts standard, burden cap, divestiture limits, etc.
+  ANTI: [
+    { label: 'Efforts Standard',     keys: ['effortsStandard'] },
+    { label: 'Hell-or-High-Water',   keys: ['hellOrHighWater'] },
+    { label: 'Divestiture Cap',      keys: ['divestitureCap', 'divestitureCapDescription'] },
+    { label: 'Burden Cap',           keys: ['burdenCap'] },
+    { label: 'Controlling Party',    keys: ['controllingParty'] },
+    { label: 'Applies To Party',     keys: ['appliesToParty'] },
+    { label: 'Filing Deadline',      keys: ['filingDeadline'] },
+  ],
+};
+
+// Pull the first non-empty value across `provisions` for any of `keys`.
+function pickFirstNonEmpty(provisions, keys) {
+  for (const p of provisions) {
+    const f = getStructuredFeatures(p) || {};
+    for (const k of keys) {
+      const v = f[k];
+      if (v === null || v === undefined || v === '' || v === false) continue;
+      if (Array.isArray(v) && v.length === 0) continue;
+      return { value: v, key: k, provision: p };
+    }
+  }
+  return null;
+}
+
+function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision }) {
+  const spec = CATEGORY_SUMMARY_FEATURES[type] || [];
+  const rows = spec.map((row) => ({
+    label: row.label,
+    hit: pickFirstNonEmpty(provisions, row.keys),
+  }));
+  const populated = rows.filter((r) => r.hit !== null);
+
+  // Sort the provision links by category for stable display.
+  const sortedProvs = [...provisions].sort((a, b) =>
+    String(a.category || '').localeCompare(String(b.category || ''), undefined, { sensitivity: 'base' })
+  );
+
+  return (
+    <div className="space-y-3">
+      <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+        <div className="px-3 py-2 bg-bg/60 border-b border-border">
+          <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+            {type === 'NOSOL' ? 'No-Solicitation Summary' : 'Antitrust Summary'}
+          </p>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-xs font-ui">
+            <thead className="bg-bg/60 border-b border-border">
+              <tr>
+                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-72">Feature</th>
+                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Value</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {populated.length === 0 ? (
+                <tr>
+                  <td colSpan={2} className="px-3 py-3 text-xs font-ui italic text-inkFaint">
+                    No structured summary features extracted for this section.
+                  </td>
+                </tr>
+              ) : (
+                populated.map((row) => {
+                  const v = row.hit.value;
+                  const display = formatFeatureValue(v);
+                  const text = Array.isArray(display) ? display.join('; ') : (display ?? String(v));
+                  return (
+                    <tr key={row.label} className="hover:bg-bg/40 transition-colors">
+                      <td className="px-3 py-2 align-top text-ink font-medium whitespace-nowrap">
+                        {row.label}
+                      </td>
+                      <td className="px-3 py-2 align-top text-ink whitespace-pre-wrap break-words">
+                        {text}
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {sortedProvs.length > 0 && (
+        <div className="bg-bg/40 border border-border rounded-lg px-3 py-2">
+          <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider mb-1.5">
+            Provisions in this section
+          </p>
+          <ul className="flex flex-wrap gap-x-3 gap-y-1">
+            {sortedProvs.map((p) => (
+              <li key={p.id}>
+                <button
+                  type="button"
+                  onClick={() => onSelectProvision && onSelectProvision(p)}
+                  className="text-xs font-ui text-accent hover:underline"
+                >
+                  {p.category || 'General'}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function ProvisionTable({ provisions, type, onSelectProvision }) {
   // STRUCT and CONSID get specialized layouts — see dedicated components above.
   if (type === 'STRUCT') {
@@ -2419,11 +2543,13 @@ function ProvisionTable({ provisions, type, onSelectProvision }) {
   if (type === 'CONSID') {
     return <ConsidTable provisions={provisions} onSelectProvision={onSelectProvision} />;
   }
-  // NOSOL / ANTI: the multi-code table is mostly-empty cells; show a per-
-  // provision structured summary instead so each row reads cleanly.
+  // NOSOL / ANTI: render a single aggregated 2-column "feature → value"
+  // summary table that scans all provisions in the section and picks the
+  // first non-empty value per canonical feature. Below the table, list the
+  // provisions as small clickable links so the user can still drill in.
   if (type === 'NOSOL' || type === 'ANTI') {
     return (
-      <StructuredSummaryView
+      <CategoryFeatureSummaryTable
         provisions={provisions}
         type={type}
         onSelectProvision={onSelectProvision}
