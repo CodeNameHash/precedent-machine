@@ -426,6 +426,30 @@ function splitPreamble(provisions) {
   return { preamble, rest };
 }
 
+/* ── IOC preamble buckets: separate the consolidated "Affirmative Covenants"
+ *    and "General Exceptions" provisions out of the main IOC table. These
+ *    appear in a dedicated section above the table of negative restrictions. */
+function isIocAffirmative(p) {
+  return !!p && (p.code === 'IOC-AFFIRMATIVE' || (typeof p.category === 'string' && /^affirmative covenants$/i.test(p.category.trim())));
+}
+function isIocGeneralExceptions(p) {
+  return !!p && (p.code === 'IOC-GENERAL-EXCEPTIONS' || (typeof p.category === 'string' && /^general exceptions$/i.test(p.category.trim())));
+}
+function splitIocPreambleBuckets(provisions) {
+  if (!Array.isArray(provisions) || provisions.length === 0) {
+    return { affirmative: null, generalExceptions: null, rest: provisions || [] };
+  }
+  let affirmative = null;
+  let generalExceptions = null;
+  const rest = [];
+  for (const p of provisions) {
+    if (!affirmative && isIocAffirmative(p)) affirmative = p;
+    else if (!generalExceptions && isIocGeneralExceptions(p)) generalExceptions = p;
+    else rest.push(p);
+  }
+  return { affirmative, generalExceptions, rest };
+}
+
 /* ── Section-wide shared features — hidden on non-preamble provisions in
  *    section-style types (e.g. IOC) where the preamble carries them once. */
 const SHARED_FEATURE_KEYS_BY_TYPE = {
@@ -782,11 +806,23 @@ function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelect
    for older provisions that lack this payload.
    ═══════════════════════════════════════════════════════════ */
 /* Small inline badge for a canonical taxonomy code (e.g. "WHOLLY_OWNED_SUB"). */
+// Humanize a taxonomy code for display: "ACCELERATED_VESTING" → "Accelerated Vesting".
+// Falls back to the raw code if it doesn't look like an UPPER_SNAKE code.
+function humanizeBadgeText(code) {
+  if (!code) return '';
+  if (!/^[A-Z][A-Z0-9_]*$/.test(code)) return code;
+  return code
+    .toLowerCase()
+    .split('_')
+    .map((w) => (w.length === 0 ? '' : w[0].toUpperCase() + w.slice(1)))
+    .join(' ');
+}
+
 function CodeBadge({ code }) {
   if (!code) return null;
   return (
-    <span className="inline-flex items-center font-ui font-medium text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200 whitespace-nowrap">
-      {code}
+    <span className="inline-flex items-center font-ui font-medium text-[10px] px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200 whitespace-nowrap">
+      {humanizeBadgeText(code)}
     </span>
   );
 }
@@ -903,7 +939,142 @@ function BringDownTiersTable({ tiers }) {
   );
 }
 
+/* ── COV-EMPLOYEE compensationItems — render as a proper table ── */
+function isCompensationItemsList(featureKey, value) {
+  if (featureKey !== 'compensationItems') return false;
+  if (!Array.isArray(value) || value.length === 0) return false;
+  return value.every((v) => v && typeof v === 'object' && !Array.isArray(v));
+}
+
+function CompensationItemsTable({ items }) {
+  if (!Array.isArray(items) || items.length === 0) return null;
+  return (
+    <div className="mt-1 overflow-x-auto">
+      <table className="min-w-full text-[11px] font-ui border border-border rounded">
+        <thead className="bg-bg/60">
+          <tr>
+            <th className="px-2 py-1 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">
+              Item
+            </th>
+            <th className="px-2 py-1 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">
+              Standard
+            </th>
+            <th className="px-2 py-1 text-left font-medium text-inkFaint uppercase tracking-wider">
+              Text
+            </th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border">
+          {items.map((it, i) => {
+            const itemCode = it.item || it.itemCode || null;
+            const itemLabel = it.item_label || it.itemLabel || itemCode || '';
+            const stdCode = it.standard_code || it.standardCode || null;
+            const stdLabel = it.standard_label || it.standardLabel || stdCode || '';
+            const txt = it.text || '';
+            return (
+              <tr key={i} className="align-top">
+                <td className="px-2 py-1 text-ink whitespace-nowrap">
+                  <div className="flex items-baseline gap-1.5 flex-wrap">
+                    {itemCode ? <CodeBadge code={itemCode} /> : null}
+                    <span>{itemLabel || (itemCode ? '' : '—')}</span>
+                  </div>
+                </td>
+                <td className="px-2 py-1 text-ink">
+                  <div className="flex items-baseline gap-1.5 flex-wrap">
+                    {stdCode ? <CodeBadge code={stdCode} /> : null}
+                    <span>{stdLabel || (stdCode ? '' : '—')}</span>
+                  </div>
+                </td>
+                <td className="px-2 py-1 text-inkMid whitespace-pre-wrap break-words">
+                  {txt
+                    ? <span className="font-body italic">&ldquo;{txt}&rdquo;</span>
+                    : <span className="text-inkFaint/70 italic">—</span>}
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+/* ── COV-EMPLOYEE dedicated renderer — replaces StructuredFeatures for
+ *    Employee Matters provisions so compensationItems renders as a table
+ *    and the rest of the key/value fields render as a clean list. ── */
+function EmploymentMattersBlock({ provision }) {
+  const features = getStructuredFeatures(provision) || {};
+  const schemaKeys = getFeatureSchema(provision.type, provision.code);
+  const extraKeys = Object.keys(features).filter((k) => !schemaKeys.includes(k));
+  const allKeys = [...schemaKeys, ...extraKeys];
+
+  // Pull compensationItems out — it gets its own table block.
+  const compItems = Array.isArray(features.compensationItems) ? features.compensationItems : null;
+
+  const renderable = [];
+  for (const k of allKeys) {
+    if (k === 'compensationItems') continue; // handled separately
+    const raw = features[k];
+    if (isEmptyValue(raw)) {
+      renderable.push({ key: k, value: null, raw: null, empty: true });
+      continue;
+    }
+    const value = formatFeatureValue(raw);
+    if (value === null || value === undefined || value === '') {
+      renderable.push({ key: k, value: null, raw: null, empty: true });
+      continue;
+    }
+    renderable.push({ key: k, value, raw, empty: false });
+  }
+
+  return (
+    <div className="bg-bg/40 border border-border rounded-md p-3 space-y-3">
+      <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+        Employee Matters Covenant
+      </p>
+
+      {compItems && compItems.length > 0 && (
+        <div>
+          <p className="text-xs font-ui font-medium text-inkMid mb-1">
+            Compensation &amp; Benefits:
+          </p>
+          <CompensationItemsTable items={compItems} />
+        </div>
+      )}
+
+      {renderable.length > 0 && (
+        <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5">
+          {renderable.map(({ key, value, raw, empty }) => (
+            <div key={key} className="text-xs font-ui flex flex-col">
+              <dt className="text-inkFaint">{humanizeKey(key)}</dt>
+              <dd className={empty ? 'text-inkFaint/70 italic' : 'text-ink'}>
+                {empty ? (
+                  <span>None</span>
+                ) : isTaggedItem(raw) ? (
+                  <TaggedValue featureKey={key} value={raw} />
+                ) : Array.isArray(value) ? (
+                  <ul className="list-disc list-inside space-y-0.5">
+                    {value.map((v, i) => (
+                      <li key={i} className="text-inkMid">{String(v)}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <span className="text-ink">{value}</span>
+                )}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      )}
+    </div>
+  );
+}
+
 function StructuredFeatures({ provision }) {
+  // COV-EMPLOYEE gets a dedicated renderer (compensationItems as a table).
+  if (provision && provision.code === 'COV-EMPLOYEE') {
+    return <EmploymentMattersBlock provision={provision} />;
+  }
   const features = getStructuredFeatures(provision) || {};
   const exceptionLikeKeys = new Set(['permittedExceptions', 'carveOuts', 'carveOutsList']);
 
@@ -941,6 +1112,12 @@ function StructuredFeatures({ provision }) {
       continue;
     }
 
+    // compensationItems (COV-EMPLOYEE shape): render as full-width sub-table.
+    if (isCompensationItemsList(k, raw)) {
+      renderable.push({ key: k, value: null, raw, empty: false, compItems: raw });
+      continue;
+    }
+
     if (isEmptyValue(raw)) {
       renderable.push({ key: k, value: null, raw: null, empty: true });
       continue;
@@ -962,15 +1139,17 @@ function StructuredFeatures({ provision }) {
         Structured Summary
       </p>
       <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5">
-        {renderable.map(({ key, value, raw, empty, tiers }) => (
+        {renderable.map(({ key, value, raw, empty, tiers, compItems }) => (
           <div
             key={key}
-            className={`text-xs font-ui flex flex-col ${tiers ? 'sm:col-span-2' : ''}`}
+            className={`text-xs font-ui flex flex-col ${tiers || compItems ? 'sm:col-span-2' : ''}`}
           >
             <dt className="text-inkFaint">{humanizeKey(key)}</dt>
             <dd className={empty ? 'text-inkFaint/70 italic' : 'text-ink'}>
               {tiers ? (
                 <BringDownTiersTable tiers={tiers} />
+              ) : compItems ? (
+                <CompensationItemsTable items={compItems} />
               ) : empty ? (
                 <span>None</span>
               ) : isTaggedItem(raw) ? (
@@ -1684,15 +1863,12 @@ function buildEquityRows(equityProvisions) {
 
 function EquityAwardTable({ rows, onSelectProvision }) {
   if (!rows || rows.length === 0) return null;
-  const renderTagged = (v, fallbackKey) => {
+  // Render a tagged value as JUST a humanized badge (no duplicate text label).
+  // The badge text is the canonical short phrase via humanizeBadgeText().
+  // Falls back to plain text when not tagged.
+  const renderTagged = (v) => {
     if (isTaggedItem(v)) {
-      const label = resolveTaggedLabel(fallbackKey, v) || v.label || v.code;
-      return (
-        <div className="flex items-baseline gap-1.5 flex-wrap">
-          <CodeBadge code={v.code} />
-          <span>{label}</span>
-        </div>
-      );
+      return <CodeBadge code={v.code} />;
     }
     if (v === null || v === undefined || v === '') {
       return <span className="text-inkFaint/70 italic">—</span>;
@@ -1704,7 +1880,7 @@ function EquityAwardTable({ rows, onSelectProvision }) {
     <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
       <div className="px-3 py-2 bg-lime-50 border-b border-border">
         <p className="text-[10px] font-ui font-medium text-lime-900 uppercase tracking-wider">
-          Equity Award Treatment
+          Equity Treatment
         </p>
       </div>
       <div className="overflow-x-auto">
@@ -1712,17 +1888,16 @@ function EquityAwardTable({ rows, onSelectProvision }) {
           <thead className="bg-bg/60 border-b border-border">
             <tr>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">Instrument</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">Outstanding</th>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Treatment</th>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Vesting</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Cash-Out Formula</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Cash-Out (spread or face value)</th>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">Cutoff Date</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
             {rows.map((row) => {
               const instLabel = isTaggedItem(row.instrument)
-                ? (resolveTaggedLabel('instrumentType', row.instrument) || row.instrument.label || row.instrument.code)
+                ? (resolveTaggedLabel('instrumentType', row.instrument) || row.instrument.label || humanizeBadgeText(row.instrument.code))
                 : String(row.instrument || 'Instrument');
               return (
                 <tr key={row.key} className="hover:bg-bg/40 transition-colors">
@@ -1732,20 +1907,14 @@ function EquityAwardTable({ rows, onSelectProvision }) {
                       onClick={() => onSelectProvision && onSelectProvision(row.provision)}
                       className="text-left text-accent hover:underline font-medium"
                     >
-                      <div className="flex items-baseline gap-1.5 flex-wrap">
-                        {isTaggedItem(row.instrument) && <CodeBadge code={row.instrument.code} />}
-                        <span>{instLabel}</span>
-                      </div>
+                      {instLabel}
                     </button>
                   </td>
-                  <td className="px-3 py-2 align-top text-ink">
-                    {row.outstandingCount ?? <span className="text-inkFaint/70 italic">—</span>}
-                  </td>
                   <td className="px-3 py-2 align-top text-ink max-w-[320px]">
-                    {renderTagged(row.treatment, 'instrumentTreatments')}
+                    {renderTagged(row.treatment)}
                   </td>
                   <td className="px-3 py-2 align-top text-ink max-w-[240px]">
-                    {renderTagged(row.vesting, 'vestingAcceleration')}
+                    {renderTagged(row.vesting)}
                   </td>
                   <td className="px-3 py-2 align-top text-ink max-w-[320px]">
                     {row.cashOut ? (
@@ -3866,7 +4035,19 @@ export default function ReviewPage() {
                       // it isn't dropped.
                       const showPreambleCard =
                         !!preamble && !SKIP_PREAMBLE_CARD_TYPES.has(type);
-                      const rest = showPreambleCard ? restAfterSplit : provs;
+                      let rest = showPreambleCard ? restAfterSplit : provs;
+                      // For IOC: pull the consolidated "Affirmative Covenants"
+                      // and "General Exceptions" provisions out of the main
+                      // table and render them in a dedicated section above.
+                      const isIocType = type === 'IOC' || type === 'IOC-T' || type === 'IOC-B';
+                      let iocAffirmative = null;
+                      let iocGeneralExceptions = null;
+                      if (isIocType) {
+                        const buckets = splitIocPreambleBuckets(rest);
+                        iocAffirmative = buckets.affirmative;
+                        iocGeneralExceptions = buckets.generalExceptions;
+                        rest = buckets.rest;
+                      }
                       return (
                         <div key={type} className="space-y-2">
                           <h2 className="font-display text-lg text-ink flex items-center gap-2">
@@ -3879,6 +4060,13 @@ export default function ReviewPage() {
                               {showPreambleCard && (
                                 <PreambleCard
                                   provision={preamble}
+                                  onEdit={handleEditProvision}
+                                />
+                              )}
+                              {isIocType && (iocAffirmative || iocGeneralExceptions) && (
+                                <IocPreambleSection
+                                  affirmative={iocAffirmative}
+                                  generalExceptions={iocGeneralExceptions}
                                   onEdit={handleEditProvision}
                                 />
                               )}
