@@ -296,11 +296,16 @@ const FEATURE_DISPLAY_ORDER = {
   ANTI: ['mainConcept', 'effortsStandard', 'hellOrHighWater', 'divestitureCap', 'divestitureCapDescription', 'burdenCap', 'appliesToParty', 'controllingParty', 'litigationObligation', 'filingDeadline', 'partyControlsStrategy', 'foreignFilingsRequired', 'interimOperatingRestrictions', 'pullAndRefileRight', 'burdensomConditionDefined'],
   TERMR: ['mainConcept', 'partyWhoCanTerminate', 'terminationTriggers', 'curePeriod', 'outsideDate', 'outsideDateMonths', 'extensionAvailable', 'extensionPeriod', 'extensionTrigger', 'superiorProposalTermination', 'faultBasedExclusion', 'tickingFee'],
   TERMF: ['mainConcept', 'triggerEvents', 'feeAmount', 'feePercentage', 'reverseFeeAmount', 'reverseFeePercentage', 'tailPeriod', 'soleRemedy', 'willfulBreachException', 'expenseReimbursement', 'expenseReimbursementCap', 'nakedNoVoteFee'],
-  DEF: ['mainConcept', 'canonicalTerm', 'definitionText', 'carveOuts', 'carveOutsList', 'disproportionateImpactClause', 'disproportionateImpact', 'disproportionateImpactScope', 'knowledgeStandard', 'knowledgePersons', 'ordinaryCourseQualifier', 'pandemicCarveout', 'cyberSecurityCarveout', 'superiorProposalPercentage', 'acquisitionProposalPercentage', 'willfulBreachDefinition', 'crossReferences'],
+  // DEF: pared down to just the two things the user cares about — where the
+  // definition appears in the agreement and whether it's an inline definition
+  // (extracted from the body of another section) vs. a Definitions-section
+  // entry. Everything else still lives on the provision itself via the full
+  // text — no structured summary needed.
+  DEF: ['sourceSection', 'inlineDefinition'],
   STRUCT: ['mainConcept', 'mergerForm', 'survivingEntity', 'closingConditionsPrecedent'],
   CONSID: ['mainConcept', 'considerationType', 'perShareAmount', 'exchangeRatio', 'equityAwardTreatment', 'outstandingInstruments', 'instrumentTreatments', 'vestingAcceleration', 'cutoffDate', 'cutoffTreatment', 'cashOutAmount', 'optionSpread', 'performanceTreatment', 'espp_treatment', 'parachuteCap', 'doubleTrigger', 'appraisalRightsAvailable', 'withholdingProvision', 'proration'],
-  'REP-T': ['linkedBringDownStandard', 'materialityQualifier', 'knowledgeQualifier', 'survivalPeriod', 'scheduleReference', 'crossReferences'],
-  'REP-B': ['linkedBringDownStandard', 'materialityQualifier', 'knowledgeQualifier', 'solvencyRepIncluded', 'financingRepIncluded', 'crossReferences'],
+  'REP-T': ['linkedBringDownStandard', 'materialityQualifier', 'knowledgeQualifier', 'survivalPeriod', 'scheduleReference'],
+  'REP-B': ['linkedBringDownStandard', 'materialityQualifier', 'knowledgeQualifier', 'solvencyRepIncluded', 'financingRepIncluded'],
   COV: ['mainConcept', 'accessScope', 'indemnificationPeriod', 'employeeBenefitPeriod', 'financingCooperation', 'cvrIncluded'],
   MISC: ['mainConcept', 'governingLaw', 'jurisdictionExclusive', 'juryWaiver', 'specificPerformance', 'thirdPartyBeneficiaryExceptions'],
   OTHER: ['mainConcept', 'summary', 'crossReferences'],
@@ -1095,6 +1100,13 @@ function StructuredFeatures({ provision }) {
   if (provision && provision.code === 'COV-EMPLOYEE') {
     return <EmploymentMattersBlock provision={provision} />;
   }
+  // Definitions don't get a structured summary — the full text IS the
+  // summary, and the only metadata we surface (sourceSection + whether it's
+  // an inline definition) is more naturally shown as inline chips on the
+  // card header. Suppress the box here.
+  if (provision && (provision.type === 'DEF' || provision.type === 'DEFINITIONS')) {
+    return null;
+  }
   const features = getStructuredFeatures(provision) || {};
   const exceptionLikeKeys = new Set(['permittedExceptions', 'carveOuts', 'carveOutsList']);
 
@@ -1707,13 +1719,14 @@ function CategoryOverview({ provisions, onSelectProvision }) {
 // the summary table (either redundant with the row's main concept, captured
 // inline in the exceptions column, or moved to the preamble section).
 const HIDDEN_TABLE_COLUMNS = {
-  IOC: ['pandemicCarveout', 'requiredByLawCarveout', 'ordinaryCourseCarveout', 'scheduleReference', 'affirmativeLimbs', 'consentStandard'],
-  'IOC-T': ['pandemicCarveout', 'requiredByLawCarveout', 'ordinaryCourseCarveout', 'scheduleReference', 'affirmativeLimbs', 'consentStandard'],
-  'IOC-B': ['pandemicCarveout', 'requiredByLawCarveout', 'ordinaryCourseCarveout', 'scheduleReference', 'affirmativeLimbs', 'consentStandard'],
+  IOC: ['mainObligation', 'mainConcept', 'pandemicCarveout', 'requiredByLawCarveout', 'ordinaryCourseCarveout', 'scheduleReference', 'affirmativeLimbs', 'consentStandard'],
+  'IOC-T': ['mainObligation', 'mainConcept', 'pandemicCarveout', 'requiredByLawCarveout', 'ordinaryCourseCarveout', 'scheduleReference', 'affirmativeLimbs', 'consentStandard'],
+  'IOC-B': ['mainObligation', 'mainConcept', 'pandemicCarveout', 'requiredByLawCarveout', 'ordinaryCourseCarveout', 'scheduleReference', 'affirmativeLimbs', 'consentStandard'],
   // REP-T/REP-B: rubric schema includes 'mainConcept' but the column is the
   // same as the "Term" column in the table, so hide it as a defensive measure.
-  'REP-T': ['mainConcept'],
-  'REP-B': ['mainConcept'],
+  // Also hide crossReferences per user request.
+  'REP-T': ['mainConcept', 'crossReferences'],
+  'REP-B': ['mainConcept', 'crossReferences'],
   COND: ['certificationRequired', 'dollarThreshold', 'scheduleReference', 'bringDownTiers'],
   'COND-M': ['certificationRequired', 'dollarThreshold', 'scheduleReference', 'bringDownTiers'],
   'COND-B': ['certificationRequired', 'dollarThreshold', 'scheduleReference', 'bringDownTiers'],
@@ -2017,7 +2030,6 @@ function EquityAwardTable({ rows, onSelectProvision }) {
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">Instrument</th>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Treatment</th>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Vesting</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Cash-Out (spread or face value)</th>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">Cutoff Date</th>
             </tr>
           </thead>
@@ -2043,13 +2055,6 @@ function EquityAwardTable({ rows, onSelectProvision }) {
                   <td className="px-3 py-2 align-top text-ink max-w-[240px]">
                     {renderTagged(row.vesting)}
                   </td>
-                  <td className="px-3 py-2 align-top text-ink max-w-[320px]">
-                    {row.cashOut ? (
-                      <span className="whitespace-pre-wrap break-words">{String(row.cashOut)}</span>
-                    ) : (
-                      <span className="text-inkFaint/70 italic">—</span>
-                    )}
-                  </td>
                   <td className="px-3 py-2 align-top text-ink whitespace-nowrap">
                     {row.cutoff ?? <span className="text-inkFaint/70 italic">—</span>}
                   </td>
@@ -2063,6 +2068,58 @@ function EquityAwardTable({ rows, onSelectProvision }) {
   );
 }
 
+// Detect the CONSID "Conversion of Shares / Effect on Capital Stock" provision
+// — this is the row that carries the merger consideration paid out for the
+// company's common stock. We synthesize a "Common Stock" row at the top of
+// the Equity Treatment table from it so users always see the per-share amount.
+function isConsidConvertProvision(p) {
+  if (!p) return false;
+  const meta = getAiMetadata(p) || {};
+  if (meta.code === 'CONSID-CONVERT') return true;
+  const cat = String(p?.category || '').toLowerCase();
+  if (!cat) return false;
+  if (cat.includes('conversion of shares')) return true;
+  if (cat.includes('effect on capital stock')) return true;
+  return false;
+}
+
+// Build a synthetic Common Stock row from the CONSID-CONVERT provision. We
+// use the per-share amount / merger consideration directly (no instrument
+// treatment formula needed — Common Stock simply receives the headline price).
+function buildCommonStockRow(convertProv) {
+  if (!convertProv) return null;
+  const f = getStructuredFeatures(convertProv) || {};
+  const per = f.perShareAmount;
+  const ct = f.considerationType;
+  // Compose a human-readable treatment string from per-share + consid type.
+  let treatmentText = null;
+  if (per && ct) {
+    const ctLabel = isTaggedItem(ct)
+      ? (resolveTaggedLabel('considerationType', ct) || ct.label || ct.code)
+      : String(ct);
+    treatmentText = `Converted into ${per}${ctLabel ? ` (${ctLabel})` : ''}`;
+  } else if (per) {
+    treatmentText = `Converted into ${per} per share`;
+  } else if (ct) {
+    const ctLabel = isTaggedItem(ct)
+      ? (resolveTaggedLabel('considerationType', ct) || ct.label || ct.code)
+      : String(ct);
+    treatmentText = `Converted into ${ctLabel}`;
+  } else {
+    treatmentText = 'Converted into the Merger Consideration';
+  }
+  return {
+    key: `${convertProv.id}-common-stock`,
+    provision: convertProv,
+    instrument: { code: 'COMMON_STOCK', label: 'Common Stock' },
+    outstandingCount: null,
+    treatment: treatmentText,
+    vesting: null,
+    cashOut: null,
+    cutoff: null,
+  };
+}
+
 function ConsidTable({ provisions, onSelectProvision }) {
   // Partition: equity-award provisions vs. everything else (conversion,
   // exchange mechanics, withholding, dissenting shares, etc.).
@@ -2070,6 +2127,22 @@ function ConsidTable({ provisions, onSelectProvision }) {
   const otherProvisions = provisions.filter((p) => !isConsidEquityProvision(p));
 
   const equityRows = buildEquityRows(equityProvisions);
+
+  // Prepend a synthetic Common Stock row sourced from the CONSID-CONVERT
+  // provision (the "Conversion of Shares" / "Effect on Capital Stock" row).
+  // This ensures the headline per-share consideration is visible at the top
+  // of the Equity Treatment table even when no equity awards are present.
+  const convertProv = provisions.find(isConsidConvertProvision);
+  const commonStockRow = buildCommonStockRow(convertProv);
+  if (commonStockRow) {
+    // Avoid duplicate if an equity row already covers Common Stock somehow.
+    const alreadyHasCommonStock = equityRows.some((r) =>
+      isTaggedItem(r.instrument) && r.instrument.code === 'COMMON_STOCK'
+    );
+    if (!alreadyHasCommonStock) {
+      equityRows.unshift(commonStockRow);
+    }
+  }
 
   // Determine if considerationType + perShareAmount are uniform across the
   // remaining (non-equity) provisions — if so, hoist into a header.
