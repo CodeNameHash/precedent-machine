@@ -1699,21 +1699,83 @@ function FullDocumentView({
 
   // Build highlight regions as offsets into the plain (marker-stripped) text.
   // Both the structured renderer and the legacy <pre> rely on these.
-  const regions = useMemo(() => {
-    if (!plainText) return [];
-    const found = [];
+  //
+  // Strategy: match SHORTEST provisions first (they're more specific — e.g.
+  // a 200-char DEF that lives inside a 5000-char NOSOL). Allow overlapping
+  // regions; the renderer layers them so shorter (more specific) provisions
+  // sit on top of longer ones.
+  //
+  // Tolerant matching, in order: explicit char positions (legacy unformatted
+  // ingests only) → exact case-insensitive → whitespace-normalized → first 200
+  // chars (signature) → first 60 chars → "SECTION X.XX" header for provisions
+  // that begin with a section heading.
+  const { regions, unmatched } = useMemo(() => {
+    if (!plainText) return { regions: [], unmatched: [] };
+
     const lowerSource = plainText.toLowerCase();
-    const usedRanges = [];
 
-    const ordered = [...provisions].sort((a, b) => {
-      const aStart = a.start_char ?? a.startChar ?? a.sort_order ?? Infinity;
-      const bStart = b.start_char ?? b.startChar ?? b.sort_order ?? Infinity;
-      return aStart - bStart;
-    });
+    // Pre-compute whitespace-normalized source. We keep an index map from
+    // normalized offset → original offset so we can translate matches back.
+    const normMap = [];
+    let normalizedSource = '';
+    {
+      let prevWasSpace = false;
+      for (let i = 0; i < plainText.length; i++) {
+        const ch = plainText[i];
+        const isWs = /\s/.test(ch);
+        if (isWs) {
+          if (!prevWasSpace) {
+            normalizedSource += ' ';
+            normMap.push(i);
+            prevWasSpace = true;
+          }
+        } else {
+          normalizedSource += ch.toLowerCase();
+          normMap.push(i);
+          prevWasSpace = false;
+        }
+      }
+      // sentinel so normMap[normalizedSource.length] is valid
+      normMap.push(plainText.length);
+    }
 
-    ordered.forEach(p => {
-      // Use explicit positions only when not formatted — explicit indices
-      // refer to the original raw text, not the marker-stripped form.
+    const normalize = (s) => {
+      let out = '';
+      let prevWasSpace = false;
+      for (let i = 0; i < s.length; i++) {
+        const ch = s[i];
+        const isWs = /\s/.test(ch);
+        if (isWs) {
+          if (!prevWasSpace) {
+            out += ' ';
+            prevWasSpace = true;
+          }
+        } else {
+          out += ch.toLowerCase();
+          prevWasSpace = false;
+        }
+      }
+      return out.trim();
+    };
+
+    // Match against the normalized source and translate back. Returns
+    // [start, end] in original plainText offsets, or null.
+    const findNormalized = (needle) => {
+      const n = normalize(needle);
+      if (!n) return null;
+      const idx = normalizedSource.indexOf(n);
+      if (idx < 0) return null;
+      const start = normMap[idx];
+      const endNorm = idx + n.length;
+      const end = normMap[Math.min(endNorm, normMap.length - 1)];
+      if (!Number.isFinite(start) || !Number.isFinite(end) || end <= start) return null;
+      return [start, end];
+    };
+
+    // Match a provision against the source using a cascade of strategies.
+    // Returns { start, end, strategy } or null.
+    const matchProvision = (p) => {
+      // Legacy explicit positions, only when source is not formatted.
       if (!isFormatted) {
         const explicitStart = p.start_char ?? p.startChar;
         const explicitEnd = p.end_char ?? p.endChar;
@@ -1724,47 +1786,108 @@ function FullDocumentView({
           explicitEnd <= plainText.length &&
           explicitEnd > explicitStart
         ) {
-          found.push({ start: explicitStart, end: explicitEnd, provision: p });
-          usedRanges.push([explicitStart, explicitEnd]);
-          return;
+          return { start: explicitStart, end: explicitEnd, strategy: 'explicit' };
         }
       }
 
       const pText = (p.full_text || '').trim();
-      if (!pText) return;
+      if (!pText) return null;
 
-      const searchFrom = usedRanges.length
-        ? Math.max(...usedRanges.map(r => r[1]))
-        : 0;
-
-      const tryFind = (needle, from) =>
-        lowerSource.indexOf(needle.toLowerCase(), from);
-
-      let idx = tryFind(pText, searchFrom);
-      let matchLen = pText.length;
-      if (idx < 0) idx = tryFind(pText, 0);
-
-      if (idx < 0 && pText.length > 120) {
-        const chunk = pText.substring(0, 120);
-        idx = tryFind(chunk, searchFrom);
-        if (idx < 0) idx = tryFind(chunk, 0);
-        if (idx >= 0) matchLen = Math.min(pText.length, plainText.length - idx);
+      // 1. Exact case-insensitive.
+      const exactIdx = lowerSource.indexOf(pText.toLowerCase());
+      if (exactIdx >= 0) {
+        return { start: exactIdx, end: exactIdx + pText.length, strategy: 'exact' };
       }
 
-      if (idx >= 0) {
-        found.push({ start: idx, end: idx + matchLen, provision: p });
-        usedRanges.push([idx, idx + matchLen]);
+      // 2. Whitespace-normalized full text.
+      const normHit = findNormalized(pText);
+      if (normHit) {
+        return { start: normHit[0], end: normHit[1], strategy: 'normalized' };
+      }
+
+      // 3. First 200-char signature, normalized. Use the actual provision
+      //    length so the highlight covers what the AI extracted.
+      if (pText.length > 200) {
+        const sig = pText.substring(0, 200);
+        const sigHit = findNormalized(sig);
+        if (sigHit) {
+          const end = Math.min(sigHit[0] + pText.length, plainText.length);
+          return { start: sigHit[0], end, strategy: 'signature-200' };
+        }
+      }
+
+      // 4. First 60-char signature for shorter provisions.
+      if (pText.length > 60) {
+        const sig = pText.substring(0, 60);
+        const sigHit = findNormalized(sig);
+        if (sigHit) {
+          const end = Math.min(sigHit[0] + pText.length, plainText.length);
+          return { start: sigHit[0], end, strategy: 'signature-60' };
+        }
+      }
+
+      // 5. "SECTION X.XX" header. If the provision begins with a section
+      //    number, find that section header in the document.
+      const sectionMatch = pText.match(/^(SECTION\s+\d+\.\d+|Section\s+\d+\.\d+|ARTICLE\s+[IVXLCDM]+|Article\s+[IVXLCDM]+)/);
+      if (sectionMatch) {
+        const header = sectionMatch[0];
+        // Look case-sensitively (sections are usually all-caps) then fallback.
+        let hIdx = plainText.indexOf(header);
+        if (hIdx < 0) hIdx = lowerSource.indexOf(header.toLowerCase());
+        if (hIdx >= 0) {
+          const end = Math.min(hIdx + pText.length, plainText.length);
+          return { start: hIdx, end, strategy: 'section-header' };
+        }
+      }
+
+      // 6. Defined-term anchor — DEF provisions usually start with `"Term"`.
+      const defMatch = pText.match(/^\s*[“"]([^"”]+)[”"]\s+(?:shall mean|means|has the meaning)/i);
+      if (defMatch) {
+        const term = defMatch[1];
+        // Search for the quoted term in the source.
+        const candidates = [`"${term}"`, `“${term}”`, `"${term}"`];
+        for (const c of candidates) {
+          const cIdx = plainText.indexOf(c);
+          if (cIdx >= 0) {
+            const end = Math.min(cIdx + pText.length, plainText.length);
+            return { start: cIdx, end, strategy: 'defined-term' };
+          }
+        }
+      }
+
+      return null;
+    };
+
+    // Sort by full_text length ASCENDING so shorter (more specific) provisions
+    // claim their positions first. Provisions with no text sort last.
+    const ordered = [...provisions].sort((a, b) => {
+      const aLen = (a.full_text || '').length || Infinity;
+      const bLen = (b.full_text || '').length || Infinity;
+      return aLen - bLen;
+    });
+
+    const matched = [];
+    const notMatched = [];
+    ordered.forEach((p) => {
+      const hit = matchProvision(p);
+      if (hit) {
+        matched.push({ start: hit.start, end: hit.end, provision: p, strategy: hit.strategy });
+      } else {
+        notMatched.push(p);
       }
     });
 
-    found.sort((a, b) => a.start - b.start || a.end - b.end);
-    const deduped = [];
-    for (const r of found) {
-      const last = deduped[deduped.length - 1];
-      if (!last || r.start >= last.end) deduped.push(r);
-    }
-    return deduped;
+    // Sort matched regions for rendering. Primary: start ascending.
+    // Secondary: end descending (so the longest region containing this
+    // start is emitted first, ahead of shorter nested regions). The
+    // renderer assumes this ordering when layering.
+    matched.sort((a, b) => a.start - b.start || b.end - a.end);
+
+    return { regions: matched, unmatched: notMatched };
   }, [plainText, provisions, isFormatted]);
+
+  // Collapsible unmatched-provisions panel toggle.
+  const [showUnmatched, setShowUnmatched] = useState(false);
 
   if (!sourceText) {
     return (
@@ -1781,47 +1904,86 @@ function FullDocumentView({
 
   // Build alternating segments for the legacy <pre> renderer (used when the
   // stored text does not contain formatting markers — i.e. older ingests).
+  // Regions may overlap, so we slice at every breakpoint and emit one span
+  // per atomic slice, layered by nesting innermost (shortest) on top.
   const segments = [];
   if (!isFormatted) {
-    let cursor = 0;
-    regions.forEach((r, i) => {
-      if (r.start > cursor) {
-        segments.push({ type: 'text', content: plainText.slice(cursor, r.start), key: `t-${i}` });
-      }
-      segments.push({
-        type: 'highlight',
-        content: plainText.slice(r.start, r.end),
-        provision: r.provision,
-        key: `h-${r.provision.id || i}`,
-      });
-      cursor = r.end;
+    // Collect all breakpoints.
+    const breakpoints = new Set([0, plainText.length]);
+    regions.forEach((r) => {
+      breakpoints.add(Math.max(0, r.start));
+      breakpoints.add(Math.min(plainText.length, r.end));
     });
-    if (cursor < plainText.length) {
-      segments.push({ type: 'text', content: plainText.slice(cursor), key: 'tail' });
+    const bps = Array.from(breakpoints).sort((a, b) => a - b);
+
+    for (let i = 0; i < bps.length - 1; i++) {
+      const segStart = bps[i];
+      const segEnd = bps[i + 1];
+      if (segEnd <= segStart) continue;
+      const covering = regions.filter((r) => r.start <= segStart && r.end >= segEnd);
+      if (covering.length === 0) {
+        segments.push({ type: 'text', content: plainText.slice(segStart, segEnd), key: `t-${segStart}` });
+      } else {
+        // Innermost (shortest) provision wins as the foreground highlight.
+        const innermost = covering.reduce((best, r) =>
+          (r.end - r.start) < (best.end - best.start) ? r : best
+        );
+        segments.push({
+          type: 'highlight',
+          content: plainText.slice(segStart, segEnd),
+          provision: innermost.provision,
+          layers: covering.length,
+          key: `h-${segStart}-${innermost.provision.id || ''}`,
+        });
+      }
     }
   }
 
-  // Render helper for highlighted text within a block.
+  // Render helper for highlighted text within a block. Handles overlapping
+  // regions by slicing at every breakpoint and rendering the innermost
+  // (shortest) provision as the visible highlight for each slice. Outer
+  // (larger) provisions still receive a click-target via the wrapping span,
+  // but the visual foreground is the most specific provision.
   const renderHighlightedText = (rawText, blockOffset) => {
-    // blockOffset is the offset of rawText within plainText. Find regions that
-    // intersect [blockOffset, blockOffset + rawText.length) and split.
     if (!rawText) return null;
-    const end = blockOffset + rawText.length;
-    const local = regions.filter(r => r.start < end && r.end > blockOffset);
+    const blockEnd = blockOffset + rawText.length;
+    const local = regions.filter((r) => r.start < blockEnd && r.end > blockOffset);
     if (local.length === 0) return rawText;
 
+    // Breakpoints inside this block.
+    const bpSet = new Set([blockOffset, blockEnd]);
+    local.forEach((r) => {
+      bpSet.add(Math.max(blockOffset, r.start));
+      bpSet.add(Math.min(blockEnd, r.end));
+    });
+    const bps = Array.from(bpSet).sort((a, b) => a - b);
+
     const out = [];
-    let cur = blockOffset;
-    local.forEach((r, idx) => {
-      const s = Math.max(r.start, blockOffset);
-      const e = Math.min(r.end, end);
-      if (s > cur) out.push(<span key={`pt-${idx}`}>{plainText.slice(cur, s)}</span>);
-      const p = r.provision;
+    for (let i = 0; i < bps.length - 1; i++) {
+      const segStart = bps[i];
+      const segEnd = bps[i + 1];
+      if (segEnd <= segStart) continue;
+      const covering = local.filter((r) => r.start <= segStart && r.end >= segEnd);
+      const text = plainText.slice(segStart, segEnd);
+      if (covering.length === 0) {
+        out.push(<span key={`pt-${segStart}`}>{text}</span>);
+        continue;
+      }
+      // Innermost (shortest) is the visible highlight.
+      const innermost = covering.reduce((best, r) =>
+        (r.end - r.start) < (best.end - best.start) ? r : best
+      );
+      const p = innermost.provision;
       const tc = typeColor(p.type);
       const isHovered = hoveredProvId === p.id;
+      // When this slice is covered by multiple regions, show a faint
+      // gutter-stack indicator to hint at nesting depth.
+      const stackBorders = covering.length > 1
+        ? `inset ${2 + (covering.length - 1) * 2}px 0 0 ${tc.hex || '#e5e7eb'}`
+        : `inset 2px 0 0 ${tc.hex || '#e5e7eb'}`;
       out.push(
         <span
-          key={`ph-${p.id || idx}`}
+          key={`ph-${segStart}-${p.id || i}`}
           id={`prov-${p.id}`}
           onClick={(ev) => { ev.stopPropagation(); onEditProvision(p); }}
           onMouseEnter={() => onHoverProv && onHoverProv(p.id)}
@@ -1831,18 +1993,20 @@ function FullDocumentView({
             backgroundColor: tc.hex || '#f9fafb',
             boxShadow: isHovered
               ? 'inset 3px 0 0 rgba(0,0,0,0.35)'
-              : `inset 2px 0 0 ${tc.hex || '#e5e7eb'}`,
+              : stackBorders,
             paddingLeft: '3px',
             paddingRight: '2px',
           }}
-          title={`${typeLabel(p.type)} -- ${p.category || 'General'}`}
+          title={
+            covering.length > 1
+              ? `${typeLabel(p.type)} -- ${p.category || 'General'} (${covering.length} overlapping provisions)`
+              : `${typeLabel(p.type)} -- ${p.category || 'General'}`
+          }
         >
-          {plainText.slice(s, e)}
+          {text}
         </span>
       );
-      cur = e;
-    });
-    if (cur < end) out.push(<span key="pt-end">{plainText.slice(cur, end)}</span>);
+    }
     return out;
   };
 
@@ -2057,11 +2221,55 @@ function FullDocumentView({
           </p>
           <p className="font-display text-sm text-ink">{title || 'Agreement'}</p>
         </div>
-        <div className="text-[10px] font-ui text-inkFaint">
-          {regions.length} of {provisions.length} provisions highlighted &middot;{' '}
-          {sourceText.length.toLocaleString()} chars
+        <div className="text-[10px] font-ui text-inkFaint text-right">
+          <div>
+            {regions.length} of {provisions.length} provisions highlighted &middot;{' '}
+            {sourceText.length.toLocaleString()} chars
+          </div>
+          {unmatched.length > 0 && (
+            <button
+              type="button"
+              onClick={() => setShowUnmatched((v) => !v)}
+              className="mt-0.5 underline decoration-dotted hover:text-ink transition-colors"
+            >
+              {showUnmatched ? 'Hide' : 'Show'} {unmatched.length} unmatched
+            </button>
+          )}
         </div>
       </div>
+
+      {/* Unmatched provisions list — collapsible */}
+      {showUnmatched && unmatched.length > 0 && (
+        <div className="border-b border-border px-6 py-3 bg-amber-50/40 max-h-48 overflow-y-auto">
+          <p className="font-ui text-[10px] uppercase tracking-wider text-amber-800 mb-2">
+            Unmatched provisions ({unmatched.length})
+          </p>
+          <ul className="space-y-1">
+            {unmatched.map((p) => {
+              const tc = typeColor(p.type);
+              const preview = (p.full_text || '').trim().slice(0, 100);
+              return (
+                <li key={p.id} className="text-[11px] font-ui flex items-start gap-2">
+                  <span
+                    className={`inline-block px-1.5 py-0.5 rounded text-[9px] font-medium border shrink-0 ${tc.border} ${tc.bg} ${tc.text}`}
+                  >
+                    {typeLabel(p.type)}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => onEditProvision(p)}
+                    className="text-left text-inkMid hover:text-ink transition-colors truncate"
+                    title={p.full_text || ''}
+                  >
+                    <span className="text-ink">{p.category || 'General'}</span>
+                    {preview && <span className="text-inkFaint"> — {preview}{preview.length === 100 ? '…' : ''}</span>}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
 
       {/* Document body */}
       <div ref={containerRef} className="p-6 md:p-12 max-h-[80vh] overflow-y-auto">
@@ -2085,6 +2293,10 @@ function FullDocumentView({
               const tc = typeColor(p.type);
               const fav = favBadge(p.ai_favorability);
               const isHovered = hoveredProvId === p.id;
+              const layers = seg.layers || 1;
+              const stackBorders = layers > 1
+                ? `inset ${2 + (layers - 1) * 2}px 0 0 ${tc.hex || '#e5e7eb'}`
+                : `inset 2px 0 0 ${tc.hex || '#e5e7eb'}`;
               return (
                 <span
                   key={seg.key}
@@ -2097,11 +2309,15 @@ function FullDocumentView({
                     backgroundColor: tc.hex || '#f9fafb',
                     boxShadow: isHovered
                       ? 'inset 3px 0 0 rgba(0,0,0,0.35)'
-                      : `inset 2px 0 0 ${tc.hex || '#e5e7eb'}`,
+                      : stackBorders,
                     paddingLeft: '4px',
                     paddingRight: '2px',
                   }}
-                  title={`${typeLabel(p.type)} -- ${p.category || 'General'}`}
+                  title={
+                    layers > 1
+                      ? `${typeLabel(p.type)} -- ${p.category || 'General'} (${layers} overlapping provisions)`
+                      : `${typeLabel(p.type)} -- ${p.category || 'General'}`
+                  }
                 >
                   {isHovered && (
                     <span
