@@ -114,13 +114,28 @@ export default async function handler(req, res) {
       type: p.type,
       code: p.code || null,
       category: p.category || 'Unclassified',
+      sourceCategory: p.sourceCategory || null,
       textPreview: (p.text || '').substring(0, 150),
       features: p.features || {},
       status: p.status || 'unknown',
       favorability: p.favorability || 'neutral',
       isNewCode: p.isNewCode || false,
       proposedCode: p.proposedCode || null,
+      proposedLabel: p.proposedLabel || null,
+      codeAssignedBy: p.codeAssignedBy || null,
+      autoMergedFrom: p.autoMergedFrom || null,
     }));
+
+    // Surface the canonical-code enforcement & auto-merge subreports at the
+    // top level of the response (and keep them inside validation.report) so
+    // the UI can render them prominently after each ingest without digging.
+    const codeQuality = {
+      uncoded_provisions: validation.report.uncoded_provisions || [],
+      auto_merged_codes: validation.report.auto_merged_codes || [],
+      proposed_new_codes_pending_approval:
+        validation.report.proposed_new_codes_pending_approval || [],
+      enforcement: validation.report.code_enforcement || null,
+    };
 
     const response = {
       success: true,
@@ -129,6 +144,7 @@ export default async function handler(req, res) {
       timing,
       diagnostics,
       validation: validation.report,
+      code_quality: codeQuality,
       provisions: provisionSummaries,
     };
 
