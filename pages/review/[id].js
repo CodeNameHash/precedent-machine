@@ -80,6 +80,44 @@ const TYPE_COLORS = {
   'OTHER':  { bg: 'bg-gray-50',    border: 'border-gray-200',   text: 'text-gray-700',   dot: 'bg-gray-400',   hex: '#f9fafb' },
 };
 
+/* ── Recital provision-type hex colors (used for dots, ref chips, section heads) ── */
+const TYPE_HEX = {
+  STRUCT:   '#7459A6',
+  CONSID:   '#2F8B7E',
+  DEF:      '#4E6FA6',
+  IOC:      '#B5862E',
+  'IOC-T':  '#B5862E',
+  'IOC-B':  '#B5862E',
+  NOSOL:    '#A8538C',
+  ANTI:     '#2F8FA8',
+  COND:     '#5660B0',
+  'COND-M': '#5660B0',
+  'COND-B': '#5660B0',
+  'COND-S': '#5660B0',
+  TERMR:    '#C0673A',
+  'TERMR-M':'#C0673A',
+  'TERMR-B':'#C0673A',
+  'TERMR-T':'#C0673A',
+  TERMF:    '#B14E63',
+  REP:      '#3F8A6A',
+  'REP-T':  '#3F8A6A',
+  'REP-B':  '#3F8A6A',
+  COV:      '#6E8AA8',
+  MAE:      '#8B5B3A',
+  'MAE-T':  '#8B5B3A',
+  'MAE-B':  '#8B5B3A',
+  MISC:     '#8A8782',
+  OTHER:    '#8A8782',
+};
+
+function typeHex(code) {
+  return TYPE_HEX[code] || '#8A8782';
+}
+
+function typeTint(code, pct) {
+  return `color-mix(in srgb, ${typeHex(code)} ${pct}%, transparent)`;
+}
+
 /* ── Sidebar grouping — parent groups with optional sub-types ── */
 const SIDEBAR_GROUPS = [
   { label: 'Structure & Mechanics', types: ['STRUCT'] },
@@ -147,17 +185,83 @@ function groupProvisionsByType(provs) {
 }
 
 const FAV_LABELS = {
-  'strong-buyer': { label: 'Strong Buyer', cls: 'bg-buyer/10 text-buyer' },
-  'mod-buyer':    { label: 'Mod. Buyer',   cls: 'bg-buyer/10 text-buyer' },
-  'buyer':        { label: 'Buyer',         cls: 'bg-buyer/10 text-buyer' },
-  'neutral':      { label: 'Neutral',       cls: 'bg-gray-100 text-inkLight' },
-  'mod-seller':   { label: 'Mod. Seller',   cls: 'bg-seller/10 text-seller' },
-  'strong-seller':{ label: 'Strong Seller', cls: 'bg-seller/10 text-seller' },
-  'seller':       { label: 'Seller',        cls: 'bg-seller/10 text-seller' },
+  'strong-buyer': { label: 'Strong Buyer', cls: 'bg-buyer/10 text-buyer', pos:  2 },
+  'mod-buyer':    { label: 'Mod. Buyer',   cls: 'bg-buyer/10 text-buyer', pos:  1 },
+  'buyer':        { label: 'Buyer',        cls: 'bg-buyer/10 text-buyer', pos:  1 },
+  'neutral':      { label: 'Balanced',     cls: 'bg-gray-100 text-inkLight', pos: 0 },
+  'mod-seller':   { label: 'Mod. Seller',  cls: 'bg-seller/10 text-seller', pos: -1 },
+  'strong-seller':{ label: 'Strong Seller',cls: 'bg-seller/10 text-seller', pos: -2 },
+  'seller':       { label: 'Seller',       cls: 'bg-seller/10 text-seller', pos: -1 },
 };
 
 function favBadge(fav) {
   return FAV_LABELS[(fav || '').toLowerCase()] || FAV_LABELS.neutral;
+}
+
+/* ── Favorability hue + soft fill (Recital) ── */
+function favHue(fav) {
+  const meta = favBadge(fav);
+  if (meta.pos > 0) return 'var(--buyer)';
+  if (meta.pos < 0) return 'var(--seller)';
+  return 'var(--neutral)';
+}
+function favSoft(fav) {
+  const hue = favHue(fav);
+  return `color-mix(in srgb, ${hue} 13%, transparent)`;
+}
+
+/* ── 5-segment diverging favorability meter (seller ◄────► buyer) ── */
+function FavMeter({ fav }) {
+  const meta = favBadge(fav);
+  const active = meta.pos + 2; // 0..4
+  const hue = favHue(fav);
+  return (
+    <span aria-hidden="true" style={{ display: 'inline-flex', gap: 2, alignItems: 'center' }}>
+      {[0, 1, 2, 3, 4].map((i) => {
+        const on = i === active;
+        const side = i < 2 ? 'var(--seller)' : i > 2 ? 'var(--buyer)' : 'var(--neutral)';
+        return (
+          <span
+            key={i}
+            style={{
+              width: on ? 5 : 4,
+              height: on ? 13 : 8,
+              borderRadius: 2,
+              background: on ? hue : `color-mix(in srgb, ${side} 22%, var(--line))`,
+              transition: 'all .15s',
+              display: 'inline-block',
+            }}
+          />
+        );
+      })}
+    </span>
+  );
+}
+
+/* ── Favorability pill (meter + label, tinted by hue) ── */
+function FavPill({ fav }) {
+  const meta = favBadge(fav);
+  return (
+    <span className="rec-fav-pill" style={{ color: favHue(fav), background: favSoft(fav) }}>
+      <FavMeter fav={fav} />
+      {meta.label}
+    </span>
+  );
+}
+
+/* ── Status tag (Approved / Needs review / Unreviewed) ── */
+function RecStatusTag({ status }) {
+  const s = STATUS[status] || STATUS.unreviewed;
+  const color =
+    status === 'approved' ? 'var(--buyer)' :
+    status === 'flagged'  ? 'var(--accent)' :
+    'var(--ink-faint)';
+  return (
+    <span className="rec-status-tag">
+      <span className="d" style={{ background: color }} />
+      {s.label}
+    </span>
+  );
 }
 
 /* ── Review Status ── */
@@ -621,12 +725,18 @@ function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelect
     return { total, approved, flagged };
   }, [provisions]);
 
+  // Status-color tokens for sidebar provision dots (Recital palette).
+  const statusDotColor = (status) => {
+    if (status === 'approved') return 'var(--buyer)';
+    if (status === 'flagged')  return 'var(--accent)';
+    return 'var(--ink-faint)';
+  };
+
   // Render the per-provision list under a type. Each row is draggable.
   const renderProvList = (provs) => (
-    <div className="ml-4 mt-0.5 space-y-0.5">
+    <div className="mt-0.5" style={{ marginLeft: 18, display: 'flex', flexDirection: 'column', gap: 1 }}>
       {provs.map(p => {
         const status = getProvisionStatus(p);
-        const st = STATUS[status];
         const isActive = p.id === activeProvId;
         const isDragging = dragProvId === p.id;
         return (
@@ -636,14 +746,16 @@ function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelect
             onDragStart={(e) => handleDragStart(e, p.id)}
             onDragEnd={handleDragEnd}
             onClick={() => onSelectProvision(p.id)}
-            className={`w-full text-left flex items-center gap-2 px-2 py-1 rounded text-xs font-ui transition-colors cursor-grab active:cursor-grabbing ${
-              isActive
-                ? 'bg-accent/10 text-accent font-medium'
-                : 'text-inkMid hover:bg-bg hover:text-ink'
-            } ${isDragging ? 'opacity-40' : ''}`}
+            className={`rec-side-item${isActive ? ' active' : ''}`}
+            style={{
+              fontSize: 12.5,
+              padding: '5px 10px',
+              cursor: isDragging ? 'grabbing' : 'grab',
+              opacity: isDragging ? 0.4 : 1,
+            }}
             title="Drag to a different category to reclassify"
           >
-            <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${st.dot}`} />
+            <span className="dot" style={{ background: statusDotColor(status) }} />
             <span className="truncate">{p.category || 'General'}</span>
           </button>
         );
@@ -652,35 +764,49 @@ function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelect
   );
 
   return (
-    <div className="w-[280px] shrink-0 bg-white border-r border-border flex flex-col h-full overflow-hidden">
+    <aside
+      className="shrink-0 flex flex-col h-full overflow-hidden"
+      style={{
+        width: 286,
+        background: 'var(--surface)',
+        borderRight: '1px solid var(--line)',
+      }}
+    >
       {/* Provisions Navigation */}
-      <div className="flex-1 overflow-y-auto py-4 px-3">
-        <div className="flex items-center justify-between px-2 mb-3">
-          <h3 className="font-ui text-[10px] font-medium text-inkFaint uppercase tracking-wider">
-            Provisions
-          </h3>
+      <div className="flex-1 overflow-y-auto" style={{ padding: '18px 14px' }}>
+        <div
+          className="flex items-center justify-between"
+          style={{ padding: '0 8px 10px' }}
+        >
+          <span className="rec-side-eyebrow">Provisions</span>
           <button
             onClick={handleCollapseAll}
-            className="text-[10px] font-ui text-accent hover:text-accent/80 transition-colors"
+            className="rec-side-eyebrow"
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              color: 'var(--accent-deep)',
+            }}
           >
-            {allCollapsed ? 'Expand All' : 'Collapse All'}
+            {allCollapsed ? 'Expand all' : 'Collapse all'}
           </button>
         </div>
 
-        <div className="space-y-1">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           {/* "All" filter button */}
           <button
             onClick={() => onFilterType(null)}
-            className={`w-full flex items-center gap-2 px-2 py-1.5 rounded text-sm font-ui transition-colors ${
-              activeFilter === null
-                ? 'bg-accent/10 text-accent font-medium'
-                : 'text-inkMid hover:bg-bg hover:text-ink'
-            }`}
+            className={`rec-side-item${activeFilter === null ? ' active' : ''}`}
           >
-            <span className="w-2 h-2 rounded-full shrink-0 bg-inkFaint" />
-            <span className="font-medium">All Provisions</span>
-            <span className="text-inkFaint text-xs ml-auto">({provisions.length})</span>
+            <span
+              className="dot"
+              style={{ background: activeFilter === null ? 'var(--accent)' : 'var(--ink-faint)' }}
+            />
+            <span style={{ fontWeight: 600 }}>All provisions</span>
+            <span className="count">{provisions.length}</span>
           </button>
+          <div style={{ height: 6 }} />
 
           {visibleGroups.map((group) => {
             const groupCollapsed = collapsedGroups[group.label] !== false;
@@ -728,30 +854,43 @@ function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelect
               <div key={group.label}>
                 {/* Parent group heading */}
                 <div
-                  className={`w-full flex items-center justify-between px-2 py-1.5 rounded text-sm font-ui transition-colors cursor-pointer ${
-                    isActiveFilter ? 'bg-accent/10' : 'hover:bg-bg'
-                  } ${isParentDropTarget ? 'ring-2 ring-accent ring-offset-1' : ''}`}
+                  className={`rec-side-item${isActiveFilter ? ' active' : ''}`}
+                  style={{
+                    boxShadow: isParentDropTarget ? '0 0 0 2px var(--accent)' : 'none',
+                  }}
                   onClick={parentClickHandler}
                   onDragOver={flatDropType ? (e) => handleDragOver(e, flatDropType) : undefined}
                   onDragLeave={flatDropType ? () => handleDragLeave(flatDropType) : undefined}
                   onDrop={flatDropType ? (e) => handleDrop(e, flatDropType) : undefined}
                   title={hasChildren ? `Show all ${group.label.toLowerCase()} combined` : undefined}
                 >
-                  <span className="flex items-center gap-2 min-w-0">
-                    <button
-                      type="button"
-                      onClick={(e) => { e.stopPropagation(); toggleGroup(group.label); }}
-                      className="w-5 h-5 flex items-center justify-center rounded text-inkFaint hover:text-ink hover:bg-bg shrink-0 font-mono text-sm leading-none"
-                      aria-label={groupCollapsed ? 'Expand' : 'Collapse'}
-                    >
-                      {groupCollapsed ? '+' : '–'}
-                    </button>
-                    <span className={`w-2 h-2 rounded-full shrink-0 ${tc.dot}`} />
-                    <span className={`font-medium truncate ${isActiveFilter ? 'text-accent' : 'text-ink'}`}>
-                      {group.label}
-                    </span>
-                    <span className="text-inkFaint text-xs">({group.total})</span>
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); toggleGroup(group.label); }}
+                    style={{
+                      width: 16,
+                      height: 16,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      background: 'none',
+                      border: 'none',
+                      color: 'var(--ink-faint)',
+                      cursor: 'pointer',
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: 12,
+                      lineHeight: 1,
+                      flexShrink: 0,
+                    }}
+                    aria-label={groupCollapsed ? 'Expand' : 'Collapse'}
+                  >
+                    {groupCollapsed ? '+' : '–'}
+                  </button>
+                  <span className="dot" style={{ background: typeHex(repType) }} />
+                  <span className="truncate" style={{ fontWeight: isActiveFilter ? 600 : 500 }}>
+                    {group.label}
                   </span>
+                  <span className="count">{group.total}</span>
                 </div>
 
                 {/* Group expanded content */}
@@ -834,7 +973,7 @@ function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelect
           <span className="text-amber-600 font-medium">{stats.flagged}</span>
         </div>
       </div>
-    </div>
+    </aside>
   );
 }
 
@@ -1241,7 +1380,7 @@ function StructuredFeatures({ provision }) {
 }
 
 /* ── Render full provision text with section refs bolded ── */
-const SECTION_REF_RE = /\b(Section\s+\d+(?:\.\d+)*[A-Za-z]?|Article\s+(?:[IVXLCDM]+|\d+))\b/g;
+const SECTION_REF_RE = /(§\s?\d+(?:\.\d+)*|\b(?:Section|Sections)\s+\d+(?:\.\d+)*[A-Za-z]?|\bArticle\s+(?:[IVXLCDM]+|\d+))/g;
 
 function renderFullTextWithRefs(text) {
   if (!text) return null;
@@ -1268,49 +1407,232 @@ function renderFullTextWithRefs(text) {
    together by default. Summary is the digest, full text is the
    source — they're shown back-to-back for context.
    ═══════════════════════════════════════════════════════════ */
+/* ── Lead / headline derivation for the Recital card ── */
+function getLeadText(provision) {
+  const features = getStructuredFeatures(provision) || {};
+  const candidates = [
+    features.mainConcept,
+    features.mainObligation,
+    features.mainCondition,
+    features.summary,
+  ];
+  for (const c of candidates) {
+    if (typeof c === 'string' && c.trim()) return c.trim();
+    if (isTaggedItem(c)) {
+      const lbl = resolveTaggedLabel('mainConcept', c);
+      if (lbl) return lbl;
+    }
+  }
+  // Fall back to first sentence of full text
+  if (provision.full_text) {
+    const { header } = parseProvisionText(provision.full_text);
+    if (header) return header;
+    return provision.full_text.slice(0, 240);
+  }
+  return provision.category || 'Provision';
+}
+
+/* ── Derive a §-style ref code shown in the meta-row chip. ── */
+function getRefCode(provision) {
+  const meta = getAiMetadata(provision) || {};
+  // Prefer an explicit section ref captured on the provision; otherwise
+  // try to extract a "Section X.YY" / "Article X" from the full text head.
+  const sectionRef =
+    provision.section_ref ||
+    meta.section_ref ||
+    meta.sectionRef ||
+    null;
+  if (sectionRef) return String(sectionRef);
+  const txt = provision.full_text || '';
+  const m = txt.match(/§\s?\d+(?:\.\d+)*|Section\s+\d+(?:\.\d+)*[A-Za-z]?|Article\s+(?:[IVXLCDM]+|\d+)/i);
+  if (m) return m[0];
+  // Final fallback: provision.code (e.g. "TERMR-OUTSIDE") or the type code.
+  if (provision.code) return provision.code;
+  if (meta.code) return meta.code;
+  return provision.type || '§';
+}
+
+/* ── Collect "key terms" for the card grid from structured features.
+ *    We pick a handful of high-signal fields, format their values as
+ *    short strings, and (if odd) span the last one across both cols.
+ *    Returns [] when nothing usable is found. ── */
+function getCardTerms(provision) {
+  const features = getStructuredFeatures(provision);
+  if (!features) return [];
+  const schemaKeys = getFeatureSchema(provision.type, provision.code);
+  // Skip fields that already show up elsewhere on the card.
+  const skip = new Set([
+    'mainConcept', 'mainObligation', 'mainCondition', 'summary',
+    'permittedExceptions', 'carveOuts', 'carveOutsList',
+    'affirmativeLimbs', 'positiveObligations',
+    'compensationItems',
+    'pandemicCarveout', 'covidCarveout', 'ordinaryCourseCarveout', 'requiredByLawCarveout',
+  ]);
+  const out = [];
+  const keys = [...schemaKeys, ...Object.keys(features).filter((k) => !schemaKeys.includes(k))];
+  for (const k of keys) {
+    if (skip.has(k)) continue;
+    const raw = features[k];
+    if (isEmptyValue(raw)) continue;
+    // Render tagged values to label; lists to "n items"; bools to Yes/No.
+    let display = null;
+    if (isTaggedItem(raw)) {
+      display = resolveTaggedLabel(k, raw) || raw.code;
+    } else if (Array.isArray(raw)) {
+      if (raw.length === 0) continue;
+      if (raw.every((v) => typeof v === 'string')) {
+        display = raw.join('; ');
+      } else if (raw.every((v) => isTaggedItem(v))) {
+        display = raw.map((v) => resolveTaggedLabel(k, v) || v.code).join('; ');
+      } else {
+        display = `${raw.length} item${raw.length === 1 ? '' : 's'}`;
+      }
+    } else if (typeof raw === 'boolean') {
+      display = raw ? 'Yes' : 'No';
+    } else {
+      display = String(raw);
+    }
+    if (!display) continue;
+    out.push({ k, label: humanizeKey(k), value: display, raw });
+    if (out.length >= 6) break;
+  }
+  return out;
+}
+
+/* ── Collect carve-outs / permitted exceptions for the Carve-outs block. ── */
+function getCardCarveouts(provision) {
+  const features = getStructuredFeatures(provision);
+  if (!features) return [];
+  const out = [];
+  const seen = new Set();
+  const pushItem = (raw, key) => {
+    let s = null;
+    if (isTaggedItem(raw)) {
+      s = resolveTaggedLabel(key, raw) || raw.code;
+    } else if (typeof raw === 'string' && raw.trim()) {
+      s = raw.trim();
+    }
+    if (s && !seen.has(s)) {
+      seen.add(s);
+      out.push(s);
+    }
+  };
+  const lists = ['permittedExceptions', 'carveOuts', 'carveOutsList'];
+  for (const k of lists) {
+    const list = features[k];
+    if (Array.isArray(list)) list.forEach((item) => pushItem(item, k));
+  }
+  const bools = [
+    ['requiredByLawCarveout', 'Required by law'],
+    ['ordinaryCourseCarveout', 'Ordinary course of business'],
+    ['pandemicCarveout', 'Pandemic measures'],
+    ['covidCarveout', 'COVID measures'],
+  ];
+  for (const [k, label] of bools) {
+    if (features[k] === true && !seen.has(label)) {
+      seen.add(label);
+      out.push(label);
+    }
+  }
+  return out;
+}
+
+/* ── Card lead text + key terms + carve-outs renderer ── */
 function ProvisionCard({ provision, onEdit }) {
-  const tc = typeColor(provision.type);
-  const fav = favBadge(provision.ai_favorability);
+  const [open, setOpen] = useState(false);
   const status = getProvisionStatus(provision);
-  const st = STATUS[status];
+  const refCode = getRefCode(provision);
+  const lead = getLeadText(provision);
+  const terms = getCardTerms(provision);
+  const carveouts = getCardCarveouts(provision);
+  const tHex = typeHex(provision.type);
+
+  const handleCardClick = (e) => {
+    // Only open edit panel when clicking the card body (not the source toggle).
+    if (e.target.closest('.rec-source-toggle') || e.target.closest('.rec-source-body')) return;
+    onEdit && onEdit(provision);
+  };
 
   return (
-    <div
+    <article
       id={`prov-${provision.id}`}
-      onClick={() => onEdit(provision)}
-      className={`bg-white border rounded-lg shadow-sm p-4 cursor-pointer hover:border-accent transition-colors ${tc.border}`}
+      className="rec-card cursor-pointer"
+      onClick={handleCardClick}
     >
-      {/* Header row: type badge + category + status */}
-      <div className="flex items-center gap-2 mb-2 flex-wrap">
-        <span className={`w-1.5 h-1.5 rounded-full ${st.dot}`} />
-        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-ui font-medium ${tc.bg} ${tc.text} ${tc.border} border`}>
-          {typeLabel(provision.type)}
-        </span>
-        <span className="text-xs font-ui font-medium text-inkMid">{provision.category || 'General'}</span>
-        <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-ui font-medium ${fav.cls}`}>
-          {fav.label}
-        </span>
-      </div>
-
-      {/* Structured Summary first (the digest), then Full Text (the source).
-          Both are always visible — no toggle. */}
-      <div className="space-y-3">
-        <StructuredFeatures provision={provision} />
-
-        <div>
-          <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider mb-1">
-            Full Text
-          </p>
-          {provision.full_text ? (
-            <p className="font-body text-sm text-ink leading-relaxed whitespace-pre-wrap">
-              {renderFullTextWithRefs(provision.full_text)}
-            </p>
-          ) : (
-            <p className="font-ui text-xs text-inkFaint italic">No text available.</p>
-          )}
+      <div className="rec-card-body">
+        {/* Meta row */}
+        <div className="rec-card-meta">
+          <span
+            className="rec-chip-code"
+            style={{
+              color: tHex,
+              background: typeTint(provision.type, 11),
+              borderColor: typeTint(provision.type, 30),
+            }}
+          >
+            {refCode}
+          </span>
+          <span className="rec-card-cat">{provision.category || 'General'}</span>
+          <FavPill fav={provision.ai_favorability} />
+          <RecStatusTag status={status} />
         </div>
+
+        {/* Lead — plain-English headline */}
+        {lead && <p className="rec-lead">{lead}</p>}
+
+        {/* Key-terms grid */}
+        {terms.length > 0 && (
+          <dl className="rec-terms">
+            {terms.map((t, i) => {
+              const span = terms.length % 2 === 1 && i === terms.length - 1;
+              return (
+                <div key={t.k} className={`rec-term${span ? ' span2' : ''}`}>
+                  <dt className="k">{t.label}</dt>
+                  <dd className="v">{t.value}</dd>
+                </div>
+              );
+            })}
+          </dl>
+        )}
+
+        {/* Carve-outs */}
+        {carveouts.length > 0 && (
+          <div className="rec-carveouts">
+            <div className="co-head">
+              Carve-outs &amp; exceptions
+              <span className="n">{carveouts.length}</span>
+            </div>
+            <ul>
+              {carveouts.map((c, i) => (
+                <li key={i}>
+                  <span className="m">—</span>
+                  <span>{c}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Source text (collapsible) */}
+        {provision.full_text && (
+          <div className="rec-source">
+            <button
+              type="button"
+              className={`rec-source-toggle${open ? ' open' : ''}`}
+              onClick={(e) => { e.stopPropagation(); setOpen((v) => !v); }}
+            >
+              <span className="car">›</span>
+              {open ? 'Hide source text' : `Source text · ${refCode}`}
+            </button>
+            {open && (
+              <div className="rec-source-body">
+                {renderFullTextWithRefs(provision.full_text)}
+              </div>
+            )}
+          </div>
+        )}
       </div>
-    </div>
+    </article>
   );
 }
 
@@ -2535,6 +2857,73 @@ function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision }) {
   );
 }
 
+/* ─── NOSOL / ANTI table — same Term/Details visual layout as StructTable.
+ *     Each provision is one row. The Details column stacks the type's
+ *     FEATURE_DISPLAY_ORDER fields as <dt>/<dd> pairs (skipping empties)
+ *     so the multi-code section reads like a clean key/value summary —
+ *     no per-feature columns with mostly-empty cells, no card stacks. */
+function MultiCodeStructLikeTable({ provisions, type, onSelectProvision }) {
+  // Sort provisions by category for stable reading order.
+  const sorted = [...provisions].sort((a, b) =>
+    String(a.category || '').localeCompare(String(b.category || '')));
+
+  const schemaKeys = (FEATURE_DISPLAY_ORDER[type] || []).filter(
+    (k) => !getHiddenColumnsForType(type).has(k),
+  );
+
+  const rows = sorted.map((p) => {
+    const features = getStructuredFeatures(p) || {};
+    const cells = schemaKeys
+      .map((key) => ({ key, raw: features[key] }))
+      .filter(({ raw }) => !isEmptyValue(raw));
+    return { p, cells };
+  });
+
+  return (
+    <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+      <table className="min-w-full text-xs font-ui">
+        <thead className="bg-bg/60 border-b border-border">
+          <tr>
+            <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[220px]">Term</th>
+            <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Details</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border">
+          {rows.map(({ p, cells }) => (
+            <tr key={p.id} className="hover:bg-bg/40 transition-colors align-top">
+              <td className="px-3 py-2 align-top">
+                <button
+                  type="button"
+                  onClick={() => onSelectProvision && onSelectProvision(p)}
+                  className="text-left text-accent hover:underline font-medium"
+                >
+                  {p.category || 'General'}
+                </button>
+              </td>
+              <td className="px-3 py-2 text-ink">
+                {cells.length === 0 ? (
+                  <span className="text-inkFaint/70 italic">—</span>
+                ) : (
+                  <dl className="space-y-1">
+                    {cells.map(({ key, raw }) => (
+                      <div key={key} className="flex flex-col">
+                        <dt className="text-[10px] text-inkFaint uppercase tracking-wider">
+                          {humanizeKey(key)}
+                        </dt>
+                        <dd>{renderFeatureCell(key, raw)}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 function ProvisionTable({ provisions, type, onSelectProvision }) {
   // STRUCT and CONSID get specialized layouts — see dedicated components above.
   if (type === 'STRUCT') {
@@ -2543,13 +2932,12 @@ function ProvisionTable({ provisions, type, onSelectProvision }) {
   if (type === 'CONSID') {
     return <ConsidTable provisions={provisions} onSelectProvision={onSelectProvision} />;
   }
-  // NOSOL / ANTI: render a single aggregated 2-column "feature → value"
-  // summary table that scans all provisions in the section and picks the
-  // first non-empty value per canonical feature. Below the table, list the
-  // provisions as small clickable links so the user can still drill in.
+  // NOSOL / ANTI: render in the same Term/Details format as StructTable —
+  // each provision is one row; the Details cell stacks the relevant feature
+  // labels/values from the type's FEATURE_DISPLAY_ORDER (skipping empties).
   if (type === 'NOSOL' || type === 'ANTI') {
     return (
-      <CategoryFeatureSummaryTable
+      <MultiCodeStructLikeTable
         provisions={provisions}
         type={type}
         onSelectProvision={onSelectProvision}
@@ -4381,26 +4769,33 @@ export default function ReviewPage() {
   return (
     <div className="min-h-screen bg-bg flex flex-col">
       {/* Top Bar */}
-      <header className="sticky top-0 z-50 bg-white border-b border-border px-4 py-3 flex items-center justify-between shrink-0">
-        <div className="flex items-center gap-3">
-          <Link href="/" className="font-display text-lg font-bold tracking-widest text-ink">
-            PRECEDENT MACHINE
+      <header
+        className="sticky top-0 z-50 bg-surface border-b border-line flex items-center justify-between shrink-0"
+        style={{ height: 56, padding: '0 22px' }}
+      >
+        <div className="flex items-center gap-4">
+          <Link href="/" className="rec-wordmark">
+            <span className="mark" />
+            Recital
+            <span className="tag">Precedent</span>
           </Link>
-          <span className="text-inkFaint font-ui text-xs">/</span>
-          <Link href="/deals" className="text-xs font-ui text-inkFaint hover:text-ink transition-colors">
-            Deals
-          </Link>
-          <span className="text-inkFaint font-ui text-xs">/</span>
-          <Link href={`/deals/${id}`} className="text-xs font-ui text-inkFaint hover:text-ink transition-colors">
-            {dealLabel}
-          </Link>
-          <span className="text-inkFaint font-ui text-xs">/</span>
-          <span className="text-xs font-ui text-inkMid font-medium">Review</span>
+          <div className="flex items-center gap-2 text-[12.5px] text-inkFaint">
+            <span style={{ color: 'var(--line)' }}>/</span>
+            <Link href="/deals" className="text-inkFaint hover:text-ink transition-colors">
+              Deals
+            </Link>
+            <span style={{ color: 'var(--line)' }}>/</span>
+            <Link href={`/deals/${id}`} className="text-inkFaint hover:text-ink transition-colors">
+              {dealLabel}
+            </Link>
+            <span style={{ color: 'var(--line)' }}>/</span>
+            <span className="text-inkMid font-medium">Review</span>
+          </div>
         </div>
         <div className="flex items-center gap-3">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-1.5 text-inkLight hover:text-ink transition-colors rounded hover:bg-bg"
+            className="p-1.5 text-inkLight hover:text-ink transition-colors rounded hover:bg-paper"
             title="Toggle sidebar"
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -4409,7 +4804,25 @@ export default function ReviewPage() {
             </svg>
           </button>
           {user && (
-            <span className="text-xs text-inkFaint font-ui">{user.name}</span>
+            <>
+              <span className="text-[12.5px] text-inkLight">{user.name}</span>
+              <span
+                style={{
+                  width: 26,
+                  height: 26,
+                  borderRadius: '50%',
+                  background: 'var(--accent-soft)',
+                  color: 'var(--accent-deep)',
+                  display: 'grid',
+                  placeItems: 'center',
+                  fontSize: 11,
+                  fontWeight: 700,
+                  letterSpacing: '.02em',
+                }}
+              >
+                {(user.name || 'U').split(/\s+/).map((s) => s[0]).slice(0, 2).join('').toUpperCase()}
+              </span>
+            </>
           )}
         </div>
       </header>
@@ -4431,40 +4844,67 @@ export default function ReviewPage() {
 
         {/* Main Content */}
         <div className="flex-1 overflow-y-auto">
-          <div className="max-w-4xl mx-auto p-6 md:p-8">
+          <div style={{ maxWidth: 880, margin: '0 auto', padding: '34px 40px 120px' }}>
             {/* Deal Header */}
-            <div className="mb-6">
-              <h1 className="font-display text-2xl text-ink">{dealLabel}</h1>
-              <div className="flex flex-wrap gap-4 mt-2 text-sm font-ui text-inkLight">
-                {deal.sector && <span>Sector: <span className="text-inkMid">{deal.sector}</span></span>}
-                {deal.value_usd && <span>Value: <span className="text-inkMid">${(deal.value_usd / 1e9).toFixed(1)}B</span></span>}
-                {deal.announce_date && <span>Date: <span className="text-inkMid">{new Date(deal.announce_date).toLocaleDateString()}</span></span>}
-                <span className="text-inkFaint">
-                  {provisions.length} provision{provisions.length !== 1 ? 's' : ''} classified
-                </span>
+            <div className="mb-[26px]">
+              <div className="rec-deal-eyebrow">
+                {deal.agreement_type || 'Merger Agreement'}
+                {deal.announce_date && (
+                  <> · {new Date(deal.announce_date).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}</>
+                )}
+              </div>
+              <h1 className="rec-deal-title">
+                {deal.acquirer} <span className="vs">acquires</span> {deal.target}
+              </h1>
+              <div className="rec-deal-meta">
+                {deal.sector && (
+                  <div className="m">
+                    <span className="k">Sector</span>
+                    <span className="v">{deal.sector}</span>
+                  </div>
+                )}
+                {deal.value_usd && (
+                  <div className="m">
+                    <span className="k">Value</span>
+                    <span className="v">${(deal.value_usd / 1e9).toFixed(1)}B</span>
+                  </div>
+                )}
+                {deal.structure && (
+                  <div className="m">
+                    <span className="k">Structure</span>
+                    <span className="v">{deal.structure}</span>
+                  </div>
+                )}
+                {deal.governing_law && (
+                  <div className="m">
+                    <span className="k">Governing law</span>
+                    <span className="v">{deal.governing_law}</span>
+                  </div>
+                )}
+                <div className="m">
+                  <span className="k">Classified</span>
+                  <span className="v">
+                    {provisions.length} provision{provisions.length !== 1 ? 's' : ''}
+                  </span>
+                </div>
               </div>
             </div>
 
             {/* Tab System */}
             {provisions.length > 0 && (
-              <div className="flex items-center gap-1 mb-4 border-b border-border">
+              <div className="rec-tabs">
                 <button
+                  type="button"
                   onClick={() => setActiveTab('provisions')}
-                  className={`px-4 py-2 text-sm font-ui transition-colors border-b-2 -mb-px ${
-                    activeTab === 'provisions'
-                      ? 'border-accent text-accent font-medium'
-                      : 'border-transparent text-inkLight hover:text-ink'
-                  }`}
+                  className={`rec-tab${activeTab === 'provisions' ? ' active' : ''}`}
                 >
                   Provisions
+                  <span className="badge-no">{provisions.length}</span>
                 </button>
                 <button
+                  type="button"
                   onClick={() => setActiveTab('document')}
-                  className={`px-4 py-2 text-sm font-ui transition-colors border-b-2 -mb-px ${
-                    activeTab === 'document'
-                      ? 'border-accent text-accent font-medium'
-                      : 'border-transparent text-inkLight hover:text-ink'
-                  }`}
+                  className={`rec-tab${activeTab === 'document' ? ' active' : ''}`}
                   title={hasSource ? 'Raw agreement text with provision highlights' : 'Raw text not stored yet — re-ingest to populate'}
                 >
                   Full Document
@@ -4473,42 +4913,81 @@ export default function ReviewPage() {
                   )}
                 </button>
 
-                {/* Filter indicator */}
-                {activeFilter && (() => {
-                  const isMulti = Array.isArray(activeFilter);
-                  const repType = isMulti ? activeFilter[0] : activeFilter;
-                  // For multi-type filters, find the parent SIDEBAR_GROUPS entry
-                  // that matches the type set so we can show its label + "(all)".
-                  let label;
-                  if (isMulti) {
-                    const sorted = [...activeFilter].sort().join(',');
-                    const match = SIDEBAR_GROUPS.find((g) => {
-                      const childTypes = g.children
-                        ? g.children.map((c) => c.type)
-                        : (g.types || []);
-                      return [...childTypes].sort().join(',') === sorted;
-                    });
-                    label = match ? `${match.label} (all)` : activeFilter.map(typeLabel).join(' + ');
-                  } else {
-                    label = typeLabel(activeFilter);
-                  }
-                  const tc = typeColor(repType);
-                  return (
-                    <div className="ml-auto flex items-center gap-2">
-                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-ui font-medium border ${tc.border} ${tc.bg} ${tc.text}`}>
-                        Filtered: {label}
-                      </span>
-                      <button
-                        onClick={() => { setActiveFilter(null); setSelectedProvId(null); }}
-                        className="text-[10px] font-ui text-inkFaint hover:text-ink"
-                      >
-                        Clear
-                      </button>
-                    </div>
-                  );
-                })()}
+                {/* Cards | Table view toggle — only on Provisions tab */}
+                {activeTab === 'provisions' && (
+                  <div className="rec-view-toggle">
+                    <button
+                      type="button"
+                      onClick={() => setProvisionView('cards')}
+                      className={provisionView === 'cards' ? 'on' : ''}
+                    >
+                      Cards
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setProvisionView('table')}
+                      className={provisionView === 'table' ? 'on' : ''}
+                    >
+                      Table
+                    </button>
+                  </div>
+                )}
               </div>
             )}
+
+            {/* Filter chip */}
+            {activeFilter && (() => {
+              const isMulti = Array.isArray(activeFilter);
+              let label;
+              if (isMulti) {
+                const sorted = [...activeFilter].sort().join(',');
+                const match = SIDEBAR_GROUPS.find((g) => {
+                  const childTypes = g.children
+                    ? g.children.map((c) => c.type)
+                    : (g.types || []);
+                  return [...childTypes].sort().join(',') === sorted;
+                });
+                label = match ? `${match.label} (all)` : activeFilter.map(typeLabel).join(' + ');
+              } else {
+                label = typeLabel(activeFilter);
+              }
+              return (
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 10,
+                    marginBottom: 18,
+                    marginTop: -6,
+                  }}
+                >
+                  <span
+                    style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: 11,
+                      color: 'var(--ink-light)',
+                      letterSpacing: '.04em',
+                    }}
+                  >
+                    Filtered · {label}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => { setActiveFilter(null); setSelectedProvId(null); }}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: 'var(--accent-deep)',
+                      cursor: 'pointer',
+                      fontSize: 12,
+                      fontFamily: 'var(--font-mono)',
+                    }}
+                  >
+                    clear
+                  </button>
+                </div>
+              );
+            })()}
 
             {/* Tab Content */}
             {provisions.length > 0 ? (
@@ -4516,37 +4995,8 @@ export default function ReviewPage() {
                 {/* Provisions Tab */}
                 {activeTab === 'provisions' && (
                   <div className="space-y-4">
-                    {/* Cards | Table view toggle */}
-                    {filteredProvisions.length > 0 && (
-                      <div className="flex items-center justify-end gap-1">
-                        <div className="inline-flex border border-border rounded overflow-hidden">
-                          <button
-                            type="button"
-                            onClick={() => setProvisionView('cards')}
-                            className={`px-3 py-1 text-[11px] font-ui transition-colors ${
-                              provisionView === 'cards'
-                                ? 'bg-accent text-white'
-                                : 'bg-white text-inkMid hover:bg-bg'
-                            }`}
-                          >
-                            Cards
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setProvisionView('table')}
-                            className={`px-3 py-1 text-[11px] font-ui transition-colors border-l border-border ${
-                              provisionView === 'table'
-                                ? 'bg-accent text-white'
-                                : 'bg-white text-inkMid hover:bg-bg'
-                            }`}
-                          >
-                            Table
-                          </button>
-                        </div>
-                      </div>
-                    )}
 
-                    {Object.entries(filteredProvsByType).map(([type, provsRaw]) => {
+                    {Object.entries(filteredProvsByType).map(([type, provsRaw], typeIdx) => {
                       // Alphabetical sort for DEF so definitions read like a glossary.
                       const provs = type === 'DEF'
                         ? [...provsRaw].sort((a, b) =>
@@ -4587,12 +5037,17 @@ export default function ReviewPage() {
                       }
                       return (
                         <div key={type} className="space-y-2">
-                          <h2 className="font-display text-lg text-ink flex items-center gap-2">
-                            <span className={`w-2.5 h-2.5 rounded-full ${typeColor(type).dot}`} />
-                            {typeLabel(type)}
-                            <span className="text-sm font-ui text-inkFaint font-normal">({provs.length} provision{provs.length === 1 ? '' : 's'})</span>
-                          </h2>
-                          {provisionView === 'table' ? (
+                          <div className="rec-type-head">
+                            <span className="ix">{String(typeIdx + 1).padStart(2, '0')}</span>
+                            <span className="th-dot" style={{ background: typeHex(type) }} />
+                            <h2>{typeLabel(type)}</h2>
+                            <span className="ct">{provs.length}</span>
+                            <span className="rule" />
+                          </div>
+                          {/* COV (Other Covenants) has no useful summary
+                              table — every covenant is too different to
+                              compare side-by-side. Always render as cards. */}
+                          {(type !== 'COV' && provisionView === 'table') ? (
                             <div className="space-y-3">
                               {showPreambleCard && (
                                 <PreambleCard
