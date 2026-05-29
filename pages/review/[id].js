@@ -397,7 +397,11 @@ const FEATURE_DISPLAY_ORDER = {
   // Canonical ANTI display order: effortsStandard first (the headline), then
   // the burden cap / divestiture limit fields, then No Inconsistent Action
   // (appliesToParty), then everything else (filing, cooperation/control, etc.).
-  ANTI: ['mainConcept', 'effortsStandard', 'hellOrHighWater', 'divestitureCap', 'divestitureCapDescription', 'burdenCap', 'appliesToParty', 'controllingParty', 'litigationObligation', 'filingDeadline', 'partyControlsStrategy', 'foreignFilingsRequired', 'interimOperatingRestrictions', 'pullAndRefileRight', 'burdensomConditionDefined'],
+  // ANTI summary: per user request, the summary table renders just Term
+  // (category) + Details (mainConcept). Per-feature columns (burdensome
+  // condition defined, divestiture cap, etc.) are intentionally suppressed
+  // here — they remain visible on the per-provision drill-in / edit panel.
+  ANTI: ['mainConcept'],
   TERMR: ['mainConcept', 'partyWhoCanTerminate', 'terminationTriggers', 'curePeriod', 'outsideDate', 'outsideDateMonths', 'extensionAvailable', 'extensionPeriod', 'extensionTrigger', 'superiorProposalTermination', 'faultBasedExclusion', 'tickingFee'],
   TERMF: ['mainConcept', 'triggerEvents', 'feeAmount', 'feePercentage', 'reverseFeeAmount', 'reverseFeePercentage', 'tailPeriod', 'soleRemedy', 'willfulBreachException', 'expenseReimbursement', 'expenseReimbursementCap', 'nakedNoVoteFee'],
   // DEF: pared down to just the two things the user cares about — where the
@@ -408,8 +412,8 @@ const FEATURE_DISPLAY_ORDER = {
   DEF: ['sourceSection', 'inlineDefinition'],
   STRUCT: ['mainConcept', 'mergerForm', 'survivingEntity', 'closingConditionsPrecedent'],
   CONSID: ['mainConcept', 'considerationType', 'perShareAmount', 'exchangeRatio', 'equityAwardTreatment', 'outstandingInstruments', 'instrumentTreatments', 'vestingAcceleration', 'cutoffDate', 'cutoffTreatment', 'cashOutAmount', 'optionSpread', 'performanceTreatment', 'espp_treatment', 'parachuteCap', 'doubleTrigger', 'appraisalRightsAvailable', 'withholdingProvision', 'proration'],
-  'REP-T': ['linkedBringDownStandard', 'materialityQualifier', 'knowledgeQualifier', 'survivalPeriod', 'scheduleReference'],
-  'REP-B': ['linkedBringDownStandard', 'materialityQualifier', 'knowledgeQualifier', 'solvencyRepIncluded', 'financingRepIncluded'],
+  'REP-T': ['materialityQualifier', 'knowledgeQualifier', 'survivalPeriod', 'scheduleReference'],
+  'REP-B': ['materialityQualifier', 'knowledgeQualifier', 'solvencyRepIncluded', 'financingRepIncluded'],
   COV: ['mainConcept', 'accessScope', 'indemnificationPeriod', 'employeeBenefitPeriod', 'financingCooperation', 'cvrIncluded'],
   MISC: ['mainConcept', 'governingLaw', 'jurisdictionExclusive', 'juryWaiver', 'specificPerformance', 'thirdPartyBeneficiaryExceptions'],
   OTHER: ['mainConcept', 'summary', 'crossReferences'],
@@ -1843,11 +1847,54 @@ function PreambleCard({ provision, onEdit }) {
    provisions side-by-side. These come BEFORE the table of
    enumerated negative restrictions.
    ═══════════════════════════════════════════════════════════ */
+/* Split a "General Exceptions" / section-wide carve-outs blob into a list
+ * of structured items. Tries to split on:
+ *   - enumerated sub-clauses ("(i)", "(ii)", "(a)", "(b)") at the start of an item
+ *   - "Except as ... ; (i) ... ; (ii) ..." patterns
+ *   - semicolons or "; or" separators
+ *   - sentence boundaries as a last resort
+ * Returns an array of trimmed string items (de-duped, length > 8). */
+function splitGeneralExceptionsItems(text) {
+  if (!text || typeof text !== 'string') return [];
+  let body = text.trim();
+  // Strip leading framing like "Except as ..." and "Notwithstanding ...".
+  // Keep it as a "preface" so the reader still sees the framing if present.
+  const items = [];
+
+  // Try enumerated sub-clause splitting first.
+  const enumeratedRe = /\(([ivxlcdm]+|[a-z]|\d+)\)\s+/gi;
+  const matches = [];
+  let m;
+  while ((m = enumeratedRe.exec(body)) !== null) {
+    matches.push({ index: m.index, marker: m[0] });
+  }
+  if (matches.length >= 2) {
+    for (let i = 0; i < matches.length; i++) {
+      const start = matches[i].index + matches[i].marker.length;
+      const end = i + 1 < matches.length ? matches[i + 1].index : body.length;
+      const t = body.substring(start, end).trim().replace(/[;,]\s*(?:or|and)?\s*$/, '');
+      if (t.length > 8) items.push(t);
+    }
+    return items;
+  }
+
+  // Fallback: split on "; " or " and " between clauses. Keep it conservative.
+  const parts = body
+    .split(/(?:\s*;\s+(?:and|or)?\s*)|(?:\.\s+(?=[A-Z(]))/)
+    .map((s) => s.trim().replace(/[;,]\s*(?:or|and)?\s*$/, ''))
+    .filter((s) => s.length > 12);
+  return parts;
+}
+
 function IocBucketCard({ provision, title, onEdit }) {
   const [showFullText, setShowFullText] = useState(false);
   if (!provision) return null;
   const features = getStructuredFeatures(provision) || {};
   const limbs = Array.isArray(features.affirmativeLimbs) ? features.affirmativeLimbs : [];
+  const isGeneralExceptions = isIocGeneralExceptions(provision);
+  const exceptionItems = isGeneralExceptions && (provision.full_text || provision.text)
+    ? splitGeneralExceptionsItems(provision.full_text || provision.text)
+    : [];
 
   const renderLimb = (limb) => {
     if (limb && typeof limb === 'object' && (limb.obligation_label || limb.text)) {
@@ -1893,6 +1940,12 @@ function IocBucketCard({ provision, title, onEdit }) {
             <li key={i}>{renderLimb(limb)}</li>
           ))}
         </ol>
+      ) : isGeneralExceptions && exceptionItems.length > 0 ? (
+        <ul className="list-disc list-inside space-y-1 text-xs font-ui text-ink">
+          {exceptionItems.map((item, i) => (
+            <li key={i} className="leading-relaxed">{item}</li>
+          ))}
+        </ul>
       ) : (
         <p className="font-body text-sm text-ink leading-relaxed whitespace-pre-wrap">
           {provision.full_text || provision.text || ''}
@@ -2079,8 +2132,8 @@ const HIDDEN_TABLE_COLUMNS = {
   // REP-T/REP-B: rubric schema includes 'mainConcept' but the column is the
   // same as the "Term" column in the table, so hide it as a defensive measure.
   // Also hide crossReferences per user request.
-  'REP-T': ['mainConcept', 'crossReferences'],
-  'REP-B': ['mainConcept', 'crossReferences'],
+  'REP-T': ['mainConcept', 'crossReferences', 'linkedBringDownStandard'],
+  'REP-B': ['mainConcept', 'crossReferences', 'linkedBringDownStandard'],
   COND: ['certificationRequired', 'dollarThreshold', 'scheduleReference', 'bringDownTiers'],
   'COND-M': ['certificationRequired', 'dollarThreshold', 'scheduleReference', 'bringDownTiers'],
   'COND-B': ['certificationRequired', 'dollarThreshold', 'scheduleReference', 'bringDownTiers'],
@@ -2478,19 +2531,13 @@ function buildCommonStockRow(convertProv) {
 }
 
 function ConsidTable({ provisions, onSelectProvision }) {
-  // Partition: equity-award provisions vs. everything else (conversion,
-  // exchange mechanics, withholding, dissenting shares, etc.).
+  // Partition: equity-award provisions vs. everything else.
   const equityProvisions = provisions.filter(isConsidEquityProvision);
   const otherProvisions = provisions.filter((p) => !isConsidEquityProvision(p));
 
   const equityRows = buildEquityRows(equityProvisions);
 
-  // Prepend a synthetic Common Stock row sourced from the CONSID-CONVERT
-  // provision (the "Conversion of Shares" / "Effect on Capital Stock" row).
-  // This ensures the headline per-share consideration is visible at the top
-  // of the Equity Treatment table even when no equity awards are present.
-  // Fallback chain: explicit CONSID-CONVERT detection → any non-equity CONSID
-  // provision carrying a perShareAmount → first non-equity CONSID provision.
+  // Find the CONSID-CONVERT provision (carries the headline per-share amount).
   let convertProv = provisions.find(isConsidConvertProvision);
   if (!convertProv) {
     convertProv = otherProvisions.find((p) => {
@@ -2500,7 +2547,6 @@ function ConsidTable({ provisions, onSelectProvision }) {
   }
   const commonStockRow = buildCommonStockRow(convertProv);
   if (commonStockRow) {
-    // Avoid duplicate if an equity row already covers Common Stock somehow.
     const alreadyHasCommonStock = equityRows.some((r) =>
       isTaggedItem(r.instrument) && r.instrument.code === 'COMMON_STOCK'
     );
@@ -2509,116 +2555,113 @@ function ConsidTable({ provisions, onSelectProvision }) {
     }
   }
 
-  // Determine if considerationType + perShareAmount are uniform across the
-  // remaining (non-equity) provisions — if so, hoist into a header.
-  const considTypes = new Set();
-  const perShares = new Set();
-  for (const p of otherProvisions) {
+  // Build the headline price + consideration-type hero block. Scan all
+  // provisions for the first non-empty perShareAmount + considerationType.
+  let heroPerShare = null;
+  let heroConsidType = null;
+  for (const p of provisions) {
     const f = getStructuredFeatures(p) || {};
-    const ct = f.considerationType;
-    const ctKey = isTaggedItem(ct) ? ct.code : (typeof ct === 'string' ? ct : null);
-    if (ctKey) considTypes.add(ctKey);
-    if (f.perShareAmount) perShares.add(String(f.perShareAmount));
-  }
-  const uniformConsid = considTypes.size === 1 && perShares.size === 1;
-  let headerLine = null;
-  if (uniformConsid) {
-    const sample = otherProvisions
-      .map((p) => getStructuredFeatures(p) || {})
-      .find((f) => f.considerationType || f.perShareAmount) || {};
-    const ctLabel = isTaggedItem(sample.considerationType)
-      ? (resolveTaggedLabel('considerationType', sample.considerationType) || sample.considerationType.code)
-      : sample.considerationType;
-    const per = sample.perShareAmount;
-    headerLine = `Consideration: ${per ? `$${per}` : ''}${per && ctLabel ? ' / ' : ''}${ctLabel || ''}`.trim();
+    if (!heroPerShare && f.perShareAmount) heroPerShare = String(f.perShareAmount);
+    if (!heroConsidType && f.considerationType) {
+      heroConsidType = isTaggedItem(f.considerationType)
+        ? (resolveTaggedLabel('considerationType', f.considerationType) || f.considerationType.label || f.considerationType.code)
+        : String(f.considerationType);
+    }
+    if (heroPerShare && heroConsidType) break;
   }
 
-  // Hide equity-specific columns from the conversion-of-shares table.
-  const baseColumns = getFeatureSchema('CONSID');
-  const hidden = new Set(CONSID_EQUITY_COLUMN_KEYS);
-  if (uniformConsid) {
-    hidden.add('considerationType');
-    hidden.add('perShareAmount');
+  // Find appraisalRightsAvailable across all CONSID provisions (first non-null).
+  let appraisalAvailable = null;
+  for (const p of provisions) {
+    const f = getStructuredFeatures(p) || {};
+    if (f.appraisalRightsAvailable !== null && f.appraisalRightsAvailable !== undefined) {
+      appraisalAvailable = f.appraisalRightsAvailable;
+      break;
+    }
   }
-  const columns = baseColumns.filter((k) => !hidden.has(k));
 
-  // Drop empty columns to keep the table readable.
-  const columnsWithData = columns.filter((k) =>
-    otherProvisions.some((p) => {
-      const v = (getStructuredFeatures(p) || {})[k];
-      if (v === null || v === undefined || v === '' || v === false) return false;
-      if (Array.isArray(v) && v.length === 0) return false;
-      return true;
-    })
-  );
-  const finalColumns = columnsWithData.length > 0 ? columnsWithData : columns;
+  // Format per-share for display ("47.50" -> "$47.50", "$47.50" -> "$47.50").
+  const formatPerShare = (raw) => {
+    if (!raw) return null;
+    const s = String(raw).trim();
+    if (s.startsWith('$')) return s;
+    if (/^[\d,.]+$/.test(s)) return `$${s}`;
+    return s;
+  };
+  const heroPriceText = formatPerShare(heroPerShare);
+
+  const renderAppraisalValue = (v) => {
+    if (v === true || v === 'yes' || v === 'true') return 'Yes';
+    if (v === false || v === 'no' || v === 'false') return 'No';
+    return String(v);
+  };
 
   return (
     <div className="space-y-3">
+      {/* Hero block: headline price + consideration type + appraisal rights. */}
+      {(heroPriceText || heroConsidType || appraisalAvailable !== null) && (
+        <div className="bg-white border-2 border-lime-300 rounded-lg shadow-sm px-5 py-4">
+          {heroPriceText && (
+            <div className="font-display text-3xl font-semibold text-ink leading-tight">
+              {heroPriceText}
+              <span className="text-base font-ui font-normal text-inkMid ml-2">per share</span>
+            </div>
+          )}
+          {heroConsidType && (
+            <div className="mt-1 text-xs font-ui font-medium text-lime-900 uppercase tracking-wider">
+              {heroConsidType}
+            </div>
+          )}
+          {appraisalAvailable !== null && (
+            <div className="mt-2 pt-2 border-t border-lime-200 text-xs font-ui text-inkMid">
+              <span className="font-medium text-inkFaint uppercase tracking-wider mr-2">
+                Appraisal Rights Available:
+              </span>
+              <span className="text-ink font-medium">
+                {renderAppraisalValue(appraisalAvailable)}
+              </span>
+            </div>
+          )}
+        </div>
+      )}
+
       {equityRows.length > 0 && (
         <EquityAwardTable rows={equityRows} onSelectProvision={onSelectProvision} />
       )}
 
-      {headerLine && (
-        <div className="bg-lime-50 border border-lime-200 rounded px-3 py-2">
-          <p className="text-sm font-ui font-medium text-lime-900">{headerLine}</p>
-        </div>
-      )}
-
+      {/* Other CONSID provisions — list as clickable links, NOT a detail table. */}
       {otherProvisions.length > 0 && (
         <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
           <div className="px-3 py-2 bg-bg/60 border-b border-border">
             <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
-              Conversion of Shares &amp; Exchange Mechanics
+              Other Consideration Provisions
             </p>
           </div>
-          <div className="overflow-x-auto">
-            <table className="min-w-full text-xs font-ui">
-              <thead className="bg-bg/60 border-b border-border">
-                <tr>
-                  <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap sticky left-0 bg-bg/60 z-10">Term</th>
-                  {finalColumns.map((k) => (
-                    <th key={k} className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">
-                      {humanizeKey(k)}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {otherProvisions.map((p) => {
-                  const features = getStructuredFeatures(p) || {};
-                  return (
-                    <tr key={p.id} className="hover:bg-paper transition-colors">
-                      <td className="px-3 py-2 align-top whitespace-nowrap sticky left-0 bg-white z-10">
-                        <button
-                          type="button"
-                          onClick={() => onSelectProvision && onSelectProvision(p)}
-                          className="text-left text-accentDeep hover:underline font-semibold inline-flex items-center gap-2"
-                        >
-                          <span
-                            style={{
-                              display: 'inline-block',
-                              width: 7,
-                              height: 7,
-                              borderRadius: 2,
-                              background: typeHex(p.type),
-                              flexShrink: 0,
-                            }}
-                          />
-                          {p.category || 'General'}
-                        </button>
-                      </td>
-                      {finalColumns.map((k) => (
-                        <td key={k} className="px-3 py-2 align-top max-w-[260px] text-ink">
-                          {renderFeatureCell(k, features[k])}
-                        </td>
-                      ))}
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+          <ul className="divide-y divide-border">
+            {otherProvisions.map((p) => (
+              <li key={p.id}>
+                <button
+                  type="button"
+                  onClick={() => onSelectProvision && onSelectProvision(p)}
+                  className="w-full text-left px-4 py-2 hover:bg-bg/40 transition-colors flex items-center gap-2"
+                >
+                  <span
+                    style={{
+                      display: 'inline-block',
+                      width: 7,
+                      height: 7,
+                      borderRadius: 2,
+                      background: typeHex(p.type),
+                      flexShrink: 0,
+                    }}
+                  />
+                  <span className="text-sm text-accent font-medium hover:underline">
+                    {p.category || 'General'}
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>
@@ -2949,6 +2992,166 @@ function MultiCodeStructLikeTable({ provisions, type, onSelectProvision }) {
           ))}
         </tbody>
       </table>
+    </div>
+  );
+}
+
+/* ─── BRINGDOWN TABLE — for REP-T / REP-B category pages.
+ *     Pulls bringDownTiers from the matching COND provision (COND-B-REP for
+ *     REP-T, COND-S-REP for REP-B) and renders the tiers grouped by standard:
+ *     "General Standard" (the catch-all tier) + "Higher Standards" (each
+ *     non-catch-all tier with its list of covered reps). */
+function isCondRepProvision(p, repsType) {
+  if (!p) return false;
+  const meta = getAiMetadata(p) || {};
+  const code = meta.code || p.code || '';
+  if (repsType === 'REP-T' && code === 'COND-B-REP') return true;
+  if (repsType === 'REP-B' && code === 'COND-S-REP') return true;
+  return false;
+}
+
+function isCatchAllRepsCovered(reps) {
+  if (!reps) return false;
+  const s = String(reps).toLowerCase().trim();
+  if (!s) return false;
+  // Heuristics: "all other reps", "the remaining reps", "all reps", "each
+  // representation", "all representations except", "general" / "default".
+  if (/\ball\s+(?:other\s+)?(?:reps|representations)\b/.test(s)) return true;
+  if (/\b(?:remaining|other|each|every)\s+(?:reps|representations)\b/.test(s)) return true;
+  if (/^general\b/.test(s) || /^default\b/.test(s)) return true;
+  if (/\bexcept\b/.test(s)) return true;
+  return false;
+}
+
+function BringdownTable({ provisions, repsType }) {
+  // Find the matching COND-B-REP / COND-S-REP provision.
+  const condProvs = (provisions || []).filter((p) => isCondRepProvision(p, repsType));
+  // Gather tiers from any matching provisions.
+  const tiers = [];
+  for (const cp of condProvs) {
+    const f = getStructuredFeatures(cp) || {};
+    if (Array.isArray(f.bringDownTiers)) {
+      for (const t of f.bringDownTiers) {
+        if (t && typeof t === 'object') tiers.push(t);
+      }
+    }
+  }
+
+  if (tiers.length === 0) return null;
+
+  // Identify the catch-all tier (the "general standard"). Heuristic: the
+  // tier whose reps_covered matches isCatchAllRepsCovered. If none match,
+  // assume the LAST tier is the catch-all (drafters typically state the
+  // general standard last, after enumerating higher-standard exceptions).
+  let generalIdx = tiers.findIndex((t) => isCatchAllRepsCovered(t.reps_covered || t.repsCovered));
+  if (generalIdx < 0) generalIdx = tiers.length - 1;
+  const generalTier = tiers[generalIdx];
+  const higherTiers = tiers.filter((_, i) => i !== generalIdx);
+
+  // Group higher tiers by their standard label so we can show them as
+  // "Higher Standards" with each label heading a list of covered reps.
+  const higherByStandard = new Map();
+  for (const t of higherTiers) {
+    const stdLabel = t.standard_label || t.standardLabel || t.standard || t.standardCode || '(unspecified standard)';
+    const reps = t.reps_covered || t.repsCovered || '';
+    const arr = higherByStandard.get(stdLabel) || [];
+    if (reps) arr.push(reps);
+    higherByStandard.set(stdLabel, arr);
+  }
+
+  const tierStdLabel = (t) =>
+    t.standard_label || t.standardLabel || t.standard || t.standardCode || '(unspecified)';
+
+  return (
+    <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+      <div className="px-3 py-2 bg-bg/60 border-b border-border">
+        <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+          Bringdown Standards
+        </p>
+      </div>
+      <div className="px-4 py-3 space-y-3 text-xs font-ui">
+        {generalTier && (
+          <div>
+            <div className="text-[10px] font-medium text-inkFaint uppercase tracking-wider mb-0.5">
+              General Standard
+            </div>
+            <div className="text-sm text-ink leading-relaxed">
+              {tierStdLabel(generalTier)}
+            </div>
+            {(generalTier.exceptions || generalTier.reps_covered) && (
+              <div className="text-[11px] text-inkMid mt-0.5">
+                {generalTier.reps_covered && (
+                  <span className="italic">{generalTier.reps_covered}</span>
+                )}
+                {generalTier.exceptions && (
+                  <span>{generalTier.reps_covered ? ' — ' : ''}{generalTier.exceptions}</span>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {higherByStandard.size > 0 && (
+          <div className="pt-2 border-t border-border">
+            <div className="text-[10px] font-medium text-inkFaint uppercase tracking-wider mb-1">
+              Higher Standards (specific reps)
+            </div>
+            <div className="space-y-2">
+              {Array.from(higherByStandard.entries()).map(([stdLabel, repsList]) => (
+                <div key={stdLabel}>
+                  <div className="text-sm text-ink font-medium">{stdLabel}:</div>
+                  {repsList.length > 0 ? (
+                    <ul className="list-disc list-inside text-[11px] text-inkMid mt-0.5 space-y-0.5">
+                      {repsList.map((reps, i) => (
+                        <li key={i} className="whitespace-pre-wrap">{reps}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <div className="text-[11px] text-inkFaint italic mt-0.5">
+                      (no specific reps listed)
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ─── DEFINITIONS LIST — for the DEF category page.
+ *     User wants no preamble, no summary table, no structured features view.
+ *     Just an alphabetical list of all defined terms, each clickable to open
+ *     the edit panel. Renders as a multi-column grid for compactness. */
+function DefinitionsList({ provisions, onSelectProvision }) {
+  const sorted = [...(provisions || [])].sort((a, b) =>
+    String(a.category || '').localeCompare(String(b.category || ''), undefined, { sensitivity: 'base' })
+  );
+  if (sorted.length === 0) return null;
+  return (
+    <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+      <div className="px-3 py-2 bg-bg/60 border-b border-border flex items-center justify-between">
+        <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+          Defined Terms
+        </p>
+        <p className="text-[10px] font-ui text-inkFaint">{sorted.length}</p>
+      </div>
+      <ul className="px-4 py-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-1">
+        {sorted.map((p) => (
+          <li key={p.id} className="truncate">
+            <button
+              type="button"
+              onClick={() => onSelectProvision && onSelectProvision(p)}
+              className="text-left text-sm text-accent hover:underline font-ui"
+              title={p.category || 'Definition'}
+            >
+              {p.category || 'Definition'}
+            </button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
@@ -5493,7 +5696,16 @@ export default function ReviewPage() {
                                   onEdit={handleEditProvision}
                                 />
                               )}
-                              {rest.length > 0 && (
+                              {(type === 'REP-T' || type === 'REP-B') && (
+                                <BringdownTable provisions={provisions} repsType={type} />
+                              )}
+                              {rest.length > 0 && type === 'DEF' && (
+                                <DefinitionsList
+                                  provisions={rest}
+                                  onSelectProvision={handleEditProvision}
+                                />
+                              )}
+                              {rest.length > 0 && type !== 'DEF' && (
                                 <ProvisionTable
                                   provisions={rest}
                                   type={type}
