@@ -265,11 +265,11 @@ function formatFeatureValue(v) {
 
 /* ── Per-type field display order — drives StructuredFeatures layout ── */
 const FEATURE_DISPLAY_ORDER = {
-  // IOC table — drop the redundant 'mainObligation' column (category column
-  // already conveys the obligation) and lead with permittedExceptions so the
-  // most-compared field is first.
+  // IOC table — drop the redundant 'mainObligation' and 'consentStandard'
+  // columns (category column already conveys the obligation) and lead with
+  // permittedExceptions so the most-compared field is first.
   IOC: [
-    'permittedExceptions', 'consentStandard', 'dollarThreshold', 'effortsStandard',
+    'permittedExceptions', 'dollarThreshold', 'effortsStandard',
     'crossReferences',
   ],
   'COND-M': ['mainCondition', 'bringDownStandard', 'tieredBringDown', 'tiers', 'certificationRequired', 'dollarThreshold', 'scheduleReference'],
@@ -1401,9 +1401,13 @@ function CategoryOverview({ provisions, onSelectProvision }) {
 // the summary table (either redundant with the row's main concept, captured
 // inline in the exceptions column, or moved to the preamble section).
 const HIDDEN_TABLE_COLUMNS = {
-  IOC: ['pandemicCarveout', 'requiredByLawCarveout', 'ordinaryCourseCarveout', 'scheduleReference'],
-  'IOC-T': ['pandemicCarveout', 'requiredByLawCarveout', 'ordinaryCourseCarveout', 'scheduleReference'],
-  'IOC-B': ['pandemicCarveout', 'requiredByLawCarveout', 'ordinaryCourseCarveout', 'scheduleReference'],
+  IOC: ['pandemicCarveout', 'requiredByLawCarveout', 'ordinaryCourseCarveout', 'scheduleReference', 'affirmativeLimbs', 'consentStandard'],
+  'IOC-T': ['pandemicCarveout', 'requiredByLawCarveout', 'ordinaryCourseCarveout', 'scheduleReference', 'affirmativeLimbs', 'consentStandard'],
+  'IOC-B': ['pandemicCarveout', 'requiredByLawCarveout', 'ordinaryCourseCarveout', 'scheduleReference', 'affirmativeLimbs', 'consentStandard'],
+  // REP-T/REP-B: rubric schema includes 'mainConcept' but the column is the
+  // same as the "Term" column in the table, so hide it as a defensive measure.
+  'REP-T': ['mainConcept'],
+  'REP-B': ['mainConcept'],
   COND: ['certificationRequired', 'dollarThreshold', 'scheduleReference', 'bringDownTiers'],
   'COND-M': ['certificationRequired', 'dollarThreshold', 'scheduleReference', 'bringDownTiers'],
   'COND-B': ['certificationRequired', 'dollarThreshold', 'scheduleReference', 'bringDownTiers'],
@@ -1527,17 +1531,255 @@ function StructTable({ provisions, onSelectProvision }) {
   );
 }
 
-/* ─── CONSID table:
- *     - If considerationType + perShareAmount are uniform across rows, hoist
- *       them into a single "Consideration: $X / [type]" header above the table.
- *     - For the equity-awards portion, each instrument (Options, RSUs, ESPP)
- *       gets its own row with columns: outstandingCount, treatment, vesting,
- *       cashOutFormula. */
+/* ─── CONSID category page layout:
+ *     1. Equity Award Treatment table at the TOP — one row per equity
+ *        instrument (Options, RSUs, PSUs, ESPP, etc.) with columns:
+ *        Instrument | Outstanding | Treatment | Vesting | Cash-Out Formula | Cutoff.
+ *     2. Conversion of Shares / Exchange / Withholding / Dissent table below —
+ *        only NON-equity provisions, with equity-specific columns hidden.
+ *
+ *     The parser's expandConsidEquityByInstrument() splits each CONSID-EQUITY
+ *     provision into one row per instrument (instrumentType set per row). We
+ *     also handle the pre-expansion shape (parallel outstandingInstruments +
+ *     instrumentTreatments arrays) and a regex fallback against the raw text
+ *     when the structured equity fields are entirely empty. */
+
+// Equity-specific column keys: these should NEVER appear in the lower
+// "Conversion of Shares" table (they only make sense for the equity table).
+const CONSID_EQUITY_COLUMN_KEYS = new Set([
+  'instrumentType',
+  'outstandingInstruments',
+  'instrumentTreatments',
+  'outstandingCount',
+  'vestingAcceleration',
+  'cashOutAmount',
+  'optionSpread',
+  'performanceTreatment',
+  'espp_treatment',
+  'cutoffDate',
+  'cutoffTreatment',
+  'equityAwardTreatment',
+  'doubleTrigger',
+  'parachuteCap',
+]);
+
+// Heuristic regex for equity instrument names in raw text (case-c fallback).
+// Order matters: PSU before RSU, RESTRICTED_STOCK before STOCK_OPTIONS, etc.
+const EQUITY_TEXT_PATTERNS = [
+  { code: 'PSU', label: 'PSUs', re: /Company\s+(?:Performance(?:-based)?\s+(?:Stock\s+Units?|RSUs?)|PSUs?)/i },
+  { code: 'RSU', label: 'RSUs', re: /Company\s+(?:Restricted\s+Stock\s+Units?|RSUs?)/i },
+  { code: 'RESTRICTED_STOCK', label: 'Restricted Stock Awards', re: /Company\s+Restricted\s+Stock\s+Awards?/i },
+  { code: 'STOCK_OPTIONS', label: 'Stock Options', re: /Company\s+Stock\s+Options?/i },
+  { code: 'ESPP', label: 'ESPP', re: /(?:Company\s+)?ESPP|Employee\s+Stock\s+Purchase\s+Plan/i },
+  { code: 'SAR', label: 'SARs', re: /Stock\s+Appreciation\s+Rights?|SARs?/i },
+  { code: 'WARRANT', label: 'Warrants', re: /Company\s+Warrants?/i },
+];
+
+// Detect whether a provision is an equity-award row. Prefers the
+// ai_metadata.code === 'CONSID-EQUITY' marker, falls back to the category
+// label since p.code is not present on rows fetched from the provisions API.
+function isConsidEquityProvision(p) {
+  const meta = getAiMetadata(p) || {};
+  if (meta.code === 'CONSID-EQUITY') return true;
+  const cat = String(p?.category || '').toLowerCase();
+  if (cat.includes('equity award') || cat.includes('stock plan') || cat.includes('treatment of equity')) {
+    return true;
+  }
+  const f = getStructuredFeatures(p) || {};
+  if (isTaggedItem(f.instrumentType)) return true;
+  const insts = f.outstandingInstruments;
+  if (Array.isArray(insts) && insts.length > 0) return true;
+  return false;
+}
+
+// Build the equity-award rows. Handles three data shapes:
+//  (a) Post-expansion: one provision per instrument; f.instrumentType set.
+//  (b) Pre-expansion: f.outstandingInstruments + f.instrumentTreatments arrays.
+//  (c) No structured equity fields — regex-scan p.full_text for instrument names.
+function buildEquityRows(equityProvisions) {
+  const rows = [];
+  for (const p of equityProvisions) {
+    const f = getStructuredFeatures(p) || {};
+    const insts = Array.isArray(f.outstandingInstruments) ? f.outstandingInstruments : [];
+    const treatments = Array.isArray(f.instrumentTreatments) ? f.instrumentTreatments : [];
+
+    // (a) instrumentType already populated (typical post-expander case).
+    if (isTaggedItem(f.instrumentType)) {
+      rows.push({
+        key: `${p.id}-single`,
+        provision: p,
+        instrument: f.instrumentType,
+        outstandingCount: f.outstandingCount ?? null,
+        treatment: treatments[0] ?? null,
+        vesting: f.vestingAcceleration ?? null,
+        cashOut: f.cashOutAmount ?? f.optionSpread ?? null,
+        cutoff: f.cutoffDate ?? null,
+      });
+      continue;
+    }
+
+    // (b) parallel arrays of instruments + treatments.
+    if (insts.length > 0) {
+      insts.forEach((inst, i) => {
+        rows.push({
+          key: `${p.id}-${i}`,
+          provision: p,
+          instrument: inst,
+          outstandingCount: f.outstandingCount ?? null,
+          treatment: treatments[i] ?? null,
+          vesting: f.vestingAcceleration ?? null,
+          cashOut: f.cashOutAmount ?? f.optionSpread ?? null,
+          cutoff: f.cutoffDate ?? null,
+        });
+      });
+      continue;
+    }
+
+    // (c) no structured equity data — scan raw text for instrument names.
+    const text = String(p?.full_text || '');
+    const found = text ? EQUITY_TEXT_PATTERNS.filter(({ re }) => re.test(text)) : [];
+    if (found.length === 0) {
+      rows.push({
+        key: `${p.id}-unknown`,
+        provision: p,
+        instrument: { code: 'UNKNOWN', label: p.category || 'Equity Award' },
+        outstandingCount: null,
+        treatment: null,
+        vesting: f.vestingAcceleration ?? null,
+        cashOut: f.cashOutAmount ?? f.optionSpread ?? null,
+        cutoff: f.cutoffDate ?? null,
+      });
+    } else {
+      const seenCodes = new Set();
+      found.forEach(({ code, label }, i) => {
+        if (seenCodes.has(code)) return;
+        seenCodes.add(code);
+        rows.push({
+          key: `${p.id}-text-${i}`,
+          provision: p,
+          instrument: { code, label },
+          outstandingCount: null,
+          treatment: null,
+          vesting: f.vestingAcceleration ?? null,
+          cashOut: f.cashOutAmount ?? f.optionSpread ?? null,
+          cutoff: f.cutoffDate ?? null,
+        });
+      });
+    }
+  }
+
+  // De-dupe rows sharing the same provision + instrument code + treatment code.
+  const seen = new Set();
+  const deduped = [];
+  for (const r of rows) {
+    const instCode = isTaggedItem(r.instrument) ? r.instrument.code : String(r.instrument || '');
+    const trCode = isTaggedItem(r.treatment) ? r.treatment.code : '';
+    const sig = `${r.provision.id}::${instCode}::${trCode}`;
+    if (seen.has(sig)) continue;
+    seen.add(sig);
+    deduped.push(r);
+  }
+  return deduped;
+}
+
+function EquityAwardTable({ rows, onSelectProvision }) {
+  if (!rows || rows.length === 0) return null;
+  const renderTagged = (v, fallbackKey) => {
+    if (isTaggedItem(v)) {
+      const label = resolveTaggedLabel(fallbackKey, v) || v.label || v.code;
+      return (
+        <div className="flex items-baseline gap-1.5 flex-wrap">
+          <CodeBadge code={v.code} />
+          <span>{label}</span>
+        </div>
+      );
+    }
+    if (v === null || v === undefined || v === '') {
+      return <span className="text-inkFaint/70 italic">—</span>;
+    }
+    return <span className="whitespace-pre-wrap break-words">{String(v)}</span>;
+  };
+
+  return (
+    <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+      <div className="px-3 py-2 bg-lime-50 border-b border-border">
+        <p className="text-[10px] font-ui font-medium text-lime-900 uppercase tracking-wider">
+          Equity Award Treatment
+        </p>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="min-w-full text-xs font-ui">
+          <thead className="bg-bg/60 border-b border-border">
+            <tr>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">Instrument</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">Outstanding</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Treatment</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Vesting</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Cash-Out Formula</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">Cutoff Date</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {rows.map((row) => {
+              const instLabel = isTaggedItem(row.instrument)
+                ? (resolveTaggedLabel('instrumentType', row.instrument) || row.instrument.label || row.instrument.code)
+                : String(row.instrument || 'Instrument');
+              return (
+                <tr key={row.key} className="hover:bg-bg/40 transition-colors">
+                  <td className="px-3 py-2 align-top whitespace-nowrap">
+                    <button
+                      type="button"
+                      onClick={() => onSelectProvision && onSelectProvision(row.provision)}
+                      className="text-left text-accent hover:underline font-medium"
+                    >
+                      <div className="flex items-baseline gap-1.5 flex-wrap">
+                        {isTaggedItem(row.instrument) && <CodeBadge code={row.instrument.code} />}
+                        <span>{instLabel}</span>
+                      </div>
+                    </button>
+                  </td>
+                  <td className="px-3 py-2 align-top text-ink">
+                    {row.outstandingCount ?? <span className="text-inkFaint/70 italic">—</span>}
+                  </td>
+                  <td className="px-3 py-2 align-top text-ink max-w-[320px]">
+                    {renderTagged(row.treatment, 'instrumentTreatments')}
+                  </td>
+                  <td className="px-3 py-2 align-top text-ink max-w-[240px]">
+                    {renderTagged(row.vesting, 'vestingAcceleration')}
+                  </td>
+                  <td className="px-3 py-2 align-top text-ink max-w-[320px]">
+                    {row.cashOut ? (
+                      <span className="whitespace-pre-wrap break-words">{String(row.cashOut)}</span>
+                    ) : (
+                      <span className="text-inkFaint/70 italic">—</span>
+                    )}
+                  </td>
+                  <td className="px-3 py-2 align-top text-ink whitespace-nowrap">
+                    {row.cutoff ?? <span className="text-inkFaint/70 italic">—</span>}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
 function ConsidTable({ provisions, onSelectProvision }) {
-  // Determine if considerationType + perShareAmount are uniform.
+  // Partition: equity-award provisions vs. everything else (conversion,
+  // exchange mechanics, withholding, dissenting shares, etc.).
+  const equityProvisions = provisions.filter(isConsidEquityProvision);
+  const otherProvisions = provisions.filter((p) => !isConsidEquityProvision(p));
+
+  const equityRows = buildEquityRows(equityProvisions);
+
+  // Determine if considerationType + perShareAmount are uniform across the
+  // remaining (non-equity) provisions — if so, hoist into a header.
   const considTypes = new Set();
   const perShares = new Set();
-  for (const p of provisions) {
+  for (const p of otherProvisions) {
     const f = getStructuredFeatures(p) || {};
     const ct = f.considerationType;
     const ctKey = isTaggedItem(ct) ? ct.code : (typeof ct === 'string' ? ct : null);
@@ -1547,7 +1789,7 @@ function ConsidTable({ provisions, onSelectProvision }) {
   const uniformConsid = considTypes.size === 1 && perShares.size === 1;
   let headerLine = null;
   if (uniformConsid) {
-    const sample = provisions
+    const sample = otherProvisions
       .map((p) => getStructuredFeatures(p) || {})
       .find((f) => f.considerationType || f.perShareAmount) || {};
     const ctLabel = isTaggedItem(sample.considerationType)
@@ -1557,64 +1799,51 @@ function ConsidTable({ provisions, onSelectProvision }) {
     headerLine = `Consideration: ${per ? `$${per}` : ''}${per && ctLabel ? ' / ' : ''}${ctLabel || ''}`.trim();
   }
 
-  // Equity-awards: extract per-instrument rows where present.
-  const equityInstrumentRows = [];
-  for (const p of provisions) {
-    const f = getStructuredFeatures(p) || {};
-    const instruments = f.outstandingInstruments;
-    const treatments = f.instrumentTreatments;
-    if (Array.isArray(instruments) && instruments.length > 0) {
-      instruments.forEach((inst, idx) => {
-        const label = typeof inst === 'string' ? inst : (inst?.label || inst?.code || `Instrument ${idx + 1}`);
-        const tr = Array.isArray(treatments) ? treatments[idx] : null;
-        equityInstrumentRows.push({
-          provId: p.id,
-          provCat: p.category,
-          label,
-          outstandingCount: typeof inst === 'object' ? inst?.count : null,
-          treatment: tr?.treatment ?? (typeof tr === 'string' ? tr : null),
-          vesting: tr?.vesting ?? null,
-          cashOutFormula: tr?.cashOutFormula ?? null,
-          provision: p,
-        });
-      });
-    }
-  }
-
-  // Filter to non-equity-instrument provisions for the main rows.
-  const mainProvisions = provisions.filter((p) => {
-    const f = getStructuredFeatures(p) || {};
-    const arr = f.outstandingInstruments;
-    return !(Array.isArray(arr) && arr.length > 0);
-  });
-
-  // Decide which columns to show for the main table.
+  // Hide equity-specific columns from the conversion-of-shares table.
   const baseColumns = getFeatureSchema('CONSID');
-  const hidden = new Set();
+  const hidden = new Set(CONSID_EQUITY_COLUMN_KEYS);
   if (uniformConsid) {
     hidden.add('considerationType');
     hidden.add('perShareAmount');
   }
-  hidden.add('outstandingInstruments');
-  hidden.add('instrumentTreatments');
   const columns = baseColumns.filter((k) => !hidden.has(k));
+
+  // Drop empty columns to keep the table readable.
+  const columnsWithData = columns.filter((k) =>
+    otherProvisions.some((p) => {
+      const v = (getStructuredFeatures(p) || {})[k];
+      if (v === null || v === undefined || v === '' || v === false) return false;
+      if (Array.isArray(v) && v.length === 0) return false;
+      return true;
+    })
+  );
+  const finalColumns = columnsWithData.length > 0 ? columnsWithData : columns;
 
   return (
     <div className="space-y-3">
+      {equityRows.length > 0 && (
+        <EquityAwardTable rows={equityRows} onSelectProvision={onSelectProvision} />
+      )}
+
       {headerLine && (
         <div className="bg-lime-50 border border-lime-200 rounded px-3 py-2">
           <p className="text-sm font-ui font-medium text-lime-900">{headerLine}</p>
         </div>
       )}
 
-      {mainProvisions.length > 0 && (
+      {otherProvisions.length > 0 && (
         <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+          <div className="px-3 py-2 bg-bg/60 border-b border-border">
+            <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+              Conversion of Shares &amp; Exchange Mechanics
+            </p>
+          </div>
           <div className="overflow-x-auto">
             <table className="min-w-full text-xs font-ui">
               <thead className="bg-bg/60 border-b border-border">
                 <tr>
                   <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap sticky left-0 bg-bg/60 z-10">Term</th>
-                  {columns.map((k) => (
+                  {finalColumns.map((k) => (
                     <th key={k} className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">
                       {humanizeKey(k)}
                     </th>
@@ -1622,7 +1851,7 @@ function ConsidTable({ provisions, onSelectProvision }) {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {mainProvisions.map((p) => {
+                {otherProvisions.map((p) => {
                   const features = getStructuredFeatures(p) || {};
                   return (
                     <tr key={p.id} className="hover:bg-bg/40 transition-colors">
@@ -1635,7 +1864,7 @@ function ConsidTable({ provisions, onSelectProvision }) {
                           {p.category || 'General'}
                         </button>
                       </td>
-                      {columns.map((k) => (
+                      {finalColumns.map((k) => (
                         <td key={k} className="px-3 py-2 align-top max-w-[260px] text-ink">
                           {renderFeatureCell(k, features[k])}
                         </td>
@@ -1646,44 +1875,6 @@ function ConsidTable({ provisions, onSelectProvision }) {
               </tbody>
             </table>
           </div>
-        </div>
-      )}
-
-      {equityInstrumentRows.length > 0 && (
-        <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
-          <div className="px-3 py-2 bg-bg/60 border-b border-border">
-            <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">Equity Award Treatment</p>
-          </div>
-          <table className="min-w-full text-xs font-ui">
-            <thead className="bg-bg/40 border-b border-border">
-              <tr>
-                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Instrument</th>
-                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Outstanding Count</th>
-                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Treatment</th>
-                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Vesting</th>
-                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Cash-Out Formula</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {equityInstrumentRows.map((row, i) => (
-                <tr key={`${row.provId}-${i}`} className="hover:bg-bg/40 transition-colors">
-                  <td className="px-3 py-2 align-top">
-                    <button
-                      type="button"
-                      onClick={() => onSelectProvision && onSelectProvision(row.provision)}
-                      className="text-left text-accent hover:underline font-medium"
-                    >
-                      {row.label}
-                    </button>
-                  </td>
-                  <td className="px-3 py-2 align-top text-ink">{row.outstandingCount ?? <span className="text-inkFaint/70 italic">—</span>}</td>
-                  <td className="px-3 py-2 align-top text-ink">{row.treatment ?? <span className="text-inkFaint/70 italic">—</span>}</td>
-                  <td className="px-3 py-2 align-top text-ink">{row.vesting ?? <span className="text-inkFaint/70 italic">—</span>}</td>
-                  <td className="px-3 py-2 align-top text-ink">{row.cashOutFormula ?? <span className="text-inkFaint/70 italic">—</span>}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </div>
       )}
     </div>
@@ -1716,7 +1907,20 @@ function ProvisionTable({ provisions, type, onSelectProvision }) {
     columns = Array.from(allKeys);
   }
   if (isMultiCode) {
-    columns = ['mainConcept'];
+    // If FEATURE_DISPLAY_ORDER defines explicit columns for this multi-code
+    // type (e.g. NOSOL's 5 deal-protection terms), honor them. Otherwise
+    // fall back to just the mainConcept column.
+    const explicit = FEATURE_DISPLAY_ORDER[type];
+    if (Array.isArray(explicit) && explicit.length > 0) {
+      columns = explicit.slice();
+    } else {
+      columns = ['mainConcept'];
+    }
+    // Also apply hidden-column denylist for multi-code types.
+    const hidden = getHiddenColumnsForType(type);
+    if (hidden.size > 0) {
+      columns = columns.filter((k) => !hidden.has(k));
+    }
   } else {
     // Apply per-type hidden-column denylist (Change 3).
     const hidden = getHiddenColumnsForType(type);
