@@ -897,18 +897,23 @@ function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelect
                 {!groupCollapsed && (
                   <div>
                     {hasChildren ? (
-                      <div className="ml-4 mt-0.5 space-y-0.5">
+                      <div
+                        className="mt-0.5"
+                        style={{ marginLeft: 18, display: 'flex', flexDirection: 'column', gap: 1 }}
+                      >
                         {group.children.map((child) => {
                           const childCollapsed = collapsedTypes[child.type] !== false;
                           const childActive = activeFilter === child.type;
-                          const ctc = typeColor(child.type);
                           const isChildDropTarget = !!dragProvId && dropTargetType === child.type;
                           return (
                             <div key={child.type}>
                               <div
-                                className={`w-full flex items-center justify-between px-2 py-1 rounded text-xs font-ui transition-colors cursor-pointer ${
-                                  childActive ? 'bg-accent/10' : 'hover:bg-bg'
-                                } ${isChildDropTarget ? 'ring-2 ring-accent ring-offset-1' : ''}`}
+                                className={`rec-side-item${childActive ? ' active' : ''}`}
+                                style={{
+                                  fontSize: 12.5,
+                                  padding: '5px 10px',
+                                  boxShadow: isChildDropTarget ? '0 0 0 2px var(--accent)' : 'none',
+                                }}
                                 onClick={() => {
                                   onFilterType(child.type);
                                   if (childCollapsed) {
@@ -919,21 +924,31 @@ function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelect
                                 onDragLeave={() => handleDragLeave(child.type)}
                                 onDrop={(e) => handleDrop(e, child.type)}
                               >
-                                <span className="flex items-center gap-2 min-w-0">
-                                  <button
-                                    type="button"
-                                    onClick={(e) => { e.stopPropagation(); toggleType(child.type); }}
-                                    className="w-4 h-4 flex items-center justify-center rounded text-inkFaint hover:text-ink hover:bg-bg shrink-0 font-mono text-xs leading-none"
-                                    aria-label={childCollapsed ? 'Expand' : 'Collapse'}
-                                  >
-                                    {childCollapsed ? '+' : '–'}
-                                  </button>
-                                  <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${ctc.dot}`} />
-                                  <span className={`truncate ${childActive ? 'text-accent font-medium' : 'text-inkMid'}`}>
-                                    {child.label}
-                                  </span>
-                                  <span className="text-inkFaint">({child.provs.length})</span>
-                                </span>
+                                <button
+                                  type="button"
+                                  onClick={(e) => { e.stopPropagation(); toggleType(child.type); }}
+                                  style={{
+                                    width: 14,
+                                    height: 14,
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    background: 'none',
+                                    border: 'none',
+                                    color: 'var(--ink-faint)',
+                                    cursor: 'pointer',
+                                    fontFamily: 'var(--font-mono)',
+                                    fontSize: 11,
+                                    lineHeight: 1,
+                                    flexShrink: 0,
+                                  }}
+                                  aria-label={childCollapsed ? 'Expand' : 'Collapse'}
+                                >
+                                  {childCollapsed ? '+' : '–'}
+                                </button>
+                                <span className="dot" style={{ background: typeHex(child.type) }} />
+                                <span className="truncate">{child.label}</span>
+                                <span className="count">{child.provs.length}</span>
                               </div>
                               {!childCollapsed && renderProvList(child.provs)}
                             </div>
@@ -952,25 +967,28 @@ function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelect
         </div>
       </div>
 
-      {/* Stats Footer */}
-      <div className="border-t border-border px-4 py-3 space-y-1.5 bg-bg/50">
-        <div className="flex items-center justify-between text-xs font-ui">
-          <span className="text-inkLight">Total</span>
-          <span className="text-ink font-medium">{stats.total}</span>
+      {/* Stats Footer (Recital style) */}
+      <div className="rec-side-stats">
+        <div className="rec-stat-bar">
+          {stats.total > 0 && (
+            <>
+              <i style={{ width: `${(stats.approved / stats.total) * 100}%`, background: 'var(--buyer)' }} />
+              <i style={{ width: `${(stats.flagged / stats.total) * 100}%`, background: 'var(--accent)' }} />
+              <i style={{ flex: 1, background: 'var(--ink-faint)' }} />
+            </>
+          )}
         </div>
-        <div className="flex items-center justify-between text-xs font-ui">
-          <span className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-buyer" />
-            <span className="text-inkLight">Approved</span>
-          </span>
-          <span className="text-buyer font-medium">{stats.approved}</span>
+        <div className="rec-stat-row">
+          <span className="lab">Approved</span>
+          <span className="num">{stats.approved}</span>
         </div>
-        <div className="flex items-center justify-between text-xs font-ui">
-          <span className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-            <span className="text-inkLight">Flagged</span>
-          </span>
-          <span className="text-amber-600 font-medium">{stats.flagged}</span>
+        <div className="rec-stat-row">
+          <span className="lab">Needs review</span>
+          <span className="num">{stats.flagged}</span>
+        </div>
+        <div className="rec-stat-row">
+          <span className="lab">Unreviewed</span>
+          <span className="num">{Math.max(0, stats.total - stats.approved - stats.flagged)}</span>
         </div>
       </div>
     </aside>
