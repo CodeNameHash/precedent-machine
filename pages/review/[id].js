@@ -3880,6 +3880,61 @@ function findCoveredRepNames(tier, repProvisions) {
   return names;
 }
 
+/* Canonical "always look for these" reps. When a deal is missing one, we
+ * synthesize a placeholder row in the main REP list so the absence is loud
+ * instead of silent. Sub-codes match first; fallback to category-regex for
+ * reps that don't have a dedicated sub-code (Parent Litigation/Ownership/
+ * Brokers). */
+const EXPECTED_REPS = {
+  'REP-B': [
+    { label: 'Sufficient Funds',         match: { code: 'REP-B-FUNDS' } },
+    { label: 'Solvency',                 match: { code: 'REP-B-SOLVENCY' } },
+    { label: 'Anti-Reliance / No Other Reps', match: { code: 'REP-B-ANTIRELIANCE' } },
+    { label: 'Parent Litigation',        match: { categoryRegex: /\blitig/i } },
+    { label: 'Parent Ownership of Company Stock', match: { categoryRegex: /\bownership\b|company\s+(?:capital\s+)?stock|share\s+ownership/i } },
+    { label: 'Brokers & Finders',        match: { categoryRegex: /broker|finder/i } },
+  ],
+  'REP-T': [
+    { label: 'Sufficiency of Assets',    match: { code: 'REP-T-SUFFICIENCY' } },
+    { label: 'Top Customers / Suppliers', match: { code: 'REP-T-TOP-CUSTOMERS' } },
+    { label: 'Material Contracts',       match: { code: 'REP-T-MATERIAL-CONTRACTS' } },
+  ],
+};
+
+function findExpectedRepMatch(list, match) {
+  if (match.code) {
+    const byCode = list.find((p) => (p.code || '').toUpperCase() === match.code.toUpperCase());
+    if (byCode) return byCode;
+  }
+  if (match.categoryRegex) {
+    return list.find((p) => match.categoryRegex.test(p.category || '')) || null;
+  }
+  return null;
+}
+
+/** Augment the rendered REP list with synthetic "_notPresent" rows for any
+ *  expected reps that the parser didn't find. Real provisions pass through
+ *  unchanged. */
+function augmentRepsWithExpectedPlaceholders(list, repsType) {
+  const expected = EXPECTED_REPS[repsType];
+  if (!expected || !Array.isArray(list)) return list || [];
+  const placeholders = [];
+  for (const spec of expected) {
+    const hit = findExpectedRepMatch(list, spec.match);
+    if (hit) continue;
+    placeholders.push({
+      id: `__not_present__${repsType}__${spec.label}`,
+      type: repsType,
+      code: spec.match.code || null,
+      category: spec.label,
+      full_text: '',
+      ai_metadata: null,
+      _notPresent: true,
+    });
+  }
+  return [...list, ...placeholders];
+}
+
 function BringdownTable({ provisions, repsType }) {
   // Find the matching COND-B-REP / COND-S-REP provision.
   const condProvs = (provisions || []).filter((p) => isCondRepProvision(p, repsType));
@@ -4238,6 +4293,33 @@ function ProvisionTable({ provisions, type, onSelectProvision }) {
           </thead>
           <tbody className="divide-y divide-border">
             {provisions.map((p) => {
+              if (p._notPresent) {
+                return (
+                  <tr key={p.id} className="bg-bg/30">
+                    <td className="px-3 py-2 align-top whitespace-nowrap sticky left-0 bg-bg/30 z-10">
+                      <span className="inline-flex items-center gap-2 italic text-inkFaint">
+                        <span
+                          style={{
+                            display: 'inline-block',
+                            width: 7,
+                            height: 7,
+                            borderRadius: 2,
+                            background: 'var(--line)',
+                            flexShrink: 0,
+                          }}
+                        />
+                        {p.category}
+                      </span>
+                    </td>
+                    <td
+                      colSpan={Math.max(columns.length, 1)}
+                      className="px-3 py-2 italic text-inkFaint"
+                    >
+                      Not present in this agreement
+                    </td>
+                  </tr>
+                );
+              }
               const features = getStructuredFeatures(p) || {};
               return (
                 <tr key={p.id} className="hover:bg-paper transition-colors">
@@ -6847,13 +6929,19 @@ export default function ReviewPage() {
                                   onSelectProvision={handleEditProvision}
                                 />
                               )}
-                              {rest.length > 0 && type !== 'DEF' && (
-                                <ProvisionTable
-                                  provisions={rest}
-                                  type={type}
-                                  onSelectProvision={handleEditProvision}
-                                />
-                              )}
+                              {type !== 'DEF' && (() => {
+                                const restAugmented = (type === 'REP-T' || type === 'REP-B')
+                                  ? augmentRepsWithExpectedPlaceholders(rest, type)
+                                  : rest;
+                                if (!restAugmented || restAugmented.length === 0) return null;
+                                return (
+                                  <ProvisionTable
+                                    provisions={restAugmented}
+                                    type={type}
+                                    onSelectProvision={handleEditProvision}
+                                  />
+                                );
+                              })()}
                             </div>
                           ) : (
                             <div className="space-y-3">
