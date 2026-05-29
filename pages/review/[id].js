@@ -6575,6 +6575,40 @@ export default function ReviewPage() {
               <h1 className="rec-deal-title">
                 {deal.acquirer} <span className="vs">acquires</span> {deal.target}
               </h1>
+              {Array.isArray(deal.metadata?.advisors) && deal.metadata.advisors.length > 0 && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: 8, marginBottom: 8 }}>
+                  {deal.metadata.advisors.map((a, idx) => {
+                    const partyLabel =
+                      a.party === 'parent' ? 'Parent'
+                      : a.party === 'company' ? 'Company'
+                      : a.party === 'special_committee' ? 'Special Committee'
+                      : null;
+                    const roleLabel = a.role ? a.role.charAt(0).toUpperCase() + a.role.slice(1) : '';
+                    return (
+                      <span
+                        key={`${a.firm}-${a.party}-${idx}`}
+                        title={`${a.firm}${a.partner ? ' — ' + a.partner : ''} (${roleLabel}${partyLabel ? ', ' + partyLabel : ''})`}
+                        style={{
+                          fontFamily: 'inherit',
+                          fontSize: 10,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.05em',
+                          padding: '3px 8px',
+                          borderRadius: 4,
+                          border: '1px solid #d4d2cd',
+                          background: '#fafaf8',
+                          color: '#3a3633',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        <span style={{ fontWeight: 600 }}>{a.firm.replace(/, LLP$/, '').replace(/ LLP$/, '')}</span>
+                        {partyLabel && <span style={{ color: '#8a8782' }}> · {partyLabel}</span>}
+                        {a.partner && <span style={{ color: '#8a8782' }}> · {a.partner}</span>}
+                      </span>
+                    );
+                  })}
+                </div>
+              )}
               <div className="rec-deal-meta">
                 {deal.sector && (
                   <div className="m">

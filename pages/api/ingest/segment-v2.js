@@ -18,6 +18,7 @@ const { classifySections } = require('../../../lib/parser-v2/classify');
 const { extractProvisions } = require('../../../lib/parser-v2/extract');
 const { validateProvisions } = require('../../../lib/parser-v2/validate');
 const { storeProvisions } = require('../../../lib/parser-v2/store');
+const { extractAdvisors } = require('../../../lib/parser-v2/advisors');
 
 export const config = {
   maxDuration: 300,
@@ -103,7 +104,16 @@ export default async function handler(req, res) {
       // Store the display-cleaned version of the agreement text so the Full
       // Document view renders without EDGAR artifacts, page numbers, etc.
       const displayText = displayCleanText(full_text);
-      storeResult = await storeProvisions(deal_id, finalProvisions, displayText, title, sb);
+      // Stage 4: detect counsel / financial advisors from the preamble +
+      // signature block. Conservative: only emits entries with a confident
+      // party signal. Errors here are non-fatal — fall back to [].
+      let advisors = [];
+      try {
+        advisors = extractAdvisors(displayText) || [];
+      } catch (advErr) {
+        console.warn('[segment-v2] advisor extraction failed:', advErr.message);
+      }
+      storeResult = await storeProvisions(deal_id, finalProvisions, displayText, title, sb, { advisors });
       timing.store = Date.now() - storeStart;
     }
 

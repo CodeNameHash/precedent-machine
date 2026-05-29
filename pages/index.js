@@ -318,6 +318,50 @@ function DealCard({ deal, selected, onToggle, provisionCount, countsLoading }) {
         {deal.sector && <Meta label="Sector" value={deal.sector} />}
       </div>
 
+      {/* Advisors (Stage 4) — small chip block, capped at 4. */}
+      {Array.isArray(deal.metadata?.advisors) && deal.metadata.advisors.length > 0 && (
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 4 }}>
+          {deal.metadata.advisors.slice(0, 4).map((a, idx) => {
+            const partyLabel =
+              a.party === 'parent' ? 'P'
+              : a.party === 'company' ? 'C'
+              : a.party === 'special_committee' ? 'SC'
+              : '';
+            return (
+              <span
+                key={`${a.firm}-${a.party}-${idx}`}
+                title={`${a.firm}${a.partner ? ' — ' + a.partner : ''} (${a.role}${a.party ? ', ' + a.party : ''})`}
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 9,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.04em',
+                  padding: '2px 6px',
+                  borderRadius: 3,
+                  border: '1px solid var(--line)',
+                  background: 'var(--paper)',
+                  color: 'var(--ink-mid)',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {a.firm.replace(/, LLP$/, '').replace(/ LLP$/, '').split(',')[0]}
+                {partyLabel && <span style={{ color: 'var(--ink-faint)' }}> · {partyLabel}</span>}
+              </span>
+            );
+          })}
+          {deal.metadata.advisors.length > 4 && (
+            <span style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: 9,
+              color: 'var(--ink-faint)',
+              padding: '2px 6px',
+            }}>
+              +{deal.metadata.advisors.length - 4} more
+            </span>
+          )}
+        </div>
+      )}
+
       {/* Review action */}
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 6 }}>
         <Link
