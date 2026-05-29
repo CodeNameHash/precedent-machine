@@ -1570,6 +1570,16 @@ function ProvisionCard({ provision, onEdit }) {
   const carveouts = getCardCarveouts(provision);
   const tHex = typeHex(provision.type);
 
+  // For Employee Benefits / Employee Matters COV provisions, render the
+  // Type | Standard | Time Period summary INSIDE this card (below the
+  // source text). buildEmployeeBenefitsSummary works on a list; pass a
+  // single-element list scoped to THIS provision so each Employee
+  // Benefits card shows its own breakdown.
+  const employeeBenefitsSummary = useMemo(() => {
+    if (!isEmployeeBenefitsProvision(provision)) return null;
+    return buildEmployeeBenefitsSummary([provision]);
+  }, [provision]);
+
   const handleCardClick = (e) => {
     // Only open edit panel when clicking the card body (not the source toggle).
     if (e.target.closest('.rec-source-toggle') || e.target.closest('.rec-source-body')) return;
@@ -1652,6 +1662,19 @@ function ProvisionCard({ provision, onEdit }) {
                 {renderFullTextWithRefs(provision.full_text)}
               </div>
             )}
+          </div>
+        )}
+
+        {/* Employee Benefits Treatment table — rendered inside the Employee
+            Benefits / Employee Matters provision card so it sits next to
+            the structured features grid. Stop click propagation so clicking
+            the table or its action buttons doesn't open the edit panel. */}
+        {employeeBenefitsSummary && (
+          <div className="mt-3" onClick={(e) => e.stopPropagation()}>
+            <EmployeeBenefitsTreatmentTable
+              summary={employeeBenefitsSummary}
+              onSelectProvision={onEdit}
+            />
           </div>
         )}
       </div>
@@ -2005,16 +2028,39 @@ function IocPreambleSection({ affirmative, generalExceptions, onEdit }) {
  *    out of the way for other COV types. */
 const EMPLOYEE_BENEFITS_ROWS = [
   { label: 'Base Salary',          itemCodes: ['BASE_SALARY'],
-    keys: ['baseSalaryStandard', 'baseSalary'] },
+    keys: ['baseSalaryStandard', 'baseSalary'],
+    periodKeys: ['baseSalaryPeriod', 'baseSalaryTimePeriod'] },
   { label: 'Bonus',                itemCodes: ['TARGET_BONUS', 'ANNUAL_BONUS_PAID'],
-    keys: ['bonusStandard', 'targetBonusStandard'] },
+    keys: ['bonusStandard', 'targetBonusStandard'],
+    periodKeys: ['bonusPeriod', 'targetBonusPeriod', 'bonusTimePeriod'] },
   { label: 'Benefits',             itemCodes: ['HEALTH_WELFARE', 'RETIREMENT', 'OTHER_BENEFITS'],
-    keys: ['benefitsStandard', 'healthWelfareStandard'] },
+    keys: ['benefitsStandard', 'healthWelfareStandard'],
+    periodKeys: ['benefitsPeriod', 'healthWelfarePeriod'] },
   { label: 'Severance',            itemCodes: ['SEVERANCE'],
-    keys: ['severanceStandard'] },
+    keys: ['severanceStandard'],
+    periodKeys: ['severancePeriod', 'severanceTimePeriod'] },
   { label: 'Long-Term Incentive',  itemCodes: ['LONG_TERM_INCENTIVE', 'EQUITY_AWARDS'],
-    keys: ['ltiStandard', 'longTermIncentiveStandard'] },
+    keys: ['ltiStandard', 'longTermIncentiveStandard'],
+    periodKeys: ['ltiPeriod', 'longTermIncentivePeriod'] },
 ];
+
+// Format months/duration → friendly text. Numbers become "N months";
+// strings pass through. Used by the Time Period column to coerce
+// protectionPeriodMonths (number) into something readable.
+function formatBenefitsPeriod(v) {
+  if (v === null || v === undefined || v === '' || v === false) return null;
+  if (typeof v === 'number') {
+    return `${v} month${v === 1 ? '' : 's'}`;
+  }
+  if (typeof v === 'string') {
+    const t = v.trim();
+    return t || null;
+  }
+  if (isTaggedItem(v)) {
+    return v.label || v.text || v.code;
+  }
+  return String(v);
+}
 
 function isEmployeeBenefitsProvision(p) {
   if (!p) return false;
@@ -2027,8 +2073,21 @@ function buildEmployeeBenefitsSummary(covProvisions) {
   const ebProvs = (covProvisions || []).filter(isEmployeeBenefitsProvision);
   if (ebProvs.length === 0) return null;
   const rows = [];
+  // Section-wide protection period — used as the fallback Time Period for
+  // every row when nothing more specific is set per item.
+  let fallbackPeriod = null;
+  for (const p of ebProvs) {
+    const f = getStructuredFeatures(p) || {};
+    fallbackPeriod = fallbackPeriod
+      || formatBenefitsPeriod(f.protectionPeriodMonths)
+      || formatBenefitsPeriod(f.protectionPeriod)
+      || formatBenefitsPeriod(f.employeeBenefitPeriod);
+    if (fallbackPeriod) break;
+  }
+
   for (const spec of EMPLOYEE_BENEFITS_ROWS) {
     let standardText = null;
+    let periodText = null;
     let source = null;
     for (const p of ebProvs) {
       const f = getStructuredFeatures(p) || {};
@@ -2044,23 +2103,48 @@ function buildEmployeeBenefitsSummary(covProvisions) {
         source = p;
         break;
       }
-      if (standardText) break;
+      // Look for an explicit per-item period via well-known feature keys.
+      if (!periodText) {
+        for (const pk of (spec.periodKeys || [])) {
+          const v = f[pk];
+          const fmt = formatBenefitsPeriod(v);
+          if (fmt) { periodText = fmt; break; }
+        }
+      }
+      if (standardText && periodText) break;
       // 2. compensationItems array (the canonical shape).
       const items = Array.isArray(f.compensationItems) ? f.compensationItems : [];
       for (const item of items) {
         if (!item || typeof item !== 'object') continue;
         const itemCode = String(item.item || item.code || '').toUpperCase();
         if (!spec.itemCodes.includes(itemCode)) continue;
-        const std = item.standard_label || item.standardLabel || item.standard_code || item.standardCode;
-        if (std) {
-          standardText = String(std);
-          source = p;
-          break;
+        if (!standardText) {
+          const std = item.standard_label || item.standardLabel || item.standard_code || item.standardCode;
+          if (std) {
+            standardText = String(std);
+            source = p;
+          }
         }
+        if (!periodText) {
+          const itemPeriod = formatBenefitsPeriod(
+            item.timePeriod || item.time_period || item.duration || item.period,
+          );
+          if (itemPeriod) periodText = itemPeriod;
+        }
+        if (standardText && periodText) break;
       }
-      if (standardText) break;
+      if (standardText && periodText) break;
     }
-    if (standardText) rows.push({ label: spec.label, value: standardText, source });
+    if (standardText) {
+      rows.push({
+        label: spec.label,
+        value: standardText,
+        // Fall back to the section-wide protection period when nothing more
+        // specific is available, so each row still has a Time Period.
+        period: periodText || fallbackPeriod || null,
+        source,
+      });
+    }
   }
   if (rows.length === 0) return null;
   return { rows, ebProvs };
@@ -2080,8 +2164,9 @@ function EmployeeBenefitsTreatmentTable({ summary, onSelectProvision }) {
         <table className="min-w-full text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
             <tr>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider w-[200px]">Item</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider w-[180px]">Type</th>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Standard</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[160px]">Time Period</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -2100,6 +2185,9 @@ function EmployeeBenefitsTreatmentTable({ summary, onSelectProvision }) {
                   ) : (
                     <span>{row.value}</span>
                   )}
+                </td>
+                <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
+                  {row.period || <span className="text-inkFaint/70 italic">—</span>}
                 </td>
               </tr>
             ))}
@@ -2120,28 +2208,40 @@ const IOC_AFFIRMATIVE_BUCKETS = [
     code: 'IOC-ORDINARY',
     name: 'Ordinary Course Obligation',
     catRe: /ordinary\s+course/i,
+    defaultAppliesTo: 'Business operations',
   },
   {
     code: 'IOC-PRESERVE',
     name: 'Preservation of Business Relationships',
     catRe: /(?:preservation|preserve).*relationship/i,
+    defaultAppliesTo: 'Customers, suppliers, employees, governmental entities',
   },
   {
     code: 'IOC-MAINTAIN',
     name: 'Maintain Business Organization & Material Assets',
     catRe: /maintain.*(?:business|organization|assets)/i,
+    defaultAppliesTo: 'Officers, key employees, properties, assets',
   },
   {
     code: 'IOC-NOACTION',
     name: 'General No-Action Restriction',
     catRe: /no\s+action/i,
   },
-  {
-    code: 'IOC-NEWLINE',
-    name: 'No New Lines of Business',
-    catRe: /new\s+lines?\s+of\s+business/i,
-  },
+  // No New Lines of Business is a NEGATIVE covenant — intentionally NOT
+  // included here. It falls through to the main IOC sub-clause table below.
 ];
+
+// Codes/categories that identify a "No New Lines of Business" provision —
+// used to exclude it from the affirmative-covenants box so it stays in the
+// negative sub-clause table where it belongs.
+function isNoNewLinesOfBusiness(p) {
+  if (!p) return false;
+  const meta = getAiMetadata(p) || {};
+  const code = String(meta.code || p.code || '');
+  if (code === 'IOC-NEWLINE') return true;
+  const cat = String(p?.category || '');
+  return /new\s+lines?\s+of\s+business|no\s+new\s+line\s+of\s+business/i.test(cat);
+}
 
 function findIocAffirmativeMatches(iocProvisions) {
   if (!Array.isArray(iocProvisions) || iocProvisions.length === 0) return [];
@@ -2177,20 +2277,64 @@ function IocAffirmativeCovenantsTable({ iocProvisions, onSelectProvision }) {
   );
   if (matches.length === 0) return null;
 
-  const textFor = (provision) => {
-    const features = getStructuredFeatures(provision) || {};
-    if (typeof features.mainConcept === 'string' && features.mainConcept.trim()) {
-      return features.mainConcept.trim();
+  // Pull the efforts standard for THIS provision. Prefer the canonical
+  // tagged effortsStandard; fall back to any obligation's efforts_standard
+  // (used on the affirmativeLimbs / positiveObligations arrays).
+  const standardFor = (provision) => {
+    const f = getStructuredFeatures(provision) || {};
+    if (isTaggedItem(f.effortsStandard)) {
+      return resolveTaggedLabel('effortsStandard', f.effortsStandard) || f.effortsStandard.label || f.effortsStandard.code;
     }
-    if (isTaggedItem(features.mainConcept)) {
-      const lbl = resolveTaggedLabel('mainConcept', features.mainConcept);
-      if (lbl) return lbl;
+    if (typeof f.effortsStandard === 'string' && f.effortsStandard.trim()) {
+      return f.effortsStandard.trim();
     }
-    const t = provision.full_text || provision.text || '';
-    if (!t) return '';
-    // Truncate long text to a reasonable summary length.
-    const trimmed = t.trim();
-    return trimmed.length > 320 ? `${trimmed.slice(0, 320).trim()}…` : trimmed;
+    // Try the obligation arrays — they each carry their own efforts_standard.
+    const limbs = Array.isArray(f.affirmativeLimbs) ? f.affirmativeLimbs
+      : Array.isArray(f.positiveObligations) ? f.positiveObligations
+      : [];
+    for (const limb of limbs) {
+      if (!limb || typeof limb !== 'object') continue;
+      const es = limb.efforts_standard || limb.effortsStandard;
+      if (!es) continue;
+      if (typeof es === 'string' && es.trim()) return es.trim();
+      if (isTaggedItem(es)) {
+        return resolveTaggedLabel('effortsStandard', es) || es.label || es.code;
+      }
+    }
+    return null;
+  };
+
+  // Pull the scope / "applies to" text. Prefer a per-bucket structured field;
+  // fall back to bucket-level defaults so the canonical rows always read well.
+  const appliesToFor = (provision, bucket) => {
+    const f = getStructuredFeatures(provision) || {};
+    const fromText = (v) => {
+      if (!v) return null;
+      if (typeof v === 'string' && v.trim()) return v.trim();
+      if (Array.isArray(v)) {
+        const parts = v
+          .map((x) => (typeof x === 'string' ? x.trim() : (x && (x.label || x.text)) || ''))
+          .filter(Boolean);
+        return parts.length ? parts.join(', ') : null;
+      }
+      if (typeof v === 'object' && (v.label || v.text)) return v.label || v.text;
+      return null;
+    };
+    const candidates = [f.scope, f.appliesTo, f.appliesto, f.applies_to];
+    for (const c of candidates) {
+      const v = fromText(c);
+      if (v) return v;
+    }
+    // Look on the obligation arrays for a per-limb scope.
+    const limbs = Array.isArray(f.affirmativeLimbs) ? f.affirmativeLimbs
+      : Array.isArray(f.positiveObligations) ? f.positiveObligations
+      : [];
+    for (const limb of limbs) {
+      if (!limb || typeof limb !== 'object') continue;
+      const v = fromText(limb.scope) || fromText(limb.appliesTo);
+      if (v) return v;
+    }
+    return bucket.defaultAppliesTo || null;
   };
 
   return (
@@ -2205,26 +2349,34 @@ function IocAffirmativeCovenantsTable({ iocProvisions, onSelectProvision }) {
           <thead className="bg-bg/60 border-b border-border">
             <tr>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[260px]">Covenant</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Summary</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[220px]">Standard</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Applies To</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {matches.map(({ bucket, provision }) => (
-              <tr key={bucket.code} className="hover:bg-bg/40 transition-colors align-top">
-                <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">
-                  <button
-                    type="button"
-                    onClick={() => onSelectProvision && onSelectProvision(provision)}
-                    className="text-left text-accent hover:underline font-medium"
-                  >
-                    {bucket.name}
-                  </button>
-                </td>
-                <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
-                  {textFor(provision) || <span className="text-inkFaint/70 italic">—</span>}
-                </td>
-              </tr>
-            ))}
+            {matches.map(({ bucket, provision }) => {
+              const std = standardFor(provision);
+              const scope = appliesToFor(provision, bucket);
+              return (
+                <tr key={bucket.code} className="hover:bg-bg/40 transition-colors align-top">
+                  <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">
+                    <button
+                      type="button"
+                      onClick={() => onSelectProvision && onSelectProvision(provision)}
+                      className="text-left text-accent hover:underline font-medium"
+                    >
+                      {bucket.name}
+                    </button>
+                  </td>
+                  <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
+                    {std || <span className="text-inkFaint/70 italic">—</span>}
+                  </td>
+                  <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
+                    {scope || <span className="text-inkFaint/70 italic">—</span>}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -2285,6 +2437,11 @@ function IocGeneralExceptionsTable({ iocProvisions, generalExceptionsProv, onSel
   }, [iocProvisions, generalExceptionsProv]);
 
   if (rows.length === 0) return null;
+  // Cap at 4 — items 5+ tend to belong to specific provisions and add noise
+  // when surfaced as section-wide exceptions.
+  const MAX_ITEMS = 4;
+  const visibleRows = rows.slice(0, MAX_ITEMS);
+  const overflowCount = Math.max(0, rows.length - visibleRows.length);
 
   return (
     <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
@@ -2302,7 +2459,7 @@ function IocGeneralExceptionsTable({ iocProvisions, generalExceptionsProv, onSel
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {rows.map((row, i) => (
+            {visibleRows.map((row, i) => (
               <tr key={i} className="hover:bg-bg/40 transition-colors align-top">
                 <td className="px-3 py-2 text-inkFaint whitespace-nowrap">{i + 1}</td>
                 <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
@@ -2323,6 +2480,13 @@ function IocGeneralExceptionsTable({ iocProvisions, generalExceptionsProv, onSel
           </tbody>
         </table>
       </div>
+      {overflowCount > 0 && (
+        <div className="px-3 py-1.5 bg-bg/40 border-t border-border">
+          <p className="text-[11px] font-ui italic text-inkFaint">
+            (+{overflowCount} more in specific provisions)
+          </p>
+        </div>
+      )}
     </div>
   );
 }
@@ -2472,10 +2636,76 @@ const HIDDEN_TABLE_COLUMNS = {
   // single "Term" cell (synthesized below for TERMR-OUTSIDE rows). Every
   // other column is hidden — the per-provision drill-in still shows the
   // full structured feature set.
-  TERMR: ['terminationTriggers', 'curePeriod', 'partyWhoCanTerminate', 'faultBasedExclusion', 'tickingFee', 'superiorProposalTermination', 'restraintFinality', 'restraintScope', 'voteFailureContext', 'voteThreshold', 'outsideDate', 'outsideDateMonths', 'extensionAvailable', 'extensionPeriod', 'extensionTrigger', 'extensionConsentParty'],
-  'TERMR-M': ['terminationTriggers', 'curePeriod', 'partyWhoCanTerminate', 'faultBasedExclusion', 'tickingFee', 'superiorProposalTermination', 'restraintFinality', 'restraintScope', 'voteFailureContext', 'voteThreshold', 'outsideDate', 'outsideDateMonths', 'extensionAvailable', 'extensionPeriod', 'extensionTrigger', 'extensionConsentParty'],
-  'TERMR-B': ['terminationTriggers', 'curePeriod', 'partyWhoCanTerminate', 'faultBasedExclusion', 'tickingFee', 'superiorProposalTermination', 'restraintFinality', 'restraintScope', 'voteFailureContext', 'voteThreshold', 'outsideDate', 'outsideDateMonths', 'extensionAvailable', 'extensionPeriod', 'extensionTrigger', 'extensionConsentParty'],
-  'TERMR-T': ['terminationTriggers', 'curePeriod', 'partyWhoCanTerminate', 'faultBasedExclusion', 'tickingFee', 'superiorProposalTermination', 'restraintFinality', 'restraintScope', 'voteFailureContext', 'voteThreshold', 'outsideDate', 'outsideDateMonths', 'extensionAvailable', 'extensionPeriod', 'extensionTrigger', 'extensionConsentParty'],
+  // Drop the long-tail termination fields from the per-row table — the
+  // synthesized "Term" cell for TERMR-OUTSIDE already encodes extensions,
+  // and the rest read as noise. The drill-in panel still shows everything.
+  // We list every spelling variant we have ever seen the parser emit so
+  // future schema drift doesn't silently leak columns back into the table.
+  TERMR: [
+    'terminationTriggers', 'curePeriod', 'partyWhoCanTerminate', 'faultBasedExclusion',
+    'tickingFee', 'superiorProposalTermination', 'restraintFinality', 'restraintScope',
+    'voteFailureContext', 'voteThreshold',
+    'outsideDate', 'outsideDateMonths',
+    'extensionAvailable', 'extensionPeriod', 'extensionTrigger', 'extensionConsentParty',
+    // New extras to hide:
+    'fundsCondition', 'funds_condition',
+    'fundsConditionExcluded', 'funds_condition_excluded',
+    'fundsConditionExclusion', 'funds_condition_exclusion',
+    'executionMethod', 'execution_method',
+    'writtenConsentRequired', 'written_consent_required',
+    'extensionConditions', 'extension_conditions',
+    'extensionConditionsRequired', 'extension_conditions_required',
+    'outsideDateExtension', 'outside_date_extension',
+    'outsideDateExtensionCondition', 'outside_date_extension_condition',
+  ],
+  'TERMR-M': [
+    'terminationTriggers', 'curePeriod', 'partyWhoCanTerminate', 'faultBasedExclusion',
+    'tickingFee', 'superiorProposalTermination', 'restraintFinality', 'restraintScope',
+    'voteFailureContext', 'voteThreshold',
+    'outsideDate', 'outsideDateMonths',
+    'extensionAvailable', 'extensionPeriod', 'extensionTrigger', 'extensionConsentParty',
+    'fundsCondition', 'funds_condition',
+    'fundsConditionExcluded', 'funds_condition_excluded',
+    'fundsConditionExclusion', 'funds_condition_exclusion',
+    'executionMethod', 'execution_method',
+    'writtenConsentRequired', 'written_consent_required',
+    'extensionConditions', 'extension_conditions',
+    'extensionConditionsRequired', 'extension_conditions_required',
+    'outsideDateExtension', 'outside_date_extension',
+    'outsideDateExtensionCondition', 'outside_date_extension_condition',
+  ],
+  'TERMR-B': [
+    'terminationTriggers', 'curePeriod', 'partyWhoCanTerminate', 'faultBasedExclusion',
+    'tickingFee', 'superiorProposalTermination', 'restraintFinality', 'restraintScope',
+    'voteFailureContext', 'voteThreshold',
+    'outsideDate', 'outsideDateMonths',
+    'extensionAvailable', 'extensionPeriod', 'extensionTrigger', 'extensionConsentParty',
+    'fundsCondition', 'funds_condition',
+    'fundsConditionExcluded', 'funds_condition_excluded',
+    'fundsConditionExclusion', 'funds_condition_exclusion',
+    'executionMethod', 'execution_method',
+    'writtenConsentRequired', 'written_consent_required',
+    'extensionConditions', 'extension_conditions',
+    'extensionConditionsRequired', 'extension_conditions_required',
+    'outsideDateExtension', 'outside_date_extension',
+    'outsideDateExtensionCondition', 'outside_date_extension_condition',
+  ],
+  'TERMR-T': [
+    'terminationTriggers', 'curePeriod', 'partyWhoCanTerminate', 'faultBasedExclusion',
+    'tickingFee', 'superiorProposalTermination', 'restraintFinality', 'restraintScope',
+    'voteFailureContext', 'voteThreshold',
+    'outsideDate', 'outsideDateMonths',
+    'extensionAvailable', 'extensionPeriod', 'extensionTrigger', 'extensionConsentParty',
+    'fundsCondition', 'funds_condition',
+    'fundsConditionExcluded', 'funds_condition_excluded',
+    'fundsConditionExclusion', 'funds_condition_exclusion',
+    'executionMethod', 'execution_method',
+    'writtenConsentRequired', 'written_consent_required',
+    'extensionConditions', 'extension_conditions',
+    'extensionConditionsRequired', 'extension_conditions_required',
+    'outsideDateExtension', 'outside_date_extension',
+    'outsideDateExtensionCondition', 'outside_date_extension_condition',
+  ],
   COV: ['financingCooperation', 'cvrIncluded'],
 };
 
@@ -3495,7 +3725,8 @@ function pickTierThreshold(tier, sourceProv) {
 // Find the names of the REP provisions a tier covers. Uses the
 // `linkedBringDownStandard` stamp left on each REP by linkBringDownToReps,
 // matching tier.standard / tier.standardCode. Falls back to free-text
-// section-number matching against tier.reps_covered.
+// section-number matching against tier.reps_covered (scans for "Section
+// X.YZ" references and maps to REP provisions by section number).
 function findCoveredRepNames(tier, repProvisions) {
   if (!Array.isArray(repProvisions) || repProvisions.length === 0) return [];
   const tierStdCode = (
@@ -3505,14 +3736,44 @@ function findCoveredRepNames(tier, repProvisions) {
     ''
   );
   const names = [];
+  const seen = new Set();
+  const pushName = (nm) => {
+    if (!nm) return;
+    const key = String(nm).toLowerCase().trim();
+    if (!key || seen.has(key)) return;
+    seen.add(key);
+    names.push(nm);
+  };
   if (tierStdCode) {
     for (const rep of repProvisions) {
       const f = getStructuredFeatures(rep) || {};
       const stamp = f.linkedBringDownStandard;
       const stampCode = isTaggedItem(stamp) ? stamp.code : stamp;
       if (stampCode && String(stampCode) === String(tierStdCode)) {
-        const nm = rep.category || '';
-        if (nm) names.push(nm);
+        pushName(rep.category || '');
+      }
+    }
+  }
+  // Fallback: scan tier.repsCovered for explicit section references and
+  // resolve them against the REP provisions' sectionNumber stamps. This
+  // recovers names for the company-side (REP-T) case where the AI sometimes
+  // doesn't stamp linkedBringDownStandard back onto every covered rep.
+  if (names.length === 0) {
+    const repsText = String(tier?.reps_covered || tier?.repsCovered || '');
+    if (repsText) {
+      const sectionRefs = new Set();
+      // Match "Section 3.5", "Section 3.05", "Section 3.5(a)", "3.5", etc.
+      const re = /(?:Section\s+)?(\d+\.\d+(?:\(\w+\))?)/gi;
+      let m;
+      while ((m = re.exec(repsText)) !== null) {
+        sectionRefs.add(m[1].toLowerCase());
+      }
+      if (sectionRefs.size > 0) {
+        for (const rep of repProvisions) {
+          const f = getStructuredFeatures(rep) || {};
+          const sn = String(f.sectionNumber || rep.section_number || '').toLowerCase();
+          if (sn && sectionRefs.has(sn)) pushName(rep.category || '');
+        }
       }
     }
   }
@@ -3557,19 +3818,15 @@ function BringdownTable({ provisions, repsType }) {
   // + any matched REP provision names.
   const higherByStandard = new Map();
   for (const entry of higherEntries) {
-    const { tier: t, source } = entry;
+    const { tier: t } = entry;
     const stdLabel = tierStdLabel(t);
     const reps = t.reps_covered || t.repsCovered || '';
     const matchedNames = findCoveredRepNames(t, repProvs);
-    const threshold = pickTierThreshold(t, source);
-    const bucket = higherByStandard.get(stdLabel) || { reps: [], names: new Set(), thresholds: new Set() };
+    const bucket = higherByStandard.get(stdLabel) || { reps: [], names: new Set() };
     if (reps) bucket.reps.push(reps);
     for (const nm of matchedNames) bucket.names.add(nm);
-    if (threshold) bucket.thresholds.add(threshold);
     higherByStandard.set(stdLabel, bucket);
   }
-
-  const generalThreshold = generalEntry ? pickTierThreshold(generalEntry.tier, generalEntry.source) : null;
 
   return (
     <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
@@ -3584,7 +3841,6 @@ function BringdownTable({ provisions, repsType }) {
             <tr>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[200px]">Tier</th>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Standard</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[140px]">Threshold</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -3606,14 +3862,10 @@ function BringdownTable({ provisions, repsType }) {
                     </div>
                   )}
                 </td>
-                <td className="px-3 py-2 text-ink whitespace-nowrap">
-                  {generalThreshold || <span className="text-inkFaint/70 italic">—</span>}
-                </td>
               </tr>
             )}
             {Array.from(higherByStandard.entries()).map(([stdLabel, bucket]) => {
               const nameList = Array.from(bucket.names);
-              const thresholdText = bucket.thresholds.size > 0 ? Array.from(bucket.thresholds).join(' / ') : null;
               return (
                 <tr key={stdLabel} className="align-top">
                   <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">
@@ -3633,9 +3885,6 @@ function BringdownTable({ provisions, repsType }) {
                         ))}
                       </ul>
                     )}
-                  </td>
-                  <td className="px-3 py-2 text-ink whitespace-nowrap">
-                    {thresholdText || <span className="text-inkFaint/70 italic">—</span>}
                   </td>
                 </tr>
               );
@@ -6322,8 +6571,12 @@ export default function ReviewPage() {
                         // Also pull the per-bucket affirmative covenant sub-codes
                         // (IOC-ORDINARY / IOC-PRESERVE / IOC-MAINTAIN / etc.)
                         // out of the main table — they're shown in the
-                        // Affirmative Covenants box above.
-                        const affMatches = findIocAffirmativeMatches(rest);
+                        // Affirmative Covenants box above. Defensive guard:
+                        // never pull a "No New Lines of Business" provision
+                        // here — it's a NEGATIVE covenant and belongs in the
+                        // sub-clause table below.
+                        const affMatches = findIocAffirmativeMatches(rest)
+                          .filter((m) => !isNoNewLinesOfBusiness(m.provision));
                         const pulledIds = new Set(affMatches.map((m) => m.provision.id));
                         if (pulledIds.size > 0) {
                           rest = rest.filter((p) => !pulledIds.has(p.id));
@@ -6381,15 +6634,10 @@ export default function ReviewPage() {
                             </div>
                           ) : (
                             <div className="space-y-3">
-                              {type === 'COV' && (() => {
-                                const ebSummary = buildEmployeeBenefitsSummary(provs);
-                                return ebSummary ? (
-                                  <EmployeeBenefitsTreatmentTable
-                                    summary={ebSummary}
-                                    onSelectProvision={handleEditProvision}
-                                  />
-                                ) : null;
-                              })()}
+                              {/* Employee Benefits Treatment table now
+                                  renders INSIDE each Employee Benefits
+                                  ProvisionCard, so no top-level injection
+                                  here — avoids the duplicate render. */}
                               {provs.map(p => (
                                 <ProvisionCard
                                   key={p.id}
