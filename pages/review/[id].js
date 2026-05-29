@@ -430,14 +430,62 @@ function isSharedFeature(featureKey, typeKey) {
 /* ═══════════════════════════════════════════════════════════
    LEFT SIDEBAR — now acts as a FILTER, not a scroller
    ═══════════════════════════════════════════════════════════ */
-function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelectProvision, activeProvId }) {
+function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelectProvision, activeProvId, onMoveProvision }) {
+  // Drag-and-drop state: track the provision being dragged and the active
+  // drop-target type so we can highlight it.
+  const [dragProvId, setDragProvId] = useState(null);
+  const [dropTargetType, setDropTargetType] = useState(null);
+
+  const handleDragStart = (e, provId) => {
+    setDragProvId(provId);
+    try {
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', String(provId));
+    } catch {
+      // some browsers throw if setData is called too late — ignore
+    }
+  };
+  const handleDragEnd = () => {
+    setDragProvId(null);
+    setDropTargetType(null);
+  };
+  const handleDragOver = (e, type) => {
+    if (!dragProvId) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    if (dropTargetType !== type) setDropTargetType(type);
+  };
+  const handleDragLeave = (type) => {
+    if (dropTargetType === type) setDropTargetType(null);
+  };
+  const handleDrop = (e, type) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const provId = dragProvId || e.dataTransfer.getData('text/plain');
+    setDragProvId(null);
+    setDropTargetType(null);
+    if (!provId || !type) return;
+    const prov = provisions.find((p) => String(p.id) === String(provId));
+    if (!prov) return;
+    if (prov.type === type) return; // no-op
+    if (onMoveProvision) onMoveProvision(prov, type);
+  };
+
   // Build the visible group structure — skip groups (and child types) with 0 provisions.
+  // For DEF (Definitions), sort provisions alphabetically by category (the defined term).
+  const sortDefsIfNeeded = (type, provs) => {
+    if (type !== 'DEF') return provs;
+    return [...provs].sort((a, b) =>
+      String(a.category || '').localeCompare(String(b.category || ''), undefined, { sensitivity: 'base' })
+    );
+  };
+
   const visibleGroups = useMemo(() => {
     return SIDEBAR_GROUPS
       .map((g) => {
         if (g.children && g.children.length > 0) {
           const presentChildren = g.children
-            .map((c) => ({ ...c, provs: provsByType[c.type] || [] }))
+            .map((c) => ({ ...c, provs: sortDefsIfNeeded(c.type, provsByType[c.type] || []) }))
             .filter((c) => c.provs.length > 0);
           const total = presentChildren.reduce((acc, c) => acc + c.provs.length, 0);
           return { label: g.label, children: presentChildren, types: presentChildren.map((c) => c.type), total };
@@ -445,7 +493,7 @@ function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelect
         const types = (g.types || []).filter((t) => (provsByType[t] || []).length > 0);
         const total = types.reduce((acc, t) => acc + (provsByType[t] || []).length, 0);
         // For a single-type flat group, collect the provisions list for direct expansion.
-        const provs = types.length === 1 ? (provsByType[types[0]] || []) : [];
+        const provs = types.length === 1 ? sortDefsIfNeeded(types[0], provsByType[types[0]] || []) : [];
         return { label: g.label, types, total, provs, singleType: types.length === 1 ? types[0] : null };
       })
       .filter((g) => g.total > 0);
@@ -494,22 +542,27 @@ function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelect
     return { total, approved, flagged };
   }, [provisions]);
 
-  // Render the per-provision list under a type.
+  // Render the per-provision list under a type. Each row is draggable.
   const renderProvList = (provs) => (
     <div className="ml-4 mt-0.5 space-y-0.5">
       {provs.map(p => {
         const status = getProvisionStatus(p);
         const st = STATUS[status];
         const isActive = p.id === activeProvId;
+        const isDragging = dragProvId === p.id;
         return (
           <button
             key={p.id}
+            draggable
+            onDragStart={(e) => handleDragStart(e, p.id)}
+            onDragEnd={handleDragEnd}
             onClick={() => onSelectProvision(p.id)}
-            className={`w-full text-left flex items-center gap-2 px-2 py-1 rounded text-xs font-ui transition-colors ${
+            className={`w-full text-left flex items-center gap-2 px-2 py-1 rounded text-xs font-ui transition-colors cursor-grab active:cursor-grabbing ${
               isActive
                 ? 'bg-accent/10 text-accent font-medium'
                 : 'text-inkMid hover:bg-bg hover:text-ink'
-            }`}
+            } ${isDragging ? 'opacity-40' : ''}`}
+            title="Drag to a different category to reclassify"
           >
             <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${st.dot}`} />
             <span className="truncate">{p.category || 'General'}</span>
@@ -562,13 +615,18 @@ function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelect
             const repType = hasChildren ? group.children[0].type : group.types[0];
             const tc = typeColor(repType);
 
+            // For flat groups, drops on the parent heading move the provision
+            // to the group's primary type. For groups with children, the parent
+            // heading is not itself a drop target (the children handle it).
+            const flatDropType = isFlatGroup ? (group.singleType || group.types[0]) : null;
+            const isParentDropTarget = !!dragProvId && flatDropType && dropTargetType === flatDropType;
             return (
               <div key={group.label}>
                 {/* Parent group heading */}
                 <div
                   className={`w-full flex items-center justify-between px-2 py-1.5 rounded text-sm font-ui transition-colors ${
                     isActiveFilter ? 'bg-accent/10' : (isFlatGroup ? 'hover:bg-bg cursor-pointer' : '')
-                  }`}
+                  } ${isParentDropTarget ? 'ring-2 ring-accent ring-offset-1' : ''}`}
                   onClick={isFlatGroup ? () => {
                     // Filter to this group's first/only type, and expand it.
                     onFilterType(group.singleType || group.types[0]);
@@ -576,6 +634,9 @@ function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelect
                       setCollapsedGroups((prev) => ({ ...prev, [group.label]: false }));
                     }
                   } : undefined}
+                  onDragOver={flatDropType ? (e) => handleDragOver(e, flatDropType) : undefined}
+                  onDragLeave={flatDropType ? () => handleDragLeave(flatDropType) : undefined}
+                  onDrop={flatDropType ? (e) => handleDrop(e, flatDropType) : undefined}
                 >
                   <span className="flex items-center gap-2 min-w-0">
                     <button
@@ -603,18 +664,22 @@ function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelect
                           const childCollapsed = collapsedTypes[child.type] !== false;
                           const childActive = activeFilter === child.type;
                           const ctc = typeColor(child.type);
+                          const isChildDropTarget = !!dragProvId && dropTargetType === child.type;
                           return (
                             <div key={child.type}>
                               <div
                                 className={`w-full flex items-center justify-between px-2 py-1 rounded text-xs font-ui transition-colors cursor-pointer ${
                                   childActive ? 'bg-accent/10' : 'hover:bg-bg'
-                                }`}
+                                } ${isChildDropTarget ? 'ring-2 ring-accent ring-offset-1' : ''}`}
                                 onClick={() => {
                                   onFilterType(child.type);
                                   if (childCollapsed) {
                                     setCollapsedTypes((prev) => ({ ...prev, [child.type]: false }));
                                   }
                                 }}
+                                onDragOver={(e) => handleDragOver(e, child.type)}
+                                onDragLeave={() => handleDragLeave(child.type)}
+                                onDrop={(e) => handleDrop(e, child.type)}
                               >
                                 <span className="flex items-center gap-2 min-w-0">
                                   <button
@@ -938,14 +1003,15 @@ function renderFullTextWithRefs(text) {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   PROVISION CARD — full text by default, structured summary opt-in
+   PROVISION CARD — shows BOTH structured summary AND full text
+   together by default. Summary is the digest, full text is the
+   source — they're shown back-to-back for context.
    ═══════════════════════════════════════════════════════════ */
 function ProvisionCard({ provision, onEdit }) {
   const tc = typeColor(provision.type);
   const fav = favBadge(provision.ai_favorability);
   const status = getProvisionStatus(provision);
   const st = STATUS[status];
-  const [showStructured, setShowStructured] = useState(false);
 
   return (
     <div
@@ -965,10 +1031,15 @@ function ProvisionCard({ provision, onEdit }) {
         </span>
       </div>
 
-      {/* Full text ALWAYS visible at the top.
-          The structured summary lives below behind a small toggle. */}
-      <div className="space-y-2">
+      {/* Structured Summary first (the digest), then Full Text (the source).
+          Both are always visible — no toggle. */}
+      <div className="space-y-3">
+        <StructuredFeatures provision={provision} />
+
         <div>
+          <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider mb-1">
+            Full Text
+          </p>
           {provision.full_text ? (
             <p className="font-body text-sm text-ink leading-relaxed whitespace-pre-wrap">
               {renderFullTextWithRefs(provision.full_text)}
@@ -977,24 +1048,127 @@ function ProvisionCard({ provision, onEdit }) {
             <p className="font-ui text-xs text-inkFaint italic">No text available.</p>
           )}
         </div>
-
-        {/* Structured summary — collapsible, default collapsed, toggle at bottom */}
-        <div>
-          <button
-            type="button"
-            onClick={(e) => { e.stopPropagation(); setShowStructured((v) => !v); }}
-            className="text-[10px] font-ui text-inkFaint hover:text-ink uppercase tracking-wider flex items-center gap-1"
-          >
-            <span>{showStructured ? '−' : '+'}</span>
-            {showStructured ? 'Hide Structured Summary' : 'Show Structured Summary'}
-          </button>
-          {showStructured && (
-            <div className="mt-2">
-              <StructuredFeatures provision={provision} />
-            </div>
-          )}
-        </div>
       </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CATEGORY OVERVIEW — section overview line per provision +
+   collapsible full-text view shown ABOVE the summary table on
+   category pages.
+   ═══════════════════════════════════════════════════════════ */
+function getOverviewLine(provision) {
+  const features = getStructuredFeatures(provision);
+  if (features) {
+    if (typeof features.mainConcept === 'string' && features.mainConcept.trim()) {
+      return features.mainConcept.trim();
+    }
+    if (isTaggedItem(features.mainConcept)) {
+      const lbl = resolveTaggedLabel('mainConcept', features.mainConcept);
+      if (lbl) return lbl;
+    }
+    if (typeof features.mainObligation === 'string' && features.mainObligation.trim()) {
+      return features.mainObligation.trim();
+    }
+    if (typeof features.mainCondition === 'string' && features.mainCondition.trim()) {
+      return features.mainCondition.trim();
+    }
+  }
+  // Fall back to first sentence of full text
+  if (provision.full_text) {
+    const { header } = parseProvisionText(provision.full_text);
+    return header || provision.full_text.slice(0, 200);
+  }
+  return '';
+}
+
+function CategoryOverview({ provisions, onSelectProvision }) {
+  const [expanded, setExpanded] = useState(false);
+  const [openProvIds, setOpenProvIds] = useState(() => new Set());
+
+  if (!provisions || provisions.length === 0) return null;
+
+  const toggleProv = (id) => {
+    setOpenProvIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  return (
+    <div className="bg-white border border-border rounded-lg shadow-sm p-4 space-y-3">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <h3 className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+          Section Overview
+        </h3>
+        <button
+          type="button"
+          onClick={() => setExpanded((v) => !v)}
+          className="px-2 py-1 text-[11px] font-ui border border-border rounded hover:bg-bg transition-colors text-inkMid flex items-center gap-1"
+        >
+          <span>{expanded ? '−' : '+'}</span>
+          {expanded ? 'Hide Full Provision Texts' : 'Show Full Provision Texts'}
+        </button>
+      </div>
+
+      <ul className="space-y-1.5">
+        {provisions.map((p) => {
+          const line = getOverviewLine(p);
+          return (
+            <li key={p.id} className="flex items-start gap-2 text-xs font-ui">
+              <span className="text-inkFaint mt-1 shrink-0">•</span>
+              <div className="flex-1 min-w-0">
+                <button
+                  type="button"
+                  onClick={() => onSelectProvision && onSelectProvision(p)}
+                  className="font-medium text-accent hover:underline mr-1"
+                >
+                  {p.category || 'General'}:
+                </button>
+                <span className="text-inkMid">{line || <em className="text-inkFaint">No summary.</em>}</span>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+
+      {expanded && (
+        <div className="pt-3 border-t border-border space-y-2">
+          {provisions.map((p) => {
+            const isOpen = openProvIds.has(p.id);
+            return (
+              <div key={p.id} className="border border-border rounded">
+                <button
+                  type="button"
+                  onClick={() => toggleProv(p.id)}
+                  className="w-full text-left px-3 py-2 flex items-center justify-between gap-2 hover:bg-bg text-xs font-ui"
+                >
+                  <span className="font-medium text-ink truncate">
+                    {p.category || 'General'}
+                  </span>
+                  <span className="text-inkFaint font-mono text-sm leading-none">
+                    {isOpen ? '−' : '+'}
+                  </span>
+                </button>
+                {isOpen && (
+                  <div className="px-3 py-2 border-t border-border bg-bg/30">
+                    {p.full_text ? (
+                      <p className="font-body text-xs text-ink leading-relaxed whitespace-pre-wrap">
+                        {renderFullTextWithRefs(p.full_text)}
+                      </p>
+                    ) : (
+                      <p className="font-ui text-xs text-inkFaint italic">No text available.</p>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
@@ -1003,6 +1177,31 @@ function ProvisionCard({ provision, onEdit }) {
    PROVISION TABLE — tabular view of all provisions of one type.
    Each row is a provision; columns are the type's feature keys.
    ═══════════════════════════════════════════════════════════ */
+
+// Per-type column denylist. These features are intentionally hidden from
+// the summary table (either redundant with the row's main concept, captured
+// inline in the exceptions column, or moved to the preamble section).
+const HIDDEN_TABLE_COLUMNS = {
+  IOC: ['pandemicCarveout', 'requiredByLawCarveout', 'ordinaryCourseCarveout', 'scheduleReference'],
+  'IOC-T': ['pandemicCarveout', 'requiredByLawCarveout', 'ordinaryCourseCarveout', 'scheduleReference'],
+  'IOC-B': ['pandemicCarveout', 'requiredByLawCarveout', 'ordinaryCourseCarveout', 'scheduleReference'],
+  COND: ['certificationRequired', 'dollarThreshold', 'scheduleReference', 'bringDownTiers'],
+  'COND-M': ['certificationRequired', 'dollarThreshold', 'scheduleReference', 'bringDownTiers'],
+  'COND-B': ['certificationRequired', 'dollarThreshold', 'scheduleReference', 'bringDownTiers'],
+  'COND-S': ['certificationRequired', 'dollarThreshold', 'scheduleReference', 'bringDownTiers'],
+  TERMR: ['terminationTriggers', 'restraintFinality', 'restraintScope', 'voteFailureContext', 'voteThreshold'],
+  'TERMR-M': ['terminationTriggers', 'restraintFinality', 'restraintScope', 'voteFailureContext', 'voteThreshold'],
+  'TERMR-B': ['terminationTriggers', 'restraintFinality', 'restraintScope', 'voteFailureContext', 'voteThreshold'],
+  'TERMR-T': ['terminationTriggers', 'restraintFinality', 'restraintScope', 'voteFailureContext', 'voteThreshold'],
+};
+
+// voteThreshold is only relevant on TERMR-VOTE rows — keep it visible there
+// but hidden on every other TERMR row. We don't have a dedicated TERMR-VOTE
+// type denylist key, so handle the inverse via getHiddenColumnsForRow.
+function getHiddenColumnsForType(type) {
+  return new Set(HIDDEN_TABLE_COLUMNS[type] || []);
+}
+
 function formatCellValue(featureKey, raw) {
   if (raw === null || raw === undefined || raw === '') return null;
   if (Array.isArray(raw)) {
@@ -1026,7 +1225,261 @@ function formatCellValue(featureKey, raw) {
   return String(v);
 }
 
+// Render a single feature cell value (tagged object → code+label, otherwise text).
+function renderFeatureCell(featureKey, raw) {
+  if (isTaggedItem(raw)) {
+    const label = resolveTaggedLabel(featureKey, raw) || raw.code;
+    return (
+      <div className="flex items-baseline gap-1.5 flex-wrap">
+        <CodeBadge code={raw.code} />
+        <span>{label}</span>
+      </div>
+    );
+  }
+  const cell = formatCellValue(featureKey, raw);
+  return (
+    <div className={`whitespace-pre-wrap break-words ${cell === null ? 'text-inkFaint/70 italic' : ''}`}>
+      {cell === null ? '—' : cell}
+    </div>
+  );
+}
+
+/* ─── STRUCT table: only show a tiny set of columns per row, and only the
+ *     columns that are relevant for that row's canonical concept. The rubric
+ *     packs many fields into a single STRUCT type — this presentation peels
+ *     them apart so each row reads as one focused statement. */
+function StructTable({ provisions, onSelectProvision }) {
+  // For "The Merger" we just show mergerForm; for "Closing" we show
+  // closingLocation + closingTiming. Everything else falls back to a generic
+  // mainConcept view.
+  const rows = provisions.map((p) => {
+    const features = getStructuredFeatures(p) || {};
+    const cat = (p.category || '').toLowerCase();
+    let cells;
+    if (cat.includes('merger') && !cat.includes('agreement')) {
+      cells = [{ key: 'mergerForm', raw: features.mergerForm }];
+    } else if (cat.includes('closing')) {
+      cells = [
+        { key: 'closingLocation', raw: features.closingLocation },
+        { key: 'closingTiming', raw: features.closingTiming },
+      ];
+    } else {
+      cells = [{ key: 'mainConcept', raw: features.mainConcept }];
+    }
+    return { p, cells };
+  });
+
+  return (
+    <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+      <table className="min-w-full text-xs font-ui">
+        <thead className="bg-bg/60 border-b border-border">
+          <tr>
+            <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[180px]">Term</th>
+            <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Details</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border">
+          {rows.map(({ p, cells }) => (
+            <tr key={p.id} className="hover:bg-bg/40 transition-colors align-top">
+              <td className="px-3 py-2 whitespace-nowrap">
+                <button
+                  type="button"
+                  onClick={() => onSelectProvision && onSelectProvision(p)}
+                  className="text-left text-accent hover:underline font-medium"
+                >
+                  {p.category || 'General'}
+                </button>
+              </td>
+              <td className="px-3 py-2 text-ink">
+                <dl className="space-y-1">
+                  {cells.map(({ key, raw }) => (
+                    <div key={key} className="flex flex-col">
+                      <dt className="text-[10px] text-inkFaint uppercase tracking-wider">{humanizeKey(key)}</dt>
+                      <dd>{renderFeatureCell(key, raw)}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+/* ─── CONSID table:
+ *     - If considerationType + perShareAmount are uniform across rows, hoist
+ *       them into a single "Consideration: $X / [type]" header above the table.
+ *     - For the equity-awards portion, each instrument (Options, RSUs, ESPP)
+ *       gets its own row with columns: outstandingCount, treatment, vesting,
+ *       cashOutFormula. */
+function ConsidTable({ provisions, onSelectProvision }) {
+  // Determine if considerationType + perShareAmount are uniform.
+  const considTypes = new Set();
+  const perShares = new Set();
+  for (const p of provisions) {
+    const f = getStructuredFeatures(p) || {};
+    const ct = f.considerationType;
+    const ctKey = isTaggedItem(ct) ? ct.code : (typeof ct === 'string' ? ct : null);
+    if (ctKey) considTypes.add(ctKey);
+    if (f.perShareAmount) perShares.add(String(f.perShareAmount));
+  }
+  const uniformConsid = considTypes.size === 1 && perShares.size === 1;
+  let headerLine = null;
+  if (uniformConsid) {
+    const sample = provisions
+      .map((p) => getStructuredFeatures(p) || {})
+      .find((f) => f.considerationType || f.perShareAmount) || {};
+    const ctLabel = isTaggedItem(sample.considerationType)
+      ? (resolveTaggedLabel('considerationType', sample.considerationType) || sample.considerationType.code)
+      : sample.considerationType;
+    const per = sample.perShareAmount;
+    headerLine = `Consideration: ${per ? `$${per}` : ''}${per && ctLabel ? ' / ' : ''}${ctLabel || ''}`.trim();
+  }
+
+  // Equity-awards: extract per-instrument rows where present.
+  const equityInstrumentRows = [];
+  for (const p of provisions) {
+    const f = getStructuredFeatures(p) || {};
+    const instruments = f.outstandingInstruments;
+    const treatments = f.instrumentTreatments;
+    if (Array.isArray(instruments) && instruments.length > 0) {
+      instruments.forEach((inst, idx) => {
+        const label = typeof inst === 'string' ? inst : (inst?.label || inst?.code || `Instrument ${idx + 1}`);
+        const tr = Array.isArray(treatments) ? treatments[idx] : null;
+        equityInstrumentRows.push({
+          provId: p.id,
+          provCat: p.category,
+          label,
+          outstandingCount: typeof inst === 'object' ? inst?.count : null,
+          treatment: tr?.treatment ?? (typeof tr === 'string' ? tr : null),
+          vesting: tr?.vesting ?? null,
+          cashOutFormula: tr?.cashOutFormula ?? null,
+          provision: p,
+        });
+      });
+    }
+  }
+
+  // Filter to non-equity-instrument provisions for the main rows.
+  const mainProvisions = provisions.filter((p) => {
+    const f = getStructuredFeatures(p) || {};
+    const arr = f.outstandingInstruments;
+    return !(Array.isArray(arr) && arr.length > 0);
+  });
+
+  // Decide which columns to show for the main table.
+  const baseColumns = getFeatureSchema('CONSID');
+  const hidden = new Set();
+  if (uniformConsid) {
+    hidden.add('considerationType');
+    hidden.add('perShareAmount');
+  }
+  hidden.add('outstandingInstruments');
+  hidden.add('instrumentTreatments');
+  const columns = baseColumns.filter((k) => !hidden.has(k));
+
+  return (
+    <div className="space-y-3">
+      {headerLine && (
+        <div className="bg-lime-50 border border-lime-200 rounded px-3 py-2">
+          <p className="text-sm font-ui font-medium text-lime-900">{headerLine}</p>
+        </div>
+      )}
+
+      {mainProvisions.length > 0 && (
+        <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-xs font-ui">
+              <thead className="bg-bg/60 border-b border-border">
+                <tr>
+                  <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap sticky left-0 bg-bg/60 z-10">Term</th>
+                  {columns.map((k) => (
+                    <th key={k} className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">
+                      {humanizeKey(k)}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {mainProvisions.map((p) => {
+                  const features = getStructuredFeatures(p) || {};
+                  return (
+                    <tr key={p.id} className="hover:bg-bg/40 transition-colors">
+                      <td className="px-3 py-2 align-top whitespace-nowrap sticky left-0 bg-white z-10">
+                        <button
+                          type="button"
+                          onClick={() => onSelectProvision && onSelectProvision(p)}
+                          className="text-left text-accent hover:underline font-medium"
+                        >
+                          {p.category || 'General'}
+                        </button>
+                      </td>
+                      {columns.map((k) => (
+                        <td key={k} className="px-3 py-2 align-top max-w-[260px] text-ink">
+                          {renderFeatureCell(k, features[k])}
+                        </td>
+                      ))}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {equityInstrumentRows.length > 0 && (
+        <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+          <div className="px-3 py-2 bg-bg/60 border-b border-border">
+            <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">Equity Award Treatment</p>
+          </div>
+          <table className="min-w-full text-xs font-ui">
+            <thead className="bg-bg/40 border-b border-border">
+              <tr>
+                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Instrument</th>
+                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Outstanding Count</th>
+                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Treatment</th>
+                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Vesting</th>
+                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Cash-Out Formula</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {equityInstrumentRows.map((row, i) => (
+                <tr key={`${row.provId}-${i}`} className="hover:bg-bg/40 transition-colors">
+                  <td className="px-3 py-2 align-top">
+                    <button
+                      type="button"
+                      onClick={() => onSelectProvision && onSelectProvision(row.provision)}
+                      className="text-left text-accent hover:underline font-medium"
+                    >
+                      {row.label}
+                    </button>
+                  </td>
+                  <td className="px-3 py-2 align-top text-ink">{row.outstandingCount ?? <span className="text-inkFaint/70 italic">—</span>}</td>
+                  <td className="px-3 py-2 align-top text-ink">{row.treatment ?? <span className="text-inkFaint/70 italic">—</span>}</td>
+                  <td className="px-3 py-2 align-top text-ink">{row.vesting ?? <span className="text-inkFaint/70 italic">—</span>}</td>
+                  <td className="px-3 py-2 align-top text-ink">{row.cashOutFormula ?? <span className="text-inkFaint/70 italic">—</span>}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function ProvisionTable({ provisions, type, onSelectProvision }) {
+  // STRUCT and CONSID get specialized layouts — see dedicated components above.
+  if (type === 'STRUCT') {
+    return <StructTable provisions={provisions} onSelectProvision={onSelectProvision} />;
+  }
+  if (type === 'CONSID') {
+    return <ConsidTable provisions={provisions} onSelectProvision={onSelectProvision} />;
+  }
+
   const schemaKeys = getFeatureSchema(type);
   // For multi-code provision types (NOSOL, ANTI), the table is simplified:
   // just Term + Provision (mainConcept). Full features remain available via
@@ -1045,6 +1498,26 @@ function ProvisionTable({ provisions, type, onSelectProvision }) {
   }
   if (isMultiCode) {
     columns = ['mainConcept'];
+  } else {
+    // Apply per-type hidden-column denylist (Change 3).
+    const hidden = getHiddenColumnsForType(type);
+    if (hidden.size > 0) {
+      columns = columns.filter((k) => !hidden.has(k));
+    }
+  }
+
+  // Special case: re-add voteThreshold only for TERMR rows whose own code is
+  // TERMR-VOTE. We detect this by scanning the provisions in the slice — if
+  // any provision has code === 'TERMR-VOTE' AND has a voteThreshold value,
+  // add the column back so it's visible for those rows.
+  const isTermrFamily = type === 'TERMR' || type === 'TERMR-M' || type === 'TERMR-B' || type === 'TERMR-T';
+  if (isTermrFamily) {
+    const hasVoteCode = provisions.some(
+      (p) => p.code === 'TERMR-VOTE' && (getStructuredFeatures(p) || {}).voteThreshold !== undefined,
+    );
+    if (hasVoteCode && !columns.includes('voteThreshold') && schemaKeys.includes('voteThreshold')) {
+      columns = [...columns, 'voteThreshold'];
+    }
   }
 
   return (
@@ -2117,12 +2590,20 @@ function EditPanel({
           </div>
           <div className="flex gap-1.5">
             <input
+              list={`feature-keys-${provision.id}`}
               value={newFeature}
               onChange={e => setNewFeature(e.target.value)}
               placeholder="Add feature..."
               className="flex-1 border border-border rounded px-2 py-1 text-xs font-ui focus:outline-none focus:ring-1 focus:ring-accent"
               onKeyDown={e => e.key === 'Enter' && addFeature()}
             />
+            {/* Autocomplete from rubric FEATURES for this provision type so
+                features are uniformly coded across deals on ingest. */}
+            <datalist id={`feature-keys-${provision.id}`}>
+              {getFeatureSchema(editType || provision.type, provision.code).map((k) => (
+                <option key={k} value={k}>{humanizeKey(k)}</option>
+              ))}
+            </datalist>
             <button
               onClick={addFeature}
               disabled={!newFeature.trim()}
@@ -2442,6 +2923,26 @@ export default function ReviewPage() {
     }
   }, [addToast, refetchProvs]);
 
+  /* ── Drag-and-drop: move provision between sidebar categories ── */
+  const handleMoveProvision = useCallback(async (provision, newType) => {
+    if (!provision || !newType || provision.type === newType) return;
+    try {
+      const resp = await fetch('/api/provisions', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: provision.id, type: newType, category: '' }),
+      });
+      const data = await resp.json();
+      if (!resp.ok || data.error) {
+        throw new Error(data.error || `HTTP ${resp.status}`);
+      }
+      addToast(`Moved to ${typeLabel(newType)}`, 'success');
+      await refetchProvs();
+    } catch (err) {
+      addToast(`Error: ${err.message}`, 'error');
+    }
+  }, [addToast, refetchProvs]);
+
   /* ── Propose New Code ── */
   const handleProposeCode = useCallback((provision) => {
     addToast('New code proposal submitted for review', 'info');
@@ -2611,6 +3112,7 @@ export default function ReviewPage() {
             onFilterType={handleFilterType}
             onSelectProvision={handleSidebarSelectProvision}
             activeProvId={editingProvision?.id}
+            onMoveProvision={handleMoveProvision}
           />
         )}
 
@@ -2711,21 +3213,38 @@ export default function ReviewPage() {
                       </div>
                     )}
 
-                    {Object.entries(filteredProvsByType).map(([type, provs]) => {
+                    {Object.entries(filteredProvsByType).map(([type, provsRaw]) => {
+                      // Alphabetical sort for DEF so definitions read like a glossary.
+                      const provs = type === 'DEF'
+                        ? [...provsRaw].sort((a, b) =>
+                            String(a.category || '').localeCompare(String(b.category || ''), undefined, { sensitivity: 'base' })
+                          )
+                        : provsRaw;
                       const { preamble, rest } = splitPreamble(provs);
+                      // Show category overview header only when the user is viewing
+                      // a single category (i.e. a sidebar filter is active) and in
+                      // table view. The overview lists each provision's mainConcept
+                      // and has a collapsible "Show Full Provision Texts" button.
+                      const isCategoryView = !!activeFilter && provisionView === 'table' && !selectedProvId;
                       return (
                         <div key={type} className="space-y-2">
                           <h2 className="font-display text-lg text-ink flex items-center gap-2">
                             <span className={`w-2.5 h-2.5 rounded-full ${typeColor(type).dot}`} />
                             {typeLabel(type)}
-                            <span className="text-sm font-ui text-inkFaint font-normal">({provs.length})</span>
+                            <span className="text-sm font-ui text-inkFaint font-normal">({provs.length} provision{provs.length === 1 ? '' : 's'})</span>
                           </h2>
                           {provisionView === 'table' ? (
                             <div className="space-y-3">
+                              {isCategoryView && rest.length > 0 && (
+                                <CategoryOverview
+                                  provisions={rest}
+                                  onSelectProvision={handleEditProvision}
+                                />
+                              )}
                               {preamble && (
                                 <div className="space-y-1">
                                   <h3 className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
-                                    Section Overview
+                                    Preamble
                                   </h3>
                                   <ProvisionCard
                                     provision={preamble}
