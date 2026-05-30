@@ -5307,44 +5307,151 @@ function CanonicalConditionsTable({ provisions, family, onSelectProvision }) {
   );
 }
 
-function MaeDefinitionSummary({ allProvisions, onSelectProvision }) {
-  const maeProvs = (allProvisions || []).filter(isMaeDefinitionProvision);
-  // Derive a one-or-two-limb hero label from features.maeLimbs (preferred) or
-  // features.preventDelayProng as a fallback. The user's headline question is
-  // "impact on Company only" vs "impact on Company + ability to consummate".
+/** Render ONE MAE definition (target-side or parent-side) as a stacked block:
+ *    - eyebrow + hero with one-limb / two-limb label
+ *    - simple list of carveouts (each clickable to source, like IOC General
+ *      Exceptions) — pulled from features.carveouts.
+ */
+function MaeSinglePartySummary({ provision, partyLabel, onSelectProvision }) {
+  const f = getStructuredFeatures(provision) || {};
+
+  // Derive limbs: maeLimbs (preferred) -> preventDelayProng (fallback).
   let limbsLabel = null;
-  for (const p of maeProvs) {
-    const f = getStructuredFeatures(p) || {};
-    const rawLimbs = isCitableValue(f.maeLimbs) ? getCitableValue(f.maeLimbs) : f.maeLimbs;
-    if (rawLimbs === 'ONE_LIMB' || rawLimbs === 'TWO_LIMB') {
-      limbsLabel = rawLimbs === 'TWO_LIMB'
-        ? 'Two-limb: impact on Company + ability to consummate'
-        : 'One-limb: impact on Company only';
-      break;
-    }
-    const pd = isCitableValue(f.preventDelayProng) ? getCitableValue(f.preventDelayProng) : f.preventDelayProng;
-    if (pd === true) {
-      limbsLabel = 'Two-limb: impact on Company + ability to consummate';
-      break;
-    }
-    if (pd === false) {
-      limbsLabel = 'One-limb: impact on Company only';
-      break;
-    }
+  const rawLimbs = isCitableValue(f.maeLimbs) ? getCitableValue(f.maeLimbs) : f.maeLimbs;
+  if (rawLimbs === 'ONE_LIMB' || rawLimbs === 'TWO_LIMB') {
+    limbsLabel = rawLimbs === 'TWO_LIMB'
+      ? 'Two-limb: effect on the entity + ability to consummate'
+      : 'One-limb: effect on the entity only';
+  } else {
+    const pdRaw = isCitableValue(f.preventDelayProng) ? getCitableValue(f.preventDelayProng) : f.preventDelayProng;
+    if (pdRaw === true) limbsLabel = 'Two-limb: effect on the entity + ability to consummate';
+    else if (pdRaw === false) limbsLabel = 'One-limb: effect on the entity only';
   }
+
+  // Pull the prevent/delay text quote (citable) for click-to-source on the
+  // "Two-limb" hero.
+  const pdRawFull = f.preventDelayProng;
+  const pdText = isCitableValue(pdRawFull) ? getCitableText(pdRawFull) : null;
+  const showEvidence = useShowEvidence();
+
+  // Build the list of carveouts. carveouts is a tagged list — { code, label, text }.
+  const carveouts = Array.isArray(f.carveouts) ? f.carveouts : [];
+
   return (
-    <div className="space-y-3">
-      <div className="bg-white border-2 rounded-lg shadow-sm px-5 py-4" style={{ borderColor: '#C9A788' }}>
+    <section className="space-y-3">
+      <header className="flex items-baseline gap-2">
+        <span className="font-mono text-[10px] text-inkFaint uppercase tracking-wider">{partyLabel}</span>
+        <h3 className="font-display text-base text-ink">{provision.category || partyLabel + ' MAE'}</h3>
+      </header>
+      <div
+        className="bg-white border-2 rounded-lg shadow-sm px-5 py-4 cursor-pointer"
+        style={{ borderColor: '#C9A788' }}
+        onClick={() => {
+          if (pdText) showEvidence(pdText);
+          else if (provision.full_text) showEvidence(provision.full_text.slice(0, 600));
+        }}
+        title={pdText ? 'View prevent/delay prong in source' : ''}
+      >
         <div className="font-mono text-[10px] text-inkFaint uppercase tracking-wider">MAE Test</div>
         <div className="font-display text-lg text-ink font-medium mt-1">
-          {limbsLabel || <span className="italic text-inkFaint text-sm">Not yet extracted (re-ingest to populate maeLimbs)</span>}
+          {limbsLabel || (
+            <span className="italic text-inkFaint text-sm">Limbs not extracted (re-ingest to populate)</span>
+          )}
         </div>
       </div>
-      <CategoryFeatureSummaryTable
-        provisions={maeProvs}
-        type="MAE"
-        onSelectProvision={onSelectProvision}
-      />
+
+      <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+        <div className="px-3 py-2 bg-bg/60 border-b border-border flex items-center justify-between">
+          <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+            Carve-outs
+          </p>
+          <p className="text-[10px] font-ui text-inkFaint">{carveouts.length}</p>
+        </div>
+        {carveouts.length === 0 ? (
+          <p className="px-3 py-3 text-xs font-ui italic text-inkFaint">
+            No carve-outs extracted (re-ingest to populate `carveouts` list with MAE_CARVEOUT codes).
+          </p>
+        ) : (
+          <ul className="divide-y divide-border">
+            {carveouts.map((c, i) => {
+              const label = c?.label || labelForCarveoutCode(c?.code) || c?.code || `Carve-out ${i + 1}`;
+              const quote = c?.text || null;
+              return (
+                <li
+                  key={i}
+                  className="px-3 py-2 hover:bg-bg/40 cursor-pointer"
+                  onClick={() => {
+                    if (quote) showEvidence(quote);
+                    else onSelectProvision && onSelectProvision(provision);
+                  }}
+                  title={quote || ''}
+                >
+                  <div className="text-xs font-ui text-ink font-medium">{label}</div>
+                  {quote && (
+                    <div className="text-[11px] font-body text-inkLight mt-0.5 italic line-clamp-2">
+                      "{quote}"
+                    </div>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
+    </section>
+  );
+}
+
+// Map a MAE_CARVEOUT_CODES code to its human label (best-effort). We do not
+// import the dict here at module top — instead resolveTaggedLabel handles
+// the lookup. This local helper just falls back gracefully when the tagged
+// item already has a label.
+function labelForCarveoutCode(code) {
+  if (!code) return null;
+  try {
+    return resolveTaggedLabel('carveouts', { code, label: null, text: '' }) || null;
+  } catch {
+    return null;
+  }
+}
+
+function MaeDefinitionSummary({ allProvisions, onSelectProvision }) {
+  const maeProvs = (allProvisions || []).filter(isMaeDefinitionProvision);
+
+  // Split into Company / Target MAE and Parent / Buyer MAE by category name.
+  // The agreement usually defines both — render them as two sub-sections.
+  const isParentSide = (p) =>
+    /parent|buyer|acquir|purchaser/i.test(p?.category || '');
+
+  const parentMae = maeProvs.find(isParentSide) || null;
+  const targetMae = maeProvs.find((p) => !isParentSide(p)) || maeProvs[0] || null;
+
+  if (!targetMae && !parentMae) {
+    return (
+      <div className="bg-white border border-border rounded-lg shadow-sm px-5 py-4">
+        <p className="text-xs font-ui italic text-inkFaint">
+          No Material Adverse Effect definition found in this agreement.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {targetMae && (
+        <MaeSinglePartySummary
+          provision={targetMae}
+          partyLabel="Company / Target"
+          onSelectProvision={onSelectProvision}
+        />
+      )}
+      {parentMae && parentMae !== targetMae && (
+        <MaeSinglePartySummary
+          provision={parentMae}
+          partyLabel="Parent / Buyer"
+          onSelectProvision={onSelectProvision}
+        />
+      )}
     </div>
   );
 }
