@@ -3340,10 +3340,33 @@ function StructTable({ provisions, onSelectProvision }) {
     if (cat.includes('merger') && !cat.includes('agreement')) {
       cells = [{ key: 'mergerForm', raw: features.mergerForm }];
     } else if (cat.includes('closing')) {
+      // The "Closing" row exposes location + timing AND a synthesized
+      // "Closing Deadline" pulled from either the existing closingTiming
+      // field or the COND-derived mutualClosingDeadlineAfterConditionsDays.
+      // The deadline used to live on the COND page; the user asked for it
+      // to surface here instead.
+      const deadline = features.mutualClosingDeadlineAfterConditionsDays
+        ?? features.closingDeadline
+        ?? null;
       cells = [
         { key: 'closingLocation', raw: features.closingLocation },
         { key: 'closingTiming', raw: features.closingTiming },
       ];
+      if (deadline !== null && deadline !== undefined && deadline !== '') {
+        cells.push({
+          key: 'closingDeadline',
+          label: 'Closing Deadline',
+          raw: typeof deadline === 'number' ? `${deadline} days after conditions satisfied` : deadline,
+        });
+      } else if (features.closingTiming) {
+        // Use closingTiming as the deadline fallback so the row always
+        // surfaces a "Closing Deadline" line.
+        cells.push({
+          key: 'closingDeadline',
+          label: 'Closing Deadline',
+          raw: features.closingTiming,
+        });
+      }
     } else {
       cells = [{ key: 'mainConcept', raw: features.mainConcept }];
     }
@@ -3393,9 +3416,9 @@ function StructTable({ provisions, onSelectProvision }) {
                   <div>{renderFeatureCell(cells[0].key, cells[0].raw)}</div>
                 ) : (
                   <dl className="space-y-1">
-                    {cells.map(({ key, raw }) => (
+                    {cells.map(({ key, raw, label }) => (
                       <div key={key} className="flex flex-col">
-                        <dt className="text-[10px] text-inkFaint uppercase tracking-wider">{humanizeKey(key)}</dt>
+                        <dt className="text-[10px] text-inkFaint uppercase tracking-wider">{label || humanizeKey(key)}</dt>
                         <dd>{renderFeatureCell(key, raw)}</dd>
                       </div>
                     ))}
@@ -4408,54 +4431,21 @@ const CATEGORY_SUMMARY_FEATURES = {
   ],
 
   // ─── COND-M / COND-B / COND-S — Paul Weiss q41–q43, q82, q88–q99 ───────
+  // Most rows were folded INTO the Details cell of each canonical-condition
+  // row below (CanonicalConditionsTable). The remaining summary rows are the
+  // few items that don't naturally fit any canonical row.
   'COND-M': [
-    // mainCondition / mainConcept dropped — canonical-condition rows below replace it.
-    // burdensomeCondition rows dropped — surfaced in the ANTI summary.
-    // Stockholder Approval / HSR Clearance also dropped — covered by canonical conditions table.
     { label: 'MAE as Closing Condition',              keys: ['maeConditionStandalone', 'maeStandaloneCondition'] },
-    { label: 'Materiality Scrape Present',            keys: ['materialityScrapePresent', 'materialityScrape'] },
-    { label: 'Materiality Scrape Language',           keys: ['materialityScrapeLanguage'] },
-    { label: 'Government Proceeding Condition',       keys: ['governmentProceedingConditionPresent'] },
-    { label: 'Absence of Enjoining Order Present',    keys: ['absenceOfEnjoiningOrderPresent'] },
-    { label: 'Absence of Enjoining Order Details',    keys: ['absenceOfEnjoiningOrderDetails'] },
-    { label: 'Closing Deadline After Conditions (days)', keys: ['mutualClosingDeadlineAfterConditionsDays'] },
-    { label: 'Bring-Down Standard',                   keys: ['bringDownStandard', 'bringDownTiers'] },
-    { label: 'Cure Periods',                          keys: ['curePeriod', 'cureDays'] },
-    { label: 'Officer Certification Required',        keys: ['certificationRequired'] },
     { label: 'Tender Offer Minimum Condition',        keys: ['tenderOfferMinimumCondition'] },
-    { label: 'Dollar Threshold',                      keys: ['dollarThreshold'] },
-    { label: 'Schedule Reference',                    keys: ['scheduleReference'] },
   ],
   'COND-B': [
-    // mainCondition / burdensome / stockholder / HSR dropped — canonical conditions table covers them.
     { label: 'Reps Bring-Down',                       keys: ['bringDownTiers', 'bringDownStandard'] },
     { label: 'MAE as Closing Condition',              keys: ['maeConditionStandalone'] },
-    { label: 'Materiality Scrape Present',            keys: ['materialityScrapePresent', 'materialityScrape'] },
-    { label: 'Materiality Scrape Language',           keys: ['materialityScrapeLanguage'] },
-    { label: 'Government Proceeding Condition',       keys: ['governmentProceedingConditionPresent'] },
-    { label: 'Absence of Enjoining Order Present',    keys: ['absenceOfEnjoiningOrderPresent'] },
-    { label: 'Absence of Enjoining Order Details',    keys: ['absenceOfEnjoiningOrderDetails'] },
-    { label: 'Closing Deadline After Conditions (days)', keys: ['mutualClosingDeadlineAfterConditionsDays'] },
     { label: 'Dissenting Shares Threshold',           keys: ['dissentingSharesThreshold'] },
-    { label: 'Cure Periods',                          keys: ['curePeriod', 'cureDays'] },
-    { label: 'Officer Certification Required',        keys: ['certificationRequired'] },
-    { label: 'Dollar Threshold',                      keys: ['dollarThreshold'] },
-    { label: 'Schedule Reference',                    keys: ['scheduleReference'] },
   ],
   'COND-S': [
-    // mainCondition / burdensome dropped — canonical conditions table covers them.
     { label: 'Reps Bring-Down',                       keys: ['bringDownTiers', 'bringDownStandard'] },
     { label: 'Funds Availability as Condition',       keys: ['fundsCondition'] },
-    { label: 'Materiality Scrape Present',            keys: ['materialityScrapePresent', 'materialityScrape'] },
-    { label: 'Materiality Scrape Language',           keys: ['materialityScrapeLanguage'] },
-    { label: 'Government Proceeding Condition',       keys: ['governmentProceedingConditionPresent'] },
-    { label: 'Absence of Enjoining Order Present',    keys: ['absenceOfEnjoiningOrderPresent'] },
-    { label: 'Absence of Enjoining Order Details',    keys: ['absenceOfEnjoiningOrderDetails'] },
-    { label: 'Closing Deadline After Conditions (days)', keys: ['mutualClosingDeadlineAfterConditionsDays'] },
-    { label: 'Cure Periods',                          keys: ['curePeriod', 'cureDays'] },
-    { label: 'Officer Certification Required',        keys: ['certificationRequired'] },
-    { label: 'Dollar Threshold',                      keys: ['dollarThreshold'] },
-    { label: 'Schedule Reference',                    keys: ['scheduleReference'] },
   ],
 
   // ─── IOC — leaner summary. Redundant rows (affirmative scope / efforts
@@ -5454,39 +5444,216 @@ function RepMaterialContractsTable({ provisions, onSelectProvision }) {
  *     for a category match and either list the matching provisions (clickable
  *     to source) or render "Not present in this agreement". Two-col layout
  *     mirrors the bringdown / IOC affirmative tables. */
+/* ── Canonical Closing Conditions lists (per family).
+ *    Each row has:
+ *      - label: human-readable canonical name
+ *      - re:    regex against provision.category to match deal provisions
+ *      - alwaysRender: when true, the row renders even if no provision
+ *        matches (used for MAE which we always want to surface). When
+ *        false (default), the row only renders if at least one provision
+ *        matches.
+ *      - tenderOnly: when true, the row only renders for tender-offer deals.
+ *      - maeSide: 'target' | 'parent' — when set, the Details cell pulls
+ *        from the matching side's MAE definition even when no condition
+ *        provision was extracted. */
 const CANONICAL_CONDITIONS_M = [
-  { label: 'Stockholder Approval',           re: /stockholder\s+approval|shareholder\s+approval|requisite\s+vote/i },
-  { label: 'No Injunctions / Law-Order Block', re: /no\s+(?:injunction|order)|legal\s+restraint|absence\s+of\s+(?:injunction|enjoining)/i },
-  { label: 'HSR Clearance',                  re: /hsr|hart[\s-]*scott|waiting\s+period\s+(?:has\s+)?expir/i },
-  { label: 'Other Regulatory Approvals',     re: /regulatory\s+approvals?|antitrust\s+approvals?|cfius|sami?r|cma|merger\s+control/i },
-  { label: 'Government Proceeding Absence',  re: /government(?:al)?\s+proceeding|no\s+(?:pending\s+)?action/i },
-  { label: 'S-4 / Proxy Effective',          re: /s-?4|proxy\s+statement\s+(?:has\s+been\s+)?(?:declared\s+)?effective|registration\s+statement/i },
+  { label: 'Stockholder Approval (Company)',  re: /stockholder\s+approval|shareholder\s+approval|requisite\s+vote/i, side: 'company' },
+  { label: 'Stockholder Approval (Parent)',   re: /(?:parent|buyer|acquir\w+)\s+(?:stockholder|shareholder)\s+approval/i, side: 'parent', requireParentApproval: true },
+  { label: 'No Injunctions',                  re: /no\s+(?:injunction|order)|legal\s+restraint|absence\s+of\s+(?:injunction|enjoining)|government(?:al)?\s+proceeding|no\s+(?:pending\s+)?action/i },
+  { label: 'HSR Clearance',                   re: /hsr|hart[\s-]*scott|waiting\s+period\s+(?:has\s+)?expir/i },
+  { label: 'Other Regulatory Approvals',      re: /regulatory\s+approvals?|antitrust\s+approvals?|cfius|sami?r|cma|merger\s+control/i },
+  { label: 'S-4 / Proxy Effective',           re: /s-?4|proxy\s+statement\s+(?:has\s+been\s+)?(?:declared\s+)?effective|registration\s+statement/i },
+  { label: 'Tender Offer Minimum Condition',  re: /tender\s+offer\s+minimum|minimum\s+condition|acceptance\s+time/i, tenderOnly: true },
 ];
 const CANONICAL_CONDITIONS_B = [
-  { label: 'Reps Bring-Down',                re: /bring[\s-]*down|representations?\s+true/i },
-  { label: 'Covenant Performance',           re: /covenants?\s+performed|covenants?\s+complied/i },
-  { label: 'No MAE',                         re: /material\s+adverse\s+effect|\bmae\b/i },
-  { label: 'Officer Certificate',            re: /officer'?s\s+certificate|officer\s+cert/i },
+  { label: 'Reps Bring-Down',                 re: /bring[\s-]*down|representations?\s+true|accuracy\s+of\s+(?:the\s+)?representations/i },
+  { label: 'Covenant Performance',            re: /covenants?\s+performed|covenants?\s+complied|performance\s+of\s+covenants/i },
+  { label: 'No Material Adverse Effect',      re: /material\s+adverse\s+effect|\bmae\b/i, alwaysRender: true, maeSide: 'target' },
 ];
 const CANONICAL_CONDITIONS_S = [
-  { label: 'Reps Bring-Down (Parent)',       re: /bring[\s-]*down|representations?\s+true/i },
-  { label: 'Covenant Performance (Parent)',  re: /covenants?\s+performed|covenants?\s+complied/i },
-  { label: 'Officer Certificate',            re: /officer'?s\s+certificate|officer\s+cert/i },
-  { label: 'Funds Available',                re: /funds\s+(?:are\s+)?available|sufficient\s+funds/i },
+  { label: 'Reps Bring-Down (Parent)',        re: /bring[\s-]*down|representations?\s+true|accuracy\s+of\s+(?:the\s+)?representations/i },
+  { label: 'Covenant Performance (Parent)',   re: /covenants?\s+performed|covenants?\s+complied|performance\s+of\s+covenants/i },
+  { label: 'No Material Adverse Effect (Parent)', re: /material\s+adverse\s+effect|\bmae\b/i, alwaysRender: true, maeSide: 'parent' },
 ];
 
-function CanonicalConditionsTable({ provisions, family, onSelectProvision }) {
+/* ── Build the Details cell content for a canonical-condition row.
+ *    Composes a multi-line description from the matched provisions'
+ *    features: verbatim closing-condition quote, threshold, bringdown
+ *    standard, cure period, materiality scrape, etc. Each composed line
+ *    is independently clickable to source via useShowEvidence(). */
+function CanonicalConditionDetails({ row, matches, allProvisions, onSelectProvision }) {
+  const showEvidence = useShowEvidence();
+
+  // Compose a list of detail lines from the matched provisions. Each line
+  // is { label, value, evidence } — value may be a string or null. If
+  // evidence is present, the line is clickable to source.
+  const lines = [];
+  const pushLine = (label, value, evidence) => {
+    if (value === null || value === undefined || value === '' || value === false) return;
+    if (Array.isArray(value) && value.length === 0) return;
+    lines.push({ label, value, evidence });
+  };
+
+  for (const p of matches) {
+    const f = getStructuredFeatures(p) || {};
+
+    // Verbatim quote (mainConcept / mainCondition / mainObligation) —
+    // shown as the headline of the row.
+    const main =
+      (typeof f.mainCondition === 'string' && f.mainCondition.trim()) ||
+      (typeof f.mainConcept === 'string' && f.mainConcept.trim()) ||
+      (typeof f.mainObligation === 'string' && f.mainObligation.trim()) ||
+      null;
+    if (main) {
+      pushLine('Provision', main, p.full_text || main);
+    }
+
+    // Threshold / bringdown / cure / materiality scrape composition.
+    const fmt = (val, key) => {
+      const u = isCitableValue(val) ? getCitableValue(val) : val;
+      if (u === null || u === undefined || u === '' || u === false) return null;
+      if (typeof u === 'boolean') return u ? 'Yes' : null;
+      if (Array.isArray(u)) {
+        const parts = u
+          .map((x) => isTaggedItem(x) ? (resolveTaggedLabel(key, x) || x.label || x.code) : String(x))
+          .filter(Boolean);
+        return parts.length ? parts.join(', ') : null;
+      }
+      if (isTaggedItem(u)) return resolveTaggedLabel(key, u) || u.label || u.code;
+      return String(u);
+    };
+
+    const bringDown = fmt(f.bringDownStandard, 'bringDownStandard');
+    if (bringDown) {
+      const ev = isCitableValue(f.bringDownStandard) ? getCitableText(f.bringDownStandard) : null;
+      pushLine('Bring-down standard', bringDown, ev);
+    }
+    if (Array.isArray(f.bringDownTiers) && f.bringDownTiers.length > 0) {
+      const tierTxt = f.bringDownTiers
+        .map((t) => {
+          const std = t.standard_label || t.standardLabel || t.standard || '';
+          const reps = t.reps_covered || t.repsCovered || '';
+          return std ? `${std}${reps ? ` (${reps})` : ''}` : null;
+        })
+        .filter(Boolean)
+        .join('; ');
+      if (tierTxt) pushLine('De minimis tiers', tierTxt, null);
+    }
+    const threshold = fmt(f.dollarThreshold, 'dollarThreshold');
+    if (threshold) {
+      const ev = isCitableValue(f.dollarThreshold) ? getCitableText(f.dollarThreshold) : null;
+      pushLine('Threshold', threshold, ev);
+    }
+    const cure = fmt(f.curePeriod, 'curePeriod') || fmt(f.cureDays, 'cureDays');
+    if (cure) pushLine('Cure period', cure, null);
+    const scrapeLang = fmt(f.materialityScrapeLanguage, 'materialityScrapeLanguage');
+    if (scrapeLang) {
+      const ev = isCitableValue(f.materialityScrapeLanguage) ? getCitableText(f.materialityScrapeLanguage) : null;
+      pushLine('Materiality scrape', scrapeLang, ev);
+    } else {
+      const scrapePresent = fmt(f.materialityScrapePresent, 'materialityScrapePresent') || fmt(f.materialityScrape, 'materialityScrape');
+      if (scrapePresent) pushLine('Materiality scrape', 'Present', null);
+    }
+  }
+
+  // MAE row fallback — when no condition provision matched but maeSide is
+  // set, pull from the matching side's MAE definition so the row shows
+  // useful detail even without an explicit condition provision.
+  if (matches.length === 0 && row.maeSide) {
+    const isParentSide = (p) => /parent|buyer|acquir|purchaser/i.test(p?.category || '');
+    const maeProvs = (allProvisions || []).filter(isMaeDefinitionProvision);
+    const target = row.maeSide === 'parent'
+      ? (maeProvs.find(isParentSide) || null)
+      : (maeProvs.find((p) => !isParentSide(p)) || maeProvs[0] || null);
+    if (target) {
+      const f = getStructuredFeatures(target) || {};
+      const limbs = isCitableValue(f.maeLimbs) ? getCitableValue(f.maeLimbs) : f.maeLimbs;
+      if (limbs === 'TWO_LIMB') pushLine('MAE limbs', 'Two-limb (effect + ability to consummate)', null);
+      else if (limbs === 'ONE_LIMB') pushLine('MAE limbs', 'One-limb (effect only)', null);
+      if (Array.isArray(f.carveouts) && f.carveouts.length > 0) {
+        pushLine('Carve-outs', `${f.carveouts.length} carve-out${f.carveouts.length === 1 ? '' : 's'} (see MAE section)`, null);
+      }
+      pushLine('Source', `See ${target.category || 'MAE definition'}`, target.full_text || null);
+    }
+  }
+
+  if (lines.length === 0) {
+    return <span className="italic text-inkFaint">Not present in this agreement</span>;
+  }
+
+  return (
+    <div className="space-y-1">
+      {lines.map((line, i) => {
+        const clickable = !!(line.evidence && showEvidence);
+        return (
+          <div
+            key={i}
+            className={`flex flex-col ${clickable ? 'cursor-pointer hover:bg-bg/40' : ''}`}
+            onClick={clickable ? () => showEvidence(line.evidence) : undefined}
+            title={clickable ? 'Click to view in document' : undefined}
+          >
+            <dt className="text-[10px] text-inkFaint uppercase tracking-wider">{line.label}</dt>
+            <dd className={`text-[11px] ${clickable ? 'text-ink hover:text-amber-700' : 'text-ink'}`}>
+              {typeof line.value === 'string' && line.label === 'Provision' ? (
+                <span className="italic">&ldquo;{line.value}&rdquo;</span>
+              ) : (
+                <span>{String(line.value)}</span>
+              )}
+            </dd>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function CanonicalConditionsTable({ provisions, allProvisions, family, onSelectProvision }) {
   const list = family === 'COND-B' ? CANONICAL_CONDITIONS_B
     : family === 'COND-S' ? CANONICAL_CONDITIONS_S
     : CANONICAL_CONDITIONS_M;
-  const label = family === 'COND-B' ? 'Buyer Closing Conditions'
+  const titleLabel = family === 'COND-B' ? 'Buyer Closing Conditions'
     : family === 'COND-S' ? 'Seller Closing Conditions'
     : 'Mutual Closing Conditions';
+
+  // Heuristic: tender-offer deal if ANY provision's full_text contains
+  // "tender offer" / "acceptance time". Used to gate the Tender Offer
+  // Minimum Condition row.
+  const isTenderDeal = useMemo(() => {
+    for (const p of provisions || []) {
+      const t = String(p?.full_text || '');
+      if (/tender\s+offer|acceptance\s+time|exchange\s+offer/i.test(t)) return true;
+    }
+    return false;
+  }, [provisions]);
+
+  // Heuristic: parent-approval row only renders when STRUCT.shareholderApprovalMethodParent
+  // indicates approval is required (not BOARD_ONLY / NA).
+  const parentApprovalRequired = useMemo(() => {
+    for (const p of provisions || []) {
+      const f = getStructuredFeatures(p) || {};
+      const raw = isCitableValue(f.shareholderApprovalMethodParent)
+        ? getCitableValue(f.shareholderApprovalMethodParent)
+        : f.shareholderApprovalMethodParent;
+      const code = isTaggedItem(raw) ? raw.code : raw;
+      if (!code) continue;
+      const s = String(code).toUpperCase();
+      if (s === 'SPECIAL_MEETING' || s === 'WRITTEN_CONSENT' || s === 'SIGN_AND_CONSENT') return true;
+    }
+    return false;
+  }, [provisions]);
+
+  // Filter the canonical list based on render predicates.
+  const renderedRows = list.filter((row) => {
+    if (row.tenderOnly && !isTenderDeal) return false;
+    if (row.requireParentApproval && !parentApprovalRequired) return false;
+    return true;
+  });
+
   return (
     <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
       <div className="px-3 py-2 bg-bg/60 border-b border-border">
         <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
-          {label}
+          {titleLabel}
         </p>
       </div>
       <div className="overflow-x-auto">
@@ -5498,29 +5665,46 @@ function CanonicalConditionsTable({ provisions, family, onSelectProvision }) {
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {list.map((row) => {
+            {renderedRows.map((row) => {
               const matches = (provisions || []).filter((p) => row.re.test(String(p.category || '')));
+              // Skip non-alwaysRender rows with no matches (other than the
+              // explicit alwaysRender canonical rows like MAE).
+              if (matches.length === 0 && !row.alwaysRender) {
+                return (
+                  <tr key={row.label} className="align-top hover:bg-bg/40">
+                    <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">{row.label}</td>
+                    <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
+                      <span className="italic text-inkFaint">Not present in this agreement</span>
+                    </td>
+                  </tr>
+                );
+              }
+              // Primary provision (first match) is the click target on the
+              // Condition column. The Details cell composes additional info
+              // from ALL matched provisions.
+              const primary = matches[0];
               return (
                 <tr key={row.label} className="align-top hover:bg-bg/40">
-                  <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">{row.label}</td>
-                  <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
-                    {matches.length === 0 ? (
-                      <span className="italic text-inkFaint">Not present in this agreement</span>
+                  <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">
+                    {primary && onSelectProvision ? (
+                      <button
+                        type="button"
+                        onClick={() => onSelectProvision(primary)}
+                        className="text-left text-accent hover:underline font-medium"
+                      >
+                        {row.label}
+                      </button>
                     ) : (
-                      <ul className="space-y-0.5">
-                        {matches.map((p) => (
-                          <li key={p.id}>
-                            <button
-                              type="button"
-                              onClick={() => onSelectProvision && onSelectProvision(p)}
-                              className="text-accent hover:underline"
-                            >
-                              {p.category || 'General'}
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
+                      <span>{row.label}</span>
                     )}
+                  </td>
+                  <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
+                    <CanonicalConditionDetails
+                      row={row}
+                      matches={matches}
+                      allProvisions={allProvisions || provisions}
+                      onSelectProvision={onSelectProvision}
+                    />
                   </td>
                 </tr>
               );
@@ -5681,7 +5865,7 @@ function MaeDefinitionSummary({ allProvisions, onSelectProvision }) {
   );
 }
 
-function ProvisionTable({ provisions, type, onSelectProvision }) {
+function ProvisionTable({ provisions, type, onSelectProvision, allProvisions }) {
   // STRUCT and CONSID get specialized layouts — see dedicated components above.
   if (type === 'STRUCT') {
     return <StructTable provisions={provisions} onSelectProvision={onSelectProvision} />;
@@ -5783,6 +5967,7 @@ function ProvisionTable({ provisions, type, onSelectProvision }) {
       <div className="space-y-3">
         <CanonicalConditionsTable
           provisions={provisions}
+          allProvisions={allProvisions || provisions}
           family={family}
           onSelectProvision={onSelectProvision}
         />
@@ -8789,6 +8974,7 @@ export default function ReviewPage() {
                                     provisions={restAugmented}
                                     type={type}
                                     onSelectProvision={handleEditProvision}
+                                    allProvisions={provisions}
                                   />
                                 );
                               })()}
