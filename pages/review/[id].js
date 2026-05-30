@@ -3605,21 +3605,83 @@ function StructTable({ provisions, onSelectProvision }) {
     }
   }
 
-  // For "The Merger" we just show mergerForm; for "Closing" we show
-  // closingLocation + closingTiming. Everything else falls back to a generic
-  // mainConcept view.
+  // Per-category condensed rendering + forced row order. We classify each
+  // STRUCT provision into one of: merger / closing / effects / effective /
+  // other, render only the most informative fields per row (no duplicate
+  // text alongside the canonical pill), and sort according to STRUCT_ORDER
+  // regardless of document position so the page reads:
+  //
+  //   1. Merger Form    (was "The Merger")
+  //   2. Closing        (location + timing + deadline)
+  //   3. Effects        (just the cited statute, e.g. "DGCL § 259")
+  //   4. Effective Time (short phrasing: "Upon filing with DE SOS")
+  //   5. Anything else  (mainConcept fallback, then alphabetical)
+  const STRUCT_ORDER = ['merger', 'closing', 'effects', 'effective', 'other'];
+
+  const classifyStruct = (p) => {
+    const cat = (p.category || '').toLowerCase();
+    if (cat.includes('effective')) return 'effective';
+    if (cat.includes('effect') && cat.includes('merger')) return 'effects';
+    if (cat.includes('closing')) return 'closing';
+    if (cat.includes('merger') && !cat.includes('agreement')) return 'merger';
+    return 'other';
+  };
+
+  // Render a tagged value as just the canonical label (the "button" form) —
+  // strip the verbatim text companion so we don't show both label and
+  // duplicate prose. Used for mergerForm.
+  const renderMergerFormCell = (raw) => {
+    if (!raw) return <span className="italic text-inkFaint">Not specified</span>;
+    if (isCitableValue(raw)) raw = getCitableValue(raw);
+    if (isTaggedItem(raw)) {
+      const label = resolveTaggedLabel('mergerForm', raw) || raw.label || raw.code;
+      return <CodeBadge code={raw.code || label} />;
+    }
+    // Plain string — render as a pill too
+    return <CodeBadge code={String(raw)} />;
+  };
+
+  // Shorten a long Effective Time provision to its essence:
+  // "Upon filing of the Certificate of Merger with the Delaware Secretary of
+  // State" rather than the whole sentence.
+  const shortEffectiveTime = (features) => {
+    const explicit = features.effectiveTimeShort;
+    if (explicit) {
+      const v = isCitableValue(explicit) ? getCitableValue(explicit) : explicit;
+      if (v) return String(v);
+    }
+    // Heuristic short-form derivation from mainConcept / provision text.
+    // Look for "filing ... with ... Secretary of State" phrasing and
+    // compress to "Upon filing with <State> SOS".
+    const concept = features.mainConcept || '';
+    const m = String(concept).match(/filing\s+(?:of\s+(?:the\s+)?Certificate(?:\s+of\s+Merger)?\s+)?with\s+(?:the\s+)?(?:Secretary\s+of\s+State\s+of\s+(?:the\s+State\s+of\s+)?)?([A-Z][a-zA-Z]+)/i);
+    if (m) return `Upon filing with ${m[1]} Secretary of State`;
+    return null; // caller falls back to mainConcept
+  };
+
+  // Compact reference to the statute that "Effects of Merger" cites
+  // (typically DGCL § 259 / § 251 / etc.).
+  const shortEffectsRef = (features) => {
+    const explicit = features.effectsOfMergerReference;
+    if (explicit) {
+      const v = isCitableValue(explicit) ? getCitableValue(explicit) : explicit;
+      if (v) return String(v);
+    }
+    const text = features.mainConcept || '';
+    const m = String(text).match(/(?:DGCL|Delaware\s+General\s+Corporation\s+Law)[^.]{0,40}?(?:§|Section)\s*(\d+(?:\([a-z]\))?)/i);
+    if (m) return `DGCL § ${m[1]}`;
+    return null;
+  };
+
   const rows = provisions.map((p) => {
     const features = getStructuredFeatures(p) || {};
-    const cat = (p.category || '').toLowerCase();
+    const kind = classifyStruct(p);
+    let displayCategory = p.category || 'General';
     let cells;
-    if (cat.includes('merger') && !cat.includes('agreement')) {
-      cells = [{ key: 'mergerForm', raw: features.mergerForm }];
-    } else if (cat.includes('closing')) {
-      // The "Closing" row exposes location + timing AND a synthesized
-      // "Closing Deadline" pulled from either the existing closingTiming
-      // field or the COND-derived mutualClosingDeadlineAfterConditionsDays.
-      // The deadline used to live on the COND page; the user asked for it
-      // to surface here instead.
+    if (kind === 'merger') {
+      displayCategory = 'Merger Form';
+      cells = [{ key: 'mergerForm', raw: features.mergerForm, render: renderMergerFormCell }];
+    } else if (kind === 'closing') {
       const deadline = features.mutualClosingDeadlineAfterConditionsDays
         ?? features.closingDeadline
         ?? null;
@@ -3634,38 +3696,71 @@ function StructTable({ provisions, onSelectProvision }) {
           raw: typeof deadline === 'number' ? `${deadline} days after conditions satisfied` : deadline,
         });
       } else if (features.closingTiming) {
-        // Use closingTiming as the deadline fallback so the row always
-        // surfaces a "Closing Deadline" line.
         cells.push({
           key: 'closingDeadline',
           label: 'Closing Deadline',
           raw: features.closingTiming,
         });
       }
+    } else if (kind === 'effects') {
+      const ref = shortEffectsRef(features);
+      cells = [{ key: 'effectsRef', raw: ref || features.mainConcept }];
+    } else if (kind === 'effective') {
+      const shortTime = shortEffectiveTime(features);
+      cells = [{ key: 'effectiveTime', raw: shortTime || features.mainConcept }];
     } else {
       cells = [{ key: 'mainConcept', raw: features.mainConcept }];
     }
-    return { p, cells };
+    return { p, kind, cells, displayCategory };
   });
+
+  // Force canonical ordering.
+  rows.sort((a, b) => {
+    const ai = STRUCT_ORDER.indexOf(a.kind);
+    const bi = STRUCT_ORDER.indexOf(b.kind);
+    if (ai !== bi) return ai - bi;
+    return String(a.displayCategory).localeCompare(String(b.displayCategory));
+  });
+
+  // Humanize a canonical UPPER_SNAKE deal-structure code to readable speech:
+  //   ONE_STEP_MERGER          -> "One-step merger"
+  //   TWO_STEP_TENDER_OFFER    -> "Two-step tender offer"
+  //   SCHEME_OF_ARRANGEMENT    -> "Scheme of arrangement"
+  // Already-humanized strings ("One-step Merger" from the heuristic
+  // fallback) pass through unchanged.
+  const humanizeDealStructure = (s) => {
+    if (!s || typeof s !== 'string') return s;
+    if (!/^[A-Z][A-Z0-9_]+$/.test(s)) return s; // already human-cased
+    return s
+      .replace(/_/g, ' ')
+      .toLowerCase()
+      .replace(/^./, (c) => c.toUpperCase())
+      .replace(/\b(one|two|three|four|five)\s+step/i, (m) => m.replace(/\s+/, '-'));
+  };
+
+  // Synthesize a "Deal Structure" row at the very top of the table — this
+  // used to live in a separate hero box but the user wants it as a regular
+  // table row in human speech. Synthesized rows have no source provision
+  // (click does nothing) and render the humanized value plainly.
+  if (heroDealStructure) {
+    const humanized = humanizeDealStructure(heroDealStructure);
+    rows.unshift({
+      p: { id: '__synth_deal_structure', category: 'Deal Structure' },
+      kind: 'structure',
+      displayCategory: 'Deal Structure',
+      cells: [{
+        key: 'dealStructure',
+        raw: humanized,
+        render: (raw) => <span className="text-ink">{raw || <span className="italic text-inkFaint">Not specified</span>}</span>,
+      }],
+    });
+  }
 
   return (
     <div className="space-y-3">
-      {(heroDealStructure || heroMergerForm) && (
-        <div className="bg-white border-2 border-violet-300 rounded-lg shadow-sm px-5 py-4 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
-          <div>
-            <div className="font-mono text-[10px] text-inkFaint uppercase tracking-wider">Deal Structure</div>
-            <div className="font-display text-lg text-ink font-medium">
-              {heroDealStructure || <span className="italic text-inkFaint text-sm">Not specified</span>}
-            </div>
-          </div>
-          <div>
-            <div className="font-mono text-[10px] text-inkFaint uppercase tracking-wider">Merger Form</div>
-            <div className="font-display text-lg text-ink font-medium">
-              {heroMergerForm || <span className="italic text-inkFaint text-sm">Not specified</span>}
-            </div>
-          </div>
-        </div>
-      )}
+{/* Hero box removed — Deal Structure + Merger Form render as the first
+        two rows of the table below so all structure info lives in one place
+        and reads as human speech, not as a separate styled callout. */}
     <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
       <table className="min-w-full text-xs font-ui">
         <thead className="bg-bg/60 border-b border-border">
@@ -3675,33 +3770,44 @@ function StructTable({ provisions, onSelectProvision }) {
           </tr>
         </thead>
         <tbody className="divide-y divide-border">
-          {rows.map(({ p, cells }) => (
+          {rows.map(({ p, cells, displayCategory }) => {
+            const isSynth = typeof p.id === 'string' && p.id.startsWith('__synth');
+            return (
             <tr key={p.id} className="hover:bg-bg/40 transition-colors align-top">
               <td className="px-3 py-2 whitespace-nowrap">
-                <button
-                  type="button"
-                  onClick={() => onSelectProvision && onSelectProvision(p)}
-                  className="text-left text-accent hover:underline font-medium"
-                >
-                  {p.category || 'General'}
-                </button>
+                {isSynth ? (
+                  <span className="text-ink font-medium">{displayCategory}</span>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => onSelectProvision && onSelectProvision(p)}
+                    className="text-left text-accent hover:underline font-medium"
+                  >
+                    {displayCategory}
+                  </button>
+                )}
               </td>
               <td className="px-3 py-2 text-ink">
                 {cells.length === 1 ? (
-                  <div>{renderFeatureCell(cells[0].key, cells[0].raw)}</div>
+                  <div>
+                    {cells[0].render
+                      ? cells[0].render(cells[0].raw)
+                      : renderFeatureCell(cells[0].key, cells[0].raw)}
+                  </div>
                 ) : (
                   <dl className="space-y-1">
-                    {cells.map(({ key, raw, label }) => (
+                    {cells.map(({ key, raw, label, render }) => (
                       <div key={key} className="flex flex-col">
                         <dt className="text-[10px] text-inkFaint uppercase tracking-wider">{label || humanizeKey(key)}</dt>
-                        <dd>{renderFeatureCell(key, raw)}</dd>
+                        <dd>{render ? render(raw) : renderFeatureCell(key, raw)}</dd>
                       </div>
                     ))}
                   </dl>
                 )}
               </td>
             </tr>
-          ))}
+            );
+          })}
         </tbody>
       </table>
     </div>
