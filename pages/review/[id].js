@@ -452,10 +452,12 @@ const FEATURE_DISPLAY_ORDER = {
     'permittedExceptions', 'dollarThreshold', 'effortsStandard',
     'crossReferences',
   ],
-  'COND-M': ['mainCondition', 'bringDownStandard', 'tieredBringDown', 'tiers', 'certificationRequired', 'dollarThreshold', 'scheduleReference'],
-  'COND-B': ['mainCondition', 'bringDownStandard', 'tieredBringDown', 'tiers', 'maeConditionStandalone', 'certificationRequired', 'dollarThreshold', 'dissentingSharesThreshold', 'scheduleReference'],
-  'COND-S': ['mainCondition', 'bringDownStandard', 'tieredBringDown', 'tiers', 'fundsCondition', 'certificationRequired', 'dollarThreshold', 'scheduleReference'],
-  COND: ['mainCondition'],
+  // mainCondition column dropped — replaced by the CanonicalConditionsTable
+  // (one row per canonical condition, e.g. Stockholder Approval, HSR Clearance).
+  'COND-M': ['bringDownStandard', 'tieredBringDown', 'tiers', 'certificationRequired', 'dollarThreshold', 'scheduleReference'],
+  'COND-B': ['bringDownStandard', 'tieredBringDown', 'tiers', 'maeConditionStandalone', 'certificationRequired', 'dollarThreshold', 'dissentingSharesThreshold', 'scheduleReference'],
+  'COND-S': ['bringDownStandard', 'tieredBringDown', 'tiers', 'fundsCondition', 'certificationRequired', 'dollarThreshold', 'scheduleReference'],
+  COND: [],
   // NOSOL table — 5 most-compared deal-protection terms only.
   // Everything else (info rights, go-shop, standstill, percentages, etc.)
   // still lives on each provision's structured summary; it's just hidden
@@ -4207,12 +4209,9 @@ const CATEGORY_SUMMARY_FEATURES = {
 
   // ─── COND-M / COND-B / COND-S — Paul Weiss q41–q43, q82, q88–q99 ───────
   'COND-M': [
-    { label: 'Main Condition',                        keys: ['mainCondition', 'mainConcept'] },
-    { label: 'Burdensome Condition Present',          keys: ['burdensomeConditionPresent'] },
-    { label: 'Burdensome Condition Scope',            keys: ['burdensomeConditionScope'] },
-    { label: 'Stockholder Approval Required',         keys: ['stockholderApprovalRequired', 'stockholderApproval'] },
-    { label: 'Regulatory Approvals Required',         keys: ['regulatoryApprovals', 'requiredApprovals'] },
-    { label: 'HSR Clearance',                         keys: ['hsrClearance', 'antitrustClearance'] },
+    // mainCondition / mainConcept dropped — canonical-condition rows below replace it.
+    // burdensomeCondition rows dropped — surfaced in the ANTI summary.
+    // Stockholder Approval / HSR Clearance also dropped — covered by canonical conditions table.
     { label: 'MAE as Closing Condition',              keys: ['maeConditionStandalone', 'maeStandaloneCondition'] },
     { label: 'Materiality Scrape Present',            keys: ['materialityScrapePresent', 'materialityScrape'] },
     { label: 'Materiality Scrape Language',           keys: ['materialityScrapeLanguage'] },
@@ -4228,9 +4227,7 @@ const CATEGORY_SUMMARY_FEATURES = {
     { label: 'Schedule Reference',                    keys: ['scheduleReference'] },
   ],
   'COND-B': [
-    { label: 'Main Condition',                        keys: ['mainCondition', 'mainConcept'] },
-    { label: 'Burdensome Condition Present',          keys: ['burdensomeConditionPresent'] },
-    { label: 'Burdensome Condition Scope',            keys: ['burdensomeConditionScope'] },
+    // mainCondition / burdensome / stockholder / HSR dropped — canonical conditions table covers them.
     { label: 'Reps Bring-Down',                       keys: ['bringDownTiers', 'bringDownStandard'] },
     { label: 'MAE as Closing Condition',              keys: ['maeConditionStandalone'] },
     { label: 'Materiality Scrape Present',            keys: ['materialityScrapePresent', 'materialityScrape'] },
@@ -4246,9 +4243,7 @@ const CATEGORY_SUMMARY_FEATURES = {
     { label: 'Schedule Reference',                    keys: ['scheduleReference'] },
   ],
   'COND-S': [
-    { label: 'Main Condition',                        keys: ['mainCondition', 'mainConcept'] },
-    { label: 'Burdensome Condition Present',          keys: ['burdensomeConditionPresent'] },
-    { label: 'Burdensome Condition Scope',            keys: ['burdensomeConditionScope'] },
+    // mainCondition / burdensome dropped — canonical conditions table covers them.
     { label: 'Reps Bring-Down',                       keys: ['bringDownTiers', 'bringDownStandard'] },
     { label: 'Funds Availability as Condition',       keys: ['fundsCondition'] },
     { label: 'Materiality Scrape Present',            keys: ['materialityScrapePresent', 'materialityScrape'] },
@@ -5207,6 +5202,89 @@ function RepMaterialContractsTable({ provisions, onSelectProvision }) {
   );
 }
 
+/* ─── Canonical Closing Conditions table (per COND family).
+ *     Rows = canonical conditions; for each row scan the provided provisions
+ *     for a category match and either list the matching provisions (clickable
+ *     to source) or render "Not present in this agreement". Two-col layout
+ *     mirrors the bringdown / IOC affirmative tables. */
+const CANONICAL_CONDITIONS_M = [
+  { label: 'Stockholder Approval',           re: /stockholder\s+approval|shareholder\s+approval|requisite\s+vote/i },
+  { label: 'No Injunctions / Law-Order Block', re: /no\s+(?:injunction|order)|legal\s+restraint|absence\s+of\s+(?:injunction|enjoining)/i },
+  { label: 'HSR Clearance',                  re: /hsr|hart[\s-]*scott|waiting\s+period\s+(?:has\s+)?expir/i },
+  { label: 'Other Regulatory Approvals',     re: /regulatory\s+approvals?|antitrust\s+approvals?|cfius|sami?r|cma|merger\s+control/i },
+  { label: 'Government Proceeding Absence',  re: /government(?:al)?\s+proceeding|no\s+(?:pending\s+)?action/i },
+  { label: 'S-4 / Proxy Effective',          re: /s-?4|proxy\s+statement\s+(?:has\s+been\s+)?(?:declared\s+)?effective|registration\s+statement/i },
+];
+const CANONICAL_CONDITIONS_B = [
+  { label: 'Reps Bring-Down',                re: /bring[\s-]*down|representations?\s+true/i },
+  { label: 'Covenant Performance',           re: /covenants?\s+performed|covenants?\s+complied/i },
+  { label: 'No MAE',                         re: /material\s+adverse\s+effect|\bmae\b/i },
+  { label: 'Officer Certificate',            re: /officer'?s\s+certificate|officer\s+cert/i },
+];
+const CANONICAL_CONDITIONS_S = [
+  { label: 'Reps Bring-Down (Parent)',       re: /bring[\s-]*down|representations?\s+true/i },
+  { label: 'Covenant Performance (Parent)',  re: /covenants?\s+performed|covenants?\s+complied/i },
+  { label: 'Officer Certificate',            re: /officer'?s\s+certificate|officer\s+cert/i },
+  { label: 'Funds Available',                re: /funds\s+(?:are\s+)?available|sufficient\s+funds/i },
+];
+
+function CanonicalConditionsTable({ provisions, family, onSelectProvision }) {
+  const list = family === 'COND-B' ? CANONICAL_CONDITIONS_B
+    : family === 'COND-S' ? CANONICAL_CONDITIONS_S
+    : CANONICAL_CONDITIONS_M;
+  const label = family === 'COND-B' ? 'Buyer Closing Conditions'
+    : family === 'COND-S' ? 'Seller Closing Conditions'
+    : 'Mutual Closing Conditions';
+  return (
+    <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+      <div className="px-3 py-2 bg-bg/60 border-b border-border">
+        <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+          {label}
+        </p>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="min-w-full text-xs font-ui">
+          <thead className="bg-bg/60 border-b border-border">
+            <tr>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[260px]">Condition</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Details</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {list.map((row) => {
+              const matches = (provisions || []).filter((p) => row.re.test(String(p.category || '')));
+              return (
+                <tr key={row.label} className="align-top hover:bg-bg/40">
+                  <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">{row.label}</td>
+                  <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
+                    {matches.length === 0 ? (
+                      <span className="italic text-inkFaint">Not present in this agreement</span>
+                    ) : (
+                      <ul className="space-y-0.5">
+                        {matches.map((p) => (
+                          <li key={p.id}>
+                            <button
+                              type="button"
+                              onClick={() => onSelectProvision && onSelectProvision(p)}
+                              className="text-accent hover:underline"
+                            >
+                              {p.category || 'General'}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
 function MaeDefinitionSummary({ allProvisions, onSelectProvision }) {
   const maeProvs = (allProvisions || []).filter(isMaeDefinitionProvision);
   // Derive a one-or-two-limb hero label from features.maeLimbs (preferred) or
@@ -5346,12 +5424,20 @@ function ProvisionTable({ provisions, type, onSelectProvision }) {
     );
   }
   if (type === 'COND' || type === 'COND-M' || type === 'COND-B' || type === 'COND-S') {
+    const family = (type === 'COND-B' || type === 'COND-S' || type === 'COND-M') ? type : 'COND-M';
     return (
-      <CategoryFeatureSummaryTable
-        provisions={provisions}
-        type={CATEGORY_SUMMARY_FEATURES[type] ? type : 'COND-M'}
-        onSelectProvision={onSelectProvision}
-      />
+      <div className="space-y-3">
+        <CanonicalConditionsTable
+          provisions={provisions}
+          family={family}
+          onSelectProvision={onSelectProvision}
+        />
+        <CategoryFeatureSummaryTable
+          provisions={provisions}
+          type={CATEGORY_SUMMARY_FEATURES[type] ? type : 'COND-M'}
+          onSelectProvision={onSelectProvision}
+        />
+      </div>
     );
   }
   if (type === 'IOC' || type === 'IOC-T' || type === 'IOC-B') {
