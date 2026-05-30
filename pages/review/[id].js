@@ -483,7 +483,7 @@ const FEATURE_DISPLAY_ORDER = {
   // entry. Everything else still lives on the provision itself via the full
   // text — no structured summary needed.
   DEF: ['sourceSection', 'inlineDefinition'],
-  STRUCT: ['mainConcept', 'mergerForm', 'survivingEntity', 'closingConditionsPrecedent'],
+  STRUCT: ['dealStructure', 'mergerForm', 'mainConcept', 'survivingEntity', 'closingConditionsPrecedent'],
   CONSID: ['mainConcept', 'considerationType', 'perShareAmount', 'exchangeRatio', 'equityAwardTreatment', 'outstandingInstruments', 'instrumentTreatments', 'vestingAcceleration', 'cutoffDate', 'cutoffTreatment', 'cashOutAmount', 'optionSpread', 'performanceTreatment', 'espp_treatment', 'parachuteCap', 'doubleTrigger', 'appraisalRightsAvailable', 'withholdingProvision', 'proration'],
   // PW diligence cleanup: REP-T / REP-B per-row table shows ONLY these four
   // columns. Specific-rep items (Sufficient Funds, Solvency, Anti-Reliance,
@@ -2898,6 +2898,27 @@ function renderFeatureCell(featureKey, raw) {
  *     packs many fields into a single STRUCT type — this presentation peels
  *     them apart so each row reads as one focused statement. */
 function StructTable({ provisions, onSelectProvision }) {
+  // Hero pair: dealStructure + mergerForm pulled from the first STRUCT-MERGER
+  // (or any STRUCT provision) that carries them. Rendered above the table.
+  let heroDealStructure = null;
+  let heroMergerForm = null;
+  for (const p of provisions) {
+    const f = getStructuredFeatures(p) || {};
+    if (!heroDealStructure && f.dealStructure) {
+      const ds = isCitableValue(f.dealStructure) ? getCitableValue(f.dealStructure) : f.dealStructure;
+      heroDealStructure = isTaggedItem(ds)
+        ? (resolveTaggedLabel('dealStructure', ds) || ds.label || ds.code)
+        : String(ds);
+    }
+    if (!heroMergerForm && f.mergerForm) {
+      const mf = isCitableValue(f.mergerForm) ? getCitableValue(f.mergerForm) : f.mergerForm;
+      heroMergerForm = isTaggedItem(mf)
+        ? (resolveTaggedLabel('mergerForm', mf) || mf.label || mf.code)
+        : String(mf);
+    }
+    if (heroDealStructure && heroMergerForm) break;
+  }
+
   // For "The Merger" we just show mergerForm; for "Closing" we show
   // closingLocation + closingTiming. Everything else falls back to a generic
   // mainConcept view.
@@ -2919,6 +2940,23 @@ function StructTable({ provisions, onSelectProvision }) {
   });
 
   return (
+    <div className="space-y-3">
+      {(heroDealStructure || heroMergerForm) && (
+        <div className="bg-white border-2 border-violet-300 rounded-lg shadow-sm px-5 py-4 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
+          <div>
+            <div className="font-mono text-[10px] text-inkFaint uppercase tracking-wider">Deal Structure</div>
+            <div className="font-display text-lg text-ink font-medium">
+              {heroDealStructure || <span className="italic text-inkFaint text-sm">Not specified</span>}
+            </div>
+          </div>
+          <div>
+            <div className="font-mono text-[10px] text-inkFaint uppercase tracking-wider">Merger Form</div>
+            <div className="font-display text-lg text-ink font-medium">
+              {heroMergerForm || <span className="italic text-inkFaint text-sm">Not specified</span>}
+            </div>
+          </div>
+        </div>
+      )}
     <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
       <table className="min-w-full text-xs font-ui">
         <thead className="bg-bg/60 border-b border-border">
@@ -2957,6 +2995,7 @@ function StructTable({ provisions, onSelectProvision }) {
           ))}
         </tbody>
       </table>
+    </div>
     </div>
   );
 }
@@ -3356,6 +3395,31 @@ function ConsidTable({ provisions, onSelectProvision }) {
     break;
   }
 
+  // Exchange Ratio — only render when considerationType references stock.
+  // Pulls exchangeRatio + exchangeRatioType from any CONSID provision (incl.
+  // CONSID-EXCHANGE-RATIO sub-code which carries ratioType + value).
+  const considTypeStr = String(heroConsidType || '').toLowerCase();
+  const showExchangeRatio = considTypeStr.includes('stock') || considTypeStr.includes('mixed');
+  let exchangeRatioValue = null;
+  let exchangeRatioType = null;
+  if (showExchangeRatio) {
+    for (const p of provisions) {
+      const f = getStructuredFeatures(p) || {};
+      const v = isCitableValue(f.exchangeRatio) ? getCitableValue(f.exchangeRatio) : f.exchangeRatio;
+      if (!exchangeRatioValue && v) exchangeRatioValue = String(v);
+      const v2raw = f.exchangeRatioType ?? f.ratioType;
+      const v2 = isCitableValue(v2raw) ? getCitableValue(v2raw) : v2raw;
+      if (!exchangeRatioType && v2) {
+        exchangeRatioType = isTaggedItem(v2)
+          ? (resolveTaggedLabel('exchangeRatioType', v2) || v2.label || v2.code)
+          : String(v2);
+      }
+      // Sub-code CONSID-EXCHANGE-RATIO carries the canonical `value` + `ratioType`.
+      if (!exchangeRatioValue && f.value) exchangeRatioValue = String(f.value);
+      if (exchangeRatioValue && exchangeRatioType) break;
+    }
+  }
+
   // Format per-share for display ("47.50" -> "$47.50", "$47.50" -> "$47.50").
   const formatPerShare = (raw) => {
     if (!raw) return null;
@@ -3396,6 +3460,17 @@ function ConsidTable({ provisions, onSelectProvision }) {
           {heroConsidType && (
             <div className="mt-1 text-xs font-ui font-medium text-lime-900 uppercase tracking-wider">
               {heroConsidType}
+            </div>
+          )}
+          {showExchangeRatio && (exchangeRatioValue || exchangeRatioType) && (
+            <div className="mt-2 pt-2 border-t border-lime-200 text-xs font-ui text-inkMid">
+              <span className="font-medium text-inkFaint uppercase tracking-wider mr-2">
+                Exchange Ratio:
+              </span>
+              <span className="text-ink font-medium">
+                {exchangeRatioValue || '—'}
+                {exchangeRatioType ? ` (${exchangeRatioType})` : ''}
+              </span>
             </div>
           )}
           {appraisalAvailable !== null && (
