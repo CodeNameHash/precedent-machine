@@ -13,6 +13,7 @@ import {
   taxonomyForFeatureKey,
   isListTaxonomyKey,
   labelForCode,
+  MATERIAL_CONTRACT_BUCKET_CODES,
 } from '../../lib/taxonomy';
 import { getFeaturesForType, PROVISION_TYPES } from '../../lib/rubric';
 
@@ -5214,9 +5215,12 @@ function RepGeneralExceptionsTable({ provisions }) {
   );
 }
 
-/* ─── REP Material Contracts table: only rendered when a REP-T-MATERIAL-CONTRACTS
- *     provision (or any REP provision with materialContractsBuckets) is present.
- *     Columns: Bucket | Threshold | Notes. */
+/* ─── REP Material Contracts table: checklist of the canonical 16 buckets
+ *     in MATERIAL_CONTRACT_BUCKET_CODES. Each row matches against the
+ *     deal's materialContractsBuckets (tagged list) + per-bucket dollar
+ *     thresholds. Buckets the deal does not address render with an italic
+ *     "Not present in this agreement" cell — same checklist pattern as
+ *     ExpectedRepsTable. */
 function RepMaterialContractsTable({ provisions, onSelectProvision }) {
   // Find the source provision: prefer one whose code or category matches.
   let source = null;
@@ -5226,28 +5230,39 @@ function RepMaterialContractsTable({ provisions, onSelectProvision }) {
     if (code === 'REP-T-MATERIAL-CONTRACTS') { source = p; break; }
     if (/material\s+contracts/i.test(p.category || '')) { source = p; break; }
   }
-  if (!source) return null;
-  const f = getStructuredFeatures(source) || {};
+  const f = source ? (getStructuredFeatures(source) || {}) : {};
   const buckets = Array.isArray(f.materialContractsBuckets) ? f.materialContractsBuckets : [];
   const thresholds = Array.isArray(f.materialContractsDollarThresholds) ? f.materialContractsDollarThresholds : [];
-  if (buckets.length === 0 && thresholds.length === 0) return null;
-  // Build a per-bucket threshold lookup. The thresholds array may carry
-  // { bucket, threshold } objects keyed by code or label.
+
+  // Lookup: bucket code → threshold. Prefer the dollar-thresholds array; fall
+  // back to a threshold field on the tagged bucket itself when present.
   const threshByCode = new Map();
   for (const t of thresholds) {
     if (!t || typeof t !== 'object') continue;
     const k = String(t.bucket || t.code || '').toUpperCase();
-    threshByCode.set(k, t.threshold || t.value || null);
+    if (k) threshByCode.set(k, t.threshold || t.value || null);
   }
-  const redactionsPermittedRaw = f.materialContractsRedactionsPermitted;
-  const redactionsDef = f.permittedRedactionsDefinition;
+  const dealBucketByCode = new Map();
+  for (const b of buckets) {
+    if (isTaggedItem(b)) {
+      dealBucketByCode.set(String(b.code).toUpperCase(), b);
+      if (b.threshold && !threshByCode.has(String(b.code).toUpperCase())) {
+        threshByCode.set(String(b.code).toUpperCase(), b.threshold);
+      }
+    }
+  }
+
+  // Render ONE row per canonical bucket code (16 codes). Unknown buckets are
+  // marked "Not present in this agreement" in italic-grey.
+  const canonicalCodes = Object.keys(MATERIAL_CONTRACT_BUCKET_CODES);
+
   return (
     <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
       <div className="px-3 py-2 bg-bg/60 border-b border-border flex items-center justify-between">
         <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
           Material Contracts
         </p>
-        {onSelectProvision && (
+        {source && onSelectProvision && (
           <button
             type="button"
             onClick={() => onSelectProvision(source)}
@@ -5260,43 +5275,29 @@ function RepMaterialContractsTable({ provisions, onSelectProvision }) {
       <table className="min-w-full text-xs font-ui">
         <thead className="bg-bg/60 border-b border-border">
           <tr>
-            <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider w-[280px]">Bucket</th>
-            <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider w-[180px]">Threshold</th>
-            <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Notes</th>
+            <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider w-[320px]">Bucket</th>
+            <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Threshold</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-border">
-          {buckets.length === 0 ? (
-            <tr>
-              <td className="px-3 py-2 italic text-inkFaint" colSpan={3}>No buckets extracted</td>
-            </tr>
-          ) : buckets.map((b, i) => {
-            const code = isTaggedItem(b) ? String(b.code).toUpperCase() : null;
-            const label = isTaggedItem(b)
-              ? (resolveTaggedLabel('materialContractsBuckets', b) || b.label || b.code)
-              : String(b);
-            const threshold = code ? (threshByCode.get(code) || (thresholds[i]?.threshold)) : (thresholds[i]?.threshold);
+          {canonicalCodes.map((code) => {
+            const label = MATERIAL_CONTRACT_BUCKET_CODES[code];
+            const dealBucket = dealBucketByCode.get(code);
+            const threshold = threshByCode.get(code) || (dealBucket && dealBucket.threshold) || null;
+            const present = !!dealBucket;
             return (
-              <tr key={i} className="align-top">
+              <tr key={code} className="align-top">
                 <td className="px-3 py-2 text-ink font-medium">{label}</td>
-                <td className="px-3 py-2 text-ink">{threshold || <span className="italic text-inkFaint">—</span>}</td>
-                <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
-                  {isTaggedItem(b) && b.text ? b.text : <span className="italic text-inkFaint">—</span>}
+                <td className="px-3 py-2 text-ink">
+                  {present ? (
+                    threshold ? <span>{String(threshold)}</span> : <span className="italic text-inkFaint">—</span>
+                  ) : (
+                    <span className="italic text-inkFaint">Not present in this agreement</span>
+                  )}
                 </td>
               </tr>
             );
           })}
-          {(redactionsPermittedRaw !== undefined || redactionsDef) && (
-            <tr className="align-top bg-bg/30">
-              <td className="px-3 py-2 text-ink font-medium">Redactions permitted</td>
-              <td className="px-3 py-2 text-ink">
-                {redactionsPermittedRaw === true ? 'Yes' : redactionsPermittedRaw === false ? 'No' : <span className="italic text-inkFaint">—</span>}
-              </td>
-              <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
-                {redactionsDef || <span className="italic text-inkFaint">—</span>}
-              </td>
-            </tr>
-          )}
         </tbody>
       </table>
     </div>
