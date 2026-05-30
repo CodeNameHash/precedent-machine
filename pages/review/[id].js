@@ -1503,7 +1503,7 @@ function EmploymentMattersBlock({ provision }) {
   );
 }
 
-function StructuredFeatures({ provision }) {
+function StructuredFeatures({ provision, allProvisions }) {
   // COV-EMPLOYEE gets a dedicated renderer (compensationItems as a table).
   if (provision && provision.code === 'COV-EMPLOYEE') {
     return <EmploymentMattersBlock provision={provision} />;
@@ -1515,7 +1515,27 @@ function StructuredFeatures({ provision }) {
   if (provision && (provision.type === 'DEF' || provision.type === 'DEFINITIONS')) {
     return null;
   }
-  const features = getStructuredFeatures(provision) || {};
+  const features = (() => {
+    const raw = getStructuredFeatures(provision) || {};
+    // P4 task 2: for REP-T/REP-B, derive linkedBringDownStandard at render
+    // time from current COND-B-REP/COND-S-REP tiers. Falls back to the
+    // stamped feature when no tier matches. This way edits to the COND
+    // bring-down tiers propagate without re-ingest.
+    if (
+      provision &&
+      (provision.type === 'REP-T' || provision.type === 'REP-B') &&
+      Array.isArray(allProvisions)
+    ) {
+      const computed = computeBringDownStandardForRep(provision, allProvisions, provision.type);
+      if (computed && computed.code) {
+        return {
+          ...raw,
+          linkedBringDownStandard: { code: computed.code, label: computed.label || computed.code },
+        };
+      }
+    }
+    return raw;
+  })();
   const exceptionLikeKeys = new Set(['permittedExceptions', 'carveOuts', 'carveOutsList']);
 
   // Schema keys for the provision type — always shown, with "—" if missing.
@@ -2029,7 +2049,7 @@ function IocPreambleSummary({ features }) {
   );
 }
 
-function PreambleCard({ provision, onEdit }) {
+function PreambleCard({ provision, onEdit, allProvisions }) {
   const [showFullText, setShowFullText] = useState(false);
   const tc = typeColor(provision.type);
   const features = getStructuredFeatures(provision) || {};
@@ -2044,7 +2064,7 @@ function PreambleCard({ provision, onEdit }) {
   const summary = isIocPreamble ? (
     <IocPreambleSummary features={features} />
   ) : (
-    <StructuredFeatures provision={provision} />
+    <StructuredFeatures provision={provision} allProvisions={allProvisions} />
   );
 
   return (
@@ -9892,6 +9912,7 @@ export default function ReviewPage() {
                                 <PreambleCard
                                   provision={preamble}
                                   onEdit={handleEditProvision}
+                                  allProvisions={provisions}
                                 />
                               )}
                               {isIocType && type === firstIocType && (
