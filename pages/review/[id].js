@@ -11131,7 +11131,11 @@ export default function ReviewPage() {
 
   /* P5 item 7: evidence selection-mode state. When `selectionMode` is set,
    * the FullDocumentView listens for mouse-up + selection and, on Confirm,
-   * calls `selectionMode.onSelect(text)` then clears the mode. */
+   * calls `selectionMode.onSelect(text)` then clears the mode.
+   *
+   * P8 item 4 (verify): endSelectionMode now also returns the active tab to
+   * 'provisions' so the user lands back on the editor with the newly-added
+   * quote visible without having to click the tab themselves. */
   const [selectionMode, setSelectionMode] = useState(null);
   const startSelectionMode = useCallback(({ onSelect, label }) => {
     setSelectionMode({ active: true, onSelect, label: label || 'evidence' });
@@ -11139,6 +11143,7 @@ export default function ReviewPage() {
   }, []);
   const endSelectionMode = useCallback(() => {
     setSelectionMode(null);
+    setActiveTab('provisions');
   }, []);
 
   const evidenceCtxValue = useMemo(
