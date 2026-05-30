@@ -5494,22 +5494,18 @@ function renderSummaryRowValue(hit, featureKeyForLookup) {
     return <span>{label}</span>;
   }
 
-  // List value → "N items · first, second, third…"
+  // List value → bullets (P8 item 6: universal list-as-bullets).
+  // Previously rendered as comma-joined "N items · first, second, third…"
+  // which hid the per-item structure on NosolMiniTable rows. Now we delegate
+  // to the same renderListAsBullets helper used by renderFeatureCell so the
+  // two paths stay consistent.
   if (Array.isArray(v)) {
     if (v.length === 0) {
       return <span className="italic text-inkFaint">Not present in this agreement</span>;
     }
-    const labels = v.map((item) => {
-      if (isTaggedItem(item)) return resolveTaggedLabel(key, item) || item.label || item.code;
-      if (item && typeof item === 'object') {
-        return String(item.label || item.text || item.obligation || JSON.stringify(item)).trim();
-      }
-      return String(item);
-    }).filter(Boolean);
-    const snippet = labels.slice(0, 3).join(', ');
-    const more = labels.length > 3 ? '…' : '';
-    const count = `${labels.length} item${labels.length === 1 ? '' : 's'}`;
-    return <span>{count} · {snippet}{more}</span>;
+    const bullets = renderListAsBullets(key, v);
+    if (bullets) return bullets;
+    return <span className="italic text-inkFaint">Not present in this agreement</span>;
   }
 
   // Boolean / scalar.
