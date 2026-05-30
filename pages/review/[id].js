@@ -3515,8 +3515,66 @@ function formatCellValue(featureKey, raw) {
   return String(v);
 }
 
+// P7 item 25: render a list-valued cell as a real <ul> of bullets. Tagged
+// items resolve to their label (with optional code badge). Strings render
+// as-is. Citable items inside the array are unwrapped to the inner value
+// and the quote shows under the bullet.
+function renderListAsBullets(featureKey, items) {
+  if (!Array.isArray(items) || items.length === 0) return null;
+  // If long, summarize with an "N items" pill (caller can swap to a
+  // collapsible). Threshold: 6.
+  return (
+    <ul className="list-disc pl-4 space-y-0.5">
+      {items.map((item, idx) => {
+        // Unwrap citable
+        const innerRaw = isCitableValue(item) ? getCitableValue(item) : item;
+        const quotes = isCitableValue(item) ? getCitableQuotes(item) : [];
+        let body;
+        if (isTaggedItem(innerRaw)) {
+          const label = resolveTaggedLabel(featureKey, innerRaw) || innerRaw.code;
+          body = (
+            <span className="inline-flex items-baseline gap-1 flex-wrap">
+              <CodeBadge code={innerRaw.code} />
+              <span>{label}</span>
+            </span>
+          );
+        } else if (innerRaw === null || innerRaw === undefined || innerRaw === '') {
+          return null;
+        } else {
+          body = <span>{String(innerRaw)}</span>;
+        }
+        return (
+          <li key={idx} className="whitespace-pre-wrap break-words">
+            {body}
+            {quotes && quotes.length > 0 ? <EvidenceQuote quotes={quotes} /> : null}
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
 // Render a single feature cell value (tagged object → code+label, otherwise text).
 function renderFeatureCell(featureKey, raw) {
+  // P7 item 25: list-valued cells render as bullets (universally).
+  if (Array.isArray(raw)) {
+    const bullets = renderListAsBullets(featureKey, raw);
+    if (bullets) return bullets;
+    return <div className="text-inkFaint/70 italic">—</div>;
+  }
+  // P7 item 25: a citable wrapper around a list value — render the list as
+  // bullets, then any wrapper-level quotes underneath.
+  if (isCitableValue(raw) && Array.isArray(getCitableValue(raw))) {
+    const innerList = getCitableValue(raw);
+    const wrapperQuotes = getCitableQuotes(raw);
+    const bullets = renderListAsBullets(featureKey, innerList);
+    return (
+      <div className="whitespace-pre-wrap break-words">
+        {bullets || <span className="text-inkFaint/70 italic">—</span>}
+        {wrapperQuotes && wrapperQuotes.length > 0 ? <EvidenceQuote quotes={wrapperQuotes} /> : null}
+      </div>
+    );
+  }
   if (isTaggedItem(raw)) {
     const label = resolveTaggedLabel(featureKey, raw) || raw.code;
     return (
@@ -6687,14 +6745,15 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
     }
     return <span>{parts.join(' ')}</span>;
   };
+  // P7 item 20: dropped the materiality-scrape row — that lives on COND, not
+  // on the reps preamble.
   const rows = [
     { label: 'SEC Filings — Language', keys: ['secFilingsExceptionLanguage', 'secFilingsExceptionScope'] },
     { label: 'SEC Filings — Scope', keys: ['secFilingsExceptionScope'] },
     { label: 'SEC Filings — Lookback', keys: ['secFilingsLookbackMonths'], custom: 'lookback' },
-    { label: 'SEC Filings — Excluded sections', keys: ['secFilingsExceptionExclusions', 'secFilingsExcludedSections'] },
+    { label: 'SEC Filings — Excluded sections', keys: ['secFilingsExceptionExclusions', 'secFilingsExceptionCarvedOutReps', 'secFilingsExcludedSections'] },
     { label: 'SEC Filings — Carved-out reps', keys: ['secFilingsExceptionCarvedOutReps', 'secFilingsCarvedOutReps'] },
     { label: 'Disclosure Letter reference', keys: ['disclosureLetterReference'] },
-    { label: 'Materiality scrape language', keys: ['materialityScrapeLanguage'] },
   ];
   return (
     <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
@@ -6743,6 +6802,9 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
  *     "Not present in this agreement" cell — same checklist pattern as
  *     ExpectedRepsTable. */
 function RepMaterialContractsTable({ provisions, onSelectProvision }) {
+  // P7 item 21: bind once at the component level (Rules of Hooks) so
+  // bucket-label click → showEvidence(quote) works inside the per-row map.
+  const showEvidence = useShowEvidence();
   // Find the source provision: prefer one whose code or category matches.
   let source = null;
   for (const p of provisions || []) {
@@ -6804,14 +6866,56 @@ function RepMaterialContractsTable({ provisions, onSelectProvision }) {
           {canonicalCodes.map((code) => {
             const label = MATERIAL_CONTRACT_BUCKET_CODES[code];
             const dealBucket = dealBucketByCode.get(code);
-            const threshold = threshByCode.get(code) || (dealBucket && dealBucket.threshold) || null;
+            const thresholdRaw = threshByCode.get(code) || (dealBucket && dealBucket.threshold) || null;
             const present = !!dealBucket;
+            // P7 item 21: unwrap citable / tagged threshold values so the cell
+            // doesn't render as "[object Object]". Threshold may arrive as a
+            // bare string/number, a citable {value, text}, or a tagged
+            // {code, label, text}.
+            let thresholdText = null;
+            let thresholdQuote = null;
+            if (thresholdRaw !== null && thresholdRaw !== undefined && thresholdRaw !== '') {
+              if (isCitableValue(thresholdRaw)) {
+                const inner = getCitableValue(thresholdRaw);
+                const q = getCitableQuotes(thresholdRaw);
+                thresholdText = typeof inner === 'object' && inner !== null
+                  ? (inner.label || inner.code || JSON.stringify(inner))
+                  : String(inner);
+                thresholdQuote = q && q.length > 0 ? q : null;
+              } else if (typeof thresholdRaw === 'object') {
+                thresholdText = thresholdRaw.label || thresholdRaw.text || thresholdRaw.code || JSON.stringify(thresholdRaw);
+              } else {
+                thresholdText = String(thresholdRaw);
+              }
+            }
+            // P7 item 21: bucket label clickable to source via useShowEvidence.
+            const bucketQuote = isTaggedItem(dealBucket) && dealBucket.text ? dealBucket.text : null;
+            const bucketClickable = present && bucketQuote && showEvidence;
             return (
               <tr key={code} className="align-top">
-                <td className="px-3 py-2 text-ink font-medium">{label}</td>
+                <td className="px-3 py-2 text-ink font-medium">
+                  {bucketClickable ? (
+                    <button
+                      type="button"
+                      onClick={() => showEvidence(bucketQuote)}
+                      className="text-left hover:text-accent hover:underline"
+                    >
+                      {label}
+                    </button>
+                  ) : (
+                    label
+                  )}
+                </td>
                 <td className="px-3 py-2 text-ink">
                   {present ? (
-                    threshold ? <span>{String(threshold)}</span> : <span className="italic text-inkFaint">—</span>
+                    thresholdText ? (
+                      <div>
+                        <span>{thresholdText}</span>
+                        {thresholdQuote ? <EvidenceQuote quotes={thresholdQuote} /> : null}
+                      </div>
+                    ) : (
+                      <span className="italic text-inkFaint">—</span>
+                    )
                   ) : (
                     <span className="italic text-inkFaint">Not present in this agreement</span>
                   )}
