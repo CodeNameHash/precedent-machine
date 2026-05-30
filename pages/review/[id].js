@@ -10005,6 +10005,277 @@ function AdvisorsEditorModal({ deal, onClose, onSaved }) {
 }
 
 /* ═══════════════════════════════════════════════════════════
+   EXTRACTION STATUS PILL — surfaces deal.metadata.extract_status and
+   exposes per-type re-extract buttons + a re-classify shortcut. Driven
+   by the split ingest pipeline (POST /api/ingest/classify and
+   /api/ingest/extract-type). Renders nothing when no classify run has
+   been recorded.
+   ═══════════════════════════════════════════════════════════ */
+
+const EXTRACTION_TYPE_LABELS = {
+  'REP-T': 'Target reps',
+  'REP-B': 'Buyer reps',
+  IOC: 'Interim operating covenants',
+  NOSOL: 'No-solicitation',
+  ANTI: 'Antitrust / regulatory',
+  COND: 'Closing conditions',
+  TERMR: 'Termination rights',
+  TERMF: 'Termination fees',
+  STRUCT: 'Structure',
+  CONSID: 'Consideration',
+  COV: 'Other covenants',
+  MISC: 'Miscellaneous',
+  DEF: 'Definitions',
+  MAE: 'Material adverse effect',
+  OTHER: 'Other / unclassified',
+};
+
+function collapseTypeForExtraction(t) {
+  if (!t) return null;
+  if (t === 'IOC-T' || t === 'IOC-B') return 'IOC';
+  if (t === 'TERMR-M' || t === 'TERMR-B' || t === 'TERMR-T') return 'TERMR';
+  if (t === 'COND-M' || t === 'COND-B' || t === 'COND-S') return 'COND';
+  return t;
+}
+
+function ExtractionStatusPill({ deal, onRefetch }) {
+  const [expanded, setExpanded] = useState(false);
+  const [busyType, setBusyType] = useState(null);
+  const [reclassifying, setReclassifying] = useState(false);
+
+  const md = deal?.metadata || {};
+  const breakdown = md.classify_breakdown || null;
+  const extractStatus = md.extract_status || {};
+
+  // Build the per-type-group list from the classify breakdown.
+  const typeGroups = useMemo(() => {
+    if (!breakdown) return [];
+    const collapsed = {};
+    for (const [t, n] of Object.entries(breakdown)) {
+      const c = collapseTypeForExtraction(t);
+      if (!c) continue;
+      collapsed[c] = (collapsed[c] || 0) + n;
+    }
+    return Object.entries(collapsed).sort((a, b) => b[1] - a[1]);
+  }, [breakdown]);
+
+  if (!breakdown) {
+    // No classify run yet — show a subtle "configure" hint linking to ingest.
+    return (
+      <div style={{ marginTop: 4, marginBottom: 4 }}>
+        <Link
+          href={`/ingest?deal_id=${deal.id}`}
+          className="text-[10px] font-ui uppercase tracking-wider text-inkFaint hover:text-accent"
+          style={{ textDecoration: 'none' }}
+        >
+          Manage ingest →
+        </Link>
+      </div>
+    );
+  }
+
+  const total = typeGroups.length;
+  const done = typeGroups.filter(([t]) => extractStatus[t]?.status === 'done').length;
+  const failed = typeGroups.filter(([t]) => extractStatus[t]?.status === 'failed').length;
+  const allDone = total > 0 && done === total;
+
+  const extractOne = async (type) => {
+    setBusyType(type);
+    try {
+      const resp = await fetch('/api/ingest/extract-type', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ deal_id: deal.id, type }),
+      });
+      const data = await resp.json();
+      if (!resp.ok || !data.success) throw new Error(data.error || 'Extract failed');
+      await onRefetch?.();
+    } catch (err) {
+      console.warn('[extract] failed', type, err);
+    }
+    setBusyType(null);
+  };
+
+  const reclassify = async () => {
+    if (!confirm('Re-classify this deal? Existing classify output will be replaced and per-type extract status reset.')) return;
+    setReclassifying(true);
+    try {
+      const resp = await fetch('/api/ingest/classify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ deal_id: deal.id }),
+      });
+      const data = await resp.json();
+      if (!resp.ok || !data.success) throw new Error(data.error || 'Re-classify failed');
+      await onRefetch?.();
+    } catch (err) {
+      alert('Re-classify failed: ' + err.message);
+    }
+    setReclassifying(false);
+  };
+
+  const summaryLabel = allDone
+    ? `Extraction: complete (${done}/${total} types)`
+    : failed > 0
+    ? `Extraction: ${done}/${total} types done · ${failed} failed`
+    : `Extraction: ${done}/${total} types complete`;
+
+  return (
+    <div style={{ marginTop: 4, marginBottom: 8 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+        <button
+          type="button"
+          onClick={() => setExpanded((v) => !v)}
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: 10,
+            letterSpacing: '.1em',
+            textTransform: 'uppercase',
+            padding: '3px 8px',
+            borderRadius: 4,
+            background: allDone ? 'color-mix(in srgb, var(--accent) 14%, transparent)' : 'var(--paper)',
+            color: failed > 0 ? 'var(--seller)' : allDone ? 'var(--accent-deep)' : 'var(--ink-mid)',
+            border: `1px solid ${failed > 0 ? 'var(--seller)' : allDone ? 'var(--accent)' : 'var(--line)'}`,
+            cursor: 'pointer',
+          }}
+        >
+          {summaryLabel} {expanded ? '▾' : '▸'}
+        </button>
+        <Link
+          href={`/ingest?deal_id=${deal.id}`}
+          className="text-[10px] font-ui uppercase tracking-wider text-inkFaint hover:text-accent"
+          style={{ textDecoration: 'none' }}
+        >
+          Manage ingest →
+        </Link>
+        <button
+          type="button"
+          onClick={reclassify}
+          disabled={reclassifying}
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: 10,
+            letterSpacing: '.1em',
+            textTransform: 'uppercase',
+            padding: '3px 8px',
+            borderRadius: 4,
+            background: 'transparent',
+            color: reclassifying ? 'var(--ink-faint)' : 'var(--ink-light)',
+            border: '1px solid var(--line)',
+            cursor: reclassifying ? 'not-allowed' : 'pointer',
+          }}
+        >
+          {reclassifying ? 'Re-classifying…' : 'Re-classify'}
+        </button>
+      </div>
+      {expanded && (
+        <div
+          style={{
+            marginTop: 8,
+            border: '1px solid var(--line)',
+            borderRadius: 8,
+            background: 'var(--paper)',
+            padding: 10,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 4,
+          }}
+        >
+          {typeGroups.map(([type, sectionCount]) => {
+            const st = extractStatus[type] || {};
+            const status = busyType === type ? 'extracting' : st.status || 'pending';
+            return (
+              <div
+                key={type}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 10,
+                  padding: '4px 6px',
+                  fontSize: 12,
+                }}
+              >
+                <span style={{ flex: 1, color: 'var(--ink)' }}>
+                  {EXTRACTION_TYPE_LABELS[type] || type}
+                  <span style={{ color: 'var(--ink-faint)', marginLeft: 6, fontSize: 11 }}>
+                    ({type}) · {sectionCount} {sectionCount === 1 ? 'section' : 'sections'}
+                    {status === 'done' && typeof st.inserted === 'number' && (
+                      <> · {st.inserted} provisions</>
+                    )}
+                    {status === 'done' && typeof st.completed_at === 'string' && (
+                      <> · {new Date(st.completed_at).toLocaleString()}</>
+                    )}
+                    {status === 'failed' && st.error && (
+                      <> · <span style={{ color: 'var(--seller)' }}>{st.error}</span></>
+                    )}
+                  </span>
+                </span>
+                <span
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 9,
+                    letterSpacing: '.1em',
+                    textTransform: 'uppercase',
+                    padding: '2px 6px',
+                    borderRadius: 4,
+                    background:
+                      status === 'done'
+                        ? 'color-mix(in srgb, var(--accent) 14%, transparent)'
+                        : status === 'extracting'
+                        ? 'var(--accent-soft)'
+                        : status === 'failed'
+                        ? 'color-mix(in srgb, var(--seller) 12%, transparent)'
+                        : 'var(--paper)',
+                    color:
+                      status === 'done'
+                        ? 'var(--accent-deep)'
+                        : status === 'extracting'
+                        ? 'var(--accent-deep)'
+                        : status === 'failed'
+                        ? 'var(--seller)'
+                        : 'var(--ink-faint)',
+                    border: `1px solid ${
+                      status === 'done'
+                        ? 'var(--accent)'
+                        : status === 'extracting'
+                        ? 'var(--accent)'
+                        : status === 'failed'
+                        ? 'var(--seller)'
+                        : 'var(--line)'
+                    }`,
+                  }}
+                >
+                  {status}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => extractOne(type)}
+                  disabled={busyType !== null}
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 10,
+                    letterSpacing: '.08em',
+                    textTransform: 'uppercase',
+                    padding: '4px 8px',
+                    borderRadius: 4,
+                    background: 'var(--surface)',
+                    color: busyType !== null ? 'var(--ink-faint)' : 'var(--ink)',
+                    border: '1px solid var(--line)',
+                    cursor: busyType !== null ? 'not-allowed' : 'pointer',
+                  }}
+                >
+                  {status === 'done' ? 'Re-extract' : 'Extract'}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
    MAIN REVIEW PAGE
    ═══════════════════════════════════════════════════════════ */
 ReviewPage.noLayout = true;
@@ -10624,6 +10895,13 @@ export default function ReviewPage() {
                   {Array.isArray(deal.metadata?.advisors) && deal.metadata.advisors.length > 0 ? 'Edit advisors' : '+ Add advisors'}
                 </button>
               </div>
+              <ExtractionStatusPill
+                deal={deal}
+                onRefetch={async () => {
+                  await refetchDeal?.();
+                  await refetchProvs?.();
+                }}
+              />
               <div className="rec-deal-meta">
                 {deal.sector && (
                   <div className="m">

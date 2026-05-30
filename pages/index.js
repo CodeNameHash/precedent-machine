@@ -362,8 +362,27 @@ function DealCard({ deal, selected, onToggle, provisionCount, countsLoading }) {
         </div>
       )}
 
-      {/* Review action */}
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 6 }}>
+      {/* Review action + manage-ingest link (split pipeline entry) */}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 6, gap: 6 }}>
+        <Link
+          href={`/ingest?deal_id=${deal.id}`}
+          onClick={(e) => e.stopPropagation()}
+          title="Classify only, extract a specific type, or re-ingest"
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: 11,
+            letterSpacing: '.08em',
+            textTransform: 'uppercase',
+            color: 'var(--ink-light)',
+            textDecoration: 'none',
+            padding: '4px 10px',
+            borderRadius: 6,
+            border: '1px solid var(--line)',
+            background: 'var(--paper)',
+          }}
+        >
+          Manage ingest
+        </Link>
         <Link
           href={`/review/${deal.id}`}
           onClick={(e) => e.stopPropagation()}

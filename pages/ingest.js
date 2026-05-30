@@ -7,19 +7,54 @@ import { useDeals } from '../lib/useSupabaseData';
 
 IngestPage.noLayout = true;
 
+// Friendly labels for type-group codes returned by /api/ingest/run-all.
+const TYPE_LABELS = {
+  'REP-T': 'Target reps',
+  'REP-B': 'Buyer reps',
+  IOC: 'Interim operating covenants',
+  NOSOL: 'No-solicitation',
+  ANTI: 'Antitrust / regulatory',
+  COND: 'Closing conditions',
+  TERMR: 'Termination rights',
+  TERMF: 'Termination fees',
+  STRUCT: 'Structure',
+  CONSID: 'Consideration',
+  COV: 'Other covenants',
+  MISC: 'Miscellaneous',
+  DEF: 'Definitions',
+  MAE: 'Material adverse effect',
+  OTHER: 'Other / unclassified',
+};
+
+const typeLabel = (t) => TYPE_LABELS[t] || t;
+
 export default function IngestPage() {
   const router = useRouter();
   const { user } = useUser({ redirectTo: '/login' });
   const { deals: allDeals, loading: dealsLoading } = useDeals();
 
+  // Preselect deal if ?deal_id= is in the URL (deep link from deal list).
+  const queryDealId =
+    typeof router.query.deal_id === 'string' ? router.query.deal_id : '';
+
+  const [mode, setMode] = useState('quick'); // 'quick' | 'split'
   const [url, setUrl] = useState('');
   const [dealId, setDealId] = useState('');
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState(null); // { kind, msg, extras }
 
+  // Split-mode state
+  const [classifySummary, setClassifySummary] = useState(null); // { section_count, by_type, types_to_extract }
+  const [typeStates, setTypeStates] = useState({}); // { TYPE: { status, inserted, deleted, timing_ms, error } }
+  const [runAllInFlight, setRunAllInFlight] = useState(false);
+
+  useEffect(() => {
+    if (queryDealId && !dealId) setDealId(queryDealId);
+  }, [queryDealId, dealId]);
+
   const canSubmit = !busy && (url.trim() || dealId);
 
-  const onIngest = async () => {
+  const onQuickIngest = async () => {
     if (!canSubmit) return;
     setBusy(true);
     setStatus({ kind: 'info', msg: url ? 'Fetching, extracting metadata, parsing…' : 'Re-parsing stored text…' });
@@ -43,12 +78,119 @@ export default function IngestPage() {
           : `Re-ingested · ${data.provisions_inserted} provisions (${data.provisions_deleted} previous removed) · ${data.advisors_found} advisors`,
         extras: { deal_id: data.deal_id, metadata: data.metadata },
       });
-      // Auto-jump to the review page after a short pause so the user sees the toast.
       setTimeout(() => router.push(`/review/${data.deal_id}`), 1200);
     } catch (e) {
       setStatus({ kind: 'err', msg: e.message });
     }
     setBusy(false);
+  };
+
+  const onClassify = async () => {
+    if (!canSubmit) return;
+    setBusy(true);
+    setClassifySummary(null);
+    setTypeStates({});
+    setStatus({ kind: 'info', msg: 'Classifying sections…' });
+    try {
+      // Step-by-step assumes an existing deal_id (or url that lands in an
+      // existing deal via run-all). Use run-all to handle both cases — it
+      // also returns the types_to_extract list we render below.
+      let targetDealId = dealId || null;
+
+      // If we only have a URL and no deal_id, fall through to from-url to
+      // create the deal first, then call classify.
+      if (!targetDealId && url.trim()) {
+        // Use from-url with a *minimal* path: just create the deal record,
+        // but we don't actually expose a "create only" endpoint — easiest
+        // path is to call classify with the url, which will fail because
+        // classify requires deal_id. So: route through the existing
+        // from-url flow as a one-shot, then surface a hint that split mode
+        // only works on existing deals.
+        setStatus({
+          kind: 'err',
+          msg: 'Split mode requires an existing deal. Use Quick mode to create the deal, then return here to step through.',
+        });
+        setBusy(false);
+        return;
+      }
+
+      const resp = await fetch('/api/ingest/run-all', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          deal_id: targetDealId,
+          url: url.trim() || undefined,
+        }),
+      });
+      const data = await resp.json();
+      if (!resp.ok || !data.success) throw new Error(data.error || 'Classify failed');
+
+      setClassifySummary({
+        deal_id: data.deal_id,
+        section_count: data.classify.section_count,
+        article_count: data.classify.article_count,
+        by_type: data.classify.by_type,
+        types_to_extract: data.types_to_extract,
+      });
+      // Initialize per-type state to 'pending'
+      const init = {};
+      for (const { type } of data.types_to_extract) {
+        init[type] = { status: 'pending' };
+      }
+      setTypeStates(init);
+      setStatus({
+        kind: 'ok',
+        msg: `Classified ${data.classify.section_count} sections across ${data.classify.article_count} articles. Pick types to extract below.`,
+      });
+    } catch (e) {
+      setStatus({ kind: 'err', msg: e.message });
+    }
+    setBusy(false);
+  };
+
+  const extractType = async (type) => {
+    if (!classifySummary?.deal_id) return;
+    setTypeStates((prev) => ({
+      ...prev,
+      [type]: { ...(prev[type] || {}), status: 'extracting', start: Date.now() },
+    }));
+    try {
+      const resp = await fetch('/api/ingest/extract-type', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ deal_id: classifySummary.deal_id, type }),
+      });
+      const data = await resp.json();
+      if (!resp.ok || !data.success) throw new Error(data.error || 'Extract failed');
+      setTypeStates((prev) => ({
+        ...prev,
+        [type]: {
+          status: 'done',
+          inserted: data.provisions_inserted,
+          deleted: data.provisions_deleted,
+          timing_ms: data.timing_ms,
+        },
+      }));
+    } catch (e) {
+      setTypeStates((prev) => ({
+        ...prev,
+        [type]: { status: 'failed', error: e.message },
+      }));
+    }
+  };
+
+  const extractAllRemaining = async () => {
+    if (!classifySummary) return;
+    setRunAllInFlight(true);
+    // Snapshot of types currently pending or failed (we re-try failed too).
+    const queue = classifySummary.types_to_extract.filter(
+      (t) => !typeStates[t.type] || typeStates[t.type].status === 'pending' || typeStates[t.type].status === 'failed',
+    );
+    for (const { type } of queue) {
+      // eslint-disable-next-line no-await-in-loop
+      await extractType(type);
+    }
+    setRunAllInFlight(false);
   };
 
   return (
@@ -75,18 +217,20 @@ export default function IngestPage() {
             padding: '48px 22px 80px',
           }}
         >
-          <div style={{ width: '100%', maxWidth: 640 }}>
+          <div style={{ width: '100%', maxWidth: 720 }}>
             <div style={{ marginBottom: 24 }}>
               <div className="rec-deal-eyebrow">Ingest</div>
               <h1 className="rec-deal-title" style={{ margin: '4px 0 6px' }}>
                 Pull a deal from a URL
               </h1>
               <p style={{ fontSize: 13.5, color: 'var(--ink-light)', lineHeight: 1.55, margin: 0 }}>
-                Paste a SEC EDGAR filing URL. We fetch it, pull the parties and date from the
-                preamble, and run the parser. If you pick an existing deal, we re-ingest using the
-                same text.
+                Paste a SEC EDGAR filing URL or pick an existing deal. Choose Quick to run the full
+                pipeline in one shot, or Step-by-step to classify first then extract each provision
+                type on its own.
               </p>
             </div>
+
+            <ModeTabs mode={mode} onChange={setMode} />
 
             <section
               style={{
@@ -131,8 +275,8 @@ export default function IngestPage() {
               </div>
 
               <Field
-                label="Re-ingest existing deal"
-                hint="Pick to wipe & re-run the parser. Leave URL blank to use the stored text."
+                label="Existing deal"
+                hint="Pick to re-ingest. Required for Step-by-step mode."
               >
                 <select
                   value={dealId}
@@ -150,12 +294,28 @@ export default function IngestPage() {
                 </select>
               </Field>
 
-              <button onClick={onIngest} disabled={!canSubmit} style={btnStyle(canSubmit)}>
-                {busy ? 'Working…' : dealId && !url ? 'Re-parse stored text' : 'Ingest'}
-              </button>
+              {mode === 'quick' ? (
+                <button onClick={onQuickIngest} disabled={!canSubmit} style={btnStyle(canSubmit)}>
+                  {busy ? 'Working…' : dealId && !url ? 'Re-parse stored text' : 'Run full pipeline'}
+                </button>
+              ) : (
+                <button onClick={onClassify} disabled={!canSubmit} style={btnStyle(canSubmit)}>
+                  {busy ? 'Classifying…' : 'Classify'}
+                </button>
+              )}
 
               {status && <StatusBlock status={status} />}
             </section>
+
+            {mode === 'split' && classifySummary && (
+              <ClassifyResults
+                summary={classifySummary}
+                typeStates={typeStates}
+                onExtract={extractType}
+                onExtractAll={extractAllRemaining}
+                runAllInFlight={runAllInFlight}
+              />
+            )}
 
             <p
               style={{
@@ -165,9 +325,9 @@ export default function IngestPage() {
                 lineHeight: 1.5,
               }}
             >
-              First ingest creates the deal record. Re-ingest wipes existing provisions and runs
-              the latest parser pipeline (taxonomy, sub-codes, advisors). You'll be redirected to
-              the review page on success.
+              Quick mode runs every phase in one Vercel call (~5 min budget). Step-by-step keeps
+              each call short — classify first, then run extract per provision type — giving you
+              visibility into which type took how long and which (if any) failed.
             </p>
 
             <div style={{ marginTop: 20 }}>
@@ -190,6 +350,220 @@ export default function IngestPage() {
       </div>
     </>
   );
+}
+
+function ModeTabs({ mode, onChange }) {
+  const tab = (key, label, sub) => (
+    <button
+      onClick={() => onChange(key)}
+      style={{
+        flex: 1,
+        padding: '10px 14px',
+        border: '1px solid var(--line)',
+        background: mode === key ? 'var(--surface)' : 'var(--paper)',
+        borderRadius: 8,
+        cursor: 'pointer',
+        textAlign: 'left',
+        fontFamily: 'inherit',
+        color: mode === key ? 'var(--ink)' : 'var(--ink-light)',
+        outline: 'none',
+      }}
+    >
+      <div
+        style={{
+          fontFamily: 'var(--font-mono)',
+          fontSize: 10,
+          letterSpacing: '.12em',
+          textTransform: 'uppercase',
+          color: mode === key ? 'var(--accent-deep)' : 'var(--ink-faint)',
+          marginBottom: 2,
+        }}
+      >
+        {label}
+      </div>
+      <div style={{ fontSize: 12, color: 'var(--ink-mid)' }}>{sub}</div>
+    </button>
+  );
+  return (
+    <div style={{ display: 'flex', gap: 10, marginBottom: 14 }}>
+      {tab('quick', 'Quick', 'Run the full pipeline in one call')}
+      {tab('split', 'Step-by-step', 'Classify, then extract per type')}
+    </div>
+  );
+}
+
+function ClassifyResults({ summary, typeStates, onExtract, onExtractAll, runAllInFlight }) {
+  const types = summary.types_to_extract || [];
+  const anyDone = Object.values(typeStates).some((s) => s.status === 'done');
+  const allDone = types.length > 0 && types.every((t) => typeStates[t.type]?.status === 'done');
+
+  return (
+    <section
+      style={{
+        background: 'var(--surface)',
+        border: '1px solid var(--line)',
+        borderRadius: 12,
+        padding: 22,
+        marginTop: 18,
+      }}
+    >
+      <div
+        style={{
+          fontFamily: 'var(--font-mono)',
+          fontSize: 10,
+          letterSpacing: '.14em',
+          textTransform: 'uppercase',
+          color: 'var(--ink-faint)',
+          marginBottom: 4,
+        }}
+      >
+        Classification
+      </div>
+      <div
+        style={{
+          fontFamily: 'var(--font-serif)',
+          fontSize: 16,
+          color: 'var(--ink)',
+          marginBottom: 16,
+        }}
+      >
+        Found {summary.section_count} sections across {summary.article_count} articles
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 14 }}>
+        {types.map(({ type, section_count }) => (
+          <TypeRow
+            key={type}
+            type={type}
+            sectionCount={section_count}
+            state={typeStates[type] || { status: 'pending' }}
+            onExtract={() => onExtract(type)}
+            disabled={runAllInFlight}
+          />
+        ))}
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, justifyContent: 'space-between' }}>
+        <button
+          onClick={onExtractAll}
+          disabled={runAllInFlight || allDone}
+          style={btnStyle(!runAllInFlight && !allDone)}
+        >
+          {runAllInFlight ? 'Extracting all…' : allDone ? 'All extracted' : 'Extract all remaining'}
+        </button>
+        {anyDone && (
+          <Link
+            href={`/review/${summary.deal_id}`}
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: 11,
+              letterSpacing: '.08em',
+              textTransform: 'uppercase',
+              color: 'var(--accent-deep)',
+              textDecoration: 'none',
+            }}
+          >
+            Open review →
+          </Link>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function TypeRow({ type, sectionCount, state, onExtract, disabled }) {
+  return (
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 10,
+        padding: '8px 10px',
+        border: '1px solid var(--line)',
+        borderRadius: 7,
+        background: 'var(--paper)',
+      }}
+    >
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 13, color: 'var(--ink)', fontWeight: 500 }}>
+          {typeLabel(type)}
+          <span style={{ color: 'var(--ink-faint)', fontWeight: 400, marginLeft: 8 }}>
+            ({type})
+          </span>
+        </div>
+        <div style={{ fontSize: 11, color: 'var(--ink-light)' }}>
+          {sectionCount} {sectionCount === 1 ? 'section' : 'sections'}
+          {state.status === 'done' && (
+            <>
+              {' '}· {state.inserted} provisions
+              {typeof state.timing_ms === 'number' && (
+                <> · {(state.timing_ms / 1000).toFixed(1)}s</>
+              )}
+            </>
+          )}
+          {state.status === 'failed' && state.error && (
+            <> · <span style={{ color: 'var(--seller)' }}>{state.error}</span></>
+          )}
+        </div>
+      </div>
+      <StatusPill status={state.status} />
+      <button
+        onClick={onExtract}
+        disabled={disabled || state.status === 'extracting'}
+        style={smallBtnStyle(!disabled && state.status !== 'extracting')}
+      >
+        {state.status === 'extracting'
+          ? '…'
+          : state.status === 'done'
+          ? 'Re-extract'
+          : 'Extract'}
+      </button>
+    </div>
+  );
+}
+
+function StatusPill({ status }) {
+  const palette = {
+    pending: { bg: 'var(--paper)', fg: 'var(--ink-faint)', border: 'var(--line)', label: 'Pending' },
+    extracting: { bg: 'var(--accent-soft)', fg: 'var(--accent-deep)', border: 'var(--accent)', label: 'Extracting' },
+    done: { bg: 'color-mix(in srgb, var(--accent) 14%, transparent)', fg: 'var(--accent-deep)', border: 'var(--accent)', label: 'Done' },
+    failed: { bg: 'color-mix(in srgb, var(--seller) 12%, transparent)', fg: 'var(--seller)', border: 'var(--seller)', label: 'Failed' },
+  };
+  const p = palette[status] || palette.pending;
+  return (
+    <span
+      style={{
+        fontFamily: 'var(--font-mono)',
+        fontSize: 9,
+        letterSpacing: '.1em',
+        textTransform: 'uppercase',
+        padding: '3px 7px',
+        borderRadius: 4,
+        background: p.bg,
+        color: p.fg,
+        border: `1px solid ${p.border}`,
+        whiteSpace: 'nowrap',
+      }}
+    >
+      {p.label}
+    </span>
+  );
+}
+
+function smallBtnStyle(enabled) {
+  return {
+    border: '1px solid var(--line)',
+    background: enabled ? 'var(--surface)' : 'var(--paper)',
+    color: enabled ? 'var(--ink)' : 'var(--ink-faint)',
+    padding: '5px 10px',
+    borderRadius: 6,
+    cursor: enabled ? 'pointer' : 'not-allowed',
+    fontFamily: 'var(--font-mono)',
+    fontSize: 10,
+    letterSpacing: '.08em',
+    textTransform: 'uppercase',
+    fontWeight: 600,
+  };
 }
 
 function StatusBlock({ status }) {
