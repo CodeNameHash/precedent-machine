@@ -7027,6 +7027,42 @@ function MaeDefinitionSummary({ allProvisions, onSelectProvision }) {
   );
 }
 
+/* P5 item 3: small wrapper that adds click-to-source behavior to every
+ * populated row cell in the generic ProvisionTable. For tagged/citable values
+ * the evidence text is the quote; for bare values that happen to be wrapped
+ * in citable shape we use the first quote; for purely bare values we fall back
+ * to a 400-char slice of provision.full_text. "—" / "Not present" cells are
+ * non-interactive. Uses useShowEvidence (same as CategoryFeatureSummaryTable). */
+function CellWithSource({ provision, featureKey, raw, isEmpty, children, className }) {
+  const showEvidence = useShowEvidence();
+  if (isEmpty) {
+    return <div className={className || 'whitespace-pre-wrap break-words'}>{children}</div>;
+  }
+  let quote = null;
+  if (isCitableValue(raw)) {
+    quote = getCitableText(raw);
+  }
+  if (!quote && isTaggedItem(raw) && typeof raw.text === 'string' && raw.text.trim()) {
+    quote = raw.text.trim();
+  }
+  if (!quote && provision && typeof provision.full_text === 'string' && provision.full_text.trim()) {
+    quote = provision.full_text.slice(0, 400);
+  }
+  if (!quote || !showEvidence) {
+    return <div className={className || 'whitespace-pre-wrap break-words'}>{children}</div>;
+  }
+  return (
+    <button
+      type="button"
+      onClick={(e) => { e.stopPropagation(); showEvidence(quote); }}
+      className={`${className || 'whitespace-pre-wrap break-words'} text-left hover:underline decoration-dotted decoration-accent/60 underline-offset-2 cursor-pointer`}
+      title="Click to see source in full document"
+    >
+      {children}
+    </button>
+  );
+}
+
 function ProvisionTable({ provisions, type, onSelectProvision, allProvisions }) {
   // STRUCT and CONSID get specialized layouts — see dedicated components above.
   if (type === 'STRUCT') {
@@ -7330,7 +7366,14 @@ function ProvisionTable({ provisions, type, onSelectProvision, allProvisions }) 
                         : computeLookbackText(monthsRaw, p?.deal?.announce_date || p?.deal_announce_date || null);
                       return (
                         <td key={k} className="px-3 py-2 align-top max-w-[200px] text-ink">
-                          {txt ? <span>{txt}</span> : <span className="text-inkFaint italic">—</span>}
+                          <CellWithSource
+                            provision={p}
+                            featureKey={k}
+                            raw={features.lookbackPeriod || features.secFilingsLookbackMonths}
+                            isEmpty={!txt}
+                          >
+                            {txt || <span className="text-inkFaint italic">—</span>}
+                          </CellWithSource>
                         </td>
                       );
                     }
@@ -7342,7 +7385,9 @@ function ProvisionTable({ provisions, type, onSelectProvision, allProvisions }) 
                       if (synth) {
                         return (
                           <td key={k} className="px-3 py-2 align-top max-w-[420px] text-ink">
-                            <div className="whitespace-pre-wrap break-words">{synth}</div>
+                            <CellWithSource provision={p} featureKey={k} raw={raw} isEmpty={false}>
+                              {synth}
+                            </CellWithSource>
                           </td>
                         );
                       }
@@ -7358,7 +7403,9 @@ function ProvisionTable({ provisions, type, onSelectProvision, allProvisions }) 
                           key={k}
                           className="px-3 py-2 align-top max-w-[260px] text-ink"
                         >
-                          <span>{label}</span>
+                          <CellWithSource provision={p} featureKey={k} raw={raw} isEmpty={false} className="">
+                            <span>{label}</span>
+                          </CellWithSource>
                         </td>
                       );
                     }
@@ -7370,9 +7417,14 @@ function ProvisionTable({ provisions, type, onSelectProvision, allProvisions }) 
                           cell === null ? 'text-inkFaint/70 italic' : 'text-ink'
                         }`}
                       >
-                        <div className="whitespace-pre-wrap break-words">
+                        <CellWithSource
+                          provision={p}
+                          featureKey={k}
+                          raw={raw}
+                          isEmpty={cell === null}
+                        >
                           {cell === null ? '—' : cell}
-                        </div>
+                        </CellWithSource>
                       </td>
                     );
                   })}
