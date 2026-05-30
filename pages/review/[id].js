@@ -7459,6 +7459,18 @@ function FullDocumentView({
   const containerRef = useRef(null);
   const [reselectSelection, setReselectSelection] = useState(null);
 
+  // P5 item 4: multi-highlight cycle state. When the highlighted quote matches
+  // in N>1 text nodes we render a floating chevron ("1 / N") that lets the
+  // user prev/next through the matches. activeMatchIdx tracks the current
+  // index; matchCount is the number of matches found in the last pass.
+  const [matchCount, setMatchCount] = useState(0);
+  const [activeMatchIdx, setActiveMatchIdx] = useState(0);
+
+  // Reset active index whenever a fresh highlight request fires.
+  useEffect(() => {
+    setActiveMatchIdx(0);
+  }, [highlightedQuote, highlightedQuoteNonce]);
+
   /* ── Stage 5: evidence-quote highlight overlay.
    *    When `highlightedQuote` is set, scan the DOM after render for the
    *    quote text (case-insensitive, whitespace-tolerant), wrap the first
@@ -7477,23 +7489,21 @@ function FullDocumentView({
     if (!needle) return undefined;
     const needleLower = needle.toLowerCase();
 
-    // Find the FIRST text-node range containing the needle. For simplicity
-    // we restrict to per-text-node matches (covers ~99% of quotes which are
-    // short, in-paragraph excerpts). A more elaborate cross-node match is
-    // possible but not worth the complexity here.
+    // P5 item 4: collect ALL matches across text nodes so the user can cycle
+    // through them via the chevron control. We restrict to per-text-node
+    // matches (covers ~99% of quotes which are short, in-paragraph excerpts).
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
-    let foundNode = null;
-    let foundIdx = -1;
+    const matches = [];
     let n;
     while ((n = walker.nextNode())) {
       const nodeText = n.data;
       if (!nodeText) continue;
       const normalized = normalize(nodeText).toLowerCase();
-      const idx = normalized.indexOf(needleLower);
-      if (idx >= 0) {
+      let searchFrom = 0;
+      while (true) {
+        const idx = normalized.indexOf(needleLower, searchFrom);
+        if (idx < 0) break;
         // Map normalized index back to raw index (best-effort).
-        // Walk nodeText, skipping consecutive whitespace, until we've
-        // consumed `idx` normalized characters.
         let normPos = 0;
         let rawPos = 0;
         let prevSpace = true;
@@ -7507,7 +7517,6 @@ function FullDocumentView({
           }
           rawPos++;
         }
-        // Now find end position by consuming needle length normalized chars.
         let endRaw = rawPos;
         let consumed = 0;
         prevSpace = true;
@@ -7522,16 +7531,21 @@ function FullDocumentView({
           endRaw++;
         }
         if (endRaw > rawPos) {
-          foundNode = n;
-          foundIdx = rawPos;
-          // Stash end position via closure
-          n.__hlEnd = endRaw;
-          break;
+          matches.push({ node: n, start: rawPos, end: endRaw });
         }
+        searchFrom = idx + Math.max(1, needleLower.length);
       }
     }
 
-    if (!foundNode) return undefined;
+    // Update chevron state. Use functional setState w/ same-value guard so
+    // we don't spin re-renders on every effect run.
+    setMatchCount((prev) => (prev === matches.length ? prev : matches.length));
+    if (matches.length === 0) return undefined;
+    const safeIdx = Math.max(0, Math.min(activeMatchIdx, matches.length - 1));
+    const pick = matches[safeIdx];
+    const foundNode = pick.node;
+    const foundIdx = pick.start;
+    foundNode.__hlEnd = pick.end;
 
     let span;
     try {
@@ -7568,8 +7582,9 @@ function FullDocumentView({
     };
     // Re-run when the quote changes OR when the same quote is re-clicked
     // (nonce bump forces re-mount of the highlight even if quote is identical).
+    // Also re-runs when activeMatchIdx changes (chevron prev/next).
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [highlightedQuote, highlightedQuoteNonce, sourceText]);
+  }, [highlightedQuote, highlightedQuoteNonce, sourceText, activeMatchIdx]);
 
   // Track selection while in re-select mode
   useEffect(() => {
@@ -8228,7 +8243,38 @@ function FullDocumentView({
       )}
 
       {/* Document body */}
-      <div ref={containerRef} className="p-6 md:p-12 max-h-[80vh] overflow-y-auto">
+      <div ref={containerRef} className="relative p-6 md:p-12 max-h-[80vh] overflow-y-auto">
+        {/* P5 item 4: multi-match chevron cycle. Renders only when the current
+            evidence quote matches in >1 places in the document. Sticks to the
+            top-right of the scrolling viewport. */}
+        {highlightedQuote && matchCount > 1 && (
+          <div
+            className="sticky top-2 z-20 ml-auto inline-flex items-center gap-1 bg-yellow-50 border border-yellow-300 rounded-full shadow-md px-2 py-1 text-[11px] font-ui text-amber-900"
+            style={{ float: 'right' }}
+          >
+            <button
+              type="button"
+              onClick={() => setActiveMatchIdx((i) => (i - 1 + matchCount) % matchCount)}
+              className="w-5 h-5 inline-flex items-center justify-center rounded hover:bg-yellow-200"
+              title="Previous match"
+              aria-label="Previous match"
+            >
+              {'<'}
+            </button>
+            <span className="font-medium tabular-nums">
+              {Math.max(0, Math.min(activeMatchIdx, matchCount - 1)) + 1} / {matchCount}
+            </span>
+            <button
+              type="button"
+              onClick={() => setActiveMatchIdx((i) => (i + 1) % matchCount)}
+              className="w-5 h-5 inline-flex items-center justify-center rounded hover:bg-yellow-200"
+              title="Next match"
+              aria-label="Next match"
+            >
+              {'>'}
+            </button>
+          </div>
+        )}
         {isFormatted ? (
           <div
             className="max-w-3xl mx-auto text-[15px] text-ink leading-[1.75]"
