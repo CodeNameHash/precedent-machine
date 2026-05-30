@@ -3239,6 +3239,30 @@ const HIDDEN_TABLE_COLUMNS = {
     'materialityScrapePresent', 'materiality_scrape_present',
     'materialityScrapeLanguage', 'materiality_scrape_language',
     'maeLimbs', 'mae_limbs',
+    // P7 item 22: deleted Stage-1 REP feature bloat. Hide for back-compat
+    // — extracts persisted before this commit may still carry these keys.
+    'environmentalLawsList', 'environmental_laws_list',
+    'environmentalPermitsHeld', 'environmental_permits_held',
+    'environmentalLiabilities', 'environmental_liabilities',
+    'hazardousMaterialsScope', 'hazardous_materials_scope',
+    'ipRegistrations', 'ip_registrations',
+    'ipLicensesIn', 'ip_licenses_in',
+    'ipLicensesOut', 'ip_licenses_out',
+    'ipInfringementClaims', 'ip_infringement_claims',
+    'ipTradeSecretsProtection', 'ip_trade_secrets_protection',
+    'taxReturnsFiled', 'tax_returns_filed',
+    'taxAuditsPending', 'tax_audits_pending',
+    'taxClosingAgreements', 'tax_closing_agreements',
+    'taxNoNotices', 'tax_no_notices',
+    'taxSection355', 'tax_section_355',
+    'taxAttributes', 'tax_attributes',
+    'itSystemsScope', 'it_systems_scope',
+    'cybersecurityIncidents', 'cybersecurity_incidents',
+    'dataPrivacyCompliance', 'data_privacy_compliance',
+    'personalInfoBreaches', 'personal_info_breaches',
+    'pendingLitigation', 'pending_litigation',
+    'governmentInvestigations', 'government_investigations',
+    'outstandingOrders', 'outstanding_orders',
   ],
   'REP-B': ['mainConcept', 'crossReferences', 'linkedBringDownStandard', 'solvencyRepIncluded', 'solvency_rep_included', 'financingRepIncluded', 'financing_rep_included', 'materialityScrape', 'materiality_scrape', 'bringDownStandard', 'bring_down_standard', 'scheduleReference', 'schedule_reference', 'sufficientFundsRepPresent', 'sufficient_funds_rep_present', 'sufficientFundsRepDetails', 'sufficient_funds_rep_details', 'solvencyRepPresent', 'solvency_rep_present', 'solvencyRepDetails', 'solvency_rep_details', 'antiRelianceRepPresent', 'anti_reliance_rep_present', 'antiRelianceRepText', 'anti_reliance_rep_text', 'parentLitigationRepPresent', 'parent_litigation_rep_present', 'parentOwnershipRepPresent', 'parent_ownership_rep_present', 'parentBrokersRepPresent', 'parent_brokers_rep_present',
     // Fully-removed REP fields (per P2 cleanup) — hidden from per-row table:
@@ -3260,6 +3284,30 @@ const HIDDEN_TABLE_COLUMNS = {
     'materialityScrapePresent', 'materiality_scrape_present',
     'materialityScrapeLanguage', 'materiality_scrape_language',
     'maeLimbs', 'mae_limbs',
+    // P7 item 22: deleted Stage-1 REP feature bloat. Hide for back-compat
+    // — extracts persisted before this commit may still carry these keys.
+    'environmentalLawsList', 'environmental_laws_list',
+    'environmentalPermitsHeld', 'environmental_permits_held',
+    'environmentalLiabilities', 'environmental_liabilities',
+    'hazardousMaterialsScope', 'hazardous_materials_scope',
+    'ipRegistrations', 'ip_registrations',
+    'ipLicensesIn', 'ip_licenses_in',
+    'ipLicensesOut', 'ip_licenses_out',
+    'ipInfringementClaims', 'ip_infringement_claims',
+    'ipTradeSecretsProtection', 'ip_trade_secrets_protection',
+    'taxReturnsFiled', 'tax_returns_filed',
+    'taxAuditsPending', 'tax_audits_pending',
+    'taxClosingAgreements', 'tax_closing_agreements',
+    'taxNoNotices', 'tax_no_notices',
+    'taxSection355', 'tax_section_355',
+    'taxAttributes', 'tax_attributes',
+    'itSystemsScope', 'it_systems_scope',
+    'cybersecurityIncidents', 'cybersecurity_incidents',
+    'dataPrivacyCompliance', 'data_privacy_compliance',
+    'personalInfoBreaches', 'personal_info_breaches',
+    'pendingLitigation', 'pending_litigation',
+    'governmentInvestigations', 'government_investigations',
+    'outstandingOrders', 'outstanding_orders',
   ],
   COND: ['certificationRequired', 'dollarThreshold', 'scheduleReference', 'bringDownTiers', 'maeConditionStandalone', 'maeStandaloneCondition', 'dissentingSharesThreshold', 'dissentingShares', 'dissentingSharesPct'],
   'COND-M': ['certificationRequired', 'dollarThreshold', 'scheduleReference', 'bringDownTiers', 'maeConditionStandalone', 'maeStandaloneCondition', 'dissentingSharesThreshold', 'dissentingShares', 'dissentingSharesPct'],
@@ -3370,62 +3418,18 @@ const REP_SPECIFIC_FEATURE_SPECS = [
       { label: 'Exceptions', keys: ['undisclosedLiabilitiesExceptions'] },
     ],
   },
-  // P5 item 2: Extended per-category rolled-up details for additional rep groups.
+  // P7 item 22: ERISA kept (5 keys still on REP-T schema). Environment / IP /
+  // Tax / IT-Cyber / Litigation feature-list specs deleted along with their
+  // backing schema keys — those categories simply aren't surfaced as a
+  // per-rep-row "Specific Features" cell anymore.
   {
-    categoryRegex: /environment/i,
-    rows: [
-      { label: 'Laws', keys: ['environmentalLawsList'] },
-      { label: 'Permits held', keys: ['environmentalPermitsHeld'] },
-      { label: 'Liabilities', keys: ['environmentalLiabilities'] },
-      { label: 'Hazardous materials scope', keys: ['hazardousMaterialsScope'] },
-    ],
-  },
-  {
-    categoryRegex: /intellectual\s+propert(y|ies)|\bip\b/i,
-    rows: [
-      { label: 'Registrations', keys: ['ipRegistrations'] },
-      { label: 'Licenses in', keys: ['ipLicensesIn'] },
-      { label: 'Licenses out', keys: ['ipLicensesOut'] },
-      { label: 'Infringement claims', keys: ['ipInfringementClaims'] },
-      { label: 'Trade-secrets protection', keys: ['ipTradeSecretsProtection'] },
-    ],
-  },
-  {
-    categoryRegex: /erisa|employee\s+benefit\s+plan/i,
+    categoryRegex: /erisa|employee\s+benefit/i,
     rows: [
       { label: 'Plans listed', keys: ['erisaPlansListed'] },
       { label: 'Compliance', keys: ['erisaCompliance'] },
       { label: 'Title IV plans', keys: ['erisaTitleIVPlans'] },
       { label: 'Multiemployer', keys: ['erisaMultiemployer'] },
       { label: 'Parachute payments', keys: ['erisaParachutePayments'] },
-    ],
-  },
-  {
-    categoryRegex: /tax(es)?\s+(?:matters|representations)?/i,
-    rows: [
-      { label: 'Returns filed', keys: ['taxReturnsFiled'] },
-      { label: 'Audits pending', keys: ['taxAuditsPending'] },
-      { label: 'Closing agreements', keys: ['taxClosingAgreements'] },
-      { label: 'No notices', keys: ['taxNoNotices'] },
-      { label: 'Section 355', keys: ['taxSection355'] },
-      { label: 'Attributes', keys: ['taxAttributes'] },
-    ],
-  },
-  {
-    categoryRegex: /it\s+systems|cyber|information\s+(?:technology|security)/i,
-    rows: [
-      { label: 'Systems scope', keys: ['itSystemsScope'] },
-      { label: 'Cyber incidents', keys: ['cybersecurityIncidents'] },
-      { label: 'Privacy compliance', keys: ['dataPrivacyCompliance'] },
-      { label: 'Personal-info breaches', keys: ['personalInfoBreaches'] },
-    ],
-  },
-  {
-    categoryRegex: /litigation|legal\s+proceedings/i,
-    rows: [
-      { label: 'Pending litigation', keys: ['pendingLitigation'] },
-      { label: 'Government investigations', keys: ['governmentInvestigations'] },
-      { label: 'Outstanding orders', keys: ['outstandingOrders'] },
     ],
   },
 ];
