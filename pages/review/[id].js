@@ -4457,6 +4457,75 @@ function findCarveoutByCode(provisions, code) {
   return null;
 }
 
+/* P4 task 3: Clear-Skies IOC fallback renderer. When the ANTI Clear-Skies row
+ * has no direct hit, scan IOC provisions for restrictions that approximate a
+ * clear-skies covenant (acquisition / merger / joint venture / business
+ * combination / asset sale / new line of business / investment). Returns a
+ * React node with the matched concepts + clickable section refs. */
+const CLEAR_SKIES_CONCEPT_RE = /(?:acquisition|merger|joint\s+venture|business\s+combination|asset\s+sale|new\s+line\s+of\s+business|investment)/i;
+function renderClearSkiesIocFallback(allProvisions, side) {
+  const ALL = Array.isArray(allProvisions) ? allProvisions : [];
+  // side === 'company': target IOC restricts company action — type IOC or IOC-T.
+  // side === 'parent':  parent IOC restricts parent action — type IOC-B.
+  const matches = ALL.filter((p) => {
+    if (!p) return false;
+    if (side === 'parent') {
+      return p.type === 'IOC-B';
+    }
+    return p.type === 'IOC' || p.type === 'IOC-T';
+  }).filter((p) => CLEAR_SKIES_CONCEPT_RE.test(String(p.category || '')));
+
+  if (matches.length === 0) {
+    return <span className="italic text-inkFaint">Not present in this agreement</span>;
+  }
+
+  // Build concept-label set for the prose: lowercase the matched regex chunks.
+  const conceptSet = new Set();
+  for (const p of matches) {
+    const m = CLEAR_SKIES_CONCEPT_RE.exec(String(p.category || ''));
+    if (m) conceptSet.add(m[0].toLowerCase());
+  }
+  const conceptList = Array.from(conceptSet).join(', ');
+
+  // Compose section refs from each matched provision: prefer the provision's
+  // section_number / sectionNumber feature, else scan its category/full_text
+  // for a "Section X.YZ" reference.
+  const refs = [];
+  const seen = new Set();
+  for (const p of matches) {
+    const f = getStructuredFeatures(p) || {};
+    const sn = f.sectionNumber || p.section_number || null;
+    let ref = null;
+    if (sn) ref = `Section ${String(sn).trim()}`;
+    if (!ref) {
+      const text = String(p.category || '') + ' ' + String(p.full_text || '');
+      const m = /Section\s+\d+\.\d+(?:\([A-Za-z0-9]+\))*/i.exec(text);
+      if (m) ref = m[0];
+    }
+    if (ref && !seen.has(ref)) {
+      seen.add(ref);
+      refs.push(ref);
+    }
+  }
+
+  return (
+    <span className="text-ink">
+      No standalone clear-skies covenant. IOC restricts {conceptList} (see
+      {' '}
+      {refs.length > 0 ? (
+        <span className="inline-flex flex-wrap gap-1 align-baseline">
+          {refs.map((r, i) => (
+            <SectionRef key={i} refText={r} allProvisions={ALL} />
+          ))}
+        </span>
+      ) : (
+        <span className="italic text-inkFaint">unspecified sections</span>
+      )}
+      ).
+    </span>
+  );
+}
+
 const CATEGORY_SUMMARY_FEATURES = {
   // ─── NOSOL — Paul Weiss diligence checklist q120–q140 ───────────────────
   NOSOL: [
@@ -4513,10 +4582,21 @@ const CATEGORY_SUMMARY_FEATURES = {
     { label: 'Pull-and-Refile — Company Consent Required', keys: ['pullAndRefileCompanyConsent'] },
     { label: 'Refile Cap Without Company Consent',    keys: ['refileCapWithoutConsent'] },
     { label: 'Timing Agreements Prohibited',          keys: ['timingAgreementsProhibited'] },
-    // Clear-skies
-    { label: 'Clear-Skies — Company',                 keys: ['clearSkiesCompany'] },
+    // Clear-skies — P4 task 3 IOC fallback: when no standalone clear-skies
+    // covenant is found, scan IOC provisions for acquisition / merger /
+    // joint-venture / business-combination / asset-sale / new-line-of-business
+    // / investment restrictions and render a summary chip list.
+    {
+      label: 'Clear-Skies — Company',
+      keys: ['clearSkiesCompany'],
+      customRender: (provisions, allProvisions) => renderClearSkiesIocFallback(allProvisions, 'company'),
+    },
     { label: 'Clear-Skies — Company Scope',           keys: ['clearSkiesCompanyScope'] },
-    { label: 'Clear-Skies — Parent',                  keys: ['clearSkiesParent'] },
+    {
+      label: 'Clear-Skies — Parent',
+      keys: ['clearSkiesParent'],
+      customRender: (provisions, allProvisions) => renderClearSkiesIocFallback(allProvisions, 'parent'),
+    },
     { label: 'Clear-Skies — Parent Scope',            keys: ['clearSkiesParentScope'] },
     // Remedy + litigation obligations
     // (P3 item 12: 'Parent Remedy Obligation' row removed — duplicated burdenCap)
@@ -4949,13 +5029,15 @@ function NosolFourTables({ provisions }) {
   );
 }
 
-function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision, hideProvisionsList, excludeProvisionIds }) {
+function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision, hideProvisionsList, excludeProvisionIds, allProvisions }) {
   const spec = CATEGORY_SUMMARY_FEATURES[type] || [];
   const excludeSet = excludeProvisionIds instanceof Set ? excludeProvisionIds : null;
   const showEvidence = useShowEvidence();
 
   // For each spec row, resolve its hit. MAE rows with `maeCode` resolve via
   // findCarveoutByCode against features.carveouts (taxonomy-tagged list).
+  // P4 task 3: rows can declare an optional `customRender(provisions, allProvisions)`
+  // which short-circuits the default value-resolution path.
   const rawRows = spec.map((row, originalIdx) => {
     let hit = null;
     if (row.maeCode) {
@@ -4966,7 +5048,7 @@ function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision, hide
     } else if (row.keys && row.keys.length > 0) {
       hit = pickFirstNonEmpty(provisions, row.keys);
     }
-    return { label: row.label, hit, lookupKey: (row.keys && row.keys[0]) || row.maeCode || null, originalIdx };
+    return { label: row.label, hit, lookupKey: (row.keys && row.keys[0]) || row.maeCode || null, originalIdx, customRender: row.customRender || null };
   });
   // P3 item 5: stable sort — populated rows first (in original order), then
   // "Not present" rows (in original order). Keeps the summary scannable.
@@ -5020,6 +5102,13 @@ function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision, hide
                 </tr>
               ) : (
                 rows.map((row) => {
+                  // P4 task 3: per-row customRender escape hatch. When the
+                  // default hit is null AND a customRender is supplied, the
+                  // renderer is called with (provisions, allProvisions) and
+                  // its return value replaces the default value cell.
+                  const customNode = row.customRender && !row.hit
+                    ? row.customRender(provisions, allProvisions || provisions)
+                    : null;
                   // Compose a source quote for click-to-source: prefer the
                   // hit's citable text, then the value's tagged text, then
                   // the provision's full_text.
@@ -5033,7 +5122,7 @@ function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision, hide
                     return null;
                   };
                   const quote = buildQuote();
-                  const clickable = !!(quote && showEvidence);
+                  const clickable = !!(quote && showEvidence) && !customNode;
                   const onClick = clickable ? () => showEvidence(quote) : undefined;
                   return (
                     <tr key={row.label} className="hover:bg-bg/40 transition-colors">
@@ -5045,7 +5134,9 @@ function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision, hide
                         onClick={onClick}
                         title={clickable ? 'Click to view in document' : undefined}
                       >
-                        {renderSummaryRowValue(row.hit, row.lookupKey)}
+                        {customNode !== null && customNode !== undefined
+                          ? customNode
+                          : renderSummaryRowValue(row.hit, row.lookupKey)}
                       </td>
                     </tr>
                   );
@@ -6897,6 +6988,7 @@ function ProvisionTable({ provisions, type, onSelectProvision, allProvisions }) 
           provisions={mainProvsAugmented}
           type="ANTI"
           onSelectProvision={onSelectProvision}
+          allProvisions={allProvisions || provisions}
         />
         {takeoverProvs.length > 0 && (
           <div className="space-y-2">
