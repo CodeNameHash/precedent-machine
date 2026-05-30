@@ -4520,7 +4520,6 @@ const CATEGORY_SUMMARY_FEATURES = {
     { label: 'Jury Trial Waiver',          keys: ['juryWaiver'] },
     { label: 'Specific Performance',       keys: ['specificPerformance'] },
     { label: 'Third-Party Beneficiaries',  keys: ['thirdPartyBeneficiaryExceptions', 'thirdPartyBeneficiaries'] },
-    { label: 'Notices Address',            keys: ['noticesAddress'] },
     { label: 'Amendments Requirement',     keys: ['amendmentsRequirement'] },
     { label: 'Waiver Standard',            keys: ['waiverStandard'] },
     { label: 'Severability',               keys: ['severability'] },
