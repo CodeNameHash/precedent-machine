@@ -354,6 +354,9 @@ function resolveTaggedLabel(featureKey, item) {
 // `mainConcept` in the rubric / DB) while presenting "Provision" in the UI.
 const HUMANIZE_KEY_OVERRIDES = {
   mainConcept: 'Provision',
+  // P3 item 15: drop the "Linked" prefix — the derived value is the bring-
+  // down standard for this rep, not a "linked" copy.
+  linkedBringDownStandard: 'Bring Down Standard',
 };
 
 function humanizeKey(key) {
@@ -373,6 +376,65 @@ function formatFeatureValue(v) {
   if (typeof v === 'boolean') return v ? 'Yes' : 'No';
   if (Array.isArray(v)) return v;
   return String(v);
+}
+
+/* ─── formatDurationWithUnits ──
+ *  Append a units suffix to a bare numeric duration based on the feature
+ *  key. Returns "<N> <unit>" when both inputs make sense, or null otherwise.
+ *  Callers pass the bare value (after unwrap) and the feature key so this
+ *  helper can pick the right unit without per-call configuration. */
+function formatDurationWithUnits(value, featureKey) {
+  if (value === null || value === undefined || value === '') return null;
+  // Already a string with units? Pass through.
+  if (typeof value === 'string') {
+    const t = value.trim();
+    if (!t) return null;
+    // If the string already mentions a unit, return as-is.
+    if (/\b(day|days|month|months|year|years|hour|hours|business\s+day)/i.test(t)) return t;
+    // Bare numeric string ("12") — fall through to unit selection below.
+    if (!/^\d+(\.\d+)?$/.test(t)) return t;
+    value = Number(t);
+  }
+  if (typeof value !== 'number' || Number.isNaN(value)) return null;
+  const key = String(featureKey || '');
+  let unit = null;
+  // Exact keys first.
+  const EXACT = {
+    noticePeriod: 'business days',
+    initialMatchPeriodDays: 'business days',
+    subsequentMatchPeriodDays: 'business days',
+    curePeriod: 'business days',
+    matchingPeriod: 'business days',
+    subsequentMatchingPeriod: 'business days',
+    cureDays: 'business days',
+    hsrFilingDeadlineBusinessDays: 'business days',
+    substantialComplianceDeadlineDays: 'days',
+    mutualClosingDeadlineAfterConditionsDays: 'business days',
+    goShopPeriodDays: 'days',
+    extendedNegotiatingPeriodDays: 'days',
+    refileCapWithoutConsent: null, // count, not duration
+    tailPeriod: 'months',
+    outsideDateMonths: 'months',
+    survivalPeriod: 'months',
+    tailFeeWindowMonths: 'months',
+    employeeBenefitPeriod: 'months',
+    protectionPeriodMonths: 'months',
+    postProtectionPeriodMonths: 'months',
+    indemnificationPeriod: 'years',
+    secFilingsLookbackMonths: 'months',
+    leadInPeriodDays: 'business days',
+  };
+  if (key in EXACT) {
+    unit = EXACT[key];
+  } else if (/Months$/.test(key)) {
+    unit = 'months';
+  } else if (/Years$/.test(key)) {
+    unit = 'years';
+  } else if (/(Days|Period)$/.test(key)) {
+    unit = 'business days';
+  }
+  if (!unit) return String(value);
+  return `${value} ${unit}`;
 }
 
 /* ── Stage 5: Citation / evidence helpers ──
@@ -3074,7 +3136,7 @@ const HIDDEN_TABLE_COLUMNS = {
   // anti-reliance, parent litigation/ownership/brokers) belong as their own
   // rep rows via sub-codes (REP-B-FUNDS, REP-B-SOLVENCY, REP-B-ANTIRELIANCE,
   // etc.), not as boolean columns on every rep. Hide them defensively.
-  'REP-T': ['mainConcept', 'crossReferences', 'linkedBringDownStandard', 'solvencyRepIncluded', 'solvency_rep_included', 'financingRepIncluded', 'financing_rep_included', 'materialityScrape', 'materiality_scrape', 'bringDownStandard', 'bring_down_standard', 'scheduleReference', 'schedule_reference', 'fundamentalRep', 'fundamental_rep', 'sufficientFundsRepPresent', 'sufficient_funds_rep_present', 'sufficientFundsRepDetails', 'sufficient_funds_rep_details', 'solvencyRepPresent', 'solvency_rep_present', 'solvencyRepDetails', 'solvency_rep_details', 'antiRelianceRepPresent', 'anti_reliance_rep_present', 'antiRelianceRepText', 'anti_reliance_rep_text', 'parentLitigationRepPresent', 'parent_litigation_rep_present', 'parentOwnershipRepPresent', 'parent_ownership_rep_present', 'parentBrokersRepPresent', 'parent_brokers_rep_present',
+  'REP-T': ['mainConcept', 'crossReferences', 'linkedBringDownStandard', 'solvencyRepIncluded', 'solvency_rep_included', 'financingRepIncluded', 'financing_rep_included', 'materialityScrape', 'materiality_scrape', 'bringDownStandard', 'bring_down_standard', 'scheduleReference', 'schedule_reference', 'sufficientFundsRepPresent', 'sufficient_funds_rep_present', 'sufficientFundsRepDetails', 'sufficient_funds_rep_details', 'solvencyRepPresent', 'solvency_rep_present', 'solvencyRepDetails', 'solvency_rep_details', 'antiRelianceRepPresent', 'anti_reliance_rep_present', 'antiRelianceRepText', 'anti_reliance_rep_text', 'parentLitigationRepPresent', 'parent_litigation_rep_present', 'parentOwnershipRepPresent', 'parent_ownership_rep_present', 'parentBrokersRepPresent', 'parent_brokers_rep_present',
     // Fully-removed REP fields (per P2 cleanup) — hidden from per-row table:
     'survivalPeriod', 'survival_period',
     'secFilingsExceptionScope', 'sec_filings_exception_scope',
@@ -3095,7 +3157,7 @@ const HIDDEN_TABLE_COLUMNS = {
     'materialityScrapeLanguage', 'materiality_scrape_language',
     'maeLimbs', 'mae_limbs',
   ],
-  'REP-B': ['mainConcept', 'crossReferences', 'linkedBringDownStandard', 'solvencyRepIncluded', 'solvency_rep_included', 'financingRepIncluded', 'financing_rep_included', 'materialityScrape', 'materiality_scrape', 'bringDownStandard', 'bring_down_standard', 'scheduleReference', 'schedule_reference', 'fundamentalRep', 'fundamental_rep', 'sufficientFundsRepPresent', 'sufficient_funds_rep_present', 'sufficientFundsRepDetails', 'sufficient_funds_rep_details', 'solvencyRepPresent', 'solvency_rep_present', 'solvencyRepDetails', 'solvency_rep_details', 'antiRelianceRepPresent', 'anti_reliance_rep_present', 'antiRelianceRepText', 'anti_reliance_rep_text', 'parentLitigationRepPresent', 'parent_litigation_rep_present', 'parentOwnershipRepPresent', 'parent_ownership_rep_present', 'parentBrokersRepPresent', 'parent_brokers_rep_present',
+  'REP-B': ['mainConcept', 'crossReferences', 'linkedBringDownStandard', 'solvencyRepIncluded', 'solvency_rep_included', 'financingRepIncluded', 'financing_rep_included', 'materialityScrape', 'materiality_scrape', 'bringDownStandard', 'bring_down_standard', 'scheduleReference', 'schedule_reference', 'sufficientFundsRepPresent', 'sufficient_funds_rep_present', 'sufficientFundsRepDetails', 'sufficient_funds_rep_details', 'solvencyRepPresent', 'solvency_rep_present', 'solvencyRepDetails', 'solvency_rep_details', 'antiRelianceRepPresent', 'anti_reliance_rep_present', 'antiRelianceRepText', 'anti_reliance_rep_text', 'parentLitigationRepPresent', 'parent_litigation_rep_present', 'parentOwnershipRepPresent', 'parent_ownership_rep_present', 'parentBrokersRepPresent', 'parent_brokers_rep_present',
     // Fully-removed REP fields (per P2 cleanup) — hidden from per-row table:
     'survivalPeriod', 'survival_period',
     'secFilingsExceptionScope', 'sec_filings_exception_scope',
@@ -3297,6 +3359,11 @@ function formatCellValue(featureKey, raw) {
   }
   if (isTaggedItem(raw)) {
     return resolveTaggedLabel(featureKey, raw) || raw.code;
+  }
+  // P3 item 7: append explicit units to bare numeric duration cells.
+  if (typeof raw === 'number') {
+    const withUnits = formatDurationWithUnits(raw, featureKey);
+    if (withUnits) return withUnits;
   }
   const v = formatFeatureValue(raw);
   if (v === null || v === undefined || v === '') return null;
@@ -4432,7 +4499,7 @@ const CATEGORY_SUMMARY_FEATURES = {
     { label: 'Clear-Skies — Parent',                  keys: ['clearSkiesParent'] },
     { label: 'Clear-Skies — Parent Scope',            keys: ['clearSkiesParentScope'] },
     // Remedy + litigation obligations
-    { label: 'Parent Remedy Obligation',              keys: ['parentRemedyObligation'] },
+    // (P3 item 12: 'Parent Remedy Obligation' row removed — duplicated burdenCap)
     { label: 'Efforts Standard Differs by Remedy',    keys: ['effortsStandardDiffersByRemedy'] },
     { label: 'Parent Litigation Obligation',          keys: ['parentLitigationObligation', 'litigationObligation'] },
     // Burdensome condition rows (q82–q83)
@@ -4563,6 +4630,13 @@ const CATEGORY_SUMMARY_FEATURES = {
   // ─── COV — Paul Weiss q115–q119 ────────────────────────────────────────
   COV: [
     { label: 'TSA Contemplated',                      keys: ['tsaContemplated'] },
+    // P3 item 4: surface per-item employee compensation standards (base salary,
+    // bonus, benefits, severance, LTI). Inserted between TSA and Financing.
+    { label: 'Employee comp: Base salary',            keys: ['baseSalaryStandard'] },
+    { label: 'Employee comp: Bonus',                  keys: ['bonusStandard', 'targetBonusStandard'] },
+    { label: 'Employee comp: Benefits',               keys: ['benefitsStandard', 'healthWelfareStandard'] },
+    { label: 'Employee comp: Severance',              keys: ['severanceStandard'] },
+    { label: 'Employee comp: Long-Term Incentive',    keys: ['ltiStandard', 'longTermIncentiveStandard'] },
     { label: 'Financing Cooperation Present',         keys: ['financingCooperationPresent', 'financingCooperation'] },
     { label: 'Financing Cooperation Scope',           keys: ['financingCooperationScope'] },
     { label: 'Financing Cooperation Breach is Condition', keys: ['financingCooperationBreachIsCondition'] },
@@ -4577,6 +4651,8 @@ const CATEGORY_SUMMARY_FEATURES = {
     { label: 'Employee Benefit Continuation Period',  keys: ['employeeBenefitPeriod'] },
     { label: 'CVR Agreement Included',                keys: ['cvrIncluded'] },
     { label: 'Access Scope',                          keys: ['accessScope'] },
+    // P3 item 6: access purpose limitation
+    { label: 'Access — Purpose Limitation',           keys: ['accessPurposeLimitation'] },
   ],
 
   // ─── MISC — preserve existing 10 rows, then PW q163–q184 ────────────────
@@ -4713,7 +4789,7 @@ function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision, hide
 
   // For each spec row, resolve its hit. MAE rows with `maeCode` resolve via
   // findCarveoutByCode against features.carveouts (taxonomy-tagged list).
-  const rows = spec.map((row) => {
+  const rawRows = spec.map((row, originalIdx) => {
     let hit = null;
     if (row.maeCode) {
       hit = findCarveoutByCode(provisions, row.maeCode);
@@ -4723,7 +4799,15 @@ function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision, hide
     } else if (row.keys && row.keys.length > 0) {
       hit = pickFirstNonEmpty(provisions, row.keys);
     }
-    return { label: row.label, hit, lookupKey: (row.keys && row.keys[0]) || row.maeCode || null };
+    return { label: row.label, hit, lookupKey: (row.keys && row.keys[0]) || row.maeCode || null, originalIdx };
+  });
+  // P3 item 5: stable sort — populated rows first (in original order), then
+  // "Not present" rows (in original order). Keeps the summary scannable.
+  const rows = [...rawRows].sort((a, b) => {
+    const aPresent = a.hit !== null && a.hit !== undefined;
+    const bPresent = b.hit !== null && b.hit !== undefined;
+    if (aPresent !== bPresent) return aPresent ? -1 : 1;
+    return a.originalIdx - b.originalIdx;
   });
 
   // Sort the provision links by category for stable display.
@@ -4951,6 +5035,71 @@ function pickTierThreshold(tier, sourceProv) {
   return null;
 }
 
+/* P3 item 15: derive Bring Down Standard at RENDER time from the current
+ * COND-B-REP / COND-S-REP bringDownTiers. This way edits to the COND tiers
+ * propagate to every REP's bring-down standard without re-ingest. Falls back
+ * to the stamped `linkedBringDownStandard` (set by linkBringDownToReps at
+ * extract time) when no tier in allProvisions matches this REP. */
+function computeBringDownStandardForRep(provision, allProvisions, repSide) {
+  if (!provision || !provision.features) return null;
+  const repType = repSide || provision.type;
+  if (repType !== 'REP-T' && repType !== 'REP-B') return null;
+  const condCode = repType === 'REP-T' ? 'COND-B-REP' : 'COND-S-REP';
+  if (!Array.isArray(allProvisions)) return null;
+
+  // Pull rep section number (best-effort).
+  const f = getStructuredFeatures(provision) || {};
+  const repSection = String(
+    f.sectionNumber || provision.section_number || ''
+  ).toLowerCase().trim();
+
+  // Walk COND provisions' bringDownTiers and try to match against this rep.
+  // Match priorities: (a) explicit reps_covered text contains this section
+  // number; (b) tagged stamp on the rep already references a tier index.
+  let catchAll = null;
+  for (const cond of allProvisions) {
+    if (!cond || cond.code !== condCode) continue;
+    const cf = getStructuredFeatures(cond) || {};
+    const tiers = Array.isArray(cf.bringDownTiers) ? cf.bringDownTiers : [];
+    for (const tier of tiers) {
+      if (!tier || typeof tier !== 'object') continue;
+      const stdCode = tier.standard || tier.standardCode || tier.standard_code || null;
+      const stdLabel = tier.standard_label || tier.standardLabel || stdCode || null;
+      if (!stdCode) continue;
+      const reps = String(tier.reps_covered || tier.repsCovered || '');
+      // Catch-all detection.
+      if (!catchAll && /\ball\s+other\b|\bremaining\b|\bcatch[\s-]*all\b/i.test(reps)) {
+        catchAll = { code: stdCode, label: stdLabel, source: cond };
+      }
+      // Explicit section-number match.
+      if (repSection && reps) {
+        // Match either "3.05" or "3.05(a)".
+        const re = new RegExp(`\\b${repSection.replace(/[.\\()]/g, (m) => '\\' + m)}\\b`, 'i');
+        if (re.test(reps)) {
+          return { code: stdCode, label: stdLabel, source: cond };
+        }
+        // Bare-number match: tier says "3.05", rep is "3.05(b)".
+        const bare = repSection.replace(/\([a-z0-9]+\)$/i, '');
+        if (bare !== repSection) {
+          const reBare = new RegExp(`\\b${bare.replace(/[.\\]/g, '\\$&')}\\b`, 'i');
+          if (reBare.test(reps)) {
+            return { code: stdCode, label: stdLabel, source: cond };
+          }
+        }
+      }
+    }
+  }
+  if (catchAll) return catchAll;
+
+  // Fallback: use the stamped value left by linkBringDownToReps at extract
+  // time. Existing data has this stamp; new data without it returns null.
+  const stamp = f.linkedBringDownStandard;
+  if (isTaggedItem(stamp)) {
+    return { code: stamp.code, label: stamp.label || stamp.code, source: null };
+  }
+  return null;
+}
+
 // Find the names of the REP provisions a tier covers. Uses the
 // `linkedBringDownStandard` stamp left on each REP by linkBringDownToReps,
 // matching tier.standard / tier.standardCode. Falls back to free-text
@@ -5021,7 +5170,7 @@ const EXPECTED_REPS = {
     { label: 'Anti-Reliance / No Other Reps', match: { code: 'REP-B-ANTIRELIANCE' } },
     { label: 'Parent Litigation',        match: { categoryRegex: /\blitig/i } },
     { label: 'Parent Ownership of Company Stock', match: { categoryRegex: /\bownership\b|company\s+(?:capital\s+)?stock|share\s+ownership/i } },
-    { label: 'Brokers & Finders',        match: { categoryRegex: /broker|finder/i } },
+    { label: 'Brokers identified',       match: { categoryRegex: /broker|finder/i } },
   ],
   'REP-T': [
     { label: 'Sufficiency of Assets',    match: { code: 'REP-T-SUFFICIENCY' } },
@@ -5744,11 +5893,25 @@ function CanonicalConditionsTable({ provisions, allProvisions, family, onSelectP
   }, [provisions]);
 
   // Filter the canonical list based on render predicates.
-  const renderedRows = list.filter((row) => {
+  const renderedRowsRaw = list.filter((row) => {
     if (row.tenderOnly && !isTenderDeal) return false;
     if (row.requireParentApproval && !parentApprovalRequired) return false;
     return true;
   });
+  // P3 item 5: stable sort — populated rows first, "Not present" rows last.
+  // alwaysRender rows count as populated for sort purposes (they always show
+  // something meaningful, even when no provision matches).
+  const renderedRows = [...renderedRowsRaw]
+    .map((row, originalIdx) => {
+      const matches = (provisions || []).filter((p) => row.re.test(String(p.category || '')));
+      const present = matches.length > 0 || !!row.alwaysRender;
+      return { row, present, originalIdx };
+    })
+    .sort((a, b) => {
+      if (a.present !== b.present) return a.present ? -1 : 1;
+      return a.originalIdx - b.originalIdx;
+    })
+    .map(({ row }) => row);
 
   return (
     <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
@@ -5806,6 +5969,18 @@ function CanonicalConditionsTable({ provisions, allProvisions, family, onSelectP
                       allProvisions={allProvisions || provisions}
                       onSelectProvision={onSelectProvision}
                     />
+                    {/* P3 item 3: render the BringdownTable inside the
+                        "Reps Bring-Down" canonical row so the tier/standard
+                        breakdown lives next to the condition that uses it. */}
+                    {/Bring[\s-]*Down/i.test(row.label) && (
+                      <div className="mt-2">
+                        <BringdownTable
+                          provisions={allProvisions || provisions}
+                          repsType={family === 'COND-S' ? 'REP-B' : 'REP-T'}
+                          onSelectProvision={onSelectProvision}
+                        />
+                      </div>
+                    )}
                   </td>
                 </tr>
               );
@@ -9035,18 +9210,17 @@ export default function ReviewPage() {
                                 />
                               )}
                               {(type === 'REP-T' || type === 'REP-B') && (
-                                <BringdownTable
-                                  provisions={provisions}
-                                  repsType={type}
-                                  onSelectProvision={handleEditProvision}
-                                />
-                              )}
-                              {(type === 'REP-T' || type === 'REP-B') && (
                                 <RepKnowledgeNote provisions={rest} />
                               )}
+                              {/* P3 item 2: General Exceptions apply to the
+                                  ENTIRE reps section — render FIRST so they
+                                  anchor the top of the page. */}
                               {(type === 'REP-T' || type === 'REP-B') && (
                                 <RepGeneralExceptionsTable provisions={rest} />
                               )}
+                              {/* P3 item 3: BringdownTable moved out of REP
+                                  page; it now renders inside the matching
+                                  COND canonical row (CanonicalConditionDetails). */}
                               {type === 'REP-T' && (
                                 <RepMaterialContractsTable
                                   provisions={rest}
