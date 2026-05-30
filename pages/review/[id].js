@@ -4017,25 +4017,40 @@ function StructTable({ provisions, onSelectProvision }) {
       // Only surface Closing Deadline as its own row when it carries
       // information distinct from closingTiming — otherwise the user sees
       // the exact same sentence repeated under two labels.
-      const explicitDeadline = features.mutualClosingDeadlineAfterConditionsDays
+      // P8 item 7: unwrap citable / object shapes on BOTH sides before the
+      // equality check so a {value: "X", text: "..."} vs bare "X" pairing
+      // still matches and the duplicate row is suppressed.
+      const unwrap = (v) => {
+        if (v === null || v === undefined) return '';
+        let cur = v;
+        if (isCitableValue(cur)) cur = getCitableValue(cur);
+        if (cur === null || cur === undefined) return '';
+        if (typeof cur === 'object') {
+          // Tagged item ({code,label,text}) or similar — prefer the verbatim
+          // text, then label, then JSON for a stable string-comparable form.
+          return String(cur.text || cur.label || cur.value || JSON.stringify(cur)).trim();
+        }
+        return String(cur).trim();
+      };
+      const explicitDeadlineRaw = features.mutualClosingDeadlineAfterConditionsDays
         ?? features.closingDeadline
         ?? null;
+      const explicitDeadlineStr = unwrap(explicitDeadlineRaw);
+      const closingTimingStr = unwrap(features.closingTiming);
       cells = [
         { key: 'closingLocation', raw: features.closingLocation },
         { key: 'closingTiming', raw: features.closingTiming },
       ];
       if (
-        explicitDeadline !== null
-        && explicitDeadline !== undefined
-        && explicitDeadline !== ''
-        && String(explicitDeadline) !== String(features.closingTiming || '')
+        explicitDeadlineStr !== ''
+        && explicitDeadlineStr !== closingTimingStr
       ) {
         cells.push({
           key: 'closingDeadline',
           label: 'Closing Deadline',
-          raw: typeof explicitDeadline === 'number'
-            ? `${explicitDeadline} days after conditions satisfied`
-            : explicitDeadline,
+          raw: typeof explicitDeadlineRaw === 'number'
+            ? `${explicitDeadlineRaw} days after conditions satisfied`
+            : explicitDeadlineRaw,
         });
       }
     } else if (kind === 'effects') {
