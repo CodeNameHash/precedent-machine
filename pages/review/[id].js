@@ -9487,6 +9487,184 @@ function DefinitionTooltip({ def, position }) {
 }
 
 /* ═══════════════════════════════════════════════════════════
+   P5 item 6: ADVISORS EDITOR MODAL
+   ───────────────────────────────────────────────────────────
+   Edits deal.metadata.advisors. PATCH /api/deals only ships a
+   merged metadata so other metadata keys (custom_taxonomy_extensions,
+   etc.) survive untouched.
+   ═══════════════════════════════════════════════════════════ */
+function AdvisorsEditorModal({ deal, onClose, onSaved }) {
+  const initial = useMemo(() => {
+    const arr = Array.isArray(deal?.metadata?.advisors) ? deal.metadata.advisors : [];
+    // Defensive clone so edits don't mutate the deal object.
+    return arr.map((a) => ({
+      firm: a.firm || '',
+      party: a.party || '',
+      partner: a.partner || '',
+      role: a.role || '',
+    }));
+  }, [deal]);
+  const [rows, setRows] = useState(initial);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
+
+  const updateRow = (idx, patch) => {
+    setRows((prev) => prev.map((r, i) => (i === idx ? { ...r, ...patch } : r)));
+  };
+  const removeRow = (idx) => {
+    setRows((prev) => prev.filter((_, i) => i !== idx));
+  };
+  const addRow = () => {
+    setRows((prev) => [...prev, { firm: '', party: 'company', partner: '', role: 'legal' }]);
+  };
+
+  const handleSave = async () => {
+    if (!deal?.id) return;
+    setSaving(true);
+    setError(null);
+    try {
+      const cleaned = rows
+        .map((r) => ({
+          firm: (r.firm || '').trim(),
+          party: r.party || '',
+          partner: (r.partner || '').trim() || undefined,
+          role: r.role || '',
+        }))
+        .filter((r) => r.firm); // drop empty firm rows
+      const nextMetadata = { ...(deal.metadata || {}), advisors: cleaned };
+      const res = await fetch('/api/deals', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: deal.id, metadata: nextMetadata }),
+      });
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}));
+        throw new Error(j.error || `HTTP ${res.status}`);
+      }
+      if (onSaved) onSaved();
+      onClose();
+    } catch (e) {
+      setError(e.message || String(e));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[85vh] flex flex-col"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="px-4 py-3 border-b border-border flex items-center justify-between">
+          <h3 className="font-display text-sm text-ink font-medium">Edit Advisors</h3>
+          <button onClick={onClose} className="p-1 text-inkLight hover:text-ink" aria-label="Close">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M4 4l8 8M12 4l-8 8" />
+            </svg>
+          </button>
+        </div>
+        <div className="flex-1 overflow-y-auto p-4 space-y-2">
+          {rows.length === 0 && (
+            <p className="text-xs font-ui italic text-inkFaint">No advisors yet. Click "+ Add advisor" to add one.</p>
+          )}
+          {rows.map((r, idx) => (
+            <div key={idx} className="border border-border rounded p-2 grid grid-cols-12 gap-2 items-center">
+              <div className="col-span-4">
+                <label className="block text-[10px] font-ui text-inkFaint uppercase tracking-wider mb-0.5">Firm</label>
+                <input
+                  value={r.firm}
+                  onChange={(e) => updateRow(idx, { firm: e.target.value })}
+                  className="w-full border border-border rounded px-2 py-1 text-xs font-ui focus:outline-none focus:ring-1 focus:ring-accent"
+                  placeholder="e.g. Wachtell Lipton"
+                />
+              </div>
+              <div className="col-span-3">
+                <label className="block text-[10px] font-ui text-inkFaint uppercase tracking-wider mb-0.5">Party</label>
+                <select
+                  value={r.party}
+                  onChange={(e) => updateRow(idx, { party: e.target.value })}
+                  className="w-full border border-border rounded px-2 py-1 text-xs font-ui bg-white focus:outline-none focus:ring-1 focus:ring-accent"
+                >
+                  <option value="">--</option>
+                  <option value="parent">Parent</option>
+                  <option value="company">Company</option>
+                  <option value="special_committee">Special Committee</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div className="col-span-2">
+                <label className="block text-[10px] font-ui text-inkFaint uppercase tracking-wider mb-0.5">Role</label>
+                <select
+                  value={r.role}
+                  onChange={(e) => updateRow(idx, { role: e.target.value })}
+                  className="w-full border border-border rounded px-2 py-1 text-xs font-ui bg-white focus:outline-none focus:ring-1 focus:ring-accent"
+                >
+                  <option value="">--</option>
+                  <option value="legal">Legal</option>
+                  <option value="financial">Financial</option>
+                  <option value="tax">Tax</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div className="col-span-2">
+                <label className="block text-[10px] font-ui text-inkFaint uppercase tracking-wider mb-0.5">Partner</label>
+                <input
+                  value={r.partner}
+                  onChange={(e) => updateRow(idx, { partner: e.target.value })}
+                  className="w-full border border-border rounded px-2 py-1 text-xs font-ui focus:outline-none focus:ring-1 focus:ring-accent"
+                  placeholder="optional"
+                />
+              </div>
+              <div className="col-span-1 pt-3 text-right">
+                <button
+                  type="button"
+                  onClick={() => removeRow(idx)}
+                  className="w-6 h-6 inline-flex items-center justify-center rounded text-inkFaint hover:bg-red-50 hover:text-red-600"
+                  title="Remove advisor"
+                  aria-label="Remove advisor"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={addRow}
+            className="text-xs font-ui text-accent hover:underline mt-2"
+          >
+            + Add advisor
+          </button>
+          {error && <p className="text-xs font-ui text-red-600 mt-2">{error}</p>}
+        </div>
+        <div className="px-4 py-3 border-t border-border flex justify-end gap-2">
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={saving}
+            className="px-3 py-1.5 text-xs font-ui border border-border rounded hover:bg-bg disabled:opacity-50"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={saving}
+            className="px-3 py-1.5 text-xs font-ui bg-accent text-white rounded hover:bg-accent/90 disabled:opacity-50"
+          >
+            {saving ? 'Saving...' : 'Save'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
    MAIN REVIEW PAGE
    ═══════════════════════════════════════════════════════════ */
 ReviewPage.noLayout = true;
@@ -9495,7 +9673,9 @@ export default function ReviewPage() {
   const router = useRouter();
   const { id } = router.query;
   const { user } = useUser({ redirectTo: '/login' });
-  const { deal, loading: dealLoading } = useDeal(id);
+  const { deal, loading: dealLoading, refetch: refetchDeal } = useDeal(id);
+  // P5 item 6: advisors editor modal toggle.
+  const [advisorsModalOpen, setAdvisorsModalOpen] = useState(false);
   const { provisions: rawProvisions, loading: provsLoading, refetch: refetchProvs } = useProvisions({ deal_id: id });
   const { addToast } = useToast();
 
@@ -10009,8 +10189,11 @@ export default function ReviewPage() {
               <h1 className="rec-deal-title">
                 {deal.acquirer} <span className="vs">acquires</span> {deal.target}
               </h1>
-              {Array.isArray(deal.metadata?.advisors) && deal.metadata.advisors.length > 0 && (
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: 8, marginBottom: 8 }}>
+              {/* P5 item 6: Edit affordance for advisors. Always show the Edit
+                  button; show the chip row when at least one advisor exists. */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: 8, marginBottom: 8, alignItems: 'center' }}>
+                {Array.isArray(deal.metadata?.advisors) && deal.metadata.advisors.length > 0 && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                   {deal.metadata.advisors.map((a, idx) => {
                     const partyLabel =
                       a.party === 'parent' ? 'Parent'
@@ -10042,7 +10225,16 @@ export default function ReviewPage() {
                     );
                   })}
                 </div>
-              )}
+                )}
+                <button
+                  type="button"
+                  onClick={() => setAdvisorsModalOpen(true)}
+                  className="text-[10px] font-ui uppercase tracking-wider text-accent hover:underline"
+                  style={{ padding: '3px 6px' }}
+                >
+                  {Array.isArray(deal.metadata?.advisors) && deal.metadata.advisors.length > 0 ? 'Edit advisors' : '+ Add advisors'}
+                </button>
+              </div>
               <div className="rec-deal-meta">
                 {deal.sector && (
                   <div className="m">
@@ -10414,6 +10606,18 @@ export default function ReviewPage() {
 
       {/* Definition Tooltip */}
       <DefinitionTooltip def={hoveredDef} position={defPosition} />
+
+      {/* P5 item 6: Advisors editor modal */}
+      {advisorsModalOpen && deal && (
+        <AdvisorsEditorModal
+          deal={deal}
+          onClose={() => setAdvisorsModalOpen(false)}
+          onSaved={() => {
+            if (refetchDeal) refetchDeal();
+            addToast('Advisors updated', 'success');
+          }}
+        />
+      )}
     </div>
     </EvidenceContext.Provider>
   );
