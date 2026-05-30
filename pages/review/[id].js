@@ -26,6 +26,10 @@ const TYPE_LABELS = {
   'MAE-B': 'Material Adverse Effect (Buyer)',
   'MAE': 'Material Adverse Effect',
   'MAE-DEF': 'Material Adverse Effect',
+  // P8 item 3: synthetic UI-only type — surfaces matching REP-T provisions
+  // (Material Contracts checklist) on their own sidebar page so the buckets
+  // table isn't buried inline on the REP-T page.
+  '__MATERIAL_CONTRACTS': 'Material Contracts',
   'IOC-T': 'Interim Operating Covenants (Target)',
   'IOC-B': 'Interim Operating Covenants (Buyer)',
   'IOC': 'Interim Operating Covenants',
@@ -6949,6 +6953,25 @@ function isMaeDefinitionProvision(p) {
   return false;
 }
 
+/* P8 item 3: synthesize a "Material Contracts" sidebar group from REP-T
+ * provisions whose code / category / features mark them as the Material
+ * Contracts bucket source. Pure UI detection — keeps the parser unchanged. */
+function isMaterialContractsProvision(p) {
+  if (!p) return false;
+  // Restrict to REP-T (the only place this surfaces) so we never pull a
+  // BOILERPLATE / MISC provision that happens to mention "material contracts".
+  const t = String(p.type || '');
+  if (t !== 'REP-T') return false;
+  const meta = getAiMetadata(p) || {};
+  const code = String(meta.code || p.code || '');
+  if (code === 'REP-T-MATERIAL-CONTRACTS') return true;
+  if (/material\s+contracts/i.test(String(p.category || ''))) return true;
+  const f = getStructuredFeatures(p) || {};
+  const buckets = f.materialContractsBuckets;
+  if (Array.isArray(buckets) && buckets.length > 0) return true;
+  return false;
+}
+
 /* ─── REP knowledge note: italic line above the REP table reading
  *     "Knowledge standard: <KNOWLEDGE_STANDARDS label or italic 'Not specified'>".
  *     Pulled from the first REP provision with non-null `knowledgeStandard`. */
@@ -11214,11 +11237,43 @@ export default function ReviewPage() {
     if (maeProvs.length > 0) {
       groups['MAE-DEF'] = maeProvs;
     }
+    // P8 item 3: synthesize a Material Contracts sidebar entry from any
+    // REP-T provision whose code / category / features identify it as the
+    // Material Contracts bucket source. The sidebar shows it under the
+    // Representations group; clicking it routes to a synthetic page that
+    // renders only the RepMaterialContractsTable + matching provision card.
+    const mcProvs = (provisions || []).filter(isMaterialContractsProvision);
+    if (mcProvs.length > 0) {
+      groups['__MATERIAL_CONTRACTS'] = mcProvs;
+    }
     return groups;
   }, [provisions]);
 
-  /* ── Group filtered provisions by type ── */
-  const filteredProvsByType = useMemo(() => groupProvisionsByType(filteredProvisions), [filteredProvisions]);
+  /* ── Group filtered provisions by type ──
+   *  Synthesize MAE-DEF and __MATERIAL_CONTRACTS the same way provsByType
+   *  does so the per-type render loop picks them up. activeFilter on these
+   *  synthetic types would otherwise yield 0 provisions and render the
+   *  empty-state. */
+  const filteredProvsByType = useMemo(() => {
+    const groups = groupProvisionsByType(filteredProvisions);
+    // When the active filter targets a synthetic group, repopulate it from
+    // ALL provisions (not the filtered set, which dropped them).
+    if (activeFilter === 'MAE-DEF' || (Array.isArray(activeFilter) && activeFilter.includes('MAE-DEF'))) {
+      const maeProvs = (provisions || []).filter(isMaeDefinitionProvision);
+      if (maeProvs.length > 0) groups['MAE-DEF'] = maeProvs;
+    } else {
+      const maeProvs = filteredProvisions.filter(isMaeDefinitionProvision);
+      if (maeProvs.length > 0) groups['MAE-DEF'] = maeProvs;
+    }
+    if (activeFilter === '__MATERIAL_CONTRACTS' || (Array.isArray(activeFilter) && activeFilter.includes('__MATERIAL_CONTRACTS'))) {
+      const mcProvs = (provisions || []).filter(isMaterialContractsProvision);
+      if (mcProvs.length > 0) groups['__MATERIAL_CONTRACTS'] = mcProvs;
+    } else {
+      const mcProvs = filteredProvisions.filter(isMaterialContractsProvision);
+      if (mcProvs.length > 0) groups['__MATERIAL_CONTRACTS'] = mcProvs;
+    }
+    return groups;
+  }, [filteredProvisions, provisions, activeFilter]);
 
   /* ── Identify the first IOC-flavored type in the rendered order. The
    *    IOC affirmative / general-exceptions / negative tables render a
@@ -11829,6 +11884,13 @@ export default function ReviewPage() {
                       } else {
                         rest = provs;
                       }
+                      // P8 item 3: Material Contracts is its own sidebar page —
+                      // pull the matching REP-T provisions OUT of the regular
+                      // REP-T page so they don't render twice. The synthetic
+                      // page is handled by its own type branch further down.
+                      if (type === 'REP-T') {
+                        rest = rest.filter((p) => !isMaterialContractsProvision(p));
+                      }
                       // For IOC: pull the consolidated "Affirmative Covenants"
                       // and "General Exceptions" provisions out of the main
                       // table and render them in a dedicated section above.
@@ -11911,9 +11973,13 @@ export default function ReviewPage() {
                               {/* P3 item 3: BringdownTable moved out of REP
                                   page; it now renders inside the matching
                                   COND canonical row (CanonicalConditionDetails). */}
-                              {type === 'REP-T' && (
+                              {/* P8 item 3: RepMaterialContractsTable moved
+                                  out of the inline REP-T page; it now renders
+                                  on its own __MATERIAL_CONTRACTS sidebar page
+                                  (branch below) so the buckets aren't buried. */}
+                              {type === '__MATERIAL_CONTRACTS' && (
                                 <RepMaterialContractsTable
-                                  provisions={rest}
+                                  provisions={provs}
                                   onSelectProvision={handleEditProvision}
                                 />
                               )}
@@ -11929,7 +11995,7 @@ export default function ReviewPage() {
                                   onSelectProvision={handleEditProvision}
                                 />
                               )}
-                              {type !== 'DEF' && type !== 'MAE-DEF' && (() => {
+                              {type !== 'DEF' && type !== 'MAE-DEF' && type !== '__MATERIAL_CONTRACTS' && (() => {
                                 const restAugmented = (type === 'REP-T' || type === 'REP-B')
                                   ? augmentRepsWithExpectedPlaceholders(rest, type, provisions)
                                   : rest;
@@ -11943,6 +12009,20 @@ export default function ReviewPage() {
                                   />
                                 );
                               })()}
+                              {/* P8 item 3: matching REP-T provision cards
+                                  below the buckets table on the synthetic
+                                  Material Contracts page. */}
+                              {type === '__MATERIAL_CONTRACTS' && provs.length > 0 && (
+                                <div className="space-y-3">
+                                  {provs.map((p) => (
+                                    <ProvisionCard
+                                      key={p.id}
+                                      provision={p}
+                                      onEdit={handleEditProvision}
+                                    />
+                                  ))}
+                                </div>
+                              )}
                             </div>
                           ) : (
                             <div className="space-y-3">
@@ -11962,7 +12042,7 @@ export default function ReviewPage() {
                         </div>
                       );
                     })}
-                    {filteredProvisions.length === 0 && (
+                    {filteredProvisions.length === 0 && Object.keys(filteredProvsByType).length === 0 && (
                       <div className="text-center py-12">
                         <p className="text-inkFaint font-ui">No provisions match this filter.</p>
                         <button
