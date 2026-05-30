@@ -169,7 +169,7 @@ async function runParserPipeline(client, fullText, dealId, title, sb) {
     provision_type: s.provisionType,
   }));
 
-  const provisions = await extractProvisions(sectionsForExtract, client);
+  const provisions = await extractProvisions(sectionsForExtract, client, cleaned);
   const validation = validateProvisions(provisions, cleaned, sectionsForExtract);
   const finalProvisions = validation.provisions;
 

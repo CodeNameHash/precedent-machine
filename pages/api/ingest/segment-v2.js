@@ -84,7 +84,7 @@ export default async function handler(req, res) {
 
     // ── Phase 3: Extract sub-provisions ──
     const extractStart = Date.now();
-    const provisions = await extractProvisions(sectionsForExtract, client);
+    const provisions = await extractProvisions(sectionsForExtract, client, cleaned);
     timing.extract = Date.now() - extractStart;
 
     // ── Phase 4: Validate ──
