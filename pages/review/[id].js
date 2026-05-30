@@ -6431,14 +6431,35 @@ function RepKnowledgeNote({ provisions }) {
  *     carve-out (scope + lookback + excluded sections + carved-out reps),
  *     schedule references, materiality scrape language, materiality scrape
  *     applies-to. Each empty row renders "Not present in this agreement". */
-function RepGeneralExceptionsTable({ provisions }) {
-  const pickKey = (key) => {
+function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
+  // P5 item 5(d): preamble fallback. When a per-rep features object is silent,
+  // fall back to the REP-T-PREAMBLE / REP-B-PREAMBLE pseudo-provision's
+  // features (one per side). Also accept the legacy single-key names.
+  const preamblePros = (provisions || []).filter((p) => {
+    const c = String(p?.code || '').toUpperCase();
+    return c === 'REP-T-PREAMBLE' || c === 'REP-B-PREAMBLE';
+  });
+  const preambleFeats = preamblePros.map((p) => getStructuredFeatures(p) || {});
+  const pickKey = (keys) => {
+    const keyList = Array.isArray(keys) ? keys : [keys];
+    // 1) First scan all non-preamble provisions for any non-empty key.
     for (const p of provisions || []) {
       const f = getStructuredFeatures(p) || {};
-      const raw = f[key];
-      if (raw === null || raw === undefined || raw === '' || raw === false) continue;
-      if (Array.isArray(raw) && raw.length === 0) continue;
-      return raw;
+      for (const key of keyList) {
+        const raw = f[key];
+        if (raw === null || raw === undefined || raw === '' || raw === false) continue;
+        if (Array.isArray(raw) && raw.length === 0) continue;
+        return raw;
+      }
+    }
+    // 2) Fall back to the dedicated preamble pseudo-provisions.
+    for (const f of preambleFeats) {
+      for (const key of keyList) {
+        const raw = f[key];
+        if (raw === null || raw === undefined || raw === '' || raw === false) continue;
+        if (Array.isArray(raw) && raw.length === 0) continue;
+        return raw;
+      }
     }
     return null;
   };
@@ -6448,11 +6469,45 @@ function RepGeneralExceptionsTable({ provisions }) {
     }
     return renderFeatureCell(key, raw);
   };
+  // P5 item 5(d): "Lookback (months)" row gains a computed "since YYYY-MM-DD"
+  // suffix from secFilingsExceptionLookbackDate, or computeLookbackText when
+  // only months + announce date are present.
+  const renderLookbackVal = () => {
+    const dateRaw = pickKey(['secFilingsExceptionLookbackDate']);
+    const months = pickKey(['secFilingsLookbackMonths']);
+    const txt = pickKey(['secFilingsExceptionLookback']);
+    let monthsVal = months;
+    if (isCitableValue(monthsVal)) monthsVal = getCitableValue(monthsVal);
+    let txtVal = txt;
+    if (isCitableValue(txtVal)) txtVal = getCitableValue(txtVal);
+    let dateVal = dateRaw;
+    if (isCitableValue(dateVal)) dateVal = getCitableValue(dateVal);
+    if (!monthsVal && !txtVal && !dateVal) {
+      return <span className="italic text-inkFaint">Not present in this agreement</span>;
+    }
+    const parts = [];
+    if (monthsVal) {
+      const computed = computeLookbackText(monthsVal, dealAnnounceDate || null);
+      parts.push(computed || `${monthsVal} months`);
+    } else if (txtVal) {
+      parts.push(String(txtVal));
+    }
+    if (dateVal) {
+      const iso = String(dateVal).slice(0, 10);
+      if (!parts.join(' ').includes(iso)) {
+        parts.push(`(since ${iso})`);
+      }
+    }
+    return <span>{parts.join(' ')}</span>;
+  };
   const rows = [
-    { label: 'SEC Filings — Scope', key: 'secFilingsExceptionScope' },
-    { label: 'SEC Filings — Lookback (months)', key: 'secFilingsLookbackMonths' },
-    { label: 'SEC Filings — Excluded sections', key: 'secFilingsExcludedSections' },
-    { label: 'SEC Filings — Carved-out reps', key: 'secFilingsCarvedOutReps' },
+    { label: 'SEC Filings — Language', keys: ['secFilingsExceptionLanguage', 'secFilingsExceptionScope'] },
+    { label: 'SEC Filings — Scope', keys: ['secFilingsExceptionScope'] },
+    { label: 'SEC Filings — Lookback', keys: ['secFilingsLookbackMonths'], custom: 'lookback' },
+    { label: 'SEC Filings — Excluded sections', keys: ['secFilingsExceptionExclusions', 'secFilingsExcludedSections'] },
+    { label: 'SEC Filings — Carved-out reps', keys: ['secFilingsExceptionCarvedOutReps', 'secFilingsCarvedOutReps'] },
+    { label: 'Disclosure Letter reference', keys: ['disclosureLetterReference'] },
+    { label: 'Materiality scrape language', keys: ['materialityScrapeLanguage'] },
   ];
   return (
     <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
@@ -6471,11 +6526,19 @@ function RepGeneralExceptionsTable({ provisions }) {
           </thead>
           <tbody className="divide-y divide-border">
             {rows.map((r) => {
-              const v = pickKey(r.key);
+              if (r.custom === 'lookback') {
+                return (
+                  <tr key={r.label} className="align-top">
+                    <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">{r.label}</td>
+                    <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">{renderLookbackVal()}</td>
+                  </tr>
+                );
+              }
+              const v = pickKey(r.keys || r.key);
               return (
                 <tr key={r.label} className="align-top">
                   <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">{r.label}</td>
-                  <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">{renderVal(r.key, v)}</td>
+                  <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">{renderVal((r.keys && r.keys[0]) || r.key, v)}</td>
                 </tr>
               );
             })}
@@ -10476,7 +10539,10 @@ export default function ReviewPage() {
                                   ENTIRE reps section — render FIRST so they
                                   anchor the top of the page. */}
                               {(type === 'REP-T' || type === 'REP-B') && (
-                                <RepGeneralExceptionsTable provisions={rest} />
+                                <RepGeneralExceptionsTable
+                                  provisions={provs}
+                                  dealAnnounceDate={deal?.announce_date || null}
+                                />
                               )}
                               {/* P3 item 3: BringdownTable moved out of REP
                                   page; it now renders inside the matching
