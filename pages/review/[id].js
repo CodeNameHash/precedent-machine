@@ -21,6 +21,7 @@ const TYPE_LABELS = {
   'MAE-T': 'Material Adverse Effect (Target)',
   'MAE-B': 'Material Adverse Effect (Buyer)',
   'MAE': 'Material Adverse Effect',
+  'MAE-DEF': 'Material Adverse Effect',
   'IOC-T': 'Interim Operating Covenants (Target)',
   'IOC-B': 'Interim Operating Covenants (Buyer)',
   'IOC': 'Interim Operating Covenants',
@@ -106,6 +107,7 @@ const TYPE_HEX = {
   MAE:      '#8B5B3A',
   'MAE-T':  '#8B5B3A',
   'MAE-B':  '#8B5B3A',
+  'MAE-DEF':'#8B5B3A',
   MISC:     '#8A8782',
   OTHER:    '#8A8782',
 };
@@ -126,6 +128,7 @@ const SIDEBAR_GROUPS = [
     { label: 'Company / Target', type: 'REP-T' },
     { label: 'Buyer / Parent', type: 'REP-B' },
   ]},
+  { label: 'Material Adverse Effect', types: ['MAE-DEF'] },
   { label: 'Interim Operating Covenants', types: ['IOC', 'IOC-T', 'IOC-B'] },
   { label: 'No-Solicitation / No-Shop', types: ['NOSOL'] },
   { label: 'Antitrust / Regulatory', types: ['ANTI'] },
@@ -681,6 +684,7 @@ const SKIP_PREAMBLE_CARD_TYPES = new Set([
   'TERMF',
   'COND', 'COND-M', 'COND-B', 'COND-S',
   'DEF',
+  'MAE-DEF',
   'MISC',
   'STRUCT',
   'OTHER',
@@ -4800,12 +4804,43 @@ function isMaeDefinitionProvision(p) {
 
 function MaeDefinitionSummary({ allProvisions, onSelectProvision }) {
   const maeProvs = (allProvisions || []).filter(isMaeDefinitionProvision);
+  // Derive a one-or-two-limb hero label from features.maeLimbs (preferred) or
+  // features.preventDelayProng as a fallback. The user's headline question is
+  // "impact on Company only" vs "impact on Company + ability to consummate".
+  let limbsLabel = null;
+  for (const p of maeProvs) {
+    const f = getStructuredFeatures(p) || {};
+    const rawLimbs = isCitableValue(f.maeLimbs) ? getCitableValue(f.maeLimbs) : f.maeLimbs;
+    if (rawLimbs === 'ONE_LIMB' || rawLimbs === 'TWO_LIMB') {
+      limbsLabel = rawLimbs === 'TWO_LIMB'
+        ? 'Two-limb: impact on Company + ability to consummate'
+        : 'One-limb: impact on Company only';
+      break;
+    }
+    const pd = isCitableValue(f.preventDelayProng) ? getCitableValue(f.preventDelayProng) : f.preventDelayProng;
+    if (pd === true) {
+      limbsLabel = 'Two-limb: impact on Company + ability to consummate';
+      break;
+    }
+    if (pd === false) {
+      limbsLabel = 'One-limb: impact on Company only';
+      break;
+    }
+  }
   return (
-    <CategoryFeatureSummaryTable
-      provisions={maeProvs}
-      type="MAE"
-      onSelectProvision={onSelectProvision}
-    />
+    <div className="space-y-3">
+      <div className="bg-white border-2 rounded-lg shadow-sm px-5 py-4" style={{ borderColor: '#C9A788' }}>
+        <div className="font-mono text-[10px] text-inkFaint uppercase tracking-wider">MAE Test</div>
+        <div className="font-display text-lg text-ink font-medium mt-1">
+          {limbsLabel || <span className="italic text-inkFaint text-sm">Not yet extracted (re-ingest to populate maeLimbs)</span>}
+        </div>
+      </div>
+      <CategoryFeatureSummaryTable
+        provisions={maeProvs}
+        type="MAE"
+        onSelectProvision={onSelectProvision}
+      />
+    </div>
   );
 }
 
@@ -7168,7 +7203,17 @@ export default function ReviewPage() {
      Preserves natural insertion order (which mirrors document order) but
      enforces TERMR-M → TERMR-B → TERMR-T ordering for the three party-specific
      termination-rights groups so the sidebar reads Mutual → Buyer → Target. */
-  const provsByType = useMemo(() => groupProvisionsByType(provisions), [provisions]);
+  const provsByType = useMemo(() => {
+    const groups = groupProvisionsByType(provisions);
+    // Synthesize a MAE-DEF group from any provision (DEF or REP-T) whose
+    // category matches the MAE definition. The user wants MAE as its own
+    // standalone section (not buried inside REP-T).
+    const maeProvs = (provisions || []).filter(isMaeDefinitionProvision);
+    if (maeProvs.length > 0) {
+      groups['MAE-DEF'] = maeProvs;
+    }
+    return groups;
+  }, [provisions]);
 
   /* ── Group filtered provisions by type ── */
   const filteredProvsByType = useMemo(() => groupProvisionsByType(filteredProvisions), [filteredProvisions]);
@@ -7805,7 +7850,7 @@ export default function ReviewPage() {
                               {(type === 'REP-T' || type === 'REP-B') && (
                                 <BringdownTable provisions={provisions} repsType={type} />
                               )}
-                              {type === 'REP-T' && (
+                              {type === 'MAE-DEF' && (
                                 <MaeDefinitionSummary
                                   allProvisions={provisions}
                                   onSelectProvision={handleEditProvision}
@@ -7817,7 +7862,7 @@ export default function ReviewPage() {
                                   onSelectProvision={handleEditProvision}
                                 />
                               )}
-                              {type !== 'DEF' && (() => {
+                              {type !== 'DEF' && type !== 'MAE-DEF' && (() => {
                                 const restAugmented = (type === 'REP-T' || type === 'REP-B')
                                   ? augmentRepsWithExpectedPlaceholders(rest, type)
                                   : rest;
