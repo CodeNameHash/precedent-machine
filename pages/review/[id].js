@@ -2365,6 +2365,30 @@ function IocAffirmativeCovenantsTable({ iocProvisions, onSelectProvision }) {
   );
   if (matches.length === 0) return null;
 
+  // Resolve a raw string standard code (e.g. "COMMERCIALLY_REASONABLE_EFFORTS")
+  // to its human label by looking it up in the EFFORTS_STANDARDS taxonomy.
+  // Falls back to a basic humanize on the raw string when no dict entry exists
+  // so the UI never shows UPPER_SNAKE codes.
+  const humanizeEffortsString = (raw) => {
+    if (!raw || typeof raw !== 'string') return raw;
+    const s = raw.trim();
+    if (!s) return null;
+    // Try the EFFORTS_STANDARDS dict first.
+    const dict = taxonomyForFeatureKey('effortsStandard') || {};
+    const fromDict = labelForCode(s, dict);
+    if (fromDict) return fromDict;
+    // Generic UPPER_SNAKE -> Title Case fallback (only if it actually looks
+    // like a code — otherwise return the raw string untouched so we don't
+    // mangle real prose).
+    if (/^[A-Z][A-Z0-9_-]+$/.test(s)) {
+      return s
+        .replace(/[_-]+/g, ' ')
+        .toLowerCase()
+        .replace(/\b\w/g, (c) => c.toUpperCase());
+    }
+    return s;
+  };
+
   // Pull the efforts standard for THIS provision. Prefer the canonical
   // tagged effortsStandard; fall back to any obligation's efforts_standard
   // (used on the affirmativeLimbs / positiveObligations arrays).
@@ -2374,7 +2398,7 @@ function IocAffirmativeCovenantsTable({ iocProvisions, onSelectProvision }) {
       return resolveTaggedLabel('effortsStandard', f.effortsStandard) || f.effortsStandard.label || f.effortsStandard.code;
     }
     if (typeof f.effortsStandard === 'string' && f.effortsStandard.trim()) {
-      return f.effortsStandard.trim();
+      return humanizeEffortsString(f.effortsStandard);
     }
     // Try the obligation arrays — they each carry their own efforts_standard.
     const limbs = Array.isArray(f.affirmativeLimbs) ? f.affirmativeLimbs
@@ -2384,7 +2408,7 @@ function IocAffirmativeCovenantsTable({ iocProvisions, onSelectProvision }) {
       if (!limb || typeof limb !== 'object') continue;
       const es = limb.efforts_standard || limb.effortsStandard;
       if (!es) continue;
-      if (typeof es === 'string' && es.trim()) return es.trim();
+      if (typeof es === 'string' && es.trim()) return humanizeEffortsString(es);
       if (isTaggedItem(es)) {
         return resolveTaggedLabel('effortsStandard', es) || es.label || es.code;
       }
@@ -3323,10 +3347,13 @@ function ConsidTable({ provisions, onSelectProvision }) {
   let appraisalAvailable = null;
   for (const p of provisions) {
     const f = getStructuredFeatures(p) || {};
-    if (f.appraisalRightsAvailable !== null && f.appraisalRightsAvailable !== undefined) {
-      appraisalAvailable = f.appraisalRightsAvailable;
-      break;
-    }
+    const raw = f.appraisalRightsAvailable;
+    if (raw === null || raw === undefined) continue;
+    // Unwrap citable { value, text } shape if present.
+    const unwrapped = isCitableValue(raw) ? raw.value : raw;
+    if (unwrapped === null || unwrapped === undefined) continue;
+    appraisalAvailable = unwrapped;
+    break;
   }
 
   // Format per-share for display ("47.50" -> "$47.50", "$47.50" -> "$47.50").
@@ -3340,6 +3367,13 @@ function ConsidTable({ provisions, onSelectProvision }) {
   const heroPriceText = formatPerShare(heroPerShare);
 
   const renderAppraisalValue = (v) => {
+    if (v && typeof v === 'object') {
+      // Tagged item { code, label, text } or citable { value, text } —
+      // resolve to the inner human label / value.
+      if ('label' in v) return v.label;
+      if ('value' in v) return renderAppraisalValue(v.value);
+      if ('text' in v) return v.text;
+    }
     if (v === true || v === 'yes' || v === 'true') return 'Yes';
     if (v === false || v === 'no' || v === 'false') return 'No';
     return String(v);
