@@ -2619,6 +2619,107 @@ function IocGeneralExceptionsTable({ iocProvisions, generalExceptionsProv, onSel
   );
 }
 
+/* ─── IOC Negative Covenants table — bringdown-style.
+ *     Rows are negative-restriction IOC sub-clause provisions (everything in
+ *     the IOC list that isn't an affirmative bucket: not IOC-ORDINARY /
+ *     IOC-PRESERVE / IOC-MAINTAIN / IOC-NOACTION). The Details cell composes
+ *     a compact one-line summary from the relevant features. */
+function IocNegativeCovenantsTable({ iocProvisions, onSelectProvision }) {
+  const affCodes = new Set(['IOC-ORDINARY', 'IOC-PRESERVE', 'IOC-MAINTAIN', 'IOC-NOACTION', 'IOC-AFFIRMATIVE', 'IOC-OTHER-AFFIRMATIVE', 'IOC-GENERAL-EXCEPTIONS', 'IOC-EXCEPTIONS']);
+  const negative = (iocProvisions || []).filter((p) => {
+    if (isPreambleProvision(p)) return false;
+    if (isIocAffirmative(p)) return false;
+    if (isIocGeneralExceptions(p)) return false;
+    const meta = getAiMetadata(p) || {};
+    const code = String(meta.code || p.code || '');
+    if (affCodes.has(code)) return false;
+    return true;
+  });
+  if (negative.length === 0) return null;
+  // Sort by IOC_CATEGORY_CODES order is non-trivial here since the parser does
+  // not always stamp a canonical category code. Fall back to category string.
+  const sorted = [...negative].sort((a, b) =>
+    String(a.category || '').localeCompare(String(b.category || '')));
+
+  // Compose a one-line details summary for a provision.
+  const detailsFor = (p) => {
+    const f = getStructuredFeatures(p) || {};
+    const bits = [];
+    const push = (label, val) => {
+      if (val === null || val === undefined || val === '' || val === false) return;
+      if (Array.isArray(val) && val.length === 0) return;
+      const unwrapped = isCitableValue(val) ? getCitableValue(val) : val;
+      if (unwrapped === null || unwrapped === undefined || unwrapped === '' || unwrapped === false) return;
+      if (typeof unwrapped === 'boolean') {
+        if (!unwrapped) return;
+        bits.push(label);
+        return;
+      }
+      if (Array.isArray(unwrapped)) {
+        const txt = unwrapped.map((x) => isTaggedItem(x) ? (x.label || x.code) : String(x)).filter(Boolean).join(', ');
+        if (txt) bits.push(`${label}: ${txt}`);
+        return;
+      }
+      if (isTaggedItem(unwrapped)) {
+        bits.push(`${label}: ${unwrapped.label || unwrapped.code}`);
+        return;
+      }
+      bits.push(`${label}: ${String(unwrapped)}`);
+    };
+    push('Threshold', f.dollarThreshold);
+    push('Settlement cap', f.interimSettlementCap);
+    push('Non-payment excluded', f.interimSettlementNonPaymentExcluded);
+    push('New-contracts scope', f.interimNewContractsScope);
+    push('Salary exceptions', f.salaryIncreaseExceptions);
+    push('Bonus exceptions', f.bonusIncreaseExceptions);
+    push('New-hire exceptions', f.newHireExceptions);
+    push('Retention restrictions', f.retentionBonusRestrictions);
+    push('Benefit-plan restrictions', f.benefitPlanRestrictions);
+    push('Equity restrictions', f.equityAwardRestrictions);
+    push('Lead-in (no response)', f.leadInAllowsActionAfterNoResponse);
+    push('Lead-in period (days)', f.leadInPeriodDays);
+    return bits.join(' · ');
+  };
+
+  return (
+    <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+      <div className="px-3 py-2 bg-bg/60 border-b border-border">
+        <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+          Negative Covenants
+        </p>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="min-w-full text-xs font-ui">
+          <thead className="bg-bg/60 border-b border-border">
+            <tr>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[280px]">Restriction</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Details</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {sorted.map((p) => (
+              <tr key={p.id} className="align-top hover:bg-bg/40">
+                <td className="px-3 py-2 text-ink font-medium">
+                  <button
+                    type="button"
+                    onClick={() => onSelectProvision && onSelectProvision(p)}
+                    className="text-left text-accent hover:underline font-medium"
+                  >
+                    {p.category || 'General'}
+                  </button>
+                </td>
+                <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
+                  {detailsFor(p) || <span className="italic text-inkFaint">—</span>}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
 /* ═══════════════════════════════════════════════════════════
    CATEGORY OVERVIEW — section overview line per provision +
    collapsible full-text view shown ABOVE the summary table on
@@ -4162,27 +4263,12 @@ const CATEGORY_SUMMARY_FEATURES = {
     { label: 'Schedule Reference',                    keys: ['scheduleReference'] },
   ],
 
-  // ─── IOC — Paul Weiss q100–q114 ────────────────────────────────────────
+  // ─── IOC — leaner summary. Redundant rows (affirmative scope / efforts
+  // standard / company exceptions / ordinary-course defined / per-bucket
+  // thresholds list) live in IocAffirmativeCovenantsTable / IocGeneralExceptionsTable
+  // / IocNegativeCovenantsTable above, so they're not repeated here.
   IOC: [
-    { label: 'Affirmative IOC Scope',                 keys: ['positiveObligations', 'affirmativeLimbs'] },
-    { label: 'Efforts Standard for Company IOCs',     keys: ['effortsStandard'] },
-    { label: 'Company IOC Exceptions',                keys: ['permittedExceptions'] },
-    { label: 'Ordinary Course / Past Practice Defined', keys: ['ordinaryCourseCarveout'] },
-    { label: 'Target IOC Buckets',                    keys: ['dollarThresholdsByCategory'] },
-    { label: 'Lead-In Allows Action After No Response', keys: ['leadInAllowsActionAfterNoResponse'] },
-    { label: 'Lead-In Period (days)',                 keys: ['leadInPeriodDays'] },
-    { label: 'Settlement Restrictions Cap',           keys: ['interimSettlementCap'] },
-    { label: 'Settlement Cap — Non-Payment Excluded', keys: ['interimSettlementNonPaymentExcluded'] },
-    { label: 'New / Amended Contracts Scope',         keys: ['interimNewContractsScope'] },
-    { label: 'Per-Category Dollar Thresholds',        keys: ['dollarThresholdsByCategory', 'dollarThreshold'] },
-    { label: 'Salary / Bonus Increase Exceptions',    keys: ['salaryIncreaseExceptions', 'bonusIncreaseExceptions'] },
-    { label: 'New Hire Exceptions',                   keys: ['newHireExceptions'] },
-    { label: 'Retention Bonus Restrictions',          keys: ['retentionBonusRestrictions'] },
-    { label: 'Benefit Plan Restrictions',             keys: ['benefitPlanRestrictions'] },
-    { label: 'Equity Award Restrictions',             keys: ['equityAwardRestrictions'] },
     { label: 'Materiality Qualifier (section-wide)',  keys: ['materialityQualifier'] },
-    { label: 'Required-by-Law Carveout',              keys: ['requiredByLawCarveout'] },
-    { label: 'Pandemic / COVID Carveout',             keys: ['pandemicCarveout'] },
     { label: 'Schedule Reference',                    keys: ['scheduleReference'] },
     { label: 'Parent / Buyer IOC Buckets',            keys: ['parentBuyerIocBuckets'] },
   ],
@@ -4334,8 +4420,9 @@ function renderSummaryRowValue(hit, featureKeyForLookup) {
   return <span>{String(v)}</span>;
 }
 
-function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision }) {
+function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision, hideProvisionsList, excludeProvisionIds }) {
   const spec = CATEGORY_SUMMARY_FEATURES[type] || [];
+  const excludeSet = excludeProvisionIds instanceof Set ? excludeProvisionIds : null;
 
   // For each spec row, resolve its hit. MAE rows with `maeCode` resolve via
   // findCarveoutByCode against features.carveouts (taxonomy-tagged list).
@@ -4410,13 +4497,18 @@ function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision }) {
         </div>
       </div>
 
-      {sortedProvs.length > 0 && (
+      {!hideProvisionsList && (() => {
+        const filtered = excludeSet
+          ? sortedProvs.filter((p) => !excludeSet.has(p.id))
+          : sortedProvs;
+        if (filtered.length === 0) return null;
+        return (
         <div className="bg-bg/40 border border-border rounded-lg px-3 py-2">
           <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider mb-1.5">
             Provisions in this section
           </p>
           <ul className="flex flex-wrap gap-x-3 gap-y-1">
-            {sortedProvs.map((p) => (
+            {filtered.map((p) => (
               <li key={p.id}>
                 <button
                   type="button"
@@ -4429,7 +4521,8 @@ function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision }) {
             ))}
           </ul>
         </div>
-      )}
+        );
+      })()}
     </div>
   );
 }
@@ -5267,6 +5360,7 @@ function ProvisionTable({ provisions, type, onSelectProvision }) {
         provisions={provisions}
         type="IOC"
         onSelectProvision={onSelectProvision}
+        hideProvisionsList={true}
       />
     );
   }
@@ -8177,6 +8271,12 @@ export default function ReviewPage() {
                                 <IocGeneralExceptionsTable
                                   iocProvisions={provs}
                                   generalExceptionsProv={iocGeneralExceptions}
+                                  onSelectProvision={handleEditProvision}
+                                />
+                              )}
+                              {isIocType && (
+                                <IocNegativeCovenantsTable
+                                  iocProvisions={rest}
                                   onSelectProvision={handleEditProvision}
                                 />
                               )}
