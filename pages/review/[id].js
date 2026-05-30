@@ -5066,6 +5066,545 @@ function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision, hide
   );
 }
 
+/* ═══════════════════════════════════════════════════════════
+   TERMF — 3-section rebuild (P4 Task 1)
+   ═══════════════════════════════════════════════════════════
+   Replaces the generic CategoryFeatureSummaryTable for TERMF with:
+     • TermfHero          — top-of-page headline (fee + % + naked-no-vote)
+     • TermfTriggerMatrix — bringdown-style table of canonical triggers
+     • TermfTailMechanics — tail-fee structural detail (only when present) */
+
+/* Click-to-source chip for a section reference. Resolves via
+ * resolveSectionReference (lib/section-ref) against the full provisions list
+ * so a label like "§8.01(b)(i) [Outside Date]" can be popped. */
+function SectionRef({ refText, allProvisions }) {
+  const showEvidence = useShowEvidence();
+  const resolved = resolveSectionReference(refText || '', allProvisions || []);
+  if (!resolved || !resolved.provision) {
+    return (
+      <span className="font-mono text-[11px] text-inkMid" title={refText || ''}>
+        {refText || ''}
+      </span>
+    );
+  }
+  const label = resolved.label || refText || '';
+  const text = String(resolved.provision.full_text || '').slice(0, 600);
+  const clickable = !!(text && showEvidence);
+  return (
+    <span
+      className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-bg/60 border border-border text-[11px] font-ui ${clickable ? 'cursor-pointer hover:bg-accent/10' : ''}`}
+      title={label}
+      onClick={clickable ? () => showEvidence(text) : undefined}
+    >
+      <span className="font-mono">{refText}</span>
+      {resolved.provision.category ? (
+        <span className="text-inkLight">[{String(resolved.provision.category).slice(0, 40)}]</span>
+      ) : null}
+    </span>
+  );
+}
+
+// Unwrap citable + format a single scalar value for the TERMF hero.
+function termfHeroDisplay(raw) {
+  if (raw === null || raw === undefined || raw === '') return null;
+  const inner = isCitableValue(raw) ? getCitableValue(raw) : raw;
+  if (inner === null || inner === undefined || inner === '' || inner === false) return null;
+  if (isTaggedItem(inner)) return inner.label || inner.code || null;
+  if (typeof inner === 'boolean') return inner ? 'Yes' : null;
+  return String(inner);
+}
+
+// Pull a single citable quote from any of the supplied raw values.
+function termfFirstQuote(...raws) {
+  for (const raw of raws) {
+    if (!isCitableValue(raw)) continue;
+    const q = getCitableQuotes(raw);
+    if (q.length > 0) return q[0];
+  }
+  return null;
+}
+
+/* TermfHero — white card with three headline numbers.
+ * - feeAmount         (large serif)
+ * - feePercentage     (large serif)
+ * - nakedNoVoteFee    (small below) */
+function TermfHero({ provisions }) {
+  const showEvidence = useShowEvidence();
+  // Walk provisions for the first non-empty value of each field.
+  const pick = (keys) => {
+    const hit = pickFirstNonEmpty(provisions, keys);
+    if (!hit) return { raw: null, provision: null };
+    return { raw: hit.value, provision: hit.provision };
+  };
+  const fee = pick(['feeAmount', 'companyTerminationFee']);
+  const feePct = pick(['feePercentage', 'terminationFeePercentEquityValue']);
+  const nakedPresent = pick(['nakedNoVoteFeePresent', 'nakedNoVoteFee']);
+  const nakedAmount = pick(['nakedNoVoteFeeAmount']);
+
+  const feeDisplay = termfHeroDisplay(fee.raw);
+  const feePctDisplay = (() => {
+    const v = termfHeroDisplay(feePct.raw);
+    if (!v) return null;
+    // Append a % sign for bare numerics.
+    if (/^\d+(\.\d+)?$/.test(String(v).trim())) return `${v}%`;
+    return v;
+  })();
+  const nakedPresentBool = (() => {
+    const v = isCitableValue(nakedPresent.raw) ? getCitableValue(nakedPresent.raw) : nakedPresent.raw;
+    return v === true || v === 'true' || v === 'yes';
+  })();
+  const nakedAmountDisplay = termfHeroDisplay(nakedAmount.raw);
+
+  const feeQuote = termfFirstQuote(fee.raw);
+  const feePctQuote = termfFirstQuote(feePct.raw);
+  const nakedQuote = termfFirstQuote(nakedAmount.raw, nakedPresent.raw);
+
+  const Item = ({ eyebrow, value, large, quote }) => {
+    const clickable = !!(quote && showEvidence);
+    return (
+      <div className="flex-1 min-w-0">
+        <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+          {eyebrow}
+        </p>
+        <div
+          className={`mt-1 ${large ? 'text-2xl font-serif' : 'text-sm'} text-ink ${clickable ? 'cursor-pointer hover:bg-yellow-50 rounded px-0.5 -mx-0.5' : ''}`}
+          title={clickable ? 'Click to view in document' : undefined}
+          onClick={clickable ? () => showEvidence(quote) : undefined}
+        >
+          {value !== null && value !== undefined && value !== '' ? (
+            value
+          ) : (
+            <span className="italic text-inkFaint text-base">—</span>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+      <div className="px-3 py-2 bg-bg/60 border-b border-border">
+        <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+          Termination Fees
+        </p>
+      </div>
+      <div className="p-4 flex flex-row gap-6 items-start">
+        <Item eyebrow="Fee Amount" value={feeDisplay} large quote={feeQuote} />
+        <Item eyebrow="% of Equity Value" value={feePctDisplay} large quote={feePctQuote} />
+        <Item
+          eyebrow="Naked No-Vote Fee"
+          value={nakedPresentBool && nakedAmountDisplay ? nakedAmountDisplay : 'Not applicable'}
+          quote={nakedQuote}
+        />
+      </div>
+    </div>
+  );
+}
+
+/* Canonical TERMF trigger specs (used by TermfTriggerMatrix). Each spec
+ * carries:
+ *   - label:       row title
+ *   - match:       (provision) => boolean ; matches deal provisions
+ *   - getClauses:  (matchedProv, features) => string[] of section refs
+ *   - getFee:      (matchedProv, features) => string|null ; fee amount cell */
+const TERMF_TRIGGER_SPECS = [
+  {
+    key: 'nakedNoVote',
+    label: 'Naked No-Vote',
+    match: (p) => /no\s*-?\s*vote|naked/i.test(p.category || ''),
+  },
+  {
+    key: 'recommendationChange',
+    label: 'Recommendation Change',
+    match: (p) => /recommendation\s+change|adverse\s+recommendation/i.test(p.category || ''),
+  },
+  {
+    key: 'companyTermSuperior',
+    label: 'Company Termination for Superior Proposal',
+    match: (p) => /superior\s+proposal/i.test(p.category || ''),
+  },
+  // Tail row is handled separately (always present when tailFeeWindowMonths
+  // is populated; uses tailFeeActivatingClauses).
+];
+
+// Extract section references from a provision: prefer features.triggerTerminationClauses;
+// fall back to scanning full_text for /Section\s+\d+\.\d+(?:\(\w+\))*/g.
+function termfExtractClauseRefs(prov, features) {
+  const out = [];
+  const ttc = features ? features.triggerTerminationClauses : null;
+  if (Array.isArray(ttc)) {
+    for (const item of ttc) {
+      if (typeof item === 'string' && item.trim()) out.push(item.trim());
+    }
+  }
+  if (out.length === 0 && prov && typeof prov.full_text === 'string') {
+    const re = /Section\s+\d+\.\d+(?:\([A-Za-z0-9]+\))*/g;
+    const seen = new Set();
+    let m;
+    while ((m = re.exec(prov.full_text)) !== null) {
+      const ref = m[0];
+      if (!seen.has(ref)) {
+        seen.add(ref);
+        out.push(ref);
+      }
+      if (out.length >= 4) break;
+    }
+  }
+  return out;
+}
+
+// Extract the per-trigger fee amount: prefer features.triggers[] entries
+// (P3 schema: { name, terminationClauses, feeAmount, feeAmountPct }).
+function termfTriggerFee(spec, prov, features, fallback) {
+  if (features && Array.isArray(features.triggers)) {
+    for (const t of features.triggers) {
+      if (!t || typeof t !== 'object') continue;
+      const name = String(t.name || '').toLowerCase();
+      const m = (() => {
+        if (spec.key === 'nakedNoVote') return /no\s*-?\s*vote|naked/i.test(name);
+        if (spec.key === 'recommendationChange') return /recommendation/i.test(name);
+        if (spec.key === 'companyTermSuperior') return /superior/i.test(name);
+        return false;
+      })();
+      if (m) {
+        const fa = t.feeAmount || t.fee_amount;
+        const pct = t.feeAmountPct || t.fee_amount_pct;
+        if (fa) return String(fa);
+        if (pct) return `${pct}%`;
+      }
+    }
+  }
+  // Per-row fallbacks.
+  if (spec.key === 'nakedNoVote' && features) {
+    const v = termfHeroDisplay(features.nakedNoVoteFeeAmount);
+    if (v) return v;
+  }
+  return fallback || 'Same as headline';
+}
+
+/* TermfTriggerMatrix — bringdown-style mini-table. Rows for canonical
+ * triggers + a "Tail Fee" row when tailFeeWindowMonths is populated. */
+function TermfTriggerMatrix({ provisions, allProvisions }) {
+  // Headline fallbacks for the Fee Amount cell.
+  const headlineHit = pickFirstNonEmpty(provisions, ['feeAmount', 'companyTerminationFee']);
+  const headlineFee = (() => {
+    if (!headlineHit) return null;
+    return termfHeroDisplay(headlineHit.value);
+  })();
+
+  // Find features object for tail-fee fields (look across all provisions).
+  let tailFeatures = {};
+  for (const p of provisions) {
+    const f = getStructuredFeatures(p) || {};
+    if (
+      f.tailFeeWindowMonths !== null && f.tailFeeWindowMonths !== undefined && f.tailFeeWindowMonths !== ''
+    ) {
+      tailFeatures = f;
+      break;
+    }
+    // Also pick up activating clauses even if window is empty.
+    if (Array.isArray(f.tailFeeActivatingClauses) && f.tailFeeActivatingClauses.length > 0) {
+      tailFeatures = f;
+    }
+  }
+
+  // Resolve each canonical trigger spec to a row.
+  const rows = TERMF_TRIGGER_SPECS.map((spec) => {
+    const matched = provisions.find(spec.match) || null;
+    const f = matched ? getStructuredFeatures(matched) : null;
+    const clauses = matched ? termfExtractClauseRefs(matched, f) : [];
+    const fee = matched ? termfTriggerFee(spec, matched, f, headlineFee) : null;
+    return { spec, matched, clauses, fee };
+  });
+
+  // Tail row: only included when tailFeeActivatingClauses is non-empty OR
+  // window months is populated.
+  const tailClauses = (() => {
+    const v = tailFeatures.tailFeeActivatingClauses;
+    if (Array.isArray(v)) {
+      return v.filter((x) => typeof x === 'string' && x.trim());
+    }
+    return [];
+  })();
+  const tailWindow = tailFeatures.tailFeeWindowMonths;
+  const tailPresent = tailClauses.length > 0 || (tailWindow !== null && tailWindow !== undefined && tailWindow !== '');
+  const tailRow = tailPresent
+    ? {
+        spec: { key: 'tail', label: 'Tail Fee' },
+        matched: { full_text: '' },
+        clauses: tailClauses,
+        fee: headlineFee || 'Same as headline',
+        isTail: true,
+      }
+    : { spec: { key: 'tail', label: 'Tail Fee' }, matched: null, clauses: [], fee: null };
+
+  const allRows = [...rows, tailRow];
+
+  // Sort: present rows first (matched non-null), absent rows to the bottom.
+  const sorted = [...allRows].sort((a, b) => {
+    const aP = !!a.matched;
+    const bP = !!b.matched;
+    if (aP !== bP) return aP ? -1 : 1;
+    return 0;
+  });
+
+  return (
+    <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+      <div className="px-3 py-2 bg-bg/60 border-b border-border">
+        <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+          Trigger Matrix
+        </p>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="min-w-full text-xs font-ui">
+          <thead className="bg-bg/60 border-b border-border">
+            <tr>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[260px]">Trigger</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Termination Clause(s)</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[180px]">Fee Amount</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {sorted.map((row) => {
+              if (!row.matched) {
+                return (
+                  <tr key={row.spec.key} className="align-top">
+                    <td className="px-3 py-2 italic text-inkFaint">{row.spec.label}</td>
+                    <td className="px-3 py-2 italic text-inkFaint">Not present in this agreement</td>
+                    <td className="px-3 py-2 italic text-inkFaint">Not present in this agreement</td>
+                  </tr>
+                );
+              }
+              return (
+                <tr key={row.spec.key} className="align-top">
+                  <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">
+                    {row.spec.label}
+                  </td>
+                  <td className="px-3 py-2 text-ink">
+                    {row.clauses.length > 0 ? (
+                      <div className="flex flex-wrap gap-1">
+                        {row.clauses.map((c, i) => (
+                          <SectionRef key={i} refText={c} allProvisions={allProvisions} />
+                        ))}
+                      </div>
+                    ) : (
+                      <span className="italic text-inkFaint">—</span>
+                    )}
+                  </td>
+                  <td className="px-3 py-2 text-ink whitespace-nowrap">
+                    {row.fee || <span className="italic text-inkFaint">—</span>}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+/* TermfTailMechanics — only renders when tailFeeWindowMonths is populated. */
+function TermfTailMechanics({ provisions, allProvisions }) {
+  const showEvidence = useShowEvidence();
+  // Locate the provision that holds the tail-fee fields (prefer one with
+  // tailFeeWindowMonths). Combine features across provisions defensively.
+  let source = null;
+  let combined = {};
+  for (const p of provisions) {
+    const f = getStructuredFeatures(p) || {};
+    if (
+      f.tailFeeWindowMonths !== null && f.tailFeeWindowMonths !== undefined && f.tailFeeWindowMonths !== ''
+    ) {
+      source = p;
+      combined = { ...combined, ...f };
+      break;
+    }
+    combined = { ...combined, ...f };
+  }
+  const window = combined.tailFeeWindowMonths;
+  if (window === null || window === undefined || window === '') return null;
+
+  const baseThreshold = (() => {
+    // Compare against acquisitionTransactionPctThreshold from NOSOL.
+    for (const p of allProvisions || []) {
+      if (!p) continue;
+      const f = getStructuredFeatures(p) || {};
+      const v = f.acquisitionTransactionPctThreshold;
+      if (v === null || v === undefined || v === '') continue;
+      const inner = isCitableValue(v) ? getCitableValue(v) : v;
+      if (inner !== null && inner !== undefined && inner !== '') return inner;
+    }
+    return null;
+  })();
+
+  const sameRequiredRaw = combined.tailFeeSameProposalRequired;
+  const sameRequired = isCitableValue(sameRequiredRaw) ? getCitableValue(sameRequiredRaw) : sameRequiredRaw;
+  const sameRequiredLabel = (() => {
+    if (sameRequired === true || sameRequired === 'true' || sameRequired === 'yes') {
+      return 'Yes — must be the same Company Takeover Proposal';
+    }
+    if (sameRequired === false || sameRequired === 'false' || sameRequired === 'no') {
+      return 'No — any Company Takeover Proposal';
+    }
+    return null;
+  })();
+
+  const recognition = (() => {
+    const raw = combined.tailFeeRecognitionEvent;
+    if (raw === null || raw === undefined || raw === '') return null;
+    return isCitableValue(raw) ? getCitableValue(raw) : raw;
+  })();
+
+  const verbatim = termfFirstQuote(
+    combined.tailFeeWindowMonths,
+    combined.tailFeeThresholdPct,
+    combined.tailFeeRecognitionEvent,
+  ) || (source ? String(source.full_text || '').slice(0, 800) : null);
+
+  const activating = (() => {
+    const v = combined.tailFeeActivatingClauses;
+    if (Array.isArray(v)) return v.filter((x) => typeof x === 'string' && x.trim());
+    return [];
+  })();
+
+  const windowDisplay = (() => {
+    const inner = isCitableValue(window) ? getCitableValue(window) : window;
+    return formatDurationWithUnits(inner, 'tailFeeWindowMonths') || `${inner} months`;
+  })();
+  const thresholdRaw = combined.tailFeeThresholdPct;
+  const thresholdInner = isCitableValue(thresholdRaw) ? getCitableValue(thresholdRaw) : thresholdRaw;
+  const thresholdDisplay = (() => {
+    if (thresholdInner === null || thresholdInner === undefined || thresholdInner === '') return null;
+    if (typeof thresholdInner === 'number' || /^\d+(\.\d+)?$/.test(String(thresholdInner).trim())) {
+      return `${thresholdInner}%`;
+    }
+    return String(thresholdInner);
+  })();
+  const thresholdDiffers = (() => {
+    if (thresholdInner === null || thresholdInner === undefined) return false;
+    if (baseThreshold === null || baseThreshold === undefined) return false;
+    return String(thresholdInner).trim() !== String(baseThreshold).trim();
+  })();
+
+  const Row = ({ label, children, quote }) => {
+    const clickable = !!(quote && showEvidence);
+    return (
+      <tr className="align-top">
+        <td className="px-3 py-2 text-ink font-medium whitespace-nowrap w-[280px]">{label}</td>
+        <td
+          className={`px-3 py-2 text-ink ${clickable ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
+          onClick={clickable ? () => showEvidence(quote) : undefined}
+        >
+          {children}
+        </td>
+      </tr>
+    );
+  };
+
+  return (
+    <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+      <div className="px-3 py-2 bg-bg/60 border-b border-border">
+        <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+          Tail Mechanics
+        </p>
+      </div>
+      <table className="min-w-full text-xs font-ui">
+        <tbody className="divide-y divide-border">
+          <Row label="Tail window" quote={termfFirstQuote(combined.tailFeeWindowMonths)}>
+            {windowDisplay}
+          </Row>
+          <Row
+            label="Threshold % for Company Takeover (tail)"
+            quote={termfFirstQuote(combined.tailFeeThresholdPct)}
+          >
+            {thresholdDisplay ? (
+              <>
+                <span>{thresholdDisplay}</span>
+                {thresholdDiffers && (
+                  <span className="text-inkMid italic ml-1">
+                    (higher than base Acquisition Proposal threshold if applicable)
+                  </span>
+                )}
+              </>
+            ) : (
+              <span className="italic text-inkFaint">Not specified</span>
+            )}
+          </Row>
+          <Row label="Triggering termination clauses">
+            {activating.length > 0 ? (
+              <div className="flex flex-wrap gap-1">
+                {activating.map((c, i) => (
+                  <SectionRef key={i} refText={c} allProvisions={allProvisions} />
+                ))}
+              </div>
+            ) : (
+              <span className="italic text-inkFaint">Not specified</span>
+            )}
+          </Row>
+          <Row label="Same proposal required?" quote={termfFirstQuote(combined.tailFeeSameProposalRequired)}>
+            {sameRequiredLabel || <span className="italic text-inkFaint">Not specified</span>}
+          </Row>
+          <Row label="Recognition event" quote={termfFirstQuote(combined.tailFeeRecognitionEvent)}>
+            {recognition ? String(recognition) : <span className="italic text-inkFaint">Not specified</span>}
+          </Row>
+          <tr className="align-top">
+            <td className="px-3 py-2 text-ink font-medium whitespace-nowrap w-[280px]">Verbatim language</td>
+            <td className="px-3 py-2 text-ink">
+              {verbatim ? (
+                <details>
+                  <summary className="cursor-pointer text-accent text-[11px]">View source</summary>
+                  <p className="mt-1 text-[11px] italic text-inkMid whitespace-pre-wrap">
+                    {String(verbatim).slice(0, 1500)}
+                  </p>
+                </details>
+              ) : (
+                <span className="italic text-inkFaint">Not present in this agreement</span>
+              )}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+/* TermfRebuiltSummary — top-level wrapper rendered by ProvisionTable when
+ * type === 'TERMF'. Stacks the Hero / Trigger Matrix / Tail Mechanics. */
+function TermfRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
+  // Sort provisions for the trailing "Provisions in this section" list.
+  const sortedProvs = [...(provisions || [])].sort((a, b) =>
+    String(a.category || '').localeCompare(String(b.category || ''), undefined, { sensitivity: 'base' }),
+  );
+  return (
+    <div className="space-y-3">
+      <TermfHero provisions={provisions || []} />
+      <TermfTriggerMatrix provisions={provisions || []} allProvisions={allProvisions || provisions || []} />
+      <TermfTailMechanics provisions={provisions || []} allProvisions={allProvisions || provisions || []} />
+      {sortedProvs.length > 0 && (
+        <div className="bg-bg/40 border border-border rounded-lg px-3 py-2">
+          <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider mb-1.5">
+            Provisions in this section
+          </p>
+          <ul className="flex flex-wrap gap-x-3 gap-y-1">
+            {sortedProvs.map((p) => (
+              <li key={p.id}>
+                <button
+                  type="button"
+                  onClick={() => onSelectProvision && onSelectProvision(p)}
+                  className="text-xs font-ui text-accent hover:underline"
+                >
+                  {p.category || 'General'}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ─── NOSOL / ANTI table — same Term/Details visual layout as StructTable.
  *     Each provision is one row. The Details column stacks the type's
  *     FEATURE_DISPLAY_ORDER fields as <dt>/<dd> pairs (skipping empties)
@@ -6395,9 +6934,9 @@ function ProvisionTable({ provisions, type, onSelectProvision, allProvisions }) 
   }
   if (type === 'TERMF') {
     return (
-      <CategoryFeatureSummaryTable
+      <TermfRebuiltSummary
         provisions={provisions}
-        type="TERMF"
+        allProvisions={allProvisions || provisions}
         onSelectProvision={onSelectProvision}
       />
     );
