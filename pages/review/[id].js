@@ -2743,27 +2743,93 @@ function IocAffirmativeCovenantsTable({ iocProvisions, onSelectProvision }) {
 /* ── IOC General Exceptions table (Bringdown-style box)
  *    Renders the section-wide permittedExceptions (scope=preamble) and/or
  *    the items extracted from the consolidated General Exceptions provision.
+ *
+ *    P8 item 1: when a IOC-NEGATIVE-PREAMBLE provision is present the parser
+ *    has split the section preamble in two — the "positive" half (affirmative
+ *    duties + section-wide carve-outs) and the "negative" half (lead-in to
+ *    the negative-covenants list). We collect each half's exception list,
+ *    dedupe by code, and render THREE groups (apply-to-both / positive-only /
+ *    negative-only) so the user can spot asymmetric carve-outs. When the
+ *    negative preamble is absent (older / single-preamble agreements) we
+ *    fall back to the existing single-list rendering.
+ *
  *    Returns null when nothing meaningful is available. */
 function IocGeneralExceptionsTableSingle({ iocProvisions, generalExceptionsProv, partyLabel, onSelectProvision }) {
   const showEvidence = useShowEvidence();
-  const rows = useMemo(() => {
-    const out = [];
 
-    // 1. Pull permittedExceptions from any IOC provision where scope === 'preamble'
-    //    (canonical section-wide carve-outs). Fall back to any permittedExceptions
-    //    when no scoped version exists.
-    const seenLabels = new Set();
-    const addException = (label, source, text) => {
-      if (!label) return;
-      const key = String(label).toLowerCase().trim();
-      if (!key || seenLabels.has(key)) return;
-      seenLabels.add(key);
-      out.push({ label: String(label), source, text: text || null });
+  // Identify positive vs negative preamble provisions among this party's
+  // IOC provisions. "Negative" is the explicit IOC-NEGATIVE-PREAMBLE code;
+  // "positive" is either an explicit IOC-POSITIVE-PREAMBLE code OR the
+  // first non-negative preamble provision (the legacy "General / Preamble"
+  // bucket carries permittedExceptions on the positive side).
+  const { negativeProv, positiveProv } = useMemo(() => {
+    let neg = null;
+    let pos = null;
+    for (const p of iocProvisions || []) {
+      const meta = getAiMetadata(p) || {};
+      const code = String(meta.code || p.code || '');
+      if (!neg && code === 'IOC-NEGATIVE-PREAMBLE') { neg = p; continue; }
+      if (!pos && code === 'IOC-POSITIVE-PREAMBLE') { pos = p; continue; }
+    }
+    if (!pos) {
+      // Fall back to the legacy "General / Preamble" provision as the positive side.
+      for (const p of iocProvisions || []) {
+        if (p === neg) continue;
+        if (isPreambleProvision(p)) { pos = p; break; }
+      }
+    }
+    return { negativeProv: neg, positiveProv: pos };
+  }, [iocProvisions]);
+
+  // Extract the exception list for a single preamble provision. Returns
+  // [{ code, label, text, source }] with code synthesized from the label
+  // when the item is a bare string (so dedupe still works).
+  const extractList = (prov, featureKey) => {
+    if (!prov) return [];
+    const f = getStructuredFeatures(prov) || {};
+    const list = Array.isArray(f[featureKey]) ? f[featureKey] : [];
+    const out = [];
+    for (const item of list) {
+      if (isTaggedItem(item)) {
+        const label = resolveTaggedLabel(featureKey, item) || item.code;
+        out.push({
+          code: String(item.code).toUpperCase(),
+          label: String(label),
+          text: item.text || null,
+          source: prov,
+        });
+      } else if (typeof item === 'string' && item.trim()) {
+        const label = item.trim();
+        out.push({
+          code: `__STR:${label.toLowerCase()}`,
+          label,
+          text: null,
+          source: prov,
+        });
+      }
+    }
+    return out;
+  };
+
+  // Collect the positive-side exception list. Mirrors the old logic:
+  // scope=preamble items from any IOC provision (fallback to unscoped) +
+  // items split from the consolidated General Exceptions provision.
+  const positiveList = useMemo(() => {
+    const seen = new Set();
+    const out = [];
+    const push = (entry) => {
+      const key = entry.code;
+      if (!key || seen.has(key)) return;
+      seen.add(key);
+      out.push(entry);
     };
 
+    // 1. permittedExceptions across every IOC provision for this party,
+    //    preferring scope=preamble items.
     const scoped = [];
     const unscoped = [];
     for (const p of iocProvisions || []) {
+      if (p === negativeProv) continue;
       const f = getStructuredFeatures(p) || {};
       const list = Array.isArray(f.permittedExceptions) ? f.permittedExceptions : [];
       for (const item of list) {
@@ -2772,32 +2838,136 @@ function IocGeneralExceptionsTableSingle({ iocProvisions, generalExceptionsProv,
         else unscoped.push({ item, source: p });
       }
     }
-    const exceptionItems = scoped.length > 0 ? scoped : unscoped;
-    for (const { item, source } of exceptionItems) {
+    const items = scoped.length > 0 ? scoped : unscoped;
+    for (const { item, source } of items) {
       if (isTaggedItem(item)) {
-        const lbl = resolveTaggedLabel('permittedExceptions', item) || item.code;
-        addException(lbl, source, item.text || null);
+        const label = resolveTaggedLabel('permittedExceptions', item) || item.code;
+        push({
+          code: String(item.code).toUpperCase(),
+          label: String(label),
+          text: item.text || null,
+          source,
+        });
       } else if (typeof item === 'string' && item.trim()) {
-        addException(item.trim(), source, null);
+        const label = item.trim();
+        push({
+          code: `__STR:${label.toLowerCase()}`,
+          label,
+          text: null,
+          source,
+        });
       }
     }
 
-    // 2. If we have a consolidated General Exceptions provision, also pull
-    //    its split items as additional rows (they're usually the most useful).
+    // 2. Consolidated General Exceptions provision's split text items.
     if (generalExceptionsProv) {
       const text = generalExceptionsProv.full_text || generalExceptionsProv.text || '';
-      const items = text ? splitGeneralExceptionsItems(text) : [];
-      for (const t of items) addException(t, generalExceptionsProv, t);
+      const split = text ? splitGeneralExceptionsItems(text) : [];
+      for (const t of split) {
+        const label = String(t).trim();
+        if (!label) continue;
+        push({
+          code: `__STR:${label.toLowerCase()}`,
+          label,
+          text: label,
+          source: generalExceptionsProv,
+        });
+      }
     }
 
     return out;
-  }, [iocProvisions, generalExceptionsProv]);
+  }, [iocProvisions, generalExceptionsProv, negativeProv]);
+
+  // Negative-side exception list comes from the IOC-NEGATIVE-PREAMBLE
+  // provision's negativePreambleExceptions feature (rubric: list-tagged).
+  const negativeList = useMemo(() => {
+    if (!negativeProv) return [];
+    const seen = new Set();
+    const out = [];
+    for (const entry of extractList(negativeProv, 'negativePreambleExceptions')) {
+      if (seen.has(entry.code)) continue;
+      seen.add(entry.code);
+      out.push(entry);
+    }
+    return out;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [negativeProv]);
 
   const title = partyLabel
     ? `${partyLabel} — General Exceptions`
     : 'General Exceptions';
 
-  if (rows.length === 0) {
+  // ── Single-list (legacy) rendering path ───────────────────────────────
+  //  Used when there's NO negative preamble (most existing data) — just
+  //  show the positive-side list as before.
+  const hasNegativeSide = negativeList.length > 0;
+
+  if (!hasNegativeSide) {
+    if (positiveList.length === 0) {
+      if (!partyLabel) return null;
+      return (
+        <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+          <div className="px-3 py-2 bg-bg/60 border-b border-border">
+            <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+              {title}
+            </p>
+          </div>
+          <div className="px-3 py-3 text-xs font-ui italic text-inkFaint">
+            Not present in this agreement
+          </div>
+        </div>
+      );
+    }
+    const MAX_ITEMS = 4;
+    const visibleRows = positiveList.slice(0, MAX_ITEMS);
+    const overflowCount = Math.max(0, positiveList.length - visibleRows.length);
+    return (
+      <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+        <div className="px-3 py-2 bg-bg/60 border-b border-border">
+          <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+            {title}
+          </p>
+        </div>
+        <IocExceptionsMiniRows
+          rows={visibleRows}
+          showEvidence={showEvidence}
+          onSelectProvision={onSelectProvision}
+        />
+        {overflowCount > 0 && (
+          <div className="px-3 py-1.5 bg-bg/40 border-t border-border">
+            <p className="text-[11px] font-ui italic text-inkFaint">
+              (+{overflowCount} more in specific provisions)
+            </p>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // ── Three-group comparison rendering path ─────────────────────────────
+  //  Both a positive and a negative preamble exist; compute the
+  //  intersection + per-side differences and render three sub-groups.
+  const posByCode = new Map(positiveList.map((r) => [r.code, r]));
+  const negByCode = new Map(negativeList.map((r) => [r.code, r]));
+  const both = [];
+  const posOnly = [];
+  const negOnly = [];
+  for (const r of positiveList) {
+    if (negByCode.has(r.code)) {
+      // Prefer the positive-side row (it tends to carry richer text); fall back to neg.
+      both.push(r);
+    } else {
+      posOnly.push(r);
+    }
+  }
+  for (const r of negativeList) {
+    if (!posByCode.has(r.code)) negOnly.push(r);
+  }
+
+  const hasAsymmetry = posOnly.length > 0 || negOnly.length > 0;
+  const allEmpty = both.length === 0 && posOnly.length === 0 && negOnly.length === 0;
+
+  if (allEmpty) {
     if (!partyLabel) return null;
     return (
       <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
@@ -2812,11 +2982,6 @@ function IocGeneralExceptionsTableSingle({ iocProvisions, generalExceptionsProv,
       </div>
     );
   }
-  // Cap at 4 — items 5+ tend to belong to specific provisions and add noise
-  // when surfaced as section-wide exceptions.
-  const MAX_ITEMS = 4;
-  const visibleRows = rows.slice(0, MAX_ITEMS);
-  const overflowCount = Math.max(0, rows.length - visibleRows.length);
 
   return (
     <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
@@ -2825,61 +2990,123 @@ function IocGeneralExceptionsTableSingle({ iocProvisions, generalExceptionsProv,
           {title}
         </p>
       </div>
-      <div className="overflow-x-auto">
-        <table className="min-w-full text-xs font-ui">
-          <thead className="bg-bg/60 border-b border-border">
-            <tr>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[260px]">Exception Type</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Details</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
-            {visibleRows.map((row, i) => {
-              const handleClick = () => {
-                if (row.text && showEvidence) {
-                  showEvidence(row.text);
-                } else if (row.source && onSelectProvision) {
-                  onSelectProvision(row.source);
-                }
-              };
-              const detailsText = row.text || row.label;
-              return (
-                <tr key={i} className="hover:bg-bg/40 transition-colors align-top">
-                  <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">
-                    {row.source && onSelectProvision ? (
-                      <button
-                        type="button"
-                        onClick={() => onSelectProvision(row.source)}
-                        className="text-left text-accent hover:underline font-medium"
-                      >
-                        {row.label}
-                      </button>
-                    ) : (
-                      <span>{row.label}</span>
-                    )}
-                  </td>
-                  <td
-                    className={`px-3 py-2 text-ink whitespace-pre-wrap break-words ${row.text && showEvidence ? 'cursor-pointer hover:text-amber-700' : ''}`}
-                    onClick={row.text && showEvidence ? handleClick : undefined}
-                    title={row.text && showEvidence ? 'Click to view in document' : undefined}
-                  >
-                    {row.text ? (
-                      <span className="italic">&ldquo;{detailsText}&rdquo;</span>
-                    ) : (
-                      <span className="text-inkFaint/70 italic">—</span>
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+      {hasAsymmetry && (
+        <div className="px-3 py-1.5 bg-amber-50 border-b border-amber-200 text-amber-900 text-xs rounded-none">
+          <span className="italic">
+            Asymmetric carve-outs detected — review the differences below.
+          </span>
+        </div>
+      )}
+      <div className="divide-y divide-border">
+        <IocExceptionsGroup
+          subtitle="Apply to both"
+          rows={both}
+          emptyHint="No carve-outs appear on both sides."
+          showEvidence={showEvidence}
+          onSelectProvision={onSelectProvision}
+        />
+        <IocExceptionsGroup
+          subtitle="Positive only"
+          rows={posOnly}
+          emptyHint="Positive preamble adds no extra carve-outs."
+          accent="positive"
+          showEvidence={showEvidence}
+          onSelectProvision={onSelectProvision}
+        />
+        <IocExceptionsGroup
+          subtitle="Negative only"
+          rows={negOnly}
+          emptyHint="Negative preamble adds no extra carve-outs."
+          accent="negative"
+          showEvidence={showEvidence}
+          onSelectProvision={onSelectProvision}
+        />
       </div>
-      {overflowCount > 0 && (
-        <div className="px-3 py-1.5 bg-bg/40 border-t border-border">
-          <p className="text-[11px] font-ui italic text-inkFaint">
-            (+{overflowCount} more in specific provisions)
-          </p>
+    </div>
+  );
+}
+
+/* Inline row table — shared between single-list and three-group renderings.
+ * Two columns: exception label (clickable to source provision) + verbatim
+ * text (clickable to evidence highlight). */
+function IocExceptionsMiniRows({ rows, showEvidence, onSelectProvision }) {
+  if (!rows || rows.length === 0) return null;
+  return (
+    <div className="overflow-x-auto">
+      <table className="min-w-full text-xs font-ui">
+        <thead className="bg-bg/60 border-b border-border">
+          <tr>
+            <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[260px]">Exception Type</th>
+            <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Details</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border">
+          {rows.map((row, i) => {
+            const detailsText = row.text || row.label;
+            const clickableText = !!(row.text && showEvidence);
+            const handleTextClick = clickableText ? () => showEvidence(row.text) : undefined;
+            return (
+              <tr key={`${row.code}-${i}`} className="hover:bg-bg/40 transition-colors align-top">
+                <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">
+                  {row.source && onSelectProvision ? (
+                    <button
+                      type="button"
+                      onClick={() => onSelectProvision(row.source)}
+                      className="text-left text-accent hover:underline font-medium"
+                    >
+                      {row.label}
+                    </button>
+                  ) : (
+                    <span>{row.label}</span>
+                  )}
+                </td>
+                <td
+                  className={`px-3 py-2 text-ink whitespace-pre-wrap break-words ${clickableText ? 'cursor-pointer hover:text-amber-700' : ''}`}
+                  onClick={handleTextClick}
+                  title={clickableText ? 'Click to view in document' : undefined}
+                >
+                  {row.text ? (
+                    <span className="italic">&ldquo;{detailsText}&rdquo;</span>
+                  ) : (
+                    <span className="text-inkFaint/70 italic">—</span>
+                  )}
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+/* Labeled sub-group container used in the three-group comparison view.
+ * Renders a subtitle bar + the inline rows table; empty groups render a
+ * single italic hint row so the user sees that the comparison was performed. */
+function IocExceptionsGroup({ subtitle, rows, emptyHint, accent, showEvidence, onSelectProvision }) {
+  const subtitleStyle =
+    accent === 'positive' ? 'text-emerald-800 bg-emerald-50/60'
+    : accent === 'negative' ? 'text-rose-800 bg-rose-50/60'
+    : 'text-inkFaint bg-bg/40';
+  return (
+    <div>
+      <div className={`px-3 py-1.5 ${subtitleStyle}`}>
+        <p className="text-[10px] font-ui font-medium uppercase tracking-wider">
+          {subtitle}
+          <span className="ml-1 normal-case font-normal opacity-70">
+            ({rows ? rows.length : 0})
+          </span>
+        </p>
+      </div>
+      {rows && rows.length > 0 ? (
+        <IocExceptionsMiniRows
+          rows={rows}
+          showEvidence={showEvidence}
+          onSelectProvision={onSelectProvision}
+        />
+      ) : (
+        <div className="px-3 py-2 text-[11px] font-ui italic text-inkFaint">
+          {emptyHint || 'None.'}
         </div>
       )}
     </div>
