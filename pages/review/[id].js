@@ -4566,9 +4566,23 @@ function BringdownTable({ provisions, repsType }) {
  *     User wants no preamble, no summary table, no structured features view.
  *     Just an alphabetical list of all defined terms, each clickable to open
  *     the edit panel. Renders as a multi-column grid for compactness. */
+// Prefer the actual defined term over the canonical-code label. For
+// inline-extracted defs, features.canonicalTerm holds the verbatim phrase
+// (e.g. "Company Material Adverse Effect"). Fallback to features.term, then
+// to the broader category, then to a placeholder.
+function definitionLabel(p) {
+  const feats = getStructuredFeatures(p) || {};
+  return (
+    feats.canonicalTerm ||
+    feats.term ||
+    p.category ||
+    'Definition'
+  );
+}
+
 function DefinitionsList({ provisions, onSelectProvision }) {
   const sorted = [...(provisions || [])].sort((a, b) =>
-    String(a.category || '').localeCompare(String(b.category || ''), undefined, { sensitivity: 'base' })
+    String(definitionLabel(a)).localeCompare(String(definitionLabel(b)), undefined, { sensitivity: 'base' })
   );
   if (sorted.length === 0) return null;
   return (
@@ -4580,18 +4594,21 @@ function DefinitionsList({ provisions, onSelectProvision }) {
         <p className="text-[10px] font-ui text-inkFaint">{sorted.length}</p>
       </div>
       <ul className="px-4 py-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-1">
-        {sorted.map((p) => (
-          <li key={p.id} className="truncate">
-            <button
-              type="button"
-              onClick={() => onSelectProvision && onSelectProvision(p)}
-              className="text-left text-sm text-accent hover:underline font-ui"
-              title={p.category || 'Definition'}
-            >
-              {p.category || 'Definition'}
-            </button>
-          </li>
-        ))}
+        {sorted.map((p) => {
+          const label = definitionLabel(p);
+          return (
+            <li key={p.id} className="truncate">
+              <button
+                type="button"
+                onClick={() => onSelectProvision && onSelectProvision(p)}
+                className="text-left text-sm text-accent hover:underline font-ui"
+                title={label}
+              >
+                {label}
+              </button>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
