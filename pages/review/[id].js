@@ -3263,6 +3263,19 @@ const HIDDEN_TABLE_COLUMNS = {
     'pendingLitigation', 'pending_litigation',
     'governmentInvestigations', 'government_investigations',
     'outstandingOrders', 'outstanding_orders',
+    // Fields that ONLY surface inside REP_SPECIFIC_FEATURE_SPECS (per
+    // matching rep category). Hide as columns so they don't appear on
+    // every rep row.
+    'absenceOfChangesStartDate', 'absence_of_changes_start_date',
+    'absenceOfChangesType', 'absence_of_changes_type',
+    'absenceOfChangesExceptions', 'absence_of_changes_exceptions',
+    'undisclosedLiabilitiesExceptions', 'undisclosed_liabilities_exceptions',
+    // ERISA-specific features — Specific Features only.
+    'erisaPlansListed', 'erisa_plans_listed',
+    'erisaCompliance', 'erisa_compliance',
+    'erisaTitleIVPlans', 'erisa_title_iv_plans',
+    'erisaMultiemployer', 'erisa_multiemployer',
+    'erisaParachutePayments', 'erisa_parachute_payments',
   ],
   'REP-B': ['mainConcept', 'crossReferences', 'linkedBringDownStandard', 'solvencyRepIncluded', 'solvency_rep_included', 'financingRepIncluded', 'financing_rep_included', 'materialityScrape', 'materiality_scrape', 'bringDownStandard', 'bring_down_standard', 'scheduleReference', 'schedule_reference', 'sufficientFundsRepPresent', 'sufficient_funds_rep_present', 'sufficientFundsRepDetails', 'sufficient_funds_rep_details', 'solvencyRepPresent', 'solvency_rep_present', 'solvencyRepDetails', 'solvency_rep_details', 'antiRelianceRepPresent', 'anti_reliance_rep_present', 'antiRelianceRepText', 'anti_reliance_rep_text', 'parentLitigationRepPresent', 'parent_litigation_rep_present', 'parentOwnershipRepPresent', 'parent_ownership_rep_present', 'parentBrokersRepPresent', 'parent_brokers_rep_present',
     // Fully-removed REP fields (per P2 cleanup) — hidden from per-row table:
@@ -3308,6 +3321,19 @@ const HIDDEN_TABLE_COLUMNS = {
     'pendingLitigation', 'pending_litigation',
     'governmentInvestigations', 'government_investigations',
     'outstandingOrders', 'outstanding_orders',
+    // Fields that ONLY surface inside REP_SPECIFIC_FEATURE_SPECS (per
+    // matching rep category). Hide as columns so they don't appear on
+    // every rep row.
+    'absenceOfChangesStartDate', 'absence_of_changes_start_date',
+    'absenceOfChangesType', 'absence_of_changes_type',
+    'absenceOfChangesExceptions', 'absence_of_changes_exceptions',
+    'undisclosedLiabilitiesExceptions', 'undisclosed_liabilities_exceptions',
+    // ERISA-specific features — Specific Features only.
+    'erisaPlansListed', 'erisa_plans_listed',
+    'erisaCompliance', 'erisa_compliance',
+    'erisaTitleIVPlans', 'erisa_title_iv_plans',
+    'erisaMultiemployer', 'erisa_multiemployer',
+    'erisaParachutePayments', 'erisa_parachute_payments',
   ],
   COND: ['certificationRequired', 'dollarThreshold', 'scheduleReference', 'bringDownTiers', 'maeConditionStandalone', 'maeStandaloneCondition', 'dissentingSharesThreshold', 'dissentingShares', 'dissentingSharesPct'],
   'COND-M': ['certificationRequired', 'dollarThreshold', 'scheduleReference', 'bringDownTiers', 'maeConditionStandalone', 'maeStandaloneCondition', 'dissentingSharesThreshold', 'dissentingShares', 'dissentingSharesPct'],
@@ -3757,24 +3783,28 @@ function StructTable({ provisions, onSelectProvision }) {
       displayCategory = 'Merger Form';
       cells = [{ key: 'mergerForm', raw: features.mergerForm, render: renderMergerFormCell }];
     } else if (kind === 'closing') {
-      const deadline = features.mutualClosingDeadlineAfterConditionsDays
+      // Only surface Closing Deadline as its own row when it carries
+      // information distinct from closingTiming — otherwise the user sees
+      // the exact same sentence repeated under two labels.
+      const explicitDeadline = features.mutualClosingDeadlineAfterConditionsDays
         ?? features.closingDeadline
         ?? null;
       cells = [
         { key: 'closingLocation', raw: features.closingLocation },
         { key: 'closingTiming', raw: features.closingTiming },
       ];
-      if (deadline !== null && deadline !== undefined && deadline !== '') {
+      if (
+        explicitDeadline !== null
+        && explicitDeadline !== undefined
+        && explicitDeadline !== ''
+        && String(explicitDeadline) !== String(features.closingTiming || '')
+      ) {
         cells.push({
           key: 'closingDeadline',
           label: 'Closing Deadline',
-          raw: typeof deadline === 'number' ? `${deadline} days after conditions satisfied` : deadline,
-        });
-      } else if (features.closingTiming) {
-        cells.push({
-          key: 'closingDeadline',
-          label: 'Closing Deadline',
-          raw: features.closingTiming,
+          raw: typeof explicitDeadline === 'number'
+            ? `${explicitDeadline} days after conditions satisfied`
+            : explicitDeadline,
         });
       }
     } else if (kind === 'effects') {
@@ -3835,30 +3865,26 @@ function StructTable({ provisions, onSelectProvision }) {
       }
     }
     rows.unshift({
-      p: { id: '__synth_deal_structure', category: 'Deal Structure' },
+      // Synthesized provision id; the synth-row label-click handler below
+      // routes the click to `useShowEvidence(synthEvidence)` rather than
+      // opening the edit panel. Carry the source quote on the synth p so
+      // the table render finds it.
+      p: {
+        id: '__synth_deal_structure',
+        category: 'Deal Structure',
+        _synthEvidence: src?.quote || null,
+      },
       kind: 'structure',
       displayCategory: 'Deal Structure',
       cells: [{
         key: 'dealStructure',
         raw: humanized,
-        render: (raw) => {
-          if (!raw) {
-            return <span className="italic text-inkFaint">Not specified</span>;
-          }
-          if (src && src.quote) {
-            return (
-              <button
-                type="button"
-                onClick={() => showEvidence(src.quote)}
-                className="text-left text-accent hover:underline font-medium"
-                title="View source"
-              >
-                {raw}
-              </button>
-            );
-          }
-          return <span className="text-ink">{raw}</span>;
-        },
+        // Plain value — the LABEL (left column) is the clickable link,
+        // matching every other row in the table.
+        render: (raw) =>
+          raw
+            ? <span className="text-ink">{raw}</span>
+            : <span className="italic text-inkFaint">Not specified</span>,
       }],
     });
   }
@@ -3879,11 +3905,25 @@ function StructTable({ provisions, onSelectProvision }) {
         <tbody className="divide-y divide-border">
           {rows.map(({ p, cells, displayCategory }) => {
             const isSynth = typeof p.id === 'string' && p.id.startsWith('__synth');
+            // Synth rows (Deal Structure) link the LABEL to source via
+            // useShowEvidence, mirroring real rows where the label opens the
+            // edit panel — keep the click target on the label across the table.
             return (
             <tr key={p.id} className="hover:bg-bg/40 transition-colors align-top">
               <td className="px-3 py-2 whitespace-nowrap">
                 {isSynth ? (
-                  <span className="text-ink font-medium">{displayCategory}</span>
+                  p._synthEvidence ? (
+                    <button
+                      type="button"
+                      onClick={() => showEvidence(p._synthEvidence)}
+                      className="text-left text-accent hover:underline font-medium"
+                      title="View source"
+                    >
+                      {displayCategory}
+                    </button>
+                  ) : (
+                    <span className="text-ink font-medium">{displayCategory}</span>
+                  )
                 ) : (
                   <button
                     type="button"
@@ -4220,6 +4260,8 @@ function buildCommonStockRow(convertProv) {
 }
 
 function ConsidTable({ provisions, onSelectProvision }) {
+  const showEvidence = useShowEvidence();
+
   // Partition: equity-award provisions vs. everything else.
   const equityProvisions = provisions.filter(isConsidEquityProvision);
   const otherProvisions = provisions.filter((p) => !isConsidEquityProvision(p));
@@ -4246,15 +4288,31 @@ function ConsidTable({ provisions, onSelectProvision }) {
 
   // Build the headline price + consideration-type hero block. Scan all
   // provisions for the first non-empty perShareAmount + considerationType.
+  // Track per-field source { provision, quote } so the table-style hero
+  // below can make every LEFT-column label clickable to source.
   let heroPerShare = null;
+  let heroPerShareSrc = null;
   let heroConsidType = null;
+  let heroConsidTypeSrc = null;
+  const captureSrc = (raw, p) => ({
+    provision: p,
+    quote:
+      (isCitableValue(raw) && getCitableText(raw)) ||
+      (isTaggedItem(raw) && raw.text) ||
+      (p?.full_text ? p.full_text.slice(0, 400) : null),
+  });
   for (const p of provisions) {
     const f = getStructuredFeatures(p) || {};
-    if (!heroPerShare && f.perShareAmount) heroPerShare = String(f.perShareAmount);
+    if (!heroPerShare && f.perShareAmount) {
+      const v = isCitableValue(f.perShareAmount) ? getCitableValue(f.perShareAmount) : f.perShareAmount;
+      heroPerShare = String(v);
+      heroPerShareSrc = captureSrc(f.perShareAmount, p);
+    }
     if (!heroConsidType && f.considerationType) {
       heroConsidType = isTaggedItem(f.considerationType)
         ? (resolveTaggedLabel('considerationType', f.considerationType) || f.considerationType.label || f.considerationType.code)
         : String(f.considerationType);
+      heroConsidTypeSrc = captureSrc(f.considerationType, p);
     }
     if (heroPerShare && heroConsidType) break;
   }
@@ -4331,14 +4389,15 @@ function ConsidTable({ provisions, onSelectProvision }) {
 
   // Find appraisalRightsAvailable across all CONSID provisions (first non-null).
   let appraisalAvailable = null;
+  let appraisalSrc = null;
   for (const p of provisions) {
     const f = getStructuredFeatures(p) || {};
     const raw = f.appraisalRightsAvailable;
     if (raw === null || raw === undefined) continue;
-    // Unwrap citable { value, text } shape if present.
     const unwrapped = isCitableValue(raw) ? raw.value : raw;
     if (unwrapped === null || unwrapped === undefined) continue;
     appraisalAvailable = unwrapped;
+    appraisalSrc = captureSrc(raw, p);
     break;
   }
 
@@ -4377,6 +4436,25 @@ function ConsidTable({ provisions, onSelectProvision }) {
   };
   const heroPriceText = formatPerShare(heroPerShare);
 
+  // Source provisions for the remaining hero rows. Capture AFTER the
+  // `showExchangeRatio` + `optionsCvrEarnInLabel` blocks above so dependent
+  // logic is settled.
+  let exchangeRatioSrc = null;
+  if (showExchangeRatio) {
+    for (const p of provisions) {
+      const f = getStructuredFeatures(p) || {};
+      const anchor = f.exchangeRatio || f.exchangeRatioType || f.ratioType || f.value;
+      if (anchor) { exchangeRatioSrc = captureSrc(anchor, p); break; }
+    }
+  }
+  let earnInSrc = null;
+  if (optionsCvrEarnInLabel) {
+    for (const p of provisions) {
+      const f = getStructuredFeatures(p) || {};
+      if (f.optionsCvrEarnIn) { earnInSrc = captureSrc(f.optionsCvrEarnIn, p); break; }
+    }
+  }
+
   const renderAppraisalValue = (v) => {
     if (v && typeof v === 'object') {
       // Tagged item { code, label, text } or citable { value, text } —
@@ -4392,56 +4470,51 @@ function ConsidTable({ provisions, onSelectProvision }) {
 
   return (
     <div className="space-y-3">
-      {/* Hero block: headline price + consideration type + appraisal rights. */}
-      {(heroPriceText || heroConsidType || appraisalAvailable !== null || optionsCvrEarnInLabel) && (
-        <div className="bg-white border-2 border-lime-300 rounded-lg shadow-sm px-5 py-4">
-          {heroPriceText && (
-            <div
-              className="font-display font-semibold text-ink leading-tight"
-              style={{ fontSize: '30px' }}
-            >
-              {heroPriceText}
-              <span className="text-sm font-ui font-normal text-inkMid ml-2">per share</span>
+      {/* Headline Consideration — bringdown-style mini-table. Each LEFT
+          column label is clickable to source (matching every other table
+          in the app); right column is the plain value. No more oversized
+          $47.50 callout. */}
+      {(heroPriceText || heroConsidType || appraisalAvailable !== null || optionsCvrEarnInLabel || (showExchangeRatio && (exchangeRatioValue || exchangeRatioType))) && (() => {
+        const heroRows = [
+          heroPriceText ? { label: 'Per-Share Price', value: <>{heroPriceText} <span className="text-inkFaint">per share</span></>, src: heroPerShareSrc } : null,
+          heroConsidType ? { label: 'Consideration Type', value: heroConsidType, src: heroConsidTypeSrc } : null,
+          (showExchangeRatio && (exchangeRatioValue || exchangeRatioType)) ? { label: 'Exchange Ratio', value: <>{exchangeRatioValue || '—'}{exchangeRatioType ? ` (${exchangeRatioType})` : ''}</>, src: exchangeRatioSrc } : null,
+          appraisalAvailable !== null ? { label: 'Appraisal Rights Available', value: renderAppraisalValue(appraisalAvailable), src: appraisalSrc } : null,
+          optionsCvrEarnInLabel ? { label: 'Options Earn-in to CVR', value: optionsCvrEarnInLabel, src: earnInSrc } : null,
+        ].filter(Boolean);
+        return (
+          <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+            <div className="px-3 py-2 bg-bg/60 border-b border-border">
+              <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+                Headline Consideration
+              </p>
             </div>
-          )}
-          {heroConsidType && (
-            <div className="mt-1 text-xs font-ui font-medium text-lime-900 uppercase tracking-wider">
-              {heroConsidType}
-            </div>
-          )}
-          {showExchangeRatio && (exchangeRatioValue || exchangeRatioType) && (
-            <div className="mt-2 pt-2 border-t border-lime-200 text-xs font-ui text-inkMid">
-              <span className="font-medium text-inkFaint uppercase tracking-wider mr-2">
-                Exchange Ratio:
-              </span>
-              <span className="text-ink font-medium">
-                {exchangeRatioValue || '—'}
-                {exchangeRatioType ? ` (${exchangeRatioType})` : ''}
-              </span>
-            </div>
-          )}
-          {appraisalAvailable !== null && (
-            <div className="mt-2 pt-2 border-t border-lime-200 text-xs font-ui text-inkMid">
-              <span className="font-medium text-inkFaint uppercase tracking-wider mr-2">
-                Appraisal Rights Available:
-              </span>
-              <span className="text-ink font-medium">
-                {renderAppraisalValue(appraisalAvailable)}
-              </span>
-            </div>
-          )}
-          {optionsCvrEarnInLabel && (
-            <div className="mt-2 pt-2 border-t border-lime-200 text-xs font-ui text-inkMid">
-              <span className="font-medium text-inkFaint uppercase tracking-wider mr-2">
-                Options Earn-In via CVR:
-              </span>
-              <span className="text-ink font-medium">
-                {optionsCvrEarnInLabel}
-              </span>
-            </div>
-          )}
-        </div>
-      )}
+            <table className="min-w-full text-xs font-ui">
+              <tbody className="divide-y divide-border">
+                {heroRows.map((row) => (
+                  <tr key={row.label} className="hover:bg-bg/40 transition-colors align-top">
+                    <td className="px-3 py-2 whitespace-nowrap w-[220px]">
+                      {row.src && row.src.quote ? (
+                        <button
+                          type="button"
+                          onClick={() => showEvidence(row.src.quote)}
+                          className="text-left text-accent hover:underline font-medium"
+                          title="View source"
+                        >
+                          {row.label}
+                        </button>
+                      ) : (
+                        <span className="text-ink font-medium">{row.label}</span>
+                      )}
+                    </td>
+                    <td className="px-3 py-2 text-ink">{row.value}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        );
+      })()}
 
       {equityRows.length > 0 && (
         <EquityAwardTable rows={equityRows} onSelectProvision={onSelectProvision} />
