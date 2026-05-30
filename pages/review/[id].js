@@ -9478,6 +9478,91 @@ function FeatureFieldEditor({ field, value, onChange, onAddCustomOption }) {
   );
 }
 
+/* ── P7 item 4: per-provision "Re-extract this section" button ───────────
+   Recovers the source section by matching the provision's startChar against
+   the deal's classified_sections, then POSTs to /api/ingest/extract-section.
+   Shows inline status. The parent page picks up the new provisions via the
+   existing realtime subscription on the provisions table — no callback hook
+   needed. */
+function ReextractSectionButton({ provision, deal }) {
+  const [status, setStatus] = useState('idle'); // idle | running | done | failed
+  const [message, setMessage] = useState('');
+
+  const resolveSectionId = () => {
+    if (!provision || !deal) return null;
+    let meta = provision.ai_metadata;
+    if (typeof meta === 'string') {
+      try { meta = JSON.parse(meta); } catch { meta = null; }
+    }
+    const provStart = meta && typeof meta.startChar === 'number' ? meta.startChar : null;
+    if (provStart === null) return null;
+    const classified = deal?.metadata?.classified_sections;
+    if (!Array.isArray(classified) || classified.length === 0) return null;
+    // Find the section whose [startChar, nextStartChar) range contains provStart.
+    const sorted = [...classified].sort((a, b) => (a.startChar || 0) - (b.startChar || 0));
+    for (let i = 0; i < sorted.length; i++) {
+      const s = sorted[i];
+      const next = i + 1 < sorted.length ? sorted[i + 1] : null;
+      const end = next ? Number(next.startChar) : (Number(s.startChar) + (s.text || '').length);
+      if (provStart >= Number(s.startChar) && provStart < end) {
+        return `section-${s.startChar}`;
+      }
+    }
+    return null;
+  };
+
+  const handleClick = async () => {
+    const sectionId = resolveSectionId();
+    if (!sectionId) {
+      setStatus('failed');
+      setMessage('Could not locate source section (no startChar)');
+      return;
+    }
+    setStatus('running');
+    setMessage('');
+    try {
+      const resp = await fetch('/api/ingest/extract-section', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ deal_id: deal.id, section_id: sectionId }),
+      });
+      const data = await resp.json();
+      if (!resp.ok || !data.success) {
+        setStatus('failed');
+        setMessage(data.error || `HTTP ${resp.status}`);
+        return;
+      }
+      setStatus('done');
+      setMessage(`+${data.provisions_inserted} / -${data.provisions_deleted}`);
+    } catch (e) {
+      setStatus('failed');
+      setMessage(e?.message || String(e));
+    }
+  };
+
+  const sectionId = resolveSectionId();
+  const disabled = !sectionId || status === 'running';
+  return (
+    <div className="space-y-1">
+      <button
+        type="button"
+        onClick={handleClick}
+        disabled={disabled}
+        className="w-full px-3 py-1.5 text-xs font-ui border border-border text-inkLight rounded hover:bg-bg disabled:opacity-50 transition-colors"
+        title={sectionId ? `Re-extract ${sectionId}` : 'No source section found (provision missing startChar)'}
+      >
+        {status === 'running' ? 'Re-extracting...' : 'Re-extract this section'}
+      </button>
+      {status === 'done' && (
+        <p className="text-[10px] font-ui text-green-700">Done — {message}</p>
+      )}
+      {status === 'failed' && (
+        <p className="text-[10px] font-ui text-red-600">Failed — {message}</p>
+      )}
+    </div>
+  );
+}
+
 /* ═══════════════════════════════════════════════════════════
    EDIT PANEL (slide-in from right)
    ═══════════════════════════════════════════════════════════ */
@@ -9763,6 +9848,11 @@ function EditPanel({
           >
             Re-select Text from Document
           </button>
+
+          {/* P7 item 4: per-section re-extract button. Resolves the source
+              section_id from provision.ai_metadata.startChar against the deal's
+              classified_sections, then POSTs to /api/ingest/extract-section. */}
+          <ReextractSectionButton provision={provision} deal={deal} />
         </div>
 
         {/* Structured Summary (schema-driven editable fields) */}
