@@ -2377,12 +2377,29 @@ function findIocAffirmativeMatches(iocProvisions) {
   return matches;
 }
 
-function IocAffirmativeCovenantsTable({ iocProvisions, onSelectProvision }) {
+function IocAffirmativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectProvision }) {
   const matches = useMemo(
     () => findIocAffirmativeMatches(iocProvisions),
     [iocProvisions],
   );
-  if (matches.length === 0) return null;
+  if (matches.length === 0) {
+    // Render the empty placeholder for the Buyer side (or any caller that
+    // requested explicit "Not present" rendering via partyLabel). Otherwise
+    // return null to preserve the original "hide when empty" behavior.
+    if (!partyLabel) return null;
+    return (
+      <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+        <div className="px-3 py-2 bg-bg/60 border-b border-border">
+          <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+            {partyLabel} — Affirmative Covenants
+          </p>
+        </div>
+        <div className="px-3 py-3 text-xs font-ui italic text-inkFaint">
+          Not present in this agreement
+        </div>
+      </div>
+    );
+  }
 
   // Resolve a raw string standard code (e.g. "COMMERCIALLY_REASONABLE_EFFORTS")
   // to its human label by looking it up in the EFFORTS_STANDARDS taxonomy.
@@ -2468,11 +2485,14 @@ function IocAffirmativeCovenantsTable({ iocProvisions, onSelectProvision }) {
     return bucket.defaultAppliesTo || null;
   };
 
+  const title = partyLabel
+    ? `${partyLabel} — Affirmative Covenants`
+    : 'Affirmative Covenants';
   return (
     <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
       <div className="px-3 py-2 bg-bg/60 border-b border-border">
         <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
-          Affirmative Covenants
+          {title}
         </p>
       </div>
       <div className="overflow-x-auto">
@@ -2515,11 +2535,34 @@ function IocAffirmativeCovenantsTable({ iocProvisions, onSelectProvision }) {
   );
 }
 
+/* Public wrapper: render Target / Company half first, then Parent / Buyer
+ * half. Buyer half always renders (with a "Not present" placeholder if no
+ * IOC-B provisions exist). */
+function IocAffirmativeCovenantsTable({ iocProvisions, onSelectProvision }) {
+  const targetProvs = (iocProvisions || []).filter((p) => p.type !== 'IOC-B');
+  const buyerProvs = (iocProvisions || []).filter((p) => p.type === 'IOC-B');
+  return (
+    <div className="space-y-3">
+      <IocAffirmativeCovenantsTableSingle
+        iocProvisions={targetProvs}
+        partyLabel="Target / Company"
+        onSelectProvision={onSelectProvision}
+      />
+      <IocAffirmativeCovenantsTableSingle
+        iocProvisions={buyerProvs}
+        partyLabel="Parent / Buyer"
+        onSelectProvision={onSelectProvision}
+      />
+    </div>
+  );
+}
+
 /* ── IOC General Exceptions table (Bringdown-style box)
  *    Renders the section-wide permittedExceptions (scope=preamble) and/or
  *    the items extracted from the consolidated General Exceptions provision.
  *    Returns null when nothing meaningful is available. */
-function IocGeneralExceptionsTable({ iocProvisions, generalExceptionsProv, onSelectProvision }) {
+function IocGeneralExceptionsTableSingle({ iocProvisions, generalExceptionsProv, partyLabel, onSelectProvision }) {
+  const showEvidence = useShowEvidence();
   const rows = useMemo(() => {
     const out = [];
 
@@ -2527,12 +2570,12 @@ function IocGeneralExceptionsTable({ iocProvisions, generalExceptionsProv, onSel
     //    (canonical section-wide carve-outs). Fall back to any permittedExceptions
     //    when no scoped version exists.
     const seenLabels = new Set();
-    const addException = (label, source) => {
+    const addException = (label, source, text) => {
       if (!label) return;
       const key = String(label).toLowerCase().trim();
       if (!key || seenLabels.has(key)) return;
       seenLabels.add(key);
-      out.push({ label: String(label), source });
+      out.push({ label: String(label), source, text: text || null });
     };
 
     const scoped = [];
@@ -2550,9 +2593,9 @@ function IocGeneralExceptionsTable({ iocProvisions, generalExceptionsProv, onSel
     for (const { item, source } of exceptionItems) {
       if (isTaggedItem(item)) {
         const lbl = resolveTaggedLabel('permittedExceptions', item) || item.code;
-        addException(lbl, source);
+        addException(lbl, source, item.text || null);
       } else if (typeof item === 'string' && item.trim()) {
-        addException(item.trim(), source);
+        addException(item.trim(), source, null);
       }
     }
 
@@ -2561,13 +2604,31 @@ function IocGeneralExceptionsTable({ iocProvisions, generalExceptionsProv, onSel
     if (generalExceptionsProv) {
       const text = generalExceptionsProv.full_text || generalExceptionsProv.text || '';
       const items = text ? splitGeneralExceptionsItems(text) : [];
-      for (const t of items) addException(t, generalExceptionsProv);
+      for (const t of items) addException(t, generalExceptionsProv, t);
     }
 
     return out;
   }, [iocProvisions, generalExceptionsProv]);
 
-  if (rows.length === 0) return null;
+  const title = partyLabel
+    ? `${partyLabel} — General Exceptions`
+    : 'General Exceptions';
+
+  if (rows.length === 0) {
+    if (!partyLabel) return null;
+    return (
+      <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+        <div className="px-3 py-2 bg-bg/60 border-b border-border">
+          <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+            {title}
+          </p>
+        </div>
+        <div className="px-3 py-3 text-xs font-ui italic text-inkFaint">
+          Not present in this agreement
+        </div>
+      </div>
+    );
+  }
   // Cap at 4 — items 5+ tend to belong to specific provisions and add noise
   // when surfaced as section-wide exceptions.
   const MAX_ITEMS = 4;
@@ -2578,36 +2639,56 @@ function IocGeneralExceptionsTable({ iocProvisions, generalExceptionsProv, onSel
     <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
       <div className="px-3 py-2 bg-bg/60 border-b border-border">
         <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
-          General Exceptions
+          {title}
         </p>
       </div>
       <div className="overflow-x-auto">
         <table className="min-w-full text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
             <tr>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider w-12">#</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Exception</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[260px]">Exception Type</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Details</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {visibleRows.map((row, i) => (
-              <tr key={i} className="hover:bg-bg/40 transition-colors align-top">
-                <td className="px-3 py-2 text-inkFaint whitespace-nowrap">{i + 1}</td>
-                <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
-                  {row.source && onSelectProvision ? (
-                    <button
-                      type="button"
-                      onClick={() => onSelectProvision(row.source)}
-                      className="text-left text-ink hover:underline"
-                    >
-                      {row.label}
-                    </button>
-                  ) : (
-                    <span>{row.label}</span>
-                  )}
-                </td>
-              </tr>
-            ))}
+            {visibleRows.map((row, i) => {
+              const handleClick = () => {
+                if (row.text && showEvidence) {
+                  showEvidence(row.text);
+                } else if (row.source && onSelectProvision) {
+                  onSelectProvision(row.source);
+                }
+              };
+              const detailsText = row.text || row.label;
+              return (
+                <tr key={i} className="hover:bg-bg/40 transition-colors align-top">
+                  <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">
+                    {row.source && onSelectProvision ? (
+                      <button
+                        type="button"
+                        onClick={() => onSelectProvision(row.source)}
+                        className="text-left text-accent hover:underline font-medium"
+                      >
+                        {row.label}
+                      </button>
+                    ) : (
+                      <span>{row.label}</span>
+                    )}
+                  </td>
+                  <td
+                    className={`px-3 py-2 text-ink whitespace-pre-wrap break-words ${row.text && showEvidence ? 'cursor-pointer hover:text-amber-700' : ''}`}
+                    onClick={row.text && showEvidence ? handleClick : undefined}
+                    title={row.text && showEvidence ? 'Click to view in document' : undefined}
+                  >
+                    {row.text ? (
+                      <span className="italic">&ldquo;{detailsText}&rdquo;</span>
+                    ) : (
+                      <span className="text-inkFaint/70 italic">—</span>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -2622,12 +2703,38 @@ function IocGeneralExceptionsTable({ iocProvisions, generalExceptionsProv, onSel
   );
 }
 
+/* Public wrapper: render Target / Company half first, then Parent / Buyer
+ * half (with "Not present" placeholder when no IOC-B provisions exist). */
+function IocGeneralExceptionsTable({ iocProvisions, generalExceptionsProv, onSelectProvision }) {
+  const targetProvs = (iocProvisions || []).filter((p) => p.type !== 'IOC-B');
+  const buyerProvs = (iocProvisions || []).filter((p) => p.type === 'IOC-B');
+  // The consolidated `generalExceptionsProv` (if any) is tied to whichever IOC
+  // section it appeared in — use its `type` to assign it to the right half.
+  const gxIsBuyer = generalExceptionsProv && generalExceptionsProv.type === 'IOC-B';
+  return (
+    <div className="space-y-3">
+      <IocGeneralExceptionsTableSingle
+        iocProvisions={targetProvs}
+        generalExceptionsProv={gxIsBuyer ? null : generalExceptionsProv}
+        partyLabel="Target / Company"
+        onSelectProvision={onSelectProvision}
+      />
+      <IocGeneralExceptionsTableSingle
+        iocProvisions={buyerProvs}
+        generalExceptionsProv={gxIsBuyer ? generalExceptionsProv : null}
+        partyLabel="Parent / Buyer"
+        onSelectProvision={onSelectProvision}
+      />
+    </div>
+  );
+}
+
 /* ─── IOC Negative Covenants table — bringdown-style.
  *     Rows are negative-restriction IOC sub-clause provisions (everything in
  *     the IOC list that isn't an affirmative bucket: not IOC-ORDINARY /
  *     IOC-PRESERVE / IOC-MAINTAIN / IOC-NOACTION). The Details cell composes
  *     a compact one-line summary from the relevant features. */
-function IocNegativeCovenantsTable({ iocProvisions, onSelectProvision }) {
+function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectProvision }) {
   const affCodes = new Set(['IOC-ORDINARY', 'IOC-PRESERVE', 'IOC-MAINTAIN', 'IOC-NOACTION', 'IOC-AFFIRMATIVE', 'IOC-OTHER-AFFIRMATIVE', 'IOC-GENERAL-EXCEPTIONS', 'IOC-EXCEPTIONS']);
   const negative = (iocProvisions || []).filter((p) => {
     if (isPreambleProvision(p)) return false;
@@ -2638,7 +2745,24 @@ function IocNegativeCovenantsTable({ iocProvisions, onSelectProvision }) {
     if (affCodes.has(code)) return false;
     return true;
   });
-  if (negative.length === 0) return null;
+  const title = partyLabel
+    ? `${partyLabel} — Negative Covenants`
+    : 'Negative Covenants';
+  if (negative.length === 0) {
+    if (!partyLabel) return null;
+    return (
+      <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+        <div className="px-3 py-2 bg-bg/60 border-b border-border">
+          <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+            {title}
+          </p>
+        </div>
+        <div className="px-3 py-3 text-xs font-ui italic text-inkFaint">
+          Not present in this agreement
+        </div>
+      </div>
+    );
+  }
   // Sort by IOC_CATEGORY_CODES order is non-trivial here since the parser does
   // not always stamp a canonical category code. Fall back to category string.
   const sorted = [...negative].sort((a, b) =>
@@ -2688,7 +2812,7 @@ function IocNegativeCovenantsTable({ iocProvisions, onSelectProvision }) {
     <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
       <div className="px-3 py-2 bg-bg/60 border-b border-border">
         <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
-          Negative Covenants
+          {title}
         </p>
       </div>
       <div className="overflow-x-auto">
@@ -2719,6 +2843,27 @@ function IocNegativeCovenantsTable({ iocProvisions, onSelectProvision }) {
           </tbody>
         </table>
       </div>
+    </div>
+  );
+}
+
+/* Public wrapper: render Target / Company half first, then Parent / Buyer
+ * half (with "Not present" placeholder when no IOC-B provisions exist). */
+function IocNegativeCovenantsTable({ iocProvisions, onSelectProvision }) {
+  const targetProvs = (iocProvisions || []).filter((p) => p.type !== 'IOC-B');
+  const buyerProvs = (iocProvisions || []).filter((p) => p.type === 'IOC-B');
+  return (
+    <div className="space-y-3">
+      <IocNegativeCovenantsTableSingle
+        iocProvisions={targetProvs}
+        partyLabel="Target / Company"
+        onSelectProvision={onSelectProvision}
+      />
+      <IocNegativeCovenantsTableSingle
+        iocProvisions={buyerProvs}
+        partyLabel="Parent / Buyer"
+        onSelectProvision={onSelectProvision}
+      />
     </div>
   );
 }
@@ -7948,6 +8093,26 @@ export default function ReviewPage() {
   /* ── Group filtered provisions by type ── */
   const filteredProvsByType = useMemo(() => groupProvisionsByType(filteredProvisions), [filteredProvisions]);
 
+  /* ── Identify the first IOC-flavored type in the rendered order. The
+   *    IOC affirmative / general-exceptions / negative tables render a
+   *    Target + Buyer split that pulls from BOTH IOC-T and IOC-B provisions,
+   *    so we only want them to render ONCE per page (on the first
+   *    encountered IOC type) instead of duplicating across IOC / IOC-T /
+   *    IOC-B sections. */
+  const firstIocType = useMemo(() => {
+    const keys = Object.keys(filteredProvsByType);
+    return keys.find((k) => k === 'IOC' || k === 'IOC-T' || k === 'IOC-B') || null;
+  }, [filteredProvsByType]);
+
+  /* ── All filtered IOC provisions (any IOC flavor) — passed to the IOC
+   *    tables on the firstIocType section so the Target + Buyer split
+   *    can see both halves regardless of which section the user lands on. */
+  const allFilteredIocProvisions = useMemo(() => {
+    return filteredProvisions.filter((p) =>
+      p.type === 'IOC' || p.type === 'IOC-T' || p.type === 'IOC-B'
+    );
+  }, [filteredProvisions]);
+
   /* ── Extract definition terms from DEF provisions ── */
   const definitionTerms = useMemo(() => {
     return provisions
@@ -8564,22 +8729,22 @@ export default function ReviewPage() {
                                   onEdit={handleEditProvision}
                                 />
                               )}
-                              {isIocType && (
+                              {isIocType && type === firstIocType && (
                                 <IocAffirmativeCovenantsTable
-                                  iocProvisions={provs}
+                                  iocProvisions={allFilteredIocProvisions}
                                   onSelectProvision={handleEditProvision}
                                 />
                               )}
-                              {isIocType && (
+                              {isIocType && type === firstIocType && (
                                 <IocGeneralExceptionsTable
-                                  iocProvisions={provs}
+                                  iocProvisions={allFilteredIocProvisions}
                                   generalExceptionsProv={iocGeneralExceptions}
                                   onSelectProvision={handleEditProvision}
                                 />
                               )}
-                              {isIocType && (
+                              {isIocType && type === firstIocType && (
                                 <IocNegativeCovenantsTable
-                                  iocProvisions={rest}
+                                  iocProvisions={allFilteredIocProvisions.filter((p) => !isPreambleProvision(p))}
                                   onSelectProvision={handleEditProvision}
                                 />
                               )}
