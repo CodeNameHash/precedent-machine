@@ -493,8 +493,16 @@ const FEATURE_DISPLAY_ORDER = {
   // Top Customers definition, Material Contracts buckets, etc.) live ONLY on
   // (a) the individual provision card drill-in, (b) the ExpectedRepsTable
   // present/not-present checklist, and (c) the respective sub-code mini-table.
-  'REP-T': ['materialityQualifier', 'knowledgeQualifier', 'survivalPeriod', 'dollarThreshold'],
-  'REP-B': ['materialityQualifier', 'knowledgeQualifier', 'survivalPeriod', 'dollarThreshold'],
+  // PW diligence cleanup v2:
+  //   * knowledgeQualifier dropped from per-row table (now an above-table note)
+  //   * lookbackPeriod added (synthesized "N months (since YYYY-MM-DD)" from
+  //     secFilingsLookbackMonths + deal.announce_date)
+  //   * specificFeatures synthetic column injected at render time by
+  //     renderSpecificFeaturesCell() — collapses absenceOfChangesType /
+  //     undisclosedLiabilitiesExceptions / materialContractsRedactionsPermitted
+  //     / topCustomersSuppliersDefinition / etc. into one <dl> per row.
+  'REP-T': ['materialityQualifier', 'survivalPeriod', 'dollarThreshold', 'lookbackPeriod', 'specificFeatures'],
+  'REP-B': ['materialityQualifier', 'survivalPeriod', 'dollarThreshold', 'lookbackPeriod', 'specificFeatures'],
   COV: ['mainConcept', 'accessScope', 'indemnificationPeriod', 'employeeBenefitPeriod', 'financingCooperation', 'cvrIncluded'],
   MISC: ['mainConcept', 'governingLaw', 'jurisdictionExclusive', 'juryWaiver', 'specificPerformance', 'thirdPartyBeneficiaryExceptions'],
   OTHER: ['mainConcept', 'summary', 'crossReferences'],
@@ -526,11 +534,15 @@ function getOrderedFeatureKeys(typeKey, featuresObj) {
 function getFeatureSchema(typeKey, code) {
   const schema = getFeaturesForType(typeKey, code) || [];
   const schemaKeys = schema.map((f) => f.key);
+  // Allow FEATURE_DISPLAY_ORDER to inject synthetic columns (computed at
+  // render time, not stored in DB / rubric). These are explicitly enumerated
+  // here so we don't accidentally surface unrelated keys.
+  const SYNTHETIC_KEYS = new Set(['specificFeatures', 'lookbackPeriod']);
   const order = FEATURE_DISPLAY_ORDER[code] || FEATURE_DISPLAY_ORDER[typeKey] || [];
   const seen = new Set();
   const ordered = [];
   for (const k of order) {
-    if (schemaKeys.includes(k)) {
+    if (schemaKeys.includes(k) || SYNTHETIC_KEYS.has(k)) {
       ordered.push(k);
       seen.add(k);
     }
@@ -2836,6 +2848,98 @@ function getHiddenColumnsForType(type) {
   return new Set(HIDDEN_TABLE_COLUMNS[type] || []);
 }
 
+/* ─── REP per-row "Specific Features" column spec ──
+ *    Match a rep provision's category against the regex; render a compact
+ *    <dl> of label/value pairs for the rep-specific subset that applies to
+ *    that rep. Keeps the main REP table to four columns (materiality, survival,
+ *    dollar, lookback) plus this single rolled-up details column.
+ */
+const REP_SPECIFIC_FEATURE_SPECS = [
+  {
+    categoryRegex: /absence\s+of\s+changes|absence\s+of\s+certain\s+changes/i,
+    rows: [
+      { label: 'Type', keys: ['absenceOfChangesType'] },
+      { label: 'Start date', keys: ['absenceOfChangesStartDate'] },
+      { label: 'Exceptions', keys: ['absenceOfChangesExceptions'] },
+    ],
+  },
+  {
+    categoryRegex: /undisclosed\s+liabilities|no\s+liabilities/i,
+    rows: [
+      { label: 'Exceptions', keys: ['undisclosedLiabilitiesExceptions'] },
+    ],
+  },
+  {
+    categoryRegex: /material\s+contracts/i,
+    rows: [
+      { label: 'Redactions permitted', keys: ['materialContractsRedactionsPermitted'] },
+      { label: 'Permitted redactions', keys: ['permittedRedactionsDefinition'] },
+    ],
+  },
+  {
+    categoryRegex: /(?:top|significant|major|key)\s+customers|suppliers/i,
+    rows: [
+      { label: 'Definition', keys: ['topCustomersSuppliersDefinition'] },
+    ],
+  },
+  {
+    categoryRegex: /sec\s+(?:documents|filings|reports)|reports\s+and\s+financial/i,
+    rows: [
+      { label: 'Exception scope', keys: ['secFilingsExceptionScope'] },
+      { label: 'Excluded sections', keys: ['secFilingsExcludedSections'] },
+      { label: 'Carved-out reps', keys: ['secFilingsCarvedOutReps'] },
+    ],
+  },
+];
+
+function findRepSpec(provision) {
+  const cat = String(provision?.category || '');
+  for (const spec of REP_SPECIFIC_FEATURE_SPECS) {
+    if (spec.categoryRegex.test(cat)) return spec;
+  }
+  return null;
+}
+
+function renderRepSpecificFeaturesCell(provision) {
+  const spec = findRepSpec(provision);
+  if (!spec) return null;
+  const features = getStructuredFeatures(provision) || {};
+  const rows = [];
+  for (const row of spec.rows) {
+    for (const key of row.keys) {
+      const raw = features[key];
+      if (raw === null || raw === undefined || raw === '' || raw === false) continue;
+      if (Array.isArray(raw) && raw.length === 0) continue;
+      rows.push({ label: row.label, key, raw });
+      break;
+    }
+  }
+  if (rows.length === 0) return null;
+  return (
+    <dl className="space-y-1">
+      {rows.map(({ label, key, raw }) => (
+        <div key={label} className="flex flex-col">
+          <dt className="text-[10px] text-inkFaint uppercase tracking-wider">{label}</dt>
+          <dd className="text-[11px]">{renderFeatureCell(key, raw)}</dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
+// Compute "N months (since YYYY-MM-DD)" from a months count + an announce date.
+function computeLookbackText(months, announceDate) {
+  if (months === null || months === undefined || months === '') return null;
+  const m = Number(months);
+  if (!Number.isFinite(m) || m <= 0) return String(months);
+  const base = announceDate ? new Date(announceDate) : null;
+  if (!base || isNaN(base.getTime())) return `${m} months`;
+  const d = new Date(base.getTime());
+  d.setMonth(d.getMonth() - m);
+  const iso = d.toISOString().slice(0, 10);
+  return `${m} months (since ${iso})`;
+}
+
 function formatCellValue(featureKey, raw) {
   if (raw === null || raw === undefined || raw === '') return null;
   // Citable wrapper — operate on the unwrapped value.
@@ -4538,13 +4642,22 @@ function findExpectedRepMatch(list, match) {
 
 /** Augment the rendered REP list with synthetic "_notPresent" rows for any
  *  expected reps that the parser didn't find. Real provisions pass through
- *  unchanged. */
-function augmentRepsWithExpectedPlaceholders(list, repsType) {
+ *  unchanged. The optional `allProvisions` lets the matcher pick up reps
+ *  stamped outside REP-T/REP-B (e.g. anti-reliance in COV / MISC). */
+function augmentRepsWithExpectedPlaceholders(list, repsType, allProvisions) {
   const expected = EXPECTED_REPS[repsType];
   if (!expected || !Array.isArray(list)) return list || [];
   const placeholders = [];
+  const externalHits = [];
+  const inListIds = new Set((list || []).map((p) => p.id));
   for (const spec of expected) {
-    const hit = findExpectedRepMatch(list, spec.match);
+    let hit = findExpectedRepMatch(list, spec.match);
+    if (!hit && Array.isArray(allProvisions) && spec.match.code) {
+      // Look across the full provision list for a code match (e.g.
+      // anti-reliance stamped on a COV provision).
+      hit = findExpectedRepMatch(allProvisions, spec.match);
+      if (hit && !inListIds.has(hit.id)) externalHits.push(hit);
+    }
     if (hit) continue;
     placeholders.push({
       id: `__not_present__${repsType}__${spec.label}`,
@@ -4556,10 +4669,10 @@ function augmentRepsWithExpectedPlaceholders(list, repsType) {
       _notPresent: true,
     });
   }
-  return [...list, ...placeholders];
+  return [...list, ...externalHits, ...placeholders];
 }
 
-function BringdownTable({ provisions, repsType }) {
+function BringdownTable({ provisions, repsType, onSelectProvision }) {
   // Find the matching COND-B-REP / COND-S-REP provision.
   const condProvs = (provisions || []).filter((p) => isCondRepProvision(p, repsType));
   // Gather tiers from any matching provisions — remember which provision
@@ -4594,8 +4707,14 @@ function BringdownTable({ provisions, repsType }) {
 
   // Group higher tier entries by standard label so all reps under the same
   // standard render together. Each entry contributes its reps_covered text
-  // + any matched REP provision names.
+  // + any matched REP provision names. Also captures the matched provisions
+  // themselves so we can wire the names as buttons that jump to the source.
   const higherByStandard = new Map();
+  const namesToProvs = new Map(); // lowercase name -> provision
+  for (const rep of repProvs) {
+    const nm = String(rep.category || '').toLowerCase().trim();
+    if (nm) namesToProvs.set(nm, rep);
+  }
   for (const entry of higherEntries) {
     const { tier: t } = entry;
     const stdLabel = tierStdLabel(t);
@@ -4654,7 +4773,25 @@ function BringdownTable({ provisions, repsType }) {
                     <div className="text-sm leading-relaxed font-medium">{stdLabel}</div>
                     {nameList.length > 0 && (
                       <div className="text-[11px] text-inkMid mt-0.5">
-                        {nameList.join(', ')}
+                        {nameList.map((nm, i) => {
+                          const prov = namesToProvs.get(String(nm).toLowerCase().trim());
+                          return (
+                            <span key={nm}>
+                              {i > 0 && ', '}
+                              {prov && onSelectProvision ? (
+                                <button
+                                  type="button"
+                                  onClick={() => onSelectProvision(prov)}
+                                  className="text-accent hover:underline"
+                                >
+                                  {nm}
+                                </button>
+                              ) : (
+                                <span>{nm}</span>
+                              )}
+                            </span>
+                          );
+                        })}
                       </div>
                     )}
                     {nameList.length === 0 && bucket.reps.length > 0 && (
@@ -4800,6 +4937,181 @@ function isMaeDefinitionProvision(p) {
   const code = String(meta.code || p?.code || '');
   if (/MAE/i.test(code) && /(DEF|MATERIAL|ADVERSE)/i.test(code)) return true;
   return false;
+}
+
+/* ─── REP knowledge note: italic line above the REP table reading
+ *     "Knowledge standard: <KNOWLEDGE_STANDARDS label or italic 'Not specified'>".
+ *     Pulled from the first REP provision with non-null `knowledgeStandard`. */
+function RepKnowledgeNote({ provisions }) {
+  let label = null;
+  for (const p of provisions || []) {
+    const f = getStructuredFeatures(p) || {};
+    const raw = isCitableValue(f.knowledgeStandard) ? getCitableValue(f.knowledgeStandard) : f.knowledgeStandard;
+    if (!raw) continue;
+    if (isTaggedItem(raw)) {
+      label = resolveTaggedLabel('knowledgeStandard', raw) || raw.label || raw.code;
+    } else if (typeof raw === 'string') {
+      label = raw;
+    }
+    if (label) break;
+  }
+  return (
+    <p className="text-[11px] font-ui italic text-inkMid px-1">
+      Knowledge standard: {label ? <span className="text-ink not-italic">{label}</span> : <span className="text-inkFaint">Not specified</span>}
+    </p>
+  );
+}
+
+/* ─── REP General Exceptions table: bringdown-style. Rows = SEC filings
+ *     carve-out (scope + lookback + excluded sections + carved-out reps),
+ *     schedule references, materiality scrape language, materiality scrape
+ *     applies-to. Each empty row renders "Not present in this agreement". */
+function RepGeneralExceptionsTable({ provisions }) {
+  const pickKey = (key) => {
+    for (const p of provisions || []) {
+      const f = getStructuredFeatures(p) || {};
+      const raw = f[key];
+      if (raw === null || raw === undefined || raw === '' || raw === false) continue;
+      if (Array.isArray(raw) && raw.length === 0) continue;
+      return raw;
+    }
+    return null;
+  };
+  const renderVal = (key, raw) => {
+    if (raw === null || raw === undefined) {
+      return <span className="italic text-inkFaint">Not present in this agreement</span>;
+    }
+    return renderFeatureCell(key, raw);
+  };
+  const rows = [
+    { label: 'SEC Filings — Scope', key: 'secFilingsExceptionScope' },
+    { label: 'SEC Filings — Lookback (months)', key: 'secFilingsLookbackMonths' },
+    { label: 'SEC Filings — Excluded sections', key: 'secFilingsExcludedSections' },
+    { label: 'SEC Filings — Carved-out reps', key: 'secFilingsCarvedOutReps' },
+    { label: 'Disclosure schedules (required)', key: 'disclosureSchedulesRequired' },
+    { label: 'Disclosure schedules (exception)', key: 'disclosureSchedulesException' },
+    { label: 'Materiality scrape language', key: 'materialityScrapeLanguage' },
+    { label: 'Materiality scrape applies to', key: 'maeQualifiedReps' },
+  ];
+  return (
+    <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+      <div className="px-3 py-2 bg-bg/60 border-b border-border">
+        <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+          General Exceptions
+        </p>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="min-w-full text-xs font-ui">
+          <thead className="bg-bg/60 border-b border-border">
+            <tr>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[260px]">Item</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Details</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {rows.map((r) => {
+              const v = pickKey(r.key);
+              return (
+                <tr key={r.label} className="align-top">
+                  <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">{r.label}</td>
+                  <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">{renderVal(r.key, v)}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+/* ─── REP Material Contracts table: only rendered when a REP-T-MATERIAL-CONTRACTS
+ *     provision (or any REP provision with materialContractsBuckets) is present.
+ *     Columns: Bucket | Threshold | Notes. */
+function RepMaterialContractsTable({ provisions, onSelectProvision }) {
+  // Find the source provision: prefer one whose code or category matches.
+  let source = null;
+  for (const p of provisions || []) {
+    const meta = getAiMetadata(p) || {};
+    const code = String(meta.code || p.code || '');
+    if (code === 'REP-T-MATERIAL-CONTRACTS') { source = p; break; }
+    if (/material\s+contracts/i.test(p.category || '')) { source = p; break; }
+  }
+  if (!source) return null;
+  const f = getStructuredFeatures(source) || {};
+  const buckets = Array.isArray(f.materialContractsBuckets) ? f.materialContractsBuckets : [];
+  const thresholds = Array.isArray(f.materialContractsDollarThresholds) ? f.materialContractsDollarThresholds : [];
+  if (buckets.length === 0 && thresholds.length === 0) return null;
+  // Build a per-bucket threshold lookup. The thresholds array may carry
+  // { bucket, threshold } objects keyed by code or label.
+  const threshByCode = new Map();
+  for (const t of thresholds) {
+    if (!t || typeof t !== 'object') continue;
+    const k = String(t.bucket || t.code || '').toUpperCase();
+    threshByCode.set(k, t.threshold || t.value || null);
+  }
+  const redactionsPermittedRaw = f.materialContractsRedactionsPermitted;
+  const redactionsDef = f.permittedRedactionsDefinition;
+  return (
+    <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+      <div className="px-3 py-2 bg-bg/60 border-b border-border flex items-center justify-between">
+        <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+          Material Contracts
+        </p>
+        {onSelectProvision && (
+          <button
+            type="button"
+            onClick={() => onSelectProvision(source)}
+            className="text-[10px] font-ui text-accent hover:underline"
+          >
+            view source
+          </button>
+        )}
+      </div>
+      <table className="min-w-full text-xs font-ui">
+        <thead className="bg-bg/60 border-b border-border">
+          <tr>
+            <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider w-[280px]">Bucket</th>
+            <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider w-[180px]">Threshold</th>
+            <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Notes</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border">
+          {buckets.length === 0 ? (
+            <tr>
+              <td className="px-3 py-2 italic text-inkFaint" colSpan={3}>No buckets extracted</td>
+            </tr>
+          ) : buckets.map((b, i) => {
+            const code = isTaggedItem(b) ? String(b.code).toUpperCase() : null;
+            const label = isTaggedItem(b)
+              ? (resolveTaggedLabel('materialContractsBuckets', b) || b.label || b.code)
+              : String(b);
+            const threshold = code ? (threshByCode.get(code) || (thresholds[i]?.threshold)) : (thresholds[i]?.threshold);
+            return (
+              <tr key={i} className="align-top">
+                <td className="px-3 py-2 text-ink font-medium">{label}</td>
+                <td className="px-3 py-2 text-ink">{threshold || <span className="italic text-inkFaint">—</span>}</td>
+                <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
+                  {isTaggedItem(b) && b.text ? b.text : <span className="italic text-inkFaint">—</span>}
+                </td>
+              </tr>
+            );
+          })}
+          {(redactionsPermittedRaw !== undefined || redactionsDef) && (
+            <tr className="align-top bg-bg/30">
+              <td className="px-3 py-2 text-ink font-medium">Redactions permitted</td>
+              <td className="px-3 py-2 text-ink">
+                {redactionsPermittedRaw === true ? 'Yes' : redactionsPermittedRaw === false ? 'No' : <span className="italic text-inkFaint">—</span>}
+              </td>
+              <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
+                {redactionsDef || <span className="italic text-inkFaint">—</span>}
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
 }
 
 function MaeDefinitionSummary({ allProvisions, onSelectProvision }) {
@@ -5093,6 +5405,27 @@ function ProvisionTable({ provisions, type, onSelectProvision }) {
                   </td>
                   {columns.map((k) => {
                     const raw = features[k];
+                    // REP synthetic: rolled-up "Specific Features" column.
+                    if ((type === 'REP-T' || type === 'REP-B') && k === 'specificFeatures') {
+                      const cell = renderRepSpecificFeaturesCell(p);
+                      return (
+                        <td key={k} className="px-3 py-2 align-top max-w-[360px] text-ink">
+                          {cell || <span className="text-inkFaint italic">—</span>}
+                        </td>
+                      );
+                    }
+                    // REP synthetic: lookback period from secFilingsLookbackMonths.
+                    if ((type === 'REP-T' || type === 'REP-B') && k === 'lookbackPeriod') {
+                      const months = features.secFilingsLookbackMonths
+                        ?? (features.lookbackPeriod ? null : null);
+                      const txt = features.lookbackPeriod
+                        || computeLookbackText(months, p?.deal?.announce_date || p?.deal_announce_date || null);
+                      return (
+                        <td key={k} className="px-3 py-2 align-top max-w-[200px] text-ink">
+                          {txt ? <span>{txt}</span> : <span className="text-inkFaint italic">—</span>}
+                        </td>
+                      );
+                    }
                     // TERMR-OUTSIDE — synthesize the "Term" cell (mainConcept)
                     // from outside-date + extension fields into a single
                     // readable string. Other cells render normally.
@@ -7848,7 +8181,23 @@ export default function ReviewPage() {
                                 />
                               )}
                               {(type === 'REP-T' || type === 'REP-B') && (
-                                <BringdownTable provisions={provisions} repsType={type} />
+                                <BringdownTable
+                                  provisions={provisions}
+                                  repsType={type}
+                                  onSelectProvision={handleEditProvision}
+                                />
+                              )}
+                              {(type === 'REP-T' || type === 'REP-B') && (
+                                <RepKnowledgeNote provisions={rest} />
+                              )}
+                              {(type === 'REP-T' || type === 'REP-B') && (
+                                <RepGeneralExceptionsTable provisions={rest} />
+                              )}
+                              {type === 'REP-T' && (
+                                <RepMaterialContractsTable
+                                  provisions={rest}
+                                  onSelectProvision={handleEditProvision}
+                                />
                               )}
                               {type === 'MAE-DEF' && (
                                 <MaeDefinitionSummary
@@ -7864,7 +8213,7 @@ export default function ReviewPage() {
                               )}
                               {type !== 'DEF' && type !== 'MAE-DEF' && (() => {
                                 const restAugmented = (type === 'REP-T' || type === 'REP-B')
-                                  ? augmentRepsWithExpectedPlaceholders(rest, type)
+                                  ? augmentRepsWithExpectedPlaceholders(rest, type, provisions)
                                   : rest;
                                 if (!restAugmented || restAugmented.length === 0) return null;
                                 return (
