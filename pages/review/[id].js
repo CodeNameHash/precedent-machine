@@ -3130,6 +3130,41 @@ function StructTable({ provisions, onSelectProvision }) {
     if (heroDealStructure && heroMergerForm) break;
   }
 
+  // Heuristic fallback when the extractor didn't populate the canonical
+  // fields: scan the union of provision text for unambiguous structural
+  // signals. Conservative — only sets values where the language is
+  // unmistakable, otherwise leaves the slot empty so the user can tell the
+  // extractor needs tuning.
+  if (!heroDealStructure || !heroMergerForm) {
+    const joined = provisions
+      .map((p) => (p.full_text || '').trim())
+      .filter(Boolean)
+      .join('\n\n');
+    if (joined) {
+      if (!heroDealStructure) {
+        if (/\bTender\s+Offer\b/i.test(joined) || /\bExchange\s+Offer\b/i.test(joined)) {
+          heroDealStructure = 'Two-step Tender Offer';
+        } else if (/\bScheme\s+of\s+Arrangement\b/i.test(joined)) {
+          heroDealStructure = 'Scheme of Arrangement';
+        } else if (/\bAsset\s+Purchase\b/i.test(joined)) {
+          heroDealStructure = 'Asset Purchase';
+        } else if (/\bagreement\s+and\s+plan\s+of\s+merger\b/i.test(joined)) {
+          heroDealStructure = 'One-step Merger';
+        }
+      }
+      if (!heroMergerForm) {
+        // "Merger Sub shall merge with and into Company; Company is surviving"
+        // is the canonical reverse-triangular form.
+        const subIntoCompany = /(?:Merger\s+Sub|Sub).{0,80}?merge\s+with\s+and\s+into\s+(?:the\s+)?Company/i.test(joined);
+        const companyIntoParent = /(?:the\s+)?Company.{0,80}?merge\s+with\s+and\s+into\s+(?:Parent|Acquir\w+|Buyer)/i.test(joined);
+        const companyIntoSub = /(?:the\s+)?Company.{0,80}?merge\s+with\s+and\s+into\s+(?:Merger\s+Sub|Sub)/i.test(joined);
+        if (subIntoCompany) heroMergerForm = 'Reverse Triangular Merger';
+        else if (companyIntoSub) heroMergerForm = 'Forward Triangular Merger';
+        else if (companyIntoParent) heroMergerForm = 'Direct Merger';
+      }
+    }
+  }
+
   // For "The Merger" we just show mergerForm; for "Closing" we show
   // closingLocation + closingTiming. Everything else falls back to a generic
   // mainConcept view.
