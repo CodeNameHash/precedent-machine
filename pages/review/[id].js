@@ -507,7 +507,18 @@ function getCitableText(v) {
   return quotes.length > 0 ? quotes[0] : null;
 }
 
-const EvidenceContext = createContext({ showEvidence: null });
+const EvidenceContext = createContext({
+  showEvidence: null,
+  // P5 item 7: selection-mode for picking evidence by selecting text in the
+  // FullDocumentView. selectionMode is { active, onSelect, label } or null.
+  selectionMode: null,
+  startSelectionMode: null,
+  endSelectionMode: null,
+});
+
+function useEvidenceSelectionMode() {
+  return useContext(EvidenceContext);
+}
 
 function useShowEvidence() {
   const ctx = useContext(EvidenceContext);
@@ -7543,6 +7554,79 @@ function FullDocumentView({
   const containerRef = useRef(null);
   const [reselectSelection, setReselectSelection] = useState(null);
 
+  // P5 item 7: evidence-selection mode (separate from reselect-text mode).
+  // Pulls selectionMode from EvidenceContext so the floating bar + mouse-up
+  // listener kick in whenever the editor activated selection capture.
+  const { selectionMode, endSelectionMode } = useEvidenceSelectionMode();
+  const [evidenceSelection, setEvidenceSelection] = useState(null);
+  const evidenceModeActive = !!(selectionMode && selectionMode.active);
+
+  useEffect(() => {
+    if (!evidenceModeActive) {
+      setEvidenceSelection(null);
+      return undefined;
+    }
+    const handleSelectionChange = () => {
+      const sel = typeof window !== 'undefined' ? window.getSelection() : null;
+      if (!sel || sel.isCollapsed) {
+        setEvidenceSelection(null);
+        return;
+      }
+      const text = sel.toString();
+      if (!text || !text.trim()) {
+        setEvidenceSelection(null);
+        return;
+      }
+      if (!containerRef.current || !sel.anchorNode || !containerRef.current.contains(sel.anchorNode)) {
+        return;
+      }
+      try {
+        const range = sel.getRangeAt(0);
+        const rect = range.getBoundingClientRect();
+        setEvidenceSelection({ text: text.trim(), rect });
+      } catch {
+        setEvidenceSelection(null);
+      }
+    };
+    const handleKey = (e) => {
+      if (e.key === 'Escape') {
+        if (typeof window !== 'undefined') {
+          const sel = window.getSelection();
+          if (sel) sel.removeAllRanges();
+        }
+        setEvidenceSelection(null);
+        if (endSelectionMode) endSelectionMode();
+      }
+    };
+    document.addEventListener('selectionchange', handleSelectionChange);
+    document.addEventListener('keydown', handleKey);
+    return () => {
+      document.removeEventListener('selectionchange', handleSelectionChange);
+      document.removeEventListener('keydown', handleKey);
+    };
+  }, [evidenceModeActive, endSelectionMode]);
+
+  const confirmEvidenceSelection = () => {
+    if (!evidenceSelection || !selectionMode) return;
+    const text = evidenceSelection.text;
+    if (typeof window !== 'undefined') {
+      const sel = window.getSelection();
+      if (sel) sel.removeAllRanges();
+    }
+    setEvidenceSelection(null);
+    if (selectionMode.onSelect) selectionMode.onSelect(text);
+    if (endSelectionMode) endSelectionMode();
+  };
+
+  const cancelEvidenceSelection = () => {
+    if (typeof window !== 'undefined') {
+      const sel = window.getSelection();
+      if (sel) sel.removeAllRanges();
+    }
+    setEvidenceSelection(null);
+    if (endSelectionMode) endSelectionMode();
+  };
+
   // P5 item 4: multi-highlight cycle state. When the highlighted quote matches
   // in N>1 text nodes we render a floating chevron ("1 / N") that lets the
   // user prev/next through the matches. activeMatchIdx tracks the current
@@ -8328,6 +8412,31 @@ function FullDocumentView({
 
       {/* Document body */}
       <div ref={containerRef} className="relative p-6 md:p-12 max-h-[80vh] overflow-y-auto">
+        {/* P5 item 7: evidence-selection mode floating bar. */}
+        {evidenceModeActive && (
+          <div className="sticky top-0 z-30 bg-amber-100 border border-amber-300 rounded-md shadow-md px-3 py-2 mb-3 flex items-center justify-between text-xs font-ui">
+            <span className="text-amber-900">
+              Selecting evidence for: <span className="font-semibold">{selectionMode?.label || 'evidence'}</span>. Highlight text in the document, then click "Use selection".
+            </span>
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={confirmEvidenceSelection}
+                disabled={!evidenceSelection}
+                className="px-2 py-1 text-[11px] bg-amber-600 text-white rounded hover:bg-amber-700 disabled:opacity-50"
+              >
+                Use selection
+              </button>
+              <button
+                type="button"
+                onClick={cancelEvidenceSelection}
+                className="px-2 py-1 text-[11px] border border-amber-400 text-amber-900 rounded hover:bg-amber-200"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
         {/* P5 item 4: multi-match chevron cycle. Renders only when the current
             evidence quote matches in >1 places in the document. Sticks to the
             top-right of the scrolling viewport. */}
@@ -8772,25 +8881,35 @@ function FeatureFieldEditor({ field, value, onChange, onAddCustomOption }) {
     const onInnerChange = (next) => {
       onChange(serialize(next, wrapped.quotes));
     };
-    const updateQuoteAt = (idx, text) => {
-      const next = [...wrapped.quotes];
-      next[idx] = text;
-      onChange(serialize(wrapped.value, next));
-    };
     const removeQuoteAt = (idx) => {
       const next = wrapped.quotes.filter((_, i) => i !== idx);
       onChange(serialize(wrapped.value, next));
     };
-    const addQuote = () => {
-      const next = [...wrapped.quotes, ''];
-      // Persist as { value, quotes: [...] } including the new empty entry so
-      // the textarea is controlled. Empty entries are filtered on next edit.
-      onChange({ value: wrapped.value ?? null, quotes: next });
+
+    // P5 item 7: evidence is added EXCLUSIVELY by selecting text in the
+    // FullDocumentView (selection mode). The chip below each evidence entry
+    // shows the quote (truncated) with a × Remove affordance. Legacy
+    // typed-text evidence still renders as chips — re-edit requires
+    // re-selection in the doc.
+    const evidenceCtx = useEvidenceSelectionMode();
+    const startSelectionMode = evidenceCtx && evidenceCtx.startSelectionMode;
+    const fieldLabel = humanizeKey(field.key);
+    const handleAddEvidence = () => {
+      if (!startSelectionMode) return;
+      startSelectionMode({
+        label: fieldLabel,
+        onSelect: (text) => {
+          if (!text || !text.trim()) return;
+          const next = [...wrapped.quotes, text.trim()];
+          onChange(serialize(wrapped.value, next));
+        },
+      });
     };
 
-    // Render: if no quotes yet, still show ONE textarea (existing UX) so the
-    // user can type without first clicking "Add quote".
-    const visibleQuotes = wrapped.quotes.length > 0 ? wrapped.quotes : [''];
+    const truncate = (s, n = 80) => {
+      const t = String(s || '').trim().replace(/\s+/g, ' ');
+      return t.length > n ? t.slice(0, n) + '…' : t;
+    };
 
     return (
       <div className="space-y-1">
@@ -8798,39 +8917,38 @@ function FeatureFieldEditor({ field, value, onChange, onAddCustomOption }) {
         <label className="block text-[10px] font-ui text-amber-700 italic">
           Evidence (verbatim quotes from the agreement)
         </label>
-        <div className="space-y-1.5">
-          {visibleQuotes.map((q, idx) => (
-            <div key={idx} className="relative">
-              <textarea
-                value={q}
-                onChange={(e) => updateQuoteAt(idx, e.target.value)}
-                rows={2}
-                placeholder={`Quote ${idx + 1} — paste the supporting sentence here...`}
-                className="w-full border border-amber-200 rounded px-2 py-1 pr-7 text-[11px] font-ui bg-amber-50/40 focus:outline-none focus:ring-1 focus:ring-amber-400"
-              />
-              <span className="absolute top-0.5 left-1.5 text-[9px] font-ui text-amber-700/70 uppercase tracking-wider pointer-events-none">
-                Quote {idx + 1}
+        <div className="space-y-1">
+          {wrapped.quotes.length === 0 && (
+            <p className="text-[10px] font-ui italic text-inkFaint">No evidence selected yet.</p>
+          )}
+          {wrapped.quotes.map((q, idx) => (
+            <div
+              key={idx}
+              className="flex items-start gap-1 border border-amber-200 bg-amber-50/40 rounded px-2 py-1"
+              title={q}
+            >
+              <span className="text-[11px] font-ui text-amber-900 flex-1 break-words">
+                {truncate(q)}
               </span>
-              {(wrapped.quotes.length > 0 || q) && (
-                <button
-                  type="button"
-                  onClick={() => removeQuoteAt(idx)}
-                  className="absolute top-1 right-1 w-5 h-5 inline-flex items-center justify-center rounded text-amber-600 hover:bg-amber-100 hover:text-amber-800 text-xs font-ui"
-                  title="Remove this quote"
-                  aria-label="Remove quote"
-                >
-                  ×
-                </button>
-              )}
+              <button
+                type="button"
+                onClick={() => removeQuoteAt(idx)}
+                className="w-5 h-5 inline-flex items-center justify-center rounded text-amber-600 hover:bg-amber-100 hover:text-amber-800 text-xs font-ui shrink-0"
+                title="Remove this quote"
+                aria-label="Remove quote"
+              >
+                ×
+              </button>
             </div>
           ))}
         </div>
         <button
           type="button"
-          onClick={addQuote}
-          className="mt-1 inline-flex items-center gap-1 text-[10px] font-ui text-amber-700 hover:text-amber-900 hover:underline"
+          onClick={handleAddEvidence}
+          disabled={!startSelectionMode}
+          className="mt-1 inline-flex items-center gap-1 text-[10px] font-ui text-amber-700 hover:text-amber-900 hover:underline disabled:opacity-50"
         >
-          + Add quote
+          + Add evidence (select in document)
         </button>
       </div>
     );
@@ -9956,7 +10074,23 @@ export default function ReviewPage() {
     setHighlightedQuoteNonce((n) => n + 1);
     setActiveTab('document');
   }, []);
-  const evidenceCtxValue = useMemo(() => ({ showEvidence }), [showEvidence]);
+
+  /* P5 item 7: evidence selection-mode state. When `selectionMode` is set,
+   * the FullDocumentView listens for mouse-up + selection and, on Confirm,
+   * calls `selectionMode.onSelect(text)` then clears the mode. */
+  const [selectionMode, setSelectionMode] = useState(null);
+  const startSelectionMode = useCallback(({ onSelect, label }) => {
+    setSelectionMode({ active: true, onSelect, label: label || 'evidence' });
+    setActiveTab('document');
+  }, []);
+  const endSelectionMode = useCallback(() => {
+    setSelectionMode(null);
+  }, []);
+
+  const evidenceCtxValue = useMemo(
+    () => ({ showEvidence, selectionMode, startSelectionMode, endSelectionMode }),
+    [showEvidence, selectionMode, startSelectionMode, endSelectionMode],
+  );
 
   /* ── P5 item 8: deal-scoped custom taxonomy extensions ────────────────── */
   const customTaxonomyCtxValue = useMemo(() => ({
