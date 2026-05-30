@@ -503,8 +503,8 @@ const FEATURE_DISPLAY_ORDER = {
   //     renderSpecificFeaturesCell() — collapses absenceOfChangesType /
   //     undisclosedLiabilitiesExceptions / materialContractsRedactionsPermitted
   //     / topCustomersSuppliersDefinition / etc. into one <dl> per row.
-  'REP-T': ['materialityQualifier', 'survivalPeriod', 'dollarThreshold', 'lookbackPeriod', 'specificFeatures'],
-  'REP-B': ['materialityQualifier', 'survivalPeriod', 'dollarThreshold', 'lookbackPeriod', 'specificFeatures'],
+  'REP-T': ['materialityQualifier', 'dollarThreshold', 'lookbackPeriod', 'specificFeatures'],
+  'REP-B': ['materialityQualifier', 'dollarThreshold', 'lookbackPeriod', 'specificFeatures'],
   COV: ['mainConcept', 'accessScope', 'indemnificationPeriod', 'employeeBenefitPeriod', 'financingCooperation', 'cvrIncluded'],
   MISC: ['mainConcept', 'governingLaw', 'jurisdictionExclusive', 'juryWaiver', 'specificPerformance', 'thirdPartyBeneficiaryExceptions'],
   OTHER: ['mainConcept', 'summary', 'crossReferences'],
@@ -2861,8 +2861,48 @@ const HIDDEN_TABLE_COLUMNS = {
   // anti-reliance, parent litigation/ownership/brokers) belong as their own
   // rep rows via sub-codes (REP-B-FUNDS, REP-B-SOLVENCY, REP-B-ANTIRELIANCE,
   // etc.), not as boolean columns on every rep. Hide them defensively.
-  'REP-T': ['mainConcept', 'crossReferences', 'linkedBringDownStandard', 'solvencyRepIncluded', 'solvency_rep_included', 'financingRepIncluded', 'financing_rep_included', 'materialityScrape', 'materiality_scrape', 'bringDownStandard', 'bring_down_standard', 'scheduleReference', 'schedule_reference', 'fundamentalRep', 'fundamental_rep', 'sufficientFundsRepPresent', 'sufficient_funds_rep_present', 'sufficientFundsRepDetails', 'sufficient_funds_rep_details', 'solvencyRepPresent', 'solvency_rep_present', 'solvencyRepDetails', 'solvency_rep_details', 'antiRelianceRepPresent', 'anti_reliance_rep_present', 'antiRelianceRepText', 'anti_reliance_rep_text', 'parentLitigationRepPresent', 'parent_litigation_rep_present', 'parentOwnershipRepPresent', 'parent_ownership_rep_present', 'parentBrokersRepPresent', 'parent_brokers_rep_present'],
-  'REP-B': ['mainConcept', 'crossReferences', 'linkedBringDownStandard', 'solvencyRepIncluded', 'solvency_rep_included', 'financingRepIncluded', 'financing_rep_included', 'materialityScrape', 'materiality_scrape', 'bringDownStandard', 'bring_down_standard', 'scheduleReference', 'schedule_reference', 'fundamentalRep', 'fundamental_rep', 'sufficientFundsRepPresent', 'sufficient_funds_rep_present', 'sufficientFundsRepDetails', 'sufficient_funds_rep_details', 'solvencyRepPresent', 'solvency_rep_present', 'solvencyRepDetails', 'solvency_rep_details', 'antiRelianceRepPresent', 'anti_reliance_rep_present', 'antiRelianceRepText', 'anti_reliance_rep_text', 'parentLitigationRepPresent', 'parent_litigation_rep_present', 'parentOwnershipRepPresent', 'parent_ownership_rep_present', 'parentBrokersRepPresent', 'parent_brokers_rep_present'],
+  'REP-T': ['mainConcept', 'crossReferences', 'linkedBringDownStandard', 'solvencyRepIncluded', 'solvency_rep_included', 'financingRepIncluded', 'financing_rep_included', 'materialityScrape', 'materiality_scrape', 'bringDownStandard', 'bring_down_standard', 'scheduleReference', 'schedule_reference', 'fundamentalRep', 'fundamental_rep', 'sufficientFundsRepPresent', 'sufficient_funds_rep_present', 'sufficientFundsRepDetails', 'sufficient_funds_rep_details', 'solvencyRepPresent', 'solvency_rep_present', 'solvencyRepDetails', 'solvency_rep_details', 'antiRelianceRepPresent', 'anti_reliance_rep_present', 'antiRelianceRepText', 'anti_reliance_rep_text', 'parentLitigationRepPresent', 'parent_litigation_rep_present', 'parentOwnershipRepPresent', 'parent_ownership_rep_present', 'parentBrokersRepPresent', 'parent_brokers_rep_present',
+    // Fully-removed REP fields (per P2 cleanup) — hidden from per-row table:
+    'survivalPeriod', 'survival_period',
+    'secFilingsExceptionScope', 'sec_filings_exception_scope',
+    'secFilingsLookbackMonths', 'sec_filings_lookback_months',
+    'secFilingsExcludedSections', 'sec_filings_excluded_sections',
+    'secFilingsCarvedOutReps', 'sec_filings_carved_out_reps',
+    'knowledgeStandard', 'knowledge_standard',
+    'disclosureSchedulesRequired', 'disclosure_schedules_required',
+    'disclosureSchedulesException', 'disclosure_schedules_exception',
+    'maeQualifiedReps', 'mae_qualified_reps',
+    'topCustomersSuppliersRepPresent', 'top_customers_suppliers_rep_present',
+    'topCustomersSuppliersDefinition', 'top_customers_suppliers_definition',
+    'materialContractsBuckets', 'material_contracts_buckets',
+    'materialContractsDollarThresholds', 'material_contracts_dollar_thresholds',
+    'materialContractsRedactionsPermitted', 'material_contracts_redactions_permitted',
+    'permittedRedactionsDefinition', 'permitted_redactions_definition',
+    'materialityScrapePresent', 'materiality_scrape_present',
+    'materialityScrapeLanguage', 'materiality_scrape_language',
+    'maeLimbs', 'mae_limbs',
+  ],
+  'REP-B': ['mainConcept', 'crossReferences', 'linkedBringDownStandard', 'solvencyRepIncluded', 'solvency_rep_included', 'financingRepIncluded', 'financing_rep_included', 'materialityScrape', 'materiality_scrape', 'bringDownStandard', 'bring_down_standard', 'scheduleReference', 'schedule_reference', 'fundamentalRep', 'fundamental_rep', 'sufficientFundsRepPresent', 'sufficient_funds_rep_present', 'sufficientFundsRepDetails', 'sufficient_funds_rep_details', 'solvencyRepPresent', 'solvency_rep_present', 'solvencyRepDetails', 'solvency_rep_details', 'antiRelianceRepPresent', 'anti_reliance_rep_present', 'antiRelianceRepText', 'anti_reliance_rep_text', 'parentLitigationRepPresent', 'parent_litigation_rep_present', 'parentOwnershipRepPresent', 'parent_ownership_rep_present', 'parentBrokersRepPresent', 'parent_brokers_rep_present',
+    // Fully-removed REP fields (per P2 cleanup) — hidden from per-row table:
+    'survivalPeriod', 'survival_period',
+    'secFilingsExceptionScope', 'sec_filings_exception_scope',
+    'secFilingsLookbackMonths', 'sec_filings_lookback_months',
+    'secFilingsExcludedSections', 'sec_filings_excluded_sections',
+    'secFilingsCarvedOutReps', 'sec_filings_carved_out_reps',
+    'knowledgeStandard', 'knowledge_standard',
+    'disclosureSchedulesRequired', 'disclosure_schedules_required',
+    'disclosureSchedulesException', 'disclosure_schedules_exception',
+    'maeQualifiedReps', 'mae_qualified_reps',
+    'topCustomersSuppliersRepPresent', 'top_customers_suppliers_rep_present',
+    'topCustomersSuppliersDefinition', 'top_customers_suppliers_definition',
+    'materialContractsBuckets', 'material_contracts_buckets',
+    'materialContractsDollarThresholds', 'material_contracts_dollar_thresholds',
+    'materialContractsRedactionsPermitted', 'material_contracts_redactions_permitted',
+    'permittedRedactionsDefinition', 'permitted_redactions_definition',
+    'materialityScrapePresent', 'materiality_scrape_present',
+    'materialityScrapeLanguage', 'materiality_scrape_language',
+    'maeLimbs', 'mae_limbs',
+  ],
   COND: ['certificationRequired', 'dollarThreshold', 'scheduleReference', 'bringDownTiers', 'maeConditionStandalone', 'maeStandaloneCondition', 'dissentingSharesThreshold', 'dissentingShares', 'dissentingSharesPct'],
   'COND-M': ['certificationRequired', 'dollarThreshold', 'scheduleReference', 'bringDownTiers', 'maeConditionStandalone', 'maeStandaloneCondition', 'dissentingSharesThreshold', 'dissentingShares', 'dissentingSharesPct'],
   'COND-B': ['certificationRequired', 'dollarThreshold', 'scheduleReference', 'bringDownTiers', 'maeConditionStandalone', 'maeStandaloneCondition', 'dissentingSharesThreshold', 'dissentingShares', 'dissentingSharesPct'],
@@ -2970,27 +3010,6 @@ const REP_SPECIFIC_FEATURE_SPECS = [
     categoryRegex: /undisclosed\s+liabilities|no\s+liabilities/i,
     rows: [
       { label: 'Exceptions', keys: ['undisclosedLiabilitiesExceptions'] },
-    ],
-  },
-  {
-    categoryRegex: /material\s+contracts/i,
-    rows: [
-      { label: 'Redactions permitted', keys: ['materialContractsRedactionsPermitted'] },
-      { label: 'Permitted redactions', keys: ['permittedRedactionsDefinition'] },
-    ],
-  },
-  {
-    categoryRegex: /(?:top|significant|major|key)\s+customers|suppliers/i,
-    rows: [
-      { label: 'Definition', keys: ['topCustomersSuppliersDefinition'] },
-    ],
-  },
-  {
-    categoryRegex: /sec\s+(?:documents|filings|reports)|reports\s+and\s+financial/i,
-    rows: [
-      { label: 'Exception scope', keys: ['secFilingsExceptionScope'] },
-      { label: 'Excluded sections', keys: ['secFilingsExcludedSections'] },
-      { label: 'Carved-out reps', keys: ['secFilingsCarvedOutReps'] },
     ],
   },
 ];
@@ -5759,11 +5778,19 @@ function ProvisionTable({ provisions, type, onSelectProvision }) {
                       );
                     }
                     // REP synthetic: lookback period from secFilingsLookbackMonths.
+                    // Unwrap citable / tagged shapes so we never render [object Object].
                     if ((type === 'REP-T' || type === 'REP-B') && k === 'lookbackPeriod') {
-                      const months = features.secFilingsLookbackMonths
-                        ?? (features.lookbackPeriod ? null : null);
-                      const txt = features.lookbackPeriod
-                        || computeLookbackText(months, p?.deal?.announce_date || p?.deal_announce_date || null);
+                      let lookbackRaw = features.lookbackPeriod;
+                      if (isCitableValue(lookbackRaw)) lookbackRaw = getCitableValue(lookbackRaw);
+                      if (isTaggedItem(lookbackRaw)) {
+                        lookbackRaw = resolveTaggedLabel('lookbackPeriod', lookbackRaw) || lookbackRaw.code;
+                      }
+                      const monthsRaw = isCitableValue(features.secFilingsLookbackMonths)
+                        ? getCitableValue(features.secFilingsLookbackMonths)
+                        : features.secFilingsLookbackMonths;
+                      const txt = (lookbackRaw && typeof lookbackRaw !== 'object')
+                        ? String(lookbackRaw)
+                        : computeLookbackText(monthsRaw, p?.deal?.announce_date || p?.deal_announce_date || null);
                       return (
                         <td key={k} className="px-3 py-2 align-top max-w-[200px] text-ink">
                           {txt ? <span>{txt}</span> : <span className="text-inkFaint italic">—</span>}
