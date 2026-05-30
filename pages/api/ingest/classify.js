@@ -70,6 +70,17 @@ function stripHtml(html) {
     .replace(/<\/div>/gi, '\n')
     .replace(/<\/tr>/gi, '\n')
     .replace(/<\/td>/gi, '\t')
+    // P7 item 15: preserve italic / em / font-style:italic spans by wrapping
+    // their content in «…» markers BEFORE the generic <[^>]+> strip. EDGAR
+    // exhibits print defined terms in italics (the term itself is in italics,
+    // followed by "means..."); without this marker the formatting is lost
+    // and findInlineDefinitions has to rely on a fragile Title-Case heuristic.
+    // The marker is single-line and balanced — won't false-positive on prose.
+    //
+    // Order matters: do the italic-marker substitution first while the tags
+    // are still present, then fall through to the generic tag strip.
+    .replace(/<\s*(?:i|em)(?:\s[^>]*)?>([^<\n]{1,500}?)<\s*\/\s*(?:i|em)\s*>/gi, '«$1»')
+    .replace(/<\s*(?:span|font)(?:\s[^>]*?(?:font-style\s*:\s*italic|class\s*=\s*"?italic)[^>]*)?>([^<\n]{1,500}?)<\s*\/\s*(?:span|font)\s*>/gi, '«$1»')
     .replace(/<[^>]+>/g, '')
     .replace(/&nbsp;/gi, ' ')
     .replace(/&amp;/gi, '&')
@@ -155,6 +166,30 @@ async function runClassifyPhase({ dealId, url, fullTextOverride, sb, client }) {
     by_type[t] = (by_type[t] || 0) + 1;
   }
 
+  // P7 item 19: per-type sub-clause estimates. Helps the classify-summary UI
+  // surface how heavy each type bucket will be in extract. For DEF we run
+  // findInlineDefinitions on each section's text for a definition count.
+  const { findInlineDefinitions } = require('../../../lib/parser-v2/extract');
+  const by_type_estimate = {}; // { type: { sections, sub_clauses, definitions? } }
+  for (const s of sectionsForExtract) {
+    const t = s.provision_type || 'OTHER';
+    if (!by_type_estimate[t]) by_type_estimate[t] = { sections: 0, sub_clauses: 0 };
+    by_type_estimate[t].sections += 1;
+    const text = s.text || s.body || '';
+    // Sub-clause estimate: count "(a)" .. "(z)" markers.
+    const subMatches = text.match(/\n\s*\([a-z]\)\s+/g);
+    if (subMatches) by_type_estimate[t].sub_clauses += subMatches.length;
+    if (t === 'DEF') {
+      try {
+        const defs = findInlineDefinitions(text);
+        if (!by_type_estimate[t].definitions) by_type_estimate[t].definitions = 0;
+        by_type_estimate[t].definitions += defs.length;
+      } catch {
+        // best-effort estimate; ignore failures
+      }
+    }
+  }
+
   // 5. Persist to deal.metadata (compact form — drop big intermediate fields)
   const compactSections = sectionsForExtract.map((s) => ({
     sectionId: `section-${s.startChar ?? s.start ?? 0}`,
@@ -181,6 +216,8 @@ async function runClassifyPhase({ dealId, url, fullTextOverride, sb, client }) {
       classified_sections: compactSections,
       classify_run_at: new Date().toISOString(),
       classify_breakdown: by_type,
+      // P7 item 19: per-type sub-clause / definition estimates.
+      classify_breakdown_estimate: by_type_estimate,
       classify_diagnostics: diagnostics,
       // Reset per-type extract status — new classify means existing extract
       // status is stale. UI will repopulate as extract-type runs.
@@ -200,6 +237,7 @@ async function runClassifyPhase({ dealId, url, fullTextOverride, sb, client }) {
   return {
     sectionsForExtract,
     by_type,
+    by_type_estimate,
     diagnostics,
     section_count: sectionsForExtract.length,
     article_count: (articles && articles.length) || 0,
@@ -241,6 +279,8 @@ export default async function handler(req, res) {
       section_count: result.section_count,
       article_count: result.article_count,
       by_type: result.by_type,
+      // P7 item 19: per-type sub-clause / definition estimates.
+      by_type_estimate: result.by_type_estimate,
       diagnostics: result.diagnostics,
       timing_ms: Date.now() - t0,
     });

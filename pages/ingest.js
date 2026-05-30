@@ -431,11 +431,12 @@ function ClassifyResults({ summary, typeStates, onExtract, onExtractAll, runAllI
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 14 }}>
-        {types.map(({ type, section_count }) => (
+        {types.map(({ type, section_count, estimate }) => (
           <TypeRow
             key={type}
             type={type}
             sectionCount={section_count}
+            estimate={estimate}
             state={typeStates[type] || { status: 'pending' }}
             onExtract={() => onExtract(type)}
             disabled={runAllInFlight}
@@ -471,7 +472,7 @@ function ClassifyResults({ summary, typeStates, onExtract, onExtractAll, runAllI
   );
 }
 
-function TypeRow({ type, sectionCount, state, onExtract, disabled }) {
+function TypeRow({ type, sectionCount, estimate, state, onExtract, disabled }) {
   return (
     <div
       style={{
@@ -493,6 +494,13 @@ function TypeRow({ type, sectionCount, state, onExtract, disabled }) {
         </div>
         <div style={{ fontSize: 11, color: 'var(--ink-light)' }}>
           {sectionCount} {sectionCount === 1 ? 'section' : 'sections'}
+          {/* P7 item 19: surface estimated sub-clauses / definitions (~). */}
+          {estimate && type === 'DEF' && typeof estimate.definitions === 'number' && estimate.definitions > 0 && (
+            <> · ~{estimate.definitions} definitions detected</>
+          )}
+          {estimate && type !== 'DEF' && estimate.sub_clauses > 0 && (
+            <> · ~{estimate.sub_clauses} sub-clauses</>
+          )}
           {state.status === 'done' && (
             <>
               {' '}· {state.inserted} provisions

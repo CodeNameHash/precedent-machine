@@ -70,10 +70,29 @@ export default async function handler(req, res) {
         return acc;
       }, {});
 
+    // P7 item 19: also collapse the sub-clause estimate by parent type.
+    const estimateByType = classifyResult.by_type_estimate || {};
+    const collapsedEstimate = {};
+    for (const [t, est] of Object.entries(estimateByType)) {
+      const k = collapse(t);
+      if (!k) continue;
+      if (!collapsedEstimate[k]) collapsedEstimate[k] = { sections: 0, sub_clauses: 0 };
+      collapsedEstimate[k].sections += est.sections || 0;
+      collapsedEstimate[k].sub_clauses += est.sub_clauses || 0;
+      if (typeof est.definitions === 'number') {
+        collapsedEstimate[k].definitions = (collapsedEstimate[k].definitions || 0) + est.definitions;
+      }
+    }
+
     for (const [t, n] of Object.entries(orderedTypes).sort((a, b) => b[1] - a[1])) {
       if (seen.has(t)) continue;
       seen.add(t);
-      types_to_extract.push({ type: t, section_count: n });
+      types_to_extract.push({
+        type: t,
+        section_count: n,
+        // P7 item 19: surface estimated sub-clauses + definitions to the UI.
+        estimate: collapsedEstimate[t] || null,
+      });
     }
 
     return res.status(200).json({
