@@ -5181,10 +5181,6 @@ function RepGeneralExceptionsTable({ provisions }) {
     { label: 'SEC Filings — Lookback (months)', key: 'secFilingsLookbackMonths' },
     { label: 'SEC Filings — Excluded sections', key: 'secFilingsExcludedSections' },
     { label: 'SEC Filings — Carved-out reps', key: 'secFilingsCarvedOutReps' },
-    { label: 'Disclosure schedules (required)', key: 'disclosureSchedulesRequired' },
-    { label: 'Disclosure schedules (exception)', key: 'disclosureSchedulesException' },
-    { label: 'Materiality scrape language', key: 'materialityScrapeLanguage' },
-    { label: 'Materiality scrape applies to', key: 'maeQualifiedReps' },
   ];
   return (
     <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
