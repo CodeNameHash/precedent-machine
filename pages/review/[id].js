@@ -3549,17 +3549,30 @@ function renderFeatureCell(featureKey, raw) {
  *     packs many fields into a single STRUCT type — this presentation peels
  *     them apart so each row reads as one focused statement. */
 function StructTable({ provisions, onSelectProvision }) {
+  const showEvidence = useShowEvidence();
+
   // Hero pair: dealStructure + mergerForm pulled from the first STRUCT-MERGER
-  // (or any STRUCT provision) that carries them. Rendered above the table.
+  // (or any STRUCT provision) that carries them. Track the SOURCE provision +
+  // citable quote so the synthesized Deal Structure row can link to source
+  // the same way the Merger Form row does.
   let heroDealStructure = null;
   let heroMergerForm = null;
+  let dealStructureSource = null; // { provision, quote }
   for (const p of provisions) {
     const f = getStructuredFeatures(p) || {};
     if (!heroDealStructure && f.dealStructure) {
-      const ds = isCitableValue(f.dealStructure) ? getCitableValue(f.dealStructure) : f.dealStructure;
+      const rawDs = f.dealStructure;
+      const ds = isCitableValue(rawDs) ? getCitableValue(rawDs) : rawDs;
       heroDealStructure = isTaggedItem(ds)
         ? (resolveTaggedLabel('dealStructure', ds) || ds.label || ds.code)
         : String(ds);
+      // Capture the source: prefer citable text, then tagged-item text,
+      // then a 400-char slice of the provision text.
+      const quote =
+        (isCitableValue(rawDs) && getCitableText(rawDs)) ||
+        (isTaggedItem(ds) && ds.text) ||
+        (p.full_text ? p.full_text.slice(0, 400) : null);
+      dealStructureSource = { provision: p, quote };
     }
     if (!heroMergerForm && f.mergerForm) {
       const mf = isCitableValue(f.mergerForm) ? getCitableValue(f.mergerForm) : f.mergerForm;
@@ -3740,10 +3753,25 @@ function StructTable({ provisions, onSelectProvision }) {
 
   // Synthesize a "Deal Structure" row at the very top of the table — this
   // used to live in a separate hero box but the user wants it as a regular
-  // table row in human speech. Synthesized rows have no source provision
-  // (click does nothing) and render the humanized value plainly.
+  // table row in human speech, AND clickable to source like Merger Form.
+  //
+  // Source resolution:
+  //   - When extracted from a STRUCT provision, dealStructureSource carries
+  //     { provision, quote } captured above.
+  //   - For the heuristic fallback (no extracted value), find the "The Merger"
+  //     STRUCT provision and use a short slice as the source quote.
   if (heroDealStructure) {
     const humanized = humanizeDealStructure(heroDealStructure);
+    let src = dealStructureSource;
+    if (!src) {
+      // Heuristic-fallback path: pick the "merger" STRUCT provision (or any
+      // STRUCT provision with text) so the click still jumps somewhere useful.
+      const mergerProv = provisions.find((p) => /merger/i.test(p.category || '') && p.full_text)
+        || provisions.find((p) => p.full_text);
+      if (mergerProv) {
+        src = { provision: mergerProv, quote: mergerProv.full_text.slice(0, 400) };
+      }
+    }
     rows.unshift({
       p: { id: '__synth_deal_structure', category: 'Deal Structure' },
       kind: 'structure',
@@ -3751,7 +3779,24 @@ function StructTable({ provisions, onSelectProvision }) {
       cells: [{
         key: 'dealStructure',
         raw: humanized,
-        render: (raw) => <span className="text-ink">{raw || <span className="italic text-inkFaint">Not specified</span>}</span>,
+        render: (raw) => {
+          if (!raw) {
+            return <span className="italic text-inkFaint">Not specified</span>;
+          }
+          if (src && src.quote) {
+            return (
+              <button
+                type="button"
+                onClick={() => showEvidence(src.quote)}
+                className="text-left text-accent hover:underline font-medium"
+                title="View source"
+              >
+                {raw}
+              </button>
+            );
+          }
+          return <span className="text-ink">{raw}</span>;
+        },
       }],
     });
   }
