@@ -7397,6 +7397,108 @@ function CanonicalConditionDetails({ row, matches, allProvisions, onSelectProvis
   );
 }
 
+/* P8 item 2: small italic banner above the canonical-conditions tables that
+ * summarizes the Frustration-of-Conditions meta-rule when present. Reads
+ * the {frustrationApplies, frustrationTest, frustrationLanguage} features
+ * from the (single) COND-FRUSTRATE provision; clicking [view source] pops
+ * the verbatim language into the FullDocumentView via useShowEvidence. */
+function CondFrustrationBanner({ allProvisions, onSelectProvision }) {
+  const showEvidence = useShowEvidence();
+  // Find the COND-FRUSTRATE provision. Match by code in ai_metadata or on
+  // the provision itself; tolerate the (rare) duplicated case by taking the
+  // first hit.
+  const prov = useMemo(() => {
+    for (const p of allProvisions || []) {
+      const meta = getAiMetadata(p) || {};
+      const code = String(meta.code || p.code || '');
+      if (code === 'COND-FRUSTRATE') return p;
+    }
+    return null;
+  }, [allProvisions]);
+
+  if (!prov) return null;
+  const features = getStructuredFeatures(prov) || {};
+
+  // Unwrap citable wrappers before pulling enum / text values.
+  const unwrap = (v) => (isCitableValue(v) ? getCitableValue(v) : v);
+  const present = unwrap(features.frustrationOfConditionsPresent);
+  if (present === false) return null; // explicit "no rule" — skip.
+
+  const appliesRaw = unwrap(features.frustrationApplies);
+  const testRaw = unwrap(features.frustrationTest);
+  const languageRaw = features.frustrationLanguage;
+  const languageText = (() => {
+    if (typeof languageRaw === 'string') return languageRaw;
+    if (isCitableValue(languageRaw)) {
+      const q = getCitableQuotes(languageRaw);
+      if (q.length > 0) return q[0];
+      const inner = getCitableValue(languageRaw);
+      return typeof inner === 'string' ? inner : null;
+    }
+    return null;
+  })();
+
+  const partyLabel = (() => {
+    const code = typeof appliesRaw === 'object' && appliesRaw ? appliesRaw.code : appliesRaw;
+    switch (code) {
+      case 'MUTUAL': return 'Mutual';
+      case 'PARENT_ONLY': return 'Parent only';
+      case 'COMPANY_ONLY': return 'Company only';
+      default: return null;
+    }
+  })();
+  const testLabel = (() => {
+    const code = typeof testRaw === 'object' && testRaw ? testRaw.code : testRaw;
+    switch (code) {
+      case 'PRIMARY_CAUSE': return 'primarily caused';
+      case 'PRINCIPAL_CAUSE': return 'principal cause';
+      case 'MATERIAL_BREACH': return 'material breach';
+      case 'WILLFUL_BREACH': return 'willful breach';
+      case 'ANY_BREACH': return 'any breach';
+      case 'OTHER': return 'other test';
+      default: return null;
+    }
+  })();
+
+  // Always render the banner when COND-FRUSTRATE is present, even if the
+  // party / test enums weren't extracted. The labeled fallback text keeps
+  // the banner informative either way.
+  const partyText = partyLabel || 'Both parties';
+  const testText = testLabel || 'the test';
+
+  const sourceQuote = languageText || prov.full_text || prov.text || null;
+  const canShowSource = !!(sourceQuote && showEvidence);
+
+  return (
+    <div className="bg-white border border-border rounded-lg shadow-sm px-3 py-2">
+      <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider mb-1">
+        Frustration of Conditions
+      </p>
+      <p className="text-xs font-ui italic text-ink leading-relaxed">
+        {partyText} — neither party may rely on the failure of a condition if
+        that party&rsquo;s {testText} caused the failure.{' '}
+        {canShowSource ? (
+          <button
+            type="button"
+            onClick={() => showEvidence(sourceQuote)}
+            className="not-italic text-accent hover:underline font-medium"
+          >
+            [view source]
+          </button>
+        ) : onSelectProvision ? (
+          <button
+            type="button"
+            onClick={() => onSelectProvision(prov)}
+            className="not-italic text-accent hover:underline font-medium"
+          >
+            [view source]
+          </button>
+        ) : null}
+      </p>
+    </div>
+  );
+}
+
 function CanonicalConditionsTable({ provisions, allProvisions, family, onSelectProvision }) {
   const list = family === 'COND-B' ? CANONICAL_CONDITIONS_B
     : family === 'COND-S' ? CANONICAL_CONDITIONS_S
@@ -7836,6 +7938,15 @@ function ProvisionTable({ provisions, type, onSelectProvision, allProvisions }) 
     const family = (type === 'COND-B' || type === 'COND-S' || type === 'COND-M') ? type : 'COND-M';
     return (
       <div className="space-y-3">
+        {/* P8 item 2: Frustration-of-Conditions banner — renders once at the
+            top of the COND family page when a COND-FRUSTRATE provision is
+            present anywhere in the deal. The sidebar splits COND into
+            Mutual/Buyer/Seller/Modifiers pages, so per-family rendering here
+            == once per page. */}
+        <CondFrustrationBanner
+          allProvisions={allProvisions || provisions}
+          onSelectProvision={onSelectProvision}
+        />
         <CanonicalConditionsTable
           provisions={provisions}
           allProvisions={allProvisions || provisions}
