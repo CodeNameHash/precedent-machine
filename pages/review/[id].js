@@ -4418,6 +4418,7 @@ function renderSummaryRowValue(hit, featureKeyForLookup) {
 function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision, hideProvisionsList, excludeProvisionIds }) {
   const spec = CATEGORY_SUMMARY_FEATURES[type] || [];
   const excludeSet = excludeProvisionIds instanceof Set ? excludeProvisionIds : null;
+  const showEvidence = useShowEvidence();
 
   // For each spec row, resolve its hit. MAE rows with `maeCode` resolve via
   // findCarveoutByCode against features.carveouts (taxonomy-tagged list).
@@ -4476,16 +4477,37 @@ function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision, hide
                   </td>
                 </tr>
               ) : (
-                rows.map((row) => (
-                  <tr key={row.label} className="hover:bg-bg/40 transition-colors">
-                    <td className="px-3 py-2 align-top text-ink font-medium whitespace-nowrap">
-                      {row.label}
-                    </td>
-                    <td className="px-3 py-2 align-top text-ink whitespace-pre-wrap break-words">
-                      {renderSummaryRowValue(row.hit, row.lookupKey)}
-                    </td>
-                  </tr>
-                ))
+                rows.map((row) => {
+                  // Compose a source quote for click-to-source: prefer the
+                  // hit's citable text, then the value's tagged text, then
+                  // the provision's full_text.
+                  const buildQuote = () => {
+                    if (!row.hit) return null;
+                    const v = row.hit.value;
+                    if (isCitableValue(v) && typeof v.text === 'string' && v.text.trim()) return v.text;
+                    if (isTaggedItem(v) && typeof v.text === 'string' && v.text.trim()) return v.text;
+                    const provText = row.hit.provision && row.hit.provision.full_text;
+                    if (typeof provText === 'string' && provText.trim()) return provText.slice(0, 600);
+                    return null;
+                  };
+                  const quote = buildQuote();
+                  const clickable = !!(quote && showEvidence);
+                  const onClick = clickable ? () => showEvidence(quote) : undefined;
+                  return (
+                    <tr key={row.label} className="hover:bg-bg/40 transition-colors">
+                      <td className="px-3 py-2 align-top text-ink font-medium whitespace-nowrap">
+                        {row.label}
+                      </td>
+                      <td
+                        className={`px-3 py-2 align-top text-ink whitespace-pre-wrap break-words ${clickable ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
+                        onClick={onClick}
+                        title={clickable ? 'Click to view in document' : undefined}
+                      >
+                        {renderSummaryRowValue(row.hit, row.lookupKey)}
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>
