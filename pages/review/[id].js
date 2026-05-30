@@ -14,6 +14,8 @@ import {
   isListTaxonomyKey,
   labelForCode,
   MATERIAL_CONTRACT_BUCKET_CODES,
+  IOC_CATEGORY_CODES,
+  IOC_CATEGORY_META,
 } from '../../lib/taxonomy';
 import { getFeaturesForType, PROVISION_TYPES } from '../../lib/rubric';
 import { resolveSectionReference } from '../../lib/section-ref';
@@ -2912,10 +2914,39 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
       </div>
     );
   }
-  // Sort by IOC_CATEGORY_CODES order is non-trivial here since the parser does
-  // not always stamp a canonical category code. Fall back to category string.
-  const sorted = [...negative].sort((a, b) =>
-    String(a.category || '').localeCompare(String(b.category || '')));
+  // P5 item 1: Sort by IOC_CATEGORY_CODES position. For each provision, derive
+  // its canonical category code from features.dollarThresholdsByCategory[0].code
+  // when present; otherwise fuzzy-match the provision.category against the
+  // synonym regexes in IOC_CATEGORY_META. Unmatched rows fall back to
+  // alphabetical (sorted to the tail after canonical-coded rows).
+  const codeOrder = Object.keys(IOC_CATEGORY_CODES);
+  const codeOrderIdx = new Map(codeOrder.map((c, i) => [c, i]));
+  const resolveIocCode = (p) => {
+    const feats = getStructuredFeatures(p) || {};
+    const dt = Array.isArray(feats.dollarThresholdsByCategory) ? feats.dollarThresholdsByCategory : null;
+    if (dt && dt.length > 0) {
+      const c = String((dt[0] && (dt[0].code || dt[0].bucket)) || '').toUpperCase();
+      if (c && codeOrderIdx.has(c)) return c;
+    }
+    const cat = String(p.category || '');
+    if (cat) {
+      for (const [code, entry] of Object.entries(IOC_CATEGORY_META)) {
+        const syns = entry.synonyms || [];
+        for (const re of syns) {
+          if (re.test(cat)) return code;
+        }
+      }
+    }
+    return null;
+  };
+  const sorted = [...negative].sort((a, b) => {
+    const aCode = resolveIocCode(a);
+    const bCode = resolveIocCode(b);
+    const aIdx = aCode ? codeOrderIdx.get(aCode) : Infinity;
+    const bIdx = bCode ? codeOrderIdx.get(bCode) : Infinity;
+    if (aIdx !== bIdx) return aIdx - bIdx;
+    return String(a.category || '').localeCompare(String(b.category || ''));
+  });
 
   // Compose a one-line details summary for a provision.
   const detailsFor = (p) => {
@@ -3305,6 +3336,64 @@ const REP_SPECIFIC_FEATURE_SPECS = [
     categoryRegex: /undisclosed\s+liabilities|no\s+liabilities/i,
     rows: [
       { label: 'Exceptions', keys: ['undisclosedLiabilitiesExceptions'] },
+    ],
+  },
+  // P5 item 2: Extended per-category rolled-up details for additional rep groups.
+  {
+    categoryRegex: /environment/i,
+    rows: [
+      { label: 'Laws', keys: ['environmentalLawsList'] },
+      { label: 'Permits held', keys: ['environmentalPermitsHeld'] },
+      { label: 'Liabilities', keys: ['environmentalLiabilities'] },
+      { label: 'Hazardous materials scope', keys: ['hazardousMaterialsScope'] },
+    ],
+  },
+  {
+    categoryRegex: /intellectual\s+propert(y|ies)|\bip\b/i,
+    rows: [
+      { label: 'Registrations', keys: ['ipRegistrations'] },
+      { label: 'Licenses in', keys: ['ipLicensesIn'] },
+      { label: 'Licenses out', keys: ['ipLicensesOut'] },
+      { label: 'Infringement claims', keys: ['ipInfringementClaims'] },
+      { label: 'Trade-secrets protection', keys: ['ipTradeSecretsProtection'] },
+    ],
+  },
+  {
+    categoryRegex: /erisa|employee\s+benefit\s+plan/i,
+    rows: [
+      { label: 'Plans listed', keys: ['erisaPlansListed'] },
+      { label: 'Compliance', keys: ['erisaCompliance'] },
+      { label: 'Title IV plans', keys: ['erisaTitleIVPlans'] },
+      { label: 'Multiemployer', keys: ['erisaMultiemployer'] },
+      { label: 'Parachute payments', keys: ['erisaParachutePayments'] },
+    ],
+  },
+  {
+    categoryRegex: /tax(es)?\s+(?:matters|representations)?/i,
+    rows: [
+      { label: 'Returns filed', keys: ['taxReturnsFiled'] },
+      { label: 'Audits pending', keys: ['taxAuditsPending'] },
+      { label: 'Closing agreements', keys: ['taxClosingAgreements'] },
+      { label: 'No notices', keys: ['taxNoNotices'] },
+      { label: 'Section 355', keys: ['taxSection355'] },
+      { label: 'Attributes', keys: ['taxAttributes'] },
+    ],
+  },
+  {
+    categoryRegex: /it\s+systems|cyber|information\s+(?:technology|security)/i,
+    rows: [
+      { label: 'Systems scope', keys: ['itSystemsScope'] },
+      { label: 'Cyber incidents', keys: ['cybersecurityIncidents'] },
+      { label: 'Privacy compliance', keys: ['dataPrivacyCompliance'] },
+      { label: 'Personal-info breaches', keys: ['personalInfoBreaches'] },
+    ],
+  },
+  {
+    categoryRegex: /litigation|legal\s+proceedings/i,
+    rows: [
+      { label: 'Pending litigation', keys: ['pendingLitigation'] },
+      { label: 'Government investigations', keys: ['governmentInvestigations'] },
+      { label: 'Outstanding orders', keys: ['outstandingOrders'] },
     ],
   },
 ];
