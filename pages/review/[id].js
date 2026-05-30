@@ -4906,26 +4906,55 @@ function BringdownTable({ provisions, repsType, onSelectProvision }) {
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {generalEntry && (
-              <tr className="align-top">
-                <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">
-                  General Standard
-                </td>
-                <td className="px-3 py-2 text-ink">
-                  <div className="text-sm leading-relaxed">{tierStdLabel(generalEntry.tier)}</div>
-                  {(generalEntry.tier.exceptions || generalEntry.tier.reps_covered) && (
-                    <div className="text-[11px] text-inkMid mt-0.5">
-                      {generalEntry.tier.reps_covered && (
-                        <span className="italic">{generalEntry.tier.reps_covered}</span>
-                      )}
-                      {generalEntry.tier.exceptions && (
-                        <span>{generalEntry.tier.reps_covered ? ' — ' : ''}{generalEntry.tier.exceptions}</span>
-                      )}
-                    </div>
-                  )}
-                </td>
-              </tr>
-            )}
+            {generalEntry && (() => {
+              // Look up which REP provisions fall under the general / de-minimis
+              // tier so the row renders clickable provision-name buttons just
+              // like the higher-standard rows. Falls back to the raw
+              // reps_covered text when no names resolve.
+              const genNames = findCoveredRepNames(generalEntry.tier, repProvs);
+              return (
+                <tr className="align-top">
+                  <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">
+                    General Standard
+                  </td>
+                  <td className="px-3 py-2 text-ink">
+                    <div className="text-sm leading-relaxed">{tierStdLabel(generalEntry.tier)}</div>
+                    {genNames.length > 0 ? (
+                      <div className="text-[11px] text-inkMid mt-0.5">
+                        {genNames.map((nm, i) => {
+                          const prov = namesToProvs.get(String(nm).toLowerCase().trim());
+                          return (
+                            <span key={nm}>
+                              {i > 0 && ', '}
+                              {prov && onSelectProvision ? (
+                                <button
+                                  type="button"
+                                  onClick={() => onSelectProvision(prov)}
+                                  className="text-accent hover:underline"
+                                >
+                                  {nm}
+                                </button>
+                              ) : (
+                                <span>{nm}</span>
+                              )}
+                            </span>
+                          );
+                        })}
+                      </div>
+                    ) : (generalEntry.tier.exceptions || generalEntry.tier.reps_covered) && (
+                      <div className="text-[11px] text-inkMid mt-0.5">
+                        {generalEntry.tier.reps_covered && (
+                          <span className="italic">{generalEntry.tier.reps_covered}</span>
+                        )}
+                        {generalEntry.tier.exceptions && (
+                          <span>{generalEntry.tier.reps_covered ? ' — ' : ''}{generalEntry.tier.exceptions}</span>
+                        )}
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              );
+            })()}
             {Array.from(higherByStandard.entries()).map(([stdLabel, bucket]) => {
               const nameList = Array.from(bucket.names);
               return (
