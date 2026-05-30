@@ -16,6 +16,7 @@ import {
   MATERIAL_CONTRACT_BUCKET_CODES,
 } from '../../lib/taxonomy';
 import { getFeaturesForType, PROVISION_TYPES } from '../../lib/rubric';
+import { resolveSectionReference } from '../../lib/section-ref';
 
 /* ── Type & Term Labels ── */
 const TYPE_LABELS = {
@@ -395,11 +396,30 @@ function getCitableValue(v) {
   return isCitableValue(v) ? v.value : v;
 }
 
+/* getCitableQuotes — returns an array of verbatim quote strings supporting
+ *  the value, normalized from either the new shape ({ value, quotes: [...] })
+ *  or the legacy shape ({ value, text: "..." }). Empty / whitespace-only
+ *  quotes are dropped. */
+function getCitableQuotes(v) {
+  if (!isCitableValue(v)) return [];
+  if (Array.isArray(v.quotes)) {
+    return v.quotes
+      .filter((q) => typeof q === 'string')
+      .map((q) => q.trim())
+      .filter(Boolean);
+  }
+  if (typeof v.text === 'string') {
+    const t = v.text.trim();
+    return t ? [t] : [];
+  }
+  return [];
+}
+
 function getCitableText(v) {
-  if (!isCitableValue(v)) return null;
-  const t = v.text;
-  if (typeof t !== 'string') return null;
-  return t.trim() || null;
+  // Legacy single-quote accessor — returns the FIRST quote. Kept for back-
+  // compat with existing callers; new code should use getCitableQuotes().
+  const quotes = getCitableQuotes(v);
+  return quotes.length > 0 ? quotes[0] : null;
 }
 
 const EvidenceContext = createContext({ showEvidence: null });
@@ -409,37 +429,84 @@ function useShowEvidence() {
   return ctx && typeof ctx.showEvidence === 'function' ? ctx.showEvidence : null;
 }
 
-/* ── EvidenceQuote: the small italic block rendered beneath a citable value.
+/* ── EvidenceQuote: small italic block beneath a citable value.
  *    Clicking jumps to the Full Document tab and highlights the quote.
- *    Renders an italic "(no evidence captured)" placeholder when text is empty. */
-function EvidenceQuote({ text, dense }) {
+ *    Renders an italic "(no evidence captured)" placeholder when empty.
+ *    Multi-quote: pass `quotes={[...]}` to render an "N sources" pill that
+ *    expands a stacked list, each quote independently clickable. */
+function EvidenceQuote({ text, quotes, dense }) {
   const showEvidence = useShowEvidence();
-  const trimmed = (text || '').trim();
-  if (!trimmed) {
+  const [expanded, setExpanded] = useState(false);
+
+  // Normalize to array of quotes.
+  const list = (() => {
+    if (Array.isArray(quotes)) {
+      return quotes.map((q) => String(q || '').trim()).filter(Boolean);
+    }
+    const t = (text || '').trim();
+    return t ? [t] : [];
+  })();
+
+  if (list.length === 0) {
     return (
       <span className={`block ${dense ? 'text-[10px]' : 'text-[11px]'} font-ui italic text-inkFaint/70 mt-0.5`}>
         (no evidence captured)
       </span>
     );
   }
-  const handleClick = () => {
-    if (showEvidence) showEvidence(trimmed);
-  };
-  const cls = `block ${dense ? 'text-[10px]' : 'text-[11px]'} font-ui italic mt-0.5 ${
+
+  const baseCls = `block ${dense ? 'text-[10px]' : 'text-[11px]'} font-ui italic mt-0.5 ${
     showEvidence
       ? 'text-amber-700 hover:text-amber-900 cursor-pointer hover:underline decoration-dotted'
       : 'text-amber-700'
   }`;
-  // Keep quotes from blowing up the cell width
-  const display = trimmed.length > 240 ? trimmed.slice(0, 237) + '…' : trimmed;
+
+  // Single-quote: render exactly as before for backwards compatibility.
+  if (list.length === 1) {
+    const q = list[0];
+    const display = q.length > 240 ? q.slice(0, 237) + '…' : q;
+    return (
+      <span
+        className={baseCls}
+        onClick={showEvidence ? () => showEvidence(q) : undefined}
+        title={showEvidence ? 'Click to view in document' : q}
+      >
+        &ldquo;{display}&rdquo;
+        {showEvidence ? <span className="not-italic text-amber-500 ml-1">&rarr;</span> : null}
+      </span>
+    );
+  }
+
+  // Multi-quote: small "N sources" pill that toggles a stacked list.
   return (
-    <span
-      className={cls}
-      onClick={showEvidence ? handleClick : undefined}
-      title={showEvidence ? 'Click to view in document' : trimmed}
-    >
-      &ldquo;{display}&rdquo;
-      {showEvidence ? <span className="not-italic text-amber-500 ml-1">&rarr;</span> : null}
+    <span className="block mt-0.5">
+      <button
+        type="button"
+        className={`inline-flex items-center gap-1 text-[10px] font-ui px-1.5 py-0.5 rounded border border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-100 ${dense ? '' : ''}`}
+        onClick={(e) => { e.stopPropagation(); setExpanded((v) => !v); }}
+        title={`${list.length} supporting quotes`}
+      >
+        {list.length} sources
+        <span className="not-italic">{expanded ? '▾' : '▸'}</span>
+      </button>
+      {expanded && (
+        <span className="block mt-1 space-y-1">
+          {list.map((q, i) => {
+            const display = q.length > 240 ? q.slice(0, 237) + '…' : q;
+            return (
+              <span
+                key={i}
+                className={baseCls}
+                onClick={showEvidence ? (e) => { e.stopPropagation(); showEvidence(q); } : undefined}
+                title={showEvidence ? 'Click to view in document' : q}
+              >
+                &ldquo;{display}&rdquo;
+                {showEvidence ? <span className="not-italic text-amber-500 ml-1">&rarr;</span> : null}
+              </span>
+            );
+          })}
+        </span>
+      )}
     </span>
   );
 }
@@ -3247,17 +3314,17 @@ function renderFeatureCell(featureKey, raw) {
       </div>
     );
   }
-  // Citable value — render the inner value normally, then the quote beneath.
+  // Citable value — render the inner value normally, then the quote(s) beneath.
   if (isCitableValue(raw)) {
     const inner = getCitableValue(raw);
-    const evidence = getCitableText(raw);
+    const quotes = getCitableQuotes(raw);
     const cell = formatCellValue(featureKey, inner);
     return (
       <div className="whitespace-pre-wrap break-words">
         <span className={cell === null ? 'text-inkFaint/70 italic' : ''}>
           {cell === null ? '—' : cell}
         </span>
-        <EvidenceQuote text={evidence} />
+        <EvidenceQuote quotes={quotes} />
       </div>
     );
   }
