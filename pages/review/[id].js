@@ -8445,41 +8445,105 @@ function FeatureFieldEditor({ field, value, onChange }) {
   const taxonomy = taxonomyForFeatureKey(field.key);
   const taxonomyEntries = taxonomy ? Object.entries(taxonomy) : null;
 
-  // Citable fields are edited as { value, text }. The picker / input below
-  // edits the INNER value; we add a dedicated evidence textarea beneath. We
+  // Citable fields are edited as { value, quotes: [...] } (back-compat with
+  // legacy { value, text } shape). The picker / input below edits the INNER
+  // value; a stack of textareas beneath edits the verbatim quote list. We
   // delegate to a recursive editor by unwrapping the value, swapping in a
-  // wrapping onChange that re-builds { value, text }.
+  // wrapping onChange that re-builds { value, quotes: [...] }.
+  // P4 task 4: replace the single evidence textarea with a vertical multi-
+  // quote list + "Add quote" button + per-quote Remove (×) control.
   if (field.citable && !taxonomy) {
-    const wrapped = isCitableValue(value) ? value : { value: value ?? null, text: '' };
+    // Normalize the stored shape to { value, quotes: [...] }.
+    const normalize = (v) => {
+      if (v === null || v === undefined) return { value: null, quotes: [] };
+      if (isCitableValue(v)) {
+        if (Array.isArray(v.quotes)) {
+          return { value: v.value, quotes: v.quotes.filter((q) => typeof q === 'string') };
+        }
+        if (typeof v.text === 'string') {
+          return { value: v.value, quotes: v.text ? [v.text] : [] };
+        }
+        return { value: v.value, quotes: [] };
+      }
+      // Bare value → wrap.
+      return { value: v, quotes: [] };
+    };
+    const wrapped = normalize(value);
+
+    const serialize = (nextValue, nextQuotes) => {
+      const clean = (nextQuotes || []).map((q) => String(q || '')).map((q) => q);
+      const nonEmpty = clean.filter((q) => q.trim().length > 0);
+      // If both value and quotes are empty, return null so the field clears.
+      if ((nextValue === null || nextValue === undefined || nextValue === '') && nonEmpty.length === 0) {
+        return null;
+      }
+      return { value: nextValue ?? null, quotes: nonEmpty };
+    };
+
     const innerField = { ...field, citable: false };
     const onInnerChange = (next) => {
-      if (next === null && !wrapped.text) {
-        onChange(null);
-        return;
-      }
-      onChange({ value: next, text: wrapped.text || '' });
+      onChange(serialize(next, wrapped.quotes));
     };
-    const onTextChange = (e) => {
-      const text = e.target.value;
-      if (text === '' && (wrapped.value === null || wrapped.value === undefined)) {
-        onChange(null);
-        return;
-      }
-      onChange({ value: wrapped.value ?? null, text });
+    const updateQuoteAt = (idx, text) => {
+      const next = [...wrapped.quotes];
+      next[idx] = text;
+      onChange(serialize(wrapped.value, next));
     };
+    const removeQuoteAt = (idx) => {
+      const next = wrapped.quotes.filter((_, i) => i !== idx);
+      onChange(serialize(wrapped.value, next));
+    };
+    const addQuote = () => {
+      const next = [...wrapped.quotes, ''];
+      // Persist as { value, quotes: [...] } including the new empty entry so
+      // the textarea is controlled. Empty entries are filtered on next edit.
+      onChange({ value: wrapped.value ?? null, quotes: next });
+    };
+
+    // Render: if no quotes yet, still show ONE textarea (existing UX) so the
+    // user can type without first clicking "Add quote".
+    const visibleQuotes = wrapped.quotes.length > 0 ? wrapped.quotes : [''];
+
     return (
       <div className="space-y-1">
         <FeatureFieldEditor field={innerField} value={wrapped.value} onChange={onInnerChange} />
         <label className="block text-[10px] font-ui text-amber-700 italic">
-          Evidence (verbatim quote from the agreement)
+          Evidence (verbatim quotes from the agreement)
         </label>
-        <textarea
-          value={wrapped.text || ''}
-          onChange={onTextChange}
-          rows={2}
-          placeholder="Paste the supporting sentence here..."
-          className="w-full border border-amber-200 rounded px-2 py-1 text-[11px] font-ui bg-amber-50/40 focus:outline-none focus:ring-1 focus:ring-amber-400"
-        />
+        <div className="space-y-1.5">
+          {visibleQuotes.map((q, idx) => (
+            <div key={idx} className="relative">
+              <textarea
+                value={q}
+                onChange={(e) => updateQuoteAt(idx, e.target.value)}
+                rows={2}
+                placeholder={`Quote ${idx + 1} — paste the supporting sentence here...`}
+                className="w-full border border-amber-200 rounded px-2 py-1 pr-7 text-[11px] font-ui bg-amber-50/40 focus:outline-none focus:ring-1 focus:ring-amber-400"
+              />
+              <span className="absolute top-0.5 left-1.5 text-[9px] font-ui text-amber-700/70 uppercase tracking-wider pointer-events-none">
+                Quote {idx + 1}
+              </span>
+              {(wrapped.quotes.length > 0 || q) && (
+                <button
+                  type="button"
+                  onClick={() => removeQuoteAt(idx)}
+                  className="absolute top-1 right-1 w-5 h-5 inline-flex items-center justify-center rounded text-amber-600 hover:bg-amber-100 hover:text-amber-800 text-xs font-ui"
+                  title="Remove this quote"
+                  aria-label="Remove quote"
+                >
+                  ×
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={addQuote}
+          className="mt-1 inline-flex items-center gap-1 text-[10px] font-ui text-amber-700 hover:text-amber-900 hover:underline"
+        >
+          + Add quote
+        </button>
       </div>
     );
   }
