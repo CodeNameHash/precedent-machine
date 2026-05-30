@@ -343,11 +343,32 @@ function isTaggedItem(v) {
   );
 }
 
-function resolveTaggedLabel(featureKey, item) {
+function resolveTaggedLabel(featureKey, item, customExtensions) {
   if (!isTaggedItem(item)) return null;
   if (item.label && typeof item.label === 'string') return item.label;
+  // P5 item 8: when the tagged code matches a deal-scoped custom extension,
+  // prefer the custom label. Falls back to the canonical taxonomy.
+  if (customExtensions && Array.isArray(customExtensions[featureKey])) {
+    const hit = customExtensions[featureKey].find((e) => e && e.code === item.code);
+    if (hit && hit.label) return hit.label;
+  }
   const dict = taxonomyForFeatureKey(featureKey);
   return labelForCode(item.code, dict || {}) || item.code;
+}
+
+/* P5 item 8: deal-scoped custom taxonomy extensions.
+ *   Shape: { [featureKey]: [{ code, label, synonyms? }] }
+ *   Stored on deals.metadata.custom_taxonomy_extensions and threaded into
+ *   render paths via CustomTaxonomyContext so the picker can show + resolve
+ *   custom options alongside canonical taxonomy entries. */
+const CustomTaxonomyContext = createContext({ extensions: {} });
+function useCustomTaxonomy() {
+  return useContext(CustomTaxonomyContext).extensions || {};
+}
+function getCustomExtensionsForKey(extensions, featureKey) {
+  if (!extensions || typeof extensions !== 'object') return [];
+  const list = extensions[featureKey];
+  return Array.isArray(list) ? list : [];
 }
 
 /* ── Friendly label conversion (camelCase / snake_case → Title Case) ── */
@@ -8690,9 +8711,26 @@ function DocumentRenderer({
 // fall back to text when a taxonomy is available — the user has to choose.
 const EDIT_OTHER_CODE = '__OTHER__';
 
-function FeatureFieldEditor({ field, value, onChange }) {
+function FeatureFieldEditor({ field, value, onChange, onAddCustomOption }) {
   const label = humanizeKey(field.key);
-  const taxonomy = taxonomyForFeatureKey(field.key);
+  const baseTaxonomy = taxonomyForFeatureKey(field.key);
+  // P5 item 8: merge canonical taxonomy with deal-scoped custom extensions.
+  const customExtensions = useCustomTaxonomy();
+  const customForKey = getCustomExtensionsForKey(customExtensions, field.key);
+  const taxonomy = useMemo(() => {
+    if (!baseTaxonomy) return null;
+    const merged = { ...baseTaxonomy };
+    for (const ext of customForKey) {
+      if (ext && ext.code && !merged[ext.code]) {
+        merged[ext.code] = ext.label || ext.code;
+      }
+    }
+    return merged;
+  }, [baseTaxonomy, customForKey]);
+  const customCodeSet = useMemo(
+    () => new Set(customForKey.map((e) => e && e.code).filter(Boolean)),
+    [customForKey],
+  );
   const taxonomyEntries = taxonomy ? Object.entries(taxonomy) : null;
 
   // Citable fields are edited as { value, quotes: [...] } (back-compat with
@@ -8756,7 +8794,7 @@ function FeatureFieldEditor({ field, value, onChange }) {
 
     return (
       <div className="space-y-1">
-        <FeatureFieldEditor field={innerField} value={wrapped.value} onChange={onInnerChange} />
+        <FeatureFieldEditor field={innerField} value={wrapped.value} onChange={onInnerChange} onAddCustomOption={onAddCustomOption} />
         <label className="block text-[10px] font-ui text-amber-700 italic">
           Evidence (verbatim quotes from the agreement)
         </label>
@@ -8867,10 +8905,24 @@ function FeatureFieldEditor({ field, value, onChange }) {
         >
           <option value="">-- select code --</option>
           {taxonomyEntries && taxonomyEntries.map(([code, lbl]) => (
-            <option key={code} value={code}>{code} -- {lbl}</option>
+            <option key={code} value={code}>
+              {code} -- {lbl}{customCodeSet.has(code) ? ' (custom)' : ''}
+            </option>
           ))}
           <option value={EDIT_OTHER_CODE}>-- Other / not applicable (free text) --</option>
         </select>
+        {/* P5 item 8: add canonical option button — replaces the "Other" escape
+            hatch as the primary way to introduce a deal-specific code. The
+            parent FeatureFieldEditor wires the actual taxonomy-extension save. */}
+        {onAddCustomOption && (
+          <button
+            type="button"
+            onClick={() => onAddCustomOption(field.key)}
+            className="text-[10px] font-ui text-accent hover:underline"
+          >
+            + Add canonical option
+          </button>
+        )}
         {isOther && (
           <p className="text-[10px] font-ui text-amber-700 italic">
             Other selected. This value will not be comparable across deals.
@@ -9167,6 +9219,8 @@ function EditPanel({
   onDelete,
   onProposeCode,
   onReselectText,
+  deal,
+  onSaveCustomTaxonomyOption,
 }) {
   const [editType, setEditType] = useState(provision?.type || '');
   const [editCategory, setEditCategory] = useState(provision?.category || '');
@@ -9179,6 +9233,62 @@ function EditPanel({
   const [editedFeatures, setEditedFeatures] = useState({});
   // Initial structured features snapshot, used for dirty detection.
   const [initialFeatures, setInitialFeatures] = useState({});
+
+  // P5 item 8: per-field "+ Add canonical option" inline form state.
+  // Active key controls which field shows the form; the form fields edit a
+  // single { label, code, synonyms } draft that, on save, gets pushed into
+  // deal.metadata.custom_taxonomy_extensions[key] via onSaveCustomTaxonomyOption.
+  const [customOptionKey, setCustomOptionKey] = useState(null);
+  const [customOptionDraft, setCustomOptionDraft] = useState({ label: '', code: '', synonyms: '' });
+  const [customOptionSaving, setCustomOptionSaving] = useState(false);
+  const [customOptionError, setCustomOptionError] = useState(null);
+
+  const handleAddCustomOption = useCallback((featureKey) => {
+    setCustomOptionKey(featureKey);
+    setCustomOptionDraft({ label: '', code: '', synonyms: '' });
+    setCustomOptionError(null);
+  }, []);
+
+  const closeCustomOptionForm = () => {
+    setCustomOptionKey(null);
+    setCustomOptionDraft({ label: '', code: '', synonyms: '' });
+    setCustomOptionError(null);
+  };
+
+  const handleSaveCustomOption = async () => {
+    if (!customOptionKey || !onSaveCustomTaxonomyOption) return;
+    const label = (customOptionDraft.label || '').trim();
+    if (!label) {
+      setCustomOptionError('Label is required');
+      return;
+    }
+    let code = (customOptionDraft.code || '').trim();
+    if (!code) {
+      // Auto-derive: "Deal-Specific X" → "DEAL_SPECIFIC_X"
+      code = label
+        .toUpperCase()
+        .replace(/[^A-Z0-9]+/g, '_')
+        .replace(/^_+|_+$/g, '');
+    }
+    if (!code) {
+      setCustomOptionError('Could not derive a code from the label');
+      return;
+    }
+    setCustomOptionSaving(true);
+    setCustomOptionError(null);
+    try {
+      await onSaveCustomTaxonomyOption(customOptionKey, {
+        code,
+        label,
+        synonyms: (customOptionDraft.synonyms || '').trim() || undefined,
+      });
+      closeCustomOptionForm();
+    } catch (e) {
+      setCustomOptionError(e.message || String(e));
+    } finally {
+      setCustomOptionSaving(false);
+    }
+  };
 
   // Read-only display value (always reflects the current provision text)
   const currentFullText = provision?.full_text || '';
@@ -9388,12 +9498,61 @@ function EditPanel({
             <h4 className="font-ui text-xs font-medium text-inkFaint uppercase tracking-wider">Structured Summary</h4>
             <div className="space-y-2">
               {dedupedSchema.map((field) => (
-                <FeatureFieldEditor
-                  key={field.key}
-                  field={field}
-                  value={editedFeatures[field.key]}
-                  onChange={(v) => setFeatureValue(field.key, v)}
-                />
+                <div key={field.key} className="space-y-1">
+                  <FeatureFieldEditor
+                    field={field}
+                    value={editedFeatures[field.key]}
+                    onChange={(v) => setFeatureValue(field.key, v)}
+                    onAddCustomOption={onSaveCustomTaxonomyOption ? handleAddCustomOption : undefined}
+                  />
+                  {customOptionKey === field.key && (
+                    <div className="border border-accent/40 bg-accent/5 rounded p-2 space-y-1.5 mt-1">
+                      <p className="text-[10px] font-ui text-accent uppercase tracking-wider font-medium">
+                        Add canonical option for "{humanizeKey(field.key)}"
+                      </p>
+                      <input
+                        value={customOptionDraft.label}
+                        onChange={(e) => setCustomOptionDraft((d) => ({ ...d, label: e.target.value }))}
+                        placeholder="Label (required) — e.g. Best Efforts"
+                        className="w-full border border-border rounded px-2 py-1 text-[11px] font-ui focus:outline-none focus:ring-1 focus:ring-accent"
+                        autoFocus
+                      />
+                      <input
+                        value={customOptionDraft.code}
+                        onChange={(e) => setCustomOptionDraft((d) => ({ ...d, code: e.target.value }))}
+                        placeholder="Canonical code (optional — auto: BEST_EFFORTS)"
+                        className="w-full border border-border rounded px-2 py-1 text-[11px] font-ui focus:outline-none focus:ring-1 focus:ring-accent"
+                      />
+                      <input
+                        value={customOptionDraft.synonyms}
+                        onChange={(e) => setCustomOptionDraft((d) => ({ ...d, synonyms: e.target.value }))}
+                        placeholder="Synonyms regex (optional) — e.g. /foo|bar/i"
+                        className="w-full border border-border rounded px-2 py-1 text-[11px] font-ui focus:outline-none focus:ring-1 focus:ring-accent"
+                      />
+                      {customOptionError && (
+                        <p className="text-[10px] font-ui text-red-600">{customOptionError}</p>
+                      )}
+                      <div className="flex gap-1.5 justify-end">
+                        <button
+                          type="button"
+                          onClick={closeCustomOptionForm}
+                          disabled={customOptionSaving}
+                          className="px-2 py-1 text-[10px] font-ui border border-border rounded hover:bg-bg disabled:opacity-50"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleSaveCustomOption}
+                          disabled={customOptionSaving}
+                          className="px-2 py-1 text-[10px] font-ui bg-accent text-white rounded hover:bg-accent/90 disabled:opacity-50"
+                        >
+                          {customOptionSaving ? 'Saving...' : 'Save'}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
           </div>
@@ -9799,6 +9958,38 @@ export default function ReviewPage() {
   }, []);
   const evidenceCtxValue = useMemo(() => ({ showEvidence }), [showEvidence]);
 
+  /* ── P5 item 8: deal-scoped custom taxonomy extensions ────────────────── */
+  const customTaxonomyCtxValue = useMemo(() => ({
+    extensions: (deal && deal.metadata && deal.metadata.custom_taxonomy_extensions) || {},
+  }), [deal]);
+
+  const handleSaveCustomTaxonomyOption = useCallback(async (featureKey, option) => {
+    if (!deal || !deal.id) throw new Error('Deal not loaded');
+    if (!featureKey || !option || !option.code) throw new Error('Invalid option');
+    const existing = (deal.metadata && deal.metadata.custom_taxonomy_extensions) || {};
+    const forKey = Array.isArray(existing[featureKey]) ? existing[featureKey] : [];
+    // Dedupe by code (replace if exists; append otherwise).
+    const filtered = forKey.filter((e) => e && e.code !== option.code);
+    filtered.push({
+      code: option.code,
+      label: option.label || option.code,
+      ...(option.synonyms ? { synonyms: option.synonyms } : {}),
+    });
+    const nextExtensions = { ...existing, [featureKey]: filtered };
+    const nextMetadata = { ...(deal.metadata || {}), custom_taxonomy_extensions: nextExtensions };
+    const res = await fetch('/api/deals', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: deal.id, metadata: nextMetadata }),
+    });
+    if (!res.ok) {
+      const j = await res.json().catch(() => ({}));
+      throw new Error(j.error || `HTTP ${res.status}`);
+    }
+    if (refetchDeal) refetchDeal();
+    addToast(`Added custom option "${option.label}"`, 'success');
+  }, [deal, refetchDeal, addToast]);
+
   /* ── Provisions sub-view: "cards" or "table" ── */
   const [provisionView, setProvisionView] = useState('table');
 
@@ -10162,6 +10353,7 @@ export default function ReviewPage() {
   const hasSource = agreementSource && agreementSource.full_text;
 
   return (
+    <CustomTaxonomyContext.Provider value={customTaxonomyCtxValue}>
     <EvidenceContext.Provider value={evidenceCtxValue}>
     <div className="h-screen bg-bg flex flex-col overflow-hidden">
       {/* Top Bar */}
@@ -10658,6 +10850,8 @@ export default function ReviewPage() {
             onDelete={handleDelete}
             onProposeCode={handleProposeCode}
             onReselectText={handleReselectText}
+            deal={deal}
+            onSaveCustomTaxonomyOption={handleSaveCustomTaxonomyOption}
           />
         )}
       </div>
@@ -10686,5 +10880,6 @@ export default function ReviewPage() {
       )}
     </div>
     </EvidenceContext.Provider>
+    </CustomTaxonomyContext.Provider>
   );
 }
