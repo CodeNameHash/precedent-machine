@@ -3816,6 +3816,31 @@ function ConsidTable({ provisions, onSelectProvision }) {
     heroConsidType = 'Cash and a CVR';
   }
 
+  // Options earn-in via CVR — only relevant when the deal pays a CVR.
+  // Scan all CONSID provisions for optionsCvrEarnIn (enum). Resolve to a
+  // human label for display.
+  let optionsCvrEarnInLabel = null;
+  if (hasCvr) {
+    const earnInLabels = {
+      EARN_IN_ELIGIBLE: 'Earn-in eligible (options receive CVR regardless of moneyness)',
+      MUST_BE_ITM: 'Must be in-the-money to receive CVR (option spread + CVR = total consideration)',
+      NOT_SPECIFIED: 'Unclear / Not specified',
+    };
+    for (const p of provisions) {
+      const f = getStructuredFeatures(p) || {};
+      const raw = isCitableValue(f.optionsCvrEarnIn)
+        ? getCitableValue(f.optionsCvrEarnIn)
+        : f.optionsCvrEarnIn;
+      const code = isTaggedItem(raw) ? raw.code : raw;
+      if (!code) continue;
+      const s = String(code).toUpperCase();
+      if (earnInLabels[s]) {
+        optionsCvrEarnInLabel = earnInLabels[s];
+        break;
+      }
+    }
+  }
+
   // Find appraisalRightsAvailable across all CONSID provisions (first non-null).
   let appraisalAvailable = null;
   for (const p of provisions) {
@@ -3880,7 +3905,7 @@ function ConsidTable({ provisions, onSelectProvision }) {
   return (
     <div className="space-y-3">
       {/* Hero block: headline price + consideration type + appraisal rights. */}
-      {(heroPriceText || heroConsidType || appraisalAvailable !== null) && (
+      {(heroPriceText || heroConsidType || appraisalAvailable !== null || optionsCvrEarnInLabel) && (
         <div className="bg-white border-2 border-lime-300 rounded-lg shadow-sm px-5 py-4">
           {heroPriceText && (
             <div
@@ -3914,6 +3939,16 @@ function ConsidTable({ provisions, onSelectProvision }) {
               </span>
               <span className="text-ink font-medium">
                 {renderAppraisalValue(appraisalAvailable)}
+              </span>
+            </div>
+          )}
+          {optionsCvrEarnInLabel && (
+            <div className="mt-2 pt-2 border-t border-lime-200 text-xs font-ui text-inkMid">
+              <span className="font-medium text-inkFaint uppercase tracking-wider mr-2">
+                Options Earn-In via CVR:
+              </span>
+              <span className="text-ink font-medium">
+                {optionsCvrEarnInLabel}
               </span>
             </div>
           )}
