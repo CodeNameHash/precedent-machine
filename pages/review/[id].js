@@ -1304,20 +1304,37 @@ function CodeBadge({ code }) {
  * in a small amber popover that appears immediately on hover (no 1-second
  * native-title delay). Click-through still works via the wrapped children;
  * the popover is positioned absolutely below the trigger and uses pointer-
- * events:none so it never blocks the underlying click. */
+ * events:none so it never blocks the underlying click. On touch devices
+ * (which never fire mouseenter), a touchstart on the wrapper reveals the
+ * popover for ~2.5s — the underlying tap action still fires normally. */
 function HoverSource({ quote, children, as = 'span', className, align = 'left' }) {
   const [show, setShow] = useState(false);
+  const hideTimerRef = useRef(null);
   const Tag = as;
   if (!quote || typeof quote !== 'string' || !quote.trim()) {
     return <Tag className={className}>{children}</Tag>;
   }
   const trimmed = quote.trim().replace(/\s+/g, ' ');
   const display = trimmed.length > 600 ? trimmed.slice(0, 600) + '…' : trimmed;
+  const clearHideTimer = () => {
+    if (hideTimerRef.current) {
+      clearTimeout(hideTimerRef.current);
+      hideTimerRef.current = null;
+    }
+  };
+  const handleTouchStart = () => {
+    clearHideTimer();
+    setShow(true);
+    // Auto-hide after 2.5s so the popover doesn't linger after the user taps
+    // through to the evidence view.
+    hideTimerRef.current = setTimeout(() => setShow(false), 2500);
+  };
   return (
     <Tag
       className={`relative ${className || ''}`}
-      onMouseEnter={() => setShow(true)}
+      onMouseEnter={() => { clearHideTimer(); setShow(true); }}
       onMouseLeave={() => setShow(false)}
+      onTouchStart={handleTouchStart}
     >
       {children}
       {show && (
