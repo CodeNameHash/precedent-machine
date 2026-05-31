@@ -154,8 +154,8 @@ const SIDEBAR_GROUPS = [
     { label: 'Material Contracts', type: '__MATERIAL_CONTRACTS' },
   ]},
   { label: 'Material Adverse Effect', children: [
-    { label: 'Company / Target MAE', type: 'MAE-DEF' },
-    { label: 'Parent / Buyer MAE', type: 'MAE-DEF-P' },
+    { label: 'Company Material Adverse Effect', type: 'MAE-DEF' },
+    { label: 'Parent Material Adverse Effect', type: 'MAE-DEF-P' },
   ]},
   { label: 'Interim Operating Covenants', types: ['IOC', 'IOC-T', 'IOC-B'] },
   { label: 'No-Solicitation / No-Shop', types: ['NOSOL'] },
@@ -178,6 +178,11 @@ const SIDEBAR_GROUPS = [
   { label: 'Miscellaneous / Boilerplate', types: ['MISC'] },
   { label: 'Other', types: ['OTHER'] },
 ];
+
+/* Synthetic, single-page sidebar types: the child label itself IS the page
+ * (a curated summary), so the sidebar should NOT show a count or a nested
+ * per-provision sub-list under it. */
+const SYNTHETIC_SINGLE_PAGE_TYPES = new Set(['MAE-DEF', 'MAE-DEF-P', '__MATERIAL_CONTRACTS']);
 
 function typeColor(code) {
   return TYPE_COLORS[code] || { bg: 'bg-gray-50', border: 'border-gray-200', text: 'text-gray-700', dot: 'bg-gray-400', hex: '#f9fafb' };
@@ -1151,9 +1156,17 @@ function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelect
                                 </button>
                                 <span className="dot" style={{ background: typeHex(child.type) }} />
                                 <span className="truncate">{child.label}</span>
-                                <span className="count">{child.provs.length}</span>
+                                {/* MAE / Material Contracts children are
+                                    single-page synthetic groups — the child
+                                    label IS the page, so don't show a count or
+                                    a redundant per-provision sub-list under it
+                                    (that's what duplicated "material adverse
+                                    effect" beneath the child). */}
+                                {!SYNTHETIC_SINGLE_PAGE_TYPES.has(child.type) && (
+                                  <span className="count">{child.provs.length}</span>
+                                )}
                               </div>
-                              {!childCollapsed && renderProvList(child.provs)}
+                              {!childCollapsed && !SYNTHETIC_SINGLE_PAGE_TYPES.has(child.type) && renderProvList(child.provs)}
                             </div>
                           );
                         })}
@@ -10278,10 +10291,10 @@ function FeatureFieldEditor({ field, value, onChange, onAddCustomOption }) {
           }}
           className={inputCls}
         >
-          <option value="">-- select code --</option>
+          <option value="">-- select --</option>
           {taxonomyEntries && taxonomyEntries.map(([code, lbl]) => (
             <option key={code} value={code}>
-              {code} -- {lbl}{customCodeSet.has(code) ? ' (custom)' : ''}
+              {lbl || humanizeBadgeText(code)}{customCodeSet.has(code) ? ' (custom)' : ''}
             </option>
           ))}
           <option value={EDIT_OTHER_CODE}>-- Other / not applicable (free text) --</option>
@@ -10835,11 +10848,20 @@ function EditPanel({
 
   // Dedupe by key — some rubric entries (e.g. IOC permittedExceptions) appear
   // twice with different scopes; the editor only needs one row per key.
+  // Also drop globally-hidden keys: crossReferences (cross-refs aren't an
+  // editable feature the user wants to manage), the deprecated carve-out
+  // aliases (carveOuts / carveOutsList — superseded by the canonical
+  // `carveouts` list), and definitionText (shown as Provision Text already).
   const dedupedSchema = useMemo(() => {
+    const HIDE = new Set([
+      'crossReferences',
+      'carveOuts', 'carveOutsList',
+      'disproportionateImpact', 'disproportionateImpactScope',
+    ]);
     const seen = new Set();
     const out = [];
     for (const f of featureSchema) {
-      if (!f || !f.key || seen.has(f.key)) continue;
+      if (!f || !f.key || seen.has(f.key) || HIDE.has(f.key)) continue;
       seen.add(f.key);
       out.push(f);
     }
