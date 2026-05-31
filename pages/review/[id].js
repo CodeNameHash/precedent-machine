@@ -4375,13 +4375,17 @@ function buildEquityRows(equityProvisions) {
         // Only one treatment in the array → safe to use it.
         myTreatment = treatments[0];
       }
+      // Per-instrument vesting: prefer this row's own instrumentVesting[0]
+      // (stamped by the expander), then the section-wide vestingAcceleration.
+      const myVesting = (Array.isArray(f.instrumentVesting) && f.instrumentVesting[0])
+        || f.vestingAcceleration || null;
       rows.push({
         key: `${p.id}-single`,
         provision: p,
         instrument: f.instrumentType,
         outstandingCount: f.outstandingCount ?? null,
         treatment: myTreatment,
-        vesting: f.vestingAcceleration ?? null,
+        vesting: myVesting,
         cashOut: f.cashOutAmount ?? f.optionSpread ?? null,
         cutoff: f.cutoffDate ?? null,
       });
@@ -4389,8 +4393,9 @@ function buildEquityRows(equityProvisions) {
     }
 
     // (b) parallel arrays of instruments + treatments — each row picks its
-    // OWN treatment by index (the parallel-array contract).
+    // OWN treatment AND vesting by index (the parallel-array contract).
     if (insts.length > 0) {
+      const vestings = Array.isArray(f.instrumentVesting) ? f.instrumentVesting : [];
       insts.forEach((inst, i) => {
         rows.push({
           key: `${p.id}-${i}`,
@@ -4398,7 +4403,7 @@ function buildEquityRows(equityProvisions) {
           instrument: inst,
           outstandingCount: f.outstandingCount ?? null,
           treatment: treatments[i] ?? null,
-          vesting: f.vestingAcceleration ?? null,
+          vesting: vestings[i] ?? f.vestingAcceleration ?? null,
           cashOut: f.cashOutAmount ?? f.optionSpread ?? null,
           cutoff: f.cutoffDate ?? null,
         });
