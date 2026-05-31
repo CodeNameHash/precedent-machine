@@ -3883,13 +3883,11 @@ function renderListAsBullets(featureKey, items) {
         const quotes = isCitableValue(item) ? getCitableQuotes(item) : [];
         let body;
         if (isTaggedItem(innerRaw)) {
-          const label = resolveTaggedLabel(featureKey, innerRaw) || innerRaw.code;
-          body = (
-            <span className="inline-flex items-baseline gap-1 flex-wrap">
-              <CodeBadge code={innerRaw.code} />
-              <span>{label}</span>
-            </span>
-          );
+          // ONE canonical pill carrying the resolved label — do NOT also render
+          // the code-humanized badge + a separate label span (that produced the
+          // doubled "Risk Factors / Risk Factors" display).
+          const label = resolveTaggedLabel(featureKey, innerRaw) || humanizeBadgeText(innerRaw.code);
+          body = <CodeBadge code={innerRaw.code} label={label} />;
         } else if (innerRaw === null || innerRaw === undefined || innerRaw === '') {
           return null;
         } else {
