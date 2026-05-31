@@ -8241,6 +8241,35 @@ function ProvisionTable({ provisions, type, onSelectProvision, allProvisions }) 
                         </td>
                       );
                     }
+                    // P9 item 4: route list-valued cells through
+                    // renderFeatureCell (which uses renderListAsBullets) so
+                    // arrays render as <ul><li> bullets instead of being
+                    // joined with "; " by formatCellValue. Strings and other
+                    // scalars still use formatCellValue for units/cleanup.
+                    const isListShape =
+                      Array.isArray(raw) ||
+                      (isCitableValue(raw) && Array.isArray(getCitableValue(raw)));
+                    if (isListShape) {
+                      const inner = Array.isArray(raw) ? raw : getCitableValue(raw);
+                      const isEmptyList = !inner || inner.length === 0;
+                      return (
+                        <td
+                          key={k}
+                          className={`px-3 py-2 align-top max-w-[360px] ${
+                            isEmptyList ? 'text-inkFaint/70 italic' : 'text-ink'
+                          }`}
+                        >
+                          <CellWithSource
+                            provision={p}
+                            featureKey={k}
+                            raw={raw}
+                            isEmpty={isEmptyList}
+                          >
+                            {isEmptyList ? '—' : renderFeatureCell(k, raw)}
+                          </CellWithSource>
+                        </td>
+                      );
+                    }
                     const cell = formatCellValue(k, raw);
                     return (
                       <td
