@@ -3250,6 +3250,12 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
     push('Equity restrictions', f.equityAwardRestrictions);
     push('Lead-in (no response)', f.leadInAllowsActionAfterNoResponse);
     push('Lead-in period (days)', f.leadInPeriodDays);
+    // The per-clause carve-outs (e.g. "(g) sell ... except (i) sales of
+    // inventory, (ii) ..."). Previously dropped from the negative-covenant
+    // Details cell even though extraction captures them.
+    push('Consent standard', f.consentStandard);
+    push('Materiality', f.materialityQualifier);
+    push('Exceptions', f.permittedExceptions);
     return bits.join(' · ');
   };
 
