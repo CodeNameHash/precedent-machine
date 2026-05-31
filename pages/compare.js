@@ -6,6 +6,13 @@ import { useUser } from '../lib/useUser';
 import { useDeals, useProvisions } from '../lib/useSupabaseData';
 import { SIDEBAR_GROUPS, typeHex, sidebarTypeOrder, findGroupForType } from '../lib/sidebar-groups';
 import { CATEGORY_SUMMARY_FEATURES } from '../lib/category-summary-features';
+import {
+  isTaggedItem,
+  isCitableValue,
+  getCitableValue,
+  getCitableText,
+  resolveTaggedLabel,
+} from '../lib/citable';
 
 ComparePage.noLayout = true;
 
@@ -763,6 +770,26 @@ function pickFeatureValue(provisions, types, keys) {
   return null;
 }
 
+// Resolve an MAE carveout row (spec rows carrying a `maeCode`) for a deal by
+// scanning the carveouts/carveOuts tagged list for a matching code — mirrors
+// the review page's findCarveoutByCode so MAE rows populate in compare too.
+function pickCarveoutByCode(provisions, types, maeCode) {
+  const typeSet = new Set(types);
+  const want = String(maeCode).toUpperCase();
+  for (const p of provisions) {
+    if (!typeSet.has(p.type)) continue;
+    const f = readFeatures(p);
+    const list = f.carveouts || f.carveOuts || f.carveOutsList;
+    if (!Array.isArray(list)) continue;
+    for (const c of list) {
+      if (!c || typeof c !== 'object') continue;
+      const code = String(c.code || c.bucket || '').toUpperCase();
+      if (code === want) return { value: c, key: 'carveouts', provision: p };
+    }
+  }
+  return null;
+}
+
 function SummaryView({
   deals,
   dealProvisions,
@@ -866,56 +893,47 @@ function SummaryMatrix({
   onSelectRow,
   compact,
 }) {
-  // Build the feature row list: union of (a) any explicit spec entries for the
-  // active types, and (b) any auto-discovered feature keys that have data in
-  // at least one deal but aren't already in the spec.
+  // Build the feature row list from the SHARED spec only — the same curated
+  // rows the review table shows (no auto-discovered extras, so the two views
+  // match). Each row carries its keys and an optional maeCode carveout marker.
   const featureRows = useMemo(() => {
     const out = [];
-    const seenKeys = new Set();
-    // Explicit spec entries first, in the order they appear in the type's spec.
+    const seen = new Set();
     for (const t of types) {
-      // Shared spec — single source of truth with the review page's table view.
       const spec = CATEGORY_SUMMARY_FEATURES[t] || [];
       for (const row of spec) {
-        const sig = row.label;
-        if (seenKeys.has(sig)) continue;
-        seenKeys.add(sig);
-        out.push({ label: row.label, keys: row.keys || [] });
+        if (seen.has(row.label)) continue;
+        seen.add(row.label);
+        out.push({ label: row.label, keys: row.keys || [], maeCode: row.maeCode || null });
       }
-    }
-    // Auto-discovered keys: union of feature keys across deals for the active
-    // types, excluding ones already covered by the spec keys.
-    const specKeys = new Set();
-    for (const row of out) for (const k of row.keys) specKeys.add(k);
-    const autoKeys = new Set();
-    for (const provs of perDealProvs) {
-      for (const p of provs) {
-        if (!types.includes(p.type)) continue;
-        const f = readFeatures(p);
-        for (const k of Object.keys(f)) {
-          if (specKeys.has(k)) continue;
-          if (isEmptyVal(f[k])) continue;
-          autoKeys.add(k);
-        }
-      }
-    }
-    for (const k of [...autoKeys].sort()) {
-      out.push({ label: humanizeKey(k), keys: [k], auto: true });
     }
     return out;
-  }, [types, perDealProvs]);
+  }, [types]);
 
-  // For each (row, deal) compute the cell value.
+  // For each (row, deal) compute the cell value — by keys, or by carveout code
+  // for MAE rows that declare a maeCode.
   const cells = useMemo(() => {
     return featureRows.map((row) => {
-      const perDeal = perDealProvs.map((provs) => pickFeatureValue(provs, types, row.keys));
+      const perDeal = perDealProvs.map((provs) => {
+        let hit = (row.keys && row.keys.length) ? pickFeatureValue(provs, types, row.keys) : null;
+        if (!hit && row.maeCode) hit = pickCarveoutByCode(provs, types, row.maeCode);
+        return hit;
+      });
       const presentCount = perDeal.filter(Boolean).length;
       return { row, perDeal, presentCount };
     });
   }, [featureRows, perDealProvs, types]);
 
-  // Drop rows where no deal has data — keeps the matrix tight.
-  const populated = cells.filter((c) => c.presentCount > 0);
+  // Review parity: a single-category page shows ALL spec rows (present first,
+  // then "Not present"); the compact ALL-document stack stays tight (populated
+  // rows only) so it doesn't explode into hundreds of empty rows.
+  const populated = useMemo(() => {
+    if (compact) return cells.filter((c) => c.presentCount > 0);
+    // Stable present-first partition (preserve spec order within each group).
+    const present = cells.filter((c) => c.presentCount > 0);
+    const absent = cells.filter((c) => c.presentCount === 0);
+    return [...present, ...absent];
+  }, [cells, compact]);
 
   return (
     <section style={{ marginBottom: 28 }}>
@@ -1084,7 +1102,9 @@ function SummaryMatrix({
                       {hit ? (
                         <SummaryCell hit={hit} />
                       ) : (
-                        <span style={{ color: 'var(--ink-faint)', fontStyle: 'italic' }}>—</span>
+                        <span style={{ color: 'var(--ink-faint)', fontStyle: 'italic', fontSize: 12 }}>
+                          Not present in this agreement
+                        </span>
                       )}
                     </td>
                   ))}
@@ -1099,7 +1119,7 @@ function SummaryMatrix({
 }
 
 function SummaryCell({ hit }) {
-  const text = formatFeatureValue(hit.value);
+  const text = renderFeatureValueNode(hit.value, hit.key);
   const evidence = getCitableTextFromValue(hit.value);
   const [showQuote, setShowQuote] = useState(false);
   return (
@@ -1643,30 +1663,78 @@ function FeaturesBlock({ features }) {
   );
 }
 
-function formatFeatureValue(v) {
+// String form of a feature value — uses the shared citable/tagged helpers so
+// the result matches the review table: citable wrappers unwrap, tagged items
+// resolve to their canonical label, booleans read Yes/No.
+function formatFeatureValue(v, key) {
   if (v == null) return '—';
-  if (typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean') return String(v);
-  if (Array.isArray(v)) {
-    return v
-      .map((x) => (typeof x === 'object' ? (x.text || x.label || x.code || JSON.stringify(x)) : String(x)))
+  let val = v;
+  if (isCitableValue(val)) val = getCitableValue(val);
+  if (typeof val === 'boolean') return val ? 'Yes' : 'No';
+  if (typeof val === 'string' || typeof val === 'number') return String(val);
+  if (Array.isArray(val)) {
+    return val
+      .map((x) => (isTaggedItem(x) ? (resolveTaggedLabel(key, x) || x.label || x.code) : (typeof x === 'object' ? (x.text || x.label || x.code || '') : String(x))))
+      .filter(Boolean)
       .join(', ');
   }
-  if (typeof v === 'object') {
-    // Citable wrapper { value, text } — render the value only here; the
-    // SummaryCell shows the supporting quote on hover. Tagged items have
-    // `code` and prefer the label.
-    if ('value' in v && !('code' in v)) {
-      return formatFeatureValue(v.value);
-    }
-    return v.text || v.label || v.code || JSON.stringify(v);
-  }
-  return String(v);
+  if (isTaggedItem(val)) return resolveTaggedLabel(key, val) || val.label || val.code || '';
+  if (typeof val === 'object') return val.text || val.label || val.code || JSON.stringify(val);
+  return String(val);
 }
 
+// The supporting verbatim quote behind a citable value (shown on demand).
 function getCitableTextFromValue(v) {
-  if (!v || typeof v !== 'object' || Array.isArray(v)) return null;
-  if ('value' in v && !('code' in v) && typeof v.text === 'string' && v.text.trim()) {
-    return v.text.trim();
-  }
+  try {
+    if (isCitableValue(v)) {
+      const t = getCitableText(v);
+      if (t && String(t).trim()) return String(t).trim();
+    }
+  } catch { /* not citable */ }
   return null;
+}
+
+// Small canonical pill — visual match for the review table's indigo code pills.
+function ComparePill({ children }) {
+  return (
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        fontFamily: 'var(--font-ui, inherit)',
+        fontSize: 11,
+        fontWeight: 500,
+        padding: '1px 7px',
+        borderRadius: 5,
+        background: '#eef2ff',
+        color: '#4338ca',
+        border: '1px solid #c7d2fe',
+        lineHeight: 1.5,
+      }}
+    >
+      {children}
+    </span>
+  );
+}
+
+// Render a feature value as a node: tagged items (and arrays of them) become
+// canonical pills like the review table; everything else falls back to text.
+function renderFeatureValueNode(v, key) {
+  let val = isCitableValue(v) ? getCitableValue(v) : v;
+  if (typeof val === 'boolean') return val ? 'Yes' : 'No';
+  if (isTaggedItem(val)) {
+    return <ComparePill>{resolveTaggedLabel(key, val) || val.label || val.code}</ComparePill>;
+  }
+  if (Array.isArray(val) && val.some((x) => isTaggedItem(x))) {
+    return (
+      <span style={{ display: 'inline-flex', flexWrap: 'wrap', gap: 4 }}>
+        {val.map((x, i) =>
+          isTaggedItem(x)
+            ? <ComparePill key={i}>{resolveTaggedLabel(key, x) || x.label || x.code}</ComparePill>
+            : <span key={i}>{typeof x === 'object' ? (x.text || x.label || x.code || '') : String(x)}</span>
+        )}
+      </span>
+    );
+  }
+  return formatFeatureValue(v, key);
 }
