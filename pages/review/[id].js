@@ -7428,21 +7428,22 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
     if (!monthsVal && !txtVal && !dateVal) {
       return <span className="italic text-inkFaint">Not present in this agreement</span>;
     }
-    // What we care about is the cut-off measured FROM SIGNING. Prefer a
-    // month-count framed that way ("X months prior to signing"); otherwise
-    // surface the verbatim textual cut-off (e.g. "1 business day prior to the
-    // date of this Agreement"), then any explicit ISO date.
-    const parts = [];
-    if (monthsVal) {
-      parts.push(`${monthsVal} months prior to signing`);
-    } else if (txtVal) {
-      parts.push(String(txtVal));
+    // The cut-off can be a SHORT period before signing (e.g. "1 business day
+    // prior to the date of this Agreement") OR a months/years look-back. Honor
+    // the agreement's own framing: if the verbatim phrase exists, show it
+    // verbatim (this is the "1 business day" case the user flagged — it is NOT
+    // a month count). Only synthesize "X months prior to signing" when we have
+    // a real month NUMBER and no verbatim phrase.
+    if (txtVal && /day|week|month|year|prior|business/i.test(String(txtVal))) {
+      return <span>{String(txtVal)}</span>;
     }
-    if (dateVal) {
-      const iso = String(dateVal).slice(0, 10);
-      if (!parts.join(' ').includes(iso)) parts.push(`(${iso})`);
+    if (monthsVal && /^\d+$/.test(String(monthsVal).trim())) {
+      return <span>{`${monthsVal} months prior to signing`}</span>;
     }
-    return <span>{parts.join(' ')}</span>;
+    if (txtVal) return <span>{String(txtVal)}</span>;
+    // Only a bare date is available — present it as the cut-off date.
+    if (dateVal) return <span>{`As of ${String(dateVal).slice(0, 10)}`}</span>;
+    return <span>{String(monthsVal)}</span>;
   };
   const showEvidence = useShowEvidence();
   const extractQuote = (raw) => evidenceQuote(raw, { fallbackToFullText: false });
@@ -7465,13 +7466,14 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
   };
 
   // ── SEC Filings exception — rendered as ONE row whose Details cell carries
-  //    sub-headings (Cut-Off Date / Portions Excluded / Carved-out Reps /
-  //    Scope), mirroring the STRUCT "Merger" row treatment. ──
+  //    sub-headings, mirroring the STRUCT "Merger" row treatment. Scope FIRST
+  //    (per user), then Cut-Off, then the canonical Portions-Excluded pills,
+  //    then Carved-out Reps. ──
   const secSubRows = [
-    { label: 'Cut-Off Date', custom: 'lookback' },
+    { label: 'Scope / Language', keys: ['secFilingsExceptionScope', 'secFilingsExceptionLanguage'] },
+    { label: 'Cut-Off', custom: 'lookback' },
     { label: 'Portions Excluded', keys: ['secFilingsExceptionExclusions', 'secFilingsExcludedSections'] },
     { label: 'Carved-out Reps', keys: ['secFilingsExceptionCarvedOutReps', 'secFilingsCarvedOutReps'] },
-    { label: 'Scope / Language', keys: ['secFilingsExceptionScope', 'secFilingsExceptionLanguage'] },
   ];
   const secValues = secSubRows.map((sr) => {
     if (sr.custom === 'lookback') {
@@ -7484,7 +7486,7 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
   const secAnyPresent = secValues.some((s) => s.present);
   const secRowQuote = secValues.find((s) => s.quote)?.quote || null;
 
-  const disclosureRaw = pickKey(['disclosureLetterReference']);
+  const disclosureRaw = pickKey(['disclosureLetterReference', 'disclosureSchedulesReference']);
 
   return (
     <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
@@ -7511,7 +7513,18 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
                     {secValues.filter((s) => s.present).map((s) => (
                       <div key={s.label} className="flex flex-col">
                         <dt className="text-[10px] text-inkFaint uppercase tracking-wider">{s.label}</dt>
-                        <dd className="whitespace-pre-wrap break-words">{s.node || <span className="text-inkFaint/70 italic">—</span>}</dd>
+                        <dd className="whitespace-pre-wrap break-words">
+                          {/* Every sub-row cites its supporting text on hover +
+                              click-to-source. */}
+                          <HoverSource quote={s.quote} as="div">
+                            <span
+                              className={s.quote && showEvidence ? 'cursor-pointer hover:bg-yellow-50' : ''}
+                              onClick={s.quote && showEvidence ? () => showEvidence(s.quote) : undefined}
+                            >
+                              {s.node || <span className="text-inkFaint/70 italic">—</span>}
+                            </span>
+                          </HoverSource>
+                        </dd>
                       </div>
                     ))}
                   </dl>
@@ -7524,9 +7537,18 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
             <tr className="align-top">
               <td className="px-3 py-2 whitespace-nowrap">{renderLabelCell('Disclosure Schedules', extractQuote(disclosureRaw))}</td>
               <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
-                {disclosureRaw != null
-                  ? renderFeatureCell('disclosureLetterReference', disclosureRaw)
-                  : <span className="italic text-inkFaint">Not present in this agreement</span>}
+                {disclosureRaw != null ? (
+                  <HoverSource quote={extractQuote(disclosureRaw)} as="div">
+                    <span
+                      className={extractQuote(disclosureRaw) && showEvidence ? 'cursor-pointer hover:bg-yellow-50' : ''}
+                      onClick={extractQuote(disclosureRaw) && showEvidence ? () => showEvidence(extractQuote(disclosureRaw)) : undefined}
+                    >
+                      {renderFeatureCell('disclosureLetterReference', disclosureRaw)}
+                    </span>
+                  </HoverSource>
+                ) : (
+                  <span className="italic text-inkFaint">Not present in this agreement</span>
+                )}
               </td>
             </tr>
           </tbody>

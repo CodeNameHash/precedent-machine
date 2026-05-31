@@ -33,13 +33,13 @@ export default async function handler(req, res) {
     const { id, deal_id, type, category } = req.query;
     if (id) {
       const { data, error } = await sb.from('provisions')
-        .select('*, deal:deals(acquirer, target, sector)')
+        .select('*, deal:deals(acquirer, target, sector, announce_date)')
         .eq('id', id).single();
       if (error) return res.status(404).json({ error: error.message });
       return res.json({ provision: data });
     }
     let q = sb.from('provisions')
-      .select('*, deal:deals(acquirer, target, sector)');
+      .select('*, deal:deals(acquirer, target, sector, announce_date)');
     if (deal_id) q = q.eq('deal_id', deal_id);
     if (type) q = q.eq('type', type);
     if (category) q = q.eq('category', category);
