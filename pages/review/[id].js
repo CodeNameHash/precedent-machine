@@ -39,7 +39,8 @@ const TYPE_LABELS = {
   'MAE-T': 'Material Adverse Effect (Target)',
   'MAE-B': 'Material Adverse Effect (Buyer)',
   'MAE': 'Material Adverse Effect',
-  'MAE-DEF': 'Material Adverse Effect',
+  'MAE-DEF': 'Material Adverse Effect (Company)',
+  'MAE-DEF-P': 'Material Adverse Effect (Parent)',
   // P8 item 3: synthetic UI-only type — surfaces matching REP-T provisions
   // (Material Contracts checklist) on their own sidebar page so the buckets
   // table isn't buried inline on the REP-T page.
@@ -130,6 +131,7 @@ const TYPE_HEX = {
   'MAE-T':  '#8B5B3A',
   'MAE-B':  '#8B5B3A',
   'MAE-DEF':'#8B5B3A',
+  'MAE-DEF-P':'#8B5B3A',
   MISC:     '#8A8782',
   OTHER:    '#8A8782',
 };
@@ -151,7 +153,10 @@ const SIDEBAR_GROUPS = [
     { label: 'Buyer / Parent', type: 'REP-B' },
     { label: 'Material Contracts', type: '__MATERIAL_CONTRACTS' },
   ]},
-  { label: 'Material Adverse Effect', types: ['MAE-DEF'] },
+  { label: 'Material Adverse Effect', children: [
+    { label: 'Company / Target MAE', type: 'MAE-DEF' },
+    { label: 'Parent / Buyer MAE', type: 'MAE-DEF-P' },
+  ]},
   { label: 'Interim Operating Covenants', types: ['IOC', 'IOC-T', 'IOC-B'] },
   { label: 'No-Solicitation / No-Shop', types: ['NOSOL'] },
   { label: 'Antitrust / Regulatory', types: ['ANTI'] },
@@ -795,6 +800,7 @@ const SKIP_PREAMBLE_CARD_TYPES = new Set([
   'COND', 'COND-M', 'COND-B', 'COND-S',
   'DEF',
   'MAE-DEF',
+  'MAE-DEF-P',
   'MISC',
   'STRUCT',
   'OTHER',
@@ -7158,6 +7164,17 @@ function isMaeDefinitionProvision(p) {
   return false;
 }
 
+/* Which side of the deal an MAE definition belongs to. "Parent" / "Buyer" /
+ * "Acquiror" MAE → parent; everything else (Company / Target, or the generic
+ * unqualified MAE) → company. Used to split the MAE sidebar entry into two
+ * clearly-labeled pages. */
+function maeDefinitionSide(p) {
+  const cat = String(p?.category || '');
+  const code = String((getAiMetadata(p) || {}).code || p?.code || '');
+  if (/parent|buyer|acquir|purchaser/i.test(cat) || /parent|buyer|-B\b/i.test(code)) return 'parent';
+  return 'company';
+}
+
 /* P8 item 3: synthesize a "Material Contracts" sidebar group from REP-T
  * provisions whose code / category / features mark them as the Material
  * Contracts bucket source. Pure UI detection — keeps the parser unchanged. */
@@ -8209,22 +8226,26 @@ function labelForCarveoutCode(code) {
   }
 }
 
-function MaeDefinitionSummary({ allProvisions, onSelectProvision }) {
+function MaeDefinitionSummary({ allProvisions, onSelectProvision, side }) {
   const maeProvs = (allProvisions || []).filter(isMaeDefinitionProvision);
 
-  // Split into Company / Target MAE and Parent / Buyer MAE by category name.
-  // The agreement usually defines both — render them as two sub-sections.
-  const isParentSide = (p) =>
-    /parent|buyer|acquir|purchaser/i.test(p?.category || '');
+  const companyMae = maeProvs.find((p) => maeDefinitionSide(p) === 'company')
+    || (side === 'company' ? maeProvs[0] : null);
+  const parentMae = maeProvs.find((p) => maeDefinitionSide(p) === 'parent') || null;
 
-  const parentMae = maeProvs.find(isParentSide) || null;
-  const targetMae = maeProvs.find((p) => !isParentSide(p)) || maeProvs[0] || null;
+  // When a side is requested (the sidebar split passes it), render ONLY that
+  // side. Falls back to rendering both when no side is given (legacy callers).
+  const renderCompany = !side || side === 'company';
+  const renderParent = !side || side === 'parent';
 
-  if (!targetMae && !parentMae) {
+  const target = renderCompany ? companyMae : null;
+  const parent = renderParent ? parentMae : null;
+
+  if (!target && !parent) {
     return (
       <div className="bg-white border border-border rounded-lg shadow-sm px-5 py-4">
         <p className="text-xs font-ui italic text-inkFaint">
-          No Material Adverse Effect definition found in this agreement.
+          No {side === 'parent' ? 'Parent / Buyer ' : side === 'company' ? 'Company / Target ' : ''}Material Adverse Effect definition found in this agreement.
         </p>
       </div>
     );
@@ -8232,16 +8253,16 @@ function MaeDefinitionSummary({ allProvisions, onSelectProvision }) {
 
   return (
     <div className="space-y-6">
-      {targetMae && (
+      {target && (
         <MaeSinglePartySummary
-          provision={targetMae}
+          provision={target}
           partyLabel="Company / Target"
           onSelectProvision={onSelectProvision}
         />
       )}
-      {parentMae && parentMae !== targetMae && (
+      {parent && parent !== target && (
         <MaeSinglePartySummary
-          provision={parentMae}
+          provision={parent}
           partyLabel="Parent / Buyer"
           onSelectProvision={onSelectProvision}
         />
@@ -11837,7 +11858,10 @@ export default function ReviewPage() {
     // standalone section (not buried inside REP-T).
     const maeProvs = (provisions || []).filter(isMaeDefinitionProvision);
     if (maeProvs.length > 0) {
-      groups['MAE-DEF'] = maeProvs;
+      const companyMae = maeProvs.filter((p) => maeDefinitionSide(p) === 'company');
+      const parentMae = maeProvs.filter((p) => maeDefinitionSide(p) === 'parent');
+      if (companyMae.length > 0) groups['MAE-DEF'] = companyMae;
+      if (parentMae.length > 0) groups['MAE-DEF-P'] = parentMae;
     }
     // P8 item 3: synthesize a Material Contracts sidebar entry from any
     // REP-T provision whose code / category / features identify it as the
@@ -11859,14 +11883,17 @@ export default function ReviewPage() {
   const filteredProvsByType = useMemo(() => {
     const groups = groupProvisionsByType(filteredProvisions);
     // When the active filter targets a synthetic group, repopulate it from
-    // ALL provisions (not the filtered set, which dropped them).
-    if (activeFilter === 'MAE-DEF' || (Array.isArray(activeFilter) && activeFilter.includes('MAE-DEF'))) {
-      const maeProvs = (provisions || []).filter(isMaeDefinitionProvision);
-      if (maeProvs.length > 0) groups['MAE-DEF'] = maeProvs;
-    } else {
-      const maeProvs = filteredProvisions.filter(isMaeDefinitionProvision);
-      if (maeProvs.length > 0) groups['MAE-DEF'] = maeProvs;
-    }
+    // ALL provisions (not the filtered set, which dropped them). MAE splits
+    // into Company (MAE-DEF) and Parent (MAE-DEF-P) sides.
+    const maeFilterActive = (t) => activeFilter === t || (Array.isArray(activeFilter) && activeFilter.includes(t));
+    const maeSource = (maeFilterActive('MAE-DEF') || maeFilterActive('MAE-DEF-P'))
+      ? (provisions || [])
+      : filteredProvisions;
+    const allMae = maeSource.filter(isMaeDefinitionProvision);
+    const companyMae = allMae.filter((p) => maeDefinitionSide(p) === 'company');
+    const parentMae = allMae.filter((p) => maeDefinitionSide(p) === 'parent');
+    if (companyMae.length > 0) groups['MAE-DEF'] = companyMae;
+    if (parentMae.length > 0) groups['MAE-DEF-P'] = parentMae;
     if (activeFilter === '__MATERIAL_CONTRACTS' || (Array.isArray(activeFilter) && activeFilter.includes('__MATERIAL_CONTRACTS'))) {
       const mcProvs = (provisions || []).filter(isMaterialContractsProvision);
       if (mcProvs.length > 0) groups['__MATERIAL_CONTRACTS'] = mcProvs;
@@ -12636,10 +12663,11 @@ export default function ReviewPage() {
                                   onSelectProvision={handleEditProvision}
                                 />
                               )}
-                              {type === 'MAE-DEF' && (
+                              {(type === 'MAE-DEF' || type === 'MAE-DEF-P') && (
                                 <MaeDefinitionSummary
                                   allProvisions={provisions}
                                   onSelectProvision={handleEditProvision}
+                                  side={type === 'MAE-DEF-P' ? 'parent' : 'company'}
                                 />
                               )}
                               {rest.length > 0 && type === 'DEF' && (
@@ -12648,7 +12676,7 @@ export default function ReviewPage() {
                                   onSelectProvision={handleEditProvision}
                                 />
                               )}
-                              {type !== 'DEF' && type !== 'MAE-DEF' && type !== '__MATERIAL_CONTRACTS' && (() => {
+                              {type !== 'DEF' && type !== 'MAE-DEF' && type !== 'MAE-DEF-P' && type !== '__MATERIAL_CONTRACTS' && (() => {
                                 const restAugmented = (type === 'REP-T' || type === 'REP-B')
                                   ? augmentRepsWithExpectedPlaceholders(rest, type, provisions)
                                   : rest;
