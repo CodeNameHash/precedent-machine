@@ -3662,7 +3662,7 @@ function getHiddenColumnsForType(type) {
  */
 const REP_SPECIFIC_FEATURE_SPECS = [
   {
-    categoryRegex: /absence\s+of\s+changes|absence\s+of\s+certain\s+changes/i,
+    categoryRegex: /absence\s+of\s+(?:certain\s+)?changes(?:\s+(?:or|and)\s+events)?|no\s+(?:material\s+)?changes/i,
     rows: [
       { label: 'Type', keys: ['absenceOfChangesType'] },
       { label: 'Start date', keys: ['absenceOfChangesStartDate'] },
@@ -3707,8 +3707,15 @@ function renderRepSpecificFeaturesCell(provision) {
   for (const row of spec.rows) {
     for (const key of row.keys) {
       const raw = features[key];
-      if (raw === null || raw === undefined || raw === '' || raw === false) continue;
-      if (Array.isArray(raw) && raw.length === 0) continue;
+      // P9 item 2(c): unwrap citable / tagged shapes BEFORE the empty-check
+      // so a {value: false, text: "..."} or {value: "", text: "..."} reads
+      // as empty rather than rendering an empty "Specific Features" row.
+      let probe = raw;
+      if (isCitableValue(probe)) probe = getCitableValue(probe);
+      if (probe === null || probe === undefined || probe === '' || probe === false) continue;
+      if (Array.isArray(probe) && probe.length === 0) continue;
+      // Tagged single value with no resolvable label → skip.
+      if (isTaggedItem(probe) && !probe.code && !probe.label) continue;
       rows.push({ label: row.label, key, raw });
       break;
     }
