@@ -1300,6 +1300,42 @@ function CodeBadge({ code }) {
   );
 }
 
+/* HoverSource — wraps any cell content and surfaces the row's source language
+ * in a small amber popover that appears immediately on hover (no 1-second
+ * native-title delay). Click-through still works via the wrapped children;
+ * the popover is positioned absolutely below the trigger and uses pointer-
+ * events:none so it never blocks the underlying click. */
+function HoverSource({ quote, children, as = 'span', className, align = 'left' }) {
+  const [show, setShow] = useState(false);
+  const Tag = as;
+  if (!quote || typeof quote !== 'string' || !quote.trim()) {
+    return <Tag className={className}>{children}</Tag>;
+  }
+  const trimmed = quote.trim().replace(/\s+/g, ' ');
+  const display = trimmed.length > 600 ? trimmed.slice(0, 600) + '…' : trimmed;
+  return (
+    <Tag
+      className={`relative ${className || ''}`}
+      onMouseEnter={() => setShow(true)}
+      onMouseLeave={() => setShow(false)}
+    >
+      {children}
+      {show && (
+        <span
+          role="tooltip"
+          className="absolute z-50 top-full mt-1 max-w-[480px] min-w-[280px] bg-amber-50 border border-amber-300 rounded shadow-lg px-3 py-2 text-[11px] italic text-amber-900 font-body whitespace-pre-wrap break-words leading-relaxed"
+          style={{
+            pointerEvents: 'none',
+            ...(align === 'right' ? { right: 0 } : { left: 0 }),
+          }}
+        >
+          &ldquo;{display}&rdquo;
+        </span>
+      )}
+    </Tag>
+  );
+}
+
 /* Render a single tagged item as: [CODE] Canonical label
  *                                  "original verbatim text" (italic gray) */
 function TaggedItem({ featureKey, item }) {
@@ -2707,24 +2743,28 @@ function IocAffirmativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelec
               const rowQuote = (typeof provision?.full_text === 'string' && provision.full_text.trim())
                 ? provision.full_text
                 : null;
-              const tip = rowQuote ? rowQuote.slice(0, 220) : undefined;
               return (
-                <tr key={bucket.code} className="hover:bg-bg/40 transition-colors align-top" title={tip}>
+                <tr key={bucket.code} className="hover:bg-bg/40 transition-colors align-top">
                   <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">
-                    <button
-                      type="button"
-                      onClick={() => onSelectProvision && onSelectProvision(provision)}
-                      className="text-left text-accent hover:underline font-medium"
-                      title={tip}
-                    >
-                      {bucket.name}
-                    </button>
+                    <HoverSource quote={rowQuote}>
+                      <button
+                        type="button"
+                        onClick={() => onSelectProvision && onSelectProvision(provision)}
+                        className="text-left text-accent hover:underline font-medium"
+                      >
+                        {bucket.name}
+                      </button>
+                    </HoverSource>
                   </td>
-                  <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words" title={tip}>
-                    {std || <span className="text-inkFaint/70 italic">—</span>}
+                  <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
+                    <HoverSource quote={rowQuote} as="div">
+                      {std || <span className="text-inkFaint/70 italic">—</span>}
+                    </HoverSource>
                   </td>
-                  <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words" title={tip}>
-                    {scope || <span className="text-inkFaint/70 italic">—</span>}
+                  <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
+                    <HoverSource quote={rowQuote} as="div">
+                      {scope || <span className="text-inkFaint/70 italic">—</span>}
+                    </HoverSource>
                   </td>
                 </tr>
               );
@@ -3063,17 +3103,20 @@ function IocExceptionsMiniRows({ rows, showEvidence, onSelectProvision }) {
             const detailsText = row.text || row.label;
             const clickableText = !!(row.text && showEvidence);
             const handleTextClick = clickableText ? () => showEvidence(row.text) : undefined;
+            const hoverQuote = row.text || (row.source && row.source.full_text) || null;
             return (
               <tr key={`${row.code}-${i}`} className="hover:bg-bg/40 transition-colors align-top">
                 <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">
                   {row.source && onSelectProvision ? (
-                    <button
-                      type="button"
-                      onClick={() => onSelectProvision(row.source)}
-                      className="text-left text-accent hover:underline font-medium"
-                    >
-                      {row.label}
-                    </button>
+                    <HoverSource quote={hoverQuote}>
+                      <button
+                        type="button"
+                        onClick={() => onSelectProvision(row.source)}
+                        className="text-left text-accent hover:underline font-medium"
+                      >
+                        {row.label}
+                      </button>
+                    </HoverSource>
                   ) : (
                     <span>{row.label}</span>
                   )}
@@ -3081,13 +3124,14 @@ function IocExceptionsMiniRows({ rows, showEvidence, onSelectProvision }) {
                 <td
                   className={`px-3 py-2 text-ink whitespace-pre-wrap break-words ${clickableText ? 'cursor-pointer hover:text-amber-700' : ''}`}
                   onClick={handleTextClick}
-                  title={clickableText ? 'Click to view in document' : undefined}
                 >
-                  {row.text ? (
-                    <span className="italic">&ldquo;{detailsText}&rdquo;</span>
-                  ) : (
-                    <span className="text-inkFaint/70 italic">—</span>
-                  )}
+                  <HoverSource quote={hoverQuote} as="div">
+                    {row.text ? (
+                      <span className="italic">&ldquo;{detailsText}&rdquo;</span>
+                    ) : (
+                      <span className="text-inkFaint/70 italic">—</span>
+                    )}
+                  </HoverSource>
                 </td>
               </tr>
             );
@@ -3282,23 +3326,26 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
           </thead>
           <tbody className="divide-y divide-border">
             {sorted.map((p) => {
-              const tip = (typeof p?.full_text === 'string' && p.full_text.trim())
-                ? p.full_text.slice(0, 220)
-                : undefined;
+              const rowQuote = (typeof p?.full_text === 'string' && p.full_text.trim())
+                ? p.full_text
+                : null;
               return (
-                <tr key={p.id} className="align-top hover:bg-bg/40" title={tip}>
+                <tr key={p.id} className="align-top hover:bg-bg/40">
                   <td className="px-3 py-2 text-ink font-medium">
-                    <button
-                      type="button"
-                      onClick={() => onSelectProvision && onSelectProvision(p)}
-                      className="text-left text-accent hover:underline font-medium"
-                      title={tip}
-                    >
-                      {p.category || 'General'}
-                    </button>
+                    <HoverSource quote={rowQuote}>
+                      <button
+                        type="button"
+                        onClick={() => onSelectProvision && onSelectProvision(p)}
+                        className="text-left text-accent hover:underline font-medium"
+                      >
+                        {p.category || 'General'}
+                      </button>
+                    </HoverSource>
                   </td>
-                  <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words" title={tip}>
-                    {detailsFor(p) || <span className="italic text-inkFaint">—</span>}
+                  <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
+                    <HoverSource quote={rowQuote} as="div">
+                      {detailsFor(p) || <span className="italic text-inkFaint">—</span>}
+                    </HoverSource>
                   </td>
                 </tr>
               );
@@ -4232,24 +4279,25 @@ function StructTable({ provisions, onSelectProvision }) {
               <td
                 className={`px-3 py-2 text-ink ${detailsClickable ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
                 onClick={detailsClickable ? () => showEvidence(rowQuote) : undefined}
-                title={detailsTip}
               >
-                {cells.length === 1 ? (
-                  <div>
-                    {cells[0].render
-                      ? cells[0].render(cells[0].raw)
-                      : renderFeatureCell(cells[0].key, cells[0].raw)}
-                  </div>
-                ) : (
-                  <dl className="space-y-1">
-                    {cells.map(({ key, raw, label, render }) => (
-                      <div key={key} className="flex flex-col">
-                        <dt className="text-[10px] text-inkFaint uppercase tracking-wider">{label || humanizeKey(key)}</dt>
-                        <dd>{render ? render(raw) : renderFeatureCell(key, raw)}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                )}
+                <HoverSource quote={rowQuote} as="div">
+                  {cells.length === 1 ? (
+                    <div>
+                      {cells[0].render
+                        ? cells[0].render(cells[0].raw)
+                        : renderFeatureCell(cells[0].key, cells[0].raw)}
+                    </div>
+                  ) : (
+                    <dl className="space-y-1">
+                      {cells.map(({ key, raw, label, render }) => (
+                        <div key={key} className="flex flex-col">
+                          <dt className="text-[10px] text-inkFaint uppercase tracking-wider">{label || humanizeKey(key)}</dt>
+                          <dd>{render ? render(raw) : renderFeatureCell(key, raw)}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  )}
+                </HoverSource>
               </td>
             </tr>
             );
@@ -4660,9 +4708,39 @@ function ConsidTable({ provisions, onSelectProvision }) {
     return false;
   };
   const hasCvr = detectCvr();
-  const hasCash = hasCvr ? detectCash() : false;
+  const hasCash = detectCash();
+  // When the deal pays both cash AND CVR, render them as two separate
+  // canonical pills instead of a combined "Cash and a CVR" string. The
+  // rendered node is consumed by the Headline Consideration mini-table.
+  let heroConsidTypeNode = null;
   if (hasCvr && hasCash) {
-    heroConsidType = 'Cash and a CVR';
+    heroConsidType = 'Cash + CVR';
+    heroConsidTypeNode = (
+      <span className="inline-flex items-center gap-1 flex-wrap">
+        <CodeBadge code="CASH" />
+        <CodeBadge code="CVR" />
+      </span>
+    );
+  } else if (heroConsidType) {
+    // Single canonical type — also render as a pill so the visual treatment
+    // matches the cash/CVR path and signals "canonical taxonomy value".
+    const codeMap = {
+      'all-cash': 'CASH',
+      'all-stock': 'STOCK',
+      'mixed-cash-and-stock': null, // render as two pills below
+      'cash-with-cvr': null,        // handled via hasCvr && hasCash above
+    };
+    const lower = String(heroConsidType).toLowerCase();
+    if (lower === 'mixed-cash-and-stock' || /mixed/.test(lower)) {
+      heroConsidTypeNode = (
+        <span className="inline-flex items-center gap-1 flex-wrap">
+          <CodeBadge code="CASH" />
+          <CodeBadge code="STOCK" />
+        </span>
+      );
+    } else if (codeMap[lower]) {
+      heroConsidTypeNode = <CodeBadge code={codeMap[lower]} />;
+    }
   }
 
   // Options earn-in via CVR — only relevant when the deal pays a CVR.
@@ -4780,7 +4858,7 @@ function ConsidTable({ provisions, onSelectProvision }) {
       {(heroPriceText || heroConsidType || appraisalAvailable !== null || optionsCvrEarnInLabel || (showExchangeRatio && (exchangeRatioValue || exchangeRatioType))) && (() => {
         const heroRows = [
           heroPriceText ? { label: 'Per-Share Price', value: <>{heroPriceText} <span className="text-inkFaint">per share</span></>, src: heroPerShareSrc } : null,
-          heroConsidType ? { label: 'Consideration Type', value: heroConsidType, src: heroConsidTypeSrc } : null,
+          heroConsidType ? { label: 'Consideration Type', value: heroConsidTypeNode || heroConsidType, src: heroConsidTypeSrc } : null,
           (showExchangeRatio && (exchangeRatioValue || exchangeRatioType)) ? { label: 'Exchange Ratio', value: <>{exchangeRatioValue || '—'}{exchangeRatioType ? ` (${exchangeRatioType})` : ''}</>, src: exchangeRatioSrc } : null,
           appraisalAvailable !== null ? { label: 'Appraisal Rights Available', value: renderAppraisalValue(appraisalAvailable), src: appraisalSrc } : null,
           optionsCvrEarnInLabel ? { label: 'Options Earn-in to CVR', value: optionsCvrEarnInLabel, src: earnInSrc } : null,
@@ -4794,25 +4872,36 @@ function ConsidTable({ provisions, onSelectProvision }) {
             </div>
             <table className="min-w-full text-xs font-ui">
               <tbody className="divide-y divide-border">
-                {heroRows.map((row) => (
-                  <tr key={row.label} className="hover:bg-bg/40 transition-colors align-top">
-                    <td className="px-3 py-2 whitespace-nowrap w-[220px]">
-                      {row.src && row.src.quote ? (
-                        <button
-                          type="button"
-                          onClick={() => showEvidence(row.src.quote)}
-                          className="text-left text-accent hover:underline font-medium"
-                          title="View source"
-                        >
-                          {row.label}
-                        </button>
-                      ) : (
-                        <span className="text-ink font-medium">{row.label}</span>
-                      )}
-                    </td>
-                    <td className="px-3 py-2 text-ink">{row.value}</td>
-                  </tr>
-                ))}
+                {heroRows.map((row) => {
+                  const rowQuote = row.src && row.src.quote ? row.src.quote : null;
+                  return (
+                    <tr key={row.label} className="hover:bg-bg/40 transition-colors align-top">
+                      <td className="px-3 py-2 whitespace-nowrap w-[220px]">
+                        {rowQuote ? (
+                          <HoverSource quote={rowQuote}>
+                            <button
+                              type="button"
+                              onClick={() => showEvidence(rowQuote)}
+                              className="text-left text-accent hover:underline font-medium"
+                            >
+                              {row.label}
+                            </button>
+                          </HoverSource>
+                        ) : (
+                          <span className="text-ink font-medium">{row.label}</span>
+                        )}
+                      </td>
+                      <td
+                        className={`px-3 py-2 text-ink ${rowQuote ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
+                        onClick={rowQuote ? () => showEvidence(rowQuote) : undefined}
+                      >
+                        <HoverSource quote={rowQuote} as="div">
+                          {row.value}
+                        </HoverSource>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -5689,14 +5778,15 @@ function NosolMiniTable({ title, spec, provisions, headerNote }) {
                 <tr key={row.label} className="hover:bg-bg/40 transition-colors">
                   <td className="px-3 py-2 align-top whitespace-nowrap">
                     {clickable ? (
-                      <button
-                        type="button"
-                        onClick={onClick}
-                        className="text-left text-accent hover:underline font-medium"
-                        title="Click to view in document"
-                      >
-                        {row.label}
-                      </button>
+                      <HoverSource quote={quote}>
+                        <button
+                          type="button"
+                          onClick={onClick}
+                          className="text-left text-accent hover:underline font-medium"
+                        >
+                          {row.label}
+                        </button>
+                      </HoverSource>
                     ) : (
                       <span className="text-ink font-medium">{row.label}</span>
                     )}
@@ -5704,9 +5794,10 @@ function NosolMiniTable({ title, spec, provisions, headerNote }) {
                   <td
                     className={`px-3 py-2 align-top text-ink whitespace-pre-wrap break-words ${clickable ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
                     onClick={onClick}
-                    title={clickable ? 'Click to view in document' : undefined}
                   >
-                    {renderSummaryRowValue(row.hit, row.lookupKey)}
+                    <HoverSource quote={quote} as="div">
+                      {renderSummaryRowValue(row.hit, row.lookupKey)}
+                    </HoverSource>
                   </td>
                 </tr>
               );
@@ -5844,19 +5935,16 @@ function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision, hide
                   return (
                     <tr key={row.label} className="hover:bg-bg/40 transition-colors">
                       <td className="px-3 py-2 align-top whitespace-nowrap">
-                        {/* P11: LEFT-column label is the click target when
-                            a source quote is available — matches every other
-                            mini-table in the app. Value cell is now plain
-                            (no longer a separate hover target). */}
                         {clickable ? (
-                          <button
-                            type="button"
-                            onClick={onClick}
-                            className="text-left text-accent hover:underline font-medium"
-                            title="Click to view in document"
-                          >
-                            {row.label}
-                          </button>
+                          <HoverSource quote={quote}>
+                            <button
+                              type="button"
+                              onClick={onClick}
+                              className="text-left text-accent hover:underline font-medium"
+                            >
+                              {row.label}
+                            </button>
+                          </HoverSource>
                         ) : (
                           <span className="text-ink font-medium">{row.label}</span>
                         )}
@@ -5864,11 +5952,12 @@ function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision, hide
                       <td
                         className={`px-3 py-2 align-top text-ink whitespace-pre-wrap break-words ${clickable ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
                         onClick={onClick}
-                        title={clickable ? 'Click to view in document' : undefined}
                       >
-                        {customNode !== null && customNode !== undefined
-                          ? customNode
-                          : renderSummaryRowValue(row.hit, row.lookupKey)}
+                        <HoverSource quote={quote} as="div">
+                          {customNode !== null && customNode !== undefined
+                            ? customNode
+                            : renderSummaryRowValue(row.hit, row.lookupKey)}
+                        </HoverSource>
                       </td>
                     </tr>
                   );
