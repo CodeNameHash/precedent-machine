@@ -12071,6 +12071,15 @@ export default function ReviewPage() {
     const mcProvs = (provisions || []).filter(isMaterialContractsProvision);
     if (mcProvs.length > 0) {
       groups['__MATERIAL_CONTRACTS'] = mcProvs;
+      // Don't ALSO list these under Company/Target (REP-T) in the sidebar —
+      // they have their own synthetic Material Contracts page. Leaving them in
+      // REP-T let a click open a near-empty REP-T single-provision view
+      // (general-exceptions + expected-rep placeholders only), which read as a
+      // confusing duplicate. The main REP-T page already filters them out.
+      const mcIds = new Set(mcProvs.map((p) => p.id));
+      if (Array.isArray(groups['REP-T'])) {
+        groups['REP-T'] = groups['REP-T'].filter((p) => !mcIds.has(p.id));
+      }
     }
     return groups;
   }, [provisions]);
