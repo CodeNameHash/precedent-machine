@@ -7656,12 +7656,16 @@ function RepMaterialContractsTable({ provisions, onSelectProvision }) {
     const tagged = isTaggedItem(b);
     const code = tagged ? String(b.code || '').toUpperCase() : '';
     const canonicalLabel = code && MATERIAL_CONTRACT_BUCKET_CODES[code] ? MATERIAL_CONTRACT_BUCKET_CODES[code] : null;
+    // A bucket is "canonical" when it carries a real taxonomy code (anything
+    // but the OTHER catch-all). Canonical buckets render as just a clickable
+    // pill; OTHER / untagged buckets render their free-text label.
+    const isCanonical = !!(code && code !== 'OTHER' && canonicalLabel);
     const ownLabel = tagged ? (b.label && b.label !== canonicalLabel ? b.label : null) : (typeof b === 'string' ? b : null);
-    const label = ownLabel || canonicalLabel || `Contract type ${i + 1}`;
+    const label = isCanonical ? canonicalLabel : (ownLabel || canonicalLabel || `Contract type ${i + 1}`);
     const text = tagged ? (b.text || null) : (typeof b === 'string' ? b : null);
     const threshRaw = (tagged && (b.threshold ?? b.qualifier)) ?? (code ? threshByCode.get(code) : null) ?? null;
     const thr = normThreshold(threshRaw);
-    return { key: `${code || 'x'}-${i}`, code, canonicalLabel, label, text, thrText: thr.text, thrQuotes: thr.quotes };
+    return { key: `${code || 'x'}-${i}`, code, canonicalLabel, isCanonical, label, text, thrText: thr.text, thrQuotes: thr.quotes };
   });
 
   const presentCodes = new Set(buckets.map((b) => isTaggedItem(b) ? String(b.code || '').toUpperCase() : '').filter(Boolean));
@@ -7707,7 +7711,22 @@ function RepMaterialContractsTable({ provisions, onSelectProvision }) {
                       <span className="text-inkFaint/60 font-mono text-[10px] mt-0.5 shrink-0">{romanizeLower(idx + 1)}</span>
                       <div className="min-w-0">
                         <HoverSource quote={quote} as="div">
-                          {clickable ? (
+                          {row.isCanonical ? (
+                            // Canonical bucket → render as just the pill (clickable to source).
+                            clickable ? (
+                              <button
+                                type="button"
+                                onClick={() => showEvidence(quote)}
+                                className="inline-flex items-center text-[11px] font-ui font-medium px-1.5 py-0.5 rounded border bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100 cursor-pointer"
+                              >
+                                {row.canonicalLabel}
+                              </button>
+                            ) : (
+                              <span className="inline-flex items-center text-[11px] font-ui font-medium px-1.5 py-0.5 rounded border bg-indigo-50 text-indigo-700 border-indigo-200">
+                                {row.canonicalLabel}
+                              </span>
+                            )
+                          ) : clickable ? (
                             <button
                               type="button"
                               onClick={() => showEvidence(quote)}
@@ -7719,13 +7738,6 @@ function RepMaterialContractsTable({ provisions, onSelectProvision }) {
                             <span className="text-ink font-medium">{row.label}</span>
                           )}
                         </HoverSource>
-                        {row.canonicalLabel && row.canonicalLabel !== row.label && (
-                          <div className="mt-0.5">
-                            <span className="inline-flex items-center text-[9px] font-ui px-1 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200">
-                              {row.canonicalLabel}
-                            </span>
-                          </div>
-                        )}
                       </div>
                     </div>
                   </td>
