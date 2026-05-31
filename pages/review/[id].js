@@ -12071,15 +12071,11 @@ export default function ReviewPage() {
     const mcProvs = (provisions || []).filter(isMaterialContractsProvision);
     if (mcProvs.length > 0) {
       groups['__MATERIAL_CONTRACTS'] = mcProvs;
-      // Don't ALSO list these under Company/Target (REP-T) in the sidebar —
-      // they have their own synthetic Material Contracts page. Leaving them in
-      // REP-T let a click open a near-empty REP-T single-provision view
-      // (general-exceptions + expected-rep placeholders only), which read as a
-      // confusing duplicate. The main REP-T page already filters them out.
-      const mcIds = new Set(mcProvs.map((p) => p.id));
-      if (Array.isArray(groups['REP-T'])) {
-        groups['REP-T'] = groups['REP-T'].filter((p) => !mcIds.has(p.id));
-      }
+      // NOTE: the material-contracts provisions deliberately REMAIN in the
+      // REP-T (Company/Target) bucket too, so they still list under that
+      // sidebar subheading. Clicking one routes to the standalone Material
+      // Contracts table (see handleSidebarSelectProvision) rather than the
+      // near-empty REP-T single-provision view.
     }
     return groups;
   }, [provisions]);
@@ -12192,8 +12188,21 @@ export default function ReviewPage() {
 
   /* ── Sidebar provision click — show ONLY that provision in the main view ── */
   const handleSidebarSelectProvision = useCallback((provId) => {
-    setSelectedProvId(provId);
     const prov = provisions.find(p => p.id === provId);
+    // Material Contracts provisions live under the REP-T (Company/Target)
+    // subheading too, but the useful view for them is the standalone buckets
+    // table, NOT a single-provision REP-T page (which would show only the
+    // general-exceptions + expected-rep placeholders). Route the click to the
+    // synthetic Material Contracts page so it renders exactly like its own
+    // top-level section.
+    if (prov && isMaterialContractsProvision(prov)) {
+      setSelectedProvId(null);
+      setActiveFilter('__MATERIAL_CONTRACTS');
+      setProvisionView('table');
+      setExpandedLabel(null);
+      return;
+    }
+    setSelectedProvId(provId);
     if (prov) {
       setActiveFilter(prov.type);
       // Auto-open the right edit panel so a single sidebar click on a
