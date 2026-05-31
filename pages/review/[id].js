@@ -1274,7 +1274,16 @@ function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelect
 // Falls back to the raw code if it doesn't look like an UPPER_SNAKE code.
 function humanizeBadgeText(code) {
   if (!code) return '';
-  if (!/^[A-Z][A-Z0-9_]*$/.test(code)) return code;
+  // Case-insensitive UPPER_SNAKE / lower_snake detection: any token of letters/
+  // digits separated by underscores gets title-cased so values like
+  // "one_step_merger" and "ONE_STEP_MERGER" both render as "One Step Merger".
+  if (!/^[A-Za-z][A-Za-z0-9_]*$/.test(code) || !/_/.test(code)) {
+    if (/^[A-Z][A-Z0-9_]*$/.test(code)) {
+      // Pure UPPER without underscores (rare) — title case it.
+      return code[0] + code.slice(1).toLowerCase();
+    }
+    return code;
+  }
   return code
     .toLowerCase()
     .split('_')
@@ -2695,21 +2704,26 @@ function IocAffirmativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelec
             {matches.map(({ bucket, provision }) => {
               const std = standardFor(provision);
               const scope = appliesToFor(provision, bucket);
+              const rowQuote = (typeof provision?.full_text === 'string' && provision.full_text.trim())
+                ? provision.full_text
+                : null;
+              const tip = rowQuote ? rowQuote.slice(0, 220) : undefined;
               return (
-                <tr key={bucket.code} className="hover:bg-bg/40 transition-colors align-top">
+                <tr key={bucket.code} className="hover:bg-bg/40 transition-colors align-top" title={tip}>
                   <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">
                     <button
                       type="button"
                       onClick={() => onSelectProvision && onSelectProvision(provision)}
                       className="text-left text-accent hover:underline font-medium"
+                      title={tip}
                     >
                       {bucket.name}
                     </button>
                   </td>
-                  <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
+                  <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words" title={tip}>
                     {std || <span className="text-inkFaint/70 italic">—</span>}
                   </td>
-                  <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
+                  <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words" title={tip}>
                     {scope || <span className="text-inkFaint/70 italic">—</span>}
                   </td>
                 </tr>
@@ -3267,22 +3281,28 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {sorted.map((p) => (
-              <tr key={p.id} className="align-top hover:bg-bg/40">
-                <td className="px-3 py-2 text-ink font-medium">
-                  <button
-                    type="button"
-                    onClick={() => onSelectProvision && onSelectProvision(p)}
-                    className="text-left text-accent hover:underline font-medium"
-                  >
-                    {p.category || 'General'}
-                  </button>
-                </td>
-                <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
-                  {detailsFor(p) || <span className="italic text-inkFaint">—</span>}
-                </td>
-              </tr>
-            ))}
+            {sorted.map((p) => {
+              const tip = (typeof p?.full_text === 'string' && p.full_text.trim())
+                ? p.full_text.slice(0, 220)
+                : undefined;
+              return (
+                <tr key={p.id} className="align-top hover:bg-bg/40" title={tip}>
+                  <td className="px-3 py-2 text-ink font-medium">
+                    <button
+                      type="button"
+                      onClick={() => onSelectProvision && onSelectProvision(p)}
+                      className="text-left text-accent hover:underline font-medium"
+                      title={tip}
+                    >
+                      {p.category || 'General'}
+                    </button>
+                  </td>
+                  <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words" title={tip}>
+                    {detailsFor(p) || <span className="italic text-inkFaint">—</span>}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -4159,9 +4179,30 @@ function StructTable({ provisions, onSelectProvision }) {
         <tbody className="divide-y divide-border">
           {rows.map(({ p, cells, displayCategory }) => {
             const isSynth = typeof p.id === 'string' && p.id.startsWith('__synth');
-            // Synth rows (Deal Structure) link the LABEL to source via
-            // useShowEvidence, mirroring real rows where the label opens the
-            // edit panel — keep the click target on the label across the table.
+            // Resolve a source quote for the row — for synth rows use the
+            // captured _synthEvidence; for real rows pull from the first cell's
+            // citable / tagged quote, falling back to the provision's full_text.
+            const buildRowQuote = () => {
+              if (isSynth) return p._synthEvidence || null;
+              for (const c of cells) {
+                const raw = c.raw;
+                if (raw == null) continue;
+                if (isCitableValue(raw)) {
+                  const q = getCitableQuotes(raw);
+                  if (q && q.length > 0) return q[0];
+                }
+                if (isTaggedItem(raw) && typeof raw.text === 'string' && raw.text.trim()) return raw.text;
+              }
+              if (typeof p.full_text === 'string' && p.full_text.trim()) return p.full_text;
+              return null;
+            };
+            const rowQuote = buildRowQuote();
+            const detailsClickable = !!(rowQuote && showEvidence);
+            const truncateTip = (s, n = 220) => {
+              const t = String(s || '').trim().replace(/\s+/g, ' ');
+              return t.length > n ? t.slice(0, n) + '…' : t;
+            };
+            const detailsTip = detailsClickable ? truncateTip(rowQuote) : undefined;
             return (
             <tr key={p.id} className="hover:bg-bg/40 transition-colors align-top">
               <td className="px-3 py-2 whitespace-nowrap">
@@ -4171,7 +4212,7 @@ function StructTable({ provisions, onSelectProvision }) {
                       type="button"
                       onClick={() => showEvidence(p._synthEvidence)}
                       className="text-left text-accent hover:underline font-medium"
-                      title="View source"
+                      title={truncateTip(p._synthEvidence)}
                     >
                       {displayCategory}
                     </button>
@@ -4188,7 +4229,11 @@ function StructTable({ provisions, onSelectProvision }) {
                   </button>
                 )}
               </td>
-              <td className="px-3 py-2 text-ink">
+              <td
+                className={`px-3 py-2 text-ink ${detailsClickable ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
+                onClick={detailsClickable ? () => showEvidence(rowQuote) : undefined}
+                title={detailsTip}
+              >
                 {cells.length === 1 ? (
                   <div>
                     {cells[0].render
@@ -11385,6 +11430,16 @@ export default function ReviewPage() {
 
   /* ── Provisions sub-view: "cards" or "table" ── */
   const [provisionView, setProvisionView] = useState('table');
+  // Per-section collapse state — keyed by provision type. Default: all expanded.
+  const [collapsedSections, setCollapsedSections] = useState(() => new Set());
+  const toggleSectionCollapse = useCallback((type) => {
+    setCollapsedSections((prev) => {
+      const next = new Set(prev);
+      if (next.has(type)) next.delete(type);
+      else next.add(type);
+      return next;
+    });
+  }, []);
 
   // Stable type sort order derived from SIDEBAR_GROUPS so the main view
   // mirrors the sidebar layout (Structure → Consideration → Reps → IOC → ...).
@@ -12121,21 +12176,33 @@ export default function ReviewPage() {
                           rest = rest.filter((p) => !pulledIds.has(p.id));
                         }
                       }
+                      const isCollapsed = collapsedSections.has(type);
                       return (
                         <div key={type} className="space-y-2">
-                          <div className="rec-type-head">
+                          <button
+                            type="button"
+                            onClick={() => toggleSectionCollapse(type)}
+                            className="rec-type-head w-full text-left cursor-pointer"
+                            aria-expanded={!isCollapsed}
+                          >
                             <span className="ix">{String(typeIdx + 1).padStart(2, '0')}</span>
                             <span className="th-dot" style={{ background: typeHex(type) }} />
                             <h2>{typeLabel(type)}</h2>
-                            <span className="ct">{provs.length}</span>
+                            <span
+                              className="inline-flex items-center text-inkFaint text-sm select-none"
+                              aria-hidden="true"
+                              style={{ marginLeft: 4 }}
+                            >
+                              {isCollapsed ? '▸' : '▾'}
+                            </span>
                             <span className="rule" />
-                          </div>
+                          </button>
                           {/* COV (Other Covenants) renders the PW diligence
                               summary table in 'table' view (via
                               CategoryFeatureSummaryTable inside ProvisionTable);
                               cards view continues to render the per-provision
                               ProvisionCard stack unchanged. */}
-                          {(provisionView === 'table') ? (
+                          {!isCollapsed && ((provisionView === 'table') ? (
                             <div className="space-y-3">
                               {showPreambleCard && (
                                 <PreambleCard
@@ -12243,7 +12310,7 @@ export default function ReviewPage() {
                                 />
                               ))}
                             </div>
-                          )}
+                          ))}
                         </div>
                       );
                     })}
