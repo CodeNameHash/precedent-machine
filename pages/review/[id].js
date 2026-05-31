@@ -4125,11 +4125,12 @@ function StructTable({ provisions, onSelectProvision }) {
       cells: [{
         key: 'dealStructure',
         raw: humanized,
-        // Plain value — the LABEL (left column) is the clickable link,
-        // matching every other row in the table.
+        // Canonical taxonomy value — render as a CodeBadge pill (same
+        // visual treatment as Merger Form below) so it's clear this is a
+        // normalized value selected from a dictionary, not free text.
         render: (raw) =>
           raw
-            ? <span className="text-ink">{raw}</span>
+            ? <CodeBadge code={raw} />
             : <span className="italic text-inkFaint">Not specified</span>,
       }],
     });
@@ -8191,19 +8192,40 @@ function ProvisionTable({ provisions, type, onSelectProvision, allProvisions }) 
                         );
                       }
                     }
-                    // Tagged value (single object) — render JUST the resolved
-                    // label (the canonical phrase) without the code badge.
-                    // The code badge is redundant noise for table cells
-                    // where the label already communicates the standard.
+                    // Tagged value (single object) — render as a CodeBadge
+                    // pill for canonical-taxonomy fields (REP qualifiers,
+                    // efforts standards, etc.) so the user can tell at a
+                    // glance which values came from a normalized dictionary
+                    // versus free text. Falls back to plain label for non-
+                    // canonical contexts (e.g. when the resolved label is
+                    // the same as a free-text quote).
                     if (isTaggedItem(raw)) {
                       const label = resolveTaggedLabel(k, raw) || raw.code;
+                      const PILL_KEYS = new Set([
+                        'materialityQualifier',
+                        'knowledgeQualifier',
+                        'effortsStandard',
+                        'consentStandard',
+                        'mergerForm',
+                        'dealStructure',
+                        'considerationType',
+                        'exchangeRatioType',
+                        'controllingParty',
+                        'appliesToParty',
+                        'partyWhoCanTerminate',
+                        'parentRemedyObligation',
+                        'knowledgeStandard',
+                      ]);
+                      const renderAsPill = PILL_KEYS.has(k);
                       return (
                         <td
                           key={k}
                           className="px-3 py-2 align-top max-w-[260px] text-ink"
                         >
                           <CellWithSource provision={p} featureKey={k} raw={raw} isEmpty={false} className="">
-                            <span>{label}</span>
+                            {renderAsPill
+                              ? <CodeBadge code={raw.code || label} />
+                              : <span>{label}</span>}
                           </CellWithSource>
                         </td>
                       );
