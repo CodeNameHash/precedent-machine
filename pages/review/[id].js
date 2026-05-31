@@ -4473,24 +4473,28 @@ function EquityAwardTable({ rows, onSelectProvision }) {
               const instLabel = isTaggedItem(row.instrument)
                 ? (resolveTaggedLabel('instrumentType', row.instrument) || row.instrument.label || humanizeBadgeText(row.instrument.code))
                 : String(row.instrument || 'Instrument');
+              const tip = (typeof row.provision?.full_text === 'string' && row.provision.full_text.trim())
+                ? row.provision.full_text.slice(0, 220)
+                : undefined;
               return (
-                <tr key={row.key} className="hover:bg-bg/40 transition-colors">
+                <tr key={row.key} className="hover:bg-bg/40 transition-colors" title={tip}>
                   <td className="px-3 py-2 align-top whitespace-nowrap">
                     <button
                       type="button"
                       onClick={() => onSelectProvision && onSelectProvision(row.provision)}
                       className="text-left text-accent hover:underline font-medium"
+                      title={tip}
                     >
                       {instLabel}
                     </button>
                   </td>
-                  <td className="px-3 py-2 align-top text-ink max-w-[320px]">
+                  <td className="px-3 py-2 align-top text-ink max-w-[320px]" title={tip}>
                     {renderTagged(row.treatment)}
                   </td>
-                  <td className="px-3 py-2 align-top text-ink max-w-[240px]">
+                  <td className="px-3 py-2 align-top text-ink max-w-[240px]" title={tip}>
                     {renderTagged(row.vesting)}
                   </td>
-                  <td className="px-3 py-2 align-top text-ink whitespace-nowrap">
+                  <td className="px-3 py-2 align-top text-ink whitespace-nowrap" title={tip}>
                     {row.cutoff ?? <span className="text-inkFaint/70 italic">—</span>}
                   </td>
                 </tr>
@@ -6214,12 +6218,15 @@ function TermfTriggerMatrix({ provisions, allProvisions }) {
                   </tr>
                 );
               }
+              const tip = (typeof row.matched?.full_text === 'string' && row.matched.full_text.trim())
+                ? row.matched.full_text.slice(0, 220)
+                : undefined;
               return (
-                <tr key={row.spec.key} className="align-top">
-                  <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">
+                <tr key={row.spec.key} className="align-top" title={tip}>
+                  <td className="px-3 py-2 text-ink font-medium whitespace-nowrap" title={tip}>
                     {row.spec.label}
                   </td>
-                  <td className="px-3 py-2 text-ink">
+                  <td className="px-3 py-2 text-ink" title={tip}>
                     {row.clauses.length > 0 ? (
                       <div className="flex flex-wrap gap-1">
                         {row.clauses.map((c, i) => (
@@ -6230,7 +6237,7 @@ function TermfTriggerMatrix({ provisions, allProvisions }) {
                       <span className="italic text-inkFaint">—</span>
                     )}
                   </td>
-                  <td className="px-3 py-2 text-ink whitespace-nowrap">
+                  <td className="px-3 py-2 text-ink whitespace-nowrap" title={tip}>
                     {row.fee || <span className="italic text-inkFaint">—</span>}
                   </td>
                 </tr>
@@ -6827,12 +6834,15 @@ function BringdownTable({ provisions, repsType, onSelectProvision }) {
               // like the higher-standard rows. Falls back to the raw
               // reps_covered text when no names resolve.
               const genNames = findCoveredRepNames(generalEntry.tier, repProvs);
+              const genTip = (typeof generalEntry.source?.full_text === 'string' && generalEntry.source.full_text.trim())
+                ? generalEntry.source.full_text.slice(0, 220)
+                : undefined;
               return (
-                <tr className="align-top">
-                  <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">
+                <tr className="align-top" title={genTip}>
+                  <td className="px-3 py-2 text-ink font-medium whitespace-nowrap" title={genTip}>
                     General Standard
                   </td>
-                  <td className="px-3 py-2 text-ink">
+                  <td className="px-3 py-2 text-ink" title={genTip}>
                     <div className="text-sm leading-relaxed">{tierStdLabel(generalEntry.tier)}</div>
                     {genNames.length > 0 ? (
                       <div className="text-[11px] text-inkMid mt-0.5">
@@ -6872,12 +6882,18 @@ function BringdownTable({ provisions, repsType, onSelectProvision }) {
             })()}
             {Array.from(higherByStandard.entries()).map(([stdLabel, bucket]) => {
               const nameList = Array.from(bucket.names);
+              // First source provision in this bucket — used for the
+              // hover-tooltip on each row.
+              const tipSource = higherEntries.find((e) => tierStdLabel(e.tier) === stdLabel);
+              const hTip = (typeof tipSource?.source?.full_text === 'string' && tipSource.source.full_text.trim())
+                ? tipSource.source.full_text.slice(0, 220)
+                : undefined;
               return (
-                <tr key={stdLabel} className="align-top">
-                  <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">
+                <tr key={stdLabel} className="align-top" title={hTip}>
+                  <td className="px-3 py-2 text-ink font-medium whitespace-nowrap" title={hTip}>
                     Higher Standard
                   </td>
-                  <td className="px-3 py-2 text-ink">
+                  <td className="px-3 py-2 text-ink" title={hTip}>
                     <div className="text-sm leading-relaxed font-medium">{stdLabel}</div>
                     {nameList.length > 0 && (
                       <div className="text-[11px] text-inkMid mt-0.5">
@@ -7733,14 +7749,18 @@ function CanonicalConditionsTable({ provisions, allProvisions, family, onSelectP
               // Condition column. The Details cell composes additional info
               // from ALL matched provisions.
               const primary = matches[0];
+              const tip = (typeof primary?.full_text === 'string' && primary.full_text.trim())
+                ? primary.full_text.slice(0, 220)
+                : undefined;
               return (
-                <tr key={row.label} className="align-top hover:bg-bg/40">
-                  <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">
+                <tr key={row.label} className="align-top hover:bg-bg/40" title={tip}>
+                  <td className="px-3 py-2 text-ink font-medium whitespace-nowrap" title={tip}>
                     {primary && onSelectProvision ? (
                       <button
                         type="button"
                         onClick={() => onSelectProvision(primary)}
                         className="text-left text-accent hover:underline font-medium"
+                        title={tip}
                       >
                         {row.label}
                       </button>
@@ -7748,7 +7768,7 @@ function CanonicalConditionsTable({ provisions, allProvisions, family, onSelectP
                       <span>{row.label}</span>
                     )}
                   </td>
-                  <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
+                  <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words" title={tip}>
                     <CanonicalConditionDetails
                       row={row}
                       matches={matches}
