@@ -4171,21 +4171,16 @@ function StructTable({ provisions, onSelectProvision }) {
           {rows.map(({ p, cells, displayCategory }) => {
             const isSynth = typeof p.id === 'string' && p.id.startsWith('__synth');
             // Resolve a source quote for the row — for synth rows use the
-            // captured _synthEvidence; for real rows pull from the first cell's
-            // citable / tagged quote, falling back to the provision's full_text.
+            // captured _synthEvidence; for real rows take the first cell with a
+            // citable / tagged quote, falling back to the provision's full_text
+            // (all via the shared resolveEvidence path).
             const buildRowQuote = () => {
               if (isSynth) return p._synthEvidence || null;
               for (const c of cells) {
-                const raw = c.raw;
-                if (raw == null) continue;
-                if (isCitableValue(raw)) {
-                  const q = getCitableQuotes(raw);
-                  if (q && q.length > 0) return q[0];
-                }
-                if (isTaggedItem(raw) && typeof raw.text === 'string' && raw.text.trim()) return raw.text;
+                const q = evidenceQuote(c.raw, { fallbackToFullText: false });
+                if (q) return q;
               }
-              if (typeof p.full_text === 'string' && p.full_text.trim()) return p.full_text;
-              return null;
+              return evidenceQuote(null, { provision: p });
             };
             const rowQuote = buildRowQuote();
             const detailsClickable = !!(rowQuote && showEvidence);
@@ -4193,7 +4188,6 @@ function StructTable({ provisions, onSelectProvision }) {
               const t = String(s || '').trim().replace(/\s+/g, ' ');
               return t.length > n ? t.slice(0, n) + '…' : t;
             };
-            const detailsTip = detailsClickable ? truncateTip(rowQuote) : undefined;
             return (
             <tr key={p.id} className="hover:bg-bg/40 transition-colors align-top">
               <td className="px-3 py-2 whitespace-nowrap">
@@ -4465,28 +4459,31 @@ function EquityAwardTable({ rows, onSelectProvision }) {
               const instLabel = isTaggedItem(row.instrument)
                 ? (resolveTaggedLabel('instrumentType', row.instrument) || row.instrument.label || humanizeBadgeText(row.instrument.code))
                 : String(row.instrument || 'Instrument');
-              const tip = (typeof row.provision?.full_text === 'string' && row.provision.full_text.trim())
-                ? row.provision.full_text.slice(0, 220)
-                : undefined;
+              // Prefer the treatment/vesting cell's own quote; fall back to the
+              // provision full_text — all via the shared resolveEvidence path.
+              const rowQuote = evidenceQuote(row.treatment, { fallbackToFullText: false })
+                || evidenceQuote(row.vesting, { fallbackToFullText: false })
+                || evidenceQuote(null, { provision: row.provision });
               return (
-                <tr key={row.key} className="hover:bg-bg/40 transition-colors" title={tip}>
+                <tr key={row.key} className="hover:bg-bg/40 transition-colors">
                   <td className="px-3 py-2 align-top whitespace-nowrap">
-                    <button
-                      type="button"
-                      onClick={() => onSelectProvision && onSelectProvision(row.provision)}
-                      className="text-left text-accent hover:underline font-medium"
-                      title={tip}
-                    >
-                      {instLabel}
-                    </button>
+                    <HoverSource quote={rowQuote}>
+                      <button
+                        type="button"
+                        onClick={() => onSelectProvision && onSelectProvision(row.provision)}
+                        className="text-left text-accent hover:underline font-medium"
+                      >
+                        {instLabel}
+                      </button>
+                    </HoverSource>
                   </td>
-                  <td className="px-3 py-2 align-top text-ink max-w-[320px]" title={tip}>
-                    {renderTagged(row.treatment)}
+                  <td className="px-3 py-2 align-top text-ink max-w-[320px]">
+                    <HoverSource quote={rowQuote} as="div">{renderTagged(row.treatment)}</HoverSource>
                   </td>
-                  <td className="px-3 py-2 align-top text-ink max-w-[240px]" title={tip}>
-                    {renderTagged(row.vesting)}
+                  <td className="px-3 py-2 align-top text-ink max-w-[240px]">
+                    <HoverSource quote={rowQuote} as="div">{renderTagged(row.vesting)}</HoverSource>
                   </td>
-                  <td className="px-3 py-2 align-top text-ink whitespace-nowrap" title={tip}>
+                  <td className="px-3 py-2 align-top text-ink whitespace-nowrap">
                     {row.cutoff ?? <span className="text-inkFaint/70 italic">—</span>}
                   </td>
                 </tr>
@@ -4591,10 +4588,7 @@ function ConsidTable({ provisions, onSelectProvision }) {
   let heroConsidTypeSrc = null;
   const captureSrc = (raw, p) => ({
     provision: p,
-    quote:
-      (isCitableValue(raw) && getCitableText(raw)) ||
-      (isTaggedItem(raw) && raw.text) ||
-      (p?.full_text ? p.full_text.slice(0, 400) : null),
+    quote: evidenceQuote(raw, { provision: p }),
   });
   for (const p of provisions) {
     const f = getStructuredFeatures(p) || {};
@@ -5703,19 +5697,9 @@ function NosolMiniTable({ title, spec, provisions, headerNote }) {
               </tr>
             )}
             {rows.map((row) => {
-              const buildQuote = () => {
-                if (!row.hit) return null;
-                const v = row.hit.value;
-                if (isCitableValue(v)) {
-                  const q = getCitableQuotes(v);
-                  if (q.length > 0) return q[0];
-                }
-                if (isTaggedItem(v) && typeof v.text === 'string' && v.text.trim()) return v.text;
-                const provText = row.hit.provision && row.hit.provision.full_text;
-                if (typeof provText === 'string' && provText.trim()) return provText.slice(0, 600);
-                return null;
-              };
-              const quote = buildQuote();
+              const quote = row.hit
+                ? evidenceQuote(row.hit.value, { provision: row.hit.provision })
+                : null;
               const clickable = !!(quote && showEvidence);
               const onClick = clickable ? () => showEvidence(quote) : undefined;
               return (
@@ -5861,19 +5845,12 @@ function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision, hide
                   const customNode = row.customRender && !row.hit
                     ? row.customRender(provisions, allProvisions || provisions)
                     : null;
-                  // Compose a source quote for click-to-source: prefer the
-                  // hit's citable text, then the value's tagged text, then
-                  // the provision's full_text.
-                  const buildQuote = () => {
-                    if (!row.hit) return null;
-                    const v = row.hit.value;
-                    if (isCitableValue(v) && typeof v.text === 'string' && v.text.trim()) return v.text;
-                    if (isTaggedItem(v) && typeof v.text === 'string' && v.text.trim()) return v.text;
-                    const provText = row.hit.provision && row.hit.provision.full_text;
-                    if (typeof provText === 'string' && provText.trim()) return provText.slice(0, 600);
-                    return null;
-                  };
-                  const quote = buildQuote();
+                  // Compose a source quote for click-to-source via the shared
+                  // resolveEvidence path (citable quotes → tagged text →
+                  // provision full_text fallback).
+                  const quote = row.hit
+                    ? evidenceQuote(row.hit.value, { provision: row.hit.provision })
+                    : null;
                   const clickable = !!(quote && showEvidence) && !customNode;
                   const onClick = clickable ? () => showEvidence(quote) : undefined;
                   return (
@@ -7222,15 +7199,7 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
     { label: 'Disclosure Letter reference', keys: ['disclosureLetterReference'] },
   ];
   const showEvidence = useShowEvidence();
-  const extractQuote = (raw) => {
-    if (!raw) return null;
-    if (isCitableValue(raw)) {
-      const q = getCitableQuotes(raw);
-      if (q && q.length > 0) return q[0];
-    }
-    if (isTaggedItem(raw) && typeof raw.text === 'string' && raw.text.trim()) return raw.text;
-    return null;
-  };
+  const extractQuote = (raw) => evidenceQuote(raw, { fallbackToFullText: false });
   const renderLabelCell = (label, quote) => {
     const clickable = !!(quote && showEvidence);
     if (clickable) {
@@ -7991,16 +7960,7 @@ function CellWithSource({ provision, featureKey, raw, isEmpty, children, classNa
   if (isEmpty) {
     return <div className={className || 'whitespace-pre-wrap break-words'}>{children}</div>;
   }
-  let quote = null;
-  if (isCitableValue(raw)) {
-    quote = getCitableText(raw);
-  }
-  if (!quote && isTaggedItem(raw) && typeof raw.text === 'string' && raw.text.trim()) {
-    quote = raw.text.trim();
-  }
-  if (!quote && provision && typeof provision.full_text === 'string' && provision.full_text.trim()) {
-    quote = provision.full_text.slice(0, 400);
-  }
+  const quote = evidenceQuote(raw, { provision });
   if (!quote || !showEvidence) {
     return <div className={className || 'whitespace-pre-wrap break-words'}>{children}</div>;
   }
