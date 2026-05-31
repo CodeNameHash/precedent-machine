@@ -7564,11 +7564,19 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
  *     thresholds. Buckets the deal does not address render with an italic
  *     "Not present in this agreement" cell — same checklist pattern as
  *     ExpectedRepsTable. */
+// Lowercase roman numeral for a 1-based index — matches the agreement's own
+// "(i) (ii) (iii)..." Material Contracts sub-clause numbering.
+function romanizeLower(num) {
+  if (!Number.isFinite(num) || num <= 0) return String(num);
+  const map = [[1000,'m'],[900,'cm'],[500,'d'],[400,'cd'],[100,'c'],[90,'xc'],[50,'l'],[40,'xl'],[10,'x'],[9,'ix'],[5,'v'],[4,'iv'],[1,'i']];
+  let n = num, out = '';
+  for (const [v, s] of map) { while (n >= v) { out += s; n -= v; } }
+  return `(${out})`;
+}
+
 function RepMaterialContractsTable({ provisions, onSelectProvision }) {
-  // P7 item 21: bind once at the component level (Rules of Hooks) so
-  // bucket-label click → showEvidence(quote) works inside the per-row map.
   const showEvidence = useShowEvidence();
-  // Find the source provision: prefer one whose code or category matches.
+  const [showCoverage, setShowCoverage] = useState(false);
   let source = null;
   for (const p of provisions || []) {
     const meta = getAiMetadata(p) || {};
@@ -7580,37 +7588,51 @@ function RepMaterialContractsTable({ provisions, onSelectProvision }) {
   const buckets = Array.isArray(f.materialContractsBuckets) ? f.materialContractsBuckets : [];
   const thresholds = Array.isArray(f.materialContractsDollarThresholds) ? f.materialContractsDollarThresholds : [];
 
-  // Lookup: bucket code → threshold. Prefer the dollar-thresholds array; fall
-  // back to a threshold field on the tagged bucket itself when present.
-  // Thresholds may be NON-dollar qualifiers too (e.g. "material" for IP
-  // licenses) — accept any non-empty value, not just dollar amounts.
   const threshByCode = new Map();
   for (const t of thresholds) {
     if (!t || typeof t !== 'object') continue;
     const k = String(t.bucket || t.code || '').toUpperCase();
     if (k) threshByCode.set(k, t.threshold ?? t.value ?? t.qualifier ?? null);
   }
-  const dealBucketByCode = new Map();
-  for (const b of buckets) {
-    if (isTaggedItem(b)) {
-      const code = String(b.code).toUpperCase();
-      dealBucketByCode.set(code, b);
-      const inlineThresh = b.threshold ?? b.qualifier ?? null;
-      if (inlineThresh && !threshByCode.has(code)) {
-        threshByCode.set(code, inlineThresh);
-      }
-    }
-  }
 
-  // Render ONE row per canonical bucket code (16 codes). Unknown buckets are
-  // marked "Not present in this agreement" in italic-grey.
+  const normThreshold = (raw) => {
+    if (raw === null || raw === undefined || raw === '') return { text: null, quotes: null };
+    if (isCitableValue(raw)) {
+      const inner = getCitableValue(raw);
+      const q = getCitableQuotes(raw);
+      const text = typeof inner === 'object' && inner !== null
+        ? (inner.label || inner.code || null) : (inner === '' ? null : String(inner));
+      return { text, quotes: q && q.length ? q : null };
+    }
+    if (typeof raw === 'object') return { text: raw.label || raw.text || raw.code || null, quotes: null };
+    return { text: String(raw), quotes: null };
+  };
+
+  // PRIMARY: one row per ACTUAL extracted sub-clause, in document order. The
+  // agreement's enumerated (i)-(xxi) list is the truth — many clauses are
+  // deal-specific and several share a canonical code, so a canonical-only
+  // checklist can never show them all. Each row carries its own threshold +
+  // canonical-bucket tag + verbatim source (hover + click).
+  const clauseRows = buckets.map((b, i) => {
+    const tagged = isTaggedItem(b);
+    const code = tagged ? String(b.code || '').toUpperCase() : '';
+    const canonicalLabel = code && MATERIAL_CONTRACT_BUCKET_CODES[code] ? MATERIAL_CONTRACT_BUCKET_CODES[code] : null;
+    const ownLabel = tagged ? (b.label && b.label !== canonicalLabel ? b.label : null) : (typeof b === 'string' ? b : null);
+    const label = ownLabel || canonicalLabel || `Contract type ${i + 1}`;
+    const text = tagged ? (b.text || null) : (typeof b === 'string' ? b : null);
+    const threshRaw = (tagged && (b.threshold ?? b.qualifier)) ?? (code ? threshByCode.get(code) : null) ?? null;
+    const thr = normThreshold(threshRaw);
+    return { key: `${code || 'x'}-${i}`, code, canonicalLabel, label, text, thrText: thr.text, thrQuotes: thr.quotes };
+  });
+
+  const presentCodes = new Set(buckets.map((b) => isTaggedItem(b) ? String(b.code || '').toUpperCase() : '').filter(Boolean));
   const canonicalCodes = Object.keys(MATERIAL_CONTRACT_BUCKET_CODES);
 
   return (
     <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
       <div className="px-3 py-2 bg-bg/60 border-b border-border flex items-center justify-between">
         <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
-          Material Contracts
+          Material Contracts <span className="text-inkFaint/70">({clauseRows.length})</span>
         </p>
         {source && onSelectProvision && (
           <button
@@ -7622,83 +7644,104 @@ function RepMaterialContractsTable({ provisions, onSelectProvision }) {
           </button>
         )}
       </div>
-      <table className="min-w-full text-xs font-ui">
-        <thead className="bg-bg/60 border-b border-border">
-          <tr>
-            <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider w-[320px]">Bucket</th>
-            <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Threshold</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-border">
-          {canonicalCodes.map((code) => {
-            const label = MATERIAL_CONTRACT_BUCKET_CODES[code];
-            const dealBucket = dealBucketByCode.get(code);
-            const thresholdRaw = threshByCode.get(code) || (dealBucket && dealBucket.threshold) || null;
-            const present = !!dealBucket;
-            // P7 item 21: unwrap citable / tagged threshold values so the cell
-            // doesn't render as "[object Object]". Threshold may arrive as a
-            // bare string/number, a citable {value, text}, or a tagged
-            // {code, label, text}.
-            let thresholdText = null;
-            let thresholdQuote = null;
-            if (thresholdRaw !== null && thresholdRaw !== undefined && thresholdRaw !== '') {
-              if (isCitableValue(thresholdRaw)) {
-                const inner = getCitableValue(thresholdRaw);
-                const q = getCitableQuotes(thresholdRaw);
-                thresholdText = typeof inner === 'object' && inner !== null
-                  ? (inner.label || inner.code || JSON.stringify(inner))
-                  : String(inner);
-                thresholdQuote = q && q.length > 0 ? q : null;
-              } else if (typeof thresholdRaw === 'object') {
-                thresholdText = thresholdRaw.label || thresholdRaw.text || thresholdRaw.code || JSON.stringify(thresholdRaw);
-              } else {
-                thresholdText = String(thresholdRaw);
-              }
-            }
-            // Bucket label is blue + clickable for any PRESENT bucket. Prefer
-            // the bucket's own quote; fall back to the source provision (jump
-            // to it in the doc) so present rows are always navigable.
-            const bucketQuote = isTaggedItem(dealBucket) && dealBucket.text ? dealBucket.text : null;
-            const onLabelClick = !present ? null
-              : bucketQuote && showEvidence ? () => showEvidence(bucketQuote)
-              : source && onSelectProvision ? () => onSelectProvision(source)
-              : null;
-            return (
-              <tr key={code} className="align-top hover:bg-bg/40">
-                <td className="px-3 py-2 font-medium">
-                  {onLabelClick ? (
-                    <HoverSource quote={bucketQuote}>
-                      <button
-                        type="button"
-                        onClick={onLabelClick}
-                        className="text-left text-accent hover:underline font-medium"
-                      >
-                        {label}
-                      </button>
-                    </HoverSource>
-                  ) : (
-                    <span className="text-inkFaint">{label}</span>
-                  )}
-                </td>
-                <td className="px-3 py-2 text-ink">
-                  {present ? (
-                    thresholdText ? (
-                      <div>
-                        <span>{thresholdText}</span>
-                        {thresholdQuote ? <EvidenceQuote quotes={thresholdQuote} /> : null}
+
+      {clauseRows.length === 0 ? (
+        <p className="px-3 py-3 text-xs font-ui italic text-inkFaint">
+          No material-contract sub-clauses extracted (re-extract REP-T to populate).
+        </p>
+      ) : (
+        <table className="min-w-full text-xs font-ui">
+          <thead className="bg-bg/60 border-b border-border">
+            <tr>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Contract Type</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider w-[200px]">Threshold</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {clauseRows.map((row, idx) => {
+              const quote = row.text || null;
+              const clickable = quote && showEvidence;
+              return (
+                <tr key={row.key} className="align-top hover:bg-bg/40">
+                  <td className="px-3 py-2">
+                    <div className="flex items-start gap-2">
+                      <span className="text-inkFaint/60 font-mono text-[10px] mt-0.5 shrink-0">{romanizeLower(idx + 1)}</span>
+                      <div className="min-w-0">
+                        <HoverSource quote={quote} as="div">
+                          {clickable ? (
+                            <button
+                              type="button"
+                              onClick={() => showEvidence(quote)}
+                              className="text-left text-accent hover:underline font-medium"
+                            >
+                              {row.label}
+                            </button>
+                          ) : (
+                            <span className="text-ink font-medium">{row.label}</span>
+                          )}
+                        </HoverSource>
+                        {row.canonicalLabel && row.canonicalLabel !== row.label && (
+                          <div className="mt-0.5">
+                            <span className="inline-flex items-center text-[9px] font-ui px-1 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200">
+                              {row.canonicalLabel}
+                            </span>
+                          </div>
+                        )}
                       </div>
+                    </div>
+                  </td>
+                  <td className="px-3 py-2 text-ink">
+                    {row.thrText ? (
+                      <HoverSource quote={(row.thrQuotes && row.thrQuotes[0]) || quote} as="div">
+                        <span
+                          className={clickable ? 'cursor-pointer hover:bg-yellow-50' : ''}
+                          onClick={(row.thrQuotes && row.thrQuotes[0] && showEvidence) ? () => showEvidence(row.thrQuotes[0]) : (clickable ? () => showEvidence(quote) : undefined)}
+                        >
+                          {row.thrText}
+                        </span>
+                      </HoverSource>
                     ) : (
-                      <span className="italic text-inkFaint">—</span>
-                    )
-                  ) : (
-                    <span className="italic text-inkFaint">Not present in this agreement</span>
-                  )}
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+                      <span className="italic text-inkFaint/70">No $ threshold</span>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      )}
+
+      {/* Secondary: collapsed canonical-coverage strip for cross-deal comparison. */}
+      <div className="border-t border-border">
+        <button
+          type="button"
+          onClick={() => setShowCoverage((v) => !v)}
+          className="w-full px-3 py-1.5 text-left text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider hover:bg-bg/40 flex items-center gap-1"
+        >
+          <span>{showCoverage ? '▾' : '▸'}</span>
+          Canonical coverage ({presentCodes.size}/{canonicalCodes.length})
+        </button>
+        {showCoverage && (
+          <div className="px-3 py-2 flex flex-wrap gap-1.5">
+            {canonicalCodes.map((code) => {
+              const present = presentCodes.has(code);
+              return (
+                <span
+                  key={code}
+                  className={`inline-flex items-center text-[10px] font-ui px-1.5 py-0.5 rounded border ${
+                    present
+                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                      : 'bg-bg/40 text-inkFaint/70 border-border line-through'
+                  }`}
+                  title={present ? 'Present' : 'Not addressed'}
+                >
+                  {MATERIAL_CONTRACT_BUCKET_CODES[code]}
+                </span>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
