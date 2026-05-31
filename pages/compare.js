@@ -13,6 +13,7 @@ import {
   getCitableText,
   resolveTaggedLabel,
 } from '../lib/citable';
+import { MATERIAL_CONTRACT_BUCKET_CODES } from '../lib/taxonomy';
 
 ComparePage.noLayout = true;
 
@@ -790,6 +791,108 @@ function pickCarveoutByCode(provisions, types, maeCode) {
   return null;
 }
 
+// The Material Contracts rep's enumerated buckets live as a feature on the
+// REP-T provision; pull them for a single deal.
+function dealMaterialContractsBuckets(provs) {
+  for (const p of provs) {
+    if (p.type !== 'REP-T') continue;
+    const f = readFeatures(p);
+    const buckets = f.materialContractsBuckets;
+    if (Array.isArray(buckets) && buckets.length) return buckets;
+  }
+  return [];
+}
+
+// Two-column (per-deal) Material Contracts table — rows are canonical bucket
+// types (pills, in taxonomy order), cells show each deal's dollar threshold or
+// "Not present". Mirrors the review page's RepMaterialContractsTable.
+function MaterialContractsCompare({ deals, perDealProvs }) {
+  const perDealByCode = perDealProvs.map((provs) => {
+    const m = new Map();
+    for (const b of dealMaterialContractsBuckets(provs)) {
+      if (!isTaggedItem(b)) continue;
+      const code = String(b.code || '').toUpperCase();
+      if (!code || code === 'OTHER') continue;
+      const thr = b.threshold ?? b.qualifier ?? null;
+      if (!m.has(code)) m.set(code, { threshold: thr, text: b.text || null });
+    }
+    return m;
+  });
+  if (!perDealByCode.some((m) => m.size > 0)) return null;
+
+  const presentCodes = Object.keys(MATERIAL_CONTRACT_BUCKET_CODES).filter(
+    (code) => perDealByCode.some((m) => m.has(code))
+  );
+  if (presentCodes.length === 0) return null;
+
+  const thrText = (entry) => {
+    if (!entry) return null;
+    const t = entry.threshold;
+    if (t == null || t === '') return 'No $ threshold';
+    return typeof t === 'object' ? (t.label || t.text || t.code || 'No $ threshold') : String(t);
+  };
+
+  return (
+    <section style={{ marginBottom: 28 }}>
+      <header
+        style={{
+          display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 8,
+          paddingBottom: 6, borderBottom: '1px solid var(--line-soft)',
+        }}
+      >
+        <span style={{ width: 9, height: 9, borderRadius: '50%', background: typeHex('REP-T') }} />
+        <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: 15, fontWeight: 500, letterSpacing: '-.01em', color: 'var(--ink)', margin: 0 }}>
+          Material Contracts
+        </h3>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--ink-faint)' }}>
+          {presentCodes.length} bucket{presentCodes.length === 1 ? '' : 's'}
+        </span>
+      </header>
+      <div style={{ border: '1px solid var(--line)', borderRadius: 8, overflow: 'hidden', background: 'var(--surface)' }}>
+        <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0, fontSize: 12.5, tableLayout: 'fixed' }}>
+          <colgroup>
+            <col style={{ width: 260 }} />
+            {deals.map((d) => <col key={d.id} />)}
+          </colgroup>
+          <thead>
+            <tr>
+              <th style={hdrCellStyle()}>Contract Type</th>
+              {deals.map((d) => (
+                <th key={d.id} style={hdrCellStyle()}>
+                  <div style={{ fontFamily: 'var(--font-serif)', fontSize: 13, fontWeight: 500, color: 'var(--ink)' }}>
+                    {d.acquirer} <span style={{ color: 'var(--ink-faint)', fontStyle: 'italic' }}>/</span> {d.target}
+                  </div>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {presentCodes.map((code) => (
+              <tr key={code}>
+                <td style={{ padding: '8px 12px', borderBottom: '1px solid var(--line-soft)', verticalAlign: 'top', background: 'var(--surface)' }}>
+                  <ComparePill>{MATERIAL_CONTRACT_BUCKET_CODES[code]}</ComparePill>
+                </td>
+                {perDealByCode.map((m, i) => {
+                  const entry = m.get(code);
+                  return (
+                    <td key={i} style={{ padding: '8px 12px', borderBottom: '1px solid var(--line-soft)', borderLeft: '1px solid var(--line-soft)', verticalAlign: 'top', background: 'var(--surface)' }}>
+                      {entry ? (
+                        <span style={{ color: 'var(--ink)' }}>{thrText(entry)}</span>
+                      ) : (
+                        <span style={{ color: 'var(--ink-faint)', fontStyle: 'italic', fontSize: 12 }}>Not present in this agreement</span>
+                      )}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+}
+
 function SummaryView({
   deals,
   dealProvisions,
@@ -832,17 +935,21 @@ function SummaryView({
         {visibleGroups.map((g) => {
           const types = g.children ? g.children.map((c) => c.type) : g.types || [];
           return (
-            <SummaryMatrix
-              key={g.label}
-              title={g.label}
-              color={typeHex(types[0] || 'OTHER')}
-              types={types}
-              deals={deals}
-              perDealProvs={perDealProvs}
-              rowsForTypes={types.flatMap((t) => rowsByType[t] || [])}
-              onSelectRow={onSelectRow}
-              compact
-            />
+            <div key={g.label}>
+              <SummaryMatrix
+                title={g.label}
+                color={typeHex(types[0] || 'OTHER')}
+                types={types}
+                deals={deals}
+                perDealProvs={perDealProvs}
+                rowsForTypes={types.flatMap((t) => rowsByType[t] || [])}
+                onSelectRow={onSelectRow}
+                compact
+              />
+              {g.label === 'Representations' && (
+                <MaterialContractsCompare deals={deals} perDealProvs={perDealProvs} />
+              )}
+            </div>
           );
         })}
       </div>
@@ -870,6 +977,9 @@ function SummaryView({
 
   return (
     <div style={{ flex: 1, overflow: 'auto', padding: '14px 22px 80px' }}>
+      {activeTypes.includes('REP-T') && (
+        <MaterialContractsCompare deals={deals} perDealProvs={perDealProvs} />
+      )}
       <SummaryMatrix
         title={title}
         color={color}
