@@ -12027,14 +12027,45 @@ export default function ReviewPage() {
                   })}
                 </div>
                 )}
-                <button
-                  type="button"
-                  onClick={() => setAdvisorsModalOpen(true)}
-                  className="text-[10px] font-ui uppercase tracking-wider text-accent hover:underline"
-                  style={{ padding: '3px 6px' }}
-                >
-                  {Array.isArray(deal.metadata?.advisors) && deal.metadata.advisors.length > 0 ? 'Edit advisors' : '+ Add advisors'}
-                </button>
+                {(() => {
+                  const hasAdvisors = Array.isArray(deal.metadata?.advisors) && deal.metadata.advisors.length > 0;
+                  // When advisors exist, render a compact "+" chip next to the
+                  // pills (matches their styling) to add more. When none exist,
+                  // keep the explicit "+ Add advisors" call-to-action.
+                  if (hasAdvisors) {
+                    return (
+                      <button
+                        type="button"
+                        onClick={() => setAdvisorsModalOpen(true)}
+                        title="Add or edit advisors"
+                        style={{
+                          fontFamily: 'inherit',
+                          fontSize: 11,
+                          lineHeight: 1,
+                          padding: '3px 8px',
+                          borderRadius: 4,
+                          border: '1px dashed #c4c2bd',
+                          background: '#fff',
+                          color: '#6a665f',
+                          cursor: 'pointer',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        +
+                      </button>
+                    );
+                  }
+                  return (
+                    <button
+                      type="button"
+                      onClick={() => setAdvisorsModalOpen(true)}
+                      className="text-[10px] font-ui uppercase tracking-wider text-accent hover:underline"
+                      style={{ padding: '3px 6px' }}
+                    >
+                      + Add advisors
+                    </button>
+                  );
+                })()}
               </div>
               <ExtractionStatusPill
                 deal={deal}
