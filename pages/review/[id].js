@@ -7149,22 +7149,86 @@ function isMaterialContractsProvision(p) {
  *     "Knowledge standard: <KNOWLEDGE_STANDARDS label or italic 'Not specified'>".
  *     Pulled from the first REP provision with non-null `knowledgeStandard`. */
 function RepKnowledgeNote({ provisions }) {
-  let label = null;
+  const showEvidence = useShowEvidence();
+  // Resolve the knowledge STANDARD (actual / actual-after-inquiry / etc.) and
+  // the PERSONS it attaches to (executive officers / a named schedule list),
+  // each as a pill with click-to-source. Standard maps a few common phrasings
+  // onto a short canonical label.
+  let standardLabel = null;
+  let standardQuote = null;
+  let persons = [];        // array of { label, quote }
+  let defQuote = null;     // the "knowledge means ..." definition sentence
+
+  const normStandard = (raw) => {
+    const v = isCitableValue(raw) ? getCitableValue(raw) : raw;
+    if (!v) return null;
+    if (isTaggedItem(v)) return resolveTaggedLabel('knowledgeStandard', v) || v.label || v.code;
+    const s = String(v).toLowerCase();
+    if (/after\s+(?:due|reasonable)\s+inquiry/.test(s) || /actual-knowledge-after/.test(s)) return 'Actual Knowledge After Due Inquiry';
+    if (/constructive/.test(s)) return 'Constructive Knowledge';
+    if (/actual/.test(s)) return 'Actual Knowledge';
+    return String(v);
+  };
+
   for (const p of provisions || []) {
     const f = getStructuredFeatures(p) || {};
-    const raw = isCitableValue(f.knowledgeStandard) ? getCitableValue(f.knowledgeStandard) : f.knowledgeStandard;
-    if (!raw) continue;
-    if (isTaggedItem(raw)) {
-      label = resolveTaggedLabel('knowledgeStandard', raw) || raw.label || raw.code;
-    } else if (typeof raw === 'string') {
-      label = raw;
+    if (!standardLabel && f.knowledgeStandard) {
+      standardLabel = normStandard(f.knowledgeStandard);
+      standardQuote = evidenceQuote(f.knowledgeStandard, { provision: p, focusOn: 'knowledge' });
     }
-    if (label) break;
+    if (persons.length === 0 && f.knowledgePersons) {
+      const raw = isCitableValue(f.knowledgePersons) ? getCitableValue(f.knowledgePersons) : f.knowledgePersons;
+      const q = evidenceQuote(f.knowledgePersons, { provision: p, focusOn: 'knowledge' });
+      const list = Array.isArray(raw) ? raw : [raw];
+      for (const item of list) {
+        if (!item) continue;
+        const lbl = isTaggedItem(item) ? (item.label || item.code) : String(item).trim();
+        if (lbl) persons.push({ label: lbl, quote: (isTaggedItem(item) && item.text) || q });
+      }
+    }
+    if (!defQuote && (f.knowledgeStandard || f.knowledgePersons)) {
+      defQuote = standardQuote || null;
+    }
   }
+
+  const Pill = ({ text, quote, tone }) => {
+    const cls = tone === 'person'
+      ? 'bg-sky-50 text-sky-700 border-sky-200'
+      : 'bg-indigo-50 text-indigo-700 border-indigo-200';
+    const inner = (
+      <span className={`inline-flex items-center font-ui font-medium text-[10px] px-1.5 py-0.5 rounded border whitespace-nowrap ${cls}`}>
+        {text}
+      </span>
+    );
+    if (quote && showEvidence) {
+      return (
+        <HoverSource quote={quote}>
+          <button type="button" onClick={() => showEvidence(quote)} className="cursor-pointer">
+            {inner}
+          </button>
+        </HoverSource>
+      );
+    }
+    return inner;
+  };
+
+  if (!standardLabel && persons.length === 0) {
+    return (
+      <p className="text-[11px] font-ui italic text-inkMid px-1">
+        Knowledge standard: <span className="text-inkFaint">Not specified</span>
+      </p>
+    );
+  }
+
   return (
-    <p className="text-[11px] font-ui italic text-inkMid px-1">
-      Knowledge standard: {label ? <span className="text-ink not-italic">{label}</span> : <span className="text-inkFaint">Not specified</span>}
-    </p>
+    <div className="flex items-center gap-1.5 flex-wrap px-1 text-[11px] font-ui text-inkMid">
+      <span className="italic">Knowledge:</span>
+      {standardLabel && <Pill text={standardLabel} quote={standardQuote} tone="standard" />}
+      {persons.length > 0 && <span className="italic text-inkFaint">of</span>}
+      {persons.map((pn, i) => (
+        <Pill key={i} text={pn.label} quote={pn.quote} tone="person" />
+      ))}
+    </div>
   );
 }
 
@@ -7226,49 +7290,64 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
     if (!monthsVal && !txtVal && !dateVal) {
       return <span className="italic text-inkFaint">Not present in this agreement</span>;
     }
+    // What we care about is the cut-off measured FROM SIGNING. Prefer a
+    // month-count framed that way ("X months prior to signing"); otherwise
+    // surface the verbatim textual cut-off (e.g. "1 business day prior to the
+    // date of this Agreement"), then any explicit ISO date.
     const parts = [];
     if (monthsVal) {
-      const computed = computeLookbackText(monthsVal, dealAnnounceDate || null);
-      parts.push(computed || `${monthsVal} months`);
+      parts.push(`${monthsVal} months prior to signing`);
     } else if (txtVal) {
       parts.push(String(txtVal));
     }
     if (dateVal) {
       const iso = String(dateVal).slice(0, 10);
-      if (!parts.join(' ').includes(iso)) {
-        parts.push(`(since ${iso})`);
-      }
+      if (!parts.join(' ').includes(iso)) parts.push(`(${iso})`);
     }
     return <span>{parts.join(' ')}</span>;
   };
-  // P7 item 20: dropped the materiality-scrape row — that lives on COND, not
-  // on the reps preamble.
-  const rows = [
-    { label: 'SEC Filings — Language', keys: ['secFilingsExceptionLanguage', 'secFilingsExceptionScope'] },
-    { label: 'SEC Filings — Scope', keys: ['secFilingsExceptionScope'] },
-    { label: 'SEC Filings — Lookback', keys: ['secFilingsLookbackMonths'], custom: 'lookback' },
-    { label: 'SEC Filings — Excluded sections', keys: ['secFilingsExceptionExclusions', 'secFilingsExceptionCarvedOutReps', 'secFilingsExcludedSections'] },
-    { label: 'SEC Filings — Carved-out reps', keys: ['secFilingsExceptionCarvedOutReps', 'secFilingsCarvedOutReps'] },
-    { label: 'Disclosure Letter reference', keys: ['disclosureLetterReference'] },
-  ];
   const showEvidence = useShowEvidence();
   const extractQuote = (raw) => evidenceQuote(raw, { fallbackToFullText: false });
   const renderLabelCell = (label, quote) => {
     const clickable = !!(quote && showEvidence);
     if (clickable) {
       return (
-        <button
-          type="button"
-          onClick={() => showEvidence(quote)}
-          className="text-left text-accent hover:underline font-medium"
-          title="Click to view in document"
-        >
-          {label}
-        </button>
+        <HoverSource quote={quote}>
+          <button
+            type="button"
+            onClick={() => showEvidence(quote)}
+            className="text-left text-accent hover:underline font-medium"
+          >
+            {label}
+          </button>
+        </HoverSource>
       );
     }
     return <span className="text-ink font-medium">{label}</span>;
   };
+
+  // ── SEC Filings exception — rendered as ONE row whose Details cell carries
+  //    sub-headings (Cut-Off Date / Portions Excluded / Carved-out Reps /
+  //    Scope), mirroring the STRUCT "Merger" row treatment. ──
+  const secSubRows = [
+    { label: 'Cut-Off Date', custom: 'lookback' },
+    { label: 'Portions Excluded', keys: ['secFilingsExceptionExclusions', 'secFilingsExcludedSections'] },
+    { label: 'Carved-out Reps', keys: ['secFilingsExceptionCarvedOutReps', 'secFilingsCarvedOutReps'] },
+    { label: 'Scope / Language', keys: ['secFilingsExceptionScope', 'secFilingsExceptionLanguage'] },
+  ];
+  const secValues = secSubRows.map((sr) => {
+    if (sr.custom === 'lookback') {
+      const lookbackRaw = pickKey(['secFilingsExceptionLookbackDate']) || pickKey(['secFilingsLookbackMonths']) || pickKey(['secFilingsExceptionLookback']);
+      return { ...sr, present: lookbackRaw !== null, node: renderLookbackVal(), quote: extractQuote(lookbackRaw) };
+    }
+    const v = pickKey(sr.keys);
+    return { ...sr, present: v !== null && v !== undefined, node: v != null ? renderFeatureCell(sr.keys[0], v) : null, quote: extractQuote(v) };
+  });
+  const secAnyPresent = secValues.some((s) => s.present);
+  const secRowQuote = secValues.find((s) => s.quote)?.quote || null;
+
+  const disclosureRaw = pickKey(['disclosureLetterReference']);
+
   return (
     <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
       <div className="px-3 py-2 bg-bg/60 border-b border-border">
@@ -7280,29 +7359,38 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
         <table className="min-w-full text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
             <tr>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[260px]">Item</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[200px]">Item</th>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Details</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {rows.map((r) => {
-              if (r.custom === 'lookback') {
-                const lookbackRaw = pickKey(['secFilingsExceptionLookbackDate']) || pickKey(['secFilingsLookbackMonths']) || pickKey(['secFilingsExceptionLookback']);
-                return (
-                  <tr key={r.label} className="align-top">
-                    <td className="px-3 py-2 whitespace-nowrap">{renderLabelCell(r.label, extractQuote(lookbackRaw))}</td>
-                    <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">{renderLookbackVal()}</td>
-                  </tr>
-                );
-              }
-              const v = pickKey(r.keys || r.key);
-              return (
-                <tr key={r.label} className="align-top">
-                  <td className="px-3 py-2 whitespace-nowrap">{renderLabelCell(r.label, extractQuote(v))}</td>
-                  <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">{renderVal((r.keys && r.keys[0]) || r.key, v)}</td>
-                </tr>
-              );
-            })}
+            {/* SEC Filings — one row, sub-headed Details cell. */}
+            <tr className="align-top">
+              <td className="px-3 py-2 whitespace-nowrap">{renderLabelCell('SEC Filings', secRowQuote)}</td>
+              <td className="px-3 py-2 text-ink">
+                {secAnyPresent ? (
+                  <dl className="space-y-1.5">
+                    {secValues.filter((s) => s.present).map((s) => (
+                      <div key={s.label} className="flex flex-col">
+                        <dt className="text-[10px] text-inkFaint uppercase tracking-wider">{s.label}</dt>
+                        <dd className="whitespace-pre-wrap break-words">{s.node || <span className="text-inkFaint/70 italic">—</span>}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                ) : (
+                  <span className="italic text-inkFaint">Not present in this agreement</span>
+                )}
+              </td>
+            </tr>
+            {/* Disclosure Schedules. */}
+            <tr className="align-top">
+              <td className="px-3 py-2 whitespace-nowrap">{renderLabelCell('Disclosure Schedules', extractQuote(disclosureRaw))}</td>
+              <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
+                {disclosureRaw != null
+                  ? renderFeatureCell('disclosureLetterReference', disclosureRaw)
+                  : <span className="italic text-inkFaint">Not present in this agreement</span>}
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
