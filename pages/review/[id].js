@@ -7334,18 +7334,22 @@ function RepMaterialContractsTable({ provisions, onSelectProvision }) {
 
   // Lookup: bucket code → threshold. Prefer the dollar-thresholds array; fall
   // back to a threshold field on the tagged bucket itself when present.
+  // Thresholds may be NON-dollar qualifiers too (e.g. "material" for IP
+  // licenses) — accept any non-empty value, not just dollar amounts.
   const threshByCode = new Map();
   for (const t of thresholds) {
     if (!t || typeof t !== 'object') continue;
     const k = String(t.bucket || t.code || '').toUpperCase();
-    if (k) threshByCode.set(k, t.threshold || t.value || null);
+    if (k) threshByCode.set(k, t.threshold ?? t.value ?? t.qualifier ?? null);
   }
   const dealBucketByCode = new Map();
   for (const b of buckets) {
     if (isTaggedItem(b)) {
-      dealBucketByCode.set(String(b.code).toUpperCase(), b);
-      if (b.threshold && !threshByCode.has(String(b.code).toUpperCase())) {
-        threshByCode.set(String(b.code).toUpperCase(), b.threshold);
+      const code = String(b.code).toUpperCase();
+      dealBucketByCode.set(code, b);
+      const inlineThresh = b.threshold ?? b.qualifier ?? null;
+      if (inlineThresh && !threshByCode.has(code)) {
+        threshByCode.set(code, inlineThresh);
       }
     }
   }
@@ -7403,22 +7407,29 @@ function RepMaterialContractsTable({ provisions, onSelectProvision }) {
                 thresholdText = String(thresholdRaw);
               }
             }
-            // P7 item 21: bucket label clickable to source via useShowEvidence.
+            // Bucket label is blue + clickable for any PRESENT bucket. Prefer
+            // the bucket's own quote; fall back to the source provision (jump
+            // to it in the doc) so present rows are always navigable.
             const bucketQuote = isTaggedItem(dealBucket) && dealBucket.text ? dealBucket.text : null;
-            const bucketClickable = present && bucketQuote && showEvidence;
+            const onLabelClick = !present ? null
+              : bucketQuote && showEvidence ? () => showEvidence(bucketQuote)
+              : source && onSelectProvision ? () => onSelectProvision(source)
+              : null;
             return (
-              <tr key={code} className="align-top">
-                <td className="px-3 py-2 text-ink font-medium">
-                  {bucketClickable ? (
-                    <button
-                      type="button"
-                      onClick={() => showEvidence(bucketQuote)}
-                      className="text-left hover:text-accent hover:underline"
-                    >
-                      {label}
-                    </button>
+              <tr key={code} className="align-top hover:bg-bg/40">
+                <td className="px-3 py-2 font-medium">
+                  {onLabelClick ? (
+                    <HoverSource quote={bucketQuote}>
+                      <button
+                        type="button"
+                        onClick={onLabelClick}
+                        className="text-left text-accent hover:underline font-medium"
+                      >
+                        {label}
+                      </button>
+                    </HoverSource>
                   ) : (
-                    label
+                    <span className="text-inkFaint">{label}</span>
                   )}
                 </td>
                 <td className="px-3 py-2 text-ink">
@@ -12378,20 +12389,11 @@ export default function ReviewPage() {
                                   />
                                 );
                               })()}
-                              {/* P8 item 3: matching REP-T provision cards
-                                  below the buckets table on the synthetic
-                                  Material Contracts page. */}
-                              {type === '__MATERIAL_CONTRACTS' && provs.length > 0 && (
-                                <div className="space-y-3">
-                                  {provs.map((p) => (
-                                    <ProvisionCard
-                                      key={p.id}
-                                      provision={p}
-                                      onEdit={handleEditProvision}
-                                    />
-                                  ))}
-                                </div>
-                              )}
+                              {/* (Removed) The matching REP-T provision cards
+                                  that used to render below the buckets table
+                                  on the Material Contracts page — the buckets
+                                  table + per-row source links cover it; the
+                                  card stack was redundant clutter. */}
                             </div>
                           ) : (
                             <div className="space-y-3">
