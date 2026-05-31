@@ -157,7 +157,11 @@ const SIDEBAR_GROUPS = [
     { label: 'Company Material Adverse Effect', type: 'MAE-DEF' },
     { label: 'Parent Material Adverse Effect', type: 'MAE-DEF-P' },
   ]},
-  { label: 'Interim Operating Covenants', types: ['IOC', 'IOC-T', 'IOC-B'] },
+  { label: 'Interim Operating Covenants', children: [
+    { label: 'Company / Target', type: 'IOC-T' },
+    { label: 'Buyer / Parent', type: 'IOC-B' },
+    { label: 'Unclassified', type: 'IOC' },
+  ]},
   { label: 'No-Solicitation / No-Shop', types: ['NOSOL'] },
   { label: 'Antitrust / Regulatory', types: ['ANTI'] },
   { label: 'Conditions to Closing', children: [
@@ -7461,22 +7465,24 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
     if (!monthsVal && !txtVal && !dateVal) {
       return <span className="italic text-inkFaint">Not present in this agreement</span>;
     }
-    // The cut-off can be a SHORT period before signing (e.g. "1 business day
-    // prior to the date of this Agreement") OR a months/years look-back. Honor
-    // the agreement's own framing: if the verbatim phrase exists, show it
-    // verbatim (this is the "1 business day" case the user flagged — it is NOT
-    // a month count). Only synthesize "X months prior to signing" when we have
-    // a real month NUMBER and no verbatim phrase.
-    if (txtVal && /day|week|month|year|prior|business/i.test(String(txtVal))) {
-      return <span>{String(txtVal)}</span>;
-    }
-    if (monthsVal && /^\d+$/.test(String(monthsVal).trim())) {
-      return <span>{`${monthsVal} months prior to signing`}</span>;
-    }
+    // Be loyal to the source. If the agreement gave us a verbatim phrase, show
+    // it verbatim — that's the truth, regardless of unit (day / week / month /
+    // year / "since DATE"). If it gave us an absolute calendar date, show that.
+    // Only synthesize "X months prior to signing" when the months count is
+    // CORROBORATED (txt explicitly says "month"/"year") — never trust a bare
+    // sub-3 months value, because that's almost always extraction confusion
+    // between "one business day" / "one week" and a months count.
     if (txtVal) return <span>{String(txtVal)}</span>;
-    // Only a bare date is available — present it as the cut-off date.
     if (dateVal) return <span>{`As of ${String(dateVal).slice(0, 10)}`}</span>;
-    return <span>{String(monthsVal)}</span>;
+    if (monthsVal && /^\d+$/.test(String(monthsVal).trim())) {
+      const n = Number(String(monthsVal).trim());
+      // Months synthesis only when the value is plausibly a month count.
+      // Sub-3 with no verbatim corroboration is dropped — extraction can't
+      // distinguish "1 month" from "1 business day" without the phrase.
+      if (n >= 3) return <span>{`${n} months prior to signing`}</span>;
+      return <span className="italic text-inkFaint">Cut-off period not captured verbatim in source</span>;
+    }
+    return <span className="italic text-inkFaint">Cut-off period not captured verbatim in source</span>;
   };
   const showEvidence = useShowEvidence();
   const extractQuote = (raw) => evidenceQuote(raw, { fallbackToFullText: false });
