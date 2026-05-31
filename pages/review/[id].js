@@ -7232,74 +7232,78 @@ function RepKnowledgeNote({ provisions }) {
   );
 }
 
-/* ─── REP Materiality Note: scans all rep rows' materialityQualifier and
- *     summarizes the prevailing standard. When the deal mixes MAE-flavored
- *     qualifiers with plain-materiality ones, reports the majority and notes
- *     the minority ("Generally MAE; some elements material to the Company").
- *     Rendered as canonical pills with click-to-source. */
-function RepMaterialityNote({ provisions }) {
+/* ─── Per-rep Materiality Qualifier cell. The materialityQualifier value for a
+ *     SINGLE rep may itself be one code or a list mixing MAE-flavored and
+ *     plain-materiality codes. We render canonical pills, and when a rep mixes
+ *     both we frame it as "Generally [MAE] and some elements [material to the
+ *     Company]" (majority code wins the "Generally" slot). Scope (to the
+ *     Company / inline) is read from the MAT_MATERIAL_* code. Each pill is
+ *     click-to-source. Returns null when no qualifier is present so the table
+ *     cell falls back to its default empty rendering. */
+function MaterialityQualifierCell({ rawValue, provision }) {
   const showEvidence = useShowEvidence();
-  // Bucket each rep's qualifier into MAE-flavored vs material-flavored.
+  const emptyDash = <span className="text-inkFaint italic">—</span>;
+  const inner = isCitableValue(rawValue) ? getCitableValue(rawValue) : rawValue;
+  if (inner === null || inner === undefined || inner === '') return emptyDash;
+  const items = Array.isArray(inner) ? inner : [inner];
+
   let maeCount = 0, matCount = 0;
   let maeQuote = null, matQuote = null;
-  let matScopeLabel = null; // "to the Company" / "to the rep"
-  for (const p of provisions || []) {
-    const f = getStructuredFeatures(p) || {};
-    const raw = f.materialityQualifier ?? f.materialityQualifiers;
-    if (!raw) continue;
-    const items = Array.isArray(isCitableValue(raw) ? getCitableValue(raw) : raw)
-      ? (isCitableValue(raw) ? getCitableValue(raw) : raw)
-      : [isCitableValue(raw) ? getCitableValue(raw) : raw];
-    for (const item of items) {
-      const code = isTaggedItem(item) ? String(item.code || '').toUpperCase() : String(item || '').toUpperCase();
-      if (!code) continue;
-      const q = (isTaggedItem(item) && item.text) || evidenceQuote(raw, { provision: p });
-      if (code.includes('MAE')) { maeCount++; if (!maeQuote) maeQuote = q; }
-      else if (code.includes('MATERIAL')) {
-        matCount++; if (!matQuote) matQuote = q;
-        if (code.includes('TO_COMPANY')) matScopeLabel = 'material to the Company';
-        else if (code.includes('INLINE')) matScopeLabel = 'material (inline)';
-        else if (!matScopeLabel) matScopeLabel = 'material';
+  let maeLabel = 'MAE';
+  let matLabel = null;
+  const fallbackQuote = evidenceQuote(rawValue, { provision });
+
+  for (const item of items) {
+    if (item === null || item === undefined || item === '') continue;
+    const code = isTaggedItem(item) ? String(item.code || '').toUpperCase() : String(item).toUpperCase();
+    const lbl = isTaggedItem(item) ? (resolveTaggedLabel('materialityQualifier', item) || item.label || item.code) : String(item);
+    const q = (isTaggedItem(item) && item.text) || fallbackQuote;
+    if (!code) continue;
+    if (code.includes('MAE')) {
+      maeCount++;
+      if (!maeQuote) { maeQuote = q; maeLabel = code.includes('AGGREGATE') ? 'MAE (aggregate)' : 'MAE'; }
+    } else if (code.includes('MATERIAL')) {
+      matCount++;
+      if (!matQuote) {
+        matQuote = q;
+        matLabel = code.includes('TO_COMPANY') ? 'Material to the Company'
+          : code.includes('INLINE') ? 'Material (inline)'
+          : code.includes('SCRAPE') ? 'Materiality scrape'
+          : 'Material';
       }
+    } else {
+      // Unknown / other materiality code — surface its label as a neutral pill.
+      if (!matLabel) { matLabel = lbl; matQuote = q; matCount++; }
     }
   }
-  if (maeCount === 0 && matCount === 0) return null;
+
+  if (maeCount === 0 && matCount === 0) return emptyDash;
 
   const Pill = ({ text, quote }) => {
-    const inner = (
+    const node = (
       <span className="inline-flex items-center font-ui font-medium text-[10px] px-1.5 py-0.5 rounded border bg-rose-50 text-rose-700 border-rose-200 whitespace-nowrap">
         {text}
       </span>
     );
     return quote && showEvidence
-      ? <HoverSource quote={quote}><button type="button" onClick={() => showEvidence(quote)} className="cursor-pointer">{inner}</button></HoverSource>
-      : inner;
+      ? <HoverSource quote={quote}><button type="button" onClick={(e) => { e.stopPropagation(); showEvidence(quote); }} className="cursor-pointer">{node}</button></HoverSource>
+      : node;
   };
 
-  // Compose the summary. Majority wins the "Generally" framing.
-  let body;
+  // Mixed within this rep → "Generally X and some elements Y".
   if (maeCount > 0 && matCount > 0) {
     const maeMajor = maeCount >= matCount;
-    body = (
-      <>
+    return (
+      <span className="inline-flex items-center gap-1 flex-wrap text-[11px] text-inkMid">
         <span className="italic">Generally</span>
-        <Pill text={maeMajor ? 'MAE' : (matScopeLabel || 'Materiality')} quote={maeMajor ? maeQuote : matQuote} />
-        <span className="italic">; some elements</span>
-        <Pill text={maeMajor ? (matScopeLabel || 'material') : 'MAE'} quote={maeMajor ? matQuote : maeQuote} />
-      </>
+        <Pill text={maeMajor ? maeLabel : (matLabel || 'Material')} quote={maeMajor ? maeQuote : matQuote} />
+        <span className="italic">and some elements</span>
+        <Pill text={maeMajor ? (matLabel || 'Material') : maeLabel} quote={maeMajor ? matQuote : maeQuote} />
+      </span>
     );
-  } else if (maeCount > 0) {
-    body = (<><span className="italic">Generally</span><Pill text="MAE" quote={maeQuote} /></>);
-  } else {
-    body = (<><span className="italic">Generally</span><Pill text={matScopeLabel || 'Materiality'} quote={matQuote} /></>);
   }
-
-  return (
-    <div className="flex items-center gap-1.5 flex-wrap px-1 text-[11px] font-ui text-inkMid">
-      <span className="italic">Materiality qualifier:</span>
-      {body}
-    </div>
-  );
+  if (maeCount > 0) return <Pill text={maeLabel} quote={maeQuote} />;
+  return <Pill text={matLabel || 'Material'} quote={matQuote} />;
 }
 
 /* ─── REP General Exceptions table: bringdown-style. Rows = SEC filings
@@ -8500,6 +8504,17 @@ function ProvisionTable({ provisions, type, onSelectProvision, allProvisions }) 
                   </td>
                   {columns.map((k) => {
                     const raw = features[k];
+                    // Materiality qualifier — render as canonical pill(s).
+                    // Handles a single rep that mixes MAE + plain-materiality
+                    // codes ("Generally MAE and some elements material to the
+                    // Company"). Applies to any type that surfaces the column.
+                    if (k === 'materialityQualifier' || k === 'materialityQualifiers') {
+                      return (
+                        <td key={k} className="px-3 py-2 align-top max-w-[320px] text-ink">
+                          <MaterialityQualifierCell rawValue={raw} provision={p} />
+                        </td>
+                      );
+                    }
                     // REP synthetic: rolled-up "Specific Features" column.
                     if ((type === 'REP-T' || type === 'REP-B') && k === 'specificFeatures') {
                       const cell = renderRepSpecificFeaturesCell(p);
@@ -12526,10 +12541,7 @@ export default function ReviewPage() {
                                 />
                               )}
                               {(type === 'REP-T' || type === 'REP-B') && (
-                                <div className="space-y-1">
-                                  <RepKnowledgeNote provisions={rest} />
-                                  <RepMaterialityNote provisions={rest} />
-                                </div>
+                                <RepKnowledgeNote provisions={rest} />
                               )}
                               {/* P3 item 2: General Exceptions apply to the
                                   ENTIRE reps section — render FIRST so they
