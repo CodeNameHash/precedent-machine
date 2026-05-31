@@ -5638,8 +5638,19 @@ function NosolMiniTable({ title, spec, provisions, headerNote }) {
               const onClick = clickable ? () => showEvidence(quote) : undefined;
               return (
                 <tr key={row.label} className="hover:bg-bg/40 transition-colors">
-                  <td className="px-3 py-2 align-top text-ink font-medium whitespace-nowrap">
-                    {row.label}
+                  <td className="px-3 py-2 align-top whitespace-nowrap">
+                    {clickable ? (
+                      <button
+                        type="button"
+                        onClick={onClick}
+                        className="text-left text-accent hover:underline font-medium"
+                        title="Click to view in document"
+                      >
+                        {row.label}
+                      </button>
+                    ) : (
+                      <span className="text-ink font-medium">{row.label}</span>
+                    )}
                   </td>
                   <td
                     className={`px-3 py-2 align-top text-ink whitespace-pre-wrap break-words ${clickable ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
@@ -5783,8 +5794,23 @@ function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision, hide
                   const onClick = clickable ? () => showEvidence(quote) : undefined;
                   return (
                     <tr key={row.label} className="hover:bg-bg/40 transition-colors">
-                      <td className="px-3 py-2 align-top text-ink font-medium whitespace-nowrap">
-                        {row.label}
+                      <td className="px-3 py-2 align-top whitespace-nowrap">
+                        {/* P11: LEFT-column label is the click target when
+                            a source quote is available — matches every other
+                            mini-table in the app. Value cell is now plain
+                            (no longer a separate hover target). */}
+                        {clickable ? (
+                          <button
+                            type="button"
+                            onClick={onClick}
+                            className="text-left text-accent hover:underline font-medium"
+                            title="Click to view in document"
+                          >
+                            {row.label}
+                          </button>
+                        ) : (
+                          <span className="text-ink font-medium">{row.label}</span>
+                        )}
                       </td>
                       <td
                         className={`px-3 py-2 align-top text-ink whitespace-pre-wrap break-words ${clickable ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
@@ -7101,6 +7127,32 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
     { label: 'SEC Filings — Carved-out reps', keys: ['secFilingsExceptionCarvedOutReps', 'secFilingsCarvedOutReps'] },
     { label: 'Disclosure Letter reference', keys: ['disclosureLetterReference'] },
   ];
+  const showEvidence = useShowEvidence();
+  const extractQuote = (raw) => {
+    if (!raw) return null;
+    if (isCitableValue(raw)) {
+      const q = getCitableQuotes(raw);
+      if (q && q.length > 0) return q[0];
+    }
+    if (isTaggedItem(raw) && typeof raw.text === 'string' && raw.text.trim()) return raw.text;
+    return null;
+  };
+  const renderLabelCell = (label, quote) => {
+    const clickable = !!(quote && showEvidence);
+    if (clickable) {
+      return (
+        <button
+          type="button"
+          onClick={() => showEvidence(quote)}
+          className="text-left text-accent hover:underline font-medium"
+          title="Click to view in document"
+        >
+          {label}
+        </button>
+      );
+    }
+    return <span className="text-ink font-medium">{label}</span>;
+  };
   return (
     <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
       <div className="px-3 py-2 bg-bg/60 border-b border-border">
@@ -7119,9 +7171,10 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
           <tbody className="divide-y divide-border">
             {rows.map((r) => {
               if (r.custom === 'lookback') {
+                const lookbackRaw = pickKey(['secFilingsExceptionLookbackDate']) || pickKey(['secFilingsLookbackMonths']) || pickKey(['secFilingsExceptionLookback']);
                 return (
                   <tr key={r.label} className="align-top">
-                    <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">{r.label}</td>
+                    <td className="px-3 py-2 whitespace-nowrap">{renderLabelCell(r.label, extractQuote(lookbackRaw))}</td>
                     <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">{renderLookbackVal()}</td>
                   </tr>
                 );
@@ -7129,7 +7182,7 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
               const v = pickKey(r.keys || r.key);
               return (
                 <tr key={r.label} className="align-top">
-                  <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">{r.label}</td>
+                  <td className="px-3 py-2 whitespace-nowrap">{renderLabelCell(r.label, extractQuote(v))}</td>
                   <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">{renderVal((r.keys && r.keys[0]) || r.key, v)}</td>
                 </tr>
               );
@@ -10297,6 +10350,36 @@ function EditPanel({
     return out;
   }, [featureSchema]);
 
+  // P11+: only show fields that currently have a value. Unpopulated fields
+  // are hidden and accessed via the "Add field" picker below. Once a key
+  // has been explicitly added in this session it stays visible even if the
+  // user clears its value.
+  const [manuallyAddedKeys, setManuallyAddedKeys] = useState(() => new Set());
+  useEffect(() => { setManuallyAddedKeys(new Set()); }, [provision?.id]);
+
+  const populatedSchema = useMemo(() => {
+    return dedupedSchema.filter((f) => {
+      if (manuallyAddedKeys.has(f.key)) return true;
+      return !isEmptyValue(editedFeatures[f.key]);
+    });
+  }, [dedupedSchema, editedFeatures, manuallyAddedKeys]);
+
+  const availableToAdd = useMemo(() => {
+    const populated = new Set(populatedSchema.map((f) => f.key));
+    return dedupedSchema.filter((f) => !populated.has(f.key));
+  }, [dedupedSchema, populatedSchema]);
+
+  const [addFieldKey, setAddFieldKey] = useState('');
+  const handleAddField = () => {
+    if (!addFieldKey) return;
+    setManuallyAddedKeys((prev) => {
+      const next = new Set(prev);
+      next.add(addFieldKey);
+      return next;
+    });
+    setAddFieldKey('');
+  };
+
   const featuresDirty = useMemo(() => {
     return JSON.stringify(editedFeatures || {}) !== JSON.stringify(initialFeatures || {});
   }, [editedFeatures, initialFeatures]);
@@ -10471,7 +10554,12 @@ function EditPanel({
           <div className="space-y-2">
             <h4 className="font-ui text-xs font-medium text-inkFaint uppercase tracking-wider">Structured Summary</h4>
             <div className="space-y-2">
-              {dedupedSchema.map((field) => (
+              {populatedSchema.length === 0 && (
+                <p className="text-[11px] font-ui italic text-inkFaint">
+                  No structured features extracted yet. Use the picker below to add one.
+                </p>
+              )}
+              {populatedSchema.map((field) => (
                 <div key={field.key} className="space-y-1">
                   <FeatureFieldEditor
                     field={field}
@@ -10529,69 +10617,30 @@ function EditPanel({
                 </div>
               ))}
             </div>
+            {availableToAdd.length > 0 && (
+              <div className="flex gap-1.5 pt-1">
+                <select
+                  value={addFieldKey}
+                  onChange={(e) => setAddFieldKey(e.target.value)}
+                  className="flex-1 border border-border rounded px-2 py-1 text-xs font-ui focus:outline-none focus:ring-1 focus:ring-accent bg-white"
+                >
+                  <option value="">+ Add field from canonical list...</option>
+                  {availableToAdd.map((f) => (
+                    <option key={f.key} value={f.key}>{humanizeKey(f.key)}</option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  onClick={handleAddField}
+                  disabled={!addFieldKey}
+                  className="px-2 py-1 text-xs font-ui bg-bg border border-border rounded hover:bg-border/50 disabled:opacity-40 transition-colors"
+                >
+                  Add
+                </button>
+              </div>
+            )}
           </div>
         )}
-
-        {/* Features (legacy free-text chips for forward-compat / non-schema fields) */}
-        <div className="space-y-2">
-          <h4 className="font-ui text-xs font-medium text-inkFaint uppercase tracking-wider">Tags</h4>
-          <div className="flex flex-wrap gap-1">
-            {features.map((f, i) => (
-              <span key={i} className="inline-flex items-center gap-1 text-[10px] font-ui px-2 py-0.5 rounded bg-bg text-inkMid border border-border">
-                {f}
-                <button
-                  onClick={() => removeFeature(i)}
-                  className="text-inkFaint hover:text-seller ml-0.5"
-                >
-                  x
-                </button>
-              </span>
-            ))}
-          </div>
-          <div className="flex gap-1.5">
-            <input
-              list={`feature-keys-${provision.id}`}
-              value={newFeature}
-              onChange={e => setNewFeature(e.target.value)}
-              placeholder="Add tag..."
-              className="flex-1 border border-border rounded px-2 py-1 text-xs font-ui focus:outline-none focus:ring-1 focus:ring-accent"
-              onKeyDown={e => e.key === 'Enter' && addFeature()}
-            />
-            {/* Autocomplete from rubric FEATURES for this provision type so
-                features are uniformly coded across deals on ingest. */}
-            <datalist id={`feature-keys-${provision.id}`}>
-              {getFeatureSchema(editType || provision.type, provision.code).map((k) => (
-                <option key={k} value={k}>{humanizeKey(k)}</option>
-              ))}
-            </datalist>
-            <button
-              onClick={addFeature}
-              disabled={!newFeature.trim()}
-              className="px-2 py-1 text-xs font-ui bg-bg border border-border rounded hover:bg-border/50 disabled:opacity-40 transition-colors"
-            >
-              Add
-            </button>
-          </div>
-        </div>
-
-        {/* Correction Reason (optional, fuels the learning system) */}
-        <div className="space-y-2">
-          <h4 className="font-ui text-xs font-medium text-inkFaint uppercase tracking-wider">Why this change?</h4>
-          <input
-            value={reason}
-            onChange={e => setReason(e.target.value)}
-            placeholder="Optional — helps train future suggestions"
-            className="w-full border border-border rounded px-3 py-1.5 text-xs font-ui focus:outline-none focus:ring-1 focus:ring-accent"
-          />
-        </div>
-
-        {/* Related Definitions */}
-        <div className="space-y-2">
-          <h4 className="font-ui text-xs font-medium text-inkFaint uppercase tracking-wider">Related Definitions</h4>
-          <p className="text-xs font-ui text-inkFaint italic">
-            Definition linking is available after provisions are fully classified.
-          </p>
-        </div>
       </div>
 
       {/* Actions Footer */}
