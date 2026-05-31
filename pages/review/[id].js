@@ -7232,6 +7232,76 @@ function RepKnowledgeNote({ provisions }) {
   );
 }
 
+/* ─── REP Materiality Note: scans all rep rows' materialityQualifier and
+ *     summarizes the prevailing standard. When the deal mixes MAE-flavored
+ *     qualifiers with plain-materiality ones, reports the majority and notes
+ *     the minority ("Generally MAE; some elements material to the Company").
+ *     Rendered as canonical pills with click-to-source. */
+function RepMaterialityNote({ provisions }) {
+  const showEvidence = useShowEvidence();
+  // Bucket each rep's qualifier into MAE-flavored vs material-flavored.
+  let maeCount = 0, matCount = 0;
+  let maeQuote = null, matQuote = null;
+  let matScopeLabel = null; // "to the Company" / "to the rep"
+  for (const p of provisions || []) {
+    const f = getStructuredFeatures(p) || {};
+    const raw = f.materialityQualifier ?? f.materialityQualifiers;
+    if (!raw) continue;
+    const items = Array.isArray(isCitableValue(raw) ? getCitableValue(raw) : raw)
+      ? (isCitableValue(raw) ? getCitableValue(raw) : raw)
+      : [isCitableValue(raw) ? getCitableValue(raw) : raw];
+    for (const item of items) {
+      const code = isTaggedItem(item) ? String(item.code || '').toUpperCase() : String(item || '').toUpperCase();
+      if (!code) continue;
+      const q = (isTaggedItem(item) && item.text) || evidenceQuote(raw, { provision: p });
+      if (code.includes('MAE')) { maeCount++; if (!maeQuote) maeQuote = q; }
+      else if (code.includes('MATERIAL')) {
+        matCount++; if (!matQuote) matQuote = q;
+        if (code.includes('TO_COMPANY')) matScopeLabel = 'material to the Company';
+        else if (code.includes('INLINE')) matScopeLabel = 'material (inline)';
+        else if (!matScopeLabel) matScopeLabel = 'material';
+      }
+    }
+  }
+  if (maeCount === 0 && matCount === 0) return null;
+
+  const Pill = ({ text, quote }) => {
+    const inner = (
+      <span className="inline-flex items-center font-ui font-medium text-[10px] px-1.5 py-0.5 rounded border bg-rose-50 text-rose-700 border-rose-200 whitespace-nowrap">
+        {text}
+      </span>
+    );
+    return quote && showEvidence
+      ? <HoverSource quote={quote}><button type="button" onClick={() => showEvidence(quote)} className="cursor-pointer">{inner}</button></HoverSource>
+      : inner;
+  };
+
+  // Compose the summary. Majority wins the "Generally" framing.
+  let body;
+  if (maeCount > 0 && matCount > 0) {
+    const maeMajor = maeCount >= matCount;
+    body = (
+      <>
+        <span className="italic">Generally</span>
+        <Pill text={maeMajor ? 'MAE' : (matScopeLabel || 'Materiality')} quote={maeMajor ? maeQuote : matQuote} />
+        <span className="italic">; some elements</span>
+        <Pill text={maeMajor ? (matScopeLabel || 'material') : 'MAE'} quote={maeMajor ? matQuote : maeQuote} />
+      </>
+    );
+  } else if (maeCount > 0) {
+    body = (<><span className="italic">Generally</span><Pill text="MAE" quote={maeQuote} /></>);
+  } else {
+    body = (<><span className="italic">Generally</span><Pill text={matScopeLabel || 'Materiality'} quote={matQuote} /></>);
+  }
+
+  return (
+    <div className="flex items-center gap-1.5 flex-wrap px-1 text-[11px] font-ui text-inkMid">
+      <span className="italic">Materiality qualifier:</span>
+      {body}
+    </div>
+  );
+}
+
 /* ─── REP General Exceptions table: bringdown-style. Rows = SEC filings
  *     carve-out (scope + lookback + excluded sections + carved-out reps),
  *     schedule references, materiality scrape language, materiality scrape
@@ -8288,6 +8358,21 @@ function ProvisionTable({ provisions, type, onSelectProvision, allProvisions }) 
         onSelectProvision={onSelectProvision}
       />
     );
+  }
+
+  // REP-T / REP-B: present in AGREEMENT ORDER (the canonical sequence the deal
+  // itself uses), not by classification/insertion accident. Sort real
+  // provisions by document position (ai_metadata.startChar), keeping any
+  // synthetic "_notPresent" placeholders after the real rows.
+  if (type === 'REP-T' || type === 'REP-B') {
+    const startOf = (p) => {
+      const meta = getAiMetadata(p) || {};
+      return typeof meta.startChar === 'number' ? meta.startChar : Number.POSITIVE_INFINITY;
+    };
+    provisions = [...provisions].sort((a, b) => {
+      if (!!a._notPresent !== !!b._notPresent) return a._notPresent ? 1 : -1;
+      return startOf(a) - startOf(b);
+    });
   }
 
   const schemaKeys = getFeatureSchema(type);
@@ -12427,7 +12512,10 @@ export default function ReviewPage() {
                                 />
                               )}
                               {(type === 'REP-T' || type === 'REP-B') && (
-                                <RepKnowledgeNote provisions={rest} />
+                                <div className="space-y-1">
+                                  <RepKnowledgeNote provisions={rest} />
+                                  <RepMaterialityNote provisions={rest} />
+                                </div>
                               )}
                               {/* P3 item 2: General Exceptions apply to the
                                   ENTIRE reps section — render FIRST so they
