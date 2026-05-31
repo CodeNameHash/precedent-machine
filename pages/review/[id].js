@@ -149,6 +149,7 @@ const SIDEBAR_GROUPS = [
   { label: 'Representations', children: [
     { label: 'Company / Target', type: 'REP-T' },
     { label: 'Buyer / Parent', type: 'REP-B' },
+    { label: 'Material Contracts', type: '__MATERIAL_CONTRACTS' },
   ]},
   { label: 'Material Adverse Effect', types: ['MAE-DEF'] },
   { label: 'Interim Operating Covenants', types: ['IOC', 'IOC-T', 'IOC-B'] },
@@ -3776,16 +3777,12 @@ function renderRepSpecificFeaturesCell(provision) {
 }
 
 // Compute "N months (since YYYY-MM-DD)" from a months count + an announce date.
-function computeLookbackText(months, announceDate) {
+function computeLookbackText(months /* announceDate unused: months-from-signing only */) {
   if (months === null || months === undefined || months === '') return null;
   const m = Number(months);
   if (!Number.isFinite(m) || m <= 0) return String(months);
-  const base = announceDate ? new Date(announceDate) : null;
-  if (!base || isNaN(base.getTime())) return `${m} months`;
-  const d = new Date(base.getTime());
-  d.setMonth(d.getMonth() - m);
-  const iso = d.toISOString().slice(0, 10);
-  return `${m} months (since ${iso})`;
+  // Per user: show the MONTHS measured from signing, not a computed date.
+  return `${m} months prior to signing`;
 }
 
 function formatCellValue(featureKey, raw) {
@@ -7271,10 +7268,12 @@ function MaterialityQualifierCell({ rawValue, provision }) {
       matCount++;
       if (!matQuote) {
         matQuote = q;
+        // "Material to the Company" (whole-rep scope) is a meaningful distinct
+        // label; plain inline / unscoped materiality both read "Material (to
+        // the rep)" per user — they're the same sort of qualifier.
         matLabel = code.includes('TO_COMPANY') ? 'Material to the Company'
-          : code.includes('INLINE') ? 'Material (inline)'
           : code.includes('SCRAPE') ? 'Materiality scrape'
-          : 'Material';
+          : 'Material (to the rep)';
       }
     } else {
       // Unknown / other materiality code — surface its label as a neutral pill.
@@ -7301,14 +7300,14 @@ function MaterialityQualifierCell({ rawValue, provision }) {
     return (
       <span className="inline-flex items-center gap-1 flex-wrap text-[11px] text-inkMid">
         <span className="italic">Generally</span>
-        <Pill text={maeMajor ? maeLabel : (matLabel || 'Material')} quote={maeMajor ? maeQuote : matQuote} />
+        <Pill text={maeMajor ? maeLabel : (matLabel || 'Material (to the rep)')} quote={maeMajor ? maeQuote : matQuote} />
         <span className="italic">and some elements</span>
-        <Pill text={maeMajor ? (matLabel || 'Material') : maeLabel} quote={maeMajor ? matQuote : maeQuote} />
+        <Pill text={maeMajor ? (matLabel || 'Material (to the rep)') : maeLabel} quote={maeMajor ? matQuote : maeQuote} />
       </span>
     );
   }
   if (maeCount > 0) return <Pill text={maeLabel} quote={maeQuote} />;
-  return <Pill text={matLabel || 'Material'} quote={matQuote} />;
+  return <Pill text={matLabel || 'Material (to the rep)'} quote={matQuote} />;
 }
 
 /* ─── REP General Exceptions table: bringdown-style. Rows = SEC filings
