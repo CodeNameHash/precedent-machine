@@ -8105,7 +8105,13 @@ function MaeSinglePartySummary({ provision, partyLabel, onSelectProvision }) {
   const showEvidence = useShowEvidence();
 
   // Build the list of carveouts. carveouts is a tagged list — { code, label, text }.
-  const carveouts = Array.isArray(f.carveouts) ? f.carveouts : [];
+  // Accept BOTH casings: the DEF extraction prompt emits `carveOuts` (capital
+  // O) while the Stage-1 schema uses `carveouts` — reading only one caused the
+  // "No carve-outs extracted" message even after a successful re-extract.
+  const carveouts = Array.isArray(f.carveouts) ? f.carveouts
+    : Array.isArray(f.carveOuts) ? f.carveOuts
+    : Array.isArray(f.carveOutsList) ? f.carveOutsList
+    : [];
 
   // Disproportionate-effect carveback: the subset of carve-outs that STILL
   // count toward an MAE to the extent they disproportionately affect the
@@ -8874,17 +8880,39 @@ function FullDocumentView({
     // Use whitespace-tolerant matching by working off a normalized version
     // of each text node's data and remembering original offsets.
     const normalize = (s) => s.replace(/\s+/g, ' ').trim();
-    const needle = normalize(target);
-    if (!needle) return undefined;
-    const needleLower = needle.toLowerCase();
+    const fullNeedle = normalize(target);
+    if (!fullNeedle) return undefined;
+    // The matcher works PER TEXT NODE, so a long multi-paragraph quote (e.g.
+    // an entire provision's full_text passed by a "details" click) would never
+    // match a single node and the view would just jump to the top. Fall back
+    // to progressively shorter anchors: full quote → first sentence → first
+    // ~12 words. The first one that yields matches wins, so we always land on
+    // (and highlight) the start of the relevant passage.
+    const buildAnchors = (s) => {
+      const out = [s];
+      const firstSentence = s.split(/(?<=[.;:])\s/)[0];
+      if (firstSentence && firstSentence.length >= 12 && firstSentence !== s) out.push(firstSentence);
+      const words = s.split(' ');
+      if (words.length > 12) out.push(words.slice(0, 12).join(' '));
+      if (words.length > 6) out.push(words.slice(0, 6).join(' '));
+      return out;
+    };
+    const anchors = buildAnchors(fullNeedle);
 
     // P5 item 4: collect ALL matches across text nodes so the user can cycle
     // through them via the chevron control. We restrict to per-text-node
     // matches (covers ~99% of quotes which are short, in-paragraph excerpts).
-    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
-    const matches = [];
-    let n;
-    while ((n = walker.nextNode())) {
+    // Try each anchor (full → sentence → leading words) until one matches.
+    let needle = anchors[0];
+    let needleLower = needle.toLowerCase();
+    let matches = [];
+    for (const anchor of anchors) {
+      needle = anchor;
+      needleLower = anchor.toLowerCase();
+      matches = [];
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+      let n;
+      while ((n = walker.nextNode())) {
       const nodeText = n.data;
       if (!nodeText) continue;
       const normalized = normalize(nodeText).toLowerCase();
@@ -8924,6 +8952,8 @@ function FullDocumentView({
         }
         searchFrom = idx + Math.max(1, needleLower.length);
       }
+      }
+      if (matches.length > 0) break; // this anchor matched — stop narrowing
     }
 
     // Update chevron state. Use functional setState w/ same-value guard so
