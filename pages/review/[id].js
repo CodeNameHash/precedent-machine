@@ -1236,41 +1236,66 @@ function CodeBadge({ code }) {
  * popover for ~2.5s — the underlying tap action still fires normally. */
 function HoverSource({ quote, children, as = 'span', className, align = 'left' }) {
   const [show, setShow] = useState(false);
+  // Fixed-position coords computed from the trigger rect on show, so the
+  // popover renders above the table's overflow clip rather than inside it.
+  const [pos, setPos] = useState(null);
   const hideTimerRef = useRef(null);
+  const triggerRef = useRef(null);
   const Tag = as;
   if (!quote || typeof quote !== 'string' || !quote.trim()) {
     return <Tag className={className}>{children}</Tag>;
   }
   const trimmed = quote.trim().replace(/\s+/g, ' ');
-  const display = trimmed.length > 600 ? trimmed.slice(0, 600) + '…' : trimmed;
+  const display = trimmed.length > TOOLTIP_MAX ? trimmed.slice(0, TOOLTIP_MAX) + '…' : trimmed;
   const clearHideTimer = () => {
     if (hideTimerRef.current) {
       clearTimeout(hideTimerRef.current);
       hideTimerRef.current = null;
     }
   };
+  // Compute fixed coords from the trigger rect. Flip ABOVE the trigger when it
+  // sits in the lower 45% of the viewport so the popover never falls off (or
+  // gets clipped at) the bottom of the table / screen.
+  const computePos = () => {
+    const el = triggerRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const flipUp = r.bottom > window.innerHeight * 0.55;
+    const left = align === 'right' ? undefined : Math.min(r.left, window.innerWidth - 500);
+    const right = align === 'right' ? Math.max(8, window.innerWidth - r.right) : undefined;
+    setPos({
+      left,
+      right,
+      top: flipUp ? undefined : r.bottom + 4,
+      bottom: flipUp ? window.innerHeight - r.top + 4 : undefined,
+    });
+  };
+  const open = () => { clearHideTimer(); computePos(); setShow(true); };
   const handleTouchStart = () => {
-    clearHideTimer();
-    setShow(true);
+    open();
     // Auto-hide after 2.5s so the popover doesn't linger after the user taps
     // through to the evidence view.
     hideTimerRef.current = setTimeout(() => setShow(false), 2500);
   };
   return (
     <Tag
-      className={`relative ${className || ''}`}
-      onMouseEnter={() => { clearHideTimer(); setShow(true); }}
+      ref={triggerRef}
+      className={className}
+      onMouseEnter={open}
       onMouseLeave={() => setShow(false)}
       onTouchStart={handleTouchStart}
     >
       {children}
-      {show && (
+      {show && pos && (
         <span
           role="tooltip"
-          className="absolute z-50 top-full mt-1 max-w-[480px] min-w-[280px] bg-amber-50 border border-amber-300 rounded shadow-lg px-3 py-2 text-[11px] italic text-amber-900 font-body whitespace-pre-wrap break-words leading-relaxed"
+          className="fixed z-[100] max-w-[480px] min-w-[280px] bg-amber-50 border border-amber-300 rounded shadow-lg px-3 py-2 text-[11px] italic text-amber-900 font-body whitespace-pre-wrap break-words leading-relaxed"
           style={{
             pointerEvents: 'none',
-            ...(align === 'right' ? { right: 0 } : { left: 0 }),
+            left: pos.left,
+            right: pos.right,
+            top: pos.top,
+            bottom: pos.bottom,
           }}
         >
           &ldquo;{display}&rdquo;
