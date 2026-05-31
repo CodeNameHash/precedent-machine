@@ -4999,6 +4999,7 @@ function ConsidTable({ provisions, onSelectProvision }) {
    features the table would show, plus a collapsible text body.
    ═══════════════════════════════════════════════════════════ */
 function StructuredSummaryCard({ provision, type, onSelectProvision }) {
+  const showEvidence = useShowEvidence();
   const [showText, setShowText] = useState(false);
   const features = getStructuredFeatures(provision) || {};
   // Honor the same column list the table would use (FEATURE_DISPLAY_ORDER +
@@ -5039,20 +5040,42 @@ function StructuredSummaryCard({ provision, type, onSelectProvision }) {
       {rows.length > 0 ? (
         <dl className="px-4 py-3 space-y-2">
           {rows.map(({ key, raw }) => {
-            // Tagged single value → humanized badge
+            // Every row's value is cited back to the source: prefer the
+            // value's own citable/tagged quote, fall back to a focused snippet
+            // of the provision's full_text containing the value. Wrap the
+            // value cell in HoverSource + click-to-evidence so the user can
+            // always see what supports the displayed value — matches the
+            // user's repeated "everything must link to source" requirement.
+            const rowQuote = evidenceQuote(raw, { provision });
+            const wrap = (node) => (
+              <HoverSource quote={rowQuote} as="span">
+                {rowQuote && showEvidence ? (
+                  <button
+                    type="button"
+                    onClick={() => showEvidence(rowQuote)}
+                    className="text-left cursor-pointer hover:underline decoration-dotted decoration-accent/60 underline-offset-2"
+                  >
+                    {node}
+                  </button>
+                ) : node}
+              </HoverSource>
+            );
+            // Tagged single value → ONE canonical pill carrying the resolved
+            // label (not a bare humanized code).
             if (isTaggedItem(raw)) {
+              const label = resolveTaggedLabel(key, raw) || humanizeBadgeText(raw.code);
               return (
                 <div key={key} className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
                   <dt className="font-ui text-[11px] text-inkFaint uppercase tracking-wider sm:w-48 shrink-0">
                     {humanizeKey(key)}
                   </dt>
                   <dd className="text-sm text-ink">
-                    <CodeBadge code={raw.code} />
+                    {wrap(<CodeBadge code={raw.code} label={label} />)}
                   </dd>
                 </div>
               );
             }
-            // List value → bulleted list (humanized badges for tagged items)
+            // List value → bulleted list (humanized labels for tagged items).
             if (Array.isArray(raw)) {
               return (
                 <div key={key} className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
@@ -5061,21 +5084,33 @@ function StructuredSummaryCard({ provision, type, onSelectProvision }) {
                   </dt>
                   <dd className="text-sm text-ink flex-1">
                     <ul className="list-disc list-inside space-y-0.5">
-                      {raw.map((item, idx) => (
-                        <li key={idx} className="leading-relaxed">
-                          {isTaggedItem(item) ? (
-                            <CodeBadge code={item.code} />
-                          ) : (
-                            <span>{String(item)}</span>
-                          )}
-                        </li>
-                      ))}
+                      {raw.map((item, idx) => {
+                        const itemQuote = (isTaggedItem(item) && item.text) || rowQuote;
+                        const itemNode = isTaggedItem(item)
+                          ? <CodeBadge code={item.code} label={resolveTaggedLabel(key, item) || humanizeBadgeText(item.code)} />
+                          : <span>{String(item)}</span>;
+                        return (
+                          <li key={idx} className="leading-relaxed">
+                            <HoverSource quote={itemQuote} as="span">
+                              {itemQuote && showEvidence ? (
+                                <button
+                                  type="button"
+                                  onClick={() => showEvidence(itemQuote)}
+                                  className="text-left cursor-pointer hover:underline decoration-dotted decoration-accent/60 underline-offset-2"
+                                >
+                                  {itemNode}
+                                </button>
+                              ) : itemNode}
+                            </HoverSource>
+                          </li>
+                        );
+                      })}
                     </ul>
                   </dd>
                 </div>
               );
             }
-            // Scalar value
+            // Scalar value (incl. citable-wrapped scalar).
             const val = formatFeatureValue(raw);
             if (val === null || val === undefined || val === '') return null;
             return (
@@ -5084,7 +5119,7 @@ function StructuredSummaryCard({ provision, type, onSelectProvision }) {
                   {humanizeKey(key)}
                 </dt>
                 <dd className="text-sm text-ink whitespace-pre-wrap break-words flex-1">
-                  {Array.isArray(val) ? val.join('; ') : String(val)}
+                  {wrap(<span>{Array.isArray(val) ? val.join('; ') : String(val)}</span>)}
                 </dd>
               </div>
             );
