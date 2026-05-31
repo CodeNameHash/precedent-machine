@@ -10230,6 +10230,64 @@ function ReextractSectionButton({ provision, deal }) {
 /* ═══════════════════════════════════════════════════════════
    EDIT PANEL (slide-in from right)
    ═══════════════════════════════════════════════════════════ */
+/* ── Per-field source affordance shown beneath each FeatureFieldEditor in
+ *    the EditPanel. Resolves the field's evidence quote(s) and renders an
+ *    amber chip (or "(view full provision)" fallback) that pops the source
+ *    in the FullDocumentView. Per user direction: "if the full provision
+ *    is what is needed to evidence the summary that's fine and the whole
+ *    thing can just be cited" — when no field-level quote exists we still
+ *    expose a click-to-source pointing at provision.full_text. */
+function FieldSourceAffordance({ field, value, provision }) {
+  const showEvidence = useShowEvidence();
+  const quotes = useMemo(() => {
+    if (isCitableValue(value)) {
+      const q = getCitableQuotes(value);
+      if (q && q.length > 0) return q;
+    }
+    if (isTaggedItem(value) && typeof value.text === 'string' && value.text.trim()) {
+      return [value.text];
+    }
+    return [];
+  }, [value]);
+  const fallbackText = (typeof provision?.full_text === 'string' && provision.full_text.trim())
+    ? provision.full_text
+    : null;
+  const truncate = (s, n = 90) => {
+    const t = String(s || '').trim().replace(/\s+/g, ' ');
+    return t.length > n ? t.slice(0, n) + '…' : t;
+  };
+  if (quotes.length === 0 && !fallbackText) return null;
+  if (quotes.length === 0) {
+    return (
+      <button
+        type="button"
+        onClick={() => showEvidence && showEvidence(fallbackText)}
+        disabled={!showEvidence}
+        className="block text-left text-[10px] font-ui italic text-amber-700 hover:text-amber-900 hover:underline disabled:opacity-50"
+        title="Click to view this provision in the document"
+      >
+        Source: full provision (click to view)
+      </button>
+    );
+  }
+  return (
+    <div className="space-y-0.5">
+      {quotes.map((q, idx) => (
+        <button
+          key={idx}
+          type="button"
+          onClick={() => showEvidence && showEvidence(q)}
+          disabled={!showEvidence}
+          className="block w-full text-left border border-amber-200 bg-amber-50/40 rounded px-2 py-1 text-[11px] font-ui text-amber-900 italic hover:bg-amber-50 disabled:opacity-50"
+          title={q}
+        >
+          &ldquo;{truncate(q)}&rdquo;
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function EditPanel({
   provision,
   allTypes,
@@ -10360,7 +10418,22 @@ function EditPanel({
   const populatedSchema = useMemo(() => {
     return dedupedSchema.filter((f) => {
       if (manuallyAddedKeys.has(f.key)) return true;
-      return !isEmptyValue(editedFeatures[f.key]);
+      const v = editedFeatures[f.key];
+      if (isEmptyValue(v)) return false;
+      // Treat inert defaults as empty for display: explicit `false` booleans,
+      // and enum sentinels like 'NA' / 'NONE' / 'OTHER' that the AI emits when
+      // a field doesn't apply. The user still has the field via the picker.
+      const inner = isCitableValue(v) ? getCitableValue(v) : v;
+      if (inner === false) return false;
+      if (typeof inner === 'string') {
+        const s = inner.trim().toUpperCase();
+        if (s === 'NA' || s === 'N/A' || s === 'NONE') return false;
+      }
+      if (isTaggedItem(inner)) {
+        const c = String(inner.code || '').toUpperCase();
+        if (c === 'NA' || c === 'NONE' || c === 'OTHER') return false;
+      }
+      return true;
     });
   }, [dedupedSchema, editedFeatures, manuallyAddedKeys]);
 
@@ -10566,6 +10639,11 @@ function EditPanel({
                     value={editedFeatures[field.key]}
                     onChange={(v) => setFeatureValue(field.key, v)}
                     onAddCustomOption={onSaveCustomTaxonomyOption ? handleAddCustomOption : undefined}
+                  />
+                  <FieldSourceAffordance
+                    field={field}
+                    value={editedFeatures[field.key]}
+                    provision={provision}
                   />
                   {customOptionKey === field.key && (
                     <div className="border border-accent/40 bg-accent/5 rounded p-2 space-y-1.5 mt-1">
