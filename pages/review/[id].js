@@ -8835,19 +8835,25 @@ function FullDocumentView({
       range.setStart(foundNode, foundIdx);
       range.setEnd(foundNode, foundNode.__hlEnd);
       span = document.createElement('span');
-      span.className = 'bg-yellow-200 ring-1 ring-yellow-400 rounded px-0.5';
+      // Clear, sustained highlight: strong amber background + ring + a brief
+      // bright-flash pulse on arrival so the eye lands on the right section.
+      span.className = 'rounded px-0.5 ring-2 ring-amber-400';
+      span.style.backgroundColor = '#fde68a'; // amber-200, sustained
+      span.style.boxShadow = '0 0 0 3px rgba(251,191,36,0.35)';
       span.dataset.evidenceHighlight = '1';
       range.surroundContents(span);
-      // Scroll into view
+      // Scroll into view, then flash brighter for ~1s to draw the eye.
       span.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      // Pulse animation via inline style transition
-      span.style.transition = 'background-color 1.6s ease-out';
+      span.style.transition = 'background-color 1.2s ease-out, box-shadow 1.2s ease-out';
+      const prevBg = span.style.backgroundColor;
+      span.style.backgroundColor = '#fbbf24'; // amber-400 flash
       setTimeout(() => {
         if (span && span.style) {
-          // Keep some highlight but soften after pulse
-          span.style.backgroundColor = '';
+          // Settle back to the sustained (not fully transparent) highlight so
+          // the section stays clearly marked after the flash.
+          span.style.backgroundColor = prevBg;
         }
-      }, 1800);
+      }, 900);
     } catch {
       // Range surroundContents can throw if the range crosses element
       // boundaries — silently skip in that rare case.
@@ -11882,6 +11888,14 @@ export default function ReviewPage() {
   const handleEditProvision = useCallback((provision) => {
     setEditingProvision(provision);
     setExpandedLabel(null);
+    // Pre-mark the provision's section in the document (without switching tabs)
+    // so when the user opens the Full Document tab it's already scrolled to and
+    // clearly highlighted. Use a focused chunk of the provision's full_text.
+    if (provision && typeof provision.full_text === 'string' && provision.full_text.trim()) {
+      const chunk = provision.full_text.trim().slice(0, 240);
+      setHighlightedQuote(chunk);
+      setHighlightedQuoteNonce((n) => n + 1);
+    }
   }, []);
 
   /* ── Save edits ── */
