@@ -1218,11 +1218,11 @@ function humanizeBadgeText(code) {
     .join(' ');
 }
 
-function CodeBadge({ code }) {
-  if (!code) return null;
+function CodeBadge({ code, label }) {
+  if (!code && !label) return null;
   return (
     <span className="inline-flex items-center font-ui font-medium text-[10px] px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200 whitespace-nowrap">
-      {humanizeBadgeText(code)}
+      {label || humanizeBadgeText(code)}
     </span>
   );
 }
@@ -4453,19 +4453,27 @@ function buildEquityRows(equityProvisions) {
   return deduped;
 }
 
-function EquityAwardTable({ rows, onSelectProvision }) {
+function EquityAwardTable({ rows, onSelectProvision, optionsCvrEarnInLabel, optionsCvrEarnInQuote }) {
   if (!rows || rows.length === 0) return null;
-  // Render a tagged value as JUST a humanized badge (no duplicate text label).
-  // The badge text is the canonical short phrase via humanizeBadgeText().
-  // Falls back to plain text when not tagged.
-  const renderTagged = (v) => {
+  // Render a tagged value as a canonical pill. Prefer the resolved taxonomy
+  // label (e.g. "Cashed out at spread (...)") over a bare code-humanization
+  // so the pill reads correctly; `featureKey` selects the taxonomy dict.
+  const renderTagged = (v, featureKey) => {
     if (isTaggedItem(v)) {
-      return <CodeBadge code={v.code} />;
+      const label = featureKey ? resolveTaggedLabel(featureKey, v) : null;
+      return <CodeBadge code={v.code} label={label || undefined} />;
     }
     if (v === null || v === undefined || v === '') {
       return <span className="text-inkFaint/70 italic">—</span>;
     }
     return <span className="whitespace-pre-wrap break-words">{String(v)}</span>;
+  };
+  // Identify the Options row so the CVR earn-in pill attaches there.
+  const isOptionsRow = (row) => {
+    const code = isTaggedItem(row.instrument) ? String(row.instrument.code || '') : '';
+    if (/OPTION/i.test(code)) return true;
+    const lbl = isTaggedItem(row.instrument) ? (row.instrument.label || '') : String(row.instrument || '');
+    return /option/i.test(lbl);
   };
 
   return (
@@ -4509,10 +4517,23 @@ function EquityAwardTable({ rows, onSelectProvision }) {
                     </HoverSource>
                   </td>
                   <td className="px-3 py-2 align-top text-ink max-w-[320px]">
-                    <HoverSource quote={rowQuote} as="div">{renderTagged(row.treatment)}</HoverSource>
+                    <HoverSource quote={rowQuote} as="div">
+                      <span className="inline-flex flex-wrap items-center gap-1">
+                        {renderTagged(row.treatment, 'equityTreatment')}
+                        {/* Options row: CVR earn-in shows as an extra pill next
+                            to "Cashed Out at Spread" rather than its own hero row. */}
+                        {optionsCvrEarnInLabel && isOptionsRow(row) ? (
+                          <HoverSource quote={optionsCvrEarnInQuote || rowQuote}>
+                            <span className="inline-flex items-center font-ui font-medium text-[10px] px-1.5 py-0.5 rounded bg-violet-50 text-violet-700 border border-violet-200 whitespace-nowrap">
+                              {optionsCvrEarnInLabel}
+                            </span>
+                          </HoverSource>
+                        ) : null}
+                      </span>
+                    </HoverSource>
                   </td>
                   <td className="px-3 py-2 align-top text-ink max-w-[240px]">
-                    <HoverSource quote={rowQuote} as="div">{renderTagged(row.vesting)}</HoverSource>
+                    <HoverSource quote={rowQuote} as="div">{renderTagged(row.vesting, 'vestingAcceleration')}</HoverSource>
                   </td>
                   <td className="px-3 py-2 align-top text-ink whitespace-nowrap">
                     {row.cutoff ?? <span className="text-inkFaint/70 italic">—</span>}
@@ -4626,7 +4647,12 @@ function ConsidTable({ provisions, onSelectProvision }) {
     if (!heroPerShare && f.perShareAmount) {
       const v = isCitableValue(f.perShareAmount) ? getCitableValue(f.perShareAmount) : f.perShareAmount;
       heroPerShare = String(v);
-      heroPerShareSrc = captureSrc(f.perShareAmount, p);
+      // focusOn the price so a full_text fallback narrows to the sentence
+      // containing "$47.50" rather than dumping the whole provision.
+      heroPerShareSrc = {
+        provision: p,
+        quote: evidenceQuote(f.perShareAmount, { provision: p, focusOn: String(v) }),
+      };
     }
     if (!heroConsidType && f.considerationType) {
       heroConsidType = isTaggedItem(f.considerationType)
@@ -4714,13 +4740,14 @@ function ConsidTable({ provisions, onSelectProvision }) {
 
   // Options earn-in via CVR — only relevant when the deal pays a CVR.
   // Scan all CONSID provisions for optionsCvrEarnIn (enum). Resolve to a
-  // human label for display.
+  // short pill label (shown in the equity Options row) + the source quote.
   let optionsCvrEarnInLabel = null;
+  let optionsCvrEarnInSrc = null;
   if (hasCvr) {
     const earnInLabels = {
-      EARN_IN_ELIGIBLE: 'Earn-in eligible (options receive CVR regardless of moneyness)',
-      MUST_BE_ITM: 'Must be in-the-money to receive CVR (option spread + CVR = total consideration)',
-      NOT_SPECIFIED: 'Unclear / Not specified',
+      EARN_IN_ELIGIBLE: 'Out-of-the-Money Options Can Earn in to CVR',
+      MUST_BE_ITM: 'Only In-the-Money Options Receive CVR',
+      NOT_SPECIFIED: null,
     };
     for (const p of provisions) {
       const f = getStructuredFeatures(p) || {};
@@ -4732,6 +4759,7 @@ function ConsidTable({ provisions, onSelectProvision }) {
       const s = String(code).toUpperCase();
       if (earnInLabels[s]) {
         optionsCvrEarnInLabel = earnInLabels[s];
+        optionsCvrEarnInSrc = captureSrc(f.optionsCvrEarnIn, p);
         break;
       }
     }
@@ -4797,14 +4825,6 @@ function ConsidTable({ provisions, onSelectProvision }) {
       if (anchor) { exchangeRatioSrc = captureSrc(anchor, p); break; }
     }
   }
-  let earnInSrc = null;
-  if (optionsCvrEarnInLabel) {
-    for (const p of provisions) {
-      const f = getStructuredFeatures(p) || {};
-      if (f.optionsCvrEarnIn) { earnInSrc = captureSrc(f.optionsCvrEarnIn, p); break; }
-    }
-  }
-
   const renderAppraisalValue = (v) => {
     if (v && typeof v === 'object') {
       // Tagged item { code, label, text } or citable { value, text } —
@@ -4824,13 +4844,12 @@ function ConsidTable({ provisions, onSelectProvision }) {
           column label is clickable to source (matching every other table
           in the app); right column is the plain value. No more oversized
           $47.50 callout. */}
-      {(heroPriceText || heroConsidType || appraisalAvailable !== null || optionsCvrEarnInLabel || (showExchangeRatio && (exchangeRatioValue || exchangeRatioType))) && (() => {
+      {(heroPriceText || heroConsidType || appraisalAvailable !== null || (showExchangeRatio && (exchangeRatioValue || exchangeRatioType))) && (() => {
         const heroRows = [
           heroPriceText ? { label: 'Per-Share Price', value: <>{heroPriceText} <span className="text-inkFaint">per share</span></>, src: heroPerShareSrc } : null,
           heroConsidType ? { label: 'Consideration Type', value: heroConsidTypeNode || heroConsidType, src: heroConsidTypeSrc } : null,
           (showExchangeRatio && (exchangeRatioValue || exchangeRatioType)) ? { label: 'Exchange Ratio', value: <>{exchangeRatioValue || '—'}{exchangeRatioType ? ` (${exchangeRatioType})` : ''}</>, src: exchangeRatioSrc } : null,
           appraisalAvailable !== null ? { label: 'Appraisal Rights Available', value: renderAppraisalValue(appraisalAvailable), src: appraisalSrc } : null,
-          optionsCvrEarnInLabel ? { label: 'Options Earn-in to CVR', value: optionsCvrEarnInLabel, src: earnInSrc } : null,
         ].filter(Boolean);
         return (
           <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
@@ -4878,44 +4897,47 @@ function ConsidTable({ provisions, onSelectProvision }) {
       })()}
 
       {equityRows.length > 0 && (
-        <EquityAwardTable rows={equityRows} onSelectProvision={onSelectProvision} />
+        <EquityAwardTable
+          rows={equityRows}
+          onSelectProvision={onSelectProvision}
+          optionsCvrEarnInLabel={optionsCvrEarnInLabel}
+          optionsCvrEarnInQuote={optionsCvrEarnInSrc && optionsCvrEarnInSrc.quote}
+        />
       )}
 
-      {/* Other CONSID provisions — list as clickable links, NOT a detail table. */}
-      {otherProvisions.length > 0 && (
-        <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
-          <div className="px-3 py-2 bg-bg/60 border-b border-border">
-            <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
-              Other Consideration Provisions
+      {/* Other provisions in this section — only those NOT already surfaced in
+          the hero (convertProv) or the equity table. Compact "Provisions in
+          this section" styling (matches the universal summary-table footer /
+          Termination Fees page) rather than the old full-width link list. */}
+      {(() => {
+        const summarizedIds = new Set();
+        if (convertProv) summarizedIds.add(convertProv.id);
+        for (const r of equityRows) {
+          if (r.provision && r.provision.id) summarizedIds.add(r.provision.id);
+        }
+        const leftover = otherProvisions.filter((p) => !summarizedIds.has(p.id));
+        if (leftover.length === 0) return null;
+        return (
+          <div className="bg-bg/40 border border-border rounded-lg px-3 py-2">
+            <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider mb-1.5">
+              Other Provisions in this Section
             </p>
-          </div>
-          <ul className="divide-y divide-border">
-            {otherProvisions.map((p) => (
-              <li key={p.id}>
-                <button
-                  type="button"
-                  onClick={() => onSelectProvision && onSelectProvision(p)}
-                  className="w-full text-left px-4 py-2 hover:bg-bg/40 transition-colors flex items-center gap-2"
-                >
-                  <span
-                    style={{
-                      display: 'inline-block',
-                      width: 7,
-                      height: 7,
-                      borderRadius: 2,
-                      background: typeHex(p.type),
-                      flexShrink: 0,
-                    }}
-                  />
-                  <span className="text-sm text-accent font-medium hover:underline">
+            <ul className="flex flex-wrap gap-x-3 gap-y-1">
+              {leftover.map((p) => (
+                <li key={p.id}>
+                  <button
+                    type="button"
+                    onClick={() => onSelectProvision && onSelectProvision(p)}
+                    className="text-xs font-ui text-accent hover:underline"
+                  >
                     {p.category || 'General'}
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+      })()}
     </div>
   );
 }
