@@ -6629,7 +6629,11 @@ const EXPECTED_REPS = {
   'REP-T': [
     { label: 'Sufficiency of Assets',    match: { code: 'REP-T-SUFFICIENCY' } },
     { label: 'Top Customers / Suppliers', match: { code: 'REP-T-TOP-CUSTOMERS' } },
-    { label: 'Material Contracts',       match: { code: 'REP-T-MATERIAL-CONTRACTS' } },
+    // P9 item 3: Material Contracts removed from the REP-T expected-reps list
+    // because it now has its own __MATERIAL_CONTRACTS sidebar page. Keeping it
+    // here would re-add the provision via augmentRepsWithExpectedPlaceholders'
+    // allProvisions externalHits pass (which finds REP-T-MATERIAL-CONTRACTS
+    // via code match), undoing the filter at line 11930.
   ],
 };
 
