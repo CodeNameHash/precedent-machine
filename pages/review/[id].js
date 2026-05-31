@@ -10092,6 +10092,10 @@ const EDIT_OTHER_CODE = '__OTHER__';
 
 function FeatureFieldEditor({ field, value, onChange, onAddCustomOption }) {
   const label = humanizeKey(field.key);
+  // Evidence selection-mode (called once at the top so renderTaggedPicker can
+  // offer "Select in document" for each tagged item's verbatim citation —
+  // Rules of Hooks: must run unconditionally, not inside a branch).
+  const fieldSelectionCtx = useEvidenceSelectionMode();
   const baseTaxonomy = taxonomyForFeatureKey(field.key);
   // P5 item 8: merge canonical taxonomy with deal-scoped custom extensions.
   const customExtensions = useCustomTaxonomy();
@@ -10316,20 +10320,56 @@ function FeatureFieldEditor({ field, value, onChange, onAddCustomOption }) {
             Other selected. This value will not be comparable across deals.
           </p>
         )}
-        <input
-          value={item.text || ''}
-          onChange={(e) => {
-            const text = e.target.value;
-            // Preserve current code/Other selection.
-            const nextCode = item.code || (text ? EDIT_OTHER_CODE : '');
+        {/* Verbatim citation: show the highlighted source text (read display) +
+            a "Select in document" affordance — NOT a free-form box. Selecting
+            text in the FullDocumentView sets this item's verbatim quote. */}
+        {(() => {
+          const startSel = fieldSelectionCtx && fieldSelectionCtx.startSelectionMode;
+          const setItemText = (text) => {
+            const t = (text || '').trim();
+            const nextCode = item.code || (t ? EDIT_OTHER_CODE : '');
             const nextLabel = nextCode === EDIT_OTHER_CODE
               ? 'Other / not applicable'
               : (taxonomy && taxonomy[nextCode]) || item.label || '';
-            onPick(text || nextCode ? { ...item, code: nextCode, label: nextLabel, text } : null);
-          }}
-          placeholder="Verbatim text from agreement..."
-          className={txtCls}
-        />
+            onPick(t || nextCode ? { ...item, code: nextCode, label: nextLabel, text: t } : null);
+          };
+          return (
+            <div className="space-y-1">
+              {item.text ? (
+                <div className="border border-amber-200 bg-amber-50/40 rounded px-2 py-1 text-[11px] font-ui text-amber-900 italic break-words">
+                  &ldquo;{item.text}&rdquo;
+                </div>
+              ) : (
+                <p className="text-[10px] font-ui italic text-inkFaint">No source text cited yet.</p>
+              )}
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!startSel) return;
+                    startSel({
+                      label: (taxonomy && taxonomy[item.code]) || item.label || field.key,
+                      onSelect: (text) => setItemText(text),
+                    });
+                  }}
+                  disabled={!startSel}
+                  className="text-[10px] font-ui text-amber-700 hover:text-amber-900 hover:underline disabled:opacity-50"
+                >
+                  {item.text ? 'Re-select in document' : '+ Select in document'}
+                </button>
+                {item.text && (
+                  <button
+                    type="button"
+                    onClick={() => setItemText('')}
+                    className="text-[10px] font-ui text-inkFaint hover:text-seller"
+                  >
+                    Clear text
+                  </button>
+                )}
+              </div>
+            </div>
+          );
+        })()}
       </div>
     );
   };
@@ -10857,6 +10897,10 @@ function EditPanel({
       'crossReferences',
       'carveOuts', 'carveOutsList',
       'disproportionateImpact', 'disproportionateImpactScope',
+      // Redundant boolean carve-out flags — the canonical `carveouts` list
+      // already captures pandemic / cybersecurity carve-outs as tagged items,
+      // so these standalone booleans just duplicate them in the editor.
+      'pandemicCarveout', 'cyberSecurityCarveout',
     ]);
     const seen = new Set();
     const out = [];
