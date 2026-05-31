@@ -3785,6 +3785,36 @@ function computeLookbackText(months /* announceDate unused: months-from-signing 
   return `${m} months prior to signing`;
 }
 
+/* Coerce a lookback value into "X months prior to signing".
+ *  - bare number / numeric string → that many months
+ *  - a date (e.g. "Since January 30, 2025" / "2025-01-30") → months between
+ *    that date and the signing date, rounded.
+ *  - anything else → the cleaned string as a last resort.
+ * The user always wants the MONTHS framing, never a raw "Since <date>". */
+function lookbackToMonths(rawValue, signingDate) {
+  let v = isCitableValue(rawValue) ? getCitableValue(rawValue) : rawValue;
+  if (isTaggedItem(v)) v = v.label || v.code;
+  if (v === null || v === undefined || v === '') return null;
+  // Numeric month count.
+  if (typeof v === 'number' || /^\s*\d{1,3}\s*$/.test(String(v))) {
+    return computeLookbackText(Number(String(v).trim()));
+  }
+  const s = String(v).trim();
+  // Try to pull a date out of the string ("Since January 30, 2025", "1/30/25").
+  const dateMatch = s.match(/(?:[A-Z][a-z]+\s+\d{1,2},?\s+\d{4})|(?:\d{4}-\d{2}-\d{2})|(?:\d{1,2}\/\d{1,2}\/\d{2,4})/);
+  const base = signingDate ? new Date(signingDate) : null;
+  if (dateMatch && base && !isNaN(base.getTime())) {
+    const d = new Date(dateMatch[0]);
+    if (!isNaN(d.getTime())) {
+      let months = (base.getFullYear() - d.getFullYear()) * 12 + (base.getMonth() - d.getMonth());
+      if (base.getDate() < d.getDate()) months -= 1;
+      if (months > 0) return `${months} months prior to signing`;
+    }
+  }
+  // No usable date/number → return the cleaned phrase (strip a leading "Since").
+  return s.replace(/^since\s+/i, '').trim() || null;
+}
+
 function formatCellValue(featureKey, raw) {
   if (raw === null || raw === undefined || raw === '') return null;
   // Citable wrapper — operate on the unwrapped value.
@@ -8195,14 +8225,15 @@ function CellWithSource({ provision, featureKey, raw, isEmpty, children, classNa
     return <div className={className || 'whitespace-pre-wrap break-words'}>{children}</div>;
   }
   return (
-    <button
-      type="button"
-      onClick={(e) => { e.stopPropagation(); showEvidence(quote); }}
-      className={`${className || 'whitespace-pre-wrap break-words'} text-left hover:underline decoration-dotted decoration-accent/60 underline-offset-2 cursor-pointer`}
-      title="Click to see source in full document"
-    >
-      {children}
-    </button>
+    <HoverSource quote={quote} as="div">
+      <button
+        type="button"
+        onClick={(e) => { e.stopPropagation(); showEvidence(quote); }}
+        className={`${className || 'whitespace-pre-wrap break-words'} text-left hover:underline decoration-dotted decoration-accent/60 underline-offset-2 cursor-pointer`}
+      >
+        {children}
+      </button>
+    </HoverSource>
   );
 }
 
@@ -8531,23 +8562,18 @@ function ProvisionTable({ provisions, type, onSelectProvision, allProvisions }) 
                     // REP synthetic: lookback period from secFilingsLookbackMonths.
                     // Unwrap citable / tagged shapes so we never render [object Object].
                     if ((type === 'REP-T' || type === 'REP-B') && k === 'lookbackPeriod') {
-                      let lookbackRaw = features.lookbackPeriod;
-                      if (isCitableValue(lookbackRaw)) lookbackRaw = getCitableValue(lookbackRaw);
-                      if (isTaggedItem(lookbackRaw)) {
-                        lookbackRaw = resolveTaggedLabel('lookbackPeriod', lookbackRaw) || lookbackRaw.code;
-                      }
-                      const monthsRaw = isCitableValue(features.secFilingsLookbackMonths)
-                        ? getCitableValue(features.secFilingsLookbackMonths)
-                        : features.secFilingsLookbackMonths;
-                      const txt = (lookbackRaw && typeof lookbackRaw !== 'object')
-                        ? String(lookbackRaw)
-                        : computeLookbackText(monthsRaw, p?.deal?.announce_date || p?.deal_announce_date || null);
+                      const signing = p?.deal?.announce_date || p?.deal_announce_date || null;
+                      // ALWAYS frame as "X months prior to signing" — prefer the
+                      // numeric month-count, then convert a stored date string.
+                      const txt = lookbackToMonths(features.secFilingsLookbackMonths, signing)
+                        || lookbackToMonths(features.lookbackPeriod, signing);
+                      const rawForQuote = features.lookbackPeriod || features.secFilingsLookbackMonths;
                       return (
                         <td key={k} className="px-3 py-2 align-top max-w-[200px] text-ink">
                           <CellWithSource
                             provision={p}
                             featureKey={k}
-                            raw={features.lookbackPeriod || features.secFilingsLookbackMonths}
+                            raw={rawForQuote}
                             isEmpty={!txt}
                           >
                             {txt || <span className="text-inkFaint italic">—</span>}
