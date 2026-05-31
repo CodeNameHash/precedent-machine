@@ -8090,6 +8090,21 @@ function MaeSinglePartySummary({ provision, partyLabel, onSelectProvision }) {
   // Build the list of carveouts. carveouts is a tagged list — { code, label, text }.
   const carveouts = Array.isArray(f.carveouts) ? f.carveouts : [];
 
+  // Disproportionate-effect carveback: the subset of carve-outs that STILL
+  // count toward an MAE to the extent they disproportionately affect the
+  // Company vs. industry peers. Identify by CANONICAL CODE (not clause letter)
+  // so we can badge each carve-out and summarize.
+  const dispList = Array.isArray(f.disproportionateImpactCarveouts) ? f.disproportionateImpactCarveouts : [];
+  const dispCodes = new Set(
+    dispList.map((x) => isTaggedItem(x) ? String(x.code || '').toUpperCase() : String(x || '').toUpperCase()).filter(Boolean),
+  );
+  // Also accept a boolean/text disproportionate clause flag.
+  const dispClauseRaw = f.disproportionateImpactClause ?? f.disproportionateEffectClause;
+  const dispClause = isCitableValue(dispClauseRaw) ? getCitableValue(dispClauseRaw) : dispClauseRaw;
+  const hasDisproportionate = dispCodes.size > 0 || (dispClause && dispClause !== false);
+  const dispClauseQuote = (isCitableValue(dispClauseRaw) && getCitableText(dispClauseRaw))
+    || (typeof dispClause === 'string' ? dispClause : null);
+
   return (
     <section className="space-y-3">
       <header className="flex items-baseline gap-2">
@@ -8120,6 +8135,22 @@ function MaeSinglePartySummary({ provision, partyLabel, onSelectProvision }) {
           </p>
           <p className="text-[10px] font-ui text-inkFaint">{carveouts.length}</p>
         </div>
+        {/* Disproportionate-effect carveback banner — names the canonical
+            carve-outs it applies to (NOT the (A)/(B) clause letters). */}
+        {hasDisproportionate && (
+          <div
+            className={`px-3 py-1.5 bg-amber-50 border-b border-amber-200 text-[11px] font-ui text-amber-900 ${dispClauseQuote && showEvidence ? 'cursor-pointer' : ''}`}
+            onClick={dispClauseQuote && showEvidence ? () => showEvidence(dispClauseQuote) : undefined}
+            title={dispClauseQuote || ''}
+          >
+            <span className="font-medium">Disproportionate-effect carveback applies</span>
+            {dispCodes.size > 0 && (
+              <span className="text-amber-800">
+                {' '}— to: {[...dispCodes].map((c) => labelForCarveoutCode(c) || humanizeBadgeText(c)).join(', ')}
+              </span>
+            )}
+          </div>
+        )}
         {carveouts.length === 0 ? (
           <p className="px-3 py-3 text-xs font-ui italic text-inkFaint">
             No carve-outs extracted (re-ingest to populate `carveouts` list with MAE_CARVEOUT codes).
@@ -8129,6 +8160,8 @@ function MaeSinglePartySummary({ provision, partyLabel, onSelectProvision }) {
             {carveouts.map((c, i) => {
               const label = c?.label || labelForCarveoutCode(c?.code) || c?.code || `Carve-out ${i + 1}`;
               const quote = c?.text || null;
+              const cCode = isTaggedItem(c) ? String(c.code || '').toUpperCase() : '';
+              const subjectToDisp = cCode && dispCodes.has(cCode);
               return (
                 <li
                   key={i}
@@ -8139,7 +8172,15 @@ function MaeSinglePartySummary({ provision, partyLabel, onSelectProvision }) {
                   }}
                   title={quote || ''}
                 >
-                  <div className="text-xs font-ui text-ink font-medium">{label}</div>
+                  <div className="text-xs font-ui text-ink font-medium flex items-center gap-1.5 flex-wrap">
+                    {isTaggedItem(c) && c.code ? <CodeBadge code={c.code} /> : null}
+                    <span>{label}</span>
+                    {subjectToDisp && (
+                      <span className="inline-flex items-center text-[9px] font-ui font-medium px-1 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-300 uppercase tracking-wide">
+                        Disp. carveback
+                      </span>
+                    )}
+                  </div>
                   {quote && (
                     <div className="text-[11px] font-body text-inkLight mt-0.5 italic line-clamp-2">
                       "{quote}"
