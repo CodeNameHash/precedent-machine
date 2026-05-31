@@ -20,7 +20,7 @@
  * as done/failed — it appends to deal.metadata.section_runs[] as an audit log.
  */
 
-import Anthropic from '@anthropic-ai/sdk';
+import { getAnthropic, MODEL } from '../../../lib/anthropic';
 import { getServiceSupabase } from '../../../lib/supabase';
 
 const {
@@ -46,7 +46,7 @@ export default async function handler(req, res) {
   const sb = getServiceSupabase();
   if (!sb) return res.status(500).json({ error: 'Supabase not configured' });
 
-  const client = new Anthropic({ apiKey });
+  const client = getAnthropic();
   const t0 = Date.now();
 
   try {

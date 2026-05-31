@@ -1,4 +1,4 @@
-import Anthropic from '@anthropic-ai/sdk';
+import { getAnthropic, MODEL } from '../../lib/anthropic';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only' });
@@ -10,7 +10,7 @@ export default async function handler(req, res) {
   if (!apiKey) return res.status(500).json({ error: 'ANTHROPIC_API_KEY not configured' });
 
   try {
-    const client = new Anthropic({ apiKey });
+    const client = getAnthropic();
 
     const messages = [];
 
@@ -29,7 +29,7 @@ export default async function handler(req, res) {
     }
 
     const resp = await client.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: MODEL,
       max_tokens: 2000,
       system: `You are a senior M&A attorney assistant with deep expertise in merger agreement provisions. You have access to the following precedent database of coded provisions from major deals. Answer questions precisely and cite specific deals when relevant. Use **bold** for emphasis.
 

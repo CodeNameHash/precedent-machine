@@ -1,6 +1,13 @@
 /**
  * segment-v2.js — Next.js API route for the v2 parser pipeline.
  *
+ * ⚠ LEGACY ROUTE — the live ingest entrypoint is now pages/ingest.js, which
+ * calls /api/ingest/from-url (single-shot) and /api/ingest/run-all +
+ * extract-type (split pipeline). Those wrap the SAME parser-v2 modules this
+ * route does, but with the per-type/per-section iteration the UI depends on.
+ * This monolithic single-request variant is only referenced by a docstring on
+ * pages/index.js. Do not build new features on it.
+ *
  * Orchestrates the full 5-phase pipeline:
  *   1. Clean text + parse structure (structural.js)
  *   2. Classify sections via AI (classify.js)
@@ -9,7 +16,7 @@
  *   5. Store in Supabase (store.js) — skipped in preview mode
  */
 
-import Anthropic from '@anthropic-ai/sdk';
+import { getAnthropic, MODEL } from '../../../lib/anthropic';
 import { getServiceSupabase } from '../../../lib/supabase';
 
 // Parser v2 modules (CommonJS)
@@ -53,7 +60,7 @@ export default async function handler(req, res) {
   const totalStart = Date.now();
 
   try {
-    const client = new Anthropic({ apiKey });
+    const client = getAnthropic();
 
     // ── Phase 1: Clean text and parse structure ──
     const parseStart = Date.now();

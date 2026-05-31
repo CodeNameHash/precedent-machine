@@ -1,4 +1,4 @@
-import Anthropic from '@anthropic-ai/sdk';
+import { getAnthropic, MODEL } from '../../../lib/anthropic';
 import { getServiceSupabase } from '../../../lib/supabase';
 import crypto from 'crypto';
 
@@ -138,7 +138,7 @@ export default async function handler(req, res) {
 
     // 3. Extract provisions using AI — all types in parallel
     const typesToExtract = provision_types || Object.keys(PROVISION_TYPE_CONFIGS);
-    const client = new Anthropic({ apiKey });
+    const client = getAnthropic();
 
     const extractStart = Date.now();
     const results = await Promise.all(typesToExtract.map(async (typeKey) => {
@@ -163,7 +163,7 @@ Use them to understand the expected length and detail level:\n`;
 
       try {
         const resp = await client.messages.create({
-          model: 'claude-sonnet-4-20250514',
+          model: MODEL,
           max_tokens: 8000,
           messages: [{
             role: 'user',

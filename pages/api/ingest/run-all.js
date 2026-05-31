@@ -13,7 +13,7 @@
  *   { success, deal_id, classify: { section_count, by_type }, types_to_extract: [...] }
  */
 
-import Anthropic from '@anthropic-ai/sdk';
+import { getAnthropic, MODEL } from '../../../lib/anthropic';
 import { getServiceSupabase } from '../../../lib/supabase';
 import { runClassifyPhase } from './classify';
 
@@ -34,7 +34,7 @@ export default async function handler(req, res) {
   const sb = getServiceSupabase();
   if (!sb) return res.status(500).json({ error: 'Supabase not configured' });
 
-  const client = new Anthropic({ apiKey });
+  const client = getAnthropic();
   const t0 = Date.now();
 
   try {

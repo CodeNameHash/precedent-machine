@@ -10,7 +10,7 @@
  *   - type is a canonical provision type ('REP-T', 'IOC', 'DEF', etc.)
  */
 
-import Anthropic from '@anthropic-ai/sdk';
+import { getAnthropic, MODEL } from '../../../lib/anthropic';
 import { getServiceSupabase } from '../../../lib/supabase';
 
 const {
@@ -188,7 +188,7 @@ export default async function handler(req, res) {
   const sb = getServiceSupabase();
   if (!sb) return res.status(500).json({ error: 'Supabase not configured' });
 
-  const client = new Anthropic({ apiKey });
+  const client = getAnthropic();
 
   try {
     const result = await runExtractTypePhase({ dealId: deal_id, type, sb, client });

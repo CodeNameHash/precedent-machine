@@ -1,4 +1,14 @@
-import Anthropic from '@anthropic-ai/sdk';
+/* ─────────────────────────────────────────────────────────────────────────
+   ⚠ LEGACY INGEST ROUTE — superseded by the parser-v2 pipeline.
+   ───────────────────────────────────────────────────────────────────────────
+   The live ingest flow is pages/ingest.js → /api/ingest/from-url + run-all +
+   extract-type (which all drive lib/parser-v2/*). This single-shot AI
+   segmenter predates that split and is only still wired to the
+   pages/admin/agreements.js "segment" extraction-mode toggle. Do not build new
+   features on it; prefer the parser-v2 routes. Kept for the admin tool until
+   that page is migrated.
+   ───────────────────────────────────────────────────────────────────────── */
+import { getAnthropic, MODEL } from '../../../lib/anthropic';
 import { getServiceSupabase } from '../../../lib/supabase';
 import { cleanEdgarText, removeRepeatedHeaders, cleanSectionText } from '../../../lib/edgar-cleanup';
 import crypto from 'crypto';
@@ -590,7 +600,7 @@ async function classifySections(sections, client, rules, dbCatalog) {
 
     await Promise.all(batches.map(async (batch) => {
       const resp = await client.messages.create({
-        model: 'claude-sonnet-4-20250514',
+        model: MODEL,
         max_tokens: 16000,
         messages: [{
           role: 'user',
@@ -1073,7 +1083,7 @@ async function extractSubProvisions(classifiedSections, client, calibrationByTyp
 
     try {
       const resp = await client.messages.create({
-        model: 'claude-sonnet-4-20250514',
+        model: MODEL,
         max_tokens: 8000,
         messages: [{
           role: 'user',
@@ -1146,7 +1156,7 @@ Return ONLY valid JSON (no markdown, no backticks):
 
     try {
       const resp = await client.messages.create({
-        model: 'claude-sonnet-4-20250514',
+        model: MODEL,
         max_tokens: 12000,
         messages: [{
           role: 'user',
@@ -1249,7 +1259,7 @@ Rules:
 
     try {
       const resp = await client.messages.create({
-        model: 'claude-sonnet-4-20250514',
+        model: MODEL,
         max_tokens: 4000,
         messages: [{
           role: 'user',
@@ -1443,7 +1453,7 @@ export default async function handler(req, res) {
       }
     }
 
-    const client = new Anthropic({ apiKey });
+    const client = getAnthropic();
     const diagnostics = {};
 
     // Phase 0: Clean EDGAR formatting artifacts

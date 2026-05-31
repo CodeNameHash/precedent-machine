@@ -14,7 +14,7 @@
  * deals.metadata.full_text — i.e. plain re-ingest of an existing deal.
  */
 
-import Anthropic from '@anthropic-ai/sdk';
+import { getAnthropic, MODEL } from '../../../lib/anthropic';
 import https from 'https';
 import http from 'http';
 import { getServiceSupabase } from '../../../lib/supabase';
@@ -133,7 +133,7 @@ ${preamble}
 Return ONLY the JSON object, no prose, no markdown fence.`;
 
   const resp = await client.messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: MODEL,
     max_tokens: 600,
     messages: [{ role: 'user', content: prompt }],
   });
@@ -208,7 +208,7 @@ export default async function handler(req, res) {
   const sb = getServiceSupabase();
   if (!sb) return res.status(500).json({ error: 'Supabase not configured' });
 
-  const client = new Anthropic({ apiKey });
+  const client = getAnthropic();
 
   try {
     // ── 1. Get the agreement text ──

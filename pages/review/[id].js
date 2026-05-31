@@ -17,6 +17,20 @@ import {
   IOC_CATEGORY_CODES,
   IOC_CATEGORY_META,
 } from '../../lib/taxonomy';
+import {
+  getAiMetadata,
+  getStructuredFeatures,
+  isTaggedItem,
+  resolveTaggedLabel,
+  isCitableValue,
+  getCitableValue,
+  getCitableQuotes,
+  getCitableText,
+  resolveEvidence,
+  evidenceQuote,
+  TOOLTIP_MAX,
+  EVIDENCE_SLICE,
+} from '../../lib/citable';
 import { getFeaturesForType, PROVISION_TYPES } from '../../lib/rubric';
 import { resolveSectionReference } from '../../lib/section-ref';
 
@@ -288,26 +302,7 @@ function getProvisionStatus(p) {
   return 'unreviewed';
 }
 
-/* ── Parse ai_metadata (handles string-vs-object payloads) ── */
-function getAiMetadata(provision) {
-  if (!provision || !provision.ai_metadata) return null;
-  if (typeof provision.ai_metadata === 'string') {
-    try { return JSON.parse(provision.ai_metadata); } catch { return null; }
-  }
-  return provision.ai_metadata;
-}
-
-/* ── Parse structured features object from ai_metadata ── */
-function getStructuredFeatures(provision) {
-  const meta = getAiMetadata(provision);
-  if (!meta || !meta.features) return null;
-  const feats = meta.features;
-  // Treat empty object as "no features"
-  if (typeof feats !== 'object' || Array.isArray(feats)) return null;
-  const keys = Object.keys(feats);
-  if (keys.length === 0) return null;
-  return feats;
-}
+/* getAiMetadata + getStructuredFeatures now live in lib/citable.js (imported). */
 
 /* ── Parse features from ai_metadata (flat chip list for backward-compat) ── */
 function getFeatures(provision) {
@@ -333,32 +328,7 @@ function getFeatures(provision) {
   return [];
 }
 
-/* ── Tagged-item helpers ──
- * A "tagged item" is a {code, label, text} object produced by the parser
- * when it maps a free-text exception/qualifier to a canonical taxonomy code.
- */
-function isTaggedItem(v) {
-  return (
-    v &&
-    typeof v === 'object' &&
-    !Array.isArray(v) &&
-    typeof v.code === 'string' &&
-    v.code.length > 0
-  );
-}
-
-function resolveTaggedLabel(featureKey, item, customExtensions) {
-  if (!isTaggedItem(item)) return null;
-  if (item.label && typeof item.label === 'string') return item.label;
-  // P5 item 8: when the tagged code matches a deal-scoped custom extension,
-  // prefer the custom label. Falls back to the canonical taxonomy.
-  if (customExtensions && Array.isArray(customExtensions[featureKey])) {
-    const hit = customExtensions[featureKey].find((e) => e && e.code === item.code);
-    if (hit && hit.label) return hit.label;
-  }
-  const dict = taxonomyForFeatureKey(featureKey);
-  return labelForCode(item.code, dict || {}) || item.code;
-}
+/* isTaggedItem + resolveTaggedLabel now live in lib/citable.js (imported). */
 
 /* P5 item 8: deal-scoped custom taxonomy extensions.
  *   Shape: { [featureKey]: [{ code, label, synonyms? }] }
@@ -464,53 +434,10 @@ function formatDurationWithUnits(value, featureKey) {
   return `${value} ${unit}`;
 }
 
-/* ── Stage 5: Citation / evidence helpers ──
- *
- * A "citable" value is the parser's { value, text } wrapper for a boolean /
- * enum / number that carries a verbatim source quote. Tagged items
- * ({ code, label, text }) are distinct: they have a `code` field. The
- * EvidenceContext lets any nested renderer pop the quote into the full-doc
- * view without prop-drilling. */
-function isCitableValue(v) {
-  return (
-    v != null &&
-    typeof v === 'object' &&
-    !Array.isArray(v) &&
-    'value' in v &&
-    !('code' in v)
-  );
-}
-
-function getCitableValue(v) {
-  return isCitableValue(v) ? v.value : v;
-}
-
-/* getCitableQuotes — returns an array of verbatim quote strings supporting
- *  the value, normalized from either the new shape ({ value, quotes: [...] })
- *  or the legacy shape ({ value, text: "..." }). Empty / whitespace-only
- *  quotes are dropped. */
-function getCitableQuotes(v) {
-  if (!isCitableValue(v)) return [];
-  if (Array.isArray(v.quotes)) {
-    return v.quotes
-      .filter((q) => typeof q === 'string')
-      .map((q) => q.trim())
-      .filter(Boolean);
-  }
-  if (typeof v.text === 'string') {
-    const t = v.text.trim();
-    return t ? [t] : [];
-  }
-  return [];
-}
-
-function getCitableText(v) {
-  // Legacy single-quote accessor — returns the FIRST quote. Kept for back-
-  // compat with existing callers; new code should use getCitableQuotes().
-  const quotes = getCitableQuotes(v);
-  return quotes.length > 0 ? quotes[0] : null;
-}
-
+/* Citation / evidence helpers (isCitableValue, getCitableValue,
+ * getCitableQuotes, getCitableText, resolveEvidence, evidenceQuote) now live
+ * in lib/citable.js (imported above). The EvidenceContext below lets any
+ * nested renderer pop a quote into the full-doc view without prop-drilling. */
 const EvidenceContext = createContext({
   showEvidence: null,
   // P5 item 7: selection-mode for picking evidence by selecting text in the

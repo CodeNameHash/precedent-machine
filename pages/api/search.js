@@ -1,4 +1,4 @@
-import Anthropic from '@anthropic-ai/sdk';
+import { getAnthropic, MODEL } from '../../lib/anthropic';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only' });
@@ -14,12 +14,12 @@ export default async function handler(req, res) {
   }
 
   try {
-    const client = new Anthropic({ apiKey });
+    const client = getAnthropic();
 
     const dealList = (deals || []).map(d => `${d.id}: ${d.acquirer}/${d.target} (${d.sector}, ${d.value})`).join('\n');
 
     const resp = await client.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: MODEL,
       max_tokens: 1000,
       messages: [{
         role: 'user',

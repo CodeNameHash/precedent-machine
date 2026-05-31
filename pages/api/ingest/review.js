@@ -1,4 +1,4 @@
-import Anthropic from '@anthropic-ai/sdk';
+import { getAnthropic, MODEL } from '../../../lib/anthropic';
 
 export const config = {
   api: { bodyParser: { sizeLimit: '10mb' } },
@@ -14,7 +14,7 @@ export default async function handler(req, res) {
   if (!apiKey) return res.status(500).json({ error: 'ANTHROPIC_API_KEY not configured' });
 
   try {
-    const client = new Anthropic({ apiKey });
+    const client = getAnthropic();
 
     // Build provisions summary for context
     const provSummary = (provisions || []).map((p, i) => (
@@ -77,7 +77,7 @@ RULES:
     }
 
     const resp = await client.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: MODEL,
       max_tokens: 4000,
       system: systemPrompt,
       messages,

@@ -1,4 +1,4 @@
-import Anthropic from '@anthropic-ai/sdk';
+import { getAnthropic, MODEL } from '../../../lib/anthropic';
 import { getServiceSupabase } from '../../../lib/supabase';
 import { cleanEdgarText, removeRepeatedHeaders, cleanSectionText } from '../../../lib/edgar-cleanup';
 import crypto from 'crypto';
@@ -849,7 +849,7 @@ async function classifyProvisions(provisions, type, client) {
 
     try {
       var resp = await client.messages.create({
-        model: 'claude-sonnet-4-20250514',
+        model: MODEL,
         max_tokens: 8000,
         messages: [{
           role: 'user',
@@ -977,7 +977,7 @@ export default async function handler(req, res) {
   var sb = getServiceSupabase();
   if (!sb) return res.status(500).json({ error: 'Supabase not configured' });
 
-  var client = new Anthropic({ apiKey });
+  const client = getAnthropic();
   var totalStart = Date.now();
   var results = [];
 
@@ -1144,7 +1144,7 @@ export default async function handler(req, res) {
 
         try {
           var resp = await client.messages.create({
-            model: 'claude-sonnet-4-20250514',
+            model: MODEL,
             max_tokens: 8000,
             messages: [{
               role: 'user',

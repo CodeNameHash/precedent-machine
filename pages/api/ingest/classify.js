@@ -11,7 +11,7 @@
  *   - Else use `deals.metadata.full_text` (or the literal full_text field).
  */
 
-import Anthropic from '@anthropic-ai/sdk';
+import { getAnthropic, MODEL } from '../../../lib/anthropic';
 import https from 'https';
 import http from 'http';
 import { getServiceSupabase } from '../../../lib/supabase';
@@ -261,7 +261,7 @@ export default async function handler(req, res) {
   const sb = getServiceSupabase();
   if (!sb) return res.status(500).json({ error: 'Supabase not configured' });
 
-  const client = new Anthropic({ apiKey });
+  const client = getAnthropic();
   const t0 = Date.now();
 
   try {

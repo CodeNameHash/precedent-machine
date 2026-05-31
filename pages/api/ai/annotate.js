@@ -1,4 +1,4 @@
-import Anthropic from '@anthropic-ai/sdk';
+import { getAnthropic, MODEL } from '../../../lib/anthropic';
 import { getServiceSupabase } from '../../../lib/supabase';
 
 export default async function handler(req, res) {
@@ -11,7 +11,7 @@ export default async function handler(req, res) {
   if (!apiKey) return res.status(500).json({ error: 'ANTHROPIC_API_KEY not configured' });
 
   try {
-    const client = new Anthropic({ apiKey });
+    const client = getAnthropic();
 
     // Learning loop: fetch recent verified admin annotations as calibration examples
     let calibrationExamples = '';
@@ -30,7 +30,7 @@ export default async function handler(req, res) {
     }
 
     const resp = await client.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: MODEL,
       max_tokens: 4000,
       messages: [{
         role: 'user',
