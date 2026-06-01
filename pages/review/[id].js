@@ -65,6 +65,8 @@ const TYPE_LABELS = {
   'COND-S': 'Conditions to Closing (Seller)',
   'COND': 'Conditions to Closing',
   'NOSOL': 'No-Solicitation / No-Shop',
+  'NOSOL-T': 'No-Solicitation (Target / Company)',
+  'NOSOL-B': 'No-Solicitation (Buyer / Parent)',
   'ANTI': 'Antitrust / Regulatory',
   'TERMR-M': 'Termination Rights (Mutual)',
   'TERMR-B': 'Termination Rights (Buyer)',
@@ -99,6 +101,8 @@ const TYPE_COLORS = {
   'COND-B': { bg: 'bg-sky-50',     border: 'border-sky-200',    text: 'text-sky-800',    dot: 'bg-sky-400',    hex: '#f0f9ff' },
   'COND-S': { bg: 'bg-indigo-50',  border: 'border-indigo-200', text: 'text-indigo-800', dot: 'bg-indigo-400', hex: '#eef2ff' },
   'NOSOL':  { bg: 'bg-purple-50',  border: 'border-purple-200', text: 'text-purple-800', dot: 'bg-purple-400', hex: '#faf5ff' },
+  'NOSOL-T':{ bg: 'bg-purple-50',  border: 'border-purple-200', text: 'text-purple-800', dot: 'bg-purple-400', hex: '#faf5ff' },
+  'NOSOL-B':{ bg: 'bg-purple-50',  border: 'border-purple-200', text: 'text-purple-800', dot: 'bg-purple-400', hex: '#faf5ff' },
   'ANTI':   { bg: 'bg-teal-50',    border: 'border-teal-200',   text: 'text-teal-800',   dot: 'bg-teal-400',   hex: '#f0fdfa' },
   'TERMR':  { bg: 'bg-orange-50',  border: 'border-orange-200', text: 'text-orange-800', dot: 'bg-orange-400', hex: '#fff7ed' },
   'TERMR-M':{ bg: 'bg-orange-50',  border: 'border-orange-200', text: 'text-orange-800', dot: 'bg-orange-400', hex: '#fff7ed' },
@@ -125,6 +129,8 @@ const TYPE_HEX = {
   'IOC-T':  '#B5862E',
   'IOC-B':  '#B5862E',
   NOSOL:    '#A8538C',
+  'NOSOL-T':'#A8538C',
+  'NOSOL-B':'#A8538C',
   ANTI:     '#2F8FA8',
   COND:     '#5660B0',
   'COND-M': '#5660B0',
@@ -173,7 +179,10 @@ const SIDEBAR_GROUPS = [
     { label: 'Company / Target', type: 'IOC-T' },
     { label: 'Buyer / Parent', type: 'IOC-B' },
   ]},
-  { label: 'No-Solicitation / No-Shop', types: ['NOSOL'] },
+  { label: 'No-Solicitation / No-Shop', children: [
+    { label: 'Company / Target', type: 'NOSOL-T' },
+    { label: 'Buyer / Parent', type: 'NOSOL-B' },
+  ]},
   { label: 'Antitrust / Regulatory', types: ['ANTI'] },
   { label: 'Conditions to Closing', children: [
     { label: 'Mutual', type: 'COND-M' },
@@ -905,13 +914,15 @@ function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelect
               maeAppliesToBoth: true,
             };
           }
-          // For IOC and Termination Rights: when any child has content, keep
-          // ALL party-typed children visible (empty ones read e.g. "Buyer (0)"
-          // with a "Not present" page when clicked). For all other groups,
-          // drop children with zero provisions as before.
+          // For IOC, Termination Rights, and No-Solicitation: when any child
+          // has content, keep ALL party-typed children visible (empty ones
+          // read e.g. "Buyer / Parent (0)" with a "Not present" page when
+          // clicked). For all other groups, drop children with zero
+          // provisions as before.
           const isIocGroup = g.label === 'Interim Operating Covenants';
           const isTermrGroup = g.label === 'Termination Rights';
-          const presentChildren = (isIocGroup || isTermrGroup) && total > 0
+          const isNosolGroup = g.label === 'No-Solicitation / No-Shop';
+          const presentChildren = (isIocGroup || isTermrGroup || isNosolGroup) && total > 0
             ? childRows
             : childRows.filter((c) => c.provs.length > 0);
           return { label: g.label, children: presentChildren, types: presentChildren.map((c) => c.type), total };
@@ -8521,13 +8532,25 @@ function ProvisionTable({ provisions, type, onSelectProvision, allProvisions }) 
   // Recommendation Framework / Key Definitions / Other Restrictions. Below
   // those, the per-provision MultiCodeStructLikeTable still renders so the
   // raw NOSOL provisions remain navigable.
-  if (type === 'NOSOL') {
+  if (type === 'NOSOL' || type === 'NOSOL-T' || type === 'NOSOL-B') {
+    // NOSOL-B (Buyer / Parent) is the always-show placeholder side — almost
+    // every M&A deal puts the no-shop on the Company only, so NOSOL-B usually
+    // has no provisions and we render a "Not present in this agreement" card.
+    if (!provisions || provisions.length === 0) {
+      return (
+        <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+          <div className="px-3 py-3 text-xs font-ui italic text-inkFaint">
+            Not present in this agreement
+          </div>
+        </div>
+      );
+    }
     return (
       <div className="space-y-3">
         <NosolFourTables provisions={provisions} />
         <MultiCodeStructLikeTable
           provisions={provisions}
-          type={type}
+          type={type === 'NOSOL-B' ? 'NOSOL-B' : 'NOSOL'}
           onSelectProvision={onSelectProvision}
         />
       </div>
@@ -12139,6 +12162,10 @@ export default function ReviewPage() {
     const hasIocBProvisions = provisions.some(p => p.type === 'IOC-B');
     const effectiveTypes = new Set(filterTypes);
     if (hasIocT && !hasIocBProvisions) effectiveTypes.add('IOC');
+    // NOSOL-T expansion mirrors IOC-T: bare NOSOL provisions count as
+    // Company/Target so the Company/Target page populates.
+    const hasNosolT = filterTypes.includes('NOSOL-T');
+    if (hasNosolT) effectiveTypes.add('NOSOL');
     return sortByTypeOrder(provisions.filter(p => effectiveTypes.has(p.type)));
   }, [provisions, activeFilter, selectedProvId, sortByTypeOrder]);
 
@@ -12200,6 +12227,21 @@ export default function ReviewPage() {
       if (!groups['TERMR-M']) groups['TERMR-M'] = [];
       if (!groups['TERMR-B']) groups['TERMR-B'] = [];
       if (!groups['TERMR-T']) groups['TERMR-T'] = [];
+    }
+    // NOSOL party split — same pattern as IOC. Classifier emits bare NOSOL
+    // (no party suffix); ~all M&A agreements only have a Company no-shop, so
+    // promote bare NOSOL to NOSOL-T and synthesize an empty NOSOL-B child so
+    // the sidebar shows "Buyer / Parent (0)" with a "Not present" placeholder
+    // page. When the classifier learns party detection, both populated
+    // children will render side-by-side.
+    if (groups['NOSOL'] && groups['NOSOL'].length > 0) {
+      groups['NOSOL-T'] = [...(groups['NOSOL-T'] || []), ...groups['NOSOL']];
+      delete groups['NOSOL'];
+    }
+    const anyNosol = !!(groups['NOSOL-T'] || groups['NOSOL-B']);
+    if (anyNosol) {
+      if (!groups['NOSOL-T']) groups['NOSOL-T'] = [];
+      if (!groups['NOSOL-B']) groups['NOSOL-B'] = [];
     }
     return groups;
   }, [provisions]);
@@ -12269,6 +12311,32 @@ export default function ReviewPage() {
       groups[activeFilter] = [];
     } else if (isAllProvisions && anyTermrPresent) {
       for (const t of termrChildren) if (!groups[t]) groups[t] = [];
+    }
+
+    // NOSOL promotion + section synthesis — mirrors IOC. Bare NOSOL provisions
+    // (from extracts that didn't emit NOSOL-T/NOSOL-B) belong to Company/Target
+    // by convention. Parent-group click → both NOSOL-T and NOSOL-B sections;
+    // direct child click → just that one; All Provisions → both when any NOSOL.
+    const nosolArr = Array.isArray(activeFilter) ? activeFilter : [];
+    const isParentNosolClick = nosolArr.includes('NOSOL-T') && nosolArr.includes('NOSOL-B');
+    const isNosolTChildClick = activeFilter === 'NOSOL-T';
+    const isNosolBChildClick = activeFilter === 'NOSOL-B';
+    const nosolTFilterActive = isParentNosolClick || isNosolTChildClick || (Array.isArray(activeFilter) && activeFilter.includes('NOSOL-T'));
+    if (nosolTFilterActive) {
+      const bareNosol = (provisions || []).filter((p) => p.type === 'NOSOL');
+      if (bareNosol.length > 0) groups['NOSOL-T'] = [...(groups['NOSOL-T'] || []), ...bareNosol];
+      delete groups['NOSOL'];
+    } else if (groups['NOSOL'] && groups['NOSOL'].length > 0) {
+      groups['NOSOL-T'] = [...(groups['NOSOL-T'] || []), ...groups['NOSOL']];
+      delete groups['NOSOL'];
+    }
+    const anyNosolFilt = !!(groups['NOSOL-T'] || groups['NOSOL-B']);
+    if (isParentNosolClick && !groups['NOSOL-B']) groups['NOSOL-B'] = [];
+    if (isNosolBChildClick && !groups['NOSOL-B']) groups['NOSOL-B'] = [];
+    if (isNosolTChildClick && !groups['NOSOL-T']) groups['NOSOL-T'] = [];
+    if (isAllProvisions && anyNosolFilt) {
+      if (!groups['NOSOL-B']) groups['NOSOL-B'] = [];
+      if (!groups['NOSOL-T']) groups['NOSOL-T'] = [];
     }
     return groups;
   }, [filteredProvisions, provisions, activeFilter]);
