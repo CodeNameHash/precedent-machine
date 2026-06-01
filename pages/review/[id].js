@@ -172,7 +172,6 @@ const SIDEBAR_GROUPS = [
   { label: 'Interim Operating Covenants', children: [
     { label: 'Company / Target', type: 'IOC-T' },
     { label: 'Buyer / Parent', type: 'IOC-B' },
-    { label: 'Unclassified', type: 'IOC' },
   ]},
   { label: 'No-Solicitation / No-Shop', types: ['NOSOL'] },
   { label: 'Antitrust / Regulatory', types: ['ANTI'] },
@@ -12128,6 +12127,18 @@ export default function ReviewPage() {
       // Contracts table (see handleSidebarSelectProvision) rather than the
       // near-empty REP-T single-provision view.
     }
+    // IOC party promotion: the classifier currently tags BOTH target-side
+    // and (rare) buyer-side IOC sections as bare 'IOC' (no party suffix). So
+    // sidebar children IOC-T / IOC-B never light up on existing data. ~all M&A
+    // agreements have only the TARGET's interim operating covenants — when a
+    // deal has bare-IOC provisions AND no explicit IOC-B provisions, fold the
+    // bare IOC pool into IOC-T so the sidebar reads "Company / Target" with
+    // the right count. (When a deal genuinely has both, a future classifier
+    // update will emit IOC-T / IOC-B directly; both will then show side-by-side.)
+    if (groups['IOC'] && groups['IOC'].length > 0 && !groups['IOC-B']) {
+      groups['IOC-T'] = [...(groups['IOC-T'] || []), ...groups['IOC']];
+      delete groups['IOC'];
+    }
     return groups;
   }, [provisions]);
 
@@ -12156,6 +12167,18 @@ export default function ReviewPage() {
     } else {
       const mcProvs = filteredProvisions.filter(isMaterialContractsProvision);
       if (mcProvs.length > 0) groups['__MATERIAL_CONTRACTS'] = mcProvs;
+    }
+    // IOC party promotion — same rule as provsByType. When the active filter
+    // is IOC-T, also need to seed the IOC-T group from any bare-IOC provisions
+    // in the FULL provisions pool (filteredProvisions just dropped them, since
+    // those provisions have p.type === 'IOC'). Mirrors the MAE handling above.
+    const iocTFilterActive = activeFilter === 'IOC-T' || (Array.isArray(activeFilter) && activeFilter.includes('IOC-T'));
+    if (iocTFilterActive) {
+      const bareIoc = (provisions || []).filter((p) => p.type === 'IOC');
+      if (bareIoc.length > 0) groups['IOC-T'] = [...(groups['IOC-T'] || []), ...bareIoc];
+    } else if (groups['IOC'] && groups['IOC'].length > 0 && !groups['IOC-B']) {
+      groups['IOC-T'] = [...(groups['IOC-T'] || []), ...groups['IOC']];
+      delete groups['IOC'];
     }
     return groups;
   }, [filteredProvisions, provisions, activeFilter]);
