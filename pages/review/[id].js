@@ -11,6 +11,11 @@ import {
 } from '../../lib/parser-v2/format-renderer';
 import { CATEGORY_SUMMARY_FEATURES } from '../../lib/category-summary-features';
 import {
+  CANONICAL_CONDITIONS_M,
+  CANONICAL_CONDITIONS_B,
+  CANONICAL_CONDITIONS_S,
+} from '../../lib/canonical-conditions';
+import {
   taxonomyForFeatureKey,
   isListTaxonomyKey,
   labelForCode,
@@ -7550,25 +7555,7 @@ function RepMaterialContractsTable({ provisions, onSelectProvision }) {
  *      - maeSide: 'target' | 'parent' — when set, the Details cell pulls
  *        from the matching side's MAE definition even when no condition
  *        provision was extracted. */
-const CANONICAL_CONDITIONS_M = [
-  { label: 'Stockholder Approval (Company)',  re: /stockholder\s+approval|shareholder\s+approval|requisite\s+vote/i, side: 'company' },
-  { label: 'Stockholder Approval (Parent)',   re: /(?:parent|buyer|acquir\w+)\s+(?:stockholder|shareholder)\s+approval/i, side: 'parent', requireParentApproval: true },
-  { label: 'No Injunctions',                  re: /no\s+(?:injunction|order)|legal\s+restraint|absence\s+of\s+(?:injunction|enjoining)|government(?:al)?\s+proceeding|no\s+(?:pending\s+)?action/i },
-  { label: 'HSR Clearance',                   re: /hsr|hart[\s-]*scott|waiting\s+period\s+(?:has\s+)?expir/i },
-  { label: 'Other Regulatory Approvals',      re: /regulatory\s+approvals?|antitrust\s+approvals?|cfius|sami?r|cma|merger\s+control/i },
-  { label: 'S-4 / Proxy Effective',           re: /s-?4|proxy\s+statement\s+(?:has\s+been\s+)?(?:declared\s+)?effective|registration\s+statement/i },
-  { label: 'Tender Offer Minimum Condition',  re: /tender\s+offer\s+minimum|minimum\s+condition|acceptance\s+time/i, tenderOnly: true },
-];
-const CANONICAL_CONDITIONS_B = [
-  { label: 'Reps Bring-Down',                 re: /bring[\s-]*down|representations?\s+true|accuracy\s+of\s+(?:the\s+)?representations/i },
-  { label: 'Covenant Performance',            re: /covenants?\s+performed|covenants?\s+complied|performance\s+of\s+covenants/i },
-  { label: 'No Material Adverse Effect',      re: /material\s+adverse\s+effect|\bmae\b/i, alwaysRender: true, maeSide: 'target' },
-];
-const CANONICAL_CONDITIONS_S = [
-  { label: 'Reps Bring-Down (Parent)',        re: /bring[\s-]*down|representations?\s+true|accuracy\s+of\s+(?:the\s+)?representations/i },
-  { label: 'Covenant Performance (Parent)',   re: /covenants?\s+performed|covenants?\s+complied|performance\s+of\s+covenants/i },
-  { label: 'No Material Adverse Effect (Parent)', re: /material\s+adverse\s+effect|\bmae\b/i, alwaysRender: true, maeSide: 'parent' },
-];
+// CANONICAL_CONDITIONS_M/B/S now live in lib/canonical-conditions.js (imported above).
 
 /* ── Build the Details cell content for a canonical-condition row.
  *    Composes a multi-line description from the matched provisions'

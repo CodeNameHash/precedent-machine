@@ -14,6 +14,7 @@ import {
   resolveTaggedLabel,
 } from '../lib/citable';
 import { MATERIAL_CONTRACT_BUCKET_CODES } from '../lib/taxonomy';
+import { canonicalConditionsFor } from '../lib/canonical-conditions';
 
 ComparePage.noLayout = true;
 
@@ -893,6 +894,136 @@ function MaterialContractsCompare({ deals, perDealProvs }) {
   );
 }
 
+// Two-column (per-deal) canonical Conditions table — rows are canonical
+// conditions from lib/canonical-conditions.js, cells either name the matching
+// deal provision (clickable to its detail) or read "Not present". Mirrors the
+// review page's CanonicalConditionsTable.
+function CanonicalConditionsCompare({ family, deals, perDealProvs, onSelectRow }) {
+  // Tender-offer detection per deal (gates the Tender Offer Minimum row).
+  const isTenderDeal = (provs) => {
+    for (const p of provs || []) {
+      const t = String(p?.full_text || '');
+      if (/tender\s+offer|acceptance\s+time|exchange\s+offer/i.test(t)) return true;
+    }
+    return false;
+  };
+  // Parent-approval detection per deal (gates the Parent Stockholder Approval row).
+  const parentApprovalRequired = (provs) => {
+    for (const p of provs || []) {
+      const f = readFeatures(p);
+      let raw = f.shareholderApprovalMethodParent;
+      if (isCitableValue(raw)) raw = getCitableValue(raw);
+      const code = isTaggedItem(raw) ? String(raw.code || '').toUpperCase() : String(raw || '').toUpperCase();
+      if (code && code !== 'BOARD_ONLY' && code !== 'NA' && code !== 'NONE') return true;
+    }
+    return false;
+  };
+
+  const rows = canonicalConditionsFor(family);
+  // For each deal, find the matching provision in this COND family.
+  const perDealMatches = perDealProvs.map((provs) => {
+    const condProvs = (provs || []).filter((p) => p.type === family);
+    return rows.map((row) => {
+      const match = condProvs.find((p) => row.re.test(String(p.category || '')));
+      return { match: match || null };
+    });
+  });
+
+  // Filter rows down to ones that should render: tender-only rows require
+  // SOMEONE to be a tender deal; parent-approval rows require SOMEONE to need
+  // it; alwaysRender rows always show; otherwise at least one deal must hit.
+  const anyTender = perDealProvs.some(isTenderDeal);
+  const anyParentApproval = perDealProvs.some(parentApprovalRequired);
+  const visibleRows = rows.filter((row, ri) => {
+    if (row.tenderOnly && !anyTender) return false;
+    if (row.requireParentApproval && !anyParentApproval) return false;
+    if (row.alwaysRender) return true;
+    return perDealMatches.some((deal) => deal[ri].match);
+  });
+  if (visibleRows.length === 0) return null;
+
+  const titleLabel = family === 'COND-B' ? 'Buyer Closing Conditions'
+    : family === 'COND-S' ? 'Seller Closing Conditions'
+    : 'Mutual Closing Conditions';
+
+  return (
+    <section style={{ marginBottom: 28 }}>
+      <header
+        style={{
+          display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 8,
+          paddingBottom: 6, borderBottom: '1px solid var(--line-soft)',
+        }}
+      >
+        <span style={{ width: 9, height: 9, borderRadius: '50%', background: typeHex(family) }} />
+        <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: 15, fontWeight: 500, letterSpacing: '-.01em', color: 'var(--ink)', margin: 0 }}>
+          {titleLabel}
+        </h3>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--ink-faint)' }}>
+          {visibleRows.length} canonical condition{visibleRows.length === 1 ? '' : 's'}
+        </span>
+      </header>
+      <div style={{ border: '1px solid var(--line)', borderRadius: 8, overflow: 'hidden', background: 'var(--surface)' }}>
+        <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0, fontSize: 12.5, tableLayout: 'fixed' }}>
+          <colgroup>
+            <col style={{ width: 260 }} />
+            {deals.map((d) => <col key={d.id} />)}
+          </colgroup>
+          <thead>
+            <tr>
+              <th style={hdrCellStyle()}>Canonical Condition</th>
+              {deals.map((d) => (
+                <th key={d.id} style={hdrCellStyle()}>
+                  <div style={{ fontFamily: 'var(--font-serif)', fontSize: 13, fontWeight: 500, color: 'var(--ink)' }}>
+                    {d.acquirer} <span style={{ color: 'var(--ink-faint)', fontStyle: 'italic' }}>/</span> {d.target}
+                  </div>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {visibleRows.map((row) => {
+              const ri = rows.indexOf(row);
+              return (
+                <tr key={row.label}>
+                  <td style={{ padding: '8px 12px', borderBottom: '1px solid var(--line-soft)', verticalAlign: 'top', background: 'var(--surface)' }}>
+                    <div style={{ fontWeight: 600, color: 'var(--ink)', fontSize: 12.5, lineHeight: 1.3 }}>
+                      {row.label}
+                    </div>
+                  </td>
+                  {perDealMatches.map((deal, i) => {
+                    const m = deal[ri].match;
+                    return (
+                      <td
+                        key={i}
+                        style={{
+                          padding: '8px 12px', borderBottom: '1px solid var(--line-soft)',
+                          borderLeft: '1px solid var(--line-soft)', verticalAlign: 'top',
+                          background: 'var(--surface)', cursor: m && onSelectRow ? 'pointer' : 'default',
+                        }}
+                        onClick={() => { if (m && onSelectRow) onSelectRow(rowKeyFor(m)); }}
+                      >
+                        {m ? (
+                          <span style={{ color: 'var(--accent-deep, var(--ink))', fontSize: 12.5 }}>
+                            {m.category || row.label}
+                          </span>
+                        ) : (
+                          <span style={{ color: 'var(--ink-faint)', fontStyle: 'italic', fontSize: 12 }}>
+                            Not present in this agreement
+                          </span>
+                        )}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+}
+
 function SummaryView({
   deals,
   dealProvisions,
@@ -949,6 +1080,13 @@ function SummaryView({
               {g.label === 'Representations' && (
                 <MaterialContractsCompare deals={deals} perDealProvs={perDealProvs} />
               )}
+              {g.label === 'Conditions to Closing' && (
+                <>
+                  <CanonicalConditionsCompare family="COND-M" deals={deals} perDealProvs={perDealProvs} onSelectRow={onSelectRow} />
+                  <CanonicalConditionsCompare family="COND-B" deals={deals} perDealProvs={perDealProvs} onSelectRow={onSelectRow} />
+                  <CanonicalConditionsCompare family="COND-S" deals={deals} perDealProvs={perDealProvs} onSelectRow={onSelectRow} />
+                </>
+              )}
             </div>
           );
         })}
@@ -979,6 +1117,19 @@ function SummaryView({
     <div style={{ flex: 1, overflow: 'auto', padding: '14px 22px 80px' }}>
       {activeTypes.includes('REP-T') && (
         <MaterialContractsCompare deals={deals} perDealProvs={perDealProvs} />
+      )}
+      {['COND-M', 'COND-B', 'COND-S'].some((t) => activeTypes.includes(t)) && (
+        <>
+          {activeTypes.includes('COND-M') && (
+            <CanonicalConditionsCompare family="COND-M" deals={deals} perDealProvs={perDealProvs} onSelectRow={onSelectRow} />
+          )}
+          {activeTypes.includes('COND-B') && (
+            <CanonicalConditionsCompare family="COND-B" deals={deals} perDealProvs={perDealProvs} onSelectRow={onSelectRow} />
+          )}
+          {activeTypes.includes('COND-S') && (
+            <CanonicalConditionsCompare family="COND-S" deals={deals} perDealProvs={perDealProvs} onSelectRow={onSelectRow} />
+          )}
+        </>
       )}
       <SummaryMatrix
         title={title}
