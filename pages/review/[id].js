@@ -22,6 +22,11 @@ import {
   MATERIAL_CONTRACT_BUCKET_CODES,
   IOC_CATEGORY_CODES,
   IOC_CATEGORY_META,
+  IOC_AFFIRMATIVE_STANDARDS,
+  IOC_AFFIRMATIVE_SCOPE_CODES,
+  IOC_AFFIRMATIVE_SCOPE_META,
+  COMMON_EXCEPTION_CODES,
+  COMMON_EXCEPTION_META,
 } from '../../lib/taxonomy';
 import {
   getAiMetadata,
@@ -2546,19 +2551,22 @@ const IOC_AFFIRMATIVE_BUCKETS = [
     code: 'IOC-ORDINARY',
     name: 'Ordinary Course Obligation',
     catRe: /ordinary\s+course/i,
-    defaultAppliesTo: 'Business operations',
+    // Default the "applies to" pills to the typical scope for this bucket
+    // (Business / operations); the extractor can stamp more specific codes.
+    defaultScopeCodes: ['BUSINESS'],
   },
   {
     code: 'IOC-PRESERVE',
     name: 'Preservation of Business Relationships',
     catRe: /(?:preservation|preserve).*relationship/i,
-    defaultAppliesTo: 'Customers, suppliers, employees, governmental entities',
+    defaultScopeCodes: ['CUSTOMERS', 'SUPPLIERS', 'EMPLOYEES', 'GOVERNMENTAL_ENTITIES'],
   },
   {
+    // P9: renamed per user. "Maintain Business" is the canonical bucket name.
     code: 'IOC-MAINTAIN',
-    name: 'Maintain Business Organization & Material Assets',
+    name: 'Maintain Business',
     catRe: /maintain.*(?:business|organization|assets)/i,
-    defaultAppliesTo: 'Officers, key employees, properties, assets',
+    defaultScopeCodes: ['BUSINESS_ORGANIZATION', 'ASSETS'],
   },
   {
     code: 'IOC-NOACTION',
@@ -2656,64 +2664,115 @@ function IocAffirmativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelec
     return s;
   };
 
-  // Pull the efforts standard for THIS provision. Prefer the canonical
-  // tagged effortsStandard; fall back to any obligation's efforts_standard
-  // (used on the affirmativeLimbs / positiveObligations arrays).
-  const standardFor = (provision) => {
+  // Pull the standard for THIS provision and return one or more CANONICAL
+  // codes from IOC_AFFIRMATIVE_STANDARDS (FLAT / MATERIAL / MATERIAL_RESPECTS
+  // / efforts variants / ORDINARY_COURSE). Empty input → FLAT (no qualifier).
+  // Returns an array of codes so a Maintain-Business cell can show "Material"
+  // and "Material respects" pills side-by-side.
+  const standardCodesFor = (provision) => {
     const f = getStructuredFeatures(provision) || {};
-    if (isTaggedItem(f.effortsStandard)) {
-      return resolveTaggedLabel('effortsStandard', f.effortsStandard) || f.effortsStandard.label || f.effortsStandard.code;
-    }
-    if (typeof f.effortsStandard === 'string' && f.effortsStandard.trim()) {
-      return humanizeEffortsString(f.effortsStandard);
-    }
-    // Try the obligation arrays — they each carry their own efforts_standard.
-    const limbs = Array.isArray(f.affirmativeLimbs) ? f.affirmativeLimbs
-      : Array.isArray(f.positiveObligations) ? f.positiveObligations
-      : [];
-    for (const limb of limbs) {
-      if (!limb || typeof limb !== 'object') continue;
-      const es = limb.efforts_standard || limb.effortsStandard;
-      if (!es) continue;
-      if (typeof es === 'string' && es.trim()) return humanizeEffortsString(es);
-      if (isTaggedItem(es)) {
-        return resolveTaggedLabel('effortsStandard', es) || es.label || es.code;
+    const out = [];
+    const seen = new Set();
+    const pushCode = (code) => {
+      if (!code) return;
+      const norm = String(code).toUpperCase().replace(/[\s-]+/g, '_');
+      if (IOC_AFFIRMATIVE_STANDARDS[norm] && !seen.has(norm)) {
+        seen.add(norm);
+        out.push(norm);
       }
-    }
-    return null;
-  };
-
-  // Pull the scope / "applies to" text. Prefer a per-bucket structured field;
-  // fall back to bucket-level defaults so the canonical rows always read well.
-  const appliesToFor = (provision, bucket) => {
-    const f = getStructuredFeatures(provision) || {};
-    const fromText = (v) => {
-      if (!v) return null;
-      if (typeof v === 'string' && v.trim()) return v.trim();
-      if (Array.isArray(v)) {
-        const parts = v
-          .map((x) => (typeof x === 'string' ? x.trim() : (x && (x.label || x.text)) || ''))
-          .filter(Boolean);
-        return parts.length ? parts.join(', ') : null;
-      }
-      if (typeof v === 'object' && (v.label || v.text)) return v.label || v.text;
+    };
+    const normaliseText = (s) => {
+      const t = String(s || '').toLowerCase().trim();
+      if (!t) return null;
+      // Order matters — match "material respects" before bare "material".
+      if (/material\s+respects/.test(t)) return 'MATERIAL_RESPECTS';
+      if (/^reasonable\s+best\s+efforts?$/.test(t)) return 'REASONABLE_BEST_EFFORTS';
+      if (/^commercially\s+reasonable\s+efforts?$/.test(t)) return 'COMMERCIALLY_REASONABLE_EFFORTS';
+      if (/^best\s+efforts?$/.test(t)) return 'BEST_EFFORTS';
+      if (/ordinary\s+course/.test(t)) return 'ORDINARY_COURSE';
+      if (/^material$/.test(t)) return 'MATERIAL';
       return null;
     };
-    const candidates = [f.scope, f.appliesTo, f.appliesto, f.applies_to];
-    for (const c of candidates) {
-      const v = fromText(c);
-      if (v) return v;
-    }
-    // Look on the obligation arrays for a per-limb scope.
+
+    const consumeES = (es) => {
+      if (!es) return;
+      if (isTaggedItem(es)) { pushCode(es.code); return; }
+      if (typeof es === 'string') { const c = normaliseText(es); if (c) pushCode(c); }
+    };
+    consumeES(f.effortsStandard);
+    consumeES(f.materialityQualifier);
     const limbs = Array.isArray(f.affirmativeLimbs) ? f.affirmativeLimbs
       : Array.isArray(f.positiveObligations) ? f.positiveObligations
       : [];
     for (const limb of limbs) {
       if (!limb || typeof limb !== 'object') continue;
-      const v = fromText(limb.scope) || fromText(limb.appliesTo);
-      if (v) return v;
+      consumeES(limb.efforts_standard || limb.effortsStandard);
+      consumeES(limb.materialityQualifier || limb.materiality);
     }
-    return bucket.defaultAppliesTo || null;
+    // Empty → canonical "Flat" (no qualifier) so the cell never reads blank.
+    if (out.length === 0) out.push('FLAT');
+    return out;
+  };
+
+  // Pull the scope / "applies to" CODES for this provision. Prefers an
+  // explicit list-tagged appliesTo on features; otherwise normalises any
+  // free-text scope to codes via the canonical synonym regexes; final fallback
+  // is bucket.defaultScopeCodes. Returns an array of code strings.
+  const scopeCodesFor = (provision, bucket) => {
+    const f = getStructuredFeatures(provision) || {};
+    const out = [];
+    const seen = new Set();
+    const push = (code) => {
+      if (!code) return;
+      const norm = String(code).toUpperCase().replace(/[\s-]+/g, '_');
+      if (IOC_AFFIRMATIVE_SCOPE_CODES[norm] && !seen.has(norm)) {
+        seen.add(norm);
+        out.push(norm);
+      }
+    };
+    const consumeAny = (v) => {
+      if (v == null || v === '') return;
+      if (isCitableValue(v)) v = getCitableValue(v);
+      if (Array.isArray(v)) { v.forEach(consumeAny); return; }
+      if (isTaggedItem(v)) { push(v.code); return; }
+      if (typeof v === 'string') {
+        // Try to map the free-text phrase to one or more canonical codes.
+        const text = v;
+        for (const [code, meta] of Object.entries(IOC_AFFIRMATIVE_SCOPE_META || {})) {
+          for (const re of (meta.synonyms || [])) {
+            if (re.test(text)) { push(code); break; }
+          }
+        }
+      }
+    };
+    [f.appliesTo, f.applies_to, f.scope, f.appliesto].forEach(consumeAny);
+    const limbs = Array.isArray(f.affirmativeLimbs) ? f.affirmativeLimbs
+      : Array.isArray(f.positiveObligations) ? f.positiveObligations
+      : [];
+    for (const limb of limbs) {
+      if (!limb || typeof limb !== 'object') continue;
+      consumeAny(limb.appliesTo || limb.scope);
+    }
+    if (out.length === 0 && Array.isArray(bucket.defaultScopeCodes)) {
+      bucket.defaultScopeCodes.forEach(push);
+    }
+    return out;
+  };
+
+  // Render a list of canonical codes as small clickable pills.
+  const renderCodePills = (codes, dict, quote) => {
+    if (!codes || codes.length === 0) return <span className="text-inkFaint/70 italic">—</span>;
+    return (
+      <span className="inline-flex flex-wrap gap-1">
+        {codes.map((code) => (
+          <HoverSource key={code} quote={quote}>
+            <span className="inline-flex items-center text-[10px] font-ui font-medium px-1.5 py-0.5 rounded border bg-indigo-50 text-indigo-700 border-indigo-200 whitespace-nowrap">
+              {dict[code] || code}
+            </span>
+          </HoverSource>
+        ))}
+      </span>
+    );
   };
 
   const title = partyLabel
@@ -2737,8 +2796,8 @@ function IocAffirmativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelec
           </thead>
           <tbody className="divide-y divide-border">
             {matches.map(({ bucket, provision }) => {
-              const std = standardFor(provision);
-              const scope = appliesToFor(provision, bucket);
+              const stdCodes = standardCodesFor(provision);
+              const scopeCodes = scopeCodesFor(provision, bucket);
               const rowQuote = (typeof provision?.full_text === 'string' && provision.full_text.trim())
                 ? provision.full_text
                 : null;
@@ -2755,15 +2814,11 @@ function IocAffirmativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelec
                       </button>
                     </HoverSource>
                   </td>
-                  <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
-                    <HoverSource quote={rowQuote} as="div">
-                      {std || <span className="text-inkFaint/70 italic">—</span>}
-                    </HoverSource>
+                  <td className="px-3 py-2 text-ink">
+                    {renderCodePills(stdCodes, IOC_AFFIRMATIVE_STANDARDS, rowQuote)}
                   </td>
-                  <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
-                    <HoverSource quote={rowQuote} as="div">
-                      {scope || <span className="text-inkFaint/70 italic">—</span>}
-                    </HoverSource>
+                  <td className="px-3 py-2 text-ink">
+                    {renderCodePills(scopeCodes, IOC_AFFIRMATIVE_SCOPE_CODES, rowQuote)}
                   </td>
                 </tr>
               );
