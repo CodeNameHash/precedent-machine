@@ -3734,31 +3734,43 @@ function getHiddenColumnsForType(type) {
  */
 const REP_SPECIFIC_FEATURE_SPECS = [
   {
+    // Start date FIRST so the look-back framing leads. Type renders via the
+    // ABSENCE_OF_CHANGES_TYPES taxonomy so HYBRID reads as the verbose phrase
+    // ("Hybrid (General operating covenant and specific IOCs cited)").
+    // Exceptions always renders — empty list shows canonical "None".
     categoryRegex: /absence\s+of\s+(?:certain\s+)?changes(?:\s+(?:or|and)\s+events)?|no\s+(?:material\s+)?changes/i,
     rows: [
-      { label: 'Type', keys: ['absenceOfChangesType'] },
       { label: 'Start date', keys: ['absenceOfChangesStartDate'] },
-      { label: 'Exceptions', keys: ['absenceOfChangesExceptions'] },
+      { label: 'Type', keys: ['absenceOfChangesType'] },
+      { label: 'Exceptions', keys: ['absenceOfChangesExceptions'], alwaysRender: true, emptyAs: 'None' },
     ],
   },
   {
-    categoryRegex: /undisclosed\s+liabilities|no\s+liabilities/i,
+    // No Undisclosed Liabilities. Matches both the standalone rep and the
+    // synthetic REP-T-NOLIAB row split out of SEC Documents; Financial
+    // Statements (clause (e)). Exceptions always renders so cross-deal
+    // comparison has a consistent row even when none are specified.
+    categoryRegex: /undisclosed\s+liabilities|\bno\s+liabilities\b/i,
     rows: [
-      { label: 'Exceptions', keys: ['undisclosedLiabilitiesExceptions'] },
+      { label: 'Exceptions', keys: ['undisclosedLiabilitiesExceptions'], alwaysRender: true, emptyAs: 'None' },
     ],
   },
   // P7 item 22: ERISA kept (5 keys still on REP-T schema). Environment / IP /
   // Tax / IT-Cyber / Litigation feature-list specs deleted along with their
   // backing schema keys — those categories simply aren't surfaced as a
   // per-rep-row "Specific Features" cell anymore.
+  //
+  // hoverQuote: for these boolean indicators we don't want the verbatim text
+  // inline — the cell just shows Yes / No and the supporting quote moves to a
+  // hover tooltip, so the row reads as a compact checklist.
   {
     categoryRegex: /erisa|employee\s+benefit/i,
     rows: [
-      { label: 'Plans listed', keys: ['erisaPlansListed'] },
-      { label: 'Compliance', keys: ['erisaCompliance'] },
-      { label: 'Title IV plans', keys: ['erisaTitleIVPlans'] },
-      { label: 'Multiemployer', keys: ['erisaMultiemployer'] },
-      { label: 'Parachute payments', keys: ['erisaParachutePayments'] },
+      { label: 'Plans listed', keys: ['erisaPlansListed'], hoverQuote: true },
+      { label: 'Compliance', keys: ['erisaCompliance'], hoverQuote: true },
+      { label: 'Title IV plans', keys: ['erisaTitleIVPlans'], hoverQuote: true },
+      { label: 'Multiemployer', keys: ['erisaMultiemployer'], hoverQuote: true },
+      { label: 'Parachute payments', keys: ['erisaParachutePayments'], hoverQuote: true },
     ],
   },
 ];
@@ -3773,36 +3785,95 @@ function findRepSpec(provision) {
 
 function renderRepSpecificFeaturesCell(provision) {
   const spec = findRepSpec(provision);
-  if (!spec) return null;
   const features = getStructuredFeatures(provision) || {};
+  const partOfRep = features.partOfRep;
+  const alsoSurfacedAs = Array.isArray(features.alsoSurfacedAs) ? features.alsoSurfacedAs : null;
+  // No spec match — fall back to JUST the cross-reference if either side is
+  // present (e.g. on the FinStmt rep, surface that No-Liab is also a row).
   const rows = [];
-  for (const row of spec.rows) {
-    for (const key of row.keys) {
-      const raw = features[key];
-      // P9 item 2(c): unwrap citable / tagged shapes BEFORE the empty-check
-      // so a {value: false, text: "..."} or {value: "", text: "..."} reads
-      // as empty rather than rendering an empty "Specific Features" row.
-      let probe = raw;
-      if (isCitableValue(probe)) probe = getCitableValue(probe);
-      if (probe === null || probe === undefined || probe === '' || probe === false) continue;
-      if (Array.isArray(probe) && probe.length === 0) continue;
-      // Tagged single value with no resolvable label → skip.
-      if (isTaggedItem(probe) && !probe.code && !probe.label) continue;
-      rows.push({ label: row.label, key, raw });
-      break;
+  if (spec) {
+    for (const row of spec.rows) {
+      let captured = null; // { key, raw }
+      for (const key of row.keys) {
+        const raw = features[key];
+        // P9 item 2(c): unwrap citable / tagged shapes BEFORE the empty-check
+        // so a {value: false, text: "..."} or {value: "", text: "..."} reads
+        // as empty rather than rendering an empty "Specific Features" row.
+        let probe = raw;
+        if (isCitableValue(probe)) probe = getCitableValue(probe);
+        const empty =
+          probe === null || probe === undefined || probe === '' || probe === false ||
+          (Array.isArray(probe) && probe.length === 0) ||
+          (isTaggedItem(probe) && !probe.code && !probe.label);
+        if (!empty) { captured = { key, raw }; break; }
+      }
+      if (captured) {
+        rows.push({ label: row.label, key: captured.key, raw: captured.raw, hoverQuote: !!row.hoverQuote });
+      } else if (row.alwaysRender) {
+        // Surface the row as the canonical empty marker (e.g. "None") so
+        // cross-deal comparison has a stable, present row.
+        rows.push({ label: row.label, key: row.keys[0], emptyAs: row.emptyAs || 'None' });
+      }
     }
   }
-  if (rows.length === 0) return null;
+  if (rows.length === 0 && !partOfRep && !alsoSurfacedAs) return null;
   return (
     <dl className="space-y-1">
-      {rows.map(({ label, key, raw }) => (
+      {partOfRep && (
+        <div className="text-[10px] italic text-inkFaint">
+          Also appears in <span className="not-italic font-medium text-inkMid">{String(partOfRep)}</span> (clause (e))
+        </div>
+      )}
+      {alsoSurfacedAs && alsoSurfacedAs.length > 0 && (
+        <div className="text-[10px] italic text-inkFaint">
+          Also surfaced separately as{' '}
+          <span className="not-italic font-medium text-inkMid">
+            {alsoSurfacedAs.join(', ')}
+          </span>
+        </div>
+      )}
+      {rows.map(({ label, key, raw, emptyAs, hoverQuote }) => (
         <div key={label} className="flex flex-col">
           <dt className="text-[10px] text-inkFaint uppercase tracking-wider">{label}</dt>
-          <dd className="text-[11px]">{renderFeatureCell(key, raw)}</dd>
+          <dd className="text-[11px]">
+            {emptyAs ? (
+              <span className="italic text-inkFaint">{emptyAs}</span>
+            ) : hoverQuote ? (
+              renderRepCellWithHoverQuote(key, raw)
+            ) : (
+              renderFeatureCell(key, raw)
+            )}
+          </dd>
         </div>
       ))}
     </dl>
   );
+}
+
+// Render a boolean-ish citable cell as just Yes / No (or its resolved text),
+// with the verbatim supporting quote behind a hover. Keeps the ERISA-style
+// checklist tight instead of showing the full provision text inline.
+function renderRepCellWithHoverQuote(featureKey, raw) {
+  let display;
+  let quote = null;
+  if (isCitableValue(raw)) {
+    const inner = getCitableValue(raw);
+    quote = getCitableText(raw);
+    if (typeof inner === 'boolean') display = inner ? 'Yes' : 'No';
+    else if (isTaggedItem(inner)) display = resolveTaggedLabel(featureKey, inner) || inner.code;
+    else if (inner === null || inner === undefined || inner === '') display = '—';
+    else display = String(inner);
+  } else if (typeof raw === 'boolean') {
+    display = raw ? 'Yes' : 'No';
+  } else if (isTaggedItem(raw)) {
+    display = resolveTaggedLabel(featureKey, raw) || raw.code;
+  } else if (raw === null || raw === undefined || raw === '') {
+    display = '—';
+  } else {
+    display = String(raw);
+  }
+  const node = <span>{display}</span>;
+  return quote ? <HoverSource quote={quote}>{node}</HoverSource> : node;
 }
 
 // Compute "N months (since YYYY-MM-DD)" from a months count + an announce date.
