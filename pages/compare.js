@@ -13,7 +13,11 @@ import {
   getCitableText,
   resolveTaggedLabel,
 } from '../lib/citable';
-import { MATERIAL_CONTRACT_BUCKET_CODES } from '../lib/taxonomy';
+import {
+  MATERIAL_CONTRACT_BUCKET_CODES,
+  IOC_CATEGORY_CODES,
+  IOC_CATEGORY_META,
+} from '../lib/taxonomy';
 import { canonicalConditionsFor } from '../lib/canonical-conditions';
 
 ComparePage.noLayout = true;
@@ -894,6 +898,140 @@ function MaterialContractsCompare({ deals, perDealProvs }) {
   );
 }
 
+// ── IOC helpers (mirror review's matchers + canonical-code resolution) ──
+const IOC_AFFIRMATIVE_CODES = new Set([
+  'IOC-ORDINARY', 'IOC-PRESERVE', 'IOC-MAINTAIN', 'IOC-NOACTION',
+  'IOC-AFFIRMATIVE', 'IOC-OTHER-AFFIRMATIVE',
+  'IOC-GENERAL-EXCEPTIONS', 'IOC-EXCEPTIONS',
+]);
+const IOC_CODE_ORDER = Object.keys(IOC_CATEGORY_CODES);
+const IOC_CODE_ORDER_IDX = new Map(IOC_CODE_ORDER.map((c, i) => [c, i]));
+
+function isIocProvision(p) {
+  return p && (p.type === 'IOC' || p.type === 'IOC-T' || p.type === 'IOC-B');
+}
+function isIocNegativeProvision(p) {
+  if (!isIocProvision(p)) return false;
+  const code = String((p.code || (readFeatures(p) && readFeatures(p).code)) || '').toUpperCase();
+  if (IOC_AFFIRMATIVE_CODES.has(code)) return false;
+  // Skip preamble-like provisions (no category at all).
+  if (!p.category && !code) return false;
+  return true;
+}
+function resolveIocCode(p) {
+  const f = readFeatures(p);
+  const dt = Array.isArray(f.dollarThresholdsByCategory) ? f.dollarThresholdsByCategory : null;
+  if (dt && dt.length) {
+    const c = String((dt[0] && (dt[0].code || dt[0].bucket)) || '').toUpperCase();
+    if (c && IOC_CODE_ORDER_IDX.has(c)) return c;
+  }
+  const cat = String(p.category || '');
+  if (cat) {
+    for (const [code, entry] of Object.entries(IOC_CATEGORY_META)) {
+      for (const re of (entry.synonyms || [])) {
+        if (re.test(cat)) return code;
+      }
+    }
+  }
+  return null;
+}
+
+// Two-column IOC Negative Covenants table — rows are canonical IOC categories
+// (taxonomy order), cells show each deal's matching provision (clickable to
+// detail) or "Not present". Split Target / Parent like the review.
+function IocNegativeCovenantsCompare({ side, deals, perDealProvs, onSelectRow }) {
+  // side: 'target' (Company/Target — IOC + IOC-T) or 'parent' (Buyer/Parent — IOC-B)
+  const sideMatch = (p) => side === 'parent' ? p.type === 'IOC-B' : p.type !== 'IOC-B';
+  // For each deal, bucket negative IOC provisions by canonical category code.
+  const perDealByCode = perDealProvs.map((provs) => {
+    const m = new Map();
+    for (const p of (provs || [])) {
+      if (!isIocProvision(p)) continue;
+      if (!sideMatch(p)) continue;
+      if (!isIocNegativeProvision(p)) continue;
+      const code = resolveIocCode(p);
+      if (!code) continue;
+      if (!m.has(code)) m.set(code, p); // first match per code wins
+    }
+    return m;
+  });
+  const presentCodes = IOC_CODE_ORDER.filter((code) => perDealByCode.some((m) => m.has(code)));
+  if (presentCodes.length === 0) return null;
+
+  const sideLabel = side === 'parent' ? 'Parent / Buyer' : 'Company / Target';
+  return (
+    <section style={{ marginBottom: 28 }}>
+      <header
+        style={{
+          display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 8,
+          paddingBottom: 6, borderBottom: '1px solid var(--line-soft)',
+        }}
+      >
+        <span style={{ width: 9, height: 9, borderRadius: '50%', background: typeHex('IOC') }} />
+        <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: 15, fontWeight: 500, letterSpacing: '-.01em', color: 'var(--ink)', margin: 0 }}>
+          {sideLabel} — Negative Covenants
+        </h3>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--ink-faint)' }}>
+          {presentCodes.length} categor{presentCodes.length === 1 ? 'y' : 'ies'}
+        </span>
+      </header>
+      <div style={{ border: '1px solid var(--line)', borderRadius: 8, overflow: 'hidden', background: 'var(--surface)' }}>
+        <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0, fontSize: 12.5, tableLayout: 'fixed' }}>
+          <colgroup>
+            <col style={{ width: 280 }} />
+            {deals.map((d) => <col key={d.id} />)}
+          </colgroup>
+          <thead>
+            <tr>
+              <th style={hdrCellStyle()}>Category</th>
+              {deals.map((d) => (
+                <th key={d.id} style={hdrCellStyle()}>
+                  <div style={{ fontFamily: 'var(--font-serif)', fontSize: 13, fontWeight: 500, color: 'var(--ink)' }}>
+                    {d.acquirer} <span style={{ color: 'var(--ink-faint)', fontStyle: 'italic' }}>/</span> {d.target}
+                  </div>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {presentCodes.map((code) => (
+              <tr key={code}>
+                <td style={{ padding: '8px 12px', borderBottom: '1px solid var(--line-soft)', verticalAlign: 'top', background: 'var(--surface)' }}>
+                  <ComparePill>{IOC_CATEGORY_CODES[code]}</ComparePill>
+                </td>
+                {perDealByCode.map((m, i) => {
+                  const p = m.get(code);
+                  return (
+                    <td
+                      key={i}
+                      style={{
+                        padding: '8px 12px', borderBottom: '1px solid var(--line-soft)',
+                        borderLeft: '1px solid var(--line-soft)', verticalAlign: 'top',
+                        background: 'var(--surface)', cursor: p && onSelectRow ? 'pointer' : 'default',
+                      }}
+                      onClick={() => { if (p && onSelectRow) onSelectRow(rowKeyFor(p)); }}
+                    >
+                      {p ? (
+                        <span style={{ color: 'var(--accent-deep, var(--ink))', fontSize: 12.5 }}>
+                          {p.category || IOC_CATEGORY_CODES[code]}
+                        </span>
+                      ) : (
+                        <span style={{ color: 'var(--ink-faint)', fontStyle: 'italic', fontSize: 12 }}>
+                          Not present in this agreement
+                        </span>
+                      )}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+}
+
 // Two-column (per-deal) canonical Conditions table — rows are canonical
 // conditions from lib/canonical-conditions.js, cells either name the matching
 // deal provision (clickable to its detail) or read "Not present". Mirrors the
@@ -1087,6 +1225,12 @@ function SummaryView({
                   <CanonicalConditionsCompare family="COND-S" deals={deals} perDealProvs={perDealProvs} onSelectRow={onSelectRow} />
                 </>
               )}
+              {g.label === 'Interim Operating Covenants' && (
+                <>
+                  <IocNegativeCovenantsCompare side="target" deals={deals} perDealProvs={perDealProvs} onSelectRow={onSelectRow} />
+                  <IocNegativeCovenantsCompare side="parent" deals={deals} perDealProvs={perDealProvs} onSelectRow={onSelectRow} />
+                </>
+              )}
             </div>
           );
         })}
@@ -1129,6 +1273,12 @@ function SummaryView({
           {activeTypes.includes('COND-S') && (
             <CanonicalConditionsCompare family="COND-S" deals={deals} perDealProvs={perDealProvs} onSelectRow={onSelectRow} />
           )}
+        </>
+      )}
+      {['IOC', 'IOC-T', 'IOC-B'].some((t) => activeTypes.includes(t)) && (
+        <>
+          <IocNegativeCovenantsCompare side="target" deals={deals} perDealProvs={perDealProvs} onSelectRow={onSelectRow} />
+          <IocNegativeCovenantsCompare side="parent" deals={deals} perDealProvs={perDealProvs} onSelectRow={onSelectRow} />
         </>
       )}
       <SummaryMatrix
