@@ -2930,9 +2930,19 @@ function IocGeneralExceptionsTableSingle({ iocProvisions, generalExceptionsProv,
     return out;
   };
 
-  // Collect the positive-side exception list. Mirrors the old logic:
-  // scope=preamble items from any IOC provision (fallback to unscoped) +
-  // items split from the consolidated General Exceptions provision.
+  // Collect the positive-side exception list — PREAMBLE-ONLY per user request.
+  // The General Exceptions table mirrors the REPs preamble pattern: it shows
+  // section-wide carve-outs introduced at the top of the IOC article, NOT
+  // exceptions extracted from individual negative sub-clauses. So we only
+  // accept items from:
+  //   (a) the IOC-POSITIVE-PREAMBLE provision's permittedExceptions / general
+  //       exceptions list, or
+  //   (b) any permittedExceptions item explicitly marked scope === 'preamble'
+  //       (legacy preambles emitted across multiple provisions), or
+  //   (c) the consolidated General Exceptions provision (generalExceptionsProv).
+  // Items from sub-clause provisions without an explicit preamble scope are
+  // skipped — they're sub-clause-specific carve-outs and belong with their
+  // negative covenant, not the section-wide General Exceptions box.
   const positiveList = useMemo(() => {
     const seen = new Set();
     const out = [];
@@ -2943,21 +2953,30 @@ function IocGeneralExceptionsTableSingle({ iocProvisions, generalExceptionsProv,
       out.push(entry);
     };
 
-    // 1. permittedExceptions across every IOC provision for this party,
-    //    preferring scope=preamble items.
-    const scoped = [];
-    const unscoped = [];
+    // 1. Items from the positive preamble provision (the IOC intro). Accept
+    //    ALL of its permittedExceptions (it IS the preamble — no scope filter
+    //    needed). Plus accept any explicit scope=preamble item from any other
+    //    IOC provision (legacy multi-preamble extractions).
+    const items = [];
     for (const p of iocProvisions || []) {
       if (p === negativeProv) continue;
       const f = getStructuredFeatures(p) || {};
       const list = Array.isArray(f.permittedExceptions) ? f.permittedExceptions : [];
+      const isPreambleProv = p === positiveProv;
       for (const item of list) {
         const scope = item && typeof item === 'object' ? item.scope : null;
-        if (scope === 'preamble') scoped.push({ item, source: p });
-        else unscoped.push({ item, source: p });
+        if (isPreambleProv || scope === 'preamble') items.push({ item, source: p });
+      }
+      // generalExceptions list-tagged feature on the preamble carries the
+      // section-wide carve-outs as a dedicated list (some extractions split
+      // them out from permittedExceptions).
+      if (isPreambleProv) {
+        const ge = Array.isArray(f.generalExceptions) ? f.generalExceptions : null;
+        if (ge) {
+          for (const item of ge) items.push({ item, source: p });
+        }
       }
     }
-    const items = scoped.length > 0 ? scoped : unscoped;
     for (const { item, source } of items) {
       if (isTaggedItem(item)) {
         const label = resolveTaggedLabel('permittedExceptions', item) || item.code;
