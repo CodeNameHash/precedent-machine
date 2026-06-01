@@ -12129,14 +12129,15 @@ export default function ReviewPage() {
     }
     const filterTypes = Array.isArray(activeFilter) ? activeFilter : [activeFilter];
     // IOC-T expansion: bare-IOC provisions (from older extracts that didn't
-    // emit IOC-T/IOC-B suffixes) are promoted to Company/Target. Without this
-    // expansion, clicking "Company / Target" on an existing deal returns
-    // zero provisions and the page reads empty.
+    // emit IOC-T/IOC-B suffixes) are promoted to Company/Target whenever the
+    // active filter touches IOC-T AND the deal has no actual IOC-B
+    // provisions. Fires for: a direct IOC-T child click, AND a parent-group
+    // click (filter array includes both IOC-T and IOC-B — Buyer presence in
+    // the filter doesn't change that bare-IOC means Target here).
     const hasIocT = filterTypes.includes('IOC-T');
-    const hasIocB = filterTypes.includes('IOC-B');
     const hasIocBProvisions = provisions.some(p => p.type === 'IOC-B');
     const effectiveTypes = new Set(filterTypes);
-    if (hasIocT && !hasIocB && !hasIocBProvisions) effectiveTypes.add('IOC');
+    if (hasIocT && !hasIocBProvisions) effectiveTypes.add('IOC');
     return sortByTypeOrder(provisions.filter(p => effectiveTypes.has(p.type)));
   }, [provisions, activeFilter, selectedProvId, sortByTypeOrder]);
 
@@ -12258,6 +12259,17 @@ export default function ReviewPage() {
       p.type === 'IOC' || p.type === 'IOC-T' || p.type === 'IOC-B'
     );
   }, [filteredProvisions]);
+
+  // Derive the IOC side-gate from the ACTIVE FILTER, not from each loop's
+  // type. A direct child click sets activeFilter to a single string and we
+  // gate the off side. A parent-group click sets it to an array (or null),
+  // so we render BOTH halves (Target with content, Parent reading "Not
+  // present in this agreement").
+  const iocSide = (() => {
+    if (activeFilter === 'IOC-T') return 'target';
+    if (activeFilter === 'IOC-B') return 'buyer';
+    return null;
+  })();
 
   /* ── Extract definition terms from DEF provisions ── */
   const definitionTerms = useMemo(() => {
@@ -12967,14 +12979,17 @@ export default function ReviewPage() {
                                   allProvisions={provisions}
                                 />
                               )}
-                              {/* IOC side-gate: when the user clicks the Company/Target IOC
-                                  child show only the Target half; same for Buyer/Parent. Parent
-                                  IOC group view (activeFilter === null / unscoped IOC) shows both. */}
+                              {/* IOC side-gate: driven by the ACTIVE FILTER, not the
+                                  current loop `type`. A direct child click sets activeFilter
+                                  to a single string ('IOC-T' or 'IOC-B') and we hide the off
+                                  side. A parent-group click sets activeFilter to an array
+                                  ['IOC-T','IOC-B'], so iocSide is null and BOTH halves render
+                                  (Target with content, Parent with "Not present"). */}
                               {isIocType && type === firstIocType && (
                                 <IocAffirmativeCovenantsTable
                                   iocProvisions={allFilteredIocProvisions}
                                   onSelectProvision={handleEditProvision}
-                                  side={type === 'IOC-T' ? 'target' : type === 'IOC-B' ? 'buyer' : null}
+                                  side={iocSide}
                                 />
                               )}
                               {isIocType && type === firstIocType && (
@@ -12982,14 +12997,14 @@ export default function ReviewPage() {
                                   iocProvisions={allFilteredIocProvisions}
                                   generalExceptionsProv={iocGeneralExceptions}
                                   onSelectProvision={handleEditProvision}
-                                  side={type === 'IOC-T' ? 'target' : type === 'IOC-B' ? 'buyer' : null}
+                                  side={iocSide}
                                 />
                               )}
                               {isIocType && type === firstIocType && (
                                 <IocNegativeCovenantsTable
                                   iocProvisions={allFilteredIocProvisions.filter((p) => !isPreambleProvision(p))}
                                   onSelectProvision={handleEditProvision}
-                                  side={type === 'IOC-T' ? 'target' : type === 'IOC-B' ? 'buyer' : null}
+                                  side={iocSide}
                                 />
                               )}
                               {(type === 'REP-T' || type === 'REP-B') && (
