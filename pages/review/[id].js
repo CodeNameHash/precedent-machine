@@ -883,10 +883,19 @@ function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelect
     return SIDEBAR_GROUPS
       .map((g) => {
         if (g.children && g.children.length > 0) {
-          const presentChildren = g.children
-            .map((c) => ({ ...c, provs: sortDefsIfNeeded(c.type, provsByType[c.type] || []) }))
-            .filter((c) => c.provs.length > 0);
-          const total = presentChildren.reduce((acc, c) => acc + c.provs.length, 0);
+          const childRows = g.children.map((c) => ({
+            ...c,
+            provs: sortDefsIfNeeded(c.type, provsByType[c.type] || []),
+          }));
+          const total = childRows.reduce((acc, c) => acc + c.provs.length, 0);
+          // For IOC: when any IOC child has content, keep BOTH Target and
+          // Parent children visible (Parent reads "Buyer / Parent (0)" with
+          // a "Not present" page when clicked). For all other groups, drop
+          // children with zero provisions as before.
+          const isIocGroup = g.label === 'Interim Operating Covenants';
+          const presentChildren = isIocGroup && total > 0
+            ? childRows
+            : childRows.filter((c) => c.provs.length > 0);
           return { label: g.label, children: presentChildren, types: presentChildren.map((c) => c.type), total };
         }
         const types = (g.types || []).filter((t) => (provsByType[t] || []).length > 0);
@@ -12094,7 +12103,16 @@ export default function ReviewPage() {
       return sortByTypeOrder(provisions);
     }
     const filterTypes = Array.isArray(activeFilter) ? activeFilter : [activeFilter];
-    return sortByTypeOrder(provisions.filter(p => filterTypes.includes(p.type)));
+    // IOC-T expansion: bare-IOC provisions (from older extracts that didn't
+    // emit IOC-T/IOC-B suffixes) are promoted to Company/Target. Without this
+    // expansion, clicking "Company / Target" on an existing deal returns
+    // zero provisions and the page reads empty.
+    const hasIocT = filterTypes.includes('IOC-T');
+    const hasIocB = filterTypes.includes('IOC-B');
+    const hasIocBProvisions = provisions.some(p => p.type === 'IOC-B');
+    const effectiveTypes = new Set(filterTypes);
+    if (hasIocT && !hasIocB && !hasIocBProvisions) effectiveTypes.add('IOC');
+    return sortByTypeOrder(provisions.filter(p => effectiveTypes.has(p.type)));
   }, [provisions, activeFilter, selectedProvId, sortByTypeOrder]);
 
   /* ── Group provisions by type (all, not filtered) ──
@@ -12139,6 +12157,12 @@ export default function ReviewPage() {
       groups['IOC-T'] = [...(groups['IOC-T'] || []), ...groups['IOC']];
       delete groups['IOC'];
     }
+    // Always-show Buyer/Parent IOC child: when ANY IOC exists, synthesize an
+    // empty IOC-B entry so the sidebar shows "Buyer / Parent (0)" rather than
+    // hiding it. Clicking the empty child renders the IOC tables with the
+    // Parent halves reading "Not present in this agreement".
+    const anyIoc = !!(groups['IOC-T'] || groups['IOC-B']);
+    if (anyIoc && !groups['IOC-B']) groups['IOC-B'] = [];
     return groups;
   }, [provisions]);
 
@@ -12180,6 +12204,13 @@ export default function ReviewPage() {
       groups['IOC-T'] = [...(groups['IOC-T'] || []), ...groups['IOC']];
       delete groups['IOC'];
     }
+    // Always-show Parent IOC: when the deal has ANY IOC of any flavor, also
+    // synthesize an empty IOC-B entry so the Buyer/Parent half renders with a
+    // "Not present in this agreement" placeholder rather than disappearing.
+    // Per user: "we should still show an item for Parent even if no IOCs and
+    // just say none on the page".
+    const anyIocPresent = !!(groups['IOC-T'] || groups['IOC-B'] || groups['IOC']);
+    if (anyIocPresent && !groups['IOC-B']) groups['IOC-B'] = [];
     return groups;
   }, [filteredProvisions, provisions, activeFilter]);
 
