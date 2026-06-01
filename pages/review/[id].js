@@ -2775,24 +2775,31 @@ function IocAffirmativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelec
   );
 }
 
-/* Public wrapper: render Target / Company half first, then Parent / Buyer
- * half. Buyer half always renders (with a "Not present" placeholder if no
- * IOC-B provisions exist). */
-function IocAffirmativeCovenantsTable({ iocProvisions, onSelectProvision }) {
+/* Public wrapper: side-gated render. When `side` is provided the wrapper
+ * renders ONLY that party's half (matches the REP-T/REP-B sidebar split —
+ * clicking the Company/Target IOC child only shows the Target half, etc.).
+ * When `side` is null/undefined (parent IOC group view) both halves render. */
+function IocAffirmativeCovenantsTable({ iocProvisions, onSelectProvision, side }) {
   const targetProvs = (iocProvisions || []).filter((p) => p.type !== 'IOC-B');
   const buyerProvs = (iocProvisions || []).filter((p) => p.type === 'IOC-B');
+  const showTarget = !side || side === 'target';
+  const showBuyer = !side || side === 'buyer';
   return (
     <div className="space-y-3">
-      <IocAffirmativeCovenantsTableSingle
-        iocProvisions={targetProvs}
-        partyLabel="Target / Company"
-        onSelectProvision={onSelectProvision}
-      />
-      <IocAffirmativeCovenantsTableSingle
-        iocProvisions={buyerProvs}
-        partyLabel="Parent / Buyer"
-        onSelectProvision={onSelectProvision}
-      />
+      {showTarget && (
+        <IocAffirmativeCovenantsTableSingle
+          iocProvisions={targetProvs}
+          partyLabel="Target / Company"
+          onSelectProvision={onSelectProvision}
+        />
+      )}
+      {showBuyer && (
+        <IocAffirmativeCovenantsTableSingle
+          iocProvisions={buyerProvs}
+          partyLabel="Parent / Buyer"
+          onSelectProvision={onSelectProvision}
+        />
+      )}
     </div>
   );
 }
@@ -3176,26 +3183,32 @@ function IocExceptionsGroup({ subtitle, rows, emptyHint, accent, showEvidence, o
 
 /* Public wrapper: render Target / Company half first, then Parent / Buyer
  * half (with "Not present" placeholder when no IOC-B provisions exist). */
-function IocGeneralExceptionsTable({ iocProvisions, generalExceptionsProv, onSelectProvision }) {
+function IocGeneralExceptionsTable({ iocProvisions, generalExceptionsProv, onSelectProvision, side }) {
   const targetProvs = (iocProvisions || []).filter((p) => p.type !== 'IOC-B');
   const buyerProvs = (iocProvisions || []).filter((p) => p.type === 'IOC-B');
   // The consolidated `generalExceptionsProv` (if any) is tied to whichever IOC
   // section it appeared in — use its `type` to assign it to the right half.
   const gxIsBuyer = generalExceptionsProv && generalExceptionsProv.type === 'IOC-B';
+  const showTarget = !side || side === 'target';
+  const showBuyer = !side || side === 'buyer';
   return (
     <div className="space-y-3">
-      <IocGeneralExceptionsTableSingle
-        iocProvisions={targetProvs}
-        generalExceptionsProv={gxIsBuyer ? null : generalExceptionsProv}
-        partyLabel="Target / Company"
-        onSelectProvision={onSelectProvision}
-      />
-      <IocGeneralExceptionsTableSingle
-        iocProvisions={buyerProvs}
-        generalExceptionsProv={gxIsBuyer ? generalExceptionsProv : null}
-        partyLabel="Parent / Buyer"
-        onSelectProvision={onSelectProvision}
-      />
+      {showTarget && (
+        <IocGeneralExceptionsTableSingle
+          iocProvisions={targetProvs}
+          generalExceptionsProv={gxIsBuyer ? null : generalExceptionsProv}
+          partyLabel="Target / Company"
+          onSelectProvision={onSelectProvision}
+        />
+      )}
+      {showBuyer && (
+        <IocGeneralExceptionsTableSingle
+          iocProvisions={buyerProvs}
+          generalExceptionsProv={gxIsBuyer ? generalExceptionsProv : null}
+          partyLabel="Parent / Buyer"
+          onSelectProvision={onSelectProvision}
+        />
+      )}
     </div>
   );
 }
@@ -3364,21 +3377,27 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
 
 /* Public wrapper: render Target / Company half first, then Parent / Buyer
  * half (with "Not present" placeholder when no IOC-B provisions exist). */
-function IocNegativeCovenantsTable({ iocProvisions, onSelectProvision }) {
+function IocNegativeCovenantsTable({ iocProvisions, onSelectProvision, side }) {
   const targetProvs = (iocProvisions || []).filter((p) => p.type !== 'IOC-B');
   const buyerProvs = (iocProvisions || []).filter((p) => p.type === 'IOC-B');
+  const showTarget = !side || side === 'target';
+  const showBuyer = !side || side === 'buyer';
   return (
     <div className="space-y-3">
-      <IocNegativeCovenantsTableSingle
-        iocProvisions={targetProvs}
-        partyLabel="Target / Company"
-        onSelectProvision={onSelectProvision}
-      />
-      <IocNegativeCovenantsTableSingle
-        iocProvisions={buyerProvs}
-        partyLabel="Parent / Buyer"
-        onSelectProvision={onSelectProvision}
-      />
+      {showTarget && (
+        <IocNegativeCovenantsTableSingle
+          iocProvisions={targetProvs}
+          partyLabel="Target / Company"
+          onSelectProvision={onSelectProvision}
+        />
+      )}
+      {showBuyer && (
+        <IocNegativeCovenantsTableSingle
+          iocProvisions={buyerProvs}
+          partyLabel="Parent / Buyer"
+          onSelectProvision={onSelectProvision}
+        />
+      )}
     </div>
   );
 }
@@ -8432,14 +8451,12 @@ function ProvisionTable({ provisions, type, onSelectProvision, allProvisions }) 
     );
   }
   if (type === 'IOC' || type === 'IOC-T' || type === 'IOC-B') {
-    return (
-      <CategoryFeatureSummaryTable
-        provisions={provisions}
-        type="IOC"
-        onSelectProvision={onSelectProvision}
-        hideProvisionsList={true}
-      />
-    );
+    // The IOC Affirmative / General Exceptions / Negative Covenants tables
+    // above already surface every IOC-level fact worth reading. The legacy
+    // 3-row CategoryFeatureSummaryTable here (Schedule Reference / Materiality
+    // Qualifier / Parent IOC Buckets) added nothing on top of those and read
+    // as a stale footer, so it is intentionally not rendered.
+    return null;
   }
   if (type === 'COV') {
     return (
@@ -12704,10 +12721,14 @@ export default function ReviewPage() {
                                   allProvisions={provisions}
                                 />
                               )}
+                              {/* IOC side-gate: when the user clicks the Company/Target IOC
+                                  child show only the Target half; same for Buyer/Parent. Parent
+                                  IOC group view (activeFilter === null / unscoped IOC) shows both. */}
                               {isIocType && type === firstIocType && (
                                 <IocAffirmativeCovenantsTable
                                   iocProvisions={allFilteredIocProvisions}
                                   onSelectProvision={handleEditProvision}
+                                  side={type === 'IOC-T' ? 'target' : type === 'IOC-B' ? 'buyer' : null}
                                 />
                               )}
                               {isIocType && type === firstIocType && (
@@ -12715,12 +12736,14 @@ export default function ReviewPage() {
                                   iocProvisions={allFilteredIocProvisions}
                                   generalExceptionsProv={iocGeneralExceptions}
                                   onSelectProvision={handleEditProvision}
+                                  side={type === 'IOC-T' ? 'target' : type === 'IOC-B' ? 'buyer' : null}
                                 />
                               )}
                               {isIocType && type === firstIocType && (
                                 <IocNegativeCovenantsTable
                                   iocProvisions={allFilteredIocProvisions.filter((p) => !isPreambleProvision(p))}
                                   onSelectProvision={handleEditProvision}
+                                  side={type === 'IOC-T' ? 'target' : type === 'IOC-B' ? 'buyer' : null}
                                 />
                               )}
                               {(type === 'REP-T' || type === 'REP-B') && (
