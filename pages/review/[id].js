@@ -888,6 +888,23 @@ function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelect
             provs: sortDefsIfNeeded(c.type, provsByType[c.type] || []),
           }));
           const total = childRows.reduce((acc, c) => acc + c.provs.length, 0);
+          // Per user: MAE renders flat (no children) when the deal has a
+          // SINGLE Material Adverse Effect definition — the typical case where
+          // one MAE applies to both Parent and Company. Show children only
+          // when separate per-party definitions exist (or, in edge cases, more
+          // than one MAE provision overall).
+          const isMaeGroup = g.label === 'Material Adverse Effect';
+          if (isMaeGroup && total === 1) {
+            const sole = childRows.find((c) => c.provs.length > 0);
+            return {
+              label: g.label,
+              types: sole ? [sole.type] : [],
+              total: 1,
+              provs: sole ? sole.provs : [],
+              singleType: sole ? sole.type : null,
+              maeAppliesToBoth: true,
+            };
+          }
           // For IOC: when any IOC child has content, keep BOTH Target and
           // Parent children visible (Parent reads "Buyer / Parent (0)" with
           // a "Not present" page when clicked). For all other groups, drop
@@ -1121,6 +1138,14 @@ function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelect
                   <span className="dot" style={{ background: typeHex(repType) }} />
                   <span className="truncate" style={{ fontWeight: isActiveFilter ? 600 : 500 }}>
                     {group.label}
+                    {group.maeAppliesToBoth && (
+                      <span
+                        className="italic"
+                        style={{ color: 'var(--ink-faint)', fontWeight: 400, marginLeft: 6, fontSize: 11 }}
+                      >
+                        (applies to Parent and Company)
+                      </span>
+                    )}
                   </span>
                   <span className="count">{group.total}</span>
                 </div>
