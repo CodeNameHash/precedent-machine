@@ -898,6 +898,139 @@ function MaterialContractsCompare({ deals, perDealProvs }) {
   );
 }
 
+// Two-column Reps table — one row per rep (the union of rep categories across
+// the selected deals), per-deal cell shows the rep's key features (materiality,
+// knowledge, lookback / start date) and a clickable category link to the
+// provision, or "Not present in this agreement". Mirrors the review page's
+// per-rep table (one row per rep) which isn't spec-driven.
+function RepsCompare({ side, deals, perDealProvs, onSelectRow }) {
+  // side: 'target' → REP-T; 'parent' → REP-B
+  const wanted = side === 'parent' ? 'REP-B' : 'REP-T';
+  // For each deal, index reps by a normalized category key.
+  const perDealByCat = perDealProvs.map((provs) => {
+    const m = new Map();
+    for (const p of (provs || [])) {
+      if (p.type !== wanted) continue;
+      // Skip the consolidated Material Contracts rep — it has its own table.
+      const cat = String(p.category || '').trim();
+      if (!cat) continue;
+      if (/material\s+contracts?/i.test(cat)) continue;
+      const key = normalizeKey(cat);
+      if (!m.has(key)) m.set(key, { provision: p, label: cat });
+    }
+    return m;
+  });
+
+  // Union of category keys across deals (preserve first-deal order, then
+  // append novel keys from later deals).
+  const rowOrder = [];
+  const seen = new Set();
+  for (const m of perDealByCat) {
+    for (const [k, v] of m.entries()) {
+      if (seen.has(k)) continue;
+      seen.add(k);
+      rowOrder.push({ key: k, label: v.label });
+    }
+  }
+  if (rowOrder.length === 0) return null;
+
+  const sideLabel = side === 'parent' ? 'Parent / Buyer' : 'Company / Target';
+  const sideTypeHex = typeHex(wanted);
+
+  // Per-deal cell: small materiality / knowledge pills + key text features.
+  const renderRepCell = (entry, onClick) => {
+    if (!entry) {
+      return <span style={{ color: 'var(--ink-faint)', fontStyle: 'italic', fontSize: 12 }}>Not present in this agreement</span>;
+    }
+    const p = entry.provision;
+    const f = readFeatures(p);
+    const materiality = f.materialityQualifier;
+    const matLabel = materiality && (isTaggedItem(isCitableValue(materiality) ? getCitableValue(materiality) : materiality)
+      ? (resolveTaggedLabel('materialityQualifier', isCitableValue(materiality) ? getCitableValue(materiality) : materiality) ||
+         (isCitableValue(materiality) ? getCitableValue(materiality) : materiality).label ||
+         (isCitableValue(materiality) ? getCitableValue(materiality) : materiality).code)
+      : compactValueText(materiality, 'materialityQualifier'));
+    const knowledge = f.knowledgeStandard;
+    const knowVal = knowledge ? (isCitableValue(knowledge) ? getCitableValue(knowledge) : knowledge) : null;
+    const knowLabel = knowVal ? (isTaggedItem(knowVal) ? (resolveTaggedLabel('knowledgeStandard', knowVal) || knowVal.label || knowVal.code) : String(knowVal)) : null;
+    const lookback = compactValueText(f.absenceOfChangesStartDate, 'absenceOfChangesStartDate')
+      || compactValueText(f.lookbackPeriod, 'lookbackPeriod')
+      || compactValueText(f.secFilingsExceptionLookback, 'secFilingsExceptionLookback');
+    const threshold = compactValueText(f.dollarThreshold, 'dollarThreshold');
+
+    return (
+      <div onClick={onClick} style={{ cursor: onClick ? 'pointer' : 'default', display: 'flex', flexDirection: 'column', gap: 5 }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+          {matLabel && <ComparePill>Materiality: {matLabel}</ComparePill>}
+          {knowLabel && <ComparePill>Knowledge: {knowLabel}</ComparePill>}
+          {!matLabel && !knowLabel && (
+            <span style={{ color: 'var(--ink-faint)', fontSize: 11.5, fontStyle: 'italic' }}>no qualifiers</span>
+          )}
+        </div>
+        {(lookback || threshold) && (
+          <div style={{ fontSize: 12, color: 'var(--ink)', lineHeight: 1.4 }}>
+            {lookback && (<><span style={{ fontFamily: 'var(--font-mono)', fontSize: 9.5, letterSpacing: '.08em', textTransform: 'uppercase', color: 'var(--ink-faint)', marginRight: 6 }}>Lookback</span>{lookback}</>)}
+            {lookback && threshold && <span style={{ color: 'var(--ink-faint)' }}> · </span>}
+            {threshold && (<><span style={{ fontFamily: 'var(--font-mono)', fontSize: 9.5, letterSpacing: '.08em', textTransform: 'uppercase', color: 'var(--ink-faint)', marginRight: 6 }}>Threshold</span>{threshold}</>)}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <section style={{ marginBottom: 28 }}>
+      <header style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 8, paddingBottom: 6, borderBottom: '1px solid var(--line-soft)' }}>
+        <span style={{ width: 9, height: 9, borderRadius: '50%', background: sideTypeHex }} />
+        <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: 15, fontWeight: 500, letterSpacing: '-.01em', color: 'var(--ink)', margin: 0 }}>
+          {sideLabel} Reps
+        </h3>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--ink-faint)' }}>
+          {rowOrder.length} rep{rowOrder.length === 1 ? '' : 's'}
+        </span>
+      </header>
+      <div style={{ border: '1px solid var(--line)', borderRadius: 8, overflow: 'hidden', background: 'var(--surface)' }}>
+        <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0, fontSize: 12.5, tableLayout: 'fixed' }}>
+          <colgroup>
+            <col style={{ width: 240 }} />
+            {deals.map((d) => <col key={d.id} />)}
+          </colgroup>
+          <thead>
+            <tr>
+              <th style={hdrCellStyle()}>Rep</th>
+              {deals.map((d) => (
+                <th key={d.id} style={hdrCellStyle()}>
+                  <div style={{ fontFamily: 'var(--font-serif)', fontSize: 13, fontWeight: 500, color: 'var(--ink)' }}>
+                    {d.acquirer} <span style={{ color: 'var(--ink-faint)', fontStyle: 'italic' }}>/</span> {d.target}
+                  </div>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rowOrder.map(({ key, label }) => (
+              <tr key={key}>
+                <td style={{ padding: '8px 12px', borderBottom: '1px solid var(--line-soft)', verticalAlign: 'top', background: 'var(--surface)' }}>
+                  <span style={{ color: 'var(--ink)', fontWeight: 600, fontSize: 12.5 }}>{label}</span>
+                </td>
+                {perDealByCat.map((m, i) => {
+                  const entry = m.get(key);
+                  const onClick = entry && onSelectRow ? () => onSelectRow(rowKeyFor(entry.provision)) : null;
+                  return (
+                    <td key={i} style={{ padding: '8px 12px', borderBottom: '1px solid var(--line-soft)', borderLeft: '1px solid var(--line-soft)', verticalAlign: 'top', background: 'var(--surface)' }}>
+                      {renderRepCell(entry, onClick)}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+}
+
 // ── IOC helpers (mirror review's matchers + canonical-code resolution) ──
 const IOC_AFFIRMATIVE_CODES = new Set([
   'IOC-ORDINARY', 'IOC-PRESERVE', 'IOC-MAINTAIN', 'IOC-NOACTION',
@@ -936,27 +1069,114 @@ function resolveIocCode(p) {
   return null;
 }
 
-// Two-column IOC Negative Covenants table — rows are canonical IOC categories
-// (taxonomy order), cells show each deal's matching provision (clickable to
-// detail) or "Not present". Split Target / Parent like the review.
+// Render a list-or-tagged value as a compact comma-separated string for IOC
+// cell sub-blocks. Returns null when nothing useful to show.
+function compactValueText(v, key) {
+  if (v == null) return null;
+  let val = isCitableValue(v) ? getCitableValue(v) : v;
+  if (val == null || val === '' || val === false) return null;
+  if (typeof val === 'boolean') return val ? 'Yes' : null;
+  if (typeof val === 'string' || typeof val === 'number') return String(val);
+  if (Array.isArray(val)) {
+    const parts = val
+      .map((x) => isTaggedItem(x) ? (resolveTaggedLabel(key, x) || x.label || x.code || x.text) : (typeof x === 'object' ? (x.text || x.label || x.code) : String(x)))
+      .filter(Boolean);
+    return parts.length ? parts.join('; ') : null;
+  }
+  if (isTaggedItem(val)) return resolveTaggedLabel(key, val) || val.label || val.code || val.text || null;
+  if (typeof val === 'object') return val.text || val.label || val.code || null;
+  return String(val);
+}
+
+// Per-IOC-row cell: two stacked sub-blocks (Exceptions, Thresholds) pulled
+// from features (permittedExceptions, consentStandard, common carveouts, and
+// dollarThreshold). Returns "Not present" when no provision matched.
+function IocCellContent({ provision, onClick }) {
+  if (!provision) {
+    return <span style={{ color: 'var(--ink-faint)', fontStyle: 'italic', fontSize: 12 }}>Not present in this agreement</span>;
+  }
+  const f = readFeatures(provision);
+  const exceptionParts = [
+    compactValueText(f.permittedExceptions, 'permittedExceptions'),
+    compactValueText(f.consentStandard, 'consentStandard'),
+  ].filter(Boolean);
+  const carveouts = [];
+  if (f.requiredByLawCarveout) carveouts.push('Required by law');
+  if (f.pandemicCarveout) carveouts.push('Pandemic');
+  if (f.ordinaryCourseCarveout) carveouts.push('Ordinary course');
+  if (carveouts.length) exceptionParts.push(carveouts.join(', '));
+  const exceptionsText = exceptionParts.join(' · ');
+  const thresholdText = compactValueText(f.dollarThreshold, 'dollarThreshold');
+
+  const SubLabel = ({ children }) => (
+    <span style={{
+      fontFamily: 'var(--font-mono)',
+      fontSize: 9.5,
+      letterSpacing: '.08em',
+      textTransform: 'uppercase',
+      color: 'var(--ink-faint)',
+      marginRight: 6,
+    }}>{children}</span>
+  );
+  return (
+    <div onClick={onClick} style={{ cursor: onClick ? 'pointer' : 'default', display: 'flex', flexDirection: 'column', gap: 4 }}>
+      <div style={{ fontSize: 12, lineHeight: 1.4 }}>
+        <SubLabel>Exceptions</SubLabel>
+        {exceptionsText ? (
+          <span style={{ color: 'var(--ink)' }}>{exceptionsText}</span>
+        ) : (
+          <span style={{ color: 'var(--ink-faint)', fontStyle: 'italic' }}>none specified</span>
+        )}
+      </div>
+      <div style={{ fontSize: 12, lineHeight: 1.4 }}>
+        <SubLabel>Thresholds</SubLabel>
+        {thresholdText ? (
+          <span style={{ color: 'var(--ink)' }}>{thresholdText}</span>
+        ) : (
+          <span style={{ color: 'var(--ink-faint)', fontStyle: 'italic' }}>no threshold</span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Two-column IOC Negative Covenants table. Rows are canonical IOC categories
+// (taxonomy order) PLUS an "Other" tail bucket for negative provisions whose
+// category doesn't match a canonical synonym (so nothing is silently dropped
+// — the source of the "only 4 IOCs" undercount). Per-deal cells show stacked
+// Exceptions and Thresholds sub-blocks. Split Target / Parent.
 function IocNegativeCovenantsCompare({ side, deals, perDealProvs, onSelectRow }) {
-  // side: 'target' (Company/Target — IOC + IOC-T) or 'parent' (Buyer/Parent — IOC-B)
   const sideMatch = (p) => side === 'parent' ? p.type === 'IOC-B' : p.type !== 'IOC-B';
-  // For each deal, bucket negative IOC provisions by canonical category code.
-  const perDealByCode = perDealProvs.map((provs) => {
-    const m = new Map();
+
+  // For each deal: canonical-coded provisions (by code) AND uncoded provisions
+  // (by category label) so nothing silently disappears under the canonical
+  // taxonomy — that was the source of the "only 4 IOCs" undercount.
+  const perDealBuckets = perDealProvs.map((provs) => {
+    const byCode = new Map();
+    const otherByCat = new Map();
     for (const p of (provs || [])) {
       if (!isIocProvision(p)) continue;
       if (!sideMatch(p)) continue;
       if (!isIocNegativeProvision(p)) continue;
       const code = resolveIocCode(p);
-      if (!code) continue;
-      if (!m.has(code)) m.set(code, p); // first match per code wins
+      if (code) {
+        if (!byCode.has(code)) byCode.set(code, p);
+      } else {
+        const cat = String(p.category || '').trim() || 'Other';
+        if (!otherByCat.has(cat)) otherByCat.set(cat, p);
+      }
     }
-    return m;
+    return { byCode, otherByCat };
   });
-  const presentCodes = IOC_CODE_ORDER.filter((code) => perDealByCode.some((m) => m.has(code)));
-  if (presentCodes.length === 0) return null;
+
+  const presentCodes = IOC_CODE_ORDER.filter((code) => perDealBuckets.some(({ byCode }) => byCode.has(code)));
+  const otherLabels = (() => {
+    const s = new Set();
+    for (const { otherByCat } of perDealBuckets) for (const k of otherByCat.keys()) s.add(k);
+    return [...s].sort((a, b) => a.localeCompare(b));
+  })();
+  const totalRows = presentCodes.length + otherLabels.length;
+  if (totalRows === 0) return null;
 
   const sideLabel = side === 'parent' ? 'Parent / Buyer' : 'Company / Target';
   return (
@@ -972,7 +1192,7 @@ function IocNegativeCovenantsCompare({ side, deals, perDealProvs, onSelectRow })
           {sideLabel} — Negative Covenants
         </h3>
         <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--ink-faint)' }}>
-          {presentCodes.length} categor{presentCodes.length === 1 ? 'y' : 'ies'}
+          {totalRows} categor{totalRows === 1 ? 'y' : 'ies'}
         </span>
       </header>
       <div style={{ border: '1px solid var(--line)', borderRadius: 8, overflow: 'hidden', background: 'var(--surface)' }}>
@@ -999,27 +1219,29 @@ function IocNegativeCovenantsCompare({ side, deals, perDealProvs, onSelectRow })
                 <td style={{ padding: '8px 12px', borderBottom: '1px solid var(--line-soft)', verticalAlign: 'top', background: 'var(--surface)' }}>
                   <ComparePill>{IOC_CATEGORY_CODES[code]}</ComparePill>
                 </td>
-                {perDealByCode.map((m, i) => {
-                  const p = m.get(code);
+                {perDealBuckets.map(({ byCode }, i) => {
+                  const p = byCode.get(code);
+                  const onClick = p && onSelectRow ? () => onSelectRow(rowKeyFor(p)) : null;
                   return (
-                    <td
-                      key={i}
-                      style={{
-                        padding: '8px 12px', borderBottom: '1px solid var(--line-soft)',
-                        borderLeft: '1px solid var(--line-soft)', verticalAlign: 'top',
-                        background: 'var(--surface)', cursor: p && onSelectRow ? 'pointer' : 'default',
-                      }}
-                      onClick={() => { if (p && onSelectRow) onSelectRow(rowKeyFor(p)); }}
-                    >
-                      {p ? (
-                        <span style={{ color: 'var(--accent-deep, var(--ink))', fontSize: 12.5 }}>
-                          {p.category || IOC_CATEGORY_CODES[code]}
-                        </span>
-                      ) : (
-                        <span style={{ color: 'var(--ink-faint)', fontStyle: 'italic', fontSize: 12 }}>
-                          Not present in this agreement
-                        </span>
-                      )}
+                    <td key={i} style={{ padding: '8px 12px', borderBottom: '1px solid var(--line-soft)', borderLeft: '1px solid var(--line-soft)', verticalAlign: 'top', background: 'var(--surface)' }}>
+                      <IocCellContent provision={p} onClick={onClick} />
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+            {otherLabels.map((label) => (
+              <tr key={`other:${label}`}>
+                <td style={{ padding: '8px 12px', borderBottom: '1px solid var(--line-soft)', verticalAlign: 'top', background: 'var(--surface)' }}>
+                  <span style={{ color: 'var(--ink)', fontWeight: 600, fontSize: 12.5 }}>{label}</span>
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9.5, color: 'var(--ink-faint)', letterSpacing: '.08em', textTransform: 'uppercase', marginTop: 2 }}>uncoded</div>
+                </td>
+                {perDealBuckets.map(({ otherByCat }, i) => {
+                  const p = otherByCat.get(label);
+                  const onClick = p && onSelectRow ? () => onSelectRow(rowKeyFor(p)) : null;
+                  return (
+                    <td key={i} style={{ padding: '8px 12px', borderBottom: '1px solid var(--line-soft)', borderLeft: '1px solid var(--line-soft)', verticalAlign: 'top', background: 'var(--surface)' }}>
+                      <IocCellContent provision={p} onClick={onClick} />
                     </td>
                   );
                 })}
@@ -1216,7 +1438,11 @@ function SummaryView({
                 compact
               />
               {g.label === 'Representations' && (
-                <MaterialContractsCompare deals={deals} perDealProvs={perDealProvs} />
+                <>
+                  <RepsCompare side="target" deals={deals} perDealProvs={perDealProvs} onSelectRow={onSelectRow} />
+                  <RepsCompare side="parent" deals={deals} perDealProvs={perDealProvs} onSelectRow={onSelectRow} />
+                  <MaterialContractsCompare deals={deals} perDealProvs={perDealProvs} />
+                </>
               )}
               {g.label === 'Conditions to Closing' && (
                 <>
@@ -1260,7 +1486,13 @@ function SummaryView({
   return (
     <div style={{ flex: 1, overflow: 'auto', padding: '14px 22px 80px' }}>
       {activeTypes.includes('REP-T') && (
-        <MaterialContractsCompare deals={deals} perDealProvs={perDealProvs} />
+        <>
+          <RepsCompare side="target" deals={deals} perDealProvs={perDealProvs} onSelectRow={onSelectRow} />
+          <MaterialContractsCompare deals={deals} perDealProvs={perDealProvs} />
+        </>
+      )}
+      {activeTypes.includes('REP-B') && (
+        <RepsCompare side="parent" deals={deals} perDealProvs={perDealProvs} onSelectRow={onSelectRow} />
       )}
       {['COND-M', 'COND-B', 'COND-S'].some((t) => activeTypes.includes(t)) && (
         <>
