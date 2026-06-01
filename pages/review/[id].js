@@ -3355,50 +3355,71 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
     return String(a.category || '').localeCompare(String(b.category || ''));
   });
 
-  // Compose a one-line details summary for a provision.
-  const detailsFor = (p) => {
+  // Per-row cell builders — split the old single "Details" composition into
+  // dedicated Threshold and Exceptions columns per user request.
+  // Threshold: dollarThreshold + the few related qualifier fields (settlement
+  // cap, lead-in window) composed inline. Empty → italic "No threshold".
+  const thresholdFor = (p) => {
     const f = getStructuredFeatures(p) || {};
     const bits = [];
     const push = (label, val) => {
       if (val === null || val === undefined || val === '' || val === false) return;
       if (Array.isArray(val) && val.length === 0) return;
-      const unwrapped = isCitableValue(val) ? getCitableValue(val) : val;
-      if (unwrapped === null || unwrapped === undefined || unwrapped === '' || unwrapped === false) return;
-      if (typeof unwrapped === 'boolean') {
-        if (!unwrapped) return;
-        bits.push(label);
+      const u = isCitableValue(val) ? getCitableValue(val) : val;
+      if (u === null || u === undefined || u === '' || u === false) return;
+      if (typeof u === 'boolean') { if (u) bits.push(label); return; }
+      if (Array.isArray(u)) {
+        const t = u.map((x) => isTaggedItem(x) ? (x.label || x.code) : String(x)).filter(Boolean).join(', ');
+        if (t) bits.push(label ? `${label}: ${t}` : t);
         return;
       }
-      if (Array.isArray(unwrapped)) {
-        const txt = unwrapped.map((x) => isTaggedItem(x) ? (x.label || x.code) : String(x)).filter(Boolean).join(', ');
-        if (txt) bits.push(`${label}: ${txt}`);
-        return;
-      }
-      if (isTaggedItem(unwrapped)) {
-        bits.push(`${label}: ${unwrapped.label || unwrapped.code}`);
-        return;
-      }
-      bits.push(`${label}: ${String(unwrapped)}`);
+      if (isTaggedItem(u)) { bits.push(label ? `${label}: ${u.label || u.code}` : (u.label || u.code)); return; }
+      bits.push(label ? `${label}: ${String(u)}` : String(u));
     };
-    push('Threshold', f.dollarThreshold);
+    push(null, f.dollarThreshold);
     push('Settlement cap', f.interimSettlementCap);
-    push('Non-payment excluded', f.interimSettlementNonPaymentExcluded);
-    push('New-contracts scope', f.interimNewContractsScope);
-    push('Salary exceptions', f.salaryIncreaseExceptions);
-    push('Bonus exceptions', f.bonusIncreaseExceptions);
-    push('New-hire exceptions', f.newHireExceptions);
-    push('Retention restrictions', f.retentionBonusRestrictions);
-    push('Benefit-plan restrictions', f.benefitPlanRestrictions);
-    push('Equity restrictions', f.equityAwardRestrictions);
-    push('Lead-in (no response)', f.leadInAllowsActionAfterNoResponse);
-    push('Lead-in period (days)', f.leadInPeriodDays);
-    // The per-clause carve-outs (e.g. "(g) sell ... except (i) sales of
-    // inventory, (ii) ..."). Previously dropped from the negative-covenant
-    // Details cell even though extraction captures them.
-    push('Consent standard', f.consentStandard);
-    push('Materiality', f.materialityQualifier);
-    push('Exceptions', f.permittedExceptions);
-    return bits.join(' · ');
+    push('Lead-in (days)', f.leadInPeriodDays);
+    return bits.length ? bits.join(' · ') : null;
+  };
+
+  // Exceptions: canonical pills from permittedExceptions + consentStandard
+  // + the common carveout booleans. Maps free-text/legacy codes onto the new
+  // COMMON_EXCEPTION_CODES so cross-deal comparison reads as pills.
+  const exceptionPillsFor = (p) => {
+    const f = getStructuredFeatures(p) || {};
+    const codes = [];
+    const seen = new Set();
+    const push = (code) => {
+      if (!code) return;
+      const norm = String(code).toUpperCase().replace(/[\s-]+/g, '_');
+      if (seen.has(norm)) return;
+      // Map any code into COMMON_EXCEPTION_CODES; unknown codes default to
+      // OTHER_SPECIFIC so the cell never reads as raw UPPER_SNAKE noise.
+      if (COMMON_EXCEPTION_CODES[norm]) {
+        seen.add(norm); codes.push(norm); return;
+      }
+      // Try synonym match against the COMMON_EXCEPTION_META labels.
+      for (const [k, meta] of Object.entries(COMMON_EXCEPTION_META || {})) {
+        for (const re of (meta.synonyms || [])) {
+          if (re.test(String(code))) { if (!seen.has(k)) { seen.add(k); codes.push(k); } return; }
+        }
+      }
+      // Fallback bucket per user request.
+      if (!seen.has('OTHER_SPECIFIC')) { seen.add('OTHER_SPECIFIC'); codes.push('OTHER_SPECIFIC'); }
+    };
+    const consumeItem = (item) => {
+      if (!item) return;
+      if (isTaggedItem(item)) { push(item.code || item.label || item.text); return; }
+      if (typeof item === 'string') { push(item); return; }
+      if (typeof item === 'object' && (item.label || item.text)) push(item.label || item.text);
+    };
+    const list = Array.isArray(f.permittedExceptions) ? f.permittedExceptions : [];
+    for (const item of list) consumeItem(item);
+    if (f.consentStandard) push('WITH_CONSENT');
+    if (f.requiredByLawCarveout) push('REQUIRED_BY_LAW');
+    if (f.pandemicCarveout) push('PANDEMIC');
+    if (f.ordinaryCourseCarveout) push('ORDINARY_COURSE');
+    return codes;
   };
 
   return (
@@ -3413,7 +3434,8 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
           <thead className="bg-bg/60 border-b border-border">
             <tr>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[280px]">Restriction</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Details</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[180px]">Threshold</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Exceptions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -3421,6 +3443,8 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
               const rowQuote = (typeof p?.full_text === 'string' && p.full_text.trim())
                 ? p.full_text
                 : null;
+              const thrText = thresholdFor(p);
+              const excCodes = exceptionPillsFor(p);
               return (
                 <tr key={p.id} className="align-top hover:bg-bg/40">
                   <td className="px-3 py-2 text-ink font-medium">
@@ -3434,10 +3458,27 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
                       </button>
                     </HoverSource>
                   </td>
-                  <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
+                  <td className="px-3 py-2 text-ink">
                     <HoverSource quote={rowQuote} as="div">
-                      {detailsFor(p) || <span className="italic text-inkFaint">—</span>}
+                      {thrText
+                        ? <span>{thrText}</span>
+                        : <span className="italic text-inkFaint">No threshold</span>}
                     </HoverSource>
+                  </td>
+                  <td className="px-3 py-2 text-ink">
+                    {excCodes.length > 0 ? (
+                      <span className="inline-flex flex-wrap gap-1">
+                        {excCodes.map((code) => (
+                          <HoverSource key={code} quote={rowQuote}>
+                            <span className="inline-flex items-center text-[10px] font-ui font-medium px-1.5 py-0.5 rounded border bg-indigo-50 text-indigo-700 border-indigo-200 whitespace-nowrap">
+                              {COMMON_EXCEPTION_CODES[code] || code}
+                            </span>
+                          </HoverSource>
+                        ))}
+                      </span>
+                    ) : (
+                      <span className="italic text-inkFaint">No exceptions</span>
+                    )}
                   </td>
                 </tr>
               );
