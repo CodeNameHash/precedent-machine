@@ -2551,14 +2551,20 @@ const IOC_AFFIRMATIVE_BUCKETS = [
     code: 'IOC-ORDINARY',
     name: 'Ordinary Course Obligation',
     catRe: /ordinary\s+course/i,
-    // Default the "applies to" pills to the typical scope for this bucket
-    // (Business / operations); the extractor can stamp more specific codes.
+    // limbRe matches against limb.obligation text on the preamble's
+    // positiveObligations array so this bucket pulls ONLY its own limb's
+    // standard/scope rather than every limb's combined.
+    limbRe: /ordinary\s+course/i,
+    // Default the "applies to" pills to the typical scope for this bucket;
+    // unioned with whatever the extractor stamps so the canonical baseline
+    // always shows and extraction adds deal-specific extras.
     defaultScopeCodes: ['BUSINESS'],
   },
   {
     code: 'IOC-PRESERVE',
     name: 'Preservation of Business Relationships',
     catRe: /(?:preservation|preserve).*relationship/i,
+    limbRe: /(?:preserv\w*|maintain)\s+(?:intact\s+)?(?:its\s+)?(?:relationship|present\s+business)/i,
     defaultScopeCodes: ['CUSTOMERS', 'SUPPLIERS', 'EMPLOYEES', 'GOVERNMENTAL_ENTITIES'],
   },
   {
@@ -2566,12 +2572,14 @@ const IOC_AFFIRMATIVE_BUCKETS = [
     code: 'IOC-MAINTAIN',
     name: 'Maintain Business',
     catRe: /maintain.*(?:business|organization|assets)/i,
+    limbRe: /maintain.*(?:business|organization|assets|properties)/i,
     defaultScopeCodes: ['BUSINESS_ORGANIZATION', 'ASSETS'],
   },
   {
     code: 'IOC-NOACTION',
     name: 'General No-Action Restriction',
     catRe: /no\s+action/i,
+    limbRe: /no\s+action|not\s+(?:take|engage)/i,
   },
   // No New Lines of Business is a NEGATIVE covenant — intentionally NOT
   // included here. It falls through to the main IOC sub-clause table below.
@@ -2664,97 +2672,148 @@ function IocAffirmativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelec
     return s;
   };
 
-  // Pull the standard for THIS provision and return one or more CANONICAL
-  // codes from IOC_AFFIRMATIVE_STANDARDS (FLAT / MATERIAL / MATERIAL_RESPECTS
-  // / efforts variants / ORDINARY_COURSE). Empty input → FLAT (no qualifier).
-  // Returns an array of codes so a Maintain-Business cell can show "Material"
-  // and "Material respects" pills side-by-side.
-  const standardCodesFor = (provision) => {
+  // Robust standard-code resolver. Maps ANY of (a) tagged item with .code,
+  // (b) UPPER_SNAKE string like "COMMERCIALLY_REASONABLE_EFFORTS", or
+  // (c) free-text phrase like "commercially reasonable efforts" to the
+  // canonical IOC_AFFIRMATIVE_STANDARDS code. Returns null when nothing maps.
+  const standardCodeFromValue = (val) => {
+    if (val == null || val === '') return null;
+    const inner = isCitableValue(val) ? getCitableValue(val) : val;
+    if (inner == null || inner === '') return null;
+    if (isTaggedItem(inner)) {
+      const c = String(inner.code || '').toUpperCase().replace(/[\s-]+/g, '_');
+      if (IOC_AFFIRMATIVE_STANDARDS[c]) return c;
+      // Fall through to synonym match on the tagged item's label/text.
+      const phrase = inner.label || inner.text || '';
+      if (phrase) return standardCodeFromValue(phrase);
+      return null;
+    }
+    if (typeof inner === 'string') {
+      const t = inner.trim();
+      if (!t) return null;
+      // Direct dict match: UPPER_SNAKE or whitespace-normalised.
+      const upper = t.toUpperCase().replace(/[\s-]+/g, '_');
+      if (IOC_AFFIRMATIVE_STANDARDS[upper]) return upper;
+      // Synonym regex match against the meta — handles "Commercially
+      // reasonable efforts", "in all material respects", "Flat", etc.
+      for (const [code, meta] of Object.entries(IOC_AFFIRMATIVE_STANDARD_META || {})) {
+        for (const re of (meta.synonyms || [])) {
+          if (re.test(t)) return code;
+        }
+      }
+    }
+    return null;
+  };
+
+  // Robust scope-code resolver — same shape, against IOC_AFFIRMATIVE_SCOPE.
+  // Returns an ARRAY of codes (a free-text scope can mention several parties).
+  const scopeCodesFromValue = (val) => {
+    if (val == null || val === '') return [];
+    const inner = isCitableValue(val) ? getCitableValue(val) : val;
+    if (inner == null || inner === '') return [];
+    if (Array.isArray(inner)) return inner.flatMap(scopeCodesFromValue);
+    if (isTaggedItem(inner)) {
+      const c = String(inner.code || '').toUpperCase().replace(/[\s-]+/g, '_');
+      if (IOC_AFFIRMATIVE_SCOPE_CODES[c]) return [c];
+      const phrase = inner.label || inner.text || '';
+      return phrase ? scopeCodesFromValue(phrase) : [];
+    }
+    if (typeof inner === 'string') {
+      const t = inner.trim();
+      if (!t) return [];
+      const upper = t.toUpperCase().replace(/[\s-]+/g, '_');
+      if (IOC_AFFIRMATIVE_SCOPE_CODES[upper]) return [upper];
+      // Synonym match against the meta — collect EVERY code whose regex
+      // fires (so "customers, suppliers, employees and governmental
+      // entities" yields all four pills).
+      const hits = [];
+      for (const [code, meta] of Object.entries(IOC_AFFIRMATIVE_SCOPE_META || {})) {
+        for (const re of (meta.synonyms || [])) {
+          if (re.test(t)) { hits.push(code); break; }
+        }
+      }
+      return hits;
+    }
+    return [];
+  };
+
+  // For a preamble provision whose features include a positiveObligations or
+  // affirmativeLimbs array, pick the limb that matches the given bucket via
+  // bucket.limbRe (matched against limb.obligation). Without this filter, a
+  // single preamble provision would surface EVERY limb's standard/scope on
+  // EVERY bucket row — the source of the "wrong standard" bug.
+  const matchingLimb = (features, bucket) => {
+    const limbs = Array.isArray(features.affirmativeLimbs) ? features.affirmativeLimbs
+      : Array.isArray(features.positiveObligations) ? features.positiveObligations
+      : [];
+    if (limbs.length === 0 || !bucket.limbRe) return null;
+    for (const limb of limbs) {
+      if (!limb || typeof limb !== 'object') continue;
+      const phrase = String(limb.obligation || limb.text || limb.label || '');
+      if (phrase && bucket.limbRe.test(phrase)) return limb;
+    }
+    return null;
+  };
+
+  // Standards for a bucket+provision. Pulls (1) the matching limb's standard
+  // if positiveObligations exists, ELSE (2) the provision's top-level
+  // standard/materiality. Empty → canonical FLAT pill.
+  const standardCodesFor = (provision, bucket) => {
     const f = getStructuredFeatures(provision) || {};
     const out = [];
     const seen = new Set();
-    const pushCode = (code) => {
-      if (!code) return;
-      const norm = String(code).toUpperCase().replace(/[\s-]+/g, '_');
-      if (IOC_AFFIRMATIVE_STANDARDS[norm] && !seen.has(norm)) {
-        seen.add(norm);
-        out.push(norm);
-      }
-    };
-    const normaliseText = (s) => {
-      const t = String(s || '').toLowerCase().trim();
-      if (!t) return null;
-      // Order matters — match "material respects" before bare "material".
-      if (/material\s+respects/.test(t)) return 'MATERIAL_RESPECTS';
-      if (/^reasonable\s+best\s+efforts?$/.test(t)) return 'REASONABLE_BEST_EFFORTS';
-      if (/^commercially\s+reasonable\s+efforts?$/.test(t)) return 'COMMERCIALLY_REASONABLE_EFFORTS';
-      if (/^best\s+efforts?$/.test(t)) return 'BEST_EFFORTS';
-      if (/ordinary\s+course/.test(t)) return 'ORDINARY_COURSE';
-      if (/^material$/.test(t)) return 'MATERIAL';
-      return null;
-    };
+    const push = (code) => { if (code && !seen.has(code)) { seen.add(code); out.push(code); } };
 
-    const consumeES = (es) => {
-      if (!es) return;
-      if (isTaggedItem(es)) { pushCode(es.code); return; }
-      if (typeof es === 'string') { const c = normaliseText(es); if (c) pushCode(c); }
-    };
-    consumeES(f.effortsStandard);
-    consumeES(f.materialityQualifier);
-    const limbs = Array.isArray(f.affirmativeLimbs) ? f.affirmativeLimbs
-      : Array.isArray(f.positiveObligations) ? f.positiveObligations
-      : [];
-    for (const limb of limbs) {
-      if (!limb || typeof limb !== 'object') continue;
-      consumeES(limb.efforts_standard || limb.effortsStandard);
-      consumeES(limb.materialityQualifier || limb.materiality);
+    const limb = matchingLimb(f, bucket);
+    if (limb) {
+      push(standardCodeFromValue(limb.efforts_standard));
+      push(standardCodeFromValue(limb.effortsStandard));
+      push(standardCodeFromValue(limb.materialityQualifier));
+      push(standardCodeFromValue(limb.materiality));
+    } else {
+      // No limb match → use top-level features. Only fall back to scanning
+      // all limbs when the provision has neither top-level standards nor a
+      // matched limb (last resort so something shows).
+      push(standardCodeFromValue(f.effortsStandard));
+      push(standardCodeFromValue(f.materialityQualifier));
+      if (out.length === 0) {
+        const limbs = Array.isArray(f.affirmativeLimbs) ? f.affirmativeLimbs
+          : Array.isArray(f.positiveObligations) ? f.positiveObligations
+          : [];
+        for (const l of limbs) {
+          if (!l || typeof l !== 'object') continue;
+          push(standardCodeFromValue(l.efforts_standard || l.effortsStandard));
+          push(standardCodeFromValue(l.materialityQualifier || l.materiality));
+        }
+      }
     }
-    // Empty → canonical "Flat" (no qualifier) so the cell never reads blank.
     if (out.length === 0) out.push('FLAT');
     return out;
   };
 
-  // Pull the scope / "applies to" CODES for this provision. Prefers an
-  // explicit list-tagged appliesTo on features; otherwise normalises any
-  // free-text scope to codes via the canonical synonym regexes; final fallback
-  // is bucket.defaultScopeCodes. Returns an array of code strings.
+  // Scope codes for a bucket+provision. Always UNIONS the bucket's
+  // defaultScopeCodes with extracted codes — defaults express the canonical
+  // meaning of the bucket, extraction adds deal-specific extras (and may
+  // re-affirm defaults). Mirrors the user's expectation that Preservation
+  // should always at least surface the canonical relationship pills.
   const scopeCodesFor = (provision, bucket) => {
     const f = getStructuredFeatures(provision) || {};
     const out = [];
     const seen = new Set();
-    const push = (code) => {
-      if (!code) return;
-      const norm = String(code).toUpperCase().replace(/[\s-]+/g, '_');
-      if (IOC_AFFIRMATIVE_SCOPE_CODES[norm] && !seen.has(norm)) {
-        seen.add(norm);
-        out.push(norm);
-      }
-    };
-    const consumeAny = (v) => {
-      if (v == null || v === '') return;
-      if (isCitableValue(v)) v = getCitableValue(v);
-      if (Array.isArray(v)) { v.forEach(consumeAny); return; }
-      if (isTaggedItem(v)) { push(v.code); return; }
-      if (typeof v === 'string') {
-        // Try to map the free-text phrase to one or more canonical codes.
-        const text = v;
-        for (const [code, meta] of Object.entries(IOC_AFFIRMATIVE_SCOPE_META || {})) {
-          for (const re of (meta.synonyms || [])) {
-            if (re.test(text)) { push(code); break; }
-          }
-        }
-      }
-    };
-    [f.appliesTo, f.applies_to, f.scope, f.appliesto].forEach(consumeAny);
-    const limbs = Array.isArray(f.affirmativeLimbs) ? f.affirmativeLimbs
-      : Array.isArray(f.positiveObligations) ? f.positiveObligations
-      : [];
-    for (const limb of limbs) {
-      if (!limb || typeof limb !== 'object') continue;
-      consumeAny(limb.appliesTo || limb.scope);
-    }
-    if (out.length === 0 && Array.isArray(bucket.defaultScopeCodes)) {
-      bucket.defaultScopeCodes.forEach(push);
+    const push = (code) => { if (code && !seen.has(code)) { seen.add(code); out.push(code); } };
+
+    // 1. Canonical baseline.
+    for (const code of (bucket.defaultScopeCodes || [])) push(code);
+
+    // 2. Extracted codes — prefer the matching limb's scope/appliesTo so
+    //    each bucket row pulls only its own limb (not every limb's).
+    const limb = matchingLimb(f, bucket);
+    if (limb) {
+      scopeCodesFromValue(limb.appliesTo).forEach(push);
+      scopeCodesFromValue(limb.applies_to).forEach(push);
+      scopeCodesFromValue(limb.scope).forEach(push);
+    } else {
+      [f.appliesTo, f.applies_to, f.scope, f.appliesto].forEach((v) => scopeCodesFromValue(v).forEach(push));
     }
     return out;
   };
@@ -3169,55 +3228,33 @@ function IocGeneralExceptionsTableSingle({ iocProvisions, generalExceptionsProv,
  * text (clickable to evidence highlight). */
 function IocExceptionsMiniRows({ rows, showEvidence, onSelectProvision }) {
   if (!rows || rows.length === 0) return null;
+  // Clean pill list per user request — was a 2-column table with verbatim
+  // text inline that read as a "horrific list". Each canonical exception
+  // renders as one indigo pill; the verbatim text moves to a hover tooltip
+  // and is reachable via click (jump to the source provision in the editor).
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full text-xs font-ui">
-        <thead className="bg-bg/60 border-b border-border">
-          <tr>
-            <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[260px]">Exception Type</th>
-            <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Details</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-border">
-          {rows.map((row, i) => {
-            const detailsText = row.text || row.label;
-            const clickableText = !!(row.text && showEvidence);
-            const handleTextClick = clickableText ? () => showEvidence(row.text) : undefined;
-            const hoverQuote = row.text || (row.source && row.source.full_text) || null;
-            return (
-              <tr key={`${row.code}-${i}`} className="hover:bg-bg/40 transition-colors align-top">
-                <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">
-                  {row.source && onSelectProvision ? (
-                    <HoverSource quote={hoverQuote}>
-                      <button
-                        type="button"
-                        onClick={() => onSelectProvision(row.source)}
-                        className="text-left text-accent hover:underline font-medium"
-                      >
-                        {row.label}
-                      </button>
-                    </HoverSource>
-                  ) : (
-                    <span>{row.label}</span>
-                  )}
-                </td>
-                <td
-                  className={`px-3 py-2 text-ink whitespace-pre-wrap break-words ${clickableText ? 'cursor-pointer hover:text-amber-700' : ''}`}
-                  onClick={handleTextClick}
-                >
-                  <HoverSource quote={hoverQuote} as="div">
-                    {row.text ? (
-                      <span className="italic">&ldquo;{detailsText}&rdquo;</span>
-                    ) : (
-                      <span className="text-inkFaint/70 italic">—</span>
-                    )}
-                  </HoverSource>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+    <div className="px-3 py-3 flex flex-wrap gap-1.5">
+      {rows.map((row, i) => {
+        const hoverQuote = row.text || (row.source && row.source.full_text) || null;
+        const handleClick = row.source && onSelectProvision
+          ? () => onSelectProvision(row.source)
+          : (row.text && showEvidence ? () => showEvidence(row.text) : undefined);
+        const Pill = (
+          <span className="inline-flex items-center text-[10.5px] font-ui font-medium px-2 py-0.5 rounded border bg-indigo-50 text-indigo-700 border-indigo-200 whitespace-nowrap">
+            {row.label}
+          </span>
+        );
+        const node = handleClick ? (
+          <button type="button" onClick={handleClick} className="cursor-pointer hover:opacity-80">
+            {Pill}
+          </button>
+        ) : Pill;
+        return (
+          <HoverSource key={`${row.code}-${i}`} quote={hoverQuote}>
+            {node}
+          </HoverSource>
+        );
+      })}
     </div>
   );
 }
