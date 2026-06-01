@@ -7059,15 +7059,20 @@ function isMaterialContractsProvision(p) {
 /* ─── REP knowledge note: italic line above the REP table reading
  *     "Knowledge standard: <KNOWLEDGE_STANDARDS label or italic 'Not specified'>".
  *     Pulled from the first REP provision with non-null `knowledgeStandard`. */
-function RepKnowledgeNote({ provisions }) {
+function RepKnowledgeNote({ provisions, allProvisions }) {
   const showEvidence = useShowEvidence();
   // Resolve the knowledge STANDARD (actual / actual-after-inquiry / etc.) and
   // the PERSONS it attaches to (executive officers / a named schedule list),
-  // each as a pill with click-to-source. Standard maps a few common phrasings
-  // onto a short canonical label.
+  // each as a pill with click-to-source.
+  //
+  // SOURCE OF TRUTH: prefer the "Knowledge" defined term in DEF (the actual
+  // definition the agreement uses), falling back to features that may have
+  // been stamped on individual reps. The DEF is the canonical anchor so the
+  // pill resolves to the same standard cross-deal.
   let standardLabel = null;
   let standardQuote = null;
-  let persons = [];        // array of { label, quote }
+  let standardCode = null;
+  let persons = [];        // array of { label, quote, code }
   let defQuote = null;     // the "knowledge means ..." definition sentence
 
   const normStandard = (raw) => {
@@ -7075,30 +7080,74 @@ function RepKnowledgeNote({ provisions }) {
     if (!v) return null;
     if (isTaggedItem(v)) return resolveTaggedLabel('knowledgeStandard', v) || v.label || v.code;
     const s = String(v).toLowerCase();
-    if (/after\s+(?:due|reasonable)\s+inquiry/.test(s) || /actual-knowledge-after/.test(s)) return 'Actual Knowledge After Due Inquiry';
-    if (/constructive/.test(s)) return 'Constructive Knowledge';
-    if (/actual/.test(s)) return 'Actual Knowledge';
+    if (/after\s+(?:due|reasonable)\s+inquiry/.test(s) || /actual-knowledge-after/.test(s)) return 'Knowledge after reasonable inquiry';
+    if (/constructive/.test(s)) return 'Constructive knowledge';
+    if (/actual/.test(s)) return 'Actual knowledge';
     return String(v);
   };
+  const codeOf = (raw) => {
+    const v = isCitableValue(raw) ? getCitableValue(raw) : raw;
+    if (isTaggedItem(v)) return v.code || null;
+    return null;
+  };
 
-  for (const p of provisions || []) {
-    const f = getStructuredFeatures(p) || {};
-    if (!standardLabel && f.knowledgeStandard) {
-      standardLabel = normStandard(f.knowledgeStandard);
-      standardQuote = evidenceQuote(f.knowledgeStandard, { provision: p, focusOn: 'knowledge' });
+  // 1. CANONICAL: look up the "Knowledge" defined term in the full provision
+  //    pool and read its features. Match by category (defined-term name).
+  const knowledgeDef = (() => {
+    for (const p of allProvisions || []) {
+      if (p.type !== 'DEF') continue;
+      const cat = String(p.category || '').trim();
+      if (/^knowledge(?:\s+of\s+(?:the\s+)?(?:company|parent))?$/i.test(cat)) return p;
+      if (/^(?:company|parent)(?:'s)?\s+knowledge$/i.test(cat)) return p;
     }
-    if (persons.length === 0 && f.knowledgePersons) {
-      const raw = isCitableValue(f.knowledgePersons) ? getCitableValue(f.knowledgePersons) : f.knowledgePersons;
-      const q = evidenceQuote(f.knowledgePersons, { provision: p, focusOn: 'knowledge' });
-      const list = Array.isArray(raw) ? raw : [raw];
-      for (const item of list) {
+    return null;
+  })();
+  if (knowledgeDef) {
+    const f = getStructuredFeatures(knowledgeDef) || {};
+    if (f.knowledgeStandard) {
+      standardLabel = normStandard(f.knowledgeStandard);
+      standardCode = codeOf(f.knowledgeStandard);
+      standardQuote = evidenceQuote(f.knowledgeStandard, { provision: knowledgeDef, focusOn: 'knowledge' })
+        || (typeof knowledgeDef.full_text === 'string' ? knowledgeDef.full_text : null);
+    }
+    if (Array.isArray(f.knowledgePersons)) {
+      for (const item of f.knowledgePersons) {
         if (!item) continue;
-        const lbl = isTaggedItem(item) ? (item.label || item.code) : String(item).trim();
-        if (lbl) persons.push({ label: lbl, quote: (isTaggedItem(item) && item.text) || q });
+        if (isTaggedItem(item)) {
+          const lbl = resolveTaggedLabel('knowledgePersons', item) || item.label || item.code;
+          if (lbl) persons.push({ label: lbl, code: item.code || null, quote: item.text || standardQuote || null });
+        } else if (typeof item === 'string' && item.trim()) {
+          persons.push({ label: item.trim(), code: null, quote: standardQuote || null });
+        }
       }
     }
-    if (!defQuote && (f.knowledgeStandard || f.knowledgePersons)) {
-      defQuote = standardQuote || null;
+    defQuote = standardQuote;
+  }
+
+  // 2. FALLBACK: if the DEF didn't surface anything (older extracts, no
+  //    Knowledge definition extracted), scan rep features.
+  if (!standardLabel) {
+    for (const p of provisions || []) {
+      const f = getStructuredFeatures(p) || {};
+      if (!standardLabel && f.knowledgeStandard) {
+        standardLabel = normStandard(f.knowledgeStandard);
+        standardCode = codeOf(f.knowledgeStandard);
+        standardQuote = evidenceQuote(f.knowledgeStandard, { provision: p, focusOn: 'knowledge' });
+      }
+      if (persons.length === 0 && f.knowledgePersons) {
+        const raw = isCitableValue(f.knowledgePersons) ? getCitableValue(f.knowledgePersons) : f.knowledgePersons;
+        const q = evidenceQuote(f.knowledgePersons, { provision: p, focusOn: 'knowledge' });
+        const list = Array.isArray(raw) ? raw : [raw];
+        for (const item of list) {
+          if (!item) continue;
+          const lbl = isTaggedItem(item) ? (item.label || item.code) : String(item).trim();
+          if (lbl) persons.push({ label: lbl, code: isTaggedItem(item) ? (item.code || null) : null, quote: (isTaggedItem(item) && item.text) || q });
+        }
+      }
+      if (!defQuote && (f.knowledgeStandard || f.knowledgePersons)) {
+        defQuote = standardQuote || null;
+      }
+      if (standardLabel && persons.length > 0) break;
     }
   }
 
@@ -7131,14 +7180,26 @@ function RepKnowledgeNote({ provisions }) {
     );
   }
 
+  // Two labelled sub-answers per request: the Standard and the Group, both
+  // canonical pills clickable to the Knowledge defined-term source.
   return (
-    <div className="flex items-center gap-1.5 flex-wrap px-1 text-[11px] font-ui text-inkMid">
-      <span className="italic">Knowledge:</span>
-      {standardLabel && <Pill text={standardLabel} quote={standardQuote} tone="standard" />}
-      {persons.length > 0 && <span className="italic text-inkFaint">of</span>}
-      {persons.map((pn, i) => (
-        <Pill key={i} text={pn.label} quote={pn.quote} tone="person" />
-      ))}
+    <div className="px-1 text-[11px] font-ui text-inkMid flex flex-col gap-1">
+      <div className="flex items-center gap-1.5 flex-wrap">
+        <span className="italic">Knowledge standard:</span>
+        {standardLabel
+          ? <Pill text={standardLabel} quote={standardQuote} tone="standard" />
+          : <span className="text-inkFaint">Not specified</span>
+        }
+      </div>
+      <div className="flex items-center gap-1.5 flex-wrap">
+        <span className="italic">Knowledge group:</span>
+        {persons.length > 0
+          ? persons.map((pn, i) => (
+              <Pill key={i} text={pn.label} quote={pn.quote} tone="person" />
+            ))
+          : <span className="text-inkFaint">Not specified</span>
+        }
+      </div>
     </div>
   );
 }
@@ -12663,7 +12724,7 @@ export default function ReviewPage() {
                                 />
                               )}
                               {(type === 'REP-T' || type === 'REP-B') && (
-                                <RepKnowledgeNote provisions={rest} />
+                                <RepKnowledgeNote provisions={rest} allProvisions={provisions} />
                               )}
                               {/* P3 item 2: General Exceptions apply to the
                                   ENTIRE reps section — render FIRST so they
