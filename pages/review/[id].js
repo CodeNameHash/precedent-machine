@@ -2747,7 +2747,7 @@ function IocAffirmativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelec
     const limbs = Array.isArray(features.affirmativeLimbs) ? features.affirmativeLimbs
       : Array.isArray(features.positiveObligations) ? features.positiveObligations
       : [];
-    if (limbs.length === 0 || !bucket.limbRe) return null;
+    if (limbs.length === 0 || !bucket || !bucket.limbRe) return null;
     for (const limb of limbs) {
       if (!limb || typeof limb !== 'object') continue;
       const phrase = String(limb.obligation || limb.text || limb.label || '');
@@ -2856,7 +2856,7 @@ function IocAffirmativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelec
           </thead>
           <tbody className="divide-y divide-border">
             {matches.map(({ bucket, provision }) => {
-              const stdCodes = standardCodesFor(provision);
+              const stdCodes = standardCodesFor(provision, bucket);
               const scopeCodes = scopeCodesFor(provision, bucket);
               const rowQuote = (typeof provision?.full_text === 'string' && provision.full_text.trim())
                 ? provision.full_text
