@@ -905,12 +905,13 @@ function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelect
               maeAppliesToBoth: true,
             };
           }
-          // For IOC: when any IOC child has content, keep BOTH Target and
-          // Parent children visible (Parent reads "Buyer / Parent (0)" with
-          // a "Not present" page when clicked). For all other groups, drop
-          // children with zero provisions as before.
+          // For IOC and Termination Rights: when any child has content, keep
+          // ALL party-typed children visible (empty ones read e.g. "Buyer (0)"
+          // with a "Not present" page when clicked). For all other groups,
+          // drop children with zero provisions as before.
           const isIocGroup = g.label === 'Interim Operating Covenants';
-          const presentChildren = isIocGroup && total > 0
+          const isTermrGroup = g.label === 'Termination Rights';
+          const presentChildren = (isIocGroup || isTermrGroup) && total > 0
             ? childRows
             : childRows.filter((c) => c.provs.length > 0);
           return { label: g.label, children: presentChildren, types: presentChildren.map((c) => c.type), total };
@@ -12189,6 +12190,17 @@ export default function ReviewPage() {
     // Parent halves reading "Not present in this agreement".
     const anyIoc = !!(groups['IOC-T'] || groups['IOC-B']);
     if (anyIoc && !groups['IOC-B']) groups['IOC-B'] = [];
+    // Same always-show treatment for TERMR per user request — when any TERMR
+    // exists, surface Mutual / Buyer / Target in the sidebar even when empty
+    // so the parent group renders all three as stacked sections (with "Not
+    // present in this agreement" for the empty ones). Unclassified (bare
+    // TERMR) keeps its existing "only when present" behaviour.
+    const anyTermr = !!(groups['TERMR-M'] || groups['TERMR-B'] || groups['TERMR-T'] || groups['TERMR']);
+    if (anyTermr) {
+      if (!groups['TERMR-M']) groups['TERMR-M'] = [];
+      if (!groups['TERMR-B']) groups['TERMR-B'] = [];
+      if (!groups['TERMR-T']) groups['TERMR-T'] = [];
+    }
     return groups;
   }, [provisions]);
 
@@ -12241,6 +12253,23 @@ export default function ReviewPage() {
     const isAllProvisions = activeFilter === null;
     const wantIocBSection = isParentIocClick || isIocBOnlyClick || (isAllProvisions && (groups['IOC-T'] || groups['IOC-B']));
     if (wantIocBSection && !groups['IOC-B']) groups['IOC-B'] = [];
+
+    // TERMR section synthesis — mirrors the IOC pattern. Parent-group click
+    // synthesizes all three party-typed children (Mutual / Buyer / Target);
+    // direct child click synthesizes just that child (so its empty page still
+    // renders); All Provisions synthesizes all three when any TERMR exists.
+    const termrChildren = ['TERMR-M', 'TERMR-B', 'TERMR-T'];
+    const termrArr = Array.isArray(activeFilter) ? activeFilter : [];
+    const isParentTermrClick = termrChildren.every((t) => termrArr.includes(t));
+    const isTermrChildClick = typeof activeFilter === 'string' && termrChildren.includes(activeFilter);
+    const anyTermrPresent = !!(groups['TERMR-M'] || groups['TERMR-B'] || groups['TERMR-T'] || groups['TERMR']);
+    if (isParentTermrClick) {
+      for (const t of termrChildren) if (!groups[t]) groups[t] = [];
+    } else if (isTermrChildClick && !groups[activeFilter]) {
+      groups[activeFilter] = [];
+    } else if (isAllProvisions && anyTermrPresent) {
+      for (const t of termrChildren) if (!groups[t]) groups[t] = [];
+    }
     return groups;
   }, [filteredProvisions, provisions, activeFilter]);
 
@@ -13055,7 +13084,22 @@ export default function ReviewPage() {
                                 const restAugmented = (type === 'REP-T' || type === 'REP-B')
                                   ? augmentRepsWithExpectedPlaceholders(rest, type, provisions)
                                   : rest;
-                                if (!restAugmented || restAugmented.length === 0) return null;
+                                if (!restAugmented || restAugmented.length === 0) {
+                                  // Empty TERMR child section (Mutual / Buyer / Target) — render a
+                                  // "Not present" placeholder rather than disappearing so the parent-
+                                  // group view stacks reads cleanly. IOC empties placeholder via their
+                                  // own table wrappers above; non-children types render nothing.
+                                  if (type === 'TERMR-M' || type === 'TERMR-B' || type === 'TERMR-T') {
+                                    return (
+                                      <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+                                        <div className="px-3 py-3 text-xs font-ui italic text-inkFaint">
+                                          Not present in this agreement
+                                        </div>
+                                      </div>
+                                    );
+                                  }
+                                  return null;
+                                }
                                 return (
                                   <ProvisionTable
                                     provisions={restAugmented}
