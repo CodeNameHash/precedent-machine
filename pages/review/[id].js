@@ -27,6 +27,7 @@ import {
   IOC_AFFIRMATIVE_SCOPE_META,
   COMMON_EXCEPTION_CODES,
   COMMON_EXCEPTION_META,
+  EXCEPTION_CODES,
 } from '../../lib/taxonomy';
 import {
   getAiMetadata,
@@ -3005,11 +3006,25 @@ function IocGeneralExceptionsTableSingle({ iocProvisions, generalExceptionsProv,
   const positiveList = useMemo(() => {
     const seen = new Set();
     const out = [];
+    // P9: collapse near-synonymous EXCEPTION_CODES into a single canonical
+    // pill so existing data (where the AI split "Letter or otherwise required
+    // by Agreement" into two tagged items) reads as ONE "As disclosed" pill
+    // rather than two near-identical pills. Same for the two "consent" codes.
+    const CODE_ALIAS = {
+      REQUIRED_BY_AGREEMENT: 'COMPANY_DISCLOSURE_LETTER',
+      DISCLOSURE_SCHEDULE: 'COMPANY_DISCLOSURE_LETTER',
+      WRITTEN_CONSENT: 'PRIOR_WRITTEN_CONSENT',
+    };
     const push = (entry) => {
-      const key = entry.code;
-      if (!key || seen.has(key)) return;
-      seen.add(key);
-      out.push(entry);
+      const canonical = CODE_ALIAS[entry.code] || entry.code;
+      if (!canonical || seen.has(canonical)) return;
+      seen.add(canonical);
+      // Re-resolve the label from the canonical code so aliased items read
+      // as the canonical pill label ("As disclosed") rather than the
+      // original code's label ("As contemplated by this Agreement").
+      const dictLabel = EXCEPTION_CODES[canonical];
+      const finalLabel = dictLabel || entry.label;
+      out.push({ ...entry, code: canonical, label: finalLabel });
     };
 
     // 1. Items from the positive preamble provision (the IOC intro). Accept
