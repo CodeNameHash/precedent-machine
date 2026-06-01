@@ -12218,25 +12218,29 @@ export default function ReviewPage() {
       const mcProvs = filteredProvisions.filter(isMaterialContractsProvision);
       if (mcProvs.length > 0) groups['__MATERIAL_CONTRACTS'] = mcProvs;
     }
-    // IOC party promotion — same rule as provsByType. When the active filter
-    // is IOC-T, also need to seed the IOC-T group from any bare-IOC provisions
-    // in the FULL provisions pool (filteredProvisions just dropped them, since
-    // those provisions have p.type === 'IOC'). Mirrors the MAE handling above.
+    // IOC party promotion + section synthesis (mirrors REPs):
+    //   • When activeFilter touches IOC-T (single child click OR parent-group
+    //     array), promote bare-IOC provisions into IOC-T AND drop the bare
+    //     IOC group so we don't render duplicate sections.
+    //   • Synthesize an empty IOC-B section ONLY when the user expects to see
+    //     the Parent half: a parent-group click (array contains both), a
+    //     direct Buyer/Parent click (activeFilter === 'IOC-B'), or the All
+    //     Provisions view (activeFilter === null) when any IOC exists. A
+    //     direct Company/Target click suppresses the IOC-B section.
     const iocTFilterActive = activeFilter === 'IOC-T' || (Array.isArray(activeFilter) && activeFilter.includes('IOC-T'));
     if (iocTFilterActive) {
       const bareIoc = (provisions || []).filter((p) => p.type === 'IOC');
       if (bareIoc.length > 0) groups['IOC-T'] = [...(groups['IOC-T'] || []), ...bareIoc];
+      delete groups['IOC'];
     } else if (groups['IOC'] && groups['IOC'].length > 0 && !groups['IOC-B']) {
       groups['IOC-T'] = [...(groups['IOC-T'] || []), ...groups['IOC']];
       delete groups['IOC'];
     }
-    // Always-show Parent IOC: when the deal has ANY IOC of any flavor, also
-    // synthesize an empty IOC-B entry so the Buyer/Parent half renders with a
-    // "Not present in this agreement" placeholder rather than disappearing.
-    // Per user: "we should still show an item for Parent even if no IOCs and
-    // just say none on the page".
-    const anyIocPresent = !!(groups['IOC-T'] || groups['IOC-B'] || groups['IOC']);
-    if (anyIocPresent && !groups['IOC-B']) groups['IOC-B'] = [];
+    const isParentIocClick = Array.isArray(activeFilter) && activeFilter.includes('IOC-T') && activeFilter.includes('IOC-B');
+    const isIocBOnlyClick = activeFilter === 'IOC-B';
+    const isAllProvisions = activeFilter === null;
+    const wantIocBSection = isParentIocClick || isIocBOnlyClick || (isAllProvisions && (groups['IOC-T'] || groups['IOC-B']));
+    if (wantIocBSection && !groups['IOC-B']) groups['IOC-B'] = [];
     return groups;
   }, [filteredProvisions, provisions, activeFilter]);
 
@@ -12979,32 +12983,34 @@ export default function ReviewPage() {
                                   allProvisions={provisions}
                                 />
                               )}
-                              {/* IOC side-gate: driven by the ACTIVE FILTER, not the
-                                  current loop `type`. A direct child click sets activeFilter
-                                  to a single string ('IOC-T' or 'IOC-B') and we hide the off
-                                  side. A parent-group click sets activeFilter to an array
-                                  ['IOC-T','IOC-B'], so iocSide is null and BOTH halves render
-                                  (Target with content, Parent with "Not present"). */}
-                              {isIocType && type === firstIocType && (
+                              {/* IOC tables render PER SECTION (like REPs): each
+                                  child type's section emits its OWN tables, with `side`
+                                  derived from the loop's `type` so IOC-T section shows the
+                                  Target half (with content) and IOC-B section shows the
+                                  Buyer half (which placeholder-renders "Not present in
+                                  this agreement" for empty groups). A bare-IOC section
+                                  (rare — only when the deal genuinely has both party-typed
+                                  and unclassified provisions) shows both halves. */}
+                              {isIocType && (
                                 <IocAffirmativeCovenantsTable
-                                  iocProvisions={allFilteredIocProvisions}
+                                  iocProvisions={provs}
                                   onSelectProvision={handleEditProvision}
-                                  side={iocSide}
+                                  side={type === 'IOC-T' ? 'target' : type === 'IOC-B' ? 'buyer' : null}
                                 />
                               )}
-                              {isIocType && type === firstIocType && (
+                              {isIocType && (
                                 <IocGeneralExceptionsTable
-                                  iocProvisions={allFilteredIocProvisions}
+                                  iocProvisions={provs}
                                   generalExceptionsProv={iocGeneralExceptions}
                                   onSelectProvision={handleEditProvision}
-                                  side={iocSide}
+                                  side={type === 'IOC-T' ? 'target' : type === 'IOC-B' ? 'buyer' : null}
                                 />
                               )}
-                              {isIocType && type === firstIocType && (
+                              {isIocType && (
                                 <IocNegativeCovenantsTable
-                                  iocProvisions={allFilteredIocProvisions.filter((p) => !isPreambleProvision(p))}
+                                  iocProvisions={provs.filter((p) => !isPreambleProvision(p))}
                                   onSelectProvision={handleEditProvision}
-                                  side={iocSide}
+                                  side={type === 'IOC-T' ? 'target' : type === 'IOC-B' ? 'buyer' : null}
                                 />
                               )}
                               {(type === 'REP-T' || type === 'REP-B') && (
