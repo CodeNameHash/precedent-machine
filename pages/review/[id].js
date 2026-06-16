@@ -6021,6 +6021,29 @@ function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision, hide
         provision: null,
       };
     }
+    // Public-deal default: reps don't survive closing in a public-target M&A
+    // merger agreement. When the deal has an SEC-filings rep (REP-T-SEC) and
+    // the extractor didn't emit a survival value, synthesize the canonical
+    // public-deal answer so the row doesn't read "Not present".
+    if (!hit && row.keys) {
+      const survivalKeys = new Set(['repsSurvivalPresent', 'repsSurvivalDuration', 'repsSurvivalExceptions']);
+      const isSurvivalRow = row.keys.some((k) => survivalKeys.has(k));
+      if (isSurvivalRow) {
+        const sections = (deal && deal.metadata && Array.isArray(deal.metadata.classified_sections))
+          ? deal.metadata.classified_sections
+          : [];
+        const isPublic = sections.some((s) => s && (s.code === 'REP-T-SEC' || s.code === 'REP-T-PROXY'));
+        if (isPublic) {
+          if (row.keys.includes('repsSurvivalPresent')) {
+            hit = { value: 'No — public-target deal; representations do not survive Closing', key: 'repsSurvivalPresent', provision: null };
+          } else if (row.keys.includes('repsSurvivalDuration')) {
+            hit = { value: '0 (public-target deal)', key: 'repsSurvivalDuration', provision: null };
+          } else if (row.keys.includes('repsSurvivalExceptions')) {
+            hit = { value: 'None — public-target deal', key: 'repsSurvivalExceptions', provision: null };
+          }
+        }
+      }
+    }
     const customRender = row.customRender || (row.customRenderKey ? CUSTOM_RENDERERS[row.customRenderKey] : null) || null;
     return { label: row.label, hit, lookupKey: (row.keys && row.keys[0]) || row.maeCode || null, originalIdx, customRender };
   });
