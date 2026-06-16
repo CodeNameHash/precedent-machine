@@ -5962,10 +5962,33 @@ function NosolFourTables({ provisions }) {
   );
 }
 
-function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision, hideProvisionsList, excludeProvisionIds, allProvisions }) {
+function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision, hideProvisionsList, excludeProvisionIds, allProvisions, deal }) {
   const spec = CATEGORY_SUMMARY_FEATURES[type] || [];
   const excludeSet = excludeProvisionIds instanceof Set ? excludeProvisionIds : null;
   const showEvidence = useShowEvidence();
+  // Synthesize outsideDateMonths from announce_date + outsideDate when the
+  // extractor left months null but the parties' calendar dates are known.
+  // Returns a number (rounded) or null.
+  const computeOutsideDateMonths = () => {
+    if (!deal || !deal.announce_date) return null;
+    let outsideDateStr = null;
+    for (const p of provisions) {
+      const f = getStructuredFeatures(p) || {};
+      const raw = f.outsideDate;
+      const unwrapped = isCitableValue(raw) ? getCitableValue(raw) : raw;
+      if (typeof unwrapped === 'string' && unwrapped.trim()) {
+        outsideDateStr = unwrapped.trim();
+        break;
+      }
+    }
+    if (!outsideDateStr) return null;
+    const od = new Date(outsideDateStr);
+    const ad = new Date(deal.announce_date);
+    if (Number.isNaN(od.getTime()) || Number.isNaN(ad.getTime())) return null;
+    const monthsFloat = (od.getFullYear() - ad.getFullYear()) * 12 + (od.getMonth() - ad.getMonth()) + (od.getDate() - ad.getDate()) / 30.4375;
+    return Math.round(monthsFloat);
+  };
+  const derivedOutsideDateMonths = computeOutsideDateMonths();
 
   // For each spec row, resolve its hit. MAE rows with `maeCode` resolve via
   // findCarveoutByCode against features.carveouts (taxonomy-tagged list).
@@ -5987,6 +6010,16 @@ function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision, hide
       }
     } else if (row.keys && row.keys.length > 0) {
       hit = pickFirstNonEmpty(provisions, row.keys);
+    }
+    // Synthesize outsideDateMonths from announce_date + outsideDate when the
+    // extractor didn't populate it but we can compute the gap from the deal
+    // record. Renders as "<N> months (calculated)".
+    if (!hit && row.keys && row.keys.includes('outsideDateMonths') && derivedOutsideDateMonths !== null) {
+      hit = {
+        value: `${derivedOutsideDateMonths} months (calculated from agreement date)`,
+        key: 'outsideDateMonths',
+        provision: null,
+      };
     }
     const customRender = row.customRender || (row.customRenderKey ? CUSTOM_RENDERERS[row.customRenderKey] : null) || null;
     return { label: row.label, hit, lookupKey: (row.keys && row.keys[0]) || row.maeCode || null, originalIdx, customRender };
@@ -8541,7 +8574,7 @@ function CellWithSource({ provision, featureKey, raw, isEmpty, children, classNa
   );
 }
 
-function ProvisionTable({ provisions, type, onSelectProvision, allProvisions }) {
+function ProvisionTable({ provisions, type, onSelectProvision, allProvisions, deal }) {
   // STRUCT and CONSID get specialized layouts — see dedicated components above.
   if (type === 'STRUCT') {
     return <StructTable provisions={provisions} onSelectProvision={onSelectProvision} />;
@@ -8600,6 +8633,7 @@ function ProvisionTable({ provisions, type, onSelectProvision, allProvisions }) 
     return (
       <div className="space-y-3">
         <CategoryFeatureSummaryTable
+          deal={deal}
           provisions={mainProvsAugmented}
           type="ANTI"
           onSelectProvision={onSelectProvision}
@@ -8639,6 +8673,7 @@ function ProvisionTable({ provisions, type, onSelectProvision, allProvisions }) 
   if (type === 'MISC') {
     return (
       <CategoryFeatureSummaryTable
+          deal={deal}
         provisions={provisions}
         type="MISC"
         onSelectProvision={onSelectProvision}
@@ -8651,10 +8686,14 @@ function ProvisionTable({ provisions, type, onSelectProvision, allProvisions }) 
   //    agreement" italic placeholder so the user can see at one glance what
   //    is populated vs. missing across the full 201-column PW spec.
   if (type === 'TERMR' || type === 'TERMR-M' || type === 'TERMR-B' || type === 'TERMR-T') {
+    // Pass the party-specific type through so CategoryFeatureSummaryTable
+    // resolves to TERMR / TERMR-B / TERMR-T (each has its own spec — Buyer
+    // and Target drop the mutual outside-date / extension rows).
     return (
       <CategoryFeatureSummaryTable
+          deal={deal}
         provisions={provisions}
-        type="TERMR"
+        type={type === 'TERMR-M' ? 'TERMR' : type}
         onSelectProvision={onSelectProvision}
       />
     );
@@ -8688,6 +8727,7 @@ function ProvisionTable({ provisions, type, onSelectProvision, allProvisions }) 
           onSelectProvision={onSelectProvision}
         />
         <CategoryFeatureSummaryTable
+          deal={deal}
           provisions={provisions}
           type={CATEGORY_SUMMARY_FEATURES[type] ? type : 'COND-M'}
           onSelectProvision={onSelectProvision}
@@ -8706,6 +8746,7 @@ function ProvisionTable({ provisions, type, onSelectProvision, allProvisions }) 
   if (type === 'COV') {
     return (
       <CategoryFeatureSummaryTable
+          deal={deal}
         provisions={provisions}
         type="COV"
         onSelectProvision={onSelectProvision}
@@ -13195,6 +13236,7 @@ export default function ReviewPage() {
                                     type={type}
                                     onSelectProvision={handleEditProvision}
                                     allProvisions={provisions}
+                                    deal={deal}
                                   />
                                 );
                               })()}
