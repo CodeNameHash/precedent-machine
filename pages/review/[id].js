@@ -5766,7 +5766,7 @@ function renderSummaryRowValue(hit, featureKeyForLookup) {
   // Tagged single value → show the resolved label.
   if (isTaggedItem(v)) {
     const label = resolveTaggedLabel(key, v) || v.label || v.code;
-    return <span>{label}</span>;
+    return <span>{prettifyEnumValue(key, label)}</span>;
   }
 
   // List value → bullets (P8 item 6: universal list-as-bullets).
@@ -5788,7 +5788,28 @@ function renderSummaryRowValue(hit, featureKeyForLookup) {
   if (v === null || v === undefined || v === '') {
     return <span className="italic text-inkFaint">Not present in this agreement</span>;
   }
-  return <span>{String(v)}</span>;
+  return <span>{prettifyEnumValue(key, String(v))}</span>;
+}
+
+/* Lowercase taxonomy enum strings ("cash-with-cvr", "all-cash") leak into the
+ * summary tables verbatim when the rubric value is a plain string rather than
+ * a tagged item. Map them to readable labels here so e.g. CVR stays capitalized
+ * in the Consideration Type cell. Only the keys we've explicitly catalogued
+ * are remapped — anything else passes through. */
+function prettifyEnumValue(key, raw) {
+  if (typeof raw !== 'string' || raw.length === 0) return raw;
+  if (key === 'considerationType') {
+    const map = {
+      'all-cash': 'All cash',
+      'all-stock': 'All stock',
+      'mixed-cash-and-stock': 'Mixed cash and stock',
+      'cash-with-cvr': 'Cash with CVR',
+    };
+    const hit = map[raw.toLowerCase()];
+    if (hit) return hit;
+    return raw.replace(/\bcvr\b/gi, 'CVR');
+  }
+  return raw;
 }
 
 /* ─── P3 item 1: NOSOL — 4 stacked mini-tables ──
