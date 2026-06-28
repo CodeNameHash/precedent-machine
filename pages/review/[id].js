@@ -3476,6 +3476,31 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
     push(null, f.dollarThreshold);
     push('Settlement cap', f.interimSettlementCap);
     push('Lead-in (days)', f.leadInPeriodDays);
+    // Surface monetary thresholds carried on permittedExceptions items (the
+    // extractor tags dollar-cap carve-outs MONETARY_THRESHOLD and attaches
+    // thresholdIndividual / thresholdAggregate). Per user request these read
+    // in the Threshold column ("$250K ind. / $2M agg.") rather than being
+    // buried as an exception pill.
+    const fmtUsd = (n) => {
+      if (n === null || n === undefined || n === '') return null;
+      const num = typeof n === 'number' ? n : Number(String(n).replace(/[$,]/g, ''));
+      if (!Number.isFinite(num)) return typeof n === 'string' ? n : null;
+      if (num >= 1_000_000 && num % 100_000 === 0) return `$${(num / 1_000_000).toFixed(num % 1_000_000 === 0 ? 0 : 1)}M`;
+      if (num >= 1_000 && num % 1_000 === 0) return `$${(num / 1_000).toFixed(0)}K`;
+      return `$${num.toLocaleString('en-US')}`;
+    };
+    const excList = Array.isArray(f.permittedExceptions) ? f.permittedExceptions : [];
+    for (const item of excList) {
+      if (!item || typeof item !== 'object') continue;
+      const ind = fmtUsd(item.thresholdIndividual);
+      const agg = fmtUsd(item.thresholdAggregate);
+      if (ind || agg) {
+        const parts = [];
+        if (ind) parts.push(`${ind} ind.`);
+        if (agg) parts.push(`${agg} agg.`);
+        bits.push(parts.join(' / '));
+      }
+    }
     return bits.length ? bits.join(' · ') : null;
   };
 
