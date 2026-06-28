@@ -2134,8 +2134,23 @@ function IocPreambleSummary({ features }) {
 
   const renderLimb = (limb) => {
     // affirmativeLimbs shape: { obligation_code, obligation_label, text }
-    if (limb && typeof limb === 'object' && (limb.obligation_label || limb.text)) {
+    if (limb && typeof limb === 'object' && (limb.obligation_label || limb.text) && !limb.obligation) {
       return limb.obligation_label || limb.text;
+    }
+    // positiveObligations limb shape (from the preamble / affirmative-chapeau
+    // extraction): { obligation, materialityQualifier, efforts_standard, appliesTo }.
+    // Render the obligation phrase plus a compact "(efforts; qualifier)" annotation.
+    if (limb && typeof limb === 'object' && limb.obligation) {
+      const base = String(limb.obligation).trim();
+      const ann = [];
+      const humanize = (s) => String(s).replace(/_/g, ' ').toLowerCase();
+      if (limb.efforts_standard) ann.push(humanize(limb.efforts_standard));
+      const mq = limb.materialityQualifier;
+      if (mq && mq !== 'FLAT') ann.push(humanize(mq));
+      if (Array.isArray(limb.appliesTo) && limb.appliesTo.length > 0) {
+        ann.push(limb.appliesTo.map((a) => humanize(a)).join(', '));
+      }
+      return ann.length ? `${base} — ${ann.join('; ')}` : base;
     }
     if (isTaggedItem(limb)) {
       const lbl = resolveTaggedLabel('positiveObligations', limb) || limb.code;
