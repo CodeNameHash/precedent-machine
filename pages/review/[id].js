@@ -7689,6 +7689,50 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
   // P5 item 5(d): "Lookback (months)" row gains a computed "since YYYY-MM-DD"
   // suffix from secFilingsExceptionLookbackDate, or computeLookbackText when
   // only months + announce date are present.
+  // Extract the standard SEC-filings cut-off sub-phrase from a longer scope /
+  // evidence sentence. The model frequently captures the cut-off verbatim but
+  // parks it inside secFilingsLookbackMonths.quotes (value:null) or inside
+  // secFilingsExceptionScope rather than the dedicated secFilingsExceptionLookback
+  // field, so renderLookbackVal needs to recover it from whatever text we have.
+  const deriveCutoffPhrase = () => {
+    // Gather candidate text from EVERY provision's (and preamble's) months /
+    // scope / language fields — not just pickKey's first hit, since that may
+    // land on the REP-T-SEC timeliness sentence (which has no cut-off) rather
+    // than the REP-T-PREAMBLE exception sentence (which does).
+    const candidates = [];
+    const pushCitable = (raw) => {
+      if (!raw) return;
+      if (isCitableValue(raw)) {
+        for (const q of getCitableQuotes(raw)) candidates.push(q);
+        const v = getCitableValue(raw);
+        if (typeof v === 'string') candidates.push(v);
+      } else if (typeof raw === 'string') {
+        candidates.push(raw);
+      }
+    };
+    const scanKeys = ['secFilingsLookbackMonths', 'secFilingsExceptionScope', 'secFilingsExceptionLanguage', 'secFilingsExceptionLookback'];
+    for (const p of provisions || []) {
+      const f = getStructuredFeatures(p) || {};
+      for (const k of scanKeys) pushCitable(f[k]);
+    }
+    for (const f of preambleFeats) {
+      for (const k of scanKeys) pushCitable(f[k]);
+    }
+    // Cut-off phrase patterns, most-specific first.
+    const patterns = [
+      /(?:at\s+least\s+)?(?:\w+\s+)?\(?\d+\)?\s+business\s+days?\s+(?:prior\s+to|before)\s+the\s+date\s+(?:of\s+this\s+Agreement|hereof)/i,
+      /the\s+business\s+day\s+immediately\s+preceding\s+the\s+date\s+(?:of\s+this\s+Agreement|hereof)/i,
+      /(?:at\s+least\s+)?(?:\w+\s+)?\(?\d+\)?\s+days?\s+(?:prior\s+to|before)\s+(?:the\s+date\s+(?:of\s+this\s+Agreement|hereof)|signing)/i,
+    ];
+    for (const text of candidates) {
+      for (const re of patterns) {
+        const m = text.match(re);
+        if (m) return m[0].replace(/\s+/g, ' ').trim();
+      }
+    }
+    return null;
+  };
+
   const renderLookbackVal = () => {
     const dateRaw = pickKey(['secFilingsExceptionLookbackDate']);
     const months = pickKey(['secFilingsLookbackMonths']);
@@ -7717,8 +7761,11 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
       // Sub-3 with no verbatim corroboration is dropped — extraction can't
       // distinguish "1 month" from "1 business day" without the phrase.
       if (n >= 3) return <span>{`${n} months prior to signing`}</span>;
-      return <span className="italic text-inkFaint">Cut-off period not captured verbatim in source</span>;
     }
+    // Last resort: recover the cut-off sub-phrase from the scope / months
+    // quote text, where the model often parks it (value:null).
+    const derived = deriveCutoffPhrase();
+    if (derived) return <span>{derived}</span>;
     return <span className="italic text-inkFaint">Cut-off period not captured verbatim in source</span>;
   };
   const showEvidence = useShowEvidence();
