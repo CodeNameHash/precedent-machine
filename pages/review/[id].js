@@ -2130,7 +2130,14 @@ function IocPreambleSummary({ features }) {
     }
   }
 
-  if (limbsRaw.length === 0 && exceptionEntries.length === 0) return null;
+  // Proviso on the affirmative chapeau (e.g. "provided that no action with
+  // respect to matters specifically addressed by any provision of Section
+  // 5.2(b) shall be deemed a breach of this sentence ...").
+  const provisoRaw = features.chapeauProviso ?? features.proviso;
+  const provisoText = isCitableValue(provisoRaw) ? getCitableValue(provisoRaw) : provisoRaw;
+  const hasProviso = typeof provisoText === 'string' && provisoText.trim().length > 0;
+
+  if (limbsRaw.length === 0 && exceptionEntries.length === 0 && !hasProviso) return null;
 
   const renderLimb = (limb) => {
     // affirmativeLimbs shape: { obligation_code, obligation_label, text }
@@ -2175,6 +2182,15 @@ function IocPreambleSummary({ features }) {
               <li key={i}>{renderLimb(limb)}</li>
             ))}
           </ol>
+        </div>
+      )}
+
+      {hasProviso && (
+        <div className="pl-3 border-l-2 border-sky-200 bg-sky-50/40 rounded-r py-1.5 pr-2">
+          <p className="text-[10px] font-ui font-medium text-sky-700 uppercase tracking-wider mb-1">
+            Proviso
+          </p>
+          <p className="text-xs font-ui text-ink">{provisoText.trim()}</p>
         </div>
       )}
 
