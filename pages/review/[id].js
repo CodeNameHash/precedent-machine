@@ -20,6 +20,7 @@ import {
   isListTaxonomyKey,
   labelForCode,
   MATERIAL_CONTRACT_BUCKET_CODES,
+  MATERIAL_CONTRACT_BUCKET_META,
   IOC_CATEGORY_CODES,
   IOC_CATEGORY_META,
   IOC_AFFIRMATIVE_STANDARDS,
@@ -7953,6 +7954,25 @@ function RepMaterialContractsTable({ provisions, onSelectProvision }) {
   });
 
   const presentCodes = new Set(buckets.map((b) => isTaggedItem(b) ? String(b.code || '').toUpperCase() : '').filter(Boolean));
+  // A single enumerated material-contracts sub-clause routinely bundles
+  // multiple concepts (e.g. Landos's first bucket: "(A) limits the freedom to
+  // compete ... (B) providing most favored nation rights ... or exclusivity
+  // obligations ... (C) right of first refusal ..."). The model tags the
+  // whole sub-clause with ONE bucket code (NONCOMPETE), so the coverage
+  // checklist wrongly reported EXCLUSIVITY_MFN as "not covered". Re-scan each
+  // bucket's verbatim text against every bucket's synonyms and mark any
+  // additional concept it explicitly covers as present too. Per user: "two
+  // things covered in one provision — check your logic there."
+  for (const b of buckets) {
+    const text = isTaggedItem(b) ? (b.text || '') : (typeof b === 'string' ? b : '');
+    if (!text || text.length < 8) continue;
+    for (const [code, meta] of Object.entries(MATERIAL_CONTRACT_BUCKET_META || {})) {
+      if (presentCodes.has(code)) continue;
+      for (const re of (meta.synonyms || [])) {
+        if (re.test(text)) { presentCodes.add(code); break; }
+      }
+    }
+  }
   const canonicalCodes = Object.keys(MATERIAL_CONTRACT_BUCKET_CODES);
 
   return (
