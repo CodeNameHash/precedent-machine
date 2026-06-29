@@ -827,6 +827,18 @@ const SKIP_PREAMBLE_CARD_TYPES = new Set([
   'OTHER',
 ]);
 
+/* Short disambiguating label for one clause inside a merged multi-provision
+   sidebar entry. Prefer a leading "Section X.YZ" / "Article" reference; else the
+   first few words of the clause text; else an ordinal. */
+function sideClauseSubLabel(p, i) {
+  const text = (p && (p.full_text || p.text)) || '';
+  const secRef = text.match(/^\s*(Section\s+\d+\.\d+[A-Za-z()]*|Article\s+[IVXLC]+)/i);
+  if (secRef) return secRef[1].replace(/\s+/g, ' ').trim();
+  const words = text.replace(/\[\[[^\]]*\]\]/g, ' ').replace(/\s+/g, ' ').trim().split(' ').slice(0, 6).join(' ');
+  if (words) return words.length > 40 ? `${words.slice(0, 39)}…` : words;
+  return `Clause ${i + 1}`;
+}
+
 /* ═══════════════════════════════════════════════════════════
    LEFT SIDEBAR — now acts as a FILTER, not a scroller
    ═══════════════════════════════════════════════════════════ */
@@ -939,6 +951,11 @@ function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelect
     Object.keys(provsByType).forEach((t) => { init[t] = true; });
     return init;
   });
+  // Collapsed state for merged multi-provision category entries, keyed by
+  // `${type}::${category}`. Default collapsed so a category that holds several
+  // clauses reads as ONE sidebar row until expanded.
+  const [collapsedCats, setCollapsedCats] = useState({});
+  const toggleCat = (key) => setCollapsedCats((prev) => ({ ...prev, [key]: prev[key] === false ? true : false }));
   const [allCollapsed, setAllCollapsed] = useState(true);
 
   const toggleGroup = (label) => {
@@ -985,36 +1002,111 @@ function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelect
     return 'var(--ink-faint)';
   };
 
-  // Render the per-provision list under a type. Each row is draggable.
-  const renderProvList = (provs) => (
-    <div className="mt-0.5" style={{ marginLeft: 18, display: 'flex', flexDirection: 'column', gap: 1 }}>
-      {provs.map(p => {
-        const status = getProvisionStatus(p);
-        const isActive = p.id === activeProvId;
-        const isDragging = dragProvId === p.id;
-        return (
-          <button
-            key={p.id}
-            draggable
-            onDragStart={(e) => handleDragStart(e, p.id)}
-            onDragEnd={handleDragEnd}
-            onClick={() => onSelectProvision(p.id)}
-            className={`rec-side-item${isActive ? ' active' : ''}`}
-            style={{
-              fontSize: 12.5,
-              padding: '5px 10px',
-              cursor: isDragging ? 'grabbing' : 'grab',
-              opacity: isDragging ? 0.4 : 1,
-            }}
-            title="Drag to a different category to reclassify"
-          >
-            <span className="dot" style={{ background: statusDotColor(status) }} />
-            <span className="truncate">{p.category || 'General'}</span>
-          </button>
-        );
-      })}
-    </div>
-  );
+  // A single draggable provision row.
+  const renderProvRow = (p, { indent = 18 } = {}) => {
+    const status = getProvisionStatus(p);
+    const isActive = p.id === activeProvId;
+    const isDragging = dragProvId === p.id;
+    return (
+      <button
+        key={p.id}
+        draggable
+        onDragStart={(e) => handleDragStart(e, p.id)}
+        onDragEnd={handleDragEnd}
+        onClick={() => onSelectProvision(p.id)}
+        className={`rec-side-item${isActive ? ' active' : ''}`}
+        style={{
+          fontSize: 12.5,
+          padding: '5px 10px',
+          marginLeft: indent - 18,
+          cursor: isDragging ? 'grabbing' : 'grab',
+          opacity: isDragging ? 0.4 : 1,
+        }}
+        title="Drag to a different category to reclassify"
+      >
+        <span className="dot" style={{ background: statusDotColor(status) }} />
+        <span className="truncate">{p.category || 'General'}</span>
+      </button>
+    );
+  };
+
+  // Render the per-provision list under a type. Provisions that share the same
+  // category label are MERGED into a single entry (with a count badge) that
+  // expands to the individual clauses on click — so e.g. two "Specific
+  // Performance; Enforcement" clauses read as one row, not a confusing
+  // duplicate. The type prop scopes the per-category collapse state.
+  const renderProvList = (provs, type) => {
+    // Group preserving first-seen order.
+    const order = [];
+    const byCat = new Map();
+    for (const p of provs) {
+      const cat = p.category || 'General';
+      if (!byCat.has(cat)) { byCat.set(cat, []); order.push(cat); }
+      byCat.get(cat).push(p);
+    }
+    return (
+      <div className="mt-0.5" style={{ marginLeft: 18, display: 'flex', flexDirection: 'column', gap: 1 }}>
+        {order.map((cat) => {
+          const items = byCat.get(cat);
+          if (items.length === 1) return renderProvRow(items[0]);
+          // Merged multi-provision entry.
+          const key = `${type || items[0].type}::${cat}`;
+          const expanded = collapsedCats[key] === false;
+          const anyActive = items.some((p) => p.id === activeProvId);
+          return (
+            <div key={key} style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <button
+                onClick={() => toggleCat(key)}
+                className={`rec-side-item${anyActive && !expanded ? ' active' : ''}`}
+                style={{ fontSize: 12.5, padding: '5px 10px' }}
+                title={`${items.length} clauses under “${cat}” — click to ${expanded ? 'collapse' : 'expand'}`}
+              >
+                <span className="dot" style={{ background: 'var(--ink-faint)' }} />
+                <span className="truncate" style={{ flex: 1 }}>{cat}</span>
+                <span style={{ fontSize: 10.5, color: 'var(--ink-faint)', marginLeft: 4 }}>
+                  {items.length}
+                </span>
+                <span style={{ fontSize: 9, color: 'var(--ink-faint)', marginLeft: 4 }}>
+                  {expanded ? '▾' : '▸'}
+                </span>
+              </button>
+              {expanded && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                  {items.map((p, i) => {
+                    const status = getProvisionStatus(p);
+                    const isActive = p.id === activeProvId;
+                    const isDragging = dragProvId === p.id;
+                    // Sub-label: prefer a section ref / first words to disambiguate.
+                    const sub = sideClauseSubLabel(p, i);
+                    return (
+                      <button
+                        key={p.id}
+                        draggable
+                        onDragStart={(e) => handleDragStart(e, p.id)}
+                        onDragEnd={handleDragEnd}
+                        onClick={() => onSelectProvision(p.id)}
+                        className={`rec-side-item${isActive ? ' active' : ''}`}
+                        style={{
+                          fontSize: 12,
+                          padding: '4px 10px 4px 26px',
+                          cursor: isDragging ? 'grabbing' : 'grab',
+                          opacity: isDragging ? 0.4 : 1,
+                        }}
+                        title="Drag to a different category to reclassify"
+                      >
+                        <span className="dot" style={{ background: statusDotColor(status) }} />
+                        <span className="truncate" style={{ color: 'var(--ink-light)' }}>{sub}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
 
   return (
     <aside
@@ -1220,14 +1312,14 @@ function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelect
                                   <span className="count">{child.provs.length}</span>
                                 )}
                               </div>
-                              {!childCollapsed && !SYNTHETIC_SINGLE_PAGE_TYPES.has(child.type) && renderProvList(child.provs)}
+                              {!childCollapsed && !SYNTHETIC_SINGLE_PAGE_TYPES.has(child.type) && renderProvList(child.provs, child.type)}
                             </div>
                           );
                         })}
                       </div>
                     ) : (
                       // Flat group: directly render its provisions list.
-                      renderProvList(group.provs)
+                      renderProvList(group.provs, group.singleType)
                     )}
                   </div>
                 )}
