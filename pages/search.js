@@ -86,11 +86,14 @@ export default function SearchPage() {
   const [code, setCode] = useState(null);
   const [fav, setFav] = useState(null);
   const [feature, setFeature] = useState(null);
+  const [dealFilter, setDealFilter] = useState(() => new Set());
   const [results, setResults] = useState([]);
   const [total, setTotal] = useState(0);
   const [ranked, setRanked] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const debounce = useRef(null);
+  const PAGE = 100;
 
   // Load facets once.
   useEffect(() => {
@@ -101,44 +104,49 @@ export default function SearchPage() {
   }, []);
 
   const runSearch = useMemo(
-    () => (params) => {
+    () => (params, offset = 0) => {
       const sp = new URLSearchParams();
       if (params.q) sp.set('q', params.q);
       if (params.family) sp.set('type', params.family);
       if (params.code) sp.set('code', params.code);
       if (params.fav) sp.set('favorability', params.fav);
       if (params.feature) sp.set('feature', params.feature);
-      sp.set('limit', '100');
-      setLoading(true);
+      if (params.deals && params.deals.length) sp.set('deal_id', params.deals.join(','));
+      sp.set('limit', String(PAGE));
+      sp.set('offset', String(offset));
+      if (offset > 0) setLoadingMore(true); else setLoading(true);
       fetch(`/api/search/provisions?${sp.toString()}`)
         .then((r) => r.json())
         .then((d) => {
-          setResults(d.results || []);
+          setResults((prev) => (offset > 0 ? [...prev, ...(d.results || [])] : d.results || []));
           setTotal(d.total || 0);
           setRanked(!!d.ranked);
         })
         .catch(() => {
-          setResults([]);
-          setTotal(0);
+          if (offset === 0) { setResults([]); setTotal(0); }
         })
-        .finally(() => setLoading(false));
+        .finally(() => { setLoading(false); setLoadingMore(false); });
     },
     [],
   );
 
-  // Re-run on any filter change (debounced for typing).
+  const activeParams = useMemo(
+    () => ({ q, family, code, fav, feature, deals: [...dealFilter] }),
+    [q, family, code, fav, feature, dealFilter],
+  );
+
+  // Re-run on any filter change (debounced for typing); resets to page 0.
   useEffect(() => {
-    const params = { q, family, code, fav, feature };
-    const hasAny = q || family || code || fav || feature;
+    const hasAny = q || family || code || fav || feature || dealFilter.size;
     if (!hasAny) {
       setResults([]);
       setTotal(0);
       return;
     }
     clearTimeout(debounce.current);
-    debounce.current = setTimeout(() => runSearch(params), 220);
+    debounce.current = setTimeout(() => runSearch(activeParams, 0), 220);
     return () => clearTimeout(debounce.current);
-  }, [q, family, code, fav, feature, runSearch]);
+  }, [q, family, code, fav, feature, dealFilter, runSearch, activeParams]);
 
   // Group results by deal for display.
   const grouped = useMemo(() => {
@@ -191,6 +199,29 @@ export default function SearchPage() {
             marginBottom: 14,
           }}
         />
+
+        {/* Deal filter chips */}
+        {facets?.deals && facets.deals.length > 1 && (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7, marginBottom: 10 }}>
+            {facets.deals.map((d) => (
+              <Chip
+                key={d.id}
+                active={dealFilter.has(d.id)}
+                count={d.count}
+                onClick={() =>
+                  setDealFilter((prev) => {
+                    const next = new Set(prev);
+                    if (next.has(d.id)) next.delete(d.id);
+                    else next.add(d.id);
+                    return next;
+                  })
+                }
+              >
+                {d.acquirer && d.target ? `${d.acquirer} → ${d.target}` : d.id.slice(0, 8)}
+              </Chip>
+            ))}
+          </div>
+        )}
 
         {/* Family chips */}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7, marginBottom: 10 }}>
@@ -312,7 +343,28 @@ export default function SearchPage() {
           </div>
         ))}
 
-        {!loading && total === 0 && (q || family || code || fav || feature) && (
+        {!loading && results.length < total && (
+          <div style={{ textAlign: 'center', marginTop: 8 }}>
+            <button
+              onClick={() => runSearch(activeParams, results.length)}
+              disabled={loadingMore}
+              style={{
+                padding: '8px 18px',
+                fontSize: 13,
+                fontWeight: 600,
+                color: 'var(--accent-deep)',
+                background: 'var(--surface)',
+                border: '1px solid var(--line)',
+                borderRadius: 8,
+                cursor: loadingMore ? 'default' : 'pointer',
+              }}
+            >
+              {loadingMore ? 'Loading…' : `Load more (${results.length} of ${total})`}
+            </button>
+          </div>
+        )}
+
+        {!loading && total === 0 && (q || family || code || fav || feature || dealFilter.size > 0) && (
           <p style={{ fontSize: 13, color: 'var(--ink-faint)', marginTop: 24, textAlign: 'center' }}>
             No provisions match these filters.
           </p>

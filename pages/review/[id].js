@@ -12178,7 +12178,7 @@ function EditPanel({
   const tc = typeColor(provision.type);
 
   return (
-    <div className="w-[400px] shrink-0 bg-white border-l border-border flex flex-col h-full overflow-hidden animate-slide-up">
+    <div className="w-[400px] max-md:w-[90vw] shrink-0 bg-white border-l border-border flex flex-col h-full overflow-hidden animate-slide-up max-md:fixed max-md:inset-y-0 max-md:right-0 max-md:z-[60] max-md:shadow-2xl">
       {/* Header */}
       <div className={`px-4 py-3 border-b border-border flex items-center justify-between ${tc.bg}`}>
         <h3 className="font-display text-sm text-ink font-medium truncate pr-2">
@@ -14208,6 +14208,14 @@ export default function ReviewPage() {
             )}
           </div>
         </div>
+
+        {/* Mobile backdrop for the edit panel (tap to close) */}
+        {editingProvision && (
+          <div
+            className="md:hidden fixed inset-0 bg-black/30 z-[55]"
+            onClick={() => setEditingProvision(null)}
+          />
+        )}
 
         {/* Right Edit Panel */}
         {editingProvision && (
