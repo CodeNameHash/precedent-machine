@@ -13281,7 +13281,23 @@ export default function ReviewPage() {
       if (!groups['NOSOL-B']) groups['NOSOL-B'] = [];
       if (!groups['NOSOL-T']) groups['NOSOL-T'] = [];
     }
-    return groups;
+
+    // Collapse the COND and TERMR party families (COND-M/B/S, TERMR-M/B/T) into
+    // a SINGLE section each. CondSingleTable / TermrRebuiltSummary already render
+    // every family in ONE table with full-span Mutual/Buyer/Seller header rows,
+    // so leaving the party types as separate keys made the page render that same
+    // table three times. Rebuild the map order-preserving (the family takes the
+    // slot of its first-seen member) so section order is unchanged.
+    const FAMILY_OF = {
+      'COND-M': 'COND', 'COND-B': 'COND', 'COND-S': 'COND',
+      'TERMR-M': 'TERMR', 'TERMR-B': 'TERMR', 'TERMR-T': 'TERMR',
+    };
+    const collapsed = {};
+    for (const [k, v] of Object.entries(groups)) {
+      const target = FAMILY_OF[k] || k;
+      collapsed[target] = [...(collapsed[target] || []), ...v];
+    }
+    return collapsed;
   }, [filteredProvisions, provisions, activeFilter]);
 
   /* ── Identify the first IOC-flavored type in the rendered order. The
