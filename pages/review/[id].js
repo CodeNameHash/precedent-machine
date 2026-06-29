@@ -12096,6 +12096,16 @@ function EditPanel({
       // already captures pandemic / cybersecurity carve-outs as tagged items,
       // so these standalone booleans just duplicate them in the editor.
       'pandemicCarveout', 'cyberSecurityCarveout',
+      // mainConcept is a paraphrase of the clause already shown verbatim in the
+      // "Provision Text → Current text" box above — don't restate it as an
+      // editable field (user: "why is the text repeated, just pull from the
+      // current text field").
+      'mainConcept',
+      // maeQualifiedReps is DERIVED from a rep carrying an MAE-level materiality
+      // qualifier; it isn't something the user hand-manages. Setting the
+      // materiality qualifier is the single action — don't surface this as a
+      // separate field requiring its own edit.
+      'maeQualifiedReps', 'mae_qualified_reps',
     ]);
     const seen = new Set();
     const out = [];
