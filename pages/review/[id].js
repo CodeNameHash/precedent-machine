@@ -12476,6 +12476,64 @@ function EditPanel({
 /* ═══════════════════════════════════════════════════════════
    CREATE PROVISION FLOATING BUTTON
    ═══════════════════════════════════════════════════════════ */
+/* Per-section "+ Add item" affordance. Lets the user capture a provision the
+   extractor missed (a new IOC covenant, an equity type not covered in
+   Consideration, …). Collects the clause text (required — provision text is
+   immutable after creation) plus an optional category, creates it of the
+   section's type, then opens the editor to classify / enrich. */
+function AddSectionItem({ type, defaultCategory, onAdd }) {
+  const [open, setOpen] = useState(false);
+  const [text, setText] = useState('');
+  const [category, setCategory] = useState('');
+  const submit = () => {
+    if (!text.trim()) return;
+    onAdd(text, { type, category: category.trim() || defaultCategory || 'Uncategorized' });
+    setText(''); setCategory(''); setOpen(false);
+  };
+  if (!open) {
+    return (
+      <button
+        type="button"
+        onClick={(e) => { e.stopPropagation(); setOpen(true); }}
+        className="text-[11px] font-ui text-accent hover:underline whitespace-nowrap"
+        title={`Add an item to ${typeLabel(type)} the parser missed`}
+      >
+        + Add item
+      </button>
+    );
+  }
+  return (
+    <div
+      className="border border-accent/40 bg-accent/5 rounded p-2 space-y-1.5 my-2"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <p className="text-[10px] font-ui text-accent uppercase tracking-wider font-medium">
+        Add to {typeLabel(type)}
+      </p>
+      <input
+        value={category}
+        onChange={(e) => setCategory(e.target.value)}
+        placeholder={`Category (optional)${defaultCategory ? ` — default: ${defaultCategory}` : ''}`}
+        className="w-full border border-border rounded px-2 py-1 text-[11px] font-ui focus:outline-none focus:ring-1 focus:ring-accent"
+      />
+      <textarea
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        placeholder="Paste the clause text…"
+        rows={3}
+        autoFocus
+        className="w-full border border-border rounded px-2 py-1 text-[11px] font-body focus:outline-none focus:ring-1 focus:ring-accent"
+      />
+      <div className="flex gap-2 justify-end">
+        <button type="button" onClick={() => { setOpen(false); setText(''); setCategory(''); }}
+          className="px-2 py-1 text-[11px] font-ui text-inkLight hover:text-ink">Cancel</button>
+        <button type="button" onClick={submit} disabled={!text.trim()}
+          className="px-3 py-1 text-[11px] font-ui bg-accent text-white rounded disabled:opacity-40">Add</button>
+      </div>
+    </div>
+  );
+}
+
 function CreateProvisionButton({ selection, onCreateProvision }) {
   if (!selection || !selection.rect) return null;
 
@@ -13611,26 +13669,28 @@ export default function ReviewPage() {
   }, [reselectingProvId, addToast, refetchProvs]);
 
   /* ── Create Provision from Selection ── */
-  const handleCreateProvision = useCallback(async (text) => {
+  const handleCreateProvision = useCallback(async (text, opts = {}) => {
     if (!id) return;
+    const body = (text || '').trim();
+    if (!body) { addToast('Add some clause text first', 'error'); return; }
     try {
       const resp = await fetch('/api/provisions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           deal_id: id,
-          full_text: text,
-          type: 'MISC',
-          category: 'Uncategorized',
+          full_text: body,
+          type: opts.type || 'MISC',
+          category: opts.category || 'Uncategorized',
           ai_favorability: 'neutral',
         }),
       });
       const data = await resp.json();
       if (data.error) throw new Error(data.error);
-      addToast('Provision created -- edit to classify', 'success');
+      addToast('Item added — edit to classify & enrich', 'success');
       refetchProvs();
       setTextSelection(null);
-      // Open the new provision for editing
+      // Open the new provision for editing (set type/category/features).
       if (data.provision) {
         setEditingProvision({ ...data.provision, _status: 'unreviewed' });
       }
@@ -14092,6 +14152,17 @@ export default function ReviewPage() {
                             </span>
                             <span className="rule" />
                           </button>
+                          {/* Add-an-item affordance — capture a provision the
+                              extractor missed for this section. */}
+                          {!isCollapsed && !SYNTHETIC_SINGLE_PAGE_TYPES.has(type) && (
+                            <div className="flex justify-end">
+                              <AddSectionItem
+                                type={type}
+                                defaultCategory={(rest && rest[0] && rest[0].category) || ''}
+                                onAdd={handleCreateProvision}
+                              />
+                            </div>
+                          )}
                           {/* COV (Other Covenants) renders the PW diligence
                               summary table in 'table' view (via
                               CategoryFeatureSummaryTable inside ProvisionTable);
