@@ -6973,15 +6973,32 @@ function TermfRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
  * Extensions sub-table and a cross-cutting "breach standard that blocks
  * termination" row (the proximate/principal-cause fault carve-out).
  * ════════════════════════════════════════════════════════════════════════ */
+// family: which side may terminate — drives the full-span header grouping.
 const TERMR_CANONICAL = [
-  { key: 'mutual',    label: 'Mutual consent',              codes: ['TERMR-MUTUAL'] },
-  { key: 'outside',   label: 'Outside / End Date',          codes: ['TERMR-OUTSIDE', 'TERMR-EXTENSION'] },
-  { key: 'legal',     label: 'Legal restraint / order',     codes: ['TERMR-LEGAL'] },
-  { key: 'vote',      label: 'Stockholder vote not obtained', codes: ['TERMR-VOTE'] },
-  { key: 'breachT',   label: 'Company (Target) breach',     codes: ['TERMR-BREACH-T'], whoHint: 'Parent / Buyer' },
-  { key: 'breachB',   label: 'Parent (Buyer) breach',       codes: ['TERMR-BREACH-B'], whoHint: 'Company / Target' },
-  { key: 'superior',  label: 'Superior Proposal',           codes: ['TERMR-SUPERIOR'], whoHint: 'Company / Target' },
-  { key: 'recommend', label: 'Change of Recommendation',    codes: ['TERMR-RECOMMEND'], whoHint: 'Parent / Buyer' },
+  { key: 'mutual',    label: 'Mutual consent',              codes: ['TERMR-MUTUAL'], family: 'mutual' },
+  { key: 'outside',   label: 'Outside / End Date',          codes: ['TERMR-OUTSIDE', 'TERMR-EXTENSION'], family: 'mutual' },
+  { key: 'legal',     label: 'Legal restraint / order',     codes: ['TERMR-LEGAL'], family: 'mutual' },
+  { key: 'vote',      label: 'Stockholder vote not obtained', codes: ['TERMR-VOTE'], family: 'mutual' },
+  { key: 'breachT',   label: 'Company (Target) breach',     codes: ['TERMR-BREACH-T'], whoHint: 'Parent / Buyer', family: 'buyer' },
+  { key: 'recommend', label: 'Change of Recommendation',    codes: ['TERMR-RECOMMEND'], whoHint: 'Parent / Buyer', family: 'buyer' },
+  { key: 'breachB',   label: 'Parent (Buyer) breach',       codes: ['TERMR-BREACH-B'], whoHint: 'Company / Target', family: 'target' },
+  { key: 'superior',  label: 'Superior Proposal',           codes: ['TERMR-SUPERIOR'], whoHint: 'Company / Target', family: 'target' },
+];
+
+const TERMR_FAMILY_LABELS = {
+  mutual: 'Mutual / Either Party',
+  buyer: 'Buyer / Parent May Terminate',
+  target: 'Company / Target May Terminate',
+};
+
+// Canonical breach standards that block a party's right to terminate. Exact
+// wording matters (per user) — classify the fault carve-out into one of these.
+const TERMR_FAULT_STANDARDS = [
+  { code: 'PRIMARILY_ATTRIBUTABLE', label: 'Primarily attributable to / caused by the terminating party', re: /primaril(?:y|ies)\s+(?:attributable|caused|result)/i },
+  { code: 'PRINCIPAL_CAUSE', label: 'Terminating party was the principal cause', re: /principal\s+cause|principally\s+caused/i },
+  { code: 'PROXIMATE_CAUSE', label: 'Proximate cause', re: /proximate(?:ly)?\s+cause/i },
+  { code: 'MATERIAL_BREACH', label: "Terminating party's material breach caused the failure", re: /material\s+breach/i },
+  { code: 'ANY_BREACH', label: "Any breach by the terminating party caused the failure", re: /breach\s+of\s+any\s+(?:covenant|representation|obligation)|failure\s+(?:on\s+the\s+part\s+of\s+such\s+party\s+)?to\s+(?:perform|comply)/i },
 ];
 
 function termrPartyLabel(f) {
@@ -7042,10 +7059,9 @@ function termrSectionLabel(p) {
 // breach standard that blocks a party's right to terminate.
 function termrFaultStandard(text) {
   if (typeof text !== 'string') return null;
-  if (/primarily\s+(?:attributable|caused|result)/i.test(text)) return 'Primarily attributable to / caused by the terminating party';
-  if (/principal\s+cause|principally\s+caused/i.test(text)) return 'Terminating party was the principal cause';
-  if (/proximate(?:ly)?\s+cause/i.test(text)) return 'Proximate cause standard';
-  if (/material\s+breach|breach\s+of\s+any\s+(?:covenant|representation|obligation)/i.test(text)) return "Terminating party's own breach caused the failure";
+  for (const s of TERMR_FAULT_STANDARDS) {
+    if (s.re.test(text)) return s.label;
+  }
   return 'Fault-based carve-out present (see language)';
 }
 
@@ -7130,53 +7146,78 @@ function TermrRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {rows.map((row) => {
-                if (!row.prov) {
-                  return (
-                    <tr key={row.spec.key} className="align-top">
-                      <td className="px-3 py-2 text-inkFaint">{row.spec.label}</td>
-                      <td className="px-3 py-2 italic text-inkFaint">—</td>
-                      <td className="px-3 py-2 italic text-inkFaint">Not present in this agreement</td>
-                    </tr>
-                  );
-                }
+              {['mutual', 'buyer', 'target'].map((fam) => {
+                const famRows = rows.filter((r) => r.spec.family === fam);
+                if (famRows.length === 0) return null;
                 return (
-                  <tr key={row.spec.key} className="align-top hover:bg-bg/40">
-                    <Cell quote={row.quote} className="font-medium">
-                      <span className="inline-flex flex-wrap items-baseline gap-x-1.5">
-                        <span className="font-medium">{row.spec.label}</span>
-                        {row.ref && (
-                          <span className="text-inkFaint inline-flex items-center">(<SectionRef refText={row.ref} allProvisions={pool} />)</span>
-                        )}
-                      </span>
-                    </Cell>
-                    <Cell quote={row.quote} className="whitespace-nowrap">
-                      {row.who || <span className="italic text-inkFaint">—</span>}
-                    </Cell>
-                    <Cell quote={row.quote}>
-                      {row.terms.length > 0
-                        ? <ul className="space-y-0.5">{row.terms.map((t, i) => <li key={i}>{t}</li>)}</ul>
-                        : <span className="italic text-inkFaint">—</span>}
-                    </Cell>
-                  </tr>
+                  <Fragment key={fam}>
+                    <tr className="bg-bg/40 border-t-2 border-border">
+                      <td colSpan={3} className="px-3 py-1.5 text-[11px] font-ui font-semibold text-inkMid uppercase tracking-wide">
+                        {TERMR_FAMILY_LABELS[fam]}
+                      </td>
+                    </tr>
+                    {famRows.map((row) => {
+                      if (!row.prov) {
+                        return (
+                          <tr key={row.spec.key} className="align-top">
+                            <td className="px-3 py-2 text-inkFaint">{row.spec.label}</td>
+                            <td className="px-3 py-2 italic text-inkFaint">—</td>
+                            <td className="px-3 py-2 italic text-inkFaint">Not present in this agreement</td>
+                          </tr>
+                        );
+                      }
+                      return (
+                        <tr key={row.spec.key} className="align-top hover:bg-bg/40">
+                          <Cell quote={row.quote} className="font-medium">
+                            <span className="inline-flex flex-wrap items-baseline gap-x-1.5">
+                              <span className="font-medium">{row.spec.label}</span>
+                              {row.ref && (
+                                <span className="text-inkFaint inline-flex items-center">(<SectionRef refText={row.ref} allProvisions={pool} />)</span>
+                              )}
+                            </span>
+                          </Cell>
+                          <Cell quote={row.quote} className="whitespace-nowrap">
+                            {row.who || <span className="italic text-inkFaint">—</span>}
+                          </Cell>
+                          <Cell quote={row.quote}>
+                            {row.terms.length > 0
+                              ? <ul className="space-y-0.5">{row.terms.map((t, i) => <li key={i}>{t}</li>)}</ul>
+                              : <span className="italic text-inkFaint">—</span>}
+                          </Cell>
+                        </tr>
+                      );
+                    })}
+                  </Fragment>
                 );
               })}
-              {/* Cross-cutting fault-based exclusion standard. */}
-              <tr className="align-top bg-bg/30">
-                <td className="px-3 py-2 text-ink font-medium">Breach standard that blocks termination</td>
-                <td className="px-3 py-2 text-inkFaint whitespace-nowrap">—</td>
-                <td
-                  className={`px-3 py-2 text-ink ${faultText && showEvidence ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
-                  onClick={faultText && showEvidence ? () => showEvidence(faultText) : undefined}
-                >
-                  <HoverSource quote={faultText} as="div">
-                    {faultStandard || <span className="italic text-inkFaint">Not specified</span>}
-                  </HoverSource>
-                </td>
-              </tr>
             </tbody>
           </table>
         </div>
+      </div>
+
+      {/* Breach standard that blocks termination — its own table, canonical
+          wording (per user: specific words matter). */}
+      <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+        <div className="px-3 py-2 bg-bg/60 border-b border-border">
+          <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+            Breach Standard Blocking the Right to Terminate
+          </p>
+        </div>
+        <table className="min-w-full text-xs font-ui">
+          <tbody className="divide-y divide-border">
+            <tr className="align-top hover:bg-bg/40">
+              <td className="px-3 py-2 text-ink font-medium whitespace-nowrap w-[220px]">Standard</td>
+              <td
+                className={`px-3 py-2 text-ink ${faultText && showEvidence ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
+                onClick={faultText && showEvidence ? () => showEvidence(faultText) : undefined}
+              >
+                <HoverSource quote={faultText} as="div">
+                  {faultStandard || <span className="italic text-inkFaint">No fault-based carve-out found</span>}
+                </HoverSource>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       {/* Outside-Date / Extensions detail */}
