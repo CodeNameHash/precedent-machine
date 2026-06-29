@@ -6360,6 +6360,26 @@ function SectionRef({ refText, allProvisions }) {
 }
 
 // Unwrap citable + format a single scalar value for the TERMF hero.
+// Parse a USD amount from a number, a citable wrapper, an object {amount},
+// or a string like "$190,000,000" / "$190 million" / "$1.3 billion". Returns a
+// Number of dollars, or null if nothing parseable.
+function parseDollarAmount(raw) {
+  let v = isCitableValue(raw) ? getCitableValue(raw) : raw;
+  if (v && typeof v === 'object' && !Array.isArray(v)) v = v.amount != null ? v.amount : v.value;
+  if (typeof v === 'number' && Number.isFinite(v)) return v;
+  if (typeof v !== 'string') return null;
+  const s = v.replace(/,/g, '');
+  const m = s.match(/\$?\s*(\d+(?:\.\d+)?)\s*(billion|bn|million|mm|m|thousand|k)?/i);
+  if (!m) return null;
+  let n = parseFloat(m[1]);
+  if (!Number.isFinite(n)) return null;
+  const unit = (m[2] || '').toLowerCase();
+  if (unit === 'billion' || unit === 'bn') n *= 1e9;
+  else if (unit === 'million' || unit === 'mm' || unit === 'm') n *= 1e6;
+  else if (unit === 'thousand' || unit === 'k') n *= 1e3;
+  return n;
+}
+
 function termfHeroDisplay(raw) {
   if (raw === null || raw === undefined || raw === '') return null;
   const inner = isCitableValue(raw) ? getCitableValue(raw) : raw;
@@ -6462,7 +6482,7 @@ function termfTriggerFee(spec, prov, features, fallback) {
 
 /* TermfTriggerMatrix — bringdown-style mini-table. Rows for canonical
  * triggers + a "Tail Fee" row when tailFeeWindowMonths is populated. */
-function TermfTriggerMatrix({ provisions, allProvisions }) {
+function TermfTriggerMatrix({ provisions, allProvisions, deal }) {
   const showEvidence = useShowEvidence();
   // Headline fallbacks for the Fee Amount cell.
   const headlineHit = pickFirstNonEmpty(provisions, ['feeAmount', 'companyTerminationFee']);
@@ -6531,6 +6551,22 @@ function TermfTriggerMatrix({ provisions, allProvisions }) {
   })();
   const headlineFeeQuote = headlineHit ? termfFirstQuote(headlineHit.value) : null;
 
+  // Computed fee-as-% of deal value. Merger agreements state a fixed dollar fee
+  // and almost never a "% of equity value" figure (so headlinePct is usually
+  // null), but the user wants the ratio. Parse the headline dollar amount and
+  // divide by the deal's value_usd; label it as an approximation.
+  const computedPct = (() => {
+    if (headlinePct) return null; // contract gave an explicit %, prefer it
+    const dv = deal && Number(deal.value_usd);
+    if (!dv || !Number.isFinite(dv) || dv <= 0) return null;
+    const raw = headlineHit ? (isCitableValue(headlineHit.value) ? getCitableValue(headlineHit.value) : headlineHit.value) : null;
+    const feeNum = parseDollarAmount(raw != null ? raw : headlineFee);
+    if (!feeNum) return null;
+    const pct = (feeNum / dv) * 100;
+    if (!Number.isFinite(pct) || pct <= 0 || pct > 100) return null;
+    return pct.toFixed(1);
+  })();
+
   // Naked no-vote row: show the amount when present, an explicit "No" when not.
   const nakedHit = pickFirstNonEmpty(provisions, ['nakedNoVoteFeePresent', 'nakedNoVoteFee']);
   const nakedPresent = (() => {
@@ -6565,6 +6601,9 @@ function TermfTriggerMatrix({ provisions, allProvisions }) {
               {headlineFee || '—'}
             </span>
             {headlinePct && <span className="text-inkFaint"> · {headlinePct} of equity value</span>}
+            {!headlinePct && computedPct && (
+              <span className="text-inkFaint"> · ≈{computedPct}% of deal value (computed)</span>
+            )}
           </HoverSource>
         )}
       </div>
@@ -7010,7 +7049,7 @@ function TermfRemedyEffect({ provisions, allProvisions }) {
 /* TermfRebuiltSummary — top-level wrapper rendered by ProvisionTable when
  * type === 'TERMF'. Stacks the Hero / Trigger Matrix / Tail Mechanics /
  * Remedy & Effect. */
-function TermfRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
+function TermfRebuiltSummary({ provisions, allProvisions, onSelectProvision, deal }) {
   // The TERMF extractor stores nested feature objects (companyTerminationFee,
   // tailProvision, …) but the three child components read FLAT keys. Augment
   // each provision's features with the derived flat keys (additive — keeps the
@@ -7031,7 +7070,7 @@ function TermfRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
     <div className="space-y-3">
       {/* Headline fee/% is folded into the Trigger table header (TermfHero
           removed per user feedback — the standalone amount/% card added little). */}
-      <TermfTriggerMatrix provisions={augmented} allProvisions={fullList} />
+      <TermfTriggerMatrix provisions={augmented} allProvisions={fullList} deal={deal} />
       <TermfTailMechanics provisions={augmented} allProvisions={fullList} />
       <TermfRemedyEffect provisions={augmented} allProvisions={fullList} />
       {sortedProvs.length > 0 && (
@@ -9596,6 +9635,7 @@ function ProvisionTable({ provisions, type, onSelectProvision, allProvisions, de
         provisions={provisions}
         allProvisions={allProvisions || provisions}
         onSelectProvision={onSelectProvision}
+        deal={deal}
       />
     );
   }
