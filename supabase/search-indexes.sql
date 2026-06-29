@@ -101,6 +101,7 @@ LANGUAGE sql STABLE AS $$
                            plainto_tsquery('english', q)) END AS rank,
          counted.n AS total_count
   FROM filtered f, counted
-  ORDER BY rank DESC, f.announce_date DESC NULLS LAST
+  -- id tie-break keeps offset pagination stable when rank/date collide.
+  ORDER BY rank DESC, f.announce_date DESC NULLS LAST, f.id
   LIMIT greatest(1, least(max_rows, 200)) OFFSET greatest(0, row_offset);
 $$;

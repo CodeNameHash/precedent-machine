@@ -104,7 +104,13 @@ async function viaBuilder(sb, p) {
   }
   if (p.featureKey) q = q.not(`ai_metadata->features->${p.featureKey}`, 'is', null);
 
-  q = q.order('created_at', { ascending: true }).range(p.offset, p.offset + p.limit - 1);
+  // Stable, total ordering for pagination: bulk re-extracts share identical
+  // created_at timestamps, so created_at alone is non-deterministic and
+  // offset paging would overlap/skip rows. Tie-break on the unique id.
+  q = q
+    .order('created_at', { ascending: true })
+    .order('id', { ascending: true })
+    .range(p.offset, p.offset + p.limit - 1);
 
   const { data, error, count } = await q;
   if (error) throw new Error(error.message);
