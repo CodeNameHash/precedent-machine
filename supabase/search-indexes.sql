@@ -48,7 +48,7 @@ CREATE OR REPLACE FUNCTION search_provisions(
   type_filter  text[] DEFAULT NULL,
   code_filter  text[] DEFAULT NULL,
   deal_filter  uuid[] DEFAULT NULL,
-  fav_filter   text   DEFAULT NULL,
+  fav_filter   text[] DEFAULT NULL,
   feature_key  text   DEFAULT NULL,
   max_rows     int    DEFAULT 50,
   row_offset   int    DEFAULT 0
@@ -78,10 +78,17 @@ LANGUAGE sql STABLE AS $$
            OR to_tsvector('english', coalesce(p.full_text,'')) @@ plainto_tsquery('english', q)
            OR p.full_text ILIKE '%'||q||'%'
            OR p.category ILIKE '%'||q||'%')
-      AND (type_filter IS NULL OR p.type = ANY(type_filter))
+      -- type_filter matches a type exactly OR expands a bare family base to its
+      -- party variants (e.g. 'TERMR' also matches TERMR-M / TERMR-B / TERMR-T),
+      -- mirroring lib/search.js typeFamilyOrConditions so the ranked and builder
+      -- paths return identical sets.
+      AND (type_filter IS NULL
+           OR p.type = ANY(type_filter)
+           OR EXISTS (SELECT 1 FROM unnest(type_filter) tf
+                      WHERE tf NOT LIKE '%-%' AND p.type LIKE tf || '-%'))
       AND (code_filter IS NULL OR (p.ai_metadata->>'code') = ANY(code_filter))
       AND (deal_filter IS NULL OR p.deal_id = ANY(deal_filter))
-      AND (fav_filter  IS NULL OR p.ai_favorability = fav_filter)
+      AND (fav_filter  IS NULL OR p.ai_favorability = ANY(fav_filter))
       AND (feature_key IS NULL OR (p.ai_metadata->'features') ? feature_key)
   ), counted AS (
     SELECT count(*) AS n FROM filtered

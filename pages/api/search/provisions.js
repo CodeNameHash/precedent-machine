@@ -26,6 +26,7 @@ import {
   typeFamilyOrConditions,
   pgrstQuote,
   buildSnippet,
+  expandFavorability,
 } from '../../../lib/search';
 
 const SELECT =
@@ -59,7 +60,7 @@ async function viaRpc(sb, p) {
     type_filter: p.types.length ? p.types : null,
     code_filter: p.codes.length ? p.codes : null,
     deal_filter: p.dealIds.length ? p.dealIds : null,
-    fav_filter: p.favorability || null,
+    fav_filter: p.favorability ? expandFavorability(p.favorability) : null,
     feature_key: p.featureKey || null,
     max_rows: p.limit,
     row_offset: p.offset,
@@ -97,7 +98,10 @@ async function viaBuilder(sb, p) {
     q = q.or(p.categories.map((c) => `category.ilike.%${String(c).replace(/[%,()]/g, ' ')}%`).join(','));
   }
   if (p.dealIds.length) q = q.in('deal_id', p.dealIds);
-  if (p.favorability) q = q.eq('ai_favorability', p.favorability);
+  if (p.favorability) {
+    const favVals = expandFavorability(p.favorability);
+    q = favVals.length > 1 ? q.in('ai_favorability', favVals) : q.eq('ai_favorability', favVals[0] || p.favorability);
+  }
   if (p.featureKey) q = q.not(`ai_metadata->features->${p.featureKey}`, 'is', null);
 
   q = q.order('created_at', { ascending: true }).range(p.offset, p.offset + p.limit - 1);

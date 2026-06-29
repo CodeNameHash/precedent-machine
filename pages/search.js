@@ -10,6 +10,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import { canonicalFavorability } from '../lib/search';
 
 const FAMILY_LABELS = {
   DEF: 'Definitions',
@@ -28,17 +29,26 @@ const FAMILY_LABELS = {
 };
 
 // Handy structured-feature shortcuts — find every deal that populates a field.
+// Keys verified to actually exist in stored ai_metadata.features.
 const FEATURE_SHORTCUTS = [
   { key: 'carveouts', label: 'MAE carve-outs' },
   { key: 'tailProvision', label: 'Tail provision' },
   { key: 'companyTerminationFee', label: 'Company term. fee' },
-  { key: 'reverseTerminationFee', label: 'Reverse term. fee' },
-  { key: 'triggers', label: 'Fee triggers' },
+  { key: 'nakedNoVoteFee', label: 'Naked no-vote fee' },
+  { key: 'expenseReimbursement', label: 'Expense reimbursement' },
+];
+
+// Canonical favorability buckets the chips filter on (matching the stored
+// synonyms via lib/search expandFavorability).
+const FAV_FILTERS = [
+  { value: 'buyer-favorable', label: 'Buyer-favorable' },
+  { value: 'neutral', label: 'Neutral' },
+  { value: 'seller-favorable', label: 'Seller-favorable' },
 ];
 
 const FAV_COLORS = {
-  good: { bg: '#e7f3ec', fg: '#1f7a48' },
-  bad: { bg: '#fbeaea', fg: '#a23030' },
+  'buyer-favorable': { bg: '#e7eefb', fg: '#1b3fa0' },
+  'seller-favorable': { bg: '#fbeaea', fg: '#a23030' },
   neutral: { bg: '#eef0f2', fg: '#5a6470' },
 };
 
@@ -206,9 +216,9 @@ export default function SearchPage() {
               ⚑ {f.label}
             </Chip>
           ))}
-          {['good', 'neutral', 'bad'].map((v) => (
-            <Chip key={v} active={fav === v} onClick={() => toggle(fav, v, setFav)}>
-              {v[0].toUpperCase() + v.slice(1)}
+          {FAV_FILTERS.map((f) => (
+            <Chip key={f.value} active={fav === f.value} onClick={() => toggle(fav, f.value, setFav)}>
+              {f.label}
             </Chip>
           ))}
         </div>
@@ -256,7 +266,8 @@ export default function SearchPage() {
               </span>
             </div>
             {items.map((r) => {
-              const c = FAV_COLORS[r.favorability] || FAV_COLORS.neutral;
+              const favBucket = canonicalFavorability(r.favorability) || 'neutral';
+              const c = FAV_COLORS[favBucket] || FAV_COLORS.neutral;
               return (
                 <Link
                   key={r.id}
@@ -290,7 +301,7 @@ export default function SearchPage() {
                     <span style={{ fontSize: 12, color: 'var(--ink)', fontWeight: 600 }}>{r.category}</span>
                     {r.favorability && (
                       <span style={{ fontSize: 10, fontWeight: 700, padding: '1px 6px', borderRadius: 4, background: c.bg, color: c.fg }}>
-                        {r.favorability}
+                        {favBucket}
                       </span>
                     )}
                   </div>

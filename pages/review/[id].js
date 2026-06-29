@@ -7199,12 +7199,20 @@ function TermrRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
   ].filter((r) => r.value !== null && r.value !== undefined && r.value !== '') : [];
 
   // Cross-cutting fault-based exclusion (the breach standard that blocks the
-  // right to terminate). Take the first populated faultBasedExclusion text.
-  let faultText = null;
-  for (const p of termrProvs) {
+  // right to terminate). The end-date right is the canonical home of this gate,
+  // so prefer the TERMR-OUTSIDE provision's faultBasedExclusion; otherwise fall
+  // back to the first populated one across all rights.
+  const faultOf = (p) => {
     const fbe = (getStructuredFeatures(p) || {}).faultBasedExclusion;
     const txt = fbe && typeof fbe === 'object' ? fbe.text : (typeof fbe === 'string' ? fbe : null);
-    if (txt && String(txt).trim()) { faultText = String(txt).trim(); break; }
+    return txt && String(txt).trim() ? String(txt).trim() : null;
+  };
+  let faultText = outsideProv ? faultOf(outsideProv) : null;
+  if (!faultText) {
+    for (const p of termrProvs) {
+      const txt = faultOf(p);
+      if (txt) { faultText = txt; break; }
+    }
   }
   const faultStandard = faultText ? termrFaultStandard(faultText) : null;
 
@@ -8390,7 +8398,7 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
   const secAnyPresent = secValues.some((s) => s.present);
   const secRowQuote = secValues.find((s) => s.quote)?.quote || null;
 
-  const disclosureRaw = pickKey(['disclosureLetterReference', 'disclosureSchedulesReference']);
+  const disclosureRaw = pickKey(['disclosureLetterReference', 'disclosureSchedulesReference', 'scheduleReference', 'schedule_reference']);
 
   return (
     <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
@@ -9121,7 +9129,19 @@ function CondSingleTable({ allProvisions, onSelectProvision }) {
     });
     const rows = rowsRaw
       .map((row, originalIdx) => {
-        const matches = famProvs.filter((p) => row.re.test(String(p.category || '')));
+        // Match on category regex OR, when the canonical row names a featureKey,
+        // on any provision that populates that structured feature (e.g. the
+        // tender-offer minimum condition is often categorized "Stockholder
+        // Approval" but carries features.tenderOfferMinimumCondition).
+        const matches = famProvs.filter((p) => {
+          if (row.re.test(String(p.category || ''))) return true;
+          if (row.featureKey) {
+            const f = getStructuredFeatures(p) || {};
+            const v = f[row.featureKey];
+            if (v !== undefined && v !== null && v !== '' && !(Array.isArray(v) && v.length === 0)) return true;
+          }
+          return false;
+        });
         const present = matches.length > 0 || !!row.alwaysRender;
         return { row, matches, present, originalIdx };
       })
