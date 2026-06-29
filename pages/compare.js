@@ -6,6 +6,7 @@ import { useUser } from '../lib/useUser';
 import { useDeals, useProvisions } from '../lib/useSupabaseData';
 import { SIDEBAR_GROUPS, typeHex, sidebarTypeOrder, findGroupForType } from '../lib/sidebar-groups';
 import { CATEGORY_SUMMARY_FEATURES } from '../lib/category-summary-features';
+import { normalizeTermfFeatures } from '../lib/termf';
 import {
   isTaggedItem,
   isCitableValue,
@@ -759,6 +760,10 @@ function readFeatures(provision) {
   if (!meta || typeof meta !== 'object') return {};
   const f = meta.features;
   if (!f || typeof f !== 'object' || Array.isArray(f)) return {};
+  // TERMF stores nested feature objects (companyTerminationFee, tailProvision, …)
+  // but CATEGORY_SUMMARY_FEATURES.TERMF reads flat keys. Normalize so the
+  // compare rows resolve the same way the review page does.
+  if (provision.type === 'TERMF') return normalizeTermfFeatures(f);
   return f;
 }
 

@@ -44,6 +44,7 @@ import {
   TOOLTIP_MAX,
   EVIDENCE_SLICE,
 } from '../../lib/citable';
+import { normalizeTermfFeatures } from '../../lib/termf';
 import { getFeaturesForType, PROVISION_TYPES } from '../../lib/rubric';
 import { resolveSectionReference } from '../../lib/section-ref';
 
@@ -6479,14 +6480,50 @@ function TermfTriggerMatrix({ provisions, allProvisions }) {
     }
   }
 
-  // Resolve each canonical trigger spec to a row.
-  const rows = TERMF_TRIGGER_SPECS.map((spec) => {
-    const matched = provisions.find(spec.match) || null;
-    const f = matched ? getStructuredFeatures(matched) : null;
-    const clauses = matched ? termfExtractClauseRefs(matched, f) : [];
-    const fee = matched ? termfTriggerFee(spec, matched, f, headlineFee) : null;
-    return { spec, matched, clauses, fee };
-  });
+  // PRIMARY: one row per derived trigger object. The normalizer flattens each
+  // fee provision's `companyTerminationFee.triggers` strings into a top-level
+  // `triggers[]` of { name, terminationClauses, feeAmount, feeAmountPct,
+  // sourceText }. A single "Company Termination Fee" provision therefore yields
+  // one row per actual trigger — Superior Proposal / Recommendation Change /
+  // No-Vote / End-Date — instead of trying to match 3 hardcoded category specs
+  // (which never matched the real provision categories). De-dupe by name.
+  let rows = [];
+  const seenTrigger = new Set();
+  for (const p of provisions) {
+    const f = getStructuredFeatures(p) || {};
+    if (!Array.isArray(f.triggers)) continue;
+    for (const t of f.triggers) {
+      if (!t || typeof t !== 'object') continue;
+      const name = String(t.name || '').trim();
+      if (!name) continue;
+      const dedupKey = name.toLowerCase();
+      if (seenTrigger.has(dedupKey)) continue;
+      seenTrigger.add(dedupKey);
+      const clauses = Array.isArray(t.terminationClauses) && t.terminationClauses.length
+        ? t.terminationClauses
+        : termfExtractClauseRefs(p, f);
+      const fee = t.feeAmount
+        ? String(t.feeAmount)
+        : (t.feeAmountPct ? `${t.feeAmountPct}%` : (headlineFee || 'Same as headline'));
+      rows.push({
+        spec: { key: `trigger-${dedupKey}`, label: name },
+        matched: { full_text: t.sourceText || p.full_text || '' },
+        clauses,
+        fee,
+      });
+    }
+  }
+
+  // FALLBACK (older data with no derived triggers): the legacy 3 category specs.
+  if (rows.length === 0) {
+    rows = TERMF_TRIGGER_SPECS.map((spec) => {
+      const matched = provisions.find(spec.match) || null;
+      const f = matched ? getStructuredFeatures(matched) : null;
+      const clauses = matched ? termfExtractClauseRefs(matched, f) : [];
+      const fee = matched ? termfTriggerFee(spec, matched, f, headlineFee) : null;
+      return { spec, matched, clauses, fee };
+    });
+  }
 
   // Tail row: only included when tailFeeActivatingClauses is non-empty OR
   // window months is populated.
@@ -6743,18 +6780,166 @@ function TermfTailMechanics({ provisions, allProvisions }) {
   );
 }
 
+/* TermfRemedyEffect — surfaces facts the extractor captures but the hero /
+ * matrix / tail components never showed: sole-and-exclusive remedy, the
+ * Fraud / Willful-Breach exception, effect of termination, late-payment
+ * interest, and expense reimbursement. Reads the (augmented) provisions —
+ * nested originals are still present alongside the derived flat keys. Renders
+ * nothing when every row is empty. */
+function TermfRemedyEffect({ provisions, allProvisions }) {
+  const showEvidence = useShowEvidence();
+
+  // Combine features across the TERMF provisions (each fee-type is its own
+  // provision, so the remedy / effect facts are spread across several).
+  let combined = {};
+  for (const p of provisions || []) {
+    const f = getStructuredFeatures(p) || {};
+    combined = { ...combined, ...f };
+  }
+
+  const asText = (v) => {
+    if (v === null || v === undefined || v === '') return null;
+    if (typeof v === 'string') return v;
+    if (typeof v === 'object') {
+      if (typeof v.text === 'string' && v.text.trim()) return v.text.trim();
+      if (Array.isArray(v.quotes)) {
+        const q = v.quotes.find((x) => typeof x === 'string' && x.trim());
+        if (q) return q.trim();
+      }
+    }
+    return null;
+  };
+  const quoteOf = (v) => (isCitableValue(v) ? (getCitableQuotes(v)[0] || null) : null);
+
+  // Sole & exclusive remedy.
+  const soleRaw = combined.soleAndExclusiveRemedy;
+  const soleBool = combined.feeSoleAndExclusiveRemedy === true
+    || combined.soleRemedy === true
+    || (isCitableValue(soleRaw) ? getCitableValue(soleRaw) === true : soleRaw === true);
+  const soleText = asText(soleRaw);
+
+  // Fraud / willful-breach exception(s).
+  const exceptions = Array.isArray(combined.feeSoleRemedyExceptions)
+    ? combined.feeSoleRemedyExceptions.filter((x) => typeof x === 'string' && x.trim())
+    : [];
+  const wbeText = asText(combined.willfulBreachException);
+  if (wbeText && !exceptions.includes(wbeText)) exceptions.push(wbeText);
+
+  // Effect of termination.
+  const effect = asText(combined.effectOfTermination);
+
+  // Interest on late payment.
+  const interest = combined.interestOnLatePayment;
+  const interestText = (() => {
+    if (!interest || typeof interest !== 'object') return asText(interest);
+    const rate = interest.rate ? String(interest.rate) : null;
+    const base = interest.base ? String(interest.base) : null;
+    if (rate && base) return `${rate} on ${base}`;
+    return rate || base || null;
+  })();
+
+  // Expense reimbursement.
+  const expenseCap = combined.expenseReimbursementCap
+    ? String(combined.expenseReimbursementCap) : null;
+  const expenseTriggers = (combined.expenseReimbursement && Array.isArray(combined.expenseReimbursement.triggers))
+    ? combined.expenseReimbursement.triggers.filter((x) => typeof x === 'string' && x.trim())
+    : [];
+
+  const hasAny = soleBool || soleText || exceptions.length > 0 || effect || interestText || expenseCap || expenseTriggers.length > 0;
+  if (!hasAny) return null;
+
+  const Row = ({ label, children, quote }) => {
+    const clickable = !!(quote && showEvidence);
+    return (
+      <tr className="align-top">
+        <td className="px-3 py-2 text-ink font-medium whitespace-nowrap w-[280px]">{label}</td>
+        <td
+          className={`px-3 py-2 text-ink ${clickable ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
+          onClick={clickable ? () => showEvidence(quote) : undefined}
+        >
+          {children}
+        </td>
+      </tr>
+    );
+  };
+
+  return (
+    <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+      <div className="px-3 py-2 bg-bg/60 border-b border-border">
+        <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+          Remedy &amp; Effect
+        </p>
+      </div>
+      <table className="min-w-full text-xs font-ui">
+        <tbody className="divide-y divide-border">
+          {(soleBool || soleText) && (
+            <Row label="Sole &amp; exclusive remedy" quote={quoteOf(soleRaw)}>
+              {soleText
+                ? <span>{soleBool ? 'Yes — ' : ''}{soleText}</span>
+                : <span>Yes</span>}
+            </Row>
+          )}
+          {exceptions.length > 0 && (
+            <Row label="Fraud / Willful-Breach exception">
+              <ul className="list-disc list-inside space-y-0.5">
+                {exceptions.map((e, i) => <li key={i}>{e}</li>)}
+              </ul>
+            </Row>
+          )}
+          {effect && (
+            <Row label="Effect of termination" quote={quoteOf(combined.effectOfTermination)}>
+              {effect}
+            </Row>
+          )}
+          {interestText && (
+            <Row label="Interest on late payment">
+              {interestText}
+            </Row>
+          )}
+          {(expenseCap || expenseTriggers.length > 0) && (
+            <Row label="Expense reimbursement">
+              {expenseCap && <span>Cap: {expenseCap}</span>}
+              {expenseTriggers.length > 0 && (
+                <div className="flex flex-wrap gap-1 mt-1">
+                  {expenseTriggers.map((c, i) => (
+                    <SectionRef key={i} refText={c} allProvisions={allProvisions} />
+                  ))}
+                </div>
+              )}
+            </Row>
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 /* TermfRebuiltSummary — top-level wrapper rendered by ProvisionTable when
- * type === 'TERMF'. Stacks the Hero / Trigger Matrix / Tail Mechanics. */
+ * type === 'TERMF'. Stacks the Hero / Trigger Matrix / Tail Mechanics /
+ * Remedy & Effect. */
 function TermfRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
+  // The TERMF extractor stores nested feature objects (companyTerminationFee,
+  // tailProvision, …) but the three child components read FLAT keys. Augment
+  // each provision's features with the derived flat keys (additive — keeps the
+  // nested shapes) so the hero / matrix / tail / remedy children resolve them
+  // through getStructuredFeatures unchanged. Shallow-clone so the shared
+  // provision objects (reused elsewhere on the page) are never mutated.
+  const augmented = (provisions || []).map((p) => {
+    const meta = getAiMetadata(p) || {};
+    const feats = meta.features && typeof meta.features === 'object' ? meta.features : {};
+    return { ...p, ai_metadata: { ...meta, features: normalizeTermfFeatures(feats) } };
+  });
+  const fullList = allProvisions || provisions || [];
   // Sort provisions for the trailing "Provisions in this section" list.
-  const sortedProvs = [...(provisions || [])].sort((a, b) =>
+  const sortedProvs = [...augmented].sort((a, b) =>
     String(a.category || '').localeCompare(String(b.category || ''), undefined, { sensitivity: 'base' }),
   );
   return (
     <div className="space-y-3">
-      <TermfHero provisions={provisions || []} />
-      <TermfTriggerMatrix provisions={provisions || []} allProvisions={allProvisions || provisions || []} />
-      <TermfTailMechanics provisions={provisions || []} allProvisions={allProvisions || provisions || []} />
+      <TermfHero provisions={augmented} />
+      <TermfTriggerMatrix provisions={augmented} allProvisions={fullList} />
+      <TermfTailMechanics provisions={augmented} allProvisions={fullList} />
+      <TermfRemedyEffect provisions={augmented} allProvisions={fullList} />
       {sortedProvs.length > 0 && (
         <div className="bg-bg/40 border border-border rounded-lg px-3 py-2">
           <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider mb-1.5">
