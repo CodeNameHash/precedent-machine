@@ -6630,13 +6630,20 @@ function TermfTailMechanics({ provisions, allProvisions }) {
     return null;
   })();
 
+  const activating = (() => {
+    const v = combined.tailFeeActivatingClauses;
+    if (Array.isArray(v)) return v.filter((x) => typeof x === 'string' && x.trim());
+    return [];
+  })();
+
   const sameRequiredRaw = combined.tailFeeSameProposalRequired;
   const sameRequired = isCitableValue(sameRequiredRaw) ? getCitableValue(sameRequiredRaw) : sameRequiredRaw;
   // Whether the tail fee requires the SAME proposal (one announced during
   // pendency) vs ANY later proposal turns on the article in the language —
   // "a bona fide … Proposal" (any) vs "the/such bona fide … Proposal" (same).
   // Per user: this is the real distinction, so derive it from the text when the
-  // boolean flag is absent.
+  // boolean flag is absent. NOTE: `activating` must be declared above this —
+  // referencing it before its `const` is a temporal-dead-zone crash.
   const proposalScopeLabel = (() => {
     if (sameRequired === true || sameRequired === 'true' || sameRequired === 'yes') {
       return 'Same proposal — must be the proposal announced during pendency';
@@ -6666,12 +6673,6 @@ function TermfTailMechanics({ provisions, allProvisions }) {
     combined.tailFeeThresholdPct,
     combined.tailFeeRecognitionEvent,
   ) || (source ? String(source.full_text || '').slice(0, 800) : null);
-
-  const activating = (() => {
-    const v = combined.tailFeeActivatingClauses;
-    if (Array.isArray(v)) return v.filter((x) => typeof x === 'string' && x.trim());
-    return [];
-  })();
 
   const windowDisplay = (() => {
     const inner = isCitableValue(window) ? getCitableValue(window) : window;
