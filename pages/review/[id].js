@@ -1021,6 +1021,7 @@ function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelect
       className="shrink-0 flex flex-col h-full overflow-hidden"
       style={{
         width: 286,
+        maxWidth: '86vw',
         background: 'var(--surface)',
         borderRight: '1px solid var(--line)',
       }}
@@ -13210,6 +13211,14 @@ export default function ReviewPage() {
   const [hoveredProvId, setHoveredProvId] = useState(null);
   const provisionRefs = useRef({});
 
+  // On phones the 286px sidebar would crush the content column, so default it
+  // closed below the md breakpoint (it becomes an overlay when toggled open).
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      setSidebarOpen(false);
+    }
+  }, []);
+
   /* ── Re-select Text mode ── */
   const [reselectingProvId, setReselectingProvId] = useState(null);
   const [reselectingProvLabel, setReselectingProvLabel] = useState('');
@@ -13551,23 +13560,32 @@ export default function ReviewPage() {
       </header>
 
       {/* Main Layout */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Left Sidebar */}
+      <div className="flex flex-1 overflow-hidden relative">
+        {/* Mobile backdrop — tap to dismiss the overlaid sidebar */}
         {sidebarOpen && (
-          <Sidebar
-            provsByType={provsByType}
-            provisions={provisions}
-            activeFilter={activeFilter}
-            onFilterType={handleFilterType}
-            onSelectProvision={handleSidebarSelectProvision}
-            activeProvId={editingProvision?.id}
-            onMoveProvision={handleMoveProvision}
+          <div
+            className="md:hidden fixed inset-0 bg-black/30 z-30"
+            onClick={() => setSidebarOpen(false)}
           />
+        )}
+        {/* Left Sidebar — in-flow on md+, fixed overlay on mobile */}
+        {sidebarOpen && (
+          <div className="max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:z-40 max-md:shadow-2xl">
+            <Sidebar
+              provsByType={provsByType}
+              provisions={provisions}
+              activeFilter={activeFilter}
+              onFilterType={handleFilterType}
+              onSelectProvision={handleSidebarSelectProvision}
+              activeProvId={editingProvision?.id}
+              onMoveProvision={handleMoveProvision}
+            />
+          </div>
         )}
 
         {/* Main Content */}
         <div className="flex-1 overflow-y-auto">
-          <div style={{ maxWidth: 880, margin: '0 auto', padding: '34px 40px 120px' }}>
+          <div style={{ maxWidth: 880, margin: '0 auto', padding: '34px clamp(14px, 4vw, 40px) 120px' }}>
             {/* Deal Header */}
             <div style={{ marginBottom: 26 }}>
               <div className="rec-deal-eyebrow">

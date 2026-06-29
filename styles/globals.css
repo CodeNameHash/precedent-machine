@@ -571,6 +571,22 @@ html, body {
 .rec-ptable .c-cat { color: var(--ink); font-weight: 600; }
 .rec-ptable .c-lead { color: var(--ink-light); }
 
+/* ─── Mobile: let wide data tables scroll instead of clipping ───
+   Many review-page tables sit inside rounded `overflow-hidden` cards. On a
+   phone the table's intrinsic width (fixed-width / nowrap columns) exceeds the
+   viewport and the card clips the right-hand columns ("tables lose columns").
+   Promote any overflow-hidden card that directly wraps a table to horizontal
+   scroll, and give the .overflow-x-auto wrappers momentum scrolling. */
+@media (max-width: 767px) {
+  .overflow-hidden:has(> table) {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
 /* ─── Sidebar items (Recital style) ─── */
 .rec-side-eyebrow {
   font-family: var(--font-mono);

@@ -7,7 +7,8 @@ const needles = process.argv.slice(3);
 (async () => {
   const errs = [];
   const browser = await chromium.launch({ executablePath:'/opt/pw-browsers/chromium-1194/chrome-linux/chrome', headless:true, args:['--no-sandbox'] });
-  const page = await browser.newPage();
+  const vw = parseInt(process.env.VW||'0',10), vh = parseInt(process.env.VH||'0',10);
+  const page = await browser.newPage(vw && vh ? { viewport:{ width:vw, height:vh } } : {});
   page.on('pageerror', e => errs.push(e.message));
   await page.goto(`http://localhost:${PORT}/login`, { waitUntil:'networkidle', timeout:60000 }).catch(e=>errs.push('login '+e.message));
   await page.waitForTimeout(1500);
@@ -24,5 +25,9 @@ const needles = process.argv.slice(3);
   console.log('pageerrors:', errs.length, errs.slice(0,3));
   console.log('len:', res.len, 'crash:', res.crash);
   if (res.found) console.log('found:', JSON.stringify(res.found));
+  if (process.env.SHOT) { await page.screenshot({ path: process.env.SHOT, fullPage:false }).catch(()=>{}); console.log('shot:', process.env.SHOT); }
+  // Report horizontal overflow (a proxy for "content wider than the screen").
+  const ov = await page.evaluate(()=>({ sw:document.documentElement.scrollWidth, cw:document.documentElement.clientWidth })).catch(()=>null);
+  if (ov) console.log('overflow:', ov.sw>ov.cw+2 ? `YES (scrollW ${ov.sw} > client ${ov.cw})` : `no (${ov.cw}px)`);
   await browser.close();
 })();
