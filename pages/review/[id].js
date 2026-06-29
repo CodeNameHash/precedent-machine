@@ -7166,12 +7166,25 @@ function TermrRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
   // table shows the full picture regardless of which party sub-page is open).
   const pool = (allProvisions && allProvisions.length ? allProvisions : provisions) || [];
   const termrProvs = pool.filter((p) => p && typeof p.type === 'string' && p.type.startsWith('TERMR'));
+  // Boilerplate sometimes lands under a TERMR code (amendment / waiver / expenses
+  // / effect-of-termination). When several provisions share a canonical code,
+  // prefer a non-boilerplate one, and among those prefer the one that actually
+  // carries a fee requirement (fixes e.g. a duplicate Superior-Proposal row
+  // where the real right has the fee but a mis-coded preamble was picked first).
+  const isTermrBoilerplate = (p) =>
+    /amendment|waiver|expenses|effect\s+of\s+termination|fees\s+and\s+expenses/i.test(String(p.category || ''));
+  const hasFee = (p) => {
+    const fr = (getStructuredFeatures(p) || {}).feeRequired;
+    const v = isCitableValue(fr) ? getCitableValue(fr) : fr;
+    return v === true || (!!v && typeof v === 'object');
+  };
   const byCode = (codes) => {
-    for (const p of termrProvs) {
-      const code = String((getAiMetadata(p) || {}).code || p.code || '');
-      if (codes.includes(code)) return p;
-    }
-    return null;
+    const matches = termrProvs.filter((p) =>
+      codes.includes(String((getAiMetadata(p) || {}).code || p.code || '')));
+    if (matches.length === 0) return null;
+    const nonBoiler = matches.filter((p) => !isTermrBoilerplate(p));
+    const pickFrom = nonBoiler.length ? nonBoiler : matches;
+    return pickFrom.find(hasFee) || pickFrom[0];
   };
 
   // Build the canonical rows.
