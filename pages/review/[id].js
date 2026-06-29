@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback, useRef, useContext, createContext } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef, useContext, createContext, Fragment } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { useDeal, useProvisions } from '../../lib/useSupabaseData';
@@ -186,18 +186,8 @@ const SIDEBAR_GROUPS = [
     { label: 'Buyer / Parent', type: 'NOSOL-B' },
   ]},
   { label: 'Antitrust / Regulatory', types: ['ANTI'] },
-  { label: 'Conditions to Closing', children: [
-    { label: 'Mutual', type: 'COND-M' },
-    { label: 'Buyer', type: 'COND-B' },
-    { label: 'Seller', type: 'COND-S' },
-    { label: 'Modifiers', type: 'COND' },
-  ]},
-  { label: 'Termination Rights', children: [
-    { label: 'Mutual', type: 'TERMR-M' },
-    { label: 'Buyer', type: 'TERMR-B' },
-    { label: 'Target', type: 'TERMR-T' },
-    { label: 'Unclassified', type: 'TERMR' },
-  ]},
+  { label: 'Conditions to Closing', types: ['COND-M', 'COND-B', 'COND-S', 'COND'], singleType: 'COND-M' },
+  { label: 'Termination Rights', types: ['TERMR-M', 'TERMR-B', 'TERMR-T', 'TERMR'], singleType: 'TERMR-M' },
   { label: 'Termination Fees', types: ['TERMF'] },
   { label: 'Other Covenants', types: ['COV'] },
   { label: 'Definitions', types: ['DEF'] },
@@ -7137,7 +7127,6 @@ function TermrRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
                 <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Right</th>
                 <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[150px]">Who Can Terminate</th>
                 <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Key Terms</th>
-                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[120px]">§</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -7148,13 +7137,19 @@ function TermrRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
                       <td className="px-3 py-2 text-inkFaint">{row.spec.label}</td>
                       <td className="px-3 py-2 italic text-inkFaint">—</td>
                       <td className="px-3 py-2 italic text-inkFaint">Not present in this agreement</td>
-                      <td className="px-3 py-2 italic text-inkFaint">—</td>
                     </tr>
                   );
                 }
                 return (
                   <tr key={row.spec.key} className="align-top hover:bg-bg/40">
-                    <Cell quote={row.quote} className="font-medium whitespace-nowrap">{row.spec.label}</Cell>
+                    <Cell quote={row.quote} className="font-medium">
+                      <span className="inline-flex flex-wrap items-baseline gap-x-1.5">
+                        <span className="font-medium">{row.spec.label}</span>
+                        {row.ref && (
+                          <span className="text-inkFaint inline-flex items-center">(<SectionRef refText={row.ref} allProvisions={pool} />)</span>
+                        )}
+                      </span>
+                    </Cell>
                     <Cell quote={row.quote} className="whitespace-nowrap">
                       {row.who || <span className="italic text-inkFaint">—</span>}
                     </Cell>
@@ -7162,9 +7157,6 @@ function TermrRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
                       {row.terms.length > 0
                         ? <ul className="space-y-0.5">{row.terms.map((t, i) => <li key={i}>{t}</li>)}</ul>
                         : <span className="italic text-inkFaint">—</span>}
-                    </Cell>
-                    <Cell quote={row.quote} className="whitespace-nowrap font-mono text-[11px] text-inkMid">
-                      {row.ref || <span className="italic text-inkFaint font-ui">—</span>}
                     </Cell>
                   </tr>
                 );
@@ -7175,7 +7167,6 @@ function TermrRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
                 <td className="px-3 py-2 text-inkFaint whitespace-nowrap">—</td>
                 <td
                   className={`px-3 py-2 text-ink ${faultText && showEvidence ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
-                  colSpan={2}
                   onClick={faultText && showEvidence ? () => showEvidence(faultText) : undefined}
                 >
                   <HoverSource quote={faultText} as="div">
@@ -8947,6 +8938,140 @@ function CanonicalConditionsTable({ provisions, allProvisions, family, onSelectP
   );
 }
 
+/* ════════════════════════════════════════════════════════════════════════
+ * CondSingleTable — ONE Closing-Conditions table with full-span Mutual /
+ * Buyer / Target header rows (per user: "one big table … splitting into
+ * mutual / buyer / seller is better than 3 tables"). Each family's canonical
+ * conditions render as a present/absent checklist (like the IOC / material-
+ * contracts tables) with the standard / detail and a click-to-source.
+ * Reuses CANONICAL_CONDITIONS_*, CanonicalConditionDetails and BringdownTable.
+ * ════════════════════════════════════════════════════════════════════════ */
+const COND_FAMILY_SECTIONS = [
+  { family: 'COND-M', label: 'Mutual Conditions', list: CANONICAL_CONDITIONS_M, repsType: 'REP-T' },
+  { family: 'COND-B', label: "Buyer's Conditions — to Parent / Merger Sub's obligation", list: CANONICAL_CONDITIONS_B, repsType: 'REP-T' },
+  { family: 'COND-S', label: "Target's Conditions — to the Company's obligation", list: CANONICAL_CONDITIONS_S, repsType: 'REP-B' },
+];
+
+function CondSingleTable({ allProvisions, onSelectProvision }) {
+  const pool = allProvisions || [];
+
+  // Tender-offer deal? (gates the Tender Offer Minimum Condition row.)
+  const isTenderDeal = useMemo(() => {
+    for (const p of pool) {
+      if (/tender\s+offer|acceptance\s+time|exchange\s+offer/i.test(String(p && p.full_text || ''))) return true;
+    }
+    return false;
+  }, [pool]);
+
+  // Parent-approval required? (gates the Parent stockholder-approval row.)
+  const parentApprovalRequired = useMemo(() => {
+    for (const p of pool) {
+      const f = getStructuredFeatures(p) || {};
+      const raw = isCitableValue(f.shareholderApprovalMethodParent)
+        ? getCitableValue(f.shareholderApprovalMethodParent)
+        : f.shareholderApprovalMethodParent;
+      const code = typeof raw === 'object' && raw ? raw.code : raw;
+      const s = String(code || '').toUpperCase();
+      if (s === 'SPECIAL_MEETING' || s === 'WRITTEN_CONSENT' || s === 'SIGN_AND_CONSENT') return true;
+    }
+    return false;
+  }, [pool]);
+
+  // Build the per-family row sets up front (present rows first, absent last).
+  const sections = COND_FAMILY_SECTIONS.map((sec) => {
+    const famProvs = pool.filter((p) => p && p.type === sec.family);
+    const rowsRaw = sec.list.filter((row) => {
+      if (row.tenderOnly && !isTenderDeal) return false;
+      if (row.requireParentApproval && !parentApprovalRequired) return false;
+      return true;
+    });
+    const rows = rowsRaw
+      .map((row, originalIdx) => {
+        const matches = famProvs.filter((p) => row.re.test(String(p.category || '')));
+        const present = matches.length > 0 || !!row.alwaysRender;
+        return { row, matches, present, originalIdx };
+      })
+      .sort((a, b) => (a.present !== b.present ? (a.present ? -1 : 1) : a.originalIdx - b.originalIdx));
+    return { ...sec, famProvs, rows };
+  });
+
+  return (
+    <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+      <div className="px-3 py-2 bg-bg/60 border-b border-border">
+        <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+          Closing Conditions
+        </p>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="min-w-full text-xs font-ui">
+          <thead className="bg-bg/60 border-b border-border">
+            <tr>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[240px]">Condition</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[90px]">Present</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Standard / Detail</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {sections.map((sec) => (
+              <Fragment key={sec.family}>
+                {/* Full-span family header row */}
+                <tr className="bg-bg/40 border-t-2 border-border">
+                  <td colSpan={3} className="px-3 py-1.5 text-[11px] font-ui font-semibold text-inkMid uppercase tracking-wide">
+                    {sec.label}
+                  </td>
+                </tr>
+                {sec.rows.map(({ row, matches, present }) => {
+                  const primary = matches[0];
+                  const quote = primary && typeof primary.full_text === 'string' ? primary.full_text : null;
+                  return (
+                    <tr key={`${sec.family}-${row.label}`} className="align-top hover:bg-bg/40">
+                      <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">
+                        {primary && onSelectProvision ? (
+                          <button type="button" onClick={() => onSelectProvision(primary)} className="text-left text-accent hover:underline font-medium">
+                            {row.label}
+                          </button>
+                        ) : <span>{row.label}</span>}
+                      </td>
+                      <td className="px-3 py-2 whitespace-nowrap">
+                        {present
+                          ? <span className="inline-flex items-center text-[10px] font-ui font-medium px-1.5 py-0.5 rounded border bg-emerald-50 text-emerald-700 border-emerald-200">Yes</span>
+                          : <span className="text-inkFaint/70 line-through text-[11px]">No</span>}
+                      </td>
+                      <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
+                        {matches.length === 0 && !row.alwaysRender ? (
+                          <span className="italic text-inkFaint">Not present in this agreement</span>
+                        ) : (
+                          <HoverSource quote={quote} as="div">
+                            <CanonicalConditionDetails
+                              row={row}
+                              matches={matches}
+                              allProvisions={pool}
+                              onSelectProvision={onSelectProvision}
+                            />
+                            {/Bring[\s-]*Down/i.test(row.label) && (
+                              <div className="mt-2">
+                                <BringdownTable
+                                  provisions={pool}
+                                  repsType={sec.repsType}
+                                  onSelectProvision={onSelectProvision}
+                                />
+                              </div>
+                            )}
+                          </HoverSource>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </Fragment>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
 /** Render ONE MAE definition (target-side or parent-side) as a stacked block:
  *    - eyebrow + hero with one-limb / two-limb label
  *    - simple list of carveouts (each clickable to source, like IOC General
@@ -9308,28 +9433,17 @@ function ProvisionTable({ provisions, type, onSelectProvision, allProvisions, de
     );
   }
   if (type === 'COND' || type === 'COND-M' || type === 'COND-B' || type === 'COND-S') {
-    const family = (type === 'COND-B' || type === 'COND-S' || type === 'COND-M') ? type : 'COND-M';
+    // One combined Closing-Conditions table with full-span Mutual / Buyer /
+    // Target header rows (per user) — built from ALL COND provisions so the
+    // whole picture shows regardless of which family sub-page is open.
     return (
       <div className="space-y-3">
-        {/* P8 item 2: Frustration-of-Conditions banner — renders once at the
-            top of the COND family page when a COND-FRUSTRATE provision is
-            present anywhere in the deal. The sidebar splits COND into
-            Mutual/Buyer/Seller/Modifiers pages, so per-family rendering here
-            == once per page. */}
         <CondFrustrationBanner
           allProvisions={allProvisions || provisions}
           onSelectProvision={onSelectProvision}
         />
-        <CanonicalConditionsTable
-          provisions={provisions}
+        <CondSingleTable
           allProvisions={allProvisions || provisions}
-          family={family}
-          onSelectProvision={onSelectProvision}
-        />
-        <CategoryFeatureSummaryTable
-          deal={deal}
-          provisions={provisions}
-          type={CATEGORY_SUMMARY_FEATURES[type] ? type : 'COND-M'}
           onSelectProvision={onSelectProvision}
         />
       </div>
