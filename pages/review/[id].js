@@ -6388,22 +6388,6 @@ function TermfTriggerMatrix({ provisions, allProvisions }) {
     return termfHeroDisplay(headlineHit.value);
   })();
 
-  // Find features object for tail-fee fields (look across all provisions).
-  let tailFeatures = {};
-  for (const p of provisions) {
-    const f = getStructuredFeatures(p) || {};
-    if (
-      f.tailFeeWindowMonths !== null && f.tailFeeWindowMonths !== undefined && f.tailFeeWindowMonths !== ''
-    ) {
-      tailFeatures = f;
-      break;
-    }
-    // Also pick up activating clauses even if window is empty.
-    if (Array.isArray(f.tailFeeActivatingClauses) && f.tailFeeActivatingClauses.length > 0) {
-      tailFeatures = f;
-    }
-  }
-
   // PRIMARY: one row per derived trigger object. The normalizer flattens each
   // fee provision's `companyTerminationFee.triggers` strings into a top-level
   // `triggers[]` of { name, terminationClauses, feeAmount, feeAmountPct,
@@ -6450,26 +6434,9 @@ function TermfTriggerMatrix({ provisions, allProvisions }) {
     });
   }
 
-  // Tail row: only included when tailFeeActivatingClauses is non-empty OR
-  // window months is populated.
-  const tailClauses = (() => {
-    const v = tailFeatures.tailFeeActivatingClauses;
-    if (Array.isArray(v)) {
-      return v.filter((x) => typeof x === 'string' && x.trim());
-    }
-    return [];
-  })();
-  const tailWindow = tailFeatures.tailFeeWindowMonths;
-  const tailPresent = tailClauses.length > 0 || (tailWindow !== null && tailWindow !== undefined && tailWindow !== '');
-  const tailRow = tailPresent
-    ? {
-        spec: { key: 'tail', label: 'Tail Fee' },
-        matched: { full_text: '' },
-        clauses: tailClauses,
-        fee: headlineFee || 'Same as headline',
-        isTail: true,
-      }
-    : { spec: { key: 'tail', label: 'Tail Fee' }, matched: null, clauses: [], fee: null };
+  // (No tail row here — the dedicated Tail Mechanics table below covers the
+  // tail fee in full; a "Tail Fee" trigger row only added a redundant
+  // "who can terminate = N/A" line.)
 
   // Headline % of equity value (folded in from the old hero per user request).
   const pctHit = pickFirstNonEmpty(provisions, ['feePercentage', 'terminationFeePercentEquityValue']);
@@ -6490,7 +6457,7 @@ function TermfTriggerMatrix({ provisions, allProvisions }) {
   })();
   const nakedAmount = termfHeroDisplay(pickFirstNonEmpty(provisions, ['nakedNoVoteFeeAmount'])?.value);
 
-  const allRows = [...rows, tailRow];
+  const allRows = rows;
 
   // Sort: present rows first (matched non-null), absent rows to the bottom.
   const sorted = [...allRows].sort((a, b) => {
@@ -6509,7 +6476,7 @@ function TermfTriggerMatrix({ provisions, allProvisions }) {
         {(headlineFee || headlinePct) && (
           <HoverSource quote={headlineFeeQuote} as="p" className="text-[11px] font-ui text-inkMid">
             <span
-              className={`font-serif text-ink ${headlineFeeQuote && showEvidence ? 'cursor-pointer hover:bg-yellow-50 rounded px-0.5' : ''}`}
+              className={`font-ui font-semibold text-ink ${headlineFeeQuote && showEvidence ? 'cursor-pointer hover:bg-yellow-50 rounded px-0.5' : ''}`}
               onClick={headlineFeeQuote && showEvidence ? () => showEvidence(headlineFeeQuote) : undefined}
             >
               {headlineFee || '—'}
@@ -6571,7 +6538,7 @@ function TermfTriggerMatrix({ provisions, allProvisions }) {
                     </HoverSource>
                   </td>
                   <td className="px-3 py-2 text-ink whitespace-nowrap">
-                    {row.party || (row.isTail ? <span className="text-inkFaint">Either party</span> : <span className="italic text-inkFaint">—</span>)}
+                    {row.party || <span className="italic text-inkFaint">—</span>}
                   </td>
                   <td className="px-3 py-2 text-ink whitespace-nowrap">
                     {row.fee || <span className="italic text-inkFaint">—</span>}
@@ -6594,6 +6561,40 @@ function TermfTriggerMatrix({ provisions, allProvisions }) {
       </div>
     </div>
   );
+}
+
+// Parse the tail's activating-clause sentences into concise canonical
+// { ref, label } pairs — the actual termination scenarios that arm the tail
+// fee (End Date / No-Vote / Breach / Recommendation Change), drawn from the
+// "Section X.YZ (Label)" sub-references inside each clause. Across the
+// precedents the tail is armed by a deal-specific subset of the termination
+// rights, so surfacing each labelled scenario (vs one long sentence) makes the
+// scope readable and comparable.
+function parseTailTriggerClauses(clauses) {
+  const out = [];
+  const seen = new Set();
+  const labelled = /(Section\s+\d+\.\d+(?:\([A-Za-z0-9]+\))*)\s*\(([^)]{2,60})\)/g;
+  for (const c of (clauses || [])) {
+    if (typeof c !== 'string') continue;
+    let m;
+    let found = false;
+    labelled.lastIndex = 0;
+    while ((m = labelled.exec(c)) !== null) {
+      found = true;
+      const ref = m[1];
+      const label = m[2].trim();
+      const key = `${ref}|${label}`.toLowerCase();
+      if (!seen.has(key)) { seen.add(key); out.push({ ref, label }); }
+    }
+    if (!found) {
+      const refs = c.match(/Section\s+\d+\.\d+(?:\([A-Za-z0-9]+\))*/g) || [];
+      for (const r of refs) {
+        const k = r.toLowerCase();
+        if (!seen.has(k)) { seen.add(k); out.push({ ref: r, label: null }); }
+      }
+    }
+  }
+  return out;
 }
 
 /* TermfTailMechanics — only renders when tailFeeWindowMonths is populated. */
@@ -6737,16 +6738,32 @@ function TermfTailMechanics({ provisions, allProvisions }) {
               <span className="italic text-inkFaint">Not specified</span>
             )}
           </Row>
-          <Row label="Triggering termination clauses">
-            {activating.length > 0 ? (
-              <div className="flex flex-wrap gap-1">
-                {activating.map((c, i) => (
-                  <SectionRef key={i} refText={c} allProvisions={allProvisions} />
-                ))}
-              </div>
-            ) : (
-              <span className="italic text-inkFaint">Not specified</span>
-            )}
+          <Row label="Termination scenarios that arm the tail" quote={activating.join('\n\n') || null}>
+            {(() => {
+              const parsed = parseTailTriggerClauses(activating);
+              if (parsed.length > 0) {
+                return (
+                  <div className="flex flex-wrap gap-1.5">
+                    {parsed.map((t, i) => (
+                      <span key={i} className="inline-flex items-center gap-1">
+                        {t.label && <span className="text-ink">{t.label}</span>}
+                        <SectionRef refText={t.ref} allProvisions={allProvisions} />
+                      </span>
+                    ))}
+                  </div>
+                );
+              }
+              if (activating.length > 0) {
+                return (
+                  <ul className="space-y-0.5">
+                    {activating.map((c, i) => (
+                      <li key={i}>{c.length > 120 ? `${c.slice(0, 119)}…` : c}</li>
+                    ))}
+                  </ul>
+                );
+              }
+              return <span className="italic text-inkFaint">Not specified</span>;
+            })()}
           </Row>
           <Row label="Triggering proposal (same vs any)" quote={termfFirstQuote(combined.tailFeeSameProposalRequired)}>
             {proposalScopeLabel || <span className="italic text-inkFaint">Not specified</span>}
@@ -6868,22 +6885,20 @@ function TermfRemedyEffect({ provisions, allProvisions }) {
       <table className="min-w-full text-xs font-ui">
         <tbody className="divide-y divide-border">
           {(soleBool || soleText) && (
-            <Row label="Sole &amp; exclusive remedy" quote={quoteOf(soleRaw)}>
-              {soleText
-                ? <span>{soleBool ? 'Yes — ' : ''}{soleText}</span>
-                : <span>Yes</span>}
+            <Row label="Sole &amp; exclusive remedy" quote={soleText || quoteOf(soleRaw)}>
+              {soleBool ? 'Yes' : 'No'}
             </Row>
           )}
           {exceptions.length > 0 && (
-            <Row label="Fraud / Willful-Breach exception">
-              <ul className="list-disc list-inside space-y-0.5">
-                {exceptions.map((e, i) => <li key={i}>{e}</li>)}
-              </ul>
+            <Row label="Fraud / Willful-Breach exception" quote={exceptions.join('\n\n')}>
+              Yes — carved out of the fee/sole-remedy bar
             </Row>
           )}
           {effect && (
-            <Row label="Effect of termination" quote={quoteOf(combined.effectOfTermination)}>
-              {effect}
+            <Row label="Effect of termination" quote={effect}>
+              {/void|no\s+further\s+force|of\s+no\s+(?:further\s+)?effect/i.test(effect)
+                ? 'Agreement becomes void; specified provisions survive'
+                : (effect.length > 80 ? `${effect.slice(0, 79)}…` : effect)}
             </Row>
           )}
           {interestText && (
