@@ -192,6 +192,12 @@ function TopBar({ user }) {
         <span className="tag">Precedent</span>
       </Link>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <Link
+          href="/search"
+          style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--accent-deep)', textDecoration: 'none' }}
+        >
+          Search precedents
+        </Link>
         {user && (
           <>
             <span style={{ fontSize: 12.5, color: 'var(--ink-light)' }}>{user.name}</span>
