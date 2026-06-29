@@ -6960,6 +6960,252 @@ function TermfRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
   );
 }
 
+/* ════════════════════════════════════════════════════════════════════════
+ * TERMINATION RIGHTS (non-fee) — rebuilt as a rich canonical table mirroring
+ * the Termination-Fees pattern, per user. One row per canonical termination
+ * right (present / "Not present"), with Who-Can-Terminate, the key negotiated
+ * terms, and a § cite (hover-to-source). Below it: an Outside-Date /
+ * Extensions sub-table and a cross-cutting "breach standard that blocks
+ * termination" row (the proximate/principal-cause fault carve-out).
+ * ════════════════════════════════════════════════════════════════════════ */
+const TERMR_CANONICAL = [
+  { key: 'mutual',    label: 'Mutual consent',              codes: ['TERMR-MUTUAL'] },
+  { key: 'outside',   label: 'Outside / End Date',          codes: ['TERMR-OUTSIDE', 'TERMR-EXTENSION'] },
+  { key: 'legal',     label: 'Legal restraint / order',     codes: ['TERMR-LEGAL'] },
+  { key: 'vote',      label: 'Stockholder vote not obtained', codes: ['TERMR-VOTE'] },
+  { key: 'breachT',   label: 'Company (Target) breach',     codes: ['TERMR-BREACH-T'], whoHint: 'Parent / Buyer' },
+  { key: 'breachB',   label: 'Parent (Buyer) breach',       codes: ['TERMR-BREACH-B'], whoHint: 'Company / Target' },
+  { key: 'superior',  label: 'Superior Proposal',           codes: ['TERMR-SUPERIOR'], whoHint: 'Company / Target' },
+  { key: 'recommend', label: 'Change of Recommendation',    codes: ['TERMR-RECOMMEND'], whoHint: 'Parent / Buyer' },
+];
+
+function termrPartyLabel(f) {
+  const raw = f && f.partyWhoCanTerminate;
+  if (!raw) return null;
+  if (raw.label && typeof raw.label === 'string') return raw.label;
+  const code = String(raw.code || '').toUpperCase();
+  if (code === 'PARTY_MUTUAL') return 'Either party';
+  if (code === 'PARTY_BUYER' || code === 'PARTY_PARENT') return 'Parent / Buyer';
+  if (code === 'PARTY_TARGET' || code === 'PARTY_COMPANY') return 'Company / Target';
+  return null;
+}
+
+// Compose the "key terms" cell for a canonical right from its features.
+function termrKeyTerms(key, f) {
+  const u = (v) => (isCitableValue(v) ? getCitableValue(v) : v);
+  const bits = [];
+  if (key === 'mutual' && u(f.writtenConsentRequired)) bits.push('Written consent of both parties');
+  if (key === 'outside') {
+    const d = u(f.outsideDate);
+    if (d) bits.push(String(d));
+    bits.push('see Outside-Date table below');
+  }
+  if (key === 'legal') {
+    if (u(f.restraintFinality)) bits.push('Order must be final & non-appealable');
+    else bits.push('Legal restraint in effect');
+  }
+  if (key === 'vote') {
+    const v = u(f.voteThreshold);
+    bits.push(v ? `Vote threshold: ${v}` : 'Required stockholder vote not obtained');
+  }
+  if (key === 'breachT' || key === 'breachB') {
+    const cd = u(f.cureDays);
+    if (cd) bits.push(`Cure period: ${cd} days`);
+    const ms = u(f.materialityStandard);
+    if (ms) bits.push(String(ms));
+  }
+  if (key === 'superior') {
+    bits.push(u(f.feeRequired) ? 'Termination fee payable' : 'No fee specified');
+  }
+  if (key === 'recommend' && u(f.preVoteOnlyWindow)) bits.push('Available pre-stockholder-vote only');
+  return bits;
+}
+
+// Pull a concise § reference (leading "Section X.YZ" or sub-clause letter)
+// from a provision's text, for the cite column.
+function termrSectionLabel(p) {
+  const t = String((p && p.full_text) || '');
+  const sec = t.match(/Section\s+\d+\.\d+(?:\([A-Za-z0-9]+\))*/);
+  if (sec) return sec[0];
+  const sub = t.match(/^\s*(\([A-Za-z0-9]+\))/);
+  if (sub) return sub[1];
+  return null;
+}
+
+// Classify the fault-based exclusion standard ("primarily attributable" /
+// "principal cause" / "proximate cause") from the carve-out language — the
+// breach standard that blocks a party's right to terminate.
+function termrFaultStandard(text) {
+  if (typeof text !== 'string') return null;
+  if (/primarily\s+(?:attributable|caused|result)/i.test(text)) return 'Primarily attributable to / caused by the terminating party';
+  if (/principal\s+cause|principally\s+caused/i.test(text)) return 'Terminating party was the principal cause';
+  if (/proximate(?:ly)?\s+cause/i.test(text)) return 'Proximate cause standard';
+  if (/material\s+breach|breach\s+of\s+any\s+(?:covenant|representation|obligation)/i.test(text)) return "Terminating party's own breach caused the failure";
+  return 'Fault-based carve-out present (see language)';
+}
+
+function TermrRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
+  const showEvidence = useShowEvidence();
+  const u = (v) => (isCitableValue(v) ? getCitableValue(v) : v);
+
+  // Gather every termination-RIGHT provision across the deal (so the one rich
+  // table shows the full picture regardless of which party sub-page is open).
+  const pool = (allProvisions && allProvisions.length ? allProvisions : provisions) || [];
+  const termrProvs = pool.filter((p) => p && typeof p.type === 'string' && p.type.startsWith('TERMR'));
+  const byCode = (codes) => {
+    for (const p of termrProvs) {
+      const code = String((getAiMetadata(p) || {}).code || p.code || '');
+      if (codes.includes(code)) return p;
+    }
+    return null;
+  };
+
+  // Build the canonical rows.
+  const rows = TERMR_CANONICAL.map((spec) => {
+    const prov = byCode(spec.codes);
+    const f = prov ? (getStructuredFeatures(prov) || {}) : {};
+    return {
+      spec,
+      prov,
+      who: termrPartyLabel(f) || spec.whoHint || null,
+      terms: prov ? termrKeyTerms(spec.key, f) : [],
+      ref: prov ? termrSectionLabel(prov) : null,
+      quote: prov && typeof prov.full_text === 'string' && prov.full_text.trim() ? prov.full_text : null,
+    };
+  });
+
+  // Outside-date detail (from TERMR-OUTSIDE).
+  const outsideProv = byCode(['TERMR-OUTSIDE', 'TERMR-EXTENSION']);
+  const of = outsideProv ? (getStructuredFeatures(outsideProv) || {}) : {};
+  const outsideRows = outsideProv ? [
+    { label: 'Outside / End Date', value: u(of.outsideDate), raw: of.outsideDate },
+    { label: 'Period from signing', value: u(of.outsideDateMonths), raw: of.outsideDateMonths },
+    { label: 'Extension available', value: u(of.outsideDateExtension) === true ? 'Yes' : (u(of.outsideDateExtension) === false ? 'No' : null), raw: of.outsideDateExtension },
+    { label: 'Extension terms / who elects', value: u(of.outsideDateExtensionConditions) || u(of.extensionConditions), raw: of.outsideDateExtensionConditions || of.extensionConditions },
+  ].filter((r) => r.value !== null && r.value !== undefined && r.value !== '') : [];
+
+  // Cross-cutting fault-based exclusion (the breach standard that blocks the
+  // right to terminate). Take the first populated faultBasedExclusion text.
+  let faultText = null;
+  for (const p of termrProvs) {
+    const fbe = (getStructuredFeatures(p) || {}).faultBasedExclusion;
+    const txt = fbe && typeof fbe === 'object' ? fbe.text : (typeof fbe === 'string' ? fbe : null);
+    if (txt && String(txt).trim()) { faultText = String(txt).trim(); break; }
+  }
+  const faultStandard = faultText ? termrFaultStandard(faultText) : null;
+
+  const Cell = ({ quote, children, className }) => {
+    const clickable = !!(quote && showEvidence);
+    return (
+      <td
+        className={`px-3 py-2 text-ink ${className || ''} ${clickable ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
+        onClick={clickable ? () => showEvidence(quote) : undefined}
+      >
+        <HoverSource quote={quote} as="div">{children}</HoverSource>
+      </td>
+    );
+  };
+
+  return (
+    <div className="space-y-3">
+      {/* Canonical termination rights */}
+      <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+        <div className="px-3 py-2 bg-bg/60 border-b border-border">
+          <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+            Termination Rights
+          </p>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-xs font-ui">
+            <thead className="bg-bg/60 border-b border-border">
+              <tr>
+                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Right</th>
+                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[150px]">Who Can Terminate</th>
+                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Key Terms</th>
+                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[120px]">§</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {rows.map((row) => {
+                if (!row.prov) {
+                  return (
+                    <tr key={row.spec.key} className="align-top">
+                      <td className="px-3 py-2 text-inkFaint">{row.spec.label}</td>
+                      <td className="px-3 py-2 italic text-inkFaint">—</td>
+                      <td className="px-3 py-2 italic text-inkFaint">Not present in this agreement</td>
+                      <td className="px-3 py-2 italic text-inkFaint">—</td>
+                    </tr>
+                  );
+                }
+                return (
+                  <tr key={row.spec.key} className="align-top hover:bg-bg/40">
+                    <Cell quote={row.quote} className="font-medium whitespace-nowrap">{row.spec.label}</Cell>
+                    <Cell quote={row.quote} className="whitespace-nowrap">
+                      {row.who || <span className="italic text-inkFaint">—</span>}
+                    </Cell>
+                    <Cell quote={row.quote}>
+                      {row.terms.length > 0
+                        ? <ul className="space-y-0.5">{row.terms.map((t, i) => <li key={i}>{t}</li>)}</ul>
+                        : <span className="italic text-inkFaint">—</span>}
+                    </Cell>
+                    <Cell quote={row.quote} className="whitespace-nowrap font-mono text-[11px] text-inkMid">
+                      {row.ref || <span className="italic text-inkFaint font-ui">—</span>}
+                    </Cell>
+                  </tr>
+                );
+              })}
+              {/* Cross-cutting fault-based exclusion standard. */}
+              <tr className="align-top bg-bg/30">
+                <td className="px-3 py-2 text-ink font-medium">Breach standard that blocks termination</td>
+                <td className="px-3 py-2 text-inkFaint whitespace-nowrap">—</td>
+                <td
+                  className={`px-3 py-2 text-ink ${faultText && showEvidence ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
+                  colSpan={2}
+                  onClick={faultText && showEvidence ? () => showEvidence(faultText) : undefined}
+                >
+                  <HoverSource quote={faultText} as="div">
+                    {faultStandard || <span className="italic text-inkFaint">Not specified</span>}
+                  </HoverSource>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Outside-Date / Extensions detail */}
+      {outsideRows.length > 0 && (
+        <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+          <div className="px-3 py-2 bg-bg/60 border-b border-border">
+            <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+              Outside Date / Extensions
+            </p>
+          </div>
+          <table className="min-w-full text-xs font-ui">
+            <tbody className="divide-y divide-border">
+              {outsideRows.map((r, i) => {
+                const q = isCitableValue(r.raw) ? (getCitableQuotes(r.raw)[0] || null) : null;
+                const clickable = !!(q && showEvidence);
+                return (
+                  <tr key={i} className="align-top hover:bg-bg/40">
+                    <td className="px-3 py-2 text-ink font-medium whitespace-nowrap w-[220px]">{r.label}</td>
+                    <td
+                      className={`px-3 py-2 text-ink ${clickable ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
+                      onClick={clickable ? () => showEvidence(q) : undefined}
+                    >
+                      <HoverSource quote={q} as="div">{String(r.value)}</HoverSource>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ─── NOSOL / ANTI table — same Term/Details visual layout as StructTable.
  *     Each provision is one row. The Details column stacks the type's
  *     FEATURE_DISPLAY_ORDER fields as <dt>/<dd> pairs (skipping empties)
@@ -9026,14 +9272,13 @@ function ProvisionTable({ provisions, type, onSelectProvision, allProvisions, de
   //    agreement" italic placeholder so the user can see at one glance what
   //    is populated vs. missing across the full 201-column PW spec.
   if (type === 'TERMR' || type === 'TERMR-M' || type === 'TERMR-B' || type === 'TERMR-T') {
-    // Pass the party-specific type through so CategoryFeatureSummaryTable
-    // resolves to TERMR / TERMR-B / TERMR-T (each has its own spec — Buyer
-    // and Target drop the mutual outside-date / extension rows).
+    // Rebuilt rich canonical table (one row per termination right) mirroring
+    // the Termination-Fees pattern. Shows the full picture from all TERMR
+    // provisions regardless of which party sub-page is open.
     return (
-      <CategoryFeatureSummaryTable
-          deal={deal}
+      <TermrRebuiltSummary
         provisions={provisions}
-        type={type === 'TERMR-M' ? 'TERMR' : type}
+        allProvisions={allProvisions || provisions}
         onSelectProvision={onSelectProvision}
       />
     );
