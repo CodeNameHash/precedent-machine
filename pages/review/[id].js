@@ -7929,7 +7929,15 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
     if (isCitableValue(txtVal)) txtVal = getCitableValue(txtVal);
     let dateVal = dateRaw;
     if (isCitableValue(dateVal)) dateVal = getCitableValue(dateVal);
-    if (!monthsVal && !txtVal && !dateVal) {
+    // Recover the verbatim exception cut-off phrase up front. CRITICAL: this
+    // must be computed BEFORE the "all empty" guard below — pickKey frequently
+    // resolves secFilingsLookbackMonths to the REP-T-PREAMBLE's citable
+    // wrapper whose value is null (the phrase lives in its .text), so
+    // monthsVal/txtVal/dateVal can all be empty even though the cut-off IS
+    // recoverable. Without this, the row short-circuited to "Not present"
+    // (the Verve "at least two (2) Business Days" bug).
+    const derived = deriveCutoffPhrase();
+    if (!monthsVal && !txtVal && !dateVal && !derived) {
       return <span className="italic text-inkFaint">Not present in this agreement</span>;
     }
     // Be loyal to the source. If the agreement gave us a verbatim phrase, show
@@ -7941,17 +7949,22 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
     // between "one business day" / "one week" and a months count.
     if (txtVal) return <span>{String(txtVal)}</span>;
     if (dateVal) return <span>{`As of ${String(dateVal).slice(0, 10)}`}</span>;
+    // Prefer the VERBATIM exception cut-off phrase (computed above) BEFORE
+    // falling back to a bare months number. The months value is frequently
+    // scraped from a DIFFERENT rep — the SEC-filings timeliness rep ("timely
+    // filed all reports … [24 months]") — which is not the same concept as the
+    // "Except as disclosed … prior to X" exception cut-off this row is about.
+    // Showing the wrong rep's "24 months" (or nothing) instead of the actual
+    // day-based cut-off was the Verve bug.
+    if (derived) return <span>{derived}</span>;
     if (monthsVal && /^\d+$/.test(String(monthsVal).trim())) {
       const n = Number(String(monthsVal).trim());
-      // Months synthesis only when the value is plausibly a month count.
-      // Sub-3 with no verbatim corroboration is dropped — extraction can't
-      // distinguish "1 month" from "1 business day" without the phrase.
+      // Months synthesis only when the value is plausibly a month count AND no
+      // verbatim day/date cut-off was recovered above. Sub-3 with no verbatim
+      // corroboration is dropped — extraction can't distinguish "1 month" from
+      // "1 business day" without the phrase.
       if (n >= 3) return <span>{`${n} months prior to signing`}</span>;
     }
-    // Last resort: recover the cut-off sub-phrase from the scope / months
-    // quote text, where the model often parks it (value:null).
-    const derived = deriveCutoffPhrase();
-    if (derived) return <span>{derived}</span>;
     return <span className="italic text-inkFaint">Cut-off period not captured verbatim in source</span>;
   };
   const showEvidence = useShowEvidence();
