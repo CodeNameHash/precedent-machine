@@ -6296,83 +6296,6 @@ function termfFirstQuote(...raws) {
   return null;
 }
 
-/* TermfHero — white card with three headline numbers.
- * - feeAmount         (large serif)
- * - feePercentage     (large serif)
- * - nakedNoVoteFee    (small below) */
-function TermfHero({ provisions }) {
-  const showEvidence = useShowEvidence();
-  // Walk provisions for the first non-empty value of each field.
-  const pick = (keys) => {
-    const hit = pickFirstNonEmpty(provisions, keys);
-    if (!hit) return { raw: null, provision: null };
-    return { raw: hit.value, provision: hit.provision };
-  };
-  const fee = pick(['feeAmount', 'companyTerminationFee']);
-  const feePct = pick(['feePercentage', 'terminationFeePercentEquityValue']);
-  const nakedPresent = pick(['nakedNoVoteFeePresent', 'nakedNoVoteFee']);
-  const nakedAmount = pick(['nakedNoVoteFeeAmount']);
-
-  const feeDisplay = termfHeroDisplay(fee.raw);
-  const feePctDisplay = (() => {
-    const v = termfHeroDisplay(feePct.raw);
-    if (!v) return null;
-    // Append a % sign for bare numerics.
-    if (/^\d+(\.\d+)?$/.test(String(v).trim())) return `${v}%`;
-    return v;
-  })();
-  const nakedPresentBool = (() => {
-    const v = isCitableValue(nakedPresent.raw) ? getCitableValue(nakedPresent.raw) : nakedPresent.raw;
-    return v === true || v === 'true' || v === 'yes';
-  })();
-  const nakedAmountDisplay = termfHeroDisplay(nakedAmount.raw);
-
-  const feeQuote = termfFirstQuote(fee.raw);
-  const feePctQuote = termfFirstQuote(feePct.raw);
-  const nakedQuote = termfFirstQuote(nakedAmount.raw, nakedPresent.raw);
-
-  const Item = ({ eyebrow, value, large, quote }) => {
-    const clickable = !!(quote && showEvidence);
-    return (
-      <div className="flex-1 min-w-0">
-        <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
-          {eyebrow}
-        </p>
-        <div
-          className={`mt-1 ${large ? 'text-2xl font-serif' : 'text-sm'} text-ink ${clickable ? 'cursor-pointer hover:bg-yellow-50 rounded px-0.5 -mx-0.5' : ''}`}
-          title={clickable ? 'Click to view in document' : undefined}
-          onClick={clickable ? () => showEvidence(quote) : undefined}
-        >
-          {value !== null && value !== undefined && value !== '' ? (
-            value
-          ) : (
-            <span className="italic text-inkFaint text-base">—</span>
-          )}
-        </div>
-      </div>
-    );
-  };
-
-  return (
-    <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
-      <div className="px-3 py-2 bg-bg/60 border-b border-border">
-        <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
-          Termination Fees
-        </p>
-      </div>
-      <div className="p-4 flex flex-row gap-6 items-start">
-        <Item eyebrow="Fee Amount" value={feeDisplay} large quote={feeQuote} />
-        <Item eyebrow="% of Equity Value" value={feePctDisplay} large quote={feePctQuote} />
-        <Item
-          eyebrow="Naked No-Vote Fee"
-          value={nakedPresentBool && nakedAmountDisplay ? nakedAmountDisplay : 'Not applicable'}
-          quote={nakedQuote}
-        />
-      </div>
-    </div>
-  );
-}
-
 /* Canonical TERMF trigger specs (used by TermfTriggerMatrix). Each spec
  * carries:
  *   - label:       row title
@@ -6457,6 +6380,7 @@ function termfTriggerFee(spec, prov, features, fallback) {
 /* TermfTriggerMatrix — bringdown-style mini-table. Rows for canonical
  * triggers + a "Tail Fee" row when tailFeeWindowMonths is populated. */
 function TermfTriggerMatrix({ provisions, allProvisions }) {
+  const showEvidence = useShowEvidence();
   // Headline fallbacks for the Fee Amount cell.
   const headlineHit = pickFirstNonEmpty(provisions, ['feeAmount', 'companyTerminationFee']);
   const headlineFee = (() => {
@@ -6509,6 +6433,7 @@ function TermfTriggerMatrix({ provisions, allProvisions }) {
         spec: { key: `trigger-${dedupKey}`, label: name },
         matched: { full_text: t.sourceText || p.full_text || '' },
         clauses,
+        party: t.party || null,
         fee,
       });
     }
@@ -6546,6 +6471,25 @@ function TermfTriggerMatrix({ provisions, allProvisions }) {
       }
     : { spec: { key: 'tail', label: 'Tail Fee' }, matched: null, clauses: [], fee: null };
 
+  // Headline % of equity value (folded in from the old hero per user request).
+  const pctHit = pickFirstNonEmpty(provisions, ['feePercentage', 'terminationFeePercentEquityValue']);
+  const headlinePct = (() => {
+    if (!pctHit) return null;
+    const v = termfHeroDisplay(pctHit.value);
+    if (!v) return null;
+    return /^\d+(\.\d+)?$/.test(String(v).trim()) ? `${v}%` : v;
+  })();
+  const headlineFeeQuote = headlineHit ? termfFirstQuote(headlineHit.value) : null;
+
+  // Naked no-vote row: show the amount when present, an explicit "No" when not.
+  const nakedHit = pickFirstNonEmpty(provisions, ['nakedNoVoteFeePresent', 'nakedNoVoteFee']);
+  const nakedPresent = (() => {
+    if (!nakedHit) return false;
+    const v = isCitableValue(nakedHit.value) ? getCitableValue(nakedHit.value) : nakedHit.value;
+    return v === true || v === 'true' || v === 'yes';
+  })();
+  const nakedAmount = termfHeroDisplay(pickFirstNonEmpty(provisions, ['nakedNoVoteFeeAmount'])?.value);
+
   const allRows = [...rows, tailRow];
 
   // Sort: present rows first (matched non-null), absent rows to the bottom.
@@ -6558,18 +6502,29 @@ function TermfTriggerMatrix({ provisions, allProvisions }) {
 
   return (
     <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
-      <div className="px-3 py-2 bg-bg/60 border-b border-border">
+      <div className="px-3 py-2 bg-bg/60 border-b border-border flex items-baseline justify-between gap-2 flex-wrap">
         <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
-          Trigger Matrix
+          Termination Fee — Triggers
         </p>
+        {(headlineFee || headlinePct) && (
+          <HoverSource quote={headlineFeeQuote} as="p" className="text-[11px] font-ui text-inkMid">
+            <span
+              className={`font-serif text-ink ${headlineFeeQuote && showEvidence ? 'cursor-pointer hover:bg-yellow-50 rounded px-0.5' : ''}`}
+              onClick={headlineFeeQuote && showEvidence ? () => showEvidence(headlineFeeQuote) : undefined}
+            >
+              {headlineFee || '—'}
+            </span>
+            {headlinePct && <span className="text-inkFaint"> · {headlinePct} of equity value</span>}
+          </HoverSource>
+        )}
       </div>
       <div className="overflow-x-auto">
         <table className="min-w-full text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
             <tr>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[260px]">Trigger</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Termination Clause(s)</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[180px]">Fee Amount</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Trigger</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[150px]">Who Can Terminate</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[150px]">Fee</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -6578,36 +6533,62 @@ function TermfTriggerMatrix({ provisions, allProvisions }) {
                 return (
                   <tr key={row.spec.key} className="align-top">
                     <td className="px-3 py-2 italic text-inkFaint">{row.spec.label}</td>
-                    <td className="px-3 py-2 italic text-inkFaint">Not present in this agreement</td>
-                    <td className="px-3 py-2 italic text-inkFaint">Not present in this agreement</td>
+                    <td className="px-3 py-2 italic text-inkFaint">—</td>
+                    <td className="px-3 py-2 italic text-inkFaint">Not present</td>
                   </tr>
                 );
               }
-              const tip = (typeof row.matched?.full_text === 'string' && row.matched.full_text.trim())
-                ? row.matched.full_text.slice(0, 220)
-                : undefined;
+              const quote = (typeof row.matched?.full_text === 'string' && row.matched.full_text.trim())
+                ? row.matched.full_text
+                : null;
+              const clickable = !!(quote && showEvidence);
               return (
-                <tr key={row.spec.key} className="align-top" title={tip}>
-                  <td className="px-3 py-2 text-ink font-medium whitespace-nowrap" title={tip}>
-                    {row.spec.label}
+                <tr key={row.spec.key} className="align-top hover:bg-bg/40">
+                  <td className="px-3 py-2 text-ink">
+                    <HoverSource quote={quote} as="div">
+                      <span className="inline-flex flex-wrap items-baseline gap-x-1.5 gap-y-1">
+                        {clickable ? (
+                          <button
+                            type="button"
+                            onClick={() => showEvidence(quote)}
+                            className="text-left text-accent hover:underline font-medium"
+                          >
+                            {row.spec.label}
+                          </button>
+                        ) : (
+                          <span className="font-medium text-ink">{row.spec.label}</span>
+                        )}
+                        {row.clauses.length > 0 && (
+                          <span className="inline-flex flex-wrap items-center gap-1 text-inkFaint">
+                            (
+                            {row.clauses.map((c, i) => (
+                              <SectionRef key={i} refText={c} allProvisions={allProvisions} />
+                            ))}
+                            )
+                          </span>
+                        )}
+                      </span>
+                    </HoverSource>
                   </td>
-                  <td className="px-3 py-2 text-ink" title={tip}>
-                    {row.clauses.length > 0 ? (
-                      <div className="flex flex-wrap gap-1">
-                        {row.clauses.map((c, i) => (
-                          <SectionRef key={i} refText={c} allProvisions={allProvisions} />
-                        ))}
-                      </div>
-                    ) : (
-                      <span className="italic text-inkFaint">—</span>
-                    )}
+                  <td className="px-3 py-2 text-ink whitespace-nowrap">
+                    {row.party || (row.isTail ? <span className="text-inkFaint">Either party</span> : <span className="italic text-inkFaint">—</span>)}
                   </td>
-                  <td className="px-3 py-2 text-ink whitespace-nowrap" title={tip}>
+                  <td className="px-3 py-2 text-ink whitespace-nowrap">
                     {row.fee || <span className="italic text-inkFaint">—</span>}
                   </td>
                 </tr>
               );
             })}
+            {/* Naked no-vote — explicit "No" when the deal carries no such fee. */}
+            <tr className="align-top hover:bg-bg/40">
+              <td className="px-3 py-2 text-ink font-medium">Naked no-vote fee</td>
+              <td className="px-3 py-2 text-inkFaint whitespace-nowrap">—</td>
+              <td className="px-3 py-2 whitespace-nowrap">
+                {nakedPresent
+                  ? <span className="text-ink">{nakedAmount || 'Yes'}</span>
+                  : <span className="italic text-inkFaint">No</span>}
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -6651,13 +6632,26 @@ function TermfTailMechanics({ provisions, allProvisions }) {
 
   const sameRequiredRaw = combined.tailFeeSameProposalRequired;
   const sameRequired = isCitableValue(sameRequiredRaw) ? getCitableValue(sameRequiredRaw) : sameRequiredRaw;
-  const sameRequiredLabel = (() => {
+  // Whether the tail fee requires the SAME proposal (one announced during
+  // pendency) vs ANY later proposal turns on the article in the language —
+  // "a bona fide … Proposal" (any) vs "the/such bona fide … Proposal" (same).
+  // Per user: this is the real distinction, so derive it from the text when the
+  // boolean flag is absent.
+  const proposalScopeLabel = (() => {
     if (sameRequired === true || sameRequired === 'true' || sameRequired === 'yes') {
-      return 'Yes — must be the same Company Takeover Proposal';
+      return 'Same proposal — must be the proposal announced during pendency';
     }
     if (sameRequired === false || sameRequired === 'false' || sameRequired === 'no') {
-      return 'No — any Company Takeover Proposal';
+      return 'Any proposal — any later Company Takeover Proposal triggers';
     }
+    const propTerm = '(?:Company\\s+)?(?:Takeover|Alternative|Acquisition)\\s+(?:Proposal|Transaction)';
+    const txt = [source ? source.full_text : '', ...activating].filter(Boolean).join('  ');
+    const hasThe = new RegExp(`\\b(?:the|such)\\s+bona\\s+fide\\b`, 'i').test(txt)
+      || new RegExp(`\\b(?:the\\s+same|such)\\s+${propTerm}`, 'i').test(txt);
+    const hasA = /\ba\s+bona\s+fide\b/i.test(txt)
+      || new RegExp(`\\ba\\s+(?:bona\\s+fide\\s+)?${propTerm}`, 'i').test(txt);
+    if (hasThe && !hasA) return 'Same proposal — language refers to "the"/"such" proposal';
+    if (hasA) return 'Any proposal — language refers to "a …" proposal';
     return null;
   })();
 
@@ -6701,13 +6695,13 @@ function TermfTailMechanics({ provisions, allProvisions }) {
   const Row = ({ label, children, quote }) => {
     const clickable = !!(quote && showEvidence);
     return (
-      <tr className="align-top">
+      <tr className="align-top hover:bg-bg/40">
         <td className="px-3 py-2 text-ink font-medium whitespace-nowrap w-[280px]">{label}</td>
         <td
           className={`px-3 py-2 text-ink ${clickable ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
           onClick={clickable ? () => showEvidence(quote) : undefined}
         >
-          {children}
+          <HoverSource quote={quote} as="div">{children}</HoverSource>
         </td>
       </tr>
     );
@@ -6753,8 +6747,8 @@ function TermfTailMechanics({ provisions, allProvisions }) {
               <span className="italic text-inkFaint">Not specified</span>
             )}
           </Row>
-          <Row label="Same proposal required?" quote={termfFirstQuote(combined.tailFeeSameProposalRequired)}>
-            {sameRequiredLabel || <span className="italic text-inkFaint">Not specified</span>}
+          <Row label="Triggering proposal (same vs any)" quote={termfFirstQuote(combined.tailFeeSameProposalRequired)}>
+            {proposalScopeLabel || <span className="italic text-inkFaint">Not specified</span>}
           </Row>
           <Row label="Recognition event" quote={termfFirstQuote(combined.tailFeeRecognitionEvent)}>
             {recognition ? String(recognition) : <span className="italic text-inkFaint">Not specified</span>}
@@ -6851,13 +6845,13 @@ function TermfRemedyEffect({ provisions, allProvisions }) {
   const Row = ({ label, children, quote }) => {
     const clickable = !!(quote && showEvidence);
     return (
-      <tr className="align-top">
+      <tr className="align-top hover:bg-bg/40">
         <td className="px-3 py-2 text-ink font-medium whitespace-nowrap w-[280px]">{label}</td>
         <td
           className={`px-3 py-2 text-ink ${clickable ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
           onClick={clickable ? () => showEvidence(quote) : undefined}
         >
-          {children}
+          <HoverSource quote={quote} as="div">{children}</HoverSource>
         </td>
       </tr>
     );
@@ -6936,7 +6930,8 @@ function TermfRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
   );
   return (
     <div className="space-y-3">
-      <TermfHero provisions={augmented} />
+      {/* Headline fee/% is folded into the Trigger table header (TermfHero
+          removed per user feedback — the standalone amount/% card added little). */}
       <TermfTriggerMatrix provisions={augmented} allProvisions={fullList} />
       <TermfTailMechanics provisions={augmented} allProvisions={fullList} />
       <TermfRemedyEffect provisions={augmented} allProvisions={fullList} />
