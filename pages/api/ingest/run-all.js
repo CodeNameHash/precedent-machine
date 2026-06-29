@@ -95,6 +95,23 @@ export default async function handler(req, res) {
       });
     }
 
+    // ALWAYS extract DEF, even when the classifier found no section titled
+    // "Definitions". extractProvisionsForType('DEF') runs the inline-definition
+    // pass that scans the FULL cleaned text — including back-of-document
+    // "EXHIBIT A — CERTAIN DEFINITIONS" / "DEFINED TERMS" appendices that fall
+    // outside the parsed Article body and so never become DEF-classified
+    // sections (e.g. Landos, whose ~110 defined terms live in Exhibit A). When
+    // a DEF article IS present this is a no-op (DEF is already queued, and the
+    // inline pass de-dupes against the section-derived definitions).
+    if (!seen.has('DEF')) {
+      seen.add('DEF');
+      types_to_extract.push({
+        type: 'DEF',
+        section_count: classifyResult.by_type?.DEF || 0,
+        estimate: collapsedEstimate['DEF'] || null,
+      });
+    }
+
     return res.status(200).json({
       success: true,
       deal_id,
