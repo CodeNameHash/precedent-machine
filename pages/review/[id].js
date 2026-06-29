@@ -11311,6 +11311,52 @@ function FeatureFieldEditor({ field, value, onChange, onAddCustomOption }) {
   );
   const taxonomyEntries = taxonomy ? Object.entries(taxonomy) : null;
 
+  // Materiality qualifier — render as a presence checkbox + standard picker
+  // (user request) instead of the generic tagged-pill picker. Ticking the box
+  // applies a materiality qualifier (default: MAE-level); the dropdown chooses
+  // the specific standard. Unticking clears it. Writes the citable tagged shape
+  // { value: { code, label }, quotes } that standardCodeFromValue already reads.
+  if (field.key === 'materialityQualifier' || field.key === 'materiality_qualifier') {
+    const STANDARDS = [
+      'MAT_MAE_AGGREGATE', 'MAT_MAE_QUALIFIED', 'MAT_MATERIAL_TO_COMPANY',
+      'MAT_ALL_MATERIAL', 'MAT_ALL_RESPECTS', 'MAT_ALL_RESPECTS_DE_MINIMIS',
+      'MAT_DE_MINIMIS', 'MAT_MATERIAL_INLINE',
+    ];
+    const labelFor = (c) => (taxonomy && taxonomy[c]) || c;
+    const inner = isCitableValue(value) ? getCitableValue(value) : value;
+    const cur = inner
+      ? (isTaggedItem(inner) ? String(inner.code || '').toUpperCase() : (typeof inner === 'string' ? inner.toUpperCase() : null))
+      : null;
+    const quotes = value && isCitableValue(value) && Array.isArray(value.quotes) ? value.quotes : [];
+    const present = !!cur && cur !== 'MAT_NO_QUALIFIER';
+    const write = (code) => onChange(code ? { value: { code, label: labelFor(code) }, quotes } : null);
+    return (
+      <div className="space-y-1">
+        <p className="text-xs font-ui text-inkLight mb-1">{label}</p>
+        <label className="flex items-center gap-2 text-xs font-ui text-ink cursor-pointer">
+          <input
+            type="checkbox"
+            checked={present}
+            onChange={(e) => write(e.target.checked ? (present ? cur : 'MAT_MAE_AGGREGATE') : null)}
+          />
+          Has materiality qualifier
+        </label>
+        {present && (
+          <select
+            value={STANDARDS.includes(cur) ? cur : ''}
+            onChange={(e) => write(e.target.value)}
+            className="w-full border border-border rounded px-2 py-1 text-[11px] font-ui focus:outline-none focus:ring-1 focus:ring-accent"
+          >
+            {!STANDARDS.includes(cur) && <option value="">{labelFor(cur)} (current)</option>}
+            {STANDARDS.map((c) => (
+              <option key={c} value={c}>{labelFor(c)}</option>
+            ))}
+          </select>
+        )}
+      </div>
+    );
+  }
+
   // Citable fields are edited as { value, quotes: [...] } (back-compat with
   // legacy { value, text } shape). The picker / input below edits the INNER
   // value; a stack of textareas beneath edits the verbatim quote list. We
