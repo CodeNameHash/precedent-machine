@@ -12545,7 +12545,7 @@ function EditPanel({
    is covered by some provision, and what % of extracted "verbatim" quotes
    actually appear in the source. Expands to the largest uncovered gaps and
    the flagged quotes so "what did we miss / what can't we prove" is a glance. */
-function TrustStrip({ dealId }) {
+function TrustStrip({ dealId, onJump }) {
   const [report, setReport] = useState(null);
   const [failed, setFailed] = useState(false);
   const [open, setOpen] = useState(false);
@@ -12613,9 +12613,16 @@ function TrustStrip({ dealId }) {
               </p>
               <ul className="space-y-1">
                 {cov.gaps.map((g, i) => (
-                  <li key={i} className="text-inkLight">
-                    <span className="text-inkFaint font-mono text-[10px]">{(g.length / 1000).toFixed(1)}k chars</span>{' '}
-                    <span className="italic">“{g.preview.slice(0, 140)}”</span>
+                  <li key={i}>
+                    <button
+                      type="button"
+                      onClick={() => onJump && onJump(g.preview)}
+                      className="text-left text-inkLight hover:text-accent hover:underline"
+                      title="Jump to this uncovered block in the document"
+                    >
+                      <span className="text-inkFaint font-mono text-[10px]">{(g.length / 1000).toFixed(1)}k chars</span>{' '}
+                      <span className="italic">“{g.preview.slice(0, 140)}”</span>
+                    </button>
                   </li>
                 ))}
               </ul>
@@ -12628,10 +12635,17 @@ function TrustStrip({ dealId }) {
               </p>
               <ul className="space-y-1">
                 {q.failures.slice(0, 10).map((f, i) => (
-                  <li key={i} className="text-inkLight">
-                    <span className="text-inkFaint">[{f.type} · {f.category}]</span>{' '}
-                    <span className="italic">“{f.quote.slice(0, 140)}”</span>
-                    {f.in_provision_text && <span className="text-inkFaint"> (found in clause, not source — likely normalization)</span>}
+                  <li key={i}>
+                    <button
+                      type="button"
+                      onClick={() => onJump && onJump(f.quote)}
+                      className="text-left text-inkLight hover:text-accent hover:underline"
+                      title="Jump to this quote in the document"
+                    >
+                      <span className="text-inkFaint">[{f.type} · {f.category}]</span>{' '}
+                      <span className="italic">“{f.quote.slice(0, 140)}”</span>
+                      {f.in_provision_text && <span className="text-inkFaint"> (found in clause, not source — likely normalization)</span>}
+                    </button>
                   </li>
                 ))}
               </ul>
@@ -14158,7 +14172,7 @@ export default function ReviewPage() {
                   </span>
                 </div>
               </div>
-              <TrustStrip dealId={id} />
+              <TrustStrip dealId={id} onJump={showEvidence} />
             </div>
 
             {/* Tab System */}
