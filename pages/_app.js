@@ -2,13 +2,10 @@ import '../styles/globals.css';
 import { UserProvider } from '../lib/useUser';
 import { ToastProvider } from '../lib/useToast';
 import Layout from '../components/Layout';
-import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
-function PrecedentMachine({ Component, pageProps }) {
-  const router = useRouter();
-  const isLogin = router.pathname === '/login';
-  const noLayout = Component.noLayout || isLogin;
+function RecitalApp({ Component, pageProps }) {
+  const noLayout = Component.noLayout;
 
   // Global keyboard shortcuts
   useEffect(() => {
@@ -36,4 +33,4 @@ function PrecedentMachine({ Component, pageProps }) {
   );
 }
 
-export default PrecedentMachine;
+export default RecitalApp;

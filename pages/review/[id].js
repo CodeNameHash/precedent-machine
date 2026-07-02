@@ -13912,7 +13912,6 @@ export default function ReviewPage() {
           <Link href="/" className="rec-wordmark">
             <span className="mark" />
             Recital
-            <span className="tag">Precedent</span>
           </Link>
           <div className="flex items-center gap-2 text-[12.5px] text-inkFaint">
             <span style={{ color: 'var(--line)' }}>/</span>
@@ -13920,7 +13919,7 @@ export default function ReviewPage() {
               Deals
             </Link>
             <span style={{ color: 'var(--line)' }}>/</span>
-            <Link href={`/deals/${id}`} className="text-inkFaint hover:text-ink transition-colors">
+            <Link href={`/review/${id}`} className="text-inkFaint hover:text-ink transition-colors">
               {dealLabel}
             </Link>
             <span style={{ color: 'var(--line)' }}>/</span>

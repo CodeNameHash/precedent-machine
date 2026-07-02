@@ -102,7 +102,7 @@ export default function Deals() {
             <tbody>
               {filtered.map(d => (
                 <tr key={d.id} className="border-b border-border last:border-0 hover:bg-bg/40 cursor-pointer transition-colors"
-                  onClick={() => window.location.href = `/deals/${d.id}`}>
+                  onClick={() => window.location.href = `/review/${d.id}`}>
                   <td className="px-4 py-3 font-ui text-ink">{d.acquirer} / {d.target}</td>
                   <td className="px-4 py-3 font-ui text-inkMid hidden md:table-cell">{d.sector || '—'}</td>
                   <td className="px-4 py-3 font-ui text-inkMid hidden md:table-cell">
