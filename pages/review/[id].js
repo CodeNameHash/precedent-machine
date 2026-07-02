@@ -13806,8 +13806,16 @@ export default function ReviewPage() {
     setReselectingProvId(provision.id);
     setReselectingProvLabel(label);
     setEditingProvision(null);
-    setActiveTab('document');
-  }, []);
+    // Jump straight to the provision's CURRENT text in the document (highlight
+    // + scroll-into-view) instead of dropping the user at the top to scroll
+    // through the whole agreement. A leading chunk is a reliable anchor.
+    const current = (provision.full_text || '').trim();
+    if (current) {
+      showEvidence(current.slice(0, 240));
+    } else {
+      setActiveTab('document');
+    }
+  }, [showEvidence]);
 
   /* ── Re-select Text: exit mode ── */
   const handleCancelReselect = useCallback(() => {
