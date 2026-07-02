@@ -30,6 +30,7 @@ export function TrustStrip({ dealId, onJump, onEditProvisionById }) {
   }
   const cov = report.coverage;
   const q = report.quotes;
+  const uncoded = report.uncoded || { count: 0, items: [] };
   const covColor = cov.pct >= 90 ? 'text-emerald-700' : cov.pct >= 75 ? 'text-amber-700' : 'text-red-700';
   const qColor = q.verified_pct == null ? 'text-inkFaint' : q.verified_pct >= 95 ? 'text-emerald-700' : q.verified_pct >= 85 ? 'text-amber-700' : 'text-red-700';
   return (
@@ -44,6 +45,9 @@ export function TrustStrip({ dealId, onJump, onEditProvisionById }) {
           Coverage <span className={`font-semibold ${covColor}`}>{cov.pct}%</span> of agreement text
           {cov.excludedChars > 0 && (
             <span className="text-inkFaint"> (excl. {Math.round(cov.excludedChars / 1000)}k of exhibits)</span>
+          )}
+          {uncoded.count > 0 && (
+            <span className="text-amber-700"> · {uncoded.count} uncoded</span>
           )}
         </span>
         <span className="text-inkFaint">·</span>
@@ -138,7 +142,31 @@ export function TrustStrip({ dealId, onJump, onEditProvisionById }) {
               </ul>
             </div>
           )}
-          {cov.gaps.length === 0 && q.failures.length === 0 && (
+          {uncoded.count > 0 && (
+            <div>
+              <p className="text-[10px] font-medium text-inkFaint uppercase tracking-wider mb-1">
+                Uncoded provisions ({uncoded.count}{uncoded.items.length < uncoded.count ? `, showing ${uncoded.items.length}` : ''})
+              </p>
+              <p className="text-[10px] text-inkFaint mb-1.5 leading-relaxed">
+                Provisions with no canonical rubric code (proposed / freeform / unset) — the remainder
+                behind the coverage figure. <b>Edit</b> opens the provision to classify it.
+              </p>
+              <ul className="space-y-1.5">
+                {uncoded.items.map((u, i) => (
+                  <li key={i} className="text-inkLight">
+                    <span className="text-inkFaint">[{u.type || '—'} · {u.category || '—'}]</span>
+                    {u.proposed && <span className="text-amber-700/80"> · proposed</span>}
+                    {u.provision_id && onEditProvisionById && (
+                      <span className="ml-1 inline-flex gap-1.5 whitespace-nowrap">
+                        <button type="button" onClick={() => onEditProvisionById(u.provision_id)} className="text-accent hover:underline" title="Open the provision to classify it">Edit</button>
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {cov.gaps.length === 0 && q.failures.length === 0 && uncoded.count === 0 && (
             <p className="text-inkFaint italic">No significant gaps or unverified quotes.</p>
           )}
         </div>
