@@ -1,5 +1,5 @@
 {
-  "_comment": "Golden expectations per deal, from the 2026-07 hand audit. Bounds are deliberately ≥/≤ (not exact) so benign extraction variance passes while regressions fail. Tighten as quality ratchets up; never loosen to make a failing run pass without understanding why it failed.",
+  "_comment": "Golden expectations per deal, from the 2026-07 hand audit. Bounds are deliberately \u2265/\u2264 (not exact) so benign extraction variance passes while regressions fail. Tighten as quality ratchets up; never loosen to make a failing run pass without understanding why it failed.",
   "deals": {
     "Landos": {
       "min_provisions": 240,
@@ -18,11 +18,28 @@
     "Metsera": {
       "min_provisions": 200,
       "min_def_count": 80,
-      "def_required_terms": ["Acting Holders", "Knowledge"],
+      "def_required_terms": [
+        "Acting Holders",
+        "Knowledge"
+      ],
       "min_termr_canonical_codes": 6,
       "min_coverage_pct": 75,
       "min_quote_verified_pct": 94,
-      "max_schema_error_rows": 5
+      "max_schema_error_rows": 5,
+      "min_nosol_provisions": 12,
+      "required_features": {
+        "NOSOL": [
+          "ceaseDiscussionsProhibitedList",
+          "changeOfRecommendationItems",
+          "fiduciaryEngageStandard",
+          "fiduciaryFinalStandard",
+          "matchingPeriod|initialMatchPeriodDays",
+          "superiorProposalTest",
+          "acquisitionTransactionDefinition",
+          "interveningEventDefinition",
+          "acceptableConfidentialityAgreementDefinition"
+        ]
+      }
     },
     "Verve": {
       "min_provisions": 290,
