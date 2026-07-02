@@ -46,6 +46,7 @@ import {
 } from '../../lib/citable';
 import { normalizeTermfFeatures } from '../../lib/termf';
 import { getFeaturesForType, PROVISION_TYPES } from '../../lib/rubric';
+import { resolveEditFields } from '../../lib/edit-schema';
 import { resolveSectionReference } from '../../lib/section-ref';
 
 /* ── Type & Term Labels ── */
@@ -12133,24 +12134,36 @@ function EditPanel({
   // editable feature the user wants to manage), the deprecated carve-out
   // aliases (carveOuts / carveOutsList — superseded by the canonical
   // `carveouts` list), and definitionText (shown as Provision Text already).
+  // Curated per-type edit schema (lib/edit-schema). Each provision type
+  // exposes ONLY the small set of things a lawyer corrects (reps →
+  // materiality / knowledge / exceptions / threshold; MAE definition →
+  // carve-outs / disproportionate carve-backs; etc.) — no cross-type noise.
+  // We map each curated key onto its rubric FEATURES entry so the existing
+  // per-field renderers keep working; keys the rubric doesn't declare get a
+  // synthesized spec from the curated control.
+  const CONTROL_TO_TYPE = { currency: 'currency', percentage: 'percentage', checkbox: 'boolean', number: 'number', list: 'list', select: 'enum', object: 'object', text: 'text', materiality: 'text', knowledge: 'text', exceptions: 'list' };
+  const curatedSchema = useMemo(() => {
+    if (!provision) return null;
+    const resolved = resolveEditFields(editType || provision.type, provision.code, provision.category, editedFeatures);
+    if (!resolved.curated) return null;
+    const byKey = new Map(featureSchema.map((f) => [f.key, f]));
+    return resolved.fields.map((cf) => {
+      const rub = byKey.get(cf.key);
+      if (rub) return { ...rub, label: cf.label || rub.label, options: cf.options || rub.options };
+      return { key: cf.key, label: cf.label, type: CONTROL_TO_TYPE[cf.control] || 'text', options: cf.options };
+    });
+  }, [provision, editType, featureSchema, editedFeatures]);
+
   const dedupedSchema = useMemo(() => {
+    // Curated types: the allowlist IS the schema.
+    if (curatedSchema) return curatedSchema;
+    // Fallback (uncurated types): rubric fields minus infra/derived keys.
     const HIDE = new Set([
       'crossReferences',
       'carveOuts', 'carveOutsList',
       'disproportionateImpact', 'disproportionateImpactScope',
-      // Redundant boolean carve-out flags — the canonical `carveouts` list
-      // already captures pandemic / cybersecurity carve-outs as tagged items,
-      // so these standalone booleans just duplicate them in the editor.
       'pandemicCarveout', 'cyberSecurityCarveout',
-      // mainConcept is a paraphrase of the clause already shown verbatim in the
-      // "Provision Text → Current text" box above — don't restate it as an
-      // editable field (user: "why is the text repeated, just pull from the
-      // current text field").
       'mainConcept',
-      // maeQualifiedReps is DERIVED from a rep carrying an MAE-level materiality
-      // qualifier; it isn't something the user hand-manages. Setting the
-      // materiality qualifier is the single action — don't surface this as a
-      // separate field requiring its own edit.
       'maeQualifiedReps', 'mae_qualified_reps',
     ]);
     const seen = new Set();
@@ -12161,7 +12174,7 @@ function EditPanel({
       out.push(f);
     }
     return out;
-  }, [featureSchema]);
+  }, [featureSchema, curatedSchema]);
 
   // P11+: only show fields that currently have a value. Unpopulated fields
   // are hidden and accessed via the "Add field" picker below. Once a key
@@ -12171,6 +12184,9 @@ function EditPanel({
   useEffect(() => { setManuallyAddedKeys(new Set()); }, [provision?.id]);
 
   const populatedSchema = useMemo(() => {
+    // Curated types show their full (small) editable set so unset qualifiers
+    // are addable in place — no "populated-only" filtering, no picker.
+    if (curatedSchema) return dedupedSchema;
     return dedupedSchema.filter((f) => {
       if (manuallyAddedKeys.has(f.key)) return true;
       const v = editedFeatures[f.key];
@@ -12193,9 +12209,11 @@ function EditPanel({
   }, [dedupedSchema, editedFeatures, manuallyAddedKeys]);
 
   const availableToAdd = useMemo(() => {
+    // Curated types show their whole set already — no add-field picker.
+    if (curatedSchema) return [];
     const populated = new Set(populatedSchema.map((f) => f.key));
     return dedupedSchema.filter((f) => !populated.has(f.key));
-  }, [dedupedSchema, populatedSchema]);
+  }, [dedupedSchema, populatedSchema, curatedSchema]);
 
   const [addFieldKey, setAddFieldKey] = useState('');
   const handleAddField = () => {
