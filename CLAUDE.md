@@ -6,6 +6,30 @@ review UI, and searches precedents across deals. Supabase Postgres backend;
 deployed on Vercel (production tracks `main`). Run `npm test` (node:test) and
 `npm run build` before pushing — CI enforces both.
 
+## Standing directive: delegate by default
+
+**Before starting ANY task, ask: can this go to Codex (gpt-5.x) or a cheaper
+model?** Delegation is the default, not the exception. The main agent's time is
+the scarce resource — spend it on legal judgment, product taste, orchestration,
+and review, not on work a cheaper model does just as well.
+
+- Reach for **Codex** (`/codex`, or `codex exec`) for anything mechanical or
+  clear-spec: refactors, component splits, test-writing, data scripts,
+  migrations, config chores, boilerplate. It's effectively free on our plan.
+- Reach for a **subagent** (`general-purpose`, or `sonnet`/`haiku` via the
+  Agent/Workflow `model` param) for self-contained research, search sweeps, or
+  parallel build tasks.
+- Keep on **opus/fable (the main agent)** only what genuinely needs high taste
+  or legal judgment (see the rubric/taxonomy/extraction rule below), work that
+  needs this session's decision history, or final review of delegated output.
+- Fan out when tasks are independent: launch several delegates at once rather
+  than doing them serially yourself.
+- Always review delegated output like a PR from a new contributor: check the
+  diff against constraints and run `npm test` + `npm run build` before merging.
+
+When in doubt, delegate the doing and keep the deciding. The routing table
+below is how you pick which model.
+
 ## Picking the right model for handoffs, workflows, and subagents
 
 Rankings, higher = better. Cost reflects what we actually pay on current
