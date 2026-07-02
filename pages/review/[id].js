@@ -12522,6 +12522,94 @@ function EditPanel({
 /* ═══════════════════════════════════════════════════════════
    CREATE PROVISION FLOATING BUTTON
    ═══════════════════════════════════════════════════════════ */
+/* Trust strip — the deal's self-audit, rendered under the deal header.
+   Pulls /api/trust/report (pure read, no AI): what % of the agreement's text
+   is covered by some provision, and what % of extracted "verbatim" quotes
+   actually appear in the source. Expands to the largest uncovered gaps and
+   the flagged quotes so "what did we miss / what can't we prove" is a glance. */
+function TrustStrip({ dealId }) {
+  const [report, setReport] = useState(null);
+  const [failed, setFailed] = useState(false);
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    if (!dealId) return;
+    let cancelled = false;
+    fetch(`/api/trust/report?deal_id=${dealId}`)
+      .then((r) => r.json())
+      .then((d) => { if (!cancelled) (d && d.coverage ? setReport(d) : setFailed(true)); })
+      .catch(() => { if (!cancelled) setFailed(true); });
+    return () => { cancelled = true; };
+  }, [dealId]);
+  if (failed) return null; // trust info is additive — never block the page
+  if (!report) {
+    return (
+      <p className="text-[11px] font-ui text-inkFaint mt-2">Verifying quotes &amp; coverage…</p>
+    );
+  }
+  const cov = report.coverage;
+  const q = report.quotes;
+  const covColor = cov.pct >= 90 ? 'text-emerald-700' : cov.pct >= 75 ? 'text-amber-700' : 'text-red-700';
+  const qColor = q.verified_pct == null ? 'text-inkFaint' : q.verified_pct >= 95 ? 'text-emerald-700' : q.verified_pct >= 85 ? 'text-amber-700' : 'text-red-700';
+  return (
+    <div className="mt-2">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="text-[11.5px] font-ui text-inkLight hover:text-ink flex items-center gap-2"
+        title="Click for uncovered gaps and unverified quotes"
+      >
+        <span>
+          Coverage <span className={`font-semibold ${covColor}`}>{cov.pct}%</span> of agreement text
+        </span>
+        <span className="text-inkFaint">·</span>
+        <span>
+          Quotes <span className={`font-semibold ${qColor}`}>{q.verified_pct == null ? '—' : `${q.verified_pct}%`}</span> verified
+          {q.unverified > 0 && <span className="text-inkFaint"> ({q.unverified} flagged)</span>}
+        </span>
+        <span className="text-[9px] text-inkFaint">{open ? '▾' : '▸'}</span>
+      </button>
+      {open && (
+        <div className="mt-2 border border-border rounded-lg bg-white p-3 space-y-3 text-[11.5px] font-ui">
+          {cov.gaps.length > 0 && (
+            <div>
+              <p className="text-[10px] font-medium text-inkFaint uppercase tracking-wider mb-1">
+                Largest uncovered blocks ({cov.gaps.length})
+              </p>
+              <ul className="space-y-1">
+                {cov.gaps.map((g, i) => (
+                  <li key={i} className="text-inkLight">
+                    <span className="text-inkFaint font-mono text-[10px]">{(g.length / 1000).toFixed(1)}k chars</span>{' '}
+                    <span className="italic">“{g.preview.slice(0, 140)}”</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {q.failures.length > 0 && (
+            <div>
+              <p className="text-[10px] font-medium text-inkFaint uppercase tracking-wider mb-1">
+                Unverified quotes ({q.unverified}{q.failures.length < q.unverified ? `, showing ${q.failures.length}` : ''})
+              </p>
+              <ul className="space-y-1">
+                {q.failures.slice(0, 10).map((f, i) => (
+                  <li key={i} className="text-inkLight">
+                    <span className="text-inkFaint">[{f.type} · {f.category}]</span>{' '}
+                    <span className="italic">“{f.quote.slice(0, 140)}”</span>
+                    {f.in_provision_text && <span className="text-inkFaint"> (found in clause, not source — likely normalization)</span>}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {cov.gaps.length === 0 && q.failures.length === 0 && (
+            <p className="text-inkFaint italic">No significant gaps or unverified quotes.</p>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* Per-section "+ Add item" affordance. Lets the user capture a provision the
    extractor missed (a new IOC covenant, an equity type not covered in
    Consideration, …). Collects the clause text (required — provision text is
@@ -14010,6 +14098,7 @@ export default function ReviewPage() {
                   </span>
                 </div>
               </div>
+              <TrustStrip dealId={id} />
             </div>
 
             {/* Tab System */}
