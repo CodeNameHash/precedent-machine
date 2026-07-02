@@ -10194,7 +10194,14 @@ function FullDocumentView({
         let endRaw = rawPos;
         let consumed = 0;
         prevSpace = true;
-        while (endRaw < nodeText.length && consumed < needle.length) {
+        // Highlight the FULL target (the whole provision text), not just the
+        // matched anchor, so the yellow span matches the provision shown in the
+        // sidebar (#12). Anchors are prefixes of fullNeedle, so extend to
+        // fullNeedle.length; capped at the node/paragraph end (endRaw guard),
+        // which fully covers single-paragraph provisions and the first
+        // paragraph of multi-paragraph ones.
+        const coverLen = Math.max(needle.length, fullNeedle.length);
+        while (endRaw < nodeText.length && consumed < coverLen) {
           const ch = nodeText[endRaw];
           if (/\s/.test(ch)) {
             if (!prevSpace) { consumed++; prevSpace = true; }
@@ -12606,10 +12613,14 @@ function EditPanel({
    is covered by some provision, and what % of extracted "verbatim" quotes
    actually appear in the source. Expands to the largest uncovered gaps and
    the flagged quotes so "what did we miss / what can't we prove" is a glance. */
-function TrustStrip({ dealId, onJump }) {
+function TrustStrip({ dealId, onJump, onEditProvisionById }) {
   const [report, setReport] = useState(null);
   const [failed, setFailed] = useState(false);
   const [open, setOpen] = useState(false);
+  // #14: how to order the uncovered blocks — by size (default) or by their
+  // position in the document. minGap filters out short blocks.
+  const [gapSort, setGapSort] = useState('size');
+  const [minGapK, setMinGapK] = useState(0);
   useEffect(() => {
     if (!dealId) return;
     let cancelled = false;
@@ -12667,13 +12678,30 @@ function TrustStrip({ dealId, onJump }) {
               </ul>
             </div>
           )}
-          {cov.gaps.length > 0 && (
+          {cov.gaps.length > 0 && (() => {
+            const shown = cov.gaps
+              .filter((g) => g.length >= minGapK * 1000)
+              .slice()
+              .sort((a, b) => (gapSort === 'size' ? b.length - a.length : a.start - b.start));
+            return (
             <div>
-              <p className="text-[10px] font-medium text-inkFaint uppercase tracking-wider mb-1">
-                Largest uncovered blocks ({cov.gaps.length})
-              </p>
+              <div className="flex items-center justify-between mb-1">
+                <p className="text-[10px] font-medium text-inkFaint uppercase tracking-wider">
+                  Uncovered blocks ({shown.length}{shown.length !== cov.gaps.length ? ` of ${cov.gaps.length}` : ''})
+                </p>
+                <div className="flex items-center gap-2 text-[10px] font-ui">
+                  <span className="text-inkFaint">sort</span>
+                  <button type="button" onClick={() => setGapSort('size')} className={gapSort === 'size' ? 'text-accent font-medium' : 'text-inkFaint hover:text-ink'}>size</button>
+                  <button type="button" onClick={() => setGapSort('position')} className={gapSort === 'position' ? 'text-accent font-medium' : 'text-inkFaint hover:text-ink'}>position</button>
+                  <span className="text-border">|</span>
+                  <span className="text-inkFaint">min</span>
+                  {[0, 1, 5].map((k) => (
+                    <button key={k} type="button" onClick={() => setMinGapK(k)} className={minGapK === k ? 'text-accent font-medium' : 'text-inkFaint hover:text-ink'}>{k === 0 ? 'all' : `${k}k`}</button>
+                  ))}
+                </div>
+              </div>
               <ul className="space-y-1">
-                {cov.gaps.map((g, i) => (
+                {shown.map((g, i) => (
                   <li key={i}>
                     <button
                       type="button"
@@ -12688,25 +12716,31 @@ function TrustStrip({ dealId, onJump }) {
                 ))}
               </ul>
             </div>
-          )}
+            );
+          })()}
           {q.failures.length > 0 && (
             <div>
               <p className="text-[10px] font-medium text-inkFaint uppercase tracking-wider mb-1">
                 Unverified quotes ({q.unverified}{q.failures.length < q.unverified ? `, showing ${q.failures.length}` : ''})
               </p>
-              <ul className="space-y-1">
+              <p className="text-[10px] text-inkFaint mb-1.5 leading-relaxed">
+                A quote our matcher couldn&apos;t find verbatim in the source. To resolve: <b>Find</b> jumps
+                to where it should be; <b>Edit</b> opens the provision to correct the quote or clear the
+                feature if the model invented it. Quotes tagged &ldquo;found in clause&rdquo; are almost
+                always a normalization miss, not a hallucination.
+              </p>
+              <ul className="space-y-1.5">
                 {q.failures.slice(0, 10).map((f, i) => (
-                  <li key={i}>
-                    <button
-                      type="button"
-                      onClick={() => onJump && onJump(f.quote)}
-                      className="text-left text-inkLight hover:text-accent hover:underline"
-                      title="Jump to this quote in the document"
-                    >
-                      <span className="text-inkFaint">[{f.type} · {f.category}]</span>{' '}
-                      <span className="italic">“{f.quote.slice(0, 140)}”</span>
-                      {f.in_provision_text && <span className="text-inkFaint"> (found in clause, not source — likely normalization)</span>}
-                    </button>
+                  <li key={i} className="text-inkLight">
+                    <span className="text-inkFaint">[{f.type} · {f.category}]</span>{' '}
+                    <span className="italic">“{f.quote.slice(0, 140)}”</span>
+                    {f.in_provision_text && <span className="text-emerald-700/80"> · likely normalization (found in clause)</span>}
+                    <span className="ml-1 inline-flex gap-1.5 whitespace-nowrap">
+                      <button type="button" onClick={() => onJump && onJump(f.quote)} className="text-accent hover:underline" title="Jump to this quote in the document">Find</button>
+                      {f.provision_id && onEditProvisionById && (
+                        <button type="button" onClick={() => onEditProvisionById(f.provision_id)} className="text-accent hover:underline" title="Open the provision to correct the quote">Edit</button>
+                      )}
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -13803,11 +13837,21 @@ export default function ReviewPage() {
     // so when the user opens the Full Document tab it's already scrolled to and
     // clearly highlighted. Use a focused chunk of the provision's full_text.
     if (provision && typeof provision.full_text === 'string' && provision.full_text.trim()) {
-      const chunk = provision.full_text.trim().slice(0, 240);
+      // Pass (most of) the provision text so the document highlight covers the
+      // WHOLE provision, matching the sidebar (#12) — not just a 240-char snippet.
+      // Capped so a pathologically long provision doesn't bloat the matcher.
+      const chunk = provision.full_text.trim().slice(0, 2000);
       setHighlightedQuote(chunk);
       setHighlightedQuoteNonce((n) => n + 1);
     }
   }, []);
+
+  // Open the editor for a provision by id (used by the trust strip's unverified-
+  // quote "Edit" action, which only carries provision_id).
+  const handleEditProvisionById = useCallback((provId) => {
+    const p = (provisions || []).find((x) => x.id === provId);
+    if (p) handleEditProvision(p);
+  }, [provisions, handleEditProvision]);
 
   /* ── Save edits ── */
   const handleSaveProvision = useCallback(async (updates) => {
@@ -14233,7 +14277,7 @@ export default function ReviewPage() {
                   </span>
                 </div>
               </div>
-              <TrustStrip dealId={id} onJump={showEvidence} />
+              <TrustStrip dealId={id} onJump={showEvidence} onEditProvisionById={handleEditProvisionById} />
             </div>
 
             {/* Tab System */}
