@@ -21,6 +21,8 @@ const path = require('path');
 const { createClient } = require('@supabase/supabase-js');
 const { createClaudeCliClient, createCodexCliClient } = require('../lib/llm-cli-client');
 const { runExtractTypePhase, markExtractFailed } = require('../lib/parser-v2/run-extract');
+const { diffSnapshots, formatDiff, snapshotStoredProvision } = require('../lib/run-history');
+const { expandTypeGroup } = require('../lib/parser-v2/extract');
 
 function loadDotEnvLocal() {
   const p = path.join(__dirname, '..', '.env.local');
@@ -94,9 +96,15 @@ async function resolveDeal(sb, dealArg) {
       const r = await runExtractTypePhase({ dealId, type, sb, client, dryRun: args.dryRun });
       if (r.dry_run) {
         console.log(`dry-run done in ${Math.round(r.timing_ms / 1000)}s: would insert ${r.would_insert}`);
-        for (const p of r.provisions) {
-          console.log(`    [${p.type}] ${p.category || '?'} (${p.text_chars} chars, features: ${p.feature_keys.slice(0, 6).join(',')})`);
-        }
+        // Auto-diff against what's currently stored: dry-run becomes a true
+        // "what would change" preview (stored = before, dry-run = after).
+        const { data: current } = await sb
+          .from('provisions')
+          .select('type, category, full_text, ai_metadata')
+          .eq('deal_id', dealId)
+          .in('type', expandTypeGroup(type));
+        const diff = diffSnapshots((current || []).map(snapshotStoredProvision), r.provisions);
+        console.log(formatDiff(diff).split('\n').map((l) => '    ' + l).join('\n'));
       } else {
         console.log(
           `done in ${Math.round(r.timing_ms / 1000)}s: +${r.provisions_inserted} / -${r.provisions_deleted}` +
