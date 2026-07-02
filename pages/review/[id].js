@@ -12560,6 +12560,9 @@ function TrustStrip({ dealId }) {
       >
         <span>
           Coverage <span className={`font-semibold ${covColor}`}>{cov.pct}%</span> of agreement text
+          {cov.excludedChars > 0 && (
+            <span className="text-inkFaint"> (excl. {Math.round(cov.excludedChars / 1000)}k of exhibits)</span>
+          )}
         </span>
         <span className="text-inkFaint">·</span>
         <span>
@@ -12570,6 +12573,21 @@ function TrustStrip({ dealId }) {
       </button>
       {open && (
         <div className="mt-2 border border-border rounded-lg bg-white p-3 space-y-3 text-[11.5px] font-ui">
+          {cov.excludedRegions && cov.excludedRegions.length > 0 && (
+            <div>
+              <p className="text-[10px] font-medium text-inkFaint uppercase tracking-wider mb-1">
+                Excluded from coverage (attached documents, not merger-agreement provisions)
+              </p>
+              <ul className="space-y-1">
+                {cov.excludedRegions.map((r, i) => (
+                  <li key={i} className="text-inkLight capitalize">
+                    <span className="text-inkFaint font-mono text-[10px]">{(r.length / 1000).toFixed(1)}k chars</span>{' '}
+                    {r.label}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
           {cov.gaps.length > 0 && (
             <div>
               <p className="text-[10px] font-medium text-inkFaint uppercase tracking-wider mb-1">

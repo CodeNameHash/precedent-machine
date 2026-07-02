@@ -156,3 +156,77 @@ test('computeCoverage reports unlocated provisions instead of failing', () => {
   assert.equal(r.unlocated, 1);
   assert.equal(r.pct, 0);
 });
+
+// ── splitSubClauses: conflated COND refinement ─────────────────────────────
+
+test('conflated tender-offer condition splits at the covenant/reps boundary', () => {
+  const { splitSubClauses } = require('../lib/parser-v2/extract');
+  const annex = `(a) there is a pending injunction prohibiting consummation of the Offer and related matters.
+(b) (i) the Company has breached or failed to comply in any material respect with any of its agreements or covenants to be performed or complied with by it under the Agreement on or before the Acceptance Time, (ii) the representations and warranties of the Company contained in the Agreement and that (x) are not made as of a specific date are not true and correct as of the Expiration Date and (y) are made as of a specific date are not true as of such date, except where the failure would not have a Company Material Adverse Effect.
+(c) the Company has not delivered a certificate signed by an executive officer confirming the foregoing.`;
+  const parts = splitSubClauses(annex, 'COND-B');
+  const letters = parts.map((p) => p.letter);
+  assert.deepEqual(letters, ['a', 'b.1', 'b.2', 'c']);
+  assert.match(parts[1].text, /covenants/);
+  assert.match(parts[2].text, /representations and warranties/);
+  assert.match(parts[2].text, /\(y\)/); // date mechanics stay with the reps limb
+});
+
+test('rep bring-down WITHOUT a covenant limb is never split', () => {
+  const { splitSubClauses } = require('../lib/parser-v2/extract');
+  const oneStep = `(a) the representations and warranties of the Company that (i) are not made as of a specific date are true and correct and (ii) are made as of a date are true as of such date, except where failure would not have an MAE, and such representations shall survive in accordance with their terms as set forth herein.
+(b) no Legal Restraint is in effect enjoining or otherwise prohibiting the consummation of the Merger or the other transactions.`;
+  const parts = splitSubClauses(oneStep, 'COND-B');
+  assert.deepEqual(parts.map((p) => p.letter), ['a', 'b']);
+});
+
+// ── ancillary-document exclusion in coverage ───────────────────────────────
+
+const { detectAncillaryRegions } = require('../lib/verification');
+
+function buildFiling() {
+  const body = `Section 1.1 ${'the merger agreement operative body text goes here and continues at length '.repeat(60)}`;
+  const sig = 'IN WITNESS WHEREOF, the parties have caused this Agreement to be executed as of the date first written above.';
+  const exhibitADefs = `Exhibit A Certain Definitions ${'Acquisition Proposal means any proposal or offer. Affiliate means a controlled entity. '.repeat(20)}`;
+  // A real attached agreement (has preamble) + a defined-term reference (does not).
+  const cvr = `Exhibit B Contingent Value Rights Agreement This Contingent Value Rights Agreement is made and entered into as of the date hereof by and between Parent and the Rights Agent. ${'CVR payment mechanics and milestone definitions follow at length here. '.repeat(60)}`;
+  return { body, sig, exhibitADefs, cvr, full: `${body}\n${sig}\n${exhibitADefs}\n${cvr}` };
+}
+
+test('detectAncillaryRegions excludes the attached CVR agreement, keeps Exhibit A defs', () => {
+  const f = buildFiling();
+  const norm = normalizeForMatch(f.full);
+  const regions = detectAncillaryRegions(norm);
+  assert.equal(regions.length, 1);
+  assert.match(regions[0][2], /contingent value rights agreement/);
+  // The excluded span starts at the CVR agreement, not at Exhibit A.
+  const start = regions[0][0];
+  assert.ok(norm.slice(start, start + 60).includes('contingent value rights agreement'));
+  assert.ok(!norm.slice(start).includes('acquisition proposal means')); // Exhibit A is before it → kept
+});
+
+test('a defined-term reference to an agreement (no preamble) is NOT excluded', () => {
+  const withRef = `Section 1.1 body ${'x '.repeat(200)}. IN WITNESS WHEREOF, the parties have caused this Agreement to be executed. Exhibit A Certain Definitions Ancillary Agreements means, collectively, the Voting Agreement and the CVR Agreement, in each case as amended.`;
+  const regions = detectAncillaryRegions(normalizeForMatch(withRef));
+  assert.equal(regions.length, 0); // no attached agreement, just a definition mentioning them
+});
+
+test('computeCoverage denominator excludes ancillary; rawPct includes it', () => {
+  const f = buildFiling();
+  // Code the body + Exhibit A defs, but NOT the CVR agreement.
+  const provisions = [{ full_text: f.body }, { full_text: f.exhibitADefs }];
+  const cov = computeCoverage(provisions, f.full);
+  assert.ok(cov.excludedChars > 2000, `excluded=${cov.excludedChars}`);
+  assert.ok(cov.pct > cov.rawPct, `pct ${cov.pct} should exceed rawPct ${cov.rawPct}`);
+  assert.ok(cov.pct >= 85, `effective coverage should be high once CVR excluded, got ${cov.pct}`);
+  // The CVR agreement is not reported as a "missed" gap.
+  assert.ok(!cov.gaps.some((g) => g.preview.includes('cvr payment mechanics')));
+});
+
+test('includeAncillary:true measures the raw filing (no exclusion)', () => {
+  const f = buildFiling();
+  const provisions = [{ full_text: f.body }, { full_text: f.exhibitADefs }];
+  const cov = computeCoverage(provisions, f.full, { includeAncillary: true });
+  assert.equal(cov.excludedChars, 0);
+  assert.equal(cov.pct, cov.rawPct);
+});
