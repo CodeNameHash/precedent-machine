@@ -41,6 +41,29 @@ test('extractTitledSubclauses pulls the monotonic a..f titled run', () => {
   assert.ok(parts.every((p) => /^[a-z]$/.test(p.letter)));
 });
 
+test('gap-tolerant sequence: a missing letter does not truncate the tail, a stray jump is rejected', () => {
+  // Real Red-Hat shape: "(i)" fails to match the titled regex (reads as a roman
+  // numeral) and a stray "(z) Inktank Storage, Inc." appears mid-list. The run
+  // must skip the (z) jump AND continue past the missing (i) to (j), (k)…
+  const text = [
+    '(a) Organization. Body text for organization rep goes here in full.',
+    '(b) Subsidiaries. Body text describing the subsidiaries representation.',
+    '(c) Capital Structure. The authorized capital stock consists of shares, including (z) Inktank Storage, Inc. as a listed subsidiary among others.',
+    '(d) Authority. The Company has all necessary corporate power and authority.',
+    '(e) SEC Documents. The Company has filed all required reports with the SEC.',
+    '(f) Absence of Changes. There has not been any Company Material Adverse Effect.',
+    '(g) Litigation. There are no material actions pending against the Company.',
+    '(h) Contracts. The Company Disclosure Letter lists each material contract.',
+    // (i) intentionally absent from the titled run (would-be "(i) Permits")
+    '(j) Environmental Matters. The Company complies with Environmental Laws.',
+    '(k) Labor Relations. There is no labor dispute pending against the Company.',
+  ].join('\n');
+  const letters = extractTitledSubclauses(text).map((p) => p.letter);
+  assert.ok(!letters.includes('z'), 'stray (z) jump must be rejected');
+  assert.ok(letters.includes('j') && letters.includes('k'), 'tail after the missing (i) must survive');
+  assert.deepEqual(letters, ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k']);
+});
+
 test('splitUmbrellaRepSections expands one umbrella into preamble + one section per rep', () => {
   const out = splitUmbrellaRepSections([sec()]);
   const preamble = out.filter((s) => s._umbrellaPreamble);
