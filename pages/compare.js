@@ -19,7 +19,7 @@ import {
   IOC_CATEGORY_CODES,
   IOC_CATEGORY_META,
 } from '../lib/taxonomy';
-import { canonicalConditionsFor } from '../lib/canonical-conditions';
+import { canonicalConditionsFor, conditionRowMatches } from '../lib/canonical-conditions';
 
 ComparePage.noLayout = true;
 
@@ -1288,7 +1288,11 @@ function CanonicalConditionsCompare({ family, deals, perDealProvs, onSelectRow }
   const perDealMatches = perDealProvs.map((provs) => {
     const condProvs = (provs || []).filter((p) => p.type === family);
     return rows.map((row) => {
-      const match = condProvs.find((p) => row.re.test(String(p.category || '')));
+      const match = condProvs.find((p) => {
+        const meta = typeof p.ai_metadata === 'string' ? (() => { try { return JSON.parse(p.ai_metadata); } catch { return {}; } })() : (p.ai_metadata || {});
+        const code = (meta.features && meta.features.canonicalCode) || meta.code || null;
+        return conditionRowMatches(row, p, code);
+      });
       return { match: match || null };
     });
   });

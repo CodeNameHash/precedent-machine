@@ -14,6 +14,7 @@ import {
   CANONICAL_CONDITIONS_M,
   CANONICAL_CONDITIONS_B,
   CANONICAL_CONDITIONS_S,
+  conditionRowMatches,
 } from '../../lib/canonical-conditions';
 import {
   taxonomyForFeatureKey,
@@ -5815,9 +5816,9 @@ const EXPECTED_REPS = {
     { label: 'Sufficient Funds',         match: { code: 'REP-B-FUNDS' } },
     { label: 'Solvency',                 match: { code: 'REP-B-SOLVENCY' } },
     { label: 'Anti-Reliance / No Other Reps', match: { code: 'REP-B-ANTIRELIANCE' } },
-    { label: 'Parent Litigation',        match: { categoryRegex: /\blitig/i } },
-    { label: 'Parent Ownership of Company Stock', match: { categoryRegex: /\bownership\b|company\s+(?:capital\s+)?stock|share\s+ownership/i } },
-    { label: 'Brokers identified',       match: { categoryRegex: /broker|finder/i } },
+    { label: 'Parent Litigation',        match: { code: 'REP-B-LIT', categoryRegex: /\blitig/i } },
+    { label: 'Parent Ownership of Company Stock', match: { code: 'REP-B-NOINTEREST', categoryRegex: /\bownership\b|company\s+(?:capital\s+)?stock|share\s+ownership/i } },
+    { label: 'Brokers identified',       match: { code: 'REP-B-BROKERS', categoryRegex: /broker|finder/i } },
   ],
   'REP-T': [
     { label: 'Sufficiency of Assets',    match: { code: 'REP-T-SUFFICIENCY' } },
@@ -7194,12 +7195,23 @@ function CanonicalConditionsTable({ provisions, allProvisions, family, onSelectP
     if (row.requireParentApproval && !parentApprovalRequired) return false;
     return true;
   });
+  // Match a canonical row against a provision by canonical CODE first (stable),
+  // falling back to the category regex. Matching on category text alone dropped
+  // present conditions to "Not present" whenever the extractor's label diverged
+  // from the row wording ("No Legal Impediment" vs "No Injunctions", "Accuracy
+  // of Target Reps" vs "…representations").
+  const codeOf = (p) => {
+    const f = getStructuredFeatures(p) || {};
+    return f.canonicalCode || (p && p.ai_metadata && p.ai_metadata.code) || null;
+  };
+  const rowMatch = (row, p) => conditionRowMatches(row, p, codeOf(p));
+
   // P3 item 5: stable sort — populated rows first, "Not present" rows last.
   // alwaysRender rows count as populated for sort purposes (they always show
   // something meaningful, even when no provision matches).
   const renderedRows = [...renderedRowsRaw]
     .map((row, originalIdx) => {
-      const matches = (provisions || []).filter((p) => row.re.test(String(p.category || '')));
+      const matches = (provisions || []).filter((p) => rowMatch(row, p));
       const present = matches.length > 0 || !!row.alwaysRender;
       return { row, present, originalIdx };
     })
@@ -7226,7 +7238,7 @@ function CanonicalConditionsTable({ provisions, allProvisions, family, onSelectP
           </thead>
           <tbody className="divide-y divide-border">
             {renderedRows.map((row) => {
-              const matches = (provisions || []).filter((p) => row.re.test(String(p.category || '')));
+              const matches = (provisions || []).filter((p) => rowMatch(row, p));
               // Skip non-alwaysRender rows with no matches (other than the
               // explicit alwaysRender canonical rows like MAE).
               if (matches.length === 0 && !row.alwaysRender) {
@@ -7346,9 +7358,10 @@ function CondSingleTable({ allProvisions, onSelectProvision }) {
         // tender-offer minimum condition is often categorized "Stockholder
         // Approval" but carries features.tenderOfferMinimumCondition).
         const matches = famProvs.filter((p) => {
-          if (row.re.test(String(p.category || ''))) return true;
+          const f = getStructuredFeatures(p) || {};
+          const code = f.canonicalCode || (p && p.ai_metadata && p.ai_metadata.code) || null;
+          if (conditionRowMatches(row, p, code)) return true;
           if (row.featureKey) {
-            const f = getStructuredFeatures(p) || {};
             const v = f[row.featureKey];
             if (v !== undefined && v !== null && v !== '' && !(Array.isArray(v) && v.length === 0)) return true;
           }
