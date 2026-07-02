@@ -12,6 +12,7 @@
  */
 
 import { getAnthropic, MODEL } from '../../../lib/anthropic';
+import { fromCp } from '../../../lib/html-entities';
 import https from 'https';
 import http from 'http';
 import { getServiceSupabase } from '../../../lib/supabase';
@@ -93,7 +94,8 @@ function stripHtml(html) {
     .replace(/&rdquo;/gi, '"')
     .replace(/&mdash;/gi, '—')
     .replace(/&ndash;/gi, '–')
-    .replace(/&#\d+;/g, '')
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, h) => fromCp(parseInt(h, 16)))
+    .replace(/&#(\d+);/g, (_, n) => fromCp(parseInt(n, 10)))
     .replace(/\t+/g, ' ')
     .replace(/ +/g, ' ')
     .replace(/\n{3,}/g, '\n\n')

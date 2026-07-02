@@ -1,6 +1,7 @@
 import { getAnthropic, MODEL } from '../../../lib/anthropic';
 import { getServiceSupabase } from '../../../lib/supabase';
 import { cleanEdgarText, removeRepeatedHeaders, cleanSectionText } from '../../../lib/edgar-cleanup';
+import { fromCp } from '../../../lib/html-entities';
 import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
@@ -324,8 +325,8 @@ function stripHtml(html) {
     .replace(/&gt;/gi, '>')
     .replace(/&quot;/gi, '"')
     .replace(/&apos;/gi, "'")
-    .replace(/&#x([0-9a-fA-F]+);/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)))
-    .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(parseInt(code, 10)))
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, hex) => fromCp(parseInt(hex, 16)))
+    .replace(/&#(\d+);/g, (_, code) => fromCp(parseInt(code, 10)))
     .replace(/&nbsp;/gi, ' ');
 }
 

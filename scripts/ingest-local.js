@@ -29,6 +29,7 @@ const { validateProvisions } = require('../lib/parser-v2/validate');
 const { storeProvisions } = require('../lib/parser-v2/store');
 const { extractAdvisors } = require('../lib/parser-v2/advisors');
 const { MERGER_FORMS } = require('../lib/taxonomy');
+const { fromCp } = require('../lib/html-entities');
 
 function loadDotEnvLocal() {
   const p = path.join(__dirname, '..', '.env.local');
@@ -80,9 +81,14 @@ function stripHtml(html) {
     .replace(/<\/td>/gi, '\t')
     .replace(/<[^>]+>/g, '')
     .replace(/&nbsp;/gi, ' ').replace(/&amp;/gi, '&').replace(/&lt;/gi, '<').replace(/&gt;/gi, '>')
-    .replace(/&quot;/gi, '"').replace(/&#39;/gi, "'").replace(/&rsquo;/gi, "'")
+    .replace(/&quot;/gi, '"').replace(/&#39;/gi, "'").replace(/&rsquo;/gi, "'").replace(/&lsquo;/gi, "'")
     .replace(/&ldquo;/gi, '"').replace(/&rdquo;/gi, '"').replace(/&mdash;/gi, '—').replace(/&ndash;/gi, '–')
-    .replace(/&#\d+;/g, '')
+    // Decode remaining numeric entities to their actual characters. SEC filings
+    // encode the curly quotes that DELIMIT every defined term as &#8220;/&#8221;
+    // (and singles as &#8216;/&#8217;); deleting them made inline/parenthetical
+    // definitions unfindable. Decode hex and decimal forms instead of dropping.
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, h) => fromCp(parseInt(h, 16)))
+    .replace(/&#(\d+);/g, (_, n) => fromCp(parseInt(n, 10)))
     .replace(/\t+/g, ' ').replace(/ +/g, ' ').replace(/\n{3,}/g, '\n\n')
     .trim();
 }
