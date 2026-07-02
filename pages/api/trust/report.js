@@ -13,6 +13,8 @@
 import { getServiceSupabase } from '../../../lib/supabase';
 import { verifyDealQuotes, computeCoverage } from '../../../lib/verification';
 
+const { validateProvisionRow } = require('../../../lib/feature-validation');
+
 export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).json({ error: 'GET only' });
   const dealId = req.query.deal_id;
@@ -41,6 +43,19 @@ export default async function handler(req, res) {
   const quotes = verifyDealQuotes(provisions || [], sourceText);
   const coverage = computeCoverage(provisions || [], sourceText);
 
+  // Schema conformance: every row's feature bag validated against the rubric.
+  const schema = { rows: (provisions || []).length, rows_with_errors: 0, rows_with_warnings: 0, top: {} };
+  for (const p of provisions || []) {
+    const r = validateProvisionRow(p);
+    if (r.errors.length) schema.rows_with_errors += 1;
+    else if (r.warnings.length) schema.rows_with_warnings += 1;
+    for (const v of [...r.errors, ...r.warnings]) {
+      const k = `${v.kind}:${v.key || '?'}`;
+      schema.top[k] = (schema.top[k] || 0) + 1;
+    }
+  }
+  schema.top = Object.fromEntries(Object.entries(schema.top).sort((a, b) => b[1] - a[1]).slice(0, 12));
+
   // Cap the failure payload; full triage lists can page later if needed.
   const failures = quotes.failures.slice(0, 100);
 
@@ -59,5 +74,6 @@ export default async function handler(req, res) {
       failures,
     },
     coverage,
+    schema,
   });
 }
