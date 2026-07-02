@@ -10104,6 +10104,14 @@ function FullDocumentView({
       const words = s.split(' ');
       if (words.length > 12) out.push(words.slice(0, 12).join(' '));
       if (words.length > 6) out.push(words.slice(0, 6).join(' '));
+      // Punctuation-tolerant fallback: the first run of 5–12 consecutive plain
+      // alphabetic words (no digits/parentheses/section numbers). This is what
+      // rescues coverage-gap and cross-reference jumps whose text starts with a
+      // mangled prefix like "section 5.3):" — we anchor on the clean clause
+      // language ("provided that the company shall be permitted to terminate")
+      // which appears verbatim (case-insensitive) in the document.
+      const cleanRun = s.match(/[a-z]+(?: [a-z]+){4,11}/i);
+      if (cleanRun && cleanRun[0].length >= 20) out.push(cleanRun[0]);
       return out;
     };
     const anchors = buildAnchors(fullNeedle);
