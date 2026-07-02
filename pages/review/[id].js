@@ -5079,7 +5079,7 @@ function EquityAwardTable({ rows, onSelectProvision, onAddProvision, optionsCvrE
             type="CONSID"
             defaultCategory="Equity Award Treatment"
             nounOverride="equity class"
-            onAdd={onAddProvision}
+            onBeginAdd={onAddProvision}
           />
         </div>
       )}
@@ -12810,61 +12810,26 @@ function addItemNoun(type) {
   return 'item';
 }
 
-function AddSectionItem({ type, defaultCategory, onAdd, nounOverride }) {
-  const [open, setOpen] = useState(false);
-  const [text, setText] = useState('');
-  const [category, setCategory] = useState('');
+// "+ Add <noun>" affordance. Instead of pasting clause text (which would break
+// the no-hallucination guarantee — provision text must be verbatim from the
+// source), this begins a SELECT-IN-DOCUMENT flow: it switches to the Full
+// Document tab and the user highlights the clause, which is then captured
+// verbatim to create the provision (category/features refined in the editor).
+function AddSectionItem({ type, defaultCategory, onBeginAdd, nounOverride }) {
   const noun = nounOverride || addItemNoun(type);
-  const submit = () => {
-    if (!text.trim()) return;
-    onAdd(text, { type, category: category.trim() || defaultCategory || 'Uncategorized' });
-    setText(''); setCategory(''); setOpen(false);
-  };
-  if (!open) {
-    return (
-      <button
-        type="button"
-        onClick={(e) => { e.stopPropagation(); setOpen(true); }}
-        className="text-[11px] font-ui text-accent hover:underline whitespace-nowrap"
-        title={`Add a ${noun} the parser missed`}
-      >
-        + Add {noun}
-      </button>
-    );
-  }
   return (
-    <div
-      className="border border-accent/40 bg-accent/5 rounded p-2 space-y-1.5 my-2"
-      onClick={(e) => e.stopPropagation()}
+    <button
+      type="button"
+      onClick={(e) => { e.stopPropagation(); onBeginAdd && onBeginAdd({ type, defaultCategory: defaultCategory || '', noun }); }}
+      className="text-[11px] font-ui text-accent hover:underline whitespace-nowrap"
+      title={`Add a ${noun} by selecting its clause text in the document`}
     >
-      <p className="text-[10px] font-ui text-accent uppercase tracking-wider font-medium">
-        Add to {typeLabel(type)}
-      </p>
-      <input
-        value={category}
-        onChange={(e) => setCategory(e.target.value)}
-        placeholder={`Category (optional)${defaultCategory ? ` — default: ${defaultCategory}` : ''}`}
-        className="w-full border border-border rounded px-2 py-1 text-[11px] font-ui focus:outline-none focus:ring-1 focus:ring-accent"
-      />
-      <textarea
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder="Paste the clause text…"
-        rows={3}
-        autoFocus
-        className="w-full border border-border rounded px-2 py-1 text-[11px] font-body focus:outline-none focus:ring-1 focus:ring-accent"
-      />
-      <div className="flex gap-2 justify-end">
-        <button type="button" onClick={() => { setOpen(false); setText(''); setCategory(''); }}
-          className="px-2 py-1 text-[11px] font-ui text-inkLight hover:text-ink">Cancel</button>
-        <button type="button" onClick={submit} disabled={!text.trim()}
-          className="px-3 py-1 text-[11px] font-ui bg-accent text-white rounded disabled:opacity-40">Add</button>
-      </div>
-    </div>
+      + Add {noun}
+    </button>
   );
 }
 
-function CreateProvisionButton({ selection, onCreateProvision }) {
+function CreateProvisionButton({ selection, onCreateProvision, addContext }) {
   if (!selection || !selection.rect) return null;
 
   const style = {
@@ -12874,16 +12839,20 @@ function CreateProvisionButton({ selection, onCreateProvision }) {
     zIndex: 50,
   };
 
+  // In add-from-section mode (#17), create with the section's type/category so
+  // the "+ Add <noun>" flow lands the selected clause in the right section.
+  const opts = addContext ? { type: addContext.type, category: addContext.defaultCategory || undefined } : {};
+  const label = addContext ? `Create ${addContext.noun || 'provision'}` : 'Create Provision';
   return (
     <div style={style} className="animate-slide-up">
       <button
-        onMouseDown={(e) => { e.preventDefault(); onCreateProvision(selection.text); }}
+        onMouseDown={(e) => { e.preventDefault(); onCreateProvision(selection.text, opts); }}
         className="px-4 py-2 text-xs font-ui bg-accent text-white rounded-lg shadow-lg hover:bg-accent/90 transition-colors flex items-center gap-1.5"
       >
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M6 2v8M2 6h8" />
         </svg>
-        Create Provision
+        {label}
       </button>
     </div>
   );
@@ -14016,11 +13985,24 @@ export default function ReviewPage() {
     }
   }, [reselectingProvId, addToast, refetchProvs]);
 
+  /* ── Add-from-selection mode (#17: select source text, never paste) ──
+     When set, the user is picking the clause in the document for a new
+     provision of addContext.type. */
+  const [addContext, setAddContext] = useState(null); // { type, defaultCategory, noun }
+  const handleBeginAdd = useCallback((ctx) => {
+    if (!ctx || !ctx.type) return;
+    setAddContext(ctx);
+    setEditingProvision(null);
+    setActiveTab('document');
+    addToast(`Select the clause for the new ${ctx.noun || 'item'} in the document`, 'info');
+  }, [addToast]);
+  const handleCancelAdd = useCallback(() => setAddContext(null), []);
+
   /* ── Create Provision from Selection ── */
   const handleCreateProvision = useCallback(async (text, opts = {}) => {
     if (!id) return;
     const body = (text || '').trim();
-    if (!body) { addToast('Add some clause text first', 'error'); return; }
+    if (!body) { addToast('Select the clause text in the document first', 'error'); return; }
     try {
       const resp = await fetch('/api/provisions', {
         method: 'POST',
@@ -14035,9 +14017,10 @@ export default function ReviewPage() {
       });
       const data = await resp.json();
       if (data.error) throw new Error(data.error);
-      addToast('Item added — edit to classify & enrich', 'success');
+      addToast('Item added from selected text — edit to classify & enrich', 'success');
       refetchProvs();
       setTextSelection(null);
+      setAddContext(null); // exit add-from-selection mode
       // Open the new provision for editing (set type/category/features).
       if (data.provision) {
         setEditingProvision({ ...data.provision, _status: 'unreviewed' });
@@ -14607,7 +14590,7 @@ export default function ReviewPage() {
                                     provisions={restAugmented}
                                     type={type}
                                     onSelectProvision={handleEditProvision}
-                                    onAddProvision={handleCreateProvision}
+                                    onAddProvision={handleBeginAdd}
                                     allProvisions={provisions}
                                     deal={deal}
                                   />
@@ -14643,7 +14626,7 @@ export default function ReviewPage() {
                               <AddSectionItem
                                 type={type}
                                 defaultCategory={(rest && rest[0] && rest[0].category) || ''}
-                                onAdd={handleCreateProvision}
+                                onBeginAdd={handleBeginAdd}
                               />
                             </div>
                           )}
@@ -14724,11 +14707,20 @@ export default function ReviewPage() {
         )}
       </div>
 
+      {/* Add-from-selection mode banner (#17): prompt to pick the clause. */}
+      {addContext && (
+        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 bg-accent text-white rounded-lg shadow-lg px-4 py-2 text-xs font-ui flex items-center gap-3 animate-slide-up">
+          <span>Select the clause for the new <b>{addContext.noun}</b> in the document, then click “Create”.</span>
+          <button type="button" onClick={handleCancelAdd} className="underline opacity-90 hover:opacity-100">Cancel</button>
+        </div>
+      )}
+
       {/* Floating Create Provision Button (hidden while re-selecting text) */}
       {!reselectingProvId && (
         <CreateProvisionButton
           selection={textSelection}
           onCreateProvision={handleCreateProvision}
+          addContext={addContext}
         />
       )}
 
