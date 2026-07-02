@@ -9989,6 +9989,10 @@ function FullDocumentView({
 }) {
   const containerRef = useRef(null);
   const [reselectSelection, setReselectSelection] = useState(null);
+  // Highlight-effect retry (survives the mount/paint race on cross-tab jumps).
+  const highlightRetryRef = useRef(0);
+  const [highlightRetryTick, setHighlightRetryTick] = useState(0);
+  useEffect(() => { highlightRetryRef.current = 0; }, [highlightedQuoteNonce]);
 
   // P5 item 7: evidence-selection mode (separate from reselect-text mode).
   // Pulls selectionMode from EvidenceContext so the floating bar + mouse-up
@@ -10176,7 +10180,20 @@ function FullDocumentView({
     // Update chevron state. Use functional setState w/ same-value guard so
     // we don't spin re-renders on every effect run.
     setMatchCount((prev) => (prev === matches.length ? prev : matches.length));
-    if (matches.length === 0) return undefined;
+    if (matches.length === 0) {
+      // Mount/paint race: when a jump comes from another tab (e.g. clicking a
+      // coverage gap in the trust dropdown), this effect can run before the
+      // large document text is painted, so nothing matches. Retry a few times
+      // (~200ms apart) until the content is there. Bounded so a genuinely
+      // absent quote stops after ~1.6s.
+      if (highlightRetryRef.current < 8) {
+        const attempt = highlightRetryRef.current + 1;
+        highlightRetryRef.current = attempt;
+        const t = setTimeout(() => setHighlightRetryTick(attempt), 200);
+        return () => clearTimeout(t);
+      }
+      return undefined;
+    }
     const safeIdx = Math.max(0, Math.min(activeMatchIdx, matches.length - 1));
     const pick = matches[safeIdx];
     const foundNode = pick.node;
@@ -10226,7 +10243,7 @@ function FullDocumentView({
     // (nonce bump forces re-mount of the highlight even if quote is identical).
     // Also re-runs when activeMatchIdx changes (chevron prev/next).
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [highlightedQuote, highlightedQuoteNonce, sourceText, activeMatchIdx]);
+  }, [highlightedQuote, highlightedQuoteNonce, sourceText, activeMatchIdx, highlightRetryTick]);
 
   // Track selection while in re-select mode
   useEffect(() => {
