@@ -17,6 +17,7 @@
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
+const { fromCp } = require('../lib/html-entities');
 
 // Load .env.local
 const envPath = path.join(__dirname, '..', '.env.local');
@@ -106,11 +107,16 @@ function stripHtml(html) {
     .replace(/&quot;/gi, '"')
     .replace(/&#39;/gi, "'")
     .replace(/&rsquo;/gi, "'")
+    .replace(/&lsquo;/gi, "'")
     .replace(/&ldquo;/gi, '"')
     .replace(/&rdquo;/gi, '"')
     .replace(/&mdash;/gi, '—')
     .replace(/&ndash;/gi, '–')
-    .replace(/&#\d+;/g, '')
+    // Decode numeric entities (SEC encodes defined-term curly quotes as
+    // &#8220;/&#8221;) instead of deleting them — deletion made inline defs
+    // unfindable.
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, h) => fromCp(parseInt(h, 16)))
+    .replace(/&#(\d+);/g, (_, n) => fromCp(parseInt(n, 10)))
     .replace(/\t+/g, ' ')
     .replace(/ +/g, ' ')
     .replace(/\n{3,}/g, '\n\n')
