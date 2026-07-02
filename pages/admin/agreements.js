@@ -821,7 +821,7 @@ export default function AddAgreements() {
   return (
     <>
       <Head>
-        <title>Add Agreement — Precedent Machine</title>
+        <title>Add Agreement — Recital</title>
         <link
           href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
           rel="stylesheet"
@@ -835,7 +835,7 @@ export default function AddAgreements() {
         <div className="header">
           <div className="logo">
             <div className="logo-dot" />
-            <h1>Precedent Machine</h1>
+            <h1>Recital</h1>
           </div>
           <div className="nav">
             <a href="/" style={{ textDecoration: 'none' }}>

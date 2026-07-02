@@ -24,7 +24,6 @@ export default function Layout({ children }) {
         <Link href="/" className="rec-wordmark">
           <span className="mark" />
           Recital
-          <span className="tag">Precedent</span>
         </Link>
         <div className="flex items-center gap-4">
           {user && (
