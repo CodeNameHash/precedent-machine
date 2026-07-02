@@ -110,6 +110,32 @@ async function evalDeal(sb, targetName, golden) {
     }
   }
 
+  if (golden.min_nosol_provisions) {
+    const n = provs.filter((p) => String(p.type).startsWith('NOSOL')).length;
+    check(results, `NOSOL provisions ≥ ${golden.min_nosol_provisions}`, n >= golden.min_nosol_provisions, n);
+  }
+
+  // required_features: { TYPE: ["key" or "keyA|keyB" alternatives, ...] } —
+  // each named feature must be present (non-null after citable unwrap) on AT
+  // LEAST ONE provision of the type group. Mirrors how the review page's
+  // mini-tables resolve rows by scanning across provisions.
+  if (golden.required_features) {
+    for (const [typePrefix, keys] of Object.entries(golden.required_features)) {
+      const group = provs.filter((p) => String(p.type).startsWith(typePrefix));
+      for (const keySpec of keys) {
+        const alts = keySpec.split('|');
+        const found = group.some((p) => {
+          const feats = (p.ai_metadata || {}).features || {};
+          return alts.some((k) => {
+            const v = unwrap(feats[k]);
+            return v !== null && v !== undefined && v !== '';
+          });
+        });
+        check(results, `${typePrefix} feature "${keySpec}" present somewhere`, found, found ? 'present' : 'MISSING');
+      }
+    }
+  }
+
   if (golden.max_schema_error_rows !== undefined) {
     let errRows = 0;
     for (const p of provs) if (validateProvisionRow(p).errors.length) errRows += 1;
