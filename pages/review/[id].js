@@ -47,6 +47,7 @@ import {
 import { normalizeTermfFeatures } from '../../lib/termf';
 import { getFeaturesForType, PROVISION_TYPES } from '../../lib/rubric';
 import { resolveEditFields } from '../../lib/edit-schema';
+import { isCanonicalCode } from '../../lib/expected-sets';
 import { resolveSectionReference } from '../../lib/section-ref';
 
 /* ── Type & Term Labels ── */
@@ -12406,7 +12407,30 @@ function EditPanel({
           </div>
 
           <div>
-            <label className="block text-xs font-ui text-inkLight mb-1">Term</label>
+            <label className="flex items-center justify-between text-xs font-ui text-inkLight mb-1">
+              <span>Term</span>
+              {(() => {
+                // Canonical-status indicator: does this provision's code map to a
+                // canonical rubric code? Surfaced only in the editor — the reviewer
+                // sees clean labels elsewhere. Non-canonical = a candidate to
+                // promote into the taxonomy (see the growth queue).
+                const code = provision && (
+                  (provision.ai_metadata && provision.ai_metadata.features && provision.ai_metadata.features.canonicalCode)
+                  || (provision.ai_metadata && provision.ai_metadata.code)
+                  || provision.code
+                );
+                const canon = isCanonicalCode(code);
+                return (
+                  <span
+                    className={`inline-flex items-center gap-1 text-[10px] font-medium ${canon ? 'text-emerald-700' : 'text-amber-700'}`}
+                    title={canon ? `Canonical category (${code})` : 'Not a canonical category — candidate to add to the taxonomy'}
+                  >
+                    <span className={`w-1.5 h-1.5 rounded-full ${canon ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+                    {canon ? 'canonical' : 'non-canonical'}
+                  </span>
+                );
+              })()}
+            </label>
             {filteredCategories.length > 0 ? (
               <select
                 value={editCategory}
