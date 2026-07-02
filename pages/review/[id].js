@@ -11885,18 +11885,28 @@ function FeatureFieldEditor({ field, value, onChange, onAddCustomOption }) {
     const placeholder = effType === 'currency' ? 'e.g. $25,000,000'
       : effType === 'percentage' ? 'e.g. 5%'
       : 'e.g. 30 days';
+    // dollarThreshold etc. are often stored citable { value, quotes|text }.
+    // Unwrap to the inner scalar for the input (not "[object Object]"), show the
+    // supporting quote, and preserve the citation when the user edits the value.
+    const cit = isCitableValue(value);
+    const inner = cit ? getCitableValue(value) : value;
+    const ev = cit ? getCitableText(value) : null;
     return (
       <div>
         {labelEl}
         <input
-          value={value == null ? '' : String(value)}
+          value={inner == null || typeof inner === 'object' ? '' : String(inner)}
           onChange={(e) => {
             const v = e.target.value;
-            onChange(v === '' ? null : v);
+            const next = v === '' ? null : v;
+            onChange(cit && next != null ? { ...value, value: next } : next);
           }}
           placeholder={placeholder}
           className="w-full border border-border rounded px-2 py-1 text-xs font-ui focus:outline-none focus:ring-1 focus:ring-accent"
         />
+        {ev && (
+          <p className="mt-0.5 font-body text-[11px] text-inkFaint italic leading-relaxed">&ldquo;{ev}&rdquo;</p>
+        )}
       </div>
     );
   }
