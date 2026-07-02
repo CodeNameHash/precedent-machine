@@ -5047,6 +5047,20 @@ function EquityAwardTable({ rows, onSelectProvision, optionsCvrEarnInLabel, opti
           </tbody>
         </table>
       </div>
+      {/* Row-level add scoped to THIS table: capture an equity class the parser
+          missed (Ben's example — "what if you missed a class of equity, I'd
+          want to add it there"). Creates a CONSID provision pre-scoped to
+          equity treatment and opens the editor to set instrument + treatment. */}
+      {onAddProvision && (
+        <div className="px-3 py-2 border-t border-border bg-lime-50/40">
+          <AddSectionItem
+            type="CONSID"
+            defaultCategory="Equity Award Treatment"
+            nounOverride="equity class"
+            onAdd={onAddProvision}
+          />
+        </div>
+      )}
     </div>
   );
 }
@@ -5106,7 +5120,7 @@ function buildCommonStockRow(convertProv) {
   };
 }
 
-function ConsidTable({ provisions, onSelectProvision }) {
+function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
   const showEvidence = useShowEvidence();
 
   // Partition: equity-award provisions vs. everything else.
@@ -5403,6 +5417,7 @@ function ConsidTable({ provisions, onSelectProvision }) {
         <EquityAwardTable
           rows={equityRows}
           onSelectProvision={onSelectProvision}
+          onAddProvision={onAddProvision}
           optionsCvrEarnInLabel={optionsCvrEarnInLabel}
           optionsCvrEarnInQuote={optionsCvrEarnInSrc && optionsCvrEarnInSrc.quote}
         />
@@ -9507,13 +9522,13 @@ function CellWithSource({ provision, featureKey, raw, isEmpty, children, classNa
   );
 }
 
-function ProvisionTable({ provisions, type, onSelectProvision, allProvisions, deal }) {
+function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, allProvisions, deal }) {
   // STRUCT and CONSID get specialized layouts — see dedicated components above.
   if (type === 'STRUCT') {
     return <StructTable provisions={provisions} onSelectProvision={onSelectProvision} />;
   }
   if (type === 'CONSID') {
-    return <ConsidTable provisions={provisions} onSelectProvision={onSelectProvision} />;
+    return <ConsidTable provisions={provisions} onSelectProvision={onSelectProvision} onAddProvision={onAddProvision} />;
   }
   // NOSOL (P3 item 1): 4 stacked mini-tables — Cease Discussions / Change of
   // Recommendation Framework / Key Definitions / Other Restrictions. Below
@@ -12706,11 +12721,11 @@ function addItemNoun(type) {
   return 'item';
 }
 
-function AddSectionItem({ type, defaultCategory, onAdd }) {
+function AddSectionItem({ type, defaultCategory, onAdd, nounOverride }) {
   const [open, setOpen] = useState(false);
   const [text, setText] = useState('');
   const [category, setCategory] = useState('');
-  const noun = addItemNoun(type);
+  const noun = nounOverride || addItemNoun(type);
   const submit = () => {
     if (!text.trim()) return;
     onAdd(text, { type, category: category.trim() || defaultCategory || 'Uncategorized' });
@@ -14493,6 +14508,7 @@ export default function ReviewPage() {
                                     provisions={restAugmented}
                                     type={type}
                                     onSelectProvision={handleEditProvision}
+                                    onAddProvision={handleCreateProvision}
                                     allProvisions={provisions}
                                     deal={deal}
                                   />
