@@ -56,6 +56,23 @@ export default async function handler(req, res) {
   }
   schema.top = Object.fromEntries(Object.entries(schema.top).sort((a, b) => b[1] - a[1]).slice(0, 12));
 
+  // Novelty: proposed codes awaiting approval + extraction flags. These are
+  // things the taxonomy did NOT cleanly absorb — surfaced, never buried.
+  const novelty = { proposed_codes: [], flags: [] };
+  for (const p of provisions || []) {
+    if (typeof p.category === 'string' && p.category.startsWith('[PROPOSED]')) {
+      novelty.proposed_codes.push({ provision_id: p.id, type: p.type, category: p.category });
+    }
+    const flags = ((p.ai_metadata || {}).features || {}).flags;
+    if (Array.isArray(flags)) {
+      for (const f of flags) {
+        if (f && (f.concern || f.text)) {
+          novelty.flags.push({ provision_id: p.id, type: p.type, category: p.category, concern: f.concern || null, text: (f.text || '').slice(0, 300) });
+        }
+      }
+    }
+  }
+
   // Cap the failure payload; full triage lists can page later if needed.
   const failures = quotes.failures.slice(0, 100);
 
@@ -75,5 +92,6 @@ export default async function handler(req, res) {
     },
     coverage,
     schema,
+    novelty,
   });
 }

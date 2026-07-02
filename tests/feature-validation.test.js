@@ -75,3 +75,15 @@ test('validationSummary is null when clean (clean rows pay zero bytes)', () => {
   assert.equal(s.errors, 1);
   assert.equal(s.warnings, 1);
 });
+
+test('flags novelty channel is valid on every type, but must be a list', () => {
+  const ok = validateFeatures('NOSOL', {
+    flags: [{ concern: 'Two-tier match right with asymmetric windows', text: 'verbatim…' }],
+  });
+  assert.deepEqual(ok, { errors: [], warnings: [] });
+  const alsoOk = validateFeatures('TERMF', { flags: [] });
+  assert.equal(alsoOk.warnings.length, 0);
+  const bad = validateFeatures('TERMF', { flags: { concern: 'not-a-list' } });
+  assert.equal(bad.errors.length, 1);
+  assert.equal(bad.errors[0].key, 'flags');
+});
