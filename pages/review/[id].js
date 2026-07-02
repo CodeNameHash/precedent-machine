@@ -12651,10 +12651,27 @@ function TrustStrip({ dealId }) {
    Consideration, …). Collects the clause text (required — provision text is
    immutable after creation) plus an optional category, creates it of the
    section's type, then opens the editor to classify / enrich. */
+// Contextual noun for the "+ Add …" affordance, by section type family.
+function addItemNoun(type) {
+  const t = String(type || '');
+  if (t.startsWith('REP')) return 'representation';
+  if (t.startsWith('COND')) return 'condition';
+  if (t.startsWith('TERMR')) return 'termination right';
+  if (t === 'TERMF') return 'fee provision';
+  if (t.startsWith('IOC')) return 'covenant';
+  if (t === 'COV') return 'covenant';
+  if (t === 'NOSOL') return 'no-shop provision';
+  if (t === 'CONSID') return 'consideration item';
+  if (t === 'DEF') return 'definition';
+  if (t === 'ANTI') return 'antitrust provision';
+  return 'item';
+}
+
 function AddSectionItem({ type, defaultCategory, onAdd }) {
   const [open, setOpen] = useState(false);
   const [text, setText] = useState('');
   const [category, setCategory] = useState('');
+  const noun = addItemNoun(type);
   const submit = () => {
     if (!text.trim()) return;
     onAdd(text, { type, category: category.trim() || defaultCategory || 'Uncategorized' });
@@ -12666,9 +12683,9 @@ function AddSectionItem({ type, defaultCategory, onAdd }) {
         type="button"
         onClick={(e) => { e.stopPropagation(); setOpen(true); }}
         className="text-[11px] font-ui text-accent hover:underline whitespace-nowrap"
-        title={`Add an item to ${typeLabel(type)} the parser missed`}
+        title={`Add a ${noun} the parser missed`}
       >
-        + Add item
+        + Add {noun}
       </button>
     );
   }
@@ -14330,17 +14347,6 @@ export default function ReviewPage() {
                             </span>
                             <span className="rule" />
                           </button>
-                          {/* Add-an-item affordance — capture a provision the
-                              extractor missed for this section. */}
-                          {!isCollapsed && !SYNTHETIC_SINGLE_PAGE_TYPES.has(type) && (
-                            <div className="flex justify-end">
-                              <AddSectionItem
-                                type={type}
-                                defaultCategory={(rest && rest[0] && rest[0].category) || ''}
-                                onAdd={handleCreateProvision}
-                              />
-                            </div>
-                          )}
                           {/* COV (Other Covenants) renders the PW diligence
                               summary table in 'table' view (via
                               CategoryFeatureSummaryTable inside ProvisionTable);
@@ -14474,6 +14480,19 @@ export default function ReviewPage() {
                               ))}
                             </div>
                           ))}
+                          {/* Add-an-item affordance — a FOOTER under the
+                              section's content (not floating by the header), so
+                              it reads as "append to this list": capture a
+                              provision the extractor missed for this section. */}
+                          {!isCollapsed && !SYNTHETIC_SINGLE_PAGE_TYPES.has(type) && (
+                            <div className="mt-2 pt-2 border-t border-border/50">
+                              <AddSectionItem
+                                type={type}
+                                defaultCategory={(rest && rest[0] && rest[0].category) || ''}
+                                onAdd={handleCreateProvision}
+                              />
+                            </div>
+                          )}
                         </div>
                       );
                     })}
