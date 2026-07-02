@@ -335,3 +335,119 @@ export function prettifyEnumValue(key, raw) {
   }
   return raw;
 }
+
+/* ── Provision Type Colors (pastel backgrounds for highlights) ── */
+const TYPE_COLORS = {
+  'MAE':    { bg: 'bg-red-50',     border: 'border-red-200',    text: 'text-red-800',    dot: 'bg-red-400',    hex: '#fef2f2' },
+  'MAE-T':  { bg: 'bg-red-50',     border: 'border-red-200',    text: 'text-red-800',    dot: 'bg-red-400',    hex: '#fef2f2' },
+  'MAE-B':  { bg: 'bg-red-50',     border: 'border-red-200',    text: 'text-red-800',    dot: 'bg-red-400',    hex: '#fef2f2' },
+  'IOC':    { bg: 'bg-amber-50',   border: 'border-amber-200',  text: 'text-amber-800',  dot: 'bg-amber-400',  hex: '#fffbeb' },
+  'IOC-T':  { bg: 'bg-amber-50',   border: 'border-amber-200',  text: 'text-amber-800',  dot: 'bg-amber-400',  hex: '#fffbeb' },
+  'IOC-B':  { bg: 'bg-amber-50',   border: 'border-amber-200',  text: 'text-amber-800',  dot: 'bg-amber-400',  hex: '#fffbeb' },
+  'COND':   { bg: 'bg-blue-50',    border: 'border-blue-200',   text: 'text-blue-800',   dot: 'bg-blue-400',   hex: '#eff6ff' },
+  'COND-M': { bg: 'bg-blue-50',    border: 'border-blue-200',   text: 'text-blue-800',   dot: 'bg-blue-400',   hex: '#eff6ff' },
+  'COND-B': { bg: 'bg-sky-50',     border: 'border-sky-200',    text: 'text-sky-800',    dot: 'bg-sky-400',    hex: '#f0f9ff' },
+  'COND-S': { bg: 'bg-indigo-50',  border: 'border-indigo-200', text: 'text-indigo-800', dot: 'bg-indigo-400', hex: '#eef2ff' },
+  'NOSOL':  { bg: 'bg-purple-50',  border: 'border-purple-200', text: 'text-purple-800', dot: 'bg-purple-400', hex: '#faf5ff' },
+  'NOSOL-T':{ bg: 'bg-purple-50',  border: 'border-purple-200', text: 'text-purple-800', dot: 'bg-purple-400', hex: '#faf5ff' },
+  'NOSOL-B':{ bg: 'bg-purple-50',  border: 'border-purple-200', text: 'text-purple-800', dot: 'bg-purple-400', hex: '#faf5ff' },
+  'ANTI':   { bg: 'bg-teal-50',    border: 'border-teal-200',   text: 'text-teal-800',   dot: 'bg-teal-400',   hex: '#f0fdfa' },
+  'TERMR':  { bg: 'bg-orange-50',  border: 'border-orange-200', text: 'text-orange-800', dot: 'bg-orange-400', hex: '#fff7ed' },
+  'TERMR-M':{ bg: 'bg-orange-50',  border: 'border-orange-200', text: 'text-orange-800', dot: 'bg-orange-400', hex: '#fff7ed' },
+  'TERMR-B':{ bg: 'bg-orange-50',  border: 'border-orange-200', text: 'text-orange-800', dot: 'bg-orange-400', hex: '#fff7ed' },
+  'TERMR-T':{ bg: 'bg-orange-50',  border: 'border-orange-200', text: 'text-orange-800', dot: 'bg-orange-400', hex: '#fff7ed' },
+  'TERMF':  { bg: 'bg-rose-50',    border: 'border-rose-200',   text: 'text-rose-800',   dot: 'bg-rose-400',   hex: '#fff1f2' },
+  'REP':    { bg: 'bg-emerald-50', border: 'border-emerald-200',text: 'text-emerald-800',dot: 'bg-emerald-400',hex: '#ecfdf5' },
+  'REP-T':  { bg: 'bg-emerald-50', border: 'border-emerald-200',text: 'text-emerald-800',dot: 'bg-emerald-400',hex: '#ecfdf5' },
+  'REP-B':  { bg: 'bg-green-50',   border: 'border-green-200',  text: 'text-green-800',  dot: 'bg-green-400',  hex: '#f0fdf4' },
+  'COV':    { bg: 'bg-cyan-50',    border: 'border-cyan-200',   text: 'text-cyan-800',   dot: 'bg-cyan-400',   hex: '#ecfeff' },
+  'DEF':    { bg: 'bg-gray-50',    border: 'border-gray-200',   text: 'text-gray-700',   dot: 'bg-gray-400',   hex: '#f9fafb' },
+  'STRUCT': { bg: 'bg-violet-50',  border: 'border-violet-200', text: 'text-violet-800', dot: 'bg-violet-400', hex: '#f5f3ff' },
+  'CONSID': { bg: 'bg-lime-50',    border: 'border-lime-200',   text: 'text-lime-800',   dot: 'bg-lime-400',   hex: '#f7fee7' },
+  'MISC':   { bg: 'bg-stone-50',   border: 'border-stone-200',  text: 'text-stone-700',  dot: 'bg-stone-400',  hex: '#fafaf9' },
+  'OTHER':  { bg: 'bg-gray-50',    border: 'border-gray-200',   text: 'text-gray-700',   dot: 'bg-gray-400',   hex: '#f9fafb' },
+};
+
+/* ── Recital provision-type hex colors (used for dots, ref chips, section heads) ── */
+const TYPE_HEX = {
+  STRUCT:   '#7459A6',
+  CONSID:   '#2F8B7E',
+  DEF:      '#4E6FA6',
+  IOC:      '#B5862E',
+  'IOC-T':  '#B5862E',
+  'IOC-B':  '#B5862E',
+  NOSOL:    '#A8538C',
+  'NOSOL-T':'#A8538C',
+  'NOSOL-B':'#A8538C',
+  ANTI:     '#2F8FA8',
+  COND:     '#5660B0',
+  'COND-M': '#5660B0',
+  'COND-B': '#5660B0',
+  'COND-S': '#5660B0',
+  TERMR:    '#C0673A',
+  'TERMR-M':'#C0673A',
+  'TERMR-B':'#C0673A',
+  'TERMR-T':'#C0673A',
+  TERMF:    '#B14E63',
+  REP:      '#3F8A6A',
+  'REP-T':  '#3F8A6A',
+  'REP-B':  '#3F8A6A',
+  COV:      '#6E8AA8',
+  MAE:      '#8B5B3A',
+  'MAE-T':  '#8B5B3A',
+  'MAE-B':  '#8B5B3A',
+  'MAE-DEF':'#8B5B3A',
+  'MAE-DEF-P':'#8B5B3A',
+  MISC:     '#8A8782',
+  OTHER:    '#8A8782',
+};
+
+export function typeHex(code) {
+  return TYPE_HEX[code] || '#8A8782';
+}
+
+export function typeColor(code) {
+  return TYPE_COLORS[code] || { bg: 'bg-gray-50', border: 'border-gray-200', text: 'text-gray-700', dot: 'bg-gray-400', hex: '#f9fafb' };
+}
+
+/* ── Sidebar grouping — parent groups with optional sub-types ── */
+export const SIDEBAR_GROUPS = [
+  { label: 'Structure & Mechanics', types: ['STRUCT'] },
+  { label: 'Consideration', types: ['CONSID'] },
+  { label: 'Representations', children: [
+    { label: 'Company / Target', type: 'REP-T' },
+    { label: 'Buyer / Parent', type: 'REP-B' },
+    { label: 'Material Contracts', type: '__MATERIAL_CONTRACTS' },
+  ]},
+  { label: 'Material Adverse Effect', children: [
+    { label: 'Company Material Adverse Effect', type: 'MAE-DEF' },
+    { label: 'Parent Material Adverse Effect', type: 'MAE-DEF-P' },
+  ]},
+  { label: 'Interim Operating Covenants', children: [
+    { label: 'Company / Target', type: 'IOC-T' },
+    { label: 'Buyer / Parent', type: 'IOC-B' },
+  ]},
+  { label: 'No-Solicitation / No-Shop', children: [
+    { label: 'Company / Target', type: 'NOSOL-T' },
+    { label: 'Buyer / Parent', type: 'NOSOL-B' },
+  ]},
+  { label: 'Antitrust / Regulatory', types: ['ANTI'] },
+  { label: 'Conditions to Closing', types: ['COND-M', 'COND-B', 'COND-S', 'COND'], singleType: 'COND-M' },
+  { label: 'Termination Rights', types: ['TERMR-M', 'TERMR-B', 'TERMR-T', 'TERMR'], singleType: 'TERMR-M' },
+  { label: 'Termination Fees', types: ['TERMF'] },
+  { label: 'Other Covenants', types: ['COV'] },
+  { label: 'Definitions', types: ['DEF'] },
+  { label: 'Miscellaneous / Boilerplate', types: ['MISC'] },
+  { label: 'Other', types: ['OTHER'] },
+];
+
+/* Synthetic, single-page sidebar types: the child label itself IS the page
+ * (a curated summary), so the sidebar should NOT show a count or a nested
+ * per-provision sub-list under it. */
+export const SYNTHETIC_SINGLE_PAGE_TYPES = new Set(['MAE-DEF', 'MAE-DEF-P', '__MATERIAL_CONTRACTS']);
+
+export function getProvisionStatus(p) {
+  if (p._status === 'approved') return 'approved';
+  if (p._status === 'flagged') return 'flagged';
+  return 'unreviewed';
+}
