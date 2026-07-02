@@ -14,6 +14,7 @@ import { getServiceSupabase } from '../../../lib/supabase';
 import { verifyDealQuotes, computeCoverage } from '../../../lib/verification';
 
 const { validateProvisionRow } = require('../../../lib/feature-validation');
+const { isCanonicalCode, provisionCode } = require('../../../lib/expected-sets');
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).json({ error: 'GET only' });
@@ -73,6 +74,25 @@ export default async function handler(req, res) {
     }
   }
 
+  // Uncoded: provisions whose canonical code is NOT set / not a canonical rubric
+  // code (proposed / freeform / missing). This is the "uncoded remainder" behind
+  // a high coverage %, surfaced so a reviewer can classify each one.
+  const uncoded = { count: 0, byType: {}, items: [] };
+  for (const p of provisions || []) {
+    if (isCanonicalCode(provisionCode(p))) continue;
+    uncoded.count += 1;
+    const type = p.type || '?';
+    uncoded.byType[type] = (uncoded.byType[type] || 0) + 1;
+    if (uncoded.items.length < 50) {
+      uncoded.items.push({
+        provision_id: p.id,
+        type: p.type || null,
+        category: p.category || null,
+        proposed: String(p.category || '').startsWith('[PROPOSED') || String(provisionCode(p) || '').startsWith('[PROPOSED'),
+      });
+    }
+  }
+
   // Cap the failure payload; full triage lists can page later if needed.
   const failures = quotes.failures.slice(0, 100);
 
@@ -93,5 +113,6 @@ export default async function handler(req, res) {
     coverage,
     schema,
     novelty,
+    uncoded,
   });
 }
