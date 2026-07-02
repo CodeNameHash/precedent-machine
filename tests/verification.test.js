@@ -12,17 +12,42 @@ const {
 
 // ── normalizeForMatch ──────────────────────────────────────────────────────
 
-test('normalizeForMatch strips pipeline markers', () => {
+test('normalizeForMatch strips pipeline markers and stray space-before-punctuation', () => {
   assert.equal(
     normalizeForMatch('subject to [[REF]]Article VII[[/REF]], the closing (the Closing)'),
-    'subject to article vii , the closing (the closing)',
+    'subject to article vii, the closing (the closing)',
   );
 });
 
-test('normalizeForMatch normalizes smart quotes, dashes, whitespace', () => {
+test('normalizeForMatch removes quote marks/apostrophes, normalizes dashes/whitespace', () => {
   assert.equal(
     normalizeForMatch('“Company’s  best\n efforts” — always'),
-    '"company\'s best efforts" - always',
+    'companys best efforts - always',
+  );
+});
+
+test('apostrophe-stripped source still matches an apostrophed quote', () => {
+  // The cleaning pipeline drops possessives from the stored source.
+  const src = normalizeForMatch('any change in the market price of the Companys stock');
+  assert.equal(quoteAppearsIn(normalizeForMatch("the market price of the Company's stock"), src), true);
+});
+
+test('unquoted stored definition matches quoted source term', () => {
+  const src = normalizeForMatch('"Acquisition Proposal" means any inquiry, proposal or offer from any Person');
+  assert.equal(quoteAppearsIn(normalizeForMatch('Acquisition Proposal means any inquiry, proposal or offer'), src), true);
+});
+
+test('mid-ellipsis quote verifies fragment-by-fragment', () => {
+  const src = normalizeForMatch(
+    'each option to purchase Shares granted under a Company Equity Plan that is outstanding shall vest, having an exercise price per Share',
+  );
+  assert.equal(
+    quoteAppearsIn(normalizeForMatch('granted under a Company Equity Plan ... having an exercise price'), src),
+    true,
+  );
+  assert.equal(
+    quoteAppearsIn(normalizeForMatch('granted under a Company Equity Plan ... payable in preferred stock units'), src),
+    false,
   );
 });
 
