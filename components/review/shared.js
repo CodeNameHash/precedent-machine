@@ -451,3 +451,61 @@ export function getProvisionStatus(p) {
   if (p._status === 'flagged') return 'flagged';
   return 'unreviewed';
 }
+
+/* ── Type & Term Labels ── */
+const TYPE_LABELS = {
+  'MAE-T': 'Material Adverse Effect (Target)',
+  'MAE-B': 'Material Adverse Effect (Buyer)',
+  'MAE': 'Material Adverse Effect',
+  'MAE-DEF': 'Material Adverse Effect (Company)',
+  'MAE-DEF-P': 'Material Adverse Effect (Parent)',
+  // P8 item 3: synthetic UI-only type — surfaces matching REP-T provisions
+  // (Material Contracts checklist) on their own sidebar page so the buckets
+  // table isn't buried inline on the REP-T page.
+  '__MATERIAL_CONTRACTS': 'Material Contracts',
+  'IOC-T': 'Interim Operating Covenants (Target)',
+  'IOC-B': 'Interim Operating Covenants (Buyer)',
+  'IOC': 'Interim Operating Covenants',
+  'COND-M': 'Conditions to Closing (Mutual)',
+  'COND-B': 'Conditions to Closing (Buyer)',
+  'COND-S': 'Conditions to Closing (Seller)',
+  'COND': 'Conditions to Closing',
+  'NOSOL': 'No-Solicitation / No-Shop',
+  'NOSOL-T': 'No-Solicitation (Target / Company)',
+  'NOSOL-B': 'No-Solicitation (Buyer / Parent)',
+  'ANTI': 'Antitrust / Regulatory',
+  'TERMR-M': 'Termination Rights (Mutual)',
+  'TERMR-B': 'Termination Rights (Buyer)',
+  'TERMR-T': 'Termination Rights (Target)',
+  'TERMR': 'Termination Rights',
+  'TERMF': 'Termination Fees & Expenses',
+  'REP-T': 'Representations & Warranties (Target)',
+  'REP-B': 'Representations & Warranties (Buyer)',
+  'REP': 'Representations & Warranties',
+  'COV': 'Other Covenants',
+  'DEF': 'Definitions',
+  'STRUCT': 'Structure & Mechanics',
+  'CONSID': 'Consideration',
+  'MISC': 'Miscellaneous / Boilerplate',
+  'OTHER': 'Other Provisions',
+};
+
+export function typeLabel(code) {
+  return TYPE_LABELS[code] || code;
+}
+
+export { TYPE_LABELS };
+
+const FAV_LABELS = {
+  'strong-buyer': { label: 'Strong Buyer', cls: 'bg-buyer/10 text-buyer', pos:  2 },
+  'mod-buyer':    { label: 'Mod. Buyer',   cls: 'bg-buyer/10 text-buyer', pos:  1 },
+  'buyer':        { label: 'Buyer',        cls: 'bg-buyer/10 text-buyer', pos:  1 },
+  'neutral':      { label: 'Balanced',     cls: 'bg-gray-100 text-inkLight', pos: 0 },
+  'mod-seller':   { label: 'Mod. Seller',  cls: 'bg-seller/10 text-seller', pos: -1 },
+  'strong-seller':{ label: 'Strong Seller',cls: 'bg-seller/10 text-seller', pos: -2 },
+  'seller':       { label: 'Seller',       cls: 'bg-seller/10 text-seller', pos: -1 },
+};
+
+export function favBadge(fav) {
+  return FAV_LABELS[(fav || '').toLowerCase()] || FAV_LABELS.neutral;
+}
