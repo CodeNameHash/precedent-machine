@@ -1,11 +1,13 @@
 import { useState, useRef, useContext, createContext } from 'react';
 import {
+  getAiMetadata,
   getStructuredFeatures,
   isTaggedItem,
   resolveTaggedLabel,
   isCitableValue,
   getCitableValue,
   getCitableQuotes,
+  getCitableText,
   TOOLTIP_MAX,
 } from '../../lib/citable';
 
@@ -508,4 +510,78 @@ const FAV_LABELS = {
 
 export function favBadge(fav) {
   return FAV_LABELS[(fav || '').toLowerCase()] || FAV_LABELS.neutral;
+}
+
+/* ── Parse features from ai_metadata (flat chip list for backward-compat) ── */
+export function getFeatures(provision) {
+  const meta = getAiMetadata(provision);
+  if (!meta) return [];
+  if (meta.key_terms) return meta.key_terms;
+  if (meta.features && typeof meta.features === 'object' && !Array.isArray(meta.features)) {
+    return Object.entries(meta.features)
+      .filter(([, v]) => {
+        if (v === null || v === undefined || v === '' || v === false) return false;
+        if (Array.isArray(v) && v.length === 0) return false;
+        return true;
+      })
+      .map(([k, v]) => {
+        if (Array.isArray(v)) return `${k}: ${v.length} item${v.length === 1 ? '' : 's'}`;
+        if (typeof v === 'boolean') return k;
+        if (v && typeof v === 'object' && 'code' in v) {
+          return `${k}: ${v.label || v.code}`;
+        }
+        return `${k}: ${v}`;
+      });
+  }
+  return [];
+}
+
+/* P5 item 8: deal-scoped custom taxonomy extensions.
+ *   Shape: { [featureKey]: [{ code, label, synonyms? }] }
+ *   Stored on deals.metadata.custom_taxonomy_extensions and threaded into
+ *   render paths via CustomTaxonomyContext so the picker can show + resolve
+ *   custom options alongside canonical taxonomy entries. */
+export const CustomTaxonomyContext = createContext({ extensions: {} });
+export function useCustomTaxonomy() {
+  return useContext(CustomTaxonomyContext).extensions || {};
+}
+export function getCustomExtensionsForKey(extensions, featureKey) {
+  if (!extensions || typeof extensions !== 'object') return [];
+  const list = extensions[featureKey];
+  return Array.isArray(list) ? list : [];
+}
+
+/* ── Friendly label conversion (camelCase / snake_case → Title Case) ── */
+// Feature keys whose human-readable label should override the default
+// camelCase humanization. Keeps the underlying data key intact (e.g.
+// `mainConcept` in the rubric / DB) while presenting "Provision" in the UI.
+const HUMANIZE_KEY_OVERRIDES = {
+  mainConcept: 'Provision',
+  // P3 item 15: drop the "Linked" prefix — the derived value is the bring-
+  // down standard for this rep, not a "linked" copy.
+  linkedBringDownStandard: 'Bring Down Standard',
+};
+
+export function humanizeKey(key) {
+  if (HUMANIZE_KEY_OVERRIDES[key]) return HUMANIZE_KEY_OVERRIDES[key];
+  return String(key)
+    .replace(/[_-]+/g, ' ')
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/\b\w/g, (c) => c.toUpperCase())
+    .trim();
+}
+
+/* Returns true when a feature value is considered "empty" for display. */
+export function isEmptyValue(raw) {
+  if (raw === null || raw === undefined) return true;
+  if (raw === '') return true;
+  if (Array.isArray(raw) && raw.length === 0) return true;
+  // Citable shape — empty if the inner value is empty AND there is no quote.
+  if (isCitableValue(raw)) {
+    const inner = getCitableValue(raw);
+    const hasInner = !(inner === null || inner === undefined || inner === '');
+    if (hasInner) return false;
+    return !getCitableText(raw);
+  }
+  return false;
 }
