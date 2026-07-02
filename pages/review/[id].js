@@ -1517,6 +1517,27 @@ function TaggedValue({ featureKey, value }) {
       </span>
     );
   }
+  // Citable { value, quotes|text } (e.g. dollarThreshold) — unwrap to the inner
+  // value + show the supporting quote, instead of stringifying the wrapper to
+  // "[object Object]".
+  if (isCitableValue(value)) {
+    const inner = getCitableValue(value);
+    const ev = getCitableText(value);
+    const shown = (inner === null || inner === undefined || (typeof inner === 'object'))
+      ? '' : String(inner);
+    return (
+      <span className="inline-flex flex-col gap-0.5">
+        {shown && <span className="text-ink">{shown}</span>}
+        {ev && (
+          <span className="font-body text-[11px] text-inkFaint italic leading-relaxed">
+            &ldquo;{ev}&rdquo;
+          </span>
+        )}
+      </span>
+    );
+  }
+  // Never stringify a bare object to "[object Object]".
+  if (value !== null && typeof value === 'object') return <span className="text-inkFaint/70 italic">—</span>;
   return <span className="text-ink">{String(value)}</span>;
 }
 
