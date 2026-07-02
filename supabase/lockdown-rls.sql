@@ -1,45 +1,30 @@
--- Precedent Machine — RLS lockdown
+-- Precedent Machine — RLS lockdown. APPLIED to production 2026-07-02.
 -- ════════════════════════════════════════════════════════════════════════
--- Run once in the Supabase SQL Editor.
+-- Kept for reference / disaster recovery. The browser never talks to
+-- Supabase directly (all reads AND writes go through /api/* with the
+-- service role, which bypasses RLS) — so dropping every permissive policy
+-- closes the public direct-to-database path without touching the app.
 --
--- WHY: every table currently has a permissive `allow_all` policy (USING true
--- WITH CHECK true) while the anon key ships to the browser — so anyone with
--- the site URL can read, write, or DELETE the entire database directly via
--- PostgREST, bypassing the app.
---
--- SAFE TO APPLY: audited 2026-07 — the browser never talks to Supabase
--- directly. Every read AND write goes through /api/* routes using the
--- SERVICE ROLE key (getServiceSupabase). lib/supabase.js's anon client has
--- zero non-API consumers. The service role bypasses RLS entirely, so the app
--- is unaffected; this only closes the public direct-to-database path.
---
--- ALSO: rotate the service key (Dashboard → Settings → API) — it was shared
--- in a chat session and should be treated as leaked. Update
--- SUPABASE_SERVICE_ROLE_KEY in Vercel env after rotating.
--- ════════════════════════════════════════════════════════════════════════
+-- Drop every allow_all policy that actually exists (DROP POLICY IF EXISTS
+-- still errors on MISSING TABLES, so iterate pg_policies instead of
+-- hardcoding table names):
+DO $$
+DECLARE r record;
+BEGIN
+  FOR r IN SELECT tablename, policyname FROM pg_policies
+           WHERE schemaname = 'public' AND policyname = 'allow_all'
+  LOOP
+    EXECUTE format('DROP POLICY %I ON public.%I', r.policyname, r.tablename);
+  END LOOP;
+END $$;
 
--- Drop the allow-all policies (leaves RLS ENABLED with no policies, which
--- denies anon/authenticated by default; service_role bypasses RLS).
-DROP POLICY IF EXISTS "allow_all" ON agreement_types;
-DROP POLICY IF EXISTS "allow_all" ON provision_types;
-DROP POLICY IF EXISTS "allow_all" ON provision_categories;
-DROP POLICY IF EXISTS "allow_all" ON agreement_sources;
-DROP POLICY IF EXISTS "allow_all" ON users;
-DROP POLICY IF EXISTS "allow_all" ON deals;
-DROP POLICY IF EXISTS "allow_all" ON provisions;
-DROP POLICY IF EXISTS "allow_all" ON annotations;
-DROP POLICY IF EXISTS "allow_all" ON comments;
-DROP POLICY IF EXISTS "allow_all" ON signoffs;
-DROP POLICY IF EXISTS "allow_all" ON comparisons;
+-- corrections was created with RLS DISABLED entirely (worse than a
+-- permissive policy — dropped policies wouldn't have protected it):
+ALTER TABLE public.corrections ENABLE ROW LEVEL SECURITY;
 
--- corrections table (added by corrections-schema.sql) may carry its own
--- permissive policy — drop defensively if present.
-DROP POLICY IF EXISTS "allow_all" ON corrections;
-
--- Verification (expected: zero rows — no permissive policies remain):
+-- Verification (both must return zero rows):
 --   SELECT tablename, policyname FROM pg_policies WHERE schemaname = 'public';
+--   SELECT tablename FROM pg_tables WHERE schemaname = 'public' AND NOT rowsecurity;
 --
--- Post-apply smoke test (should now FAIL with a permissions error):
---   curl -s "https://<project>.supabase.co/rest/v1/deals?select=id" \
---     -H "apikey: <ANON_KEY>" -H "Authorization: Bearer <ANON_KEY>"
--- And the app itself should be unaffected (all traffic is service-role).
+-- Verified post-apply 2026-07-02: anon READ → [], anon WRITE → 401,
+-- anon DELETE → 0-row no-op; app API + service role unaffected (791 rows).
