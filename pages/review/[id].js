@@ -4956,7 +4956,7 @@ function buildEquityRows(equityProvisions) {
   return deduped;
 }
 
-function EquityAwardTable({ rows, onSelectProvision, optionsCvrEarnInLabel, optionsCvrEarnInQuote }) {
+function EquityAwardTable({ rows, onSelectProvision, onAddProvision, optionsCvrEarnInLabel, optionsCvrEarnInQuote }) {
   if (!rows || rows.length === 0) return null;
   // Render a tagged value as a canonical pill. Prefer the resolved taxonomy
   // label (e.g. "Cashed out at spread (...)") over a bare code-humanization
