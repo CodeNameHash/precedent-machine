@@ -386,9 +386,21 @@ function FeatureFieldEditor({ field, value, onChange, onAddCustomOption }) {
 
   // Enum (no taxonomy, plain options[]) — render select w/ Other escape hatch.
   if (effType === 'enum' && Array.isArray(field.options)) {
-    const isKnown = field.options.includes(value);
-    const isOther = !isKnown && value != null && value !== '';
-    const pickValue = isOther ? EDIT_OTHER_CODE : (value == null ? '' : String(value));
+    // Options come in two shapes: bare code strings (['ONE_STEP_MERGER', …])
+    // or curated { value, label } objects (edit-schema selects). Normalize to
+    // { value, label } and DISPLAY a humanized label while the stored value
+    // stays the raw code. ONE_STEP_MERGER → "One Step Merger".
+    const opts = field.options
+      .map((opt) => (opt && typeof opt === 'object'
+        ? { value: opt.value, label: opt.label || humanizeBadgeText(opt.value) }
+        : { value: opt, label: humanizeBadgeText(opt) }))
+      .filter((o) => o.value != null && o.value !== '');
+    // Unwrap a citable-wrapped scalar so the picker matches on (and displays)
+    // the inner code instead of falling through to "[object Object]".
+    const rawValue = isCitableValue(value) ? getCitableValue(value) : value;
+    const isKnown = opts.some((o) => o.value === rawValue);
+    const isOther = !isKnown && rawValue != null && rawValue !== '';
+    const pickValue = isOther ? EDIT_OTHER_CODE : (rawValue == null ? '' : String(rawValue));
     return (
       <div className="space-y-1">
         {labelEl}
@@ -398,7 +410,7 @@ function FeatureFieldEditor({ field, value, onChange, onAddCustomOption }) {
             const choice = e.target.value;
             if (choice === '') return onChange(null);
             if (choice === EDIT_OTHER_CODE) {
-              onChange(typeof value === 'string' ? value : '');
+              onChange(typeof rawValue === 'string' ? rawValue : '');
               return;
             }
             onChange(choice);
@@ -406,8 +418,8 @@ function FeatureFieldEditor({ field, value, onChange, onAddCustomOption }) {
           className="w-full border border-border rounded px-2 py-1 text-xs font-ui focus:outline-none focus:ring-1 focus:ring-accent bg-white"
         >
           <option value="">--</option>
-          {field.options.map((opt) => (
-            <option key={opt} value={opt}>{opt}</option>
+          {opts.map((o) => (
+            <option key={o.value} value={o.value}>{o.label}</option>
           ))}
           <option value={EDIT_OTHER_CODE}>-- Other / not applicable (free text) --</option>
         </select>
@@ -417,7 +429,7 @@ function FeatureFieldEditor({ field, value, onChange, onAddCustomOption }) {
               Other selected. This value will not be comparable across deals.
             </p>
             <input
-              value={value == null ? '' : String(value)}
+              value={rawValue == null ? '' : String(rawValue)}
               onChange={(e) => onChange(e.target.value === '' ? null : e.target.value)}
               placeholder="Free-text value..."
               className="w-full border border-border rounded px-2 py-1 text-xs font-ui focus:outline-none focus:ring-1 focus:ring-accent"
