@@ -85,6 +85,51 @@ test('too-short quote is unjudgeable (null), not falsely verified', () => {
   assert.equal(quoteAppearsIn(normalizeForMatch('the fee'), SOURCE), null);
 });
 
+// ── enumerated cross-reference fallback ────────────────────────────────────
+
+const XREF_SOURCE = normalizeForMatch(
+  'would have constituted a breach of Section 5.01(a), (d), (f), (g), (k), (m), '
+  + '(q), and (r) (solely to the extent related to the foregoing clauses (a), (d) '
+  + 'of Section 5.01). Section 3.09. Taxes. Except as set forth in Section 6.02(b), '
+  + 'the Company has filed all Tax Returns.',
+);
+
+test('expanded cross-reference (Section 5.01(f)) verifies against a compressed enumeration', () => {
+  // Source only writes "Section 5.01" once, then bare (d),(f)…; the extractor
+  // expands each into a standalone citation. Each must still verify.
+  for (const cl of ['a', 'd', 'f', 'g', 'k', 'm', 'q', 'r']) {
+    assert.equal(quoteAppearsIn(normalizeForMatch(`Section 5.01(${cl})`), XREF_SOURCE), true, `clause (${cl})`);
+  }
+});
+
+test('cross-reference with trailing gloss verifies on its leading anchor', () => {
+  const q = 'Section 5.01(r) (solely to the extent related to the foregoing clauses (a), (d) of Section 5.01)';
+  assert.equal(quoteAppearsIn(normalizeForMatch(q), XREF_SOURCE), true);
+});
+
+test('cross-reference to a clause NOT in the enumeration fails', () => {
+  // (z) is not among 5.01's enumerated clauses → must not be papered over.
+  assert.equal(quoteAppearsIn(normalizeForMatch('Section 5.01(z)'), XREF_SOURCE), false);
+});
+
+test('cross-reference does not borrow a paren-clause from an unrelated section', () => {
+  // (b) appears in the source, but under Section 6.02, not Section 5.01.
+  assert.equal(quoteAppearsIn(normalizeForMatch('Section 5.01(b)'), XREF_SOURCE), false);
+});
+
+test('line-break-hyphenated compound in source matches a closed quote', () => {
+  // Source split "covenants-not-to-sue" across a line → "covenants- not-to-sue".
+  const src = normalizeForMatch('except for non-exclusive licenses and covenants- not-to-sue granted to employees');
+  assert.equal(quoteAppearsIn(normalizeForMatch('covenants-not-to-sue granted to employees'), src), true);
+});
+
+test('a real dash separator (spaces both sides) is not collapsed into a word', () => {
+  const src = normalizeForMatch('the Closing - which occurs at 10am - shall be final');
+  // "closing which" must NOT become matchable; the separator stays a boundary.
+  assert.equal(normalizeForMatch('the Closing - which occurs').includes('closing - which'), true);
+  assert.equal(quoteAppearsIn(normalizeForMatch('the Closing - which occurs at 10am'), src), true);
+});
+
 // ── collectQuotes ──────────────────────────────────────────────────────────
 
 test('collectQuotes finds quotes arrays, legacy text, tagged text — not plain values', () => {
