@@ -59,3 +59,18 @@ test('efforts-titled section beats its COV article (Metsera 6.03 -> ANTI)', () =
   const rep = { number: '3.17', title: 'Regulatory Matters', heading: 'Regulatory Matters', text: 'SECTION 3.17. Regulatory Matters. Except as would not have an MAE...' };
   assert.notEqual((tryDeterministic(rep, 'REP-T') || {}).type, 'ANTI');
 });
+
+test('codename conduct sections resolve positionally (Mr. Cooper: Maverick/Cavalier)', async () => {
+  const articles = [
+    { number: 'V', title: 'COVENANTS OF MAVERICK', startChar: 0 },
+    { number: 'VI', title: 'COVENANTS OF CAVALIER', startChar: 9000 },
+  ];
+  const sections = [
+    sec('5.1', 'Conduct of Maverick', 'COVENANTS OF MAVERICK', 100),
+    sec('6.1', 'Conduct of Cavalier', 'COVENANTS OF CAVALIER', 9100),
+  ];
+  const out = await classifySections(sections, articles, stubClient);
+  const byNum = Object.fromEntries(out.map((s) => [s.number, s.provisionType]));
+  assert.equal(byNum['5.1'], 'IOC-T', 'target codename conduct -> IOC-T');
+  assert.equal(byNum['6.1'], 'IOC-B', 'buyer codename conduct -> IOC-B');
+});
