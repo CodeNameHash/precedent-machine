@@ -6391,11 +6391,16 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
   };
 
   // ── SEC Filings exception — rendered as ONE row whose Details cell carries
-  //    sub-headings, mirroring the STRUCT "Merger" row treatment. Scope FIRST
-  //    (per user), then Cut-Off, then the canonical Portions-Excluded pills,
-  //    then Carved-out Reps. ──
+  //    sub-headings, mirroring the STRUCT "Merger" row treatment. Audit
+  //    block 3: the cell used to LEAD with the verbatim scope sentence and
+  //    only append the derived Cut-Off phrase second — inverted per the
+  //    table design contract (canonical/derived value in the cell, verbatim
+  //    source on hover only). Cut-Off now leads; the scope sentence is never
+  //    printed in the cell, only carried as hover/click-to-source text on
+  //    the label + Cut-Off row. ──
+  const scopeRaw = pickKey(['secFilingsExceptionScope', 'secFilingsExceptionLanguage']);
+  const scopeQuote = extractQuote(scopeRaw);
   const secSubRows = [
-    { label: 'Scope / Language', keys: ['secFilingsExceptionScope', 'secFilingsExceptionLanguage'] },
     { label: 'Cut-Off', custom: 'lookback' },
     { label: 'Portions Excluded', keys: ['secFilingsExceptionExclusions', 'secFilingsExcludedSections'] },
     { label: 'Carved-out Reps', keys: ['secFilingsExceptionCarvedOutReps', 'secFilingsCarvedOutReps'] },
@@ -6403,13 +6408,17 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
   const secValues = secSubRows.map((sr) => {
     if (sr.custom === 'lookback') {
       const lookbackRaw = pickKey(['secFilingsExceptionLookbackDate']) || pickKey(['secFilingsLookbackMonths']) || pickKey(['secFilingsExceptionLookback']);
-      return { ...sr, present: lookbackRaw !== null, node: renderLookbackVal(), quote: extractQuote(lookbackRaw) };
+      // The derived Cut-Off phrase is frequently recovered FROM the scope
+      // sentence (deriveCutoffPhrase scans secFilingsExceptionScope among
+      // other fields) — the scope quote is still the right hover evidence
+      // even when the lookback field itself has no citable text of its own.
+      return { ...sr, present: lookbackRaw !== null || !!scopeQuote, node: renderLookbackVal(), quote: extractQuote(lookbackRaw) || scopeQuote };
     }
     const v = pickKey(sr.keys);
     return { ...sr, present: v !== null && v !== undefined, node: v != null ? renderFeatureCell(sr.keys[0], v) : null, quote: extractQuote(v) };
   });
-  const secAnyPresent = secValues.some((s) => s.present);
-  const secRowQuote = secValues.find((s) => s.quote)?.quote || null;
+  const secAnyPresent = secValues.some((s) => s.present) || scopeRaw !== null;
+  const secRowQuote = secValues.find((s) => s.quote)?.quote || scopeQuote || null;
 
   const disclosureRaw = pickKey(['disclosureLetterReference', 'disclosureSchedulesReference', 'scheduleReference', 'schedule_reference']);
 
