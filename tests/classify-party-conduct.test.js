@@ -37,6 +37,27 @@ test('entity-named second rep section is re-tagged REP-B positionally (Starwood)
   assert.equal(byNum['3.2'], 'REP-B', 'buyer reps (second, entity-named) re-tagged REP-B');
 });
 
+test('buyer-reps-FIRST ordering: a reps article naming Merger Sub is REP-B (Kraft)', async () => {
+  // Kraft's drafting order is inverted: Article III is the BUYER's reps
+  // ("... of Heinz, Merger Sub I and Merger Sub II") and Article IV the
+  // target's ("... of Kraft"). Neither title contains a party word, so the
+  // positional REP fixup used to tag III REP-T and re-tag IV REP-B —
+  // exactly backwards. Only the acquirer has a merger sub, so the
+  // merger-sub-named article must resolve REP-B directly.
+  const articles = [
+    { number: 'III', title: 'Representations and Warranties of Heinz, Merger Sub I and Merger Sub II', startChar: 0 },
+    { number: 'IV', title: 'Representations and Warranties of Kraft', startChar: 9000 },
+  ];
+  const sections = [
+    sec('3.01', 'Corporate Organization', 'Representations and Warranties of Heinz, Merger Sub I and Merger Sub II', 100),
+    sec('4.01', 'Corporate Organization', 'Representations and Warranties of Kraft', 9100),
+  ];
+  const out = await classifySections(sections, articles, stubClient);
+  const byNum = Object.fromEntries(out.map((s) => [s.number, s.provisionType]));
+  assert.equal(byNum['3.01'], 'REP-B', 'merger-sub-named article (first) is the buyer side');
+  assert.equal(byNum['4.01'], 'REP-T', 'entity-named target article (second) stays REP-T');
+});
+
 test('separate per-party rep articles are untouched by the section fixup (Anadarko)', async () => {
   const articles = [
     { number: 'III', title: 'REPRESENTATIONS AND WARRANTIES OF THE COMPANY', startChar: 0 },
