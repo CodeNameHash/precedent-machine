@@ -278,7 +278,7 @@ test('includeAncillary:true measures the raw filing (no exclusion)', () => {
 
 test('attached charter/bylaws exhibit is excluded from the coverage denominator', () => {
   const { detectAncillaryRegions, normalizeForMatch } = require('../lib/verification');
-  const body = 'Section 9.1 Amendments. This Agreement may be amended. '.repeat(50);
+  const body = 'Section 9.1 Amendments. This Agreement may be amended. '.repeat(300);
   const sig = ' IN WITNESS WHEREOF, the parties have caused this Agreement to be executed as of the date first written above. ';
   const charter = ' EXHIBIT A ARTICLES OF INCORPORATION OF CSRA INC. ARTICLE I The name of the corporation is CSRA Inc. Its registered office in the State of Nevada is located at 100 Main St. ' + 'Offices and places of business either within or without the State of Nevada may be established. '.repeat(60);
   const norm = normalizeForMatch(body + sig + charter);
