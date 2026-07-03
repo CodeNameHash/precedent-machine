@@ -132,7 +132,7 @@ function groupProvisionsByType(provs) {
 
 
 
-/* ── Favorability hue + soft fill (Recital) ── */
+/* ── Favorability hue + soft fill (Corpus) ── */
 function favHue(fav) {
   const meta = favBadge(fav);
   if (meta.pos > 0) return 'var(--buyer)';
@@ -989,7 +989,7 @@ function renderFullTextWithRefs(text) {
    together by default. Summary is the digest, full text is the
    source — they're shown back-to-back for context.
    ═══════════════════════════════════════════════════════════ */
-/* ── Lead / headline derivation for the Recital card ── */
+/* ── Lead / headline derivation for the Corpus card ── */
 function getLeadText(provision) {
   const features = getStructuredFeatures(provision) || {};
   const candidates = [
@@ -9455,7 +9455,7 @@ export default function ReviewPage() {
         <div className="flex items-center gap-4">
           <Link href="/" className="rec-wordmark">
             <span className="mark" />
-            Recital
+            Corpus
           </Link>
           <div className="flex items-center gap-2 text-[12.5px] text-inkFaint">
             <span style={{ color: 'var(--line)' }}>/</span>

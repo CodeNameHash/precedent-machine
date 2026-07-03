@@ -196,7 +196,7 @@ export default function IngestPage() {
   return (
     <>
       <Head>
-        <title>Ingest · Recital</title>
+        <title>Ingest · Corpus</title>
       </Head>
 
       <div
@@ -691,7 +691,7 @@ function TopBar({ user }) {
     >
       <Link href="/" className="rec-wordmark">
         <span className="mark" />
-        Recital
+        Corpus
       </Link>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         {user && (

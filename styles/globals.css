@@ -1,4 +1,4 @@
-/* ─── Fonts: Recital rebrand (Hanken Grotesk + Spline Sans Mono) ───
+/* ─── Fonts: Corpus rebrand (Hanken Grotesk + Spline Sans Mono) ───
    Loaded via _document.js <link> as the primary path; this @import
    is a safety net for any standalone CSS consumers. */
 @import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500&display=swap');
@@ -8,7 +8,7 @@
 @tailwind utilities;
 
 /* ══════════════════════════════════════════════════════════════
-   RECITAL — design tokens
+   CORPUS — design tokens
    ══════════════════════════════════════════════════════════════ */
 :root {
   /* surface / paper — near-white, neutral, no beige */
@@ -110,7 +110,7 @@ html, body {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   RECITAL — review-page components
+   CORPUS — review-page components
    These class-based styles match the design handoff and are used
    alongside Tailwind utilities in pages/review/[id].js.
    ══════════════════════════════════════════════════════════════ */
@@ -587,7 +587,7 @@ html, body {
   }
 }
 
-/* ─── Sidebar items (Recital style) ─── */
+/* ─── Sidebar items (Corpus style) ─── */
 .rec-side-eyebrow {
   font-family: var(--font-mono);
   font-size: 10px;

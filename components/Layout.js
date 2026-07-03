@@ -9,7 +9,7 @@ import { ViewModeToggle } from './ViewModeContext';
  * comparison view (/compare), both of which opt out of this Layout entirely
  * and render their own top bars (so they can support full-bleed sidebars).
  * Legacy pages (deals, provisions, ingest, admin, frankenstein, login,
- * review/index) still use this shell. We keep the Recital wordmark + user
+ * review/index) still use this shell. We keep the Corpus wordmark + user
  * info so they remain visually consistent, but the side nav is gone — the
  * legacy surfaces are no longer first-class.
  */
@@ -24,7 +24,7 @@ export default function Layout({ children }) {
       >
         <Link href="/" className="rec-wordmark">
           <span className="mark" />
-          Recital
+          Corpus
         </Link>
         <div className="flex items-center gap-4">
           <ViewModeToggle />

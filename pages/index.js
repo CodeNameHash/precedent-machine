@@ -162,7 +162,7 @@ export default function HomePage() {
   return (
     <>
       <Head>
-        <title>Recital</title>
+        <title>Corpus</title>
       </Head>
 
       <div className="min-h-screen" style={{ background: 'var(--paper)' }}>
@@ -171,7 +171,7 @@ export default function HomePage() {
         <main style={{ maxWidth: 1280, margin: '0 auto', padding: '48px 40px 120px' }}>
           {/* Hero */}
           <div style={{ marginBottom: 36 }}>
-            <div className="rec-deal-eyebrow">Recital</div>
+            <div className="rec-deal-eyebrow">Corpus</div>
             <h1 className="rec-deal-title" style={{ maxWidth: 720 }}>
               Cross-deal comparison for M&amp;A agreements
             </h1>
@@ -438,7 +438,7 @@ function TopBar({ user }) {
     >
       <Link href="/" className="rec-wordmark">
         <span className="mark" />
-        Recital
+        Corpus
       </Link>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         <Link

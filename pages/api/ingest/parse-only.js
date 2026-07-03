@@ -16,16 +16,16 @@ function detectTOC(fullText) {
   if (tocHeaderMatch) {
     const tocBlockStart = tocHeaderMatch.index + tocHeaderMatch[0].length;
 
-    // Find where the TOC block ends: look for preamble, recitals, or
+    // Find where the TOC block ends: look for preamble, corpuss, or
     // ARTICLE I body heading (preceded by substantive text, not a TOC line).
     // The body typically starts with "AGREEMENT AND PLAN", "This Agreement",
-    // "PREAMBLE", "RECITALS", or the first ARTICLE with body text following.
+    // "PREAMBLE", "CORPUSS", or the first ARTICLE with body text following.
     const afterHeader = fullText.substring(tocBlockStart);
     const bodySignals = [
       /\n\s*(AGREEMENT\s+AND\s+PLAN\s+OF\s+MERGER)/i,
       /\n\s*(This\s+Agreement\s+and\s+Plan)/i,
       /\n\s*(PREAMBLE)/i,
-      /\n\s*(RECITALS)/i,
+      /\n\s*(CORPUSS)/i,
       /\n\s*(NOW,?\s+THEREFORE)/i,
     ];
 
@@ -315,7 +315,7 @@ function findBodyStartInCleanedText(cleanedText, tocEntries) {
   const bodySignals = [
     afterTocHeader.match(/\n\s*(AGREEMENT\s+AND\s+PLAN\s+OF\s+MERGER)/i),
     afterTocHeader.match(/\n\s*(PREAMBLE)/i),
-    afterTocHeader.match(/\n\s*(RECITALS)/i),
+    afterTocHeader.match(/\n\s*(CORPUSS)/i),
     afterTocHeader.match(/\n\s*(NOW,?\s+THEREFORE)/i),
     afterTocHeader.match(/\n\s*(This\s+Agreement\s+and\s+Plan)/i),
   ].filter(Boolean);

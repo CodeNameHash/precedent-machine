@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 
-const STORAGE_KEY = 'recital.viewMode';
+const STORAGE_KEY = 'corpus.viewMode';
 
 /*
  * Edit view vs. User view.

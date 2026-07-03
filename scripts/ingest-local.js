@@ -40,7 +40,7 @@ function loadDotEnvLocal() {
   }
 }
 
-const SEC_UA = process.env.SEC_USER_AGENT || 'Recital bengoodchild@gmail.com';
+const SEC_UA = process.env.SEC_USER_AGENT || 'Corpus bengoodchild@gmail.com';
 
 // ── helpers copied verbatim from pages/api/ingest/from-url.js ──────────────
 function fetchUrl(url) {

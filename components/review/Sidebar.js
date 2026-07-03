@@ -182,7 +182,7 @@ export function Sidebar({ provsByType, provisions, activeFilter, onFilterType, o
     return { total, approved, flagged };
   }, [provisions]);
 
-  // Status-color tokens for sidebar provision dots (Recital palette).
+  // Status-color tokens for sidebar provision dots (Corpus palette).
   // Approved/flagged is the editor's QA workflow status — in user view every
   // dot stays neutral so it doesn't leak review-state to a non-editor.
   const statusDotColor = (status) => {
@@ -519,7 +519,7 @@ export function Sidebar({ provsByType, provisions, activeFilter, onFilterType, o
         </div>
       </div>
 
-      {/* Stats Footer (Recital style) — editor QA workflow (approved /
+      {/* Stats Footer (Corpus style) — editor QA workflow (approved /
           flagged / unreviewed counts), not deal content. Editors only. */}
       {isEdit && (
         <div className="rec-side-stats">
