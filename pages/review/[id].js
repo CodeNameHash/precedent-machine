@@ -81,6 +81,18 @@ import {
   CitableHover,
 } from '../../components/review/shared';
 import { NosolFourTables } from '../../components/review/NosolFourTables';
+import {
+  termCellHoverQuote,
+  knowledgeQualifierDisplay,
+  isErisaBenefitsRep,
+  sortByAgreementOrder,
+  parseSectionParts,
+  compareSectionParts,
+  extractCrossQualificationSentence,
+  buildBringdownTierLines,
+  resolveCertifiedConditions,
+  buildOutsideDateExtensionDetail,
+} from '../../components/review/table-logic';
 import { ConsidTable } from '../../components/review/ConsiderationTables';
 import { Sidebar } from '../../components/review/Sidebar';
 import { FullDocumentView } from '../../components/review/FullDocumentView';
@@ -342,8 +354,12 @@ const FEATURE_DISPLAY_ORDER = {
   //     renderSpecificFeaturesCell() — collapses absenceOfChangesType /
   //     undisclosedLiabilitiesExceptions / materialContractsRedactionsPermitted
   //     / topCustomersSuppliersDefinition / etc. into one <dl> per row.
-  'REP-T': ['materialityQualifier', 'dollarThreshold', 'lookbackPeriod', 'specificFeatures'],
-  'REP-B': ['materialityQualifier', 'dollarThreshold', 'lookbackPeriod', 'specificFeatures'],
+  // Metsera fb2 block 2b: Knowledge Qualifier sits NEXT TO Materiality
+  // Qualifier (it used to fall to the last column because it wasn't listed
+  // here — getFeatureSchema appends unlisted schema keys after the ordered
+  // ones). Column order: Term | Materiality | Knowledge | ...rest.
+  'REP-T': ['materialityQualifier', 'knowledgeQualifier', 'dollarThreshold', 'lookbackPeriod', 'specificFeatures'],
+  'REP-B': ['materialityQualifier', 'knowledgeQualifier', 'dollarThreshold', 'lookbackPeriod', 'specificFeatures'],
   COV: ['mainConcept', 'accessScope', 'indemnificationPeriod', 'employeeBenefitPeriod', 'financingCooperation', 'cvrIncluded'],
   MISC: ['mainConcept', 'governingLaw', 'jurisdictionExclusive', 'juryWaiver', 'specificPerformance', 'thirdPartyBeneficiaryExceptions'],
   OTHER: ['mainConcept', 'summary', 'crossReferences'],
@@ -2647,7 +2663,13 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
     }
     return null;
   };
-  const sorted = [...negative].sort((a, b) => {
+  // Metsera fb2 block 2e/4b: AGREEMENT ORDER first — natural sort by
+  // features.sectionNumber (5.01(b)(i) < 5.01(b)(ii) < 5.02) when present.
+  // Rows without a parseable section number fall back to the previous
+  // canonical IOC_CATEGORY_CODES order (then alphabetical), after sectioned
+  // rows.
+  const iocSecOf = (p) => (getStructuredFeatures(p) || {}).sectionNumber;
+  const canonicalSorted = [...negative].sort((a, b) => {
     const aCode = resolveIocCode(a);
     const bCode = resolveIocCode(b);
     const aIdx = aCode ? codeOrderIdx.get(aCode) : Infinity;
@@ -2655,6 +2677,7 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
     if (aIdx !== bIdx) return aIdx - bIdx;
     return String(a.category || '').localeCompare(String(b.category || ''));
   });
+  const sorted = sortByAgreementOrder(canonicalSorted, iocSecOf);
 
   // Per-row cell builders — split the old single "Details" composition into
   // dedicated Threshold and Exceptions columns per user request.
@@ -5469,12 +5492,20 @@ function TermrRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
   // Terms cell instead of living in a separate table below (per user).
   const outsideProv = byCode(['TERMR-OUTSIDE', 'TERMR-EXTENSION']);
   const of = outsideProv ? (getStructuredFeatures(outsideProv) || {}) : {};
+  // fb2 block 3g: the extension detail is a single derived line read from the
+  // TERMR-OUTSIDE features' stored text — "Automatic extension to <date>" /
+  // "Either party may elect to extend …" only when the source supports that
+  // phrasing, appending "available only if all other conditions remain
+  // capable of satisfaction" only when the source says so. Never invented;
+  // falls back to the raw stored fields when no phrasing is derivable.
+  const extensionDetail = outsideProv ? buildOutsideDateExtensionDetail(of) : null;
   const outsideRows = outsideProv ? [
     { label: 'Outside / End Date', value: u(of.outsideDate), raw: of.outsideDate },
     { label: 'Period from signing', value: u(of.outsideDateMonths), raw: of.outsideDateMonths },
-    { label: 'Extension available', value: u(of.outsideDateExtension) === true ? 'Yes' : (u(of.outsideDateExtension) === false ? 'No' : null), raw: of.outsideDateExtension },
-    { label: 'Extension terms / who elects', value: u(of.outsideDateExtensionConditions) || u(of.extensionConditions), raw: of.outsideDateExtensionConditions || of.extensionConditions },
-  ].filter((r) => r.value !== null && r.value !== undefined && r.value !== '') : [];
+    extensionDetail
+      ? { label: 'Extension', value: extensionDetail, raw: of.outsideDateExtension || of.extensionConditions }
+      : { label: 'Extension terms / who elects', value: u(of.outsideDateExtensionConditions) || u(of.extensionConditions), raw: of.outsideDateExtensionConditions || of.extensionConditions },
+  ].filter((r) => r && r.value !== null && r.value !== undefined && r.value !== '') : [];
 
   // Build the canonical rows. The Outside-Date row's "quote" prefers the
   // TERMR-OUTSIDE provision (whose detail is now folded into this row) over
@@ -5544,10 +5575,26 @@ function TermrRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
               {['mutual', 'buyer', 'target'].map((fam) => {
                 const famRows = rows.filter((r) => r.spec.family === fam);
                 if (famRows.length === 0) return null;
+                // fb2 block 3a: status dot bullet on every termination-right
+                // row (same visual as the reps rows).
+                const termrDot = (
+                  <span
+                    style={{
+                      display: 'inline-block',
+                      width: 7,
+                      height: 7,
+                      borderRadius: 2,
+                      background: typeHex('TERMR'),
+                      flexShrink: 0,
+                    }}
+                  />
+                );
                 return (
                   <Fragment key={fam}>
-                    <tr className="bg-bg/40 border-t-2 border-border">
-                      <td colSpan={2} className="px-3 py-1.5 text-[11px] font-ui font-semibold text-inkMid uppercase tracking-wide">
+                    {/* fb2 block 3c: clearer subtitle styling for the family
+                        header rows, matching the reps-side section titles. */}
+                    <tr className="bg-bg/60 border-t-2 border-border">
+                      <td colSpan={2} className="px-3 py-2.5 text-xs font-ui font-semibold text-inkMid uppercase tracking-wider">
                         {TERMR_FAMILY_LABELS[fam]}
                       </td>
                     </tr>
@@ -5555,7 +5602,12 @@ function TermrRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
                       if (!row.prov) {
                         return (
                           <tr key={row.spec.key} className="align-top">
-                            <td className="px-3 py-2 text-inkFaint">{row.spec.label}</td>
+                            <td className="px-3 py-2 text-inkFaint">
+                              <span className="inline-flex items-center gap-2">
+                                {termrDot}
+                                {row.spec.label}
+                              </span>
+                            </td>
                             <td className="px-3 py-2 italic text-inkFaint">Not present in this agreement</td>
                           </tr>
                         );
@@ -5563,7 +5615,10 @@ function TermrRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
                       return (
                         <tr key={row.spec.key} className="align-top hover:bg-bg/40">
                           <Cell quote={row.quote} className="font-medium">
-                            {row.spec.label}
+                            <span className="inline-flex items-center gap-2">
+                              {termrDot}
+                              {row.spec.label}
+                            </span>
                           </Cell>
                           <Cell quote={row.quote}>
                             {row.terms.length > 0
@@ -5625,41 +5680,6 @@ function isCondRepProvision(p, repsType) {
   if (repsType === 'REP-T' && code === 'COND-B-REP') return true;
   if (repsType === 'REP-B' && code === 'COND-S-REP') return true;
   return false;
-}
-
-function isCatchAllRepsCovered(reps) {
-  if (!reps) return false;
-  const s = String(reps).toLowerCase().trim();
-  if (!s) return false;
-  // Heuristics: "all other reps", "the remaining reps", "all reps", "each
-  // representation", "all representations except", "general" / "default".
-  if (/\ball\s+(?:other\s+)?(?:reps|representations)\b/.test(s)) return true;
-  if (/\b(?:remaining|other|each|every)\s+(?:reps|representations)\b/.test(s)) return true;
-  if (/^general\b/.test(s) || /^default\b/.test(s)) return true;
-  if (/\bexcept\b/.test(s)) return true;
-  return false;
-}
-
-// Pull a dollar/threshold value from a tier and/or its source provision.
-// Tries tier.dollarThreshold, tier.threshold, then features.dollarThreshold,
-// then scans the provision's full_text for the first currency value as a
-// last-resort fallback.
-function pickTierThreshold(tier, sourceProv) {
-  if (tier) {
-    const v = tier.dollarThreshold ?? tier.threshold ?? tier.dollar_threshold;
-    if (v !== null && v !== undefined && v !== '') return String(v);
-  }
-  if (sourceProv) {
-    const f = getStructuredFeatures(sourceProv) || {};
-    const dt = f.dollarThreshold;
-    if (dt !== null && dt !== undefined && dt !== '') return String(dt);
-    const text = String(sourceProv.full_text || '');
-    if (text) {
-      const m = text.match(/\$\s?[\d,]+(?:\.\d+)?(?:\s?(?:million|billion|thousand))?/i);
-      if (m) return m[0];
-    }
-  }
-  return null;
 }
 
 /* P3 item 15: derive Bring Down Standard at RENDER time from the current
@@ -5853,13 +5873,18 @@ function augmentRepsWithExpectedPlaceholders(list, repsType, allProvisions) {
   return [...list, ...externalHits, ...placeholders];
 }
 
-// Reps bring-down: compact "tier → standard" summary line, per the table
-// design contract. Was previously a full mini-table breaking out each tier's
-// covered reps by name and any exception sub-text (de-minimis detail); now
-// it's the standard names only ("MAE standard; capitalization to de
-// minimis"), higher-standard tiers first, general/catch-all tier last.
-// Verbatim tier text stays out of the cell entirely — the row it's nested in
-// already carries the source provision's quote via HoverSource.
+// Reps bring-down: one line PER TIER, faithful to the extracted tiers
+// (Metsera fb2 block 3e — REPEAT-FAILURE fix). The previous per-group
+// renderer (commit 4358e43) over-collapsed: it relabelled the catch-all tier
+// "All other reps" even when the drafting read "All Company representations
+// … OTHER THAN Section 3.01 (first sentence only), …" (dropping the
+// exclusions), truncated resolved names to "a, b, c +N" (dropping the
+// "(first sentence only)" qualifiers), de-duplicated lines, and re-sorted
+// tiers. A rep can legitimately sit under TWO tiers (excluded from the MAE
+// tier AND listed under in-all-material-respects) — every tier must render
+// as extracted: '<group description> → <standard headline>'. Section cites
+// resolve to rep names with parenthetical qualifiers preserved
+// (buildBringdownTierLines, unit-tested against the live Metsera shape).
 function BringdownTable({ provisions, repsType }) {
   const condProvs = (provisions || []).filter((p) => isCondRepProvision(p, repsType));
   const tiers = [];
@@ -5873,67 +5898,21 @@ function BringdownTable({ provisions, repsType }) {
   }
   if (tiers.length === 0) return null;
 
-  let generalIdx = tiers.findIndex((t) => isCatchAllRepsCovered(t.reps_covered || t.repsCovered));
-  if (generalIdx < 0) generalIdx = tiers.length - 1;
-
-  // Headline-ize a tier's standard: the reader wants the STANDARD NAME, not
-  // the draft's free text ("true and correct except for de minimis
-  // inaccuracies" → "De minimis").
-  const headline = (t) => {
-    const raw = String(t.standard_label || t.standardLabel || t.standard || t.standardCode || '').toLowerCase();
-    if (/de\s*minimis/.test(raw)) return 'De minimis';
-    if (/all\s+material\s+respects|material\s+respects/.test(raw)) return 'In all material respects';
-    if (/mae|material\s+adverse/.test(raw)) return 'MAE standard';
-    if (/all\s+respects/.test(raw)) return 'In all respects';
-    const s = String(t.standard_label || t.standardLabel || t.standard || t.standardCode || '(unspecified)');
-    return s.length > 40 ? `${s.slice(0, 39)}…` : s;
-  };
-
-  // Name the rep GROUP each tier covers: catch-all → "All other reps";
-  // otherwise resolve the cited section numbers against the deal's rep
-  // provisions (features.sectionNumber → category), falling back to any
-  // parenthesized rep names in the drafting, then to the cited sections.
+  // Section → rep-name map for resolving cited sections against this side's
+  // rep provisions (features.sectionNumber → category).
   const repPool = (provisions || []).filter((p) => p.type === repsType);
   const nameBySec = {};
   for (const rp of repPool) {
     const sec = String(((getStructuredFeatures(rp) || {}).sectionNumber) || '').trim();
     if (sec && !nameBySec[sec]) nameBySec[sec] = rp.category;
   }
-  const groupLabel = (t, isGeneral) => {
-    if (isGeneral) return 'All other reps';
-    const rc = String(t.reps_covered || t.repsCovered || '');
-    const secs = rc.match(/\d+\.\d+(?:\([a-z0-9]+\))*/gi) || [];
-    const names = [];
-    for (const s of secs) {
-      const n = nameBySec[s] || nameBySec[s.replace(/\(.*$/, '')];
-      if (n && !names.includes(n)) names.push(n);
-    }
-    if (!names.length) {
-      for (const m of rc.matchAll(/\(([A-Z][^)]{2,40})\)/g)) {
-        if (!names.includes(m[1])) names.push(m[1]);
-      }
-    }
-    if (names.length) return names.length > 3 ? `${names.slice(0, 3).join(', ')} +${names.length - 3}` : names.join(', ');
-    return secs.length ? `Sections ${secs.slice(0, 4).join(', ')}` : 'Specified reps';
-  };
 
-  // One line per (rep group → standard); higher-standard tiers first,
-  // catch-all last. NO provision text, NO threshold detail — headline only.
-  const rows = [];
-  const seenKey = new Set();
-  tiers.forEach((t, i) => {
-    const row = { group: groupLabel(t, i === generalIdx), std: headline(t), general: i === generalIdx };
-    const key = `${row.group}||${row.std}`;
-    if (seenKey.has(key)) return;
-    seenKey.add(key);
-    rows.push(row);
-  });
-  rows.sort((a, b) => (a.general === b.general ? 0 : a.general ? 1 : -1));
+  const rows = buildBringdownTierLines(tiers, nameBySec);
 
   return (
     <div className="space-y-0.5">
-      {rows.map((r) => (
-        <p key={`${r.group}-${r.std}`} className="text-[11px] font-ui text-inkMid">
+      {rows.map((r, i) => (
+        <p key={i} className="text-[11px] font-ui text-inkMid">
           <span className={r.general ? 'text-inkFaint' : 'text-ink font-medium'}>{r.group}</span>
           <span className="text-inkFaint"> → </span>
           <span>{r.std}</span>
@@ -6234,30 +6213,56 @@ function RepKnowledgeNote({ provisions, allProvisions }) {
  *     Company / inline) is read from the MAT_MATERIAL_* code. Each pill is
  *     click-to-source. Returns null when no qualifier is present so the table
  *     cell falls back to its default empty rendering. */
-function MaterialityQualifierCell({ rawValue, provision }) {
+/* Empty qualifier cell — a dash that still hovers/clicks to the row's source
+ * provision text (audit block 9a), so the reader can verify the absence
+ * directly rather than trusting the app's negative claim blindly. Shared by
+ * the materiality and knowledge qualifier cells. */
+function EmptyCellDash({ provision }) {
   const showEvidence = useShowEvidence();
-  // Audit block 9a: an empty materiality cell still hovers to the row's
-  // source provision text, so the reader can verify the absence directly
-  // rather than trusting the app's negative claim blindly.
-  const emptyDash = (() => {
-    const rowQuote = (typeof provision?.full_text === 'string' && provision.full_text.trim())
-      ? provision.full_text
-      : null;
-    if (!rowQuote || !showEvidence) {
-      return <span className="text-inkFaint italic">—</span>;
-    }
-    return (
-      <HoverSource quote={rowQuote}>
-        <button
-          type="button"
-          onClick={(e) => { e.stopPropagation(); showEvidence(rowQuote); }}
-          className="text-inkFaint italic cursor-pointer hover:underline decoration-dotted"
-        >
-          —
-        </button>
-      </HoverSource>
-    );
-  })();
+  const rowQuote = termCellHoverQuote(provision);
+  if (!rowQuote || !showEvidence) {
+    return <span className="text-inkFaint italic">—</span>;
+  }
+  return (
+    <HoverSource quote={rowQuote}>
+      <button
+        type="button"
+        onClick={(e) => { e.stopPropagation(); showEvidence(rowQuote); }}
+        className="text-inkFaint italic cursor-pointer hover:underline decoration-dotted"
+      >
+        —
+      </button>
+    </HoverSource>
+  );
+}
+
+/* ─── Per-rep Knowledge Qualifier cell (Metsera fb2 block 2c). States the
+ *     SCOPE when the extracted feature carries it: "Partial: <detail>" when
+ *     the feature's text names specific sub-clauses / sentences, "Entire rep"
+ *     when an explicit whole-rep scope was extracted. When no scope info
+ *     exists (the common case today — the extractor emits a bare boolean),
+ *     render just the standard pill; scope is never invented. */
+function KnowledgeQualifierCell({ rawValue, provision }) {
+  const display = knowledgeQualifierDisplay(rawValue);
+  if (!display) return <EmptyCellDash provision={provision} />;
+  const label = (display.code
+    && resolveTaggedLabel('knowledgeQualifier', { code: display.code, label: display.label }))
+    || display.label
+    || 'Knowledge-qualified';
+  const quote = display.quote || termCellHoverQuote(provision);
+  return (
+    <span className="inline-flex items-center gap-1 flex-wrap text-[11px] text-inkMid">
+      <Pill text={label} quote={quote} tone="standard" />
+      {display.scope === 'partial' && (
+        <span className="italic">Partial{display.detail ? `: ${display.detail}` : ''}</span>
+      )}
+      {display.scope === 'entire' && <span className="italic">Entire rep</span>}
+    </span>
+  );
+}
+
+function MaterialityQualifierCell({ rawValue, provision }) {
+  const emptyDash = <EmptyCellDash provision={provision} />;
   const inner = isCitableValue(rawValue) ? getCitableValue(rawValue) : rawValue;
   if (inner === null || inner === undefined || inner === '') return emptyDash;
   const items = Array.isArray(inner) ? inner : [inner];
@@ -6500,6 +6505,23 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
   const secRowQuote = secValues.find((s) => s.quote)?.quote || scopeQuote || null;
 
   const disclosureRaw = pickKey(['disclosureLetterReference', 'disclosureSchedulesReference', 'scheduleReference', 'schedule_reference']);
+  // Metsera fb2 block 2f: the cell shows only the disclosure STANDARD phrase.
+  // When the stored reference carries a cross-qualification sentence
+  // ("disclosure in any section shall be deemed to qualify … to the extent
+  // that it is reasonably apparent on its face"), extract THAT sentence for
+  // the cell; the full stored text stays reachable via hover/click.
+  const disclosureFullText = (() => {
+    if (typeof disclosureRaw === 'string') return disclosureRaw;
+    if (isCitableValue(disclosureRaw)) {
+      const t = getCitableText(disclosureRaw);
+      if (t) return t;
+      const inner = getCitableValue(disclosureRaw);
+      return typeof inner === 'string' ? inner : null;
+    }
+    return null;
+  })();
+  const disclosureStandard = extractCrossQualificationSentence(disclosureFullText);
+  const disclosureQuote = extractQuote(disclosureRaw) || disclosureFullText;
 
   // Audit block 2: this table is called for BOTH REP-T and REP-B. The
   // Buyer/Parent side routinely has no SEC-filings exception or disclosure-
@@ -6562,17 +6584,20 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
                 )}
               </td>
             </tr>
-            {/* Disclosure Schedules. */}
+            {/* Disclosure Schedules — standard phrase only in the cell
+                (fb2 2f); the full stored reference lives in the hover. */}
             <tr className="align-top">
-              <td className="px-3 py-2 whitespace-nowrap">{renderLabelCell('Disclosure Schedules', extractQuote(disclosureRaw))}</td>
+              <td className="px-3 py-2 whitespace-nowrap">{renderLabelCell('Disclosure Schedules', disclosureQuote)}</td>
               <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
                 {disclosureRaw != null ? (
-                  <HoverSource quote={extractQuote(disclosureRaw)} as="div">
+                  <HoverSource quote={disclosureQuote} as="div">
                     <span
-                      className={extractQuote(disclosureRaw) && showEvidence ? 'cursor-pointer hover:bg-yellow-50' : ''}
-                      onClick={extractQuote(disclosureRaw) && showEvidence ? () => showEvidence(extractQuote(disclosureRaw)) : undefined}
+                      className={disclosureQuote && showEvidence ? 'cursor-pointer hover:bg-yellow-50' : ''}
+                      onClick={disclosureQuote && showEvidence ? () => showEvidence(disclosureQuote) : undefined}
                     >
-                      {renderFeatureCell('disclosureLetterReference', disclosureRaw)}
+                      {disclosureStandard
+                        ? <span>{disclosureStandard}</span>
+                        : renderFeatureCell('disclosureLetterReference', disclosureRaw)}
                     </span>
                   </HoverSource>
                 ) : (
@@ -6880,7 +6905,7 @@ function CanonicalConditionDetails({ row, matches, allProvisions, certifies }) {
       return <span className="italic text-inkFaint">{CONDITION_ABSENT_COPY}</span>;
     }
     return certifies && certifies.length > 0
-      ? <span className="text-ink">Certifies: {certifies.join(' + ')}</span>
+      ? <span className="text-ink">Certifies: {certifies.join(', ')}</span>
       : <span className="italic text-inkFaint">Certifies the closing conditions (specific items not extracted)</span>;
   }
 
@@ -6957,7 +6982,12 @@ function CanonicalConditionDetails({ row, matches, allProvisions, certifies }) {
     <div className="space-y-1">
       {lines.map((line, i) => (
         <div key={i} className="flex flex-col">
-          <dt className="text-[10px] text-inkFaint uppercase tracking-wider">{line.label}</dt>
+          {/* fb2 block 3b: the generic summary line used to carry a
+              "Condition" label inside the value cell — redundant (the whole
+              column IS the condition detail), so it renders label-less. */}
+          {line.label !== 'Condition' && (
+            <dt className="text-[10px] text-inkFaint uppercase tracking-wider">{line.label}</dt>
+          )}
           <dd className="text-[11px] text-ink">{String(line.value)}</dd>
         </div>
       ))}
@@ -7138,20 +7168,48 @@ function CondSingleTable({ allProvisions, onSelectProvision }) {
       })
       .sort((a, b) => (a.present !== b.present ? (a.present ? -1 : 1) : a.originalIdx - b.originalIdx));
 
-    // Officer's-certificate rows (block 5d): which sibling conditions must
-    // the certificate certify? Convention across the precedents: the
-    // certificate certifies the conditions whose provisions carry
-    // certificationRequired (reps bring-down + covenant performance) — list
-    // those rows' labels, lowercased for the "certifies: x + y" sentence.
-    const certifies = [];
-    for (const { row, matches } of rows) {
-      if (/Officer.?s Certificate/i.test(row.label)) continue;
-      const certified = matches.some((p) => {
+    // Officer's-certificate rows — which sibling conditions does the
+    // certificate certify? Metsera fb2 block 3f: the certificationRequired
+    // quote names the certified sections ("… the conditions set forth in
+    // Section 7.02(a), Section 7.02(b) and Section 7.02(c) have been
+    // satisfied"). Parse those cites and RESOLVE each against the sibling
+    // condition rows (features.sectionNumber, else the leading clause letter
+    // of the provision text) so the cell reads NAMES, not cites:
+    // "Certifies: reps bring-down, covenant performance, no MAE".
+    const certQuote = (() => {
+      for (const p of famProvs) {
         const f = getStructuredFeatures(p) || {};
-        const v = isCitableValue(f.certificationRequired) ? getCitableValue(f.certificationRequired) : f.certificationRequired;
-        return v === true;
-      });
-      if (certified) certifies.push(row.label.replace(/\s*\(Parent\)$/, '').toLowerCase());
+        const raw = f.certificationRequired;
+        if (raw === undefined || raw === null) continue;
+        const texts = isCitableValue(raw) ? [...getCitableQuotes(raw)] : [];
+        if (raw && typeof raw === 'object' && typeof raw.text === 'string') texts.push(raw.text);
+        for (const t of texts) {
+          if (/Sections?\s+\d/i.test(String(t || ''))) return String(t);
+        }
+      }
+      return null;
+    })();
+    const famRowsInfo = rows.map(({ row, matches }) => ({
+      label: row.label,
+      matches: matches.map((p) => ({
+        sectionNumber: (getStructuredFeatures(p) || {}).sectionNumber,
+        fullText: p.full_text,
+      })),
+    }));
+    let certifies = certQuote ? resolveCertifiedConditions(certQuote, famRowsInfo) : [];
+    if (certifies.length === 0) {
+      // Fallback for extracts whose certificationRequired carries no cite-
+      // bearing quote: the boolean convention (reps bring-down + covenant
+      // performance rows carry certificationRequired === true).
+      for (const { row, matches } of rows) {
+        if (/Officer.?s Certificate/i.test(row.label)) continue;
+        const certified = matches.some((p) => {
+          const f = getStructuredFeatures(p) || {};
+          const v = isCitableValue(f.certificationRequired) ? getCitableValue(f.certificationRequired) : f.certificationRequired;
+          return v === true;
+        });
+        if (certified) certifies.push(row.label.replace(/\s*\(Parent\)$/, '').toLowerCase());
+      }
     }
 
     return { ...sec, famProvs, rows, certifies };
@@ -7173,57 +7231,101 @@ function CondSingleTable({ allProvisions, onSelectProvision }) {
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {sections.map((sec) => (
+            {sections.map((sec) => {
+              // fb2 block 3d: absent canonical conditions no longer render as
+              // per-row "Not found …" rows — they collapse into ONE compact
+              // "Conditions not included" strip at the bottom of the family
+              // block (same pattern as the Material Contracts canonical-
+              // coverage checklist).
+              const presentRows = sec.rows.filter(({ row, matches }) => matches.length > 0 || row.alwaysRender);
+              const absentRows = sec.rows.filter(({ row, matches }) => matches.length === 0 && !row.alwaysRender);
+              const famDot = (
+                <span
+                  style={{
+                    display: 'inline-block',
+                    width: 7,
+                    height: 7,
+                    borderRadius: 2,
+                    background: typeHex(sec.family),
+                    flexShrink: 0,
+                  }}
+                />
+              );
+              return (
               <Fragment key={sec.family}>
-                {/* Full-span family header row */}
-                <tr className="bg-bg/40 border-t-2 border-border">
-                  <td colSpan={2} className="px-3 py-1.5 text-[11px] font-ui font-semibold text-inkMid uppercase tracking-wide">
+                {/* Full-span family header row — clearer subtitle styling
+                    (fb2 block 3c), matching the reps-side section titles. */}
+                <tr className="bg-bg/60 border-t-2 border-border">
+                  <td colSpan={2} className="px-3 py-2.5 text-xs font-ui font-semibold text-inkMid uppercase tracking-wider">
                     {sec.label}
                   </td>
                 </tr>
                 {/* Block 5e: the "Present: Yes" chip column is dropped — a
-                    populated Detail cell already means present; absent rows
-                    render the explicit not-found text (which must NOT assert
-                    absence as fact — extraction gaps look identical). */}
-                {sec.rows.map(({ row, matches }) => {
+                    populated Detail cell already means present. */}
+                {presentRows.map(({ row, matches }) => {
                   const primary = matches[0];
                   const quote = primary && typeof primary.full_text === 'string' ? primary.full_text : null;
                   return (
                     <tr key={`${sec.family}-${row.label}`} className="align-top hover:bg-bg/40">
+                      {/* fb2 block 3a: status dot bullet (same visual as the
+                          reps rows) on every condition row. */}
                       <td className={`px-3 py-2 text-ink font-medium whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>
                         {primary && onSelectProvision ? (
-                          <button type="button" onClick={() => onSelectProvision(primary)} className="text-left text-accent hover:underline font-medium">
+                          <button type="button" onClick={() => onSelectProvision(primary)} className="text-left text-accent hover:underline font-medium inline-flex items-center gap-2">
+                            {famDot}
                             {row.label}
                           </button>
-                        ) : <span>{row.label}</span>}
+                        ) : (
+                          <span className="inline-flex items-center gap-2">
+                            {famDot}
+                            {row.label}
+                          </span>
+                        )}
                       </td>
                       <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
-                        {matches.length === 0 && !row.alwaysRender ? (
-                          <span className="italic text-inkFaint">{CONDITION_ABSENT_COPY}</span>
-                        ) : (
-                          <HoverSource quote={quote} as="div">
-                            <CanonicalConditionDetails
-                              row={row}
-                              matches={matches}
-                              allProvisions={pool}
-                              certifies={sec.certifies}
-                            />
-                            {/Bring[\s-]*Down/i.test(row.label) && (
-                              <div className="mt-1">
-                                <BringdownTable
-                                  provisions={pool}
-                                  repsType={sec.repsType}
-                                />
-                              </div>
-                            )}
-                          </HoverSource>
-                        )}
+                        <HoverSource quote={quote} as="div">
+                          <CanonicalConditionDetails
+                            row={row}
+                            matches={matches}
+                            allProvisions={pool}
+                            certifies={sec.certifies}
+                          />
+                          {/Bring[\s-]*Down/i.test(row.label) && (
+                            <div className="mt-1">
+                              <BringdownTable
+                                provisions={pool}
+                                repsType={sec.repsType}
+                              />
+                            </div>
+                          )}
+                        </HoverSource>
                       </td>
                     </tr>
                   );
                 })}
+                {absentRows.length > 0 && (
+                  <tr className="bg-bg/20">
+                    <td colSpan={2} className="px-3 py-2">
+                      <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider mb-1">
+                        Conditions not included
+                      </p>
+                      <span className="flex flex-wrap gap-1.5">
+                        {absentRows.map(({ row }) => (
+                          <span
+                            key={row.label}
+                            className="inline-flex items-center text-[10px] font-ui px-1.5 py-0.5 rounded border bg-bg/40 text-inkFaint/70 border-border line-through"
+                            title={CONDITION_ABSENT_COPY}
+                          >
+                            {row.label}
+                          </span>
+                        ))}
+                      </span>
+                    </td>
+                  </tr>
+                )}
               </Fragment>
-            ))}
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -7634,18 +7736,24 @@ function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, a
   }
 
   // REP-T / REP-B: present in AGREEMENT ORDER (the canonical sequence the deal
-  // itself uses), not by classification/insertion accident. Sort real
-  // provisions by document position (ai_metadata.startChar), keeping any
-  // synthetic "_notPresent" placeholders after the real rows.
+  // itself uses), not by classification/insertion accident. Metsera fb2 block
+  // 2e: primary key is features.sectionNumber with a NATURAL sort (3.02 <
+  // 3.10); rows without a parseable section number fall back to document
+  // position (ai_metadata.startChar) and sort after sectioned rows. Synthetic
+  // "_notPresent" placeholders stay last.
   if (type === 'REP-T' || type === 'REP-B') {
     const startOf = (p) => {
       const meta = getAiMetadata(p) || {};
       return typeof meta.startChar === 'number' ? meta.startChar : Number.POSITIVE_INFINITY;
     };
-    provisions = [...provisions].sort((a, b) => {
-      if (!!a._notPresent !== !!b._notPresent) return a._notPresent ? 1 : -1;
-      return startOf(a) - startOf(b);
-    });
+    const real = provisions.filter((p) => !p._notPresent);
+    const placeholders = provisions.filter((p) => !!p._notPresent);
+    const byStartChar = [...real].sort((a, b) => startOf(a) - startOf(b));
+    const bySection = sortByAgreementOrder(
+      byStartChar,
+      (p) => (getStructuredFeatures(p) || {}).sectionNumber,
+    );
+    provisions = [...bySection, ...placeholders];
   }
 
   const schemaKeys = getFeatureSchema(type);
@@ -7766,24 +7874,35 @@ function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, a
               const features = getStructuredFeatures(p) || {};
               return (
                 <tr key={p.id} className="hover:bg-paper transition-colors">
+                  {/* Metsera fb2 block 2a (REPEAT-FAILURE fix): the Term cell
+                      hovers to the row's provision source for EVERY row. The
+                      earlier hover fix (audit block 9a, commit 686530d) only
+                      covered VALUE cells via CellWithSource /
+                      MaterialityQualifierCell — this first column never went
+                      through either renderer, so rows whose qualifier cell was
+                      empty appeared to have no hover at all. The wiring below
+                      (HoverSource quote={termCellHoverQuote(p)}) is asserted
+                      by tests/reps-table-display.test.js — do not remove. */}
                   <td className="px-3 py-2 align-top whitespace-normal break-words sticky left-0 bg-white z-10">
-                    <button
-                      type="button"
-                      onClick={() => onSelectProvision && onSelectProvision(p)}
-                      className="text-left text-accentDeep hover:underline font-semibold inline-flex items-center gap-2"
-                    >
-                      <span
-                        style={{
-                          display: 'inline-block',
-                          width: 7,
-                          height: 7,
-                          borderRadius: 2,
-                          background: typeHex(p.type),
-                          flexShrink: 0,
-                        }}
-                      />
-                      {p.category || 'General'}
-                    </button>
+                    <HoverSource quote={termCellHoverQuote(p)}>
+                      <button
+                        type="button"
+                        onClick={() => onSelectProvision && onSelectProvision(p)}
+                        className="text-left text-accentDeep hover:underline font-semibold inline-flex items-center gap-2"
+                      >
+                        <span
+                          style={{
+                            display: 'inline-block',
+                            width: 7,
+                            height: 7,
+                            borderRadius: 2,
+                            background: typeHex(p.type),
+                            flexShrink: 0,
+                          }}
+                        />
+                        {p.category || 'General'}
+                      </button>
+                    </HoverSource>
                   </td>
                   {columns.map((k) => {
                     const raw = features[k];
@@ -7798,9 +7917,21 @@ function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, a
                         </td>
                       );
                     }
+                    // Knowledge qualifier — canonical pill + extracted scope
+                    // ("Partial: …" / "Entire rep") when available (fb2 2c).
+                    if (k === 'knowledgeQualifier' || k === 'knowledgeQualifiers') {
+                      return (
+                        <td key={k} className="px-3 py-2 align-top max-w-[320px] text-ink">
+                          <KnowledgeQualifierCell rawValue={raw} provision={p} />
+                        </td>
+                      );
+                    }
                     // REP synthetic: rolled-up "Specific Features" column.
+                    // Metsera fb2 block 2d: the ERISA / Employee Benefits rep
+                    // renders a clean dash here — the per-plan boolean
+                    // checklist read as clutter (details remain on drill-in).
                     if ((type === 'REP-T' || type === 'REP-B') && k === 'specificFeatures') {
-                      const cell = renderRepSpecificFeaturesCell(p);
+                      const cell = isErisaBenefitsRep(p) ? null : renderRepSpecificFeaturesCell(p);
                       return (
                         <td key={k} className="px-3 py-2 align-top max-w-[360px] text-ink">
                           {cell || <span className="text-inkFaint italic">—</span>}
@@ -9065,8 +9196,19 @@ export default function ReviewPage() {
       const target = FAMILY_OF[k] || k;
       collapsed[target] = [...(collapsed[target] || []), ...v];
     }
-    return collapsed;
-  }, [filteredProvisions, provisions, activeFilter]);
+    // fb2 blocks 4a/4b: render sections in SIDEBAR_GROUPS order (Structure →
+    // Consideration → Reps → MAE → Material Contracts → IOC → No-Sol → Anti →
+    // Conditions → Termination Rights → Fees → rest; Seller/Target before
+    // Buyer). Synthesized groups (empty IOC-B / NOSOL-B / TERMR children,
+    // MAE-DEF, __MATERIAL_CONTRACTS) are appended above in whatever order the
+    // synthesis code runs — without this sort they'd fall to the page bottom.
+    const orderedEntries = Object.entries(collapsed).sort((a, b) => {
+      const ai = TYPE_SORT_ORDER.has(a[0]) ? TYPE_SORT_ORDER.get(a[0]) : 9999;
+      const bi = TYPE_SORT_ORDER.has(b[0]) ? TYPE_SORT_ORDER.get(b[0]) : 9999;
+      return ai - bi;
+    });
+    return Object.fromEntries(orderedEntries);
+  }, [filteredProvisions, provisions, activeFilter, TYPE_SORT_ORDER]);
 
   /* ── Identify the first IOC-flavored type in the rendered order. The
    *    IOC affirmative / general-exceptions / negative tables render a
@@ -9784,6 +9926,31 @@ export default function ReviewPage() {
                             String(a.category || '').localeCompare(String(b.category || ''), undefined, { sensitivity: 'base' })
                           )
                         : provsRaw;
+                      // fb2 block 4c: an EMPTY buyer-side section collapses to
+                      // a single inline line ("IOC (Buyer) — None") instead of
+                      // a numbered header framing a stack of empty tables.
+                      if ((type === 'IOC-B' || type === 'NOSOL-B') && provs.filter((p) => !p._notPresent).length === 0) {
+                        return (
+                          <div key={type} className="flex items-center gap-2 py-1 px-1">
+                            <span
+                              style={{
+                                display: 'inline-block',
+                                width: 7,
+                                height: 7,
+                                borderRadius: 2,
+                                background: typeHex(type),
+                                flexShrink: 0,
+                              }}
+                            />
+                            <span className="text-xs font-ui text-inkFaint">
+                              <span className="font-medium text-inkMid">
+                                {type === 'IOC-B' ? 'IOC (Buyer)' : 'No-Shop (Buyer)'}
+                              </span>
+                              {' — None'}
+                            </span>
+                          </div>
+                        );
+                      }
                       const { preamble, rest: restAfterSplit } = splitPreamble(provs);
                       // Only show a preamble card for section-style types that
                       // have a meaningful structured preamble (e.g. IOC, REP-*,

@@ -531,19 +531,25 @@ export function typeColor(code) {
   return TYPE_COLORS[code] || { bg: 'bg-gray-50', border: 'border-gray-200', text: 'text-gray-700', dot: 'bg-gray-400', hex: '#f9fafb' };
 }
 
-/* ── Sidebar grouping — parent groups with optional sub-types ── */
+/* ── Sidebar grouping — parent groups with optional sub-types ──
+ *    Metsera fb2 block 4a: this array is ALSO the review page's section
+ *    order (TYPE_SORT_ORDER derives from it). Canonical reading order:
+ *    Structure → Consideration → Reps → MAE → Material Contracts → IOC →
+ *    No-Sol → Antitrust → Closing Conditions → Termination Rights →
+ *    Termination Fees → rest. Seller/Target children always sit before
+ *    Buyer/Parent (block 4b). */
 export const SIDEBAR_GROUPS = [
   { label: 'Structure & Mechanics', types: ['STRUCT'] },
   { label: 'Consideration', types: ['CONSID'] },
   { label: 'Representations', children: [
     { label: 'Company / Target', type: 'REP-T' },
     { label: 'Buyer / Parent', type: 'REP-B' },
-    { label: 'Material Contracts', type: '__MATERIAL_CONTRACTS' },
   ]},
   { label: 'Material Adverse Effect', children: [
     { label: 'Company Material Adverse Effect', type: 'MAE-DEF' },
     { label: 'Parent Material Adverse Effect', type: 'MAE-DEF-P' },
   ]},
+  { label: 'Material Contracts', types: ['__MATERIAL_CONTRACTS'] },
   { label: 'Interim Operating Covenants', children: [
     { label: 'Company / Target', type: 'IOC-T' },
     { label: 'Buyer / Parent', type: 'IOC-B' },
