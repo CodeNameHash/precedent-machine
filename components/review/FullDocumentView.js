@@ -7,6 +7,7 @@ import {
   typeLabel,
   favBadge,
 } from './shared';
+import { useViewMode } from '../ViewModeContext';
 
 /* ═══════════════════════════════════════════════════════════
    FULL DOCUMENT VIEW — renders raw agreement text with
@@ -26,6 +27,7 @@ export function FullDocumentView({
   highlightedQuote,
   highlightedQuoteNonce,
 }) {
+  const { isEdit } = useViewMode();
   const containerRef = useRef(null);
   const [reselectSelection, setReselectSelection] = useState(null);
   // Highlight-effect retry (survives the mount/paint race on cross-tab jumps).
@@ -898,24 +900,32 @@ export function FullDocumentView({
           <p className="font-display text-sm text-ink">{title || 'Agreement'}</p>
         </div>
         <div className="text-[10px] font-ui text-inkFaint text-right">
-          <div>
-            {regions.length} of {provisions.length} provisions highlighted &middot;{' '}
-            {sourceText.length.toLocaleString()} chars
-          </div>
-          {unmatched.length > 0 && (
-            <button
-              type="button"
-              onClick={() => setShowUnmatched((v) => !v)}
-              className="mt-0.5 underline decoration-dotted hover:text-ink transition-colors"
-            >
-              {showUnmatched ? 'Hide' : 'Show'} {unmatched.length} unmatched
-            </button>
+          {/* "N of M highlighted" / "unmatched" are matcher-quality (extraction
+              status) indicators — editors only. Users just see the doc. */}
+          {isEdit ? (
+            <>
+              <div>
+                {regions.length} of {provisions.length} provisions highlighted &middot;{' '}
+                {sourceText.length.toLocaleString()} chars
+              </div>
+              {unmatched.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setShowUnmatched((v) => !v)}
+                  className="mt-0.5 underline decoration-dotted hover:text-ink transition-colors"
+                >
+                  {showUnmatched ? 'Hide' : 'Show'} {unmatched.length} unmatched
+                </button>
+              )}
+            </>
+          ) : (
+            <div>{sourceText.length.toLocaleString()} chars</div>
           )}
         </div>
       </div>
 
-      {/* Unmatched provisions list — collapsible */}
-      {showUnmatched && unmatched.length > 0 && (
+      {/* Unmatched provisions list — collapsible, editors only */}
+      {isEdit && showUnmatched && unmatched.length > 0 && (
         <div className="border-b border-border px-6 py-3 bg-amber-50/40 max-h-48 overflow-y-auto">
           <p className="font-ui text-[10px] uppercase tracking-wider text-amber-800 mb-2">
             Unmatched provisions ({unmatched.length})
