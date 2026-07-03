@@ -2093,7 +2093,14 @@ function IocAffirmativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelec
           <thead className="bg-bg/60 border-b border-border">
             <tr>
               <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Covenant</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[220px]">Standard</th>
+              {/* Audit block 8: sibling ths must NOT carry width classes —
+                  table-fixed proportionally SCALES every explicitly-sized
+                  column when all columns are constrained (the sum of
+                  declared widths is less than the rendered table width), so
+                  the Covenant column measured 231px instead of the intended
+                  190px. Leaving Standard/Applies To unconstrained lets them
+                  absorb the extra width instead. */}
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">Standard</th>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Applies To</th>
             </tr>
           </thead>
@@ -4840,8 +4847,13 @@ function TermfTriggerMatrix({ provisions, allProvisions, deal }) {
           <thead className="bg-bg/60 border-b border-border">
             <tr>
               <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Trigger</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[150px]">Who Can Terminate</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[150px]">Fee</th>
+              {/* Audit block 8: dropped the sibling width classes — with
+                  ALL three columns explicitly sized, table-fixed scaled them
+                  proportionally to fill the table's rendered width (Trigger
+                  measured 296px instead of 190px). Only the label column is
+                  pinned; the rest flex. */}
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">Who Can Terminate</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">Fee</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -6733,8 +6745,14 @@ function RepMaterialContractsTable({ provisions, onSelectProvision }) {
         <table className="min-w-full table-fixed text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
             <tr>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Contract Type</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider w-[190px] min-w-[190px] max-w-[190px]">Threshold</th>
+              {/* Audit block 8: this table had it backwards — the label
+                  column (Contract Type) carried no width while the VALUE
+                  column (Threshold) was pinned to 190px, so Contract Type
+                  ballooned to fill the rest (measured 336px). Standard
+                  convention is the reverse: label column fixed, value
+                  column flexes. */}
+              <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Contract Type</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Threshold</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
