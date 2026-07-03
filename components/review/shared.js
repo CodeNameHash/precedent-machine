@@ -157,14 +157,38 @@ export function CodeBadge({ code, label }) {
   );
 }
 
+/* Audit block 9b: split `text` on case-insensitive occurrences of
+ * `highlight`, wrapping matches in <strong> so the reader can spot the
+ * applicable phrase inside a long verbatim quote at a glance. Returns the
+ * plain string unchanged when there's no highlight, no match, or the
+ * highlight is too short to be meaningful (avoids over-matching). */
+export function renderHighlighted(text, highlight) {
+  if (typeof text !== 'string' || !text) return text;
+  if (!highlight || typeof highlight !== 'string') return text;
+  const needle = highlight.trim();
+  if (needle.length < 2) return text;
+  const escaped = needle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  let parts;
+  try {
+    parts = text.split(new RegExp(`(${escaped})`, 'gi'));
+  } catch {
+    return text;
+  }
+  if (parts.length <= 1) return text;
+  return parts.map((part, i) => (i % 2 === 1 ? <strong key={i}>{part}</strong> : part));
+}
+
 /* HoverSource — wraps any cell content and surfaces the row's source language
  * in a small amber popover that appears immediately on hover (no 1-second
  * native-title delay). Click-through still works via the wrapped children;
  * the popover is positioned absolutely below the trigger and uses pointer-
  * events:none so it never blocks the underlying click. On touch devices
  * (which never fire mouseenter), a touchstart on the wrapper reveals the
- * popover for ~2.5s — the underlying tap action still fires normally. */
-export function HoverSource({ quote, children, as = 'span', className, align = 'left' }) {
+ * popover for ~2.5s — the underlying tap action still fires normally.
+ * `highlight` (audit block 9b): an optional string (the cell's resolved
+ * value/qualifier text) — case-insensitive matches inside the popover quote
+ * render in <strong> so the applicable phrase jumps out. */
+export function HoverSource({ quote, children, as = 'span', className, align = 'left', highlight }) {
   const [show, setShow] = useState(false);
   // Fixed-position coords computed from the trigger rect on show, so the
   // popover renders above the table's overflow clip rather than inside it.
@@ -228,7 +252,7 @@ export function HoverSource({ quote, children, as = 'span', className, align = '
             bottom: pos.bottom,
           }}
         >
-          &ldquo;{display}&rdquo;
+          &ldquo;{renderHighlighted(display, highlight)}&rdquo;
         </span>
       )}
     </Tag>
@@ -261,7 +285,13 @@ const PILL_TONES = {
   amount: 'bg-emerald-50 text-emerald-700 border-emerald-200',
 };
 
-export function Pill({ text, quote, tone = 'neutral', onClick, className = '' }) {
+// `highlight` (audit block 9b, opt-in): forwarded to HoverSource so the
+// popover bolds case-insensitive matches of this string inside the quote.
+// Defaults to `text` (the pill's own label) when not explicitly overridden
+// — most pills exist precisely to surface a phrase the source quote also
+// contains, so bolding it there is the useful default; pass `highlight={null}`
+// to opt out.
+export function Pill({ text, quote, tone = 'neutral', onClick, className = '', highlight }) {
   const showEvidence = useShowEvidence();
   if (text === null || text === undefined || text === '') return null;
   const colorCls = PILL_TONES[tone] || PILL_TONES.neutral;
@@ -280,7 +310,7 @@ export function Pill({ text, quote, tone = 'neutral', onClick, className = '' })
       {inner}
     </button>
   ) : inner;
-  return quote ? <HoverSource quote={quote}>{body}</HoverSource> : body;
+  return quote ? <HoverSource quote={quote} highlight={highlight === undefined ? text : highlight}>{body}</HoverSource> : body;
 }
 
 /* ── CitableHover: table-cell wrapper enforcing the design contract — the

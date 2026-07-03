@@ -6297,7 +6297,29 @@ function RepKnowledgeNote({ provisions, allProvisions }) {
  *     click-to-source. Returns null when no qualifier is present so the table
  *     cell falls back to its default empty rendering. */
 function MaterialityQualifierCell({ rawValue, provision }) {
-  const emptyDash = <span className="text-inkFaint italic">—</span>;
+  const showEvidence = useShowEvidence();
+  // Audit block 9a: an empty materiality cell still hovers to the row's
+  // source provision text, so the reader can verify the absence directly
+  // rather than trusting the app's negative claim blindly.
+  const emptyDash = (() => {
+    const rowQuote = (typeof provision?.full_text === 'string' && provision.full_text.trim())
+      ? provision.full_text
+      : null;
+    if (!rowQuote || !showEvidence) {
+      return <span className="text-inkFaint italic">—</span>;
+    }
+    return (
+      <HoverSource quote={rowQuote}>
+        <button
+          type="button"
+          onClick={(e) => { e.stopPropagation(); showEvidence(rowQuote); }}
+          className="text-inkFaint italic cursor-pointer hover:underline decoration-dotted"
+        >
+          —
+        </button>
+      </HoverSource>
+    );
+  })();
   const inner = isCitableValue(rawValue) ? getCitableValue(rawValue) : rawValue;
   if (inner === null || inner === undefined || inner === '') return emptyDash;
   const items = Array.isArray(inner) ? inner : [inner];
@@ -7496,10 +7518,14 @@ function MaeDefinitionSummary({ allProvisions, onSelectProvision, side }) {
  * non-interactive. Uses useShowEvidence (same as CategoryFeatureSummaryTable). */
 function CellWithSource({ provision, featureKey, raw, isEmpty, children, className }) {
   const showEvidence = useShowEvidence();
-  if (isEmpty) {
-    return <div className={className || 'whitespace-pre-wrap break-words'}>{children}</div>;
-  }
-  const quote = evidenceQuote(raw, { provision });
+  // Audit block 9a: an empty cell (dash) still offers the row's source
+  // provision on hover, so the reader can verify the absence directly
+  // rather than trusting a negative claim blindly. A feature-level quote
+  // wins when there is one; an empty cell has none, so fall back to the
+  // provision's own full text.
+  const quote = isEmpty
+    ? ((typeof provision?.full_text === 'string' && provision.full_text.trim()) ? provision.full_text : null)
+    : evidenceQuote(raw, { provision });
   if (!quote || !showEvidence) {
     return <div className={className || 'whitespace-pre-wrap break-words'}>{children}</div>;
   }
