@@ -2576,7 +2576,7 @@ function IocGeneralExceptionsTable({ iocProvisions, generalExceptionsProv, onSel
  *     the IOC list that isn't an affirmative bucket: not IOC-ORDINARY /
  *     IOC-PRESERVE / IOC-MAINTAIN / IOC-NOACTION). The Details cell composes
  *     a compact one-line summary from the relevant features. */
-function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectProvision }) {
+function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectProvision, deal }) {
   const affCodes = new Set(['IOC-ORDINARY', 'IOC-PRESERVE', 'IOC-MAINTAIN', 'IOC-NOACTION', 'IOC-AFFIRMATIVE', 'IOC-OTHER-AFFIRMATIVE', 'IOC-GENERAL-EXCEPTIONS', 'IOC-EXCEPTIONS']);
   const negative = (iocProvisions || []).filter((p) => {
     if (isPreambleProvision(p)) return false;
@@ -2658,11 +2658,20 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
     const pushBit = (bitText) => {
       if (!bitText) return;
       const m = bitText.match(AMOUNT_RE);
-      const compact = (m && bitText.trim().length > m[0].length + 20) ? m[0] : bitText;
+      let compact = (m && bitText.trim().length > m[0].length + 20) ? m[0] : bitText;
       const ampKey = m ? m[0].replace(/[$,\s]/g, '').toLowerCase() : null;
       if (ampKey) {
         if (seenAmounts.has(ampKey)) return;
         seenAmounts.add(ampKey);
+        // Audit block 7: reuse the fee hero's "≈X% of deal value" computation
+        // for the plain-dollar threshold pill (not the label-prefixed
+        // compounds, where a bare suffix would read ambiguously). Omitted
+        // when deal value is unknown — subtle, muted-in-place, not a
+        // separate row.
+        if (compact.trim() === m[0].trim()) {
+          const pct = pctOfDealValue(m[0], deal);
+          if (pct) compact = `${compact} (≈${pct}%)`;
+        }
       }
       bits.push(compact);
     };
@@ -2823,7 +2832,7 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
 
 /* Public wrapper: render Target / Company half first, then Parent / Buyer
  * half (with "Not present" placeholder when no IOC-B provisions exist). */
-function IocNegativeCovenantsTable({ iocProvisions, onSelectProvision, side }) {
+function IocNegativeCovenantsTable({ iocProvisions, onSelectProvision, side, deal }) {
   const targetProvs = (iocProvisions || []).filter((p) => p.type !== 'IOC-B');
   const buyerProvs = (iocProvisions || []).filter((p) => p.type === 'IOC-B');
   const showTarget = !side || side === 'target';
@@ -2835,6 +2844,7 @@ function IocNegativeCovenantsTable({ iocProvisions, onSelectProvision, side }) {
           iocProvisions={targetProvs}
           partyLabel="Target / Company"
           onSelectProvision={onSelectProvision}
+          deal={deal}
         />
       )}
       {showBuyer && (
@@ -2842,6 +2852,7 @@ function IocNegativeCovenantsTable({ iocProvisions, onSelectProvision, side }) {
           iocProvisions={buyerProvs}
           partyLabel="Parent / Buyer"
           onSelectProvision={onSelectProvision}
+          deal={deal}
         />
       )}
     </div>
@@ -4583,6 +4594,23 @@ function parseDollarAmount(raw) {
   else if (unit === 'million' || unit === 'mm' || unit === 'm') n *= 1e6;
   else if (unit === 'thousand' || unit === 'k') n *= 1e3;
   return n;
+}
+
+// Audit block 7: reusable "$X (≈Y% of deal value)" computation, shared
+// between the TERMF hero (which pioneered the pattern) and IOC threshold
+// pills. Returns the percentage as a string (no "%" suffix) or null when
+// the deal value is unknown, the amount doesn't parse, or the ratio would
+// be a nonsensical >100%. `decimals` defaults tighter than the hero's — IOC
+// thresholds are usually a small fraction of a percent (e.g. "≈0.04%"),
+// where the hero's 1-decimal rounding would collapse to "0.0%".
+function pctOfDealValue(amountRaw, deal, decimals = 2) {
+  const dv = deal && Number(deal.value_usd);
+  if (!dv || !Number.isFinite(dv) || dv <= 0) return null;
+  const amountNum = parseDollarAmount(amountRaw);
+  if (!amountNum) return null;
+  const pct = (amountNum / dv) * 100;
+  if (!Number.isFinite(pct) || pct <= 0 || pct > 100) return null;
+  return pct.toFixed(decimals);
 }
 
 function termfHeroDisplay(raw) {
@@ -9900,6 +9928,7 @@ export default function ReviewPage() {
                                   iocProvisions={provs.filter((p) => !isPreambleProvision(p))}
                                   onSelectProvision={handleEditProvision}
                                   side={type === 'IOC-T' ? 'target' : type === 'IOC-B' ? 'buyer' : null}
+                                  deal={deal}
                                 />
                               )}
                               {(type === 'REP-T' || type === 'REP-B') && (
