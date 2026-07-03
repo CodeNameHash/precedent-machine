@@ -1886,7 +1886,7 @@ function IocAffirmativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelec
           </p>
         </div>
         <div className="px-3 py-3 text-xs font-ui italic text-inkFaint">
-          Not present in this agreement
+          None extracted for this agreement.
         </div>
       </div>
     );
@@ -2368,7 +2368,7 @@ function IocGeneralExceptionsTableSingle({ iocProvisions, generalExceptionsProv,
             </p>
           </div>
           <div className="px-3 py-3 text-xs font-ui italic text-inkFaint">
-            Not present in this agreement
+            None extracted for this agreement.
           </div>
         </div>
       );
@@ -2432,7 +2432,7 @@ function IocGeneralExceptionsTableSingle({ iocProvisions, generalExceptionsProv,
           </p>
         </div>
         <div className="px-3 py-3 text-xs font-ui italic text-inkFaint">
-          Not present in this agreement
+          None extracted for this agreement.
         </div>
       </div>
     );
@@ -2600,7 +2600,7 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
           </p>
         </div>
         <div className="px-3 py-3 text-xs font-ui italic text-inkFaint">
-          Not present in this agreement
+          None extracted for this agreement.
         </div>
       </div>
     );
@@ -6413,6 +6413,22 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
 
   const disclosureRaw = pickKey(['disclosureLetterReference', 'disclosureSchedulesReference', 'scheduleReference', 'schedule_reference']);
 
+  // Audit block 2: this table is called for BOTH REP-T and REP-B. The
+  // Buyer/Parent side routinely has no SEC-filings exception or disclosure-
+  // schedule reference (SEC reporting reps are almost always Target-only) —
+  // when EVERY row would be empty, collapse the whole table to a single
+  // muted line instead of a header framing two "Not present" rows. Never
+  // "Not present" — extraction may simply have missed it.
+  if (!secAnyPresent && disclosureRaw === null) {
+    return (
+      <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+        <div className="px-3 py-3 text-xs font-ui italic text-inkFaint">
+          None extracted for this agreement.
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
       <div className="px-3 py-2 bg-bg/60 border-b border-border">
@@ -9849,7 +9865,7 @@ export default function ReviewPage() {
                                     return (
                                       <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
                                         <div className="px-3 py-3 text-xs font-ui italic text-inkFaint">
-                                          Not present in this agreement
+                                          None extracted for this agreement.
                                         </div>
                                       </div>
                                     );
