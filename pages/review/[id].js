@@ -4932,7 +4932,13 @@ function TermfTailMechanics({ provisions, allProvisions }) {
 
   const windowDisplay = (() => {
     const inner = isCitableValue(window) ? getCitableValue(window) : window;
-    return formatDurationWithUnits(inner, 'tailFeeWindowMonths') || `${inner} months`;
+    const formatted = formatDurationWithUnits(inner, 'tailFeeWindowMonths') || `${inner} months`;
+    // Audit block 5: the extractor sometimes returns the whole verbatim tail
+    // clause — with its own internal section cites — instead of a clean
+    // duration. Strip citation fragments and cap length; the full clause
+    // stays reachable via this row's evidence hover (quote, below).
+    const cleaned = stripSectionCitations(String(formatted));
+    return cleaned.length > 60 ? `${cleaned.slice(0, 59)}…` : cleaned;
   })();
   const thresholdRaw = combined.tailFeeThresholdPct;
   const thresholdInner = isCitableValue(thresholdRaw) ? getCitableValue(thresholdRaw) : thresholdRaw;
@@ -5128,12 +5134,17 @@ function TermfRemedyEffect({ provisions }) {
               Yes — carved out of the fee/sole-remedy bar
             </Row>
           )}
+          {/* Audit block 5: "Effect of termination" (Agreement becomes void,
+              specified provisions survive) is a GENERAL post-termination
+              provision, not fee-specific — it belongs with the Boilerplate
+              Summary, not this fee table. Point there instead of repeating
+              (or truncating) the clause here. */}
           {effect && (
-            <Row label="Effect of termination" quote={effect}>
-              {/void|no\s+further\s+force|of\s+no\s+(?:further\s+)?effect/i.test(effect)
-                ? 'Agreement becomes void; specified provisions survive'
-                : (effect.length > 80 ? `${effect.slice(0, 79)}…` : effect)}
-            </Row>
+            <tr className="align-top">
+              <td colSpan={2} className="px-3 py-2 text-[11px] font-ui italic text-inkFaint">
+                General post-termination effects and remedies: see Boilerplate Summary.
+              </td>
+            </tr>
           )}
           {interestText && (
             <Row label="Interest on late payment">
