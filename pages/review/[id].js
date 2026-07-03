@@ -7579,7 +7579,7 @@ function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, a
         <table className="min-w-full table-fixed text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
             <tr>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap sticky left-0 bg-bg/60 z-10">
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[190px] min-w-[190px] max-w-[190px] sticky left-0 bg-bg/60 z-10">
                 Term
               </th>
               {columns.map((k) => (
@@ -7597,7 +7597,7 @@ function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, a
               if (p._notPresent) {
                 return (
                   <tr key={p.id} className="bg-bg/30">
-                    <td className="px-3 py-2 align-top whitespace-nowrap sticky left-0 bg-bg/30 z-10">
+                    <td className="px-3 py-2 align-top whitespace-normal break-words sticky left-0 bg-bg/30 z-10">
                       <span className="inline-flex items-center gap-2 italic text-inkFaint">
                         <span
                           style={{
@@ -7624,7 +7624,7 @@ function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, a
               const features = getStructuredFeatures(p) || {};
               return (
                 <tr key={p.id} className="hover:bg-paper transition-colors">
-                  <td className="px-3 py-2 align-top whitespace-nowrap sticky left-0 bg-white z-10">
+                  <td className="px-3 py-2 align-top whitespace-normal break-words sticky left-0 bg-white z-10">
                     <button
                       type="button"
                       onClick={() => onSelectProvision && onSelectProvision(p)}
