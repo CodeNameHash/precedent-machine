@@ -91,15 +91,6 @@ export default function HomePage() {
         <TopBar user={user} />
 
         <main style={{ maxWidth: 1280, margin: '0 auto', padding: '48px 40px 120px' }}>
-          {/* Hero */}
-          <div style={{ marginBottom: 36 }}>
-            <div className="rec-deal-eyebrow">Corpus</div>
-            <h1 className="rec-deal-title" style={{ maxWidth: 720 }}>
-              Cross-deal comparison for M&amp;A agreements
-            </h1>
-          </div>
-
-          <div style={{ height: 1, background: 'var(--line)', margin: '0 0 28px' }} />
 
           <DealsTable
             rows={rows}

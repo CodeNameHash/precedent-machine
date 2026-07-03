@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useViewMode } from './ViewModeContext';
 
 /* ─── Deals home-page table: Excel/Airtable-style per-column header
  * controls (sort + multi-select filter), an active-filters chip row, and
@@ -530,6 +531,7 @@ function Dash() {
 }
 
 function DealRow({ row, selected, onToggle, onOpen }) {
+  const { isEdit } = useViewMode();
   const date = fmtDate(row.date);
   const value = fmtValue(row.value);
   return (
@@ -568,13 +570,15 @@ function DealRow({ row, selected, onToggle, onOpen }) {
         {row.sellerLawyers.length ? row.sellerLawyers.join(', ') : <Dash />}
       </td>
       <td className="px-3 py-2 align-top whitespace-nowrap text-right" onClick={(e) => e.stopPropagation()}>
-        <Link
-          href={`/ingest?deal_id=${row.id}`}
-          title="Classify only, extract a specific type, or re-ingest"
-          className="font-mono text-[10px] uppercase tracking-wider text-inkLight hover:text-accentDeep"
-        >
-          Ingest
-        </Link>
+        {isEdit ? (
+          <Link
+            href={`/ingest?deal_id=${row.id}`}
+            title="Classify only, extract a specific type, or re-ingest"
+            className="font-mono text-[10px] uppercase tracking-wider text-inkLight hover:text-accentDeep"
+          >
+            Ingest
+          </Link>
+        ) : null}
       </td>
     </tr>
   );
@@ -681,18 +685,26 @@ export default function DealsTable({ rows, loading, dealsCount, totalProvisions,
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters, sort, queryText, ready]);
 
+  // FACETED options: each column's checklist lists only values present in the
+  // rows that survive every OTHER column's filters (Excel-style — a column's
+  // own selections are excluded from its facet base so multi-select within
+  // the column stays possible). Already-selected values stay listed even at
+  // zero results so they can be un-picked.
   const columnOptions = useMemo(() => {
     const out = {};
     for (const col of COLUMNS) {
       if (col.kind !== 'text' && col.kind !== 'multi') continue;
+      const othersFilters = { ...filters, [col.key]: new Set() };
+      const base = applyFilters(rows, othersFilters, queryText);
       const set = new Set();
-      for (const r of rows) {
+      for (const r of base) {
         for (const v of getValues(col, r)) set.add(v);
       }
+      for (const v of (filters[col.key] || [])) set.add(v);
       out[col.key] = [...set].sort((a, b) => a.localeCompare(b));
     }
     return out;
-  }, [rows]);
+  }, [rows, filters, queryText]);
 
   const filteredRows = useMemo(() => applyFilters(rows, filters, queryText), [rows, filters, queryText]);
   const sortedRows = useMemo(() => sortRows(filteredRows, sort), [filteredRows, sort]);
@@ -761,17 +773,10 @@ export default function DealsTable({ rows, loading, dealsCount, totalProvisions,
         </span>
       </header>
 
-      {/* Free-text search — ANDs with every column filter below. */}
-      <div className="flex flex-wrap items-center gap-2 px-[22px] py-3 border-b border-border">
-        <input
-          type="search"
-          value={queryText}
-          onChange={(e) => setQueryText(e.target.value)}
-          placeholder="Filter by party, firm, or lawyer…"
-          aria-label="Filter deals"
-          className="font-ui text-xs px-2.5 py-1.5 rounded border border-border bg-white text-ink placeholder:text-inkFaint focus:outline-none focus:border-accent w-64"
-        />
-        <span className="ml-auto font-mono text-[11px] text-inkFaint">
+      {/* Free-text box removed per review — column-header filters carry the
+          load. ?q= URLs still parse (queryText state kept). */}
+      <div className="flex items-center justify-end px-[22px] py-2 border-b border-border">
+        <span className="font-mono text-[11px] text-inkFaint">
           {loading ? '' : `${sortedRows.length} of ${rows.length}`}
         </span>
       </div>
