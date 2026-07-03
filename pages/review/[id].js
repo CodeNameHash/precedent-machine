@@ -7375,18 +7375,19 @@ function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, a
     return <ConsidTable provisions={provisions} onSelectProvision={onSelectProvision} onAddProvision={onAddProvision} />;
   }
   // NOSOL (P3 item 1): 4 stacked mini-tables — Cease Discussions / Change of
-  // Recommendation Framework / Key Definitions / Other Restrictions. Below
-  // those, the per-provision MultiCodeStructLikeTable still renders so the
-  // raw NOSOL provisions remain navigable.
+  // Recommendation Framework / Key Definitions / Other Restrictions. These
+  // are the canonical rendering; a per-provision MultiCodeStructLikeTable
+  // used to also mount here, duplicating the same data across a fifth table
+  // full of empty rows (audit block 1) — removed.
   if (type === 'NOSOL' || type === 'NOSOL-T' || type === 'NOSOL-B') {
-    // NOSOL-B (Buyer / Parent) is the always-show placeholder side — almost
-    // every M&A deal puts the no-shop on the Company only, so NOSOL-B usually
-    // has no provisions and we render a "Not present in this agreement" card.
+    // Whole-section-empty guard (audit block 2): no provisions at all for
+    // this party. "None extracted" rather than "Not present" — extraction
+    // may simply have missed it; we never affirmatively assert absence.
     if (!provisions || provisions.length === 0) {
       return (
         <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
           <div className="px-3 py-3 text-xs font-ui italic text-inkFaint">
-            Not present in this agreement
+            None extracted for this agreement.
           </div>
         </div>
       );
@@ -7394,11 +7395,6 @@ function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, a
     return (
       <div className="space-y-3">
         <NosolFourTables provisions={provisions} />
-        <MultiCodeStructLikeTable
-          provisions={provisions}
-          type={type === 'NOSOL-B' ? 'NOSOL-B' : 'NOSOL'}
-          onSelectProvision={onSelectProvision}
-        />
       </div>
     );
   }
