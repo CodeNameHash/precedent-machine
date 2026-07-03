@@ -1,6 +1,7 @@
 import '../styles/globals.css';
 import { UserProvider } from '../lib/useUser';
 import { ToastProvider } from '../lib/useToast';
+import { ViewModeProvider } from '../components/ViewModeContext';
 import Layout from '../components/Layout';
 import { useEffect } from 'react';
 
@@ -21,13 +22,15 @@ function RecitalApp({ Component, pageProps }) {
   return (
     <UserProvider>
       <ToastProvider>
-        {noLayout ? (
-          <Component {...pageProps} />
-        ) : (
-          <Layout>
+        <ViewModeProvider>
+          {noLayout ? (
             <Component {...pageProps} />
-          </Layout>
-        )}
+          ) : (
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          )}
+        </ViewModeProvider>
       </ToastProvider>
     </UserProvider>
   );

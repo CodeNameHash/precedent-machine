@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { useUser } from '../lib/useUser';
+import { ViewModeToggle } from './ViewModeContext';
 
 /**
  * Layout — the minimal shell used by any page that doesn't set `.noLayout`.
@@ -26,6 +27,7 @@ export default function Layout({ children }) {
           Recital
         </Link>
         <div className="flex items-center gap-4">
+          <ViewModeToggle />
           {user && (
             <>
               <span className="text-sm text-inkLight hidden sm:inline">{user.name}</span>
