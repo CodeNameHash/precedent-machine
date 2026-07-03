@@ -2,8 +2,14 @@
    GET/POST /api/search/provisions — cross-deal provision search.
    ───────────────────────────────────────────────────────────────────────────
    Query the WHOLE corpus (every provision across every deal) by:
-     q            free text (ILIKE on clause text + category; ts_rank-ordered
-                  when the search_provisions RPC / FTS index is installed)
+     q            free text (ILIKE on clause text + category, plus a match on
+                  the owning deal's acquirer/target and — where present —
+                  metadata.parent_entity/target_entity/acquirer_display/
+                  target_display, so "AbbVie" finds a deal filed under a
+                  merger-sub name like "Bespin Subsidiary, LLC"; ts_rank-
+                  ordered when the search_provisions RPC / FTS index is
+                  installed, though the RPC path does not yet do the deal-name
+                  match — see viaBuilder)
      type         provision type or family, comma list (TERMR → TERMR + party
                   variants TERMR-M/-B/-T); see lib/search.js
      code         canonical code(s), comma list (e.g. DEF-MAE, TERMF-TARGET)
@@ -85,12 +91,45 @@ async function viaRpc(sb, p) {
   return { total, results, ranked: true };
 }
 
+// Deal-level fields worth matching against free text: the parties as filed
+// (acquirer/target) PLUS the ultimate-parent + colloquial display names
+// captured in deals.metadata (see scripts/ingest-local.js,
+// pages/api/ingest/from-url.js, scripts/backfill-parent-entities.js). A
+// search for "AbbVie" should surface the Landos deal even though the filed
+// acquirer is the merger sub "Bespin Subsidiary, LLC". PostgREST can't easily
+// OR a local column against an embedded relation's JSON field in one query,
+// so — per the corpus-is-small assumption already made in facets.js — fetch
+// the deals table and match client/API-side, then fold the matches into the
+// provisions OR-filter as a deal_id.in(...) clause.
+async function matchingDealIds(sb, qRaw) {
+  const needle = qRaw.toLowerCase();
+  const { data, error } = await sb.from('deals').select('id, acquirer, target, metadata');
+  if (error || !data) return [];
+  return data
+    .filter((d) => {
+      const meta = d.metadata && typeof d.metadata === 'object' ? d.metadata : {};
+      const fields = [
+        d.acquirer,
+        d.target,
+        meta.parent_entity,
+        meta.target_entity,
+        meta.acquirer_display,
+        meta.target_display,
+      ];
+      return fields.some((f) => typeof f === 'string' && f.toLowerCase().includes(needle));
+    })
+    .map((d) => d.id);
+}
+
 async function viaBuilder(sb, p) {
   let q = sb.from('provisions').select(SELECT, { count: 'exact' });
 
   if (p.q) {
     const safe = p.q.replace(/[%,()]/g, ' ');
-    q = q.or(`full_text.ilike.%${safe}%,category.ilike.%${safe}%`);
+    const orClauses = [`full_text.ilike.%${safe}%`, `category.ilike.%${safe}%`];
+    const dealIds = await matchingDealIds(sb, p.q);
+    if (dealIds.length) orClauses.push(`deal_id.in.(${dealIds.join(',')})`);
+    q = q.or(orClauses.join(','));
   }
   if (p.types.length) q = q.or(typeFamilyOrConditions(p.types).join(','));
   if (p.codes.length) q = q.in('ai_metadata->>code', p.codes);

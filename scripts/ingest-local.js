@@ -106,7 +106,11 @@ Return ONLY a JSON object with these fields. Use null for any field you cannot d
   "signing_date": "YYYY-MM-DD — the agreement signing/execution date",
   "value_usd": number or null,
   "sector": "string — single short label like 'Biopharma', 'Technology', 'Financial Services'",
-  "merger_form": "one of: ${mergerFormCodes.join(', ')} — pick the best match"
+  "merger_form": "one of: ${mergerFormCodes.join(', ')} — pick the best match",
+  "parent_entity": "string or null — the ULTIMATE PARENT on whose behalf the acquisition is made. NEVER the merger sub and NEVER an intermediate holding shell: if the signatory is a merger sub formed by a public parent for this transaction (e.g. 'Bespin Subsidiary, LLC' formed by 'AbbVie Inc.'), parent_entity is the parent ('AbbVie Inc.'), not the sub. If the filed acquirer already IS the ultimate parent (no separate parent named), repeat the acquirer's name here.",
+  "target_entity": "string or null — the target's clean legal entity name (usually same as target)",
+  "acquirer_display": "string or null — short colloquial/market name for the acquirer's ultimate parent with no Inc./Corp./LLC/L.P./plc suffix, e.g. 'AbbVie', 'Pfizer', 'Red Hat'",
+  "target_display": "string or null — short colloquial/market name for the target with no Inc./Corp./LLC/L.P./plc suffix, e.g. 'Metsera'"
 }
 
 Agreement text (preamble):
@@ -127,6 +131,10 @@ Return ONLY the JSON object, no prose, no markdown fence.`;
     value_usd: typeof parsed.value_usd === 'number' ? parsed.value_usd : null,
     sector: parsed.sector || null,
     merger_form: parsed.merger_form || null,
+    parent_entity: parsed.parent_entity || null,
+    target_entity: parsed.target_entity || null,
+    acquirer_display: parsed.acquirer_display || null,
+    target_display: parsed.target_display || null,
   };
 }
 
@@ -161,7 +169,16 @@ async function ingestOne(sb, client, url) {
     value_usd: meta.value_usd,
     announce_date: meta.signing_date,
     sector: meta.sector,
-    metadata: { source_url: url, full_text: fullText, merger_form: meta.merger_form, ingested_at: new Date().toISOString() },
+    metadata: {
+      source_url: url,
+      full_text: fullText,
+      merger_form: meta.merger_form,
+      ingested_at: new Date().toISOString(),
+      parent_entity: meta.parent_entity,
+      target_entity: meta.target_entity,
+      acquirer_display: meta.acquirer_display,
+      target_display: meta.target_display,
+    },
   }).select().single();
   if (insErr) throw new Error(`Deal insert failed: ${insErr.message}`);
 
