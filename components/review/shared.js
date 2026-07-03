@@ -224,14 +224,81 @@ export function HoverSource({ quote, children, as = 'span', className, align = '
   );
 }
 
+/* ── Standard left label-column width for all review tables (block 8).
+ *    Matches the Closing Conditions table's Condition column so the label
+ *    column lines up as the eye moves from table to table. */
+export const REVIEW_LABEL_COL_W = 'w-[240px]';
+
+/* ── Pill: canonical inline chip for a resolved, plain-English value
+ *    (dollar amount, standard, taxonomy code, person, materiality
+ *    qualifier). Consolidates several near-identical local `Pill` helpers
+ *    that had drifted in size/padding across TERMR/TERMF/knowledge/
+ *    materiality cells — same visual weight everywhere now. Per the table
+ *    design contract, the pill carries the plain-English label; the
+ *    verbatim source text is reachable only via hover (and click-to-source
+ *    when `quote` + EvidenceContext are both available). `tone` picks the
+ *    color family; unrecognized tones fall back to `neutral`. */
+const PILL_TONES = {
+  neutral: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+  standard: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+  person: 'bg-sky-50 text-sky-700 border-sky-200',
+  materiality: 'bg-rose-50 text-rose-700 border-rose-200',
+  amount: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+};
+
+export function Pill({ text, quote, tone = 'neutral', onClick, className = '' }) {
+  const showEvidence = useShowEvidence();
+  if (text === null || text === undefined || text === '') return null;
+  const colorCls = PILL_TONES[tone] || PILL_TONES.neutral;
+  const inner = (
+    <span className={`inline-flex items-center font-ui font-medium text-[10px] px-1.5 py-0.5 rounded border whitespace-nowrap ${colorCls} ${className}`}>
+      {text}
+    </span>
+  );
+  const handler = onClick || (quote && showEvidence ? () => showEvidence(quote) : null);
+  const body = handler ? (
+    <button
+      type="button"
+      onClick={(e) => { e.stopPropagation(); handler(e); }}
+      className="cursor-pointer hover:opacity-80"
+    >
+      {inner}
+    </button>
+  ) : inner;
+  return quote ? <HoverSource quote={quote}>{body}</HoverSource> : body;
+}
+
+/* ── CitableHover: table-cell wrapper enforcing the design contract — the
+ *    cell shows only the resolved value; the verbatim quote surfaces on
+ *    hover and (when EvidenceContext provides showEvidence) click jumps to
+ *    the document highlight. Replaces the in-cell EvidenceQuote block for
+ *    table content. */
+export function CitableHover({ quotes, children }) {
+  const showEvidence = useShowEvidence();
+  const list = (Array.isArray(quotes) ? quotes : [quotes])
+    .map((q) => String(q || '').trim())
+    .filter(Boolean);
+  if (list.length === 0) return children;
+  const joined = list.join('\n\n');
+  return (
+    <HoverSource quote={joined}>
+      <span
+        className={showEvidence ? 'cursor-pointer' : undefined}
+        onClick={showEvidence ? (e) => { e.stopPropagation(); showEvidence(list[0]); } : undefined}
+      >
+        {children}
+      </span>
+    </HoverSource>
+  );
+}
+
 // P7 item 25: render a list-valued cell as a real <ul> of bullets. Tagged
 // items resolve to their label (with optional code badge). Strings render
-// as-is. Citable items inside the array are unwrapped to the inner value
-// and the quote shows under the bullet.
+// as-is. Citable items are unwrapped to the inner value; per the table
+// design contract the quote is hover-only (CitableHover), never printed
+// beneath the bullet.
 export function renderListAsBullets(featureKey, items) {
   if (!Array.isArray(items) || items.length === 0) return null;
-  // If long, summarize with an "N items" pill (caller can swap to a
-  // collapsible). Threshold: 6.
   return (
     <ul className="list-disc pl-4 space-y-0.5">
       {items.map((item, idx) => {
@@ -245,6 +312,8 @@ export function renderListAsBullets(featureKey, items) {
           // doubled "Risk Factors / Risk Factors" display).
           const label = resolveTaggedLabel(featureKey, innerRaw) || humanizeBadgeText(innerRaw.code);
           body = <CodeBadge code={innerRaw.code} label={label} />;
+          // Tagged items carry their own verbatim `text` — hover-only too.
+          if (quotes.length === 0 && innerRaw.text) quotes.push(innerRaw.text);
         } else if (innerRaw === null || innerRaw === undefined || innerRaw === '') {
           return null;
         } else {
@@ -252,8 +321,7 @@ export function renderListAsBullets(featureKey, items) {
         }
         return (
           <li key={idx} className="whitespace-pre-wrap break-words">
-            {body}
-            {quotes && quotes.length > 0 ? <EvidenceQuote quotes={quotes} /> : null}
+            <CitableHover quotes={quotes}>{body}</CitableHover>
           </li>
         );
       })}
