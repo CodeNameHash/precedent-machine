@@ -268,14 +268,37 @@ export function Pill({ text, quote, tone = 'neutral', onClick, className = '' })
   return quote ? <HoverSource quote={quote}>{body}</HoverSource> : body;
 }
 
+/* ── CitableHover: table-cell wrapper enforcing the design contract — the
+ *    cell shows only the resolved value; the verbatim quote surfaces on
+ *    hover and (when EvidenceContext provides showEvidence) click jumps to
+ *    the document highlight. Replaces the in-cell EvidenceQuote block for
+ *    table content. */
+export function CitableHover({ quotes, children }) {
+  const showEvidence = useShowEvidence();
+  const list = (Array.isArray(quotes) ? quotes : [quotes])
+    .map((q) => String(q || '').trim())
+    .filter(Boolean);
+  if (list.length === 0) return children;
+  const joined = list.join('\n\n');
+  return (
+    <HoverSource quote={joined}>
+      <span
+        className={showEvidence ? 'cursor-pointer' : undefined}
+        onClick={showEvidence ? (e) => { e.stopPropagation(); showEvidence(list[0]); } : undefined}
+      >
+        {children}
+      </span>
+    </HoverSource>
+  );
+}
+
 // P7 item 25: render a list-valued cell as a real <ul> of bullets. Tagged
 // items resolve to their label (with optional code badge). Strings render
-// as-is. Citable items inside the array are unwrapped to the inner value
-// and the quote shows under the bullet.
+// as-is. Citable items are unwrapped to the inner value; per the table
+// design contract the quote is hover-only (CitableHover), never printed
+// beneath the bullet.
 export function renderListAsBullets(featureKey, items) {
   if (!Array.isArray(items) || items.length === 0) return null;
-  // If long, summarize with an "N items" pill (caller can swap to a
-  // collapsible). Threshold: 6.
   return (
     <ul className="list-disc pl-4 space-y-0.5">
       {items.map((item, idx) => {
@@ -289,6 +312,8 @@ export function renderListAsBullets(featureKey, items) {
           // doubled "Risk Factors / Risk Factors" display).
           const label = resolveTaggedLabel(featureKey, innerRaw) || humanizeBadgeText(innerRaw.code);
           body = <CodeBadge code={innerRaw.code} label={label} />;
+          // Tagged items carry their own verbatim `text` — hover-only too.
+          if (quotes.length === 0 && innerRaw.text) quotes.push(innerRaw.text);
         } else if (innerRaw === null || innerRaw === undefined || innerRaw === '') {
           return null;
         } else {
@@ -296,8 +321,7 @@ export function renderListAsBullets(featureKey, items) {
         }
         return (
           <li key={idx} className="whitespace-pre-wrap break-words">
-            {body}
-            {quotes && quotes.length > 0 ? <EvidenceQuote quotes={quotes} /> : null}
+            <CitableHover quotes={quotes}>{body}</CitableHover>
           </li>
         );
       })}

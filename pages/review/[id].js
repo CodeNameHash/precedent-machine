@@ -49,7 +49,6 @@ import { normalizeTermfFeatures } from '../../lib/termf';
 import { getFeaturesForType, PROVISION_TYPES } from '../../lib/rubric';
 import { resolveEditFields } from '../../lib/edit-schema';
 import { isCanonicalCode } from '../../lib/expected-sets';
-import { resolveSectionReference } from '../../lib/section-ref';
 import { AddSectionItem } from '../../components/review/AddSectionItem';
 import { TrustStrip } from '../../components/review/TrustStrip';
 import {
@@ -76,6 +75,7 @@ import {
   CustomTaxonomyContext,
   Pill,
   REVIEW_LABEL_COL_W,
+  CitableHover,
 } from '../../components/review/shared';
 import { NosolFourTables } from '../../components/review/NosolFourTables';
 import { ConsidTable } from '../../components/review/ConsiderationTables';
@@ -3403,15 +3403,16 @@ function renderFeatureCell(featureKey, raw) {
     return <div className="text-inkFaint/70 italic">—</div>;
   }
   // P7 item 25: a citable wrapper around a list value — render the list as
-  // bullets, then any wrapper-level quotes underneath.
+  // bullets; wrapper-level quotes are hover-only per the design contract.
   if (isCitableValue(raw) && Array.isArray(getCitableValue(raw))) {
     const innerList = getCitableValue(raw);
     const wrapperQuotes = getCitableQuotes(raw);
     const bullets = renderListAsBullets(featureKey, innerList);
     return (
       <div className="whitespace-pre-wrap break-words">
-        {bullets || <span className="text-inkFaint/70 italic">—</span>}
-        {wrapperQuotes && wrapperQuotes.length > 0 ? <EvidenceQuote quotes={wrapperQuotes} /> : null}
+        <CitableHover quotes={wrapperQuotes}>
+          {bullets || <span className="text-inkFaint/70 italic">—</span>}
+        </CitableHover>
       </div>
     );
   }
@@ -3424,17 +3425,19 @@ function renderFeatureCell(featureKey, raw) {
       </div>
     );
   }
-  // Citable value — render the inner value normally, then the quote(s) beneath.
+  // Citable value — render the inner value; the quote(s) are hover-only per
+  // the design contract (was an in-cell amber EvidenceQuote block).
   if (isCitableValue(raw)) {
     const inner = getCitableValue(raw);
     const quotes = getCitableQuotes(raw);
     const cell = formatCellValue(featureKey, inner);
     return (
       <div className="whitespace-pre-wrap break-words">
-        <span className={cell === null ? 'text-inkFaint/70 italic' : ''}>
-          {cell === null ? '—' : cell}
-        </span>
-        <EvidenceQuote quotes={quotes} />
+        <CitableHover quotes={quotes}>
+          <span className={cell === null ? 'text-inkFaint/70 italic' : ''}>
+            {cell === null ? '—' : cell}
+          </span>
+        </CitableHover>
       </div>
     );
   }
@@ -4244,42 +4247,20 @@ function renderClearSkiesIocFallback(allProvisions, side) {
   }
   const conceptList = Array.from(conceptSet).join(', ');
 
-  // Compose section refs from each matched provision: prefer the provision's
-  // section_number / sectionNumber feature, else scan its category/full_text
-  // for a "Section X.YZ" reference.
-  const refs = [];
-  const seen = new Set();
-  for (const p of matches) {
-    const f = getStructuredFeatures(p) || {};
-    const sn = f.sectionNumber || p.section_number || null;
-    let ref = null;
-    if (sn) ref = `Section ${String(sn).trim()}`;
-    if (!ref) {
-      const text = String(p.category || '') + ' ' + String(p.full_text || '');
-      const m = /Section\s+\d+\.\d+(?:\([A-Za-z0-9]+\))*/i.exec(text);
-      if (m) ref = m[0];
-    }
-    if (ref && !seen.has(ref)) {
-      seen.add(ref);
-      refs.push(ref);
-    }
-  }
+  // Per the table design contract, no section citations render in-cell —
+  // the source language is reachable on hover; matched IOC provisions are
+  // navigable from their own section.
+  const hoverQuote = matches
+    .map((p) => String(p.full_text || '').trim())
+    .filter(Boolean)
+    .join('\n\n') || null;
 
   return (
-    <span className="text-ink">
-      No standalone clear-skies covenant. IOC restricts {conceptList} (see
-      {' '}
-      {refs.length > 0 ? (
-        <span className="inline-flex flex-wrap gap-1 align-baseline">
-          {refs.map((r, i) => (
-            <SectionRef key={i} refText={r} allProvisions={ALL} />
-          ))}
-        </span>
-      ) : (
-        <span className="italic text-inkFaint">unspecified sections</span>
-      )}
-      ).
-    </span>
+    <HoverSource quote={hoverQuote}>
+      <span className="text-ink">
+        No standalone clear-skies covenant. IOC restricts {conceptList} (see interim operating covenants).
+      </span>
+    </HoverSource>
   );
 }
 
@@ -4532,35 +4513,9 @@ function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision, hide
      • TermfTriggerMatrix — bringdown-style table of canonical triggers
      • TermfTailMechanics — tail-fee structural detail (only when present) */
 
-/* Click-to-source chip for a section reference. Resolves via
- * resolveSectionReference (lib/section-ref) against the full provisions list
- * so a label like "§8.01(b)(i) [Outside Date]" can be popped. */
-function SectionRef({ refText, allProvisions }) {
-  const showEvidence = useShowEvidence();
-  const resolved = resolveSectionReference(refText || '', allProvisions || []);
-  if (!resolved || !resolved.provision) {
-    return (
-      <span className="font-mono text-[11px] text-inkMid" title={refText || ''}>
-        {refText || ''}
-      </span>
-    );
-  }
-  const label = resolved.label || refText || '';
-  const text = String(resolved.provision.full_text || '').slice(0, 600);
-  const clickable = !!(text && showEvidence);
-  return (
-    <span
-      className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-bg/60 border border-border text-[11px] font-ui ${clickable ? 'cursor-pointer hover:bg-accent/10' : ''}`}
-      title={label}
-      onClick={clickable ? () => showEvidence(text) : undefined}
-    >
-      <span className="font-mono">{refText}</span>
-      {resolved.provision.category ? (
-        <span className="text-inkLight">[{String(resolved.provision.category).slice(0, 40)}]</span>
-      ) : null}
-    </span>
-  );
-}
+/* SectionRef (the font-mono click-to-source citation chip) is gone: per the
+ * table design contract, section citations never render as table content —
+ * the mono-font chips were also the "font is off in some places" bug. */
 
 // Unwrap citable + format a single scalar value for the TERMF hero.
 // Parse a USD amount from a number, a citable wrapper, an object {amount},
