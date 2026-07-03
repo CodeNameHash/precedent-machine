@@ -155,13 +155,36 @@ async function runParserPipeline(client, fullText, dealId, title, sb) {
   return { insertedCount: (storeResult && storeResult.insertedCount) || 0, advisors };
 }
 
-async function ingestOne(sb, client, url) {
+async function ingestOne(sb, client, url, existingDealId = null) {
   const t0 = Date.now();
   const html = await fetchUrl(url);
   const fullText = stripHtml(html);
   if (fullText.length < 5000) throw new Error(`Fetched text too short (${fullText.length} chars) — wrong URL?`);
   const meta = await extractDealMetadata(client, fullText);
   if (!meta.acquirer || !meta.target) throw new Error('Could not identify acquirer/target from the preamble');
+
+  // In-place re-ingest: reuse the existing deal row (URLs stay valid; manual
+  // deal-level edits and metadata keys survive via the merge below +
+  // storeProvisions' own metadata merge). storeProvisions deletes and
+  // reinserts the deal's provisions.
+  if (existingDealId) {
+    const { data: existing, error: exErr } = await sb.from('deals').select('id, acquirer, target, metadata').eq('id', existingDealId).single();
+    if (exErr || !existing) throw new Error(`--deal-id ${existingDealId} not found: ${exErr && exErr.message}`);
+    const mergedMeta = {
+      ...(existing.metadata || {}),
+      source_url: url,
+      merger_form: meta.merger_form,
+      parent_entity: meta.parent_entity,
+      target_entity: meta.target_entity,
+      acquirer_display: meta.acquirer_display,
+      target_display: meta.target_display,
+      reingested_at: new Date().toISOString(),
+    };
+    await sb.from('deals').update({ metadata: mergedMeta }).eq('id', existingDealId);
+    const title = `${existing.acquirer} / ${existing.target}`;
+    const parseResult = await runParserPipeline(client, fullText, existingDealId, title, sb);
+    return { deal_id: existingDealId, title, sector: meta.sector, inserted: parseResult.insertedCount, timing_ms: Date.now() - t0, inPlace: true };
+  }
 
   const { data: newDeal, error: insErr } = await sb.from('deals').insert({
     acquirer: meta.acquirer,
@@ -188,16 +211,18 @@ async function ingestOne(sb, client, url) {
 }
 
 function parseArgs(argv) {
-  const args = { url: null, manifest: null, backend: 'claude', model: 'sonnet' };
+  const args = { url: null, manifest: null, backend: 'claude', model: 'sonnet', dealId: null };
   for (let i = 2; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--url') args.url = argv[++i];
     else if (a === '--manifest') args.manifest = argv[++i];
     else if (a === '--backend') args.backend = argv[++i];
     else if (a === '--model') args.model = argv[++i];
+    else if (a === '--deal-id') args.dealId = argv[++i];
     else { console.error(`Unknown arg: ${a}`); process.exit(1); }
   }
   if (!args.url && !args.manifest) { console.error('Provide --url <ex21-url> or --manifest <path.json>'); process.exit(1); }
+  if (args.dealId && !args.url) { console.error('--deal-id requires --url'); process.exit(1); }
   return args;
 }
 
@@ -220,7 +245,7 @@ function parseArgs(argv) {
   for (const url of urls) {
     process.stdout.write(`→ ingesting ${url.slice(-60)} … `);
     try {
-      const r = await ingestOne(sb, client, url);
+      const r = await ingestOne(sb, client, url, args.dealId || null);
       console.log(`done in ${Math.round(r.timing_ms / 1000)}s: ${r.title} [${r.sector}] +${r.inserted} provisions (deal ${r.deal_id})`);
     } catch (err) {
       console.log(`FAILED: ${err.message}`);
