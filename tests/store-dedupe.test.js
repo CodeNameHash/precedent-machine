@@ -47,3 +47,30 @@ test('dedupeProvisions never merges empty or missing full_text provisions', () =
 
   assert.deepEqual(dedupeProvisions(provisions), provisions);
 });
+
+const { differentiateCategories } = require('../lib/parser-v2/store');
+
+test('differentiateCategories renames same-category distinct-text provisions by their own section heading', () => {
+  const provisions = [
+    { type: 'REP-T', category: 'Capitalization; Subsidiaries', full_text: 'SECTION 3.02. Capital Structure. The authorized capital stock consists of shares.' },
+    { type: 'REP-T', category: 'Capitalization; Subsidiaries', full_text: 'SECTION 3.03. Company Subsidiaries. Each subsidiary is duly organized.' },
+    { type: 'REP-T', category: 'Litigation', full_text: 'SECTION 3.13. Litigation. There is no pending action.' },
+  ];
+  const out = differentiateCategories(provisions);
+  assert.equal(out[0].category, 'Capitalization; Subsidiaries — Capital Structure');
+  assert.equal(out[1].category, 'Capitalization; Subsidiaries — Company Subsidiaries');
+  // singleton untouched
+  assert.equal(out[2].category, 'Litigation');
+});
+
+test('differentiateCategories leaves a member alone when its heading equals the shared label', () => {
+  const provisions = [
+    { type: 'IOC-T', category: 'Indebtedness', full_text: '(i) incur any indebtedness for borrowed money in excess of $500,000.' },
+    { type: 'IOC-T', category: 'Indebtedness', full_text: '(n) make any capital contribution or investment in any Person.', ai_metadata: { features: { sectionNumber: '5.01(n)' } } },
+  ];
+  const out = differentiateCategories(provisions);
+  // No SECTION heading in sub-clause text: first has no number either -> unchanged;
+  // second falls back to its section number.
+  assert.equal(out[0].category, 'Indebtedness');
+  assert.equal(out[1].category, 'Indebtedness (§5.01(n))');
+});
