@@ -115,25 +115,36 @@ export function EvidenceQuote({ text, quotes, dense }) {
   );
 }
 
+// Acronyms that should stay fully capitalized when a code is split into
+// words (e.g. "CashCvr" → "Cash CVR", not "Cash Cvr").
+const HUMANIZE_ACRONYMS = new Set(['CVR', 'MAE', 'IOC', 'IP', 'FDA', 'HSR', 'CEO', 'CFO', 'ESPP', 'RSU', 'PSU', 'SAR']);
+const titleCaseWord = (w) => {
+  if (!w) return '';
+  const upper = w.toUpperCase();
+  return HUMANIZE_ACRONYMS.has(upper) ? upper : w[0].toUpperCase() + w.slice(1).toLowerCase();
+};
+
 // Humanize a taxonomy code for display: "ACCELERATED_VESTING" → "Accelerated Vesting".
-// Falls back to the raw code if it doesn't look like an UPPER_SNAKE code.
+// Falls back to the raw code if it doesn't look like a recognizable code shape.
 export function humanizeBadgeText(code) {
   if (!code) return '';
   // Case-insensitive UPPER_SNAKE / lower_snake detection: any token of letters/
   // digits separated by underscores gets title-cased so values like
   // "one_step_merger" and "ONE_STEP_MERGER" both render as "One Step Merger".
-  if (!/^[A-Za-z][A-Za-z0-9_]*$/.test(code) || !/_/.test(code)) {
-    if (/^[A-Z][A-Z0-9_]*$/.test(code)) {
-      // Pure UPPER without underscores (rare) — title case it.
-      return code[0] + code.slice(1).toLowerCase();
-    }
-    return code;
+  if (/_/.test(code) && /^[A-Za-z][A-Za-z0-9_]*$/.test(code)) {
+    return code.split('_').map(titleCaseWord).join(' ');
   }
-  return code
-    .toLowerCase()
-    .split('_')
-    .map((w) => (w.length === 0 ? '' : w[0].toUpperCase() + w.slice(1)))
-    .join(' ');
+  if (/^[A-Z][A-Z0-9]*$/.test(code)) {
+    // Pure UPPER without underscores (rare) — title case it.
+    return code[0] + code.slice(1).toLowerCase();
+  }
+  // PascalCase / camelCase without underscores (e.g. "CashCvr") — split at
+  // capital-letter boundaries and title-case each word so a raw slug never
+  // leaks into the UI unchanged (audit block 6b).
+  if (/^[A-Za-z][A-Za-z0-9]*$/.test(code) && /[a-z]/.test(code) && /[A-Z]/.test(code.slice(1))) {
+    return code.replace(/([a-z0-9])([A-Z])/g, '$1 $2').split(' ').map(titleCaseWord).join(' ');
+  }
+  return code;
 }
 
 /* Small inline badge for a canonical taxonomy code (e.g. "WHOLLY_OWNED_SUB"). */
@@ -397,13 +408,19 @@ export function renderSummaryRowValue(hit, featureKeyForLookup) {
 export function prettifyEnumValue(key, raw) {
   if (typeof raw !== 'string' || raw.length === 0) return raw;
   if (key === 'considerationType') {
+    // Normalize away case/format drift (hyphens, underscores, PascalCase)
+    // before matching — the extractor's enum contract is lower-hyphenated
+    // ("cash-with-cvr") but live data sometimes drifts to other shapes
+    // ("CashCvr"). Audit block 6a/6b.
+    const norm = raw.toLowerCase().replace(/[^a-z]/g, '');
     const map = {
-      'all-cash': 'All cash',
-      'all-stock': 'All stock',
-      'mixed-cash-and-stock': 'Mixed cash and stock',
-      'cash-with-cvr': 'Cash with CVR',
+      allcash: 'All cash',
+      allstock: 'All stock',
+      mixedcashandstock: 'Mixed cash and stock',
+      cashwithcvr: 'Cash + CVR',
+      cashcvr: 'Cash + CVR',
     };
-    const hit = map[raw.toLowerCase()];
+    const hit = map[norm];
     if (hit) return hit;
     return raw.replace(/\bcvr\b/gi, 'CVR');
   }

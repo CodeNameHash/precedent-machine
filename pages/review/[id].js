@@ -2646,19 +2646,39 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
   const thresholdFor = (p) => {
     const f = getStructuredFeatures(p) || {};
     const bits = [];
+    // Audit block 6e: CapEx/Settlement threshold cells could show a verbose
+    // descriptive sentence AND a separate pill carrying the very same dollar
+    // figure (once as the raw dollarThreshold sentence, again from the
+    // Settlement-cap / permittedExceptions figures). De-dupe by the extracted
+    // amount, and compact any bit that's a long sentence down to just its $
+    // figure — the full sentence is already reachable via the row's evidence
+    // hover, never duplicated in-cell.
+    const AMOUNT_RE = /\$\s?[\d,]+(?:\.\d+)?(?:\s*(?:million|billion|thousand))?/i;
+    const seenAmounts = new Set();
+    const pushBit = (bitText) => {
+      if (!bitText) return;
+      const m = bitText.match(AMOUNT_RE);
+      const compact = (m && bitText.trim().length > m[0].length + 20) ? m[0] : bitText;
+      const ampKey = m ? m[0].replace(/[$,\s]/g, '').toLowerCase() : null;
+      if (ampKey) {
+        if (seenAmounts.has(ampKey)) return;
+        seenAmounts.add(ampKey);
+      }
+      bits.push(compact);
+    };
     const push = (label, val) => {
       if (val === null || val === undefined || val === '' || val === false) return;
       if (Array.isArray(val) && val.length === 0) return;
       const u = isCitableValue(val) ? getCitableValue(val) : val;
       if (u === null || u === undefined || u === '' || u === false) return;
-      if (typeof u === 'boolean') { if (u) bits.push(label); return; }
+      if (typeof u === 'boolean') { if (u) pushBit(label); return; }
       if (Array.isArray(u)) {
         const t = u.map((x) => isTaggedItem(x) ? (x.label || x.code) : String(x)).filter(Boolean).join(', ');
-        if (t) bits.push(label ? `${label}: ${t}` : t);
+        if (t) pushBit(label ? `${label}: ${t}` : t);
         return;
       }
-      if (isTaggedItem(u)) { bits.push(label ? `${label}: ${u.label || u.code}` : (u.label || u.code)); return; }
-      bits.push(label ? `${label}: ${String(u)}` : String(u));
+      if (isTaggedItem(u)) { pushBit(label ? `${label}: ${u.label || u.code}` : (u.label || u.code)); return; }
+      pushBit(label ? `${label}: ${String(u)}` : String(u));
     };
     push(null, f.dollarThreshold);
     push('Settlement cap', f.interimSettlementCap);
@@ -2685,7 +2705,7 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
         const parts = [];
         if (ind) parts.push(`${ind} ind.`);
         if (agg) parts.push(`${agg} agg.`);
-        bits.push(parts.join(' / '));
+        pushBit(parts.join(' / '));
       }
     }
     return bits.length ? bits.join(' · ') : null;
@@ -3553,7 +3573,11 @@ function StructTable({ provisions, onSelectProvision }) {
     if (isCitableValue(raw)) raw = getCitableValue(raw);
     if (isTaggedItem(raw)) {
       const label = resolveTaggedLabel('mergerForm', raw) || raw.label || raw.code;
-      return <CodeBadge code={raw.code || label} />;
+      // Audit block 6b: pass the resolved LABEL, not just the raw code — a
+      // raw taxonomy code without underscores (e.g. a PascalCase slug) falls
+      // through CodeBadge's fallback humanizer unchanged and leaks into the
+      // pill verbatim.
+      return <CodeBadge code={raw.code} label={label} />;
     }
     // Plain string — render as a pill too
     return <CodeBadge code={String(raw)} />;
@@ -3602,7 +3626,30 @@ function StructTable({ provisions, onSelectProvision }) {
       typeof features.mainConcept === 'string' ? features.mainConcept : '',
       String(p.full_text || '').slice(0, 1200),
     ].join(' ');
-    if (/certificate\s+of\s+incorporation|charter/i.test(cat)) {
+    // Audit block 6c: a single provision's category sometimes covers BOTH
+    // topics at once ("Certificate of Incorporation / Bylaws") — the
+    // charter-first branch below would match on the "charter" alternative
+    // and return only the charter half, silently dropping the bylaws
+    // treatment. Detect the combined case first and render both halves.
+    const isCharterCat = /certificate\s+of\s+incorporation|charter/i.test(cat);
+    const isBylawsCat = /bylaws/i.test(cat);
+    if (isCharterCat && isBylawsCat) {
+      const exMatch = text.match(/Exhibit\s+([A-Z])\b/i);
+      const charterHalf = exMatch
+        ? `per Exhibit ${exMatch[1].toUpperCase()}`
+        : (/certificate\s+of\s+incorporation\s+of\s+(?:the\s+)?Merger\s+Sub/i.test(text) ? "per Merger Sub's" : null);
+      const bylawsHalf = /bylaws\s+of\s+(?:the\s+)?Merger\s+Sub|Merger\s+Sub(?:'s)?[^.]{0,60}bylaws/i.test(text)
+        ? "per Merger Sub's"
+        : (exMatch ? `per Exhibit ${exMatch[1].toUpperCase()}` : null);
+      if (charterHalf || bylawsHalf) {
+        const parts = [];
+        if (charterHalf) parts.push(`Charter: ${charterHalf}`);
+        if (bylawsHalf) parts.push(`Bylaws: ${bylawsHalf}`);
+        return parts.join(' · ');
+      }
+      return null;
+    }
+    if (isCharterCat) {
       const ex = text.match(/Exhibit\s+([A-Z])\b/i);
       if (ex) return `Per Exhibit ${ex[1].toUpperCase()}`;
       if (/certificate\s+of\s+incorporation\s+of\s+(?:the\s+)?Merger\s+Sub/i.test(text)) {
@@ -5485,29 +5532,33 @@ function TermrRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
       </div>
 
       {/* Breach standard that blocks termination — its own table, canonical
-          wording (per user: specific words matter). */}
-      <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
-        <div className="px-3 py-2 bg-bg/60 border-b border-border">
-          <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
-            Breach Standard Blocking the Right to Terminate
-          </p>
+          wording (per user: specific words matter). Audit block 6d: omit
+          the whole sub-table entirely when nothing was found, rather than
+          rendering a one-row "No fault-based carve-out found" table. */}
+      {faultStandard && (
+        <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+          <div className="px-3 py-2 bg-bg/60 border-b border-border">
+            <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+              Breach Standard Blocking the Right to Terminate
+            </p>
+          </div>
+          <table className="min-w-full table-fixed text-xs font-ui">
+            <tbody className="divide-y divide-border">
+              <tr className="align-top hover:bg-bg/40">
+                <td className={`px-3 py-2 text-ink font-medium whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>Standard</td>
+                <td
+                  className={`px-3 py-2 text-ink ${faultText && showEvidence ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
+                  onClick={faultText && showEvidence ? () => showEvidence(faultText) : undefined}
+                >
+                  <HoverSource quote={faultText} as="div">
+                    {faultStandard}
+                  </HoverSource>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <table className="min-w-full table-fixed text-xs font-ui">
-          <tbody className="divide-y divide-border">
-            <tr className="align-top hover:bg-bg/40">
-              <td className={`px-3 py-2 text-ink font-medium whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>Standard</td>
-              <td
-                className={`px-3 py-2 text-ink ${faultText && showEvidence ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
-                onClick={faultText && showEvidence ? () => showEvidence(faultText) : undefined}
-              >
-                <HoverSource quote={faultText} as="div">
-                  {faultStandard || <span className="italic text-inkFaint">No fault-based carve-out found</span>}
-                </HoverSource>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      )}
     </div>
   );
 }
@@ -7827,7 +7878,7 @@ function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, a
                         >
                           <CellWithSource provision={p} featureKey={k} raw={raw} isEmpty={false} className="">
                             {renderAsPill
-                              ? <CodeBadge code={raw.code || label} />
+                              ? <CodeBadge code={raw.code} label={label} />
                               : <span>{label}</span>}
                           </CellWithSource>
                         </td>
