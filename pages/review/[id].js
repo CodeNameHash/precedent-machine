@@ -9196,8 +9196,19 @@ export default function ReviewPage() {
       const target = FAMILY_OF[k] || k;
       collapsed[target] = [...(collapsed[target] || []), ...v];
     }
-    return collapsed;
-  }, [filteredProvisions, provisions, activeFilter]);
+    // fb2 blocks 4a/4b: render sections in SIDEBAR_GROUPS order (Structure →
+    // Consideration → Reps → MAE → Material Contracts → IOC → No-Sol → Anti →
+    // Conditions → Termination Rights → Fees → rest; Seller/Target before
+    // Buyer). Synthesized groups (empty IOC-B / NOSOL-B / TERMR children,
+    // MAE-DEF, __MATERIAL_CONTRACTS) are appended above in whatever order the
+    // synthesis code runs — without this sort they'd fall to the page bottom.
+    const orderedEntries = Object.entries(collapsed).sort((a, b) => {
+      const ai = TYPE_SORT_ORDER.has(a[0]) ? TYPE_SORT_ORDER.get(a[0]) : 9999;
+      const bi = TYPE_SORT_ORDER.has(b[0]) ? TYPE_SORT_ORDER.get(b[0]) : 9999;
+      return ai - bi;
+    });
+    return Object.fromEntries(orderedEntries);
+  }, [filteredProvisions, provisions, activeFilter, TYPE_SORT_ORDER]);
 
   /* ── Identify the first IOC-flavored type in the rendered order. The
    *    IOC affirmative / general-exceptions / negative tables render a
@@ -9915,6 +9926,31 @@ export default function ReviewPage() {
                             String(a.category || '').localeCompare(String(b.category || ''), undefined, { sensitivity: 'base' })
                           )
                         : provsRaw;
+                      // fb2 block 4c: an EMPTY buyer-side section collapses to
+                      // a single inline line ("IOC (Buyer) — None") instead of
+                      // a numbered header framing a stack of empty tables.
+                      if ((type === 'IOC-B' || type === 'NOSOL-B') && provs.filter((p) => !p._notPresent).length === 0) {
+                        return (
+                          <div key={type} className="flex items-center gap-2 py-1 px-1">
+                            <span
+                              style={{
+                                display: 'inline-block',
+                                width: 7,
+                                height: 7,
+                                borderRadius: 2,
+                                background: typeHex(type),
+                                flexShrink: 0,
+                              }}
+                            />
+                            <span className="text-xs font-ui text-inkFaint">
+                              <span className="font-medium text-inkMid">
+                                {type === 'IOC-B' ? 'IOC (Buyer)' : 'No-Shop (Buyer)'}
+                              </span>
+                              {' — None'}
+                            </span>
+                          </div>
+                        );
+                      }
                       const { preamble, rest: restAfterSplit } = splitPreamble(provs);
                       // Only show a preamble card for section-style types that
                       // have a meaningful structured preamble (e.g. IOC, REP-*,

@@ -369,7 +369,11 @@ export function Sidebar({ provsByType, provisions, activeFilter, onFilterType, o
             // For flat groups, drops on the parent heading move the provision
             // to the group's primary type. For groups with children, the parent
             // heading is not itself a drop target (the children handle it).
-            const flatDropType = isFlatGroup ? (group.singleType || group.types[0]) : null;
+            // Synthetic single-page groups (e.g. Material Contracts) are never
+            // drop targets — dropping would "reclassify" to a UI-only type.
+            const flatPrimaryType = isFlatGroup ? (group.singleType || group.types[0]) : null;
+            const flatIsSynthetic = !!flatPrimaryType && SYNTHETIC_SINGLE_PAGE_TYPES.has(flatPrimaryType);
+            const flatDropType = flatPrimaryType && !flatIsSynthetic ? flatPrimaryType : null;
             const isParentDropTarget = !!dragProvId && flatDropType && dropTargetType === flatDropType;
             // Parent groups with children get a combined-filter click handler
             // that passes all child types as an array.
@@ -434,7 +438,9 @@ export function Sidebar({ provsByType, provisions, activeFilter, onFilterType, o
                       </span>
                     )}
                   </span>
-                  <span className="count">{group.total}</span>
+                  {/* Synthetic single-page groups: the label IS the page —
+                      no count (matches the child-row treatment). */}
+                  {!flatIsSynthetic && <span className="count">{group.total}</span>}
                 </div>
 
                 {/* Group expanded content */}
@@ -509,7 +515,9 @@ export function Sidebar({ provsByType, provisions, activeFilter, onFilterType, o
                       </div>
                     ) : (
                       // Flat group: directly render its provisions list.
-                      renderProvList(group.provs, group.singleType)
+                      // Synthetic single-page groups (Material Contracts) ARE
+                      // the page — no per-provision sub-list under them.
+                      !SYNTHETIC_SINGLE_PAGE_TYPES.has(group.singleType) && renderProvList(group.provs, group.singleType)
                     )}
                   </div>
                 )}
