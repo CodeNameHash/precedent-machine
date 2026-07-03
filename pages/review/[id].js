@@ -1750,7 +1750,7 @@ function EmployeeBenefitsTreatmentTable({ summary, onSelectProvision }) {
         </p>
       </div>
       <div className="overflow-x-auto">
-        <table className="min-w-full table-fixed text-xs font-ui">
+        <table className="min-w-full text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
             <tr>
               <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider ${REVIEW_LABEL_COL_W}`}>Type</th>
@@ -2091,7 +2091,7 @@ function IocAffirmativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelec
         </p>
       </div>
       <div className="overflow-x-auto">
-        <table className="min-w-full table-fixed text-xs font-ui">
+        <table className="min-w-full text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
             <tr>
               <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Covenant</th>
@@ -2781,11 +2781,11 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
         </p>
       </div>
       <div className="overflow-x-auto">
-        <table className="min-w-full table-fixed text-xs font-ui">
+        <table className="min-w-full text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
             <tr>
               <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Restriction</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[190px] min-w-[190px] max-w-[190px]">Threshold</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">Threshold</th>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Exceptions</th>
             </tr>
           </thead>
@@ -3848,7 +3848,7 @@ function StructTable({ provisions, onSelectProvision }) {
           Structure &amp; Mechanics
         </p>
       </div>
-      <table className="min-w-full table-fixed text-xs font-ui">
+      <table className="min-w-full text-xs font-ui">
         <thead className="bg-bg/60 border-b border-border">
           <tr>
             <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Term</th>
@@ -3878,7 +3878,7 @@ function StructTable({ provisions, onSelectProvision }) {
             };
             return (
             <tr key={p.id} className="hover:bg-bg/40 transition-colors align-top">
-              <td className="px-3 py-2 whitespace-normal break-words w-[190px] min-w-[190px] max-w-[190px]">
+              <td className="px-3 py-2 whitespace-normal break-words">
                 {isSynth ? (
                   p._synthEvidence ? (
                     <button
@@ -4479,7 +4479,7 @@ function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision, hide
           </p>
         </div>
         <div className="overflow-x-auto">
-          <table className="min-w-full table-fixed text-xs font-ui">
+          <table className="min-w-full text-xs font-ui">
             <thead className="bg-bg/60 border-b border-border">
               <tr>
                 <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Feature</th>
@@ -4849,7 +4849,7 @@ function TermfTriggerMatrix({ provisions, allProvisions, deal }) {
         )}
       </div>
       <div className="overflow-x-auto">
-        <table className="min-w-full table-fixed text-xs font-ui">
+        <table className="min-w-full text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
             <tr>
               <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Trigger</th>
@@ -5070,7 +5070,7 @@ function TermfTailMechanics({ provisions, allProvisions }) {
           Tail Mechanics
         </p>
       </div>
-      <table className="min-w-full table-fixed text-xs font-ui">
+      <table className="min-w-full text-xs font-ui">
         <tbody className="divide-y divide-border">
           <Row label="Tail window" quote={termfFirstQuote(combined.tailFeeWindowMonths)}>
             {windowDisplay}
@@ -5215,7 +5215,7 @@ function TermfRemedyEffect({ provisions }) {
           Remedy &amp; Effect
         </p>
       </div>
-      <table className="min-w-full table-fixed text-xs font-ui">
+      <table className="min-w-full text-xs font-ui">
         <tbody className="divide-y divide-border">
           {(soleBool || soleText) && (
             <Row label="Sole &amp; exclusive remedy" quote={soleText || quoteOf(soleRaw)}>
@@ -5529,7 +5529,7 @@ function TermrRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
           </p>
         </div>
         <div className="overflow-x-auto">
-          <table className="min-w-full table-fixed text-xs font-ui">
+          <table className="min-w-full text-xs font-ui">
             <thead className="bg-bg/60 border-b border-border">
               <tr>
                 <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Right</th>
@@ -5588,7 +5588,7 @@ function TermrRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
               Breach Standard Blocking the Right to Terminate
             </p>
           </div>
-          <table className="min-w-full table-fixed text-xs font-ui">
+          <table className="min-w-full text-xs font-ui">
             <tbody className="divide-y divide-border">
               <tr className="align-top hover:bg-bg/40">
                 <td className={`px-3 py-2 text-ink font-medium whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>Standard</td>
@@ -6521,7 +6521,7 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
         </p>
       </div>
       <div className="overflow-x-auto">
-        <table className="min-w-full table-fixed text-xs font-ui">
+        <table className="min-w-full text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
             <tr>
               <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Item</th>
@@ -6698,7 +6698,7 @@ function RepMaterialContractsTable({ provisions, onSelectProvision }) {
           No material-contract sub-clauses extracted (re-extract REP-T to populate).
         </p>
       ) : (
-        <table className="min-w-full table-fixed text-xs font-ui">
+        <table className="min-w-full text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
             <tr>
               {/* Audit block 8: this table had it backwards — the label
@@ -7158,7 +7158,7 @@ function CondSingleTable({ allProvisions, onSelectProvision }) {
         </p>
       </div>
       <div className="overflow-x-auto">
-        <table className="min-w-full table-fixed text-xs font-ui">
+        <table className="min-w-full text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
             <tr>
               <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Condition</th>
@@ -7706,10 +7706,10 @@ function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, a
         </p>
       </div>
       <div className="overflow-x-auto">
-        <table className="min-w-full table-fixed text-xs font-ui">
+        <table className="min-w-full text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
             <tr>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[190px] min-w-[190px] max-w-[190px] sticky left-0 bg-bg/60 z-10">
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap sticky left-0 bg-bg/60 z-10">
                 Term
               </th>
               {columns.map((k) => (

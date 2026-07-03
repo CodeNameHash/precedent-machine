@@ -90,10 +90,10 @@ function NosolMiniTable({ title, spec, provisions, headerNote }) {
         </p>
       </div>
       <div className="overflow-x-auto">
-        <table className="min-w-full table-fixed text-xs font-ui">
+        <table className="min-w-full text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
             <tr>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[190px] min-w-[190px] max-w-[190px]">Feature</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">Feature</th>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Value</th>
             </tr>
           </thead>
