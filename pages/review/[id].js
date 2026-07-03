@@ -5247,7 +5247,10 @@ const TERMR_FAULT_STANDARDS = [
 // When a deal's TERMR-VOTE provision didn't capture it, fall back to
 // shareholder-approval-related fields on the deal's STRUCT / COND-M
 // (Stockholder Approval condition) provisions per user request; otherwise the
-// row omits the vote standard rather than guessing.
+// row omits the vote standard rather than guessing. Audit block 4b: the old
+// mainCondition fallback dumped a raw, un-summarized condition sentence into
+// the row — dropped. Only the dedicated (summarized) voteThreshold field is
+// ever shown; the row renders nothing rather than leaking raw prose.
 function termrVoteStandard(f, allProvisions) {
   const u = (v) => (isCitableValue(v) ? getCitableValue(v) : v);
   const own = u(f.voteThreshold);
@@ -5260,10 +5263,24 @@ function termrVoteStandard(f, allProvisions) {
     const pf = getStructuredFeatures(p) || {};
     const vt = u(pf.voteThreshold);
     if (vt) return String(vt);
-    const mc = u(pf.mainCondition);
-    if (mc && /major|vote|approv/i.test(String(mc))) return String(mc);
   }
   return null;
+}
+
+// Audit block 4a: materialityStandard often carries the clause verbatim,
+// including its own internal section cross-references ("...the condition
+// set forth in Section 7.02(a) or Section 7.02(b) would not be then
+// satisfied"). Strip those citation fragments — the substance survives
+// without pointing back into the agreement's own numbering; the full
+// sentence remains reachable via the row's evidence hover.
+function stripSectionCitations(text) {
+  if (typeof text !== 'string' || !text) return text;
+  return text
+    .replace(/,?\s*(?:as\s+)?set\s+forth\s+in\s+Sections?\s+\d+(?:\.\d+)*(?:\([a-zA-Z0-9]+\))*(?:\s*(?:,|or|and)\s*Sections?\s+\d+(?:\.\d+)*(?:\([a-zA-Z0-9]+\))*)*/gi, '')
+    .replace(/,?\s*pursuant\s+to\s+Sections?\s+\d+(?:\.\d+)*(?:\([a-zA-Z0-9]+\))*/gi, '')
+    .replace(/\s{2,}/g, ' ')
+    .replace(/\s+([.,;])/g, '$1')
+    .trim();
 }
 
 // Compose the "key terms" cell for a canonical right from its features.
@@ -5289,7 +5306,7 @@ function termrKeyTerms(key, f, ctx = {}) {
     const cd = u(f.cureDays);
     if (cd) bits.push(`Cure period: ${cd} days`);
     const ms = u(f.materialityStandard);
-    if (ms) bits.push(String(ms));
+    if (ms) bits.push(stripSectionCitations(String(ms)));
   }
   if (key === 'superior') {
     bits.push(u(f.feeRequired) ? 'Termination fee payable' : 'No fee specified');
