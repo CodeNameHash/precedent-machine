@@ -1886,7 +1886,7 @@ function IocAffirmativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelec
           </p>
         </div>
         <div className="px-3 py-3 text-xs font-ui italic text-inkFaint">
-          Not present in this agreement
+          None extracted for this agreement.
         </div>
       </div>
     );
@@ -2093,7 +2093,14 @@ function IocAffirmativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelec
           <thead className="bg-bg/60 border-b border-border">
             <tr>
               <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Covenant</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[220px]">Standard</th>
+              {/* Audit block 8: sibling ths must NOT carry width classes —
+                  table-fixed proportionally SCALES every explicitly-sized
+                  column when all columns are constrained (the sum of
+                  declared widths is less than the rendered table width), so
+                  the Covenant column measured 231px instead of the intended
+                  190px. Leaving Standard/Applies To unconstrained lets them
+                  absorb the extra width instead. */}
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">Standard</th>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Applies To</th>
             </tr>
           </thead>
@@ -2368,7 +2375,7 @@ function IocGeneralExceptionsTableSingle({ iocProvisions, generalExceptionsProv,
             </p>
           </div>
           <div className="px-3 py-3 text-xs font-ui italic text-inkFaint">
-            Not present in this agreement
+            None extracted for this agreement.
           </div>
         </div>
       );
@@ -2432,7 +2439,7 @@ function IocGeneralExceptionsTableSingle({ iocProvisions, generalExceptionsProv,
           </p>
         </div>
         <div className="px-3 py-3 text-xs font-ui italic text-inkFaint">
-          Not present in this agreement
+          None extracted for this agreement.
         </div>
       </div>
     );
@@ -2576,7 +2583,7 @@ function IocGeneralExceptionsTable({ iocProvisions, generalExceptionsProv, onSel
  *     the IOC list that isn't an affirmative bucket: not IOC-ORDINARY /
  *     IOC-PRESERVE / IOC-MAINTAIN / IOC-NOACTION). The Details cell composes
  *     a compact one-line summary from the relevant features. */
-function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectProvision }) {
+function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectProvision, deal }) {
   const affCodes = new Set(['IOC-ORDINARY', 'IOC-PRESERVE', 'IOC-MAINTAIN', 'IOC-NOACTION', 'IOC-AFFIRMATIVE', 'IOC-OTHER-AFFIRMATIVE', 'IOC-GENERAL-EXCEPTIONS', 'IOC-EXCEPTIONS']);
   const negative = (iocProvisions || []).filter((p) => {
     if (isPreambleProvision(p)) return false;
@@ -2600,7 +2607,7 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
           </p>
         </div>
         <div className="px-3 py-3 text-xs font-ui italic text-inkFaint">
-          Not present in this agreement
+          None extracted for this agreement.
         </div>
       </div>
     );
@@ -2646,19 +2653,48 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
   const thresholdFor = (p) => {
     const f = getStructuredFeatures(p) || {};
     const bits = [];
+    // Audit block 6e: CapEx/Settlement threshold cells could show a verbose
+    // descriptive sentence AND a separate pill carrying the very same dollar
+    // figure (once as the raw dollarThreshold sentence, again from the
+    // Settlement-cap / permittedExceptions figures). De-dupe by the extracted
+    // amount, and compact any bit that's a long sentence down to just its $
+    // figure — the full sentence is already reachable via the row's evidence
+    // hover, never duplicated in-cell.
+    const AMOUNT_RE = /\$\s?[\d,]+(?:\.\d+)?(?:\s*(?:million|billion|thousand))?/i;
+    const seenAmounts = new Set();
+    const pushBit = (bitText) => {
+      if (!bitText) return;
+      const m = bitText.match(AMOUNT_RE);
+      let compact = (m && bitText.trim().length > m[0].length + 20) ? m[0] : bitText;
+      const ampKey = m ? m[0].replace(/[$,\s]/g, '').toLowerCase() : null;
+      if (ampKey) {
+        if (seenAmounts.has(ampKey)) return;
+        seenAmounts.add(ampKey);
+        // Audit block 7: reuse the fee hero's "≈X% of deal value" computation
+        // for the plain-dollar threshold pill (not the label-prefixed
+        // compounds, where a bare suffix would read ambiguously). Omitted
+        // when deal value is unknown — subtle, muted-in-place, not a
+        // separate row.
+        if (compact.trim() === m[0].trim()) {
+          const pct = pctOfDealValue(m[0], deal);
+          if (pct) compact = `${compact} (≈${pct}%)`;
+        }
+      }
+      bits.push(compact);
+    };
     const push = (label, val) => {
       if (val === null || val === undefined || val === '' || val === false) return;
       if (Array.isArray(val) && val.length === 0) return;
       const u = isCitableValue(val) ? getCitableValue(val) : val;
       if (u === null || u === undefined || u === '' || u === false) return;
-      if (typeof u === 'boolean') { if (u) bits.push(label); return; }
+      if (typeof u === 'boolean') { if (u) pushBit(label); return; }
       if (Array.isArray(u)) {
         const t = u.map((x) => isTaggedItem(x) ? (x.label || x.code) : String(x)).filter(Boolean).join(', ');
-        if (t) bits.push(label ? `${label}: ${t}` : t);
+        if (t) pushBit(label ? `${label}: ${t}` : t);
         return;
       }
-      if (isTaggedItem(u)) { bits.push(label ? `${label}: ${u.label || u.code}` : (u.label || u.code)); return; }
-      bits.push(label ? `${label}: ${String(u)}` : String(u));
+      if (isTaggedItem(u)) { pushBit(label ? `${label}: ${u.label || u.code}` : (u.label || u.code)); return; }
+      pushBit(label ? `${label}: ${String(u)}` : String(u));
     };
     push(null, f.dollarThreshold);
     push('Settlement cap', f.interimSettlementCap);
@@ -2685,7 +2721,7 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
         const parts = [];
         if (ind) parts.push(`${ind} ind.`);
         if (agg) parts.push(`${agg} agg.`);
-        bits.push(parts.join(' / '));
+        pushBit(parts.join(' / '));
       }
     }
     return bits.length ? bits.join(' · ') : null;
@@ -2803,7 +2839,7 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
 
 /* Public wrapper: render Target / Company half first, then Parent / Buyer
  * half (with "Not present" placeholder when no IOC-B provisions exist). */
-function IocNegativeCovenantsTable({ iocProvisions, onSelectProvision, side }) {
+function IocNegativeCovenantsTable({ iocProvisions, onSelectProvision, side, deal }) {
   const targetProvs = (iocProvisions || []).filter((p) => p.type !== 'IOC-B');
   const buyerProvs = (iocProvisions || []).filter((p) => p.type === 'IOC-B');
   const showTarget = !side || side === 'target';
@@ -2815,6 +2851,7 @@ function IocNegativeCovenantsTable({ iocProvisions, onSelectProvision, side }) {
           iocProvisions={targetProvs}
           partyLabel="Target / Company"
           onSelectProvision={onSelectProvision}
+          deal={deal}
         />
       )}
       {showBuyer && (
@@ -2822,6 +2859,7 @@ function IocNegativeCovenantsTable({ iocProvisions, onSelectProvision, side }) {
           iocProvisions={buyerProvs}
           partyLabel="Parent / Buyer"
           onSelectProvision={onSelectProvision}
+          deal={deal}
         />
       )}
     </div>
@@ -3553,7 +3591,11 @@ function StructTable({ provisions, onSelectProvision }) {
     if (isCitableValue(raw)) raw = getCitableValue(raw);
     if (isTaggedItem(raw)) {
       const label = resolveTaggedLabel('mergerForm', raw) || raw.label || raw.code;
-      return <CodeBadge code={raw.code || label} />;
+      // Audit block 6b: pass the resolved LABEL, not just the raw code — a
+      // raw taxonomy code without underscores (e.g. a PascalCase slug) falls
+      // through CodeBadge's fallback humanizer unchanged and leaks into the
+      // pill verbatim.
+      return <CodeBadge code={raw.code} label={label} />;
     }
     // Plain string — render as a pill too
     return <CodeBadge code={String(raw)} />;
@@ -3602,7 +3644,30 @@ function StructTable({ provisions, onSelectProvision }) {
       typeof features.mainConcept === 'string' ? features.mainConcept : '',
       String(p.full_text || '').slice(0, 1200),
     ].join(' ');
-    if (/certificate\s+of\s+incorporation|charter/i.test(cat)) {
+    // Audit block 6c: a single provision's category sometimes covers BOTH
+    // topics at once ("Certificate of Incorporation / Bylaws") — the
+    // charter-first branch below would match on the "charter" alternative
+    // and return only the charter half, silently dropping the bylaws
+    // treatment. Detect the combined case first and render both halves.
+    const isCharterCat = /certificate\s+of\s+incorporation|charter/i.test(cat);
+    const isBylawsCat = /bylaws/i.test(cat);
+    if (isCharterCat && isBylawsCat) {
+      const exMatch = text.match(/Exhibit\s+([A-Z])\b/i);
+      const charterHalf = exMatch
+        ? `per Exhibit ${exMatch[1].toUpperCase()}`
+        : (/certificate\s+of\s+incorporation\s+of\s+(?:the\s+)?Merger\s+Sub/i.test(text) ? "per Merger Sub's" : null);
+      const bylawsHalf = /bylaws\s+of\s+(?:the\s+)?Merger\s+Sub|Merger\s+Sub(?:'s)?[^.]{0,60}bylaws/i.test(text)
+        ? "per Merger Sub's"
+        : (exMatch ? `per Exhibit ${exMatch[1].toUpperCase()}` : null);
+      if (charterHalf || bylawsHalf) {
+        const parts = [];
+        if (charterHalf) parts.push(`Charter: ${charterHalf}`);
+        if (bylawsHalf) parts.push(`Bylaws: ${bylawsHalf}`);
+        return parts.join(' · ');
+      }
+      return null;
+    }
+    if (isCharterCat) {
       const ex = text.match(/Exhibit\s+([A-Z])\b/i);
       if (ex) return `Per Exhibit ${ex[1].toUpperCase()}`;
       if (/certificate\s+of\s+incorporation\s+of\s+(?:the\s+)?Merger\s+Sub/i.test(text)) {
@@ -4538,6 +4603,23 @@ function parseDollarAmount(raw) {
   return n;
 }
 
+// Audit block 7: reusable "$X (≈Y% of deal value)" computation, shared
+// between the TERMF hero (which pioneered the pattern) and IOC threshold
+// pills. Returns the percentage as a string (no "%" suffix) or null when
+// the deal value is unknown, the amount doesn't parse, or the ratio would
+// be a nonsensical >100%. `decimals` defaults tighter than the hero's — IOC
+// thresholds are usually a small fraction of a percent (e.g. "≈0.04%"),
+// where the hero's 1-decimal rounding would collapse to "0.0%".
+function pctOfDealValue(amountRaw, deal, decimals = 2) {
+  const dv = deal && Number(deal.value_usd);
+  if (!dv || !Number.isFinite(dv) || dv <= 0) return null;
+  const amountNum = parseDollarAmount(amountRaw);
+  if (!amountNum) return null;
+  const pct = (amountNum / dv) * 100;
+  if (!Number.isFinite(pct) || pct <= 0 || pct > 100) return null;
+  return pct.toFixed(decimals);
+}
+
 function termfHeroDisplay(raw) {
   if (raw === null || raw === undefined || raw === '') return null;
   const inner = isCitableValue(raw) ? getCitableValue(raw) : raw;
@@ -4765,8 +4847,13 @@ function TermfTriggerMatrix({ provisions, allProvisions, deal }) {
           <thead className="bg-bg/60 border-b border-border">
             <tr>
               <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Trigger</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[150px]">Who Can Terminate</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[150px]">Fee</th>
+              {/* Audit block 8: dropped the sibling width classes — with
+                  ALL three columns explicitly sized, table-fixed scaled them
+                  proportionally to fill the table's rendered width (Trigger
+                  measured 296px instead of 190px). Only the label column is
+                  pinned; the rest flex. */}
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">Who Can Terminate</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">Fee</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -4932,7 +5019,13 @@ function TermfTailMechanics({ provisions, allProvisions }) {
 
   const windowDisplay = (() => {
     const inner = isCitableValue(window) ? getCitableValue(window) : window;
-    return formatDurationWithUnits(inner, 'tailFeeWindowMonths') || `${inner} months`;
+    const formatted = formatDurationWithUnits(inner, 'tailFeeWindowMonths') || `${inner} months`;
+    // Audit block 5: the extractor sometimes returns the whole verbatim tail
+    // clause — with its own internal section cites — instead of a clean
+    // duration. Strip citation fragments and cap length; the full clause
+    // stays reachable via this row's evidence hover (quote, below).
+    const cleaned = stripSectionCitations(String(formatted));
+    return cleaned.length > 60 ? `${cleaned.slice(0, 59)}…` : cleaned;
   })();
   const thresholdRaw = combined.tailFeeThresholdPct;
   const thresholdInner = isCitableValue(thresholdRaw) ? getCitableValue(thresholdRaw) : thresholdRaw;
@@ -5128,12 +5221,17 @@ function TermfRemedyEffect({ provisions }) {
               Yes — carved out of the fee/sole-remedy bar
             </Row>
           )}
+          {/* Audit block 5: "Effect of termination" (Agreement becomes void,
+              specified provisions survive) is a GENERAL post-termination
+              provision, not fee-specific — it belongs with the Boilerplate
+              Summary, not this fee table. Point there instead of repeating
+              (or truncating) the clause here. */}
           {effect && (
-            <Row label="Effect of termination" quote={effect}>
-              {/void|no\s+further\s+force|of\s+no\s+(?:further\s+)?effect/i.test(effect)
-                ? 'Agreement becomes void; specified provisions survive'
-                : (effect.length > 80 ? `${effect.slice(0, 79)}…` : effect)}
-            </Row>
+            <tr className="align-top">
+              <td colSpan={2} className="px-3 py-2 text-[11px] font-ui italic text-inkFaint">
+                General post-termination effects and remedies: see Boilerplate Summary.
+              </td>
+            </tr>
           )}
           {interestText && (
             <Row label="Interest on late payment">
@@ -5247,7 +5345,10 @@ const TERMR_FAULT_STANDARDS = [
 // When a deal's TERMR-VOTE provision didn't capture it, fall back to
 // shareholder-approval-related fields on the deal's STRUCT / COND-M
 // (Stockholder Approval condition) provisions per user request; otherwise the
-// row omits the vote standard rather than guessing.
+// row omits the vote standard rather than guessing. Audit block 4b: the old
+// mainCondition fallback dumped a raw, un-summarized condition sentence into
+// the row — dropped. Only the dedicated (summarized) voteThreshold field is
+// ever shown; the row renders nothing rather than leaking raw prose.
 function termrVoteStandard(f, allProvisions) {
   const u = (v) => (isCitableValue(v) ? getCitableValue(v) : v);
   const own = u(f.voteThreshold);
@@ -5260,10 +5361,24 @@ function termrVoteStandard(f, allProvisions) {
     const pf = getStructuredFeatures(p) || {};
     const vt = u(pf.voteThreshold);
     if (vt) return String(vt);
-    const mc = u(pf.mainCondition);
-    if (mc && /major|vote|approv/i.test(String(mc))) return String(mc);
   }
   return null;
+}
+
+// Audit block 4a: materialityStandard often carries the clause verbatim,
+// including its own internal section cross-references ("...the condition
+// set forth in Section 7.02(a) or Section 7.02(b) would not be then
+// satisfied"). Strip those citation fragments — the substance survives
+// without pointing back into the agreement's own numbering; the full
+// sentence remains reachable via the row's evidence hover.
+function stripSectionCitations(text) {
+  if (typeof text !== 'string' || !text) return text;
+  return text
+    .replace(/,?\s*(?:as\s+)?set\s+forth\s+in\s+Sections?\s+\d+(?:\.\d+)*(?:\([a-zA-Z0-9]+\))*(?:\s*(?:,|or|and)\s*Sections?\s+\d+(?:\.\d+)*(?:\([a-zA-Z0-9]+\))*)*/gi, '')
+    .replace(/,?\s*pursuant\s+to\s+Sections?\s+\d+(?:\.\d+)*(?:\([a-zA-Z0-9]+\))*/gi, '')
+    .replace(/\s{2,}/g, ' ')
+    .replace(/\s+([.,;])/g, '$1')
+    .trim();
 }
 
 // Compose the "key terms" cell for a canonical right from its features.
@@ -5289,7 +5404,7 @@ function termrKeyTerms(key, f, ctx = {}) {
     const cd = u(f.cureDays);
     if (cd) bits.push(`Cure period: ${cd} days`);
     const ms = u(f.materialityStandard);
-    if (ms) bits.push(String(ms));
+    if (ms) bits.push(stripSectionCitations(String(ms)));
   }
   if (key === 'superior') {
     bits.push(u(f.feeRequired) ? 'Termination fee payable' : 'No fee specified');
@@ -5457,101 +5572,33 @@ function TermrRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
       </div>
 
       {/* Breach standard that blocks termination — its own table, canonical
-          wording (per user: specific words matter). */}
-      <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
-        <div className="px-3 py-2 bg-bg/60 border-b border-border">
-          <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
-            Breach Standard Blocking the Right to Terminate
-          </p>
-        </div>
-        <table className="min-w-full table-fixed text-xs font-ui">
-          <tbody className="divide-y divide-border">
-            <tr className="align-top hover:bg-bg/40">
-              <td className={`px-3 py-2 text-ink font-medium whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>Standard</td>
-              <td
-                className={`px-3 py-2 text-ink ${faultText && showEvidence ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
-                onClick={faultText && showEvidence ? () => showEvidence(faultText) : undefined}
-              >
-                <HoverSource quote={faultText} as="div">
-                  {faultStandard || <span className="italic text-inkFaint">No fault-based carve-out found</span>}
-                </HoverSource>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
-
-/* ─── NOSOL / ANTI table — same Term/Details visual layout as StructTable.
- *     Each provision is one row. The Details column stacks the type's
- *     FEATURE_DISPLAY_ORDER fields as <dt>/<dd> pairs (skipping empties)
- *     so the multi-code section reads like a clean key/value summary —
- *     no per-feature columns with mostly-empty cells, no card stacks. */
-function MultiCodeStructLikeTable({ provisions, type, onSelectProvision }) {
-  // Sort provisions by category for stable reading order.
-  const sorted = [...provisions].sort((a, b) =>
-    String(a.category || '').localeCompare(String(b.category || '')));
-
-  const schemaKeys = (FEATURE_DISPLAY_ORDER[type] || []).filter(
-    (k) => !getHiddenColumnsForType(type).has(k),
-  );
-
-  const rows = sorted.map((p) => {
-    const features = getStructuredFeatures(p) || {};
-    const cells = schemaKeys
-      .map((key) => ({ key, raw: features[key] }))
-      .filter(({ raw }) => !isEmptyValue(raw));
-    return { p, cells };
-  });
-
-  return (
-    <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
-      <div className="px-3 py-2 bg-bg/60 border-b border-border">
-        <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
-          {typeLabel(type)} — Provisions
-        </p>
-      </div>
-      <table className="min-w-full table-fixed text-xs font-ui">
-        <thead className="bg-bg/60 border-b border-border">
-          <tr>
-            <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Term</th>
-            <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Details</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-border">
-          {rows.map(({ p, cells }) => (
-            <tr key={p.id} className="hover:bg-bg/40 transition-colors align-top">
-              <td className="px-3 py-2 align-top">
-                <button
-                  type="button"
-                  onClick={() => onSelectProvision && onSelectProvision(p)}
-                  className="text-left text-accent hover:underline font-medium"
+          wording (per user: specific words matter). Audit block 6d: omit
+          the whole sub-table entirely when nothing was found, rather than
+          rendering a one-row "No fault-based carve-out found" table. */}
+      {faultStandard && (
+        <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+          <div className="px-3 py-2 bg-bg/60 border-b border-border">
+            <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+              Breach Standard Blocking the Right to Terminate
+            </p>
+          </div>
+          <table className="min-w-full table-fixed text-xs font-ui">
+            <tbody className="divide-y divide-border">
+              <tr className="align-top hover:bg-bg/40">
+                <td className={`px-3 py-2 text-ink font-medium whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>Standard</td>
+                <td
+                  className={`px-3 py-2 text-ink ${faultText && showEvidence ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
+                  onClick={faultText && showEvidence ? () => showEvidence(faultText) : undefined}
                 >
-                  {p.category || 'General'}
-                </button>
-              </td>
-              <td className="px-3 py-2 text-ink">
-                {cells.length === 0 ? (
-                  <span className="text-inkFaint/70 italic">—</span>
-                ) : (
-                  <dl className="space-y-1">
-                    {cells.map(({ key, raw }) => (
-                      <div key={key} className="flex flex-col">
-                        <dt className="text-[10px] text-inkFaint uppercase tracking-wider">
-                          {humanizeKey(key)}
-                        </dt>
-                        <dd>{renderFeatureCell(key, raw)}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                  <HoverSource quote={faultText} as="div">
+                    {faultStandard}
+                  </HoverSource>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }
@@ -6178,7 +6225,29 @@ function RepKnowledgeNote({ provisions, allProvisions }) {
  *     click-to-source. Returns null when no qualifier is present so the table
  *     cell falls back to its default empty rendering. */
 function MaterialityQualifierCell({ rawValue, provision }) {
-  const emptyDash = <span className="text-inkFaint italic">—</span>;
+  const showEvidence = useShowEvidence();
+  // Audit block 9a: an empty materiality cell still hovers to the row's
+  // source provision text, so the reader can verify the absence directly
+  // rather than trusting the app's negative claim blindly.
+  const emptyDash = (() => {
+    const rowQuote = (typeof provision?.full_text === 'string' && provision.full_text.trim())
+      ? provision.full_text
+      : null;
+    if (!rowQuote || !showEvidence) {
+      return <span className="text-inkFaint italic">—</span>;
+    }
+    return (
+      <HoverSource quote={rowQuote}>
+        <button
+          type="button"
+          onClick={(e) => { e.stopPropagation(); showEvidence(rowQuote); }}
+          className="text-inkFaint italic cursor-pointer hover:underline decoration-dotted"
+        >
+          —
+        </button>
+      </HoverSource>
+    );
+  })();
   const inner = isCitableValue(rawValue) ? getCitableValue(rawValue) : rawValue;
   if (inner === null || inner === undefined || inner === '') return emptyDash;
   const items = Array.isArray(inner) ? inner : [inner];
@@ -6391,11 +6460,16 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
   };
 
   // ── SEC Filings exception — rendered as ONE row whose Details cell carries
-  //    sub-headings, mirroring the STRUCT "Merger" row treatment. Scope FIRST
-  //    (per user), then Cut-Off, then the canonical Portions-Excluded pills,
-  //    then Carved-out Reps. ──
+  //    sub-headings, mirroring the STRUCT "Merger" row treatment. Audit
+  //    block 3: the cell used to LEAD with the verbatim scope sentence and
+  //    only append the derived Cut-Off phrase second — inverted per the
+  //    table design contract (canonical/derived value in the cell, verbatim
+  //    source on hover only). Cut-Off now leads; the scope sentence is never
+  //    printed in the cell, only carried as hover/click-to-source text on
+  //    the label + Cut-Off row. ──
+  const scopeRaw = pickKey(['secFilingsExceptionScope', 'secFilingsExceptionLanguage']);
+  const scopeQuote = extractQuote(scopeRaw);
   const secSubRows = [
-    { label: 'Scope / Language', keys: ['secFilingsExceptionScope', 'secFilingsExceptionLanguage'] },
     { label: 'Cut-Off', custom: 'lookback' },
     { label: 'Portions Excluded', keys: ['secFilingsExceptionExclusions', 'secFilingsExcludedSections'] },
     { label: 'Carved-out Reps', keys: ['secFilingsExceptionCarvedOutReps', 'secFilingsCarvedOutReps'] },
@@ -6403,15 +6477,35 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
   const secValues = secSubRows.map((sr) => {
     if (sr.custom === 'lookback') {
       const lookbackRaw = pickKey(['secFilingsExceptionLookbackDate']) || pickKey(['secFilingsLookbackMonths']) || pickKey(['secFilingsExceptionLookback']);
-      return { ...sr, present: lookbackRaw !== null, node: renderLookbackVal(), quote: extractQuote(lookbackRaw) };
+      // The derived Cut-Off phrase is frequently recovered FROM the scope
+      // sentence (deriveCutoffPhrase scans secFilingsExceptionScope among
+      // other fields) — the scope quote is still the right hover evidence
+      // even when the lookback field itself has no citable text of its own.
+      return { ...sr, present: lookbackRaw !== null || !!scopeQuote, node: renderLookbackVal(), quote: extractQuote(lookbackRaw) || scopeQuote };
     }
     const v = pickKey(sr.keys);
     return { ...sr, present: v !== null && v !== undefined, node: v != null ? renderFeatureCell(sr.keys[0], v) : null, quote: extractQuote(v) };
   });
-  const secAnyPresent = secValues.some((s) => s.present);
-  const secRowQuote = secValues.find((s) => s.quote)?.quote || null;
+  const secAnyPresent = secValues.some((s) => s.present) || scopeRaw !== null;
+  const secRowQuote = secValues.find((s) => s.quote)?.quote || scopeQuote || null;
 
   const disclosureRaw = pickKey(['disclosureLetterReference', 'disclosureSchedulesReference', 'scheduleReference', 'schedule_reference']);
+
+  // Audit block 2: this table is called for BOTH REP-T and REP-B. The
+  // Buyer/Parent side routinely has no SEC-filings exception or disclosure-
+  // schedule reference (SEC reporting reps are almost always Target-only) —
+  // when EVERY row would be empty, collapse the whole table to a single
+  // muted line instead of a header framing two "Not present" rows. Never
+  // "Not present" — extraction may simply have missed it.
+  if (!secAnyPresent && disclosureRaw === null) {
+    return (
+      <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+        <div className="px-3 py-3 text-xs font-ui italic text-inkFaint">
+          None extracted for this agreement.
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
@@ -6601,8 +6695,14 @@ function RepMaterialContractsTable({ provisions, onSelectProvision }) {
         <table className="min-w-full table-fixed text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
             <tr>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Contract Type</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider w-[190px] min-w-[190px] max-w-[190px]">Threshold</th>
+              {/* Audit block 8: this table had it backwards — the label
+                  column (Contract Type) carried no width while the VALUE
+                  column (Threshold) was pinned to 190px, so Contract Type
+                  ballooned to fill the rest (measured 336px). Standard
+                  convention is the reverse: label column fixed, value
+                  column flexes. */}
+              <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Contract Type</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Threshold</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -7346,10 +7446,14 @@ function MaeDefinitionSummary({ allProvisions, onSelectProvision, side }) {
  * non-interactive. Uses useShowEvidence (same as CategoryFeatureSummaryTable). */
 function CellWithSource({ provision, featureKey, raw, isEmpty, children, className }) {
   const showEvidence = useShowEvidence();
-  if (isEmpty) {
-    return <div className={className || 'whitespace-pre-wrap break-words'}>{children}</div>;
-  }
-  const quote = evidenceQuote(raw, { provision });
+  // Audit block 9a: an empty cell (dash) still offers the row's source
+  // provision on hover, so the reader can verify the absence directly
+  // rather than trusting a negative claim blindly. A feature-level quote
+  // wins when there is one; an empty cell has none, so fall back to the
+  // provision's own full text.
+  const quote = isEmpty
+    ? ((typeof provision?.full_text === 'string' && provision.full_text.trim()) ? provision.full_text : null)
+    : evidenceQuote(raw, { provision });
   if (!quote || !showEvidence) {
     return <div className={className || 'whitespace-pre-wrap break-words'}>{children}</div>;
   }
@@ -7375,18 +7479,19 @@ function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, a
     return <ConsidTable provisions={provisions} onSelectProvision={onSelectProvision} onAddProvision={onAddProvision} />;
   }
   // NOSOL (P3 item 1): 4 stacked mini-tables — Cease Discussions / Change of
-  // Recommendation Framework / Key Definitions / Other Restrictions. Below
-  // those, the per-provision MultiCodeStructLikeTable still renders so the
-  // raw NOSOL provisions remain navigable.
+  // Recommendation Framework / Key Definitions / Other Restrictions. These
+  // are the canonical rendering; a per-provision MultiCodeStructLikeTable
+  // used to also mount here, duplicating the same data across a fifth table
+  // full of empty rows (audit block 1) — removed.
   if (type === 'NOSOL' || type === 'NOSOL-T' || type === 'NOSOL-B') {
-    // NOSOL-B (Buyer / Parent) is the always-show placeholder side — almost
-    // every M&A deal puts the no-shop on the Company only, so NOSOL-B usually
-    // has no provisions and we render a "Not present in this agreement" card.
+    // Whole-section-empty guard (audit block 2): no provisions at all for
+    // this party. "None extracted" rather than "Not present" — extraction
+    // may simply have missed it; we never affirmatively assert absence.
     if (!provisions || provisions.length === 0) {
       return (
         <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
           <div className="px-3 py-3 text-xs font-ui italic text-inkFaint">
-            Not present in this agreement
+            None extracted for this agreement.
           </div>
         </div>
       );
@@ -7394,11 +7499,6 @@ function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, a
     return (
       <div className="space-y-3">
         <NosolFourTables provisions={provisions} />
-        <MultiCodeStructLikeTable
-          provisions={provisions}
-          type={type === 'NOSOL-B' ? 'NOSOL-B' : 'NOSOL'}
-          onSelectProvision={onSelectProvision}
-        />
       </div>
     );
   }
@@ -7778,7 +7878,7 @@ function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, a
                         >
                           <CellWithSource provision={p} featureKey={k} raw={raw} isEmpty={false} className="">
                             {renderAsPill
-                              ? <CodeBadge code={raw.code || label} />
+                              ? <CodeBadge code={raw.code} label={label} />
                               : <span>{label}</span>}
                           </CellWithSource>
                         </td>
@@ -9800,6 +9900,7 @@ export default function ReviewPage() {
                                   iocProvisions={provs.filter((p) => !isPreambleProvision(p))}
                                   onSelectProvision={handleEditProvision}
                                   side={type === 'IOC-T' ? 'target' : type === 'IOC-B' ? 'buyer' : null}
+                                  deal={deal}
                                 />
                               )}
                               {(type === 'REP-T' || type === 'REP-B') && (
@@ -9853,7 +9954,7 @@ export default function ReviewPage() {
                                     return (
                                       <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
                                         <div className="px-3 py-3 text-xs font-ui italic text-inkFaint">
-                                          Not present in this agreement
+                                          None extracted for this agreement.
                                         </div>
                                       </div>
                                     );

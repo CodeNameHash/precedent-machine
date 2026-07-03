@@ -11,6 +11,7 @@ import {
   CodeBadge,
   HoverSource,
   humanizeBadgeText,
+  prettifyEnumValue,
   useShowEvidence,
   Pill,
   REVIEW_LABEL_COL_W,
@@ -336,6 +337,18 @@ function isConsidConvertProvision(p) {
   return false;
 }
 
+// Resolve a considerationType value (tagged or plain-string enum) to its
+// humanized label. Audit block 6a: a plain-string enum value ("cash-with-cvr")
+// used to render verbatim as a parenthetical slug — route it through
+// prettifyEnumValue (which normalizes case/format drift) instead of
+// String()-ing it as-is.
+function resolveConsidTypeLabel(ct) {
+  if (isTaggedItem(ct)) {
+    return resolveTaggedLabel('considerationType', ct) || ct.label || humanizeBadgeText(ct.code);
+  }
+  return prettifyEnumValue('considerationType', String(ct));
+}
+
 // Build a synthetic Common Stock row from the CONSID-CONVERT provision. We
 // use the per-share amount / merger consideration directly (no instrument
 // treatment formula needed — Common Stock simply receives the headline price).
@@ -347,16 +360,12 @@ function buildCommonStockRow(convertProv) {
   // Compose a human-readable treatment string from per-share + consid type.
   let treatmentText = null;
   if (per && ct) {
-    const ctLabel = isTaggedItem(ct)
-      ? (resolveTaggedLabel('considerationType', ct) || ct.label || ct.code)
-      : String(ct);
+    const ctLabel = resolveConsidTypeLabel(ct);
     treatmentText = `Converted into ${per}${ctLabel ? ` (${ctLabel})` : ''}`;
   } else if (per) {
     treatmentText = `Converted into ${per} per share`;
   } else if (ct) {
-    const ctLabel = isTaggedItem(ct)
-      ? (resolveTaggedLabel('considerationType', ct) || ct.label || ct.code)
-      : String(ct);
+    const ctLabel = resolveConsidTypeLabel(ct);
     treatmentText = `Converted into ${ctLabel}`;
   } else {
     treatmentText = 'Converted into the Merger Consideration';

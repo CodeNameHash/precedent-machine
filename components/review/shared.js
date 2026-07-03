@@ -115,25 +115,36 @@ export function EvidenceQuote({ text, quotes, dense }) {
   );
 }
 
+// Acronyms that should stay fully capitalized when a code is split into
+// words (e.g. "CashCvr" → "Cash CVR", not "Cash Cvr").
+const HUMANIZE_ACRONYMS = new Set(['CVR', 'MAE', 'IOC', 'IP', 'FDA', 'HSR', 'CEO', 'CFO', 'ESPP', 'RSU', 'PSU', 'SAR']);
+const titleCaseWord = (w) => {
+  if (!w) return '';
+  const upper = w.toUpperCase();
+  return HUMANIZE_ACRONYMS.has(upper) ? upper : w[0].toUpperCase() + w.slice(1).toLowerCase();
+};
+
 // Humanize a taxonomy code for display: "ACCELERATED_VESTING" → "Accelerated Vesting".
-// Falls back to the raw code if it doesn't look like an UPPER_SNAKE code.
+// Falls back to the raw code if it doesn't look like a recognizable code shape.
 export function humanizeBadgeText(code) {
   if (!code) return '';
   // Case-insensitive UPPER_SNAKE / lower_snake detection: any token of letters/
   // digits separated by underscores gets title-cased so values like
   // "one_step_merger" and "ONE_STEP_MERGER" both render as "One Step Merger".
-  if (!/^[A-Za-z][A-Za-z0-9_]*$/.test(code) || !/_/.test(code)) {
-    if (/^[A-Z][A-Z0-9_]*$/.test(code)) {
-      // Pure UPPER without underscores (rare) — title case it.
-      return code[0] + code.slice(1).toLowerCase();
-    }
-    return code;
+  if (/_/.test(code) && /^[A-Za-z][A-Za-z0-9_]*$/.test(code)) {
+    return code.split('_').map(titleCaseWord).join(' ');
   }
-  return code
-    .toLowerCase()
-    .split('_')
-    .map((w) => (w.length === 0 ? '' : w[0].toUpperCase() + w.slice(1)))
-    .join(' ');
+  if (/^[A-Z][A-Z0-9]*$/.test(code)) {
+    // Pure UPPER without underscores (rare) — title case it.
+    return code[0] + code.slice(1).toLowerCase();
+  }
+  // PascalCase / camelCase without underscores (e.g. "CashCvr") — split at
+  // capital-letter boundaries and title-case each word so a raw slug never
+  // leaks into the UI unchanged (audit block 6b).
+  if (/^[A-Za-z][A-Za-z0-9]*$/.test(code) && /[a-z]/.test(code) && /[A-Z]/.test(code.slice(1))) {
+    return code.replace(/([a-z0-9])([A-Z])/g, '$1 $2').split(' ').map(titleCaseWord).join(' ');
+  }
+  return code;
 }
 
 /* Small inline badge for a canonical taxonomy code (e.g. "WHOLLY_OWNED_SUB"). */
@@ -146,14 +157,38 @@ export function CodeBadge({ code, label }) {
   );
 }
 
+/* Audit block 9b: split `text` on case-insensitive occurrences of
+ * `highlight`, wrapping matches in <strong> so the reader can spot the
+ * applicable phrase inside a long verbatim quote at a glance. Returns the
+ * plain string unchanged when there's no highlight, no match, or the
+ * highlight is too short to be meaningful (avoids over-matching). */
+export function renderHighlighted(text, highlight) {
+  if (typeof text !== 'string' || !text) return text;
+  if (!highlight || typeof highlight !== 'string') return text;
+  const needle = highlight.trim();
+  if (needle.length < 2) return text;
+  const escaped = needle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  let parts;
+  try {
+    parts = text.split(new RegExp(`(${escaped})`, 'gi'));
+  } catch {
+    return text;
+  }
+  if (parts.length <= 1) return text;
+  return parts.map((part, i) => (i % 2 === 1 ? <strong key={i}>{part}</strong> : part));
+}
+
 /* HoverSource — wraps any cell content and surfaces the row's source language
  * in a small amber popover that appears immediately on hover (no 1-second
  * native-title delay). Click-through still works via the wrapped children;
  * the popover is positioned absolutely below the trigger and uses pointer-
  * events:none so it never blocks the underlying click. On touch devices
  * (which never fire mouseenter), a touchstart on the wrapper reveals the
- * popover for ~2.5s — the underlying tap action still fires normally. */
-export function HoverSource({ quote, children, as = 'span', className, align = 'left' }) {
+ * popover for ~2.5s — the underlying tap action still fires normally.
+ * `highlight` (audit block 9b): an optional string (the cell's resolved
+ * value/qualifier text) — case-insensitive matches inside the popover quote
+ * render in <strong> so the applicable phrase jumps out. */
+export function HoverSource({ quote, children, as = 'span', className, align = 'left', highlight }) {
   const [show, setShow] = useState(false);
   // Fixed-position coords computed from the trigger rect on show, so the
   // popover renders above the table's overflow clip rather than inside it.
@@ -217,7 +252,7 @@ export function HoverSource({ quote, children, as = 'span', className, align = '
             bottom: pos.bottom,
           }}
         >
-          &ldquo;{display}&rdquo;
+          &ldquo;{renderHighlighted(display, highlight)}&rdquo;
         </span>
       )}
     </Tag>
@@ -250,7 +285,13 @@ const PILL_TONES = {
   amount: 'bg-emerald-50 text-emerald-700 border-emerald-200',
 };
 
-export function Pill({ text, quote, tone = 'neutral', onClick, className = '' }) {
+// `highlight` (audit block 9b, opt-in): forwarded to HoverSource so the
+// popover bolds case-insensitive matches of this string inside the quote.
+// Defaults to `text` (the pill's own label) when not explicitly overridden
+// — most pills exist precisely to surface a phrase the source quote also
+// contains, so bolding it there is the useful default; pass `highlight={null}`
+// to opt out.
+export function Pill({ text, quote, tone = 'neutral', onClick, className = '', highlight }) {
   const showEvidence = useShowEvidence();
   if (text === null || text === undefined || text === '') return null;
   const colorCls = PILL_TONES[tone] || PILL_TONES.neutral;
@@ -269,7 +310,7 @@ export function Pill({ text, quote, tone = 'neutral', onClick, className = '' })
       {inner}
     </button>
   ) : inner;
-  return quote ? <HoverSource quote={quote}>{body}</HoverSource> : body;
+  return quote ? <HoverSource quote={quote} highlight={highlight === undefined ? text : highlight}>{body}</HoverSource> : body;
 }
 
 /* ── CitableHover: table-cell wrapper enforcing the design contract — the
@@ -397,13 +438,19 @@ export function renderSummaryRowValue(hit, featureKeyForLookup) {
 export function prettifyEnumValue(key, raw) {
   if (typeof raw !== 'string' || raw.length === 0) return raw;
   if (key === 'considerationType') {
+    // Normalize away case/format drift (hyphens, underscores, PascalCase)
+    // before matching — the extractor's enum contract is lower-hyphenated
+    // ("cash-with-cvr") but live data sometimes drifts to other shapes
+    // ("CashCvr"). Audit block 6a/6b.
+    const norm = raw.toLowerCase().replace(/[^a-z]/g, '');
     const map = {
-      'all-cash': 'All cash',
-      'all-stock': 'All stock',
-      'mixed-cash-and-stock': 'Mixed cash and stock',
-      'cash-with-cvr': 'Cash with CVR',
+      allcash: 'All cash',
+      allstock: 'All stock',
+      mixedcashandstock: 'Mixed cash and stock',
+      cashwithcvr: 'Cash + CVR',
+      cashcvr: 'Cash + CVR',
     };
-    const hit = map[raw.toLowerCase()];
+    const hit = map[norm];
     if (hit) return hit;
     return raw.replace(/\bcvr\b/gi, 'CVR');
   }

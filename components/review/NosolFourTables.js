@@ -1,10 +1,26 @@
-import { evidenceQuote } from '../../lib/citable';
+import { evidenceQuote, isCitableValue, getCitableValue } from '../../lib/citable';
 import {
   useShowEvidence,
   pickFirstNonEmpty,
   HoverSource,
   renderSummaryRowValue,
 } from './shared';
+
+// Audit block 1: the parser sometimes emits a bare digit for duration-typed
+// features ("4" instead of "4 business days"). Append the unit ONLY when the
+// value is a bare number — text that already carries units passes through
+// untouched. Only the display value changes; the underlying hit (and its
+// evidence quote) is left intact so hover/click-to-source keep working.
+function withUnitSuffix(hit, unit) {
+  if (!hit || !unit) return hit;
+  const raw = hit.value;
+  const inner = isCitableValue(raw) ? getCitableValue(raw) : raw;
+  const isBareNumber = typeof inner === 'number' || (typeof inner === 'string' && /^\d+(\.\d+)?$/.test(inner.trim()));
+  if (!isBareNumber) return hit;
+  const suffixed = `${inner} ${unit}`;
+  const newValue = isCitableValue(raw) ? { ...raw, value: suffixed } : suffixed;
+  return { ...hit, value: newValue };
+}
 
 /* ─── P3 item 1: NOSOL — 4 stacked mini-tables ──
  *  Cease-Discussions / Change-of-Recommendation Framework / Key Definitions /
@@ -24,8 +40,10 @@ const NOSOL_CHANGE_OF_REC = [
   { label: 'What does NOT constitute a Change of Recommendation', keys: ['notChangeOfRecommendationItems'] },
   { label: 'Engagement standard (to discuss with a third party)', keys: ['engagementStandard', 'fiduciaryEngageStandard'] },
   { label: 'Change-of-recommendation standard',        keys: ['changeRecStandard', 'fiduciaryFinalStandard'] },
-  { label: 'Initial match period',                     keys: ['initialMatchPeriodDays', 'matchingPeriod'] },
-  { label: 'Subsequent match period (per material amendment)', keys: ['subsequentMatchPeriodDays', 'subsequentMatchingPeriod'] },
+  { label: 'Notice Period (to existing buyer, upon receipt of a proposal)', keys: ['noticePeriod'], unit: 'hours' },
+  { label: 'Notice Content',                           keys: ['noticeContent'] },
+  { label: 'Initial match period',                     keys: ['initialMatchPeriodDays', 'matchingPeriod'], unit: 'business days' },
+  { label: 'Subsequent match period (per material amendment)', keys: ['subsequentMatchPeriodDays', 'subsequentMatchingPeriod'], unit: 'business days' },
   { label: 'Material-improvement standard',            keys: ['materialImprovementStandard'] },
 ];
 const NOSOL_KEY_DEFINITIONS = [
@@ -54,7 +72,7 @@ const NOSOL_OTHER_RESTRICTIONS = [
 function NosolMiniTable({ title, spec, provisions, headerNote }) {
   const showEvidence = useShowEvidence();
   const rawRows = spec.map((row, originalIdx) => {
-    const hit = pickFirstNonEmpty(provisions, row.keys);
+    const hit = withUnitSuffix(pickFirstNonEmpty(provisions, row.keys), row.unit);
     return { label: row.label, hit, lookupKey: row.keys[0] || null, originalIdx };
   });
   const rows = [...rawRows].sort((a, b) => {
