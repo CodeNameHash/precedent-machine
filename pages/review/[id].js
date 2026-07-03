@@ -53,6 +53,7 @@ import { resolveEditFields } from '../../lib/edit-schema';
 import { isCanonicalCode } from '../../lib/expected-sets';
 import { AddSectionItem } from '../../components/review/AddSectionItem';
 import { TrustStrip } from '../../components/review/TrustStrip';
+import { useViewMode, ViewModeToggle } from '../../components/ViewModeContext';
 import {
   EvidenceContext,
   useShowEvidence,
@@ -1120,6 +1121,7 @@ function getCardCarveouts(provision) {
 
 /* ── Card lead text + key terms + carve-outs renderer ── */
 function ProvisionCard({ provision, onEdit }) {
+  const { isEdit } = useViewMode();
   const [open, setOpen] = useState(false);
   const status = getProvisionStatus(provision);
   const refCode = getRefCode(provision);
@@ -1165,7 +1167,9 @@ function ProvisionCard({ provision, onEdit }) {
           </span>
           <span className="rec-card-cat">{provision.category || 'General'}</span>
           <FavPill fav={provision.ai_favorability} />
-          <RecStatusTag status={status} />
+          {/* Approved / Needs review / Unreviewed is the editor's QA workflow
+              status, not deal content — editors only. */}
+          {isEdit && <RecStatusTag status={status} />}
         </div>
 
         {/* Lead — plain-English headline */}
@@ -6600,6 +6604,7 @@ function romanizeLower(num) {
 }
 
 function RepMaterialContractsTable({ provisions, onSelectProvision }) {
+  const { isEdit } = useViewMode();
   const showEvidence = useShowEvidence();
   const [showCoverage, setShowCoverage] = useState(false);
   let source = null;
@@ -6695,7 +6700,9 @@ function RepMaterialContractsTable({ provisions, onSelectProvision }) {
 
       {clauseRows.length === 0 ? (
         <p className="px-3 py-3 text-xs font-ui italic text-inkFaint">
-          No material-contract sub-clauses extracted (re-extract REP-T to populate).
+          {isEdit
+            ? 'No material-contract sub-clauses extracted (re-extract REP-T to populate).'
+            : 'No material-contract sub-clauses found.'}
         </p>
       ) : (
         <table className="min-w-full text-xs font-ui">
@@ -7230,6 +7237,7 @@ function CondSingleTable({ allProvisions, onSelectProvision }) {
  *      Exceptions) — pulled from features.carveouts.
  */
 function MaeSinglePartySummary({ provision, partyLabel, onSelectProvision }) {
+  const { isEdit } = useViewMode();
   const f = getStructuredFeatures(provision) || {};
 
   // Derive limbs: maeLimbs (preferred) -> preventDelayProng (fallback).
@@ -7293,7 +7301,9 @@ function MaeSinglePartySummary({ provision, partyLabel, onSelectProvision }) {
         <div className="font-mono text-[10px] text-inkFaint uppercase tracking-wider">MAE Test</div>
         <div className="font-display text-lg text-ink font-medium mt-1">
           {limbsLabel || (
-            <span className="italic text-inkFaint text-sm">Limbs not extracted (re-ingest to populate)</span>
+            <span className="italic text-inkFaint text-sm">
+              {isEdit ? 'Limbs not extracted (re-ingest to populate)' : 'Not available'}
+            </span>
           )}
         </div>
       </div>
@@ -7323,7 +7333,9 @@ function MaeSinglePartySummary({ provision, partyLabel, onSelectProvision }) {
         )}
         {carveouts.length === 0 ? (
           <p className="px-3 py-3 text-xs font-ui italic text-inkFaint">
-            No carve-outs extracted (re-ingest to populate `carveouts` list with MAE_CARVEOUT codes).
+            {isEdit
+              ? 'No carve-outs extracted (re-ingest to populate `carveouts` list with MAE_CARVEOUT codes).'
+              : 'No carve-outs found.'}
           </p>
         ) : (
           <ul className="divide-y divide-border">
@@ -8680,6 +8692,7 @@ ReviewPage.noLayout = true;
 export default function ReviewPage() {
   const router = useRouter();
   const { id } = router.query;
+  const { isEdit } = useViewMode();
   const { user } = useUser({ redirectTo: '/login' });
   const { deal, loading: dealLoading, refetch: refetchDeal } = useDeal(id);
   // P5 item 6: advisors editor modal toggle.
@@ -9172,17 +9185,21 @@ export default function ReviewPage() {
       setActiveFilter(prov.type);
       // Auto-open the right edit panel so a single sidebar click on a
       // provision swaps the right-side toolbar to the editor for that item.
-      setEditingProvision(prov);
+      // User view: no editing, so leave the panel closed — the main content
+      // still switches to this provision's card via setSelectedProvId above.
+      if (isEdit) setEditingProvision(prov);
       setExpandedLabel(null);
     }
     // Single-provision selection should use the card view so the user can
     // see the full structured summary + collapsible text for that one item.
     setProvisionView('cards');
-  }, [provisions]);
+  }, [provisions, isEdit]);
 
   /* ── Edit provision ── */
   const handleEditProvision = useCallback((provision) => {
-    setEditingProvision(provision);
+    // User view: keep the click-to-evidence behavior (highlight + jump below)
+    // but never mount the edit panel — no editing/save affordances for users.
+    if (isEdit) setEditingProvision(provision);
     setExpandedLabel(null);
     // Pre-mark the provision's section in the document (without switching tabs)
     // so when the user opens the Full Document tab it's already scrolled to and
@@ -9195,7 +9212,7 @@ export default function ReviewPage() {
       setHighlightedQuote(chunk);
       setHighlightedQuoteNonce((n) => n + 1);
     }
-  }, []);
+  }, [isEdit]);
 
   // Open the editor for a provision by id (used by the trust strip's unverified-
   // quote "Edit" action, which only carries provision_id).
@@ -9454,6 +9471,7 @@ export default function ReviewPage() {
           </div>
         </div>
         <div className="flex items-center gap-3">
+          <ViewModeToggle />
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="p-1.5 text-inkLight hover:text-ink transition-colors rounded hover:bg-paper"
@@ -9563,7 +9581,7 @@ export default function ReviewPage() {
                   })}
                 </div>
                 )}
-                {(() => {
+                {isEdit && (() => {
                   const hasAdvisors = Array.isArray(deal.metadata?.advisors) && deal.metadata.advisors.length > 0;
                   // When advisors exist, render a compact "+" chip next to the
                   // pills (matches their styling) to add more. When none exist,
@@ -9603,13 +9621,15 @@ export default function ReviewPage() {
                   );
                 })()}
               </div>
-              <ExtractionStatusPill
-                deal={deal}
-                onRefetch={async () => {
-                  await refetchDeal?.();
-                  await refetchProvs?.();
-                }}
-              />
+              {isEdit && (
+                <ExtractionStatusPill
+                  deal={deal}
+                  onRefetch={async () => {
+                    await refetchDeal?.();
+                    await refetchProvs?.();
+                  }}
+                />
+              )}
               <div className="rec-deal-meta">
                 {deal.sector && (
                   <div className="m">
@@ -9635,14 +9655,20 @@ export default function ReviewPage() {
                     <span className="v">{deal.governing_law}</span>
                   </div>
                 )}
-                <div className="m">
-                  <span className="k">Classified</span>
-                  <span className="v">
-                    {provisions.length} provision{provisions.length !== 1 ? 's' : ''}
-                  </span>
-                </div>
+                {/* "Classified" is a pipeline-stage stat (extraction status),
+                    not deal content — editor-only, like the trust strip below. */}
+                {isEdit && (
+                  <div className="m">
+                    <span className="k">Classified</span>
+                    <span className="v">
+                      {provisions.length} provision{provisions.length !== 1 ? 's' : ''}
+                    </span>
+                  </div>
+                )}
               </div>
-              <TrustStrip dealId={id} onJump={showEvidence} onEditProvisionById={handleEditProvisionById} />
+              {isEdit && (
+                <TrustStrip dealId={id} onJump={showEvidence} onEditProvisionById={handleEditProvisionById} />
+              )}
             </div>
 
             {/* Tab System */}
@@ -9952,7 +9978,10 @@ export default function ReviewPage() {
                                     provisions={restAugmented}
                                     type={type}
                                     onSelectProvision={handleEditProvision}
-                                    onAddProvision={handleBeginAdd}
+                                    // ConsidTable/EquityAwardTable render their own inline
+                                    // "+ Add" affordance whenever onAddProvision is truthy —
+                                    // withhold it in user view (editors only).
+                                    onAddProvision={isEdit ? handleBeginAdd : undefined}
                                     allProvisions={provisions}
                                     deal={deal}
                                   />
@@ -9983,7 +10012,7 @@ export default function ReviewPage() {
                               section's content (not floating by the header), so
                               it reads as "append to this list": capture a
                               provision the extractor missed for this section. */}
-                          {!isCollapsed && !SYNTHETIC_SINGLE_PAGE_TYPES.has(type) && (
+                          {isEdit && !isCollapsed && !SYNTHETIC_SINGLE_PAGE_TYPES.has(type) && (
                             <div className="mt-2 pt-2 border-t border-border/50">
                               <AddSectionItem
                                 type={type}
@@ -10042,16 +10071,19 @@ export default function ReviewPage() {
           </div>
         </div>
 
-        {/* Mobile backdrop for the edit panel (tap to close) */}
-        {editingProvision && (
+        {/* Mobile backdrop for the edit panel (tap to close). isEdit-gated
+            defensively — editingProvision should already be null in user
+            view since the handlers above never set it there. */}
+        {isEdit && editingProvision && (
           <div
             className="md:hidden fixed inset-0 bg-black/30 z-[55]"
             onClick={() => setEditingProvision(null)}
           />
         )}
 
-        {/* Right Edit Panel */}
-        {editingProvision && (
+        {/* Right Edit Panel — editors only. No editing/save affordances in
+            user view; see handleEditProvision / handleSidebarSelectProvision. */}
+        {isEdit && editingProvision && (
           <EditPanel
             provision={editingProvision}
             allTypes={provTypes.length > 0 ? provTypes : Object.keys(TYPE_LABELS).map(k => ({ key: k, label: TYPE_LABELS[k] }))}
@@ -10069,16 +10101,16 @@ export default function ReviewPage() {
         )}
       </div>
 
-      {/* Add-from-selection mode banner (#17): prompt to pick the clause. */}
-      {addContext && (
+      {/* Add-from-selection mode banner (#17): prompt to pick the clause. Editors only. */}
+      {isEdit && addContext && (
         <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 bg-accent text-white rounded-lg shadow-lg px-4 py-2 text-xs font-ui flex items-center gap-3 animate-slide-up">
           <span>Select the clause for the new <b>{addContext.noun}</b> in the document, then click “Create”.</span>
           <button type="button" onClick={handleCancelAdd} className="underline opacity-90 hover:opacity-100">Cancel</button>
         </div>
       )}
 
-      {/* Floating Create Provision Button (hidden while re-selecting text) */}
-      {!reselectingProvId && (
+      {/* Floating Create Provision Button — editors only (hidden while re-selecting text too). */}
+      {isEdit && !reselectingProvId && (
         <CreateProvisionButton
           selection={textSelection}
           onCreateProvision={handleCreateProvision}
@@ -10089,8 +10121,8 @@ export default function ReviewPage() {
       {/* Definition Tooltip */}
       <DefinitionTooltip def={hoveredDef} position={defPosition} />
 
-      {/* P5 item 6: Advisors editor modal */}
-      {advisorsModalOpen && deal && (
+      {/* P5 item 6: Advisors editor modal — editors only. */}
+      {isEdit && advisorsModalOpen && deal && (
         <AdvisorsEditorModal
           deal={deal}
           onClose={() => setAdvisorsModalOpen(false)}

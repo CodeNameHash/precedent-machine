@@ -6,6 +6,7 @@ import {
   typeHex,
   getProvisionStatus,
 } from './shared';
+import { useViewMode } from '../ViewModeContext';
 
 /* Short disambiguating label for one clause inside a merged multi-provision
    sidebar entry. Prefer a leading "Section X.YZ" / "Article" reference; else the
@@ -23,12 +24,17 @@ function sideClauseSubLabel(p, i) {
    LEFT SIDEBAR — now acts as a FILTER, not a scroller
    ═══════════════════════════════════════════════════════════ */
 export function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelectProvision, activeProvId, onMoveProvision }) {
+  const { isEdit } = useViewMode();
   // Drag-and-drop state: track the provision being dragged and the active
   // drop-target type so we can highlight it.
   const [dragProvId, setDragProvId] = useState(null);
   const [dropTargetType, setDropTargetType] = useState(null);
 
+  // Drag-and-drop reclassification is an edit/correction control — disabled
+  // entirely in user view (no-op the start/drop handlers rather than
+  // threading `draggable={isEdit}` through every row).
   const handleDragStart = (e, provId) => {
+    if (!isEdit) return;
     setDragProvId(provId);
     try {
       e.dataTransfer.effectAllowed = 'move';
@@ -53,6 +59,7 @@ export function Sidebar({ provsByType, provisions, activeFilter, onFilterType, o
   const handleDrop = (e, type) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!isEdit) return;
     const provId = dragProvId || e.dataTransfer.getData('text/plain');
     setDragProvId(null);
     setDropTargetType(null);
@@ -176,7 +183,10 @@ export function Sidebar({ provsByType, provisions, activeFilter, onFilterType, o
   }, [provisions]);
 
   // Status-color tokens for sidebar provision dots (Recital palette).
+  // Approved/flagged is the editor's QA workflow status — in user view every
+  // dot stays neutral so it doesn't leak review-state to a non-editor.
   const statusDotColor = (status) => {
+    if (!isEdit) return 'var(--ink-faint)';
     if (status === 'approved') return 'var(--buyer)';
     if (status === 'flagged')  return 'var(--accent)';
     return 'var(--ink-faint)';
@@ -190,7 +200,7 @@ export function Sidebar({ provsByType, provisions, activeFilter, onFilterType, o
     return (
       <button
         key={p.id}
-        draggable
+        draggable={isEdit}
         onDragStart={(e) => handleDragStart(e, p.id)}
         onDragEnd={handleDragEnd}
         onClick={() => onSelectProvision(p.id)}
@@ -202,7 +212,7 @@ export function Sidebar({ provsByType, provisions, activeFilter, onFilterType, o
           cursor: isDragging ? 'grabbing' : 'grab',
           opacity: isDragging ? 0.4 : 1,
         }}
-        title="Drag to a different category to reclassify"
+        title={isEdit ? "Drag to a different category to reclassify" : undefined}
       >
         <span className="dot" style={{ background: statusDotColor(status) }} />
         <span className="truncate">{p.category || 'General'}</span>
@@ -261,7 +271,7 @@ export function Sidebar({ provsByType, provisions, activeFilter, onFilterType, o
                     return (
                       <button
                         key={p.id}
-                        draggable
+                        draggable={isEdit}
                         onDragStart={(e) => handleDragStart(e, p.id)}
                         onDragEnd={handleDragEnd}
                         onClick={() => onSelectProvision(p.id)}
@@ -272,7 +282,7 @@ export function Sidebar({ provsByType, provisions, activeFilter, onFilterType, o
                           cursor: isDragging ? 'grabbing' : 'grab',
                           opacity: isDragging ? 0.4 : 1,
                         }}
-                        title="Drag to a different category to reclassify"
+                        title={isEdit ? "Drag to a different category to reclassify" : undefined}
                       >
                         <span className="dot" style={{ background: statusDotColor(status) }} />
                         <span className="truncate" style={{ color: 'var(--ink-light)' }}>{sub}</span>
@@ -509,30 +519,33 @@ export function Sidebar({ provsByType, provisions, activeFilter, onFilterType, o
         </div>
       </div>
 
-      {/* Stats Footer (Recital style) */}
-      <div className="rec-side-stats">
-        <div className="rec-stat-bar">
-          {stats.total > 0 && (
-            <>
-              <i style={{ width: `${(stats.approved / stats.total) * 100}%`, background: 'var(--buyer)' }} />
-              <i style={{ width: `${(stats.flagged / stats.total) * 100}%`, background: 'var(--accent)' }} />
-              <i style={{ flex: 1, background: 'var(--ink-faint)' }} />
-            </>
-          )}
+      {/* Stats Footer (Recital style) — editor QA workflow (approved /
+          flagged / unreviewed counts), not deal content. Editors only. */}
+      {isEdit && (
+        <div className="rec-side-stats">
+          <div className="rec-stat-bar">
+            {stats.total > 0 && (
+              <>
+                <i style={{ width: `${(stats.approved / stats.total) * 100}%`, background: 'var(--buyer)' }} />
+                <i style={{ width: `${(stats.flagged / stats.total) * 100}%`, background: 'var(--accent)' }} />
+                <i style={{ flex: 1, background: 'var(--ink-faint)' }} />
+              </>
+            )}
+          </div>
+          <div className="rec-stat-row">
+            <span className="lab">Approved</span>
+            <span className="num">{stats.approved}</span>
+          </div>
+          <div className="rec-stat-row">
+            <span className="lab">Needs review</span>
+            <span className="num">{stats.flagged}</span>
+          </div>
+          <div className="rec-stat-row">
+            <span className="lab">Unreviewed</span>
+            <span className="num">{Math.max(0, stats.total - stats.approved - stats.flagged)}</span>
+          </div>
         </div>
-        <div className="rec-stat-row">
-          <span className="lab">Approved</span>
-          <span className="num">{stats.approved}</span>
-        </div>
-        <div className="rec-stat-row">
-          <span className="lab">Needs review</span>
-          <span className="num">{stats.flagged}</span>
-        </div>
-        <div className="rec-stat-row">
-          <span className="lab">Unreviewed</span>
-          <span className="num">{Math.max(0, stats.total - stats.approved - stats.flagged)}</span>
-        </div>
-      </div>
+      )}
     </aside>
   );
 }
