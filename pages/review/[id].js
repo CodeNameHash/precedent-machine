@@ -1751,7 +1751,7 @@ function EmployeeBenefitsTreatmentTable({ summary, onSelectProvision }) {
         <table className="min-w-full text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
             <tr>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider w-[180px]">Type</th>
+              <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider ${REVIEW_LABEL_COL_W}`}>Type</th>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Standard</th>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[160px]">Time Period</th>
             </tr>
@@ -2092,7 +2092,7 @@ function IocAffirmativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelec
         <table className="min-w-full text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
             <tr>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[260px]">Covenant</th>
+              <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Covenant</th>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[220px]">Standard</th>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Applies To</th>
             </tr>
@@ -2742,7 +2742,7 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
         <table className="min-w-full text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
             <tr>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[280px]">Restriction</th>
+              <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Restriction</th>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[180px]">Threshold</th>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Exceptions</th>
             </tr>
@@ -2770,7 +2770,13 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
                   <td className="px-3 py-2 text-ink">
                     <HoverSource quote={rowQuote} as="div">
                       {thrText
-                        ? <span>{thrText}</span>
+                        ? (
+                          <span className="inline-flex flex-wrap gap-1">
+                            {thrText.split(' · ').map((bit, i) => (
+                              <Pill key={i} text={bit} tone="amount" />
+                            ))}
+                          </span>
+                        )
                         : <span className="italic text-inkFaint">No threshold</span>}
                     </HoverSource>
                   </td>
@@ -2778,11 +2784,7 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
                     {excCodes.length > 0 ? (
                       <span className="inline-flex flex-wrap gap-1">
                         {excCodes.map((code) => (
-                          <HoverSource key={code} quote={rowQuote}>
-                            <span className="inline-flex items-center text-[10px] font-ui font-medium px-1.5 py-0.5 rounded border bg-indigo-50 text-indigo-700 border-indigo-200 whitespace-nowrap">
-                              {COMMON_EXCEPTION_CODES[code] || code}
-                            </span>
-                          </HoverSource>
+                          <Pill key={code} text={COMMON_EXCEPTION_CODES[code] || code} quote={rowQuote} />
                         ))}
                       </span>
                     ) : (
@@ -4428,7 +4430,7 @@ function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision, hide
           <table className="min-w-full text-xs font-ui">
             <thead className="bg-bg/60 border-b border-border">
               <tr>
-                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-72">Feature</th>
+                <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Feature</th>
                 <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Value</th>
               </tr>
             </thead>
@@ -5551,10 +5553,15 @@ function MultiCodeStructLikeTable({ provisions, type, onSelectProvision }) {
 
   return (
     <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+      <div className="px-3 py-2 bg-bg/60 border-b border-border">
+        <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+          {typeLabel(type)} — Provisions
+        </p>
+      </div>
       <table className="min-w-full text-xs font-ui">
         <thead className="bg-bg/60 border-b border-border">
           <tr>
-            <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[220px]">Term</th>
+            <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Term</th>
             <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Details</th>
           </tr>
         </thead>
@@ -6418,7 +6425,7 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
         <table className="min-w-full text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
             <tr>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[200px]">Item</th>
+              <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Item</th>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Details</th>
             </tr>
           </thead>
@@ -7597,8 +7604,22 @@ function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, a
     }
   }
 
+  // Block 8/9b: every review table gets a small uppercase title. The reps
+  // tables were missing one — name them per side; other types reuse their
+  // canonical type label.
+  const tableTitle = type === 'REP-T'
+    ? 'Representations & Warranties — Company'
+    : type === 'REP-B'
+      ? 'Representations & Warranties — Parent & Merger Sub'
+      : typeLabel(type);
+
   return (
     <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+      <div className="px-3 py-2 bg-bg/60 border-b border-border">
+        <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+          {tableTitle}
+        </p>
+      </div>
       <div className="overflow-x-auto">
         <table className="min-w-full text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
@@ -9678,6 +9699,19 @@ export default function ReviewPage() {
                       // page is handled by its own type branch further down.
                       if (type === 'REP-T') {
                         rest = rest.filter((p) => !isMaterialContractsProvision(p));
+                      }
+                      // Block 9a: REP preamble pseudo-provisions (codes
+                      // REP-T-PREAMBLE / REP-B-PREAMBLE, category "Reps
+                      // Preamble") never render as per-rep table rows — their
+                      // content is already summarized above the table by
+                      // RepGeneralExceptionsTable / RepKnowledgeNote.
+                      if (type === 'REP-T' || type === 'REP-B') {
+                        rest = rest.filter((p) => {
+                          const code = String((getAiMetadata(p) || {}).code || p.code || '').toUpperCase();
+                          if (code === 'REP-T-PREAMBLE' || code === 'REP-B-PREAMBLE') return false;
+                          if (/reps?\s+preamble/i.test(String(p.category || ''))) return false;
+                          return true;
+                        });
                       }
                       // For IOC: pull the consolidated "Affirmative Covenants"
                       // and "General Exceptions" provisions out of the main
