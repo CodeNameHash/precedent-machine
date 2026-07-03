@@ -51,3 +51,11 @@ test('separate per-party rep articles are untouched by the section fixup (Anadar
   assert.equal(byNum['3.13'], 'REP-T');
   assert.equal(byNum['4.12'], 'REP-B');
 });
+
+test('efforts-titled section beats its COV article (Metsera 6.03 -> ANTI)', () => {
+  const s = { number: '6.03', title: 'Reasonable Best Efforts; Notification', heading: 'Reasonable Best Efforts; Notification', text: 'SECTION 6.03. Reasonable Best Efforts; Notification. (a) Upon the terms and subject to the conditions of this Agreement, each party shall use reasonable best efforts to take all actions necessary to consummate the Merger, including obtaining all antitrust approvals under the HSR Act.' };
+  assert.equal(tryDeterministic(s, 'COV').type, 'ANTI');
+  // A rep titled "Regulatory Matters" inside a REP article must NOT be yanked.
+  const rep = { number: '3.17', title: 'Regulatory Matters', heading: 'Regulatory Matters', text: 'SECTION 3.17. Regulatory Matters. Except as would not have an MAE...' };
+  assert.notEqual((tryDeterministic(rep, 'REP-T') || {}).type, 'ANTI');
+});
