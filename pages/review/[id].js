@@ -2068,10 +2068,7 @@ function IocAffirmativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelec
     const seen = new Set();
     const push = (code) => { if (code && !seen.has(code)) { seen.add(code); out.push(code); } };
 
-    // 1. Canonical baseline.
-    for (const code of (bucket.defaultScopeCodes || [])) push(code);
-
-    // 2. Extracted codes — prefer the matching limb's scope/appliesTo so
+    // 1. Extracted codes — prefer the matching limb's scope/appliesTo so
     //    each bucket row pulls only its own limb (not every limb's).
     const limb = matchingLimb(f, bucket);
     if (limb) {
@@ -2080,6 +2077,23 @@ function IocAffirmativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelec
       scopeCodesFromValue(limb.scope).forEach(push);
     } else {
       [f.appliesTo, f.applies_to, f.scope, f.appliesto].forEach((v) => scopeCodesFromValue(v).forEach(push));
+    }
+
+    // 2. The split per-obligation provisions (IOC-ORDINARY / IOC-PRESERVE /
+    //    IOC-MAINTAIN emitted by splitIocPreamble) carry EMPTY features — the
+    //    verbatim enumeration lives in their full_text ("… customers,
+    //    suppliers, licensors, licensees, Governmental Entities …"). Derive
+    //    scope pills from the text itself so the noun list is COMPLETE per
+    //    the agreement (the licensors/licensees miss).
+    if (out.length === 0 && typeof provision.full_text === 'string') {
+      scopeCodesFromValue(provision.full_text).forEach(push);
+    }
+
+    // 3. Canonical defaults ONLY when nothing is extractable — showing
+    //    default pills (Customers/Employees) the agreement doesn't enumerate
+    //    while omitting ones it does was actively misleading.
+    if (out.length === 0) {
+      for (const code of (bucket.defaultScopeCodes || [])) push(code);
     }
     return out;
   };
