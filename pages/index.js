@@ -4,8 +4,32 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useUser } from '../lib/useUser';
 import { useDeals } from '../lib/useSupabaseData';
+import { getDisplayAdvisors } from '../lib/canonical-advisors';
 
 HomePage.noLayout = true;
+
+/* Compact deal-value format: 9420000000 → "$9.4B", 137500000 → "$137.5M". */
+function fmtValue(v) {
+  const n = typeof v === 'number' ? v : v ? Number(v) : NaN;
+  if (!Number.isFinite(n) || n <= 0) return null;
+  const trim = (x) => {
+    const s = x.toFixed(1);
+    return s.endsWith('.0') ? s.slice(0, -2) : s;
+  };
+  if (n >= 1e9) return `$${trim(n / 1e9)}B`;
+  if (n >= 1e6) return `$${trim(n / 1e6)}M`;
+  if (n >= 1e3) return `$${trim(n / 1e3)}K`;
+  return `$${n}`;
+}
+
+function fmtDate(d) {
+  if (!d) return null;
+  const dt = new Date(d);
+  if (Number.isNaN(dt.getTime())) return null;
+  return dt.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+const EM_DASH = '—';
 
 export default function HomePage() {
   const { user } = useUser();
@@ -14,6 +38,12 @@ export default function HomePage() {
   const [selected, setSelected] = useState(() => new Set());
   const [counts, setCounts] = useState({}); // { [dealId]: number }
   const [countsLoading, setCountsLoading] = useState(false);
+
+  // Filters + sort
+  const [query, setQuery] = useState('');
+  const [industry, setIndustry] = useState('');
+  const [firm, setFirm] = useState('');
+  const [sort, setSort] = useState({ key: 'date', dir: 'desc' });
 
   // Fetch provision counts per deal in parallel once deals are loaded.
   useEffect(() => {
@@ -40,6 +70,79 @@ export default function HomePage() {
     [counts]
   );
 
+  // Enrich each deal with display names + CANONICALIZED advisors (read-time
+  // canon layer over metadata.advisors_v2 — see lib/canonical-advisors.js).
+  const rows = useMemo(
+    () =>
+      (deals || []).map((d) => {
+        const meta = d.metadata && typeof d.metadata === 'object' ? d.metadata : {};
+        const adv = getDisplayAdvisors(meta);
+        return {
+          id: d.id,
+          date: d.announce_date || null,
+          buyer: meta.acquirer_display || meta.parent_entity || d.acquirer || null,
+          seller: meta.target_display || d.target || null,
+          value: d.value_usd,
+          industry: d.sector || null,
+          buyerFirms: adv.buyerFirms,
+          buyerLawyers: adv.buyerLawyers,
+          sellerFirms: adv.sellerFirms,
+          sellerLawyers: adv.sellerLawyers,
+        };
+      }),
+    [deals]
+  );
+
+  const industries = useMemo(
+    () => [...new Set(rows.map((r) => r.industry).filter(Boolean))].sort(),
+    [rows]
+  );
+  const firms = useMemo(
+    () => [...new Set(rows.flatMap((r) => [...r.buyerFirms, ...r.sellerFirms]))].sort(),
+    [rows]
+  );
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    let out = rows;
+    if (q) {
+      out = out.filter((r) =>
+        [r.buyer, r.seller, ...r.buyerFirms, ...r.sellerFirms, ...r.buyerLawyers, ...r.sellerLawyers]
+          .some((s) => s && s.toLowerCase().includes(q))
+      );
+    }
+    if (industry) out = out.filter((r) => r.industry === industry);
+    if (firm) out = out.filter((r) => r.buyerFirms.includes(firm) || r.sellerFirms.includes(firm));
+    return out;
+  }, [rows, query, industry, firm]);
+
+  const sorted = useMemo(() => {
+    const dir = sort.dir === 'asc' ? 1 : -1;
+    const val = (r) => {
+      if (sort.key === 'value') {
+        const n = typeof r.value === 'number' ? r.value : r.value ? Number(r.value) : NaN;
+        return Number.isFinite(n) ? n : null;
+      }
+      return r.date ? new Date(r.date).getTime() : null;
+    };
+    return [...filtered].sort((a, b) => {
+      const va = val(a);
+      const vb = val(b);
+      if (va === null && vb === null) return 0;
+      if (va === null) return 1; // nulls last regardless of direction
+      if (vb === null) return -1;
+      return (va - vb) * dir;
+    });
+  }, [filtered, sort]);
+
+  const toggleSort = (key) => {
+    setSort((prev) =>
+      prev.key === key
+        ? { key, dir: prev.dir === 'desc' ? 'asc' : 'desc' }
+        : { key, dir: 'desc' }
+    );
+  };
+
   const toggle = (id) => {
     setSelected((prev) => {
       const next = new Set(prev);
@@ -65,7 +168,7 @@ export default function HomePage() {
       <div className="min-h-screen" style={{ background: 'var(--paper)' }}>
         <TopBar user={user} />
 
-        <main style={{ maxWidth: 1080, margin: '0 auto', padding: '48px 40px 120px' }}>
+        <main style={{ maxWidth: 1280, margin: '0 auto', padding: '48px 40px 120px' }}>
           {/* Hero */}
           <div style={{ marginBottom: 36 }}>
             <div className="rec-deal-eyebrow">Recital</div>
@@ -120,41 +223,96 @@ export default function HomePage() {
               </span>
             </header>
 
-            <div style={{ padding: 22 }}>
-              {loading ? (
-                <div
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                    gap: 16,
-                  }}
+            {/* Filter bar */}
+            <div className="flex flex-wrap items-center gap-2 px-[22px] py-3 border-b border-border">
+              <input
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Filter by party, firm, or lawyer…"
+                aria-label="Filter deals"
+                className="font-ui text-xs px-2.5 py-1.5 rounded border border-border bg-white text-ink placeholder:text-inkFaint focus:outline-none focus:border-accent w-64"
+              />
+              <select
+                value={industry}
+                onChange={(e) => setIndustry(e.target.value)}
+                aria-label="Filter by industry"
+                className="font-ui text-xs px-2 py-1.5 rounded border border-border bg-white text-ink focus:outline-none focus:border-accent"
+              >
+                <option value="">All industries</option>
+                {industries.map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+              <select
+                value={firm}
+                onChange={(e) => setFirm(e.target.value)}
+                aria-label="Filter by law firm"
+                className="font-ui text-xs px-2 py-1.5 rounded border border-border bg-white text-ink focus:outline-none focus:border-accent"
+              >
+                <option value="">All firms</option>
+                {firms.map((f) => (
+                  <option key={f} value={f}>{f}</option>
+                ))}
+              </select>
+              {(query || industry || firm) && (
+                <button
+                  type="button"
+                  onClick={() => { setQuery(''); setIndustry(''); setFirm(''); }}
+                  className="font-ui text-xs text-inkLight hover:text-ink underline decoration-dotted"
                 >
-                  <SkeletonDealCard />
-                  <SkeletonDealCard />
-                </div>
-              ) : deals.length === 0 ? (
-                <EmptyDeals />
-              ) : (
-                <div
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                    gap: 16,
-                  }}
-                >
-                  {deals.map((d) => (
-                    <DealCard
-                      key={d.id}
-                      deal={d}
-                      selected={selected.has(d.id)}
-                      onToggle={() => toggle(d.id)}
-                      provisionCount={counts[d.id]}
-                      countsLoading={countsLoading && counts[d.id] === undefined}
-                    />
-                  ))}
-                </div>
+                  Clear
+                </button>
               )}
+              <span className="ml-auto font-mono text-[11px] text-inkFaint">
+                {loading ? '' : `${sorted.length} of ${rows.length}`}
+              </span>
             </div>
+
+            {loading ? (
+              <SkeletonTable />
+            ) : deals.length === 0 ? (
+              <EmptyDeals />
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="min-w-full table-auto text-xs font-ui">
+                  <thead className="bg-bg/60 border-b border-border">
+                    <tr>
+                      <th className="px-3 py-2 w-8" aria-label="Select for comparison" />
+                      <SortTh label="Date" active={sort.key === 'date'} dir={sort.dir} onClick={() => toggleSort('date')} />
+                      <Th>Buyer</Th>
+                      <Th>Seller</Th>
+                      <SortTh label="Value" active={sort.key === 'value'} dir={sort.dir} onClick={() => toggleSort('value')} />
+                      <Th>Industry</Th>
+                      <Th>Buyer Firm</Th>
+                      <Th>Buyer Lawyers</Th>
+                      <Th>Seller Firm</Th>
+                      <Th>Seller Lawyers</Th>
+                      <th className="px-3 py-2" aria-label="Actions" />
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border">
+                    {sorted.length === 0 ? (
+                      <tr>
+                        <td colSpan={11} className="px-4 py-8 text-center italic text-inkFaint">
+                          No deals match the current filters.
+                        </td>
+                      </tr>
+                    ) : (
+                      sorted.map((r) => (
+                        <DealRow
+                          key={r.id}
+                          row={r}
+                          selected={selected.has(r.id)}
+                          onToggle={() => toggle(r.id)}
+                          onOpen={() => router.push(`/review/${r.id}`)}
+                        />
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </section>
 
           {/* Compare CTA */}
@@ -168,6 +326,98 @@ export default function HomePage() {
         </main>
       </div>
     </>
+  );
+}
+
+/* ─── Table cells ───────────────────────────────────────────── */
+function Th({ children }) {
+  return (
+    <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">
+      {children}
+    </th>
+  );
+}
+
+function SortTh({ label, active, dir, onClick }) {
+  return (
+    <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">
+      <button
+        type="button"
+        onClick={onClick}
+        className={`inline-flex items-center gap-1 uppercase tracking-wider hover:text-ink ${active ? 'text-ink' : ''}`}
+        title={`Sort by ${label.toLowerCase()}`}
+      >
+        {label}
+        <span aria-hidden="true" className={active ? 'text-accent' : 'text-inkFaint/60'}>
+          {active ? (dir === 'asc' ? '▲' : '▼') : '▾'}
+        </span>
+      </button>
+    </th>
+  );
+}
+
+function Dash() {
+  return <span className="text-inkFaint/70">{EM_DASH}</span>;
+}
+
+function DealRow({ row, selected, onToggle, onOpen }) {
+  const date = fmtDate(row.date);
+  const value = fmtValue(row.value);
+  return (
+    <tr
+      onClick={onOpen}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') onOpen();
+      }}
+      tabIndex={0}
+      className="hover:bg-bg/40 transition-colors cursor-pointer"
+    >
+      <td className="px-3 py-2 align-top" onClick={(e) => e.stopPropagation()}>
+        <input
+          type="checkbox"
+          checked={selected}
+          onChange={onToggle}
+          aria-label="Select deal for comparison"
+          className="accent-[var(--accent)] cursor-pointer"
+        />
+      </td>
+      <td className="px-3 py-2 align-top whitespace-nowrap text-inkMid">
+        {date || <Dash />}
+      </td>
+      <td className="px-3 py-2 align-top font-semibold text-ink max-w-[240px]">
+        {row.buyer || <Dash />}
+      </td>
+      <td className="px-3 py-2 align-top font-semibold text-ink max-w-[240px]">
+        {row.seller || <Dash />}
+      </td>
+      <td className="px-3 py-2 align-top whitespace-nowrap text-ink">
+        {value || <Dash />}
+      </td>
+      <td className="px-3 py-2 align-top whitespace-nowrap text-inkMid">
+        {row.industry || <Dash />}
+      </td>
+      <td className="px-3 py-2 align-top text-ink max-w-[240px]">
+        {row.buyerFirms.length ? row.buyerFirms.join('; ') : <Dash />}
+      </td>
+      <td className="px-3 py-2 align-top text-inkMid max-w-[240px]">
+        {row.buyerLawyers.length ? row.buyerLawyers.join(', ') : <Dash />}
+      </td>
+      <td className="px-3 py-2 align-top text-ink max-w-[240px]">
+        {row.sellerFirms.length ? row.sellerFirms.join('; ') : <Dash />}
+      </td>
+      <td className="px-3 py-2 align-top text-inkMid max-w-[240px]">
+        {row.sellerLawyers.length ? row.sellerLawyers.join(', ') : <Dash />}
+      </td>
+      <td className="px-3 py-2 align-top whitespace-nowrap text-right" onClick={(e) => e.stopPropagation()}>
+        <Link
+          href={`/ingest?deal_id=${row.id}`}
+          title="Classify only, extract a specific type, or re-ingest"
+          className="font-mono text-[10px] uppercase tracking-wider text-inkLight hover:text-accentDeep"
+        >
+          Ingest
+        </Link>
+      </td>
+    </tr>
   );
 }
 
@@ -228,226 +478,19 @@ function TopBar({ user }) {
   );
 }
 
-/* ─── Deal card ─────────────────────────────────────────────── */
-function DealCard({ deal, selected, onToggle, provisionCount, countsLoading }) {
-  const date = deal.announce_date
-    ? new Date(deal.announce_date).toLocaleDateString(undefined, {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-      })
-    : null;
-
+function SkeletonTable() {
   return (
-    <div
-      role="button"
-      tabIndex={0}
-      onClick={onToggle}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onToggle();
-        }
-      }}
-      style={{
-        position: 'relative',
-        background: 'var(--surface)',
-        border: `1px solid ${selected ? 'var(--accent)' : 'var(--line)'}`,
-        boxShadow: selected ? '0 0 0 1px var(--accent) inset' : 'none',
-        borderRadius: 12,
-        padding: '18px 18px 16px',
-        cursor: 'pointer',
-        transition: 'border-color .12s, box-shadow .12s, transform .12s',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 10,
-        minHeight: 168,
-      }}
-    >
-      {/* Checkbox top-right */}
-      <span
-        aria-hidden="true"
-        style={{
-          position: 'absolute',
-          top: 14,
-          right: 14,
-          width: 18,
-          height: 18,
-          borderRadius: 5,
-          border: `1.5px solid ${selected ? 'var(--accent)' : 'var(--ink-faint)'}`,
-          background: selected ? 'var(--accent)' : 'transparent',
-          display: 'grid',
-          placeItems: 'center',
-          color: '#fff',
-          fontSize: 12,
-          lineHeight: 1,
-          transition: 'all .12s',
-        }}
-      >
-        {selected ? '✓' : ''}
-      </span>
-
-      {/* Eyebrow */}
-      <div
-        style={{
-          fontFamily: 'var(--font-mono)',
-          fontSize: 10,
-          letterSpacing: '.14em',
-          textTransform: 'uppercase',
-          color: 'var(--ink-faint)',
-        }}
-      >
-        {deal.agreement_type || 'Acquisition'}
-        {date && <> · {date}</>}
-      </div>
-
-      {/* Title */}
-      <div
-        style={{
-          fontFamily: 'var(--font-serif)',
-          fontSize: 19,
-          lineHeight: 1.2,
-          fontWeight: 500,
-          letterSpacing: '-.01em',
-          color: 'var(--ink)',
-          paddingRight: 28, // avoid the checkbox
-        }}
-      >
-        {deal.acquirer || 'Unknown'} <span style={{ color: 'var(--ink-faint)', fontStyle: 'italic' }}>/</span>{' '}
-        {deal.target || 'Unknown'}
-      </div>
-
-      {/* Meta */}
-      <div style={{ display: 'flex', gap: 18, flexWrap: 'wrap', marginTop: 'auto' }}>
-        <Meta label="Provisions" value={countsLoading ? '…' : provisionCount ?? '—'} />
-        {deal.sector && <Meta label="Sector" value={deal.sector} />}
-      </div>
-
-      {/* Advisors (Stage 4) — small chip block, capped at 4. */}
-      {Array.isArray(deal.metadata?.advisors) && deal.metadata.advisors.length > 0 && (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 4 }}>
-          {deal.metadata.advisors.slice(0, 4).map((a, idx) => {
-            const partyLabel =
-              a.party === 'parent' ? 'P'
-              : a.party === 'company' ? 'C'
-              : a.party === 'special_committee' ? 'SC'
-              : '';
-            return (
-              <span
-                key={`${a.firm}-${a.party}-${idx}`}
-                title={`${a.firm}${a.partner ? ' — ' + a.partner : ''} (${a.role}${a.party ? ', ' + a.party : ''})`}
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: 9,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.04em',
-                  padding: '2px 6px',
-                  borderRadius: 3,
-                  border: '1px solid var(--line)',
-                  background: 'var(--paper)',
-                  color: 'var(--ink-mid)',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                {a.firm.replace(/, LLP$/, '').replace(/ LLP$/, '').split(',')[0]}
-                {partyLabel && <span style={{ color: 'var(--ink-faint)' }}> · {partyLabel}</span>}
-              </span>
-            );
-          })}
-          {deal.metadata.advisors.length > 4 && (
-            <span style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: 9,
-              color: 'var(--ink-faint)',
-              padding: '2px 6px',
-            }}>
-              +{deal.metadata.advisors.length - 4} more
-            </span>
-          )}
+    <div className="p-[22px] space-y-3">
+      {[0, 1, 2, 3].map((i) => (
+        <div key={i} className="flex gap-4">
+          <div className="h-3 rounded bg-lineSoft" style={{ width: '10%' }} />
+          <div className="h-3 rounded bg-line" style={{ width: '18%' }} />
+          <div className="h-3 rounded bg-line" style={{ width: '18%' }} />
+          <div className="h-3 rounded bg-lineSoft" style={{ width: '8%' }} />
+          <div className="h-3 rounded bg-lineSoft" style={{ width: '14%' }} />
+          <div className="h-3 rounded bg-lineSoft" style={{ width: '14%' }} />
         </div>
-      )}
-
-      {/* Review action + manage-ingest link (split pipeline entry) */}
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 6, gap: 6 }}>
-        <Link
-          href={`/ingest?deal_id=${deal.id}`}
-          onClick={(e) => e.stopPropagation()}
-          title="Classify only, extract a specific type, or re-ingest"
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: 11,
-            letterSpacing: '.08em',
-            textTransform: 'uppercase',
-            color: 'var(--ink-light)',
-            textDecoration: 'none',
-            padding: '4px 10px',
-            borderRadius: 6,
-            border: '1px solid var(--line)',
-            background: 'var(--paper)',
-          }}
-        >
-          Manage ingest
-        </Link>
-        <Link
-          href={`/review/${deal.id}`}
-          onClick={(e) => e.stopPropagation()}
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: 11,
-            letterSpacing: '.08em',
-            textTransform: 'uppercase',
-            color: 'var(--accent-deep)',
-            textDecoration: 'none',
-            padding: '4px 10px',
-            borderRadius: 6,
-            border: '1px solid var(--line)',
-            background: 'var(--paper)',
-          }}
-        >
-          Review →
-        </Link>
-      </div>
-    </div>
-  );
-}
-
-function Meta({ label, value }) {
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-      <span
-        style={{
-          fontFamily: 'var(--font-mono)',
-          fontSize: 10,
-          letterSpacing: '.1em',
-          textTransform: 'uppercase',
-          color: 'var(--ink-faint)',
-        }}
-      >
-        {label}
-      </span>
-      <span style={{ fontSize: 13, color: 'var(--ink-mid)', fontWeight: 500 }}>{value}</span>
-    </div>
-  );
-}
-
-function SkeletonDealCard() {
-  return (
-    <div
-      style={{
-        background: 'var(--surface)',
-        border: '1px solid var(--line)',
-        borderRadius: 12,
-        padding: 18,
-        minHeight: 168,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 12,
-      }}
-    >
-      <div style={{ height: 10, width: '40%', background: 'var(--line-soft)', borderRadius: 4 }} />
-      <div style={{ height: 18, width: '70%', background: 'var(--line)', borderRadius: 4 }} />
-      <div style={{ height: 14, width: '55%', background: 'var(--line-soft)', borderRadius: 4 }} />
-      <div style={{ height: 14, width: '35%', background: 'var(--line-soft)', borderRadius: 4 }} />
+      ))}
     </div>
   );
 }
