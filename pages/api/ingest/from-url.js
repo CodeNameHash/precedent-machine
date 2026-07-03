@@ -110,7 +110,7 @@ function stripHtml(html) {
 }
 
 async function extractDealMetadata(client, text) {
-  // Use the first ~10k chars — that's where preamble + recitals + Article 1 live.
+  // Use the first ~10k chars — that's where preamble + corpuss + Article 1 live.
   const preamble = text.substring(0, 10000);
 
   const mergerFormCodes = Object.keys(MERGER_FORMS);

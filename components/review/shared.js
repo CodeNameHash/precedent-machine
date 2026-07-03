@@ -489,7 +489,7 @@ const TYPE_COLORS = {
   'OTHER':  { bg: 'bg-gray-50',    border: 'border-gray-200',   text: 'text-gray-700',   dot: 'bg-gray-400',   hex: '#f9fafb' },
 };
 
-/* ── Recital provision-type hex colors (used for dots, ref chips, section heads) ── */
+/* ── Corpus provision-type hex colors (used for dots, ref chips, section heads) ── */
 const TYPE_HEX = {
   STRUCT:   '#7459A6',
   CONSID:   '#2F8B7E',

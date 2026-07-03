@@ -5,7 +5,7 @@ import { ViewModeProvider } from '../components/ViewModeContext';
 import Layout from '../components/Layout';
 import { useEffect } from 'react';
 
-function RecitalApp({ Component, pageProps }) {
+function CorpusApp({ Component, pageProps }) {
   const noLayout = Component.noLayout;
 
   // Global keyboard shortcuts
@@ -36,4 +36,4 @@ function RecitalApp({ Component, pageProps }) {
   );
 }
 
-export default RecitalApp;
+export default CorpusApp;

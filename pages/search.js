@@ -171,7 +171,7 @@ export default function SearchPage() {
   return (
     <>
       <Head>
-        <title>Search precedents · Recital</title>
+        <title>Search precedents · Corpus</title>
       </Head>
       <div style={{ maxWidth: 940, margin: '0 auto' }}>
         <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--ink)', marginBottom: 4 }}>

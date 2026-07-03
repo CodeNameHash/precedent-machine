@@ -57,7 +57,7 @@ export default function ComparePage() {
   return (
     <>
       <Head>
-        <title>Compare deals · Recital</title>
+        <title>Compare deals · Corpus</title>
       </Head>
 
       <div
@@ -157,7 +157,7 @@ function TopBar({ user }) {
     >
       <Link href="/" className="rec-wordmark">
         <span className="mark" />
-        Recital
+        Corpus
       </Link>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         {user && (
