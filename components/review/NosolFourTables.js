@@ -72,10 +72,10 @@ function NosolMiniTable({ title, spec, provisions, headerNote }) {
         </p>
       </div>
       <div className="overflow-x-auto">
-        <table className="min-w-full text-xs font-ui">
+        <table className="min-w-full table-fixed text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
             <tr>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-80">Feature</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[190px] min-w-[190px] max-w-[190px]">Feature</th>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Value</th>
             </tr>
           </thead>
@@ -95,7 +95,7 @@ function NosolMiniTable({ title, spec, provisions, headerNote }) {
               const onClick = clickable ? () => showEvidence(quote) : undefined;
               return (
                 <tr key={row.label} className="hover:bg-bg/40 transition-colors">
-                  <td className="px-3 py-2 align-top whitespace-nowrap">
+                  <td className="px-3 py-2 align-top whitespace-normal break-words">
                     {clickable ? (
                       <HoverSource quote={quote}>
                         <button
