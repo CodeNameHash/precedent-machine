@@ -3585,6 +3585,42 @@ function StructTable({ provisions, onSelectProvision }) {
     return null;
   };
 
+  // Block 6: shorten verbose governance rows to one-line shorthand — the
+  // Certificate of Incorporation row reads "Per Exhibit A", Bylaws "Per
+  // Merger Sub's bylaws", Directors & Officers "Per Merger Sub". Derived
+  // from the extracted values / provision text where the pattern is
+  // unmistakable; the full text stays available on hover (row HoverSource).
+  const shortGovernance = (p, features) => {
+    const cat = String(p.category || '');
+    const text = [
+      typeof features.mainConcept === 'string' ? features.mainConcept : '',
+      String(p.full_text || '').slice(0, 1200),
+    ].join(' ');
+    if (/certificate\s+of\s+incorporation|charter/i.test(cat)) {
+      const ex = text.match(/Exhibit\s+([A-Z])\b/i);
+      if (ex) return `Per Exhibit ${ex[1].toUpperCase()}`;
+      if (/certificate\s+of\s+incorporation\s+of\s+(?:the\s+)?Merger\s+Sub/i.test(text)) {
+        return "Per Merger Sub's certificate of incorporation";
+      }
+      return null;
+    }
+    if (/bylaws/i.test(cat)) {
+      if (/bylaws\s+of\s+(?:the\s+)?Merger\s+Sub|Merger\s+Sub(?:'s)?[^.]{0,60}bylaws/i.test(text)) {
+        return "Per Merger Sub's bylaws";
+      }
+      const ex = text.match(/Exhibit\s+([A-Z])\b/i);
+      if (ex) return `Per Exhibit ${ex[1].toUpperCase()}`;
+      return null;
+    }
+    if (/directors?\s*(?:&|and)\s*officers?|directors?\s+of\s+the\s+surviving|officers?\s+of\s+the\s+surviving/i.test(cat)) {
+      if (/(?:directors?|officers?)\s+of\s+(?:the\s+)?Merger\s+Sub/i.test(text)) {
+        return 'Per Merger Sub';
+      }
+      return null;
+    }
+    return null;
+  };
+
   const rows = provisions.map((p) => {
     const features = getStructuredFeatures(p) || {};
     const kind = classifyStruct(p);
@@ -3640,7 +3676,15 @@ function StructTable({ provisions, onSelectProvision }) {
       const shortTime = shortEffectiveTime(features);
       cells = [{ key: 'effectiveTime', raw: shortTime || features.mainConcept }];
     } else {
-      cells = [{ key: 'mainConcept', raw: features.mainConcept }];
+      const short = shortGovernance(p, features);
+      cells = short
+        ? [{
+            key: 'mainConcept',
+            raw: short,
+            // One-line shorthand only; full text lives in the row hover.
+            render: (raw) => <div className="line-clamp-1">{raw}</div>,
+          }]
+        : [{ key: 'mainConcept', raw: features.mainConcept }];
     }
     return { p, kind, cells, displayCategory };
   });
@@ -3722,10 +3766,15 @@ function StructTable({ provisions, onSelectProvision }) {
         two rows of the table below so all structure info lives in one place
         and reads as human speech, not as a separate styled callout. */}
     <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+      <div className="px-3 py-2 bg-bg/60 border-b border-border">
+        <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+          Structure &amp; Mechanics
+        </p>
+      </div>
       <table className="min-w-full text-xs font-ui">
         <thead className="bg-bg/60 border-b border-border">
           <tr>
-            <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[180px]">Term</th>
+            <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Term</th>
             <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Details</th>
           </tr>
         </thead>
