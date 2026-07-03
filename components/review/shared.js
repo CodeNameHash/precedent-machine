@@ -135,8 +135,11 @@ export function humanizeBadgeText(code) {
     return code.split('_').map(titleCaseWord).join(' ');
   }
   if (/^[A-Z][A-Z0-9]*$/.test(code)) {
-    // Pure UPPER without underscores (rare) — title case it.
-    return code[0] + code.slice(1).toLowerCase();
+    // Pure UPPER without underscores (rare) — title case it, unless it's a
+    // known acronym that must stay fully capitalized (e.g. "CVR" must not
+    // become "Cvr" — this is what let a bare CodeBadge code="CVR" render
+    // as "Cvr" and run together with an adjacent "Cash" badge as "CashCvr").
+    return HUMANIZE_ACRONYMS.has(code) ? code : code[0] + code.slice(1).toLowerCase();
   }
   // PascalCase / camelCase without underscores (e.g. "CashCvr") — split at
   // capital-letter boundaries and title-case each word so a raw slug never

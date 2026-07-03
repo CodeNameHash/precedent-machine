@@ -2095,13 +2095,17 @@ function IocAffirmativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelec
           <thead className="bg-bg/60 border-b border-border">
             <tr>
               <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Covenant</th>
-              {/* Audit block 8: sibling ths must NOT carry width classes —
-                  table-fixed proportionally SCALES every explicitly-sized
-                  column when all columns are constrained (the sum of
-                  declared widths is less than the rendered table width), so
-                  the Covenant column measured 231px instead of the intended
-                  190px. Leaving Standard/Applies To unconstrained lets them
-                  absorb the extra width instead. */}
+              {/* Audit block 8 (superseded — see punch-list-2): sibling ths
+                  must NOT carry width classes so Standard/Applies To absorb
+                  the remaining width. That alone wasn't the whole story: the
+                  Covenant column still measured 231px because the BODY cell
+                  below also needs the fixed-width class + whitespace-normal.
+                  With `whitespace-nowrap` on the body <td> and no explicit
+                  width there, a long covenant name's unbreakable text forces
+                  table-layout:fixed to grow the column past its max-width —
+                  a real browser quirk, not spec behavior. Compare the
+                  Structure & Mechanics "Term" column (row ~3877) which pins
+                  the width on BOTH th and td and wraps instead of nowrap. */}
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">Standard</th>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Applies To</th>
             </tr>
@@ -2115,7 +2119,7 @@ function IocAffirmativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelec
                 : null;
               return (
                 <tr key={bucket.code} className="hover:bg-bg/40 transition-colors align-top">
-                  <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">
+                  <td className={`px-3 py-2 text-ink font-medium whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>
                     <HoverSource quote={rowQuote}>
                       <button
                         type="button"
@@ -4508,7 +4512,7 @@ function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision, hide
                   const onClick = clickable ? () => showEvidence(quote) : undefined;
                   return (
                     <tr key={row.label} className="hover:bg-bg/40 transition-colors">
-                      <td className="px-3 py-2 align-top whitespace-nowrap">
+                      <td className={`px-3 py-2 align-top whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>
                         {clickable ? (
                           <HoverSource quote={quote}>
                             <button
@@ -7179,7 +7183,7 @@ function CondSingleTable({ allProvisions, onSelectProvision }) {
                   const quote = primary && typeof primary.full_text === 'string' ? primary.full_text : null;
                   return (
                     <tr key={`${sec.family}-${row.label}`} className="align-top hover:bg-bg/40">
-                      <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">
+                      <td className={`px-3 py-2 text-ink font-medium whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>
                         {primary && onSelectProvision ? (
                           <button type="button" onClick={() => onSelectProvision(primary)} className="text-left text-accent hover:underline font-medium">
                             {row.label}

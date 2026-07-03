@@ -505,12 +505,17 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
   // When the deal pays both cash AND CVR, render them as two separate
   // canonical pills instead of a combined "Cash and a CVR" string. The
   // rendered node is consumed by the Headline Consideration mini-table.
+  // A literal "+" text node sits between the pills — not just a CSS gap —
+  // so the pair reads "Cash + CVR" instead of running together as
+  // "CashCvr"/"CashCVR" when the page is read as plain text (screen
+  // readers, DOM text search, copy-paste). Audit block 6c.
   let heroConsidTypeNode = null;
   if (hasCvr && hasCash) {
     heroConsidType = 'Cash + CVR';
     heroConsidTypeNode = (
       <span className="inline-flex items-center gap-1 flex-wrap">
         <CodeBadge code="CASH" />
+        <span className="text-inkFaint">+</span>
         <CodeBadge code="CVR" />
       </span>
     );
@@ -528,6 +533,7 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
       heroConsidTypeNode = (
         <span className="inline-flex items-center gap-1 flex-wrap">
           <CodeBadge code="CASH" />
+          <span className="text-inkFaint">+</span>
           <CodeBadge code="STOCK" />
         </span>
       );
