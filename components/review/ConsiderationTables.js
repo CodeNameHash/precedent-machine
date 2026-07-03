@@ -636,27 +636,35 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
       {(heroPriceText || heroConsidType || appraisalAvailable !== null || (showExchangeRatio && (exchangeRatioValue || exchangeRatioType))) && (() => {
         // Per-share consideration: amounts render as pills (block 2). When
         // the deal carries a CVR (block 7a), BOTH legs show — the cash pill
-        // and a "1 CVR (up to $X.XX)" pill — never cash alone.
+        // and a "1 CVR (up to $X.XX)" pill — never cash alone. The pills
+        // carry no quote of their own (the ROW-level HoverSource handles
+        // hover/click); the CVR quote is folded into the row quote.
         const cvrMaxText = formatPerShare(cvrMaxPayment);
         const perShareValue = heroPriceText ? (
           <span className="inline-flex items-center gap-1 flex-wrap">
             <Pill
               text={hasCvr && hasCash ? `${heroPriceText} in cash` : heroPriceText}
               tone="amount"
-              quote={heroPerShareSrc && heroPerShareSrc.quote}
             />
             {hasCvr && (
               <Pill
                 text={`1 CVR${cvrMaxText ? ` (up to ${cvrMaxText})` : ''}`}
                 tone="amount"
-                quote={cvrSrc && cvrSrc.quote}
               />
             )}
             <span className="text-inkFaint">per share</span>
           </span>
         ) : null;
+        const perShareSrc = (() => {
+          const quotes = [
+            heroPerShareSrc && heroPerShareSrc.quote,
+            hasCvr && cvrSrc && cvrSrc.quote,
+          ].filter(Boolean);
+          if (quotes.length === 0) return heroPerShareSrc;
+          return { ...(heroPerShareSrc || {}), quote: quotes.join('\n\n') };
+        })();
         const heroRows = [
-          perShareValue ? { label: 'Per-Share Consideration', value: perShareValue, src: heroPerShareSrc } : null,
+          perShareValue ? { label: 'Per-Share Consideration', value: perShareValue, src: perShareSrc } : null,
           heroConsidType ? { label: 'Consideration Type', value: heroConsidTypeNode || heroConsidType, src: heroConsidTypeSrc } : null,
           (showExchangeRatio && (exchangeRatioValue || exchangeRatioType)) ? { label: 'Exchange Ratio', value: <>{exchangeRatioValue || '—'}{exchangeRatioType ? ` (${exchangeRatioType})` : ''}</>, src: exchangeRatioSrc } : null,
           appraisalAvailable !== null ? { label: 'Appraisal Rights Available', value: renderAppraisalValue(appraisalAvailable), src: appraisalSrc } : null,
