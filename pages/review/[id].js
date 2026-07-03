@@ -15,6 +15,8 @@ import {
   CANONICAL_CONDITIONS_B,
   CANONICAL_CONDITIONS_S,
   conditionRowMatches,
+  conditionDetailLines,
+  CONDITION_ABSENT_COPY,
 } from '../../lib/canonical-conditions';
 import {
   taxonomyForFeatureKey,
@@ -6864,7 +6866,7 @@ function CanonicalConditionDetails({ row, matches, allProvisions, certifies }) {
 
   if (isCert) {
     if (matches.length === 0 && (!certifies || certifies.length === 0)) {
-      return <span className="italic text-inkFaint">Not present in this agreement</span>;
+      return <span className="italic text-inkFaint">{CONDITION_ABSENT_COPY}</span>;
     }
     return certifies && certifies.length > 0
       ? <span className="text-ink">Certifies: {certifies.join(' + ')}</span>
@@ -6921,44 +6923,23 @@ function CanonicalConditionDetails({ row, matches, allProvisions, certifies }) {
     );
   }
 
-  // Every other condition row: structured facts only (threshold, cure
-  // period, materiality scrape) — never the raw provision sentence.
+  // Every other condition row: structured facts only (condition summary,
+  // threshold, cure period, materiality scrape, schedule reference) — never
+  // the raw provision sentence. conditionDetailLines is the shared pure
+  // builder (lib/canonical-conditions.js), unit-tested against real shapes.
   const lines = [];
-  const pushLine = (lbl, value) => {
-    if (value === null || value === undefined || value === '' || value === false) return;
-    if (Array.isArray(value) && value.length === 0) return;
-    lines.push({ label: lbl, value });
-  };
   for (const p of matches) {
-    const f = getStructuredFeatures(p) || {};
-    const fmt = (val, key) => {
-      const uu = isCitableValue(val) ? getCitableValue(val) : val;
-      if (uu === null || uu === undefined || uu === '' || uu === false) return null;
-      if (typeof uu === 'boolean') return uu ? 'Yes' : null;
-      if (Array.isArray(uu)) {
-        const parts = uu
-          .map((x) => isTaggedItem(x) ? (resolveTaggedLabel(key, x) || x.label || x.code) : String(x))
-          .filter(Boolean);
-        return parts.length ? parts.join(', ') : null;
-      }
-      if (isTaggedItem(uu)) return resolveTaggedLabel(key, uu) || uu.label || uu.code;
-      return String(uu);
-    };
-    const threshold = fmt(f.dollarThreshold, 'dollarThreshold');
-    if (threshold) pushLine('Threshold', threshold);
-    const cure = fmt(f.curePeriod, 'curePeriod') || fmt(f.cureDays, 'cureDays');
-    if (cure) pushLine('Cure period', cure);
-    const scrapeLang = fmt(f.materialityScrapeLanguage, 'materialityScrapeLanguage');
-    if (scrapeLang) {
-      pushLine('Materiality scrape', 'Present');
-    } else {
-      const scrapePresent = fmt(f.materialityScrapePresent, 'materialityScrapePresent') || fmt(f.materialityScrape, 'materialityScrape');
-      if (scrapePresent) pushLine('Materiality scrape', 'Present');
-    }
+    for (const line of conditionDetailLines(getStructuredFeatures(p) || {})) lines.push(line);
   }
 
   if (lines.length === 0) {
-    return <span className="italic text-inkFaint">Not present in this agreement</span>;
+    // A matched row is PRESENT even when no displayable detail was extracted.
+    // Rendering the absent copy here is a false affirmative absence — the bug
+    // that blanked the whole Mutual Conditions section on deals whose COND-M
+    // features carried only booleans/summaries.
+    return matches.length > 0
+      ? <span className="italic text-inkFaint">Present (detail not extracted)</span>
+      : <span className="italic text-inkFaint">{CONDITION_ABSENT_COPY}</span>;
   }
 
   return (
@@ -7191,7 +7172,8 @@ function CondSingleTable({ allProvisions, onSelectProvision }) {
                 </tr>
                 {/* Block 5e: the "Present: Yes" chip column is dropped — a
                     populated Detail cell already means present; absent rows
-                    keep the explicit "Not present in this agreement" text. */}
+                    render the explicit not-found text (which must NOT assert
+                    absence as fact — extraction gaps look identical). */}
                 {sec.rows.map(({ row, matches }) => {
                   const primary = matches[0];
                   const quote = primary && typeof primary.full_text === 'string' ? primary.full_text : null;
@@ -7206,7 +7188,7 @@ function CondSingleTable({ allProvisions, onSelectProvision }) {
                       </td>
                       <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
                         {matches.length === 0 && !row.alwaysRender ? (
-                          <span className="italic text-inkFaint">Not present in this agreement</span>
+                          <span className="italic text-inkFaint">{CONDITION_ABSENT_COPY}</span>
                         ) : (
                           <HoverSource quote={quote} as="div">
                             <CanonicalConditionDetails
