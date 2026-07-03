@@ -17,6 +17,7 @@ import {
   REVIEW_LABEL_COL_W,
 } from './shared';
 import { AddSectionItem } from './AddSectionItem';
+import { buildPerShareParts } from './table-logic';
 
 // Equity-specific column keys: these should NEVER appear in the lower
 // "Conversion of Shares" table (they only make sense for the equity table).
@@ -416,7 +417,6 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
   let heroPerShare = null;
   let heroPerShareSrc = null;
   let heroConsidType = null;
-  let heroConsidTypeSrc = null;
   const captureSrc = (raw, p) => ({
     provision: p,
     quote: evidenceQuote(raw, { provision: p }),
@@ -437,7 +437,6 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
       heroConsidType = isTaggedItem(f.considerationType)
         ? (resolveTaggedLabel('considerationType', f.considerationType) || f.considerationType.label || f.considerationType.code)
         : String(f.considerationType);
-      heroConsidTypeSrc = captureSrc(f.considerationType, p);
     }
     if (heroPerShare && heroConsidType) break;
   }
@@ -502,44 +501,12 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
       break;
     }
   }
-  // When the deal pays both cash AND CVR, render them as two separate
-  // canonical pills instead of a combined "Cash and a CVR" string. The
-  // rendered node is consumed by the Headline Consideration mini-table.
-  // A literal "+" text node sits between the pills — not just a CSS gap —
-  // so the pair reads "Cash + CVR" instead of running together as
-  // "CashCvr"/"CashCVR" when the page is read as plain text (screen
-  // readers, DOM text search, copy-paste). Audit block 6c.
-  let heroConsidTypeNode = null;
+  // Metsera fb2 block 1a: the "Consideration Type" row is intentionally NOT
+  // rendered — the Per-Share Consideration row already carries the type
+  // ("$47.50 in cash + 1 CVR"). heroConsidType is still computed above
+  // because the Exchange Ratio gating below reads it.
   if (hasCvr && hasCash) {
     heroConsidType = 'Cash + CVR';
-    heroConsidTypeNode = (
-      <span className="inline-flex items-center gap-1 flex-wrap">
-        <CodeBadge code="CASH" />
-        <span className="text-inkFaint">+</span>
-        <CodeBadge code="CVR" />
-      </span>
-    );
-  } else if (heroConsidType) {
-    // Single canonical type — also render as a pill so the visual treatment
-    // matches the cash/CVR path and signals "canonical taxonomy value".
-    const codeMap = {
-      'all-cash': 'CASH',
-      'all-stock': 'STOCK',
-      'mixed-cash-and-stock': null, // render as two pills below
-      'cash-with-cvr': null,        // handled via hasCvr && hasCash above
-    };
-    const lower = String(heroConsidType).toLowerCase();
-    if (lower === 'mixed-cash-and-stock' || /mixed/.test(lower)) {
-      heroConsidTypeNode = (
-        <span className="inline-flex items-center gap-1 flex-wrap">
-          <CodeBadge code="CASH" />
-          <span className="text-inkFaint">+</span>
-          <CodeBadge code="STOCK" />
-        </span>
-      );
-    } else if (codeMap[lower]) {
-      heroConsidTypeNode = <CodeBadge code={codeMap[lower]} />;
-    }
   }
 
   // Options earn-in via CVR — only relevant when the deal pays a CVR.
@@ -648,26 +615,29 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
           column label is clickable to source (matching every other table
           in the app); right column is the plain value. No more oversized
           $47.50 callout. */}
-      {(heroPriceText || heroConsidType || appraisalAvailable !== null || (showExchangeRatio && (exchangeRatioValue || exchangeRatioType))) && (() => {
+      {(heroPriceText || hasCvr || appraisalAvailable !== null || (showExchangeRatio && (exchangeRatioValue || exchangeRatioType))) && (() => {
         // Per-share consideration: amounts render as pills (block 2). When
         // the deal carries a CVR (block 7a), BOTH legs show — the cash pill
-        // and a "1 CVR (up to $X.XX)" pill — never cash alone. The pills
-        // carry no quote of their own (the ROW-level HoverSource handles
-        // hover/click); the CVR quote is folded into the row quote.
+        // and a "1 CVR (up to $X.XX)" pill — never cash alone, joined by a
+        // literal "+" ("$47.50 in cash + 1 CVR", Metsera fb2 block 1c). No
+        // trailing "per share" — the left label already says Per-Share
+        // (block 1b). The pills carry no quote of their own (the ROW-level
+        // HoverSource handles hover/click); the CVR quote is folded into
+        // the row quote.
         const cvrMaxText = formatPerShare(cvrMaxPayment);
-        const perShareValue = heroPriceText ? (
+        const perShareParts = buildPerShareParts({
+          perShareText: heroPriceText,
+          hasCvr,
+          hasCash,
+          cvrMaxText,
+        });
+        const perShareValue = perShareParts.length > 0 ? (
           <span className="inline-flex items-center gap-1 flex-wrap">
-            <Pill
-              text={hasCvr && hasCash ? `${heroPriceText} in cash` : heroPriceText}
-              tone="amount"
-            />
-            {hasCvr && (
-              <Pill
-                text={`1 CVR${cvrMaxText ? ` (up to ${cvrMaxText})` : ''}`}
-                tone="amount"
-              />
-            )}
-            <span className="text-inkFaint">per share</span>
+            {perShareParts.map((part, i) => (
+              part.type === 'plus'
+                ? <span key={i} className="text-inkFaint">+</span>
+                : <Pill key={i} text={part.text} tone="amount" />
+            ))}
           </span>
         ) : null;
         const perShareSrc = (() => {
@@ -678,9 +648,10 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
           if (quotes.length === 0) return heroPerShareSrc;
           return { ...(heroPerShareSrc || {}), quote: quotes.join('\n\n') };
         })();
+        // Metsera fb2 block 1a: no "Consideration Type" row — Per-Share
+        // Consideration carries the type.
         const heroRows = [
           perShareValue ? { label: 'Per-Share Consideration', value: perShareValue, src: perShareSrc } : null,
-          heroConsidType ? { label: 'Consideration Type', value: heroConsidTypeNode || heroConsidType, src: heroConsidTypeSrc } : null,
           (showExchangeRatio && (exchangeRatioValue || exchangeRatioType)) ? { label: 'Exchange Ratio', value: <>{exchangeRatioValue || '—'}{exchangeRatioType ? ` (${exchangeRatioType})` : ''}</>, src: exchangeRatioSrc } : null,
           appraisalAvailable !== null ? { label: 'Appraisal Rights Available', value: renderAppraisalValue(appraisalAvailable), src: appraisalSrc } : null,
         ].filter(Boolean);
