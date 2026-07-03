@@ -2743,7 +2743,7 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
           <thead className="bg-bg/60 border-b border-border">
             <tr>
               <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Restriction</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[180px]">Threshold</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[190px] min-w-[190px] max-w-[190px]">Threshold</th>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Exceptions</th>
             </tr>
           </thead>
@@ -3807,7 +3807,7 @@ function StructTable({ provisions, onSelectProvision }) {
             };
             return (
             <tr key={p.id} className="hover:bg-bg/40 transition-colors align-top">
-              <td className="px-3 py-2 whitespace-nowrap">
+              <td className="px-3 py-2 whitespace-normal break-words w-[190px] min-w-[190px] max-w-[190px]">
                 {isSynth ? (
                   p._synthEvidence ? (
                     <button
@@ -4953,7 +4953,7 @@ function TermfTailMechanics({ provisions, allProvisions }) {
     const clickable = !!(quote && showEvidence);
     return (
       <tr className="align-top hover:bg-bg/40">
-        <td className={`px-3 py-2 text-ink font-medium whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>{label}</td>
+        <td className={`px-3 py-2 text-ink font-medium whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>{label}</td>
         <td
           className={`px-3 py-2 text-ink ${clickable ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
           onClick={clickable ? () => showEvidence(quote) : undefined}
@@ -5098,7 +5098,7 @@ function TermfRemedyEffect({ provisions }) {
     const clickable = !!(quote && showEvidence);
     return (
       <tr className="align-top hover:bg-bg/40">
-        <td className={`px-3 py-2 text-ink font-medium whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>{label}</td>
+        <td className={`px-3 py-2 text-ink font-medium whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>{label}</td>
         <td
           className={`px-3 py-2 text-ink ${clickable ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
           onClick={clickable ? () => showEvidence(quote) : undefined}
@@ -5467,7 +5467,7 @@ function TermrRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
         <table className="min-w-full text-xs font-ui">
           <tbody className="divide-y divide-border">
             <tr className="align-top hover:bg-bg/40">
-              <td className={`px-3 py-2 text-ink font-medium whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Standard</td>
+              <td className={`px-3 py-2 text-ink font-medium whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>Standard</td>
               <td
                 className={`px-3 py-2 text-ink ${faultText && showEvidence ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
                 onClick={faultText && showEvidence ? () => showEvidence(faultText) : undefined}
@@ -6558,7 +6558,7 @@ function RepMaterialContractsTable({ provisions, onSelectProvision }) {
           <thead className="bg-bg/60 border-b border-border">
             <tr>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Contract Type</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider w-[200px]">Threshold</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider w-[190px] min-w-[190px] max-w-[190px]">Threshold</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">

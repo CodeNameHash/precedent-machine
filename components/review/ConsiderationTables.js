@@ -261,7 +261,7 @@ export function EquityAwardTable({ rows, onSelectProvision, onAddProvision, opti
                 || evidenceQuote(null, { provision: row.provision });
               return (
                 <tr key={row.key} className="hover:bg-bg/40 transition-colors">
-                  <td className={`px-3 py-2 align-top whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>
+                  <td className={`px-3 py-2 align-top whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>
                     <HoverSource quote={rowQuote}>
                       <button
                         type="button"
@@ -682,7 +682,7 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
                   const rowQuote = row.src && row.src.quote ? row.src.quote : null;
                   return (
                     <tr key={row.label} className="hover:bg-bg/40 transition-colors align-top">
-                      <td className={`px-3 py-2 whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>
+                      <td className={`px-3 py-2 whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>
                         {rowQuote ? (
                           <HoverSource quote={rowQuote}>
                             <button
