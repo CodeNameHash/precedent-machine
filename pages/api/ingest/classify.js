@@ -19,6 +19,7 @@ import { getServiceSupabase } from '../../../lib/supabase';
 
 const { parseStructure, cleanText, displayCleanText } = require('../../../lib/parser-v2/structural');
 const { classifySections } = require('../../../lib/parser-v2/classify');
+const { toCompactSections } = require('../../../lib/parser-v2/snapshot');
 
 export const config = {
   maxDuration: 300,
@@ -192,19 +193,9 @@ async function runClassifyPhase({ dealId, url, fullTextOverride, sb, client }) {
     }
   }
 
-  // 5. Persist to deal.metadata (compact form — drop big intermediate fields)
-  const compactSections = sectionsForExtract.map((s) => ({
-    sectionId: `section-${s.startChar ?? s.start ?? 0}`,
-    type: s.provision_type || null,
-    code: s.provisionCode || null,
-    text: s.text || s.body || '',
-    startChar: typeof s.startChar === 'number' ? s.startChar : (s.start || 0),
-    sectionNumber: s.number || s.sectionNumber || null,
-    title: s.title || s.heading || null,
-    articleType: s.articleType || null,
-    confidence: s.confidence || null,
-    classifiedBy: s.classifiedBy || null,
-  }));
+  // 5. Persist to deal.metadata (compact form — drop big intermediate fields;
+  // shared shape in lib/parser-v2/snapshot.js)
+  const compactSections = toCompactSections(sectionsForExtract);
 
   if (dealId) {
     const displayText = displayCleanText(fullText);

@@ -1,0 +1,218 @@
+/* Tests for the partial-reprocessing helpers:
+   lib/parser-v2/snapshot.js (compact snapshot shape, prior-cache lookup,
+   classification diff) and the pure planning helpers in scripts/reprocess.js.
+   Also covers classifySections' prior-snapshot cache path (no AI call when
+   the cache covers every non-deterministic section). */
+
+const test = require('node:test');
+const assert = require('node:assert');
+
+const {
+  normalizeSectionText,
+  sectionTextHash,
+  toCompactSections,
+  sectionsForExtractFromSnapshot,
+  buildPriorLookup,
+  classifyBreakdown,
+  diffClassifications,
+} = require('../lib/parser-v2/snapshot');
+
+const {
+  parseTypesArg,
+  snapshotSectionCounts,
+  deterministicEstimate,
+  countsForTypes,
+  formatClassifyDiff,
+  classifiedByTally,
+} = require('../scripts/reprocess');
+
+const { classifySections } = require('../lib/parser-v2/classify');
+
+/* ── snapshot shape round-trip ───────────────────────────────────────────── */
+
+test('toCompactSections accepts both provision_type and provisionType spellings', () => {
+  const compact = toCompactSections([
+    { provision_type: 'TERMF', text: 'a', startChar: 5, number: '8.03', title: 'Termination Fee' },
+    { provisionType: 'ANTI', body: 'b', start: 9, sectionNumber: '6.03', heading: 'Efforts' },
+  ]);
+  assert.strictEqual(compact[0].type, 'TERMF');
+  assert.strictEqual(compact[0].sectionNumber, '8.03');
+  assert.strictEqual(compact[0].startChar, 5);
+  assert.strictEqual(compact[1].type, 'ANTI');
+  assert.strictEqual(compact[1].text, 'b');
+  assert.strictEqual(compact[1].title, 'Efforts');
+});
+
+test('sectionsForExtractFromSnapshot round-trips the compact shape into extract input', () => {
+  const compact = toCompactSections([{
+    provision_type: 'TERMF', provisionCode: 'TERMF-RTF-ANTI', text: 'fee text',
+    startChar: 100, number: '8.03', title: 'Termination Fee', articleType: 'TERMINATION',
+  }]);
+  const [s] = sectionsForExtractFromSnapshot(compact);
+  assert.strictEqual(s.provision_type, 'TERMF');
+  assert.strictEqual(s.provisionType, 'TERMF');
+  assert.strictEqual(s.provisionCode, 'TERMF-RTF-ANTI');
+  assert.strictEqual(s.text, 'fee text');
+  assert.strictEqual(s.body, 'fee text');
+  assert.strictEqual(s.startChar, 100);
+  assert.strictEqual(s.start, 100);
+  assert.strictEqual(s.number, '8.03');
+  assert.strictEqual(s.heading, 'Termination Fee');
+});
+
+/* ── text normalization / hashing ────────────────────────────────────────── */
+
+test('sectionTextHash is stable across display markers, «italics», and whitespace', () => {
+  const raw = 'SECTION 5.07. Employee Matters. The Company shall provide benefits.';
+  const display = '[[SECTION]]SECTION 5.07.[[/SECTION]]  «Employee Matters».\n\nThe  Company shall provide benefits.';
+  assert.strictEqual(sectionTextHash(raw), sectionTextHash(display));
+  assert.notStrictEqual(sectionTextHash(raw), sectionTextHash(raw + ' Amended.'));
+  assert.strictEqual(normalizeSectionText('  A  B  '), 'a b');
+});
+
+/* ── prior lookup + classify cache ───────────────────────────────────────── */
+
+const throwingClient = {
+  messages: { create: async () => { throw new Error('AI must not be called'); } },
+};
+
+test('classifySections reuses the prior snapshot instead of calling the AI', async () => {
+  const text = 'The Company shall maintain employee benefit plans for one year following closing.';
+  const sections = [{ number: '5.07', title: 'Section 5.07. Employee Matters.', text, startChar: 0 }];
+  const prior = buildPriorLookup([
+    { type: 'COV', code: 'COV-EMPLOYEE', confidence: 'high', text },
+  ]);
+  const out = await classifySections(sections, [], throwingClient, { prior });
+  assert.strictEqual(out.length, 1);
+  assert.strictEqual(out[0].provisionType, 'COV');
+  assert.strictEqual(out[0].provisionCode, 'COV-EMPLOYEE');
+  assert.strictEqual(out[0].classifiedBy, 'cache');
+});
+
+test('classifySections calls the AI for sections missing from the prior snapshot', async () => {
+  const sections = [{ number: '5.07', title: 'Section 5.07. Employee Matters.', text: 'Brand new text never classified before.', startChar: 0 }];
+  const prior = buildPriorLookup([
+    { type: 'COV', code: null, confidence: 'high', text: 'Some other section entirely.' },
+  ]);
+  let aiCalled = false;
+  const stubClient = {
+    messages: {
+      create: async () => {
+        aiCalled = true;
+        return { content: [{ text: '[{"index":0,"provisionType":"COV","confidence":"high","reasoning":"x"}]' }] };
+      },
+    },
+  };
+  const out = await classifySections(sections, [], stubClient, { prior });
+  assert.strictEqual(aiCalled, true);
+  assert.strictEqual(out[0].provisionType, 'COV');
+  assert.strictEqual(out[0].classifiedBy, 'ai');
+});
+
+test('deterministic rules beat the cache — rule changes take effect immediately', async () => {
+  const text = 'This Agreement shall be governed by the laws of Delaware.';
+  const sections = [{ number: '9.05', title: 'Section 9.05. Governing Law.', text, startChar: 0 }];
+  const prior = buildPriorLookup([{ type: 'COV', code: null, confidence: 'high', text }]);
+  const out = await classifySections(sections, [], throwingClient, { prior });
+  assert.strictEqual(out[0].provisionType, 'MISC'); // deterministic governing-law rule
+  assert.strictEqual(out[0].classifiedBy, 'regex');
+});
+
+test('buildPriorLookup skips untyped rows and keeps first entry per hash', () => {
+  const prior = buildPriorLookup([
+    { type: null, text: 'abc' },
+    { type: 'COV', code: 'X', text: 'same text' },
+    { type: 'MISC', code: 'Y', text: 'same text' },
+  ]);
+  assert.strictEqual(prior.size, 1);
+  assert.strictEqual(prior.get(sectionTextHash('same text')).provisionType, 'COV');
+});
+
+/* ── classification diff ─────────────────────────────────────────────────── */
+
+test('diffClassifications reports type changes, code changes, adds, removes', () => {
+  const before = [
+    { sectionNumber: '6.03', title: 'Efforts', type: 'COV', code: null, text: 'efforts text' },
+    { sectionNumber: '8.03', title: 'Termination Fee', type: 'TERMF', code: null, text: 'fee text' },
+    { sectionNumber: '9.01', title: 'Old Section', type: 'MISC', code: null, text: 'gone' },
+  ];
+  const after = [
+    { sectionNumber: '6.03', title: 'Efforts', type: 'ANTI', code: null, text: 'efforts text' },
+    { sectionNumber: '8.03', title: 'Termination Fee', type: 'TERMF', code: 'TERMF-RTF-ANTI', text: 'fee text' },
+    { sectionNumber: '9.02', title: 'New Section', type: 'MISC', code: null, text: 'fresh' },
+  ];
+  const diff = diffClassifications(before, after);
+  assert.strictEqual(diff.changed.length, 2);
+  const typeChange = diff.changed.find((c) => c.sectionNumber === '6.03');
+  assert.strictEqual(typeChange.from, 'COV');
+  assert.strictEqual(typeChange.to, 'ANTI');
+  const codeChange = diff.changed.find((c) => c.sectionNumber === '8.03');
+  assert.strictEqual(codeChange.toCode, 'TERMF-RTF-ANTI');
+  assert.strictEqual(diff.removed.length, 1);
+  assert.strictEqual(diff.removed[0].sectionNumber, '9.01');
+  assert.strictEqual(diff.added.length, 1);
+  assert.strictEqual(diff.added[0].sectionNumber, '9.02');
+  assert.strictEqual(diff.unchanged, 0);
+});
+
+test('diffClassifications falls back to text-hash matching when offsets/numbers shift', () => {
+  const before = [{ sectionNumber: null, title: 'Annex I', type: 'COND', code: null, text: 'offer conditions text', startChar: 100 }];
+  const after = [{ sectionNumber: null, title: 'Annex I', type: 'COND', code: null, text: '[[SECTION]]offer conditions text[[/SECTION]]', startChar: 900 }];
+  const diff = diffClassifications(before, after);
+  assert.strictEqual(diff.unchanged, 1);
+  assert.strictEqual(diff.added.length, 0);
+  assert.strictEqual(diff.removed.length, 0);
+});
+
+test('formatClassifyDiff renders terse change lines', () => {
+  const out = formatClassifyDiff({
+    changed: [{ sectionNumber: '6.03', title: 'Efforts', from: 'COV', to: 'ANTI', fromCode: null, toCode: null }],
+    added: [],
+    removed: [],
+    unchanged: 40,
+  });
+  assert.match(out, /~ §6\.03 Efforts: COV → ANTI/);
+  assert.match(out, /= 40 unchanged/);
+});
+
+/* ── planning helpers ────────────────────────────────────────────────────── */
+
+test('parseTypesArg splits, uppercases, dedupes, validates', () => {
+  assert.deepStrictEqual(parseTypesArg('termf,anti'), ['TERMF', 'ANTI']);
+  assert.deepStrictEqual(parseTypesArg(['TERMF', 'TERMF,COND']), ['TERMF', 'COND']);
+  assert.throws(() => parseTypesArg('BOGUS'), /Unknown type "BOGUS"/);
+});
+
+test('snapshotSectionCounts expands type groups (TERMR covers party variants)', () => {
+  const compact = [
+    { type: 'TERMR' }, { type: 'TERMR-B' }, { type: 'TERMF' }, { type: 'COV' },
+  ];
+  assert.deepStrictEqual(snapshotSectionCounts(compact, ['TERMR', 'TERMF']), { TERMR: 2, TERMF: 1 });
+});
+
+test('countsForTypes sums group members out of a by-type breakdown', () => {
+  const byType = { 'COND-M': 2, 'COND-B': 1, TERMF: 3, COV: 9 };
+  assert.deepStrictEqual(countsForTypes(byType, ['COND', 'TERMF']), { COND: 3, TERMF: 3 });
+});
+
+test('deterministicEstimate counts rule-resolvable sections and unresolved rest', () => {
+  const articles = [{ number: 'VII', title: 'CONDITIONS TO THE MERGER' }];
+  const sections = [
+    { number: '7.01', title: 'Section 7.01. Conditions to Obligations of Each Party.', text: 'The obligations of each party to effect the Merger…' },
+    { number: '9.99', title: 'Section 9.99. Some Bespoke Provision.', text: 'Entirely novel text no rule matches.' },
+  ];
+  const est = deterministicEstimate(sections, articles);
+  assert.strictEqual(est.total, 2);
+  assert.strictEqual(est.unresolved, 1);
+  assert.strictEqual((est.byType['COND-M'] || 0), 1);
+});
+
+test('classifyBreakdown and classifiedByTally count by field', () => {
+  const compact = [
+    { type: 'COV', classifiedBy: 'regex' },
+    { type: 'COV', classifiedBy: 'cache' },
+    { type: 'TERMF', classifiedBy: 'ai' },
+  ];
+  assert.deepStrictEqual(classifyBreakdown(compact), { COV: 2, TERMF: 1 });
+  assert.deepStrictEqual(classifiedByTally(compact), { regex: 1, cache: 1, ai: 1 });
+});
