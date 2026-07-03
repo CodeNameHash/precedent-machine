@@ -224,6 +224,11 @@ export function HoverSource({ quote, children, as = 'span', className, align = '
   );
 }
 
+/* ── Standard left label-column width for all review tables (block 8).
+ *    Matches the Closing Conditions table's Condition column so the label
+ *    column lines up as the eye moves from table to table. */
+export const REVIEW_LABEL_COL_W = 'w-[240px]';
+
 /* ── Pill: canonical inline chip for a resolved, plain-English value
  *    (dollar amount, standard, taxonomy code, person, materiality
  *    qualifier). Consolidates several near-identical local `Pill` helpers

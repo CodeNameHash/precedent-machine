@@ -75,6 +75,7 @@ import {
   humanizeKey,
   CustomTaxonomyContext,
   Pill,
+  REVIEW_LABEL_COL_W,
 } from '../../components/review/shared';
 import { NosolFourTables } from '../../components/review/NosolFourTables';
 import { ConsidTable } from '../../components/review/ConsiderationTables';
@@ -4579,12 +4580,6 @@ function parseDollarAmount(raw) {
   else if (unit === 'thousand' || unit === 'k') n *= 1e3;
   return n;
 }
-
-// Standard left label-column width, applied across the review tables (TERMR,
-// TERMF, Structure & Mechanics, Consideration) so the eye doesn't re-anchor
-// from table to table. Matches the width already used by the Closing
-// Conditions table's "Condition" column (block 8: standardize on that width).
-const REVIEW_LABEL_COL_W = 'w-[240px]';
 
 function termfHeroDisplay(raw) {
   if (raw === null || raw === undefined || raw === '') return null;

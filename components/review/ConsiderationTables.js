@@ -12,6 +12,8 @@ import {
   HoverSource,
   humanizeBadgeText,
   useShowEvidence,
+  Pill,
+  REVIEW_LABEL_COL_W,
 } from './shared';
 import { AddSectionItem } from './AddSectionItem';
 
@@ -182,11 +184,36 @@ export function buildEquityRows(equityProvisions) {
   return deduped;
 }
 
+// Render a treatment/vesting string with any dollar amounts pulled out as
+// amount pills (block 7b: amounts as pills), e.g. "Converted into $47.50" →
+// "Converted into [$47.50]".
+const DOLLAR_AMOUNT_RE = /\$\s?[\d,]+(?:\.\d+)?(?:\s*(?:million|billion))?/gi;
+function renderWithAmountPills(text) {
+  const s = String(text);
+  const re = new RegExp(DOLLAR_AMOUNT_RE.source, 'gi');
+  const parts = [];
+  let last = 0;
+  let m;
+  while ((m = re.exec(s)) !== null) {
+    if (m.index > last) parts.push(s.slice(last, m.index));
+    parts.push(<Pill key={`amt-${m.index}`} text={m[0]} tone="amount" />);
+    last = m.index + m[0].length;
+  }
+  if (parts.length === 0) return s;
+  if (last < s.length) parts.push(s.slice(last));
+  return (
+    <span className="inline-flex items-baseline gap-1 flex-wrap">
+      {parts.map((p, i) => (typeof p === 'string' ? <span key={i}>{p}</span> : p))}
+    </span>
+  );
+}
+
 export function EquityAwardTable({ rows, onSelectProvision, onAddProvision, optionsCvrEarnInLabel, optionsCvrEarnInQuote }) {
   if (!rows || rows.length === 0) return null;
   // Render a tagged value as a canonical pill. Prefer the resolved taxonomy
   // label (e.g. "Cashed out at spread (...)") over a bare code-humanization
   // so the pill reads correctly; `featureKey` selects the taxonomy dict.
+  // Plain strings render one line (block 7b) with dollar amounts as pills.
   const renderTagged = (v, featureKey) => {
     if (isTaggedItem(v)) {
       const label = featureKey ? resolveTaggedLabel(featureKey, v) : null;
@@ -195,7 +222,7 @@ export function EquityAwardTable({ rows, onSelectProvision, onAddProvision, opti
     if (v === null || v === undefined || v === '') {
       return <span className="text-inkFaint/70 italic">—</span>;
     }
-    return <span className="whitespace-pre-wrap break-words">{String(v)}</span>;
+    return <div className="line-clamp-1">{renderWithAmountPills(String(v))}</div>;
   };
   // Identify the Options row so the CVR earn-in pill attaches there.
   const isOptionsRow = (row) => {
@@ -234,12 +261,12 @@ export function EquityAwardTable({ rows, onSelectProvision, onAddProvision, opti
                 || evidenceQuote(null, { provision: row.provision });
               return (
                 <tr key={row.key} className="hover:bg-bg/40 transition-colors">
-                  <td className="px-3 py-2 align-top whitespace-nowrap">
+                  <td className={`px-3 py-2 align-top whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>
                     <HoverSource quote={rowQuote}>
                       <button
                         type="button"
                         onClick={() => onSelectProvision && onSelectProvision(row.provision)}
-                        className="text-left text-accent hover:underline font-medium"
+                        className="text-left text-accent hover:underline font-semibold"
                       >
                         {instLabel}
                       </button>
@@ -447,6 +474,25 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
   };
   const hasCvr = detectCvr();
   const hasCash = detectCash();
+
+  // Block 7a: when the deal pays a CVR, the headline consideration must show
+  // BOTH components — the cash leg and the CVR leg — so cash-only is never
+  // presented as the whole consideration. Pull the per-CVR maximum payment
+  // from the CONSID-CVR features (maxPayment) for the "(up to $X.XX)" tail.
+  let cvrMaxPayment = null;
+  let cvrSrc = null;
+  if (hasCvr) {
+    for (const p of provisions) {
+      const f = getStructuredFeatures(p) || {};
+      const raw = f.maxPayment ?? f.cvrMaxPayment ?? null;
+      if (raw === null || raw === undefined || raw === '') continue;
+      const v = isCitableValue(raw) ? getCitableValue(raw) : raw;
+      if (v === null || v === undefined || v === '') continue;
+      cvrMaxPayment = String(v);
+      cvrSrc = captureSrc(raw, p);
+      break;
+    }
+  }
   // When the deal pays both cash AND CVR, render them as two separate
   // canonical pills instead of a combined "Cash and a CVR" string. The
   // rendered node is consumed by the Headline Consideration mini-table.
@@ -588,8 +634,29 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
           in the app); right column is the plain value. No more oversized
           $47.50 callout. */}
       {(heroPriceText || heroConsidType || appraisalAvailable !== null || (showExchangeRatio && (exchangeRatioValue || exchangeRatioType))) && (() => {
+        // Per-share consideration: amounts render as pills (block 2). When
+        // the deal carries a CVR (block 7a), BOTH legs show — the cash pill
+        // and a "1 CVR (up to $X.XX)" pill — never cash alone.
+        const cvrMaxText = formatPerShare(cvrMaxPayment);
+        const perShareValue = heroPriceText ? (
+          <span className="inline-flex items-center gap-1 flex-wrap">
+            <Pill
+              text={hasCvr && hasCash ? `${heroPriceText} in cash` : heroPriceText}
+              tone="amount"
+              quote={heroPerShareSrc && heroPerShareSrc.quote}
+            />
+            {hasCvr && (
+              <Pill
+                text={`1 CVR${cvrMaxText ? ` (up to ${cvrMaxText})` : ''}`}
+                tone="amount"
+                quote={cvrSrc && cvrSrc.quote}
+              />
+            )}
+            <span className="text-inkFaint">per share</span>
+          </span>
+        ) : null;
         const heroRows = [
-          heroPriceText ? { label: 'Per-Share Price', value: <>{heroPriceText} <span className="text-inkFaint">per share</span></>, src: heroPerShareSrc } : null,
+          perShareValue ? { label: 'Per-Share Consideration', value: perShareValue, src: heroPerShareSrc } : null,
           heroConsidType ? { label: 'Consideration Type', value: heroConsidTypeNode || heroConsidType, src: heroConsidTypeSrc } : null,
           (showExchangeRatio && (exchangeRatioValue || exchangeRatioType)) ? { label: 'Exchange Ratio', value: <>{exchangeRatioValue || '—'}{exchangeRatioType ? ` (${exchangeRatioType})` : ''}</>, src: exchangeRatioSrc } : null,
           appraisalAvailable !== null ? { label: 'Appraisal Rights Available', value: renderAppraisalValue(appraisalAvailable), src: appraisalSrc } : null,
@@ -607,7 +674,7 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
                   const rowQuote = row.src && row.src.quote ? row.src.quote : null;
                   return (
                     <tr key={row.label} className="hover:bg-bg/40 transition-colors align-top">
-                      <td className="px-3 py-2 whitespace-nowrap w-[220px]">
+                      <td className={`px-3 py-2 whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>
                         {rowQuote ? (
                           <HoverSource quote={rowQuote}>
                             <button
