@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useDeals } from '../../lib/useSupabaseData';
+import { useViewMode } from '../../components/ViewModeContext';
 import { SkeletonTable, EmptyState, ErrorState, Breadcrumbs } from '../../components/UI';
 import { useUser } from '../../lib/useUser';
 
@@ -33,17 +34,20 @@ export default function Deals() {
     refetch();
   };
 
+  const { isEdit } = useViewMode();
   return (
     <div className="space-y-6">
       <Breadcrumbs items={[{ label: 'Dashboard', href: '/' }, { label: 'Deals' }]} />
       <div className="flex items-center justify-between">
         <h1 className="font-display text-2xl text-ink">Deals</h1>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="px-4 py-2 text-sm font-ui bg-accent text-white rounded hover:bg-accent/90 transition-colors"
-        >
-          {showForm ? 'Cancel' : '+ Add Deal'}
-        </button>
+        {isEdit ? (
+          <button
+            onClick={() => setShowForm(!showForm)}
+            className="px-4 py-2 text-sm font-ui bg-accent text-white rounded hover:bg-accent/90 transition-colors"
+          >
+            {showForm ? 'Cancel' : '+ Add Deal'}
+          </button>
+        ) : null}
       </div>
 
       {/* Add Deal Form */}
