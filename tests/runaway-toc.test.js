@@ -89,6 +89,65 @@ test('runaway TOC block: swallowed body articles and collapsed headings are reco
   assert.ok(captured / cleaned.length > 0.8, `text share ${(captured / cleaned.length).toFixed(2)} > 0.8`);
 });
 
+test('mid-document bogus TOC block (swallowed final sections + signature) is rescued', () => {
+  // Kraft shape: markTableOfContents anchored on the in-prose "table of
+  // contents ... are for reference purposes only" sentence in Section 9.04
+  // (Interpretation) — 53% into the document — and swallowed the final
+  // sections (9.05+) and the signature block as [[TOC_ENTRY]]s. The block is
+  // SMALL (18.7k in the real filing), so the size trigger alone never fires:
+  // position is the discriminator. Swallowed section headings must be
+  // restored as blank-line-anchored headings, and IN WITNESS WHEREOF must be
+  // re-anchored so findBodyEnd stops before the bundled exhibits.
+  const pad = LONG_FILLER + LONG_FILLER; // pushes the block start past 30k
+  const doc = [
+    'AGREEMENT AND PLAN OF MERGER, dated as of March 24, 2015 (this "Agreement"), among BUYER CORPORATION and TARGET INC.',
+    '',
+    'ARTICLE I',
+    '',
+    'The Merger',
+    '',
+    `SECTION 1.01. The Merger. Upon the terms and subject to the conditions set forth in this Agreement, Merger Sub shall be merged with and into the Company.${pad}`,
+    '',
+    'ARTICLE IX',
+    '',
+    'General Provisions',
+    '',
+    'SECTION 9.04. Interpretation. When a reference is made in this Agreement to an Article or Section, such reference shall be to an Article or Section of this Agreement unless otherwise indicated. The',
+    '[[TOC_START]]table of contents, index of defined terms and headings contained in this Agreement are for reference purposes only and shall not affect in any way the meaning or interpretation of this Agreement.',
+    '[[TOC_ENTRY]]SECTION 9.05|Severability. If any term or other provision of this Agreement is invalid, illegal or incapable of being enforced by any Law, all other conditions and provisions of this Agreement shall nevertheless remain in full force and effect so long as the economic or legal substance of the Transactions is not affected in any manner adverse to any party.|[[/TOC_ENTRY]]',
+    '[[TOC_ENTRY]]SECTION 9.06|Counterparts. This Agreement may be executed in one or more counterparts, all of which shall be considered one and the same agreement and shall become effective when one or more counterparts have been signed by each of the parties and delivered to the other parties.|[[/TOC_ENTRY]]',
+    // A wrapped CROSS-REFERENCE entry (lowercase continuation) that carries
+    // the signature lead-in — must be joined mid-line, with IN WITNESS
+    // WHEREOF re-broken onto its own line.
+    '[[TOC_ENTRY]]Section 9.06|shall survive the termination of this Agreement pursuant to the terms hereof, together with the Confidentiality Agreement. IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.|[[/TOC_ENTRY]]',
+    '[[/TOC_START]]',
+    '',
+    // Bundled exhibit (by-laws) AFTER the agreement — must stay out of the body.
+    'ARTICLE X',
+    '',
+    'Fiscal Year',
+    '',
+    'The fiscal year of the Corporation shall end on the Sunday nearest to December 31 of each year.',
+  ].join('\n');
+
+  const cleaned = cleanText(doc);
+  const { sections, articles } = parseStructure(cleaned);
+  const nums = sections.map((s) => String(s.number));
+  for (const n of ['1.01', '9.04', '9.05', '9.06']) {
+    assert.ok(nums.includes(n), `section ${n} recovered (got ${nums})`);
+  }
+  const s905 = sections.find((s) => String(s.number) === '9.05');
+  assert.match(s905.title || '', /Severability/);
+  // The signature anchor was restored: no section may run into the exhibit.
+  const iw = cleaned.indexOf('IN WITNESS WHEREOF');
+  assert.ok(iw > 0, 'IN WITNESS WHEREOF survived the rescue');
+  for (const s of sections) {
+    assert.ok(s.startChar < iw, `section ${s.number} starts before the signature block`);
+  }
+  // The by-laws exhibit's ARTICLE X was not parsed as a body article.
+  assert.ok(!articles.some((a) => String(a.number) === 'X'), 'exhibit ARTICLE X excluded');
+});
+
 test('healthy TOC block (small, stray [[REF]] inside) is still dropped, not recovered', () => {
   const doc = [
     'AGREEMENT AND PLAN OF MERGER',
