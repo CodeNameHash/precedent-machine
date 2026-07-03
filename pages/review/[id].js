@@ -5790,181 +5790,49 @@ function augmentRepsWithExpectedPlaceholders(list, repsType, allProvisions) {
   return [...list, ...externalHits, ...placeholders];
 }
 
-function BringdownTable({ provisions, repsType, onSelectProvision }) {
-  // Find the matching COND-B-REP / COND-S-REP provision.
+// Reps bring-down: compact "tier → standard" summary line, per the table
+// design contract. Was previously a full mini-table breaking out each tier's
+// covered reps by name and any exception sub-text (de-minimis detail); now
+// it's the standard names only ("MAE standard; capitalization to de
+// minimis"), higher-standard tiers first, general/catch-all tier last.
+// Verbatim tier text stays out of the cell entirely — the row it's nested in
+// already carries the source provision's quote via HoverSource.
+function BringdownTable({ provisions, repsType }) {
   const condProvs = (provisions || []).filter((p) => isCondRepProvision(p, repsType));
-  // Gather tiers from any matching provisions — remember which provision
-  // each tier came from so we can pull thresholds / text as a fallback.
   const tiers = [];
   for (const cp of condProvs) {
     const f = getStructuredFeatures(cp) || {};
     if (Array.isArray(f.bringDownTiers)) {
       for (const t of f.bringDownTiers) {
-        if (t && typeof t === 'object') tiers.push({ tier: t, source: cp });
+        if (t && typeof t === 'object') tiers.push(t);
       }
     }
   }
-
   if (tiers.length === 0) return null;
 
-  // Identify the catch-all tier (the "general standard"). Heuristic: the
-  // tier whose reps_covered matches isCatchAllRepsCovered. If none match,
-  // assume the LAST tier is the catch-all (drafters typically state the
-  // general standard last, after enumerating higher-standard exceptions).
-  let generalIdx = tiers.findIndex(({ tier: t }) => isCatchAllRepsCovered(t.reps_covered || t.repsCovered));
+  let generalIdx = tiers.findIndex((t) => isCatchAllRepsCovered(t.reps_covered || t.repsCovered));
   if (generalIdx < 0) generalIdx = tiers.length - 1;
-  const generalEntry = tiers[generalIdx];
-  const higherEntries = tiers.filter((_, i) => i !== generalIdx);
-
   const tierStdLabel = (t) =>
     t.standard_label || t.standardLabel || t.standard || t.standardCode || '(unspecified)';
 
-  // REP provisions in this category — used to enumerate which reps each
-  // higher-standard tier covers (via the linkedBringDownStandard stamp).
-  const repProvs = (provisions || []).filter((p) => p.type === repsType);
+  const generalLabel = tierStdLabel(tiers[generalIdx]);
+  const seen = new Set();
+  const higherLabels = [];
+  tiers.forEach((t, i) => {
+    if (i === generalIdx) return;
+    const label = tierStdLabel(t);
+    if (seen.has(label)) return;
+    seen.add(label);
+    higherLabels.push(label);
+  });
 
-  // Group higher tier entries by standard label so all reps under the same
-  // standard render together. Each entry contributes its reps_covered text
-  // + any matched REP provision names. Also captures the matched provisions
-  // themselves so we can wire the names as buttons that jump to the source.
-  const higherByStandard = new Map();
-  const namesToProvs = new Map(); // lowercase name -> provision
-  for (const rep of repProvs) {
-    const nm = String(rep.category || '').toLowerCase().trim();
-    if (nm) namesToProvs.set(nm, rep);
-  }
-  for (const entry of higherEntries) {
-    const { tier: t } = entry;
-    const stdLabel = tierStdLabel(t);
-    const reps = t.reps_covered || t.repsCovered || '';
-    const matchedNames = findCoveredRepNames(t, repProvs);
-    const bucket = higherByStandard.get(stdLabel) || { reps: [], names: new Set() };
-    if (reps) bucket.reps.push(reps);
-    for (const nm of matchedNames) bucket.names.add(nm);
-    higherByStandard.set(stdLabel, bucket);
-  }
+  const ordered = [...higherLabels, generalLabel].filter((v, i, arr) => arr.indexOf(v) === i);
 
   return (
-    <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
-      <div className="px-3 py-2 bg-bg/60 border-b border-border">
-        <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
-          Bringdown Standards
-        </p>
-      </div>
-      <div className="overflow-x-auto">
-        <table className="min-w-full text-xs font-ui">
-          <thead className="bg-bg/60 border-b border-border">
-            <tr>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[200px]">Tier</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Standard</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
-            {generalEntry && (() => {
-              // Look up which REP provisions fall under the general / de-minimis
-              // tier so the row renders clickable provision-name buttons just
-              // like the higher-standard rows. Falls back to the raw
-              // reps_covered text when no names resolve.
-              const genNames = findCoveredRepNames(generalEntry.tier, repProvs);
-              const genTip = (typeof generalEntry.source?.full_text === 'string' && generalEntry.source.full_text.trim())
-                ? generalEntry.source.full_text.slice(0, 220)
-                : undefined;
-              return (
-                <tr className="align-top" title={genTip}>
-                  <td className="px-3 py-2 text-ink font-medium whitespace-nowrap" title={genTip}>
-                    General Standard
-                  </td>
-                  <td className="px-3 py-2 text-ink" title={genTip}>
-                    <div className="text-sm leading-relaxed">{tierStdLabel(generalEntry.tier)}</div>
-                    {genNames.length > 0 ? (
-                      <div className="text-[11px] text-inkMid mt-0.5">
-                        {genNames.map((nm, i) => {
-                          const prov = namesToProvs.get(String(nm).toLowerCase().trim());
-                          return (
-                            <span key={nm}>
-                              {i > 0 && ', '}
-                              {prov && onSelectProvision ? (
-                                <button
-                                  type="button"
-                                  onClick={() => onSelectProvision(prov)}
-                                  className="text-accent hover:underline"
-                                >
-                                  {nm}
-                                </button>
-                              ) : (
-                                <span>{nm}</span>
-                              )}
-                            </span>
-                          );
-                        })}
-                      </div>
-                    ) : (generalEntry.tier.exceptions || generalEntry.tier.reps_covered) && (
-                      <div className="text-[11px] text-inkMid mt-0.5">
-                        {generalEntry.tier.reps_covered && (
-                          <span className="italic">{generalEntry.tier.reps_covered}</span>
-                        )}
-                        {generalEntry.tier.exceptions && (
-                          <span>{generalEntry.tier.reps_covered ? ' — ' : ''}{generalEntry.tier.exceptions}</span>
-                        )}
-                      </div>
-                    )}
-                  </td>
-                </tr>
-              );
-            })()}
-            {Array.from(higherByStandard.entries()).map(([stdLabel, bucket]) => {
-              const nameList = Array.from(bucket.names);
-              // First source provision in this bucket — used for the
-              // hover-tooltip on each row.
-              const tipSource = higherEntries.find((e) => tierStdLabel(e.tier) === stdLabel);
-              const hTip = (typeof tipSource?.source?.full_text === 'string' && tipSource.source.full_text.trim())
-                ? tipSource.source.full_text.slice(0, 220)
-                : undefined;
-              return (
-                <tr key={stdLabel} className="align-top" title={hTip}>
-                  <td className="px-3 py-2 text-ink font-medium whitespace-nowrap" title={hTip}>
-                    Higher Standard
-                  </td>
-                  <td className="px-3 py-2 text-ink" title={hTip}>
-                    <div className="text-sm leading-relaxed font-medium">{stdLabel}</div>
-                    {nameList.length > 0 && (
-                      <div className="text-[11px] text-inkMid mt-0.5">
-                        {nameList.map((nm, i) => {
-                          const prov = namesToProvs.get(String(nm).toLowerCase().trim());
-                          return (
-                            <span key={nm}>
-                              {i > 0 && ', '}
-                              {prov && onSelectProvision ? (
-                                <button
-                                  type="button"
-                                  onClick={() => onSelectProvision(prov)}
-                                  className="text-accent hover:underline"
-                                >
-                                  {nm}
-                                </button>
-                              ) : (
-                                <span>{nm}</span>
-                              )}
-                            </span>
-                          );
-                        })}
-                      </div>
-                    )}
-                    {nameList.length === 0 && bucket.reps.length > 0 && (
-                      <ul className="list-disc list-inside text-[11px] text-inkMid mt-0.5 space-y-0.5">
-                        {bucket.reps.map((reps, i) => (
-                          <li key={i} className="whitespace-pre-wrap">{reps}</li>
-                        ))}
-                      </ul>
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <p className="text-[11px] font-ui text-inkMid">
+      <span className="text-inkFaint">Bring-down standards: </span>
+      {ordered.join('; ')}
+    </p>
   );
 }
 
@@ -6808,99 +6676,134 @@ function RepMaterialContractsTable({ provisions, onSelectProvision }) {
  *    features: verbatim closing-condition quote, threshold, bringdown
  *    standard, cure period, materiality scrape, etc. Each composed line
  *    is independently clickable to source via useShowEvidence(). */
-function CanonicalConditionDetails({ row, matches, allProvisions, onSelectProvision }) {
-  const showEvidence = useShowEvidence();
+// Extract just the compliance/materiality "standard" PHRASE from a
+// condition's one-sentence AI summary (mainCondition/mainConcept) — e.g.
+// "in all material respects" — rather than the whole paraphrased sentence
+// (block 5: covenant-performance and bring-down rows show the standard
+// only). Order matters: check the more specific phrase first.
+const CONDITION_STANDARD_PHRASES = [
+  { re: /in all material respects/i, label: 'In all material respects' },
+  { re: /in all respects/i, label: 'In all respects' },
+  { re: /material\s+adverse\s+effect|\bmae\b/i, label: 'MAE standard' },
+  { re: /de\s+minimis/i, label: 'De minimis' },
+];
+function extractConditionStandard(text) {
+  const t = String(text || '');
+  for (const p of CONDITION_STANDARD_PHRASES) {
+    if (p.re.test(t)) return p.label;
+  }
+  return null;
+}
 
-  // Compose a list of detail lines from the matched provisions. Each line
-  // is { label, value, evidence } — value may be a string or null. If
-  // evidence is present, the line is clickable to source.
+/* CanonicalConditionDetails — the "Standard / Detail" cell for one closing-
+ * condition row. Per the table design contract, this NEVER renders the raw
+ * provision sentence (the row's own HoverSource wrapper already surfaces the
+ * source quote on hover) — only derived, plain-English facts. Four condition
+ * types get bespoke, compact treatment (block 5): Reps Bring-Down, Covenant
+ * Performance, No-MAE, and Officer's Certificate. `certifies` (officer's-
+ * certificate rows only) is the list of sibling condition labels this
+ * certificate covers, computed by the caller (CondSingleTable) from sibling
+ * rows' certificationRequired flags. */
+function CanonicalConditionDetails({ row, matches, allProvisions, certifies }) {
+  const label = String(row.label || '');
+  const isBringDown = /Bring[\s-]*Down/i.test(label);
+  const isCovenant = /Covenant Performance/i.test(label);
+  const isNoMae = /Material Adverse Effect/i.test(label);
+  const isCert = /Officer.?s Certificate/i.test(label);
+  const u = (v) => (isCitableValue(v) ? getCitableValue(v) : v);
+
+  if (isCert) {
+    if (matches.length === 0 && (!certifies || certifies.length === 0)) {
+      return <span className="italic text-inkFaint">Not present in this agreement</span>;
+    }
+    return certifies && certifies.length > 0
+      ? <span className="text-ink">Certifies: {certifies.join(' + ')}</span>
+      : <span className="italic text-inkFaint">Certifies the closing conditions (specific items not extracted)</span>;
+  }
+
+  if (isBringDown) {
+    // When tiers were extracted, the compact "tier → standard" summary
+    // renders separately via <BringdownTable> (CondSingleTable) — this cell
+    // only needs a fallback for the rare untiered case.
+    for (const p of matches) {
+      const f = getStructuredFeatures(p) || {};
+      if (Array.isArray(f.bringDownTiers) && f.bringDownTiers.length > 0) return null;
+    }
+    for (const p of matches) {
+      const f = getStructuredFeatures(p) || {};
+      const std = extractConditionStandard(f.mainCondition) || extractConditionStandard(f.mainConcept);
+      if (std) return <span className="text-ink">{std}</span>;
+    }
+    return <span className="italic text-inkFaint">Standard not specified</span>;
+  }
+
+  if (isCovenant) {
+    for (const p of matches) {
+      const f = getStructuredFeatures(p) || {};
+      const std = extractConditionStandard(f.mainCondition) || extractConditionStandard(f.mainConcept);
+      if (std) return <span className="text-ink">{std}</span>;
+    }
+    return <span className="italic text-inkFaint">Standard not specified</span>;
+  }
+
+  if (isNoMae) {
+    let continuing = null;
+    for (const p of matches) {
+      const f = getStructuredFeatures(p) || {};
+      const t = `${typeof f.mainCondition === 'string' ? f.mainCondition : ''} ${p.full_text || ''}`;
+      if (/continu(?:ing|e[ds]?)\s+(?:to\s+(?:be|exist)|material\s+adverse\s+effect|effect)/i.test(t)) {
+        continuing = true;
+        break;
+      }
+    }
+    const isParentSide = (p) => /parent|buyer|acquir|purchaser/i.test(p?.category || '');
+    const maeProvs = (allProvisions || []).filter(isMaeDefinitionProvision);
+    const maeDef = row.maeSide === 'parent'
+      ? (maeProvs.find(isParentSide) || null)
+      : (maeProvs.find((p) => !isParentSide(p)) || maeProvs[0] || null);
+    const limbs = maeDef ? u((getStructuredFeatures(maeDef) || {}).maeLimbs) : null;
+    const limbsLabel = limbs === 'TWO_LIMB' ? 'Two-limb' : limbs === 'ONE_LIMB' ? 'One-limb' : null;
+    return (
+      <span className="text-ink inline-flex items-center gap-1.5 flex-wrap">
+        <span>{continuing === true ? 'MAE must be continuing at Closing' : 'Continuing requirement not specified'}</span>
+        {limbsLabel && <Pill text={limbsLabel} tone="standard" />}
+      </span>
+    );
+  }
+
+  // Every other condition row: structured facts only (threshold, cure
+  // period, materiality scrape) — never the raw provision sentence.
   const lines = [];
-  const pushLine = (label, value, evidence) => {
+  const pushLine = (lbl, value) => {
     if (value === null || value === undefined || value === '' || value === false) return;
     if (Array.isArray(value) && value.length === 0) return;
-    lines.push({ label, value, evidence });
+    lines.push({ label: lbl, value });
   };
-
   for (const p of matches) {
     const f = getStructuredFeatures(p) || {};
-
-    // Verbatim quote (mainConcept / mainCondition / mainObligation) —
-    // shown as the headline of the row.
-    const main =
-      (typeof f.mainCondition === 'string' && f.mainCondition.trim()) ||
-      (typeof f.mainConcept === 'string' && f.mainConcept.trim()) ||
-      (typeof f.mainObligation === 'string' && f.mainObligation.trim()) ||
-      null;
-    if (main) {
-      pushLine('Provision', main, p.full_text || main);
-    }
-
-    // Threshold / bringdown / cure / materiality scrape composition.
     const fmt = (val, key) => {
-      const u = isCitableValue(val) ? getCitableValue(val) : val;
-      if (u === null || u === undefined || u === '' || u === false) return null;
-      if (typeof u === 'boolean') return u ? 'Yes' : null;
-      if (Array.isArray(u)) {
-        const parts = u
+      const uu = isCitableValue(val) ? getCitableValue(val) : val;
+      if (uu === null || uu === undefined || uu === '' || uu === false) return null;
+      if (typeof uu === 'boolean') return uu ? 'Yes' : null;
+      if (Array.isArray(uu)) {
+        const parts = uu
           .map((x) => isTaggedItem(x) ? (resolveTaggedLabel(key, x) || x.label || x.code) : String(x))
           .filter(Boolean);
         return parts.length ? parts.join(', ') : null;
       }
-      if (isTaggedItem(u)) return resolveTaggedLabel(key, u) || u.label || u.code;
-      return String(u);
+      if (isTaggedItem(uu)) return resolveTaggedLabel(key, uu) || uu.label || uu.code;
+      return String(uu);
     };
-
-    const bringDown = fmt(f.bringDownStandard, 'bringDownStandard');
-    if (bringDown) {
-      const ev = isCitableValue(f.bringDownStandard) ? getCitableText(f.bringDownStandard) : null;
-      pushLine('Bring-down standard', bringDown, ev);
-    }
-    if (Array.isArray(f.bringDownTiers) && f.bringDownTiers.length > 0) {
-      const tierTxt = f.bringDownTiers
-        .map((t) => {
-          const std = t.standard_label || t.standardLabel || t.standard || '';
-          const reps = t.reps_covered || t.repsCovered || '';
-          return std ? `${std}${reps ? ` (${reps})` : ''}` : null;
-        })
-        .filter(Boolean)
-        .join('; ');
-      if (tierTxt) pushLine('De minimis tiers', tierTxt, null);
-    }
     const threshold = fmt(f.dollarThreshold, 'dollarThreshold');
-    if (threshold) {
-      const ev = isCitableValue(f.dollarThreshold) ? getCitableText(f.dollarThreshold) : null;
-      pushLine('Threshold', threshold, ev);
-    }
+    if (threshold) pushLine('Threshold', threshold);
     const cure = fmt(f.curePeriod, 'curePeriod') || fmt(f.cureDays, 'cureDays');
-    if (cure) pushLine('Cure period', cure, null);
+    if (cure) pushLine('Cure period', cure);
     const scrapeLang = fmt(f.materialityScrapeLanguage, 'materialityScrapeLanguage');
     if (scrapeLang) {
-      const ev = isCitableValue(f.materialityScrapeLanguage) ? getCitableText(f.materialityScrapeLanguage) : null;
-      pushLine('Materiality scrape', scrapeLang, ev);
+      pushLine('Materiality scrape', 'Present');
     } else {
       const scrapePresent = fmt(f.materialityScrapePresent, 'materialityScrapePresent') || fmt(f.materialityScrape, 'materialityScrape');
-      if (scrapePresent) pushLine('Materiality scrape', 'Present', null);
-    }
-  }
-
-  // MAE row fallback — when no condition provision matched but maeSide is
-  // set, pull from the matching side's MAE definition so the row shows
-  // useful detail even without an explicit condition provision.
-  if (matches.length === 0 && row.maeSide) {
-    const isParentSide = (p) => /parent|buyer|acquir|purchaser/i.test(p?.category || '');
-    const maeProvs = (allProvisions || []).filter(isMaeDefinitionProvision);
-    const target = row.maeSide === 'parent'
-      ? (maeProvs.find(isParentSide) || null)
-      : (maeProvs.find((p) => !isParentSide(p)) || maeProvs[0] || null);
-    if (target) {
-      const f = getStructuredFeatures(target) || {};
-      const limbs = isCitableValue(f.maeLimbs) ? getCitableValue(f.maeLimbs) : f.maeLimbs;
-      if (limbs === 'TWO_LIMB') pushLine('MAE limbs', 'Two-limb (effect + ability to consummate)', null);
-      else if (limbs === 'ONE_LIMB') pushLine('MAE limbs', 'One-limb (effect only)', null);
-      if (Array.isArray(f.carveouts) && f.carveouts.length > 0) {
-        pushLine('Carve-outs', `${f.carveouts.length} carve-out${f.carveouts.length === 1 ? '' : 's'} (see MAE section)`, null);
-      }
-      pushLine('Source', `See ${target.category || 'MAE definition'}`, target.full_text || null);
+      if (scrapePresent) pushLine('Materiality scrape', 'Present');
     }
   }
 
@@ -6910,26 +6813,12 @@ function CanonicalConditionDetails({ row, matches, allProvisions, onSelectProvis
 
   return (
     <div className="space-y-1">
-      {lines.map((line, i) => {
-        const clickable = !!(line.evidence && showEvidence);
-        return (
-          <div
-            key={i}
-            className={`flex flex-col ${clickable ? 'cursor-pointer hover:bg-bg/40' : ''}`}
-            onClick={clickable ? () => showEvidence(line.evidence) : undefined}
-            title={clickable ? 'Click to view in document' : undefined}
-          >
-            <dt className="text-[10px] text-inkFaint uppercase tracking-wider">{line.label}</dt>
-            <dd className={`text-[11px] ${clickable ? 'text-ink hover:text-amber-700' : 'text-ink'}`}>
-              {typeof line.value === 'string' && line.label === 'Provision' ? (
-                <span className="italic">&ldquo;{line.value}&rdquo;</span>
-              ) : (
-                <span>{String(line.value)}</span>
-              )}
-            </dd>
-          </div>
-        );
-      })}
+      {lines.map((line, i) => (
+        <div key={i} className="flex flex-col">
+          <dt className="text-[10px] text-inkFaint uppercase tracking-wider">{line.label}</dt>
+          <dd className="text-[11px] text-ink">{String(line.value)}</dd>
+        </div>
+      ))}
     </div>
   );
 }
@@ -7036,155 +6925,8 @@ function CondFrustrationBanner({ allProvisions, onSelectProvision }) {
   );
 }
 
-function CanonicalConditionsTable({ provisions, allProvisions, family, onSelectProvision }) {
-  const list = family === 'COND-B' ? CANONICAL_CONDITIONS_B
-    : family === 'COND-S' ? CANONICAL_CONDITIONS_S
-    : CANONICAL_CONDITIONS_M;
-  const titleLabel = family === 'COND-B' ? 'Buyer Closing Conditions'
-    : family === 'COND-S' ? 'Seller Closing Conditions'
-    : 'Mutual Closing Conditions';
-
-  // Heuristic: tender-offer deal if ANY provision's full_text contains
-  // "tender offer" / "acceptance time". Used to gate the Tender Offer
-  // Minimum Condition row.
-  const isTenderDeal = useMemo(() => {
-    for (const p of provisions || []) {
-      const t = String(p?.full_text || '');
-      if (/tender\s+offer|acceptance\s+time|exchange\s+offer/i.test(t)) return true;
-    }
-    return false;
-  }, [provisions]);
-
-  // Heuristic: parent-approval row only renders when STRUCT.shareholderApprovalMethodParent
-  // indicates approval is required (not BOARD_ONLY / NA).
-  const parentApprovalRequired = useMemo(() => {
-    for (const p of provisions || []) {
-      const f = getStructuredFeatures(p) || {};
-      const raw = isCitableValue(f.shareholderApprovalMethodParent)
-        ? getCitableValue(f.shareholderApprovalMethodParent)
-        : f.shareholderApprovalMethodParent;
-      const code = isTaggedItem(raw) ? raw.code : raw;
-      if (!code) continue;
-      const s = String(code).toUpperCase();
-      if (s === 'SPECIAL_MEETING' || s === 'WRITTEN_CONSENT' || s === 'SIGN_AND_CONSENT') return true;
-    }
-    return false;
-  }, [provisions]);
-
-  // Filter the canonical list based on render predicates.
-  const renderedRowsRaw = list.filter((row) => {
-    if (row.tenderOnly && !isTenderDeal) return false;
-    if (row.requireParentApproval && !parentApprovalRequired) return false;
-    return true;
-  });
-  // Match a canonical row against a provision by canonical CODE first (stable),
-  // falling back to the category regex. Matching on category text alone dropped
-  // present conditions to "Not present" whenever the extractor's label diverged
-  // from the row wording ("No Legal Impediment" vs "No Injunctions", "Accuracy
-  // of Target Reps" vs "…representations").
-  const codeOf = (p) => {
-    const f = getStructuredFeatures(p) || {};
-    return f.canonicalCode || (p && p.ai_metadata && p.ai_metadata.code) || null;
-  };
-  const rowMatch = (row, p) => conditionRowMatches(row, p, codeOf(p));
-
-  // P3 item 5: stable sort — populated rows first, "Not present" rows last.
-  // alwaysRender rows count as populated for sort purposes (they always show
-  // something meaningful, even when no provision matches).
-  const renderedRows = [...renderedRowsRaw]
-    .map((row, originalIdx) => {
-      const matches = (provisions || []).filter((p) => rowMatch(row, p));
-      const present = matches.length > 0 || !!row.alwaysRender;
-      return { row, present, originalIdx };
-    })
-    .sort((a, b) => {
-      if (a.present !== b.present) return a.present ? -1 : 1;
-      return a.originalIdx - b.originalIdx;
-    })
-    .map(({ row }) => row);
-
-  return (
-    <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
-      <div className="px-3 py-2 bg-bg/60 border-b border-border">
-        <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
-          {titleLabel}
-        </p>
-      </div>
-      <div className="overflow-x-auto">
-        <table className="min-w-full text-xs font-ui">
-          <thead className="bg-bg/60 border-b border-border">
-            <tr>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[260px]">Condition</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Details</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
-            {renderedRows.map((row) => {
-              const matches = (provisions || []).filter((p) => rowMatch(row, p));
-              // Skip non-alwaysRender rows with no matches (other than the
-              // explicit alwaysRender canonical rows like MAE).
-              if (matches.length === 0 && !row.alwaysRender) {
-                return (
-                  <tr key={row.label} className="align-top hover:bg-bg/40">
-                    <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">{row.label}</td>
-                    <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
-                      <span className="italic text-inkFaint">Not present in this agreement</span>
-                    </td>
-                  </tr>
-                );
-              }
-              // Primary provision (first match) is the click target on the
-              // Condition column. The Details cell composes additional info
-              // from ALL matched provisions.
-              const primary = matches[0];
-              const tip = (typeof primary?.full_text === 'string' && primary.full_text.trim())
-                ? primary.full_text.slice(0, 220)
-                : undefined;
-              return (
-                <tr key={row.label} className="align-top hover:bg-bg/40" title={tip}>
-                  <td className="px-3 py-2 text-ink font-medium whitespace-nowrap" title={tip}>
-                    {primary && onSelectProvision ? (
-                      <button
-                        type="button"
-                        onClick={() => onSelectProvision(primary)}
-                        className="text-left text-accent hover:underline font-medium"
-                        title={tip}
-                      >
-                        {row.label}
-                      </button>
-                    ) : (
-                      <span>{row.label}</span>
-                    )}
-                  </td>
-                  <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words" title={tip}>
-                    <CanonicalConditionDetails
-                      row={row}
-                      matches={matches}
-                      allProvisions={allProvisions || provisions}
-                      onSelectProvision={onSelectProvision}
-                    />
-                    {/* P3 item 3: render the BringdownTable inside the
-                        "Reps Bring-Down" canonical row so the tier/standard
-                        breakdown lives next to the condition that uses it. */}
-                    {/Bring[\s-]*Down/i.test(row.label) && (
-                      <div className="mt-2">
-                        <BringdownTable
-                          provisions={allProvisions || provisions}
-                          repsType={family === 'COND-S' ? 'REP-B' : 'REP-T'}
-                          onSelectProvision={onSelectProvision}
-                        />
-                      </div>
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
+// CanonicalConditionsTable (per-family variant) removed — dead code.
+// CondSingleTable below is the live Closing-Conditions renderer.
 
 /* ════════════════════════════════════════════════════════════════════════
  * CondSingleTable — ONE Closing-Conditions table with full-span Mutual /
@@ -7253,7 +6995,24 @@ function CondSingleTable({ allProvisions, onSelectProvision }) {
         return { row, matches, present, originalIdx };
       })
       .sort((a, b) => (a.present !== b.present ? (a.present ? -1 : 1) : a.originalIdx - b.originalIdx));
-    return { ...sec, famProvs, rows };
+
+    // Officer's-certificate rows (block 5d): which sibling conditions must
+    // the certificate certify? Convention across the precedents: the
+    // certificate certifies the conditions whose provisions carry
+    // certificationRequired (reps bring-down + covenant performance) — list
+    // those rows' labels, lowercased for the "certifies: x + y" sentence.
+    const certifies = [];
+    for (const { row, matches } of rows) {
+      if (/Officer.?s Certificate/i.test(row.label)) continue;
+      const certified = matches.some((p) => {
+        const f = getStructuredFeatures(p) || {};
+        const v = isCitableValue(f.certificationRequired) ? getCitableValue(f.certificationRequired) : f.certificationRequired;
+        return v === true;
+      });
+      if (certified) certifies.push(row.label.replace(/\s*\(Parent\)$/, '').toLowerCase());
+    }
+
+    return { ...sec, famProvs, rows, certifies };
   });
 
   return (
@@ -7267,8 +7026,7 @@ function CondSingleTable({ allProvisions, onSelectProvision }) {
         <table className="min-w-full text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
             <tr>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[240px]">Condition</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[90px]">Present</th>
+              <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Condition</th>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Standard / Detail</th>
             </tr>
           </thead>
@@ -7277,11 +7035,14 @@ function CondSingleTable({ allProvisions, onSelectProvision }) {
               <Fragment key={sec.family}>
                 {/* Full-span family header row */}
                 <tr className="bg-bg/40 border-t-2 border-border">
-                  <td colSpan={3} className="px-3 py-1.5 text-[11px] font-ui font-semibold text-inkMid uppercase tracking-wide">
+                  <td colSpan={2} className="px-3 py-1.5 text-[11px] font-ui font-semibold text-inkMid uppercase tracking-wide">
                     {sec.label}
                   </td>
                 </tr>
-                {sec.rows.map(({ row, matches, present }) => {
+                {/* Block 5e: the "Present: Yes" chip column is dropped — a
+                    populated Detail cell already means present; absent rows
+                    keep the explicit "Not present in this agreement" text. */}
+                {sec.rows.map(({ row, matches }) => {
                   const primary = matches[0];
                   const quote = primary && typeof primary.full_text === 'string' ? primary.full_text : null;
                   return (
@@ -7293,11 +7054,6 @@ function CondSingleTable({ allProvisions, onSelectProvision }) {
                           </button>
                         ) : <span>{row.label}</span>}
                       </td>
-                      <td className="px-3 py-2 whitespace-nowrap">
-                        {present
-                          ? <span className="inline-flex items-center text-[10px] font-ui font-medium px-1.5 py-0.5 rounded border bg-emerald-50 text-emerald-700 border-emerald-200">Yes</span>
-                          : <span className="text-inkFaint/70 line-through text-[11px]">No</span>}
-                      </td>
                       <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
                         {matches.length === 0 && !row.alwaysRender ? (
                           <span className="italic text-inkFaint">Not present in this agreement</span>
@@ -7307,14 +7063,13 @@ function CondSingleTable({ allProvisions, onSelectProvision }) {
                               row={row}
                               matches={matches}
                               allProvisions={pool}
-                              onSelectProvision={onSelectProvision}
+                              certifies={sec.certifies}
                             />
                             {/Bring[\s-]*Down/i.test(row.label) && (
-                              <div className="mt-2">
+                              <div className="mt-1">
                                 <BringdownTable
                                   provisions={pool}
                                   repsType={sec.repsType}
-                                  onSelectProvision={onSelectProvision}
                                 />
                               </div>
                             )}
