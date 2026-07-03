@@ -81,6 +81,18 @@ import {
   CitableHover,
 } from '../../components/review/shared';
 import { NosolFourTables } from '../../components/review/NosolFourTables';
+import {
+  termCellHoverQuote,
+  knowledgeQualifierDisplay,
+  isErisaBenefitsRep,
+  sortByAgreementOrder,
+  parseSectionParts,
+  compareSectionParts,
+  extractCrossQualificationSentence,
+  buildBringdownTierLines,
+  resolveCertifiedConditions,
+  buildOutsideDateExtensionDetail,
+} from '../../components/review/table-logic';
 import { ConsidTable } from '../../components/review/ConsiderationTables';
 import { Sidebar } from '../../components/review/Sidebar';
 import { FullDocumentView } from '../../components/review/FullDocumentView';
@@ -342,8 +354,12 @@ const FEATURE_DISPLAY_ORDER = {
   //     renderSpecificFeaturesCell() — collapses absenceOfChangesType /
   //     undisclosedLiabilitiesExceptions / materialContractsRedactionsPermitted
   //     / topCustomersSuppliersDefinition / etc. into one <dl> per row.
-  'REP-T': ['materialityQualifier', 'dollarThreshold', 'lookbackPeriod', 'specificFeatures'],
-  'REP-B': ['materialityQualifier', 'dollarThreshold', 'lookbackPeriod', 'specificFeatures'],
+  // Metsera fb2 block 2b: Knowledge Qualifier sits NEXT TO Materiality
+  // Qualifier (it used to fall to the last column because it wasn't listed
+  // here — getFeatureSchema appends unlisted schema keys after the ordered
+  // ones). Column order: Term | Materiality | Knowledge | ...rest.
+  'REP-T': ['materialityQualifier', 'knowledgeQualifier', 'dollarThreshold', 'lookbackPeriod', 'specificFeatures'],
+  'REP-B': ['materialityQualifier', 'knowledgeQualifier', 'dollarThreshold', 'lookbackPeriod', 'specificFeatures'],
   COV: ['mainConcept', 'accessScope', 'indemnificationPeriod', 'employeeBenefitPeriod', 'financingCooperation', 'cvrIncluded'],
   MISC: ['mainConcept', 'governingLaw', 'jurisdictionExclusive', 'juryWaiver', 'specificPerformance', 'thirdPartyBeneficiaryExceptions'],
   OTHER: ['mainConcept', 'summary', 'crossReferences'],
@@ -2647,7 +2663,13 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
     }
     return null;
   };
-  const sorted = [...negative].sort((a, b) => {
+  // Metsera fb2 block 2e/4b: AGREEMENT ORDER first — natural sort by
+  // features.sectionNumber (5.01(b)(i) < 5.01(b)(ii) < 5.02) when present.
+  // Rows without a parseable section number fall back to the previous
+  // canonical IOC_CATEGORY_CODES order (then alphabetical), after sectioned
+  // rows.
+  const iocSecOf = (p) => (getStructuredFeatures(p) || {}).sectionNumber;
+  const canonicalSorted = [...negative].sort((a, b) => {
     const aCode = resolveIocCode(a);
     const bCode = resolveIocCode(b);
     const aIdx = aCode ? codeOrderIdx.get(aCode) : Infinity;
@@ -2655,6 +2677,7 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
     if (aIdx !== bIdx) return aIdx - bIdx;
     return String(a.category || '').localeCompare(String(b.category || ''));
   });
+  const sorted = sortByAgreementOrder(canonicalSorted, iocSecOf);
 
   // Per-row cell builders — split the old single "Details" composition into
   // dedicated Threshold and Exceptions columns per user request.
@@ -6234,30 +6257,56 @@ function RepKnowledgeNote({ provisions, allProvisions }) {
  *     Company / inline) is read from the MAT_MATERIAL_* code. Each pill is
  *     click-to-source. Returns null when no qualifier is present so the table
  *     cell falls back to its default empty rendering. */
-function MaterialityQualifierCell({ rawValue, provision }) {
+/* Empty qualifier cell — a dash that still hovers/clicks to the row's source
+ * provision text (audit block 9a), so the reader can verify the absence
+ * directly rather than trusting the app's negative claim blindly. Shared by
+ * the materiality and knowledge qualifier cells. */
+function EmptyCellDash({ provision }) {
   const showEvidence = useShowEvidence();
-  // Audit block 9a: an empty materiality cell still hovers to the row's
-  // source provision text, so the reader can verify the absence directly
-  // rather than trusting the app's negative claim blindly.
-  const emptyDash = (() => {
-    const rowQuote = (typeof provision?.full_text === 'string' && provision.full_text.trim())
-      ? provision.full_text
-      : null;
-    if (!rowQuote || !showEvidence) {
-      return <span className="text-inkFaint italic">—</span>;
-    }
-    return (
-      <HoverSource quote={rowQuote}>
-        <button
-          type="button"
-          onClick={(e) => { e.stopPropagation(); showEvidence(rowQuote); }}
-          className="text-inkFaint italic cursor-pointer hover:underline decoration-dotted"
-        >
-          —
-        </button>
-      </HoverSource>
-    );
-  })();
+  const rowQuote = termCellHoverQuote(provision);
+  if (!rowQuote || !showEvidence) {
+    return <span className="text-inkFaint italic">—</span>;
+  }
+  return (
+    <HoverSource quote={rowQuote}>
+      <button
+        type="button"
+        onClick={(e) => { e.stopPropagation(); showEvidence(rowQuote); }}
+        className="text-inkFaint italic cursor-pointer hover:underline decoration-dotted"
+      >
+        —
+      </button>
+    </HoverSource>
+  );
+}
+
+/* ─── Per-rep Knowledge Qualifier cell (Metsera fb2 block 2c). States the
+ *     SCOPE when the extracted feature carries it: "Partial: <detail>" when
+ *     the feature's text names specific sub-clauses / sentences, "Entire rep"
+ *     when an explicit whole-rep scope was extracted. When no scope info
+ *     exists (the common case today — the extractor emits a bare boolean),
+ *     render just the standard pill; scope is never invented. */
+function KnowledgeQualifierCell({ rawValue, provision }) {
+  const display = knowledgeQualifierDisplay(rawValue);
+  if (!display) return <EmptyCellDash provision={provision} />;
+  const label = (display.code
+    && resolveTaggedLabel('knowledgeQualifier', { code: display.code, label: display.label }))
+    || display.label
+    || 'Knowledge-qualified';
+  const quote = display.quote || termCellHoverQuote(provision);
+  return (
+    <span className="inline-flex items-center gap-1 flex-wrap text-[11px] text-inkMid">
+      <Pill text={label} quote={quote} tone="standard" />
+      {display.scope === 'partial' && (
+        <span className="italic">Partial{display.detail ? `: ${display.detail}` : ''}</span>
+      )}
+      {display.scope === 'entire' && <span className="italic">Entire rep</span>}
+    </span>
+  );
+}
+
+function MaterialityQualifierCell({ rawValue, provision }) {
+  const emptyDash = <EmptyCellDash provision={provision} />;
   const inner = isCitableValue(rawValue) ? getCitableValue(rawValue) : rawValue;
   if (inner === null || inner === undefined || inner === '') return emptyDash;
   const items = Array.isArray(inner) ? inner : [inner];
@@ -6500,6 +6549,23 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
   const secRowQuote = secValues.find((s) => s.quote)?.quote || scopeQuote || null;
 
   const disclosureRaw = pickKey(['disclosureLetterReference', 'disclosureSchedulesReference', 'scheduleReference', 'schedule_reference']);
+  // Metsera fb2 block 2f: the cell shows only the disclosure STANDARD phrase.
+  // When the stored reference carries a cross-qualification sentence
+  // ("disclosure in any section shall be deemed to qualify … to the extent
+  // that it is reasonably apparent on its face"), extract THAT sentence for
+  // the cell; the full stored text stays reachable via hover/click.
+  const disclosureFullText = (() => {
+    if (typeof disclosureRaw === 'string') return disclosureRaw;
+    if (isCitableValue(disclosureRaw)) {
+      const t = getCitableText(disclosureRaw);
+      if (t) return t;
+      const inner = getCitableValue(disclosureRaw);
+      return typeof inner === 'string' ? inner : null;
+    }
+    return null;
+  })();
+  const disclosureStandard = extractCrossQualificationSentence(disclosureFullText);
+  const disclosureQuote = extractQuote(disclosureRaw) || disclosureFullText;
 
   // Audit block 2: this table is called for BOTH REP-T and REP-B. The
   // Buyer/Parent side routinely has no SEC-filings exception or disclosure-
@@ -6562,17 +6628,20 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
                 )}
               </td>
             </tr>
-            {/* Disclosure Schedules. */}
+            {/* Disclosure Schedules — standard phrase only in the cell
+                (fb2 2f); the full stored reference lives in the hover. */}
             <tr className="align-top">
-              <td className="px-3 py-2 whitespace-nowrap">{renderLabelCell('Disclosure Schedules', extractQuote(disclosureRaw))}</td>
+              <td className="px-3 py-2 whitespace-nowrap">{renderLabelCell('Disclosure Schedules', disclosureQuote)}</td>
               <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
                 {disclosureRaw != null ? (
-                  <HoverSource quote={extractQuote(disclosureRaw)} as="div">
+                  <HoverSource quote={disclosureQuote} as="div">
                     <span
-                      className={extractQuote(disclosureRaw) && showEvidence ? 'cursor-pointer hover:bg-yellow-50' : ''}
-                      onClick={extractQuote(disclosureRaw) && showEvidence ? () => showEvidence(extractQuote(disclosureRaw)) : undefined}
+                      className={disclosureQuote && showEvidence ? 'cursor-pointer hover:bg-yellow-50' : ''}
+                      onClick={disclosureQuote && showEvidence ? () => showEvidence(disclosureQuote) : undefined}
                     >
-                      {renderFeatureCell('disclosureLetterReference', disclosureRaw)}
+                      {disclosureStandard
+                        ? <span>{disclosureStandard}</span>
+                        : renderFeatureCell('disclosureLetterReference', disclosureRaw)}
                     </span>
                   </HoverSource>
                 ) : (
@@ -7634,18 +7703,24 @@ function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, a
   }
 
   // REP-T / REP-B: present in AGREEMENT ORDER (the canonical sequence the deal
-  // itself uses), not by classification/insertion accident. Sort real
-  // provisions by document position (ai_metadata.startChar), keeping any
-  // synthetic "_notPresent" placeholders after the real rows.
+  // itself uses), not by classification/insertion accident. Metsera fb2 block
+  // 2e: primary key is features.sectionNumber with a NATURAL sort (3.02 <
+  // 3.10); rows without a parseable section number fall back to document
+  // position (ai_metadata.startChar) and sort after sectioned rows. Synthetic
+  // "_notPresent" placeholders stay last.
   if (type === 'REP-T' || type === 'REP-B') {
     const startOf = (p) => {
       const meta = getAiMetadata(p) || {};
       return typeof meta.startChar === 'number' ? meta.startChar : Number.POSITIVE_INFINITY;
     };
-    provisions = [...provisions].sort((a, b) => {
-      if (!!a._notPresent !== !!b._notPresent) return a._notPresent ? 1 : -1;
-      return startOf(a) - startOf(b);
-    });
+    const real = provisions.filter((p) => !p._notPresent);
+    const placeholders = provisions.filter((p) => !!p._notPresent);
+    const byStartChar = [...real].sort((a, b) => startOf(a) - startOf(b));
+    const bySection = sortByAgreementOrder(
+      byStartChar,
+      (p) => (getStructuredFeatures(p) || {}).sectionNumber,
+    );
+    provisions = [...bySection, ...placeholders];
   }
 
   const schemaKeys = getFeatureSchema(type);
@@ -7766,24 +7841,35 @@ function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, a
               const features = getStructuredFeatures(p) || {};
               return (
                 <tr key={p.id} className="hover:bg-paper transition-colors">
+                  {/* Metsera fb2 block 2a (REPEAT-FAILURE fix): the Term cell
+                      hovers to the row's provision source for EVERY row. The
+                      earlier hover fix (audit block 9a, commit 686530d) only
+                      covered VALUE cells via CellWithSource /
+                      MaterialityQualifierCell — this first column never went
+                      through either renderer, so rows whose qualifier cell was
+                      empty appeared to have no hover at all. The wiring below
+                      (HoverSource quote={termCellHoverQuote(p)}) is asserted
+                      by tests/reps-table-display.test.js — do not remove. */}
                   <td className="px-3 py-2 align-top whitespace-normal break-words sticky left-0 bg-white z-10">
-                    <button
-                      type="button"
-                      onClick={() => onSelectProvision && onSelectProvision(p)}
-                      className="text-left text-accentDeep hover:underline font-semibold inline-flex items-center gap-2"
-                    >
-                      <span
-                        style={{
-                          display: 'inline-block',
-                          width: 7,
-                          height: 7,
-                          borderRadius: 2,
-                          background: typeHex(p.type),
-                          flexShrink: 0,
-                        }}
-                      />
-                      {p.category || 'General'}
-                    </button>
+                    <HoverSource quote={termCellHoverQuote(p)}>
+                      <button
+                        type="button"
+                        onClick={() => onSelectProvision && onSelectProvision(p)}
+                        className="text-left text-accentDeep hover:underline font-semibold inline-flex items-center gap-2"
+                      >
+                        <span
+                          style={{
+                            display: 'inline-block',
+                            width: 7,
+                            height: 7,
+                            borderRadius: 2,
+                            background: typeHex(p.type),
+                            flexShrink: 0,
+                          }}
+                        />
+                        {p.category || 'General'}
+                      </button>
+                    </HoverSource>
                   </td>
                   {columns.map((k) => {
                     const raw = features[k];
@@ -7798,9 +7884,21 @@ function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, a
                         </td>
                       );
                     }
+                    // Knowledge qualifier — canonical pill + extracted scope
+                    // ("Partial: …" / "Entire rep") when available (fb2 2c).
+                    if (k === 'knowledgeQualifier' || k === 'knowledgeQualifiers') {
+                      return (
+                        <td key={k} className="px-3 py-2 align-top max-w-[320px] text-ink">
+                          <KnowledgeQualifierCell rawValue={raw} provision={p} />
+                        </td>
+                      );
+                    }
                     // REP synthetic: rolled-up "Specific Features" column.
+                    // Metsera fb2 block 2d: the ERISA / Employee Benefits rep
+                    // renders a clean dash here — the per-plan boolean
+                    // checklist read as clutter (details remain on drill-in).
                     if ((type === 'REP-T' || type === 'REP-B') && k === 'specificFeatures') {
-                      const cell = renderRepSpecificFeaturesCell(p);
+                      const cell = isErisaBenefitsRep(p) ? null : renderRepSpecificFeaturesCell(p);
                       return (
                         <td key={k} className="px-3 py-2 align-top max-w-[360px] text-ink">
                           {cell || <span className="text-inkFaint italic">—</span>}
