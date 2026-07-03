@@ -262,14 +262,11 @@ export function HoverSource({ quote, children, as = 'span', className, align = '
   );
 }
 
-/* ── Standard left label-column width for all review tables (block 8).
- *    Hard-constrained (min+max) because `w-` alone is only a HINT in
- *    auto-layout tables: content-heavy nowrap columns (reps Term) grew far
- *    wider than squeezed ones (IOC Restriction). 190px matches the IOC
- *    Restriction rendering the user picked as the reference; label cells
- *    must wrap (whitespace-normal), never nowrap. Also applied to the IOC
- *    Threshold column so the Exceptions column gets room. */
-export const REVIEW_LABEL_COL_W = 'w-[190px] min-w-[190px] max-w-[190px]';
+/* ── Label-column CAP for review tables. Per review feedback the columns
+ *    are CONTENT-SIZED (auto table layout — each column as small as its
+ *    content needs); this class only caps the label column so a long label
+ *    wraps at 240px instead of ballooning the column. No fixed/min width. */
+export const REVIEW_LABEL_COL_W = 'max-w-[240px]';
 
 /* ── Pill: canonical inline chip for a resolved, plain-English value
  *    (dollar amount, standard, taxonomy code, person, materiality

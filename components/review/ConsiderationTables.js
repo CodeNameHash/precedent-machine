@@ -241,7 +241,7 @@ export function EquityAwardTable({ rows, onSelectProvision, onAddProvision, opti
         </p>
       </div>
       <div className="overflow-x-auto">
-        <table className="min-w-full table-fixed text-xs font-ui">
+        <table className="min-w-full text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
             <tr>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">Instrument</th>
@@ -691,7 +691,7 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
                 Headline Consideration
               </p>
             </div>
-            <table className="min-w-full table-fixed text-xs font-ui">
+            <table className="min-w-full text-xs font-ui">
               <tbody className="divide-y divide-border">
                 {heroRows.map((row) => {
                   const rowQuote = row.src && row.src.quote ? row.src.quote : null;
