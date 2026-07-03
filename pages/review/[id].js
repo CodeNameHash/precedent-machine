@@ -5818,27 +5818,71 @@ function BringdownTable({ provisions, repsType }) {
 
   let generalIdx = tiers.findIndex((t) => isCatchAllRepsCovered(t.reps_covered || t.repsCovered));
   if (generalIdx < 0) generalIdx = tiers.length - 1;
-  const tierStdLabel = (t) =>
-    t.standard_label || t.standardLabel || t.standard || t.standardCode || '(unspecified)';
 
-  const generalLabel = tierStdLabel(tiers[generalIdx]);
-  const seen = new Set();
-  const higherLabels = [];
+  // Headline-ize a tier's standard: the reader wants the STANDARD NAME, not
+  // the draft's free text ("true and correct except for de minimis
+  // inaccuracies" → "De minimis").
+  const headline = (t) => {
+    const raw = String(t.standard_label || t.standardLabel || t.standard || t.standardCode || '').toLowerCase();
+    if (/de\s*minimis/.test(raw)) return 'De minimis';
+    if (/all\s+material\s+respects|material\s+respects/.test(raw)) return 'In all material respects';
+    if (/mae|material\s+adverse/.test(raw)) return 'MAE standard';
+    if (/all\s+respects/.test(raw)) return 'In all respects';
+    const s = String(t.standard_label || t.standardLabel || t.standard || t.standardCode || '(unspecified)');
+    return s.length > 40 ? `${s.slice(0, 39)}…` : s;
+  };
+
+  // Name the rep GROUP each tier covers: catch-all → "All other reps";
+  // otherwise resolve the cited section numbers against the deal's rep
+  // provisions (features.sectionNumber → category), falling back to any
+  // parenthesized rep names in the drafting, then to the cited sections.
+  const repPool = (provisions || []).filter((p) => p.type === repsType);
+  const nameBySec = {};
+  for (const rp of repPool) {
+    const sec = String(((getStructuredFeatures(rp) || {}).sectionNumber) || '').trim();
+    if (sec && !nameBySec[sec]) nameBySec[sec] = rp.category;
+  }
+  const groupLabel = (t, isGeneral) => {
+    if (isGeneral) return 'All other reps';
+    const rc = String(t.reps_covered || t.repsCovered || '');
+    const secs = rc.match(/\d+\.\d+(?:\([a-z0-9]+\))*/gi) || [];
+    const names = [];
+    for (const s of secs) {
+      const n = nameBySec[s] || nameBySec[s.replace(/\(.*$/, '')];
+      if (n && !names.includes(n)) names.push(n);
+    }
+    if (!names.length) {
+      for (const m of rc.matchAll(/\(([A-Z][^)]{2,40})\)/g)) {
+        if (!names.includes(m[1])) names.push(m[1]);
+      }
+    }
+    if (names.length) return names.length > 3 ? `${names.slice(0, 3).join(', ')} +${names.length - 3}` : names.join(', ');
+    return secs.length ? `Sections ${secs.slice(0, 4).join(', ')}` : 'Specified reps';
+  };
+
+  // One line per (rep group → standard); higher-standard tiers first,
+  // catch-all last. NO provision text, NO threshold detail — headline only.
+  const rows = [];
+  const seenKey = new Set();
   tiers.forEach((t, i) => {
-    if (i === generalIdx) return;
-    const label = tierStdLabel(t);
-    if (seen.has(label)) return;
-    seen.add(label);
-    higherLabels.push(label);
+    const row = { group: groupLabel(t, i === generalIdx), std: headline(t), general: i === generalIdx };
+    const key = `${row.group}||${row.std}`;
+    if (seenKey.has(key)) return;
+    seenKey.add(key);
+    rows.push(row);
   });
-
-  const ordered = [...higherLabels, generalLabel].filter((v, i, arr) => arr.indexOf(v) === i);
+  rows.sort((a, b) => (a.general === b.general ? 0 : a.general ? 1 : -1));
 
   return (
-    <p className="text-[11px] font-ui text-inkMid">
-      <span className="text-inkFaint">Bring-down standards: </span>
-      {ordered.join('; ')}
-    </p>
+    <div className="space-y-0.5">
+      {rows.map((r) => (
+        <p key={`${r.group}-${r.std}`} className="text-[11px] font-ui text-inkMid">
+          <span className={r.general ? 'text-inkFaint' : 'text-ink font-medium'}>{r.group}</span>
+          <span className="text-inkFaint"> → </span>
+          <span>{r.std}</span>
+        </p>
+      ))}
+    </div>
   );
 }
 
