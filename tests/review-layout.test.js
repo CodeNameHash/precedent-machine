@@ -22,6 +22,7 @@ const EXPECTED_ORDER = [
   'Interim Operating Covenants',
   'No-Solicitation / No-Shop',
   'Antitrust / Regulatory',
+  'SEC Filing / Meeting Requirements',
   'Conditions to Closing',
   'Termination Rights',
   'Termination Fees',
