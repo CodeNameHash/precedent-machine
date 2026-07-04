@@ -187,11 +187,18 @@ async function ingestOne(sb, client, url, existingDealId = null) {
       target_entity: meta.target_entity,
       acquirer_display: meta.acquirer_display,
       target_display: meta.target_display,
-      reingested_at: new Date().toISOString(),
     };
     await sb.from('deals').update({ metadata: mergedMeta }).eq('id', existingDealId);
     const title = `${existing.acquirer} / ${existing.target}`;
     const parseResult = await runParserPipeline(client, fullText, existingDealId, title, sb);
+    // Stamp reingested_at only AFTER storeProvisions succeeded. Stamping it
+    // up front (old behaviour) made an aborted re-ingest indistinguishable
+    // from a successful one: the deal carried a fresh reingested_at while the
+    // provisions table still held the previous run's rows (Kraft, 2026-07-03
+    // — stale pre-#59 collapse rows read as a fresh parse failure). Re-read
+    // metadata first because storeProvisions rewrites it during the run.
+    const { data: post } = await sb.from('deals').select('metadata').eq('id', existingDealId).single();
+    await sb.from('deals').update({ metadata: { ...((post && post.metadata) || {}), reingested_at: new Date().toISOString() } }).eq('id', existingDealId);
     return { deal_id: existingDealId, title, sector: meta.sector, inserted: parseResult.insertedCount, timing_ms: Date.now() - t0, inPlace: true };
   }
 
