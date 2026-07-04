@@ -130,6 +130,80 @@ test('a real dash separator (spaces both sides) is not collapsed into a word', (
   assert.equal(quoteAppearsIn(normalizeForMatch('the Closing - which occurs at 10am'), src), true);
 });
 
+// ── quote-fidelity pass: matcher artifact classes (July 2026) ──────────────
+
+test('space-before-hyphen statutory ref ("13.1 -721") matches a closed quote', () => {
+  // Kraft: EDGAR renders "Section 13.1 -721 of the VSCA"; the model quotes it
+  // closed. Space AFTER the hyphen was already handled; this is the mirror.
+  const src = normalizeForMatch('The Merger shall have the effects set forth in Section 13.1 -721 of the VSCA.');
+  assert.equal(quoteAppearsIn(normalizeForMatch('the effects set forth in Section 13.1-721 of the VSCA'), src), true);
+});
+
+test('a spaced dash separator is still a word boundary (negative)', () => {
+  const src = normalizeForMatch('the Closing - which occurs at 10am - shall be final');
+  assert.equal(quoteAppearsIn(normalizeForMatch('the Closing which occurs at 10am'), src), false);
+});
+
+test('stray space inside an opening paren ("( LFRP)") matches a closed quote', () => {
+  // Dyax/Sanofi/Concho: quote-mark stripping leaves '( LFRP)' in the source.
+  const src = normalizeForMatch('its Licensing and Funded Research Program ( LFRP) shall not be deemed ordinary course');
+  assert.equal(quoteAppearsIn(normalizeForMatch('Funded Research Program ("LFRP") shall not be deemed'), src), true);
+});
+
+test('gap between adjacent parens ("10.2(iii) (a)") matches a closed quote', () => {
+  const src = normalizeForMatch('the persons identified on Section 10.2(iii) (a) of the Company Disclosure Letter');
+  assert.equal(quoteAppearsIn(normalizeForMatch('identified on Section 10.2(iii)(a) of the Company Disclosure Letter'), src), true);
+});
+
+test('paren-spacing tolerance never rescues invented content (negative)', () => {
+  const src = normalizeForMatch('the persons identified on Section 10.2(iii) (a) of the Company Disclosure Letter');
+  assert.equal(quoteAppearsIn(normalizeForMatch('identified on Section 10.2(iii)(q) of the Parent Schedule of Exceptions'), src), false);
+});
+
+test('short quote ending "." where the source continues ":" verifies', () => {
+  // Dyax: quote "not to, directly or indirectly." / source "…indirectly: (i)".
+  const src = normalizeForMatch('shall instruct its Representatives not to, directly or indirectly: (i) initiate, solicit');
+  assert.equal(quoteAppearsIn(normalizeForMatch('not to, directly or indirectly.'), src), true);
+});
+
+test('elided quote whose final fragment ends "." where the source continues "," verifies', () => {
+  const src = normalizeForMatch(
+    'the Company shall instruct and cause its Representatives, agents and advisors not to, (i) initiate, solicit or knowingly '
+    + 'encourage the making of any proposal or offer that constitutes an Acquisition Proposal, or (ii) engage in any discussions',
+  );
+  const q = 'the Company shall instruct and cause its Representatives ... not to, (i) initiate, solicit or knowingly encourage the making of any proposal or offer that constitutes an Acquisition Proposal.';
+  assert.equal(quoteAppearsIn(normalizeForMatch(q), src), true);
+});
+
+test('trailing-period tolerance never rescues an invented fragment (negative)', () => {
+  const src = normalizeForMatch(
+    'the Company shall instruct and cause its Representatives, agents and advisors not to, (i) initiate, solicit or knowingly '
+    + 'encourage the making of any proposal or offer that constitutes an Acquisition Proposal, or (ii) engage in any discussions',
+  );
+  const q = 'the Company shall instruct and cause its Representatives ... payable only in preferred stock units of the Parent.';
+  assert.equal(quoteAppearsIn(normalizeForMatch(q), src), false);
+});
+
+test('trailing-period strip cannot shrink a fragment below the judgeable floor', () => {
+  const src = normalizeForMatch('not to, directly or indirectly: (i) initiate');
+  // "indirectly...." strips to 10 chars (< MIN_QUOTE_CHARS) — must NOT verify.
+  assert.equal(quoteAppearsIn(normalizeForMatch('indirectly....'), src), false);
+});
+
+test('elision right after a sentence period (". ...") splits cleanly and verifies', () => {
+  // Forest City/Concho: "…Effect. ... except…" normalizes to four glued dots;
+  // the old exact-"..." split left ". except…" as an unmatchable fragment.
+  const src = normalizeForMatch('would not have a Material Adverse Effect. Except in the case of clauses (ii) and (iii) above, any such breach');
+  const q = 'would not have a Material Adverse Effect. ... except in the case of clauses (ii) and (iii) above';
+  assert.equal(quoteAppearsIn(normalizeForMatch(q), src), true);
+});
+
+test('post-period elision still fails on invented continuation (negative)', () => {
+  const src = normalizeForMatch('would not have a Material Adverse Effect. Except in the case of clauses (ii) and (iii) above, any such breach');
+  const q = 'would not have a Material Adverse Effect. ... except where the Buyer waives such clauses in writing';
+  assert.equal(quoteAppearsIn(normalizeForMatch(q), src), false);
+});
+
 // ── collectQuotes ──────────────────────────────────────────────────────────
 
 test('collectQuotes finds quotes arrays, legacy text, tagged text — not plain values', () => {
