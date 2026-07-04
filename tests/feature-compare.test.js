@@ -42,13 +42,17 @@ test('comparableFeatures excludes free-text and includes enum/tagged/boolean/lis
   const anti = byKey('ANTI');
   const ioc = byKey('IOC');
 
-  // enum (bringDownStandard), tagged/object coded (materialityQualifier),
-  // boolean (knowledgeQualifier), list set (permittedExceptions) all present.
+  // enum (bringDownStandard), tagged/object coded (materialityQualifier,
+  // knowledgeQualifier), list set (permittedExceptions) all present.
+  // knowledgeQualifier moved from an LLM-authored article-wide boolean to a
+  // deterministically-stamped per-rep TAGGED object (audit fix: the UI's
+  // per-rep Knowledge Qualifier cell needs code/label/text/scope, not a bare
+  // boolean it could never actually attach to an individual rep row).
   assert.equal(rep.get('bringDownStandard').kind, 'enum');
   assert.ok(Array.isArray(rep.get('bringDownStandard').options));
   assert.equal(rep.get('materialityQualifier').kind, 'coded');
   assert.equal(rep.get('materialityQualifier').coded, true);
-  assert.equal(rep.get('knowledgeQualifier').kind, 'boolean');
+  assert.equal(rep.get('knowledgeQualifier').kind, 'coded');
   assert.equal(ioc.get('permittedExceptions').kind, 'set');
   assert.equal(anti.get('effortsStandard').kind, 'enum');
 

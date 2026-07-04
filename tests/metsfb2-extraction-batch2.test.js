@@ -33,7 +33,15 @@ test('REP-T prompt asks for the AoC No-MAE and ordinary-course limbs, but never 
   assert.match(instr, /aocCitedCovenantSections/);
   // Post-pass-populated keys must NOT be requested from the model.
   assert.ok(!instr.includes('aocCitedCovenantNames'));
-  assert.ok(!instr.includes('knowledgeScope'));
+  // "knowledgeScope" (post-pass) must be absent, but "knowledgeScopeType"
+  // (the audit-fix LLM field, clause-scoped, no `source` annotation) must be
+  // requested — the negative lookahead distinguishes the bare post-pass key
+  // from the new field that legitimately contains it as a substring.
+  assert.ok(!/knowledgeScope(?!Type)/.test(instr));
+  assert.match(instr, /knowledgeScopeType/);
+  // knowledgeQualifier is now ALSO post-pass (stamped deterministically onto
+  // each rep, not LLM-authored) — must not be requested either.
+  assert.ok(!instr.includes('knowledgeQualifier'));
   // The pre-existing post-pass key is now excluded from prompts too.
   assert.ok(!instr.includes('linkedBringDownStandard'));
 });
@@ -267,12 +275,19 @@ test('TERMF_TRIGGER_CODES is a stable dictionary of plain-English trigger labels
   assert.equal(TERMF_TRIGGER_CODES.RECOMMENDATION_CHANGE, 'Parent terminates after the Board changes its recommendation');
 });
 
-test('TERMF prompt demands tagged { code, label, text } triggers and bans bare section-ref labels', () => {
+test('TERMF prompt demands tagged { code, label, text } triggers and bans section-ref labels anywhere in the label', () => {
   const instr = buildFeatureInstructions('TERMF');
   assert.match(instr, /TRIGGER SHAPE/);
   assert.match(instr, /"code": "<TERMF_TRIGGER_CODES code>"/);
   assert.match(instr, /plain-English one-liner/);
-  assert.match(instr, /must NEVER be a bare section cross-reference/);
+  // Tightened audit rule: label must START with the plain-English action, and
+  // a cross-reference cite is forbidden ANYWHERE in the label (not just as
+  // the whole label) — labels were still leading with the section cite
+  // before this fix ("Company terminates ... pursuant to Section 8.01(f),
+  // its termination right associated with accepting a Superior Proposal").
+  assert.match(instr, /label"?\s+MUST START with the plain-English action/);
+  assert.match(instr, /cross-reference cite is FORBIDDEN ANYWHERE in "label"/);
+  assert.match(instr, /Section 8\.01\(f\).*is WRONG/);
   // The codebook itself is embedded.
   assert.match(instr, /SUPERIOR_PROPOSAL: Company terminates to accept a Superior Proposal/);
   assert.match(instr, /NAKED_NO_VOTE/);
