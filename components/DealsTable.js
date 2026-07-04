@@ -72,6 +72,7 @@ export const COLUMNS = [
   { key: 'buyer', label: 'Buyer', kind: 'text', get: (r) => r.buyer },
   { key: 'seller', label: 'Seller', kind: 'text', get: (r) => r.seller },
   { key: 'value', label: 'Value', kind: 'value' },
+  { key: 'consideration', label: 'Consideration', kind: 'text', get: (r) => r.consideration },
   { key: 'industry', label: 'Industry', kind: 'text', get: (r) => r.industry },
   { key: 'buyerFirm', label: 'Buyer Firm', kind: 'multi', get: (r) => r.buyerFirms },
   { key: 'buyerLawyer', label: 'Buyer Lawyers', kind: 'multi', get: (r) => r.buyerLawyers },
@@ -556,6 +557,7 @@ function DealRow({ row, selected, onToggle, onOpen }) {
       <td className="px-3 py-2 align-top font-semibold text-ink max-w-[240px]">{row.buyer || <Dash />}</td>
       <td className="px-3 py-2 align-top font-semibold text-ink max-w-[240px]">{row.seller || <Dash />}</td>
       <td className="px-3 py-2 align-top whitespace-nowrap text-ink">{value || <Dash />}</td>
+      <td className="px-3 py-2 align-top whitespace-nowrap text-inkMid">{row.consideration || <Dash />}</td>
       <td className="px-3 py-2 align-top whitespace-nowrap text-inkMid">{row.industry || <Dash />}</td>
       <td className="px-3 py-2 align-top text-ink max-w-[240px]">
         {row.buyerFirms.length ? row.buyerFirms.join('; ') : <Dash />}
