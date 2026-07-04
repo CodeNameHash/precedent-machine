@@ -110,7 +110,28 @@ function computeDuplicateCount(provisions) {
   for (const p of provisions || []) {
     const norm = normalizeForDupe(p && p.full_text);
     if (norm.length < 20) continue; // too short to be a meaningful duplicate signal
-    counts.set(norm, (counts.get(norm) || 0) + 1);
+    // Same-text rows are NOT duplicates when they are deliberate siblings:
+    // per-instrument CONSID-EQUITY rows (instrumentType differs) and Strategy-B
+    // multi-code decompositions (code differs) legitimately share one span.
+    // Key on text + code + instrumentType so only true redundancy counts.
+    //
+    // instrumentType.code alone is a FAMILY code (e.g. "RSUs" covers Company
+    // RSUs, Company 2018 RSUs and Director RSUs; "RESTRICTED_STOCK" covers
+    // both regular and Rollover Restricted Stock) — too coarse when a single
+    // section decomposes into several same-family sibling rows with distinct
+    // per-instrument treatment (CSRA's Section 3.2 RSU/2018-RSU/Director-RSU
+    // rows; Covance's Section 2.03 Restricted-Stock/Rollover rows). Those
+    // siblings quote a DIFFERENT instrumentType.text (the specific instrument
+    // reference) even though the family code matches, so folding it into the
+    // key keeps genuine same-instrument duplicates flagged while excluding
+    // legitimate per-instrument decompositions.
+    const meta = p && p.ai_metadata && typeof p.ai_metadata === 'object' ? p.ai_metadata : {};
+    const feats = meta.features && typeof meta.features === 'object' ? meta.features : {};
+    const instCode = feats.instrumentType ? (feats.instrumentType.code || feats.instrumentType) : '';
+    const instText = (feats.instrumentType && typeof feats.instrumentType === 'object' && feats.instrumentType.text) || '';
+    const key = `${norm}::${meta.code || ''}::${instCode}::${instText}`;
+    counts.set(key, (counts.get(key) || 0) + 1);
+    continue;
   }
   let dups = 0;
   for (const n of counts.values()) {
