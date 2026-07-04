@@ -83,6 +83,8 @@ import {
 } from '../../components/review/shared';
 import { NosolFourTables } from '../../components/review/NosolFourTables';
 import { NoOtherRepsFraudTable } from '../../components/review/NoOtherRepsFraudTable';
+import { DealNavContext, TermCell } from '../../components/review/TermCell';
+import { DocPopUnder } from '../../components/review/DocPopUnder';
 import {
   termCellHoverQuote,
   knowledgeQualifierDisplay,
@@ -4690,19 +4692,22 @@ function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision, hide
                   return (
                     <tr key={row.label} className="hover:bg-bg/40 transition-colors">
                       <td className={`px-3 py-2 align-top whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>
-                        {clickable ? (
-                          <HoverSource quote={quote}>
-                            <button
-                              type="button"
-                              onClick={onClick}
-                              className="text-left text-accent hover:underline font-medium"
-                            >
-                              {row.label}
-                            </button>
-                          </HoverSource>
-                        ) : (
-                          <span className="text-ink font-medium">{row.label}</span>
-                        )}
+                        {/* FB3: TermCell is the ONE shared wrapper for
+                            card click-through (Surface 1) + "see text"
+                            pop-under (Surface 2) — degrades to a plain
+                            label when this row has no backing provision
+                            (row.hit null / customRender rows). */}
+                        <TermCell provision={row.hit && row.hit.provision} quote={quote}>
+                          {clickable ? (
+                            <HoverSource quote={quote}>
+                              <span className="text-left text-accent hover:underline font-medium">
+                                {row.label}
+                              </span>
+                            </HoverSource>
+                          ) : (
+                            <span className="text-ink font-medium">{row.label}</span>
+                          )}
+                        </TermCell>
                       </td>
                       <td
                         className={`px-3 py-2 align-top text-ink whitespace-pre-wrap break-words ${clickable ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
@@ -9173,6 +9178,24 @@ export default function ReviewPage() {
     setActiveTab('provisions');
   }, []);
 
+  /* ── FB3 Surface 2: "see text" in-place document pop-under. Opened by any
+   *    <TermCell> via DealNavContext; renders the raw agreement text
+   *    windowed around the provision's span WITHOUT navigating away — the
+   *    Provisions tab underneath keeps its scroll position because it never
+   *    unmounts (the sheet is a fixed overlay, mounted/unmounted separately
+   *    below). ── */
+  const [docSheet, setDocSheet] = useState({ open: false, provision: null, quote: null });
+  const openSeeText = useCallback(({ provision, quote }) => {
+    setDocSheet({ open: true, provision, quote: quote || (provision && provision.full_text) || null });
+  }, []);
+  const closeSeeText = useCallback(() => {
+    setDocSheet((s) => ({ ...s, open: false }));
+  }, []);
+  const dealNavCtxValue = useMemo(
+    () => ({ dealId: id, openSeeText }),
+    [id, openSeeText],
+  );
+
   const evidenceCtxValue = useMemo(
     () => ({ showEvidence, selectionMode, startSelectionMode, endSelectionMode }),
     [showEvidence, selectionMode, startSelectionMode, endSelectionMode],
@@ -9650,6 +9673,18 @@ export default function ReviewPage() {
     if (p) handleEditProvision(p);
   }, [provisions, handleEditProvision]);
 
+  // FB3 Surface 1: the provision card page (pages/review/[id]/provision/
+  // [provisionId].js) can't mount EditPanel itself (needs deal/allTypes/
+  // allCategories + this page's save/approve/flag/delete handlers — see the
+  // FB3 brief). Instead its "Edit" link comes back here with ?edit=<id>,
+  // and this effect opens the same edit panel the tables already use.
+  useEffect(() => {
+    if (!router.isReady || !isEdit) return;
+    const editId = router.query.edit;
+    if (typeof editId === 'string' && editId) handleEditProvisionById(editId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.isReady, router.query.edit, isEdit, provisions]);
+
   /* ── Save edits ── */
   const handleSaveProvision = useCallback(async (updates) => {
     if (!updates || !updates.id) {
@@ -9874,6 +9909,7 @@ export default function ReviewPage() {
 
   return (
     <CustomTaxonomyContext.Provider value={customTaxonomyCtxValue}>
+    <DealNavContext.Provider value={dealNavCtxValue}>
     <EvidenceContext.Provider value={evidenceCtxValue}>
     <div className="h-screen bg-bg flex flex-col overflow-hidden">
       {/* Top Bar */}
@@ -10597,8 +10633,24 @@ export default function ReviewPage() {
           }}
         />
       )}
+      {/* FB3 Surface 2: in-place document pop-under, opened by any TermCell's
+          "see text" link via DealNavContext. Fixed-position overlay — mounting
+          it here (outside the scrolling provisions column) means opening/
+          closing it never touches that column's scroll position. */}
+      <DocPopUnder
+        open={docSheet.open}
+        dealId={id}
+        provision={docSheet.provision}
+        quote={docSheet.quote}
+        sourceText={hasSource ? agreementSource.full_text : null}
+        docTitle={hasSource ? agreementSource.title : null}
+        isEdit={isEdit}
+        onEditProvision={handleEditProvision}
+        onClose={closeSeeText}
+      />
     </div>
     </EvidenceContext.Provider>
+    </DealNavContext.Provider>
     </CustomTaxonomyContext.Provider>
   );
 }
