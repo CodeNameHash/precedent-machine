@@ -1,11 +1,23 @@
+import { useState } from 'react';
 import { evidenceQuote, isCitableValue, getCitableValue } from '../../lib/citable';
 import {
   useShowEvidence,
-  pickFirstNonEmpty,
   HoverSource,
+  Pill,
   renderSummaryRowValue,
 } from './shared';
 import { TermCell } from './TermCell';
+import {
+  canonicalizeNosolPills,
+  goShopDisplay,
+  NOSOL_COR_LIFECYCLE_LABELS,
+  nosolDefinitionInitialState,
+  noticePeriodParts,
+  pickNosolFeature,
+  prohibitedActPills,
+  representativeStandardDisplay,
+  superiorProposalLimbs,
+} from './table-logic';
 
 // Audit block 1: the parser sometimes emits a bare digit for duration-typed
 // features ("4" instead of "4 business days"). Append the unit ONLY when the
@@ -31,21 +43,23 @@ function withUnitSuffix(hit, unit) {
  *  feature among `keys`. Empty rows render the "Not present" italic
  *  placeholder, with sorting (P3 item 5) putting populated rows first. */
 const NOSOL_CEASE_DISCUSSIONS = [
-  { label: 'Prohibited acts',                          keys: ['ceaseDiscussionsProhibitedList'] },
-  { label: 'Standard for affiliates / representatives', keys: ['ceaseDiscussionsAffiliateStandard', 'representativesStandard'] },
-  { label: 'Liability for representative breach',      keys: ['ceaseDiscussionsLiability', 'representativeBreachIsCompanyBreach'] },
+  { label: 'Prohibited Acts',                          keys: ['ceaseDiscussionsProhibitedList'], kind: 'prohibitedActs' },
+  { label: 'Standard for affiliates/representatives',  keys: ['representativesStandard', 'ceaseDiscussionsAffiliateStandard'], kind: 'representativeStandard' },
+  { label: 'Express liability for representative breach', keys: ['ceaseDiscussionsLiability', 'representativeBreachIsCompanyBreach'] },
   { label: 'Exceptions',                               keys: ['ceaseDiscussionsExceptions'] },
 ];
 const NOSOL_CHANGE_OF_REC = [
-  { label: 'What constitutes a Change of Recommendation', keys: ['changeOfRecommendationItems'] },
-  { label: 'What does NOT constitute a Change of Recommendation', keys: ['notChangeOfRecommendationItems'] },
+  { label: NOSOL_COR_LIFECYCLE_LABELS[0], keys: ['changeOfRecommendationItems'], kind: 'canonicalPills', vocab: 'changeOfRecommendationItems' },
+  { label: NOSOL_COR_LIFECYCLE_LABELS[1], keys: ['notChangeOfRecommendationItems'], kind: 'canonicalPills', vocab: 'notChangeOfRecommendationItems' },
   { label: 'Engagement standard (to discuss with a third party)', keys: ['engagementStandard', 'fiduciaryEngageStandard'] },
-  { label: 'Change-of-recommendation standard',        keys: ['changeRecStandard', 'fiduciaryFinalStandard'] },
-  { label: 'Notice Period (to existing buyer, upon receipt of a proposal)', keys: ['noticePeriod'], unit: 'hours' },
-  { label: 'Notice Content',                           keys: ['noticeContent'] },
+  { label: 'Notice period',                            keys: ['noticePeriod'], kind: 'noticePeriod' },
+  { label: 'Notice content',                           keys: ['noticeContent'], kind: 'canonicalPills', vocab: 'noticeContent' },
+  { label: 'Standstill waiver permitted',              keys: ['standstillWaiverPermitted', 'standstillWaiver'] },
+  { label: 'Anti-clubbing waiver permitted',           keys: ['antiClubbingWaiverPermitted'] },
   { label: 'Initial match period',                     keys: ['initialMatchPeriodDays', 'matchingPeriod'], unit: 'business days' },
   { label: 'Subsequent match period (per material amendment)', keys: ['subsequentMatchPeriodDays', 'subsequentMatchingPeriod'], unit: 'business days' },
-  { label: 'Material-improvement standard',            keys: ['materialImprovementStandard'] },
+  { label: 'Change-of-recommendation standard',        keys: ['changeRecStandard', 'fiduciaryFinalStandard'] },
+  { label: 'Material improvement standard',            keys: ['superiorProposalTest'], kind: 'superiorProposalLimbs' },
 ];
 const NOSOL_KEY_DEFINITIONS = [
   { label: 'Company Takeover Proposal / Acquisition Proposal', keys: ['acquisitionTransactionDefinition', 'acquisitionTransactionPctThreshold'] },
@@ -57,31 +71,75 @@ const NOSOL_KEY_DEFINITIONS = [
   { label: 'Acceptable Confidentiality Agreement',     keys: ['acceptableConfidentialityAgreementDefinition'] },
 ];
 const NOSOL_OTHER_RESTRICTIONS = [
-  { label: 'Go-Shop Present',                          keys: ['goShopPresent'] },
-  { label: 'Go-Shop Period',                           keys: ['goShopPeriodDays', 'goShopWindow'] },
-  { label: 'Go-Shop Excluded Parties',                 keys: ['goShopExcludedParties'] },
-  { label: 'Extended Negotiating Period',              keys: ['extendedNegotiatingPeriodDays'] },
-  { label: 'Standstill Waiver Permitted',              keys: ['standstillWaiverPermitted', 'standstillWaiver'] },
-  { label: 'Anti-Clubbing Waiver Permitted',           keys: ['antiClubbingWaiverPermitted'] },
-  { label: 'Info Required — Bidder Identity',          keys: ['infoRequiredBidderIdentity'] },
-  { label: 'Info Required — Communications & Drafts',  keys: ['infoRequiredCommunicationsDrafts'] },
-  { label: 'Info Required — Financing Papers',         keys: ['infoRequiredFinancingPapers'] },
   { label: 'Force the Vote',                           keys: ['forceTheVote', 'forceTheVoteDetails'] },
   { label: 'Parent Termination Right for Nonsolicit Breach', keys: ['parentTerminationRightForNonsolicitBreach'] },
 ];
 
-function NosolMiniTable({ title, spec, provisions, headerNote }) {
+function PillStrip({ pills, tone = 'standard' }) {
+  const list = (pills || []).filter(Boolean);
+  if (list.length === 0) return <span className="italic text-inkFaint">Not present in this agreement</span>;
+  return (
+    <div className="flex flex-wrap gap-1.5">
+      {list.map((pill, idx) => (
+        <Pill
+          key={`${pill.code || pill.label}-${idx}`}
+          text={pill.label}
+          quote={pill.quote}
+          tone={tone}
+          highlight={null}
+        />
+      ))}
+    </div>
+  );
+}
+
+function renderNosolCustomValue(row, hit, provisions) {
+  if (row.kind === 'prohibitedActs') {
+    return <PillStrip pills={prohibitedActPills(provisions)} />;
+  }
+  if (row.kind === 'representativeStandard') {
+    const display = representativeStandardDisplay(hit && hit.value);
+    return display
+      ? <Pill text={display.label} quote={display.quote} tone="standard" highlight={null} />
+      : <span className="italic text-inkFaint">Not present in this agreement</span>;
+  }
+  if (row.kind === 'canonicalPills') {
+    return <PillStrip pills={canonicalizeNosolPills(hit && hit.value, row.vocab)} />;
+  }
+  if (row.kind === 'noticePeriod') {
+    const parts = noticePeriodParts(hit && hit.value);
+    return parts ? <PillStrip pills={parts} /> : renderSummaryRowValue(hit, row.keys[0]);
+  }
+  if (row.kind === 'superiorProposalLimbs') {
+    const limbs = superiorProposalLimbs(hit && hit.value);
+    if (limbs.length === 0) return <span className="italic text-inkFaint">Not present in this agreement</span>;
+    return (
+      <div className="space-y-1.5">
+        {limbs.map((limb) => (
+          <HoverSource key={limb.label} quote={limb.quote} as="div">
+            <div className="rounded border border-border bg-bg/40 px-2 py-1">
+              <div className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">{limb.label}</div>
+              <div className="text-xs text-ink whitespace-pre-wrap break-words">{limb.text}</div>
+            </div>
+          </HoverSource>
+        ))}
+      </div>
+    );
+  }
+  return null;
+}
+
+function NosolMiniTable({ title, spec, provisions, headerNote, collapsibleDefinitions = false }) {
   const showEvidence = useShowEvidence();
+  const [collapsedDefs, setCollapsedDefs] = useState(() => (
+    collapsibleDefinitions ? nosolDefinitionInitialState(spec.map((row) => row.label)) : new Set()
+  ));
   const rawRows = spec.map((row, originalIdx) => {
-    const hit = withUnitSuffix(pickFirstNonEmpty(provisions, row.keys), row.unit);
-    return { label: row.label, hit, lookupKey: row.keys[0] || null, originalIdx };
+    const picked = pickNosolFeature(provisions, row.keys);
+    const hit = withUnitSuffix(picked, row.unit);
+    return { ...row, hit, lookupKey: row.keys[0] || null, originalIdx };
   });
-  const rows = [...rawRows].sort((a, b) => {
-    const aP = a.hit !== null && a.hit !== undefined;
-    const bP = b.hit !== null && b.hit !== undefined;
-    if (aP !== bP) return aP ? -1 : 1;
-    return a.originalIdx - b.originalIdx;
-  });
+  const rows = rawRows;
 
   return (
     <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
@@ -107,33 +165,61 @@ function NosolMiniTable({ title, spec, provisions, headerNote }) {
               </tr>
             )}
             {rows.map((row) => {
+              const collapsed = collapsibleDefinitions && collapsedDefs.has(row.label);
+              const customValue = collapsed ? null : renderNosolCustomValue(row, row.hit, provisions);
               const quote = row.hit
                 ? evidenceQuote(row.hit.value, { provision: row.hit.provision })
                 : null;
-              const clickable = !!(quote && showEvidence);
+              const clickable = !!(quote && showEvidence) && !customValue && !collapsed;
               const onClick = clickable ? () => showEvidence(quote) : undefined;
+              const toggleDefinition = collapsibleDefinitions
+                ? () => setCollapsedDefs((prev) => {
+                  const next = new Set(prev);
+                  if (next.has(row.label)) next.delete(row.label);
+                  else next.add(row.label);
+                  return next;
+                })
+                : null;
               return (
                 <tr key={row.label} className="hover:bg-bg/40 transition-colors">
                   <td className="px-3 py-2 align-top whitespace-normal break-words">
                     <TermCell provision={row.hit && row.hit.provision} quote={quote}>
-                      {clickable ? (
-                        <HoverSource quote={quote}>
-                          <span className="text-left text-accent hover:underline font-medium">
-                            {row.label}
-                          </span>
-                        </HoverSource>
-                      ) : (
-                        <span className="text-ink font-medium">{row.label}</span>
-                      )}
+                    {toggleDefinition ? (
+                      <button
+                        type="button"
+                        onClick={toggleDefinition}
+                        className="text-left text-accent hover:underline font-medium"
+                        aria-expanded={!collapsed}
+                      >
+                        <span className="mr-1 text-inkFaint">{collapsed ? '+' : '-'}</span>
+                        {row.label}
+                      </button>
+                    ) : clickable ? (
+                      <HoverSource quote={quote}>
+                        <button
+                          type="button"
+                          onClick={onClick}
+                          className="text-left text-accent hover:underline font-medium"
+                        >
+                          {row.label}
+                        </button>
+                      </HoverSource>
+                    ) : (
+                      <span className="text-ink font-medium">{row.label}</span>
+                    )}
                     </TermCell>
                   </td>
                   <td
                     className={`px-3 py-2 align-top text-ink whitespace-pre-wrap break-words ${clickable ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
                     onClick={onClick}
                   >
-                    <HoverSource quote={quote} as="div">
-                      {renderSummaryRowValue(row.hit, row.lookupKey)}
-                    </HoverSource>
+                    {collapsed ? null : (
+                      customValue || (
+                        <HoverSource quote={quote} as="div">
+                          {renderSummaryRowValue(row.hit, row.lookupKey)}
+                        </HoverSource>
+                      )
+                    )}
                   </td>
                 </tr>
               );
@@ -145,9 +231,32 @@ function NosolMiniTable({ title, spec, provisions, headerNote }) {
   );
 }
 
+function NosolGoShopTop({ provisions }) {
+  const display = goShopDisplay(provisions);
+  if (!display.present) {
+    return (
+      <div className="bg-white border border-border rounded-lg shadow-sm px-3 py-2">
+        <p className="text-xs font-ui text-ink">No go-shop.</p>
+      </div>
+    );
+  }
+  return (
+    <NosolMiniTable
+      title="Go-Shop"
+      spec={[
+        { label: 'Go-Shop Period', keys: ['goShopPeriodDays', 'goShopWindow'] },
+        { label: 'Go-Shop Excluded Parties', keys: ['goShopExcludedParties'] },
+        { label: 'Extended Negotiating Period', keys: ['extendedNegotiatingPeriodDays'] },
+      ]}
+      provisions={provisions}
+    />
+  );
+}
+
 export function NosolFourTables({ provisions }) {
   return (
     <div className="space-y-3">
+      <NosolGoShopTop provisions={provisions} />
       <NosolMiniTable
         title="Cease Discussions"
         spec={NOSOL_CEASE_DISCUSSIONS}
@@ -163,6 +272,7 @@ export function NosolFourTables({ provisions }) {
         title="Key Definitions"
         spec={NOSOL_KEY_DEFINITIONS}
         provisions={provisions}
+        collapsibleDefinitions
       />
       <NosolMiniTable
         title="Other Restrictions"
