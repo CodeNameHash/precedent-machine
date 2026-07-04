@@ -653,21 +653,28 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
   const headlineType = deriveHeadlineConsiderationType(provisions);
   const headlineTypeLabel = headlineConsiderationLabel(headlineType);
 
-  const fieldValue = (raw) => {
+  // Audit-2 item 6(a): a raw enum value (e.g. "FIXED", "MIXED_ELECTION")
+  // with no {code,label} tagged wrapper used to render verbatim via
+  // String(raw) — route it through prettifyEnumValue's bare-enum guard
+  // (humanizes UPPER_SNAKE tokens; a per-key taxonomy dict, when one is
+  // registered for featureKey, wins) so every enum leak in this table gets
+  // the same treatment table cells get everywhere else.
+  const fieldValue = (raw, featureKey) => {
     if (raw === null || raw === undefined || raw === '') return null;
-    if (isCitableValue(raw)) return fieldValue(getCitableValue(raw));
+    if (isCitableValue(raw)) return fieldValue(getCitableValue(raw), featureKey);
     if (isTaggedItem(raw)) return raw.label || raw.code || null;
     if (typeof raw === 'boolean') return raw ? 'Yes' : 'No';
-    return String(raw);
+    return prettifyEnumValue(featureKey, String(raw));
   };
 
   const stockRows = [];
-  const pushStockRow = (label, raw, provision, focus) => {
-    const value = fieldValue(raw);
+  const pushStockRow = (label, raw, provision, focus, featureKey) => {
+    const value = fieldValue(raw, featureKey);
     if (!value) return;
     stockRows.push({
       label,
       value,
+      provisionId: provision && provision.id,
       quote: evidenceQuote(raw, { provision, focusOn: focus || value }),
     });
   };
@@ -675,7 +682,7 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
     if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return;
     const quote = evidenceQuote(obj, { provision }) || obj.text || null;
     for (const [key, label] of fields) {
-      pushStockRow(`${prefix} — ${label}`, obj[key], provision);
+      pushStockRow(`${prefix} — ${label}`, obj[key], provision, null, key);
     }
     if (obj.text) {
       stockRows.push({ label: `${prefix} — Text`, value: String(obj.text), quote });
@@ -683,7 +690,7 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
   };
   for (const p of provisions) {
     const f = getStructuredFeatures(p) || {};
-    pushStockRow('Exchange Ratio Type', f.exchangeRatioType ?? f.ratioType, p);
+    pushStockRow('Exchange Ratio Type', f.exchangeRatioType ?? f.ratioType, p, null, 'ratioType');
     pushStockRow('Exchange Ratio Formula', f.exchangeRatioText, p);
     pushObjectRows('Collar', f.collar, p, [
       ['present', 'Present'],
@@ -708,9 +715,15 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
     }
     pushStockRow('Tax Reorg Text', f.taxReorgText, p);
   }
+  // Audit-2 item 6(b): dedupe by provision id AND normalized label — not
+  // just label+value — so a duplicate PROVISION entry (the Cooper "Dividend
+  // Equivalence" double row: the same provision.id appearing twice in the
+  // source array) collapses even when its value shape differs trivially
+  // (citable wrapper vs. plain, whitespace) between the two occurrences.
   const seenStockRows = new Set();
   const dedupedStockRows = stockRows.filter((row) => {
-    const key = `${row.label}::${row.value}`;
+    const normalizedLabel = String(row.label || '').trim().toLowerCase();
+    const key = `${row.provisionId || ''}::${normalizedLabel}`;
     if (seenStockRows.has(key)) return false;
     seenStockRows.add(key);
     return true;

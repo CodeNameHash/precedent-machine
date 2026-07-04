@@ -130,3 +130,59 @@ test('CONDITION_ABSENT_COPY does not assert absence as fact', () => {
   assert.equal(CONDITION_ABSENT_COPY, 'Not found (may not be present, or not yet extracted)');
   assert.ok(!/not present in this agreement/i.test(CONDITION_ABSENT_COPY));
 });
+
+/* ── Audit-2 item 1: deriveMaeContinuing — the structured continuingRequirement
+   feature must win over the regex fallback. Regression: a provision whose
+   condition text read "...Material Adverse Effect that is continuing" (MAE-
+   first word order) rendered "Continuing requirement not specified" because
+   the old regex only matched the continuing-first order ("continuing to be
+   material adverse effect"), even though the structured feature was
+   already Yes. */
+
+test('deriveMaeContinuing trusts an explicit true structured feature, no regex needed', () => {
+  const { deriveMaeContinuing } = mod;
+  assert.equal(deriveMaeContinuing([{ continuingRequirement: true, mainCondition: '', fullText: '' }]), true);
+});
+
+test('deriveMaeContinuing trusts an explicit false structured feature over a matching fullText regex', () => {
+  const { deriveMaeContinuing } = mod;
+  // fullText would regex-match ("continuing to be"), but the structured
+  // field is authoritative and says false — must not be overridden.
+  assert.equal(
+    deriveMaeContinuing([{ continuingRequirement: false, mainCondition: '', fullText: 'shall be continuing to be in effect' }]),
+    false
+  );
+});
+
+test('deriveMaeContinuing falls back to regex when the structured field is absent (legacy provision)', () => {
+  const { deriveMaeContinuing } = mod;
+  assert.equal(
+    deriveMaeContinuing([{ mainCondition: '', fullText: 'there shall not have occurred any Company Material Adverse Effect that is continuing' }]),
+    true,
+    'trailing "MAE ... that is continuing" word order must match'
+  );
+});
+
+test('deriveMaeContinuing regex fallback still matches the original continuing-first order', () => {
+  const { deriveMaeContinuing } = mod;
+  assert.equal(
+    deriveMaeContinuing([{ mainCondition: '', fullText: 'no Material Adverse Effect continuing to exist as of the Closing' }]),
+    true
+  );
+});
+
+test('deriveMaeContinuing regex fallback matches "has occurred and is continuing"', () => {
+  const { deriveMaeContinuing } = mod;
+  assert.equal(
+    deriveMaeContinuing([{ mainCondition: '', fullText: 'any Company Material Adverse Effect that has occurred and is continuing' }]),
+    true
+  );
+});
+
+test('deriveMaeContinuing returns null (not specified) when neither structured field nor regex has anything', () => {
+  const { deriveMaeContinuing } = mod;
+  assert.equal(
+    deriveMaeContinuing([{ mainCondition: '', fullText: 'there shall not have occurred any Company Material Adverse Effect' }]),
+    null
+  );
+});

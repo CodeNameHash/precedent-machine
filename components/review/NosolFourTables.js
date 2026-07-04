@@ -292,9 +292,18 @@ function NosolGoShopTop({ provisions }) {
     <NosolMiniTable
       title="Go-Shop"
       spec={[
-        { label: 'Go-Shop Period', keys: ['goShopPeriodDays', 'goShopWindow'] },
+        // Audit-2 item 6(c): goShopPeriodDays / extendedNegotiatingPeriodDays
+        // are, by the extraction schema itself (lib/rubric.js — "Go-shop
+        // period (days)"), always a count of DAYS — appending "days" to a
+        // bare number here isn't guessing a unit, it's using the field's own
+        // documented one (same unit withUnitSuffix already applies for these
+        // exact keys via formatDurationWithUnits' EXACT map elsewhere).
+        // withUnitSuffix only suffixes a genuinely BARE number — a
+        // goShopWindow fallback value that's already free text with its own
+        // unit embedded passes through unchanged, never double-suffixed.
+        { label: 'Go-Shop Period', keys: ['goShopPeriodDays', 'goShopWindow'], unit: 'days' },
         { label: 'Go-Shop Excluded Parties', keys: ['goShopExcludedParties'] },
-        { label: 'Extended Negotiating Period', keys: ['extendedNegotiatingPeriodDays'] },
+        { label: 'Extended Negotiating Period', keys: ['extendedNegotiatingPeriodDays'], unit: 'days' },
       ]}
       provisions={provisions}
     />

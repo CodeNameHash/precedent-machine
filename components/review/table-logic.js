@@ -758,10 +758,29 @@ export function truncateAtWordBoundary(text, max) {
  * choke point feeding every downstream grouping/sidebar/filter view so the
  * type never has to be re-excluded per render path.
  * ══════════════════════════════════════════════════════════════════════════ */
+// Audit-2 item 3(a): the extractor stamps "[PROPOSED] " onto p.category when
+// it proposes a category not yet in the canonical taxonomy — a deliberate
+// signal FOR EDITORS (promote-to-canonical review queue), not something a
+// reviewer in read-only USER mode should ever see. Strip it here, at the same
+// choke point as the SECTION-LEFTOVER gate above, so every downstream
+// grouping/sidebar/table view gets the clean label with no re-stripping per
+// render path.
+const PROPOSED_CATEGORY_PREFIX_RE = /^\[PROPOSED\]\s*/;
+
+export function stripProposedCategoryPrefix(category) {
+  if (typeof category !== 'string') return category;
+  return category.replace(PROPOSED_CATEGORY_PREFIX_RE, '');
+}
+
 export function filterProvisionsForViewMode(provisions, isEdit) {
   const list = Array.isArray(provisions) ? provisions : [];
-  if (isEdit) return list;
-  return list.filter((p) => p && p.type !== 'SECTION-LEFTOVER');
+  const withoutLeftovers = isEdit ? list : list.filter((p) => p && p.type !== 'SECTION-LEFTOVER');
+  if (isEdit) return withoutLeftovers;
+  return withoutLeftovers.map((p) =>
+    (p && typeof p.category === 'string' && PROPOSED_CATEGORY_PREFIX_RE.test(p.category))
+      ? { ...p, category: stripProposedCategoryPrefix(p.category) }
+      : p
+  );
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -1431,12 +1450,15 @@ export function buildAntitrustSummaryRows(antiProvisions, allProvisions) {
     rows.push(antiRow('Caps & Limits', 'Caps & Limits', burdenHit, { detailKeys }));
   }
 
+  // Audit-2 item 5: unlike every other row above (only pushed when a
+  // matching feature was found), Litigation ALWAYS renders — the whole
+  // point is to affirmatively answer "the agreement is silent on a
+  // litigation-defense obligation" rather than let the row vanish (Metsera
+  // currently omits the span entirely when litigationObligation is absent).
   const litigationHit = firstAntiHit(anti, ['litigationObligation', 'parentLitigationObligation']);
-  if (litigationHit) {
-    rows.push(antiRow('Litigation', 'Litigation', litigationHit, {
-      detailKeys: ['litigationObligationQualification'],
-    }));
-  }
+  rows.push(antiRow('Litigation', 'Litigation', litigationHit, {
+    detailKeys: ['litigationObligationQualification'],
+  }));
 
   const clearSkiesHit = firstAntiHit(anti, ['clearSkies', 'clearSkiesCompany', 'clearSkiesParent']);
   if (clearSkiesHit) {

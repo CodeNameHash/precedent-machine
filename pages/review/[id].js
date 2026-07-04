@@ -17,6 +17,7 @@ import {
   conditionRowMatches,
   conditionDetailLines,
   CONDITION_ABSENT_COPY,
+  deriveMaeContinuing,
 } from '../../lib/canonical-conditions';
 import {
   taxonomyForFeatureKey,
@@ -4445,7 +4446,10 @@ function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision, hide
       }
     }
     const customRender = row.customRender || (row.customRenderKey ? CUSTOM_RENDERERS[row.customRenderKey] : null) || null;
-    return { label: row.label, hit, lookupKey: (row.keys && row.keys[0]) || row.maeCode || null, originalIdx, customRender };
+    // `keys` (the full list, not just the first) is carried through so the
+    // "Other provisions in this section" block below can mark EVERY
+    // provision matching ANY of this row's keys as consumed — audit-2 item 7.
+    return { label: row.label, hit, lookupKey: (row.keys && row.keys[0]) || row.maeCode || null, keys: row.keys || null, originalIdx, customRender };
   });
   // P3 item 5: stable sort — populated rows first (in original order), then
   // "Not present" rows (in original order). Keeps the summary scannable.
@@ -4562,14 +4566,15 @@ function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision, hide
       </div>
 
       {!hideProvisionsList && (() => {
-        // FB3 item 6: dedupe against every provision the summary table above
-        // already consumed as a row's source, in addition to any exclusion
-        // set the caller supplied.
-        const consumedIds = new Set(
-          rows
-            .map((row) => row.hit && row.hit.provision && row.hit.provision.id)
-            .filter(Boolean),
-        );
+        // FB3 item 6 / audit-2 item 7: dedupe against every provision the
+        // summary table above already consumed as a row's source (not just
+        // the single first-hit provision per row — allConsumedProvisionIds
+        // marks EVERY provision carrying a value for any row's keys), in
+        // addition to any exclusion set the caller supplied.
+        const consumedIds = new Set([
+          ...rows.map((row) => row.hit && row.hit.provision && row.hit.provision.id).filter(Boolean),
+          ...allConsumedProvisionIds(provisions, rows.map((row) => row.keys).filter(Boolean)),
+        ]);
         const filtered = sortedProvs.filter((p) => !consumedIds.has(p.id) && !(excludeSet && excludeSet.has(p.id)));
         if (filtered.length === 0) return null;
         return (
@@ -7181,6 +7186,8 @@ function CanonicalConditionDetails({ row, matches, allProvisions, certifies }) {
   const isCovenant = /Covenant Performance/i.test(label);
   const isNoMae = /Material Adverse Effect/i.test(label);
   const isCert = /Officer.?s Certificate/i.test(label);
+  const isAntitrust = /^Antitrust$/i.test(label);
+  const isStockholderApproval = /Stockholder Approval/i.test(label);
   const u = (v) => (isCitableValue(v) ? getCitableValue(v) : v);
 
   if (isCert) {
@@ -7217,16 +7224,74 @@ function CanonicalConditionDetails({ row, matches, allProvisions, certifies }) {
     return <span className="italic text-inkFaint">Standard not specified</span>;
   }
 
-  if (isNoMae) {
-    let continuing = null;
+  if (isStockholderApproval) {
+    // FB3/audit-2 item 4(b): the vote standard is stamped from the
+    // Company Stockholder Approval DEF onto COND-M-STOCKHOLDER by
+    // linkStockholderApprovalDefinition (lib/parser-v2/extract.js) — a
+    // plain verbatim string, never a raw provision sentence (it's the
+    // cross-referenced DEFINITION's text, not this condition's own). Core
+    // clipped in the cell, full text on hover — same pattern as every other
+    // long-quote cell in this table (see truncateAtWordBoundary call sites).
+    let def = null;
     for (const p of matches) {
       const f = getStructuredFeatures(p) || {};
-      const t = `${typeof f.mainCondition === 'string' ? f.mainCondition : ''} ${p.full_text || ''}`;
-      if (/continu(?:ing|e[ds]?)\s+(?:to\s+(?:be|exist)|material\s+adverse\s+effect|effect)/i.test(t)) {
-        continuing = true;
-        break;
+      const raw = f.approvalDefinition;
+      const val = isCitableValue(raw) ? getCitableValue(raw) : raw;
+      if (typeof val === 'string' && val.trim()) { def = val.trim(); break; }
+    }
+    if (!def) {
+      return matches.length > 0
+        ? <span className="italic text-inkFaint">Present (vote standard not extracted)</span>
+        : <span className="italic text-inkFaint">{CONDITION_ABSENT_COPY}</span>;
+    }
+    return (
+      <span className="text-ink">
+        <HoverSource quote={def}>{truncateAtWordBoundary(def, 160)}</HoverSource>
+      </span>
+    );
+  }
+
+  if (isAntitrust) {
+    // FB3/audit-2 item 4(a): the antitrust condition bundles TWO
+    // conceptually distinct approvals (HSR waiting-period expiration, and
+    // any OTHER scheduled regulatory approvals) — antitrustApprovals
+    // (lib/parser-v2/extract.js) emits them as two SEPARATE tagged items so
+    // they render as two pills, never one merged row with a section/
+    // schedule cross-reference bleeding into the visible text (the cite
+    // lives in "text", hover-only, same discipline as TERMF trigger pills).
+    for (const p of matches) {
+      const f = getStructuredFeatures(p) || {};
+      const raw = f.antitrustApprovals;
+      const items = Array.isArray(raw) ? raw : (isCitableValue(raw) ? getCitableValue(raw) : null);
+      if (Array.isArray(items) && items.length > 0) {
+        const tagged = items.filter(isTaggedItem);
+        if (tagged.length > 0) {
+          return (
+            <span className="inline-flex items-center gap-1.5 flex-wrap">
+              {tagged.map((item, i) => (
+                <Pill
+                  key={item.code || i}
+                  text={resolveTaggedLabel('antitrustApprovals', item) || item.code}
+                  quote={typeof item.text === 'string' ? item.text : null}
+                  tone="standard"
+                />
+              ))}
+            </span>
+          );
+        }
       }
     }
+    // No structured antitrustApprovals yet (legacy/not-yet-extracted
+    // provision) — fall through to the generic condition-detail path below.
+  }
+
+  if (isNoMae) {
+    const continuing = deriveMaeContinuing(
+      matches.map((p) => {
+        const f = getStructuredFeatures(p) || {};
+        return { continuingRequirement: f.continuingRequirement, mainCondition: f.mainCondition, fullText: p.full_text };
+      })
+    );
     const isParentSide = (p) => /parent|buyer|acquir|purchaser/i.test(p?.category || '');
     const maeProvs = (allProvisions || []).filter(isMaeDefinitionProvision);
     const maeDef = row.maeSide === 'parent'
@@ -7345,7 +7410,12 @@ function CondFrustrationBanner({ allProvisions, onSelectProvision }) {
   // party / test enums weren't extracted. The labeled fallback text keeps
   // the banner informative either way.
   const partyText = partyLabel || 'Both parties';
-  const testText = testLabel || 'the test';
+  // Audit-2 item 6: "the test" read as "that party's the test caused the
+  // failure" when the causation-test enum wasn't extracted — a stray
+  // article stacked right after the possessive. "own conduct" reads
+  // correctly in the same sentence slot and stays accurate as a generic
+  // fallback regardless of which specific test the agreement actually uses.
+  const testText = testLabel || 'own conduct';
 
   const sourceQuote = languageText || prov.full_text || prov.text || null;
   const canShowSource = !!(sourceQuote && showEvidence);
@@ -8027,14 +8097,30 @@ function ProvisionsInSectionList({ provisions, onSelectProvision, consumedIds })
   const sorted = [...filtered].sort((a, b) =>
     String(a.category || '').localeCompare(String(b.category || ''), undefined, { sensitivity: 'base' }),
   );
-  if (sorted.length === 0) return null;
+  // Audit-2 item 6(b): dedupe by provision id AND normalized category label.
+  // Id dedupe guards a literal duplicate entry in the source array; label
+  // dedupe guards several distinct provisions/fragments that all share the
+  // same canonical category text (the "Exchange of Certificates / Payment
+  // Mechanics" quadruplication) — either match collapses to one entry, so
+  // this list never shows the same visible label more than once.
+  const seenIds = new Set();
+  const seenLabels = new Set();
+  const deduped = sorted.filter((p) => {
+    if (p && seenIds.has(p.id)) return false;
+    const normalizedLabel = String((p && p.category) || 'General').trim().toLowerCase();
+    if (seenLabels.has(normalizedLabel)) return false;
+    if (p) seenIds.add(p.id);
+    seenLabels.add(normalizedLabel);
+    return true;
+  });
+  if (deduped.length === 0) return null;
   return (
     <div className="bg-bg/40 border border-border rounded-lg px-3 py-2">
       <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider mb-1.5">
         Other provisions in this section
       </p>
       <ul className="flex flex-wrap gap-x-3 gap-y-1">
-        {sorted.map((p) => (
+        {deduped.map((p) => (
           <li key={p.id}>
             <button
               type="button"
@@ -8152,6 +8238,27 @@ function consumedProvisionIds(provisions, keyGroups) {
   for (const keys of keyGroups) {
     const hit = pickFirstNonEmpty(provisions, keys);
     if (hit && hit.provision && hit.provision.id) ids.add(hit.provision.id);
+  }
+  return ids;
+}
+
+// Audit-2 item 7 (A10): consumedProvisionIds (and any rows.map(r => r.hit...)
+// dedupe built the same way) only marks the FIRST provision that matched a
+// key group as consumed. When TWO physically different provisions both
+// carry a value for the same summary key (Metsera: two separate "Standard
+// of Efforts" provisions), only the first is ever marked consumed — the
+// second still leaks into "Other provisions in this section" as an
+// apparent duplicate of a row the summary table already displays. This
+// variant scans every provision and marks ALL of them that carry a
+// non-empty value for ANY key in ANY group, not just the first hit.
+function allConsumedProvisionIds(provisions, keyGroups) {
+  const ids = new Set();
+  for (const p of provisions || []) {
+    if (!p || !p.id) continue;
+    const f = getStructuredFeatures(p) || {};
+    for (const keys of keyGroups || []) {
+      if ((keys || []).some((k) => !isEmptyValue(f[k]))) { ids.add(p.id); break; }
+    }
   }
   return ids;
 }
@@ -8276,11 +8383,19 @@ function renderFeeExpenseCell(provisions, allProvisions) {
   const raw = hit.value;
   const inner = isCitableValue(raw) ? getCitableValue(raw) : raw;
   const text = typeof inner === 'string' ? inner : String(inner ?? '');
+  // Audit-2 item 6: f.sectionNumber is only ever populated on OTHER-type
+  // provisions (the 100%-coverage catch-all — see lib/rubric.js) — every
+  // canonical type (ANTI, TERMF, NOSOL, COND-*, ...) carries its section
+  // number on the provision.section_number DB column instead (same
+  // fallback pattern used elsewhere in this file, e.g. line ~5901). Reading
+  // the feature ONLY meant "6.03(b)" / "8.02" cites could never resolve —
+  // the sections that own them never made it into this index at all.
   const sectionIndex = (allProvisions || []).map((p) => {
     const f = getStructuredFeatures(p) || {};
     const secRaw = f.sectionNumber;
     const sec = isCitableValue(secRaw) ? getCitableValue(secRaw) : secRaw;
-    return { sectionNumber: typeof sec === 'string' ? sec : null, category: p.category };
+    const resolved = (typeof sec === 'string' && sec.trim()) ? sec : (p && p.section_number);
+    return { sectionNumber: typeof resolved === 'string' ? resolved : null, category: p.category };
   });
   const body = buildFeeExpenseSentence(text, sectionIndex);
   if (!body) return null;
@@ -8386,6 +8501,20 @@ function antiFieldLabel(key) {
 function renderAntiObjectValue(featureKey, raw) {
   let v = isCitableValue(raw) ? getCitableValue(raw) : raw;
   if (isTaggedItem(v)) {
+    // Audit-2 item 5(b): a Pill asserts a CANONICAL taxonomy value — only
+    // render one when `.code` actually resolves in this feature's dictionary.
+    // consultationTier is tagged-typed, but some provisions (Red Hat) carry
+    // raw consultation language that didn't map to a real CONSULTATION_TIER
+    // member; rendering that as a pill produces a giant "fake pill" holding
+    // a whole sentence. Fall back to a short clipped quote styled as text.
+    const dict = taxonomyForFeatureKey(featureKey);
+    const isCanonical = !!dict && labelForCode(v.code, dict) !== null;
+    if (!isCanonical) {
+      const text = (typeof v.text === 'string' && v.text.trim())
+        || (typeof v.label === 'string' && v.label.trim())
+        || String(v.code || '');
+      return <span className="text-inkMid">{truncateAtWordBoundary(text, 180)}</span>;
+    }
     const label = resolveTaggedLabel(featureKey, v) || v.label || v.code;
     return <Pill text={label} quote={v.text} tone="standard" />;
   }
@@ -8448,7 +8577,16 @@ function renderClearSkiesLines(hit, provisions) {
 }
 
 function renderAntiHitValue(row, provisions) {
-  if (!row.hit) return <span className="italic text-inkFaint">Not present in this agreement</span>;
+  if (!row.hit) {
+    // Audit-2 item 5: Litigation ALWAYS renders (buildAntitrustSummaryRows
+    // pushes the row unconditionally) — "Silent" affirmatively states the
+    // agreement doesn't address a litigation-defense obligation, matching
+    // the "Silent on fraud" convention used elsewhere for always-shown
+    // affirmative-absence rows, rather than the generic (and here
+    // ambiguous-sounding) "Not present in this agreement".
+    if (row.label === 'Litigation') return <span className="italic text-inkFaint">Silent</span>;
+    return <span className="italic text-inkFaint">Not present in this agreement</span>;
+  }
   const key = row.hit.key;
   const quote = evidenceQuote(row.hit.value, { provision: row.hit.provision });
   if (key === 'clearSkies') {
@@ -8491,9 +8629,31 @@ function renderAntiHitValue(row, provisions) {
   );
 }
 
+// Mirrors buildAntitrustSummaryRows' own key groups (components/review/
+// table-logic.js) — audit-2 item 7: marks EVERY provision carrying a value
+// for any of these keys as consumed, not just the single first-hit
+// provision per row (Metsera: two separate "Standard of Efforts"
+// provisions both leaked into "Other provisions in this section" because
+// only the first was ever marked consumed).
+const ANTI_CONSUMED_KEY_GROUPS = [
+  ['effortsStandard'], ['effortsStandardDiffersByRemedy'],
+  ['burdenCommitment', 'burdenCap', 'divestitureCap', 'divestitureCapDescription'], ['capDetail'],
+  ['litigationObligation', 'parentLitigationObligation'], ['litigationObligationQualification'],
+  ['clearSkies', 'clearSkiesCompany', 'clearSkiesParent'], ['clearSkiesCompanyScope'], ['clearSkiesParentScope'],
+  ['regulatoryStrategyControlTagged', 'controllingParty', 'regulatoryStrategyControl'],
+  ['consultationTier', 'regulatoryCooperationScope'],
+  ['pullRefile', 'pullAndRefileCompanyConsent'],
+  ['hsrFilingDeadline', 'hsrFilingDeadlineBusinessDays'],
+  ['exHsrFilingDeadline', 'otherRegulatoryFilingDeadlines', 'filingDeadline'],
+  ['timingAgreement', 'timingAgreementsProhibited'],
+];
+
 function AntitrustSummaryTable({ provisions, allProvisions, onSelectProvision }) {
   const rows = buildAntitrustSummaryRows(provisions, allProvisions || provisions);
-  const consumedIds = new Set(rows.map((r) => r.hit && r.hit.provision && r.hit.provision.id).filter(Boolean));
+  const consumedIds = new Set([
+    ...rows.map((r) => r.hit && r.hit.provision && r.hit.provision.id).filter(Boolean),
+    ...allConsumedProvisionIds(provisions, ANTI_CONSUMED_KEY_GROUPS),
+  ]);
   return (
     <div className="space-y-3">
       <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
@@ -11131,7 +11291,7 @@ export default function ReviewPage() {
                               {showPreambleCard && (
                                 <PreambleCard
                                   provision={preamble}
-                                  onEdit={handleEditProvision}
+                                  onEdit={isEdit ? handleEditProvision : undefined}
                                   allProvisions={provisions}
                                 />
                               )}
