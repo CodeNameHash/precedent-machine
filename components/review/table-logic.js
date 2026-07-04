@@ -1275,3 +1275,12 @@ function localFeatures(provision) {
   const feats = (meta && meta.features) || provision.features || {};
   return feats && typeof feats === 'object' && !Array.isArray(feats) ? feats : {};
 }
+
+function localMeta(provision) {
+  const meta = provision && provision.ai_metadata;
+  if (!meta) return null;
+  if (typeof meta === 'string') {
+    try { return JSON.parse(meta); } catch { return null; }
+  }
+  return meta;
+}
