@@ -545,6 +545,16 @@ export const SIDEBAR_GROUPS = [
     { label: 'Company / Target', type: 'REP-T' },
     { label: 'Buyer / Parent', type: 'REP-B' },
   ]},
+  // No Other Reps / Fraud (Abry) — the four-question summary sits at the
+  // END of the R&W block, same "synthetic single-page section" pattern as
+  // Material Contracts below: it scans EVERY provision for the five Abry
+  // fields (titled REP-T-NOREP / REP-B-NOREP / REP-B-ANTIRELIANCE sections,
+  // or a MISC-ENTIRE section with the language embedded in its body) rather
+  // than belonging to one provision type. Always visible (see the
+  // '__ABRY' synthesis in pages/review/[id].js) so an absent clause reads
+  // as an explicit "Not present in this agreement" / "Silent on fraud"
+  // rather than a missing section.
+  { label: 'No Other Reps / Fraud (Abry)', types: ['__ABRY'] },
   { label: 'Material Adverse Effect', children: [
     { label: 'Company Material Adverse Effect', type: 'MAE-DEF' },
     { label: 'Parent Material Adverse Effect', type: 'MAE-DEF-P' },
@@ -571,7 +581,7 @@ export const SIDEBAR_GROUPS = [
 /* Synthetic, single-page sidebar types: the child label itself IS the page
  * (a curated summary), so the sidebar should NOT show a count or a nested
  * per-provision sub-list under it. */
-export const SYNTHETIC_SINGLE_PAGE_TYPES = new Set(['MAE-DEF', 'MAE-DEF-P', '__MATERIAL_CONTRACTS']);
+export const SYNTHETIC_SINGLE_PAGE_TYPES = new Set(['MAE-DEF', 'MAE-DEF-P', '__MATERIAL_CONTRACTS', '__ABRY']);
 
 export function getProvisionStatus(p) {
   if (p._status === 'approved') return 'approved';
@@ -590,6 +600,9 @@ const TYPE_LABELS = {
   // (Material Contracts checklist) on their own sidebar page so the buckets
   // table isn't buried inline on the REP-T page.
   '__MATERIAL_CONTRACTS': 'Material Contracts',
+  // Synthetic UI-only type — the No Other Reps / Fraud (Abry) four-question
+  // summary; see the SIDEBAR_GROUPS comment above for what feeds it.
+  '__ABRY': 'No Other Reps / Fraud (Abry)',
   'IOC-T': 'Interim Operating Covenants (Target)',
   'IOC-B': 'Interim Operating Covenants (Buyer)',
   'IOC': 'Interim Operating Covenants',
