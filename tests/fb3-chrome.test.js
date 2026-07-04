@@ -179,8 +179,8 @@ test('item 8b: absent equity instruments collapse into a strip under the Equity 
   assert.match(src, /function absentEquityInstrumentLabels/);
   assert.match(src, /noun="equity instruments"/);
   // Rendered directly after (under) the EquityAwardTable, inside the same
-  // `equityRows.length > 0` gate so it never appears without the table.
-  const gateIdx = src.indexOf('equityRows.length > 0 && (');
+  // `employeeEquityRows.length > 0` gate so it never appears without the table.
+  const gateIdx = src.indexOf('employeeEquityRows.length > 0 && (');
   const stripIdx = src.indexOf('noun="equity instruments"');
   assert.ok(gateIdx >= 0 && stripIdx > gateIdx);
 });

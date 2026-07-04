@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import { useUser } from '../lib/useUser';
 import { useDeals } from '../lib/useSupabaseData';
 import { getDisplayAdvisors } from '../lib/canonical-advisors';
+import { getDisplayAcquirer, getDisplayTarget } from '../lib/deal-display';
 import DealsTable from '../components/DealsTable';
 import { headlineConsiderationLabel } from '../components/review/table-logic';
 
@@ -55,8 +56,9 @@ export default function HomePage() {
         return {
           id: d.id,
           date: d.announce_date || null,
-          buyer: meta.acquirer_display || meta.parent_entity || d.acquirer || null,
-          seller: meta.target_display || d.target || null,
+          ultimateParent: getDisplayAcquirer(d),
+          buyer: getDisplayAcquirer(d),
+          seller: getDisplayTarget(d),
           value: d.value_usd,
           consideration,
           industry: d.sector || null,

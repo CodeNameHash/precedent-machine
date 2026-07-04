@@ -53,6 +53,36 @@ export function buildPerShareParts({ perShareText, hasCvr, hasCash, cvrMaxText }
   return parts;
 }
 
+export function deriveHeadlineConsiderationType(provisions) {
+  const texts = [];
+  for (const p of provisions || []) {
+    const f = (p && (p.features || p.structured_features)) || {};
+    const fields = [
+      f.considerationType,
+      f.electionMechanics,
+      f.electionDeadline,
+      f.proration,
+      f.cashElection,
+      f.stockElection,
+      p && p.category,
+      p && p.full_text,
+      p && p.text,
+    ];
+    for (const raw of fields) {
+      for (const t of collectTexts(raw)) texts.push(t);
+    }
+  }
+  const hay = texts.join('\n').toLowerCase();
+  const hasCashElection = /\bcash\s+election\b/.test(hay);
+  const hasStockElection = /\bstock\s+election\b|\bshare\s+election\b/.test(hay);
+  const hasElectionMechanics = /\belection\s+(?:form|deadline|mechanics|procedure|period)\b|\bmake\s+an\s+election\b/.test(hay);
+  const hasProration = /\bprorat(?:ion|e|ed)\b/.test(hay);
+  if ((hasCashElection && hasStockElection) || ((hasCashElection || hasStockElection) && (hasElectionMechanics || hasProration))) {
+    return 'MIXED_ELECTION';
+  }
+  return null;
+}
+
 /* ══════════════════════════════════════════════════════════════════════════
  * BLOCK 2a — Term-cell hover quote (REGRESSION target).
  * The Term (first, sticky) cell of every provision-table row hovers to the
@@ -368,6 +398,38 @@ export function buildBringdownTierLines(tiers, nameBySec) {
       || /\ball\s+other\s+(?:reps|representations)\b/i.test(covered);
     return { group, std: bringdownStandardHeadline(tier), general };
   });
+}
+
+export function splitBringdownCoveredPills(group) {
+  const text = String(group || '').trim();
+  if (!text) return [];
+  const marker = text.match(/^(.*?\bother than\b)\s+(.+)$/i);
+  if (marker) {
+    const head = marker[1].trim();
+    const tail = marker[2].trim();
+    return [head, ...splitBringdownCoveredPills(tail)];
+  }
+  const parts = [];
+  let cur = '';
+  let depth = 0;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (ch === '(') depth++;
+    if (ch === ')') depth = Math.max(0, depth - 1);
+    const commaBreak = depth === 0 && ch === ',';
+    const andBreak = depth === 0 && /^\s+and\s+/i.test(text.slice(i)) && !/\bthrough\s*$/i.test(cur);
+    if (commaBreak || andBreak) {
+      const clean = cur.trim();
+      if (clean) parts.push(clean);
+      if (andBreak) i += text.slice(i).match(/^\s+and\s+/i)[0].length - 1;
+      cur = '';
+      continue;
+    }
+    cur += ch;
+  }
+  const clean = cur.trim().replace(/^and\s+/i, '');
+  if (clean) parts.push(clean);
+  return parts.length ? parts : [text];
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
