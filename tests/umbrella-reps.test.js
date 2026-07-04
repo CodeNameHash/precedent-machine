@@ -115,6 +115,39 @@ test('an enumerated single rep (Material Contracts, untitled roman items) is NOT
   assert.equal(out[0]._umbrellaChild, undefined);
 });
 
+test('sibling gate (Skechers): a long titled-subclause rep inside an already-segmented article is NOT split', () => {
+  // Skechers-shaped: ~12 distinct per-topic REP-T sections (3.1–3.12), one of
+  // which (IP) is long and internally uses titled lettered sub-clauses. The
+  // umbrella pre-pass must NOT fire — the article is already segmented, and
+  // splitting shreds one rep into a row per letter (REP-T hit 53).
+  const siblings = Array.from({ length: 11 }, (_, i) => ({
+    provision_type: 'REP-T',
+    number: `3.${i + 1}`,
+    title: `Rep Topic ${i + 1}`,
+    startChar: i * 1000,
+    text: `SECTION 3.${i + 1}. Rep Topic ${i + 1}. The Company represents and warrants accordingly.`,
+  }));
+  const longIp = sec({ number: '3.16', title: 'Intellectual Property' });
+  const out = splitUmbrellaRepSections([...siblings, longIp]);
+  assert.equal(out.length, 12);
+  assert.ok(out.every((s) => !s._umbrellaChild && !s._umbrellaPreamble));
+  assert.ok(out.includes(longIp), 'long IP rep passes through untouched');
+});
+
+test('sibling gate does not block the true umbrella case (few REP sections)', () => {
+  // Old-style drafting: the whole reps article is ONE giant section (plus a
+  // couple of stubs). The split must still fire.
+  const stub = {
+    provision_type: 'REP-T',
+    number: '3.02',
+    title: 'Brokers',
+    startChar: 90000,
+    text: 'SECTION 3.02. Brokers. No broker is entitled to any fee from the Company.',
+  };
+  const out = splitUmbrellaRepSections([sec(), stub]);
+  assert.equal(out.filter((s) => s._umbrellaChild).length, 6);
+});
+
 test('non-REP sections are never touched', () => {
   const cov = { provision_type: 'COV', number: '5.01', startChar: 0, text: UMBRELLA_TEXT };
   const out = splitUmbrellaRepSections([cov]);
