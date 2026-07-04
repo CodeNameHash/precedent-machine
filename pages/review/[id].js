@@ -45,6 +45,7 @@ import {
   getCitableText,
   resolveEvidence,
   evidenceQuote,
+  evidenceHover,
   TOOLTIP_MAX,
   EVIDENCE_SLICE,
 } from '../../lib/citable';
@@ -89,6 +90,7 @@ import { NoOtherRepsFraudTable } from '../../components/review/NoOtherRepsFraudT
 import { DealNavContext, TermCell } from '../../components/review/TermCell';
 import { DocPopUnder } from '../../components/review/DocPopUnder';
 import { SecMeetingTable } from '../../components/review/SecMeetingTable';
+import { EmployeeBenefitsTable } from '../../components/review/EmployeeBenefitsTable';
 import {
   termCellHoverQuote,
   knowledgeQualifierDisplay,
@@ -1547,187 +1549,15 @@ function IocPreambleSection({ affirmative, generalExceptions, onEdit }) {
   );
 }
 
-/* ── Employee Benefits summary box (Bringdown-style). Shown above the COV
- *    Employee Benefits provisions on the Other Covenants page. Reads the
- *    standards the provision sets for each comp/benefit item (base salary,
- *    bonus, benefits, severance, LTI, …) and lists each populated row.
- *    Returns null when no relevant features are present so the box stays
- *    out of the way for other COV types. */
-const EMPLOYEE_BENEFITS_ROWS = [
-  { label: 'Base Salary',          itemCodes: ['BASE_SALARY'],
-    keys: ['baseSalaryStandard', 'baseSalary'],
-    periodKeys: ['baseSalaryPeriod', 'baseSalaryTimePeriod'] },
-  { label: 'Bonus',                itemCodes: ['TARGET_BONUS', 'ANNUAL_BONUS_PAID'],
-    keys: ['bonusStandard', 'targetBonusStandard'],
-    periodKeys: ['bonusPeriod', 'targetBonusPeriod', 'bonusTimePeriod'] },
-  { label: 'Benefits',             itemCodes: ['HEALTH_WELFARE', 'RETIREMENT', 'OTHER_BENEFITS'],
-    keys: ['benefitsStandard', 'healthWelfareStandard'],
-    periodKeys: ['benefitsPeriod', 'healthWelfarePeriod'] },
-  { label: 'Severance',            itemCodes: ['SEVERANCE'],
-    keys: ['severanceStandard'],
-    periodKeys: ['severancePeriod', 'severanceTimePeriod'] },
-  { label: 'Long-Term Incentive',  itemCodes: ['LONG_TERM_INCENTIVE', 'EQUITY_AWARDS'],
-    keys: ['ltiStandard', 'longTermIncentiveStandard'],
-    periodKeys: ['ltiPeriod', 'longTermIncentivePeriod'] },
-];
-
-// Format months/duration → friendly text. Numbers become "N months";
-// strings pass through. Used by the Time Period column to coerce
-// protectionPeriodMonths (number) into something readable.
-function formatBenefitsPeriod(v) {
-  if (v === null || v === undefined || v === '' || v === false) return null;
-  if (typeof v === 'number') {
-    return `${v} month${v === 1 ? '' : 's'}`;
-  }
-  if (typeof v === 'string') {
-    const t = v.trim();
-    return t || null;
-  }
-  if (isTaggedItem(v)) {
-    return v.label || v.text || v.code;
-  }
-  return String(v);
-}
-
-function isEmployeeBenefitsProvision(p) {
-  if (!p) return false;
-  const cat = String(p?.category || '').toLowerCase();
-  if (!cat) return false;
-  return /employee[^a-z]*benefits|benefits[^a-z]*continuation|employee\s+matters|continuing\s+employees/i.test(cat);
-}
-
-function buildEmployeeBenefitsSummary(covProvisions) {
-  const ebProvs = (covProvisions || []).filter(isEmployeeBenefitsProvision);
-  if (ebProvs.length === 0) return null;
-  const rows = [];
-  // Section-wide protection period — used as the fallback Time Period for
-  // every row when nothing more specific is set per item.
-  let fallbackPeriod = null;
-  for (const p of ebProvs) {
-    const f = getStructuredFeatures(p) || {};
-    fallbackPeriod = fallbackPeriod
-      || formatBenefitsPeriod(f.protectionPeriodMonths)
-      || formatBenefitsPeriod(f.protectionPeriod)
-      || formatBenefitsPeriod(f.employeeBenefitPeriod);
-    if (fallbackPeriod) break;
-  }
-
-  for (const spec of EMPLOYEE_BENEFITS_ROWS) {
-    let standardText = null;
-    let periodText = null;
-    let source = null;
-    for (const p of ebProvs) {
-      const f = getStructuredFeatures(p) || {};
-      // 1. Explicit per-key feature (most reliable when present).
-      for (const k of spec.keys) {
-        const v = f[k];
-        if (v === null || v === undefined || v === '' || v === false) continue;
-        if (isTaggedItem(v)) {
-          standardText = resolveTaggedLabel(k, v) || v.code;
-        } else {
-          standardText = String(v);
-        }
-        source = p;
-        break;
-      }
-      // Look for an explicit per-item period via well-known feature keys.
-      if (!periodText) {
-        for (const pk of (spec.periodKeys || [])) {
-          const v = f[pk];
-          const fmt = formatBenefitsPeriod(v);
-          if (fmt) { periodText = fmt; break; }
-        }
-      }
-      if (standardText && periodText) break;
-      // 2. compensationItems array (the canonical shape).
-      const items = Array.isArray(f.compensationItems) ? f.compensationItems : [];
-      for (const item of items) {
-        if (!item || typeof item !== 'object') continue;
-        const itemCode = String(item.item || item.code || '').toUpperCase();
-        if (!spec.itemCodes.includes(itemCode)) continue;
-        if (!standardText) {
-          const std = item.standard_label || item.standardLabel || item.standard_code || item.standardCode;
-          if (std) {
-            standardText = String(std);
-            source = p;
-          }
-        }
-        if (!periodText) {
-          const itemPeriod = formatBenefitsPeriod(
-            item.timePeriod || item.time_period || item.duration || item.period,
-          );
-          if (itemPeriod) periodText = itemPeriod;
-        }
-        if (standardText && periodText) break;
-      }
-      if (standardText && periodText) break;
-    }
-    if (standardText) {
-      rows.push({
-        label: spec.label,
-        value: standardText,
-        // Fall back to the section-wide protection period when nothing more
-        // specific is available, so each row still has a Time Period.
-        period: periodText || fallbackPeriod || null,
-        source,
-      });
-    }
-  }
-  if (rows.length === 0) return null;
-  return { rows, ebProvs };
-}
-
-function EmployeeBenefitsTreatmentTable({ summary, onSelectProvision }) {
-  if (!summary) return null;
-  const { rows } = summary;
-  return (
-    <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
-      <div className="px-3 py-2 bg-bg/60 border-b border-border">
-        <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
-          Employee Benefits Treatment
-        </p>
-      </div>
-      <div className="overflow-x-auto">
-        <table className="min-w-full text-xs font-ui">
-          <thead className="bg-bg/60 border-b border-border">
-            <tr>
-              <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider ${REVIEW_LABEL_COL_W}`}>Type</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Standard</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[160px]">Time Period</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
-            {rows.map((row, i) => (
-              <tr key={i} className="hover:bg-bg/40 transition-colors align-top">
-                <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">
-                  <TermCell provision={row.source} quote={row.source && row.source.full_text}>
-                    {row.label}
-                  </TermCell>
-                </td>
-                <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
-                  {row.source && onSelectProvision ? (
-                    <button
-                      type="button"
-                      onClick={() => onSelectProvision(row.source)}
-                      className="text-left text-ink hover:underline"
-                    >
-                      {row.value}
-                    </button>
-                  ) : (
-                    <span>{row.value}</span>
-                  )}
-                </td>
-                <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
-                  {row.period || <span className="text-inkFaint/70 italic">—</span>}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
+/* Employee Benefits now has its OWN dedicated section (FB3 missed item 1) —
+ * components/review/EmployeeBenefitsTable.js + lib/employee-benefits.js,
+ * registered as the synthetic '__EMPLOYEE_BENEFITS' page immediately before
+ * "Other Covenants" — see SIDEBAR_GROUPS in components/review/shared.js and
+ * the sentinel synthesis / render branch below. The block that used to live
+ * here (EMPLOYEE_BENEFITS_ROWS / buildEmployeeBenefitsSummary /
+ * EmployeeBenefitsTreatmentTable) was dead code — defined but never
+ * rendered anywhere on the Other Covenants page — and has been removed in
+ * favor of the new section. */
 
 /* ── IOC Affirmative Covenants table (Bringdown-style box)
  *    Shows one row per known affirmative-covenant sub-code in this IOC
@@ -2775,6 +2605,7 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
           <thead className="bg-bg/60 border-b border-border">
             <tr>
               <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Restriction</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Components</th>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">Threshold</th>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Exceptions</th>
             </tr>
@@ -2786,6 +2617,14 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
                 : null;
               const thrText = thresholdFor(p);
               const excCodes = exceptionPillsFor(p);
+              // FB3 missed item 2: deterministic cross-deal comparability tags
+              // (stampIocRestrictionComponents post-pass) — every canonical
+              // category this sub-clause's own text hits, so a bundled clause
+              // (e.g. indebtedness + guarantee of a third party's indebtedness)
+              // shows both tags rather than a single forced bucket.
+              const componentCodes = Array.isArray((getStructuredFeatures(p) || {}).restrictionComponents)
+                ? (getStructuredFeatures(p) || {}).restrictionComponents
+                : [];
               return (
                 <tr key={p.id} className="align-top hover:bg-bg/40">
                   <td className="px-3 py-2 text-ink font-medium">
@@ -2796,6 +2635,17 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
                         </span>
                       </HoverSource>
                     </TermCell>
+                  </td>
+                  <td className="px-3 py-2 text-ink">
+                    {componentCodes.length > 0 ? (
+                      <span className="inline-flex flex-wrap gap-1">
+                        {componentCodes.map((code) => (
+                          <Pill key={code} text={(IOC_CATEGORY_META[code] && IOC_CATEGORY_META[code].label) || code} quote={rowQuote} tone="neutral" highlight={null} />
+                        ))}
+                      </span>
+                    ) : (
+                      <span className="italic text-inkFaint/70">—</span>
+                    )}
                   </td>
                   <td className="px-3 py-2 text-ink">
                     <HoverSource quote={rowQuote} as="div">
@@ -5603,6 +5453,16 @@ function stripSectionCitations(text) {
     .trim();
 }
 
+// FB3 missed item 4: format a stored ISO date ("2026-03-21") as a readable
+// calendar date ("March 21, 2026"). Returns null for anything unparseable —
+// never falls back to a raw/garbled string.
+function formatIsoDateReadable(iso) {
+  if (typeof iso !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return null;
+  const d = new Date(`${iso}T00:00:00Z`);
+  if (Number.isNaN(d.getTime())) return null;
+  return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+}
+
 // Compose the "key terms" cell for a canonical right from its features.
 // `ctx` carries cross-row detail the per-right features don't have on their
 // own: outsideRows (folded-in Outside-Date/Extension detail) and voteStandard
@@ -5688,12 +5548,27 @@ function TermrRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
   // capable of satisfaction" only when the source says so. Never invented;
   // falls back to the raw stored fields when no phrasing is derivable.
   const extensionDetail = outsideProv ? buildOutsideDateExtensionDetail(of) : null;
+  // FB3 missed item 4: render the deterministic post-pass months fields
+  // (outsideDateMonthsPostSigning / extensionMonths — lib/rubric.js
+  // TERMR-OUTSIDE, computed by computeOutsideDateMonths off the deal's own
+  // signing + ISO dates) ONLY when they and their source ISO date are
+  // actually populated. Never invented.
+  const outsideMonthsPostSigning = typeof of.outsideDateMonthsPostSigning === 'number' ? of.outsideDateMonthsPostSigning : null;
+  const outsideDateReadable = formatIsoDateReadable(of.outsideDateISO);
+  const extensionMonths = typeof of.extensionMonths === 'number' ? of.extensionMonths : null;
+  const extensionRowBase = extensionDetail
+    ? { label: 'Extension', value: extensionDetail, raw: of.outsideDateExtension || of.extensionConditions }
+    : { label: 'Extension terms / who elects', value: u(of.outsideDateExtensionConditions) || u(of.extensionConditions), raw: of.outsideDateExtensionConditions || of.extensionConditions };
+  const extensionRow = (extensionRowBase.value && extensionMonths !== null)
+    ? { ...extensionRowBase, value: `${extensionRowBase.value} (+${extensionMonths} month${extensionMonths === 1 ? '' : 's'})` }
+    : extensionRowBase;
   const outsideRows = outsideProv ? [
     { label: 'Outside / End Date', value: u(of.outsideDate), raw: of.outsideDate },
     { label: 'Period from signing', value: u(of.outsideDateMonths), raw: of.outsideDateMonths },
-    extensionDetail
-      ? { label: 'Extension', value: extensionDetail, raw: of.outsideDateExtension || of.extensionConditions }
-      : { label: 'Extension terms / who elects', value: u(of.outsideDateExtensionConditions) || u(of.extensionConditions), raw: of.outsideDateExtensionConditions || of.extensionConditions },
+    (outsideDateReadable && outsideMonthsPostSigning !== null)
+      ? { label: 'Outside date', value: `${outsideDateReadable} (~${outsideMonthsPostSigning} month${outsideMonthsPostSigning === 1 ? '' : 's'} post-signing)`, raw: outsideMonthsPostSigning }
+      : null,
+    extensionRow,
   ].filter((r) => r && r.value !== null && r.value !== undefined && r.value !== '') : [];
 
   // Build the canonical rows. The Outside-Date row's "quote" prefers the
@@ -8096,7 +7971,12 @@ function GroupHeaderRow({ label }) {
 function DefaultFeatureRow({ label, provisions, keys }) {
   const showEvidence = useShowEvidence();
   const hit = keys && keys.length ? pickFirstNonEmpty(provisions, keys) : null;
-  const quote = hit ? evidenceQuote(hit.value, { provision: hit.provision }) : null;
+  // GD 11 repeat fix: the VALUE cell's popover renders the provision's full
+  // text with the supporting excerpt bolded (evidenceHover), rather than the
+  // bare excerpt with nothing to bold against. Click-to-source still jumps
+  // to the tight excerpt (hover.primaryQuote), not the padded context.
+  const hover = hit ? evidenceHover(hit.value, { provision: hit.provision }) : { quote: null, highlight: null, primaryQuote: null };
+  const quote = hover.primaryQuote;
   const clickable = !!(quote && showEvidence);
   return (
     <tr className="hover:bg-bg/40 transition-colors align-top">
@@ -8109,7 +7989,7 @@ function DefaultFeatureRow({ label, provisions, keys }) {
         className={`px-3 py-2 text-ink whitespace-pre-wrap break-words ${clickable ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
         onClick={clickable ? () => showEvidence(quote) : undefined}
       >
-        <HoverSource quote={quote} as="div">
+        <HoverSource quote={hover.quote} highlight={hover.highlight} as="div">
           {renderSummaryRowValue(hit, keys && keys[0])}
         </HoverSource>
       </td>
@@ -8179,8 +8059,8 @@ function renderDoInsuranceCapCell(provisions) {
   const inner = isCitableValue(raw) ? getCitableValue(raw) : raw;
   const str = typeof inner === 'string' ? inner : String(inner ?? '');
   const concise = deriveInsuranceCapConcise(str) || truncateAtWordBoundary(str, 80);
-  const quote = evidenceQuote(raw, { provision: hit.provision });
-  return <HoverSource quote={quote} as="div">{concise}</HoverSource>;
+  const hover = evidenceHover(raw, { provision: hit.provision });
+  return <HoverSource quote={hover.quote} highlight={hover.highlight} as="div">{concise}</HoverSource>;
 }
 
 // FB3 item 4(b): concise duration ("6 years") via the same unit-inference
@@ -8191,8 +8071,8 @@ function renderDoPeriodCell(provisions) {
   const raw = hit.value;
   const inner = isCitableValue(raw) ? getCitableValue(raw) : raw;
   const text = formatDurationWithUnits(inner, 'indemnificationPeriod') || String(inner);
-  const quote = evidenceQuote(raw, { provision: hit.provision });
-  return <HoverSource quote={quote} as="div">{text}</HoverSource>;
+  const hover = evidenceHover(raw, { provision: hit.provision });
+  return <HoverSource quote={hover.quote} highlight={hover.highlight} as="div">{text}</HoverSource>;
 }
 
 // FB3 item 4(e): the Parent/Company public-statements carveouts collapse into
@@ -8414,7 +8294,11 @@ const MISC_CONSUMED_KEY_GROUPS = [
   ['feeExpenseAllocation'],
   ['specificPerformance'], ['bondSecurityRequiredForSP'], ['specificPerformanceLimitations'],
   ['specificPerformanceMutual'], ['companyRightToForceClose'], ['companyForceCloseConditions'],
-  ['willfulBreachDefinition'], ['willfulBreachRequiresActualKnowledge'], ['willfulBreachCoversOmissions'],
+  // Note: willfulBreachDefinition itself moved to NoOtherRepsFraudTable (FB3
+  // missed item 5, single home) and is deliberately NOT consumed here. The
+  // other three willful-breach flags stay on this Misc table (see rows below)
+  // — they're distinct data the new Abry/Willful-Breach row doesn't show.
+  ['willfulBreachRequiresActualKnowledge'], ['willfulBreachCoversOmissions'],
   ['willfulBreachLimitedToMaterial'],
   ['parentAssignmentRight'], ['parentAssignmentConditions'], ['companyConsentForAssignment'],
   ['assignmentExceptions'], ['assignmentRestrictions'],
@@ -8455,7 +8339,9 @@ function MiscSummaryTable({ provisions, allProvisions, onSelectProvision }) {
               <DefaultFeatureRow label="Company Force-Close Conditions" provisions={provisions} keys={['companyForceCloseConditions']} />
 
               <GroupHeaderRow label="Willful Breach" />
-              <DefaultFeatureRow label="Willful Breach Definition" provisions={provisions} keys={['willfulBreachDefinition']} />
+              {/* Willful Breach Definition moved to the No Other Reps / Fraud /
+                  Willful Breach (Abry) table (FB3 missed item 5) — single home,
+                  removed here to avoid showing the same definition twice. */}
               <DefaultFeatureRow label="Willful Breach Requires Actual Knowledge" provisions={provisions} keys={['willfulBreachRequiresActualKnowledge']} />
               <DefaultFeatureRow label="Willful Breach Covers Omissions" provisions={provisions} keys={['willfulBreachCoversOmissions']} />
               <DefaultFeatureRow label="Willful Breach Limited to Material" provisions={provisions} keys={['willfulBreachLimitedToMaterial']} />
@@ -8692,7 +8578,7 @@ function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, a
     }
     return (
       <div className="space-y-3">
-        <NosolFourTables provisions={provisions} />
+        <NosolFourTables provisions={provisions} allProvisions={allProvisions} />
       </div>
     );
   }
@@ -10212,6 +10098,11 @@ export default function ReviewPage() {
     if ((provisions || []).length > 0) {
       groups['__ABRY'] = [{ id: '__abry_sentinel__', type: '__ABRY' }];
       groups['__SEC_MEETING'] = [{ id: '__sec_meeting_sentinel__', type: '__SEC_MEETING' }];
+      // FB3 missed item 1: Employee Benefits — same always-synthesized
+      // single-item sentinel as SEC Filing / Meeting above, so the sidebar
+      // entry never disappears; EmployeeBenefitsTable derives its own
+      // collapsed/"no data extracted" state from the deal's full provisions.
+      groups['__EMPLOYEE_BENEFITS'] = [{ id: '__employee_benefits_sentinel__', type: '__EMPLOYEE_BENEFITS' }];
     }
     // IOC party promotion: the classifier currently tags BOTH target-side
     // and (rare) buyer-side IOC sections as bare 'IOC' (no party suffix). So
@@ -10292,6 +10183,11 @@ export default function ReviewPage() {
     if ((provisions || []).length > 0) {
       groups['__ABRY'] = [{ id: '__abry_sentinel__', type: '__ABRY' }];
       groups['__SEC_MEETING'] = [{ id: '__sec_meeting_sentinel__', type: '__SEC_MEETING' }];
+      // FB3 missed item 1: Employee Benefits — same always-synthesized
+      // single-item sentinel as SEC Filing / Meeting above, so the sidebar
+      // entry never disappears; EmployeeBenefitsTable derives its own
+      // collapsed/"no data extracted" state from the deal's full provisions.
+      groups['__EMPLOYEE_BENEFITS'] = [{ id: '__employee_benefits_sentinel__', type: '__EMPLOYEE_BENEFITS' }];
     }
     // IOC party promotion + section synthesis (mirrors REPs):
     //   • When activeFilter touches IOC-T (single child click OR parent-group
@@ -11300,6 +11196,9 @@ export default function ReviewPage() {
                               {type === '__SEC_MEETING' && (
                                 <SecMeetingTable allProvisions={provisions} />
                               )}
+                              {type === '__EMPLOYEE_BENEFITS' && (
+                                <EmployeeBenefitsTable allProvisions={provisions} />
+                              )}
                               {(type === 'MAE-DEF' || type === 'MAE-DEF-P') && (
                                 <MaeDefinitionSummary
                                   allProvisions={provisions}
@@ -11313,7 +11212,7 @@ export default function ReviewPage() {
                                   onSelectProvision={handleEditProvision}
                                 />
                               )}
-                              {type !== 'DEF' && type !== 'MAE-DEF' && type !== 'MAE-DEF-P' && type !== '__MATERIAL_CONTRACTS' && type !== '__ABRY' && type !== '__SEC_MEETING' && (() => {
+                              {type !== 'DEF' && type !== 'MAE-DEF' && type !== 'MAE-DEF-P' && type !== '__MATERIAL_CONTRACTS' && type !== '__ABRY' && type !== '__SEC_MEETING' && type !== '__EMPLOYEE_BENEFITS' && (() => {
                                 const restAugmented = (type === 'REP-T' || type === 'REP-B')
                                   ? augmentRepsWithExpectedPlaceholders(rest, type, provisions)
                                   : rest;

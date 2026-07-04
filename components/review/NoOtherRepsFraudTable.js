@@ -2,7 +2,7 @@ import { deriveAbrySummary } from '../../lib/abry';
 import { useShowEvidence, HoverSource, Pill, REVIEW_LABEL_COL_W } from './shared';
 import { TermCell } from './TermCell';
 
-/* ─── No Other Reps / Fraud (Abry) summary ──
+/* ─── No Other Reps / Fraud / Willful Breach (Abry) summary ──
  *  THE FOUR QUESTIONS (one row each, per side) + a fraud line — the entire
  *  point of this section (see lib/abry.js header for the full mapping):
  *    Q1  Buyer's non-reliance representation
@@ -65,6 +65,30 @@ function FraudCell({ fraud }) {
   );
 }
 
+// FB3 missed item 5: single home for Willful Breach — this row replaces the
+// old "Willful Breach" group that used to live on the Misc/Boilerplate table
+// (removed there; see pages/review/[id].js MiscSummaryTable). Sourced from
+// ANY provision carrying `willfulBreachDefinition` (DEF or MISC — see
+// lib/abry.js firstWillfulBreachDefinition), verbatim hover, "Not defined"
+// when the deal has no such clause.
+function WillfulBreachCell({ willfulBreach }) {
+  const showEvidence = useShowEvidence();
+  if (!willfulBreach || willfulBreach.status !== 'defined') {
+    return <span className="italic text-inkFaint">Not defined</span>;
+  }
+  const quote = willfulBreach.quote;
+  return (
+    <HoverSource quote={quote} as="div">
+      <span
+        className={`whitespace-pre-wrap break-words ${showEvidence ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
+        onClick={showEvidence ? () => showEvidence(quote) : undefined}
+      >
+        {quote}
+      </span>
+    </HoverSource>
+  );
+}
+
 const ROWS = [
   {
     key: 'q1',
@@ -99,7 +123,7 @@ export function NoOtherRepsFraudTable({ allProvisions }) {
     <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
       <div className="px-3 py-2 bg-bg/60 border-b border-border">
         <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
-          No Other Reps / Fraud (Abry)
+          No Other Reps / Fraud / Willful Breach (Abry)
         </p>
       </div>
       <div className="overflow-x-auto">
@@ -138,6 +162,19 @@ export function NoOtherRepsFraudTable({ allProvisions }) {
               </td>
               <td className="px-3 py-2 text-ink">
                 <FraudCell fraud={summary.fraud} />
+              </td>
+            </tr>
+            <tr className="align-top bg-bg/30">
+              <td className="px-3 py-2 whitespace-normal break-words">
+                <TermCell provision={summary.willfulBreach && summary.willfulBreach.provision} quote={summary.willfulBreach && summary.willfulBreach.quote}>
+                  <span className="text-ink font-medium">Willful Breach</span>
+                </TermCell>
+                <div className="text-[10px] text-inkFaint mt-0.5">
+                  Is "willful breach" defined, and what is the core standard?
+                </div>
+              </td>
+              <td className="px-3 py-2 text-ink">
+                <WillfulBreachCell willfulBreach={summary.willfulBreach} />
               </td>
             </tr>
           </tbody>

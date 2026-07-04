@@ -1026,6 +1026,90 @@ export function noticePeriodParts(raw) {
   return parts.length > 0 ? parts : null;
 }
 
+// ── FB3 missed item 6: NOSOL definition chains ──────────────────────────
+// The "Key Definitions" table's feature-key rows never resolve real data for
+// Superior [Company] Proposal / Company Takeover Proposal — those concepts
+// live on the deal's own DEF provisions (canonicalTerm/definitionText), not
+// on bespoke NOSOL feature keys. This pulls the deal's ACTUAL defined-term
+// variants (whatever the drafters called them) straight from the DEF
+// provisions, and — one level deep only, never fabricated — nests a chained
+// reference as an indented child row when the parent definition's own text
+// literally names another defined term that itself has its own DEF
+// provision in this deal.
+const SUPERIOR_PROPOSAL_RE = /superior\s+(?:company\s+)?proposal/i;
+const TAKEOVER_PROPOSAL_RE = /(?:company\s+)?(?:takeover|acquisition)\s+proposal/i;
+
+function defProvisionFeatures(p) {
+  return nosolFeatures(p);
+}
+
+function findDefProvisionByTermRegex(allProvisions, re, excludeId) {
+  for (const p of (allProvisions || [])) {
+    if (!p || p.type !== 'DEF' || p.id === excludeId) continue;
+    const f = defProvisionFeatures(p);
+    const term = typeof f.canonicalTerm === 'string' ? f.canonicalTerm : '';
+    if (term && re.test(term)) return p;
+  }
+  return null;
+}
+
+function buildNosolDefRow(provision) {
+  if (!provision) return null;
+  const f = defProvisionFeatures(provision);
+  const term = typeof f.canonicalTerm === 'string' && f.canonicalTerm.trim() ? f.canonicalTerm.trim() : null;
+  const text = typeof f.definitionText === 'string' && f.definitionText.trim() ? f.definitionText.trim() : null;
+  if (!term) return null;
+  return { term, label: term, text, provision, crossReferences: Array.isArray(f.crossReferences) ? f.crossReferences : [] };
+}
+
+// One level deep only: does `row`'s own definitionText literally contain one
+// of its OWN crossReferences verbatim (case-insensitive), AND does that
+// referenced term have its own DEF provision in this deal? If so, that DEF
+// provision becomes the indented child. Never invents a chain — both the
+// textual reference and the target provision must be real.
+function chainedChildRowFor(row, allProvisions) {
+  if (!row || !row.text) return null;
+  const haystack = row.text.toLowerCase();
+  for (const ref of row.crossReferences) {
+    if (typeof ref !== 'string' || !ref.trim()) continue;
+    const refTrimmed = ref.trim();
+    if (row.term && refTrimmed.toLowerCase() === row.term.toLowerCase()) continue;
+    if (!haystack.includes(refTrimmed.toLowerCase())) continue;
+    const match = (allProvisions || []).find((p) => {
+      if (!p || p.type !== 'DEF' || (row.provision && p.id === row.provision.id)) return false;
+      const f = defProvisionFeatures(p);
+      return typeof f.canonicalTerm === 'string' && f.canonicalTerm.trim().toLowerCase() === refTrimmed.toLowerCase();
+    });
+    if (match) return buildNosolDefRow(match);
+  }
+  return null;
+}
+
+/* Returns an array of { term, label, text, provision, quote, child } rows —
+ * `child` (same shape, or null) is the one-level-deep chained definition.
+ * Sourced entirely from this deal's own DEF provisions; returns [] when
+ * neither target definition exists (never fabricated). */
+export function nosolDefinitionChainRows(allProvisions) {
+  const rows = [];
+  const superior = findDefProvisionByTermRegex(allProvisions, SUPERIOR_PROPOSAL_RE);
+  const superiorRow = buildNosolDefRow(superior);
+  if (superiorRow) {
+    superiorRow.quote = superiorRow.text;
+    superiorRow.child = chainedChildRowFor(superiorRow, allProvisions);
+    if (superiorRow.child) superiorRow.child.quote = superiorRow.child.text;
+    rows.push(superiorRow);
+  }
+  const takeover = findDefProvisionByTermRegex(allProvisions, TAKEOVER_PROPOSAL_RE, superior && superior.id);
+  const takeoverRow = buildNosolDefRow(takeover);
+  if (takeoverRow) {
+    takeoverRow.quote = takeoverRow.text;
+    takeoverRow.child = chainedChildRowFor(takeoverRow, allProvisions);
+    if (takeoverRow.child) takeoverRow.child.quote = takeoverRow.child.text;
+    rows.push(takeoverRow);
+  }
+  return rows;
+}
+
 export function pickNosolFeature(provisions, keys) {
   for (const p of (provisions || [])) {
     const f = nosolFeatures(p);

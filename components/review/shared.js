@@ -582,6 +582,7 @@ const TYPE_HEX = {
   'REP-T':  '#3F8A6A',
   'REP-B':  '#3F8A6A',
   '__SEC_MEETING': '#6E8AA8',
+  '__EMPLOYEE_BENEFITS': '#6E8AA8',
   COV:      '#6E8AA8',
   MAE:      '#8B5B3A',
   'MAE-T':  '#8B5B3A',
@@ -623,7 +624,7 @@ export const SIDEBAR_GROUPS = [
   // '__ABRY' synthesis in pages/review/[id].js) so an absent clause reads
   // as an explicit "Not present in this agreement" / "Silent on fraud"
   // rather than a missing section.
-  { label: 'No Other Reps / Fraud (Abry)', types: ['__ABRY'] },
+  { label: 'No Other Reps / Fraud / Willful Breach (Abry)', types: ['__ABRY'] },
   { label: 'Material Adverse Effect', children: [
     { label: 'Company Material Adverse Effect', type: 'MAE-DEF' },
     { label: 'Parent Material Adverse Effect', type: 'MAE-DEF-P' },
@@ -642,6 +643,10 @@ export const SIDEBAR_GROUPS = [
   { label: 'Conditions to Closing', types: ['COND-M', 'COND-B', 'COND-S', 'COND'], singleType: 'COND-M' },
   { label: 'Termination Rights', types: ['TERMR-M', 'TERMR-B', 'TERMR-T', 'TERMR'], singleType: 'TERMR-M' },
   { label: 'Termination Fees', types: ['TERMF'] },
+  // FB3 missed item 1: Employee Benefits — new dedicated synthetic section,
+  // registered exactly like SEC Filing / Meeting Requirements above, placed
+  // immediately BEFORE Other Covenants per owner's spec.
+  { label: 'Employee Benefits', types: ['__EMPLOYEE_BENEFITS'] },
   { label: 'Other Covenants', types: ['COV'] },
   { label: 'Miscellaneous / Boilerplate', types: ['MISC'] },
   // FB3 chrome: Definitions moved to the bottom of the page (after Misc) —
@@ -653,7 +658,7 @@ export const SIDEBAR_GROUPS = [
 /* Synthetic, single-page sidebar types: the child label itself IS the page
  * (a curated summary), so the sidebar should NOT show a count or a nested
  * per-provision sub-list under it. */
-export const SYNTHETIC_SINGLE_PAGE_TYPES = new Set(['MAE-DEF', 'MAE-DEF-P', '__MATERIAL_CONTRACTS', '__ABRY', '__SEC_MEETING']);
+export const SYNTHETIC_SINGLE_PAGE_TYPES = new Set(['MAE-DEF', 'MAE-DEF-P', '__MATERIAL_CONTRACTS', '__ABRY', '__SEC_MEETING', '__EMPLOYEE_BENEFITS']);
 
 export function getProvisionStatus(p) {
   if (p._status === 'approved') return 'approved';
@@ -674,8 +679,9 @@ const TYPE_LABELS = {
   '__MATERIAL_CONTRACTS': 'Material Contracts',
   // Synthetic UI-only type — the No Other Reps / Fraud (Abry) four-question
   // summary; see the SIDEBAR_GROUPS comment above for what feeds it.
-  '__ABRY': 'No Other Reps / Fraud (Abry)',
+  '__ABRY': 'No Other Reps / Fraud / Willful Breach (Abry)',
   '__SEC_MEETING': 'SEC Filing / Meeting Requirements',
+  '__EMPLOYEE_BENEFITS': 'Employee Benefits',
   'IOC-T': 'Interim Operating Covenants (Target)',
   'IOC-B': 'Interim Operating Covenants (Buyer)',
   'IOC': 'Interim Operating Covenants',
