@@ -77,6 +77,12 @@ export function buildEquityRows(equityProvisions) {
     const f = getStructuredFeatures(p) || {};
     const insts = Array.isArray(f.outstandingInstruments) ? f.outstandingInstruments : [];
     const treatments = Array.isArray(f.instrumentTreatments) ? f.instrumentTreatments : [];
+    // Audit fix batch item 5: track which instrument codes THIS provision
+    // already has a structured row for, so the raw-text fallback below can
+    // AUGMENT with any additional instruments mentioned in full_text instead
+    // of being skipped outright whenever any structured instrument exists.
+    const structuredCodes = new Set();
+    let hasStructuredRow = false;
 
     // (a) instrumentType already populated (typical post-expander case).
     // Use THIS row's own treatment — prefer the singular `equityAwardTreatment`
@@ -86,7 +92,9 @@ export function buildEquityRows(equityProvisions) {
     // be mis-labeled "Partially Accelerated" when the array also contained
     // a different instrument's treatment.
     if (isTaggedItem(f.instrumentType)) {
+      hasStructuredRow = true;
       const myCode = String(f.instrumentType.code || '').toUpperCase();
+      structuredCodes.add(myCode);
       let myTreatment = null;
       if (isTaggedItem(f.equityAwardTreatment)) {
         myTreatment = f.equityAwardTreatment;
@@ -117,14 +125,13 @@ export function buildEquityRows(equityProvisions) {
         cashOut: f.cashOutAmount ?? f.optionSpread ?? null,
         cutoff: f.cutoffDate ?? null,
       });
-      continue;
-    }
-
-    // (b) parallel arrays of instruments + treatments — each row picks its
-    // OWN treatment AND vesting by index (the parallel-array contract).
-    if (insts.length > 0) {
+    } else if (insts.length > 0) {
+      // (b) parallel arrays of instruments + treatments — each row picks its
+      // OWN treatment AND vesting by index (the parallel-array contract).
+      hasStructuredRow = true;
       const vestings = Array.isArray(f.instrumentVesting) ? f.instrumentVesting : [];
       insts.forEach((inst, i) => {
+        if (isTaggedItem(inst)) structuredCodes.add(String(inst.code || '').toUpperCase());
         rows.push({
           key: `${p.id}-${i}`,
           provision: p,
@@ -136,13 +143,20 @@ export function buildEquityRows(equityProvisions) {
           cutoff: f.cutoffDate ?? null,
         });
       });
-      continue;
     }
 
-    // (c) no structured equity data — scan raw text for instrument names.
+    // (c) Audit fix batch item 5: scan raw text for instrument names NOT
+    // already covered by a structured row above (e.g. Metsera's RSA, named
+    // in full_text §2.03(ii), alongside a structured PSU/RSU instrumentType
+    // that used to short-circuit this whole branch via `continue`). This is
+    // now an AUGMENT step, not a mutually-exclusive fallback — it only runs
+    // for instruments this provision hasn't already produced a row for, so a
+    // structured instrument never gets a duplicate text-derived row.
     const text = String(p?.full_text || '');
-    const found = text ? EQUITY_TEXT_PATTERNS.filter(({ re }) => re.test(text)) : [];
-    if (found.length === 0) {
+    const found = text
+      ? EQUITY_TEXT_PATTERNS.filter(({ re, code }) => re.test(text) && !structuredCodes.has(code))
+      : [];
+    if (!hasStructuredRow && found.length === 0) {
       rows.push({
         key: `${p.id}-unknown`,
         provision: p,
@@ -153,7 +167,7 @@ export function buildEquityRows(equityProvisions) {
         cashOut: f.cashOutAmount ?? f.optionSpread ?? null,
         cutoff: f.cutoffDate ?? null,
       });
-    } else {
+    } else if (found.length > 0) {
       const seenCodes = new Set();
       found.forEach(({ code, label }, i) => {
         if (seenCodes.has(code)) return;

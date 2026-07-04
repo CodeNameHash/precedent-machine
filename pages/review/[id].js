@@ -93,6 +93,10 @@ import {
   buildBringdownTierLines,
   resolveCertifiedConditions,
   buildOutsideDateExtensionDetail,
+  buildAocNoMaeLimbText,
+  buildAocCitedCovenantsText,
+  selectIocGeneralExceptionsItems,
+  buildIocRowDisplayLabels,
 } from '../../components/review/table-logic';
 import { ConsidTable } from '../../components/review/ConsiderationTables';
 import { Sidebar } from '../../components/review/Sidebar';
@@ -107,6 +111,17 @@ import { EditPanel } from '../../components/review/EditPanel';
 function typeTint(code, pct) {
   return `color-mix(in srgb, ${typeHex(code)} ${pct}%, transparent)`;
 }
+
+// Audit fix batch item 9: the per-row bullet dot used by the Conditions and
+// Termination Rights tables is meant to read like the Reps tables' row dot
+// ("same visual as the reps rows" — see TermrRebuiltSummary/CondSingleTable
+// below), but both were wired to their OWN section-identity color
+// (typeHex('TERMR') / typeHex(sec.family)) instead of the Reps green. Pull
+// the exact green from the REP-T/REP-B type-color entry so it can't drift
+// from whatever the reps rows use — this constant is ONLY for those two
+// tables' row dots; every other typeHex(...) call (section headers, ref
+// chips, sidebar) keeps its own section-identity color untouched.
+const REP_ROW_DOT_GREEN = typeHex('REP-T');
 
 
 
@@ -2322,26 +2337,39 @@ function IocGeneralExceptionsTableSingle({ iocProvisions, generalExceptionsProv,
     //    ALL of its permittedExceptions (it IS the preamble — no scope filter
     //    needed). Plus accept any explicit scope=preamble item from any other
     //    IOC provision (legacy multi-preamble extractions).
-    const items = [];
-    for (const p of iocProvisions || []) {
-      if (p === negativeProv) continue;
-      const f = getStructuredFeatures(p) || {};
-      const list = Array.isArray(f.permittedExceptions) ? f.permittedExceptions : [];
-      const isPreambleProv = p === positiveProv;
-      for (const item of list) {
-        const scope = item && typeof item === 'object' ? item.scope : null;
-        if (isPreambleProv || scope === 'preamble') items.push({ item, source: p });
-      }
-      // generalExceptions list-tagged feature on the preamble carries the
-      // section-wide carve-outs as a dedicated list (some extractions split
-      // them out from permittedExceptions).
-      if (isPreambleProv) {
-        const ge = Array.isArray(f.generalExceptions) ? f.generalExceptions : null;
-        if (ge) {
-          for (const item of ge) items.push({ item, source: p });
-        }
-      }
-    }
+    //    Audit fix batch item 3: ALSO accept the consolidated General
+    //    Exceptions row itself, matched by code/category via
+    //    isIocGeneralExceptions() — NOT by party-typed equality with
+    //    positiveProv. Some deals (Metsera) split their IOC preamble into
+    //    party-suffixed sub-clause rows (typed IOC-T/IOC-B) plus a separate
+    //    bare-IOC "General Exceptions" preamble row; isPreambleProvision()
+    //    only matches category "Preamble" / "General/Preamble", so that bare
+    //    row never became `positiveProv` and its structured
+    //    permittedExceptions were skipped entirely — falling through to the
+    //    raw full_text regex-splitter in step 2 below, which produced a raw
+    //    mid-sentence blob instead of the 4 structured pills already in the
+    //    DB. Matching on isIocGeneralExceptions(p) picks up that row
+    //    regardless of its type/party suffix.
+    // Build the per-provision plain-data rows the pure selector operates on
+    // (table-logic.js's selectIocGeneralExceptionsItems), which decides both
+    // (a) which raw items count as structured exceptions and (b) whether the
+    // raw-text fallback below must be skipped — `source` is opaque to that
+    // function, so the provision itself passes straight through onto each
+    // returned item for hover/click-to-source attribution.
+    const sourceRows = (iocProvisions || [])
+      .filter((p) => p !== negativeProv)
+      .map((p) => {
+        const f = getStructuredFeatures(p) || {};
+        return {
+          isNegativePreamble: false,
+          isPositivePreamble: p === positiveProv,
+          isGeneralExceptionsRow: p === generalExceptionsProv || isIocGeneralExceptions(p),
+          permittedExceptions: Array.isArray(f.permittedExceptions) ? f.permittedExceptions : [],
+          generalExceptions: Array.isArray(f.generalExceptions) ? f.generalExceptions : [],
+          source: p,
+        };
+      });
+    const { items, skipTextFallback } = selectIocGeneralExceptionsItems(sourceRows);
     for (const { item, source } of items) {
       if (isTaggedItem(item)) {
         const label = resolveTaggedLabel('permittedExceptions', item) || item.code;
@@ -2362,8 +2390,12 @@ function IocGeneralExceptionsTableSingle({ iocProvisions, generalExceptionsProv,
       }
     }
 
-    // 2. Consolidated General Exceptions provision's split text items.
-    if (generalExceptionsProv) {
+    // 2. Consolidated General Exceptions provision's split text items — ONLY
+    //    as a fallback when step 1 found no structured permittedExceptions /
+    //    generalExceptions on that row. Otherwise this raw full_text regex
+    //    splitter would duplicate the clean structured pills with a raw
+    //    mid-sentence blob (the audit-fix-batch item 3 symptom).
+    if (generalExceptionsProv && !skipTextFallback) {
       const text = generalExceptionsProv.full_text || generalExceptionsProv.text || '';
       const split = text ? splitGeneralExceptionsItems(text) : [];
       for (const t of split) {
@@ -2379,7 +2411,7 @@ function IocGeneralExceptionsTableSingle({ iocProvisions, generalExceptionsProv,
     }
 
     return out;
-  }, [iocProvisions, generalExceptionsProv, negativeProv]);
+  }, [iocProvisions, generalExceptionsProv, negativeProv, positiveProv]);
 
   // Negative-side exception list comes from the IOC-NEGATIVE-PREAMBLE
   // provision's negativePreambleExceptions feature (rubric: list-tagged).
@@ -2694,6 +2726,27 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
   });
   const sorted = sortByAgreementOrder(canonicalSorted, iocSecOf);
 
+  // Audit fix batch item 4 — IOC limb naming. Several deals (Metsera) reuse
+  // the SAME raw p.category text ("Mergers, Acquisitions, Dispositions") for
+  // every sub-clause under a combined article header, so 3 negative-covenant
+  // rows read as identical labels with no way to tell which limb is which —
+  // even though each row already carries its OWN resolved canonical code
+  // (resolveIocCode, used above for sorting). Build the display label from
+  // that code's canonical taxonomy label instead of the raw shared category
+  // text; if rows still collide after that (e.g. two genuinely-INDEBTEDNESS
+  // rows), append the row's own section-number pill as a final
+  // disambiguator. Never touches stored data — display only.
+  const displayLabelByKey = buildIocRowDisplayLabels(sorted.map((p) => {
+    const code = resolveIocCode(p);
+    return {
+      key: p.id,
+      canonicalLabel: code && IOC_CATEGORY_META[code] && IOC_CATEGORY_META[code].label,
+      fallbackLabel: p.category,
+      sectionNumber: (getStructuredFeatures(p) || {}).sectionNumber,
+    };
+  }));
+  const displayLabelFor = (p) => displayLabelByKey.get(p.id) || p.category || 'General';
+
   // Per-row cell builders — split the old single "Details" composition into
   // dedicated Threshold and Exceptions columns per user request.
   // Threshold: dollarThreshold + the few related qualifier fields (settlement
@@ -2847,7 +2900,7 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
                         onClick={() => onSelectProvision && onSelectProvision(p)}
                         className="text-left text-accent hover:underline font-medium"
                       >
-                        {p.category || 'General'}
+                        {displayLabelFor(p)}
                       </button>
                     </HoverSource>
                   </td>
@@ -3110,6 +3163,31 @@ const HIDDEN_TABLE_COLUMNS = {
     'erisaTitleIVPlans', 'erisa_title_iv_plans',
     'erisaMultiemployer', 'erisa_multiemployer',
     'erisaParachutePayments', 'erisa_parachute_payments',
+    // Audit fix batch item 1 (reps-table raw-column leak): MetsFB2 batch-2
+    // fields (AoC "no MAE" limb / cited-covenant cites, No-Other-Reps /
+    // Non-Reliance, knowledge scope) live on the FEATURES['REP-T'] schema for
+    // getFeatureSchema's ordering/specificFeatures purposes, but must never
+    // surface as raw per-row columns — they render inside the "Specific
+    // Features" cell (REP_SPECIFIC_FEATURE_SPECS) or the Knowledge Qualifier
+    // hover instead. sectionNumber hidden defensively (not currently on this
+    // schema, but used for row sorting — see bySection above — so it must
+    // never leak as a column if it's ever added to the rubric schema).
+    'aocNoMaePresent', 'aoc_no_mae_present',
+    'aocNoMaeSinceDate', 'aoc_no_mae_since_date',
+    'aocOrdinaryCourseLimb', 'aoc_ordinary_course_limb',
+    'aocCitedCovenantSections', 'aoc_cited_covenant_sections',
+    'aocCitedCovenantNames', 'aoc_cited_covenant_names',
+    'noOtherRepsPresent', 'no_other_reps_present',
+    'noOtherRepsParty', 'no_other_reps_party',
+    'nonRelianceClause', 'non_reliance_clause',
+    'extraContractualClaimsWaived', 'extra_contractual_claims_waived',
+    'fraudCarveout', 'fraud_carveout',
+    'knowledgeScope', 'knowledge_scope',
+    // knowledgeScopeType landed on this same schema via #71 (merged into this
+    // branch after the item-1 audit) — same leak pattern, same fix: hide it
+    // defensively rather than let it reappear as a raw column.
+    'knowledgeScopeType', 'knowledge_scope_type',
+    'sectionNumber', 'section_number',
   ],
   'REP-B': ['mainConcept', 'crossReferences', 'linkedBringDownStandard', 'solvencyRepIncluded', 'solvency_rep_included', 'financingRepIncluded', 'financing_rep_included', 'materialityScrape', 'materiality_scrape', 'bringDownStandard', 'bring_down_standard', 'scheduleReference', 'schedule_reference', 'sufficientFundsRepPresent', 'sufficient_funds_rep_present', 'sufficientFundsRepDetails', 'sufficient_funds_rep_details', 'solvencyRepPresent', 'solvency_rep_present', 'solvencyRepDetails', 'solvency_rep_details', 'antiRelianceRepPresent', 'anti_reliance_rep_present', 'antiRelianceRepText', 'anti_reliance_rep_text', 'parentLitigationRepPresent', 'parent_litigation_rep_present', 'parentOwnershipRepPresent', 'parent_ownership_rep_present', 'parentBrokersRepPresent', 'parent_brokers_rep_present',
     // Fully-removed REP fields (per P2 cleanup) — hidden from per-row table:
@@ -3155,6 +3233,24 @@ const HIDDEN_TABLE_COLUMNS = {
     'pendingLitigation', 'pending_litigation',
     'governmentInvestigations', 'government_investigations',
     'outstandingOrders', 'outstanding_orders',
+    // Audit fix batch item 1: same MetsFB2 batch-2 fields as REP-T above —
+    // Specific Features cell / Knowledge Qualifier hover only, never a column.
+    'aocNoMaePresent', 'aoc_no_mae_present',
+    'aocNoMaeSinceDate', 'aoc_no_mae_since_date',
+    'aocOrdinaryCourseLimb', 'aoc_ordinary_course_limb',
+    'aocCitedCovenantSections', 'aoc_cited_covenant_sections',
+    'aocCitedCovenantNames', 'aoc_cited_covenant_names',
+    'noOtherRepsPresent', 'no_other_reps_present',
+    'noOtherRepsParty', 'no_other_reps_party',
+    'nonRelianceClause', 'non_reliance_clause',
+    'extraContractualClaimsWaived', 'extra_contractual_claims_waived',
+    'fraudCarveout', 'fraud_carveout',
+    'knowledgeScope', 'knowledge_scope',
+    // knowledgeScopeType landed on this same schema via #71 (merged into this
+    // branch after the item-1 audit) — same leak pattern, same fix: hide it
+    // defensively rather than let it reappear as a raw column.
+    'knowledgeScopeType', 'knowledge_scope_type',
+    'sectionNumber', 'section_number',
     // Fields that ONLY surface inside REP_SPECIFIC_FEATURE_SPECS (per
     // matching rep category). Hide as columns so they don't appear on
     // every rep row.
@@ -3274,6 +3370,15 @@ const REP_SPECIFIC_FEATURE_SPECS = [
       { label: 'Start date', keys: ['absenceOfChangesStartDate'] },
       { label: 'Type', keys: ['absenceOfChangesType'] },
       { label: 'Exceptions', keys: ['absenceOfChangesExceptions'], alwaysRender: true, emptyAs: 'None' },
+      // Audit fix batch item 1: the "no MAE since [date]" limb and the
+      // ordinary-course limb's cited-covenant cross-references were leaking
+      // as raw columns (aocNoMaePresent, aocCitedCovenantNames, etc — see
+      // HIDDEN_TABLE_COLUMNS above). They belong HERE, inside the AoC rep's
+      // Specific Features cell, with custom renderers (not the generic
+      // renderFeatureCell, which stringifies aocCitedCovenantNames's
+      // {section,name} objects as "[object Object]").
+      { label: 'No MAE limb', keys: ['aocNoMaePresent'], render: renderAocNoMaeLimb },
+      { label: 'Cited covenants', keys: ['aocCitedCovenantNames'], render: renderAocCitedCovenants },
     ],
   },
   {
@@ -3305,6 +3410,34 @@ const REP_SPECIFIC_FEATURE_SPECS = [
     ],
   },
 ];
+
+// Audit fix batch item 1 — AoC "No MAE since [date]" term treatment. Renders
+// as prose ("No MAE since January 1, 2025"), never a raw boolean/date column.
+function renderAocNoMaeLimb(raw, features) {
+  const inner = isCitableValue(raw) ? getCitableValue(raw) : raw;
+  const dateRaw = features ? features.aocNoMaeSinceDate : null;
+  const dateInner = isCitableValue(dateRaw) ? getCitableValue(dateRaw) : dateRaw;
+  const text = buildAocNoMaeLimbText(inner, dateInner);
+  if (!text) return null;
+  const quote =
+    (isCitableValue(dateRaw) && getCitableText(dateRaw)) ||
+    (isCitableValue(raw) && getCitableText(raw)) ||
+    null;
+  return quote ? <HoverSource quote={quote}>{text}</HoverSource> : <span>{text}</span>;
+}
+
+// Audit fix batch item 1 — AoC ordinary-course limb's cited covenant sections,
+// resolved deterministically (post-pass) to { section, name } pairs. Renders
+// as "5.01(a) Dividends and Distributions, 5.01(d) M&A/Dispositions, …" — a
+// null name falls back to the section alone. Never the generic array
+// stringifier (which would print "[object Object]" for these objects).
+function renderAocCitedCovenants(raw) {
+  const inner = isCitableValue(raw) ? getCitableValue(raw) : raw;
+  const text = buildAocCitedCovenantsText(inner);
+  if (!text) return null;
+  const quote = isCitableValue(raw) ? getCitableText(raw) : null;
+  return quote ? <HoverSource quote={quote}>{text}</HoverSource> : <span>{text}</span>;
+}
 
 function findRepSpec(provision) {
   const cat = String(provision?.category || '');
@@ -3339,7 +3472,15 @@ function renderRepSpecificFeaturesCell(provision) {
         if (!empty) { captured = { key, raw }; break; }
       }
       if (captured) {
-        rows.push({ label: row.label, key: captured.key, raw: captured.raw, hoverQuote: !!row.hoverQuote });
+        if (row.render) {
+          // Custom row renderer (e.g. AoC No-MAE limb / cited covenants) —
+          // compute eagerly and skip the row entirely if it has nothing to
+          // show, rather than rendering an empty label with a blank value.
+          const node = row.render(captured.raw, features);
+          if (node) rows.push({ label: row.label, node });
+        } else {
+          rows.push({ label: row.label, key: captured.key, raw: captured.raw, hoverQuote: !!row.hoverQuote });
+        }
       } else if (row.alwaysRender) {
         // Surface the row as the canonical empty marker (e.g. "None") so
         // cross-deal comparison has a stable, present row.
@@ -3363,11 +3504,11 @@ function renderRepSpecificFeaturesCell(provision) {
           </span>
         </div>
       )}
-      {rows.map(({ label, key, raw, emptyAs, hoverQuote }) => (
+      {rows.map(({ label, key, raw, emptyAs, hoverQuote, node }) => (
         <div key={label} className="flex flex-col">
           <dt className="text-[10px] text-inkFaint uppercase tracking-wider">{label}</dt>
           <dd className="text-[11px]">
-            {emptyAs ? (
+            {node !== undefined ? node : emptyAs ? (
               <span className="italic text-inkFaint">{emptyAs}</span>
             ) : hoverQuote ? (
               renderRepCellWithHoverQuote(key, raw)
@@ -4999,6 +5140,19 @@ function parseTailTriggerClauses(clauses) {
   return out;
 }
 
+// Audit fix batch item 6: truncate at the nearest word boundary at-or-before
+// `max`, never mid-word ("…Company Takeover Propo…"). Callers should also
+// wrap the result in a HoverSource carrying the untruncated text so the full
+// clause is always reachable, not just guessable from the cut-off fragment.
+function truncateAtWordBoundary(text, max) {
+  const s = String(text || '');
+  if (s.length <= max) return s;
+  const slice = s.slice(0, max);
+  const lastSpace = slice.lastIndexOf(' ');
+  const safe = lastSpace > max * 0.6 ? slice.slice(0, lastSpace) : slice;
+  return `${safe.trim()}…`;
+}
+
 /* TermfTailMechanics — only renders when tailFeeWindowMonths is populated. */
 function TermfTailMechanics({ provisions, allProvisions }) {
   const showEvidence = useShowEvidence();
@@ -5150,7 +5304,9 @@ function TermfTailMechanics({ provisions, allProvisions }) {
                 return (
                   <ul className="space-y-0.5">
                     {activating.map((c, i) => (
-                      <li key={i}>{c.length > 120 ? `${c.slice(0, 119)}…` : c}</li>
+                      <li key={i}>
+                        <HoverSource quote={c}>{truncateAtWordBoundary(c, 120)}</HoverSource>
+                      </li>
                     ))}
                   </ul>
                 );
@@ -5599,11 +5755,22 @@ function TermrRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
                       width: 7,
                       height: 7,
                       borderRadius: 2,
-                      background: typeHex('TERMR'),
+                      background: REP_ROW_DOT_GREEN,
                       flexShrink: 0,
                     }}
                   />
                 );
+                // Audit fix batch item 10: absent termination rights used to
+                // render as their own greyed inline placeholder row per
+                // right. Per the ticket, this family should get the
+                // SAME (a)(c)(d) treatment as Conditions — canonical present
+                // rights render as full rows, and canonical rights with no
+                // matching provision collapse into ONE strikethrough
+                // "not included" pill strip at the bottom of the family
+                // block (see CondSingleTable's absentRows / "Conditions not
+                // included" strip above — identical pattern, reused here).
+                const presentFamRows = famRows.filter((row) => row.prov);
+                const absentFamRows = famRows.filter((row) => !row.prov);
                 return (
                   <Fragment key={fam}>
                     {/* fb2 block 3c: clearer subtitle styling for the family
@@ -5613,36 +5780,41 @@ function TermrRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
                         {TERMR_FAMILY_LABELS[fam]}
                       </td>
                     </tr>
-                    {famRows.map((row) => {
-                      if (!row.prov) {
-                        return (
-                          <tr key={row.spec.key} className="align-top">
-                            <td className="px-3 py-2 text-inkFaint">
-                              <span className="inline-flex items-center gap-2">
-                                {termrDot}
+                    {presentFamRows.map((row) => (
+                      <tr key={row.spec.key} className="align-top hover:bg-bg/40">
+                        <Cell quote={row.quote} className="font-medium">
+                          <span className="inline-flex items-center gap-2">
+                            {termrDot}
+                            {row.spec.label}
+                          </span>
+                        </Cell>
+                        <Cell quote={row.quote}>
+                          {row.terms.length > 0
+                            ? <ul className="space-y-0.5">{row.terms.map((t, i) => <li key={i}>{t}</li>)}</ul>
+                            : <span className="italic text-inkFaint">—</span>}
+                        </Cell>
+                      </tr>
+                    ))}
+                    {absentFamRows.length > 0 && (
+                      <tr className="bg-bg/20">
+                        <td colSpan={2} className="px-3 py-2">
+                          <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider mb-1">
+                            Termination rights not included
+                          </p>
+                          <span className="flex flex-wrap gap-1.5">
+                            {absentFamRows.map((row) => (
+                              <span
+                                key={row.spec.key}
+                                className="inline-flex items-center text-[10px] font-ui px-1.5 py-0.5 rounded border bg-bg/40 text-inkFaint/70 border-border line-through"
+                                title={CONDITION_ABSENT_COPY}
+                              >
                                 {row.spec.label}
                               </span>
-                            </td>
-                            <td className="px-3 py-2 italic text-inkFaint">Not present in this agreement</td>
-                          </tr>
-                        );
-                      }
-                      return (
-                        <tr key={row.spec.key} className="align-top hover:bg-bg/40">
-                          <Cell quote={row.quote} className="font-medium">
-                            <span className="inline-flex items-center gap-2">
-                              {termrDot}
-                              {row.spec.label}
-                            </span>
-                          </Cell>
-                          <Cell quote={row.quote}>
-                            {row.terms.length > 0
-                              ? <ul className="space-y-0.5">{row.terms.map((t, i) => <li key={i}>{t}</li>)}</ul>
-                              : <span className="italic text-inkFaint">—</span>}
-                          </Cell>
-                        </tr>
-                      );
-                    })}
+                            ))}
+                          </span>
+                        </td>
+                      </tr>
+                    )}
                   </Fragment>
                 );
               })}
@@ -6261,14 +6433,23 @@ function EmptyCellDash({ provision }) {
  *     when an explicit whole-rep scope was extracted. When no scope info
  *     exists (the common case today — the extractor emits a bare boolean),
  *     render just the standard pill; scope is never invented. */
-function KnowledgeQualifierCell({ rawValue, provision }) {
+function KnowledgeQualifierCell({ rawValue, provision, knowledgeScope }) {
   const display = knowledgeQualifierDisplay(rawValue);
   if (!display) return <EmptyCellDash provision={provision} />;
   const label = (display.code
     && resolveTaggedLabel('knowledgeQualifier', { code: display.code, label: display.label }))
     || display.label
     || 'Knowledge-qualified';
-  const quote = display.quote || termCellHoverQuote(provision);
+  // Audit fix batch item 1: knowledgeScope (the "Knowledge" DEF provision's
+  // verbatim definition, stamped deterministically post-pass) must never be
+  // a per-row column — it belongs here, folded into the qualifier's hover so
+  // a lawyer can see what "knowledge" means for this rep without leaving the
+  // table.
+  const scopeText = typeof knowledgeScope === 'string' ? knowledgeScope.trim() : '';
+  const baseQuote = display.quote || termCellHoverQuote(provision);
+  const quote = scopeText
+    ? (baseQuote ? `${baseQuote}\n\n— Knowledge definition —\n${scopeText}` : `— Knowledge definition —\n${scopeText}`)
+    : baseQuote;
   return (
     <span className="inline-flex items-center gap-1 flex-wrap text-[11px] text-inkMid">
       <Pill text={label} quote={quote} tone="standard" />
@@ -6539,8 +6720,34 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
     }
     return null;
   })();
-  const disclosureStandard = extractCrossQualificationSentence(disclosureFullText);
-  const disclosureQuote = extractQuote(disclosureRaw) || disclosureFullText;
+  let disclosureStandard = extractCrossQualificationSentence(disclosureFullText);
+  // Audit fix batch item 7: disclosureRaw is whichever scheduleReference-ish
+  // value pickKey finds FIRST across every rep, in provision order — for a
+  // fresh deal that's routinely the Reps Preamble's OWN scheduleReference,
+  // which is just a short label ("Company Disclosure Letter"), not the
+  // preamble's cross-qualification sentence. That sentence lives in the
+  // preamble PROVISION's full_text, not its scheduleReference feature — e.g.
+  // Metsera's Article III preamble reads "...the disclosure in any section
+  // shall be deemed to qualify or apply to other sections and subsections in
+  // this Article III to the extent that it is reasonably apparent on its
+  // face that such disclosure also qualifies or applies to such other
+  // sections and subsections...". The existing pattern already matches this
+  // real phrasing ("reasonably apparent") — it just never saw the text,
+  // because disclosureFullText was the short label instead of the preamble's
+  // full text. Fall back to scanning the preamble provisions' verbatim text
+  // (already computed above as preamblePros) before giving up.
+  let disclosureStandardSourceText = disclosureFullText;
+  if (!disclosureStandard) {
+    for (const p of preamblePros) {
+      const found = extractCrossQualificationSentence(p.full_text);
+      if (found) {
+        disclosureStandard = found;
+        disclosureStandardSourceText = p.full_text;
+        break;
+      }
+    }
+  }
+  const disclosureQuote = extractQuote(disclosureRaw) || disclosureStandardSourceText;
 
   // Audit block 2: this table is called for BOTH REP-T and REP-B. The
   // Buyer/Parent side routinely has no SEC-filings exception or disclosure-
@@ -6548,7 +6755,20 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
   // when EVERY row would be empty, collapse the whole table to a single
   // muted line instead of a header framing two "Not present" rows. Never
   // "Not present" — extraction may simply have missed it.
+  //
+  // Audit fix batch item 2: this box is a SUPPLEMENT that sits ABOVE the
+  // main per-rep table (see caller comment: "render FIRST so they anchor
+  // the top of the page"), summarizing SEC-filings-exception / disclosure-
+  // schedule data — it is NOT a statement about the reps section as a
+  // whole. When there IS underlying rep data for this party (the normal
+  // case — Buyer reps essentially never carry a SEC-filings exception),
+  // rendering "None extracted for this agreement." here reads as if
+  // nothing was extracted for the ENTIRE Buyer reps section, directly
+  // above a fully-populated table that contradicts it. Render nothing in
+  // that case; only show the placeholder when this party truly has no
+  // reps at all (so the claim is actually true).
   if (!secAnyPresent && disclosureRaw === null) {
+    if (Array.isArray(provisions) && provisions.length > 0) return null;
     return (
       <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
         <div className="px-3 py-3 text-xs font-ui italic text-inkFaint">
@@ -7265,7 +7485,7 @@ function CondSingleTable({ allProvisions, onSelectProvision }) {
                     width: 7,
                     height: 7,
                     borderRadius: 2,
-                    background: typeHex(sec.family),
+                    background: REP_ROW_DOT_GREEN,
                     flexShrink: 0,
                   }}
                 />
@@ -7941,7 +8161,7 @@ function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, a
                     if (k === 'knowledgeQualifier' || k === 'knowledgeQualifiers') {
                       return (
                         <td key={k} className="px-3 py-2 align-top max-w-[320px] text-ink">
-                          <KnowledgeQualifierCell rawValue={raw} provision={p} />
+                          <KnowledgeQualifierCell rawValue={raw} provision={p} knowledgeScope={features.knowledgeScope} />
                         </td>
                       );
                     }
@@ -8597,7 +8817,7 @@ function collapseTypeForExtraction(t) {
   return t;
 }
 
-function ExtractionStatusPill({ deal, onRefetch }) {
+function ExtractionStatusPill({ deal, provisions, onRefetch }) {
   const [expanded, setExpanded] = useState(false);
   const [busyType, setBusyType] = useState(null);
   const [reclassifying, setReclassifying] = useState(false);
@@ -8605,6 +8825,39 @@ function ExtractionStatusPill({ deal, onRefetch }) {
   const md = deal?.metadata || {};
   const breakdown = md.classify_breakdown || null;
   const extractStatus = md.extract_status || {};
+  // Audit fix batch item 8: a re-classify (POST /api/ingest/classify) or a
+  // reprocess run wipes deal.metadata.extract_status to {} unconditionally
+  // (see pages/api/ingest/classify.js / scripts/reprocess.js), expecting the
+  // per-type /api/ingest/extract-type flow to repopulate it. Deals whose
+  // structured features were instead patched in place by a targeted script
+  // (e.g. the MetsFB2 batch-2 field additions) never go through that
+  // per-type marker, so extract_status stays permanently empty even though
+  // every provision is fully extracted — the banner then reads
+  // "0/N TYPES COMPLETE" on a deal with nothing left to extract. When
+  // extract_status carries no data at all, derive completeness from the
+  // provisions themselves instead of trusting an absent status map: a type
+  // counts as done if every provision classified into it already has a
+  // non-empty structured features object.
+  const hasExtractStatusData = Object.keys(extractStatus).length > 0;
+  const derivedDoneTypes = useMemo(() => {
+    if (hasExtractStatusData || !Array.isArray(provisions) || provisions.length === 0) return new Set();
+    const byType = {};
+    for (const p of provisions) {
+      const c = collapseTypeForExtraction(p.type);
+      if (!c) continue;
+      (byType[c] || (byType[c] = [])).push(p);
+    }
+    const done = new Set();
+    for (const [t, provs] of Object.entries(byType)) {
+      if (provs.length > 0 && provs.every((p) => {
+        const f = getStructuredFeatures(p);
+        return !!f && Object.keys(f).length > 0;
+      })) {
+        done.add(t);
+      }
+    }
+    return done;
+  }, [provisions, hasExtractStatusData]);
 
   // Build the per-type-group list from the classify breakdown.
   const typeGroups = useMemo(() => {
@@ -8634,8 +8887,12 @@ function ExtractionStatusPill({ deal, onRefetch }) {
   }
 
   const total = typeGroups.length;
-  const done = typeGroups.filter(([t]) => extractStatus[t]?.status === 'done').length;
-  const failed = typeGroups.filter(([t]) => extractStatus[t]?.status === 'failed').length;
+  const done = typeGroups.filter(([t]) => (
+    hasExtractStatusData ? extractStatus[t]?.status === 'done' : derivedDoneTypes.has(t)
+  )).length;
+  const failed = hasExtractStatusData
+    ? typeGroups.filter(([t]) => extractStatus[t]?.status === 'failed').length
+    : 0;
   const allDone = total > 0 && done === total;
 
   const extractOne = async (type) => {
@@ -8742,7 +8999,12 @@ function ExtractionStatusPill({ deal, onRefetch }) {
         >
           {typeGroups.map(([type, sectionCount]) => {
             const st = extractStatus[type] || {};
-            const status = busyType === type ? 'extracting' : st.status || 'pending';
+            // Audit fix batch item 8: keep the per-row badge consistent with
+            // the header summary above — when extract_status is empty
+            // deal-wide, fall back to the same provisions-derived signal
+            // rather than showing "pending" on a type that's actually done.
+            const derivedDone = !hasExtractStatusData && derivedDoneTypes.has(type);
+            const status = busyType === type ? 'extracting' : (st.status || (derivedDone ? 'done' : 'pending'));
             return (
               <div
                 key={type}
@@ -9803,6 +10065,7 @@ export default function ReviewPage() {
               {isEdit && (
                 <ExtractionStatusPill
                   deal={deal}
+                  provisions={provisions}
                   onRefetch={async () => {
                     await refetchDeal?.();
                     await refetchProvs?.();
