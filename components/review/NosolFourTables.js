@@ -11,6 +11,7 @@ import {
   canonicalizeNosolPills,
   goShopDisplay,
   NOSOL_COR_LIFECYCLE_LABELS,
+  nosolDefinitionChainRows,
   nosolDefinitionInitialState,
   noticePeriodParts,
   pickNosolFeature,
@@ -62,7 +63,11 @@ const NOSOL_CHANGE_OF_REC = [
   { label: 'Material improvement standard',            keys: ['superiorProposalTest'], kind: 'superiorProposalLimbs' },
 ];
 const NOSOL_KEY_DEFINITIONS = [
-  { label: 'Company Takeover Proposal / Acquisition Proposal', keys: ['acquisitionTransactionDefinition', 'acquisitionTransactionPctThreshold'] },
+  // FB3 missed item 6: the real "Superior [Company] Proposal" / "Company
+  // Takeover Proposal" definitions are sourced from the deal's own DEF
+  // provisions (see nosolDefinitionChainRows / extraRows below) — the old
+  // feature-key row here never resolved real data (acquisitionTransaction*
+  // isn't a field any provision actually carries).
   { label: 'Superior Proposal — threshold %',          keys: ['superiorProposalThresholdPct', 'superiorProposalPercentage'] },
   { label: 'Superior Proposal — test',                 keys: ['superiorProposalTest'] },
   { label: 'Superior Proposal — determiner',           keys: ['superiorProposalDeterminer'] },
@@ -129,7 +134,47 @@ function renderNosolCustomValue(row, hit, provisions) {
   return null;
 }
 
-function NosolMiniTable({ title, spec, provisions, headerNote, collapsibleDefinitions = false }) {
+// FB3 missed item 6: a DEF-provision-sourced definition row (optionally with
+// one indented, one-level-deep chained child row) — flattened into a plain
+// array so it slots into the same <tbody> as the feature-key spec rows
+// without a Fragment. `indent` styles the child row's label cell.
+function flattenNosolExtraRows(extraRows) {
+  const out = [];
+  for (const row of extraRows || []) {
+    if (!row) continue;
+    out.push({ ...row, indent: 0 });
+    if (row.child) out.push({ ...row.child, indent: 1, term: `${row.term}__child` });
+  }
+  return out;
+}
+
+function NosolDefRow({ row }) {
+  const showEvidence = useShowEvidence();
+  const quote = row.quote || null;
+  const clickable = !!(quote && showEvidence);
+  return (
+    <tr key={row.term} className={`hover:bg-bg/40 transition-colors ${row.indent ? 'bg-bg/20' : ''}`}>
+      <td className="px-3 py-2 align-top whitespace-normal break-words">
+        <TermCell provision={row.provision} quote={quote}>
+          <span className={`text-ink font-medium ${row.indent ? 'pl-4 inline-flex items-baseline gap-1' : ''}`}>
+            {row.indent ? <span className="text-inkFaint">↳</span> : null}
+            {row.label}
+          </span>
+        </TermCell>
+      </td>
+      <td
+        className={`px-3 py-2 align-top text-ink whitespace-pre-wrap break-words ${clickable ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
+        onClick={clickable ? () => showEvidence(quote) : undefined}
+      >
+        <HoverSource quote={quote} as="div">
+          {row.text || <span className="italic text-inkFaint">Not present in this agreement</span>}
+        </HoverSource>
+      </td>
+    </tr>
+  );
+}
+
+function NosolMiniTable({ title, spec, provisions, headerNote, collapsibleDefinitions = false, extraRows = null }) {
   const showEvidence = useShowEvidence();
   const [collapsedDefs, setCollapsedDefs] = useState(() => (
     collapsibleDefinitions ? nosolDefinitionInitialState(spec.map((row) => row.label)) : new Set()
@@ -164,6 +209,9 @@ function NosolMiniTable({ title, spec, provisions, headerNote, collapsibleDefini
                 </td>
               </tr>
             )}
+            {flattenNosolExtraRows(extraRows).map((row) => (
+              <NosolDefRow key={row.term} row={row} />
+            ))}
             {rows.map((row) => {
               const collapsed = collapsibleDefinitions && collapsedDefs.has(row.label);
               const customValue = collapsed ? null : renderNosolCustomValue(row, row.hit, provisions);
@@ -253,7 +301,11 @@ function NosolGoShopTop({ provisions }) {
   );
 }
 
-export function NosolFourTables({ provisions }) {
+export function NosolFourTables({ provisions, allProvisions }) {
+  // FB3 missed item 6: Superior Company Proposal / Company Takeover Proposal
+  // (+ one-level-deep chained reference) sourced from the deal's own DEF
+  // provisions — needs the full deal, not just the NOSOL-filtered pool.
+  const defChainRows = nosolDefinitionChainRows(allProvisions || provisions);
   return (
     <div className="space-y-3">
       <NosolGoShopTop provisions={provisions} />
@@ -273,6 +325,7 @@ export function NosolFourTables({ provisions }) {
         spec={NOSOL_KEY_DEFINITIONS}
         provisions={provisions}
         collapsibleDefinitions
+        extraRows={defChainRows}
       />
       <NosolMiniTable
         title="Other Restrictions"
