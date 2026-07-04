@@ -69,7 +69,7 @@ function formatValueShort(n) {
  * value computation, filtering, and sorting. ───────────────────────────── */
 export const COLUMNS = [
   { key: 'date', label: 'Date', kind: 'date' },
-  { key: 'buyer', label: 'Buyer', kind: 'text', get: (r) => r.buyer },
+  { key: 'buyer', label: 'Buyer', kind: 'text', get: (r) => r.ultimateParent || r.buyer },
   { key: 'seller', label: 'Seller', kind: 'text', get: (r) => r.seller },
   { key: 'value', label: 'Value', kind: 'value' },
   { key: 'consideration', label: 'Consideration', kind: 'text', get: (r) => r.consideration },
@@ -122,7 +122,7 @@ export function applyFilters(rows, filters, queryText) {
   const q = (queryText || '').trim().toLowerCase();
   return rows.filter((r) => {
     if (q) {
-      const hay = [r.buyer, r.seller, ...r.buyerFirms, ...r.sellerFirms, ...r.buyerLawyers, ...r.sellerLawyers];
+      const hay = [r.ultimateParent || r.buyer, r.seller, ...r.buyerFirms, ...r.sellerFirms, ...r.buyerLawyers, ...r.sellerLawyers];
       if (!hay.some((s) => s && s.toLowerCase().includes(q))) return false;
     }
     for (const key of SELECTABLE_KEYS) {
@@ -535,6 +535,7 @@ function DealRow({ row, selected, onToggle, onOpen }) {
   const { isEdit } = useViewMode();
   const date = fmtDate(row.date);
   const value = fmtValue(row.value);
+  const buyer = row.ultimateParent || row.buyer;
   return (
     <tr
       onClick={onOpen}
@@ -554,7 +555,7 @@ function DealRow({ row, selected, onToggle, onOpen }) {
         />
       </td>
       <td className="px-3 py-2 align-top whitespace-nowrap text-inkMid">{date || <Dash />}</td>
-      <td className="px-3 py-2 align-top font-semibold text-ink max-w-[240px]">{row.buyer || <Dash />}</td>
+      <td className="px-3 py-2 align-top font-semibold text-ink max-w-[240px]">{buyer || <Dash />}</td>
       <td className="px-3 py-2 align-top font-semibold text-ink max-w-[240px]">{row.seller || <Dash />}</td>
       <td className="px-3 py-2 align-top whitespace-nowrap text-ink">{value || <Dash />}</td>
       <td className="px-3 py-2 align-top whitespace-nowrap text-inkMid">{row.consideration || <Dash />}</td>

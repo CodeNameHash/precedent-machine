@@ -310,7 +310,7 @@ export function EquityAwardTable({ rows, onSelectProvision, onAddProvision, opti
     <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
       <div className="px-3 py-2 bg-lime-50 border-b border-border">
         <p className="text-[10px] font-ui font-medium text-lime-900 uppercase tracking-wider">
-          Equity Treatment
+          Employee equity treatment
         </p>
       </div>
       <div className="overflow-x-auto">
@@ -470,15 +470,11 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
       return f.perShareAmount || f.considerationType;
     }) || otherProvisions[0] || null;
   }
-  const commonStockRow = buildCommonStockRow(convertProv);
-  if (commonStockRow) {
-    const alreadyHasCommonStock = equityRows.some((r) =>
-      isTaggedItem(r.instrument) && r.instrument.code === 'COMMON_STOCK'
-    );
-    if (!alreadyHasCommonStock) {
-      equityRows.unshift(commonStockRow);
-    }
-  }
+  const employeeEquityRows = equityRows.filter((r) => {
+    const code = isTaggedItem(r.instrument) ? String(r.instrument.code || '').toUpperCase() : String(r.instrument || '').toUpperCase();
+    const label = isTaggedItem(r.instrument) ? String(r.instrument.label || '') : String(r.instrument || '');
+    return code !== 'COMMON_STOCK' && !/^common\s+stock$/i.test(label.trim());
+  });
 
   // Build the headline price + consideration-type hero block. Scan all
   // provisions for the first non-empty perShareAmount + considerationType.
@@ -864,10 +860,10 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
         </div>
       )}
 
-      {equityRows.length > 0 && (
+      {employeeEquityRows.length > 0 && (
         <>
           <EquityAwardTable
-            rows={equityRows}
+            rows={employeeEquityRows}
             onSelectProvision={onSelectProvision}
             onAddProvision={onAddProvision}
             optionsCvrEarnInLabel={optionsCvrEarnInLabel}
@@ -875,7 +871,7 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
           />
           <NotIncludedStrip
             noun="equity instruments"
-            items={absentEquityInstrumentLabels(equityRows)}
+            items={absentEquityInstrumentLabels(employeeEquityRows)}
           />
         </>
       )}
@@ -887,7 +883,7 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
       {(() => {
         const summarizedIds = new Set();
         if (convertProv) summarizedIds.add(convertProv.id);
-        for (const r of equityRows) {
+        for (const r of employeeEquityRows) {
           if (r.provision && r.provision.id) summarizedIds.add(r.provision.id);
         }
         const leftover = otherProvisions.filter((p) => !summarizedIds.has(p.id));

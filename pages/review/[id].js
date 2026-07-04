@@ -49,6 +49,7 @@ import {
 } from '../../lib/citable';
 import { normalizeTermfFeatures } from '../../lib/termf';
 import { getFeaturesForType, PROVISION_TYPES } from '../../lib/rubric';
+import { getDisplayAcquirer, getDisplayTarget } from '../../lib/deal-display';
 import { resolveEditFields } from '../../lib/edit-schema';
 import { isCanonicalCode } from '../../lib/expected-sets';
 import { AddSectionItem } from '../../components/review/AddSectionItem';
@@ -100,6 +101,7 @@ import {
   buildOutsideDateExtensionDetail,
   buildAocNoMaeLimbText,
   buildAocCitedCovenantsText,
+  deriveHeadlineConsiderationType,
   selectIocGeneralExceptionsItems,
   buildIocRowDisplayLabels,
   dedupeIocExceptionEntries,
@@ -118,6 +120,7 @@ import {
   displayTypeForProvision,
   compactDoValue,
   numericDollarOnly,
+  splitBringdownCoveredPills,
 } from '../../components/review/table-logic';
 import { ConsidTable } from '../../components/review/ConsiderationTables';
 import { Sidebar } from '../../components/review/Sidebar';
@@ -1730,6 +1733,12 @@ function EmployeeBenefitsTreatmentTable({ summary, onSelectProvision }) {
  *    Business Organization, etc. Falls back to category match if no codes
  *    are present. Returns null when nothing matches. */
 const IOC_AFFIRMATIVE_BUCKETS = [
+  {
+    code: 'IOC-EXISTENCE',
+    name: 'Maintain Corporate Existence',
+    catRe: /maintain.*(?:existence|good standing)|corporate\s+existence/i,
+    limbRe: /maintain\s+(?:its\s+)?existence|good\s+standing/i,
+  },
   {
     code: 'IOC-ORDINARY',
     name: 'Ordinary Course Obligation',
@@ -3666,6 +3675,11 @@ function StructTable({ provisions, onSelectProvision }) {
     return 'other';
   };
 
+  const demoteStructToOtherList = (p) => {
+    const cat = String(p?.category || '').toLowerCase();
+    return /tax\s*treatment|intended\s+tax|subsequent\s+actions?|further\s+actions?/.test(cat);
+  };
+
   // Render a tagged value as just the canonical label (the "button" form) —
   // strip the verbatim text companion so we don't show both label and
   // duplicate prose. Used for mergerForm.
@@ -3714,6 +3728,37 @@ function StructTable({ provisions, onSelectProvision }) {
     const m = String(text).match(/(?:DGCL|Delaware\s+General\s+Corporation\s+Law)[^.]{0,40}?(?:§|Section)\s*(\d+(?:\([a-z]\))?)/i);
     if (m) return `DGCL § ${m[1]}`;
     return null;
+  };
+
+  const shortClosingTiming = (raw) => {
+    const unwrap = (v) => {
+      if (v === null || v === undefined) return '';
+      let cur = v;
+      if (isCitableValue(cur)) cur = getCitableValue(cur);
+      if (cur === null || cur === undefined) return '';
+      return typeof cur === 'object'
+        ? String(cur.text || cur.label || cur.value || '').trim()
+        : String(cur).trim();
+    };
+    const text = unwrap(raw);
+    if (!text) return raw;
+    const dayMatch = text.match(/\b(?:the\s+)?(?:second|2nd|two|2)\s+Business\s+Days?\b/i);
+    const base = dayMatch
+      ? '2 Business Days after satisfaction of conditions'
+      : text.replace(/^no\s+later\s+than\s+/i, '').replace(/\s+/g, ' ').trim();
+    if (!/marketing\s+period/i.test(text)) return base;
+    const parentNotice = text.match(/Business Day during the Marketing Period specified by Parent[^,;.]*/i);
+    const afterEnd = text.match(/(?:third|3rd)\s+Business\s+Day\s+after\s+the\s+Marketing\s+Period\s+ends/i);
+    const altParts = [
+      parentNotice ? parentNotice[0].replace(/\s+/g, ' ') : 'Parent-specified Business Day during Marketing Period',
+      afterEnd ? afterEnd[0].replace(/\s+/g, ' ') : '3rd Business Day after Marketing Period ends',
+    ];
+    return (
+      <div className="space-y-0.5">
+        <div>{base}</div>
+        <div className="text-inkMid">If marketing period not ended: earlier of (i) {altParts[0]}; or (ii) {altParts[1]}</div>
+      </div>
+    );
   };
 
   // Block 6: shorten verbose governance rows to one-line shorthand — the
@@ -3775,7 +3820,7 @@ function StructTable({ provisions, onSelectProvision }) {
     return null;
   };
 
-  const rows = provisions.map((p) => {
+  const allRows = provisions.map((p) => {
     const features = getStructuredFeatures(p) || {};
     const kind = classifyStruct(p);
     let displayCategory = p.category || 'General';
@@ -3809,7 +3854,7 @@ function StructTable({ provisions, onSelectProvision }) {
       const closingTimingStr = unwrap(features.closingTiming);
       cells = [
         { key: 'closingLocation', raw: features.closingLocation },
-        { key: 'closingTiming', raw: features.closingTiming },
+        { key: 'closingTiming', raw: features.closingTiming, render: shortClosingTiming },
       ];
       if (
         explicitDeadlineStr !== ''
@@ -3842,6 +3887,10 @@ function StructTable({ provisions, onSelectProvision }) {
     }
     return { p, kind, cells, displayCategory };
   });
+  const otherListProvisions = allRows
+    .filter(({ p }) => demoteStructToOtherList(p))
+    .map(({ p }) => p);
+  const rows = allRows.filter(({ p }) => !demoteStructToOtherList(p));
 
   // Force canonical ordering.
   rows.sort((a, b) => {
@@ -4006,6 +4055,26 @@ function StructTable({ provisions, onSelectProvision }) {
         </tbody>
       </table>
     </div>
+    {otherListProvisions.length > 0 && (
+      <div className="bg-bg/40 border border-border rounded-lg px-3 py-2">
+        <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider mb-1.5">
+          Other provisions in this section
+        </p>
+        <ul className="flex flex-wrap gap-x-3 gap-y-1">
+          {otherListProvisions.map((p) => (
+            <li key={p.id}>
+              <button
+                type="button"
+                onClick={() => onSelectProvision && onSelectProvision(p)}
+                className="text-xs font-ui text-accent hover:underline"
+              >
+                {p.category || 'General'}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
     </div>
   );
 }
@@ -6043,13 +6112,21 @@ function BringdownTable({ provisions, repsType }) {
   const rows = buildBringdownTierLines(tiers, nameBySec);
 
   return (
-    <div className="space-y-0.5">
+    <div className="space-y-1">
       {rows.map((r, i) => (
-        <p key={i} className="text-[11px] font-ui text-inkMid">
-          <span className={r.general ? 'text-inkFaint' : 'text-ink font-medium'}>{r.group}</span>
-          <span className="text-inkFaint"> → </span>
-          <span>{r.std}</span>
-        </p>
+        <div key={i} className="grid grid-cols-[132px_minmax(0,1fr)] gap-2 items-start text-[11px] font-ui">
+          <div className="text-ink font-medium whitespace-nowrap">{r.std}</div>
+          <div className="flex flex-wrap gap-1">
+            {splitBringdownCoveredPills(r.group).map((label, j) => (
+              <span
+                key={`${i}-${j}`}
+                className={`inline-flex items-center rounded border px-1.5 py-0.5 leading-tight ${r.general && j === 0 ? 'bg-bg/60 text-inkMid border-border' : 'bg-emerald-50 text-emerald-800 border-emerald-200'}`}
+              >
+                {label}
+              </span>
+            ))}
+          </div>
+        </div>
       ))}
     </div>
   );
@@ -6395,6 +6472,108 @@ function EmptyCellDash({ provision }) {
   );
 }
 
+function normalizeReviewSectionCite(raw) {
+  if (!raw || typeof raw !== 'string') return null;
+  const m = raw.match(/(\d+)\.(\d+)\s*((?:\(\s*[A-Za-z0-9]+\s*\))*)/);
+  if (!m) return null;
+  const major = parseInt(m[1], 10);
+  const minor = parseInt(m[2], 10);
+  if (Number.isNaN(major) || Number.isNaN(minor)) return null;
+  const subs = (m[3].match(/\(\s*([A-Za-z0-9]+)\s*\)/g) || [])
+    .map((s) => `(${s.replace(/[()\s]/g, '').toLowerCase()})`)
+    .join('');
+  return `${major}.${minor}${subs}`;
+}
+
+function buildRepNameBySection(provisions) {
+  const out = new Map();
+  for (const p of provisions || []) {
+    if (!p || !String(p.type || '').startsWith('REP')) continue;
+    const f = getStructuredFeatures(p) || {};
+    const key = normalizeReviewSectionCite(String(f.sectionNumber || ''));
+    if (key && p.category && !out.has(key)) out.set(key, p.category);
+  }
+  return out;
+}
+
+function resolveRepCitesForDisplay(raw, provisions) {
+  const quote = evidenceQuote(raw, { fallbackToFullText: false });
+  const inner = isCitableValue(raw) ? getCitableValue(raw) : raw;
+  const list = Array.isArray(inner) ? inner : (inner ? [inner] : []);
+  const nameBySec = buildRepNameBySection(provisions);
+  const seen = new Set();
+  const items = [];
+  const push = (cite, label, source) => {
+    const key = `${cite || ''}::${label || ''}`;
+    if (!label || seen.has(key)) return;
+    seen.add(key);
+    items.push({ cite, label, source: source || cite || quote || null });
+  };
+  for (const item of list) {
+    const text = isTaggedItem(item)
+      ? (item.text || item.label || item.code)
+      : isCitableValue(item)
+        ? (getCitableText(item) || String(getCitableValue(item) || ''))
+        : String(item || '');
+    if (!text.trim()) continue;
+    const citeMatches = [...text.matchAll(/Sections?\s+\d+\.\d+\s*(?:\([A-Za-z0-9]+\))*/gi)];
+    if (citeMatches.length === 0) {
+      push(null, text.trim(), quote || text.trim());
+      continue;
+    }
+    for (const m of citeMatches) {
+      const cite = m[0].replace(/^Sections?\s+/i, 'Section ').trim();
+      const key = normalizeReviewSectionCite(cite);
+      const exact = key ? nameBySec.get(key) : null;
+      let label = exact;
+      if (!label && key) {
+        const base = key.replace(/(\([a-z0-9]+\))+$/i, '');
+        const baseName = nameBySec.get(base);
+        if (baseName) {
+          const subs = key.slice(base.length);
+          label = subs ? `${baseName} ${subs}` : baseName;
+        }
+      }
+      push(cite, label || cite, text.trim());
+    }
+  }
+  return { items, quote };
+}
+
+function RepCiteNamesList({ raw, provisions }) {
+  const showEvidence = useShowEvidence();
+  const { items, quote } = resolveRepCitesForDisplay(raw, provisions);
+  if (items.length === 0) return renderFeatureCell('secFilingsExceptionCarvedOutReps', raw);
+  return (
+    <ul className="list-disc list-inside space-y-0.5">
+      {items.map((item, idx) => {
+        const q = item.source || quote;
+        const node = (
+          <span>
+            {item.label}
+            {item.cite && item.label !== item.cite ? <span className="text-inkFaint"> ({item.cite})</span> : null}
+          </span>
+        );
+        return (
+          <li key={`${item.label}-${idx}`}>
+            <HoverSource quote={q} as="span">
+              {q && showEvidence ? (
+                <button
+                  type="button"
+                  onClick={() => showEvidence(q)}
+                  className="text-left hover:underline decoration-dotted decoration-accent/60 underline-offset-2"
+                >
+                  {node}
+                </button>
+              ) : node}
+            </HoverSource>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
 /* ─── Per-rep Knowledge Qualifier cell (Metsera fb2 block 2c). States the
  *     SCOPE when the extracted feature carries it: "Partial: <detail>" when
  *     the feature's text names specific sub-clauses / sentences, "Entire rep"
@@ -6697,7 +6876,10 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
       return { ...sr, present: lookbackRaw !== null || !!scopeQuote || !!secCutoffFallbackQuote, node: renderLookbackVal(), quote: extractQuote(lookbackRaw) || scopeQuote || secCutoffFallbackQuote };
     }
     const v = pickKey(sr.keys);
-    return { ...sr, present: v !== null && v !== undefined, node: v != null ? renderFeatureCell(sr.keys[0], v) : null, quote: extractQuote(v) };
+    const node = sr.label === 'Carved-out Reps' && v != null
+      ? <RepCiteNamesList raw={v} provisions={provisions} />
+      : (v != null ? renderFeatureCell(sr.keys[0], v) : null);
+    return { ...sr, present: v !== null && v !== undefined, node, quote: extractQuote(v) };
   });
   const secAnyPresent = secValues.some((s) => s.present) || scopeRaw !== null;
   const secRowQuote = secValues.find((s) => s.quote)?.quote || scopeQuote || null;
@@ -7174,7 +7356,7 @@ function CanonicalConditionDetails({ row, matches, allProvisions, certifies }) {
       ? (maeProvs.find(isParentSide) || null)
       : (maeProvs.find((p) => !isParentSide(p)) || maeProvs[0] || null);
     const limbs = maeDef ? u((getStructuredFeatures(maeDef) || {}).maeLimbs) : null;
-    const limbsLabel = limbs === 'TWO_LIMB' ? 'Two-limb' : limbs === 'ONE_LIMB' ? 'One-limb' : null;
+    const limbsLabel = limbs === 'TWO_LIMB' ? 'Two-limb' : null;
     return (
       <span className="text-ink inline-flex items-center gap-1.5 flex-wrap">
         <span>{continuing === true ? 'MAE must be continuing at Closing' : 'Continuing requirement not specified'}</span>
@@ -7605,23 +7787,34 @@ function MaeSinglePartySummary({ provision, partyLabel, onSelectProvision }) {
         <span className="font-mono text-[10px] text-inkFaint uppercase tracking-wider">{partyLabel}</span>
         <h3 className="font-display text-base text-ink">{provision.category || partyLabel + ' MAE'}</h3>
       </header>
-      <div
-        className="bg-white border-2 rounded-lg shadow-sm px-5 py-4 cursor-pointer"
-        style={{ borderColor: '#C9A788' }}
-        onClick={() => {
-          if (pdText) showEvidence(pdText);
-          else if (provision.full_text) showEvidence(provision.full_text.slice(0, 600));
-        }}
-        title={pdText ? 'View prevent/delay prong in source' : ''}
-      >
-        <div className="font-mono text-[10px] text-inkFaint uppercase tracking-wider">MAE Test</div>
-        <div className="font-display text-lg text-ink font-medium mt-1">
-          {limbsLabel || (
-            <span className="italic text-inkFaint text-sm">
-              {isEdit ? 'Limbs not extracted (re-ingest to populate)' : 'Not available'}
-            </span>
-          )}
-        </div>
+      <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+        <table className="min-w-full text-xs font-ui">
+          <tbody>
+            <tr className="hover:bg-bg/40 align-top">
+              <td className={`px-3 py-2 text-ink font-medium whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>
+                <HoverSource quote={pdText || provision.full_text || null}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (pdText) showEvidence(pdText);
+                      else if (provision.full_text) showEvidence(provision.full_text.slice(0, 600));
+                    }}
+                    className="text-left text-accent hover:underline font-medium"
+                  >
+                    MAE Test
+                  </button>
+                </HoverSource>
+              </td>
+              <td className="px-3 py-2 text-ink">
+                {limbsLabel || (
+                  <span className="italic text-inkFaint">
+                    {isEdit ? 'Limbs not extracted (re-ingest to populate)' : 'Not available'}
+                  </span>
+                )}
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
@@ -10388,7 +10581,7 @@ export default function ReviewPage() {
     );
   }
 
-  const dealLabel = `${deal.acquirer} / ${deal.target}`;
+  const dealLabel = `${getDisplayAcquirer(deal) || deal.acquirer || 'Acquirer'} / ${getDisplayTarget(deal) || deal.target || 'Target'}`;
   const hasSource = agreementSource && agreementSource.full_text;
 
   return (
@@ -10819,6 +11012,9 @@ export default function ReviewPage() {
                           rest = rest.filter((p) => !pulledIds.has(p.id));
                         }
                       }
+                      const considerationHeadlineType = type === 'CONSID'
+                        ? deriveHeadlineConsiderationType(provs)
+                        : null;
                       const isCollapsed = collapsedSections.has(type);
                       return (
                         <div key={type} className="space-y-2">
@@ -10831,6 +11027,11 @@ export default function ReviewPage() {
                             <span className="ix">{String(typeIdx + 1).padStart(2, '0')}</span>
                             <span className="th-dot" style={{ background: typeHex(type) }} />
                             <h2>{typeLabel(type)}</h2>
+                            {considerationHeadlineType === 'MIXED_ELECTION' && (
+                              <span className="inline-flex items-center font-ui font-semibold text-[10px] px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase tracking-wider">
+                                Cash/Stock Election
+                              </span>
+                            )}
                             <span
                               className="inline-flex items-center text-inkFaint text-sm select-none"
                               aria-hidden="true"

@@ -53,15 +53,37 @@ export function buildPerShareParts({ perShareText, hasCvr, hasCash, cvrMaxText }
   return parts;
 }
 
-/* ══════════════════════════════════════════════════════════════════════════
- * BLOCK 2a — Term-cell hover quote (REGRESSION target).
- * The Term (first, sticky) cell of every provision-table row hovers to the
- * row's provision source text — for EVERY row, not just rows whose qualifier
- * cell happens to carry evidence. The earlier fix (commit 686530d, audit
- * block 9a) routed only VALUE cells through CellWithSource /
- * MaterialityQualifierCell fallbacks; the Term cell never went through either
- * renderer, so it silently kept no hover at all.
- * ══════════════════════════════════════════════════════════════════════════ */
+export function deriveHeadlineConsiderationType(provisions) {
+  const list = Array.isArray(provisions) ? provisions : [];
+  let hasCash = false;
+  let hasStock = false;
+  let hasElection = false;
+  for (const item of list) {
+    const f = item && (item.mainConcept || item.considerationType || item.perShareAmount || item.exchangeRatio)
+      ? item
+      : localFeatures(item);
+    const ctRaw = unwrapLocal(f.considerationType);
+    const ct = isTagged(ctRaw) ? `${ctRaw.code || ''} ${ctRaw.label || ''}` : String(ctRaw || '');
+    const joined = [
+      ct,
+      f.proration,
+      f.prorationMechanics && JSON.stringify(f.prorationMechanics),
+      f.electionMechanics,
+      f.exchangeRatio,
+      f.exchangeRatioText,
+      f.perShareAmount,
+      f.cashAmount,
+    ].filter(Boolean).join(' ');
+    if (f.perShareAmount || f.cashAmount || /\bcash\b/i.test(joined)) hasCash = true;
+    if (f.exchangeRatio || f.exchangeRatioText || /\bstock\b|share(?:s)?\s+of\b|all-stock/i.test(joined)) hasStock = true;
+    if (/election|proration|mixed-cash-and-stock|mixed[_\s-]?election|cash_election|stock_election/i.test(joined)) hasElection = true;
+  }
+  if (hasElection) return 'MIXED_ELECTION';
+  if (hasStock) return 'STOCK';
+  if (hasCash) return 'CASH';
+  return null;
+}
+
 export function termCellHoverQuote(provision) {
   const t = provision && typeof provision.full_text === 'string' ? provision.full_text.trim() : '';
   return t ? provision.full_text : null;
@@ -368,6 +390,38 @@ export function buildBringdownTierLines(tiers, nameBySec) {
       || /\ball\s+other\s+(?:reps|representations)\b/i.test(covered);
     return { group, std: bringdownStandardHeadline(tier), general };
   });
+}
+
+export function splitBringdownCoveredPills(group) {
+  const text = String(group || '').trim();
+  if (!text) return [];
+  const marker = text.match(/^(.*?\bother than\b)\s+(.+)$/i);
+  if (marker) {
+    const head = marker[1].trim();
+    const tail = marker[2].trim();
+    return [head, ...splitBringdownCoveredPills(tail)];
+  }
+  const parts = [];
+  let cur = '';
+  let depth = 0;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (ch === '(') depth++;
+    if (ch === ')') depth = Math.max(0, depth - 1);
+    const commaBreak = depth === 0 && ch === ',';
+    const andBreak = depth === 0 && /^\s+and\s+/i.test(text.slice(i)) && !/\bthrough\s*$/i.test(cur);
+    if (commaBreak || andBreak) {
+      const clean = cur.trim();
+      if (clean) parts.push(clean);
+      if (andBreak) i += text.slice(i).match(/^\s+and\s+/i)[0].length - 1;
+      cur = '';
+      continue;
+    }
+    cur += ch;
+  }
+  const clean = cur.trim().replace(/^and\s+/i, '');
+  if (clean) parts.push(clean);
+  return parts.length ? parts : [text];
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -1197,36 +1251,6 @@ export function isConsiderationGroupedProvision(provision) {
   return false;
 }
 
-export function deriveHeadlineConsiderationType(provisions) {
-  const list = Array.isArray(provisions) ? provisions : [];
-  let hasCash = false;
-  let hasStock = false;
-  let hasElection = false;
-  for (const item of list) {
-    const f = item && (item.mainConcept || item.considerationType || item.perShareAmount || item.exchangeRatio)
-      ? item
-      : localFeatures(item);
-    const ctRaw = unwrapLocal(f.considerationType);
-    const ct = isTagged(ctRaw) ? `${ctRaw.code || ''} ${ctRaw.label || ''}` : String(ctRaw || '');
-    const joined = [
-      ct,
-      f.proration,
-      f.prorationMechanics && JSON.stringify(f.prorationMechanics),
-      f.electionMechanics,
-      f.exchangeRatio,
-      f.exchangeRatioText,
-      f.perShareAmount,
-      f.cashAmount,
-    ].filter(Boolean).join(' ');
-    if (f.perShareAmount || f.cashAmount || /\bcash\b/i.test(joined)) hasCash = true;
-    if (f.exchangeRatio || f.exchangeRatioText || /\bstock\b|share(?:s)?\s+of\b|all-stock/i.test(joined)) hasStock = true;
-    if (/election|proration|mixed-cash-and-stock|mixed[_\s-]?election|cash_election|stock_election/i.test(joined)) hasElection = true;
-  }
-  if (hasElection) return 'MIXED_ELECTION';
-  if (hasStock) return 'STOCK';
-  if (hasCash) return 'CASH';
-  return null;
-}
 
 export function numericDollarOnly(raw) {
   const val = unwrapLocal(raw);
