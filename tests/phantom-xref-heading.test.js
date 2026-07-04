@@ -69,6 +69,36 @@ test('Skechers shape: wrapped "prohibited by\\nSection 5.2 (other than ..." is n
   assert.ok(!/Forbearance Covenants\. Except/.test(byNum['5.1'].text), '5.1 does not swallow the 5.2 body');
 });
 
+test('Verve shape: sentence-ending self-reference "of this\\nSection 6.3." is not a heading; wrapped-title headings still are', () => {
+  const doc = [
+    'AGREEMENT AND PLAN OF MERGER, dated as of June 16, 2025 (this "Agreement"), among ELI LILLY AND COMPANY and VERVE THERAPEUTICS, INC.',
+    '',
+    'ARTICLE VI',
+    '',
+    'COVENANTS',
+    '',
+    [
+      `Section 6.3. Acquisition Proposals. (a) The Company shall not solicit any Acquisition Proposal, and shall inform any Person considering an Acquisition Proposal of the provisions of this`,
+      'Section 6.3.',
+      '',
+      `(b) Notwithstanding Section 6.3(a) or any other provision of this Agreement, the Company may participate in discussions regarding a Superior Proposal.${BODY_FILLER}`,
+    ].join('\n'),
+    '',
+    // Kraft/Metsera-style REAL heading: number-period at end of line, title
+    // (with body) on the next line — must survive the self-reference guard.
+    'Section 6.4.',
+    `Access to Information. (a) Upon reasonable notice, the Company shall afford Parent reasonable access to its properties, books and records.${BODY_FILLER}`,
+  ].join('\n');
+
+  const { sections } = parseStructure(doc);
+  const byNum = Object.fromEntries(sections.map((s) => [s.number, s]));
+
+  assert.ok(byNum['6.3'], 'section 6.3 exists');
+  assert.match(byNum['6.3'].text, /Superior Proposal/, '6.3 keeps sub-clause (b) past the self-reference');
+  assert.ok(byNum['6.4'], 'wrapped-title heading 6.4 still detected');
+  assert.match(byNum['6.4'].title, /Access to Information/);
+});
+
 test('Mr. Cooper shape: "consistent with this\\nSection 7.8 (including ..." does not truncate the host section', () => {
   const doc = [
     'AGREEMENT AND PLAN OF MERGER, dated as of March 31, 2025 (this "Agreement"), among ROCKET COMPANIES, INC. and MR. COOPER GROUP INC.',
