@@ -23,7 +23,7 @@ function sideClauseSubLabel(p, i) {
 /* ═══════════════════════════════════════════════════════════
    LEFT SIDEBAR — now acts as a FILTER, not a scroller
    ═══════════════════════════════════════════════════════════ */
-export function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelectProvision, activeProvId, onMoveProvision }) {
+export function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelectProvision, activeProvId, onMoveProvision, onClose }) {
   const { isEdit } = useViewMode();
   // Drag-and-drop state: track the provision being dragged and the active
   // drop-target type so we can highlight it.
@@ -315,18 +315,33 @@ export function Sidebar({ provsByType, provisions, activeFilter, onFilterType, o
           style={{ padding: '0 8px 10px' }}
         >
           <span className="rec-side-eyebrow">Provisions</span>
-          <button
-            onClick={handleCollapseAll}
-            className="rec-side-eyebrow"
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              color: 'var(--accent-deep)',
-            }}
-          >
-            {allCollapsed ? 'Expand all' : 'Collapse all'}
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleCollapseAll}
+              className="rec-side-eyebrow"
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                color: 'var(--accent-deep)',
+              }}
+            >
+              {allCollapsed ? 'Expand all' : 'Collapse all'}
+            </button>
+            {onClose && (
+              <button
+                type="button"
+                onClick={onClose}
+                title="Close sidebar"
+                className="p-1 text-inkLight hover:text-ink transition-colors rounded hover:bg-paper"
+                style={{ display: 'inline-flex' }}
+              >
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M4 4l8 8M12 4l-8 8" />
+                </svg>
+              </button>
+            )}
+          </div>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>

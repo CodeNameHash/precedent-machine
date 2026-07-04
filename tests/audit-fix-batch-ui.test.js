@@ -209,13 +209,30 @@ test('item 10: TermrRebuiltSummary no longer renders an inline per-right absence
   assert.ok(!/Not present in this agreement/.test(fnBody), 'inline absence-placeholder row must be gone');
 });
 
-test('item 10: TermrRebuiltSummary renders the same strikethrough "not included" pill strip as Conditions', () => {
+test('item 10: TermrRebuiltSummary renders the shared NotIncludedStrip (same component Conditions/Reps/Equity/Fees use)', () => {
   const fnBody = functionBody('TermrRebuiltSummary');
-  assert.match(fnBody, /Termination rights not included/);
-  assert.match(fnBody, /line-through/);
+  // FB3 chrome: the strikethrough pill strip was consolidated into ONE shared
+  // component (components/review/shared.js NotIncludedStrip) so every
+  // "not included" strip in the app shares the same collapsed-by-default
+  // behavior — TermrRebuiltSummary now just calls it instead of inlining
+  // its own markup.
+  assert.match(fnBody, /<NotIncludedStrip/);
+  assert.match(fnBody, /noun="termination rights"/);
   assert.match(fnBody, /title=\{CONDITION_ABSENT_COPY\}/);
-  // Same pill classes as CondSingleTable's "Conditions not included" strip.
+});
+
+test('item 10 (FB3): shared NotIncludedStrip renders the strikethrough pill classes and starts collapsed', () => {
+  const sharedSrc = fs.readFileSync(path.join(__dirname, '..', 'components', 'review', 'shared.js'), 'utf8');
+  const fnStart = sharedSrc.indexOf('export function NotIncludedStrip');
+  assert.ok(fnStart >= 0, 'NotIncludedStrip exported from shared.js');
+  const fnBody = sharedSrc.slice(fnStart, sharedSrc.indexOf('\nexport function', fnStart + 10));
+  assert.match(fnBody, /line-through/);
   assert.match(fnBody, /inline-flex items-center text-\[10px\] font-ui px-1\.5 py-0\.5 rounded border bg-bg\/40 text-inkFaint\/70 border-border line-through/);
+  // Collapsed by default: useState(false), and the summary line + caret
+  // toggle, not an always-expanded list.
+  assert.match(fnBody, /useState\(false\)/);
+  assert.match(fnBody, /not included/);
+  assert.match(fnBody, /expanded \? '▾' : '▸'/);
 });
 
 test('item 10: absent rights still get the green row dot treatment (only present-row markup changed)', () => {
