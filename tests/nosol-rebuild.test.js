@@ -57,6 +57,46 @@ test('promptly plus 48-hour hard cap renders as two notice-period elements', () 
   assert.deepEqual(parts.map((p) => p.label), ['Promptly', '48 hours']);
 });
 
+/* ─────────────────────────────────────────────────────────────────────────
+ * Audit-2 item 2 — live regression: Metsera and Skechers both rendered
+ * "4 hours" for a match-period notice the source states in BUSINESS DAYS.
+ * The old regex required a bare digit immediately adjacent to the unit word
+ * ("4 business days") and fell back to assuming hours when it didn't find
+ * one — real agreements spell the number out, sometimes with a parenthetical
+ * numeral, so it never matched. Fixed shapes below are the ACTUAL verbatim
+ * quotes stored on each deal's NOSOL-MATCH provision.
+ * ───────────────────────────────────────────────────────────────────────── */
+
+test('Metsera NOSOL-MATCH: "four (4) business days" renders as "4 business days", not "4 hours"', () => {
+  const value = {
+    value: 4,
+    quotes: ['the Company has provided prior written notice to Parent, at least four (4) business days in advance (the "Notice Period"), of its intention to take such action with respect to such Superior Company Proposal'],
+  };
+  const parts = mod.noticePeriodParts(value);
+  assert.deepEqual(parts.map((p) => p.label), ['4 business days']);
+});
+
+test('Skechers NOSOL-MATCH: spelled-out "four Business Days" (no numeral at all) renders as "4 business days", not "4 hours"', () => {
+  const value = {
+    value: 4,
+    quotes: ['the Company has provided prior written notice to Parent at least four Business Days in advance (the "Notice Period") to the effect that the Company Board has (A) received a bona fide Acquisition Proposal'],
+  };
+  const parts = mod.noticePeriodParts(value);
+  assert.deepEqual(parts.map((p) => p.label), ['4 business days']);
+});
+
+test('a genuinely hour-denominated period (no day wording anywhere) still renders in hours', () => {
+  const value = { value: 24, quotes: ['the Company will promptly (and, in any event, within 24 hours) notify Parent'] };
+  const parts = mod.noticePeriodParts(value);
+  assert.deepEqual(parts.map((p) => p.label), ['Promptly', '24 hours']);
+});
+
+test('a bare number with no unit word anywhere never fabricates "hours"', () => {
+  const value = { value: 4, quotes: ['the Company shall notify Parent within the period set out in Schedule 5.02'] };
+  const parts = mod.noticePeriodParts(value);
+  assert.deepEqual(parts.map((p) => p.label), ['4 (unit not stated in source)']);
+});
+
 test('superior-proposal test renders as value and deliverability limbs', () => {
   const hit = mod.pickNosolFeature(METSERA_NOSOL, ['superiorProposalTest']);
   const limbs = mod.superiorProposalLimbs(hit.value);
