@@ -80,6 +80,7 @@ import {
   REVIEW_LABEL_COL_W,
   CitableHover,
   prettifyEnumValue,
+  NotIncludedStrip,
 } from '../../components/review/shared';
 import { NosolFourTables } from '../../components/review/NosolFourTables';
 import { NoOtherRepsFraudTable } from '../../components/review/NoOtherRepsFraudTable';
@@ -1153,131 +1154,6 @@ function getCardCarveouts(provision) {
     }
   }
   return out;
-}
-
-/* ── Card lead text + key terms + carve-outs renderer ── */
-function ProvisionCard({ provision, onEdit }) {
-  const { isEdit } = useViewMode();
-  const [open, setOpen] = useState(false);
-  const status = getProvisionStatus(provision);
-  const refCode = getRefCode(provision);
-  const lead = getLeadText(provision);
-  const terms = getCardTerms(provision);
-  const carveouts = getCardCarveouts(provision);
-  const tHex = typeHex(provision.type);
-
-  // For Employee Benefits / Employee Matters COV provisions, render the
-  // Type | Standard | Time Period summary INSIDE this card (below the
-  // source text). buildEmployeeBenefitsSummary works on a list; pass a
-  // single-element list scoped to THIS provision so each Employee
-  // Benefits card shows its own breakdown.
-  const employeeBenefitsSummary = useMemo(() => {
-    if (!isEmployeeBenefitsProvision(provision)) return null;
-    return buildEmployeeBenefitsSummary([provision]);
-  }, [provision]);
-
-  const handleCardClick = (e) => {
-    // Only open edit panel when clicking the card body (not the source toggle).
-    if (e.target.closest('.rec-source-toggle') || e.target.closest('.rec-source-body')) return;
-    onEdit && onEdit(provision);
-  };
-
-  return (
-    <article
-      id={`prov-${provision.id}`}
-      className="rec-card cursor-pointer"
-      onClick={handleCardClick}
-    >
-      <div className="rec-card-body">
-        {/* Meta row */}
-        <div className="rec-card-meta">
-          <span
-            className="rec-chip-code"
-            style={{
-              color: tHex,
-              background: typeTint(provision.type, 11),
-              borderColor: typeTint(provision.type, 30),
-            }}
-          >
-            {refCode}
-          </span>
-          <span className="rec-card-cat">{provision.category || 'General'}</span>
-          <FavPill fav={provision.ai_favorability} />
-          {/* Approved / Needs review / Unreviewed is the editor's QA workflow
-              status, not deal content — editors only. */}
-          {isEdit && <RecStatusTag status={status} />}
-        </div>
-
-        {/* Lead — plain-English headline */}
-        {lead && <p className="rec-lead">{lead}</p>}
-
-        {/* Key-terms grid */}
-        {terms.length > 0 && (
-          <dl className="rec-terms">
-            {terms.map((t, i) => {
-              const span = terms.length % 2 === 1 && i === terms.length - 1;
-              return (
-                <div key={t.k} className={`rec-term${span ? ' span2' : ''}`}>
-                  <dt className="k">{t.label}</dt>
-                  <dd className="v">{t.value}</dd>
-                </div>
-              );
-            })}
-          </dl>
-        )}
-
-        {/* Carve-outs */}
-        {carveouts.length > 0 && (
-          <div className="rec-carveouts">
-            <div className="co-head">
-              Carve-outs &amp; exceptions
-              <span className="n">{carveouts.length}</span>
-            </div>
-            <ul>
-              {carveouts.map((c, i) => (
-                <li key={i}>
-                  <span className="m">—</span>
-                  <span>{c}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {/* Source text (collapsible) */}
-        {provision.full_text && (
-          <div className="rec-source">
-            <button
-              type="button"
-              className={`rec-source-toggle${open ? ' open' : ''}`}
-              onClick={(e) => { e.stopPropagation(); setOpen((v) => !v); }}
-            >
-              <span className="car">›</span>
-              {open ? 'Hide source text' : `Source text · ${refCode}`}
-            </button>
-            {open && (
-              <div className="rec-source-body">
-                {renderFullTextWithRefs(provision.full_text)}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Employee Benefits Treatment table — rendered inside the Employee
-            Benefits / Employee Matters provision card so it sits next to
-            the structured features grid. Stop click propagation so clicking
-            the table or its action buttons doesn't open the edit panel. */}
-        {employeeBenefitsSummary && (
-          <div className="mt-3" onClick={(e) => e.stopPropagation()}>
-            <EmployeeBenefitsTreatmentTable
-              summary={employeeBenefitsSummary}
-              onSelectProvision={onEdit}
-            />
-          </div>
-        )}
-      </div>
-    </article>
-  );
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -4724,14 +4600,20 @@ function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision, hide
       </div>
 
       {!hideProvisionsList && (() => {
-        const filtered = excludeSet
-          ? sortedProvs.filter((p) => !excludeSet.has(p.id))
-          : sortedProvs;
+        // FB3 item 6: dedupe against every provision the summary table above
+        // already consumed as a row's source, in addition to any exclusion
+        // set the caller supplied.
+        const consumedIds = new Set(
+          rows
+            .map((row) => row.hit && row.hit.provision && row.hit.provision.id)
+            .filter(Boolean),
+        );
+        const filtered = sortedProvs.filter((p) => !consumedIds.has(p.id) && !(excludeSet && excludeSet.has(p.id)));
         if (filtered.length === 0) return null;
         return (
         <div className="bg-bg/40 border border-border rounded-lg px-3 py-2">
           <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider mb-1.5">
-            Provisions in this section
+            Other provisions in this section
           </p>
           <ul className="flex flex-wrap gap-x-3 gap-y-1">
             {filtered.map((p) => (
@@ -5083,16 +4965,18 @@ function TermfTriggerMatrix({ provisions, allProvisions, deal }) {
                 </tr>
               );
             })}
-            {/* Naked no-vote — explicit "No" when the deal carries no such fee. */}
-            <tr className="align-top hover:bg-bg/40">
-              <td className="px-3 py-2 text-ink font-medium">Naked no-vote fee</td>
-              <td className="px-3 py-2 text-inkFaint whitespace-nowrap">—</td>
-              <td className="px-3 py-2 whitespace-nowrap">
-                {nakedPresent
-                  ? <Pill text={nakedAmount || 'Yes'} tone="amount" />
-                  : <span className="italic text-inkFaint">No</span>}
-              </td>
-            </tr>
+            {/* Naked no-vote fee: only rendered as a row when present. When
+                absent, it's covered by the collapsed "Termination fees not
+                included" strip (FB3 item 8c) instead of an inline "No" row. */}
+            {nakedPresent && (
+              <tr className="align-top hover:bg-bg/40">
+                <td className="px-3 py-2 text-ink font-medium">Naked no-vote fee</td>
+                <td className="px-3 py-2 text-inkFaint whitespace-nowrap">—</td>
+                <td className="px-3 py-2 whitespace-nowrap">
+                  <Pill text={nakedAmount || 'Yes'} tone="amount" />
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
@@ -5456,10 +5340,50 @@ function TermfRebuiltSummary({ provisions, allProvisions, onSelectProvision, dea
     return { ...p, ai_metadata: { ...meta, features: normalizeTermfFeatures(feats) } };
   });
   const fullList = allProvisions || provisions || [];
-  // Sort provisions for the trailing "Provisions in this section" list.
+  // Sort provisions for the trailing "Other provisions in this section" list.
   const sortedProvs = [...augmented].sort((a, b) =>
     String(a.category || '').localeCompare(String(b.category || ''), undefined, { sensitivity: 'base' }),
   );
+
+  // FB3 item 6: dedupe the footer list against everything the Trigger
+  // Matrix / Tail Mechanics / Remedy & Effect tables already surfaced. Those
+  // three tables read a fixed set of feature keys off EVERY provision (they
+  // merge features across the whole TERMF section) — a provision counts as
+  // "covered" when it populates any of those keys.
+  const TERMF_CONSUMED_KEYS = [
+    'triggers', 'feeAmount', 'companyTerminationFee', 'feePercentage', 'terminationFeePercentEquityValue',
+    'nakedNoVoteFeePresent', 'nakedNoVoteFee', 'nakedNoVoteFeeAmount',
+    'tailFeeWindowMonths', 'tailFeeThresholdPct', 'tailFeeActivatingClauses', 'tailFeeSameProposalRequired',
+    'soleAndExclusiveRemedy', 'feeSoleAndExclusiveRemedy', 'soleRemedy', 'feeSoleRemedyExceptions',
+    'willfulBreachException', 'effectOfTermination', 'interestOnLatePayment',
+    'expenseReimbursementCap', 'expenseReimbursement',
+  ];
+  const isConsumedByTermfTables = (p) => {
+    const f = getStructuredFeatures(p) || {};
+    return TERMF_CONSUMED_KEYS.some((k) => !isEmptyValue(f[k]));
+  };
+  const leftoverProvs = sortedProvs.filter((p) => !isConsumedByTermfTables(p));
+
+  // FB3 item 8c: canonical termination fee TYPES this deal doesn't carry,
+  // collapsed into a "Termination fees not included" strip (same pattern as
+  // Termination Rights / Conditions / Reps / Equity Instruments).
+  const nakedNoVotePresent = (() => {
+    const hit = pickFirstNonEmpty(augmented, ['nakedNoVoteFeePresent', 'nakedNoVoteFee']);
+    if (!hit) return false;
+    const v = isCitableValue(hit.value) ? getCitableValue(hit.value) : hit.value;
+    return v === true || v === 'true' || v === 'yes';
+  })();
+  const antitrustBreakFeePresent = fullList.some(
+    (p) => p && (p.code === 'TERMF-RTF-ANTI' || /antitrust|regulatory/i.test(p.category || '')) && (p.type === 'TERMF' || (p.ai_metadata && p.ai_metadata.code === 'TERMF-RTF-ANTI')),
+  );
+  const expenseReimbursementPresent = !!pickFirstNonEmpty(augmented, ['expenseReimbursementCap'])
+    || fullList.some((p) => p && p.code === 'TERMF-REIMBURSE');
+  const absentFeeTypes = [
+    !nakedNoVotePresent && 'Naked no-vote fee',
+    !antitrustBreakFeePresent && 'Antitrust / regulatory break fee',
+    !expenseReimbursementPresent && 'Expense reimbursement',
+  ].filter(Boolean);
+
   return (
     <div className="space-y-3">
       {/* Headline fee/% is folded into the Trigger table header (TermfHero
@@ -5467,13 +5391,14 @@ function TermfRebuiltSummary({ provisions, allProvisions, onSelectProvision, dea
       <TermfTriggerMatrix provisions={augmented} allProvisions={fullList} deal={deal} />
       <TermfTailMechanics provisions={augmented} allProvisions={fullList} />
       <TermfRemedyEffect provisions={augmented} allProvisions={fullList} />
-      {sortedProvs.length > 0 && (
+      <NotIncludedStrip noun="termination fees" items={absentFeeTypes} />
+      {leftoverProvs.length > 0 && (
         <div className="bg-bg/40 border border-border rounded-lg px-3 py-2">
           <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider mb-1.5">
-            Provisions in this section
+            Other provisions in this section
           </p>
           <ul className="flex flex-wrap gap-x-3 gap-y-1">
-            {sortedProvs.map((p) => (
+            {leftoverProvs.map((p) => (
               <li key={p.id}>
                 <button
                   type="button"
@@ -5780,24 +5705,13 @@ function TermrRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
                       </tr>
                     ))}
                     {absentFamRows.length > 0 && (
-                      <tr className="bg-bg/20">
-                        <td colSpan={2} className="px-3 py-2">
-                          <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider mb-1">
-                            Termination rights not included
-                          </p>
-                          <span className="flex flex-wrap gap-1.5">
-                            {absentFamRows.map((row) => (
-                              <span
-                                key={row.spec.key}
-                                className="inline-flex items-center text-[10px] font-ui px-1.5 py-0.5 rounded border bg-bg/40 text-inkFaint/70 border-border line-through"
-                                title={CONDITION_ABSENT_COPY}
-                              >
-                                {row.spec.label}
-                              </span>
-                            ))}
-                          </span>
-                        </td>
-                      </tr>
+                      <NotIncludedStrip
+                        as="tr"
+                        colSpan={2}
+                        noun="termination rights"
+                        items={absentFamRows.map((row) => row.spec.label)}
+                        title={CONDITION_ABSENT_COPY}
+                      />
                     )}
                   </Fragment>
                 );
@@ -7527,24 +7441,13 @@ function CondSingleTable({ allProvisions, onSelectProvision }) {
                   );
                 })}
                 {absentRows.length > 0 && (
-                  <tr className="bg-bg/20">
-                    <td colSpan={2} className="px-3 py-2">
-                      <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider mb-1">
-                        Conditions not included
-                      </p>
-                      <span className="flex flex-wrap gap-1.5">
-                        {absentRows.map(({ row }) => (
-                          <span
-                            key={row.label}
-                            className="inline-flex items-center text-[10px] font-ui px-1.5 py-0.5 rounded border bg-bg/40 text-inkFaint/70 border-border line-through"
-                            title={CONDITION_ABSENT_COPY}
-                          >
-                            {row.label}
-                          </span>
-                        ))}
-                      </span>
-                    </td>
-                  </tr>
+                  <NotIncludedStrip
+                    as="tr"
+                    colSpan={2}
+                    noun="conditions"
+                    items={absentRows.map(({ row }) => row.label)}
+                    title={CONDITION_ABSENT_COPY}
+                  />
                 )}
               </Fragment>
               );
@@ -8067,33 +7970,11 @@ function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, a
           </thead>
           <tbody className="divide-y divide-border">
             {provisions.map((p) => {
-              if (p._notPresent) {
-                return (
-                  <tr key={p.id} className="bg-bg/30">
-                    <td className="px-3 py-2 align-top whitespace-normal break-words sticky left-0 bg-bg/30 z-10">
-                      <span className="inline-flex items-center gap-2 italic text-inkFaint">
-                        <span
-                          style={{
-                            display: 'inline-block',
-                            width: 7,
-                            height: 7,
-                            borderRadius: 2,
-                            background: 'var(--line)',
-                            flexShrink: 0,
-                          }}
-                        />
-                        {p.category}
-                      </span>
-                    </td>
-                    <td
-                      colSpan={Math.max(columns.length, 1)}
-                      className="px-3 py-2 italic text-inkFaint"
-                    >
-                      Not present in this agreement
-                    </td>
-                  </tr>
-                );
-              }
+              // FB3 item 8a: absent canonical reps no longer render as their
+              // own greyed inline placeholder row — they collapse into ONE
+              // "Reps not included" strip below the table (same
+              // NotIncludedStrip pattern as Termination Rights/Conditions).
+              if (p._notPresent) return null;
               const features = getStructuredFeatures(p) || {};
               return (
                 <tr key={p.id} className="hover:bg-paper transition-colors">
@@ -8287,6 +8168,18 @@ function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, a
                 </tr>
               );
             })}
+            {(() => {
+              const notPresent = provisions.filter((p) => p._notPresent);
+              if (notPresent.length === 0) return null;
+              return (
+                <NotIncludedStrip
+                  as="tr"
+                  colSpan={columns.length + 1}
+                  noun="reps"
+                  items={notPresent.map((p) => p.category)}
+                />
+              );
+            })()}
           </tbody>
         </table>
       </div>
@@ -9210,8 +9103,6 @@ export default function ReviewPage() {
     addToast(`Added custom option "${option.label}"`, 'success');
   }, [deal, refetchDeal, addToast]);
 
-  /* ── Provisions sub-view: "cards" or "table" ── */
-  const [provisionView, setProvisionView] = useState('table');
   // Per-section collapse state — keyed by provision type. Default: all expanded.
   const [collapsedSections, setCollapsedSections] = useState(() => new Set());
   const toggleSectionCollapse = useCallback((type) => {
@@ -9588,9 +9479,6 @@ export default function ReviewPage() {
     }
     setActiveFilter(next);
     setSelectedProvId(null); // clear single-provision view when changing type filter
-    // When clicking a category title, default to the Table view so the user
-    // sees all provisions of that type as rows side-by-side.
-    if (next !== null) setProvisionView('table');
   }, []);
 
   /* ── Sidebar provision click — show ONLY that provision in the main view ── */
@@ -9605,7 +9493,6 @@ export default function ReviewPage() {
     if (prov && isMaterialContractsProvision(prov)) {
       setSelectedProvId(null);
       setActiveFilter('__MATERIAL_CONTRACTS');
-      setProvisionView('table');
       setExpandedLabel(null);
       return;
     }
@@ -9619,9 +9506,6 @@ export default function ReviewPage() {
       if (isEdit) setEditingProvision(prov);
       setExpandedLabel(null);
     }
-    // Single-provision selection should use the card view so the user can
-    // see the full structured summary + collapsible text for that one item.
-    setProvisionView('cards');
   }, [provisions, isEdit]);
 
   /* ── Edit provision ── */
@@ -9881,36 +9765,47 @@ export default function ReviewPage() {
         className="bg-surface border-b border-line flex items-center justify-between shrink-0"
         style={{ height: 56, padding: '0 22px' }}
       >
-        <div className="flex items-center gap-4">
-          <Link href="/" className="rec-wordmark">
+        <div className="flex items-center gap-4 min-w-0 flex-1">
+          <Link href="/" className="rec-wordmark shrink-0">
             <span className="mark" />
             Corpus
           </Link>
-          <div className="flex items-center gap-2 text-[12.5px] text-inkFaint">
-            <span style={{ color: 'var(--line)' }}>/</span>
-            <Link href="/deals" className="text-inkFaint hover:text-ink transition-colors">
+          <div className="flex items-center gap-2 text-[12.5px] text-inkFaint min-w-0">
+            <span className="shrink-0" style={{ color: 'var(--line)' }}>/</span>
+            <Link href="/deals" className="text-inkFaint hover:text-ink transition-colors shrink-0">
               Deals
             </Link>
-            <span style={{ color: 'var(--line)' }}>/</span>
-            <Link href={`/review/${id}`} className="text-inkFaint hover:text-ink transition-colors">
+            <span className="shrink-0" style={{ color: 'var(--line)' }}>/</span>
+            {/* Deal name truncates with an ellipsis rather than bleeding out
+                of the title bar on narrow/mobile widths (FB3 item 2). */}
+            <Link
+              href={`/review/${id}`}
+              className="text-inkFaint hover:text-ink transition-colors truncate min-w-0 max-w-[45vw] sm:max-w-[280px]"
+              title={dealLabel}
+            >
               {dealLabel}
             </Link>
-            <span style={{ color: 'var(--line)' }}>/</span>
-            <span className="text-inkMid font-medium">Review</span>
+            <span className="shrink-0" style={{ color: 'var(--line)' }}>/</span>
+            <span className="text-inkMid font-medium shrink-0">Review</span>
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 shrink-0">
           <ViewModeToggle />
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-1.5 text-inkLight hover:text-ink transition-colors rounded hover:bg-paper"
-            title="Toggle sidebar"
-          >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <rect x="1" y="2" width="14" height="12" rx="1" />
-              <path d="M5 2v12" />
-            </svg>
-          </button>
+          {/* FB3 item 1: the close control now lives at the top of the
+              sidebar itself (see Sidebar.js). This header button only
+              reopens the sidebar once it's been closed. */}
+          {!sidebarOpen && (
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="p-1.5 text-inkLight hover:text-ink transition-colors rounded hover:bg-paper"
+              title="Show sidebar"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <rect x="1" y="2" width="14" height="12" rx="1" />
+                <path d="M5 2v12" />
+              </svg>
+            </button>
+          )}
           {user && (
             <>
               <span className="text-[12.5px] text-inkLight">{user.name}</span>
@@ -9955,6 +9850,7 @@ export default function ReviewPage() {
               onSelectProvision={handleSidebarSelectProvision}
               activeProvId={editingProvision?.id}
               onMoveProvision={handleMoveProvision}
+              onClose={() => setSidebarOpen(false)}
             />
           </div>
         )}
@@ -10061,12 +9957,6 @@ export default function ReviewPage() {
                 />
               )}
               <div className="rec-deal-meta">
-                {deal.sector && (
-                  <div className="m">
-                    <span className="k">Sector</span>
-                    <span className="v">{deal.sector}</span>
-                  </div>
-                )}
                 {deal.value_usd && (
                   <div className="m">
                     <span className="k">Value</span>
@@ -10123,26 +10013,6 @@ export default function ReviewPage() {
                     <span className="ml-1.5 text-[10px] text-inkFaint">(no raw text)</span>
                   )}
                 </button>
-
-                {/* Cards | Table view toggle — only on Provisions tab */}
-                {activeTab === 'provisions' && (
-                  <div className="rec-view-toggle">
-                    <button
-                      type="button"
-                      onClick={() => setProvisionView('cards')}
-                      className={provisionView === 'cards' ? 'on' : ''}
-                    >
-                      Cards
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setProvisionView('table')}
-                      className={provisionView === 'table' ? 'on' : ''}
-                    >
-                      Table
-                    </button>
-                  </div>
-                )}
               </div>
             )}
 
@@ -10326,11 +10196,10 @@ export default function ReviewPage() {
                             <span className="rule" />
                           </button>
                           {/* COV (Other Covenants) renders the PW diligence
-                              summary table in 'table' view (via
-                              CategoryFeatureSummaryTable inside ProvisionTable);
-                              cards view continues to render the per-provision
-                              ProvisionCard stack unchanged. */}
-                          {!isCollapsed && ((provisionView === 'table') ? (
+                              summary table via CategoryFeatureSummaryTable
+                              inside ProvisionTable. Card view is retired
+                              (FB3 item 3) — table is the only rendering. */}
+                          {!isCollapsed && (
                             <div className="space-y-3">
                               {showPreambleCard && (
                                 <PreambleCard
@@ -10458,21 +10327,7 @@ export default function ReviewPage() {
                                   table + per-row source links cover it; the
                                   card stack was redundant clutter. */}
                             </div>
-                          ) : (
-                            <div className="space-y-3">
-                              {/* Employee Benefits Treatment table now
-                                  renders INSIDE each Employee Benefits
-                                  ProvisionCard, so no top-level injection
-                                  here — avoids the duplicate render. */}
-                              {provs.map(p => (
-                                <ProvisionCard
-                                  key={p.id}
-                                  provision={p}
-                                  onEdit={handleEditProvision}
-                                />
-                              ))}
-                            </div>
-                          ))}
+                          )}
                           {/* Add-an-item affordance — a FOOTER under the
                               section's content (not floating by the header), so
                               it reads as "append to this list": capture a

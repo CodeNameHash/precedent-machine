@@ -473,6 +473,58 @@ export function prettifyEnumValue(key, raw) {
   return raw;
 }
 
+/* ── NotIncludedStrip: shared collapsed-by-default "not included" summary.
+ *    Canonical items a deal's provisions don't cover (termination rights,
+ *    conditions, reps, equity instruments, termination fee types, …) used to
+ *    render as an always-expanded strikethrough pill row. Per FB3 chrome
+ *    feedback, every instance now starts COLLAPSED as a single summary line
+ *    ("N <noun> not included ▸") and expands on click — one shared component
+ *    so the behavior is consistent everywhere it's used.
+ *    `as="tr"` renders inside an existing <table><tbody> (pass `colSpan`);
+ *    the default renders a standalone bordered block for use outside a
+ *    table (e.g. under the Equity Treatment table, or in the TERMF stack). */
+export function NotIncludedStrip({ items, noun, colSpan = 2, as = 'div', title }) {
+  const [expanded, setExpanded] = useState(false);
+  if (!items || items.length === 0) return null;
+  const count = items.length;
+  const summary = count === 1 && /s$/.test(noun)
+    ? `1 ${noun.slice(0, -1)} not included`
+    : `${count} ${noun} not included`;
+  const body = (
+    <>
+      <button
+        type="button"
+        onClick={() => setExpanded((v) => !v)}
+        className="inline-flex items-center gap-1.5 text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider hover:text-inkMid"
+      >
+        <span>{summary}</span>
+        <span className="not-italic normal-case">{expanded ? '▾' : '▸'}</span>
+      </button>
+      {expanded && (
+        <span className="flex flex-wrap gap-1.5 mt-1.5">
+          {items.map((item, i) => (
+            <span
+              key={i}
+              className="inline-flex items-center text-[10px] font-ui px-1.5 py-0.5 rounded border bg-bg/40 text-inkFaint/70 border-border line-through"
+              title={title}
+            >
+              {item}
+            </span>
+          ))}
+        </span>
+      )}
+    </>
+  );
+  if (as === 'tr') {
+    return (
+      <tr className="bg-bg/20">
+        <td colSpan={colSpan} className="px-3 py-2">{body}</td>
+      </tr>
+    );
+  }
+  return <div className="bg-bg/20 border border-border rounded-lg px-3 py-2">{body}</div>;
+}
+
 /* ── Provision Type Colors (pastel backgrounds for highlights) ── */
 const TYPE_COLORS = {
   'MAE':    { bg: 'bg-red-50',     border: 'border-red-200',    text: 'text-red-800',    dot: 'bg-red-400',    hex: '#fef2f2' },
@@ -589,8 +641,10 @@ export const SIDEBAR_GROUPS = [
   { label: 'Termination Rights', types: ['TERMR-M', 'TERMR-B', 'TERMR-T', 'TERMR'], singleType: 'TERMR-M' },
   { label: 'Termination Fees', types: ['TERMF'] },
   { label: 'Other Covenants', types: ['COV'] },
-  { label: 'Definitions', types: ['DEF'] },
   { label: 'Miscellaneous / Boilerplate', types: ['MISC'] },
+  // FB3 chrome: Definitions moved to the bottom of the page (after Misc) —
+  // it's a reference glossary, not something read in document order.
+  { label: 'Definitions', types: ['DEF'] },
   { label: 'Other', types: ['OTHER'] },
 ];
 

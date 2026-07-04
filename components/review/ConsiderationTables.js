@@ -15,10 +15,45 @@ import {
   useShowEvidence,
   Pill,
   REVIEW_LABEL_COL_W,
+  NotIncludedStrip,
 } from './shared';
 import { AddSectionItem } from './AddSectionItem';
 import { buildPerShareParts, resolveInstrumentVesting } from './table-logic';
 import { hasAffirmativeMention } from '../../lib/instrument-negation';
+import { EQUITY_INSTRUMENTS } from '../../lib/taxonomy';
+
+// Aliases so a UI-side text-detected code (singular, e.g. "RSU") or a
+// structured extraction code (matching EQUITY_INSTRUMENTS exactly, e.g.
+// "RSUs") both count as "present" for the same canonical instrument.
+const EQUITY_INSTRUMENT_ALIASES = {
+  STOCK_OPTIONS: ['STOCK_OPTIONS'],
+  RSUs: ['RSUS', 'RSU'],
+  PSUs: ['PSUS', 'PSU'],
+  RESTRICTED_STOCK: ['RESTRICTED_STOCK'],
+  WARRANTS: ['WARRANTS', 'WARRANT'],
+  ESPP: ['ESPP'],
+  CONVERTIBLE_NOTES: ['CONVERTIBLE_NOTES', 'CONVERTIBLE_NOTE'],
+  SARS: ['SARS', 'SAR'],
+  PHANTOM_STOCK: ['PHANTOM_STOCK'],
+  DEFERRED_COMPENSATION: ['DEFERRED_COMPENSATION'],
+};
+
+// FB3 item 8b: equity instruments from the canonical EQUITY_INSTRUMENTS list
+// that this deal's equity rows don't cover — rendered as a collapsed
+// "Equity awards not present" strip under the Equity Treatment table.
+function absentEquityInstrumentLabels(equityRows) {
+  const presentCodes = new Set(
+    (equityRows || []).map((r) =>
+      (isTaggedItem(r.instrument) ? String(r.instrument.code || '') : String(r.instrument || '')).toUpperCase(),
+    ),
+  );
+  return Object.keys(EQUITY_INSTRUMENTS)
+    .filter((key) => {
+      const aliases = EQUITY_INSTRUMENT_ALIASES[key] || [key.toUpperCase()];
+      return !aliases.some((a) => presentCodes.has(a));
+    })
+    .map((key) => EQUITY_INSTRUMENTS[key]);
+}
 
 // Equity-specific column keys: these should NEVER appear in the lower
 // "Conversion of Shares" table (they only make sense for the equity table).
@@ -732,13 +767,19 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
       })()}
 
       {equityRows.length > 0 && (
-        <EquityAwardTable
-          rows={equityRows}
-          onSelectProvision={onSelectProvision}
-          onAddProvision={onAddProvision}
-          optionsCvrEarnInLabel={optionsCvrEarnInLabel}
-          optionsCvrEarnInQuote={optionsCvrEarnInSrc && optionsCvrEarnInSrc.quote}
-        />
+        <>
+          <EquityAwardTable
+            rows={equityRows}
+            onSelectProvision={onSelectProvision}
+            onAddProvision={onAddProvision}
+            optionsCvrEarnInLabel={optionsCvrEarnInLabel}
+            optionsCvrEarnInQuote={optionsCvrEarnInSrc && optionsCvrEarnInSrc.quote}
+          />
+          <NotIncludedStrip
+            noun="equity instruments"
+            items={absentEquityInstrumentLabels(equityRows)}
+          />
+        </>
       )}
 
       {/* Other provisions in this section — only those NOT already surfaced in
@@ -756,7 +797,7 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
         return (
           <div className="bg-bg/40 border border-border rounded-lg px-3 py-2">
             <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider mb-1.5">
-              Other Provisions in this Section
+              Other provisions in this section
             </p>
             <ul className="flex flex-wrap gap-x-3 gap-y-1">
               {leftover.map((p) => (
