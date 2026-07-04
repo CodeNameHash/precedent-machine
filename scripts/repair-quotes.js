@@ -130,6 +130,22 @@ const REPAIRS = [
     find: 'provided, however, that the right to terminate this Agreement under this Section 8.01(b)(i)',
     spanStart: 'provided, further, however, that the right to terminate this agreement under this section 8.01(b)(i)',
   },
+  {
+    deal: 'Anadarko',
+    provision_id: '9a55034e-a3c1-40ef-970b-947fb6845836',
+    note: 'model rewrote the "neither...nor...shall be construed" negation as "shall not be construed" and silently elided the (or to request or authorize the Company...) parenthetical',
+    find: "shall not be construed to require Parent or any of Parent's Subsidiaries to undertake ... any efforts or to take any action if such efforts or action would, or would reasonably be expected to, result in a Substantial Detriment",
+    spanStart: 'neither the provisions of this section 7.1 nor any other provision of this agreement shall be construed to require parent',
+    spanEnd: 'result in a substantial detriment',
+    maxSpan: 700,
+  },
+  {
+    deal: 'Prometheus',
+    provision_id: '850a1d33-64b9-4de8-a37c-6a7fa2221048',
+    note: 'model silently elided "by virtue of the Merger automatically and without any action on the part of the Company, Parent or the holder thereof," (no ellipsis) — fixes both instrumentVesting[2].text and instrumentTreatments[2].text in one pass, since the latter\'s stored text carries the former as its literal prefix',
+    find: 'shall be automatically fully vested',
+    spanStart: 'shall by virtue of the merger automatically and without any action on the part of the company, parent or the holder thereof, be automatically fully vested',
+  },
 ];
 
 /* ── env / CLI ───────────────────────────────────────────────────────────── */
