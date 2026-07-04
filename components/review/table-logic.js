@@ -123,7 +123,13 @@ export function knowledgeQualifierDisplay(raw) {
       if (scope) break;
     }
   }
-  if (scope === 'partial' && !detail && typeof scopeField === 'string') detail = scopeField;
+  // FIX BATCH item 3: the only way `scope === 'partial'` reaches here with
+  // `detail` still null is when `scopeField` WAS the bare enum token 'PARTIAL'
+  // itself (the regex scan above always sets its own `detail` when it fires).
+  // Rendering that enum back out as the "detail" produced the literal
+  // "Partial: PARTIAL" — a raw enum leaking into a UI string. When there's no
+  // actual descriptive text, leave detail null so the caller renders bare
+  // "Partial".
 
   return { label, code, scope, detail, quote };
 }
@@ -495,6 +501,47 @@ export function selectIocGeneralExceptionsItems(rows) {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
+ * FIX BATCH item 1 — IOC General Exceptions: 4th pill dropped.
+ * Metsera's General Exceptions preamble strings together FOUR distinct
+ * carve-outs ("...Company Disclosure Letter ... or otherwise expressly
+ * required by this Agreement ... or required by Law ... or with Parent's
+ * consent"), each tagged with its own EXCEPTION_CODES code
+ * (COMPANY_DISCLOSURE_LETTER / REQUIRED_BY_AGREEMENT / REQUIRED_BY_LAW /
+ * PRIOR_WRITTEN_CONSENT) — but the page's old CODE_ALIAS collapsed
+ * REQUIRED_BY_AGREEMENT into COMPANY_DISCLOSURE_LETTER (a leftover from an
+ * earlier composite-carve-out rule that taxonomy.js itself has since
+ * reversed: REQUIRED_BY_AGREEMENT now has its own distinct label,
+ * "As contemplated by this Agreement"), so only 3 pills ever rendered.
+ * REQUIRED_BY_AGREEMENT must NOT be aliased away — every other alias here
+ * intentionally collapses genuine near-duplicates (the two disclosure-cite
+ * codes, the two consent codes).
+ * ══════════════════════════════════════════════════════════════════════════ */
+export const IOC_EXCEPTION_CODE_ALIAS = {
+  DISCLOSURE_SCHEDULE: 'COMPANY_DISCLOSURE_LETTER',
+  WRITTEN_CONSENT: 'PRIOR_WRITTEN_CONSENT',
+};
+
+/** Collapse near-duplicate exception codes and dedupe by canonical code,
+ *  re-resolving each surviving entry's label from `exceptionCodesDict` (the
+ *  canonical taxonomy dictionary) keyed off the ALIASED code so an aliased
+ *  item reads as its canonical pill's label. entries: [{ code, label, ... }].
+ *  Order-preserving — first occurrence of each canonical code wins. */
+export function dedupeIocExceptionEntries(entries, exceptionCodesDict) {
+  const dict = exceptionCodesDict || {};
+  const seen = new Set();
+  const out = [];
+  for (const entry of (entries || [])) {
+    if (!entry || !entry.code) continue;
+    const canonical = IOC_EXCEPTION_CODE_ALIAS[entry.code] || entry.code;
+    if (seen.has(canonical)) continue;
+    seen.add(canonical);
+    const dictLabel = dict[canonical];
+    out.push({ ...entry, code: canonical, label: dictLabel || entry.label });
+  }
+  return out;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
  * AUDIT FIX BATCH item 4 — IOC negative-covenant row naming.
  * Several deals (Metsera) reuse the SAME raw category text for every
  * sub-clause under a combined article header ("Mergers, Acquisitions,
@@ -520,4 +567,68 @@ export function buildIocRowDisplayLabels(rows) {
     labelByKey.set(r.key, label);
   }
   return labelByKey;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+ * FIX BATCH item 2 (second half) — equity-instrument vesting inheritance.
+ * A CONSID-EQUITY provision can emit MORE outstandingInstruments than
+ * instrumentTreatments/instrumentVesting entries (Metsera: 3 instruments —
+ * Stock Options, Restricted Stock, ESPP — but only 1 instrumentVesting entry,
+ * the options' own double-trigger clause). Naively falling back to the
+ * section-wide `vestingAcceleration` field for every instrument lacking its
+ * OWN positional entry hands that same double-trigger language to RSAs/ESPP
+ * too, which is a different instrument's clause, not theirs — implausible
+ * and lawyer-visible. The section-wide field only unambiguously describes
+ * THIS instrument when it is the section's ONLY instrument; otherwise render
+ * nothing so the caller falls back to "—" instead of guessing.
+ * ══════════════════════════════════════════════════════════════════════════ */
+export function resolveInstrumentVesting(index, vestings, sectionWideVesting, instrumentCount) {
+  const list = Array.isArray(vestings) ? vestings : [];
+  const own = list[index];
+  if (own !== undefined && own !== null) return own;
+  if (instrumentCount === 1) return sectionWideVesting ?? null;
+  return null;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+ * FIX BATCH item 6 — tail-arming scenario truncation.
+ * The tail-arming trigger label is often a single long clause (Metsera:
+ * "Deal is terminated on specified grounds and an alternative takeover
+ * transaction with a bidder that was on the table is consummated, or a
+ * definitive agreement for it is signed and later consummated, within twelve
+ * months" — 218 chars, COMPLETE in storage). A short/aggressive char-count
+ * cutoff lands mid-clause ("...with a bidder that was on the table is…"),
+ * which reads as a dangling, incomplete sentence even though it technically
+ * stopped at a word boundary. Prefer ending at the last CLAUSE boundary
+ * (", " / "; ") within the slice when one exists reasonably far in — that
+ * reads as a complete thought — before falling back to a plain word boundary,
+ * then a hard cut. The full text is always still reachable via hover
+ * (HoverSource quote), so no completion is ever fabricated here.
+ * ══════════════════════════════════════════════════════════════════════════ */
+export function truncateAtWordBoundary(text, max) {
+  const s = String(text || '');
+  if (s.length <= max) return s;
+  const slice = s.slice(0, max);
+  const lastClause = Math.max(slice.lastIndexOf(', '), slice.lastIndexOf('; '));
+  if (lastClause > max * 0.3) {
+    return `${slice.slice(0, lastClause).trim()}…`;
+  }
+  const lastSpace = slice.lastIndexOf(' ');
+  const safe = lastSpace > max * 0.6 ? slice.slice(0, lastSpace) : slice;
+  return `${safe.trim()}…`;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+ * FIX BATCH item 5 — SECTION-LEFTOVER gating.
+ * SECTION-LEFTOVER provisions are internal coverage-plumbing (the 100%-
+ * text-coverage backfill for spans no provision claimed) — useful for an
+ * editor auditing extraction completeness, meaningless (and confusing) to a
+ * reviewer in read-only USER mode. Gate them to edit mode only, at the single
+ * choke point feeding every downstream grouping/sidebar/filter view so the
+ * type never has to be re-excluded per render path.
+ * ══════════════════════════════════════════════════════════════════════════ */
+export function filterProvisionsForViewMode(provisions, isEdit) {
+  const list = Array.isArray(provisions) ? provisions : [];
+  if (isEdit) return list;
+  return list.filter((p) => p && p.type !== 'SECTION-LEFTOVER');
 }

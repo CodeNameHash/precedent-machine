@@ -79,6 +79,7 @@ import {
   Pill,
   REVIEW_LABEL_COL_W,
   CitableHover,
+  prettifyEnumValue,
 } from '../../components/review/shared';
 import { NosolFourTables } from '../../components/review/NosolFourTables';
 import { NoOtherRepsFraudTable } from '../../components/review/NoOtherRepsFraudTable';
@@ -97,6 +98,9 @@ import {
   buildAocCitedCovenantsText,
   selectIocGeneralExceptionsItems,
   buildIocRowDisplayLabels,
+  dedupeIocExceptionEntries,
+  truncateAtWordBoundary,
+  filterProvisionsForViewMode,
 } from '../../components/review/table-logic';
 import { ConsidTable } from '../../components/review/ConsiderationTables';
 import { Sidebar } from '../../components/review/Sidebar';
@@ -2310,28 +2314,13 @@ function IocGeneralExceptionsTableSingle({ iocProvisions, generalExceptionsProv,
   // skipped — they're sub-clause-specific carve-outs and belong with their
   // negative covenant, not the section-wide General Exceptions box.
   const positiveList = useMemo(() => {
-    const seen = new Set();
-    const out = [];
-    // P9: collapse near-synonymous EXCEPTION_CODES into a single canonical
-    // pill so existing data (where the AI split "Letter or otherwise required
-    // by Agreement" into two tagged items) reads as ONE "As disclosed" pill
-    // rather than two near-identical pills. Same for the two "consent" codes.
-    const CODE_ALIAS = {
-      REQUIRED_BY_AGREEMENT: 'COMPANY_DISCLOSURE_LETTER',
-      DISCLOSURE_SCHEDULE: 'COMPANY_DISCLOSURE_LETTER',
-      WRITTEN_CONSENT: 'PRIOR_WRITTEN_CONSENT',
-    };
-    const push = (entry) => {
-      const canonical = CODE_ALIAS[entry.code] || entry.code;
-      if (!canonical || seen.has(canonical)) return;
-      seen.add(canonical);
-      // Re-resolve the label from the canonical code so aliased items read
-      // as the canonical pill label ("As disclosed") rather than the
-      // original code's label ("As contemplated by this Agreement").
-      const dictLabel = EXCEPTION_CODES[canonical];
-      const finalLabel = dictLabel || entry.label;
-      out.push({ ...entry, code: canonical, label: finalLabel });
-    };
+    const raw = [];
+    // Item 1 fix: collapsing/deduping now runs ONCE at the end via the pure
+    // dedupeIocExceptionEntries (table-logic.js) — collect every raw entry
+    // here unfiltered so a genuinely distinct code (e.g. REQUIRED_BY_AGREEMENT)
+    // is never dropped by an earlier ad-hoc alias map. See that function's
+    // header comment for why REQUIRED_BY_AGREEMENT must NOT be aliased away.
+    const push = (entry) => { raw.push(entry); };
 
     // 1. Items from the positive preamble provision (the IOC intro). Accept
     //    ALL of its permittedExceptions (it IS the preamble — no scope filter
@@ -2410,7 +2399,7 @@ function IocGeneralExceptionsTableSingle({ iocProvisions, generalExceptionsProv,
       }
     }
 
-    return out;
+    return dedupeIocExceptionEntries(raw, EXCEPTION_CODES);
   }, [iocProvisions, generalExceptionsProv, negativeProv, positiveProv]);
 
   // Negative-side exception list comes from the IOC-NEGATIVE-PREAMBLE
@@ -3603,7 +3592,7 @@ function formatCellValue(featureKey, raw) {
           const label = resolveTaggedLabel(featureKey, item);
           return label || item.code;
         }
-        return String(item);
+        return prettifyEnumValue(featureKey, String(item));
       })
       .join('; ');
   }
@@ -3617,7 +3606,12 @@ function formatCellValue(featureKey, raw) {
   }
   const v = formatFeatureValue(raw);
   if (v === null || v === undefined || v === '') return null;
-  return String(v);
+  // FIX BATCH item 4: this is the generic per-provision feature-cell path
+  // (distinct from renderSummaryRowValue's NosolFourTables path) — route any
+  // bare enum-shaped string through the same taxonomy-lookup + humanize
+  // fallback so no raw code (e.g. "RBE_NOT_TO", "POSITIVE_ONLY") can leak
+  // through here either.
+  return prettifyEnumValue(featureKey, String(v));
 }
 
 
@@ -5140,18 +5134,8 @@ function parseTailTriggerClauses(clauses) {
   return out;
 }
 
-// Audit fix batch item 6: truncate at the nearest word boundary at-or-before
-// `max`, never mid-word ("…Company Takeover Propo…"). Callers should also
-// wrap the result in a HoverSource carrying the untruncated text so the full
-// clause is always reachable, not just guessable from the cut-off fragment.
-function truncateAtWordBoundary(text, max) {
-  const s = String(text || '');
-  if (s.length <= max) return s;
-  const slice = s.slice(0, max);
-  const lastSpace = slice.lastIndexOf(' ');
-  const safe = lastSpace > max * 0.6 ? slice.slice(0, lastSpace) : slice;
-  return `${safe.trim()}…`;
-}
+// truncateAtWordBoundary now lives in table-logic.js (fix batch item 6 —
+// clause-boundary-aware truncation, testable without a JSX harness).
 
 /* TermfTailMechanics — only renders when tailFeeWindowMonths is populated. */
 function TermfTailMechanics({ provisions, allProvisions }) {
@@ -5305,7 +5289,7 @@ function TermfTailMechanics({ provisions, allProvisions }) {
                   <ul className="space-y-0.5">
                     {activating.map((c, i) => (
                       <li key={i}>
-                        <HoverSource quote={c}>{truncateAtWordBoundary(c, 120)}</HoverSource>
+                        <HoverSource quote={c}>{truncateAtWordBoundary(c, 200)}</HoverSource>
                       </li>
                     ))}
                   </ul>
@@ -9143,11 +9127,15 @@ export default function ReviewPage() {
   const [statusOverrides, setStatusOverrides] = useState({});
 
   const provisions = useMemo(() => {
-    return rawProvisions.map(p => ({
+    // Fix batch item 5: SECTION-LEFTOVER (internal coverage plumbing — text
+    // not claimed by any provision) is edit-mode-only. Filtering here, at the
+    // single choke point every downstream grouping/sidebar/filter view reads
+    // from, means the type never needs re-excluding per render path.
+    return filterProvisionsForViewMode(rawProvisions, isEdit).map(p => ({
       ...p,
       _status: statusOverrides[p.id] || 'unreviewed',
     }));
-  }, [rawProvisions, statusOverrides]);
+  }, [rawProvisions, statusOverrides, isEdit]);
 
   /* ── Sidebar filter state ── */
   const [activeFilter, setActiveFilter] = useState(null);

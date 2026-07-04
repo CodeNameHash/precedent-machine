@@ -17,7 +17,8 @@ import {
   REVIEW_LABEL_COL_W,
 } from './shared';
 import { AddSectionItem } from './AddSectionItem';
-import { buildPerShareParts } from './table-logic';
+import { buildPerShareParts, resolveInstrumentVesting } from './table-logic';
+import { hasAffirmativeMention } from '../../lib/instrument-negation';
 
 // Equity-specific column keys: these should NEVER appear in the lower
 // "Conversion of Shares" table (they only make sense for the equity table).
@@ -138,7 +139,13 @@ export function buildEquityRows(equityProvisions) {
           instrument: inst,
           outstandingCount: f.outstandingCount ?? null,
           treatment: treatments[i] ?? null,
-          vesting: vestings[i] ?? f.vestingAcceleration ?? null,
+          // Fix batch item 2: only fall back to the section-wide vesting
+          // field when THIS instrument has no paired entry of its own AND
+          // it's the section's only instrument — otherwise a different
+          // instrument's vesting language (e.g. options' own double-trigger
+          // clause) silently "inherits" onto RSAs/ESPP rows that never had
+          // their own vesting extracted. See resolveInstrumentVesting.
+          vesting: resolveInstrumentVesting(i, vestings, f.vestingAcceleration, insts.length),
           cashOut: f.cashOutAmount ?? f.optionSpread ?? null,
           cutoff: f.cutoffDate ?? null,
         });
@@ -152,9 +159,15 @@ export function buildEquityRows(equityProvisions) {
     // now an AUGMENT step, not a mutually-exclusive fallback — it only runs
     // for instruments this provision hasn't already produced a row for, so a
     // structured instrument never gets a duplicate text-derived row.
+    //
+    // Fix batch item 2: a bare name hit is not evidence the instrument is
+    // actually outstanding — merger agreements routinely name an instrument
+    // only to negate its existence ("no ... stock appreciation rights ...
+    // issued or outstanding" is standard capitalization-rep boilerplate).
+    // Only count a match whose containing sentence does NOT negate it.
     const text = String(p?.full_text || '');
     const found = text
-      ? EQUITY_TEXT_PATTERNS.filter(({ re, code }) => re.test(text) && !structuredCodes.has(code))
+      ? EQUITY_TEXT_PATTERNS.filter(({ re, code }) => !structuredCodes.has(code) && hasAffirmativeMention(re, text))
       : [];
     if (!hasStructuredRow && found.length === 0) {
       rows.push({
@@ -178,7 +191,11 @@ export function buildEquityRows(equityProvisions) {
           instrument: { code, label },
           outstandingCount: null,
           treatment: null,
-          vesting: f.vestingAcceleration ?? null,
+          // Fix batch item 2: text-detected instruments never had a genuine
+          // per-instrument vesting extracted — never inherit the section-wide
+          // field (that's another instrument's language, e.g. the options'
+          // double-trigger clause showing up verbatim on an ESPP row).
+          vesting: null,
           cashOut: f.cashOutAmount ?? f.optionSpread ?? null,
           cutoff: f.cutoffDate ?? null,
         });
