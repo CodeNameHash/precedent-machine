@@ -1689,7 +1689,11 @@ function EmployeeBenefitsTreatmentTable({ summary, onSelectProvision }) {
           <tbody className="divide-y divide-border">
             {rows.map((row, i) => (
               <tr key={i} className="hover:bg-bg/40 transition-colors align-top">
-                <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">{row.label}</td>
+                <td className="px-3 py-2 text-ink font-medium whitespace-nowrap">
+                  <TermCell provision={row.source} quote={row.source && row.source.full_text}>
+                    {row.label}
+                  </TermCell>
+                </td>
                 <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
                   {row.source && onSelectProvision ? (
                     <button
@@ -2062,15 +2066,13 @@ function IocAffirmativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelec
               return (
                 <tr key={bucket.code} className="hover:bg-bg/40 transition-colors align-top">
                   <td className={`px-3 py-2 text-ink font-medium whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>
-                    <HoverSource quote={rowQuote}>
-                      <button
-                        type="button"
-                        onClick={() => onSelectProvision && onSelectProvision(provision)}
-                        className="text-left text-accent hover:underline font-medium"
-                      >
-                        {bucket.name}
-                      </button>
-                    </HoverSource>
+                    <TermCell provision={provision} quote={rowQuote}>
+                      <HoverSource quote={rowQuote}>
+                        <span className="text-left text-accent hover:underline font-medium">
+                          {bucket.name}
+                        </span>
+                      </HoverSource>
+                    </TermCell>
                   </td>
                   <td className="px-3 py-2 text-ink">
                     {renderCodePills(stdCodes, IOC_AFFIRMATIVE_STANDARDS, rowQuote)}
@@ -2771,15 +2773,13 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
               return (
                 <tr key={p.id} className="align-top hover:bg-bg/40">
                   <td className="px-3 py-2 text-ink font-medium">
-                    <HoverSource quote={rowQuote}>
-                      <button
-                        type="button"
-                        onClick={() => onSelectProvision && onSelectProvision(p)}
-                        className="text-left text-accent hover:underline font-medium"
-                      >
-                        {displayLabelFor(p)}
-                      </button>
-                    </HoverSource>
+                    <TermCell provision={p} quote={rowQuote}>
+                      <HoverSource quote={rowQuote}>
+                        <span className="text-left text-accent hover:underline font-medium">
+                          {displayLabelFor(p)}
+                        </span>
+                      </HoverSource>
+                    </TermCell>
                   </td>
                   <td className="px-3 py-2 text-ink">
                     <HoverSource quote={rowQuote} as="div">
@@ -3965,13 +3965,11 @@ function StructTable({ provisions, onSelectProvision }) {
                     <span className="text-ink font-medium">{displayCategory}</span>
                   )
                 ) : (
-                  <button
-                    type="button"
-                    onClick={() => onSelectProvision && onSelectProvision(p)}
-                    className="text-left text-accent hover:underline font-medium"
-                  >
-                    {displayCategory}
-                  </button>
+                  <TermCell provision={p} quote={rowQuote}>
+                    <span className="text-left text-accent hover:underline font-medium">
+                      {displayCategory}
+                    </span>
+                  </TermCell>
                 )}
               </td>
               <td
@@ -4846,6 +4844,7 @@ function TermfTriggerMatrix({ provisions, allProvisions, deal }) {
       rows.push({
         spec: { key: `trigger-${dedupKey}`, label: name },
         matched: { full_text: t.sourceText || p.full_text || '' },
+        provision: p,
         clauses,
         party: t.party || null,
         fee,
@@ -4860,7 +4859,7 @@ function TermfTriggerMatrix({ provisions, allProvisions, deal }) {
       const f = matched ? getStructuredFeatures(matched) : null;
       const clauses = matched ? termfExtractClauseRefs(matched, f) : [];
       const fee = matched ? termfTriggerFee(spec, matched, f, headlineFee) : null;
-      return { spec, matched, clauses, fee };
+      return { spec, matched, provision: matched, clauses, fee };
     });
   }
 
@@ -4964,19 +4963,17 @@ function TermfTriggerMatrix({ provisions, allProvisions, deal }) {
               return (
                 <tr key={row.spec.key} className="align-top hover:bg-bg/40">
                   <td className="px-3 py-2 text-ink">
-                    <HoverSource quote={quote} as="div">
+                    <TermCell provision={row.provision || row.matched} quote={quote}>
+                    <HoverSource quote={quote} as="span">
                       {clickable ? (
-                        <button
-                          type="button"
-                          onClick={() => showEvidence(quote)}
-                          className="text-left text-accent hover:underline font-medium"
-                        >
+                        <span className="text-left text-accent hover:underline font-medium">
                           {row.spec.label}
-                        </button>
+                        </span>
                       ) : (
                         <span className="font-medium text-ink">{row.spec.label}</span>
                       )}
                     </HoverSource>
+                    </TermCell>
                   </td>
                   <td className="px-3 py-2 text-ink whitespace-nowrap">
                     {row.party || <span className="italic text-inkFaint">—</span>}
@@ -4992,7 +4989,11 @@ function TermfTriggerMatrix({ provisions, allProvisions, deal }) {
                 included" strip (FB3 item 8c) instead of an inline "No" row. */}
             {nakedPresent && (
               <tr className="align-top hover:bg-bg/40">
-                <td className="px-3 py-2 text-ink font-medium">Naked no-vote fee</td>
+                <td className="px-3 py-2 text-ink font-medium">
+                  <TermCell provision={nakedHit && nakedHit.provision} quote={nakedHit && evidenceQuote(nakedHit.value, { provision: nakedHit.provision })}>
+                    Naked no-vote fee
+                  </TermCell>
+                </td>
                 <td className="px-3 py-2 text-inkFaint whitespace-nowrap">—</td>
                 <td className="px-3 py-2 whitespace-nowrap">
                   <Pill text={nakedAmount || 'Yes'} tone="amount" />
@@ -5122,11 +5123,15 @@ function TermfTailMechanics({ provisions, allProvisions }) {
     }
     return String(thresholdInner);
   })();
-  const Row = ({ label, children, quote }) => {
+  const Row = ({ label, children, quote, provision }) => {
     const clickable = !!(quote && showEvidence);
     return (
       <tr className="align-top hover:bg-bg/40">
-        <td className={`px-3 py-2 text-ink font-medium whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>{label}</td>
+        <td className={`px-3 py-2 text-ink font-medium whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>
+          <TermCell provision={provision} quote={quote}>
+            {label}
+          </TermCell>
+        </td>
         <td
           className={`px-3 py-2 text-ink ${clickable ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
           onClick={clickable ? () => showEvidence(quote) : undefined}
@@ -5146,12 +5151,13 @@ function TermfTailMechanics({ provisions, allProvisions }) {
       </div>
       <table className="min-w-full text-xs font-ui">
         <tbody className="divide-y divide-border">
-          <Row label="Tail window" quote={termfFirstQuote(combined.tailFeeWindowMonths)}>
+          <Row label="Tail window" quote={termfFirstQuote(combined.tailFeeWindowMonths)} provision={source}>
             {windowDisplay}
           </Row>
           <Row
             label="Threshold % for Company Takeover (tail)"
             quote={termfFirstQuote(combined.tailFeeThresholdPct)}
+            provision={source}
           >
             {thresholdDisplay ? (
               <span>{thresholdDisplay}</span>
@@ -5159,7 +5165,7 @@ function TermfTailMechanics({ provisions, allProvisions }) {
               <span className="italic text-inkFaint">Not specified</span>
             )}
           </Row>
-          <Row label="Termination scenarios that arm the tail" quote={activating.join('\n\n') || null}>
+          <Row label="Termination scenarios that arm the tail" quote={activating.join('\n\n') || null} provision={source}>
             {(() => {
               // Plain-English scenario labels only — the § reference chip
               // (font-mono, citation-styled) is dropped per the table design
@@ -5185,7 +5191,7 @@ function TermfTailMechanics({ provisions, allProvisions }) {
               return <span className="italic text-inkFaint">Not specified</span>;
             })()}
           </Row>
-          <Row label="Triggering proposal (same vs any)" quote={termfFirstQuote(combined.tailFeeSameProposalRequired)}>
+          <Row label="Triggering proposal (same vs any)" quote={termfFirstQuote(combined.tailFeeSameProposalRequired)} provision={source}>
             {proposalScopeLabel || <span className="italic text-inkFaint">Not specified</span>}
           </Row>
         </tbody>
@@ -5206,8 +5212,12 @@ function TermfRemedyEffect({ provisions }) {
   // Combine features across the TERMF provisions (each fee-type is its own
   // provision, so the remedy / effect facts are spread across several).
   let combined = {};
+  const sourceByKey = {};
   for (const p of provisions || []) {
     const f = getStructuredFeatures(p) || {};
+    for (const [key, value] of Object.entries(f)) {
+      if (sourceByKey[key] === undefined && !isEmptyValue(value)) sourceByKey[key] = p;
+    }
     combined = { ...combined, ...f };
   }
 
@@ -5262,11 +5272,15 @@ function TermfRemedyEffect({ provisions }) {
   const hasAny = soleBool || soleText || exceptions.length > 0 || effect || interestText || expenseCap || expenseTriggers.length > 0;
   if (!hasAny) return null;
 
-  const Row = ({ label, children, quote }) => {
+  const Row = ({ label, children, quote, provision }) => {
     const clickable = !!(quote && showEvidence);
     return (
       <tr className="align-top hover:bg-bg/40">
-        <td className={`px-3 py-2 text-ink font-medium whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>{label}</td>
+        <td className={`px-3 py-2 text-ink font-medium whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>
+          <TermCell provision={provision} quote={quote}>
+            {label}
+          </TermCell>
+        </td>
         <td
           className={`px-3 py-2 text-ink ${clickable ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
           onClick={clickable ? () => showEvidence(quote) : undefined}
@@ -5287,12 +5301,12 @@ function TermfRemedyEffect({ provisions }) {
       <table className="min-w-full text-xs font-ui">
         <tbody className="divide-y divide-border">
           {(soleBool || soleText) && (
-            <Row label="Sole &amp; exclusive remedy" quote={soleText || quoteOf(soleRaw)}>
+            <Row label="Sole &amp; exclusive remedy" quote={soleText || quoteOf(soleRaw)} provision={sourceByKey.soleAndExclusiveRemedy || sourceByKey.feeSoleAndExclusiveRemedy || sourceByKey.soleRemedy}>
               {soleBool ? 'Yes' : 'No'}
             </Row>
           )}
           {exceptions.length > 0 && (
-            <Row label="Fraud / Willful-Breach exception" quote={exceptions.join('\n\n')}>
+            <Row label="Fraud / Willful-Breach exception" quote={exceptions.join('\n\n')} provision={sourceByKey.feeSoleRemedyExceptions || sourceByKey.willfulBreachException}>
               Yes — carved out of the fee/sole-remedy bar
             </Row>
           )}
@@ -5309,12 +5323,12 @@ function TermfRemedyEffect({ provisions }) {
             </tr>
           )}
           {interestText && (
-            <Row label="Interest on late payment">
+            <Row label="Interest on late payment" provision={sourceByKey.interestOnLatePayment}>
               {interestText}
             </Row>
           )}
           {(expenseCap || expenseTriggers.length > 0) && (
-            <Row label="Expense reimbursement">
+            <Row label="Expense reimbursement" provision={sourceByKey.expenseReimbursementCap || sourceByKey.expenseReimbursement}>
               {expenseCap && <Pill text={`Cap: ${expenseCap}`} tone="amount" />}
               {expenseTriggers.length > 0 && (
                 <div className="text-[11px] text-inkMid mt-1">{expenseTriggers.join(', ')}</div>
@@ -5695,10 +5709,12 @@ function TermrRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
                     {presentFamRows.map((row) => (
                       <tr key={row.spec.key} className="align-top hover:bg-bg/40">
                         <Cell quote={row.quote} className="font-medium">
-                          <span className="inline-flex items-center gap-2">
-                            {termrDot}
-                            {row.spec.label}
-                          </span>
+                          <TermCell provision={row.prov} quote={row.quote}>
+                            <span className="inline-flex items-center gap-2">
+                              {termrDot}
+                              {row.spec.label}
+                            </span>
+                          </TermCell>
                         </Cell>
                         <Cell quote={row.quote}>
                           {row.terms.length > 0
@@ -5738,7 +5754,11 @@ function TermrRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
           <table className="min-w-full text-xs font-ui">
             <tbody className="divide-y divide-border">
               <tr className="align-top hover:bg-bg/40">
-                <td className={`px-3 py-2 text-ink font-medium whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>Standard</td>
+                <td className={`px-3 py-2 text-ink font-medium whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>
+                  <TermCell provision={outsideProv} quote={faultText}>
+                    Standard
+                  </TermCell>
+                </td>
                 <td
                   className={`px-3 py-2 text-ink ${faultText && showEvidence ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
                   onClick={faultText && showEvidence ? () => showEvidence(faultText) : undefined}
@@ -6949,34 +6969,21 @@ function RepMaterialContractsTable({ provisions, onSelectProvision }) {
                     <div className="flex items-start gap-2">
                       <span className="text-inkFaint/60 font-mono text-[10px] mt-0.5 shrink-0">{romanizeLower(idx + 1)}</span>
                       <div className="min-w-0">
-                        <HoverSource quote={quote} as="div">
-                          {row.isCanonical ? (
-                            // Canonical bucket → render as just the pill (clickable to source).
-                            clickable ? (
-                              <button
-                                type="button"
-                                onClick={() => showEvidence(quote)}
-                                className="inline-flex items-center text-[11px] font-ui font-medium px-1.5 py-0.5 rounded border bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100 cursor-pointer"
-                              >
-                                {row.canonicalLabel}
-                              </button>
-                            ) : (
-                              <span className="inline-flex items-center text-[11px] font-ui font-medium px-1.5 py-0.5 rounded border bg-indigo-50 text-indigo-700 border-indigo-200">
-                                {row.canonicalLabel}
-                              </span>
-                            )
-                          ) : clickable ? (
-                            <button
-                              type="button"
-                              onClick={() => showEvidence(quote)}
-                              className="text-left text-accent hover:underline font-medium"
-                            >
-                              {row.label}
-                            </button>
-                          ) : (
-                            <span className="text-ink font-medium">{row.label}</span>
-                          )}
-                        </HoverSource>
+	                        <TermCell provision={source} quote={quote || (source && source.full_text)}>
+	                        <HoverSource quote={quote} as="span">
+	                          {row.isCanonical ? (
+	                            <span className="inline-flex items-center text-[11px] font-ui font-medium px-1.5 py-0.5 rounded border bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100">
+	                              {row.canonicalLabel}
+	                            </span>
+	                          ) : clickable ? (
+	                            <span className="text-left text-accent hover:underline font-medium">
+	                              {row.label}
+	                            </span>
+	                          ) : (
+	                            <span className="text-ink font-medium">{row.label}</span>
+	                          )}
+	                        </HoverSource>
+	                        </TermCell>
                       </div>
                     </div>
                   </td>
@@ -7466,11 +7473,13 @@ function CondSingleTable({ allProvisions, onSelectProvision }) {
                       {/* fb2 block 3a: status dot bullet (same visual as the
                           reps rows) on every condition row. */}
                       <td className={`px-3 py-2 text-ink font-medium whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>
-                        {primary && onSelectProvision ? (
-                          <button type="button" onClick={() => onSelectProvision(primary)} className="text-left text-accent hover:underline font-medium inline-flex items-center gap-2">
-                            {famDot}
-                            {row.label}
-                          </button>
+                        {primary ? (
+                          <TermCell provision={primary} quote={quote}>
+                            <span className="text-left text-accent hover:underline font-medium inline-flex items-center gap-2">
+                              {famDot}
+                              {row.label}
+                            </span>
+                          </TermCell>
                         ) : (
                           <span className="inline-flex items-center gap-2">
                             {famDot}
@@ -7643,7 +7652,9 @@ function MaeSinglePartySummary({ provision, partyLabel, onSelectProvision }) {
                       <td className="px-3 py-2 whitespace-normal break-words">
                         <div className="flex items-center gap-1.5 flex-wrap">
                           {isTaggedItem(c) && c.code ? <CodeBadge code={c.code} /> : null}
-                          <span className="text-ink font-medium">{label}</span>
+                          <TermCell provision={provision} quote={quote || provision.full_text}>
+                            <span className="text-ink font-medium">{label}</span>
+                          </TermCell>
                         </div>
                         {subjectToDisp && (
                           <span
@@ -7773,13 +7784,11 @@ function CellWithSource({ provision, featureKey, raw, isEmpty, children, classNa
  */
 function AocTermCell({ provision, features, onSelectProvision }) {
   const pills = buildAocTermPills(features);
+  const quote = termCellHoverQuote(provision);
   return (
     <td className="px-3 py-2 align-top whitespace-normal break-words sticky left-0 bg-white z-10">
-      <button
-        type="button"
-        onClick={() => onSelectProvision && onSelectProvision(provision)}
-        className="text-left text-accentDeep hover:underline font-semibold inline-flex items-center gap-2 mb-1"
-      >
+      <TermCell provision={provision} quote={quote}>
+      <span className="text-left text-accentDeep hover:underline font-semibold inline-flex items-center gap-2 mb-1">
         <span
           style={{
             display: 'inline-block',
@@ -7791,7 +7800,8 @@ function AocTermCell({ provision, features, onSelectProvision }) {
           }}
         />
         {provision.category || 'General'}
-      </button>
+      </span>
+      </TermCell>
       {pills.length > 0 ? (
         <div className="flex items-center gap-1 flex-wrap">
           {pills.map((p) => (
@@ -7875,7 +7885,9 @@ function DefaultFeatureRow({ label, provisions, keys }) {
   return (
     <tr className="hover:bg-bg/40 transition-colors align-top">
       <td className={`px-3 py-2 whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>
-        <span className="text-ink font-medium">{label}</span>
+        <TermCell provision={hit && hit.provision} quote={quote}>
+          <span className="text-ink font-medium">{label}</span>
+        </TermCell>
       </td>
       <td
         className={`px-3 py-2 text-ink whitespace-pre-wrap break-words ${clickable ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
@@ -8557,12 +8569,9 @@ function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, a
                       (HoverSource quote={termCellHoverQuote(p)}) is asserted
                       by tests/reps-table-display.test.js — do not remove. */}
                   <td className="px-3 py-2 align-top whitespace-normal break-words sticky left-0 bg-white z-10">
-                    <HoverSource quote={termCellHoverQuote(p)}>
-                      <button
-                        type="button"
-                        onClick={() => onSelectProvision && onSelectProvision(p)}
-                        className="text-left text-accentDeep hover:underline font-semibold inline-flex items-center gap-2"
-                      >
+                    <TermCell provision={p} quote={termCellHoverQuote(p)}>
+                      <HoverSource quote={termCellHoverQuote(p)}>
+                        <span className="text-left text-accentDeep hover:underline font-semibold inline-flex items-center gap-2">
                         <span
                           style={{
                             display: 'inline-block',
@@ -8574,8 +8583,9 @@ function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, a
                           }}
                         />
                         {p.category || 'General'}
-                      </button>
-                    </HoverSource>
+                        </span>
+                      </HoverSource>
+                    </TermCell>
                   </td>
                   {columns.map((k) => {
                     const raw = features[k];
