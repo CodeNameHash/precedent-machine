@@ -405,3 +405,119 @@ export function buildOutsideDateExtensionDetail(features) {
     ? `${lead} — available only if all other conditions remain capable of satisfaction`
     : lead;
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+ * AUDIT FIX BATCH item 1 — REP-T/REP-B "Specific Features" cell: AoC (Absence
+ * of Changes) "no MAE since [date]" limb + cited-covenant cross-references.
+ * These two fields (aocNoMaePresent/aocNoMaeSinceDate, aocCitedCovenantNames)
+ * used to leak as raw per-row COLUMNS on the reps table (aocCitedCovenantNames
+ * is an array of {section, name} objects, which the generic cell stringifier
+ * rendered as "[object Object]"). They belong inside the AoC rep's Specific
+ * Features cell instead, with dedicated text-builders — pure text-shaping so
+ * the wiring itself is unit-testable without a JSX harness (pages/review/
+ * [id].js wraps the returned string in a HoverSource).
+ * ══════════════════════════════════════════════════════════════════════════ */
+
+// hasLimb: unwrapped aocNoMaePresent boolean. sinceDate: unwrapped
+// aocNoMaeSinceDate string (verbatim, e.g. "January 1, 2025").
+export function buildAocNoMaeLimbText(hasLimb, sinceDate) {
+  if (!hasLimb) return null;
+  const dateText = (typeof sinceDate === 'string' && sinceDate.trim()) ? sinceDate.trim() : null;
+  return dateText ? `No MAE since ${dateText}` : 'No MAE since [date not specified]';
+}
+
+// citedCovenants: unwrapped aocCitedCovenantNames — array of { section, name }
+// (post-pass resolved, never AI-populated); name null → section alone.
+export function buildAocCitedCovenantsText(citedCovenants) {
+  const list = Array.isArray(citedCovenants) ? citedCovenants : [];
+  const text = list
+    .map((item) => {
+      if (item && typeof item === 'object') {
+        const section = item.section ? String(item.section).trim() : '';
+        const name = item.name ? String(item.name).trim() : '';
+        return name ? `${section} ${name}`.trim() : section;
+      }
+      return String(item).trim();
+    })
+    .filter(Boolean)
+    .join(', ');
+  return text || null;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+ * AUDIT FIX BATCH item 3 — IOC General Exceptions source selection.
+ * Some deals (Metsera) split their IOC preamble into party-suffixed
+ * sub-clause rows (typed IOC-T/IOC-B) plus a SEPARATE bare-IOC "General
+ * Exceptions" consolidated row. The old source-selection only accepted a
+ * row's structured permittedExceptions/generalExceptions when it was exactly
+ * `positiveProv` (found via isPreambleProvision(), category === "Preamble" /
+ * "General/Preamble") — a bare "General Exceptions"-categorized row never
+ * matched, so its structured pills were skipped and the raw full_text
+ * regex-splitter fallback ran instead, producing a raw mid-sentence blob.
+ * This pure selector mirrors the real per-provision decision so it's testable
+ * without a JSX harness — pages/review/[id].js still does the isTaggedItem /
+ * resolveTaggedLabel taxonomy resolution on the returned raw items.
+ * ══════════════════════════════════════════════════════════════════════════ */
+export function selectIocGeneralExceptionsItems(rows) {
+  // rows: [{ isNegativePreamble, isPositivePreamble, isGeneralExceptionsRow,
+  //          permittedExceptions, generalExceptions, source }]
+  // `source` is opaque (a provision object in [id].js, a plain id in tests) —
+  // this function never inspects it, only carries it through onto each
+  // returned item so the caller can still attribute a pill to its provision
+  // (hover/click-to-source) without this pure selector needing to know what
+  // a "provision" looks like.
+  const items = []; // [{ item, source }]
+  let generalExceptionsRowContributed = false;
+  for (const r of (rows || [])) {
+    if (r.isNegativePreamble) continue;
+    const include = !!r.isPositivePreamble || !!r.isGeneralExceptionsRow;
+    const list = Array.isArray(r.permittedExceptions) ? r.permittedExceptions : [];
+    for (const item of list) {
+      const scope = item && typeof item === 'object' ? item.scope : null;
+      if (include || scope === 'preamble') {
+        items.push({ item, source: r.source });
+        if (r.isGeneralExceptionsRow) generalExceptionsRowContributed = true;
+      }
+    }
+    if (include) {
+      const ge = Array.isArray(r.generalExceptions) ? r.generalExceptions : null;
+      if (ge && ge.length > 0) {
+        for (const item of ge) items.push({ item, source: r.source });
+        if (r.isGeneralExceptionsRow) generalExceptionsRowContributed = true;
+      }
+    }
+  }
+  // The raw full_text regex-splitter fallback must be skipped once the
+  // general-exceptions row has already contributed structured items — running
+  // it anyway would duplicate the clean pills with a raw-text blob of the
+  // same data (the audit-fix-batch item 3 symptom).
+  return { items, skipTextFallback: generalExceptionsRowContributed };
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+ * AUDIT FIX BATCH item 4 — IOC negative-covenant row naming.
+ * Several deals (Metsera) reuse the SAME raw category text for every
+ * sub-clause under a combined article header ("Mergers, Acquisitions,
+ * Dispositions" x3, "Indebtedness" x2) — even though each row already
+ * carries its OWN resolved canonical code. Build the display label from that
+ * code's canonical taxonomy label; if rows still collide after that, append
+ * the row's own section-number pill as a final disambiguator. Never touches
+ * stored data — display only.
+ * ══════════════════════════════════════════════════════════════════════════ */
+export function buildIocRowDisplayLabels(rows) {
+  // rows: [{ key, canonicalLabel, fallbackLabel, sectionNumber }]
+  const counts = new Map();
+  for (const r of (rows || [])) {
+    const l = r.canonicalLabel || r.fallbackLabel || 'General';
+    counts.set(l, (counts.get(l) || 0) + 1);
+  }
+  const labelByKey = new Map();
+  for (const r of (rows || [])) {
+    const base = r.canonicalLabel || r.fallbackLabel || 'General';
+    const label = (counts.get(base) || 0) <= 1
+      ? base
+      : (r.sectionNumber ? `${base} — ${r.sectionNumber}` : base);
+    labelByKey.set(r.key, label);
+  }
+  return labelByKey;
+}
