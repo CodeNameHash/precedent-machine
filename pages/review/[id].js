@@ -115,6 +115,9 @@ import {
   buildFeeExpenseSentence,
   dedupeTexts,
   deriveKnowledgeHeader,
+  displayTypeForProvision,
+  compactDoValue,
+  numericDollarOnly,
 } from '../../components/review/table-logic';
 import { ConsidTable } from '../../components/review/ConsiderationTables';
 import { Sidebar } from '../../components/review/Sidebar';
@@ -148,8 +151,9 @@ const REP_ROW_DOT_GREEN = typeHex('REP-T');
    Mutual → Buyer → Target ordering for the TERMR party-specific groups. */
 function groupProvisionsByType(provs) {
   const groups = {};
+  const all = Array.isArray(provs) ? provs : [];
   provs.forEach(p => {
-    const t = p.type || 'Other';
+    const t = displayTypeForProvision(p, all);
     if (!groups[t]) groups[t] = [];
     groups[t].push(p);
   });
@@ -4616,7 +4620,15 @@ function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision, hide
                         <HoverSource quote={quote} as="div">
                           {customNode !== null && customNode !== undefined
                             ? customNode
-                            : renderSummaryRowValue(row.hit, row.lookupKey)}
+                            : (() => {
+                                const hitCode = row.hit && row.hit.provision
+                                  ? String(((getAiMetadata(row.hit.provision) || {}).code || row.hit.provision.code || ''))
+                                  : '';
+                                const compact = type === 'COV' && hitCode === 'COV-DO'
+                                  ? compactDoValue(row.lookupKey, row.hit.value)
+                                  : null;
+                                return compact || renderSummaryRowValue(row.hit, row.lookupKey);
+                              })()}
                         </HoverSource>
                       </td>
                     </tr>
@@ -4801,7 +4813,7 @@ function termfTriggerFee(spec, prov, features, fallback) {
       if (m) {
         const fa = t.feeAmount || t.fee_amount;
         const pct = t.feeAmountPct || t.fee_amount_pct;
-        if (fa) return String(fa);
+        if (fa) return numericDollarOnly(fa);
         if (pct) return `${pct}%`;
       }
     }
@@ -4822,7 +4834,7 @@ function TermfTriggerMatrix({ provisions, allProvisions, deal }) {
   const headlineHit = pickFirstNonEmpty(provisions, ['feeAmount', 'companyTerminationFee']);
   const headlineFee = (() => {
     if (!headlineHit) return null;
-    return termfHeroDisplay(headlineHit.value);
+    return numericDollarOnly(termfHeroDisplay(headlineHit.value));
   })();
 
   // PRIMARY: one row per derived trigger object. The normalizer flattens each
@@ -4848,7 +4860,7 @@ function TermfTriggerMatrix({ provisions, allProvisions, deal }) {
         ? t.terminationClauses
         : termfExtractClauseRefs(p, f);
       const fee = t.feeAmount
-        ? String(t.feeAmount)
+        ? numericDollarOnly(t.feeAmount)
         : (t.feeAmountPct ? `${t.feeAmountPct}%` : (headlineFee || 'Same as headline'));
       rows.push({
         spec: { key: `trigger-${dedupKey}`, label: name },
@@ -4988,7 +5000,7 @@ function TermfTriggerMatrix({ provisions, allProvisions, deal }) {
                     {row.party || <span className="italic text-inkFaint">—</span>}
                   </td>
                   <td className="px-3 py-2 whitespace-nowrap">
-                    {row.fee ? <Pill text={row.fee} tone="amount" /> : <span className="italic text-inkFaint">—</span>}
+                    {row.fee ? <Pill text={numericDollarOnly(row.fee)} tone="amount" /> : <span className="italic text-inkFaint">—</span>}
                   </td>
                 </tr>
               );
@@ -5273,7 +5285,7 @@ function TermfRemedyEffect({ provisions }) {
 
   // Expense reimbursement.
   const expenseCap = combined.expenseReimbursementCap
-    ? String(combined.expenseReimbursementCap) : null;
+    ? numericDollarOnly(combined.expenseReimbursementCap) : null;
   const expenseTriggers = (combined.expenseReimbursement && Array.isArray(combined.expenseReimbursement.triggers))
     ? combined.expenseReimbursement.triggers.filter((x) => typeof x === 'string' && x.trim())
     : [];
@@ -9774,7 +9786,10 @@ export default function ReviewPage() {
     // Company/Target so the Company/Target page populates.
     const hasNosolT = filterTypes.includes('NOSOL-T');
     if (hasNosolT) effectiveTypes.add('NOSOL');
-    return sortByTypeOrder(provisions.filter(p => effectiveTypes.has(p.type)));
+    return sortByTypeOrder(provisions.filter((p) => {
+      const displayType = displayTypeForProvision(p, provisions);
+      return effectiveTypes.has(p.type) || effectiveTypes.has(displayType);
+    }));
   }, [provisions, activeFilter, selectedProvId, sortByTypeOrder]);
 
   /* ── Group provisions by type (all, not filtered) ──
@@ -10838,34 +10853,26 @@ export default function ReviewPage() {
                                   allProvisions={provisions}
                                 />
                               )}
-                              {/* IOC tables render PER SECTION (like REPs): each
-                                  child type's section emits its OWN tables, with `side`
-                                  derived from the loop's `type` so IOC-T section shows the
-                                  Target half (with content) and IOC-B section shows the
-                                  Buyer half (which placeholder-renders "Not present in
-                                  this agreement" for empty groups). A bare-IOC section
-                                  (rare — only when the deal genuinely has both party-typed
-                                  and unclassified provisions) shows both halves. */}
-                              {isIocType && (
+                              {isIocType && type === firstIocType && (
                                 <IocAffirmativeCovenantsTable
-                                  iocProvisions={provs}
+                                  iocProvisions={allFilteredIocProvisions}
                                   onSelectProvision={handleEditProvision}
-                                  side={type === 'IOC-T' ? 'target' : type === 'IOC-B' ? 'buyer' : null}
+                                  side={iocSide}
                                 />
                               )}
-                              {isIocType && (
+                              {isIocType && type === firstIocType && (
                                 <IocGeneralExceptionsTable
-                                  iocProvisions={provs}
+                                  iocProvisions={allFilteredIocProvisions}
                                   generalExceptionsProv={iocGeneralExceptions}
                                   onSelectProvision={handleEditProvision}
-                                  side={type === 'IOC-T' ? 'target' : type === 'IOC-B' ? 'buyer' : null}
+                                  side={iocSide}
                                 />
                               )}
-                              {isIocType && (
+                              {isIocType && type === firstIocType && (
                                 <IocNegativeCovenantsTable
-                                  iocProvisions={provs.filter((p) => !isPreambleProvision(p))}
+                                  iocProvisions={allFilteredIocProvisions.filter((p) => !isPreambleProvision(p))}
                                   onSelectProvision={handleEditProvision}
-                                  side={type === 'IOC-T' ? 'target' : type === 'IOC-B' ? 'buyer' : null}
+                                  side={iocSide}
                                   deal={deal}
                                 />
                               )}

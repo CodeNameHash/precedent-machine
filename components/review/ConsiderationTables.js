@@ -19,7 +19,12 @@ import {
 } from './shared';
 import { AddSectionItem } from './AddSectionItem';
 import { TermCell } from './TermCell';
-import { buildPerShareParts, resolveInstrumentVesting } from './table-logic';
+import {
+  buildPerShareParts,
+  resolveInstrumentVesting,
+  deriveHeadlineConsiderationType,
+  headlineConsiderationLabel,
+} from './table-logic';
 import { hasAffirmativeMention } from '../../lib/instrument-negation';
 import { EQUITY_INSTRUMENTS } from '../../lib/taxonomy';
 
@@ -649,6 +654,71 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
     return s;
   };
   const heroPriceText = formatPerShare(heroPerShare);
+  const headlineType = deriveHeadlineConsiderationType(provisions);
+  const headlineTypeLabel = headlineConsiderationLabel(headlineType);
+
+  const fieldValue = (raw) => {
+    if (raw === null || raw === undefined || raw === '') return null;
+    if (isCitableValue(raw)) return fieldValue(getCitableValue(raw));
+    if (isTaggedItem(raw)) return raw.label || raw.code || null;
+    if (typeof raw === 'boolean') return raw ? 'Yes' : 'No';
+    return String(raw);
+  };
+
+  const stockRows = [];
+  const pushStockRow = (label, raw, provision, focus) => {
+    const value = fieldValue(raw);
+    if (!value) return;
+    stockRows.push({
+      label,
+      value,
+      quote: evidenceQuote(raw, { provision, focusOn: focus || value }),
+    });
+  };
+  const pushObjectRows = (prefix, obj, provision, fields) => {
+    if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return;
+    const quote = evidenceQuote(obj, { provision }) || obj.text || null;
+    for (const [key, label] of fields) {
+      pushStockRow(`${prefix} — ${label}`, obj[key], provision);
+    }
+    if (obj.text) {
+      stockRows.push({ label: `${prefix} — Text`, value: String(obj.text), quote });
+    }
+  };
+  for (const p of provisions) {
+    const f = getStructuredFeatures(p) || {};
+    pushStockRow('Exchange Ratio Type', f.exchangeRatioType ?? f.ratioType, p);
+    pushStockRow('Exchange Ratio Formula', f.exchangeRatioText, p);
+    pushObjectRows('Collar', f.collar, p, [
+      ['present', 'Present'],
+      ['type', 'Type'],
+      ['floor', 'Floor'],
+      ['cap', 'Cap'],
+    ]);
+    pushObjectRows('Walk-Away Right', f.walkAwayRight, p, [
+      ['present', 'Present'],
+      ['party', 'Party'],
+      ['trigger', 'Trigger'],
+      ['fillOrKillOption', 'Fill-or-kill option'],
+    ]);
+    pushObjectRows('Proration', f.prorationMechanics, p, [
+      ['electionType', 'Election Type'],
+      ['oversubscriptionTreatment', 'Oversubscription'],
+      ['electionDeadline', 'Election Deadline'],
+    ]);
+    pushStockRow('Dividend Equivalence', f.dividendEquivalence, p);
+    if (f.taxReorgIntended !== null && f.taxReorgIntended !== undefined) {
+      pushStockRow('Tax Reorg Intended', f.taxReorgIntended, p);
+    }
+    pushStockRow('Tax Reorg Text', f.taxReorgText, p);
+  }
+  const seenStockRows = new Set();
+  const dedupedStockRows = stockRows.filter((row) => {
+    const key = `${row.label}::${row.value}`;
+    if (seenStockRows.has(key)) return false;
+    seenStockRows.add(key);
+    return true;
+  });
 
   // Source provisions for the remaining hero rows. Capture AFTER the
   // `showExchangeRatio` + `optionsCvrEarnInLabel` blocks above so dependent
@@ -722,10 +792,15 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
         ].filter(Boolean);
         return (
           <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
-            <div className="px-3 py-2 bg-bg/60 border-b border-border">
+            <div className="px-3 py-2 bg-bg/60 border-b border-border flex items-center justify-between gap-2 flex-wrap">
               <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
                 Headline Consideration
               </p>
+              {headlineTypeLabel && (
+                <span className="inline-flex items-center gap-1 text-[10px] font-ui font-medium px-1.5 py-0.5 rounded border bg-emerald-50 text-emerald-700 border-emerald-200 uppercase tracking-wider">
+                  Consideration: {headlineTypeLabel}
+                </span>
+              )}
             </div>
             <table className="min-w-full text-xs font-ui">
               <tbody className="divide-y divide-border">
@@ -762,6 +837,32 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
           </div>
         );
       })()}
+
+      {dedupedStockRows.length > 0 && (
+        <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+          <div className="px-3 py-2 bg-bg/60 border-b border-border">
+            <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+              Stock Consideration Mechanics
+            </p>
+          </div>
+          <table className="min-w-full text-xs font-ui">
+            <tbody className="divide-y divide-border">
+              {dedupedStockRows.map((row) => (
+                <tr key={`${row.label}-${row.value}`} className="hover:bg-bg/40 transition-colors align-top">
+                  <td className={`px-3 py-2 whitespace-normal break-words text-ink font-medium ${REVIEW_LABEL_COL_W}`}>
+                    {row.label}
+                  </td>
+                  <td className="px-3 py-2 text-ink">
+                    <HoverSource quote={row.quote} as="div">
+                      <span>{row.value}</span>
+                    </HoverSource>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       {equityRows.length > 0 && (
         <>

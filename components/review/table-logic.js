@@ -1160,3 +1160,118 @@ export function nosolFeatures(provision) {
   if (meta && typeof meta === 'object' && meta.features && typeof meta.features === 'object') return meta.features;
   return {};
 }
+
+export function compactDoValue(featureKey, raw) {
+  const val = unwrapLocal(raw);
+  if (val === null || val === undefined || val === '') return null;
+  if (featureKey === 'indemnificationPeriod') {
+    const n = Number(val);
+    if (Number.isFinite(n)) return `${n} years`;
+    return String(val);
+  }
+  if (featureKey === 'insuranceCap') {
+    const s = String(val);
+    const pct = s.match(/(\d+(?:\.\d+)?)\s*%\s+of\s+(?:the\s+)?(?:current|last|annual|aggregate)?[^.;]{0,80}premium/i);
+    if (pct) return `${pct[1]}% of annual premium`;
+    const capName = s.match(/"([^"]*Cap Amount[^"]*)"/i);
+    if (capName) return capName[1];
+    const dollars = s.match(/\$\s?[\d,]+(?:\.\d+)?(?:\s*(?:million|billion|thousand))?/i);
+    if (dollars) return dollars[0];
+    return s.length > 90 ? `${s.slice(0, 89).trim()}...` : s;
+  }
+  return null;
+}
+
+export function isConsiderationGroupedProvision(provision) {
+  if (!provision) return false;
+  if (provision.type === 'CONSID') return true;
+  if (provision.type === 'DEF') return false;
+  const code = localCode(provision);
+  const cat = String(provision.category || '');
+  const text = String(provision.full_text || provision.text || '');
+  if (code === 'CONSID-EQUITY' || code === 'CONSID-CONVERT' || code === 'CONSID-EXCHANGE-RATIO') return true;
+  if (/equity\s+awards?|stock\s+plans?|treatment\s+of\s+(?:equity|stock|rsu|psu|options?)/i.test(cat)) return true;
+  if (/lock[\s-]?up/i.test(cat) && /stock\s+consideration|class\s+[a-z]\s+common\s+stock|shares?\s+received|transfer/i.test(`${cat} ${text}`)) return true;
+  const feats = localFeatures(provision);
+  if (feats.exchangeRatio || feats.equityAwardTreatment || feats.instrumentType) return true;
+  return false;
+}
+
+export function deriveHeadlineConsiderationType(provisions) {
+  const list = Array.isArray(provisions) ? provisions : [];
+  let hasCash = false;
+  let hasStock = false;
+  let hasElection = false;
+  for (const item of list) {
+    const f = item && (item.mainConcept || item.considerationType || item.perShareAmount || item.exchangeRatio)
+      ? item
+      : localFeatures(item);
+    const ctRaw = unwrapLocal(f.considerationType);
+    const ct = isTagged(ctRaw) ? `${ctRaw.code || ''} ${ctRaw.label || ''}` : String(ctRaw || '');
+    const joined = [
+      ct,
+      f.proration,
+      f.prorationMechanics && JSON.stringify(f.prorationMechanics),
+      f.electionMechanics,
+      f.exchangeRatio,
+      f.exchangeRatioText,
+      f.perShareAmount,
+      f.cashAmount,
+    ].filter(Boolean).join(' ');
+    if (f.perShareAmount || f.cashAmount || /\bcash\b/i.test(joined)) hasCash = true;
+    if (f.exchangeRatio || f.exchangeRatioText || /\bstock\b|share(?:s)?\s+of\b|all-stock/i.test(joined)) hasStock = true;
+    if (/election|proration|mixed-cash-and-stock|mixed[_\s-]?election|cash_election|stock_election/i.test(joined)) hasElection = true;
+  }
+  if (hasElection) return 'MIXED_ELECTION';
+  if (hasStock) return 'STOCK';
+  if (hasCash) return 'CASH';
+  return null;
+}
+
+export function numericDollarOnly(raw) {
+  const val = unwrapLocal(raw);
+  if (val === null || val === undefined || val === '') return null;
+  if (typeof val === 'number' && Number.isFinite(val)) return `$${Math.round(val).toLocaleString('en-US')}`;
+  const s = String(val);
+  const paren = s.match(/\(\s*(\$\s?[\d,]+(?:\.\d+)?)\s*\)/);
+  if (paren) return paren[1].replace(/\$\s+/, '$');
+  const direct = s.match(/\$\s?[\d,]+(?:\.\d+)?/);
+  if (direct) return direct[0].replace(/\$\s+/, '$');
+  return s;
+}
+
+export function headlineConsiderationLabel(value) {
+  if (value === 'CASH') return 'Cash';
+  if (value === 'STOCK') return 'Stock';
+  if (value === 'MIXED_ELECTION') return 'Mixed election';
+  return null;
+}
+
+export function displayTypeForProvision(provision, allProvisions) {
+  if (!provision) return 'Other';
+  if (isConsiderationGroupedProvision(provision)) return 'CONSID';
+  if (provision.type === 'IOC') {
+    const code = localCode(provision);
+    const affOrPreamble = /^IOC-(?:ORDINARY|PRESERVE|MAINTAIN|NOACTION|AFFIRMATIVE|OTHER-AFFIRMATIVE|GENERAL-EXCEPTIONS|EXCEPTIONS|POSITIVE-PREAMBLE)$/.test(code);
+    const hasTargetIoc = (allProvisions || []).some((p) => p && p.type === 'IOC-T');
+    if (affOrPreamble && hasTargetIoc) return 'IOC-T';
+  }
+  return provision.type || 'Other';
+}
+
+function unwrapLocal(v) {
+  if (isCitable(v)) return v.value;
+  return v;
+}
+
+function localCode(provision) {
+  const meta = localMeta(provision);
+  return String((meta && meta.code) || provision?.code || '').toUpperCase();
+}
+
+function localFeatures(provision) {
+  if (!provision) return {};
+  const meta = localMeta(provision);
+  const feats = (meta && meta.features) || provision.features || {};
+  return feats && typeof feats === 'object' && !Array.isArray(feats) ? feats : {};
+}

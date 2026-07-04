@@ -6,6 +6,7 @@ import { useUser } from '../lib/useUser';
 import { useDeals } from '../lib/useSupabaseData';
 import { getDisplayAdvisors } from '../lib/canonical-advisors';
 import DealsTable from '../components/DealsTable';
+import { headlineConsiderationLabel } from '../components/review/table-logic';
 
 HomePage.noLayout = true;
 
@@ -49,12 +50,15 @@ export default function HomePage() {
       (deals || []).map((d) => {
         const meta = d.metadata && typeof d.metadata === 'object' ? d.metadata : {};
         const adv = getDisplayAdvisors(meta);
+        const rawConsideration = meta.headlineConsiderationType || meta.headline_consideration_type || meta.considerationType || meta.consideration_type || null;
+        const consideration = headlineConsiderationLabel(rawConsideration) || rawConsideration || null;
         return {
           id: d.id,
           date: d.announce_date || null,
           buyer: meta.acquirer_display || meta.parent_entity || d.acquirer || null,
           seller: meta.target_display || d.target || null,
           value: d.value_usd,
+          consideration,
           industry: d.sector || null,
           buyerFirms: adv.buyerFirms,
           buyerLawyers: adv.buyerLawyers,
