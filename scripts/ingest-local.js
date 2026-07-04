@@ -27,6 +27,7 @@ const { classifySections } = require('../lib/parser-v2/classify');
 const { extractProvisions } = require('../lib/parser-v2/extract');
 const { validateProvisions } = require('../lib/parser-v2/validate');
 const { storeProvisions } = require('../lib/parser-v2/store');
+const { toCompactSections, classifyBreakdown } = require('../lib/parser-v2/snapshot');
 const { extractAdvisors } = require('../lib/parser-v2/advisors');
 const { MERGER_FORMS } = require('../lib/taxonomy');
 const { fromCp } = require('../lib/html-entities');
@@ -151,7 +152,15 @@ async function runParserPipeline(client, fullText, dealId, title, sb) {
   const displayText = displayCleanText(fullText);
   let advisors = [];
   try { advisors = extractAdvisors(displayText) || []; } catch { /* best effort */ }
-  const storeResult = await storeProvisions(dealId, finalProvisions, displayText, title, sb, { advisors });
+  // Persist the classified-sections snapshot so scripts/reprocess.js (and the
+  // per-type extract API) can re-extract single types later without
+  // re-parsing/re-classifying the whole agreement.
+  const compactSections = toCompactSections(sectionsForExtract);
+  const storeResult = await storeProvisions(dealId, finalProvisions, displayText, title, sb, {
+    advisors,
+    classified_sections: compactSections,
+    classify_breakdown: classifyBreakdown(compactSections),
+  });
   return { insertedCount: (storeResult && storeResult.insertedCount) || 0, advisors };
 }
 
