@@ -81,6 +81,7 @@ import {
   CitableHover,
 } from '../../components/review/shared';
 import { NosolFourTables } from '../../components/review/NosolFourTables';
+import { NoOtherRepsFraudTable } from '../../components/review/NoOtherRepsFraudTable';
 import {
   termCellHoverQuote,
   knowledgeQualifierDisplay,
@@ -5828,7 +5829,11 @@ const EXPECTED_REPS = {
   'REP-B': [
     { label: 'Sufficient Funds',         match: { code: 'REP-B-FUNDS' } },
     { label: 'Solvency',                 match: { code: 'REP-B-SOLVENCY' } },
-    { label: 'Anti-Reliance / No Other Reps', match: { code: 'REP-B-ANTIRELIANCE' } },
+    // Anti-Reliance / No Other Reps placeholder removed: the No Other Reps /
+    // Fraud (Abry) summary section (sidebar, end of the R&W block) is now
+    // the ONE place that answers this — see components/review/
+    // NoOtherRepsFraudTable.js + lib/abry.js. A second checklist row here
+    // would duplicate (and could disagree with) that answer.
     { label: 'Parent Litigation',        match: { code: 'REP-B-LIT', categoryRegex: /\blitig/i } },
     { label: 'Parent Ownership of Company Stock', match: { code: 'REP-B-NOINTEREST', categoryRegex: /\bownership\b|company\s+(?:capital\s+)?stock|share\s+ownership/i } },
     { label: 'Brokers identified',       match: { code: 'REP-B-BROKERS', categoryRegex: /broker|finder/i } },
@@ -9055,6 +9060,18 @@ export default function ReviewPage() {
       // Contracts table (see handleSidebarSelectProvision) rather than the
       // near-empty REP-T single-provision view.
     }
+    // No Other Reps / Fraud (Abry) summary — ALWAYS shown (unlike Material
+    // Contracts above, which only appears when a matching provision exists):
+    // the whole point of this section is to affirmatively answer "Not
+    // present in this agreement" / "Silent on fraud" when the deal lacks
+    // these clauses, so the sidebar entry must never disappear. A one-item
+    // sentinel keeps the group non-empty for the Sidebar's `total > 0`
+    // visibility filter; NoOtherRepsFraudTable ignores it and derives its
+    // answers from the deal's full `provisions` list directly (the Abry
+    // fields can land on any provision type/code — see lib/abry.js).
+    if ((provisions || []).length > 0) {
+      groups['__ABRY'] = [{ id: '__abry_sentinel__', type: '__ABRY' }];
+    }
     // IOC party promotion: the classifier currently tags BOTH target-side
     // and (rare) buyer-side IOC sections as bare 'IOC' (no party suffix). So
     // sidebar children IOC-T / IOC-B never light up on existing data. ~all M&A
@@ -9127,6 +9144,12 @@ export default function ReviewPage() {
     } else {
       const mcProvs = filteredProvisions.filter(isMaterialContractsProvision);
       if (mcProvs.length > 0) groups['__MATERIAL_CONTRACTS'] = mcProvs;
+    }
+    // No Other Reps / Fraud (Abry) — always present (see the matching
+    // comment in provsByType above); a filtered view can drop the sentinel,
+    // so re-synthesize it here too whenever the deal has any provisions.
+    if ((provisions || []).length > 0) {
+      groups['__ABRY'] = [{ id: '__abry_sentinel__', type: '__ABRY' }];
     }
     // IOC party promotion + section synthesis (mirrors REPs):
     //   • When activeFilter touches IOC-T (single child click OR parent-group
@@ -10121,6 +10144,16 @@ export default function ReviewPage() {
                                   onSelectProvision={handleEditProvision}
                                 />
                               )}
+                              {/* No Other Reps / Fraud (Abry) — a deal-wide
+                                  summary, not a per-type provision list, so it
+                                  scans the FULL `provisions` array (any
+                                  provision, any type/code) rather than the
+                                  `provs`/`rest` derived for this loop
+                                  iteration (which for '__ABRY' is just the
+                                  visibility sentinel synthesized above). */}
+                              {type === '__ABRY' && (
+                                <NoOtherRepsFraudTable allProvisions={provisions} />
+                              )}
                               {(type === 'MAE-DEF' || type === 'MAE-DEF-P') && (
                                 <MaeDefinitionSummary
                                   allProvisions={provisions}
@@ -10134,7 +10167,7 @@ export default function ReviewPage() {
                                   onSelectProvision={handleEditProvision}
                                 />
                               )}
-                              {type !== 'DEF' && type !== 'MAE-DEF' && type !== 'MAE-DEF-P' && type !== '__MATERIAL_CONTRACTS' && (() => {
+                              {type !== 'DEF' && type !== 'MAE-DEF' && type !== 'MAE-DEF-P' && type !== '__MATERIAL_CONTRACTS' && type !== '__ABRY' && (() => {
                                 const restAugmented = (type === 'REP-T' || type === 'REP-B')
                                   ? augmentRepsWithExpectedPlaceholders(rest, type, provisions)
                                   : rest;
