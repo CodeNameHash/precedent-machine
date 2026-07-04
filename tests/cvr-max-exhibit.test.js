@@ -57,11 +57,35 @@ test('ignores aggregate dollar figures (e.g. $100,000 wiring threshold)', () => 
   );
 });
 
-test('no-op when an LLM-extracted maxPayment already exists', () => {
+test('exhibit sum overrides a smaller single-milestone LLM value (Metsera regression: "up to $7.00" should be "$22.50")', () => {
+  const prov = cvrProv();
+  // The LLM only noticed the Mono FDA milestone ($7.00) and stamped it as
+  // the deal's max — the exhibit actually defines three milestones summing
+  // to $22.50. The exhibit scan must win here, not no-op.
+  prov.features.maxPayment = '$7.00';
+  backfillCvrMaxFromExhibit([prov], DOC);
+  assert.strictEqual(prov.features.maxPayment, '$22.50');
+  assert.strictEqual(prov.features.cvrMilestonePayments.length, 3);
+});
+
+test('LLM value >= exhibit sum is respected (no override)', () => {
   const prov = cvrProv();
   prov.features.maxPayment = '$99.99';
   backfillCvrMaxFromExhibit([prov], DOC);
   assert.strictEqual(prov.features.maxPayment, '$99.99');
+  assert.strictEqual(prov.features.cvrMilestonePayments, undefined);
+});
+
+test('no-op when the exhibit scan finds a single milestone equal to the stored LLM value', () => {
+  const prov = cvrProv();
+  prov.features.maxPayment = '$5.00';
+  const singleMilestoneDoc =
+    'AGREEMENT AND PLAN OF MERGER ... the right to receive the Milestone ' +
+    'Payments as set forth in the CVR Agreement (a "CVR") in cash ... ' +
+    'Exhibit B [[CENTER]]FORM OF CONTINGENT VALUE RIGHTS AGREEMENT[[/CENTER]] ' +
+    '[[DEFINED]]"Milestone Payment"[[/DEFINED]] means $5.00 per CVR, payable upon Milestone Achievement.';
+  backfillCvrMaxFromExhibit([prov], singleMilestoneDoc);
+  assert.strictEqual(prov.features.maxPayment, '$5.00');
   assert.strictEqual(prov.features.cvrMilestonePayments, undefined);
 });
 
