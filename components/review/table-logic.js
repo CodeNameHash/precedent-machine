@@ -54,44 +54,36 @@ export function buildPerShareParts({ perShareText, hasCvr, hasCash, cvrMaxText }
 }
 
 export function deriveHeadlineConsiderationType(provisions) {
-  const texts = [];
-  for (const p of provisions || []) {
-    const f = (p && (p.features || p.structured_features)) || {};
-    const fields = [
-      f.considerationType,
-      f.electionMechanics,
-      f.electionDeadline,
+  const list = Array.isArray(provisions) ? provisions : [];
+  let hasCash = false;
+  let hasStock = false;
+  let hasElection = false;
+  for (const item of list) {
+    const f = item && (item.mainConcept || item.considerationType || item.perShareAmount || item.exchangeRatio)
+      ? item
+      : localFeatures(item);
+    const ctRaw = unwrapLocal(f.considerationType);
+    const ct = isTagged(ctRaw) ? `${ctRaw.code || ''} ${ctRaw.label || ''}` : String(ctRaw || '');
+    const joined = [
+      ct,
       f.proration,
-      f.cashElection,
-      f.stockElection,
-      p && p.category,
-      p && p.full_text,
-      p && p.text,
-    ];
-    for (const raw of fields) {
-      for (const t of collectTexts(raw)) texts.push(t);
-    }
+      f.prorationMechanics && JSON.stringify(f.prorationMechanics),
+      f.electionMechanics,
+      f.exchangeRatio,
+      f.exchangeRatioText,
+      f.perShareAmount,
+      f.cashAmount,
+    ].filter(Boolean).join(' ');
+    if (f.perShareAmount || f.cashAmount || /\bcash\b/i.test(joined)) hasCash = true;
+    if (f.exchangeRatio || f.exchangeRatioText || /\bstock\b|share(?:s)?\s+of\b|all-stock/i.test(joined)) hasStock = true;
+    if (/election|proration|mixed-cash-and-stock|mixed[_\s-]?election|cash_election|stock_election/i.test(joined)) hasElection = true;
   }
-  const hay = texts.join('\n').toLowerCase();
-  const hasCashElection = /\bcash\s+election\b/.test(hay);
-  const hasStockElection = /\bstock\s+election\b|\bshare\s+election\b/.test(hay);
-  const hasElectionMechanics = /\belection\s+(?:form|deadline|mechanics|procedure|period)\b|\bmake\s+an\s+election\b/.test(hay);
-  const hasProration = /\bprorat(?:ion|e|ed)\b/.test(hay);
-  if ((hasCashElection && hasStockElection) || ((hasCashElection || hasStockElection) && (hasElectionMechanics || hasProration))) {
-    return 'MIXED_ELECTION';
-  }
+  if (hasElection) return 'MIXED_ELECTION';
+  if (hasStock) return 'STOCK';
+  if (hasCash) return 'CASH';
   return null;
 }
 
-/* ══════════════════════════════════════════════════════════════════════════
- * BLOCK 2a — Term-cell hover quote (REGRESSION target).
- * The Term (first, sticky) cell of every provision-table row hovers to the
- * row's provision source text — for EVERY row, not just rows whose qualifier
- * cell happens to carry evidence. The earlier fix (commit 686530d, audit
- * block 9a) routed only VALUE cells through CellWithSource /
- * MaterialityQualifierCell fallbacks; the Term cell never went through either
- * renderer, so it silently kept no hover at all.
- * ══════════════════════════════════════════════════════════════════════════ */
 export function termCellHoverQuote(provision) {
   const t = provision && typeof provision.full_text === 'string' ? provision.full_text.trim() : '';
   return t ? provision.full_text : null;
@@ -1259,36 +1251,6 @@ export function isConsiderationGroupedProvision(provision) {
   return false;
 }
 
-export function deriveHeadlineConsiderationType(provisions) {
-  const list = Array.isArray(provisions) ? provisions : [];
-  let hasCash = false;
-  let hasStock = false;
-  let hasElection = false;
-  for (const item of list) {
-    const f = item && (item.mainConcept || item.considerationType || item.perShareAmount || item.exchangeRatio)
-      ? item
-      : localFeatures(item);
-    const ctRaw = unwrapLocal(f.considerationType);
-    const ct = isTagged(ctRaw) ? `${ctRaw.code || ''} ${ctRaw.label || ''}` : String(ctRaw || '');
-    const joined = [
-      ct,
-      f.proration,
-      f.prorationMechanics && JSON.stringify(f.prorationMechanics),
-      f.electionMechanics,
-      f.exchangeRatio,
-      f.exchangeRatioText,
-      f.perShareAmount,
-      f.cashAmount,
-    ].filter(Boolean).join(' ');
-    if (f.perShareAmount || f.cashAmount || /\bcash\b/i.test(joined)) hasCash = true;
-    if (f.exchangeRatio || f.exchangeRatioText || /\bstock\b|share(?:s)?\s+of\b|all-stock/i.test(joined)) hasStock = true;
-    if (/election|proration|mixed-cash-and-stock|mixed[_\s-]?election|cash_election|stock_election/i.test(joined)) hasElection = true;
-  }
-  if (hasElection) return 'MIXED_ELECTION';
-  if (hasStock) return 'STOCK';
-  if (hasCash) return 'CASH';
-  return null;
-}
 
 export function numericDollarOnly(raw) {
   const val = unwrapLocal(raw);
