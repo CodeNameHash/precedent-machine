@@ -91,7 +91,9 @@ export default async function handler(req, res) {
 
     // ── Phase 3: Extract sub-provisions ──
     const extractStart = Date.now();
-    const provisions = await extractProvisions(sectionsForExtract, client, cleaned);
+    // Legacy route (see file header) — best-effort dealMeta threading only;
+    // filing_date is whatever the caller supplied, not independently verified.
+    const provisions = await extractProvisions(sectionsForExtract, client, cleaned, { signingDate: filing_date });
     timing.extract = Date.now() - extractStart;
 
     // ── Phase 4: Validate ──

@@ -140,13 +140,13 @@ Return ONLY the JSON object, no prose, no markdown fence.`;
 }
 
 // ── the parser pipeline (mirrors runParserPipeline in from-url.js) ─────────
-async function runParserPipeline(client, fullText, dealId, title, sb) {
+async function runParserPipeline(client, fullText, dealId, title, sb, dealMeta = {}) {
   const cleaned = cleanText(fullText);
   const { sections, articles } = parseStructure(cleaned);
   if (sections.length === 0) throw new Error('Parser found no sections in the agreement text');
   const classifiedSections = await classifySections(sections, articles, client);
   const sectionsForExtract = classifiedSections.map((s) => ({ ...s, provision_type: s.provisionType }));
-  const provisions = await extractProvisions(sectionsForExtract, client, cleaned);
+  const provisions = await extractProvisions(sectionsForExtract, client, cleaned, dealMeta);
   const validation = validateProvisions(provisions, cleaned, sectionsForExtract);
   const finalProvisions = validation.provisions;
   const displayText = displayCleanText(fullText);
@@ -190,7 +190,7 @@ async function ingestOne(sb, client, url, existingDealId = null) {
     };
     await sb.from('deals').update({ metadata: mergedMeta }).eq('id', existingDealId);
     const title = `${existing.acquirer} / ${existing.target}`;
-    const parseResult = await runParserPipeline(client, fullText, existingDealId, title, sb);
+    const parseResult = await runParserPipeline(client, fullText, existingDealId, title, sb, { signingDate: meta.signing_date });
     // Stamp reingested_at only AFTER storeProvisions succeeded. Stamping it
     // up front (old behaviour) made an aborted re-ingest indistinguishable
     // from a successful one: the deal carried a fresh reingested_at while the
@@ -222,7 +222,7 @@ async function ingestOne(sb, client, url, existingDealId = null) {
   if (insErr) throw new Error(`Deal insert failed: ${insErr.message}`);
 
   const title = `${meta.acquirer} / ${meta.target}`;
-  const parseResult = await runParserPipeline(client, fullText, newDeal.id, title, sb);
+  const parseResult = await runParserPipeline(client, fullText, newDeal.id, title, sb, { signingDate: meta.signing_date });
   return { deal_id: newDeal.id, title, sector: meta.sector, inserted: parseResult.insertedCount, timing_ms: Date.now() - t0 };
 }
 

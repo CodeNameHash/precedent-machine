@@ -167,7 +167,7 @@ Return ONLY the JSON object, no prose, no markdown fence.`;
   };
 }
 
-async function runParserPipeline(client, fullText, dealId, title, sb) {
+async function runParserPipeline(client, fullText, dealId, title, sb, dealMeta = {}) {
   const cleaned = cleanText(fullText);
   const { sections, articles, diagnostics } = parseStructure(cleaned);
   if (sections.length === 0) {
@@ -180,7 +180,7 @@ async function runParserPipeline(client, fullText, dealId, title, sb) {
     provision_type: s.provisionType,
   }));
 
-  const provisions = await extractProvisions(sectionsForExtract, client, cleaned);
+  const provisions = await extractProvisions(sectionsForExtract, client, cleaned, dealMeta);
   const validation = validateProvisions(provisions, cleaned, sectionsForExtract);
   const finalProvisions = validation.provisions;
 
@@ -312,7 +312,8 @@ export default async function handler(req, res) {
       ? `${existingDeal.acquirer} / ${existingDeal.target}`
       : `${createdMetadata.acquirer} / ${createdMetadata.target}`;
 
-    const parseResult = await runParserPipeline(client, fullText, targetDealId, title, sb);
+    const signingDate = existingDeal ? existingDeal.announce_date : createdMetadata.signing_date;
+    const parseResult = await runParserPipeline(client, fullText, targetDealId, title, sb, { signingDate });
 
     return res.status(200).json({
       success: true,
