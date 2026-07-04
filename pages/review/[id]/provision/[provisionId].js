@@ -15,6 +15,7 @@ import {
 } from '../../../../components/review/shared';
 import { buildProvisionFamily, getSectionNumber } from '../../../../components/review/provision-family';
 import { DocPopUnder } from '../../../../components/review/DocPopUnder';
+import { filterProvisionsForViewMode } from '../../../../components/review/table-logic';
 
 /* ── One structured feature as a labeled pill/row. Reuses
  *    renderSummaryRowValue (the same renderer table cells use) so a value
@@ -111,7 +112,16 @@ export default function ProvisionCardPage() {
   const { id: dealId, provisionId } = router.query;
   const { isEdit } = useViewMode();
   const { deal, loading: dealLoading } = useDeal(dealId);
-  const { provisions, loading: provsLoading } = useProvisions({ deal_id: dealId });
+  const { provisions: rawProvisions, loading: provsLoading } = useProvisions({ deal_id: dealId });
+
+  // Same choke point as the main review page (components/review/table-logic.js):
+  // SECTION-LEFTOVER gating + [PROPOSED] category-prefix stripping outside
+  // edit mode, so this standalone card page can't leak either behind the
+  // main table view's back.
+  const provisions = useMemo(
+    () => filterProvisionsForViewMode(rawProvisions, isEdit),
+    [rawProvisions, isEdit],
+  );
 
   const target = useMemo(
     () => (provisions || []).find((p) => p.id === provisionId) || null,

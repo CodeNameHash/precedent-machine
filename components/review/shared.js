@@ -11,6 +11,7 @@ import {
   TOOLTIP_MAX,
 } from '../../lib/citable';
 import { taxonomyForFeatureKey, labelForCode } from '../../lib/taxonomy';
+import { isFlagItem } from '../../lib/flag-item';
 
 /* Citation / evidence helpers (isCitableValue, getCitableValue,
  * getCitableQuotes, getCitableText, resolveEvidence, evidenceQuote) now live
@@ -118,7 +119,7 @@ export function EvidenceQuote({ text, quotes, dense }) {
 
 // Acronyms that should stay fully capitalized when a code is split into
 // words (e.g. "CashCvr" → "Cash CVR", not "Cash Cvr").
-const HUMANIZE_ACRONYMS = new Set(['CVR', 'MAE', 'IOC', 'IP', 'FDA', 'HSR', 'CEO', 'CFO', 'ESPP', 'RSU', 'PSU', 'SAR']);
+const HUMANIZE_ACRONYMS = new Set(['CVR', 'MAE', 'IOC', 'IP', 'FDA', 'HSR', 'CEO', 'CFO', 'ESPP', 'RSU', 'PSU', 'SAR', 'DGCL']);
 const titleCaseWord = (w) => {
   if (!w) return '';
   const upper = w.toUpperCase();
@@ -359,6 +360,12 @@ export function renderListAsBullets(featureKey, items) {
           const label = resolveTaggedLabel(featureKey, innerRaw) || humanizeBadgeText(innerRaw.code);
           body = <CodeBadge code={innerRaw.code} label={label} />;
           // Tagged items carry their own verbatim `text` — hover-only too.
+          if (quotes.length === 0 && innerRaw.text) quotes.push(innerRaw.text);
+        } else if (isFlagItem(innerRaw)) {
+          // A "flags" entry: { concern, text } — the novelty/off-market escape
+          // valve. Show the one-sentence concern as the body; the verbatim
+          // quote is hover-only, same as every other list item.
+          body = <span>{innerRaw.concern}</span>;
           if (quotes.length === 0 && innerRaw.text) quotes.push(innerRaw.text);
         } else if (innerRaw === null || innerRaw === undefined || innerRaw === '') {
           return null;
