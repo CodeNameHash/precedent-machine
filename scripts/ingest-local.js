@@ -27,6 +27,7 @@ const { classifySections } = require('../lib/parser-v2/classify');
 const { extractProvisions } = require('../lib/parser-v2/extract');
 const { validateProvisions } = require('../lib/parser-v2/validate');
 const { storeProvisions } = require('../lib/parser-v2/store');
+const { toCompactSections, classifyBreakdown } = require('../lib/parser-v2/snapshot');
 const { extractAdvisors } = require('../lib/parser-v2/advisors');
 const { MERGER_FORMS } = require('../lib/taxonomy');
 const { fromCp } = require('../lib/html-entities');
@@ -151,7 +152,15 @@ async function runParserPipeline(client, fullText, dealId, title, sb) {
   const displayText = displayCleanText(fullText);
   let advisors = [];
   try { advisors = extractAdvisors(displayText) || []; } catch { /* best effort */ }
-  const storeResult = await storeProvisions(dealId, finalProvisions, displayText, title, sb, { advisors });
+  // Persist the classified-sections snapshot so scripts/reprocess.js (and the
+  // per-type extract API) can re-extract single types later without
+  // re-parsing/re-classifying the whole agreement.
+  const compactSections = toCompactSections(sectionsForExtract);
+  const storeResult = await storeProvisions(dealId, finalProvisions, displayText, title, sb, {
+    advisors,
+    classified_sections: compactSections,
+    classify_breakdown: classifyBreakdown(compactSections),
+  });
   return { insertedCount: (storeResult && storeResult.insertedCount) || 0, advisors };
 }
 
@@ -178,11 +187,18 @@ async function ingestOne(sb, client, url, existingDealId = null) {
       target_entity: meta.target_entity,
       acquirer_display: meta.acquirer_display,
       target_display: meta.target_display,
-      reingested_at: new Date().toISOString(),
     };
     await sb.from('deals').update({ metadata: mergedMeta }).eq('id', existingDealId);
     const title = `${existing.acquirer} / ${existing.target}`;
     const parseResult = await runParserPipeline(client, fullText, existingDealId, title, sb);
+    // Stamp reingested_at only AFTER storeProvisions succeeded. Stamping it
+    // up front (old behaviour) made an aborted re-ingest indistinguishable
+    // from a successful one: the deal carried a fresh reingested_at while the
+    // provisions table still held the previous run's rows (Kraft, 2026-07-03
+    // — stale pre-#59 collapse rows read as a fresh parse failure). Re-read
+    // metadata first because storeProvisions rewrites it during the run.
+    const { data: post } = await sb.from('deals').select('metadata').eq('id', existingDealId).single();
+    await sb.from('deals').update({ metadata: { ...((post && post.metadata) || {}), reingested_at: new Date().toISOString() } }).eq('id', existingDealId);
     return { deal_id: existingDealId, title, sector: meta.sector, inserted: parseResult.insertedCount, timing_ms: Date.now() - t0, inPlace: true };
   }
 
