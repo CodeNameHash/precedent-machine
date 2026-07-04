@@ -105,3 +105,24 @@ test('no-op when there is no CVR exhibit in the document', () => {
   backfillCvrMaxFromExhibit([prov], 'AGREEMENT AND PLAN OF MERGER ... a "CVR" in cash ... no exhibit here.');
   assert.strictEqual(prov.features.maxPayment, undefined);
 });
+
+test('milestone terms split across EDGAR line-wraps are still found', () => {
+  const wrappedDoc =
+    'AGREEMENT ... the Milestone Payments as set forth in the CVR Agreement (a "CVR") ... ' +
+    'FORM OF CONTINGENT VALUE RIGHTS AGREEMENT ... ' +
+    '"Clinical\nTrial Milestone Payment" means $5.00 in cash, without interest. ' +
+    '"Combination FDA\nApproval Milestone Payment" means $10.50 in cash, without interest. ' +
+    '"Mono FDA Approval Milestone Payment" means $7.00 in cash, without interest.';
+  const prov = {
+    type: 'CONSID',
+    code: 'CONSID-CVR',
+    text: 'right to receive the Milestone Payments as set forth in the CVR Agreement (a "CVR")',
+    features: { maxPayment: '$7.00' },
+  };
+  backfillCvrMaxFromExhibit([prov], wrappedDoc);
+  assert.strictEqual(prov.features.maxPayment, '$22.50');
+  assert.deepStrictEqual(
+    prov.features.cvrMilestonePayments.map((i) => i.label),
+    ['Clinical Trial Milestone Payment', 'Combination FDA Approval Milestone Payment', 'Mono FDA Approval Milestone Payment']
+  );
+});
