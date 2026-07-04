@@ -32,6 +32,7 @@ import {
   COMMON_EXCEPTION_CODES,
   COMMON_EXCEPTION_META,
   EXCEPTION_CODES,
+  CLEAR_SKIES_FAMILY,
 } from '../../lib/taxonomy';
 import {
   getAiMetadata,
@@ -121,6 +122,7 @@ import {
   compactDoValue,
   numericDollarOnly,
   splitBringdownCoveredPills,
+  buildAntitrustSummaryRows,
 } from '../../components/review/table-logic';
 import { ConsidTable } from '../../components/review/ConsiderationTables';
 import { Sidebar } from '../../components/review/Sidebar';
@@ -8477,6 +8479,191 @@ function MiscSummaryTable({ provisions, allProvisions, onSelectProvision }) {
   );
 }
 
+function antiFieldLabel(key) {
+  const labels = {
+    capDetail: 'Cap detail',
+    burdenCap: 'Burden cap',
+    divestitureCap: 'Quantitative cap',
+    divestitureCapDescription: 'Cap description',
+    burdensomeConditionScope: 'Burdensome-condition scope',
+    burdensomeConditionInTerminationTriggers: 'Termination trigger',
+    burdensomConditionDefined: 'Burdensome Condition defined',
+    burdensomeConditionPresent: 'Burdensome Condition present',
+    burdenBaseline: 'Baseline',
+    litigationObligationQualification: 'Qualification',
+    clearSkiesCompanyScope: 'Company',
+    clearSkiesParentScope: 'Parent',
+  };
+  return labels[key] || humanizeKey(key);
+}
+
+function renderAntiObjectValue(featureKey, raw) {
+  let v = isCitableValue(raw) ? getCitableValue(raw) : raw;
+  if (isTaggedItem(v)) {
+    const label = resolveTaggedLabel(featureKey, v) || v.label || v.code;
+    return <Pill text={label} quote={v.text} tone="standard" />;
+  }
+  if (!v || typeof v !== 'object' || Array.isArray(v)) {
+    return renderSummaryRowValue({ value: raw, key: featureKey }, featureKey);
+  }
+  if (featureKey === 'hsrFilingDeadline') {
+    const bits = [];
+    if (v.days !== null && v.days !== undefined && v.days !== '') bits.push(`${v.days} ${v.unit || 'days'}`);
+    else if (v.unit) bits.push(v.unit);
+    if (v.text && bits.length === 0) bits.push(v.text);
+    return <span>{bits.join(' ') || 'Present'}</span>;
+  }
+  if (featureKey === 'exHsrFilingDeadline') {
+    const parts = [];
+    if (v.standard) parts.push(v.standard);
+    if (Array.isArray(v.jurisdictions) && v.jurisdictions.length > 0) parts.push(v.jurisdictions.join(', '));
+    if (v.text && parts.length === 0) parts.push(v.text);
+    return <span>{parts.join(' · ') || 'Present'}</span>;
+  }
+  return <span>{Object.entries(v).filter(([, val]) => val !== null && val !== undefined && val !== '').map(([k, val]) => `${humanizeKey(k)}: ${Array.isArray(val) ? val.join(', ') : String(val)}`).join(' · ')}</span>;
+}
+
+function renderClearSkiesLines(hit, provisions) {
+  const raw = hit && hit.value;
+  const unwrapped = isCitableValue(raw) ? getCitableValue(raw) : raw;
+  const lines = [];
+  const pushStructured = (party, entry) => {
+    if (!entry || typeof entry !== 'object') return;
+    const family = entry.family || entry.code || null;
+    const modifiers = Array.isArray(entry.modifiers) ? entry.modifiers : [];
+    lines.push({ party, family, modifiers, text: entry.text || null });
+  };
+  if (unwrapped && typeof unwrapped === 'object' && !Array.isArray(unwrapped) && (unwrapped.company || unwrapped.parent)) {
+    pushStructured('Company', unwrapped.company);
+    pushStructured('Parent', unwrapped.parent);
+  } else {
+    const companyScope = pickFirstNonEmpty(provisions, ['clearSkiesCompanyScope']);
+    const parentScope = pickFirstNonEmpty(provisions, ['clearSkiesParentScope']);
+    if (companyScope) lines.push({ party: 'Company', family: null, modifiers: [], text: getCitableValue(companyScope.value) });
+    if (parentScope) lines.push({ party: 'Parent', family: null, modifiers: [], text: getCitableValue(parentScope.value) });
+  }
+  if (lines.length === 0) return renderSummaryRowValue(hit, hit && hit.key);
+  return (
+    <div className="space-y-1">
+      {lines.map((line) => {
+        const familyLabel = line.family ? (CLEAR_SKIES_FAMILY[line.family] || line.family) : 'Clear-skies covenant';
+        const scope = line.modifiers.map((m) => CLEAR_SKIES_FAMILY[m] || m).filter(Boolean).join(', ');
+        return (
+          <div key={line.party} className="flex flex-wrap items-center gap-1.5">
+            <span className="font-medium text-ink">{line.party}:</span>
+            <Pill text={familyLabel} quote={line.text} tone="standard" />
+            {scope && <span className="text-inkMid">{scope}</span>}
+            {!scope && line.text && <span className="text-inkMid">{truncateAtWordBoundary(String(line.text), 180)}</span>}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function renderAntiHitValue(row, provisions) {
+  if (!row.hit) return <span className="italic text-inkFaint">Not present in this agreement</span>;
+  const key = row.hit.key;
+  const quote = evidenceQuote(row.hit.value, { provision: row.hit.provision });
+  if (key === 'clearSkies') {
+    return <HoverSource quote={quote} as="div">{renderClearSkiesLines(row.hit, provisions)}</HoverSource>;
+  }
+  const main = (
+    <HoverSource quote={quote} as="span">
+      {renderAntiObjectValue(key, row.hit.value)}
+    </HoverSource>
+  );
+  const suffix = row.suffixHit && getCitableValue(row.suffixHit.value) === true
+    ? <Pill text="Differs by remedy" quote={evidenceQuote(row.suffixHit.value, { provision: row.suffixHit.provision })} tone="standard" />
+    : null;
+  const detailHits = (row.detailKeys || [])
+    .filter((k) => k !== key)
+    .map((k) => ({ key: k, hit: pickFirstNonEmpty(provisions, [k]) }))
+    .filter(({ hit }) => hit);
+  if (!suffix && detailHits.length === 0) return main;
+  return (
+    <div className="space-y-1.5">
+      <div className="flex flex-wrap items-center gap-1.5">
+        {main}
+        {suffix}
+      </div>
+      {detailHits.length > 0 && (
+        <dl className="space-y-1">
+          {detailHits.map(({ key: detailKey, hit }) => (
+            <div key={detailKey} className="flex flex-col">
+              <dt className="text-[10px] text-inkFaint uppercase tracking-wider">{antiFieldLabel(detailKey)}</dt>
+              <dd className="text-[11px] text-ink">
+                <HoverSource quote={evidenceQuote(hit.value, { provision: hit.provision })} as="span">
+                  {renderAntiObjectValue(detailKey, hit.value)}
+                </HoverSource>
+              </dd>
+            </div>
+          ))}
+        </dl>
+      )}
+    </div>
+  );
+}
+
+function AntitrustSummaryTable({ provisions, allProvisions, onSelectProvision }) {
+  const rows = buildAntitrustSummaryRows(provisions, allProvisions || provisions);
+  const consumedIds = new Set(rows.map((r) => r.hit && r.hit.provision && r.hit.provision.id).filter(Boolean));
+  return (
+    <div className="space-y-3">
+      <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+        <div className="px-3 py-2 bg-bg/60 border-b border-border">
+          <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+            Antitrust Summary
+          </p>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-xs font-ui">
+            <thead className="bg-bg/60 border-b border-border">
+              <tr>
+                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">Span</th>
+                <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Feature</th>
+                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Value</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {rows.length === 0 ? (
+                <tr>
+                  <td colSpan={3} className="px-3 py-3 text-xs font-ui italic text-inkFaint">
+                    No structured antitrust summary extracted.
+                  </td>
+                </tr>
+              ) : rows.map((row) => (
+                <tr key={`${row.section}-${row.label}`} className="align-top hover:bg-bg/40">
+                  {row.showSection && (
+                    <td rowSpan={row.rowSpan} className="px-3 py-2 bg-bg/40 text-[10px] font-ui font-semibold text-inkMid uppercase tracking-wider border-r border-border align-top whitespace-nowrap">
+                      {row.section}
+                    </td>
+                  )}
+                  <td className={`px-3 py-2 text-ink font-medium whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>
+                    {row.hit && row.hit.provision && onSelectProvision ? (
+                      <button type="button" onClick={() => onSelectProvision(row.hit.provision)} className="text-left text-accent hover:underline font-medium">
+                        {row.label}
+                      </button>
+                    ) : row.label}
+                  </td>
+                  <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
+                    {renderAntiHitValue(row, provisions)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <ProvisionsInSectionList
+        provisions={provisions}
+        onSelectProvision={onSelectProvision}
+        consumedIds={consumedIds}
+      />
+    </div>
+  );
+}
+
 function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, allProvisions, deal }) {
   // STRUCT and CONSID get specialized layouts — see dedicated components above.
   if (type === 'STRUCT') {
@@ -8531,10 +8718,8 @@ function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, a
     const mainProvsAugmented = [...mainProvs, ...condTermrFallback];
     return (
       <div className="space-y-3">
-        <CategoryFeatureSummaryTable
-          deal={deal}
+        <AntitrustSummaryTable
           provisions={mainProvsAugmented}
-          type="ANTI"
           onSelectProvision={onSelectProvision}
           allProvisions={allProvisions || provisions}
         />

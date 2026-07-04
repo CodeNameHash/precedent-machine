@@ -1308,3 +1308,142 @@ function localMeta(provision) {
   }
   return meta;
 }
+
+export function findAntitrustConditionProvision(allProvisions) {
+  return (allProvisions || []).find((p) => {
+    if (!p) return false;
+    if (antiProvisionCode(p) === 'COND-M-REG') return true;
+    return (p.type === 'COND-M' || p.type === 'COND') && /hsr|hart[\s-]*scott|regulatory|antitrust|merger\s+control/i.test(String(p.category || ''));
+  }) || null;
+}
+
+export function buildAntitrustSummaryRows(antiProvisions, allProvisions) {
+  const anti = antiProvisions || [];
+  const rows = [];
+
+  const effortsHit = firstAntiHit(anti, ['effortsStandard']);
+  if (effortsHit) {
+    rows.push(antiRow('Efforts', 'Efforts', effortsHit, {
+      suffixHit: firstAntiHit(anti, ['effortsStandardDiffersByRemedy']),
+    }));
+  }
+
+  const burdenHit = firstAntiHit(anti, ['burdenCommitment', 'burdenCap', 'divestitureCap', 'divestitureCapDescription']);
+  if (burdenHit) {
+    const detailKeys = ['capDetail'];
+    const burdenCode = antiTaggedCode(burdenHit.value);
+    if (burdenCode === 'BURDENSOME_CONDITION' || burdenHit.key === 'burdenCap') {
+      detailKeys.push(
+        'burdenCap',
+        'divestitureCap',
+        'divestitureCapDescription',
+        'burdensomeConditionScope',
+        'burdensomeConditionInTerminationTriggers',
+        'burdensomConditionDefined',
+        'burdensomeConditionPresent',
+      );
+    }
+    detailKeys.push('burdenBaseline');
+    rows.push(antiRow('Caps & Limits', 'Caps & Limits', burdenHit, { detailKeys }));
+  }
+
+  const litigationHit = firstAntiHit(anti, ['litigationObligation', 'parentLitigationObligation']);
+  if (litigationHit) {
+    rows.push(antiRow('Litigation', 'Litigation', litigationHit, {
+      detailKeys: ['litigationObligationQualification'],
+    }));
+  }
+
+  const clearSkiesHit = firstAntiHit(anti, ['clearSkies', 'clearSkiesCompany', 'clearSkiesParent']);
+  if (clearSkiesHit) {
+    rows.push(antiRow('Clear Skies', 'Clear Skies', clearSkiesHit, {
+      detailKeys: ['clearSkiesCompanyScope', 'clearSkiesParentScope'],
+    }));
+  }
+
+  const strategyRows = [
+    ['Control', ['regulatoryStrategyControlTagged', 'controllingParty', 'regulatoryStrategyControl']],
+    ['Consultation', ['consultationTier', 'regulatoryCooperationScope']],
+    ['Pull-Refiling', ['pullRefile', 'pullAndRefileCompanyConsent']],
+    ['HSR Filing Deadline', ['hsrFilingDeadline', 'hsrFilingDeadlineBusinessDays']],
+    ['Ex-HSR Filing Deadline', ['exHsrFilingDeadline', 'otherRegulatoryFilingDeadlines', 'filingDeadline']],
+    ['Timing Agreement', ['timingAgreement', 'timingAgreementsProhibited']],
+  ];
+  for (const [label, keys] of strategyRows) {
+    const hit = firstAntiHit(anti, keys);
+    if (hit) rows.push(antiRow('Strategy & Filings', label, hit));
+  }
+
+  const cond = findAntitrustConditionProvision(allProvisions || anti);
+  if (cond) {
+    const f = antiProvisionFeatures(cond);
+    rows.push(antiRow('Closing Condition (antitrust)', 'Antitrust', {
+      key: 'antitrustCondition',
+      value: f.mainCondition || f.mainConcept || cond.category || 'Present',
+      provision: cond,
+    }));
+  }
+
+  const counts = rows.reduce((acc, row) => {
+    acc[row.section] = (acc[row.section] || 0) + 1;
+    return acc;
+  }, {});
+  const seen = {};
+  return rows.map((row) => {
+    seen[row.section] = (seen[row.section] || 0) + 1;
+    return {
+      ...row,
+      showSection: seen[row.section] === 1,
+      rowSpan: counts[row.section],
+    };
+  });
+}
+
+function antiProvisionCode(provision) {
+  const f = antiProvisionFeatures(provision);
+  let meta = provision && provision.ai_metadata;
+  if (typeof meta === 'string') {
+    try { meta = JSON.parse(meta); } catch { meta = null; }
+  }
+  return f.canonicalCode || (meta && meta.code) || provision?.code || null;
+}
+
+function antiTaggedCode(raw) {
+  const inner = unwrap(raw);
+  if (isTagged(inner)) return String(inner.code || '').toUpperCase();
+  if (typeof inner === 'string') return inner.toUpperCase();
+  return '';
+}
+
+function firstAntiHit(provisions, keys) {
+  for (const p of provisions || []) {
+    const f = antiProvisionFeatures(p);
+    for (const key of keys || []) {
+      const value = f[key];
+      if (!antiValueIsEmpty(value)) return { key, value, provision: p };
+    }
+  }
+  return null;
+}
+
+function antiRow(section, label, hit, extra = {}) {
+  return { section, label, hit: hit || null, ...extra };
+}
+
+function antiProvisionFeatures(provision) {
+  if (!provision) return {};
+  let meta = provision.ai_metadata || null;
+  if (typeof meta === 'string') {
+    try { meta = JSON.parse(meta); } catch { meta = null; }
+  }
+  const f = meta && meta.features;
+  return f && typeof f === 'object' && !Array.isArray(f) ? f : {};
+}
+
+function antiValueIsEmpty(raw) {
+  if (raw === null || raw === undefined || raw === '' || raw === false) return true;
+  if (Array.isArray(raw) && raw.length === 0) return true;
+  const inner = unwrap(raw);
+  if (inner !== raw) return antiValueIsEmpty(inner);
+  return false;
+}
