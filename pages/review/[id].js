@@ -86,6 +86,7 @@ import { NosolFourTables } from '../../components/review/NosolFourTables';
 import { NoOtherRepsFraudTable } from '../../components/review/NoOtherRepsFraudTable';
 import { DealNavContext, TermCell } from '../../components/review/TermCell';
 import { DocPopUnder } from '../../components/review/DocPopUnder';
+import { SecMeetingTable } from '../../components/review/SecMeetingTable';
 import {
   termCellHoverQuote,
   knowledgeQualifierDisplay,
@@ -3220,7 +3221,7 @@ const HIDDEN_TABLE_COLUMNS = {
     'outsideDateExtension', 'outside_date_extension',
     'outsideDateExtensionCondition', 'outside_date_extension_condition',
   ],
-  COV: ['financingCooperation', 'cvrIncluded'],
+  COV: ['financingCooperation', 'cvrIncluded', 'proxyFilingDeadline', 'mailingDeadline', 'meetingDeadline', 'adjournmentRights', 'meetingControlNotes'],
 };
 
 // voteThreshold is only relevant on TERMR-VOTE rows — keep it visible there
@@ -4242,9 +4243,17 @@ const SUBCODE_SUMMARY_FEATURES = {
   ],
   'COV-PROXY': [
     { label: 'Proxy Filing Deadline',              keys: ['proxyFilingDeadline'] },
-    { label: 'Special Meeting Deadline',           keys: ['specialMeetingDeadline'] },
-    { label: 'Meeting Delay Permitted',            keys: ['meetingDelayPermitted'] },
-    { label: 'Meeting Delay Conditions',           keys: ['meetingDelayConditions'] },
+    { label: 'Mailing Deadline',                   keys: ['mailingDeadline'] },
+    { label: 'Meeting Deadline',                   keys: ['meetingDeadline'] },
+    { label: 'Adjournment Rights',                 keys: ['adjournmentRights'] },
+    { label: 'Meeting Control Notes',              keys: ['meetingControlNotes'] },
+  ],
+  'COV-MEETING': [
+    { label: 'Proxy Filing Deadline',              keys: ['proxyFilingDeadline'] },
+    { label: 'Mailing Deadline',                   keys: ['mailingDeadline'] },
+    { label: 'Meeting Deadline',                   keys: ['meetingDeadline'] },
+    { label: 'Adjournment Rights',                 keys: ['adjournmentRights'] },
+    { label: 'Meeting Control Notes',              keys: ['meetingControlNotes'] },
   ],
   'COV-DO': [
     { label: 'Insurance Cap',                      keys: ['insuranceCap'] },
@@ -9809,6 +9818,7 @@ export default function ReviewPage() {
     // fields can land on any provision type/code — see lib/abry.js).
     if ((provisions || []).length > 0) {
       groups['__ABRY'] = [{ id: '__abry_sentinel__', type: '__ABRY' }];
+      groups['__SEC_MEETING'] = [{ id: '__sec_meeting_sentinel__', type: '__SEC_MEETING' }];
     }
     // IOC party promotion: the classifier currently tags BOTH target-side
     // and (rare) buyer-side IOC sections as bare 'IOC' (no party suffix). So
@@ -9888,6 +9898,7 @@ export default function ReviewPage() {
     // so re-synthesize it here too whenever the deal has any provisions.
     if ((provisions || []).length > 0) {
       groups['__ABRY'] = [{ id: '__abry_sentinel__', type: '__ABRY' }];
+      groups['__SEC_MEETING'] = [{ id: '__sec_meeting_sentinel__', type: '__SEC_MEETING' }];
     }
     // IOC party promotion + section synthesis (mirrors REPs):
     //   • When activeFilter touches IOC-T (single child click OR parent-group
@@ -10893,6 +10904,9 @@ export default function ReviewPage() {
                               {type === '__ABRY' && (
                                 <NoOtherRepsFraudTable allProvisions={provisions} />
                               )}
+                              {type === '__SEC_MEETING' && (
+                                <SecMeetingTable allProvisions={provisions} />
+                              )}
                               {(type === 'MAE-DEF' || type === 'MAE-DEF-P') && (
                                 <MaeDefinitionSummary
                                   allProvisions={provisions}
@@ -10906,7 +10920,7 @@ export default function ReviewPage() {
                                   onSelectProvision={handleEditProvision}
                                 />
                               )}
-                              {type !== 'DEF' && type !== 'MAE-DEF' && type !== 'MAE-DEF-P' && type !== '__MATERIAL_CONTRACTS' && type !== '__ABRY' && (() => {
+                              {type !== 'DEF' && type !== 'MAE-DEF' && type !== 'MAE-DEF-P' && type !== '__MATERIAL_CONTRACTS' && type !== '__ABRY' && type !== '__SEC_MEETING' && (() => {
                                 const restAugmented = (type === 'REP-T' || type === 'REP-B')
                                   ? augmentRepsWithExpectedPlaceholders(rest, type, provisions)
                                   : rest;

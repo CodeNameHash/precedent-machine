@@ -581,6 +581,7 @@ const TYPE_HEX = {
   REP:      '#3F8A6A',
   'REP-T':  '#3F8A6A',
   'REP-B':  '#3F8A6A',
+  '__SEC_MEETING': '#6E8AA8',
   COV:      '#6E8AA8',
   MAE:      '#8B5B3A',
   'MAE-T':  '#8B5B3A',
@@ -637,6 +638,7 @@ export const SIDEBAR_GROUPS = [
     { label: 'Buyer / Parent', type: 'NOSOL-B' },
   ]},
   { label: 'Antitrust / Regulatory', types: ['ANTI'] },
+  { label: 'SEC Filing / Meeting Requirements', types: ['__SEC_MEETING'] },
   { label: 'Conditions to Closing', types: ['COND-M', 'COND-B', 'COND-S', 'COND'], singleType: 'COND-M' },
   { label: 'Termination Rights', types: ['TERMR-M', 'TERMR-B', 'TERMR-T', 'TERMR'], singleType: 'TERMR-M' },
   { label: 'Termination Fees', types: ['TERMF'] },
@@ -651,7 +653,7 @@ export const SIDEBAR_GROUPS = [
 /* Synthetic, single-page sidebar types: the child label itself IS the page
  * (a curated summary), so the sidebar should NOT show a count or a nested
  * per-provision sub-list under it. */
-export const SYNTHETIC_SINGLE_PAGE_TYPES = new Set(['MAE-DEF', 'MAE-DEF-P', '__MATERIAL_CONTRACTS', '__ABRY']);
+export const SYNTHETIC_SINGLE_PAGE_TYPES = new Set(['MAE-DEF', 'MAE-DEF-P', '__MATERIAL_CONTRACTS', '__ABRY', '__SEC_MEETING']);
 
 export function getProvisionStatus(p) {
   if (p._status === 'approved') return 'approved';
@@ -673,6 +675,7 @@ const TYPE_LABELS = {
   // Synthetic UI-only type — the No Other Reps / Fraud (Abry) four-question
   // summary; see the SIDEBAR_GROUPS comment above for what feeds it.
   '__ABRY': 'No Other Reps / Fraud (Abry)',
+  '__SEC_MEETING': 'SEC Filing / Meeting Requirements',
   'IOC-T': 'Interim Operating Covenants (Target)',
   'IOC-B': 'Interim Operating Covenants (Buyer)',
   'IOC': 'Interim Operating Covenants',
