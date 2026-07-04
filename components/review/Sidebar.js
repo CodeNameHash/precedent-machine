@@ -315,7 +315,7 @@ export function Sidebar({ provsByType, provisions, activeFilter, onFilterType, o
           style={{ padding: '0 8px 10px' }}
         >
           <span className="rec-side-eyebrow">Provisions</span>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <button
               onClick={handleCollapseAll}
               className="rec-side-eyebrow"
@@ -332,12 +332,13 @@ export function Sidebar({ provsByType, provisions, activeFilter, onFilterType, o
               <button
                 type="button"
                 onClick={onClose}
+                className="p-1.5 text-inkLight hover:text-ink transition-colors rounded hover:bg-paper"
                 title="Close sidebar"
-                className="p-1 text-inkLight hover:text-ink transition-colors rounded hover:bg-paper"
-                style={{ display: 'inline-flex' }}
+                aria-label="Close sidebar"
               >
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M4 4l8 8M12 4l-8 8" />
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <rect x="1" y="2" width="14" height="12" rx="1" />
+                  <path d="M5 2v12" />
                 </svg>
               </button>
             )}

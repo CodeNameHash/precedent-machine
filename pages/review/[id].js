@@ -9791,21 +9791,6 @@ export default function ReviewPage() {
         </div>
         <div className="flex items-center gap-3 shrink-0">
           <ViewModeToggle />
-          {/* FB3 item 1: the close control now lives at the top of the
-              sidebar itself (see Sidebar.js). This header button only
-              reopens the sidebar once it's been closed. */}
-          {!sidebarOpen && (
-            <button
-              onClick={() => setSidebarOpen(true)}
-              className="p-1.5 text-inkLight hover:text-ink transition-colors rounded hover:bg-paper"
-              title="Show sidebar"
-            >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <rect x="1" y="2" width="14" height="12" rx="1" />
-                <path d="M5 2v12" />
-              </svg>
-            </button>
-          )}
           {user && (
             <>
               <span className="text-[12.5px] text-inkLight">{user.name}</span>
@@ -9853,6 +9838,30 @@ export default function ReviewPage() {
               onClose={() => setSidebarOpen(false)}
             />
           </div>
+        )}
+        {!sidebarOpen && (
+          <button
+            type="button"
+            onClick={() => setSidebarOpen(true)}
+            aria-label="Open sidebar"
+            title="Open sidebar"
+            className="fixed right-0 top-1/2 z-40 -translate-y-1/2 text-inkLight hover:text-ink focus:outline-none focus:ring-2 focus:ring-accent"
+            style={{
+              width: 14,
+              height: 76,
+              border: '1px solid var(--line)',
+              borderRight: 0,
+              borderRadius: '6px 0 0 6px',
+              background: 'var(--surface)',
+              boxShadow: '0 2px 12px rgba(0,0,0,0.08)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <span aria-hidden="true" style={{ fontSize: 16, lineHeight: 1, transform: 'translateX(-1px)' }}>‹</span>
+          </button>
         )}
 
         {/* Main Content */}

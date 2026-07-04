@@ -38,11 +38,13 @@ test('item 1: Sidebar.js owns an onClose affordance rendered at the top of the p
   assert.ok(eyebrowIdx >= 0 && closeIdx > eyebrowIdx && closeIdx < eyebrowIdx + 1500);
 });
 
-test('item 1: the review page header no longer has an always-on sidebar toggle — it only reopens when closed', () => {
+test('item 1: no title-bar reopen button — closed sidebar shows an edge pull-out tab', () => {
   const src = reviewSrc();
   assert.ok(!/title="Toggle sidebar"/.test(src), 'the old always-present toggle button is gone');
+  assert.ok(!/title="Show sidebar"/.test(src), 'no reopen button in the title bar');
   assert.match(src, /\{!sidebarOpen && \(/);
-  assert.match(src, /title="Show sidebar"/);
+  assert.match(src, /aria-label="Open sidebar"/);
+  assert.match(src, /fixed right-0 top-1\/2/); // edge pull-out tab, vertically centered
   assert.match(src, /onClose=\{\(\) => setSidebarOpen\(false\)\}/);
 });
 
