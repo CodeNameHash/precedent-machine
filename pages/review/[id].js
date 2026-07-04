@@ -3183,6 +3183,10 @@ const HIDDEN_TABLE_COLUMNS = {
     'extraContractualClaimsWaived', 'extra_contractual_claims_waived',
     'fraudCarveout', 'fraud_carveout',
     'knowledgeScope', 'knowledge_scope',
+    // knowledgeScopeType landed on this same schema via #71 (merged into this
+    // branch after the item-1 audit) — same leak pattern, same fix: hide it
+    // defensively rather than let it reappear as a raw column.
+    'knowledgeScopeType', 'knowledge_scope_type',
     'sectionNumber', 'section_number',
   ],
   'REP-B': ['mainConcept', 'crossReferences', 'linkedBringDownStandard', 'solvencyRepIncluded', 'solvency_rep_included', 'financingRepIncluded', 'financing_rep_included', 'materialityScrape', 'materiality_scrape', 'bringDownStandard', 'bring_down_standard', 'scheduleReference', 'schedule_reference', 'sufficientFundsRepPresent', 'sufficient_funds_rep_present', 'sufficientFundsRepDetails', 'sufficient_funds_rep_details', 'solvencyRepPresent', 'solvency_rep_present', 'solvencyRepDetails', 'solvency_rep_details', 'antiRelianceRepPresent', 'anti_reliance_rep_present', 'antiRelianceRepText', 'anti_reliance_rep_text', 'parentLitigationRepPresent', 'parent_litigation_rep_present', 'parentOwnershipRepPresent', 'parent_ownership_rep_present', 'parentBrokersRepPresent', 'parent_brokers_rep_present',
@@ -3242,6 +3246,10 @@ const HIDDEN_TABLE_COLUMNS = {
     'extraContractualClaimsWaived', 'extra_contractual_claims_waived',
     'fraudCarveout', 'fraud_carveout',
     'knowledgeScope', 'knowledge_scope',
+    // knowledgeScopeType landed on this same schema via #71 (merged into this
+    // branch after the item-1 audit) — same leak pattern, same fix: hide it
+    // defensively rather than let it reappear as a raw column.
+    'knowledgeScopeType', 'knowledge_scope_type',
     'sectionNumber', 'section_number',
     // Fields that ONLY surface inside REP_SPECIFIC_FEATURE_SPECS (per
     // matching rep category). Hide as columns so they don't appear on
