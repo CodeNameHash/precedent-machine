@@ -82,3 +82,40 @@ test('"represents and warrants" does not create a WARRANTS instrument', () => {
   const codes = (prov.features.outstandingInstruments || []).map((i) => i.code);
   assert.ok(!codes.includes('WARRANTS'), `no phantom warrants, got ${codes}`);
 });
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * Fix batch item 2 — negation guard. A bare name hit is not evidence the
+ * instrument is outstanding: merger agreements routinely name an instrument
+ * only to negate its existence (real Metsera capitalization-rep boilerplate:
+ * "there have been no issuances ... of ... stock appreciation rights ...").
+ * ───────────────────────────────────────────────────────────────────────── */
+
+test('a negated mention ("no ... stock appreciation rights ... outstanding") does NOT add the instrument', () => {
+  const prov = equityProv({
+    outstandingInstruments: [
+      { code: 'STOCK_OPTIONS', label: 'Stock Options', text: 'each Company Stock Option' },
+    ],
+  });
+  prov.text +=
+    ' Since the Measurement Date, there have been no issuances by the Company of ' +
+    'restricted shares, stock appreciation rights, contingent value rights or other rights.';
+  backfillMissingInstrumentMentions([prov]);
+  const codes = (prov.features.outstandingInstruments || []).map((i) => i.code);
+  assert.ok(!codes.includes('SARS'), `no phantom SARs from a negated mention, got ${codes}`);
+});
+
+test('an affirmative mention still adds the instrument even when unrelated negated boilerplate is also present', () => {
+  const prov = equityProv({
+    outstandingInstruments: [
+      { code: 'STOCK_OPTIONS', label: 'Stock Options', text: 'each Company Stock Option' },
+    ],
+  });
+  prov.text +=
+    ' There have been no issuances of stock appreciation rights. ' +
+    'Each Company Warrant outstanding immediately prior to the Effective Time shall be canceled ' +
+    'in exchange for the Merger Consideration.';
+  backfillMissingInstrumentMentions([prov]);
+  const codes = (prov.features.outstandingInstruments || []).map((i) => i.code);
+  assert.ok(codes.includes('WARRANTS'), `genuinely-mentioned Warrants must still be added, got ${codes}`);
+  assert.ok(!codes.includes('SARS'), `negated SARs must still be excluded, got ${codes}`);
+});

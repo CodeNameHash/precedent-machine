@@ -10,6 +10,7 @@ import {
   getCitableText,
   TOOLTIP_MAX,
 } from '../../lib/citable';
+import { taxonomyForFeatureKey, labelForCode } from '../../lib/taxonomy';
 
 /* Citation / evidence helpers (isCitableValue, getCitableValue,
  * getCitableQuotes, getCitableText, resolveEvidence, evidenceQuote) now live
@@ -362,7 +363,9 @@ export function renderListAsBullets(featureKey, items) {
         } else if (innerRaw === null || innerRaw === undefined || innerRaw === '') {
           return null;
         } else {
-          body = <span>{String(innerRaw)}</span>;
+          // FIX BATCH item 4 sweep: plain-string list items (no {code,label}
+          // wrapper) get the same bare-enum guard as the scalar-cell path.
+          body = <span>{prettifyEnumValue(featureKey, String(innerRaw))}</span>;
         }
         return (
           <li key={idx} className="whitespace-pre-wrap break-words">
@@ -453,6 +456,19 @@ export function prettifyEnumValue(key, raw) {
     const hit = map[norm];
     if (hit) return hit;
     return raw.replace(/\bcvr\b/gi, 'CVR');
+  }
+  // FIX BATCH item 4: generic bare-enum leak guard. A feature value that
+  // slipped through UN-tagged (a plain enum string like "RBE_NOT_TO" /
+  // "POSITIVE_ONLY" rather than a {code,label} object) never went through
+  // resolveTaggedLabel, so it rendered verbatim. Route ANY UPPER_SNAKE-shaped
+  // value through this key's taxonomy dictionary first; if the key has no
+  // dictionary (or the code isn't in it), humanize it to Title Case rather
+  // than let the raw token reach the page. Real prose values (lowercase,
+  // spaced) never match this shape and pass through untouched.
+  if (/^[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)*$/.test(raw)) {
+    const dict = taxonomyForFeatureKey(key);
+    const label = dict && labelForCode(raw, dict);
+    return label || humanizeBadgeText(raw);
   }
   return raw;
 }
