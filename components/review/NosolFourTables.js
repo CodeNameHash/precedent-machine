@@ -5,6 +5,7 @@ import {
   HoverSource,
   renderSummaryRowValue,
 } from './shared';
+import { TermCell } from './TermCell';
 
 // Audit block 1: the parser sometimes emits a bare digit for duration-typed
 // features ("4" instead of "4 business days"). Append the unit ONLY when the
@@ -114,19 +115,17 @@ function NosolMiniTable({ title, spec, provisions, headerNote }) {
               return (
                 <tr key={row.label} className="hover:bg-bg/40 transition-colors">
                   <td className="px-3 py-2 align-top whitespace-normal break-words">
-                    {clickable ? (
-                      <HoverSource quote={quote}>
-                        <button
-                          type="button"
-                          onClick={onClick}
-                          className="text-left text-accent hover:underline font-medium"
-                        >
-                          {row.label}
-                        </button>
-                      </HoverSource>
-                    ) : (
-                      <span className="text-ink font-medium">{row.label}</span>
-                    )}
+                    <TermCell provision={row.hit && row.hit.provision} quote={quote}>
+                      {clickable ? (
+                        <HoverSource quote={quote}>
+                          <span className="text-left text-accent hover:underline font-medium">
+                            {row.label}
+                          </span>
+                        </HoverSource>
+                      ) : (
+                        <span className="text-ink font-medium">{row.label}</span>
+                      )}
+                    </TermCell>
                   </td>
                   <td
                     className={`px-3 py-2 align-top text-ink whitespace-pre-wrap break-words ${clickable ? 'cursor-pointer hover:bg-yellow-50' : ''}`}

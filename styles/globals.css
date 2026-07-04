@@ -700,6 +700,36 @@ html, body {
   font-family: var(--font-sans);
 }
 
+/* ═══════════ FB3 — shared term-cell wrapper (card click-through +
+   "see text" pop-under launcher). Applied uniformly by
+   components/review/TermCell.js wherever a table renders a clickable
+   term/label. ═══════════ */
+.term-cell-label {
+  color: inherit;
+  text-decoration: none;
+}
+.term-cell-label:hover {
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 2px;
+}
+.term-cell-seetext {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .04em;
+  color: var(--ink-faint);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+.term-cell-seetext:hover {
+  color: var(--accent-deep);
+  text-decoration: underline;
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar { width: 11px; height: 11px; }
 ::-webkit-scrollbar-thumb {
