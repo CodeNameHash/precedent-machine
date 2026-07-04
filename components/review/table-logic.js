@@ -632,3 +632,185 @@ export function filterProvisionsForViewMode(provisions, isEdit) {
   if (isEdit) return list;
   return list.filter((p) => p && p.type !== 'SECTION-LEFTOVER');
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+ * FB3 item 2 — AoC rep row: one pill per limb actually present.
+ * The AoC ("Absence of Certain Changes") rep bundles up to three independent
+ * limbs: a "no MAE since [date]" prong, an ordinary-course prong, and
+ * (layered on top of the ordinary-course prong) cited-covenant "specific
+ * IOC" cross-references. Never label this "General operating covenant" (the
+ * raw absenceOfChangesType taxonomy label) — that reads as if nothing
+ * specific was cited even when covenant sections were. Returns
+ * [{ key, label, quote }] — quote is hover-only, never printed inline.
+ * ══════════════════════════════════════════════════════════════════════════ */
+export function buildAocTermPills(features) {
+  const f = features || {};
+  const pills = [];
+
+  const noMaeRaw = f.aocNoMaePresent;
+  if (unwrap(noMaeRaw) === true) {
+    const dateRaw = f.aocNoMaeSinceDate;
+    const dateInner = unwrap(dateRaw);
+    const quote = collectTexts(dateRaw)[0] || collectTexts(noMaeRaw)[0] || null;
+    const label = buildAocNoMaeLimbText(true, typeof dateInner === 'string' ? dateInner : null) || 'No MAE';
+    pills.push({ key: 'noMae', label, quote });
+  }
+
+  const citedRaw = f.aocCitedCovenantNames;
+  const citedInner = unwrap(citedRaw);
+  const hasCited = Array.isArray(citedInner) && citedInner.length > 0;
+  const ocRaw = f.aocOrdinaryCourseLimb;
+  const ocInner = unwrap(ocRaw);
+  const hasOc = typeof ocInner === 'string' && ocInner.trim().length > 0;
+
+  if (hasCited) {
+    // Cited covenant sections turn the ordinary-course limb into (in
+    // substance) a set of specifically-enumerated IOCs.
+    const quote = collectTexts(citedRaw)[0] || (hasOc ? ocInner : null);
+    pills.push({ key: 'iocs', label: 'Specific IOC carve-outs', quote });
+  } else if (hasOc) {
+    pills.push({ key: 'oc', label: 'Ordinary course', quote: ocInner });
+  }
+
+  return pills;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+ * FB3 item 3 — scope-qualified pill text: "(partial)" renders INSIDE the
+ * pill's own label, in parens, never as separate sibling text. Nothing extra
+ * renders when scope is absent or "entire" — the unmarked pill IS the
+ * "applies to the whole rep" case. Shared by knowledgeQualifier (existing
+ * `display.scope` from knowledgeQualifierDisplay above) and
+ * materialityQualifier (the concurrent extraction agent's new `scope` field).
+ * ══════════════════════════════════════════════════════════════════════════ */
+export function withScopeParens(label, scope) {
+  return scope === 'partial' ? `${label} (partial)` : label;
+}
+
+// materialityQualifier's scope value (ENTIRE_REP / PARTIAL) uses the same
+// vocabulary as knowledgeQualifierDisplay's own scope detection — normalize
+// both the same way so "(partial)" means the same thing on either pill.
+export function normalizeQualifierScope(raw) {
+  if (typeof raw !== 'string') return null;
+  const s = raw.trim().toUpperCase();
+  if (s === 'PARTIAL') return 'partial';
+  if (s === 'ENTIRE' || s === 'ENTIRE_REP' || s === 'WHOLE_REP') return 'entire';
+  return null;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+ * FB3 item 4(a) — D&O Insurance Cap concise form: derive "N% of annual
+ * premium" from the verbatim clause. Never invents a number — returns null
+ * (caller falls back to a truncated verbatim snippet) when no percentage or
+ * dollar figure is found near "premium".
+ * ══════════════════════════════════════════════════════════════════════════ */
+export function deriveInsuranceCapConcise(text) {
+  if (typeof text !== 'string' || !text.trim()) return null;
+  const pct = text.match(/(\d+(?:\.\d+)?)\s*%\)?\s*of\s+the\s+(?:then-current\s+|current\s+)?annual\s+premium/i);
+  if (pct) return `${pct[1]}% of annual premium`;
+  const dollar = text.match(/\$[\d,]+(?:\.\d+)?(?:\s*(?:million|billion|thousand|mm|k))?/i);
+  if (dollar && /premium/i.test(text)) return dollar[0].trim();
+  return null;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+ * FB3 item 4(d) — Access row: humanized scope label + purpose pill(s).
+ * Two purpose pills when accessPurposeLimitation names BOTH consummation and
+ * integration-planning purposes (e.g. "solely for the purpose of
+ * consummating the Transactions or integration planning purposes").
+ * ══════════════════════════════════════════════════════════════════════════ */
+export function humanizeAccessScopeToken(raw) {
+  const s = String(raw || '').replace(/[-_]+/g, ' ').trim();
+  if (!s) return null;
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+// Returns which purpose(s) the verbatim purpose-limitation text names:
+// a subset of ['consummation', 'integration'], or ['other'] when the text is
+// non-empty but names neither, or [] when there's no text at all.
+export function detectAccessPurposes(text) {
+  if (typeof text !== 'string' || !text.trim()) return [];
+  const hasConsummation = /consummat/i.test(text);
+  const hasIntegration = /integrat/i.test(text);
+  if (!hasConsummation && !hasIntegration) return ['other'];
+  const out = [];
+  if (hasConsummation) out.push('consummation');
+  if (hasIntegration) out.push('integration');
+  return out;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+ * FB3 item 5(d) — Jurisdiction row must NAME the courts + fallback, never a
+ * bare "Yes". `jurisdictionText` (features.jurisdiction) already carries the
+ * fallback court in the same verbatim string (e.g. "Court of Chancery ...
+ * (or, if such court shall be unavailable, any state or federal court ...)");
+ * prefer it over the boolean exclusivity flag, which used to win the
+ * pickFirstNonEmpty race and render as a content-free "Yes".
+ * ══════════════════════════════════════════════════════════════════════════ */
+export function buildJurisdictionDisplay({ jurisdictionText, jurisdictionExclusive, jurisdictionExclusiveText }) {
+  let text = (typeof jurisdictionText === 'string' && jurisdictionText.trim()) ? jurisdictionText.trim() : null;
+  if (!text && typeof jurisdictionExclusiveText === 'string' && jurisdictionExclusiveText.trim()) {
+    // No court-name text extracted — never invent one. Fall back to the
+    // exclusivity clause's own verbatim text rather than a bare "Yes".
+    text = jurisdictionExclusiveText.trim();
+  }
+  if (!text) return null;
+  return { text, exclusive: jurisdictionExclusive === true };
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+ * FB3 item 5(e) — Fees & Expenses: "Parties pay own expenses except for
+ * [resolved §-refs]". Resolve each cited section against the deal's OWN
+ * sections (by sectionNumber, matched on the base number so "6.03(b)"
+ * resolves against a provision classified at "6.03"). An unresolvable cite
+ * keeps the bare citation — never invented.
+ * ══════════════════════════════════════════════════════════════════════════ */
+export function extractSectionRefs(text) {
+  if (typeof text !== 'string') return [];
+  const matches = text.match(/Section\s+\d+(?:\.\d+)*(?:\([a-z0-9]+\))?/gi) || [];
+  const seen = new Set();
+  const out = [];
+  for (const m of matches) {
+    const norm = m.replace(/\s+/g, ' ').trim();
+    if (!seen.has(norm)) { seen.add(norm); out.push(norm); }
+  }
+  return out;
+}
+
+// sectionIndex: [{ sectionNumber: '6.02', category: 'Access to Information...' }, ...]
+// (already-unwrapped plain strings — the caller does the citable unwrap).
+export function resolveSectionRef(ref, sectionIndex) {
+  const m = ref.match(/([\d.]+)/);
+  if (!m) return ref;
+  const baseNum = m[1].replace(/\.$/, '');
+  for (const entry of sectionIndex || []) {
+    const sec = entry && entry.sectionNumber;
+    if (typeof sec !== 'string') continue;
+    const secBase = sec.replace(/\([a-z0-9]+\)\s*$/i, '').trim();
+    if (secBase === baseNum) return `${ref} (${entry.category})`;
+  }
+  return ref;
+}
+
+export function buildFeeExpenseSentence(text, sectionIndex) {
+  if (typeof text !== 'string' || !text.trim()) return null;
+  const refs = extractSectionRefs(text);
+  if (refs.length === 0) return 'Parties pay their own fees and expenses.';
+  const resolved = refs.map((r) => resolveSectionRef(r, sectionIndex));
+  return `Parties pay their own fees and expenses, except for ${resolved.join(', ')}.`;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+ * FB3 item 4(e) — Public Statements: the Parent/Company carveout booleans
+ * collapse into ONE deduped "Exceptions" list (they're near-always identical
+ * text on a single deal) rather than two separate near-duplicate rows.
+ * ══════════════════════════════════════════════════════════════════════════ */
+export function dedupeTexts(texts) {
+  const seen = new Set();
+  const out = [];
+  for (const t of texts || []) {
+    const norm = typeof t === 'string' ? t.trim() : '';
+    if (norm && !seen.has(norm)) { seen.add(norm); out.push(norm); }
+  }
+  return out;
+}
