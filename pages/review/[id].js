@@ -113,6 +113,7 @@ import {
   buildJurisdictionDisplay,
   buildFeeExpenseSentence,
   dedupeTexts,
+  deriveKnowledgeHeader,
 } from '../../components/review/table-logic';
 import { ConsidTable } from '../../components/review/ConsiderationTables';
 import { Sidebar } from '../../components/review/Sidebar';
@@ -6187,6 +6188,16 @@ function RepKnowledgeNote({ provisions, allProvisions }) {
   let standardCode = null;
   let persons = [];        // array of { label, quote, code }
   let defQuote = null;     // the "knowledge means ..." definition sentence
+  let stampedKnowledgeScope = null;
+
+  for (const p of provisions || []) {
+    const f = getStructuredFeatures(p) || {};
+    const scope = typeof f.knowledgeScope === 'string' ? f.knowledgeScope.trim() : '';
+    if (scope) {
+      stampedKnowledgeScope = scope;
+      break;
+    }
+  }
 
   const normStandard = (raw) => {
     const v = isCitableValue(raw) ? getCitableValue(raw) : raw;
@@ -6262,6 +6273,22 @@ function RepKnowledgeNote({ provisions, allProvisions }) {
       }
       if (standardLabel && persons.length > 0) break;
     }
+  }
+
+  const derived = deriveKnowledgeHeader({
+    knowledgeScope: stampedKnowledgeScope,
+    legacyStandard: standardLabel,
+    legacyGroup: persons,
+  });
+  if (derived.source === 'definition') {
+    const quote = (knowledgeDef && typeof knowledgeDef.full_text === 'string' && knowledgeDef.full_text.trim())
+      ? knowledgeDef.full_text
+      : derived.quote;
+    standardLabel = derived.standard;
+    standardCode = null;
+    standardQuote = quote;
+    persons = (derived.group || []).map((label) => ({ label, code: null, quote }));
+    defQuote = quote;
   }
 
   if (!standardLabel && persons.length === 0) {
@@ -6599,6 +6626,21 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
   //    the label + Cut-Off row. ──
   const scopeRaw = pickKey(['secFilingsExceptionScope', 'secFilingsExceptionLanguage']);
   const scopeQuote = extractQuote(scopeRaw);
+  const secCutoffFallbackQuote = (() => {
+    const keys = ['secFilingsExceptionLookbackDate', 'secFilingsLookbackMonths', 'secFilingsExceptionLookback', 'secFilingsExceptionScope', 'secFilingsExceptionLanguage'];
+    for (const p of provisions || []) {
+      const f = getStructuredFeatures(p) || {};
+      if (keys.some((k) => f[k] !== null && f[k] !== undefined && f[k] !== '')) {
+        const text = typeof p.full_text === 'string' ? p.full_text.trim() : '';
+        if (text) return p.full_text;
+      }
+    }
+    for (const p of preamblePros) {
+      const text = typeof p.full_text === 'string' ? p.full_text.trim() : '';
+      if (text) return p.full_text;
+    }
+    return null;
+  })();
   const secSubRows = [
     { label: 'Cut-Off', custom: 'lookback' },
     { label: 'Portions Excluded', keys: ['secFilingsExceptionExclusions', 'secFilingsExcludedSections'] },
@@ -6611,7 +6653,7 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
       // sentence (deriveCutoffPhrase scans secFilingsExceptionScope among
       // other fields) — the scope quote is still the right hover evidence
       // even when the lookback field itself has no citable text of its own.
-      return { ...sr, present: lookbackRaw !== null || !!scopeQuote, node: renderLookbackVal(), quote: extractQuote(lookbackRaw) || scopeQuote };
+      return { ...sr, present: lookbackRaw !== null || !!scopeQuote || !!secCutoffFallbackQuote, node: renderLookbackVal(), quote: extractQuote(lookbackRaw) || scopeQuote || secCutoffFallbackQuote };
     }
     const v = pickKey(sr.keys);
     return { ...sr, present: v !== null && v !== undefined, node: v != null ? renderFeatureCell(sr.keys[0], v) : null, quote: extractQuote(v) };

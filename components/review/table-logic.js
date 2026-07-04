@@ -135,6 +135,83 @@ export function knowledgeQualifierDisplay(raw) {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
+ * FB3 — REP section Knowledge header.
+ * Prefer the deal's defined "Knowledge" scope stamped by parser-v2's
+ * linkKnowledgeScopeToReps over legacy rep-preamble fields. The helper stays
+ * deliberately text-only so tests can pin the lawyer-visible summary without
+ * rendering React.
+ * ══════════════════════════════════════════════════════════════════════════ */
+function cleanKnowledgeRole(text) {
+  return String(text || '')
+    .replace(/\s+/g, ' ')
+    .replace(/^[,;:\s]+|[,;:\s]+$/g, '')
+    .replace(/^(?:and|or)\s+/i, '')
+    .replace(/\s+(?:and|or)$/i, '')
+    .replace(/\s*,?\s*in\s+each\s+case$/i, '')
+    .trim();
+}
+
+function splitKnowledgeRoles(text) {
+  const s = String(text || '').replace(/\s+/g, ' ').trim();
+  if (!s) return [];
+  const romanMatches = [...s.matchAll(/\(\s*(?:i|ii|iii|iv|v|vi|vii|viii|ix|x)\s*\)/gi)];
+  if (romanMatches.length > 0) {
+    const out = [];
+    for (let i = 0; i < romanMatches.length; i += 1) {
+      const start = romanMatches[i].index + romanMatches[i][0].length;
+      const end = i + 1 < romanMatches.length ? romanMatches[i + 1].index : s.length;
+      const role = cleanKnowledgeRole(s.slice(start, end));
+      if (role) out.push(role);
+    }
+    return out;
+  }
+  return s
+    .split(/\s*;\s*|\s*,\s*(?=(?:the\s+)?(?:chief|general|director|senior|svp|evp|cfo|gc|officer|president|controller|counsel|treasurer|secretary)\b)/i)
+    .map(cleanKnowledgeRole)
+    .filter(Boolean);
+}
+
+function groupTextFromKnowledgeScope(scope) {
+  const s = String(scope || '').replace(/\s+/g, ' ').trim();
+  if (!s) return [];
+  const afterOf = s.match(/\b(?:actual\s+)?knowledge\s+of\s+(.+)$/i);
+  let tail = afterOf ? afterOf[1] : s;
+  tail = tail
+    .replace(/\s*,?\s*(?:after|following)\s+(?:due|reasonable)\s+inquir(?:y|ies)\b.*$/i, '')
+    .replace(/\s*,?\s*without\s+(?:due|reasonable)\s+inquir(?:y|ies)\b.*$/i, '')
+    .replace(/\s*,?\s*assuming\s+(?:due|reasonable)\s+inquir(?:y|ies)\b.*$/i, '');
+  return splitKnowledgeRoles(tail);
+}
+
+export function deriveKnowledgeHeader({ knowledgeScope, legacyStandard, legacyGroup } = {}) {
+  const scope = typeof knowledgeScope === 'string' ? knowledgeScope.trim() : '';
+  if (scope) {
+    const hasReasonableInquiry = /(?:after|following)\s+(?:due|reasonable)\s+inquir(?:y|ies)\b/i.test(scope)
+      || /reasonable\s+inquir(?:y|ies)\b/i.test(scope);
+    let standard = null;
+    if (/\bactual\s+knowledge\b/i.test(scope)) standard = 'Actual knowledge';
+    else if (/\bconstructive\s+knowledge\b/i.test(scope)) standard = 'Constructive knowledge';
+    else if (/\bknowledge\b/i.test(scope)) standard = 'Knowledge';
+    if (standard && hasReasonableInquiry) standard += ' (after reasonable inquiry)';
+    return {
+      standard,
+      group: groupTextFromKnowledgeScope(scope),
+      quote: scope,
+      source: 'definition',
+    };
+  }
+  const group = Array.isArray(legacyGroup)
+    ? legacyGroup.map((x) => (typeof x === 'string' ? x : x && x.label)).filter(Boolean)
+    : (legacyGroup ? [String(legacyGroup)] : []);
+  return {
+    standard: legacyStandard || null,
+    group,
+    quote: null,
+    source: 'legacy',
+  };
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
  * BLOCK 2d — ERISA / Employee Benefits rep: specific-features suppression.
  * ══════════════════════════════════════════════════════════════════════════ */
 export function isErisaBenefitsRep(provision) {

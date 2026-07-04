@@ -96,6 +96,39 @@ test('2c: tagged value with no scoping text → just the standard', () => {
   assert.equal(d.label, 'Actual knowledge');
 });
 
+test('fb3: knowledge header prefers DEF-derived knowledgeScope over legacy rep fields', () => {
+  const def = '"Knowledge" means the actual knowledge of (i) the Chief Financial Officer or General Counsel, (ii) Director, Tax and (iii) Senior Vice President, Global Controller, in each case after reasonable inquiry.';
+  const d = mod.deriveKnowledgeHeader({
+    knowledgeScope: def,
+    legacyStandard: 'Constructive knowledge',
+    legacyGroup: ['Executive officers'],
+  });
+  assert.equal(d.standard, 'Actual knowledge (after reasonable inquiry)');
+  assert.deepEqual(d.group, [
+    'the Chief Financial Officer or General Counsel',
+    'Director, Tax',
+    'Senior Vice President, Global Controller',
+  ]);
+  assert.equal(d.quote, def);
+  assert.equal(d.source, 'definition');
+});
+
+test('fb3: knowledge header falls back to legacy fields when no DEF scope exists', () => {
+  const d = mod.deriveKnowledgeHeader({
+    legacyStandard: 'Constructive knowledge',
+    legacyGroup: [{ label: 'Executive officers' }, { label: 'Named officers' }],
+  });
+  assert.equal(d.standard, 'Constructive knowledge');
+  assert.deepEqual(d.group, ['Executive officers', 'Named officers']);
+  assert.equal(d.source, 'legacy');
+});
+
+test('fb3: SEC Cut-Off display path wraps the value in HoverSource with fallback quote', () => {
+  const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
+  assert.match(src, /quote:\s*extractQuote\(lookbackRaw\)\s*\|\|\s*scopeQuote\s*\|\|\s*secCutoffFallbackQuote/);
+  assert.match(src, /<HoverSource quote=\{s\.quote\} as="div">\s*<span[\s\S]*?\{s\.node \|\| <span className="text-inkFaint\/70 italic">—<\/span>\}/);
+});
+
 /* ── 2d: ERISA / Employee Benefits specific-features suppression ───────── */
 test('2d: Metsera "Employee Benefit Plans; ERISA" rep is detected', () => {
   assert.equal(mod.isErisaBenefitsRep({
