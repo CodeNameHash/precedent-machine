@@ -1439,3 +1439,11 @@ function antiProvisionFeatures(provision) {
   const f = meta && meta.features;
   return f && typeof f === 'object' && !Array.isArray(f) ? f : {};
 }
+
+function antiValueIsEmpty(raw) {
+  if (raw === null || raw === undefined || raw === '' || raw === false) return true;
+  if (Array.isArray(raw) && raw.length === 0) return true;
+  const inner = unwrap(raw);
+  if (inner !== raw) return antiValueIsEmpty(inner);
+  return false;
+}
