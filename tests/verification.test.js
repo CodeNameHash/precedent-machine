@@ -286,3 +286,33 @@ test('attached charter/bylaws exhibit is excluded from the coverage denominator'
   assert.equal(regions.length, 1);
   assert.ok(/articles of incorporation/.test(regions[0][2]));
 });
+
+test('detectAncillaryRegions: def-appendix mid-tail carves out ONLY the appendix (Kraft shape)', () => {
+  // Kraft tail order: signature → charter exhibit → index of defined terms →
+  // by-laws → EOF. The old carve-back ended the exclusion at the index header,
+  // returning ~200k of by-laws to the denominator (coverage 59.6% on a
+  // fully-extracted deal). Both exhibit spans must be excluded; the appendix
+  // span stays in.
+  const { detectAncillaryRegions } = require('../lib/verification');
+  const pad = (label, n) => `${label} ${'lorem ipsum dolor sit '.repeat(n)}`;
+  // Body must be long enough that the charter exhibit sits past the 40%-of-doc
+  // scan floor in detectAncillaryRegions.
+  const body = pad('agreement and plan of merger dated as of march 24, 2015. section 1.01. the merger.', 600);
+  const sig = 'in witness whereof, the parties have caused this agreement to be executed by their officers. ';
+  const charter = pad('exhibit a certificate of incorporation of the surviving corporation. the name of the corporation is kraft heinz. registered office in delaware.', 200);
+  const appendix = pad('index of defined terms term section acceptable confidentiality agreement 5.05 acquisition proposal 5.05', 100);
+  const bylaws = pad('by-laws of the kraft heinz company article i offices. the registered office shall be in the city of wilmington.', 300);
+  const source = [body, sig, charter, appendix, bylaws].join(' ');
+
+  const spans = detectAncillaryRegions(source.toLowerCase());
+  assert.equal(spans.length, 2, `expected 2 excluded spans, got ${JSON.stringify(spans)}`);
+  const charterAt = source.toLowerCase().indexOf('exhibit a certificate');
+  const appendixAt = source.toLowerCase().indexOf('index of defined terms');
+  const bylawsAt = source.toLowerCase().indexOf('by-laws of');
+  // Span 1 covers the charter and ends at the appendix.
+  assert.ok(Math.abs(spans[0][0] - charterAt) < 200, `span1 start ${spans[0][0]} vs charter ${charterAt}`);
+  assert.ok(Math.abs(spans[0][1] - appendixAt) < 200, `span1 end ${spans[0][1]} vs appendix ${appendixAt}`);
+  // Span 2 starts at the by-laws and runs to EOF — the appendix itself is kept.
+  assert.ok(Math.abs(spans[1][0] - bylawsAt) < 200, `span2 start ${spans[1][0]} vs bylaws ${bylawsAt}`);
+  assert.equal(spans[1][1], source.length);
+});
