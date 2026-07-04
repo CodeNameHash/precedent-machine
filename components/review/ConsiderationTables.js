@@ -18,6 +18,7 @@ import {
   NotIncludedStrip,
 } from './shared';
 import { AddSectionItem } from './AddSectionItem';
+import { TermCell } from './TermCell';
 import { buildPerShareParts, resolveInstrumentVesting } from './table-logic';
 import { hasAffirmativeMention } from '../../lib/instrument-negation';
 import { EQUITY_INSTRUMENTS } from '../../lib/taxonomy';
@@ -330,15 +331,13 @@ export function EquityAwardTable({ rows, onSelectProvision, onAddProvision, opti
               return (
                 <tr key={row.key} className="hover:bg-bg/40 transition-colors">
                   <td className={`px-3 py-2 align-top whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>
-                    <HoverSource quote={rowQuote}>
-                      <button
-                        type="button"
-                        onClick={() => onSelectProvision && onSelectProvision(row.provision)}
-                        className="text-left text-accent hover:underline font-semibold"
-                      >
-                        {instLabel}
-                      </button>
-                    </HoverSource>
+                    <TermCell provision={row.provision} quote={rowQuote}>
+                      <HoverSource quote={rowQuote}>
+                        <span className="text-left text-accent hover:underline font-semibold">
+                          {instLabel}
+                        </span>
+                      </HoverSource>
+                    </TermCell>
                   </td>
                   <td className="px-3 py-2 align-top text-ink max-w-[320px]">
                     <HoverSource quote={rowQuote} as="div">
@@ -735,19 +734,17 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
                   return (
                     <tr key={row.label} className="hover:bg-bg/40 transition-colors align-top">
                       <td className={`px-3 py-2 whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>
-                        {rowQuote ? (
-                          <HoverSource quote={rowQuote}>
-                            <button
-                              type="button"
-                              onClick={() => showEvidence(rowQuote)}
-                              className="text-left text-accent hover:underline font-medium"
-                            >
-                              {row.label}
-                            </button>
-                          </HoverSource>
-                        ) : (
-                          <span className="text-ink font-medium">{row.label}</span>
-                        )}
+                        <TermCell provision={row.src && row.src.provision} quote={rowQuote}>
+                          {rowQuote ? (
+                            <HoverSource quote={rowQuote}>
+                              <span className="text-left text-accent hover:underline font-medium">
+                                {row.label}
+                              </span>
+                            </HoverSource>
+                          ) : (
+                            <span className="text-ink font-medium">{row.label}</span>
+                          )}
+                        </TermCell>
                       </td>
                       <td
                         className={`px-3 py-2 text-ink ${rowQuote ? 'cursor-pointer hover:bg-yellow-50' : ''}`}

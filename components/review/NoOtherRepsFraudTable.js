@@ -1,5 +1,6 @@
 import { deriveAbrySummary } from '../../lib/abry';
 import { useShowEvidence, HoverSource, Pill, REVIEW_LABEL_COL_W } from './shared';
+import { TermCell } from './TermCell';
 
 /* ─── No Other Reps / Fraud (Abry) summary ──
  *  THE FOUR QUESTIONS (one row each, per side) + a fraud line — the entire
@@ -115,7 +116,9 @@ export function NoOtherRepsFraudTable({ allProvisions }) {
               return (
                 <tr key={row.key} className="align-top">
                   <td className="px-3 py-2 whitespace-normal break-words">
-                    <span className="text-ink font-medium">{row.label}</span>
+                    <TermCell provision={hit && hit.provision} quote={hit && hit.quote}>
+                      <span className="text-ink font-medium">{row.label}</span>
+                    </TermCell>
                     <div className="text-[10px] text-inkFaint mt-0.5">{row.hint}</div>
                   </td>
                   <td className="px-3 py-2 text-ink">
@@ -126,7 +129,9 @@ export function NoOtherRepsFraudTable({ allProvisions }) {
             })}
             <tr className="align-top bg-bg/30">
               <td className="px-3 py-2 whitespace-normal break-words">
-                <span className="text-ink font-medium">Fraud Carve-Out</span>
+                <TermCell provision={summary.fraud && summary.fraud.provision} quote={summary.fraud && summary.fraud.quote}>
+                  <span className="text-ink font-medium">Fraud Carve-Out</span>
+                </TermCell>
                 <div className="text-[10px] text-inkFaint mt-0.5">
                   Is there an express fraud carve-out preserving fraud claims?
                 </div>

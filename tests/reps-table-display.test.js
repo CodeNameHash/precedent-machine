@@ -42,12 +42,12 @@ test('2a regression: no quote for empty/placeholder rows (no popover wiring)', (
   assert.equal(mod.termCellHoverQuote(null), null);
 });
 
-test('2a regression: Term cell in [id].js is wired through HoverSource', () => {
+test('2a regression: Term cell in [id].js is wired through TermCell and HoverSource', () => {
   const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
   // The row-level fallback hover on the FIRST (sticky Term) column. If this
   // wiring is removed or renamed without an equivalent, this test fails —
   // which is exactly what would have caught the earlier regression.
-  assert.match(src, /<HoverSource quote=\{termCellHoverQuote\(p\)\}>\s*<button/);
+  assert.match(src, /<TermCell provision=\{p\} quote=\{termCellHoverQuote\(p\)\}>\s*<HoverSource quote=\{termCellHoverQuote\(p\)\}>/);
 });
 
 /* ── 2b: column order — Knowledge next to Materiality ─────────────────── */
