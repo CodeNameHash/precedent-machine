@@ -1059,3 +1059,104 @@ export function superiorProposalLimbs(raw) {
     quote,
   }));
 }
+
+export const NOSOL_PILL_VOCAB = {
+  changeOfRecommendationItems: [
+    {
+      code: 'WITHDRAW_OR_ADVERSE_MODIFY_RECOMMENDATION',
+      label: 'Withdraw or adverse-modify recommendation',
+      patterns: [
+        /\b(withhold|withdraw|amend|change|qualify|modify|fail to make|fail to include).{0,140}(recommendation|schedule 14d-9|proxy statement)/i,
+      ],
+    },
+    {
+      code: 'APPROVE_OR_RECOMMEND_COMPETING_PROPOSAL',
+      label: 'Approve or recommend competing proposal',
+      patterns: [
+        /\b(approve|adopt|endorse|recommend|declare advisable).{0,120}(acquisition|takeover|competing|alternative transaction|proposal)/i,
+      ],
+    },
+    {
+      code: 'FAIL_TO_REAFFIRM_ON_REQUEST',
+      label: 'Fail to reaffirm on request',
+      patterns: [
+        /fail.{0,120}(reaffirm|republish|publicly recommend against).{0,150}(request|parent|business days)/i,
+      ],
+    },
+    {
+      code: 'FAIL_TO_RECOMMEND_AGAINST_TENDER_OFFER',
+      label: 'Fail to recommend against tender offer within required period',
+      patterns: [
+        /(tender|exchange).{0,180}(fail to recommend against|recommend against acceptance|solicitation\/recommendation statement|schedule 14d-9|formal action|public statement)/i,
+      ],
+    },
+    {
+      code: 'APPROVE_ALTERNATIVE_AGREEMENT',
+      label: 'Approve alternative agreement',
+      patterns: [
+        /(alternative|acquisition|transaction).{0,70}agreement|letter of intent|memorandum of understanding|agreement in principle|cause or permit.{0,120}enter|enter into.*agreement/i,
+      ],
+    },
+  ],
+  notChangeOfRecommendationItems: [
+    {
+      code: 'EXCHANGE_ACT_DISCLOSURE_COMPLIANCE',
+      label: '14d-9 / 14e-2 stop-look-listen compliance',
+      patterns: [
+        /14d-9|14e-2|1012|regulation m-a|stop,? ?look(?:-| )?and(?:-| )?listen|take no position/i,
+      ],
+    },
+    {
+      code: 'FACTUAL_ACCURATE_DISCLOSURE',
+      label: 'Factually accurate disclosure',
+      patterns: [
+        /factual|factually accurate|only describes|receipt of .*proposal|bidder'?s identity|identity of .*party|material terms|reaffirm/i,
+      ],
+    },
+    {
+      code: 'ROUTINE_COMMUNICATIONS',
+      label: 'Routine communications',
+      patterns: [
+        /informing any person|existence of the provisions|determination .*superior proposal|delivery .*notice|not unanimous|required by applicable law|comply with applicable law|inconsistent with applicable law/i,
+      ],
+    },
+  ],
+  noticeContent: [
+    {
+      code: 'IDENTITY',
+      label: 'Identity',
+      patterns: [/identity|name of such person|person or group|party making|person making|group/i],
+    },
+    {
+      code: 'MATERIAL_TERMS',
+      label: 'Material terms',
+      patterns: [/material terms|terms and conditions|basis for|details/i],
+    },
+    {
+      code: 'COPIES_OF_PROPOSAL',
+      label: 'Copies of Proposal',
+      patterns: [/copies|copy|draft|written request|proposed agreements|ancillary documents|written communications|relevant documents|documentation|financing commitments/i],
+    },
+    {
+      code: 'DESCRIPTION_IF_NOT_IN_WRITING',
+      label: 'Description if not in writing',
+      patterns: [/not in writing|oral|description of (?:the )?(?:material )?terms|written summary/i],
+    },
+    {
+      code: 'MODIFICATIONS',
+      label: 'Modifications',
+      patterns: [/amendment|modification|changes?|subsequent|status of any discussions|negotiations|developments/i],
+    },
+  ],
+};
+
+export function nosolFeatures(provision) {
+  if (!provision) return {};
+  if (provision.features && typeof provision.features === 'object') return provision.features;
+  let meta = provision.ai_metadata;
+  if (typeof meta === 'string') {
+    try { meta = JSON.parse(meta); } catch { meta = null; }
+  }
+  if (meta && typeof meta === 'object' && meta.features && typeof meta.features === 'object') return meta.features;
+  return {};
+}
