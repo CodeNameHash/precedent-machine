@@ -72,10 +72,74 @@ test('TERMINATION-article "Fees and Expenses": TERMF only when the body carries 
   assert.equal(misc.code, 'MISC-EXPENSES');
   // Concho 8.3 — fee triggers dressed in an expenses title
   assert.equal(tryDeterministic(sec('8.3', 'Expenses and Other Payments'), 'TERMINATION').type, 'TERMF');
-  // Fees and Expenses OUTSIDE a TERMINATION article keeps the MISC rule
-  // (Kraft 6.08-style sections are a known body-level limitation).
-  assert.equal(tryDeterministic(sec('6.08', 'Fees and Expenses'), 'COV').type, 'MISC');
 });
+
+test('body-aware "Fees and Expenses" generalizes BEYOND the TERMINATION article (Red Hat / Kraft / Bioverativ)', () => {
+  // Bioverativ 9.04(b) — a real $326,000,000 termination fee sitting in a
+  // MISCELLANEOUS-article "Fees and Expenses" section, not a TERMINATION
+  // article. PR #67 only checked the body inside TERMINATION articles, so
+  // this stayed MISC/COV corpus-wide until now.
+  const bioverativBody = 'In the event this Agreement is terminated under circumstances requiring payment of the Company Termination Fee, ' +
+    'the Company shall pay to Parent a fee of $326,000,000 (the "Company Termination Fee"), payable by wire transfer within two business days of such termination. ' +
+    'Except as set forth in this Section 9.04, each party shall bear its own fees and expenses. '.repeat(5);
+  assert.deepEqual(
+    tryDeterministic(sec('9.04', 'Fees and Expenses', bioverativBody), 'MISC'),
+    { type: 'TERMF', confidence: 'high' },
+  );
+  // Same shape, sitting in a COV article (Kraft/Red Hat-style placement) —
+  // still TERMF, because the discriminator is body-keyed, not article-keyed.
+  assert.equal(tryDeterministic(sec('6.08', 'Fees and Expenses', bioverativBody), 'COV').type, 'TERMF');
+  // No article context at all (title rule alone must still catch it).
+  assert.equal(tryDeterministic(sec('6.08', 'Fees and Expenses', bioverativBody), null).type, 'TERMF');
+  // "Expense Reimbursement" outside TERMINATION, with real fee substance —
+  // the fourth title this discriminator covers.
+  assert.equal(tryDeterministic(sec('9.5', 'Expense Reimbursement', bioverativBody), 'MISC').type, 'TERMF');
+  // Bioverativ's ACTUAL title punctuates with a semicolon ("Fees; Expenses"),
+  // not "and" — the corpus-wide safety sweep caught this as the reason the
+  // section wasn't matching at all pre-fix. Real body text (Section 9.04(b)).
+  const bioverativReal = 'Section 9.04. Fees; Expenses. ' +
+    '(a) Except as otherwise expressly provided in this Agreement, all costs and expenses incurred in connection with this Agreement and the Transactions shall be paid by the party incurring such costs or expenses. ' +
+    '(b) If this Agreement is terminated by the Company pursuant to Section 8.01(d)(i), prior to or concurrently with such termination, the Company shall pay Parent a fee in the amount of $326,000,000 (the "Termination Fee").';
+  assert.deepEqual(
+    tryDeterministic(sec('9.04', 'Fees; Expenses', bioverativReal), 'MISC'),
+    { type: 'TERMF', confidence: 'high' },
+  );
+});
+
+test('body-aware "Fees and Expenses"/"Expenses" negative: genuine boilerplate stays MISC in ANY article', () => {
+  // CSRA-shaped: ~278 chars of pure each-party-bears-its-own boilerplate, no
+  // dollar figures, no "Termination Fee" term, no payable-upon-termination
+  // language. Must stay MISC no matter which article it lands in.
+  const csraBoilerplate = 'Except as otherwise expressly provided in this Agreement, all fees, costs and expenses incurred in connection with this Agreement and the transactions ' +
+    'contemplated hereby shall be paid by the party incurring such fees, costs or expenses, whether or not the Merger is consummated.';
+  const miscCov = tryDeterministic(sec('6.08', 'Fees and Expenses', csraBoilerplate), 'COV');
+  assert.equal(miscCov.type, 'MISC');
+  assert.equal(miscCov.code, 'MISC-EXPENSES');
+  const miscTerm = tryDeterministic(sec('8.03', 'Fees and Expenses', csraBoilerplate), 'TERMINATION');
+  assert.equal(miscTerm.type, 'MISC');
+  assert.equal(miscTerm.code, 'MISC-EXPENSES');
+  const miscMisc = tryDeterministic(sec('10.4', 'Expenses'), 'MISC');
+  assert.equal(miscMisc.type, 'MISC');
+
+  // A REP-article section that merely mentions fees in prose must not be
+  // yanked by the generic title regex — "Fees and Expenses" only fires on
+  // an exact (anchored) title, so a differently-titled rep stays put.
+  const repProse = sec(
+    '3.09',
+    'Brokers and Finders Fees',
+    "Except for fees payable to the Company's financial advisor, no broker, finder or investment banker is entitled to any brokerage, finder's or other fee or commission in connection with the transactions contemplated by this Agreement.",
+  );
+  assert.equal(tryDeterministic(repProse, 'REP-T').type, 'REP-T');
+
+  // Belt-and-braces: even an EXACT "Expenses" title inside a REP article
+  // (never happens in practice, but the notInArticle guard must hold) keeps
+  // the article's REP-T, not MISC/TERMF, regardless of body content.
+  assert.equal(tryDeterministic(sec('3.10', 'Expenses', bioverativBodyForRepGuard()), 'REP-T').type, 'REP-T');
+});
+
+function bioverativBodyForRepGuard() {
+  return 'The Company shall pay Parent a fee of $326,000,000 (the "Company Termination Fee") payable upon termination of this Agreement.';
+}
 
 test('tender-offer condition annex "Conditions to the Offer" → COND-B', () => {
   assert.equal(tryDeterministic(sec('ANNEX-COND', 'Conditions to the Offer'), null).type, 'COND-B');   // CSRA / Bioverativ / Pharmasset

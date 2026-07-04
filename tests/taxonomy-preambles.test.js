@@ -17,11 +17,20 @@ test('COND-M-REG is relabeled Antitrust, code kept stable', () => {
   assert.ok(CODES['COND-M-REG'].aliases.includes('Scheduled Approvals'));
 });
 
-test('"Fees and Expenses" title routes deterministically to MISC-EXPENSES', () => {
+test('"Fees and Expenses" title routes deterministically to MISC-EXPENSES when the body is boilerplate', () => {
   const sec = { number: '8.03', title: 'Fees and Expenses', heading: 'Fees and Expenses', text: 'SECTION 8.03. Fees and Expenses. Except as set forth in Section 6.02, all fees shall be paid by the party incurring them.' };
   const r = tryDeterministic(sec, 'MISC');
   assert.equal(r.type, 'MISC');
   assert.equal(r.code, 'MISC-EXPENSES');
-  // "Expense Reimbursement" must NOT match (TERMF territory).
-  assert.notEqual((tryDeterministic({ ...sec, title: 'Expense Reimbursement', heading: 'Expense Reimbursement' }, null) || {}).code, 'MISC-EXPENSES');
+  // "Expense Reimbursement" is body-gated by the SAME discriminator (see
+  // fix/termf-body-aware): with the same boilerplate body it ALSO routes to
+  // MISC-EXPENSES, not TERMF — title alone no longer decides for either.
+  const reimburseBoilerplate = tryDeterministic({ ...sec, title: 'Expense Reimbursement', heading: 'Expense Reimbursement' }, null);
+  assert.equal(reimburseBoilerplate.type, 'MISC');
+  assert.equal(reimburseBoilerplate.code, 'MISC-EXPENSES');
+  // But when the body actually carries termination-fee substance, "Expense
+  // Reimbursement" (and "Fees and Expenses") both resolve TERMF.
+  const feeBody = 'The Company shall pay Parent the Company Termination Fee of $10,000,000, payable upon termination of this Agreement.';
+  const reimburseFee = tryDeterministic({ ...sec, title: 'Expense Reimbursement', heading: 'Expense Reimbursement', text: feeBody }, null);
+  assert.equal(reimburseFee.type, 'TERMF');
 });
