@@ -44,7 +44,7 @@ test('item 1: no title-bar reopen button — closed sidebar shows an edge pull-o
   assert.ok(!/title="Show sidebar"/.test(src), 'no reopen button in the title bar');
   assert.match(src, /\{!sidebarOpen && \(/);
   assert.match(src, /aria-label="Open sidebar"/);
-  assert.match(src, /fixed right-0 top-1\/2/); // edge pull-out tab, vertically centered
+  assert.match(src, /fixed left-0 top-1\/2/); // edge pull-out tab on the LEFT (sidebar side), vertically centered
   assert.match(src, /onClose=\{\(\) => setSidebarOpen\(false\)\}/);
 });
 

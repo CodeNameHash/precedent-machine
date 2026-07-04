@@ -9845,22 +9845,22 @@ export default function ReviewPage() {
             onClick={() => setSidebarOpen(true)}
             aria-label="Open sidebar"
             title="Open sidebar"
-            className="fixed right-0 top-1/2 z-40 -translate-y-1/2 text-inkLight hover:text-ink focus:outline-none focus:ring-2 focus:ring-accent"
+            className="fixed left-0 top-1/2 z-40 -translate-y-1/2 text-ink hover:text-accent focus:outline-none focus:ring-2 focus:ring-accent"
             style={{
-              width: 14,
-              height: 76,
+              width: 22,
+              height: 110,
               border: '1px solid var(--line)',
-              borderRight: 0,
-              borderRadius: '6px 0 0 6px',
+              borderLeft: 0,
+              borderRadius: '0 8px 8px 0',
               background: 'var(--surface)',
-              boxShadow: '0 2px 12px rgba(0,0,0,0.08)',
+              boxShadow: '2px 2px 14px rgba(0,0,0,0.14)',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
             }}
           >
-            <span aria-hidden="true" style={{ fontSize: 16, lineHeight: 1, transform: 'translateX(-1px)' }}>‹</span>
+            <span aria-hidden="true" style={{ fontSize: 19, lineHeight: 1, transform: 'translateX(1px)', fontWeight: 600 }}>›</span>
           </button>
         )}
 
