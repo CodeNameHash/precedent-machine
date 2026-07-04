@@ -110,7 +110,16 @@ function computeDuplicateCount(provisions) {
   for (const p of provisions || []) {
     const norm = normalizeForDupe(p && p.full_text);
     if (norm.length < 20) continue; // too short to be a meaningful duplicate signal
-    counts.set(norm, (counts.get(norm) || 0) + 1);
+    // Same-text rows are NOT duplicates when they are deliberate siblings:
+    // per-instrument CONSID-EQUITY rows (instrumentType differs) and Strategy-B
+    // multi-code decompositions (code differs) legitimately share one span.
+    // Key on text + code + instrumentType so only true redundancy counts.
+    const meta = p && p.ai_metadata && typeof p.ai_metadata === 'object' ? p.ai_metadata : {};
+    const feats = meta.features && typeof meta.features === 'object' ? meta.features : {};
+    const inst = feats.instrumentType ? (feats.instrumentType.code || feats.instrumentType) : '';
+    const key = `${norm}::${meta.code || ''}::${inst}`;
+    counts.set(key, (counts.get(key) || 0) + 1);
+    continue;
   }
   let dups = 0;
   for (const n of counts.values()) {
