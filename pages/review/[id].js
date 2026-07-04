@@ -102,6 +102,15 @@ import {
   dedupeIocExceptionEntries,
   truncateAtWordBoundary,
   filterProvisionsForViewMode,
+  buildAocTermPills,
+  withScopeParens,
+  normalizeQualifierScope,
+  deriveInsuranceCapConcise,
+  humanizeAccessScopeToken,
+  detectAccessPurposes,
+  buildJurisdictionDisplay,
+  buildFeeExpenseSentence,
+  dedupeTexts,
 } from '../../components/review/table-logic';
 import { ConsidTable } from '../../components/review/ConsiderationTables';
 import { Sidebar } from '../../components/review/Sidebar';
@@ -3218,6 +3227,13 @@ function getHiddenColumnsForType(type) {
   return new Set(HIDDEN_TABLE_COLUMNS[type] || []);
 }
 
+// FB3 item 2: shared by REP_SPECIFIC_FEATURE_SPECS (below) AND ProvisionTable's
+// per-row AoC merge — one regex, so the two never drift apart.
+const AOC_REP_CATEGORY_REGEX = /absence\s+of\s+(?:certain\s+)?changes(?:\s+(?:or|and)\s+events)?|no\s+(?:material\s+)?changes/i;
+function isAocRepProvision(p) {
+  return AOC_REP_CATEGORY_REGEX.test(String(p?.category || ''));
+}
+
 /* ─── REP per-row "Specific Features" column spec ──
  *    Match a rep provision's category against the regex; render a compact
  *    <dl> of label/value pairs for the rep-specific subset that applies to
@@ -3230,7 +3246,7 @@ const REP_SPECIFIC_FEATURE_SPECS = [
     // ABSENCE_OF_CHANGES_TYPES taxonomy so HYBRID reads as the verbose phrase
     // ("Hybrid (General operating covenant and specific IOCs cited)").
     // Exceptions always renders — empty list shows canonical "None".
-    categoryRegex: /absence\s+of\s+(?:certain\s+)?changes(?:\s+(?:or|and)\s+events)?|no\s+(?:material\s+)?changes/i,
+    categoryRegex: AOC_REP_CATEGORY_REGEX,
     rows: [
       { label: 'Start date', keys: ['absenceOfChangesStartDate'] },
       { label: 'Type', keys: ['absenceOfChangesType'] },
@@ -5042,18 +5058,12 @@ function TermfTailMechanics({ provisions, allProvisions }) {
   const window = combined.tailFeeWindowMonths;
   if (window === null || window === undefined || window === '') return null;
 
-  const baseThreshold = (() => {
-    // Compare against acquisitionTransactionPctThreshold from NOSOL.
-    for (const p of allProvisions || []) {
-      if (!p) continue;
-      const f = getStructuredFeatures(p) || {};
-      const v = f.acquisitionTransactionPctThreshold;
-      if (v === null || v === undefined || v === '') continue;
-      const inner = isCitableValue(v) ? getCitableValue(v) : v;
-      if (inner !== null && inner !== undefined && inner !== '') return inner;
-    }
-    return null;
-  })();
+  // FB3 item 6: this used to also compute a `baseThreshold` (the NOSOL
+  // acquisitionTransactionPctThreshold) purely to decide whether to append
+  // "(higher than base Acquisition Proposal threshold if applicable)" next to
+  // the tail threshold. That parenthetical read as boilerplate hedge language
+  // rather than a fact, not a comparison the user asked for — removed, along
+  // with the now-unused baseThreshold/thresholdDiffers computation.
 
   const activating = (() => {
     const v = combined.tailFeeActivatingClauses;
@@ -5106,12 +5116,6 @@ function TermfTailMechanics({ provisions, allProvisions }) {
     }
     return String(thresholdInner);
   })();
-  const thresholdDiffers = (() => {
-    if (thresholdInner === null || thresholdInner === undefined) return false;
-    if (baseThreshold === null || baseThreshold === undefined) return false;
-    return String(thresholdInner).trim() !== String(baseThreshold).trim();
-  })();
-
   const Row = ({ label, children, quote }) => {
     const clickable = !!(quote && showEvidence);
     return (
@@ -5144,14 +5148,7 @@ function TermfTailMechanics({ provisions, allProvisions }) {
             quote={termfFirstQuote(combined.tailFeeThresholdPct)}
           >
             {thresholdDisplay ? (
-              <>
-                <span>{thresholdDisplay}</span>
-                {thresholdDiffers && (
-                  <span className="text-inkMid italic ml-1">
-                    (higher than base Acquisition Proposal threshold if applicable)
-                  </span>
-                )}
-              </>
+              <span>{thresholdDisplay}</span>
             ) : (
               <span className="italic text-inkFaint">Not specified</span>
             )}
@@ -6331,32 +6328,36 @@ function EmptyCellDash({ provision }) {
  *     when an explicit whole-rep scope was extracted. When no scope info
  *     exists (the common case today — the extractor emits a bare boolean),
  *     render just the standard pill; scope is never invented. */
+// FB3 item 3: the scope qualifier ("(partial)") renders INSIDE the pill's own
+// text, in parens — "Knowledge-qualified (partial)" — never as a separate
+// sibling span. Nothing extra renders when scope is absent or "entire" (the
+// unmarked pill IS the "applies to the whole rep" case). withScopeParens /
+// normalizeQualifierScope live in table-logic.js (pure, unit-tested) so the
+// same shape drives both knowledgeQualifier and materialityQualifier pills.
 function KnowledgeQualifierCell({ rawValue, provision, knowledgeScope }) {
   const display = knowledgeQualifierDisplay(rawValue);
   if (!display) return <EmptyCellDash provision={provision} />;
-  const label = (display.code
+  const baseLabel = (display.code
     && resolveTaggedLabel('knowledgeQualifier', { code: display.code, label: display.label }))
     || display.label
     || 'Knowledge-qualified';
+  const label = withScopeParens(baseLabel, display.scope);
   // Audit fix batch item 1: knowledgeScope (the "Knowledge" DEF provision's
   // verbatim definition, stamped deterministically post-pass) must never be
   // a per-row column — it belongs here, folded into the qualifier's hover so
   // a lawyer can see what "knowledge" means for this rep without leaving the
-  // table.
+  // table. FB3 item 3: the partial-scope `detail` snippet (previously shown
+  // as visible "Partial: <detail>" text) moves into the hover too — the pill
+  // itself only ever shows the "(partial)" parenthetical.
   const scopeText = typeof knowledgeScope === 'string' ? knowledgeScope.trim() : '';
   const baseQuote = display.quote || termCellHoverQuote(provision);
-  const quote = scopeText
+  let quote = scopeText
     ? (baseQuote ? `${baseQuote}\n\n— Knowledge definition —\n${scopeText}` : `— Knowledge definition —\n${scopeText}`)
     : baseQuote;
-  return (
-    <span className="inline-flex items-center gap-1 flex-wrap text-[11px] text-inkMid">
-      <Pill text={label} quote={quote} tone="standard" />
-      {display.scope === 'partial' && (
-        <span className="italic">Partial{display.detail ? `: ${display.detail}` : ''}</span>
-      )}
-      {display.scope === 'entire' && <span className="italic">Entire rep</span>}
-    </span>
-  );
+  if (display.scope === 'partial' && display.detail) {
+    quote = quote ? `${quote}\n\n— Partial scope —\n${display.detail}` : `— Partial scope —\n${display.detail}`;
+  }
+  return <Pill text={label} quote={quote} tone="standard" />;
 }
 
 function MaterialityQualifierCell({ rawValue, provision }) {
@@ -6365,10 +6366,19 @@ function MaterialityQualifierCell({ rawValue, provision }) {
   if (inner === null || inner === undefined || inner === '') return emptyDash;
   const items = Array.isArray(inner) ? inner : [inner];
 
+  // FB3 item 3: `scope` (ENTIRE_REP / PARTIAL) may sit on the outer citable
+  // wrapper (features.materialityQualifier.scope, the concurrent extraction
+  // agent's field) or on an individual tagged item — either way, the same
+  // in-pill "(partial)" parenthetical applies, never separate text.
+  const topScope = normalizeQualifierScope(
+    rawValue && typeof rawValue === 'object' && !Array.isArray(rawValue) ? rawValue.scope : null,
+  );
+
   let maeCount = 0, matCount = 0;
   let maeQuote = null, matQuote = null;
   let maeLabel = 'MAE';
   let matLabel = null;
+  let maeScope = null, matScope = null;
   const fallbackQuote = evidenceQuote(rawValue, { provision });
 
   for (const item of items) {
@@ -6376,10 +6386,11 @@ function MaterialityQualifierCell({ rawValue, provision }) {
     const code = isTaggedItem(item) ? String(item.code || '').toUpperCase() : String(item).toUpperCase();
     const lbl = isTaggedItem(item) ? (resolveTaggedLabel('materialityQualifier', item) || item.label || item.code) : String(item);
     const q = (isTaggedItem(item) && item.text) || fallbackQuote;
+    const itemScope = (isTaggedItem(item) && normalizeQualifierScope(item.scope)) || topScope;
     if (!code) continue;
     if (code.includes('MAE')) {
       maeCount++;
-      if (!maeQuote) { maeQuote = q; maeLabel = code.includes('AGGREGATE') ? 'MAE (aggregate)' : 'MAE'; }
+      if (!maeQuote) { maeQuote = q; maeLabel = code.includes('AGGREGATE') ? 'MAE (aggregate)' : 'MAE'; maeScope = itemScope; }
     } else if (code.includes('MATERIAL')) {
       matCount++;
       if (!matQuote) {
@@ -6390,10 +6401,11 @@ function MaterialityQualifierCell({ rawValue, provision }) {
         matLabel = code.includes('TO_COMPANY') ? 'Material to the Company'
           : code.includes('SCRAPE') ? 'Materiality scrape'
           : 'Material (to the rep)';
+        matScope = itemScope;
       }
     } else {
       // Unknown / other materiality code — surface its label as a neutral pill.
-      if (!matLabel) { matLabel = lbl; matQuote = q; matCount++; }
+      if (!matLabel) { matLabel = lbl; matQuote = q; matCount++; matScope = itemScope; }
     }
   }
 
@@ -6405,14 +6417,14 @@ function MaterialityQualifierCell({ rawValue, provision }) {
     return (
       <span className="inline-flex items-center gap-1 flex-wrap text-[11px] text-inkMid">
         <span className="italic">Generally</span>
-        <Pill text={maeMajor ? maeLabel : (matLabel || 'Material (to the rep)')} quote={maeMajor ? maeQuote : matQuote} tone="materiality" />
+        <Pill text={withScopeParens(maeMajor ? maeLabel : (matLabel || 'Material (to the rep)'), maeMajor ? maeScope : matScope)} quote={maeMajor ? maeQuote : matQuote} tone="materiality" />
         <span className="italic">and some elements</span>
-        <Pill text={maeMajor ? (matLabel || 'Material (to the rep)') : maeLabel} quote={maeMajor ? matQuote : maeQuote} tone="materiality" />
+        <Pill text={withScopeParens(maeMajor ? (matLabel || 'Material (to the rep)') : maeLabel, maeMajor ? matScope : maeScope)} quote={maeMajor ? matQuote : maeQuote} tone="materiality" />
       </span>
     );
   }
-  if (maeCount > 0) return <Pill text={maeLabel} quote={maeQuote} tone="materiality" />;
-  return <Pill text={matLabel || 'Material (to the rep)'} quote={matQuote} tone="materiality" />;
+  if (maeCount > 0) return <Pill text={withScopeParens(maeLabel, maeScope)} quote={maeQuote} tone="materiality" />;
+  return <Pill text={withScopeParens(matLabel || 'Material (to the rep)', matScope)} quote={matQuote} tone="materiality" />;
 }
 
 /* ─── REP General Exceptions table: bringdown-style. Rows = SEC filings
@@ -7507,7 +7519,6 @@ function MaeSinglePartySummary({ provision, partyLabel, onSelectProvision }) {
   // Also accept a boolean/text disproportionate clause flag.
   const dispClauseRaw = f.disproportionateImpactClause ?? f.disproportionateEffectClause;
   const dispClause = isCitableValue(dispClauseRaw) ? getCitableValue(dispClauseRaw) : dispClauseRaw;
-  const hasDisproportionate = dispCodes.size > 0 || (dispClause && dispClause !== false);
   const dispClauseQuote = (isCitableValue(dispClauseRaw) && getCitableText(dispClauseRaw))
     || (typeof dispClause === 'string' ? dispClause : null);
 
@@ -7543,22 +7554,11 @@ function MaeSinglePartySummary({ provision, partyLabel, onSelectProvision }) {
           </p>
           <p className="text-[10px] font-ui text-inkFaint">{carveouts.length}</p>
         </div>
-        {/* Disproportionate-effect carveback banner — names the canonical
-            carve-outs it applies to (NOT the (A)/(B) clause letters). */}
-        {hasDisproportionate && (
-          <div
-            className={`px-3 py-1.5 bg-amber-50 border-b border-amber-200 text-[11px] font-ui text-amber-900 ${dispClauseQuote && showEvidence ? 'cursor-pointer' : ''}`}
-            onClick={dispClauseQuote && showEvidence ? () => showEvidence(dispClauseQuote) : undefined}
-            title={dispClauseQuote || ''}
-          >
-            <span className="font-medium">Disproportionate-effect carveback applies</span>
-            {dispCodes.size > 0 && (
-              <span className="text-amber-800">
-                {' '}— to: {[...dispCodes].map((c) => labelForCarveoutCode(c) || humanizeBadgeText(c)).join(', ')}
-              </span>
-            )}
-          </div>
-        )}
+        {/* FB3 item 1: ONE table, no duplication — the disproportionate-impact
+            carveback used to render TWICE (a top banner naming every carveout
+            it applies to, AND a per-row "Disp. carveback" tag on each of those
+            same rows). The banner is gone; the per-row tag is now the only
+            place that fact lives. */}
         {carveouts.length === 0 ? (
           <p className="px-3 py-3 text-xs font-ui italic text-inkFaint">
             {isEdit
@@ -7566,40 +7566,56 @@ function MaeSinglePartySummary({ provision, partyLabel, onSelectProvision }) {
               : 'No carve-outs found.'}
           </p>
         ) : (
-          <ul className="divide-y divide-border">
-            {carveouts.map((c, i) => {
-              const label = c?.label || labelForCarveoutCode(c?.code) || c?.code || `Carve-out ${i + 1}`;
-              const quote = c?.text || null;
-              const cCode = isTaggedItem(c) ? String(c.code || '').toUpperCase() : '';
-              const subjectToDisp = cCode && dispCodes.has(cCode);
-              return (
-                <li
-                  key={i}
-                  className="px-3 py-2 hover:bg-bg/40 cursor-pointer"
-                  onClick={() => {
-                    if (quote) showEvidence(quote);
-                    else onSelectProvision && onSelectProvision(provision);
-                  }}
-                  title={quote || ''}
-                >
-                  <div className="text-xs font-ui text-ink font-medium flex items-center gap-1.5 flex-wrap">
-                    {isTaggedItem(c) && c.code ? <CodeBadge code={c.code} /> : null}
-                    <span>{label}</span>
-                    {subjectToDisp && (
-                      <span className="inline-flex items-center text-[9px] font-ui font-medium px-1 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-300 uppercase tracking-wide">
-                        Disp. carveback
-                      </span>
-                    )}
-                  </div>
-                  {quote && (
-                    <div className="text-[11px] font-body text-inkLight mt-0.5 italic line-clamp-2">
-                      "{quote}"
-                    </div>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-xs font-ui">
+              <thead className="bg-bg/40 border-b border-border">
+                <tr>
+                  <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap w-[220px]">
+                    Carve-out
+                  </th>
+                  <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">
+                    Text
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {carveouts.map((c, i) => {
+                  const label = c?.label || labelForCarveoutCode(c?.code) || c?.code || `Carve-out ${i + 1}`;
+                  const quote = c?.text || null;
+                  const cCode = isTaggedItem(c) ? String(c.code || '').toUpperCase() : '';
+                  const subjectToDisp = cCode && dispCodes.has(cCode);
+                  return (
+                    <tr
+                      key={i}
+                      className={`align-top hover:bg-bg/40 ${quote ? 'cursor-pointer' : ''}`}
+                      onClick={() => {
+                        if (quote) showEvidence(quote);
+                        else onSelectProvision && onSelectProvision(provision);
+                      }}
+                    >
+                      <td className="px-3 py-2 whitespace-normal break-words">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          {isTaggedItem(c) && c.code ? <CodeBadge code={c.code} /> : null}
+                          <span className="text-ink font-medium">{label}</span>
+                        </div>
+                        {subjectToDisp && (
+                          <span
+                            className="inline-flex items-center mt-1 text-[9px] font-ui font-medium px-1 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-300 uppercase tracking-wide cursor-help"
+                            title={dispClauseQuote || 'Subject to the disproportionate-impact carveback'}
+                          >
+                            Disp. carveback applies
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-3 py-2 text-inkLight whitespace-pre-wrap break-words">
+                        {quote ? `"${quote}"` : <span className="italic text-inkFaint">—</span>}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </section>
@@ -7696,6 +7712,498 @@ function CellWithSource({ provision, featureKey, raw, isEmpty, children, classNa
   );
 }
 
+/* FB3 item 2 — Absence-of-Certain-Changes rep row.
+ *
+ * This rep's "Term" is really a bundle of independent limbs (a "no MAE since
+ * [date]" prong, an ordinary-course prong, sometimes cited-covenant "specific
+ * IOC" cross-references layered on top of the ordinary-course prong). The old
+ * single mainConcept sentence — or worse, the raw absenceOfChangesType label
+ * ("General operating covenant") — flattened that into one opaque phrase.
+ * Render ONE pill per limb actually present instead; each pill hovers to the
+ * verbatim text for THAT limb specifically (not the whole rep). Pill-building
+ * itself is pure logic in table-logic.js (buildAocTermPills) so it's
+ * unit-testable without a JSX harness.
+ */
+function AocTermCell({ provision, features, onSelectProvision }) {
+  const pills = buildAocTermPills(features);
+  return (
+    <td className="px-3 py-2 align-top whitespace-normal break-words sticky left-0 bg-white z-10">
+      <button
+        type="button"
+        onClick={() => onSelectProvision && onSelectProvision(provision)}
+        className="text-left text-accentDeep hover:underline font-semibold inline-flex items-center gap-2 mb-1"
+      >
+        <span
+          style={{
+            display: 'inline-block',
+            width: 7,
+            height: 7,
+            borderRadius: 2,
+            background: typeHex(provision.type),
+            flexShrink: 0,
+          }}
+        />
+        {provision.category || 'General'}
+      </button>
+      {pills.length > 0 ? (
+        <div className="flex items-center gap-1 flex-wrap">
+          {pills.map((p) => (
+            <Pill key={p.key} text={p.label} quote={p.quote} tone="standard" />
+          ))}
+        </div>
+      ) : (
+        <span className="italic text-inkFaint text-[11px]">No limbs identified</span>
+      )}
+    </td>
+  );
+}
+
+// The other columns (materiality / knowledge / dollar threshold / lookback /
+// specific-features) are near-always empty noise for this rep — everything
+// that matters lives in the term pills above. Collapse them into ONE cell so
+// the row doesn't read as four "—" columns in a row.
+function AocAnalysisCell({ provision, features, columnCount }) {
+  const specificFeatures = renderRepSpecificFeaturesCell(provision);
+  const materialityRaw = features.materialityQualifier;
+  const knowledgeRaw = features.knowledgeQualifier;
+  const hasMateriality = !isEmptyValue(materialityRaw);
+  const hasKnowledge = !isEmptyValue(knowledgeRaw);
+  if (!specificFeatures && !hasMateriality && !hasKnowledge) {
+    return (
+      <td colSpan={Math.max(columnCount, 1)} className="px-3 py-2 align-top text-inkFaint/70 italic">
+        —
+      </td>
+    );
+  }
+  return (
+    <td colSpan={Math.max(columnCount, 1)} className="px-3 py-2 align-top text-ink">
+      <div className="flex flex-wrap items-start gap-3">
+        {hasMateriality && (
+          <div>
+            <div className="text-[10px] text-inkFaint uppercase tracking-wider">Materiality</div>
+            <MaterialityQualifierCell rawValue={materialityRaw} provision={provision} />
+          </div>
+        )}
+        {hasKnowledge && (
+          <div>
+            <div className="text-[10px] text-inkFaint uppercase tracking-wider">Knowledge</div>
+            <KnowledgeQualifierCell rawValue={knowledgeRaw} provision={provision} knowledgeScope={features.knowledgeScope} />
+          </div>
+        )}
+        {specificFeatures && <div>{specificFeatures}</div>}
+      </div>
+    </td>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FB3 items 4/5/7 — COV ("Other Covenants") and MISC ("Boilerplate")
+   grouped summary tables, replacing the generic CategoryFeatureSummaryTable
+   for these two types. Both types are boilerplate checklists where a
+   deliberate curated order (with span/header rows grouping related
+   provisions) reads far better than the generic present-first sort — the
+   pattern already used for TERMR/TERMF/COND below.
+   ═══════════════════════════════════════════════════════════ */
+
+// A header/span row spanning both columns — groups related rows together
+// (e.g. "Specific Performance", "D&O Indemnification & Insurance").
+function GroupHeaderRow({ label }) {
+  return (
+    <tr className="bg-bg/50">
+      <td colSpan={2} className="px-3 py-1.5 text-[10px] font-ui font-semibold text-inkMid uppercase tracking-wider border-t border-border">
+        {label}
+      </td>
+    </tr>
+  );
+}
+
+// Default row: resolve the first non-empty value across `provisions` for
+// `keys`, render it through the same value formatter CategoryFeatureSummaryTable
+// used, with click-to-source wired to the row.
+function DefaultFeatureRow({ label, provisions, keys }) {
+  const showEvidence = useShowEvidence();
+  const hit = keys && keys.length ? pickFirstNonEmpty(provisions, keys) : null;
+  const quote = hit ? evidenceQuote(hit.value, { provision: hit.provision }) : null;
+  const clickable = !!(quote && showEvidence);
+  return (
+    <tr className="hover:bg-bg/40 transition-colors align-top">
+      <td className={`px-3 py-2 whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>
+        <span className="text-ink font-medium">{label}</span>
+      </td>
+      <td
+        className={`px-3 py-2 text-ink whitespace-pre-wrap break-words ${clickable ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
+        onClick={clickable ? () => showEvidence(quote) : undefined}
+      >
+        <HoverSource quote={quote} as="div">
+          {renderSummaryRowValue(hit, keys && keys[0])}
+        </HoverSource>
+      </td>
+    </tr>
+  );
+}
+
+// Custom row: `node` is fully pre-built content (its own hover/click wiring
+// already included), or null/undefined to render the canonical "Not present"
+// placeholder.
+function CustomFeatureRow({ label, node }) {
+  return (
+    <tr className="hover:bg-bg/40 transition-colors align-top">
+      <td className={`px-3 py-2 whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>
+        <span className="text-ink font-medium">{label}</span>
+      </td>
+      <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
+        {node !== null && node !== undefined ? node : (
+          <span className="italic text-inkFaint">Not present in this agreement</span>
+        )}
+      </td>
+    </tr>
+  );
+}
+
+// Shared "Other provisions in this section" footer — every row above is a
+// rolled-up cross-provision summary; this list is how each individual
+// MISC/COV provision (Severability, Counterparts, etc.) stays reachable even
+// when it isn't its own table row. `consumedIds` (FB3 item 6, matching the
+// same dedupe CategoryFeatureSummaryTable/TermfRebuiltSummary apply) excludes
+// provisions whose data already surfaced as a row's source above, so a
+// provision never shows twice.
+function ProvisionsInSectionList({ provisions, onSelectProvision, consumedIds }) {
+  const filtered = (provisions || []).filter((p) => !(consumedIds && consumedIds.has(p.id)));
+  const sorted = [...filtered].sort((a, b) =>
+    String(a.category || '').localeCompare(String(b.category || ''), undefined, { sensitivity: 'base' }),
+  );
+  if (sorted.length === 0) return null;
+  return (
+    <div className="bg-bg/40 border border-border rounded-lg px-3 py-2">
+      <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider mb-1.5">
+        Other provisions in this section
+      </p>
+      <ul className="flex flex-wrap gap-x-3 gap-y-1">
+        {sorted.map((p) => (
+          <li key={p.id}>
+            <button
+              type="button"
+              onClick={() => onSelectProvision && onSelectProvision(p)}
+              className="text-xs font-ui text-accent hover:underline"
+            >
+              {p.category || 'General'}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+// FB3 item 4(a): deriveInsuranceCapConcise (pure, "N% of annual premium")
+// lives in table-logic.js so it's unit-testable with real fixture text.
+function renderDoInsuranceCapCell(provisions) {
+  const hit = pickFirstNonEmpty(provisions, ['insuranceCap']);
+  if (!hit) return null;
+  const raw = hit.value;
+  const inner = isCitableValue(raw) ? getCitableValue(raw) : raw;
+  const str = typeof inner === 'string' ? inner : String(inner ?? '');
+  const concise = deriveInsuranceCapConcise(str) || truncateAtWordBoundary(str, 80);
+  const quote = evidenceQuote(raw, { provision: hit.provision });
+  return <HoverSource quote={quote} as="div">{concise}</HoverSource>;
+}
+
+// FB3 item 4(b): concise duration ("6 years") via the same unit-inference
+// helper the TERMF tables use, instead of the bare unlabeled number.
+function renderDoPeriodCell(provisions) {
+  const hit = pickFirstNonEmpty(provisions, ['indemnificationPeriod']);
+  if (!hit) return null;
+  const raw = hit.value;
+  const inner = isCitableValue(raw) ? getCitableValue(raw) : raw;
+  const text = formatDurationWithUnits(inner, 'indemnificationPeriod') || String(inner);
+  const quote = evidenceQuote(raw, { provision: hit.provision });
+  return <HoverSource quote={quote} as="div">{text}</HoverSource>;
+}
+
+// FB3 item 4(e): the Parent/Company public-statements carveouts collapse into
+// ONE deduped "Exceptions" list (they're near-always identical text on a
+// single deal) rather than two separate boolean rows.
+function renderPublicStatementsExceptionsCell(provisions) {
+  const raws = ['publicStatementsCarveoutParent', 'publicStatementsCarveoutCompany'].map((key) => {
+    const hit = pickFirstNonEmpty(provisions, [key]);
+    if (!hit) return null;
+    const raw = hit.value;
+    return (isCitableValue(raw) && getCitableText(raw)) || (typeof raw === 'string' ? raw : null);
+  });
+  const texts = dedupeTexts(raws);
+  if (texts.length === 0) return null;
+  return (
+    <ul className="space-y-1 list-disc pl-4">
+      {texts.map((t, i) => (
+        <li key={i}>
+          <HoverSource quote={t} as="span">{truncateAtWordBoundary(t, 220)}</HoverSource>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+// FB3 item 4(d): humanized access-scope pill, PLUS a purpose pill per
+// distinct purpose named in accessPurposeLimitation (detectAccessPurposes,
+// table-logic.js) — two pills when the clause covers both "consummating the
+// Transactions" and "integration planning" purposes.
+const ACCESS_PURPOSE_LABELS = {
+  consummation: 'Consummation of the Transactions',
+  integration: 'Integration planning',
+};
+
+function renderAccessCell(provisions) {
+  const scopeHit = pickFirstNonEmpty(provisions, ['accessScope']);
+  const purposeHit = pickFirstNonEmpty(provisions, ['accessPurposeLimitation']);
+  if (!scopeHit && !purposeHit) return null;
+  const pills = [];
+  if (scopeHit) {
+    const raw = scopeHit.value;
+    const inner = isCitableValue(raw) ? getCitableValue(raw) : raw;
+    const label = isTaggedItem(inner)
+      ? (resolveTaggedLabel('accessScope', inner) || inner.label || humanizeAccessScopeToken(inner.code))
+      : humanizeAccessScopeToken(inner);
+    if (label) pills.push({ key: 'scope', label, quote: evidenceQuote(raw, { provision: scopeHit.provision }) });
+  }
+  if (purposeHit) {
+    const raw = purposeHit.value;
+    const inner = isCitableValue(raw) ? getCitableValue(raw) : raw;
+    const text = typeof inner === 'string' ? inner : null;
+    if (text) {
+      const quote = (isCitableValue(raw) && getCitableText(raw)) || text;
+      const purposes = detectAccessPurposes(text);
+      for (const purpose of purposes) {
+        const label = ACCESS_PURPOSE_LABELS[purpose] || truncateAtWordBoundary(text, 60);
+        pills.push({ key: `purpose-${purpose}`, label, quote });
+      }
+    }
+  }
+  if (pills.length === 0) return null;
+  return (
+    <div className="flex items-center gap-1 flex-wrap">
+      {pills.map((p) => <Pill key={p.key} text={p.label} quote={p.quote} tone="standard" />)}
+    </div>
+  );
+}
+
+const COV_FINANCING_KEYS = ['financingCooperationPresent', 'financingCooperation', 'financingCooperationScope', 'financingCooperationBreachIsCondition'];
+
+// FB3 item 6 (matching CategoryFeatureSummaryTable/TermfRebuiltSummary's own
+// dedupe): a provision whose data already surfaced as a row's source above
+// should not ALSO show as a redundant link in the "Other provisions in this
+// section" footer.
+function consumedProvisionIds(provisions, keyGroups) {
+  const ids = new Set();
+  for (const keys of keyGroups) {
+    const hit = pickFirstNonEmpty(provisions, keys);
+    if (hit && hit.provision && hit.provision.id) ids.add(hit.provision.id);
+  }
+  return ids;
+}
+
+const COV_CONSUMED_KEY_GROUPS = [
+  ['tsaContemplated'], ['baseSalaryStandard'], ['bonusStandard', 'targetBonusStandard'],
+  ['benefitsStandard', 'healthWelfareStandard'], ['severanceStandard'], ['ltiStandard', 'longTermIncentiveStandard'],
+  ['employeeBenefitPeriod'], ['accessScope'], ['accessPurposeLimitation'],
+  ['financingCooperationPresent', 'financingCooperation'], ['financingCooperationScope'], ['financingCooperationBreachIsCondition'],
+  ['publicStatementsJointApproval'], ['publicStatementsCarveoutParent'], ['publicStatementsCarveoutCompany'],
+  ['insuranceCap'], ['indemnificationPeriod'], ['advancementOfExpenses'],
+];
+
+function CovSummaryTable({ provisions, onSelectProvision }) {
+  const hasFinancing = COV_FINANCING_KEYS.some((k) => !!pickFirstNonEmpty(provisions, [k]));
+  return (
+    <div className="space-y-3">
+      <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+        <div className="px-3 py-2 bg-bg/60 border-b border-border">
+          <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+            Covenants Summary
+          </p>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-xs font-ui">
+            <thead className="bg-bg/60 border-b border-border">
+              <tr>
+                <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Feature</th>
+                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Value</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              <DefaultFeatureRow label="TSA Contemplated" provisions={provisions} keys={['tsaContemplated']} />
+              <DefaultFeatureRow label="Employee comp: Base salary" provisions={provisions} keys={['baseSalaryStandard']} />
+              <DefaultFeatureRow label="Employee comp: Bonus" provisions={provisions} keys={['bonusStandard', 'targetBonusStandard']} />
+              <DefaultFeatureRow label="Employee comp: Benefits" provisions={provisions} keys={['benefitsStandard', 'healthWelfareStandard']} />
+              <DefaultFeatureRow label="Employee comp: Severance" provisions={provisions} keys={['severanceStandard']} />
+              <DefaultFeatureRow label="Employee comp: Long-Term Incentive" provisions={provisions} keys={['ltiStandard', 'longTermIncentiveStandard']} />
+              <DefaultFeatureRow label="Employee Benefit Continuation Period" provisions={provisions} keys={['employeeBenefitPeriod']} />
+              <CustomFeatureRow label="Access" node={renderAccessCell(provisions)} />
+
+              {/* FB3 item 7: "Financing — None" span row when the deal has no
+                  financing-cooperation provisions at all, instead of three
+                  separate "Not present" rows. */}
+              {hasFinancing ? (
+                <>
+                  <GroupHeaderRow label="Financing" />
+                  <DefaultFeatureRow label="Financing Cooperation Present" provisions={provisions} keys={['financingCooperationPresent', 'financingCooperation']} />
+                  <DefaultFeatureRow label="Financing Cooperation Scope" provisions={provisions} keys={['financingCooperationScope']} />
+                  <DefaultFeatureRow label="Financing Cooperation Breach is Condition" provisions={provisions} keys={['financingCooperationBreachIsCondition']} />
+                </>
+              ) : (
+                <tr className="bg-bg/30">
+                  <td colSpan={2} className="px-3 py-1.5 text-[10px] font-ui font-semibold text-inkFaint uppercase tracking-wider border-t border-border">
+                    Financing — None
+                  </td>
+                </tr>
+              )}
+
+              <GroupHeaderRow label="Public Statements" />
+              <DefaultFeatureRow label="Joint Approval" provisions={provisions} keys={['publicStatementsJointApproval']} />
+              <CustomFeatureRow label="Exceptions" node={renderPublicStatementsExceptionsCell(provisions)} />
+
+              <GroupHeaderRow label="D&O Indemnification & Insurance" />
+              <CustomFeatureRow label="Insurance Cap" node={renderDoInsuranceCapCell(provisions)} />
+              <CustomFeatureRow label="Tail Period" node={renderDoPeriodCell(provisions)} />
+              <DefaultFeatureRow label="Advancement of Expenses" provisions={provisions} keys={['advancementOfExpenses']} />
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <ProvisionsInSectionList
+        provisions={provisions}
+        onSelectProvision={onSelectProvision}
+        consumedIds={consumedProvisionIds(provisions, COV_CONSUMED_KEY_GROUPS)}
+      />
+    </div>
+  );
+}
+
+// FB3 item 5(d): Jurisdiction must NAME the courts + fallback — never a bare
+// "Yes". buildJurisdictionDisplay (table-logic.js) prefers `jurisdiction`
+// (which already carries the fallback court in the same verbatim string,
+// e.g. "Court of Chancery ... (or, if such court shall be unavailable, any
+// state or federal court ...)") over the boolean exclusivity flag, which
+// used to win the pickFirstNonEmpty race and render as a content-free "Yes".
+function renderJurisdictionCell(provisions) {
+  const jurHit = pickFirstNonEmpty(provisions, ['jurisdiction']);
+  const exclHit = pickFirstNonEmpty(provisions, ['jurisdictionExclusive']);
+  if (!jurHit && !exclHit) return null;
+  const jurRaw = jurHit ? jurHit.value : null;
+  const jurInner = jurRaw !== null ? (isCitableValue(jurRaw) ? getCitableValue(jurRaw) : jurRaw) : null;
+  const usableJurText = typeof jurInner === 'string' && jurInner.trim() ? jurInner.trim() : null;
+  const exclRaw = exclHit ? exclHit.value : null;
+  const exclInner = exclRaw !== null ? (isCitableValue(exclRaw) ? getCitableValue(exclRaw) : exclRaw) : null;
+  const exclText = exclRaw !== null ? (isCitableValue(exclRaw) ? getCitableText(exclRaw) : null) : null;
+  const display = buildJurisdictionDisplay({
+    jurisdictionText: usableJurText,
+    jurisdictionExclusive: exclInner === true,
+    jurisdictionExclusiveText: exclText,
+  });
+  if (!display) return null;
+  // buildJurisdictionDisplay prefers jurisdictionText when present, so the
+  // quote source tracks the same preference.
+  const quote = usableJurText ? evidenceQuote(jurRaw, { provision: jurHit.provision }) : display.text;
+  return (
+    <HoverSource quote={quote} as="div">
+      <span>{display.text}</span>
+      {display.exclusive && <span className="ml-1.5 italic text-inkFaint text-[11px]">(exclusive jurisdiction)</span>}
+    </HoverSource>
+  );
+}
+
+// FB3 item 5(e): "Parties pay own expenses except for [resolved §-refs]" —
+// buildFeeExpenseSentence (table-logic.js) resolves each cited section
+// against the deal's OWN sections (by sectionNumber, matched on the base
+// number so "6.03(b)" resolves against a provision classified at "6.03").
+// Unresolvable cites keep the bare citation — never invented.
+function renderFeeExpenseCell(provisions, allProvisions) {
+  const hit = pickFirstNonEmpty(provisions, ['feeExpenseAllocation']);
+  if (!hit) return null;
+  const raw = hit.value;
+  const inner = isCitableValue(raw) ? getCitableValue(raw) : raw;
+  const text = typeof inner === 'string' ? inner : String(inner ?? '');
+  const sectionIndex = (allProvisions || []).map((p) => {
+    const f = getStructuredFeatures(p) || {};
+    const secRaw = f.sectionNumber;
+    const sec = isCitableValue(secRaw) ? getCitableValue(secRaw) : secRaw;
+    return { sectionNumber: typeof sec === 'string' ? sec : null, category: p.category };
+  });
+  const body = buildFeeExpenseSentence(text, sectionIndex);
+  if (!body) return null;
+  const quote = evidenceQuote(raw, { provision: hit.provision });
+  return <HoverSource quote={quote} as="div">{body}</HoverSource>;
+}
+
+const MISC_CONSUMED_KEY_GROUPS = [
+  ['governingLaw'], ['jurisdiction'], ['jurisdictionExclusive'], ['juryWaiver'],
+  ['thirdPartyBeneficiaryExceptions', 'thirdPartyBeneficiaries'], ['amendmentsRequirement'], ['waiverStandard'],
+  ['feeExpenseAllocation'],
+  ['specificPerformance'], ['bondSecurityRequiredForSP'], ['specificPerformanceLimitations'],
+  ['specificPerformanceMutual'], ['companyRightToForceClose'], ['companyForceCloseConditions'],
+  ['willfulBreachDefinition'], ['willfulBreachRequiresActualKnowledge'], ['willfulBreachCoversOmissions'],
+  ['willfulBreachLimitedToMaterial'],
+  ['parentAssignmentRight'], ['parentAssignmentConditions'], ['companyConsentForAssignment'],
+  ['assignmentExceptions'], ['assignmentRestrictions'],
+];
+
+function MiscSummaryTable({ provisions, allProvisions, onSelectProvision }) {
+  return (
+    <div className="space-y-3">
+      <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+        <div className="px-3 py-2 bg-bg/60 border-b border-border">
+          <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
+            Boilerplate Summary
+          </p>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-xs font-ui">
+            <thead className="bg-bg/60 border-b border-border">
+              <tr>
+                <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Feature</th>
+                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Value</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              <DefaultFeatureRow label="Governing Law" provisions={provisions} keys={['governingLaw']} />
+              <CustomFeatureRow label="Jurisdiction" node={renderJurisdictionCell(provisions)} />
+              <DefaultFeatureRow label="Jury Trial Waiver" provisions={provisions} keys={['juryWaiver']} />
+              <DefaultFeatureRow label="Third-Party Beneficiaries" provisions={provisions} keys={['thirdPartyBeneficiaryExceptions', 'thirdPartyBeneficiaries']} />
+              <DefaultFeatureRow label="Amendments Requirement" provisions={provisions} keys={['amendmentsRequirement']} />
+              <DefaultFeatureRow label="Waiver Standard" provisions={provisions} keys={['waiverStandard']} />
+              <CustomFeatureRow label="Fee / Expense Allocation" node={renderFeeExpenseCell(provisions, allProvisions)} />
+
+              <GroupHeaderRow label="Specific Performance" />
+              <DefaultFeatureRow label="Specific Performance" provisions={provisions} keys={['specificPerformance']} />
+              <DefaultFeatureRow label="Bond / Security Required" provisions={provisions} keys={['bondSecurityRequiredForSP']} />
+              <DefaultFeatureRow label="Limitations on Specific Performance" provisions={provisions} keys={['specificPerformanceLimitations']} />
+              <DefaultFeatureRow label="Mutual Specific Performance Right" provisions={provisions} keys={['specificPerformanceMutual']} />
+              <DefaultFeatureRow label="Company Right to Force Parent to Close" provisions={provisions} keys={['companyRightToForceClose']} />
+              <DefaultFeatureRow label="Company Force-Close Conditions" provisions={provisions} keys={['companyForceCloseConditions']} />
+
+              <GroupHeaderRow label="Willful Breach" />
+              <DefaultFeatureRow label="Willful Breach Definition" provisions={provisions} keys={['willfulBreachDefinition']} />
+              <DefaultFeatureRow label="Willful Breach Requires Actual Knowledge" provisions={provisions} keys={['willfulBreachRequiresActualKnowledge']} />
+              <DefaultFeatureRow label="Willful Breach Covers Omissions" provisions={provisions} keys={['willfulBreachCoversOmissions']} />
+              <DefaultFeatureRow label="Willful Breach Limited to Material" provisions={provisions} keys={['willfulBreachLimitedToMaterial']} />
+
+              <GroupHeaderRow label="Assignment" />
+              <DefaultFeatureRow label="Parent Assignment Right" provisions={provisions} keys={['parentAssignmentRight']} />
+              <DefaultFeatureRow label="Parent Assignment Conditions" provisions={provisions} keys={['parentAssignmentConditions']} />
+              <DefaultFeatureRow label="Company Consent for Assignment" provisions={provisions} keys={['companyConsentForAssignment']} />
+              <DefaultFeatureRow label="Assignment Exceptions" provisions={provisions} keys={['assignmentExceptions']} />
+              <DefaultFeatureRow label="Assignment Restrictions" provisions={provisions} keys={['assignmentRestrictions']} />
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <ProvisionsInSectionList
+        provisions={provisions}
+        onSelectProvision={onSelectProvision}
+        consumedIds={consumedProvisionIds(provisions, MISC_CONSUMED_KEY_GROUPS)}
+      />
+    </div>
+  );
+}
+
 function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, allProvisions, deal }) {
   // STRUCT and CONSID get specialized layouts — see dedicated components above.
   if (type === 'STRUCT') {
@@ -7785,15 +8293,15 @@ function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, a
       </div>
     );
   }
-  // MISC: render as a 2-column antitrust-style summary table. Below the
-  // table, list each MISC provision as a clickable link (the
-  // CategoryFeatureSummaryTable already does this).
+  // MISC: FB3 item 5 rebuild — grouped rows (Specific Performance / Willful
+  // Breach / Assignment) with span/header rows, resolved Jurisdiction and
+  // Fee & Expense cells, severability/counterparts moved to the provisions
+  // list below (see MiscSummaryTable).
   if (type === 'MISC') {
     return (
-      <CategoryFeatureSummaryTable
-          deal={deal}
+      <MiscSummaryTable
         provisions={provisions}
-        type="MISC"
+        allProvisions={allProvisions || provisions}
         onSelectProvision={onSelectProvision}
       />
     );
@@ -7851,11 +8359,13 @@ function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, a
     return null;
   }
   if (type === 'COV') {
+    // FB3 item 4/7 rebuild — concise D&O cap/period, humanized access pills,
+    // consolidated Public Statements exceptions row, a "Financing — None"
+    // span when the deal has no financing-cooperation provisions, and a D&O
+    // span header grouping the D&O rows (see CovSummaryTable).
     return (
-      <CategoryFeatureSummaryTable
-          deal={deal}
+      <CovSummaryTable
         provisions={provisions}
-        type="COV"
         onSelectProvision={onSelectProvision}
       />
     );
@@ -7976,6 +8486,18 @@ function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, a
               // NotIncludedStrip pattern as Termination Rights/Conditions).
               if (p._notPresent) return null;
               const features = getStructuredFeatures(p) || {};
+              // FB3 item 2: Absence of Certain Changes rep — the term is a set
+              // of limbs (pills), and every OTHER column is empty noise for
+              // this rep. Merge columns.length columns to the right of the
+              // term into one analysis cell rather than five "—" cells.
+              if ((type === 'REP-T' || type === 'REP-B') && isAocRepProvision(p)) {
+                return (
+                  <tr key={p.id} className="hover:bg-paper transition-colors">
+                    <AocTermCell provision={p} features={features} onSelectProvision={onSelectProvision} />
+                    <AocAnalysisCell provision={p} features={features} columnCount={columns.length} />
+                  </tr>
+                );
+              }
               return (
                 <tr key={p.id} className="hover:bg-paper transition-colors">
                   {/* Metsera fb2 block 2a (REPEAT-FAILURE fix): the Term cell
