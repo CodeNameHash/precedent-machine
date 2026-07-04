@@ -891,3 +891,171 @@ export function dedupeTexts(texts) {
   }
   return out;
 }
+
+export function canonicalizeNosolPills(raw, vocabName) {
+  const vocab = NOSOL_PILL_VOCAB[vocabName] || [];
+  const out = [];
+  const seen = new Set();
+  for (const item of itemsFromRaw(raw)) {
+    const text = firstText(item);
+    if (!text) continue;
+    let matched = false;
+    for (const def of vocab) {
+      if (!def.patterns.some((re) => re.test(text))) continue;
+      matched = true;
+      if (!seen.has(def.code)) {
+        seen.add(def.code);
+        out.push({ type: 'pill', code: def.code, label: def.label, quote: text });
+      }
+    }
+    if (!matched) {
+      out.push({ type: 'pill', code: 'OTHER', label: 'Other', quote: text });
+    }
+  }
+  return out;
+}
+
+export function goShopDisplay(provisions) {
+  const period = pickNosolFeature(provisions, ['goShopPeriodDays', 'goShopWindow']);
+  const excluded = pickNosolFeature(provisions, ['goShopExcludedParties']);
+  const extended = pickNosolFeature(provisions, ['extendedNegotiatingPeriodDays']);
+  const present = pickNosolFeature(provisions, ['goShopPresent']);
+  const presentValue = present ? unwrap(present.value) : null;
+  const hasGoShop = presentValue === true || !!period || !!excluded || !!extended;
+  return {
+    present: hasGoShop,
+    rows: [
+      { label: 'Go-Shop Period', hit: period },
+      { label: 'Go-Shop Excluded Parties', hit: excluded },
+      { label: 'Extended Negotiating Period', hit: extended },
+    ],
+  };
+}
+
+export const NOSOL_COR_LIFECYCLE_LABELS = [
+  'What constitutes a Change of Recommendation',
+  'What does NOT constitute a Change of Recommendation',
+  'Engagement standard (to discuss with a third party)',
+  'Notice period',
+  'Notice content',
+  'Standstill waiver permitted',
+  'Anti-clubbing waiver permitted',
+  'Initial match period',
+  'Subsequent match period',
+  'Change-of-recommendation standard',
+  'Material improvement standard',
+];
+
+export function nosolDefinitionInitialState(labels) {
+  return new Set((labels || []).filter(Boolean));
+}
+
+export function noticePeriodParts(raw) {
+  const quote = firstText(raw) || null;
+  const value = unwrap(raw);
+  const text = `${quote || ''} ${value === null || value === undefined ? '' : String(value)}`;
+  const parts = [];
+  if (/promptly|as promptly as reasonably practicable/i.test(text)) {
+    parts.push({ label: 'Promptly', quote });
+  }
+  const capMatch = text.match(/(?:within|later than|no event later than)[^.\n;]{0,50}?(\d+|twenty-four|forty-eight|96)\s*(hours?|business days?|calendar days?)/i)
+    || text.match(/\b(\d+)\s*(hours?|business days?|calendar days?)\b/i);
+  if (capMatch) {
+    const n = capMatch[1].toLowerCase() === 'twenty-four' ? '24'
+      : capMatch[1].toLowerCase() === 'forty-eight' ? '48'
+        : capMatch[1];
+    const unit = capMatch[2].toLowerCase().replace(/s$/, '');
+    parts.push({ label: `${n} ${unit}${String(n) === '1' ? '' : 's'}`, quote });
+  } else if (typeof value === 'number') {
+    parts.push({ label: `${value} hours`, quote });
+  }
+  return parts.length > 0 ? parts : null;
+}
+
+export function pickNosolFeature(provisions, keys) {
+  for (const p of (provisions || [])) {
+    const f = nosolFeatures(p);
+    for (const k of (keys || [])) {
+      const v = f[k];
+      if (v === null || v === undefined || v === '' || v === false) continue;
+      if (Array.isArray(v) && v.length === 0) continue;
+      return { value: v, key: k, provision: p };
+    }
+  }
+  return null;
+}
+
+function firstText(raw) {
+  const texts = collectTexts(raw);
+  if (texts.length > 0) return texts.join('\n\n');
+  const inner = unwrap(raw);
+  if (inner === null || inner === undefined) return '';
+  if (Array.isArray(inner)) return inner.map((x) => firstText(x)).filter(Boolean).join('\n\n');
+  if (typeof inner === 'object') return JSON.stringify(inner);
+  return String(inner);
+}
+
+function itemsFromRaw(raw) {
+  const inner = unwrap(raw);
+  if (Array.isArray(inner)) return inner;
+  if (inner === null || inner === undefined || inner === '' || inner === false) return [];
+  return [inner];
+}
+
+export function prohibitedActPills(provisions) {
+  const hit = pickNosolFeature(provisions, ['ceaseDiscussionsProhibitedList']);
+  const items = itemsFromRaw(hit && hit.value);
+  const quoteFor = (re) => {
+    for (const item of items) {
+      const text = firstText(item);
+      if (re.test(text)) return text;
+    }
+    return hit ? firstText(hit.value) : null;
+  };
+  return [
+    {
+      label: 'Cease all discussions',
+      quote: quoteFor(/cease|terminat|discussion|negotiation|solicitation|activity/i),
+    },
+    {
+      label: 'Terminated diligence access',
+      quote: quoteFor(/data room|access|non-public information|books|records|diligence|return|destroy|confidential information/i),
+    },
+  ];
+}
+
+export function representativeStandardDisplay(raw) {
+  const quote = firstText(raw) || null;
+  const value = unwrap(raw);
+  const text = typeof value === 'string' ? value : '';
+  const upper = text.toUpperCase();
+  let label = null;
+  if (upper === 'RBE_NOT_TO' || /reasonable\s+best\s+efforts/i.test(text)) label = 'Reasonable best efforts';
+  else if (upper === 'INSTRUCT_NOT_TO' || /\binstruct|direct/i.test(text)) label = 'Instruct / direct';
+  else if (upper === 'CAUSE_NOT_TO' || /\bcause\b/i.test(text)) label = 'Cause';
+  else if (upper === 'NA') label = 'Not applicable';
+  else if (text) label = text;
+  return label ? { label, quote } : null;
+}
+
+export function superiorProposalLimbs(raw) {
+  const quote = firstText(raw) || null;
+  const source = String(unwrap(raw) || '').replace(/\s+/g, ' ').trim();
+  if (!source) return [];
+  const paren = source.match(/\((?:i|x|A)\)\s*(.+?)\s+(?:and\s+)?\((?:ii|y|B)\)\s*(.+)$/i);
+  let limbs = paren ? [paren[1], paren[2]] : [];
+  if (limbs.length === 0) {
+    const semi = source.match(/(.+?financial point of view[^;]*);?\s+and\s+(.+)/i);
+    if (semi) limbs = [semi[1], semi[2]];
+  }
+  if (limbs.length === 0) {
+    const likelyFirst = source.match(/^(is likely to be consummated.*?)\s+and\s+(would.*more favorable.*)$/i);
+    if (likelyFirst) limbs = [likelyFirst[2], likelyFirst[1]];
+  }
+  if (limbs.length === 0) limbs = [source];
+  return limbs.slice(0, 2).map((text, idx) => ({
+    label: idx === 0 ? 'Value limb' : 'Deliverability limb',
+    text: text.replace(/^\s*that,\s*/i, '').trim(),
+    quote,
+  }));
+}
