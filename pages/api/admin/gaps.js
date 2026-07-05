@@ -6,7 +6,11 @@ const {
   buildGapDetails,
   buildUncodedDetails,
   buildUncodedSummary,
+  classifyGapRegion,
+  formatGapId,
+  gapTextFromSource,
   gapPreviewFromSource,
+  isReviewableGapRegion,
 } = require('../../../lib/gap-review');
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -169,7 +173,12 @@ function summariseDeal(deal, provisions, latestIngest) {
     ? verifyDealQuotes(provisions || [], sourceText)
     : { unverified: null };
   const canonicalRate = computeCanonicalRate(provisions || []);
-  const largestGap = (coverage.gaps || [])[0] || null;
+  const typedGaps = (coverage.gaps || []).map((gap) => {
+    const regionType = classifyGapRegion(gapTextFromSource(sourceText, gap));
+    return { gap, regionType, reviewable: isReviewableGapRegion(regionType) };
+  });
+  const reviewableGaps = typedGaps.filter((item) => item.reviewable);
+  const largestGap = (reviewableGaps[0] && reviewableGaps[0].gap) || null;
   const uncodedSummary = buildUncodedSummary(provisions || []);
 
   return {
@@ -179,7 +188,8 @@ function summariseDeal(deal, provisions, latestIngest) {
     coverage_pct: coverage.pct,
     canonical_rate: round(canonicalRate),
     unverified_quotes: verification.unverified,
-    gap_count: (coverage.gaps || []).length,
+    gap_count: reviewableGaps.length,
+    ignored_gap_count: typedGaps.length - reviewableGaps.length,
     uncoded_count: uncodedSummary.count,
     uncoded_proposed_count: uncodedSummary.proposed_count,
     uncoded_type_counts: uncodedSummary.by_type,
@@ -222,11 +232,16 @@ async function getDetail(req, res, sb, dealId) {
     sourceText: sourceTextOf(deal),
     provisions: provisionsResult.data || [],
   });
+  const reviewableGaps = gaps
+    .filter((gap) => gap.reviewable_gap)
+    .map((gap, index) => ({ ...gap, id: formatGapId(index + 1) }));
+  const ignoredGaps = gaps.filter((gap) => !gap.reviewable_gap);
   const uncoded = buildUncodedDetails(provisionsResult.data || []);
 
   return res.status(200).json({
     summary: publicSummary(summary),
-    gaps,
+    gaps: reviewableGaps,
+    ignored_gaps: ignoredGaps,
     uncoded,
     coverage: {
       sourceChars: summary._coverage.sourceChars,
@@ -237,6 +252,9 @@ async function getDetail(req, res, sb, dealId) {
       unlocated: summary._coverage.unlocated,
       excludedChars: summary._coverage.excludedChars,
       excludedRegions: summary._coverage.excludedRegions,
+      rawGapCount: gaps.length,
+      reviewableGapCount: reviewableGaps.length,
+      ignoredGapCount: ignoredGaps.length,
     },
     ...(ingestRefsResult.unavailable && ingestRefsResult.unavailable.length ? { ingest_refs_unavailable: ingestRefsResult.unavailable } : {}),
   });
