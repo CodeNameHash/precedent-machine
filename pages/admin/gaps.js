@@ -583,6 +583,8 @@ export default function GapReviewAdmin() {
                           <Link
                             key={gap.id}
                             href={{ pathname: '/admin/gaps', query: { deal_id: selectedSummary.deal_id, gap: gap.id } }}
+                            replace
+                            scroll={false}
                             className={`block rounded border px-3 py-2 text-left hover:border-accent ${
                               selectedGapKey === gap.id ? 'border-accent bg-accent/5' : 'border-transparent'
                             }`}
@@ -804,6 +806,8 @@ export default function GapReviewAdmin() {
                           <Link
                             key={item.id}
                             href={{ pathname: '/admin/gaps', query: { deal_id: selectedSummary.deal_id, needs_code: item.id } }}
+                            replace
+                            scroll={false}
                             className={`block rounded border px-3 py-2 text-left hover:border-accent ${
                               selectedNeedsCodeKey === item.id ? 'border-accent bg-accent/5' : 'border-transparent'
                             }`}
