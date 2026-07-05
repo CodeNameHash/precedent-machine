@@ -7,8 +7,9 @@ const {
   buildGapDetails,
   buildUncodedDetails,
   buildUncodedSummary,
-  classifyGapRegion,
+  classifyGapRegionWithContext,
   formatGapId,
+  normalizeForGapDisplay,
   gapTextFromSource,
   gapPreviewFromSource,
   isReviewableGapRegion,
@@ -81,6 +82,21 @@ function round(value, places = 3) {
   if (!Number.isFinite(value)) return null;
   const scale = 10 ** places;
   return Math.round(value * scale) / scale;
+}
+
+function reviewableCoverageStats(coverage, reviewableGaps) {
+  const sourceChars = Number(coverage && coverage.sourceChars) || 0;
+  const excludedChars = Number(coverage && coverage.excludedChars) || 0;
+  const effectiveChars = Math.max(1, sourceChars - excludedChars);
+  const reviewableGapChars = (reviewableGaps || []).reduce((sum, item) => {
+    return sum + Math.max(0, Number(item && item.gap && item.gap.length) || 0);
+  }, 0);
+  const coveredChars = Math.max(0, effectiveChars - reviewableGapChars);
+  return {
+    pct: Math.round((coveredChars / effectiveChars) * 1000) / 10,
+    gapChars: reviewableGapChars,
+    effectiveChars,
+  };
 }
 
 async function fetchAllProvisions(sb, dealId) {
@@ -179,11 +195,16 @@ function summariseDeal(deal, provisions, latestIngest) {
     ? verifyDealQuotes(provisions || [], sourceText)
     : { unverified: null };
   const canonicalRate = computeCanonicalRate(provisions || []);
+  const displaySource = normalizeForGapDisplay(sourceText);
   const typedGaps = (coverage.gaps || []).map((gap) => {
-    const regionType = classifyGapRegion(gapTextFromSource(sourceText, gap));
+    const start = Math.max(0, Number(gap && gap.start) || 0);
+    const length = Math.max(0, Number(gap && gap.length) || 0);
+    const fullText = gapTextFromSource(sourceText, gap);
+    const regionType = classifyGapRegionWithContext(displaySource, start, start + length, fullText);
     return { gap, regionType, reviewable: isReviewableGapRegion(regionType) };
   });
   const reviewableGaps = typedGaps.filter((item) => item.reviewable);
+  const reviewableCoverage = reviewableCoverageStats(coverage, reviewableGaps);
   const largestGap = (reviewableGaps[0] && reviewableGaps[0].gap) || null;
   const needsCodeSummary = buildUncodedSummary(provisions || []);
   const parserReview = sourceText ? buildParserReview(sourceText) : null;
@@ -193,7 +214,11 @@ function summariseDeal(deal, provisions, latestIngest) {
     deal_id: deal.id,
     acquirer: deal.acquirer || null,
     target: deal.target || null,
-    coverage_pct: coverage.pct,
+    coverage_pct: reviewableCoverage.pct,
+    reviewable_coverage_pct: reviewableCoverage.pct,
+    raw_coverage_pct: coverage.rawPct,
+    reviewable_gap_chars: reviewableCoverage.gapChars,
+    reviewable_effective_chars: reviewableCoverage.effectiveChars,
     canonical_rate: round(canonicalRate),
     unverified_quotes: verification.unverified,
     gap_count: reviewableGaps.length,
@@ -267,6 +292,9 @@ async function getDetail(req, res, sb, dealId) {
       sourceChars: summary._coverage.sourceChars,
       coveredChars: summary._coverage.coveredChars,
       pct: summary._coverage.pct,
+      reviewablePct: summary.reviewable_coverage_pct,
+      reviewableGapChars: summary.reviewable_gap_chars,
+      reviewableEffectiveChars: summary.reviewable_effective_chars,
       rawPct: summary._coverage.rawPct,
       located: summary._coverage.located,
       unlocated: summary._coverage.unlocated,

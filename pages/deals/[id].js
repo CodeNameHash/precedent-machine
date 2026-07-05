@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { useDeal, useProvisions } from '../../lib/useSupabaseData';
 import { SkeletonCard, EmptyState, Breadcrumbs } from '../../components/UI';
+import { displayTypeForProvision } from '../../components/review/table-logic';
 
 export default function DealDetail() {
   const router = useRouter();
@@ -18,8 +19,9 @@ export default function DealDetail() {
   );
 
   const provsByType = {};
-  provisions.forEach(p => {
-    const t = p.type || 'Other';
+  const allProvisions = Array.isArray(provisions) ? provisions : [];
+  allProvisions.forEach(p => {
+    const t = displayTypeForProvision(p, allProvisions);
     if (!provsByType[t]) provsByType[t] = [];
     provsByType[t].push(p);
   });
@@ -29,7 +31,10 @@ export default function DealDetail() {
     'MAE': 'Material Adverse Effect',
     'IOC-T': 'Interim Operating Covenants (Target)', 'IOC-B': 'Interim Operating Covenants (Buyer)',
     'COND-M': 'Conditions to Closing (Mutual)', 'COND-B': 'Conditions to Closing (Buyer)', 'COND-S': 'Conditions to Closing (Seller)',
-    'NOSOL': 'No-Solicitation / No-Shop', 'ANTI': 'Antitrust / Regulatory',
+    'NOSOL': 'No-Solicitation / No-Shop',
+    'NOSOL-T': 'No-Solicitation (Target / Company)',
+    'NOSOL-B': 'No-Solicitation (Buyer / Parent)',
+    'ANTI': 'Antitrust / Regulatory',
     'TERMR-M': 'Termination Rights (Mutual)', 'TERMR-B': 'Termination Rights (Buyer)', 'TERMR-T': 'Termination Rights (Target)',
     'TERMF': 'Termination Fees', 'REP-T': 'Representations (Target)', 'REP-B': 'Representations (Buyer)',
     'COV': 'Other Covenants', 'DEF': 'Definitions', 'STRUCT': 'Structure & Mechanics', 'CONSID': 'Consideration',

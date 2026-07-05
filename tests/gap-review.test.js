@@ -6,6 +6,7 @@ const { normalizeForMatch } = require('../lib/verification');
 const {
   normalizeForGapDisplay,
   suggestGapType,
+  locateProvisionIntervals,
   buildGapDetails,
   buildUncodedSummary,
   buildUncodedDetails,
@@ -77,6 +78,30 @@ test('classifyGapRegion separates non-provision matter from reviewable body gaps
   );
 });
 
+test('buildGapDetails treats mid-recital slices under an article Recitals heading as frontmatter', () => {
+  const source = [
+    'AGREEMENT AND PLAN OF MERGER',
+    'ARTICLE I. RECITALS',
+    'A. The Company Board has established a special committee to evaluate the Transactions.',
+    'B. The Special Committee has unanimously determined that this Agreement and the Transactions are advisable, fair to and in the best interests of the Company and the stockholders.',
+    'C. The Company Board approved execution and delivery of this Agreement.',
+    'AGREEMENT NOW, THEREFORE, in consideration of the foregoing, the Parties agree as follows:',
+    'ARTICLE I DEFINITIONS & INTERPRETATIONS',
+    'Section 1.1 Certain Definitions. Affiliate means any Person controlled by another Person.',
+  ].join(' ');
+  const display = normalizeForGapDisplay(source);
+  const gapStart = display.indexOf('best interests of the Company');
+  const gapLength = display.indexOf('C. The Company Board') - gapStart;
+  const details = buildGapDetails({
+    coverage: { gaps: [{ start: gapStart, length: gapLength }] },
+    sourceText: source,
+    provisions: [],
+  });
+
+  assert.equal(details[0].region_type, REGION_TYPES.PREAMBLE_RECITALS);
+  assert.equal(details[0].reviewable_gap, false);
+});
+
 test('buildGapDetails numbers document-order gaps with full text, contexts, heading, and adjacent provisions', () => {
   const source = [
     'Section 1.01 Intro. Parent will acquire the Company at the Effective Time.',
@@ -137,8 +162,30 @@ test('buildGapDetails honours parser-supplied region type for definition annexes
   });
 
   assert.equal(gap.region_type, REGION_TYPES.BODY_SECTION_DEFINITION);
-  assert.equal(gap.reviewable_gap, true);
-  assert.equal(gap.ignored_reason, null);
+  assert.equal(gap.reviewable_gap, false);
+  assert.equal(gap.ignored_reason, 'Non-reviewable parser region.');
+});
+
+test('locateProvisionIntervals places duplicate parent-side text in the parent section', () => {
+  const duplicate = '(f) Parent shall not waive any standstill provision unless the Parent Board determines that failure to do so would be inconsistent with its fiduciary duties. ';
+  const source = [
+    'Table of Contents 6.4 No Solicitation by Parent',
+    '6.3 No Solicitation by the Company.',
+    duplicate.repeat(3),
+    '6.4 No Solicitation by Parent.',
+    duplicate.repeat(3),
+  ].join(' ');
+  const [interval] = locateProvisionIntervals([{
+    id: 'parent-nosol',
+    type: 'NOSOL',
+    category: 'Standstill Waiver',
+    full_text: duplicate.repeat(3),
+    ai_metadata: { features: { canonicalCode: 'NOSOL-STANDSTILL-WAIVER' } },
+  }], source);
+
+  const normSource = normalizeForMatch(source);
+  const parentHeading = normSource.lastIndexOf('6.4 no solicitation by parent.');
+  assert.ok(interval.start > parentHeading, `interval ${interval.start} should be after parent heading ${parentHeading}`);
 });
 
 test('gapPreviewFromSource returns the display text slice, not the stored coverage snippet', () => {
@@ -219,4 +266,11 @@ test('/api/admin/gaps uses schema-backed candidate ordering fields', () => {
   assert.match(source, /\.select\('id, ingested_deal_id, status, discovered_at'\)/);
   assert.match(source, /\.order\('discovered_at', \{ ascending: false \}\)/);
   assert.doesNotMatch(source, /\.select\('id, ingested_deal_id, status, updated_at'\)/);
+});
+
+test('/api/admin/gaps summary uses context-aware gap region classification', () => {
+  const source = fs.readFileSync(path.join(__dirname, '..', 'pages/api/admin/gaps.js'), 'utf8');
+  assert.match(source, /classifyGapRegionWithContext/);
+  assert.match(source, /normalizeForGapDisplay\(sourceText\)/);
+  assert.doesNotMatch(source, /classifyGapRegion\(gapTextFromSource\(sourceText, gap\)\)/);
 });

@@ -38,6 +38,65 @@ test('citable wrapper around the right type is fine; around the wrong type is no
   assert.equal(bad.errors.length, 1);
 });
 
+test('taxonomy-backed enum fields accept tagged and citable-tagged values', () => {
+  const anti = validateFeatures('ANTI', {
+    effortsStandard: { code: 'REASONABLE_BEST_EFFORTS', label: 'Reasonable best efforts', text: 'reasonable best efforts' },
+  });
+  assert.deepEqual(anti, { errors: [], warnings: [] });
+
+  const nosol = validateFeatures('NOSOL', {
+    canonicalCode: 'NOSOL-PROHIBIT',
+    representativesStandard: {
+      value: { code: 'RBE_NOT_TO', label: 'Reasonable best efforts to cause not to', text: 'reasonable best efforts to cause' },
+      quotes: [],
+    },
+    interveningEventScope: {
+      value: { code: 'POSITIVE_ONLY', label: 'Positive only', text: 'shall not include any Company Takeover Proposal' },
+      quotes: [],
+    },
+  });
+  assert.deepEqual(nosol, { errors: [], warnings: [] });
+
+  const rep = validateFeatures('REP-T', {
+    canonicalCode: 'REP-T-NOCHANGE',
+    absenceOfChangesType: {
+      value: { code: 'GENERAL_ORDINARY_COURSE', label: 'General operating covenant', text: 'ordinary course' },
+      quotes: [],
+    },
+  });
+  assert.deepEqual(rep, { errors: [], warnings: [] });
+});
+
+test('taxonomy-backed text fields accept tagged standard objects', () => {
+  const r = validateFeatures('NOSOL', {
+    canonicalCode: 'NOSOL-CEASE',
+    ceaseDiscussionsAffiliateStandard: {
+      code: 'RBE_NOT_TO',
+      label: 'Reasonable best efforts to cause',
+      text: 'shall use reasonable best efforts to cause its Representatives to cease',
+    },
+  });
+  assert.deepEqual(r, { errors: [], warnings: [] });
+});
+
+test('taxonomy-backed legacy enum fields accept newer materiality and knowledge codes', () => {
+  const bringDown = validateFeatures('REP-B', {
+    canonicalCode: 'REP-B-LIT',
+    bringDownStandard: {
+      code: 'MAT_MAE_AGGREGATE',
+      label: 'Would not, individually or in aggregate, have MAE',
+      text: 'except as would not, individually or in the aggregate, reasonably be expected to have a Parent Material Adverse Effect',
+    },
+  });
+  assert.deepEqual(bringDown, { errors: [], warnings: [] });
+
+  const knowledge = validateFeatures('DEF', {
+    canonicalCode: 'DEF-KNOWLEDGE',
+    knowledgeStandard: { code: 'ACTUAL', label: 'Actual knowledge', text: 'actual knowledge' },
+  });
+  assert.deepEqual(knowledge, { errors: [], warnings: [] });
+});
+
 test('unknown keys warn (drift is counted, not fatal)', () => {
   const r = validateFeatures('TERMF', { totallyMadeUpKey: 'x' });
   assert.equal(r.errors.length, 0);

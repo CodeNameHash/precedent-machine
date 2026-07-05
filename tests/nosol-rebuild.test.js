@@ -151,3 +151,35 @@ test('canonical pill vocabulary falls back to OTHER with verbatim hover text', (
   assert.equal(other.label, 'Other');
   assert.match(other.quote, /one-off board action/);
 });
+
+test('bare Conoco-shaped NOSOL rows route to Company or Parent display sections', () => {
+  assert.equal(
+    mod.displayTypeForProvision({
+      type: 'NOSOL',
+      full_text: '6.3 No Solicitation by the Company. The Company Board may make a Company Change of Recommendation after notice to Parent.',
+    }),
+    'NOSOL-T',
+  );
+  assert.equal(
+    mod.displayTypeForProvision({
+      type: 'NOSOL',
+      full_text: '6.4 No Solicitation by Parent. The Parent Board may make a Parent Change of Recommendation after notice to the Company.',
+    }),
+    'NOSOL-B',
+  );
+  assert.equal(
+    mod.displayTypeForProvision({
+      type: 'NOSOL',
+      full_text: 'Parent shall promptly notify the Company of any Parent Competing Proposal received by Parent.',
+    }),
+    'NOSOL-B',
+  );
+  assert.equal(
+    mod.displayTypeForProvision({
+      type: 'NOSOL',
+      ai_metadata: { features: { sectionNumber: '6.4(f)' } },
+      full_text: 'During the period commencing with execution, Parent shall not waive any standstill agreement.',
+    }),
+    'NOSOL-B',
+  );
+});

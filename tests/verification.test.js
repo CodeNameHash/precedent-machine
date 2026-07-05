@@ -9,6 +9,7 @@ const {
   sanitizeFeatureQuotes,
   verifyDealQuotes,
   computeCoverage,
+  locateProvisionInSource,
 } = require('../lib/verification');
 
 // ── normalizeForMatch ──────────────────────────────────────────────────────
@@ -335,6 +336,49 @@ test('computeCoverage reports unlocated provisions instead of failing', () => {
   assert.equal(r.pct, 0);
 });
 
+test('locateProvisionInSource prefers matching text after the parent IOC heading', () => {
+  const duplicate = '(i) declare, set aside or pay any dividend or make any other distribution in respect of capital stock without consent. ';
+  const source = [
+    'Table of Contents 6.2 Conduct of Parent Business Pending the Merger',
+    '6.1 Conduct of Company Business Pending the Merger.',
+    duplicate.repeat(3),
+    '6.2 Conduct of Parent Business Pending the Merger.',
+    duplicate.repeat(3),
+    '6.3 No Solicitation by the Company.',
+  ].join(' ');
+  const provision = {
+    type: 'IOC-B',
+    full_text: duplicate.repeat(3),
+    ai_metadata: { features: { sectionNumber: '6.2(i)' } },
+  };
+  const located = locateProvisionInSource(provision, source);
+  const normSource = normalizeForMatch(source);
+  const parentHeading = normSource.lastIndexOf('6.2 conduct of parent business pending the merger.');
+  assert.ok(parentHeading > 0);
+  assert.ok(located.start > parentHeading, `located ${located.start} should be after parent heading ${parentHeading}`);
+});
+
+test('locateProvisionInSource uses parent NoSol section hints for duplicate parent-side clauses', () => {
+  const duplicate = '(f) Parent shall not waive any standstill provision unless the Parent Board determines that failure to do so would be inconsistent with its fiduciary duties. ';
+  const source = [
+    'Table of Contents 6.4 No Solicitation by Parent',
+    '6.3 No Solicitation by the Company.',
+    duplicate.repeat(3),
+    '6.4 No Solicitation by Parent.',
+    duplicate.repeat(3),
+  ].join(' ');
+  const provision = {
+    type: 'NOSOL',
+    full_text: duplicate.repeat(3),
+    ai_metadata: { features: { canonicalCode: 'NOSOL-STANDSTILL-WAIVER' } },
+  };
+  const located = locateProvisionInSource(provision, source);
+  const normSource = normalizeForMatch(source);
+  const parentHeading = normSource.lastIndexOf('6.4 no solicitation by parent.');
+  assert.ok(parentHeading > 0);
+  assert.ok(located.start > parentHeading, `located ${located.start} should be after parent heading ${parentHeading}`);
+});
+
 // ── splitSubClauses: conflated COND refinement ─────────────────────────────
 
 test('conflated tender-offer condition splits at the covenant/reps boundary', () => {
@@ -448,4 +492,21 @@ test('detectAncillaryRegions: def-appendix mid-tail carves out ONLY the appendix
   // Span 2 starts at the by-laws and runs to EOF — the appendix itself is kept.
   assert.ok(Math.abs(spans[1][0] - bylawsAt) < 200, `span2 start ${spans[1][0]} vs bylaws ${bylawsAt}`);
   assert.equal(spans[1][1], source.length);
+});
+
+test('detectAncillaryRegions does not keep charter article definitions as merger-agreement definitions', () => {
+  const { detectAncillaryRegions } = require('../lib/verification');
+  const pad = (label, n) => `${label} ${'lorem ipsum dolor sit '.repeat(n)}`;
+  const body = pad('agreement and plan of merger section 9.01 termination.', 600);
+  const sig = 'in witness whereof, the parties have caused this agreement to be executed by their officers. ';
+  const charterStart = pad('exhibit a certificate of incorporation. the name of the corporation is the kraft heinz company. registered office in delaware.', 80);
+  const preferred = pad('certain definitions for purposes of this article iv the following terms shall have the meanings indicated. base amount means series a preferred stock redemption amounts. dividends shall accrue daily.', 260);
+  const bylaws = pad('by-laws of the kraft heinz company article i offices.', 160);
+  const source = [body, sig, charterStart, preferred, bylaws].join(' ').toLowerCase();
+
+  const spans = detectAncillaryRegions(source);
+  assert.equal(spans.length, 1, `expected one excluded charter span, got ${JSON.stringify(spans)}`);
+  const charterAt = source.indexOf('exhibit a certificate');
+  assert.ok(Math.abs(spans[0][0] - charterAt) < 200, `span start ${spans[0][0]} vs charter ${charterAt}`);
+  assert.equal(spans[0][1], source.length);
 });

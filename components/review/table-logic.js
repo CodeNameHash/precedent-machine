@@ -1416,9 +1416,61 @@ export function headlineConsiderationLabel(value) {
   return null;
 }
 
+export function isParentSideNosolProvision(provision) {
+  if (!provision) return false;
+  if (provision.type === 'NOSOL-B') return true;
+  if (provision.type === 'NOSOL-T') return false;
+  if (provision.type !== 'NOSOL') return false;
+
+  const features = localFeatures(provision);
+  const section = String(
+    features.sectionNumber ||
+    features.section_number ||
+    features.sourceSection ||
+    features.source_section ||
+    '',
+  );
+  if (/^6\.4\b/i.test(section) || /\bsection\s+6\.4\b/i.test(section)) return true;
+  if (/^6\.3\b/i.test(section) || /\bsection\s+6\.3\b/i.test(section)) return false;
+
+  const text = [
+    provision.category,
+    provision.full_text,
+    provision.text,
+    features.mainConcept,
+    features.standstillWaiverConditions,
+    features.ceaseDiscussionsLiability,
+    features.representativeBreachConditions,
+  ].filter(Boolean).join(' ');
+
+  if (/\bsection\s+6\.4\b/i.test(text) && !/\bsection\s+6\.3\b/i.test(text)) return true;
+  if (/\bsection\s+6\.3\b/i.test(text) && !/\bsection\s+6\.4\b/i.test(text)) return false;
+
+  const parentStrong = (
+    /\bParent\s+(?:Board|Stockholder Approval|Competing Proposal|Superior Proposal|Intervening Event)\b/i.test(text) ||
+    /\bParent\s+and\s+its\s+(?:officers|Representatives)\b/i.test(text) ||
+    /\bParent\s+shall\s+promptly\b/i.test(text) ||
+    /\bParent\s+provides?\s+the\s+Company\b/i.test(text) ||
+    /\bParent\s+may\s+waive\b/i.test(text) ||
+    /\bParent\s+represents\s+and\s+warrants\b/i.test(text)
+  );
+  const companyStrong = (
+    /\bCompany\s+(?:Board|Stockholder Approval|Competing Proposal|Superior Proposal|Intervening Event)\b/i.test(text) ||
+    /\bCompany\s+and\s+its\s+(?:officers|Representatives)\b/i.test(text) ||
+    /\bCompany\s+shall\s+promptly\b/i.test(text) ||
+    /\bCompany\s+provides?\s+Parent\b/i.test(text) ||
+    /\bCompany\s+may\s+waive\b/i.test(text)
+  );
+
+  return parentStrong && !companyStrong;
+}
+
 export function displayTypeForProvision(provision, allProvisions) {
   if (!provision) return 'Other';
   if (isConsiderationGroupedProvision(provision)) return 'CONSID';
+  if (provision.type === 'NOSOL') {
+    return isParentSideNosolProvision(provision) ? 'NOSOL-B' : 'NOSOL-T';
+  }
   if (provision.type === 'IOC') {
     const code = localCode(provision);
     const affOrPreamble = /^IOC-(?:ORDINARY|PRESERVE|MAINTAIN|NOACTION|AFFIRMATIVE|OTHER-AFFIRMATIVE|GENERAL-EXCEPTIONS|EXCEPTIONS|POSITIVE-PREAMBLE)$/.test(code);

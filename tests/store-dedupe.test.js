@@ -143,3 +143,31 @@ test('storeProvisionsForType repairs verified MAE subset quotes and removes comp
     'removed_unverified_quote',
   ]);
 });
+
+test('storeProvisionsForType dedupes exact duplicate provisions before insert', async () => {
+  const text = '(m) implement or adopt any material change in its accounting policies.';
+  const sb = fakeStoreSupabase(text);
+
+  const result = await storeProvisionsForType('deal-1', 'IOC', [
+    {
+      type: 'IOC-T',
+      code: 'IOC-ACCOUNTING',
+      category: 'Accounting Changes',
+      text,
+      favorability: 'buyer-favorable',
+      features: { canonicalCode: 'IOC-ACCOUNTING', mainObligation: text },
+    },
+    {
+      type: 'IOC-T',
+      code: 'IOC-ACCOUNTING',
+      category: 'Accounting Changes',
+      text,
+      favorability: 'buyer-favorable',
+      features: { canonicalCode: 'IOC-ACCOUNTING', mainObligation: text },
+    },
+  ], sb);
+
+  assert.equal(result.insertedCount, 1);
+  assert.equal(sb.inserted.length, 1);
+  assert.equal(sb.inserted[0].category, 'Accounting Changes');
+});

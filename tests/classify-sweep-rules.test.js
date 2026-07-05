@@ -50,6 +50,9 @@ test('no-shop titled "Unsolicited Proposals" (Bioverativ 6.02) → NOSOL', () =>
 test('consideration mechanics in a STRUCT article → CONSID', () => {
   assert.equal(tryDeterministic(sec('1.4', 'Effect on Capital Stock'), 'STRUCT').type, 'CONSID');   // Mr. Cooper / Prometheus / Anadarko
   assert.equal(tryDeterministic(sec('2.01', 'Conversion of Capital Stock'), null).type, 'CONSID');  // Red Hat
+  assert.equal(tryDeterministic(sec('3.2', 'Treatment of Equity Compensation Awards'), null).type, 'CONSID'); // Concho
+  assert.equal(tryDeterministic(sec('3.3', 'Payment for Securities; Exchange'), null).type, 'CONSID'); // Concho
+  assert.equal(tryDeterministic(sec('3.4', 'No Appraisal Rights'), null).type, 'CONSID'); // Concho
   // Genuinely-structural titles keep STRUCT.
   assert.equal(tryDeterministic(sec('2.4', 'Effect of the Merger'), 'STRUCT').type, 'STRUCT');
 });

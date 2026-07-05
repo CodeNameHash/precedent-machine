@@ -10237,10 +10237,6 @@ export default function ReviewPage() {
     const hasIocBProvisions = provisions.some(p => p.type === 'IOC-B');
     const effectiveTypes = new Set(filterTypes);
     if (hasIocT && !hasIocBProvisions) effectiveTypes.add('IOC');
-    // NOSOL-T expansion mirrors IOC-T: bare NOSOL provisions count as
-    // Company/Target so the Company/Target page populates.
-    const hasNosolT = filterTypes.includes('NOSOL-T');
-    if (hasNosolT) effectiveTypes.add('NOSOL');
     return sortByTypeOrder(provisions.filter((p) => {
       const displayType = displayTypeForProvision(p, provisions);
       return effectiveTypes.has(p.type) || effectiveTypes.has(displayType);
@@ -10324,14 +10320,15 @@ export default function ReviewPage() {
       if (!groups['TERMR-B']) groups['TERMR-B'] = [];
       if (!groups['TERMR-T']) groups['TERMR-T'] = [];
     }
-    // NOSOL party split — same pattern as IOC. Classifier emits bare NOSOL
-    // (no party suffix); ~all M&A agreements only have a Company no-shop, so
-    // promote bare NOSOL to NOSOL-T and synthesize an empty NOSOL-B child so
-    // the sidebar shows "Buyer / Parent (0)" with a "Not present" placeholder
-    // page. When the classifier learns party detection, both populated
-    // children will render side-by-side.
+    // NOSOL party split — displayTypeForProvision maps bare NOSOL rows to
+    // Company/Target or Buyer/Parent from the clause text. Keep this fallback
+    // for legacy rows that still land in a bare group.
     if (groups['NOSOL'] && groups['NOSOL'].length > 0) {
-      groups['NOSOL-T'] = [...(groups['NOSOL-T'] || []), ...groups['NOSOL']];
+      for (const p of groups['NOSOL']) {
+        const displayType = displayTypeForProvision(p, provisions);
+        const targetType = displayType === 'NOSOL-B' ? 'NOSOL-B' : 'NOSOL-T';
+        groups[targetType] = [...(groups[targetType] || []), p];
+      }
       delete groups['NOSOL'];
     }
     const anyNosol = !!(groups['NOSOL-T'] || groups['NOSOL-B']);
@@ -10421,21 +10418,18 @@ export default function ReviewPage() {
       for (const t of termrChildren) if (!groups[t]) groups[t] = [];
     }
 
-    // NOSOL promotion + section synthesis — mirrors IOC. Bare NOSOL provisions
-    // (from extracts that didn't emit NOSOL-T/NOSOL-B) belong to Company/Target
-    // by convention. Parent-group click → both NOSOL-T and NOSOL-B sections;
-    // direct child click → just that one; All Provisions → both when any NOSOL.
+    // NOSOL section synthesis — displayTypeForProvision already routes bare
+    // rows to the correct side; only redistribute unexpected bare leftovers.
     const nosolArr = Array.isArray(activeFilter) ? activeFilter : [];
     const isParentNosolClick = nosolArr.includes('NOSOL-T') && nosolArr.includes('NOSOL-B');
     const isNosolTChildClick = activeFilter === 'NOSOL-T';
     const isNosolBChildClick = activeFilter === 'NOSOL-B';
-    const nosolTFilterActive = isParentNosolClick || isNosolTChildClick || (Array.isArray(activeFilter) && activeFilter.includes('NOSOL-T'));
-    if (nosolTFilterActive) {
-      const bareNosol = (provisions || []).filter((p) => p.type === 'NOSOL');
-      if (bareNosol.length > 0) groups['NOSOL-T'] = [...(groups['NOSOL-T'] || []), ...bareNosol];
-      delete groups['NOSOL'];
-    } else if (groups['NOSOL'] && groups['NOSOL'].length > 0) {
-      groups['NOSOL-T'] = [...(groups['NOSOL-T'] || []), ...groups['NOSOL']];
+    if (groups['NOSOL'] && groups['NOSOL'].length > 0) {
+      for (const p of groups['NOSOL']) {
+        const displayType = displayTypeForProvision(p, provisions);
+        const targetType = displayType === 'NOSOL-B' ? 'NOSOL-B' : 'NOSOL-T';
+        groups[targetType] = [...(groups[targetType] || []), p];
+      }
       delete groups['NOSOL'];
     }
     const anyNosolFilt = !!(groups['NOSOL-T'] || groups['NOSOL-B']);
@@ -10592,7 +10586,7 @@ export default function ReviewPage() {
     }
     setSelectedProvId(provId);
     if (prov) {
-      setActiveFilter(prov.type);
+      setActiveFilter(displayTypeForProvision(prov, provisions));
       // Auto-open the right edit panel so a single sidebar click on a
       // provision swaps the right-side toolbar to the editor for that item.
       // User view: no editing, so leave the panel closed — the main content
@@ -10653,7 +10647,7 @@ export default function ReviewPage() {
         if (isMaterialContractsProvision(selected)) {
           nextFilter = '__MATERIAL_CONTRACTS';
         } else {
-          nextFilter = selected.type;
+          nextFilter = displayTypeForProvision(selected, provisions);
           nextSelected = selected.id;
         }
       }
