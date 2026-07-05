@@ -72,12 +72,31 @@ function GapReference({ summary, gap }) {
   ].filter(Boolean).join(' | ');
 }
 
-function GapText({ gap }) {
+function UncodedReference({ summary, item }) {
+  return [
+    `deal_id=${summary.deal_id}`,
+    `uncoded=${item.id}`,
+    item.provision_id ? `provision_id=${item.provision_id}` : null,
+    item.type ? `type=${item.type}` : null,
+    item.category ? `category=${item.category}` : null,
+    item.code ? `code=${item.code}` : null,
+  ].filter(Boolean).join(' | ');
+}
+
+function FullText({ item }) {
   return (
     <pre className="max-h-[720px] overflow-auto whitespace-pre-wrap rounded border border-border bg-bg/40 p-4 text-[13px] leading-6 text-ink">
-      {gap.full_text || gap.text || gap.preview || ''}
+      {item.full_text || item.text || item.preview || ''}
     </pre>
   );
+}
+
+function GapText({ gap }) {
+  return <FullText item={gap} />;
+}
+
+function UncodedText({ item }) {
+  return <FullText item={item} />;
 }
 
 function LoadingRows({ rows = 4 }) {
@@ -102,6 +121,7 @@ export default function GapReviewAdmin() {
   const router = useRouter();
   const selectedDealId = typeof router.query.deal_id === 'string' ? router.query.deal_id : null;
   const selectedGapId = typeof router.query.gap === 'string' ? router.query.gap : null;
+  const selectedUncodedId = typeof router.query.uncoded === 'string' ? router.query.uncoded : null;
   const readerRef = useRef(null);
   const [rows, setRows] = useState([]);
   const [pagination, setPagination] = useState(null);
@@ -112,12 +132,17 @@ export default function GapReviewAdmin() {
   const [detail, setDetail] = useState(null);
   const [error, setError] = useState(null);
   const [copiedGap, setCopiedGap] = useState(null);
+  const [copiedUncoded, setCopiedUncoded] = useState(null);
   const [expandedGapIds, setExpandedGapIds] = useState(() => new Set());
+  const [expandedUncodedIds, setExpandedUncodedIds] = useState(() => new Set());
 
   const selectedSummary = detail?.summary || rows.find(row => row.deal_id === selectedDealId) || null;
   const gaps = detail?.gaps || [];
   const selectedGap = gaps.find((gap) => gap.id === selectedGapId) || gaps[0] || null;
   const selectedGapKey = selectedGap ? selectedGap.id : null;
+  const uncoded = detail?.uncoded || [];
+  const selectedUncoded = uncoded.find((item) => item.id === selectedUncodedId) || uncoded[0] || null;
+  const selectedUncodedKey = selectedUncoded ? selectedUncoded.id : null;
 
   const summaryUrl = useMemo(() => {
     const sp = new URLSearchParams();
@@ -167,8 +192,9 @@ export default function GapReviewAdmin() {
   }, [router.isReady, selectedDealId]);
 
   useEffect(() => {
-    if (!detail?.gaps) return;
-    setExpandedGapIds(new Set(detail.gaps.map((gap) => gap.id)));
+    if (!detail) return;
+    setExpandedGapIds(new Set((detail.gaps || []).map((gap) => gap.id)));
+    setExpandedUncodedIds(new Set());
   }, [detail?.summary?.deal_id]);
 
   useEffect(() => {
@@ -191,6 +217,21 @@ export default function GapReviewAdmin() {
     setTimeout(() => setCopiedGap(null), 1200);
   };
 
+  const copyUncodedReference = async (item) => {
+    if (!selectedSummary || !item) return;
+    const ref = UncodedReference({ summary: selectedSummary, item });
+    await navigator.clipboard.writeText(ref);
+    setCopiedUncoded(item.id);
+    setTimeout(() => setCopiedUncoded(null), 1200);
+  };
+
+  const copyUncodedText = async (item) => {
+    if (!item) return;
+    await navigator.clipboard.writeText(item.full_text || item.text || item.preview || '');
+    setCopiedUncoded(`${item.id}:text`);
+    setTimeout(() => setCopiedUncoded(null), 1200);
+  };
+
   const expandAll = () => {
     setExpandedGapIds(new Set(gaps.map((gap) => gap.id)));
   };
@@ -204,6 +245,23 @@ export default function GapReviewAdmin() {
       const next = new Set(current);
       if (next.has(gapId)) next.delete(gapId);
       else next.add(gapId);
+      return next;
+    });
+  };
+
+  const expandAllUncoded = () => {
+    setExpandedUncodedIds(new Set(uncoded.map((item) => item.id)));
+  };
+
+  const collapseAllUncoded = () => {
+    setExpandedUncodedIds(new Set());
+  };
+
+  const toggleUncoded = (itemId) => {
+    setExpandedUncodedIds((current) => {
+      const next = new Set(current);
+      if (next.has(itemId)) next.delete(itemId);
+      else next.add(itemId);
       return next;
     });
   };
@@ -260,7 +318,7 @@ export default function GapReviewAdmin() {
       {loading ? (
         <LoadingRows rows={8} />
       ) : (
-        <div className="overflow-hidden rounded-lg border border-border bg-white shadow-sm">
+        <div className="overflow-x-auto rounded-lg border border-border bg-white shadow-sm">
           <div className="flex items-center justify-between border-b border-border bg-bg/50 px-4 py-3">
             <h2 className="font-display text-lg text-ink">Deals</h2>
             {pagination && (
@@ -278,6 +336,7 @@ export default function GapReviewAdmin() {
                   <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Deal</th>
                   <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Coverage</th>
                   <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Gaps</th>
+                  <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Uncoded</th>
                   <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Largest</th>
                   <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Canonical</th>
                   <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Quotes</th>
@@ -302,6 +361,7 @@ export default function GapReviewAdmin() {
                     </td>
                     <td className="px-4 py-3 font-ui text-ink">{pct(row.coverage_pct)}</td>
                     <td className="px-4 py-3 font-ui text-ink">{num(row.gap_count)}</td>
+                    <td className="px-4 py-3 font-ui text-ink">{num(row.uncoded_count)}</td>
                     <td className="max-w-md px-4 py-3">
                       <div className="font-ui text-ink">{num(row.largest_gap_chars)} chars</div>
                       <div className="mt-0.5 truncate text-xs font-ui text-inkLight">{row.largest_gap_preview || '-'}</div>
@@ -319,7 +379,7 @@ export default function GapReviewAdmin() {
                         href={{ pathname: '/admin/gaps', query: { deal_id: row.deal_id } }}
                         className="inline-flex rounded bg-accent px-3 py-1.5 text-xs font-ui text-white hover:bg-accent/90"
                       >
-                        Read gaps
+                        Read
                       </Link>
                     </td>
                   </tr>
@@ -359,9 +419,10 @@ export default function GapReviewAdmin() {
                     </Link>
                   </div>
                 </div>
-                <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-5">
+                <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-6">
                   <Metric label="Coverage" value={pct(selectedSummary.coverage_pct)} />
                   <Metric label="Gaps" value={num(selectedSummary.gap_count)} />
+                  <Metric label="Uncoded" value={num(selectedSummary.uncoded_count)} />
                   <Metric label="Largest gap" value={`${num(selectedSummary.largest_gap_chars)} chars`} />
                   <Metric label="Canonical" value={rate(selectedSummary.canonical_rate)} />
                   <Metric label="Unverified quotes" value={num(selectedSummary.unverified_quotes)} />
@@ -529,6 +590,170 @@ export default function GapReviewAdmin() {
                     </div>
                   </div>
 
+                </>
+              )}
+
+              {uncoded.length === 0 ? (
+                <div className="rounded-lg border border-border bg-white p-8 text-center text-sm font-ui text-inkFaint shadow-sm">
+                  No uncoded extracted sections.
+                </div>
+              ) : (
+                <>
+                  <div className="grid gap-4 lg:grid-cols-[280px_minmax(0,1fr)]">
+                    <div className="rounded-lg border border-border bg-white shadow-sm">
+                      <div className="border-b border-border bg-bg/50 px-4 py-3">
+                        <h3 className="font-display text-lg text-ink">Uncoded Sections</h3>
+                      </div>
+                      <div className="max-h-[620px] overflow-auto p-2">
+                        {uncoded.map((item) => (
+                          <Link
+                            key={item.id}
+                            href={{ pathname: '/admin/gaps', query: { deal_id: selectedSummary.deal_id, uncoded: item.id } }}
+                            className={`block rounded border px-3 py-2 text-left hover:border-accent ${
+                              selectedUncodedKey === item.id ? 'border-accent bg-accent/5' : 'border-transparent'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="font-mono text-xs font-semibold text-accent">{item.id}</span>
+                              <SuggestionPill type={item.family_type || item.type || 'UNCODED'} />
+                            </div>
+                            <div className="mt-1 truncate text-xs font-ui text-ink">
+                              {item.rough_heading || item.preview || item.id}
+                            </div>
+                            <div className="mt-1 truncate text-[10px] font-ui text-inkFaint">
+                              {num(item.length)} chars - {item.category || item.code || 'missing code'}
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="rounded-lg border border-border bg-white p-5 shadow-sm">
+                      {selectedUncoded ? (
+                        <>
+                          <div className="flex flex-wrap items-start justify-between gap-4">
+                            <div className="min-w-0">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <span className="font-mono text-xs font-semibold text-accent">{selectedUncoded.id}</span>
+                                <SuggestionPill type={selectedUncoded.family_type || selectedUncoded.type || 'UNCODED'} />
+                                {selectedUncoded.provision_id && (
+                                  <span className="text-xs font-ui text-inkFaint">prov {shortId(selectedUncoded.provision_id)}</span>
+                                )}
+                              </div>
+                              <h3 className="mt-2 font-display text-xl text-ink">
+                                {selectedUncoded.rough_heading || selectedUncoded.id}
+                              </h3>
+                              <p className="mt-1 text-sm font-ui text-inkLight">{selectedUncoded.suggested_reason}</p>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              <button
+                                type="button"
+                                onClick={() => copyUncodedReference(selectedUncoded)}
+                                className="rounded border border-border px-3 py-1.5 text-xs font-ui text-inkLight hover:border-accent hover:text-ink"
+                              >
+                                {copiedUncoded === selectedUncoded.id ? 'Copied' : 'Copy reference'}
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => copyUncodedText(selectedUncoded)}
+                                className="rounded border border-border px-3 py-1.5 text-xs font-ui text-inkLight hover:border-accent hover:text-ink"
+                              >
+                                {copiedUncoded === `${selectedUncoded.id}:text` ? 'Copied' : 'Copy text'}
+                              </button>
+                            </div>
+                          </div>
+
+                          <div className="mt-4 grid gap-3 md:grid-cols-3">
+                            <div className="rounded border border-border bg-bg/40 p-3">
+                              <div className="mb-1 text-[10px] font-ui uppercase tracking-wide text-inkFaint">Type</div>
+                              <p className="truncate text-xs font-ui text-inkLight">{selectedUncoded.type || '-'}</p>
+                            </div>
+                            <div className="rounded border border-border bg-bg/40 p-3">
+                              <div className="mb-1 text-[10px] font-ui uppercase tracking-wide text-inkFaint">Category</div>
+                              <p className="truncate text-xs font-ui text-inkLight">{selectedUncoded.category || '-'}</p>
+                            </div>
+                            <div className="rounded border border-border bg-bg/40 p-3">
+                              <div className="mb-1 text-[10px] font-ui uppercase tracking-wide text-inkFaint">Stored code</div>
+                              <p className="truncate text-xs font-ui text-inkLight">{selectedUncoded.code || '-'}</p>
+                            </div>
+                          </div>
+
+                          <div className="mt-4">
+                            <UncodedText item={selectedUncoded} />
+                          </div>
+                        </>
+                      ) : null}
+                    </div>
+                  </div>
+
+                  <div className="rounded-lg border border-border bg-white shadow-sm">
+                    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-bg/50 px-4 py-3">
+                      <h3 className="font-display text-lg text-ink">All Uncoded Text</h3>
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          onClick={expandAllUncoded}
+                          className="rounded border border-border px-3 py-1.5 text-xs font-ui text-inkLight hover:border-accent hover:text-ink"
+                        >
+                          Expand all
+                        </button>
+                        <button
+                          type="button"
+                          onClick={collapseAllUncoded}
+                          className="rounded border border-border px-3 py-1.5 text-xs font-ui text-inkLight hover:border-accent hover:text-ink"
+                        >
+                          Collapse all
+                        </button>
+                      </div>
+                    </div>
+                    <div className="divide-y divide-border">
+                      {uncoded.map((item, index) => {
+                        const open = expandedUncodedIds.has(item.id);
+                        return (
+                          <div key={item.id} className="p-5">
+                            <div className="flex flex-wrap items-start justify-between gap-4">
+                              <div className="min-w-0">
+                                <div className="flex flex-wrap items-center gap-2">
+                                  <span className="font-mono text-xs font-semibold text-accent">{item.id}</span>
+                                  <SuggestionPill type={item.family_type || item.type || 'UNCODED'} />
+                                  <span className="text-xs font-ui text-inkFaint">{num(item.length)} chars</span>
+                                </div>
+                                <h4 className="mt-2 font-display text-lg text-ink">
+                                  {item.rough_heading || `Uncoded ${index + 1}`}
+                                </h4>
+                                <p className="mt-1 text-xs font-ui text-inkLight">
+                                  {item.category || item.code || item.suggested_reason}
+                                </p>
+                              </div>
+                              <div className="flex flex-wrap gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => toggleUncoded(item.id)}
+                                  className="rounded border border-border px-3 py-1.5 text-xs font-ui text-inkLight hover:border-accent hover:text-ink"
+                                >
+                                  {open ? 'Collapse' : 'Expand'}
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => copyUncodedText(item)}
+                                  className="rounded border border-border px-3 py-1.5 text-xs font-ui text-inkLight hover:border-accent hover:text-ink"
+                                >
+                                  {copiedUncoded === `${item.id}:text` ? 'Copied' : 'Copy text'}
+                                </button>
+                              </div>
+                            </div>
+                            {open ? (
+                              <div className="mt-4">
+                                <UncodedText item={item} />
+                              </div>
+                            ) : (
+                              <p className="mt-3 truncate text-sm font-ui text-inkLight">{item.preview}</p>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </>
               )}
             </>
