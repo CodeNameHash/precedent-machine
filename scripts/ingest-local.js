@@ -32,10 +32,20 @@ const { extractAdvisors } = require('../lib/parser-v2/advisors');
 const { MERGER_FORMS } = require('../lib/taxonomy');
 const { fromCp } = require('../lib/html-entities');
 
-function loadDotEnvLocal() {
-  const p = path.join(__dirname, '..', '.env.local');
-  if (!fs.existsSync(p)) return;
-  for (const line of fs.readFileSync(p, 'utf-8').split('\n')) {
+function findDotEnvLocal(start = path.join(__dirname, '..')) {
+  let dir = start;
+  for (;;) {
+    const candidate = path.join(dir, '.env.local');
+    if (fs.existsSync(candidate)) return candidate;
+    const parent = path.dirname(dir);
+    if (parent === dir) return null;
+    dir = parent;
+  }
+}
+
+function loadDotEnvLocal(envPath = findDotEnvLocal()) {
+  if (!envPath || !fs.existsSync(envPath)) return;
+  for (const line of fs.readFileSync(envPath, 'utf-8').split('\n')) {
     const m = line.match(/^([A-Z0-9_]+)=(.*)$/);
     if (m && !(m[1] in process.env)) process.env[m[1]] = m[2].replace(/^"|"$/g, '');
   }
@@ -242,7 +252,7 @@ function parseArgs(argv) {
   return args;
 }
 
-(async () => {
+async function main() {
   loadDotEnvLocal();
   const args = parseArgs(process.argv);
   const dbUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -254,8 +264,11 @@ function parseArgs(argv) {
     : createClaudeCliClient({ model: args.model });
   console.log(`Backend: ${client.backend}${args.model ? ` (${args.model})` : ''}`);
 
-  const urls = args.manifest
-    ? JSON.parse(fs.readFileSync(args.manifest, 'utf-8')).map((d) => d.url || d).filter(Boolean)
+  const manifestRows = args.manifest ? JSON.parse(fs.readFileSync(args.manifest, 'utf-8')) : null;
+  const urls = manifestRows
+    ? (Array.isArray(manifestRows) ? manifestRows : manifestRows.candidates || [])
+      .map((d) => d.agreement_exhibit_url || d.url || d)
+      .filter(Boolean)
     : [args.url];
 
   for (const url of urls) {
@@ -268,4 +281,21 @@ function parseArgs(argv) {
       process.exitCode = 1;
     }
   }
-})().catch((e) => { console.error(e.message); process.exit(1); });
+}
+
+module.exports = {
+  SEC_UA,
+  extractDealMetadata,
+  fetchUrl,
+  findDotEnvLocal,
+  ingestOne,
+  loadDotEnvLocal,
+  main,
+  parseArgs,
+  runParserPipeline,
+  stripHtml,
+};
+
+if (require.main === module) {
+  main().catch((e) => { console.error(e.message); process.exit(1); });
+}
