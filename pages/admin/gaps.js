@@ -209,6 +209,11 @@ export default function GapReviewAdmin() {
   const needsCodeItems = detail?.needs_code || detail?.uncoded || [];
   const selectedNeedsCode = needsCodeItems.find((item) => item.id === selectedNeedsCodeId) || needsCodeItems[0] || null;
   const selectedNeedsCodeKey = selectedNeedsCode ? selectedNeedsCode.id : null;
+  const parserReview = detail?.parser_review || null;
+  const parserSummary = parserReview?.summary || {};
+  const structuralGaps = detail?.structural_gaps || parserReview?.structural_gaps || [];
+  const definitionWarnings = detail?.definition_warnings || parserReview?.definition_warnings || [];
+  const dataModelFlags = detail?.data_model_flags || parserReview?.data_model_flags || [];
 
   const summaryUrl = useMemo(() => {
     const sp = new URLSearchParams();
@@ -460,6 +465,9 @@ export default function GapReviewAdmin() {
                   <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Deal</th>
                   <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Coverage</th>
                   <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Gaps</th>
+                  <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Parser</th>
+                  <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Def</th>
+                  <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Data</th>
                   <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Needs Code</th>
                   <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Largest</th>
                   <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Canonical</th>
@@ -485,6 +493,9 @@ export default function GapReviewAdmin() {
                     </td>
                     <td className="px-4 py-3 font-ui text-ink">{pct(row.coverage_pct)}</td>
                     <td className="px-4 py-3 font-ui text-ink">{num(row.gap_count)}</td>
+                    <td className="px-4 py-3 font-ui text-ink">{num(row.parser_structural_gap_count)}</td>
+                    <td className="px-4 py-3 font-ui text-ink">{num(row.definition_warning_count)}</td>
+                    <td className="px-4 py-3 font-ui text-ink">{num(row.data_model_flag_count)}</td>
                     <td className="px-4 py-3 font-ui text-ink">{num(row.needs_code_count ?? row.uncoded_count)}</td>
                     <td className="max-w-md px-4 py-3">
                       <div className="font-ui text-ink">{num(row.largest_gap_chars)} chars</div>
@@ -543,13 +554,16 @@ export default function GapReviewAdmin() {
                     </Link>
                   </div>
                 </div>
-                <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-6">
+                <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-9">
                   <Metric label="Coverage" value={pct(selectedSummary.coverage_pct)} />
                   <Metric label="Gaps" value={num(selectedSummary.gap_count)} />
                   <Metric label="Needs Code" value={num(selectedSummary.needs_code_count ?? selectedSummary.uncoded_count)} />
                   <Metric label="Largest gap" value={`${num(selectedSummary.largest_gap_chars)} chars`} />
                   <Metric label="Canonical" value={rate(selectedSummary.canonical_rate)} />
                   <Metric label="Unverified quotes" value={num(selectedSummary.unverified_quotes)} />
+                  <Metric label="Parser gaps" value={num(parserSummary.structural_gap_count)} />
+                  <Metric label="Definition warnings" value={num(parserSummary.definition_warning_count)} />
+                  <Metric label="Data flags" value={num(parserSummary.data_model_flag_count)} />
                 </div>
               </div>
 
@@ -715,6 +729,63 @@ export default function GapReviewAdmin() {
                   </div>
 
                 </>
+              )}
+
+              {(structuralGaps.length > 0 || definitionWarnings.length > 0 || dataModelFlags.length > 0) && (
+                <div className="rounded-lg border border-border bg-white shadow-sm">
+                  <div className="border-b border-border bg-bg/50 px-4 py-3">
+                    <h3 className="font-display text-lg text-ink">Parser Review</h3>
+                  </div>
+                  <div className="divide-y divide-border">
+                    {structuralGaps.map((gap) => (
+                      <div key={gap.id} className="p-5">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="font-mono text-xs font-semibold text-accent">{gap.id}</span>
+                          <SuggestionPill type={gap.region_type} />
+                          <span className="text-xs font-ui text-inkFaint">
+                            start {num(gap.start)} - {num(gap.length)} chars
+                          </span>
+                        </div>
+                        <FullText item={gap} />
+                      </div>
+                    ))}
+                    {definitionWarnings.map((warning) => (
+                      <div key={warning.id} className="p-5">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="font-mono text-xs font-semibold text-accent">{warning.id}</span>
+                          <SuggestionPill type={warning.code} />
+                          <span className="text-xs font-ui text-inkFaint">
+                            {warning.section_number || '-'} {warning.term ? `- ${warning.term}` : ''}
+                          </span>
+                        </div>
+                        <h4 className="mt-2 font-display text-lg text-ink">
+                          {warning.section_title || warning.term || warning.id}
+                        </h4>
+                        <p className="mt-1 text-sm font-ui text-inkLight">{warning.message}</p>
+                        <p className="mt-3 rounded border border-border bg-bg/40 p-3 text-sm font-ui leading-6 text-ink">
+                          {warning.preview}
+                        </p>
+                      </div>
+                    ))}
+                    {dataModelFlags.map((flag) => (
+                      <div key={flag.id} className="p-5">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="font-mono text-xs font-semibold text-accent">{flag.id}</span>
+                          <SuggestionPill type={flag.flag} />
+                          <span className="text-xs font-ui text-inkFaint">
+                            {flag.section_number || '-'}
+                          </span>
+                        </div>
+                        <h4 className="mt-2 font-display text-lg text-ink">
+                          {flag.section_title || flag.id}
+                        </h4>
+                        <p className="mt-3 rounded border border-border bg-bg/40 p-3 text-sm font-ui leading-6 text-ink">
+                          {flag.preview}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               )}
 
               {needsCodeItems.length === 0 ? (
