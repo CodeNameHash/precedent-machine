@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useUser } from '../../lib/useUser';
-import { Breadcrumbs, SkeletonTable } from '../../components/UI';
+import { Breadcrumbs } from '../../components/UI';
 import AdminNav from '../../components/admin/AdminNav';
 
 const DEFAULT_LIMIT = 100;
@@ -72,10 +72,37 @@ function GapReference({ summary, gap }) {
   ].filter(Boolean).join(' | ');
 }
 
+function GapText({ gap }) {
+  return (
+    <pre className="max-h-[720px] overflow-auto whitespace-pre-wrap rounded border border-border bg-bg/40 p-4 text-[13px] leading-6 text-ink">
+      {gap.full_text || gap.text || gap.preview || ''}
+    </pre>
+  );
+}
+
+function LoadingRows({ rows = 4 }) {
+  return (
+    <div className="rounded-lg border border-border bg-white p-4 shadow-sm">
+      <div className="space-y-3">
+        {Array.from({ length: rows }).map((_, index) => (
+          <div key={index} className="grid gap-3 md:grid-cols-[2fr_1fr_1fr_2fr]">
+            <div className="h-4 rounded bg-bg" />
+            <div className="h-4 rounded bg-bg" />
+            <div className="h-4 rounded bg-bg" />
+            <div className="h-4 rounded bg-bg" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function GapReviewAdmin() {
   useUser({ redirectTo: '/login' });
   const router = useRouter();
   const selectedDealId = typeof router.query.deal_id === 'string' ? router.query.deal_id : null;
+  const selectedGapId = typeof router.query.gap === 'string' ? router.query.gap : null;
+  const readerRef = useRef(null);
   const [rows, setRows] = useState([]);
   const [pagination, setPagination] = useState(null);
   const [limit, setLimit] = useState(DEFAULT_LIMIT);
@@ -85,8 +112,12 @@ export default function GapReviewAdmin() {
   const [detail, setDetail] = useState(null);
   const [error, setError] = useState(null);
   const [copiedGap, setCopiedGap] = useState(null);
+  const [expandedGapIds, setExpandedGapIds] = useState(() => new Set());
 
   const selectedSummary = detail?.summary || rows.find(row => row.deal_id === selectedDealId) || null;
+  const gaps = detail?.gaps || [];
+  const selectedGap = gaps.find((gap) => gap.id === selectedGapId) || gaps[0] || null;
+  const selectedGapKey = selectedGap ? selectedGap.id : null;
 
   const summaryUrl = useMemo(() => {
     const sp = new URLSearchParams();
@@ -135,9 +166,15 @@ export default function GapReviewAdmin() {
     loadDetail(selectedDealId);
   }, [router.isReady, selectedDealId]);
 
-  const openDeal = (dealId) => {
-    router.push({ pathname: '/admin/gaps', query: { deal_id: dealId } }, undefined, { shallow: true });
-  };
+  useEffect(() => {
+    if (!detail?.gaps) return;
+    setExpandedGapIds(new Set(detail.gaps.map((gap) => gap.id)));
+  }, [detail?.summary?.deal_id]);
+
+  useEffect(() => {
+    if (!selectedDealId || !detail || !readerRef.current) return;
+    readerRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [selectedDealId, detail]);
 
   const copyReference = async (gap) => {
     if (!selectedSummary || !gap) return;
@@ -145,6 +182,30 @@ export default function GapReviewAdmin() {
     await navigator.clipboard.writeText(ref);
     setCopiedGap(gap.id);
     setTimeout(() => setCopiedGap(null), 1200);
+  };
+
+  const copyGapText = async (gap) => {
+    if (!gap) return;
+    await navigator.clipboard.writeText(gap.full_text || gap.text || gap.preview || '');
+    setCopiedGap(`${gap.id}:text`);
+    setTimeout(() => setCopiedGap(null), 1200);
+  };
+
+  const expandAll = () => {
+    setExpandedGapIds(new Set(gaps.map((gap) => gap.id)));
+  };
+
+  const collapseAll = () => {
+    setExpandedGapIds(new Set());
+  };
+
+  const toggleGap = (gapId) => {
+    setExpandedGapIds((current) => {
+      const next = new Set(current);
+      if (next.has(gapId)) next.delete(gapId);
+      else next.add(gapId);
+      return next;
+    });
   };
 
   return (
@@ -155,9 +216,6 @@ export default function GapReviewAdmin() {
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="font-display text-2xl text-ink">Gap Review</h1>
-          <p className="mt-1 text-sm font-ui text-inkLight">
-            Coverage gaps sorted low first, with one-deal detail loaded on demand.
-          </p>
         </div>
         <div className="flex flex-wrap items-end gap-2">
           <label className="text-xs font-ui text-inkLight">
@@ -200,7 +258,7 @@ export default function GapReviewAdmin() {
       )}
 
       {loading ? (
-        <SkeletonTable rows={8} cols={7} />
+        <LoadingRows rows={8} />
       ) : (
         <div className="overflow-hidden rounded-lg border border-border bg-white shadow-sm">
           <div className="flex items-center justify-between border-b border-border bg-bg/50 px-4 py-3">
@@ -224,6 +282,7 @@ export default function GapReviewAdmin() {
                   <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Canonical</th>
                   <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Quotes</th>
                   <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Ingest</th>
+                  <th className="px-4 py-3 text-right font-ui font-medium text-inkLight">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -233,14 +292,13 @@ export default function GapReviewAdmin() {
                     className={`border-b border-border last:border-0 hover:bg-bg/40 ${selectedDealId === row.deal_id ? 'bg-accent/5' : ''}`}
                   >
                     <td className="px-4 py-3">
-                      <button
-                        type="button"
-                        onClick={() => openDeal(row.deal_id)}
-                        className="text-left font-ui text-ink hover:text-accent"
+                      <Link
+                        href={{ pathname: '/admin/gaps', query: { deal_id: row.deal_id } }}
+                        className="block text-left font-ui text-ink hover:text-accent"
                       >
                         <span className="block font-medium">{row.acquirer || '?'} / {row.target || '?'}</span>
                         <span className="block text-[10px] text-inkFaint">{row.deal_id}</span>
-                      </button>
+                      </Link>
                     </td>
                     <td className="px-4 py-3 font-ui text-ink">{pct(row.coverage_pct)}</td>
                     <td className="px-4 py-3 font-ui text-ink">{num(row.gap_count)}</td>
@@ -256,6 +314,14 @@ export default function GapReviewAdmin() {
                         run {shortId(row.latest_ingest_run_id)} - cand {shortId(row.latest_ingest_candidate_id)}
                       </div>
                     </td>
+                    <td className="px-4 py-3 text-right">
+                      <Link
+                        href={{ pathname: '/admin/gaps', query: { deal_id: row.deal_id } }}
+                        className="inline-flex rounded bg-accent px-3 py-1.5 text-xs font-ui text-white hover:bg-accent/90"
+                      >
+                        Read gaps
+                      </Link>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -265,9 +331,9 @@ export default function GapReviewAdmin() {
       )}
 
       {selectedDealId && (
-        <div className="space-y-4">
+        <div ref={readerRef} className="space-y-4">
           {detailLoading ? (
-            <SkeletonTable rows={3} cols={4} />
+            <LoadingRows rows={3} />
           ) : selectedSummary ? (
             <>
               <div className="rounded-lg border border-border bg-white p-5 shadow-sm">
@@ -280,10 +346,10 @@ export default function GapReviewAdmin() {
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <Link
-                      href={`/review/${selectedSummary.deal_id}?tab=document`}
+                      href={`/review/${selectedSummary.deal_id}`}
                       className="rounded bg-accent px-3 py-1.5 text-sm font-ui text-white hover:bg-accent/90"
                     >
-                      Review document
+                      Open deal
                     </Link>
                     <Link
                       href={`/api/trust/report?deal_id=${selectedSummary.deal_id}`}
@@ -302,84 +368,168 @@ export default function GapReviewAdmin() {
                 </div>
               </div>
 
-              {(detail?.gaps || []).length === 0 ? (
+              {gaps.length === 0 ? (
                 <div className="rounded-lg border border-border bg-white p-8 text-center text-sm font-ui text-inkFaint shadow-sm">
                   No coverage gaps above the threshold.
                 </div>
               ) : (
-                <div className="space-y-3">
-                  {(detail?.gaps || []).map((gap, index) => (
-                    <div key={gap.id} className="rounded-lg border border-border bg-white p-5 shadow-sm">
-                      <div className="flex flex-wrap items-start justify-between gap-4">
-                        <div className="min-w-0">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <span className="font-mono text-xs font-semibold text-accent">{gap.id}</span>
-                            <SuggestionPill type={gap.suggested_type} />
-                            <span className="text-xs font-ui text-inkFaint">
-                              start {num(gap.start)} - {num(gap.length)} chars
-                            </span>
-                          </div>
-                          <h3 className="mt-2 font-display text-lg text-ink">
-                            {gap.rough_heading || `Gap ${index + 1}`}
-                          </h3>
-                          <p className="mt-1 text-sm font-ui text-inkLight">{gap.suggested_reason}</p>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          <button
-                            type="button"
-                            onClick={() => copyReference(gap)}
-                            className="rounded border border-border px-3 py-1.5 text-xs font-ui text-inkLight hover:border-accent hover:text-ink"
-                          >
-                            {copiedGap === gap.id ? 'Copied' : 'Copy reference'}
-                          </button>
+                <>
+                  <div className="grid gap-4 lg:grid-cols-[280px_minmax(0,1fr)]">
+                    <div className="rounded-lg border border-border bg-white shadow-sm">
+                      <div className="border-b border-border bg-bg/50 px-4 py-3">
+                        <h3 className="font-display text-lg text-ink">Gaps</h3>
+                      </div>
+                      <div className="max-h-[620px] overflow-auto p-2">
+                        {gaps.map((gap) => (
                           <Link
-                            href={`/review/${selectedSummary.deal_id}?tab=document&mode=edit&gap=${encodeURIComponent(gap.id)}`}
-                            className="rounded border border-border px-3 py-1.5 text-xs font-ui text-inkLight hover:border-accent hover:text-ink"
+                            key={gap.id}
+                            href={{ pathname: '/admin/gaps', query: { deal_id: selectedSummary.deal_id, gap: gap.id } }}
+                            className={`block rounded border px-3 py-2 text-left hover:border-accent ${
+                              selectedGapKey === gap.id ? 'border-accent bg-accent/5' : 'border-transparent'
+                            }`}
                           >
-                            Review gap
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="font-mono text-xs font-semibold text-accent">{gap.id}</span>
+                              <SuggestionPill type={gap.suggested_type} />
+                            </div>
+                            <div className="mt-1 truncate text-xs font-ui text-ink">
+                              {gap.rough_heading || gap.preview || gap.id}
+                            </div>
+                            <div className="mt-1 text-[10px] font-ui text-inkFaint">
+                              {num(gap.length)} chars, start {num(gap.start)}
+                            </div>
                           </Link>
-                        </div>
-                      </div>
-
-                      <div className="mt-4 grid gap-3 md:grid-cols-2">
-                        <div className="rounded border border-border bg-bg/40 p-3">
-                          <div className="mb-1 text-[10px] font-ui uppercase tracking-wide text-inkFaint">Before</div>
-                          <p className="max-h-36 overflow-auto whitespace-pre-wrap text-xs font-ui leading-relaxed text-inkLight">
-                            {gap.before_context || '-'}
-                          </p>
-                        </div>
-                        <div className="rounded border border-border bg-bg/40 p-3">
-                          <div className="mb-1 text-[10px] font-ui uppercase tracking-wide text-inkFaint">After</div>
-                          <p className="max-h-36 overflow-auto whitespace-pre-wrap text-xs font-ui leading-relaxed text-inkLight">
-                            {gap.after_context || '-'}
-                          </p>
-                        </div>
-                      </div>
-
-                      <details className="mt-4 rounded border border-border bg-white" open={index === 0}>
-                        <summary className="cursor-pointer px-3 py-2 text-sm font-ui font-medium text-ink">
-                          Full gap text
-                        </summary>
-                        <pre className="max-h-[520px] overflow-auto whitespace-pre-wrap border-t border-border bg-bg/40 p-3 text-xs leading-relaxed text-ink">
-                          {gap.full_text}
-                        </pre>
-                      </details>
-
-                      <div className="mt-3 flex flex-wrap gap-3 text-xs font-ui text-inkFaint">
-                        <span>
-                          Before provision: {gap.adjacent_provisions?.before
-                            ? `${shortId(gap.adjacent_provisions.before.provision_id)} - ${gap.adjacent_provisions.before.type || '?'} - ${gap.adjacent_provisions.before.category || '?'}`
-                            : '-'}
-                        </span>
-                        <span>
-                          After provision: {gap.adjacent_provisions?.after
-                            ? `${shortId(gap.adjacent_provisions.after.provision_id)} - ${gap.adjacent_provisions.after.type || '?'} - ${gap.adjacent_provisions.after.category || '?'}`
-                            : '-'}
-                        </span>
+                        ))}
                       </div>
                     </div>
-                  ))}
-                </div>
+
+                    <div className="rounded-lg border border-border bg-white p-5 shadow-sm">
+                      {selectedGap ? (
+                        <>
+                          <div className="flex flex-wrap items-start justify-between gap-4">
+                            <div className="min-w-0">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <span className="font-mono text-xs font-semibold text-accent">{selectedGap.id}</span>
+                                <SuggestionPill type={selectedGap.suggested_type} />
+                                <span className="text-xs font-ui text-inkFaint">
+                                  start {num(selectedGap.start)} - {num(selectedGap.length)} chars
+                                </span>
+                              </div>
+                              <h3 className="mt-2 font-display text-xl text-ink">
+                                {selectedGap.rough_heading || selectedGap.id}
+                              </h3>
+                              <p className="mt-1 text-sm font-ui text-inkLight">{selectedGap.suggested_reason}</p>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              <button
+                                type="button"
+                                onClick={() => copyReference(selectedGap)}
+                                className="rounded border border-border px-3 py-1.5 text-xs font-ui text-inkLight hover:border-accent hover:text-ink"
+                              >
+                                {copiedGap === selectedGap.id ? 'Copied' : 'Copy reference'}
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => copyGapText(selectedGap)}
+                                className="rounded border border-border px-3 py-1.5 text-xs font-ui text-inkLight hover:border-accent hover:text-ink"
+                              >
+                                {copiedGap === `${selectedGap.id}:text` ? 'Copied' : 'Copy text'}
+                              </button>
+                            </div>
+                          </div>
+
+                          <div className="mt-4 grid gap-3 md:grid-cols-2">
+                            <div className="rounded border border-border bg-bg/40 p-3">
+                              <div className="mb-1 text-[10px] font-ui uppercase tracking-wide text-inkFaint">Before</div>
+                              <p className="max-h-44 overflow-auto whitespace-pre-wrap text-xs font-ui leading-relaxed text-inkLight">
+                                {selectedGap.before_context || '-'}
+                              </p>
+                            </div>
+                            <div className="rounded border border-border bg-bg/40 p-3">
+                              <div className="mb-1 text-[10px] font-ui uppercase tracking-wide text-inkFaint">After</div>
+                              <p className="max-h-44 overflow-auto whitespace-pre-wrap text-xs font-ui leading-relaxed text-inkLight">
+                                {selectedGap.after_context || '-'}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="mt-4">
+                            <GapText gap={selectedGap} />
+                          </div>
+                        </>
+                      ) : null}
+                    </div>
+                  </div>
+
+                  <div className="rounded-lg border border-border bg-white shadow-sm">
+                    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-bg/50 px-4 py-3">
+                      <h3 className="font-display text-lg text-ink">All Gap Text</h3>
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          onClick={expandAll}
+                          className="rounded border border-border px-3 py-1.5 text-xs font-ui text-inkLight hover:border-accent hover:text-ink"
+                        >
+                          Expand all
+                        </button>
+                        <button
+                          type="button"
+                          onClick={collapseAll}
+                          className="rounded border border-border px-3 py-1.5 text-xs font-ui text-inkLight hover:border-accent hover:text-ink"
+                        >
+                          Collapse all
+                        </button>
+                      </div>
+                    </div>
+                    <div className="divide-y divide-border">
+                      {gaps.map((gap, index) => {
+                        const open = expandedGapIds.has(gap.id);
+                        return (
+                          <div key={gap.id} className="p-5">
+                            <div className="flex flex-wrap items-start justify-between gap-4">
+                              <div className="min-w-0">
+                                <div className="flex flex-wrap items-center gap-2">
+                                  <span className="font-mono text-xs font-semibold text-accent">{gap.id}</span>
+                                  <SuggestionPill type={gap.suggested_type} />
+                                  <span className="text-xs font-ui text-inkFaint">
+                                    start {num(gap.start)} - {num(gap.length)} chars
+                                  </span>
+                                </div>
+                                <h4 className="mt-2 font-display text-lg text-ink">
+                                  {gap.rough_heading || `Gap ${index + 1}`}
+                                </h4>
+                              </div>
+                              <div className="flex flex-wrap gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => toggleGap(gap.id)}
+                                  className="rounded border border-border px-3 py-1.5 text-xs font-ui text-inkLight hover:border-accent hover:text-ink"
+                                >
+                                  {open ? 'Collapse' : 'Expand'}
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => copyGapText(gap)}
+                                  className="rounded border border-border px-3 py-1.5 text-xs font-ui text-inkLight hover:border-accent hover:text-ink"
+                                >
+                                  {copiedGap === `${gap.id}:text` ? 'Copied' : 'Copy text'}
+                                </button>
+                              </div>
+                            </div>
+                            {open ? (
+                              <div className="mt-4">
+                                <GapText gap={gap} />
+                              </div>
+                            ) : (
+                              <p className="mt-3 truncate text-sm font-ui text-inkLight">{gap.preview}</p>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                </>
               )}
             </>
           ) : null}
