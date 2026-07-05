@@ -3507,8 +3507,8 @@ function StructTable({ provisions, onSelectProvision }) {
   }
 
   // Per-category condensed rendering + forced row order. We classify each
-  // STRUCT provision into one of: merger / closing / effects / effective /
-  // other, render only the most informative fields per row (no duplicate
+  // STRUCT provision into one of: merger / offer / closing / effects /
+  // effective / other, render only the most informative fields per row (no duplicate
   // text alongside the canonical pill), and sort according to STRUCT_ORDER
   // regardless of document position so the page reads:
   //
@@ -3517,10 +3517,12 @@ function StructTable({ provisions, onSelectProvision }) {
   //   3. Effects        (just the cited statute, e.g. "DGCL § 259")
   //   4. Effective Time (short phrasing: "Upon filing with DE SOS")
   //   5. Anything else  (mainConcept fallback, then alphabetical)
-  const STRUCT_ORDER = ['merger', 'closing', 'effects', 'effective', 'other'];
+  const STRUCT_ORDER = ['merger', 'offer', 'closing', 'effects', 'effective', 'other'];
 
   const classifyStruct = (p) => {
     const cat = (p.category || '').toLowerCase();
+    const code = String(p.code || p.ai_metadata?.code || p.ai_metadata?.features?.canonicalCode || '').toUpperCase();
+    if (code === 'STRUCT-OFFER' || cat.includes('tender offer')) return 'offer';
     if (cat.includes('effective')) return 'effective';
     if (cat.includes('effect') && cat.includes('merger')) return 'effects';
     if (cat.includes('closing')) return 'closing';
@@ -3681,6 +3683,20 @@ function StructTable({ provisions, onSelectProvision }) {
     if (kind === 'merger') {
       displayCategory = 'Merger Form';
       cells = [{ key: 'mergerForm', raw: features.mergerForm, render: renderMergerFormCell }];
+    } else if (kind === 'offer') {
+      displayCategory = p.category || 'Tender Offer Mechanics';
+      cells = [
+        { key: 'offerCommencementDeadline', label: 'Commencement', raw: features.offerCommencementDeadline },
+        { key: 'offerPrice', label: 'Price', raw: features.offerPrice },
+        { key: 'offerConditionsReference', label: 'Conditions', raw: features.offerConditionsReference },
+        { key: 'offerExpirationAndExtension', label: 'Expiration / Extension', raw: features.offerExpirationAndExtension },
+        { key: 'acceptanceAndPaymentMechanics', label: 'Acceptance / Payment', raw: features.acceptanceAndPaymentMechanics },
+        { key: 'scheduleTOFiling', label: 'Schedule TO', raw: features.scheduleTOFiling },
+        { key: 'schedule14D9Filing', label: 'Schedule 14D-9', raw: features.schedule14D9Filing },
+        { key: 'stockholderListCovenant', label: 'Stockholder Lists', raw: features.stockholderListCovenant },
+        { key: 'backendMergerMechanic', label: 'Back-end Merger', raw: features.backendMergerMechanic },
+      ].filter((cell) => cell.raw !== null && cell.raw !== undefined && String(cell.raw).trim() !== '');
+      if (cells.length === 0) cells = [{ key: 'mainConcept', raw: features.mainConcept }];
     } else if (kind === 'closing') {
       // Only surface Closing Deadline as its own row when it carries
       // information distinct from closingTiming — otherwise the user sees
