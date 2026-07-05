@@ -23,6 +23,26 @@ cross-deal comparison.
 - Run the focused tests for the touched surface, then `npm test`, before opening a PR.
 - Commit messages: imperative mood + 1-3 line body explaining *why*.
 
+## Current status as of 2026-07-05
+
+- Production `main`: `98c61bd` (`feat(ingest): add passive EDGAR candidate catalog`), deployed green on Vercel.
+- Live smoke checks after merge: `/`, `/review`, and `/admin/candidates` all returned HTTP 200.
+- Corpus remains 19 deals. `node scripts/ingest-qa.js --all` passed 19/19 with 0 unverified quotes and 0 duplicate clauses after the latest ingest-catalog work.
+- Recent merged work:
+  - PR #100: WP04 P5 per-type extraction parity follow-ups.
+  - PR #101: WP-SCHEMA P1 feature-key inventory and drift audit.
+  - PR #102: WP-SCHEMA P2 empty schema registry, formatters, and empty-state policy.
+  - PR #103: WP-INGEST-CATALOG passive EDGAR watcher, `deal_candidates` SQL, `/admin/candidates`, cron route, dry-run/backfill CLI.
+- WP-INGEST-CATALOG operational follow-ups:
+  - Apply `supabase/deal-candidates-schema.sql` in Supabase. Codex could not apply it directly because only Supabase URL/service-role env vars were available locally, not a Postgres migration URL.
+  - Run the catalogue backfill, for example `node scripts/edgar-watch.js --since 2024-01-01`, after SQL is applied. Do not run this before the table exists.
+  - Verify at least 200 candidate rows, zero duplicate `agreement_text_hash` rows, and the next overnight cron run.
+- Current sequencing:
+  - WP-SCHEMA Phase 3 is blocked until WP-INGEST-SEED-50 lands.
+  - WP-INGEST-SEED-50 is blocked until `deal_candidates` exists and is populated.
+  - WP-UX-SHELL has no dependency and can start now from `pm-wp-ux-shell.codex.md`.
+  - WP-ROUTE can also run in parallel if needed.
+
 ## Repo layout (the important bits)
 
 ```
