@@ -38,6 +38,59 @@ const check = (results, name, ok, actual) => {
   results.push({ name, ok, actual });
 };
 
+function featureBag(provision) {
+  const metadata = provision && provision.ai_metadata;
+  const features = metadata && typeof metadata === 'object' ? metadata.features : null;
+  return features && typeof features === 'object' ? features : {};
+}
+
+function textValue(value) {
+  const unwrapped = unwrap(value);
+  if (unwrapped === null || unwrapped === undefined) return '';
+  if (typeof unwrapped === 'string') return unwrapped;
+  if (typeof unwrapped === 'object') return unwrapped.label || unwrapped.value || unwrapped.code || '';
+  return String(unwrapped);
+}
+
+function carveoutCount(provision) {
+  const carveouts = featureBag(provision).carveouts;
+  const unwrapped = unwrap(carveouts);
+  if (Array.isArray(unwrapped)) return unwrapped.length;
+  if (unwrapped && Array.isArray(unwrapped.value)) return unwrapped.value.length;
+  return 0;
+}
+
+function selectMaeDefinition(provisions) {
+  const candidates = (provisions || []).filter((p) => {
+    if (!p || p.type !== 'DEF') return false;
+    const features = featureBag(p);
+    const code = provisionCode(p);
+    const term = textValue(features.canonicalTerm);
+    const haystack = `${p.category || ''} ${term} ${code || ''}`;
+    return /\bmaterial adverse effect\b/i.test(haystack) || code === 'DEF-MAE';
+  });
+  if (!candidates.length) return null;
+
+  return candidates
+    .map((p) => {
+      const features = featureBag(p);
+      const term = textValue(features.canonicalTerm).trim().toLowerCase();
+      const category = String(p.category || '').trim().toLowerCase();
+      const code = provisionCode(p);
+      const exactTerm = term === 'material adverse effect' || category === 'material adverse effect';
+      const parentSpecific = /^parent material adverse effect$/.test(term) || /^parent material adverse effect$/.test(category);
+      return {
+        provision: p,
+        score:
+          (code === 'DEF-MAE' ? 100 : 0)
+          + (exactTerm ? 50 : 0)
+          + (parentSpecific ? -25 : 0)
+          + Math.min(carveoutCount(p), 20),
+      };
+    })
+    .sort((a, b) => b.score - a.score)[0].provision;
+}
+
 async function evalDeal(sb, targetName, golden) {
   const results = [];
   const { data: deals } = await sb.from('deals').select('id, target, metadata').ilike('target', `%${targetName}%`);
@@ -72,10 +125,8 @@ async function evalDeal(sb, targetName, golden) {
   }
 
   if (golden.mae_min_carveouts) {
-    const mae = provs.find((p) => p.type === 'DEF' && /material adverse effect/i.test(p.category || ''));
-    const carveouts = mae ? ((mae.ai_metadata || {}).features || {}).carveouts : null;
-    const n = Array.isArray(carveouts) ? carveouts.length
-      : (carveouts && Array.isArray(carveouts.value)) ? carveouts.value.length : 0;
+    const mae = selectMaeDefinition(provs);
+    const n = carveoutCount(mae);
     check(results, `MAE carve-outs ≥ ${golden.mae_min_carveouts}`, n >= golden.mae_min_carveouts, n);
   }
 
@@ -145,7 +196,7 @@ async function evalDeal(sb, targetName, golden) {
   return results;
 }
 
-(async () => {
+async function main() {
   loadDotEnvLocal();
   const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -167,4 +218,14 @@ async function evalDeal(sb, targetName, golden) {
   }
   console.log(failed ? `\n${failed} golden check(s) FAILED` : '\nAll golden checks passed');
   process.exit(failed ? 1 : 0);
-})().catch((e) => { console.error(e.message); process.exit(1); });
+}
+
+if (require.main === module) {
+  main().catch((e) => { console.error(e.message); process.exit(1); });
+}
+
+module.exports = {
+  carveoutCount,
+  evalDeal,
+  selectMaeDefinition,
+};

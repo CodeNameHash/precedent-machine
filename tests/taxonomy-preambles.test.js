@@ -12,6 +12,13 @@ test('COND/TERMR preamble + MISC-EXPENSES codes are canonical', () => {
   }
 });
 
+test('queued admin Needs Code promotions are canonical where approved', () => {
+  for (const c of ['REP-B-SUBSIDIARIES', 'REP-B-REALPROPERTY', 'DEF-ENVIRONMENTAL-CLAIMS']) {
+    assert.ok(CODES[c], `${c} in rubric`);
+    assert.equal(isCanonicalCode(c), true, `${c} canonical`);
+  }
+});
+
 test('COND-M-REG is relabeled Antitrust, code kept stable', () => {
   assert.equal(CODES['COND-M-REG'].label, 'Antitrust');
   assert.ok(CODES['COND-M-REG'].aliases.includes('Scheduled Approvals'));
@@ -33,4 +40,31 @@ test('"Fees and Expenses" title routes deterministically to MISC-EXPENSES when t
   const feeBody = 'The Company shall pay Parent the Company Termination Fee of $10,000,000, payable upon termination of this Agreement.';
   const reimburseFee = tryDeterministic({ ...sec, title: 'Expense Reimbursement', heading: 'Expense Reimbursement', text: feeBody }, null);
   assert.equal(reimburseFee.type, 'TERMF');
+});
+
+test('amendment and extension-waiver boilerplate route to existing MISC codes', () => {
+  const amend = tryDeterministic({
+    number: '7.3',
+    title: 'Amendment',
+    heading: 'Amendment',
+    text: 'SECTION 7.3 Amendment. This Agreement may be amended by the parties hereto.',
+  }, 'TERMINATION');
+  assert.equal(amend.type, 'MISC');
+  assert.equal(amend.code, 'MISC-AMEND');
+
+  const waiver = tryDeterministic({
+    number: '7.4',
+    title: 'Extension; Waiver',
+    heading: 'Extension; Waiver',
+    text: 'SECTION 7.4 Extension; Waiver. A party may extend the time for performance or waive compliance.',
+  }, 'TERMINATION');
+  assert.equal(waiver.type, 'MISC');
+  assert.equal(waiver.code, 'MISC-WAIVER');
+});
+
+test('queued admin Needs Code title refinements stamp approved codes', () => {
+  const { refineSubCode } = require('../lib/parser-v2/classify');
+  assert.equal(refineSubCode({ title: 'Subsidiaries' }, 'REP-B'), 'REP-B-SUBSIDIARIES');
+  assert.equal(refineSubCode({ title: 'Real Property' }, 'REP-B'), 'REP-B-REALPROPERTY');
+  assert.equal(refineSubCode({ title: 'Environmental Claims' }, 'DEF'), 'DEF-ENVIRONMENTAL-CLAIMS');
 });

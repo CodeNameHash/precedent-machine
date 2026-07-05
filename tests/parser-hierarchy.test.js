@@ -2,8 +2,9 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 
 const { parseStructure, cleanText } = require('../lib/parser-v2/structural');
-const { assertCoverage } = require('../lib/parser-v2/coverage');
+const { assertCoverage, findUncovered, findOverlaps, mergeAdjacent } = require('../lib/parser-v2/coverage');
 const { REGION_TYPES } = require('../lib/parser-v2/regions');
+const regions = require('../lib/parser-v2/regions');
 const { analyzeDefinitionCompleteness, findDefinitionUnits } = require('../lib/parser-v2/regions/definitions');
 const { atomicRuleForSection } = require('../lib/parser-v2/regions/atomic');
 const { detectDoubleDummyEquity } = require('../lib/parser-v2/regions/double-dummy');
@@ -80,6 +81,19 @@ test('parser hierarchy regions cover the full cleaned document exactly', () => {
   assert.equal(parsed.diagnostics.regionCoverageComplete, true);
   assert.equal(parsed.diagnostics.regionCoverageGaps.length, 0);
   assert.equal(parsed.diagnostics.regionCoverageOverlaps.length, 0);
+});
+
+test('parser hierarchy exports the WP helper API names', () => {
+  assert.equal(typeof regions.isProvisionType, 'function');
+  assert.equal(typeof regions.isPreambleType, 'function');
+  assert.equal(typeof regions.isBackmatterType, 'function');
+  assert.equal(typeof regions.isClassifiable, 'function');
+  assert.equal(REGION_TYPES.BACKMATTER_UNCLASSIFIED, 'backmatter.unclassified');
+  assert.deepEqual(findUncovered([{ type: 'x', start: 0, end: 5 }], 8), [
+    { start: 5, end: 8, length: 3 },
+  ]);
+  assert.equal(findOverlaps([{ type: 'x', start: 0, end: 5 }, { type: 'x', start: 3, end: 7 }]).length, 1);
+  assert.equal(mergeAdjacent([{ type: 'x', start: 0, end: 2 }, { type: 'x', start: 2, end: 5 }])[0].end, 5);
 });
 
 test('parser hierarchy types frontmatter and backmatter outside the reviewable body gap queue', () => {
@@ -227,16 +241,27 @@ The Company shall not solicit Acquisition Proposals.
   assert.equal(parsed.sections[1].title, 'No Solicitation');
 });
 
-test('double-dummy detector recognises company option headings', () => {
+test('double-dummy detector is independent of the narrower atomic rules', () => {
   const atomicRule = atomicRuleForSection({
     title: 'Company Stock Options',
     text: 'Each Company Option shall be converted into a Parent Option and assumed by Parent.',
   });
 
-  assert.ok(atomicRule);
-  assert.equal(atomicRule.key, 'equity_awards');
+  assert.equal(atomicRule, null);
   assert.equal(detectDoubleDummyEquity({
     title: 'Company Stock Options',
     text: 'Each Company Option shall be converted into a Parent Option and assumed by Parent.',
   }), true);
+});
+
+test('atomic rules do not fire on incidental stock, fee, or insurance references', () => {
+  for (const title of [
+    'Information Supplied',
+    'Brokers',
+    'HSR and Other Approvals',
+    "Indemnification; Directors' and Officers' Insurance",
+    'Entire Agreement; No Third Party Beneficiaries',
+  ]) {
+    assert.equal(atomicRuleForSection({ title, text: 'Parent Common Stock fees and expenses.' }), null);
+  }
 });

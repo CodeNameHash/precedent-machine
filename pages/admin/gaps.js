@@ -90,20 +90,27 @@ function NeedsCodeReference({ summary, item }) {
   ].filter(Boolean).join(' | ');
 }
 
+function ParserReviewReference({ summary, item }) {
+  return [
+    `deal_id=${summary.deal_id}`,
+    `parser_review=${item.id}`,
+    item.start != null ? `start=${item.start}` : null,
+    item.length != null ? `length=${item.length}` : null,
+    item.section_number ? `section=${item.section_number}` : null,
+    item.kind ? `kind=${item.kind}` : null,
+  ].filter(Boolean).join(' | ');
+}
+
+function reviewText(item) {
+  return item?.full_text || item?.text || item?.preview || '';
+}
+
 function FullText({ item }) {
   return (
     <pre className="max-h-[720px] overflow-auto whitespace-pre-wrap rounded border border-border bg-bg/40 p-4 text-[13px] leading-6 text-ink">
-      {item.full_text || item.text || item.preview || ''}
+      {reviewText(item)}
     </pre>
   );
-}
-
-function GapText({ gap }) {
-  return <FullText item={gap} />;
-}
-
-function NeedsCodeText({ item }) {
-  return <FullText item={item} />;
 }
 
 function NeedsCodeTaskForm({ draft, status, submitting, onChange, onSubmit }) {
@@ -185,9 +192,9 @@ export default function GapReviewAdmin() {
   const selectedNeedsCodeId = typeof router.query.needs_code === 'string'
     ? router.query.needs_code
     : (typeof router.query.uncoded === 'string' ? router.query.uncoded : null);
+  const selectedReviewItemId = typeof router.query.review_item === 'string' ? router.query.review_item : null;
   const readerRef = useRef(null);
-  const gapReaderRef = useRef(null);
-  const needsCodeReaderRef = useRef(null);
+  const reviewReaderRef = useRef(null);
   const [rows, setRows] = useState([]);
   const [pagination, setPagination] = useState(null);
   const [limit, setLimit] = useState(DEFAULT_LIMIT);
@@ -196,26 +203,93 @@ export default function GapReviewAdmin() {
   const [detailLoading, setDetailLoading] = useState(false);
   const [detail, setDetail] = useState(null);
   const [error, setError] = useState(null);
-  const [copiedGap, setCopiedGap] = useState(null);
-  const [copiedNeedsCode, setCopiedNeedsCode] = useState(null);
-  const [expandedGapIds, setExpandedGapIds] = useState(() => new Set());
-  const [expandedNeedsCodeIds, setExpandedNeedsCodeIds] = useState(() => new Set());
+  const [copiedReviewItem, setCopiedReviewItem] = useState(null);
+  const [expandedReviewItemIds, setExpandedReviewItemIds] = useState(() => new Set());
   const [taskDrafts, setTaskDrafts] = useState({});
   const [taskStatuses, setTaskStatuses] = useState({});
   const [taskSubmitting, setTaskSubmitting] = useState(null);
 
   const selectedSummary = detail?.summary || rows.find(row => row.deal_id === selectedDealId) || null;
   const gaps = detail?.gaps || [];
-  const selectedGap = gaps.find((gap) => gap.id === selectedGapId) || gaps[0] || null;
-  const selectedGapKey = selectedGap ? selectedGap.id : null;
   const needsCodeItems = detail?.needs_code || detail?.uncoded || [];
-  const selectedNeedsCode = needsCodeItems.find((item) => item.id === selectedNeedsCodeId) || needsCodeItems[0] || null;
-  const selectedNeedsCodeKey = selectedNeedsCode ? selectedNeedsCode.id : null;
   const parserReview = detail?.parser_review || null;
   const parserSummary = parserReview?.summary || {};
   const structuralGaps = detail?.structural_gaps || parserReview?.structural_gaps || [];
   const definitionWarnings = detail?.definition_warnings || parserReview?.definition_warnings || [];
   const dataModelFlags = detail?.data_model_flags || parserReview?.data_model_flags || [];
+  const reviewItems = useMemo(() => {
+    const gapItems = gaps.map((gap) => ({
+      ...gap,
+      key: `gap:${gap.id}`,
+      source: 'gap',
+      kind: 'Coverage gap',
+      display_id: gap.id,
+      pill: gap.suggested_type || 'GAP',
+      title: gap.rough_heading || gap.id,
+      reason: gap.suggested_reason || null,
+      detail: `${num(gap.length)} chars, start ${num(gap.start)}`,
+      referenceKind: 'gap',
+      raw: gap,
+    }));
+    const needsItems = needsCodeItems.map((item) => ({
+      ...item,
+      key: `needs_code:${item.id}`,
+      source: 'needs_code',
+      kind: 'Needs Code',
+      display_id: item.id,
+      pill: item.family_type || item.type || 'NEEDS CODE',
+      title: item.rough_heading || item.category || item.id,
+      reason: item.suggested_reason || null,
+      detail: `${num(item.length)} chars - ${item.category || item.code || 'missing code'}`,
+      referenceKind: 'needs_code',
+      raw: item,
+    }));
+    const structuralItems = structuralGaps.map((item) => ({
+      ...item,
+      key: `parser:${item.id}`,
+      source: 'parser',
+      kind: 'Parser structural gap',
+      display_id: item.id,
+      pill: item.region_type || 'PARSER',
+      title: item.region_type || item.id,
+      reason: 'Parser region coverage left this text outside a known document region.',
+      detail: `${num(item.length)} chars, start ${num(item.start)}`,
+      referenceKind: 'parser',
+      raw: item,
+    }));
+    const definitionItems = definitionWarnings.map((item) => ({
+      ...item,
+      key: `parser:${item.id}`,
+      source: 'parser',
+      kind: 'Definition warning',
+      display_id: item.id,
+      pill: item.code || 'DEF WARNING',
+      title: item.section_title || item.term || item.id,
+      reason: item.message || null,
+      detail: `${item.section_number || '-'}${item.term ? ` - ${item.term}` : ''}`,
+      referenceKind: 'parser',
+      raw: item,
+    }));
+    const dataItems = dataModelFlags.map((item) => ({
+      ...item,
+      key: `parser:${item.id}`,
+      source: 'parser',
+      kind: 'Data model flag',
+      display_id: item.id,
+      pill: item.flag || 'DATA',
+      title: item.section_title || item.id,
+      reason: 'Parser found a drafting pattern that may need schema/model support.',
+      detail: item.section_number || '-',
+      referenceKind: 'parser',
+      raw: item,
+    }));
+    return [...gapItems, ...needsItems, ...structuralItems, ...definitionItems, ...dataItems];
+  }, [gaps, needsCodeItems, structuralGaps, definitionWarnings, dataModelFlags]);
+  const selectedReviewKey = selectedReviewItemId
+    || (selectedGapId ? `gap:${selectedGapId}` : null)
+    || (selectedNeedsCodeId ? `needs_code:${selectedNeedsCodeId}` : null);
+  const selectedReviewItem = reviewItems.find((item) => item.key === selectedReviewKey) || reviewItems[0] || null;
+  const selectedReviewItemKey = selectedReviewItem ? selectedReviewItem.key : null;
 
   const scrollIntoView = (ref) => {
     const frame = window.requestAnimationFrame(() => {
@@ -273,85 +347,51 @@ export default function GapReviewAdmin() {
 
   useEffect(() => {
     if (!detail) return;
-    setExpandedGapIds(new Set((detail.gaps || []).map((gap) => gap.id)));
-    setExpandedNeedsCodeIds(new Set());
+    setExpandedReviewItemIds(new Set());
   }, [detail?.summary?.deal_id]);
 
   useEffect(() => {
-    if (!selectedDealId || selectedGapId || selectedNeedsCodeId || !detail || !readerRef.current) return undefined;
+    if (!selectedDealId || selectedGapId || selectedNeedsCodeId || selectedReviewItemId || !detail || !readerRef.current) return undefined;
     return scrollIntoView(readerRef);
-  }, [selectedDealId, selectedGapId, selectedNeedsCodeId, detail]);
+  }, [selectedDealId, selectedGapId, selectedNeedsCodeId, selectedReviewItemId, detail]);
 
   useEffect(() => {
-    if (!selectedGapId || !selectedGap || !gapReaderRef.current) return undefined;
-    return scrollIntoView(gapReaderRef);
-  }, [selectedGapId, selectedGap?.id]);
+    if (!selectedReviewKey || !selectedReviewItem || !reviewReaderRef.current) return undefined;
+    return scrollIntoView(reviewReaderRef);
+  }, [selectedReviewKey, selectedReviewItem?.key]);
 
-  useEffect(() => {
-    if (!selectedNeedsCodeId || !selectedNeedsCode || !needsCodeReaderRef.current) return undefined;
-    return scrollIntoView(needsCodeReaderRef);
-  }, [selectedNeedsCodeId, selectedNeedsCode?.id]);
-
-  const copyReference = async (gap) => {
-    if (!selectedSummary || !gap) return;
-    const ref = GapReference({ summary: selectedSummary, gap });
-    await navigator.clipboard.writeText(ref);
-    setCopiedGap(gap.id);
-    setTimeout(() => setCopiedGap(null), 1200);
-  };
-
-  const copyGapText = async (gap) => {
-    if (!gap) return;
-    await navigator.clipboard.writeText(gap.full_text || gap.text || gap.preview || '');
-    setCopiedGap(`${gap.id}:text`);
-    setTimeout(() => setCopiedGap(null), 1200);
-  };
-
-  const copyNeedsCodeReference = async (item) => {
+  const copyReviewReference = async (item) => {
     if (!selectedSummary || !item) return;
-    const ref = NeedsCodeReference({ summary: selectedSummary, item });
+    const ref = item.referenceKind === 'gap'
+      ? GapReference({ summary: selectedSummary, gap: item.raw || item })
+      : item.referenceKind === 'needs_code'
+        ? NeedsCodeReference({ summary: selectedSummary, item: item.raw || item })
+        : ParserReviewReference({ summary: selectedSummary, item });
     await navigator.clipboard.writeText(ref);
-    setCopiedNeedsCode(item.id);
-    setTimeout(() => setCopiedNeedsCode(null), 1200);
+    setCopiedReviewItem(item.key);
+    setTimeout(() => setCopiedReviewItem(null), 1200);
   };
 
-  const copyNeedsCodeText = async (item) => {
+  const copyReviewText = async (item) => {
     if (!item) return;
-    await navigator.clipboard.writeText(item.full_text || item.text || item.preview || '');
-    setCopiedNeedsCode(`${item.id}:text`);
-    setTimeout(() => setCopiedNeedsCode(null), 1200);
+    await navigator.clipboard.writeText(reviewText(item));
+    setCopiedReviewItem(`${item.key}:text`);
+    setTimeout(() => setCopiedReviewItem(null), 1200);
   };
 
-  const expandAll = () => {
-    setExpandedGapIds(new Set(gaps.map((gap) => gap.id)));
+  const expandAllReviewItems = () => {
+    setExpandedReviewItemIds(new Set(reviewItems.map((item) => item.key)));
   };
 
-  const collapseAll = () => {
-    setExpandedGapIds(new Set());
+  const collapseAllReviewItems = () => {
+    setExpandedReviewItemIds(new Set());
   };
 
-  const toggleGap = (gapId) => {
-    setExpandedGapIds((current) => {
+  const toggleReviewItem = (itemKey) => {
+    setExpandedReviewItemIds((current) => {
       const next = new Set(current);
-      if (next.has(gapId)) next.delete(gapId);
-      else next.add(gapId);
-      return next;
-    });
-  };
-
-  const expandAllNeedsCode = () => {
-    setExpandedNeedsCodeIds(new Set(needsCodeItems.map((item) => item.id)));
-  };
-
-  const collapseAllNeedsCode = () => {
-    setExpandedNeedsCodeIds(new Set());
-  };
-
-  const toggleNeedsCode = (itemId) => {
-    setExpandedNeedsCodeIds((current) => {
-      const next = new Set(current);
-      if (next.has(itemId)) next.delete(itemId);
-      else next.add(itemId);
+      if (next.has(itemKey)) next.delete(itemKey);
+      else next.add(itemKey);
       return next;
     });
   };
@@ -436,7 +476,7 @@ export default function GapReviewAdmin() {
             />
           </label>
           <label className="text-xs font-ui text-inkLight">
-            Max coverage
+            Max reviewable
             <input
               type="number"
               min="0"
@@ -482,13 +522,13 @@ export default function GapReviewAdmin() {
               <thead>
                 <tr className="border-b border-border">
                   <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Deal</th>
-                  <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Coverage</th>
+                  <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Reviewable coverage</th>
                   <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Gaps</th>
                   <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Parser</th>
                   <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Def</th>
                   <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Data</th>
                   <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Needs Code</th>
-                  <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Largest</th>
+                  <th className="w-24 px-4 py-3 text-left font-ui font-medium text-inkLight">Largest</th>
                   <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Canonical</th>
                   <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Quotes</th>
                   <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Ingest</th>
@@ -510,16 +550,16 @@ export default function GapReviewAdmin() {
                         <span className="block text-[10px] text-inkFaint">{row.deal_id}</span>
                       </Link>
                     </td>
-                    <td className="px-4 py-3 font-ui text-ink">{pct(row.coverage_pct)}</td>
+                    <td className="px-4 py-3">
+                      <div className="font-ui text-ink">{pct(row.reviewable_coverage_pct ?? row.coverage_pct)}</div>
+                      <div className="mt-0.5 text-[10px] font-ui text-inkFaint">raw {pct(row.raw_coverage_pct)}</div>
+                    </td>
                     <td className="px-4 py-3 font-ui text-ink">{num(row.gap_count)}</td>
                     <td className="px-4 py-3 font-ui text-ink">{num(row.parser_structural_gap_count)}</td>
                     <td className="px-4 py-3 font-ui text-ink">{num(row.definition_warning_count)}</td>
                     <td className="px-4 py-3 font-ui text-ink">{num(row.data_model_flag_count)}</td>
                     <td className="px-4 py-3 font-ui text-ink">{num(row.needs_code_count ?? row.uncoded_count)}</td>
-                    <td className="max-w-md px-4 py-3">
-                      <div className="font-ui text-ink">{num(row.largest_gap_chars)} chars</div>
-                      <div className="mt-0.5 truncate text-xs font-ui text-inkLight">{row.largest_gap_preview || '-'}</div>
-                    </td>
+                    <td className="w-24 whitespace-nowrap px-4 py-3 font-ui text-ink">{num(row.largest_gap_chars)} chars</td>
                     <td className="px-4 py-3 font-ui text-ink">{rate(row.canonical_rate)}</td>
                     <td className="px-4 py-3 font-ui text-ink">{num(row.unverified_quotes)}</td>
                     <td className="px-4 py-3">
@@ -573,8 +613,9 @@ export default function GapReviewAdmin() {
                     </Link>
                   </div>
                 </div>
-                <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-9">
-                  <Metric label="Coverage" value={pct(selectedSummary.coverage_pct)} />
+                <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-10">
+                  <Metric label="Reviewable coverage" value={pct(selectedSummary.reviewable_coverage_pct ?? selectedSummary.coverage_pct)} />
+                  <Metric label="Raw coverage" value={pct(selectedSummary.raw_coverage_pct)} />
                   <Metric label="Gaps" value={num(selectedSummary.gap_count)} />
                   <Metric label="Needs Code" value={num(selectedSummary.needs_code_count ?? selectedSummary.uncoded_count)} />
                   <Metric label="Largest gap" value={`${num(selectedSummary.largest_gap_chars)} chars`} />
@@ -586,324 +627,130 @@ export default function GapReviewAdmin() {
                 </div>
               </div>
 
-              {gaps.length === 0 ? (
+              {reviewItems.length === 0 ? (
                 <div className="rounded-lg border border-border bg-white p-8 text-center text-sm font-ui text-inkFaint shadow-sm">
-                  No coverage gaps above the threshold.
+                  No review items.
                 </div>
               ) : (
                 <>
-                  <div className="grid gap-4 lg:grid-cols-[280px_minmax(0,1fr)]">
+                  <div className="grid gap-4 lg:grid-cols-[300px_minmax(0,1fr)]">
                     <div className="rounded-lg border border-border bg-white shadow-sm">
                       <div className="border-b border-border bg-bg/50 px-4 py-3">
-                        <h3 className="font-display text-lg text-ink">Gaps</h3>
+                        <h3 className="font-display text-lg text-ink">Review Queue</h3>
+                        <p className="mt-1 text-xs font-ui text-inkFaint">
+                          {num(gaps.length)} gaps, {num(needsCodeItems.length)} needs code, {num(structuralGaps.length + definitionWarnings.length + dataModelFlags.length)} parser review
+                        </p>
                       </div>
-                      <div className="max-h-[620px] overflow-auto p-2">
-                        {gaps.map((gap) => (
+                      <div className="max-h-[680px] overflow-auto p-2">
+                        {reviewItems.map((item) => (
                           <Link
-                            key={gap.id}
-                            href={{ pathname: '/admin/gaps', query: { deal_id: selectedSummary.deal_id, gap: gap.id } }}
+                            key={item.key}
+                            href={{ pathname: '/admin/gaps', query: { deal_id: selectedSummary.deal_id, review_item: item.key } }}
                             className={`block rounded border px-3 py-2 text-left hover:border-accent ${
-                              selectedGapKey === gap.id ? 'border-accent bg-accent/5' : 'border-transparent'
+                              selectedReviewItemKey === item.key ? 'border-accent bg-accent/5' : 'border-transparent'
                             }`}
                           >
                             <div className="flex items-center justify-between gap-2">
-                              <span className="font-mono text-xs font-semibold text-accent">{gap.id}</span>
-                              <SuggestionPill type={gap.suggested_type} />
+                              <span className="font-mono text-xs font-semibold text-accent">{item.display_id}</span>
+                              <SuggestionPill type={item.pill} />
                             </div>
                             <div className="mt-1 truncate text-xs font-ui text-ink">
-                              {gap.rough_heading || gap.preview || gap.id}
-                            </div>
-                            <div className="mt-1 text-[10px] font-ui text-inkFaint">
-                              {num(gap.length)} chars, start {num(gap.start)}
-                            </div>
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div ref={gapReaderRef} className="scroll-mt-4 rounded-lg border border-border bg-white p-5 shadow-sm">
-                      {selectedGap ? (
-                        <>
-                          <div className="flex flex-wrap items-start justify-between gap-4">
-                            <div className="min-w-0">
-                              <div className="flex flex-wrap items-center gap-2">
-                                <span className="font-mono text-xs font-semibold text-accent">{selectedGap.id}</span>
-                                <SuggestionPill type={selectedGap.suggested_type} />
-                                <span className="text-xs font-ui text-inkFaint">
-                                  start {num(selectedGap.start)} - {num(selectedGap.length)} chars
-                                </span>
-                              </div>
-                              <h3 className="mt-2 font-display text-xl text-ink">
-                                {selectedGap.rough_heading || selectedGap.id}
-                              </h3>
-                              <p className="mt-1 text-sm font-ui text-inkLight">{selectedGap.suggested_reason}</p>
-                            </div>
-                            <div className="flex flex-wrap gap-2">
-                              <button
-                                type="button"
-                                onClick={() => copyReference(selectedGap)}
-                                className="rounded border border-border px-3 py-1.5 text-xs font-ui text-inkLight hover:border-accent hover:text-ink"
-                              >
-                                {copiedGap === selectedGap.id ? 'Copied' : 'Copy reference'}
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => copyGapText(selectedGap)}
-                                className="rounded border border-border px-3 py-1.5 text-xs font-ui text-inkLight hover:border-accent hover:text-ink"
-                              >
-                                {copiedGap === `${selectedGap.id}:text` ? 'Copied' : 'Copy text'}
-                              </button>
-                            </div>
-                          </div>
-
-                          <div className="mt-4 grid gap-3 md:grid-cols-2">
-                            <div className="rounded border border-border bg-bg/40 p-3">
-                              <div className="mb-1 text-[10px] font-ui uppercase tracking-wide text-inkFaint">Before</div>
-                              <p className="max-h-44 overflow-auto whitespace-pre-wrap text-xs font-ui leading-relaxed text-inkLight">
-                                {selectedGap.before_context || '-'}
-                              </p>
-                            </div>
-                            <div className="rounded border border-border bg-bg/40 p-3">
-                              <div className="mb-1 text-[10px] font-ui uppercase tracking-wide text-inkFaint">After</div>
-                              <p className="max-h-44 overflow-auto whitespace-pre-wrap text-xs font-ui leading-relaxed text-inkLight">
-                                {selectedGap.after_context || '-'}
-                              </p>
-                            </div>
-                          </div>
-
-                          <div className="mt-4">
-                            <GapText gap={selectedGap} />
-                          </div>
-                        </>
-                      ) : null}
-                    </div>
-                  </div>
-
-                  <div className="rounded-lg border border-border bg-white shadow-sm">
-                    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-bg/50 px-4 py-3">
-                      <h3 className="font-display text-lg text-ink">All Gap Text</h3>
-                      <div className="flex flex-wrap gap-2">
-                        <button
-                          type="button"
-                          onClick={expandAll}
-                          className="rounded border border-border px-3 py-1.5 text-xs font-ui text-inkLight hover:border-accent hover:text-ink"
-                        >
-                          Expand all
-                        </button>
-                        <button
-                          type="button"
-                          onClick={collapseAll}
-                          className="rounded border border-border px-3 py-1.5 text-xs font-ui text-inkLight hover:border-accent hover:text-ink"
-                        >
-                          Collapse all
-                        </button>
-                      </div>
-                    </div>
-                    <div className="divide-y divide-border">
-                      {gaps.map((gap, index) => {
-                        const open = expandedGapIds.has(gap.id);
-                        return (
-                          <div key={gap.id} className="p-5">
-                            <div className="flex flex-wrap items-start justify-between gap-4">
-                              <div className="min-w-0">
-                                <div className="flex flex-wrap items-center gap-2">
-                                  <span className="font-mono text-xs font-semibold text-accent">{gap.id}</span>
-                                  <SuggestionPill type={gap.suggested_type} />
-                                  <span className="text-xs font-ui text-inkFaint">
-                                    start {num(gap.start)} - {num(gap.length)} chars
-                                  </span>
-                                </div>
-                                <h4 className="mt-2 font-display text-lg text-ink">
-                                  {gap.rough_heading || `Gap ${index + 1}`}
-                                </h4>
-                              </div>
-                              <div className="flex flex-wrap gap-2">
-                                <button
-                                  type="button"
-                                  onClick={() => toggleGap(gap.id)}
-                                  className="rounded border border-border px-3 py-1.5 text-xs font-ui text-inkLight hover:border-accent hover:text-ink"
-                                >
-                                  {open ? 'Collapse' : 'Expand'}
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => copyGapText(gap)}
-                                  className="rounded border border-border px-3 py-1.5 text-xs font-ui text-inkLight hover:border-accent hover:text-ink"
-                                >
-                                  {copiedGap === `${gap.id}:text` ? 'Copied' : 'Copy text'}
-                                </button>
-                              </div>
-                            </div>
-                            {open ? (
-                              <div className="mt-4">
-                                <GapText gap={gap} />
-                              </div>
-                            ) : (
-                              <p className="mt-3 truncate text-sm font-ui text-inkLight">{gap.preview}</p>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                </>
-              )}
-
-              {(structuralGaps.length > 0 || definitionWarnings.length > 0 || dataModelFlags.length > 0) && (
-                <div className="rounded-lg border border-border bg-white shadow-sm">
-                  <div className="border-b border-border bg-bg/50 px-4 py-3">
-                    <h3 className="font-display text-lg text-ink">Parser Review</h3>
-                  </div>
-                  <div className="divide-y divide-border">
-                    {structuralGaps.map((gap) => (
-                      <div key={gap.id} className="p-5">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="font-mono text-xs font-semibold text-accent">{gap.id}</span>
-                          <SuggestionPill type={gap.region_type} />
-                          <span className="text-xs font-ui text-inkFaint">
-                            start {num(gap.start)} - {num(gap.length)} chars
-                          </span>
-                        </div>
-                        <FullText item={gap} />
-                      </div>
-                    ))}
-                    {definitionWarnings.map((warning) => (
-                      <div key={warning.id} className="p-5">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="font-mono text-xs font-semibold text-accent">{warning.id}</span>
-                          <SuggestionPill type={warning.code} />
-                          <span className="text-xs font-ui text-inkFaint">
-                            {warning.section_number || '-'} {warning.term ? `- ${warning.term}` : ''}
-                          </span>
-                        </div>
-                        <h4 className="mt-2 font-display text-lg text-ink">
-                          {warning.section_title || warning.term || warning.id}
-                        </h4>
-                        <p className="mt-1 text-sm font-ui text-inkLight">{warning.message}</p>
-                        <p className="mt-3 rounded border border-border bg-bg/40 p-3 text-sm font-ui leading-6 text-ink">
-                          {warning.preview}
-                        </p>
-                      </div>
-                    ))}
-                    {dataModelFlags.map((flag) => (
-                      <div key={flag.id} className="p-5">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="font-mono text-xs font-semibold text-accent">{flag.id}</span>
-                          <SuggestionPill type={flag.flag} />
-                          <span className="text-xs font-ui text-inkFaint">
-                            {flag.section_number || '-'}
-                          </span>
-                        </div>
-                        <h4 className="mt-2 font-display text-lg text-ink">
-                          {flag.section_title || flag.id}
-                        </h4>
-                        <p className="mt-3 rounded border border-border bg-bg/40 p-3 text-sm font-ui leading-6 text-ink">
-                          {flag.preview}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {needsCodeItems.length === 0 ? (
-                <div className="rounded-lg border border-border bg-white p-8 text-center text-sm font-ui text-inkFaint shadow-sm">
-                  No Needs Code sections.
-                </div>
-              ) : (
-                <>
-                  <div className="grid gap-4 lg:grid-cols-[280px_minmax(0,1fr)]">
-                    <div className="rounded-lg border border-border bg-white shadow-sm">
-                      <div className="border-b border-border bg-bg/50 px-4 py-3">
-                        <h3 className="font-display text-lg text-ink">Needs Code</h3>
-                      </div>
-                      <div className="max-h-[620px] overflow-auto p-2">
-                        {needsCodeItems.map((item) => (
-                          <Link
-                            key={item.id}
-                            href={{ pathname: '/admin/gaps', query: { deal_id: selectedSummary.deal_id, needs_code: item.id } }}
-                            className={`block rounded border px-3 py-2 text-left hover:border-accent ${
-                              selectedNeedsCodeKey === item.id ? 'border-accent bg-accent/5' : 'border-transparent'
-                            }`}
-                          >
-                            <div className="flex items-center justify-between gap-2">
-                              <span className="font-mono text-xs font-semibold text-accent">{item.id}</span>
-                              <SuggestionPill type={item.family_type || item.type || 'NEEDS CODE'} />
-                            </div>
-                            <div className="mt-1 truncate text-xs font-ui text-ink">
-                              {item.rough_heading || item.preview || item.id}
+                              {item.title || item.preview || item.display_id}
                             </div>
                             <div className="mt-1 truncate text-[10px] font-ui text-inkFaint">
-                              {num(item.length)} chars - {item.category || item.code || 'missing code'}
+                              {item.kind} - {item.detail || '-'}
                             </div>
                           </Link>
                         ))}
                       </div>
                     </div>
 
-                    <div ref={needsCodeReaderRef} className="scroll-mt-4 rounded-lg border border-border bg-white p-5 shadow-sm">
-                      {selectedNeedsCode ? (
+                    <div ref={reviewReaderRef} className="scroll-mt-4 rounded-lg border border-border bg-white p-5 shadow-sm">
+                      {selectedReviewItem ? (
                         <>
                           <div className="flex flex-wrap items-start justify-between gap-4">
                             <div className="min-w-0">
                               <div className="flex flex-wrap items-center gap-2">
-                                <span className="font-mono text-xs font-semibold text-accent">{selectedNeedsCode.id}</span>
-                                <SuggestionPill type={selectedNeedsCode.family_type || selectedNeedsCode.type || 'NEEDS CODE'} />
-                                {selectedNeedsCode.provision_id && (
-                                  <span className="text-xs font-ui text-inkFaint">prov {shortId(selectedNeedsCode.provision_id)}</span>
+                                <span className="font-mono text-xs font-semibold text-accent">{selectedReviewItem.display_id}</span>
+                                <SuggestionPill type={selectedReviewItem.pill} />
+                                <span className="text-xs font-ui text-inkFaint">{selectedReviewItem.kind}</span>
+                                {selectedReviewItem.provision_id && (
+                                  <span className="text-xs font-ui text-inkFaint">prov {shortId(selectedReviewItem.provision_id)}</span>
                                 )}
                               </div>
                               <h3 className="mt-2 font-display text-xl text-ink">
-                                {selectedNeedsCode.rough_heading || selectedNeedsCode.id}
+                                {selectedReviewItem.title || selectedReviewItem.display_id}
                               </h3>
-                              <p className="mt-1 text-sm font-ui text-inkLight">{selectedNeedsCode.suggested_reason}</p>
+                              {selectedReviewItem.reason && (
+                                <p className="mt-1 text-sm font-ui text-inkLight">{selectedReviewItem.reason}</p>
+                              )}
                             </div>
                             <div className="flex flex-wrap gap-2">
                               <button
                                 type="button"
-                                onClick={() => copyNeedsCodeReference(selectedNeedsCode)}
+                                onClick={() => copyReviewReference(selectedReviewItem)}
                                 className="rounded border border-border px-3 py-1.5 text-xs font-ui text-inkLight hover:border-accent hover:text-ink"
                               >
-                                {copiedNeedsCode === selectedNeedsCode.id ? 'Copied' : 'Copy reference'}
+                                {copiedReviewItem === selectedReviewItem.key ? 'Copied' : 'Copy reference'}
                               </button>
                               <button
                                 type="button"
-                                onClick={() => copyNeedsCodeText(selectedNeedsCode)}
+                                onClick={() => copyReviewText(selectedReviewItem)}
                                 className="rounded border border-border px-3 py-1.5 text-xs font-ui text-inkLight hover:border-accent hover:text-ink"
                               >
-                                {copiedNeedsCode === `${selectedNeedsCode.id}:text` ? 'Copied' : 'Copy text'}
+                                {copiedReviewItem === `${selectedReviewItem.key}:text` ? 'Copied' : 'Copy text'}
                               </button>
                             </div>
                           </div>
 
-                          <div className="mt-4 grid gap-3 md:grid-cols-3">
-                            <div className="rounded border border-border bg-bg/40 p-3">
-                              <div className="mb-1 text-[10px] font-ui uppercase tracking-wide text-inkFaint">Type</div>
-                              <p className="truncate text-xs font-ui text-inkLight">{selectedNeedsCode.type || '-'}</p>
+                          {selectedReviewItem.source === 'gap' && (
+                            <div className="mt-4 grid gap-3 md:grid-cols-2">
+                              <div className="rounded border border-border bg-bg/40 p-3">
+                                <div className="mb-1 text-[10px] font-ui uppercase tracking-wide text-inkFaint">Before</div>
+                                <p className="max-h-44 overflow-auto whitespace-pre-wrap text-xs font-ui leading-relaxed text-inkLight">
+                                  {selectedReviewItem.before_context || '-'}
+                                </p>
+                              </div>
+                              <div className="rounded border border-border bg-bg/40 p-3">
+                                <div className="mb-1 text-[10px] font-ui uppercase tracking-wide text-inkFaint">After</div>
+                                <p className="max-h-44 overflow-auto whitespace-pre-wrap text-xs font-ui leading-relaxed text-inkLight">
+                                  {selectedReviewItem.after_context || '-'}
+                                </p>
+                              </div>
                             </div>
-                            <div className="rounded border border-border bg-bg/40 p-3">
-                              <div className="mb-1 text-[10px] font-ui uppercase tracking-wide text-inkFaint">Category</div>
-                              <p className="truncate text-xs font-ui text-inkLight">{selectedNeedsCode.category || '-'}</p>
-                            </div>
-                            <div className="rounded border border-border bg-bg/40 p-3">
-                              <div className="mb-1 text-[10px] font-ui uppercase tracking-wide text-inkFaint">Stored code</div>
-                              <p className="truncate text-xs font-ui text-inkLight">{selectedNeedsCode.code || '-'}</p>
-                            </div>
-                          </div>
+                          )}
+
+                          {selectedReviewItem.source === 'needs_code' && (
+                            <>
+                              <div className="mt-4 grid gap-3 md:grid-cols-3">
+                                <div className="rounded border border-border bg-bg/40 p-3">
+                                  <div className="mb-1 text-[10px] font-ui uppercase tracking-wide text-inkFaint">Type</div>
+                                  <p className="truncate text-xs font-ui text-inkLight">{selectedReviewItem.type || '-'}</p>
+                                </div>
+                                <div className="rounded border border-border bg-bg/40 p-3">
+                                  <div className="mb-1 text-[10px] font-ui uppercase tracking-wide text-inkFaint">Category</div>
+                                  <p className="truncate text-xs font-ui text-inkLight">{selectedReviewItem.category || '-'}</p>
+                                </div>
+                                <div className="rounded border border-border bg-bg/40 p-3">
+                                  <div className="mb-1 text-[10px] font-ui uppercase tracking-wide text-inkFaint">Stored code</div>
+                                  <p className="truncate text-xs font-ui text-inkLight">{selectedReviewItem.code || '-'}</p>
+                                </div>
+                              </div>
+
+                              <div className="mt-4">
+                                <NeedsCodeTaskForm
+                                  draft={taskDraftFor(selectedReviewItem)}
+                                  status={taskStatusFor(selectedReviewItem)}
+                                  submitting={taskSubmitting === needsCodeTaskKey(selectedReviewItem)}
+                                  onChange={(patch) => updateTaskDraft(selectedReviewItem, patch)}
+                                  onSubmit={(event) => submitNeedsCodeTask(event, selectedReviewItem)}
+                                />
+                              </div>
+                            </>
+                          )}
 
                           <div className="mt-4">
-                            <NeedsCodeTaskForm
-                              draft={taskDraftFor(selectedNeedsCode)}
-                              status={taskStatusFor(selectedNeedsCode)}
-                              submitting={taskSubmitting === needsCodeTaskKey(selectedNeedsCode)}
-                              onChange={(patch) => updateTaskDraft(selectedNeedsCode, patch)}
-                              onSubmit={(event) => submitNeedsCodeTask(event, selectedNeedsCode)}
-                            />
-                          </div>
-
-                          <div className="mt-4">
-                            <NeedsCodeText item={selectedNeedsCode} />
+                            <FullText item={selectedReviewItem} />
                           </div>
                         </>
                       ) : null}
@@ -912,18 +759,18 @@ export default function GapReviewAdmin() {
 
                   <div className="rounded-lg border border-border bg-white shadow-sm">
                     <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-bg/50 px-4 py-3">
-                      <h3 className="font-display text-lg text-ink">All Needs Code Text</h3>
+                      <h3 className="font-display text-lg text-ink">All Review Text</h3>
                       <div className="flex flex-wrap gap-2">
                         <button
                           type="button"
-                          onClick={expandAllNeedsCode}
+                          onClick={expandAllReviewItems}
                           className="rounded border border-border px-3 py-1.5 text-xs font-ui text-inkLight hover:border-accent hover:text-ink"
                         >
                           Expand all
                         </button>
                         <button
                           type="button"
-                          onClick={collapseAllNeedsCode}
+                          onClick={collapseAllReviewItems}
                           className="rounded border border-border px-3 py-1.5 text-xs font-ui text-inkLight hover:border-accent hover:text-ink"
                         >
                           Collapse all
@@ -931,44 +778,44 @@ export default function GapReviewAdmin() {
                       </div>
                     </div>
                     <div className="divide-y divide-border">
-                      {needsCodeItems.map((item, index) => {
-                        const open = expandedNeedsCodeIds.has(item.id);
+                      {reviewItems.map((item) => {
+                        const open = expandedReviewItemIds.has(item.key);
                         return (
-                          <div key={item.id} className="p-5">
+                          <div key={item.key} className="p-5">
                             <div className="flex flex-wrap items-start justify-between gap-4">
                               <div className="min-w-0">
                                 <div className="flex flex-wrap items-center gap-2">
-                                  <span className="font-mono text-xs font-semibold text-accent">{item.id}</span>
-                                  <SuggestionPill type={item.family_type || item.type || 'NEEDS CODE'} />
-                                  <span className="text-xs font-ui text-inkFaint">{num(item.length)} chars</span>
+                                  <span className="font-mono text-xs font-semibold text-accent">{item.display_id}</span>
+                                  <SuggestionPill type={item.pill} />
+                                  <span className="text-xs font-ui text-inkFaint">{item.kind}</span>
                                 </div>
                                 <h4 className="mt-2 font-display text-lg text-ink">
-                                  {item.rough_heading || `Needs Code ${index + 1}`}
+                                  {item.title || item.display_id}
                                 </h4>
-                                <p className="mt-1 text-xs font-ui text-inkLight">
-                                  {item.category || item.code || item.suggested_reason}
-                                </p>
+                                {item.reason && (
+                                  <p className="mt-1 text-xs font-ui text-inkLight">{item.reason}</p>
+                                )}
                               </div>
                               <div className="flex flex-wrap gap-2">
                                 <button
                                   type="button"
-                                  onClick={() => toggleNeedsCode(item.id)}
+                                  onClick={() => toggleReviewItem(item.key)}
                                   className="rounded border border-border px-3 py-1.5 text-xs font-ui text-inkLight hover:border-accent hover:text-ink"
                                 >
                                   {open ? 'Collapse' : 'Expand'}
                                 </button>
                                 <button
                                   type="button"
-                                  onClick={() => copyNeedsCodeText(item)}
+                                  onClick={() => copyReviewText(item)}
                                   className="rounded border border-border px-3 py-1.5 text-xs font-ui text-inkLight hover:border-accent hover:text-ink"
                                 >
-                                  {copiedNeedsCode === `${item.id}:text` ? 'Copied' : 'Copy text'}
+                                  {copiedReviewItem === `${item.key}:text` ? 'Copied' : 'Copy text'}
                                 </button>
                               </div>
                             </div>
                             {open ? (
                               <div className="mt-4">
-                                <NeedsCodeText item={item} />
+                                <FullText item={item} />
                               </div>
                             ) : (
                               <p className="mt-3 truncate text-sm font-ui text-inkLight">{item.preview}</p>

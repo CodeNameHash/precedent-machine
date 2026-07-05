@@ -6,6 +6,7 @@ const { normalizeForMatch } = require('../lib/verification');
 const {
   normalizeForGapDisplay,
   suggestGapType,
+  locateProvisionIntervals,
   buildGapDetails,
   buildUncodedSummary,
   buildUncodedDetails,
@@ -137,8 +138,30 @@ test('buildGapDetails honours parser-supplied region type for definition annexes
   });
 
   assert.equal(gap.region_type, REGION_TYPES.BODY_SECTION_DEFINITION);
-  assert.equal(gap.reviewable_gap, true);
-  assert.equal(gap.ignored_reason, null);
+  assert.equal(gap.reviewable_gap, false);
+  assert.equal(gap.ignored_reason, 'Non-reviewable parser region.');
+});
+
+test('locateProvisionIntervals places duplicate parent-side text in the parent section', () => {
+  const duplicate = '(f) Parent shall not waive any standstill provision unless the Parent Board determines that failure to do so would be inconsistent with its fiduciary duties. ';
+  const source = [
+    'Table of Contents 6.4 No Solicitation by Parent',
+    '6.3 No Solicitation by the Company.',
+    duplicate.repeat(3),
+    '6.4 No Solicitation by Parent.',
+    duplicate.repeat(3),
+  ].join(' ');
+  const [interval] = locateProvisionIntervals([{
+    id: 'parent-nosol',
+    type: 'NOSOL',
+    category: 'Standstill Waiver',
+    full_text: duplicate.repeat(3),
+    ai_metadata: { features: { canonicalCode: 'NOSOL-STANDSTILL-WAIVER' } },
+  }], source);
+
+  const normSource = normalizeForMatch(source);
+  const parentHeading = normSource.lastIndexOf('6.4 no solicitation by parent.');
+  assert.ok(interval.start > parentHeading, `interval ${interval.start} should be after parent heading ${parentHeading}`);
 });
 
 test('gapPreviewFromSource returns the display text slice, not the stored coverage snippet', () => {
