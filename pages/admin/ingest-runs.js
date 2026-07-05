@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Head from 'next/head';
-import Link from 'next/link';
 import { useUser } from '../../lib/useUser';
+import AdminNav from '../../components/admin/AdminNav';
 
 IngestRunsPage.noLayout = true;
 
@@ -145,9 +145,8 @@ export default function IngestRunsPage() {
               <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Admin</p>
               <h1 className="text-xl font-semibold">Ingest runs</h1>
             </div>
-            <div className="flex items-center gap-3 text-sm">
-              <Link className="text-neutral-600 hover:text-neutral-950" href="/admin/candidates">Deal candidates</Link>
-              <Link className="text-neutral-600 hover:text-neutral-950" href="/ingest">Ingest</Link>
+            <div className="flex flex-wrap items-center justify-end gap-3 text-sm">
+              <AdminNav className="justify-end" />
               <button
                 type="button"
                 onClick={loadRuns}

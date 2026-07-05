@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback } from 'react';
 import Head from 'next/head';
 import JSZip from 'jszip';
+import AdminNav from '../../components/admin/AdminNav';
 
 AddAgreements.noLayout = true;
 
@@ -838,9 +839,7 @@ export default function AddAgreements() {
             <h1>Corpus</h1>
           </div>
           <div className="nav">
-            <a href="/" style={{ textDecoration: 'none' }}>
-              <button className="nav-btn">Back to Comparison</button>
-            </a>
+            <AdminNav />
           </div>
         </div>
 

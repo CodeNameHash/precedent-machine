@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useUser } from '../../lib/useUser';
+import AdminNav from '../../components/admin/AdminNav';
 
 CandidatesPage.noLayout = true;
 
@@ -88,10 +89,8 @@ export default function CandidatesPage() {
               <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Admin</p>
               <h1 className="text-xl font-semibold">Deal candidates</h1>
             </div>
-            <div className="flex items-center gap-3 text-sm">
-              <Link className="text-neutral-600 hover:text-neutral-950" href="/admin/ingest-runs">Ingest runs</Link>
-              <Link className="text-neutral-600 hover:text-neutral-950" href="/admin/agreements">Upload agreements</Link>
-              <Link className="text-neutral-600 hover:text-neutral-950" href="/ingest">Ingest</Link>
+            <div className="flex flex-wrap items-center justify-end gap-3 text-sm">
+              <AdminNav className="justify-end" />
               <button
                 type="button"
                 onClick={load}
