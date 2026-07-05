@@ -167,3 +167,50 @@ test('Covance-shape: TOC entries with long same-line titles are not mistaken for
   assert.ok(s101, 'section 1.01 found');
   assert.ok((s101.text || '').length > 300, `1.01 must carry body text, got ${(s101.text || '').length} chars (TOC stub bug)`);
 });
+
+test('TopBuild-shape: bare headings with no space after the number still segment', () => {
+  const doc = [
+    'AGREEMENT AND PLAN OF MERGER',
+    '',
+    'TABLE OF CONTENTS',
+    '',
+    'ARTICLE III Representations and Warranties -- 3.1',
+    'ARTICLE IV Covenants -- 4.1',
+    'ARTICLE V Conditions -- 5.1',
+    '',
+    'AGREEMENT AND PLAN OF MERGER, dated as of April 18, 2026, among BUYER INC., MERGER SUB INC. and TARGET CORP.',
+    '',
+    'WHEREAS, the parties intend to effect the merger;',
+    '',
+    'ARTICLE III',
+    '',
+    'Representations and Warranties',
+    '',
+    `3.1Representations and Warranties of the Company. Except as set forth in the Company Disclosure Letter, the Company represents and warrants to Parent as follows.${BODY_FILLER}`,
+    '',
+    `3.2Capitalization. The authorized capital stock of the Company consists of shares of common stock and preferred stock.${BODY_FILLER}`,
+    '',
+    'ARTICLE IV',
+    '',
+    'Covenants',
+    '',
+    `4.1Interim Operations of the Company. From the date of this Agreement until the Effective Time, the Company shall conduct its business in the ordinary course.${BODY_FILLER}`,
+    '',
+    'ARTICLE V',
+    '',
+    'Conditions',
+    '',
+    `5.1Conditions to Each Party's Obligation to Effect the Merger. The obligations of the parties are subject to the satisfaction or waiver of the following conditions.${BODY_FILLER}`,
+    '',
+    `5.2Additional Conditions to the Obligations of Parent, Titanium Merger Sub and Forward Merger Sub. Parent's obligations are subject to the satisfaction or waiver of the following further conditions.${BODY_FILLER}`,
+    ].join('\n');
+
+  const { sections } = parseStructure(cleanText(doc));
+  const nums = sections.map((s) => String(s.number));
+  for (const n of ['3.1', '3.2', '4.1', '5.1', '5.2']) {
+    assert.ok(nums.includes(n), `section ${n} captured (got ${nums})`);
+  }
+  const s31 = sections.find((s) => String(s.number) === '3.1');
+  assert.match(s31.title || '', /Representations and Warranties of the Company/);
+  assert.ok((s31.text || '').length > 300, '3.1 carries body text, not an article intro blob');
+});
