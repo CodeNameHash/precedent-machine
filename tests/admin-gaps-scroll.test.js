@@ -15,3 +15,11 @@ test('admin gaps deep links scroll selected G and U reader panels into view', ()
   assert.match(source, /ref=\{readerRef\}/);
   assert.match(source, /ref=\{reviewReaderRef\}/);
 });
+
+test('admin gaps direct deal links skip the expensive summary auto-load', () => {
+  const source = fs.readFileSync(path.join(__dirname, '..', 'pages/admin/gaps.js'), 'utf8');
+
+  assert.match(source, /const DEFAULT_LIMIT = 10/);
+  assert.match(source, /if \(selectedDealId\) \{\s*setLoading\(false\);\s*setRows\(\[\]\);\s*setPagination\(null\);\s*return;\s*\}/);
+  assert.match(source, /const showSummaryTable = !selectedDealId \|\| loading \|\| rows\.length > 0/);
+});

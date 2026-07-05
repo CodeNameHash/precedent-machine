@@ -5,7 +5,7 @@ import { useUser } from '../../lib/useUser';
 import { Breadcrumbs } from '../../components/UI';
 import AdminNav from '../../components/admin/AdminNav';
 
-const DEFAULT_LIMIT = 100;
+const DEFAULT_LIMIT = 10;
 const DEFAULT_CODING_ACTION = 'propose_new_code';
 const CODING_ACTIONS = [
   { value: 'propose_new_code', label: 'Propose new code' },
@@ -290,6 +290,7 @@ export default function GapReviewAdmin() {
     || (selectedNeedsCodeId ? `needs_code:${selectedNeedsCodeId}` : null);
   const selectedReviewItem = reviewItems.find((item) => item.key === selectedReviewKey) || reviewItems[0] || null;
   const selectedReviewItemKey = selectedReviewItem ? selectedReviewItem.key : null;
+  const showSummaryTable = !selectedDealId || loading || rows.length > 0;
 
   const scrollIntoView = (ref) => {
     const frame = window.requestAnimationFrame(() => {
@@ -337,8 +338,15 @@ export default function GapReviewAdmin() {
   };
 
   useEffect(() => {
+    if (!router.isReady) return;
+    if (selectedDealId) {
+      setLoading(false);
+      setRows([]);
+      setPagination(null);
+      return;
+    }
     loadSummary();
-  }, [summaryUrl]);
+  }, [router.isReady, selectedDealId, summaryUrl]);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -503,7 +511,7 @@ export default function GapReviewAdmin() {
         </div>
       )}
 
-      {loading ? (
+      {showSummaryTable && (loading ? (
         <LoadingRows rows={8} />
       ) : (
         <div className="overflow-x-auto rounded-lg border border-border bg-white shadow-sm">
@@ -582,7 +590,7 @@ export default function GapReviewAdmin() {
             </table>
           )}
         </div>
-      )}
+      ))}
 
       {selectedDealId && (
         <div ref={readerRef} className="space-y-4">

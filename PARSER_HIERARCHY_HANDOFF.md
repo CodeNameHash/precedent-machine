@@ -238,9 +238,36 @@ The 4 needs-review items are taxonomy or corpus-sweep calls, not safe mechanical
 - target/seller tax opinion side mapping,
 - no-control IOC global sweep.
 
+## Admin Gaps Load Hotfix
+
+Production issue found after deploy: `/admin/gaps` looked like it was not loading data because the summary list defaulted to `limit=100` and recomputed expensive metrics on request for every listed deal.
+
+Measured live timings:
+
+- `/api/admin/gaps?deal_id=c34415ed-44f7-432f-8d7c-6464b0310239`: about `7s`.
+- `/api/admin/gaps?limit=10`: about `28s`.
+- `/api/admin/gaps?limit=100`: about `53s` in one run and may time out.
+
+Cause:
+
+- The table summary path fetches all provisions per deal and recomputes coverage, reviewable gaps, quote verification, canonical rate, parser review, and needs-code counts.
+- The detail path does the same work for one deal, so it is usable.
+
+Hotfix in this branch:
+
+- `pages/admin/gaps.js` default summary limit reduced from `100` to `10`.
+- Direct `deal_id` pages skip the summary auto-load and render the deal detail directly.
+- Manual `Refresh` still loads the table if needed.
+
+Proper follow-up:
+
+- Persist per-deal quality metrics after ingest/reprocess/provision edits.
+- Make the summary table read those stored metrics instead of recomputing full-text coverage and parser review on every request.
+- Keep the expensive recomputation path for detail pages and explicit refresh/repair tooling.
+
 ## Next Work
 
-1. Commit, push, deploy, and curl-verify the live admin endpoint.
+1. Push and deploy the admin-gaps load hotfix.
 2. Use the reviewable-gap admin page to diagnose the remaining Glow, Landos, and Kraft gaps.
 3. Separately decide the 4 `needs_review` coding tasks.
 
