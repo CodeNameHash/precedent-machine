@@ -9,8 +9,10 @@ const {
   buildGapDetails,
   buildUncodedSummary,
   buildUncodedDetails,
+  classifyGapRegion,
   gapPreviewFromSource,
 } = require('../lib/gap-review');
+const { REGION_TYPES } = require('../lib/parser-v2/regions');
 
 test('normalizeForGapDisplay aligns offsets with normalizeForMatch while preserving case', () => {
   const source = '[[SECTION]] Section 5.04. “No Solicitation” — Company’s duty. [[/SECTION]]';
@@ -52,6 +54,29 @@ test('NOSOL wins when a gap also contains covenant or misc anchors', () => {
   assert.equal(suggestion.anchor, 'No Solicitation');
 });
 
+test('classifyGapRegion separates non-provision matter from reviewable body gaps', () => {
+  assert.equal(
+    classifyGapRegion('TABLE OF CONTENTS Section 5.03 No Solicitation 41 Section 6.01 Covenants 52'),
+    REGION_TYPES.PREAMBLE_TOC,
+  );
+  assert.equal(
+    classifyGapRegion('WHEREAS, the parties desire to enter into the Merger.'),
+    REGION_TYPES.PREAMBLE_RECITALS,
+  );
+  assert.equal(
+    classifyGapRegion('IN WITNESS WHEREOF, the parties have executed this Agreement. /s/ Parent'),
+    REGION_TYPES.BACKMATTER_SIGNATURES,
+  );
+  assert.equal(
+    classifyGapRegion('Section 5.03 No Solicitation. The Company shall not solicit Acquisition Proposals.'),
+    REGION_TYPES.BODY_SECTION_UNASSIGNED,
+  );
+  assert.equal(
+    classifyGapRegion('"Confidentiality Agreement" means the Confidentiality Agreement, dated as of June 1, 2020, between Parent and the Company.'),
+    REGION_TYPES.BODY_SECTION_UNASSIGNED,
+  );
+});
+
 test('buildGapDetails numbers document-order gaps with full text, contexts, heading, and adjacent provisions', () => {
   const source = [
     'Section 1.01 Intro. Parent will acquire the Company at the Effective Time.',
@@ -89,6 +114,9 @@ test('buildGapDetails numbers document-order gaps with full text, contexts, head
   assert.match(gaps[0].after_context, /Notices/);
   assert.match(gaps[0].rough_heading, /Section 5\.04 No Solicitation/);
   assert.equal(gaps[0].suggested_type, 'NOSOL');
+  assert.equal(gaps[0].region_type, REGION_TYPES.BODY_SECTION_UNASSIGNED);
+  assert.equal(gaps[0].reviewable_gap, true);
+  assert.equal(gaps[0].ignored_reason, null);
   assert.equal(gaps[0].adjacent_provisions.before.provision_id, 'prov-intro');
   assert.equal(gaps[0].adjacent_provisions.after.provision_id, 'prov-notices');
 });
