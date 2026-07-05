@@ -186,6 +186,8 @@ export default function GapReviewAdmin() {
     ? router.query.needs_code
     : (typeof router.query.uncoded === 'string' ? router.query.uncoded : null);
   const readerRef = useRef(null);
+  const gapReaderRef = useRef(null);
+  const needsCodeReaderRef = useRef(null);
   const [rows, setRows] = useState([]);
   const [pagination, setPagination] = useState(null);
   const [limit, setLimit] = useState(DEFAULT_LIMIT);
@@ -214,6 +216,13 @@ export default function GapReviewAdmin() {
   const structuralGaps = detail?.structural_gaps || parserReview?.structural_gaps || [];
   const definitionWarnings = detail?.definition_warnings || parserReview?.definition_warnings || [];
   const dataModelFlags = detail?.data_model_flags || parserReview?.data_model_flags || [];
+
+  const scrollIntoView = (ref) => {
+    const frame = window.requestAnimationFrame(() => {
+      ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  };
 
   const summaryUrl = useMemo(() => {
     const sp = new URLSearchParams();
@@ -269,9 +278,19 @@ export default function GapReviewAdmin() {
   }, [detail?.summary?.deal_id]);
 
   useEffect(() => {
-    if (!selectedDealId || !detail || !readerRef.current) return;
-    readerRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, [selectedDealId, detail]);
+    if (!selectedDealId || selectedGapId || selectedNeedsCodeId || !detail || !readerRef.current) return undefined;
+    return scrollIntoView(readerRef);
+  }, [selectedDealId, selectedGapId, selectedNeedsCodeId, detail]);
+
+  useEffect(() => {
+    if (!selectedGapId || !selectedGap || !gapReaderRef.current) return undefined;
+    return scrollIntoView(gapReaderRef);
+  }, [selectedGapId, selectedGap?.id]);
+
+  useEffect(() => {
+    if (!selectedNeedsCodeId || !selectedNeedsCode || !needsCodeReaderRef.current) return undefined;
+    return scrollIntoView(needsCodeReaderRef);
+  }, [selectedNeedsCodeId, selectedNeedsCode?.id]);
 
   const copyReference = async (gap) => {
     if (!selectedSummary || !gap) return;
@@ -602,7 +621,7 @@ export default function GapReviewAdmin() {
                       </div>
                     </div>
 
-                    <div className="rounded-lg border border-border bg-white p-5 shadow-sm">
+                    <div ref={gapReaderRef} className="scroll-mt-4 rounded-lg border border-border bg-white p-5 shadow-sm">
                       {selectedGap ? (
                         <>
                           <div className="flex flex-wrap items-start justify-between gap-4">
@@ -823,7 +842,7 @@ export default function GapReviewAdmin() {
                       </div>
                     </div>
 
-                    <div className="rounded-lg border border-border bg-white p-5 shadow-sm">
+                    <div ref={needsCodeReaderRef} className="scroll-mt-4 rounded-lg border border-border bg-white p-5 shadow-sm">
                       {selectedNeedsCode ? (
                         <>
                           <div className="flex flex-wrap items-start justify-between gap-4">
