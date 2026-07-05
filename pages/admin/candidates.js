@@ -5,7 +5,7 @@ import { useUser } from '../../lib/useUser';
 
 CandidatesPage.noLayout = true;
 
-const STATUSES = ['all', 'pending', 'queued', 'ingested', 'skipped', 'error'];
+const STATUSES = ['all', 'pending', 'queued', 'ingested', 'needs_review', 'skipped', 'error'];
 
 function money(value) {
   if (!value) return 'Not parsed';
@@ -89,6 +89,7 @@ export default function CandidatesPage() {
               <h1 className="text-xl font-semibold">Deal candidates</h1>
             </div>
             <div className="flex items-center gap-3 text-sm">
+              <Link className="text-neutral-600 hover:text-neutral-950" href="/admin/ingest-runs">Ingest runs</Link>
               <Link className="text-neutral-600 hover:text-neutral-950" href="/admin/agreements">Upload agreements</Link>
               <Link className="text-neutral-600 hover:text-neutral-950" href="/ingest">Ingest</Link>
               <button
@@ -177,6 +178,16 @@ export default function CandidatesPage() {
                         {row.status}
                       </span>
                       {row.skip_reason ? <div className="mt-2 text-xs text-neutral-500">{row.skip_reason}</div> : null}
+                      {row.review_notes ? <div className="mt-2 text-xs text-amber-700">{row.review_notes}</div> : null}
+                      {row.last_error ? <div className="mt-2 text-xs text-red-700">{row.last_error}</div> : null}
+                      {row.ingested_deal_id ? (
+                        <Link
+                          className="mt-2 inline-block text-xs font-medium text-blue-700 hover:text-blue-900"
+                          href={`/review/${row.ingested_deal_id}`}
+                        >
+                          Open deal
+                        </Link>
+                      ) : null}
                     </td>
                     <td className="border-b border-neutral-200 px-3 py-3">
                       <div className="flex flex-wrap gap-2">

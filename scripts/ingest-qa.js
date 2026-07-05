@@ -333,7 +333,11 @@ module.exports = {
   provisionCode,
   computeCanonicalRate,
   evaluateGates,
+  fetchAllProvisions,
   findDotEnvLocal,
+  loadDotEnvLocal,
+  printScorecard,
+  qaOneDeal,
   DEFAULT_GATES,
 };
 

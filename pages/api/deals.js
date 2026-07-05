@@ -1,23 +1,35 @@
 import { getServiceSupabase } from '../../lib/supabase';
 
+function includeStaging(req) {
+  return req.query.includeStaging === '1' || req.query.include_staging === '1';
+}
+
+function isStagingDeal(deal) {
+  const meta = deal && deal.metadata && typeof deal.metadata === 'object' ? deal.metadata : {};
+  return meta.ingest_status === 'staging';
+}
+
 export default async function handler(req, res) {
   const sb = getServiceSupabase();
   if (!sb) return res.status(500).json({ error: 'Supabase not configured' });
 
   if (req.method === 'GET') {
     const { id } = req.query;
+    const showStaging = includeStaging(req);
     if (id) {
       const { data, error } = await sb.from('deals')
         .select('*')
         .eq('id', id).single();
       if (error) return res.status(404).json({ error: error.message });
+      if (!showStaging && isStagingDeal(data)) return res.status(404).json({ error: 'Deal is staging' });
       return res.json({ deal: data });
     }
     const { data, error } = await sb.from('deals')
       .select('*')
       .order('announce_date', { ascending: false });
     if (error) return res.status(500).json({ error: error.message });
-    return res.json({ deals: data });
+    const deals = showStaging ? (data || []) : (data || []).filter((deal) => !isStagingDeal(deal));
+    return res.json({ deals });
   }
 
   if (req.method === 'POST') {

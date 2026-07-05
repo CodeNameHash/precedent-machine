@@ -6,6 +6,15 @@ const IMMUTABLE_FIELDS = ['deal_id'];
 // Fields snapshotted into before/after for correction logging
 const TRACKED_FIELDS = ['type', 'category', 'full_text', 'ai_favorability', 'prohibition', 'exceptions'];
 
+function includeStaging(req) {
+  return req.query.includeStaging === '1' || req.query.include_staging === '1';
+}
+
+function isStagingDeal(deal) {
+  const meta = deal && deal.metadata && typeof deal.metadata === 'object' ? deal.metadata : {};
+  return meta.ingest_status === 'staging';
+}
+
 function snapshot(provision) {
   if (!provision) return null;
   const snap = {};
@@ -31,22 +40,25 @@ export default async function handler(req, res) {
 
   if (req.method === 'GET') {
     const { id, deal_id, type, category } = req.query;
+    const showStaging = includeStaging(req);
     if (id) {
       const { data, error } = await sb.from('provisions')
-        .select('*, deal:deals(acquirer, target, sector, announce_date)')
+        .select('*, deal:deals(acquirer, target, sector, announce_date, metadata)')
         .eq('id', id).single();
       if (error) return res.status(404).json({ error: error.message });
+      if (!showStaging && isStagingDeal(data && data.deal)) return res.status(404).json({ error: 'Provision is staging' });
       return res.json({ provision: data });
     }
     let q = sb.from('provisions')
-      .select('*, deal:deals(acquirer, target, sector, announce_date)');
+      .select('*, deal:deals(acquirer, target, sector, announce_date, metadata)');
     if (deal_id) q = q.eq('deal_id', deal_id);
     if (type) q = q.eq('type', type);
     if (category) q = q.eq('category', category);
     q = q.order('created_at', { ascending: true });
     const { data, error } = await q;
     if (error) return res.status(500).json({ error: error.message });
-    return res.json({ provisions: data });
+    const provisions = showStaging ? (data || []) : (data || []).filter((row) => !isStagingDeal(row && row.deal));
+    return res.json({ provisions });
   }
 
   if (req.method === 'POST') {

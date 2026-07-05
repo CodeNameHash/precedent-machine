@@ -5,12 +5,12 @@ const path = require('path');
 
 const {
   DEFAULT_FAMILIES,
-  buildDealJobs,
   buildFamilyJobs,
   buildJobPlan,
-  parseArgs,
+  buildPrepareJobs,
   runPlanOnly,
-} = require('../scripts/ingest-job-runner');
+} = require('../lib/ingest-job-plan');
+const { parseArgs } = require('../scripts/ingest-job-runner');
 
 const ITEMS = [
   {
@@ -42,37 +42,38 @@ test('parseArgs caps concurrency and defaults to plan-only mode', () => {
   ]);
 
   assert.equal(args.execute, false);
-  assert.equal(args.maxDealConcurrency, 2);
-  assert.equal(args.maxFamilyConcurrency, 6);
+  assert.equal(args.maxDealConcurrency, 8);
+  assert.equal(args.maxFamilyConcurrency, 8);
 });
 
-test('planner source has no ingest or Supabase imports', () => {
-  const source = fs.readFileSync(path.join(__dirname, '..', 'scripts', 'ingest-job-runner.js'), 'utf8');
+test('pure planner source has no ingest, Supabase, or LLM imports', () => {
+  const source = fs.readFileSync(path.join(__dirname, '..', 'lib', 'ingest-job-plan.js'), 'utf8');
   assert.doesNotMatch(source, /ingestOne|ingest-local|ingest-seed-batch|@supabase\/supabase-js|llm-cli-client/);
 });
 
-test('buildDealJobs creates one locked deal job per manifest item', () => {
-  const jobs = buildDealJobs(ITEMS, { runId: 'run-1' });
+test('buildPrepareJobs creates one locked prepare job per manifest item', () => {
+  const jobs = buildPrepareJobs(ITEMS, { runId: 'run-1' });
 
   assert.equal(jobs.length, 2);
-  assert.equal(jobs[0].kind, 'deal-ingest');
+  assert.equal(jobs[0].kind, 'deal-prepare');
   assert.equal(jobs[0].status, 'planned');
   assert.equal(jobs[0].lock_key, 'candidate:candidate-a');
   assert.equal(jobs[0].url, 'https://sec.example/a.htm');
-  assert.ok(jobs[0].phases.includes('extract-all-families'));
+  assert.ok(jobs[0].phases.includes('write-classified-snapshot'));
+  assert.ok(!jobs[0].phases.includes('extract-all-families'));
 });
 
 test('buildFamilyJobs expands a deal into retryable per-family jobs', () => {
-  const [dealJob] = buildDealJobs([ITEMS[0]], { runId: 'run-1' });
-  const jobs = buildFamilyJobs(dealJob, ['REP-T', 'IOC', 'TERMR']);
+  const [prepareJob] = buildPrepareJobs([ITEMS[0]], { runId: 'run-1' });
+  const jobs = buildFamilyJobs(prepareJob, ['REP-T', 'IOC', 'TERMR']);
 
   assert.deepEqual(jobs.map((job) => job.family), ['REP-T', 'IOC', 'TERMR']);
-  assert.deepEqual(jobs.map((job) => job.depends_on), [[dealJob.id], [dealJob.id], [dealJob.id]]);
+  assert.deepEqual(jobs.map((job) => job.depends_on), [[prepareJob.id], [prepareJob.id], [prepareJob.id]]);
   assert.equal(jobs[0].max_attempts, 2);
   assert.equal(jobs[0].lock_key, 'family:candidate-a:REP-T');
 });
 
-test('buildJobPlan records safety flags and does not execute ingestion', () => {
+test('buildJobPlan records safety flags and creates prepare/family/qa/finalize graph', () => {
   const plan = buildJobPlan(ITEMS, {
     runId: 'run-1',
     maxDealConcurrency: 2,
@@ -86,7 +87,17 @@ test('buildJobPlan records safety flags and does not execute ingestion', () => {
   assert.equal(plan.safety.execute_supported, false);
   assert.equal(plan.counts.deal_jobs, 2);
   assert.equal(plan.counts.family_jobs, 2 * DEFAULT_FAMILIES.length);
+  assert.equal(plan.counts.qa_jobs, 2);
+  assert.equal(plan.counts.finalize_jobs, 2);
   assert.equal(plan.jobs.length, plan.counts.total_jobs);
+  assert.deepEqual(
+    plan.jobs.filter((job) => job.candidate_id === 'candidate-a').map((job) => job.kind),
+    ['deal-prepare', ...DEFAULT_FAMILIES.map(() => 'family-extract'), 'deal-qa', 'finalize-candidate'],
+  );
+  const qa = plan.jobs.find((job) => job.kind === 'deal-qa' && job.candidate_id === 'candidate-a');
+  const finalize = plan.jobs.find((job) => job.kind === 'finalize-candidate' && job.candidate_id === 'candidate-a');
+  assert.equal(qa.depends_on.length, DEFAULT_FAMILIES.length);
+  assert.deepEqual(finalize.depends_on, [qa.id]);
 });
 
 test('runPlanOnly returns planned results and only calls an injected dry worker', async () => {
@@ -104,5 +115,10 @@ test('runPlanOnly returns planned results and only calls an injected dry worker'
   });
 
   assert.deepEqual(seen, plan.jobs.map((job) => job.id));
-  assert.deepEqual(results.map((result) => result.status), ['planned', 'planned']);
+  assert.deepEqual(results.map((result) => result.status), ['planned', 'planned', 'planned', 'planned']);
+});
+
+test('CLI keeps --execute blocked', () => {
+  const args = parseArgs(['node', 'script', '--manifest', 'manifest.json', '--execute']);
+  assert.equal(args.execute, true);
 });

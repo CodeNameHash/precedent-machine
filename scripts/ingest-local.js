@@ -236,6 +236,63 @@ async function ingestOne(sb, client, url, existingDealId = null) {
   return { deal_id: newDeal.id, title, sector: meta.sector, inserted: parseResult.insertedCount, timing_ms: Date.now() - t0 };
 }
 
+async function prepareDealForIngest(sb, client, url, options = {}) {
+  const t0 = Date.now();
+  const html = await fetchUrl(url);
+  const fullText = stripHtml(html);
+  if (fullText.length < 5000) throw new Error(`Fetched text too short (${fullText.length} chars) — wrong URL?`);
+  const meta = await extractDealMetadata(client, fullText);
+  if (!meta.acquirer || !meta.target) throw new Error('Could not identify acquirer/target from the preamble');
+
+  const cleaned = cleanText(fullText);
+  const { sections, articles } = parseStructure(cleaned);
+  if (sections.length === 0) throw new Error('Parser found no sections in the agreement text');
+  const classifiedSections = await classifySections(sections, articles, client);
+  const sectionsForExtract = classifiedSections.map((s) => ({ ...s, provision_type: s.provisionType }));
+  const compactSections = toCompactSections(sectionsForExtract);
+  const displayText = displayCleanText(fullText);
+  let advisors = [];
+  try { advisors = extractAdvisors(displayText) || []; } catch { /* best effort */ }
+
+  const title = `${meta.acquirer} / ${meta.target}`;
+  const { data: newDeal, error: insErr } = await sb.from('deals').insert({
+    acquirer: meta.acquirer,
+    target: meta.target,
+    value_usd: meta.value_usd,
+    announce_date: meta.signing_date,
+    sector: meta.sector,
+    metadata: {
+      source_url: url,
+      full_text: displayText,
+      merger_form: meta.merger_form,
+      staged_at: new Date().toISOString(),
+      ingest_status: 'staging',
+      pipeline: 'parser-v2',
+      agreement_title: title,
+      char_count: displayText.length,
+      parent_entity: meta.parent_entity,
+      target_entity: meta.target_entity,
+      acquirer_display: meta.acquirer_display,
+      target_display: meta.target_display,
+      classified_sections: compactSections,
+      classify_run_at: new Date().toISOString(),
+      classify_breakdown: classifyBreakdown(compactSections),
+      ...(advisors.length > 0 ? { advisors } : {}),
+      ...(options.seed_ingest ? { seed_ingest: options.seed_ingest } : {}),
+    },
+  }).select().single();
+  if (insErr) throw new Error(`Deal insert failed: ${insErr.message}`);
+
+  return {
+    deal_id: newDeal.id,
+    title,
+    sector: meta.sector,
+    section_count: compactSections.length,
+    advisors,
+    timing_ms: Date.now() - t0,
+  };
+}
+
 function parseArgs(argv) {
   const args = { url: null, manifest: null, backend: 'claude', model: 'sonnet', dealId: null };
   for (let i = 2; i < argv.length; i++) {
@@ -292,6 +349,7 @@ module.exports = {
   loadDotEnvLocal,
   main,
   parseArgs,
+  prepareDealForIngest,
   runParserPipeline,
   stripHtml,
 };

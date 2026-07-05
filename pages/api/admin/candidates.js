@@ -1,6 +1,6 @@
 import { getServiceSupabase } from '../../../lib/supabase';
 
-const VALID_STATUSES = new Set(['pending', 'queued', 'ingested', 'skipped', 'error']);
+const VALID_STATUSES = new Set(['pending', 'queued', 'ingested', 'skipped', 'needs_review', 'error']);
 
 function cleanLimit(value) {
   const n = Number(value || 100);
@@ -43,7 +43,7 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'PATCH') {
-    const { id, status, skip_reason, ingested_deal_id } = req.body || {};
+    const { id, status, skip_reason, ingested_deal_id, review_notes, last_error } = req.body || {};
     if (!id) return res.status(400).json({ error: 'id is required' });
     if (status && !VALID_STATUSES.has(status)) return res.status(400).json({ error: 'Invalid status' });
 
@@ -51,6 +51,8 @@ export default async function handler(req, res) {
     if (status) updates.status = status;
     if (skip_reason !== undefined) updates.skip_reason = skip_reason || null;
     if (ingested_deal_id !== undefined) updates.ingested_deal_id = ingested_deal_id || null;
+    if (review_notes !== undefined) updates.review_notes = review_notes || null;
+    if (last_error !== undefined) updates.last_error = last_error || null;
 
     if (Object.keys(updates).length === 0) {
       return res.status(400).json({ error: 'No updates supplied' });
