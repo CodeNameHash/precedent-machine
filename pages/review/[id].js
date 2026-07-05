@@ -131,6 +131,7 @@ import { ConsidTable } from '../../components/review/ConsiderationTables';
 import { Sidebar } from '../../components/review/Sidebar';
 import { FullDocumentView } from '../../components/review/FullDocumentView';
 import { EditPanel } from '../../components/review/EditPanel';
+import { parseReviewRouteQuery, serializeReviewRouteQuery } from '../../lib/review-route';
 
 
 
@@ -10020,13 +10021,14 @@ ReviewPage.noLayout = true;
 
 export default function ReviewPage() {
   const router = useRouter();
-  const { id } = router.query;
+  const rawDealId = router.query.id;
+  const dealId = router.isReady && typeof rawDealId === 'string' ? rawDealId : null;
   const { isEdit } = useViewMode();
   const { user } = useUser({ redirectTo: '/login' });
-  const { deal, loading: dealLoading, refetch: refetchDeal } = useDeal(id);
+  const { deal, loading: dealLoading, refetch: refetchDeal } = useDeal(dealId);
   // P5 item 6: advisors editor modal toggle.
   const [advisorsModalOpen, setAdvisorsModalOpen] = useState(false);
-  const { provisions: rawProvisions, loading: provsLoading, refetch: refetchProvs } = useProvisions({ deal_id: id });
+  const { provisions: rawProvisions, loading: provsLoading, refetch: refetchProvs } = useProvisions({ deal_id: dealId });
   const { addToast } = useToast();
 
   /* ── Agreement Source ── */
@@ -10034,13 +10036,13 @@ export default function ReviewPage() {
   const [sourceLoading, setSourceLoading] = useState(true);
 
   useEffect(() => {
-    if (!id) return;
+    if (!dealId) return;
     setSourceLoading(true);
-    fetch(`/api/agreement-source?deal_id=${id}`)
+    fetch(`/api/agreement-source?deal_id=${dealId}`)
       .then(r => r.json())
       .then(d => { setAgreementSource(d.agreement_source); setSourceLoading(false); })
       .catch(() => setSourceLoading(false));
-  }, [id]);
+  }, [dealId]);
 
   /* ── Provision Types & Categories ── */
   const [provTypes, setProvTypes] = useState([]);
@@ -10077,6 +10079,16 @@ export default function ReviewPage() {
 
   /* ── Tab state: "provisions" or "document" ── */
   const [activeTab, setActiveTab] = useState('provisions');
+  const pushReviewRoute = useCallback((patch = {}) => {
+    if (!router.isReady || !dealId) return;
+    const current = parseReviewRouteQuery(router.query);
+    const query = serializeReviewRouteQuery({ ...current, ...patch });
+    router.push(
+      { pathname: router.pathname, query: { id: dealId, ...query } },
+      undefined,
+      { shallow: true, scroll: false },
+    );
+  }, [router, dealId]);
 
   /* ── Stage 5: highlight a verbatim quote in the Full Document tab.
    *    Set by EvidenceQuote click; consumed by FullDocumentView. */
@@ -10087,7 +10099,8 @@ export default function ReviewPage() {
     setHighlightedQuote(quote);
     setHighlightedQuoteNonce((n) => n + 1);
     setActiveTab('document');
-  }, []);
+    pushReviewRoute({ tab: 'document' });
+  }, [pushReviewRoute]);
 
   /* P5 item 7: evidence selection-mode state. When `selectionMode` is set,
    * the FullDocumentView listens for mouse-up + selection and, on Confirm,
@@ -10100,11 +10113,13 @@ export default function ReviewPage() {
   const startSelectionMode = useCallback(({ onSelect, label }) => {
     setSelectionMode({ active: true, onSelect, label: label || 'evidence' });
     setActiveTab('document');
-  }, []);
+    pushReviewRoute({ tab: 'document' });
+  }, [pushReviewRoute]);
   const endSelectionMode = useCallback(() => {
     setSelectionMode(null);
     setActiveTab('provisions');
-  }, []);
+    pushReviewRoute({ tab: 'provisions' });
+  }, [pushReviewRoute]);
 
   /* ── FB3 Surface 2: "see text" in-place document pop-under. Opened by any
    *    <TermCell> via DealNavContext; renders the raw agreement text
@@ -10120,8 +10135,8 @@ export default function ReviewPage() {
     setDocSheet((s) => ({ ...s, open: false }));
   }, []);
   const dealNavCtxValue = useMemo(
-    () => ({ dealId: id, openSeeText }),
-    [id, openSeeText],
+    () => ({ dealId, openSeeText }),
+    [dealId, openSeeText],
   );
 
   const evidenceCtxValue = useMemo(
@@ -10512,6 +10527,10 @@ export default function ReviewPage() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [hoveredProvId, setHoveredProvId] = useState(null);
   const provisionRefs = useRef({});
+  const closeEditPanel = useCallback(() => {
+    setEditingProvision(null);
+    pushReviewRoute({ editProvisionId: null });
+  }, [pushReviewRoute]);
 
   // On phones the 286px sidebar would crush the content column, so default it
   // closed below the md breakpoint (it becomes an overlay when toggled open).
@@ -10529,7 +10548,7 @@ export default function ReviewPage() {
   useEffect(() => {
     const handleClick = () => setExpandedLabel(null);
     const handleEscape = () => {
-      if (editingProvision) setEditingProvision(null);
+      if (editingProvision) closeEditPanel();
       else setExpandedLabel(null);
     };
     document.addEventListener('click', handleClick);
@@ -10538,7 +10557,7 @@ export default function ReviewPage() {
       document.removeEventListener('click', handleClick);
       document.removeEventListener('pm:escape', handleEscape);
     };
-  }, [editingProvision]);
+  }, [editingProvision, closeEditPanel]);
 
   /* ── Sidebar filter handler — accepts a single type, an array of types
    *     (for parent-group "show all children combined" clicks), or null
@@ -10552,7 +10571,8 @@ export default function ReviewPage() {
     }
     setActiveFilter(next);
     setSelectedProvId(null); // clear single-provision view when changing type filter
-  }, []);
+    pushReviewRoute({ section: next, provisionId: null });
+  }, [pushReviewRoute]);
 
   /* ── Sidebar provision click — show ONLY that provision in the main view ── */
   const handleSidebarSelectProvision = useCallback((provId) => {
@@ -10567,6 +10587,7 @@ export default function ReviewPage() {
       setSelectedProvId(null);
       setActiveFilter('__MATERIAL_CONTRACTS');
       setExpandedLabel(null);
+      pushReviewRoute({ section: '__MATERIAL_CONTRACTS', provisionId: null });
       return;
     }
     setSelectedProvId(provId);
@@ -10578,14 +10599,22 @@ export default function ReviewPage() {
       // still switches to this provision's card via setSelectedProvId above.
       if (isEdit) setEditingProvision(prov);
       setExpandedLabel(null);
+      pushReviewRoute({
+        section: null,
+        provisionId: prov.id,
+        editProvisionId: isEdit ? prov.id : null,
+      });
     }
-  }, [provisions, isEdit]);
+  }, [provisions, isEdit, pushReviewRoute]);
 
   /* ── Edit provision ── */
   const handleEditProvision = useCallback((provision) => {
     // User view: keep the click-to-evidence behavior (highlight + jump below)
     // but never mount the edit panel — no editing/save affordances for users.
-    if (isEdit) setEditingProvision(provision);
+    if (isEdit) {
+      setEditingProvision(provision);
+      if (provision && provision.id) pushReviewRoute({ editProvisionId: provision.id });
+    }
     setExpandedLabel(null);
     // Pre-mark the provision's section in the document (without switching tabs)
     // so when the user opens the Full Document tab it's already scrolled to and
@@ -10598,7 +10627,7 @@ export default function ReviewPage() {
       setHighlightedQuote(chunk);
       setHighlightedQuoteNonce((n) => n + 1);
     }
-  }, [isEdit]);
+  }, [isEdit, pushReviewRoute]);
 
   // Open the editor for a provision by id (used by the trust strip's unverified-
   // quote "Edit" action, which only carries provision_id).
@@ -10607,17 +10636,54 @@ export default function ReviewPage() {
     if (p) handleEditProvision(p);
   }, [provisions, handleEditProvision]);
 
-  // FB3 Surface 1: the provision card page (pages/review/[id]/provision/
-  // [provisionId].js) can't mount EditPanel itself (needs deal/allTypes/
-  // allCategories + this page's save/approve/flag/delete handlers — see the
-  // FB3 brief). Instead its "Edit" link comes back here with ?edit=<id>,
-  // and this effect opens the same edit panel the tables already use.
+  // Hydrate direct links once the route and provision list are ready.
+  // Compatibility: ?edit=<id> still enters through router.query.edit via
+  // parseReviewRouteQuery; the old path was handleEditProvisionById(editId).
   useEffect(() => {
-    if (!router.isReady || !isEdit) return;
-    const editId = router.query.edit;
-    if (typeof editId === 'string' && editId) handleEditProvisionById(editId);
+    if (!router.isReady) return;
+    const route = parseReviewRouteQuery(router.query);
+    if (route.tab && route.tab !== activeTab) setActiveTab(route.tab);
+    if (provsLoading) return;
+
+    let nextFilter = null;
+    let nextSelected = null;
+    if (route.provisionId) {
+      const selected = provisions.find((p) => String(p.id) === String(route.provisionId));
+      if (selected) {
+        if (isMaterialContractsProvision(selected)) {
+          nextFilter = '__MATERIAL_CONTRACTS';
+        } else {
+          nextFilter = selected.type;
+          nextSelected = selected.id;
+        }
+      }
+    } else if (route.section) {
+      const sectionValues = Array.isArray(route.section) ? route.section : [route.section];
+      const validSections = sectionValues.filter((section) =>
+        Object.prototype.hasOwnProperty.call(provsByType, section)
+      );
+      if (validSections.length === 1) nextFilter = validSections[0];
+      else if (validSections.length > 1) nextFilter = validSections;
+    }
+
+    setActiveFilter((prev) => {
+      const prevKey = Array.isArray(prev) ? prev.join('\u0000') : prev;
+      const nextKey = Array.isArray(nextFilter) ? nextFilter.join('\u0000') : nextFilter;
+      return prevKey === nextKey ? prev : nextFilter;
+    });
+    setSelectedProvId((prev) => (prev === nextSelected ? prev : nextSelected));
+
+    if (isEdit) {
+      const editTarget = route.editProvisionId
+        ? provisions.find((p) => String(p.id) === String(route.editProvisionId))
+        : null;
+      setEditingProvision((prev) => {
+        if (!editTarget) return prev ? null : prev;
+        return prev && prev.id === editTarget.id ? prev : editTarget;
+      });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.isReady, router.query.edit, isEdit, provisions]);
+  }, [router.isReady, router.query, activeTab, provsLoading, provisions, provsByType, isEdit]);
 
   /* ── Save edits ── */
   const handleSaveProvision = useCallback(async (updates) => {
@@ -10637,12 +10703,12 @@ export default function ReviewPage() {
       }
       addToast('Provision updated', 'success');
       await refetchProvs();
-      setEditingProvision(null);
+      closeEditPanel();
     } catch (err) {
       addToast(`Error: ${err.message}`, 'error');
       throw err;
     }
-  }, [addToast, refetchProvs]);
+  }, [addToast, refetchProvs, closeEditPanel]);
 
   /* ── Approve ── */
   const handleApprove = useCallback((provision) => {
@@ -10668,12 +10734,12 @@ export default function ReviewPage() {
       const data = await resp.json();
       if (data.error) throw new Error(data.error);
       addToast('Provision deleted', 'success');
-      setEditingProvision(null);
+      closeEditPanel();
       refetchProvs();
     } catch (err) {
       addToast(`Error: ${err.message}`, 'error');
     }
-  }, [addToast, refetchProvs]);
+  }, [addToast, refetchProvs, closeEditPanel]);
 
   /* ── Drag-and-drop: move provision between sidebar categories ── */
   const handleMoveProvision = useCallback(async (provision, newType) => {
@@ -10698,8 +10764,8 @@ export default function ReviewPage() {
   /* ── Propose New Code ── */
   const handleProposeCode = useCallback((provision) => {
     addToast('New code proposal submitted for review', 'info');
-    setEditingProvision(null);
-  }, [addToast]);
+    closeEditPanel();
+  }, [addToast, closeEditPanel]);
 
   /* ── Re-select Text: enter mode ── */
   const handleReselectText = useCallback((provision) => {
@@ -10707,7 +10773,7 @@ export default function ReviewPage() {
     const label = `${typeLabel(provision.type)} -- ${provision.category || 'General'}`;
     setReselectingProvId(provision.id);
     setReselectingProvLabel(label);
-    setEditingProvision(null);
+    closeEditPanel();
     // Jump straight to the provision's CURRENT text in the document (highlight
     // + scroll-into-view) instead of dropping the user at the top to scroll
     // through the whole agreement. A leading chunk is a reliable anchor.
@@ -10716,8 +10782,9 @@ export default function ReviewPage() {
       showEvidence(current.slice(0, 240));
     } else {
       setActiveTab('document');
+      pushReviewRoute({ tab: 'document' });
     }
-  }, [showEvidence]);
+  }, [showEvidence, closeEditPanel, pushReviewRoute]);
 
   /* ── Re-select Text: exit mode ── */
   const handleCancelReselect = useCallback(() => {
@@ -10755,15 +10822,16 @@ export default function ReviewPage() {
   const handleBeginAdd = useCallback((ctx) => {
     if (!ctx || !ctx.type) return;
     setAddContext(ctx);
-    setEditingProvision(null);
+    closeEditPanel();
     setActiveTab('document');
+    pushReviewRoute({ tab: 'document' });
     addToast(`Select the clause for the new ${ctx.noun || 'item'} in the document`, 'info');
-  }, [addToast]);
+  }, [addToast, closeEditPanel, pushReviewRoute]);
   const handleCancelAdd = useCallback(() => setAddContext(null), []);
 
   /* ── Create Provision from Selection ── */
   const handleCreateProvision = useCallback(async (text, opts = {}) => {
-    if (!id) return;
+    if (!dealId) return;
     const body = (text || '').trim();
     if (!body) { addToast('Select the clause text in the document first', 'error'); return; }
     try {
@@ -10771,7 +10839,7 @@ export default function ReviewPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          deal_id: id,
+          deal_id: dealId,
           full_text: body,
           type: opts.type || 'MISC',
           category: opts.category || 'Uncategorized',
@@ -10791,7 +10859,7 @@ export default function ReviewPage() {
     } catch (err) {
       addToast(`Error: ${err.message}`, 'error');
     }
-  }, [id, addToast, refetchProvs]);
+  }, [dealId, addToast, refetchProvs]);
 
   /* ── Definition hover ── */
   const handleDefHover = useCallback((def, event) => {
@@ -10865,7 +10933,7 @@ export default function ReviewPage() {
             {/* Deal name truncates with an ellipsis rather than bleeding out
                 of the title bar on narrow/mobile widths (FB3 item 2). */}
             <Link
-              href={`/review/${id}`}
+              href={`/review/${dealId}`}
               className="text-inkFaint hover:text-ink transition-colors truncate min-w-0 max-w-[45vw] sm:max-w-[280px]"
               title={dealLabel}
             >
@@ -10919,7 +10987,7 @@ export default function ReviewPage() {
               activeFilter={activeFilter}
               onFilterType={handleFilterType}
               onSelectProvision={handleSidebarSelectProvision}
-              activeProvId={editingProvision?.id}
+              activeProvId={selectedProvId || editingProvision?.id}
               onMoveProvision={handleMoveProvision}
               onClose={() => setSidebarOpen(false)}
             />
@@ -11082,7 +11150,7 @@ export default function ReviewPage() {
                 )}
               </div>
               {isEdit && (
-                <TrustStrip dealId={id} onJump={showEvidence} onEditProvisionById={handleEditProvisionById} />
+                <TrustStrip dealId={dealId} onJump={showEvidence} onEditProvisionById={handleEditProvisionById} />
               )}
             </div>
 
@@ -11091,7 +11159,10 @@ export default function ReviewPage() {
               <div className="rec-tabs">
                 <button
                   type="button"
-                  onClick={() => setActiveTab('provisions')}
+                  onClick={() => {
+                    setActiveTab('provisions');
+                    pushReviewRoute({ tab: 'provisions' });
+                  }}
                   className={`rec-tab${activeTab === 'provisions' ? ' active' : ''}`}
                 >
                   Provisions
@@ -11099,7 +11170,10 @@ export default function ReviewPage() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setActiveTab('document')}
+                  onClick={() => {
+                    setActiveTab('document');
+                    pushReviewRoute({ tab: 'document' });
+                  }}
                   className={`rec-tab${activeTab === 'document' ? ' active' : ''}`}
                   title={hasSource ? 'Raw agreement text with provision highlights' : 'Raw text not stored yet — re-ingest to populate'}
                 >
@@ -11149,7 +11223,7 @@ export default function ReviewPage() {
                   </span>
                   <button
                     type="button"
-                    onClick={() => { setActiveFilter(null); setSelectedProvId(null); }}
+                    onClick={() => handleFilterType(null)}
                     style={{
                       background: 'none',
                       border: 'none',
@@ -11449,7 +11523,7 @@ export default function ReviewPage() {
                       <div className="text-center py-12">
                         <p className="text-inkFaint font-ui">No provisions match this filter.</p>
                         <button
-                          onClick={() => { setActiveFilter(null); setSelectedProvId(null); }}
+                          onClick={() => handleFilterType(null)}
                           className="text-accent text-sm font-ui hover:underline mt-2"
                         >
                           Show all provisions
@@ -11498,7 +11572,7 @@ export default function ReviewPage() {
         {isEdit && editingProvision && (
           <div
             className="md:hidden fixed inset-0 bg-black/30 z-[55]"
-            onClick={() => setEditingProvision(null)}
+            onClick={closeEditPanel}
           />
         )}
 
@@ -11509,7 +11583,7 @@ export default function ReviewPage() {
             provision={editingProvision}
             allTypes={provTypes.length > 0 ? provTypes : Object.keys(TYPE_LABELS).map(k => ({ key: k, label: TYPE_LABELS[k] }))}
             allCategories={provCategories}
-            onClose={() => setEditingProvision(null)}
+            onClose={closeEditPanel}
             onSave={handleSaveProvision}
             onApprove={handleApprove}
             onFlag={handleFlag}
@@ -11559,7 +11633,7 @@ export default function ReviewPage() {
           closing it never touches that column's scroll position. */}
       <DocPopUnder
         open={docSheet.open}
-        dealId={id}
+        dealId={dealId}
         provision={docSheet.provision}
         quote={docSheet.quote}
         sourceText={hasSource ? agreementSource.full_text : null}
