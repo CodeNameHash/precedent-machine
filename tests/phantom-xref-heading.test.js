@@ -19,7 +19,7 @@
    Run: npm test */
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { parseStructure } = require('../lib/parser-v2/structural');
+const { parseStructure, cleanText } = require('../lib/parser-v2/structural');
 
 const BODY_FILLER = ' The parties agree to the covenants and undertakings set forth herein, subject to the terms and conditions of this Agreement and applicable Law, in each case as more fully described below.'.repeat(3);
 
@@ -56,15 +56,10 @@ test('Skechers shape: wrapped "prohibited by\\nSection 5.2 (other than ..." is n
   const { sections } = parseStructure(doc);
   const byNum = Object.fromEntries(sections.map((s) => [s.number, s]));
 
-  // The REAL 5.2 (Forbearance Covenants) is kept — not the phantom.
   assert.ok(byNum['5.2'], 'section 5.2 exists');
   assert.match(byNum['5.2'].title, /Forbearance Covenants/, 'real 5.2 wins over the phantom cross-reference');
   assert.match(byNum['5.2'].text, /will not permit any of its Subsidiaries/, 'forbearance body attached to 5.2');
-
-  // 3.12 is not truncated at the wrapped cross-reference.
   assert.match(byNum['3.12'].text, /if taken or proposed to be taken after the date hereof/, '3.12 keeps its full text past the wrapped Section 5.2 reference');
-
-  // 5.1 ends at the REAL 5.2 heading, not by swallowing it.
   assert.match(byNum['5.1'].text, /maintain its existence in good standing/);
   assert.ok(!/Forbearance Covenants\. Except/.test(byNum['5.1'].text), '5.1 does not swallow the 5.2 body');
 });
@@ -84,8 +79,6 @@ test('Verve shape: sentence-ending self-reference "of this\\nSection 6.3." is no
       `(b) Notwithstanding Section 6.3(a) or any other provision of this Agreement, the Company may participate in discussions regarding a Superior Proposal.${BODY_FILLER}`,
     ].join('\n'),
     '',
-    // Kraft/Metsera-style REAL heading: number-period at end of line, title
-    // (with body) on the next line — must survive the self-reference guard.
     'Section 6.4.',
     `Access to Information. (a) Upon reasonable notice, the Company shall afford Parent reasonable access to its properties, books and records.${BODY_FILLER}`,
   ].join('\n');
@@ -123,4 +116,30 @@ test('Mr. Cooper shape: "consistent with this\\nSection 7.8 (including ..." does
   assert.match(byNum['7.8'].text, /including the immediately foregoing sentence/, '7.8 keeps the text after the wrapped self-reference');
   assert.match(byNum['7.8'].text, /except pursuant to Section 5\.2/, '7.8 runs to its true end');
   assert.ok(byNum['7.9'], 'next section still detected');
+});
+
+test('Conoco shape: wrapped cross-reference with semicolon does not create a phantom heading', () => {
+  const doc = cleanText(`
+AGREEMENT AND PLAN OF MERGER
+
+NOW, THEREFORE, the parties agree as follows:
+
+ARTICLE VI
+COVENANTS AND AGREEMENTS
+
+6.1 Conduct of Company Business Pending the Merger. (a) Except as set forth on Schedule 6.1(a), the Company shall not take action contemplated
+by Section 3.2; (D) pay or agree to pay any amount to any current or former director, officer or employee except as not required by the terms of any Company Plan.
+
+6.2 Conduct of Parent Business Pending the Merger. Parent shall conduct its business in the ordinary course.
+`);
+  const parsed = parseStructure(doc);
+  const sections = parsed.sections;
+  const byNum = Object.fromEntries(sections.map((section) => [section.number, section]));
+
+  assert.ok(byNum['6.1'], 'section 6.1 exists');
+  assert.match(byNum['6.1'].text, /by Section 3\.2; \(D\) pay or agree to pay/);
+  assert.match(byNum['6.1'].text, /current or former director/);
+  assert.match(byNum['6.1'].text, /not required by the terms of any Company Plan/);
+  assert.equal(sections.filter((section) => section.number === '3.2').length, 0);
+  assert.ok(byNum['6.2'], 'section 6.2 still exists after 6.1');
 });

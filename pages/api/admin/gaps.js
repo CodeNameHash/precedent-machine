@@ -2,6 +2,7 @@ import { getServiceSupabase } from '../../../lib/supabase';
 import { computeCoverage, verifyDealQuotes } from '../../../lib/verification';
 
 const { computeCanonicalRate } = require('../../../scripts/ingest-qa');
+const { buildParserReview } = require('../../../lib/parser-v2/structural');
 const {
   buildGapDetails,
   buildUncodedDetails,
@@ -185,6 +186,8 @@ function summariseDeal(deal, provisions, latestIngest) {
   const reviewableGaps = typedGaps.filter((item) => item.reviewable);
   const largestGap = (reviewableGaps[0] && reviewableGaps[0].gap) || null;
   const needsCodeSummary = buildUncodedSummary(provisions || []);
+  const parserReview = sourceText ? buildParserReview(sourceText) : null;
+  const parserSummary = parserReview ? parserReview.summary : {};
 
   return {
     deal_id: deal.id,
@@ -195,6 +198,9 @@ function summariseDeal(deal, provisions, latestIngest) {
     unverified_quotes: verification.unverified,
     gap_count: reviewableGaps.length,
     ignored_gap_count: typedGaps.length - reviewableGaps.length,
+    parser_structural_gap_count: parserSummary.structural_gap_count ?? null,
+    definition_warning_count: parserSummary.definition_warning_count ?? null,
+    data_model_flag_count: parserSummary.data_model_flag_count ?? null,
     needs_code_count: needsCodeSummary.count,
     needs_code_proposed_count: needsCodeSummary.proposed_count,
     needs_code_type_counts: needsCodeSummary.by_type,
@@ -245,6 +251,7 @@ async function getDetail(req, res, sb, dealId) {
     .map((gap, index) => ({ ...gap, id: formatGapId(index + 1) }));
   const ignoredGaps = gaps.filter((gap) => !gap.reviewable_gap);
   const needsCode = buildUncodedDetails(provisionsResult.data || []);
+  const parserReview = buildParserReview(sourceTextOf(deal));
 
   return res.status(200).json({
     summary: publicSummary(summary),
@@ -252,6 +259,10 @@ async function getDetail(req, res, sb, dealId) {
     ignored_gaps: ignoredGaps,
     needs_code: needsCode,
     uncoded: needsCode,
+    parser_review: parserReview,
+    definition_warnings: parserReview.definition_warnings,
+    data_model_flags: parserReview.data_model_flags,
+    structural_gaps: parserReview.structural_gaps,
     coverage: {
       sourceChars: summary._coverage.sourceChars,
       coveredChars: summary._coverage.coveredChars,
@@ -264,6 +275,9 @@ async function getDetail(req, res, sb, dealId) {
       rawGapCount: gaps.length,
       reviewableGapCount: reviewableGaps.length,
       ignoredGapCount: ignoredGaps.length,
+      parserStructuralGapCount: parserReview.summary.structural_gap_count,
+      definitionWarningCount: parserReview.summary.definition_warning_count,
+      dataModelFlagCount: parserReview.summary.data_model_flag_count,
     },
     ...(ingestRefsResult.unavailable && ingestRefsResult.unavailable.length ? { ingest_refs_unavailable: ingestRefsResult.unavailable } : {}),
   });

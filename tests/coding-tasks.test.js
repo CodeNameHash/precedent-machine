@@ -30,6 +30,9 @@ const item = {
   proposed: true,
   suggested_reason: 'Proposed taxonomy item awaiting review.',
   rough_heading: 'Section 5.03 Go-Shop',
+  section_number: '5.03',
+  start_char: 12345,
+  region_type: 'body.section.provision',
   preview: 'Section 5.03 Go-Shop. The Company may solicit Acquisition Proposals.',
   full_text: 'Section 5.03 Go-Shop. The Company may solicit Acquisition Proposals for 30 days.',
 };
@@ -95,6 +98,9 @@ test('buildCodingTaskPayload contains the CLI handoff fields', () => {
   assert.equal(payload.ben_note, 'This belongs under no-shop exceptions.');
   assert.equal(payload.suggested_action, 'assign_existing');
   assert.equal(payload.suggested_code, 'NOSOL-GOSHOP');
+  assert.equal(payload.needs_code_item.section_number, '5.03');
+  assert.equal(payload.needs_code_item.start_char, 12345);
+  assert.equal(payload.needs_code_item.region_type, 'body.section.provision');
   assert.equal(payload.audit.direct_taxonomy_write, false);
   assert.equal(payload.audit.cli_audited, true);
 });

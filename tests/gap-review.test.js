@@ -121,6 +121,26 @@ test('buildGapDetails numbers document-order gaps with full text, contexts, head
   assert.equal(gaps[0].adjacent_provisions.after.provision_id, 'prov-notices');
 });
 
+test('buildGapDetails honours parser-supplied region type for definition annexes', () => {
+  const source = 'ANNEX A Certain Definitions "Company Competing Proposal" means any proposal involving (a) assets and (b) equity.';
+  const display = normalizeForGapDisplay(source);
+  const [gap] = buildGapDetails({
+    coverage: {
+      gaps: [{
+        start: 0,
+        length: display.length,
+        region_type: REGION_TYPES.BODY_SECTION_DEFINITION,
+      }],
+    },
+    sourceText: source,
+    provisions: [],
+  });
+
+  assert.equal(gap.region_type, REGION_TYPES.BODY_SECTION_DEFINITION);
+  assert.equal(gap.reviewable_gap, true);
+  assert.equal(gap.ignored_reason, null);
+});
+
 test('gapPreviewFromSource returns the display text slice, not the stored coverage snippet', () => {
   const source = 'Section 1.01 Intro. Some text. Section 8.01 Expenses. Each party pays its own expenses.';
   const display = normalizeForGapDisplay(source);
@@ -144,7 +164,14 @@ test('buildUncodedDetails numbers non-canonical extracted provisions with full t
       id: 'prov-proposed',
       type: 'NOSOL',
       category: '[PROPOSED] Go-Shop',
-      ai_metadata: { features: { canonicalCode: '[PROPOSED] NOSOL-GOSHOP' } },
+      ai_metadata: {
+        startChar: 298438,
+        regionType: REGION_TYPES.BODY_SECTION_DEFINITION,
+        features: {
+          canonicalCode: '[PROPOSED] NOSOL-GOSHOP',
+          sectionNumber: 'Annex-A',
+        },
+      },
       full_text: 'Section 5.03 Go-Shop. The Company may solicit Acquisition Proposals for 30 days.',
     },
     {
@@ -177,6 +204,9 @@ test('buildUncodedDetails numbers non-canonical extracted provisions with full t
   assert.equal(uncoded[0].provision_id, 'prov-proposed');
   assert.equal(uncoded[0].proposed, true);
   assert.equal(uncoded[0].code, '[PROPOSED] NOSOL-GOSHOP');
+  assert.equal(uncoded[0].section_number, 'Annex-A');
+  assert.equal(uncoded[0].start_char, 298438);
+  assert.equal(uncoded[0].region_type, REGION_TYPES.BODY_SECTION_DEFINITION);
   assert.match(uncoded[0].full_text, /Go-Shop/);
   assert.equal(uncoded[1].code, null);
   assert.match(uncoded[1].suggested_reason, /No canonical code/);
