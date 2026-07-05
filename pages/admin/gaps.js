@@ -6,6 +6,13 @@ import { Breadcrumbs } from '../../components/UI';
 import AdminNav from '../../components/admin/AdminNav';
 
 const DEFAULT_LIMIT = 100;
+const DEFAULT_CODING_ACTION = 'propose_new_code';
+const CODING_ACTIONS = [
+  { value: 'propose_new_code', label: 'Propose new code' },
+  { value: 'assign_existing', label: 'Assign existing' },
+  { value: 'split', label: 'Split' },
+  { value: 'ignore', label: 'Ignore' },
+];
 
 async function readJson(resp) {
   const text = await resp.text();
@@ -72,10 +79,10 @@ function GapReference({ summary, gap }) {
   ].filter(Boolean).join(' | ');
 }
 
-function UncodedReference({ summary, item }) {
+function NeedsCodeReference({ summary, item }) {
   return [
     `deal_id=${summary.deal_id}`,
-    `uncoded=${item.id}`,
+    `needs_code=${item.id}`,
     item.provision_id ? `provision_id=${item.provision_id}` : null,
     item.type ? `type=${item.type}` : null,
     item.category ? `category=${item.category}` : null,
@@ -95,8 +102,62 @@ function GapText({ gap }) {
   return <FullText item={gap} />;
 }
 
-function UncodedText({ item }) {
+function NeedsCodeText({ item }) {
   return <FullText item={item} />;
+}
+
+function NeedsCodeTaskForm({ draft, status, submitting, onChange, onSubmit }) {
+  return (
+    <form onSubmit={onSubmit} className="rounded border border-border bg-bg/40 p-3">
+      <div className="grid gap-3 md:grid-cols-[180px_minmax(160px,1fr)]">
+        <label className="text-xs font-ui text-inkLight">
+          Action
+          <select
+            value={draft.suggested_action}
+            onChange={(e) => onChange({ suggested_action: e.target.value })}
+            className="mt-1 block w-full rounded border border-border bg-white px-2 py-1.5 text-sm text-ink focus:outline-none focus:ring-1 focus:ring-accent"
+          >
+            {CODING_ACTIONS.map((action) => (
+              <option key={action.value} value={action.value}>{action.label}</option>
+            ))}
+          </select>
+        </label>
+        <label className="text-xs font-ui text-inkLight">
+          Existing code
+          <input
+            type="text"
+            value={draft.suggested_code}
+            onChange={(e) => onChange({ suggested_code: e.target.value })}
+            placeholder="Optional"
+            className="mt-1 block w-full rounded border border-border bg-white px-2 py-1.5 text-sm text-ink focus:outline-none focus:ring-1 focus:ring-accent"
+          />
+        </label>
+      </div>
+      <label className="mt-3 block text-xs font-ui text-inkLight">
+        Ben note
+        <textarea
+          value={draft.note}
+          onChange={(e) => onChange({ note: e.target.value })}
+          rows={3}
+          className="mt-1 block w-full rounded border border-border bg-white px-2 py-1.5 text-sm leading-5 text-ink focus:outline-none focus:ring-1 focus:ring-accent"
+        />
+      </label>
+      <div className="mt-3 flex flex-wrap items-center gap-3">
+        <button
+          type="submit"
+          disabled={submitting}
+          className="rounded bg-accent px-3 py-1.5 text-xs font-ui text-white hover:bg-accent/90 disabled:opacity-40"
+        >
+          {submitting ? 'Queueing' : 'Queue for CLI'}
+        </button>
+        {status?.message && (
+          <span className={`text-xs font-ui ${status.ok ? 'text-buyer' : 'text-seller'}`}>
+            {status.message}
+          </span>
+        )}
+      </div>
+    </form>
+  );
 }
 
 function LoadingRows({ rows = 4 }) {
@@ -121,7 +182,9 @@ export default function GapReviewAdmin() {
   const router = useRouter();
   const selectedDealId = typeof router.query.deal_id === 'string' ? router.query.deal_id : null;
   const selectedGapId = typeof router.query.gap === 'string' ? router.query.gap : null;
-  const selectedUncodedId = typeof router.query.uncoded === 'string' ? router.query.uncoded : null;
+  const selectedNeedsCodeId = typeof router.query.needs_code === 'string'
+    ? router.query.needs_code
+    : (typeof router.query.uncoded === 'string' ? router.query.uncoded : null);
   const readerRef = useRef(null);
   const [rows, setRows] = useState([]);
   const [pagination, setPagination] = useState(null);
@@ -132,17 +195,20 @@ export default function GapReviewAdmin() {
   const [detail, setDetail] = useState(null);
   const [error, setError] = useState(null);
   const [copiedGap, setCopiedGap] = useState(null);
-  const [copiedUncoded, setCopiedUncoded] = useState(null);
+  const [copiedNeedsCode, setCopiedNeedsCode] = useState(null);
   const [expandedGapIds, setExpandedGapIds] = useState(() => new Set());
-  const [expandedUncodedIds, setExpandedUncodedIds] = useState(() => new Set());
+  const [expandedNeedsCodeIds, setExpandedNeedsCodeIds] = useState(() => new Set());
+  const [taskDrafts, setTaskDrafts] = useState({});
+  const [taskStatuses, setTaskStatuses] = useState({});
+  const [taskSubmitting, setTaskSubmitting] = useState(null);
 
   const selectedSummary = detail?.summary || rows.find(row => row.deal_id === selectedDealId) || null;
   const gaps = detail?.gaps || [];
   const selectedGap = gaps.find((gap) => gap.id === selectedGapId) || gaps[0] || null;
   const selectedGapKey = selectedGap ? selectedGap.id : null;
-  const uncoded = detail?.uncoded || [];
-  const selectedUncoded = uncoded.find((item) => item.id === selectedUncodedId) || uncoded[0] || null;
-  const selectedUncodedKey = selectedUncoded ? selectedUncoded.id : null;
+  const needsCodeItems = detail?.needs_code || detail?.uncoded || [];
+  const selectedNeedsCode = needsCodeItems.find((item) => item.id === selectedNeedsCodeId) || needsCodeItems[0] || null;
+  const selectedNeedsCodeKey = selectedNeedsCode ? selectedNeedsCode.id : null;
 
   const summaryUrl = useMemo(() => {
     const sp = new URLSearchParams();
@@ -194,7 +260,7 @@ export default function GapReviewAdmin() {
   useEffect(() => {
     if (!detail) return;
     setExpandedGapIds(new Set((detail.gaps || []).map((gap) => gap.id)));
-    setExpandedUncodedIds(new Set());
+    setExpandedNeedsCodeIds(new Set());
   }, [detail?.summary?.deal_id]);
 
   useEffect(() => {
@@ -217,19 +283,19 @@ export default function GapReviewAdmin() {
     setTimeout(() => setCopiedGap(null), 1200);
   };
 
-  const copyUncodedReference = async (item) => {
+  const copyNeedsCodeReference = async (item) => {
     if (!selectedSummary || !item) return;
-    const ref = UncodedReference({ summary: selectedSummary, item });
+    const ref = NeedsCodeReference({ summary: selectedSummary, item });
     await navigator.clipboard.writeText(ref);
-    setCopiedUncoded(item.id);
-    setTimeout(() => setCopiedUncoded(null), 1200);
+    setCopiedNeedsCode(item.id);
+    setTimeout(() => setCopiedNeedsCode(null), 1200);
   };
 
-  const copyUncodedText = async (item) => {
+  const copyNeedsCodeText = async (item) => {
     if (!item) return;
     await navigator.clipboard.writeText(item.full_text || item.text || item.preview || '');
-    setCopiedUncoded(`${item.id}:text`);
-    setTimeout(() => setCopiedUncoded(null), 1200);
+    setCopiedNeedsCode(`${item.id}:text`);
+    setTimeout(() => setCopiedNeedsCode(null), 1200);
   };
 
   const expandAll = () => {
@@ -249,21 +315,79 @@ export default function GapReviewAdmin() {
     });
   };
 
-  const expandAllUncoded = () => {
-    setExpandedUncodedIds(new Set(uncoded.map((item) => item.id)));
+  const expandAllNeedsCode = () => {
+    setExpandedNeedsCodeIds(new Set(needsCodeItems.map((item) => item.id)));
   };
 
-  const collapseAllUncoded = () => {
-    setExpandedUncodedIds(new Set());
+  const collapseAllNeedsCode = () => {
+    setExpandedNeedsCodeIds(new Set());
   };
 
-  const toggleUncoded = (itemId) => {
-    setExpandedUncodedIds((current) => {
+  const toggleNeedsCode = (itemId) => {
+    setExpandedNeedsCodeIds((current) => {
       const next = new Set(current);
       if (next.has(itemId)) next.delete(itemId);
       else next.add(itemId);
       return next;
     });
+  };
+
+  const needsCodeTaskKey = (item) => item ? (item.provision_id || item.id) : '';
+
+  const taskDraftFor = (item) => {
+    const key = needsCodeTaskKey(item);
+    return taskDrafts[key] || { suggested_action: DEFAULT_CODING_ACTION, suggested_code: '', note: '' };
+  };
+
+  const taskStatusFor = (item) => taskStatuses[needsCodeTaskKey(item)] || null;
+
+  const updateTaskDraft = (item, patch) => {
+    const key = needsCodeTaskKey(item);
+    setTaskDrafts((current) => ({
+      ...current,
+      [key]: {
+        suggested_action: DEFAULT_CODING_ACTION,
+        suggested_code: '',
+        note: '',
+        ...(current[key] || {}),
+        ...patch,
+      },
+    }));
+  };
+
+  const submitNeedsCodeTask = async (event, item) => {
+    event.preventDefault();
+    if (!selectedSummary || !item) return;
+    const key = needsCodeTaskKey(item);
+    const draft = taskDraftFor(item);
+    setTaskSubmitting(key);
+    setTaskStatuses((current) => ({ ...current, [key]: null }));
+    setError(null);
+    try {
+      const data = await readJson(await fetch('/api/admin/gaps', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          deal_id: selectedSummary.deal_id,
+          needs_code_id: item.id,
+          provision_id: item.provision_id || null,
+          suggested_action: draft.suggested_action,
+          suggested_code: draft.suggested_code,
+          note: draft.note,
+        }),
+      }));
+      setTaskStatuses((current) => ({
+        ...current,
+        [key]: { ok: true, message: `Queued ${shortId(data.task?.id)}` },
+      }));
+    } catch (err) {
+      setTaskStatuses((current) => ({
+        ...current,
+        [key]: { ok: false, message: err.message },
+      }));
+    } finally {
+      setTaskSubmitting(null);
+    }
   };
 
   return (
@@ -336,7 +460,7 @@ export default function GapReviewAdmin() {
                   <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Deal</th>
                   <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Coverage</th>
                   <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Gaps</th>
-                  <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Uncoded</th>
+                  <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Needs Code</th>
                   <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Largest</th>
                   <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Canonical</th>
                   <th className="px-4 py-3 text-left font-ui font-medium text-inkLight">Quotes</th>
@@ -361,7 +485,7 @@ export default function GapReviewAdmin() {
                     </td>
                     <td className="px-4 py-3 font-ui text-ink">{pct(row.coverage_pct)}</td>
                     <td className="px-4 py-3 font-ui text-ink">{num(row.gap_count)}</td>
-                    <td className="px-4 py-3 font-ui text-ink">{num(row.uncoded_count)}</td>
+                    <td className="px-4 py-3 font-ui text-ink">{num(row.needs_code_count ?? row.uncoded_count)}</td>
                     <td className="max-w-md px-4 py-3">
                       <div className="font-ui text-ink">{num(row.largest_gap_chars)} chars</div>
                       <div className="mt-0.5 truncate text-xs font-ui text-inkLight">{row.largest_gap_preview || '-'}</div>
@@ -422,7 +546,7 @@ export default function GapReviewAdmin() {
                 <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-6">
                   <Metric label="Coverage" value={pct(selectedSummary.coverage_pct)} />
                   <Metric label="Gaps" value={num(selectedSummary.gap_count)} />
-                  <Metric label="Uncoded" value={num(selectedSummary.uncoded_count)} />
+                  <Metric label="Needs Code" value={num(selectedSummary.needs_code_count ?? selectedSummary.uncoded_count)} />
                   <Metric label="Largest gap" value={`${num(selectedSummary.largest_gap_chars)} chars`} />
                   <Metric label="Canonical" value={rate(selectedSummary.canonical_rate)} />
                   <Metric label="Unverified quotes" value={num(selectedSummary.unverified_quotes)} />
@@ -593,29 +717,29 @@ export default function GapReviewAdmin() {
                 </>
               )}
 
-              {uncoded.length === 0 ? (
+              {needsCodeItems.length === 0 ? (
                 <div className="rounded-lg border border-border bg-white p-8 text-center text-sm font-ui text-inkFaint shadow-sm">
-                  No uncoded extracted sections.
+                  No Needs Code sections.
                 </div>
               ) : (
                 <>
                   <div className="grid gap-4 lg:grid-cols-[280px_minmax(0,1fr)]">
                     <div className="rounded-lg border border-border bg-white shadow-sm">
                       <div className="border-b border-border bg-bg/50 px-4 py-3">
-                        <h3 className="font-display text-lg text-ink">Uncoded Sections</h3>
+                        <h3 className="font-display text-lg text-ink">Needs Code</h3>
                       </div>
                       <div className="max-h-[620px] overflow-auto p-2">
-                        {uncoded.map((item) => (
+                        {needsCodeItems.map((item) => (
                           <Link
                             key={item.id}
-                            href={{ pathname: '/admin/gaps', query: { deal_id: selectedSummary.deal_id, uncoded: item.id } }}
+                            href={{ pathname: '/admin/gaps', query: { deal_id: selectedSummary.deal_id, needs_code: item.id } }}
                             className={`block rounded border px-3 py-2 text-left hover:border-accent ${
-                              selectedUncodedKey === item.id ? 'border-accent bg-accent/5' : 'border-transparent'
+                              selectedNeedsCodeKey === item.id ? 'border-accent bg-accent/5' : 'border-transparent'
                             }`}
                           >
                             <div className="flex items-center justify-between gap-2">
                               <span className="font-mono text-xs font-semibold text-accent">{item.id}</span>
-                              <SuggestionPill type={item.family_type || item.type || 'UNCODED'} />
+                              <SuggestionPill type={item.family_type || item.type || 'NEEDS CODE'} />
                             </div>
                             <div className="mt-1 truncate text-xs font-ui text-ink">
                               {item.rough_heading || item.preview || item.id}
@@ -629,36 +753,36 @@ export default function GapReviewAdmin() {
                     </div>
 
                     <div className="rounded-lg border border-border bg-white p-5 shadow-sm">
-                      {selectedUncoded ? (
+                      {selectedNeedsCode ? (
                         <>
                           <div className="flex flex-wrap items-start justify-between gap-4">
                             <div className="min-w-0">
                               <div className="flex flex-wrap items-center gap-2">
-                                <span className="font-mono text-xs font-semibold text-accent">{selectedUncoded.id}</span>
-                                <SuggestionPill type={selectedUncoded.family_type || selectedUncoded.type || 'UNCODED'} />
-                                {selectedUncoded.provision_id && (
-                                  <span className="text-xs font-ui text-inkFaint">prov {shortId(selectedUncoded.provision_id)}</span>
+                                <span className="font-mono text-xs font-semibold text-accent">{selectedNeedsCode.id}</span>
+                                <SuggestionPill type={selectedNeedsCode.family_type || selectedNeedsCode.type || 'NEEDS CODE'} />
+                                {selectedNeedsCode.provision_id && (
+                                  <span className="text-xs font-ui text-inkFaint">prov {shortId(selectedNeedsCode.provision_id)}</span>
                                 )}
                               </div>
                               <h3 className="mt-2 font-display text-xl text-ink">
-                                {selectedUncoded.rough_heading || selectedUncoded.id}
+                                {selectedNeedsCode.rough_heading || selectedNeedsCode.id}
                               </h3>
-                              <p className="mt-1 text-sm font-ui text-inkLight">{selectedUncoded.suggested_reason}</p>
+                              <p className="mt-1 text-sm font-ui text-inkLight">{selectedNeedsCode.suggested_reason}</p>
                             </div>
                             <div className="flex flex-wrap gap-2">
                               <button
                                 type="button"
-                                onClick={() => copyUncodedReference(selectedUncoded)}
+                                onClick={() => copyNeedsCodeReference(selectedNeedsCode)}
                                 className="rounded border border-border px-3 py-1.5 text-xs font-ui text-inkLight hover:border-accent hover:text-ink"
                               >
-                                {copiedUncoded === selectedUncoded.id ? 'Copied' : 'Copy reference'}
+                                {copiedNeedsCode === selectedNeedsCode.id ? 'Copied' : 'Copy reference'}
                               </button>
                               <button
                                 type="button"
-                                onClick={() => copyUncodedText(selectedUncoded)}
+                                onClick={() => copyNeedsCodeText(selectedNeedsCode)}
                                 className="rounded border border-border px-3 py-1.5 text-xs font-ui text-inkLight hover:border-accent hover:text-ink"
                               >
-                                {copiedUncoded === `${selectedUncoded.id}:text` ? 'Copied' : 'Copy text'}
+                                {copiedNeedsCode === `${selectedNeedsCode.id}:text` ? 'Copied' : 'Copy text'}
                               </button>
                             </div>
                           </div>
@@ -666,20 +790,30 @@ export default function GapReviewAdmin() {
                           <div className="mt-4 grid gap-3 md:grid-cols-3">
                             <div className="rounded border border-border bg-bg/40 p-3">
                               <div className="mb-1 text-[10px] font-ui uppercase tracking-wide text-inkFaint">Type</div>
-                              <p className="truncate text-xs font-ui text-inkLight">{selectedUncoded.type || '-'}</p>
+                              <p className="truncate text-xs font-ui text-inkLight">{selectedNeedsCode.type || '-'}</p>
                             </div>
                             <div className="rounded border border-border bg-bg/40 p-3">
                               <div className="mb-1 text-[10px] font-ui uppercase tracking-wide text-inkFaint">Category</div>
-                              <p className="truncate text-xs font-ui text-inkLight">{selectedUncoded.category || '-'}</p>
+                              <p className="truncate text-xs font-ui text-inkLight">{selectedNeedsCode.category || '-'}</p>
                             </div>
                             <div className="rounded border border-border bg-bg/40 p-3">
                               <div className="mb-1 text-[10px] font-ui uppercase tracking-wide text-inkFaint">Stored code</div>
-                              <p className="truncate text-xs font-ui text-inkLight">{selectedUncoded.code || '-'}</p>
+                              <p className="truncate text-xs font-ui text-inkLight">{selectedNeedsCode.code || '-'}</p>
                             </div>
                           </div>
 
                           <div className="mt-4">
-                            <UncodedText item={selectedUncoded} />
+                            <NeedsCodeTaskForm
+                              draft={taskDraftFor(selectedNeedsCode)}
+                              status={taskStatusFor(selectedNeedsCode)}
+                              submitting={taskSubmitting === needsCodeTaskKey(selectedNeedsCode)}
+                              onChange={(patch) => updateTaskDraft(selectedNeedsCode, patch)}
+                              onSubmit={(event) => submitNeedsCodeTask(event, selectedNeedsCode)}
+                            />
+                          </div>
+
+                          <div className="mt-4">
+                            <NeedsCodeText item={selectedNeedsCode} />
                           </div>
                         </>
                       ) : null}
@@ -688,18 +822,18 @@ export default function GapReviewAdmin() {
 
                   <div className="rounded-lg border border-border bg-white shadow-sm">
                     <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-bg/50 px-4 py-3">
-                      <h3 className="font-display text-lg text-ink">All Uncoded Text</h3>
+                      <h3 className="font-display text-lg text-ink">All Needs Code Text</h3>
                       <div className="flex flex-wrap gap-2">
                         <button
                           type="button"
-                          onClick={expandAllUncoded}
+                          onClick={expandAllNeedsCode}
                           className="rounded border border-border px-3 py-1.5 text-xs font-ui text-inkLight hover:border-accent hover:text-ink"
                         >
                           Expand all
                         </button>
                         <button
                           type="button"
-                          onClick={collapseAllUncoded}
+                          onClick={collapseAllNeedsCode}
                           className="rounded border border-border px-3 py-1.5 text-xs font-ui text-inkLight hover:border-accent hover:text-ink"
                         >
                           Collapse all
@@ -707,19 +841,19 @@ export default function GapReviewAdmin() {
                       </div>
                     </div>
                     <div className="divide-y divide-border">
-                      {uncoded.map((item, index) => {
-                        const open = expandedUncodedIds.has(item.id);
+                      {needsCodeItems.map((item, index) => {
+                        const open = expandedNeedsCodeIds.has(item.id);
                         return (
                           <div key={item.id} className="p-5">
                             <div className="flex flex-wrap items-start justify-between gap-4">
                               <div className="min-w-0">
                                 <div className="flex flex-wrap items-center gap-2">
                                   <span className="font-mono text-xs font-semibold text-accent">{item.id}</span>
-                                  <SuggestionPill type={item.family_type || item.type || 'UNCODED'} />
+                                  <SuggestionPill type={item.family_type || item.type || 'NEEDS CODE'} />
                                   <span className="text-xs font-ui text-inkFaint">{num(item.length)} chars</span>
                                 </div>
                                 <h4 className="mt-2 font-display text-lg text-ink">
-                                  {item.rough_heading || `Uncoded ${index + 1}`}
+                                  {item.rough_heading || `Needs Code ${index + 1}`}
                                 </h4>
                                 <p className="mt-1 text-xs font-ui text-inkLight">
                                   {item.category || item.code || item.suggested_reason}
@@ -728,23 +862,23 @@ export default function GapReviewAdmin() {
                               <div className="flex flex-wrap gap-2">
                                 <button
                                   type="button"
-                                  onClick={() => toggleUncoded(item.id)}
+                                  onClick={() => toggleNeedsCode(item.id)}
                                   className="rounded border border-border px-3 py-1.5 text-xs font-ui text-inkLight hover:border-accent hover:text-ink"
                                 >
                                   {open ? 'Collapse' : 'Expand'}
                                 </button>
                                 <button
                                   type="button"
-                                  onClick={() => copyUncodedText(item)}
+                                  onClick={() => copyNeedsCodeText(item)}
                                   className="rounded border border-border px-3 py-1.5 text-xs font-ui text-inkLight hover:border-accent hover:text-ink"
                                 >
-                                  {copiedUncoded === `${item.id}:text` ? 'Copied' : 'Copy text'}
+                                  {copiedNeedsCode === `${item.id}:text` ? 'Copied' : 'Copy text'}
                                 </button>
                               </div>
                             </div>
                             {open ? (
                               <div className="mt-4">
-                                <UncodedText item={item} />
+                                <NeedsCodeText item={item} />
                               </div>
                             ) : (
                               <p className="mt-3 truncate text-sm font-ui text-inkLight">{item.preview}</p>

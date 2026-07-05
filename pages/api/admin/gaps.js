@@ -12,6 +12,11 @@ const {
   gapPreviewFromSource,
   isReviewableGapRegion,
 } = require('../../../lib/gap-review');
+const {
+  buildCodingTaskRow,
+  findNeedsCodeItem,
+  validateCodingTaskInput,
+} = require('../../../lib/coding-tasks');
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const PROVISION_PAGE_SIZE = 1000;
@@ -179,7 +184,7 @@ function summariseDeal(deal, provisions, latestIngest) {
   });
   const reviewableGaps = typedGaps.filter((item) => item.reviewable);
   const largestGap = (reviewableGaps[0] && reviewableGaps[0].gap) || null;
-  const uncodedSummary = buildUncodedSummary(provisions || []);
+  const needsCodeSummary = buildUncodedSummary(provisions || []);
 
   return {
     deal_id: deal.id,
@@ -190,9 +195,12 @@ function summariseDeal(deal, provisions, latestIngest) {
     unverified_quotes: verification.unverified,
     gap_count: reviewableGaps.length,
     ignored_gap_count: typedGaps.length - reviewableGaps.length,
-    uncoded_count: uncodedSummary.count,
-    uncoded_proposed_count: uncodedSummary.proposed_count,
-    uncoded_type_counts: uncodedSummary.by_type,
+    needs_code_count: needsCodeSummary.count,
+    needs_code_proposed_count: needsCodeSummary.proposed_count,
+    needs_code_type_counts: needsCodeSummary.by_type,
+    uncoded_count: needsCodeSummary.count,
+    uncoded_proposed_count: needsCodeSummary.proposed_count,
+    uncoded_type_counts: needsCodeSummary.by_type,
     largest_gap_chars: largestGap ? largestGap.length : 0,
     largest_gap_preview: largestGap ? gapPreviewFromSource(sourceText, largestGap, 240) : null,
     metadata: {
@@ -236,13 +244,14 @@ async function getDetail(req, res, sb, dealId) {
     .filter((gap) => gap.reviewable_gap)
     .map((gap, index) => ({ ...gap, id: formatGapId(index + 1) }));
   const ignoredGaps = gaps.filter((gap) => !gap.reviewable_gap);
-  const uncoded = buildUncodedDetails(provisionsResult.data || []);
+  const needsCode = buildUncodedDetails(provisionsResult.data || []);
 
   return res.status(200).json({
     summary: publicSummary(summary),
     gaps: reviewableGaps,
     ignored_gaps: ignoredGaps,
-    uncoded,
+    needs_code: needsCode,
+    uncoded: needsCode,
     coverage: {
       sourceChars: summary._coverage.sourceChars,
       coveredChars: summary._coverage.coveredChars,
@@ -258,6 +267,49 @@ async function getDetail(req, res, sb, dealId) {
     },
     ...(ingestRefsResult.unavailable && ingestRefsResult.unavailable.length ? { ingest_refs_unavailable: ingestRefsResult.unavailable } : {}),
   });
+}
+
+async function createCodingTask(req, res, sb) {
+  const parsed = validateCodingTaskInput(req.body || {});
+  if (!parsed.ok) return fail(res, 400, 'Invalid coding task request', parsed.errors);
+
+  const input = parsed.value;
+  const [{ data: deal, error: dealError }, provisionsResult] = await Promise.all([
+    sb.from('deals').select('id, acquirer, target, metadata').eq('id', input.dealId).single(),
+    fetchAllProvisions(sb, input.dealId).then((data) => ({ data })).catch((error) => ({ error })),
+  ]);
+
+  if (dealError) return fail(res, dealError.code === 'PGRST116' ? 404 : 500, dealError.message);
+  if (provisionsResult.error) return fail(res, 500, provisionsResult.error.message || String(provisionsResult.error));
+
+  const needsCode = buildUncodedDetails(provisionsResult.data || []);
+  const item = findNeedsCodeItem(needsCode, {
+    needsCodeId: input.needsCodeId,
+    provisionId: input.provisionId,
+  });
+  if (!item) return fail(res, 404, 'Needs Code item not found for deal');
+
+  const row = buildCodingTaskRow({
+    deal,
+    item,
+    suggestedAction: input.suggestedAction,
+    note: input.note,
+    suggestedCode: input.suggestedCode,
+  });
+
+  const { data, error } = await sb
+    .from('coding_tasks')
+    .insert(row)
+    .select()
+    .single();
+
+  const unavailable = tableUnavailable(error);
+  if (unavailable) {
+    return fail(res, 500, 'coding_tasks table unavailable; apply supabase/coding-tasks-schema.sql', unavailable);
+  }
+  if (error) return fail(res, 500, error.message);
+
+  return res.status(201).json({ task: data, payload: data.payload });
 }
 
 async function getSummary(req, res, sb) {
@@ -315,13 +367,15 @@ async function getSummary(req, res, sb) {
 }
 
 export default async function handler(req, res) {
-  if (req.method !== 'GET') {
-    res.setHeader('Allow', 'GET');
-    return fail(res, 405, 'GET only');
+  if (!['GET', 'POST'].includes(req.method)) {
+    res.setHeader('Allow', 'GET, POST');
+    return fail(res, 405, 'GET or POST only');
   }
 
   const sb = getServiceSupabase();
   if (!sb) return fail(res, 500, 'Supabase not configured');
+
+  if (req.method === 'POST') return createCodingTask(req, res, sb);
 
   const dealId = Array.isArray(req.query.deal_id) ? req.query.deal_id[0] : req.query.deal_id;
   if (dealId) return getDetail(req, res, sb, dealId);
