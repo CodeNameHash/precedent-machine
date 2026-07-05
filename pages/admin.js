@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useUser } from '../lib/useUser';
 import { useUsers, useDeals, useProvisions } from '../lib/useSupabaseData';
 import { Breadcrumbs, SkeletonCard } from '../components/UI';
+import AdminNav from '../components/admin/AdminNav';
 
 export default function Admin() {
   const { user } = useUser({ redirectTo: '/login' });
@@ -28,6 +29,7 @@ export default function Admin() {
     <div className="space-y-6 max-w-3xl">
       <Breadcrumbs items={[{ label: 'Dashboard', href: '/' }, { label: 'Admin' }]} />
       <h1 className="font-display text-2xl text-ink">Admin</h1>
+      <AdminNav />
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4">
