@@ -1,6 +1,6 @@
 # Parser Hierarchy Handoff
 
-Updated: 2026-07-05 19:14 EDT
+Updated: 2026-07-05 19:46 EDT
 
 ## Current Worktree
 
@@ -265,11 +265,53 @@ Proper follow-up:
 - Make the summary table read those stored metrics instead of recomputing full-text coverage and parser review on every request.
 - Keep the expensive recomputation path for detail pages and explicit refresh/repair tooling.
 
+## Glow Gap Review Follow-up
+
+Ben reviewed Glow / European Wax (`86a01770-f565-47c5-8e7d-2a75a66b5e8b`) and identified that the first three live G rows were recitals. Confirmed.
+
+Current finding:
+
+- Live before this follow-up: reviewable `98.9`, `5` reviewable gaps.
+- Local patched gap classifier: `7` raw gaps, `5` ignored, `2` reviewable.
+- Estimated reviewable coverage after deploy: about `99.7`.
+
+What changed locally:
+
+- `lib/gap-review.js` now classifies mid-recital slices as `preamble.recitals` when a broader context window shows a lettered recital run leading into `NOW, THEREFORE`.
+- This handles Glow's `Article I. RECITALS` form where the gap slice itself starts mid-sentence and does not contain `WHEREAS`.
+- `tests/gap-review.test.js` locks this regression.
+- `pages/admin/gaps.js` review-queue links now use `scroll={false}` so clicking G/U/parser rows does not jump to the page top.
+- `tests/admin-gaps-scroll.test.js` locks that regression.
+
+Glow residual reviewable gaps after the local patch:
+
+- NoSol tail: text starting `inquiry or proposal that constitutes... (iv) approve, endorse or recommend... (vi) authorize...`. This sits between the stored `NOSOL / Solicitation Prohibition` row and `NOSOL / Enforcement of Standstills`. It is a real NoSol extraction hole. Re-extracting NOSOL alone was already attempted earlier, so this likely needs extractor/splitter/prompt repair before another NOSOL reprocess.
+- No Consent Fees: `(b) No Consent Fees...` in Section 6.1 / Section 6.2 boundary. This is a real efforts / antitrust covenant extraction hole, not a U-row. It should become an extracted ANTI/COV provision after the relevant extractor path is fixed or refreshed.
+
+Glow U-001 / U-002 agent findings:
+
+- `U-001`, provision `7b8ed998-a011-4e1d-94f7-3ffbf3035b37`: Section 5.2 Forbearance Covenants chapeau. Complete negative covenant lead-in. Root cause is extractor logic: `splitIocPreamble()` only emits `IOC-NEGATIVE-PREAMBLE` after detecting affirmative limbs. Fix extractor to emit standalone `IOC-NEGATIVE-PREAMBLE`, then reprocess IOC.
+- `U-002`, provision `42625bbb-7ef0-4ac8-8567-e8f8c9e4db72`: first fragment of Section 5.1 Affirmative Obligations. It is incomplete. Nearby rows hold the later exception limbs and actual positive obligations. Root cause is `splitSubClauses()` treating pre-obligation exception list `(a)/(b)/(c)/(d)` as real subclauses. Fix IOC subclause splitting before reprocessing IOC. Do not manually code this row as-is.
+
+Glow classify-only dry-run:
+
+- `node scripts/reprocess.js --deal "European Wax" --classify-only --backend codex --model gpt-5.5`, with parent env injected.
+- Result: `110` sections classified, `108` regex / `2` cache.
+- Only diff: `8.4 Amendment` and `8.5 Extension; Waiver` move from `TERMR` to `MISC` with existing codes `MISC-AMEND` and `MISC-WAIVER`.
+
+Implication:
+
+- The parser/classifier path is mostly stable enough for controlled reprocessing.
+- Do not start broad seed ingest yet.
+- First do a narrow extractor repair pass for IOC/NOSOL/ANTI-COV on Glow, then apply targeted reprocess and verify that Glow goes to `0` or near-`0` reviewable gaps.
+
 ## Next Work
 
-1. Push and deploy the admin-gaps load hotfix.
-2. Use the reviewable-gap admin page to diagnose the remaining Glow, Landos, and Kraft gaps.
-3. Separately decide the 4 `needs_review` coding tasks.
+1. Push and deploy the Glow recital/admin-scroll hotfix.
+2. Fix IOC extractor handling for standalone negative chapeaux and affirmative exception-list chapeaux.
+3. Repair / re-run Glow IOC, NOSOL, and ANTI/COV targeted reprocess.
+4. If Glow validates, repeat the same targeted gap-review/reprocess loop on Landos and Kraft.
+5. After those pass, resume seed ingest ramp with stored quality metrics as the next admin-table performance improvement.
 
 ## Tests Already Run Before This Handoff
 

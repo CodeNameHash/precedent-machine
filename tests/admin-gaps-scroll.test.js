@@ -16,6 +16,12 @@ test('admin gaps deep links scroll selected G and U reader panels into view', ()
   assert.match(source, /ref=\{reviewReaderRef\}/);
 });
 
+test('admin gaps review queue row links preserve scroll while updating the deep link', () => {
+  const source = fs.readFileSync(path.join(__dirname, '..', 'pages/admin/gaps.js'), 'utf8');
+
+  assert.match(source, /reviewItems\.map\(\(item\) => \(\s*<Link[\s\S]*href=\{\{ pathname: '\/admin\/gaps', query: \{ deal_id: selectedSummary\.deal_id, review_item: item\.key \} \}\}\s*scroll=\{false\}/);
+});
+
 test('admin gaps direct deal links skip the expensive summary auto-load', () => {
   const source = fs.readFileSync(path.join(__dirname, '..', 'pages/admin/gaps.js'), 'utf8');
 

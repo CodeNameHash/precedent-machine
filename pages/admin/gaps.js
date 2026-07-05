@@ -654,6 +654,7 @@ export default function GapReviewAdmin() {
                           <Link
                             key={item.key}
                             href={{ pathname: '/admin/gaps', query: { deal_id: selectedSummary.deal_id, review_item: item.key } }}
+                            scroll={false}
                             className={`block rounded border px-3 py-2 text-left hover:border-accent ${
                               selectedReviewItemKey === item.key ? 'border-accent bg-accent/5' : 'border-transparent'
                             }`}

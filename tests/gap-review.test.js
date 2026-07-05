@@ -78,6 +78,30 @@ test('classifyGapRegion separates non-provision matter from reviewable body gaps
   );
 });
 
+test('buildGapDetails treats mid-recital slices under an article Recitals heading as frontmatter', () => {
+  const source = [
+    'AGREEMENT AND PLAN OF MERGER',
+    'ARTICLE I. RECITALS',
+    'A. The Company Board has established a special committee to evaluate the Transactions.',
+    'B. The Special Committee has unanimously determined that this Agreement and the Transactions are advisable, fair to and in the best interests of the Company and the stockholders.',
+    'C. The Company Board approved execution and delivery of this Agreement.',
+    'AGREEMENT NOW, THEREFORE, in consideration of the foregoing, the Parties agree as follows:',
+    'ARTICLE I DEFINITIONS & INTERPRETATIONS',
+    'Section 1.1 Certain Definitions. Affiliate means any Person controlled by another Person.',
+  ].join(' ');
+  const display = normalizeForGapDisplay(source);
+  const gapStart = display.indexOf('best interests of the Company');
+  const gapLength = display.indexOf('C. The Company Board') - gapStart;
+  const details = buildGapDetails({
+    coverage: { gaps: [{ start: gapStart, length: gapLength }] },
+    sourceText: source,
+    provisions: [],
+  });
+
+  assert.equal(details[0].region_type, REGION_TYPES.PREAMBLE_RECITALS);
+  assert.equal(details[0].reviewable_gap, false);
+});
+
 test('buildGapDetails numbers document-order gaps with full text, contexts, heading, and adjacent provisions', () => {
   const source = [
     'Section 1.01 Intro. Parent will acquire the Company at the Effective Time.',
