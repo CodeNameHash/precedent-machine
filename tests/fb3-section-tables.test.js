@@ -126,6 +126,21 @@ test('deriveInsuranceCapConcise: no percentage/dollar figure near "premium" retu
   assert.equal(mod.deriveInsuranceCapConcise(null), null);
 });
 
+// Audit-2 item 5 — real Cooper Tire (Goodyear) clause: the qualifier is
+// "the LAST annual premium", which the old (then-current|current)-only
+// alternation missed, so the cell rendered the raw proviso.
+const COOPER_INSURANCE_CAP_TEXT =
+  'Parent will not be required to pay annual premiums in excess of 300% of the last annual premium paid by the Company prior to the date hereof in respect of the coverage required to be obtained pursuant hereto, but in such case will purchase as much coverage as reasonably practicable for such amount; and provided further, that if the Surviving Corporation purchases a "tail policy" and the same coverage costs on an annual basis more than 300% of such last annual premium, the Surviving Corporation will purchase the maximum amount of coverage that can be obtained for 300% of such last annual premium.';
+
+test('deriveInsuranceCapConcise: Cooper Tire "300% of the last annual premium" derives the concise form', () => {
+  assert.equal(mod.deriveInsuranceCapConcise(COOPER_INSURANCE_CAP_TEXT), '300% of annual premium');
+});
+
+test('deriveInsuranceCapConcise: "450% of the current aggregate annual premium" (Cooper company tail) derives too', () => {
+  const text = 'the Company shall not pay an aggregate amount for such policy in excess of 450% of the current aggregate annual premium paid by the Company for the existing policy.';
+  assert.equal(mod.deriveInsuranceCapConcise(text), '450% of annual premium');
+});
+
 /* ─────────────────────────────────────────────────────────────────────────
  * Item 4(d) — Access scope humanization + purpose-pill detection
  * ───────────────────────────────────────────────────────────────────────── */

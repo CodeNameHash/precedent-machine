@@ -856,7 +856,13 @@ export function normalizeQualifierScope(raw) {
  * ══════════════════════════════════════════════════════════════════════════ */
 export function deriveInsuranceCapConcise(text) {
   if (typeof text !== 'string' || !text.trim()) return null;
-  const pct = text.match(/(\d+(?:\.\d+)?)\s*%\)?\s*of\s+the\s+(?:then-current\s+|current\s+)?annual\s+premium/i);
+  // Audit-2 item 5: admit the full family of premium qualifiers. Cooper
+  // Tire's clause reads "300% of the last annual premium paid by the
+  // Company" — the old alternation (then-current|current only) missed
+  // "last", so the cell fell back to the raw proviso. Also seen in the
+  // wild: "450% of the current aggregate annual premium" (same deal) and
+  // "such last annual premium".
+  const pct = text.match(/(\d+(?:\.\d+)?)\s*%\)?\s*of\s+(?:the\s+|such\s+)?(?:then-current\s+|current\s+|last\s+|existing\s+)?(?:aggregate\s+)?annual\s+premium/i);
   if (pct) return `${pct[1]}% of annual premium`;
   const dollar = text.match(/\$[\d,]+(?:\.\d+)?(?:\s*(?:million|billion|thousand|mm|k))?/i);
   if (dollar && /premium/i.test(text)) return dollar[0].trim();
@@ -1023,6 +1029,21 @@ export function nosolDefinitionInitialState(labels) {
   return new Set((labels || []).filter(Boolean));
 }
 
+// Audit-2 item 2: the old capMatch regex required a bare digit immediately
+// adjacent to the unit word ("4 business days"). Real agreements almost
+// never phrase it that way — they spell the number out, optionally followed
+// by a parenthetical numeral ("four (4) business days", Metsera; "four
+// Business Days", Skechers) — so the regex silently failed to find a unit
+// and fell through to a bare-number fallback that ASSUMED hours. Hour-
+// denominated Change-of-Recommendation notice periods are near-nonexistent
+// in practice (2-5 business days is the market standard); the fallback must
+// never manufacture "hours" out of a unit-less number.
+const NUMBER_WORD_RE = '(?:\\d+|one|two|three|four|five|six|seven|eight|nine|ten|twenty-four|forty-eight|ninety-six)';
+const NOTICE_UNIT_RE = new RegExp(
+  `\\b${NUMBER_WORD_RE}\\b\\s*(?:\\(\\s*\\d+\\s*\\))?\\s*['’]?\\s*(hours?|business\\s*days?|calendar\\s*days?|days?)\\b`,
+  'i',
+);
+
 export function noticePeriodParts(raw) {
   const quote = firstText(raw) || null;
   const value = unwrap(raw);
@@ -1031,16 +1052,24 @@ export function noticePeriodParts(raw) {
   if (/promptly|as promptly as reasonably practicable/i.test(text)) {
     parts.push({ label: 'Promptly', quote });
   }
-  const capMatch = text.match(/(?:within|later than|no event later than)[^.\n;]{0,50}?(\d+|twenty-four|forty-eight|96)\s*(hours?|business days?|calendar days?)/i)
-    || text.match(/\b(\d+)\s*(hours?|business days?|calendar days?)\b/i);
-  if (capMatch) {
-    const n = capMatch[1].toLowerCase() === 'twenty-four' ? '24'
-      : capMatch[1].toLowerCase() === 'forty-eight' ? '48'
-        : capMatch[1];
-    const unit = capMatch[2].toLowerCase().replace(/s$/, '');
-    parts.push({ label: `${n} ${unit}${String(n) === '1' ? '' : 's'}`, quote });
+  const n = value === null || value === undefined ? null : value;
+  const unitMatch = text.match(NOTICE_UNIT_RE);
+  if (unitMatch) {
+    // A number-with-unit shape was found verbatim in the quote/value text —
+    // trust the unit it actually states, not a guess.
+    const unit = unitMatch[1].toLowerCase().replace(/\s+/g, ' ').replace(/s$/, '');
+    const label = n !== null ? `${n} ${unit}${String(n) === '1' ? '' : 's'}` : unitMatch[0].trim();
+    parts.push({ label, quote });
+  } else if (/business\s*days?/i.test(text)) {
+    parts.push({ label: `${n} business day${n === 1 ? '' : 's'}`, quote });
+  } else if (/calendar\s*days?/i.test(text)) {
+    parts.push({ label: `${n} calendar day${n === 1 ? '' : 's'}`, quote });
+  } else if (/\bhours?\b/i.test(text)) {
+    parts.push({ label: `${n} hour${n === 1 ? '' : 's'}`, quote });
   } else if (typeof value === 'number') {
-    parts.push({ label: `${value} hours`, quote });
+    // No unit word anywhere in the source text — render the bare figure
+    // rather than fabricating a unit (see comment above).
+    parts.push({ label: `${value} (unit not stated in source)`, quote });
   }
   return parts.length > 0 ? parts : null;
 }

@@ -80,3 +80,82 @@ test('residual keeps all four section-wide carve-outs verbatim', () => {
     'full consent parenthetical verbatim'
   );
 });
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * Audit-2 item 5 — Cooper IOC preserve limbs. Both Cooper deals phrase the
+ * preservation duty as "preserve INTACT its current/present business
+ * organization(s) ..." rather than "preserve its present relationships ...",
+ * so the relationships-only IOC-PRESERVE pattern never fired and the limb
+ * vanished from the affirmative table. Additionally, the efforts qualifier
+ * sits before the FIRST infinitive only ("use commercially reasonable
+ * efforts to conduct ... and to preserve ...") so the preserve limb's own
+ * text carries no efforts phrase — the coordinated-infinitive rule must
+ * carry the CRE standard across, not default to FLAT.
+ * ───────────────────────────────────────────────────────────────────────── */
+
+// Real Mr. Cooper §5.1 preamble (Rocket / Mr. Cooper, trimmed).
+const MRCOOPER_PREAMBLE =
+  'Section 5.1 Conduct of Maverick. From the date of this Agreement until the ' +
+  'Maverick Effective Time, except with the prior written consent of Cavalier ' +
+  '(such consent not to be unreasonably withheld, conditioned or delayed), as ' +
+  'expressly permitted or required by this Agreement, as may be required by ' +
+  'applicable Law or as set forth in Section 5.1 of the Maverick Disclosure ' +
+  'Schedules, Maverick and each of its Subsidiaries shall use commercially ' +
+  'reasonable efforts to conduct its business and operations in the ordinary ' +
+  'course of business consistent with past practice in all material respects ' +
+  'and to preserve intact its current business organizations and relationships ' +
+  'with material customers, vendors, distributors, partners, licensors, ' +
+  'licensees, creditors and other Persons with which it has material business ' +
+  'relations; provided that (x) no action by Maverick or any of its ' +
+  'Subsidiaries to the extent expressly permitted by any of clauses (a) ' +
+  'through (t) below shall be a breach of this sentence.';
+
+// Real Cooper Tire §5.1 preamble limb (Goodyear / Cooper Tire, trimmed).
+const COOPERTIRE_PRESERVE_SENTENCE =
+  'the Company shall, and shall cause each of its Subsidiaries to, use its ' +
+  'commercially reasonable efforts to preserve intact its present business ' +
+  'organization, keep available the services of its directors, officers and ' +
+  'employees and maintain existing relations and goodwill with customers, ' +
+  'distributors, lenders, partners (including Joint Venture partners and ' +
+  'others with similar relationships), suppliers and others having material ' +
+  'business associations with it or its Subsidiaries; provided, however, that ' +
+  'the failure to take any action prohibited by the subclauses in the next ' +
+  'sentence shall not be a breach.';
+
+test('Mr. Cooper §5.1: "preserve intact its current business organizations and relationships" limb is split out', () => {
+  const split = splitIocPreamble(MRCOOPER_PREAMBLE);
+  assert.ok(split, 'preamble must split');
+  const keys = split.obligations.map((o) => o.key);
+  assert.ok(keys.includes('IOC-ORDINARY'), `ordinary-course limb expected, got ${keys}`);
+  assert.ok(keys.includes('IOC-PRESERVE'), `preserve limb expected, got ${keys}`);
+  const preserve = split.obligations.find((o) => o.key === 'IOC-PRESERVE');
+  assert.ok(preserve.text.includes('business organizations and relationships'), preserve.text);
+});
+
+test('Mr. Cooper §5.1: coordinated "efforts to conduct ... and to preserve" carries CRE onto the preserve limb (not FLAT)', () => {
+  const split = splitIocPreamble(MRCOOPER_PREAMBLE);
+  const preserve = split.obligations.find((o) => o.key === 'IOC-PRESERVE');
+  assert.equal(preserve.efforts_standard, 'COMMERCIALLY_REASONABLE_EFFORTS');
+  const ordinary = split.obligations.find((o) => o.key === 'IOC-ORDINARY');
+  assert.equal(ordinary.efforts_standard, 'COMMERCIALLY_REASONABLE_EFFORTS');
+});
+
+test('Cooper Tire §5.1: "preserve intact its present business organization, keep available the services ..." limb is split with CRE', () => {
+  const split = splitIocPreamble(COOPERTIRE_PRESERVE_SENTENCE);
+  assert.ok(split, 'sentence must split');
+  const preserve = split.obligations.find((o) => o.key === 'IOC-PRESERVE');
+  assert.ok(preserve, `preserve limb expected, got ${split.obligations.map((o) => o.key)}`);
+  assert.ok(preserve.text.includes('keep available the services'), preserve.text);
+  assert.equal(preserve.efforts_standard, 'COMMERCIALLY_REASONABLE_EFFORTS');
+});
+
+test('a genuinely flat "and to preserve" with NO efforts phrase in the sentence stays FLAT', () => {
+  const flat =
+    'the Company shall conduct its business in the ordinary course of business ' +
+    'and to preserve intact its current business organizations and relationships with material customers.';
+  const split = splitIocPreamble(flat);
+  const preserve = split && split.obligations.find((o) => o.key === 'IOC-PRESERVE');
+  if (preserve) {
+    assert.equal(preserve.efforts_standard, 'FLAT');
+  }
+});
