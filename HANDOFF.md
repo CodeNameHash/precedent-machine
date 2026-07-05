@@ -17,11 +17,11 @@ cross-deal comparison.
 
 ## Workflow conventions
 
-- **Develop on branch** `claude/zealous-gauss-FGD7v`, then merge fast-forward to `main`.
+- Work on a fresh branch from `origin/main`.
+- Open a PR, wait for CI to pass, then squash merge. Do not push directly to `main`.
 - `main` auto-deploys to production via Vercel git integration.
-- Always run `npm run build` before committing — Vercel will fail otherwise.
+- Run the focused tests for the touched surface, then `npm test`, before opening a PR.
 - Commit messages: imperative mood + 1-3 line body explaining *why*.
-- Never push to main without explicit user instruction unless merging from the dev branch.
 
 ## Repo layout (the important bits)
 
@@ -46,7 +46,7 @@ lib/
 
 pages/
   index.js                    # Legacy SPA (public/spa.js) — kept around but not the live UX
-  review/[id].js              # **THE MAIN UX**. Single 6000-line file with all components
+  review/[id].js              # **THE MAIN UX**. Large page shell backed by components/review/*
   review/index.js             # Review index listing deals
   api/
     deals.js                  # GET/POST/PATCH/DELETE deals
@@ -322,55 +322,64 @@ users
 - `agreement_sources` — was planned but never created. Agreement text lives in
   `deals.metadata.full_text` instead.
 
-## Current active deals
+## Current corpus
 
-After the cleanup, only two deals remain (both tender offers):
+The live corpus has 19 merger-agreement deals across biopharma, technology,
+energy, consumer, financial services, real estate, grocery retail, hospitality,
+food and beverage, automotive, and healthcare. Review pages are available at:
 
-| Deal ID | Acquirer | Target | Date |
-|---|---|---|---|
-| `64d894e4-7cd3-411b-9236-b597dde295c8` | Pfizer | Metsera | 2025-01-07 |
-| `5ad40f11-6cbc-4934-8dfc-c46a03cc11a0` | Eli Lilly | Verve Therapeutics | 2025-06-16 |
+- https://precedent-machine.vercel.app/review
 
-Review URLs:
-- https://precedent-machine.vercel.app/review/64d894e4-7cd3-411b-9236-b597dde295c8
-- https://precedent-machine.vercel.app/review/5ad40f11-6cbc-4934-8dfc-c46a03cc11a0
+Representative current review URLs:
+
+- https://precedent-machine.vercel.app/review/885edae5-49e8-464a-9f33-edd229119d7c — Pfizer / Metsera
+- https://precedent-machine.vercel.app/review/320a3899-0d74-42d6-a412-3a962997d6ca — Lilly / Verve
+- https://precedent-machine.vercel.app/review/af4940e1-a645-437c-acfa-4a53e8d9f7ac — Beach / Skechers
+
+## Current trust layer
+
+- Quote verification exists in `lib/verification.js` and is exercised by
+  `scripts/ingest-qa.js`; the current corpus gate is 0 unverified quotes.
+- Coverage accounting and section-leftover backfills exist in the parser and
+  QA gate. Coverage is a pipeline/QA capability, not yet a polished review-page
+  product surface.
+- Run history exists in `deals.metadata.extraction_runs`, with diff helpers in
+  `lib/run-history.js` and `scripts/diff-runs.js`. It is not yet a first-class
+  table or UI.
+- Human corrections are logged and re-applied for per-type reprocesses via
+  `lib/parser-v2/reapply-corrections.js`.
+- RLS lockdown was applied to production on 2026-07-02; see
+  `supabase/lockdown-rls.sql`.
+- Tender-offer mechanics are covered by `STRUCT-OFFER`; Verve, CSRA, Bioverativ,
+  and Pharmasset classify without non-tender collateral.
 
 ## Open issues / known limitations
 
-1. **Tender-offer agreement parsing is incomplete.** Lilly/Verve currently shows
-   0 IOC / 0 NOSOL / 0 COND-B/S / 0 REP-B / 0 CONSID because of classifier
-   issues with single-article "COVENANTS" structures and Annex I (Offer Conditions).
-   **A parser fix is in flight at the time of this writeup** — check the latest
-   commits on the dev branch.
+1. **Stable provision identity is not solved.** Provision IDs still churn on
+   re-extract. Corrections can be re-applied, but durable permalinks and
+   annotation identity need a stronger anchor model.
 
-2. **Uncoded provisions: ~89 per ingest.** The canonical code enforcer can't
-   classify ~37% of provisions. Many are legitimate inline definitions or
-   SECTION-LEFTOVER provisions that genuinely don't have a rubric code, but some
-   are real misses. Investigate by querying `code_quality.uncoded_provisions` in
-   the ingest response.
+2. **Document families are not modelled.** A deal is still primarily one merger
+   agreement, even though real matters include CVR agreements, disclosure-letter
+   excerpts, tender-offer materials, and amendments.
 
-3. **Learning Phase 1 is logging only.** Corrections are saved to the
-   `corrections` table but nothing feeds them back into the parser yet. Phase 2
-   (inject corrections as in-context examples for the classifier) is designed
-   but not built.
+3. **The ingest pipeline needs a real job runner.** Per-type runs have run
+   history and dry-run support, but full ingestion still lacks queue-backed
+   resumability, progress UI, retry controls, and per-step cost/timing tracking.
 
-4. **Auto-merge is conservative.** Currently 0-1 codes auto-merge per ingest.
-   This is fine but means we'll accumulate proposed codes that should be approved
-   into the rubric over time. There's no UI for that approval yet.
+4. **Feature schemas are better but not fully single-source.** `rubric.js`,
+   `taxonomy.js`, validation, extraction prompts, and UI renderers are closer
+   than before, but feature shape and rendering are not generated from one typed
+   schema.
 
-5. **Bring-down catch-all heuristic.** `linkBringDownToReps()` defaults to
-   `MAT_MAE_QUALIFIED` when no explicit catch-all is found. This is the standard
-   in nearly every M&A deal but might be wrong for unusual structures.
+5. **Metadata and analytics are thin.** Deal value is populated, but consideration
+   split, premium, structure, parties' counsel, industry taxonomy, benchmarks,
+   saved screens, and outlier flagging remain the next product layer.
 
-6. **Definition coverage.** Pfizer/Metsera shows 95 DEF provisions including
-   inline definitions captured from other sections. Lilly/Verve shows 131 — some
-   of those are likely over-capture from articulation that looks like definitions
-   but isn't.
-
-7. **No re-ingestion safety net.** If an ingest fails mid-pipeline, you can lose
-   data. The store does delete-then-insert with batch fallback, but a hard timeout
-   between delete and insert would leave the deal empty. Always test ingests on a
-   single deal before bulk operations.
+6. **Review UX needs expert audit.** The core data is much stronger than the old
+   roadmap described, but review-page hierarchy, hover behaviour, card/detail
+   paths, canonical labels, and duplicate/wordy rows need a dedicated pass before
+   building benchmarks.
 
 ## Common tasks
 
@@ -524,8 +533,8 @@ git checkout claude/zealous-gauss-FGD7v
 4. Look at the latest 5-10 commits on `main` — they show the recent direction.
 5. If working on the parser, test locally with the node one-liners above before
    spending tokens on a Vercel re-ingest.
-6. If working on the UI, the live review pages for Pfizer/Metsera and Lilly/Verve
-   are the test surface.
+6. If working on the UI, spot-check multiple live review pages across the 19-deal
+   corpus, including at least one tender offer and one one-step merger.
 7. Always commit + push + Vercel deploy verify (`mcp__bf4c4c42-..._get_deployment`
    tool) before declaring a change done.
 
