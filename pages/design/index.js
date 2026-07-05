@@ -14,14 +14,11 @@ import {
   shellStyles,
 } from '../../lib/design/components';
 import { colors, radii, spacing, typeScale } from '../../lib/design/tokens';
+import { designPreviewServerSideProps } from '../../lib/design/route-guard';
 import { primitiveStories, typeSamples } from '../../__fixtures__/ux-shell/design';
 
-export async function getStaticProps() {
-  if (process.env.NODE_ENV === 'production') {
-    return { notFound: true };
-  }
-
-  return { props: {} };
+export async function getServerSideProps() {
+  return designPreviewServerSideProps();
 }
 
 export default function DesignIndex() {
