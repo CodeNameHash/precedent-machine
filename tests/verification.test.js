@@ -6,6 +6,7 @@ const {
   normalizeForMatch,
   quoteAppearsIn,
   collectQuotes,
+  sanitizeFeatureQuotes,
   verifyDealQuotes,
   computeCoverage,
 } = require('../lib/verification');
@@ -243,6 +244,64 @@ test('verifyDealQuotes separates verified / unverified / skipped', () => {
   assert.equal(r.unverified, 1);
   assert.equal(r.skipped, 1);
   assert.equal(r.failures[0].in_provision_text, false);
+});
+
+test('sanitizeFeatureQuotes removes compressed Glow-style MAE quotes before QA', () => {
+  const source = [
+    'any failure, in and of itself, by the Company Group to meet (1) any public analyst estimates',
+    "or expectations of the Company Group's revenue, earnings or other financial performance or results of operations",
+    'for any period; or (2) any internal projections or forecasts of its revenues, earnings or other financial performance',
+  ].join(' ');
+  const compressed = 'any failure, in and of itself, by the Company Group to meet any public analyst estimates or expectations or internal projections or forecasts';
+  const good = 'any public analyst estimates or expectations of the Company Group';
+  const features = {
+    carveouts: [
+      { code: 'FAILURE_TO_MEET_PROJECTIONS', label: 'Failure to meet projections', text: source },
+    ],
+    nonDisproportionateImpactCarveouts: [
+      { code: 'FAILURE_TO_MEET_PROJECTIONS', label: 'Failure to meet projections', text: compressed },
+    ],
+    failureToMeetProjectionCarveout: { value: true, quotes: [compressed, good] },
+  };
+
+  const scrub = sanitizeFeatureQuotes(features, source, { provisionText: source });
+
+  assert.equal(scrub.repaired, 1);
+  assert.equal(scrub.removed, 1);
+  assert.equal(features.nonDisproportionateImpactCarveouts[0].text, source);
+  assert.deepEqual(features.failureToMeetProjectionCarveout.quotes, [good]);
+  assert.deepEqual(scrub.details.map((d) => d.path), [
+    'nonDisproportionateImpactCarveouts[0].text',
+    'failureToMeetProjectionCarveout.quotes[0]',
+  ]);
+
+  const verified = verifyDealQuotes([{
+    id: 'p1',
+    type: 'DEF',
+    category: 'Material Adverse Effect',
+    full_text: source,
+    ai_metadata: { features },
+  }], source);
+  assert.equal(verified.unverified, 0);
+});
+
+test('sanitizeFeatureQuotes does not repair MAE subset quotes from ambiguous same-code carveouts', () => {
+  const source = 'changes in GAAP or changes in accounting standards shall not constitute a Material Adverse Effect';
+  const features = {
+    carveouts: [
+      { code: 'ACCOUNTING', label: 'Accounting', text: 'changes in GAAP' },
+      { code: 'ACCOUNTING', label: 'Accounting', text: 'changes in accounting standards' },
+    ],
+    disproportionateImpactCarveouts: [
+      { code: 'ACCOUNTING', label: 'Accounting', text: 'changes in GAAP or accounting standards combined summary' },
+    ],
+  };
+
+  const scrub = sanitizeFeatureQuotes(features, source, { provisionText: source });
+
+  assert.equal(scrub.repaired, 0);
+  assert.equal(scrub.removed, 1);
+  assert.equal(features.disproportionateImpactCarveouts[0].text, null);
 });
 
 // ── computeCoverage ────────────────────────────────────────────────────────
