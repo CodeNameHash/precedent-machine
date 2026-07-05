@@ -1231,17 +1231,30 @@ export function superiorProposalLimbs(raw) {
   const paren = source.match(/\((?:i|x|A)\)\s*(.+?)\s+(?:and\s+)?\((?:ii|y|B)\)\s*(.+)$/i);
   let limbs = paren ? [paren[1], paren[2]] : [];
   if (limbs.length === 0) {
-    const semi = source.match(/(.+?financial point of view[^;]*);?\s+and\s+(.+)/i);
-    if (semi) limbs = [semi[1], semi[2]];
+    const deliverabilityFirst = source.match(/^((?:that,\s*)?(?:(?:is|would\s+be)\s+)?(?:reasonably\s+)?likely\s+to\s+be\s+(?:completed|consummated).*?)\s+and\s+((?:that,\s*)?(?:(?:would|is|could)\s+).*(?:greater\s+value|more\s+favo[u]?rable|superior).*)$/i);
+    if (deliverabilityFirst) limbs = [deliverabilityFirst[2], deliverabilityFirst[1]];
   }
   if (limbs.length === 0) {
-    const likelyFirst = source.match(/^(is likely to be consummated.*?)\s+and\s+(would.*more favorable.*)$/i);
-    if (likelyFirst) limbs = [likelyFirst[2], likelyFirst[1]];
+    const deliverabilityStart = source.search(/\s+and\s+(?=(?:that,\s*)?(?:(?:is|would\s+be)\s+)?(?:reasonably\s+)?likely\s+to\s+be\s+(?:completed|consummated)\b)/i);
+    if (deliverabilityStart >= 0) {
+      limbs = [
+        source.slice(0, deliverabilityStart),
+        source.slice(deliverabilityStart).replace(/^\s+and\s+/i, ''),
+      ];
+    }
+  }
+  if (limbs.length === 0) {
+    const semi = source.match(/(.+?financial point of view[^;]*);?\s+and\s+(.+)/i);
+    if (semi) limbs = [semi[1], semi[2]];
   }
   if (limbs.length === 0) limbs = [source];
   return limbs.slice(0, 2).map((text, idx) => ({
     label: idx === 0 ? 'Value limb' : 'Deliverability limb',
-    text: text.replace(/^\s*that,\s*/i, '').trim(),
+    text: text
+      .replace(/^\s*that,\s*/i, '')
+      .replace(/\s+(?:and\s*)?$/i, '')
+      .replace(/[,\s]+$/i, '')
+      .trim(),
     quote,
   }));
 }
