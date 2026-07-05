@@ -1,6 +1,6 @@
 # Parser Hierarchy Handoff
 
-Updated: 2026-07-05 19:41 EDT
+Updated: 2026-07-05 19:53 EDT
 
 ## Current Worktree
 
@@ -16,7 +16,29 @@ The WP is canonical. Deviate only where there is a concrete contradiction or evi
 
 Known contradiction: Phase 10 asks to update `HANDOFF.md`, but the WP allowlist says the modify list is exhaustive and does not include `HANDOFF.md`. Ben separately requested a handoff file, so this file is the explicit handoff surface.
 
-## Dirty Worktree Files
+## Current Control Plane
+
+- This branch is clean and pushed at `7886086` (`Fix admin gap summary metrics`).
+- Next action is to merge `codex/parser-hierarchy-plan-completion` to `main`, then start WP-SCHEMA from fresh `origin/main`.
+- WP-SCHEMA Phase 1 and Phase 2 are already on `origin/main`:
+  - `scripts/schema-inventory.js`
+  - `docs/schema-migration/inventory.jsonl`
+  - `docs/schema-migration/inventory-summary.md`
+  - `docs/schema-migration/phase-1-findings.md`
+  - `lib/schema/*`
+  - `tests/schema/*`
+- WP-SCHEMA starts at Phase 3, not Phase 1.
+- Phase 3 missing pieces:
+  - `scripts/generate-registry.js`
+  - populated `lib/schema/features.js`
+  - populated `lib/schema/tags.js`
+  - `docs/schema-migration/orphan-check.txt`
+  - `docs/schema-migration/deletions.md`
+  - live-feature schema coverage test
+- Parallel sidecar: implement stored admin/gaps quality metrics so the table stops recomputing coverage/quotes/parser review per request.
+- Do not mix Glow extractor fixes into WP-SCHEMA. Those are a later targeted parser lane after the schema phase is underway or separately scheduled.
+
+## Branch Change Surface
 
 - `components/review/table-logic.js`
 - `lib/feature-validation.js`
