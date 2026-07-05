@@ -15,6 +15,19 @@ function isStagingDeal(deal) {
   return meta.ingest_status === 'staging';
 }
 
+async function fetchStagingDealIds(sb) {
+  const { data, error } = await sb.from('deals').select('id, metadata');
+  if (error) throw new Error(error.message);
+  return new Set((data || []).filter(isStagingDeal).map((deal) => deal.id));
+}
+
+async function dealIsStaging(sb, dealId) {
+  if (!dealId) return false;
+  const { data, error } = await sb.from('deals').select('id, metadata').eq('id', dealId).single();
+  if (error) throw new Error(error.message);
+  return isStagingDeal(data);
+}
+
 function snapshot(provision) {
   if (!provision) return null;
   const snap = {};
@@ -43,21 +56,41 @@ export default async function handler(req, res) {
     const showStaging = includeStaging(req);
     if (id) {
       const { data, error } = await sb.from('provisions')
-        .select('*, deal:deals(acquirer, target, sector, announce_date, metadata)')
+        .select('*, deal:deals(acquirer, target, sector, announce_date)')
         .eq('id', id).single();
       if (error) return res.status(404).json({ error: error.message });
-      if (!showStaging && isStagingDeal(data && data.deal)) return res.status(404).json({ error: 'Provision is staging' });
+      if (!showStaging) {
+        try {
+          if (await dealIsStaging(sb, data && data.deal_id)) return res.status(404).json({ error: 'Provision is staging' });
+        } catch (err) {
+          return res.status(500).json({ error: err.message });
+        }
+      }
       return res.json({ provision: data });
     }
+    let stagingDealIds = new Set();
+    if (!showStaging && deal_id) {
+      try {
+        if (await dealIsStaging(sb, deal_id)) return res.json({ provisions: [] });
+      } catch (err) {
+        return res.status(500).json({ error: err.message });
+      }
+    } else if (!showStaging) {
+      try {
+        stagingDealIds = await fetchStagingDealIds(sb);
+      } catch (err) {
+        return res.status(500).json({ error: err.message });
+      }
+    }
     let q = sb.from('provisions')
-      .select('*, deal:deals(acquirer, target, sector, announce_date, metadata)');
+      .select('*, deal:deals(acquirer, target, sector, announce_date)');
     if (deal_id) q = q.eq('deal_id', deal_id);
     if (type) q = q.eq('type', type);
     if (category) q = q.eq('category', category);
     q = q.order('created_at', { ascending: true });
     const { data, error } = await q;
     if (error) return res.status(500).json({ error: error.message });
-    const provisions = showStaging ? (data || []) : (data || []).filter((row) => !isStagingDeal(row && row.deal));
+    const provisions = showStaging ? (data || []) : (data || []).filter((row) => !stagingDealIds.has(row.deal_id));
     return res.json({ provisions });
   }
 
