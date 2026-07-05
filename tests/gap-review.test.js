@@ -7,6 +7,8 @@ const {
   normalizeForGapDisplay,
   suggestGapType,
   buildGapDetails,
+  buildUncodedSummary,
+  buildUncodedDetails,
   gapPreviewFromSource,
 } = require('../lib/gap-review');
 
@@ -99,6 +101,59 @@ test('gapPreviewFromSource returns the display text slice, not the stored covera
     gapPreviewFromSource(source, { start, length: display.length - start }, 80),
     'Section 8.01 Expenses. Each party pays its own expenses.',
   );
+});
+
+test('buildUncodedDetails numbers non-canonical extracted provisions with full text', () => {
+  const provisions = [
+    {
+      id: 'prov-canonical',
+      type: 'REP-T',
+      category: 'Organisation',
+      ai_metadata: { features: { canonicalCode: 'REP-T-ORG' } },
+      full_text: 'Section 3.01 Organisation. The Company is duly organised.',
+    },
+    {
+      id: 'prov-proposed',
+      type: 'NOSOL',
+      category: '[PROPOSED] Go-Shop',
+      ai_metadata: { features: { canonicalCode: '[PROPOSED] NOSOL-GOSHOP' } },
+      full_text: 'Section 5.03 Go-Shop. The Company may solicit Acquisition Proposals for 30 days.',
+    },
+    {
+      id: 'prov-missing',
+      type: 'COV',
+      category: 'Ordinary Course',
+      ai_metadata: { features: {} },
+      full_text: 'Section 4.01 Conduct of Business. The Company shall operate in the ordinary course.',
+    },
+    {
+      id: 'prov-freeform',
+      type: 'MISC',
+      category: 'Bespoke Notice Mechanics',
+      ai_metadata: { features: { canonicalCode: 'MISC-BESPOKE-NOTICES' } },
+      full_text: 'Section 9.02 Bespoke Notice Mechanics. Notices must include a deal code.',
+    },
+  ];
+
+  const summary = buildUncodedSummary(provisions);
+  assert.deepEqual(summary, {
+    count: 3,
+    proposed_count: 1,
+    by_type: { NOSOL: 1, COV: 1, MISC: 1 },
+  });
+
+  const uncoded = buildUncodedDetails(provisions);
+
+  assert.equal(uncoded.length, 3);
+  assert.deepEqual(uncoded.map((item) => item.id), ['U-001', 'U-002', 'U-003']);
+  assert.equal(uncoded[0].provision_id, 'prov-proposed');
+  assert.equal(uncoded[0].proposed, true);
+  assert.equal(uncoded[0].code, '[PROPOSED] NOSOL-GOSHOP');
+  assert.match(uncoded[0].full_text, /Go-Shop/);
+  assert.equal(uncoded[1].code, null);
+  assert.match(uncoded[1].suggested_reason, /No canonical code/);
+  assert.equal(uncoded[2].family_type, 'MISC');
+  assert.match(uncoded[2].suggested_reason, /not in the canonical rubric/);
 });
 
 test('/api/admin/gaps uses schema-backed candidate ordering fields', () => {

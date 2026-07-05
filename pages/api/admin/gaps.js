@@ -2,7 +2,12 @@ import { getServiceSupabase } from '../../../lib/supabase';
 import { computeCoverage, verifyDealQuotes } from '../../../lib/verification';
 
 const { computeCanonicalRate } = require('../../../scripts/ingest-qa');
-const { buildGapDetails, gapPreviewFromSource } = require('../../../lib/gap-review');
+const {
+  buildGapDetails,
+  buildUncodedDetails,
+  buildUncodedSummary,
+  gapPreviewFromSource,
+} = require('../../../lib/gap-review');
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const PROVISION_PAGE_SIZE = 1000;
@@ -165,6 +170,7 @@ function summariseDeal(deal, provisions, latestIngest) {
     : { unverified: null };
   const canonicalRate = computeCanonicalRate(provisions || []);
   const largestGap = (coverage.gaps || [])[0] || null;
+  const uncodedSummary = buildUncodedSummary(provisions || []);
 
   return {
     deal_id: deal.id,
@@ -174,6 +180,9 @@ function summariseDeal(deal, provisions, latestIngest) {
     canonical_rate: round(canonicalRate),
     unverified_quotes: verification.unverified,
     gap_count: (coverage.gaps || []).length,
+    uncoded_count: uncodedSummary.count,
+    uncoded_proposed_count: uncodedSummary.proposed_count,
+    uncoded_type_counts: uncodedSummary.by_type,
     largest_gap_chars: largestGap ? largestGap.length : 0,
     largest_gap_preview: largestGap ? gapPreviewFromSource(sourceText, largestGap, 240) : null,
     metadata: {
@@ -213,10 +222,12 @@ async function getDetail(req, res, sb, dealId) {
     sourceText: sourceTextOf(deal),
     provisions: provisionsResult.data || [],
   });
+  const uncoded = buildUncodedDetails(provisionsResult.data || []);
 
   return res.status(200).json({
     summary: publicSummary(summary),
     gaps,
+    uncoded,
     coverage: {
       sourceChars: summary._coverage.sourceChars,
       coveredChars: summary._coverage.coveredChars,
