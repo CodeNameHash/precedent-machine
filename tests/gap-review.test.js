@@ -267,3 +267,10 @@ test('/api/admin/gaps uses schema-backed candidate ordering fields', () => {
   assert.match(source, /\.order\('discovered_at', \{ ascending: false \}\)/);
   assert.doesNotMatch(source, /\.select\('id, ingested_deal_id, status, updated_at'\)/);
 });
+
+test('/api/admin/gaps summary uses context-aware gap region classification', () => {
+  const source = fs.readFileSync(path.join(__dirname, '..', 'pages/api/admin/gaps.js'), 'utf8');
+  assert.match(source, /classifyGapRegionWithContext/);
+  assert.match(source, /normalizeForGapDisplay\(sourceText\)/);
+  assert.doesNotMatch(source, /classifyGapRegion\(gapTextFromSource\(sourceText, gap\)\)/);
+});

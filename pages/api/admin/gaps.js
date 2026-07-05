@@ -7,8 +7,9 @@ const {
   buildGapDetails,
   buildUncodedDetails,
   buildUncodedSummary,
-  classifyGapRegion,
+  classifyGapRegionWithContext,
   formatGapId,
+  normalizeForGapDisplay,
   gapTextFromSource,
   gapPreviewFromSource,
   isReviewableGapRegion,
@@ -194,8 +195,12 @@ function summariseDeal(deal, provisions, latestIngest) {
     ? verifyDealQuotes(provisions || [], sourceText)
     : { unverified: null };
   const canonicalRate = computeCanonicalRate(provisions || []);
+  const displaySource = normalizeForGapDisplay(sourceText);
   const typedGaps = (coverage.gaps || []).map((gap) => {
-    const regionType = classifyGapRegion(gapTextFromSource(sourceText, gap));
+    const start = Math.max(0, Number(gap && gap.start) || 0);
+    const length = Math.max(0, Number(gap && gap.length) || 0);
+    const fullText = gapTextFromSource(sourceText, gap);
+    const regionType = classifyGapRegionWithContext(displaySource, start, start + length, fullText);
     return { gap, regionType, reviewable: isReviewableGapRegion(regionType) };
   });
   const reviewableGaps = typedGaps.filter((item) => item.reviewable);

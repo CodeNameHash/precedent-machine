@@ -1,6 +1,6 @@
 # Parser Hierarchy Handoff
 
-Updated: 2026-07-05 19:46 EDT
+Updated: 2026-07-05 19:41 EDT
 
 ## Current Worktree
 
@@ -279,7 +279,8 @@ What changed locally:
 
 - `lib/gap-review.js` now classifies mid-recital slices as `preamble.recitals` when a broader context window shows a lettered recital run leading into `NOW, THEREFORE`.
 - This handles Glow's `Article I. RECITALS` form where the gap slice itself starts mid-sentence and does not contain `WHEREAS`.
-- `tests/gap-review.test.js` locks this regression.
+- `pages/api/admin/gaps.js` now uses the same context-aware classifier for summary/table metrics; live detail rows were correct after the first deploy, but summary `gap_count` still used the old direct classifier.
+- `tests/gap-review.test.js` locks both regressions.
 - `pages/admin/gaps.js` review-queue links now use `scroll={false}` so clicking G/U/parser rows does not jump to the page top.
 - `tests/admin-gaps-scroll.test.js` locks that regression.
 
@@ -307,7 +308,7 @@ Implication:
 
 ## Next Work
 
-1. Push and deploy the Glow recital/admin-scroll hotfix.
+1. Push and deploy the Glow recital/admin-scroll/summary-metric hotfix.
 2. Fix IOC extractor handling for standalone negative chapeaux and affirmative exception-list chapeaux.
 3. Repair / re-run Glow IOC, NOSOL, and ANTI/COV targeted reprocess.
 4. If Glow validates, repeat the same targeted gap-review/reprocess loop on Landos and Kraft.
@@ -340,5 +341,12 @@ Implication:
   - Result: passed. Landos, Metsera, and Verve golden checks all green.
   - Targeted ingest QA for Conoco, Glow / European Wax, Landos / Bespin, and Kraft / H.J. Heinz.
   - Result: all passed.
+- After Glow recap/admin-scroll hotfix:
+  - `node --test tests/gap-review.test.js tests/admin-gaps-scroll.test.js`
+  - Result: passed, 15/15.
+  - `npm test`
+  - Result: passed, 794/794.
+  - `npm run build`
+  - Result: passed. Build reported missing Supabase env during static generation and completed in offline mode, as expected for this worktree.
 
 Full pre/post reprocess safety diff remains unrun because there is no single harness and the `--apply` sequence would mutate live data.
