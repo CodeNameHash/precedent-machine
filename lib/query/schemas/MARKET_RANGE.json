@@ -1,0 +1,1 @@
+{"type":"object","required":["provision_type","field_path","deal_filter","chart_kind"],"properties":{"provision_type":{"type":"string"},"field_path":{"type":"string"},"deal_filter":{"type":"object"},"chart_kind":{"type":"string","enum":["HISTOGRAM","BOX","BAR"]}}}

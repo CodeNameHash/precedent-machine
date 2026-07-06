@@ -1,0 +1,1 @@
+{"type":"object","required":["deal_ids","provision_types","highlight_deltas","included_field_groups"],"properties":{"deal_ids":{"type":"array","minItems":2,"maxItems":4,"items":{"type":"string"}},"provision_types":{"type":"array","items":{"type":"string"}},"highlight_deltas":{"type":"boolean"},"included_field_groups":{"type":"array","items":{"type":"string"}}}}
