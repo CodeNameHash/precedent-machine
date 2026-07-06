@@ -52,10 +52,11 @@ test('enum and list-tag features carry the required schema fields', () => {
   }
 });
 
-test('empty registry lookup helpers return safe defaults', () => {
+test('registry lookup helpers return safe defaults and populated type lists', () => {
   assert.equal(schema.getFeature('missing'), null);
-  assert.deepEqual(schema.getFeaturesForType('STRUCT'), []);
-  assert.deepEqual(schema.getFeaturesForCode('STRUCT', 'STRUCT-MERGER'), []);
+  assert.ok(schema.getFeature('dealStructure'));
+  assert.ok(schema.getFeaturesForType('STRUCT').length > 0);
+  assert.ok(schema.getFeaturesForCode('STRUCT', 'STRUCT-MERGER').length > 0);
   assert.equal(schema.getTag('MISSING', 'NOPE'), null);
   assert.deepEqual(schema.getTagsForFamily('NOPE'), []);
 });
