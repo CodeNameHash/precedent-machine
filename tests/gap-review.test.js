@@ -321,12 +321,16 @@ test('buildBoundaryAudit exposes provision spans, reviewable gaps, and unlocated
   assert.equal(audit.summary.reviewable_gaps, 1);
   assert.equal(audit.items[0].id, 'P-001');
   assert.equal(audit.items[0].provision_id, 'prov-intro');
+  assert.match(audit.items[0].full_text, /Parent will acquire the Company/);
   assert.equal(audit.items[1].provision_id, 'prov-offer');
   assert.match(audit.items[1].tail_preview, /Offer and$/);
+  assert.equal(audit.items[1].text, audit.items[1].full_text);
   assert.equal(audit.items[1].flags[0].code, 'odd_end_word');
   assert.equal(audit.items[2].id, 'G-001');
   assert.equal(audit.items[2].reviewable_gap, true);
+  assert.match(audit.items[2].full_text, /No Solicitation/);
   assert.equal(audit.unlocated[0].provision_id, 'prov-unlocated');
+  assert.match(audit.unlocated[0].full_text, /Missing Covenant/);
   assert.equal(audit.unlocated[0].flags[0].code, 'unlocated');
 });
 

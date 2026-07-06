@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { typeHex, typeLabel } from './shared';
 
@@ -48,6 +48,10 @@ function FlagList({ flags }) {
   );
 }
 
+function fullTextForItem(item) {
+  return item.full_text || item.text || item.preview || 'No text.';
+}
+
 function BoundaryRow({ item, onEditProvision, dealId }) {
   const isProvision = item.kind === 'provision';
   const isGap = item.kind === 'gap';
@@ -89,14 +93,8 @@ function BoundaryRow({ item, onEditProvision, dealId }) {
         </div>
       </div>
       <p className="mt-2 whitespace-pre-wrap font-serif text-[12px] leading-relaxed text-inkMid">
-        {item.preview || item.text || 'No preview.'}
+        {fullTextForItem(item)}
       </p>
-      {isProvision && item.tail_preview && item.tail_preview !== item.preview && (
-        <p className="mt-2 whitespace-pre-wrap border-l-2 border-line pl-2 font-serif text-[12px] leading-relaxed text-inkMid">
-          <span className="font-ui text-[10px] uppercase tracking-wider text-inkFaint">Ends </span>
-          {item.tail_preview}
-        </p>
-      )}
       {isGap && item.suggested_reason && (
         <p className="mt-2 font-ui text-[10px] text-inkFaint">{item.suggested_reason}</p>
       )}
@@ -128,7 +126,7 @@ function UnlocatedRow({ item, onEditProvision }) {
           )}
         </div>
       </div>
-      <p className="mt-2 whitespace-pre-wrap font-serif text-[12px] leading-relaxed text-inkMid">{item.preview || 'No preview.'}</p>
+      <p className="mt-2 whitespace-pre-wrap font-serif text-[12px] leading-relaxed text-inkMid">{fullTextForItem(item)}</p>
       <FlagList flags={item.flags} />
     </div>
   );
@@ -158,9 +156,10 @@ export function BoundaryAuditPanel({ open, dealId, onClose, onEditProvision }) {
   const items = Array.isArray(audit && audit.items) ? audit.items : [];
   const unlocated = Array.isArray(audit && audit.unlocated) ? audit.unlocated : [];
   const summary = audit && audit.summary ? audit.summary : {};
-  const flagged = useMemo(() => items.filter((item) => (
-    Array.isArray(item.flags) && item.flags.some((flag) => flag && flag.severity !== 'info')
-  )), [items]);
+  const handleEditProvision = (provisionId) => {
+    if (onEditProvision) onEditProvision(provisionId);
+    if (onClose) onClose();
+  };
 
   if (!open) return null;
 
@@ -203,31 +202,22 @@ export function BoundaryAuditPanel({ open, dealId, onClose, onEditProvision }) {
                 ))}
               </div>
 
+              <section className="space-y-2">
+                <h3 className="font-ui text-[11px] font-semibold uppercase tracking-wider text-inkMid">Source order</h3>
+                {items.map((item) => (
+                  <BoundaryRow key={`${item.kind}-${item.id}-${item.start || item.provision_id}`} item={item} onEditProvision={handleEditProvision} dealId={dealId} />
+                ))}
+                {items.length === 0 && <div className="rounded border border-border bg-white p-4 font-ui text-sm text-inkFaint">No boundary audit data.</div>}
+              </section>
+
               {unlocated.length > 0 && (
                 <section className="space-y-2">
                   <h3 className="font-ui text-[11px] font-semibold uppercase tracking-wider text-rose-700">Unlocated provisions</h3>
                   {unlocated.map((item) => (
-                    <UnlocatedRow key={item.id} item={item} onEditProvision={onEditProvision} />
+                    <UnlocatedRow key={item.id} item={item} onEditProvision={handleEditProvision} />
                   ))}
                 </section>
               )}
-
-              {flagged.length > 0 && (
-                <section className="space-y-2">
-                  <h3 className="font-ui text-[11px] font-semibold uppercase tracking-wider text-inkMid">Flagged in source order</h3>
-                  {flagged.map((item) => (
-                    <BoundaryRow key={`${item.kind}-${item.id}-${item.start || item.provision_id}`} item={item} onEditProvision={onEditProvision} dealId={dealId} />
-                  ))}
-                </section>
-              )}
-
-              <section className="space-y-2">
-                <h3 className="font-ui text-[11px] font-semibold uppercase tracking-wider text-inkMid">All spans</h3>
-                {items.map((item) => (
-                  <BoundaryRow key={`${item.kind}-${item.id}-${item.start || item.provision_id}`} item={item} onEditProvision={onEditProvision} dealId={dealId} />
-                ))}
-                {items.length === 0 && <div className="rounded border border-border bg-white p-4 font-ui text-sm text-inkFaint">No boundary audit data.</div>}
-              </section>
             </div>
           )}
         </div>

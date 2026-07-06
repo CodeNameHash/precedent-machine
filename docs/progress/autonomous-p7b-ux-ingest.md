@@ -383,3 +383,19 @@ Updated: 2026-07-05
   - Full tests passed: `node --test --test-reporter=dot tests/*.test.js`.
   - Build passed from a temp copy with `node_modules` symlinked to `/tmp/wp-schema-p7-node_modules-1783304291`.
 - Do not stage `lib/llm-cli-client.js` unless intentionally changing concurrency. The temporary Metsera agent `MAX_CONCURRENT = 6` edit was reverted to repo default `2`.
+
+## 2026-07-06 11:20 EDT Boundary Audit Follow-Up
+
+- Fixed the boundary audit drawer based on Ben's live review:
+  - Edit buttons now close the audit drawer after selecting the provision, so the edit panel is visible.
+  - Boundary rows now render full text, not just preview/tail snippets.
+  - The primary list is a single source-order list; unlocated rows sit below it because they have no source position.
+  - Removed the duplicated `Flagged in source order` section.
+- Local browser smoke passed on Conoco:
+  - Source-order list appears first.
+  - Full text is visible.
+  - Clicking an audit-row Edit button closes the drawer and opens the edit panel at `?mode=edit&edit=<provision_id>`.
+- Gates passed:
+  - Focused parser/gap/verification tests: 69/69.
+  - Full `node --test --test-reporter=dot tests/*.test.js`.
+  - Temp-copy `npm run build`.
