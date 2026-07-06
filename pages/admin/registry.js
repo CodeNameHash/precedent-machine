@@ -5,6 +5,7 @@ import { useUser } from '../../lib/useUser';
 import { Breadcrumbs } from '../../components/UI';
 import AdminNav from '../../components/admin/AdminNav';
 import RegistryCard from '../../components/admin/registry/RegistryCard';
+import RegistryMergeBoard from '../../components/admin/registry/RegistryMergeBoard';
 import RegistrySidebar from '../../components/admin/registry/RegistrySidebar';
 import FlagBadge from '../../components/admin/registry/FlagBadge';
 
@@ -66,6 +67,7 @@ export default function RegistryAdmin({ registry, initialDecisions, provisionTyp
   const [active, setActive] = useState('FLAGGED');
   const [decisions, setDecisions] = useState(initialDecisions || {});
   const [pendingOnly, setPendingOnly] = useState(false);
+  const [viewMode, setViewMode] = useState('board');
   const [dealId, setDealId] = useState('');
   const [status, setStatus] = useState(null);
   const fields = registry.fields || [];
@@ -149,15 +151,32 @@ export default function RegistryAdmin({ registry, initialDecisions, provisionTyp
           />
           <section>
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded border border-border bg-white p-3">
-              <label className="flex items-center gap-2 text-xs font-ui text-inkLight">
-                <input
-                  type="checkbox"
-                  checked={pendingOnly}
-                  onChange={(event) => setPendingOnly(event.target.checked)}
-                  className="h-4 w-4 rounded border-border text-accent"
-                />
-                Pending only
-              </label>
+              <div className="flex flex-wrap items-center gap-3">
+                <label className="flex items-center gap-2 text-xs font-ui text-inkLight">
+                  <input
+                    type="checkbox"
+                    checked={pendingOnly}
+                    onChange={(event) => setPendingOnly(event.target.checked)}
+                    className="h-4 w-4 rounded border-border text-accent"
+                  />
+                  Pending only
+                </label>
+                <div className="inline-flex rounded border border-border bg-bg/40 p-0.5">
+                  {[
+                    ['board', 'Board'],
+                    ['full', 'Full'],
+                  ].map(([value, label]) => (
+                    <button
+                      key={value}
+                      type="button"
+                      onClick={() => setViewMode(value)}
+                      className={`rounded px-3 py-1 text-xs font-ui ${viewMode === value ? 'bg-white text-ink shadow-sm' : 'text-inkLight hover:text-ink'}`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
               <label className="flex items-center gap-2 text-xs font-ui text-inkLight">
                 Deal ID
                 <input
@@ -186,17 +205,25 @@ export default function RegistryAdmin({ registry, initialDecisions, provisionTyp
                 </div>
               </div>
             ) : (
-              <div className="space-y-4">
-                {filteredFields.map((field) => (
-                  <RegistryCard
-                    key={field.key}
-                    field={field}
-                    decision={decisions[field.key]}
-                    onDecision={saveDecision}
-                    onPreview={previewField}
-                  />
-                ))}
-              </div>
+              viewMode === 'board' ? (
+                <RegistryMergeBoard
+                  fields={filteredFields}
+                  decisions={decisions}
+                  onDecision={saveDecision}
+                />
+              ) : (
+                <div className="space-y-4">
+                  {filteredFields.map((field) => (
+                    <RegistryCard
+                      key={field.key}
+                      field={field}
+                      decision={decisions[field.key]}
+                      onDecision={saveDecision}
+                      onPreview={previewField}
+                    />
+                  ))}
+                </div>
+              )
             )}
           </section>
         </div>

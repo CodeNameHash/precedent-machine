@@ -15,13 +15,19 @@ test('admin registry page exposes sidebar, cards, vocab, freeze, preview, and de
   assert.match(page, /\/api\/admin\/registry\/preview/);
   assert.match(page, /RegistrySidebar/);
   assert.match(page, /RegistryCard/);
+  assert.match(page, /RegistryMergeBoard/);
+  assert.match(page, /Board/);
 });
 
 test('registry components carry stable test ids', () => {
   const sidebar = read('components/admin/registry/RegistrySidebar.jsx');
   const card = read('components/admin/registry/RegistryCard.jsx');
+  const board = read('components/admin/registry/RegistryMergeBoard.jsx');
   assert.match(sidebar, /data-testid="registry-sidebar"/);
   assert.match(card, /data-testid="registry-card"/);
+  assert.match(board, /data-testid="registry-merge-board"/);
+  assert.match(board, /onDrop/);
+  assert.match(board, /decision: 'merge'/);
 });
 
 test('registry API freezes only after pending decisions clear', () => {
