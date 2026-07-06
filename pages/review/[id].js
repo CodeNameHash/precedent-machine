@@ -86,6 +86,7 @@ import {
   CitableHover,
   prettifyEnumValue,
   NotIncludedStrip,
+  EmptyFeatureState,
 } from '../../components/review/shared';
 import { NosolFourTables } from '../../components/review/NosolFourTables';
 import { NoOtherRepsFraudTable } from '../../components/review/NoOtherRepsFraudTable';
@@ -279,6 +280,18 @@ function schemaFeatureText(featureKey, value) {
   if (rendered === null || rendered === undefined || rendered === '') return null;
   if (rendered && typeof rendered === 'object' && rendered.kind === 'empty') return null;
   return String(rendered);
+}
+
+function schemaEmptyState(featureKey, value) {
+  if (!featureKey) return null;
+  const rendered = schemaRenderFeatureValue(featureKey, value);
+  if (rendered && typeof rendered === 'object' && rendered.kind === 'empty') return rendered;
+  return null;
+}
+
+function renderEmptyFeatureOrDash(featureKey, value) {
+  const state = schemaEmptyState(featureKey, value);
+  return state ? <EmptyFeatureState state={state} /> : '—';
 }
 
 function formatFeatureValue(v, featureKey) {
@@ -3391,6 +3404,14 @@ function formatCellValue(featureKey, raw) {
 
 // Render a single feature cell value (tagged object → code+label, otherwise text).
 function renderFeatureCell(featureKey, raw) {
+  const emptyState = schemaEmptyState(featureKey, raw);
+  if (emptyState) {
+    return (
+      <div className="whitespace-pre-wrap break-words">
+        <EmptyFeatureState state={emptyState} />
+      </div>
+    );
+  }
   // P7 item 25: list-valued cells render as bullets (universally).
   if (Array.isArray(raw)) {
     const bullets = renderListAsBullets(featureKey, raw);
@@ -3430,7 +3451,7 @@ function renderFeatureCell(featureKey, raw) {
       <div className="whitespace-pre-wrap break-words">
         <CitableHover quotes={quotes}>
           <span className={cell === null ? 'text-inkFaint/70 italic' : ''}>
-            {cell === null ? '—' : cell}
+            {cell === null ? renderEmptyFeatureOrDash(featureKey, inner) : cell}
           </span>
         </CitableHover>
       </div>
@@ -11115,14 +11136,22 @@ export default function ReviewPage() {
                 })()}
               </div>
               {isEdit && (
-                <ExtractionStatusPill
-                  deal={deal}
-                  provisions={provisions}
-                  onRefetch={async () => {
-                    await refetchDeal?.();
-                    await refetchProvs?.();
-                  }}
-                />
+                <div className="flex flex-wrap items-center gap-2">
+                  <ExtractionStatusPill
+                    deal={deal}
+                    provisions={provisions}
+                    onRefetch={async () => {
+                      await refetchDeal?.();
+                      await refetchProvs?.();
+                    }}
+                  />
+                  <Link
+                    href={`/review/${dealId}/needs-review`}
+                    className="rounded border border-border px-2.5 py-1 text-[11px] font-ui text-inkLight hover:border-accent hover:text-ink"
+                  >
+                    Needs review
+                  </Link>
+                </div>
               )}
               <div className="rec-deal-meta">
                 {deal.value_usd && (

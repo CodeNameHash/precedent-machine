@@ -1,4 +1,5 @@
 import { useState, useRef, useContext, createContext } from 'react';
+import { renderFeatureValue as schemaRenderFeatureValue } from '../../lib/schema';
 import {
   getAiMetadata,
   getStructuredFeatures,
@@ -398,16 +399,46 @@ export function pickFirstNonEmpty(provisions, keys) {
   return null;
 }
 
+function schemaEmptyState(featureKey, value) {
+  if (!featureKey) return null;
+  const rendered = schemaRenderFeatureValue(featureKey, value);
+  if (rendered && typeof rendered === 'object' && rendered.kind === 'empty') return rendered;
+  return null;
+}
+
+export function EmptyFeatureState({ state }) {
+  if (!state) return null;
+  const toneClass = state.tone === 'warning'
+    ? 'border-amber-300 bg-amber-50 text-amber-700'
+    : state.tone === 'info'
+      ? 'border-accent/30 bg-accent/5 text-accent'
+      : 'border-border bg-bg text-inkFaint';
+  return (
+    <span
+      className={`inline-flex items-center rounded border px-2 py-0.5 text-[11px] font-ui italic ${toneClass}`}
+      title={state.title || undefined}
+    >
+      {state.label}
+    </span>
+  );
+}
+
+function EmptySummaryValue({ featureKey, value }) {
+  const state = schemaEmptyState(featureKey, value);
+  if (state) return <EmptyFeatureState state={state} />;
+  return <span className="italic text-inkFaint">Not present in this agreement</span>;
+}
+
 // Render a single row's value cell. Returns either a React node (for italic
 // "Not present" placeholder, list count+snippet, or tagged label) or a string.
 export function renderSummaryRowValue(hit, featureKeyForLookup) {
   if (hit === null || hit === undefined) {
-    return (
-      <span className="italic text-inkFaint">Not present in this agreement</span>
-    );
+    return <EmptySummaryValue featureKey={featureKeyForLookup} value={null} />;
   }
   let v = hit.value;
   const key = hit.key || featureKeyForLookup;
+  const emptyState = schemaEmptyState(key, v);
+  if (emptyState) return <EmptyFeatureState state={emptyState} />;
 
   // Unwrap citable wrapper.
   if (isCitableValue(v)) v = getCitableValue(v);
@@ -425,17 +456,17 @@ export function renderSummaryRowValue(hit, featureKeyForLookup) {
   // two paths stay consistent.
   if (Array.isArray(v)) {
     if (v.length === 0) {
-      return <span className="italic text-inkFaint">Not present in this agreement</span>;
+      return <EmptySummaryValue featureKey={key} value={v} />;
     }
     const bullets = renderListAsBullets(key, v);
     if (bullets) return bullets;
-    return <span className="italic text-inkFaint">Not present in this agreement</span>;
+    return <EmptySummaryValue featureKey={key} value={null} />;
   }
 
   // Boolean / scalar.
   if (typeof v === 'boolean') return <span>{v ? 'Yes' : 'No'}</span>;
   if (v === null || v === undefined || v === '') {
-    return <span className="italic text-inkFaint">Not present in this agreement</span>;
+    return <EmptySummaryValue featureKey={key} value={v} />;
   }
   return <span>{prettifyEnumValue(key, String(v))}</span>;
 }
