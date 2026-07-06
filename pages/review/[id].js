@@ -10464,13 +10464,6 @@ export default function ReviewPage() {
     return displayType || provision.type || null;
   }, [provisions]);
 
-  const activeFilterIncludesProvision = useCallback((provision) => {
-    if (!provision || activeFilter === null) return true;
-    const filters = Array.isArray(activeFilter) ? activeFilter : [activeFilter];
-    const displayType = displayTypeForProvision(provision, provisions);
-    return filters.includes(provision.type) || filters.includes(displayType);
-  }, [activeFilter, provisions]);
-
   /* ── Filtered provisions based on sidebar selection ── */
   const filteredProvisions = useMemo(() => {
     if (activeFilter === null) {
@@ -10828,6 +10821,17 @@ export default function ReviewPage() {
     setPendingScrollTarget({ provisionId: provision.id, sectionType });
   }, [renderedSectionTypeForProvision]);
 
+  const queueSectionScroll = useCallback((sectionType) => {
+    if (!sectionType) return;
+    setCollapsedSections((prev) => {
+      if (!prev.has(sectionType)) return prev;
+      const next = new Set(prev);
+      next.delete(sectionType);
+      return next;
+    });
+    setPendingScrollTarget({ provisionId: null, sectionType });
+  }, []);
+
   useEffect(() => {
     if (!pendingScrollTarget) return;
     const run = () => {
@@ -10875,9 +10879,9 @@ export default function ReviewPage() {
     };
   }, [editingProvision, closeEditPanel]);
 
-  /* ── Sidebar filter handler — accepts a single type, an array of types
-   *     (for parent-group "show all children combined" clicks), or null
-   *     to clear the filter. */
+  /* ── Sidebar section navigation — accepts a single type, an array of types
+   *     (for parent-group clicks), or null. Sidebar clicks should jump, not
+   *     hide the rest of the review page. */
   const handleFilterType = useCallback((type) => {
     // Normalize: empty array → null; single-element array → string
     let next = type;
@@ -10888,10 +10892,12 @@ export default function ReviewPage() {
     setFullDocOpen(false);
     setDocSheet((s) => (s.open ? { ...s, open: false } : s));
     setActiveTab('provisions');
-    setActiveFilter(next);
+    setActiveFilter(null);
     setSelectedProvId(null); // clear single-provision view when changing type filter
+    const sectionType = Array.isArray(next) ? next[0] : next;
+    if (sectionType) queueSectionScroll(sectionType);
     pushReviewRoute({ section: next, provisionId: null, tab: null });
-  }, [pushReviewRoute]);
+  }, [pushReviewRoute, queueSectionScroll]);
 
   /* ── Sidebar provision click — jump to the provision without narrowing the page ── */
   const handleSidebarSelectProvision = useCallback((provId) => {
@@ -10907,7 +10913,7 @@ export default function ReviewPage() {
       setDocSheet((s) => (s.open ? { ...s, open: false } : s));
       setActiveTab('provisions');
       setSelectedProvId(prov.id);
-      setActiveFilter('__MATERIAL_CONTRACTS');
+      setActiveFilter(null);
       setExpandedLabel(null);
       queueProvisionScroll(prov);
       if (isEdit) setEditingProvision(prov);
@@ -10924,10 +10930,7 @@ export default function ReviewPage() {
     setActiveTab('provisions');
     setSelectedProvId(provId);
     if (prov) {
-      const sectionType = renderedSectionTypeForProvision(prov);
-      if (!activeFilterIncludesProvision(prov)) {
-        setActiveFilter(sectionType);
-      }
+      setActiveFilter(null);
       // Auto-open the right edit panel so a single sidebar click on a
       // provision swaps the right-side toolbar to the editor for that item.
       // User view: no editing, so leave the panel closed.
@@ -10941,7 +10944,7 @@ export default function ReviewPage() {
         tab: null,
       });
     }
-  }, [provisions, isEdit, activeFilterIncludesProvision, renderedSectionTypeForProvision, queueProvisionScroll, pushReviewRoute]);
+  }, [provisions, isEdit, queueProvisionScroll, pushReviewRoute]);
 
   /* ── Edit provision ── */
   const handleEditProvision = useCallback((provision) => {
@@ -10994,12 +10997,10 @@ export default function ReviewPage() {
     }
     if (provsLoading) return;
 
-    let nextFilter = null;
     let nextSelected = null;
     if (route.provisionId) {
       const selected = provisions.find((p) => String(p.id) === String(route.provisionId));
       if (selected) {
-        nextFilter = renderedSectionTypeForProvision(selected);
         nextSelected = selected.id;
         queueProvisionScroll(selected);
       }
@@ -11008,14 +11009,11 @@ export default function ReviewPage() {
       const validSections = sectionValues.filter((section) =>
         Object.prototype.hasOwnProperty.call(provsByType, section)
       );
-      if (validSections.length === 1) nextFilter = validSections[0];
-      else if (validSections.length > 1) nextFilter = validSections;
+      if (validSections.length > 0) queueSectionScroll(validSections[0]);
     }
 
     setActiveFilter((prev) => {
-      const prevKey = Array.isArray(prev) ? prev.join('\u0000') : prev;
-      const nextKey = Array.isArray(nextFilter) ? nextFilter.join('\u0000') : nextFilter;
-      return prevKey === nextKey ? prev : nextFilter;
+      return prev === null ? prev : null;
     });
     setSelectedProvId((prev) => (prev === nextSelected ? prev : nextSelected));
 

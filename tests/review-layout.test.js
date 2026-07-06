@@ -110,13 +110,32 @@ test('sidebar provision clicks scroll without narrowing the review list', () => 
   assert.ok(handlerStart > 0);
   const handlerBody = src.slice(handlerStart, src.indexOf('/* ── Edit provision ── */', handlerStart));
   assert.match(handlerBody, /queueProvisionScroll\(prov\)/);
-  assert.match(handlerBody, /if \(!activeFilterIncludesProvision\(prov\)\)/);
+  assert.match(handlerBody, /setActiveFilter\(null\)/);
+  assert.doesNotMatch(handlerBody, /setActiveFilter\(sectionType\)/);
+  assert.doesNotMatch(handlerBody, /activeFilterIncludesProvision/);
   assert.match(handlerBody, /if \(isEdit\) setEditingProvision\(prov\)/);
   assert.doesNotMatch(handlerBody, /setSelectedProvId\(null\)/);
 
   assert.match(src, /scrollIntoView\(\{ behavior: 'smooth', block: 'center' \}\)/);
   assert.match(src, /id=\{`review-prov-\$\{p\.id\}`\}/);
   assert.match(src, /provisionRefs=\{provisionRefs\}/);
+});
+
+test('sidebar section clicks and direct links scroll without filtering the page', () => {
+  const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
+  const filterStart = src.indexOf('const handleFilterType = useCallback((type) =>');
+  assert.ok(filterStart > 0);
+  const filterBody = src.slice(filterStart, src.indexOf('/* ── Sidebar provision click', filterStart));
+  assert.match(filterBody, /setActiveFilter\(null\)/);
+  assert.match(filterBody, /queueSectionScroll\(sectionType\)/);
+  assert.doesNotMatch(filterBody, /setActiveFilter\(next\)/);
+
+  const hydrateStart = src.indexOf('// Hydrate direct links once the route and provision list are ready.');
+  assert.ok(hydrateStart > 0);
+  const hydrateBody = src.slice(hydrateStart, src.indexOf('/* ── Save edits ── */', hydrateStart));
+  assert.match(hydrateBody, /queueSectionScroll\(validSections\[0\]\)/);
+  assert.match(hydrateBody, /return prev === null \? prev : null/);
+  assert.doesNotMatch(hydrateBody, /nextFilter =/);
 });
 
 test('rep lookback renderer frames numeric month counts as years before signing', () => {
