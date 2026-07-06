@@ -7,7 +7,7 @@
     "lib/vocab/ioc-categories.js"
   ],
   "input_field_count": 1327,
-  "field_count": 680,
+  "field_count": 681,
   "fields": [
     {
       "key": "absenceOfChangesExceptions",
@@ -29562,6 +29562,43 @@
           }
         ]
       },
+      "status": "PENDING_REVIEW"
+    },
+    {
+      "key": "tenderOffer",
+      "label": "Tender offer structure present",
+      "data_type": "BOOLEAN",
+      "applies_to": "STRUCT",
+      "party_scope": "DEAL_LEVEL",
+      "structural_patterns": [
+        "THREE_STATE"
+      ],
+      "states": [
+        "PRESENT",
+        "ABSENT",
+        "UNKNOWN"
+      ],
+      "source_file": "reviewer-added",
+      "resolver_stub": {
+        "resolver_kind": "DERIVED_FROM_FIELD",
+        "source": "dealStructure",
+        "json_path": "tenderOffer",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve as true when dealStructure indicates a two-step tender offer or offer mechanics are present."
+      },
+      "resolver_notes": "Boolean split-out from dealStructure so merger structure and tender-offer status can be reviewed separately.",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "reviewer-added",
+      "merged_from": [
+        {
+          "origin": "schema-features",
+          "key": "dealStructure",
+          "merge_rule": "reviewer-split"
+        }
+      ],
+      "also_matches_provision_codes": [
+        "STRUCT-OFFER"
+      ],
       "status": "PENDING_REVIEW"
     },
     {

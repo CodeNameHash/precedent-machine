@@ -15,6 +15,32 @@ const PREFERRED_CANONICAL_BY_NORM = {
   materialityqualifier: 'materialityQualifier',
 };
 
+const REVIEWER_ADDED_FIELDS = [
+  {
+    key: 'tenderOffer',
+    label: 'Tender offer structure present',
+    data_type: 'BOOLEAN',
+    applies_to: 'STRUCT',
+    party_scope: 'DEAL_LEVEL',
+    structural_patterns: ['THREE_STATE'],
+    states: ['PRESENT', 'ABSENT', 'UNKNOWN'],
+    source_file: 'reviewer-added',
+    resolver_stub: {
+      resolver_kind: 'DERIVED_FROM_FIELD',
+      source: 'dealStructure',
+      json_path: 'tenderOffer',
+      stateful_test_deal_ids_required: true,
+      notes: 'Resolve as true when dealStructure indicates a two-step tender offer or offer mechanics are present.',
+    },
+    resolver_notes: 'Boolean split-out from dealStructure so merger structure and tender-offer status can be reviewed separately.',
+    test_deal_ids_required_per_state: 'Required before ACTIVE registry promotion.',
+    origin: 'reviewer-added',
+    merged_from: [{ origin: 'schema-features', key: 'dealStructure', merge_rule: 'reviewer-split' }],
+    also_matches_provision_codes: ['STRUCT-OFFER'],
+    status: 'PENDING_REVIEW',
+  },
+];
+
 function clone(row) {
   return JSON.parse(JSON.stringify(row));
 }
@@ -155,7 +181,11 @@ function dedupeRegistry(inputData) {
     }
   }
 
-  const fields = [...canonicalByKey.values(), ...flagged].sort((a, b) => String(a.key).localeCompare(String(b.key)));
+  const fields = [...canonicalByKey.values(), ...flagged];
+  for (const row of REVIEWER_ADDED_FIELDS) {
+    if (!fields.some((field) => field.key === row.key)) fields.push(ensureRow(row));
+  }
+  fields.sort((a, b) => String(a.key).localeCompare(String(b.key)));
   const flaggedNearDuplicates = fields.filter((row) => row.review_flag === 'REQUIRES_REVIEWER_DECISION').length;
   for (const row of fields) {
     row.status = row.status || 'PENDING_REVIEW';
