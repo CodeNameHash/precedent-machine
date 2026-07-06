@@ -3163,37 +3163,6 @@
       "resolver_notes": "MAE Carve-Outs (canonical list - each item drawn from MAE_CARVEOUT_CODES; tag with hasDisproportionateImpactCarveback when the disproportionate-impact carveback applies to that specific carveout)",
       "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
       "origin": "schema-features",
-      "merged_from": [],
-      "also_matches_provision_codes": [],
-      "review_flag": "REQUIRES_REVIEWER_DECISION",
-      "proposed_action": "review duplicate group carveout",
-      "status": "PENDING_REVIEW"
-    },
-    {
-      "key": "carveOuts",
-      "label": "Carve-Outs (for MAE - enumerated exceptions)",
-      "data_type": "ENUM_MULTI",
-      "applies_to": "DEF",
-      "party_scope": "DEAL_LEVEL",
-      "structural_patterns": [
-        "THREE_STATE"
-      ],
-      "states": [
-        "PRESENT",
-        "ABSENT",
-        "UNKNOWN"
-      ],
-      "source_file": "lib/schema/features.js",
-      "resolver_stub": {
-        "resolver_kind": "DIRECT_PATH",
-        "source": "lib/schema/features.js",
-        "json_path": "carveOuts",
-        "stateful_test_deal_ids_required": true,
-        "notes": "Resolve carveOuts from lib/schema/features.js; normalise to ENUM_MULTI before activation."
-      },
-      "resolver_notes": "Carve-Outs (for MAE - enumerated exceptions)",
-      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
-      "origin": "schema-features",
       "merged_from": [
         {
           "origin": "rubric-features",
@@ -3224,6 +3193,37 @@
           }
         ]
       },
+      "review_flag": "REQUIRES_REVIEWER_DECISION",
+      "proposed_action": "review duplicate group carveout",
+      "status": "PENDING_REVIEW"
+    },
+    {
+      "key": "carveOuts",
+      "label": "Carve-Outs (for MAE - enumerated exceptions)",
+      "data_type": "ENUM_MULTI",
+      "applies_to": "DEF",
+      "party_scope": "DEAL_LEVEL",
+      "structural_patterns": [
+        "THREE_STATE"
+      ],
+      "states": [
+        "PRESENT",
+        "ABSENT",
+        "UNKNOWN"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "carveOuts",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve carveOuts from lib/schema/features.js; normalise to ENUM_MULTI before activation."
+      },
+      "resolver_notes": "Carve-Outs (for MAE - enumerated exceptions)",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features",
+      "merged_from": [],
+      "also_matches_provision_codes": [],
       "review_flag": "REQUIRES_REVIEWER_DECISION",
       "proposed_action": "review duplicate group carveout",
       "status": "PENDING_REVIEW"
@@ -17956,37 +17956,6 @@
       "resolver_notes": "Materiality Qualifier (section-wide)",
       "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
       "origin": "schema-features",
-      "merged_from": [],
-      "also_matches_provision_codes": [],
-      "review_flag": "REQUIRES_REVIEWER_DECISION",
-      "proposed_action": "review duplicate group materialityqualifier",
-      "status": "PENDING_REVIEW"
-    },
-    {
-      "key": "materialityQualifiers",
-      "label": "Materiality Qualifiers",
-      "data_type": "TEXT",
-      "applies_to": "MISC",
-      "party_scope": "DEAL_LEVEL",
-      "structural_patterns": [
-        "THREE_STATE"
-      ],
-      "states": [
-        "PRESENT",
-        "ABSENT",
-        "UNKNOWN"
-      ],
-      "source_file": "lib/schema/features.js",
-      "resolver_stub": {
-        "resolver_kind": "DIRECT_PATH",
-        "source": "lib/schema/features.js",
-        "json_path": "materialityQualifiers",
-        "stateful_test_deal_ids_required": true,
-        "notes": "Resolve materialityQualifiers from lib/schema/features.js; normalise to TEXT before activation."
-      },
-      "resolver_notes": "Materiality Qualifiers",
-      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
-      "origin": "schema-features",
       "merged_from": [
         {
           "origin": "rubric-features",
@@ -18029,6 +17998,37 @@
           }
         ]
       },
+      "review_flag": "REQUIRES_REVIEWER_DECISION",
+      "proposed_action": "review duplicate group materialityqualifier",
+      "status": "PENDING_REVIEW"
+    },
+    {
+      "key": "materialityQualifiers",
+      "label": "Materiality Qualifiers",
+      "data_type": "TEXT",
+      "applies_to": "MISC",
+      "party_scope": "DEAL_LEVEL",
+      "structural_patterns": [
+        "THREE_STATE"
+      ],
+      "states": [
+        "PRESENT",
+        "ABSENT",
+        "UNKNOWN"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "materialityQualifiers",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve materialityQualifiers from lib/schema/features.js; normalise to TEXT before activation."
+      },
+      "resolver_notes": "Materiality Qualifiers",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features",
+      "merged_from": [],
+      "also_matches_provision_codes": [],
       "review_flag": "REQUIRES_REVIEWER_DECISION",
       "proposed_action": "review duplicate group materialityqualifier",
       "status": "PENDING_REVIEW"

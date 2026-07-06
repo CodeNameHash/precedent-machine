@@ -177,7 +177,7 @@ groups untouched: 158
 - tsaContemplated: rubric.cov.tsa_contemplated
 - acquisitionProposalPercentage: rubric.def.acquisition_proposal_percentage
 - canonicalTerm: rubric.def.canonical_term
-- carveOuts: rubric.def.carve_outs, rubric.def.carveouts
+- carveouts: rubric.def.carve_outs, rubric.def.carveouts
 - carveOutsList: rubric.def.carve_outs_list
 - crossReferences: rubric.def.cross_references, rubric.ioc.cross_references, rubric.other.cross_references, rubric.rep_b.cross_references, rubric.rep_t.cross_references
 - cyberSecurityCarveout: rubric.def.cyber_security_carveout
@@ -209,7 +209,7 @@ groups untouched: 158
 - leadInAllowsActionAfterNoResponse: rubric.ioc.lead_in_allows_action_after_no_response
 - leadInPeriodDays: rubric.ioc.lead_in_period_days
 - mainObligation: rubric.ioc.main_obligation
-- materialityQualifiers: rubric.ioc.materiality_qualifier, rubric.rep_b.materiality_qualifier, rubric.rep_t.materiality_qualifier
+- materialityQualifier: rubric.ioc.materiality_qualifier, rubric.rep_b.materiality_qualifier, rubric.rep_t.materiality_qualifier
 - newHireExceptions: rubric.ioc.new_hire_exceptions
 - ordinaryCourseCarveout: rubric.ioc.ordinary_course_carveout
 - parentBuyerIocBuckets: rubric.ioc.parent_buyer_ioc_buckets
@@ -528,7 +528,6 @@ groups untouched: 158
 - REQUIRES_REVIEWER_DECISION negativePreambleExceptions <= rubric.ioc_negative_preamble.negative_preamble_exceptions: party_scope
 - REQUIRES_REVIEWER_DECISION dollarThreshold <= rubric.ioc.dollar_threshold: data_type
 - REQUIRES_REVIEWER_DECISION interimSettlementCap <= rubric.ioc.interim_settlement_cap: data_type
-- REQUIRES_REVIEWER_DECISION materialityQualifiers <= rubric.ioc.materiality_qualifier: party_scope
 - REQUIRES_REVIEWER_DECISION extraContractualClaimsWaived <= rubric.misc.extra_contractual_claims_waived: party_scope
 - REQUIRES_REVIEWER_DECISION fraudCarveout <= rubric.misc.fraud_carveout: party_scope
 - REQUIRES_REVIEWER_DECISION mainConcept <= rubric.misc.main_concept: party_scope
@@ -569,7 +568,6 @@ groups untouched: 158
 - REQUIRES_REVIEWER_DECISION secFilingsExceptionLookbackDate <= rubric.rep_b_preamble.sec_filings_exception_lookback_date: party_scope
 - REQUIRES_REVIEWER_DECISION language <= rubric.rep_b_solvency.language: party_scope
 - REQUIRES_REVIEWER_DECISION mainConcept <= rubric.rep_b_solvency.main_concept: party_scope
-- REQUIRES_REVIEWER_DECISION materialityQualifiers <= rubric.rep_b.materiality_qualifier: party_scope
 - REQUIRES_REVIEWER_DECISION mainConcept <= rubric.rep_t_material_contracts.main_concept: party_scope
 - REQUIRES_REVIEWER_DECISION materialContractsBuckets <= rubric.rep_t_material_contracts.material_contracts_buckets: party_scope
 - REQUIRES_REVIEWER_DECISION materialContractsDollarThresholds <= rubric.rep_t_material_contracts.material_contracts_dollar_thresholds: party_scope
@@ -598,7 +596,6 @@ groups untouched: 158
 - REQUIRES_REVIEWER_DECISION definition <= rubric.rep_t_top_customers.definition: party_scope
 - REQUIRES_REVIEWER_DECISION mainConcept <= rubric.rep_t_top_customers.main_concept: party_scope
 - REQUIRES_REVIEWER_DECISION knowledgeStandard <= rubric.rep_t.knowledge_standard: data_type
-- REQUIRES_REVIEWER_DECISION materialityQualifiers <= rubric.rep_t.materiality_qualifier: party_scope
 - REQUIRES_REVIEWER_DECISION mainConcept <= rubric.struct_closing.main_concept: party_scope
 - REQUIRES_REVIEWER_DECISION mainConcept <= rubric.struct_merger.main_concept: party_scope
 - REQUIRES_REVIEWER_DECISION mainConcept <= rubric.struct_offer.main_concept: party_scope

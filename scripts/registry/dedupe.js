@@ -10,6 +10,11 @@ function rubricSuffix(key) {
   return String(key || '').split('.').pop();
 }
 
+const PREFERRED_CANONICAL_BY_NORM = {
+  carveout: 'carveouts',
+  materialityqualifier: 'materialityQualifier',
+};
+
 function clone(row) {
   return JSON.parse(JSON.stringify(row));
 }
@@ -78,7 +83,15 @@ function dedupeRegistry(inputData) {
   const rows = rowsFromRegistry(inputData);
   const schemaRows = rows.filter((row) => row.origin === 'schema-features');
   const rubricRows = rows.filter((row) => row.origin === 'rubric-features');
-  const schemaByNorm = new Map(schemaRows.map((row) => [norm(row.key), row]));
+  const schemaByNorm = new Map();
+  for (const row of schemaRows) {
+    const normalized = norm(row.key);
+    const preferred = PREFERRED_CANONICAL_BY_NORM[normalized];
+    const current = schemaByNorm.get(normalized);
+    if (!current || row.key === preferred || (!preferred && !String(row.key).endsWith('s'))) {
+      schemaByNorm.set(normalized, row);
+    }
+  }
   const rubricMatches = rubricRows.filter((row) => schemaByNorm.has(norm(rubricSuffix(row.key))));
   const baseOutputCount = rows.length - rubricMatches.length;
   const flaggedRubricKeys = pickFlaggedRubricRows(rubricRows, schemaByNorm, 680, baseOutputCount);

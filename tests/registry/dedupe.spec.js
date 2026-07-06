@@ -28,3 +28,16 @@ test('review-sensitive near duplicates remain separate and flagged', () => {
   assert.ok(carveoutRows.some((field) => field.review_flag === 'REQUIRES_REVIEWER_DECISION'));
   assert.match(reportMarkdown(report), /flagged near-duplicates/);
 });
+
+test('rubric suffix merges prefer current canonical keys over legacy aliases', () => {
+  const { registry } = dedupeRegistry(source);
+  const carveouts = registry.fields.find((field) => field.key === 'carveouts');
+  const carveOuts = registry.fields.find((field) => field.key === 'carveOuts');
+  const materialityQualifier = registry.fields.find((field) => field.key === 'materialityQualifier');
+  const materialityQualifiers = registry.fields.find((field) => field.key === 'materialityQualifiers');
+
+  assert.ok(carveouts.merged_from.some((item) => item.key === 'rubric.def.carveouts'));
+  assert.equal(carveOuts.merged_from.length, 0);
+  assert.ok(materialityQualifier.merged_from.some((item) => item.key === 'rubric.rep_t.materiality_qualifier'));
+  assert.equal(materialityQualifiers.merged_from.length, 0);
+});
