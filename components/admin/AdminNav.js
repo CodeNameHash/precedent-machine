@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 
 export const ADMIN_NAV_LINKS = [
   { href: '/admin', label: 'Admin hub' },
+  { href: '/admin/registry', label: 'Registry' },
   { href: '/admin/gaps', label: 'Gap review' },
   { href: '/admin/ingest-runs', label: 'Ingest runs' },
   { href: '/admin/candidates', label: 'Deal candidates' },

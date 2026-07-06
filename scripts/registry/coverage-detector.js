@@ -12,6 +12,7 @@ function coverageProblems(rows) {
   const duplicated = [...registryKeys.entries()].filter(([, count]) => count > 1).map(([key]) => key);
   const excess = rows.filter((row) => {
     if (FEATURES[row.key]) return false;
+    if (row.review_flag === 'REQUIRES_REVIEWER_DECISION') return false;
     return !['appendix-a-priority', 'ioc-categories'].includes(row.origin);
   }).map((row) => row.key);
   return { missing, duplicated, excess };

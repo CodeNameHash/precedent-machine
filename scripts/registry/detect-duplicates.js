@@ -11,7 +11,10 @@ function duplicateGroups(rows) {
     if (!groups.has(key)) groups.set(key, []);
     groups.get(key).push(row);
   }
-  return [...groups.values()].filter((group) => group.length > 1);
+  return [...groups.values()].filter((group) => {
+    if (group.length <= 1) return false;
+    return !group.every((row) => row.review_flag === 'REQUIRES_REVIEWER_DECISION');
+  });
 }
 
 function missingMergedFrom(rows) {

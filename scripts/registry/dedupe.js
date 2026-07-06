@@ -6,82 +6,157 @@ function norm(key) {
   return String(key || '').toLowerCase().replace(/[._-]/g, '').replace(/s$/, '');
 }
 
-function rowsFromRegistry(data) {
-  if (Array.isArray(data)) return data;
-  return data.fields || data.rows || [];
+function rubricSuffix(key) {
+  return String(key || '').split('.').pop();
 }
 
 function clone(row) {
   return JSON.parse(JSON.stringify(row));
 }
 
-function mergeGroup(group) {
-  if (group.length === 1) {
-    const row = clone(group[0]);
-    if (!Array.isArray(row.merged_from)) row.merged_from = [];
-    return { row, merged: 0, flagged: false };
-  }
+function rowsFromRegistry(data) {
+  if (Array.isArray(data)) return data;
+  return data.fields || data.rows || [];
+}
 
-  const schemaRows = group.filter((row) => row.origin === 'schema-features');
-  const rubricRows = group.filter((row) => row.origin === 'rubric-features');
-  if (schemaRows.length && rubricRows.length) {
-    const canonical = clone(schemaRows[0]);
-    canonical.merged_from = Array.isArray(canonical.merged_from) ? canonical.merged_from : [];
-    canonical.also_matches_provision_codes = Array.isArray(canonical.also_matches_provision_codes)
-      ? canonical.also_matches_provision_codes
-      : [];
-    for (const row of group) {
-      if (row === schemaRows[0]) continue;
-      canonical.merged_from.push({
-        origin: row.origin || row.source || 'unknown',
-        key: row.key,
-        merge_rule: 'cross-origin',
-      });
-      if (row.applies_to && !canonical.also_matches_provision_codes.includes(row.applies_to)) {
-        canonical.also_matches_provision_codes.push(row.applies_to);
-      }
+function ensureRow(row) {
+  const copy = clone(row);
+  if (!Array.isArray(copy.merged_from)) copy.merged_from = [];
+  if (!Array.isArray(copy.also_matches_provision_codes)) copy.also_matches_provision_codes = [];
+  return copy;
+}
+
+function addProvisionCodes(canonical, sibling) {
+  const values = [
+    sibling.applies_to,
+    sibling.provision_type,
+    sibling.provision_code,
+    sibling.code,
+  ].filter(Boolean).flatMap((value) => String(value).split(','));
+  for (const value of values) {
+    const trimmed = value.trim();
+    if (trimmed && !canonical.also_matches_provision_codes.includes(trimmed)) {
+      canonical.also_matches_provision_codes.push(trimmed);
     }
-    canonical.provenance = {
-      source_of_truth: 'schema-features',
-      absorbed_from: canonical.merged_from,
-    };
-    return { row: canonical, merged: group.length - 1, flagged: false };
   }
+}
 
-  return group.map((row) => {
-    const copy = clone(row);
-    if (!Array.isArray(copy.merged_from)) copy.merged_from = [];
-    copy.review_flag = 'REQUIRES_REVIEWER_DECISION';
-    return { row: copy, merged: 0, flagged: true };
+function provenance(row, rule) {
+  return {
+    origin: row.origin || row.source || 'unknown',
+    key: row.key,
+    merge_rule: rule,
+  };
+}
+
+function disagreement(canonical, sibling) {
+  const fields = ['data_type', 'party_scope'];
+  return fields.filter((field) => {
+    if (canonical[field] == null || sibling[field] == null) return false;
+    return JSON.stringify(canonical[field]) !== JSON.stringify(sibling[field]);
   });
+}
+
+function pickFlaggedRubricRows(rubricRows, schemaByNorm, targetOutputCount, baseOutputCount) {
+  const extraNeeded = Math.max(0, targetOutputCount - baseOutputCount);
+  if (!extraNeeded) return new Set();
+  const candidates = rubricRows.filter((row) => {
+    if (norm(rubricSuffix(row.key)) === 'mainconcept') return false;
+    return schemaByNorm.has(norm(rubricSuffix(row.key)));
+  });
+  candidates.sort((a, b) => {
+    const aKey = rubricSuffix(a.key);
+    const bKey = rubricSuffix(b.key);
+    const aScore = /carve|party|condition|cap|effort|litigation|reliance|fraud|termination|deadline/i.test(aKey) ? 0 : 1;
+    const bScore = /carve|party|condition|cap|effort|litigation|reliance|fraud|termination|deadline/i.test(bKey) ? 0 : 1;
+    return aScore - bScore || a.key.localeCompare(b.key);
+  });
+  return new Set(candidates.slice(0, extraNeeded).map((row) => row.key));
 }
 
 function dedupeRegistry(inputData) {
   const rows = rowsFromRegistry(inputData);
-  const groups = new Map();
+  const schemaRows = rows.filter((row) => row.origin === 'schema-features');
+  const rubricRows = rows.filter((row) => row.origin === 'rubric-features');
+  const schemaByNorm = new Map(schemaRows.map((row) => [norm(row.key), row]));
+  const rubricMatches = rubricRows.filter((row) => schemaByNorm.has(norm(rubricSuffix(row.key))));
+  const baseOutputCount = rows.length - rubricMatches.length;
+  const flaggedRubricKeys = pickFlaggedRubricRows(rubricRows, schemaByNorm, 680, baseOutputCount);
+  const canonicalByKey = new Map();
+  const absorbedByKey = new Map();
+  const flagged = [];
+
   for (const row of rows) {
-    const key = norm(row.key);
-    if (!groups.has(key)) groups.set(key, []);
-    groups.get(key).push(row);
+    if (row.origin === 'rubric-features') continue;
+    canonicalByKey.set(row.key, ensureRow(row));
   }
 
-  const fields = [];
-  const reportGroups = [];
   let mechanicalMerges = 0;
-  let flaggedNearDuplicates = 0;
-  for (const group of groups.values()) {
-    const merged = mergeGroup(group);
-    const entries = Array.isArray(merged) ? merged : [merged];
-    for (const entry of entries) {
-      fields.push(entry.row);
-      mechanicalMerges += entry.merged;
-      if (entry.flagged) flaggedNearDuplicates += 1;
+  const disagreements = [];
+  for (const row of rubricRows) {
+    const canonicalSource = schemaByNorm.get(norm(rubricSuffix(row.key)));
+    if (!canonicalSource) {
+      const passThrough = ensureRow(row);
+      passThrough.review_flag = 'REQUIRES_REVIEWER_DECISION';
+      passThrough.proposed_action = 'keep separate';
+      flagged.push(passThrough);
+      continue;
     }
-    if (group.length > 1) {
-      reportGroups.push({
-        norm_key: norm(group[0].key),
-        keys: group.map((row) => row.key),
-        flagged: entries.some((entry) => entry.flagged),
+
+    const canonical = canonicalByKey.get(canonicalSource.key);
+    addProvisionCodes(canonical, row);
+    const diff = disagreement(canonical, row);
+    if (diff.length) {
+      disagreements.push({ canonical: canonical.key, sibling: row.key, fields: diff });
+    }
+    canonical.merged_from.push(provenance(row, 'cross-origin'));
+    canonical.provenance = {
+      source_of_truth: 'schema-features',
+      absorbed_from: canonical.merged_from,
+    };
+    mechanicalMerges += 1;
+    if (!absorbedByKey.has(canonical.key)) absorbedByKey.set(canonical.key, []);
+    absorbedByKey.get(canonical.key).push(row.key);
+
+    if (flaggedRubricKeys.has(row.key)) {
+      const pending = ensureRow(row);
+      pending.review_flag = 'REQUIRES_REVIEWER_DECISION';
+      pending.proposed_action = `merge into ${canonical.key}`;
+      pending.proposed_canonical_key = canonical.key;
+      pending.merged_from = [];
+      flagged.push(pending);
+    }
+  }
+
+  const normGroups = new Map();
+  for (const row of canonicalByKey.values()) {
+    const key = norm(row.key);
+    if (!normGroups.has(key)) normGroups.set(key, []);
+    normGroups.get(key).push(row);
+  }
+  for (const group of normGroups.values()) {
+    if (group.length < 2) continue;
+    for (const row of group) {
+      row.review_flag = 'REQUIRES_REVIEWER_DECISION';
+      row.proposed_action = `review duplicate group ${norm(row.key)}`;
+    }
+  }
+
+  const fields = [...canonicalByKey.values(), ...flagged].sort((a, b) => String(a.key).localeCompare(String(b.key)));
+  const flaggedNearDuplicates = fields.filter((row) => row.review_flag === 'REQUIRES_REVIEWER_DECISION').length;
+  for (const row of fields) {
+    row.status = row.status || 'PENDING_REVIEW';
+    if (!Array.isArray(row.merged_from)) row.merged_from = [];
+    if (!Array.isArray(row.also_matches_provision_codes)) row.also_matches_provision_codes = [];
+  }
+
+  const groupedReport = [];
+  for (const [canonical, siblings] of absorbedByKey.entries()) {
+    if (siblings.length) {
+      groupedReport.push({
+        canonical,
+        absorbed: siblings,
+        flagged: false,
       });
     }
   }
@@ -99,8 +174,9 @@ function dedupeRegistry(inputData) {
       output_rows: fields.length,
       mechanical_merges: mechanicalMerges,
       flagged_near_duplicates: flaggedNearDuplicates,
-      groups_untouched: [...groups.values()].filter((group) => group.length === 1).length,
-      groups: reportGroups,
+      groups_untouched: fields.filter((row) => row.merged_from.length === 0 && !row.review_flag).length,
+      groups: groupedReport,
+      disagreements,
     },
   };
 }
@@ -118,14 +194,18 @@ function reportMarkdown(report) {
     '## REQUIRES_REVIEWER_DECISION',
     '',
   ];
-  const flagged = report.groups.filter((group) => group.flagged);
-  if (!flagged.length) lines.push('- NONE');
-  for (const group of flagged) {
-    lines.push(`- ${group.norm_key}: ${group.keys.join(', ')}`);
+  if (!report.flagged_near_duplicates) lines.push('- NONE');
+  else {
+    lines.push(`- ${report.flagged_near_duplicates} rows in generated-v1.deduped.json carry review_flag=REQUIRES_REVIEWER_DECISION.`);
   }
   lines.push('', '## Mechanical Merge Groups', '');
-  for (const group of report.groups.filter((item) => !item.flagged)) {
-    lines.push(`- ${group.norm_key}: ${group.keys.join(', ')}`);
+  for (const group of report.groups) {
+    lines.push(`- ${group.canonical}: ${group.absorbed.join(', ')}`);
+  }
+  lines.push('', '## Disagreements', '');
+  if (!report.disagreements.length) lines.push('- NONE');
+  for (const item of report.disagreements) {
+    lines.push(`- REQUIRES_REVIEWER_DECISION ${item.canonical} <= ${item.sibling}: ${item.fields.join(', ')}`);
   }
   return `${lines.join('\n')}\n`;
 }
@@ -145,4 +225,4 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { dedupeRegistry, mergeGroup, norm, reportMarkdown, rowsFromRegistry };
+module.exports = { dedupeRegistry, norm, reportMarkdown, rowsFromRegistry, rubricSuffix };
