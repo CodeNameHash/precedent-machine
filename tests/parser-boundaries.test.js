@@ -8,6 +8,7 @@ const { findEnactingClause } = require('../lib/parser-v2/invariants/enacting-har
 const { isLegalSentenceBoundary } = require('../lib/parser-v2/invariants/sentence-integrity');
 const { listWouldContinueAcrossBoundary } = require('../lib/parser-v2/invariants/list-continuity');
 const { isInvalidTerminator } = require('../lib/parser-v2/invariants/provision-completeness');
+const { repairProvisionTextBoundariesFromSections } = require('../lib/parser-v2/extract');
 
 test('text layers clean structural noise while retaining raw offset mapping', () => {
   const raw = 'Alpha|\u200b word-\nbreak\nPage 2 of 9\n2.21 . Heading';
@@ -129,4 +130,63 @@ test('sentence and list invariants identify illegal cuts', () => {
     isInvalidTerminator('subject to Section 6.4', '\n(a) continued clause.'),
     true,
   );
+});
+
+test('boundary repair extends provision text that stopped after a closing paren', () => {
+  const sectionText = [
+    'Section 7.03. Regulatory Efforts.',
+    'Parent shall not be required to agree to any Remedy Action that would reasonably be expected to have, individually or in the aggregate, a material adverse effect on Parent and its Subsidiaries, taken as a whole (a "Burdensome Condition")',
+    'and (y) the Company and its Subsidiaries shall not, without Parent prior written consent, take or agree to take any Remedy Action.',
+    'Nothing in this Agreement shall require either party to take any action unless conditioned upon the Closing.',
+    'The Company shall not commit to any timing agreement with a Governmental Authority without consent.',
+  ].join(' ');
+  const provisions = [{
+    type: 'ANTI',
+    code: 'ANTI-BURDEN',
+    category: 'Burden Cap',
+    text: 'Parent shall not be required to agree to any Remedy Action that would reasonably be expected to have, individually or in the aggregate, a material adverse effect on Parent and its Subsidiaries, taken as a whole (a "Burdensome Condition")',
+    startChar: sectionText.indexOf('Parent shall'),
+  }, {
+    type: 'ANTI',
+    code: 'ANTI-TIMING',
+    category: 'Timing Agreements',
+    text: 'The Company shall not commit to any timing agreement with a Governmental Authority without consent.',
+    startChar: sectionText.indexOf('The Company shall not commit'),
+  }];
+
+  const report = repairProvisionTextBoundariesFromSections(
+    [{ provision_type: 'ANTI', number: '7.03', title: 'Regulatory Efforts', text: sectionText, startChar: 0 }],
+    provisions,
+  );
+
+  assert.equal(report.repaired, 1);
+  assert.match(provisions[0].text, /and \(y\) the Company/);
+  assert.match(provisions[0].text, /conditioned upon the Closing\.$/);
+  assert.doesNotMatch(provisions[0].text, /The Company shall not commit/);
+});
+
+test('boundary repair extends mid-roman-item cuts without swallowing the next item', () => {
+  const sectionText = [
+    'Section 1.01. Offer Mechanics.',
+    '(vii) cause the information agent to mail the offer documents to holders of Shares;',
+    '(viii) provide Parent with stockholder lists and security position listings so that',
+    'Parent may communicate with holders of Shares regarding the Offer;',
+    '(ix) take all other actions reasonably necessary to consummate the Offer.',
+  ].join(' ');
+  const provisions = [{
+    type: 'STRUCT',
+    code: 'STRUCT-OFFER',
+    category: 'Offer Mechanics',
+    text: '(viii) provide Parent with stockholder lists and security position listings so that',
+    startChar: sectionText.indexOf('(viii)'),
+  }];
+
+  const report = repairProvisionTextBoundariesFromSections(
+    [{ provision_type: 'STRUCT', number: '1.01', title: 'Offer Mechanics', text: sectionText, startChar: 0 }],
+    provisions,
+  );
+
+  assert.equal(report.repaired, 1);
+  assert.match(provisions[0].text, /regarding the Offer;$/);
+  assert.doesNotMatch(provisions[0].text, /\(ix\)/);
 });

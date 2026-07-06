@@ -175,7 +175,7 @@ const DEFAULT_GATES = {
   repB: 5,
   def: 40,
   cond: 8,
-  coverage: 85,
+  coverage: 95,
   canonicalRate: 0.7,
 };
 

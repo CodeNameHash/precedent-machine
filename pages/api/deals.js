@@ -1,4 +1,31 @@
 import { getServiceSupabase } from '../../lib/supabase';
+const { QUALITY_METRICS_TABLE } = require('../../lib/deal-quality-metrics');
+
+const DEAL_LIST_SELECT = [
+  'id',
+  'acquirer',
+  'target',
+  'value_usd',
+  'announce_date',
+  'sector',
+  'created_at',
+  'created_by',
+  'ingest_status:metadata->>ingest_status',
+  'ultimateParent:metadata->>ultimateParent',
+  'ultimate_parent:metadata->>ultimate_parent',
+  'parent_entity:metadata->>parent_entity',
+  'acquirerUltimateParent:metadata->>acquirerUltimateParent',
+  'acquirer_ultimate_parent:metadata->>acquirer_ultimate_parent',
+  'acquirer_display:metadata->>acquirer_display',
+  'target_display:metadata->>target_display',
+  'target_entity:metadata->>target_entity',
+  'advisors_v2:metadata->advisors_v2',
+  'advisors:metadata->advisors',
+  'headlineConsiderationType:metadata->>headlineConsiderationType',
+  'headline_consideration_type:metadata->>headline_consideration_type',
+  'considerationType:metadata->>considerationType',
+  'consideration_type:metadata->>consideration_type',
+].join(', ');
 
 function includeStaging(req) {
   return req.query.includeStaging === '1' || req.query.include_staging === '1';
@@ -7,6 +34,55 @@ function includeStaging(req) {
 function isStagingDeal(deal) {
   const meta = deal && deal.metadata && typeof deal.metadata === 'object' ? deal.metadata : {};
   return meta.ingest_status === 'staging';
+}
+
+function listRowToDeal(row, provisionCounts) {
+  const metadata = {
+    ...(row.ingest_status ? { ingest_status: row.ingest_status } : {}),
+    ...(row.ultimateParent ? { ultimateParent: row.ultimateParent } : {}),
+    ...(row.ultimate_parent ? { ultimate_parent: row.ultimate_parent } : {}),
+    ...(row.parent_entity ? { parent_entity: row.parent_entity } : {}),
+    ...(row.acquirerUltimateParent ? { acquirerUltimateParent: row.acquirerUltimateParent } : {}),
+    ...(row.acquirer_ultimate_parent ? { acquirer_ultimate_parent: row.acquirer_ultimate_parent } : {}),
+    ...(row.acquirer_display ? { acquirer_display: row.acquirer_display } : {}),
+    ...(row.target_display ? { target_display: row.target_display } : {}),
+    ...(row.target_entity ? { target_entity: row.target_entity } : {}),
+    ...(row.advisors_v2 ? { advisors_v2: row.advisors_v2 } : {}),
+    ...(row.advisors ? { advisors: row.advisors } : {}),
+    ...(row.headlineConsiderationType ? { headlineConsiderationType: row.headlineConsiderationType } : {}),
+    ...(row.headline_consideration_type ? { headline_consideration_type: row.headline_consideration_type } : {}),
+    ...(row.considerationType ? { considerationType: row.considerationType } : {}),
+    ...(row.consideration_type ? { consideration_type: row.consideration_type } : {}),
+  };
+
+  return {
+    id: row.id,
+    acquirer: row.acquirer,
+    target: row.target,
+    value_usd: row.value_usd,
+    announce_date: row.announce_date,
+    sector: row.sector,
+    created_at: row.created_at,
+    created_by: row.created_by,
+    metadata,
+    provision_count: provisionCounts.has(row.id) ? provisionCounts.get(row.id) : null,
+  };
+}
+
+async function fetchProvisionCounts(sb, dealIds) {
+  const counts = new Map();
+  if (!dealIds.length) return counts;
+
+  const { data, error } = await sb
+    .from(QUALITY_METRICS_TABLE)
+    .select('deal_id, provision_count')
+    .in('deal_id', dealIds);
+  if (error) return counts;
+
+  for (const row of data || []) {
+    if (row && row.deal_id) counts.set(row.deal_id, Number(row.provision_count) || 0);
+  }
+  return counts;
 }
 
 export default async function handler(req, res) {
@@ -25,10 +101,12 @@ export default async function handler(req, res) {
       return res.json({ deal: data });
     }
     const { data, error } = await sb.from('deals')
-      .select('*')
+      .select(DEAL_LIST_SELECT)
       .order('announce_date', { ascending: false });
     if (error) return res.status(500).json({ error: error.message });
-    const deals = showStaging ? (data || []) : (data || []).filter((deal) => !isStagingDeal(deal));
+    const rows = showStaging ? (data || []) : (data || []).filter((deal) => !isStagingDeal({ metadata: { ingest_status: deal.ingest_status } }));
+    const provisionCounts = await fetchProvisionCounts(sb, rows.map((deal) => deal.id).filter(Boolean));
+    const deals = rows.map((row) => listRowToDeal(row, provisionCounts));
     return res.json({ deals });
   }
 

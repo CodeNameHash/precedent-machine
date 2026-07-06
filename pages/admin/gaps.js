@@ -320,11 +320,14 @@ export default function GapReviewAdmin() {
     return `/api/admin/gaps?${sp.toString()}`;
   }, [limit, minCoverage]);
 
-  const loadSummary = async () => {
+  const loadSummary = async (refreshMetrics = false) => {
     setLoading(true);
     setError(null);
     try {
-      const data = await readJson(await fetch(summaryUrl));
+      const url = refreshMetrics
+        ? `${summaryUrl}${summaryUrl.includes('?') ? '&' : '?'}refresh_metrics=1`
+        : summaryUrl;
+      const data = await readJson(await fetch(url));
       setRows(data.rows || []);
       setPagination(data.pagination || null);
     } catch (err) {
@@ -510,7 +513,7 @@ export default function GapReviewAdmin() {
             />
           </label>
           <button
-            onClick={loadSummary}
+            onClick={() => loadSummary(true)}
             disabled={loading}
             className="rounded border border-border px-3 py-1.5 text-sm font-ui text-inkLight hover:border-accent hover:text-ink disabled:opacity-40"
           >
@@ -574,14 +577,20 @@ export default function GapReviewAdmin() {
                     </td>
                     <td className="px-4 py-3">
                       <div className="font-ui text-ink">{pct(row.reviewable_coverage_pct ?? row.coverage_pct)}</div>
-                      <div className="mt-0.5 text-[10px] font-ui text-inkFaint">raw {pct(row.raw_coverage_pct)}</div>
+                      <div className="mt-0.5 text-[10px] font-ui text-inkFaint">
+                        {row.quality_metrics_source === 'metrics_pending' || row.quality_metrics_source === 'metrics_stale'
+                          ? 'metrics pending'
+                          : `raw ${pct(row.raw_coverage_pct)}`}
+                      </div>
                     </td>
                     <td className="px-4 py-3 font-ui text-ink">{num(row.gap_count)}</td>
                     <td className="px-4 py-3 font-ui text-ink">{num(row.parser_structural_gap_count)}</td>
                     <td className="px-4 py-3 font-ui text-ink">{num(row.definition_warning_count)}</td>
                     <td className="px-4 py-3 font-ui text-ink">{num(row.data_model_flag_count)}</td>
                     <td className="px-4 py-3 font-ui text-ink">{num(row.needs_code_count ?? row.uncoded_count)}</td>
-                    <td className="w-24 whitespace-nowrap px-4 py-3 font-ui text-ink">{num(row.largest_gap_chars)} chars</td>
+                    <td className="w-24 whitespace-nowrap px-4 py-3 font-ui text-ink">
+                      {row.largest_gap_chars == null ? '-' : `${num(row.largest_gap_chars)} chars`}
+                    </td>
                     <td className="px-4 py-3 font-ui text-ink">{rate(row.canonical_rate)}</td>
                     <td className="px-4 py-3 font-ui text-ink">{num(row.unverified_quotes)}</td>
                     <td className="px-4 py-3">

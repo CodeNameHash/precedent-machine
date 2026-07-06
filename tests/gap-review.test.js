@@ -61,6 +61,16 @@ test('classifyGapRegion separates non-provision matter from reviewable body gaps
     REGION_TYPES.PREAMBLE_TOC,
   );
   assert.equal(
+    classifyGapRegion([
+      'ef20035469_ex2-1.htm EXHIBIT 2.1 AGREEMENT AND PLAN OF MERGER',
+      'ARTICLE I The Merger SECTION 1.01. The Merger SECTION 1.02. Closing SECTION 1.03. Effective Time',
+      'ARTICLE II Effect of the Merger SECTION 2.01. Effect on Capital Stock SECTION 2.02. Exchange Matters',
+      'ARTICLE III Representations SECTION 3.01. Organization SECTION 3.02. Capitalization SECTION 3.03. Authority',
+      'ARTICLE V Covenants SECTION 5.01. Conduct of Business SECTION 5.02. Solicitation SECTION 5.03. Efforts',
+    ].join(' ')),
+    REGION_TYPES.PREAMBLE_TOC,
+  );
+  assert.equal(
     classifyGapRegion('WHEREAS, the parties desire to enter into the Merger.'),
     REGION_TYPES.PREAMBLE_RECITALS,
   );

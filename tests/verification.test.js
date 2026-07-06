@@ -147,6 +147,14 @@ test('space-before-hyphen statutory ref ("13.1 -721") matches a closed quote', (
   assert.equal(quoteAppearsIn(normalizeForMatch('the effects set forth in Section 13.1-721 of the VSCA'), src), true);
 });
 
+test('split final digit in decimal citation matches closed provision text', () => {
+  const src = normalizeForMatch('Title to Properties. Except for Governmental Property as defined in FAR Section 45.10 1, the Company has title.');
+  assert.equal(
+    quoteAppearsIn(normalizeForMatch('Governmental Property as defined in FAR Section 45.101, the Company has title'), src),
+    true,
+  );
+});
+
 test('a spaced dash separator is still a word boundary (negative)', () => {
   const src = normalizeForMatch('the Closing - which occurs at 10am - shall be final');
   assert.equal(quoteAppearsIn(normalizeForMatch('the Closing which occurs at 10am'), src), false);

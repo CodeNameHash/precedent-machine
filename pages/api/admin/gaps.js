@@ -235,6 +235,43 @@ function largestGapSortValue(row) {
   return Number.isFinite(n) ? n : 0;
 }
 
+function pendingQualitySummary(deal, latestIngest, reason = 'metrics_pending') {
+  return {
+    deal_id: deal.id,
+    acquirer: deal.acquirer || null,
+    target: deal.target || null,
+    coverage_pct: null,
+    reviewable_coverage_pct: null,
+    raw_coverage_pct: null,
+    reviewable_gap_chars: null,
+    reviewable_effective_chars: null,
+    canonical_rate: null,
+    unverified_quotes: null,
+    gap_count: null,
+    ignored_gap_count: null,
+    parser_structural_gap_count: null,
+    definition_warning_count: null,
+    data_model_flag_count: null,
+    needs_code_count: null,
+    needs_code_proposed_count: null,
+    needs_code_type_counts: {},
+    uncoded_count: null,
+    uncoded_proposed_count: null,
+    uncoded_type_counts: {},
+    largest_gap_chars: null,
+    largest_gap_preview: null,
+    metadata: {},
+    latest_ingest_run_id: latestIngest ? latestIngest.run_id || null : null,
+    latest_ingest_candidate_id: latestIngest ? latestIngest.candidate_id || null : null,
+    latest_ingest_run_status: latestIngest ? latestIngest.run_status || latestIngest.candidate_status || null : null,
+    provision_count: null,
+    source_chars: null,
+    quality_metrics_version: null,
+    quality_metrics_computed_at: null,
+    quality_metrics_source: reason,
+  };
+}
+
 async function getDetail(req, res, sb, dealId) {
   if (!isUuid(dealId)) return fail(res, 400, 'Invalid deal_id');
   const refreshMetrics = shouldRefreshMetrics(req);
@@ -392,14 +429,27 @@ async function getSummary(req, res, sb) {
       continue;
     }
     if (stored && !storedMetricIsCurrent(stored)) staleCount += 1;
-    computeDealIds.push(deal.id);
+    if (refreshMetrics) {
+      computeDealIds.push(deal.id);
+    } else {
+      rowsByDeal.set(
+        deal.id,
+        pendingQualitySummary(
+          deal,
+          ingestRefsResult.byDeal.get(deal.id) || null,
+          stored ? 'metrics_stale' : 'metrics_pending',
+        ),
+      );
+    }
   }
 
-  let fullDealsById;
-  try {
-    fullDealsById = await fetchDealsForMetricCompute(sb, computeDealIds);
-  } catch (err) {
-    return fail(res, 500, err.message);
+  let fullDealsById = new Map();
+  if (computeDealIds.length > 0) {
+    try {
+      fullDealsById = await fetchDealsForMetricCompute(sb, computeDealIds);
+    } catch (err) {
+      return fail(res, 500, err.message);
+    }
   }
 
   let recomputedCount = 0;
@@ -431,7 +481,11 @@ async function getSummary(req, res, sb) {
   const rows = (deals || [])
     .map((deal) => rowsByDeal.get(deal.id))
     .filter(Boolean)
-    .filter((row) => minCoverage == null || row.coverage_pct <= minCoverage)
+    .filter((row) => {
+      if (minCoverage == null) return true;
+      const coverage = Number(row.coverage_pct);
+      return Number.isFinite(coverage) && coverage <= minCoverage;
+    })
     .sort((a, b) => {
       const aCoverage = coverageSortValue(a);
       const bCoverage = coverageSortValue(b);
@@ -453,7 +507,7 @@ async function getSummary(req, res, sb) {
     },
     quality_metrics: {
       table: QUALITY_METRICS_TABLE,
-      mode: refreshMetrics ? 'refresh' : 'stored_with_fallback',
+      mode: refreshMetrics ? 'refresh' : 'stored_only',
       stored: storedCount,
       recomputed: recomputedCount,
       written: storedWriteCount,

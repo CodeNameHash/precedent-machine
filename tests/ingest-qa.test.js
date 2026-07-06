@@ -136,7 +136,7 @@ test('computeCanonicalRate is vacuously 1 when there are no non-DEF provisions',
 test('evaluateGates: all-pass metrics evaluate to ok=true', () => {
   const metrics = {
     counts: { repT: 20, repB: 8, def: 50, cond: 10, ioc: 3, nosol: 1, termr: 4, termf: 1, total: 97 },
-    coveragePct: 92,
+    coveragePct: 96,
     unverified: 0,
     duplicates: 0,
     canonicalRate: 0.85,
@@ -150,7 +150,7 @@ test('evaluateGates: all-pass metrics evaluate to ok=true', () => {
 test('evaluateGates flags a below-threshold count and an unverified quote', () => {
   const metrics = {
     counts: { repT: 5, repB: 8, def: 50, cond: 10, ioc: 0, nosol: 0, termr: 0, termf: 0, total: 5 },
-    coveragePct: 92,
+    coveragePct: 96,
     unverified: 2,
     duplicates: 0,
     canonicalRate: 0.85,
@@ -168,7 +168,7 @@ test('evaluateGates flags a below-threshold count and an unverified quote', () =
 test('evaluateGates honors gate overrides (e.g. --min-rep-t)', () => {
   const metrics = {
     counts: { repT: 5, repB: 8, def: 50, cond: 10, ioc: 0, nosol: 0, termr: 0, termf: 0, total: 5 },
-    coveragePct: 92,
+    coveragePct: 96,
     unverified: 0,
     duplicates: 0,
     canonicalRate: 0.85,
@@ -186,7 +186,7 @@ test('DEFAULT_GATES matches the documented thresholds', () => {
     repB: 5,
     def: 40,
     cond: 8,
-    coverage: 85,
+    coverage: 95,
     canonicalRate: 0.7,
   });
 });

@@ -322,14 +322,39 @@ Updated: 2026-07-05
 - Reconnect note, 2026-07-06 09:29 EDT:
   - Local process check shows `node scripts/ingest-worker.js --run-id seed50-batch6-20260706T060243Z ...` plus a `codex exec` child still active, despite the earlier queue note saying no active ingest sessions.
   - Commit/deploy can proceed because no files are being changed under the worker after this note, but ingest status should be checked before restarting or widening any queue batch.
+- Boundary/performance pass, 2026-07-06 10:09 EDT:
+  - Verizon G-001 is now classified as TOC/frontmatter by a same-line TOC detector, so it should become non-reviewable after deploy/metrics refresh.
+  - Verizon G-002 is not ANTI-specific. It is a generic provision boundary failure where extracted text stopped after a closing parenthesis while the clause continued.
+  - Added a generic extraction boundary repair pass in `lib/parser-v2/extract.js`:
+    - runs for full ingest and per-type reprocess before `SECTION-LEFTOVER` generation,
+    - extends provision text to the next real legal sentence/list boundary inside the same classified section,
+    - stops before the next located provision/list item.
+  - Fixed `nextStartsList` in `sentence-integrity` so roman markers like `(ix)` are recognised as list starts.
+  - Added locator normalisation for split decimal citations: source `FAR Section 45.10 1` now matches provision text `45.101`.
+  - General Dynamics review agent `019f37bc-e04b-7be3-aee3-251ddbec0902` findings:
+    - Deal id `6369cc9c-3cb7-40b6-9227-2b9b0361c2a3`.
+    - G-001: STRUCT §2.1 tender-offer mechanics stopped mid-list after `other provisions of this`.
+    - G-002: REP-T §4.12 locator false-negative caused by `45.10 1` vs `45.101`.
+    - G-003: ANTI §6.3(d) uncovered because stored row was a non-contiguous splice.
+    - G-004: NOSOL §6.4 under-extracted, row stopped mid-sentence and gap ran into proxy/meeting text.
+    - Expected fix path: deploy code, reprocess General Dynamics `STRUCT`, `REP-T`, `ANTI`, `NOSOL`, refresh quality metrics, rerun QA. G-002 should improve from locator normalisation without a semantic extraction change.
+  - Admin/deal-list performance:
+    - `/api/deals` list mode now uses a narrow projection and provision counts from `deal_quality_metrics`, without `metadata.full_text`.
+    - Deal selector and review index no longer fan out to `/api/provisions` for counts.
+    - `/admin/gaps` summary defaults to persisted `deal_quality_metrics`; live recompute is behind explicit Refresh (`refresh_metrics=1`); detail remains live/on-demand.
+    - Pending/stale metrics now render as pending/unknown rather than clean zeroes.
+  - Gates run so far:
+    - `NODE_PATH=/tmp/wp-schema-p7-node_modules-1783304291 node --test tests/parser-boundaries.test.js tests/verification.test.js tests/gap-review.test.js tests/ingest-qa.test.js tests/run-extract-quality.test.js tests/per-type-parity-followups.test.js` passed 89/89.
+  - Local process check at 10:09 EDT showed no active Next/dev server, ingest worker, reprocess, or Codex CLI child.
 
 ## Open Risks
 
 - Some existing extracted data may be stale after schema prompt/rendering or hierarchy fixes.
-- Admin/review pages may still compute too much live rather than loading persisted snapshots.
+- Admin/review summary pages are now persisted-first, but detail pages remain live by design.
 - Long-running test/build gates need dependency symlink handling because this repo tracks `node_modules` as a symlink.
 - Batch6 and Batch2b are no longer live.
 - Batch4b is stopped with two failed prepare rows; do not restart until duplicate policy and failed candidates are handled.
 - There are currently two clean Zymeworks/Theravance deal rows in Supabase; decide whether to mark/delete one duplicate before treating corpus counts as clean.
 - Systematic canonical-rate failure remains on several high-coverage deals other than Verizon; diagnose before broad ingest resumes.
 - Verizon's DEF refresh materially changed definition row shape/count from 82 to 115. QA/admin numbers are strong, but this is worth a quick legal/data review before treating the refresh pattern as safe for every failed deal.
+- Boundary repair is code-level only until target deals are reprocessed and metrics refreshed. Do not declare General Dynamics clean until `STRUCT`, `REP-T`, `ANTI`, and `NOSOL` reruns plus QA confirm it.

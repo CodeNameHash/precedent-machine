@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -16,32 +16,10 @@ export default function HomePage() {
   const router = useRouter();
   const { deals, loading } = useDeals();
   const [selected, setSelected] = useState(() => new Set());
-  const [counts, setCounts] = useState({}); // { [dealId]: number }
-  const [countsLoading, setCountsLoading] = useState(false);
-
-  // Fetch provision counts per deal in parallel once deals are loaded.
-  useEffect(() => {
-    if (!deals || deals.length === 0) return;
-    let cancelled = false;
-    setCountsLoading(true);
-    Promise.all(
-      deals.map((d) =>
-        fetch(`/api/provisions?deal_id=${d.id}`)
-          .then((r) => r.json())
-          .then((j) => [d.id, (j.provisions || []).length])
-          .catch(() => [d.id, 0])
-      )
-    ).then((entries) => {
-      if (cancelled) return;
-      setCounts(Object.fromEntries(entries));
-      setCountsLoading(false);
-    });
-    return () => { cancelled = true; };
-  }, [deals]);
 
   const totalProvisions = useMemo(
-    () => Object.values(counts).reduce((a, b) => a + b, 0),
-    [counts]
+    () => (deals || []).reduce((sum, deal) => sum + (Number(deal.provision_count) || 0), 0),
+    [deals]
   );
 
   // Enrich each deal with display names + CANONICALIZED advisors (read-time
@@ -103,7 +81,7 @@ export default function HomePage() {
             loading={loading}
             dealsCount={deals.length}
             totalProvisions={totalProvisions}
-            countsLoading={countsLoading}
+            countsLoading={loading}
             selected={selected}
             onToggle={toggle}
             onOpen={(id) => router.push(`/review/${id}`)}

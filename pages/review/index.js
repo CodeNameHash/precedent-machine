@@ -1,14 +1,13 @@
 import Link from 'next/link';
-import { useDeals, useProvisions } from '../../lib/useSupabaseData';
+import { useDeals } from '../../lib/useSupabaseData';
 import { useUser } from '../../lib/useUser';
 import { Breadcrumbs, SkeletonCard, EmptyState } from '../../components/UI';
 
 export default function ReviewIndex() {
   const { user } = useUser({ redirectTo: '/login' });
   const { deals, loading: dealsLoading } = useDeals();
-  const { provisions, loading: provsLoading } = useProvisions();
 
-  if (dealsLoading || provsLoading) {
+  if (dealsLoading) {
     return (
       <div className="space-y-4 max-w-4xl">
         <SkeletonCard />
@@ -18,16 +17,7 @@ export default function ReviewIndex() {
     );
   }
 
-  // Count provisions per deal
-  const provCountByDeal = {};
-  provisions.forEach(p => {
-    if (p.deal_id) {
-      provCountByDeal[p.deal_id] = (provCountByDeal[p.deal_id] || 0) + 1;
-    }
-  });
-
-  // Filter to deals that have provisions
-  const dealsWithProvs = deals.filter(d => provCountByDeal[d.id] > 0);
+  const dealsWithProvs = deals.filter(d => d.provision_count == null || Number(d.provision_count) > 0);
 
   return (
     <div className="space-y-6 max-w-4xl">
@@ -74,7 +64,9 @@ export default function ReviewIndex() {
                 </div>
                 <div className="text-right">
                   <span className="text-sm font-ui text-inkMid font-medium">
-                    {provCountByDeal[deal.id]} provision{provCountByDeal[deal.id] !== 1 ? 's' : ''}
+                    {deal.provision_count == null
+                      ? 'Provision count pending'
+                      : `${Number(deal.provision_count) || 0} provision${Number(deal.provision_count) !== 1 ? 's' : ''}`}
                   </span>
                   <p className="text-[10px] font-ui text-accent mt-0.5">Review &rarr;</p>
                 </div>
