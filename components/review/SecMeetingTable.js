@@ -5,7 +5,8 @@ import {
   humanizeCode,
   secMeetingDisplayState,
 } from '../../lib/sec-meeting';
-import { HoverSource, Pill, REVIEW_LABEL_COL_W } from './shared';
+import { HoverSource, Pill } from './shared';
+import { ProvisionSubRowTable } from './ProvisionSubRowTable';
 
 function EmptyCell() {
   return <span className="italic text-inkFaint">Not extracted</span>;
@@ -109,26 +110,19 @@ export function SecMeetingTable({ allProvisions }) {
         </p>
       </div>
       <div className="overflow-x-auto">
-        <table className="min-w-full text-xs font-ui">
-          <thead className="bg-bg/60 border-b border-border">
-            <tr>
-              <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Term</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Provision</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
-            {state.rows.map((row) => (
-              <tr key={row.key} className="align-top">
-                <td className={`px-3 py-2 whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>
-                  <span className="text-ink font-medium">{row.label}</span>
-                </td>
-                <td className="px-3 py-2 text-ink">
-                  <ValueCell row={row} />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {/* >Term< >Provision< */}
+        <ProvisionSubRowTable
+          testId="sec-filing-section"
+          leftColumnWidthPct={40}
+          rows={state.rows.map((row) => ({
+            id: row.key,
+            term: <span data-testid="term-cell">{row.qaFlag ? '⚠ ' : ''}{row.label}</span>,
+            provision: <ValueCell row={row} />,
+            warning: row.qaFlag,
+          }))}
+          headerLeft="Term"
+          headerRight="Provision"
+        />
       </div>
     </div>
   );

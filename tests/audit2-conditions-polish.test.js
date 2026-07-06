@@ -64,9 +64,10 @@ test('isStockholderApproval matches the Stockholder Approval condition rows', ()
 });
 
 test('the stockholder-approval branch reads approvalDefinition and renders core (clipped) + hover verbatim', () => {
-  const body = branchBody('if (isStockholderApproval) {', 1200);
+  const body = branchBody('if (isStockholderApproval) {', 2000);
   assert.match(body, /f\.approvalDefinition/);
   assert.match(body, /<HoverSource quote=\{def\}>\{truncateAtWordBoundary\(def, 160\)\}<\/HoverSource>/);
+  assert.match(body, /data-testid="vote-standard-pill"/);
 });
 
 test('the stockholder-approval branch renders nothing asserted (no fabricated vote standard) when approvalDefinition is absent', () => {

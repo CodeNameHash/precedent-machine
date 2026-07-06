@@ -20,6 +20,26 @@ function sideClauseSubLabel(p, i) {
   return `Clause ${i + 1}`;
 }
 
+function provisionCode(p) {
+  const meta = p && p.ai_metadata;
+  if (meta && typeof meta === 'object') return meta.code || p.code || null;
+  if (typeof meta === 'string') {
+    try {
+      const parsed = JSON.parse(meta);
+      return parsed && (parsed.code || p.code) || null;
+    } catch {
+      return p && p.code;
+    }
+  }
+  return p && p.code;
+}
+
+function isCanonicalSidebarItem(p) {
+  const code = String(provisionCode(p) || '').trim();
+  if (!code) return false;
+  return !/^\[?PROPOSED/i.test(code);
+}
+
 /* ═══════════════════════════════════════════════════════════
    LEFT SIDEBAR
    ═══════════════════════════════════════════════════════════ */
@@ -197,6 +217,7 @@ export function Sidebar({ provsByType, provisions, activeFilter, onFilterType, o
     const status = getProvisionStatus(p);
     const isActive = p.id === activeProvId;
     const isDragging = dragProvId === p.id;
+    const canonical = isCanonicalSidebarItem(p);
     return (
       <button
         key={p.id}
@@ -213,9 +234,14 @@ export function Sidebar({ provsByType, provisions, activeFilter, onFilterType, o
           opacity: isDragging ? 0.4 : 1,
         }}
         title={isEdit ? "Drag to a different category to reclassify" : undefined}
+        data-testid={canonical ? 'sidebar-item-canonical-sample' : 'sidebar-item-non-canonical-sample'}
       >
-        <span className="dot" style={{ background: statusDotColor(status) }} />
-        <span className="rec-side-label">{p.category || 'General'}</span>
+        {canonical ? (
+          <span className="dot" style={{ background: statusDotColor(status) }} />
+        ) : (
+          <span aria-hidden="true" style={{ color: 'var(--ink-faint)', opacity: 0.7, marginRight: 4 }}>ˑ</span>
+        )}
+        <span className="rec-side-label" style={{ opacity: canonical ? 1 : 0.7 }}>{p.category || 'General'}</span>
       </button>
     );
   };
@@ -260,9 +286,10 @@ export function Sidebar({ provsByType, provisions, activeFilter, onFilterType, o
               {expanded && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                   {items.map((p, i) => {
-                    const status = getProvisionStatus(p);
-                    const isActive = p.id === activeProvId;
-                    const isDragging = dragProvId === p.id;
+                      const status = getProvisionStatus(p);
+                      const isActive = p.id === activeProvId;
+                      const isDragging = dragProvId === p.id;
+                      const canonical = isCanonicalSidebarItem(p);
                     // Sub-label: prefer a section ref / first words to disambiguate.
                     const sub = sideClauseSubLabel(p, i);
                     return (
@@ -281,8 +308,12 @@ export function Sidebar({ provsByType, provisions, activeFilter, onFilterType, o
                         }}
                         title={isEdit ? "Drag to a different category to reclassify" : undefined}
                       >
-                        <span className="dot" style={{ background: statusDotColor(status) }} />
-                        <span className="rec-side-label" style={{ color: 'var(--ink-light)' }}>{sub}</span>
+                        {canonical ? (
+                          <span className="dot" style={{ background: statusDotColor(status) }} />
+                        ) : (
+                          <span aria-hidden="true" style={{ color: 'var(--ink-faint)', opacity: 0.7, marginRight: 4 }}>ˑ</span>
+                        )}
+                        <span className="rec-side-label" style={{ color: 'var(--ink-light)', opacity: canonical ? 1 : 0.7 }}>{sub}</span>
                       </button>
                     );
                   })}
@@ -297,6 +328,7 @@ export function Sidebar({ provsByType, provisions, activeFilter, onFilterType, o
 
   return (
     <aside
+      data-testid="sidebar-nav"
       className="shrink-0 flex flex-col h-full overflow-hidden"
       style={{
         width: 286,

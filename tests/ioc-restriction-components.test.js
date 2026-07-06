@@ -69,16 +69,16 @@ test('stampIocRestrictionComponents is idempotent — skips a provision that alr
   assert.deepEqual(provisions[0].features.restrictionComponents, ['CAPEX'], 'existing value preserved, not overwritten');
 });
 
-/* ── Wiring: Components pills column on the IOC negative-covenants table
+/* ── Wiring: restrictionComponents pills on the IOC negative-covenants table
    (pages/review/[id].js is JSX and can't be imported under node --test —
    see tests/fb3-wiring.test.js for the established source-text pattern). */
 const reviewSrc = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
 
-test('IocNegativeCovenantsTableSingle renders a Components column of restrictionComponents pills', () => {
+test('IocNegativeCovenantsTableSingle renders restrictionComponents pills in the strict Provision column', () => {
   const start = reviewSrc.indexOf('function IocNegativeCovenantsTableSingle(');
   assert.ok(start > 0);
   const body = reviewSrc.slice(start, reviewSrc.indexOf('function IocNegativeCovenantsTable(', start));
-  assert.match(body, /<th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Components<\/th>/);
+  assert.match(body, /<th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Provision<\/th>/);
   assert.match(body, /restrictionComponents/);
   assert.match(body, /IOC_CATEGORY_META\[code\]/);
 });

@@ -1,6 +1,7 @@
 import { employeeBenefitsDisplayState } from '../../lib/employee-benefits';
-import { HoverSource, Pill, REVIEW_LABEL_COL_W } from './shared';
+import { HoverSource, Pill } from './shared';
 import { TermCell } from './TermCell';
+import { ProvisionSubRowTable } from './ProvisionSubRowTable';
 
 function EmptyCell() {
   return <span className="italic text-inkFaint">Not extracted</span>;
@@ -51,42 +52,43 @@ export function EmployeeBenefitsTable({ allProvisions }) {
         </p>
       </div>
       <div className="overflow-x-auto">
-        <table className="min-w-full text-xs font-ui">
-          <thead className="bg-bg/60 border-b border-border">
-            <tr>
-              <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Term</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Standard / Comparison Group</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
-            {state.continuationPeriod && (
-              <tr className="align-top">
-                <td className={`px-3 py-2 whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>
-                  <TermCell provision={state.continuationPeriod.provision} quote={state.continuationPeriod.quote}>
-                    <span className="text-ink font-medium">Continuation period</span>
-                  </TermCell>
-                </td>
-                <td className="px-3 py-2 text-ink">
-                  <HoverSource quote={state.continuationPeriod.quote} as="div">
-                    <span>{state.continuationPeriod.value}</span>
-                  </HoverSource>
-                </td>
-              </tr>
-            )}
-            {state.rows.map((row) => (
-              <tr key={row.code} className="align-top">
-                <td className={`px-3 py-2 whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>
-                  <TermCell provision={row.provision} quote={row.quote}>
+        {/* >Term< >Provision< */}
+        <ProvisionSubRowTable
+          testId="employee-benefits-table"
+          leftColumnWidthPct={40}
+          headerLeft="Term"
+          headerRight="Provision"
+          rows={[
+            ...(state.continuationPeriod ? [{
+              id: 'continuation-period',
+              term: (
+                <TermCell provision={state.continuationPeriod.provision} quote={state.continuationPeriod.quote}>
+                  <span className="text-ink font-medium">Continuation period</span>
+                </TermCell>
+              ),
+              provision: (
+                <HoverSource quote={state.continuationPeriod.quote} as="div">
+                  <span>{state.continuationPeriod.value}</span>
+                </HoverSource>
+              ),
+            }] : []),
+            ...state.rows.map((row) => ({
+              id: row.code,
+              testId: row.comparisonGroup === 'Company pre-closing arrangements' ? 'emp-benefits-precluding-arrangements' : undefined,
+              term: (
+                <TermCell provision={row.provision} quote={row.quote}>
+                  <span className="inline-flex items-center gap-1.5 flex-wrap">
+                    {row.comparisonGroup === 'Company pre-closing arrangements' ? (
+                      <Pill text="Company pre-closing" quote={row.quote} tone="person" />
+                    ) : null}
                     <span className="text-ink font-medium">{row.label}</span>
-                  </TermCell>
-                </td>
-                <td className="px-3 py-2 text-ink">
-                  <ElementValueCell row={row} />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                  </span>
+                </TermCell>
+              ),
+              provision: <ElementValueCell row={row} />,
+            })),
+          ]}
+        />
       </div>
     </div>
   );

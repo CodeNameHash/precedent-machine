@@ -96,6 +96,7 @@ export function buildEquityRows(equityProvisions) {
           treatment: t.consideration_type || t.considerationType || null,
           vesting: t.vesting_treatment || t.vestingTreatment || null,
           performance: t.performance_treatment || t.performanceTreatment || null,
+          cvrEntitlement: t.cvr_entitlement || t.cvrEntitlement || null,
           cashFormula: t.cash_formula || t.cashFormula || null,
           stockFormula: t.stock_formula || t.stockFormula || null,
           inTheMoneyOnly: t.in_the_money_only ?? t.inTheMoneyOnly ?? null,
@@ -121,6 +122,60 @@ export function buildEquityRows(equityProvisions) {
     deduped.push(r);
   }
   return deduped;
+}
+
+export const CONSIDERATION_BADGE_TEXT = {
+  ALL_CASH: 'All cash',
+  ALL_STOCK_FIXED_EXCHANGE: 'All stock (fixed exchange)',
+  ALL_STOCK_FIXED_VALUE: 'All stock (fixed value)',
+  CASH_AND_STOCK_MIX: 'Cash + stock',
+  CASH_AND_CVR: 'Cash + CVR',
+  STOCK_AND_CVR: 'Stock + CVR',
+  CASH_STOCK_AND_CVR: 'Cash + stock + CVR',
+  CASH_AND_ELECTION: 'Cash + election',
+  STOCK_AND_ELECTION: 'Stock + election',
+  MIXED_ELECTION: 'Mixed election',
+  OTHER: 'Other - see terms',
+};
+
+function normalizeConsiderationCode(raw) {
+  return String(raw || '')
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '');
+}
+
+export function considerationBadgeTextFromDeal(deal, provisions) {
+  const direct = deal?.consideration_type_canonical
+    || deal?.metadata?.consideration_type_canonical
+    || deal?.metadata?.headlineConsiderationType
+    || deal?.metadata?.headline_consideration_type
+    || deal?.metadata?.considerationType
+    || deal?.metadata?.consideration_type
+    || null;
+  const directCode = normalizeConsiderationCode(direct);
+  if (CONSIDERATION_BADGE_TEXT[directCode]) return CONSIDERATION_BADGE_TEXT[directCode];
+  if (/CASH.*CVR|CVR.*CASH/.test(directCode)) return 'Cash + CVR';
+  if (/CASH/.test(directCode) && !/STOCK/.test(directCode)) return 'All cash';
+  const derived = deriveHeadlineConsiderationType(provisions || []);
+  const derivedLabel = headlineConsiderationLabel(derived, provisions || []);
+  if (derivedLabel === 'Cash') return 'All cash';
+  return derivedLabel || null;
+}
+
+export function ConsiderationBadge({ deal, provisions }) {
+  const text = considerationBadgeTextFromDeal(deal, provisions);
+  if (!text) return null;
+  return (
+    <span
+      data-testid="consideration-badge"
+      className="inline-flex items-center gap-1 text-[10px] font-ui font-medium px-1.5 py-0.5 rounded border bg-emerald-50 text-emerald-700 border-emerald-200"
+    >
+      <span aria-hidden="true">◆</span>
+      {text}
+    </span>
+  );
 }
 
 // Render a treatment/vesting string with any dollar amounts pulled out as
@@ -178,7 +233,7 @@ function performanceTreatmentLabel(value, quote) {
   return labels[code] || humanizeBadgeText(code || String(value));
 }
 
-export function EquityAwardTable({ rows, onSelectProvision, onAddProvision, optionsCvrEarnInLabel, optionsCvrEarnInQuote }) {
+export function EquityAwardTable({ rows, onSelectProvision, onAddProvision, optionsCvrEarnInLabel, optionsCvrEarnInQuote, dealConsiderationLabel }) {
   if (!rows || rows.length === 0) return null;
   // Render a tagged value as a canonical pill. Prefer the resolved taxonomy
   // label (e.g. "Cashed out at spread (...)") over a bare code-humanization
@@ -195,6 +250,67 @@ export function EquityAwardTable({ rows, onSelectProvision, onAddProvision, opti
     const text = /^[A-Z0-9_]+$/.test(String(v)) ? humanizeBadgeText(String(v)) : String(v);
     return <div className="line-clamp-2">{renderWithAmountPills(text)}</div>;
   };
+  const equityTypeFor = (row) => {
+    const code = isTaggedItem(row.instrument) ? String(row.instrument.code || '').toUpperCase() : String(row.instrument || '').toUpperCase();
+    const label = isTaggedItem(row.instrument) ? String(row.instrument.label || '') : String(row.instrument || '');
+    if (/OPTION/.test(code) || /option/i.test(label)) return row.inTheMoneyOnly === false ? 'OPTIONS_OTM' : (row.inTheMoneyOnly === true ? 'OPTIONS_ITM' : 'OPTIONS_ALL');
+    if (code === 'RESTRICTED_STOCK') return 'RSA';
+    if (code === 'RSA') return 'RSA';
+    if (code === 'RSU') return 'RSU';
+    if (code === 'PSU') return 'PSU';
+    if (code === 'ESPP') return 'ESPP';
+    if (code === 'DIRECTOR_EQUITY') return 'DIRECTOR_EQUITY';
+    return 'OTHER_EQUITY';
+  };
+  const equityTypeLabel = (key) => ({
+    OPTIONS_ITM: 'OPTIONS — ITM',
+    OPTIONS_OTM: 'OPTIONS — OTM',
+    OPTIONS_ALL: 'OPTIONS — ALL',
+    RSA: 'RSA',
+    RSU: 'RSU',
+    PSU: 'PSU',
+    ESPP: 'ESPP',
+    DIRECTOR_EQUITY: 'DIRECTOR EQUITY',
+    OTHER_EQUITY: 'OTHER EQUITY',
+  }[key] || key);
+  const vestingLabel = (value) => {
+    const code = normalizeConsiderationCode(isTaggedItem(value) ? value.code : value);
+    const labels = {
+      CONTINUED_VESTING: 'CONTINUED VESTING',
+      FULLY_VESTED_ACCELERATED: 'FULLY VESTED · ACCEL.',
+      FULLY_ACCELERATED: 'FULLY VESTED · ACCEL.',
+      PRO_RATA_ACCELERATION: 'PRO RATA · ACCEL.',
+      PRO_RATA_ACCELERATED: 'PRO RATA · ACCEL.',
+      CANCELLED_NO_CONSIDERATION: 'CANCELLED · NO CONSIDER.',
+      CANCELLED_FOR_CONSIDERATION: 'CASHED OUT AT SPREAD',
+      CASHED_OUT_AT_SPREAD: 'CASHED OUT AT SPREAD',
+      ROLLED_OVER: 'ROLLED OVER',
+      ROLLOVER: 'ROLLED OVER',
+      CONVERTED_TO_PARENT_EQUITY: 'CONVERTED TO PARENT EQUITY',
+      ASSUMED_BY_PARENT: 'CONVERTED TO PARENT EQUITY',
+    };
+    return labels[code] || humanizeBadgeText(code || 'UNSPECIFIED').toUpperCase();
+  };
+  const cvrLabel = (row, equityType) => {
+    const explicit = normalizeConsiderationCode(row.cvrEntitlement);
+    const map = { YES: 'Yes', NO: 'No', ITM_ONLY: 'ITM only', NA: 'NA' };
+    if (map[explicit]) return map[explicit];
+    if (equityType === 'ESPP') return 'NA';
+    if (equityType === 'RSA') return 'No';
+    if (equityType === 'OPTIONS_ITM') return 'ITM only';
+    if (/CVR/i.test(String(row.quote || row.treatment || ''))) return 'Yes';
+    return 'No';
+  };
+  const considerationFor = (row) => {
+    const treatmentCode = normalizeConsiderationCode(row.treatment);
+    if (treatmentCode === 'CANCELLATION') return '—';
+    return dealConsiderationLabel || '—';
+  };
+  const noteFor = (row, equityType) => {
+    if (equityType === 'ESPP') return 'Offering period terminated';
+    if (isPsuRow(row)) return <><span className="sr-only">Performance</span>Performance deemed at target</>;
+    return '—';
+  };
   // Identify the Options row so the CVR earn-in pill attaches there.
   const isOptionsRow = (row) => {
     const code = isTaggedItem(row.instrument) ? String(row.instrument.code || '') : '';
@@ -204,93 +320,68 @@ export function EquityAwardTable({ rows, onSelectProvision, onAddProvision, opti
   };
 
   return (
-    <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+    <div data-testid="employee-equity-section" className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
       <div className="px-3 py-2 bg-lime-50 border-b border-border">
         <p className="text-[10px] font-ui font-medium text-lime-900 uppercase tracking-wider">
           Employee equity treatment
         </p>
       </div>
-      <div className="p-3 space-y-2">
+      <div className="overflow-x-auto">
+        <table data-testid="employee-equity-table" className="min-w-full text-xs font-ui">
+          <thead className="bg-bg/60 border-b border-border">
+            <tr>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Equity Type</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Consideration</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Vesting Treatment</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">CVR Entitlement</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Notes</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
         {rows.map((row) => {
-          const instLabel = isTaggedItem(row.instrument)
-            ? (row.instrument.label || resolveTaggedLabel('instrumentType', row.instrument) || humanizeBadgeText(row.instrument.code))
-            : String(row.instrument || 'Instrument');
           const rowQuote = row.quote
             || evidenceQuote(row.treatment, { fallbackToFullText: false })
             || evidenceQuote(row.vesting, { fallbackToFullText: false })
             || evidenceQuote(row.performance, { fallbackToFullText: false })
             || evidenceQuote(null, { provision: row.provision });
-          const psuPerformance = isPsuRow(row)
-            ? performanceTreatmentLabel(row.performance, rowQuote)
-            : null;
+          const equityType = equityTypeFor(row);
+          const consideration = considerationFor(row);
+          const cvr = cvrLabel(row, equityType);
+          const vesting = vestingLabel(row.vesting);
+          const note = noteFor(row, equityType);
           return (
-            <div key={row.key} className="border border-border rounded-lg bg-bg/20 p-3">
-              <div className="flex items-start justify-between gap-2">
+            <tr key={row.key} data-testid={`equity-row-${equityType}`} className="align-top hover:bg-bg/40">
+              <td className="px-3 py-2">
                 <TermCell provision={row.provision} quote={rowQuote}>
                   <HoverSource quote={rowQuote}>
-                    <span className="text-left text-accent hover:underline font-semibold text-sm">
-                      {instLabel}
+                    <span className="inline-flex items-center font-ui font-medium text-[10px] px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200 whitespace-nowrap">
+                      {equityTypeLabel(equityType)}
                     </span>
                   </HoverSource>
                 </TermCell>
-                {row.grouping ? (
-                  <span className="text-[10px] font-ui uppercase tracking-wider text-inkFaint border border-border rounded px-1.5 py-0.5 bg-white">
-                    {humanizeBadgeText(row.grouping)}
-                  </span>
-                ) : null}
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 mt-2 text-xs font-ui">
-                <div>
-                  <p className="text-[10px] uppercase tracking-wider text-inkFaint mb-0.5">Consideration</p>
-                  <HoverSource quote={rowQuote} as="div">{renderTagged(row.treatment, 'equityTreatment')}</HoverSource>
-                </div>
-                <div>
-                  <p className="text-[10px] uppercase tracking-wider text-inkFaint mb-0.5">Vesting</p>
-                  <HoverSource quote={rowQuote} as="div">{renderTagged(row.vesting, 'vestingAcceleration')}</HoverSource>
-                </div>
-                {psuPerformance ? (
-                  <div>
-                    <p className="text-[10px] uppercase tracking-wider text-inkFaint mb-0.5">Performance</p>
-                    <HoverSource quote={rowQuote} as="div" className="text-ink">{psuPerformance}</HoverSource>
-                  </div>
-                ) : null}
-                {row.cashFormula ? (
-                  <div className="sm:col-span-2">
-                    <p className="text-[10px] uppercase tracking-wider text-inkFaint mb-0.5">Cash Formula</p>
-                    <HoverSource quote={rowQuote} as="div" className="text-ink">{renderWithAmountPills(row.cashFormula)}</HoverSource>
-                  </div>
-                ) : null}
-                {row.stockFormula ? (
-                  <div className="sm:col-span-2">
-                    <p className="text-[10px] uppercase tracking-wider text-inkFaint mb-0.5">Stock Formula</p>
-                    <HoverSource quote={rowQuote} as="div" className="text-ink">{row.stockFormula}</HoverSource>
-                  </div>
-                ) : null}
-                {row.inTheMoneyOnly !== null && row.inTheMoneyOnly !== undefined ? (
-                  <div>
-                    <p className="text-[10px] uppercase tracking-wider text-inkFaint mb-0.5">ITM Only</p>
-                    <span className="text-ink">{row.inTheMoneyOnly ? 'Yes' : 'No'}</span>
-                  </div>
-                ) : null}
-                {row.spanType ? (
-                  <div>
-                    <p className="text-[10px] uppercase tracking-wider text-inkFaint mb-0.5">Source Span</p>
-                    <span className="text-ink">{humanizeBadgeText(row.spanType)}</span>
-                  </div>
-                ) : null}
+              </td>
+              <td className="px-3 py-2 text-ink">
+                {consideration}
+              </td>
+              <td className="px-3 py-2">
+                <Pill text={vesting} quote={rowQuote} tone="standard" />
+              </td>
+              <td className="px-3 py-2 text-ink">{cvr}</td>
+              <td className="px-3 py-2 text-ink">
+                {note}
                 {optionsCvrEarnInLabel && isOptionsRow(row) ? (
-                  <div className="sm:col-span-2">
-                    <HoverSource quote={optionsCvrEarnInQuote || rowQuote}>
-                      <span className="inline-flex items-center font-ui font-medium text-[10px] px-1.5 py-0.5 rounded bg-violet-50 text-violet-700 border border-violet-200">
-                        {optionsCvrEarnInLabel}
-                      </span>
-                    </HoverSource>
-                  </div>
+                  <HoverSource quote={optionsCvrEarnInQuote || rowQuote}>
+                    <span className="ml-1 inline-flex items-center font-ui font-medium text-[10px] px-1.5 py-0.5 rounded bg-violet-50 text-violet-700 border border-violet-200">
+                      {optionsCvrEarnInLabel}
+                    </span>
+                  </HoverSource>
                 ) : null}
-              </div>
-            </div>
+              </td>
+            </tr>
           );
         })}
+          </tbody>
+        </table>
       </div>
       {/* Row-level add scoped to THIS table: capture an equity class the parser
           missed (Ben's example — "what if you missed a class of equity, I'd
@@ -373,7 +464,7 @@ function buildCommonStockRow(convertProv) {
   };
 }
 
-export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
+export function ConsidTable({ provisions, onSelectProvision, onAddProvision, deal }) {
   const showEvidence = useShowEvidence();
 
   // Partition: equity-award provisions vs. everything else.
@@ -571,6 +662,7 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
   const heroPriceText = formatPerShare(heroPerShare);
   const headlineType = deriveHeadlineConsiderationType(provisions);
   const headlineTypeLabel = headlineConsiderationLabel(headlineType, provisions);
+  const dealConsiderationLabel = considerationBadgeTextFromDeal(deal, provisions);
 
   // Audit-2 item 6(a): a raw enum value (e.g. "FIXED", "MIXED_ELECTION")
   // with no {code,label} tagged wrapper used to render verbatim via
@@ -726,7 +818,7 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
               </p>
               {headlineTypeLabel && (
                 <span className="inline-flex items-center gap-1 text-[10px] font-ui font-medium px-1.5 py-0.5 rounded border bg-emerald-50 text-emerald-700 border-emerald-200">
-                  Consideration: {headlineTypeLabel}
+                  {headlineTypeLabel}
                 </span>
               )}
             </div>
@@ -809,6 +901,7 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
                   onAddProvision={onAddProvision}
                   optionsCvrEarnInLabel={optionsCvrEarnInLabel}
                   optionsCvrEarnInQuote={optionsCvrEarnInSrc && optionsCvrEarnInSrc.quote}
+                  dealConsiderationLabel={dealConsiderationLabel}
                 />
               );
             }
@@ -830,6 +923,7 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
                             onAddProvision={onAddProvision}
                             optionsCvrEarnInLabel={optionsCvrEarnInLabel}
                             optionsCvrEarnInQuote={optionsCvrEarnInSrc && optionsCvrEarnInSrc.quote}
+                            dealConsiderationLabel={dealConsiderationLabel}
                           />
                         ) : (
                           <p className="text-xs font-ui text-inkLight">Share cancellation only.</p>

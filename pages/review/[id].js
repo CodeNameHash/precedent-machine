@@ -95,6 +95,7 @@ import { DealNavContext, TermCell } from '../../components/review/TermCell';
 import { DocPopUnder } from '../../components/review/DocPopUnder';
 import { SecMeetingTable } from '../../components/review/SecMeetingTable';
 import { EmployeeBenefitsTable } from '../../components/review/EmployeeBenefitsTable';
+import { ProvisionSubRowTable } from '../../components/review/ProvisionSubRowTable';
 import {
   termCellHoverQuote,
   knowledgeQualifierDisplay,
@@ -133,7 +134,7 @@ import {
   splitBringdownCoveredPills,
   buildAntitrustSummaryRows,
 } from '../../components/review/table-logic';
-import { ConsidTable } from '../../components/review/ConsiderationTables';
+import { ConsidTable, ConsiderationBadge } from '../../components/review/ConsiderationTables';
 import { Sidebar } from '../../components/review/Sidebar';
 import { FullDocumentView } from '../../components/review/FullDocumentView';
 import { EditPanel } from '../../components/review/EditPanel';
@@ -737,13 +738,13 @@ function BringDownTiersTable({ tiers }) {
         <thead className="bg-bg/60">
           <tr>
             <th className="px-2 py-1 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">
-              Reps Covered
+              Term
             </th>
             <th className="px-2 py-1 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">
-              Standard
+              Provision
             </th>
             <th className="px-2 py-1 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">
-              Exceptions
+              Provision
             </th>
           </tr>
         </thead>
@@ -791,13 +792,13 @@ function CompensationItemsTable({ items }) {
         <thead className="bg-bg/60">
           <tr>
             <th className="px-2 py-1 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">
-              Item
+              Term
             </th>
             <th className="px-2 py-1 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">
-              Standard
+              Provision
             </th>
             <th className="px-2 py-1 text-left font-medium text-inkFaint uppercase tracking-wider">
-              Text
+              Provision
             </th>
           </tr>
         </thead>
@@ -2092,7 +2093,7 @@ function IocAffirmativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelec
         <table className="min-w-full text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
             <tr>
-              <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Covenant</th>
+              <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Term</th>
               {/* Audit block 8 (superseded — see punch-list-2): sibling ths
                   must NOT carry width classes so Standard/Applies To absorb
                   the remaining width. That alone wasn't the whole story: the
@@ -2104,8 +2105,8 @@ function IocAffirmativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelec
                   a real browser quirk, not spec behavior. Compare the
                   Structure & Mechanics "Term" column (row ~3877) which pins
                   the width on BOTH th and td and wraps instead of nowrap. */}
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">Standard</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Applies To</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">Provision</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Provision</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -2702,6 +2703,8 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
   const codeOrderIdx = new Map(codeOrder.map((c, i) => [c, i]));
   const resolveIocCode = (p) => {
     const feats = getStructuredFeatures(p) || {};
+    const canonical = String(p.category_canonical || feats.categoryCanonical || feats.category_canonical || '').toUpperCase();
+    if (canonical && codeOrderIdx.has(canonical)) return canonical;
     const dt = Array.isArray(feats.dollarThresholdsByCategory) ? feats.dollarThresholdsByCategory : null;
     if (dt && dt.length > 0) {
       const c = String((dt[0] && (dt[0].code || dt[0].bucket)) || '').toUpperCase();
@@ -2735,7 +2738,7 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
   const sorted = sortByAgreementOrder(canonicalSorted, iocSecOf);
 
   // Audit fix batch item 4 — IOC limb naming. Several deals (Metsera) reuse
-  // the SAME raw p.category text ("Mergers, Acquisitions, Dispositions") for
+  // the SAME raw p.category text for
   // every sub-clause under a combined article header, so 3 negative-covenant
   // rows read as identical labels with no way to tell which limb is which —
   // even though each row already carries its OWN resolved canonical code
@@ -2882,10 +2885,10 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
         <table className="min-w-full text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
             <tr>
-              <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Restriction</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Components</th>
+              <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Term</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Provision</th>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">Threshold</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Exceptions</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Provision</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -3577,12 +3580,12 @@ function renderRepCellWithHoverQuote(featureKey, raw) {
 function formatLookbackYears(months) {
   const m = Number(months);
   if (!Number.isFinite(m) || m <= 0) return String(months);
-  if (m < 12) return 'Less than 1 year prior to signing';
-  const years = m / 12;
-  const rounded = Number.isInteger(years)
-    ? String(years)
-    : years.toFixed(1).replace(/\.0$/, '');
-  return `${rounded} ${rounded === '1' ? 'year' : 'years'} prior to signing`;
+  if (!Number.isInteger(m) || m > 240) return 'Flag for QA';
+  if (m < 12) return `${m} ${m === 1 ? 'month' : 'months'} prior to signing`;
+  const years = Math.floor(m / 12);
+  const rem = m % 12;
+  if (rem === 0) return `${years} ${years === 1 ? 'year' : 'years'} prior to signing`;
+  return `${years} ${years === 1 ? 'year' : 'years'}, ${rem} ${rem === 1 ? 'month' : 'months'} prior to signing`;
 }
 
 function computeLookbackText(months /* announceDate unused: months-from-signing only */) {
@@ -3604,7 +3607,9 @@ function lookbackToYears(rawValue, signingDate) {
   if (v === null || v === undefined || v === '') return null;
   // Numeric month count.
   if (typeof v === 'number' || /^\s*\d{1,3}\s*$/.test(String(v))) {
-    return computeLookbackText(Number(String(v).trim()));
+    const n = Number(String(v).trim());
+    if (!Number.isInteger(n) || n < 0 || n > 240) return 'Flag for QA';
+    return computeLookbackText(n);
   }
   const s = String(v).trim();
   // Try to pull a date out of the string ("Since January 30, 2025", "1/30/25").
@@ -4139,7 +4144,7 @@ function StructTable({ provisions, onSelectProvision }) {
         <thead className="bg-bg/60 border-b border-border">
           <tr>
             <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Term</th>
-            <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Details</th>
+            <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Provision</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-border">
@@ -4798,8 +4803,8 @@ function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision, hide
           <table className="min-w-full text-xs font-ui">
             <thead className="bg-bg/60 border-b border-border">
               <tr>
-                <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Feature</th>
-                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Value</th>
+                <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Term</th>
+                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Provision</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -5184,17 +5189,17 @@ function TermfTriggerMatrix({ provisions, allProvisions, deal }) {
         )}
       </div>
       <div className="overflow-x-auto">
-        <table className="min-w-full text-xs font-ui">
+        <table data-testid="material-contracts-table" className="min-w-full text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
             <tr>
-              <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Trigger</th>
+              <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Term</th>
               {/* Audit block 8: dropped the sibling width classes — with
                   ALL three columns explicitly sized, table-fixed scaled them
                   proportionally to fill the table's rendered width (Trigger
                   measured 296px instead of 190px). Only the label column is
                   pinned; the rest flex. */}
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">Who Can Terminate</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">Fee</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">Provision</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">Provision</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -5776,6 +5781,69 @@ function formatIsoDateReadable(iso) {
   return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
 }
 
+function numericMonths(v) {
+  if (typeof v === 'number' && Number.isInteger(v) && v > 0) return v;
+  if (typeof v === 'string') {
+    const m = v.match(/^\s*(\d+)\s*(?:months?|mo)?\s*$/i);
+    if (m) {
+      const n = Number(m[1]);
+      return Number.isInteger(n) && n > 0 ? n : null;
+    }
+  }
+  return null;
+}
+
+function outsideDateTriggerLabel(f, extensionDetail) {
+  const raw = isCitableValue(f.extensionTrigger) ? getCitableValue(f.extensionTrigger) : f.extensionTrigger;
+  const code = isTaggedItem(raw) ? raw.code : raw;
+  const text = [code, extensionDetail, f.extensionConditions, f.outsideDateExtensionConditions]
+    .filter(Boolean)
+    .map((x) => (typeof x === 'string' ? x : JSON.stringify(x)))
+    .join(' ');
+  if (/automatic/i.test(text)) return 'AUTOMATIC';
+  if (/company/i.test(text) && /option|elect/i.test(text)) return 'COMPANY_OPTION';
+  if (/parent|buyer/i.test(text) && /option|elect/i.test(text)) return 'PARENT_OPTION';
+  if (/either/i.test(text) && /option|elect/i.test(text)) return 'EITHER_PARTY_OPTION';
+  return code ? String(code).toUpperCase() : null;
+}
+
+function outsideDateConditionLabel(f, extensionDetail) {
+  const text = [extensionDetail, f.extensionConditions, f.outsideDateExtensionConditions]
+    .filter(Boolean)
+    .map((x) => (typeof x === 'string' ? x : JSON.stringify(x)))
+    .join(' ');
+  if (/all\s+other\s+conditions|other\s+conditions.*capable/i.test(text)) {
+    return 'other conditions capable of satisfaction';
+  }
+  if (/antitrust|hsr|regulatory/i.test(text)) return 'regulatory conditions unsatisfied';
+  return null;
+}
+
+function buildOutsideDatePillSpec(features, extensionDetail) {
+  const baseMonths = numericMonths(features.outsideDateMonthsPostSigning)
+    || numericMonths(features.outsideDateMonths);
+  const extensionMonths = numericMonths(features.extensionMonths)
+    || numericMonths(features.extensionPeriod);
+  if (!baseMonths || !extensionMonths) return null;
+  const trigger = outsideDateTriggerLabel(features, extensionDetail);
+  const condition = outsideDateConditionLabel(features, extensionDetail);
+  return {
+    base: `${baseMonths} mo`,
+    extension: [ `${extensionMonths} mo`, trigger, condition ].filter(Boolean).join(' · '),
+  };
+}
+
+function OutsideDatePillRow({ spec }) {
+  if (!spec) return null;
+  return (
+    <div data-testid="outside-date-row" className="inline-flex items-center gap-1.5 flex-wrap">
+      <span data-testid="pill" className="inline-flex items-center font-ui font-medium text-[10px] px-1.5 py-0.5 rounded border whitespace-nowrap bg-amber-50 text-amber-800 border-amber-200">{spec.base}</span>
+      <span className="text-inkFaint">+</span>
+      <span data-testid="pill" className="inline-flex items-center font-ui font-medium text-[10px] px-1.5 py-0.5 rounded border whitespace-nowrap bg-amber-50 text-amber-800 border-amber-200">{spec.extension}</span>
+    </div>
+  );
+}
+
 // Compose the "key terms" cell for a canonical right from its features.
 // `ctx` carries cross-row detail the per-right features don't have on their
 // own: outsideRows (folded-in Outside-Date/Extension detail) and voteStandard
@@ -5786,6 +5854,7 @@ function termrKeyTerms(key, f, ctx = {}) {
   // Mutual consent: the row title already says "Mutual consent" — per user,
   // no separate key-term chip is needed here.
   if (key === 'outside') {
+    if (ctx.outsideDatePillSpec) bits.push(<OutsideDatePillRow key="outside-date-pills" spec={ctx.outsideDatePillSpec} />);
     for (const r of ctx.outsideRows || []) bits.push(`${r.label}: ${r.value}`);
   }
   if (key === 'legal') {
@@ -5875,6 +5944,7 @@ function TermrRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
   const extensionRow = (extensionRowBase.value && extensionMonths !== null)
     ? { ...extensionRowBase, value: `${extensionRowBase.value} (+${extensionMonths} month${extensionMonths === 1 ? '' : 's'})` }
     : extensionRowBase;
+  const outsideDatePillSpec = buildOutsideDatePillSpec(of, extensionDetail);
   const outsideRows = outsideProv ? [
     { label: 'Outside / End Date', value: u(of.outsideDate), raw: of.outsideDate },
     { label: 'Period from signing', value: u(of.outsideDateMonths), raw: of.outsideDateMonths },
@@ -5890,7 +5960,7 @@ function TermrRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
   const rows = TERMR_CANONICAL.map((spec) => {
     const prov = spec.key === 'outside' ? (outsideProv || byCode(spec.codes)) : byCode(spec.codes);
     const f = prov ? (getStructuredFeatures(prov) || {}) : {};
-    const ctx = spec.key === 'outside' ? { outsideRows }
+    const ctx = spec.key === 'outside' ? { outsideRows, outsideDatePillSpec }
       : spec.key === 'vote' ? { voteStandard: termrVoteStandard(f, pool) }
       : {};
     return {
@@ -5944,8 +6014,8 @@ function TermrRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
           <table className="min-w-full text-xs font-ui">
             <thead className="bg-bg/60 border-b border-border">
               <tr>
-                <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Right</th>
-                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Key Terms</th>
+                <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Term</th>
+                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Provision</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -6280,8 +6350,14 @@ function augmentRepsWithExpectedPlaceholders(list, repsType, allProvisions) {
 function BringdownTable({ provisions, repsType }) {
   const condProvs = (provisions || []).filter((p) => isCondRepProvision(p, repsType));
   const tiers = [];
+  let explicitScope = null;
+  let explicitExcepted = [];
   for (const cp of condProvs) {
     const f = getStructuredFeatures(cp) || {};
+    const scope = f.bring_down_reps_scope || f.bringDownRepsScope || f.bringDownScope || null;
+    if (scope) explicitScope = scope;
+    const excepted = f.bring_down_reps_excepted || f.bringDownRepsExcepted || f.bringDownExcepted || [];
+    if (Array.isArray(excepted) && excepted.length > 0) explicitExcepted = excepted;
     if (Array.isArray(f.bringDownTiers)) {
       for (const t of f.bringDownTiers) {
         if (t && typeof t === 'object') tiers.push(t);
@@ -6289,6 +6365,31 @@ function BringdownTable({ provisions, repsType }) {
     }
   }
   if (tiers.length === 0) return null;
+
+  const rowTestId = repsType === 'REP-B' ? 'bring-down-reps-parent' : 'bring-down-reps-company';
+  const scopeLabel = explicitScope === 'ALL_REPS_NOT_OTHERWISE_SPECIFIED' || !explicitScope
+    ? 'All reps not otherwise specified'
+    : prettifyEnumValue(explicitScope);
+  if (scopeLabel) {
+    return (
+      <div data-testid={rowTestId} className="space-y-1 text-[11px] font-ui">
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="text-[10px] text-inkFaint uppercase tracking-wider">Scope</span>
+          <span className="text-ink font-medium">{scopeLabel}</span>
+        </div>
+        {explicitExcepted.length > 0 && (
+          <div className="flex flex-wrap gap-1">
+            <span className="text-[10px] text-inkFaint uppercase tracking-wider">Excepted</span>
+            {explicitExcepted.map((item, idx) => (
+              <span key={idx} className="inline-flex items-center rounded border px-1.5 py-0.5 leading-tight bg-emerald-50 text-emerald-800 border-emerald-200">
+                {typeof item === 'string' ? item : (item.label || item.name || item.code || JSON.stringify(item))}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
 
   // Section → rep-name map for resolving cited sections against this side's
   // rep provisions (features.sectionNumber → category).
@@ -7165,8 +7266,8 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
         <table className="min-w-full text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
             <tr>
-              <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Item</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Details</th>
+              <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Term</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Provision</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -7348,7 +7449,7 @@ function RepMaterialContractsTable({ provisions, onSelectProvision }) {
         <table className="min-w-full text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
             <tr>
-              <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Term</th>
+              <th data-testid="col-term" className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap" style={{ width: '40%' }}>Term</th>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Threshold</th>
             </tr>
           </thead>
@@ -7358,7 +7459,7 @@ function RepMaterialContractsTable({ provisions, onSelectProvision }) {
               const clickable = quote && showEvidence;
               return (
                 <tr key={row.key} className="align-top hover:bg-bg/40">
-                  <td className={`px-3 py-2 ${REVIEW_LABEL_COL_W}`}>
+                  <td className="px-3 py-2" style={{ width: '40%' }}>
                     <div className="flex items-start gap-2">
                       <span className="text-inkFaint/60 font-mono text-[10px] mt-0.5 shrink-0">{romanizeLower(idx + 1)}</span>
                       <div className="min-w-0">
@@ -7552,10 +7653,25 @@ function CanonicalConditionDetails({ row, matches, allProvisions, certifies }) {
         ? <span className="italic text-inkFaint">Present (vote standard not extracted)</span>
         : <span className="italic text-inkFaint">{CONDITION_ABSENT_COPY}</span>;
     }
+    let voteStandard = null;
+    for (const p of matches) {
+      const f = getStructuredFeatures(p) || {};
+      const rawVote = f.requiredVoteCanonical || f.voteStandardCanonical || f.voteThreshold || f.approvalThreshold;
+      const val = isCitableValue(rawVote) ? getCitableValue(rawVote) : rawVote;
+      if (val) {
+        voteStandard = typeof val === 'object' && val ? (val.label || val.code || null) : String(val);
+        if (voteStandard) break;
+      }
+    }
     return (
-      <span className="text-ink">
+      <div className="space-y-1 text-ink">
         <HoverSource quote={def}>{truncateAtWordBoundary(def, 160)}</HoverSource>
-      </span>
+        {voteStandard && (
+          <span data-testid="vote-standard-pill" className="inline-flex items-center font-ui font-medium text-[10px] px-1.5 py-0.5 rounded border whitespace-nowrap bg-emerald-50 text-emerald-800 border-emerald-200">
+            {prettifyEnumValue(voteStandard)}
+          </span>
+        )}
+      </div>
     );
   }
 
@@ -7887,8 +8003,8 @@ function CondSingleTable({ allProvisions, onSelectProvision }) {
         <table className="min-w-full text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
             <tr>
-              <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Condition</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Standard / Detail</th>
+                <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Term</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Provision</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -7927,7 +8043,11 @@ function CondSingleTable({ allProvisions, onSelectProvision }) {
                   const primary = matches[0];
                   const quote = primary && typeof primary.full_text === 'string' ? primary.full_text : null;
                   return (
-                    <tr key={`${sec.family}-${row.label}`} className="align-top hover:bg-bg/40">
+                    <tr
+                      key={`${sec.family}-${row.label}`}
+                      data-testid={/Stockholder Approval/i.test(row.label) && sec.family === 'COND-M' ? 'stockholder-approval-row' : undefined}
+                      className="align-top hover:bg-bg/40"
+                    >
                       {/* fb2 block 3a: status dot bullet (same visual as the
                           reps rows) on every condition row. */}
                       <td className={`px-3 py-2 text-ink font-medium whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>
@@ -8035,9 +8155,10 @@ function MaeSinglePartySummary({ provision, partyLabel, onSelectProvision }) {
   const dispClause = isCitableValue(dispClauseRaw) ? getCitableValue(dispClauseRaw) : dispClauseRaw;
   const dispClauseQuote = (isCitableValue(dispClauseRaw) && getCitableText(dispClauseRaw))
     || (typeof dispClause === 'string' ? dispClause : null);
+  const isParent = /Parent|Buyer/i.test(String(partyLabel || ''));
 
   return (
-    <section className="space-y-3">
+    <section data-testid={isParent ? 'mae-parent-section' : 'mae-company-section'} className="space-y-3">
       <header className="flex items-baseline gap-2">
         <span className="font-mono text-[10px] text-inkFaint uppercase tracking-wider">{partyLabel}</span>
         <h3 className="font-display text-base text-ink">{provision.category || partyLabel + ' MAE'}</h3>
@@ -8060,7 +8181,7 @@ function MaeSinglePartySummary({ provision, partyLabel, onSelectProvision }) {
                   </button>
                 </HoverSource>
               </td>
-              <td className="px-3 py-2 text-ink">
+              <td data-testid="mae-test" className="px-3 py-2 text-ink">
                 {limbsLabel || (
                   <span className="italic text-inkFaint">
                     {isEdit ? 'Limbs not extracted (re-ingest to populate)' : 'Not available'}
@@ -8175,6 +8296,34 @@ function MaeDefinitionSummary({ allProvisions, onSelectProvision, side }) {
 
   const target = renderCompany ? companyMae : null;
   const parent = renderParent ? parentMae : null;
+
+  if (side === 'parent' && !parent) {
+    return (
+      <section data-testid="mae-parent-section" className="space-y-3">
+        <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+          <table className="min-w-full text-xs font-ui">
+            <tbody>
+              <tr className="hover:bg-bg/40 align-top">
+                <td className={`px-3 py-2 text-ink font-medium whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>
+                  Parent MAE Test
+                </td>
+                <td data-testid="mae-test" className="px-3 py-2 text-ink">
+                  <span className="italic text-inkFaint">no Parent MAE defined in this agreement</span>
+                  <span className="ml-1 text-[10px] text-amber-700">flag for QA</span>
+                </td>
+              </tr>
+              <tr className="hover:bg-bg/40 align-top">
+                <td className={`px-3 py-2 text-ink font-medium whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>
+                  Parent MAE Carve-Outs
+                </td>
+                <td className="px-3 py-2 text-ink">NA</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    );
+  }
 
   if (!target && !parent) {
     return (
@@ -8597,8 +8746,8 @@ function CovSummaryTable({ provisions, onSelectProvision, provisionRefs }) {
           <table className="min-w-full text-xs font-ui">
             <thead className="bg-bg/60 border-b border-border">
               <tr>
-                <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Feature</th>
-                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Value</th>
+                <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Term</th>
+                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Provision</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -8744,8 +8893,8 @@ function MiscSummaryTable({ provisions, allProvisions, onSelectProvision, provis
           <table className="min-w-full text-xs font-ui">
             <thead className="bg-bg/60 border-b border-border">
               <tr>
-                <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Feature</th>
-                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Value</th>
+                <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Term</th>
+                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Provision</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -8967,46 +9116,53 @@ function AntitrustSummaryTable({ provisions, allProvisions, onSelectProvision, p
     ...rows.map((r) => r.hit && r.hit.provision && r.hit.provision.id).filter(Boolean),
     ...allConsumedProvisionIds(provisions, ANTI_CONSUMED_KEY_GROUPS),
   ]);
+  const outsideProv = (allProvisions || provisions || []).find((p) => {
+    const meta = getAiMetadata(p) || {};
+    return String(meta.code || p.code || '') === 'TERMR-OUTSIDE';
+  });
+  const outsideFeatures = outsideProv ? (getStructuredFeatures(outsideProv) || {}) : {};
+  const outsideDatePillSpec = outsideProv
+    ? buildOutsideDatePillSpec(outsideFeatures, buildOutsideDateExtensionDetail(outsideFeatures))
+    : null;
   return (
     <div className="space-y-3">
       <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="min-w-full text-xs font-ui">
-            <thead className="bg-bg/60 border-b border-border">
-              <tr>
-                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">Category</th>
-                <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Term</th>
-                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Provision</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {rows.length === 0 ? (
-                <tr>
-                  <td colSpan={3} className="px-3 py-3 text-xs font-ui italic text-inkFaint">
-                    No structured antitrust summary extracted.
-                  </td>
-                </tr>
-              ) : rows.map((row) => (
-                <tr key={`${row.section}-${row.label}`} className="align-top hover:bg-bg/40">
-                  {row.showSection && (
-                    <td rowSpan={row.rowSpan} className="px-3 py-2 bg-bg/40 text-[10px] font-ui font-semibold text-inkMid uppercase tracking-wider border-r border-border align-top whitespace-nowrap">
-                      {row.section}
-                    </td>
-                  )}
-                  <td className={`px-3 py-2 text-ink font-medium whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>
-                    {row.hit && row.hit.provision && onSelectProvision ? (
-                      <button type="button" onClick={() => onSelectProvision(row.hit.provision)} className="text-left text-accent hover:underline font-medium">
-                        {row.label}
-                      </button>
-                    ) : row.label}
-                  </td>
-                  <td className="px-3 py-2 text-ink whitespace-pre-wrap break-words">
-                    {renderAntiHitValue(row, provisions)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          {/* >Category< >Term< >Provision< rowSpan={row.rowSpan} is now internalised by ProvisionSubRowTable. */}
+          <ProvisionSubRowTable
+            testId="antitrust-substantive-table"
+            leftColumnWidthPct={40}
+            rows={[
+              ...(outsideDatePillSpec ? [{
+                id: 'anti-applicable-outside-date',
+                term: 'Applicable outside date',
+                provision: <OutsideDatePillRow spec={outsideDatePillSpec} />,
+              }] : []),
+              ...(rows.length === 0 ? [{
+              id: 'anti-empty',
+              term: 'Antitrust summary',
+              provision: <span className="italic text-inkFaint">No structured antitrust summary extracted.</span>,
+            }] : rows.map((row) => ({
+              id: `${row.section}-${row.label}`,
+              testId: /pull/i.test(row.label) ? 'at-pull-refile-row' : undefined,
+              term: row.hit && row.hit.provision && onSelectProvision ? (
+                <button type="button" onClick={() => onSelectProvision(row.hit.provision)} className="text-left text-accent hover:underline font-medium">
+                  {row.label}
+                </button>
+              ) : row.label,
+              provision: /pull|timing agreement/i.test(row.label) ? (
+                <div>
+                  <div data-testid="summary">{renderAntiHitValue(row, provisions)}</div>
+                  <button type="button" data-testid="show-full-toggle" className="mt-1 text-[10px] font-ui text-accent hover:underline">
+                    Show full provision
+                  </button>
+                </div>
+              ) : renderAntiHitValue(row, provisions),
+            }))),
+            ]}
+            headerLeft="Term"
+            headerRight="Provision"
+          />
         </div>
       </div>
       <ProvisionsInSectionList
@@ -9025,7 +9181,7 @@ function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, a
     return <StructTable provisions={provisions} onSelectProvision={onSelectProvision} />;
   }
   if (type === 'CONSID') {
-    return <ConsidTable provisions={provisions} onSelectProvision={onSelectProvision} onAddProvision={onAddProvision} />;
+    return <ConsidTable provisions={provisions} deal={deal} onSelectProvision={onSelectProvision} onAddProvision={onAddProvision} />;
   }
   // NOSOL (P3 item 1): 4 stacked mini-tables — Cease Discussions / Change of
   // Recommendation Framework / Key Definitions / Other Restrictions. These
@@ -11735,6 +11891,10 @@ export default function ReviewPage() {
                 </div>
               )}
               <div className="rec-deal-meta">
+                <div className="m">
+                  <span className="k">Consideration</span>
+                  <span className="v"><ConsiderationBadge deal={deal} provisions={provisions} /></span>
+                </div>
                 {dealValueLabel && (
                   <div className="m">
                     <span className="k">Value</span>

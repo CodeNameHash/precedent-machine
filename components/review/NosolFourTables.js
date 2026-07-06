@@ -42,7 +42,7 @@ function withUnitSuffix(hit, unit) {
 
 /* ─── P3 item 1: NOSOL — 4 stacked mini-tables ──
  *  Cease-Discussions / Change-of-Recommendation Framework / Key Definitions /
- *  Other Restrictions. Each is a 2-column (Feature | Value) bringdown-style
+ *  Other Restrictions. Each is a 2-column (Term | Provision) bringdown-style
  *  mini-table. All rows use the same row-resolution logic as
  *  CategoryFeatureSummaryTable: scan provisions for the first non-empty
  *  feature among `keys`. Empty rows render the "Not present" italic
@@ -218,8 +218,8 @@ function NosolMiniTable({ title, spec, provisions, headerNote, collapsibleDefini
         <table className="min-w-full text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
             <tr>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">Feature</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Value</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">Term</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Provision</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
