@@ -13,7 +13,7 @@ function coverageProblems(rows) {
   const excess = rows.filter((row) => {
     if (FEATURES[row.key]) return false;
     if (row.review_flag === 'REQUIRES_REVIEWER_DECISION') return false;
-    return !['appendix-a-priority', 'ioc-categories'].includes(row.origin);
+    return !['appendix-a-priority', 'ioc-categories', 'reviewer-added'].includes(row.origin);
   }).map((row) => row.key);
   return { missing, duplicated, excess };
 }

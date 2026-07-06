@@ -116,15 +116,30 @@ function scrollNearViewportEdge(event) {
   if (window.innerHeight - event.clientY < edge) window.scrollBy({ top: step, behavior: 'auto' });
 }
 
-function buildRows(fields, decisions) {
+function compareFields(a, b, decisions, sortMode) {
+  const aDecision = decisions[a.key];
+  const bDecision = decisions[b.key];
+  const aName = reviewName(a, aDecision);
+  const bName = reviewName(b, bDecision);
+  if (sortMode === 'name-asc') return aName.localeCompare(bName) || a.key.localeCompare(b.key);
+  if (sortMode === 'name-desc') return bName.localeCompare(aName) || a.key.localeCompare(b.key);
+  return groupName(a, aDecision).localeCompare(groupName(b, bDecision))
+    || aName.localeCompare(bName)
+    || a.key.localeCompare(b.key);
+}
+
+function suggestionLabel(suggestion) {
+  if (!suggestion) return null;
+  if (suggestion.decision === 'merge') return `merge -> ${readableKey(suggestion.merge_into)}`;
+  if (suggestion.decision === 'reject') return 'remove';
+  if (suggestion.decision === 'defer') return `defer -> ${suggestion.defer_to_phase}`;
+  if (suggestion.decision === 'rename') return `rename -> ${readableKey(suggestion.rename_to)}`;
+  return suggestion.decision;
+}
+
+function buildRows(fields, decisions, sortMode) {
   const childrenByTarget = new Map();
-  const sortedFields = [...fields].sort((a, b) => {
-    const aDecision = decisions[a.key];
-    const bDecision = decisions[b.key];
-    return groupName(a, aDecision).localeCompare(groupName(b, bDecision))
-      || reviewName(a, aDecision).localeCompare(reviewName(b, bDecision))
-      || a.key.localeCompare(b.key);
-  });
+  const sortedFields = [...fields].sort((a, b) => compareFields(a, b, decisions, sortMode));
   for (const field of fields) {
     const target = decisions[field.key]?.decision === 'merge' ? decisions[field.key].merge_into : null;
     if (!target) continue;
@@ -141,7 +156,7 @@ function buildRows(fields, decisions) {
   for (const field of sortedFields) {
     if (childKeys.has(field.key)) continue;
     rows.push({ field, depth: 0 });
-    const children = [...(childrenByTarget.get(field.key) || [])].sort((a, b) => reviewName(a, decisions[a.key]).localeCompare(reviewName(b, decisions[b.key])));
+    const children = [...(childrenByTarget.get(field.key) || [])].sort((a, b) => compareFields(a, b, decisions, sortMode));
     for (const child of children) {
       rows.push({ field: child, depth: 1, parentKey: field.key });
     }
@@ -151,7 +166,7 @@ function buildRows(fields, decisions) {
     if (fields.some((field) => field.key === target)) continue;
     const virtual = { key: target, label: 'External merge target' };
     rows.push({ field: virtual, depth: 0, virtual: true });
-    for (const child of [...children].sort((a, b) => reviewName(a, decisions[a.key]).localeCompare(reviewName(b, decisions[b.key])))) {
+    for (const child of [...children].sort((a, b) => compareFields(a, b, decisions, sortMode))) {
       rows.push({ field: child, depth: 1, parentKey: target });
     }
   }
@@ -159,22 +174,23 @@ function buildRows(fields, decisions) {
   return rows;
 }
 
-export default function RegistryMergeBoard({ fields, decisions, onDecision }) {
+export default function RegistryMergeBoard({ fields, decisions, suggestions = {}, onDecision }) {
   const [draggedKey, setDraggedKey] = useState(null);
-  const [savingKey, setSavingKey] = useState(null);
+  const [savingKey, updateSavingKey] = useState(null);
   const [error, setError] = useState(null);
+  const [sortMode, setSortMode] = useState('group');
   const byKey = useMemo(() => new Map(fields.map((field) => [field.key, field])), [fields]);
-  const rows = useMemo(() => buildRows(fields, decisions), [fields, decisions]);
+  const rows = useMemo(() => buildRows(fields, decisions, sortMode), [fields, decisions, sortMode]);
 
   async function save(payload) {
-    setSavingKey(payload.key);
+    updateSavingKey(payload.key);
     setError(null);
     try {
       await onDecision(payload);
     } catch (err) {
       setError(err.message || 'Decision save failed');
     } finally {
-      setSavingKey(null);
+      updateSavingKey(null);
     }
   }
 
@@ -193,17 +209,46 @@ export default function RegistryMergeBoard({ fields, decisions, onDecision }) {
     });
   }
 
+  async function applySuggestion(field, suggestion) {
+    if (!suggestion) return;
+    await save({
+      key: field.key,
+      decision: suggestion.decision,
+      merge_into: suggestion.merge_into || '',
+      rename_to: suggestion.rename_to || field.key,
+      defer_to_phase: suggestion.defer_to_phase || '',
+    });
+  }
+
   return (
     <div data-testid="registry-merge-board">
       {error && <div className="mb-3 text-xs font-ui text-seller">{error}</div>}
+      <div className="mb-2 flex flex-wrap items-center gap-2 text-xs font-ui">
+        <span className="text-inkFaint">Sort</span>
+        {[
+          ['group', 'Group'],
+          ['name-asc', 'Name A-Z'],
+          ['name-desc', 'Name Z-A'],
+        ].map(([value, label]) => (
+          <button
+            key={value}
+            type="button"
+            onClick={() => setSortMode(value)}
+            className={`rounded border px-2 py-1 ${sortMode === value ? 'border-accent bg-accent text-white' : 'border-border bg-white text-inkLight hover:border-accent hover:text-ink'}`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
       <div className="overflow-x-auto rounded border border-border bg-white">
-        <div className="grid min-w-[1180px] grid-cols-[minmax(240px,1.15fr)_180px_minmax(280px,1.35fr)_120px_190px_96px] border-b border-border bg-bg/60 px-3 py-2 text-[10px] font-ui uppercase tracking-wide text-inkFaint">
+        <div className="grid min-w-[1320px] grid-cols-[minmax(240px,1.1fr)_210px_112px_170px_minmax(250px,1.1fr)_120px_190px] border-b border-border bg-bg/60 px-3 py-2 text-[10px] font-ui uppercase tracking-wide text-inkFaint">
           <div>Name</div>
+          <div>Suggested</div>
+          <div>Actions</div>
           <div>Group</div>
           <div>Label</div>
           <div>Status</div>
           <div>Merge target</div>
-          <div>Actions</div>
         </div>
         <div className="divide-y divide-border">
           {rows.map(({ field, depth, parentKey, virtual }) => {
@@ -213,6 +258,20 @@ export default function RegistryMergeBoard({ fields, decisions, onDecision }) {
             const dragging = draggedKey === field.key;
             const name = reviewName(field, decision ? decisions[field.key] : null);
             const group = groupName(field, decision ? decisions[field.key] : null);
+            const suggestion = !decision ? suggestions[field.key] : null;
+            const suggested = suggestionLabel(suggestion);
+            const gone = decision === 'merge' || decision === 'reject' || decision === 'defer';
+            const approved = decision === 'approve';
+            const rowTone = dragging
+              ? 'bg-accent/10 opacity-70'
+              : approved
+                ? 'border-l-4 border-buyer bg-buyer/10 hover:bg-buyer/15'
+                : gone
+                  ? 'bg-bg/50 text-inkFaint opacity-70'
+                  : depth
+                    ? 'bg-bg/30'
+                    : 'bg-white hover:bg-bg/40';
+            const rowSize = depth ? 'min-h-[30px] py-1 text-[11px]' : 'min-h-[38px] py-1.5 text-xs';
             return (
               <div
                 key={`${parentKey || 'root'}:${field.key}`}
@@ -232,26 +291,28 @@ export default function RegistryMergeBoard({ fields, decisions, onDecision }) {
                   event.preventDefault();
                   dropOn(field.key);
                 }}
-                className={`grid min-h-[38px] min-w-[1180px] grid-cols-[minmax(240px,1.15fr)_180px_minmax(280px,1.35fr)_120px_190px_96px] items-center gap-3 px-3 py-1.5 text-xs transition-colors ${
-                  dragging ? 'bg-accent/10 opacity-70' : depth ? 'bg-bg/30' : 'bg-white hover:bg-bg/40'
-                }`}
+                className={`grid min-w-[1320px] grid-cols-[minmax(240px,1.1fr)_210px_112px_170px_minmax(250px,1.1fr)_120px_190px] items-center gap-3 px-3 transition-colors ${rowSize} ${rowTone}`}
               >
-                <div className="flex min-w-0 items-center gap-2">
+                <div className="flex min-w-0 items-center gap-2" style={{ paddingLeft: depth ? 18 : 0 }}>
                   <span className="w-4 shrink-0 text-inkFaint">{depth ? '->' : '::'}</span>
                   <div className="min-w-0">
-                    <div className={`truncate font-ui font-semibold ${virtual ? 'text-inkFaint' : 'text-ink'}`}>{name}</div>
-                    {!virtual && <div className="truncate text-[10px] font-ui text-inkFaint">{field.key}</div>}
+                    <div className={`truncate font-ui font-semibold ${virtual || gone ? 'text-inkFaint' : approved ? 'text-buyer' : 'text-ink'}`}>{name}</div>
+                    {!virtual && <div className={`truncate font-ui text-inkFaint ${depth ? 'text-[9px]' : 'text-[10px]'}`}>{field.key}</div>}
                   </div>
                 </div>
-                <div className="truncate font-ui text-[11px] text-inkLight" title={group}>{group}</div>
-                <div className="truncate text-inkLight" title={shortLabel(field)}>{shortLabel(field)}</div>
-                <div className="flex items-center gap-1">
-                  <FlagBadge value={decisionTone(decision)} />
-                </div>
-                <div className="truncate text-inkFaint" title={mergeInto}>
-                  {decision === 'merge' ? readableKey(mergeInto) : mergeInto ? `suggested: ${readableKey(mergeInto)}` : '-'}
+                <div className="truncate font-ui text-[11px] text-inkLight" title={suggestion?.reason || ''}>
+                  {suggested || '-'}
                 </div>
                 <div className="flex items-center justify-end gap-1">
+                  <button
+                    type="button"
+                    title={suggestion?.reason ? `Apply suggestion: ${suggestion.reason}` : 'No suggestion'}
+                    disabled={saving || virtual || !suggestion}
+                    onClick={() => applySuggestion(field, suggestion)}
+                    className="h-7 w-7 rounded border border-border text-xs font-ui text-accent hover:border-accent disabled:opacity-30"
+                  >
+                    S
+                  </button>
                   <button
                     type="button"
                     title="Approve"
@@ -270,6 +331,14 @@ export default function RegistryMergeBoard({ fields, decisions, onDecision }) {
                   >
                     R
                   </button>
+                </div>
+                <div className="truncate font-ui text-[11px] text-inkLight" title={group}>{group}</div>
+                <div className="truncate text-inkLight" title={shortLabel(field)}>{shortLabel(field)}</div>
+                <div className="flex items-center gap-1">
+                  <FlagBadge value={decisionTone(decision)} />
+                </div>
+                <div className="truncate text-inkFaint" title={mergeInto}>
+                  {decision === 'merge' ? readableKey(mergeInto) : mergeInto ? `suggested: ${readableKey(mergeInto)}` : '-'}
                 </div>
               </div>
             );

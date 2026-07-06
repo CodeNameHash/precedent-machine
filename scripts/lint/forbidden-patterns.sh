@@ -70,16 +70,44 @@ function changedFiles() {
   if (process.env.CHANGED_FILES) {
     return process.env.CHANGED_FILES.split(/\r?\n/).map(normalize).filter(Boolean);
   }
+  function diffNames(ref) {
+    return execFileSync('git', ['diff', '--name-only', ref], {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    })
+      .split(/\r?\n/)
+      .map(normalize)
+      .filter(Boolean);
+  }
   const refs = ['origin/main...HEAD', 'main...HEAD'];
   for (const ref of refs) {
     try {
-      return execFileSync('git', ['diff', '--name-only', ref], { encoding: 'utf8' })
-        .split(/\r?\n/)
-        .map(normalize)
-        .filter(Boolean);
+      return diffNames(ref);
     } catch (_) {
       // Try the next base ref.
     }
+  }
+  if (process.env.GITHUB_ACTIONS && process.env.GITHUB_BASE_REF && process.env.GITHUB_HEAD_REF) {
+    const base = process.env.GITHUB_BASE_REF;
+    const head = process.env.GITHUB_HEAD_REF;
+    try {
+      execFileSync('git', [
+        'fetch',
+        '--no-tags',
+        '--depth=200',
+        'origin',
+        `+refs/heads/${base}:refs/remotes/origin/${base}`,
+        `+refs/heads/${head}:refs/remotes/origin/${head}`,
+      ], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
+      return diffNames(`origin/${base}..origin/${head}`);
+    } catch (_) {
+      // Try the single-parent checkout fallback below.
+    }
+  }
+  try {
+    return diffNames('HEAD^1..HEAD');
+  } catch (_) {
+    // Fall back to a full scan below.
   }
   return walk(root).map((file) => file.rel);
 }

@@ -1,6 +1,1999 @@
 {
   "version": "reviewer-state-v1",
   "generated_from": "docs/market-registry/generated-v1.deduped.json",
-  "decisions": {},
-  "updated_at": null
+  "decisions": {
+    "carveouts": {
+      "key": "carveouts",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "carveouts",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:17:44.429Z"
+    },
+    "survivingEntity": {
+      "key": "survivingEntity",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "survivingEntity",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:18:27.731Z"
+    },
+    "stockholderListCovenant": {
+      "key": "stockholderListCovenant",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "stockholderListCovenant",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:18:31.994Z"
+    },
+    "section251h": {
+      "key": "section251h",
+      "decision": "merge",
+      "merge_into": "dealstructure",
+      "rename_to": "section251h",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:18:58.695Z"
+    },
+    "burdenCap": {
+      "key": "burdenCap",
+      "decision": "merge",
+      "merge_into": "divestitureCapDescription",
+      "rename_to": "burdenCap",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:43:35.061Z"
+    },
+    "burdenCommitment": {
+      "key": "burdenCommitment",
+      "decision": "merge",
+      "merge_into": "divestitureCapDescription",
+      "rename_to": "burdenCommitment",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:43:35.061Z"
+    },
+    "burdensomConditionDefined": {
+      "key": "burdensomConditionDefined",
+      "decision": "merge",
+      "merge_into": "divestitureInCondition",
+      "rename_to": "burdensomConditionDefined",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:43:35.061Z"
+    },
+    "burdensomeConditionScope": {
+      "key": "burdensomeConditionScope",
+      "decision": "merge",
+      "merge_into": "divestitureInCondition",
+      "rename_to": "burdensomeConditionScope",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:43:35.061Z"
+    },
+    "burdensomeConditionPresent": {
+      "key": "burdensomeConditionPresent",
+      "decision": "merge",
+      "merge_into": "divestitureInCondition",
+      "rename_to": "burdensomeConditionPresent",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:43:35.061Z"
+    },
+    "capDetail": {
+      "key": "capDetail",
+      "decision": "merge",
+      "merge_into": "divestitureCapDescription",
+      "rename_to": "capDetail",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:43:35.061Z"
+    },
+    "clearSkiesCompanyScope": {
+      "key": "clearSkiesCompanyScope",
+      "decision": "merge",
+      "merge_into": "clearSkiesCompany",
+      "rename_to": "clearSkiesCompanyScope",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:29:42.923Z"
+    },
+    "clearSkiesParentScope": {
+      "key": "clearSkiesParentScope",
+      "decision": "merge",
+      "merge_into": "clearSkiesParent",
+      "rename_to": "clearSkiesParentScope",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:29:44.280Z"
+    },
+    "divestitureCapDescription": {
+      "key": "divestitureCapDescription",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "divestitureCapDescription",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:43:35.061Z"
+    },
+    "hsrFilingDeadlineBusinessDays": {
+      "key": "hsrFilingDeadlineBusinessDays",
+      "decision": "merge",
+      "merge_into": "hsrFilingDeadline",
+      "rename_to": "hsrFilingDeadlineBusinessDays",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "timingAgreementsProhibited": {
+      "key": "timingAgreementsProhibited",
+      "decision": "merge",
+      "merge_into": "timingAgreement",
+      "rename_to": "timingAgreementsProhibited",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "substantialComplianceDeadlineDays": {
+      "key": "substantialComplianceDeadlineDays",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "substantialComplianceDeadlineDays",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "regulatoryStrategyControl": {
+      "key": "regulatoryStrategyControl",
+      "decision": "merge",
+      "merge_into": "controllingParty",
+      "rename_to": "regulatoryStrategyControl",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "mergerForm": {
+      "key": "mergerForm",
+      "decision": "merge",
+      "merge_into": "dealstructure",
+      "rename_to": "mergerForm",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:36:05.216Z"
+    },
+    "shortFormMergerMechanic": {
+      "key": "shortFormMergerMechanic",
+      "decision": "merge",
+      "merge_into": "dealstructure",
+      "rename_to": "shortFormMergerMechanic",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:36:09.779Z"
+    },
+    "perShareAmount": {
+      "key": "perShareAmount",
+      "decision": "rename",
+      "merge_into": null,
+      "rename_to": "perShareConsideration",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:39:59.842Z"
+    },
+    "offerConsideration": {
+      "key": "offerConsideration",
+      "decision": "merge",
+      "merge_into": "perShareConsideration",
+      "rename_to": "offerConsideration",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:39:59.842Z"
+    },
+    "offerConditionsReference": {
+      "key": "offerConditionsReference",
+      "decision": "merge",
+      "merge_into": "tenderOfferMinimumCondition",
+      "rename_to": "offerConditionsReference",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:39:59.842Z"
+    },
+    "dealStructure": {
+      "key": "dealStructure",
+      "decision": "rename",
+      "merge_into": null,
+      "rename_to": "dealstructure",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:39:59.842Z"
+    },
+    "tenderOffer": {
+      "key": "tenderOffer",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "tenderOffer",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:39:59.842Z"
+    },
+    "willfulBreachRequiresActualKnowledge": {
+      "key": "willfulBreachRequiresActualKnowledge",
+      "decision": "merge",
+      "merge_into": "willfulBreachDefinition",
+      "rename_to": "willfulBreachRequiresActualKnowledge",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:40:28.655Z"
+    },
+    "willfulBreachLimitedToMaterial": {
+      "key": "willfulBreachLimitedToMaterial",
+      "decision": "merge",
+      "merge_into": "willfulBreachDefinition",
+      "rename_to": "willfulBreachLimitedToMaterial",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:40:30.638Z"
+    },
+    "willfulBreachCoversOmissions": {
+      "key": "willfulBreachCoversOmissions",
+      "decision": "merge",
+      "merge_into": "willfulBreachLimitedToMaterial",
+      "rename_to": "willfulBreachCoversOmissions",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:40:32.105Z"
+    },
+    "term": {
+      "key": "term",
+      "decision": "defer",
+      "merge_into": null,
+      "rename_to": "term",
+      "defer_to_phase": "CVR_PROVISIONS",
+      "updated_at": "2026-07-06T21:41:04.001Z"
+    },
+    "transferable": {
+      "key": "transferable",
+      "decision": "defer",
+      "merge_into": null,
+      "rename_to": "transferable",
+      "defer_to_phase": "CVR_PROVISIONS",
+      "updated_at": "2026-07-06T21:41:04.001Z"
+    },
+    "maxPayment": {
+      "key": "maxPayment",
+      "decision": "defer",
+      "merge_into": null,
+      "rename_to": "maxPayment",
+      "defer_to_phase": "CVR_PROVISIONS",
+      "updated_at": "2026-07-06T21:41:04.001Z"
+    },
+    "milestones": {
+      "key": "milestones",
+      "decision": "defer",
+      "merge_into": null,
+      "rename_to": "milestones",
+      "defer_to_phase": "CVR_PROVISIONS",
+      "updated_at": "2026-07-06T21:41:04.001Z"
+    },
+    "cvrMilestonePayments": {
+      "key": "cvrMilestonePayments",
+      "decision": "defer",
+      "merge_into": null,
+      "rename_to": "cvrMilestonePayments",
+      "defer_to_phase": "CVR_PROVISIONS",
+      "updated_at": "2026-07-06T21:41:04.001Z"
+    },
+    "value": {
+      "key": "value",
+      "decision": "merge",
+      "merge_into": "exchangeRatio",
+      "rename_to": "value",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:41:04.001Z"
+    },
+    "materialityQualifier": {
+      "key": "materialityQualifier",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "materialityQualifier",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:41:18.486Z"
+    },
+    "materialityQualifiers": {
+      "key": "materialityQualifiers",
+      "decision": "merge",
+      "merge_into": "materialityQualifier",
+      "rename_to": "materialityQualifiers",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:04:00.000Z"
+    },
+    "vestingStatus": {
+      "key": "vestingStatus",
+      "decision": "merge",
+      "merge_into": "instrumentVesting",
+      "rename_to": "vestingStatus",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:41:40.433Z"
+    },
+    "maeStandaloneCondition": {
+      "key": "maeStandaloneCondition",
+      "decision": "merge",
+      "merge_into": "maeConditionStandalone",
+      "rename_to": "maeStandaloneCondition",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:44:26.844Z"
+    },
+    "burdenBaseline": {
+      "key": "burdenBaseline",
+      "decision": "merge",
+      "merge_into": "divestitureCapDescription",
+      "rename_to": "burdenBaseline",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:43:35.061Z"
+    },
+    "divestitureCap": {
+      "key": "divestitureCap",
+      "decision": "merge",
+      "merge_into": "divestitureCapDescription",
+      "rename_to": "divestitureCap",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:43:35.061Z"
+    },
+    "rubric.anti_burden.burden_cap": {
+      "key": "rubric.anti_burden.burden_cap",
+      "decision": "merge",
+      "merge_into": "divestitureCapDescription",
+      "rename_to": "rubric.anti_burden.burden_cap",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:43:35.061Z"
+    },
+    "rubric.anti_burden.cap_detail": {
+      "key": "rubric.anti_burden.cap_detail",
+      "decision": "merge",
+      "merge_into": "divestitureCapDescription",
+      "rename_to": "rubric.anti_burden.cap_detail",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:43:35.061Z"
+    },
+    "rubric.anti_burden.divestiture_cap": {
+      "key": "rubric.anti_burden.divestiture_cap",
+      "decision": "merge",
+      "merge_into": "divestitureCapDescription",
+      "rename_to": "rubric.anti_burden.divestiture_cap",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:43:35.061Z"
+    },
+    "rubric.anti_burden.divestiture_cap_description": {
+      "key": "rubric.anti_burden.divestiture_cap_description",
+      "decision": "merge",
+      "merge_into": "divestitureCapDescription",
+      "rename_to": "rubric.anti_burden.divestiture_cap_description",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:43:35.061Z"
+    },
+    "rubric.anti_efforts.cap_detail": {
+      "key": "rubric.anti_efforts.cap_detail",
+      "decision": "merge",
+      "merge_into": "divestitureCapDescription",
+      "rename_to": "rubric.anti_efforts.cap_detail",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:43:35.061Z"
+    },
+    "rubric.anti.burden_cap": {
+      "key": "rubric.anti.burden_cap",
+      "decision": "merge",
+      "merge_into": "divestitureCapDescription",
+      "rename_to": "rubric.anti.burden_cap",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:43:35.061Z"
+    },
+    "rubric.anti.cap_detail": {
+      "key": "rubric.anti.cap_detail",
+      "decision": "merge",
+      "merge_into": "divestitureCapDescription",
+      "rename_to": "rubric.anti.cap_detail",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:43:35.061Z"
+    },
+    "rubric.anti.divestiture_cap": {
+      "key": "rubric.anti.divestiture_cap",
+      "decision": "merge",
+      "merge_into": "divestitureCapDescription",
+      "rename_to": "rubric.anti.divestiture_cap",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:43:35.061Z"
+    },
+    "rubric.anti.divestiture_cap_description": {
+      "key": "rubric.anti.divestiture_cap_description",
+      "decision": "merge",
+      "merge_into": "divestitureCapDescription",
+      "rename_to": "rubric.anti.divestiture_cap_description",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:43:35.061Z"
+    },
+    "burdensomeConditionInTerminationTriggers": {
+      "key": "burdensomeConditionInTerminationTriggers",
+      "decision": "merge",
+      "merge_into": "divestitureInCondition",
+      "rename_to": "burdensomeConditionInTerminationTriggers",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:43:35.061Z"
+    },
+    "deal.antitrust.burdensomeConditionDefined": {
+      "key": "deal.antitrust.burdensomeConditionDefined",
+      "decision": "merge",
+      "merge_into": "divestitureInCondition",
+      "rename_to": "deal.antitrust.burdensomeConditionDefined",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:43:35.061Z"
+    },
+    "deal.antitrust.burdensomeConditionPresent": {
+      "key": "deal.antitrust.burdensomeConditionPresent",
+      "decision": "merge",
+      "merge_into": "divestitureInCondition",
+      "rename_to": "deal.antitrust.burdensomeConditionPresent",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:43:35.061Z"
+    },
+    "deal.antitrust.burdensomeConditionScope": {
+      "key": "deal.antitrust.burdensomeConditionScope",
+      "decision": "merge",
+      "merge_into": "divestitureInCondition",
+      "rename_to": "deal.antitrust.burdensomeConditionScope",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:43:35.061Z"
+    },
+    "rubric.anti_burden.burdensom_condition_defined": {
+      "key": "rubric.anti_burden.burdensom_condition_defined",
+      "decision": "merge",
+      "merge_into": "divestitureInCondition",
+      "rename_to": "rubric.anti_burden.burdensom_condition_defined",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:43:35.061Z"
+    },
+    "rubric.anti_burden.burdensome_condition_in_termination_triggers": {
+      "key": "rubric.anti_burden.burdensome_condition_in_termination_triggers",
+      "decision": "merge",
+      "merge_into": "divestitureInCondition",
+      "rename_to": "rubric.anti_burden.burdensome_condition_in_termination_triggers",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:43:35.061Z"
+    },
+    "rubric.anti_burden.burdensome_condition_present": {
+      "key": "rubric.anti_burden.burdensome_condition_present",
+      "decision": "merge",
+      "merge_into": "divestitureInCondition",
+      "rename_to": "rubric.anti_burden.burdensome_condition_present",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:43:35.061Z"
+    },
+    "rubric.anti_burden.burdensome_condition_scope": {
+      "key": "rubric.anti_burden.burdensome_condition_scope",
+      "decision": "merge",
+      "merge_into": "divestitureInCondition",
+      "rename_to": "rubric.anti_burden.burdensome_condition_scope",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:43:35.061Z"
+    },
+    "rubric.anti.burdensom_condition_defined": {
+      "key": "rubric.anti.burdensom_condition_defined",
+      "decision": "merge",
+      "merge_into": "divestitureInCondition",
+      "rename_to": "rubric.anti.burdensom_condition_defined",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:43:35.061Z"
+    },
+    "rubric.anti.burdensome_condition_in_termination_triggers": {
+      "key": "rubric.anti.burdensome_condition_in_termination_triggers",
+      "decision": "merge",
+      "merge_into": "divestitureInCondition",
+      "rename_to": "rubric.anti.burdensome_condition_in_termination_triggers",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:43:35.061Z"
+    },
+    "rubric.cond_b.burdensome_condition_present": {
+      "key": "rubric.cond_b.burdensome_condition_present",
+      "decision": "merge",
+      "merge_into": "divestitureInCondition",
+      "rename_to": "rubric.cond_b.burdensome_condition_present",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:43:35.061Z"
+    },
+    "rubric.cond_b.burdensome_condition_scope": {
+      "key": "rubric.cond_b.burdensome_condition_scope",
+      "decision": "merge",
+      "merge_into": "divestitureInCondition",
+      "rename_to": "rubric.cond_b.burdensome_condition_scope",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:43:35.061Z"
+    },
+    "rubric.cond_m.burdensome_condition_present": {
+      "key": "rubric.cond_m.burdensome_condition_present",
+      "decision": "merge",
+      "merge_into": "divestitureInCondition",
+      "rename_to": "rubric.cond_m.burdensome_condition_present",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:43:35.061Z"
+    },
+    "rubric.cond_m.burdensome_condition_scope": {
+      "key": "rubric.cond_m.burdensome_condition_scope",
+      "decision": "merge",
+      "merge_into": "divestitureInCondition",
+      "rename_to": "rubric.cond_m.burdensome_condition_scope",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:43:35.061Z"
+    },
+    "divestitureInCondition": {
+      "key": "divestitureInCondition",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "divestitureInCondition",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:43:35.061Z"
+    },
+    "hsrClearance": {
+      "key": "hsrClearance",
+      "decision": "merge",
+      "merge_into": "regulatoryApprovals",
+      "rename_to": "hsrClearance",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:44:26.844Z"
+    },
+    "approvalDefinition": {
+      "key": "approvalDefinition",
+      "decision": "merge",
+      "merge_into": "stockholderApprovalRequired",
+      "rename_to": "approvalDefinition",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:44:26.844Z"
+    },
+    "deal.conditions.stockholderVote": {
+      "key": "deal.conditions.stockholderVote",
+      "decision": "merge",
+      "merge_into": "stockholderApprovalRequired",
+      "rename_to": "deal.conditions.stockholderVote",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:44:26.844Z"
+    },
+    "deal.conditions.proxy": {
+      "key": "deal.conditions.proxy",
+      "decision": "merge",
+      "merge_into": "stockholderApprovalRequired",
+      "rename_to": "deal.conditions.proxy",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:44:26.844Z"
+    },
+    "deal.conditions.antitrust": {
+      "key": "deal.conditions.antitrust",
+      "decision": "merge",
+      "merge_into": "regulatoryApprovals",
+      "rename_to": "deal.conditions.antitrust",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:44:26.844Z"
+    },
+    "deal.conditions.noMAE": {
+      "key": "deal.conditions.noMAE",
+      "decision": "merge",
+      "merge_into": "maeConditionStandalone",
+      "rename_to": "deal.conditions.noMAE",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:44:26.844Z"
+    },
+    "deal.conditions.repsBringDown": {
+      "key": "deal.conditions.repsBringDown",
+      "decision": "merge",
+      "merge_into": "bringDownTiers",
+      "rename_to": "deal.conditions.repsBringDown",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:44:26.844Z"
+    },
+    "deal.conditions.covenantsBringDown": {
+      "key": "deal.conditions.covenantsBringDown",
+      "decision": "merge",
+      "merge_into": "covenantComplianceStandard",
+      "rename_to": "deal.conditions.covenantsBringDown",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:44:26.844Z"
+    },
+    "rubric.cond_b.government_proceeding_condition_present": {
+      "key": "rubric.cond_b.government_proceeding_condition_present",
+      "decision": "merge",
+      "merge_into": "governmentProceedingConditionPresent",
+      "rename_to": "rubric.cond_b.government_proceeding_condition_present",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:44:26.844Z"
+    },
+    "rubric.cond_m.government_proceeding_condition_present": {
+      "key": "rubric.cond_m.government_proceeding_condition_present",
+      "decision": "merge",
+      "merge_into": "governmentProceedingConditionPresent",
+      "rename_to": "rubric.cond_m.government_proceeding_condition_present",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:44:26.844Z"
+    },
+    "rubric.cond_b.mae_condition_standalone": {
+      "key": "rubric.cond_b.mae_condition_standalone",
+      "decision": "merge",
+      "merge_into": "maeConditionStandalone",
+      "rename_to": "rubric.cond_b.mae_condition_standalone",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:44:26.844Z"
+    },
+    "rubric.cond_b.main_condition": {
+      "key": "rubric.cond_b.main_condition",
+      "decision": "merge",
+      "merge_into": "mainCondition",
+      "rename_to": "rubric.cond_b.main_condition",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:44:26.844Z"
+    },
+    "rubric.cond_m.main_condition": {
+      "key": "rubric.cond_m.main_condition",
+      "decision": "merge",
+      "merge_into": "mainCondition",
+      "rename_to": "rubric.cond_m.main_condition",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:44:26.844Z"
+    },
+    "rubric.cond_b.mutual_closing_deadline_after_conditions_days": {
+      "key": "rubric.cond_b.mutual_closing_deadline_after_conditions_days",
+      "decision": "merge",
+      "merge_into": "mutualClosingDeadlineAfterConditionsDays",
+      "rename_to": "rubric.cond_b.mutual_closing_deadline_after_conditions_days",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:44:26.844Z"
+    },
+    "rubric.cond_b.tender_offer_minimum_condition": {
+      "key": "rubric.cond_b.tender_offer_minimum_condition",
+      "decision": "merge",
+      "merge_into": "tenderOfferMinimumCondition",
+      "rename_to": "rubric.cond_b.tender_offer_minimum_condition",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:44:26.844Z"
+    },
+    "rubric.cond_frustrate.frustration_of_conditions_present": {
+      "key": "rubric.cond_frustrate.frustration_of_conditions_present",
+      "decision": "merge",
+      "merge_into": "frustrationOfConditionsPresent",
+      "rename_to": "rubric.cond_frustrate.frustration_of_conditions_present",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:44:26.844Z"
+    },
+    "stockholderApprovalRequired": {
+      "key": "stockholderApprovalRequired",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "stockholderApprovalRequired",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:44:26.844Z"
+    },
+    "regulatoryApprovals": {
+      "key": "regulatoryApprovals",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "regulatoryApprovals",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "maeConditionStandalone": {
+      "key": "maeConditionStandalone",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "maeConditionStandalone",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:44:26.844Z"
+    },
+    "bringDownTiers": {
+      "key": "bringDownTiers",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "bringDownTiers",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:44:26.844Z"
+    },
+    "covenantComplianceStandard": {
+      "key": "covenantComplianceStandard",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "covenantComplianceStandard",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:44:26.844Z"
+    },
+    "governmentProceedingConditionPresent": {
+      "key": "governmentProceedingConditionPresent",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "governmentProceedingConditionPresent",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:44:26.844Z"
+    },
+    "mainCondition": {
+      "key": "mainCondition",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "mainCondition",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:44:26.844Z"
+    },
+    "mutualClosingDeadlineAfterConditionsDays": {
+      "key": "mutualClosingDeadlineAfterConditionsDays",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "mutualClosingDeadlineAfterConditionsDays",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:44:26.844Z"
+    },
+    "tenderOfferMinimumCondition": {
+      "key": "tenderOfferMinimumCondition",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "tenderOfferMinimumCondition",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:44:26.844Z"
+    },
+    "frustrationOfConditionsPresent": {
+      "key": "frustrationOfConditionsPresent",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "frustrationOfConditionsPresent",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:44:26.844Z"
+    },
+    "carveOutsList": {
+      "key": "carveOutsList",
+      "decision": "merge",
+      "merge_into": "carveOuts",
+      "rename_to": "carveOutsList",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:44:36.504Z"
+    },
+    "carveOuts": {
+      "key": "carveOuts",
+      "decision": "merge",
+      "merge_into": "carveouts",
+      "rename_to": "carveOuts",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:45:14.356Z"
+    },
+    "acquisitionProposalPercentage": {
+      "key": "acquisitionProposalPercentage",
+      "decision": "rename",
+      "merge_into": null,
+      "rename_to": "nosolAcquisitionProposalPercentage",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:45:19.726Z"
+    },
+    "rubric.anti_filing.hsr_filing_deadline_business_days": {
+      "key": "rubric.anti_filing.hsr_filing_deadline_business_days",
+      "decision": "merge",
+      "merge_into": "hsrFilingDeadline",
+      "rename_to": "rubric.anti_filing.hsr_filing_deadline_business_days",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "rubric.anti.hsr_filing_deadline_business_days": {
+      "key": "rubric.anti.hsr_filing_deadline_business_days",
+      "decision": "merge",
+      "merge_into": "hsrFilingDeadline",
+      "rename_to": "rubric.anti.hsr_filing_deadline_business_days",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "rubric.anti.hsr_filing_deadline": {
+      "key": "rubric.anti.hsr_filing_deadline",
+      "decision": "merge",
+      "merge_into": "hsrFilingDeadline",
+      "rename_to": "rubric.anti.hsr_filing_deadline",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "aocCitedCovenantSections": {
+      "key": "aocCitedCovenantSections",
+      "decision": "merge",
+      "merge_into": "aocCitedCovenantNames",
+      "rename_to": "aocCitedCovenantSections",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:46:42.798Z"
+    },
+    "appliesToParty": {
+      "key": "appliesToParty",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "appliesToParty",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "controllingParty": {
+      "key": "controllingParty",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "controllingParty",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "effortsStandard": {
+      "key": "effortsStandard",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "effortsStandard",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "effortsStandardDiffersByRemedy": {
+      "key": "effortsStandardDiffersByRemedy",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "effortsStandardDiffersByRemedy",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "exHsrFilingDeadline": {
+      "key": "exHsrFilingDeadline",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "exHsrFilingDeadline",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "filingDeadline": {
+      "key": "filingDeadline",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "filingDeadline",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "hsrFilingDeadline": {
+      "key": "hsrFilingDeadline",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "hsrFilingDeadline",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "otherRegulatoryFilingDeadlines": {
+      "key": "otherRegulatoryFilingDeadlines",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "otherRegulatoryFilingDeadlines",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "litigationObligation": {
+      "key": "litigationObligation",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "litigationObligation",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "pullAndRefileRight": {
+      "key": "pullAndRefileRight",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "pullAndRefileRight",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "pullAndRefileCompanyConsent": {
+      "key": "pullAndRefileCompanyConsent",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "pullAndRefileCompanyConsent",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "pullRefileText": {
+      "key": "pullRefileText",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "pullRefileText",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "regulatoryCooperationScope": {
+      "key": "regulatoryCooperationScope",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "regulatoryCooperationScope",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "regulatoryCooperationCarveout": {
+      "key": "regulatoryCooperationCarveout",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "regulatoryCooperationCarveout",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "springingRegulatoryConditions": {
+      "key": "springingRegulatoryConditions",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "springingRegulatoryConditions",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "timingAgreement": {
+      "key": "timingAgreement",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "timingAgreement",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "clearSkies": {
+      "key": "clearSkies",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "clearSkies",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "clearSkiesCompany": {
+      "key": "clearSkiesCompany",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "clearSkiesCompany",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "clearSkiesParent": {
+      "key": "clearSkiesParent",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "clearSkiesParent",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "foreignFilingsRequired": {
+      "key": "foreignFilingsRequired",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "foreignFilingsRequired",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "hellOrHighWater": {
+      "key": "hellOrHighWater",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "hellOrHighWater",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "interimOperatingRestrictions": {
+      "key": "interimOperatingRestrictions",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "interimOperatingRestrictions",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "parentRemedyObligation": {
+      "key": "parentRemedyObligation",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "parentRemedyObligation",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "partyControlsStrategy": {
+      "key": "partyControlsStrategy",
+      "decision": "merge",
+      "merge_into": "controllingParty",
+      "rename_to": "partyControlsStrategy",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "regulatoryStrategyControlTagged": {
+      "key": "regulatoryStrategyControlTagged",
+      "decision": "merge",
+      "merge_into": "controllingParty",
+      "rename_to": "regulatoryStrategyControlTagged",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "rubric.anti_cooperate.controlling_party": {
+      "key": "rubric.anti_cooperate.controlling_party",
+      "decision": "merge",
+      "merge_into": "controllingParty",
+      "rename_to": "rubric.anti_cooperate.controlling_party",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "rubric.anti.controlling_party": {
+      "key": "rubric.anti.controlling_party",
+      "decision": "merge",
+      "merge_into": "controllingParty",
+      "rename_to": "rubric.anti.controlling_party",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "rubric.anti.party_controls_strategy": {
+      "key": "rubric.anti.party_controls_strategy",
+      "decision": "merge",
+      "merge_into": "controllingParty",
+      "rename_to": "rubric.anti.party_controls_strategy",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "rubric.anti_burden.efforts_standard": {
+      "key": "rubric.anti_burden.efforts_standard",
+      "decision": "merge",
+      "merge_into": "effortsStandard",
+      "rename_to": "rubric.anti_burden.efforts_standard",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "rubric.anti_efforts.efforts_standard": {
+      "key": "rubric.anti_efforts.efforts_standard",
+      "decision": "merge",
+      "merge_into": "effortsStandard",
+      "rename_to": "rubric.anti_efforts.efforts_standard",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "rubric.anti.efforts_standard": {
+      "key": "rubric.anti.efforts_standard",
+      "decision": "merge",
+      "merge_into": "effortsStandard",
+      "rename_to": "rubric.anti.efforts_standard",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "rubric.anti_efforts.efforts_standard_differs_by_remedy": {
+      "key": "rubric.anti_efforts.efforts_standard_differs_by_remedy",
+      "decision": "merge",
+      "merge_into": "effortsStandardDiffersByRemedy",
+      "rename_to": "rubric.anti_efforts.efforts_standard_differs_by_remedy",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "rubric.anti.efforts_standard_differs_by_remedy": {
+      "key": "rubric.anti.efforts_standard_differs_by_remedy",
+      "decision": "merge",
+      "merge_into": "effortsStandardDiffersByRemedy",
+      "rename_to": "rubric.anti.efforts_standard_differs_by_remedy",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "rubric.anti_filing.hsr_filing_deadline": {
+      "key": "rubric.anti_filing.hsr_filing_deadline",
+      "decision": "merge",
+      "merge_into": "hsrFilingDeadline",
+      "rename_to": "rubric.anti_filing.hsr_filing_deadline",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "rubric.anti_filing.ex_hsr_filing_deadline": {
+      "key": "rubric.anti_filing.ex_hsr_filing_deadline",
+      "decision": "merge",
+      "merge_into": "exHsrFilingDeadline",
+      "rename_to": "rubric.anti_filing.ex_hsr_filing_deadline",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "rubric.anti.ex_hsr_filing_deadline": {
+      "key": "rubric.anti.ex_hsr_filing_deadline",
+      "decision": "merge",
+      "merge_into": "exHsrFilingDeadline",
+      "rename_to": "rubric.anti.ex_hsr_filing_deadline",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "rubric.anti_filing.filing_deadline": {
+      "key": "rubric.anti_filing.filing_deadline",
+      "decision": "merge",
+      "merge_into": "filingDeadline",
+      "rename_to": "rubric.anti_filing.filing_deadline",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "rubric.anti.filing_deadline": {
+      "key": "rubric.anti.filing_deadline",
+      "decision": "merge",
+      "merge_into": "filingDeadline",
+      "rename_to": "rubric.anti.filing_deadline",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "rubric.anti_filing.other_regulatory_filing_deadlines": {
+      "key": "rubric.anti_filing.other_regulatory_filing_deadlines",
+      "decision": "merge",
+      "merge_into": "otherRegulatoryFilingDeadlines",
+      "rename_to": "rubric.anti_filing.other_regulatory_filing_deadlines",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "rubric.anti.other_regulatory_filing_deadlines": {
+      "key": "rubric.anti.other_regulatory_filing_deadlines",
+      "decision": "merge",
+      "merge_into": "otherRegulatoryFilingDeadlines",
+      "rename_to": "rubric.anti.other_regulatory_filing_deadlines",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "rubric.anti.substantial_compliance_deadline_days": {
+      "key": "rubric.anti.substantial_compliance_deadline_days",
+      "decision": "merge",
+      "merge_into": "substantialComplianceDeadlineDays",
+      "rename_to": "rubric.anti.substantial_compliance_deadline_days",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "rubric.anti_noaction.applies_to_party": {
+      "key": "rubric.anti_noaction.applies_to_party",
+      "decision": "merge",
+      "merge_into": "appliesToParty",
+      "rename_to": "rubric.anti_noaction.applies_to_party",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "rubric.anti.applies_to_party": {
+      "key": "rubric.anti.applies_to_party",
+      "decision": "merge",
+      "merge_into": "appliesToParty",
+      "rename_to": "rubric.anti.applies_to_party",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "litigationObligationQualification": {
+      "key": "litigationObligationQualification",
+      "decision": "merge",
+      "merge_into": "litigationObligation",
+      "rename_to": "litigationObligationQualification",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "parentLitigationObligation": {
+      "key": "parentLitigationObligation",
+      "decision": "merge",
+      "merge_into": "litigationObligation",
+      "rename_to": "parentLitigationObligation",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "rubric.anti.litigation_obligation": {
+      "key": "rubric.anti.litigation_obligation",
+      "decision": "merge",
+      "merge_into": "litigationObligation",
+      "rename_to": "rubric.anti.litigation_obligation",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "rubric.anti.litigation_obligation_qualification": {
+      "key": "rubric.anti.litigation_obligation_qualification",
+      "decision": "merge",
+      "merge_into": "litigationObligation",
+      "rename_to": "rubric.anti.litigation_obligation_qualification",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "rubric.anti.parent_litigation_obligation": {
+      "key": "rubric.anti.parent_litigation_obligation",
+      "decision": "merge",
+      "merge_into": "litigationObligation",
+      "rename_to": "rubric.anti.parent_litigation_obligation",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "pullRefile": {
+      "key": "pullRefile",
+      "decision": "merge",
+      "merge_into": "pullRefileText",
+      "rename_to": "pullRefile",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "rubric.anti.regulatory_closing_conditions": {
+      "key": "rubric.anti.regulatory_closing_conditions",
+      "decision": "merge",
+      "merge_into": "regulatoryApprovals",
+      "rename_to": "rubric.anti.regulatory_closing_conditions",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "regulatoryClosingConditions": {
+      "key": "regulatoryClosingConditions",
+      "decision": "merge",
+      "merge_into": "regulatoryApprovals",
+      "rename_to": "regulatoryClosingConditions",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "rubric.anti.regulatory_cooperation_carveout": {
+      "key": "rubric.anti.regulatory_cooperation_carveout",
+      "decision": "merge",
+      "merge_into": "regulatoryCooperationCarveout",
+      "rename_to": "rubric.anti.regulatory_cooperation_carveout",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "rubric.anti.springing_regulatory_conditions": {
+      "key": "rubric.anti.springing_regulatory_conditions",
+      "decision": "merge",
+      "merge_into": "springingRegulatoryConditions",
+      "rename_to": "rubric.anti.springing_regulatory_conditions",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "timingAgreementText": {
+      "key": "timingAgreementText",
+      "decision": "merge",
+      "merge_into": "timingAgreement",
+      "rename_to": "timingAgreementText",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:05.668Z"
+    },
+    "erisaCompliance": {
+      "key": "erisaCompliance",
+      "decision": "defer",
+      "merge_into": null,
+      "rename_to": "erisaCompliance",
+      "defer_to_phase": "EMPLOYEE_BENEFITS_ERISA",
+      "updated_at": "2026-07-06T21:47:28.313Z"
+    },
+    "erisaMultiemployer": {
+      "key": "erisaMultiemployer",
+      "decision": "defer",
+      "merge_into": null,
+      "rename_to": "erisaMultiemployer",
+      "defer_to_phase": "EMPLOYEE_BENEFITS_ERISA",
+      "updated_at": "2026-07-06T21:47:28.313Z"
+    },
+    "erisaParachutePayments": {
+      "key": "erisaParachutePayments",
+      "decision": "defer",
+      "merge_into": null,
+      "rename_to": "erisaParachutePayments",
+      "defer_to_phase": "EMPLOYEE_BENEFITS_ERISA",
+      "updated_at": "2026-07-06T21:47:28.313Z"
+    },
+    "erisaPlansListed": {
+      "key": "erisaPlansListed",
+      "decision": "defer",
+      "merge_into": null,
+      "rename_to": "erisaPlansListed",
+      "defer_to_phase": "EMPLOYEE_BENEFITS_ERISA",
+      "updated_at": "2026-07-06T21:47:28.313Z"
+    },
+    "erisaTitleIVPlans": {
+      "key": "erisaTitleIVPlans",
+      "decision": "defer",
+      "merge_into": null,
+      "rename_to": "erisaTitleIVPlans",
+      "defer_to_phase": "EMPLOYEE_BENEFITS_ERISA",
+      "updated_at": "2026-07-06T21:47:28.313Z"
+    },
+    "secFilingsExceptionLookbackDate": {
+      "key": "secFilingsExceptionLookbackDate",
+      "decision": "merge",
+      "merge_into": "secFilingsExceptionLookback",
+      "rename_to": "secFilingsExceptionLookbackDate",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:46.707Z"
+    },
+    "secFilingsExceptionScope": {
+      "key": "secFilingsExceptionScope",
+      "decision": "merge",
+      "merge_into": "secFilingsExceptionExclusions",
+      "rename_to": "secFilingsExceptionScope",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:47:54.737Z"
+    },
+    "maeLimbs": {
+      "key": "maeLimbs",
+      "decision": "merge",
+      "merge_into": "preventDelayProng",
+      "rename_to": "maeLimbs",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:48:00.194Z"
+    },
+    "preventDelayProng": {
+      "key": "preventDelayProng",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "preventDelayProng",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:48:00.194Z"
+    },
+    "absenceOfEnjoiningOrderDetails": {
+      "key": "absenceOfEnjoiningOrderDetails",
+      "decision": "merge",
+      "merge_into": "absenceOfEnjoiningOrderPresent",
+      "rename_to": "absenceOfEnjoiningOrderDetails",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:48:44.023Z"
+    },
+    "noticePeriod": {
+      "key": "noticePeriod",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "noticePeriod",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:52:55.174Z"
+    },
+    "fiduciaryEngageStandard": {
+      "key": "fiduciaryEngageStandard",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "fiduciaryEngageStandard",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:52:55.174Z"
+    },
+    "fiduciaryCarveoutThreshold": {
+      "key": "fiduciaryCarveoutThreshold",
+      "decision": "merge",
+      "merge_into": "fiduciaryEngageStandard",
+      "rename_to": "fiduciaryCarveoutThreshold",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:52:55.174Z"
+    },
+    "engagementStandard": {
+      "key": "engagementStandard",
+      "decision": "merge",
+      "merge_into": "fiduciaryEngageStandard",
+      "rename_to": "engagementStandard",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:52:55.174Z"
+    },
+    "discussionInitiationNoticeHours": {
+      "key": "discussionInitiationNoticeHours",
+      "decision": "rename",
+      "merge_into": null,
+      "rename_to": "discussionInitiationNoticeTiming",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:52:55.174Z"
+    },
+    "discussionInitiationNoticePresent": {
+      "key": "discussionInitiationNoticePresent",
+      "decision": "merge",
+      "merge_into": "discussionInitiationNoticeTiming",
+      "rename_to": "discussionInitiationNoticePresent",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:52:55.174Z"
+    },
+    "discussionInitiationNoticeText": {
+      "key": "discussionInitiationNoticeText",
+      "decision": "merge",
+      "merge_into": "discussionInitiationNoticeTiming",
+      "rename_to": "discussionInitiationNoticeText",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:52:55.174Z"
+    },
+    "exchangeRatioText": {
+      "key": "exchangeRatioText",
+      "decision": "merge",
+      "merge_into": "exchangeRatio",
+      "rename_to": "exchangeRatioText",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:55:33.274Z"
+    },
+    "taxReorgText": {
+      "key": "taxReorgText",
+      "decision": "merge",
+      "merge_into": "taxReorgIntended",
+      "rename_to": "taxReorgText",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T21:56:28.621Z"
+    },
+    "equityAwardTreatment": {
+      "key": "equityAwardTreatment",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "equityAwardTreatment",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:05:00.000Z"
+    },
+    "instrumentTreatments": {
+      "key": "instrumentTreatments",
+      "decision": "merge",
+      "merge_into": "equityAwardTreatment",
+      "rename_to": "instrumentTreatments",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:05:00.000Z"
+    },
+    "flags": {
+      "key": "flags",
+      "decision": "reject",
+      "merge_into": null,
+      "rename_to": "flags",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:04:34.642Z"
+    },
+    "forceTheVoteDetails": {
+      "key": "forceTheVoteDetails",
+      "decision": "merge",
+      "merge_into": "forceTheVote",
+      "rename_to": "forceTheVoteDetails",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:04:42.872Z"
+    },
+    "deal.nosol.definitions.acquisitionProposal": {
+      "key": "deal.nosol.definitions.acquisitionProposal",
+      "decision": "merge",
+      "merge_into": "acquisitionTransactionDefinition",
+      "rename_to": "deal.nosol.definitions.acquisitionProposal",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:07:45.410Z"
+    },
+    "deal.antitrust.capStandard": {
+      "key": "deal.antitrust.capStandard",
+      "decision": "merge",
+      "merge_into": "divestitureCapDescription",
+      "rename_to": "deal.antitrust.capStandard",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:07:47.626Z"
+    },
+    "deal.antitrust.controlLeadParty": {
+      "key": "deal.antitrust.controlLeadParty",
+      "decision": "merge",
+      "merge_into": "controllingParty",
+      "rename_to": "deal.antitrust.controlLeadParty",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:07:49.492Z"
+    },
+    "deal.antitrust.effortsStandard": {
+      "key": "deal.antitrust.effortsStandard",
+      "decision": "merge",
+      "merge_into": "effortsStandard",
+      "rename_to": "deal.antitrust.effortsStandard",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:07:50.810Z"
+    },
+    "deal.nosol.refreshPeriodDays": {
+      "key": "deal.nosol.refreshPeriodDays",
+      "decision": "merge",
+      "merge_into": "subsequentMatchPeriodDays",
+      "rename_to": "deal.nosol.refreshPeriodDays",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:07:54.022Z"
+    },
+    "deal.rw.knowledgeQualifier": {
+      "key": "deal.rw.knowledgeQualifier",
+      "decision": "merge",
+      "merge_into": "knowledgeQualifier",
+      "rename_to": "deal.rw.knowledgeQualifier",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:07:55.443Z"
+    },
+    "deal.rw.lookback": {
+      "key": "deal.rw.lookback",
+      "decision": "merge",
+      "merge_into": "lookbackAnchor",
+      "rename_to": "deal.rw.lookback",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:07:57.775Z"
+    },
+    "deal.rw.materialityScrape": {
+      "key": "deal.rw.materialityScrape",
+      "decision": "merge",
+      "merge_into": "materialityScrape",
+      "rename_to": "deal.rw.materialityScrape",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:07:58.605Z"
+    },
+    "deal.rw.noOtherRepsFraud": {
+      "key": "deal.rw.noOtherRepsFraud",
+      "decision": "merge",
+      "merge_into": "fraudCarveout",
+      "rename_to": "deal.rw.noOtherRepsFraud",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:08:00.408Z"
+    },
+    "materialityScrapePresent": {
+      "key": "materialityScrapePresent",
+      "decision": "merge",
+      "merge_into": "materialityScrape",
+      "rename_to": "materialityScrapePresent",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:08:02.659Z"
+    },
+    "deal.consideration.appraisalRightsAvailable": {
+      "key": "deal.consideration.appraisalRightsAvailable",
+      "decision": "merge",
+      "merge_into": "appraisalRightsAvailable",
+      "rename_to": "deal.consideration.appraisalRightsAvailable",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:08:06.092Z"
+    },
+    "deal.consideration.collar.cap": {
+      "key": "deal.consideration.collar.cap",
+      "decision": "merge",
+      "merge_into": "collar",
+      "rename_to": "deal.consideration.collar.cap",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:08:08.026Z"
+    },
+    "deal.consideration.collar.floor": {
+      "key": "deal.consideration.collar.floor",
+      "decision": "merge",
+      "merge_into": "collar",
+      "rename_to": "deal.consideration.collar.floor",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:08:09.842Z"
+    },
+    "deal.consideration.collar.present": {
+      "key": "deal.consideration.collar.present",
+      "decision": "merge",
+      "merge_into": "collar",
+      "rename_to": "deal.consideration.collar.present",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:08:10.525Z"
+    },
+    "deal.consideration.collar.type": {
+      "key": "deal.consideration.collar.type",
+      "decision": "merge",
+      "merge_into": "collarType",
+      "rename_to": "deal.consideration.collar.type",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:08:11.626Z"
+    },
+    "deal.consideration.cvr.deadline": {
+      "key": "deal.consideration.cvr.deadline",
+      "decision": "defer",
+      "merge_into": null,
+      "rename_to": "deal.consideration.cvr.deadline",
+      "defer_to_phase": "CVR_PROVISIONS",
+      "updated_at": "2026-07-06T22:08:14.079Z"
+    },
+    "deal.consideration.cvr.milestone": {
+      "key": "deal.consideration.cvr.milestone",
+      "decision": "defer",
+      "merge_into": null,
+      "rename_to": "deal.consideration.cvr.milestone",
+      "defer_to_phase": "CVR_PROVISIONS",
+      "updated_at": "2026-07-06T22:08:15.304Z"
+    },
+    "deal.consideration.cvr.present": {
+      "key": "deal.consideration.cvr.present",
+      "decision": "defer",
+      "merge_into": null,
+      "rename_to": "deal.consideration.cvr.present",
+      "defer_to_phase": "CVR_PROVISIONS",
+      "updated_at": "2026-07-06T22:08:15.973Z"
+    },
+    "deal.consideration.cvr.type": {
+      "key": "deal.consideration.cvr.type",
+      "decision": "defer",
+      "merge_into": null,
+      "rename_to": "deal.consideration.cvr.type",
+      "defer_to_phase": "CVR_PROVISIONS",
+      "updated_at": "2026-07-06T22:08:16.538Z"
+    },
+    "deal.consideration.dividendEquivalence": {
+      "key": "deal.consideration.dividendEquivalence",
+      "decision": "merge",
+      "merge_into": "dividendEquivalence",
+      "rename_to": "deal.consideration.dividendEquivalence",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:08:18.409Z"
+    },
+    "language": {
+      "key": "language",
+      "decision": "merge",
+      "merge_into": "collar",
+      "rename_to": "language",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:08:23.026Z"
+    },
+    "financingCooperationPresent": {
+      "key": "financingCooperationPresent",
+      "decision": "merge",
+      "merge_into": "financingCooperation",
+      "rename_to": "financingCooperationPresent",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:08:24.893Z"
+    },
+    "financingCooperationScope": {
+      "key": "financingCooperationScope",
+      "decision": "merge",
+      "merge_into": "financingCooperation",
+      "rename_to": "financingCooperationScope",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:08:26.071Z"
+    },
+    "alsoSurfacedAs": {
+      "key": "alsoSurfacedAs",
+      "decision": "reject",
+      "merge_into": null,
+      "rename_to": "alsoSurfacedAs",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:08:33.127Z"
+    },
+    "appliesTo": {
+      "key": "appliesTo",
+      "decision": "reject",
+      "merge_into": null,
+      "rename_to": "appliesTo",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:08:33.889Z"
+    },
+    "inlineDefinition": {
+      "key": "inlineDefinition",
+      "decision": "reject",
+      "merge_into": null,
+      "rename_to": "inlineDefinition",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:08:34.605Z"
+    },
+    "sourceSection": {
+      "key": "sourceSection",
+      "decision": "reject",
+      "merge_into": null,
+      "rename_to": "sourceSection",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:08:35.375Z"
+    },
+    "sourceSectionType": {
+      "key": "sourceSectionType",
+      "decision": "reject",
+      "merge_into": null,
+      "rename_to": "sourceSectionType",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:08:35.922Z"
+    },
+    "noConflictingAgreementsScope": {
+      "key": "noConflictingAgreementsScope",
+      "decision": "merge",
+      "merge_into": "noConflictingAgreementsPresent",
+      "rename_to": "noConflictingAgreementsScope",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:08:39.138Z"
+    },
+    "deal.antitrust.exHsrFilingDeadline": {
+      "key": "deal.antitrust.exHsrFilingDeadline",
+      "decision": "merge",
+      "merge_into": "exHsrFilingDeadline",
+      "rename_to": "deal.antitrust.exHsrFilingDeadline",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:08:40.837Z"
+    },
+    "deal.termination.rights.byBuyer": {
+      "key": "deal.termination.rights.byBuyer",
+      "decision": "merge",
+      "merge_into": "terminationTriggers",
+      "rename_to": "deal.termination.rights.byBuyer",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:08:47.010Z"
+    },
+    "deal.termination.rights.byCompany": {
+      "key": "deal.termination.rights.byCompany",
+      "decision": "merge",
+      "merge_into": "terminationTriggers",
+      "rename_to": "deal.termination.rights.byCompany",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:08:47.689Z"
+    },
+    "deal.termination.rights.mutual": {
+      "key": "deal.termination.rights.mutual",
+      "decision": "merge",
+      "merge_into": "terminationTriggers",
+      "rename_to": "deal.termination.rights.mutual",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:08:48.359Z"
+    },
+    "deal.termination.outsideDateExtensions": {
+      "key": "deal.termination.outsideDateExtensions",
+      "decision": "merge",
+      "merge_into": "outsideDateExtension",
+      "rename_to": "deal.termination.outsideDateExtensions",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:09:01.093Z"
+    },
+    "sufficientFundsRepDetails": {
+      "key": "sufficientFundsRepDetails",
+      "decision": "merge",
+      "merge_into": "sufficientFundsRepPresent",
+      "rename_to": "sufficientFundsRepDetails",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:09:06.357Z"
+    },
+    "solvencyRepDetails": {
+      "key": "solvencyRepDetails",
+      "decision": "merge",
+      "merge_into": "solvencyRepIncluded",
+      "rename_to": "solvencyRepDetails",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:09:07.909Z"
+    },
+    "nakedNoVoteFeePresent": {
+      "key": "nakedNoVoteFeePresent",
+      "decision": "merge",
+      "merge_into": "terminationFees",
+      "rename_to": "nakedNoVoteFeePresent",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:23:34.591Z"
+    },
+    "informationSharingObligationScope": {
+      "key": "informationSharingObligationScope",
+      "decision": "merge",
+      "merge_into": "informationSharingObligationPresent",
+      "rename_to": "informationSharingObligationScope",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:09:24.160Z"
+    },
+    "deal.antitrust.clearSkiesCompany": {
+      "key": "deal.antitrust.clearSkiesCompany",
+      "decision": "merge",
+      "merge_into": "clearSkiesCompany",
+      "rename_to": "deal.antitrust.clearSkiesCompany",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:09:26.026Z"
+    },
+    "deal.antitrust.clearSkiesParent": {
+      "key": "deal.antitrust.clearSkiesParent",
+      "decision": "merge",
+      "merge_into": "clearSkiesParent",
+      "rename_to": "deal.antitrust.clearSkiesParent",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:09:26.659Z"
+    },
+    "deal.antitrust.pullAndRefile": {
+      "key": "deal.antitrust.pullAndRefile",
+      "decision": "merge",
+      "merge_into": "pullRefileText",
+      "rename_to": "deal.antitrust.pullAndRefile",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:09:30.558Z"
+    },
+    "deal.antitrust.timingAgreement": {
+      "key": "deal.antitrust.timingAgreement",
+      "decision": "merge",
+      "merge_into": "timingAgreement",
+      "rename_to": "deal.antitrust.timingAgreement",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:09:32.393Z"
+    },
+    "deal.antitrust.hsrFilingDeadline": {
+      "key": "deal.antitrust.hsrFilingDeadline",
+      "decision": "merge",
+      "merge_into": "hsrFilingDeadline",
+      "rename_to": "deal.antitrust.hsrFilingDeadline",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:09:33.259Z"
+    },
+    "deal.antitrust.litigationObligation": {
+      "key": "deal.antitrust.litigationObligation",
+      "decision": "merge",
+      "merge_into": "litigationObligation",
+      "rename_to": "deal.antitrust.litigationObligation",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:09:34.793Z"
+    },
+    "antiRelianceRepText": {
+      "key": "antiRelianceRepText",
+      "decision": "merge",
+      "merge_into": "antiRelianceRepPresent",
+      "rename_to": "antiRelianceRepText",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:09:35.921Z"
+    },
+    "scope": {
+      "key": "scope",
+      "decision": "merge",
+      "merge_into": "sufficientFundsRepPresent",
+      "rename_to": "scope",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:09:39.275Z"
+    },
+    "deal.termf.companyTerminationFee.amount": {
+      "key": "deal.termf.companyTerminationFee.amount",
+      "decision": "merge",
+      "merge_into": "terminationFees",
+      "rename_to": "deal.termf.companyTerminationFee.amount",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:23:34.591Z"
+    },
+    "deal.termf.nakedNoVoteFee.amount": {
+      "key": "deal.termf.nakedNoVoteFee.amount",
+      "decision": "merge",
+      "merge_into": "terminationFees",
+      "rename_to": "deal.termf.nakedNoVoteFee.amount",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:23:34.591Z"
+    },
+    "deal.termination.outsideDate": {
+      "key": "deal.termination.outsideDate",
+      "decision": "merge",
+      "merge_into": "outsideDate",
+      "rename_to": "deal.termination.outsideDate",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:18:33.576Z"
+    },
+    "lawOrderTerminationScope": {
+      "key": "lawOrderTerminationScope",
+      "decision": "merge",
+      "merge_into": "lawOrderTerminationPresent",
+      "rename_to": "lawOrderTerminationScope",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:18:34.907Z"
+    },
+    "deal.termf.buyerTerminationFee.amount": {
+      "key": "deal.termf.buyerTerminationFee.amount",
+      "decision": "merge",
+      "merge_into": "terminationFees",
+      "rename_to": "deal.termf.buyerTerminationFee.amount",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:23:34.591Z"
+    },
+    "solvencyRepPresent": {
+      "key": "solvencyRepPresent",
+      "decision": "merge",
+      "merge_into": "solvencyRepIncluded",
+      "rename_to": "solvencyRepPresent",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:19:03.706Z"
+    },
+    "definition": {
+      "key": "definition",
+      "decision": "merge",
+      "merge_into": "topCustomersSuppliersDefinition",
+      "rename_to": "definition",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:19:44.259Z"
+    },
+    "materialityScrapeLanguage": {
+      "key": "materialityScrapeLanguage",
+      "decision": "merge",
+      "merge_into": "materialityScrape",
+      "rename_to": "materialityScrapeLanguage",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:20:15.758Z"
+    },
+    "deal.nosol.initialMatchPeriodDays": {
+      "key": "deal.nosol.initialMatchPeriodDays",
+      "decision": "merge",
+      "merge_into": "initialMatchPeriodDays",
+      "rename_to": "deal.nosol.initialMatchPeriodDays",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:20:22.727Z"
+    },
+    "deal.nosol.matchingPeriod": {
+      "key": "deal.nosol.matchingPeriod",
+      "decision": "merge",
+      "merge_into": "initialMatchPeriodDays",
+      "rename_to": "deal.nosol.matchingPeriod",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:20:23.743Z"
+    },
+    "nonDisproportionateImpactCarveouts": {
+      "key": "nonDisproportionateImpactCarveouts",
+      "decision": "reject",
+      "merge_into": null,
+      "rename_to": "nonDisproportionateImpactCarveouts",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:20:26.588Z"
+    },
+    "deal.mae.carveouts": {
+      "key": "deal.mae.carveouts",
+      "decision": "merge",
+      "merge_into": "carveouts",
+      "rename_to": "deal.mae.carveouts",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:20:54.279Z"
+    },
+    "disproportionateImpact": {
+      "key": "disproportionateImpact",
+      "decision": "merge",
+      "merge_into": "disproportionateImpactClause",
+      "rename_to": "disproportionateImpact",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:20:55.725Z"
+    },
+    "disproportionateImpactScope": {
+      "key": "disproportionateImpactScope",
+      "decision": "merge",
+      "merge_into": "disproportionateImpactCarveouts",
+      "rename_to": "disproportionateImpactScope",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:20:56.259Z"
+    },
+    "deal.consideration.exchangeRatio": {
+      "key": "deal.consideration.exchangeRatio",
+      "decision": "merge",
+      "merge_into": "exchangeRatio",
+      "rename_to": "deal.consideration.exchangeRatio",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:21:16.142Z"
+    },
+    "deal.consideration.exchangeRatioType": {
+      "key": "deal.consideration.exchangeRatioType",
+      "decision": "merge",
+      "merge_into": "exchangeRatioType",
+      "rename_to": "deal.consideration.exchangeRatioType",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:21:17.259Z"
+    },
+    "deal.consideration.oversubscriptionTreatment": {
+      "key": "deal.consideration.oversubscriptionTreatment",
+      "decision": "merge",
+      "merge_into": "prorationMechanics",
+      "rename_to": "deal.consideration.oversubscriptionTreatment",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:21:20.943Z"
+    },
+    "deal.consideration.perShareCashComponent": {
+      "key": "deal.consideration.perShareCashComponent",
+      "decision": "merge",
+      "merge_into": "perShareConsideration",
+      "rename_to": "deal.consideration.perShareCashComponent",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:21:24.856Z"
+    },
+    "deal.consideration.perShareStockComponent": {
+      "key": "deal.consideration.perShareStockComponent",
+      "decision": "merge",
+      "merge_into": "perShareConsideration",
+      "rename_to": "deal.consideration.perShareStockComponent",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:21:25.341Z"
+    },
+    "deal.consideration.type": {
+      "key": "deal.consideration.type",
+      "decision": "merge",
+      "merge_into": "considerationType",
+      "rename_to": "deal.consideration.type",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:21:26.675Z"
+    },
+    "deal.consideration.walkAwayRight.party": {
+      "key": "deal.consideration.walkAwayRight.party",
+      "decision": "merge",
+      "merge_into": "walkAwayRight",
+      "rename_to": "deal.consideration.walkAwayRight.party",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:21:30.726Z"
+    },
+    "deal.consideration.walkAwayRight.present": {
+      "key": "deal.consideration.walkAwayRight.present",
+      "decision": "merge",
+      "merge_into": "walkAwayRight",
+      "rename_to": "deal.consideration.walkAwayRight.present",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:21:31.008Z"
+    },
+    "deal.nosol.definitions.interveningEvent": {
+      "key": "deal.nosol.definitions.interveningEvent",
+      "decision": "merge",
+      "merge_into": "interveningEventDefinition",
+      "rename_to": "deal.nosol.definitions.interveningEvent",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:21:32.142Z"
+    },
+    "deal.nosol.fiduciaryOut.present": {
+      "key": "deal.nosol.fiduciaryOut.present",
+      "decision": "merge",
+      "merge_into": "fiduciaryOutStandard",
+      "rename_to": "deal.nosol.fiduciaryOut.present",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:21:37.256Z"
+    },
+    "deal.nosol.fiduciaryOut.types": {
+      "key": "deal.nosol.fiduciaryOut.types",
+      "decision": "merge",
+      "merge_into": "fiduciaryOutStandard",
+      "rename_to": "deal.nosol.fiduciaryOut.types",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:21:38.122Z"
+    },
+    "deal.mae.appliesTo": {
+      "key": "deal.mae.appliesTo",
+      "decision": "merge",
+      "merge_into": "appliesToParty",
+      "rename_to": "deal.mae.appliesTo",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:21:39.604Z"
+    },
+    "carveouts_disproportionateImpactCarveouts_note": {
+      "key": "carveouts_disproportionateImpactCarveouts_note",
+      "decision": "merge",
+      "merge_into": "disproportionateImpactClause",
+      "rename_to": "carveouts_disproportionateImpactCarveouts_note",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:21:40.538Z"
+    },
+    "terminationFees": {
+      "key": "terminationFees",
+      "decision": "approve",
+      "merge_into": null,
+      "rename_to": "terminationFees",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:23:34.591Z"
+    },
+    "effectsOfMergerReference": {
+      "key": "effectsOfMergerReference",
+      "decision": "merge",
+      "merge_into": "dealstructure",
+      "rename_to": "effectsOfMergerReference",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:24:36.707Z"
+    },
+    "amount": {
+      "key": "amount",
+      "decision": "merge",
+      "merge_into": "terminationFees",
+      "rename_to": "amount",
+      "defer_to_phase": null,
+      "updated_at": "2026-07-06T22:25:49.726Z"
+    }
+  },
+  "updated_at": "2026-07-06T22:25:49.726Z"
 }
