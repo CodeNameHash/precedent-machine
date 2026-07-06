@@ -6454,16 +6454,15 @@ function isMaeDefinitionProvision(p) {
  * unqualified MAE) → company. Used to split the MAE sidebar entry into two
  * clearly-labeled pages. */
 function maeDefinitionSide(p) {
-  const termAndText = [
-    definitionLabel(p),
-    p?.full_text,
-    p?.text,
-  ].filter(Boolean).join(' ');
-  if (/parent|buyer|acquir|purchaser/i.test(termAndText)) return 'parent';
-  if (/company|target/i.test(termAndText)) return 'company';
+  const term = String(definitionLabel(p) || '');
+  if (/parent|buyer|acquir|purchaser/i.test(term)) return 'parent';
+  if (/company|target/i.test(term)) return 'company';
   const cat = String(p?.category || '');
   const code = String((getAiMetadata(p) || {}).code || p?.code || '');
   if (/parent|buyer|acquir|purchaser/i.test(cat) || /parent|buyer|-B\b/i.test(code)) return 'parent';
+  const fallbackText = [p?.full_text, p?.text].filter(Boolean).join(' ');
+  if (/parent|buyer|acquir|purchaser/i.test(fallbackText)) return 'parent';
+  if (/company|target/i.test(fallbackText)) return 'company';
   return 'company';
 }
 

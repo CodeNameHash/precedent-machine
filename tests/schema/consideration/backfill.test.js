@@ -5,6 +5,7 @@ const {
   conversionNeedsReextraction,
   legacyProvisionFromRow,
   mentionedInstrumentCodes,
+  parseArgs,
 } = require('../../../scripts/backfill-consideration');
 const { buildConsiderationEquityProvision } = require('../../../lib/parser-v2/consideration-equity');
 
@@ -35,4 +36,12 @@ test('consideration backfill detects loose RSA and ESPP mentions as re-extractio
 
   assert.deepEqual(mentionedInstrumentCodes(row.full_text), new Set(['STOCK_OPTIONS', 'RSA', 'ESPP']));
   assert.equal(conversionNeedsReextraction(row, extracted), true);
+});
+
+test('consideration backfill supports clean-only mode', () => {
+  const args = parseArgs(['node', 'script', '--all', '--clean-only', '--apply']);
+
+  assert.equal(args.all, true);
+  assert.equal(args.cleanOnly, true);
+  assert.equal(args.apply, true);
 });

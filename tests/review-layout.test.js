@@ -152,9 +152,13 @@ test('MAE definition side detection reads the defined term before generic catego
   const start = reviewSrc.indexOf('function maeDefinitionSide(p)');
   assert.ok(start > 0);
   const body = reviewSrc.slice(start, reviewSrc.indexOf('/* P8 item 3', start));
+  const termIdx = body.indexOf('const term = String(definitionLabel(p)');
+  const fallbackIdx = body.indexOf('const fallbackText =');
 
   assert.match(body, /definitionLabel\(p\)/);
-  assert.match(body, /p\?\.full_text/);
+  assert.ok(termIdx > -1, 'defined term is inspected first');
+  assert.ok(fallbackIdx > termIdx, 'definition body is fallback only');
+  assert.match(body, /fallbackText/);
   assert.match(body, /parent\|buyer\|acquir\|purchaser/i);
   assert.match(body, /company\|target/i);
   assert.match(sidebarSrc, /Parent Material Adverse Effect/);

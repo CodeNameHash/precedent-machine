@@ -39,19 +39,20 @@ function loadDotEnvLocal() {
 }
 
 function parseArgs(argv) {
-  const args = { deal: null, all: false, apply: false };
+  const args = { deal: null, all: false, apply: false, cleanOnly: false };
   for (let i = 2; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--deal') args.deal = argv[++i];
     else if (a === '--all') args.all = true;
     else if (a === '--apply') args.apply = true;
+    else if (a === '--clean-only') args.cleanOnly = true;
     else {
       console.error(`Unknown arg: ${a}`);
       process.exit(1);
     }
   }
   if (!args.deal && !args.all) {
-    console.error('Usage: node scripts/backfill-consideration.js (--deal <substring> | --all) [--apply]');
+    console.error('Usage: node scripts/backfill-consideration.js (--deal <substring> | --all) [--clean-only] [--apply]');
     process.exit(1);
   }
   return args;
@@ -170,7 +171,7 @@ async function writeExtracted(sb, dealId, row, extracted, needsReextraction) {
   return provisionId;
 }
 
-async function backfillDeal(sb, deal, apply) {
+async function backfillDeal(sb, deal, apply, options = {}) {
   const rows = await fetchEquityRows(sb, deal.id);
   const results = [];
   for (const row of rows) {
@@ -180,6 +181,17 @@ async function backfillDeal(sb, deal, apply) {
       continue;
     }
     const needsReextraction = conversionNeedsReextraction(row, extracted);
+    if (options.cleanOnly && needsReextraction) {
+      results.push({
+        row_id: row.id,
+        skipped: true,
+        reason: 'needs re-extraction',
+        section_ref: extracted.sectionRef,
+        treatments: extracted.treatments.map((t) => t.instrumentType),
+        needs_reextraction: true,
+      });
+      continue;
+    }
     const summary = {
       row_id: row.id,
       section_ref: extracted.sectionRef,
@@ -201,9 +213,9 @@ async function main() {
   if (!url || !key) throw new Error('Supabase creds required');
   const sb = createClient(url, key);
   const deals = await fetchDeals(sb, args);
-  console.log(`Backfill consideration — ${deals.length} deal(s), ${args.apply ? 'APPLY' : 'dry-run'}`);
+  console.log(`Backfill consideration — ${deals.length} deal(s), ${args.apply ? 'APPLY' : 'dry-run'}${args.cleanOnly ? ', clean-only' : ''}`);
   for (const deal of deals) {
-    const result = await backfillDeal(sb, deal, args.apply);
+    const result = await backfillDeal(sb, deal, args.apply, { cleanOnly: args.cleanOnly });
     console.log(`${deal.acquirer || '?'} / ${deal.target || '?'} (${deal.id}): ${JSON.stringify(result)}`);
   }
 }
