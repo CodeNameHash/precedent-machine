@@ -34,19 +34,35 @@ export default function RegistryCard({ field, decision, onDecision, onPreview })
   }));
   const [saving, setSaving] = useState(false);
   const [preview, setPreview] = useState(null);
+  const [error, setError] = useState(null);
+
+  function validationError(nextDecision = draft.decision) {
+    if (nextDecision === 'merge' && !draft.merge_into.trim()) return 'Merge target required';
+    if (nextDecision === 'rename' && !draft.rename_to.trim()) return 'Rename target required';
+    if (nextDecision === 'defer' && !draft.defer_to_phase.trim()) return 'Deferral phase required';
+    return null;
+  }
 
   async function save(nextDecision) {
+    const invalid = validationError(nextDecision);
+    if (invalid) {
+      setError(invalid);
+      return;
+    }
     const payload = {
       key: field.key,
       decision: nextDecision || draft.decision,
-      merge_into: draft.merge_into,
-      rename_to: draft.rename_to,
-      defer_to_phase: draft.defer_to_phase,
+      merge_into: draft.merge_into.trim(),
+      rename_to: draft.rename_to.trim(),
+      defer_to_phase: draft.defer_to_phase.trim(),
     };
     setSaving(true);
+    setError(null);
     try {
       await onDecision(payload);
       setDraft((current) => ({ ...current, decision: payload.decision }));
+    } catch (err) {
+      setError(err.message || 'Decision save failed');
     } finally {
       setSaving(false);
     }
@@ -58,6 +74,7 @@ export default function RegistryCard({ field, decision, onDecision, onPreview })
   }
 
   const pending = !decision?.decision;
+  const currentValidation = validationError();
 
   return (
     <article data-testid="registry-card" className="rounded border border-border bg-white p-4 shadow-sm">
@@ -126,7 +143,10 @@ export default function RegistryCard({ field, decision, onDecision, onPreview })
           Decision
           <select
             value={draft.decision}
-            onChange={(event) => setDraft((current) => ({ ...current, decision: event.target.value }))}
+            onChange={(event) => {
+              setError(null);
+              setDraft((current) => ({ ...current, decision: event.target.value }));
+            }}
             className="mt-1 block w-full rounded border border-border bg-white px-2 py-1.5 text-sm text-ink focus:outline-none focus:ring-1 focus:ring-accent"
           >
             <option value="">Pending</option>
@@ -162,13 +182,16 @@ export default function RegistryCard({ field, decision, onDecision, onPreview })
         </label>
         <button
           type="button"
-          disabled={saving || !draft.decision}
+          disabled={saving || !draft.decision || Boolean(currentValidation)}
           onClick={() => save()}
           className="self-end rounded bg-accent px-3 py-2 text-xs font-ui text-white hover:bg-accent/90 disabled:opacity-40"
         >
           {saving ? 'Saving' : pending ? 'Save' : 'Update'}
         </button>
       </div>
+      {(error || currentValidation) && (
+        <div className="mt-3 text-xs font-ui text-seller">{error || currentValidation}</div>
+      )}
     </article>
   );
 }
