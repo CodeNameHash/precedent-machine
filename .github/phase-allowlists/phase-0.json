@@ -1,0 +1,24 @@
+{
+  "phase": "0",
+  "name": "schema-03-wireup-and-market-registry-generation",
+  "allowed": [
+    "docs/market-registry/generated-v1.json",
+    "docs/market-registry/generated-v1.md",
+    "lib/parser-v2/store-cards.js",
+    "lib/parser-v2/store.js",
+    "pages/api/parse/",
+    "components/review/ProvisionCardTable.jsx",
+    "pages/review/[id].js",
+    "lib/queries/review-deal.js",
+    "db/migrations/",
+    "tests/review/phase-0-card-model-wireup.spec.js",
+    "WORKLOG-P0.md"
+  ],
+  "denied": [
+    "scripts/lint/forbidden-patterns.sh",
+    ".github/phase-allowlists/*",
+    "docs/acks/*",
+    "docs/market-registry/FROZEN-*"
+  ],
+  "market_registry_additions": []
+}
