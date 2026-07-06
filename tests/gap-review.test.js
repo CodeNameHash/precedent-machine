@@ -117,12 +117,14 @@ test('buildGapDetails numbers document-order gaps with full text, contexts, head
       id: 'prov-intro',
       type: 'STRUCT',
       category: 'Intro',
+      ai_metadata: { features: { mainConcept: 'Parent will acquire the Company.' } },
       full_text: 'Section 1.01 Intro. Parent will acquire the Company at the Effective Time.',
     },
     {
       id: 'prov-notices',
       type: 'MISC',
       category: 'Notices',
+      ai_metadata: { features: { mainConcept: 'Notices must be delivered to listed parties.' } },
       full_text: 'Section 9.02 Notices. All notices must be in writing and delivered to the parties listed below.',
     },
   ];
@@ -143,7 +145,9 @@ test('buildGapDetails numbers document-order gaps with full text, contexts, head
   assert.equal(gaps[0].reviewable_gap, true);
   assert.equal(gaps[0].ignored_reason, null);
   assert.equal(gaps[0].adjacent_provisions.before.provision_id, 'prov-intro');
+  assert.equal(gaps[0].adjacent_provisions.before.main_concept, 'Parent will acquire the Company.');
   assert.equal(gaps[0].adjacent_provisions.after.provision_id, 'prov-notices');
+  assert.equal(gaps[0].adjacent_provisions.after.main_concept, 'Notices must be delivered to listed parties.');
 });
 
 test('buildGapDetails honours parser-supplied region type for definition annexes', () => {
@@ -217,6 +221,7 @@ test('buildUncodedDetails numbers non-canonical extracted provisions with full t
         features: {
           canonicalCode: '[PROPOSED] NOSOL-GOSHOP',
           sectionNumber: 'Annex-A',
+          mainConcept: { value: 'Company may run a 30-day go-shop.', quotes: ['go-shop quote'] },
         },
       },
       full_text: 'Section 5.03 Go-Shop. The Company may solicit Acquisition Proposals for 30 days.',
@@ -254,6 +259,7 @@ test('buildUncodedDetails numbers non-canonical extracted provisions with full t
   assert.equal(uncoded[0].section_number, 'Annex-A');
   assert.equal(uncoded[0].start_char, 298438);
   assert.equal(uncoded[0].region_type, REGION_TYPES.BODY_SECTION_DEFINITION);
+  assert.equal(uncoded[0].main_concept, 'Company may run a 30-day go-shop.');
   assert.match(uncoded[0].full_text, /Go-Shop/);
   assert.equal(uncoded[1].code, null);
   assert.match(uncoded[1].suggested_reason, /No canonical code/);

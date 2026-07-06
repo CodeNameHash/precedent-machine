@@ -29,3 +29,32 @@ test('admin gaps direct deal links skip the expensive summary auto-load', () => 
   assert.match(source, /if \(selectedDealId\) \{\s*setLoading\(false\);\s*setRows\(\[\]\);\s*setPagination\(null\);\s*return;\s*\}/);
   assert.match(source, /const showSummaryTable = !selectedDealId \|\| loading \|\| rows\.length > 0/);
 });
+
+test('admin gaps surfaces schema-backed main concepts in review items', () => {
+  const source = fs.readFileSync(path.join(__dirname, '..', 'pages/admin/gaps.js'), 'utf8');
+
+  assert.match(source, /function conceptText/);
+  assert.match(source, /function adjacentConcept/);
+  assert.match(source, /mainConcept: adjacentConcept\(gap\)/);
+  assert.match(source, /mainConcept: conceptText\(item\.main_concept\)/);
+  assert.match(source, /Main concept:/);
+  assert.match(source, /Adjacent provisions/);
+});
+
+test('review and compare feature fallback rendering use the schema renderer', () => {
+  const reviewSource = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
+  const compareSource = fs.readFileSync(path.join(__dirname, '..', 'pages', 'compare.js'), 'utf8');
+  const summarySource = fs.readFileSync(path.join(__dirname, '..', 'lib', 'schema', 'summary.js'), 'utf8');
+
+  assert.match(reviewSource, /renderFeatureValue as schemaRenderFeatureValue/);
+  assert.match(reviewSource, /schemaRenderFeatureValue\(featureKey, value\)/);
+  assert.match(reviewSource, /formatFeatureValue\(raw, featureKey\)/);
+  assert.match(compareSource, /renderFeatureValue as schemaRenderFeatureValue/);
+  assert.match(compareSource, /schemaRenderFeatureValue\(key, value\)/);
+  assert.match(reviewSource, /lib\/schema\/summary/);
+  assert.match(compareSource, /lib\/schema\/summary/);
+  assert.doesNotMatch(reviewSource, /import\s+\{ CATEGORY_SUMMARY_FEATURES \}\s+from ['"][^'"]*lib\/category-summary-features/);
+  assert.doesNotMatch(compareSource, /import\s+\{ CATEGORY_SUMMARY_FEATURES \}\s+from ['"][^'"]*lib\/category-summary-features/);
+  assert.match(summarySource, /getCategorySummaryRows/);
+  assert.match(summarySource, /primaryFeature/);
+});

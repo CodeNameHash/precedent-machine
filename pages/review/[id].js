@@ -9,7 +9,7 @@ import {
   parseFormattedDocument,
   stripFormattingMarkers,
 } from '../../lib/parser-v2/format-renderer';
-import { CATEGORY_SUMMARY_FEATURES } from '../../lib/category-summary-features';
+import { CATEGORY_SUMMARY_FEATURES } from '../../lib/schema/summary';
 import {
   CANONICAL_CONDITIONS_M,
   CANONICAL_CONDITIONS_B,
@@ -52,6 +52,7 @@ import {
 } from '../../lib/citable';
 import { normalizeTermfFeatures } from '../../lib/termf';
 import { getFeaturesForType, PROVISION_TYPES } from '../../lib/rubric';
+import { renderFeatureValue as schemaRenderFeatureValue } from '../../lib/schema';
 import { getDisplayAcquirer, getDisplayTarget } from '../../lib/deal-display';
 import { resolveEditFields } from '../../lib/edit-schema';
 import { isCanonicalCode } from '../../lib/expected-sets';
@@ -272,12 +273,22 @@ const STATUS = {
 
 
 
-function formatFeatureValue(v) {
+function schemaFeatureText(featureKey, value) {
+  if (!featureKey) return null;
+  const rendered = schemaRenderFeatureValue(featureKey, value);
+  if (rendered === null || rendered === undefined || rendered === '') return null;
+  if (rendered && typeof rendered === 'object' && rendered.kind === 'empty') return null;
+  return String(rendered);
+}
+
+function formatFeatureValue(v, featureKey) {
   if (v === null || v === undefined) return null;
   // Citable shape { value, text } — unwrap to the inner value. Tagged items
   // have `code` so they're distinguished from citable wraps.
-  if (isCitableValue(v)) return formatFeatureValue(v.value);
+  if (isCitableValue(v)) return formatFeatureValue(v.value, featureKey);
   if (typeof v === 'boolean') return v ? 'Yes' : 'No';
+  const schemaRendered = schemaFeatureText(featureKey, v);
+  if (schemaRendered) return schemaRendered;
   if (Array.isArray(v)) return v;
   return String(v);
 }
@@ -3367,7 +3378,7 @@ function formatCellValue(featureKey, raw) {
     const withUnits = formatDurationWithUnits(raw, featureKey);
     if (withUnits) return withUnits;
   }
-  const v = formatFeatureValue(raw);
+  const v = formatFeatureValue(raw, featureKey);
   if (v === null || v === undefined || v === '') return null;
   // FIX BATCH item 4: this is the generic per-provision feature-cell path
   // (distinct from renderSummaryRowValue's NosolFourTables path) — route any
