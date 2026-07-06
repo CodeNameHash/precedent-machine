@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { typeHex, typeLabel } from './shared';
 
@@ -50,6 +50,18 @@ function FlagList({ flags }) {
 
 function fullTextForItem(item) {
   return item.full_text || item.text || item.preview || 'No text.';
+}
+
+function issueRank(item) {
+  if (!Array.isArray(item && item.flags)) return 0;
+  if (item.flags.some((flag) => flag && flag.severity === 'error')) return 2;
+  if (item.flags.some((flag) => flag && flag.severity === 'warn')) return 1;
+  return 0;
+}
+
+function sourceStart(item) {
+  const n = Number(item && item.start);
+  return Number.isFinite(n) ? n : Number.POSITIVE_INFINITY;
 }
 
 function BoundaryRow({ item, onEditProvision, dealId }) {
@@ -132,8 +144,9 @@ function UnlocatedRow({ item, onEditProvision }) {
   );
 }
 
-export function BoundaryAuditPanel({ open, dealId, onClose, onEditProvision }) {
+export function BoundaryAuditPanel({ open, dealId, editing = false, onClose, onEditProvision }) {
   const [state, setState] = useState({ loading: false, error: null, data: null });
+  const [sortMode, setSortMode] = useState('source');
 
   useEffect(() => {
     if (!open || !dealId) return undefined;
@@ -156,17 +169,24 @@ export function BoundaryAuditPanel({ open, dealId, onClose, onEditProvision }) {
   const items = Array.isArray(audit && audit.items) ? audit.items : [];
   const unlocated = Array.isArray(audit && audit.unlocated) ? audit.unlocated : [];
   const summary = audit && audit.summary ? audit.summary : {};
+  const sortedItems = useMemo(() => {
+    if (sortMode !== 'issues') return items;
+    return [...items].sort((a, b) => {
+      const rank = issueRank(b) - issueRank(a);
+      if (rank !== 0) return rank;
+      return sourceStart(a) - sourceStart(b);
+    });
+  }, [items, sortMode]);
   const handleEditProvision = (provisionId) => {
     if (onEditProvision) onEditProvision(provisionId);
-    if (onClose) onClose();
   };
 
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[72] flex justify-end">
-      <button type="button" aria-label="Close boundary audit" className="absolute inset-0 bg-black/30" onClick={onClose} />
-      <aside className="relative z-[73] flex h-full w-full max-w-[1040px] flex-col border-l border-line bg-bg shadow-2xl" role="dialog" aria-modal="true" aria-label="Boundary audit">
+    <div className={`fixed inset-y-0 left-0 z-[72] flex ${editing ? 'right-0 md:right-[400px]' : 'right-0 justify-end'}`}>
+      {!editing && <button type="button" aria-label="Close boundary audit" className="absolute inset-0 bg-black/30" onClick={onClose} />}
+      <aside className={`relative z-[73] flex h-full w-full flex-col bg-bg shadow-2xl ${editing ? 'border-r border-line md:shadow-xl' : 'max-w-[1040px] border-l border-line'}`} role="dialog" aria-modal="true" aria-label="Boundary audit">
         <div className="flex items-center justify-between gap-3 border-b border-line bg-surface px-4 py-3">
           <div className="min-w-0">
             <p className="font-ui text-[10px] uppercase tracking-wider text-inkFaint">Boundary audit</p>
@@ -203,11 +223,30 @@ export function BoundaryAuditPanel({ open, dealId, onClose, onEditProvision }) {
               </div>
 
               <section className="space-y-2">
-                <h3 className="font-ui text-[11px] font-semibold uppercase tracking-wider text-inkMid">Source order</h3>
-                {items.map((item) => (
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <h3 className="font-ui text-[11px] font-semibold uppercase tracking-wider text-inkMid">
+                    {sortMode === 'issues' ? 'Issues first' : 'Source order'}
+                  </h3>
+                  <div className="inline-flex rounded border border-border bg-white p-0.5 font-ui text-[10px]">
+                    {[
+                      ['source', 'Source order'],
+                      ['issues', 'Issues first'],
+                    ].map(([mode, label]) => (
+                      <button
+                        key={mode}
+                        type="button"
+                        onClick={() => setSortMode(mode)}
+                        className={`rounded px-2 py-1 ${sortMode === mode ? 'bg-accent text-white' : 'text-inkMid hover:text-accent'}`}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                {sortedItems.map((item) => (
                   <BoundaryRow key={`${item.kind}-${item.id}-${item.start || item.provision_id}`} item={item} onEditProvision={handleEditProvision} dealId={dealId} />
                 ))}
-                {items.length === 0 && <div className="rounded border border-border bg-white p-4 font-ui text-sm text-inkFaint">No boundary audit data.</div>}
+                {sortedItems.length === 0 && <div className="rounded border border-border bg-white p-4 font-ui text-sm text-inkFaint">No boundary audit data.</div>}
               </section>
 
               {unlocated.length > 0 && (

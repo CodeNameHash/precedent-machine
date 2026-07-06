@@ -11736,6 +11736,7 @@ export default function ReviewPage() {
         <BoundaryAuditPanel
           open={boundaryAuditOpen}
           dealId={dealId}
+          editing={!!editingProvision}
           onClose={() => setBoundaryAuditOpen(false)}
           onEditProvision={handleEditProvisionById}
         />
