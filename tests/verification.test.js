@@ -21,6 +21,12 @@ test('normalizeForMatch strips pipeline markers and stray space-before-punctuati
   );
 });
 
+test('normalizeForMatch aligns display heading pipes with parser heading punctuation', () => {
+  const source = normalizeForMatch('[[REF]]Section 2.8[[/REF]]|Financial Statements. (a)Each statement is true.');
+  const provision = normalizeForMatch('Section 2.8. Financial Statements. (a)Each statement is true.');
+  assert.equal(source.includes(provision), true);
+});
+
 test('normalizeForMatch removes quote marks/apostrophes, normalizes dashes/whitespace', () => {
   assert.equal(
     normalizeForMatch('“Company’s  best\n efforts” — always'),
@@ -462,6 +468,18 @@ test('attached charter/bylaws exhibit is excluded from the coverage denominator'
   const regions = detectAncillaryRegions(norm);
   assert.equal(regions.length, 1);
   assert.ok(/articles of incorporation/.test(regions[0][2]));
+});
+
+test('signature-page certificate-of-designations stack is excluded from coverage denominator', () => {
+  const body = 'Section 9.1 Amendments. This Transaction Agreement may be amended only by written instrument. '.repeat(300);
+  const signaturePages = '[Signature Page to Transaction Agreement] By: /s/ Officer Name: Officer Title: Chief Financial Officer '.repeat(40);
+  const cert = 'Exhibit A Certificate of Designations of Series A Cumulative Redeemable Preferred Stock. The corporation does hereby certify that the board of directors created a series of preferred stock. '.repeat(120);
+  const taxReceivable = 'Tax Receivable Agreement. This Tax Receivable Agreement is made and entered into by and among the parties. '.repeat(80);
+  const norm = normalizeForMatch(`${body} ${signaturePages} ${cert} ${taxReceivable}`);
+  const regions = detectAncillaryRegions(norm);
+  assert.equal(regions.length, 1);
+  assert.ok(/certificate of designations/.test(regions[0][2]));
+  assert.ok(norm.slice(regions[0][0], regions[0][0] + 80).includes('signature page to transaction agreement'));
 });
 
 test('detectAncillaryRegions: def-appendix mid-tail carves out ONLY the appendix (Kraft shape)', () => {

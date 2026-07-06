@@ -6,6 +6,11 @@ const { createClaudeCliClient, createCodexCliClient } = require('../lib/llm-cli-
 const { prepareDealForIngest, loadDotEnvLocal } = require('./ingest-local');
 const { qaOneDeal } = require('./ingest-qa');
 const { runExtractTypePhase, markExtractFailed } = require('../lib/parser-v2/run-extract');
+const { backfillSectionLeftovers } = require('../lib/parser-v2/extract');
+const { cleanText } = require('../lib/parser-v2/structural');
+const { sectionsForExtractFromSnapshot } = require('../lib/parser-v2/snapshot');
+const { storeProvisionsForType } = require('../lib/parser-v2/store');
+const { validateProvisions } = require('../lib/parser-v2/validate');
 
 const PAGE_SIZE = 1000;
 const DEFAULT_MODEL = 'gpt-5.5';
@@ -218,11 +223,21 @@ async function updateCandidate(sb, candidateId, updates) {
 }
 
 async function findExistingDealBySourceUrl(sb, url) {
+  const sourceUrl = String(url || '').trim();
+  if (!sourceUrl) return null;
+
+  const filtered = await sb
+    .from('deals')
+    .select('id,acquirer,target,metadata')
+    .eq('metadata->>source_url', sourceUrl)
+    .limit(1);
+  if (!filtered.error) return (filtered.data && filtered.data[0]) || null;
+
   const { data, error } = await sb.from('deals').select('id,acquirer,target,metadata');
   if (error) throw new Error(`Existing deal check failed: ${error.message}`);
   return (data || []).find((deal) => {
     const meta = deal && deal.metadata && typeof deal.metadata === 'object' ? deal.metadata : {};
-    return String(meta.source_url || '').trim() === String(url || '').trim();
+    return String(meta.source_url || '').trim() === sourceUrl;
   }) || null;
 }
 
@@ -311,6 +326,79 @@ async function fetchAllProvisions(sb, dealId) {
   return out;
 }
 
+async function fetchProvisionRowsForBackfill(sb, dealId) {
+  const out = [];
+  let offset = 0;
+  for (;;) {
+    const { data, error } = await sb
+      .from('provisions')
+      .select('id, type, category, full_text, ai_favorability, ai_metadata')
+      .eq('deal_id', dealId)
+      .range(offset, offset + PAGE_SIZE - 1);
+    if (error) throw new Error(`Provision backfill fetch failed: ${error.message}`);
+    out.push(...(data || []));
+    if (!data || data.length < PAGE_SIZE) break;
+    offset += PAGE_SIZE;
+  }
+  return out.filter((row) => !['OTHER', 'SECTION-LEFTOVER'].includes(row && row.type));
+}
+
+function dbProvisionToParserProvision(row) {
+  const meta = row && row.ai_metadata && typeof row.ai_metadata === 'object' ? row.ai_metadata : {};
+  const features = meta.features && typeof meta.features === 'object' ? meta.features : {};
+  const startChar = typeof meta.startChar === 'number'
+    ? meta.startChar
+    : (typeof meta.start_char === 'number' ? meta.start_char : null);
+  return {
+    type: row.type,
+    code: meta.code || features.canonicalCode || null,
+    category: row.category || 'Unclassified',
+    text: row.full_text || '',
+    full_text: row.full_text || '',
+    startChar,
+    favorability: row.ai_favorability || 'neutral',
+    features,
+    relatedDefinitions: Array.isArray(meta.relatedDefinitions) ? meta.relatedDefinitions : [],
+    isNewCode: Boolean(meta.isNewCode),
+    proposedCode: meta.proposedCode || null,
+    proposedLabel: meta.proposedLabel || null,
+  };
+}
+
+async function refreshCoverageBackfillsForDeal(sb, deal) {
+  const metadata = deal && deal.metadata && typeof deal.metadata === 'object' ? deal.metadata : {};
+  const classified = Array.isArray(metadata.classified_sections) ? metadata.classified_sections : [];
+  const fullText = cleanText(metadata.full_text || '');
+  if (!deal || !deal.id || !fullText || classified.length === 0) {
+    return { skipped: true, reason: 'missing-full-text-or-classified-sections' };
+  }
+
+  const sections = sectionsForExtractFromSnapshot(classified);
+  const typedProvisions = (await fetchProvisionRowsForBackfill(sb, deal.id))
+    .map(dbProvisionToParserProvision)
+    .filter((provision) => provision.text);
+
+  backfillSectionLeftovers(sections, typedProvisions);
+  const validation = validateProvisions(typedProvisions, fullText, sections);
+  const backfills = ((validation && validation.provisions) || typedProvisions)
+    .filter((provision) =>
+      provision &&
+      provision.backfilled === true &&
+      ['OTHER', 'SECTION-LEFTOVER'].includes(provision.type)
+    );
+
+  const storeResult = await storeProvisionsForType(deal.id, 'OTHER', backfills, sb);
+  return {
+    skipped: false,
+    sections_checked: sections.length,
+    typed_provisions: typedProvisions.filter((p) => !['OTHER', 'SECTION-LEFTOVER'].includes(p.type)).length,
+    backfills: backfills.length,
+    inserted: storeResult.insertedCount || 0,
+    deleted: storeResult.deletedCount || 0,
+    errors: storeResult.errors || null,
+  };
+}
+
 async function stampProvisionMetadata(sb, dealId, seed) {
   const provisions = await fetchAllProvisions(sb, dealId);
   for (const provision of provisions) {
@@ -366,6 +454,15 @@ async function handlePrepare(sb, client, job, args) {
   await updateCandidate(sb, job.candidate_id, { status: 'queued', skip_reason: null, last_error: null });
   const result = await prepareDealForIngest(sb, client, url, { seed_ingest: seedMetadata(job, args) });
   await propagateDealId(sb, job, result.deal_id);
+  if (result && result.skipped) {
+    await updateCandidate(sb, job.candidate_id, {
+      status: 'ingested',
+      ingested_deal_id: result.deal_id,
+      skip_reason: result.reason || null,
+      last_error: null,
+    });
+    await markDownstreamSucceeded(sb, job, result);
+  }
   return result;
 }
 
@@ -385,8 +482,9 @@ async function handleFamily(sb, client, job) {
 async function handleQa(sb, job) {
   const dealId = await resolveDealId(sb, job);
   const deal = await fetchDeal(sb, dealId);
+  const coverageBackfill = await refreshCoverageBackfillsForDeal(sb, deal);
   const ok = await qaOneDeal(sb, deal, null);
-  const result = { deal_id: dealId, ok };
+  const result = { deal_id: dealId, ok, coverage_backfill: coverageBackfill };
   await insertArtifact(sb, job, 'qa-result', ok ? 'QA passed' : 'QA needs review', result);
   if (!ok) {
     await updateCandidate(sb, job.candidate_id, {
@@ -520,13 +618,16 @@ async function main() {
 module.exports = {
   CLAIMABLE_KINDS,
   createLlmClient,
+  dbProvisionToParserProvision,
   handleFamily,
   handleFinalize,
   handlePrepare,
   handleQa,
   hasRunningJobs,
+  findExistingDealBySourceUrl,
   jobUrl,
   parseArgs,
+  refreshCoverageBackfillsForDeal,
   resolveDealId,
   seedMetadata,
   serviceSupabase,

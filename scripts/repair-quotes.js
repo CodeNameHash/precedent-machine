@@ -235,13 +235,13 @@ function findRawSpan(raw, normSource, ns, ne) {
       let s = a;
       let e = b;
       for (;;) {
-        const lead = raw.slice(s, e).match(/^(?:\[\[\/?[A-Z_]+\]\]|[\s«»])+/);
+        const lead = raw.slice(s, e).match(/^(?:\[\[\/?[A-Za-z0-9_ -]+\]\]|[\s«»])+/);
         if (lead && normalizeForMatch(raw.slice(s + lead[0].length, e)) === target) { s += lead[0].length; continue; }
         if (s < e && normalizeForMatch(raw.slice(s + 1, e)) === target) { s += 1; continue; }
         break;
       }
       for (;;) {
-        const tail = raw.slice(s, e).match(/(?:\[\[\/?[A-Z_]+\]\]|[\s«»])+$/);
+        const tail = raw.slice(s, e).match(/(?:\[\[\/?[A-Za-z0-9_ -]+\]\]|[\s«»])+$/);
         if (tail && normalizeForMatch(raw.slice(s, e - tail[0].length)) === target) { e -= tail[0].length; continue; }
         if (e > s && normalizeForMatch(raw.slice(s, e - 1)) === target) { e -= 1; continue; }
         break;
@@ -258,7 +258,8 @@ function findRawSpan(raw, normSource, ns, ne) {
 // sides), so this never changes whether the quote verifies.
 function stripPipelineMarkers(s) {
   return s
-    .replace(/\[\[\/?[A-Z_]+\]\]/g, '')
+    .replace(/\[\[\/?[A-Za-z0-9_ -]+\]\]/g, '')
+    .replace(/\[\[\/?[A-Za-z0-9_ -]*$/g, '')
     .replace(/[«»]/g, '')
     .replace(/ {2,}/g, ' ')
     .trim();

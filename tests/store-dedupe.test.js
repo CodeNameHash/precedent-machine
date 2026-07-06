@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { dedupeProvisions, storeProvisionsForType } = require('../lib/parser-v2/store');
+const { cleanProvisionText, dedupeProvisions, expandTypeGroupForStore, storeProvisionsForType } = require('../lib/parser-v2/store');
 
 test('dedupeProvisions keeps the first byte-identical provision', () => {
   const provisions = [
@@ -18,6 +18,27 @@ test('dedupeProvisions ignores section markers and whitespace', () => {
   ];
 
   assert.deepEqual(dedupeProvisions(provisions), [provisions[0]]);
+});
+
+test('cleanProvisionText strips display markers from stored provision text', () => {
+  assert.equal(
+    cleanProvisionText({
+      full_text: '[[DEFINED]]"Final Order"[[/DEFINED]] means an order that is final. [[REF]]Section 6.03[[/REF]] applies.',
+    }),
+    '"Final Order" means an order that is final. Section 6.03 applies.',
+  );
+  assert.equal(
+    cleanProvisionText({
+      full_text: '"Intellectual Property Rights"[[/D',
+    }),
+    '"Intellectual Property Rights"',
+  );
+  assert.equal(
+    cleanProvisionText({
+      full_text: 'subject to the terms of [[REF]',
+    }),
+    'subject to the terms of',
+  );
 });
 
 test('dedupeProvisions keeps same-category provisions with different text', () => {
@@ -46,6 +67,10 @@ test('dedupeProvisions never merges empty or missing full_text provisions', () =
   ];
 
   assert.deepEqual(dedupeProvisions(provisions), provisions);
+});
+
+test('OTHER storage owns both catch-all coverage row types', () => {
+  assert.deepEqual(expandTypeGroupForStore('OTHER'), ['OTHER', 'SECTION-LEFTOVER']);
 });
 
 const { differentiateCategories } = require('../lib/parser-v2/store');
@@ -170,4 +195,30 @@ test('storeProvisionsForType dedupes exact duplicate provisions before insert', 
   assert.equal(result.insertedCount, 1);
   assert.equal(sb.inserted.length, 1);
   assert.equal(sb.inserted[0].category, 'Accounting Changes');
+});
+
+test('storeProvisionsForType strips display markers before insert', async () => {
+  const source = '"Final Order" means an order that is final.';
+  const sb = fakeStoreSupabase(source);
+
+  const result = await storeProvisionsForType('deal-1', 'DEF', [
+    {
+      type: 'DEF',
+      code: 'DEF-GENERAL',
+      category: 'Final Order',
+      text: '[[DEFINED]]"Final Order"[[/DEFINED]] means an order that is final.',
+      favorability: 'neutral',
+      features: {
+        canonicalTerm: 'Final Order',
+        definitionText: '[[DEFINED]]"Final Order"[[/DEFINED]] means an order that is final.',
+      },
+    },
+  ], sb);
+
+  assert.equal(result.insertedCount, 1);
+  assert.equal(sb.inserted[0].full_text, '"Final Order" means an order that is final.');
+  assert.equal(
+    sb.inserted[0].ai_metadata.features.definitionText,
+    '"Final Order" means an order that is final.',
+  );
 });

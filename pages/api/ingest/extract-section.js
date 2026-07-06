@@ -26,6 +26,7 @@ import { getServiceSupabase } from '../../../lib/supabase';
 const {
   extractProvisionsForType,
 } = require('../../../lib/parser-v2/extract');
+const { cleanText } = require('../../../lib/parser-v2/structural');
 
 export const config = {
   maxDuration: 60,
@@ -62,7 +63,7 @@ export default async function handler(req, res) {
     if (!classified) {
       throw Object.assign(new Error('No classified_sections — run /api/ingest/classify first'), { statusCode: 404 });
     }
-    const cleaned = metadata.full_text || '';
+    const cleaned = cleanText(metadata.full_text || '');
 
     // ── 2. Locate target section by sectionId (or by exact startChar) ──
     // sectionId is "section-<startChar>" per classify.js.

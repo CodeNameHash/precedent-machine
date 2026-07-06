@@ -10109,8 +10109,9 @@ export default function ReviewPage() {
   // When set, sidebar single-provision click filters the main view to just that one provision
   const [selectedProvId, setSelectedProvId] = useState(null);
 
-  /* ── Tab state: "provisions" or "document" ── */
+  /* ── Main surface + full-document overlay state ── */
   const [activeTab, setActiveTab] = useState('provisions');
+  const [fullDocOpen, setFullDocOpen] = useState(false);
   const pushReviewRoute = useCallback((patch = {}) => {
     if (!router.isReady || !dealId) return;
     const current = parseReviewRouteQuery(router.query);
@@ -10126,13 +10127,27 @@ export default function ReviewPage() {
    *    Set by EvidenceQuote click; consumed by FullDocumentView. */
   const [highlightedQuote, setHighlightedQuote] = useState(null);
   const [highlightedQuoteNonce, setHighlightedQuoteNonce] = useState(0);
-  const showEvidence = useCallback((quote) => {
-    if (!quote || typeof quote !== 'string') return;
-    setHighlightedQuote(quote);
-    setHighlightedQuoteNonce((n) => n + 1);
-    setActiveTab('document');
+  const openFullDocument = useCallback((quote = null) => {
+    if (quote && typeof quote === 'string') {
+      setHighlightedQuote(quote);
+      setHighlightedQuoteNonce((n) => n + 1);
+    }
+    setActiveTab('provisions');
+    setFullDocOpen(true);
     pushReviewRoute({ tab: 'document' });
   }, [pushReviewRoute]);
+  const closeFullDocument = useCallback(() => {
+    setFullDocOpen(false);
+    setSelectionMode(null);
+    setReselectingProvId(null);
+    setReselectingProvLabel('');
+    setActiveTab('provisions');
+    pushReviewRoute({ tab: null });
+  }, [pushReviewRoute]);
+  const showEvidence = useCallback((quote) => {
+    if (!quote || typeof quote !== 'string') return;
+    openFullDocument(quote);
+  }, [openFullDocument]);
 
   /* P5 item 7: evidence selection-mode state. When `selectionMode` is set,
    * the FullDocumentView listens for mouse-up + selection and, on Confirm,
@@ -10144,13 +10159,13 @@ export default function ReviewPage() {
   const [selectionMode, setSelectionMode] = useState(null);
   const startSelectionMode = useCallback(({ onSelect, label }) => {
     setSelectionMode({ active: true, onSelect, label: label || 'evidence' });
-    setActiveTab('document');
-    pushReviewRoute({ tab: 'document' });
-  }, [pushReviewRoute]);
+    openFullDocument();
+  }, [openFullDocument]);
   const endSelectionMode = useCallback(() => {
     setSelectionMode(null);
+    setFullDocOpen(false);
     setActiveTab('provisions');
-    pushReviewRoute({ tab: 'provisions' });
+    pushReviewRoute({ tab: null });
   }, [pushReviewRoute]);
 
   /* ── FB3 Surface 2: "see text" in-place document pop-under. Opened by any
@@ -10166,6 +10181,14 @@ export default function ReviewPage() {
   const closeSeeText = useCallback(() => {
     setDocSheet((s) => ({ ...s, open: false }));
   }, []);
+  useEffect(() => {
+    if (!fullDocOpen) return undefined;
+    const handleKey = (event) => {
+      if (event.key === 'Escape') closeFullDocument();
+    };
+    document.addEventListener('keydown', handleKey);
+    return () => document.removeEventListener('keydown', handleKey);
+  }, [fullDocOpen, closeFullDocument]);
   const dealNavCtxValue = useMemo(
     () => ({ dealId, openSeeText }),
     [dealId, openSeeText],
@@ -10210,6 +10233,7 @@ export default function ReviewPage() {
 
   // Per-section collapse state — keyed by provision type. Default: all expanded.
   const [collapsedSections, setCollapsedSections] = useState(() => new Set());
+  const collapseHydratedDealRef = useRef(null);
   const toggleSectionCollapse = useCallback((type) => {
     setCollapsedSections((prev) => {
       const next = new Set(prev);
@@ -10522,6 +10546,40 @@ export default function ReviewPage() {
     );
   }, [filteredProvisions]);
 
+  useEffect(() => {
+    if (!dealId || collapseHydratedDealRef.current === dealId) return;
+    const sectionKeys = Object.keys(filteredProvsByType);
+    if (sectionKeys.length === 0) return;
+    collapseHydratedDealRef.current = dealId;
+    const storageKey = `pm.review.collapsedSections.${dealId}`;
+    try {
+      const saved = window.localStorage.getItem(storageKey);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          const valid = parsed.filter((key) => sectionKeys.includes(key));
+          setCollapsedSections(new Set(valid));
+          return;
+        }
+      }
+    } catch {
+      // fall back to default collapsed state
+    }
+    setCollapsedSections(new Set(sectionKeys));
+  }, [dealId, filteredProvsByType]);
+
+  useEffect(() => {
+    if (!dealId || collapseHydratedDealRef.current !== dealId) return;
+    try {
+      window.localStorage.setItem(
+        `pm.review.collapsedSections.${dealId}`,
+        JSON.stringify([...collapsedSections]),
+      );
+    } catch {
+      // localStorage can be unavailable in private or test contexts
+    }
+  }, [dealId, collapsedSections]);
+
   // Derive the IOC side-gate from the ACTIVE FILTER, not from each loop's
   // type. A direct child click sets activeFilter to a single string and we
   // gate the off side. A parent-group click sets it to an array (or null),
@@ -10595,9 +10653,12 @@ export default function ReviewPage() {
       if (type.length === 0) next = null;
       else if (type.length === 1) next = type[0];
     }
+    setFullDocOpen(false);
+    setDocSheet((s) => (s.open ? { ...s, open: false } : s));
+    setActiveTab('provisions');
     setActiveFilter(next);
     setSelectedProvId(null); // clear single-provision view when changing type filter
-    pushReviewRoute({ section: next, provisionId: null });
+    pushReviewRoute({ section: next, provisionId: null, tab: null });
   }, [pushReviewRoute]);
 
   /* ── Sidebar provision click — show ONLY that provision in the main view ── */
@@ -10610,12 +10671,18 @@ export default function ReviewPage() {
     // synthetic Material Contracts page so it renders exactly like its own
     // top-level section.
     if (prov && isMaterialContractsProvision(prov)) {
+      setFullDocOpen(false);
+      setDocSheet((s) => (s.open ? { ...s, open: false } : s));
+      setActiveTab('provisions');
       setSelectedProvId(null);
       setActiveFilter('__MATERIAL_CONTRACTS');
       setExpandedLabel(null);
-      pushReviewRoute({ section: '__MATERIAL_CONTRACTS', provisionId: null });
+      pushReviewRoute({ section: '__MATERIAL_CONTRACTS', provisionId: null, tab: null });
       return;
     }
+    setFullDocOpen(false);
+    setDocSheet((s) => (s.open ? { ...s, open: false } : s));
+    setActiveTab('provisions');
     setSelectedProvId(provId);
     if (prov) {
       setActiveFilter(displayTypeForProvision(prov, provisions));
@@ -10629,6 +10696,7 @@ export default function ReviewPage() {
         section: null,
         provisionId: prov.id,
         editProvisionId: isEdit ? prov.id : null,
+        tab: null,
       });
     }
   }, [provisions, isEdit, pushReviewRoute]);
@@ -10668,7 +10736,20 @@ export default function ReviewPage() {
   useEffect(() => {
     if (!router.isReady) return;
     const route = parseReviewRouteQuery(router.query);
-    if (route.tab && route.tab !== activeTab) setActiveTab(route.tab);
+    if (route.tab === 'document') {
+      setFullDocOpen(true);
+      if (activeTab !== 'provisions') setActiveTab('provisions');
+    } else {
+      if (fullDocOpen) setFullDocOpen(false);
+      if (selectionMode) setSelectionMode(null);
+      if (reselectingProvId) {
+        setReselectingProvId(null);
+        setReselectingProvLabel('');
+      }
+      if (route.tab && route.tab !== activeTab) {
+        setActiveTab(route.tab);
+      }
+    }
     if (provsLoading) return;
 
     let nextFilter = null;
@@ -11013,7 +11094,7 @@ export default function ReviewPage() {
               activeFilter={activeFilter}
               onFilterType={handleFilterType}
               onSelectProvision={handleSidebarSelectProvision}
-              activeProvId={selectedProvId || editingProvision?.id}
+              activeProvId={selectedProvId}
               onMoveProvision={handleMoveProvision}
               onClose={() => setSidebarOpen(false)}
             />
@@ -11188,27 +11269,31 @@ export default function ReviewPage() {
               )}
             </div>
 
-            {/* Tab System */}
+            {/* Review toolbar */}
             {provisions.length > 0 && (
-              <div className="rec-tabs">
+              <div
+                className="sticky top-0 z-20 mb-4 flex flex-wrap items-center justify-between gap-2 border-b border-line bg-bg/95 py-2 backdrop-blur"
+              >
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setCollapsedSections(new Set())}
+                    className="rounded border border-border bg-white px-2.5 py-1 text-[11px] font-ui text-inkLight hover:border-accent hover:text-ink"
+                  >
+                    Expand all
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCollapsedSections(new Set(Object.keys(filteredProvsByType)))}
+                    className="rounded border border-border bg-white px-2.5 py-1 text-[11px] font-ui text-inkLight hover:border-accent hover:text-ink"
+                  >
+                    Collapse all
+                  </button>
+                </div>
                 <button
                   type="button"
-                  onClick={() => {
-                    setActiveTab('provisions');
-                    pushReviewRoute({ tab: 'provisions' });
-                  }}
-                  className={`rec-tab${activeTab === 'provisions' ? ' active' : ''}`}
-                >
-                  Provisions
-                  <span className="badge-no">{provisions.length}</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setActiveTab('document');
-                    pushReviewRoute({ tab: 'document' });
-                  }}
-                  className={`rec-tab${activeTab === 'document' ? ' active' : ''}`}
+                  onClick={() => openFullDocument()}
+                  className="rounded border border-border bg-white px-3 py-1.5 text-xs font-ui font-medium text-ink hover:border-accent hover:text-accent"
                   title={hasSource ? 'Raw agreement text with provision highlights' : 'Raw text not stored yet — re-ingest to populate'}
                 >
                   Full Document
@@ -11219,68 +11304,13 @@ export default function ReviewPage() {
               </div>
             )}
 
-            {/* Filter chip */}
-            {activeFilter && (() => {
-              const isMulti = Array.isArray(activeFilter);
-              let label;
-              if (isMulti) {
-                const sorted = [...activeFilter].sort().join(',');
-                const match = SIDEBAR_GROUPS.find((g) => {
-                  const childTypes = g.children
-                    ? g.children.map((c) => c.type)
-                    : (g.types || []);
-                  return [...childTypes].sort().join(',') === sorted;
-                });
-                label = match ? `${match.label} (all)` : activeFilter.map(typeLabel).join(' + ');
-              } else {
-                label = typeLabel(activeFilter);
-              }
-              return (
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 10,
-                    marginBottom: 18,
-                    marginTop: -6,
-                  }}
-                >
-                  <span
-                    style={{
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: 11,
-                      color: 'var(--ink-light)',
-                      letterSpacing: '.04em',
-                    }}
-                  >
-                    Filtered · {label}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => handleFilterType(null)}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      color: 'var(--accent-deep)',
-                      cursor: 'pointer',
-                      fontSize: 12,
-                      fontFamily: 'var(--font-mono)',
-                    }}
-                  >
-                    clear
-                  </button>
-                </div>
-              );
-            })()}
-
             {/* Tab Content */}
             {provisions.length > 0 ? (
               <>
                 {/* Provisions Tab */}
-                {activeTab === 'provisions' && (
-                  <div className="space-y-4">
+                <div className="space-y-4">
 
-                    {Object.entries(filteredProvsByType).map(([type, provsRaw], typeIdx) => {
+                    {Object.entries(filteredProvsByType).map(([type, provsRaw]) => {
                       // Alphabetical sort for DEF so definitions read like a glossary.
                       const provs = type === 'DEF'
                         ? [...provsRaw].sort((a, b) =>
@@ -11389,9 +11419,10 @@ export default function ReviewPage() {
                             className="rec-type-head w-full text-left cursor-pointer"
                             aria-expanded={!isCollapsed}
                           >
-                            <span className="ix">{String(typeIdx + 1).padStart(2, '0')}</span>
                             <span className="th-dot" style={{ background: typeHex(type) }} />
                             <h2>{typeLabel(type)}</h2>
+                            <span className="rec-section-slot" aria-hidden="true" />
+                            <span className="rec-section-slot" aria-hidden="true" />
                             {considerationHeadlineType === 'MIXED_ELECTION' && (
                               <span className="inline-flex items-center font-ui font-semibold text-[10px] px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase tracking-wider">
                                 Cash/Stock Election
@@ -11565,25 +11596,6 @@ export default function ReviewPage() {
                       </div>
                     )}
                   </div>
-                )}
-
-                {/* Full Document Tab — raw agreement text with highlighted provisions */}
-                {activeTab === 'document' && (
-                  <FullDocumentView
-                    sourceText={hasSource ? agreementSource.full_text : null}
-                    title={hasSource ? agreementSource.title : null}
-                    provisions={filteredProvisions}
-                    onEditProvision={handleEditProvision}
-                    hoveredProvId={hoveredProvId}
-                    onHoverProv={setHoveredProvId}
-                    isReselecting={!!reselectingProvId}
-                    reselectingProvLabel={reselectingProvLabel}
-                    onConfirmReselect={handleConfirmReselect}
-                    onCancelReselect={handleCancelReselect}
-                    highlightedQuote={highlightedQuote}
-                    highlightedQuoteNonce={highlightedQuoteNonce}
-                  />
-                )}
               </>
             ) : (
               <EmptyState
@@ -11660,6 +11672,52 @@ export default function ReviewPage() {
             addToast('Advisors updated', 'success');
           }}
         />
+      )}
+      {fullDocOpen && (
+        <div className="fixed inset-0 z-[70] flex justify-end">
+          <button
+            type="button"
+            aria-label="Close full document"
+            className="absolute inset-0 bg-black/30"
+            onClick={closeFullDocument}
+          />
+          <aside
+            className="relative z-[71] flex h-full w-full max-w-[980px] flex-col border-l border-line bg-bg shadow-2xl"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Full document"
+          >
+            <div className="flex items-center justify-between gap-3 border-b border-line bg-surface px-4 py-3">
+              <div className="min-w-0">
+                <p className="font-ui text-[10px] uppercase tracking-wider text-inkFaint">Agreement text</p>
+                <p className="truncate font-display text-sm text-ink">{hasSource ? agreementSource.title : dealLabel}</p>
+              </div>
+              <button
+                type="button"
+                onClick={closeFullDocument}
+                className="rounded border border-border bg-white px-3 py-1.5 text-xs font-ui font-medium text-ink hover:border-accent hover:text-accent"
+              >
+                Close
+              </button>
+            </div>
+            <div className="min-h-0 flex-1 overflow-y-auto p-3 md:p-5">
+              <FullDocumentView
+                sourceText={hasSource ? agreementSource.full_text : null}
+                title={hasSource ? agreementSource.title : null}
+                provisions={provisions}
+                onEditProvision={handleEditProvision}
+                hoveredProvId={hoveredProvId}
+                onHoverProv={setHoveredProvId}
+                isReselecting={!!reselectingProvId}
+                reselectingProvLabel={reselectingProvLabel}
+                onConfirmReselect={handleConfirmReselect}
+                onCancelReselect={handleCancelReselect}
+                highlightedQuote={highlightedQuote}
+                highlightedQuoteNonce={highlightedQuoteNonce}
+              />
+            </div>
+          </aside>
+        </div>
       )}
       {/* FB3 Surface 2: in-place document pop-under, opened by any TermCell's
           "see text" link via DealNavContext. Fixed-position overlay — mounting

@@ -236,6 +236,49 @@ async function ingestOne(sb, client, url, existingDealId = null) {
   return { deal_id: newDeal.id, title, sector: meta.sector, inserted: parseResult.insertedCount, timing_ms: Date.now() - t0 };
 }
 
+function normalizeDealPartyName(value) {
+  return String(value || '')
+    .toLowerCase()
+    .replace(/\b(incorporated|inc|corp|corporation|llc|l\.l\.c|ltd|limited|plc|company|co)\b\.?/g, '')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+}
+
+function datesCompatible(a, b) {
+  const left = String(a || '').slice(0, 10);
+  const right = String(b || '').slice(0, 10);
+  if (!left || !right) return true;
+  return left === right;
+}
+
+async function findExistingCleanDealByParties(sb, meta) {
+  const acquirerKey = normalizeDealPartyName(meta && meta.acquirer);
+  const targetKey = normalizeDealPartyName(meta && meta.target);
+  if (!acquirerKey || !targetKey) return null;
+
+  let query = await sb
+    .from('deals')
+    .select('id,acquirer,target,announce_date,metadata')
+    .eq('metadata->>ingest_status', 'clean')
+    .limit(1000);
+  if (query.error) {
+    query = await sb
+      .from('deals')
+      .select('id,acquirer,target,announce_date,metadata')
+      .limit(1000);
+  }
+  if (query.error) throw new Error(`Existing deal party check failed: ${query.error.message}`);
+
+  const signingDate = meta && meta.signing_date;
+  return (query.data || []).find((deal) => {
+    const dealMeta = deal && deal.metadata && typeof deal.metadata === 'object' ? deal.metadata : {};
+    if (dealMeta.ingest_status && dealMeta.ingest_status !== 'clean') return false;
+    if (normalizeDealPartyName(deal.acquirer) !== acquirerKey) return false;
+    if (normalizeDealPartyName(deal.target) !== targetKey) return false;
+    return datesCompatible(signingDate, deal.announce_date);
+  }) || null;
+}
+
 async function prepareDealForIngest(sb, client, url, options = {}) {
   const t0 = Date.now();
   const html = await fetchUrl(url);
@@ -243,6 +286,18 @@ async function prepareDealForIngest(sb, client, url, options = {}) {
   if (fullText.length < 5000) throw new Error(`Fetched text too short (${fullText.length} chars) — wrong URL?`);
   const meta = await extractDealMetadata(client, fullText);
   if (!meta.acquirer || !meta.target) throw new Error('Could not identify acquirer/target from the preamble');
+
+  const existingByParties = await findExistingCleanDealByParties(sb, meta);
+  if (existingByParties) {
+    return {
+      skipped: true,
+      reason: 'party-pair-already-in-corpus',
+      deal_id: existingByParties.id,
+      title: `${existingByParties.acquirer || meta.acquirer} / ${existingByParties.target || meta.target}`,
+      sector: meta.sector,
+      timing_ms: Date.now() - t0,
+    };
+  }
 
   const cleaned = cleanText(fullText);
   const { sections, articles } = parseStructure(cleaned);
@@ -344,10 +399,12 @@ module.exports = {
   SEC_UA,
   extractDealMetadata,
   fetchUrl,
+  findExistingCleanDealByParties,
   findDotEnvLocal,
   ingestOne,
   loadDotEnvLocal,
   main,
+  normalizeDealPartyName,
   parseArgs,
   prepareDealForIngest,
   runParserPipeline,

@@ -215,7 +215,7 @@ export function Sidebar({ provsByType, provisions, activeFilter, onFilterType, o
         title={isEdit ? "Drag to a different category to reclassify" : undefined}
       >
         <span className="dot" style={{ background: statusDotColor(status) }} />
-        <span className="truncate">{p.category || 'General'}</span>
+        <span className="rec-side-label">{p.category || 'General'}</span>
       </button>
     );
   };
@@ -252,10 +252,7 @@ export function Sidebar({ provsByType, provisions, activeFilter, onFilterType, o
                 title={`${items.length} clauses under “${cat}” — click to ${expanded ? 'collapse' : 'expand'}`}
               >
                 <span className="dot" style={{ background: 'var(--ink-faint)' }} />
-                <span className="truncate" style={{ flex: 1 }}>{cat}</span>
-                <span style={{ fontSize: 10.5, color: 'var(--ink-faint)', marginLeft: 4 }}>
-                  {items.length}
-                </span>
+                <span className="rec-side-label" style={{ flex: 1 }}>{cat}</span>
                 <span style={{ fontSize: 9, color: 'var(--ink-faint)', marginLeft: 4 }}>
                   {expanded ? '▾' : '▸'}
                 </span>
@@ -285,7 +282,7 @@ export function Sidebar({ provsByType, provisions, activeFilter, onFilterType, o
                         title={isEdit ? "Drag to a different category to reclassify" : undefined}
                       >
                         <span className="dot" style={{ background: statusDotColor(status) }} />
-                        <span className="truncate" style={{ color: 'var(--ink-light)' }}>{sub}</span>
+                        <span className="rec-side-label" style={{ color: 'var(--ink-light)' }}>{sub}</span>
                       </button>
                     );
                   })}
@@ -328,6 +325,20 @@ export function Sidebar({ provsByType, provisions, activeFilter, onFilterType, o
             >
               {allCollapsed ? 'Expand all' : 'Collapse all'}
             </button>
+            {(activeFilter !== null || activeProvId) && (
+              <button
+                onClick={() => onFilterType(null)}
+                className="rec-side-eyebrow"
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: 'var(--accent-deep)',
+                }}
+              >
+                Show all
+              </button>
+            )}
             {onClose && (
               <button
                 type="button"
@@ -346,20 +357,6 @@ export function Sidebar({ provsByType, provisions, activeFilter, onFilterType, o
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          {/* "All" filter button */}
-          <button
-            onClick={() => onFilterType(null)}
-            className={`rec-side-item${activeFilter === null ? ' active' : ''}`}
-          >
-            <span
-              className="dot"
-              style={{ background: activeFilter === null ? 'var(--accent)' : 'var(--ink-faint)' }}
-            />
-            <span style={{ fontWeight: 600 }}>All provisions</span>
-            <span className="count">{provisions.length}</span>
-          </button>
-          <div style={{ height: 6 }} />
-
           {visibleGroups.map((group) => {
             const groupCollapsed = collapsedGroups[group.label] !== false;
             const hasChildren = Array.isArray(group.children) && group.children.length > 0;
@@ -433,7 +430,7 @@ export function Sidebar({ provsByType, provisions, activeFilter, onFilterType, o
                       border: 'none',
                       color: 'var(--ink-faint)',
                       cursor: 'pointer',
-                      fontFamily: 'var(--font-mono)',
+                      fontFamily: 'var(--font-sans)',
                       fontSize: 12,
                       lineHeight: 1,
                       flexShrink: 0,
@@ -443,7 +440,7 @@ export function Sidebar({ provsByType, provisions, activeFilter, onFilterType, o
                     {groupCollapsed ? '+' : '–'}
                   </button>
                   <span className="dot" style={{ background: typeHex(repType) }} />
-                  <span className="truncate" style={{ fontWeight: isActiveFilter ? 600 : 500 }}>
+                  <span className="rec-side-label" style={{ fontWeight: isActiveFilter ? 600 : 500 }}>
                     {group.label}
                     {group.maeAppliesToBoth && (
                       <span
@@ -456,7 +453,6 @@ export function Sidebar({ provsByType, provisions, activeFilter, onFilterType, o
                   </span>
                   {/* Synthetic single-page groups: the label IS the page —
                       no count (matches the child-row treatment). */}
-                  {!flatIsSynthetic && <span className="count">{group.total}</span>}
                 </div>
 
                 {/* Group expanded content */}
@@ -503,7 +499,7 @@ export function Sidebar({ provsByType, provisions, activeFilter, onFilterType, o
                                     border: 'none',
                                     color: 'var(--ink-faint)',
                                     cursor: 'pointer',
-                                    fontFamily: 'var(--font-mono)',
+                                    fontFamily: 'var(--font-sans)',
                                     fontSize: 11,
                                     lineHeight: 1,
                                     flexShrink: 0,
@@ -513,16 +509,7 @@ export function Sidebar({ provsByType, provisions, activeFilter, onFilterType, o
                                   {childCollapsed ? '+' : '–'}
                                 </button>
                                 <span className="dot" style={{ background: typeHex(child.type) }} />
-                                <span className="truncate">{child.label}</span>
-                                {/* MAE / Material Contracts children are
-                                    single-page synthetic groups — the child
-                                    label IS the page, so don't show a count or
-                                    a redundant per-provision sub-list under it
-                                    (that's what duplicated "material adverse
-                                    effect" beneath the child). */}
-                                {!SYNTHETIC_SINGLE_PAGE_TYPES.has(child.type) && (
-                                  <span className="count">{child.provs.length}</span>
-                                )}
+                                <span className="rec-side-label">{child.label}</span>
                               </div>
                               {!childCollapsed && !SYNTHETIC_SINGLE_PAGE_TYPES.has(child.type) && renderProvList(child.provs, child.type)}
                             </div>

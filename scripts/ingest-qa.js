@@ -106,7 +106,8 @@ function computeCounts(provisions) {
 function normalizeForDupe(text) {
   if (typeof text !== 'string') return '';
   return text
-    .replace(/\[\[\/?[A-Z_]+\]\]/g, ' ')
+    .replace(/\[\[\/?[A-Za-z0-9_ -]+\]\]/g, ' ')
+    .replace(/\[\[\/?[A-Za-z0-9_ -]*$/g, ' ')
     .replace(/\s+/g, ' ')
     .trim()
     .toLowerCase();

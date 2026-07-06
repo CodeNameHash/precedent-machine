@@ -25,6 +25,9 @@ const LETTERED_DEF_TEXT =
   '(c) evidencing Indebtedness; and ' +
   '(d) creating any joint venture or partnership.';
 
+const MARKERED_ROMAN_DEF_TEXT =
+  ROMAN_DEF_TEXT.replace('"Material Contract"', '[[DEFINED]]"Material Contract"[[/DEFINED]]');
+
 function makeRepClient() {
   return {
     messages: {
@@ -133,7 +136,7 @@ async function runFixture(definitionText) {
 }
 
 test('runExtractTypePhase stamps roman Material Contract buckets on per-type REP-T reprocess', async () => {
-  const buckets = await runFixture(ROMAN_DEF_TEXT);
+  const buckets = await runFixture(MARKERED_ROMAN_DEF_TEXT);
   assert.ok(Array.isArray(buckets), 'expected materialContractsBuckets array');
   assert.ok(buckets.length >= 7, `expected roman buckets to populate, got ${buckets.length}`);
   const codes = buckets.map((b) => b.code);

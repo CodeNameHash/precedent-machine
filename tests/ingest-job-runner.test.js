@@ -73,6 +73,26 @@ test('buildFamilyJobs expands a deal into retryable per-family jobs', () => {
   assert.equal(jobs[0].lock_key, 'family:candidate-a:REP-T');
 });
 
+test('default family queue includes no-shop and antitrust extract jobs', () => {
+  const [prepareJob] = buildPrepareJobs([ITEMS[0]], { runId: 'run-1' });
+  const jobs = buildFamilyJobs(prepareJob);
+  const families = jobs.map((job) => job.family);
+
+  assert.deepEqual(
+    DEFAULT_FAMILIES.slice(DEFAULT_FAMILIES.indexOf('IOC') + 1, DEFAULT_FAMILIES.indexOf('COND')),
+    ['NOSOL', 'ANTI'],
+  );
+  assert.ok(families.includes('NOSOL'));
+  assert.ok(families.includes('ANTI'));
+
+  for (const family of ['NOSOL', 'ANTI']) {
+    const job = jobs.find((candidateJob) => candidateJob.family === family);
+    assert.equal(job.kind, 'family-extract');
+    assert.deepEqual(job.depends_on, [prepareJob.id]);
+    assert.ok(job.phases.includes(`extract-${family}`));
+  }
+});
+
 test('buildJobPlan records safety flags and creates prepare/family/qa/finalize graph', () => {
   const plan = buildJobPlan(ITEMS, {
     runId: 'run-1',
@@ -94,9 +114,16 @@ test('buildJobPlan records safety flags and creates prepare/family/qa/finalize g
     plan.jobs.filter((job) => job.candidate_id === 'candidate-a').map((job) => job.kind),
     ['deal-prepare', ...DEFAULT_FAMILIES.map(() => 'family-extract'), 'deal-qa', 'finalize-candidate'],
   );
+  assert.deepEqual(
+    plan.jobs
+      .filter((job) => job.kind === 'family-extract' && job.candidate_id === 'candidate-a')
+      .map((job) => job.family),
+    DEFAULT_FAMILIES,
+  );
   const qa = plan.jobs.find((job) => job.kind === 'deal-qa' && job.candidate_id === 'candidate-a');
   const finalize = plan.jobs.find((job) => job.kind === 'finalize-candidate' && job.candidate_id === 'candidate-a');
   assert.equal(qa.depends_on.length, DEFAULT_FAMILIES.length);
+  assert.deepEqual(qa.phases, ['load-staging-deal', 'refresh-coverage-backfill', 'run-ingest-qa', 'write-qa-artifact']);
   assert.deepEqual(finalize.depends_on, [qa.id]);
 });
 

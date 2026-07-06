@@ -32,6 +32,18 @@ test('parses the direct-link query contract', () => {
   });
 });
 
+test('normalizes old full-document tab links to the document overlay', () => {
+  assert.deepEqual(route.parseReviewRouteQuery({
+    tab: 'full',
+  }), {
+    section: null,
+    provisionId: null,
+    tab: 'document',
+    mode: null,
+    editProvisionId: null,
+  });
+});
+
 test('provision wins over section', () => {
   assert.deepEqual(route.parseReviewRouteQuery({
     section: 'IOC-B',
