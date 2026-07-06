@@ -1,6 +1,6 @@
 # Parser Hierarchy Handoff
 
-Updated: 2026-07-05 19:53 EDT
+Updated: 2026-07-05 20:13 EDT
 
 ## Current Worktree
 
@@ -18,8 +18,10 @@ Known contradiction: Phase 10 asks to update `HANDOFF.md`, but the WP allowlist 
 
 ## Current Control Plane
 
-- This branch is clean and pushed at `7886086` (`Fix admin gap summary metrics`).
-- Next action is to merge `codex/parser-hierarchy-plan-completion` to `main`, then start WP-SCHEMA from fresh `origin/main`.
+- Parser/admin branch was merged to `main` at `2a68d8e` (`Merge parser hierarchy completion`).
+- Current WP-SCHEMA worktree: `/Users/bengoodchild/Documents/Claude/precedent-machine/.claude/worktrees/wp-schema-p3`.
+- Current WP-SCHEMA branch: `feat/schema-first-p3-populate-registry`.
+- Current WP-SCHEMA PR: `#119` (`https://github.com/CodeNameHash/precedent-machine/pull/119`), CI green before this handoff refresh.
 - WP-SCHEMA Phase 1 and Phase 2 are already on `origin/main`:
   - `scripts/schema-inventory.js`
   - `docs/schema-migration/inventory.jsonl`
@@ -27,15 +29,18 @@ Known contradiction: Phase 10 asks to update `HANDOFF.md`, but the WP allowlist 
   - `docs/schema-migration/phase-1-findings.md`
   - `lib/schema/*`
   - `tests/schema/*`
-- WP-SCHEMA starts at Phase 3, not Phase 1.
-- Phase 3 missing pieces:
+- WP-SCHEMA Phase 3 is implemented, committed, pushed, and opened as PR `#119`:
   - `scripts/generate-registry.js`
-  - populated `lib/schema/features.js`
-  - populated `lib/schema/tags.js`
+  - populated `lib/schema/features.js` with `524` FeatureDefs
+  - populated `lib/schema/tags.js` with `130` TagDefs
+  - generated baselines in `lib/schema/features.generated.js` and `lib/schema/tags.generated.js`
   - `docs/schema-migration/orphan-check.txt`
   - `docs/schema-migration/deletions.md`
-  - live-feature schema coverage test
-- Parallel sidecar: implement stored admin/gaps quality metrics so the table stops recomputing coverage/quotes/parser review per request.
+  - `docs/schema-migration/phase-3-notes.md`
+  - `tests/schema/coverage.test.js`
+- Phase 3 live coverage initially found 17 live-only keys missing from the static P1 inventory; these are now represented as supplemental registry entries.
+- Several one-source keys are heavily live-used, so no deletion decisions were made in Phase 3.
+- Parallel sidecar reviewed and hardened: admin/gaps stored metrics branch `codex/admin-gaps-stored-metrics`, commit `0b845d1`, PR `#120` (`https://github.com/CodeNameHash/precedent-machine/pull/120`). CI was pending when this handoff was updated.
 - Do not mix Glow extractor fixes into WP-SCHEMA. Those are a later targeted parser lane after the schema phase is underway or separately scheduled.
 
 ## Branch Change Surface
