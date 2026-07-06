@@ -28,6 +28,9 @@ test('registry components carry stable test ids', () => {
   assert.match(board, /data-testid="registry-merge-board"/);
   assert.match(board, /onDrop/);
   assert.match(board, /decision: 'merge'/);
+  assert.match(board, /readableKey/);
+  assert.match(board, /groupName/);
+  assert.match(board, /Group/);
 });
 
 test('registry API freezes only after pending decisions clear', () => {
