@@ -131,10 +131,10 @@ test('/api/admin/gaps summary is stored-metrics first with explicit refresh fall
   assert.match(source, /refresh_metrics/);
 });
 
-test('deal quality metrics provision fetch does not require prod-optional text_hash column', () => {
+test('deal quality metrics provision fetch uses only live production provision columns', () => {
   const source = fs.readFileSync(path.join(__dirname, '..', 'lib', 'deal-quality-metrics.js'), 'utf8');
   const selectMatch = source.match(/\.from\('provisions'\)\s*[\s\S]*?\.select\('([^']+)'\)/);
 
   assert.ok(selectMatch, 'fetchAllProvisions provisions select should be visible');
-  assert.doesNotMatch(selectMatch[1], /\btext_hash\b/);
+  assert.equal(selectMatch[1], 'id, deal_id, type, category, full_text, ai_metadata, created_at');
 });
