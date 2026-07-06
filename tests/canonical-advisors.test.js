@@ -146,3 +146,25 @@ test('getDisplayAdvisors tolerates missing/partial metadata', () => {
   const d = getDisplayAdvisors({ advisors_v2: { buyer_firm: 'Wachtell, Lipton, Rosen & Katz' } });
   assert.equal(d.buyerFirm, 'Wachtell');
 });
+
+test('getDisplayAdvisors falls back to deal facts and legacy edited advisors', () => {
+  const facts = getDisplayAdvisors({
+    deal_facts: {
+      advisors: {
+        buyer_firms: ['Paul, Weiss, Rifkind, Wharton & Garrison LLP'],
+        seller_firms: ['Cooley LLP'],
+      },
+    },
+  });
+  assert.deepEqual(facts.buyerFirms, ['Paul, Weiss']);
+  assert.deepEqual(facts.sellerFirms, ['Cooley']);
+
+  const legacy = getDisplayAdvisors({
+    advisors: [
+      { firm: 'Wachtell, Lipton, Rosen & Katz', party: 'parent' },
+      { firm: 'Wilson Sonsini Goodrich & Rosati', party: 'company' },
+    ],
+  });
+  assert.deepEqual(legacy.buyerFirms, ['Wachtell']);
+  assert.deepEqual(legacy.sellerFirms, ['Wilson Sonsini']);
+});

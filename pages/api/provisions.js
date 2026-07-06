@@ -48,6 +48,127 @@ function snapshot(provision) {
   return snap;
 }
 
+function metaObject(value) {
+  if (!value) return {};
+  if (typeof value === 'string') {
+    try { return JSON.parse(value) || {}; } catch { return {}; }
+  }
+  return typeof value === 'object' && !Array.isArray(value) ? value : {};
+}
+
+function considerationEquityId(row) {
+  if (!row) return null;
+  if (row.consideration_equity_provision_id) return row.consideration_equity_provision_id;
+  const meta = metaObject(row.ai_metadata);
+  const features = metaObject(meta.features);
+  return features.considerationEquityProvisionId || null;
+}
+
+async function attachConsiderationEquity(sb, provisions) {
+  const rows = Array.isArray(provisions) ? provisions : (provisions ? [provisions] : []);
+  const ids = [...new Set(rows.map(considerationEquityId).filter(Boolean))];
+  if (ids.length === 0) return provisions;
+
+  const { data: equityRows, error: equityErr } = await sb
+    .from('consideration_equity_provisions')
+    .select('*')
+    .in('id', ids);
+  if (equityErr) {
+    if (/consideration_equity_provisions|schema cache|does not exist|Could not find/i.test(equityErr.message || '')) {
+      return provisions;
+    }
+    throw equityErr;
+  }
+
+  const { data: treatmentRows, error: treatmentErr } = await sb
+    .from('consideration_treatments')
+    .select('*')
+    .in('provision_id', ids)
+    .order('source_span_start', { ascending: true });
+  if (treatmentErr) throw treatmentErr;
+
+  let electionRows = [];
+  let optionRows = [];
+  let prorationRows = [];
+  let stepRows = [];
+  const { data: elections, error: electionErr } = await sb
+    .from('election_mechanisms')
+    .select('*')
+    .in('provision_id', ids);
+  if (electionErr) {
+    if (!/election_mechanisms|schema cache|does not exist|Could not find/i.test(electionErr.message || '')) {
+      throw electionErr;
+    }
+  } else {
+    electionRows = elections || [];
+    const electionIds = electionRows.map((row) => row.id).filter(Boolean);
+    const prorationIds = electionRows.map((row) => row.proration_rule_id).filter(Boolean);
+    const stepIds = electionRows.map((row) => row.transaction_step_id).filter(Boolean);
+    if (electionIds.length > 0) {
+      const { data: options, error: optionErr } = await sb
+        .from('election_options')
+        .select('*')
+        .in('election_mechanism_id', electionIds)
+        .order('display_order', { ascending: true });
+      if (optionErr) throw optionErr;
+      optionRows = options || [];
+    }
+    if (prorationIds.length > 0) {
+      const { data: prorations, error: prorationErr } = await sb
+        .from('proration_rules')
+        .select('*')
+        .in('id', prorationIds);
+      if (prorationErr) throw prorationErr;
+      prorationRows = prorations || [];
+    }
+    if (stepIds.length > 0) {
+      const { data: steps, error: stepErr } = await sb
+        .from('transaction_steps')
+        .select('*')
+        .in('id', stepIds);
+      if (stepErr && !/transaction_steps|schema cache|does not exist|Could not find/i.test(stepErr.message || '')) throw stepErr;
+      stepRows = steps || [];
+    }
+  }
+
+  const treatmentsByProvision = new Map();
+  for (const treatment of treatmentRows || []) {
+    if (!treatmentsByProvision.has(treatment.provision_id)) treatmentsByProvision.set(treatment.provision_id, []);
+    treatmentsByProvision.get(treatment.provision_id).push(treatment);
+  }
+  const optionsByElection = new Map();
+  for (const option of optionRows) {
+    if (!optionsByElection.has(option.election_mechanism_id)) optionsByElection.set(option.election_mechanism_id, []);
+    optionsByElection.get(option.election_mechanism_id).push(option);
+  }
+  const prorationById = new Map(prorationRows.map((row) => [row.id, row]));
+  const stepById = new Map(stepRows.map((row) => [row.id, row]));
+  const electionByProvision = new Map(electionRows.map((row) => [
+    row.provision_id,
+    {
+      ...row,
+      options: optionsByElection.get(row.id) || [],
+      proration_rule: row.proration_rule_id ? (prorationById.get(row.proration_rule_id) || null) : null,
+      transaction_step: row.transaction_step_id ? (stepById.get(row.transaction_step_id) || null) : null,
+    },
+  ]));
+
+  const equityById = new Map((equityRows || []).map((row) => [
+    row.id,
+    {
+      ...row,
+      treatments: treatmentsByProvision.get(row.id) || [],
+      election_mechanism: electionByProvision.get(row.id) || null,
+    },
+  ]));
+
+  for (const row of rows) {
+    const id = considerationEquityId(row);
+    if (id && equityById.has(id)) row.consideration_equity = equityById.get(id);
+  }
+  return provisions;
+}
+
 export default async function handler(req, res) {
   const sb = getServiceSupabase();
   if (!sb) return res.status(500).json({ error: 'Supabase not configured' });
@@ -67,6 +188,7 @@ export default async function handler(req, res) {
           return res.status(500).json({ error: err.message });
         }
       }
+      await attachConsiderationEquity(sb, data);
       return res.json({ provision: data });
     }
     let stagingDealIds = new Set();
@@ -92,6 +214,7 @@ export default async function handler(req, res) {
     const { data, error } = await q;
     if (error) return res.status(500).json({ error: error.message });
     const provisions = showStaging ? (data || []) : (data || []).filter((row) => !stagingDealIds.has(row.deal_id));
+    await attachConsiderationEquity(sb, provisions);
     return res.json({ provisions });
   }
 

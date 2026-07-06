@@ -199,6 +199,20 @@ test('item 4: an unresolved row (no canonical code) falls back to the raw catego
   assert.equal(labels.get('p1'), 'Bespoke Covenant');
 });
 
+test('item 4: IOC threshold amounts render as dollars, never bare numerals', () => {
+  assert.equal(mod.formatIocThresholdAmount(2000000), '$2,000,000');
+  assert.equal(mod.formatIocThresholdAmount('2000000'), '$2,000,000');
+  assert.equal(mod.formatIocThresholdAmount(250000, true), '$250K');
+  assert.equal(mod.formatIocThresholdAmount('$2,000,000'), '$2,000,000');
+});
+
+test('item 4: IOC threshold hover context narrows to the driving dollar amount', () => {
+  const source = `${'opening covenant background '.repeat(20)}The Company shall not make capital expenditures except for expenditures not exceeding $2,000,000 in the aggregate during any fiscal year, and other unrelated covenant text follows.${' trailing unrelated covenant background'.repeat(20)}`;
+  const ctx = mod.sourceContextForValue(source, '$2,000,000');
+  assert.match(ctx, /\$2,000,000 in the aggregate/);
+  assert.ok(ctx.length < source.length, 'context should be narrower than the whole provision');
+});
+
 /* ─────────────────────────────────────────────────────────────────────────
  * Item 10 — Termination Rights absent-rights pill strip (same treatment as
  * Conditions). Source-pinned: no importable pure logic, JSX markup swap.

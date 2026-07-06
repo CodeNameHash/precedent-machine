@@ -26,10 +26,29 @@ const METSERA_NOSOL = [
   },
   {
     category: 'Change of Recommendation',
+    full_text: '(e) Neither the Company Board nor any committee thereof shall ...',
     features: {
       changeOfRecommendationItems: [
         '(A) withdraw, amend, change, qualify or modify in a manner adverse to Parent or Merger Sub the Company Board Recommendation',
+        '(B) fail to make the Company Board Recommendation in the Proxy Statement',
+        '(C) approve, recommend or declare advisable any Company Takeover Proposal',
+        '(D) fail to publicly recommend against such Company Takeover Proposal within ten (10) business days of the request of Parent',
+        '(E) fail to recommend against a tender or exchange offer related to a Company Takeover Proposal',
         'a one-off board action that is not in the canonical vocabulary',
+      ],
+    },
+  },
+  {
+    category: 'Change of Recommendation General Override',
+    full_text: '(g) Nothing contained in this Section 5.02 ...',
+    features: {
+      tenderOfferDisclosureScope: 'taking and disclosing to its stockholders a position contemplated by Rule 14d-9 or Rule 14e-2(a) under the Exchange Act',
+      legallyRequiredDisclosurePermitted: {
+        value: true,
+        quotes: ['making any disclosure to its stockholders if the Company Board or a committee thereof determines, after consultation with outside counsel, is required by applicable Law'],
+      },
+      notChangeOfRecommendationItems: [
+        "any disclosure of information to the Company's stockholders that solely (i) describes the Company's receipt of a Company Takeover Proposal and the operation of this Agreement with respect thereto and (ii) contains a statement reaffirming the Company Board Recommendation shall not be deemed to be an Adverse Recommendation Change",
       ],
     },
   },
@@ -150,6 +169,26 @@ test('canonical pill vocabulary falls back to OTHER with verbatim hover text', (
   assert.ok(other);
   assert.equal(other.label, 'Other');
   assert.match(other.quote, /one-off board action/);
+});
+
+test('changeOfRecommendationItemRows preserves each Metsera A-E item as full text', () => {
+  const rows = mod.changeOfRecommendationItemRows(METSERA_NOSOL);
+  assert.deepEqual(rows.slice(0, 5).map((r) => r.label), ['A', 'B', 'C', 'D', 'E']);
+  assert.equal(rows.length, 6);
+  assert.match(rows[3].text, /ten \(10\) business days/);
+  assert.match(rows[4].text, /tender or exchange offer/);
+});
+
+test('notChangeOfRecommendationItemRows preserves 14d-9, required-law, and reaffirmation carve-outs separately', () => {
+  const rows = mod.notChangeOfRecommendationItemRows(METSERA_NOSOL);
+  assert.deepEqual(rows.map((r) => r.label), [
+    '14d-9 / 14e-2 disclosure',
+    'Required by law',
+    'Proposal receipt + reaffirmation',
+  ]);
+  assert.match(rows[0].text, /Rule 14d-9 or Rule 14e-2/);
+  assert.match(rows[1].text, /required by applicable Law/);
+  assert.match(rows[2].text, /statement reaffirming the Company Board Recommendation/);
 });
 
 test('bare Conoco-shaped NOSOL rows route to Company or Parent display sections', () => {

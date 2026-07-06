@@ -4,6 +4,28 @@ import { useDeal, useProvisions } from '../../lib/useSupabaseData';
 import { SkeletonCard, EmptyState, Breadcrumbs } from '../../components/UI';
 import { displayTypeForProvision } from '../../components/review/table-logic';
 
+function topologyLabel(topology) {
+  const labels = {
+    SINGLE_MERGER: 'Single-step merger',
+    FORWARD_TRIANGULAR: 'Forward triangular merger',
+    REVERSE_TRIANGULAR: 'Reverse triangular merger',
+    TWO_STEP_TENDER: 'Two-step tender',
+    DOUBLE_DUMMY: 'Double-dummy reorg',
+    MULTI_STEP_REORG: 'Multi-step reorg',
+    OTHER: 'Other topology',
+  };
+  return labels[topology] || 'Other topology';
+}
+
+function topologyTooltip(row) {
+  if (!row) return '';
+  if (row.topology_needs_review) return 'Topology detection uncertain, needs review';
+  if (row.topology === 'TWO_STEP_TENDER') return 'Tender offer followed by back-end merger';
+  if (row.topology === 'DOUBLE_DUMMY') return 'Two mergers ending with both parties as subsidiaries of HoldCo';
+  if (row.topology === 'MULTI_STEP_REORG') return `${row.step_count || '?'} transaction steps`;
+  return topologyLabel(row.topology);
+}
+
 export default function DealDetail() {
   const router = useRouter();
   const { id } = router.query;
@@ -50,7 +72,21 @@ export default function DealDetail() {
 
       {/* Deal Header */}
       <div className="bg-white border border-border rounded-lg shadow-sm p-6">
-        <h1 className="font-display text-2xl text-ink">{deal.acquirer} / {deal.target}</h1>
+        <div className="flex flex-wrap items-center gap-2">
+          <h1 className="font-display text-2xl text-ink">{deal.acquirer} / {deal.target}</h1>
+          {deal.deal_topology && deal.deal_topology.topology && deal.deal_topology.topology !== 'SINGLE_MERGER' ? (
+            <span
+              title={topologyTooltip(deal.deal_topology)}
+              className={`inline-flex items-center text-[10px] font-ui font-medium px-2 py-1 rounded border uppercase tracking-wider ${
+                deal.deal_topology.topology_needs_review
+                  ? 'bg-amber-50 text-amber-700 border-amber-200'
+                  : 'bg-sky-50 text-sky-700 border-sky-200'
+              }`}
+            >
+              {topologyLabel(deal.deal_topology.topology)}
+            </span>
+          ) : null}
+        </div>
         <div className="flex flex-wrap gap-4 mt-3 text-sm font-ui text-inkLight">
           {deal.sector && <span>Sector: <span className="text-inkMid">{deal.sector}</span></span>}
           {deal.value_usd && <span>Value: <span className="text-inkMid">${(deal.value_usd / 1e9).toFixed(1)}B</span></span>}

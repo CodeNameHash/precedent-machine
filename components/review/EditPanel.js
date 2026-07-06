@@ -648,8 +648,8 @@ function FeatureFieldEditor({ field, value, onChange, onAddCustomOption }) {
 }
 
 /* ── P7 item 4: per-provision "Re-extract this section" button ───────────
-   Recovers the source section by matching the provision's startChar against
-   the deal's classified_sections, then POSTs to /api/ingest/extract-section.
+   Recovers the source section from its persisted parser region id, falling
+   back to startChar for older snapshots, then POSTs to /api/ingest/extract-section.
    Shows inline status. The parent page picks up the new provisions via the
    existing realtime subscription on the provisions table — no callback hook
    needed. */
@@ -657,16 +657,30 @@ function ReextractSectionButton({ provision, deal }) {
   const [status, setStatus] = useState('idle'); // idle | running | done | failed
   const [message, setMessage] = useState('');
 
-  const resolveSectionId = () => {
+  const resolveSectionTarget = () => {
     if (!provision || !deal) return null;
     let meta = provision.ai_metadata;
     if (typeof meta === 'string') {
       try { meta = JSON.parse(meta); } catch { meta = null; }
     }
-    const provStart = meta && typeof meta.startChar === 'number' ? meta.startChar : null;
-    if (provStart === null) return null;
     const classified = deal?.metadata?.classified_sections;
     if (!Array.isArray(classified) || classified.length === 0) return null;
+
+    const features = meta && meta.features && typeof meta.features === 'object' ? meta.features : {};
+    const provisionRegionId = provision.region_id || provision.regionId || meta?.region_id || meta?.regionId || features.region_id || features.regionId || null;
+    if (provisionRegionId) {
+      const byRegion = classified.find((s) => String(s.regionId || s.region_id || '') === String(provisionRegionId));
+      if (byRegion) {
+        return {
+          sectionId: byRegion.sectionId || `section-${byRegion.startChar ?? 0}`,
+          regionId: provisionRegionId,
+        };
+      }
+    }
+
+    const provStart = meta && typeof meta.startChar === 'number' ? meta.startChar : null;
+    if (provStart === null) return provisionRegionId ? { regionId: provisionRegionId } : null;
+
     // Find the section whose [startChar, nextStartChar) range contains provStart.
     const sorted = [...classified].sort((a, b) => (a.startChar || 0) - (b.startChar || 0));
     for (let i = 0; i < sorted.length; i++) {
@@ -674,17 +688,20 @@ function ReextractSectionButton({ provision, deal }) {
       const next = i + 1 < sorted.length ? sorted[i + 1] : null;
       const end = next ? Number(next.startChar) : (Number(s.startChar) + (s.text || '').length);
       if (provStart >= Number(s.startChar) && provStart < end) {
-        return `section-${s.startChar}`;
+        return {
+          sectionId: s.sectionId || `section-${s.startChar}`,
+          regionId: s.regionId || s.region_id || provisionRegionId || null,
+        };
       }
     }
-    return null;
+    return provisionRegionId ? { regionId: provisionRegionId } : null;
   };
 
   const handleClick = async () => {
-    const sectionId = resolveSectionId();
-    if (!sectionId) {
+    const sectionTarget = resolveSectionTarget();
+    if (!sectionTarget) {
       setStatus('failed');
-      setMessage('Could not locate source section (no startChar)');
+      setMessage('Could not locate source section');
       return;
     }
     setStatus('running');
@@ -693,7 +710,11 @@ function ReextractSectionButton({ provision, deal }) {
       const resp = await fetch('/api/ingest/extract-section', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ deal_id: deal.id, section_id: sectionId }),
+        body: JSON.stringify({
+          deal_id: deal.id,
+          ...(sectionTarget.sectionId ? { section_id: sectionTarget.sectionId } : {}),
+          ...(sectionTarget.regionId ? { region_id: sectionTarget.regionId } : {}),
+        }),
       });
       const data = await resp.json();
       if (!resp.ok || !data.success) {
@@ -709,8 +730,8 @@ function ReextractSectionButton({ provision, deal }) {
     }
   };
 
-  const sectionId = resolveSectionId();
-  const disabled = !sectionId || status === 'running';
+  const sectionTarget = resolveSectionTarget();
+  const disabled = !sectionTarget || status === 'running';
   return (
     <div className="space-y-1">
       <button
@@ -718,7 +739,7 @@ function ReextractSectionButton({ provision, deal }) {
         onClick={handleClick}
         disabled={disabled}
         className="w-full px-3 py-1.5 text-xs font-ui border border-border text-inkLight rounded hover:bg-bg disabled:opacity-50 transition-colors"
-        title={sectionId ? `Re-extract ${sectionId}` : 'No source section found (provision missing startChar)'}
+        title={sectionTarget ? `Re-extract ${sectionTarget.regionId || sectionTarget.sectionId}` : 'No source section found'}
       >
         {status === 'running' ? 'Re-extracting...' : 'Re-extract this section'}
       </button>
@@ -1186,8 +1207,7 @@ export function EditPanel({
           </button>
 
           {/* P7 item 4: per-section re-extract button. Resolves the source
-              section_id from provision.ai_metadata.startChar against the deal's
-              classified_sections, then POSTs to /api/ingest/extract-section. */}
+              section by region id, falling back to startChar for older rows. */}
           <ReextractSectionButton provision={provision} deal={deal} />
         </div>
 

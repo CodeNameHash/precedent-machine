@@ -54,14 +54,14 @@ export function EmployeeBenefitsTable({ allProvisions }) {
         <table className="min-w-full text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
             <tr>
-              <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Element</th>
+              <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Term</th>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Standard / Comparison Group</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
             {state.continuationPeriod && (
               <tr className="align-top">
-                <td className="px-3 py-2 whitespace-normal break-words">
+                <td className={`px-3 py-2 whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>
                   <TermCell provision={state.continuationPeriod.provision} quote={state.continuationPeriod.quote}>
                     <span className="text-ink font-medium">Continuation period</span>
                   </TermCell>
@@ -75,7 +75,7 @@ export function EmployeeBenefitsTable({ allProvisions }) {
             )}
             {state.rows.map((row) => (
               <tr key={row.code} className="align-top">
-                <td className="px-3 py-2 whitespace-normal break-words">
+                <td className={`px-3 py-2 whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>
                   <TermCell provision={row.provision} quote={row.quote}>
                     <span className="text-ink font-medium">{row.label}</span>
                   </TermCell>

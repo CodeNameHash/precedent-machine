@@ -5,6 +5,7 @@ const path = require('path');
 const { createClient } = require('@supabase/supabase-js');
 const { createClaudeCliClient, createCodexCliClient } = require('../lib/llm-cli-client');
 const { ingestOne, loadDotEnvLocal } = require('./ingest-local');
+const { buildPartiesFact, buildValueUsdFact, mergeDealFacts } = require('../lib/deal-facts');
 
 const PAGE_SIZE = 1000;
 const DEFAULT_MODEL = 'gpt-5.5';
@@ -77,6 +78,8 @@ function normaliseManifest(raw) {
       candidate_id: row.candidate_id || row.id || null,
       url,
       agreement_exhibit_url: url,
+      deal_value_usd: row.deal_value_usd || row.value_usd || row.effective_value_usd || null,
+      parties: row.parties || null,
       priority_reasons: Array.isArray(row.priority_reasons) ? row.priority_reasons : [],
     };
   });
@@ -166,6 +169,7 @@ function seedMetadata(item, args) {
     seedDealKey: item.deal_key || null,
     seedPriorityReasons: item.priority_reasons || [],
     seedPriorityVerification: item.priority_verification || null,
+    seedCandidateDealValueUsd: item.deal_value_usd || null,
   };
 }
 
@@ -205,22 +209,49 @@ async function inspectPartialDealAfterError(sb, item, args, error) {
 }
 
 async function stampDealMetadata(sb, dealId, item, args) {
-  const { data, error } = await sb.from('deals').select('metadata').eq('id', dealId).single();
+  const { data, error } = await sb.from('deals').select('metadata,value_usd').eq('id', dealId).single();
   if (error) throw new Error(`Deal metadata fetch failed: ${error.message}`);
   const current = data && data.metadata && typeof data.metadata === 'object' ? data.metadata : {};
+  const candidateValue = item.deal_value_usd || (item.priority_verification && item.priority_verification.value_usd) || null;
+  const itemParties = item.parties && typeof item.parties === 'object' ? item.parties : {};
+  const candidateParties = buildPartiesFact({
+    acquirer: itemParties.contractual_acquirer || itemParties.acquirer || null,
+    target: itemParties.contractual_target || itemParties.target || null,
+    parent_entity: itemParties.acquirer || null,
+    target_entity: itemParties.target || null,
+    acquirer_display: itemParties.acquirer || null,
+    target_display: itemParties.target || null,
+  }, {
+    source_url: item.url || item.agreement_exhibit_url || null,
+    source_label: 'Seed manifest party metadata',
+    method: 'candidate_metadata',
+  });
   const seedIngest = {
     run_id: args.runId,
     candidate_id: item.candidate_id || null,
     deal_key: item.deal_key || null,
     priority_reasons: item.priority_reasons || [],
     priority_verification: item.priority_verification || null,
+    candidate_deal_value_usd: candidateValue,
     ingested_by: args.backend,
     extraction_model: args.model,
     ingested_at: new Date().toISOString(),
   };
+  const metadata = mergeDealFacts({ ...current, seed_ingest: seedIngest }, {
+    value_usd: buildValueUsdFact(candidateValue, {
+      source_url: item.url || item.agreement_exhibit_url || null,
+      source_label: 'EDGAR candidate metadata',
+      method: 'candidate_metadata',
+    }),
+    parties: candidateParties,
+  });
+  const updateRow = {
+    metadata,
+    ...(candidateValue && !data.value_usd ? { value_usd: candidateValue } : {}),
+  };
   const { error: updateError } = await sb
     .from('deals')
-    .update({ metadata: { ...current, seed_ingest: seedIngest } })
+    .update(updateRow)
     .eq('id', dealId);
   if (updateError) throw new Error(`Deal metadata update failed: ${updateError.message}`);
 }
@@ -265,9 +296,18 @@ async function runOne(sb, client, item, args) {
   }
 
   await updateCandidate(sb, item.candidate_id, { status: 'queued', skip_reason: null });
+  const itemWithCandidateFacts = {
+    ...item,
+    deal_value_usd: (candidate && candidate.deal_value_usd) || item.deal_value_usd || null,
+    parties: item.parties || (candidate ? {
+      acquirer: candidate.acquirer_name || null,
+      target: candidate.target_name || null,
+      filed_by: candidate.filed_by_party || null,
+    } : null),
+  };
   const result = await ingestOne(sb, client, item.url);
-  await stampDealMetadata(sb, result.deal_id, item, args);
-  const stampedProvisionCount = await stampProvisionMetadata(sb, result.deal_id, item, args);
+  await stampDealMetadata(sb, result.deal_id, itemWithCandidateFacts, args);
+  const stampedProvisionCount = await stampProvisionMetadata(sb, result.deal_id, itemWithCandidateFacts, args);
   await updateCandidate(sb, item.candidate_id, {
     status: 'ingested',
     ingested_deal_id: result.deal_id,

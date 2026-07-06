@@ -32,6 +32,21 @@ test('pushObjectRows threads the field key through to pushStockRow so nested enu
   assert.match(body, /pushStockRow\(`\$\{prefix\} — \$\{label\}`, obj\[key\], provision, null, key\)/);
 });
 
+test('review CONSID badge renders the derived human consideration label', () => {
+  const src = REVIEW_SRC();
+  assert.match(src, /headlineConsiderationLabel\(considerationHeadlineType, provs\)/);
+  assert.match(src, /\{considerationHeadlineLabel\}/);
+  assert.doesNotMatch(src, /Cash\/Stock Election/);
+});
+
+test('PSU performance treatment is rendered from structured treatment rows', () => {
+  const src = CONSID_SRC();
+  assert.match(src, /performance: t\.performance_treatment \|\| t\.performanceTreatment/);
+  assert.match(src, /function performanceTreatmentLabel/);
+  assert.match(src, /Greater of target or actual/);
+  assert.match(src, />Performance</);
+});
+
 /* ── (b) dedupe Dividend Equivalence / Exchange of Certificates entries ── */
 
 test('ConsiderationTables dedupedStockRows keys on provision id + normalized label, not label+value', () => {

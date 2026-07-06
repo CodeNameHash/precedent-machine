@@ -49,6 +49,7 @@ test('seed metadata follows run and candidate identity', () => {
     deal_key: 'deal-key',
     priority_reasons: ['reason'],
     priority_verification: null,
+    candidate_deal_value_usd: null,
     ingested_by: 'codex',
     extraction_model: 'gpt-5.5',
   });

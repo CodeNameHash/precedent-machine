@@ -21,7 +21,7 @@ function sideClauseSubLabel(p, i) {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   LEFT SIDEBAR — now acts as a FILTER, not a scroller
+   LEFT SIDEBAR
    ═══════════════════════════════════════════════════════════ */
 export function Sidebar({ provsByType, provisions, activeFilter, onFilterType, onSelectProvision, activeProvId, onMoveProvision, onClose }) {
   const { isEdit } = useViewMode();

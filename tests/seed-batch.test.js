@@ -78,6 +78,7 @@ test('seedMetadata stamps extractor, model, run, candidate, deal key, and verifi
     seedDealKey: 'deal-key',
     seedPriorityReasons: ['Deal value at or above $10bn'],
     seedPriorityVerification: { value_usd: 14_000_000_000 },
+    seedCandidateDealValueUsd: null,
   });
 });
 

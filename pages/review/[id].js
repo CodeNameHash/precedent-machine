@@ -54,6 +54,7 @@ import { normalizeTermfFeatures } from '../../lib/termf';
 import { getFeaturesForType, PROVISION_TYPES } from '../../lib/rubric';
 import { renderFeatureValue as schemaRenderFeatureValue } from '../../lib/schema';
 import { getDisplayAcquirer, getDisplayTarget } from '../../lib/deal-display';
+import { asNumber, buildValueUsdFact, mergeDealFacts, valueUsdFromDeal } from '../../lib/deal-facts';
 import { resolveEditFields } from '../../lib/edit-schema';
 import { isCanonicalCode } from '../../lib/expected-sets';
 import { AddSectionItem } from '../../components/review/AddSectionItem';
@@ -108,8 +109,10 @@ import {
   buildAocNoMaeLimbText,
   buildAocCitedCovenantsText,
   deriveHeadlineConsiderationType,
+  headlineConsiderationLabel,
   selectIocGeneralExceptionsItems,
   buildIocRowDisplayLabels,
+  formatIocThresholdAmount,
   dedupeIocExceptionEntries,
   truncateAtWordBoundary,
   filterProvisionsForViewMode,
@@ -126,6 +129,7 @@ import {
   displayTypeForProvision,
   compactDoValue,
   numericDollarOnly,
+  sourceContextForValue,
   splitBringdownCoveredPills,
   buildAntitrustSummaryRows,
 } from '../../components/review/table-logic';
@@ -420,7 +424,7 @@ const FEATURE_DISPLAY_ORDER = {
   // present/not-present checklist, and (c) the respective sub-code mini-table.
   // PW diligence cleanup v2:
   //   * knowledgeQualifier dropped from per-row table (now an above-table note)
-  //   * lookbackPeriod added (synthesized "N months (since YYYY-MM-DD)" from
+  //   * lookbackPeriod added (synthesized years-prior-to-signing text from
   //     secFilingsLookbackMonths + deal.announce_date)
   //   * specificFeatures synthetic column injected at render time by
   //     renderSpecificFeaturesCell() — collapses absenceOfChangesType /
@@ -2547,7 +2551,10 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
         return;
       }
       if (isTaggedItem(u)) { pushBit(label ? `${label}: ${u.label || u.code}` : (u.label || u.code)); return; }
-      pushBit(label ? `${label}: ${String(u)}` : String(u));
+      const text = (!label || /(?:cap|threshold)/i.test(label))
+        ? (formatIocThresholdAmount(u, false) || String(u))
+        : String(u);
+      pushBit(label ? `${label}: ${text}` : text);
     };
     push(null, f.dollarThreshold);
     push('Settlement cap', f.interimSettlementCap);
@@ -2557,19 +2564,11 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
     // thresholdIndividual / thresholdAggregate). Per user request these read
     // in the Threshold column ("$250K ind. / $2M agg.") rather than being
     // buried as an exception pill.
-    const fmtUsd = (n) => {
-      if (n === null || n === undefined || n === '') return null;
-      const num = typeof n === 'number' ? n : Number(String(n).replace(/[$,]/g, ''));
-      if (!Number.isFinite(num)) return typeof n === 'string' ? n : null;
-      if (num >= 1_000_000 && num % 100_000 === 0) return `$${(num / 1_000_000).toFixed(num % 1_000_000 === 0 ? 0 : 1)}M`;
-      if (num >= 1_000 && num % 1_000 === 0) return `$${(num / 1_000).toFixed(0)}K`;
-      return `$${num.toLocaleString('en-US')}`;
-    };
     const excList = Array.isArray(f.permittedExceptions) ? f.permittedExceptions : [];
     for (const item of excList) {
       if (!item || typeof item !== 'object') continue;
-      const ind = fmtUsd(item.thresholdIndividual);
-      const agg = fmtUsd(item.thresholdAggregate);
+      const ind = formatIocThresholdAmount(item.thresholdIndividual, true);
+      const agg = formatIocThresholdAmount(item.thresholdAggregate, true);
       if (ind || agg) {
         const parts = [];
         if (ind) parts.push(`${ind} ind.`);
@@ -2675,17 +2674,15 @@ function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectPr
                     )}
                   </td>
                   <td className="px-3 py-2 text-ink">
-                    <HoverSource quote={rowQuote} as="div">
-                      {thrText
-                        ? (
-                          <span className="inline-flex flex-wrap gap-1">
-                            {thrText.split(' · ').map((bit, i) => (
-                              <Pill key={i} text={bit} tone="amount" />
-                            ))}
-                          </span>
-                        )
-                        : <span className="italic text-inkFaint">No threshold</span>}
-                    </HoverSource>
+                    {thrText
+                      ? (
+                        <span className="inline-flex flex-wrap gap-1">
+                          {thrText.split(' · ').map((bit, i) => (
+                            <Pill key={i} text={bit} quote={sourceContextForValue(rowQuote, bit)} tone="amount" />
+                          ))}
+                        </span>
+                      )
+                      : <span className="italic text-inkFaint">No threshold</span>}
                   </td>
                   <td className="px-3 py-2 text-ink">
                     {excCodes.length > 0 ? (
@@ -3325,22 +3322,31 @@ function renderRepCellWithHoverQuote(featureKey, raw) {
   return quote ? <HoverSource quote={quote}>{node}</HoverSource> : node;
 }
 
-// Compute "N months (since YYYY-MM-DD)" from a months count + an announce date.
+function formatLookbackYears(months) {
+  const m = Number(months);
+  if (!Number.isFinite(m) || m <= 0) return String(months);
+  if (m < 12) return 'Less than 1 year prior to signing';
+  const years = m / 12;
+  const rounded = Number.isInteger(years)
+    ? String(years)
+    : years.toFixed(1).replace(/\.0$/, '');
+  return `${rounded} ${rounded === '1' ? 'year' : 'years'} prior to signing`;
+}
+
 function computeLookbackText(months /* announceDate unused: months-from-signing only */) {
   if (months === null || months === undefined || months === '') return null;
   const m = Number(months);
   if (!Number.isFinite(m) || m <= 0) return String(months);
-  // Per user: show the MONTHS measured from signing, not a computed date.
-  return `${m} months prior to signing`;
+  return formatLookbackYears(m);
 }
 
-/* Coerce a lookback value into "X months prior to signing".
+/* Coerce a lookback value into a years-prior-to-signing phrase.
  *  - bare number / numeric string → that many months
  *  - a date (e.g. "Since January 30, 2025" / "2025-01-30") → months between
  *    that date and the signing date, rounded.
  *  - anything else → the cleaned string as a last resort.
- * The user always wants the MONTHS framing, never a raw "Since <date>". */
-function lookbackToMonths(rawValue, signingDate) {
+ */
+function lookbackToYears(rawValue, signingDate) {
   let v = isCitableValue(rawValue) ? getCitableValue(rawValue) : rawValue;
   if (isTaggedItem(v)) v = v.label || v.code;
   if (v === null || v === undefined || v === '') return null;
@@ -3357,7 +3363,7 @@ function lookbackToMonths(rawValue, signingDate) {
     if (!isNaN(d.getTime())) {
       let months = (base.getFullYear() - d.getFullYear()) * 12 + (base.getMonth() - d.getMonth());
       if (base.getDate() < d.getDate()) months -= 1;
-      if (months > 0) return `${months} months prior to signing`;
+      if (months > 0) return formatLookbackYears(months);
     }
   }
   // No usable date/number → return the cleaned phrase (strip a leading "Since").
@@ -4517,7 +4523,7 @@ function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision, hide
 
   const titleLabel = (() => {
     if (type === 'NOSOL') return 'No-Solicitation Summary';
-    if (type === 'ANTI')  return 'Antitrust Summary';
+    if (type === 'ANTI')  return 'Regulatory Summary';
     if (type === 'MISC')  return 'Boilerplate Summary';
     if (type === 'MAE')   return 'Material Adverse Effect Summary';
     if (type === 'TERMR' || type === 'TERMR-M' || type === 'TERMR-B' || type === 'TERMR-T') return 'Termination Rights Summary';
@@ -6196,6 +6202,13 @@ function isMaeDefinitionProvision(p) {
  * unqualified MAE) → company. Used to split the MAE sidebar entry into two
  * clearly-labeled pages. */
 function maeDefinitionSide(p) {
+  const termAndText = [
+    definitionLabel(p),
+    p?.full_text,
+    p?.text,
+  ].filter(Boolean).join(' ');
+  if (/parent|buyer|acquir|purchaser/i.test(termAndText)) return 'parent';
+  if (/company|target/i.test(termAndText)) return 'company';
   const cat = String(p?.category || '');
   const code = String((getAiMetadata(p) || {}).code || p?.code || '');
   if (/parent|buyer|acquir|purchaser/i.test(cat) || /parent|buyer|-B\b/i.test(code)) return 'parent';
@@ -6653,7 +6666,7 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
     }
     return renderFeatureCell(key, raw);
   };
-  // P5 item 5(d): "Lookback (months)" row gains a computed "since YYYY-MM-DD"
+  // P5 item 5(d): "Lookback" row gains a computed "since YYYY-MM-DD"
   // suffix from secFilingsExceptionLookbackDate, or computeLookbackText when
   // only months + announce date are present.
   // Extract the standard SEC-filings cut-off sub-phrase from a longer scope /
@@ -6724,7 +6737,7 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
     // Be loyal to the source. If the agreement gave us a verbatim phrase, show
     // it verbatim — that's the truth, regardless of unit (day / week / month /
     // year / "since DATE"). If it gave us an absolute calendar date, show that.
-    // Only synthesize "X months prior to signing" when the months count is
+    // Only synthesize a years-prior-to-signing phrase when the months count is
     // CORROBORATED (txt explicitly says "month"/"year") — never trust a bare
     // sub-3 months value, because that's almost always extraction confusion
     // between "one business day" / "one week" and a months count.
@@ -6740,11 +6753,11 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
     if (derived) return <span>{derived}</span>;
     if (monthsVal && /^\d+$/.test(String(monthsVal).trim())) {
       const n = Number(String(monthsVal).trim());
-      // Months synthesis only when the value is plausibly a month count AND no
+      // Synthesis only when the value is plausibly a month count AND no
       // verbatim day/date cut-off was recovered above. Sub-3 with no verbatim
       // corroboration is dropped — extraction can't distinguish "1 month" from
       // "1 business day" without the phrase.
-      if (n >= 3) return <span>{`${n} months prior to signing`}</span>;
+      if (n >= 3) return <span>{formatLookbackYears(n)}</span>;
     }
     return <span className="italic text-inkFaint">Cut-off period not captured verbatim in source</span>;
   };
@@ -7084,13 +7097,7 @@ function RepMaterialContractsTable({ provisions, onSelectProvision }) {
         <table className="min-w-full text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
             <tr>
-              {/* Audit block 8: this table had it backwards — the label
-                  column (Contract Type) carried no width while the VALUE
-                  column (Threshold) was pinned to 190px, so Contract Type
-                  ballooned to fill the rest (measured 336px). Standard
-                  convention is the reverse: label column fixed, value
-                  column flexes. */}
-              <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Contract Type</th>
+              <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Term</th>
               <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Threshold</th>
             </tr>
           </thead>
@@ -7100,7 +7107,7 @@ function RepMaterialContractsTable({ provisions, onSelectProvision }) {
               const clickable = quote && showEvidence;
               return (
                 <tr key={row.key} className="align-top hover:bg-bg/40">
-                  <td className="px-3 py-2">
+                  <td className={`px-3 py-2 ${REVIEW_LABEL_COL_W}`}>
                     <div className="flex items-start gap-2">
                       <span className="text-inkFaint/60 font-mono text-[10px] mt-0.5 shrink-0">{romanizeLower(idx + 1)}</span>
                       <div className="min-w-0">
@@ -8142,7 +8149,7 @@ function CustomFeatureRow({ label, node }) {
 // same dedupe CategoryFeatureSummaryTable/TermfRebuiltSummary apply) excludes
 // provisions whose data already surfaced as a row's source above, so a
 // provision never shows twice.
-function ProvisionsInSectionList({ provisions, onSelectProvision, consumedIds }) {
+function ProvisionsInSectionList({ provisions, onSelectProvision, consumedIds, provisionRefs }) {
   const filtered = (provisions || []).filter((p) => !(consumedIds && consumedIds.has(p.id)));
   const sorted = [...filtered].sort((a, b) =>
     String(a.category || '').localeCompare(String(b.category || ''), undefined, { sensitivity: 'base' }),
@@ -8171,7 +8178,11 @@ function ProvisionsInSectionList({ provisions, onSelectProvision, consumedIds })
       </p>
       <ul className="flex flex-wrap gap-x-3 gap-y-1">
         {deduped.map((p) => (
-          <li key={p.id}>
+          <li
+            key={p.id}
+            id={`review-prov-${p.id}`}
+            ref={el => { if (provisionRefs && provisionRefs.current) provisionRefs.current[p.id] = el; }}
+          >
             <button
               type="button"
               onClick={() => onSelectProvision && onSelectProvision(p)}
@@ -8322,7 +8333,7 @@ const COV_CONSUMED_KEY_GROUPS = [
   ['insuranceCap'], ['indemnificationPeriod'], ['advancementOfExpenses'],
 ];
 
-function CovSummaryTable({ provisions, onSelectProvision }) {
+function CovSummaryTable({ provisions, onSelectProvision, provisionRefs }) {
   const hasFinancing = COV_FINANCING_KEYS.some((k) => !!pickFirstNonEmpty(provisions, [k]));
   return (
     <div className="space-y-3">
@@ -8384,6 +8395,7 @@ function CovSummaryTable({ provisions, onSelectProvision }) {
         provisions={provisions}
         onSelectProvision={onSelectProvision}
         consumedIds={consumedProvisionIds(provisions, COV_CONSUMED_KEY_GROUPS)}
+        provisionRefs={provisionRefs}
       />
     </div>
   );
@@ -8469,7 +8481,7 @@ const MISC_CONSUMED_KEY_GROUPS = [
   ['assignmentExceptions'], ['assignmentRestrictions'],
 ];
 
-function MiscSummaryTable({ provisions, allProvisions, onSelectProvision }) {
+function MiscSummaryTable({ provisions, allProvisions, onSelectProvision, provisionRefs }) {
   return (
     <div className="space-y-3">
       <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
@@ -8525,6 +8537,7 @@ function MiscSummaryTable({ provisions, allProvisions, onSelectProvision }) {
         provisions={provisions}
         onSelectProvision={onSelectProvision}
         consumedIds={consumedProvisionIds(provisions, MISC_CONSUMED_KEY_GROUPS)}
+        provisionRefs={provisionRefs}
       />
     </div>
   );
@@ -8698,7 +8711,7 @@ const ANTI_CONSUMED_KEY_GROUPS = [
   ['timingAgreement', 'timingAgreementsProhibited'],
 ];
 
-function AntitrustSummaryTable({ provisions, allProvisions, onSelectProvision }) {
+function AntitrustSummaryTable({ provisions, allProvisions, onSelectProvision, provisionRefs }) {
   const rows = buildAntitrustSummaryRows(provisions, allProvisions || provisions);
   const consumedIds = new Set([
     ...rows.map((r) => r.hit && r.hit.provision && r.hit.provision.id).filter(Boolean),
@@ -8707,18 +8720,13 @@ function AntitrustSummaryTable({ provisions, allProvisions, onSelectProvision })
   return (
     <div className="space-y-3">
       <div className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
-        <div className="px-3 py-2 bg-bg/60 border-b border-border">
-          <p className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">
-            Antitrust Summary
-          </p>
-        </div>
         <div className="overflow-x-auto">
           <table className="min-w-full text-xs font-ui">
             <thead className="bg-bg/60 border-b border-border">
               <tr>
-                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">Span</th>
-                <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Feature</th>
-                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Value</th>
+                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">Category</th>
+                <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Term</th>
+                <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Provision</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -8755,12 +8763,13 @@ function AntitrustSummaryTable({ provisions, allProvisions, onSelectProvision })
         provisions={provisions}
         onSelectProvision={onSelectProvision}
         consumedIds={consumedIds}
+        provisionRefs={provisionRefs}
       />
     </div>
   );
 }
 
-function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, allProvisions, deal }) {
+function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, allProvisions, deal, provisionRefs }) {
   // STRUCT and CONSID get specialized layouts — see dedicated components above.
   if (type === 'STRUCT') {
     return <StructTable provisions={provisions} onSelectProvision={onSelectProvision} />;
@@ -8818,6 +8827,7 @@ function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, a
           provisions={mainProvsAugmented}
           onSelectProvision={onSelectProvision}
           allProvisions={allProvisions || provisions}
+          provisionRefs={provisionRefs}
         />
         {takeoverProvs.length > 0 && (
           <div className="space-y-2">
@@ -8857,6 +8867,7 @@ function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, a
         provisions={provisions}
         allProvisions={allProvisions || provisions}
         onSelectProvision={onSelectProvision}
+        provisionRefs={provisionRefs}
       />
     );
   }
@@ -8921,6 +8932,7 @@ function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, a
       <CovSummaryTable
         provisions={provisions}
         onSelectProvision={onSelectProvision}
+        provisionRefs={provisionRefs}
       />
     );
   }
@@ -9046,14 +9058,24 @@ function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, a
               // term into one analysis cell rather than five "—" cells.
               if ((type === 'REP-T' || type === 'REP-B') && isAocRepProvision(p)) {
                 return (
-                  <tr key={p.id} className="hover:bg-paper transition-colors">
+                  <tr
+                    key={p.id}
+                    id={`review-prov-${p.id}`}
+                    ref={el => { if (provisionRefs && provisionRefs.current) provisionRefs.current[p.id] = el; }}
+                    className="hover:bg-paper transition-colors"
+                  >
                     <AocTermCell provision={p} features={features} onSelectProvision={onSelectProvision} />
                     <AocAnalysisCell provision={p} features={features} columnCount={columns.length} />
                   </tr>
                 );
               }
               return (
-                <tr key={p.id} className="hover:bg-paper transition-colors">
+                <tr
+                  key={p.id}
+                  id={`review-prov-${p.id}`}
+                  ref={el => { if (provisionRefs && provisionRefs.current) provisionRefs.current[p.id] = el; }}
+                  className="hover:bg-paper transition-colors"
+                >
                   {/* Metsera fb2 block 2a (REPEAT-FAILURE fix): the Term cell
                       hovers to the row's provision source for EVERY row. The
                       earlier hover fix (audit block 9a, commit 686530d) only
@@ -9120,10 +9142,10 @@ function ProvisionTable({ provisions, type, onSelectProvision, onAddProvision, a
                     // Unwrap citable / tagged shapes so we never render [object Object].
                     if ((type === 'REP-T' || type === 'REP-B') && k === 'lookbackPeriod') {
                       const signing = p?.deal?.announce_date || p?.deal_announce_date || null;
-                      // ALWAYS frame as "X months prior to signing" — prefer the
+                      // Frame as years prior to signing. Prefer the
                       // numeric month-count, then convert a stored date string.
-                      const txt = lookbackToMonths(features.secFilingsLookbackMonths, signing)
-                        || lookbackToMonths(features.lookbackPeriod, signing);
+                      const txt = lookbackToYears(features.secFilingsLookbackMonths, signing)
+                        || lookbackToYears(features.lookbackPeriod, signing);
                       const rawForQuote = features.lookbackPeriod || features.secFilingsLookbackMonths;
                       return (
                         <td key={k} className="px-3 py-2 align-top max-w-[200px] text-ink">
@@ -9552,6 +9574,162 @@ function DefinitionTooltip({ def, position }) {
     >
       <p className="font-ui text-xs font-medium text-ink mb-1">{def.term}</p>
       <p className="font-body text-xs text-inkMid leading-relaxed">{def.text}</p>
+    </div>
+  );
+}
+
+function formatDealValueCompact(value) {
+  const n = asNumber(value);
+  if (!n || n <= 0) return null;
+  const trim = (x) => {
+    const s = x.toFixed(1);
+    return s.endsWith('.0') ? s.slice(0, -2) : s;
+  };
+  if (n >= 1e9) return `$${trim(n / 1e9)}B`;
+  if (n >= 1e6) return `$${trim(n / 1e6)}M`;
+  if (n >= 1e3) return `$${trim(n / 1e3)}K`;
+  return `$${Math.round(n).toLocaleString('en-US')}`;
+}
+
+function parseDealValueInput(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return null;
+  const s = raw.toLowerCase().replace(/[$,\s]/g, '');
+  const match = s.match(/^(\d+(?:\.\d+)?)(bn|b|bil|billion|m|mm|mil|million|k|thousand)?$/);
+  if (!match) return null;
+  const n = Number(match[1]);
+  if (!Number.isFinite(n) || n <= 0) return null;
+  const suffix = match[2] || '';
+  if (suffix === 'bn' || suffix === 'b' || suffix === 'bil' || suffix === 'billion') return Math.round(n * 1e9);
+  if (suffix === 'm' || suffix === 'mm' || suffix === 'mil' || suffix === 'million') return Math.round(n * 1e6);
+  if (suffix === 'k' || suffix === 'thousand') return Math.round(n * 1e3);
+  return Math.round(n);
+}
+
+function DealDataEditorModal({ deal, onClose, onSaved }) {
+  const facts = deal?.metadata?.deal_facts || {};
+  const valueFact = facts.value_usd || {};
+  const [valueText, setValueText] = useState(() => formatDealValueCompact(valueFact.value || deal?.value_usd) || '');
+  const [sourceUrl, setSourceUrl] = useState(valueFact.source_url || deal?.metadata?.source_url || '');
+  const [sourceLabel, setSourceLabel] = useState(valueFact.source_label || 'Manual review');
+  const [quote, setQuote] = useState(valueFact.quote || '');
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleSave = async () => {
+    if (!deal?.id) return;
+    const parsed = parseDealValueInput(valueText);
+    if (!parsed) {
+      setError('Enter a value like 1.2B, 500M, or 1200000000.');
+      return;
+    }
+    setSaving(true);
+    setError(null);
+    try {
+      const value_usd = parsed;
+      const nextMetadata = mergeDealFacts(deal.metadata || {}, {
+        value_usd: buildValueUsdFact(value_usd, {
+          source_url: sourceUrl.trim() || null,
+          source_label: sourceLabel.trim() || 'Manual review',
+          quote: quote.trim() || null,
+          method: 'manual_review',
+          locked: true,
+        }),
+      });
+      const res = await fetch('/api/deals', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: deal.id, value_usd, metadata: nextMetadata }),
+      });
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}));
+        throw new Error(j.error || `HTTP ${res.status}`);
+      }
+      if (onSaved) onSaved();
+      onClose();
+    } catch (e) {
+      setError(e.message || String(e));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-lg shadow-xl max-w-xl w-full max-h-[85vh] flex flex-col"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="px-4 py-3 border-b border-border flex items-center justify-between">
+          <h3 className="font-display text-sm text-ink font-medium">Deal Data</h3>
+          <button onClick={onClose} className="p-1 text-inkLight hover:text-ink" aria-label="Close">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M4 4l8 8M12 4l-8 8" />
+            </svg>
+          </button>
+        </div>
+        <div className="flex-1 overflow-y-auto p-4 space-y-3">
+          <label className="block">
+            <span className="block text-[10px] font-ui text-inkFaint uppercase tracking-wider mb-0.5">Value</span>
+            <input
+              value={valueText}
+              onChange={(e) => setValueText(e.target.value)}
+              className="w-full border border-border rounded px-2 py-1.5 text-xs font-ui focus:outline-none focus:ring-1 focus:ring-accent"
+              placeholder="e.g. 4.5B"
+            />
+          </label>
+          <label className="block">
+            <span className="block text-[10px] font-ui text-inkFaint uppercase tracking-wider mb-0.5">Source URL</span>
+            <input
+              value={sourceUrl}
+              onChange={(e) => setSourceUrl(e.target.value)}
+              className="w-full border border-border rounded px-2 py-1.5 text-xs font-ui focus:outline-none focus:ring-1 focus:ring-accent"
+              placeholder="https://..."
+            />
+          </label>
+          <label className="block">
+            <span className="block text-[10px] font-ui text-inkFaint uppercase tracking-wider mb-0.5">Source label</span>
+            <input
+              value={sourceLabel}
+              onChange={(e) => setSourceLabel(e.target.value)}
+              className="w-full border border-border rounded px-2 py-1.5 text-xs font-ui focus:outline-none focus:ring-1 focus:ring-accent"
+              placeholder="Company press release"
+            />
+          </label>
+          <label className="block">
+            <span className="block text-[10px] font-ui text-inkFaint uppercase tracking-wider mb-0.5">Source text</span>
+            <textarea
+              value={quote}
+              onChange={(e) => setQuote(e.target.value)}
+              rows={4}
+              className="w-full border border-border rounded px-2 py-1.5 text-xs font-ui focus:outline-none focus:ring-1 focus:ring-accent"
+              placeholder="Optional quote or context"
+            />
+          </label>
+          {error && <p className="text-xs font-ui text-red-600">{error}</p>}
+        </div>
+        <div className="px-4 py-3 border-t border-border flex justify-end gap-2">
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={saving}
+            className="px-3 py-1.5 text-xs font-ui border border-border rounded hover:bg-bg disabled:opacity-50"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={saving}
+            className="px-3 py-1.5 text-xs font-ui bg-accent text-white rounded hover:bg-accent/90 disabled:opacity-50"
+          >
+            {saving ? 'Saving...' : 'Save'}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -10061,6 +10239,7 @@ export default function ReviewPage() {
   const { deal, loading: dealLoading, refetch: refetchDeal } = useDeal(dealId);
   // P5 item 6: advisors editor modal toggle.
   const [advisorsModalOpen, setAdvisorsModalOpen] = useState(false);
+  const [dealDataModalOpen, setDealDataModalOpen] = useState(false);
   const { provisions: rawProvisions, loading: provsLoading, refetch: refetchProvs } = useProvisions({ deal_id: dealId });
   const { addToast } = useToast();
 
@@ -10273,13 +10452,27 @@ export default function ReviewPage() {
     });
   }, [TYPE_SORT_ORDER]);
 
+  const renderedSectionTypeForProvision = useCallback((provision) => {
+    if (!provision) return null;
+    if (isMaterialContractsProvision(provision)) return '__MATERIAL_CONTRACTS';
+    if (isMaeDefinitionProvision(provision)) {
+      return maeDefinitionSide(provision) === 'parent' ? 'MAE-DEF-P' : 'MAE-DEF';
+    }
+    const displayType = displayTypeForProvision(provision, provisions);
+    if (displayType === 'COND-M' || displayType === 'COND-B' || displayType === 'COND-S') return 'COND';
+    if (displayType === 'TERMR-M' || displayType === 'TERMR-B' || displayType === 'TERMR-T') return 'TERMR';
+    return displayType || provision.type || null;
+  }, [provisions]);
+
+  const activeFilterIncludesProvision = useCallback((provision) => {
+    if (!provision || activeFilter === null) return true;
+    const filters = Array.isArray(activeFilter) ? activeFilter : [activeFilter];
+    const displayType = displayTypeForProvision(provision, provisions);
+    return filters.includes(provision.type) || filters.includes(displayType);
+  }, [activeFilter, provisions]);
+
   /* ── Filtered provisions based on sidebar selection ── */
   const filteredProvisions = useMemo(() => {
-    // Single-provision view wins over type filter
-    if (selectedProvId) {
-      const one = provisions.find(p => p.id === selectedProvId);
-      return one ? [one] : [];
-    }
     if (activeFilter === null) {
       // "All Provisions" — render in sidebar order so the page mirrors the nav.
       return sortByTypeOrder(provisions);
@@ -10299,7 +10492,7 @@ export default function ReviewPage() {
       const displayType = displayTypeForProvision(p, provisions);
       return effectiveTypes.has(p.type) || effectiveTypes.has(displayType);
     }));
-  }, [provisions, activeFilter, selectedProvId, sortByTypeOrder]);
+  }, [provisions, activeFilter, sortByTypeOrder]);
 
   /* ── Group provisions by type (all, not filtered) ──
      Preserves natural insertion order (which mirrors document order) but
@@ -10588,8 +10781,9 @@ export default function ReviewPage() {
   // so we render BOTH halves (Target with content, Parent reading "Not
   // present in this agreement").
   const iocSide = (() => {
-    if (activeFilter === 'IOC-T') return 'target';
-    if (activeFilter === 'IOC-B') return 'buyer';
+    const filters = Array.isArray(activeFilter) ? activeFilter : [activeFilter];
+    if (filters.length === 1 && filters[0] === 'IOC-T') return 'target';
+    if (filters.length === 1 && filters[0] === 'IOC-B') return 'buyer';
     return null;
   })();
 
@@ -10613,10 +10807,46 @@ export default function ReviewPage() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [hoveredProvId, setHoveredProvId] = useState(null);
   const provisionRefs = useRef({});
+  const sectionRefs = useRef({});
+  const [pendingScrollTarget, setPendingScrollTarget] = useState(null);
   const closeEditPanel = useCallback(() => {
     setEditingProvision(null);
     pushReviewRoute({ editProvisionId: null });
   }, [pushReviewRoute]);
+
+  const queueProvisionScroll = useCallback((provision) => {
+    if (!provision || !provision.id) return;
+    const sectionType = renderedSectionTypeForProvision(provision);
+    if (sectionType) {
+      setCollapsedSections((prev) => {
+        if (!prev.has(sectionType)) return prev;
+        const next = new Set(prev);
+        next.delete(sectionType);
+        return next;
+      });
+    }
+    setPendingScrollTarget({ provisionId: provision.id, sectionType });
+  }, [renderedSectionTypeForProvision]);
+
+  useEffect(() => {
+    if (!pendingScrollTarget) return;
+    const run = () => {
+      const { provisionId, sectionType } = pendingScrollTarget;
+      const el =
+        provisionRefs.current[provisionId] ||
+        (typeof document !== 'undefined' ? document.getElementById(`review-prov-${provisionId}`) : null) ||
+        (sectionType ? sectionRefs.current[sectionType] : null);
+      if (!el) return;
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setPendingScrollTarget(null);
+    };
+    const raf = typeof window !== 'undefined'
+      ? window.requestAnimationFrame(() => window.requestAnimationFrame(run))
+      : null;
+    return () => {
+      if (raf && typeof window !== 'undefined') window.cancelAnimationFrame(raf);
+    };
+  }, [pendingScrollTarget, filteredProvsByType, collapsedSections]);
 
   // On phones the 286px sidebar would crush the content column, so default it
   // closed below the md breakpoint (it becomes an overlay when toggled open).
@@ -10663,7 +10893,7 @@ export default function ReviewPage() {
     pushReviewRoute({ section: next, provisionId: null, tab: null });
   }, [pushReviewRoute]);
 
-  /* ── Sidebar provision click — show ONLY that provision in the main view ── */
+  /* ── Sidebar provision click — jump to the provision without narrowing the page ── */
   const handleSidebarSelectProvision = useCallback((provId) => {
     const prov = provisions.find(p => p.id === provId);
     // Material Contracts provisions live under the REP-T (Company/Target)
@@ -10676,10 +10906,17 @@ export default function ReviewPage() {
       setFullDocOpen(false);
       setDocSheet((s) => (s.open ? { ...s, open: false } : s));
       setActiveTab('provisions');
-      setSelectedProvId(null);
+      setSelectedProvId(prov.id);
       setActiveFilter('__MATERIAL_CONTRACTS');
       setExpandedLabel(null);
-      pushReviewRoute({ section: '__MATERIAL_CONTRACTS', provisionId: null, tab: null });
+      queueProvisionScroll(prov);
+      if (isEdit) setEditingProvision(prov);
+      pushReviewRoute({
+        section: null,
+        provisionId: prov.id,
+        editProvisionId: isEdit ? prov.id : null,
+        tab: null,
+      });
       return;
     }
     setFullDocOpen(false);
@@ -10687,13 +10924,16 @@ export default function ReviewPage() {
     setActiveTab('provisions');
     setSelectedProvId(provId);
     if (prov) {
-      setActiveFilter(displayTypeForProvision(prov, provisions));
+      const sectionType = renderedSectionTypeForProvision(prov);
+      if (!activeFilterIncludesProvision(prov)) {
+        setActiveFilter(sectionType);
+      }
       // Auto-open the right edit panel so a single sidebar click on a
       // provision swaps the right-side toolbar to the editor for that item.
-      // User view: no editing, so leave the panel closed — the main content
-      // still switches to this provision's card via setSelectedProvId above.
+      // User view: no editing, so leave the panel closed.
       if (isEdit) setEditingProvision(prov);
       setExpandedLabel(null);
+      queueProvisionScroll(prov);
       pushReviewRoute({
         section: null,
         provisionId: prov.id,
@@ -10701,7 +10941,7 @@ export default function ReviewPage() {
         tab: null,
       });
     }
-  }, [provisions, isEdit, pushReviewRoute]);
+  }, [provisions, isEdit, activeFilterIncludesProvision, renderedSectionTypeForProvision, queueProvisionScroll, pushReviewRoute]);
 
   /* ── Edit provision ── */
   const handleEditProvision = useCallback((provision) => {
@@ -10759,12 +10999,9 @@ export default function ReviewPage() {
     if (route.provisionId) {
       const selected = provisions.find((p) => String(p.id) === String(route.provisionId));
       if (selected) {
-        if (isMaterialContractsProvision(selected)) {
-          nextFilter = '__MATERIAL_CONTRACTS';
-        } else {
-          nextFilter = displayTypeForProvision(selected, provisions);
-          nextSelected = selected.id;
-        }
+        nextFilter = renderedSectionTypeForProvision(selected);
+        nextSelected = selected.id;
+        queueProvisionScroll(selected);
       }
     } else if (route.section) {
       const sectionValues = Array.isArray(route.section) ? route.section : [route.section];
@@ -11015,8 +11252,16 @@ export default function ReviewPage() {
     );
   }
 
-  const dealLabel = `${getDisplayAcquirer(deal) || deal.acquirer || 'Acquirer'} / ${getDisplayTarget(deal) || deal.target || 'Target'}`;
+  const displayAcquirer = getDisplayAcquirer(deal) || deal.acquirer || 'Acquirer';
+  const displayTarget = getDisplayTarget(deal) || deal.target || 'Target';
+  const contractualAcquirer = deal.acquirer && displayAcquirer && deal.acquirer !== displayAcquirer
+    ? deal.acquirer
+    : null;
+  const dealLabel = `${displayAcquirer} / ${displayTarget}`;
   const hasSource = agreementSource && agreementSource.full_text;
+  const dealValueUsd = valueUsdFromDeal(deal);
+  const dealValueLabel = formatDealValueCompact(dealValueUsd);
+  const dealValueFact = deal?.metadata?.deal_facts?.value_usd || null;
 
   return (
     <CustomTaxonomyContext.Provider value={customTaxonomyCtxValue}>
@@ -11139,8 +11384,13 @@ export default function ReviewPage() {
                 )}
               </div>
               <h1 className="rec-deal-title">
-                {deal.acquirer} <span className="vs">acquires</span> {deal.target}
+                {displayAcquirer} <span className="vs">acquires</span> {displayTarget}
               </h1>
+              {contractualAcquirer ? (
+                <p className="mt-1 text-[11px] font-ui text-inkFaint">
+                  Contractual parent: {contractualAcquirer}
+                </p>
+              ) : null}
               {/* P5 item 6: Edit affordance for advisors. Always show the Edit
                   button; show the chip row when at least one advisor exists. */}
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: 8, marginBottom: 8, alignItems: 'center' }}>
@@ -11237,10 +11487,35 @@ export default function ReviewPage() {
                 </div>
               )}
               <div className="rec-deal-meta">
-                {deal.value_usd && (
+                {dealValueLabel && (
                   <div className="m">
                     <span className="k">Value</span>
-                    <span className="v">${(deal.value_usd / 1e9).toFixed(1)}B</span>
+                    <span className="v">
+                      {dealValueLabel}
+                      {dealValueFact?.source_url && (
+                        <a
+                          href={dealValueFact.source_url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="ml-1 text-accent hover:underline"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          source
+                        </a>
+                      )}
+                    </span>
+                  </div>
+                )}
+                {isEdit && (
+                  <div className="m">
+                    <span className="k">Data</span>
+                    <button
+                      type="button"
+                      onClick={() => setDealDataModalOpen(true)}
+                      className="v text-accent hover:underline"
+                    >
+                      Edit
+                    </button>
                   </div>
                 )}
                 {deal.structure && (
@@ -11423,9 +11698,17 @@ export default function ReviewPage() {
                       const considerationHeadlineType = type === 'CONSID'
                         ? deriveHeadlineConsiderationType(provs)
                         : null;
+                      const considerationHeadlineLabel = type === 'CONSID'
+                        ? headlineConsiderationLabel(considerationHeadlineType, provs)
+                        : null;
+                      const showConsiderationElectionBadge = considerationHeadlineLabel && /election/i.test(considerationHeadlineLabel);
                       const isCollapsed = collapsedSections.has(type);
                       return (
-                        <div key={type} className="space-y-2">
+                        <div
+                          key={type}
+                          ref={el => { sectionRefs.current[type] = el; }}
+                          className="space-y-2"
+                        >
                           <button
                             type="button"
                             onClick={() => toggleSectionCollapse(type)}
@@ -11434,11 +11717,9 @@ export default function ReviewPage() {
                           >
                             <span className="th-dot" style={{ background: typeHex(type) }} />
                             <h2>{typeLabel(type)}</h2>
-                            <span className="rec-section-slot" aria-hidden="true" />
-                            <span className="rec-section-slot" aria-hidden="true" />
-                            {considerationHeadlineType === 'MIXED_ELECTION' && (
-                              <span className="inline-flex items-center font-ui font-semibold text-[10px] px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase tracking-wider">
-                                Cash/Stock Election
+                            {showConsiderationElectionBadge && (
+                              <span className="inline-flex items-center font-ui font-semibold text-[10px] px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                {considerationHeadlineLabel}
                               </span>
                             )}
                             <span
@@ -11571,6 +11852,7 @@ export default function ReviewPage() {
                                     onAddProvision={isEdit ? handleBeginAdd : undefined}
                                     allProvisions={provisions}
                                     deal={deal}
+                                    provisionRefs={provisionRefs}
                                   />
                                 );
                               })()}
@@ -11683,6 +11965,16 @@ export default function ReviewPage() {
           onSaved={() => {
             if (refetchDeal) refetchDeal();
             addToast('Advisors updated', 'success');
+          }}
+        />
+      )}
+      {isEdit && dealDataModalOpen && deal && (
+        <DealDataEditorModal
+          deal={deal}
+          onClose={() => setDealDataModalOpen(false)}
+          onSaved={() => {
+            if (refetchDeal) refetchDeal();
+            addToast('Deal data updated', 'success');
           }}
         />
       )}

@@ -75,6 +75,15 @@ test('NoOtherRepsFraudTable renders a Willful Breach row after the fraud row, "N
   assert.match(noOtherRepsSrc, /summary\.willfulBreach/);
 });
 
+test('NoOtherRepsFraudTable uses Term / Provision headers and no per-row helper text', () => {
+  assert.match(noOtherRepsSrc, />Term</);
+  assert.match(noOtherRepsSrc, />Provision</);
+  assert.doesNotMatch(noOtherRepsSrc, />Question</);
+  assert.doesNotMatch(noOtherRepsSrc, />Answer</);
+  assert.doesNotMatch(noOtherRepsSrc, /Does the Buyer represent/);
+  assert.doesNotMatch(noOtherRepsSrc, /Is there an express fraud carve-out/);
+});
+
 test('sidebar labels (shared.js) also carry the renamed Abry section', () => {
   assert.match(sharedSrc, /No Other Reps \/ Fraud \/ Willful Breach \(Abry\)/);
 });

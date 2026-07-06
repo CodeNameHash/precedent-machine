@@ -19,46 +19,15 @@ import {
 } from './shared';
 import { AddSectionItem } from './AddSectionItem';
 import { TermCell } from './TermCell';
+import ElectionCard from './ElectionCard';
 import {
   buildPerShareParts,
-  resolveInstrumentVesting,
   deriveHeadlineConsiderationType,
   headlineConsiderationLabel,
 } from './table-logic';
-import { hasAffirmativeMention } from '../../lib/instrument-negation';
-import { EQUITY_INSTRUMENTS } from '../../lib/taxonomy';
 
-// Aliases so a UI-side text-detected code (singular, e.g. "RSU") or a
-// structured extraction code (matching EQUITY_INSTRUMENTS exactly, e.g.
-// "RSUs") both count as "present" for the same canonical instrument.
-const EQUITY_INSTRUMENT_ALIASES = {
-  STOCK_OPTIONS: ['STOCK_OPTIONS'],
-  RSUs: ['RSUS', 'RSU'],
-  PSUs: ['PSUS', 'PSU'],
-  RESTRICTED_STOCK: ['RESTRICTED_STOCK'],
-  WARRANTS: ['WARRANTS', 'WARRANT'],
-  ESPP: ['ESPP'],
-  CONVERTIBLE_NOTES: ['CONVERTIBLE_NOTES', 'CONVERTIBLE_NOTE'],
-  SARS: ['SARS', 'SAR'],
-  PHANTOM_STOCK: ['PHANTOM_STOCK'],
-  DEFERRED_COMPENSATION: ['DEFERRED_COMPENSATION'],
-};
-
-// FB3 item 8b: equity instruments from the canonical EQUITY_INSTRUMENTS list
-// that this deal's equity rows don't cover — rendered as a collapsed
-// "Equity awards not present" strip under the Equity Treatment table.
-function absentEquityInstrumentLabels(equityRows) {
-  const presentCodes = new Set(
-    (equityRows || []).map((r) =>
-      (isTaggedItem(r.instrument) ? String(r.instrument.code || '') : String(r.instrument || '')).toUpperCase(),
-    ),
-  );
-  return Object.keys(EQUITY_INSTRUMENTS)
-    .filter((key) => {
-      const aliases = EQUITY_INSTRUMENT_ALIASES[key] || [key.toUpperCase()];
-      return !aliases.some((a) => presentCodes.has(a));
-    })
-    .map((key) => EQUITY_INSTRUMENTS[key]);
+function absentEquityInstrumentLabels() {
+  return [];
 }
 
 // Equity-specific column keys: these should NEVER appear in the lower
@@ -80,167 +49,63 @@ const CONSID_EQUITY_COLUMN_KEYS = new Set([
   'parachuteCap',
 ]);
 
-// Heuristic regex for equity instrument names in raw text (case-c fallback).
-// Order matters: PSU before RSU, RESTRICTED_STOCK before STOCK_OPTIONS, etc.
-const EQUITY_TEXT_PATTERNS = [
-  { code: 'PSU', label: 'PSUs', re: /Company\s+(?:Performance(?:-based)?\s+(?:Stock\s+Units?|RSUs?)|PSUs?)/i },
-  { code: 'RSU', label: 'RSUs', re: /Company\s+(?:Restricted\s+Stock\s+Units?|RSUs?)/i },
-  { code: 'RESTRICTED_STOCK', label: 'Restricted Stock Awards', re: /Company\s+Restricted\s+Stock\s+Awards?/i },
-  { code: 'STOCK_OPTIONS', label: 'Stock Options', re: /Company\s+Stock\s+Options?/i },
-  { code: 'ESPP', label: 'ESPP', re: /(?:Company\s+)?ESPP|Employee\s+Stock\s+Purchase\s+Plan/i },
-  { code: 'SAR', label: 'SARs', re: /Stock\s+Appreciation\s+Rights?|SARs?/i },
-  { code: 'WARRANT', label: 'Warrants', re: /Company\s+Warrants?/i },
-];
-
-// Detect whether a provision is an equity-award row. Prefers the
-// ai_metadata.code === 'CONSID-EQUITY' marker, falls back to the category
-// label since p.code is not present on rows fetched from the provisions API.
 function isConsidEquityProvision(p) {
+  const treatmentRows = Array.isArray(p?.consideration_equity?.treatments)
+    ? p.consideration_equity.treatments
+    : [];
+  if (treatmentRows.length > 0) return true;
   const meta = getAiMetadata(p) || {};
   if (meta.code === 'CONSID-EQUITY') return true;
-  const cat = String(p?.category || '').toLowerCase();
-  if (cat.includes('equity award') || cat.includes('stock plan') || cat.includes('treatment of equity')) {
-    return true;
-  }
-  const f = getStructuredFeatures(p) || {};
-  if (isTaggedItem(f.instrumentType)) return true;
-  const insts = f.outstandingInstruments;
-  if (Array.isArray(insts) && insts.length > 0) return true;
   return false;
 }
 
-// Build the equity-award rows. Handles three data shapes:
-//  (a) Post-expansion: one provision per instrument; f.instrumentType set.
-//  (b) Pre-expansion: f.outstandingInstruments + f.instrumentTreatments arrays.
-//  (c) No structured equity fields — regex-scan p.full_text for instrument names.
+function treatmentInstrumentLabel(treatment) {
+  const code = String(treatment.instrument_type || treatment.instrumentType || '').toUpperCase();
+  const labels = {
+    STOCK_OPTIONS: 'Stock Options',
+    RSA: 'Restricted Stock Awards',
+    RSU: 'Restricted Stock Units (RSUs)',
+    PSU: 'Performance Stock Units (PSUs)',
+    ESPP: 'Employee Stock Purchase Plan rights',
+    SAR: 'Stock Appreciation Rights',
+    PHANTOM_STOCK: 'Phantom Stock',
+    DSU: 'Deferred Stock Units',
+    DIRECTOR_EQUITY: 'Director Equity',
+    OTHER_EQUITY: 'Other Equity',
+  };
+  return labels[code] || humanizeBadgeText(code || 'Instrument');
+}
+
+// Build the equity-award rows from WP-SCHEMA-01 treatment rows only. Legacy
+// instrument arrays are deliberately ignored so stale parser features cannot
+// surface phantom instruments.
 export function buildEquityRows(equityProvisions) {
   const rows = [];
   for (const p of equityProvisions) {
-    const f = getStructuredFeatures(p) || {};
-    const insts = Array.isArray(f.outstandingInstruments) ? f.outstandingInstruments : [];
-    const treatments = Array.isArray(f.instrumentTreatments) ? f.instrumentTreatments : [];
-    // Audit fix batch item 5: track which instrument codes THIS provision
-    // already has a structured row for, so the raw-text fallback below can
-    // AUGMENT with any additional instruments mentioned in full_text instead
-    // of being skipped outright whenever any structured instrument exists.
-    const structuredCodes = new Set();
-    let hasStructuredRow = false;
-
-    // (a) instrumentType already populated (typical post-expander case).
-    // Use THIS row's own treatment — prefer the singular `equityAwardTreatment`
-    // when present, otherwise find a parallel treatment that matches this
-    // instrument's code, otherwise (only as a last resort) treatments[0].
-    // Picking treatments[0] blindly is what caused fully-accelerated rows to
-    // be mis-labeled "Partially Accelerated" when the array also contained
-    // a different instrument's treatment.
-    if (isTaggedItem(f.instrumentType)) {
-      hasStructuredRow = true;
-      const myCode = String(f.instrumentType.code || '').toUpperCase();
-      structuredCodes.add(myCode);
-      let myTreatment = null;
-      if (isTaggedItem(f.equityAwardTreatment)) {
-        myTreatment = f.equityAwardTreatment;
-      } else if (insts.length > 0) {
-        // Try to match by instrument code in the parallel array.
-        const idx = insts.findIndex(
-          (inst) => isTaggedItem(inst) && String(inst.code || '').toUpperCase() === myCode,
-        );
-        if (idx >= 0 && idx < treatments.length) {
-          myTreatment = treatments[idx];
-        }
-      }
-      if (myTreatment === null && treatments.length === 1) {
-        // Only one treatment in the array → safe to use it.
-        myTreatment = treatments[0];
-      }
-      // Per-instrument vesting: prefer this row's own instrumentVesting[0]
-      // (stamped by the expander), then the section-wide vestingAcceleration.
-      const myVesting = (Array.isArray(f.instrumentVesting) && f.instrumentVesting[0])
-        || f.vestingAcceleration || null;
-      rows.push({
-        key: `${p.id}-single`,
-        provision: p,
-        instrument: f.instrumentType,
-        outstandingCount: f.outstandingCount ?? null,
-        treatment: myTreatment,
-        vesting: myVesting,
-        cashOut: f.cashOutAmount ?? f.optionSpread ?? null,
-        cutoff: f.cutoffDate ?? null,
-      });
-    } else if (insts.length > 0) {
-      // (b) parallel arrays of instruments + treatments — each row picks its
-      // OWN treatment AND vesting by index (the parallel-array contract).
-      hasStructuredRow = true;
-      const vestings = Array.isArray(f.instrumentVesting) ? f.instrumentVesting : [];
-      insts.forEach((inst, i) => {
-        if (isTaggedItem(inst)) structuredCodes.add(String(inst.code || '').toUpperCase());
+    const treatmentPayload = p.consideration_equity || null;
+    const treatmentRows = Array.isArray(treatmentPayload?.treatments) ? treatmentPayload.treatments : [];
+    if (treatmentRows.length > 0) {
+      treatmentRows.forEach((t, i) => {
         rows.push({
-          key: `${p.id}-${i}`,
+          key: `${p.id}-treatment-${t.id || i}`,
           provision: p,
-          instrument: inst,
-          outstandingCount: f.outstandingCount ?? null,
-          treatment: treatments[i] ?? null,
-          // Fix batch item 2: only fall back to the section-wide vesting
-          // field when THIS instrument has no paired entry of its own AND
-          // it's the section's only instrument — otherwise a different
-          // instrument's vesting language (e.g. options' own double-trigger
-          // clause) silently "inherits" onto RSAs/ESPP rows that never had
-          // their own vesting extracted. See resolveInstrumentVesting.
-          vesting: resolveInstrumentVesting(i, vestings, f.vestingAcceleration, insts.length),
-          cashOut: f.cashOutAmount ?? f.optionSpread ?? null,
-          cutoff: f.cutoffDate ?? null,
+          instrument: {
+            code: t.instrument_type || t.instrumentType,
+            label: treatmentInstrumentLabel(t),
+          },
+          treatment: t.consideration_type || t.considerationType || null,
+          vesting: t.vesting_treatment || t.vestingTreatment || null,
+          performance: t.performance_treatment || t.performanceTreatment || null,
+          cashFormula: t.cash_formula || t.cashFormula || null,
+          stockFormula: t.stock_formula || t.stockFormula || null,
+          inTheMoneyOnly: t.in_the_money_only ?? t.inTheMoneyOnly ?? null,
+          spanType: t.span_type || t.spanType || null,
+          grouping: treatmentPayload.treatment_grouping || treatmentPayload.treatmentGrouping || null,
+          quote: t.verbatim_quote || t.verbatimQuote || null,
+          cutoff: null,
         });
       });
-    }
-
-    // (c) Audit fix batch item 5: scan raw text for instrument names NOT
-    // already covered by a structured row above (e.g. Metsera's RSA, named
-    // in full_text §2.03(ii), alongside a structured PSU/RSU instrumentType
-    // that used to short-circuit this whole branch via `continue`). This is
-    // now an AUGMENT step, not a mutually-exclusive fallback — it only runs
-    // for instruments this provision hasn't already produced a row for, so a
-    // structured instrument never gets a duplicate text-derived row.
-    //
-    // Fix batch item 2: a bare name hit is not evidence the instrument is
-    // actually outstanding — merger agreements routinely name an instrument
-    // only to negate its existence ("no ... stock appreciation rights ...
-    // issued or outstanding" is standard capitalization-rep boilerplate).
-    // Only count a match whose containing sentence does NOT negate it.
-    const text = String(p?.full_text || '');
-    const found = text
-      ? EQUITY_TEXT_PATTERNS.filter(({ re, code }) => !structuredCodes.has(code) && hasAffirmativeMention(re, text))
-      : [];
-    if (!hasStructuredRow && found.length === 0) {
-      rows.push({
-        key: `${p.id}-unknown`,
-        provision: p,
-        instrument: { code: 'UNKNOWN', label: p.category || 'Equity Award' },
-        outstandingCount: null,
-        treatment: null,
-        vesting: f.vestingAcceleration ?? null,
-        cashOut: f.cashOutAmount ?? f.optionSpread ?? null,
-        cutoff: f.cutoffDate ?? null,
-      });
-    } else if (found.length > 0) {
-      const seenCodes = new Set();
-      found.forEach(({ code, label }, i) => {
-        if (seenCodes.has(code)) return;
-        seenCodes.add(code);
-        rows.push({
-          key: `${p.id}-text-${i}`,
-          provision: p,
-          instrument: { code, label },
-          outstandingCount: null,
-          treatment: null,
-          // Fix batch item 2: text-detected instruments never had a genuine
-          // per-instrument vesting extracted — never inherit the section-wide
-          // field (that's another instrument's language, e.g. the options'
-          // double-trigger clause showing up verbatim on an ESPP row).
-          vesting: null,
-          cashOut: f.cashOutAmount ?? f.optionSpread ?? null,
-          cutoff: f.cutoffDate ?? null,
-        });
-      });
+      continue;
     }
   }
 
@@ -282,6 +147,37 @@ function renderWithAmountPills(text) {
   );
 }
 
+function isPsuRow(row) {
+  const code = isTaggedItem(row.instrument)
+    ? String(row.instrument.code || '').toUpperCase()
+    : String(row.instrument || '').toUpperCase();
+  const label = isTaggedItem(row.instrument)
+    ? String(row.instrument.label || '')
+    : String(row.instrument || '');
+  return code === 'PSU' || /performance\s+stock\s+units?|\bpsus?\b/i.test(label);
+}
+
+function performanceTreatmentLabel(value, quote) {
+  if (value === null || value === undefined || value === '') return null;
+  const code = String(isTaggedItem(value) ? value.code || value.label || '' : value).toUpperCase();
+  const source = String(quote || value || '');
+  if (/\bgreater\s+of\b/i.test(source) && /target/i.test(source) && /actual/i.test(source)) {
+    return 'Greater of target or actual';
+  }
+  if (/\bhigher\s+of\b/i.test(source) && /target/i.test(source) && /actual/i.test(source)) {
+    return 'Greater of target or actual';
+  }
+  const labels = {
+    DEEMED_TARGET: 'Target performance',
+    DEEMED_MAXIMUM: 'Maximum performance',
+    ACTUAL_PERFORMANCE: 'Actual performance',
+    PRO_RATA: 'Pro rata',
+    BOARD_DETERMINATION: 'Board determination',
+    N_A: 'Not specified',
+  };
+  return labels[code] || humanizeBadgeText(code || String(value));
+}
+
 export function EquityAwardTable({ rows, onSelectProvision, onAddProvision, optionsCvrEarnInLabel, optionsCvrEarnInQuote }) {
   if (!rows || rows.length === 0) return null;
   // Render a tagged value as a canonical pill. Prefer the resolved taxonomy
@@ -296,7 +192,8 @@ export function EquityAwardTable({ rows, onSelectProvision, onAddProvision, opti
     if (v === null || v === undefined || v === '') {
       return <span className="text-inkFaint/70 italic">—</span>;
     }
-    return <div className="line-clamp-1">{renderWithAmountPills(String(v))}</div>;
+    const text = /^[A-Z0-9_]+$/.test(String(v)) ? humanizeBadgeText(String(v)) : String(v);
+    return <div className="line-clamp-2">{renderWithAmountPills(text)}</div>;
   };
   // Identify the Options row so the CVR earn-in pill attaches there.
   const isOptionsRow = (row) => {
@@ -313,64 +210,87 @@ export function EquityAwardTable({ rows, onSelectProvision, onAddProvision, opti
           Employee equity treatment
         </p>
       </div>
-      <div className="overflow-x-auto">
-        <table className="min-w-full text-xs font-ui">
-          <thead className="bg-bg/60 border-b border-border">
-            <tr>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">Instrument</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Treatment</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Vesting</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap">Cutoff Date</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
-            {rows.map((row) => {
-              const instLabel = isTaggedItem(row.instrument)
-                ? (resolveTaggedLabel('instrumentType', row.instrument) || row.instrument.label || humanizeBadgeText(row.instrument.code))
-                : String(row.instrument || 'Instrument');
-              // Prefer the treatment/vesting cell's own quote; fall back to the
-              // provision full_text — all via the shared resolveEvidence path.
-              const rowQuote = evidenceQuote(row.treatment, { fallbackToFullText: false })
-                || evidenceQuote(row.vesting, { fallbackToFullText: false })
-                || evidenceQuote(null, { provision: row.provision });
-              return (
-                <tr key={row.key} className="hover:bg-bg/40 transition-colors">
-                  <td className={`px-3 py-2 align-top whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>
-                    <TermCell provision={row.provision} quote={rowQuote}>
-                      <HoverSource quote={rowQuote}>
-                        <span className="text-left text-accent hover:underline font-semibold">
-                          {instLabel}
-                        </span>
-                      </HoverSource>
-                    </TermCell>
-                  </td>
-                  <td className="px-3 py-2 align-top text-ink max-w-[320px]">
-                    <HoverSource quote={rowQuote} as="div">
-                      <span className="inline-flex flex-wrap items-center gap-1">
-                        {renderTagged(row.treatment, 'equityTreatment')}
-                        {/* Options row: CVR earn-in shows as an extra pill next
-                            to "Cashed Out at Spread" rather than its own hero row. */}
-                        {optionsCvrEarnInLabel && isOptionsRow(row) ? (
-                          <HoverSource quote={optionsCvrEarnInQuote || rowQuote}>
-                            <span className="inline-flex items-center font-ui font-medium text-[10px] px-1.5 py-0.5 rounded bg-violet-50 text-violet-700 border border-violet-200 whitespace-nowrap">
-                              {optionsCvrEarnInLabel}
-                            </span>
-                          </HoverSource>
-                        ) : null}
+      <div className="p-3 space-y-2">
+        {rows.map((row) => {
+          const instLabel = isTaggedItem(row.instrument)
+            ? (row.instrument.label || resolveTaggedLabel('instrumentType', row.instrument) || humanizeBadgeText(row.instrument.code))
+            : String(row.instrument || 'Instrument');
+          const rowQuote = row.quote
+            || evidenceQuote(row.treatment, { fallbackToFullText: false })
+            || evidenceQuote(row.vesting, { fallbackToFullText: false })
+            || evidenceQuote(row.performance, { fallbackToFullText: false })
+            || evidenceQuote(null, { provision: row.provision });
+          const psuPerformance = isPsuRow(row)
+            ? performanceTreatmentLabel(row.performance, rowQuote)
+            : null;
+          return (
+            <div key={row.key} className="border border-border rounded-lg bg-bg/20 p-3">
+              <div className="flex items-start justify-between gap-2">
+                <TermCell provision={row.provision} quote={rowQuote}>
+                  <HoverSource quote={rowQuote}>
+                    <span className="text-left text-accent hover:underline font-semibold text-sm">
+                      {instLabel}
+                    </span>
+                  </HoverSource>
+                </TermCell>
+                {row.grouping ? (
+                  <span className="text-[10px] font-ui uppercase tracking-wider text-inkFaint border border-border rounded px-1.5 py-0.5 bg-white">
+                    {humanizeBadgeText(row.grouping)}
+                  </span>
+                ) : null}
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 mt-2 text-xs font-ui">
+                <div>
+                  <p className="text-[10px] uppercase tracking-wider text-inkFaint mb-0.5">Consideration</p>
+                  <HoverSource quote={rowQuote} as="div">{renderTagged(row.treatment, 'equityTreatment')}</HoverSource>
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase tracking-wider text-inkFaint mb-0.5">Vesting</p>
+                  <HoverSource quote={rowQuote} as="div">{renderTagged(row.vesting, 'vestingAcceleration')}</HoverSource>
+                </div>
+                {psuPerformance ? (
+                  <div>
+                    <p className="text-[10px] uppercase tracking-wider text-inkFaint mb-0.5">Performance</p>
+                    <HoverSource quote={rowQuote} as="div" className="text-ink">{psuPerformance}</HoverSource>
+                  </div>
+                ) : null}
+                {row.cashFormula ? (
+                  <div className="sm:col-span-2">
+                    <p className="text-[10px] uppercase tracking-wider text-inkFaint mb-0.5">Cash Formula</p>
+                    <HoverSource quote={rowQuote} as="div" className="text-ink">{renderWithAmountPills(row.cashFormula)}</HoverSource>
+                  </div>
+                ) : null}
+                {row.stockFormula ? (
+                  <div className="sm:col-span-2">
+                    <p className="text-[10px] uppercase tracking-wider text-inkFaint mb-0.5">Stock Formula</p>
+                    <HoverSource quote={rowQuote} as="div" className="text-ink">{row.stockFormula}</HoverSource>
+                  </div>
+                ) : null}
+                {row.inTheMoneyOnly !== null && row.inTheMoneyOnly !== undefined ? (
+                  <div>
+                    <p className="text-[10px] uppercase tracking-wider text-inkFaint mb-0.5">ITM Only</p>
+                    <span className="text-ink">{row.inTheMoneyOnly ? 'Yes' : 'No'}</span>
+                  </div>
+                ) : null}
+                {row.spanType ? (
+                  <div>
+                    <p className="text-[10px] uppercase tracking-wider text-inkFaint mb-0.5">Source Span</p>
+                    <span className="text-ink">{humanizeBadgeText(row.spanType)}</span>
+                  </div>
+                ) : null}
+                {optionsCvrEarnInLabel && isOptionsRow(row) ? (
+                  <div className="sm:col-span-2">
+                    <HoverSource quote={optionsCvrEarnInQuote || rowQuote}>
+                      <span className="inline-flex items-center font-ui font-medium text-[10px] px-1.5 py-0.5 rounded bg-violet-50 text-violet-700 border border-violet-200">
+                        {optionsCvrEarnInLabel}
                       </span>
                     </HoverSource>
-                  </td>
-                  <td className="px-3 py-2 align-top text-ink max-w-[240px]">
-                    <HoverSource quote={rowQuote} as="div">{renderTagged(row.vesting, 'vestingAcceleration')}</HoverSource>
-                  </td>
-                  <td className="px-3 py-2 align-top text-ink whitespace-nowrap">
-                    {row.cutoff ?? <span className="text-inkFaint/70 italic">—</span>}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                  </div>
+                ) : null}
+              </div>
+            </div>
+          );
+        })}
       </div>
       {/* Row-level add scoped to THIS table: capture an equity class the parser
           missed (Ben's example — "what if you missed a class of equity, I'd
@@ -459,6 +379,7 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
   // Partition: equity-award provisions vs. everything else.
   const equityProvisions = provisions.filter(isConsidEquityProvision);
   const otherProvisions = provisions.filter((p) => !isConsidEquityProvision(p));
+  const electionProvisions = equityProvisions.filter((p) => p.consideration_equity && p.consideration_equity.election_mechanism);
 
   const equityRows = buildEquityRows(equityProvisions);
 
@@ -500,9 +421,7 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
       };
     }
     if (!heroConsidType && f.considerationType) {
-      heroConsidType = isTaggedItem(f.considerationType)
-        ? (resolveTaggedLabel('considerationType', f.considerationType) || f.considerationType.label || f.considerationType.code)
-        : String(f.considerationType);
+      heroConsidType = resolveConsidTypeLabel(f.considerationType);
     }
     if (heroPerShare && heroConsidType) break;
   }
@@ -651,7 +570,7 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
   };
   const heroPriceText = formatPerShare(heroPerShare);
   const headlineType = deriveHeadlineConsiderationType(provisions);
-  const headlineTypeLabel = headlineConsiderationLabel(headlineType);
+  const headlineTypeLabel = headlineConsiderationLabel(headlineType, provisions);
 
   // Audit-2 item 6(a): a raw enum value (e.g. "FIXED", "MIXED_ELECTION")
   // with no {code,label} tagged wrapper used to render verbatim via
@@ -806,7 +725,7 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
                 Headline Consideration
               </p>
               {headlineTypeLabel && (
-                <span className="inline-flex items-center gap-1 text-[10px] font-ui font-medium px-1.5 py-0.5 rounded border bg-emerald-50 text-emerald-700 border-emerald-200 uppercase tracking-wider">
+                <span className="inline-flex items-center gap-1 text-[10px] font-ui font-medium px-1.5 py-0.5 rounded border bg-emerald-50 text-emerald-700 border-emerald-200">
                   Consideration: {headlineTypeLabel}
                 </span>
               )}
@@ -873,15 +792,55 @@ export function ConsidTable({ provisions, onSelectProvision, onAddProvision }) {
         </div>
       )}
 
+      {electionProvisions.map((p) => (
+        <ElectionCard key={`election-${p.id}`} election={p.consideration_equity.election_mechanism} />
+      ))}
+
       {employeeEquityRows.length > 0 && (
         <>
-          <EquityAwardTable
-            rows={employeeEquityRows}
-            onSelectProvision={onSelectProvision}
-            onAddProvision={onAddProvision}
-            optionsCvrEarnInLabel={optionsCvrEarnInLabel}
-            optionsCvrEarnInQuote={optionsCvrEarnInSrc && optionsCvrEarnInSrc.quote}
-          />
+          {(() => {
+            const stepRows = employeeEquityRows.filter((row) => row.provision?.consideration_equity?.transaction_step);
+            const stepIds = [...new Set(stepRows.map((row) => row.provision.consideration_equity.transaction_step.id).filter(Boolean))];
+            if (stepIds.length <= 1) {
+              return (
+                <EquityAwardTable
+                  rows={employeeEquityRows}
+                  onSelectProvision={onSelectProvision}
+                  onAddProvision={onAddProvision}
+                  optionsCvrEarnInLabel={optionsCvrEarnInLabel}
+                  optionsCvrEarnInQuote={optionsCvrEarnInSrc && optionsCvrEarnInSrc.quote}
+                />
+              );
+            }
+            return (
+              <div className="space-y-2">
+                {stepIds.map((stepId, index) => {
+                  const rowsForStep = employeeEquityRows.filter((row) => row.provision?.consideration_equity?.transaction_step?.id === stepId);
+                  const step = rowsForStep[0]?.provision?.consideration_equity?.transaction_step || {};
+                  return (
+                    <details key={stepId} open={index === 0} className="bg-white border border-border rounded-lg shadow-sm overflow-hidden">
+                      <summary className="cursor-pointer px-3 py-2 bg-lime-50 border-b border-border text-[10px] font-ui font-medium text-lime-900 uppercase tracking-wider">
+                        Step {step.step_order || index + 1} — {humanizeBadgeText(step.step_kind || 'Merger')}
+                      </summary>
+                      <div className="p-3">
+                        {rowsForStep.length > 0 ? (
+                          <EquityAwardTable
+                            rows={rowsForStep}
+                            onSelectProvision={onSelectProvision}
+                            onAddProvision={onAddProvision}
+                            optionsCvrEarnInLabel={optionsCvrEarnInLabel}
+                            optionsCvrEarnInQuote={optionsCvrEarnInSrc && optionsCvrEarnInSrc.quote}
+                          />
+                        ) : (
+                          <p className="text-xs font-ui text-inkLight">Share cancellation only.</p>
+                        )}
+                      </div>
+                    </details>
+                  );
+                })}
+              </div>
+            );
+          })()}
           <NotIncludedStrip
             noun="equity instruments"
             items={absentEquityInstrumentLabels(employeeEquityRows)}

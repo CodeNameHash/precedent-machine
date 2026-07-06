@@ -46,6 +46,7 @@ const {
   classifyBreakdown,
   diffClassifications,
 } = require('../lib/parser-v2/snapshot');
+const { attachRegionIdsToSections, persistParserRegions } = require('../lib/parser-v2/region-store');
 
 /* ── pure helpers (exported for tests — no DB, no LLM) ───────────────────── */
 
@@ -286,16 +287,18 @@ async function fetchAllTypes(sb, dealId) {
  * Parse + classify a deal's STORED full_text (no fetch), cache-assisted.
  * Returns { classified, compact, sections, articles }.
  */
-async function classifyFromStoredText(deal, client, prior) {
+async function classifyFromStoredText(sb, deal, client, prior) {
   const { cleanText, parseStructure } = require('../lib/parser-v2/structural');
   const { classifySections } = require('../lib/parser-v2/classify');
   const fullText = deal.metadata && deal.metadata.full_text;
   if (!fullText) throw new Error('No stored full_text — full re-ingest required (scripts/ingest-local.js)');
   const cleaned = cleanText(fullText);
-  const { sections, articles } = parseStructure(cleaned);
+  const { sections, articles, regions } = parseStructure(cleaned);
   if (sections.length === 0) throw new Error('Parser found no sections in stored full_text');
   const classified = await classifySections(sections, articles, client, { prior });
-  return { classified, compact: toCompactSections(classified), sections, articles };
+  const persistedRegions = await persistParserRegions(sb, deal.id, cleaned, regions, sections);
+  const withRegions = attachRegionIdsToSections(classified, persistedRegions.rows);
+  return { classified: withRegions, compact: toCompactSections(withRegions), sections, articles };
 }
 
 async function persistSnapshot(sb, deal, compact, { resetExtractStatus = false } = {}) {
@@ -322,7 +325,7 @@ async function reclassifyDeal(sb, deal, client, apply) {
     console.log('  no prior snapshot — every non-deterministic section will need the AI');
   }
 
-  const { compact } = await classifyFromStoredText(deal, client, prior);
+  const { compact } = await classifyFromStoredText(sb, deal, client, prior);
   const tally = classifiedByTally(compact);
   console.log(`  classified ${compact.length} sections (${Object.entries(tally).map(([k, n]) => `${k}: ${n}`).join(', ')})`);
 
@@ -391,7 +394,7 @@ async function extractDeal(sb, deal, types, client) {
   // persisted so every future reprocess skips it.
   if (!snapshot) {
     console.log('  no snapshot — classifying from stored full_text (one-time; will be cached)…');
-    const { compact } = await classifyFromStoredText(deal, client, null);
+    const { compact } = await classifyFromStoredText(sb, deal, client, null);
     await persistSnapshot(sb, deal, compact);
     snapshot = compact;
     console.log(`  snapshot persisted: ${compact.length} sections`);

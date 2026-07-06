@@ -230,7 +230,12 @@ export function HoverSource({ quote, children, as = 'span', className, align = '
       bottom: flipUp ? window.innerHeight - r.top + 4 : undefined,
     });
   };
-  const open = () => { clearHideTimer(); computePos(); setShow(true); };
+  const open = () => {
+    if (triggerRef.current && triggerRef.current.closest && triggerRef.current.closest('.term-cell-label')) return;
+    clearHideTimer();
+    computePos();
+    setShow(true);
+  };
   const handleTouchStart = () => {
     open();
     // Auto-hide after 2.5s so the popover doesn't linger after the user taps
@@ -487,7 +492,13 @@ export function prettifyEnumValue(key, raw) {
     const map = {
       allcash: 'All cash',
       allstock: 'All stock',
+      mixed: 'Mixed cash / stock',
       mixedcashandstock: 'Mixed cash and stock',
+      mixedelection: 'Election',
+      cashorstock: 'Cash / stock election',
+      cashorstockormixed: 'Cash / stock / mixed election',
+      cashelection: 'Cash election',
+      stockelection: 'Stock election',
       cashwithcvr: 'Cash + CVR',
       cashcvr: 'Cash + CVR',
     };
@@ -587,6 +598,7 @@ const TYPE_COLORS = {
   'REP':    { bg: 'bg-emerald-50', border: 'border-emerald-200',text: 'text-emerald-800',dot: 'bg-emerald-400',hex: '#ecfdf5' },
   'REP-T':  { bg: 'bg-emerald-50', border: 'border-emerald-200',text: 'text-emerald-800',dot: 'bg-emerald-400',hex: '#ecfdf5' },
   'REP-B':  { bg: 'bg-green-50',   border: 'border-green-200',  text: 'text-green-800',  dot: 'bg-green-400',  hex: '#f0fdf4' },
+  '__ABRY': { bg: 'bg-stone-50',   border: 'border-stone-200',  text: 'text-stone-700',  dot: 'bg-stone-400',  hex: '#fafaf9' },
   'COV':    { bg: 'bg-cyan-50',    border: 'border-cyan-200',   text: 'text-cyan-800',   dot: 'bg-cyan-400',   hex: '#ecfeff' },
   'DEF':    { bg: 'bg-gray-50',    border: 'border-gray-200',   text: 'text-gray-700',   dot: 'bg-gray-400',   hex: '#f9fafb' },
   'STRUCT': { bg: 'bg-violet-50',  border: 'border-violet-200', text: 'text-violet-800', dot: 'bg-violet-400', hex: '#f5f3ff' },
@@ -619,6 +631,7 @@ const TYPE_HEX = {
   REP:      '#3F8A6A',
   'REP-T':  '#3F8A6A',
   'REP-B':  '#3F8A6A',
+  '__ABRY': '#8A8782',
   '__SEC_MEETING': '#6E8AA8',
   '__EMPLOYEE_BENEFITS': '#6E8AA8',
   COV:      '#6E8AA8',
@@ -653,16 +666,6 @@ export const SIDEBAR_GROUPS = [
     { label: 'Company / Target', type: 'REP-T' },
     { label: 'Buyer / Parent', type: 'REP-B' },
   ]},
-  // No Other Reps / Fraud (Abry) — the four-question summary sits at the
-  // END of the R&W block, same "synthetic single-page section" pattern as
-  // Material Contracts below: it scans EVERY provision for the five Abry
-  // fields (titled REP-T-NOREP / REP-B-NOREP / REP-B-ANTIRELIANCE sections,
-  // or a MISC-ENTIRE section with the language embedded in its body) rather
-  // than belonging to one provision type. Always visible (see the
-  // '__ABRY' synthesis in pages/review/[id].js) so an absent clause reads
-  // as an explicit "Not present in this agreement" / "Silent on fraud"
-  // rather than a missing section.
-  { label: 'No Other Reps / Fraud / Willful Breach (Abry)', types: ['__ABRY'] },
   { label: 'Material Adverse Effect', children: [
     { label: 'Company Material Adverse Effect', type: 'MAE-DEF' },
     { label: 'Parent Material Adverse Effect', type: 'MAE-DEF-P' },
@@ -687,6 +690,9 @@ export const SIDEBAR_GROUPS = [
   { label: 'Employee Benefits', types: ['__EMPLOYEE_BENEFITS'] },
   { label: 'Other Covenants', types: ['COV'] },
   { label: 'Miscellaneous / Boilerplate', types: ['MISC'] },
+  // No Other Reps / Fraud (Abry) is a curated legal-risk summary rather than
+  // an ordinary R&W table. Keep it near the end, immediately before DEF.
+  { label: 'No Other Reps / Fraud / Willful Breach (Abry)', types: ['__ABRY'] },
   // FB3 chrome: Definitions moved to the bottom of the page (after Misc) —
   // it's a reference glossary, not something read in document order.
   { label: 'Definitions', types: ['DEF'] },

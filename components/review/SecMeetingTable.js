@@ -112,14 +112,14 @@ export function SecMeetingTable({ allProvisions }) {
         <table className="min-w-full text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
             <tr>
-              <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Requirement</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Extracted term</th>
+              <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Term</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Provision</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
             {state.rows.map((row) => (
               <tr key={row.key} className="align-top">
-                <td className="px-3 py-2 whitespace-normal break-words">
+                <td className={`px-3 py-2 whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>
                   <span className="text-ink font-medium">{row.label}</span>
                 </td>
                 <td className="px-3 py-2 text-ink">

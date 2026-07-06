@@ -37,6 +37,24 @@ function metseraDefProvisions() {
         crossReferences: ['Company Takeover Proposal', 'Company Board', 'Transactions'],
       },
     },
+    {
+      id: 'intervening-event',
+      type: 'DEF',
+      features: {
+        canonicalTerm: 'Intervening Event',
+        definitionText: 'a material event, change, effect, development, circumstance or occurrence that was not known to the Company Board as of the date of this Agreement.',
+        crossReferences: [],
+      },
+    },
+    {
+      id: 'acceptable-confidentiality',
+      type: 'DEF',
+      features: {
+        canonicalTerm: 'Acceptable Confidentiality Agreement',
+        definitionText: 'a confidentiality agreement containing terms no less favourable in the aggregate to the Company than those contained in the Confidentiality Agreement.',
+        crossReferences: [],
+      },
+    },
   ];
 }
 
@@ -45,6 +63,8 @@ test('nosolDefinitionChainRows finds both Metsera term variants from the deal\'s
   const terms = rows.map((r) => r.term);
   assert.ok(terms.includes('Superior Company Proposal'));
   assert.ok(terms.includes('Company Takeover Proposal'));
+  assert.ok(terms.includes('Intervening Event'));
+  assert.ok(terms.includes('Acceptable Confidentiality Agreement'));
 });
 
 test('Superior Company Proposal chains in Company Takeover Proposal one level deep (its own text literally names it, and it has its own DEF provision)', () => {
@@ -59,6 +79,21 @@ test('Company Takeover Proposal has no further chain (its crossReferences are ge
   const rows = mod.nosolDefinitionChainRows(metseraDefProvisions());
   const takeover = rows.find((r) => r.term === 'Company Takeover Proposal');
   assert.equal(takeover.child, null);
+});
+
+test('flattenNosolDefinitionRows removes a child/top-level duplicate from the rendered rows', () => {
+  const rows = mod.nosolDefinitionChainRows(metseraDefProvisions());
+  const flat = mod.flattenNosolDefinitionRows(rows);
+  const takeoverRows = flat.filter((r) => r.term === 'Company Takeover Proposal');
+  assert.equal(takeoverRows.length, 1);
+});
+
+test('DEF-sourced definition rows suppress overlapping NOSOL feature-definition rows', () => {
+  const rows = mod.nosolDefinitionChainRows(metseraDefProvisions());
+  assert.equal(mod.nosolFeatureRowCoveredByDef({ label: 'Intervening Event — definition' }, rows), true);
+  assert.equal(mod.nosolFeatureRowCoveredByDef({ label: 'Acceptable Confidentiality Agreement' }, rows), true);
+  assert.equal(mod.nosolFeatureRowCoveredByDef({ label: 'Intervening Event — scope' }, rows), false);
+  assert.equal(mod.nosolFeatureRowCoveredByDef({ label: 'Superior Proposal — test' }, rows), false);
 });
 
 test('never fabricates a chain: a crossReference not actually present in the definition text is not pulled in', () => {
@@ -95,6 +130,7 @@ const reviewSrc = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', 
 test('NosolFourTables accepts allProvisions and wires nosolDefinitionChainRows into the Key Definitions table\'s extraRows', () => {
   assert.match(nosolTablesSrc, /export function NosolFourTables\(\{ provisions, allProvisions \}\)/);
   assert.match(nosolTablesSrc, /nosolDefinitionChainRows\(allProvisions \|\| provisions\)/);
+  assert.match(nosolTablesSrc, /nosolFeatureRowCoveredByDef\(row, defChainRows\)/);
   assert.match(nosolTablesSrc, /title="Key Definitions"[\s\S]{0,200}extraRows=\{defChainRows\}/);
 });
 

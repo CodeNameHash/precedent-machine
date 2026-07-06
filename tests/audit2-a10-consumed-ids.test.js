@@ -30,7 +30,7 @@ test('allConsumedProvisionIds marks every provision carrying a value for any key
 });
 
 test('AntitrustSummaryTable extends consumedIds with allConsumedProvisionIds over ANTI_CONSUMED_KEY_GROUPS', () => {
-  const body = slice('function AntitrustSummaryTable({ provisions, allProvisions, onSelectProvision }) {', 500);
+  const body = slice('function AntitrustSummaryTable({ provisions, allProvisions, onSelectProvision', 500);
   assert.match(body, /allConsumedProvisionIds\(provisions, ANTI_CONSUMED_KEY_GROUPS\)/);
 });
 

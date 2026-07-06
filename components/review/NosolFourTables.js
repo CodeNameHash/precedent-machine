@@ -8,11 +8,15 @@ import {
 } from './shared';
 import { TermCell } from './TermCell';
 import {
+  changeOfRecommendationItemRows,
   canonicalizeNosolPills,
   goShopDisplay,
+  flattenNosolDefinitionRows,
   NOSOL_COR_LIFECYCLE_LABELS,
+  notChangeOfRecommendationItemRows,
   nosolDefinitionChainRows,
   nosolDefinitionInitialState,
+  nosolFeatureRowCoveredByDef,
   noticePeriodParts,
   pickNosolFeature,
   prohibitedActPills,
@@ -50,8 +54,8 @@ const NOSOL_CEASE_DISCUSSIONS = [
   { label: 'Exceptions',                               keys: ['ceaseDiscussionsExceptions'] },
 ];
 const NOSOL_CHANGE_OF_REC = [
-  { label: NOSOL_COR_LIFECYCLE_LABELS[0], keys: ['changeOfRecommendationItems'], kind: 'canonicalPills', vocab: 'changeOfRecommendationItems' },
-  { label: NOSOL_COR_LIFECYCLE_LABELS[1], keys: ['notChangeOfRecommendationItems'], kind: 'canonicalPills', vocab: 'notChangeOfRecommendationItems' },
+  { label: NOSOL_COR_LIFECYCLE_LABELS[0], keys: ['changeOfRecommendationItems'], kind: 'changeOfRecommendationItems' },
+  { label: NOSOL_COR_LIFECYCLE_LABELS[1], keys: ['notChangeOfRecommendationItems'], kind: 'notChangeOfRecommendationItems' },
   { label: 'Engagement standard (to discuss with a third party)', keys: ['engagementStandard', 'fiduciaryEngageStandard'] },
   { label: 'Notice period',                            keys: ['noticePeriod'], kind: 'noticePeriod' },
   { label: 'Notice content',                           keys: ['noticeContent'], kind: 'canonicalPills', vocab: 'noticeContent' },
@@ -98,6 +102,23 @@ function PillStrip({ pills, tone = 'standard' }) {
   );
 }
 
+function FullTextItemList({ rows }) {
+  const list = (rows || []).filter((row) => row && row.text);
+  if (list.length === 0) return <span className="italic text-inkFaint">Not present in this agreement</span>;
+  return (
+    <div className="space-y-1.5">
+      {list.map((row, idx) => (
+        <HoverSource key={`${row.label}-${idx}`} quote={row.quote || row.text} as="div">
+          <div className="rounded border border-border bg-bg/35 px-2 py-1.5">
+            <div className="text-[10px] font-ui font-medium text-inkFaint uppercase tracking-wider">{row.label}</div>
+            <div className="text-xs text-ink whitespace-pre-wrap break-words leading-relaxed">{row.text}</div>
+          </div>
+        </HoverSource>
+      ))}
+    </div>
+  );
+}
+
 function renderNosolCustomValue(row, hit, provisions) {
   if (row.kind === 'prohibitedActs') {
     return <PillStrip pills={prohibitedActPills(provisions)} />;
@@ -110,6 +131,12 @@ function renderNosolCustomValue(row, hit, provisions) {
   }
   if (row.kind === 'canonicalPills') {
     return <PillStrip pills={canonicalizeNosolPills(hit && hit.value, row.vocab)} />;
+  }
+  if (row.kind === 'changeOfRecommendationItems') {
+    return <FullTextItemList rows={changeOfRecommendationItemRows(provisions)} />;
+  }
+  if (row.kind === 'notChangeOfRecommendationItems') {
+    return <FullTextItemList rows={notChangeOfRecommendationItemRows(provisions)} />;
   }
   if (row.kind === 'noticePeriod') {
     const parts = noticePeriodParts(hit && hit.value);
@@ -139,13 +166,7 @@ function renderNosolCustomValue(row, hit, provisions) {
 // array so it slots into the same <tbody> as the feature-key spec rows
 // without a Fragment. `indent` styles the child row's label cell.
 function flattenNosolExtraRows(extraRows) {
-  const out = [];
-  for (const row of extraRows || []) {
-    if (!row) continue;
-    out.push({ ...row, indent: 0 });
-    if (row.child) out.push({ ...row.child, indent: 1, term: `${row.term}__child` });
-  }
-  return out;
+  return flattenNosolDefinitionRows(extraRows);
 }
 
 function NosolDefRow({ row }) {
@@ -315,6 +336,7 @@ export function NosolFourTables({ provisions, allProvisions }) {
   // (+ one-level-deep chained reference) sourced from the deal's own DEF
   // provisions — needs the full deal, not just the NOSOL-filtered pool.
   const defChainRows = nosolDefinitionChainRows(allProvisions || provisions);
+  const keyDefinitionsSpec = NOSOL_KEY_DEFINITIONS.filter((row) => !nosolFeatureRowCoveredByDef(row, defChainRows));
   return (
     <div className="space-y-3">
       <NosolGoShopTop provisions={provisions} />
@@ -331,7 +353,7 @@ export function NosolFourTables({ provisions, allProvisions }) {
       />
       <NosolMiniTable
         title="Key Definitions"
-        spec={NOSOL_KEY_DEFINITIONS}
+        spec={keyDefinitionsSpec}
         provisions={provisions}
         collapsibleDefinitions
         extraRows={defChainRows}

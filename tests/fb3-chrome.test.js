@@ -175,9 +175,12 @@ test('item 8a: absent reps collapse into ONE "Reps not included" strip instead o
 
 test('item 8b: absent equity instruments collapse into a strip under the Equity Treatment table', () => {
   const src = considSrc();
-  assert.match(src, /import \{ EQUITY_INSTRUMENTS \} from '\.\.\/\.\.\/lib\/taxonomy'/);
   assert.match(src, /function absentEquityInstrumentLabels/);
   assert.match(src, /noun="equity instruments"/);
+  assert.match(src, /function absentEquityInstrumentLabels\(\) \{\s*return \[\];\s*\}/);
+  assert.doesNotMatch(src, /EQUITY_TEXT_PATTERNS/);
+  assert.doesNotMatch(src, /hasAffirmativeMention/);
+  assert.doesNotMatch(src, /SARs\?\/i/);
   // Rendered directly after (under) the EquityAwardTable, inside the same
   // `employeeEquityRows.length > 0` gate so it never appears without the table.
   const gateIdx = src.indexOf('employeeEquityRows.length > 0 && (');

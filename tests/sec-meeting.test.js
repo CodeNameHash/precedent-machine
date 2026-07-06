@@ -134,6 +134,18 @@ test('secMeetingDisplayState builds rows from a realistic proxy / meeting fixtur
   assert.ok(state.rows.some((row) => row.label === 'Adjournment rights - Mutual'));
 });
 
+test('secMeetingDisplayState omits Company from the adjournment-rights row title', () => {
+  const state = secMeeting.secMeetingDisplayState([provision('COV-MEETING', {
+    adjournmentRights: [{
+      party: 'COMPANY',
+      reasons: [{ code: 'INSUFFICIENT_VOTES', label: 'Insufficient votes', text: 'to solicit additional proxies' }],
+      text: 'The Company may adjourn the Company Stockholders Meeting to solicit additional proxies.',
+    }],
+  })]);
+  assert.ok(state.rows.some((row) => row.label === 'Adjournment rights'));
+  assert.ok(!state.rows.some((row) => /Adjournment rights - Company/.test(row.label)));
+});
+
 test('secMeetingDisplayState returns collapsed no-data line for all-null fixture', () => {
   const state = secMeeting.secMeetingDisplayState([provision('COV-PROXY', {
     proxyFilingDeadline: null,
@@ -152,4 +164,7 @@ test('SecMeetingTable component uses HoverSource and the collapsed no-data copy'
   assert.match(src, /export function SecMeetingTable/);
   assert.match(src, /HoverSource/);
   assert.match(src, /state\.collapsedText/);
+  assert.match(src, />Term</);
+  assert.match(src, />Provision</);
+  assert.doesNotMatch(src, /Extracted term/);
 });

@@ -82,9 +82,11 @@ test('per-type CONSID extract runs the instrument-mention backstop (RSA row is n
   const client = makeOptionsOnlyClient();
   const provisions = await extractProvisionsForType(classifiedSections, 'CONSID', client, FULL_CLEANED_TEXT);
 
-  const codes = provisions.map((p) => p.features && p.features.instrumentType && p.features.instrumentType.code).filter(Boolean);
-  assert.ok(codes.includes('STOCK_OPTIONS'), `expected STOCK_OPTIONS row, got ${codes}`);
-  assert.ok(codes.includes('RESTRICTED_STOCK'), `text-detected RESTRICTED_STOCK row must not be dropped by the per-type path, got ${codes}`);
+  const equity = provisions.find((p) => p.code === 'CONSID-EQUITY');
+  const codes = ((equity && equity.features && equity.features.considerationTreatments) || [])
+    .map((t) => t.instrumentType);
+  assert.ok(codes.includes('STOCK_OPTIONS'), `expected STOCK_OPTIONS treatment, got ${codes}`);
+  assert.ok(codes.includes('RSA'), `text-detected RSA treatment must not be dropped by the per-type path, got ${codes}`);
 });
 
 test('per-type CONSID extract runs the CVR-exhibit sum backfill (maxPayment = exhibit sum, not the LLM default)', async () => {

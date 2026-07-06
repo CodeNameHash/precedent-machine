@@ -24,6 +24,39 @@ test('headline consideration type derives cash, stock, and mixed election deals'
     logic.deriveHeadlineConsiderationType([{ considerationType: 'mixed-cash-and-stock', prorationMechanics: { electionType: 'MIXED_ELECTION' } }]),
     'MIXED_ELECTION',
   );
+  assert.equal(
+    logic.deriveHeadlineConsiderationType([{ perShareAmount: '$10.00', exchangeRatio: '0.5 shares of Parent common stock' }]),
+    'MIXED',
+  );
+  assert.equal(
+    logic.deriveHeadlineConsiderationType([{ considerationType: 'mixed-cash-and-stock' }]),
+    'MIXED',
+  );
+});
+
+test('headline consideration labels humanize mixed and election values', () => {
+  assert.equal(logic.headlineConsiderationLabel('MIXED'), 'Mixed cash / stock');
+  assert.equal(logic.headlineConsiderationLabel('MIXED_ELECTION'), 'Election');
+  assert.equal(
+    logic.headlineConsiderationLabel('MIXED_ELECTION', [{
+      consideration_equity: {
+        election_mechanism: {
+          election_type: 'CASH_OR_STOCK',
+          options: [
+            { option_type: 'CASH_ELECTION' },
+            { option_type: 'STOCK_ELECTION' },
+          ],
+        },
+      },
+    }]),
+    'Cash / stock election',
+  );
+  assert.equal(
+    logic.headlineConsiderationLabel('MIXED_ELECTION', [{
+      features: { prorationMechanics: { electionType: 'MIXED_ELECTION' } },
+    }]),
+    'Mixed election',
+  );
 });
 
 test('CONSID schema includes stock-deal feature keys', () => {

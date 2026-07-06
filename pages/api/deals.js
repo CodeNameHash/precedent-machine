@@ -21,6 +21,7 @@ const DEAL_LIST_SELECT = [
   'target_entity:metadata->>target_entity',
   'advisors_v2:metadata->advisors_v2',
   'advisors:metadata->advisors',
+  'deal_facts:metadata->deal_facts',
   'headlineConsiderationType:metadata->>headlineConsiderationType',
   'headline_consideration_type:metadata->>headline_consideration_type',
   'considerationType:metadata->>considerationType',
@@ -49,6 +50,7 @@ function listRowToDeal(row, provisionCounts) {
     ...(row.target_entity ? { target_entity: row.target_entity } : {}),
     ...(row.advisors_v2 ? { advisors_v2: row.advisors_v2 } : {}),
     ...(row.advisors ? { advisors: row.advisors } : {}),
+    ...(row.deal_facts ? { deal_facts: row.deal_facts } : {}),
     ...(row.headlineConsiderationType ? { headlineConsiderationType: row.headlineConsiderationType } : {}),
     ...(row.headline_consideration_type ? { headline_consideration_type: row.headline_consideration_type } : {}),
     ...(row.considerationType ? { considerationType: row.considerationType } : {}),
@@ -98,6 +100,14 @@ export default async function handler(req, res) {
         .eq('id', id).single();
       if (error) return res.status(404).json({ error: error.message });
       if (!showStaging && isStagingDeal(data)) return res.status(404).json({ error: 'Deal is staging' });
+      const { data: topologyRows, error: topologyErr } = await sb
+        .from('deal_topology')
+        .select('*, primary_step:transaction_steps(*)')
+        .eq('deal_id', id)
+        .limit(1);
+      if (!topologyErr && topologyRows && topologyRows[0]) {
+        data.deal_topology = topologyRows[0];
+      }
       return res.json({ deal: data });
     }
     const { data, error } = await sb.from('deals')
@@ -132,6 +142,20 @@ export default async function handler(req, res) {
         .select('metadata').eq('id', id).single();
       if (!readErr && existing && existing.metadata && typeof existing.metadata === 'object') {
         const merged = { ...existing.metadata, ...updates.metadata };
+        const existingFacts = (existing.metadata.deal_facts && typeof existing.metadata.deal_facts === 'object') ? existing.metadata.deal_facts : null;
+        const incomingFacts = (updates.metadata.deal_facts && typeof updates.metadata.deal_facts === 'object') ? updates.metadata.deal_facts : null;
+        if (existingFacts || incomingFacts) {
+          const factsMerged = { ...(existingFacts || {}) };
+          if (incomingFacts) {
+            for (const [key, value] of Object.entries(incomingFacts)) {
+              const prior = factsMerged[key] && typeof factsMerged[key] === 'object' ? factsMerged[key] : {};
+              factsMerged[key] = value && typeof value === 'object' && !Array.isArray(value)
+                ? { ...prior, ...value }
+                : value;
+            }
+          }
+          merged.deal_facts = factsMerged;
+        }
         const existingExt = (existing.metadata.custom_taxonomy_extensions && typeof existing.metadata.custom_taxonomy_extensions === 'object') ? existing.metadata.custom_taxonomy_extensions : null;
         const incomingExt = (updates.metadata.custom_taxonomy_extensions && typeof updates.metadata.custom_taxonomy_extensions === 'object') ? updates.metadata.custom_taxonomy_extensions : null;
         if (existingExt || incomingExt) {

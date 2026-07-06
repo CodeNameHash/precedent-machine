@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { cleanProvisionText, dedupeProvisions, expandTypeGroupForStore, storeProvisionsForType } = require('../lib/parser-v2/store');
+const { archiveProvisionRows, cleanProvisionText, dedupeProvisions, expandTypeGroupForStore, storeProvisionsForType } = require('../lib/parser-v2/store');
 
 test('dedupeProvisions keeps the first byte-identical provision', () => {
   const provisions = [
@@ -71,6 +71,30 @@ test('dedupeProvisions never merges empty or missing full_text provisions', () =
 
 test('OTHER storage owns both catch-all coverage row types', () => {
   assert.deepEqual(expandTypeGroupForStore('OTHER'), ['OTHER', 'SECTION-LEFTOVER']);
+});
+
+test('archiveProvisionRows writes deleted provision payloads to the migration archive table', async () => {
+  const inserted = [];
+  const sb = {
+    from(table) {
+      assert.equal(table, 'provisions_archive_20260706');
+      return {
+        insert(rows) {
+          inserted.push(...rows);
+          return Promise.resolve({ error: null });
+        },
+      };
+    },
+  };
+
+  const result = await archiveProvisionRows(sb, [
+    { id: '11111111-1111-4111-8111-111111111111', deal_id: '22222222-2222-4222-8222-222222222222', category: 'Treatment of Equity Awards' },
+  ], 'test/archive');
+
+  assert.equal(result.archived, 1);
+  assert.equal(inserted[0].original_provision_id, '11111111-1111-4111-8111-111111111111');
+  assert.equal(inserted[0].archive_reason, 'test/archive');
+  assert.equal(inserted[0].row_data.category, 'Treatment of Equity Awards');
 });
 
 const { differentiateCategories } = require('../lib/parser-v2/store');

@@ -15,6 +15,7 @@ const path = require('path');
 const reviewSrc = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
 const termCellSrc = fs.readFileSync(path.join(__dirname, '..', 'components', 'review', 'TermCell.js'), 'utf8');
 const docPopUnderSrc = fs.readFileSync(path.join(__dirname, '..', 'components', 'review', 'DocPopUnder.js'), 'utf8');
+const sharedSrc = fs.readFileSync(path.join(__dirname, '..', 'components', 'review', 'shared.js'), 'utf8');
 const cardPagePath = path.join(__dirname, '..', 'pages', 'review', '[id]', 'provision', '[provisionId].js');
 
 test('TermCell.js exports the shared cell-wrapper + nav context (single source for card click-through + see-text)', () => {
@@ -25,6 +26,12 @@ test('TermCell.js exports the shared cell-wrapper + nav context (single source f
   assert.match(termCellSrc, /\/review\/\$\{dealId\}\/provision\/\$\{provision\.id\}/);
   // "See text" affordance calls back into DealNavContext's openSeeText.
   assert.match(termCellSrc, /openSeeText\(\{ provision, quote/);
+});
+
+test('TermCell owns source hover through the explicit see-text control, not the left-hand term label', () => {
+  assert.match(termCellSrc, /import \{ HoverSource \} from '\.\/shared'/);
+  assert.match(termCellSrc, /<HoverSource quote=\{seeTextQuote\} highlight=\{null\}>/);
+  assert.match(sharedSrc, /closest\('\.term-cell-label'\)/);
 });
 
 test('DocPopUnder.js renders a windowed excerpt (lib/doc-match), not the whole document in one node', () => {

@@ -1,6 +1,6 @@
 # Autonomous P7B, WP-UX, Ingest Progress
 
-Updated: 2026-07-05
+Updated: 2026-07-06
 
 ## Current State
 
@@ -39,6 +39,45 @@ Updated: 2026-07-05
 - V5 is authoritative for WP-UX scope only; current repo state and existing queue code govern ingest sequencing.
 
 ## Progress
+
+### Region ID Spread, 2026-07-06
+
+- Decision: `region_id` should be spread deliberately through source-bound workflows, not every generic report.
+- Implemented locally:
+  - Review edit panel re-extract resolves by persisted parser region id first, with `startChar` as legacy fallback.
+  - `/api/ingest/extract-section` accepts `region_id`, deletes/reinserts by region first, and stores region identity in row and metadata.
+  - Parser extraction fallback provisions and `SECTION-LEFTOVER` rows now retain section region identity.
+  - Section-leftover backfill prefers same-region membership and skips mismatched-region text matches, preventing duplicate-text bleed across sections.
+  - Worker coverage backfill DB-row conversion preserves region anchors.
+  - Admin gap/detail helpers and deal quality metrics carry `region_id` into gap, uncoded, boundary, and unlocated outputs.
+  - Store metadata now duplicates `regionId`/`region_id`, `regionKey`, and `regionType` so old consumers still see the anchor.
+- Regression added: `tests/parser-region-store.test.js` covers section-leftover region anchoring.
+- Gates passed:
+  - `node -c` on changed JS/API/test files.
+  - `git diff --check`.
+  - `node --test tests/parser-region-store.test.js tests/gap-review.test.js tests/ingest-worker.test.js tests/deal-quality-metrics.test.js tests/store-dedupe.test.js`, 45/45.
+  - `node --test tests/reprocess.test.js tests/run-history.test.js`, 20/20.
+  - `node --test tests/consideration-equity-schema.test.js tests/schema/consideration/*.test.js tests/consid-per-type-backfills.test.js tests/rsa-espp-treatment-and-instrument-backfill.test.js tests/fb3-chrome.test.js`, 31/31.
+  - Temp-copy `npm run build` passed.
+- Caveat: Maxwell agent `019f37c9-ed04-7c73-8926-b0c01d6c1aaf` is still active on full-corpus CONSID apply. Do not commit/deploy this mixed tree until that finishes and its data/code diff is reviewed.
+
+### WP-SCHEMA-02 Discovery, 2026-07-06
+
+- Scope: implement `/Users/bengoodchild/Downloads/pm-wp-schema-02-election.codex.md` and `/Users/bengoodchild/Downloads/pm-wp-schema-02-transaction-steps.codex.md` precisely, after Discovery.
+- Discovery result:
+  - Corpus checked: 41 deals.
+  - Classified sections checked: 3,702.
+  - Classified sections with `region_id`: 3,702.
+  - WP-SCHEMA-01 consideration schema exists in production and current local tree, but the local tree remains uncommitted and Maxwell is still applying full-corpus CONSID.
+- Transaction-step fixtures selected:
+  - ConocoPhillips / Concho Resources: focused scan reads as `SINGLE_MERGER`, not double-dummy.
+  - General Dynamics / CSRA: `TWO_STEP_TENDER` candidate, signals include `Acceptance Time` and Offer mechanics.
+  - Global Net Lease / Modiv: single-step control.
+- Election fixtures selected:
+  - QXO / TopBuild: cash/stock election candidate, signals include `Maximum Cash Election Number` and `Maximum Stock Election Number`.
+  - Global Net Lease / Modiv: non-election control.
+  - Synthetic CVR-inclusion fixture remains required by WP-SCHEMA-02-ELECTION.
+- Implementation guardrail: additive schema/code only; no data writes, no commit, no deploy while Maxwell migration remains active.
 
 ### P7B
 
@@ -412,3 +451,181 @@ Updated: 2026-07-05
   - `tests/provision-metadata-locks.test.js`
 - Temp-copy `npm run build` passed.
 - Full `node --test --test-reporter=dot tests/*.test.js` currently has unrelated CONSID backfill failures in the dirty parser/schema worktree.
+
+## 2026-07-06 WP-SCHEMA-02 Implementation
+
+- Implemented the two attached schema briefs locally, not committed/deployed:
+  - `/Users/bengoodchild/Downloads/pm-wp-schema-02-transaction-steps.codex.md`
+  - `/Users/bengoodchild/Downloads/pm-wp-schema-02-election.codex.md`
+- Migration files are deliberately split per the briefs:
+  - `supabase/schema-02-transaction-steps.sql`
+  - `supabase/schema-02-election.sql`
+- Transaction-step work:
+  - `lib/parser-v2/detectors/transaction-steps.js`
+  - `lib/schema/topology-detector.js`
+  - store path materialises `transaction_steps` before `deal_topology`, then binds multi-step `consideration_equity_provisions.transaction_step_id`.
+  - API/UI expose `deal_topology` and show a topology badge on non-single-step deal pages.
+  - `scripts/backfill-transaction-steps.js` is dry-run by default.
+- Election work:
+  - `lib/parser-v2/elections.js`
+  - `components/review/ElectionCard.jsx`
+  - consideration renderer shows the election panel once above treatment cards, with option cards separated by `OR`, default/deadline, and proration source language.
+  - store path writes `proration_rules`, `election_mechanisms`, `election_options` with write-time invariants and best-effort cleanup on child insert failure.
+  - `scripts/backfill-elections.js` is dry-run by default.
+- Discovery / dry-runs before shareholder-election carrier fix:
+  - ConocoPhillips / Concho: `SINGLE_MERGER`, one `MERGER` step, section `1.2`.
+  - General Dynamics / CSRA: `TWO_STEP_TENDER`, `TENDER_OFFER` then `BACK_END_MERGER`, warning only on chaining.
+  - Global Net Lease / Modiv: `SINGLE_MERGER`, one `MERGER` step.
+  - Initial QXO, Skechers, and Global Net Lease election dry-runs produced `election_mechanisms: 0` because the first implementation only scanned existing `consideration_equity_provisions`, which had employee-equity rows only. That was not good enough for the intended cash/stock election product.
+- Shareholder-election carrier correction:
+  - `lib/parser-v2/consideration-equity.js` now builds a `CONSID-ELECTION` carrier from election-bearing ordinary `CONSID` provisions, including cash/stock shareholder consideration provisions.
+  - Store path now permits a `CONSID-ELECTION` carrier with zero employee-equity treatments, while still enforcing election quote fidelity and option/proration invariants.
+  - `scripts/backfill-elections.js` now scans live `provisions` CONSID rows as well as existing consideration carrier rows, and can create/link a carrier row on `--apply`.
+  - This still does not add WP-SCHEMA-03 cash modelling. It only gives the election mechanism a parent consideration provision so split cash/stock consideration can be displayed and queried.
+- Election dry-runs after correction:
+  - QXO / TopBuild: `election_mechanisms: 1`, `CASH_OR_STOCK`, `CASH_ELECTION` + `STOCK_ELECTION`, prorated.
+  - Skechers: `election_mechanisms: 3`, cash/mixed election-bearing sections detected. Types currently classify as `OTHER` because these sections do not expose a clean standalone `STOCK_ELECTION`; review before apply.
+  - Global Net Lease / Modiv: `election_mechanisms: 0`, non-election control remains clean.
+- Gates after final patches:
+  - Syntax passed for schema-02 parser/store/scripts.
+  - Focused schema/store/consideration tests passed: 38/38.
+  - Temp-copy `npm run build` passed with `node_modules` symlinked to `/tmp/wp-schema-p7-node_modules-1783304291`.
+  - `git diff --check` passed.
+- Do not run apply backfills yet. Next required step is human review of the dry-run output and migration application order, then apply `schema-02-transaction-steps.sql`, `schema-02-election.sql`, and only then run backfills with `--apply`.
+
+## 2026-07-06 12:29 EDT Metsera Review Pass
+
+- User clarification: the large UX/substantive feedback block refers to Metsera.
+- Agent lanes:
+  - Locke UI lane completed and its UI copy/layout patches were reviewed into the main worktree.
+  - Ramanujan antitrust lane completed and its extraction post-pass patches were reviewed into the main worktree.
+  - Zeno corpus/schema sweep completed read-only and produced the follow-up map below.
+  - Maxwell remains the blocking agent for committing the mixed schema-02/consideration worktree. Do not commit/deploy until Maxwell is polled and its output is integrated or explicitly deferred.
+- Implemented Metsera UI/display fixes:
+  - Antitrust table no longer repeats the redundant `Antitrust Summary` heading.
+  - Antitrust row headers now read `Category` / `Term` / `Provision`.
+  - `Pull-Refiling` relabelled to `Pull and Refile`.
+  - Antitrust timing rows now prefer full `pullRefileText` and `timingAgreementText` before short enum values, so Metsera's parent pull-and-refile proviso can display.
+  - SEC meeting, employee benefits, and No Other Reps/Fraud tables now use `Term` / `Provision` language.
+  - SEC adjournment row title no longer says `Company`.
+  - Employee Benefits precluding-arrangements label now says `Company pre-closing arrangements`.
+  - No Other Reps/Fraud moved to the end before Definitions in sidebar/review order.
+  - Material Contracts left column aligned to the standard review label width.
+  - IOC side gate now treats single-child filter arrays like `['IOC-T']` as target-only, so Parent/Buyer tables no longer appear in Target-only IOC sections.
+  - IOC threshold display now formats bare numeric threshold values as dollars with commas, e.g. `2000000` to `$2,000,000`.
+  - Rep lookback display now frames numeric month counts as years before signing, not raw month counts.
+  - No-sol Key Definitions now source Intervening Event and Acceptable Confidentiality Agreement from DEF rows when present, suppressing duplicate legacy NOSOL feature-definition rows and deduping child/top-level definition repeats.
+- Implemented antitrust extraction/post-pass fixes:
+  - Normalises Metsera-shaped pull/refile and timing-agreement text by repairing truncated timing sentences from the same provision boundary.
+  - Splits Clear Skies into parent/company scope fields where source text supports it.
+  - Suppresses unhelpful generic `capDetail` on ANTI-HOHW.
+  - Stamps COND-M-REG antitrust closing conditions as HSR plus Scheduled Approvals.
+  - Adds outside-date antitrust extension summary to timing text when the termination-rights outside-date row supports it.
+- Observed live Metsera data:
+  - Metsera ANTI-TIMING already stored full `pullRefileText` / `timingAgreementText`; the display was preferring the enum.
+  - Metsera COND-M-REG already carries HSR plus Scheduled Approvals in structured fields; the UI/condition finder must prefer those fields over broad category language.
+  - Metsera dividend IOC row locally resolves as `IOC-DIVIDEND` with dividend-specific exceptions; the earlier `acquisitions / business combinations` display was a row/component display issue, not proof the stored dividend row was miscoded.
+- Gates passed after this pass:
+  - Syntax: `node -c components/review/table-logic.js` and `node -c lib/parser-v2/extract.js`.
+  - Focused UI/parser tests: `tests/audit-fix-batch-ui.test.js tests/nosol-definition-chains.test.js tests/review-layout.test.js tests/anti-regulatory-efforts.test.js tests/sec-meeting.test.js tests/employee-benefits.test.js tests/willful-breach-abry.test.js`, 75/75.
+  - Focused schema/parser tests: `tests/schema/validation.test.js tests/schema/formatters.test.js tests/parser-boundaries.test.js tests/canonical-conditions.test.js tests/cond-termr-display.test.js tests/per-type-parity-followups.test.js tests/feature-validation.test.js`, 68/68.
+  - Build initially caught a duplicate top-level helper name in `lib/parser-v2/extract.js`; fixed by renaming the antitrust helper to `firstAntitrustSentenceMatching`.
+  - Post-fix focused antitrust/boundary tests passed: `tests/anti-regulatory-efforts.test.js tests/parser-boundaries.test.js`, 16/16.
+  - Temp-copy `npm run build` passed with `node_modules` symlinked to `/tmp/wp-schema-p7-node_modules-1783304291`.
+  - `git diff --check` passed.
+- Deferred follow-ups:
+  - AOC needs a real schema/rendering lane, not a display patch: add `aocNoMaeSinceDate`, `aocSpecifiedIocComplianceSinceDate`, and resolved `aocSpecifiedIocCovenants` with covenant text and source links.
+  - MAE empty data is likely stale DEF-MAE extraction, not a schema absence. Reprocess Metsera DEF/MAE after commit/deploy and add QA warning when DEF-MAE lacks `carveouts` or `maeLimbs`.
+  - R&W SEC filing excluded portions need a tagged canonical backfill for `secFilingsExceptionExclusions` / `secFilingsExcludedSections`.
+  - IOC `OTHER` / `OTHER_SPECIFIC` taxonomy alignment remains open: specific IOC pages should distinguish section-wide exceptions from local exceptions and show each `OTHER` item with source text.
+  - Canonical indicator/pill consistency should become a shared renderer backed by `resolveTaggedLabel`, not more bespoke pill rules.
+
+## 2026-07-06 Metsera NoSOL + Hover Follow-Up
+
+- User review notes:
+  - Metsera ARC provision (e) has five A-E items, but the UI compressed them into three canonical chips.
+  - Metsera general override provision (g) should surface three not-change items: Rule 14d-9/14e-2 disclosure, required-by-law disclosure, and proposal-receipt / agreement-operation disclosure with recommendation reaffirmation.
+  - With explicit `see text`, left-hand term labels should not also show broad hover text. Right-column hovers must point to the specific source phrase driving the value.
+- Live data check:
+  - Provision `f5f9a180-80af-499a-a7eb-105722a5e773` already stores all five `changeOfRecommendationItems` A-E.
+  - Provision `aa713c4d-5b5c-43c7-9f54-fc4b14a6470a` already stores `tenderOfferDisclosureScope`, `legallyRequiredDisclosurePermitted`, and the reaffirming `notChangeOfRecommendationItems` text.
+  - Root issue was display compression, not missing live data for these Metsera points.
+- Implemented locally:
+  - `NosolFourTables` now renders full itemised text rows for `What constitutes a Change of Recommendation`.
+  - `NosolFourTables` now renders full itemised text rows for `What does NOT constitute a Change of Recommendation`, deriving 14d-9/14e-2, required-law, and reaffirmation rows from the stored feature fields.
+  - NOSOL prompt now explicitly tells extraction to preserve each general-override safe-disclosure carve-out as a separate not-change item.
+  - `TermCell` now wraps the explicit `see text` control in source hover.
+  - `HoverSource` suppresses popovers triggered inside `.term-cell-label`, so left-hand term labels no longer show broad source hover.
+  - IOC threshold amount pills now use a narrow source context around the driving dollar amount instead of the whole provision.
+- Gates passed:
+  - Syntax checks on touched UI/parser files.
+  - Focused NoSOL/hover/IOC suite: `tests/nosol-rebuild.test.js tests/audit-fix-batch-ui.test.js tests/fb3-wiring.test.js tests/nosol-definition-chains.test.js tests/review-layout.test.js`, 60/60.
+  - Broader focused UI/parser suite: `tests/audit-fix-batch-ui.test.js tests/nosol-rebuild.test.js tests/nosol-definition-chains.test.js tests/fb3-wiring.test.js tests/review-layout.test.js tests/anti-regulatory-efforts.test.js tests/sec-meeting.test.js tests/employee-benefits.test.js tests/willful-breach-abry.test.js tests/evidence-hover.test.js tests/reps-table-display.test.js`, 124/124.
+  - Schema/parser focused suite: `tests/schema/validation.test.js tests/schema/formatters.test.js tests/parser-boundaries.test.js tests/feature-validation.test.js`, 34/34.
+  - Temp-copy `npm run build` passed with `node_modules` symlinked to `/tmp/wp-schema-p7-node_modules-1783304291`.
+  - `git diff --check` passed.
+
+## 2026-07-06 WP-SCHEMA-03 + Deal Facts Checkpoint
+
+- User requested implementation of `/Users/bengoodchild/Downloads/pm-wp-schema-03-card-model.codex.md` while Maxwell continues, plus Metsera SAR/MAE/no-sol checks, sidebar jump fixes, deal metadata/value/source capture, and consideration display investigation.
+- Implemented the explicit WP-SCHEMA-03 additive scaffold:
+  - `supabase/schema-03-card-model.sql`
+  - `lib/schema/card-model.js`
+  - `scripts/lint-schema-fields.js`
+  - `tests/schema/card-model/invariants.test.js`
+  - `tests/schema/card-model/schema-sql.test.js`
+  - `lib/schema/index.js` export
+- Important schema-03 boundary:
+  - The brief names shared tables and direct-source child tables, but does not specify where many scalar card fields live, including consideration headline fields, rep qualifiers, condition party, no-shop type, fee amount, and similar per-card values.
+  - Adding a generic field table, JSON payload, or broad scalar columns would vary from the brief.
+  - Section 5.4 also says every child table row must carry source quote/spans, while the specified `closing_condition_cited_provisions` table has no quote/span columns. I treated that as a link table and pinned the guardrail accordingly.
+  - Result: explicit migration/helper/guardrails are implemented, but extractor/store/UI cutover is intentionally not done until that ambiguity is resolved.
+- Metsera checks:
+  - SAR issue: live/API Metsera equity data does not include SAR treatments. SAR mentions are in negated representation language only. No data backfill needed unless Ben sees a stale client page.
+  - No-sol uncoded tail: already pulled into the NOSOL provision, live gap counts are clean for that issue.
+  - MAE display root cause found and fixed locally: both Company MAE and Parent MAE had the same category/code, and side detection was not reading the defined term text. The review/sidebar now classify parent/buyer/acquiror MAE as Parent and company/target MAE as Company.
+- Sidebar provision click fix:
+  - Clicking a provision in the left sidebar now scrolls/jumps to that provision instead of narrowing/hiding the other provisions.
+  - Edit mode still opens the edit panel.
+- Deal facts/value/source work:
+  - Added `lib/deal-facts.js` for `deal_facts` metadata helpers.
+  - Ingest paths now preserve value, value source, public/display party facts, contractual parties, advisor facts, and derived consideration facts inside `metadata.deal_facts`, while also filling `deals.value_usd` when available.
+  - Deal list prefers `deal_facts` for value/consideration display.
+  - Review header now has edit-mode deal-data editing for value/source fields, using `/api/deals` PATCH and preserving source metadata.
+- Consideration display:
+  - Review section headers already route derived `MIXED` / election values through `headlineConsiderationLabel`, including `Election` and `Cash / stock election`.
+  - Found one remaining local leak in `ConsiderationTables`: the headline consideration block captured raw `f.considerationType` before display. Patched it to use `resolveConsidTypeLabel`, so raw `MIXED` does not survive into the consideration hero logic.
+- Euler consideration agent completed and was closed:
+  - Confirmed Envestnet has one consideration-equity provision and three treatment rows, PSU / RSU / Stock Options. Duplicate RSU/PSU display was not duplicate stored treatment rows.
+  - Confirmed PSU performance was stored on treatment rows but not rendered.
+  - Confirmed Envestnet contractual buyer is `BCPE Pequod Buyer, Inc.` while the public buyer is Bain Capital, so display and contractual-party names should remain distinct.
+- Integrated local follow-ups from Euler:
+  - Equity award rows now carry `performance_treatment` / `performanceTreatment`.
+  - PSU rows render a `Performance` field, including `Greater of target or actual` when the source quote says the award is based on the greater/higher of target and actual performance.
+  - Parser post-pass no longer collapses greater-of-target-and-actual PSU language into plain target performance.
+  - Review hero uses display buyer/target names from `getDisplayAcquirer` / `getDisplayTarget`, while showing a small `Contractual parent` line when the legal parent differs.
+- Gates passed so far:
+  - `NODE_PATH=/tmp/wp-schema-p7-node_modules-1783304291 node --test tests/schema/card-model/invariants.test.js tests/schema/card-model/schema-sql.test.js`
+  - `node scripts/lint-schema-fields.js`
+  - `NODE_PATH=/tmp/wp-schema-p7-node_modules-1783304291 node --test tests/review-layout.test.js`
+  - `NODE_PATH=/tmp/wp-schema-p7-node_modules-1783304291 node --test tests/deal-facts.test.js tests/canonical-advisors.test.js tests/seed-batch.test.js`
+  - `NODE_PATH=/tmp/wp-schema-p7-node_modules-1783304291 node --test tests/schema/card-model/invariants.test.js tests/schema/card-model/schema-sql.test.js tests/review-layout.test.js`
+  - `NODE_PATH=/tmp/wp-schema-p7-node_modules-1783304291 node --test tests/mrcooper-stock-batch.test.js tests/fb3-3g-skechers.test.js tests/audit2-cosmetic-sweep.test.js`
+  - `NODE_PATH=/tmp/wp-schema-p7-node_modules-1783304291 node --test tests/consideration-equity-schema.test.js tests/audit2-cosmetic-sweep.test.js tests/mrcooper-stock-batch.test.js tests/fb3-3g-skechers.test.js tests/review-layout.test.js`
+  - Temp-copy `npm run build` passed after copying `/tmp/wp-schema-p7-node_modules-1783304291` into the temp app.
+- Maxwell completed:
+  - Maxwell was a production-data lane, not a code-patch lane.
+  - Metsera / WP-SCHEMA-01 consideration migration is complete in production data for deal `885edae5-49e8-464a-9f33-edd229119d7c`.
+  - Metsera CONSID-EQUITY now has three schema treatments: STOCK_OPTIONS, RSA, ESPP.
+  - Corpus state reported by Maxwell: 29 current CONSID-EQUITY rows, 0 bad legacy equity rows, 31 `consideration_equity_provisions`, 118 `consideration_treatments`, 0 duplicate treatment keys, 0 quote mismatches, 206 archived provision rows.
+  - Metsera QA PASS: 310 provisions, coverage 97.20%, unverified quotes 0, duplicates 0, canonical rate 0.92.
+  - Admin gaps refreshed: `https://precedent-machine.vercel.app/admin/gaps?deal_id=885edae5-49e8-464a-9f33-edd229119d7c`, gap_count 0, structural gaps 0, data_model flags 0.
+- Final local readiness after Maxwell:
+  - Patched full-suite expectation drift in `tests/ingest-worker.test.js` for `candidate_deal_value_usd`.
+  - Patched brittle Antitrust source-slice test for the current `AntitrustSummaryTable` props.
+  - `NODE_PATH=/tmp/wp-schema-p7-node_modules-1783304291 /Users/bengoodchild/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --test tests/*.test.js` passed, 878/878.
+  - `git diff --check` passed.
+  - Temp-copy `npm run build` passed after copying `/tmp/wp-schema-p7-node_modules-1783304291` into the temp app.
+- Deploy state:
+  - Code and data are now together and deploy-ready, subject to staging by file and excluding `.DS_Store`.
+  - WP-SCHEMA-03 remains the explicit scaffold and guardrail implementation only. Full card-model extractor/store/UI cutover is still blocked by the scalar-field ambiguity in the brief.

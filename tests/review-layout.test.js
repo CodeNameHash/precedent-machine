@@ -52,6 +52,13 @@ test('4a: components/review/shared.js SIDEBAR_GROUPS keeps the same order', () =
   // child of Representations.
   const repsBlock = body.slice(body.indexOf("label: 'Representations'"), body.indexOf("label: 'Material Adverse Effect'"));
   assert.ok(!repsBlock.includes('__MATERIAL_CONTRACTS'));
+  assert.ok(!repsBlock.includes('__ABRY'));
+
+  const misc = body.indexOf("label: 'Miscellaneous / Boilerplate'");
+  const abry = body.indexOf("label: 'No Other Reps / Fraud / Willful Breach (Abry)'");
+  const defs = body.indexOf("label: 'Definitions'");
+  assert.ok(misc < abry, 'Abry summary comes after Miscellaneous / Boilerplate');
+  assert.ok(abry < defs, 'Abry summary comes before Definitions');
 });
 
 test('4b: seller/target children come before buyer/parent in every split group', () => {
@@ -79,4 +86,75 @@ test('4c: empty buyer-side sections collapse to a single inline "— None" line'
   assert.ok(src.includes("'IOC (Buyer)'"));
   assert.ok(src.includes("'No-Shop (Buyer)'"));
   assert.match(src, /\{' — None'\}/);
+});
+
+test('IOC side gate treats single-item filter arrays as child clicks', () => {
+  const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
+  const start = src.indexOf('const iocSide = (() =>');
+  assert.ok(start > 0);
+  const body = src.slice(start, src.indexOf('})();', start));
+  assert.match(body, /const filters = Array\.isArray\(activeFilter\) \? activeFilter : \[activeFilter\]/);
+  assert.match(body, /filters\.length === 1 && filters\[0\] === 'IOC-T'/);
+  assert.match(body, /filters\.length === 1 && filters\[0\] === 'IOC-B'/);
+});
+
+test('sidebar provision clicks scroll without narrowing the review list', () => {
+  const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
+
+  const filteredStart = src.indexOf('const filteredProvisions = useMemo(() =>');
+  assert.ok(filteredStart > 0);
+  const filteredBody = src.slice(filteredStart, src.indexOf('/* ── Group provisions by type', filteredStart));
+  assert.doesNotMatch(filteredBody, /selectedProvId[\s\S]*return one \? \[one\] : \[\]/);
+
+  const handlerStart = src.indexOf('const handleSidebarSelectProvision = useCallback((provId) =>');
+  assert.ok(handlerStart > 0);
+  const handlerBody = src.slice(handlerStart, src.indexOf('/* ── Edit provision ── */', handlerStart));
+  assert.match(handlerBody, /queueProvisionScroll\(prov\)/);
+  assert.match(handlerBody, /if \(!activeFilterIncludesProvision\(prov\)\)/);
+  assert.match(handlerBody, /if \(isEdit\) setEditingProvision\(prov\)/);
+  assert.doesNotMatch(handlerBody, /setSelectedProvId\(null\)/);
+
+  assert.match(src, /scrollIntoView\(\{ behavior: 'smooth', block: 'center' \}\)/);
+  assert.match(src, /id=\{`review-prov-\$\{p\.id\}`\}/);
+  assert.match(src, /provisionRefs=\{provisionRefs\}/);
+});
+
+test('rep lookback renderer frames numeric month counts as years before signing', () => {
+  const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
+  assert.match(src, /function formatLookbackYears\(months\)/);
+  assert.match(src, /years prior to signing/);
+  assert.match(src, /lookbackToYears\(features\.secFilingsLookbackMonths, signing\)/);
+  assert.doesNotMatch(src, /months prior to signing/);
+});
+
+test('MAE definition side detection reads the defined term before generic category/code', () => {
+  const reviewSrc = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
+  const sidebarSrc = fs.readFileSync(path.join(__dirname, '..', 'lib', 'sidebar-groups.js'), 'utf8');
+  const start = reviewSrc.indexOf('function maeDefinitionSide(p)');
+  assert.ok(start > 0);
+  const body = reviewSrc.slice(start, reviewSrc.indexOf('/* P8 item 3', start));
+
+  assert.match(body, /definitionLabel\(p\)/);
+  assert.match(body, /p\?\.full_text/);
+  assert.match(body, /parent\|buyer\|acquir\|purchaser/i);
+  assert.match(body, /company\|target/i);
+  assert.match(sidebarSrc, /Parent Material Adverse Effect/);
+  assert.match(sidebarSrc, /MAE-DEF-P/);
+});
+
+test('review hero uses display party names while preserving contractual parent detail', () => {
+  const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
+  assert.match(src, /const displayAcquirer = getDisplayAcquirer\(deal\)/);
+  assert.match(src, /const displayTarget = getDisplayTarget\(deal\)/);
+  assert.match(src, /\{displayAcquirer\} <span className="vs">acquires<\/span> \{displayTarget\}/);
+  assert.match(src, /Contractual parent: \{contractualAcquirer\}/);
+});
+
+test('review section collapse arrow sits next to the section title', () => {
+  const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
+  const start = src.indexOf('<h2>{typeLabel(type)}</h2>');
+  assert.ok(start > 0);
+  const headerBody = src.slice(start, src.indexOf('<span className="rule"', start));
+  assert.doesNotMatch(headerBody, /rec-section-slot/);
+  assert.match(headerBody, /\{isCollapsed \? '▸' : '▾'\}/);
 });

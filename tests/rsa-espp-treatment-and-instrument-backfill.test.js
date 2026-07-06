@@ -57,11 +57,10 @@ function optionsOnlyClient() {
 }
 
 function equityRowByInstrument(provisions, code) {
-  return provisions.find((p) =>
-    p.code === 'CONSID-EQUITY' &&
-    p.features &&
-    p.features.instrumentType &&
-    p.features.instrumentType.code === code);
+  const normalized = code === 'RESTRICTED_STOCK' ? 'RSA' : code;
+  const equity = provisions.find((p) => p.code === 'CONSID-EQUITY');
+  return ((equity && equity.features && equity.features.considerationTreatments) || [])
+    .find((t) => t.instrumentType === normalized);
 }
 
 test('full CONSID extraction backfills RSA and ESPP treatment values before row expansion', async () => {
@@ -72,19 +71,19 @@ test('full CONSID extraction backfills RSA and ESPP treatment values before row 
 
   assert.ok(rsa, 'RSA row should be present');
   assert.ok(espp, 'ESPP row should be present');
-  assert.equal(rsa.features.equityAwardTreatment.code, 'ACCELERATED_VESTING');
-  assert.match(rsa.features.equityAwardTreatment.text, /Restricted Stock Award.*shall vest in full/i);
-  assert.equal(espp.features.equityAwardTreatment.code, 'CANCELLED_NO_CONSIDERATION');
-  assert.match(espp.features.equityAwardTreatment.text, /Company ESPP.*terminate/i);
+  assert.equal(rsa.vestingTreatment, 'FULLY_VESTED_ACCELERATED');
+  assert.match(rsa.verbatimQuote, /Restricted Stock Award.*shall vest in full/i);
+  assert.equal(espp.considerationType, 'CANCELLATION');
+  assert.match(espp.verbatimQuote, /Company ESPP.*terminate/i);
 });
 
 test('per-type CONSID extraction uses the same instrument backfill path as full ingest', async () => {
   const provisions = await extractProvisionsForType(CLASSIFIED, 'CONSID', optionsOnlyClient(), EQUITY_TEXT);
-  const codes = provisions
-    .map((p) => p.features && p.features.instrumentType && p.features.instrumentType.code)
-    .filter(Boolean);
+  const equity = provisions.find((p) => p.code === 'CONSID-EQUITY');
+  const codes = ((equity && equity.features && equity.features.considerationTreatments) || [])
+    .map((t) => t.instrumentType);
 
-  assert.deepEqual(new Set(codes), new Set(['STOCK_OPTIONS', 'RESTRICTED_STOCK', 'ESPP']));
-  assert.equal(equityRowByInstrument(provisions, 'RESTRICTED_STOCK').features.equityAwardTreatment.code, 'ACCELERATED_VESTING');
-  assert.equal(equityRowByInstrument(provisions, 'ESPP').features.equityAwardTreatment.code, 'CANCELLED_NO_CONSIDERATION');
+  assert.deepEqual(new Set(codes), new Set(['STOCK_OPTIONS', 'RSA', 'ESPP']));
+  assert.equal(equityRowByInstrument(provisions, 'RESTRICTED_STOCK').vestingTreatment, 'FULLY_VESTED_ACCELERATED');
+  assert.equal(equityRowByInstrument(provisions, 'ESPP').considerationType, 'CANCELLATION');
 });

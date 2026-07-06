@@ -28,9 +28,11 @@ const { extractProvisions } = require('../lib/parser-v2/extract');
 const { validateProvisions } = require('../lib/parser-v2/validate');
 const { storeProvisions } = require('../lib/parser-v2/store');
 const { toCompactSections, classifyBreakdown } = require('../lib/parser-v2/snapshot');
+const { attachRegionIdsToSections, persistParserRegions } = require('../lib/parser-v2/region-store');
 const { extractAdvisors } = require('../lib/parser-v2/advisors');
 const { MERGER_FORMS } = require('../lib/taxonomy');
 const { fromCp } = require('../lib/html-entities');
+const { buildPartiesFact, buildValueUsdFact, mergeDealFacts } = require('../lib/deal-facts');
 
 function findDotEnvLocal(start = path.join(__dirname, '..')) {
   let dir = start;
@@ -104,6 +106,22 @@ function stripHtml(html) {
     .trim();
 }
 
+function metadataWithDealFacts(base, meta, sourceUrl, valueOverride = null) {
+  const value = valueOverride !== null && valueOverride !== undefined ? valueOverride : meta && meta.value_usd;
+  return mergeDealFacts(base || {}, {
+    value_usd: buildValueUsdFact(value, {
+      source_url: sourceUrl || null,
+      source_label: 'Agreement preamble',
+      method: valueOverride ? 'candidate_metadata' : 'ingest_metadata',
+    }),
+    parties: buildPartiesFact(meta || {}, {
+      source_url: sourceUrl || null,
+      source_label: 'Agreement preamble',
+      method: 'ingest_metadata',
+    }),
+  });
+}
+
 async function extractDealMetadata(client, text) {
   const preamble = text.substring(0, 10000);
   const mergerFormCodes = Object.keys(MERGER_FORMS);
@@ -152,10 +170,14 @@ Return ONLY the JSON object, no prose, no markdown fence.`;
 // ── the parser pipeline (mirrors runParserPipeline in from-url.js) ─────────
 async function runParserPipeline(client, fullText, dealId, title, sb, dealMeta = {}) {
   const cleaned = cleanText(fullText);
-  const { sections, articles } = parseStructure(cleaned);
+  const { sections, articles, regions } = parseStructure(cleaned);
   if (sections.length === 0) throw new Error('Parser found no sections in the agreement text');
   const classifiedSections = await classifySections(sections, articles, client);
-  const sectionsForExtract = classifiedSections.map((s) => ({ ...s, provision_type: s.provisionType }));
+  const persistedRegions = await persistParserRegions(sb, dealId, cleaned, regions, sections);
+  const sectionsForExtract = attachRegionIdsToSections(
+    classifiedSections.map((s) => ({ ...s, provision_type: s.provisionType })),
+    persistedRegions.rows,
+  );
   const provisions = await extractProvisions(sectionsForExtract, client, cleaned, dealMeta);
   const validation = validateProvisions(provisions, cleaned, sectionsForExtract);
   const finalProvisions = validation.provisions;
@@ -189,7 +211,7 @@ async function ingestOne(sb, client, url, existingDealId = null) {
   if (existingDealId) {
     const { data: existing, error: exErr } = await sb.from('deals').select('id, acquirer, target, metadata').eq('id', existingDealId).single();
     if (exErr || !existing) throw new Error(`--deal-id ${existingDealId} not found: ${exErr && exErr.message}`);
-    const mergedMeta = {
+    const mergedMeta = metadataWithDealFacts({
       ...(existing.metadata || {}),
       source_url: url,
       merger_form: meta.merger_form,
@@ -197,8 +219,12 @@ async function ingestOne(sb, client, url, existingDealId = null) {
       target_entity: meta.target_entity,
       acquirer_display: meta.acquirer_display,
       target_display: meta.target_display,
+    }, meta, url);
+    const updateRow = {
+      metadata: mergedMeta,
+      ...(meta.value_usd ? { value_usd: meta.value_usd } : {}),
     };
-    await sb.from('deals').update({ metadata: mergedMeta }).eq('id', existingDealId);
+    await sb.from('deals').update(updateRow).eq('id', existingDealId);
     const title = `${existing.acquirer} / ${existing.target}`;
     const parseResult = await runParserPipeline(client, fullText, existingDealId, title, sb, { signingDate: meta.signing_date });
     // Stamp reingested_at only AFTER storeProvisions succeeded. Stamping it
@@ -218,7 +244,7 @@ async function ingestOne(sb, client, url, existingDealId = null) {
     value_usd: meta.value_usd,
     announce_date: meta.signing_date,
     sector: meta.sector,
-    metadata: {
+    metadata: metadataWithDealFacts({
       source_url: url,
       full_text: fullText,
       merger_form: meta.merger_form,
@@ -227,7 +253,7 @@ async function ingestOne(sb, client, url, existingDealId = null) {
       target_entity: meta.target_entity,
       acquirer_display: meta.acquirer_display,
       target_display: meta.target_display,
-    },
+    }, meta, url),
   }).select().single();
   if (insErr) throw new Error(`Deal insert failed: ${insErr.message}`);
 
@@ -300,23 +326,25 @@ async function prepareDealForIngest(sb, client, url, options = {}) {
   }
 
   const cleaned = cleanText(fullText);
-  const { sections, articles } = parseStructure(cleaned);
+  const { sections, articles, regions } = parseStructure(cleaned);
   if (sections.length === 0) throw new Error('Parser found no sections in the agreement text');
   const classifiedSections = await classifySections(sections, articles, client);
-  const sectionsForExtract = classifiedSections.map((s) => ({ ...s, provision_type: s.provisionType }));
-  const compactSections = toCompactSections(sectionsForExtract);
+  let sectionsForExtract = classifiedSections.map((s) => ({ ...s, provision_type: s.provisionType }));
+  let compactSections = toCompactSections(sectionsForExtract);
   const displayText = displayCleanText(fullText);
   let advisors = [];
   try { advisors = extractAdvisors(displayText) || []; } catch { /* best effort */ }
 
   const title = `${meta.acquirer} / ${meta.target}`;
+  const candidateValue = options.seed_ingest && options.seed_ingest.candidate_deal_value_usd;
+  const valueUsd = meta.value_usd || candidateValue || null;
   const { data: newDeal, error: insErr } = await sb.from('deals').insert({
     acquirer: meta.acquirer,
     target: meta.target,
-    value_usd: meta.value_usd,
+    value_usd: valueUsd,
     announce_date: meta.signing_date,
     sector: meta.sector,
-    metadata: {
+    metadata: metadataWithDealFacts({
       source_url: url,
       full_text: displayText,
       merger_form: meta.merger_form,
@@ -334,9 +362,21 @@ async function prepareDealForIngest(sb, client, url, options = {}) {
       classify_breakdown: classifyBreakdown(compactSections),
       ...(advisors.length > 0 ? { advisors } : {}),
       ...(options.seed_ingest ? { seed_ingest: options.seed_ingest } : {}),
-    },
+    }, meta, url, valueUsd),
   }).select().single();
   if (insErr) throw new Error(`Deal insert failed: ${insErr.message}`);
+
+  const persistedRegions = await persistParserRegions(sb, newDeal.id, cleaned, regions, sections);
+  sectionsForExtract = attachRegionIdsToSections(sectionsForExtract, persistedRegions.rows);
+  compactSections = toCompactSections(sectionsForExtract);
+  const { error: snapshotErr } = await sb.from('deals').update({
+    metadata: {
+      ...(newDeal.metadata || {}),
+      classified_sections: compactSections,
+      classify_breakdown: classifyBreakdown(compactSections),
+    },
+  }).eq('id', newDeal.id);
+  if (snapshotErr) throw new Error(`Deal region snapshot update failed: ${snapshotErr.message}`);
 
   return {
     deal_id: newDeal.id,

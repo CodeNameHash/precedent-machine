@@ -15,7 +15,11 @@ const {
   taxonomyForFeatureKey,
 } = require('../lib/taxonomy');
 const { getFeaturesForType, getFeaturesForCode } = require('../lib/rubric');
-const { buildFeatureInstructions } = require('../lib/parser-v2/extract');
+const {
+  buildFeatureInstructions,
+  normalizeAntitrustRegulatoryFeatures,
+  repairProvisionTextBoundariesFromSections,
+} = require('../lib/parser-v2/extract');
 
 let tableLogic;
 test.before(async () => {
@@ -84,13 +88,21 @@ test('ANTI prompt contains digest markers, HSR split, and both CRITICAL warnings
   assert.ok(instr.includes('Facially-HOHW language may be capped by a remote proviso — check for provisos before EXPRESS_HOHW; SILENT_NO_CAP only when no limitation language exists anywhere in the efforts/remedies provisions.'));
 });
 
-test('UI source wires the custom ANTI span-table renderer and removes terminated-party breach carveout row', () => {
+test('UI source wires the custom ANTI grouped table renderer and removes terminated-party breach carveout row', () => {
   const reviewSrc = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
   const summarySrc = fs.readFileSync(path.join(__dirname, '..', 'lib', 'category-summary-features.js'), 'utf8');
   const tableLogicSrc = fs.readFileSync(path.join(__dirname, '..', 'components', 'review', 'table-logic.js'), 'utf8');
   assert.match(reviewSrc, /function AntitrustSummaryTable/);
   assert.match(reviewSrc, /rowSpan=\{row\.rowSpan\}/);
+  const antiStart = reviewSrc.indexOf('function AntitrustSummaryTable');
+  const antiBody = reviewSrc.slice(antiStart, reviewSrc.indexOf('function ProvisionTable', antiStart));
+  assert.ok(!antiBody.includes('Antitrust Summary'));
+  assert.match(antiBody, />Category</);
+  assert.match(antiBody, />Term</);
+  assert.match(antiBody, />Provision</);
   assert.match(tableLogicSrc, /Closing Condition \(antitrust\)/);
+  assert.match(summarySrc, /Pull and Refile/);
+  assert.doesNotMatch(summarySrc, /Pull-Refiling/);
   assert.match(summarySrc, /HSR Filing Deadline/);
   assert.match(summarySrc, /Ex-HSR Filing Deadline/);
   assert.ok(!summarySrc.includes('Terminating Party Breach Carveout'));
@@ -140,8 +152,131 @@ test('antitrust row plan keeps silent codes but omits unsupported rows', () => {
   assert.ok(rows.find((r) => r.section === 'Efforts'));
   assert.ok(rows.find((r) => r.section === 'Caps & Limits'));
   assert.ok(rows.find((r) => r.label === 'Litigation'));
-  assert.ok(rows.find((r) => r.label === 'Pull-Refiling'));
+  assert.ok(rows.find((r) => r.label === 'Pull and Refile'));
   assert.ok(rows.find((r) => r.label === 'Timing Agreement'));
   assert.equal(rows.find((r) => r.label === 'Control'), undefined);
   assert.equal(rows.find((r) => r.label === 'HSR Filing Deadline'), undefined);
+});
+
+test('antitrust row plan prefers full timing text over short enum labels', () => {
+  const rows = tableLogic.buildAntitrustSummaryRows([
+    {
+      type: 'ANTI',
+      category: 'Timing Agreements',
+      ai_metadata: {
+        features: {
+          pullRefile: { code: 'MUTUAL_CONSENT', label: 'Mutual consent', text: 'except with consent' },
+          pullRefileText: 'Mutual consent is required, provided that Parent may pull and refile if it refiles within two business days.',
+          timingAgreement: { code: 'NOT_UNREASONABLY_WITHHELD', label: 'Consent not unreasonably withheld', text: 'except with consent' },
+          timingAgreementText: 'The parties may not enter timing agreements without consent, provided that Parent may pull and refile if it refiles within two business days.',
+        },
+      },
+    },
+  ], []);
+  const pull = rows.find((r) => r.label === 'Pull and Refile');
+  const timing = rows.find((r) => r.label === 'Timing Agreement');
+  assert.equal(pull.hit.key, 'pullRefileText');
+  assert.match(pull.hit.value, /two business days/);
+  assert.equal(timing.hit.key, 'timingAgreementText');
+  assert.match(timing.hit.value, /timing agreements/);
+});
+
+test('Metsera-shaped antitrust post-pass repairs pull-refile, timing, clear skies, closing condition, and extension summary', () => {
+  const timingSentence = 'Notwithstanding the foregoing sentence, the parties agree not to (A) extend, directly or indirectly, any waiting period under the HSR Act or any Foreign Merger Control Law or enter into any agreement with a Governmental Entity to delay or not to consummate the Merger, except with the prior written consent of the other party, or (B) pull and refile any filing made under the HSR Act or any Foreign Merger Control Law, except with the prior written consent of the other party; provided that Parent may pull and refile under the HSR Act or any Foreign Merger Control Law so long as Parent refiles within two (2) Business Days.';
+  const clearSkiesText = 'Parent shall not, and shall cause its controlled Affiliates not to, acquire any business if such acquisition would reasonably be expected to prevent or materially delay the consummation of the Merger or would reasonably be expected to make materially more difficult the satisfaction of the conditions set forth in Article VII. Company shall not, and shall cause its Subsidiaries not to, take any action that would reasonably be expected to prevent or materially delay the consummation of the Merger.';
+  const condText = '(ii) (A) any applicable waiting period under the HSR Act shall have expired or been terminated and (B) the approvals set forth in Section 7.01(a) of the Company Disclosure Letter (the "Scheduled Approvals") shall have been obtained.';
+  const sectionText = `${timingSentence} ${clearSkiesText}`;
+  const cut = timingSentence.indexOf('provided') + 'provi'.length;
+
+  const provisions = [
+    {
+      type: 'ANTI',
+      code: 'ANTI-TIMING',
+      category: 'Timing Agreements',
+      text: timingSentence.slice(0, cut),
+      startChar: 0,
+      features: {
+        pullRefile: { code: 'MUTUAL_CONSENT', label: 'Mutual consent', text: 'except with the prior written consent of the other party' },
+        pullRefileText: timingSentence.slice(0, cut),
+        timingAgreement: { code: 'BARRED_MUTUAL_CONSENT', label: 'Barred absent mutual consent', text: 'except with the prior written consent of the other party' },
+        timingAgreementText: timingSentence.slice(0, cut),
+      },
+    },
+    {
+      type: 'ANTI',
+      code: 'ANTI-NOACTION',
+      category: 'Clear Skies',
+      text: clearSkiesText,
+      startChar: sectionText.indexOf('Parent shall'),
+      features: {},
+    },
+    {
+      type: 'COND-M',
+      code: 'COND-M-REG',
+      category: 'Regulatory Approvals',
+      text: condText,
+      startChar: 1000,
+      features: {
+        hsrClearance: true,
+        mainCondition: 'The HSR Act waiting period must have expired or been terminated.',
+      },
+    },
+    {
+      type: 'TERMR',
+      code: 'TERMR-OUTSIDE',
+      category: 'Outside Date',
+      text: 'outside date text',
+      startChar: 2000,
+      features: {
+        extensionConditions: {
+          value: 'Automatic extension triggers if, three business days before the Initial Outside Date, the HSR and Scheduled Approvals closing condition remains unsatisfied but all other conditions are satisfied or capable of being satisfied.',
+          quotes: ['if one or both of the conditions set forth in Section 7.01(a) and Section 7.01(b) (if the Judgment relates to the HSR Act and any Foreign Merger Control Law) shall not have been satisfied'],
+        },
+        outsideDateExtension: { value: true, quotes: ['the Initial Outside Date shall automatically be extended to June 21, 2026'] },
+      },
+    },
+    {
+      type: 'ANTI',
+      code: 'ANTI-BURDEN',
+      category: 'Burden Cap / Divestiture Limits',
+      text: 'Neither Parent nor any of its Affiliates shall be required to divest assets or litigate against any Governmental Entity.',
+      startChar: 3000,
+      features: {
+        burdenCommitment: { code: 'ANTI_HOHW', label: 'No obligation to divest or litigate (anti-HOHW)', text: 'shall be required to divest assets or litigate' },
+        capDetail: 'No obligation to divest or litigate.',
+      },
+    },
+  ];
+
+  const repair = repairProvisionTextBoundariesFromSections(
+    [{ provision_type: 'ANTI', number: '6.03', title: 'Reasonable Best Efforts; Notification', text: sectionText, startChar: 0 }],
+    provisions,
+  );
+  assert.equal(repair.repaired, 1);
+
+  normalizeAntitrustRegulatoryFeatures(provisions);
+
+  const timing = provisions[0].features;
+  assert.equal(timing.pullRefile.code, 'BUYER_UNILATERAL_GF');
+  assert.match(timing.pullRefile.text, /provided that Parent may pull and refile/);
+  assert.match(timing.pullRefileText, /Parent refiles within two \(2\) Business Days\.$/);
+  assert.equal(timing.pullAndRefileCompanyConsent, true);
+  assert.equal(timing.timingAgreement.code, 'BARRED_MUTUAL_CONSENT');
+  assert.match(timing.timingAgreementText, /delay or not to consummate the Merger/);
+  assert.match(timing.timingAgreementText, /Outside Date extension: Automatic extension triggers/);
+
+  const clear = provisions[1].features;
+  assert.equal(clear.clearSkiesParent, true);
+  assert.equal(clear.clearSkiesCompany, true);
+  assert.match(clear.clearSkiesParentScope, /reasonably be expected to prevent or materially delay/);
+  assert.match(clear.clearSkiesParentScope, /reasonably be expected to make materially more difficult the satisfaction of the conditions/);
+  assert.doesNotMatch(clear.clearSkiesParentScope, /^Company shall/);
+  assert.match(clear.clearSkiesCompanyScope, /^Company shall not/);
+
+  const cond = provisions[2].features;
+  assert.match(cond.mainCondition, /HSR Act waiting period/);
+  assert.match(cond.mainCondition, /Scheduled Approvals/);
+  assert.deepEqual(cond.antitrustApprovals.map((item) => item.code), ['HSR', 'SCHEDULED_APPROVALS']);
+  assert.match(cond.antitrustApprovals[1].text, /Section 7\.01\(a\) of the Company Disclosure Letter/);
+  assert.equal('capDetail' in provisions[4].features, false);
 });

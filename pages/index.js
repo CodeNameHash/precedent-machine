@@ -5,9 +5,9 @@ import { useRouter } from 'next/router';
 import { useUser } from '../lib/useUser';
 import { useDeals } from '../lib/useSupabaseData';
 import { getDisplayAdvisors } from '../lib/canonical-advisors';
+import { considerationFromMetadata, valueUsdFromDeal } from '../lib/deal-facts';
 import { getDisplayAcquirer, getDisplayTarget } from '../lib/deal-display';
 import DealsTable from '../components/DealsTable';
-import { headlineConsiderationLabel } from '../components/review/table-logic';
 
 HomePage.noLayout = true;
 
@@ -29,16 +29,15 @@ export default function HomePage() {
       (deals || []).map((d) => {
         const meta = d.metadata && typeof d.metadata === 'object' ? d.metadata : {};
         const adv = getDisplayAdvisors(meta);
-        const rawConsideration = meta.headlineConsiderationType || meta.headline_consideration_type || meta.considerationType || meta.consideration_type || null;
-        const consideration = headlineConsiderationLabel(rawConsideration) || rawConsideration || null;
+        const considerationFact = considerationFromMetadata(meta);
         return {
           id: d.id,
           date: d.announce_date || null,
           ultimateParent: getDisplayAcquirer(d),
           buyer: getDisplayAcquirer(d),
           seller: getDisplayTarget(d),
-          value: d.value_usd,
-          consideration,
+          value: valueUsdFromDeal(d),
+          consideration: considerationFact && considerationFact.summary,
           industry: d.sector || null,
           buyerFirms: adv.buyerFirms,
           buyerLawyers: adv.buyerLawyers,

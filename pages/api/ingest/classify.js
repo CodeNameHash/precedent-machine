@@ -20,6 +20,7 @@ import { getServiceSupabase } from '../../../lib/supabase';
 const { parseStructure, cleanText, displayCleanText } = require('../../../lib/parser-v2/structural');
 const { classifySections } = require('../../../lib/parser-v2/classify');
 const { toCompactSections } = require('../../../lib/parser-v2/snapshot');
+const { attachRegionIdsToSections, persistParserRegions } = require('../../../lib/parser-v2/region-store');
 
 export const config = {
   maxDuration: 300,
@@ -147,7 +148,7 @@ async function runClassifyPhase({ dealId, url, fullTextOverride, sb, client }) {
 
   // 2. Clean + parse structure
   const cleaned = cleanText(fullText);
-  const { sections, articles, diagnostics } = parseStructure(cleaned);
+  const { sections, articles, regions, diagnostics } = parseStructure(cleaned);
   if (sections.length === 0) {
     const err = new Error('Parser found no sections in the agreement text');
     err.statusCode = 422;
@@ -157,10 +158,15 @@ async function runClassifyPhase({ dealId, url, fullTextOverride, sb, client }) {
 
   // 3. Classify
   const classifiedSections = await classifySections(sections, articles, client);
-  const sectionsForExtract = classifiedSections.map((s) => ({
+  let sectionsForExtract = classifiedSections.map((s) => ({
     ...s,
     provision_type: s.provisionType,
   }));
+
+  if (dealId) {
+    const persistedRegions = await persistParserRegions(sb, dealId, cleaned, regions, sections);
+    sectionsForExtract = attachRegionIdsToSections(sectionsForExtract, persistedRegions.rows);
+  }
 
   // 4. Build by-type breakdown
   const by_type = {};

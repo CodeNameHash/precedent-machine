@@ -93,25 +93,21 @@ const ROWS = [
   {
     key: 'q1',
     label: "Buyer's Non-Reliance Representation",
-    hint: 'Does the Buyer represent it did not rely on anything beyond the express reps?',
     hasScope: false,
   },
   {
     key: 'q2',
     label: "Seller's No-Other-Reps Statement",
-    hint: 'Does the Seller state it made no other reps — and what is the scope?',
     hasScope: true,
   },
   {
     key: 'q3',
     label: "Seller's Non-Reliance Representation (Reciprocal)",
-    hint: "Does the Seller represent it did not rely on anything beyond Buyer's express reps?",
     hasScope: false,
   },
   {
     key: 'q4',
     label: "Buyer's No-Other-Reps Statement (Reciprocal)",
-    hint: 'Does the Buyer state it made no other reps — and what is the scope?',
     hasScope: true,
   },
 ];
@@ -130,8 +126,8 @@ export function NoOtherRepsFraudTable({ allProvisions }) {
         <table className="min-w-full text-xs font-ui">
           <thead className="bg-bg/60 border-b border-border">
             <tr>
-              <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Question</th>
-              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Answer</th>
+              <th className={`px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider whitespace-nowrap ${REVIEW_LABEL_COL_W}`}>Term</th>
+              <th className="px-3 py-2 text-left font-medium text-inkFaint uppercase tracking-wider">Provision</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -139,11 +135,10 @@ export function NoOtherRepsFraudTable({ allProvisions }) {
               const hit = summary[row.key];
               return (
                 <tr key={row.key} className="align-top">
-                  <td className="px-3 py-2 whitespace-normal break-words">
+                  <td className={`px-3 py-2 whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>
                     <TermCell provision={hit && hit.provision} quote={hit && hit.quote}>
                       <span className="text-ink font-medium">{row.label}</span>
                     </TermCell>
-                    <div className="text-[10px] text-inkFaint mt-0.5">{row.hint}</div>
                   </td>
                   <td className="px-3 py-2 text-ink">
                     <YesNotPresentCell hit={hit} scopeLabel={row.hasScope ? hit.scope : null} />
@@ -152,26 +147,20 @@ export function NoOtherRepsFraudTable({ allProvisions }) {
               );
             })}
             <tr className="align-top bg-bg/30">
-              <td className="px-3 py-2 whitespace-normal break-words">
+              <td className={`px-3 py-2 whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>
                 <TermCell provision={summary.fraud && summary.fraud.provision} quote={summary.fraud && summary.fraud.quote}>
                   <span className="text-ink font-medium">Fraud Carve-Out</span>
                 </TermCell>
-                <div className="text-[10px] text-inkFaint mt-0.5">
-                  Is there an express fraud carve-out preserving fraud claims?
-                </div>
               </td>
               <td className="px-3 py-2 text-ink">
                 <FraudCell fraud={summary.fraud} />
               </td>
             </tr>
             <tr className="align-top bg-bg/30">
-              <td className="px-3 py-2 whitespace-normal break-words">
+              <td className={`px-3 py-2 whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>
                 <TermCell provision={summary.willfulBreach && summary.willfulBreach.provision} quote={summary.willfulBreach && summary.willfulBreach.quote}>
                   <span className="text-ink font-medium">Willful Breach</span>
                 </TermCell>
-                <div className="text-[10px] text-inkFaint mt-0.5">
-                  Is "willful breach" defined, and what is the core standard?
-                </div>
               </td>
               <td className="px-3 py-2 text-ink">
                 <WillfulBreachCell willfulBreach={summary.willfulBreach} />

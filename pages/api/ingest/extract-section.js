@@ -3,17 +3,17 @@
  *
  * Re-extracts a SINGLE classified section on a deal:
  *   1. Loads deal.metadata.classified_sections
- *   2. Locates the section by sectionId
+ *   2. Locates the section by region_id or sectionId
  *   3. Runs extractProvisionsForType against a 1-element classifiedSections array
  *      containing only that section
- *   4. Finds existing provisions on the deal whose ai_metadata.startChar falls
- *      within the section's [startChar, endChar) range and DELETES them
+ *   4. Finds existing provisions in the same region, falling back to
+ *      ai_metadata.startChar within the section's [startChar, endChar) range
  *   5. Inserts the freshly-extracted provisions
  *   6. Appends a per-section run entry to deal.metadata.section_runs[]
  *
  * Bounded to ~5-15s — single section, single AI roundtrip.
  *
- * Input: POST { deal_id, section_id }   (section_id is the "section-<startChar>" string)
+ * Input: POST { deal_id, region_id?, section_id? }
  * Output: { success, deal_id, section_id, provisions_inserted, provisions_deleted, timing_ms }
  *
  * Unlike /api/ingest/extract-type, this endpoint does NOT mark the whole type
@@ -36,9 +36,9 @@ export const config = {
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only' });
 
-  const { deal_id, section_id } = req.body || {};
-  if (!deal_id || !section_id) {
-    return res.status(400).json({ error: 'deal_id and section_id are required' });
+  const { deal_id, section_id, region_id } = req.body || {};
+  if (!deal_id || (!section_id && !region_id)) {
+    return res.status(400).json({ error: 'deal_id and section_id or region_id are required' });
   }
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -65,20 +65,25 @@ export default async function handler(req, res) {
     }
     const cleaned = cleanText(metadata.full_text || '');
 
-    // ── 2. Locate target section by sectionId (or by exact startChar) ──
-    // sectionId is "section-<startChar>" per classify.js.
-    const findId = String(section_id);
-    let target = classified.find((s) => {
-      const sid = `section-${s.startChar ?? 0}`;
-      return sid === findId || String(s.sectionId || '') === findId;
-    });
+    // ── 2. Locate target section by region id, sectionId, or exact startChar ──
+    const findRegionId = region_id ? String(region_id) : null;
+    const findId = section_id ? String(section_id) : null;
+    let target = findRegionId
+      ? classified.find((s) => String(s.regionId || s.region_id || '') === findRegionId)
+      : null;
+    if (!target && findId) {
+      target = classified.find((s) => {
+        const sid = `section-${s.startChar ?? 0}`;
+        return sid === findId || String(s.sectionId || '') === findId;
+      });
+    }
     if (!target) {
       // Fallback: numeric coercion in case the caller passed a bare startChar
-      const sc = Number(findId.replace(/^section-/, ''));
+      const sc = Number(String(findId || '').replace(/^section-/, ''));
       if (Number.isFinite(sc)) target = classified.find((s) => Number(s.startChar) === sc);
     }
     if (!target) {
-      throw Object.assign(new Error(`section ${section_id} not found on deal`), { statusCode: 404 });
+      throw Object.assign(new Error(`section ${section_id || region_id} not found on deal`), { statusCode: 404 });
     }
     if (!target.type) {
       throw Object.assign(new Error('target section has no classified type'), { statusCode: 400 });
@@ -99,10 +104,15 @@ export default async function handler(req, res) {
       body: target.text || '',
       startChar: target.startChar || 0,
       start: target.startChar || 0,
+      endChar: typeof target.endChar === 'number' ? target.endChar : null,
       number: target.sectionNumber || null,
       sectionNumber: target.sectionNumber || null,
       title: target.title || null,
       heading: target.title || null,
+      regionId: target.regionId || target.region_id || findRegionId || null,
+      region_id: target.regionId || target.region_id || findRegionId || null,
+      regionKey: target.regionKey || null,
+      regionType: target.regionType || null,
       articleType: target.articleType || null,
       provision_type: target.type,
       provisionType: target.type,
@@ -110,34 +120,48 @@ export default async function handler(req, res) {
     };
     const extracted = await extractProvisionsForType([sectionForExtract], target.type, client, cleaned);
 
-    // ── 4. Delete existing provisions in the section's char range ──────
-    // We look at ai_metadata.startChar (the per-provision anchor we already store).
-    const { data: existing, error: exErr } = await sb
+    // ── 4. Delete existing provisions in the region first, char range second ──────
+    let existingResult = await sb
       .from('provisions')
-      .select('id, ai_metadata')
+      .select('id, ai_metadata, region_id')
       .eq('deal_id', deal_id);
+    if (existingResult.error && /region_id|schema cache|does not exist|Could not find/i.test(existingResult.error.message || '')) {
+      existingResult = await sb
+        .from('provisions')
+        .select('id, ai_metadata')
+        .eq('deal_id', deal_id);
+    }
+    const { data: existing, error: exErr } = existingResult;
     if (exErr) throw Object.assign(new Error(`Failed to read provisions: ${exErr.message}`), { statusCode: 500 });
 
-    const toDelete = [];
+    const targetRegionId = target.regionId || target.region_id || findRegionId || null;
+    const toDelete = new Set();
     for (const p of (existing || [])) {
       let meta = p.ai_metadata;
       if (typeof meta === 'string') {
         try { meta = JSON.parse(meta); } catch { meta = null; }
       }
+      const features = meta && meta.features && typeof meta.features === 'object' ? meta.features : {};
+      const provisionRegionId = p.region_id || meta?.region_id || meta?.regionId || features.region_id || features.regionId || null;
+      if (targetRegionId && provisionRegionId && String(provisionRegionId) === String(targetRegionId)) {
+        toDelete.add(p.id);
+        continue;
+      }
       const sc = meta && typeof meta.startChar === 'number' ? meta.startChar : null;
       if (sc === null) continue;
-      if (sc >= Number(target.startChar) && sc < sectionEnd) toDelete.push(p.id);
+      if (sc >= Number(target.startChar) && sc < sectionEnd) toDelete.add(p.id);
     }
     let deletedCount = 0;
-    if (toDelete.length > 0) {
-      const { error: annotErr } = await sb.from('annotations').delete().in('provision_id', toDelete);
+    const idsToDelete = [...toDelete];
+    if (idsToDelete.length > 0) {
+      const { error: annotErr } = await sb.from('annotations').delete().in('provision_id', idsToDelete);
       if (annotErr) {
         // non-fatal — log and continue
         console.warn('[extract-section] annotation delete failed:', annotErr.message);
       }
-      const { error: delErr } = await sb.from('provisions').delete().in('id', toDelete);
+      const { error: delErr } = await sb.from('provisions').delete().in('id', idsToDelete);
       if (delErr) throw Object.assign(new Error(`Failed to delete existing provisions: ${delErr.message}`), { statusCode: 500 });
-      deletedCount = toDelete.length;
+      deletedCount = idsToDelete.length;
     }
 
     // ── 5. Insert freshly-extracted provisions ────────────────────────
@@ -149,17 +173,30 @@ export default async function handler(req, res) {
         category: prov.category || 'Unclassified',
         full_text: (prov.text || '').trim(),
         ai_favorability: prov.favorability || 'neutral',
+        ...(targetRegionId ? { region_id: targetRegionId } : {}),
         ai_metadata: {
-          features: prov.features || {},
+          features: {
+            ...(prov.features || {}),
+            ...(targetRegionId && !(prov.features && (prov.features.regionId || prov.features.region_id))
+              ? { regionId: targetRegionId }
+              : {}),
+          },
           code: prov.code || null,
           relatedDefinitions: prov.relatedDefinitions || [],
           isNewCode: prov.isNewCode || false,
           proposedCode: prov.proposedCode || null,
           proposedLabel: prov.proposedLabel || null,
           startChar: typeof prov.startChar === 'number' ? prov.startChar : null,
+          ...(targetRegionId ? { regionId: targetRegionId, region_id: targetRegionId } : {}),
+          ...(target.regionKey ? { regionKey: target.regionKey } : {}),
+          ...(target.regionType ? { regionType: target.regionType } : {}),
         },
       }));
-      const { data: insData, error: insErr } = await sb.from('provisions').insert(rows).select('id');
+      let insertResult = await sb.from('provisions').insert(rows).select('id');
+      if (insertResult.error && /region_id|schema cache|does not exist|Could not find/i.test(insertResult.error.message || '')) {
+        insertResult = await sb.from('provisions').insert(rows.map(({ region_id: _regionId, ...row }) => row)).select('id');
+      }
+      const { data: insData, error: insErr } = insertResult;
       if (insErr) throw Object.assign(new Error(`Insert failed: ${insErr.message}`), { statusCode: 500 });
       insertedCount = insData ? insData.length : rows.length;
     }
@@ -168,6 +205,7 @@ export default async function handler(req, res) {
     const sectionRuns = Array.isArray(metadata.section_runs) ? [...metadata.section_runs] : [];
     sectionRuns.push({
       section_id: findId,
+      region_id: targetRegionId,
       section_startChar: target.startChar,
       section_number: target.sectionNumber || null,
       section_title: target.title || null,
@@ -187,6 +225,7 @@ export default async function handler(req, res) {
       success: true,
       deal_id,
       section_id: findId,
+      region_id: targetRegionId,
       type: target.type,
       provisions_inserted: insertedCount,
       provisions_deleted: deletedCount,
@@ -199,6 +238,7 @@ export default async function handler(req, res) {
       success: false,
       deal_id,
       section_id,
+      region_id,
       error: err.message || 'Extract failed',
     });
   }

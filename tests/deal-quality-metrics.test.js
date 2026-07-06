@@ -133,8 +133,7 @@ test('/api/admin/gaps summary is stored-metrics first with explicit refresh fall
 
 test('deal quality metrics provision fetch uses only live production provision columns', () => {
   const source = fs.readFileSync(path.join(__dirname, '..', 'lib', 'deal-quality-metrics.js'), 'utf8');
-  const selectMatch = source.match(/\.from\('provisions'\)\s*[\s\S]*?\.select\('([^']+)'\)/);
 
-  assert.ok(selectMatch, 'fetchAllProvisions provisions select should be visible');
-  assert.equal(selectMatch[1], 'id, deal_id, type, category, full_text, ai_metadata, created_at');
+  assert.match(source, /const baseSelect = 'id, deal_id, type, category, full_text, ai_metadata, created_at'/);
+  assert.match(source, /\.select\(includeRegionId \? `\$\{baseSelect\}, region_id` : baseSelect\)/);
 });

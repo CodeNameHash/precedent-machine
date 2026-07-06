@@ -55,7 +55,7 @@ test('isEmployeeBenefitsProvision falls back to category regex when no code is p
 test('comparisonGroupForStandardCode: buyer-employee standard vs every pre-closing standard vs buyer discretion (no comparison)', () => {
   assert.equal(eb.comparisonGroupForStandardCode('COMPARABLE_TO_BUYER_EMPLOYEES'), 'Similarly-situated buyer employees');
   for (const code of ['NO_LESS_FAVORABLE', 'SUBSTANTIALLY_SIMILAR', 'SUBSTANTIALLY_COMPARABLE', 'IN_THE_AGGREGATE', 'TARGET_BASELINE']) {
-    assert.equal(eb.comparisonGroupForStandardCode(code), 'Pre-closing arrangements', code);
+    assert.equal(eb.comparisonGroupForStandardCode(code), 'Company pre-closing arrangements', code);
   }
   assert.equal(eb.comparisonGroupForStandardCode('BUYER_DISCRETION'), null);
   assert.equal(eb.comparisonGroupForStandardCode(null), null);
@@ -81,10 +81,10 @@ test('buildElementRows: Metsera — one row PER compensationItems element, each 
   assert.equal(rows.length, 5);
   const byCode = Object.fromEntries(rows.map((r) => [r.code, r]));
   assert.equal(byCode.BASE_SALARY.standardLabel, 'No less favorable than current');
-  assert.equal(byCode.BASE_SALARY.comparisonGroup, 'Pre-closing arrangements');
+  assert.equal(byCode.BASE_SALARY.comparisonGroup, 'Company pre-closing arrangements');
   assert.equal(byCode.LONG_TERM_INCENTIVE.standardLabel, 'Comparable to similarly situated buyer employees');
   assert.equal(byCode.LONG_TERM_INCENTIVE.comparisonGroup, 'Similarly-situated buyer employees');
-  assert.equal(byCode.OTHER_BENEFITS.comparisonGroup, 'Pre-closing arrangements');
+  assert.equal(byCode.OTHER_BENEFITS.comparisonGroup, 'Company pre-closing arrangements');
   assert.ok(rows.every((r) => !r.bundled), 'Metsera has a direct entry per element — nothing bundled');
   // Canonical order: Base salary before Target bonus before LTI before Severance before Other benefits.
   assert.deepEqual(rows.map((r) => r.code), ['BASE_SALARY', 'TARGET_BONUS', 'LONG_TERM_INCENTIVE', 'SEVERANCE', 'OTHER_BENEFITS']);
@@ -199,5 +199,6 @@ test('EmployeeBenefitsTable.js renders a Continuation period row and per-element
   assert.match(tableSrc, /Continuation period/);
   assert.match(tableSrc, /row\.standardLabel/);
   assert.match(tableSrc, /row\.comparisonGroup/);
+  assert.match(tableSrc, />Term</);
   assert.ok(!/label:\s*['"][^'"]*:/i.test(tableSrc), 'no ":" inside a literal row label');
 });

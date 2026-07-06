@@ -76,11 +76,91 @@ export function deriveHeadlineConsiderationType(provisions) {
     ].filter(Boolean).join(' ');
     if (f.perShareAmount || f.cashAmount || /\bcash\b/i.test(joined)) hasCash = true;
     if (f.exchangeRatio || f.exchangeRatioText || /\bstock\b|share(?:s)?\s+of\b|all-stock/i.test(joined)) hasStock = true;
-    if (/election|proration|mixed-cash-and-stock|mixed[_\s-]?election|cash_election|stock_election/i.test(joined)) hasElection = true;
+    if (/election|proration|mixed[_\s-]?election|cash_election|stock_election/i.test(joined)) hasElection = true;
   }
   if (hasElection) return 'MIXED_ELECTION';
+  if (hasCash && hasStock) return 'MIXED';
   if (hasStock) return 'STOCK';
   if (hasCash) return 'CASH';
+  return null;
+}
+
+function normalizeEnumCode(value) {
+  return String(value || '')
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '');
+}
+
+function electionOptionTypes(mechanism) {
+  const options = Array.isArray(mechanism?.options) ? mechanism.options : [];
+  return options
+    .map((option) => normalizeEnumCode(option.option_type || option.optionType))
+    .filter(Boolean);
+}
+
+function electionLabelFromTypes(types) {
+  const set = new Set((types || []).map(normalizeEnumCode).filter(Boolean));
+  const hasCash = set.has('CASH_ELECTION');
+  const hasStock = set.has('STOCK_ELECTION');
+  const hasMixed = set.has('MIXED_ELECTION');
+  const hasCvr = set.has('CVR_INCLUDED') || set.has('CVR_EXCLUDED') || set.has('CVR_INCLUSION');
+  if (hasCash && hasStock && hasMixed) return 'Cash / stock / mixed election';
+  if (hasCash && hasStock) return 'Cash / stock election';
+  if (hasCash && hasMixed) return 'Cash / mixed election';
+  if (hasStock && hasMixed) return 'Stock / mixed election';
+  if (hasCvr) return 'CVR election';
+  if (hasCash) return 'Cash election';
+  if (hasStock) return 'Stock election';
+  if (hasMixed) return 'Mixed election';
+  return null;
+}
+
+function electionLabelFromCode(value) {
+  const code = normalizeEnumCode(value);
+  if (!code) return null;
+  if (code === 'CASH_OR_STOCK') return 'Cash / stock election';
+  if (code === 'CASH_OR_STOCK_OR_MIXED') return 'Cash / stock / mixed election';
+  if (code === 'CVR_INCLUSION') return 'CVR election';
+  if (code === 'CASH_ELECTION') return 'Cash election';
+  if (code === 'STOCK_ELECTION') return 'Stock election';
+  if (code === 'MIXED_ELECTION') return 'Mixed election';
+  if (code.includes('ELECTION')) return 'Election';
+  return null;
+}
+
+export function deriveConsiderationElectionLabel(provisions) {
+  const list = Array.isArray(provisions) ? provisions : [];
+  for (const item of list) {
+    const mechanism = item?.consideration_equity?.election_mechanism
+      || item?.considerationEquity?.electionMechanism
+      || item?.electionMechanism
+      || null;
+    if (mechanism) {
+      const optionLabel = electionLabelFromTypes(electionOptionTypes(mechanism));
+      if (optionLabel) return optionLabel;
+      return electionLabelFromCode(mechanism.election_type || mechanism.electionType) || 'Election';
+    }
+  }
+
+  for (const item of list) {
+    const f = item && (item.mainConcept || item.considerationType || item.perShareAmount || item.exchangeRatio)
+      ? item
+      : localFeatures(item);
+    const mechanics = f.prorationMechanics || f.proration || null;
+    if (mechanics && typeof mechanics === 'object') {
+      const label = electionLabelFromCode(mechanics.electionType || mechanics.election_type);
+      if (label) return label;
+    }
+    const joined = [
+      f.electionMechanics,
+      mechanics && JSON.stringify(mechanics),
+      f.considerationType && JSON.stringify(f.considerationType),
+    ].filter(Boolean).join(' ');
+    if (/cash[_\s-]?election/i.test(joined) && /stock[_\s-]?election/i.test(joined)) return 'Cash / stock election';
+    if (/election|proration/i.test(joined)) return 'Election';
+  }
   return null;
 }
 
@@ -700,6 +780,63 @@ export function buildIocRowDisplayLabels(rows) {
   return labelByKey;
 }
 
+export function formatIocThresholdAmount(raw, compact = false) {
+  const value = unwrapLocal(raw);
+  if (value === null || value === undefined || value === '') return null;
+  let num = null;
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    num = value;
+  } else if (typeof value === 'string') {
+    const trimmed = value.trim();
+    if (/^\d+(?:\.\d+)?$/.test(trimmed.replace(/,/g, ''))) {
+      num = Number(trimmed.replace(/,/g, ''));
+    } else {
+      return trimmed;
+    }
+  }
+  if (num === null || !Number.isFinite(num)) return String(value);
+  if (!compact) return `$${Math.round(num).toLocaleString('en-US')}`;
+  if (num >= 1_000_000 && num % 100_000 === 0) {
+    const scaled = num / 1_000_000;
+    return `$${scaled.toFixed(num % 1_000_000 === 0 ? 0 : 1).replace(/\.0$/, '')}M`;
+  }
+  if (num >= 1_000 && num % 1_000 === 0) return `$${Math.round(num / 1_000)}K`;
+  return `$${Math.round(num).toLocaleString('en-US')}`;
+}
+
+export function sourceContextForValue(sourceText, displayValue, radius = 180) {
+  const source = String(sourceText || '');
+  const display = String(displayValue || '');
+  if (!source || !display) return null;
+  const amount = display.match(/\$\s?(\d+(?:,\d{3})*|\d+(?:\.\d+)?)([KMBT])?/i);
+  const needles = [];
+  if (amount) {
+    const raw = Number(amount[1].replace(/,/g, ''));
+    const unit = String(amount[2] || '').toUpperCase();
+    const multiplier = unit === 'T' ? 1_000_000_000_000
+      : unit === 'B' ? 1_000_000_000
+        : unit === 'M' ? 1_000_000
+          : unit === 'K' ? 1_000
+            : 1;
+    const value = Number.isFinite(raw) ? raw * multiplier : null;
+    if (value) {
+      needles.push(`$${Math.round(value).toLocaleString('en-US')}`);
+      if (value >= 1_000_000) needles.push(`$${value / 1_000_000} million`);
+      if (value >= 1_000) needles.push(`$${value / 1_000} thousand`);
+    }
+  }
+  const textNeedle = display.replace(/\s*\(≈[^)]*\)\s*/g, '').trim();
+  if (textNeedle) needles.push(textNeedle);
+  for (const needle of needles) {
+    const idx = source.toLowerCase().indexOf(String(needle).toLowerCase());
+    if (idx < 0) continue;
+    const start = Math.max(0, idx - radius);
+    const end = Math.min(source.length, idx + String(needle).length + radius);
+    return source.slice(start, end).replace(/\s+/g, ' ').trim();
+  }
+  return source.replace(/\s+/g, ' ').trim();
+}
+
 /* ══════════════════════════════════════════════════════════════════════════
  * FIX BATCH item 2 (second half) — equity-instrument vesting inheritance.
  * A CONSID-EQUITY provision can emit MORE outstandingInstruments than
@@ -994,6 +1131,82 @@ export function canonicalizeNosolPills(raw, vocabName) {
   return out;
 }
 
+function compactLabelText(text) {
+  return String(text || '').replace(/\s+/g, ' ').trim();
+}
+
+function nosolItemLabel(text, index) {
+  const s = compactLabelText(text);
+  const marker = s.match(/^\(?([A-Z]|\d+|[ivx]+)\)/i);
+  if (marker) return marker[1].toUpperCase();
+  return String(index + 1);
+}
+
+function nosolItemRowsFromHit(hit) {
+  const out = [];
+  for (const item of itemsFromRaw(hit && hit.value)) {
+    const text = firstText(item);
+    if (!text) continue;
+    out.push({
+      label: nosolItemLabel(text, out.length),
+      text,
+      quote: text,
+      provision: hit && hit.provision,
+    });
+  }
+  return out;
+}
+
+function featureRowText(hit) {
+  return firstText(hit && hit.value);
+}
+
+function pushUniqueNosolRow(out, seen, row) {
+  if (!row || !row.text) return;
+  const norm = compactLabelText(row.text).toLowerCase();
+  if (!norm || seen.has(norm)) return;
+  seen.add(norm);
+  out.push(row);
+}
+
+export function changeOfRecommendationItemRows(provisions) {
+  return nosolItemRowsFromHit(pickNosolFeature(provisions, ['changeOfRecommendationItems']));
+}
+
+export function notChangeOfRecommendationItemRows(provisions) {
+  const out = [];
+  const seen = new Set();
+  const tender = pickNosolFeature(provisions, ['tenderOfferDisclosureScope', 'tenderOfferDisclosurePermitted']);
+  pushUniqueNosolRow(out, seen, {
+    label: '14d-9 / 14e-2 disclosure',
+    text: featureRowText(tender),
+    quote: featureRowText(tender),
+    provision: tender && tender.provision,
+  });
+  const law = pickNosolFeature(provisions, ['legallyRequiredDisclosurePermitted']);
+  pushUniqueNosolRow(out, seen, {
+    label: 'Required by law',
+    text: featureRowText(law),
+    quote: featureRowText(law),
+    provision: law && law.provision,
+  });
+  const explicit = pickNosolFeature(provisions, ['notChangeOfRecommendationItems']);
+  for (const item of itemsFromRaw(explicit && explicit.value)) {
+    const text = firstText(item);
+    if (!text) continue;
+    const label = /receipt\b[\s\S]{0,220}\breaffirm/i.test(text)
+      ? 'Proposal receipt + reaffirmation'
+      : nosolItemLabel(text, out.length);
+    pushUniqueNosolRow(out, seen, {
+      label,
+      text,
+      quote: text,
+      provision: explicit && explicit.provision,
+    });
+  }
+  return out;
+}
+
 export function goShopDisplay(provisions) {
   const period = pickNosolFeature(provisions, ['goShopPeriodDays', 'goShopWindow']);
   const excluded = pickNosolFeature(provisions, ['goShopExcludedParties']);
@@ -1086,6 +1299,8 @@ export function noticePeriodParts(raw) {
 // provision in this deal.
 const SUPERIOR_PROPOSAL_RE = /superior\s+(?:company\s+)?proposal/i;
 const TAKEOVER_PROPOSAL_RE = /(?:company\s+)?(?:takeover|acquisition)\s+proposal/i;
+const INTERVENING_EVENT_RE = /intervening\s+event/i;
+const ACCEPTABLE_CONFIDENTIALITY_RE = /acceptable\s+confidentiality\s+agreement/i;
 
 function defProvisionFeatures(p) {
   return nosolFeatures(p);
@@ -1139,13 +1354,21 @@ function chainedChildRowFor(row, allProvisions) {
  * neither target definition exists (never fabricated). */
 export function nosolDefinitionChainRows(allProvisions) {
   const rows = [];
+  const seen = new Set();
+  const pushRow = (row) => {
+    if (!row) return;
+    const key = (row.provision && row.provision.id) || (row.term && row.term.toLowerCase()) || row.label;
+    if (key && seen.has(key)) return;
+    if (key) seen.add(key);
+    rows.push(row);
+  };
   const superior = findDefProvisionByTermRegex(allProvisions, SUPERIOR_PROPOSAL_RE);
   const superiorRow = buildNosolDefRow(superior);
   if (superiorRow) {
     superiorRow.quote = superiorRow.text;
     superiorRow.child = chainedChildRowFor(superiorRow, allProvisions);
     if (superiorRow.child) superiorRow.child.quote = superiorRow.child.text;
-    rows.push(superiorRow);
+    pushRow(superiorRow);
   }
   const takeover = findDefProvisionByTermRegex(allProvisions, TAKEOVER_PROPOSAL_RE, superior && superior.id);
   const takeoverRow = buildNosolDefRow(takeover);
@@ -1153,9 +1376,49 @@ export function nosolDefinitionChainRows(allProvisions) {
     takeoverRow.quote = takeoverRow.text;
     takeoverRow.child = chainedChildRowFor(takeoverRow, allProvisions);
     if (takeoverRow.child) takeoverRow.child.quote = takeoverRow.child.text;
-    rows.push(takeoverRow);
+    pushRow(takeoverRow);
+  }
+  const interveningRow = buildNosolDefRow(findDefProvisionByTermRegex(allProvisions, INTERVENING_EVENT_RE));
+  if (interveningRow) {
+    interveningRow.quote = interveningRow.text;
+    pushRow(interveningRow);
+  }
+  const acceptableConfidentialityRow = buildNosolDefRow(findDefProvisionByTermRegex(allProvisions, ACCEPTABLE_CONFIDENTIALITY_RE));
+  if (acceptableConfidentialityRow) {
+    acceptableConfidentialityRow.quote = acceptableConfidentialityRow.text;
+    pushRow(acceptableConfidentialityRow);
   }
   return rows;
+}
+
+export function flattenNosolDefinitionRows(extraRows) {
+  const out = [];
+  const seen = new Set();
+  const push = (row, indent) => {
+    if (!row) return;
+    const key = (row.provision && row.provision.id) || (row.term && row.term.toLowerCase()) || row.label;
+    if (key && seen.has(key)) return;
+    if (key) seen.add(key);
+    out.push({ ...row, indent });
+  };
+  for (const row of extraRows || []) {
+    push(row, 0);
+    push(row && row.child, 1);
+  }
+  return out;
+}
+
+export function nosolFeatureRowCoveredByDef(row, defRows) {
+  const label = String((row && row.label) || '').toLowerCase();
+  const terms = flattenNosolDefinitionRows(defRows)
+    .map((item) => String(item.term || item.label || '').toLowerCase());
+  if (label.includes('intervening event') && label.includes('definition')) {
+    return terms.some((term) => term.includes('intervening event'));
+  }
+  if (label.includes('acceptable confidentiality agreement')) {
+    return terms.some((term) => term.includes('acceptable confidentiality agreement'));
+  }
+  return false;
 }
 
 export function pickNosolFeature(provisions, keys) {
@@ -1409,10 +1672,16 @@ export function numericDollarOnly(raw) {
   return s;
 }
 
-export function headlineConsiderationLabel(value) {
-  if (value === 'CASH') return 'Cash';
-  if (value === 'STOCK') return 'Stock';
-  if (value === 'MIXED_ELECTION') return 'Mixed election';
+export function headlineConsiderationLabel(value, provisions) {
+  const electionLabel = deriveConsiderationElectionLabel(provisions);
+  if (electionLabel) return electionLabel;
+  const code = normalizeEnumCode(value);
+  if (code === 'CASH' || code === 'ALL_CASH') return 'Cash';
+  if (code === 'STOCK' || code === 'ALL_STOCK') return 'Stock';
+  if (code === 'MIXED' || code === 'MIXED_CASH_AND_STOCK') return 'Mixed cash / stock';
+  if (code === 'MIXED_ELECTION') return 'Election';
+  const directElectionLabel = electionLabelFromCode(code);
+  if (directElectionLabel) return directElectionLabel;
   return null;
 }
 
@@ -1564,10 +1833,10 @@ export function buildAntitrustSummaryRows(antiProvisions, allProvisions) {
   const strategyRows = [
     ['Control', ['regulatoryStrategyControlTagged', 'controllingParty', 'regulatoryStrategyControl']],
     ['Consultation', ['consultationTier', 'regulatoryCooperationScope']],
-    ['Pull-Refiling', ['pullRefile', 'pullAndRefileCompanyConsent']],
+    ['Pull and Refile', ['pullRefileText', 'pullRefile', 'pullAndRefileCompanyConsent']],
     ['HSR Filing Deadline', ['hsrFilingDeadline', 'hsrFilingDeadlineBusinessDays']],
     ['Ex-HSR Filing Deadline', ['exHsrFilingDeadline', 'otherRegulatoryFilingDeadlines', 'filingDeadline']],
-    ['Timing Agreement', ['timingAgreement', 'timingAgreementsProhibited']],
+    ['Timing Agreement', ['timingAgreementText', 'timingAgreement', 'timingAgreementsProhibited']],
   ];
   for (const [label, keys] of strategyRows) {
     const hit = firstAntiHit(anti, keys);

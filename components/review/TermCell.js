@@ -1,6 +1,7 @@
 import { createContext, useContext } from 'react';
 import Link from 'next/link';
 import { useViewMode } from '../ViewModeContext';
+import { HoverSource } from './shared';
 
 /* ═══════════════════════════════════════════════════════════
    FB3 — DealNavContext: the ONE place a table cell learns (a)
@@ -45,6 +46,21 @@ export function TermCell({ provision, quote, children, className = '', seeText =
   const href = `/review/${dealId}/provision/${provision.id}${isEdit ? '?mode=edit' : ''}`;
   const hasText = !!(quote && String(quote).trim()) || !!(provision.full_text && provision.full_text.trim());
   const showSeeText = seeText && hasText && typeof openSeeText === 'function';
+  const seeTextQuote = quote || provision.full_text;
+  const seeTextButton = showSeeText ? (
+    <button
+      type="button"
+      className="term-cell-seetext"
+      onClick={(e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        openSeeText({ provision, quote: seeTextQuote });
+      }}
+      title="Show this passage in the full agreement text"
+    >
+      see text
+    </button>
+  ) : null;
 
   return (
     <Tag className={`term-cell ${className}`.trim()}>
@@ -55,19 +71,10 @@ export function TermCell({ provision, quote, children, className = '', seeText =
       >
         {children}
       </Link>
-      {showSeeText && (
-        <button
-          type="button"
-          className="term-cell-seetext"
-          onClick={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            openSeeText({ provision, quote: quote || provision.full_text });
-          }}
-          title="Show this passage in the full agreement text"
-        >
-          see text
-        </button>
+      {seeTextButton && (
+        <HoverSource quote={seeTextQuote} highlight={null}>
+          {seeTextButton}
+        </HoverSource>
       )}
     </Tag>
   );

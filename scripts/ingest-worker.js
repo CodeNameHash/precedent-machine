@@ -11,6 +11,7 @@ const { cleanText } = require('../lib/parser-v2/structural');
 const { sectionsForExtractFromSnapshot } = require('../lib/parser-v2/snapshot');
 const { storeProvisionsForType } = require('../lib/parser-v2/store');
 const { validateProvisions } = require('../lib/parser-v2/validate');
+const { buildPartiesFact, buildValueUsdFact, mergeDealFacts } = require('../lib/deal-facts');
 
 const PAGE_SIZE = 1000;
 const DEFAULT_MODEL = 'gpt-5.5';
@@ -90,12 +91,17 @@ function jobUrl(job) {
 
 function seedMetadata(job, args) {
   const payload = job.payload && typeof job.payload === 'object' ? job.payload : {};
+  const candidate = payload.candidate && typeof payload.candidate === 'object' ? payload.candidate : {};
+  const verification = payload.priority_verification && typeof payload.priority_verification === 'object'
+    ? payload.priority_verification
+    : {};
   return {
     run_id: job.run_id,
     candidate_id: job.candidate_id || payload.candidate_id || null,
     deal_key: payload.deal_key || null,
     priority_reasons: payload.priority_reasons || [],
     priority_verification: payload.priority_verification || null,
+    candidate_deal_value_usd: payload.deal_value_usd || candidate.deal_value_usd || verification.value_usd || null,
     ingested_by: args.backend,
     extraction_model: args.model,
   };
@@ -302,7 +308,7 @@ async function resolveDealId(sb, job) {
 async function fetchDeal(sb, dealId) {
   const { data, error } = await sb
     .from('deals')
-    .select('id, acquirer, target, metadata, announce_date')
+    .select('id, acquirer, target, value_usd, metadata, announce_date')
     .eq('id', dealId)
     .single();
   if (error) throw new Error(`Deal fetch failed: ${error.message}`);
@@ -329,12 +335,23 @@ async function fetchAllProvisions(sb, dealId) {
 async function fetchProvisionRowsForBackfill(sb, dealId) {
   const out = [];
   let offset = 0;
+  const baseSelect = 'id, type, category, full_text, ai_favorability, ai_metadata';
+  let includeRegionId = true;
   for (;;) {
-    const { data, error } = await sb
+    let result = await sb
       .from('provisions')
-      .select('id, type, category, full_text, ai_favorability, ai_metadata')
+      .select(includeRegionId ? `${baseSelect}, region_id` : baseSelect)
       .eq('deal_id', dealId)
       .range(offset, offset + PAGE_SIZE - 1);
+    if (result.error && includeRegionId && /region_id|schema cache|does not exist|Could not find/i.test(result.error.message || '')) {
+      includeRegionId = false;
+      result = await sb
+        .from('provisions')
+        .select(baseSelect)
+        .eq('deal_id', dealId)
+        .range(offset, offset + PAGE_SIZE - 1);
+    }
+    const { data, error } = result;
     if (error) throw new Error(`Provision backfill fetch failed: ${error.message}`);
     out.push(...(data || []));
     if (!data || data.length < PAGE_SIZE) break;
@@ -349,6 +366,8 @@ function dbProvisionToParserProvision(row) {
   const startChar = typeof meta.startChar === 'number'
     ? meta.startChar
     : (typeof meta.start_char === 'number' ? meta.start_char : null);
+  const regionId = row.region_id || meta.region_id || meta.regionId || features.region_id || features.regionId || null;
+  const nextFeatures = regionId && !features.regionId ? { ...features, regionId } : features;
   return {
     type: row.type,
     code: meta.code || features.canonicalCode || null,
@@ -356,8 +375,10 @@ function dbProvisionToParserProvision(row) {
     text: row.full_text || '',
     full_text: row.full_text || '',
     startChar,
+    regionId,
+    region_id: regionId,
     favorability: row.ai_favorability || 'neutral',
-    features,
+    features: nextFeatures,
     relatedDefinitions: Array.isArray(meta.relatedDefinitions) ? meta.relatedDefinitions : [],
     isNewCode: Boolean(meta.isNewCode),
     proposedCode: meta.proposedCode || null,
@@ -499,19 +520,44 @@ async function handleQa(sb, job) {
 async function handleFinalize(sb, job, args) {
   const dealId = await resolveDealId(sb, job);
   const deal = await fetchDeal(sb, dealId);
+  const candidate = await fetchCandidate(sb, job.candidate_id);
   const current = deal.metadata && typeof deal.metadata === 'object' ? deal.metadata : {};
   const seed = {
     ...(current.seed_ingest || {}),
     ...seedMetadata(job, args),
     ingested_at: new Date().toISOString(),
   };
-  const metadata = {
+  const candidateValue = (candidate && candidate.deal_value_usd) || seed.candidate_deal_value_usd || null;
+  const candidateParties = candidate ? buildPartiesFact({
+    acquirer: deal.acquirer || candidate.acquirer_name || null,
+    target: deal.target || candidate.target_name || null,
+    parent_entity: candidate.acquirer_name || null,
+    target_entity: candidate.target_name || null,
+    acquirer_display: candidate.acquirer_name || null,
+    target_display: candidate.target_name || null,
+  }, {
+    source_url: candidate.agreement_exhibit_url || jobUrl(job),
+    source_label: 'EDGAR candidate metadata',
+    method: 'candidate_metadata',
+  }) : null;
+  const metadata = mergeDealFacts({
     ...current,
     seed_ingest: seed,
     ingest_status: 'clean',
     ingested_at: new Date().toISOString(),
+  }, {
+    value_usd: buildValueUsdFact(candidateValue, {
+      source_url: (candidate && candidate.agreement_exhibit_url) || jobUrl(job),
+      source_label: 'EDGAR candidate metadata',
+      method: 'candidate_metadata',
+    }),
+    parties: candidateParties,
+  });
+  const updateRow = {
+    metadata,
+    ...(candidateValue && !deal.value_usd ? { value_usd: candidateValue } : {}),
   };
-  const { error } = await sb.from('deals').update({ metadata }).eq('id', dealId);
+  const { error } = await sb.from('deals').update(updateRow).eq('id', dealId);
   if (error) throw new Error(`Deal finalise failed: ${error.message}`);
   const stamped = await stampProvisionMetadata(sb, dealId, seed);
   await updateCandidate(sb, job.candidate_id, {

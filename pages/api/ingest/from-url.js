@@ -28,6 +28,7 @@ const { extractProvisions } = require('../../../lib/parser-v2/extract');
 const { validateProvisions } = require('../../../lib/parser-v2/validate');
 const { storeProvisions } = require('../../../lib/parser-v2/store');
 const { extractAdvisors } = require('../../../lib/parser-v2/advisors');
+const { buildPartiesFact, buildValueUsdFact, mergeDealFacts } = require('../../../lib/deal-facts');
 
 export const config = {
   maxDuration: 300,
@@ -107,6 +108,21 @@ function stripHtml(html) {
     .replace(/ +/g, ' ')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
+}
+
+function metadataWithDealFacts(base, meta, sourceUrl) {
+  return mergeDealFacts(base || {}, {
+    value_usd: buildValueUsdFact(meta && meta.value_usd, {
+      source_url: sourceUrl || null,
+      source_label: 'Agreement preamble',
+      method: 'ingest_metadata',
+    }),
+    parties: buildPartiesFact(meta || {}, {
+      source_url: sourceUrl || null,
+      source_label: 'Agreement preamble',
+      method: 'ingest_metadata',
+    }),
+  });
 }
 
 async function extractDealMetadata(client, text) {
@@ -256,6 +272,7 @@ export default async function handler(req, res) {
     // ── 2. Resolve the deal record (create or reuse) ──
     let targetDealId = deal_id || null;
     let createdMetadata = null;
+    let refreshedMetadata = null;
 
     if (!targetDealId) {
       createdMetadata = await extractDealMetadata(client, fullText);
@@ -273,7 +290,7 @@ export default async function handler(req, res) {
         value_usd: createdMetadata.value_usd,
         announce_date: createdMetadata.signing_date,
         sector: createdMetadata.sector,
-        metadata: {
+        metadata: metadataWithDealFacts({
           source_url: sourceUrl,
           full_text: fullText,
           merger_form: createdMetadata.merger_form,
@@ -282,7 +299,7 @@ export default async function handler(req, res) {
           target_entity: createdMetadata.target_entity,
           acquirer_display: createdMetadata.acquirer_display,
           target_display: createdMetadata.target_display,
-        },
+        }, createdMetadata, sourceUrl),
       };
 
       const { data: newDeal, error: insErr } = await sb
@@ -293,16 +310,31 @@ export default async function handler(req, res) {
       if (insErr) throw new Error(`Deal insert failed: ${insErr.message}`);
       targetDealId = newDeal.id;
     } else {
+      try {
+        refreshedMetadata = await extractDealMetadata(client, fullText);
+      } catch (metadataErr) {
+        console.warn('[from-url] existing-deal metadata refresh failed:', metadataErr.message);
+      }
       // Update metadata for existing deal: refresh full_text + source_url.
-      const mergedMeta = {
+      const basis = refreshedMetadata || {};
+      const mergedMeta = metadataWithDealFacts({
         ...(existingDeal?.metadata || {}),
         full_text: fullText,
         source_url: sourceUrl || existingDeal?.metadata?.source_url || null,
+        ...(basis.merger_form ? { merger_form: basis.merger_form } : {}),
+        ...(basis.parent_entity ? { parent_entity: basis.parent_entity } : {}),
+        ...(basis.target_entity ? { target_entity: basis.target_entity } : {}),
+        ...(basis.acquirer_display ? { acquirer_display: basis.acquirer_display } : {}),
+        ...(basis.target_display ? { target_display: basis.target_display } : {}),
         ingested_at: new Date().toISOString(),
+      }, refreshedMetadata, sourceUrl || existingDeal?.metadata?.source_url || null);
+      const updateRow = {
+        metadata: mergedMeta,
+        ...(refreshedMetadata && refreshedMetadata.value_usd ? { value_usd: refreshedMetadata.value_usd } : {}),
       };
       const { error: updErr } = await sb
         .from('deals')
-        .update({ metadata: mergedMeta })
+        .update(updateRow)
         .eq('id', targetDealId);
       if (updErr) console.warn('[from-url] deal metadata update failed:', updErr.message);
     }
