@@ -8120,7 +8120,6 @@ function MaeSinglePartySummary({ provision, partyLabel, onSelectProvision }) {
                     >
                       <td className="px-3 py-2 whitespace-normal break-words">
                         <div className="flex items-center gap-1.5 flex-wrap">
-                          {isTaggedItem(c) && c.code ? <CodeBadge code={c.code} /> : null}
                           <TermCell provision={provision} quote={quote || provision.full_text}>
                             <span className="text-ink font-medium">{label}</span>
                           </TermCell>

@@ -165,6 +165,19 @@ test('MAE definition side detection reads the defined term before generic catego
   assert.match(sidebarSrc, /MAE-DEF-P/);
 });
 
+test('MAE carve-out rows render the title without a duplicate code badge', () => {
+  const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
+  const start = src.indexOf('function MaeSinglePartySummary');
+  assert.ok(start > 0);
+  const body = src.slice(start, src.indexOf('function labelForCarveoutCode', start));
+  const rowsStart = body.indexOf('carveouts.map');
+  assert.ok(rowsStart > 0);
+  const rows = body.slice(rowsStart);
+
+  assert.match(rows, /<TermCell provision=\{provision\}/);
+  assert.doesNotMatch(rows, /<CodeBadge code=\{c\.code\}/);
+});
+
 test('review hero uses display party names while preserving contractual parent detail', () => {
   const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
   assert.match(src, /const displayAcquirer = getDisplayAcquirer\(deal\)/);
