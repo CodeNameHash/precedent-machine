@@ -400,3 +400,15 @@ Updated: 2026-07-05
   - Focused parser/gap/verification tests: 69/69.
   - Full `node --test --test-reporter=dot tests/*.test.js`.
   - Temp-copy `npm run build`.
+
+## 2026-07-06 Definition Text Lock
+
+- Ben flagged that DEF `definitionText` was editable separately from the provision text.
+- Implemented lock in two layers:
+  - Review editor no longer surfaces `definitionText` as a structured-summary field.
+  - `/api/provisions` strips `definitionText` from incoming feature updates and preserves the stored value.
+- Focused tests passed:
+  - `tests/edit-schema.test.js`
+  - `tests/provision-metadata-locks.test.js`
+- Temp-copy `npm run build` passed.
+- Full `node --test --test-reporter=dot tests/*.test.js` currently has unrelated CONSID backfill failures in the dirty parser/schema worktree.

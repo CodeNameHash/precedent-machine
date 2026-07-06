@@ -1,5 +1,6 @@
 import { getServiceSupabase } from '../../lib/supabase';
 import { diffCorrectionType, logCorrection } from './corrections';
+import { mergeProvisionAiMetadata } from '../../lib/provision-metadata-locks';
 
 const IMMUTABLE_FIELDS = ['deal_id'];
 
@@ -148,18 +149,7 @@ export default async function handler(req, res) {
       if (typeof existingMeta === 'string') {
         try { existingMeta = JSON.parse(existingMeta); } catch { existingMeta = null; }
       }
-      const baseMeta = (existingMeta && typeof existingMeta === 'object' && !Array.isArray(existingMeta)) ? existingMeta : {};
-      const incoming = safeUpdates.ai_metadata;
-      const mergedFeatures = {
-        ...((baseMeta.features && typeof baseMeta.features === 'object' && !Array.isArray(baseMeta.features)) ? baseMeta.features : {}),
-        ...((incoming.features && typeof incoming.features === 'object' && !Array.isArray(incoming.features)) ? incoming.features : {}),
-      };
-      safeUpdates.ai_metadata = {
-        ...baseMeta,
-        ...incoming,
-        features: mergedFeatures,
-        user_corrected: true,
-      };
+      safeUpdates.ai_metadata = mergeProvisionAiMetadata(existingMeta, safeUpdates.ai_metadata);
     }
 
     const { data, error } = await sb.from('provisions').update(safeUpdates).eq('id', id).select().single();

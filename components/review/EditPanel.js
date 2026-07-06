@@ -932,6 +932,7 @@ export function EditPanel({
     // Fallback (uncurated types): rubric fields minus infra/derived keys.
     const HIDE = new Set([
       'crossReferences',
+      'definitionText',
       'carveOuts', 'carveOutsList',
       'disproportionateImpact', 'disproportionateImpactScope',
       'pandemicCarveout', 'cyberSecurityCarveout',

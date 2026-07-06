@@ -47,11 +47,17 @@ test('materiality control carries taxonomy standard options', () => {
   assert.ok(mat.options.every((o) => o.label && o.value));
 });
 
-test('uncurated type falls back to populated rubric fields only', () => {
-  const r = resolveEditFields('CONSID', null, 'x', { perShareAmount: '$10.00', mainConcept: 'ignored', emptyList: [] });
+test('uncurated type falls back to populated editable rubric fields only', () => {
+  const r = resolveEditFields('CONSID', null, 'x', {
+    perShareAmount: '$10.00',
+    mainConcept: 'ignored',
+    definitionText: 'locked to provision text',
+    emptyList: [],
+  });
   assert.equal(r.curated, false);
   const ks = keys(r.fields);
   assert.ok(ks.includes('perShareAmount'));   // populated → shown
   assert.ok(!ks.includes('mainConcept'));      // hidden by fallback
+  assert.ok(!ks.includes('definitionText'));   // locked to provision text
   assert.ok(!ks.includes('emptyList'));        // empty → not shown
 });
