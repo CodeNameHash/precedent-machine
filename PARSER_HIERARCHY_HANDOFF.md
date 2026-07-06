@@ -1,13 +1,14 @@
 # Parser Hierarchy Handoff
 
-Updated: 2026-07-05 20:27 EDT
+Updated: 2026-07-05 21:10 EDT
 
 ## Current Worktree
 
-- Path: `/Users/bengoodchild/Documents/Claude/precedent-machine/.claude/worktrees/conoco-parser-hierarchy`
-- Branch: `codex/parser-hierarchy-plan-completion`
-- Dev server: `http://localhost:3001`, running from this worktree.
-- Canonical WP: `/Users/bengoodchild/Downloads/pm-wp-parser-hierarchy.codex.md`
+- Path: `/Users/bengoodchild/Documents/Claude/precedent-machine/.claude/worktrees/wp-schema-p4`
+- Branch: `feat/schema-first-p4-zod-validation`
+- Dev server: none for this schema phase.
+- Canonical WP: `/Users/bengoodchild/Downloads/pm-schema-first-migration.codex.md`
+- Parser hierarchy WP: `/Users/bengoodchild/Downloads/pm-wp-parser-hierarchy.codex.md`
 - Source gap review: `/Users/bengoodchild/Downloads/gap-review-conocophillips-2020-07-05.md`
 
 ## Working Rule
@@ -19,9 +20,9 @@ Known contradiction: Phase 10 asks to update `HANDOFF.md`, but the WP allowlist 
 ## Current Control Plane
 
 - Parser/admin branch was merged to `main` at `2a68d8e` (`Merge parser hierarchy completion`).
-- Current WP-SCHEMA worktree: `/Users/bengoodchild/Documents/Claude/precedent-machine/.claude/worktrees/wp-schema-p3`.
-- Current WP-SCHEMA branch: `feat/schema-first-p3-populate-registry` (merged).
-- Current WP-SCHEMA PR: `#119` (`https://github.com/CodeNameHash/precedent-machine/pull/119`), merged to `main` at `244aff4`.
+- Current WP-SCHEMA worktree: `/Users/bengoodchild/Documents/Claude/precedent-machine/.claude/worktrees/wp-schema-p4`.
+- Current WP-SCHEMA branch: `feat/schema-first-p4-zod-validation`.
+- Current WP-SCHEMA PR: `#124` (`https://github.com/CodeNameHash/precedent-machine/pull/124`).
 - WP-SCHEMA Phase 1 and Phase 2 are already on `origin/main`:
   - `scripts/schema-inventory.js`
   - `docs/schema-migration/inventory.jsonl`
@@ -40,6 +41,17 @@ Known contradiction: Phase 10 asks to update `HANDOFF.md`, but the WP allowlist 
   - `tests/schema/coverage.test.js`
 - Phase 3 live coverage initially found 17 live-only keys missing from the static P1 inventory; these are now represented as supplemental registry entries.
 - Several one-source keys are heavily live-used, so no deletion decisions were made in Phase 3.
+- WP-SCHEMA Phase 4 is implemented in PR `#124`:
+  - adds `zod` as the schema validation dependency
+  - adds `lib/schema/validation.js`
+  - makes `lib/feature-validation.js` a compatibility adapter
+  - routes `lib/parser-v2/store.js` write-time validation through the schema registry
+  - adds `tests/schema/validation.test.js`
+  - records verification in `docs/schema-migration/phase-4-notes.md`
+  - validation remains flag-only, conservative, and behaviour-neutral
+  - live parity against `origin/main` over `7,667` production provisions: legacy `2` errors / `4,930` warnings, schema-backed adapter `2` errors / `4,310` warnings, `0` worsened rows
+  - gates passed: focused validation/store tests, `npm test`, schema tests, live schema coverage, `npm run build`, `scripts/ingest-qa.js --all`
+- Registry review is the next checkpoint before P5/P6/P7, because those phases make registry labels, prompts, renderers, and empty-state semantics product-facing. P4 did not require registry review because it is flag-only.
 - Admin/gaps stored metrics sidecar is merged:
   - PR `#120` (`https://github.com/CodeNameHash/precedent-machine/pull/120`) merged at `14c55cd`.
   - Hotfix PR `#121` (`https://github.com/CodeNameHash/precedent-machine/pull/121`) merged at `9afb9cb` to remove `provisions.text_hash` from the production query.
