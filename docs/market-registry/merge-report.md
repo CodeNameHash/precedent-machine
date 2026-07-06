@@ -1,7 +1,7 @@
 # Market Registry Merge Report
 
 input rows: 1327
-output rows: 681
+output rows: 682
 mechanical merges: 701
 flagged near-duplicates: 59
 groups untouched: 158

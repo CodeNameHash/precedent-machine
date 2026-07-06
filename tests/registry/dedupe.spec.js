@@ -45,7 +45,11 @@ test('rubric suffix merges prefer current canonical keys over legacy aliases', (
 test('reviewer split adds tenderOffer boolean without changing parser sources', () => {
   const { registry } = dedupeRegistry(source);
   const tenderOffer = registry.fields.find((field) => field.key === 'tenderOffer');
+  const divestitureInCondition = registry.fields.find((field) => field.key === 'divestitureInCondition');
   assert.equal(tenderOffer.data_type, 'BOOLEAN');
   assert.equal(tenderOffer.origin, 'reviewer-added');
   assert.ok(tenderOffer.merged_from.some((item) => item.key === 'dealStructure'));
+  assert.equal(divestitureInCondition.data_type, 'BOOLEAN');
+  assert.equal(divestitureInCondition.origin, 'reviewer-added');
+  assert.ok(divestitureInCondition.merged_from.some((item) => item.key === 'burdensomeConditionPresent'));
 });

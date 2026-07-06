@@ -39,6 +39,32 @@ const REVIEWER_ADDED_FIELDS = [
     also_matches_provision_codes: ['STRUCT-OFFER'],
     status: 'PENDING_REVIEW',
   },
+  {
+    key: 'divestitureInCondition',
+    label: 'Divestiture or burdensome-condition concept appears in closing condition',
+    data_type: 'BOOLEAN',
+    applies_to: 'ANTI,COND-B,COND-M,COND-S',
+    party_scope: 'DEAL_LEVEL',
+    structural_patterns: ['THREE_STATE'],
+    states: ['PRESENT', 'ABSENT', 'UNKNOWN'],
+    source_file: 'reviewer-added',
+    resolver_stub: {
+      resolver_kind: 'DERIVED_FROM_FIELD',
+      source: 'burdensomeConditionPresent',
+      json_path: 'divestitureInCondition',
+      stateful_test_deal_ids_required: true,
+      notes: 'Resolve as true when divestiture, burdensome-condition, or remedy-cap concepts appear as closing-condition limitations.',
+    },
+    resolver_notes: 'Boolean split-out for whether divestiture/remedy cap appears in closing-condition conditionality.',
+    test_deal_ids_required_per_state: 'Required before ACTIVE registry promotion.',
+    origin: 'reviewer-added',
+    merged_from: [
+      { origin: 'schema-features', key: 'burdensomeConditionPresent', merge_rule: 'reviewer-split' },
+      { origin: 'schema-features', key: 'burdensomeConditionScope', merge_rule: 'reviewer-split' },
+    ],
+    also_matches_provision_codes: ['ANTI-BURDEN', 'COND-B', 'COND-M', 'COND-S'],
+    status: 'PENDING_REVIEW',
+  },
 ];
 
 function clone(row) {
