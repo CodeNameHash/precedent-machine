@@ -552,6 +552,15 @@ function isPreambleProvision(provision) {
   return /^general\s*\/?\s*preamble$/i.test(cat);
 }
 
+function isHeadingOnlyIocRow(provision) {
+  if (!provision) return false;
+  const f = getStructuredFeatures(provision);
+  const hasSubstantiveFeatures = f && Object.keys(f).some((k) => !isEmptyValue(f[k]));
+  if (hasSubstantiveFeatures) return false;
+  const text = String(provision.full_text || provision.text || '').trim();
+  return /^Section\s+\d+(?:\.\d+)*\s+[A-Z][^.\n]{0,120}\.?\s*$/i.test(text);
+}
+
 /* ── Split a list of provisions into [preamble, rest] for category views.
  *    Returns the first preamble provision (if any) and all remaining ones. */
 function splitPreamble(provisions) {
@@ -1652,6 +1661,106 @@ function isNoNewLinesOfBusiness(p) {
   return /new\s+lines?\s+of\s+business|no\s+new\s+line\s+of\s+business/i.test(cat);
 }
 
+const IOC_POSITIVE_PREAMBLE_BUCKET = {
+  code: 'IOC-POSITIVE-PREAMBLE',
+  name: null,
+  catRe: /positive\s+preamble/i,
+  limbRe: null,
+  defaultScopeCodes: [],
+  synthetic: true,
+};
+
+function isIocPositivePreambleProvision(p) {
+  if (!p) return false;
+  const meta = getAiMetadata(p) || {};
+  const code = String(meta.code || p.code || '').toUpperCase();
+  if (code === 'IOC-POSITIVE-PREAMBLE') return true;
+  return /positive\s+preamble/i.test(String(p.category || ''));
+}
+
+function limbText(limb) {
+  if (!limb || typeof limb !== 'object') return String(limb || '').trim();
+  return String(limb.obligation || limb.text || limb.label || '').trim();
+}
+
+function normalizeObligationText(text) {
+  return String(text || '')
+    .toLowerCase()
+    .replace(/\([^)]*\)/g, ' ')
+    .replace(/\b(?:and\s+)?(?:to\s+)?(?:use|using)\s+(?:commercially\s+reasonable|reasonable\s+best|reasonable|best|good\s+faith)\s+efforts?\s+(?:to\s+)?/g, ' ')
+    .replace(/\b(?:and\s+)?to\s+/g, ' ')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function splitIncludedObligationTail(tail) {
+  const cleaned = String(tail || '')
+    .replace(/\bwithout\s+limitation\b/gi, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (!cleaned) return [];
+  const marked = cleaned
+    .replace(/\s*\((?:i|ii|iii|iv|v|vi|vii|viii|ix|x|\d+|[a-z])\)\s*/gi, '|||')
+    .replace(/;\s+and\s+/gi, '|||')
+    .replace(/;\s+/g, '|||')
+    .replace(/\s+and\s+(?=(?:to\s+)?(?:use|using|perform|renew|preserve|retain|conduct|maintain)\b)/gi, '|||');
+  return marked
+    .split('|||')
+    .map((part) => part.replace(/^[,;\s]+|[,;\s]+$/g, '').trim())
+    .filter((part) => part.length > 0);
+}
+
+function liftIncludedObligationsForDisplay(limb) {
+  if (!limb || typeof limb !== 'object') return limb;
+  const text = limbText(limb);
+  const match = text.match(/\b,?\s*including(?:\s+without\s+limitation)?\s+/i);
+  const existing = Array.isArray(limb.includedObligations) ? limb.includedObligations : [];
+  if (!match) {
+    return existing.length > 0 ? { ...limb, includedObligations: existing } : limb;
+  }
+  const head = text.slice(0, match.index).replace(/[,;\s]+$/g, '').trim();
+  const tail = text.slice(match.index + match[0].length);
+  const children = splitIncludedObligationTail(tail).map((part) => ({
+    obligation: part,
+    efforts_standard: limb.efforts_standard || limb.effortsStandard || 'FLAT',
+    appliesTo: limb.appliesTo || limb.applies_to || limb.scope || [],
+  }));
+  return {
+    ...limb,
+    obligation: head || text,
+    includedObligations: [...existing, ...children],
+  };
+}
+
+function positiveObligationLimbsForDisplay(features) {
+  const limbs = Array.isArray(features?.affirmativeLimbs) && features.affirmativeLimbs.length > 0
+    ? features.affirmativeLimbs
+    : Array.isArray(features?.positiveObligations)
+    ? features.positiveObligations
+    : [];
+  const lifted = limbs
+    .filter((limb) => limbText(limb))
+    .map(liftIncludedObligationsForDisplay);
+  const includedNorms = new Set();
+  for (const limb of lifted) {
+    for (const child of (Array.isArray(limb?.includedObligations) ? limb.includedObligations : [])) {
+      const norm = normalizeObligationText(limbText(child));
+      if (norm) includedNorms.add(norm);
+    }
+  }
+  return lifted.filter((limb) => {
+    const norm = normalizeObligationText(limbText(limb));
+    if (!norm || includedNorms.size === 0) return true;
+    for (const childNorm of includedNorms) {
+      if (norm === childNorm) return false;
+      if (norm.length >= 24 && childNorm.includes(norm)) return false;
+      if (childNorm.length >= 24 && norm.includes(childNorm)) return false;
+    }
+    return true;
+  });
+}
+
 function findIocAffirmativeMatches(iocProvisions) {
   if (!Array.isArray(iocProvisions) || iocProvisions.length === 0) return [];
   const used = new Set();
@@ -1675,6 +1784,15 @@ function findIocAffirmativeMatches(iocProvisions) {
       used.add(hit.id);
       matches.push({ bucket, provision: hit });
     }
+  }
+  for (const p of iocProvisions) {
+    if (!p || used.has(p.id) || isHeadingOnlyIocRow(p)) continue;
+    if (!isIocPositivePreambleProvision(p)) continue;
+    const features = getStructuredFeatures(p) || {};
+    const limbs = positiveObligationLimbsForDisplay(features);
+    if (limbs.length === 0 && !String(p.full_text || p.text || '').trim()) continue;
+    used.add(p.id);
+    matches.push({ bucket: IOC_POSITIVE_PREAMBLE_BUCKET, provision: p, limbs });
   }
   return matches;
 }
@@ -1798,9 +1916,7 @@ function IocAffirmativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelec
   // single preamble provision would surface EVERY limb's standard/scope on
   // EVERY bucket row — the source of the "wrong standard" bug.
   const matchingLimb = (features, bucket) => {
-    const limbs = Array.isArray(features.affirmativeLimbs) ? features.affirmativeLimbs
-      : Array.isArray(features.positiveObligations) ? features.positiveObligations
-      : [];
+    const limbs = positiveObligationLimbsForDisplay(features);
     if (limbs.length === 0 || !bucket || !bucket.limbRe) return null;
     for (const limb of limbs) {
       if (!limb || typeof limb !== 'object') continue;
@@ -1832,9 +1948,7 @@ function IocAffirmativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelec
       push(standardCodeFromValue(f.effortsStandard));
       push(standardCodeFromValue(f.materialityQualifier));
       if (out.length === 0) {
-        const limbs = Array.isArray(f.affirmativeLimbs) ? f.affirmativeLimbs
-          : Array.isArray(f.positiveObligations) ? f.positiveObligations
-          : [];
+        const limbs = positiveObligationLimbsForDisplay(f);
         for (const l of limbs) {
           if (!l || typeof l !== 'object') continue;
           push(standardCodeFromValue(l.efforts_standard || l.effortsStandard));
@@ -1903,6 +2017,67 @@ function IocAffirmativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelec
     );
   };
 
+  const standardCodesForLimb = (limb, fallbackText = null) => {
+    const out = [];
+    const seen = new Set();
+    const push = (code) => { if (code && !seen.has(code)) { seen.add(code); out.push(code); } };
+    if (limb && typeof limb === 'object') {
+      push(standardCodeFromValue(limb.efforts_standard));
+      push(standardCodeFromValue(limb.effortsStandard));
+      push(standardCodeFromValue(limb.materialityQualifier));
+      push(standardCodeFromValue(limb.materiality));
+    }
+    if (out.length === 0 && fallbackText) push(standardCodeFromValue(fallbackText));
+    if (out.length === 0) out.push('FLAT');
+    return out;
+  };
+
+  const scopeCodesForLimb = (limb) => {
+    const out = [];
+    const seen = new Set();
+    const push = (code) => { if (code && !seen.has(code)) { seen.add(code); out.push(code); } };
+    if (limb && typeof limb === 'object') {
+      scopeCodesFromValue(limb.appliesTo).forEach(push);
+      scopeCodesFromValue(limb.applies_to).forEach(push);
+      scopeCodesFromValue(limb.scope).forEach(push);
+    }
+    return out;
+  };
+
+  const renderIncludedObligations = (limb, rowQuote) => {
+    const children = Array.isArray(limb?.includedObligations) ? limb.includedObligations : [];
+    if (children.length === 0) return null;
+    return (
+      <ol className="mt-2 space-y-1 border-l border-border pl-3 text-[11px] font-normal text-inkMid">
+        {children.map((child, idx) => (
+          <li key={`${idx}-${limbText(child).slice(0, 24)}`} className="space-y-1">
+            <HoverSource quote={rowQuote}>
+              <span>{limbText(child)}</span>
+            </HoverSource>
+            <div className="flex flex-wrap gap-1">
+              {renderCodePills(standardCodesForLimb(child, rowQuote), IOC_AFFIRMATIVE_STANDARDS, rowQuote)}
+              {renderCodePills(scopeCodesForLimb(child), IOC_AFFIRMATIVE_SCOPE_CODES, rowQuote)}
+            </div>
+          </li>
+        ))}
+      </ol>
+    );
+  };
+
+  const rows = matches.flatMap(({ bucket, provision, limbs }) => {
+    if (!bucket.synthetic) return [{ key: bucket.code, bucket, provision, limb: null }];
+    const rowLimbs = Array.isArray(limbs) ? limbs : positiveObligationLimbsForDisplay(getStructuredFeatures(provision) || {});
+    if (rowLimbs.length === 0) {
+      return [{ key: `${bucket.code}-fallback`, bucket, provision, limb: null, fallbackText: String(provision.full_text || provision.text || '').trim() }];
+    }
+    return rowLimbs.map((limb, index) => ({
+      key: `${bucket.code}-${provision.id || 'p'}-${index}`,
+      bucket,
+      provision,
+      limb,
+    }));
+  });
+
   const title = partyLabel
     ? `${partyLabel} — Affirmative Covenants`
     : 'Affirmative Covenants';
@@ -1934,22 +2109,27 @@ function IocAffirmativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelec
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {matches.map(({ bucket, provision }) => {
-              const stdCodes = standardCodesFor(provision, bucket);
-              const scopeCodes = scopeCodesFor(provision, bucket);
+            {rows.map(({ key, bucket, provision, limb, fallbackText }) => {
+              const synthetic = !!bucket.synthetic;
               const rowQuote = (typeof provision?.full_text === 'string' && provision.full_text.trim())
                 ? provision.full_text
                 : null;
+              const stdCodes = synthetic && limb ? standardCodesForLimb(limb, rowQuote) : standardCodesFor(provision, bucket);
+              const scopeCodes = synthetic && limb ? scopeCodesForLimb(limb) : scopeCodesFor(provision, bucket);
+              const label = synthetic
+                ? (limbText(limb) || fallbackText || 'Affirmative chapeau')
+                : bucket.name;
               return (
-                <tr key={bucket.code} className="hover:bg-bg/40 transition-colors align-top">
+                <tr key={key} className="hover:bg-bg/40 transition-colors align-top">
                   <td className={`px-3 py-2 text-ink font-medium whitespace-normal break-words ${REVIEW_LABEL_COL_W}`}>
                     <TermCell provision={provision} quote={rowQuote}>
                       <HoverSource quote={rowQuote}>
                         <span className="text-left text-accent hover:underline font-medium">
-                          {bucket.name}
+                          {label}
                         </span>
                       </HoverSource>
                     </TermCell>
+                    {synthetic && renderIncludedObligations(limb, rowQuote)}
                   </td>
                   <td className="px-3 py-2 text-ink">
                     {renderCodePills(stdCodes, IOC_AFFIRMATIVE_STANDARDS, rowQuote)}
@@ -1967,31 +2147,101 @@ function IocAffirmativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelec
   );
 }
 
+function normalisePartyRole(raw) {
+  const text = String(raw || '').trim();
+  if (!text) return null;
+  const upper = text.toUpperCase().replace(/[^A-Z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+  const aliases = {
+    TARGET: 'COMPANY',
+    COMPANY_TARGET: 'COMPANY',
+    PARENT_BUYER: 'PARENT',
+    BUYER: 'PARENT',
+    CABOT_PARTIES: 'CABOT',
+    COLUMBUS_PARTIES: 'COLUMBUS',
+  };
+  return aliases[upper] || upper;
+}
+
+function displayPartyRole(role) {
+  const labels = {
+    COMPANY: 'Target / Company',
+    PARENT: 'Parent / Buyer',
+    COLUMBUS: 'Columbus',
+    CABOT: 'Cabot',
+    MERGER_SUB: 'Merger Sub',
+    SPINCO: 'SpinCo',
+    REMAINCO: 'RemainCo',
+    JV: 'JV',
+  };
+  if (labels[role]) return labels[role];
+  return String(role || '')
+    .toLowerCase()
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+function partyRoleOf(provision) {
+  const f = getStructuredFeatures(provision) || {};
+  const direct = normalisePartyRole(f.party_role || f.partyRole || f.party || f.subjectParty);
+  if (direct) return direct;
+  const text = String(provision?.full_text || provision?.text || provision?.category || '');
+  const named = text.match(/\b(Columbus|Cabot|SpinCo|RemainCo|Parent|Buyer|Company|Merger\s+Sub)\b(?=.{0,80}\b(?:shall|will|agrees?|must)\b)/i)
+    || text.match(/\bby\s+the\s+(Cabot|Columbus)\s+Part(?:y|ies)\b/i);
+  if (named) return normalisePartyRole(named[1]);
+  return provision?.type === 'IOC-B' ? 'PARENT' : 'COMPANY';
+}
+
+function partyRoleSide(role, provisions) {
+  if (role === 'PARENT' || role === 'BUYER' || role === 'MERGER_SUB') return 'buyer';
+  if (Array.isArray(provisions) && provisions.some((p) => p?.type === 'IOC-B')) return 'buyer';
+  return 'target';
+}
+
+function partyRoleSortValue(role) {
+  const order = { COMPANY: 0, PARENT: 1 };
+  return Object.prototype.hasOwnProperty.call(order, role) ? order[role] : 10;
+}
+
+function groupIocProvisionsByPartyRole(iocProvisions, side) {
+  const groups = new Map();
+  for (const p of iocProvisions || []) {
+    if (!p) continue;
+    const role = partyRoleOf(p);
+    const existing = groups.get(role) || [];
+    existing.push(p);
+    groups.set(role, existing);
+  }
+  return [...groups.entries()]
+    .map(([role, provisions]) => ({
+      role,
+      label: displayPartyRole(role),
+      side: partyRoleSide(role, provisions),
+      provisions,
+    }))
+    .filter((group) => !side || side === group.side)
+    .sort((a, b) => {
+      const byOrder = partyRoleSortValue(a.role) - partyRoleSortValue(b.role);
+      if (byOrder !== 0) return byOrder;
+      return a.label.localeCompare(b.label);
+    });
+}
+
 /* Public wrapper: side-gated render. When `side` is provided the wrapper
  * renders ONLY that party's half (matches the REP-T/REP-B sidebar split —
  * clicking the Company/Target IOC child only shows the Target half, etc.).
  * When `side` is null/undefined (parent IOC group view) both halves render. */
 function IocAffirmativeCovenantsTable({ iocProvisions, onSelectProvision, side }) {
-  const targetProvs = (iocProvisions || []).filter((p) => p.type !== 'IOC-B');
-  const buyerProvs = (iocProvisions || []).filter((p) => p.type === 'IOC-B');
-  const showTarget = !side || side === 'target';
-  const showBuyer = !side || side === 'buyer';
+  const groups = groupIocProvisionsByPartyRole(iocProvisions, side);
   return (
     <div className="space-y-3">
-      {showTarget && (
+      {groups.map((group) => (
         <IocAffirmativeCovenantsTableSingle
-          iocProvisions={targetProvs}
-          partyLabel="Target / Company"
+          key={group.role}
+          iocProvisions={group.provisions}
+          partyLabel={group.label}
           onSelectProvision={onSelectProvision}
         />
-      )}
-      {showBuyer && (
-        <IocAffirmativeCovenantsTableSingle
-          iocProvisions={buyerProvs}
-          partyLabel="Parent / Buyer"
-          onSelectProvision={onSelectProvision}
-        />
-      )}
+      ))}
     </div>
   );
 }
@@ -2413,9 +2663,11 @@ function IocGeneralExceptionsTable({ iocProvisions, generalExceptionsProv, onSel
  *     IOC-PRESERVE / IOC-MAINTAIN / IOC-NOACTION). The Details cell composes
  *     a compact one-line summary from the relevant features. */
 function IocNegativeCovenantsTableSingle({ iocProvisions, partyLabel, onSelectProvision, deal }) {
-  const affCodes = new Set(['IOC-ORDINARY', 'IOC-PRESERVE', 'IOC-MAINTAIN', 'IOC-NOACTION', 'IOC-AFFIRMATIVE', 'IOC-OTHER-AFFIRMATIVE', 'IOC-GENERAL-EXCEPTIONS', 'IOC-EXCEPTIONS']);
+  const affCodes = new Set(['IOC-ORDINARY', 'IOC-PRESERVE', 'IOC-MAINTAIN', 'IOC-NOACTION', 'IOC-AFFIRMATIVE', 'IOC-OTHER-AFFIRMATIVE', 'IOC-POSITIVE-PREAMBLE', 'IOC-GENERAL-EXCEPTIONS', 'IOC-EXCEPTIONS']);
   const negative = (iocProvisions || []).filter((p) => {
+    if (isHeadingOnlyIocRow(p)) return false;
     if (isPreambleProvision(p)) return false;
+    if (isIocPositivePreambleProvision(p)) return false;
     if (isIocAffirmative(p)) return false;
     if (isIocGeneralExceptions(p)) return false;
     const meta = getAiMetadata(p) || {};
@@ -11675,6 +11927,7 @@ export default function ReviewPage() {
                       let iocAffirmative = null;
                       let iocGeneralExceptions = null;
                       if (isIocType) {
+                        rest = rest.filter((p) => !isHeadingOnlyIocRow(p));
                         const buckets = splitIocPreambleBuckets(rest);
                         iocAffirmative = buckets.affirmative;
                         iocGeneralExceptions = buckets.generalExceptions;
@@ -11759,7 +12012,7 @@ export default function ReviewPage() {
                               )}
                               {isIocType && type === firstIocType && (
                                 <IocNegativeCovenantsTable
-                                  iocProvisions={allFilteredIocProvisions.filter((p) => !isPreambleProvision(p))}
+                                  iocProvisions={allFilteredIocProvisions.filter((p) => !isPreambleProvision(p) && !isHeadingOnlyIocRow(p))}
                                   onSelectProvision={handleEditProvision}
                                   side={iocSide}
                                   deal={deal}
