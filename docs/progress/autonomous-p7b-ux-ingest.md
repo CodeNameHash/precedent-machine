@@ -358,3 +358,28 @@ Updated: 2026-07-05
 - Systematic canonical-rate failure remains on several high-coverage deals other than Verizon; diagnose before broad ingest resumes.
 - Verizon's DEF refresh materially changed definition row shape/count from 82 to 115. QA/admin numbers are strong, but this is worth a quick legal/data review before treating the refresh pattern as safe for every failed deal.
 - Boundary repair is code-level only until target deals are reprocessed and metrics refreshed. Do not declare General Dynamics clean until `STRUCT`, `REP-T`, `ANTI`, and `NOSOL` reruns plus QA confirm it.
+
+## 2026-07-06 10:55 EDT Update
+
+- Production deploy `90b2fbf` completed earlier in this lane:
+  - `https://precedent-machine.vercel.app` aliases `https://precedent-machine-11tf4947k-codenamehashs-projects.vercel.app`.
+  - `/api/deals` returned 35 deals without `metadata.full_text`, using persisted provision counts.
+  - `/api/admin/gaps?limit=25` returned `mode:"stored_only"` after metrics warm.
+- Metrics warm for `/api/admin/gaps?limit=100&refresh_metrics=1` recomputed/wrote 41 metrics rows.
+- Metsera full reingest agent `019f37c9-ed04-7c73-8926-b0c01d6c1aaf` completed:
+  - Deal id `885edae5-49e8-464a-9f33-edd229119d7c`, Pfizer Inc. / Metsera, Inc.
+  - Inserted 310 provisions.
+  - QA passed: coverage 97.20, unverified quotes 0, duplicate clauses 0, canonical rate 0.92.
+  - Stored metrics after admin refresh: reviewable coverage 100, raw coverage 79.4, gap_count 0, ignored_gap_count 4, needs_code_count 14.
+  - No duplicate Metsera-like deal row found.
+- Edit-mode boundary audit UI is in progress on this branch:
+  - New `/api/admin/gaps?deal_id=...` detail payload key: `boundary_audit`.
+  - New `BoundaryAuditPanel` opens from the review-page toolbar in edit mode.
+  - Panel shows source-order spans, starts, tails, gaps, unlocated rows, warning/error flags, and edit/read links.
+  - Flag logic checks real provision tails, not truncated starts, and suppresses expected DEF and same-family contained overlaps.
+  - Broad different-family parent spans are flagged once as `contains_nested_spans` instead of warning on every contained child.
+  - Browser smoke on Conoco edit view passed locally: button present, panel opens, `FLAGGED` count 14, all spans/tails/Edit links visible.
+  - Focused tests passed: `tests/gap-review.test.js tests/parser-boundaries.test.js tests/verification.test.js`, 69/69.
+  - Full tests passed: `node --test --test-reporter=dot tests/*.test.js`.
+  - Build passed from a temp copy with `node_modules` symlinked to `/tmp/wp-schema-p7-node_modules-1783304291`.
+- Do not stage `lib/llm-cli-client.js` unless intentionally changing concurrency. The temporary Metsera agent `MAX_CONCURRENT = 6` edit was reverted to repo default `2`.

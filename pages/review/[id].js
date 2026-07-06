@@ -133,6 +133,7 @@ import { ConsidTable } from '../../components/review/ConsiderationTables';
 import { Sidebar } from '../../components/review/Sidebar';
 import { FullDocumentView } from '../../components/review/FullDocumentView';
 import { EditPanel } from '../../components/review/EditPanel';
+import { BoundaryAuditPanel } from '../../components/review/BoundaryAuditPanel';
 import { parseReviewRouteQuery, serializeReviewRouteQuery } from '../../lib/review-route';
 
 
@@ -10112,6 +10113,7 @@ export default function ReviewPage() {
   /* ── Main surface + full-document overlay state ── */
   const [activeTab, setActiveTab] = useState('provisions');
   const [fullDocOpen, setFullDocOpen] = useState(false);
+  const [boundaryAuditOpen, setBoundaryAuditOpen] = useState(false);
   const pushReviewRoute = useCallback((patch = {}) => {
     if (!router.isReady || !dealId) return;
     const current = parseReviewRouteQuery(router.query);
@@ -11290,17 +11292,28 @@ export default function ReviewPage() {
                     Collapse all
                   </button>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => openFullDocument()}
-                  className="rounded border border-border bg-white px-3 py-1.5 text-xs font-ui font-medium text-ink hover:border-accent hover:text-accent"
-                  title={hasSource ? 'Raw agreement text with provision highlights' : 'Raw text not stored yet — re-ingest to populate'}
-                >
-                  Full Document
-                  {!hasSource && (
-                    <span className="ml-1.5 text-[10px] text-inkFaint">(no raw text)</span>
+                <div className="flex items-center gap-2">
+                  {isEdit && (
+                    <button
+                      type="button"
+                      onClick={() => setBoundaryAuditOpen(true)}
+                      className="rounded border border-border bg-white px-3 py-1.5 text-xs font-ui font-medium text-ink hover:border-accent hover:text-accent"
+                    >
+                      Boundary Audit
+                    </button>
                   )}
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => openFullDocument()}
+                    className="rounded border border-border bg-white px-3 py-1.5 text-xs font-ui font-medium text-ink hover:border-accent hover:text-accent"
+                    title={hasSource ? 'Raw agreement text with provision highlights' : 'Raw text not stored yet — re-ingest to populate'}
+                  >
+                    Full Document
+                    {!hasSource && (
+                      <span className="ml-1.5 text-[10px] text-inkFaint">(no raw text)</span>
+                    )}
+                  </button>
+                </div>
               </div>
             )}
 
@@ -11718,6 +11731,14 @@ export default function ReviewPage() {
             </div>
           </aside>
         </div>
+      )}
+      {isEdit && (
+        <BoundaryAuditPanel
+          open={boundaryAuditOpen}
+          dealId={dealId}
+          onClose={() => setBoundaryAuditOpen(false)}
+          onEditProvision={handleEditProvisionById}
+        />
       )}
       {/* FB3 Surface 2: in-place document pop-under, opened by any TermCell's
           "see text" link via DealNavContext. Fixed-position overlay — mounting

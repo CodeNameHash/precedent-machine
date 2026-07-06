@@ -7,6 +7,7 @@ const {
   normalizeForGapDisplay,
   suggestGapType,
   locateProvisionIntervals,
+  buildBoundaryAudit,
   buildGapDetails,
   buildUncodedSummary,
   buildUncodedDetails,
@@ -275,6 +276,122 @@ test('buildUncodedDetails numbers non-canonical extracted provisions with full t
   assert.match(uncoded[1].suggested_reason, /No canonical code/);
   assert.equal(uncoded[2].family_type, 'MISC');
   assert.match(uncoded[2].suggested_reason, /not in the canonical rubric/);
+});
+
+test('buildBoundaryAudit exposes provision spans, reviewable gaps, and unlocated rows', () => {
+  const source = [
+    'Section 1.01 Intro. Parent will acquire the Company.',
+    'Section 2.01 Tender Offer. Parent shall commence the Offer and',
+    'Section 5.04 No Solicitation. The Company shall not solicit Acquisition Proposals.',
+  ].join(' ');
+  const display = normalizeForGapDisplay(source);
+  const gapStart = display.indexOf('Section 5.04');
+  const provisions = [
+    {
+      id: 'prov-intro',
+      type: 'STRUCT',
+      category: 'Intro',
+      ai_metadata: { features: { canonicalCode: 'STRUCT-MERGER' } },
+      full_text: 'Section 1.01 Intro. Parent will acquire the Company.',
+    },
+    {
+      id: 'prov-offer',
+      type: 'STRUCT',
+      category: 'Tender Offer',
+      ai_metadata: { features: { canonicalCode: 'STRUCT-TENDER' } },
+      full_text: 'Section 2.01 Tender Offer. Parent shall commence the Offer and',
+    },
+    {
+      id: 'prov-unlocated',
+      type: 'COV',
+      category: 'Missing Covenant',
+      ai_metadata: { features: { canonicalCode: 'COV-ORDINARY-COURSE' } },
+      full_text: 'Section 6.01 Missing Covenant. The Company shall operate in the ordinary course.',
+    },
+  ];
+
+  const audit = buildBoundaryAudit({
+    coverage: { gaps: [{ start: gapStart, length: display.length - gapStart }] },
+    sourceText: source,
+    provisions,
+  });
+
+  assert.equal(audit.summary.provisions_located, 2);
+  assert.equal(audit.summary.provisions_unlocated, 1);
+  assert.equal(audit.summary.reviewable_gaps, 1);
+  assert.equal(audit.items[0].id, 'P-001');
+  assert.equal(audit.items[0].provision_id, 'prov-intro');
+  assert.equal(audit.items[1].provision_id, 'prov-offer');
+  assert.match(audit.items[1].tail_preview, /Offer and$/);
+  assert.equal(audit.items[1].flags[0].code, 'odd_end_word');
+  assert.equal(audit.items[2].id, 'G-001');
+  assert.equal(audit.items[2].reviewable_gap, true);
+  assert.equal(audit.unlocated[0].provision_id, 'prov-unlocated');
+  assert.equal(audit.unlocated[0].flags[0].code, 'unlocated');
+});
+
+test('buildBoundaryAudit does not warn on same-family contained spans', () => {
+  const source = 'Section 6.01 Interim Covenants. The Company shall not: (a) issue stock without Parent consent; (b) incur debt without Parent consent.';
+  const audit = buildBoundaryAudit({
+    coverage: { gaps: [] },
+    sourceText: source,
+    provisions: [
+      {
+        id: 'ioc-preamble',
+        type: 'IOC-T',
+        category: 'Interim Covenants Preamble',
+        ai_metadata: { features: { canonicalCode: 'IOC-T-PREAMBLE' } },
+        full_text: source,
+      },
+      {
+        id: 'ioc-issue-stock',
+        type: 'IOC-T',
+        category: 'Issuance of Securities',
+        ai_metadata: { features: { canonicalCode: 'IOC-T-ISSUANCE' } },
+        full_text: '(a) issue stock without Parent consent;',
+      },
+    ],
+  });
+
+  const child = audit.items.find((item) => item.provision_id === 'ioc-issue-stock');
+  assert.ok(child);
+  assert.equal(child.flags.some((flag) => flag.code === 'overlap'), false);
+});
+
+test('buildBoundaryAudit flags a broad different-family parent once instead of every child', () => {
+  const source = 'Section 6.01 Covenants. The Company shall not: (a) issue stock without Parent consent; (b) incur debt without Parent consent.';
+  const audit = buildBoundaryAudit({
+    coverage: { gaps: [] },
+    sourceText: source,
+    provisions: [
+      {
+        id: 'broad-other',
+        type: 'OTHER',
+        category: 'Covenants',
+        ai_metadata: { features: { canonicalCode: 'OTHER-GENERAL' } },
+        full_text: source,
+      },
+      {
+        id: 'ioc-issue-stock',
+        type: 'IOC-T',
+        category: 'Issuance of Securities',
+        ai_metadata: { features: { canonicalCode: 'IOC-T-ISSUANCE' } },
+        full_text: '(a) issue stock without Parent consent;',
+      },
+      {
+        id: 'ioc-debt',
+        type: 'IOC-T',
+        category: 'Debt',
+        ai_metadata: { features: { canonicalCode: 'IOC-T-DEBT' } },
+        full_text: '(b) incur debt without Parent consent.',
+      },
+    ],
+  });
+
+  const parent = audit.items.find((item) => item.provision_id === 'broad-other');
+  const children = audit.items.filter((item) => String(item.provision_id || '').startsWith('ioc-'));
+  assert.equal(parent.flags.some((flag) => flag.code === 'contains_nested_spans'), true);
+  assert.equal(children.some((item) => item.flags.some((flag) => flag.code === 'overlap')), false);
 });
 
 test('/api/admin/gaps uses schema-backed candidate ordering fields', () => {

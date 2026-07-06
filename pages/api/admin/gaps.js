@@ -2,6 +2,7 @@ import { getServiceSupabase } from '../../../lib/supabase';
 
 const { buildParserReview } = require('../../../lib/parser-v2/structural');
 const {
+  buildBoundaryAudit,
   buildGapDetails,
   buildUncodedDetails,
   formatGapId,
@@ -307,11 +308,17 @@ async function getDetail(req, res, sb, dealId) {
   const ignoredGaps = gaps.filter((gap) => !gap.reviewable_gap);
   const needsCode = buildUncodedDetails(provisionsResult.data || []);
   const parserReview = buildParserReview(sourceTextOf(deal));
+  const boundaryAudit = buildBoundaryAudit({
+    coverage: summary._coverage,
+    sourceText: sourceTextOf(deal),
+    provisions: provisionsResult.data || [],
+  });
 
   return res.status(200).json({
     summary: publicSummary(summary),
     gaps: reviewableGaps,
     ignored_gaps: ignoredGaps,
+    boundary_audit: boundaryAudit,
     needs_code: needsCode,
     uncoded: needsCode,
     parser_review: parserReview,
