@@ -1,30 +1,58 @@
 import { getServiceSupabase } from '../../../lib/supabase';
-import { computeCoverage, verifyDealQuotes } from '../../../lib/verification';
 
-const { computeCanonicalRate } = require('../../../scripts/ingest-qa');
 const { buildParserReview } = require('../../../lib/parser-v2/structural');
 const {
   buildGapDetails,
   buildUncodedDetails,
-  buildUncodedSummary,
-  classifyGapRegionWithContext,
   formatGapId,
-  normalizeForGapDisplay,
-  gapTextFromSource,
-  gapPreviewFromSource,
-  isReviewableGapRegion,
 } = require('../../../lib/gap-review');
 const {
   buildCodingTaskRow,
   findNeedsCodeItem,
   validateCodingTaskInput,
 } = require('../../../lib/coding-tasks');
+const {
+  QUALITY_METRICS_TABLE,
+  QUALITY_METRICS_VERSION,
+  fetchAllProvisions,
+  publicSummary,
+  sourceTextOf,
+  summaryFromStoredQualityMetrics,
+  summariseDealQuality,
+  upsertDealQualityMetrics,
+} = require('../../../lib/deal-quality-metrics');
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-const PROVISION_PAGE_SIZE = 1000;
 const DEFAULT_LIMIT = 50;
 const MAX_LIMIT = 100;
-const SUMMARY_MAX_GAPS = 1000;
+const QUALITY_METRICS_SELECT = [
+  'deal_id',
+  'metrics_version',
+  'provision_count',
+  'source_chars',
+  'coverage_pct',
+  'reviewable_coverage_pct',
+  'raw_coverage_pct',
+  'reviewable_gap_chars',
+  'reviewable_effective_chars',
+  'canonical_rate',
+  'unverified_quotes',
+  'gap_count',
+  'ignored_gap_count',
+  'parser_structural_gap_count',
+  'definition_warning_count',
+  'data_model_flag_count',
+  'needs_code_count',
+  'needs_code_proposed_count',
+  'needs_code_type_counts',
+  'uncoded_count',
+  'uncoded_proposed_count',
+  'uncoded_type_counts',
+  'largest_gap_chars',
+  'largest_gap_preview',
+  'metadata',
+  'computed_at',
+].join(', ');
 
 function fail(res, status, error, detail) {
   return res.status(status).json({ error, ...(detail ? { detail } : {}) });
@@ -68,56 +96,30 @@ function parseMinCoverage(value) {
   return Math.max(0, Math.min(100, n));
 }
 
-function metaOf(deal) {
-  const meta = deal && deal.metadata;
-  return meta && typeof meta === 'object' && !Array.isArray(meta) ? meta : {};
+function parseBooleanFlag(value) {
+  const raw = Array.isArray(value) ? value[0] : value;
+  if (raw == null || raw === '') return false;
+  return ['1', 'true', 'yes', 'y', 'refresh'].includes(String(raw).toLowerCase());
 }
 
-function sourceTextOf(deal) {
-  const meta = metaOf(deal);
-  return typeof meta.full_text === 'string' ? meta.full_text : '';
+function shouldRefreshMetrics(req) {
+  return parseBooleanFlag(req.query.refresh_metrics) || parseBooleanFlag(req.query.refresh);
 }
 
-function round(value, places = 3) {
-  if (!Number.isFinite(value)) return null;
-  const scale = 10 ** places;
-  return Math.round(value * scale) / scale;
+function qualityMetricsUnavailable(error) {
+  const unavailable = tableUnavailable(error);
+  return unavailable ? { table: QUALITY_METRICS_TABLE, ...unavailable } : null;
 }
 
-function reviewableCoverageStats(coverage, reviewableGaps) {
-  const sourceChars = Number(coverage && coverage.sourceChars) || 0;
-  const excludedChars = Number(coverage && coverage.excludedChars) || 0;
-  const effectiveChars = Math.max(1, sourceChars - excludedChars);
-  const reviewableGapChars = (reviewableGaps || []).reduce((sum, item) => {
-    return sum + Math.max(0, Number(item && item.gap && item.gap.length) || 0);
-  }, 0);
-  const coveredChars = Math.max(0, effectiveChars - reviewableGapChars);
+async function maybeUpsertQualityMetrics(sb, summary) {
+  const upsert = await upsertDealQualityMetrics(sb, summary);
+  const unavailable = qualityMetricsUnavailable(upsert.error);
+  if (unavailable) return { unavailable };
+  if (upsert.error) throw new Error(upsert.error.message || String(upsert.error));
   return {
-    pct: Math.round((coveredChars / effectiveChars) * 1000) / 10,
-    gapChars: reviewableGapChars,
-    effectiveChars,
+    stored: true,
+    computed_at: upsert.data ? upsert.data.computed_at || null : upsert.payload.computed_at,
   };
-}
-
-async function fetchAllProvisions(sb, dealId) {
-  const out = [];
-  let offset = 0;
-
-  for (;;) {
-    const { data, error } = await sb
-      .from('provisions')
-      .select('id, deal_id, type, category, full_text, ai_metadata, created_at')
-      .eq('deal_id', dealId)
-      .order('created_at', { ascending: true })
-      .range(offset, offset + PROVISION_PAGE_SIZE - 1);
-
-    if (error) throw new Error(error.message);
-    out.push(...(data || []));
-    if (!data || data.length < PROVISION_PAGE_SIZE) break;
-    offset += PROVISION_PAGE_SIZE;
-  }
-
-  return out;
 }
 
 async function mapWithConcurrency(items, limit, fn) {
@@ -184,75 +186,58 @@ async function fetchLatestIngestRefs(sb, dealIds) {
   return { byDeal, unavailable };
 }
 
-function summariseDeal(deal, provisions, latestIngest) {
-  const sourceText = sourceTextOf(deal);
-  const meta = metaOf(deal);
-  const coverage = computeCoverage(provisions || [], sourceText, {
-    maxGaps: SUMMARY_MAX_GAPS,
-    minGapChars: 400,
-  });
-  const verification = sourceText
-    ? verifyDealQuotes(provisions || [], sourceText)
-    : { unverified: null };
-  const canonicalRate = computeCanonicalRate(provisions || []);
-  const displaySource = normalizeForGapDisplay(sourceText);
-  const typedGaps = (coverage.gaps || []).map((gap) => {
-    const start = Math.max(0, Number(gap && gap.start) || 0);
-    const length = Math.max(0, Number(gap && gap.length) || 0);
-    const fullText = gapTextFromSource(sourceText, gap);
-    const regionType = classifyGapRegionWithContext(displaySource, start, start + length, fullText);
-    return { gap, regionType, reviewable: isReviewableGapRegion(regionType) };
-  });
-  const reviewableGaps = typedGaps.filter((item) => item.reviewable);
-  const reviewableCoverage = reviewableCoverageStats(coverage, reviewableGaps);
-  const largestGap = (reviewableGaps[0] && reviewableGaps[0].gap) || null;
-  const needsCodeSummary = buildUncodedSummary(provisions || []);
-  const parserReview = sourceText ? buildParserReview(sourceText) : null;
-  const parserSummary = parserReview ? parserReview.summary : {};
+async function fetchStoredQualityMetrics(sb, dealIds) {
+  const byDeal = new Map();
+  if (!dealIds.length) return { byDeal, unavailable: null };
 
-  return {
-    deal_id: deal.id,
-    acquirer: deal.acquirer || null,
-    target: deal.target || null,
-    coverage_pct: reviewableCoverage.pct,
-    reviewable_coverage_pct: reviewableCoverage.pct,
-    raw_coverage_pct: coverage.rawPct,
-    reviewable_gap_chars: reviewableCoverage.gapChars,
-    reviewable_effective_chars: reviewableCoverage.effectiveChars,
-    canonical_rate: round(canonicalRate),
-    unverified_quotes: verification.unverified,
-    gap_count: reviewableGaps.length,
-    ignored_gap_count: typedGaps.length - reviewableGaps.length,
-    parser_structural_gap_count: parserSummary.structural_gap_count ?? null,
-    definition_warning_count: parserSummary.definition_warning_count ?? null,
-    data_model_flag_count: parserSummary.data_model_flag_count ?? null,
-    needs_code_count: needsCodeSummary.count,
-    needs_code_proposed_count: needsCodeSummary.proposed_count,
-    needs_code_type_counts: needsCodeSummary.by_type,
-    uncoded_count: needsCodeSummary.count,
-    uncoded_proposed_count: needsCodeSummary.proposed_count,
-    uncoded_type_counts: needsCodeSummary.by_type,
-    largest_gap_chars: largestGap ? largestGap.length : 0,
-    largest_gap_preview: largestGap ? gapPreviewFromSource(sourceText, largestGap, 240) : null,
-    metadata: {
-      ingest_status: meta.ingest_status || meta.ingestStatus || null,
-    },
-    latest_ingest_run_id: latestIngest ? latestIngest.run_id || null : null,
-    latest_ingest_candidate_id: latestIngest ? latestIngest.candidate_id || null : null,
-    latest_ingest_run_status: latestIngest ? latestIngest.run_status || latestIngest.candidate_status || null : null,
-    provision_count: (provisions || []).length,
-    source_chars: sourceText.length,
-    _coverage: coverage,
-  };
+  const { data, error } = await sb
+    .from(QUALITY_METRICS_TABLE)
+    .select(QUALITY_METRICS_SELECT)
+    .in('deal_id', dealIds);
+
+  const unavailable = qualityMetricsUnavailable(error);
+  if (unavailable) return { byDeal, unavailable };
+  if (error) throw new Error(error.message || String(error));
+
+  for (const row of data || []) {
+    if (row && row.deal_id) byDeal.set(row.deal_id, row);
+  }
+  return { byDeal, unavailable: null };
 }
 
-function publicSummary(row) {
-  const { _coverage, ...publicRow } = row;
-  return publicRow;
+async function fetchDealsForMetricCompute(sb, dealIds) {
+  const byDeal = new Map();
+  if (!dealIds.length) return byDeal;
+
+  const { data, error } = await sb
+    .from('deals')
+    .select('id, acquirer, target, metadata')
+    .in('id', dealIds);
+
+  if (error) throw new Error(error.message || String(error));
+  for (const deal of data || []) {
+    if (deal && deal.id) byDeal.set(deal.id, deal);
+  }
+  return byDeal;
+}
+
+function storedMetricIsCurrent(row) {
+  return row && Number(row.metrics_version) === QUALITY_METRICS_VERSION;
+}
+
+function coverageSortValue(row) {
+  const n = Number(row && row.coverage_pct);
+  return Number.isFinite(n) ? n : Number.POSITIVE_INFINITY;
+}
+
+function largestGapSortValue(row) {
+  const n = Number(row && row.largest_gap_chars);
+  return Number.isFinite(n) ? n : 0;
 }
 
 async function getDetail(req, res, sb, dealId) {
   if (!isUuid(dealId)) return fail(res, 400, 'Invalid deal_id');
+  const refreshMetrics = shouldRefreshMetrics(req);
 
   const [{ data: deal, error: dealError }, provisionsResult, ingestRefsResult] = await Promise.all([
     sb.from('deals').select('id, acquirer, target, metadata').eq('id', dealId).single(),
@@ -265,7 +250,15 @@ async function getDetail(req, res, sb, dealId) {
   if (ingestRefsResult.error) return fail(res, 500, ingestRefsResult.error.message || String(ingestRefsResult.error));
 
   const latestIngest = ingestRefsResult.byDeal.get(dealId) || null;
-  const summary = summariseDeal(deal, provisionsResult.data || [], latestIngest);
+  const summary = summariseDealQuality(deal, provisionsResult.data || [], latestIngest);
+  let qualityMetrics = null;
+  if (refreshMetrics) {
+    try {
+      qualityMetrics = await maybeUpsertQualityMetrics(sb, summary);
+    } catch (err) {
+      return fail(res, 500, err.message);
+    }
+  }
   const gaps = buildGapDetails({
     coverage: summary._coverage,
     sourceText: sourceTextOf(deal),
@@ -307,6 +300,7 @@ async function getDetail(req, res, sb, dealId) {
       definitionWarningCount: parserReview.summary.definition_warning_count,
       dataModelFlagCount: parserReview.summary.data_model_flag_count,
     },
+    ...(qualityMetrics ? { quality_metrics: qualityMetrics } : {}),
     ...(ingestRefsResult.unavailable && ingestRefsResult.unavailable.length ? { ingest_refs_unavailable: ingestRefsResult.unavailable } : {}),
   });
 }
@@ -358,10 +352,11 @@ async function getSummary(req, res, sb) {
   const limit = parseLimit(req.query.limit);
   const offset = parseOffset(req.query.offset);
   const minCoverage = parseMinCoverage(req.query.min_coverage);
+  const refreshMetrics = shouldRefreshMetrics(req);
 
   const { data: deals, error, count } = await sb
     .from('deals')
-    .select('id, acquirer, target, metadata', { count: 'exact' })
+    .select('id, acquirer, target', { count: 'exact' })
     .order('target', { ascending: true })
     .range(offset, offset + limit - 1);
 
@@ -375,21 +370,73 @@ async function getSummary(req, res, sb) {
     return fail(res, 500, err.message);
   }
 
-  let rows;
+  let storedMetricsResult = { byDeal: new Map(), unavailable: null };
+  if (!refreshMetrics) {
+    try {
+      storedMetricsResult = await fetchStoredQualityMetrics(sb, dealIds);
+    } catch (err) {
+      return fail(res, 500, err.message);
+    }
+  }
+
+  const rowsByDeal = new Map();
+  const computeDealIds = [];
+  let storedCount = 0;
+  let staleCount = 0;
+
+  for (const deal of deals || []) {
+    const stored = storedMetricsResult.byDeal.get(deal.id);
+    if (!refreshMetrics && storedMetricIsCurrent(stored)) {
+      rowsByDeal.set(deal.id, summaryFromStoredQualityMetrics(deal, stored, ingestRefsResult.byDeal.get(deal.id) || null));
+      storedCount += 1;
+      continue;
+    }
+    if (stored && !storedMetricIsCurrent(stored)) staleCount += 1;
+    computeDealIds.push(deal.id);
+  }
+
+  let fullDealsById;
   try {
-    rows = await mapWithConcurrency(deals || [], 4, async (deal) => {
+    fullDealsById = await fetchDealsForMetricCompute(sb, computeDealIds);
+  } catch (err) {
+    return fail(res, 500, err.message);
+  }
+
+  let recomputedCount = 0;
+  let storedWriteCount = 0;
+  let qualityMetricsUnavailableInfo = storedMetricsResult.unavailable;
+  try {
+    await mapWithConcurrency(computeDealIds, 4, async (dealId) => {
+      const deal = fullDealsById.get(dealId);
+      if (!deal) throw new Error(`Deal not found while computing metrics: ${dealId}`);
       const provisions = await fetchAllProvisions(sb, deal.id);
-      return summariseDeal(deal, provisions, ingestRefsResult.byDeal.get(deal.id) || null);
+      const summary = summariseDealQuality(deal, provisions, ingestRefsResult.byDeal.get(deal.id) || null);
+      recomputedCount += 1;
+
+      if (!qualityMetricsUnavailableInfo) {
+        const write = await maybeUpsertQualityMetrics(sb, summary);
+        if (write.unavailable) {
+          qualityMetricsUnavailableInfo = write.unavailable;
+        } else {
+          storedWriteCount += 1;
+        }
+      }
+
+      rowsByDeal.set(deal.id, summary);
     });
   } catch (err) {
     return fail(res, 500, err.message);
   }
 
-  rows = rows
+  const rows = (deals || [])
+    .map((deal) => rowsByDeal.get(deal.id))
+    .filter(Boolean)
     .filter((row) => minCoverage == null || row.coverage_pct <= minCoverage)
     .sort((a, b) => {
-      if (a.coverage_pct !== b.coverage_pct) return a.coverage_pct - b.coverage_pct;
-      if (a.largest_gap_chars !== b.largest_gap_chars) return b.largest_gap_chars - a.largest_gap_chars;
+      const aCoverage = coverageSortValue(a);
+      const bCoverage = coverageSortValue(b);
+      if (aCoverage !== bCoverage) return aCoverage - bCoverage;
+      if (a.largest_gap_chars !== b.largest_gap_chars) return largestGapSortValue(b) - largestGapSortValue(a);
       return String(a.target || '').localeCompare(String(b.target || ''));
     })
     .map(publicSummary);
@@ -404,6 +451,16 @@ async function getSummary(req, res, sb) {
       returned: rows.length,
       min_coverage: minCoverage,
     },
+    quality_metrics: {
+      table: QUALITY_METRICS_TABLE,
+      mode: refreshMetrics ? 'refresh' : 'stored_with_fallback',
+      stored: storedCount,
+      recomputed: recomputedCount,
+      written: storedWriteCount,
+      stale: staleCount,
+      schema_available: !qualityMetricsUnavailableInfo,
+    },
+    ...(qualityMetricsUnavailableInfo ? { quality_metrics_unavailable: qualityMetricsUnavailableInfo } : {}),
     ...(ingestRefsResult.unavailable && ingestRefsResult.unavailable.length ? { ingest_refs_unavailable: ingestRefsResult.unavailable } : {}),
   });
 }

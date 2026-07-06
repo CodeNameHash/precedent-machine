@@ -269,7 +269,7 @@ test('/api/admin/gaps uses schema-backed candidate ordering fields', () => {
 });
 
 test('/api/admin/gaps summary uses context-aware gap region classification', () => {
-  const source = fs.readFileSync(path.join(__dirname, '..', 'pages/api/admin/gaps.js'), 'utf8');
+  const source = fs.readFileSync(path.join(__dirname, '..', 'lib', 'deal-quality-metrics.js'), 'utf8');
   assert.match(source, /classifyGapRegionWithContext/);
   assert.match(source, /normalizeForGapDisplay\(sourceText\)/);
   assert.doesNotMatch(source, /classifyGapRegion\(gapTextFromSource\(sourceText, gap\)\)/);
