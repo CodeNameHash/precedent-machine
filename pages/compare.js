@@ -5,8 +5,9 @@ import { useRouter } from 'next/router';
 import { useUser } from '../lib/useUser';
 import { useDeals, useProvisions } from '../lib/useSupabaseData';
 import { SIDEBAR_GROUPS, typeHex, sidebarTypeOrder, findGroupForType } from '../lib/sidebar-groups';
-import { CATEGORY_SUMMARY_FEATURES } from '../lib/category-summary-features';
+import { CATEGORY_SUMMARY_FEATURES } from '../lib/schema/summary';
 import { normalizeTermfFeatures } from '../lib/termf';
+import { renderFeatureValue as schemaRenderFeatureValue } from '../lib/schema';
 import {
   isTaggedItem,
   isCitableValue,
@@ -2317,11 +2318,21 @@ function FeaturesBlock({ features }) {
 // String form of a feature value — uses the shared citable/tagged helpers so
 // the result matches the review table: citable wrappers unwrap, tagged items
 // resolve to their canonical label, booleans read Yes/No.
+function schemaFeatureText(key, value) {
+  if (!key) return null;
+  const rendered = schemaRenderFeatureValue(key, value);
+  if (rendered === null || rendered === undefined || rendered === '') return null;
+  if (rendered && typeof rendered === 'object' && rendered.kind === 'empty') return null;
+  return String(rendered);
+}
+
 function formatFeatureValue(v, key) {
   if (v == null) return '—';
   let val = v;
   if (isCitableValue(val)) val = getCitableValue(val);
   if (typeof val === 'boolean') return val ? 'Yes' : 'No';
+  const schemaRendered = schemaFeatureText(key, val);
+  if (schemaRendered) return schemaRendered;
   if (typeof val === 'string' || typeof val === 'number') return String(val);
   if (Array.isArray(val)) {
     return val

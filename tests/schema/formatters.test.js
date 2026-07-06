@@ -36,6 +36,13 @@ test('object formatters render deadline and tender basis objects', () => {
   assert.equal(formatValue('tender_basis', { basis: 'FULLY_DILUTED', thresholdPct: 80 }), '80% of fully diluted');
 });
 
+test('generic schema rendering does not leak object coercions', () => {
+  assert.equal(formatValue(null, { value: 'Company may respond to a Superior Proposal.', quotes: ['quote'] }), 'Company may respond to a Superior Proposal.');
+  assert.equal(formatValue(null, { code: 'HELL_OR_HIGH_WATER' }), 'Hell Or High Water');
+  assert.equal(formatValue(null, [{ label: 'Ordinary course exception' }, { text: 'required by law' }]), 'Ordinary course exception; required by law');
+  assert.doesNotMatch(formatValue(null, { threshold: { amount: '$10m' } }), /\[object Object\]/);
+});
+
 test('quote formatter escapes HTML-sensitive characters', () => {
   assert.equal(escapeHtml('<b>"quoted"</b>'), '&lt;b&gt;&quot;quoted&quot;&lt;/b&gt;');
   assert.equal(formatValue('quote', 'A & B'), 'A &amp; B');

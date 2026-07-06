@@ -101,6 +101,18 @@ function ParserReviewReference({ summary, item }) {
   ].filter(Boolean).join(' | ');
 }
 
+function conceptText(value) {
+  const text = String(value || '').replace(/\s+/g, ' ').trim();
+  return text || null;
+}
+
+function adjacentConcept(gap) {
+  const before = conceptText(gap?.adjacent_provisions?.before?.main_concept);
+  const after = conceptText(gap?.adjacent_provisions?.after?.main_concept);
+  if (before && after && before !== after) return `Before: ${before} | After: ${after}`;
+  return before || after || null;
+}
+
 function reviewText(item) {
   return item?.full_text || item?.text || item?.preview || '';
 }
@@ -227,6 +239,7 @@ export default function GapReviewAdmin() {
       pill: gap.suggested_type || 'GAP',
       title: gap.rough_heading || gap.id,
       reason: gap.suggested_reason || null,
+      mainConcept: adjacentConcept(gap),
       detail: `${num(gap.length)} chars, start ${num(gap.start)}`,
       referenceKind: 'gap',
       raw: gap,
@@ -240,6 +253,7 @@ export default function GapReviewAdmin() {
       pill: item.family_type || item.type || 'NEEDS CODE',
       title: item.rough_heading || item.category || item.id,
       reason: item.suggested_reason || null,
+      mainConcept: conceptText(item.main_concept),
       detail: `${num(item.length)} chars - ${item.category || item.code || 'missing code'}`,
       referenceKind: 'needs_code',
       raw: item,
@@ -667,6 +681,11 @@ export default function GapReviewAdmin() {
                             <div className="mt-1 truncate text-xs font-ui text-ink">
                               {item.title || item.preview || item.display_id}
                             </div>
+                            {item.mainConcept && (
+                              <div className="mt-1 line-clamp-2 text-[11px] font-ui leading-4 text-inkLight">
+                                {item.mainConcept}
+                              </div>
+                            )}
                             <div className="mt-1 truncate text-[10px] font-ui text-inkFaint">
                               {item.kind} - {item.detail || '-'}
                             </div>
@@ -694,6 +713,11 @@ export default function GapReviewAdmin() {
                               {selectedReviewItem.reason && (
                                 <p className="mt-1 text-sm font-ui text-inkLight">{selectedReviewItem.reason}</p>
                               )}
+                              {selectedReviewItem.mainConcept && (
+                                <p className="mt-2 max-w-3xl text-sm font-ui leading-5 text-ink">
+                                  <span className="font-semibold">Main concept:</span> {selectedReviewItem.mainConcept}
+                                </p>
+                              )}
                             </div>
                             <div className="flex flex-wrap gap-2">
                               <button
@@ -715,6 +739,23 @@ export default function GapReviewAdmin() {
 
                           {selectedReviewItem.source === 'gap' && (
                             <div className="mt-4 grid gap-3 md:grid-cols-2">
+                              <div className="rounded border border-border bg-bg/40 p-3 md:col-span-2">
+                                <div className="mb-1 text-[10px] font-ui uppercase tracking-wide text-inkFaint">Adjacent provisions</div>
+                                <div className="grid gap-3 md:grid-cols-2">
+                                  <p className="text-xs font-ui leading-relaxed text-inkLight">
+                                    <span className="font-semibold text-inkMid">Before:</span>{' '}
+                                    {selectedReviewItem.adjacent_provisions?.before?.main_concept
+                                      || selectedReviewItem.adjacent_provisions?.before?.category
+                                      || '-'}
+                                  </p>
+                                  <p className="text-xs font-ui leading-relaxed text-inkLight">
+                                    <span className="font-semibold text-inkMid">After:</span>{' '}
+                                    {selectedReviewItem.adjacent_provisions?.after?.main_concept
+                                      || selectedReviewItem.adjacent_provisions?.after?.category
+                                      || '-'}
+                                  </p>
+                                </div>
+                              </div>
                               <div className="rounded border border-border bg-bg/40 p-3">
                                 <div className="mb-1 text-[10px] font-ui uppercase tracking-wide text-inkFaint">Before</div>
                                 <p className="max-h-44 overflow-auto whitespace-pre-wrap text-xs font-ui leading-relaxed text-inkLight">
@@ -744,6 +785,10 @@ export default function GapReviewAdmin() {
                                 <div className="rounded border border-border bg-bg/40 p-3">
                                   <div className="mb-1 text-[10px] font-ui uppercase tracking-wide text-inkFaint">Stored code</div>
                                   <p className="truncate text-xs font-ui text-inkLight">{selectedReviewItem.code || '-'}</p>
+                                </div>
+                                <div className="rounded border border-border bg-bg/40 p-3 md:col-span-3">
+                                  <div className="mb-1 text-[10px] font-ui uppercase tracking-wide text-inkFaint">Main concept</div>
+                                  <p className="text-xs font-ui leading-relaxed text-inkLight">{selectedReviewItem.mainConcept || '-'}</p>
                                 </div>
                               </div>
 
@@ -804,6 +849,11 @@ export default function GapReviewAdmin() {
                                 </h4>
                                 {item.reason && (
                                   <p className="mt-1 text-xs font-ui text-inkLight">{item.reason}</p>
+                                )}
+                                {item.mainConcept && (
+                                  <p className="mt-2 text-xs font-ui leading-5 text-ink">
+                                    <span className="font-semibold">Main concept:</span> {item.mainConcept}
+                                  </p>
                                 )}
                               </div>
                               <div className="flex flex-wrap gap-2">
