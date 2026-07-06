@@ -2232,9 +2232,13 @@ function groupIocProvisionsByPartyRole(iocProvisions, side) {
  * When `side` is null/undefined (parent IOC group view) both halves render. */
 function IocAffirmativeCovenantsTable({ iocProvisions, onSelectProvision, side }) {
   const groups = groupIocProvisionsByPartyRole(iocProvisions, side);
+  const groupsWithAffirmatives = groups.filter((group) =>
+    findIocAffirmativeMatches(group.provisions).length > 0,
+  );
+  const renderGroups = groupsWithAffirmatives.length > 0 ? groupsWithAffirmatives : groups;
   return (
     <div className="space-y-3">
-      {groups.map((group) => (
+      {renderGroups.map((group) => (
         <IocAffirmativeCovenantsTableSingle
           key={group.role}
           iocProvisions={group.provisions}
