@@ -41,7 +41,7 @@ const REVIEWER_ADDED_FIELDS = [
   },
   {
     key: 'divestitureInCondition',
-    label: 'Divestiture or burdensome-condition concept appears in closing condition',
+    label: 'Divestiture concept appears in conditionality',
     data_type: 'BOOLEAN',
     applies_to: 'ANTI,COND-B,COND-M,COND-S',
     party_scope: 'DEAL_LEVEL',
@@ -53,7 +53,7 @@ const REVIEWER_ADDED_FIELDS = [
       source: 'burdensomeConditionPresent',
       json_path: 'divestitureInCondition',
       stateful_test_deal_ids_required: true,
-      notes: 'Resolve as true when divestiture, burdensome-condition, or remedy-cap concepts appear as closing-condition limitations.',
+      notes: 'Resolve as true when divestiture, remedy-cap, or similar remedy-limit concepts appear as deal conditionality limits.',
     },
     resolver_notes: 'Boolean split-out for whether divestiture/remedy cap appears in closing-condition conditionality.',
     test_deal_ids_required_per_state: 'Required before ACTIVE registry promotion.',
@@ -63,6 +63,35 @@ const REVIEWER_ADDED_FIELDS = [
       { origin: 'schema-features', key: 'burdensomeConditionScope', merge_rule: 'reviewer-split' },
     ],
     also_matches_provision_codes: ['ANTI-BURDEN', 'COND-B', 'COND-M', 'COND-S'],
+    status: 'PENDING_REVIEW',
+  },
+  {
+    key: 'terminationFees',
+    label: 'Termination fees - structured fee table',
+    data_type: 'LIST_OBJECT',
+    applies_to: 'TERMF',
+    party_scope: 'DEAL_LEVEL',
+    structural_patterns: ['CONDITIONAL_TRIGGERED', 'THRESHOLD_PRESENCE_DUAL'],
+    states: ['PRESENT', 'ABSENT', 'UNKNOWN'],
+    source_file: 'reviewer-added',
+    resolver_stub: {
+      resolver_kind: 'DERIVED_FROM_FIELD',
+      source: 'lib/termf.js',
+      json_path: 'terminationFees',
+      stateful_test_deal_ids_required: true,
+      notes: 'Resolve from TERMF features into rows with feeType, payableBy, payableTo, amount, percentEquityValue, triggers, paymentDeadline, tail, soleRemedy, and exceptions.',
+    },
+    resolver_notes: 'Structured replacement for flat fee amount / trigger fields.',
+    test_deal_ids_required_per_state: 'Required before ACTIVE registry promotion.',
+    origin: 'reviewer-added',
+    merged_from: [
+      { origin: 'schema-features', key: 'companyTerminationFee', merge_rule: 'reviewer-structured-table' },
+      { origin: 'schema-features', key: 'reverseTerminationFee', merge_rule: 'reviewer-structured-table' },
+      { origin: 'schema-features', key: 'expenseReimbursement', merge_rule: 'reviewer-structured-table' },
+      { origin: 'schema-features', key: 'tailProvision', merge_rule: 'reviewer-structured-table' },
+      { origin: 'schema-features', key: 'triggers', merge_rule: 'reviewer-structured-table' },
+    ],
+    also_matches_provision_codes: ['TERMF', 'TERMF-TARGET', 'TERMF-REVERSE', 'TERMF-EXPENSE', 'TERMF-TAIL'],
     status: 'PENDING_REVIEW',
   },
 ];
@@ -95,6 +124,44 @@ function addProvisionCodes(canonical, sibling) {
     if (trimmed && !canonical.also_matches_provision_codes.includes(trimmed)) {
       canonical.also_matches_provision_codes.push(trimmed);
     }
+  }
+}
+
+function splitCsv(value) {
+  return String(value || '').split(',').map((item) => item.trim()).filter(Boolean);
+}
+
+function setCsv(row, field, values) {
+  const seen = new Set();
+  const ordered = [];
+  for (const value of values) {
+    const trimmed = String(value || '').trim();
+    if (!trimmed || seen.has(trimmed)) continue;
+    seen.add(trimmed);
+    ordered.push(trimmed);
+  }
+  row[field] = ordered.join(',');
+}
+
+function expandIocAppliesTo(row) {
+  const key = String(row.key || '');
+  const applies = splitCsv(row.applies_to);
+  if (!applies.length) return;
+
+  if (/^deal\.ioc\.(?:hasBuyerIoc|buyerHas|parentBuyer)/.test(key)
+    || (key.startsWith('deal.ioc.') && row.party_scope === 'PARENT_ONLY')) {
+    setCsv(row, 'applies_to', ['IOC-B']);
+    return;
+  }
+
+  if (/^deal\.ioc\.(?:hasCompanyIoc|negativeCovenants\.)/.test(key)
+    || (key.startsWith('deal.ioc.') && row.party_scope === 'COMPANY_ONLY')) {
+    setCsv(row, 'applies_to', ['IOC-T']);
+    return;
+  }
+
+  if (applies.includes('IOC')) {
+    setCsv(row, 'applies_to', applies.flatMap((value) => (value === 'IOC' ? ['IOC', 'IOC-T', 'IOC-B'] : [value])));
   }
 }
 
@@ -211,6 +278,7 @@ function dedupeRegistry(inputData) {
   for (const row of REVIEWER_ADDED_FIELDS) {
     if (!fields.some((field) => field.key === row.key)) fields.push(ensureRow(row));
   }
+  for (const row of fields) expandIocAppliesTo(row);
   fields.sort((a, b) => String(a.key).localeCompare(String(b.key)));
   const flaggedNearDuplicates = fields.filter((row) => row.review_flag === 'REQUIRES_REVIEWER_DECISION').length;
   for (const row of fields) {

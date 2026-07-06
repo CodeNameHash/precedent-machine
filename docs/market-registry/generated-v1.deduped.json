@@ -7,7 +7,7 @@
     "lib/vocab/ioc-categories.js"
   ],
   "input_field_count": 1327,
-  "field_count": 682,
+  "field_count": 683,
   "fields": [
     {
       "key": "absenceOfChangesExceptions",
@@ -904,7 +904,7 @@
       "key": "affirmativeLimbs",
       "label": "Affirmative Limbs - for the consolidated \"Affirmative Covenants\" provision: each limb of the preamble (ordinary course / preserve relationships / maintain assets) as a structured entry { obligation_code, obligation_label, text, efforts_standard }.",
       "data_type": "ENUM_MULTI",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -1944,7 +1944,7 @@
       "key": "benefitPlanRestrictions",
       "label": "Benefit-plan restrictions (text)",
       "data_type": "TEXT",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -2213,7 +2213,7 @@
       "key": "bonusIncreaseExceptions",
       "label": "Bonus-increase exceptions (text)",
       "data_type": "TEXT",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -4881,7 +4881,7 @@
       "key": "consentStandard",
       "label": "Consent Standard",
       "data_type": "ENUM",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -5504,7 +5504,7 @@
       "key": "crossReferences",
       "label": "Cross References (other sections/articles referenced)",
       "data_type": "ENUM_MULTI",
-      "applies_to": "DEF,IOC,OTHER,REP-B,REP-T",
+      "applies_to": "DEF,IOC,IOC-T,IOC-B,OTHER,REP-B,REP-T",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -7168,7 +7168,7 @@
       "key": "deal.ioc.buyerHasAffirmativeCovenants",
       "label": "IOC Buyer Has Affirmative Covenants",
       "data_type": "BOOLEAN",
-      "applies_to": "all",
+      "applies_to": "IOC-B",
       "party_scope": "PARENT_ONLY",
       "structural_patterns": [
         "THREE_STATE",
@@ -7199,7 +7199,7 @@
       "key": "deal.ioc.buyerHasNegativeCovenants",
       "label": "IOC Buyer Has Negative Covenants",
       "data_type": "BOOLEAN",
-      "applies_to": "all",
+      "applies_to": "IOC-B",
       "party_scope": "PARENT_ONLY",
       "structural_patterns": [
         "THREE_STATE",
@@ -7230,7 +7230,7 @@
       "key": "deal.ioc.category.accounting_changes",
       "label": "Accounting changes",
       "data_type": "BOOLEAN",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -7263,7 +7263,7 @@
       "key": "deal.ioc.category.acquisitions_business_combinations",
       "label": "Acquisitions & business combinations",
       "data_type": "BOOLEAN",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -7296,7 +7296,7 @@
       "key": "deal.ioc.category.benefit_plans",
       "label": "Benefit plans",
       "data_type": "BOOLEAN",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -7329,7 +7329,7 @@
       "key": "deal.ioc.category.capital_expenditures",
       "label": "Capital expenditures",
       "data_type": "BOOLEAN",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -7362,7 +7362,7 @@
       "key": "deal.ioc.category.charter_bylaw_amendments",
       "label": "Charter/bylaw amendments",
       "data_type": "BOOLEAN",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -7395,7 +7395,7 @@
       "key": "deal.ioc.category.collective_bargaining",
       "label": "Collective bargaining",
       "data_type": "BOOLEAN",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -7428,7 +7428,7 @@
       "key": "deal.ioc.category.data_privacy_cyber",
       "label": "Data privacy & cyber",
       "data_type": "BOOLEAN",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -7461,7 +7461,7 @@
       "key": "deal.ioc.category.dispositions_asset_sales",
       "label": "Dispositions & asset sales",
       "data_type": "BOOLEAN",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -7494,7 +7494,7 @@
       "key": "deal.ioc.category.dividends_distributions",
       "label": "Dividends & distributions",
       "data_type": "BOOLEAN",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -7527,7 +7527,7 @@
       "key": "deal.ioc.category.employee_compensation",
       "label": "Employee compensation",
       "data_type": "BOOLEAN",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -7560,7 +7560,7 @@
       "key": "deal.ioc.category.employee_hiring_termination",
       "label": "Hiring & termination",
       "data_type": "BOOLEAN",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -7593,7 +7593,7 @@
       "key": "deal.ioc.category.equity_issuances",
       "label": "Equity issuances",
       "data_type": "BOOLEAN",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -7626,7 +7626,7 @@
       "key": "deal.ioc.category.equity_repurchases",
       "label": "Equity repurchases",
       "data_type": "BOOLEAN",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -7659,7 +7659,7 @@
       "key": "deal.ioc.category.indebtedness",
       "label": "Indebtedness",
       "data_type": "BOOLEAN",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -7692,7 +7692,7 @@
       "key": "deal.ioc.category.insurance",
       "label": "Insurance",
       "data_type": "BOOLEAN",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -7725,7 +7725,7 @@
       "key": "deal.ioc.category.intercompany_arrangements",
       "label": "Intercompany arrangements",
       "data_type": "BOOLEAN",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -7758,7 +7758,7 @@
       "key": "deal.ioc.category.ip_licensing",
       "label": "IP licensing",
       "data_type": "BOOLEAN",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -7791,7 +7791,7 @@
       "key": "deal.ioc.category.liens_encumbrances",
       "label": "Liens & encumbrances",
       "data_type": "BOOLEAN",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -7824,7 +7824,7 @@
       "key": "deal.ioc.category.litigation_settlements",
       "label": "Litigation settlements",
       "data_type": "BOOLEAN",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -7857,7 +7857,7 @@
       "key": "deal.ioc.category.material_contracts",
       "label": "Material contracts",
       "data_type": "BOOLEAN",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -7890,7 +7890,7 @@
       "key": "deal.ioc.category.other_ordinary_course",
       "label": "Other - ordinary course",
       "data_type": "BOOLEAN",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -7923,7 +7923,7 @@
       "key": "deal.ioc.category.real_estate_leases",
       "label": "Real estate & leases",
       "data_type": "BOOLEAN",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -7956,7 +7956,7 @@
       "key": "deal.ioc.category.regulatory_filings",
       "label": "Regulatory filings",
       "data_type": "BOOLEAN",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -7989,7 +7989,7 @@
       "key": "deal.ioc.category.tax_elections",
       "label": "Tax elections",
       "data_type": "BOOLEAN",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -8022,7 +8022,7 @@
       "key": "deal.ioc.hasBuyerIoc",
       "label": "IOC Has Buyer IOC",
       "data_type": "BOOLEAN",
-      "applies_to": "all",
+      "applies_to": "IOC-B",
       "party_scope": "PARENT_ONLY",
       "structural_patterns": [
         "THREE_STATE",
@@ -8053,7 +8053,7 @@
       "key": "deal.ioc.hasCompanyIoc",
       "label": "IOC Has Company IOC",
       "data_type": "BOOLEAN",
-      "applies_to": "all",
+      "applies_to": "IOC-T",
       "party_scope": "COMPANY_ONLY",
       "structural_patterns": [
         "THREE_STATE",
@@ -8084,7 +8084,7 @@
       "key": "deal.ioc.negativeCovenants.acquisitions",
       "label": "Negative Covenants Acquisitions",
       "data_type": "BOOLEAN",
-      "applies_to": "all",
+      "applies_to": "IOC-T",
       "party_scope": "DEAL_LEVEL",
       "structural_patterns": [
         "THREE_STATE",
@@ -8114,7 +8114,7 @@
       "key": "deal.ioc.negativeCovenants.capex",
       "label": "Negative Covenants Capex",
       "data_type": "BOOLEAN",
-      "applies_to": "all",
+      "applies_to": "IOC-T",
       "party_scope": "DEAL_LEVEL",
       "structural_patterns": [
         "THREE_STATE",
@@ -8144,7 +8144,7 @@
       "key": "deal.ioc.negativeCovenants.debt",
       "label": "Negative Covenants Debt",
       "data_type": "BOOLEAN",
-      "applies_to": "all",
+      "applies_to": "IOC-T",
       "party_scope": "DEAL_LEVEL",
       "structural_patterns": [
         "THREE_STATE",
@@ -8175,7 +8175,7 @@
       "key": "deal.ioc.negativeCovenants.debtLimbs",
       "label": "Negative Covenants Debt Limbs",
       "data_type": "ENUM_MULTI",
-      "applies_to": "all",
+      "applies_to": "IOC-T",
       "party_scope": "DEAL_LEVEL",
       "structural_patterns": [
         "THREE_STATE",
@@ -8204,7 +8204,7 @@
       "key": "deal.ioc.negativeCovenants.dividends",
       "label": "Negative Covenants Dividends",
       "data_type": "BOOLEAN",
-      "applies_to": "all",
+      "applies_to": "IOC-T",
       "party_scope": "DEAL_LEVEL",
       "structural_patterns": [
         "THREE_STATE",
@@ -9740,7 +9740,7 @@
     },
     {
       "key": "divestitureInCondition",
-      "label": "Divestiture or burdensome-condition concept appears in closing condition",
+      "label": "Divestiture concept appears in conditionality",
       "data_type": "BOOLEAN",
       "applies_to": "ANTI,COND-B,COND-M,COND-S",
       "party_scope": "DEAL_LEVEL",
@@ -9758,7 +9758,7 @@
         "source": "burdensomeConditionPresent",
         "json_path": "divestitureInCondition",
         "stateful_test_deal_ids_required": true,
-        "notes": "Resolve as true when divestiture, burdensome-condition, or remedy-cap concepts appear as closing-condition limitations."
+        "notes": "Resolve as true when divestiture, remedy-cap, or similar remedy-limit concepts appear as deal conditionality limits."
       },
       "resolver_notes": "Boolean split-out for whether divestiture/remedy cap appears in closing-condition conditionality.",
       "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
@@ -9834,7 +9834,7 @@
       "key": "dollarThreshold",
       "label": "Dollar Threshold",
       "data_type": "FLOAT_PERCENT",
-      "applies_to": "COND-B,COND-M,COND-S,IOC",
+      "applies_to": "COND-B,COND-M,COND-S,IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -9917,7 +9917,7 @@
       "key": "dollarThresholdsByCategory",
       "label": "Per-category dollar thresholds - list of tagged items { code, label, text, threshold } drawn from IOC_CATEGORY_CODES",
       "data_type": "ENUM_MULTI",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -10213,7 +10213,7 @@
       "key": "effortsStandard",
       "label": "Efforts Standard",
       "data_type": "ENUM",
-      "applies_to": "ANTI,IOC",
+      "applies_to": "ANTI,IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -10509,7 +10509,7 @@
       "key": "equityAwardRestrictions",
       "label": "Equity-award restrictions (text)",
       "data_type": "TEXT",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -12831,7 +12831,7 @@
       "key": "flags",
       "label": "Internal quality flags",
       "data_type": "ENUM_MULTI",
-      "applies_to": "ANTI,COND,COND-B,COND-M,COND-S,CONSID,COV,DEF,IOC,MISC,NOSOL,OTHER,REP-B,REP-T,STRUCT,TERMF,TERMR",
+      "applies_to": "ANTI,COND,COND-B,COND-M,COND-S,CONSID,COV,DEF,IOC,IOC-T,IOC-B,MISC,NOSOL,OTHER,REP-B,REP-T,STRUCT,TERMF,TERMR",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -14787,7 +14787,7 @@
       "key": "interimNewContractsScope",
       "label": "Interim new-contracts restriction scope (text)",
       "data_type": "TEXT",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -14883,7 +14883,7 @@
       "key": "interimSettlementCap",
       "label": "Interim settlement cap (dollar)",
       "data_type": "FLOAT_PERCENT",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -14933,7 +14933,7 @@
       "key": "interimSettlementNonPaymentExcluded",
       "label": "Settlement cap excludes non-payment relief",
       "data_type": "BOOLEAN",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -15176,7 +15176,7 @@
       "key": "iocAffirmativeScope",
       "label": "IOC affirmative scope",
       "data_type": "TEXT",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -15208,7 +15208,7 @@
       "key": "iocAffirmativeStandard",
       "label": "IOC affirmative standard",
       "data_type": "TEXT",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -15874,7 +15874,7 @@
       "key": "leadInAllowsActionAfterNoResponse",
       "label": "Lead-in allows action after Parent non-response",
       "data_type": "BOOLEAN",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -15923,7 +15923,7 @@
       "key": "leadInPeriodDays",
       "label": "Lead-in period (days)",
       "data_type": "INT_DAYS",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -16778,7 +16778,7 @@
       "key": "mainConcept",
       "label": "Provision",
       "data_type": "TEXT",
-      "applies_to": "ANTI,COND,CONSID,COV,DEF,IOC,MISC,NOSOL,OTHER,REP-B,REP-T,STRUCT,TERMF,TERMR",
+      "applies_to": "ANTI,COND,CONSID,COV,DEF,IOC,IOC-T,IOC-B,MISC,NOSOL,OTHER,REP-B,REP-T,STRUCT,TERMF,TERMR",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -17573,7 +17573,7 @@
       "key": "mainObligation",
       "label": "Main Obligation (one-sentence summary of what the sub-clause restricts or requires)",
       "data_type": "TEXT",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -17977,7 +17977,7 @@
       "key": "materialityQualifier",
       "label": "Materiality Qualifier (section-wide)",
       "data_type": "TEXT",
-      "applies_to": "IOC,REP-B,REP-T",
+      "applies_to": "IOC,IOC-T,IOC-B,REP-B,REP-T",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -18868,7 +18868,7 @@
       "key": "negativePreambleAffiliateStandard",
       "label": "Negative preamble - affiliate / subsidiary standard (e.g. \"shall not, and shall not permit any Subsidiary to\")",
       "data_type": "TEXT",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -18918,7 +18918,7 @@
       "key": "negativePreambleExceptions",
       "label": "Negative preamble - section-wide exceptions (tagged list)",
       "data_type": "ENUM_MULTI",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -18967,7 +18967,7 @@
       "key": "newHireExceptions",
       "label": "New-hire exceptions (text)",
       "data_type": "TEXT",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -20132,7 +20132,7 @@
       "key": "ordinaryCourseCarveout",
       "label": "Ordinary Course Carve-out (section-wide)",
       "data_type": "BOOLEAN",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -20733,7 +20733,7 @@
       "key": "pandemicCarveout",
       "label": "Pandemic / COVID Carve-out (section-wide)",
       "data_type": "BOOLEAN",
-      "applies_to": "DEF,IOC",
+      "applies_to": "DEF,IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -21080,7 +21080,7 @@
       "key": "parentBuyerIocBuckets",
       "label": "Parent / buyer IOC buckets",
       "data_type": "ENUM_MULTI",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PARENT_ONLY",
       "structural_patterns": [
         "THREE_STATE",
@@ -21872,7 +21872,7 @@
       "key": "permittedExceptions",
       "label": "Sub-clause permitted exceptions",
       "data_type": "ENUM_MULTI",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -22028,7 +22028,7 @@
       "key": "positiveObligations",
       "label": "Positive Obligations (limbs) - discrete affirmative duties stated in the IOC preamble. Each limb is an object { obligation, efforts_standard, appliesTo } with efforts_standard as the SOLE standard (FLAT when unqualified).",
       "data_type": "ENUM_MULTI",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -23860,7 +23860,7 @@
       "key": "requiredByLawCarveout",
       "label": "Required by Law Carve-out (section-wide)",
       "data_type": "BOOLEAN",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -23958,7 +23958,7 @@
       "key": "restrictionComponents",
       "label": "Restriction Components - canonical IOC_CATEGORY_CODES tags this sub-clause restricts (deterministic post-pass, one clause may carry several)",
       "data_type": "ENUM_MULTI",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -24007,7 +24007,7 @@
       "key": "retentionBonusRestrictions",
       "label": "Retention-bonus restrictions (text)",
       "data_type": "TEXT",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -25978,7 +25978,7 @@
       "key": "rubric.ioc.party_role",
       "label": "IOC covenant party role - grammatical covenanting party such as COMPANY, PARENT, COLUMBUS, CABOT, SPINCO, REMAINCO, JV",
       "data_type": "TEXT",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -26060,7 +26060,7 @@
       "key": "salaryIncreaseExceptions",
       "label": "Salary-increase exceptions (text)",
       "data_type": "TEXT",
-      "applies_to": "IOC",
+      "applies_to": "IOC,IOC-T,IOC-B",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -26156,7 +26156,7 @@
       "key": "scheduleReference",
       "label": "Disclosure schedule reference",
       "data_type": "TEXT",
-      "applies_to": "COND-B,COND-M,COND-S,IOC,REP-T",
+      "applies_to": "COND-B,COND-M,COND-S,IOC,IOC-T,IOC-B,REP-T",
       "party_scope": "PER_PARTY",
       "structural_patterns": [
         "THREE_STATE",
@@ -30001,6 +30001,68 @@
           }
         ]
       },
+      "status": "PENDING_REVIEW"
+    },
+    {
+      "key": "terminationFees",
+      "label": "Termination fees - structured fee table",
+      "data_type": "LIST_OBJECT",
+      "applies_to": "TERMF",
+      "party_scope": "DEAL_LEVEL",
+      "structural_patterns": [
+        "CONDITIONAL_TRIGGERED",
+        "THRESHOLD_PRESENCE_DUAL"
+      ],
+      "states": [
+        "PRESENT",
+        "ABSENT",
+        "UNKNOWN"
+      ],
+      "source_file": "reviewer-added",
+      "resolver_stub": {
+        "resolver_kind": "DERIVED_FROM_FIELD",
+        "source": "lib/termf.js",
+        "json_path": "terminationFees",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve from TERMF features into rows with feeType, payableBy, payableTo, amount, percentEquityValue, triggers, paymentDeadline, tail, soleRemedy, and exceptions."
+      },
+      "resolver_notes": "Structured replacement for flat fee amount / trigger fields.",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "reviewer-added",
+      "merged_from": [
+        {
+          "origin": "schema-features",
+          "key": "companyTerminationFee",
+          "merge_rule": "reviewer-structured-table"
+        },
+        {
+          "origin": "schema-features",
+          "key": "reverseTerminationFee",
+          "merge_rule": "reviewer-structured-table"
+        },
+        {
+          "origin": "schema-features",
+          "key": "expenseReimbursement",
+          "merge_rule": "reviewer-structured-table"
+        },
+        {
+          "origin": "schema-features",
+          "key": "tailProvision",
+          "merge_rule": "reviewer-structured-table"
+        },
+        {
+          "origin": "schema-features",
+          "key": "triggers",
+          "merge_rule": "reviewer-structured-table"
+        }
+      ],
+      "also_matches_provision_codes": [
+        "TERMF",
+        "TERMF-TARGET",
+        "TERMF-REVERSE",
+        "TERMF-EXPENSE",
+        "TERMF-TAIL"
+      ],
       "status": "PENDING_REVIEW"
     },
     {

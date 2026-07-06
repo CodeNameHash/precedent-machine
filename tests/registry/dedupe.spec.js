@@ -46,10 +46,25 @@ test('reviewer split adds tenderOffer boolean without changing parser sources', 
   const { registry } = dedupeRegistry(source);
   const tenderOffer = registry.fields.find((field) => field.key === 'tenderOffer');
   const divestitureInCondition = registry.fields.find((field) => field.key === 'divestitureInCondition');
+  const terminationFees = registry.fields.find((field) => field.key === 'terminationFees');
   assert.equal(tenderOffer.data_type, 'BOOLEAN');
   assert.equal(tenderOffer.origin, 'reviewer-added');
   assert.ok(tenderOffer.merged_from.some((item) => item.key === 'dealStructure'));
   assert.equal(divestitureInCondition.data_type, 'BOOLEAN');
   assert.equal(divestitureInCondition.origin, 'reviewer-added');
   assert.ok(divestitureInCondition.merged_from.some((item) => item.key === 'burdensomeConditionPresent'));
+  assert.equal(terminationFees.data_type, 'LIST_OBJECT');
+  assert.equal(terminationFees.origin, 'reviewer-added');
+  assert.ok(terminationFees.merged_from.some((item) => item.key === 'companyTerminationFee'));
+});
+
+test('IOC registry rows are reviewable by target and buyer buckets', () => {
+  const { registry } = dedupeRegistry(source);
+  const category = registry.fields.find((field) => field.key === 'deal.ioc.category.capital_expenditures');
+  const buyerFlag = registry.fields.find((field) => field.key === 'deal.ioc.hasBuyerIoc');
+  const companyFlag = registry.fields.find((field) => field.key === 'deal.ioc.hasCompanyIoc');
+
+  assert.deepEqual(category.applies_to.split(','), ['IOC', 'IOC-T', 'IOC-B']);
+  assert.equal(buyerFlag.applies_to, 'IOC-B');
+  assert.equal(companyFlag.applies_to, 'IOC-T');
 });

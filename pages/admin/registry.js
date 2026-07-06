@@ -30,9 +30,10 @@ function valueList(value) {
   return String(value || '').split(',').map((item) => item.trim()).filter(Boolean);
 }
 
-function matchesFilter(field, active) {
+function matchesFilter(field, active, suggestions = {}) {
   if (active === 'ALL') return true;
   if (active === 'FLAGGED') return field.review_flag === 'REQUIRES_REVIEWER_DECISION';
+  if (active === 'SUGGESTED') return Boolean(suggestions[field.key]);
   const direct = valueList(field.applies_to).includes(active)
     || field.provision_type === active
     || field.provision_code === active;
@@ -51,6 +52,10 @@ function counts(fields, decisions) {
   };
 }
 
+function suggestionCount(fields, decisions, suggestions) {
+  return fields.filter((field) => suggestions[field.key] && !decisions[field.key]?.decision).length;
+}
+
 async function postJson(url, payload) {
   const response = await fetch(url, {
     method: 'POST',
@@ -62,7 +67,7 @@ async function postJson(url, payload) {
   return data;
 }
 
-export default function RegistryAdmin({ registry, initialDecisions, provisionTypes, vocab }) {
+export default function RegistryAdmin({ registry, initialDecisions, initialSuggestions, provisionTypes, vocab }) {
   useUser({ redirectTo: '/login' });
   const [active, setActive] = useState('FLAGGED');
   const [decisions, setDecisions] = useState(initialDecisions || {});
@@ -71,13 +76,15 @@ export default function RegistryAdmin({ registry, initialDecisions, provisionTyp
   const [dealId, setDealId] = useState('');
   const [status, setStatus] = useState(null);
   const fields = registry.fields || [];
+  const suggestions = initialSuggestions || {};
   const summary = counts(fields, decisions);
+  const suggested = suggestionCount(fields, decisions, suggestions);
   const filteredFields = useMemo(() => {
     if (active === 'VOCAB') return [];
     return fields
-      .filter((field) => matchesFilter(field, active))
+      .filter((field) => matchesFilter(field, active, suggestions))
       .filter((field) => !pendingOnly || !decisions[field.key]?.decision);
-  }, [active, decisions, fields, pendingOnly]);
+  }, [active, decisions, fields, pendingOnly, suggestions]);
 
   async function saveDecision(payload) {
     const data = await postJson('/api/admin/registry/decision', payload);
@@ -126,10 +133,11 @@ export default function RegistryAdmin({ registry, initialDecisions, provisionTyp
           </div>
         </div>
 
-        <section className="mt-6 grid gap-3 md:grid-cols-5">
+        <section className="mt-6 grid gap-3 md:grid-cols-6">
           {[
             ['Total', summary.total],
             ['Flagged', summary.flagged],
+            ['Suggested', suggested],
             ['Pending', summary.pending],
             ['Approved', summary.approved],
             ['Rejected', summary.rejected],
@@ -146,6 +154,7 @@ export default function RegistryAdmin({ registry, initialDecisions, provisionTyp
             active={active}
             fields={fields}
             provisionTypes={provisionTypes}
+            suggestions={suggestions}
             vocabCount={vocab.length}
             onSelect={setActive}
           />
@@ -209,6 +218,7 @@ export default function RegistryAdmin({ registry, initialDecisions, provisionTyp
                 <RegistryMergeBoard
                   fields={filteredFields}
                   decisions={decisions}
+                  suggestions={suggestions}
                   onDecision={saveDecision}
                 />
               ) : (
@@ -234,12 +244,15 @@ export default function RegistryAdmin({ registry, initialDecisions, provisionTyp
 
 export async function getStaticProps() {
   const { PROVISION_TYPES } = require('../../lib/rubric');
+  const { buildRegistryReviewSuggestions } = require('../../lib/registry-review-suggestions');
   const registry = readJson(path.join(process.cwd(), 'docs/market-registry/generated-v1.deduped.json'), { fields: [] });
   const state = readJson(path.join(process.cwd(), 'docs/market-registry/reviewer-state.json'), { decisions: {} });
+  const suggestions = buildRegistryReviewSuggestions(registry.fields || [], state.decisions || {});
   return {
     props: {
       registry,
       initialDecisions: state.decisions || {},
+      initialSuggestions: suggestions,
       provisionTypes: PROVISION_TYPES,
       vocab: vocabFiles(),
     },

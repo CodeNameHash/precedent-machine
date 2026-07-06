@@ -63,7 +63,9 @@ function loadAllowlist(phase) {
   return JSON.parse(fs.readFileSync(file, 'utf8'));
 }
 
-function checkAllowlist({ phase = readPhaseFromState(), files = changedFiles() } = {}) {
+function checkAllowlist(options = {}) {
+  const phase = options.phase || readPhaseFromState();
+  const files = options.files || (phase === '-1' ? [] : changedFiles());
   if (phase === '-1') {
     return { phase, files, denied: [], outside: [], bootstrap: true };
   }

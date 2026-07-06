@@ -1,8 +1,9 @@
 import FlagBadge from './FlagBadge';
 
-function countFor(filter, fields) {
+function countFor(filter, fields, suggestions = {}) {
   if (filter === 'ALL') return fields.length;
   if (filter === 'FLAGGED') return fields.filter((field) => field.review_flag === 'REQUIRES_REVIEWER_DECISION').length;
+  if (filter === 'SUGGESTED') return fields.filter((field) => suggestions[field.key]).length;
   if (filter === 'VOCAB') return 0;
   return fields.filter((field) => {
     const applies = String(field.applies_to || '').split(',').map((item) => item.trim());
@@ -14,10 +15,11 @@ function countFor(filter, fields) {
   }).length;
 }
 
-export default function RegistrySidebar({ active, fields, provisionTypes, vocabCount = 0, onSelect }) {
+export default function RegistrySidebar({ active, fields, provisionTypes, suggestions = {}, vocabCount = 0, onSelect }) {
   const items = [
     { key: 'ALL', label: 'All' },
     { key: 'FLAGGED', label: 'Flagged' },
+    { key: 'SUGGESTED', label: 'Suggested' },
     ...provisionTypes.map((type) => ({ key: type.key, label: type.key, title: type.label })),
     { key: 'VOCAB', label: 'Vocab' },
   ];
@@ -25,7 +27,7 @@ export default function RegistrySidebar({ active, fields, provisionTypes, vocabC
   return (
     <aside data-testid="registry-sidebar" className="space-y-2">
       {items.map((item) => {
-        const count = item.key === 'VOCAB' ? vocabCount : countFor(item.key, fields);
+        const count = item.key === 'VOCAB' ? vocabCount : countFor(item.key, fields, suggestions);
         const selected = active === item.key;
         return (
           <button
@@ -40,7 +42,7 @@ export default function RegistrySidebar({ active, fields, provisionTypes, vocabC
             }`}
           >
             <span className="truncate">{item.label}</span>
-            {item.key === 'FLAGGED' && count > 0 ? (
+            {(item.key === 'FLAGGED' || item.key === 'SUGGESTED') && count > 0 ? (
               <FlagBadge value="REQUIRES_REVIEWER_DECISION" />
             ) : (
               <span className={selected ? 'text-white/80' : 'text-inkFaint'}>{count}</span>

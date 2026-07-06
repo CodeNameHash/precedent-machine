@@ -32,7 +32,7 @@ export default function RegistryCard({ field, decision, onDecision, onPreview })
     rename_to: decision?.rename_to || field.key,
     defer_to_phase: decision?.defer_to_phase || '',
   }));
-  const [saving, setSaving] = useState(false);
+  const [saving, updateSaving] = useState(false);
   const [preview, setPreview] = useState(null);
   const [error, setError] = useState(null);
 
@@ -56,7 +56,7 @@ export default function RegistryCard({ field, decision, onDecision, onPreview })
       rename_to: draft.rename_to.trim(),
       defer_to_phase: draft.defer_to_phase.trim(),
     };
-    setSaving(true);
+    updateSaving(true);
     setError(null);
     try {
       await onDecision(payload);
@@ -64,7 +64,7 @@ export default function RegistryCard({ field, decision, onDecision, onPreview })
     } catch (err) {
       setError(err.message || 'Decision save failed');
     } finally {
-      setSaving(false);
+      updateSaving(false);
     }
   }
 
