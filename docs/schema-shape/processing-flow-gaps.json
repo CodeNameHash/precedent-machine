@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "generated_from": "docs/schema-shape/provision-processing-flow.md § 4",
+  "gaps": [
+    {
+      "id": "G1",
+      "title": "Provision-instance identity is implicit",
+      "problem": "Classifier binds a concept to a Section but the resulting Provision has no stable ID separate from the Section. Re-ingestion can create a duplicate Provision row for an unchanged underlying concept.",
+      "fix": "Provision ID = hash(deal_id, kind, concept_key, ordinal-within-section). Persist across re-ingestion.",
+      "owning_wp": "WP-PROVISION-ID-01",
+      "phase": "post-0-D",
+      "status": "open"
+    },
+    {
+      "id": "G2",
+      "title": "Excerpts are anonymous",
+      "problem": "Excerpts have Verbatim text and a Provenance location but no stable Excerpt ID. Re-runs can't identify the same quote span idempotently.",
+      "fix": "Excerpt ID = hash(document_hash, char_offset_start, char_offset_end).",
+      "owning_wp": "WP-PROVISION-ID-01",
+      "phase": "post-0-D",
+      "status": "open"
+    },
+    {
+      "id": "G3",
+      "title": "Normalizer has no manifest",
+      "problem": "Normalizers are scattered under lib/vocab/*-aliases.js with no single manifest listing each Normalizer's Attribute, version, and canonical target.",
+      "fix": "Add lib/vocab/manifest.js — one export listing {attribute, aliases_file, version, canonical_target_attribute}. Load-time validated. Surface in /admin/taxonomy.",
+      "owning_wp": "WP-NORMALIZER-MANIFEST-01",
+      "phase": "post-0-D",
+      "status": "open"
+    },
+    {
+      "id": "G4",
+      "title": "Provenance is a bundle in spec, scattered fields in code",
+      "problem": "Taxonomy names Provenance as {document, location, extractor, extracted_at, confidence}. In practice these fields live in different places — some on the Claim row, some on the Excerpt, some in the reconciliation log.",
+      "fix": "Introduce provenance:{...} sub-object on every persisted Claim. Migration writes existing fields into it. Backwards-compatible via projection.",
+      "owning_wp": "WP-PROVENANCE-BUNDLE-01",
+      "phase": "post-0-D",
+      "status": "open"
+    },
+    {
+      "id": "G5",
+      "title": "Prompt version and code SHA not systematically stamped",
+      "problem": "Provenance spec requires prompt version + code SHA. Some paths stamp them, some don't. Retrospective re-runs rely on file history rather than stamped Provenance.",
+      "fix": "Central extractor-stamp.js helper. Every LLM call routes through it. CI invariant refuses to persist a Claim without a fully populated Provenance.extractor.",
+      "owning_wp": "WP-PROVENANCE-BUNDLE-01",
+      "phase": "post-0-D",
+      "status": "open"
+    },
+    {
+      "id": "G6",
+      "title": "Reconciliation log actions have no Taxonomy target",
+      "problem": "Seven action types (MERGE, MOVE_FIELD, RECLASSIFY_FIELD, RECODE_FIELD, RESET_ENUM, SPLIT, SCHEMA_DEFERRED) have no canonical mapping onto Taxonomy nodes/edges. Reviewers can't filter by node.",
+      "fix": "Add taxonomy_target field to each log entry: one of {Deal, DealProfile, Section, Provision, Excerpt, Claim, Attribute, Canonical, Normalizer, Registry, ReferencesDefinitionEdge}.",
+      "owning_wp": "WP-RECONCILIATION-TAG-01",
+      "phase": "post-0-D",
+      "status": "open"
+    },
+    {
+      "id": "G7",
+      "title": "Ingest QA does not exercise Normalizer citation",
+      "problem": "QA checks unverified quotes and duplicate clauses but not whether Canonical assignments cite a Normalizer rule. Free-text drift can pass unnoticed.",
+      "fix": "QA check: every Canonical must cite identity (Verbatim == Canonical) or a specific Normalizer rule ID.",
+      "owning_wp": "WP-NORMALIZER-CITATION-01",
+      "phase": "post-0-D",
+      "status": "open",
+      "depends_on": ["G3"]
+    },
+    {
+      "id": "G8",
+      "title": "DealProfile Claims share Excerpt-requiring pipeline",
+      "problem": "DealProfile Claims (parties, closing date, jurisdiction) synthesised from cover pages sometimes get spurious Excerpts attached to satisfy the schema.",
+      "fix": "Explicit DealProfile branch at stage 3. Attributes flagged scope=deal route to a lighter extractor. Excerpt nullable for scope=deal Attributes.",
+      "owning_wp": "WP-DEFINITIONS-AS-PROVISIONS-01",
+      "phase": "0.5",
+      "status": "open"
+    },
+    {
+      "id": "G9",
+      "title": "No admin surface renders the runtime flow",
+      "problem": "Taxonomy has /admin/taxonomy. Runtime flow has no admin page — new engineers can't see stages, files, or per-stage metrics.",
+      "fix": "/admin/processing-flow — mermaid + stage cards + gap panel. Deep-links to Provision-instance detail pages.",
+      "owning_wp": "WP-PROCESSING-FLOW-MAP-01",
+      "phase": "0-D",
+      "status": "scheduled"
+    },
+    {
+      "id": "G10",
+      "title": "Cross-Section definitions resolution is undefined",
+      "problem": "Extractor sees one Section at a time. When an operative Provision references a defined term whose definition-Provision lives elsewhere, there is no formal resolution mechanism.",
+      "fix": "Two-pass extraction. Pass 1 extracts all definition-Provisions and builds a deal-wide definitions map. Pass 2 extracts operative-Provisions with the definitions bundle as additional prompt context. Inline definitions do not require pass ordering — they are already visible in their containing Section.",
+      "owning_wp": "WP-DEFINITIONS-AS-PROVISIONS-01",
+      "phase": "0.5",
+      "status": "open"
+    },
+    {
+      "id": "G11",
+      "title": "Provision kind field is not persisted",
+      "problem": "Taxonomy v3 introduces Provision.kind in {operative, definition} and the references_definition edge. Persisted schema does not yet carry these.",
+      "fix": "Add kind field to Provision. Add references_definition edge array. Migration sets kind=operative on every existing Provision. Freeze Gate PR required.",
+      "owning_wp": "WP-DEFINITIONS-AS-PROVISIONS-01",
+      "phase": "0.5",
+      "status": "open"
+    }
+  ]
+}

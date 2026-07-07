@@ -1,0 +1,225 @@
+# Provision Processing Flow — Ingest to Claim
+
+**Status:** Draft v2. Companion to `docs/schema-shape/provision-taxonomy-triple-model.md`.
+**Rule:** Where this file describes runtime *behaviour*, the Taxonomy file governs the *shape* of the artefacts named here. If the two disagree on names or containment, the Taxonomy file wins.
+**Scope:** Describes the end-to-end pipeline that turns one source document into a bag of Claims populating a Deal record. Uses Taxonomy vocabulary throughout — Deal, DealProfile, Section, Provision, Excerpt, Claim, Attribute, Verbatim, Canonical, Provenance, Normalizer, Attribute Registry, Canonical Vocabulary.
+
+---
+
+## 1. End-to-end pipeline
+
+```mermaid
+flowchart TD
+  subgraph INGEST["1. Ingest"]
+    A1["Source document<br/>(PDF / DOCX / SEC EDGAR URL)"]
+    A2["Fetch + hash<br/>content-addressed store"]
+    A3["Text layer extraction<br/>(text-layers.js)"]
+    A1 --> A2 --> A3
+  end
+
+  subgraph SEGMENT["2. Structural segmentation"]
+    B1["Structural parse<br/>(structural.js)"]
+    B2["Section boundaries<br/>Article/Section/Schedule/Exhibit"]
+    B3["Region store<br/>(region-store.js)"]
+    B1 --> B2 --> B3
+  end
+
+  subgraph CLASSIFY["3. Provision classification"]
+    C1["Classify each Section<br/>(classify.js)"]
+    C2["Detector library<br/>(detectors/*)"]
+    C3["Provision instances<br/>kind=operative or kind=definition"]
+    C4["Inline definition scan<br/>parenthetical + defined-term patterns"]
+    C1 --> C2 --> C3
+    C1 --> C4 --> C3
+  end
+
+  subgraph EXTRACT["4. Claim extraction — two-pass"]
+    D0["Pass 1: definition-Provisions<br/>build deal-wide definitions map"]
+    D1["Pass 2: operative-Provisions<br/>with definitions context bundle"]
+    D2["Per-Provision LLM call<br/>(extract.js, prompt.js, anthropic.js)"]
+    D3["parse-json.js<br/>strict-schema decode"]
+    D4["Verbatim + Attribute pairs<br/>with Provenance stamp"]
+    D0 --> D1 --> D2 --> D3 --> D4
+  end
+
+  subgraph NORMALIZE["5. Normalisation"]
+    E1["Attribute Registry lookup<br/>(generated-v1.json)"]
+    E2["Normalizer resolve<br/>(vocab/*-aliases.js)"]
+    E3["Canonical Vocabulary check<br/>(FROZEN-*.json)"]
+    E4["reapply-corrections.js<br/>reviewer overrides"]
+    E1 --> E2 --> E3 --> E4
+  end
+
+  subgraph VALIDATE["6. Validation"]
+    F1["Schema validation<br/>(schema/validation.js)"]
+    F2["Coverage check<br/>(coverage.js)"]
+    F3["Invariants<br/>(parser-v2/invariants/*)"]
+    F4["Quote verification<br/>(verification.js)"]
+    F1 --> F2 --> F3 --> F4
+  end
+
+  subgraph PERSIST["7. Persist"]
+    G1["Snapshot writer<br/>(snapshot.js)"]
+    G2["normalized-v1.json<br/>append Claims + references_definition edges"]
+    G3["reconciliation-log.jsonl<br/>append actions"]
+    G1 --> G2 --> G3
+  end
+
+  subgraph QA["8. Ingest QA gate"]
+    H1["ingest-qa.js<br/>0 unverified quotes<br/>0 duplicate Provisions of same kind on same range"]
+    H2["Per-deal thresholds<br/>coverage + canonical-rate"]
+    H3["Quarantine if fail"]
+    H1 --> H2 --> H3
+  end
+
+  INGEST --> SEGMENT --> CLASSIFY --> EXTRACT --> NORMALIZE --> VALIDATE --> PERSIST --> QA
+  H3 -.->|feeds Dimension A<br/>Uncovered text| AUDIT["Schema-Loss Audit"]
+  D4 -.->|feeds Dimension B<br/>Suspect Claims| AUDIT
+```
+
+---
+
+## 2. Stage-by-stage — what happens, what lands, what governs
+
+| # | Stage | Reads | Writes | Governed by | Key files |
+|---|---|---|---|---|---|
+| 1 | **Ingest** | source URL / uploaded file | content-addressed blob + text layer | file-hash uniqueness | `ingest-agreements.js`, `text-layers.js`, `pages/api/ingest/from-url.js` |
+| 2 | **Structural segmentation** | text layer | Section boundaries in Region store | topology detector | `structural.js`, `regions.js`, `region-store.js`, `topology-detector.js` |
+| 3 | **Provision classification** | Sections | Provision instances of two kinds — `operative` and `definition`. Definitions may appear in a definitions Section (Article II typical) or inline within any other Section. Inline definitions are materialised as first-class definition-Provisions without removing text from the containing operative Provision's Excerpt. | Attribute Registry (which Provisions are known); inline-definition scanner (parenthetical `(the "X")`, italic-in-quotes, "means" clauses) | `classify.js`, `parser-v2/detectors/*`, `api/ingest/classify.js` |
+| 4 | **Claim extraction — two-pass** | Provisions | Claim tuples (Attribute, Verbatim, Provenance); Canonical still empty. **Pass 1** extracts all definition-Provisions first and builds a deal-wide definitions map (`{term → definition-Provision-ID}`). **Pass 2** extracts operative-Provisions with the definitions bundle available in prompt context so cross-Section defined terms are resolvable. The operative prompt still sees the operative Excerpt in full — the definitions bundle is *additional* context, never a substitution. | prompt version + code SHA pinned in Provenance; two-pass ordering enforced by `run-extract.js` | `parser-v2/extract.js`, `run-extract.js`, `prompt.js`, `anthropic.js`, `parse-json.js` |
+| 5 | **Normalisation** | Verbatim | Canonical | Attribute Registry (open) + Canonical Vocabulary (closed) + Normalizer rules | `lib/vocab/*-aliases.js`, `reapply-corrections.js`, `canonical-*.js` |
+| 6 | **Validation** | Claims + Section text | pass/fail per-Claim | schema types, invariants, quote-tightness, `references_definition` targets exist | `schema/validation.js`, `parser-v2/invariants/*`, `verification.js`, `coverage.js` |
+| 7 | **Persist** | validated Claims | `normalized-v1.json` (Claims + `references_definition` edges), `reconciliation-log.jsonl` | append-only for reconciliation log; snapshot pattern for normalized | `snapshot.js`, `store.js` |
+| 8 | **Ingest QA gate** | persisted deal | quarantine flag or clean | 0 unverified quotes, 0 duplicate Provisions **of the same kind on the same byte-range** (overlapping Excerpts of *different-kind* Provisions are legal — that's how inline definitions coexist with their operative Provisions), per-deal thresholds | `ingest-qa.js` |
+
+---
+
+## 3. Where each Taxonomy node is born
+
+| Taxonomy node | Created at stage | By what |
+|---|---|---|
+| **Deal** | 1 (Ingest) | first document creates the Deal record |
+| **DealProfile** | 3 (Classify) — updated in 4 (Extract) | deal-level Claims extracted from cover pages, recitals, signature blocks |
+| **Section** | 2 (Segment) | structural parser |
+| **Provision (kind=operative)** | 3 (Classify) | classifier binds a known Attribute-Registry concept to a Section |
+| **Provision (kind=definition)** | 3 (Classify) | classifier detects a defined-term pattern — either in a dedicated definitions Section or inline in any other Section |
+| **`references_definition` edge** | 4 (Extract), pass 2 | operative extractor resolves cited terms against pass-1 definitions map |
+| **Excerpt** | 4 (Extract) | LLM returns Verbatim + quote span → materialised as Excerpt (byte-range into source; overlaps across different-kind Provisions are legal) |
+| **Claim** | 4 (Extract) → 5 (Normalise) — Canonical filled in stage 5 | extractor emits Attribute+Verbatim+Provenance; normaliser fills Canonical |
+| **Attribute Registry entry** | out-of-band; governed via reviewer flow | `generate-registry.js`, `registry-review-suggestions.js` |
+| **Canonical Vocabulary entry** | out-of-band; Freeze Gate PR only | `docs/vocab/FROZEN-*.json` |
+| **Normalizer** | out-of-band; hand-authored or reviewer-approved | `lib/vocab/*-aliases.js` |
+| **Provenance** | 4 (Extract) | stamped at LLM call; retained through 5–7 |
+
+---
+
+## 4. Gaps and improvements identified
+
+Reading the pipeline against the Taxonomy surfaces the following weak points. Each is a candidate for a follow-up WP.
+
+### G1. Provision-instance identity is implicit
+
+**Problem.** A Provision is defined in the Taxonomy as "the instance in this deal of a named contractual concept". Today the classifier binds a concept to a Section but the resulting Provision has no stable ID separate from the Section. Re-ingestion can create a new Provision row even when the underlying concept is unchanged.
+**Fix.** Give every Provision a deterministic ID = hash(deal_id, kind, concept_key, ordinal-within-section). Persist across re-ingestion. Enables Dimension-B "same Provision, different Claim over time" audits.
+**Owning WP candidate:** `WP-PROVISION-ID-01`.
+
+### G2. Excerpts are anonymous
+
+**Problem.** Excerpts have Verbatim text and a Provenance location but no stable Excerpt ID. If an extractor is re-run and produces the same quote span, we can't tell whether it's the same Excerpt.
+**Fix.** Excerpt ID = hash(document_hash, char_offset_start, char_offset_end). Deterministic. Lets re-runs be idempotent for Excerpt-scoped Claims.
+**Owning WP candidate:** folds into G1 (`WP-PROVISION-ID-01`) — same PR.
+
+### G3. Normalizer is scattered across `vocab/*-aliases.js` with no manifest
+
+**Problem.** Taxonomy names Normalizer as a first-class governance surface. In code it's just files under `lib/vocab/`. No single manifest lists all Normalizers, their Attribute they apply to, or their version.
+**Fix.** Add `lib/vocab/manifest.js` — one export listing `{ attribute, aliases_file, version, canonical_target_attribute }`. Load-time validated. Surface in `/admin/taxonomy` under the Normalizer node.
+**Owning WP candidate:** `WP-NORMALIZER-MANIFEST-01`. Small.
+
+### G4. Provenance is a bundle in the spec, a scatter of fields in code
+
+**Problem.** Taxonomy Section 4 says Provenance is `{document, location, extractor, extracted_at, confidence}`. In practice these fields exist but not under one namespace — some live on the Claim row, some on the Excerpt, some in the reconciliation log.
+**Fix.** Introduce a `provenance: {...}` sub-object on every persisted Claim. Migration writes existing fields into it; readers gain a stable path. Backwards-compatible via projection.
+**Owning WP candidate:** `WP-PROVENANCE-BUNDLE-01`. Medium — touches persistence.
+
+### G5. Extractor prompt version and code SHA are not systematically stamped
+
+**Problem.** Provenance spec requires prompt version + code SHA. Some paths stamp them, some don't. Retrospective re-runs currently rely on file history rather than stamped Provenance.
+**Fix.** Central `extractor-stamp.js` helper. Every LLM call routes through it. CI invariant refuses to persist a Claim without a fully populated Provenance.extractor.
+**Owning WP candidate:** folds into G4.
+
+### G6. Reconciliation log actions are string constants, not typed events
+
+**Problem.** `reconciliation-log.jsonl` has 7 action types (MERGE, MOVE_FIELD, RECLASSIFY_FIELD, RECODE_FIELD, RESET_ENUM, SPLIT, SCHEMA_DEFERRED). No canonical mapping onto Taxonomy nodes/edges. Reviewers can't easily filter "all actions that moved a Claim's Attribute" vs "all actions that changed a Provision's Section-binding".
+**Fix.** Add `taxonomy_target` field to each log entry: one of `{Deal, DealProfile, Section, Provision, Excerpt, Claim, Attribute, Canonical, Normalizer, Registry, ReferencesDefinitionEdge}`. Reviewers gain per-node filters.
+**Owning WP candidate:** `WP-RECONCILIATION-TAG-01`. Additive, no schema break.
+
+### G7. Ingest QA gate does not exercise the Normalizer
+
+**Problem.** `ingest-qa.js` checks unverified quotes and duplicate clauses. Does not check "Verbatim resolved to a Canonical without invoking a Normalizer" (implicit identity mapping) vs "resolved via a specific Normalizer rule". Free-text drift can pass unnoticed.
+**Fix.** Add QA check: every Canonical assignment must cite either identity (Verbatim == Canonical) or a Normalizer rule ID. Fail-open unresolved.
+**Owning WP candidate:** `WP-NORMALIZER-CITATION-01`. Requires G3 first.
+
+### G8. DealProfile Claims share their pipeline with Provision-scoped Claims
+
+**Problem.** DealProfile Claims (parties, closing date, jurisdiction) go through the same extractor pipeline but they don't have an Excerpt — they're often synthesised from cover pages. In practice the pipeline sometimes attaches a spurious Excerpt to keep the schema happy.
+**Fix.** Explicit DealProfile branch at stage 3: Attributes flagged `scope=deal` route to a lighter extractor that doesn't require an Excerpt (just Provenance). Update schema to make Excerpt nullable for `scope=deal` Attributes.
+**Owning WP candidate:** `WP-DEALPROFILE-BRANCH-01`. Schema-touching. Fold into WP-DEFINITIONS-AS-PROVISIONS-01 in Phase 0.5 — both are "not every Provision-analogue has an Excerpt" changes.
+
+### G9. No admin surface renders this flow
+
+**Problem.** Taxonomy has `/admin/taxonomy` (WP-TAXONOMY-MAP-01). Runtime flow has nothing. New engineers or a handoff recipient can't see what stages a document goes through, or which files own each stage.
+**Fix.** `/admin/processing-flow` — mermaid diagram from this document, click a stage to drill into the code paths and recent-run metrics (per-stage duration, per-stage failure counts). Deep-links to Provision-instance detail pages.
+**Owning WP candidate:** `WP-PROCESSING-FLOW-MAP-01`. This is the picture-page. See Section 5 below.
+
+### G10. Cross-Section definitions resolution is undefined
+
+**Problem.** Extractor currently sees one Section's text at a time. When an operative Provision references a defined term whose definition-Provision lives in a different Section (e.g., operative clause in Article VII references "Superior Proposal" defined in Article II), there's no formal mechanism to resolve the term at extraction time.
+**Fix.** Two-pass extraction (Section 2, stage 4). Pass 1 extracts all definition-Provisions first and builds a deal-wide definitions map. Pass 2 extracts operative-Provisions with the definitions bundle available as additional prompt context. **Inline definitions do not require pass ordering** — they live in the same Section as their operative Provision, so the operative extractor already sees the sentence including the parenthetical. Two-pass ordering matters only for cross-Section references.
+**Owning WP candidate:** folds into `WP-DEFINITIONS-AS-PROVISIONS-01` in Phase 0.5.
+
+### G11. Provision kind field is not persisted
+
+**Problem.** Taxonomy v3 introduces `Provision.kind ∈ {operative, definition}` and the `references_definition` edge. Persisted schema does not yet carry these.
+**Fix.** Add `kind` field to Provision; add `references_definition` edge array. Migration sets `kind=operative` on every existing Provision. Freeze Gate PR required.
+**Owning WP candidate:** `WP-DEFINITIONS-AS-PROVISIONS-01` in Phase 0.5. This is the parent WP; G8 and G10 are sub-goals.
+
+---
+
+## 5. Proposed WP-PROCESSING-FLOW-MAP-01
+
+**Sibling of WP-TAXONOMY-MAP-01 inside Phase 0-D.** Read-only reference page. No schema changes. No new writes.
+
+**Ships:** `/admin/processing-flow`.
+
+**Renders, top to bottom:**
+1. **This document (`docs/schema-shape/provision-processing-flow.md`) top panel** — mermaid + prose, exactly like `/admin/taxonomy` renders the Taxonomy file.
+2. **Stage cards** — one card per stage 1–8, each showing:
+   - stage name and one-line description
+   - owning file paths (links open in a repo browser modal)
+   - last-run metrics (median duration, failure count last 24h, quarantine count)
+   - per-stage Taxonomy nodes emitted/consumed
+3. **Gap panel** — collapsed by default. Renders G1–G11 above with owning WP candidate. Marks each with status: `open | scheduled | in-progress | done`. Sourced from `docs/schema-shape/processing-flow-gaps.json`.
+4. **Legend** — links out to Taxonomy page and to Master Brief Section 2.9.
+
+**Files produced:**
+- `pages/admin/processing-flow.js`
+- `pages/api/admin/processing-flow/metrics.js`
+- `components/admin/processing-flow/{StageDiagram,StageCard,GapPanel}.jsx`
+- `docs/schema-shape/provision-processing-flow.md` (this file, Codex-read-only)
+- `docs/schema-shape/processing-flow-gaps.json` (data behind gap panel)
+- `tests/admin/processing-flow.spec.js`
+
+**Preflight:** must exist on `origin/main` at start of the WP → `docs/schema-shape/provision-processing-flow.md` + `docs/schema-shape/provision-taxonomy-triple-model.md` + `docs/schema-shape/processing-flow-gaps.json`. Otherwise `BLOCKED-P0-D-flow-doc-missing.md`.
+
+**Manifest additions to Section 2.5:** all files above, Codex-read-only for the two doc files and the gap-JSON.
+
+**Merge order within Phase 0-D:** parallel with WP-TAXONOMY-MAP-01 after CLEANUP lands the nav-registry refactor — both are pure-read admin pages sharing the same nav registry.
+
+---
+
+## 6. Cross-reference
+
+- **Taxonomy of artefacts** — `docs/schema-shape/provision-taxonomy-triple-model.md` (companion, static shape).
+- **Master brief Section 2.9** — Phase 0-D structure. WP-PROCESSING-FLOW-MAP-01 slots here.
+- **Phase 0.5 WP-DEFINITIONS-AS-PROVISIONS-01** — realises Provision `kind` field, `references_definition` edge, two-pass extraction, and DealProfile branch. Behind Freeze Gate PR.
+- **Frozen status** — this document becomes FROZEN under G-0C once approved, alongside the Taxonomy file.
