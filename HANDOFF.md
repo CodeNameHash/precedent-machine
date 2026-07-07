@@ -612,3 +612,6 @@ opinions about what's "normal" in M&A.
 ## WP-QUERY completion note
 
 2026-07-07: WP-QUERY: query engine field access now resolves through the Phase 0-C registry with alias fallback, saved query payloads are version-pinned in `query_payload._meta`, `/api/query/kinds` exposes the five query-kind schemas, and the query menu is endpoint-driven with existing fallbacks. Follow-up: the repo still has no ESLint dependency, so raw feature-key access is enforced by the query test scanner until ESLint is wired.
+
+
+REVIEW_QUEUE_RESOLUTION {"id":"ed9210c4-76bf-4068-9562-b68869d20c98","kind":"canonical","title":"WP-M2-01 contract: four-action treatment + admin surfaces","choice_key":"approve","codex_action":"proceed with Steps 2-6","resolved_at":"2026-07-07T22:06:59.118Z","resolved_by":"ben"}
