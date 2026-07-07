@@ -608,3 +608,7 @@ opinions about what's "normal" in M&A.
 ## WP-REGISTRY-EVOLVE-01 apply note
 
 2026-07-07: WP-REGISTRY-EVOLVE-01 steps 3-6 prepared in PR: 61 approved registry deltas applied, 19 reconciliation-log rename records appended, no c_noise rows. G-0B-T3 crossing: Ben merge required.
+
+## WP-QUERY completion note
+
+2026-07-07: WP-QUERY: query engine field access now resolves through the Phase 0-C registry with alias fallback, saved query payloads are version-pinned in `query_payload._meta`, `/api/query/kinds` exposes the five query-kind schemas, and the query menu is endpoint-driven with existing fallbacks. Follow-up: the repo still has no ESLint dependency, so raw feature-key access is enforced by the query test scanner until ESLint is wired.
