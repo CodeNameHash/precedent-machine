@@ -1,4 +1,4 @@
-PM_MASTER_STRAITJACKET_SHA256: 5bdf3400144c80c7b9b0b5dfb842d3467e41dfd38b2bb81e681d3cc7f377904e
+PM_MASTER_STRAITJACKET_SHA256: c76b3b82515ddb0275d08805317cc16d1311f92350a1ed7f1295b20ab8af3835
 
 I acknowledge master straitjacket WP-MASTER-V1. I will:
 1. Not touch any file outside the phase allowlist.
