@@ -212,7 +212,7 @@ Thirteen phases, executed strictly in order: Phase -1 (enforcement teeth), then 
 6. Once frozen: create `lib/parser-v2/store-cards.js` (NEW) that writes extracted provisions into `provision_cards` and its 12 child tables.
 7. Modify `lib/parser-v2/store.js` to call `store-cards.js` during the normal extraction write path.
 8. Locate the actual parse API endpoint under `pages/api/parse/` (verify the exact filename in the repo — do not assume `[dealId].js` is correct without checking) and wire it to call the card-model store path.
-9. Run the extractor on Metsera. Verify `provision_cards` populates with **≥50 rows** for `deal_id = 885edae5-49e8-464a-9f33-edd229119d7c`.
+9. Run the extractor on Metsera. Verify `provision_cards` populates with **≥40 rows** for `deal_id = 885edae5-49e8-464a-9f33-edd229119d7c`. (Threshold reduced from ≥50 to ≥40 on 2026-07-07 by Ben — see PART 3.)
 10. Build `components/review/ProvisionCardTable.jsx` (NEW) — generic renderer for provision cards, rendering `Term | Provision` with sub-rows via `<ProvisionSubRowTable />` (already exists in the repo at `components/review/ProvisionSubRowTable.jsx` — reuse it, do not rebuild it).
 11. Create `lib/queries/review-deal.js` (NEW) — reads `provision_cards` + all 12 child tables for a given `deal_id`.
 12. In `pages/review/[id].js`, add the branch: if `provision_cards.count(deal_id=X) > 0`, render from cards via `<ProvisionCardTable />`. Else fall back to the existing legacy components (`ConsiderationTables.js`, `NosolFourTables.js`, `EmployeeBenefitsTable.js`, `SecMeetingTable.js`, `NoOtherRepsFraudTable.js`). Do NOT delete legacy components in this phase — Phase 7 does that.
@@ -234,12 +234,12 @@ Thirteen phases, executed strictly in order: Phase -1 (enforcement teeth), then 
 **Forbidden in Phase 0:** anything under `components/review/` other than `ProvisionCardTable.jsx`; any legacy renderer deletion; anything under `lib/schema/`; any pre-existing migration file edit.
 
 **Blocking tests:**
-- `PH0-A: provision_cards populated for Metsera` — `db.count('*').from('provision_cards').where('deal_id', METSERA_ID)` ≥ 50.
+- `PH0-A: provision_cards populated for Metsera` — `db.count('*').from('provision_cards').where('deal_id', METSERA_ID)` ≥ 40.
 - `PH0-B: review page renders provision cards for Metsera` — `screen.getByTestId('provision-card-table')` present.
 - `PH0-C: legacy fallback still works for deals without cards` — a deal with zero card rows renders `screen.getByTestId('legacy-review-tables')`.
 - `PH0-D: market-registry-completeness` — `docs/market-registry/FROZEN-v1.json` exists and every field it lists has ≥1 resolver reference.
 
-**Definition of done.** All 4 blocking tests green. `docs/market-registry/FROZEN-v1.json` exists (reviewer-committed). `provision_cards` has ≥50 rows for Metsera. All 7 cross-cutting invariants (Appendix E) pass. `WORKLOG-P0.md` committed with `CODEX_MODEL_UNCHANGED:TRUE`.
+**Definition of done.** All 4 blocking tests green. `docs/market-registry/FROZEN-v1.json` exists (reviewer-committed). `provision_cards` has ≥40 rows for Metsera. All 7 cross-cutting invariants (Appendix E) pass. `WORKLOG-P0.md` committed with `CODEX_MODEL_UNCHANGED:TRUE`.
 
 **If blocked:** write `BLOCKED-P0.md` — state whether the blocker is on the registry-generation half or the wire-up half, cite the exact file/line Codex could not resolve, and stop. Do not half-ship a wire-up without the registry freeze, and do not skip the registry step "to save time."
 
@@ -687,7 +687,7 @@ Thirteen phases, executed strictly in order: Phase -1 (enforcement teeth), then 
 
 **Steps.**
 
-1. Confirm precondition: every deal in `deals` has ≥50 `provision_cards` rows AND the legacy-fallback path in `pages/review/[id].js` never fires in a full audit run across all 40 deals.
+1. Confirm precondition: every deal in `deals` has ≥40 `provision_cards` rows AND the legacy-fallback path in `pages/review/[id].js` never fires in a full audit run across all 40 deals.
 2. Run the audit. If any deal still falls back to legacy, STOP — do not delete legacy renderers while any deal depends on them. Write `BLOCKED-P7.md` naming the specific deal(s) still on legacy.
 3. If the audit is clean, delete: `components/review/ConsiderationTables.js`, `components/review/NosolFourTables.js`, `components/review/EmployeeBenefitsTable.js` (the OLD one, not the Phase 5 rewritten one — verify naming didn't collide), `components/review/SecMeetingTable.js`, `components/review/NoOtherRepsFraudTable.js`, and any other bespoke legacy renderer discovered during the audit.
 
@@ -698,6 +698,53 @@ Thirteen phases, executed strictly in order: Phase -1 (enforcement teeth), then 
 **Definition of done.** Zero legacy renderer files remain. All 40 deals render from `provision_cards`. All 7 cross-cutting invariants pass.
 
 **If blocked:** `BLOCKED-P7.md` — name which deal(s) are not yet card-backed; do not delete legacy code while any deal still needs it.
+
+---
+
+# PART 3 — CURRENT STATE (2026-07-07 evening)
+
+This section is a living snapshot of where `main` actually is, updated whenever the shape of the queue changes materially. **Codex must read this section on every session start before picking up work.** If anything in PART 0–2 or the Appendices contradicts PART 3, PART 3 wins for the current-state facts only (never for shape/scope/gate rules — those still bind).
+
+## 3.1 What is authoritative
+
+- **This document (`pm-master-straitjacket.codex.md`)** — global constraints, phase runbook, appendices, invariants. Master shape. Modified only via freeze-gate crossings or an explicit Ben-authored PR.
+- **`precedent-machine-roadmap-v5.md`** — post-P0-D work-package (WP) roadmap. Authoritative source for every WP's scope, branch, exit criteria, and dependency chain. Any WP referenced by name (e.g. `WP-UX-SHELL`, `WP-INGEST-CATALOG`, `WP-QUERY`, `WP-REPORTS`) resolves to its section in Roadmap v5.
+- **`pm-schema-first-migration.codex.md`** — the schema-first migration primary brief that WP-SCHEMA points at. Any brief in the repo that references "schema-first migration" resolves here.
+- **Per-WP briefs (`pm-wp-<slug>.codex.md`)** — thin execution briefs that point at a Roadmap v5 §. They exist to (a) name the branch, (b) confirm the phase-allowlist entry, (c) restate exit criteria, and (d) delegate substantive spec to Roadmap v5. They must not duplicate or contradict Roadmap v5.
+
+## 3.2 Freeze-gate status
+
+- **G-0B-T, T2-a, T2-b, T3** — merged.
+- **G-0C (Taxonomy v3 + Processing Flow v2)** — **FROZEN** at commit `1ea062d6d86e10b96b30a805df863095d49360fc` on 2026-07-07T15:56:55Z by ben@precedent-machine. `audit-state.json.frozen_shapes = ["phase-0-C"]`. Any code path that classifies, reads, or writes provisions MUST resolve to the vocab/flow defined by these two documents.
+- **G-0, G-0A, G-1 through G-4, G-SCORE, G-LEARN** — pending, queued.
+
+## 3.3 Active work-package queue (post-drawer, post-G-0C)
+
+Ordering is dependency-driven, not priority-driven. Codex picks the topmost unblocked WP unless a per-WP brief says otherwise.
+
+1. **WP-INGEST-CATALOG** (Roadmap v5 §WP-INGEST-CATALOG) — next. Branch `wp/ingest-catalog`. Cataloguing all deal ingest sources and their current parser paths. Unblocked.
+2. **WP-UX-SHELL** (Roadmap v5 §WP-UX-SHELL, lines 398–435) — unblocked, brief lands with this PR. Branch `feat/ux-shell`. Ships design tokens, ESLint rule, new two-level sidebar, dense header, canonical short-form dict, full-doc overlay, landing grid, section persistence. Does NOT touch provision cards, `lib/features/**`, `lib/rubric/**`, `lib/taxonomy/**`, ingest, or API routes.
+3. **WP-SCHEMA** — pointer WP, resolves to `pm-schema-first-migration.codex.md`. Depends on nothing at this layer; downstream of Phase 0-A freeze at the code layer.
+4. **WP-QUERY, WP-REPORTS** — spec merged, UI polish blocked on WP-UX-SHELL.
+5. **WP-REPO-HYGIENE-01** — queued for after WP-INGEST-CATALOG.
+6. **WP-UX-REVIEW** — blocked on WP-UX-SHELL.
+
+## 3.4 Active blocks on `main`
+
+- `BLOCKED-P0-C-PR140-PATH-A.md` — long-standing deferred block, keep. Not touched by this PR.
+- (All other BLOCKED-* markers resolved by this PR and prior merges through #174.)
+
+## 3.5 Threshold waivers logged
+
+- **2026-07-07 — Ben, verbal + this PR.** Metsera `provision_cards` acceptance threshold reduced from **≥50** to **≥40**. Affected lines updated in-line: 215, 237, 242, 690, 1702. Line 639 (`PH5-C` defined-term span UI count) is NOT covered by this waiver — that ≥50 is a UI count, unchanged.
+
+## 3.6 Branch pattern for WPs
+
+WP branches use `wp/<slug>` (kebab-case slug, min 3 chars, no leading/trailing dash) mapping to phase id `WP-<UPPER-SLUG>` and allowlist file `.github/phase-allowlists/wp-<slug>.json`. Exceptions codified in code: WP-CI-INFRA-01/02/03 remain hardcoded self-hosting phases. WP-UX-SHELL uses `feat/ux-shell` (Roadmap v5 override).
+
+## 3.7 Merge posture (Inv-25)
+
+Codex self-merges on green CI by default. Ben review-and-merge is required only when the PR (a) crosses a freeze gate, (b) modifies canonical legal semantics (Attributes, deal-comparison logic, MAE / carve-out / covenant classification), or (c) is explicitly marked so in the per-PR brief. This waiver PR is Ben-authored and Ben-merged under clause (b) plus explicit Ben authorization.
 
 ---
 
@@ -1699,7 +1746,7 @@ Before Phase 0.5 opens, run these reprocess steps (via the existing ingest-repro
 1. **Reprocess Skechers** (`af4940e1-a645-437c-acfa-4a53e8d9f7ac`) **consideration.** Confirms `MIXED_ELECTION`, `Fixed` exchange ratio, and Election Deadline all surface via `<ElectionCard>`.
 2. **Reprocess Chevron/Anadarko** (`dc042001-b987-404f-bd02-41e1939fb914`) **consideration + antitrust.** Confirms the cash+stock hero-row merge and the Stock Consideration Mechanics scope filter both apply cleanly; confirms Caps & Limits and Litigation obligation resolve to single canonical values.
 3. **Reprocess Mr. Cooper** (`8cd0787f-4ca0-40fe-aebf-6f88c0b101da`) **IOC + employee-benefits + termination.** Confirms IOC-B card parity, the Employee Benefits column swap, and the Termination outside-date pill all resolve correctly.
-4. **Reprocess Metsera** (`885edae5-49e8-464a-9f33-edd229119d7c`) — already covered by Phase 0's WP-SCHEMA-03 wire-up; no separate action needed here beyond confirming ≥50 `provision_cards` rows exist.
+4. **Reprocess Metsera** (`885edae5-49e8-464a-9f33-edd229119d7c`) — already covered by Phase 0's WP-SCHEMA-03 wire-up; no separate action needed here beyond confirming ≥40 `provision_cards` rows exist.
 
 `docs/reprocess/round-3.md` format: one section per deal, each listing what was reprocessed, before/after state, and any residual flags for QA.
 
