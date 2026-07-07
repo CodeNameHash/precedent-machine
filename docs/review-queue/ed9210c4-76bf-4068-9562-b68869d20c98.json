@@ -1,0 +1,41 @@
+{
+  "id": "ed9210c4-76bf-4068-9562-b68869d20c98",
+  "created_at": "2026-07-07T00:00:00.000Z",
+  "kind": "canonical",
+  "title": "WP-M2-01 contract: four-action treatment + admin surfaces",
+  "summary": "Reconciliation queue has 644 RESOLVED entries across four action types (MERGE=410, SPLIT=15, MOVED_OR_DROPPED=44, SCHEMA_DEFERRED=175). Ben has pre-approved the treatment (see evidence). This entry exists as the audit record. Approving unblocks WP-M2-01 to write the actual PRs below. Rejecting halts and re-opens the discussion.",
+  "evidence": [
+    {
+      "label": "This directive",
+      "url": "docs/handoffs/CODEX-DIRECTIVE-M2-01-unblock.md"
+    },
+    {
+      "label": "Original blocker (to be deleted)",
+      "url": "BLOCKED-WP-RECONCIL-DOWNSTREAM-malformed-entries.md"
+    },
+    {
+      "label": "reconciliation-queue.json",
+      "url": "docs/schema-shape/reconciliation-queue.json"
+    }
+  ],
+  "choices": [
+    {
+      "key": "approve",
+      "label": "Approve four-action treatment + admin surfaces",
+      "codex_action": "proceed with Steps 2-6"
+    },
+    {
+      "key": "reject",
+      "label": "Reject, reopen discussion",
+      "codex_action": "halt WP-M2-01, ping Ben"
+    },
+    {
+      "key": "modify",
+      "label": "Approve with changes",
+      "codex_action": "await Ben-authored diff to this directive"
+    }
+  ],
+  "resolution": null,
+  "resolved_at": null,
+  "resolved_by": null
+}

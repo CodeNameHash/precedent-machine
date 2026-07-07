@@ -1,6 +1,6 @@
 const { listEntries } = require('../../../../lib/review-queue/store');
 
-module.exports = function handler(req, res) {
+function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
   try {
     const includeResolved = req.query && String(req.query.include_resolved || req.query.includeResolved || '') === 'true';
@@ -9,4 +9,7 @@ module.exports = function handler(req, res) {
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
-};
+}
+
+module.exports = handler;
+module.exports.default = handler;
