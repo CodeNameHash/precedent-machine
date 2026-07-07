@@ -32,6 +32,14 @@
     "description": "Read the provision taxonomy source and inspect live corpus counts by taxonomy node."
   },
   {
+    "id": "processing-flow",
+    "label": "Processing flow",
+    "href": "/admin/processing-flow",
+    "group": "schema",
+    "order": 50,
+    "description": "Read the ingest-to-Claim flow and inspect live pipeline metrics and gap follow-ups."
+  },
+  {
     "id": "schema-loss",
     "label": "Schema loss audit",
     "href": "/admin/schema-loss",

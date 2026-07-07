@@ -18,6 +18,10 @@ Reconcile: Resolve canonical registry reconciliation queue items with reviewer d
 
 Taxonomy: Read the provision taxonomy source and inspect live corpus counts by taxonomy node.
 
+## processing-flow
+
+Processing flow: Read the ingest-to-Claim flow and inspect live pipeline metrics and gap follow-ups.
+
 ## schema-loss
 
 Schema loss audit: Review uncovered text and suspect Claims, then route each item to the correct downstream queue.

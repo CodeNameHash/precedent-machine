@@ -59,6 +59,7 @@ test('nav-registry render snapshot', () => {
     'schema:20:Audit:/admin/registry/audit',
     'schema:30:Reconcile:/admin/registry/reconcile',
     'schema:40:Taxonomy:/admin/taxonomy',
+    'schema:50:Processing flow:/admin/processing-flow',
     'schema:60:Schema loss audit:/admin/schema-loss',
     'search:10:Search / Review:/',
   ]);
