@@ -1,7 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 
-const { buildQueue } = require('../../scripts/schema-shape/reconcile-corpus');
+const { buildQueue, needsCanonicalReview } = require('../../scripts/schema-shape/reconcile-corpus');
 const { normalizeValue } = require('../../lib/schema-shape/normalize-value');
 
 test('PH0C-E: retrospective sweep is idempotent', () => {
@@ -35,6 +35,22 @@ test('PH0C-E: known aliases do not queue', () => {
       raw_value: 'end date',
       source_provision_id: 'prov-2',
     }],
+  });
+  assert.deepEqual(queue.entries, []);
+});
+
+test('PH0C-E: free-text and presence-only fields do not enter the reconciliation queue', () => {
+  assert.equal(needsCanonicalReview('canonicalTerm', { type: 'string' }), false);
+  assert.equal(needsCanonicalReview('crossReferences', { enumValues: ['ABSENT', 'PRESENT', 'UNKNOWN'] }), false);
+  const queue = buildQueue({
+    entries: [
+      { key: 'canonicalTerm', type: 'string' },
+      { key: 'crossReferences', type: 'enum', enumValues: ['ABSENT', 'PRESENT', 'UNKNOWN'] },
+    ],
+    triples: [
+      { deal_id: 'deal-1', field_key: 'canonicalTerm', canonicalKey: null, raw_value: 'SEC', source_provision_id: 'prov-1' },
+      { deal_id: 'deal-1', field_key: 'crossReferences', canonicalKey: null, raw_value: 'Exchange Act', source_provision_id: 'prov-2' },
+    ],
   });
   assert.deepEqual(queue.entries, []);
 });
