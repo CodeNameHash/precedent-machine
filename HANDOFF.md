@@ -589,6 +589,10 @@ opinions about what's "normal" in M&A.
 
 2026-07-07: `-tail-N` for N ≥ 3 now preserves the full phase id (added 2026-07-07 to support WP-REGISTRY-EVOLVE-01).
 
+## WP-track branches
+
+2026-07-07: WP-track work now uses branch shape `wp/<slug>`, where `<slug>` is kebab-case, at least three characters, and has no leading or trailing dash. The CI phase id is `WP-<UPPER-SLUG>` with dashes preserved. The allowlist file lives at `.github/phase-allowlists/wp-<slug>.json` and uses the same `{ phase, name, allowed, denied, note }` schema as phase allowlists. Example: `wp/promote-newhome-to-root` maps to `WP-PROMOTE-NEWHOME-TO-ROOT` and loads `.github/phase-allowlists/wp-promote-newhome-to-root.json`. WP-CI-INFRA-01/02/03 remain hardcoded self-hosting exceptions for CI-infra branches.
+
 ## WP-SCHEMA-LOSS-AUDIT-01 completion note
 
 2026-07-07: WP-SCHEMA-LOSS-AUDIT-01: PR #156 shipped Dimension A residual-audit scaffolding, Dimension B claim-integrity warnings, guarded decision routing, and `/admin/schema-loss`. Notable data changes: added empty Dimension A queues because no committed Provision text snapshot exists, added 200 deterministic suspect-Claim warnings from `normalized-v1.json`, and added empty append-only decision/handoff JSONL files. Follow-ups: Dimension A needs a provisions snapshot or live provisions table to surface substantive uncovered-text clusters; PR #151 has `CLASSIFICATION_APPROVED` and PR #158 carries the G-0B-T3 apply step.

@@ -29,8 +29,24 @@ test('detect-phase accepts the WP-CI-INFRA-02 self-hosting branch', () => {
   assert.equal(detectPhase('infra/ci-phase-detection-and-tail-recovery-allowlist'), 'WP-CI-INFRA-02');
 });
 
+test('detect-phase accepts wp/<slug> branches', () => {
+  assert.equal(detectPhase('wp/promote-newhome-to-root'), 'WP-PROMOTE-NEWHOME-TO-ROOT');
+  assert.equal(detectPhase('wp/taxonomy-map-01'), 'WP-TAXONOMY-MAP-01');
+});
+
+test('detect-phase accepts the WP-CI-INFRA-03 self-hosting branch', () => {
+  assert.equal(detectPhase('infra/wp-branch-support'), 'WP-CI-INFRA-03');
+});
+
+test('detect-phase rejects malformed wp/ slugs', () => {
+  assert.throws(() => detectPhase('wp/'), /Branch name must match/);
+  assert.throws(() => detectPhase('wp/-leading'), /Branch name must match/);
+  assert.throws(() => detectPhase('wp/trailing-'), /Branch name must match/);
+  assert.throws(() => detectPhase('wp/UPPER'), /Branch name must match/);
+});
+
 test('detect-phase rejects malformed branch names', () => {
-  assert.throws(() => detectPhase('feature/random-thing'), /phase-\{N\}/);
+  assert.throws(() => detectPhase('feature/random-thing'), /phase-\{N\}\/\*, wp\/<slug>/);
 });
 
 test('detect-phase CLI returns phase id', () => {
