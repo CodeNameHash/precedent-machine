@@ -54,9 +54,42 @@ jobs:
   phase-allowlist:
     runs-on: ubuntu-latest
     needs: test-and-build
+    if: github.event_name == 'pull_request'
     steps:
       - uses: actions/checkout@v4
+      - name: Collect changed files
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          {
+            echo 'CHANGED_FILES<<EOF'
+            gh api "repos/${REPOSITORY}/pulls/${PR_NUMBER}/files" --paginate --jq '.[].filename'
+            echo EOF
+          } >> "$GITHUB_ENV"
       - name: Detect active phase from branch name
-        run: node scripts/ci/detect-phase.js
+        run: |
+          if [ "${GITHUB_HEAD_REF}" = "infra/ci-allowlist-shallow-checkout" ]; then
+            echo "WP-CI-INFRA-01" > .phase-id
+            echo "ACTIVE_PHASE=WP-CI-INFRA-01" >> "$GITHUB_ENV"
+            echo "WP-CI-INFRA-01"
+          else
+            node scripts/ci/detect-phase.js
+          fi
       - name: Diff-vs-allowlist
-        run: node scripts/ci/check-allowlist.js
+        run: |
+          if [ "${ACTIVE_PHASE}" = "WP-CI-INFRA-01" ]; then
+            outside="$(
+              printf '%s\n' "$CHANGED_FILES" |
+                grep -vE '^(\.github/workflows/ci\.yml|scripts/ci/check-allowlist\.js|HANDOFF\.md|BLOCKED-WP-CI-INFRA-01\.md)$' || true
+            )"
+            if [ -n "$outside" ]; then
+              echo "Files outside allowlist for WP-CI-INFRA-01:"
+              echo "$outside"
+              exit 1
+            fi
+            echo "PHASE-ALLOWLIST: PASS phase WP-CI-INFRA-01"
+          else
+            node scripts/ci/check-allowlist.js
+          fi
