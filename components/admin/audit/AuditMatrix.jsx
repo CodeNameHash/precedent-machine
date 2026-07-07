@@ -13,7 +13,7 @@ export default function AuditMatrix({ matrix }) {
   const rows = matrix?.rows || [];
   const columns = matrix?.columns || [];
   return (
-    <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
+    <div className="w-full">
       <div className="overflow-auto rounded border border-border bg-white" data-testid="audit-matrix">
         <table className="min-w-full text-sm">
           <thead>
