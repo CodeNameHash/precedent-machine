@@ -18,9 +18,21 @@ function detectPhaseDetails(branchName) {
       phase: 'WP-CI-INFRA-02',
     };
   }
+  if (branch === 'infra/wp-branch-support') {
+    return {
+      rawPhase: 'WP-CI-INFRA-03',
+      phase: 'WP-CI-INFRA-03',
+    };
+  }
+  const wpMatch = branch.match(/^wp\/([a-z0-9][a-z0-9-]*[a-z0-9])$/);
+  if (wpMatch) {
+    const slug = wpMatch[1];
+    const phase = `WP-${slug.toUpperCase()}`;
+    return { rawPhase: phase, phase };
+  }
   const match = branch.match(/^phase-([^/]+)\//);
   if (!match) {
-    throw new Error(`Branch name must match phase-{N}/*, got "${branch || '(empty)'}"`);
+    throw new Error(`Branch name must match phase-{N}/*, wp/<slug>, or a hardcoded WP-CI-INFRA-* branch, got "${branch || '(empty)'}"`);
   }
   const rawPhase = match[1];
   return {

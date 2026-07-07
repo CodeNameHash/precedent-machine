@@ -14,6 +14,14 @@ const WP_CI_INFRA_02_ALLOWED = [
   'tests/ci/check-allowlist.spec.js',
 ];
 
+const WP_CI_INFRA_03_ALLOWED = [
+  'scripts/ci/detect-phase.js',
+  'scripts/ci/check-allowlist.js',
+  'tests/ci/detect-phase.spec.js',
+  'tests/ci/check-allowlist.spec.js',
+  'HANDOFF.md',
+];
+
 function normalizeFile(file) {
   return String(file || '').replace(/\\/g, '/').replace(/^\.\//, '').trim();
 }
@@ -65,9 +73,22 @@ function changedFiles(env = process.env) {
 }
 
 function loadAllowlist(phase) {
-  const file = path.join('.github', 'phase-allowlists', `phase-${phase}.json`);
+  const phaseStr = String(phase || '');
+  if (phaseStr.startsWith('WP-CI-INFRA-')) {
+    throw new Error(`No allowlist file for infra phase ${phaseStr}`);
+  }
+  const wpMatch = phaseStr.match(/^WP-([A-Z0-9-]+)$/);
+  if (wpMatch) {
+    const slug = wpMatch[1].toLowerCase();
+    const file = path.join('.github', 'phase-allowlists', `wp-${slug}.json`);
+    if (!fs.existsSync(file)) {
+      throw new Error(`Missing WP allowlist for ${phaseStr}: ${file}`);
+    }
+    return JSON.parse(fs.readFileSync(file, 'utf8'));
+  }
+  const file = path.join('.github', 'phase-allowlists', `phase-${phaseStr}.json`);
   if (!fs.existsSync(file)) {
-    throw new Error(`Missing allowlist for phase ${phase}: ${file}`);
+    throw new Error(`Missing allowlist for phase ${phaseStr}: ${file}`);
   }
   return JSON.parse(fs.readFileSync(file, 'utf8'));
 }
@@ -77,7 +98,8 @@ function isAlwaysAllowed(file) {
 }
 
 function checkInfraAllowlist(phase, files) {
-  const outside = files.filter((file) => !isAlwaysAllowed(file) && !WP_CI_INFRA_02_ALLOWED.includes(file));
+  const allowed = phase === 'WP-CI-INFRA-03' ? WP_CI_INFRA_03_ALLOWED : WP_CI_INFRA_02_ALLOWED;
+  const outside = files.filter((file) => !isAlwaysAllowed(file) && !allowed.includes(file));
   return { phase, files, denied: [], outside };
 }
 
@@ -87,7 +109,7 @@ function checkAllowlist(options = {}) {
   if (phase === '-1') {
     return { phase, files, denied: [], outside: [], bootstrap: true };
   }
-  if (phase === 'WP-CI-INFRA-02') {
+  if (phase === 'WP-CI-INFRA-02' || phase === 'WP-CI-INFRA-03') {
     return checkInfraAllowlist(phase, files);
   }
   const allowlist = loadAllowlist(phase);

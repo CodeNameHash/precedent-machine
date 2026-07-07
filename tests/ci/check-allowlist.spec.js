@@ -1,5 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
 const { spawnSync } = require('node:child_process');
 
 const { checkAllowlist, isAlwaysAllowed, matchesPattern } = require('../../scripts/ci/check-allowlist');
@@ -57,6 +58,60 @@ test('check-allowlist self-hosts WP-CI-INFRA-02', () => {
   });
   assert.deepEqual(result.denied, []);
   assert.deepEqual(result.outside, []);
+});
+
+test('check-allowlist self-hosts WP-CI-INFRA-03', () => {
+  const result = checkAllowlist({
+    phase: 'WP-CI-INFRA-03',
+    files: [
+      'scripts/ci/detect-phase.js',
+      'scripts/ci/check-allowlist.js',
+      'tests/ci/detect-phase.spec.js',
+      'tests/ci/check-allowlist.spec.js',
+      'HANDOFF.md',
+    ],
+  });
+  assert.deepEqual(result.denied, []);
+  assert.deepEqual(result.outside, []);
+});
+
+test('check-allowlist rejects out-of-scope WP-CI-INFRA-03 files', () => {
+  const result = checkAllowlist({
+    phase: 'WP-CI-INFRA-03',
+    files: ['scripts/ci/detect-phase.js', '.github/workflows/ci.yml'],
+  });
+  assert.deepEqual(result.denied, []);
+  assert.deepEqual(result.outside, ['.github/workflows/ci.yml']);
+});
+
+test('check-allowlist loads wp/<slug> allowlist files', () => {
+  const file = '.github/phase-allowlists/wp-test-wp.json';
+  const previous = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : null;
+  try {
+    fs.writeFileSync(file, `${JSON.stringify({
+      phase: 'WP-TEST-WP',
+      name: 'test-wp',
+      allowed: ['allowed/path.js', 'HANDOFF.md'],
+      denied: ['denied/**'],
+      note: 'temporary test fixture',
+    }, null, 2)}\n`);
+    const pass = checkAllowlist({
+      phase: 'WP-TEST-WP',
+      files: ['allowed/path.js', 'HANDOFF.md'],
+    });
+    assert.deepEqual(pass.denied, []);
+    assert.deepEqual(pass.outside, []);
+
+    const fail = checkAllowlist({
+      phase: 'WP-TEST-WP',
+      files: ['allowed/path.js', 'denied/file.js', 'other/file.js'],
+    });
+    assert.deepEqual(fail.denied, ['denied/file.js']);
+    assert.deepEqual(fail.outside, ['other/file.js']);
+  } finally {
+    if (previous == null) fs.rmSync(file, { force: true });
+    else fs.writeFileSync(file, previous);
+  }
 });
 
 test('check-allowlist CLI names the failing file', () => {
