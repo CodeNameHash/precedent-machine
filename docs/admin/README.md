@@ -26,6 +26,10 @@ Processing flow: Read the ingest-to-Claim flow and inspect live pipeline metrics
 
 Schema loss audit: Review uncovered text and suspect Claims, then route each item to the correct downstream queue.
 
+## review-queue
+
+Review queue: Resolve Ben-gated canonical, destructive, unfreeze, and clarification decisions.
+
 ## agreements
 
 Upload agreements: Upload source agreements into the ingestion workflow.

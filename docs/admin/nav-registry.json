@@ -48,6 +48,14 @@
     "description": "Two-tab audit: uncovered text and suspect Claims routed to downstream reviewer queues."
   },
   {
+    "id": "review-queue",
+    "label": "Review queue",
+    "href": "/admin/review-queue",
+    "group": "schema",
+    "order": 70,
+    "description": "Resolve Ben-gated canonical, destructive, unfreeze, and clarification decisions."
+  },
+  {
     "id": "agreements",
     "label": "Upload agreements",
     "href": "/admin/agreements",
