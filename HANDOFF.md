@@ -572,3 +572,7 @@ opinions about what's "normal" in M&A.
 ## Phase 0-B-tail completion note
 
 2026-07-07: Phase 0-B-tail: canonical-registry-v1.md + normalized-v1.json shipped. Phase 0-C may now rebase and proceed. Added `ingest-qa` npm script alias and recorded the pre-existing ingest QA quarantine baseline at `docs/ingest/quarantine-baseline-2026-07-07.md`.
+
+## WP-CI-INFRA-02 completion note
+
+2026-07-07: WP-CI-INFRA-02: phase detection now maps `phase-*-tail` recovery branches to the base phase allowlist while retaining the raw tail phase in CI state. Phase 0-B allowlist extended for Phase 0-B-tail-2 recovery files, with explicit denies preserving the rest of the phase-allowlist directory. Unblocks PR #135 phase-allowlist.
