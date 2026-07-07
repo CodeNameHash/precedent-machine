@@ -1,0 +1,33 @@
+{
+  "phase": "WP-M2-02-SCHEMA-PARITY-AUDIT",
+  "name": "m2-02-schema-parity-audit",
+  "allowed": [
+    ".github/phase-allowlists/wp-m2-02-schema-parity-audit.json",
+    "BLOCKED-WP-M2-02-SCHEMA-PARITY-AUDIT.md",
+    "docs/audit/parity-discovery.md",
+    "docs/schema-migration/phase-8-parity.md",
+    "docs/schema-migration/phase-8-parity-triage.md",
+    "scripts/audit/schema-parity.js",
+    "tests/audit/schema-parity.spec.js",
+    ".github/workflows/ci.yml",
+    "WORKLOG-WP-SCHEMA-PARITY-AUDIT.md",
+    "HANDOFF.md"
+  ],
+  "denied": [
+    "docs/vocab/FROZEN-*.json",
+    "docs/market-registry/FROZEN-*.json",
+    "docs/schema-shape/*.frozen",
+    "docs/schema-shape/canonical-registry-v1.md",
+    "docs/schema-shape/canonical-definitions.md",
+    "docs/schema-shape/normalized-v1.json",
+    "docs/schema-shape/reconciliation-queue.json",
+    "lib/schema/**",
+    "lib/rubric.js",
+    "lib/vocab/**",
+    "components/review/**",
+    "pages/review/**",
+    "supabase/migrations/**",
+    "db/migrations/**"
+  ],
+  "note": "WP-M2-02 schema parity audit may add only the audit harness, audit reports, CI wiring, worklog/handoff, and blocker record. It must not alter schema/rubric/vocab/review-renderer behaviour."
+}
