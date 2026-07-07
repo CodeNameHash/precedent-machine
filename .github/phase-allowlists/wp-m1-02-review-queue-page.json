@@ -1,0 +1,28 @@
+{
+  "phase": "WP-M1-02-REVIEW-QUEUE-PAGE",
+  "name": "m1-02-review-queue-page",
+  "allowed": [
+    ".github/phase-allowlists/wp-m1-02-review-queue-page.json",
+    "pm-wp-m1-02-review-queue-page.codex.md",
+    "components/admin/ReviewQueueEntry.js",
+    "pages/admin/review-queue.js",
+    "docs/admin/nav-registry.json",
+    "docs/admin/README.md",
+    "tests/admin/nav-registry.spec.js",
+    "tests/admin/review-queue.spec.js"
+  ],
+  "denied": [
+    "docs/vocab/FROZEN-*.json",
+    "docs/market-registry/FROZEN-*.json",
+    "docs/schema-shape/*.frozen",
+    "docs/schema-shape/canonical-registry-v1.md",
+    "docs/schema-shape/canonical-definitions.md",
+    "docs/schema-shape/normalized-v1.json",
+    "lib/parser-v2/**",
+    "lib/schema/**",
+    "lib/rubric.js",
+    "supabase/migrations/**",
+    "db/migrations/**"
+  ],
+  "note": "WP-M1-02 ships the Review Queue admin page, reusable entry card, admin nav registration, and focused tests. It consumes the WP-M1-01 backend and does not create canonical decisions or modify frozen schema artefacts."
+}
