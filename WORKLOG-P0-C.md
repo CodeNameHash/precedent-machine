@@ -36,3 +36,9 @@ RECONCILE_CORPUS: 50624 queue entries produced from 71395 triples
 OPTION_A_COMPLETE: populated Phase 0-C deal-value triples and reconciliation queue before freeze.
 
 PHASE_0_C_TAIL_RECONCILE_BULK_TRIAGE: grouped reconciliation queue by field/raw value for bulk review, added group-level resolution, and kept `/admin/registry/reconcile` below the large page-data warning.
+
+PHASE_0_C_TAIL_CANONICAL_FIELDS_ONLY: narrowed reconciliation queue to frozen-vocab and non-presence enum fields. Queue now contains 720 NEW entries across 417 grouped review items; free-text/date/boolean and presence-only fields stay in triples but no longer block freeze.
+
+RECONCILE_CORPUS: 12692 queue entries produced from 71395 triples
+
+RECONCILE_CORPUS: 720 queue entries produced from 71395 triples

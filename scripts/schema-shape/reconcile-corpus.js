@@ -28,6 +28,14 @@ function validCanonical(fieldKey, canonicalKey, registryEntry = null) {
   return (registryEntry?.enumValues || []).some((value) => value === canonicalKey);
 }
 
+function needsCanonicalReview(fieldKey, registryEntry = null) {
+  if (vocabRefForField(fieldKey)) return true;
+  const enumValues = registryEntry?.enumValues || [];
+  if (!enumValues.length) return false;
+  const presenceOnly = enumValues.every((value) => ['ABSENT', 'PRESENT', 'UNKNOWN'].includes(value));
+  return !presenceOnly;
+}
+
 function enumCandidates(rawValue, registryEntry) {
   return (registryEntry?.enumValues || []).map((value) => ({
     canonicalKey: value,
@@ -58,6 +66,7 @@ function buildQueue(normalized) {
   const entries = [];
   for (const triple of triples) {
     const registryEntry = registry.get(triple.field_key);
+    if (!needsCanonicalReview(triple.field_key, registryEntry)) continue;
     if (validCanonical(triple.field_key, triple.canonicalKey, registryEntry)) continue;
     entries.push({
       id: queueId(triple.deal_id, triple.field_key, triple.raw_value),
@@ -110,6 +119,7 @@ if (require.main === module) {
 
 module.exports = {
   buildQueue,
+  needsCanonicalReview,
   queueId,
   registryIndex,
   validCanonical,
