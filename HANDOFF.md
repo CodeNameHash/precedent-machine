@@ -568,3 +568,7 @@ opinions about what's "normal" in M&A.
 ## WP-CI-INFRA-01 completion note
 
 2026-07-07: WP-CI-INFRA-01: phase-allowlist CI job fixed for shallow-checkout PRs. Unblocks PR #132.
+
+## Phase 0-B-tail completion note
+
+2026-07-07: Phase 0-B-tail: canonical-registry-v1.md + normalized-v1.json shipped. Phase 0-C may now rebase and proceed. Added `ingest-qa` npm script alias and recorded the pre-existing ingest QA quarantine baseline at `docs/ingest/quarantine-baseline-2026-07-07.md`.
