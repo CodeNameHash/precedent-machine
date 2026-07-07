@@ -14,6 +14,10 @@ Audit: Inspect the Phase 0-C audit matrix and evidence behind populated canonica
 
 Reconcile: Resolve canonical registry reconciliation queue items with reviewer decisions.
 
+## taxonomy
+
+Taxonomy: Read the provision taxonomy source and inspect live corpus counts by taxonomy node.
+
 ## schema-loss
 
 Schema loss audit: Review uncovered text and suspect Claims, then route each item to the correct downstream queue.

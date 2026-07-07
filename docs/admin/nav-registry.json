@@ -24,6 +24,14 @@
     "description": "Resolve canonical registry reconciliation queue items with reviewer decisions."
   },
   {
+    "id": "taxonomy",
+    "label": "Taxonomy",
+    "href": "/admin/taxonomy",
+    "group": "schema",
+    "order": 40,
+    "description": "Read the provision taxonomy source and inspect live corpus counts by taxonomy node."
+  },
+  {
     "id": "schema-loss",
     "label": "Schema loss audit",
     "href": "/admin/schema-loss",
