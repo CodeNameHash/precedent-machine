@@ -10406,20 +10406,7 @@ function ExtractionStatusPill({ deal, provisions, onRefetch }) {
     return Object.entries(collapsed).sort((a, b) => b[1] - a[1]);
   }, [breakdown]);
 
-  if (!breakdown) {
-    // No classify run yet — show a subtle "configure" hint linking to ingest.
-    return (
-      <div style={{ marginTop: 4, marginBottom: 4 }}>
-        <Link
-          href={`/ingest?deal_id=${deal.id}`}
-          className="text-[10px] font-ui uppercase tracking-wider text-inkFaint hover:text-accent"
-          style={{ textDecoration: 'none' }}
-        >
-          Manage ingest →
-        </Link>
-      </div>
-    );
-  }
+  if (!breakdown) return null;
 
   const total = typeGroups.length;
   const done = typeGroups.filter(([t]) => (
@@ -10492,13 +10479,6 @@ function ExtractionStatusPill({ deal, provisions, onRefetch }) {
         >
           {summaryLabel} {expanded ? '▾' : '▸'}
         </button>
-        <Link
-          href={`/ingest?deal_id=${deal.id}`}
-          className="text-[10px] font-ui uppercase tracking-wider text-inkFaint hover:text-accent"
-          style={{ textDecoration: 'none' }}
-        >
-          Manage ingest →
-        </Link>
         <button
           type="button"
           onClick={reclassify}
