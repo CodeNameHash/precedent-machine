@@ -5,6 +5,15 @@ const path = require('path');
 const { execFileSync } = require('child_process');
 const { branchFromEnv, detectPhase } = require('./detect-phase');
 
+const WP_CI_INFRA_02_ALLOWED = [
+  'scripts/ci/detect-phase.js',
+  'scripts/ci/check-allowlist.js',
+  '.github/phase-allowlists/phase-0-B.json',
+  'HANDOFF.md',
+  'tests/ci/detect-phase.spec.js',
+  'tests/ci/check-allowlist.spec.js',
+];
+
 function normalizeFile(file) {
   return String(file || '').replace(/\\/g, '/').replace(/^\.\//, '').trim();
 }
@@ -63,16 +72,29 @@ function loadAllowlist(phase) {
   return JSON.parse(fs.readFileSync(file, 'utf8'));
 }
 
+function isAlwaysAllowed(file) {
+  return /^BLOCKED-.*\.md$/.test(normalizeFile(file));
+}
+
+function checkInfraAllowlist(phase, files) {
+  const outside = files.filter((file) => !isAlwaysAllowed(file) && !WP_CI_INFRA_02_ALLOWED.includes(file));
+  return { phase, files, denied: [], outside };
+}
+
 function checkAllowlist(options = {}) {
   const phase = options.phase || readPhaseFromState();
   const files = options.files || (phase === '-1' ? [] : changedFiles());
   if (phase === '-1') {
     return { phase, files, denied: [], outside: [], bootstrap: true };
   }
+  if (phase === 'WP-CI-INFRA-02') {
+    return checkInfraAllowlist(phase, files);
+  }
   const allowlist = loadAllowlist(phase);
   const denied = [];
   const outside = [];
   for (const file of files) {
+    if (isAlwaysAllowed(file)) continue;
     if (allowlist.denied.some((pattern) => matchesPattern(file, pattern))) {
       denied.push(file);
       continue;
@@ -112,6 +134,7 @@ module.exports = {
   checkAllowlist,
   changedFiles,
   globToRegExp,
+  isAlwaysAllowed,
   loadAllowlist,
   matchesPattern,
   normalizeFile,
