@@ -66,6 +66,37 @@ test('PH0C-J: reconciliation log replay reconstructs empty-log state', () => {
   assert.ok(Array.isArray(readLog('docs/schema-shape/reconciliation-log.jsonl')));
 });
 
+test('PH0C-J: reconciliation replay applies G-0B-T3 RENAME_KEY rows to registry entries', () => {
+  const normalized = {
+    entries: [{
+      key: 'tenderOffer',
+      displayName: 'Tender offer structure present',
+      type: 'boolean',
+      aliases: ['dealStructure', 'tenderOffer', 'tender_offer'],
+    }],
+  };
+  const [entry] = replay(normalized, [{
+    decision: 'RENAME_KEY',
+    field_key: 'tenderOffer',
+    to: {
+      displayName: 'Tender offer present',
+      type: 'boolean',
+      aliases: ['tenderOffer', 'tender_offer'],
+    },
+  }]).entries;
+  assert.deepEqual(entry, {
+    key: 'tenderOffer',
+    displayName: 'Tender offer present',
+    type: 'boolean',
+    aliases: ['tenderOffer', 'tender_offer'],
+  });
+});
+
+test('PH0C-J: reconciliation replay ignores legacy MERGE rows for registry entries without values', () => {
+  const normalized = { entries: [{ key: 'x' }] };
+  assert.deepEqual(replay(normalized, [{ action: 'MERGE', rawValue: undefined, touched: [{}], targetCanonicalKey: 'A' }]), normalized);
+});
+
 test('PH0C-OPTION-A: normalized artifact contains populated deal-value triples', () => {
   const normalized = JSON.parse(fs.readFileSync('docs/schema-shape/normalized-v1.json', 'utf8'));
   const triples = normalized.triples || [];
