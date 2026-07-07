@@ -1,0 +1,46 @@
+{
+  "id": "FROZEN-party_role-v1",
+  "name": "party_role",
+  "status": "FROZEN",
+  "version": 1,
+  "introduced_by_phase": "0-B",
+  "values": [
+    {
+      "key": "company",
+      "label": "Company",
+      "aliases": [
+        "TARGET",
+        "SELLER",
+        "target",
+        "seller"
+      ]
+    },
+    {
+      "key": "parent",
+      "label": "Parent",
+      "aliases": [
+        "BUYER",
+        "ACQUIRER",
+        "PARENT",
+        "buyer",
+        "acquirer"
+      ]
+    },
+    {
+      "key": "both",
+      "label": "Both parties",
+      "aliases": [
+        "MUTUAL",
+        "EITHER",
+        "BOTH",
+        "mutual",
+        "either"
+      ]
+    }
+  ],
+  "rules": [
+    "Aliases are display-only and input-normalization only.",
+    "The stored canonicalKey is always company, parent, or both.",
+    "Legacy TARGET, BUYER, SELLER values may appear in extractorRawValue but not canonicalKey."
+  ]
+}
