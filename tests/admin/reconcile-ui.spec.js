@@ -7,9 +7,22 @@ test('PH0C-D: reconcile page exposes queue and decision API logs one row', () =>
   const sidebar = fs.readFileSync('components/admin/reconcile/QueueSidebar.jsx', 'utf8');
   const decide = fs.readFileSync('pages/api/admin/reconcile/decide.js', 'utf8');
   assert.match(page, /EntryPane/);
+  assert.match(page, /group: 'raw_value'/);
   assert.match(sidebar, /data-testid="reconcile-queue"/);
+  assert.match(sidebar, /entryTotal/);
   assert.match(decide, /reconciliation-log\.jsonl/);
   assert.match(decide, /failAfterPrepare/);
+  assert.match(decide, /applyResolution/);
+  assert.match(decide, /field_key/);
+  assert.match(decide, /raw_value/);
+});
+
+test('PH0C-D: queue API supports grouped slices for bulk triage', () => {
+  const queue = fs.readFileSync('pages/api/admin/reconcile/queue.js', 'utf8');
+  assert.match(queue, /groupEntries/);
+  assert.match(queue, /entry_total/);
+  assert.match(queue, /deal_count/);
+  assert.match(queue, /query\.group === 'raw_value'/);
 });
 
 test('PH0C-D: AdminNav includes Reconcile after Audit', () => {

@@ -8,35 +8,77 @@ function clone(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
+function selectedEntries(entries, body) {
+  if (Array.isArray(body.ids) && body.ids.length) {
+    const ids = new Set(body.ids);
+    return entries.filter((entry) => ids.has(entry.id));
+  }
+  if (body.field_key && Object.prototype.hasOwnProperty.call(body, 'raw_value')) {
+    return entries.filter((entry) => entry.field_key === body.field_key && entry.raw_value === body.raw_value && entry.status !== 'RESOLVED');
+  }
+  if (body.id) return entries.filter((entry) => entry.id === body.id);
+  return [];
+}
+
+function applyResolution(queue, normalized, body, now = new Date().toISOString()) {
+  const nextQueue = clone(queue);
+  const nextNormalized = clone(normalized);
+  const entries = selectedEntries(nextQueue.entries || [], body);
+  if (!entries.length) return { error: 'Queue entry not found' };
+  const action = body.action || 'MERGE';
+  const targetCanonicalKey = body.targetCanonicalKey || null;
+  const touched = [];
+  for (const entry of entries) {
+    entry.status = 'RESOLVED';
+    entry.resolution = {
+      action,
+      targetCanonicalKey,
+      rationale: body.rationale || '',
+      resolved_at: now,
+    };
+    touched.push(entry.id);
+  }
+  if (targetCanonicalKey) {
+    const selectedKeys = new Set(entries.map((entry) => `${entry.deal_id}|${entry.field_key}|${entry.raw_value}`));
+    for (const triple of nextNormalized.triples || []) {
+      if (selectedKeys.has(`${triple.deal_id}|${triple.field_key}|${triple.raw_value}`)) {
+        triple.canonicalKey = targetCanonicalKey;
+      }
+    }
+  }
+  const first = entries[0];
+  const logRow = {
+    id: `log-${Date.now()}`,
+    action,
+    field_key: first.field_key,
+    raw_value: first.raw_value,
+    targetCanonicalKey,
+    rationale: body.rationale || '',
+    touched,
+    resolved_at: now,
+  };
+  return { nextQueue, nextNormalized, entries, logRow };
+}
+
 export default function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
   const queue = JSON.parse(fs.readFileSync(QUEUE_FILE, 'utf8'));
   const normalized = JSON.parse(fs.readFileSync(NORMALIZED_FILE, 'utf8'));
   const logBefore = fs.existsSync(LOG_FILE) ? fs.readFileSync(LOG_FILE, 'utf8') : '';
-  const nextQueue = clone(queue);
-  const nextNormalized = clone(normalized);
-  const entry = nextQueue.entries.find((item) => item.id === req.body.id);
-  if (!entry) return res.status(404).json({ error: 'Queue entry not found' });
+  const prepared = applyResolution(queue, normalized, req.body);
+  if (prepared.error) return res.status(404).json({ error: prepared.error });
   if (req.body.failAfterPrepare) return res.status(500).json({ error: 'Injected failure before commit' });
-  entry.status = 'RESOLVED';
-  entry.resolution = { action: req.body.action, targetCanonicalKey: req.body.targetCanonicalKey || null, rationale: req.body.rationale };
-  const logRow = {
-    id: `log-${Date.now()}`,
-    action: req.body.action || 'MERGE',
-    rawValue: entry.rawValue,
-    targetCanonicalKey: req.body.targetCanonicalKey || null,
-    rationale: req.body.rationale || '',
-    touched: entry.occurrences || [],
-  };
   try {
-    fs.writeFileSync(QUEUE_FILE, `${JSON.stringify(nextQueue, null, 2)}\n`);
-    fs.writeFileSync(NORMALIZED_FILE, `${JSON.stringify(nextNormalized, null, 2)}\n`);
-    fs.writeFileSync(LOG_FILE, `${logBefore}${JSON.stringify(logRow)}\n`);
+    fs.writeFileSync(QUEUE_FILE, `${JSON.stringify(prepared.nextQueue, null, 2)}\n`);
+    fs.writeFileSync(NORMALIZED_FILE, `${JSON.stringify(prepared.nextNormalized, null, 2)}\n`);
+    fs.writeFileSync(LOG_FILE, `${logBefore}${JSON.stringify(prepared.logRow)}\n`);
   } catch (error) {
     fs.writeFileSync(QUEUE_FILE, `${JSON.stringify(queue, null, 2)}\n`);
     fs.writeFileSync(NORMALIZED_FILE, `${JSON.stringify(normalized, null, 2)}\n`);
     fs.writeFileSync(LOG_FILE, logBefore);
     throw error;
   }
-  return res.status(200).json({ entry, log: logRow });
+  return res.status(200).json({ entries: prepared.entries, log: prepared.logRow });
 }
+
+export { applyResolution, selectedEntries };

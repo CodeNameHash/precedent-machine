@@ -34,3 +34,5 @@ MIGRATE_TO_TRIPLES: 71395 triples produced from 12539 provisions across 40 deals
 RECONCILE_CORPUS: 50624 queue entries produced from 71395 triples
 
 OPTION_A_COMPLETE: populated Phase 0-C deal-value triples and reconciliation queue before freeze.
+
+PHASE_0_C_TAIL_RECONCILE_BULK_TRIAGE: grouped reconciliation queue by field/raw value for bulk review, added group-level resolution, and kept `/admin/registry/reconcile` below the large page-data warning.
