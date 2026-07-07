@@ -25,18 +25,19 @@
     "tests/schema-shape/processing-flow-*.spec.js",
     "tests/schema-shape/taxonomy-*.spec.js",
     "tests/schema-loss/**",
+    "docs/schema-shape/phase-0-C.frozen",
+    "docs/schema-shape/audit-state.json",
+    "pages/api/admin/audit/freeze.js",
     "WORKLOG-P0-D.md",
     "HANDOFF.md"
   ],
   "denied": [
     "docs/vocab/FROZEN-*.json",
     "docs/market-registry/FROZEN-*.json",
-    "docs/schema-shape/*.frozen",
     "docs/schema-shape/canonical-registry-v1.md",
     "docs/schema-shape/normalized-v1.json",
     "docs/schema-shape/reconciliation-log.jsonl",
     "docs/schema-shape/canonical-definitions.md",
-    "pages/api/admin/audit/freeze.js",
     "pages/api/admin/registry/freeze.js",
     "lib/parser-v2/**",
     "lib/schema/**",
@@ -47,5 +48,5 @@
     "supabase/migrations/**",
     "db/migrations/**"
   ],
-  "note": "Phase 0-D is read-only against every FROZEN artifact and every Phase-0-C-owned reconciliation/canonical file. Phase 0-D ships four WPs (WP-ADMIN-CLEANUP-01, WP-TAXONOMY-MAP-01, WP-PROCESSING-FLOW-MAP-01, WP-SCHEMA-LOSS-AUDIT-01) that render existing sources of truth and detect loss; no phase-0-D work may edit the sources themselves. Reviewer decisions from WP-SCHEMA-LOSS-AUDIT-01 re-open upstream freeze gates per Section 2.7 but never write to a FROZEN file directly. The Taxonomy and Processing-Flow markdown files are in the allowed list only because the map pages need to render them and may commit rendered-svg companions; edits to their prose remain reviewer-authored through the Freeze Gate PR mechanism (Codex may not mutate them mid-phase). scripts/schema-loss/** is allowed because WP-SCHEMA-LOSS-AUDIT-01 ships the residual and integrity audit scripts. pages/ingest.js is allowed as an explicit single-file deletion path for WP-ADMIN-CLEANUP-01 step 3; no other pages/** modifications are permitted. archive/strings-reviewer/** is allowed because PR #141's preserved reviewer UI folds into Phase 0-D scope (see WP-ADMIN-CLEANUP-01)."
+  "note": "Phase 0-D is read-only against every FROZEN artifact and every Phase-0-C-owned reconciliation/canonical file. Phase 0-D ships four WPs (WP-ADMIN-CLEANUP-01, WP-TAXONOMY-MAP-01, WP-PROCESSING-FLOW-MAP-01, WP-SCHEMA-LOSS-AUDIT-01) that render existing sources of truth and detect loss; no phase-0-D work may edit the sources themselves. Reviewer decisions from WP-SCHEMA-LOSS-AUDIT-01 re-open upstream freeze gates per Section 2.7 but never write to a FROZEN file directly. The Taxonomy and Processing-Flow markdown files are in the allowed list only because the map pages need to render them and may commit rendered-svg companions; edits to their prose remain reviewer-authored through the Freeze Gate PR mechanism (Codex may not mutate them mid-phase). scripts/schema-loss/** is allowed because WP-SCHEMA-LOSS-AUDIT-01 ships the residual and integrity audit scripts. pages/ingest.js is allowed as an explicit single-file deletion path for WP-ADMIN-CLEANUP-01 step 3; no other pages/** modifications are permitted. archive/strings-reviewer/** is allowed because PR #141's preserved reviewer UI folds into Phase 0-D scope (see WP-ADMIN-CLEANUP-01). Freeze-gate exception (added 2026-07-07): `docs/schema-shape/phase-0-C.frozen`, `docs/schema-shape/audit-state.json`, and `pages/api/admin/audit/freeze.js` are permitted in Phase 0-D because closing G-0C is a Phase-0-D-owned action (the gate blocks all four 0-D WPs). Editing any other frozen shape file remains forbidden. The freeze endpoint is on the allowed list to permit an async refactor required for section-anchor hydration; its logic must not change beyond that refactor."
 }
