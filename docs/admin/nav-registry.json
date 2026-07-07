@@ -24,6 +24,22 @@
     "description": "Resolve canonical registry reconciliation queue items with reviewer decisions."
   },
   {
+    "id": "reconciliation-dropped",
+    "label": "Dropped reconciliation",
+    "href": "/admin/reconciliation/dropped",
+    "group": "schema",
+    "order": 35,
+    "description": "Inspect moved or dropped reconciliation entries from the approved downstream cleanup."
+  },
+  {
+    "id": "reconciliation-deferred",
+    "label": "Deferred reconciliation",
+    "href": "/admin/reconciliation/deferred",
+    "group": "schema",
+    "order": 36,
+    "description": "Inspect schema-deferred reconciliation entries grouped by their downstream unblocker."
+  },
+  {
     "id": "taxonomy",
     "label": "Taxonomy",
     "href": "/admin/taxonomy",

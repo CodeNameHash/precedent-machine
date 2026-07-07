@@ -14,6 +14,14 @@ Audit: Inspect the Phase 0-C audit matrix and evidence behind populated canonica
 
 Reconcile: Resolve canonical registry reconciliation queue items with reviewer decisions.
 
+## reconciliation-dropped
+
+Dropped reconciliation: Inspect moved or dropped reconciliation entries from the approved downstream cleanup.
+
+## reconciliation-deferred
+
+Deferred reconciliation: Inspect schema-deferred reconciliation entries grouped by their downstream unblocker.
+
 ## taxonomy
 
 Taxonomy: Read the provision taxonomy source and inspect live corpus counts by taxonomy node.
