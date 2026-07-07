@@ -1,0 +1,27 @@
+{
+  "phase": "WP-PROMOTE-NEWHOME-TO-ROOT",
+  "name": "promote-newhome-to-root",
+  "allowed": [
+    ".github/phase-allowlists/wp-promote-newhome-to-root.json",
+    "BLOCKED-WP-PROMOTE-NEWHOME.md",
+    "BLOCKED-ALL.md",
+    "HANDOFF.md",
+    "next.config.js",
+    "lib/query/fixtures.js",
+    "pages/index.js",
+    "pages/newhome.js",
+    "pages/library.js",
+    "pages/newhome/library.js",
+    "pages/query/[kind]/[id].js",
+    "pages/newhome/query/[kind]/[id].js",
+    "pages/api/home.js",
+    "pages/api/newhome.js",
+    "pages/search.js",
+    "pages/api/search/facets.js",
+    "pages/api/search/provisions.js",
+    "pages/provisions/index.js",
+    "pages/provisions/[id].js"
+  ],
+  "denied": [],
+  "note": "WP-PROMOTE-NEWHOME adopts /newhome as /, moves library/query routes, preserves redirects, deletes legacy search and provisions index routes, and removes blocker files resolved by WP-CI-INFRA-03."
+}

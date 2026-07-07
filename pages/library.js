@@ -27,7 +27,7 @@ export default function LibraryPage() {
       <Head><title>Query Library · Corpus</title></Head>
       <main className="lib">
         <header>
-          <Link href="/newhome" className="brand"><span />Corpus</Link>
+          <Link href="/" className="brand"><span />Corpus</Link>
           <h1>User library</h1>
         </header>
         <section>
@@ -39,7 +39,7 @@ export default function LibraryPage() {
               <tbody>
                 {rows.map((row) => (
                   <tr key={row.id}>
-                    <td><Link href={`/newhome/query/${slug(row.query_kind)}/${row.id}`}>{row.title}</Link></td>
+                    <td><Link href={`/query/${slug(row.query_kind)}/${row.id}`}>{row.title}</Link></td>
                     <td>{row.query_kind.replace(/_/g, ' ')}</td>
                     <td>{row.last_run_at ? new Date(row.last_run_at).toLocaleString() : '-'}</td>
                     <td>{row.run_count || 0}</td>
