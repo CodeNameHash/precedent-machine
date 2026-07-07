@@ -1,6 +1,7 @@
 import fs from 'fs';
 
 const QUEUE_FILE = 'docs/schema-shape/reconciliation-queue.json';
+const NORMALIZED_FILE = 'docs/schema-shape/normalized-v1.json';
 const DEFAULT_LIMIT = 100;
 
 function clampInt(value, fallback, max) {
@@ -24,7 +25,30 @@ function entryMatches(entry, query = {}) {
   return true;
 }
 
-function groupEntries(entries) {
+function registryIndex(entries = []) {
+  return new Map(entries.map((entry) => [entry.key, entry]));
+}
+
+function enumCandidates(entry, registry) {
+  const enumValues = registry.get(entry.field_key)?.enumValues || [];
+  if (!enumValues.length) return entry.similarity_candidates || [];
+  return enumValues.map((canonicalKey) => ({
+    canonicalKey,
+    string_score: canonicalKey === entry.raw_value ? 1 : 0,
+    context_score: 0,
+    prior_score: 0,
+    total: canonicalKey === entry.raw_value ? 1 : 0,
+  }));
+}
+
+function hydrateCandidates(entries, registry) {
+  return entries.map((entry) => ({
+    ...entry,
+    similarity_candidates: enumCandidates(entry, registry),
+  }));
+}
+
+function groupRawEntries(entries) {
   const groups = new Map();
   for (const entry of entries) {
     const key = `${entry.field_key}|${entry.raw_value}`;
@@ -49,15 +73,43 @@ function groupEntries(entries) {
   }
   return [...groups.values()].map((group) => {
     const { deal_ids: dealIds, ...rest } = group;
-    return { ...rest, deal_count: dealIds.size };
+    return { ...rest, deal_count: dealIds.size, deal_ids: [...dealIds] };
   }).sort((a, b) => b.count - a.count || a.field_key.localeCompare(b.field_key) || a.raw_value.localeCompare(b.raw_value));
+}
+
+function groupFieldEntries(entries) {
+  const rawGroups = groupRawEntries(entries);
+  const groups = new Map();
+  for (const rawGroup of rawGroups) {
+    const group = groups.get(rawGroup.field_key) || {
+      id: rawGroup.field_key,
+      group_type: 'field_key',
+      field_key: rawGroup.field_key,
+      count: 0,
+      deal_count: 0,
+      raw_count: 0,
+      raw_groups: [],
+      deal_ids: new Set(),
+    };
+    group.count += rawGroup.count;
+    group.raw_count += 1;
+    group.raw_groups.push(rawGroup);
+    for (const dealId of rawGroup.deal_ids || []) group.deal_ids.add(dealId);
+    groups.set(rawGroup.field_key, group);
+  }
+  return [...groups.values()].map((group) => {
+    const { deal_ids: dealIds, ...rest } = group;
+    return { ...rest, deal_count: dealIds.size };
+  }).sort((a, b) => a.field_key.localeCompare(b.field_key));
 }
 
 export function readQueueSlice(query = {}) {
   const queue = JSON.parse(fs.readFileSync(QUEUE_FILE, 'utf8'));
-  const filtered = (queue.entries || []).filter((entry) => entryMatches(entry, query));
-  const grouped = query.group === 'raw_value' || query.group === 'true';
-  const items = grouped ? groupEntries(filtered) : filtered;
+  const normalized = JSON.parse(fs.readFileSync(NORMALIZED_FILE, 'utf8'));
+  const registry = registryIndex(normalized.entries || []);
+  const filtered = hydrateCandidates((queue.entries || []).filter((entry) => entryMatches(entry, query)), registry);
+  const grouped = ['raw_value', 'field_key', 'true'].includes(String(query.group || ''));
+  const items = query.group === 'field_key' ? groupFieldEntries(filtered) : (grouped ? groupRawEntries(filtered) : filtered);
   const offset = clampInt(query.offset, 0, items.length);
   const limit = clampInt(query.limit, DEFAULT_LIMIT, 500);
   return {
@@ -67,11 +119,12 @@ export function readQueueSlice(query = {}) {
     offset,
     limit,
     grouped,
+    group: query.group || null,
     entries: items.slice(offset, offset + limit),
   };
 }
 
-export { groupEntries };
+export { groupRawEntries as groupEntries, groupFieldEntries };
 
 export default function handler(req, res) {
   return res.status(200).json(readQueueSlice(req.query || {}));
