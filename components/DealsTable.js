@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useViewMode } from './ViewModeContext';
 
@@ -572,17 +571,7 @@ function DealRow({ row, selected, onToggle, onOpen }) {
       <td className="px-3 py-2 align-top text-inkMid max-w-[240px]">
         {row.sellerLawyers.length ? row.sellerLawyers.join(', ') : <Dash />}
       </td>
-      <td className="px-3 py-2 align-top whitespace-nowrap text-right" onClick={(e) => e.stopPropagation()}>
-        {isEdit ? (
-          <Link
-            href={`/ingest?deal_id=${row.id}`}
-            title="Classify only, extract a specific type, or re-ingest"
-            className="font-mono text-[10px] uppercase tracking-wider text-inkLight hover:text-accentDeep"
-          >
-            Ingest
-          </Link>
-        ) : null}
-      </td>
+      <td className="px-3 py-2 align-top whitespace-nowrap text-right" onClick={(e) => e.stopPropagation()} />
     </tr>
   );
 }
