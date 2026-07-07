@@ -8,4 +8,4 @@
 - WP-PROCESSING-FLOW-MAP-01 merged in PR #165. `/admin/processing-flow` renders the processing-flow source, stage metrics, and gap list.
 - WP-SCHEMA-LOSS-AUDIT-01 was already merged in PR #156 before this fan-out resumed.
 - WP-REGISTRY-EVOLVE-01 classification/apply path was already merged in PRs #151 and #158 before this fan-out resumed.
-- WP-ADMIN-CLEANUP-01 step 3 remains blocked by live `/ingest` callers recorded in `BLOCKED-WP-ADMIN-CLEANUP-01-STEP-3.md`.
+- WP-ADMIN-CLEANUP-01 step 3 was unblocked by reviewer approval to delete the legacy `/ingest` CTAs from review pages, then delete `pages/ingest.js`.

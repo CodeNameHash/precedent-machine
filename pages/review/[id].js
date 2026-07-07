@@ -12306,11 +12306,6 @@ export default function ReviewPage() {
                 icon="+"
                 title="No provisions found"
                 description="This deal has no parsed provisions yet. Ingest an agreement to get started."
-                action={
-                  <Link href="/ingest" className="inline-block px-4 py-2 text-sm font-ui bg-accent text-white rounded hover:bg-accent/90 transition-colors">
-                    Go to Ingest
-                  </Link>
-                }
               />
             )}
           </div>

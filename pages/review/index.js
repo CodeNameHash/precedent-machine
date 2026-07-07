@@ -38,11 +38,6 @@ export default function ReviewIndex() {
           icon="+"
           title="No deals to review"
           description="Ingest an agreement first, then come back here to review the parsed provisions."
-          action={
-            <Link href="/ingest" className="inline-block px-4 py-2 text-sm font-ui bg-accent text-white rounded hover:bg-accent/90 transition-colors">
-              Go to Ingest
-            </Link>
-          }
         />
       ) : (
         <div className="space-y-2">
