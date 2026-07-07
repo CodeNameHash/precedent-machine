@@ -564,3 +564,7 @@ The user is a senior M&A attorney building this tool primarily for their own
 review workflow but with cross-deal comparison as the headline goal. Treat
 their domain expertise as ground truth and confirm before introducing structural
 opinions about what's "normal" in M&A.
+
+## WP-CI-INFRA-01 completion note
+
+2026-07-07: WP-CI-INFRA-01: phase-allowlist CI job fixed for shallow-checkout PRs. Unblocks PR #132.
