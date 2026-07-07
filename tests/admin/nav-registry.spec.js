@@ -4,6 +4,12 @@ const test = require('node:test');
 
 const registry = require('../../docs/admin/nav-registry.json');
 
+function pageFileForHref(href) {
+  if (href === '/') return 'pages/index.js';
+  if (!href.startsWith('/admin/')) return null;
+  return `pages${href}.js`;
+}
+
 test('nav-registry.json is well-formed', () => {
   const allowedGroups = new Set(['schema', 'ingest', 'search', 'system']);
   for (const entry of registry) {
@@ -54,4 +60,25 @@ test('nav-registry render snapshot', () => {
     'schema:30:Reconcile:/admin/registry/reconcile',
     'search:10:Search / Review:/',
   ]);
+});
+
+test('admin hub renders one card per nav-registry entry', () => {
+  const hub = fs.readFileSync('pages/admin/index.js', 'utf8');
+  assert.match(hub, /navRegistry/);
+  assert.match(hub, /data-testid="admin-hub-card"/);
+  assert.match(hub, /section\.entries\.map/);
+});
+
+test('every pages/admin nav-registry entry exists', () => {
+  for (const entry of registry) {
+    if (!entry.href.startsWith('/admin/')) continue;
+    assert.ok(fs.existsSync(pageFileForHref(entry.href)), `${entry.href} is missing its page file`);
+  }
+});
+
+test('docs/admin/README.md has a heading per nav-registry id', () => {
+  const readme = fs.readFileSync('docs/admin/README.md', 'utf8');
+  for (const entry of registry) {
+    assert.match(readme, new RegExp(`^## ${entry.id}$`, 'm'));
+  }
 });
