@@ -1,0 +1,28 @@
+{
+  "phase": "WP-M2-00-01-QUEUE-CANONICAL-SCHEMA",
+  "name": "m2-00-01-queue-canonical-schema",
+  "allowed": [
+    ".github/phase-allowlists/wp-m2-00-01-queue-canonical-schema.json",
+    ".github/phase-allowlists/wp-m2-02-schema-parity-audit.json",
+    "BLOCKED-WP-M2-02-SCHEMA-PARITY-AUDIT.md",
+    "docs/handoffs/CODEX-DIRECTIVE-M2-02-restructure.md",
+    "docs/handoffs/M2-00-canonical-shapes.md",
+    "docs/review-queue/a187a933-217d-40f0-9ac6-ed4afe054e4a.json"
+  ],
+  "denied": [
+    "docs/vocab/FROZEN-*.json",
+    "docs/market-registry/FROZEN-*.json",
+    "docs/schema-shape/*.frozen",
+    "docs/schema-shape/canonical-registry-v1.md",
+    "docs/schema-shape/canonical-definitions.md",
+    "docs/schema-shape/normalized-v1.json",
+    "docs/schema-shape/reconciliation-queue.json",
+    "lib/**",
+    "pages/**",
+    "components/**",
+    "scripts/**",
+    "supabase/migrations/**",
+    "db/migrations/**"
+  ],
+  "note": "WP-M2-00 Step 1 publishes the canonical schema Review Queue entry and evidence. It also removes the stale BLOCKED file from merged PR #186 because blockers now route through Review Queue entries."
+}

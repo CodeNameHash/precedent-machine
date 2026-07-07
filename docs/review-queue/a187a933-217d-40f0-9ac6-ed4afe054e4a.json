@@ -1,0 +1,45 @@
+{
+  "id": "a187a933-217d-40f0-9ac6-ed4afe054e4a",
+  "created_at": "2026-07-07T23:32:46.000Z",
+  "kind": "canonical",
+  "title": "WP-M2-00 canonical schema: provision identity, provenance, kind, definitions",
+  "summary": "Before wiring up the schema-first render path, three canonical shapes must be locked: (1) provision-instance identity (stable across reingest) plus excerpt IDs; (2) provenance bundle (source doc, page, offset, extractor plus version, model, prompt hash, run_id) plus extractor stamp visible on card; (3) Provision.kind field with values standard | definition | cross-reference, enabling definitions-as-provisions with cross-references. Approving unblocks WP-M2-00 Steps 2-8 to write the actual PRs. The evidence also carries the useful M2-02 discovery from PR #186: there are currently 40 deals, zero provision_cards rows, and no card-backed review branch.",
+  "evidence": [
+    {
+      "label": "This directive",
+      "url": "docs/handoffs/CODEX-DIRECTIVE-M2-02-restructure.md"
+    },
+    {
+      "label": "Proposed canonical shapes and M2-02 discovery",
+      "url": "docs/handoffs/M2-00-canonical-shapes.md"
+    },
+    {
+      "label": "PLAN-TAXONOMY-GAPS.md before restructure",
+      "url": "PLAN-TAXONOMY-GAPS.md"
+    },
+    {
+      "label": "Merged blocker PR #186",
+      "url": "https://github.com/CodeNameHash/precedent-machine/pull/186"
+    }
+  ],
+  "choices": [
+    {
+      "key": "approve",
+      "label": "Approve all three shapes as proposed",
+      "codex_action": "proceed with WP-M2-00 Steps 2-8"
+    },
+    {
+      "key": "reject",
+      "label": "Reject, reopen with counter-proposal",
+      "codex_action": "halt WP-M2-00, ping Ben"
+    },
+    {
+      "key": "modify",
+      "label": "Approve with changes",
+      "codex_action": "await Ben-authored diff to this directive"
+    }
+  ],
+  "resolution": null,
+  "resolved_at": null,
+  "resolved_by": null
+}
