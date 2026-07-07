@@ -58,6 +58,8 @@ test('nav-registry render snapshot', () => {
     'schema:10:Registry:/admin/registry',
     'schema:20:Audit:/admin/registry/audit',
     'schema:30:Reconcile:/admin/registry/reconcile',
+    'schema:35:Dropped reconciliation:/admin/reconciliation/dropped',
+    'schema:36:Deferred reconciliation:/admin/reconciliation/deferred',
     'schema:40:Taxonomy:/admin/taxonomy',
     'schema:50:Processing flow:/admin/processing-flow',
     'schema:60:Schema loss audit:/admin/schema-loss',
