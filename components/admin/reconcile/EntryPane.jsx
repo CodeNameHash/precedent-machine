@@ -1,7 +1,7 @@
 import CrossDealPreview from './CrossDealPreview';
 import SplitFlow from './SplitFlow';
 
-export default function EntryPane({ entry, suggestions = [], selectedCandidate, onSelectCandidate, onResolve }) {
+export default function EntryPane({ entry, suggestions = [], selectedCandidate, message, isResolving = false, onSelectCandidate, onResolve }) {
   if (!entry) {
     return <main className="p-6 text-sm text-inkLight">Select a queue entry.</main>;
   }
@@ -29,13 +29,23 @@ export default function EntryPane({ entry, suggestions = [], selectedCandidate, 
             </button>
           ))}
         </div>
+        {selectedCandidate ? (
+          <p className="mt-3 text-sm text-inkLight">Selected: {selectedCandidate.canonicalKey || selectedCandidate.key}</p>
+        ) : (
+          <p className="mt-3 text-sm text-inkLight">Select a suggested match before Merge or Promote.</p>
+        )}
       </section>
       <CrossDealPreview entry={entry} />
+      {message ? (
+        <div className={`rounded border px-3 py-2 text-sm ${message.tone === 'error' ? 'border-red-200 bg-red-50 text-red-700' : 'border-green-200 bg-green-50 text-green-800'}`}>
+          {message.text}
+        </div>
+      ) : null}
       <div className="flex flex-wrap gap-2">
-        <button type="button" className="rounded border border-border px-3 py-1 text-sm disabled:opacity-50" disabled={!selectedCandidate} onClick={() => onResolve('MERGE')}>Merge</button>
-        <button type="button" className="rounded border border-border px-3 py-1 text-sm disabled:opacity-50" disabled={!selectedCandidate} onClick={() => onResolve('PROMOTE')}>Promote</button>
-        <button type="button" className="rounded border border-border px-3 py-1 text-sm" onClick={() => onResolve('SPLIT')}>Split</button>
-        <button type="button" className="rounded border border-border px-3 py-1 text-sm" onClick={() => onResolve('FREEFORM')}>Freeform</button>
+        <button type="button" className="rounded border border-border px-3 py-1 text-sm disabled:opacity-50" disabled={!selectedCandidate || isResolving} onClick={() => onResolve('MERGE')}>Merge</button>
+        <button type="button" className="rounded border border-border px-3 py-1 text-sm disabled:opacity-50" disabled={!selectedCandidate || isResolving} onClick={() => onResolve('PROMOTE')}>Promote</button>
+        <button type="button" className="rounded border border-border px-3 py-1 text-sm disabled:opacity-50" disabled={isResolving} onClick={() => onResolve('SPLIT')}>Split</button>
+        <button type="button" className="rounded border border-border px-3 py-1 text-sm disabled:opacity-50" disabled={isResolving} onClick={() => onResolve('FREEFORM')}>Freeform</button>
       </div>
       <SplitFlow entry={entry} />
     </main>

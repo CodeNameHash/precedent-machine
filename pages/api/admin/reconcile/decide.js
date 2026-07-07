@@ -27,6 +27,12 @@ function applyResolution(queue, normalized, body, now = new Date().toISOString()
   if (!entries.length) return { error: 'Queue entry not found' };
   const action = body.action || 'MERGE';
   const targetCanonicalKey = body.targetCanonicalKey || null;
+  if (['MERGE', 'PROMOTE'].includes(action) && !targetCanonicalKey) {
+    return { error: `${action} requires targetCanonicalKey` };
+  }
+  if (action === 'SPLIT') {
+    return { error: 'SPLIT is not implemented yet; use Merge, Promote, or Freeform.' };
+  }
   const touched = [];
   for (const entry of entries) {
     entry.status = 'RESOLVED';
@@ -62,11 +68,14 @@ function applyResolution(queue, normalized, body, now = new Date().toISOString()
 
 export default function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  if (process.env.VERCEL) {
+    return res.status(409).json({ error: 'Reconciliation writes must run locally so repo JSON artifacts can be committed.' });
+  }
   const queue = JSON.parse(fs.readFileSync(QUEUE_FILE, 'utf8'));
   const normalized = JSON.parse(fs.readFileSync(NORMALIZED_FILE, 'utf8'));
   const logBefore = fs.existsSync(LOG_FILE) ? fs.readFileSync(LOG_FILE, 'utf8') : '';
   const prepared = applyResolution(queue, normalized, req.body);
-  if (prepared.error) return res.status(404).json({ error: prepared.error });
+  if (prepared.error) return res.status(400).json({ error: prepared.error });
   if (req.body.failAfterPrepare) return res.status(500).json({ error: 'Injected failure before commit' });
   try {
     fs.writeFileSync(QUEUE_FILE, `${JSON.stringify(prepared.nextQueue, null, 2)}\n`);
