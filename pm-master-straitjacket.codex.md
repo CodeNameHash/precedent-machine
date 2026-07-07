@@ -39,6 +39,8 @@ Phase N+1 does not start until Phase N's tag is present in `git log`. This is en
 | Reprocess instructions for Skechers/Chevron/Mr. Cooper/Metsera | I |
 | Explicit non-scope (what Codex may never touch) | J |
 
+**Current milestone queue.** PART 3 §3.3 is now a pointer to `PLAN.md` at repo root. Use `PLAN.md` and `PLAN-M<n>-*.md` for current milestone sequencing and detail.
+
 If a rule in Part 2 references "Appendix X," Codex reads Appendix X before writing code for that step. Not after. Not never.
 
 ---
@@ -718,17 +720,9 @@ This section is a living snapshot of where `main` actually is, updated whenever 
 - **G-0C (Taxonomy v3 + Processing Flow v2)** — **FROZEN** at commit `1ea062d6d86e10b96b30a805df863095d49360fc` on 2026-07-07T15:56:55Z by ben@precedent-machine. `audit-state.json.frozen_shapes = ["phase-0-C"]`. Any code path that classifies, reads, or writes provisions MUST resolve to the vocab/flow defined by these two documents.
 - **G-0, G-0A, G-1 through G-4, G-SCORE, G-LEARN** — pending, queued.
 
-## 3.3 Active work-package queue (post-drawer, post-G-0C)
+## 3.3 Active work-package queue
 
-Ordering is dependency-driven, not priority-driven. Codex picks the topmost unblocked WP unless a per-WP brief says otherwise.
-
-1. **WP-INGEST-CATALOG** (Roadmap v5 §WP-INGEST-CATALOG) — next. Branch `wp/ingest-catalog`. Cataloguing all deal ingest sources and their current parser paths. Unblocked.
-2. **WP-UX-SHELL** (Roadmap v5 §WP-UX-SHELL, lines 398–435) — unblocked, brief lands with this PR. Branch `feat/ux-shell`. Ships design tokens, ESLint rule, new two-level sidebar, dense header, canonical short-form dict, full-doc overlay, landing grid, section persistence. Does NOT touch provision cards, `lib/features/**`, `lib/rubric/**`, `lib/taxonomy/**`, ingest, or API routes.
-3. **WP-SCHEMA** — schema-first migration per `pm-schema-first-migration.codex.md`. **Phases 1–7B merged** (PRs #101, #102, #119, #124, #125, #126, #127, #128). **Open:** Phase 8 (destructive delete of old vocabularies) — gated on Ben decision, not on Codex; `docs/schema-migration/deletions.md` still reads "No deletion decisions recorded yet." Do NOT kick Phase 8 without an explicit Ben go.
-4. **WP-RECONCIL-DOWNSTREAM** (new, this PR) — Phase-0-C reconciliation queue landed 644 RESOLVED entries and G-0C is frozen (`1ea062d`), but the two downstream artifacts remain incomplete: (a) `docs/schema-shape/reextraction-queue.json` still has **0 entries** — must be populated from the 644 resolved reconciliations; (b) once populated, run reextraction against affected deals and produce `docs/reprocess/round-reconcil.md`. Discovery step: read `docs/schema-shape/reconciliation-log.jsonl` (99 decisions) + `reconciliation-queue.json` entries where `status = RESOLVED` and derive the reextraction target set. Also unblocks `docs/schema-shape/unmapped-observations.json` Dimension A once a provisions snapshot exists.
-5. **WP-QUERY, WP-REPORTS** — spec merged, UI polish blocked on WP-UX-SHELL.
-6. **WP-REPO-HYGIENE-01** — queued for after WP-INGEST-CATALOG.
-7. **WP-UX-REVIEW** — blocked on WP-UX-SHELL.
+**§3.3 Active work-package queue** — superseded by `PLAN.md` at repo root. See `PLAN.md` for current milestones and `PLAN-M<n>-*.md` for detail. This section is a pointer only.
 
 ## 3.4 Active blocks on `main`
 

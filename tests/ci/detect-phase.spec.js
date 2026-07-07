@@ -38,6 +38,10 @@ test('detect-phase accepts the WP-CI-INFRA-03 self-hosting branch', () => {
   assert.equal(detectPhase('infra/wp-branch-support'), 'WP-CI-INFRA-03');
 });
 
+test('detect-phase accepts the transitional PLAN system branch', () => {
+  assert.equal(detectPhase('plan/land-plan-system'), 'PLAN-SYSTEM');
+});
+
 test('detect-phase rejects malformed wp/ slugs', () => {
   assert.throws(() => detectPhase('wp/'), /Branch name must match/);
   assert.throws(() => detectPhase('wp/-leading'), /Branch name must match/);
@@ -46,7 +50,7 @@ test('detect-phase rejects malformed wp/ slugs', () => {
 });
 
 test('detect-phase rejects malformed branch names', () => {
-  assert.throws(() => detectPhase('feature/random-thing'), /phase-\{N\}\/\*, wp\/<slug>/);
+  assert.throws(() => detectPhase('feature/random-thing'), /phase-\{N\}\/\*, wp\/<slug>, plan\/land-plan-system/);
 });
 
 test('detect-phase CLI returns phase id', () => {
