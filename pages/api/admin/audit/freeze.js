@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { buildAuditMatrix } from './matrix';
+import { buildAuditMatrix } from './matrix.js';
 
 const STATE_FILE = 'docs/schema-shape/audit-state.json';
 const MARKER_FILE = 'docs/schema-shape/phase-0-C.frozen';

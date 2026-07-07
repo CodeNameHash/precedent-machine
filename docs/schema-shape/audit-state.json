@@ -1,5 +1,16 @@
 {
   "schema_version": 1,
-  "frozen_shapes": [],
-  "decisions": []
+  "frozen_shapes": [
+    "phase-0-C"
+  ],
+  "decisions": [
+    {
+      "gate": "G-0C",
+      "status": "green",
+      "resolution": "frozen",
+      "frozen_at": "2026-07-07T15:56:55.693Z",
+      "reviewer": "ben@precedent-machine",
+      "note": "Phase 0-C audit matrix reviewed; evidence quotes verified > 20 chars across all populated cells."
+    }
+  ]
 }
