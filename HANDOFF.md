@@ -591,4 +591,8 @@ opinions about what's "normal" in M&A.
 
 ## WP-SCHEMA-LOSS-AUDIT-01 completion note
 
-2026-07-07: WP-SCHEMA-LOSS-AUDIT-01: PR #156 shipped Dimension A residual-audit scaffolding, Dimension B claim-integrity warnings, guarded decision routing, and `/admin/schema-loss`. Notable data changes: added empty Dimension A queues because no committed Provision text snapshot exists, added 200 deterministic suspect-Claim warnings from `normalized-v1.json`, and added empty append-only decision/handoff JSONL files. Follow-ups: Dimension A needs a provisions snapshot or live provisions table to surface substantive uncovered-text clusters; PR #151 still awaits `CLASSIFICATION_APPROVED`.
+2026-07-07: WP-SCHEMA-LOSS-AUDIT-01: PR #156 shipped Dimension A residual-audit scaffolding, Dimension B claim-integrity warnings, guarded decision routing, and `/admin/schema-loss`. Notable data changes: added empty Dimension A queues because no committed Provision text snapshot exists, added 200 deterministic suspect-Claim warnings from `normalized-v1.json`, and added empty append-only decision/handoff JSONL files. Follow-ups: Dimension A needs a provisions snapshot or live provisions table to surface substantive uncovered-text clusters; PR #151 has `CLASSIFICATION_APPROVED` and PR #158 carries the G-0B-T3 apply step.
+
+## WP-REGISTRY-EVOLVE-01 apply note
+
+2026-07-07: WP-REGISTRY-EVOLVE-01 steps 3-6 prepared in PR: 61 approved registry deltas applied, 19 reconciliation-log rename records appended, no c_noise rows. G-0B-T3 crossing: Ben merge required.
