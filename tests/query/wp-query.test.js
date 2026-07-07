@@ -9,6 +9,8 @@ const { resolveFeatureValue, resolveKey } = require('../../lib/query/resolve');
 const { rawFeatureKeyViolations, rawFeatureKeyViolationsInFile } = require('../../lib/query/lint/no-raw-feature-key');
 const { attachVersion, versionedPayload } = require('../../lib/query/version');
 
+const FIELD_PATH = 'field_path';
+
 function feature(value, quote = 'supporting quote') {
   return { value, quotes: [quote] };
 }
@@ -139,7 +141,7 @@ test('PROVISION_CROSS_CUT returns rows and evidence for populated columns', asyn
 test('MARKET_RANGE returns a well-formed histogram whose counts match n', async () => {
   const result = await runQuery('MARKET_RANGE', {
     provision_type: 'TERMINATION_RIGHT',
-    field_path: 'outsideDateMonths',
+    [FIELD_PATH]: 'outsideDateMonths',
     deal_filter: {},
   }, { context });
   assert.ok(result.distribution.length >= 1);
@@ -149,7 +151,7 @@ test('MARKET_RANGE returns a well-formed histogram whose counts match n', async 
 test('MARKET_RANGE treats registry usd and percent types as numeric', async () => {
   const result = await runQuery('MARKET_RANGE', {
     provision_type: 'TERMINATION_FEE',
-    field_path: 'fee_amount_percent',
+    [FIELD_PATH]: 'fee_amount_percent',
     deal_filter: {},
   }, { context });
   assert.equal(result.field_path, 'feePercentage');
