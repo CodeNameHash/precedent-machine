@@ -1,0 +1,24 @@
+{
+  "phase": "WP-M1-03-CODEX-HELPERS",
+  "name": "m1-03-codex-helpers",
+  "allowed": [
+    ".github/phase-allowlists/wp-m1-03-codex-helpers.json",
+    "pm-wp-m1-03-codex-helpers.codex.md",
+    "scripts/review-queue/**",
+    "tests/review-queue/**"
+  ],
+  "denied": [
+    "docs/vocab/FROZEN-*.json",
+    "docs/market-registry/FROZEN-*.json",
+    "docs/schema-shape/*.frozen",
+    "docs/schema-shape/canonical-registry-v1.md",
+    "docs/schema-shape/canonical-definitions.md",
+    "docs/schema-shape/normalized-v1.json",
+    "lib/parser-v2/**",
+    "lib/schema/**",
+    "lib/rubric.js",
+    "supabase/migrations/**",
+    "db/migrations/**"
+  ],
+  "note": "WP-M1-03 ships Codex-side Review Queue CLI helpers and tests. It does not create live queue entries, alter canonical semantics, or modify frozen schema artefacts."
+}
