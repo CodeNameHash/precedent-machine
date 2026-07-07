@@ -8,7 +8,7 @@ import { freezePreconditions } from '../../pages/api/admin/audit/freeze.js';
 const STATE_FILE = 'docs/schema-shape/audit-state.json';
 const MARKER_FILE = 'docs/schema-shape/phase-0-C.frozen';
 
-const pre = freezePreconditions();
+const pre = await freezePreconditions();
 if (!pre.ok) {
   console.error('Freeze preconditions failed:');
   for (const f of pre.failures) console.error(' -', f);
