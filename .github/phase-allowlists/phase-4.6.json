@@ -1,0 +1,21 @@
+{
+  "phase": "4.6",
+  "name": "iocb-card-parity",
+  "allowed": [
+    "components/review/IocPartyCard.jsx",
+    "pages/review/[id].js",
+    "tests/iocb-card-has-affirmative-subtable.test.js",
+    "tests/iocb-card-has-negative-subtable.test.js",
+    "tests/ioc-card-single-component.test.js",
+    "WORKLOG-P4.6.md"
+  ],
+  "denied": [
+    "scripts/lint/forbidden-patterns.sh",
+    ".github/phase-allowlists/*",
+    "docs/acks/*"
+  ],
+  "market_registry_additions": [
+    "deal.ioc.buyerHasAffirmativeCovenants",
+    "deal.ioc.buyerHasNegativeCovenants"
+  ]
+}

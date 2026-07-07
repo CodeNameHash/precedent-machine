@@ -1,0 +1,31 @@
+{
+  "phase": "3",
+  "name": "material-contracts-ioc-target-nosol",
+  "allowed": [
+    "components/review/MaterialContractsTable.jsx",
+    "components/review/IocTargetSection.jsx",
+    "components/review/NosolSection.jsx",
+    "lib/vocab/threshold-qualitative.js",
+    "lib/vocab/superior-proposal-limbs.js",
+    "lib/vocab/nosol-carveouts.js",
+    "lib/queries/ioc-target.js",
+    "lib/queries/nosol.js",
+    "lib/parser-v2/classify.js",
+    "scripts/audit/ioc-scope-mismatch.js",
+    "scripts/canonical-sweep/threshold-qualitative.js",
+    "scripts/canonical-sweep/superior-proposal-limbs.js",
+    "scripts/canonical-sweep/nosol-carveouts.js",
+    "reports/canonical-sweep/phase-3-*.md",
+    "db/migrations/",
+    "tests/review/phase-3-*.spec.js",
+    "WORKLOG-P3.md"
+  ],
+  "denied": [
+    "scripts/lint/forbidden-patterns.sh",
+    ".github/phase-allowlists/*",
+    "docs/acks/*",
+    "docs/market-registry/FROZEN-*",
+    "docs/vocab/FROZEN-*"
+  ],
+  "market_registry_additions": []
+}

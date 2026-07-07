@@ -1,0 +1,651 @@
+# Market Registry Merge Report
+
+input rows: 1327
+output rows: 683
+mechanical merges: 701
+flagged near-duplicates: 59
+groups untouched: 158
+
+## REQUIRES_REVIEWER_DECISION
+
+- 59 rows in generated-v1.deduped.json carry review_flag=REQUIRES_REVIEWER_DECISION.
+
+## Mechanical Merge Groups
+
+- burdenBaseline: rubric.anti_burden.burden_baseline, rubric.anti_efforts.burden_baseline, rubric.anti.burden_baseline
+- burdenCap: rubric.anti_burden.burden_cap, rubric.anti.burden_cap
+- burdenCommitment: rubric.anti_burden.burden_commitment, rubric.anti_efforts.burden_commitment, rubric.anti.burden_commitment
+- burdensomConditionDefined: rubric.anti_burden.burdensom_condition_defined, rubric.anti.burdensom_condition_defined
+- burdensomeConditionInTerminationTriggers: rubric.anti_burden.burdensome_condition_in_termination_triggers, rubric.anti.burdensome_condition_in_termination_triggers
+- burdensomeConditionPresent: rubric.anti_burden.burdensome_condition_present, rubric.cond_b.burdensome_condition_present, rubric.cond_m.burdensome_condition_present, rubric.cond_s.burdensome_condition_present
+- burdensomeConditionScope: rubric.anti_burden.burdensome_condition_scope, rubric.cond_b.burdensome_condition_scope, rubric.cond_m.burdensome_condition_scope, rubric.cond_s.burdensome_condition_scope
+- capDetail: rubric.anti_burden.cap_detail, rubric.anti_efforts.cap_detail, rubric.anti.cap_detail
+- divestitureCap: rubric.anti_burden.divestiture_cap, rubric.anti.divestiture_cap
+- divestitureCapDescription: rubric.anti_burden.divestiture_cap_description, rubric.anti.divestiture_cap_description
+- effortsStandard: rubric.anti_burden.efforts_standard, rubric.anti_efforts.efforts_standard, rubric.anti.efforts_standard, rubric.ioc.efforts_standard
+- hellOrHighWater: rubric.anti_burden.hell_or_high_water, rubric.anti.hell_or_high_water
+- mainConcept: rubric.anti_burden.main_concept, rubric.anti_cooperate.main_concept, rubric.anti_efforts.main_concept, rubric.anti_filing.main_concept, rubric.anti_noaction.main_concept, rubric.anti.main_concept, rubric.cond_frustrate.main_concept, rubric.consid_collar.main_concept, rubric.consid_cvr.main_concept, rubric.consid_exchange_ratio.main_concept, rubric.consid_ticking.main_concept, rubric.consid_walkaway.main_concept, rubric.consid.main_concept, rubric.cov_appraisal.main_concept, rubric.cov_do.main_concept, rubric.cov_employee.main_concept, rubric.cov_marketing.main_concept, rubric.cov_payagent.main_concept, rubric.cov_shaprv_parent.main_concept, rubric.cov.main_concept, rubric.def.main_concept, rubric.ioc_negative_preamble.main_concept, rubric.misc.main_concept, rubric.nosol.main_concept, rubric.other.main_concept, rubric.rep_b_antireliance.main_concept, rubric.rep_b_funds.main_concept, rubric.rep_b_norep.main_concept, rubric.rep_b_preamble.main_concept, rubric.rep_b_solvency.main_concept, rubric.rep_b.main_concept, rubric.rep_t_material_contracts.main_concept, rubric.rep_t_noliab.main_concept, rubric.rep_t_norep.main_concept, rubric.rep_t_preamble.main_concept, rubric.rep_t_sufficiency.main_concept, rubric.rep_t_top_customers.main_concept, rubric.rep_t.main_concept, rubric.struct_closing.main_concept, rubric.struct_merger.main_concept, rubric.struct_offer.main_concept, rubric.struct.main_concept, rubric.termf_effect.main_concept, rubric.termf_expense.main_concept, rubric.termf_reimburse.main_concept, rubric.termf_reverse.main_concept, rubric.termf_rtf_anti.main_concept, rubric.termf_sole.main_concept, rubric.termf_tail.main_concept, rubric.termf_target.main_concept, rubric.termf.main_concept, rubric.termr_breach_b.main_concept, rubric.termr_breach_t.main_concept, rubric.termr_extension.main_concept, rubric.termr_legal.main_concept, rubric.termr_mutual.main_concept, rubric.termr_outside.main_concept, rubric.termr_recommend.main_concept, rubric.termr_superior.main_concept, rubric.termr_vote.main_concept, rubric.termr.main_concept
+- consultationTier: rubric.anti_cooperate.consultation_tier, rubric.anti.consultation_tier
+- controllingParty: rubric.anti_cooperate.controlling_party, rubric.anti.controlling_party
+- regulatoryCooperationScope: rubric.anti_cooperate.regulatory_cooperation_scope, rubric.anti.regulatory_cooperation_scope
+- regulatoryStrategyControl: rubric.anti_cooperate.regulatory_strategy_control, rubric.anti.regulatory_strategy_control
+- regulatoryStrategyControlTagged: rubric.anti_cooperate.regulatory_strategy_control_tagged, rubric.anti.regulatory_strategy_control_tagged
+- effortsStandardDiffersByRemedy: rubric.anti_efforts.efforts_standard_differs_by_remedy, rubric.anti.efforts_standard_differs_by_remedy
+- exHsrFilingDeadline: rubric.anti_filing.ex_hsr_filing_deadline, rubric.anti.ex_hsr_filing_deadline
+- filingDeadline: rubric.anti_filing.filing_deadline, rubric.anti.filing_deadline
+- hsrFilingDeadline: rubric.anti_filing.hsr_filing_deadline, rubric.anti.hsr_filing_deadline
+- hsrFilingDeadlineBusinessDays: rubric.anti_filing.hsr_filing_deadline_business_days, rubric.anti.hsr_filing_deadline_business_days
+- otherRegulatoryFilingDeadlines: rubric.anti_filing.other_regulatory_filing_deadlines, rubric.anti.other_regulatory_filing_deadlines
+- appliesToParty: rubric.anti_noaction.applies_to_party, rubric.anti.applies_to_party
+- clearSkies: rubric.anti.clear_skies
+- clearSkiesCompany: rubric.anti.clear_skies_company
+- clearSkiesCompanyScope: rubric.anti.clear_skies_company_scope
+- clearSkiesParent: rubric.anti.clear_skies_parent
+- clearSkiesParentScope: rubric.anti.clear_skies_parent_scope
+- foreignFilingsRequired: rubric.anti.foreign_filings_required
+- interimOperatingRestrictions: rubric.anti.interim_operating_restrictions
+- litigationObligation: rubric.anti.litigation_obligation
+- litigationObligationQualification: rubric.anti.litigation_obligation_qualification
+- parentLitigationObligation: rubric.anti.parent_litigation_obligation
+- parentRemedyObligation: rubric.anti.parent_remedy_obligation
+- partyControlsStrategy: rubric.anti.party_controls_strategy
+- pullAndRefileCompanyConsent: rubric.anti.pull_and_refile_company_consent
+- pullAndRefileRight: rubric.anti.pull_and_refile_right
+- pullRefile: rubric.anti.pull_refile
+- pullRefileText: rubric.anti.pull_refile_text
+- regulatoryClosingConditions: rubric.anti.regulatory_closing_conditions
+- regulatoryCooperationCarveout: rubric.anti.regulatory_cooperation_carveout
+- springingRegulatoryConditions: rubric.anti.springing_regulatory_conditions
+- substantialComplianceDeadlineDays: rubric.anti.substantial_compliance_deadline_days
+- timingAgreement: rubric.anti.timing_agreement
+- timingAgreementText: rubric.anti.timing_agreement_text
+- timingAgreementsProhibited: rubric.anti.timing_agreements_prohibited
+- absenceOfEnjoiningOrderDetails: rubric.cond_b.absence_of_enjoining_order_details, rubric.cond_m.absence_of_enjoining_order_details, rubric.cond_s.absence_of_enjoining_order_details
+- absenceOfEnjoiningOrderPresent: rubric.cond_b.absence_of_enjoining_order_present, rubric.cond_m.absence_of_enjoining_order_present, rubric.cond_s.absence_of_enjoining_order_present
+- bringDownTiers: rubric.cond_b.bring_down_tiers, rubric.cond_m.bring_down_tiers, rubric.cond_s.bring_down_tiers
+- certificationRequired: rubric.cond_b.certification_required, rubric.cond_m.certification_required, rubric.cond_s.certification_required
+- citedProvisionNames: rubric.cond_b.cited_provision_names, rubric.cond_m.cited_provision_names, rubric.cond_s.cited_provision_names
+- closingTimingProvisions: rubric.cond_b.closing_timing_provisions, rubric.cond_m.closing_timing_provisions, rubric.cond_s.closing_timing_provisions, rubric.termr.closing_timing_provisions
+- continuingRequirement: rubric.cond_b.continuing_requirement
+- dissentingSharesThreshold: rubric.cond_b.dissenting_shares_threshold
+- dollarThreshold: rubric.cond_b.dollar_threshold, rubric.cond_m.dollar_threshold, rubric.cond_s.dollar_threshold, rubric.ioc.dollar_threshold
+- governmentProceedingConditionPresent: rubric.cond_b.government_proceeding_condition_present, rubric.cond_m.government_proceeding_condition_present, rubric.cond_s.government_proceeding_condition_present
+- hsrClearance: rubric.cond_b.hsr_clearance, rubric.cond_m.hsr_clearance, rubric.cond_s.hsr_clearance
+- maeConditionStandalone: rubric.cond_b.mae_condition_standalone
+- mainCondition: rubric.cond_b.main_condition, rubric.cond_m.main_condition, rubric.cond_s.main_condition, rubric.cond.main_condition
+- mutualClosingDeadlineAfterConditionsDays: rubric.cond_b.mutual_closing_deadline_after_conditions_days, rubric.cond_m.mutual_closing_deadline_after_conditions_days, rubric.cond_s.mutual_closing_deadline_after_conditions_days
+- regulatoryApprovals: rubric.cond_b.regulatory_approvals, rubric.cond_m.regulatory_approvals, rubric.cond_s.regulatory_approvals
+- scheduleReference: rubric.cond_b.schedule_reference, rubric.cond_m.schedule_reference, rubric.cond_s.schedule_reference, rubric.ioc.schedule_reference, rubric.rep_t.schedule_reference
+- stockholderApprovalRequired: rubric.cond_b.stockholder_approval_required, rubric.cond_m.stockholder_approval_required, rubric.cond_s.stockholder_approval_required
+- tenderOfferMinimumCondition: rubric.cond_b.tender_offer_minimum_condition, rubric.cond_m.tender_offer_minimum_condition, rubric.cond_s.tender_offer_minimum_condition
+- frustrationApplies: rubric.cond_frustrate.frustration_applies
+- frustrationLanguage: rubric.cond_frustrate.frustration_language
+- frustrationOfConditionsPresent: rubric.cond_frustrate.frustration_of_conditions_present
+- frustrationTest: rubric.cond_frustrate.frustration_test
+- antitrustApprovals: rubric.cond_m.antitrust_approvals
+- approvalDefinition: rubric.cond_m.approval_definition
+- fundsCondition: rubric.cond_s.funds_condition
+- collarType: rubric.consid_collar.collar_type
+- language: rubric.consid_collar.language, rubric.rep_b_antireliance.language, rubric.rep_b_norep.language, rubric.rep_b_solvency.language, rubric.rep_t_norep.language, rubric.rep_t_sufficiency.language
+- lowerBound: rubric.consid_collar.lower_bound
+- upperBound: rubric.consid_collar.upper_bound
+- maxPayment: rubric.consid_cvr.max_payment
+- milestones: rubric.consid_cvr.milestones
+- term: rubric.consid_cvr.term
+- transferable: rubric.consid_cvr.transferable
+- triggers: rubric.consid_cvr.triggers, rubric.termf_reimburse.triggers, rubric.termf_rtf_anti.triggers, rubric.termf.triggers
+- ratioType: rubric.consid_exchange_ratio.ratio_type
+- value: rubric.consid_exchange_ratio.value
+- escalationFormula: rubric.consid_ticking.escalation_formula
+- rate: rubric.consid_ticking.rate
+- startDate: rubric.consid_ticking.start_date
+- holder: rubric.consid_walkaway.holder
+- threshold: rubric.consid_walkaway.threshold
+- appraisalRightsAvailable: rubric.consid.appraisal_rights_available
+- cashOutAmount: rubric.consid.cash_out_amount
+- collar: rubric.consid.collar
+- considerationType: rubric.consid.consideration_type
+- cutoffDate: rubric.consid.cutoff_date
+- cutoffTreatment: rubric.consid.cutoff_treatment
+- dividendEquivalence: rubric.consid.dividend_equivalence
+- doubleTrigger: rubric.consid.double_trigger
+- equityAwardTreatment: rubric.consid.equity_award_treatment
+- espp_treatment: rubric.consid.espp_treatment
+- exchangeRatio: rubric.consid.exchange_ratio
+- exchangeRatioText: rubric.consid.exchange_ratio_text
+- exchangeRatioType: rubric.consid.exchange_ratio_type
+- instrumentTreatments: rubric.consid.instrument_treatments
+- instrumentType: rubric.consid.instrument_type
+- instrumentVesting: rubric.consid.instrument_vesting
+- optionSpread: rubric.consid.option_spread
+- optionsCvrEarnIn: rubric.consid.options_cvr_earn_in
+- outstandingCount: rubric.consid.outstanding_count
+- outstandingInstruments: rubric.consid.outstanding_instruments
+- parachuteCap: rubric.consid.parachute_cap
+- perShareAmount: rubric.consid.per_share_amount
+- performanceTreatment: rubric.consid.performance_treatment
+- proration: rubric.consid.proration
+- prorationMechanics: rubric.consid.proration_mechanics
+- taxReorgIntended: rubric.consid.tax_reorg_intended
+- taxReorgText: rubric.consid.tax_reorg_text
+- vestingAcceleration: rubric.consid.vesting_acceleration
+- walkAwayRight: rubric.consid.walk_away_right
+- withholdingProvision: rubric.consid.withholding_provision
+- parentInfoRights: rubric.cov_appraisal.parent_info_rights
+- parentParticipationOrControl: rubric.cov_appraisal.parent_participation_or_control
+- paymentConsent: rubric.cov_appraisal.payment_consent
+- settlementConsent: rubric.cov_appraisal.settlement_consent
+- additionalTerms: rubric.cov_do.additional_terms
+- advancementOfExpenses: rubric.cov_do.advancement_of_expenses
+- insuranceCap: rubric.cov_do.insurance_cap
+- notificationConsequences: rubric.cov_do.notification_consequences
+- compensationItems: rubric.cov_employee.compensation_items
+- continuedService: rubric.cov_employee.continued_service
+- continued401k: rubric.cov_employee.continued401k
+- eligibilityWaiver: rubric.cov_employee.eligibility_waiver
+- employeeBenefitPeriod: rubric.cov_employee.employee_benefit_period, rubric.cov.employee_benefit_period
+- postProtectionPeriodMonths: rubric.cov_employee.post_protection_period_months
+- postProtectionStandard: rubric.cov_employee.post_protection_standard
+- protectionPeriod: rubric.cov_employee.protection_period
+- protectionPeriodMonths: rubric.cov_employee.protection_period_months
+- severanceProtection: rubric.cov_employee.severance_protection
+- unionContracts: rubric.cov_employee.union_contracts
+- commencement: rubric.cov_marketing.commencement
+- periodBusinessDays: rubric.cov_marketing.period_business_days
+- adjournmentRights: rubric.cov_meeting.adjournment_rights, rubric.cov_proxy.adjournment_rights
+- mailingDeadline: rubric.cov_meeting.mailing_deadline, rubric.cov_proxy.mailing_deadline
+- meetingControlNotes: rubric.cov_meeting.meeting_control_notes, rubric.cov_proxy.meeting_control_notes
+- meetingDeadline: rubric.cov_meeting.meeting_deadline, rubric.cov_proxy.meeting_deadline
+- proxyFilingDeadline: rubric.cov_meeting.proxy_filing_deadline, rubric.cov_proxy.proxy_filing_deadline
+- companyConsent: rubric.cov_payagent.company_consent
+- otherAgentFormulation: rubric.cov_payagent.other_agent_formulation
+- transferAgentException: rubric.cov_payagent.transfer_agent_exception
+- parentAdoptionMechanism: rubric.cov_shaprv_parent.parent_adoption_mechanism
+- parentAdoptionTiming: rubric.cov_shaprv_parent.parent_adoption_timing
+- accessPurposeLimitation: rubric.cov.access_purpose_limitation
+- accessScope: rubric.cov.access_scope
+- covenantComplianceStandard: rubric.cov.covenant_compliance_standard
+- cvrIncluded: rubric.cov.cvr_included
+- financingCooperation: rubric.cov.financing_cooperation
+- financingCooperationBreachIsCondition: rubric.cov.financing_cooperation_breach_is_condition
+- financingCooperationPresent: rubric.cov.financing_cooperation_present
+- financingCooperationScope: rubric.cov.financing_cooperation_scope
+- indemnificationPeriod: rubric.cov.indemnification_period
+- publicStatementsCarveoutCompany: rubric.cov.public_statements_carveout_company
+- publicStatementsCarveoutParent: rubric.cov.public_statements_carveout_parent
+- publicStatementsJointApproval: rubric.cov.public_statements_joint_approval
+- tsaContemplated: rubric.cov.tsa_contemplated
+- acquisitionProposalPercentage: rubric.def.acquisition_proposal_percentage
+- canonicalTerm: rubric.def.canonical_term
+- carveouts: rubric.def.carve_outs, rubric.def.carveouts
+- carveOutsList: rubric.def.carve_outs_list
+- crossReferences: rubric.def.cross_references, rubric.ioc.cross_references, rubric.other.cross_references, rubric.rep_b.cross_references, rubric.rep_t.cross_references
+- cyberSecurityCarveout: rubric.def.cyber_security_carveout
+- definitionText: rubric.def.definition_text
+- disproportionateImpact: rubric.def.disproportionate_impact
+- disproportionateImpactCarveouts: rubric.def.disproportionate_impact_carveouts
+- disproportionateImpactClause: rubric.def.disproportionate_impact_clause
+- disproportionateImpactScope: rubric.def.disproportionate_impact_scope
+- knowledgePersons: rubric.def.knowledge_persons
+- knowledgeStandard: rubric.def.knowledge_standard, rubric.rep_t.knowledge_standard
+- nonDisproportionateImpactCarveouts: rubric.def.non_disproportionate_impact_carveouts
+- ordinaryCourseQualifier: rubric.def.ordinary_course_qualifier
+- pandemicCarveout: rubric.def.pandemic_carveout, rubric.ioc.pandemic_carveout
+- preventDelayProng: rubric.def.prevent_delay_prong
+- preventDelayRepsCovered: rubric.def.prevent_delay_reps_covered
+- superiorProposalPercentage: rubric.def.superior_proposal_percentage, rubric.nosol.superior_proposal_percentage
+- willfulBreachDefinition: rubric.def.willful_breach_definition, rubric.misc.willful_breach_definition
+- negativePreambleAffiliateStandard: rubric.ioc_negative_preamble.negative_preamble_affiliate_standard
+- negativePreambleExceptions: rubric.ioc_negative_preamble.negative_preamble_exceptions
+- affirmativeLimbs: rubric.ioc.affirmative_limbs
+- benefitPlanRestrictions: rubric.ioc.benefit_plan_restrictions
+- bonusIncreaseExceptions: rubric.ioc.bonus_increase_exceptions
+- consentStandard: rubric.ioc.consent_standard
+- dollarThresholdsByCategory: rubric.ioc.dollar_thresholds_by_category
+- equityAwardRestrictions: rubric.ioc.equity_award_restrictions
+- interimNewContractsScope: rubric.ioc.interim_new_contracts_scope
+- interimSettlementCap: rubric.ioc.interim_settlement_cap
+- interimSettlementNonPaymentExcluded: rubric.ioc.interim_settlement_non_payment_excluded
+- leadInAllowsActionAfterNoResponse: rubric.ioc.lead_in_allows_action_after_no_response
+- leadInPeriodDays: rubric.ioc.lead_in_period_days
+- mainObligation: rubric.ioc.main_obligation
+- materialityQualifier: rubric.ioc.materiality_qualifier, rubric.rep_b.materiality_qualifier, rubric.rep_t.materiality_qualifier
+- newHireExceptions: rubric.ioc.new_hire_exceptions
+- ordinaryCourseCarveout: rubric.ioc.ordinary_course_carveout
+- parentBuyerIocBuckets: rubric.ioc.parent_buyer_ioc_buckets
+- permittedExceptions: rubric.ioc.permitted_exceptions
+- positiveObligations: rubric.ioc.positive_obligations
+- requiredByLawCarveout: rubric.ioc.required_by_law_carveout
+- restrictionComponents: rubric.ioc.restriction_components
+- retentionBonusRestrictions: rubric.ioc.retention_bonus_restrictions
+- salaryIncreaseExceptions: rubric.ioc.salary_increase_exceptions
+- assignmentExceptions: rubric.misc.assignment_exceptions
+- assignmentRestrictions: rubric.misc.assignment_restrictions
+- bondSecurityRequiredForSP: rubric.misc.bond_security_required_for_sp
+- companyConsentForAssignment: rubric.misc.company_consent_for_assignment
+- companyForceCloseConditions: rubric.misc.company_force_close_conditions
+- companyRightToForceClose: rubric.misc.company_right_to_force_close
+- extraContractualClaimsWaived: rubric.misc.extra_contractual_claims_waived, rubric.rep_b_antireliance.extra_contractual_claims_waived, rubric.rep_b_norep.extra_contractual_claims_waived, rubric.rep_b.extra_contractual_claims_waived, rubric.rep_t_norep.extra_contractual_claims_waived, rubric.rep_t.extra_contractual_claims_waived
+- feeExpenseAllocation: rubric.misc.fee_expense_allocation
+- forumCourts: rubric.misc.forum_courts
+- forumFallback: rubric.misc.forum_fallback
+- fraudCarveout: rubric.misc.fraud_carveout, rubric.rep_b_antireliance.fraud_carveout, rubric.rep_b_norep.fraud_carveout, rubric.rep_b.fraud_carveout, rubric.rep_t_norep.fraud_carveout, rubric.rep_t.fraud_carveout
+- governingLaw: rubric.misc.governing_law
+- jurisdictionExclusive: rubric.misc.jurisdiction_exclusive
+- juryWaiver: rubric.misc.jury_waiver
+- noExcusePostClosingPresent: rubric.misc.no_excuse_post_closing_present
+- noOtherRepsParty: rubric.misc.no_other_reps_party, rubric.rep_b_antireliance.no_other_reps_party, rubric.rep_b_norep.no_other_reps_party, rubric.rep_b.no_other_reps_party, rubric.rep_t_norep.no_other_reps_party, rubric.rep_t.no_other_reps_party
+- noOtherRepsPresent: rubric.misc.no_other_reps_present, rubric.rep_b_antireliance.no_other_reps_present, rubric.rep_b_norep.no_other_reps_present, rubric.rep_b.no_other_reps_present, rubric.rep_t_norep.no_other_reps_present, rubric.rep_t.no_other_reps_present
+- noSetoffPresent: rubric.misc.no_setoff_present
+- nonRelianceClause: rubric.misc.non_reliance_clause, rubric.rep_b_antireliance.non_reliance_clause, rubric.rep_b_norep.non_reliance_clause, rubric.rep_b.non_reliance_clause, rubric.rep_t_norep.non_reliance_clause, rubric.rep_t.non_reliance_clause
+- noticesAddress: rubric.misc.notices_address
+- parentAssignmentConditions: rubric.misc.parent_assignment_conditions
+- parentAssignmentRight: rubric.misc.parent_assignment_right
+- repsSurvivalDuration: rubric.misc.reps_survival_duration
+- repsSurvivalExceptions: rubric.misc.reps_survival_exceptions
+- repsSurvivalPresent: rubric.misc.reps_survival_present
+- specificPerformance: rubric.misc.specific_performance
+- specificPerformanceLimitations: rubric.misc.specific_performance_limitations
+- specificPerformanceMutual: rubric.misc.specific_performance_mutual
+- terminationExceptionForBadBehavior: rubric.misc.termination_exception_for_bad_behavior
+- thirdPartyBeneficiaries: rubric.misc.third_party_beneficiaries
+- thirdPartyBeneficiaryExceptions: rubric.misc.third_party_beneficiary_exceptions
+- willfulBreachCoversOmissions: rubric.misc.willful_breach_covers_omissions
+- willfulBreachLimitedToMaterial: rubric.misc.willful_breach_limited_to_material
+- willfulBreachRequiresActualKnowledge: rubric.misc.willful_breach_requires_actual_knowledge
+- acceptableConfidentialityAgreementDefinition: rubric.nosol.acceptable_confidentiality_agreement_definition
+- acquisitionTransactionDefinition: rubric.nosol.acquisition_transaction_definition
+- acquisitionTransactionPctThreshold: rubric.nosol.acquisition_transaction_pct_threshold
+- antiClubbingWaiverConditions: rubric.nosol.anti_clubbing_waiver_conditions
+- antiClubbingWaiverPermitted: rubric.nosol.anti_clubbing_waiver_permitted
+- arcReaffirmDeadlineDays: rubric.nosol.arc_reaffirm_deadline_days
+- boardChangeForInterveningEvent: rubric.nosol.board_change_for_intervening_event
+- boardChangeForSuperiorProposal: rubric.nosol.board_change_for_superior_proposal
+- boardChangeStandard: rubric.nosol.board_change_standard
+- ceaseDiscussionsAffiliateStandard: rubric.nosol.cease_discussions_affiliate_standard
+- ceaseDiscussionsExceptions: rubric.nosol.cease_discussions_exceptions
+- ceaseDiscussionsLiability: rubric.nosol.cease_discussions_liability
+- ceaseDiscussionsProhibitedList: rubric.nosol.cease_discussions_prohibited_list
+- changeOfRecommendationItems: rubric.nosol.change_of_recommendation_items
+- changeRecStandard: rubric.nosol.change_rec_standard
+- companyTerminationForSuperior: rubric.nosol.company_termination_for_superior
+- companyTerminationForSuperiorConditions: rubric.nosol.company_termination_for_superior_conditions
+- confidentialityRequired: rubric.nosol.confidentiality_required
+- discussionInitiationNoticeHours: rubric.nosol.discussion_initiation_notice_hours
+- discussionInitiationNoticePresent: rubric.nosol.discussion_initiation_notice_present
+- discussionInitiationNoticeText: rubric.nosol.discussion_initiation_notice_text
+- dontAskDontWaive: rubric.nosol.dont_ask_dont_waive
+- engagementStandard: rubric.nosol.engagement_standard
+- extendedNegotiatingPeriodDays: rubric.nosol.extended_negotiating_period_days
+- fiduciaryCarveoutThreshold: rubric.nosol.fiduciary_carveout_threshold
+- fiduciaryEngageStandard: rubric.nosol.fiduciary_engage_standard
+- fiduciaryFinalStandard: rubric.nosol.fiduciary_final_standard
+- fiduciaryOutStandard: rubric.nosol.fiduciary_out_standard
+- forceTheVote: rubric.nosol.force_the_vote
+- forceTheVoteDetails: rubric.nosol.force_the_vote_details
+- goShopExcludedParties: rubric.nosol.go_shop_excluded_parties
+- goShopPeriodDays: rubric.nosol.go_shop_period_days
+- goShopPresent: rubric.nosol.go_shop_present
+- goShopWindow: rubric.nosol.go_shop_window
+- infoRequiredBidderIdentity: rubric.nosol.info_required_bidder_identity
+- infoRequiredCommunicationsDrafts: rubric.nosol.info_required_communications_drafts
+- infoRequiredFinancingPapers: rubric.nosol.info_required_financing_papers
+- informationRights: rubric.nosol.information_rights
+- informationSharingObligationPresent: rubric.nosol.information_sharing_obligation_present
+- informationSharingObligationScope: rubric.nosol.information_sharing_obligation_scope
+- informationSharingObligationTiming: rubric.nosol.information_sharing_obligation_timing
+- initialMatchPeriodDays: rubric.nosol.initial_match_period_days
+- interveningEventDefinition: rubric.nosol.intervening_event_definition
+- interveningEventProvision: rubric.nosol.intervening_event_provision
+- interveningEventScope: rubric.nosol.intervening_event_scope
+- interveningEventTermination: rubric.nosol.intervening_event_termination
+- legallyRequiredDisclosurePermitted: rubric.nosol.legally_required_disclosure_permitted
+- matchingPeriod: rubric.nosol.matching_period
+- materialImprovementStandard: rubric.nosol.material_improvement_standard
+- noConflictingAgreementsPresent: rubric.nosol.no_conflicting_agreements_present
+- noConflictingAgreementsScope: rubric.nosol.no_conflicting_agreements_scope
+- notChangeOfRecommendationItems: rubric.nosol.not_change_of_recommendation_items
+- noticeContent: rubric.nosol.notice_content
+- noticePeriod: rubric.nosol.notice_period
+- parentTerminationRightForNonsolicitBreach: rubric.nosol.parent_termination_right_for_nonsolicit_breach
+- representativeBreachConditions: rubric.nosol.representative_breach_conditions
+- representativeBreachIsCompanyBreach: rubric.nosol.representative_breach_is_company_breach
+- representativesStandard: rubric.nosol.representatives_standard
+- safeDisclosureCarveoutLanguage: rubric.nosol.safe_disclosure_carveout_language
+- standstillWaiver: rubric.nosol.standstill_waiver
+- standstillWaiverConditions: rubric.nosol.standstill_waiver_conditions
+- standstillWaiverPermitted: rubric.nosol.standstill_waiver_permitted
+- subsequentMatchPeriodDays: rubric.nosol.subsequent_match_period_days
+- subsequentMatching: rubric.nosol.subsequent_matching
+- subsequentMatchingPeriod: rubric.nosol.subsequent_matching_period
+- superiorProposalDeterminer: rubric.nosol.superior_proposal_determiner
+- superiorProposalTest: rubric.nosol.superior_proposal_test
+- superiorProposalThresholdPct: rubric.nosol.superior_proposal_threshold_pct
+- tenderOfferDisclosurePermitted: rubric.nosol.tender_offer_disclosure_permitted
+- tenderOfferDisclosureScope: rubric.nosol.tender_offer_disclosure_scope
+- sectionNumber: rubric.other.section_number
+- sectionTitle: rubric.other.section_title
+- summary: rubric.other.summary
+- coversExpenses: rubric.rep_b_funds.covers_expenses
+- coversMergerConsideration: rubric.rep_b_funds.covers_merger_consideration
+- coversReverseTermFee: rubric.rep_b_funds.covers_reverse_term_fee
+- scope: rubric.rep_b_funds.scope
+- disclosureLetterReference: rubric.rep_b_preamble.disclosure_letter_reference, rubric.rep_t_preamble.disclosure_letter_reference
+- secFilingsExceptionCarvedOutReps: rubric.rep_b_preamble.sec_filings_exception_carved_out_reps, rubric.rep_t_preamble.sec_filings_exception_carved_out_reps
+- secFilingsExceptionCutoffStandard: rubric.rep_b_preamble.sec_filings_exception_cutoff_standard, rubric.rep_t_preamble.sec_filings_exception_cutoff_standard
+- secFilingsExceptionExclusions: rubric.rep_b_preamble.sec_filings_exception_exclusions, rubric.rep_t_preamble.sec_filings_exception_exclusions
+- secFilingsExceptionLanguage: rubric.rep_b_preamble.sec_filings_exception_language, rubric.rep_t_preamble.sec_filings_exception_language
+- secFilingsExceptionLookback: rubric.rep_b_preamble.sec_filings_exception_lookback, rubric.rep_t_preamble.sec_filings_exception_lookback
+- secFilingsExceptionLookbackDate: rubric.rep_b_preamble.sec_filings_exception_lookback_date, rubric.rep_t_preamble.sec_filings_exception_lookback_date
+- antiRelianceRepPresent: rubric.rep_b.anti_reliance_rep_present
+- antiRelianceRepText: rubric.rep_b.anti_reliance_rep_text
+- bringDownStandard: rubric.rep_b.bring_down_standard, rubric.rep_t.bring_down_standard
+- financingRepIncluded: rubric.rep_b.financing_rep_included
+- knowledgeQualifier: rubric.rep_b.knowledge_qualifier, rubric.rep_t.knowledge_qualifier
+- knowledgeScope: rubric.rep_b.knowledge_scope, rubric.rep_t.knowledge_scope
+- knowledgeScopeType: rubric.rep_b.knowledge_scope_type, rubric.rep_t.knowledge_scope_type
+- linkedBringDownStandard: rubric.rep_b.linked_bring_down_standard, rubric.rep_t.linked_bring_down_standard
+- materialityScopeType: rubric.rep_b.materiality_scope_type, rubric.rep_t.materiality_scope_type
+- materialityScrape: rubric.rep_b.materiality_scrape, rubric.rep_t.materiality_scrape
+- parentBrokersRepPresent: rubric.rep_b.parent_brokers_rep_present
+- parentLitigationRepPresent: rubric.rep_b.parent_litigation_rep_present
+- parentOwnershipRepPresent: rubric.rep_b.parent_ownership_rep_present
+- solvencyRepDetails: rubric.rep_b.solvency_rep_details
+- solvencyRepIncluded: rubric.rep_b.solvency_rep_included
+- solvencyRepPresent: rubric.rep_b.solvency_rep_present
+- sufficientFundsRepDetails: rubric.rep_b.sufficient_funds_rep_details
+- sufficientFundsRepPresent: rubric.rep_b.sufficient_funds_rep_present
+- materialContractsBuckets: rubric.rep_t_material_contracts.material_contracts_buckets, rubric.rep_t.material_contracts_buckets
+- materialContractsDollarThresholds: rubric.rep_t_material_contracts.material_contracts_dollar_thresholds, rubric.rep_t.material_contracts_dollar_thresholds
+- materialContractsRedactionsPermitted: rubric.rep_t_material_contracts.material_contracts_redactions_permitted, rubric.rep_t.material_contracts_redactions_permitted
+- permittedRedactionsDefinition: rubric.rep_t_material_contracts.permitted_redactions_definition, rubric.rep_t.permitted_redactions_definition
+- undisclosedLiabilitiesExceptions: rubric.rep_t_noliab.undisclosed_liabilities_exceptions, rubric.rep_t.undisclosed_liabilities_exceptions
+- coverage: rubric.rep_t_top_customers.coverage
+- definition: rubric.rep_t_top_customers.definition
+- absenceOfChangesExceptions: rubric.rep_t.absence_of_changes_exceptions
+- absenceOfChangesStartDate: rubric.rep_t.absence_of_changes_start_date
+- absenceOfChangesType: rubric.rep_t.absence_of_changes_type
+- aocCitedCovenantNames: rubric.rep_t.aoc_cited_covenant_names
+- aocCitedCovenantSections: rubric.rep_t.aoc_cited_covenant_sections
+- aocNoMaePresent: rubric.rep_t.aoc_no_mae_present
+- aocNoMaeSinceDate: rubric.rep_t.aoc_no_mae_since_date
+- aocOrdinaryCourseLimb: rubric.rep_t.aoc_ordinary_course_limb
+- disclosureSchedulesException: rubric.rep_t.disclosure_schedules_exception
+- disclosureSchedulesRequired: rubric.rep_t.disclosure_schedules_required
+- lookbackPeriod: rubric.rep_t.lookback_period
+- maeLimbs: rubric.rep_t.mae_limbs
+- maeQualifiedReps: rubric.rep_t.mae_qualified_reps
+- materialityScrapeLanguage: rubric.rep_t.materiality_scrape_language
+- materialityScrapePresent: rubric.rep_t.materiality_scrape_present
+- secFilingsCarvedOutReps: rubric.rep_t.sec_filings_carved_out_reps
+- secFilingsExceptionScope: rubric.rep_t.sec_filings_exception_scope
+- secFilingsExcludedSections: rubric.rep_t.sec_filings_excluded_sections
+- secFilingsLookbackMonths: rubric.rep_t.sec_filings_lookback_months
+- survivalPeriod: rubric.rep_t.survival_period
+- topCustomersSuppliersDefinition: rubric.rep_t.top_customers_suppliers_definition
+- topCustomersSuppliersRepPresent: rubric.rep_t.top_customers_suppliers_rep_present
+- closingLocation: rubric.struct_closing.closing_location
+- closingTiming: rubric.struct_closing.closing_timing
+- adsPresent: rubric.struct_merger.ads_present, rubric.struct.ads_present
+- adsVotingMechanics: rubric.struct_merger.ads_voting_mechanics, rubric.struct.ads_voting_mechanics
+- dealStructure: rubric.struct_merger.deal_structure, rubric.struct_offer.deal_structure, rubric.struct.deal_structure
+- mergerForm: rubric.struct_merger.merger_form, rubric.struct_offer.merger_form, rubric.struct.merger_form
+- shareholderApprovalMethodCompany: rubric.struct_merger.shareholder_approval_method_company, rubric.struct.shareholder_approval_method_company
+- shareholderApprovalMethodParent: rubric.struct_merger.shareholder_approval_method_parent, rubric.struct.shareholder_approval_method_parent
+- acceptanceAndPaymentMechanics: rubric.struct_offer.acceptance_and_payment_mechanics
+- backendMergerMechanic: rubric.struct_offer.backend_merger_mechanic
+- buyerBoardDesignation: rubric.struct_offer.buyer_board_designation
+- offerCommencementDeadline: rubric.struct_offer.offer_commencement_deadline
+- offerConditionsReference: rubric.struct_offer.offer_conditions_reference
+- offerConsideration: rubric.struct_offer.offer_consideration
+- offerExpirationAndExtension: rubric.struct_offer.offer_expiration_and_extension
+- offerPrice: rubric.struct_offer.offer_price
+- scheduleTOFiling: rubric.struct_offer.schedule_tofiling
+- schedule14D9Filing: rubric.struct_offer.schedule14_d9_filing
+- section251h: rubric.struct_offer.section251h
+- shortFormMergerMechanic: rubric.struct_offer.short_form_merger_mechanic
+- stockholderListCovenant: rubric.struct_offer.stockholder_list_covenant
+- effectiveTimeShort: rubric.struct.effective_time_short
+- effectsOfMergerReference: rubric.struct.effects_of_merger_reference
+- effectOfTermination: rubric.termf_effect.effect_of_termination, rubric.termf.effect_of_termination
+- willfulBreachException: rubric.termf_effect.willful_breach_exception, rubric.termf_sole.willful_breach_exception, rubric.termf.willful_breach_exception
+- expenseReimbursement: rubric.termf_expense.expense_reimbursement, rubric.termf.expense_reimbursement
+- cap: rubric.termf_reimburse.cap
+- interestOnLatePayment: rubric.termf_reverse.interest_on_late_payment, rubric.termf_target.interest_on_late_payment, rubric.termf.interest_on_late_payment
+- reverseTerminationFee: rubric.termf_reverse.reverse_termination_fee, rubric.termf.reverse_termination_fee
+- amount: rubric.termf_rtf_anti.amount
+- exceptions: rubric.termf_rtf_anti.exceptions
+- soleRemedy: rubric.termf_rtf_anti.sole_remedy, rubric.termf.sole_remedy
+- specificPerformanceBar: rubric.termf_rtf_anti.specific_performance_bar
+- soleAndExclusiveRemedy: rubric.termf_sole.sole_and_exclusive_remedy, rubric.termf.sole_and_exclusive_remedy
+- tailProvision: rubric.termf_tail.tail_provision, rubric.termf.tail_provision
+- companyTerminationFee: rubric.termf_target.company_termination_fee, rubric.termf.company_termination_fee
+- nakedNoVoteFee: rubric.termf_target.naked_no_vote_fee, rubric.termf.naked_no_vote_fee
+- expenseReimbursementCap: rubric.termf.expense_reimbursement_cap
+- feeAmount: rubric.termf.fee_amount
+- feePercentage: rubric.termf.fee_percentage
+- feeSoleAndExclusiveRemedy: rubric.termf.fee_sole_and_exclusive_remedy
+- feeSoleRemedyExceptions: rubric.termf.fee_sole_remedy_exceptions
+- nakedNoVoteFeeAmount: rubric.termf.naked_no_vote_fee_amount
+- nakedNoVoteFeePresent: rubric.termf.naked_no_vote_fee_present
+- remedyBarAfterFee: rubric.termf.remedy_bar_after_fee
+- remedyScope: rubric.termf.remedy_scope
+- reverseFeeAmount: rubric.termf.reverse_fee_amount
+- reverseFeePercentage: rubric.termf.reverse_fee_percentage
+- tailFeeActivatingClauses: rubric.termf.tail_fee_activating_clauses
+- tailFeeRecognitionEvent: rubric.termf.tail_fee_recognition_event
+- tailFeeSameProposalRequired: rubric.termf.tail_fee_same_proposal_required
+- tailFeeThresholdPct: rubric.termf.tail_fee_threshold_pct
+- tailFeeTriggerAltAnnouncedDuringPendency: rubric.termf.tail_fee_trigger_alt_announced_during_pendency
+- tailFeeTriggerConsummatedDuringTail: rubric.termf.tail_fee_trigger_consummated_during_tail
+- tailFeeTriggerEndDate: rubric.termf.tail_fee_trigger_end_date
+- tailFeeTriggerNakedNoVote: rubric.termf.tail_fee_trigger_naked_no_vote
+- tailFeeWindowMonths: rubric.termf.tail_fee_window_months
+- tailPeriod: rubric.termf.tail_period
+- terminationFeePercentEquityValue: rubric.termf.termination_fee_percent_equity_value
+- triggerEvents: rubric.termf.trigger_events, rubric.termr_recommend.trigger_events
+- cureDays: rubric.termr_breach_b.cure_days, rubric.termr_breach_t.cure_days
+- faultBasedExclusion: rubric.termr_breach_b.fault_based_exclusion, rubric.termr_breach_t.fault_based_exclusion, rubric.termr_legal.fault_based_exclusion, rubric.termr_outside.fault_based_exclusion, rubric.termr_vote.fault_based_exclusion, rubric.termr.fault_based_exclusion
+- materialityStandard: rubric.termr_breach_b.materiality_standard, rubric.termr_breach_t.materiality_standard
+- partyWhoCanTerminate: rubric.termr_breach_b.party_who_can_terminate, rubric.termr_breach_t.party_who_can_terminate, rubric.termr_extension.party_who_can_terminate, rubric.termr_legal.party_who_can_terminate, rubric.termr_mutual.party_who_can_terminate, rubric.termr_outside.party_who_can_terminate, rubric.termr_recommend.party_who_can_terminate, rubric.termr_superior.party_who_can_terminate, rubric.termr_vote.party_who_can_terminate, rubric.termr.party_who_can_terminate
+- extensionConditions: rubric.termr_extension.extension_conditions, rubric.termr_outside.extension_conditions
+- extensionPeriod: rubric.termr_extension.extension_period
+- outsideDateExtension: rubric.termr_extension.outside_date_extension, rubric.termr_outside.outside_date_extension
+- tickingFee: rubric.termr_extension.ticking_fee
+- restraintFinality: rubric.termr_legal.restraint_finality
+- executionMethod: rubric.termr_mutual.execution_method
+- writtenConsentRequired: rubric.termr_mutual.written_consent_required
+- extendedOutsideDateISO: rubric.termr_outside.extended_outside_date_iso
+- extensionMonths: rubric.termr_outside.extension_months
+- outsideDate: rubric.termr_outside.outside_date
+- outsideDateExtensionConditions: rubric.termr_outside.outside_date_extension_conditions
+- outsideDateISO: rubric.termr_outside.outside_date_iso
+- outsideDateMonths: rubric.termr_outside.outside_date_months
+- outsideDateMonthsPostSigning: rubric.termr_outside.outside_date_months_post_signing
+- preVoteOnlyWindow: rubric.termr_recommend.pre_vote_only_window
+- executionConditions: rubric.termr_superior.execution_conditions
+- feeRequired: rubric.termr_superior.fee_required
+- voteThreshold: rubric.termr_vote.vote_threshold
+- extensionMaxExercises: rubric.termr.extension_max_exercises
+- extensionMutualOrUnilateral: rubric.termr.extension_mutual_or_unilateral
+- extensionParty: rubric.termr.extension_party
+- finalAndNonappealableRequired: rubric.termr.final_and_nonappealable_required
+- lawOrderTerminationPresent: rubric.termr.law_order_termination_present
+- lawOrderTerminationScope: rubric.termr.law_order_termination_scope
+- lostPremiumDamagesConditions: rubric.termr.lost_premium_damages_conditions
+- lostPremiumDamagesPursuit: rubric.termr.lost_premium_damages_pursuit
+- marketOutHolder: rubric.termr.market_out_holder
+- terminationCarveoutForOwnBreach: rubric.termr.termination_carveout_for_own_breach
+- terminationTriggers: rubric.termr.termination_triggers
+
+## Disagreements
+
+- REQUIRES_REVIEWER_DECISION burdensomeConditionScope <= rubric.anti_burden.burdensome_condition_scope: data_type
+- REQUIRES_REVIEWER_DECISION divestitureCap <= rubric.anti_burden.divestiture_cap: data_type
+- REQUIRES_REVIEWER_DECISION effortsStandard <= rubric.anti_burden.efforts_standard: data_type, party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.anti_burden.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.anti_cooperate.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION effortsStandard <= rubric.anti_efforts.efforts_standard: data_type, party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.anti_efforts.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.anti_filing.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.anti_noaction.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION divestitureCap <= rubric.anti.divestiture_cap: data_type
+- REQUIRES_REVIEWER_DECISION effortsStandard <= rubric.anti.efforts_standard: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.anti.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION bringDownTiers <= rubric.cond_b.bring_down_tiers: data_type
+- REQUIRES_REVIEWER_DECISION dollarThreshold <= rubric.cond_b.dollar_threshold: data_type, party_scope
+- REQUIRES_REVIEWER_DECISION scheduleReference <= rubric.cond_b.schedule_reference: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.cond_frustrate.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION bringDownTiers <= rubric.cond_m.bring_down_tiers: data_type
+- REQUIRES_REVIEWER_DECISION dollarThreshold <= rubric.cond_m.dollar_threshold: data_type, party_scope
+- REQUIRES_REVIEWER_DECISION scheduleReference <= rubric.cond_m.schedule_reference: party_scope
+- REQUIRES_REVIEWER_DECISION bringDownTiers <= rubric.cond_s.bring_down_tiers: data_type
+- REQUIRES_REVIEWER_DECISION dollarThreshold <= rubric.cond_s.dollar_threshold: data_type, party_scope
+- REQUIRES_REVIEWER_DECISION scheduleReference <= rubric.cond_s.schedule_reference: party_scope
+- REQUIRES_REVIEWER_DECISION language <= rubric.consid_collar.language: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.consid_collar.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.consid_cvr.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION maxPayment <= rubric.consid_cvr.max_payment: data_type
+- REQUIRES_REVIEWER_DECISION triggers <= rubric.consid_cvr.triggers: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.consid_exchange_ratio.main_concept: data_type, party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.consid_ticking.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.consid_walkaway.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.consid.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.cov_appraisal.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.cov_do.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.cov_employee.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.cov_marketing.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.cov_payagent.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.cov_shaprv_parent.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.cov.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION crossReferences <= rubric.def.cross_references: party_scope
+- REQUIRES_REVIEWER_DECISION knowledgeStandard <= rubric.def.knowledge_standard: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.def.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION pandemicCarveout <= rubric.def.pandemic_carveout: party_scope
+- REQUIRES_REVIEWER_DECISION superiorProposalPercentage <= rubric.def.superior_proposal_percentage: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.ioc_negative_preamble.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION negativePreambleAffiliateStandard <= rubric.ioc_negative_preamble.negative_preamble_affiliate_standard: party_scope
+- REQUIRES_REVIEWER_DECISION negativePreambleExceptions <= rubric.ioc_negative_preamble.negative_preamble_exceptions: party_scope
+- REQUIRES_REVIEWER_DECISION dollarThreshold <= rubric.ioc.dollar_threshold: data_type
+- REQUIRES_REVIEWER_DECISION interimSettlementCap <= rubric.ioc.interim_settlement_cap: data_type
+- REQUIRES_REVIEWER_DECISION extraContractualClaimsWaived <= rubric.misc.extra_contractual_claims_waived: party_scope
+- REQUIRES_REVIEWER_DECISION fraudCarveout <= rubric.misc.fraud_carveout: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.misc.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION noOtherRepsParty <= rubric.misc.no_other_reps_party: party_scope
+- REQUIRES_REVIEWER_DECISION noOtherRepsPresent <= rubric.misc.no_other_reps_present: party_scope
+- REQUIRES_REVIEWER_DECISION nonRelianceClause <= rubric.misc.non_reliance_clause: party_scope
+- REQUIRES_REVIEWER_DECISION willfulBreachDefinition <= rubric.misc.willful_breach_definition: data_type
+- REQUIRES_REVIEWER_DECISION discussionInitiationNoticeHours <= rubric.nosol.discussion_initiation_notice_hours: data_type
+- REQUIRES_REVIEWER_DECISION goShopWindow <= rubric.nosol.go_shop_window: data_type
+- REQUIRES_REVIEWER_DECISION crossReferences <= rubric.other.cross_references: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.other.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION extraContractualClaimsWaived <= rubric.rep_b_antireliance.extra_contractual_claims_waived: party_scope
+- REQUIRES_REVIEWER_DECISION fraudCarveout <= rubric.rep_b_antireliance.fraud_carveout: party_scope
+- REQUIRES_REVIEWER_DECISION language <= rubric.rep_b_antireliance.language: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.rep_b_antireliance.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION noOtherRepsParty <= rubric.rep_b_antireliance.no_other_reps_party: party_scope
+- REQUIRES_REVIEWER_DECISION noOtherRepsPresent <= rubric.rep_b_antireliance.no_other_reps_present: party_scope
+- REQUIRES_REVIEWER_DECISION nonRelianceClause <= rubric.rep_b_antireliance.non_reliance_clause: party_scope
+- REQUIRES_REVIEWER_DECISION coversExpenses <= rubric.rep_b_funds.covers_expenses: party_scope
+- REQUIRES_REVIEWER_DECISION coversMergerConsideration <= rubric.rep_b_funds.covers_merger_consideration: party_scope
+- REQUIRES_REVIEWER_DECISION coversReverseTermFee <= rubric.rep_b_funds.covers_reverse_term_fee: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.rep_b_funds.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION scope <= rubric.rep_b_funds.scope: party_scope
+- REQUIRES_REVIEWER_DECISION extraContractualClaimsWaived <= rubric.rep_b_norep.extra_contractual_claims_waived: party_scope
+- REQUIRES_REVIEWER_DECISION fraudCarveout <= rubric.rep_b_norep.fraud_carveout: party_scope
+- REQUIRES_REVIEWER_DECISION language <= rubric.rep_b_norep.language: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.rep_b_norep.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION noOtherRepsParty <= rubric.rep_b_norep.no_other_reps_party: party_scope
+- REQUIRES_REVIEWER_DECISION noOtherRepsPresent <= rubric.rep_b_norep.no_other_reps_present: party_scope
+- REQUIRES_REVIEWER_DECISION nonRelianceClause <= rubric.rep_b_norep.non_reliance_clause: party_scope
+- REQUIRES_REVIEWER_DECISION disclosureLetterReference <= rubric.rep_b_preamble.disclosure_letter_reference: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.rep_b_preamble.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION secFilingsExceptionCarvedOutReps <= rubric.rep_b_preamble.sec_filings_exception_carved_out_reps: party_scope
+- REQUIRES_REVIEWER_DECISION secFilingsExceptionCutoffStandard <= rubric.rep_b_preamble.sec_filings_exception_cutoff_standard: party_scope
+- REQUIRES_REVIEWER_DECISION secFilingsExceptionExclusions <= rubric.rep_b_preamble.sec_filings_exception_exclusions: party_scope
+- REQUIRES_REVIEWER_DECISION secFilingsExceptionLanguage <= rubric.rep_b_preamble.sec_filings_exception_language: party_scope
+- REQUIRES_REVIEWER_DECISION secFilingsExceptionLookback <= rubric.rep_b_preamble.sec_filings_exception_lookback: party_scope
+- REQUIRES_REVIEWER_DECISION secFilingsExceptionLookbackDate <= rubric.rep_b_preamble.sec_filings_exception_lookback_date: party_scope
+- REQUIRES_REVIEWER_DECISION language <= rubric.rep_b_solvency.language: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.rep_b_solvency.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.rep_t_material_contracts.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION materialContractsBuckets <= rubric.rep_t_material_contracts.material_contracts_buckets: party_scope
+- REQUIRES_REVIEWER_DECISION materialContractsDollarThresholds <= rubric.rep_t_material_contracts.material_contracts_dollar_thresholds: party_scope
+- REQUIRES_REVIEWER_DECISION materialContractsRedactionsPermitted <= rubric.rep_t_material_contracts.material_contracts_redactions_permitted: party_scope
+- REQUIRES_REVIEWER_DECISION permittedRedactionsDefinition <= rubric.rep_t_material_contracts.permitted_redactions_definition: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.rep_t_noliab.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION undisclosedLiabilitiesExceptions <= rubric.rep_t_noliab.undisclosed_liabilities_exceptions: party_scope
+- REQUIRES_REVIEWER_DECISION extraContractualClaimsWaived <= rubric.rep_t_norep.extra_contractual_claims_waived: party_scope
+- REQUIRES_REVIEWER_DECISION fraudCarveout <= rubric.rep_t_norep.fraud_carveout: party_scope
+- REQUIRES_REVIEWER_DECISION language <= rubric.rep_t_norep.language: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.rep_t_norep.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION noOtherRepsParty <= rubric.rep_t_norep.no_other_reps_party: party_scope
+- REQUIRES_REVIEWER_DECISION noOtherRepsPresent <= rubric.rep_t_norep.no_other_reps_present: party_scope
+- REQUIRES_REVIEWER_DECISION nonRelianceClause <= rubric.rep_t_norep.non_reliance_clause: party_scope
+- REQUIRES_REVIEWER_DECISION disclosureLetterReference <= rubric.rep_t_preamble.disclosure_letter_reference: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.rep_t_preamble.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION secFilingsExceptionCarvedOutReps <= rubric.rep_t_preamble.sec_filings_exception_carved_out_reps: party_scope
+- REQUIRES_REVIEWER_DECISION secFilingsExceptionCutoffStandard <= rubric.rep_t_preamble.sec_filings_exception_cutoff_standard: party_scope
+- REQUIRES_REVIEWER_DECISION secFilingsExceptionExclusions <= rubric.rep_t_preamble.sec_filings_exception_exclusions: party_scope
+- REQUIRES_REVIEWER_DECISION secFilingsExceptionLanguage <= rubric.rep_t_preamble.sec_filings_exception_language: party_scope
+- REQUIRES_REVIEWER_DECISION secFilingsExceptionLookback <= rubric.rep_t_preamble.sec_filings_exception_lookback: party_scope
+- REQUIRES_REVIEWER_DECISION secFilingsExceptionLookbackDate <= rubric.rep_t_preamble.sec_filings_exception_lookback_date: party_scope
+- REQUIRES_REVIEWER_DECISION language <= rubric.rep_t_sufficiency.language: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.rep_t_sufficiency.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION coverage <= rubric.rep_t_top_customers.coverage: party_scope
+- REQUIRES_REVIEWER_DECISION definition <= rubric.rep_t_top_customers.definition: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.rep_t_top_customers.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION knowledgeStandard <= rubric.rep_t.knowledge_standard: data_type
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.struct_closing.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.struct_merger.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.struct_offer.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.struct.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION effectOfTermination <= rubric.termf_effect.effect_of_termination: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.termf_effect.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION willfulBreachException <= rubric.termf_effect.willful_breach_exception: party_scope
+- REQUIRES_REVIEWER_DECISION expenseReimbursement <= rubric.termf_expense.expense_reimbursement: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.termf_expense.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION cap <= rubric.termf_reimburse.cap: data_type, party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.termf_reimburse.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION triggers <= rubric.termf_reimburse.triggers: party_scope
+- REQUIRES_REVIEWER_DECISION interestOnLatePayment <= rubric.termf_reverse.interest_on_late_payment: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.termf_reverse.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION reverseTerminationFee <= rubric.termf_reverse.reverse_termination_fee: party_scope
+- REQUIRES_REVIEWER_DECISION amount <= rubric.termf_rtf_anti.amount: party_scope
+- REQUIRES_REVIEWER_DECISION exceptions <= rubric.termf_rtf_anti.exceptions: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.termf_rtf_anti.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION soleRemedy <= rubric.termf_rtf_anti.sole_remedy: party_scope
+- REQUIRES_REVIEWER_DECISION specificPerformanceBar <= rubric.termf_rtf_anti.specific_performance_bar: party_scope
+- REQUIRES_REVIEWER_DECISION triggers <= rubric.termf_rtf_anti.triggers: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.termf_sole.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION soleAndExclusiveRemedy <= rubric.termf_sole.sole_and_exclusive_remedy: party_scope
+- REQUIRES_REVIEWER_DECISION willfulBreachException <= rubric.termf_sole.willful_breach_exception: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.termf_tail.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION tailProvision <= rubric.termf_tail.tail_provision: party_scope
+- REQUIRES_REVIEWER_DECISION interestOnLatePayment <= rubric.termf_target.interest_on_late_payment: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.termf_target.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION nakedNoVoteFee <= rubric.termf_target.naked_no_vote_fee: party_scope
+- REQUIRES_REVIEWER_DECISION expenseReimbursementCap <= rubric.termf.expense_reimbursement_cap: data_type
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.termr_breach_b.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION partyWhoCanTerminate <= rubric.termr_breach_b.party_who_can_terminate: data_type
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.termr_breach_t.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION partyWhoCanTerminate <= rubric.termr_breach_t.party_who_can_terminate: data_type
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.termr_extension.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION partyWhoCanTerminate <= rubric.termr_extension.party_who_can_terminate: data_type
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.termr_legal.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION partyWhoCanTerminate <= rubric.termr_legal.party_who_can_terminate: data_type
+- REQUIRES_REVIEWER_DECISION executionMethod <= rubric.termr_mutual.execution_method: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.termr_mutual.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION partyWhoCanTerminate <= rubric.termr_mutual.party_who_can_terminate: data_type, party_scope
+- REQUIRES_REVIEWER_DECISION writtenConsentRequired <= rubric.termr_mutual.written_consent_required: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.termr_outside.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION partyWhoCanTerminate <= rubric.termr_outside.party_who_can_terminate: data_type
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.termr_recommend.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION partyWhoCanTerminate <= rubric.termr_recommend.party_who_can_terminate: data_type
+- REQUIRES_REVIEWER_DECISION triggerEvents <= rubric.termr_recommend.trigger_events: party_scope
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.termr_superior.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION partyWhoCanTerminate <= rubric.termr_superior.party_who_can_terminate: data_type
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.termr_vote.main_concept: party_scope
+- REQUIRES_REVIEWER_DECISION partyWhoCanTerminate <= rubric.termr_vote.party_who_can_terminate: data_type
+- REQUIRES_REVIEWER_DECISION extensionMaxExercises <= rubric.termr.extension_max_exercises: data_type
+- REQUIRES_REVIEWER_DECISION mainConcept <= rubric.termr.main_concept: party_scope

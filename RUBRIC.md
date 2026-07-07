@@ -123,7 +123,7 @@ These are the (a)/(b)/(c) sub-clauses within the "Conduct of Business" section. 
 |------|-------|-------------|
 | IOC-ORDINARY | Ordinary Course Obligation | General obligation to conduct business in the ordinary course |
 | IOC-CHARTER | Charter / Bylaws Amendments | No amendments to certificate of incorporation or bylaws |
-| IOC-MERGE | Mergers, Acquisitions, Dispositions | No mergers, acquisitions, sales of material assets |
+| IOC-MERGE | Acquisition / Disposition Covenant | No mergers, acquisitions, sales of material assets |
 | IOC-ISSUE | Issuance of Securities | No issuance, sale, or pledge of equity securities |
 | IOC-REPURCHASE | Share Repurchases | No repurchase or redemption of equity securities |
 | IOC-DIVIDEND | Dividends and Distributions | No declaration or payment of dividends |

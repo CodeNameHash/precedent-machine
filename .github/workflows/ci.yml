@@ -19,3 +19,44 @@ jobs:
         run: npm test
       - name: Production build
         run: npm run build
+  invariants:
+    runs-on: ubuntu-latest
+    needs: test-and-build
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Invariant 1 (already covered by test-and-build)
+        run: echo "covered"
+      - name: Invariant 2 — ioc-scope-mismatch
+        run: node scripts/audit/ioc-scope-mismatch.js
+      - name: Invariant 3 — closing-condition-scope
+        run: node scripts/lint/closing-condition-scope.js
+      - name: Invariant 4 — forbidden-patterns
+        run: bash scripts/lint/forbidden-patterns.sh
+      - name: Invariant 5 — market-registry-completeness
+        run: node scripts/lint/market-registry-completeness.js
+      - name: Invariant 6 — component-reuse
+        run: node scripts/lint/component-reuse.js
+      - name: Invariant 7 — party-scope-audit
+        run: node scripts/lint/party-scope-audit.js
+      - name: Invariant 8 — detect-duplicates
+        run: node scripts/registry/detect-duplicates.js
+      - name: Invariant 9 — orphan-detector
+        run: node scripts/registry/orphan-detector.js
+      - name: Invariant 10 — coverage-detector
+        run: node scripts/registry/coverage-detector.js
+      - name: Invariant 11 — provenance-log
+        run: node scripts/registry/provenance-log.js
+  phase-allowlist:
+    runs-on: ubuntu-latest
+    needs: test-and-build
+    steps:
+      - uses: actions/checkout@v4
+      - name: Detect active phase from branch name
+        run: node scripts/ci/detect-phase.js
+      - name: Diff-vs-allowlist
+        run: node scripts/ci/check-allowlist.js

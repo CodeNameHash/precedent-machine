@@ -1,0 +1,26 @@
+{
+  "phase": "5",
+  "name": "termination-other-covenants-definitions",
+  "allowed": [
+    "components/review/OutsideDateRow.jsx",
+    "components/review/DefinedTerm.jsx",
+    "components/review/DefinitionDrawer.jsx",
+    "components/review/OtherCovenantsSection.jsx",
+    "components/review/EmployeeBenefitsTable.jsx",
+    "lib/parser-v2/link-defined-terms.js",
+    "lib/queries/definitions-index.js",
+    "db/migrations/",
+    "scripts/data-fix/reclassify-other-covenants.js",
+    "tests/review/phase-5-*.spec.js",
+    "WORKLOG-P5.md"
+  ],
+  "denied": [
+    "scripts/lint/forbidden-patterns.sh",
+    ".github/phase-allowlists/*",
+    "docs/acks/*"
+  ],
+  "market_registry_additions": [
+    "deal.termination.outsideDate",
+    "deal.definedTerms"
+  ]
+}

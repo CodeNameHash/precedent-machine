@@ -1,0 +1,19 @@
+{
+  "phase": "7",
+  "name": "delete-legacy-renderers",
+  "allowed": [
+    "components/review/ConsiderationTables.js",
+    "components/review/NosolFourTables.js",
+    "components/review/EmployeeBenefitsTable.js",
+    "components/review/SecMeetingTable.js",
+    "components/review/NoOtherRepsFraudTable.js",
+    "tests/review/phase-7-legacy-deletion.spec.js",
+    "WORKLOG-P7.md"
+  ],
+  "denied": [
+    "scripts/lint/forbidden-patterns.sh",
+    ".github/phase-allowlists/*",
+    "docs/acks/*"
+  ],
+  "market_registry_additions": []
+}
