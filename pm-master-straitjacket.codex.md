@@ -724,10 +724,11 @@ Ordering is dependency-driven, not priority-driven. Codex picks the topmost unbl
 
 1. **WP-INGEST-CATALOG** (Roadmap v5 §WP-INGEST-CATALOG) — next. Branch `wp/ingest-catalog`. Cataloguing all deal ingest sources and their current parser paths. Unblocked.
 2. **WP-UX-SHELL** (Roadmap v5 §WP-UX-SHELL, lines 398–435) — unblocked, brief lands with this PR. Branch `feat/ux-shell`. Ships design tokens, ESLint rule, new two-level sidebar, dense header, canonical short-form dict, full-doc overlay, landing grid, section persistence. Does NOT touch provision cards, `lib/features/**`, `lib/rubric/**`, `lib/taxonomy/**`, ingest, or API routes.
-3. **WP-SCHEMA** — pointer WP, resolves to `pm-schema-first-migration.codex.md`. Depends on nothing at this layer; downstream of Phase 0-A freeze at the code layer.
-4. **WP-QUERY, WP-REPORTS** — spec merged, UI polish blocked on WP-UX-SHELL.
-5. **WP-REPO-HYGIENE-01** — queued for after WP-INGEST-CATALOG.
-6. **WP-UX-REVIEW** — blocked on WP-UX-SHELL.
+3. **WP-SCHEMA** — schema-first migration per `pm-schema-first-migration.codex.md`. **Phases 1–7B merged** (PRs #101, #102, #119, #124, #125, #126, #127, #128). **Open:** Phase 8 (destructive delete of old vocabularies) — gated on Ben decision, not on Codex; `docs/schema-migration/deletions.md` still reads "No deletion decisions recorded yet." Do NOT kick Phase 8 without an explicit Ben go.
+4. **WP-RECONCIL-DOWNSTREAM** (new, this PR) — Phase-0-C reconciliation queue landed 644 RESOLVED entries and G-0C is frozen (`1ea062d`), but the two downstream artifacts remain incomplete: (a) `docs/schema-shape/reextraction-queue.json` still has **0 entries** — must be populated from the 644 resolved reconciliations; (b) once populated, run reextraction against affected deals and produce `docs/reprocess/round-reconcil.md`. Discovery step: read `docs/schema-shape/reconciliation-log.jsonl` (99 decisions) + `reconciliation-queue.json` entries where `status = RESOLVED` and derive the reextraction target set. Also unblocks `docs/schema-shape/unmapped-observations.json` Dimension A once a provisions snapshot exists.
+5. **WP-QUERY, WP-REPORTS** — spec merged, UI polish blocked on WP-UX-SHELL.
+6. **WP-REPO-HYGIENE-01** — queued for after WP-INGEST-CATALOG.
+7. **WP-UX-REVIEW** — blocked on WP-UX-SHELL.
 
 ## 3.4 Active blocks on `main`
 
