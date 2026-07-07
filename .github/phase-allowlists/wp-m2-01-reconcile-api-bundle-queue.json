@@ -1,0 +1,24 @@
+{
+  "phase": "WP-M2-01-RECONCILE-API-BUNDLE-QUEUE",
+  "name": "m2-01-reconcile-api-bundle-queue",
+  "allowed": [
+    ".github/phase-allowlists/wp-m2-01-reconcile-api-bundle-queue.json",
+    "next.config.js",
+    "HANDOFF.md"
+  ],
+  "denied": [
+    "docs/vocab/FROZEN-*.json",
+    "docs/market-registry/FROZEN-*.json",
+    "docs/schema-shape/*.frozen",
+    "docs/schema-shape/canonical-registry-v1.md",
+    "docs/schema-shape/canonical-definitions.md",
+    "docs/schema-shape/normalized-v1.json",
+    "docs/schema-shape/reconciliation-queue.json",
+    "lib/parser-v2/**",
+    "lib/schema/**",
+    "lib/rubric.js",
+    "supabase/migrations/**",
+    "db/migrations/**"
+  ],
+  "note": "Hotfixes the production reconciliation queue API by tracing the committed queue artifacts into the Vercel serverless function. Does not change queue data or schema semantics."
+}
