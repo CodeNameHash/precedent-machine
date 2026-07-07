@@ -1,0 +1,41 @@
+{
+  "id": "authorize-legacy-vocab-deletion",
+  "created_at": "2026-07-07T00:00:00.000Z",
+  "kind": "destructive",
+  "title": "Authorize legacy vocab deletion",
+  "summary": "Codex needs Ben to authorize the later WP-M2-04 legacy vocab deletion workflow before any legacy vocab file or export is removed. This queue entry does not delete anything by itself. Approval lets Codex run the legacy-vocab reference audit, prepare the manifest, and open a destructive deletion PR only for items that the audit marks safe and Ben has authorized. Rejection keeps the legacy vocab exports in place and blocks that deletion step.",
+  "evidence": [
+    {
+      "label": "PLAN destructive-delete rule",
+      "url": "https://github.com/CodeNameHash/precedent-machine/blob/main/PLAN.md"
+    },
+    {
+      "label": "M1 first live decision",
+      "url": "https://github.com/CodeNameHash/precedent-machine/blob/main/PLAN-M1-review-queue.md"
+    },
+    {
+      "label": "M2 legacy vocab deletion workflow",
+      "url": "https://github.com/CodeNameHash/precedent-machine/blob/main/PLAN-M2-schema-deploy.md"
+    }
+  ],
+  "choices": [
+    {
+      "key": "approve",
+      "label": "Authorize deletion workflow",
+      "codex_action": "proceed with WP-M2-04 legacy vocab audit and later destructive deletion PR limited to approved safe items"
+    },
+    {
+      "key": "reject",
+      "label": "Do not delete legacy vocab",
+      "codex_action": "block WP-M2-04 legacy vocab deletion and keep legacy vocab exports in place"
+    },
+    {
+      "key": "defer",
+      "label": "Defer decision",
+      "codex_action": "leave WP-M2-04 legacy vocab deletion blocked pending further Ben review"
+    }
+  ],
+  "resolution": null,
+  "resolved_at": null,
+  "resolved_by": null
+}

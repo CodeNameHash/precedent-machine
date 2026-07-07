@@ -1,0 +1,25 @@
+{
+  "phase": "WP-M1-04-DOCUMENTATION",
+  "name": "m1-04-documentation",
+  "allowed": [
+    ".github/phase-allowlists/wp-m1-04-documentation.json",
+    "pm-wp-m1-04-documentation.codex.md",
+    "docs/admin/review-queue.md",
+    "docs/review-queue/authorize-legacy-vocab-deletion.json",
+    "tests/review-queue/review-queue-docs.spec.js"
+  ],
+  "denied": [
+    "docs/vocab/FROZEN-*.json",
+    "docs/market-registry/FROZEN-*.json",
+    "docs/schema-shape/*.frozen",
+    "docs/schema-shape/canonical-registry-v1.md",
+    "docs/schema-shape/canonical-definitions.md",
+    "docs/schema-shape/normalized-v1.json",
+    "lib/parser-v2/**",
+    "lib/schema/**",
+    "lib/rubric.js",
+    "supabase/migrations/**",
+    "db/migrations/**"
+  ],
+  "note": "WP-M1-04 documents the Review Queue and adds the first live Ben gate as a queue entry. It does not delete files, change vocab semantics, or modify frozen schema artefacts."
+}
