@@ -6,6 +6,7 @@ export const ADMIN_NAV_LINKS = [
   { href: '/admin/registry', label: 'Registry' },
   { href: '/admin/registry/audit', label: 'Audit' },
   { href: '/admin/registry/reconcile', label: 'Reconcile' },
+  { href: '/admin/registry/strings', label: 'Strings' },
   { href: '/admin/gaps', label: 'Gap review' },
   { href: '/admin/ingest-runs', label: 'Ingest runs' },
   { href: '/admin/candidates', label: 'Deal candidates' },

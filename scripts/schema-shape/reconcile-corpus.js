@@ -43,7 +43,7 @@ function enumCandidates(rawValue, registryEntry) {
     context_score: 0,
     prior_score: 0,
     total: value === rawValue ? 1 : 0,
-  })).sort((a, b) => b.total - a.total || a.canonicalKey.localeCompare(b.canonicalKey)).slice(0, 3);
+  })).sort((a, b) => b.total - a.total || a.canonicalKey.localeCompare(b.canonicalKey));
 }
 
 function candidatesFor(triple, registryEntry = null) {

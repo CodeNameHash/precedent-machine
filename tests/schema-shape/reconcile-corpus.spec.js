@@ -54,3 +54,18 @@ test('PH0C-E: free-text and presence-only fields do not enter the reconciliation
   });
   assert.deepEqual(queue.entries, []);
 });
+
+test('PH0C-E: enum reconciliation candidates are not capped at three', () => {
+  const queue = buildQueue({
+    entries: [
+      { key: 'partyWhoCanTerminate', type: 'enum', enumValues: ['buyer', 'either', 'mutual', 'target'] },
+    ],
+    triples: [
+      { deal_id: 'deal-1', field_key: 'partyWhoCanTerminate', canonicalKey: null, raw_value: 'PARTY_TARGET', source_provision_id: 'prov-1' },
+    ],
+  });
+  assert.deepEqual(
+    queue.entries[0].similarity_candidates.map((candidate) => candidate.canonicalKey),
+    ['buyer', 'either', 'mutual', 'target'],
+  );
+});
