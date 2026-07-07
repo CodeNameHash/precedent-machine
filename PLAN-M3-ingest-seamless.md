@@ -15,6 +15,7 @@ Absorbs taxonomy gaps G8 (ingest QA normalizer check), G10 (cross-section defini
 - Zero manual steps between "documents dropped" and "renders correctly."
 - Ingest QA harness (`scripts/ingest/qa-harness.js`) runs automatically post-ingest and fails ingest if any normalizer regressed.
 - `provision.kind` field populated on every card ("standard" | "definition" | "cross-reference").
+- **Residual waitlist review:** At end of M3, any entries still on `schema-deferred-waitlist.jsonl` get a Review Queue entry: "N SCHEMA_DEFERRED entries have no matching schema after M3 — reclassify as MOVED_OR_DROPPED or extend schema?"
 
 ## WPs in M3
 
@@ -28,6 +29,7 @@ Absorbs taxonomy gaps G8 (ingest QA normalizer check), G10 (cross-section defini
 - Brief: `pm-wp-provision-id-01.codex.md` (to be authored during M3)
 - Classification: **canonical** — one Queue entry: "Approve provision-instance identity scheme" with the ID shape + migration plan.
 - Branch: `wp/m3-01-provision-id`
+- **Waitlist drain:** Scan `docs/reprocess/schema-deferred-waitlist.jsonl`. Any entries whose `waiting_on` matches this WP's newly-delivered schema object get promoted to MERGE (or SPLIT if applicable), reextracted, and struck from the waitlist. Updates the drain status badge on `/admin/reconciliation/deferred` to `Drained`.
 
 ### WP-M3-02: Normalizer manifest (G3)
 
@@ -46,6 +48,7 @@ Absorbs taxonomy gaps G8 (ingest QA normalizer check), G10 (cross-section defini
   - Provenance bundle is the audit source for parity/reconciliation
 - Classification: **canonical** — one Queue entry: "Approve provenance bundle shape."
 - Branch: `wp/m3-03-provenance-bundle`
+- **Waitlist drain:** Scan `docs/reprocess/schema-deferred-waitlist.jsonl`. Any entries whose `waiting_on` matches this WP's newly-delivered schema object get promoted to MERGE (or SPLIT if applicable), reextracted, and struck from the waitlist. Updates the drain status badge on `/admin/reconciliation/deferred` to `Drained`.
 
 ### WP-M3-04: Definitions as Provisions (G10 + G11)
 
@@ -55,6 +58,7 @@ Absorbs taxonomy gaps G8 (ingest QA normalizer check), G10 (cross-section defini
   - Renderer collapses cross-refs into hover-cards; definitions get a dedicated "Definitions" tab on `/review/[id]`
 - Classification: **canonical** — one Queue entry: "Approve definitions-as-provisions model" with example rendered card + JSON shape.
 - Branch: `wp/m3-04-definitions-as-provisions`
+- **Waitlist drain:** Scan `docs/reprocess/schema-deferred-waitlist.jsonl`. Any entries whose `waiting_on` matches this WP's newly-delivered schema object get promoted to MERGE (or SPLIT if applicable), reextracted, and struck from the waitlist. Updates the drain status badge on `/admin/reconciliation/deferred` to `Drained`.
 
 ### WP-M3-05: Ingest end-to-end smoke test + admin surface (G9)
 
