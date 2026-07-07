@@ -584,3 +584,7 @@ opinions about what's "normal" in M&A.
 ## WP-CI-INFRA-01 large-diff follow-up
 
 2026-07-07: WP-CI-INFRA-01: replaces PR files API with local git diff for phase-allowlist changed-files collection. Fixes HTTP 422 on large-diff PRs (PR #140). Preserves original API call as fallback.
+
+## CI phase detection
+
+2026-07-07: `-tail-N` for N ≥ 3 now preserves the full phase id (added 2026-07-07 to support WP-REGISTRY-EVOLVE-01).

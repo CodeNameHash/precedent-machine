@@ -15,6 +15,11 @@ test('detect-phase maps tail recovery branches to base phase', () => {
   assert.equal(detectPhase('phase-0-B-tail-2/frozen-vocabs-and-normalize'), '0-B');
 });
 
+test('detect-phase preserves late-tail phase ids', () => {
+  assert.equal(detectPhase('phase-0-B-tail-3/foo'), '0-B-tail-3');
+  assert.equal(detectPhase('phase-0-B-tail-4/foo'), '0-B-tail-4');
+});
+
 test('detect-phase preserves non-tail phase ids', () => {
   assert.equal(detectPhase('phase-0-C/audit-and-reconcile'), '0-C');
   assert.equal(detectPhase('phase-0.5/foo'), '0.5');
