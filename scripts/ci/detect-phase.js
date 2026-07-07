@@ -30,8 +30,11 @@ function detectPhaseDetails(branchName) {
 }
 
 function normalizeTailPhase(phaseId) {
-  const match = String(phaseId || '').match(/^([\w.-]+?)-tail(-\d+)?$/);
-  return match ? match[1] : phaseId;
+  const match = String(phaseId || '').match(/^([\w.-]+?)-tail(?:-(\d+))?$/);
+  if (!match) return phaseId;
+  const tailNum = match[2] ? Number(match[2]) : null;
+  if (tailNum === null || tailNum <= 2) return match[1];
+  return phaseId;
 }
 
 function writeCiState(phase, env = process.env, rawPhase = phase) {
