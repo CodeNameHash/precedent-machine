@@ -7,7 +7,8 @@ test('PH0C-D: reconcile page exposes queue and decision API logs one row', () =>
   const sidebar = fs.readFileSync('components/admin/reconcile/QueueSidebar.jsx', 'utf8');
   const decide = fs.readFileSync('pages/api/admin/reconcile/decide.js', 'utf8');
   assert.match(page, /EntryPane/);
-  assert.match(page, /group: 'raw_value'/);
+  assert.match(page, /group: 'field_key'/);
+  assert.match(page, /selectedRawId/);
   assert.match(page, /setMessage/);
   assert.match(sidebar, /data-testid="reconcile-queue"/);
   assert.match(sidebar, /entryTotal/);
@@ -22,15 +23,17 @@ test('PH0C-D: reconcile page exposes queue and decision API logs one row', () =>
 
 test('PH0C-D: queue API supports grouped slices for bulk triage', () => {
   const queue = fs.readFileSync('pages/api/admin/reconcile/queue.js', 'utf8');
-  assert.match(queue, /groupEntries/);
+  assert.match(queue, /groupFieldEntries/);
+  assert.match(queue, /hydrateCandidates/);
   assert.match(queue, /entry_total/);
   assert.match(queue, /deal_count/);
-  assert.match(queue, /query\.group === 'raw_value'/);
+  assert.match(queue, /query\.group === 'field_key'/);
 });
 
 test('PH0C-D: reconcile actions expose disabled states and feedback copy', () => {
   const pane = fs.readFileSync('components/admin/reconcile/EntryPane.jsx', 'utf8');
   assert.match(pane, /Select a suggested match before Merge or Promote/);
+  assert.match(pane, /rawGroups\.map/);
   assert.match(pane, /message\.tone === 'error'/);
   assert.match(pane, /disabled=\{!selectedCandidate \|\| isResolving\}/);
 });
