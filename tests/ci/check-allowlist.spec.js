@@ -84,6 +84,32 @@ test('check-allowlist rejects out-of-scope WP-CI-INFRA-03 files', () => {
   assert.deepEqual(result.outside, ['.github/workflows/ci.yml']);
 });
 
+test('check-allowlist self-hosts PLAN system branch', () => {
+  const result = checkAllowlist({
+    phase: 'PLAN-SYSTEM',
+    files: [
+      '.github/phase-allowlists/phase-0-D.json',
+      'PLAN.md',
+      'PLAN-M1-review-queue.md',
+      'PLAN-M2-schema-deploy.md',
+      'PLAN-M3-ingest-seamless.md',
+      'PLAN-M4-query.md',
+      'PLAN-M5-ui-homogenized.md',
+      'PLAN-TAXONOMY-GAPS.md',
+      'docs/acks/ACK-MASTER-V1.reference.md',
+      'pm-master-straitjacket.codex.md',
+      'pm-wp-ux-shell.codex.md',
+      'scripts/ci/detect-phase.js',
+      'scripts/ci/check-allowlist.js',
+      'tests/ci/detect-phase.spec.js',
+      'tests/ci/check-allowlist.spec.js',
+      'WORKLOG-P-1.md',
+    ],
+  });
+  assert.deepEqual(result.denied, []);
+  assert.deepEqual(result.outside, []);
+});
+
 test('check-allowlist loads wp/<slug> allowlist files', () => {
   const file = '.github/phase-allowlists/wp-test-wp.json';
   const previous = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : null;

@@ -22,6 +22,25 @@ const WP_CI_INFRA_03_ALLOWED = [
   'HANDOFF.md',
 ];
 
+const PLAN_SYSTEM_ALLOWED = [
+  '.github/phase-allowlists/phase-0-D.json',
+  'PLAN.md',
+  'PLAN-M1-review-queue.md',
+  'PLAN-M2-schema-deploy.md',
+  'PLAN-M3-ingest-seamless.md',
+  'PLAN-M4-query.md',
+  'PLAN-M5-ui-homogenized.md',
+  'PLAN-TAXONOMY-GAPS.md',
+  'docs/acks/ACK-MASTER-V1.reference.md',
+  'pm-master-straitjacket.codex.md',
+  'pm-wp-ux-shell.codex.md',
+  'scripts/ci/detect-phase.js',
+  'scripts/ci/check-allowlist.js',
+  'tests/ci/detect-phase.spec.js',
+  'tests/ci/check-allowlist.spec.js',
+  'WORKLOG-P-1.md',
+];
+
 function normalizeFile(file) {
   return String(file || '').replace(/\\/g, '/').replace(/^\.\//, '').trim();
 }
@@ -103,6 +122,11 @@ function checkInfraAllowlist(phase, files) {
   return { phase, files, denied: [], outside };
 }
 
+function checkExactAllowlist(phase, files, allowed) {
+  const outside = files.filter((file) => !isAlwaysAllowed(file) && !allowed.includes(file));
+  return { phase, files, denied: [], outside };
+}
+
 function checkAllowlist(options = {}) {
   const phase = options.phase || readPhaseFromState();
   const files = options.files || (phase === '-1' ? [] : changedFiles());
@@ -111,6 +135,9 @@ function checkAllowlist(options = {}) {
   }
   if (phase === 'WP-CI-INFRA-02' || phase === 'WP-CI-INFRA-03') {
     return checkInfraAllowlist(phase, files);
+  }
+  if (phase === 'PLAN-SYSTEM') {
+    return checkExactAllowlist(phase, files, PLAN_SYSTEM_ALLOWED);
   }
   const allowlist = loadAllowlist(phase);
   const denied = [];

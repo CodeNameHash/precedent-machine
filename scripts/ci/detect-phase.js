@@ -24,6 +24,12 @@ function detectPhaseDetails(branchName) {
       phase: 'WP-CI-INFRA-03',
     };
   }
+  if (branch === 'plan/land-plan-system') {
+    return {
+      rawPhase: 'PLAN-SYSTEM',
+      phase: 'PLAN-SYSTEM',
+    };
+  }
   const wpMatch = branch.match(/^wp\/([a-z0-9][a-z0-9-]*[a-z0-9])$/);
   if (wpMatch) {
     const slug = wpMatch[1];
@@ -32,7 +38,7 @@ function detectPhaseDetails(branchName) {
   }
   const match = branch.match(/^phase-([^/]+)\//);
   if (!match) {
-    throw new Error(`Branch name must match phase-{N}/*, wp/<slug>, or a hardcoded WP-CI-INFRA-* branch, got "${branch || '(empty)'}"`);
+    throw new Error(`Branch name must match phase-{N}/*, wp/<slug>, plan/land-plan-system, or a hardcoded WP-CI-INFRA-* branch, got "${branch || '(empty)'}"`);
   }
   const rawPhase = match[1];
   return {
