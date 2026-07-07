@@ -588,3 +588,7 @@ opinions about what's "normal" in M&A.
 ## CI phase detection
 
 2026-07-07: `-tail-N` for N ≥ 3 now preserves the full phase id (added 2026-07-07 to support WP-REGISTRY-EVOLVE-01).
+
+## WP-SCHEMA-LOSS-AUDIT-01 completion note
+
+2026-07-07: WP-SCHEMA-LOSS-AUDIT-01: PR #156 shipped Dimension A residual-audit scaffolding, Dimension B claim-integrity warnings, guarded decision routing, and `/admin/schema-loss`. Notable data changes: added empty Dimension A queues because no committed Provision text snapshot exists, added 200 deterministic suspect-Claim warnings from `normalized-v1.json`, and added empty append-only decision/handoff JSONL files. Follow-ups: Dimension A needs a provisions snapshot or live provisions table to surface substantive uncovered-text clusters; PR #151 still awaits `CLASSIFICATION_APPROVED`.
