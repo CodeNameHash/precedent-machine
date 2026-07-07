@@ -35,3 +35,7 @@ Three clicks handle all eight semantic gaps. Five gaps (G3, G6, G7, G8, G9) are 
 ## What happens if the gap-review turns up a new gap G12
 
 Codex adds a row to this table in the PR that discovers it, slots the WP into the appropriate milestone, and classifies it. If it's canonical → new Queue entry. If mechanical → just proceed.
+
+## Schema-deferred waitlist
+
+175 reconciliation entries are on the waitlist waiting for M3 schema objects. See `PLAN-M3-ingest-seamless.md` for per-WP drain hooks and `/admin/reconciliation/deferred` for live status.
