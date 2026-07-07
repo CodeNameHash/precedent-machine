@@ -64,7 +64,7 @@ export default function QueryPage() {
       });
       const json = await res.json();
       if (json.error) throw new Error(json.error);
-      router.replace(`/newhome/query/${String(kind)}/${json.saved_query.id}`);
+      router.replace(`/query/${String(kind)}/${json.saved_query.id}`);
     } catch (err) {
       setError(err.message || 'Save failed');
     } finally {
@@ -77,7 +77,7 @@ export default function QueryPage() {
       <Head><title>{`${title} · Corpus`}</title></Head>
       <div className="qp">
         <header className="top">
-          <Link href="/newhome" className="brand"><span />Corpus</Link>
+          <Link href="/" className="brand"><span />Corpus</Link>
           <div>
             <h1>{title}</h1>
             <p>{id === 'adhoc' ? 'Ad hoc query' : 'Saved query'}</p>

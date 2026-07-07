@@ -260,7 +260,7 @@ export default function ProvisionDetail() {
   if (!provision) return (
     <div className="text-center py-12 space-y-2">
       <p className="text-inkFaint font-ui">Provision not found.</p>
-      <Link href="/provisions" className="text-accent text-sm font-ui hover:underline">← Back to Provisions</Link>
+      <Link href="/" className="text-accent text-sm font-ui hover:underline">Back to Corpus</Link>
     </div>
   );
 

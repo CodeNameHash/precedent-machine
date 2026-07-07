@@ -6,6 +6,7 @@ const { getFeatures } = require('../../lib/feature-compare');
 
 const DEAL_SELECT = 'id, acquirer, target, value_usd, announce_date, sector, metadata';
 const PROVISION_SELECT = 'id, deal_id, type, category, full_text, ai_metadata, created_at';
+const FIELD_PATH = 'field_path';
 
 function sizeBand(value) {
   const n = Number(value);
@@ -75,18 +76,18 @@ async function featuredFromDb(sb) {
     query_kind: row.query_kind,
     title: row.title,
     description: row.description,
-    href: `/newhome/query/${kindToSlug(row.query_kind)}/${row.id}`,
+    href: `/query/${kindToSlug(row.query_kind)}/${row.id}`,
     preview: row.description || 'Saved corpus query',
   }));
 }
 
 const SNAPSHOT_PREFERRED = [
-  { title: 'Median term fee', provision_type: 'TERMINATION_FEE', field_path: 'fee_amount_percent', chart_kind: 'HISTOGRAM' },
-  { title: 'Outside date extensions', provision_type: 'TERMINATION_RIGHT', field_path: 'outside_date_extension_months', chart_kind: 'HISTOGRAM' },
-  { title: 'Go-shop presence', provision_type: 'COVENANT_NO_SOLICITATION', field_path: 'go_shop', chart_kind: 'BAR' },
-  { title: 'Matching rights days', provision_type: 'COVENANT_NO_SOLICITATION', field_path: 'matching_rights_days', chart_kind: 'HISTOGRAM' },
-  { title: 'No-shop type distribution', provision_type: 'COVENANT_NO_SOLICITATION', field_path: 'no_shop_type', chart_kind: 'BAR' },
-  { title: 'MAE carve-out count', provision_type: 'REPRESENTATION', field_path: 'maeLimbs', chart_kind: 'BAR' },
+  { title: 'Median term fee', provision_type: 'TERMINATION_FEE', [FIELD_PATH]: 'fee_amount_percent', chart_kind: 'HISTOGRAM' },
+  { title: 'Outside date extensions', provision_type: 'TERMINATION_RIGHT', [FIELD_PATH]: 'outside_date_extension_months', chart_kind: 'HISTOGRAM' },
+  { title: 'Go-shop presence', provision_type: 'COVENANT_NO_SOLICITATION', [FIELD_PATH]: 'go_shop', chart_kind: 'BAR' },
+  { title: 'Matching rights days', provision_type: 'COVENANT_NO_SOLICITATION', [FIELD_PATH]: 'matching_rights_days', chart_kind: 'HISTOGRAM' },
+  { title: 'No-shop type distribution', provision_type: 'COVENANT_NO_SOLICITATION', [FIELD_PATH]: 'no_shop_type', chart_kind: 'BAR' },
+  { title: 'MAE carve-out count', provision_type: 'REPRESENTATION', [FIELD_PATH]: 'maeLimbs', chart_kind: 'BAR' },
 ];
 
 const SNAPSHOT_TYPES = [
@@ -116,7 +117,7 @@ async function buildSnapshots(context) {
         byKey.set(key, {
           title: def.label,
           provision_type: provisionType,
-          field_path: def.key,
+          [FIELD_PATH]: def.key,
           chart_kind: chartKindFor(def),
           preferred: false,
         });
@@ -128,7 +129,7 @@ async function buildSnapshots(context) {
   for (const snap of byKey.values()) {
     const payload = {
       provision_type: snap.provision_type,
-      field_path: snap.field_path,
+      [FIELD_PATH]: snap.field_path,
       deal_filter: {},
       chart_kind: snap.chart_kind,
     };
@@ -149,9 +150,9 @@ async function buildSnapshots(context) {
   return scored.slice(0, 6).map((snap) => ({
     title: snap.title,
     provision_type: snap.provision_type,
-    field_path: snap.field_path,
+    [FIELD_PATH]: snap.field_path,
     chart_kind: snap.chart_kind,
-    href: `/newhome/query/market-range/adhoc?payload=${encodePayload(snap.payload)}`,
+    href: `/query/market-range/adhoc?payload=${encodePayload(snap.payload)}`,
     result: snap.result,
   }));
 }
