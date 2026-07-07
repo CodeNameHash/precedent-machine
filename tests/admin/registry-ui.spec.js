@@ -62,7 +62,6 @@ test('registry API freezes only after pending decisions clear', () => {
 });
 
 test('admin nav includes registry route', () => {
-  const nav = read('components/admin/AdminNav.js');
-  assert.match(nav, /\/admin\/registry/);
-  assert.match(nav, /Registry/);
+  const registry = require('../../docs/admin/nav-registry.json');
+  assert.ok(registry.some((entry) => entry.href === '/admin/registry' && entry.label === 'Registry'));
 });

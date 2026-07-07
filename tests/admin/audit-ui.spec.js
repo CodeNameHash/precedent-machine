@@ -13,6 +13,7 @@ test('PH0C-C: audit page and APIs expose matrix and freeze gate', () => {
 });
 
 test('PH0C-C: AdminNav includes Audit after Registry', () => {
-  const nav = fs.readFileSync('components/admin/AdminNav.js', 'utf8');
-  assert.ok(nav.indexOf("label: 'Registry'") < nav.indexOf("label: 'Audit'"));
+  const registry = require('../../docs/admin/nav-registry.json');
+  const schema = registry.filter((entry) => entry.group === 'schema').sort((a, b) => a.order - b.order);
+  assert.ok(schema.findIndex((entry) => entry.label === 'Registry') < schema.findIndex((entry) => entry.label === 'Audit'));
 });
