@@ -37,6 +37,7 @@ export default function HomePage() {
   const [filters, setFilters] = useState({ sector: '', year: '', size: '' });
   const [sort, setSort] = useState('signing_desc');
   const [newOpen, setNewOpen] = useState(false);
+  const [queryKinds, setQueryKinds] = useState([]);
 
   useEffect(() => {
     fetch('/api/home')
@@ -46,6 +47,13 @@ export default function HomePage() {
         setData(json);
       })
       .catch((err) => setError(err.message));
+  }, []);
+
+  useEffect(() => {
+    fetch('/api/query/kinds')
+      .then((res) => res.json())
+      .then((json) => setQueryKinds(Array.isArray(json.kinds) ? json.kinds : []))
+      .catch(() => setQueryKinds([]));
   }, []);
 
   useEffect(() => {
@@ -206,7 +214,7 @@ export default function HomePage() {
                     </select>
                     <div className="newQuery">
                       <button type="button" onClick={() => setNewOpen((v) => !v)}>+ New query</button>
-                      {newOpen && <NewQueryMenu deals={deals} />}
+                      {newOpen && <NewQueryMenu deals={deals} kinds={queryKinds} />}
                     </div>
                   </div>
                 </div>
@@ -343,15 +351,24 @@ function Bars({ items }) {
   return <span className="spark">{items.slice(0, 10).map((count, i) => <span key={i} className="bar" style={{ height: `${Math.max(6, (count / max) * 48)}px` }} />)}</span>;
 }
 
-function NewQueryMenu({ deals }) {
+function NewQueryMenu({ deals, kinds }) {
   const ids = (deals || []).slice(0, 4).map((deal) => deal.id);
   const firstId = ids[0];
-  const links = [
-    ['Deal compare', 'deal-compare', { deal_ids: ids.slice(0, 4), provision_types: ['CONSIDERATION', 'TERMINATION_FEE'], highlight_deltas: true, included_field_groups: ['primary'] }],
-    ['Provision cross-cut', 'provision-cross-cut', { provision_type: 'COVENANT_NO_SOLICITATION', provision_subtype: null, deal_ids: ids, columns: ['go_shop', 'matching_rights_days'], sort_by: 'deal_signing_date_desc' }],
-    ['Market range', 'market-range', { provision_type: 'TERMINATION_FEE', [FIELD_PATH]: 'fee_amount_percent', deal_filter: {}, chart_kind: 'HISTOGRAM' }],
-    ['Filter then list', 'filter-then-list', { filters: [], sort_by: 'deal_signing_date_desc', columns: ['deal_name', 'signing_date', 'consideration_type', 'total_deal_value'] }],
-    ['Deal to market', 'deal-to-market', { deal_id: firstId, comparison_set_filter: {}, provision_types: null }],
-  ];
-  return <div className="menu">{links.map(([label, kind, payload]) => <Link key={kind} href={queryHref(kind, payload)}>{label}</Link>)}</div>;
+  const defaults = {
+    DEAL_COMPARE: ['Deal compare', { deal_ids: ids.slice(0, 4), provision_types: ['CONSIDERATION', 'TERMINATION_FEE'], highlight_deltas: true, included_field_groups: ['primary'] }],
+    PROVISION_CROSS_CUT: ['Provision cross-cut', { provision_type: 'COVENANT_NO_SOLICITATION', provision_subtype: null, deal_ids: ids, columns: ['go_shop', 'matching_rights_days'], sort_by: 'deal_signing_date_desc' }],
+    MARKET_RANGE: ['Market range', { provision_type: 'TERMINATION_FEE', [FIELD_PATH]: 'fee_amount_percent', deal_filter: {}, chart_kind: 'HISTOGRAM' }],
+    FILTER_THEN_LIST: ['Filter then list', { filters: [], sort_by: 'deal_signing_date_desc', columns: ['deal_name', 'signing_date', 'consideration_type', 'total_deal_value'] }],
+    DEAL_TO_MARKET: ['Deal to market', { deal_id: firstId, comparison_set_filter: {}, provision_types: null }],
+  };
+  const source = Array.isArray(kinds) && kinds.length
+    ? kinds.map((item) => [defaults[item.kind]?.[0] || item.kind.replace(/_/g, ' ').toLowerCase(), item.slug, defaults[item.kind]?.[1] || {}])
+    : [
+        ['Deal compare', 'deal-compare', defaults.DEAL_COMPARE[1]],
+        ['Provision cross-cut', 'provision-cross-cut', defaults.PROVISION_CROSS_CUT[1]],
+        ['Market range', 'market-range', defaults.MARKET_RANGE[1]],
+        ['Filter then list', 'filter-then-list', defaults.FILTER_THEN_LIST[1]],
+        ['Deal to market', 'deal-to-market', defaults.DEAL_TO_MARKET[1]],
+      ];
+  return <div className="menu">{source.map(([label, kind, payload]) => <Link key={kind} href={queryHref(kind, payload)}>{label}</Link>)}</div>;
 }

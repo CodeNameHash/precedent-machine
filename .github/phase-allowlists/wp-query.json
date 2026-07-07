@@ -1,0 +1,32 @@
+{
+  "phase": "WP-QUERY",
+  "name": "query-adopt-and-harden",
+  "allowed": [
+    ".github/phase-allowlists/wp-query.json",
+    ".eslintrc.js",
+    "HANDOFF.md",
+    "lib/query/**",
+    "pages/query/[kind]/[id].js",
+    "pages/api/query/run.js",
+    "pages/api/query/kinds.js",
+    "pages/api/saved-queries.js",
+    "pages/index.js",
+    "tests/query/**"
+  ],
+  "denied": [
+    "lib/features/**",
+    "lib/rubric/**",
+    "lib/taxonomy/**",
+    "lib/schema-shape/**",
+    "supabase/migrations/**",
+    "db/migrations/**",
+    "docs/schema-shape/*.frozen",
+    "docs/schema-shape/canonical-registry-v1.md",
+    "docs/schema-shape/canonical-definitions.md",
+    "docs/schema-shape/normalized-v1.json",
+    "pages/search.js",
+    "pages/provisions/index.js",
+    "pages/newhome/**"
+  ],
+  "note": "WP-QUERY adopts and hardens the existing query surface. It may edit lib/query/**, the query APIs, the query page, homepage + New query wiring, saved-query persistence, and tests. It must not edit schema-shape sources, frozen artefacts, rubric/features/taxonomy, migrations, or delete legacy routes."
+}
