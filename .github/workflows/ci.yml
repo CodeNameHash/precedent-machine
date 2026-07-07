@@ -57,17 +57,41 @@ jobs:
     if: github.event_name == 'pull_request'
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Collect changed files
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           REPOSITORY: ${{ github.repository }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
+          set -euo pipefail
+          # Prefer local git; fall back to GitHub PR files API only if git fails.
+          # The PR files API cannot render very large text diffs (HTTP 422),
+          # but check-allowlist.js only needs file NAMES, not diffs.
+          FILES=""
+          if git cat-file -e "${BASE_SHA}^{commit}" 2>/dev/null && \
+             git cat-file -e "${HEAD_SHA}^{commit}" 2>/dev/null; then
+            MERGE_BASE="$(git merge-base "${BASE_SHA}" "${HEAD_SHA}" || true)"
+            if [ -n "${MERGE_BASE}" ]; then
+              FILES="$(git diff --name-only "${MERGE_BASE}" "${HEAD_SHA}")"
+            else
+              FILES="$(git diff --name-only "${BASE_SHA}" "${HEAD_SHA}")"
+            fi
+          fi
+          if [ -z "${FILES}" ]; then
+            echo "git diff produced no files; falling back to gh api"
+            FILES="$(gh api "repos/${REPOSITORY}/pulls/${PR_NUMBER}/files" \
+                       --paginate --jq '.[].filename')"
+          fi
           {
             echo 'CHANGED_FILES<<EOF'
-            gh api "repos/${REPOSITORY}/pulls/${PR_NUMBER}/files" --paginate --jq '.[].filename'
+            printf '%s\n' "${FILES}"
             echo EOF
           } >> "$GITHUB_ENV"
+          echo "Collected $(printf '%s\n' "${FILES}" | grep -c . || true) changed file(s)"
       - name: Detect active phase from branch name
         run: |
           if [ "${GITHUB_HEAD_REF}" = "infra/ci-allowlist-shallow-checkout" ]; then

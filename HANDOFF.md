@@ -580,3 +580,7 @@ opinions about what's "normal" in M&A.
 ## Phase 0-B-tail-2 completion note
 
 2026-07-07: Phase 0-B-tail-2: frozen triggerCode/party_role vocabs, normalizer, shape helpers, and Phase 0-C allowlist shipped. Phase 0-C may rebase and proceed.
+
+## WP-CI-INFRA-01 large-diff follow-up
+
+2026-07-07: WP-CI-INFRA-01: replaces PR files API with local git diff for phase-allowlist changed-files collection. Fixes HTTP 422 on large-diff PRs (PR #140). Preserves original API call as fallback.
