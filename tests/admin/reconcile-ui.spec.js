@@ -8,6 +8,7 @@ test('PH0C-D: reconcile page exposes queue and decision API logs one row', () =>
   const decide = fs.readFileSync('pages/api/admin/reconcile/decide.js', 'utf8');
   assert.match(page, /EntryPane/);
   assert.match(page, /group: 'raw_value'/);
+  assert.match(page, /setMessage/);
   assert.match(sidebar, /data-testid="reconcile-queue"/);
   assert.match(sidebar, /entryTotal/);
   assert.match(decide, /reconciliation-log\.jsonl/);
@@ -15,6 +16,8 @@ test('PH0C-D: reconcile page exposes queue and decision API logs one row', () =>
   assert.match(decide, /applyResolution/);
   assert.match(decide, /field_key/);
   assert.match(decide, /raw_value/);
+  assert.match(decide, /targetCanonicalKey/);
+  assert.match(decide, /process\.env\.VERCEL/);
 });
 
 test('PH0C-D: queue API supports grouped slices for bulk triage', () => {
@@ -23,6 +26,13 @@ test('PH0C-D: queue API supports grouped slices for bulk triage', () => {
   assert.match(queue, /entry_total/);
   assert.match(queue, /deal_count/);
   assert.match(queue, /query\.group === 'raw_value'/);
+});
+
+test('PH0C-D: reconcile actions expose disabled states and feedback copy', () => {
+  const pane = fs.readFileSync('components/admin/reconcile/EntryPane.jsx', 'utf8');
+  assert.match(pane, /Select a suggested match before Merge or Promote/);
+  assert.match(pane, /message\.tone === 'error'/);
+  assert.match(pane, /disabled=\{!selectedCandidate \|\| isResolving\}/);
 });
 
 test('PH0C-D: AdminNav includes Reconcile after Audit', () => {

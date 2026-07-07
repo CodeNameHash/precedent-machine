@@ -42,3 +42,5 @@ PHASE_0_C_TAIL_CANONICAL_FIELDS_ONLY: narrowed reconciliation queue to frozen-vo
 RECONCILE_CORPUS: 12692 queue entries produced from 71395 triples
 
 RECONCILE_CORPUS: 720 queue entries produced from 71395 triples
+
+PHASE_0_C_TAIL_RECONCILE_ACTION_FEEDBACK: clarified reconcile action workflow, surfaced API errors and successes in the UI, blocked Vercel/serverless writes, and made Split report not implemented instead of silently resolving.
