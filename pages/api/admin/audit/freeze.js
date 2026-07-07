@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { buildAuditMatrix } from './matrix';
+import { buildAuditMatrix } from './matrix.js';
 
 const STATE_FILE = 'docs/schema-shape/audit-state.json';
 const MARKER_FILE = 'docs/schema-shape/phase-0-C.frozen';
@@ -12,13 +12,13 @@ function readJson(file, fallback) {
   return JSON.parse(fs.readFileSync(file, 'utf8'));
 }
 
-function freezePreconditions() {
+async function freezePreconditions() {
   const failures = [];
   const normalized = readJson(NORMALIZED_FILE, { triples: [] });
   const queue = readJson(QUEUE_FILE, { entries: [] });
   const triples = normalized.triples || [];
   const openQueue = (queue.entries || []).filter((entry) => ['NEW', 'IN_REVIEW'].includes(entry.status));
-  const matrix = buildAuditMatrix({ deal_id: METSERA_DEAL_ID });
+  const matrix = await buildAuditMatrix({ deal_id: METSERA_DEAL_ID });
   const metsera = matrix.rows[0];
   const cells = metsera ? Object.values(metsera.cells || {}).filter((cell) => cell.status !== 'empty') : [];
   if (!triples.length) failures.push('normalized-v1.json has no triples');
@@ -31,12 +31,12 @@ function freezePreconditions() {
   return { ok: failures.length === 0, failures };
 }
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
   const state = JSON.parse(fs.readFileSync(STATE_FILE, 'utf8'));
   const unresolved = (state.decisions || []).filter((decision) => decision.status === 'red' && !decision.resolution);
   if (unresolved.length) return res.status(409).json({ error: 'Unresolved red cells', unresolved });
-  const preconditions = freezePreconditions();
+  const preconditions = await freezePreconditions();
   if (!preconditions.ok) {
     return res.status(409).json({ error: 'Phase 0-C freeze preconditions failed', failures: preconditions.failures });
   }

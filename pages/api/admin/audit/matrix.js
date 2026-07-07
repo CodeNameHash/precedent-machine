@@ -1,4 +1,6 @@
 import fs from 'fs';
+import { getServiceSupabase } from '../../../../lib/supabase.js';
+import { getDisplayAcquirer, getDisplayTarget } from '../../../../lib/deal-display.js';
 
 const NORMALIZED_FILE = 'docs/schema-shape/normalized-v1.json';
 const QUEUE_FILE = 'docs/schema-shape/reconciliation-queue.json';
@@ -36,13 +38,45 @@ function cellForTriples(triples, pendingQueue) {
     extractorRawValue: canonical.raw_value,
     sourceProvisionId: canonical.source_provision_id,
     source_provision_id: canonical.source_provision_id,
+    section_anchor: null,
     evidence_quote: canonical.evidence_quote,
     source_excerpt: canonical.evidence_quote,
     value_count: triples.length,
   };
 }
 
-export function buildAuditMatrix({ deal_id: dealId, limit = DEFAULT_COLUMN_LIMIT } = {}) {
+async function hydrateDealNames(dealIds) {
+  const ids = [...new Set(dealIds.filter(Boolean))];
+  if (!ids.length) return new Map();
+  const supabase = getServiceSupabase();
+  if (!supabase) return new Map();
+  const { data, error } = await supabase
+    .from('deals')
+    .select('id, metadata, target, acquirer')
+    .in('id', ids);
+  if (error || !data) return new Map();
+  return new Map(data.map((row) => {
+    const acq = getDisplayAcquirer(row);
+    const tgt = getDisplayTarget(row);
+    const label = acq && tgt ? `${acq} / ${tgt}` : (acq || tgt || row.id);
+    return [row.id, label];
+  }));
+}
+
+async function hydrateProvisionAnchors(provisionIds) {
+  const ids = [...new Set(provisionIds.filter(Boolean))];
+  if (!ids.length) return new Map();
+  const supabase = getServiceSupabase();
+  if (!supabase) return new Map();
+  const { data, error } = await supabase
+    .from('provisions')
+    .select('id, section_anchor, section_number')
+    .in('id', ids);
+  if (error || !data) return new Map();
+  return new Map(data.map((row) => [row.id, row.section_anchor || row.section_number || null]));
+}
+
+export async function buildAuditMatrix({ deal_id: dealId, limit = DEFAULT_COLUMN_LIMIT } = {}) {
   const normalized = readJson(NORMALIZED_FILE, { entries: [], triples: [] });
   const queue = readJson(QUEUE_FILE, { entries: [] });
   const triples = (normalized.triples || []).filter((triple) => !dealId || triple.deal_id === dealId);
@@ -65,9 +99,27 @@ export function buildAuditMatrix({ deal_id: dealId, limit = DEFAULT_COLUMN_LIMIT
       fields.has(column.key) ? cellForTriples(fields.get(column.key), pendingQueue) : { status: 'empty' },
     ])),
   }));
+  const provisionIds = [];
+  for (const row of rows) {
+    for (const cell of Object.values(row.cells || {})) {
+      if (cell.sourceProvisionId) provisionIds.push(cell.sourceProvisionId);
+    }
+  }
+  const [dealNames, provisionAnchors] = await Promise.all([
+    hydrateDealNames(rows.map((row) => row.deal_id)),
+    hydrateProvisionAnchors(provisionIds),
+  ]);
+  for (const row of rows) {
+    row.deal_name = dealNames.get(row.deal_id) || row.deal_id;
+    for (const cell of Object.values(row.cells || {})) {
+      if (cell.sourceProvisionId) {
+        cell.section_anchor = provisionAnchors.get(cell.sourceProvisionId) || null;
+      }
+    }
+  }
   return { columns, rows, triple_count: triples.length };
 }
 
-export default function handler(req, res) {
-  res.status(200).json(buildAuditMatrix(req.query || {}));
+export default async function handler(req, res) {
+  res.status(200).json(await buildAuditMatrix(req.query || {}));
 }
