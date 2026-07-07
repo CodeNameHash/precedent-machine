@@ -576,3 +576,7 @@ opinions about what's "normal" in M&A.
 ## WP-CI-INFRA-02 completion note
 
 2026-07-07: WP-CI-INFRA-02: phase detection now maps `phase-*-tail` recovery branches to the base phase allowlist while retaining the raw tail phase in CI state. Phase 0-B allowlist extended for Phase 0-B-tail-2 recovery files, with explicit denies preserving the rest of the phase-allowlist directory. Unblocks PR #135 phase-allowlist.
+
+## Phase 0-B-tail-2 completion note
+
+2026-07-07: Phase 0-B-tail-2: frozen triggerCode/party_role vocabs, normalizer, shape helpers, and Phase 0-C allowlist shipped. Phase 0-C may rebase and proceed.

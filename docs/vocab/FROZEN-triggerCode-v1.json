@@ -1,0 +1,58 @@
+{
+  "id": "FROZEN-triggerCode-v1",
+  "name": "triggerCode",
+  "status": "FROZEN",
+  "version": 1,
+  "introduced_by_phase": "0-B",
+  "values": [
+    {
+      "key": "SUPERIOR_PROPOSAL",
+      "label": "Company terminates for superior proposal"
+    },
+    {
+      "key": "BOARD_RECOMMENDATION_CHANGE",
+      "label": "Buyer terminates for adverse recommendation change"
+    },
+    {
+      "key": "NAKED_NO_VOTE",
+      "label": "Naked no-vote termination"
+    },
+    {
+      "key": "MUTUAL_DROP_DEAD",
+      "label": "Either party terminates at outside date"
+    },
+    {
+      "key": "BUYER_REG_FAILURE",
+      "label": "Buyer regulatory / antitrust failure"
+    },
+    {
+      "key": "COMPANY_BREACH_MATERIAL",
+      "label": "Buyer terminates for company material breach"
+    },
+    {
+      "key": "BUYER_BREACH_MATERIAL",
+      "label": "Company terminates for buyer material breach"
+    },
+    {
+      "key": "LAW_ORDER_PERMANENT_ENJOIN",
+      "label": "Permanent legal enjoinment of the transaction"
+    },
+    {
+      "key": "COMPANY_BREACH_FINANCING_COOPERATION",
+      "label": "Company breach of financing cooperation covenants"
+    },
+    {
+      "key": "OUTSIDE_DATE_ELAPSED",
+      "label": "Outside date elapsed (no successful closing)"
+    },
+    {
+      "key": "STOCKHOLDER_VOTE_FAILED",
+      "label": "Company stockholder vote fails to obtain requisite approval"
+    }
+  ],
+  "rules": [
+    "terminationRights[].triggerCodes[] and terminationFees[].triggers[].triggerCode cite this vocabulary.",
+    "Text-matching between rights and fee descriptions is forbidden as a linkage mechanism.",
+    "Adding a new triggerCode requires the Appendix G PROPOSED to FROZEN workflow."
+  ]
+}
