@@ -8,19 +8,19 @@ export default function EntryPane({ entry, suggestions = [], onSelectCandidate }
   return (
     <main className="space-y-4 p-6">
       <div className="inline-flex rounded border border-accent bg-accent px-3 py-1 text-sm font-semibold text-white">
-        {entry.rawValue}
+        {entry.raw_value}
       </div>
       <section className="rounded border border-border bg-white p-4">
         <h2 className="font-display text-lg text-ink">Suggested Match</h2>
         <div className="mt-3 space-y-2">
           {suggestions.map((candidate) => (
             <button
-              key={candidate.key}
+              key={candidate.canonicalKey || candidate.key}
               type="button"
               className="block w-full rounded border border-border px-3 py-2 text-left text-sm"
               onClick={() => onSelectCandidate(candidate)}
             >
-              {candidate.key} ({candidate.score.total})
+              {candidate.canonicalKey || candidate.key} ({candidate.total ?? candidate.score?.total})
             </button>
           ))}
         </div>

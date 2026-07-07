@@ -1,4 +1,3 @@
-import fs from 'fs';
 import AdminNav from '../../../components/admin/AdminNav';
 import AuditMatrix from '../../../components/admin/audit/AuditMatrix';
 
@@ -16,13 +15,7 @@ export default function AuditPage({ matrix }) {
   );
 }
 
-export function getStaticProps() {
-  const normalized = JSON.parse(fs.readFileSync('docs/schema-shape/normalized-v1.json', 'utf8'));
-  const columns = (normalized.entries || []).slice(0, 6).map((entry) => ({ key: entry.key, label: entry.displayName || entry.key }));
-  const rows = [{
-    deal_id: 'corpus-baseline',
-    deal_name: 'Corpus baseline',
-    cells: Object.fromEntries(columns.map((column) => [column.key, { status: 'green', canonicalKey: column.key, sourceProvisionId: null }])),
-  }];
-  return { props: { matrix: { columns, rows } } };
+export async function getStaticProps() {
+  const { buildAuditMatrix } = await import('../../api/admin/audit/matrix');
+  return { props: { matrix: buildAuditMatrix() } };
 }

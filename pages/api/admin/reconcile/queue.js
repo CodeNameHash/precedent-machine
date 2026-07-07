@@ -1,9 +1,28 @@
 import fs from 'fs';
-import { rankCandidates } from '../../../../lib/schema-shape/similarity';
+
+const QUEUE_FILE = 'docs/schema-shape/reconciliation-queue.json';
+const DEFAULT_LIMIT = 100;
+
+function clampInt(value, fallback, max) {
+  const parsed = Number.parseInt(value, 10);
+  if (!Number.isFinite(parsed) || parsed < 0) return fallback;
+  return Math.min(parsed, max);
+}
+
+export function readQueueSlice(query = {}) {
+  const queue = JSON.parse(fs.readFileSync(QUEUE_FILE, 'utf8'));
+  const entries = queue.entries || [];
+  const offset = clampInt(query.offset, 0, entries.length);
+  const limit = clampInt(query.limit, DEFAULT_LIMIT, 500);
+  return {
+    schema_version: queue.schema_version,
+    total: entries.length,
+    offset,
+    limit,
+    entries: entries.slice(offset, offset + limit),
+  };
+}
 
 export default function handler(req, res) {
-  const queue = JSON.parse(fs.readFileSync('docs/schema-shape/reconciliation-queue.json', 'utf8'));
-  const entries = queue.entries || [];
-  const suggestions = Object.fromEntries(entries.map((entry) => [entry.id, rankCandidates(entry.rawValue, { vocab: entry.vocab, shape: entry.field }).slice(0, 3)]));
-  return res.status(200).json({ entries, suggestions });
+  return res.status(200).json(readQueueSlice(req.query || {}));
 }

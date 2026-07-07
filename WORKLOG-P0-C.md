@@ -28,3 +28,9 @@ Phase 0-C implementation branch reopened after Phase 0-B-tail-2 landed.
 
 - Retrospective sweep currently yields an empty queue because the Phase 0-B-tail normalised artifact is registry-shaped rather than deal-value-shaped.
 - `phase-0-C.frozen` is not committed by this branch; the freeze API writes it when the reviewer confirms audit freeze.
+
+MIGRATE_TO_TRIPLES: 71395 triples produced from 12539 provisions across 40 deals
+
+RECONCILE_CORPUS: 50624 queue entries produced from 71395 triples
+
+OPTION_A_COMPLETE: populated Phase 0-C deal-value triples and reconciliation queue before freeze.
