@@ -39,6 +39,7 @@ test('PH0C-D: reconcile actions expose disabled states and feedback copy', () =>
 });
 
 test('PH0C-D: AdminNav includes Reconcile after Audit', () => {
-  const nav = fs.readFileSync('components/admin/AdminNav.js', 'utf8');
-  assert.ok(nav.indexOf("label: 'Audit'") < nav.indexOf("label: 'Reconcile'"));
+  const registry = require('../../docs/admin/nav-registry.json');
+  const schema = registry.filter((entry) => entry.group === 'schema').sort((a, b) => a.order - b.order);
+  assert.ok(schema.findIndex((entry) => entry.label === 'Audit') < schema.findIndex((entry) => entry.label === 'Reconcile'));
 });

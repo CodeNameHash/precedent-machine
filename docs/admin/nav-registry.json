@@ -1,0 +1,66 @@
+[
+  {
+    "id": "registry",
+    "label": "Registry",
+    "href": "/admin/registry",
+    "group": "schema",
+    "order": 10,
+    "description": "Review canonical schema fields, vocabularies, merge candidates, and freeze readiness."
+  },
+  {
+    "id": "registry-audit",
+    "label": "Audit",
+    "href": "/admin/registry/audit",
+    "group": "schema",
+    "order": 20,
+    "description": "Inspect the Phase 0-C audit matrix and evidence behind populated canonical cells."
+  },
+  {
+    "id": "registry-reconcile",
+    "label": "Reconcile",
+    "href": "/admin/registry/reconcile",
+    "group": "schema",
+    "order": 30,
+    "description": "Resolve canonical registry reconciliation queue items with reviewer decisions."
+  },
+  {
+    "id": "agreements",
+    "label": "Upload agreements",
+    "href": "/admin/agreements",
+    "group": "ingest",
+    "order": 10,
+    "description": "Upload source agreements into the ingestion workflow."
+  },
+  {
+    "id": "candidates",
+    "label": "Deal candidates",
+    "href": "/admin/candidates",
+    "group": "ingest",
+    "order": 20,
+    "description": "Review EDGAR-discovered deal candidates before promotion into the corpus."
+  },
+  {
+    "id": "ingest-runs",
+    "label": "Ingest runs",
+    "href": "/admin/ingest-runs",
+    "group": "ingest",
+    "order": 30,
+    "description": "Monitor ingestion runs, statuses, and batch-level processing output."
+  },
+  {
+    "id": "gaps",
+    "label": "Gap review",
+    "href": "/admin/gaps",
+    "group": "ingest",
+    "order": 40,
+    "description": "Review extraction coverage gaps and route follow-up work."
+  },
+  {
+    "id": "search-review",
+    "label": "Search / Review",
+    "href": "/",
+    "group": "search",
+    "order": 10,
+    "description": "Return to the main deal search and review workspace."
+  }
+]
