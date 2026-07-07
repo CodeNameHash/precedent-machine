@@ -9,6 +9,6 @@ test('legacy /ingest page is deleted', () => {
 test('review pages no longer link to /ingest', () => {
   for (const file of ['pages/review/[id].js', 'pages/review/index.js']) {
     const source = fs.readFileSync(file, 'utf8');
-    assert.doesNotMatch(source, /href=["'`]\/ingest["'`]/);
+    assert.doesNotMatch(source, /href=\{?[`"']\/ingest(?:[?"'`}]|$)/);
   }
 });
