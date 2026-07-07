@@ -14,6 +14,10 @@ Audit: Inspect the Phase 0-C audit matrix and evidence behind populated canonica
 
 Reconcile: Resolve canonical registry reconciliation queue items with reviewer decisions.
 
+## schema-loss
+
+Schema loss audit: Review uncovered text and suspect Claims, then route each item to the correct downstream queue.
+
 ## agreements
 
 Upload agreements: Upload source agreements into the ingestion workflow.
@@ -106,6 +110,18 @@ Serves the admin route `/api/admin/registry/preview` for the admin workflow asso
 
 Serves the admin route `/api/admin/reprocess-cond` for the admin workflow associated with its filename.
 
+## API: pages/api/admin/schema-loss/decide.js
+
+Serves the admin route `/api/admin/schema-loss/decide` for schema-loss reviewer decisions.
+
+## API: pages/api/admin/schema-loss/queue.js
+
+Serves the admin route `/api/admin/schema-loss/queue` for Dimension A and Dimension B queues.
+
+## API: pages/api/admin/schema-loss/rerun.js
+
+Serves the admin route `/api/admin/schema-loss/rerun` for manual audit re-runs.
+
 ## API: pages/api/admin/store-agreement.js
 
 Serves the admin route `/api/admin/store-agreement` for the admin workflow associated with its filename.
@@ -141,6 +157,30 @@ Provides the `QueueSidebar` admin UI component used by the admin pages or review
 ## Component: components/admin/reconcile/SplitFlow.jsx
 
 Provides the `SplitFlow` admin UI component used by the admin pages or reviewer flows.
+
+## Component: components/admin/schema-loss/ClusterPane.jsx
+
+Provides the `ClusterPane` admin UI component for Dimension A uncovered-text entries.
+
+## Component: components/admin/schema-loss/DecisionRouter.jsx
+
+Provides the `DecisionRouter` admin UI component for schema-loss reviewer routing.
+
+## Component: components/admin/schema-loss/IntegrityWarningPane.jsx
+
+Provides the `IntegrityWarningPane` admin UI component for Dimension B suspect Claims.
+
+## Component: components/admin/schema-loss/ProvisionViewer.jsx
+
+Provides the `ProvisionViewer` admin UI component shared by both schema-loss tabs.
+
+## Component: components/admin/schema-loss/QueueSidebar.jsx
+
+Provides the `QueueSidebar` admin UI component for schema-loss queue selection.
+
+## Component: components/admin/schema-loss/ResidualHighlighter.jsx
+
+Provides the `ResidualHighlighter` admin UI component for uncovered-text samples.
 
 ## Component: components/admin/registry/FlagBadge.jsx
 
