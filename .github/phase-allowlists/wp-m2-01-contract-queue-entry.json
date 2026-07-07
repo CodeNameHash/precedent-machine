@@ -1,0 +1,25 @@
+{
+  "phase": "WP-M2-01-CONTRACT-QUEUE-ENTRY",
+  "name": "m2-01-contract-queue-entry",
+  "allowed": [
+    ".github/phase-allowlists/wp-m2-01-contract-queue-entry.json",
+    "docs/handoffs/CODEX-DIRECTIVE-M2-01-unblock.md",
+    "docs/review-queue/ed9210c4-76bf-4068-9562-b68869d20c98.json",
+    "pages/api/admin/review-queue/index.js",
+    "pages/api/admin/review-queue/[id]/resolve.js"
+  ],
+  "denied": [
+    "docs/vocab/FROZEN-*.json",
+    "docs/market-registry/FROZEN-*.json",
+    "docs/schema-shape/*.frozen",
+    "docs/schema-shape/canonical-registry-v1.md",
+    "docs/schema-shape/canonical-definitions.md",
+    "docs/schema-shape/normalized-v1.json",
+    "lib/parser-v2/**",
+    "lib/schema/**",
+    "lib/rubric.js",
+    "supabase/migrations/**",
+    "db/migrations/**"
+  ],
+  "note": "WP-M2-01 contract queue-entry PR checks in Ben's directive, publishes the Review Queue audit record, and fixes the Review Queue API default export shape needed for Ben to click the entry in production. It does not change reconciliation data, canonical semantics, extraction logic, or admin reconciliation surfaces."
+}
