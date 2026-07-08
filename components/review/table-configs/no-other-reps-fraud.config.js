@@ -1,3 +1,4 @@
+import React from 'react';
 import { deriveAbrySummary } from '../../../lib/abry.js';
 
 const ABRY_CODES = ['MISC-ENTIRE', 'REP-T-NOREP', 'REP-B-NOREP', 'REP-B-ANTIRELIANCE'];
@@ -9,6 +10,12 @@ const FEATURE_KEYS = [
   'fraudCarveout',
   'willfulBreachDefinition',
 ];
+// Q1/Q3 are the "non-reliance" side of the pairing, Q2/Q4 the "no-other-reps"
+// side — see lib/abry.js's module header. deriveAbrySummary only computes a
+// `scope` label (extra-contractual materials named in the clause) for the
+// no-other-reps questions (Q2/Q4); Q1/Q3 carry no scope field in the current
+// schema, so no scope pill is rendered for them (documented in the PR, not
+// fabricated).
 const QUESTIONS = [
   ['q1', 'Buyer non-reliance', 'Non-reliance'],
   ['q2', 'Seller no-other-reps', 'No-other-reps'],
@@ -58,6 +65,8 @@ function questionRow(key, label, kind, entry) {
     status: present ? 'Present' : 'Not present',
     detail: quoteOrDetail(entry),
     evidence: present ? entry.quote || '' : '',
+    source: present ? entry.provision : null,
+    scope: present ? entry.scope || null : null,
     present,
   };
 }
@@ -70,7 +79,10 @@ function fraudRow(fraud) {
     status: present ? 'Present' : 'Silent',
     detail: present ? fraud.quote : 'Silent on fraud',
     evidence: present ? fraud.quote : '',
+    source: present ? fraud.provision : null,
+    scope: null,
     present: true,
+    emptyState: !present,
   };
 }
 function willfulBreachRow(willfulBreach) {
@@ -82,8 +94,63 @@ function willfulBreachRow(willfulBreach) {
     status: 'Defined',
     detail: willfulBreach.quote,
     evidence: willfulBreach.quote,
+    source: willfulBreach.provision,
+    scope: null,
     present: true,
   };
+}
+// The Abry "four questions" (Q1-Q4) read most efficiently as a single
+// coverage checklist before the detail rows below spell out each one —
+// mirrors material-contracts.config.js's rollup-header-then-rows shape.
+function checklistRow(questionRows) {
+  return {
+    id: 'no-other-reps-fraud-checklist',
+    label: 'Four-question coverage',
+    kind: 'Checklist',
+    status: `${questionRows.filter((row) => row.present).length}/4 present`,
+    detail: 'See rows below for the underlying quote and scope on each question.',
+    evidence: null,
+    source: null,
+    scope: null,
+    present: true,
+    checklistItems: questionRows.map((row) => ({
+      id: row.id,
+      label: row.label,
+      present: row.present,
+      evidence: row.evidence,
+      source: row.source,
+    })),
+  };
+}
+
+function renderStatus(row, ctx) {
+  const PillCell = ctx?.primitives?.PillCell;
+  if (!PillCell) return row.status;
+  return React.createElement(PillCell, {
+    label: row.status,
+    tone: row.present ? 'present' : row.emptyState ? 'missing' : 'missing',
+    evidence: row.evidence,
+    source: row.source,
+  });
+}
+
+function renderDetail(row, ctx) {
+  const { PillCell, EvidenceHoverSource, CoverageChecklist, EmptyStateBranch } = ctx?.primitives || {};
+  if (row.checklistItems) {
+    if (!CoverageChecklist) return row.checklistItems.map((item) => `${item.label}: ${item.present ? 'Present' : 'Missing'}`).join('\n');
+    return React.createElement(CoverageChecklist, { items: row.checklistItems, emptyCopy: 'No ABRY signal captured.' });
+  }
+  if (row.emptyState) {
+    return EmptyStateBranch ? React.createElement(EmptyStateBranch, { copy: row.detail }) : row.detail;
+  }
+  const scopePill = row.scope && PillCell
+    ? React.createElement(PillCell, { key: 'scope', label: row.scope, tone: 'info', evidence: row.evidence, source: row.source })
+    : null;
+  const text = EvidenceHoverSource && row.evidence
+    ? React.createElement(EvidenceHoverSource, { value: row.detail, evidence: row.evidence, source: row.source, as: 'span' }, row.detail)
+    : row.detail;
+  if (!scopePill) return text;
+  return React.createElement('div', { className: 'space-y-1' }, scopePill, text);
 }
 
 const noOtherRepsFraudConfig = {
@@ -94,8 +161,10 @@ const noOtherRepsFraudConfig = {
     const cards = (reviewDeal?.cards || []).filter(hasAbrySignal);
     if (!cards.length) return [];
     const summary = deriveAbrySummary(cards.map(pseudoProvision));
+    const questionRows = QUESTIONS.map(([key, label, kind]) => questionRow(key, label, kind, summary[key]));
     return [
-      ...QUESTIONS.map(([key, label, kind]) => questionRow(key, label, kind, summary[key])),
+      checklistRow(questionRows),
+      ...questionRows,
       fraudRow(summary.fraud),
       willfulBreachRow(summary.willfulBreach),
     ].filter(Boolean);
@@ -103,9 +172,9 @@ const noOtherRepsFraudConfig = {
   columns: [
     { id: 'question', header: 'Question', width: '18rem', renderCell: (row) => row.label },
     { id: 'kind', header: 'Type', width: '10rem', renderCell: (row) => row.kind },
-    { id: 'status', header: 'Status', width: '8rem', renderCell: (row) => row.status },
-    { id: 'detail', header: 'Detail', renderCell: (row) => row.detail },
+    { id: 'status', header: 'Status', width: '8rem', renderCell: renderStatus },
+    { id: 'detail', header: 'Detail', renderCell: renderDetail },
   ],
 };
 
-export { noOtherRepsFraudConfig };
+export { noOtherRepsFraudConfig, renderDetail, renderStatus };

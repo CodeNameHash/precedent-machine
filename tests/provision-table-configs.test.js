@@ -1204,6 +1204,7 @@ test('no-other-reps fraud config maps Abry four-question summary', () => {
     }],
   });
   assert.deepEqual(rows.map((row) => row.label), [
+    'Four-question coverage',
     'Buyer non-reliance',
     'Seller no-other-reps',
     'Seller non-reliance',
@@ -1213,9 +1214,17 @@ test('no-other-reps fraud config maps Abry four-question summary', () => {
   ]);
   assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-q1').status, 'Present');
   assert.match(rows.find((row) => row.id === 'no-other-reps-fraud-q2').detail, /data room/);
+  assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-q2').scope, 'Agreement + data room');
+  assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-q1').scope, null);
   assert.match(rows.find((row) => row.id === 'no-other-reps-fraud-q4').detail, /management presentations/);
+  assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-q4').scope, 'Agreement + management presentations');
   assert.match(rows.find((row) => row.id === 'no-other-reps-fraud-fraud').detail, /nothing herein limits liability for Fraud/);
   assert.match(rows.find((row) => row.id === 'no-other-reps-fraud-willful-breach').detail, /intentional and material breach/);
+  assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-checklist').status, '4/4 present');
+  assert.deepEqual(
+    rows.find((row) => row.id === 'no-other-reps-fraud-checklist').checklistItems.map((item) => item.present),
+    [true, true, true, true],
+  );
 });
 
 test('no-other-reps fraud config renders fraud silence as a meaningful row', () => {
@@ -1234,4 +1243,50 @@ test('no-other-reps fraud config renders fraud silence as a meaningful row', () 
   assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-q1').status, 'Present');
   assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-q3').status, 'Not present');
   assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-fraud').status, 'Silent');
+  assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-fraud').emptyState, true);
+  assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-checklist').status, '2/4 present');
+});
+
+test('no-other-reps-fraud render cells use pill, coverage-checklist, evidence-hover, and empty-state primitives', () => {
+  const rows = noOtherRepsFraudMod.noOtherRepsFraudConfig.selectRows({
+    cards: [{
+      id: 'entire',
+      provision_subtype: 'MISC-ENTIRE',
+      short_title: 'Entire Agreement',
+      primary_quote: 'Each party disclaims reliance on extra-contractual statements.',
+      features: {
+        noOtherRepsPresent: true,
+        noOtherRepsParty: 'BOTH',
+        nonRelianceClause: 'Parent acknowledges that the Company makes no representations other than those in this Agreement.\n\nThe Company acknowledges that Parent makes no representations other than those in this Agreement.',
+        extraContractualClaimsWaived: true,
+        fraudCarveout: 'nothing herein limits liability for Fraud involving data room materials.',
+      },
+    }],
+  });
+  const checklist = rows.find((row) => row.id === 'no-other-reps-fraud-checklist');
+  const q2 = rows.find((row) => row.id === 'no-other-reps-fraud-q2');
+  const fraud = rows.find((row) => row.id === 'no-other-reps-fraud-fraud');
+  const primitives = {
+    PillCell: ({ label }) => React.createElement('span', { className: 'pill' }, label),
+    EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
+    CoverageChecklist: ({ items }) => React.createElement('ul', { 'data-testid': 'coverage-checklist' }, items.map((item) => React.createElement('li', { key: item.id }, `${item.label}:${item.present}`))),
+    EmptyStateBranch: ({ copy }) => React.createElement('div', { 'data-testid': 'empty-state-branch' }, copy),
+  };
+  const statusColumn = noOtherRepsFraudMod.noOtherRepsFraudConfig.columns.find((column) => column.id === 'status');
+  const detailColumn = noOtherRepsFraudMod.noOtherRepsFraudConfig.columns.find((column) => column.id === 'detail');
+  const checklistHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(checklist, { primitives })));
+  assert.match(checklistHtml, /data-testid="coverage-checklist"/);
+  assert.match(checklistHtml, /Seller no-other-reps:true/);
+  const q2Html = renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(q2, { primitives })));
+  assert.match(q2Html, /pill">Agreement \+ data room/);
+  assert.match(q2Html, /data-evidence="Parent acknowledges/);
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, statusColumn.renderCell(q2, { primitives }))), /pill">Present/);
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(fraud, { primitives }))), /data-evidence="nothing herein limits liability for Fraud/);
+
+  // Silence branch — separate deal with no fraud carve-out at all.
+  const silentRows = noOtherRepsFraudMod.noOtherRepsFraudConfig.selectRows({
+    cards: [{ id: 'norep', provision_subtype: 'REP-T-NOREP', features: { noOtherRepsPresent: true, noOtherRepsParty: 'COMPANY', nonRelianceClause: 'No reliance on extra-contractual statements.' } }],
+  });
+  const silentFraud = silentRows.find((row) => row.id === 'no-other-reps-fraud-fraud');
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(silentFraud, { primitives }))), /data-testid="empty-state-branch"/);
 });
