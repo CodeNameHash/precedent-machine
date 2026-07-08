@@ -675,3 +675,5 @@ REVIEW_QUEUE_RESOLUTION {"id":"m2-06-template-table-architecture","kind":"canoni
 2026-07-08: WP-M2-09 Step 3, Rep Materiality / Qualifiers family: enriched representation qualifier config with taxonomy-readable signals and hover-source rendering for materiality, knowledge, schedule, SEC carve-out, bring-down, and rep-specific rows.
 
 2026-07-08: WP-M2-09 Step 3, MAE / Definitions family: enriched MAE definitions config with taxonomy-readable signals and hover-source rendering for limbs, carve-outs, disproportionate-impact clauses, prevent-delay prongs, and scope.
+
+2026-07-08: WP-M2-09 Step 3, Antitrust / Regulatory family: enriched antitrust/regulatory config with taxonomy-readable signals and hover-source rendering for efforts, filings, approvals, litigation, cooperation, remedies, caps, conduct, and outside-date/ticking-fee linkage.
