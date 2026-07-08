@@ -1,0 +1,11 @@
+{
+  "phase": "WP-M2-00-03-STORE-CARDS",
+  "name": "m2-00-03-store-cards",
+  "allowed": [
+    ".github/phase-allowlists/wp-m2-00-03-store-cards.json",
+    "lib/parser-v2/store-cards.js",
+    "tests/e2e/fixtures/metsera-card-writer.json",
+    "tests/parser-v2-store-cards.test.js"
+  ],
+  "denied": []
+}
