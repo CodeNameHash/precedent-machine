@@ -650,3 +650,4 @@ REVIEW_QUEUE_RESOLUTION {"id":"m2-06-template-table-architecture","kind":"canoni
 
 2026-07-08: WP-M2-06 Step 8: added the no-shop core mechanics config, `nosol-noshop`, for the schema-first `ProvisionTable` path. The config covers prohibition, cease-discussions, and no-shop exception rows using NOSOL subtypes plus feature/text fallbacks.
 2026-07-08: WP-M2-06 Step 9: added the Superior Proposal config, `nosol-superior`, for the schema-first `ProvisionTable` path. The config covers threshold, proposal test, determiner, engagement standard, and final determination standard using NOSOL/DEF features plus quote fallback.
+2026-07-08: WP-M2-06 Step 10: added the Intervening Event config, `nosol-intervening`, for the schema-first `ProvisionTable` path. The config covers existence/board-change, definition, scope, exceptions, and termination-right rows using NOSOL/DEF features plus quote fallback.

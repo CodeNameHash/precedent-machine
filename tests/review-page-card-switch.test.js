@@ -20,6 +20,7 @@ test('review page mounts the first schema structured table config before cards',
   assert.match(reviewPageSource, /import \{ conditionsSConfig \} from '..\/..\/components\/review\/table-configs\/conditions-s\.config';/);
   assert.match(reviewPageSource, /import \{ iocExceptionsConfig \} from '..\/..\/components\/review\/table-configs\/ioc-exceptions\.config';/);
   assert.match(reviewPageSource, /import \{ materialContractsConfig \} from '..\/..\/components\/review\/table-configs\/material-contracts\.config';/);
+  assert.match(reviewPageSource, /import \{ nosolInterveningConfig \} from '..\/..\/components\/review\/table-configs\/nosol-intervening\.config';/);
   assert.match(reviewPageSource, /import \{ nosolNoshopConfig \} from '..\/..\/components\/review\/table-configs\/nosol-noshop\.config';/);
   assert.match(reviewPageSource, /import \{ nosolSuperiorConfig \} from '..\/..\/components\/review\/table-configs\/nosol-superior\.config';/);
   assert.match(reviewPageSource, /import \{ tailFeeConfig \} from '..\/..\/components\/review\/table-configs\/tail-fee\.config';/);
@@ -31,6 +32,7 @@ test('review page mounts the first schema structured table config before cards',
   assert.match(reviewPageSource, /<ProvisionTable config=\{tailFeeConfig\} reviewDeal=\{schemaReviewDeal/);
   assert.match(reviewPageSource, /<ProvisionTable config=\{nosolNoshopConfig\} reviewDeal=\{schemaReviewDeal/);
   assert.match(reviewPageSource, /<ProvisionTable config=\{nosolSuperiorConfig\} reviewDeal=\{schemaReviewDeal/);
+  assert.match(reviewPageSource, /<ProvisionTable config=\{nosolInterveningConfig\} reviewDeal=\{schemaReviewDeal/);
   assert.ok(
     reviewPageSource.indexOf('<ProvisionTable config={conditionsMConfig}') <
       reviewPageSource.indexOf('<ProvisionTable config={conditionsBConfig}') &&
@@ -47,6 +49,8 @@ test('review page mounts the first schema structured table config before cards',
       reviewPageSource.indexOf('<ProvisionTable config={nosolNoshopConfig}') <
       reviewPageSource.indexOf('<ProvisionTable config={nosolSuperiorConfig}') &&
       reviewPageSource.indexOf('<ProvisionTable config={nosolSuperiorConfig}') <
+      reviewPageSource.indexOf('<ProvisionTable config={nosolInterveningConfig}') &&
+      reviewPageSource.indexOf('<ProvisionTable config={nosolInterveningConfig}') <
       reviewPageSource.indexOf('<ProvisionCardTable reviewDeal={schemaReviewDeal'),
     'structured schema tables should render before the raw card list',
   );
