@@ -669,3 +669,5 @@ REVIEW_QUEUE_RESOLUTION {"id":"m2-06-template-table-architecture","kind":"canoni
 2026-07-08: WP-M2-09 Step 3, IOC / General Covenants family: enriched IOC exceptions and general covenant configs with efforts, consent, knowledge, and deadline signals plus hover-source rendering for extracted exception/detail text.
 
 2026-07-08: WP-M2-09 Step 3, Fees family: enriched termination fee, tail-fee mechanics, and advisers/fees/expenses configs with primitive-backed signals, threshold cells, and hover-source rendering for fee evidence.
+
+2026-07-08: WP-M2-09 Step 3, NoSol family: enriched no-shop, superior proposal, intervening event, and fiduciary-out configs with primitive-backed signals and hover-source rendering for standards, scopes, notice/match periods, and termination rights.

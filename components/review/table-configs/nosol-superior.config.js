@@ -1,3 +1,5 @@
+import React from 'react';
+
 const ROWS = [
   { id: 'threshold', label: 'Superior Proposal threshold', keys: ['superiorProposalThresholdPct', 'superiorProposalPercentage'], fallback: thresholdFromText },
   { id: 'test', label: 'Superior Proposal test', keys: ['superiorProposalTest'], fallback: testFromText },
@@ -75,8 +77,32 @@ function rowForSpec(spec, cards) {
     party: [...new Set(cards.map(partySide))].join(', ') || 'Target / Company',
     detail,
     evidence,
+    sourceCards: cards,
     present: true,
   };
+}
+function rowSignal(row) {
+  if (!row?.detail) return null;
+  const tone = row.id.endsWith('threshold') ? 'info' : 'neutral';
+  return { id: `${row.id}-signal`, label: `${row.label}: ${row.detail}`, value: row.detail, tone, evidence: row.evidence, source: row.sourceCards?.[0] };
+}
+function renderSignals(row, ctx) {
+  const PillCell = ctx?.primitives?.PillCell;
+  const signal = rowSignal(row);
+  if (!signal) return '';
+  if (!PillCell) return signal.label;
+  return React.createElement(PillCell, {
+    label: signal.label,
+    value: signal.value,
+    tone: signal.tone,
+    evidence: signal.evidence,
+    source: signal.source,
+  });
+}
+function renderDetail(row, ctx) {
+  const EvidenceHoverSource = ctx?.primitives?.EvidenceHoverSource;
+  if (!EvidenceHoverSource || !row.evidence) return row.detail;
+  return React.createElement(EvidenceHoverSource, { value: row.detail, evidence: row.evidence, source: row.sourceCards?.[0], as: 'span' }, row.detail);
 }
 
 const nosolSuperiorConfig = {
@@ -91,9 +117,10 @@ const nosolSuperiorConfig = {
   columns: [
     { id: 'term', header: 'Term', width: '18rem', renderCell: (row) => row.label },
     { id: 'party', header: 'Party', width: '12rem', renderCell: (row) => row.party },
-    { id: 'detail', header: 'Detail', renderCell: (row) => row.detail },
+    { id: 'signals', header: 'Signals', width: '18rem', renderCell: renderSignals },
+    { id: 'detail', header: 'Detail', renderCell: renderDetail },
   ],
   empty: { copy: 'No Superior Proposal mechanics found.' },
 };
 
-export { nosolSuperiorConfig };
+export { nosolSuperiorConfig, renderDetail, renderSignals, rowSignal };

@@ -1,3 +1,5 @@
+import React from 'react';
+
 const ROWS = [
   { id: 'prohibit', label: 'No-shop / non-solicit restriction', codes: ['NOSOL-PROHIBIT'], keys: ['noShopType', 'prohibitedActions', 'mainRestriction'] },
   { id: 'cease', label: 'Cease discussions', codes: ['NOSOL-CEASE'], keys: ['ceaseDiscussionsProhibitedList', 'ceaseDiscussionsAffiliateStandard', 'ceaseDiscussionsLiability'] },
@@ -59,8 +61,32 @@ function rowForSpec(spec, cards) {
     party: parties || 'Target / Company',
     detail: detail || 'Present, detail not extracted',
     evidence: matches.map(textOf).filter(Boolean).join('\n\n'),
+    sourceCards: matches,
     present: true,
   };
+}
+function rowSignal(row) {
+  if (!row?.detail) return null;
+  const tone = row.id.endsWith('exceptions') ? 'warning' : 'info';
+  return { id: `${row.id}-signal`, label: `${row.label}: ${row.detail}`, value: row.detail, tone, evidence: row.evidence, source: row.sourceCards?.[0] };
+}
+function renderSignals(row, ctx) {
+  const PillCell = ctx?.primitives?.PillCell;
+  const signal = rowSignal(row);
+  if (!signal) return '';
+  if (!PillCell) return signal.label;
+  return React.createElement(PillCell, {
+    label: signal.label,
+    value: signal.value,
+    tone: signal.tone,
+    evidence: signal.evidence,
+    source: signal.source,
+  });
+}
+function renderDetail(row, ctx) {
+  const EvidenceHoverSource = ctx?.primitives?.EvidenceHoverSource;
+  if (!EvidenceHoverSource || !row.evidence) return row.detail;
+  return React.createElement(EvidenceHoverSource, { value: row.detail, evidence: row.evidence, source: row.sourceCards?.[0], as: 'span' }, row.detail);
 }
 
 const nosolNoshopConfig = {
@@ -75,9 +101,10 @@ const nosolNoshopConfig = {
   columns: [
     { id: 'term', header: 'Term', width: '18rem', renderCell: (row) => row.label },
     { id: 'party', header: 'Party', width: '12rem', renderCell: (row) => row.party },
-    { id: 'detail', header: 'Detail', renderCell: (row) => row.detail },
+    { id: 'signals', header: 'Signals', width: '18rem', renderCell: renderSignals },
+    { id: 'detail', header: 'Detail', renderCell: renderDetail },
   ],
   empty: { copy: 'No no-shop core mechanics found.' },
 };
 
-export { nosolNoshopConfig };
+export { nosolNoshopConfig, renderDetail, renderSignals, rowSignal };
