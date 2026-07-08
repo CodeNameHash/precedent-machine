@@ -411,6 +411,35 @@ test('termination-rights config exposes timing and right signals with hover deta
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(outsideDate, { primitives }))), /data-evidence="Either party may terminate/);
 });
 
+test('sec-meeting config exposes proxy and offer signals with hover details', () => {
+  const rows = secMeetingMod.secMeetingConfig.selectRows({
+    cards: [{
+      id: 'proxy',
+      provision_subtype: 'COV-PROXY',
+      primary_quote: 'The Company shall file the proxy statement within 10 business days and Parent may require one adjournment.',
+      features: {
+        proxyFilingDeadline: { days: 10, unit: 'BUSINESS_DAYS', trigger: 'SIGNING', text: 'file within 10 business days after signing' },
+        adjournmentRights: [{ party: 'PARENT', reasons: [{ code: 'SOLICIT_VOTES', label: 'Solicit votes' }], maxDaysTotal: 30, text: 'Parent may require one adjournment to solicit votes.' }],
+        schedule14D9Filing: 'Company files Schedule 14D-9 promptly after offer commencement.',
+      },
+    }],
+  });
+  const proxy = rows.find((row) => row.id === 'sec-meeting-proxy-filing');
+  const adjournment = rows.find((row) => row.id === 'sec-meeting-adjournment-0');
+  const schedule14d9 = rows.find((row) => row.id === 'sec-meeting-schedule14D9Filing');
+  assert.match(proxy.signals[0].label, /Proxy \/ meeting: 10 business days after signing/);
+  assert.match(adjournment.signals[0].label, /Solicit votes/);
+  assert.match(schedule14d9.signals[0].label, /SEC \/ offer: Company files Schedule 14D-9/);
+  const primitives = {
+    PillCell: ({ label }) => React.createElement('span', { className: 'pill' }, label),
+    EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
+  };
+  const signalColumn = secMeetingMod.secMeetingConfig.columns.find((column) => column.id === 'signals');
+  const detailColumn = secMeetingMod.secMeetingConfig.columns.find((column) => column.id === 'detail');
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, signalColumn.renderCell(proxy, { primitives }))), /10 business days after signing/);
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(schedule14d9, { primitives }))), /data-evidence="The Company shall file the proxy statement/);
+});
+
 test('general-covenants config exposes efforts, consent, knowledge, and deadline signals', () => {
   const rows = generalCovenantsMod.generalCovenantsConfig.selectRows({
     cards: [{

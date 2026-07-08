@@ -681,3 +681,5 @@ REVIEW_QUEUE_RESOLUTION {"id":"m2-06-template-table-architecture","kind":"canoni
 2026-07-08: WP-M2-09 Step 3, Structure / Mechanics family: enriched structure/mechanics config with primitive-backed signals and hover-source rendering for transaction form, merger mechanics, closing, tender-offer, governance, and consideration mechanics.
 
 2026-07-08: WP-M2-09 Step 3, Termination Rights family: enriched termination-rights config with primitive-backed signals and hover-source rendering for party, triggers, outside date, extensions, vote failure, breach, and fiduciary termination rows.
+
+2026-07-08: WP-M2-09 Step 3, SEC / Meeting family: enriched shareholder meeting, proxy, tender-offer SEC matters config with primitive-backed signals and hover-source rendering for filing deadlines, meeting deadlines, adjournment rights, and offer mechanics.
