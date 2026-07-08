@@ -374,6 +374,43 @@ test('structure-mechanics config exposes transaction-form signals and hover deta
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(section251h, { primitives }))), /data-evidence="The merger shall be a reverse triangular merger/);
 });
 
+test('termination-rights config exposes timing and right signals with hover details', () => {
+  const rows = terminationRightsMod.terminationRightsConfig.selectRows({
+    cards: [{
+      id: 'termr',
+      provision_type: 'TERMINATION_RIGHT',
+      provision_subtype: 'TERMR-OUTSIDE',
+      short_title: 'Outside Date',
+      primary_quote: 'Either party may terminate after June 30, 2026, subject to a 90-day regulatory extension and a material uncured breach standard.',
+      features: {
+        partyWhoCanTerminate: 'PARTY_MUTUAL',
+        outsideDate: 'June 30, 2026',
+        extensionPeriod: '90 days',
+        breachStandard: 'material uncured breach',
+        recommendationChangeTermination: true,
+      },
+    }],
+  });
+  const party = rows.find((row) => row.id === 'termination-rights-party');
+  const outsideDate = rows.find((row) => row.id === 'termination-rights-outside-date');
+  const extension = rows.find((row) => row.id === 'termination-rights-extension');
+  const breach = rows.find((row) => row.id === 'termination-rights-breach');
+  const recommendation = rows.find((row) => row.id === 'termination-rights-recommendation');
+  assert.deepEqual(party.signals.map((item) => item.label), ['Right: Mutual (both parties)']);
+  assert.deepEqual(outsideDate.signals.map((item) => item.label), ['Timing: June 30, 2026']);
+  assert.deepEqual(extension.signals.map((item) => item.label), ['Timing: 90 days']);
+  assert.deepEqual(breach.signals.map((item) => item.label), ['Breach: material uncured breach']);
+  assert.deepEqual(recommendation.signals.map((item) => item.label), ['Fiduciary: Yes']);
+  const primitives = {
+    PillCell: ({ label }) => React.createElement('span', { className: 'pill' }, label),
+    EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
+  };
+  const signalColumn = terminationRightsMod.terminationRightsConfig.columns.find((column) => column.id === 'signals');
+  const detailColumn = terminationRightsMod.terminationRightsConfig.columns.find((column) => column.id === 'detail');
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, signalColumn.renderCell(party, { primitives }))), /Mutual \(both parties\)/);
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(outsideDate, { primitives }))), /data-evidence="Either party may terminate/);
+});
+
 test('general-covenants config exposes efforts, consent, knowledge, and deadline signals', () => {
   const rows = generalCovenantsMod.generalCovenantsConfig.selectRows({
     cards: [{
