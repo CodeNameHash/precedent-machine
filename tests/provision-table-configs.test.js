@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 const path = require('node:path');
 
 let mod;
+let employeeBenefitsMod;
 let iocMod;
 let materialContractsMod;
 let nosolFiduciaryMod;
@@ -12,6 +13,7 @@ let nosolSuperiorMod;
 let tailFeeMod;
 test.before(async () => {
   mod = await import(path.join('..', 'components', 'review', 'table-configs', 'conditions-m.config.js'));
+  employeeBenefitsMod = await import(path.join('..', 'components', 'review', 'table-configs', 'employee-benefits.config.js'));
   iocMod = await import(path.join('..', 'components', 'review', 'table-configs', 'ioc-exceptions.config.js'));
   materialContractsMod = await import(path.join('..', 'components', 'review', 'table-configs', 'material-contracts.config.js'));
   nosolFiduciaryMod = await import(path.join('..', 'components', 'review', 'table-configs', 'nosol-fiduciary.config.js'));
@@ -441,4 +443,51 @@ test('nosol-fiduciary config falls back to fiduciary quote text', () => {
   assert.match(rows.find((row) => row.id === 'nosol-fiduciary-board-change').detail, /Adverse Recommendation Change/);
   assert.equal(rows.find((row) => row.id === 'nosol-fiduciary-notice-period').detail, 'four Business Days');
   assert.match(rows.find((row) => row.id === 'nosol-fiduciary-reps').detail, /Representatives/);
+});
+
+test('employee-benefits config maps structured compensation items', () => {
+  const rows = employeeBenefitsMod.employeeBenefitsConfig.selectRows({
+    cards: [{
+      id: 'employee-benefits',
+      provision_subtype: 'COV-EMPLOYEE',
+      primary_quote: 'Continuing Employees shall receive compensation and benefits protections.',
+      features: {
+        compensationItems: [{
+          benefit_types: [{ code: 'BASE_SALARY', label: 'Base salary' }, { code: 'TARGET_BONUS', label: 'Target annual bonus' }],
+          standard_codes: ['NO_LESS_FAVORABLE'],
+          standard_labels: ['No less favourable'],
+          comparison_group: 'pre-closing target employee baseline',
+          exceptions: ['equity awards'],
+          bundling: 'aggregate',
+          text: 'base salary and target bonus no less favourable in the aggregate',
+        }],
+      },
+    }],
+  });
+  assert.deepEqual(rows.map((row) => row.benefit), ['Base salary', 'Target annual bonus']);
+  assert.equal(rows[0].comparison, 'pre-closing target employee baseline');
+  assert.match(rows[0].standard, /No less favourable/);
+  assert.match(rows[0].detail, /Exceptions: equity awards/);
+  assert.match(rows[0].detail, /Bundling: aggregate/);
+});
+
+test('employee-benefits config falls back to legacy flat standards', () => {
+  const rows = employeeBenefitsMod.employeeBenefitsConfig.selectRows({
+    cards: [{
+      id: 'employee-benefits',
+      provision_subtype: 'COV-EMPLOYEE',
+      primary_quote: 'For 12 months, base salary and health benefits shall be substantially comparable.',
+      features: {
+        employeeBenefitPeriod: 12,
+        baseSalaryStandard: 'substantially comparable base salary',
+        benefitsStandard: 'substantially comparable health benefits',
+      },
+    }],
+  });
+  assert.deepEqual(rows.map((row) => row.benefit), [
+    'Continuation period',
+    'Base salary',
+    'Health and welfare benefits',
+  ]);
+  assert.equal(rows.find((row) => row.id === 'employee-benefits-period').standard, '12');
 });

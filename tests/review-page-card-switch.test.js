@@ -18,6 +18,7 @@ test('review page mounts the first schema structured table config before cards',
   assert.match(reviewPageSource, /import \{ conditionsMConfig \} from '..\/..\/components\/review\/table-configs\/conditions-m\.config';/);
   assert.match(reviewPageSource, /import \{ conditionsBConfig \} from '..\/..\/components\/review\/table-configs\/conditions-b\.config';/);
   assert.match(reviewPageSource, /import \{ conditionsSConfig \} from '..\/..\/components\/review\/table-configs\/conditions-s\.config';/);
+  assert.match(reviewPageSource, /import \{ employeeBenefitsConfig \} from '..\/..\/components\/review\/table-configs\/employee-benefits\.config';/);
   assert.match(reviewPageSource, /import \{ iocExceptionsConfig \} from '..\/..\/components\/review\/table-configs\/ioc-exceptions\.config';/);
   assert.match(reviewPageSource, /import \{ materialContractsConfig \} from '..\/..\/components\/review\/table-configs\/material-contracts\.config';/);
   assert.match(reviewPageSource, /import \{ nosolFiduciaryConfig \} from '..\/..\/components\/review\/table-configs\/nosol-fiduciary\.config';/);
@@ -35,6 +36,7 @@ test('review page mounts the first schema structured table config before cards',
   assert.match(reviewPageSource, /<ProvisionTable config=\{nosolSuperiorConfig\} reviewDeal=\{schemaReviewDeal/);
   assert.match(reviewPageSource, /<ProvisionTable config=\{nosolInterveningConfig\} reviewDeal=\{schemaReviewDeal/);
   assert.match(reviewPageSource, /<ProvisionTable config=\{nosolFiduciaryConfig\} reviewDeal=\{schemaReviewDeal/);
+  assert.match(reviewPageSource, /<ProvisionTable config=\{employeeBenefitsConfig\} reviewDeal=\{schemaReviewDeal/);
   assert.ok(
     reviewPageSource.indexOf('<ProvisionTable config={conditionsMConfig}') <
       reviewPageSource.indexOf('<ProvisionTable config={conditionsBConfig}') &&
@@ -55,6 +57,8 @@ test('review page mounts the first schema structured table config before cards',
       reviewPageSource.indexOf('<ProvisionTable config={nosolInterveningConfig}') <
       reviewPageSource.indexOf('<ProvisionTable config={nosolFiduciaryConfig}') &&
       reviewPageSource.indexOf('<ProvisionTable config={nosolFiduciaryConfig}') <
+      reviewPageSource.indexOf('<ProvisionTable config={employeeBenefitsConfig}') &&
+      reviewPageSource.indexOf('<ProvisionTable config={employeeBenefitsConfig}') <
       reviewPageSource.indexOf('<ProvisionCardTable reviewDeal={schemaReviewDeal'),
     'structured schema tables should render before the raw card list',
   );
