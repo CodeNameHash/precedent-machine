@@ -20,12 +20,12 @@
   ],
   "choices": [
     {
-      "key": "approve_remediation",
+      "key": "approve-remediation",
       "label": "Approve remediation plan",
       "codex_action": "open follow-up mechanical PRs to strip proposed labels from schema user-mode cards, fix STRUCT/OTHER card type mapping, exclude coverage-plumbing cards from user-mode schema render, repair missing-card backfill coverage, rerun the parity audit, and resume WP-M2-02 only once zero diffs are reached"
     },
     {
-      "key": "investigate_first",
+      "key": "investigate-first",
       "label": "Investigate before remediation",
       "codex_action": "produce deeper per-category samples and proposed code changes before touching card writer or renderer logic"
     },
