@@ -1,0 +1,25 @@
+{
+  "phase": "WP-M2-02-UNCOVERED-TEXT-USER-MODE",
+  "name": "m2-02-uncovered-text-user-mode",
+  "allowed": [
+    ".github/phase-allowlists/wp-m2-02-uncovered-text-user-mode.json",
+    "lib/queries/review-deal.js",
+    "tests/queries/review-deal.test.js"
+  ],
+  "denied": [
+    "docs/vocab/FROZEN-*.json",
+    "docs/market-registry/FROZEN-*.json",
+    "docs/schema-shape/*.frozen",
+    "docs/schema-shape/canonical-registry-v1.md",
+    "docs/schema-shape/canonical-definitions.md",
+    "docs/schema-shape/normalized-v1.json",
+    "lib/parser-v2/**",
+    "lib/schema/**",
+    "pages/**",
+    "components/**",
+    "scripts/**",
+    "supabase/migrations/**",
+    "db/migrations/**"
+  ],
+  "note": "WP-M2-02 Step 5 hides Uncovered text coverage-plumbing cards from user-mode schema card reads while preserving admin-mode reads."
+}
