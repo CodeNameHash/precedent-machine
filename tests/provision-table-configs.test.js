@@ -1033,7 +1033,7 @@ test('nosol-noshop config maps core no-shop cards', () => {
         provision_subtype: 'NOSOL-PROHIBIT',
         party_scope: 'COMPANY',
         primary_quote: 'The Company shall not solicit Acquisition Proposals.',
-        features: { prohibitedActions: ['solicit', 'initiate', 'knowingly encourage'] },
+        features: { ceaseDiscussionsProhibitedList: ['solicit', 'initiate', 'knowingly encourage'] },
       },
       {
         id: 'cease',
@@ -1217,7 +1217,7 @@ test('nosol configs render signals and hover-source details with primitives', ()
       provision_type: 'COVENANT_NO_SOLICITATION',
       provision_subtype: 'NOSOL-PROHIBIT',
       primary_quote: 'The Company shall not solicit or knowingly encourage an Acquisition Proposal.',
-      features: { prohibitedActions: ['solicit', 'knowingly encourage'] },
+      features: { ceaseDiscussionsProhibitedList: ['solicit', 'knowingly encourage'] },
     }],
   });
   const noShopSignal = nosolNoshopMod.nosolNoshopConfig.columns.find((column) => column.id === 'signals');

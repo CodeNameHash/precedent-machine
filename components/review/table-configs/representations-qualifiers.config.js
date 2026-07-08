@@ -21,6 +21,10 @@ const ROWS = [
   ['scrape', 'Materiality scrape', 'Bring-down', ['materialityScrape', 'materialityScrapeLanguage', 'materialityScrapePresent']],
   ['mae-qualified', 'MAE-qualified reps', 'Qualifier', ['maeQualifiedReps']],
   ['specific', 'Specific features', 'Rep-specific', ['specificFeatures']],
+  // Skechers cross-deal parity gap (PE financing solvency rep) — no config
+  // read it before; REP-B-SOLVENCY is a REPRESENTATION card so it already
+  // matches isRepQualifier() below.
+  ['solvency', 'Solvency representation', 'Rep-specific', ['solvencyRepDetails', 'solvencyRepIncluded', 'solvencyRepPresent']],
 ];
 
 const PER_REP_ROW_IDS = new Set(['materiality', 'knowledge', 'bringdown']);

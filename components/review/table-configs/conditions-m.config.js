@@ -111,6 +111,9 @@ function conditionSignals(row, matches) {
     out.push(signal('effortsStandard', 'Efforts', f.effortsStandard || f.antitrustEffortsStandard, provision, 'info'));
     out.push(signal('consentStandard', 'Consent', f.consentStandard, provision, 'info'));
     out.push(materialityScrapeSignal(provision));
+    // Skechers cross-deal parity gap: no Metsera claim, but sits on the same
+    // No Legal Impediment / COND-M-LEGAL card as the rest of this row.
+    out.push(signal('governmentProceedingConditionPresent', 'Government proceeding', f.governmentProceedingConditionPresent, provision, 'warning'));
     const approvals = Array.isArray(f.antitrustApprovals) ? f.antitrustApprovals : [];
     for (const approval of approvals) out.push(signal('antitrustApprovals', 'Approval', approval, provision, 'present'));
   }

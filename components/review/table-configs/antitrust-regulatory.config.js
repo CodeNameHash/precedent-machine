@@ -16,6 +16,7 @@ const ROWS = [
   ['pull-refile', 'Pull-and-refile right', 'Process', ['pullAndRefileRight', 'pullRefile', 'pullRefileText']],
   ['remedies', 'Remedy obligation', 'Remedies', ['parentRemedyObligation', 'remedyObligation', 'divestitureObligation']],
   ['burden-cap', 'Burdensome-condition cap', 'Caps', ['divestitureCapDescription', 'divestitureCap', 'burdenBaseline', 'hellOrHighWater', 'burdensomeConditionLimit']],
+  ['divestiture-required', 'Divestiture required before consummation', 'Caps', ['divestitureInCondition']],
   ['clear-skies', 'Clear-skies covenant', 'Conduct', ['clearSkiesParent', 'clearSkiesParentScope', 'clearSkiesCompany', 'clearSkiesCompanyScope', 'clearSkies', 'clearSkiesObligation']],
   ['timing-agreements', 'Timing agreements', 'Conduct', ['timingAgreement', 'timingAgreementText', 'noInconsistentAction']],
   ['springing-conditions', 'Springing / regulatory closing conditions', 'Termination', ['springingRegulatoryConditions', 'regulatoryClosingConditions']],
