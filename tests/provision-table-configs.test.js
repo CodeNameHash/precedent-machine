@@ -4,9 +4,11 @@ const path = require('node:path');
 
 let mod;
 let iocMod;
+let materialContractsMod;
 test.before(async () => {
   mod = await import(path.join('..', 'components', 'review', 'table-configs', 'conditions-m.config.js'));
   iocMod = await import(path.join('..', 'components', 'review', 'table-configs', 'ioc-exceptions.config.js'));
+  materialContractsMod = await import(path.join('..', 'components', 'review', 'table-configs', 'material-contracts.config.js'));
 });
 
 function card(overrides = {}) {
@@ -170,4 +172,43 @@ test('ioc-exceptions config falls back to splitting general-exceptions card text
     'As required by law',
     'With consent',
   ]);
+});
+
+test('material-contracts config maps hydrated buckets and thresholds', () => {
+  const rows = materialContractsMod.materialContractsConfig.selectRows({
+    cards: [{
+      id: 'material-contracts',
+      provision_type: 'REPRESENTATION',
+      provision_subtype: 'REP-T-MATERIAL-CONTRACTS',
+      short_title: 'Material Contracts',
+      primary_quote: 'Material Contracts are listed.',
+      features: {
+        materialContractsBuckets: [
+          { code: 'AGGREGATE_PAYMENTS', label: 'Aggregate payments', threshold: '$25,000,000', text: 'contracts involving aggregate payments over $25,000,000' },
+          { code: 'INDEBTEDNESS', label: 'Indebtedness', text: 'contracts evidencing indebtedness' },
+        ],
+        materialContractsDollarThresholds: [{ bucket: 'INDEBTEDNESS', threshold: '$5,000,000' }],
+      },
+    }],
+  });
+  assert.deepEqual(rows.map((row) => row.label), [
+    'Contracts above an aggregate-payments threshold',
+    'Indebtedness contracts',
+  ]);
+  assert.deepEqual(rows.map((row) => row.threshold), ['$25,000,000', '$5,000,000']);
+});
+
+test('material-contracts config falls back to canonical bucket synonyms in card text', () => {
+  const rows = materialContractsMod.materialContractsConfig.selectRows({
+    cards: [{
+      id: 'material-contracts',
+      provision_type: 'REPRESENTATION',
+      provision_subtype: 'REP-T-MATERIAL-CONTRACTS',
+      short_title: 'Material Contracts',
+      primary_quote: 'Material Contracts include any credit agreement, joint venture agreement, and contract research organization agreement.',
+    }],
+  });
+  assert.ok(rows.some((row) => row.label === 'Indebtedness contracts'));
+  assert.ok(rows.some((row) => row.label === 'Joint ventures / partnerships'));
+  assert.ok(rows.some((row) => row.label === 'Clinical research organization contracts'));
 });
