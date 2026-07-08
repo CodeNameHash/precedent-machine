@@ -1,0 +1,41 @@
+{
+  "id": "authorize-legacy-renderer-deletion",
+  "created_at": "2026-07-08T15:00:00.000Z",
+  "kind": "destructive",
+  "title": "Authorize legacy renderer deletion",
+  "summary": "WP-M2-05 removes the legacy fallback branch from pages/review/[id].js and deletes the bespoke legacy review table components. This is destructive, so Codex needs explicit approval before touching those files. Current evidence: WP-M2-02 schema parity is green, WP-M2-03 confirms all 40 deals are card-backed with zero default legacy fallback, and CI schema-parity is required. Approval lets Codex open the deletion PR limited to the review renderer fallback and listed legacy components. Rejection keeps the fallback and components in place.",
+  "evidence": [
+    {
+      "label": "M2 plan WP-M2-05",
+      "url": "https://github.com/CodeNameHash/precedent-machine/blob/main/PLAN-M2-schema-deploy.md"
+    },
+    {
+      "label": "All-deals card-backed audit",
+      "url": "https://github.com/CodeNameHash/precedent-machine/blob/main/docs/audits/card-backed-status.md"
+    },
+    {
+      "label": "Schema parity report",
+      "url": "https://github.com/CodeNameHash/precedent-machine/blob/main/docs/schema-migration/phase-8-parity.md"
+    }
+  ],
+  "choices": [
+    {
+      "key": "approve",
+      "label": "Authorize legacy renderer deletion",
+      "codex_action": "proceed with WP-M2-05 deletion PR limited to pages/review/[id].js and the listed legacy review table components"
+    },
+    {
+      "key": "reject",
+      "label": "Keep legacy renderer",
+      "codex_action": "block WP-M2-05 and keep the legacy fallback branch and table components"
+    },
+    {
+      "key": "defer",
+      "label": "Defer decision",
+      "codex_action": "leave WP-M2-05 blocked pending further Ben review"
+    }
+  ],
+  "resolution": null,
+  "resolved_at": null,
+  "resolved_by": null
+}

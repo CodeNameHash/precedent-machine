@@ -627,3 +627,5 @@ REVIEW_QUEUE_RESOLUTION {"id":"m2-02-recital-suppression","kind":"canonical","ti
 2026-07-08: WP-M2-03 all-deals card-backed audit: added the audit harness and status report. Live audit passed for 40 / 40 deals, zero default legacy fallback, minimum `provision_cards` count 237 against the >=40 threshold.
 
 2026-07-08: WP-M2-04 legacy vocab deletion audit: generated the legacy-vocab reference manifest and deletion manifest. All 7 targets still have live references, so no destructive deletion PR was opened. Follow-up: migrate callers off `lib/rubric.js`, `lib/taxonomy.js`, `lib/feature-validation.js`, `lib/expected-sets.js`, `lib/category-summary-features.js`, and the two vocab alias maps before Phase 8 deletion.
+
+2026-07-08: WP-M2-05 renderer deletion queue: added the destructive Review Queue entry for Ben to authorize deleting the legacy review renderer fallback and bespoke legacy table components.
