@@ -44,7 +44,7 @@ test('2a regression: no quote for empty/placeholder rows (no popover wiring)', (
 
 test('2a regression: legacy table branch is retired and schema card render path remains active', () => {
   const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
-  assert.match(src, /<ProvisionCardTable reviewDeal=\{schemaReviewDeal/, 'schema card table remains the user render path');
+  assert.match(src, /<ProvisionCardTable reviewDeal=\{reviewDealForTables/, 'schema card table remains the user render path');
   assert.doesNotMatch(src, /function ProvisionTable\(/, 'legacy ProvisionTable branch must stay deleted');
 });
 

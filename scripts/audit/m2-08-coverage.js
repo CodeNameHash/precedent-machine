@@ -42,6 +42,13 @@ function mdCell(value) {
 
 function buildCoverage(repoRoot = process.cwd()) {
   const pageSource = fs.readFileSync(path.join(repoRoot, REVIEW_PAGE), 'utf8');
+  // Phase A shell-restore: the per-family tables now mount through a single
+  // accordion map over the REVIEW_TABLE_CONFIGS array instead of 23 literal
+  // <ProvisionTable> tags. A config counts as "mounted" when it's enumerated
+  // in that ordered array (which the accordion renders).
+  const arrayStart = pageSource.indexOf('const REVIEW_TABLE_CONFIGS = [');
+  const arrayEnd = arrayStart >= 0 ? pageSource.indexOf('];', arrayStart) : -1;
+  const configArrayLiteral = arrayStart >= 0 && arrayEnd >= 0 ? pageSource.slice(arrayStart, arrayEnd) : '';
   return SURFACES.map((surface) => {
     const configs = CONFIGS_BY_SURFACE[surface.name] || [];
     const checks = configs.map((file) => {
@@ -52,7 +59,7 @@ function buildCoverage(repoRoot = process.cwd()) {
         symbol,
         exists: fs.existsSync(filePath),
         imported: pageSource.includes(`{ ${symbol} }`),
-        mounted: pageSource.includes(`<ProvisionTable config={${symbol}}`),
+        mounted: configArrayLiteral.includes(`  ${symbol},`),
       };
     });
     const covered = checks.length > 0 && checks.every((check) => check.exists && check.imported && check.mounted);

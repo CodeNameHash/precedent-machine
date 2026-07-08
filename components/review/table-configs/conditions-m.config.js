@@ -101,6 +101,10 @@ function conditionSignals(row, matches) {
     tone: matches.length ? 'neutral' : 'missing',
     evidence: matches[0] && matches[0].full_text,
     source: matches[0] && matches[0].sourceCard,
+    // AC6: a raw canonical code (e.g. COND-M-STOCKHOLDER) is editor metadata,
+    // not reader content. Tagged so renderSignals can drop it in the default
+    // Reviewer view — the Term column already shows the friendly condition name.
+    isCanonicalCode: true,
   }] : [];
   for (const provision of matches) {
     const f = provision.features || {};
@@ -122,8 +126,14 @@ function conditionSignals(row, matches) {
 
 function renderSignals(row, ctx) {
   const PillCell = ctx?.primitives?.PillCell;
-  if (!PillCell) return row.signals.map((item) => item.label).join('\n');
-  return row.signals.map((item) => React.createElement(PillCell, {
+  // AC6: only hide the raw canonical-code pill when we KNOW we're in the
+  // read view (isEdit === false). When the mode is unknown (undefined, e.g.
+  // direct unit-test renders) we stay permissive and show it.
+  const signals = ctx?.isEdit === false
+    ? row.signals.filter((item) => !item.isCanonicalCode)
+    : row.signals;
+  if (!PillCell) return signals.map((item) => item.label).join('\n');
+  return signals.map((item) => React.createElement(PillCell, {
     key: item.id,
     label: item.label,
     value: item.value,
