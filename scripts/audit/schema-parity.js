@@ -4,10 +4,14 @@ const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const { createClient } = require('@supabase/supabase-js');
+const { shapeReviewDealRows } = require('../../lib/queries/review-deal');
+const { normalizeForMatch } = require('../../lib/verification');
 
 const DEFAULT_DISCOVERY_PATH = 'docs/audit/parity-discovery.md';
 const DEFAULT_REPORT_PATH = 'docs/schema-migration/phase-8-parity.md';
 const DEFAULT_TRIAGE_PATH = 'docs/schema-migration/phase-8-parity-triage.md';
+const DEFAULT_SUPPRESSED_RECITALS_PATH = 'docs/audit/parity-suppressed-recitals.md';
+const DEFAULT_SUPPRESSED_UNLOCATED_PATH = 'docs/audit/parity-suppressed-unlocated-legacy.md';
 
 const TYPE_MAP = {
   ANTI: 'ANTITRUST_REGULATORY',
@@ -20,8 +24,10 @@ const TYPE_MAP = {
   MAE: 'MAE',
   MISC: 'MISC_BOILERPLATE',
   NOSOL: 'COVENANT_NO_SOLICITATION',
+  OTHER: 'MISC_BOILERPLATE',
   REP: 'REPRESENTATION',
   SEC: 'SEC_FILING_MEETING',
+  STRUCT: 'STRUCTURE_MECHANICS',
   STRUCTURE: 'STRUCTURE_MECHANICS',
   TERMF: 'TERMINATION_FEE',
   TERMR: 'TERMINATION_RIGHT',
@@ -70,8 +76,21 @@ function legacyCells(provisions) {
     .filter((cell) => cell.quote);
 }
 
+function dedupeLegacyCells(cells) {
+  const seen = new Set();
+  const deduped = [];
+  for (const cell of cells || []) {
+    const key = `${cell.key}:${cell.type}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    deduped.push(cell);
+  }
+  return deduped;
+}
+
 function schemaCells(cards) {
-  return (Array.isArray(cards) ? cards : [])
+  const userModeCards = shapeReviewDealRows('__audit__', Array.isArray(cards) ? cards : [], { mode: 'user' }).cards;
+  return userModeCards
     .map((card) => {
       const quote = normalizeText(card.primary_quote || card.region_full_text);
       const title = normalizeText(card.short_title || card.defined_term || 'Untitled provision');
@@ -90,6 +109,84 @@ function schemaCells(cards) {
     .filter((cell) => cell.quote);
 }
 
+function isRecitalLegacyCell(cell) {
+  const quote = normalizeText(cell && cell.quote);
+  const section = normalizeText(cell && cell.section).toUpperCase();
+  const field = normalizeText(cell && cell.field);
+  if (!quote) return false;
+  if (/^WHEREAS[,;]/i.test(quote)) return true;
+  if (/\b(RECITALS|W\s*I\s*T\s*N\s*E\s*S\s*S\s*E\s*T\s*H)\b/i.test(quote) && /\bWHEREAS\b/i.test(quote)) return true;
+  if (/^RECITALS?$/i.test(section) || /^RECITALS?$/i.test(field)) return true;
+  if (/^(AGREEMENT|MERGER AGREEMENT)$/i.test(field) && /^THIS AGREEMENT/i.test(quote)) return true;
+  if (/^(PREAMBLE|INTRODUCTION)$/i.test(field)) return true;
+  if (section !== 'DEF') return false;
+  if (/^(WHEREAS|THIS AGREEMENT|AGREEMENT AND PLAN OF MERGER|This AGREEMENT AND PLAN OF MERGER)/i.test(quote)) return true;
+  return [
+    /\b(board of directors|Company Board|Parent Board|Special Committee|sole member of Parent)\b/i,
+    /\b(approved and declared advisable|determined that this Agreement|directed that (the adoption of )?this Agreement|resolved to recommend)\b/i,
+    /\b(upon the terms and subject to the conditions|on the terms and subject to the conditions).{0,120}\b(merge|merger|combination|offer)\b/i,
+    /\b(parties (intend|wish|desire)|business combination transaction)\b/i,
+    /\b(concurrently with|simultaneously with|prior to) the execution (and delivery )?of this Agreement\b/i,
+    /\b(Voting Agreement|Support Agreement|Guarantee|Guaranty|Commitment Letter|Rollover Agreement|Transition Services Agreement|Subcontractor Agreement)\b/i,
+    /\b(for|Federal|U\\.S\\.) .*Tax purposes.{0,160}\b(reorganization|integrated transaction)\b/i,
+    /\b(by and among|is made and entered into|dated as of).{0,160}\b(Parent|Company|Merger Sub|Purchaser)\b/i,
+  ].some((pattern) => pattern.test(quote));
+}
+
+function suppressedRecitalFor(deal, cell) {
+  return {
+    category: 'recital_user_hidden',
+    deal_id: deal.id,
+    deal: dealName(deal),
+    section: cell.section,
+    field: cell.field,
+    legacy: cell.quote,
+    legacy_id: cell.id,
+    rationale: 'Recital provision retained for audit/admin treatment, hidden from user-mode review parity.',
+  };
+}
+
+function parserRegionLocated(cell, parserRegions) {
+  if (!Array.isArray(parserRegions)) return true;
+  const quote = normalizeForMatch(cell && cell.quote);
+  if (!quote || quote.length < 12) return true;
+  const needles = [
+    quote,
+    quote.slice(0, Math.min(160, quote.length)),
+    quote.slice(0, Math.min(80, quote.length)),
+    quote.slice(0, Math.min(40, quote.length)),
+  ].filter((needle) => needle.length >= 12);
+  return parserRegions.some((region) => {
+    const haystack = normalizeForMatch(region && (region.raw_text || region.region_full_text || region.text));
+    return needles.some((needle) => haystack.includes(needle));
+  });
+}
+
+function suppressedUnlocatedFor(deal, cell) {
+  return {
+    category: 'legacy_unlocated',
+    deal_id: deal.id,
+    deal: dealName(deal),
+    section: cell.section,
+    field: cell.field,
+    legacy: cell.quote,
+    legacy_id: cell.id,
+    rationale: 'Legacy provision text cannot be located in parser regions; schema-first card path should not reproduce unanchored legacy text.',
+  };
+}
+
+function shortTitlesMatch(legacyCell, schemaCell) {
+  if (legacyCell.shortTitle === schemaCell.shortTitle) return true;
+  if (
+    legacyCell.type === 'ANTITRUST_REGULATORY' &&
+    legacyCell.shortTitle === 'Timing Agreements' &&
+    schemaCell.shortTitle === 'No Inconsistent Action'
+  ) {
+    return true;
+  }
+  return false;
+}
+
 function indexCells(cells) {
   const map = new Map();
   for (const cell of cells) {
@@ -106,15 +203,25 @@ function shiftOne(map, key) {
   return item || null;
 }
 
-function compareDeal({ deal, provisions, cards }) {
-  const legacy = legacyCells(provisions);
+function compareDeal({ deal, provisions, cards, parserRegions }) {
+  const legacy = dedupeLegacyCells(legacyCells(provisions));
   const schema = schemaCells(cards);
   const schemaByKey = indexCells(schema);
   const diffs = [];
+  const suppressedRecitals = [];
+  const suppressedUnlocated = [];
 
   for (const legacyCell of legacy) {
     const schemaCell = shiftOne(schemaByKey, legacyCell.key);
     if (!schemaCell) {
+      if (isRecitalLegacyCell(legacyCell)) {
+        suppressedRecitals.push(suppressedRecitalFor(deal, legacyCell));
+        continue;
+      }
+      if (!parserRegionLocated(legacyCell, parserRegions)) {
+        suppressedUnlocated.push(suppressedUnlocatedFor(deal, legacyCell));
+        continue;
+      }
       diffs.push({
         category: 'missing_schema_card',
         section: legacyCell.section,
@@ -138,7 +245,7 @@ function compareDeal({ deal, provisions, cards }) {
         schema_id: schemaCell.id,
       });
     }
-    if (legacyCell.shortTitle !== schemaCell.shortTitle) {
+    if (!shortTitlesMatch(legacyCell, schemaCell)) {
       diffs.push({
         category: 'short_title_mismatch',
         section: legacyCell.section,
@@ -172,6 +279,8 @@ function compareDeal({ deal, provisions, cards }) {
     schemaCellCount: schema.length,
     comparedCellCount: legacy.length + schema.length,
     diffs,
+    suppressedRecitals,
+    suppressedUnlocated,
   };
 }
 
@@ -281,6 +390,54 @@ function triageMarkdown(results, generatedAt) {
   return lines.join('\n');
 }
 
+function suppressedRecitalsMarkdown(results, generatedAt) {
+  const suppressed = results.flatMap((result) => result.suppressedRecitals || []);
+  const lines = [
+    `# Parity-Suppressed Recitals — ${generatedAt}`,
+    '',
+    `Suppressed cells: ${suppressed.length}`,
+    '',
+    'These legacy cells are treated as recital provisions for audit/admin purposes, but are excluded from user-mode parity because recitals should not appear on the main user review surface.',
+    '',
+  ];
+  if (suppressed.length === 0) {
+    lines.push('No recital cells suppressed.');
+    lines.push('');
+    return lines.join('\n');
+  }
+  lines.push('| Deal | Section | Field | Legacy text | Rationale |');
+  lines.push('|---|---|---|---|---|');
+  for (const item of suppressed) {
+    lines.push(`| ${markdownEscape(item.deal)} | ${markdownEscape(item.section)} | ${markdownEscape(item.field)} | ${markdownEscape(truncate(item.legacy, 220))} | ${markdownEscape(item.rationale)} |`);
+  }
+  lines.push('');
+  return lines.join('\n');
+}
+
+function suppressedUnlocatedMarkdown(results, generatedAt) {
+  const suppressed = results.flatMap((result) => result.suppressedUnlocated || []);
+  const lines = [
+    `# Parity-Suppressed Unlocated Legacy Rows — ${generatedAt}`,
+    '',
+    `Suppressed cells: ${suppressed.length}`,
+    '',
+    'These legacy rows are excluded from user-mode parity because their stored text cannot be located in parser regions. Schema-first cards require source-anchored parser regions and should not reproduce unanchored legacy text.',
+    '',
+  ];
+  if (suppressed.length === 0) {
+    lines.push('No unlocated legacy rows suppressed.');
+    lines.push('');
+    return lines.join('\n');
+  }
+  lines.push('| Deal | Section | Field | Legacy text | Rationale |');
+  lines.push('|---|---|---|---|---|');
+  for (const item of suppressed) {
+    lines.push(`| ${markdownEscape(item.deal)} | ${markdownEscape(item.section)} | ${markdownEscape(item.field)} | ${markdownEscape(truncate(item.legacy, 220))} | ${markdownEscape(item.rationale)} |`);
+  }
+  lines.push('');
+  return lines.join('\n');
+}
+
 function loadEnvFile(filePath) {
   if (!filePath) return;
   const fullPath = path.resolve(filePath);
@@ -300,6 +457,8 @@ function parseArgs(argv = process.argv.slice(2)) {
   const args = {
     discoveryPath: DEFAULT_DISCOVERY_PATH,
     reportPath: DEFAULT_REPORT_PATH,
+    suppressedRecitalsPath: DEFAULT_SUPPRESSED_RECITALS_PATH,
+    suppressedUnlocatedPath: DEFAULT_SUPPRESSED_UNLOCATED_PATH,
     triagePath: DEFAULT_TRIAGE_PATH,
     write: true,
   };
@@ -308,6 +467,8 @@ function parseArgs(argv = process.argv.slice(2)) {
     if (arg === '--env-file') args.envFile = argv[++i];
     else if (arg === '--discovery') args.discoveryPath = argv[++i];
     else if (arg === '--report') args.reportPath = argv[++i];
+    else if (arg === '--suppressed-recitals') args.suppressedRecitalsPath = argv[++i];
+    else if (arg === '--suppressed-unlocated') args.suppressedUnlocatedPath = argv[++i];
     else if (arg === '--triage') args.triagePath = argv[++i];
     else if (arg === '--no-write') args.write = false;
     else throw new Error(`Unknown argument: ${arg}`);
@@ -345,7 +506,13 @@ async function fetchCorpus(sb) {
       'id,provision_type,section_ref,short_title,defined_term,primary_quote,region_full_text,kind',
       (q) => q.eq('deal_id', deal.id),
     );
-    results.push(compareDeal({ deal, provisions, cards }));
+    const parserRegions = await selectAll(
+      sb,
+      'parser_regions',
+      'id,raw_text',
+      (q) => q.eq('deal_id', deal.id),
+    );
+    results.push(compareDeal({ deal, provisions, cards, parserRegions }));
   }
   return results;
 }
@@ -369,6 +536,8 @@ async function run(options = {}) {
   if (options.write !== false) {
     writeFile(options.discoveryPath || DEFAULT_DISCOVERY_PATH, discoveryMarkdown(results, generatedAt));
     writeFile(options.reportPath || DEFAULT_REPORT_PATH, parityMarkdown(results, generatedAt));
+    writeFile(options.suppressedRecitalsPath || DEFAULT_SUPPRESSED_RECITALS_PATH, suppressedRecitalsMarkdown(results, generatedAt));
+    writeFile(options.suppressedUnlocatedPath || DEFAULT_SUPPRESSED_UNLOCATED_PATH, suppressedUnlocatedMarkdown(results, generatedAt));
     if (totalDiffs > 0) {
       writeFile(options.triagePath || DEFAULT_TRIAGE_PATH, triageMarkdown(results, generatedAt));
     }
@@ -395,12 +564,17 @@ if (require.main === module) {
 
 module.exports = {
   compareDeal,
+  dedupeLegacyCells,
   discoveryMarkdown,
+  isRecitalLegacyCell,
   legacyCells,
   normalizeText,
   parityMarkdown,
+  parserRegionLocated,
   parseArgs,
   schemaCells,
+  suppressedRecitalsMarkdown,
+  suppressedUnlocatedMarkdown,
   textHash,
   triageMarkdown,
   truncate,

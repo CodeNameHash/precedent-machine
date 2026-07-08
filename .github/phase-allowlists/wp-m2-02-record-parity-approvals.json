@@ -1,0 +1,25 @@
+{
+  "phase": "WP-M2-02-RECORD-PARITY-APPROVALS",
+  "name": "m2-02-record-parity-approvals",
+  "allowed": [
+    ".github/phase-allowlists/wp-m2-02-record-parity-approvals.json",
+    "HANDOFF.md",
+    "docs/review-queue/m2-02-schema-parity-diffs.json",
+    "docs/review-queue/m2-02-recital-suppression.json"
+  ],
+  "denied": [
+    "docs/vocab/FROZEN-*.json",
+    "docs/market-registry/FROZEN-*.json",
+    "docs/schema-shape/*.frozen",
+    "docs/schema-shape/canonical-registry-v1.md",
+    "docs/schema-shape/canonical-definitions.md",
+    "docs/schema-shape/normalized-v1.json",
+    "lib/**",
+    "pages/**",
+    "components/**",
+    "scripts/**",
+    "supabase/migrations/**",
+    "db/migrations/**"
+  ],
+  "note": "Records Ben's Review Queue approvals for the WP-M2-02 parity remediation plan and modified recital treatment. No implementation or schema behaviour changes."
+}

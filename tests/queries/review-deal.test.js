@@ -3,8 +3,11 @@ const assert = require('node:assert/strict');
 
 const {
   fetchReviewDealCards,
+  filterRowsForMode,
+  isUncoveredTextCard,
   parseReferences,
   shapeReviewDealRows,
+  stripProposedShortTitle,
 } = require('../../lib/queries/review-deal');
 
 function card(overrides = {}) {
@@ -99,4 +102,75 @@ test('fetchReviewDealCards reads provision_cards and returns grouped shape', asy
   const shaped = await fetchReviewDealCards('deal-1', fakeSupabase(rows));
   assert.deepEqual(shaped.cards.map((item) => item.provision_instance_id), ['a', 'b']);
   assert.deepEqual(shaped.sections.map((section) => section.sectionRef), ['Section 1.01', 'Section 2.01']);
+});
+
+test('stripProposedShortTitle strips only the exact user-mode prefix', () => {
+  assert.equal(stripProposedShortTitle('[PROPOSED] Transfer Taxes'), 'Transfer Taxes');
+  assert.equal(stripProposedShortTitle('[PROPOSED]'), '[PROPOSED]');
+  assert.equal(stripProposedShortTitle('[proposed] Transfer Taxes'), '[proposed] Transfer Taxes');
+  assert.equal(stripProposedShortTitle('Transfer Taxes'), 'Transfer Taxes');
+  assert.equal(stripProposedShortTitle(null), null);
+});
+
+test('shapeReviewDealRows strips proposed labels in user mode', () => {
+  const shaped = shapeReviewDealRows('deal-1', [
+    card({ short_title: '[PROPOSED] Transfer Taxes' }),
+  ]);
+
+  assert.equal(shaped.cards[0].short_title, 'Transfer Taxes');
+  assert.equal(shaped.sections[0].cards[0].short_title, 'Transfer Taxes');
+});
+
+test('shapeReviewDealRows preserves proposed labels in admin mode', () => {
+  const shaped = shapeReviewDealRows('deal-1', [
+    card({ short_title: '[PROPOSED] Transfer Taxes' }),
+  ], { mode: 'admin' });
+
+  assert.equal(shaped.cards[0].short_title, '[PROPOSED] Transfer Taxes');
+});
+
+test('fetchReviewDealCards threads admin mode through the grouped shape', async () => {
+  const shaped = await fetchReviewDealCards('deal-1', fakeSupabase([
+    card({ short_title: '[PROPOSED] Transfer Taxes' }),
+  ]), { mode: 'admin' });
+
+  assert.equal(shaped.cards[0].short_title, '[PROPOSED] Transfer Taxes');
+});
+
+test('isUncoveredTextCard detects coverage-plumbing card titles and section paths', () => {
+  assert.equal(isUncoveredTextCard(card({ short_title: 'Uncovered text — Acquisition Proposals' })), true);
+  assert.equal(isUncoveredTextCard(card({ section_ref: '6.2 | Uncovered text — Acquisition Proposals | abc123' })), true);
+  assert.equal(isUncoveredTextCard(card({ short_title: 'Covered text' })), false);
+});
+
+test('shapeReviewDealRows hides uncovered-text cards in user mode', () => {
+  const shaped = shapeReviewDealRows('deal-1', [
+    card({ id: 'covered', provision_instance_id: 'covered', short_title: 'The Merger' }),
+    card({ id: 'uncovered', provision_instance_id: 'uncovered', short_title: 'Uncovered text — The Merger' }),
+  ]);
+
+  assert.deepEqual(shaped.cards.map((item) => item.provision_instance_id), ['covered']);
+  assert.equal(shaped.cardCount, 1);
+});
+
+test('shapeReviewDealRows preserves uncovered-text cards in admin mode', () => {
+  const shaped = shapeReviewDealRows('deal-1', [
+    card({ id: 'covered', provision_instance_id: 'covered', short_title: 'The Merger' }),
+    card({ id: 'uncovered', provision_instance_id: 'uncovered', short_title: 'Uncovered text — The Merger' }),
+  ], { mode: 'admin' });
+
+  assert.deepEqual(shaped.cards.map((item) => item.provision_instance_id), ['covered', 'uncovered']);
+  assert.equal(shaped.cardCount, 2);
+});
+
+test('filterRowsForMode does not mutate the source row array', () => {
+  const rows = [
+    card({ id: 'a', provision_instance_id: 'a', short_title: 'Uncovered text — The Merger' }),
+    card({ id: 'b', provision_instance_id: 'b', short_title: 'The Merger' }),
+  ];
+  const filtered = filterRowsForMode(rows);
+
+  assert.equal(rows.length, 2);
+  assert.equal(filtered.length, 1);
+  assert.equal(filtered[0].provision_instance_id, 'b');
 });

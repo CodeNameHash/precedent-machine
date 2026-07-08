@@ -92,6 +92,33 @@ test('Metsera-shaped fixture emits definition and cross-reference cards', () => 
   assert.equal(rows[1].provision_type, 'COVENANT_INTERIM_OPERATING');
 });
 
+test('card writer maps STRUCT into the schema-valid structure card family', () => {
+  const base = {
+    region_id: '00000000-0000-4000-8000-000000000099',
+    section_path: 'Section 2.01',
+    region_full_text: 'The merger shall be effected.',
+    text: 'The merger shall be effected.',
+    provenance: {
+      source_doc_id: 'doc-1',
+      source_doc_page: 1,
+      source_doc_offset_start: 0,
+      source_doc_offset_end: 30,
+      extractor_name: 'parser-v2',
+      extractor_version: 'test',
+      model: 'test',
+      prompt_hash: 'sha256:test',
+      run_id: 'run-1',
+      extracted_at: '2026-07-08T00:00:00.000Z',
+    },
+  };
+  const rows = buildProvisionCardRows('deal-1', [
+    { ...base, type: 'STRUCT', code: 'STRUCT-MERGER', category: 'The Merger' },
+    { ...base, type: 'OTHER', code: 'OTHER-CHARTER', category: 'Charter', text: 'The charter shall be amended.' },
+  ]);
+
+  assert.deepEqual(rows.map((row) => row.provision_type), ['STRUCTURE_MECHANICS', 'MISC_BOILERPLATE']);
+});
+
 test('storeProvisionCards replaces deal rows and upserts on provision_instance_id', async () => {
   const fixture = JSON.parse(fs.readFileSync('tests/e2e/fixtures/metsera-card-writer.json', 'utf8'));
   const sb = fakeSupabase();

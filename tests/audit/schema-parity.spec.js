@@ -106,6 +106,8 @@ test('parseArgs accepts explicit output paths and no-write mode', () => {
     envFile: '.env.local',
     discoveryPath: 'tmp/discovery.md',
     reportPath: 'tmp/report.md',
+    suppressedRecitalsPath: 'docs/audit/parity-suppressed-recitals.md',
+    suppressedUnlocatedPath: 'docs/audit/parity-suppressed-unlocated-legacy.md',
     triagePath: 'tmp/triage.md',
     write: false,
   });
