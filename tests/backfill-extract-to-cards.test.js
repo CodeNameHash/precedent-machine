@@ -118,9 +118,11 @@ test('dedupeProvisionCardRows removes rows that would violate live unique constr
   assert.equal(result.removed, 2);
 });
 
-test('replaceProvisionCardRows deletes deal rows and upserts in batches', async () => {
+function fakeReplaceSupabase(options = {}) {
   const calls = [];
-  const sb = {
+  const existingRows = options.existingRows || [];
+  return {
+    calls,
     from(table) {
       return {
         delete() {
@@ -128,20 +130,90 @@ test('replaceProvisionCardRows deletes deal rows and upserts in batches', async 
           return {
             eq(column, value) {
               calls.push({ table, op: 'delete-eq', column, value });
-              return Promise.resolve({ error: null });
+              return {
+                in(column2, values) {
+                  calls.push({ table, op: 'delete-in', column: column2, values });
+                  return Promise.resolve({ error: null });
+                },
+                then(resolve) {
+                  return Promise.resolve({ error: null }).then(resolve);
+                },
+              };
             },
           };
         },
-        upsert(rows, options) {
-          calls.push({ table, op: 'upsert', rows, options });
+        select(columns) {
+          calls.push({ table, op: 'select', columns });
+          return {
+            eq(column, value) {
+              calls.push({ table, op: 'select-eq', column, value });
+              return Promise.resolve({
+                data: existingRows.filter((row) => row.deal_id === value),
+                error: null,
+              });
+            },
+          };
+        },
+        upsert(rows, upsertOptions) {
+          calls.push({ table, op: 'upsert', rows, options: upsertOptions });
           return Promise.resolve({ error: null });
         },
       };
     },
   };
-  await replaceProvisionCardRows(sb, 'deal-1', [{ id: 1 }, { id: 2 }, { id: 3 }], 2);
-  assert.equal(calls[0].op, 'delete');
-  assert.equal(calls[1].op, 'delete-eq');
-  assert.deepEqual(calls.filter((call) => call.op === 'upsert').map((call) => call.rows.length), [2, 1]);
-  assert.equal(calls.find((call) => call.op === 'upsert').options.onConflict, 'provision_instance_id');
+}
+
+test('replaceProvisionCardRows upserts before deleting (claims FK-cascade safety) and batches the upsert', async () => {
+  // provision_cards.excerpt_id cascades ON DELETE to public.claims -- a
+  // delete-then-upsert here would wipe every claim for the deal on any
+  // corpus rebuild, even when nothing actually changed. Mirrors
+  // lib/parser-v2/store-cards.js's storeProvisionCards fix.
+  const orphanId = 'orphan-1';
+  const sb = fakeReplaceSupabase({
+    existingRows: [
+      { deal_id: 'deal-1', provision_instance_id: 'pi-1' },
+      { deal_id: 'deal-1', provision_instance_id: 'pi-2' },
+      { deal_id: 'deal-1', provision_instance_id: 'pi-3' },
+      { deal_id: 'deal-1', provision_instance_id: orphanId },
+    ],
+  });
+  const rows = [
+    { id: 1, provision_instance_id: 'pi-1' },
+    { id: 2, provision_instance_id: 'pi-2' },
+    { id: 3, provision_instance_id: 'pi-3' },
+  ];
+  const written = await replaceProvisionCardRows(sb, 'deal-1', rows, 2);
+  assert.equal(written, 3);
+
+  const upsertIndex = sb.calls.findIndex((call) => call.op === 'upsert');
+  const orphanDeleteIndex = sb.calls.findIndex((call) => call.op === 'delete-in');
+  assert.ok(upsertIndex >= 0, 'upsert must be called');
+  assert.ok(orphanDeleteIndex >= 0, 'orphan delete must be called');
+  assert.ok(upsertIndex < orphanDeleteIndex, 'upsert must run before the orphan delete');
+  assert.ok(!sb.calls.slice(0, upsertIndex).some((call) => call.op === 'delete' || call.op === 'delete-eq' || call.op === 'delete-in'), 'no delete may precede the upsert');
+
+  assert.deepEqual(sb.calls.filter((call) => call.op === 'upsert').map((call) => call.rows.length), [2, 1]);
+  assert.equal(sb.calls.find((call) => call.op === 'upsert').options.onConflict, 'provision_instance_id');
+
+  const orphanDeleteCall = sb.calls[orphanDeleteIndex];
+  assert.equal(orphanDeleteCall.column, 'provision_instance_id');
+  assert.deepEqual(orphanDeleteCall.values, [orphanId]);
+
+  // Exactly one delete call total -- the scoped orphan cleanup -- never a
+  // second, broader delete-all-for-deal call (the old, unsafe path).
+  assert.equal(sb.calls.filter((call) => call.op === 'delete').length, 1);
+});
+
+test('replaceProvisionCardRows with zero rows deletes all existing cards for the deal', async () => {
+  const sb = fakeReplaceSupabase({
+    existingRows: [{ deal_id: 'deal-empty', provision_instance_id: 'x' }],
+  });
+  const written = await replaceProvisionCardRows(sb, 'deal-empty', [], 50);
+  assert.equal(written, 0);
+  assert.equal(sb.calls[0].op, 'delete');
+  assert.deepEqual(
+    sb.calls.filter((call) => call.op === 'delete-eq').map((call) => [call.column, call.value]),
+    [['deal_id', 'deal-empty']],
+  );
+  assert.ok(!sb.calls.some((call) => call.op === 'upsert'), 'no upsert should run when there are zero rows to write');
 });
