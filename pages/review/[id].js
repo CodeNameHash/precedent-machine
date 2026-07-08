@@ -135,6 +135,7 @@ import { FullDocumentView } from '../../components/review/FullDocumentView';
 import { EditPanel } from '../../components/review/EditPanel';
 import ProvisionCardTable from '../../components/review/ProvisionCardTable';
 import ProvisionTable from '../../components/review/ProvisionTable';
+import { considerationHeroConfig } from '../../components/review/table-configs/consideration-hero.config';
 import { conditionsBConfig } from '../../components/review/table-configs/conditions-b.config';
 import { conditionsMConfig } from '../../components/review/table-configs/conditions-m.config';
 import { conditionsSConfig } from '../../components/review/table-configs/conditions-s.config';
@@ -11541,6 +11542,7 @@ export default function ReviewPage() {
                   ) : null}
                   {!schemaCardsLoading ? (
                     <>
+                      <ProvisionTable config={considerationHeroConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                       <ProvisionTable config={conditionsMConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                       <ProvisionTable config={conditionsBConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                       <ProvisionTable config={conditionsSConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />

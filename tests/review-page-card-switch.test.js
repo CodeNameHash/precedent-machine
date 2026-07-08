@@ -15,6 +15,7 @@ test('review page imports the provision card table', () => {
 
 test('review page mounts the first schema structured table config before cards', () => {
   assert.match(reviewPageSource, /import ProvisionTable from '..\/..\/components\/review\/ProvisionTable';/);
+  assert.match(reviewPageSource, /import \{ considerationHeroConfig \} from '..\/..\/components\/review\/table-configs\/consideration-hero\.config';/);
   assert.match(reviewPageSource, /import \{ conditionsMConfig \} from '..\/..\/components\/review\/table-configs\/conditions-m\.config';/);
   assert.match(reviewPageSource, /import \{ conditionsBConfig \} from '..\/..\/components\/review\/table-configs\/conditions-b\.config';/);
   assert.match(reviewPageSource, /import \{ conditionsSConfig \} from '..\/..\/components\/review\/table-configs\/conditions-s\.config';/);
@@ -28,6 +29,7 @@ test('review page mounts the first schema structured table config before cards',
   assert.match(reviewPageSource, /import \{ noOtherRepsFraudConfig \} from '..\/..\/components\/review\/table-configs\/no-other-reps-fraud\.config';/);
   assert.match(reviewPageSource, /import \{ secMeetingConfig \} from '..\/..\/components\/review\/table-configs\/sec-meeting\.config';/);
   assert.match(reviewPageSource, /import \{ tailFeeConfig \} from '..\/..\/components\/review\/table-configs\/tail-fee\.config';/);
+  assert.match(reviewPageSource, /<ProvisionTable config=\{considerationHeroConfig\} reviewDeal=\{schemaReviewDeal/);
   assert.match(reviewPageSource, /<ProvisionTable config=\{conditionsMConfig\} reviewDeal=\{schemaReviewDeal/);
   assert.match(reviewPageSource, /<ProvisionTable config=\{conditionsBConfig\} reviewDeal=\{schemaReviewDeal/);
   assert.match(reviewPageSource, /<ProvisionTable config=\{conditionsSConfig\} reviewDeal=\{schemaReviewDeal/);
@@ -42,7 +44,9 @@ test('review page mounts the first schema structured table config before cards',
   assert.match(reviewPageSource, /<ProvisionTable config=\{secMeetingConfig\} reviewDeal=\{schemaReviewDeal/);
   assert.match(reviewPageSource, /<ProvisionTable config=\{noOtherRepsFraudConfig\} reviewDeal=\{schemaReviewDeal/);
   assert.ok(
-    reviewPageSource.indexOf('<ProvisionTable config={conditionsMConfig}') <
+    reviewPageSource.indexOf('<ProvisionTable config={considerationHeroConfig}') <
+      reviewPageSource.indexOf('<ProvisionTable config={conditionsMConfig}') &&
+      reviewPageSource.indexOf('<ProvisionTable config={conditionsMConfig}') <
       reviewPageSource.indexOf('<ProvisionTable config={conditionsBConfig}') &&
       reviewPageSource.indexOf('<ProvisionTable config={conditionsBConfig}') <
       reviewPageSource.indexOf('<ProvisionTable config={conditionsSConfig}') &&

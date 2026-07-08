@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 const path = require('node:path');
 
 let mod;
+let considerationHeroMod;
 let employeeBenefitsMod;
 let iocMod;
 let materialContractsMod;
@@ -15,6 +16,7 @@ let secMeetingMod;
 let tailFeeMod;
 test.before(async () => {
   mod = await import(path.join('..', 'components', 'review', 'table-configs', 'conditions-m.config.js'));
+  considerationHeroMod = await import(path.join('..', 'components', 'review', 'table-configs', 'consideration-hero.config.js'));
   employeeBenefitsMod = await import(path.join('..', 'components', 'review', 'table-configs', 'employee-benefits.config.js'));
   iocMod = await import(path.join('..', 'components', 'review', 'table-configs', 'ioc-exceptions.config.js'));
   materialContractsMod = await import(path.join('..', 'components', 'review', 'table-configs', 'material-contracts.config.js'));
@@ -54,6 +56,71 @@ test('conditions-m config maps schema cards to canonical present rows', () => {
     'Antitrust',
   ]);
   assert.match(rows.find((row) => row.label === 'Antitrust').detail, /HSR waiting period/);
+});
+
+test('consideration hero config maps cash plus CVR economics', () => {
+  const rows = considerationHeroMod.considerationHeroConfig.selectRows({
+    cards: [
+      {
+        id: 'merger-consid',
+        provision_subtype: 'CONSID',
+        short_title: 'Merger Consideration',
+        primary_quote: 'Each share shall be converted into $47.50 in cash plus one CVR.',
+        features: {
+          considerationType: 'cash-with-cvr',
+          perShareAmount: '$47.50',
+          withholdingProvision: true,
+        },
+      },
+      {
+        id: 'cvr',
+        provision_subtype: 'CONSID-CVR',
+        short_title: 'CVR',
+        primary_quote: 'Each CVR may pay up to $17.50 on milestone achievement.',
+        features: {
+          triggers: ['First milestone', 'Second milestone'],
+          maxPayment: '$17.50',
+          term: 'five years',
+          transferable: false,
+        },
+      },
+    ],
+  });
+  assert.equal(rows.find((row) => row.id === 'consideration-hero-headline').detail, 'Cash + CVR');
+  assert.equal(rows.find((row) => row.id === 'consideration-hero-per-share').detail, '$47.50 in cash + 1 CVR (up to $17.50)');
+  assert.equal(rows.find((row) => row.id === 'consideration-hero-cvr-maxPayment').detail, '$17.50');
+  assert.equal(rows.find((row) => row.id === 'consideration-hero-cvr-transferable').detail, 'No');
+});
+
+test('consideration hero config maps stock/election mechanics and tender-offer price', () => {
+  const rows = considerationHeroMod.considerationHeroConfig.selectRows({
+    cards: [
+      {
+        id: 'stock',
+        provision_subtype: 'CONSID',
+        primary_quote: 'Each share receives 0.5 shares of Parent common stock.',
+        features: {
+          considerationType: 'mixed-cash-and-stock',
+          exchangeRatio: '0.5 shares of Parent common stock',
+          prorationMechanics: { electionType: 'CASH_OR_STOCK', oversubscriptionTreatment: 'pro rata' },
+          collar: { present: true, type: 'SYMMETRIC', floor: '$10.00', cap: '$15.00' },
+          walkAwayRight: { present: true, party: 'Target', trigger: 'stock price below floor' },
+        },
+      },
+      {
+        id: 'offer',
+        provision_subtype: 'STRUCT-OFFER',
+        features: {
+          offerConsideration: 'Cash',
+          offerPrice: '$12.00 per share',
+        },
+      },
+    ],
+  });
+  assert.equal(rows.find((row) => row.id === 'consideration-hero-headline').detail, 'Cash / stock election');
+  assert.match(rows.find((row) => row.id === 'consideration-hero-prorationMechanics').detail, /CASH_OR_STOCK/);
+  assert.equal(rows.find((row) => row.id === 'consideration-hero-offerPrice').detail, '$12.00 per share');
+  assert.match(rows.find((row) => row.id === 'consideration-hero-collar').detail, /SYMMETRIC/);
 });
 
 test('conditions-m config returns no table rows when no closing-condition cards exist', () => {
