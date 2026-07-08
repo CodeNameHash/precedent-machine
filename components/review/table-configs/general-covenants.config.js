@@ -6,7 +6,7 @@ const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
 const ROWS = [
   ['ordinary-course', 'Ordinary-course covenant', 'Interim operating', ['ordinaryCourseConduct', 'absenceConductedOrdinaryCourse']],
-  ['no-mae', 'No MAE / no changes limb', 'Interim operating', ['absenceNoMAE', 'aocNoMaePresent']],
+  ['no-mae', 'No MAE / no changes limb', 'Interim operating', ['aocNoMaePresent']],
   ['specified-iocs', 'Specified interim operating covenants', 'Interim operating', ['absenceSpecifiedIOCs', 'negativeCovenantBaskets']],
   ['negative', 'Negative covenant restrictions', 'Restrictions', ['negativeCovenant', 'restrictedActions']],
   ['affirmative', 'Affirmative covenants', 'Affirmative', ['affirmativeCovenants', 'positiveObligations']],

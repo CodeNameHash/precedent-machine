@@ -4,10 +4,12 @@ const assert = require('node:assert/strict');
 const { FEATURES } = require('../../lib/schema/features');
 const { FEATURE_VALUE_TYPES, validateFeatureDef } = require('../../lib/schema/types');
 
-// These 15 keys exist in docs/schema-shape/normalized-v1.json's `entries` (added during
+// These 14 keys exist in docs/schema-shape/normalized-v1.json's `entries` (added during
 // Phase 0-C reconciliation) but were missing from the generated registry, leaving them
 // ungoverned even though app code imports FEATURES from this file. See
 // docs/schema-shape/normalized-v1.json and lib/schema/features.js header.
+// (absenceNoMAE was dropped as a confirmed duplicate of aocNoMaePresent — both are
+// REP-T-NOCHANGE / "Absence of Certain Changes or Events" booleans.)
 const RECONCILED_KEYS = [
   'terminationFees',
   'antitrustEffortsStandard',
@@ -18,7 +20,6 @@ const RECONCILED_KEYS = [
   'feeExpenseAllocationExceptions',
   'absenceSpecifiedIOCs',
   'party_role',
-  'absenceNoMAE',
   'interveningEventExceptions',
   'notificationCovenantFailureStandard',
   'buyerEffortsCap',
@@ -26,7 +27,7 @@ const RECONCILED_KEYS = [
   'nominalTargetParty',
 ];
 
-test('all 15 reconciliation-added keys are present in FEATURES', () => {
+test('all 14 reconciliation-added keys are present in FEATURES', () => {
   for (const key of RECONCILED_KEYS) {
     assert.ok(key in FEATURES, `${key} missing from FEATURES`);
   }
