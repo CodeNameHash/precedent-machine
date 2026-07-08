@@ -112,9 +112,25 @@ async function existingCardCount(sb, dealId) {
   return count || 0;
 }
 
+// Mirrors the upsert-before-delete fix in lib/parser-v2/store-cards.js
+// (storeProvisionCards): provision_cards.excerpt_id cascades to
+// public.claims on DELETE, so a delete-then-upsert here would wipe every
+// claim for the deal on any corpus rebuild, even when every provision
+// survives re-extraction unchanged. Upsert first (rows keep their stable
+// provision_instance_id / excerpt_id, so no cascade fires for survivors),
+// then delete only the orphans -- provision_instance_ids that existed for
+// this deal before this run but are absent from the new row set.
 async function replaceProvisionCardRows(sb, dealId, rows, batchSize = UPSERT_BATCH_SIZE) {
-  const { error: deleteError } = await sb.from('provision_cards').delete().eq('deal_id', dealId);
-  if (deleteError) throw new Error(`Failed to delete existing provision_cards: ${deleteError.message}`);
+  if (rows.length === 0) {
+    // Nothing survives this extraction, so every existing card for the deal
+    // is an orphan by definition -- delete-all is the correct (and only
+    // possible) orphan set here. This does still cascade all of that deal's
+    // claims, which is correct: there are no provisions left to anchor them.
+    const { error: deleteError } = await sb.from('provision_cards').delete().eq('deal_id', dealId);
+    if (deleteError) throw new Error(`Failed to delete existing provision_cards: ${deleteError.message}`);
+    return 0;
+  }
+
   for (let index = 0; index < rows.length; index += batchSize) {
     const batch = rows.slice(index, index + batchSize);
     let lastError = null;
@@ -135,6 +151,33 @@ async function replaceProvisionCardRows(sb, dealId, rows, batchSize = UPSERT_BAT
     }
     if (lastError) throw new Error(`Failed to upsert provision_cards batch ${index / batchSize + 1}: ${lastError.message || String(lastError)}`);
   }
+
+  const survivingIds = new Set(rows.map((row) => row.provision_instance_id));
+  const { data: existingRows, error: existingError } = await sb
+    .from('provision_cards')
+    .select('provision_instance_id')
+    .eq('deal_id', dealId);
+  if (existingError) {
+    throw new Error(`Failed to read existing provision_cards for orphan cleanup: ${existingError.message}`);
+  }
+  const orphanIds = (existingRows || [])
+    .map((row) => row.provision_instance_id)
+    .filter((provisionInstanceIdValue) => !survivingIds.has(provisionInstanceIdValue));
+  if (orphanIds.length > 0) {
+    // .in() (not a hand-built "not in (...)" string) so postgrest-js
+    // handles quoting of any reserved characters (",", "(", ")") that can
+    // legitimately appear in provision_instance_id via sectionPath (e.g.
+    // "Section 5.3(a)").
+    const { error: deleteOrphansError } = await sb
+      .from('provision_cards')
+      .delete()
+      .eq('deal_id', dealId)
+      .in('provision_instance_id', orphanIds);
+    if (deleteOrphansError) {
+      throw new Error(`Failed to delete orphaned provision_cards: ${deleteOrphansError.message}`);
+    }
+  }
+
   return rows.length;
 }
 

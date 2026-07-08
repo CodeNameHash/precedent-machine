@@ -35,10 +35,11 @@ test('M2-09 queue entry validates and blocks later steps pending approval', () =
   validateEntry(entry);
 });
 
-test('committed M2-09 queue entry is unresolved', () => {
+test('committed M2-09 queue entry is resolved as approved, unblocking Step 4', () => {
   const entry = JSON.parse(fs.readFileSync('docs/review-queue/m2-09-per-family-rebuild-plan.json', 'utf8'));
   validateEntry(entry);
-  assert.equal(entry.resolution, null);
-  assert.equal(entry.resolved_at, null);
-  assert.equal(entry.resolved_by, null);
+  assert.equal(entry.resolution.choice_key, 'approve');
+  assert.equal(entry.resolution.codex_action, 'proceed with WP-M2-09 Steps 2-4 against the approved per-family rebuild plan');
+  assert.ok(Number.isFinite(Date.parse(entry.resolved_at)), 'resolved_at must be a valid ISO date once resolved');
+  assert.equal(entry.resolved_by, 'ben');
 });
