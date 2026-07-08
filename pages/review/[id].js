@@ -135,20 +135,29 @@ import { FullDocumentView } from '../../components/review/FullDocumentView';
 import { EditPanel } from '../../components/review/EditPanel';
 import ProvisionCardTable from '../../components/review/ProvisionCardTable';
 import ProvisionTable from '../../components/review/ProvisionTable';
+import { advisersFeesExpensesConfig } from '../../components/review/table-configs/advisers-fees-expenses.config';
+import { antitrustRegulatoryConfig } from '../../components/review/table-configs/antitrust-regulatory.config';
+import { approvalsVotesConfig } from '../../components/review/table-configs/approvals-votes.config';
 import { considerationHeroConfig } from '../../components/review/table-configs/consideration-hero.config';
 import { conditionsBConfig } from '../../components/review/table-configs/conditions-b.config';
 import { conditionsMConfig } from '../../components/review/table-configs/conditions-m.config';
 import { conditionsSConfig } from '../../components/review/table-configs/conditions-s.config';
 import { employeeBenefitsConfig } from '../../components/review/table-configs/employee-benefits.config';
+import { generalCovenantsConfig } from '../../components/review/table-configs/general-covenants.config';
 import { iocExceptionsConfig } from '../../components/review/table-configs/ioc-exceptions.config';
+import { maeDefinitionsConfig } from '../../components/review/table-configs/mae-definitions.config';
 import { materialContractsConfig } from '../../components/review/table-configs/material-contracts.config';
 import { nosolFiduciaryConfig } from '../../components/review/table-configs/nosol-fiduciary.config';
 import { nosolInterveningConfig } from '../../components/review/table-configs/nosol-intervening.config';
 import { nosolNoshopConfig } from '../../components/review/table-configs/nosol-noshop.config';
 import { nosolSuperiorConfig } from '../../components/review/table-configs/nosol-superior.config';
 import { noOtherRepsFraudConfig } from '../../components/review/table-configs/no-other-reps-fraud.config';
+import { representationsQualifiersConfig } from '../../components/review/table-configs/representations-qualifiers.config';
 import { secMeetingConfig } from '../../components/review/table-configs/sec-meeting.config';
+import { structureMechanicsConfig } from '../../components/review/table-configs/structure-mechanics.config';
 import { tailFeeConfig } from '../../components/review/table-configs/tail-fee.config';
+import { terminationFeesConfig } from '../../components/review/table-configs/termination-fees.config';
+import { terminationRightsConfig } from '../../components/review/table-configs/termination-rights.config';
 import { BoundaryAuditPanel } from '../../components/review/BoundaryAuditPanel';
 import { parseReviewRouteQuery, serializeReviewRouteQuery } from '../../lib/review-route';
 
@@ -11542,19 +11551,28 @@ export default function ReviewPage() {
                   ) : null}
                   {!schemaCardsLoading ? (
                     <>
+                      <ProvisionTable config={structureMechanicsConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                       <ProvisionTable config={considerationHeroConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                       <ProvisionTable config={conditionsMConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                       <ProvisionTable config={conditionsBConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                       <ProvisionTable config={conditionsSConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
+                      <ProvisionTable config={approvalsVotesConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
+                      <ProvisionTable config={representationsQualifiersConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
+                      <ProvisionTable config={maeDefinitionsConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                       <ProvisionTable config={materialContractsConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                       <ProvisionTable config={iocExceptionsConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
+                      <ProvisionTable config={generalCovenantsConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                       <ProvisionTable config={tailFeeConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
+                      <ProvisionTable config={terminationFeesConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
+                      <ProvisionTable config={terminationRightsConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                       <ProvisionTable config={nosolNoshopConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                       <ProvisionTable config={nosolSuperiorConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                       <ProvisionTable config={nosolInterveningConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                       <ProvisionTable config={nosolFiduciaryConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
+                      <ProvisionTable config={antitrustRegulatoryConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                       <ProvisionTable config={employeeBenefitsConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                       <ProvisionTable config={secMeetingConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
+                      <ProvisionTable config={advisersFeesExpensesConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                       <ProvisionTable config={noOtherRepsFraudConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                       <ProvisionCardTable reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                     </>
