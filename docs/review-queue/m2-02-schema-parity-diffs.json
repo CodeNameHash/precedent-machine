@@ -1,0 +1,49 @@
+{
+  "id": "m2-02-schema-parity-diffs",
+  "created_at": "2026-07-08T03:20:00.000Z",
+  "kind": "clarify",
+  "title": "WP-M2-02 schema parity audit found 972 diffs — remediation plan",
+  "summary": "The 972 diffs decompose into four mechanical bugs plus one canonical rule. Root causes: (1) [PROPOSED] label not stripped in schema-first user-mode render — 480 diffs; (2) STRUCT and OTHER types mapped to MISC_BOILERPLATE by the card writer — 285 diffs; (3) Uncovered-text coverage cards visible in user mode instead of admin-only — 62 diffs; (4) legacy user-mode renders WHEREAS/preamble text as definitions (legacy is wrong, schema-first is right) — ~100 diffs; (5) genuine extractor coverage gaps — ~45 diffs. Expected trajectory: 972 → 492 → 207 → 145 → ~45 → 0. Bucket (4) needs a small canonical rule to codify; a separate Queue entry has been filed. Approving here approves the mechanical remediation plan.",
+  "evidence": [
+    {
+      "label": "Parity report",
+      "url": "docs/schema-migration/phase-8-parity.md"
+    },
+    {
+      "label": "Parity triage",
+      "url": "docs/schema-migration/phase-8-parity-triage.md"
+    },
+    {
+      "label": "Discovery counts",
+      "url": "docs/audit/parity-discovery.md"
+    },
+    {
+      "label": "This directive",
+      "url": "docs/handoffs/CODEX-DIRECTIVE-M2-02-parity-remediation.md"
+    },
+    {
+      "label": "Canonical rule Queue entry (recital suppression)",
+      "url": "docs/review-queue/m2-02-recital-suppression.json"
+    }
+  ],
+  "choices": [
+    {
+      "key": "approve-plan",
+      "label": "Approve remediation plan (5 sequential mechanical PRs + reaudit after each)",
+      "codex_action": "proceed with Steps 3-8"
+    },
+    {
+      "key": "modify",
+      "label": "Approve with changes",
+      "codex_action": "await Ben-authored diff"
+    },
+    {
+      "key": "reject",
+      "label": "Reject — reopen discussion",
+      "codex_action": "halt WP-M2-02"
+    }
+  ],
+  "resolution": null,
+  "resolved_at": null,
+  "resolved_by": null
+}
