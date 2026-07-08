@@ -1,0 +1,1164 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-07-08T14:51:29.571Z",
+  "generated_by": "scripts/audit/legacy-vocab-references.js",
+  "targets": [
+    {
+      "target_path": "lib/feature-validation.js",
+      "target_exports": [
+        "validateFeatures",
+        "validateProvisionRow",
+        "validationSummary",
+        "unwrap",
+        "INFRA_KEYS"
+      ],
+      "semantic_role": "Legacy adapter around schema validation for provision feature bags.",
+      "exists": true,
+      "references": [
+        {
+          "file": "docs/schema-migration/phase-1-log.md",
+          "line": 7,
+          "kind": "path-reference",
+          "excerpt": "- Required `lib/rubric.js`, `lib/taxonomy.js`, `lib/expected-sets.js`, and `lib/feature-validation.js`."
+        },
+        {
+          "file": "docs/schema-migration/phase-4-notes.md",
+          "line": 6,
+          "kind": "path-reference",
+          "excerpt": "- Runtime validation was still centred on `lib/feature-validation.js`."
+        },
+        {
+          "file": "docs/schema-migration/phase-4-notes.md",
+          "line": 8,
+          "kind": "path-reference",
+          "excerpt": "- Existing callers and tests still import `lib/feature-validation.js`, so that path remains as a compatibility adapter in this phase."
+        },
+        {
+          "file": "docs/schema-migration/phase-4-notes.md",
+          "line": 19,
+          "kind": "path-reference",
+          "excerpt": "- Replaced `lib/feature-validation.js` with a thin compatibility adapter preserving the old public API."
+        },
+        {
+          "file": "HANDOFF.md",
+          "line": 629,
+          "kind": "path-reference",
+          "excerpt": "2026-07-08: WP-M2-04 legacy vocab deletion audit: generated the legacy-vocab reference manifest and deletion manifest. All 7 targets still have live references, so no destructive deletion PR was opened. Follow-up: migrat"
+        },
+        {
+          "file": "pages/api/trust/report.js",
+          "line": 16,
+          "kind": "require",
+          "excerpt": "const { validateProvisionRow } = require('../../../lib/feature-validation');"
+        },
+        {
+          "file": "PARSER_HIERARCHY_HANDOFF.md",
+          "line": 47,
+          "kind": "path-reference",
+          "excerpt": "- makes `lib/feature-validation.js` a compatibility adapter"
+        },
+        {
+          "file": "PARSER_HIERARCHY_HANDOFF.md",
+          "line": 68,
+          "kind": "path-reference",
+          "excerpt": "- `lib/feature-validation.js`"
+        },
+        {
+          "file": "pm-schema-first-migration.codex.md",
+          "line": 22,
+          "kind": "path-reference",
+          "excerpt": "- `lib/feature-validation.js` — enforces rubric shapes at write"
+        },
+        {
+          "file": "pm-schema-first-migration.codex.md",
+          "line": 650,
+          "kind": "path-reference",
+          "excerpt": "Replace the imperative shape checks in `lib/feature-validation.js`"
+        },
+        {
+          "file": "pm-schema-first-migration.codex.md",
+          "line": 886,
+          "kind": "path-reference",
+          "excerpt": "Cleanup phase. Delete `lib/feature-validation.js` (already an adapter"
+        },
+        {
+          "file": "scripts/eval.js",
+          "line": 22,
+          "kind": "require",
+          "excerpt": "const { validateProvisionRow, unwrap } = require('../lib/feature-validation');"
+        },
+        {
+          "file": "scripts/schema-inventory.js",
+          "line": 22,
+          "kind": "path-reference",
+          "excerpt": "featureValidation: path.join(ROOT, 'lib/feature-validation.js'),"
+        },
+        {
+          "file": "scripts/schema-inventory.js",
+          "line": 737,
+          "kind": "path-reference",
+          "excerpt": "lines.push('- Required `lib/rubric.js`, `lib/taxonomy.js`, `lib/expected-sets.js`, and `lib/feature-validation.js`.');"
+        },
+        {
+          "file": "tests/abry.test.js",
+          "line": 210,
+          "kind": "require",
+          "excerpt": "const { validateFeatures } = require('../lib/feature-validation');"
+        },
+        {
+          "file": "tests/feature-validation.test.js",
+          "line": 1,
+          "kind": "path-reference",
+          "excerpt": "/* Tests for lib/feature-validation.js — write-time schema enforcement. */"
+        },
+        {
+          "file": "tests/feature-validation.test.js",
+          "line": 9,
+          "kind": "require",
+          "excerpt": "} = require('../lib/feature-validation');"
+        },
+        {
+          "file": "tests/metsfb2-extraction-batch2.test.js",
+          "line": 24,
+          "kind": "require",
+          "excerpt": "const { validateFeatures } = require('../lib/feature-validation');"
+        },
+        {
+          "file": "tests/schema/validation.test.js",
+          "line": 13,
+          "kind": "require",
+          "excerpt": "const legacy = require('../../lib/feature-validation');"
+        },
+        {
+          "file": "tests/sec-meeting.test.js",
+          "line": 8,
+          "kind": "require",
+          "excerpt": "const { validateFeatures } = require('../lib/feature-validation');"
+        },
+        {
+          "file": "tests/tender-offer-mechanics.test.js",
+          "line": 9,
+          "kind": "require",
+          "excerpt": "const { validateFeatures } = require('../lib/feature-validation');"
+        },
+        {
+          "file": "WORKLOG-WP-M2-04-LEGACY-VOCAB-DELETION.md",
+          "line": 19,
+          "kind": "path-reference",
+          "excerpt": "- `lib/feature-validation.js`: 28 references."
+        }
+      ],
+      "reference_count": 22,
+      "codex_verdict": "unsafe-live-references"
+    },
+    {
+      "target_path": "lib/expected-sets.js",
+      "target_exports": [
+        "computeExpectedSets",
+        "analyzeDealCoverage",
+        "analyzeCorpusTaxonomy",
+        "familyType",
+        "provisionCode",
+        "isCanonicalCode",
+        "CURATED_CORE",
+        "CORE_THRESHOLD",
+        "COMMON_THRESHOLD"
+      ],
+      "semantic_role": "Legacy expected-set and taxonomy-growth coverage helper.",
+      "exists": true,
+      "references": [
+        {
+          "file": "components/review/EditPanel.js",
+          "line": 13,
+          "kind": "import",
+          "excerpt": "import { isCanonicalCode } from '../../lib/expected-sets';"
+        },
+        {
+          "file": "docs/schema-migration/phase-1-log.md",
+          "line": 7,
+          "kind": "path-reference",
+          "excerpt": "- Required `lib/rubric.js`, `lib/taxonomy.js`, `lib/expected-sets.js`, and `lib/feature-validation.js`."
+        },
+        {
+          "file": "HANDOFF.md",
+          "line": 629,
+          "kind": "path-reference",
+          "excerpt": "2026-07-08: WP-M2-04 legacy vocab deletion audit: generated the legacy-vocab reference manifest and deletion manifest. All 7 targets still have live references, so no destructive deletion PR was opened. Follow-up: migrat"
+        },
+        {
+          "file": "lib/feature-compare.js",
+          "line": 37,
+          "kind": "path-reference",
+          "excerpt": "CommonJS (matches lib/expected-sets.js): consumed by the API route, the"
+        },
+        {
+          "file": "lib/feature-compare.js",
+          "line": 43,
+          "kind": "relative-module-reference",
+          "excerpt": "const { familyType, provisionCode } = require('./expected-sets');"
+        },
+        {
+          "file": "lib/gap-review.js",
+          "line": 2,
+          "kind": "relative-module-reference",
+          "excerpt": "const { familyType, isCanonicalCode, provisionCode } = require('./expected-sets');"
+        },
+        {
+          "file": "lib/query/types.js",
+          "line": 2,
+          "kind": "relative-module-reference",
+          "excerpt": "const { familyType, provisionCode } = require('../expected-sets');"
+        },
+        {
+          "file": "pages/api/trust/report.js",
+          "line": 17,
+          "kind": "require",
+          "excerpt": "const { isCanonicalCode, provisionCode } = require('../../../lib/expected-sets');"
+        },
+        {
+          "file": "pages/review/[id].js",
+          "line": 59,
+          "kind": "import",
+          "excerpt": "import { isCanonicalCode } from '../../lib/expected-sets';"
+        },
+        {
+          "file": "pm-schema-first-migration.codex.md",
+          "line": 23,
+          "kind": "path-reference",
+          "excerpt": "- `lib/expected-sets.js` — declares required feature bundles"
+        },
+        {
+          "file": "pm-schema-first-migration.codex.md",
+          "line": 125,
+          "kind": "path-reference",
+          "excerpt": "- Loads `lib/expected-sets.js` and enumerates every declared"
+        },
+        {
+          "file": "pm-schema-first-migration.codex.md",
+          "line": 887,
+          "kind": "path-reference",
+          "excerpt": "after P4), `lib/expected-sets.js` (functionality absorbed into"
+        },
+        {
+          "file": "scripts/schema-inventory.js",
+          "line": 20,
+          "kind": "path-reference",
+          "excerpt": "expectedSets: path.join(ROOT, 'lib/expected-sets.js'),"
+        },
+        {
+          "file": "scripts/schema-inventory.js",
+          "line": 737,
+          "kind": "path-reference",
+          "excerpt": "lines.push('- Required `lib/rubric.js`, `lib/taxonomy.js`, `lib/expected-sets.js`, and `lib/feature-validation.js`.');"
+        },
+        {
+          "file": "scripts/taxonomy-report.js",
+          "line": 21,
+          "kind": "require",
+          "excerpt": "} = require('../lib/expected-sets');"
+        },
+        {
+          "file": "tests/expected-sets.test.js",
+          "line": 1,
+          "kind": "path-reference",
+          "excerpt": "/* Tests for lib/expected-sets.js — corpus-derived expected-set systematization. */"
+        },
+        {
+          "file": "tests/expected-sets.test.js",
+          "line": 6,
+          "kind": "require",
+          "excerpt": "} = require('../lib/expected-sets');"
+        },
+        {
+          "file": "tests/taxonomy-preambles.test.js",
+          "line": 5,
+          "kind": "require",
+          "excerpt": "const { isCanonicalCode } = require('../lib/expected-sets');"
+        },
+        {
+          "file": "WORKLOG-WP-M2-04-LEGACY-VOCAB-DELETION.md",
+          "line": 20,
+          "kind": "path-reference",
+          "excerpt": "- `lib/expected-sets.js`: 23 references."
+        }
+      ],
+      "reference_count": 19,
+      "codex_verdict": "unsafe-live-references"
+    },
+    {
+      "target_path": "lib/category-summary-features.js",
+      "target_exports": [
+        "CATEGORY_SUMMARY_FEATURES"
+      ],
+      "semantic_role": "Legacy per-category summary-table row configuration.",
+      "exists": true,
+      "references": [
+        {
+          "file": "docs/schema-migration/phase-1-log.md",
+          "line": 8,
+          "kind": "path-reference",
+          "excerpt": "- Text-evaluated `lib/category-summary-features.js` because it uses an ESM export in a CommonJS package."
+        },
+        {
+          "file": "docs/schema-migration/phase-6-notes.md",
+          "line": 5,
+          "kind": "path-reference",
+          "excerpt": "- At discovery time, the review page and compare page still imported `lib/category-summary-features.js` directly."
+        },
+        {
+          "file": "docs/schema-migration/phase-6-notes.md",
+          "line": 14,
+          "kind": "path-reference",
+          "excerpt": "- Moved review and compare runtime imports from `lib/category-summary-features.js` to `lib/schema/summary.js`."
+        },
+        {
+          "file": "docs/schema-migration/phase-6-notes.md",
+          "line": 23,
+          "kind": "path-reference",
+          "excerpt": "- `lib/category-summary-features.js` remains in place as the compatibility source because scripts/tests still inspect it and because its row labels, fallback keys, MAE carveout rows, aliases, and custom render markers ar"
+        },
+        {
+          "file": "HANDOFF.md",
+          "line": 629,
+          "kind": "path-reference",
+          "excerpt": "2026-07-08: WP-M2-04 legacy vocab deletion audit: generated the legacy-vocab reference manifest and deletion manifest. All 7 targets still have live references, so no destructive deletion PR was opened. Follow-up: migrat"
+        },
+        {
+          "file": "lib/schema/summary.js",
+          "line": 2,
+          "kind": "relative-module-reference",
+          "excerpt": "import { CATEGORY_SUMMARY_FEATURES as LEGACY_CATEGORY_SUMMARY_FEATURES } from '../category-summary-features';"
+        },
+        {
+          "file": "pages/compare.js",
+          "line": 742,
+          "kind": "path-reference",
+          "excerpt": "// SUMMARY_FEATURE_SPECS retired — compare now uses the shared CATEGORY_SUMMARY_FEATURES (lib/category-summary-features.js), the same spec the review table view uses."
+        },
+        {
+          "file": "pages/review/[id].js",
+          "line": 4659,
+          "kind": "path-reference",
+          "excerpt": "// CATEGORY_SUMMARY_FEATURES now lives in lib/category-summary-features.js"
+        },
+        {
+          "file": "pages/review/[id].js",
+          "line": 4714,
+          "kind": "path-reference",
+          "excerpt": "// (lib/category-summary-features.js) carries a string `customRenderKey`"
+        },
+        {
+          "file": "pm-schema-first-migration.codex.md",
+          "line": 24,
+          "kind": "path-reference",
+          "excerpt": "- `lib/category-summary-features.js` — declares which keys the"
+        },
+        {
+          "file": "pm-schema-first-migration.codex.md",
+          "line": 127,
+          "kind": "path-reference",
+          "excerpt": "- Loads `lib/category-summary-features.js` and enumerates every"
+        },
+        {
+          "file": "pm-schema-first-migration.codex.md",
+          "line": 779,
+          "kind": "path-reference",
+          "excerpt": "3. Delete `lib/category-summary-features.js` at the end of this phase."
+        },
+        {
+          "file": "pm-schema-first-migration.codex.md",
+          "line": 888,
+          "kind": "path-reference",
+          "excerpt": "FeatureDef.presence), `lib/category-summary-features.js` (deleted in"
+        },
+        {
+          "file": "scripts/schema-inventory.js",
+          "line": 21,
+          "kind": "path-reference",
+          "excerpt": "categorySummary: path.join(ROOT, 'lib/category-summary-features.js'),"
+        },
+        {
+          "file": "scripts/schema-inventory.js",
+          "line": 738,
+          "kind": "path-reference",
+          "excerpt": "lines.push('- Text-evaluated `lib/category-summary-features.js` because it uses an ESM export in a CommonJS package.');"
+        },
+        {
+          "file": "WORKLOG-WP-M2-04-LEGACY-VOCAB-DELETION.md",
+          "line": 21,
+          "kind": "path-reference",
+          "excerpt": "- `lib/category-summary-features.js`: 14 references."
+        }
+      ],
+      "reference_count": 16,
+      "codex_verdict": "unsafe-live-references"
+    },
+    {
+      "target_path": "lib/taxonomy.js",
+      "target_exports": [
+        "taxonomyForFeatureKey",
+        "labelForCode",
+        "isValidTaxonomyCode",
+        "formatDict",
+        "normalizeToCode",
+        "TERMF_TRIGGER_CODES",
+        "MERGER_FORMS",
+        "MAE_CARVEOUT_CODES",
+        "IOC_CATEGORY_CODES"
+      ],
+      "semantic_role": "Legacy canonical tag dictionaries and feature-key taxonomy resolver.",
+      "exists": true,
+      "references": [
+        {
+          "file": "CLAUDE.md",
+          "line": 100,
+          "kind": "path-reference",
+          "excerpt": "- Fable/Opus end to end: `lib/rubric.js` / `lib/taxonomy.js` semantics,"
+        },
+        {
+          "file": "components/review/EditPanel.js",
+          "line": 2,
+          "kind": "import",
+          "excerpt": "import { taxonomyForFeatureKey, isListTaxonomyKey } from '../../lib/taxonomy';"
+        },
+        {
+          "file": "components/review/shared.js",
+          "line": 14,
+          "kind": "import",
+          "excerpt": "import { taxonomyForFeatureKey, labelForCode } from '../../lib/taxonomy';"
+        },
+        {
+          "file": "docs/admin/nav-registry.json",
+          "line": 45,
+          "kind": "relative-module-reference",
+          "excerpt": "\"href\": \"/admin/taxonomy\","
+        },
+        {
+          "file": "docs/schema-migration/phase-1-log.md",
+          "line": 7,
+          "kind": "path-reference",
+          "excerpt": "- Required `lib/rubric.js`, `lib/taxonomy.js`, `lib/expected-sets.js`, and `lib/feature-validation.js`."
+        },
+        {
+          "file": "HANDOFF.md",
+          "line": 209,
+          "kind": "path-reference",
+          "excerpt": "`lib/taxonomy.js` defines canonical short-codes for VALUES inside features (not"
+        },
+        {
+          "file": "HANDOFF.md",
+          "line": 550,
+          "kind": "path-reference",
+          "excerpt": "3. Skim `lib/rubric.js`, `lib/taxonomy.js`, `lib/parser-v2/extract.js`,"
+        },
+        {
+          "file": "HANDOFF.md",
+          "line": 629,
+          "kind": "path-reference",
+          "excerpt": "2026-07-08: WP-M2-04 legacy vocab deletion audit: generated the legacy-vocab reference manifest and deletion manifest. All 7 targets still have live references, so no destructive deletion PR was opened. Follow-up: migrat"
+        },
+        {
+          "file": "lib/citable.js",
+          "line": 19,
+          "kind": "relative-module-reference",
+          "excerpt": "import { taxonomyForFeatureKey, labelForCode } from './taxonomy.js';"
+        },
+        {
+          "file": "lib/edit-schema.js",
+          "line": 33,
+          "kind": "relative-module-reference",
+          "excerpt": "} = require('./taxonomy');"
+        },
+        {
+          "file": "lib/feature-compare.js",
+          "line": 42,
+          "kind": "relative-module-reference",
+          "excerpt": "const { taxonomyForFeatureKey, labelForCode } = require('./taxonomy');"
+        },
+        {
+          "file": "lib/instrument-negation.js",
+          "line": 32,
+          "kind": "path-reference",
+          "excerpt": "component — the same pattern already used for lib/taxonomy.js /"
+        },
+        {
+          "file": "lib/parser-v2/consideration-equity.js",
+          "line": 2,
+          "kind": "relative-module-reference",
+          "excerpt": "const { EQUITY_INSTRUMENTS } = require('../taxonomy');"
+        },
+        {
+          "file": "lib/parser-v2/extract.js",
+          "line": 64,
+          "kind": "relative-module-reference",
+          "excerpt": "} = require('../taxonomy');"
+        },
+        {
+          "file": "lib/schema/validation.js",
+          "line": 4,
+          "kind": "relative-module-reference",
+          "excerpt": "const { taxonomyForFeatureKey } = require('../taxonomy');"
+        },
+        {
+          "file": "pages/admin/processing-flow.js",
+          "line": 228,
+          "kind": "relative-module-reference",
+          "excerpt": "<Link href=\"/admin/taxonomy\" className=\"rounded border border-border bg-white px-4 py-2 text-sm text-inkLight hover:border-accent hover:text-ink\">"
+        },
+        {
+          "file": "pages/api/ingest/from-url.js",
+          "line": 23,
+          "kind": "import",
+          "excerpt": "import { MERGER_FORMS } from '../../../lib/taxonomy';"
+        },
+        {
+          "file": "pages/compare.js",
+          "line": 22,
+          "kind": "import",
+          "excerpt": "} from '../lib/taxonomy';"
+        },
+        {
+          "file": "pages/review/[id].js",
+          "line": 37,
+          "kind": "import",
+          "excerpt": "} from '../../lib/taxonomy';"
+        },
+        {
+          "file": "pages/review/[id].js",
+          "line": 4544,
+          "kind": "path-reference",
+          "excerpt": "// ─── MAE carveout codes (kept in sync with lib/taxonomy.js MAE_CARVEOUT_META)."
+        },
+        {
+          "file": "pm-schema-first-migration.codex.md",
+          "line": 21,
+          "kind": "path-reference",
+          "excerpt": "- `lib/taxonomy.js` — 1,277 lines, uses `code:` (different vocab)"
+        },
+        {
+          "file": "pm-schema-first-migration.codex.md",
+          "line": 122,
+          "kind": "path-reference",
+          "excerpt": "- Loads `lib/taxonomy.js` and enumerates every canonical code map"
+        },
+        {
+          "file": "pm-schema-first-migration.codex.md",
+          "line": 891,
+          "kind": "path-reference",
+          "excerpt": "`lib/taxonomy.js` into just legacy backward-compat exports if any"
+        },
+        {
+          "file": "pm-schema-first-migration.codex.md",
+          "line": 917,
+          "kind": "path-reference",
+          "excerpt": "3. Move the parts of `lib/taxonomy.js` that were tags into"
+        },
+        {
+          "file": "scripts/ingest-local.js",
+          "line": 33,
+          "kind": "require",
+          "excerpt": "const { MERGER_FORMS } = require('../lib/taxonomy');"
+        },
+        {
+          "file": "scripts/schema-inventory.js",
+          "line": 19,
+          "kind": "path-reference",
+          "excerpt": "taxonomy: path.join(ROOT, 'lib/taxonomy.js'),"
+        },
+        {
+          "file": "scripts/schema-inventory.js",
+          "line": 737,
+          "kind": "path-reference",
+          "excerpt": "lines.push('- Required `lib/rubric.js`, `lib/taxonomy.js`, `lib/expected-sets.js`, and `lib/feature-validation.js`.');"
+        },
+        {
+          "file": "tests/admin/taxonomy.spec.js",
+          "line": 18,
+          "kind": "relative-module-reference",
+          "excerpt": "assert.equal(entry.href, '/admin/taxonomy');"
+        },
+        {
+          "file": "tests/anti-regulatory-efforts.test.js",
+          "line": 16,
+          "kind": "require",
+          "excerpt": "} = require('../lib/taxonomy');"
+        },
+        {
+          "file": "tests/cond-enrichment.test.js",
+          "line": 20,
+          "kind": "require",
+          "excerpt": "const { ANTITRUST_APPROVAL_CODES } = require('../lib/taxonomy');"
+        },
+        {
+          "file": "tests/ioc-efforts-standard.test.js",
+          "line": 20,
+          "kind": "require",
+          "excerpt": "const { EFFORTS_STANDARDS } = require('../lib/taxonomy');"
+        },
+        {
+          "file": "tests/ioc-scope-pills.test.js",
+          "line": 6,
+          "kind": "require",
+          "excerpt": "const { IOC_AFFIRMATIVE_SCOPE_META } = require('../lib/taxonomy');"
+        },
+        {
+          "file": "tests/metsfb2-extraction-batch2.test.js",
+          "line": 22,
+          "kind": "require",
+          "excerpt": "const { TERMF_TRIGGER_CODES } = require('../lib/taxonomy');"
+        },
+        {
+          "file": "tests/raw-enum-labels.test.js",
+          "line": 9,
+          "kind": "require",
+          "excerpt": "const taxonomy = require('../lib/taxonomy.js');"
+        },
+        {
+          "file": "WORKLOG-WP-M2-04-LEGACY-VOCAB-DELETION.md",
+          "line": 22,
+          "kind": "path-reference",
+          "excerpt": "- `lib/taxonomy.js`: 46 references."
+        }
+      ],
+      "reference_count": 35,
+      "codex_verdict": "unsafe-live-references"
+    },
+    {
+      "target_path": "lib/rubric.js",
+      "target_exports": [
+        "PROVISION_TYPES",
+        "CODES",
+        "FEATURES",
+        "CITABLE_FEATURE_KEYS",
+        "getCodesForType",
+        "isValidCode",
+        "findCodeByAlias",
+        "getTypeLabel",
+        "getFeaturesForType",
+        "getFeaturesForCode"
+      ],
+      "semantic_role": "Legacy provision-type, canonical-code, and feature-schema source.",
+      "exists": true,
+      "references": [
+        {
+          "file": ".github/phase-allowlists/phase-0-A.json",
+          "line": 34,
+          "kind": "path-reference",
+          "excerpt": "\"lib/rubric.js\","
+        },
+        {
+          "file": ".github/phase-allowlists/phase-0-B.json",
+          "line": 65,
+          "kind": "path-reference",
+          "excerpt": "\"lib/rubric.js\","
+        },
+        {
+          "file": ".github/phase-allowlists/phase-0-C.json",
+          "line": 65,
+          "kind": "path-reference",
+          "excerpt": "\"lib/rubric.js\","
+        },
+        {
+          "file": ".github/phase-allowlists/phase-0-D.json",
+          "line": 59,
+          "kind": "path-reference",
+          "excerpt": "\"lib/rubric.js\","
+        },
+        {
+          "file": ".github/phase-allowlists/wp-m1-01-review-queue-backend.json",
+          "line": 21,
+          "kind": "path-reference",
+          "excerpt": "\"lib/rubric.js\","
+        },
+        {
+          "file": ".github/phase-allowlists/wp-m1-02-review-queue-page.json",
+          "line": 23,
+          "kind": "path-reference",
+          "excerpt": "\"lib/rubric.js\","
+        },
+        {
+          "file": ".github/phase-allowlists/wp-m1-03-codex-helpers.json",
+          "line": 19,
+          "kind": "path-reference",
+          "excerpt": "\"lib/rubric.js\","
+        },
+        {
+          "file": ".github/phase-allowlists/wp-m1-04-documentation.json",
+          "line": 20,
+          "kind": "path-reference",
+          "excerpt": "\"lib/rubric.js\","
+        },
+        {
+          "file": ".github/phase-allowlists/wp-m2-01-admin-reconciliation-surfaces.json",
+          "line": 27,
+          "kind": "path-reference",
+          "excerpt": "\"lib/rubric.js\","
+        },
+        {
+          "file": ".github/phase-allowlists/wp-m2-01-contract-queue-entry.json",
+          "line": 20,
+          "kind": "path-reference",
+          "excerpt": "\"lib/rubric.js\","
+        },
+        {
+          "file": ".github/phase-allowlists/wp-m2-01-reconcil-downstream.json",
+          "line": 24,
+          "kind": "path-reference",
+          "excerpt": "\"lib/rubric.js\","
+        },
+        {
+          "file": ".github/phase-allowlists/wp-m2-01-reconcile-api-bundle-queue.json",
+          "line": 19,
+          "kind": "path-reference",
+          "excerpt": "\"lib/rubric.js\","
+        },
+        {
+          "file": ".github/phase-allowlists/wp-schema-parity-audit.json",
+          "line": 24,
+          "kind": "path-reference",
+          "excerpt": "\"lib/rubric.js\","
+        },
+        {
+          "file": "CLAUDE.md",
+          "line": 100,
+          "kind": "path-reference",
+          "excerpt": "- Fable/Opus end to end: `lib/rubric.js` / `lib/taxonomy.js` semantics,"
+        },
+        {
+          "file": "components/review/EditPanel.js",
+          "line": 11,
+          "kind": "import",
+          "excerpt": "import { getFeaturesForType } from '../../lib/rubric';"
+        },
+        {
+          "file": "components/review/EmployeeBenefitsTable.js",
+          "line": 33,
+          "kind": "path-reference",
+          "excerpt": "* (lib/rubric.js) via lib/employee-benefits.js (pure, unit-tested). */"
+        },
+        {
+          "file": "components/review/NosolFourTables.js",
+          "line": 317,
+          "kind": "path-reference",
+          "excerpt": "// are, by the extraction schema itself (lib/rubric.js — \"Go-shop"
+        },
+        {
+          "file": "docs/schema-migration/phase-1-log.md",
+          "line": 7,
+          "kind": "path-reference",
+          "excerpt": "- Required `lib/rubric.js`, `lib/taxonomy.js`, `lib/expected-sets.js`, and `lib/feature-validation.js`."
+        },
+        {
+          "file": "HANDOFF.md",
+          "line": 177,
+          "kind": "path-reference",
+          "excerpt": "`lib/rubric.js` is the **single source of truth** for what's a valid provision."
+        },
+        {
+          "file": "HANDOFF.md",
+          "line": 550,
+          "kind": "path-reference",
+          "excerpt": "3. Skim `lib/rubric.js`, `lib/taxonomy.js`, `lib/parser-v2/extract.js`,"
+        },
+        {
+          "file": "HANDOFF.md",
+          "line": 629,
+          "kind": "path-reference",
+          "excerpt": "2026-07-08: WP-M2-04 legacy vocab deletion audit: generated the legacy-vocab reference manifest and deletion manifest. All 7 targets still have live references, so no destructive deletion PR was opened. Follow-up: migrat"
+        },
+        {
+          "file": "lib/abry.js",
+          "line": 22,
+          "kind": "path-reference",
+          "excerpt": "// fraudCarveout — see lib/rubric.js) can land on a titled section"
+        },
+        {
+          "file": "lib/canonical-conditions.js",
+          "line": 117,
+          "kind": "path-reference",
+          "excerpt": "// populated true/false on current-schema provisions per lib/rubric.js) wins"
+        },
+        {
+          "file": "lib/edit-schema.js",
+          "line": 28,
+          "kind": "relative-module-reference",
+          "excerpt": "const { getFeaturesForType } = require('./rubric');"
+        },
+        {
+          "file": "lib/employee-benefits.js",
+          "line": 13,
+          "kind": "path-reference",
+          "excerpt": "// SOURCE: COV-EMPLOYEE provisions (lib/rubric.js). The DB `type` column is"
+        },
+        {
+          "file": "lib/expected-sets.js",
+          "line": 31,
+          "kind": "relative-module-reference",
+          "excerpt": "const { PROVISION_TYPES, CODES, getCodesForType } = require('./rubric');"
+        },
+        {
+          "file": "lib/feature-compare.js",
+          "line": 12,
+          "kind": "path-reference",
+          "excerpt": "1. GENERAL — DRIVEN OFF the declared `type` of each feature in lib/rubric.js"
+        },
+        {
+          "file": "lib/feature-compare.js",
+          "line": 41,
+          "kind": "relative-module-reference",
+          "excerpt": "const { FEATURES } = require('./rubric');"
+        },
+        {
+          "file": "lib/instrument-negation.js",
+          "line": 33,
+          "kind": "path-reference",
+          "excerpt": "lib/rubric.js)."
+        },
+        {
+          "file": "lib/parser-v2/classify.js",
+          "line": 14,
+          "kind": "relative-module-reference",
+          "excerpt": "const { PROVISION_TYPES, CODES } = require('../rubric');"
+        },
+        {
+          "file": "lib/parser-v2/extract.js",
+          "line": 26,
+          "kind": "relative-module-reference",
+          "excerpt": "} = require('../rubric');"
+        },
+        {
+          "file": "lib/parser-v2/run-extract.js",
+          "line": 33,
+          "kind": "relative-module-reference",
+          "excerpt": "const { isValidCode } = require('../rubric');"
+        },
+        {
+          "file": "lib/parser-v2/validate.js",
+          "line": 21,
+          "kind": "relative-module-reference",
+          "excerpt": "} = require('../rubric');"
+        },
+        {
+          "file": "lib/query/types.js",
+          "line": 1,
+          "kind": "relative-module-reference",
+          "excerpt": "const { FEATURES } = require('../rubric');"
+        },
+        {
+          "file": "lib/verification.js",
+          "line": 26,
+          "kind": "path-reference",
+          "excerpt": "CommonJS on purpose (same pattern as lib/search.js / lib/rubric.js) so both"
+        },
+        {
+          "file": "pages/admin/registry.js",
+          "line": 246,
+          "kind": "require",
+          "excerpt": "const { PROVISION_TYPES } = require('../../lib/rubric');"
+        },
+        {
+          "file": "pages/review/[id].js",
+          "line": 54,
+          "kind": "import",
+          "excerpt": "import { getFeaturesForType, PROVISION_TYPES } from '../../lib/rubric';"
+        },
+        {
+          "file": "pages/review/[id].js",
+          "line": 5937,
+          "kind": "path-reference",
+          "excerpt": "// (outsideDateMonthsPostSigning / extensionMonths — lib/rubric.js"
+        },
+        {
+          "file": "pages/review/[id].js",
+          "line": 8851,
+          "kind": "path-reference",
+          "excerpt": "// provisions (the 100%-coverage catch-all — see lib/rubric.js) — every"
+        },
+        {
+          "file": "PARSER_HIERARCHY_HANDOFF.md",
+          "line": 77,
+          "kind": "path-reference",
+          "excerpt": "- `lib/rubric.js`"
+        },
+        {
+          "file": "PLAN-M2-schema-deploy.md",
+          "line": 12,
+          "kind": "path-reference",
+          "excerpt": "- `lib/rubric.js`, `lib/vocab/*-aliases.js` legacy exports deleted (only their canonical replacements remain)."
+        },
+        {
+          "file": "pm-master-straitjacket.codex.md",
+          "line": 209,
+          "kind": "path-reference",
+          "excerpt": "1. Read `lib/schema/features.js`, `lib/rubric.js`, and `lib/vocab/ioc-categories.js` in full. Do not skim."
+        },
+        {
+          "file": "pm-master-straitjacket.codex.md",
+          "line": 270,
+          "kind": "path-reference",
+          "excerpt": "- **Layout:** left sidebar = 20 provision-type tabs sourced from `PROVISION_TYPES` in `lib/rubric.js` (verify the exact export name in the file before wiring), plus a top tab `FLAGGED (≈50)` that surfaces the `REQUIRES_R"
+        },
+        {
+          "file": "pm-master-straitjacket.codex.md",
+          "line": 302,
+          "kind": "path-reference",
+          "excerpt": "**Forbidden in Phase 0-A:** anything under `lib/parser-v2/` (that's Phase 0 steps 6–13, gated behind this phase's freeze); anything under `pages/review/` (Phase 0 steps 10–13); `docs/market-registry/FROZEN-v1.json` (this"
+        },
+        {
+          "file": "pm-master-straitjacket.codex.md",
+          "line": 830,
+          "kind": "path-reference",
+          "excerpt": "**GENERATED REMAINDER.** The ~215 fields not inlined above are Codex's Phase 0 responsibility, not the reviewer's. Codex reads `lib/schema/features.js`, `lib/rubric.js`, and `lib/vocab/ioc-categories.js` in full and prod"
+        },
+        {
+          "file": "pm-master-straitjacket.codex.md",
+          "line": 1251,
+          "kind": "path-reference",
+          "excerpt": "\"lib/rubric.js\","
+        },
+        {
+          "file": "pm-schema-first-migration.codex.md",
+          "line": 20,
+          "kind": "path-reference",
+          "excerpt": "- `lib/rubric.js` — 4,904 lines, 465 distinct `key:` entries"
+        },
+        {
+          "file": "pm-schema-first-migration.codex.md",
+          "line": 115,
+          "kind": "path-reference",
+          "excerpt": "- Loads `lib/rubric.js` and enumerates:"
+        },
+        {
+          "file": "pm-schema-first-migration.codex.md",
+          "line": 889,
+          "kind": "path-reference",
+          "excerpt": "P6), and collapse `lib/rubric.js` into just PROVISION_TYPES + CODES"
+        },
+        {
+          "file": "pm-schema-first-migration.codex.md",
+          "line": 913,
+          "kind": "path-reference",
+          "excerpt": "2. Move the parts of `lib/rubric.js` that ARE NOT features"
+        },
+        {
+          "file": "scripts/registry/orphan-detector.js",
+          "line": 9,
+          "kind": "path-reference",
+          "excerpt": "'lib/rubric.js',"
+        },
+        {
+          "file": "scripts/reprocess.js",
+          "line": 42,
+          "kind": "require",
+          "excerpt": "const { PROVISION_TYPES } = require('../lib/rubric');"
+        },
+        {
+          "file": "scripts/schema-inventory.js",
+          "line": 18,
+          "kind": "path-reference",
+          "excerpt": "rubric: path.join(ROOT, 'lib/rubric.js'),"
+        },
+        {
+          "file": "scripts/schema-inventory.js",
+          "line": 635,
+          "kind": "path-reference",
+          "excerpt": "lines.push('No type mismatches found. This can be legitimate because only `lib/rubric.js` currently declares feature value types.');"
+        },
+        {
+          "file": "scripts/schema-inventory.js",
+          "line": 737,
+          "kind": "path-reference",
+          "excerpt": "lines.push('- Required `lib/rubric.js`, `lib/taxonomy.js`, `lib/expected-sets.js`, and `lib/feature-validation.js`.');"
+        },
+        {
+          "file": "tests/abry.test.js",
+          "line": 2,
+          "kind": "path-reference",
+          "excerpt": "and the extraction-side plumbing that feeds it (lib/rubric.js FEATURES.MISC,"
+        },
+        {
+          "file": "tests/abry.test.js",
+          "line": 205,
+          "kind": "path-reference",
+          "excerpt": "// fixtures above (lib/rubric.js FEATURES.MISC + the MISC prompt rule in"
+        },
+        {
+          "file": "tests/abry.test.js",
+          "line": 209,
+          "kind": "require",
+          "excerpt": "const { FEATURES, getFeaturesForType } = require('../lib/rubric');"
+        },
+        {
+          "file": "tests/anti-regulatory-efforts.test.js",
+          "line": 17,
+          "kind": "require",
+          "excerpt": "const { getFeaturesForType, getFeaturesForCode } = require('../lib/rubric');"
+        },
+        {
+          "file": "tests/cond-enrichment.test.js",
+          "line": 19,
+          "kind": "require",
+          "excerpt": "const { getFeaturesForType } = require('../lib/rubric');"
+        },
+        {
+          "file": "tests/ioc-restriction-components.test.js",
+          "line": 14,
+          "kind": "require",
+          "excerpt": "const { FEATURES, getFeaturesForType } = require('../lib/rubric');"
+        },
+        {
+          "file": "tests/knowledge-scope-type.test.js",
+          "line": 19,
+          "kind": "require",
+          "excerpt": "const { getFeaturesForType } = require('../lib/rubric');"
+        },
+        {
+          "file": "tests/materiality-scope.test.js",
+          "line": 14,
+          "kind": "require",
+          "excerpt": "const { getFeaturesForType } = require('../lib/rubric');"
+        },
+        {
+          "file": "tests/metsfb2-extraction-batch2.test.js",
+          "line": 23,
+          "kind": "require",
+          "excerpt": "const { getFeaturesForType, FEATURES } = require('../lib/rubric');"
+        },
+        {
+          "file": "tests/misc-willful-breach-forum.test.js",
+          "line": 17,
+          "kind": "require",
+          "excerpt": "const { getFeaturesForType } = require('../lib/rubric');"
+        },
+        {
+          "file": "tests/mrcooper-stock-batch.test.js",
+          "line": 6,
+          "kind": "require",
+          "excerpt": "const { getFeaturesForType } = require('../lib/rubric');"
+        },
+        {
+          "file": "tests/schema/prompt.test.js",
+          "line": 10,
+          "kind": "require",
+          "excerpt": "const { getFeaturesForType } = require('../../lib/rubric');"
+        },
+        {
+          "file": "tests/schema/registry-shape.test.js",
+          "line": 4,
+          "kind": "require",
+          "excerpt": "const rubric = require('../../lib/rubric');"
+        },
+        {
+          "file": "tests/sec-meeting.test.js",
+          "line": 7,
+          "kind": "require",
+          "excerpt": "const { FEATURES, getFeaturesForType } = require('../lib/rubric');"
+        },
+        {
+          "file": "tests/taxonomy-preambles.test.js",
+          "line": 4,
+          "kind": "require",
+          "excerpt": "const { CODES } = require('../lib/rubric');"
+        },
+        {
+          "file": "tests/tender-offer-mechanics.test.js",
+          "line": 6,
+          "kind": "require",
+          "excerpt": "const { CODES, getFeaturesForType } = require('../lib/rubric');"
+        },
+        {
+          "file": "tests/termr-outside-date-months.test.js",
+          "line": 14,
+          "kind": "require",
+          "excerpt": "const { getFeaturesForType } = require('../lib/rubric');"
+        },
+        {
+          "file": "WORKLOG-P0-A.md",
+          "line": 45,
+          "kind": "path-reference",
+          "excerpt": "- `lib/rubric.js` exports 17 top-level `PROVISION_TYPES`, not 20-plus. The UI renders all 17, plus `FLAGGED`, `ALL`, and `VOCAB`."
+        },
+        {
+          "file": "WORKLOG-WP-M2-04-LEGACY-VOCAB-DELETION.md",
+          "line": 23,
+          "kind": "path-reference",
+          "excerpt": "- `lib/rubric.js`: 91 references."
+        }
+      ],
+      "reference_count": 74,
+      "codex_verdict": "unsafe-live-references"
+    },
+    {
+      "target_path": "lib/vocab/party-role-aliases.js",
+      "target_exports": [
+        "PARTY_ROLE_ALIASES"
+      ],
+      "semantic_role": "Legacy alias map for frozen party-role vocabulary normalisation.",
+      "exists": true,
+      "references": [
+        {
+          "file": ".github/phase-allowlists/phase-0-B.json",
+          "line": 17,
+          "kind": "path-reference",
+          "excerpt": "\"lib/vocab/party-role-aliases.js\","
+        },
+        {
+          "file": ".github/phase-allowlists/phase-0-C.json",
+          "line": 26,
+          "kind": "path-reference",
+          "excerpt": "\"lib/vocab/party-role-aliases.js\","
+        },
+        {
+          "file": "lib/schema-shape/normalize-value.js",
+          "line": 3,
+          "kind": "relative-module-reference",
+          "excerpt": "const { PARTY_ROLE_ALIASES } = require('../vocab/party-role-aliases');"
+        },
+        {
+          "file": "WORKLOG-WP-M2-04-LEGACY-VOCAB-DELETION.md",
+          "line": 24,
+          "kind": "path-reference",
+          "excerpt": "- `lib/vocab/party-role-aliases.js`: 3 references."
+        }
+      ],
+      "reference_count": 4,
+      "codex_verdict": "unsafe-live-references"
+    },
+    {
+      "target_path": "lib/vocab/trigger-code-aliases.js",
+      "target_exports": [
+        "TRIGGER_CODE_ALIASES"
+      ],
+      "semantic_role": "Legacy alias map for frozen trigger-code vocabulary normalisation.",
+      "exists": true,
+      "references": [
+        {
+          "file": ".github/phase-allowlists/phase-0-B.json",
+          "line": 19,
+          "kind": "path-reference",
+          "excerpt": "\"lib/vocab/trigger-code-aliases.js\","
+        },
+        {
+          "file": ".github/phase-allowlists/phase-0-C.json",
+          "line": 27,
+          "kind": "path-reference",
+          "excerpt": "\"lib/vocab/trigger-code-aliases.js\","
+        },
+        {
+          "file": "lib/schema-shape/normalize-value.js",
+          "line": 4,
+          "kind": "relative-module-reference",
+          "excerpt": "const { TRIGGER_CODE_ALIASES } = require('../vocab/trigger-code-aliases');"
+        },
+        {
+          "file": "WORKLOG-WP-M2-04-LEGACY-VOCAB-DELETION.md",
+          "line": 25,
+          "kind": "path-reference",
+          "excerpt": "- `lib/vocab/trigger-code-aliases.js`: 3 references."
+        }
+      ],
+      "reference_count": 4,
+      "codex_verdict": "unsafe-live-references"
+    }
+  ]
+}
