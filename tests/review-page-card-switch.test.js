@@ -13,6 +13,17 @@ test('review page imports the provision card table', () => {
   assert.match(reviewPageSource, /import ProvisionCardTable from '..\/..\/components\/review\/ProvisionCardTable';/);
 });
 
+test('review page mounts the first schema structured table config before cards', () => {
+  assert.match(reviewPageSource, /import ProvisionTable from '..\/..\/components\/review\/ProvisionTable';/);
+  assert.match(reviewPageSource, /import \{ conditionsMConfig \} from '..\/..\/components\/review\/table-configs\/conditions-m\.config';/);
+  assert.match(reviewPageSource, /<ProvisionTable config=\{conditionsMConfig\} reviewDeal=\{schemaReviewDeal/);
+  assert.ok(
+    reviewPageSource.indexOf('<ProvisionTable config={conditionsMConfig}') <
+      reviewPageSource.indexOf('<ProvisionCardTable reviewDeal={schemaReviewDeal'),
+    'structured schema table should render before the raw card list',
+  );
+});
+
 test('review page renders the schema card table without a legacy fallback threshold', () => {
   assert.doesNotMatch(reviewPageSource, /SCHEMA_RENDER_MIN_CARDS/);
   assert.doesNotMatch(reviewPageSource, /schemaCardCount >=/);
