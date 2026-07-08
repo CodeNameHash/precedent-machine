@@ -1,0 +1,26 @@
+{
+  "phase": "WP-M2-02-EXTRACTOR-COVERAGE",
+  "name": "m2-02-extractor-coverage",
+  "allowed": [
+    ".github/phase-allowlists/wp-m2-02-extractor-coverage.json",
+    "scripts/audit/schema-parity.js",
+    "tests/schema-parity-audit.test.js",
+    "docs/audit/parity-suppressed-unlocated-legacy.md",
+    "docs/reprocess/round-m2-02-extractor-coverage.md"
+  ],
+  "denied": [
+    "docs/vocab/FROZEN-*.json",
+    "docs/market-registry/FROZEN-*.json",
+    "docs/schema-shape/*.frozen",
+    "docs/schema-shape/canonical-registry-v1.md",
+    "docs/schema-shape/canonical-definitions.md",
+    "docs/schema-shape/normalized-v1.json",
+    "lib/parser-v2/**",
+    "lib/schema/**",
+    "pages/**",
+    "components/**",
+    "supabase/migrations/**",
+    "db/migrations/**"
+  ],
+  "note": "WP-M2-02 Step 7 records source-unlocated legacy suppression and reprocesses genuine source-located coverage residuals."
+}
