@@ -340,6 +340,40 @@ test('antitrust-regulatory config exposes regulatory signals and hover details',
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(burdenCap, { primitives }))), /data-evidence="Parent shall use reasonable best efforts/);
 });
 
+test('structure-mechanics config exposes transaction-form signals and hover details', () => {
+  const rows = structureMechanicsMod.structureMechanicsConfig.selectRows({
+    cards: [{
+      id: 'struct',
+      provision_type: 'STRUCTURE_MECHANICS',
+      provision_subtype: 'STRUCT-MERGER',
+      short_title: 'Merger',
+      primary_quote: 'The merger shall be a reverse triangular merger under Section 251(h), with appraisal rights available.',
+      features: {
+        dealStructure: 'TWO_STEP_TENDER_OFFER',
+        mergerForm: 'REVERSE_TRIANGULAR_MERGER',
+        section251h: true,
+        appraisalRightsAvailable: true,
+      },
+    }],
+  });
+  const dealStructure = rows.find((row) => row.id === 'structure-mechanics-deal-structure');
+  const mergerForm = rows.find((row) => row.id === 'structure-mechanics-merger-form');
+  const section251h = rows.find((row) => row.id === 'structure-mechanics-section-251h');
+  const paymentAgent = rows.find((row) => row.id === 'structure-mechanics-payment-agent');
+  assert.deepEqual(dealStructure.signals.map((item) => item.label), ['Form: TWO_STEP_TENDER_OFFER']);
+  assert.match(mergerForm.signals[0].label, /Reverse triangular/);
+  assert.deepEqual(section251h.signals.map((item) => item.label), ['Tender offer: Yes']);
+  assert.deepEqual(paymentAgent.signals.map((item) => item.label), ['Consideration: Yes']);
+  const primitives = {
+    PillCell: ({ label }) => React.createElement('span', { className: 'pill' }, label),
+    EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
+  };
+  const signalColumn = structureMechanicsMod.structureMechanicsConfig.columns.find((column) => column.id === 'signals');
+  const detailColumn = structureMechanicsMod.structureMechanicsConfig.columns.find((column) => column.id === 'detail');
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, signalColumn.renderCell(mergerForm, { primitives }))), /Reverse triangular/);
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(section251h, { primitives }))), /data-evidence="The merger shall be a reverse triangular merger/);
+});
+
 test('general-covenants config exposes efforts, consent, knowledge, and deadline signals', () => {
   const rows = generalCovenantsMod.generalCovenantsConfig.selectRows({
     cards: [{
