@@ -72,3 +72,37 @@ test('conditions-b config maps schema cards to buyer-side canonical present rows
   ]);
   assert.match(rows.find((row) => row.label === 'Covenant Performance').detail, /all material respects/);
 });
+
+test('conditions-s config maps schema cards to seller-side canonical present rows', () => {
+  const rows = mod.conditionsSConfig.selectRows({
+    cards: [
+      card({
+        id: 'parent-rep',
+        provision_subtype: 'COND-S-REP',
+        short_title: 'Accuracy of Parent Reps',
+        primary_quote: 'The representations and warranties of Parent shall be true and correct.',
+      }),
+      card({
+        id: 'parent-cov',
+        provision_subtype: 'COND-S-COV',
+        short_title: 'Parent Covenant Compliance',
+        primary_quote: 'Parent shall have complied with its covenants in all material respects.',
+      }),
+      card({
+        id: 'funds',
+        provision_subtype: 'COND-S-FUNDS',
+        short_title: 'Sufficient Funds',
+        primary_quote: 'Parent shall have sufficient funds to consummate the Merger.',
+      }),
+    ],
+  });
+  const present = rows.filter((row) => row.present).map((row) => row.label);
+  assert.deepEqual(present, [
+    'Reps Bring-Down (Parent)',
+    'Covenant Performance (Parent)',
+    'No Material Adverse Effect (Parent)',
+    'Financing / Sufficient Funds',
+  ]);
+  assert.match(rows.find((row) => row.label === 'No Material Adverse Effect (Parent)').detail, /Not found/);
+  assert.match(rows.find((row) => row.label === 'Financing / Sufficient Funds').detail, /sufficient funds/);
+});

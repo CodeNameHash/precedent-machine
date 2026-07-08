@@ -1,6 +1,7 @@
 import {
   CANONICAL_CONDITIONS_B,
   CANONICAL_CONDITIONS_M,
+  CANONICAL_CONDITIONS_S,
   CONDITION_ABSENT_COPY,
   conditionDetailLines,
   conditionRowMatches,
@@ -98,4 +99,11 @@ const conditionsBConfig = createConditionsConfig({
   empty: 'No buyer closing-condition cards found.',
 });
 
-export { cardToProvision, conditionsBConfig, conditionsMConfig, createConditionsConfig };
+const conditionsSConfig = createConditionsConfig({
+  id: 'conditions-s',
+  title: 'Closing Conditions — Seller',
+  rows: CANONICAL_CONDITIONS_S,
+  empty: 'No seller closing-condition cards found.',
+});
+
+export { cardToProvision, conditionsBConfig, conditionsMConfig, conditionsSConfig, createConditionsConfig };
