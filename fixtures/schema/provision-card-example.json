@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "description": "WP-M2-00 canonical provision-card shape examples.",
+  "cards": [
+    {
+      "provision_instance_id": "885edae5-49e8-464a-9f33-edd229119d7c:Section 8.03:216fb96085fe",
+      "excerpt_id": "885edae5-49e8-464a-9f33-edd229119d7c:Section 8.03:216fb96085fe:0",
+      "deal_id": "885edae5-49e8-464a-9f33-edd229119d7c",
+      "section_path": "Section 8.03",
+      "kind": "standard",
+      "text": "The Company shall use reasonable best efforts to consummate the Merger.",
+      "defined_term": null,
+      "defined_value": null,
+      "references": [],
+      "provenance": {
+        "source_doc_id": "doc-metsera-merger-agreement",
+        "source_doc_page": 42,
+        "source_doc_offset_start": 1200,
+        "source_doc_offset_end": 1266,
+        "extractor_name": "parser-v2",
+        "extractor_version": "m2-00-card-schema-v1",
+        "model": "claude-sonnet-4",
+        "prompt_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "run_id": "run-m2-00-example",
+        "extracted_at": "2026-07-08T00:00:00.000Z"
+      }
+    },
+    {
+      "provision_instance_id": "885edae5-49e8-464a-9f33-edd229119d7c:Article I:fccaf4954e6a",
+      "excerpt_id": "885edae5-49e8-464a-9f33-edd229119d7c:Article I:fccaf4954e6a:0",
+      "deal_id": "885edae5-49e8-464a-9f33-edd229119d7c",
+      "section_path": "Article I",
+      "kind": "definition",
+      "text": "Company Material Adverse Effect means any effect that is materially adverse to the business of the Company.",
+      "defined_term": "Company Material Adverse Effect",
+      "defined_value": "any effect that is materially adverse to the business of the Company",
+      "references": [],
+      "provenance": {
+        "source_doc_id": "doc-metsera-merger-agreement",
+        "source_doc_page": 8,
+        "source_doc_offset_start": 300,
+        "source_doc_offset_end": 398,
+        "extractor_name": "parser-v2",
+        "extractor_version": "m2-00-card-schema-v1",
+        "model": "claude-sonnet-4",
+        "prompt_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "run_id": "run-m2-00-example",
+        "extracted_at": "2026-07-08T00:00:00.000Z"
+      }
+    },
+    {
+      "provision_instance_id": "885edae5-49e8-464a-9f33-edd229119d7c:Section 6.01:19b6a370c49c",
+      "excerpt_id": "885edae5-49e8-464a-9f33-edd229119d7c:Section 6.01:19b6a370c49c:0",
+      "deal_id": "885edae5-49e8-464a-9f33-edd229119d7c",
+      "section_path": "Section 6.01",
+      "kind": "cross-reference",
+      "text": "The Company shall not take any action that would reasonably be expected to have a Company Material Adverse Effect.",
+      "defined_term": null,
+      "defined_value": null,
+      "references": [
+        "885edae5-49e8-464a-9f33-edd229119d7c:Article I:fccaf4954e6a"
+      ],
+      "provenance": {
+        "source_doc_id": "doc-metsera-merger-agreement",
+        "source_doc_page": 28,
+        "source_doc_offset_start": 900,
+        "source_doc_offset_end": 1007,
+        "extractor_name": "parser-v2",
+        "extractor_version": "m2-00-card-schema-v1",
+        "model": "claude-sonnet-4",
+        "prompt_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "run_id": "run-m2-00-example",
+        "extracted_at": "2026-07-08T00:00:00.000Z"
+      }
+    }
+  ]
+}
