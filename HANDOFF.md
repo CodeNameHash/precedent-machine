@@ -623,3 +623,5 @@ REVIEW_QUEUE_RESOLUTION {"id":"authorize-legacy-vocab-deletion","kind":"destruct
 REVIEW_QUEUE_RESOLUTION {"id":"m2-02-schema-parity-diffs","kind":"clarify","title":"WP-M2-02 schema parity audit found 972 diffs — remediation plan","choice_key":"approve-plan","codex_action":"proceed with Steps 3-8","resolved_at":"2026-07-08T13:53:42.890Z","resolved_by":"ben"}
 
 REVIEW_QUEUE_RESOLUTION {"id":"m2-02-recital-suppression","kind":"canonical","title":"Are WHEREAS/preamble/recital paragraphs 'provisions' for parity purposes?","choice_key":"modify","codex_action":"await Ben diff","resolved_at":"2026-07-08T13:55:00.000Z","resolved_by":"ben"}
+
+2026-07-08: WP-M2-03 all-deals card-backed audit: added the audit harness and status report. Live audit passed for 40 / 40 deals, zero default legacy fallback, minimum `provision_cards` count 237 against the >=40 threshold.
