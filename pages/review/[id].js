@@ -134,6 +134,8 @@ import { Sidebar } from '../../components/review/Sidebar';
 import { FullDocumentView } from '../../components/review/FullDocumentView';
 import { EditPanel } from '../../components/review/EditPanel';
 import ProvisionCardTable from '../../components/review/ProvisionCardTable';
+import ProvisionTable from '../../components/review/ProvisionTable';
+import { conditionsMConfig } from '../../components/review/table-configs/conditions-m.config';
 import { BoundaryAuditPanel } from '../../components/review/BoundaryAuditPanel';
 import { parseReviewRouteQuery, serializeReviewRouteQuery } from '../../lib/review-route';
 
@@ -11526,7 +11528,10 @@ export default function ReviewPage() {
                     </div>
                   ) : null}
                   {!schemaCardsLoading ? (
-                    <ProvisionCardTable reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0 }} />
+                    <>
+                      <ProvisionTable config={conditionsMConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
+                      <ProvisionCardTable reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
+                    </>
                   ) : null}
                   </div>
               </>

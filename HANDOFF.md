@@ -633,3 +633,7 @@ REVIEW_QUEUE_RESOLUTION {"id":"m2-02-recital-suppression","kind":"canonical","ti
 REVIEW_QUEUE_RESOLUTION {"id":"authorize-legacy-renderer-deletion","kind":"destructive","title":"Authorize legacy renderer deletion","choice_key":"approve","codex_action":"proceed with WP-M2-05 deletion PR limited to pages/review/[id].js and the listed legacy review table components","resolved_at":"2026-07-08T14:59:07.849Z","resolved_by":"ben"}
 
 2026-07-08: WP-M2-05 legacy renderer deletion: deleted the review-page legacy fallback branch and bespoke legacy table components after Ben approved Review Queue entry `authorize-legacy-renderer-deletion`. Schema-first review cards are now the only user render path; all-deals card-backed audit still passes for 40 / 40 deals with zero legacy fallback.
+
+REVIEW_QUEUE_RESOLUTION {"id":"m2-06-template-table-architecture","kind":"canonical","title":"Approve template-driven ProvisionTable architecture (WP-M2-06)","choice_key":"approve","codex_action":"proceed with WP-M2-06 table template and config PRs","resolved_at":"2026-07-08T15:16:53.526Z","resolved_by":"ben"}
+
+2026-07-08: WP-M2-06 Step 2: added the generic schema-first `ProvisionTable` template and the first config, `conditions-m`, for mutual closing conditions. The review page now renders the mutual conditions structured table above schema cards. Config length: 84 lines, under the 150-line guardrail.
