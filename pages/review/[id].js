@@ -138,8 +138,11 @@ import { ConsidTable, ConsiderationBadge } from '../../components/review/Conside
 import { Sidebar } from '../../components/review/Sidebar';
 import { FullDocumentView } from '../../components/review/FullDocumentView';
 import { EditPanel } from '../../components/review/EditPanel';
+import ProvisionCardTable from '../../components/review/ProvisionCardTable';
 import { BoundaryAuditPanel } from '../../components/review/BoundaryAuditPanel';
 import { parseReviewRouteQuery, serializeReviewRouteQuery } from '../../lib/review-route';
+
+const SCHEMA_RENDER_MIN_CARDS = 40;
 
 
 
@@ -10628,10 +10631,54 @@ export default function ReviewPage() {
   const [dealDataModalOpen, setDealDataModalOpen] = useState(false);
   const { provisions: rawProvisions, loading: provsLoading, refetch: refetchProvs } = useProvisions({ deal_id: dealId });
   const { addToast } = useToast();
+  const renderModeParam = Array.isArray(router.query.render) ? router.query.render[0] : router.query.render;
+  const forcedRenderMode = renderModeParam === 'schema' || renderModeParam === 'legacy' ? renderModeParam : null;
+
+  const [schemaReviewDeal, setSchemaReviewDeal] = useState(null);
+  const [schemaCardsLoading, setSchemaCardsLoading] = useState(false);
+  const [schemaCardsError, setSchemaCardsError] = useState(null);
 
   /* ── Agreement Source ── */
   const [agreementSource, setAgreementSource] = useState(null);
   const [sourceLoading, setSourceLoading] = useState(true);
+
+  useEffect(() => {
+    if (!router.isReady || !dealId || forcedRenderMode === 'legacy') {
+      setSchemaReviewDeal(null);
+      setSchemaCardsLoading(false);
+      setSchemaCardsError(null);
+      return;
+    }
+
+    let cancelled = false;
+    setSchemaCardsLoading(true);
+    setSchemaCardsError(null);
+
+    fetch(`/api/review/${encodeURIComponent(dealId)}/cards`)
+      .then(async (response) => {
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(payload.error || `HTTP ${response.status}`);
+        }
+        return payload.reviewDeal || null;
+      })
+      .then((nextReviewDeal) => {
+        if (!cancelled) setSchemaReviewDeal(nextReviewDeal);
+      })
+      .catch((error) => {
+        if (!cancelled) {
+          setSchemaReviewDeal(null);
+          setSchemaCardsError(error.message || String(error));
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setSchemaCardsLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [router.isReady, dealId, forcedRenderMode]);
 
   useEffect(() => {
     if (!dealId) return;
@@ -11646,6 +11693,13 @@ export default function ReviewPage() {
   const dealValueUsd = valueUsdFromDeal(deal);
   const dealValueLabel = formatDealValueCompact(dealValueUsd);
   const dealValueFact = deal?.metadata?.deal_facts?.value_usd || null;
+  const schemaCardCount = schemaReviewDeal?.cardCount || 0;
+  const useSchemaRender = forcedRenderMode === 'schema'
+    ? !schemaCardsLoading
+    : forcedRenderMode === 'legacy'
+      ? false
+      : schemaCardCount >= SCHEMA_RENDER_MIN_CARDS;
+  const hasReviewContent = provisions.length > 0 || useSchemaRender || schemaCardsLoading;
 
   return (
     <CustomTaxonomyContext.Provider value={customTaxonomyCtxValue}>
@@ -11935,7 +11989,7 @@ export default function ReviewPage() {
             </div>
 
             {/* Review toolbar */}
-            {provisions.length > 0 && (
+            {hasReviewContent && (
               <div
                 className="sticky top-0 z-20 mb-4 flex flex-wrap items-center justify-between gap-2 border-b border-line bg-bg/95 py-2 backdrop-blur"
               >
@@ -11981,11 +12035,26 @@ export default function ReviewPage() {
             )}
 
             {/* Tab Content */}
-            {provisions.length > 0 ? (
+            {hasReviewContent ? (
               <>
                 {/* Provisions Tab */}
                 <div className="space-y-4">
-
+                  {schemaCardsLoading && forcedRenderMode === 'schema' ? (
+                    <div className="rounded border border-border bg-white px-4 py-3 text-xs font-ui text-inkLight">
+                      Loading schema cards...
+                    </div>
+                  ) : null}
+                  {useSchemaRender ? (
+                    <>
+                      {schemaCardsError ? (
+                        <div className="rounded border border-red-200 bg-red-50 px-4 py-3 text-xs font-ui text-red-700">
+                          Schema cards failed to load: {schemaCardsError}
+                        </div>
+                      ) : null}
+                      <ProvisionCardTable reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0 }} />
+                    </>
+                  ) : (
+                    <>
                     {Object.entries(filteredProvsByType).map(([type, provsRaw]) => {
                       // Alphabetical sort for DEF so definitions read like a glossary.
                       const provs = type === 'DEF'
@@ -12279,6 +12348,8 @@ export default function ReviewPage() {
                         </button>
                       </div>
                     )}
+                    </>
+                  )}
                   </div>
               </>
             ) : (
