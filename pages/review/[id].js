@@ -140,6 +140,7 @@ import { conditionsMConfig } from '../../components/review/table-configs/conditi
 import { conditionsSConfig } from '../../components/review/table-configs/conditions-s.config';
 import { iocExceptionsConfig } from '../../components/review/table-configs/ioc-exceptions.config';
 import { materialContractsConfig } from '../../components/review/table-configs/material-contracts.config';
+import { nosolFiduciaryConfig } from '../../components/review/table-configs/nosol-fiduciary.config';
 import { nosolInterveningConfig } from '../../components/review/table-configs/nosol-intervening.config';
 import { nosolNoshopConfig } from '../../components/review/table-configs/nosol-noshop.config';
 import { nosolSuperiorConfig } from '../../components/review/table-configs/nosol-superior.config';
@@ -11546,6 +11547,7 @@ export default function ReviewPage() {
                       <ProvisionTable config={nosolNoshopConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                       <ProvisionTable config={nosolSuperiorConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                       <ProvisionTable config={nosolInterveningConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
+                      <ProvisionTable config={nosolFiduciaryConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                       <ProvisionCardTable reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                     </>
                   ) : null}
