@@ -51,6 +51,42 @@ jobs:
         run: node scripts/registry/coverage-detector.js
       - name: Invariant 11 — provenance-log
         run: node scripts/registry/provenance-log.js
+  schema-parity:
+    runs-on: ubuntu-latest
+    needs: test-and-build
+    if: github.event_name == 'pull_request'
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Detect schema parity touch
+        id: touch
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          FILES="$(git diff --name-only "${BASE_SHA}" "${HEAD_SHA}")"
+          if printf '%s\n' "${FILES}" | grep -Eq '^(lib/schema/|lib/rubric\.js|lib/vocab/|components/review/|pages/review/)'; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+            echo "Schema parity relevant files changed."
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "No schema parity relevant files changed; skipping audit."
+          fi
+      - name: Schema parity audit
+        if: steps.touch.outputs.run == 'true'
+        run: node scripts/audit/schema-parity.js
   phase-allowlist:
     runs-on: ubuntu-latest
     needs: test-and-build
