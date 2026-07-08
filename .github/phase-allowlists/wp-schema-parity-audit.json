@@ -1,0 +1,32 @@
+{
+  "phase": "WP-SCHEMA-PARITY-AUDIT",
+  "name": "schema-parity-audit",
+  "allowed": [
+    ".github/phase-allowlists/wp-schema-parity-audit.json",
+    ".github/workflows/ci.yml",
+    "scripts/audit/schema-parity.js",
+    "tests/audit/schema-parity.spec.js",
+    "docs/audit/parity-discovery.md",
+    "docs/schema-migration/phase-8-parity.md",
+    "docs/schema-migration/phase-8-parity-triage.md",
+    "docs/review-queue/*.json",
+    "WORKLOG-WP-SCHEMA-PARITY-AUDIT.md",
+    "HANDOFF.md"
+  ],
+  "denied": [
+    "docs/vocab/FROZEN-*.json",
+    "docs/market-registry/FROZEN-*.json",
+    "docs/schema-shape/*.frozen",
+    "docs/schema-shape/canonical-registry-v1.md",
+    "docs/schema-shape/canonical-definitions.md",
+    "docs/schema-shape/normalized-v1.json",
+    "lib/schema/**",
+    "lib/rubric.js",
+    "lib/vocab/**",
+    "components/review/**",
+    "pages/review/**",
+    "supabase/migrations/**",
+    "db/migrations/**"
+  ],
+  "note": "WP-SCHEMA-PARITY-AUDIT adds the audit harness, CI hook, and generated parity reports only. It must not change renderers, schema semantics, vocab sources, or deal data."
+}

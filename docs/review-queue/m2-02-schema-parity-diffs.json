@@ -1,0 +1,41 @@
+{
+  "id": "m2-02-schema-parity-diffs",
+  "created_at": "2026-07-08T03:20:00.000Z",
+  "kind": "clarify",
+  "title": "WP-M2-02 schema parity audit found 972 diffs",
+  "summary": "The first authoritative schema parity audit is not clean: 0/40 deals pass, with 972 total diffs. Main categories: 480 schema card short-title mismatches, mostly [PROPOSED] labels visible in schema cards while legacy user-mode strips them; 285 type mismatches, including STRUCT provisions mapped to MISC_BOILERPLATE by the card writer; 145 visible legacy provisions missing schema cards, usually M2-00 backfill coverage gaps; 62 schema-only cards, often uncovered-text coverage cards that legacy user-mode does not render. Do not delete the legacy renderer or vocab sources until these are remediated and the audit returns zero diffs.",
+  "evidence": [
+    {
+      "label": "Parity audit report",
+      "url": "docs/schema-migration/phase-8-parity.md"
+    },
+    {
+      "label": "Parity triage",
+      "url": "docs/schema-migration/phase-8-parity-triage.md"
+    },
+    {
+      "label": "Discovery counts",
+      "url": "docs/audit/parity-discovery.md"
+    }
+  ],
+  "choices": [
+    {
+      "key": "approve_remediation",
+      "label": "Approve remediation plan",
+      "codex_action": "open follow-up mechanical PRs to strip proposed labels from schema user-mode cards, fix STRUCT/OTHER card type mapping, exclude coverage-plumbing cards from user-mode schema render, repair missing-card backfill coverage, rerun the parity audit, and resume WP-M2-02 only once zero diffs are reached"
+    },
+    {
+      "key": "investigate_first",
+      "label": "Investigate before remediation",
+      "codex_action": "produce deeper per-category samples and proposed code changes before touching card writer or renderer logic"
+    },
+    {
+      "key": "defer",
+      "label": "Defer parity cleanup",
+      "codex_action": "leave WP-M2-02 gated and do not proceed to M2-04 or M2-05 destructive cleanup"
+    }
+  ],
+  "resolution": null,
+  "resolved_at": null,
+  "resolved_by": null
+}
