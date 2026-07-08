@@ -1,3 +1,5 @@
+import * as ProvisionTablePrimitives from './primitives/ProvisionTablePrimitives';
+
 /*
 Config shape:
 {
@@ -14,6 +16,7 @@ export default function ProvisionTable({ config, reviewDeal }) {
   const rows = config.selectRows(reviewDeal);
   if (!Array.isArray(rows) || rows.length === 0) return null;
   const columns = Array.isArray(config.columns) ? config.columns : [];
+  const ctx = { reviewDeal, config, primitives: ProvisionTablePrimitives };
 
   return (
     <section data-testid={`provision-table-${config.id}`} className="rounded border border-border bg-white shadow-sm">
@@ -42,7 +45,7 @@ export default function ProvisionTable({ config, reviewDeal }) {
               <tr key={row.id || row.label} className={row.present ? 'align-top hover:bg-bg/40' : 'align-top bg-bg/30 text-inkFaint'}>
                 {columns.map((column) => (
                   <td key={`${row.id || row.label}-${column.id}`} className="px-3 py-2 whitespace-pre-wrap break-words text-ink">
-                    {column.renderCell ? column.renderCell(row, { reviewDeal, config }) : null}
+                    {column.renderCell ? column.renderCell(row, ctx) : null}
                   </td>
                 ))}
               </tr>
