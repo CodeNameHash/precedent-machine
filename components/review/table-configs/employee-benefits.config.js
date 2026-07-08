@@ -1,3 +1,4 @@
+import React from 'react';
 import { comparisonGroupForStandardCode } from '../../../lib/employee-benefits.js';
 
 const FALLBACK_ITEMS = [
@@ -77,6 +78,15 @@ function detailBits(raw) {
   if (raw?.text) bits.push(String(raw.text));
   return bits.join('\n');
 }
+// A single compensationItems entry (`raw`) can address several canonical
+// benefit types at once (benefit_types.length > 1) or carry an explicit
+// `bundling` marker (aggregate/bundled test language). Either signal means
+// the standard/comparison/text on this row was NOT extracted per-element —
+// it was read off a clause that bundles several elements together. Each
+// element still gets its own row (comparability across deals requires
+// per-element tracking — see lib/employee-benefits.js header), but the row
+// carries `bundled`/`siblingElements` so the render layer can flag it and
+// cross-link the other elements sharing the same source clause.
 function rowsFromCompensationItems(cards) {
   const rows = [];
   for (const card of cards) {
@@ -86,14 +96,21 @@ function rowsFromCompensationItems(cards) {
       if (!raw || typeof raw !== 'object') continue;
       const stdCode = standardCode(raw);
       const stdLabel = standardLabel(raw, stdCode);
-      for (const type of benefitTypes(raw)) {
+      const types = benefitTypes(raw);
+      const bundled = !!raw.bundling || types.length > 1;
+      for (const type of types) {
         rows.push({
           id: `employee-benefits-${type.code || rows.length}`,
           benefit: type.label,
           comparison: raw.comparison_group || raw.comparisonGroup || comparisonGroupForStandardCode(stdCode) || 'Not specified',
           standard: stdLabel || 'Not specified',
+          standardCode: stdCode || null,
           detail: detailBits(raw) || 'Present, detail not extracted',
           evidence: raw.text || textOf(card),
+          source: card,
+          bundled,
+          bundlingNote: raw.bundling ? valueText(raw.bundling) : null,
+          siblingElements: types.filter((t) => t.code !== type.code).map((t) => ({ code: t.code, label: t.label })),
           present: true,
         });
       }
@@ -113,12 +130,85 @@ function fallbackRows(cards) {
       standard: hit.text,
       detail: textOf(hit.card),
       evidence: textOf(hit.card),
+      source: hit.card,
+      bundled: false,
+      bundlingNote: null,
+      siblingElements: [],
       present: true,
     });
   }
   const period = firstFeature(cards, ['employeeBenefitPeriod', 'protectionPeriod', 'protectionPeriodMonths']);
-  if (period) rows.unshift({ id: 'employee-benefits-period', benefit: 'Continuation period', comparison: 'All covered employees', standard: period.text, detail: textOf(period.card), evidence: textOf(period.card), present: true });
+  if (period) {
+    rows.unshift({
+      id: 'employee-benefits-period',
+      benefit: 'Continuation period',
+      comparison: 'All covered employees',
+      standard: period.text,
+      detail: textOf(period.card),
+      evidence: textOf(period.card),
+      source: period.card,
+      bundled: false,
+      bundlingNote: null,
+      siblingElements: [],
+      present: true,
+    });
+  }
   return rows;
+}
+
+function renderComparison(row, ctx) {
+  const PillCell = ctx?.primitives?.PillCell;
+  if (!PillCell || !row.comparison) return row.comparison;
+  return React.createElement(PillCell, {
+    label: row.comparison,
+    tone: row.comparison === 'Not specified' ? 'missing' : 'neutral',
+    evidence: row.evidence,
+    source: row.source,
+  });
+}
+
+function renderStandard(row, ctx) {
+  const PillCell = ctx?.primitives?.PillCell;
+  if (!PillCell || !row.standard) return row.standard;
+  return React.createElement(PillCell, {
+    label: row.standard,
+    tone: row.standard === 'Not specified' ? 'missing' : 'info',
+    evidence: row.evidence,
+    source: row.source,
+  });
+}
+
+function renderDetail(row, ctx) {
+  const { PillCell, GroupedSubRows, EvidenceHoverSource } = ctx?.primitives || {};
+  const bundledBadge = row.bundled && PillCell
+    ? React.createElement(PillCell, {
+        key: 'bundled',
+        label: row.bundlingNote ? `Bundled: ${row.bundlingNote}` : 'Bundled / aggregate test',
+        tone: 'warning',
+        evidence: row.evidence,
+        source: row.source,
+      })
+    : null;
+  const siblingGroup = row.siblingElements?.length && GroupedSubRows
+    ? React.createElement(GroupedSubRows, {
+        groups: [{
+          id: `${row.id}-siblings`,
+          label: 'Bundled with (same clause / standard)',
+          rows: row.siblingElements.map((sibling) => ({
+            id: sibling.code || sibling.label,
+            label: sibling.label,
+            value: row.standard,
+            evidence: row.evidence,
+            source: row.source,
+          })),
+        }],
+      })
+    : null;
+  const text = EvidenceHoverSource && row.evidence
+    ? React.createElement(EvidenceHoverSource, { value: row.detail, evidence: row.evidence, source: row.source, as: 'span' }, row.detail)
+    : row.detail;
+  if (!bundledBadge && !siblingGroup) return text;
+  return React.createElement('div', { className: 'space-y-1' }, bundledBadge, siblingGroup, text);
 }
 
 const employeeBenefitsConfig = {
@@ -133,10 +223,10 @@ const employeeBenefitsConfig = {
   },
   columns: [
     { id: 'benefit', header: 'Benefit Type', width: '15rem', renderCell: (row) => row.benefit },
-    { id: 'comparison', header: 'Comparison Group', width: '14rem', renderCell: (row) => row.comparison },
-    { id: 'standard', header: 'Standard', width: '14rem', renderCell: (row) => row.standard },
-    { id: 'detail', header: 'Exceptions / Bundling / Text', renderCell: (row) => row.detail },
+    { id: 'comparison', header: 'Comparison Group', width: '14rem', renderCell: renderComparison },
+    { id: 'standard', header: 'Standard', width: '14rem', renderCell: renderStandard },
+    { id: 'detail', header: 'Exceptions / Bundling / Text', renderCell: renderDetail },
   ],
 };
 
-export { employeeBenefitsConfig };
+export { employeeBenefitsConfig, renderComparison, renderDetail, renderStandard };
