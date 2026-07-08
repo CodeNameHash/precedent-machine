@@ -15,7 +15,16 @@ test('review page imports the provision card table', () => {
 
 test('review page mounts the first schema structured table config before cards', () => {
   assert.match(reviewPageSource, /import ProvisionTable from '..\/..\/components\/review\/ProvisionTable';/);
+  assert.match(reviewPageSource, /import \{ structureMechanicsConfig \} from '..\/..\/components\/review\/table-configs\/structure-mechanics\.config';/);
   assert.match(reviewPageSource, /import \{ considerationHeroConfig \} from '..\/..\/components\/review\/table-configs\/consideration-hero\.config';/);
+  assert.match(reviewPageSource, /import \{ antitrustRegulatoryConfig \} from '..\/..\/components\/review\/table-configs\/antitrust-regulatory\.config';/);
+  assert.match(reviewPageSource, /import \{ approvalsVotesConfig \} from '..\/..\/components\/review\/table-configs\/approvals-votes\.config';/);
+  assert.match(reviewPageSource, /import \{ generalCovenantsConfig \} from '..\/..\/components\/review\/table-configs\/general-covenants\.config';/);
+  assert.match(reviewPageSource, /import \{ maeDefinitionsConfig \} from '..\/..\/components\/review\/table-configs\/mae-definitions\.config';/);
+  assert.match(reviewPageSource, /import \{ representationsQualifiersConfig \} from '..\/..\/components\/review\/table-configs\/representations-qualifiers\.config';/);
+  assert.match(reviewPageSource, /import \{ terminationFeesConfig \} from '..\/..\/components\/review\/table-configs\/termination-fees\.config';/);
+  assert.match(reviewPageSource, /import \{ terminationRightsConfig \} from '..\/..\/components\/review\/table-configs\/termination-rights\.config';/);
+  assert.match(reviewPageSource, /import \{ advisersFeesExpensesConfig \} from '..\/..\/components\/review\/table-configs\/advisers-fees-expenses\.config';/);
   assert.match(reviewPageSource, /import \{ conditionsMConfig \} from '..\/..\/components\/review\/table-configs\/conditions-m\.config';/);
   assert.match(reviewPageSource, /import \{ conditionsBConfig \} from '..\/..\/components\/review\/table-configs\/conditions-b\.config';/);
   assert.match(reviewPageSource, /import \{ conditionsSConfig \} from '..\/..\/components\/review\/table-configs\/conditions-s\.config';/);
@@ -29,7 +38,16 @@ test('review page mounts the first schema structured table config before cards',
   assert.match(reviewPageSource, /import \{ noOtherRepsFraudConfig \} from '..\/..\/components\/review\/table-configs\/no-other-reps-fraud\.config';/);
   assert.match(reviewPageSource, /import \{ secMeetingConfig \} from '..\/..\/components\/review\/table-configs\/sec-meeting\.config';/);
   assert.match(reviewPageSource, /import \{ tailFeeConfig \} from '..\/..\/components\/review\/table-configs\/tail-fee\.config';/);
+  assert.match(reviewPageSource, /<ProvisionTable config=\{structureMechanicsConfig\} reviewDeal=\{schemaReviewDeal/);
   assert.match(reviewPageSource, /<ProvisionTable config=\{considerationHeroConfig\} reviewDeal=\{schemaReviewDeal/);
+  assert.match(reviewPageSource, /<ProvisionTable config=\{antitrustRegulatoryConfig\} reviewDeal=\{schemaReviewDeal/);
+  assert.match(reviewPageSource, /<ProvisionTable config=\{approvalsVotesConfig\} reviewDeal=\{schemaReviewDeal/);
+  assert.match(reviewPageSource, /<ProvisionTable config=\{generalCovenantsConfig\} reviewDeal=\{schemaReviewDeal/);
+  assert.match(reviewPageSource, /<ProvisionTable config=\{maeDefinitionsConfig\} reviewDeal=\{schemaReviewDeal/);
+  assert.match(reviewPageSource, /<ProvisionTable config=\{representationsQualifiersConfig\} reviewDeal=\{schemaReviewDeal/);
+  assert.match(reviewPageSource, /<ProvisionTable config=\{terminationFeesConfig\} reviewDeal=\{schemaReviewDeal/);
+  assert.match(reviewPageSource, /<ProvisionTable config=\{terminationRightsConfig\} reviewDeal=\{schemaReviewDeal/);
+  assert.match(reviewPageSource, /<ProvisionTable config=\{advisersFeesExpensesConfig\} reviewDeal=\{schemaReviewDeal/);
   assert.match(reviewPageSource, /<ProvisionTable config=\{conditionsMConfig\} reviewDeal=\{schemaReviewDeal/);
   assert.match(reviewPageSource, /<ProvisionTable config=\{conditionsBConfig\} reviewDeal=\{schemaReviewDeal/);
   assert.match(reviewPageSource, /<ProvisionTable config=\{conditionsSConfig\} reviewDeal=\{schemaReviewDeal/);
@@ -43,35 +61,36 @@ test('review page mounts the first schema structured table config before cards',
   assert.match(reviewPageSource, /<ProvisionTable config=\{employeeBenefitsConfig\} reviewDeal=\{schemaReviewDeal/);
   assert.match(reviewPageSource, /<ProvisionTable config=\{secMeetingConfig\} reviewDeal=\{schemaReviewDeal/);
   assert.match(reviewPageSource, /<ProvisionTable config=\{noOtherRepsFraudConfig\} reviewDeal=\{schemaReviewDeal/);
+  const mountedConfigs = [
+    'structureMechanicsConfig',
+    'considerationHeroConfig',
+    'conditionsMConfig',
+    'conditionsBConfig',
+    'conditionsSConfig',
+    'approvalsVotesConfig',
+    'representationsQualifiersConfig',
+    'maeDefinitionsConfig',
+    'materialContractsConfig',
+    'iocExceptionsConfig',
+    'generalCovenantsConfig',
+    'tailFeeConfig',
+    'terminationFeesConfig',
+    'terminationRightsConfig',
+    'nosolNoshopConfig',
+    'nosolSuperiorConfig',
+    'nosolInterveningConfig',
+    'nosolFiduciaryConfig',
+    'antitrustRegulatoryConfig',
+    'employeeBenefitsConfig',
+    'secMeetingConfig',
+    'advisersFeesExpensesConfig',
+    'noOtherRepsFraudConfig',
+  ];
+  const mountPositions = mountedConfigs.map((config) => reviewPageSource.indexOf(`<ProvisionTable config={${config}}`));
+  assert.ok(mountPositions.every((position) => position >= 0));
+  assert.deepEqual(mountPositions, [...mountPositions].sort((a, b) => a - b));
   assert.ok(
-    reviewPageSource.indexOf('<ProvisionTable config={considerationHeroConfig}') <
-      reviewPageSource.indexOf('<ProvisionTable config={conditionsMConfig}') &&
-      reviewPageSource.indexOf('<ProvisionTable config={conditionsMConfig}') <
-      reviewPageSource.indexOf('<ProvisionTable config={conditionsBConfig}') &&
-      reviewPageSource.indexOf('<ProvisionTable config={conditionsBConfig}') <
-      reviewPageSource.indexOf('<ProvisionTable config={conditionsSConfig}') &&
-      reviewPageSource.indexOf('<ProvisionTable config={conditionsSConfig}') <
-      reviewPageSource.indexOf('<ProvisionTable config={materialContractsConfig}') &&
-      reviewPageSource.indexOf('<ProvisionTable config={materialContractsConfig}') <
-      reviewPageSource.indexOf('<ProvisionTable config={iocExceptionsConfig}') &&
-      reviewPageSource.indexOf('<ProvisionTable config={iocExceptionsConfig}') <
-      reviewPageSource.indexOf('<ProvisionTable config={tailFeeConfig}') &&
-      reviewPageSource.indexOf('<ProvisionTable config={tailFeeConfig}') <
-      reviewPageSource.indexOf('<ProvisionTable config={nosolNoshopConfig}') &&
-      reviewPageSource.indexOf('<ProvisionTable config={nosolNoshopConfig}') <
-      reviewPageSource.indexOf('<ProvisionTable config={nosolSuperiorConfig}') &&
-      reviewPageSource.indexOf('<ProvisionTable config={nosolSuperiorConfig}') <
-      reviewPageSource.indexOf('<ProvisionTable config={nosolInterveningConfig}') &&
-      reviewPageSource.indexOf('<ProvisionTable config={nosolInterveningConfig}') <
-      reviewPageSource.indexOf('<ProvisionTable config={nosolFiduciaryConfig}') &&
-      reviewPageSource.indexOf('<ProvisionTable config={nosolFiduciaryConfig}') <
-      reviewPageSource.indexOf('<ProvisionTable config={employeeBenefitsConfig}') &&
-      reviewPageSource.indexOf('<ProvisionTable config={employeeBenefitsConfig}') <
-      reviewPageSource.indexOf('<ProvisionTable config={secMeetingConfig}') &&
-      reviewPageSource.indexOf('<ProvisionTable config={secMeetingConfig}') <
-      reviewPageSource.indexOf('<ProvisionTable config={noOtherRepsFraudConfig}') &&
-      reviewPageSource.indexOf('<ProvisionTable config={noOtherRepsFraudConfig}') <
-      reviewPageSource.indexOf('<ProvisionCardTable reviewDeal={schemaReviewDeal'),
+    mountPositions.at(-1) < reviewPageSource.indexOf('<ProvisionCardTable reviewDeal={schemaReviewDeal'),
     'structured schema tables should render before the raw card list',
   );
 });

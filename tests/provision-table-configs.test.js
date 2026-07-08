@@ -3,30 +3,48 @@ const assert = require('node:assert/strict');
 const path = require('node:path');
 
 let mod;
+let advisersFeesExpensesMod;
+let antitrustRegulatoryMod;
+let approvalsVotesMod;
 let considerationHeroMod;
 let employeeBenefitsMod;
+let generalCovenantsMod;
 let iocMod;
+let maeDefinitionsMod;
 let materialContractsMod;
 let nosolFiduciaryMod;
 let nosolInterveningMod;
 let nosolNoshopMod;
 let nosolSuperiorMod;
 let noOtherRepsFraudMod;
+let representationsQualifiersMod;
 let secMeetingMod;
+let structureMechanicsMod;
 let tailFeeMod;
+let terminationFeesMod;
+let terminationRightsMod;
 test.before(async () => {
   mod = await import(path.join('..', 'components', 'review', 'table-configs', 'conditions-m.config.js'));
+  advisersFeesExpensesMod = await import(path.join('..', 'components', 'review', 'table-configs', 'advisers-fees-expenses.config.js'));
+  antitrustRegulatoryMod = await import(path.join('..', 'components', 'review', 'table-configs', 'antitrust-regulatory.config.js'));
+  approvalsVotesMod = await import(path.join('..', 'components', 'review', 'table-configs', 'approvals-votes.config.js'));
   considerationHeroMod = await import(path.join('..', 'components', 'review', 'table-configs', 'consideration-hero.config.js'));
   employeeBenefitsMod = await import(path.join('..', 'components', 'review', 'table-configs', 'employee-benefits.config.js'));
+  generalCovenantsMod = await import(path.join('..', 'components', 'review', 'table-configs', 'general-covenants.config.js'));
   iocMod = await import(path.join('..', 'components', 'review', 'table-configs', 'ioc-exceptions.config.js'));
+  maeDefinitionsMod = await import(path.join('..', 'components', 'review', 'table-configs', 'mae-definitions.config.js'));
   materialContractsMod = await import(path.join('..', 'components', 'review', 'table-configs', 'material-contracts.config.js'));
   nosolFiduciaryMod = await import(path.join('..', 'components', 'review', 'table-configs', 'nosol-fiduciary.config.js'));
   nosolInterveningMod = await import(path.join('..', 'components', 'review', 'table-configs', 'nosol-intervening.config.js'));
   nosolNoshopMod = await import(path.join('..', 'components', 'review', 'table-configs', 'nosol-noshop.config.js'));
   nosolSuperiorMod = await import(path.join('..', 'components', 'review', 'table-configs', 'nosol-superior.config.js'));
   noOtherRepsFraudMod = await import(path.join('..', 'components', 'review', 'table-configs', 'no-other-reps-fraud.config.js'));
+  representationsQualifiersMod = await import(path.join('..', 'components', 'review', 'table-configs', 'representations-qualifiers.config.js'));
   secMeetingMod = await import(path.join('..', 'components', 'review', 'table-configs', 'sec-meeting.config.js'));
+  structureMechanicsMod = await import(path.join('..', 'components', 'review', 'table-configs', 'structure-mechanics.config.js'));
   tailFeeMod = await import(path.join('..', 'components', 'review', 'table-configs', 'tail-fee.config.js'));
+  terminationFeesMod = await import(path.join('..', 'components', 'review', 'table-configs', 'termination-fees.config.js'));
+  terminationRightsMod = await import(path.join('..', 'components', 'review', 'table-configs', 'termination-rights.config.js'));
 });
 
 function card(overrides = {}) {
@@ -121,6 +139,30 @@ test('consideration hero config maps stock/election mechanics and tender-offer p
   assert.match(rows.find((row) => row.id === 'consideration-hero-prorationMechanics').detail, /CASH_OR_STOCK/);
   assert.equal(rows.find((row) => row.id === 'consideration-hero-offerPrice').detail, '$12.00 per share');
   assert.match(rows.find((row) => row.id === 'consideration-hero-collar').detail, /SYMMETRIC/);
+});
+
+test('M2-08 gap configs map their core schema-card fields', () => {
+  const cards = [
+    { id: 'struct', provision_type: 'STRUCTURE_MECHANICS', provision_subtype: 'STRUCT-MERGER', short_title: 'Merger', features: { dealStructure: 'ONE_STEP_MERGER', closingTiming: '2 business days after conditions' } },
+    { id: 'anti', provision_type: 'ANTITRUST_REGULATORY', provision_subtype: 'ANTI-HSR', short_title: 'HSR', features: { effortsStandard: 'reasonable best efforts', burdensomeConditionLimit: 'no divestiture of material assets' } },
+    { id: 'mae', provision_type: 'MAE', provision_subtype: 'MAE-DEF', short_title: 'Material Adverse Effect', features: { maeLimbType: 'TWO_LIMB', disproportionateImpactClause: 'except to the extent disproportionate' } },
+    { id: 'termr', provision_type: 'TERMINATION_RIGHT', provision_subtype: 'TERMR-OUTSIDE', short_title: 'Outside Date', features: { outsideDate: 'June 30, 2026', extensionAvailable: true } },
+    { id: 'termf', provision_type: 'TERMINATION_FEE', provision_subtype: 'TERMF-TARGET', short_title: 'Company Fee', features: { targetTerminationFee: '$100,000,000', feeRequired: true } },
+    { id: 'cov', provision_type: 'COVENANT_OTHER', provision_subtype: 'COV-ACCESS', short_title: 'Access', features: { accessRights: 'reasonable access during normal business hours', publicStatements: 'joint consent' } },
+    { id: 'vote', provision_type: 'CLOSING_CONDITION', provision_subtype: 'COND-M-STOCKHOLDER', short_title: 'Stockholder Approval', features: { approvalDefinition: 'majority of outstanding shares', voteThreshold: 'majority outstanding' } },
+    { id: 'misc', provision_type: 'MISC_BOILERPLATE', provision_subtype: 'MISC-EXPENSES', short_title: 'Fees and Expenses', features: { feeExpenseAllocation: 'each party bears its own expenses', governingLaw: 'Delaware' } },
+    { id: 'rep', provision_type: 'REPRESENTATION', provision_subtype: 'REP-T-SEC', short_title: 'SEC Documents', features: { materialityQualifier: 'in all material respects', knowledgeQualifier: 'Company knowledge' } },
+  ];
+  const reviewDeal = { cards };
+  assert.equal(structureMechanicsMod.structureMechanicsConfig.selectRows(reviewDeal)[0].detail, 'ONE_STEP_MERGER');
+  assert.match(antitrustRegulatoryMod.antitrustRegulatoryConfig.selectRows(reviewDeal)[0].detail, /reasonable best/);
+  assert.equal(maeDefinitionsMod.maeDefinitionsConfig.selectRows(reviewDeal)[0].detail, 'TWO_LIMB');
+  assert.equal(terminationRightsMod.terminationRightsConfig.selectRows(reviewDeal)[0].detail, 'June 30, 2026');
+  assert.equal(terminationFeesMod.terminationFeesConfig.selectRows(reviewDeal)[0].detail, '$100,000,000');
+  assert.match(generalCovenantsMod.generalCovenantsConfig.selectRows(reviewDeal)[0].detail, /reasonable access/);
+  assert.match(approvalsVotesMod.approvalsVotesConfig.selectRows(reviewDeal)[0].detail, /majority/);
+  assert.match(advisersFeesExpensesMod.advisersFeesExpensesConfig.selectRows(reviewDeal)[0].detail, /own expenses/);
+  assert.match(representationsQualifiersMod.representationsQualifiersConfig.selectRows(reviewDeal)[0].detail, /material respects/);
 });
 
 test('conditions-m config returns no table rows when no closing-condition cards exist', () => {
