@@ -643,3 +643,5 @@ REVIEW_QUEUE_RESOLUTION {"id":"m2-06-template-table-architecture","kind":"canoni
 2026-07-08: WP-M2-06 Step 4: added the seller closing-conditions config, `conditions-s`, reusing the schema-first `ProvisionTable` template. The shared conditions config factory is 110 lines and the seller binding is 1 line, both under the 150-line guardrail.
 
 2026-07-08: WP-M2-06 Step 5: added the IOC general-exceptions config, `ioc-exceptions`, for the schema-first `ProvisionTable` path. The config prefers structured feature exceptions when hydrated and falls back to splitting the general-exceptions card text.
+
+2026-07-08: WP-M2-06 Step 6: added the Material Contracts config, `material-contracts`, for the schema-first `ProvisionTable` path. The config uses hydrated `materialContractsBuckets` when present and falls back to canonical bucket synonym matching from `MATERIAL_CONTRACT_BUCKET_META`.
