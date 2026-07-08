@@ -1,0 +1,11 @@
+{
+  "phase": "WP-M2-00-07-CORPUS-BACKFILL",
+  "name": "m2-00-07-corpus-backfill",
+  "allowed": [
+    ".github/phase-allowlists/wp-m2-00-07-corpus-backfill.json",
+    "docs/reprocess/round-m2-00-backfill.md",
+    "scripts/backfill/extract-to-cards.js",
+    "tests/backfill-extract-to-cards.test.js"
+  ],
+  "denied": []
+}
