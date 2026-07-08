@@ -5,6 +5,7 @@ const {
   fetchReviewDealCards,
   parseReferences,
   shapeReviewDealRows,
+  stripProposedShortTitle,
 } = require('../../lib/queries/review-deal');
 
 function card(overrides = {}) {
@@ -99,4 +100,37 @@ test('fetchReviewDealCards reads provision_cards and returns grouped shape', asy
   const shaped = await fetchReviewDealCards('deal-1', fakeSupabase(rows));
   assert.deepEqual(shaped.cards.map((item) => item.provision_instance_id), ['a', 'b']);
   assert.deepEqual(shaped.sections.map((section) => section.sectionRef), ['Section 1.01', 'Section 2.01']);
+});
+
+test('stripProposedShortTitle strips only the exact user-mode prefix', () => {
+  assert.equal(stripProposedShortTitle('[PROPOSED] Transfer Taxes'), 'Transfer Taxes');
+  assert.equal(stripProposedShortTitle('[PROPOSED]'), '[PROPOSED]');
+  assert.equal(stripProposedShortTitle('[proposed] Transfer Taxes'), '[proposed] Transfer Taxes');
+  assert.equal(stripProposedShortTitle('Transfer Taxes'), 'Transfer Taxes');
+  assert.equal(stripProposedShortTitle(null), null);
+});
+
+test('shapeReviewDealRows strips proposed labels in user mode', () => {
+  const shaped = shapeReviewDealRows('deal-1', [
+    card({ short_title: '[PROPOSED] Transfer Taxes' }),
+  ]);
+
+  assert.equal(shaped.cards[0].short_title, 'Transfer Taxes');
+  assert.equal(shaped.sections[0].cards[0].short_title, 'Transfer Taxes');
+});
+
+test('shapeReviewDealRows preserves proposed labels in admin mode', () => {
+  const shaped = shapeReviewDealRows('deal-1', [
+    card({ short_title: '[PROPOSED] Transfer Taxes' }),
+  ], { mode: 'admin' });
+
+  assert.equal(shaped.cards[0].short_title, '[PROPOSED] Transfer Taxes');
+});
+
+test('fetchReviewDealCards threads admin mode through the grouped shape', async () => {
+  const shaped = await fetchReviewDealCards('deal-1', fakeSupabase([
+    card({ short_title: '[PROPOSED] Transfer Taxes' }),
+  ]), { mode: 'admin' });
+
+  assert.equal(shaped.cards[0].short_title, '[PROPOSED] Transfer Taxes');
 });
