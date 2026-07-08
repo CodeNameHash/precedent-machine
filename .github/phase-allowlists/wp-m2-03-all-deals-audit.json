@@ -1,0 +1,26 @@
+{
+  "phase": "WP-M2-03-ALL-DEALS-AUDIT",
+  "name": "m2-03-all-deals-audit",
+  "allowed": [
+    ".github/phase-allowlists/wp-m2-03-all-deals-audit.json",
+    "scripts/audit/all-deals-card-backed.js",
+    "tests/audit/all-deals-card-backed.spec.js",
+    "docs/audits/card-backed-status.md",
+    "WORKLOG-WP-ALL-DEALS-CARD-BACKED-AUDIT.md",
+    "HANDOFF.md"
+  ],
+  "denied": [
+    "docs/vocab/FROZEN-*.json",
+    "docs/market-registry/FROZEN-*.json",
+    "docs/schema-shape/*.frozen",
+    "docs/schema-shape/canonical-registry-v1.md",
+    "docs/schema-shape/canonical-definitions.md",
+    "docs/schema-shape/normalized-v1.json",
+    "lib/**",
+    "components/**",
+    "pages/**",
+    "supabase/migrations/**",
+    "db/migrations/**"
+  ],
+  "note": "WP-M2-03 adds the all-deals card-backed audit harness and generated status report only. It must not change renderers, schema semantics, frozen artefacts, or deal data."
+}
