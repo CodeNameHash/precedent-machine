@@ -7,8 +7,39 @@
     "lib/vocab/ioc-categories.js"
   ],
   "input_field_count": 1327,
-  "field_count": 683,
+  "field_count": 694,
   "fields": [
+    {
+      "key": "absenceConductedOrdinaryCourse",
+      "label": "Absence-of-changes — conducted in ordinary course",
+      "data_type": "BOOLEAN",
+      "applies_to": "REP-T",
+      "party_scope": "PER_PARTY",
+      "structural_patterns": [
+        "THREE_STATE",
+        "COMPONENT_LIMB",
+        "THRESHOLD_PRESENCE_DUAL"
+      ],
+      "states": [
+        "PRESENT",
+        "ABSENT",
+        "UNKNOWN"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "absenceConductedOrdinaryCourse",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve absenceConductedOrdinaryCourse from lib/schema/features.js; normalise to BOOLEAN before activation."
+      },
+      "resolver_notes": "Absence-of-changes — conducted in ordinary course",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features",
+      "merged_from": [],
+      "also_matches_provision_codes": [],
+      "status": "PENDING_REVIEW"
+    },
     {
       "key": "absenceOfChangesExceptions",
       "label": "Absence-of-changes exceptions",
@@ -289,6 +320,68 @@
           }
         ]
       },
+      "status": "PENDING_REVIEW"
+    },
+    {
+      "key": "absenceSpecifiedIOCReferences",
+      "label": "Absence-of-changes — specified IOC references",
+      "data_type": "TEXT",
+      "applies_to": "REP-T",
+      "party_scope": "PER_PARTY",
+      "structural_patterns": [
+        "THREE_STATE",
+        "COMPONENT_LIMB",
+        "THRESHOLD_PRESENCE_DUAL"
+      ],
+      "states": [
+        "PRESENT",
+        "ABSENT",
+        "UNKNOWN"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "absenceSpecifiedIOCReferences",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve absenceSpecifiedIOCReferences from lib/schema/features.js; normalise to TEXT before activation."
+      },
+      "resolver_notes": "Absence-of-changes — specified IOC references",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features",
+      "merged_from": [],
+      "also_matches_provision_codes": [],
+      "status": "PENDING_REVIEW"
+    },
+    {
+      "key": "absenceSpecifiedIOCs",
+      "label": "Absence-of-changes — specified IOCs absent",
+      "data_type": "BOOLEAN",
+      "applies_to": "REP-T",
+      "party_scope": "PER_PARTY",
+      "structural_patterns": [
+        "THREE_STATE",
+        "COMPONENT_LIMB",
+        "THRESHOLD_PRESENCE_DUAL"
+      ],
+      "states": [
+        "PRESENT",
+        "ABSENT",
+        "UNKNOWN"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "absenceSpecifiedIOCs",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve absenceSpecifiedIOCs from lib/schema/features.js; normalise to BOOLEAN before activation."
+      },
+      "resolver_notes": "Absence-of-changes — specified IOCs absent",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features",
+      "merged_from": [],
+      "also_matches_provision_codes": [],
       "status": "PENDING_REVIEW"
     },
     {
@@ -1291,6 +1384,39 @@
           }
         ]
       },
+      "status": "PENDING_REVIEW"
+    },
+    {
+      "key": "antitrustEffortsStandard",
+      "label": "Antitrust efforts standard",
+      "data_type": "ENUM",
+      "applies_to": "ANTI",
+      "party_scope": "PER_PARTY",
+      "structural_patterns": [
+        "THREE_STATE",
+        "STANDARD_SCOPE_COMPOUND"
+      ],
+      "states": [
+        "best-efforts",
+        "commercially-reasonable-efforts",
+        "flat",
+        "good-faith-efforts",
+        "reasonable-best-efforts",
+        "reasonable-efforts"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "antitrustEffortsStandard",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve antitrustEffortsStandard from lib/schema/features.js; normalise to ENUM before activation."
+      },
+      "resolver_notes": "Antitrust efforts standard",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features",
+      "merged_from": [],
+      "also_matches_provision_codes": [],
       "status": "PENDING_REVIEW"
     },
     {
@@ -2941,6 +3067,37 @@
           }
         ]
       },
+      "status": "PENDING_REVIEW"
+    },
+    {
+      "key": "buyerEffortsCap",
+      "label": "Buyer antitrust efforts cap / prohibited remedy limit",
+      "data_type": "TEXT",
+      "applies_to": "ANTI",
+      "party_scope": "PARENT_ONLY",
+      "structural_patterns": [
+        "THREE_STATE",
+        "PARTY_ASYMMETRIC",
+        "THRESHOLD_PRESENCE_DUAL"
+      ],
+      "states": [
+        "PRESENT",
+        "ABSENT",
+        "UNKNOWN"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "buyerEffortsCap",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve buyerEffortsCap from lib/schema/features.js; normalise to TEXT before activation."
+      },
+      "resolver_notes": "Buyer antitrust efforts cap / prohibited remedy limit",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features",
+      "merged_from": [],
+      "also_matches_provision_codes": [],
       "status": "PENDING_REVIEW"
     },
     {
@@ -12092,6 +12249,36 @@
       "status": "PENDING_REVIEW"
     },
     {
+      "key": "feeExpenseAllocationExceptions",
+      "label": "Fee / expense allocation exceptions",
+      "data_type": "TEXT",
+      "applies_to": "MISC",
+      "party_scope": "DEAL_LEVEL",
+      "structural_patterns": [
+        "THREE_STATE",
+        "MAGNITUDE_POLYMORPHIC"
+      ],
+      "states": [
+        "PRESENT",
+        "ABSENT",
+        "UNKNOWN"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "feeExpenseAllocationExceptions",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve feeExpenseAllocationExceptions from lib/schema/features.js; normalise to TEXT before activation."
+      },
+      "resolver_notes": "Fee / expense allocation exceptions",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features",
+      "merged_from": [],
+      "also_matches_provision_codes": [],
+      "status": "PENDING_REVIEW"
+    },
+    {
       "key": "feePercentage",
       "label": "Fee as Percentage of Deal Value",
       "data_type": "USD_AMOUNT",
@@ -15024,6 +15211,38 @@
           }
         ]
       },
+      "status": "PENDING_REVIEW"
+    },
+    {
+      "key": "interveningEventExceptions",
+      "label": "Intervening Event exceptions",
+      "data_type": "TEXT",
+      "applies_to": "NOSOL",
+      "party_scope": "PER_PARTY",
+      "structural_patterns": [
+        "THREE_STATE",
+        "THRESHOLD_PRESENCE_DUAL",
+        "STANDARD_SCOPE_COMPOUND",
+        "CONDITIONAL_TRIGGERED"
+      ],
+      "states": [
+        "PRESENT",
+        "ABSENT",
+        "UNKNOWN"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "interveningEventExceptions",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve interveningEventExceptions from lib/schema/features.js; normalise to TEXT before activation."
+      },
+      "resolver_notes": "Intervening Event exceptions",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features",
+      "merged_from": [],
+      "also_matches_provision_codes": [],
       "status": "PENDING_REVIEW"
     },
     {
@@ -19156,6 +19375,35 @@
       "status": "PENDING_REVIEW"
     },
     {
+      "key": "nominalTargetParty",
+      "label": "Nominal target party for role coding",
+      "data_type": "TEXT",
+      "applies_to": "STRUCT",
+      "party_scope": "DEAL_LEVEL",
+      "structural_patterns": [
+        "THREE_STATE"
+      ],
+      "states": [
+        "PRESENT",
+        "ABSENT",
+        "UNKNOWN"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "nominalTargetParty",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve nominalTargetParty from lib/schema/features.js; normalise to TEXT before activation."
+      },
+      "resolver_notes": "Nominal target party for role coding",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features",
+      "merged_from": [],
+      "also_matches_provision_codes": [],
+      "status": "PENDING_REVIEW"
+    },
+    {
       "key": "nonDisproportionateImpactCarveouts",
       "label": "Carve-Outs NOT subject to disproportionate-impact carveback",
       "data_type": "ENUM_MULTI",
@@ -19796,6 +20044,37 @@
           }
         ]
       },
+      "status": "PENDING_REVIEW"
+    },
+    {
+      "key": "notificationCovenantFailureStandard",
+      "label": "Notification covenant — covenant-failure standard",
+      "data_type": "ENUM",
+      "applies_to": "COV",
+      "party_scope": "DEAL_LEVEL",
+      "structural_patterns": [
+        "THREE_STATE",
+        "COMPONENT_LIMB",
+        "STANDARD_SCOPE_COMPOUND"
+      ],
+      "states": [
+        "ALL_IN_MATERIAL_RESPECTS",
+        "EACH_IN_MATERIAL_RESPECTS",
+        "HYBRID"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "notificationCovenantFailureStandard",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve notificationCovenantFailureStandard from lib/schema/features.js; normalise to ENUM before activation."
+      },
+      "resolver_notes": "Notification covenant — covenant-failure standard",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features",
+      "merged_from": [],
+      "also_matches_provision_codes": [],
       "status": "PENDING_REVIEW"
     },
     {
@@ -21516,6 +21795,38 @@
         "notes": "Resolve partOfRep from lib/schema/features.js; normalise to TEXT before activation."
       },
       "resolver_notes": "Part Of Rep",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features",
+      "merged_from": [],
+      "also_matches_provision_codes": [],
+      "status": "PENDING_REVIEW"
+    },
+    {
+      "key": "party_role",
+      "label": "IOC covenant party role — grammatical covenanting party (e.g. COMPANY, PARENT, COLUMBUS, CABOT, SPINCO, REMAINCO, JV)",
+      "data_type": "TEXT",
+      "applies_to": "IOC",
+      "party_scope": "PER_PARTY",
+      "structural_patterns": [
+        "THREE_STATE",
+        "COMPONENT_LIMB",
+        "PARTY_ASYMMETRIC",
+        "HEADING_WINS"
+      ],
+      "states": [
+        "PRESENT",
+        "ABSENT",
+        "UNKNOWN"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "party_role",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve party_role from lib/schema/features.js; normalise to TEXT before activation."
+      },
+      "resolver_notes": "IOC covenant party role — grammatical covenanting party (e.g. COMPANY, PARENT, COLUMBUS, CABOT, SPINCO, REMAINCO, JV)",
       "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
       "origin": "schema-features",
       "merged_from": [],
@@ -29510,6 +29821,37 @@
         "notes": "Resolve targetBonusStandard from lib/schema/features.js; normalise to TEXT before activation."
       },
       "resolver_notes": "Employee comp: Bonus",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features",
+      "merged_from": [],
+      "also_matches_provision_codes": [],
+      "status": "PENDING_REVIEW"
+    },
+    {
+      "key": "targetEffortsCap",
+      "label": "Target antitrust efforts cap / prohibited remedy limit",
+      "data_type": "TEXT",
+      "applies_to": "ANTI",
+      "party_scope": "COMPANY_ONLY",
+      "structural_patterns": [
+        "THREE_STATE",
+        "PARTY_ASYMMETRIC",
+        "THRESHOLD_PRESENCE_DUAL"
+      ],
+      "states": [
+        "PRESENT",
+        "ABSENT",
+        "UNKNOWN"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "targetEffortsCap",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve targetEffortsCap from lib/schema/features.js; normalise to TEXT before activation."
+      },
+      "resolver_notes": "Target antitrust efforts cap / prohibited remedy limit",
       "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
       "origin": "schema-features",
       "merged_from": [],
