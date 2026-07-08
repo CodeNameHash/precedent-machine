@@ -1,20 +1,30 @@
 import React from 'react';
 import taxonomy from '../../../lib/taxonomy.js';
-import { cardCode, cardType, firstFeature, makeRow, selectCards, textOf, valueText } from './card-utils.js';
+import { allFeatures, cardCode, cardType, firstFeature, labelOf, makeRow, selectCards, textOf, valueText } from './card-utils.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
+// 'party' (partyWhoCanTerminate) is a PER-RIGHT attribute: Metsera has 9
+// TERMINATION_RIGHT cards each with their own claim (Target Breach -> Buyer,
+// Superior Proposal -> Target, Outside Date -> Mutual, ...). firstFeature()
+// would collapse all 9 into a single value; render one row per card instead
+// (see PER_RIGHT_ROW_IDS below) so the party+right pairing survives.
 const ROWS = [
   ['party', 'Party who can terminate', 'Right', ['partyWhoCanTerminate']],
   ['triggers', 'Termination trigger', 'Right', ['terminationTriggers', 'mainConcept']],
   ['outside-date', 'Outside date', 'Timing', ['outsideDate', 'outsideDateISO']],
   ['outside-months', 'Months post-signing', 'Timing', ['outsideDateMonthsPostSigning', 'outsideDateMonths']],
-  ['extension', 'Extension right', 'Timing', ['extensionAvailable', 'extensionPeriod', 'extensionTrigger']],
+  ['extension', 'Extension right', 'Timing', ['extensionMonths', 'outsideDateExtension', 'outsideDateExtensionConditions', 'extensionAvailable', 'extensionPeriod', 'extensionTrigger']],
+  ['restraint-finality', 'Legal restraint finality', 'Right', ['restraintFinality']],
   ['vote', 'Vote failure', 'Approval', ['voteThreshold', 'shareholderApprovalFailure']],
   ['breach', 'Breach standard / cure', 'Breach', ['breachStandard', 'curePeriod', 'faultBasedExclusion']],
-  ['recommendation', 'Change of recommendation', 'Fiduciary', ['recommendationChangeTermination', 'parentTerminationRightForNonsolicitBreach']],
-  ['superior', 'Superior proposal termination', 'Fiduciary', ['superiorProposalTermination']],
+  ['willful-breach', 'Willful breach defn / exception', 'Breach', ['willfulBreachDefinition', 'willfulBreachException']],
+  ['recommendation', 'Change of recommendation', 'Fiduciary', ['triggerEvents', 'recommendationChangeTermination', 'parentTerminationRightForNonsolicitBreach']],
+  ['superior', 'Superior proposal termination', 'Fiduciary', ['companyTerminationForSuperior', 'superiorProposalTermination', 'feeRequired']],
+  ['specific-performance', 'Specific performance (mutual)', 'Remedies', ['specificPerformanceMutual', 'specificPerformance']],
 ];
+
+const PER_RIGHT_ROW_IDS = new Set(['party']);
 
 function isTerminationRight(card) {
   return cardType(card) === 'TERMINATION_RIGHT' || cardCode(card).startsWith('TERMR') || /termination right|outside date|superior proposal/i.test(`${card?.short_title || ''} ${textOf(card)}`);
@@ -48,11 +58,10 @@ function signalFor(row) {
   };
 }
 
-function mappedTerminationRows(cards) {
-  return ROWS
-    .map(([id, label, kind, keys]) => {
-      const hit = firstFeature(cards, keys || id);
-      const row = makeRow('termination-rights', id, label, kind, hit);
+function perRightRows(cards, id, label, kind, keys) {
+  return allFeatures(cards, keys)
+    .map((hit) => {
+      const row = makeRow('termination-rights', `${id}-${hit.card?.id || ''}`, `${label} — ${labelOf(hit.card)}`, kind, hit);
       if (!row) return null;
       return {
         ...row,
@@ -63,6 +72,27 @@ function mappedTerminationRows(cards) {
       };
     })
     .filter(Boolean);
+}
+
+function mappedTerminationRows(cards) {
+  const rows = [];
+  for (const [id, label, kind, keys] of ROWS) {
+    if (PER_RIGHT_ROW_IDS.has(id)) {
+      rows.push(...perRightRows(cards, id, label, kind, keys || id));
+      continue;
+    }
+    const hit = firstFeature(cards, keys || id);
+    const row = makeRow('termination-rights', id, label, kind, hit);
+    if (!row) continue;
+    rows.push({
+      ...row,
+      value: hit.value,
+      featureKey: hit.key,
+      sourceCard: hit.card,
+      signals: [signalFor({ ...row, value: hit.value, featureKey: hit.key, sourceCard: hit.card })].filter(Boolean),
+    });
+  }
+  return rows;
 }
 
 function renderSignals(row, ctx) {

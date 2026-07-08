@@ -23,12 +23,12 @@ function scalar(value) {
 }
 function combineFeatures(cards) {
   let combined = {};
-  for (const card of cards) combined = { ...combined, ...normalizeTermfFeatures(cardFeatures(card)) };
+  for (const card of cards) combined = { ...combined, ...normalizeTermfFeatures(cardFeatures(card), cardCode(card)) };
   return combined;
 }
 function sourceCard(cards, features) {
   return cards.find((card) => cardCode(card) === 'TERMF-TAIL') ||
-    cards.find((card) => Object.keys(normalizeTermfFeatures(cardFeatures(card))).some((key) => key.startsWith('tailFee'))) ||
+    cards.find((card) => Object.keys(normalizeTermfFeatures(cardFeatures(card), cardCode(card))).some((key) => key.startsWith('tailFee'))) ||
     cards.find((card) => /tail|within\s+\d+\s+months|takeover\s+proposal/i.test(textOf(card)));
 }
 function fallbackFromText(card) {

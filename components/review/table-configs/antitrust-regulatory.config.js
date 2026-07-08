@@ -6,15 +6,20 @@ const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
 const ROWS = [
   ['efforts', 'Efforts standard', 'Efforts', ['effortsStandard', 'antitrustEffortsStandard']],
-  ['filings', 'Regulatory filings', 'Timing', ['hsrFilingDeadline', 'foreignFilings', 'regulatoryFilingsDeadline']],
+  ['hsr-deadline', 'HSR filing deadline', 'Timing', ['hsrFilingDeadlineBusinessDays', 'hsrFilingDeadline', 'exHsrFilingDeadline']],
+  ['foreign-filings', 'Foreign regulatory filings', 'Timing', ['foreignFilingsRequired', 'foreignFilings']],
+  ['other-filings', 'Other regulatory filing deadlines', 'Timing', ['otherRegulatoryFilingDeadlines', 'regulatoryFilingsDeadline']],
   ['approvals', 'Required approvals', 'Approvals', ['antitrustApprovals', 'regulatoryApprovals']],
   ['litigation', 'Regulatory litigation obligation', 'Litigation', ['litigationObligation', 'parentLitigationObligation']],
-  ['consultation', 'Consultation / cooperation tier', 'Process', ['consultationTier', 'cooperationStandard']],
-  ['remedies', 'Remedy obligation', 'Remedies', ['remedyObligation', 'divestitureObligation']],
-  ['burden-cap', 'Burdensome-condition cap', 'Caps', ['burdensomeConditionLimit', 'burdenBaseline', 'hellOrHighWater']],
-  ['clear-skies', 'Clear-skies covenant', 'Conduct', ['clearSkies', 'clearSkiesObligation']],
+  ['consultation', 'Consultation / cooperation tier', 'Process', ['regulatoryCooperationScope', 'regulatoryCooperationCarveout', 'consultationTier', 'cooperationStandard']],
+  ['strategy-control', 'Regulatory strategy & control', 'Process', ['regulatoryStrategyControlTagged']],
+  ['pull-refile', 'Pull-and-refile right', 'Process', ['pullAndRefileRight', 'pullRefile', 'pullRefileText']],
+  ['remedies', 'Remedy obligation', 'Remedies', ['parentRemedyObligation', 'remedyObligation', 'divestitureObligation']],
+  ['burden-cap', 'Burdensome-condition cap', 'Caps', ['divestitureCapDescription', 'divestitureCap', 'burdenBaseline', 'hellOrHighWater', 'burdensomeConditionLimit']],
+  ['clear-skies', 'Clear-skies covenant', 'Conduct', ['clearSkiesParent', 'clearSkiesParentScope', 'clearSkiesCompany', 'clearSkiesCompanyScope', 'clearSkies', 'clearSkiesObligation']],
   ['timing-agreements', 'Timing agreements', 'Conduct', ['timingAgreement', 'timingAgreementText', 'noInconsistentAction']],
-  ['outside-date', 'Regulatory outside-date linkage', 'Termination', ['outsideDateExtension', 'antitrustOutsideDateExtension', 'tickingFee']],
+  ['springing-conditions', 'Springing / regulatory closing conditions', 'Termination', ['springingRegulatoryConditions', 'regulatoryClosingConditions']],
+  ['outside-date', 'Regulatory outside-date linkage', 'Termination', ['outsideDateExtension', 'outsideDateExtensionConditions', 'antitrustOutsideDateExtension', 'tickingFee']],
 ];
 
 function isAntitrust(card) {

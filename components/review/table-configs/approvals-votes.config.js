@@ -4,6 +4,8 @@ const ROWS = [
   ['company-method', 'Company approval method', 'Approval', ['shareholderApprovalMethodCompany', 'companyApprovalMethod']],
   ['parent-method', 'Parent approval method', 'Approval', ['shareholderApprovalMethodParent', 'parentApprovalMethod']],
   ['approval-definition', 'Approval definition', 'Approval', ['approvalDefinition', 'stockholderApprovalDefinition']],
+  ['stockholder-approval-required', 'Stockholder approval required', 'Approval', ['stockholderApprovalRequired']],
+  ['written-consent-required', 'Written consent required', 'Approval', ['writtenConsentRequired']],
   ['vote-threshold', 'Vote threshold', 'Vote', ['voteThreshold', 'requiredVote']],
   ['quorum', 'Quorum', 'Meeting', ['quorumRequirement', 'quorum']],
   ['record-date', 'Record date', 'Meeting', ['recordDate', 'meetingRecordDate']],

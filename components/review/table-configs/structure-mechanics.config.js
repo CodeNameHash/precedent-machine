@@ -9,7 +9,7 @@ const ROWS = [
   ['merger-form', 'Merger form', 'Transaction form', ['mergerForm']],
   ['surviving-entity', 'Surviving entity', 'Merger mechanics', ['survivingEntity']],
   ['closing-location', 'Closing location', 'Closing', ['closingLocation']],
-  ['closing-timing', 'Closing timing', 'Closing', ['closingTiming', 'closingDeadline']],
+  ['closing-timing', 'Closing timing', 'Closing', ['closingTimingProvisions', 'closingTiming', 'closingDeadline']],
   ['effective-time', 'Effective time', 'Closing', ['effectiveTimeShort', 'effectiveTime', 'mainConcept']],
   ['effects', 'Effects of merger', 'Merger mechanics', ['effectsOfMergerReference']],
   ['section-251h', 'DGCL 251(h) / back-end merger', 'Tender offer', ['section251h', 'backendMergerMechanic']],

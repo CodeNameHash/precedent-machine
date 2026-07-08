@@ -1,21 +1,29 @@
 import React from 'react';
 import taxonomy from '../../../lib/taxonomy.js';
-import { cardCode, cardType, firstFeature, makeRow, selectCards, textOf, valueText } from './card-utils.js';
+import { allFeatures, cardCode, cardType, firstFeature, labelOf, makeRow, selectCards, textOf, valueText } from './card-utils.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
+// Per-rep families: 37 REPRESENTATION cards can each carry their OWN
+// knowledgeQualifier / materialityQualifier / linkedBringDownStandard claim
+// (16 / 22 / 37 claims respectively on Metsera). firstFeature() would return
+// only the first card's value; these three render one row PER card instead
+// (see PER_REP_ROW_IDS below).
 const ROWS = [
   ['materiality', 'Materiality qualifier', 'Qualifier', ['materialityQualifier', 'materialityScopeType']],
   ['knowledge', 'Knowledge qualifier', 'Qualifier', ['knowledgeQualifier', 'knowledgeStandard', 'knowledgeScopeType']],
   ['threshold', 'Dollar threshold', 'Qualifier', ['dollarThreshold']],
   ['lookback', 'Lookback period', 'Qualifier', ['lookbackPeriod']],
-  ['schedule', 'Disclosure schedule exception', 'Exceptions', ['scheduleReference', 'disclosureScheduleException']],
-  ['sec-filings', 'SEC filings carve-out', 'Exceptions', ['secFilingsExceptionCarvedOutReps', 'secFilingsCarvedOutReps']],
+  ['schedule', 'Disclosure schedule exception', 'Exceptions', ['disclosureSchedulesException', 'disclosureSchedulesRequired']],
+  ['sec-filings', 'SEC filings carve-out', 'Exceptions', ['secFilingsExcludedSections', 'secFilingsExceptionScope']],
   ['bringdown', 'Linked bring-down standard', 'Bring-down', ['linkedBringDownStandard', 'bringDownStandard']],
   ['bringdown-tiers', 'Bring-down tiers', 'Bring-down', ['bringDownTiers']],
-  ['scrape', 'Materiality scrape', 'Bring-down', ['materialityScrape', 'materialityScrapeScope']],
+  ['scrape', 'Materiality scrape', 'Bring-down', ['materialityScrape', 'materialityScrapeLanguage', 'materialityScrapePresent']],
+  ['mae-qualified', 'MAE-qualified reps', 'Qualifier', ['maeQualifiedReps']],
   ['specific', 'Specific features', 'Rep-specific', ['specificFeatures']],
 ];
+
+const PER_REP_ROW_IDS = new Set(['materiality', 'knowledge', 'bringdown']);
 
 function isRepQualifier(card) {
   const type = cardType(card);
@@ -49,11 +57,10 @@ function signalFor(row) {
   };
 }
 
-function mappedQualifierRows(cards) {
-  return ROWS
-    .map(([id, label, kind, keys]) => {
-      const hit = firstFeature(cards, keys || id);
-      const row = makeRow('representations-qualifiers', id, label, kind, hit);
+function perRepRows(cards, id, label, kind, keys) {
+  return allFeatures(cards, keys)
+    .map((hit) => {
+      const row = makeRow('representations-qualifiers', `${id}-${hit.card?.id || ''}`, `${label} — ${labelOf(hit.card)}`, kind, hit);
       if (!row) return null;
       return {
         ...row,
@@ -64,6 +71,27 @@ function mappedQualifierRows(cards) {
       };
     })
     .filter(Boolean);
+}
+
+function mappedQualifierRows(cards) {
+  const rows = [];
+  for (const [id, label, kind, keys] of ROWS) {
+    if (PER_REP_ROW_IDS.has(id)) {
+      rows.push(...perRepRows(cards, id, label, kind, keys || id));
+      continue;
+    }
+    const hit = firstFeature(cards, keys || id);
+    const row = makeRow('representations-qualifiers', id, label, kind, hit);
+    if (!row) continue;
+    rows.push({
+      ...row,
+      value: hit.value,
+      featureKey: hit.key,
+      sourceCard: hit.card,
+      signals: [signalFor({ ...row, value: hit.value, featureKey: hit.key, sourceCard: hit.card })].filter(Boolean),
+    });
+  }
+  return rows;
 }
 
 function renderSignals(row, ctx) {

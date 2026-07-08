@@ -220,7 +220,7 @@ test('M2-08 gap configs map their core schema-card fields', () => {
     { id: 'anti', provision_type: 'ANTITRUST_REGULATORY', provision_subtype: 'ANTI-HSR', short_title: 'HSR', features: { effortsStandard: 'reasonable best efforts', burdensomeConditionLimit: 'no divestiture of material assets' } },
     { id: 'mae', provision_type: 'MAE', provision_subtype: 'MAE-DEF', short_title: 'Material Adverse Effect', features: { maeLimbType: 'TWO_LIMB', disproportionateImpactClause: 'except to the extent disproportionate' } },
     { id: 'termr', provision_type: 'TERMINATION_RIGHT', provision_subtype: 'TERMR-OUTSIDE', short_title: 'Outside Date', features: { outsideDate: 'June 30, 2026', extensionAvailable: true } },
-    { id: 'termf', provision_type: 'TERMINATION_FEE', provision_subtype: 'TERMF-TARGET', short_title: 'Company Fee', features: { targetTerminationFee: '$100,000,000', feeRequired: true } },
+    { id: 'termf', provision_type: 'TERMINATION_FEE', provision_subtype: 'TERMF-TARGET', short_title: 'Company Fee', features: { terminationFees: { amount: '$100,000,000', triggers: [] }, feeRequired: true } },
     { id: 'cov', provision_type: 'COVENANT_OTHER', provision_subtype: 'COV-ACCESS', short_title: 'Access', features: { accessRights: 'reasonable access during normal business hours', publicStatements: 'joint consent' } },
     { id: 'vote', provision_type: 'CLOSING_CONDITION', provision_subtype: 'COND-M-STOCKHOLDER', short_title: 'Stockholder Approval', features: { approvalDefinition: 'majority of outstanding shares', voteThreshold: 'majority outstanding' } },
     { id: 'misc', provision_type: 'MISC_BOILERPLATE', provision_subtype: 'MISC-EXPENSES', short_title: 'Fees and Expenses', features: { feeExpenseAllocation: 'each party bears its own expenses', governingLaw: 'Delaware' } },
@@ -231,7 +231,7 @@ test('M2-08 gap configs map their core schema-card fields', () => {
   assert.match(antitrustRegulatoryMod.antitrustRegulatoryConfig.selectRows(reviewDeal)[0].detail, /reasonable best/);
   assert.equal(maeDefinitionsMod.maeDefinitionsConfig.selectRows(reviewDeal)[0].detail, 'TWO_LIMB');
   assert.equal(terminationRightsMod.terminationRightsConfig.selectRows(reviewDeal)[0].detail, 'June 30, 2026');
-  assert.equal(terminationFeesMod.terminationFeesConfig.selectRows(reviewDeal)[0].detail, '$100,000,000');
+  assert.match(terminationFeesMod.terminationFeesConfig.selectRows(reviewDeal)[0].detail, /\$100,000,000/);
   assert.match(generalCovenantsMod.generalCovenantsConfig.selectRows(reviewDeal)[0].detail, /reasonable access/);
   assert.match(approvalsVotesMod.approvalsVotesConfig.selectRows(reviewDeal)[0].detail, /majority/);
   assert.match(advisersFeesExpensesMod.advisersFeesExpensesConfig.selectRows(reviewDeal)[0].detail, /own expenses/);
@@ -249,15 +249,15 @@ test('representations-qualifiers config exposes taxonomy-readable signals and ho
       features: {
         materialityQualifier: { code: 'MAT_MAE_QUALIFIED', label: 'MAE qualifier', text: 'would not have an MAE' },
         knowledgeStandard: { code: 'ACTUAL', label: 'Actual knowledge', text: 'actual knowledge' },
-        disclosureScheduleException: 'except as set forth in Section 4.06 of the Company Disclosure Schedule',
+        disclosureSchedulesException: 'except as set forth in Section 4.06 of the Company Disclosure Schedule',
         linkedBringDownStandard: 'in all material respects',
       },
     }],
   });
-  const materiality = rows.find((row) => row.id === 'representations-qualifiers-materiality');
-  const knowledge = rows.find((row) => row.id === 'representations-qualifiers-knowledge');
+  const materiality = rows.find((row) => row.id === 'representations-qualifiers-materiality-rep');
+  const knowledge = rows.find((row) => row.id === 'representations-qualifiers-knowledge-rep');
   const schedule = rows.find((row) => row.id === 'representations-qualifiers-schedule');
-  const bringDown = rows.find((row) => row.id === 'representations-qualifiers-bringdown');
+  const bringDown = rows.find((row) => row.id === 'representations-qualifiers-bringdown-rep');
   assert.deepEqual(materiality.signals.map((item) => item.label), ['Qualifier: True except where failure would not have an MAE']);
   assert.deepEqual(knowledge.signals.map((item) => item.label), ['Qualifier: Actual knowledge']);
   assert.deepEqual(schedule.signals.map((item) => item.label), ['Exception: except as set forth in Section 4.06 of the Company Disclosure Schedule']);
@@ -270,6 +270,27 @@ test('representations-qualifiers config exposes taxonomy-readable signals and ho
   const detailColumn = representationsQualifiersMod.representationsQualifiersConfig.columns.find((column) => column.id === 'detail');
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, signalColumn.renderCell(materiality, { primitives }))), /True except where failure would not have an MAE/);
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(knowledge, { primitives }))), /data-evidence="The SEC Documents were accurate/);
+});
+
+test('representations-qualifiers config renders ONE row per rep for knowledge/materiality/bring-down, not a single collapsed row (Metsera regression: 16/22/37 claims were collapsing to 1)', () => {
+  const repCard = (id, short_title, features) => ({
+    id, provision_type: 'REPRESENTATION', provision_subtype: 'REP-T-GENERIC', short_title, primary_quote: `${short_title} representation text.`, features,
+  });
+  const rows = representationsQualifiersMod.representationsQualifiersConfig.selectRows({
+    cards: [
+      repCard('rep-org', 'Organization', { knowledgeQualifier: 'Company knowledge', materialityQualifier: 'material respects', linkedBringDownStandard: 'in all material respects' }),
+      repCard('rep-cap', 'Capitalization', { materialityQualifier: 'MAE qualified', linkedBringDownStandard: 'true and correct in all respects' }),
+      repCard('rep-lit', 'Litigation', { knowledgeQualifier: 'to the knowledge of Parent', linkedBringDownStandard: 'accurate as of the Closing Date' }),
+    ],
+  });
+  const knowledgeRows = rows.filter((row) => row.label.startsWith('Knowledge qualifier'));
+  const materialityRows = rows.filter((row) => row.label.startsWith('Materiality qualifier'));
+  const bringDownRows = rows.filter((row) => row.label.startsWith('Linked bring-down standard'));
+  assert.equal(knowledgeRows.length, 2, 'knowledge qualifier should render one row per rep card that has one, not collapse to 1');
+  assert.equal(materialityRows.length, 2, 'materiality qualifier should render one row per rep card that has one, not collapse to 1');
+  assert.equal(bringDownRows.length, 3, 'bring-down standard should render one row per rep card (all 3 have one), not collapse to 1');
+  assert.deepEqual(new Set(knowledgeRows.map((row) => row.id)), new Set(['representations-qualifiers-knowledge-rep-org', 'representations-qualifiers-knowledge-rep-lit']));
+  assert.ok(bringDownRows.every((row) => row.label.includes('—')), 'per-rep rows should carry the source rep in the label so rows stay distinguishable');
 });
 
 test('mae-definitions config exposes carve-out and definition signals with hover details', () => {
@@ -306,6 +327,46 @@ test('mae-definitions config exposes carve-out and definition signals with hover
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(preventDelay, { primitives }))), /data-evidence="Material Adverse Effect excludes/);
 });
 
+test('mae-definitions config splits Company vs Parent DEF-MAE cards into their own row sets, not one side silently absorbing the other (Metsera regression)', () => {
+  const rows = maeDefinitionsMod.maeDefinitionsConfig.selectRows({
+    cards: [
+      {
+        id: 'mae-parent',
+        provision_type: 'DEFINITION',
+        provision_subtype: 'DEF-MAE',
+        short_title: 'Material Adverse Effect',
+        defined_term: 'Parent Material Adverse Effect',
+        primary_quote: 'Parent Material Adverse Effect definition text.',
+        features: { maeLimbs: 'ONE_LIMB' },
+      },
+      {
+        id: 'mae-company',
+        provision_type: 'DEFINITION',
+        provision_subtype: 'DEF-MAE',
+        short_title: 'Material Adverse Effect',
+        defined_term: 'Company Material Adverse Effect',
+        primary_quote: 'Company Material Adverse Effect definition text.',
+        features: {
+          maeLimbs: 'TWO_LIMB',
+          carveouts: [{ code: 'ECONOMY_GENERAL', label: 'General economy', text: 'general economic conditions' }],
+        },
+      },
+    ],
+  });
+  const companyLimbs = rows.find((row) => row.id === 'mae-definitions-company-limbs');
+  const parentLimbs = rows.find((row) => row.id === 'mae-definitions-parent-limbs');
+  const companyCarveouts = rows.find((row) => row.id === 'mae-definitions-company-carveouts');
+  const parentCarveouts = rows.find((row) => row.id === 'mae-definitions-parent-carveouts');
+  assert.ok(companyLimbs, 'Company side should render its own MAE-limbs row');
+  assert.ok(parentLimbs, 'Parent side should render its own MAE-limbs row (previously absorbed by whichever card came first)');
+  assert.equal(companyLimbs.detail, 'TWO_LIMB');
+  assert.equal(parentLimbs.detail, 'ONE_LIMB');
+  assert.ok(companyCarveouts, 'Company carve-outs should render');
+  assert.equal(parentCarveouts, undefined, 'Parent has no carve-out data, so no Parent carve-outs row should be fabricated');
+  assert.ok(companyLimbs.label.startsWith('Company:'));
+  assert.ok(parentLimbs.label.startsWith('Parent:'));
+});
+
 test('antitrust-regulatory config exposes regulatory signals and hover details', () => {
   const rows = antitrustRegulatoryMod.antitrustRegulatoryConfig.selectRows({
     cards: [{
@@ -323,7 +384,7 @@ test('antitrust-regulatory config exposes regulatory signals and hover details',
     }],
   });
   const efforts = rows.find((row) => row.id === 'antitrust-regulatory-efforts');
-  const filings = rows.find((row) => row.id === 'antitrust-regulatory-filings');
+  const filings = rows.find((row) => row.id === 'antitrust-regulatory-hsr-deadline');
   const approvals = rows.find((row) => row.id === 'antitrust-regulatory-approvals');
   const burdenCap = rows.find((row) => row.id === 'antitrust-regulatory-burden-cap');
   assert.deepEqual(efforts.signals.map((item) => item.label), ['Efforts: Reasonable best efforts']);
@@ -391,7 +452,7 @@ test('termination-rights config exposes timing and right signals with hover deta
       },
     }],
   });
-  const party = rows.find((row) => row.id === 'termination-rights-party');
+  const party = rows.find((row) => row.id === 'termination-rights-party-termr');
   const outsideDate = rows.find((row) => row.id === 'termination-rights-outside-date');
   const extension = rows.find((row) => row.id === 'termination-rights-extension');
   const breach = rows.find((row) => row.id === 'termination-rights-breach');
@@ -409,6 +470,29 @@ test('termination-rights config exposes timing and right signals with hover deta
   const detailColumn = terminationRightsMod.terminationRightsConfig.columns.find((column) => column.id === 'detail');
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, signalColumn.renderCell(party, { primitives }))), /Mutual \(both parties\)/);
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(outsideDate, { primitives }))), /data-evidence="Either party may terminate/);
+});
+
+test('termination-rights config renders ONE row per right for partyWhoCanTerminate, not a single collapsed row (Metsera regression: 9 claims across 9 rights were collapsing to 1)', () => {
+  const termrCard = (id, short_title, party) => ({
+    id, provision_type: 'TERMINATION_RIGHT', provision_subtype: 'TERMR-GENERIC', short_title, primary_quote: `${short_title} termination right text.`, features: { partyWhoCanTerminate: party },
+  });
+  const rows = terminationRightsMod.terminationRightsConfig.selectRows({
+    cards: [
+      termrCard('termr-breach', 'Target Breach', 'PARTY_BUYER'),
+      termrCard('termr-superior', 'Superior Proposal', 'PARTY_TARGET'),
+      termrCard('termr-outside', 'Outside Date', 'PARTY_MUTUAL'),
+    ],
+  });
+  const partyRows = rows.filter((row) => row.label.startsWith('Party who can terminate'));
+  assert.equal(partyRows.length, 3, 'each termination right should keep its own party row instead of collapsing to 1');
+  assert.deepEqual(new Set(partyRows.map((row) => row.id)), new Set([
+    'termination-rights-party-termr-breach',
+    'termination-rights-party-termr-superior',
+    'termination-rights-party-termr-outside',
+  ]));
+  assert.ok(partyRows.some((row) => row.label.includes('Target Breach') && row.detail === 'PARTY_BUYER'));
+  assert.ok(partyRows.some((row) => row.label.includes('Superior Proposal') && row.detail === 'PARTY_TARGET'));
+  assert.ok(partyRows.some((row) => row.label.includes('Outside Date') && row.detail === 'PARTY_MUTUAL'));
 });
 
 test('sec-meeting config exposes proxy and offer signals with hover details', () => {
@@ -464,6 +548,30 @@ test('general-covenants config exposes efforts, consent, knowledge, and deadline
     'Knowledge: Knowledge qualified: to the Company Knowledge',
     'Deadline: 5 business days',
   ]);
+});
+
+test('general-covenants config renders one row PER covenant card in addition to the curated summary rows (Metsera regression: 38 IOC/COV cards collapsed into a fixed 10-row table)', () => {
+  const covCard = (id, subtype, short_title, mainConcept) => ({
+    id, provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: subtype, short_title, primary_quote: `${short_title} clause text.`, features: { mainConcept },
+  });
+  const rows = generalCovenantsMod.generalCovenantsConfig.selectRows({
+    cards: [
+      covCard('cov-maintain', 'IOC-MAINTAIN', 'Maintain Insurance', 'The Company shall maintain existing insurance policies.'),
+      covCard('cov-ordinary', 'IOC-ORDINARY', 'Ordinary Course', 'The Company shall conduct business in the ordinary course.'),
+      covCard('cov-dividend', 'IOC-DIVIDEND', 'Dividends', 'The Company shall not declare dividends without consent.'),
+      { id: 'cov-preamble', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-GENERAL-EXCEPTIONS', short_title: 'General Exceptions', primary_quote: 'Exceptions preamble.', features: {} },
+    ],
+  });
+  const maintain = rows.find((row) => row.label === 'Maintain Insurance');
+  const ordinary = rows.find((row) => row.label === 'Ordinary Course');
+  const dividend = rows.find((row) => row.label === 'Dividends');
+  const preamble = rows.find((row) => row.label === 'General Exceptions');
+  assert.ok(maintain, 'each IOC card should get its own per-clause row');
+  assert.ok(ordinary);
+  assert.ok(dividend);
+  assert.equal(maintain.kind, 'Interim operating');
+  assert.equal(maintain.detail, 'The Company shall maintain existing insurance policies.');
+  assert.equal(preamble, undefined, 'the preamble/general-exceptions container card is rendered by ioc-exceptions.config.js, not duplicated here');
 });
 
 test('conditions-m config returns no table rows when no closing-condition cards exist', () => {
@@ -802,14 +910,22 @@ test('termination fee and expense configs expose primitive-backed signals', () =
       provision_subtype: 'TERMF-TARGET',
       primary_quote: 'The Company shall pay a termination fee of $100,000,000 as a condition to termination.',
       features: {
-        targetTerminationFee: '$100,000,000',
+        // Real claims-adapter shape: every TERMF card's structured fee data
+        // lands under the SAME flat attribute name, differentiated by which
+        // card (provision_subtype) it's attached to (see lib/termf.js's
+        // routeRawTerminationFees).
+        terminationFees: {
+          amount: '$100,000,000',
+          triggers: [{ code: 'SUPERIOR_PROPOSAL', text: 'Company terminates pursuant to Section 8.01(f)', label: 'Company terminates to accept a Superior Proposal' }],
+        },
         feeRequired: true,
       },
     }],
   });
-  const amount = terminationRows.find((row) => row.id === 'termination-fees-target-fee');
+  const amount = terminationRows.find((row) => row.id === 'termination-fees-COMPANY_TERMINATION_FEE');
   const feeRequired = terminationRows.find((row) => row.id === 'termination-fees-required');
-  assert.deepEqual(amount.signals.map((item) => item.label), ['Amount: $100,000,000']);
+  assert.match(amount.detail, /\$100,000,000/);
+  assert.deepEqual(amount.signals.map((item) => item.label), ['Company terminates to accept a Superior Proposal']);
   assert.deepEqual(feeRequired.signals.map((item) => item.label), ['Condition: Yes']);
   const termSignals = terminationFeesMod.terminationFeesConfig.columns.find((column) => column.id === 'signals');
   const termDetail = terminationFeesMod.terminationFeesConfig.columns.find((column) => column.id === 'detail');
@@ -832,6 +948,54 @@ test('termination fee and expense configs expose primitive-backed signals', () =
   assert.deepEqual(exception.signals.map((item) => item.label), ['Expenses: Parent pays HSR filing fees']);
   const miscSignals = advisersFeesExpensesMod.advisersFeesExpensesConfig.columns.find((column) => column.id === 'signals');
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, miscSignals.renderCell(exception, { primitives }))), /Parent pays HSR filing fees/);
+});
+
+test('termination-fees config renders structured fee-table cells, not raw JSON, across multiple TERMF cards (Metsera regression: terminationFees dumped literal JSON)', () => {
+  const rows = terminationFeesMod.terminationFeesConfig.selectRows({
+    cards: [
+      {
+        id: 'termf-target',
+        provision_type: 'TERMINATION_FEE',
+        provision_subtype: 'TERMF-TARGET',
+        primary_quote: 'Company Termination Fee provision.',
+        features: {
+          terminationFees: {
+            amount: '$190,000,000',
+            payment_deadline: 'within two business days after termination',
+            triggers: [
+              { code: 'SUPERIOR_PROPOSAL', text: 'Company terminates pursuant to Section 8.01(f)', label: 'Company terminates to accept a Superior Proposal' },
+              { code: 'RECOMMENDATION_CHANGE', text: 'Parent terminates pursuant to Section 8.01(d)', label: 'Parent terminates after a recommendation change' },
+            ],
+          },
+        },
+      },
+      {
+        id: 'termf-expense',
+        provision_type: 'TERMINATION_FEE',
+        provision_subtype: 'TERMF-EXPENSE',
+        primary_quote: 'Expense Reimbursement provision.',
+        features: {
+          terminationFees: { triggers: [{ code: 'OTHER', text: 'Company fails to make a required payment', label: 'Company fails to promptly make a required payment' }] },
+        },
+      },
+    ],
+  });
+  const companyFee = rows.find((row) => row.id === 'termination-fees-COMPANY_TERMINATION_FEE');
+  const expenseFee = rows.find((row) => row.id === 'termination-fees-EXPENSE_REIMBURSEMENT');
+  assert.ok(companyFee, 'company termination fee row should render');
+  assert.ok(expenseFee, 'expense reimbursement row should render as its own row, not folded into the company fee row');
+  // Neither row's detail is the raw claim object serialized inline.
+  assert.doesNotMatch(companyFee.detail, /\{"amount"/);
+  assert.doesNotMatch(companyFee.detail, /"triggers":\[/);
+  assert.match(companyFee.detail, /\$190,000,000/);
+  assert.match(companyFee.detail, /within two business days/);
+  // Each trigger is its own short, human-readable pill — not the full
+  // verbatim clause text dumped into one cell.
+  assert.deepEqual(companyFee.signals.map((item) => item.label), [
+    'Company terminates to accept a Superior Proposal',
+    'Parent terminates after a recommendation change',
+  ]);
+  assert.deepEqual(expenseFee.signals.map((item) => item.label), ['Company fails to promptly make a required payment']);
 });
 
 test('tail-fee render cells use threshold and evidence primitives', () => {

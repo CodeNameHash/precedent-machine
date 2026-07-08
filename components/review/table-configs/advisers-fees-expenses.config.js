@@ -3,7 +3,7 @@ import { cardCode, cardType, firstFeature, makeRow, selectCards, textOf } from '
 
 const ROWS = [
   ['fee-expense', 'Fee / expense allocation', 'Expenses', ['feeExpenseAllocation', 'expensesAllocation']],
-  ['expense-exceptions', 'Expense exceptions', 'Expenses', ['feeExpenseExceptions', 'expenseExceptions']],
+  ['expense-exceptions', 'Expense exceptions', 'Expenses', ['feeExpenseAllocationExceptions', 'feeExpenseExceptions', 'expenseExceptions']],
   ['adviser-fees', 'Adviser fees', 'Advisers', ['adviserFees', 'brokerFees', 'financialAdvisorFees']],
   ['company-adviser', 'Company adviser', 'Advisers', ['companyFinancialAdvisor', 'companyAdvisor']],
   ['parent-adviser', 'Parent adviser', 'Advisers', ['parentFinancialAdvisor', 'parentAdvisor']],
