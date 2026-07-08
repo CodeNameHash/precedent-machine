@@ -81,11 +81,12 @@ test('4a: review page sorts rendered sections by SIDEBAR_GROUPS order (synthesiz
   assert.match(src, /return Object\.fromEntries\(orderedEntries\)/);
 });
 
-test('4c: empty buyer-side sections collapse to a single inline "— None" line', () => {
+test('review page no longer renders legacy empty buyer-side section placeholders', () => {
   const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
-  assert.ok(src.includes("'IOC (Buyer)'"));
-  assert.ok(src.includes("'No-Shop (Buyer)'"));
-  assert.match(src, /\{' — None'\}/);
+  assert.doesNotMatch(src, /'IOC \(Buyer\)'/);
+  assert.doesNotMatch(src, /'No-Shop \(Buyer\)'/);
+  assert.doesNotMatch(src, /\{' — None'\}/);
+  assert.match(src, /<ProvisionCardTable reviewDeal=\{schemaReviewDeal/);
 });
 
 test('IOC side gate treats single-item filter arrays as child clicks', () => {
@@ -138,14 +139,6 @@ test('sidebar section clicks and direct links scroll without filtering the page'
   assert.doesNotMatch(hydrateBody, /nextFilter =/);
 });
 
-test('rep lookback renderer frames numeric month counts as years before signing', () => {
-  const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
-  assert.match(src, /function formatLookbackYears\(months\)/);
-  assert.match(src, /years prior to signing/);
-  assert.match(src, /lookbackToYears\(features\.secFilingsLookbackMonths, signing\)/);
-  assert.doesNotMatch(src, /months prior to signing/);
-});
-
 test('MAE definition side detection reads the defined term before generic category/code', () => {
   const reviewSrc = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
   const sidebarSrc = fs.readFileSync(path.join(__dirname, '..', 'lib', 'sidebar-groups.js'), 'utf8');
@@ -184,13 +177,4 @@ test('review hero uses display party names while preserving contractual parent d
   assert.match(src, /const displayTarget = getDisplayTarget\(deal\)/);
   assert.match(src, /\{displayAcquirer\} <span className="vs">acquires<\/span> \{displayTarget\}/);
   assert.match(src, /Contractual parent: \{contractualAcquirer\}/);
-});
-
-test('review section collapse arrow sits next to the section title', () => {
-  const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
-  const start = src.indexOf('<h2>{typeLabel(type)}</h2>');
-  assert.ok(start > 0);
-  const headerBody = src.slice(start, src.indexOf('<span className="rule"', start));
-  assert.doesNotMatch(headerBody, /rec-section-slot/);
-  assert.match(headerBody, /\{isCollapsed \? '▸' : '▾'\}/);
 });

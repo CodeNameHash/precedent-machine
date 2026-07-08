@@ -121,11 +121,11 @@ test('TERMF dollar formatter strips words and preserves numeric dollars', () => 
   assert.equal(logic.numericDollarOnly('Three Hundred Million Dollars ($300,000,000)'), '$300,000,000');
 });
 
-test('IOC-B and IOC-T use the same shared IOC table components gated by iocSide', () => {
+test('IOC-B and IOC-T legacy table wiring is retired behind schema cards', () => {
   const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
-  assert.match(src, /type === firstIocType/);
-  assert.match(src, /iocProvisions=\{allFilteredIocProvisions\}/);
-  assert.match(src, /side=\{iocSide\}/);
+  assert.match(src, /<ProvisionCardTable reviewDeal=\{schemaReviewDeal/, 'schema card table remains the user render path');
+  assert.doesNotMatch(src, /iocProvisions=\{allFilteredIocProvisions\}/);
+  assert.doesNotMatch(src, /side=\{iocSide\}/);
 });
 
 test('DealsTable has a filterable Consideration column', () => {

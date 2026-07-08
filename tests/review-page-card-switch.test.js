@@ -13,17 +13,16 @@ test('review page imports the provision card table', () => {
   assert.match(reviewPageSource, /import ProvisionCardTable from '..\/..\/components\/review\/ProvisionCardTable';/);
 });
 
-test('review page switches to schema render at the 40-card threshold', () => {
-  assert.match(reviewPageSource, /const SCHEMA_RENDER_MIN_CARDS = 40;/);
-  assert.match(reviewPageSource, /schemaCardCount >= SCHEMA_RENDER_MIN_CARDS/);
+test('review page renders the schema card table without a legacy fallback threshold', () => {
+  assert.doesNotMatch(reviewPageSource, /SCHEMA_RENDER_MIN_CARDS/);
+  assert.doesNotMatch(reviewPageSource, /schemaCardCount >=/);
   assert.match(reviewPageSource, /<ProvisionCardTable reviewDeal=\{schemaReviewDeal/);
 });
 
-test('review page supports render query overrides', () => {
-  assert.match(reviewPageSource, /renderModeParam === 'schema'/);
-  assert.match(reviewPageSource, /renderModeParam === 'legacy'/);
-  assert.match(reviewPageSource, /forcedRenderMode === 'legacy'/);
-  assert.match(reviewPageSource, /forcedRenderMode === 'schema'/);
+test('review page no longer supports the retired legacy render query override', () => {
+  assert.doesNotMatch(reviewPageSource, /renderModeParam/);
+  assert.doesNotMatch(reviewPageSource, /forcedRenderMode/);
+  assert.doesNotMatch(reviewPageSource, /renderModeParam === 'legacy'/);
 });
 
 test('review page fetches card-backed deal data through the API route', () => {

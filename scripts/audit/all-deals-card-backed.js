@@ -59,13 +59,19 @@ function readThreshold() {
 function assertReviewPageBranch(source) {
   const body = String(source || '');
   const required = [
-    /schemaCardCount\s*>=\s*SCHEMA_RENDER_MIN_CARDS/,
-    /forcedRenderMode\s*===\s*'legacy'/,
-    /forcedRenderMode\s*===\s*'schema'/,
     /<ProvisionCardTable\s+reviewDeal=\{schemaReviewDeal/,
   ];
   const missing = required.filter((pattern) => !pattern.test(body));
   if (missing.length) throw new Error('Review page schema/legacy branch shape not recognised');
+  const forbidden = [
+    /SCHEMA_RENDER_MIN_CARDS/,
+    /forcedRenderMode/,
+    /renderModeParam/,
+    /schemaCardCount\s*>=/,
+  ];
+  if (forbidden.some((pattern) => pattern.test(body))) {
+    throw new Error('Review page still contains legacy render-switch code');
+  }
 }
 
 function shortcodeFor(deal) {

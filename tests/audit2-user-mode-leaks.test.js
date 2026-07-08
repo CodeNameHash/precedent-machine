@@ -109,15 +109,9 @@ test('PreambleCard renders its Edit button only when onEdit is passed (component
   assert.match(body, /\{onEdit && \(/, 'PreambleCard still gates its Edit button on onEdit being truthy');
 });
 
-test('the PreambleCard call site passes onEdit gated on isEdit, not the handler unconditionally', () => {
+test('the legacy PreambleCard call site is not part of the schema-only review render', () => {
   const src = reviewSrc();
-  const callIdx = src.indexOf('<PreambleCard');
-  assert.ok(callIdx > -1, 'expected to find the PreambleCard call site');
-  const call = src.slice(callIdx, callIdx + 250);
-  assert.match(
-    call,
-    /onEdit=\{isEdit \? handleEditProvision : undefined\}/,
-    'PreambleCard (the section-stub content on e.g. Cooper IOC-B) must not show a live Edit button in read-only user mode'
-  );
-  assert.doesNotMatch(call, /onEdit=\{handleEditProvision\}/, 'must not pass the raw handler unconditionally');
+  assert.equal(src.indexOf('<PreambleCard'), -1, 'schema-only review page must not render the legacy preamble card');
+  assert.match(src, /<ProvisionCardTable reviewDeal=\{schemaReviewDeal/, 'schema card table remains the user render path');
+  assert.doesNotMatch(src, /onEdit=\{handleEditProvision\}/, 'must not pass the raw handler unconditionally');
 });
