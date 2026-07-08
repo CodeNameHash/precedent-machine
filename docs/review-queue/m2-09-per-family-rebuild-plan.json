@@ -1,0 +1,45 @@
+{
+  "id": "m2-09-per-family-rebuild-plan",
+  "created_at": "2026-07-08T17:06:02.988Z",
+  "kind": "canonical",
+  "title": "Approve M2-09 per-family rebuild plan",
+  "summary": "Codex reconciled the legacy JSX audit with the schema augmentation inventory. Approving this entry authorizes Steps 2-4 to build the shared render primitives, enrich each config to the per-family spec, and restore schema-first only after analytical parity is met.\n\nRequired augmentation set:\nConditions: canonicalCode, effortsStandard, consentStandard, materialityScrapeBoolean\nMaterial Contracts: materialContractsBuckets, materialContractsDollarThresholds, MATERIAL_CONTRACT_BUCKET_META.synonyms\nIOC / General Covenants: iocEffortsStandard, iocConsentStandard, knowledgeQualifier, dayCountDeadline\nTail Fee / Fees: tailDurationMonths, triggerRules, terminationFees\nNoSol: matchingRightBusinessDays, fiduciaryOutStandard, interveningEventScope\nRep Materiality / Qualifiers: materialityQualifier, knowledgeQualifier, rw-general-lookback-scopes.js, rw-sec-filings-portions-excluded.js\nMAE / Definitions: maeLimbType, carveouts, disproportionateImpactClause, preventDelayProng\nAntitrust / Regulatory: burdensomeConditionLimit, effortsStandard, hsrFilingDeadline, tickingFee\nStructure / Mechanics: dealStructure, mergerForm, section251h, backendMergerMechanic, appraisalRightsAvailable\nTermination Rights: outsideDate, recommendationChangeTermination, terminationTriggers, breachStandard\nSEC / Meeting: proxyFilingDeadline, voteThreshold, adjournmentRights\nApprovals / Votes: voteThreshold, quorumRequirement, dualClassTreatment, recordDate\nEmployee Benefits: compensationItems, comparisonGroup, benefitStandard, bundling\nNo Other Reps / Fraud: noOtherRepsScope, nonRelianceScope, fraudCarveout\nAdvisers / Fees / Expenses: feeExpenseAllocation, feeExpenseExceptions, adviserFees",
+  "evidence": [
+    {
+      "label": "Per-family plan",
+      "url": "docs/audit/m2-09-per-family-plan.md"
+    },
+    {
+      "label": "Legacy JSX inventory",
+      "url": "docs/audit/m2-09-legacy-inventory.md"
+    },
+    {
+      "label": "Schema augmentations",
+      "url": "docs/audit/m2-09-schema-augmentations.md"
+    },
+    {
+      "label": "Primitives inventory",
+      "url": "docs/audit/m2-09-primitives-needed.md"
+    }
+  ],
+  "choices": [
+    {
+      "key": "approve",
+      "label": "Approve batch plan",
+      "codex_action": "proceed with WP-M2-09 Steps 2-4 against the approved per-family rebuild plan"
+    },
+    {
+      "key": "modify",
+      "label": "Approve with changes",
+      "codex_action": "await Ben-authored modifications to docs/audit/m2-09-per-family-plan.md before Step 2"
+    },
+    {
+      "key": "defer",
+      "label": "Defer M2-09",
+      "codex_action": "halt WP-M2-09 before primitive extraction and leave schema-first default blocked"
+    }
+  ],
+  "resolution": null,
+  "resolved_at": null,
+  "resolved_by": null
+}
