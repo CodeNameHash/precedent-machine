@@ -619,3 +619,7 @@ REVIEW_QUEUE_RESOLUTION {"id":"ed9210c4-76bf-4068-9562-b68869d20c98","kind":"can
 REVIEW_QUEUE_RESOLUTION {"id":"a187a933-217d-40f0-9ac6-ed4afe054e4a","kind":"canonical","title":"WP-M2-00 canonical schema: provision identity, provenance, kind, definitions","choice_key":"approve","codex_action":"proceed with WP-M2-00 Steps 2-8","resolved_at":"2026-07-08T01:40:55.102Z","resolved_by":"ben"}
 
 REVIEW_QUEUE_RESOLUTION {"id":"authorize-legacy-vocab-deletion","kind":"destructive","title":"Authorize legacy vocab deletion","choice_key":"approve","codex_action":"proceed with WP-M2-04 legacy vocab audit and later destructive deletion PR limited to approved safe items","resolved_at":"2026-07-08T01:40:55.102Z","resolved_by":"ben"}
+
+REVIEW_QUEUE_RESOLUTION {"id":"m2-02-schema-parity-diffs","kind":"clarify","title":"WP-M2-02 schema parity audit found 972 diffs — remediation plan","choice_key":"approve-plan","codex_action":"proceed with Steps 3-8","resolved_at":"2026-07-08T13:53:42.890Z","resolved_by":"ben"}
+
+REVIEW_QUEUE_RESOLUTION {"id":"m2-02-recital-suppression","kind":"canonical","title":"Are WHEREAS/preamble/recital paragraphs 'provisions' for parity purposes?","choice_key":"modify","codex_action":"await Ben diff","resolved_at":"2026-07-08T13:55:00.000Z","resolved_by":"ben"}

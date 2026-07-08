@@ -31,7 +31,12 @@
       "codex_action": "await Ben diff"
     }
   ],
-  "resolution": null,
-  "resolved_at": null,
-  "resolved_by": null
+  "resolution": {
+    "choice_key": "modify",
+    "label": "Approve with modifications",
+    "codex_action": "await Ben diff",
+    "note": "Ben decision: tag recitals as recital provisions, but do not show them to users in the main review page or other user-mode review surfaces. Recitals may remain visible for admin/audit purposes."
+  },
+  "resolved_at": "2026-07-08T13:55:00.000Z",
+  "resolved_by": "ben"
 }
