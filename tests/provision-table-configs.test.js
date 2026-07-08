@@ -272,6 +272,40 @@ test('representations-qualifiers config exposes taxonomy-readable signals and ho
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(knowledge, { primitives }))), /data-evidence="The SEC Documents were accurate/);
 });
 
+test('mae-definitions config exposes carve-out and definition signals with hover details', () => {
+  const rows = maeDefinitionsMod.maeDefinitionsConfig.selectRows({
+    cards: [{
+      id: 'mae',
+      provision_type: 'MAE',
+      provision_subtype: 'MAE-DEF',
+      short_title: 'Material Adverse Effect',
+      primary_quote: 'Material Adverse Effect excludes general economic conditions except to the extent disproportionate and includes effects that prevent or materially delay closing.',
+      features: {
+        maeLimbType: 'TWO_LIMB',
+        carveouts: [{ code: 'ECONOMY_GENERAL', label: 'General economy', text: 'general economic conditions' }],
+        disproportionateImpactClause: 'except to the extent disproportionate',
+        preventDelayProng: 'prevent or materially delay closing',
+      },
+    }],
+  });
+  const limbs = rows.find((row) => row.id === 'mae-definitions-limbs');
+  const carveouts = rows.find((row) => row.id === 'mae-definitions-carveouts');
+  const disproportionate = rows.find((row) => row.id === 'mae-definitions-disproportionate');
+  const preventDelay = rows.find((row) => row.id === 'mae-definitions-prevent-delay');
+  assert.deepEqual(limbs.signals.map((item) => item.label), ['Definition: TWO_LIMB']);
+  assert.deepEqual(carveouts.signals.map((item) => item.label), ['Carve-out: General economic conditions']);
+  assert.deepEqual(disproportionate.signals.map((item) => item.label), ['Exception: except to the extent disproportionate']);
+  assert.deepEqual(preventDelay.signals.map((item) => item.label), ['Definition: prevent or materially delay closing']);
+  const primitives = {
+    PillCell: ({ label }) => React.createElement('span', { className: 'pill' }, label),
+    EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
+  };
+  const signalColumn = maeDefinitionsMod.maeDefinitionsConfig.columns.find((column) => column.id === 'signals');
+  const detailColumn = maeDefinitionsMod.maeDefinitionsConfig.columns.find((column) => column.id === 'detail');
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, signalColumn.renderCell(carveouts, { primitives }))), /General economic conditions/);
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(preventDelay, { primitives }))), /data-evidence="Material Adverse Effect excludes/);
+});
+
 test('general-covenants config exposes efforts, consent, knowledge, and deadline signals', () => {
   const rows = generalCovenantsMod.generalCovenantsConfig.selectRows({
     cards: [{
