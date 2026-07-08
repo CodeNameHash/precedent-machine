@@ -1,0 +1,27 @@
+{
+  "phase": "WP-M2-09-01B-SCHEMA-AUGMENTATIONS",
+  "name": "m2-09-01b-schema-augmentations",
+  "allowed": [
+    ".github/phase-allowlists/wp-m2-09-01b-schema-augmentations.json",
+    "HANDOFF.md",
+    "docs/audit/m2-09-schema-augmentations.md",
+    "scripts/audit/schema-augmentation-inventory.js",
+    "tests/audit/schema-augmentation-inventory.spec.js"
+  ],
+  "denied": [
+    "components/review/**",
+    "docs/vocab/FROZEN-*.json",
+    "docs/market-registry/FROZEN-*.json",
+    "docs/schema-shape/*.frozen",
+    "docs/schema-shape/canonical-registry-v1.md",
+    "docs/schema-shape/canonical-definitions.md",
+    "docs/schema-shape/normalized-v1.json",
+    "lib/schema/**",
+    "lib/rubric.js",
+    "lib/vocab/**",
+    "pages/review/[id].js",
+    "supabase/migrations/**",
+    "db/migrations/**"
+  ],
+  "note": "WP-M2-09 Step 1b is an audit-only branch that inventories schema-card augmentations for analytical-parity planning."
+}
