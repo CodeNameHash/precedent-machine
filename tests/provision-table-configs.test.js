@@ -3,8 +3,10 @@ const assert = require('node:assert/strict');
 const path = require('node:path');
 
 let mod;
+let iocMod;
 test.before(async () => {
   mod = await import(path.join('..', 'components', 'review', 'table-configs', 'conditions-m.config.js'));
+  iocMod = await import(path.join('..', 'components', 'review', 'table-configs', 'ioc-exceptions.config.js'));
 });
 
 function card(overrides = {}) {
@@ -105,4 +107,67 @@ test('conditions-s config maps schema cards to seller-side canonical present row
   ]);
   assert.match(rows.find((row) => row.label === 'No Material Adverse Effect (Parent)').detail, /Not found/);
   assert.match(rows.find((row) => row.label === 'Financing / Sufficient Funds').detail, /sufficient funds/);
+});
+
+test('ioc-exceptions config prefers structured feature exceptions', () => {
+  const rows = iocMod.iocExceptionsConfig.selectRows({
+    cards: [
+      {
+        id: 'ioc-general',
+        provision_type: 'COVENANT_INTERIM_OPERATING',
+        provision_subtype: 'IOC-GENERAL-EXCEPTIONS',
+        party_scope: 'COMPANY',
+        short_title: 'General Exceptions',
+        features: {
+          permittedExceptions: [
+            { code: 'COMPANY_DISCLOSURE_LETTER', label: 'As disclosed', text: 'except as set forth in the Company Disclosure Letter' },
+            { code: 'REQUIRED_BY_AGREEMENT', label: 'As contemplated by this Agreement', text: 'otherwise expressly required by this Agreement' },
+            { code: 'REQUIRED_BY_LAW', label: 'As required by law', text: 'as required by applicable Law' },
+            { code: 'PRIOR_WRITTEN_CONSENT', label: 'With consent', text: 'with Parent consent' },
+          ],
+        },
+      },
+      {
+        id: 'ioc-neg',
+        provision_type: 'COVENANT_INTERIM_OPERATING',
+        provision_subtype: 'IOC-NEGATIVE-PREAMBLE',
+        party_scope: 'COMPANY',
+        short_title: 'Negative Preamble',
+        features: {
+          negativePreambleExceptions: [{ code: 'ORDINARY_COURSE', label: 'Ordinary course', text: 'ordinary course of business' }],
+        },
+      },
+    ],
+  });
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0].party, 'Target / Company');
+  assert.deepEqual(rows[0].positive.map((entry) => entry.label), [
+    'As disclosed',
+    'As contemplated by this Agreement',
+    'As required by law',
+    'With consent',
+  ]);
+  assert.deepEqual(rows[0].negative.map((entry) => entry.label), ['Ordinary course']);
+});
+
+test('ioc-exceptions config falls back to splitting general-exceptions card text', () => {
+  const rows = iocMod.iocExceptionsConfig.selectRows({
+    cards: [
+      {
+        id: 'ioc-general',
+        provision_type: 'COVENANT_INTERIM_OPERATING',
+        provision_subtype: 'IOC-GENERAL-EXCEPTIONS',
+        party_scope: 'BUYER',
+        short_title: 'General Exceptions',
+        primary_quote: '(i) except as set forth in the Buyer Disclosure Schedule; (ii) as required by applicable Law; (iii) with the Company consent',
+      },
+    ],
+  });
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0].party, 'Parent / Buyer');
+  assert.deepEqual(rows[0].positive.map((entry) => entry.label), [
+    'As disclosed',
+    'As required by law',
+    'With consent',
+  ]);
 });
