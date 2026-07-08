@@ -24,8 +24,9 @@ function fixtureProvisions() {
   }));
 }
 
-function fakeSupabase() {
+function fakeSupabase(options = {}) {
   const calls = [];
+  const existingRows = options.existingRows || [];
   return {
     calls,
     from(table) {
@@ -35,7 +36,29 @@ function fakeSupabase() {
           return {
             eq(column, value) {
               calls.push({ table, op: 'eq', column, value });
-              return Promise.resolve({ error: null });
+              // Awaitable directly (delete-all path: `await ...delete().eq(...)`)
+              // and chainable with `.in()` (scoped orphan-delete path).
+              return {
+                in(column2, values) {
+                  calls.push({ table, op: 'in', column: column2, values });
+                  return Promise.resolve({ error: null });
+                },
+                then(resolve) {
+                  return Promise.resolve({ error: null }).then(resolve);
+                },
+              };
+            },
+          };
+        },
+        select(columns) {
+          calls.push({ table, op: 'select', columns });
+          return {
+            eq(column, value) {
+              calls.push({ table, op: 'eq', column, value });
+              return Promise.resolve({
+                data: existingRows.filter((row) => row.deal_id === value || !row.deal_id),
+                error: null,
+              });
             },
           };
         },
@@ -119,7 +142,7 @@ test('card writer maps STRUCT into the schema-valid structure card family', () =
   assert.deepEqual(rows.map((row) => row.provision_type), ['STRUCTURE_MECHANICS', 'MISC_BOILERPLATE']);
 });
 
-test('storeProvisionCards replaces deal rows and upserts on provision_instance_id', async () => {
+test('storeProvisionCards upserts on provision_instance_id before touching existing rows', async () => {
   const fixture = JSON.parse(fs.readFileSync('tests/e2e/fixtures/metsera-card-writer.json', 'utf8'));
   const sb = fakeSupabase();
   const result = await storeProvisionCards(fixture.deal_id, fixture, sb, {
@@ -132,9 +155,80 @@ test('storeProvisionCards replaces deal rows and upserts on provision_instance_i
   });
 
   assert.equal(result.insertedCount, 2);
-  assert.equal(sb.calls[0].op, 'delete');
+  // Upsert must run first (claims FK-cascade safety, see store-cards.js
+  // comment above storeProvisionCards): no delete of any kind may precede
+  // the upsert.
+  assert.equal(sb.calls[0].op, 'upsert');
+  assert.ok(!sb.calls.slice(0, sb.calls.findIndex((call) => call.op === 'upsert')).some((call) => call.op === 'delete'));
   const upsert = sb.calls.find((call) => call.op === 'upsert');
   assert.equal(upsert.table, 'provision_cards');
   assert.equal(upsert.options.onConflict, 'provision_instance_id');
   assert.equal(upsert.rows[1].kind, 'cross-reference');
+});
+
+test('storeProvisionCards re-ingest: survivors are upserted in place, never deleted (claims FK-cascade safety)', async () => {
+  const fixture = JSON.parse(fs.readFileSync('tests/e2e/fixtures/metsera-card-writer.json', 'utf8'));
+  const options = {
+    sourceDocId: fixture.source_doc_id,
+    model: 'claude-sonnet-4',
+    promptHash: 'sha256:test',
+    runId: 'metsera-card-writer-test',
+    extractedAt: '2026-07-08T00:00:00.000Z',
+  };
+  // Build the "new" rows the same way storeProvisionCards will, so we know
+  // the exact provision_instance_id values that must survive re-ingest.
+  const newRows = buildProvisionCardRows(fixture.deal_id, fixture, options);
+  assert.equal(newRows.length, 2);
+
+  const survivorIds = newRows.map((row) => row.provision_instance_id);
+  const orphanId = `${fixture.deal_id}:Section 99.9:dropped-provision`;
+  const existingRows = [
+    { deal_id: fixture.deal_id, provision_instance_id: survivorIds[0] },
+    { deal_id: fixture.deal_id, provision_instance_id: survivorIds[1] },
+    { deal_id: fixture.deal_id, provision_instance_id: orphanId },
+  ];
+  const sb = fakeSupabase({ existingRows });
+
+  const result = await storeProvisionCards(fixture.deal_id, fixture, sb, {
+    ...options,
+    replaceDeal: true,
+  });
+
+  assert.equal(result.insertedCount, 2);
+
+  const upsertIndex = sb.calls.findIndex((call) => call.op === 'upsert');
+  const deleteIndex = sb.calls.findIndex((call) => call.op === 'in');
+  assert.ok(upsertIndex >= 0, 'upsert must be called');
+  assert.ok(deleteIndex >= 0, 'orphan delete must be called');
+  assert.ok(upsertIndex < deleteIndex, 'upsert must run before the orphan delete');
+
+  // The upsert carries the survivors with their stable provision_instance_id
+  // (same excerpt_id derives from this) -- a FK-cascade on claims would only
+  // fire if those rows were deleted, and they never are.
+  const upsertCall = sb.calls[upsertIndex];
+  assert.deepEqual(
+    upsertCall.rows.map((row) => row.provision_instance_id).sort(),
+    survivorIds.slice().sort(),
+  );
+
+  // The orphan delete targets only the dropped provision, never a survivor.
+  const orphanDeleteCall = sb.calls[deleteIndex];
+  assert.deepEqual(orphanDeleteCall.values, [orphanId]);
+  assert.equal(orphanDeleteCall.column, 'provision_instance_id');
+
+  // Exactly one delete call total -- the scoped orphan cleanup -- never a
+  // second, broader delete-all-for-deal call (the old, unsafe path).
+  assert.equal(sb.calls.filter((call) => call.op === 'delete').length, 1);
+});
+
+test('storeProvisionCards with replaceDeal and zero new rows deletes all existing cards for the deal', async () => {
+  const sb = fakeSupabase({ existingRows: [{ deal_id: 'deal-empty', provision_instance_id: 'x' }] });
+  const result = await storeProvisionCards('deal-empty', { provisions: [] }, sb, { replaceDeal: true });
+
+  assert.equal(result.insertedCount, 0);
+  assert.equal(sb.calls[0].op, 'delete');
+  assert.deepEqual(
+    sb.calls.filter((call) => call.op === 'eq').map((call) => [call.column, call.value]),
+    [['deal_id', 'deal-empty']],
+  );
 });
