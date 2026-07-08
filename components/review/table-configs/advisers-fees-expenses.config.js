@@ -1,4 +1,5 @@
-import { cardCode, cardType, mappedRows, selectCards, textOf } from './card-utils.js';
+import React from 'react';
+import { cardCode, cardType, firstFeature, makeRow, selectCards, textOf } from './card-utils.js';
 
 const ROWS = [
   ['fee-expense', 'Fee / expense allocation', 'Expenses', ['feeExpenseAllocation', 'expensesAllocation']],
@@ -18,18 +19,62 @@ function isMiscFee(card) {
   return type === 'MISC_BOILERPLATE' || code.startsWith('MISC') || /fees|expenses|adviser|advisor|governing law|jurisdiction|specific performance/i.test(`${card?.short_title || ''} ${textOf(card)}`);
 }
 
+function miscSignal(row) {
+  if (!row?.detail) return null;
+  const label = row.kind === 'Advisers' ? 'Adviser' : row.kind;
+  return {
+    id: `${row.id}-signal`,
+    label: `${label}: ${row.detail}`,
+    value: row.detail,
+    tone: row.kind === 'Expenses' ? 'info' : 'neutral',
+    evidence: row.evidence,
+    source: row.sourceCard,
+  };
+}
+
+function mappedMiscRows(cards) {
+  return ROWS
+    .map(([id, label, kind, keys]) => {
+      const hit = firstFeature(cards, keys || id);
+      const row = makeRow('advisers-fees-expenses', id, label, kind, hit);
+      if (!row) return null;
+      return { ...row, sourceCard: hit.card, signals: [miscSignal({ ...row, sourceCard: hit.card })].filter(Boolean) };
+    })
+    .filter(Boolean);
+}
+
+function renderSignals(row, ctx) {
+  const PillCell = ctx?.primitives?.PillCell;
+  if (!PillCell) return (row.signals || []).map((item) => item.label).join('\n');
+  return (row.signals || []).map((item) => React.createElement(PillCell, {
+    key: item.id,
+    label: item.label,
+    value: item.value,
+    tone: item.tone,
+    evidence: item.evidence,
+    source: item.source,
+  }));
+}
+
+function renderDetail(row, ctx) {
+  const EvidenceHoverSource = ctx?.primitives?.EvidenceHoverSource;
+  if (!EvidenceHoverSource || !row.evidence) return row.detail;
+  return React.createElement(EvidenceHoverSource, { evidence: row.evidence, source: row.sourceCard, as: 'span' }, row.detail);
+}
+
 const advisersFeesExpensesConfig = {
   id: 'advisers-fees-expenses',
   title: 'Advisers / Fees / Expenses',
   layoutSlot: 'misc',
   selectRows(reviewDeal) {
-    return mappedRows('advisers-fees-expenses', selectCards(reviewDeal, isMiscFee), ROWS);
+    return mappedMiscRows(selectCards(reviewDeal, isMiscFee));
   },
   columns: [
     { id: 'term', header: 'Term', width: '18rem', renderCell: (row) => row.label },
     { id: 'kind', header: 'Kind', width: '10rem', renderCell: (row) => row.kind },
-    { id: 'detail', header: 'Detail', renderCell: (row) => row.detail },
+    { id: 'signals', header: 'Signals', width: '18rem', renderCell: renderSignals },
+    { id: 'detail', header: 'Detail', renderCell: renderDetail },
   ],
 };
 
-export { advisersFeesExpensesConfig };
+export { advisersFeesExpensesConfig, miscSignal, renderDetail, renderSignals };

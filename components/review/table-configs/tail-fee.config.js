@@ -1,3 +1,4 @@
+import React from 'react';
 import { normalizeTermfFeatures } from '../../../lib/termf.js';
 
 function cardCode(card) {
@@ -62,6 +63,41 @@ function formatClauses(value) {
   if (!list.length) return 'Not specified';
   return list.map((item) => String(scalar(item) || item).trim()).filter(Boolean).join('\n\n');
 }
+function mechanicTone(id) {
+  if (id === 'tail-same-proposal') return 'warning';
+  if (id === 'tail-window' || id === 'tail-threshold') return 'info';
+  return 'neutral';
+}
+function renderMechanic(row, ctx) {
+  const ThresholdCellWithHoverQuote = ctx?.primitives?.ThresholdCellWithHoverQuote;
+  const EvidenceHoverSource = ctx?.primitives?.EvidenceHoverSource;
+  if (row.id === 'tail-threshold' && ThresholdCellWithHoverQuote) {
+    return React.createElement(ThresholdCellWithHoverQuote, {
+      threshold: row.value,
+      evidence: row.evidence,
+      source: row.sourceCard,
+    });
+  }
+  if (!EvidenceHoverSource || !row.evidence) return row.value;
+  return React.createElement(EvidenceHoverSource, { value: row.value, evidence: row.evidence, source: row.sourceCard, as: 'span' }, row.value);
+}
+function renderSignals(row, ctx) {
+  const PillCell = ctx?.primitives?.PillCell;
+  const label = `${row.label}: ${row.value}`;
+  if (!PillCell) return label;
+  return React.createElement(PillCell, {
+    label,
+    value: row.value,
+    tone: mechanicTone(row.id),
+    evidence: row.evidence,
+    source: row.sourceCard,
+  });
+}
+function renderEvidence(row, ctx) {
+  const EvidenceHoverSource = ctx?.primitives?.EvidenceHoverSource;
+  if (!EvidenceHoverSource || !row.evidence) return row.evidence;
+  return React.createElement(EvidenceHoverSource, { evidence: row.evidence, source: row.sourceCard, as: 'span' }, row.evidence);
+}
 
 const tailFeeConfig = {
   id: 'tail-fee',
@@ -80,18 +116,19 @@ const tailFeeConfig = {
     ].some((value) => value !== null && value !== undefined && value !== '');
     if (!hasTail) return [];
     return [
-      { id: 'tail-window', label: 'Tail window', value: formatWindow(features.tailFeeWindowMonths), evidence: textOf(source), present: true },
-      { id: 'tail-threshold', label: 'Threshold % for Company Takeover Proposal', value: formatPct(features.tailFeeThresholdPct), evidence: textOf(source), present: true },
-      { id: 'tail-arming', label: 'Termination scenarios that arm the tail', value: formatClauses(features.tailFeeActivatingClauses), evidence: textOf(source), present: true },
-      { id: 'tail-same-proposal', label: 'Triggering proposal', value: formatBool(features.tailFeeSameProposalRequired), evidence: textOf(source), present: true },
+      { id: 'tail-window', label: 'Tail window', value: formatWindow(features.tailFeeWindowMonths), evidence: textOf(source), sourceCard: source, present: true },
+      { id: 'tail-threshold', label: 'Threshold % for Company Takeover Proposal', value: formatPct(features.tailFeeThresholdPct), evidence: textOf(source), sourceCard: source, present: true },
+      { id: 'tail-arming', label: 'Termination scenarios that arm the tail', value: formatClauses(features.tailFeeActivatingClauses), evidence: textOf(source), sourceCard: source, present: true },
+      { id: 'tail-same-proposal', label: 'Triggering proposal', value: formatBool(features.tailFeeSameProposalRequired), evidence: textOf(source), sourceCard: source, present: true },
     ];
   },
   columns: [
     { id: 'term', header: 'Term', width: '20rem', renderCell: (row) => row.label },
-    { id: 'value', header: 'Mechanic', renderCell: (row) => row.value },
-    { id: 'evidence', header: 'Evidence', renderCell: (row) => row.evidence },
+    { id: 'signals', header: 'Signals', width: '18rem', renderCell: renderSignals },
+    { id: 'value', header: 'Mechanic', renderCell: renderMechanic },
+    { id: 'evidence', header: 'Evidence', renderCell: renderEvidence },
   ],
   empty: { copy: 'No tail-fee mechanics found.' },
 };
 
-export { tailFeeConfig };
+export { renderEvidence, renderMechanic, renderSignals, tailFeeConfig };
