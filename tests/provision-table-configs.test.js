@@ -10,6 +10,7 @@ let nosolFiduciaryMod;
 let nosolInterveningMod;
 let nosolNoshopMod;
 let nosolSuperiorMod;
+let noOtherRepsFraudMod;
 let secMeetingMod;
 let tailFeeMod;
 test.before(async () => {
@@ -21,6 +22,7 @@ test.before(async () => {
   nosolInterveningMod = await import(path.join('..', 'components', 'review', 'table-configs', 'nosol-intervening.config.js'));
   nosolNoshopMod = await import(path.join('..', 'components', 'review', 'table-configs', 'nosol-noshop.config.js'));
   nosolSuperiorMod = await import(path.join('..', 'components', 'review', 'table-configs', 'nosol-superior.config.js'));
+  noOtherRepsFraudMod = await import(path.join('..', 'components', 'review', 'table-configs', 'no-other-reps-fraud.config.js'));
   secMeetingMod = await import(path.join('..', 'components', 'review', 'table-configs', 'sec-meeting.config.js'));
   tailFeeMod = await import(path.join('..', 'components', 'review', 'table-configs', 'tail-fee.config.js'));
 });
@@ -533,4 +535,54 @@ test('sec-meeting config maps tender-offer SEC filing mechanics', () => {
     'Tender-offer minimum condition',
   ]);
   assert.equal(rows.find((row) => row.id === 'sec-meeting-schedule14D9Filing').subject, 'SEC / offer');
+});
+
+test('no-other-reps fraud config maps Abry four-question summary', () => {
+  const rows = noOtherRepsFraudMod.noOtherRepsFraudConfig.selectRows({
+    cards: [{
+      id: 'entire',
+      provision_subtype: 'MISC-ENTIRE',
+      short_title: 'Entire Agreement',
+      primary_quote: 'Each party disclaims reliance on extra-contractual statements, except in cases of fraud.',
+      features: {
+        noOtherRepsPresent: true,
+        noOtherRepsParty: 'BOTH',
+        nonRelianceClause: 'Parent acknowledges that the Company makes no representations other than those in this Agreement.\n\nThe Company acknowledges that Parent makes no representations other than those in this Agreement.',
+        extraContractualClaimsWaived: true,
+        fraudCarveout: 'nothing herein limits liability for Fraud involving data room materials.\n\nnothing herein limits liability for Fraud involving management presentations.',
+        willfulBreachDefinition: 'Willful Breach means an intentional and material breach of this Agreement.',
+      },
+    }],
+  });
+  assert.deepEqual(rows.map((row) => row.label), [
+    'Buyer non-reliance',
+    'Seller no-other-reps',
+    'Seller non-reliance',
+    'Buyer no-other-reps',
+    'Fraud carve-out',
+    'Willful breach definition',
+  ]);
+  assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-q1').status, 'Present');
+  assert.match(rows.find((row) => row.id === 'no-other-reps-fraud-q2').detail, /data room/);
+  assert.match(rows.find((row) => row.id === 'no-other-reps-fraud-q4').detail, /management presentations/);
+  assert.match(rows.find((row) => row.id === 'no-other-reps-fraud-fraud').detail, /nothing herein limits liability for Fraud/);
+  assert.match(rows.find((row) => row.id === 'no-other-reps-fraud-willful-breach').detail, /intentional and material breach/);
+});
+
+test('no-other-reps fraud config renders fraud silence as a meaningful row', () => {
+  const rows = noOtherRepsFraudMod.noOtherRepsFraudConfig.selectRows({
+    cards: [{
+      id: 'target-norep',
+      provision_subtype: 'REP-T-NOREP',
+      short_title: 'No Other Representations',
+      features: {
+        noOtherRepsPresent: true,
+        noOtherRepsParty: 'COMPANY',
+        nonRelianceClause: 'Parent has not relied on any representation other than those expressly set forth in this Agreement.',
+      },
+    }],
+  });
+  assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-q1').status, 'Present');
+  assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-q3').status, 'Not present');
+  assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-fraud').status, 'Silent');
 });

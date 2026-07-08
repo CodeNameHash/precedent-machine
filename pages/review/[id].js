@@ -145,6 +145,7 @@ import { nosolFiduciaryConfig } from '../../components/review/table-configs/noso
 import { nosolInterveningConfig } from '../../components/review/table-configs/nosol-intervening.config';
 import { nosolNoshopConfig } from '../../components/review/table-configs/nosol-noshop.config';
 import { nosolSuperiorConfig } from '../../components/review/table-configs/nosol-superior.config';
+import { noOtherRepsFraudConfig } from '../../components/review/table-configs/no-other-reps-fraud.config';
 import { secMeetingConfig } from '../../components/review/table-configs/sec-meeting.config';
 import { tailFeeConfig } from '../../components/review/table-configs/tail-fee.config';
 import { BoundaryAuditPanel } from '../../components/review/BoundaryAuditPanel';
@@ -11552,6 +11553,7 @@ export default function ReviewPage() {
                       <ProvisionTable config={nosolFiduciaryConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                       <ProvisionTable config={employeeBenefitsConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                       <ProvisionTable config={secMeetingConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
+                      <ProvisionTable config={noOtherRepsFraudConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                       <ProvisionCardTable reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                     </>
                   ) : null}
