@@ -5,6 +5,7 @@ const path = require('node:path');
 let mod;
 let iocMod;
 let materialContractsMod;
+let nosolInterveningMod;
 let nosolNoshopMod;
 let nosolSuperiorMod;
 let tailFeeMod;
@@ -12,6 +13,7 @@ test.before(async () => {
   mod = await import(path.join('..', 'components', 'review', 'table-configs', 'conditions-m.config.js'));
   iocMod = await import(path.join('..', 'components', 'review', 'table-configs', 'ioc-exceptions.config.js'));
   materialContractsMod = await import(path.join('..', 'components', 'review', 'table-configs', 'material-contracts.config.js'));
+  nosolInterveningMod = await import(path.join('..', 'components', 'review', 'table-configs', 'nosol-intervening.config.js'));
   nosolNoshopMod = await import(path.join('..', 'components', 'review', 'table-configs', 'nosol-noshop.config.js'));
   nosolSuperiorMod = await import(path.join('..', 'components', 'review', 'table-configs', 'nosol-superior.config.js'));
   tailFeeMod = await import(path.join('..', 'components', 'review', 'table-configs', 'tail-fee.config.js'));
@@ -341,4 +343,47 @@ test('nosol-superior config falls back to definition quote text', () => {
   assert.equal(rows.find((row) => row.id === 'nosol-superior-threshold').detail, '75%');
   assert.match(rows.find((row) => row.id === 'nosol-superior-test').detail, /greater value/);
   assert.match(rows.find((row) => row.id === 'nosol-superior-determiner').detail, /Company Board determines/);
+});
+
+test('nosol-intervening config maps intervening event features', () => {
+  const rows = nosolInterveningMod.nosolInterveningConfig.selectRows({
+    cards: [{
+      id: 'intervening',
+      provision_type: 'COVENANT_NO_SOLICITATION',
+      provision_subtype: 'NOSOL-INTERVENING',
+      party_scope: 'COMPANY',
+      primary_quote: 'The Company Board may make an Adverse Recommendation Change in response to an Intervening Event.',
+      features: {
+        boardChangeForInterveningEvent: true,
+        interveningEventDefinition: 'an event unknown to the Company Board as of signing',
+        interveningEventScope: 'POSITIVE_ONLY',
+        interveningEventExceptions: ['Acquisition Proposal-related events'],
+        interveningEventTermination: 'No termination right, recommendation change only',
+      },
+    }],
+  });
+  assert.deepEqual(rows.map((row) => row.label), [
+    'Intervening Event provision',
+    'Definition',
+    'Scope',
+    'Exceptions',
+    'Termination right',
+  ]);
+  assert.equal(rows.find((row) => row.id === 'nosol-intervening-provision').detail, 'Yes');
+  assert.match(rows.find((row) => row.id === 'nosol-intervening-scope').detail, /Positive/);
+});
+
+test('nosol-intervening config falls back to definition and exception quote text', () => {
+  const rows = nosolInterveningMod.nosolInterveningConfig.selectRows({
+    cards: [{
+      id: 'intervening',
+      provision_type: 'DEFINITION',
+      provision_subtype: 'DEF-INTERVENING',
+      short_title: 'Intervening Event',
+      primary_quote: 'Intervening Event means any material event that was not known as of signing. Provided that an Intervening Event shall not include any event arising from an Acquisition Proposal.',
+    }],
+  });
+  assert.match(rows.find((row) => row.id === 'nosol-intervening-definition').detail, /means any material event/);
+  assert.match(rows.find((row) => row.id === 'nosol-intervening-scope').detail, /Positive/);
+  assert.match(rows.find((row) => row.id === 'nosol-intervening-exceptions').detail, /shall not include/);
 });

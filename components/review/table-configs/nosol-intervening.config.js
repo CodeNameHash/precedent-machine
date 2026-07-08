@@ -1,0 +1,110 @@
+const ROWS = [
+  { id: 'provision', label: 'Intervening Event provision', keys: ['interveningEventProvision', 'boardChangeForInterveningEvent'], fallback: provisionFromText },
+  { id: 'definition', label: 'Definition', keys: ['interveningEventDefinition', 'deal.nosol.definitions.interveningEvent'], fallback: definitionFromText },
+  { id: 'scope', label: 'Scope', keys: ['interveningEventScope'], fallback: scopeFromText },
+  { id: 'exceptions', label: 'Exceptions', keys: ['interveningEventExceptions'], fallback: exceptionsFromText },
+  { id: 'termination', label: 'Termination right', keys: ['interveningEventTermination'], fallback: terminationFromText },
+];
+
+function cardCode(card) {
+  return String(card?.provision_subtype || card?.canonical_code || card?.provision_code || '').trim().toUpperCase();
+}
+function cardFeatures(card) {
+  if (card?.features && typeof card.features === 'object') return card.features;
+  const meta = card?.ai_metadata;
+  if (meta?.features && typeof meta.features === 'object') return meta.features;
+  return {};
+}
+function isInterveningCard(card) {
+  const code = cardCode(card);
+  if (['NOSOL-INTERVENING', 'DEF-INTERVENING'].includes(code)) return true;
+  if (card?.provision_type !== 'COVENANT_NO_SOLICITATION' && !/^NOSOL(?:-|$)/.test(code)) return false;
+  return /intervening\s+event/i.test(`${card?.short_title || ''} ${textOf(card)}`);
+}
+function partySide(card) {
+  const scope = String(card?.party_scope || '').toUpperCase();
+  return scope === 'BUYER' || scope === 'PARENT' ? 'Buyer / Parent' : 'Target / Company';
+}
+function textOf(card) {
+  return String(card?.primary_quote || card?.region_full_text || '').trim();
+}
+function valueText(value) {
+  if (value === null || value === undefined || value === '') return null;
+  if (Array.isArray(value)) return value.map(valueText).filter(Boolean).join('; ');
+  if (typeof value === 'object') return value.value || value.label || value.text || value.code || null;
+  if (typeof value === 'boolean') return value ? 'Yes' : 'No';
+  return String(value);
+}
+function firstFeature(cards, keys) {
+  for (const card of cards) {
+    const features = cardFeatures(card);
+    for (const key of keys) {
+      const text = valueText(features[key]);
+      if (text) return prettifyScope(text);
+    }
+  }
+  return null;
+}
+function sentence(text, pattern) {
+  const match = text.match(pattern);
+  return match ? match[0].replace(/\s+/g, ' ').trim() : null;
+}
+function provisionFromText(text) {
+  if (/intervening\s+event/i.test(text) && /change|withdraw|modify|recommendation/i.test(text)) return 'Board change permitted for an Intervening Event';
+  return /intervening\s+event/i.test(text) ? 'Yes' : null;
+}
+function definitionFromText(text) {
+  return sentence(text, /Intervening\s+Event\s+means[^.]+(?:\.)?/i);
+}
+function scopeFromText(text) {
+  if (/shall\s+not\s+include[^.]+Acquisition\s+Proposal/i.test(text) || /does\s+not\s+relate\s+to[^.]+Acquisition\s+Proposal/i.test(text)) return 'Positive / non-Acquisition Proposal events only';
+  if (/intervening\s+event/i.test(text)) return 'Not limited to Acquisition Proposal events on the face of the card';
+  return null;
+}
+function exceptionsFromText(text) {
+  return sentence(text, /(?:shall\s+not\s+include|does\s+not\s+relate\s+to|provided\s+that)[^.]+(?:\.)?/i);
+}
+function terminationFromText(text) {
+  if (/terminate[^.]+Intervening\s+Event/i.test(text)) return sentence(text, /[^.]*terminate[^.]+Intervening\s+Event[^.]*\.?/i);
+  if (/Intervening\s+Event[^.]+termination/i.test(text)) return sentence(text, /[^.]*Intervening\s+Event[^.]+termination[^.]*\.?/i);
+  return null;
+}
+function prettifyScope(text) {
+  const code = String(text).trim().toUpperCase();
+  if (code === 'POSITIVE_ONLY') return 'Positive / non-Acquisition Proposal events only';
+  if (code === 'BOTH') return 'Positive and negative events';
+  if (code === 'NA') return 'No Intervening Event provision';
+  return text;
+}
+function rowForSpec(spec, cards) {
+  const evidence = cards.map(textOf).filter(Boolean).join('\n\n');
+  const detail = firstFeature(cards, spec.keys) || spec.fallback(evidence);
+  if (!detail) return null;
+  return {
+    id: `nosol-intervening-${spec.id}`,
+    label: spec.label,
+    party: [...new Set(cards.map(partySide))].join(', ') || 'Target / Company',
+    detail,
+    evidence,
+    present: true,
+  };
+}
+
+const nosolInterveningConfig = {
+  id: 'nosol-intervening',
+  title: 'Intervening Event Mechanics',
+  layoutSlot: 'nosol',
+  selectRows(reviewDeal) {
+    const cards = (reviewDeal?.cards || []).filter(isInterveningCard);
+    if (!cards.length) return [];
+    return ROWS.map((row) => rowForSpec(row, cards)).filter(Boolean);
+  },
+  columns: [
+    { id: 'term', header: 'Term', width: '18rem', renderCell: (row) => row.label },
+    { id: 'party', header: 'Party', width: '12rem', renderCell: (row) => row.party },
+    { id: 'detail', header: 'Detail', renderCell: (row) => row.detail },
+  ],
+  empty: { copy: 'No Intervening Event mechanics found.' },
+};
+
+export { nosolInterveningConfig };

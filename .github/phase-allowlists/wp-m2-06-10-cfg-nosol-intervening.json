@@ -1,0 +1,25 @@
+{
+  "phase": "WP-M2-06-10-CFG-NOSOL-INTERVENING",
+  "name": "m2-06-10-cfg-nosol-intervening",
+  "allowed": [
+    ".github/phase-allowlists/wp-m2-06-10-cfg-nosol-intervening.json",
+    "HANDOFF.md",
+    "components/review/table-configs/nosol-intervening.config.js",
+    "pages/review/[id].js",
+    "tests/provision-table-configs.test.js",
+    "tests/review-page-card-switch.test.js"
+  ],
+  "denied": [
+    "docs/vocab/FROZEN-*.json",
+    "docs/market-registry/FROZEN-*.json",
+    "docs/schema-shape/*.frozen",
+    "docs/schema-shape/canonical-registry-v1.md",
+    "docs/schema-shape/canonical-definitions.md",
+    "docs/schema-shape/normalized-v1.json",
+    "lib/schema/**",
+    "lib/parser-v2/**",
+    "supabase/migrations/**",
+    "db/migrations/**"
+  ],
+  "note": "WP-M2-06 Step 10 adds the Intervening Event schema-first table config."
+}
