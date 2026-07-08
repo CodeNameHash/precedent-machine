@@ -649,3 +649,4 @@ REVIEW_QUEUE_RESOLUTION {"id":"m2-06-template-table-architecture","kind":"canoni
 2026-07-08: WP-M2-06 Step 7: added the Tail Fee config, `tail-fee`, for the schema-first `ProvisionTable` path. The config uses `normalizeTermfFeatures` so nested `tailProvision` and flat tail fields both render, with a text fallback for current card rows.
 
 2026-07-08: WP-M2-06 Step 8: added the no-shop core mechanics config, `nosol-noshop`, for the schema-first `ProvisionTable` path. The config covers prohibition, cease-discussions, and no-shop exception rows using NOSOL subtypes plus feature/text fallbacks.
+2026-07-08: WP-M2-06 Step 9: added the Superior Proposal config, `nosol-superior`, for the schema-first `ProvisionTable` path. The config covers threshold, proposal test, determiner, engagement standard, and final determination standard using NOSOL/DEF features plus quote fallback.
