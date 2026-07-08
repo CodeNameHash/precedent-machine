@@ -44,15 +44,17 @@ test('threshold parsers read the M2 plan and review page constants', () => {
   assert.equal(thresholdFromReviewPage('const SCHEMA_RENDER_MIN_CARDS = 40;'), 40);
 });
 
-test('review page branch assertion recognises forced and default schema branches', () => {
+test('review page branch assertion recognises schema-only render path', () => {
   assert.doesNotThrow(() => assertReviewPageBranch(`
-    const useSchemaRender = forcedRenderMode === 'schema'
-      ? true
-      : forcedRenderMode === 'legacy'
-        ? false
-        : schemaCardCount >= SCHEMA_RENDER_MIN_CARDS;
     <ProvisionCardTable reviewDeal={schemaReviewDeal || { sections: [] }} />
   `));
+});
+
+test('review page branch assertion rejects retired legacy render switches', () => {
+  assert.throws(() => assertReviewPageBranch(`
+    const useSchemaRender = forcedRenderMode === 'legacy' ? false : schemaCardCount >= SCHEMA_RENDER_MIN_CARDS;
+    <ProvisionCardTable reviewDeal={schemaReviewDeal || { sections: [] }} />
+  `), /legacy render-switch/);
 });
 
 test('parseArgs accepts env, report, and no-write flags', () => {

@@ -629,3 +629,7 @@ REVIEW_QUEUE_RESOLUTION {"id":"m2-02-recital-suppression","kind":"canonical","ti
 2026-07-08: WP-M2-04 legacy vocab deletion audit: generated the legacy-vocab reference manifest and deletion manifest. All 7 targets still have live references, so no destructive deletion PR was opened. Follow-up: migrate callers off `lib/rubric.js`, `lib/taxonomy.js`, `lib/feature-validation.js`, `lib/expected-sets.js`, `lib/category-summary-features.js`, and the two vocab alias maps before Phase 8 deletion.
 
 2026-07-08: WP-M2-05 renderer deletion queue: added the destructive Review Queue entry for Ben to authorize deleting the legacy review renderer fallback and bespoke legacy table components.
+
+REVIEW_QUEUE_RESOLUTION {"id":"authorize-legacy-renderer-deletion","kind":"destructive","title":"Authorize legacy renderer deletion","choice_key":"approve","codex_action":"proceed with WP-M2-05 deletion PR limited to pages/review/[id].js and the listed legacy review table components","resolved_at":"2026-07-08T14:59:07.849Z","resolved_by":"ben"}
+
+2026-07-08: WP-M2-05 legacy renderer deletion: deleted the review-page legacy fallback branch and bespoke legacy table components after Ben approved Review Queue entry `authorize-legacy-renderer-deletion`. Schema-first review cards are now the only user render path; all-deals card-backed audit still passes for 40 / 40 deals with zero legacy fallback.
