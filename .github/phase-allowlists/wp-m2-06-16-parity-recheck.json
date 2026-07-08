@@ -1,0 +1,29 @@
+{
+  "phase": "WP-M2-06-16-PARITY-RECHECK",
+  "name": "m2-06-16-parity-recheck",
+  "allowed": [
+    ".github/phase-allowlists/wp-m2-06-16-parity-recheck.json",
+    "HANDOFF.md",
+    "docs/audit/parity-discovery.md",
+    "docs/audit/parity-suppressed-recitals.md",
+    "docs/audit/parity-suppressed-unlocated-legacy.md",
+    "docs/schema-migration/phase-8-parity.md",
+    "docs/schema-migration/phase-8-parity-triage.md"
+  ],
+  "denied": [
+    "docs/vocab/FROZEN-*.json",
+    "docs/market-registry/FROZEN-*.json",
+    "docs/schema-shape/*.frozen",
+    "docs/schema-shape/canonical-registry-v1.md",
+    "docs/schema-shape/canonical-definitions.md",
+    "docs/schema-shape/normalized-v1.json",
+    "lib/schema/**",
+    "lib/rubric.js",
+    "lib/vocab/**",
+    "components/review/**",
+    "pages/review/**",
+    "supabase/migrations/**",
+    "db/migrations/**"
+  ],
+  "note": "WP-M2-06 Step 16 reruns the schema parity audit after all schema-first table configs land."
+}

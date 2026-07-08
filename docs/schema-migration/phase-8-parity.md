@@ -1,4 +1,4 @@
-# Phase-8 Parity Audit — 2026-07-08T14:37:01.010Z
+# Phase-8 Parity Audit — 2026-07-08T16:24:39.600Z
 
 Corpus: 40 deals.
 Total cells compared: 24803.
