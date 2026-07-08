@@ -86,7 +86,7 @@ test('review page no longer renders legacy empty buyer-side section placeholders
   assert.doesNotMatch(src, /'IOC \(Buyer\)'/);
   assert.doesNotMatch(src, /'No-Shop \(Buyer\)'/);
   assert.doesNotMatch(src, /\{' — None'\}/);
-  assert.match(src, /<ProvisionCardTable reviewDeal=\{schemaReviewDeal/);
+  assert.match(src, /<ProvisionCardTable reviewDeal=\{reviewDealForTables/);
 });
 
 test('IOC side gate treats single-item filter arrays as child clicks', () => {
@@ -128,13 +128,15 @@ test('sidebar section clicks and direct links scroll without filtering the page'
   assert.ok(filterStart > 0);
   const filterBody = src.slice(filterStart, src.indexOf('/* ── Sidebar provision click', filterStart));
   assert.match(filterBody, /setActiveFilter\(null\)/);
-  assert.match(filterBody, /queueSectionScroll\(sectionType\)/);
+  // Phase A shell-restore: nav clicks translate the provision type into the
+  // accordion section id, then scroll/expand that curated table.
+  assert.match(filterBody, /queueSectionScroll\(sectionId\)/);
   assert.doesNotMatch(filterBody, /setActiveFilter\(next\)/);
 
   const hydrateStart = src.indexOf('// Hydrate direct links once the route and provision list are ready.');
   assert.ok(hydrateStart > 0);
   const hydrateBody = src.slice(hydrateStart, src.indexOf('/* ── Save edits ── */', hydrateStart));
-  assert.match(hydrateBody, /queueSectionScroll\(validSections\[0\]\)/);
+  assert.match(hydrateBody, /queueSectionScroll\(sectionIdForType\(validSections\[0\]\)\)/);
   assert.match(hydrateBody, /return prev === null \? prev : null/);
   assert.doesNotMatch(hydrateBody, /nextFilter =/);
 });

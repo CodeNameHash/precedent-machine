@@ -123,7 +123,7 @@ test('TERMF dollar formatter strips words and preserves numeric dollars', () => 
 
 test('IOC-B and IOC-T legacy table wiring is retired behind schema cards', () => {
   const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
-  assert.match(src, /<ProvisionCardTable reviewDeal=\{schemaReviewDeal/, 'schema card table remains the user render path');
+  assert.match(src, /<ProvisionCardTable reviewDeal=\{reviewDealForTables/, 'schema card table remains the user render path');
   assert.doesNotMatch(src, /iocProvisions=\{allFilteredIocProvisions\}/);
   assert.doesNotMatch(src, /side=\{iocSide\}/);
 });

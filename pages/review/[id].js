@@ -161,7 +161,80 @@ import { terminationRightsConfig } from '../../components/review/table-configs/t
 import { BoundaryAuditPanel } from '../../components/review/BoundaryAuditPanel';
 import { parseReviewRouteQuery, serializeReviewRouteQuery } from '../../lib/review-route';
 
+// Phase A shell-restore: the curated per-family tables, in render order. Each
+// becomes one collapsible accordion section keyed by its config.id. Kept as a
+// module constant so the collapse/scroll wiring can enumerate section ids
+// without re-listing them.
+const REVIEW_TABLE_CONFIGS = [
+  structureMechanicsConfig,
+  considerationHeroConfig,
+  conditionsMConfig,
+  conditionsBConfig,
+  conditionsSConfig,
+  approvalsVotesConfig,
+  representationsQualifiersConfig,
+  maeDefinitionsConfig,
+  materialContractsConfig,
+  iocExceptionsConfig,
+  generalCovenantsConfig,
+  tailFeeConfig,
+  terminationFeesConfig,
+  terminationRightsConfig,
+  nosolNoshopConfig,
+  nosolSuperiorConfig,
+  nosolInterveningConfig,
+  nosolFiduciaryConfig,
+  antitrustRegulatoryConfig,
+  employeeBenefitsConfig,
+  secMeetingConfig,
+  advisersFeesExpensesConfig,
+  noOtherRepsFraudConfig,
+];
 
+// Maps a sidebar provision-type key to the config.id of the accordion section
+// that surfaces it, so a left-nav click scrolls to + expands the right table.
+const SIDEBAR_TYPE_TO_SECTION_ID = {
+  STRUCT: 'structure-mechanics',
+  CONSID: 'consideration-hero',
+  COND: 'conditions-m',
+  'COND-M': 'conditions-m',
+  'COND-B': 'conditions-b',
+  'COND-S': 'conditions-s',
+  'REP-T': 'representations-qualifiers',
+  'REP-B': 'representations-qualifiers',
+  'MAE-DEF': 'mae-definitions',
+  'MAE-DEF-P': 'mae-definitions',
+  __MATERIAL_CONTRACTS: 'material-contracts',
+  'IOC-T': 'ioc-exceptions',
+  'IOC-B': 'ioc-exceptions',
+  IOC: 'ioc-exceptions',
+  COV: 'general-covenants',
+  TERMF: 'termination-fees',
+  TERMR: 'termination-rights',
+  'TERMR-M': 'termination-rights',
+  'TERMR-B': 'termination-rights',
+  'TERMR-T': 'termination-rights',
+  'NOSOL-T': 'nosol-noshop',
+  'NOSOL-B': 'nosol-noshop',
+  NOSOL: 'nosol-noshop',
+  ANTI: 'antitrust-regulatory',
+  __EMPLOYEE_BENEFITS: 'employee-benefits',
+  __SEC_MEETING: 'sec-meeting',
+  __ABRY: 'no-other-reps-fraud',
+};
+
+function sectionIdForType(type) {
+  if (!type) return null;
+  return SIDEBAR_TYPE_TO_SECTION_ID[type] || null;
+}
+
+// Representative provision type per accordion section, for the section-header
+// dot color (visual parity with the old per-type headers). Sections with no
+// mapped type fall back to a neutral dot at the call site.
+const SECTION_ID_TO_TYPE = Object.entries(SIDEBAR_TYPE_TO_SECTION_ID).reduce((acc, [type, id]) => {
+  if (!acc[id]) acc[id] = type;
+  return acc;
+}, {});
 
 
 
@@ -10669,9 +10742,31 @@ export default function ReviewPage() {
     );
   }, [filteredProvisions]);
 
+  // Curated per-family accordion sections that actually have rows for this
+  // deal, in render order. Drives both the accordion render and the
+  // collapse/scroll wiring below.
+  const reviewDealForTables = useMemo(
+    () => schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] },
+    [schemaReviewDeal],
+  );
+  const reviewSections = useMemo(() => {
+    return REVIEW_TABLE_CONFIGS
+      .map((config) => {
+        let rows = [];
+        try {
+          rows = config.selectRows(reviewDealForTables) || [];
+        } catch {
+          rows = [];
+        }
+        return { id: config.id, title: config.title, config, hasRows: Array.isArray(rows) && rows.length > 0 };
+      })
+      .filter((section) => section.hasRows);
+  }, [reviewDealForTables]);
+  const reviewSectionIds = useMemo(() => reviewSections.map((section) => section.id), [reviewSections]);
+
   useEffect(() => {
     if (!dealId || collapseHydratedDealRef.current === dealId) return;
-    const sectionKeys = Object.keys(filteredProvsByType);
+    const sectionKeys = reviewSectionIds;
     if (sectionKeys.length === 0) return;
     collapseHydratedDealRef.current = dealId;
     const storageKey = `pm.review.collapsedSections.${dealId}`;
@@ -10689,7 +10784,7 @@ export default function ReviewPage() {
       // fall back to default collapsed state
     }
     setCollapsedSections(new Set(sectionKeys));
-  }, [dealId, filteredProvsByType]);
+  }, [dealId, reviewSectionIds]);
 
   useEffect(() => {
     if (!dealId || collapseHydratedDealRef.current !== dealId) return;
@@ -10744,7 +10839,10 @@ export default function ReviewPage() {
 
   const queueProvisionScroll = useCallback((provision) => {
     if (!provision || !provision.id) return;
-    const sectionType = renderedSectionTypeForProvision(provision);
+    // Translate the provision's rendered provision-type into the config.id of
+    // the accordion section that surfaces it, so we expand + scroll the right
+    // curated table (there are no per-provision anchors in the schema render).
+    const sectionType = sectionIdForType(renderedSectionTypeForProvision(provision));
     if (sectionType) {
       setCollapsedSections((prev) => {
         if (!prev.has(sectionType)) return prev;
@@ -10785,7 +10883,7 @@ export default function ReviewPage() {
     return () => {
       if (raf && typeof window !== 'undefined') window.cancelAnimationFrame(raf);
     };
-  }, [pendingScrollTarget, filteredProvsByType, collapsedSections]);
+  }, [pendingScrollTarget, reviewSectionIds, collapsedSections]);
 
   // On phones the 286px sidebar would crush the content column, so default it
   // closed below the md breakpoint (it becomes an overlay when toggled open).
@@ -10829,8 +10927,9 @@ export default function ReviewPage() {
     setActiveTab('provisions');
     setActiveFilter(null);
     setSelectedProvId(null); // clear single-provision view when changing type filter
-    const sectionType = Array.isArray(next) ? next[0] : next;
-    if (sectionType) queueSectionScroll(sectionType);
+    const clickedType = Array.isArray(next) ? next[0] : next;
+    const sectionId = sectionIdForType(clickedType);
+    if (sectionId) queueSectionScroll(sectionId);
     pushReviewRoute({ section: next, provisionId: null, tab: null });
   }, [pushReviewRoute, queueSectionScroll]);
 
@@ -10944,7 +11043,7 @@ export default function ReviewPage() {
       const validSections = sectionValues.filter((section) =>
         Object.prototype.hasOwnProperty.call(provsByType, section)
       );
-      if (validSections.length > 0) queueSectionScroll(validSections[0]);
+      if (validSections.length > 0) queueSectionScroll(sectionIdForType(validSections[0]));
     }
 
     setActiveFilter((prev) => {
@@ -11427,7 +11526,19 @@ export default function ReviewPage() {
               <div className="rec-deal-meta">
                 <div className="m">
                   <span className="k">Consideration</span>
-                  <span className="v">{headerConsiderationLabel}</span>
+                  <span className="v">
+                    {headerConsiderationLabel && headerConsiderationLabel !== 'Not specified' ? (
+                      <span
+                        data-testid="consideration-badge"
+                        className="inline-flex items-center gap-1 rounded border border-emerald-200 bg-emerald-50 px-1.5 py-0.5 text-[10px] font-ui font-medium text-emerald-700"
+                      >
+                        <span aria-hidden="true">◆</span>
+                        {headerConsiderationLabel}
+                      </span>
+                    ) : (
+                      headerConsiderationLabel
+                    )}
+                  </span>
                 </div>
                 {dealValueLabel && (
                   <div className="m">
@@ -11503,7 +11614,7 @@ export default function ReviewPage() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => setCollapsedSections(new Set(Object.keys(filteredProvsByType)))}
+                    onClick={() => setCollapsedSections(new Set(reviewSectionIds))}
                     className="rounded border border-border bg-white px-2.5 py-1 text-[11px] font-ui text-inkLight hover:border-accent hover:text-ink"
                   >
                     Collapse all
@@ -11551,30 +11662,55 @@ export default function ReviewPage() {
                   ) : null}
                   {!schemaCardsLoading ? (
                     <>
-                      <ProvisionTable config={structureMechanicsConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
-                      <ProvisionTable config={considerationHeroConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
-                      <ProvisionTable config={conditionsMConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
-                      <ProvisionTable config={conditionsBConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
-                      <ProvisionTable config={conditionsSConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
-                      <ProvisionTable config={approvalsVotesConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
-                      <ProvisionTable config={representationsQualifiersConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
-                      <ProvisionTable config={maeDefinitionsConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
-                      <ProvisionTable config={materialContractsConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
-                      <ProvisionTable config={iocExceptionsConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
-                      <ProvisionTable config={generalCovenantsConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
-                      <ProvisionTable config={tailFeeConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
-                      <ProvisionTable config={terminationFeesConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
-                      <ProvisionTable config={terminationRightsConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
-                      <ProvisionTable config={nosolNoshopConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
-                      <ProvisionTable config={nosolSuperiorConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
-                      <ProvisionTable config={nosolInterveningConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
-                      <ProvisionTable config={nosolFiduciaryConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
-                      <ProvisionTable config={antitrustRegulatoryConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
-                      <ProvisionTable config={employeeBenefitsConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
-                      <ProvisionTable config={secMeetingConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
-                      <ProvisionTable config={advisersFeesExpensesConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
-                      <ProvisionTable config={noOtherRepsFraudConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
-                      <ProvisionCardTable reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
+                      {/* Curated per-family tables render as a collapsible
+                          accordion, collapsed by default (dc46bef parity). A
+                          left-nav click expands + scrolls the matching section
+                          via sectionRefs, keyed by config.id. */}
+                      {reviewSections.map((section) => {
+                        const collapsed = collapsedSections.has(section.id);
+                        const dotType = SECTION_ID_TO_TYPE[section.id];
+                        return (
+                          <div
+                            key={section.id}
+                            ref={(el) => { sectionRefs.current[section.id] = el; }}
+                            className="space-y-2"
+                          >
+                            <button
+                              type="button"
+                              onClick={() => toggleSectionCollapse(section.id)}
+                              className="rec-type-head w-full text-left cursor-pointer"
+                              aria-expanded={!collapsed}
+                            >
+                              <span
+                                className="th-dot"
+                                style={{ background: dotType ? typeHex(dotType) : 'var(--ink-faint)' }}
+                              />
+                              <h2>{section.title}</h2>
+                              <span
+                                className="inline-flex items-center text-inkFaint text-sm select-none"
+                                aria-hidden="true"
+                                style={{ marginLeft: 4 }}
+                              >
+                                {collapsed ? '▸' : '▾'}
+                              </span>
+                              <span className="rule" />
+                            </button>
+                            {!collapsed && (
+                              <ProvisionTable
+                                config={section.config}
+                                reviewDeal={reviewDealForTables}
+                                isEdit={isEdit}
+                              />
+                            )}
+                          </div>
+                        );
+                      })}
+                      {/* Catch-all raw card dump duplicates the curated tables
+                          above — editor/QA only; hidden from the Reviewer view
+                          so nothing renders twice (AC5). */}
+                      {isEdit && (
+                        <ProvisionCardTable reviewDeal={reviewDealForTables} />
+                      )}
                     </>
                   ) : null}
                   </div>

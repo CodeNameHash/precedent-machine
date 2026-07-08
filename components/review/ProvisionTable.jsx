@@ -11,12 +11,49 @@ Config shape:
   empty?: { copy: string },
 }
 */
-export default function ProvisionTable({ config, reviewDeal }) {
+
+// Phase A shell-restore (AC4): columns that dump the full provision clause
+// text inline (raw primary_quote / region_full_text / structured detail
+// lines). These are pulled OUT of the always-visible grid and relocated
+// behind a per-row "see text" expander on the first column, matching the
+// dc46bef "see text" affordance. Keyed by (config.id -> [column.id]) so we
+// never touch the legitimate short feature/pill columns that happen to share
+// a column id (e.g. 'detail') across families.
+const FULL_TEXT_COLUMNS = {
+  'conditions-m': ['provision'],
+  'conditions-b': ['provision'],
+  'conditions-s': ['provision'],
+  'material-contracts': ['evidence'],
+  'tail-fee': ['evidence'],
+  'employee-benefits': ['detail'],
+  'no-other-reps-fraud': ['detail'],
+};
+
+function SeeTextExpander({ children }) {
+  return (
+    <details className="mt-1">
+      <summary className="term-cell-seetext" style={{ listStyle: 'none' }}>
+        see text
+      </summary>
+      <div className="mt-1 max-w-[42rem] whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight">
+        {children}
+      </div>
+    </details>
+  );
+}
+
+export default function ProvisionTable({ config, reviewDeal, isEdit = false }) {
   if (!config || typeof config.selectRows !== 'function') return null;
   const rows = config.selectRows(reviewDeal);
   if (!Array.isArray(rows) || rows.length === 0) return null;
-  const columns = Array.isArray(config.columns) ? config.columns : [];
+  const allColumns = Array.isArray(config.columns) ? config.columns : [];
+  const fullTextIds = FULL_TEXT_COLUMNS[config.id] || [];
+  const columns = allColumns.filter((column) => !fullTextIds.includes(column.id));
+  const fullTextColumns = allColumns.filter((column) => fullTextIds.includes(column.id));
   const ctx = { reviewDeal, config, primitives: ProvisionTablePrimitives };
+  // isEdit flows into ctx so per-family renderCells can suppress edit-only
+  // affordances (e.g. raw canonical-code pills) in the default Reviewer view.
+  ctx.isEdit = isEdit;
 
   return (
     <section data-testid={`provision-table-${config.id}`} className="rounded border border-border bg-white shadow-sm">
@@ -41,15 +78,23 @@ export default function ProvisionTable({ config, reviewDeal }) {
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {rows.map((row) => (
-              <tr key={row.id || row.label} className={row.present ? 'align-top hover:bg-bg/40' : 'align-top bg-bg/30 text-inkFaint'}>
-                {columns.map((column) => (
-                  <td key={`${row.id || row.label}-${column.id}`} className="px-3 py-2 whitespace-pre-wrap break-words text-ink">
-                    {column.renderCell ? column.renderCell(row, ctx) : null}
-                  </td>
-                ))}
-              </tr>
-            ))}
+            {rows.map((row) => {
+              const fullTextNodes = fullTextColumns
+                .map((column) => (column.renderCell ? column.renderCell(row, ctx) : null))
+                .filter(Boolean);
+              return (
+                <tr key={row.id || row.label} className={row.present ? 'align-top hover:bg-bg/40' : 'align-top bg-bg/30 text-inkFaint'}>
+                  {columns.map((column, colIdx) => (
+                    <td key={`${row.id || row.label}-${column.id}`} className="px-3 py-2 whitespace-pre-wrap break-words text-ink">
+                      {column.renderCell ? column.renderCell(row, ctx) : null}
+                      {colIdx === 0 && fullTextNodes.length > 0 ? (
+                        <SeeTextExpander>{fullTextNodes}</SeeTextExpander>
+                      ) : null}
+                    </td>
+                  ))}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

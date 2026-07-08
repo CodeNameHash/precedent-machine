@@ -38,29 +38,12 @@ test('review page mounts the first schema structured table config before cards',
   assert.match(reviewPageSource, /import \{ noOtherRepsFraudConfig \} from '..\/..\/components\/review\/table-configs\/no-other-reps-fraud\.config';/);
   assert.match(reviewPageSource, /import \{ secMeetingConfig \} from '..\/..\/components\/review\/table-configs\/sec-meeting\.config';/);
   assert.match(reviewPageSource, /import \{ tailFeeConfig \} from '..\/..\/components\/review\/table-configs\/tail-fee\.config';/);
-  assert.match(reviewPageSource, /<ProvisionTable config=\{structureMechanicsConfig\} reviewDeal=\{schemaReviewDeal/);
-  assert.match(reviewPageSource, /<ProvisionTable config=\{considerationHeroConfig\} reviewDeal=\{schemaReviewDeal/);
-  assert.match(reviewPageSource, /<ProvisionTable config=\{antitrustRegulatoryConfig\} reviewDeal=\{schemaReviewDeal/);
-  assert.match(reviewPageSource, /<ProvisionTable config=\{approvalsVotesConfig\} reviewDeal=\{schemaReviewDeal/);
-  assert.match(reviewPageSource, /<ProvisionTable config=\{generalCovenantsConfig\} reviewDeal=\{schemaReviewDeal/);
-  assert.match(reviewPageSource, /<ProvisionTable config=\{maeDefinitionsConfig\} reviewDeal=\{schemaReviewDeal/);
-  assert.match(reviewPageSource, /<ProvisionTable config=\{representationsQualifiersConfig\} reviewDeal=\{schemaReviewDeal/);
-  assert.match(reviewPageSource, /<ProvisionTable config=\{terminationFeesConfig\} reviewDeal=\{schemaReviewDeal/);
-  assert.match(reviewPageSource, /<ProvisionTable config=\{terminationRightsConfig\} reviewDeal=\{schemaReviewDeal/);
-  assert.match(reviewPageSource, /<ProvisionTable config=\{advisersFeesExpensesConfig\} reviewDeal=\{schemaReviewDeal/);
-  assert.match(reviewPageSource, /<ProvisionTable config=\{conditionsMConfig\} reviewDeal=\{schemaReviewDeal/);
-  assert.match(reviewPageSource, /<ProvisionTable config=\{conditionsBConfig\} reviewDeal=\{schemaReviewDeal/);
-  assert.match(reviewPageSource, /<ProvisionTable config=\{conditionsSConfig\} reviewDeal=\{schemaReviewDeal/);
-  assert.match(reviewPageSource, /<ProvisionTable config=\{materialContractsConfig\} reviewDeal=\{schemaReviewDeal/);
-  assert.match(reviewPageSource, /<ProvisionTable config=\{iocExceptionsConfig\} reviewDeal=\{schemaReviewDeal/);
-  assert.match(reviewPageSource, /<ProvisionTable config=\{tailFeeConfig\} reviewDeal=\{schemaReviewDeal/);
-  assert.match(reviewPageSource, /<ProvisionTable config=\{nosolNoshopConfig\} reviewDeal=\{schemaReviewDeal/);
-  assert.match(reviewPageSource, /<ProvisionTable config=\{nosolSuperiorConfig\} reviewDeal=\{schemaReviewDeal/);
-  assert.match(reviewPageSource, /<ProvisionTable config=\{nosolInterveningConfig\} reviewDeal=\{schemaReviewDeal/);
-  assert.match(reviewPageSource, /<ProvisionTable config=\{nosolFiduciaryConfig\} reviewDeal=\{schemaReviewDeal/);
-  assert.match(reviewPageSource, /<ProvisionTable config=\{employeeBenefitsConfig\} reviewDeal=\{schemaReviewDeal/);
-  assert.match(reviewPageSource, /<ProvisionTable config=\{secMeetingConfig\} reviewDeal=\{schemaReviewDeal/);
-  assert.match(reviewPageSource, /<ProvisionTable config=\{noOtherRepsFraudConfig\} reviewDeal=\{schemaReviewDeal/);
+  // Phase A shell-restore: the per-family tables now render through a single
+  // collapsible-accordion map over REVIEW_TABLE_CONFIGS rather than 23 literal
+  // <ProvisionTable> mounts. The ordered array + the map is the render path.
+  assert.match(reviewPageSource, /const REVIEW_TABLE_CONFIGS = \[/);
+  assert.match(reviewPageSource, /reviewSections\.map\(\(section\) => \{/);
+  assert.match(reviewPageSource, /<ProvisionTable\s+config=\{section\.config\}\s+reviewDeal=\{reviewDealForTables\}\s+isEdit=\{isEdit\}/);
   const mountedConfigs = [
     'structureMechanicsConfig',
     'considerationHeroConfig',
@@ -86,11 +69,16 @@ test('review page mounts the first schema structured table config before cards',
     'advisersFeesExpensesConfig',
     'noOtherRepsFraudConfig',
   ];
-  const mountPositions = mountedConfigs.map((config) => reviewPageSource.indexOf(`<ProvisionTable config={${config}}`));
+  // Every config is enumerated in the ordered REVIEW_TABLE_CONFIGS array.
+  const arrayStart = reviewPageSource.indexOf('const REVIEW_TABLE_CONFIGS = [');
+  const arrayEnd = reviewPageSource.indexOf('];', arrayStart);
+  const arrayLiteral = reviewPageSource.slice(arrayStart, arrayEnd);
+  const mountPositions = mountedConfigs.map((config) => arrayLiteral.indexOf(`  ${config},`));
   assert.ok(mountPositions.every((position) => position >= 0));
   assert.deepEqual(mountPositions, [...mountPositions].sort((a, b) => a - b));
+  // The curated tables render before the raw card dump.
   assert.ok(
-    mountPositions.at(-1) < reviewPageSource.indexOf('<ProvisionCardTable reviewDeal={schemaReviewDeal'),
+    arrayEnd < reviewPageSource.indexOf('<ProvisionCardTable reviewDeal={reviewDealForTables'),
     'structured schema tables should render before the raw card list',
   );
 });
@@ -98,7 +86,9 @@ test('review page mounts the first schema structured table config before cards',
 test('review page renders the schema card table without a legacy fallback threshold', () => {
   assert.doesNotMatch(reviewPageSource, /SCHEMA_RENDER_MIN_CARDS/);
   assert.doesNotMatch(reviewPageSource, /schemaCardCount >=/);
-  assert.match(reviewPageSource, /<ProvisionCardTable reviewDeal=\{schemaReviewDeal/);
+  // Phase A shell-restore: the raw card dump is gated to the editor/QA view so
+  // it never duplicates the curated tables in the default Reviewer view.
+  assert.match(reviewPageSource, /isEdit && \(\s*<ProvisionCardTable reviewDeal=\{reviewDealForTables\}/);
 });
 
 test('review page no longer supports the retired legacy render query override', () => {

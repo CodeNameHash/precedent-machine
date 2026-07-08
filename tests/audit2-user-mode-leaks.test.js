@@ -112,6 +112,6 @@ test('PreambleCard renders its Edit button only when onEdit is passed (component
 test('the legacy PreambleCard call site is not part of the schema-only review render', () => {
   const src = reviewSrc();
   assert.equal(src.indexOf('<PreambleCard'), -1, 'schema-only review page must not render the legacy preamble card');
-  assert.match(src, /<ProvisionCardTable reviewDeal=\{schemaReviewDeal/, 'schema card table remains the user render path');
+  assert.match(src, /<ProvisionCardTable reviewDeal=\{reviewDealForTables/, 'schema card table remains the user render path');
   assert.doesNotMatch(src, /onEdit=\{handleEditProvision\}/, 'must not pass the raw handler unconditionally');
 });
