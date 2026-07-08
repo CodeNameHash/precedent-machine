@@ -5,10 +5,12 @@ const path = require('node:path');
 let mod;
 let iocMod;
 let materialContractsMod;
+let tailFeeMod;
 test.before(async () => {
   mod = await import(path.join('..', 'components', 'review', 'table-configs', 'conditions-m.config.js'));
   iocMod = await import(path.join('..', 'components', 'review', 'table-configs', 'ioc-exceptions.config.js'));
   materialContractsMod = await import(path.join('..', 'components', 'review', 'table-configs', 'material-contracts.config.js'));
+  tailFeeMod = await import(path.join('..', 'components', 'review', 'table-configs', 'tail-fee.config.js'));
 });
 
 function card(overrides = {}) {
@@ -211,4 +213,42 @@ test('material-contracts config falls back to canonical bucket synonyms in card 
   assert.ok(rows.some((row) => row.label === 'Indebtedness contracts'));
   assert.ok(rows.some((row) => row.label === 'Joint ventures / partnerships'));
   assert.ok(rows.some((row) => row.label === 'Clinical research organization contracts'));
+});
+
+test('tail-fee config maps nested tailProvision mechanics', () => {
+  const rows = tailFeeMod.tailFeeConfig.selectRows({
+    cards: [{
+      id: 'tail',
+      provision_type: 'TERMINATION_FEE',
+      provision_subtype: 'TERMF-TAIL',
+      primary_quote: 'If within 12 months the Company enters into a Company Takeover Proposal, the Company shall pay the fee.',
+      features: {
+        tailProvision: {
+          period_months: 12,
+          threshold_percentage: 50,
+          triggers: ['Outside date termination followed by a Company Takeover Proposal'],
+        },
+        tailFeeSameProposalRequired: false,
+      },
+    }],
+  });
+  assert.deepEqual(rows.map((row) => row.value), [
+    '12 months',
+    '50%',
+    'Outside date termination followed by a Company Takeover Proposal',
+    'Any later qualifying proposal can trigger',
+  ]);
+});
+
+test('tail-fee config falls back to tail language in card text', () => {
+  const rows = tailFeeMod.tailFeeConfig.selectRows({
+    cards: [{
+      id: 'tail',
+      provision_type: 'TERMINATION_FEE',
+      provision_subtype: 'TERMF-TARGET',
+      primary_quote: 'If within 9 months after termination the Company consummates a Takeover Proposal for 50% or more of its equity, the Company shall pay Parent the fee.',
+    }],
+  });
+  assert.equal(rows.find((row) => row.id === 'tail-window').value, '9 months');
+  assert.equal(rows.find((row) => row.id === 'tail-threshold').value, '50%');
 });

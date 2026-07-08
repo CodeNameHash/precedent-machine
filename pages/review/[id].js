@@ -140,6 +140,7 @@ import { conditionsMConfig } from '../../components/review/table-configs/conditi
 import { conditionsSConfig } from '../../components/review/table-configs/conditions-s.config';
 import { iocExceptionsConfig } from '../../components/review/table-configs/ioc-exceptions.config';
 import { materialContractsConfig } from '../../components/review/table-configs/material-contracts.config';
+import { tailFeeConfig } from '../../components/review/table-configs/tail-fee.config';
 import { BoundaryAuditPanel } from '../../components/review/BoundaryAuditPanel';
 import { parseReviewRouteQuery, serializeReviewRouteQuery } from '../../lib/review-route';
 
@@ -11538,6 +11539,7 @@ export default function ReviewPage() {
                       <ProvisionTable config={conditionsSConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                       <ProvisionTable config={materialContractsConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                       <ProvisionTable config={iocExceptionsConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
+                      <ProvisionTable config={tailFeeConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                       <ProvisionCardTable reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                     </>
                   ) : null}

@@ -645,3 +645,5 @@ REVIEW_QUEUE_RESOLUTION {"id":"m2-06-template-table-architecture","kind":"canoni
 2026-07-08: WP-M2-06 Step 5: added the IOC general-exceptions config, `ioc-exceptions`, for the schema-first `ProvisionTable` path. The config prefers structured feature exceptions when hydrated and falls back to splitting the general-exceptions card text.
 
 2026-07-08: WP-M2-06 Step 6: added the Material Contracts config, `material-contracts`, for the schema-first `ProvisionTable` path. The config uses hydrated `materialContractsBuckets` when present and falls back to canonical bucket synonym matching from `MATERIAL_CONTRACT_BUCKET_META`.
+
+2026-07-08: WP-M2-06 Step 7: added the Tail Fee config, `tail-fee`, for the schema-first `ProvisionTable` path. The config uses `normalizeTermfFeatures` so nested `tailProvision` and flat tail fields both render, with a text fallback for current card rows.
