@@ -7,6 +7,13 @@ const nextConfig = {
         './docs/schema-shape/reconciliation-queue.json',
         './docs/schema-shape/normalized-v1.json',
       ],
+      '/api/admin/review-queue': [
+        './docs/review-queue/*.json',
+      ],
+      '/api/admin/review-queue/[id]/resolve': [
+        './docs/review-queue/*.json',
+        './HANDOFF.md',
+      ],
     },
   },
   async redirects() {

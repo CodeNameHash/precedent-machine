@@ -32,3 +32,13 @@ test('review queue nav registration points at the page', () => {
   assert.equal(entry.order, 70);
   assert.ok(fs.existsSync('pages/admin/review-queue.js'));
 });
+
+test('review queue API bundles repo-backed queue files for Vercel', () => {
+  const nextConfig = require('../../next.config');
+  const includes = nextConfig.experimental.outputFileTracingIncludes;
+  assert.deepEqual(includes['/api/admin/review-queue'], ['./docs/review-queue/*.json']);
+  assert.deepEqual(includes['/api/admin/review-queue/[id]/resolve'], [
+    './docs/review-queue/*.json',
+    './HANDOFF.md',
+  ]);
+});
