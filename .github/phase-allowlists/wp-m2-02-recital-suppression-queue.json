@@ -1,0 +1,23 @@
+{
+  "phase": "WP-M2-02-RECITAL-SUPPRESSION-QUEUE",
+  "name": "m2-02-recital-suppression-queue",
+  "allowed": [
+    ".github/phase-allowlists/wp-m2-02-recital-suppression-queue.json",
+    "docs/review-queue/m2-02-recital-suppression.json"
+  ],
+  "denied": [
+    "docs/vocab/FROZEN-*.json",
+    "docs/market-registry/FROZEN-*.json",
+    "docs/schema-shape/*.frozen",
+    "docs/schema-shape/canonical-registry-v1.md",
+    "docs/schema-shape/canonical-definitions.md",
+    "docs/schema-shape/normalized-v1.json",
+    "lib/**",
+    "pages/**",
+    "components/**",
+    "scripts/**",
+    "supabase/migrations/**",
+    "db/migrations/**"
+  ],
+  "note": "Adds the canonical Review Queue entry asking Ben whether recital/preamble text is excluded from parity as non-provision context. No code, data, schema, vocab, or renderer behavior changes."
+}
