@@ -1,0 +1,26 @@
+{
+  "phase": "WP-M2-09-02-PROVISION-TABLE-PRIMITIVES",
+  "name": "m2-09-02-provision-table-primitives",
+  "allowed": [
+    ".github/phase-allowlists/wp-m2-09-02-provision-table-primitives.json",
+    "HANDOFF.md",
+    "components/review/ProvisionTable.jsx",
+    "components/review/primitives/ProvisionTablePrimitives.jsx",
+    "tests/review/provision-table-primitives.spec.js"
+  ],
+  "denied": [
+    "docs/vocab/FROZEN-*.json",
+    "docs/market-registry/FROZEN-*.json",
+    "docs/schema-shape/*.frozen",
+    "docs/schema-shape/canonical-registry-v1.md",
+    "docs/schema-shape/canonical-definitions.md",
+    "docs/schema-shape/normalized-v1.json",
+    "lib/schema/**",
+    "lib/rubric.js",
+    "lib/vocab/**",
+    "pages/review/[id].js",
+    "supabase/migrations/**",
+    "db/migrations/**"
+  ],
+  "note": "WP-M2-09 Step 2 adds reusable ProvisionTable render primitives for the per-family schema-first rebuild queue."
+}
