@@ -1,6 +1,8 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const path = require('node:path');
+const React = require('react');
+const { renderToStaticMarkup } = require('react-dom/server');
 
 let mod;
 let advisersFeesExpensesMod;
@@ -74,6 +76,77 @@ test('conditions-m config maps schema cards to canonical present rows', () => {
     'Antitrust',
   ]);
   assert.match(rows.find((row) => row.label === 'Antitrust').detail, /HSR waiting period/);
+});
+
+test('conditions config preserves feature-backed signals for analytical parity', () => {
+  const rows = mod.conditionsMConfig.selectRows({
+    cards: [
+      card({
+        id: 'reg',
+        provision_subtype: 'COND-M-REG',
+        short_title: 'Regulatory Approvals',
+        primary_quote: 'The HSR waiting period and scheduled approvals shall have been obtained.',
+        features: {
+          effortsStandard: 'REASONABLE_BEST_EFFORTS',
+          antitrustApprovals: [
+            { code: 'HSR', label: 'HSR clearance', text: 'HSR waiting period' },
+            { code: 'SCHEDULED_APPROVALS', label: 'Scheduled approvals', text: 'scheduled approvals' },
+          ],
+        },
+      }),
+    ],
+  });
+  const antitrust = rows.find((row) => row.label === 'Antitrust');
+  assert.deepEqual(antitrust.signals.map((item) => item.label), [
+    'COND-M-REG',
+    'Efforts: Reasonable best efforts',
+    'Approval: HSR clearance',
+    'Approval: Scheduled approvals',
+  ]);
+  assert.match(antitrust.evidence, /HSR waiting period/);
+});
+
+test('conditions buyer bring-down rows expose materiality scrape badges, including false', () => {
+  const rows = mod.conditionsBConfig.selectRows({
+    cards: [
+      card({
+        id: 'rep',
+        provision_subtype: 'COND-B-REP',
+        short_title: 'Accuracy of Target Reps',
+        primary_quote: 'The representations shall be true in all material respects.',
+        features: { materialityScrapeBoolean: false },
+      }),
+    ],
+  });
+  const bringDown = rows.find((row) => row.label === 'Reps Bring-Down');
+  assert.ok(bringDown.signals.some((item) => item.label === 'COND-B-REP'));
+  assert.ok(bringDown.signals.some((item) => item.label === 'Scrape: No'));
+});
+
+test('conditions render cells use primitive pills and evidence hover when provided', () => {
+  const rows = mod.conditionsMConfig.selectRows({
+    cards: [
+      card({
+        id: 'reg',
+        provision_subtype: 'COND-M-REG',
+        short_title: 'Regulatory Approvals',
+        primary_quote: 'The HSR waiting period shall have expired.',
+        features: { effortsStandard: 'REASONABLE_BEST_EFFORTS' },
+      }),
+    ],
+  });
+  const antitrust = rows.find((row) => row.label === 'Antitrust');
+  const signalsColumn = mod.conditionsMConfig.columns.find((column) => column.id === 'signals');
+  const detailColumn = mod.conditionsMConfig.columns.find((column) => column.id === 'provision');
+  const primitives = {
+    PillCell: ({ label }) => React.createElement('span', { className: 'pill' }, label),
+    EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
+  };
+  const signalsHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, signalsColumn.renderCell(antitrust, { primitives })));
+  assert.match(signalsHtml, /COND-M-REG/);
+  assert.match(signalsHtml, /Reasonable best efforts/);
+  const detailHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(antitrust, { primitives })));
+  assert.match(detailHtml, /data-evidence="The HSR waiting period shall have expired\."/);
 });
 
 test('consideration hero config maps cash plus CVR economics', () => {

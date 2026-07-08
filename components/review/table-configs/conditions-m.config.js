@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   CANONICAL_CONDITIONS_B,
   CANONICAL_CONDITIONS_M,
@@ -6,22 +7,33 @@ import {
   conditionDetailLines,
   conditionRowMatches,
 } from '../../../lib/canonical-conditions.js';
+import taxonomy from '../../../lib/taxonomy.js';
+import { cardFeatures } from './card-utils.js';
+
+const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
 function cardCode(card) {
   return String(card?.provision_subtype || card?.canonical_code || card?.provision_code || '').trim().toUpperCase();
 }
 
+function textOf(card) {
+  return String(card?.primary_quote || card?.region_full_text || '').trim();
+}
+
 function cardToProvision(card) {
   const code = cardCode(card);
+  const features = cardFeatures(card);
   return {
     id: card.id || card.provision_instance_id,
     type: code.startsWith('COND-') ? code.split('-').slice(0, 2).join('-') : 'COND-M',
     category: card.short_title || '',
-    full_text: card.primary_quote || card.region_full_text || '',
+    full_text: textOf(card),
+    sourceCard: card,
     features: {
+      ...features,
       canonicalCode: code,
-      mainCondition: card.primary_quote || card.region_full_text || '',
-      sectionNumber: card.section_ref || '',
+      mainCondition: features.mainCondition || features.mainConcept || textOf(card),
+      sectionNumber: features.sectionNumber || card.section_ref || '',
     },
   };
 }
@@ -35,6 +47,96 @@ function detailText(matches) {
       return lines.map((line) => `${line.label}: ${line.value}`).join('\n');
     })
     .join('\n\n');
+}
+
+function unwrap(value) {
+  if (value && typeof value === 'object' && !Array.isArray(value) && 'value' in value && !('code' in value)) return value.value;
+  return value;
+}
+
+function readableFeatureValue(key, value) {
+  const inner = unwrap(value);
+  if (inner === null || inner === undefined || inner === '') return null;
+  if (typeof inner === 'boolean') return inner ? 'Yes' : 'No';
+  if (Array.isArray(inner)) return inner.map((item) => readableFeatureValue(key, item)).filter(Boolean).join(', ');
+  if (typeof inner === 'object') return inner.label || inner.text || inner.code || null;
+  const dict = taxonomyForFeatureKey(key);
+  return (dict && labelForCode(String(inner), dict)) || String(inner);
+}
+
+function evidenceFor(value, provision) {
+  if (value && typeof value === 'object' && !Array.isArray(value)) {
+    if (typeof value.text === 'string' && value.text.trim()) return value.text.trim();
+    if (Array.isArray(value.quotes)) return value.quotes.find((quote) => typeof quote === 'string' && quote.trim()) || provision.full_text;
+  }
+  return provision.full_text;
+}
+
+function signal(id, label, value, provision, tone = 'info') {
+  const readable = readableFeatureValue(id, value);
+  if (!readable) return null;
+  return {
+    id: `${provision.id || provision.features.canonicalCode}-${id}-${readable}`,
+    label: `${label}: ${readable}`,
+    value,
+    tone,
+    evidence: evidenceFor(value, provision),
+    source: provision.sourceCard,
+  };
+}
+
+function materialityScrapeSignal(provision) {
+  const f = provision.features || {};
+  if (typeof f.materialityScrapeBoolean === 'boolean') return signal('materialityScrapeBoolean', 'Scrape', f.materialityScrapeBoolean, provision, 'warning');
+  if (typeof f.materialityScrapePresent === 'boolean') return signal('materialityScrapePresent', 'Scrape', f.materialityScrapePresent, provision, 'warning');
+  return signal('materialityScrape', 'Scrape', f.materialityScrape || f.materialityScrapeLanguage, provision, 'warning');
+}
+
+function conditionSignals(row, matches) {
+  const baseCode = (row.codes && row.codes[0]) || (matches[0] && matches[0].features.canonicalCode) || null;
+  const out = baseCode ? [{
+    id: `${row.label}-canonical-code`,
+    label: baseCode,
+    value: baseCode,
+    tone: matches.length ? 'neutral' : 'missing',
+    evidence: matches[0] && matches[0].full_text,
+    source: matches[0] && matches[0].sourceCard,
+  }] : [];
+  for (const provision of matches) {
+    const f = provision.features || {};
+    out.push(signal('effortsStandard', 'Efforts', f.effortsStandard || f.antitrustEffortsStandard, provision, 'info'));
+    out.push(signal('consentStandard', 'Consent', f.consentStandard, provision, 'info'));
+    out.push(materialityScrapeSignal(provision));
+    const approvals = Array.isArray(f.antitrustApprovals) ? f.antitrustApprovals : [];
+    for (const approval of approvals) out.push(signal('antitrustApprovals', 'Approval', approval, provision, 'present'));
+  }
+  const seen = new Set();
+  return out
+    .filter(Boolean)
+    .filter((item) => {
+      if (seen.has(item.label)) return false;
+      seen.add(item.label);
+      return true;
+    });
+}
+
+function renderSignals(row, ctx) {
+  const PillCell = ctx?.primitives?.PillCell;
+  if (!PillCell) return row.signals.map((item) => item.label).join('\n');
+  return row.signals.map((item) => React.createElement(PillCell, {
+    key: item.id,
+    label: item.label,
+    value: item.value,
+    tone: item.tone,
+    evidence: item.evidence,
+    source: item.source,
+  }));
+}
+
+function renderDetail(row, ctx) {
+  const EvidenceHoverSource = ctx?.primitives?.EvidenceHoverSource;
+  if (!EvidenceHoverSource || !row.evidence) return row.detail;
+  return React.createElement(EvidenceHoverSource, { evidence: row.evidence, source: row.source, as: 'span' }, row.detail);
 }
 
 function createConditionsConfig({ id, title, rows: canonicalRows, empty }) {
@@ -57,6 +159,9 @@ function createConditionsConfig({ id, title, rows: canonicalRows, empty }) {
           matches,
           present: matches.length > 0 || !!row.alwaysRender,
           detail: detailText(matches),
+          signals: conditionSignals(row, matches),
+          evidence: matches[0] && matches[0].full_text,
+          source: matches[0] && matches[0].sourceCard,
           originalIdx,
         };
       })
@@ -76,9 +181,15 @@ function createConditionsConfig({ id, title, rows: canonicalRows, empty }) {
         renderCell: (row) => row.label,
       },
       {
+        id: 'signals',
+        header: 'Signals',
+        width: '18rem',
+        renderCell: renderSignals,
+      },
+      {
         id: 'provision',
         header: 'Provision',
-        renderCell: (row) => row.detail,
+        renderCell: renderDetail,
       },
     ],
     empty: { copy: empty },
@@ -106,4 +217,4 @@ const conditionsSConfig = createConditionsConfig({
   empty: 'No seller closing-condition cards found.',
 });
 
-export { cardToProvision, conditionsBConfig, conditionsMConfig, conditionsSConfig, createConditionsConfig };
+export { cardToProvision, conditionSignals, conditionsBConfig, conditionsMConfig, conditionsSConfig, createConditionsConfig, renderDetail, renderSignals };
