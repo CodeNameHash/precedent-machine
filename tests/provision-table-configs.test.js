@@ -5,11 +5,13 @@ const path = require('node:path');
 let mod;
 let iocMod;
 let materialContractsMod;
+let nosolNoshopMod;
 let tailFeeMod;
 test.before(async () => {
   mod = await import(path.join('..', 'components', 'review', 'table-configs', 'conditions-m.config.js'));
   iocMod = await import(path.join('..', 'components', 'review', 'table-configs', 'ioc-exceptions.config.js'));
   materialContractsMod = await import(path.join('..', 'components', 'review', 'table-configs', 'material-contracts.config.js'));
+  nosolNoshopMod = await import(path.join('..', 'components', 'review', 'table-configs', 'nosol-noshop.config.js'));
   tailFeeMod = await import(path.join('..', 'components', 'review', 'table-configs', 'tail-fee.config.js'));
 });
 
@@ -251,4 +253,47 @@ test('tail-fee config falls back to tail language in card text', () => {
   });
   assert.equal(rows.find((row) => row.id === 'tail-window').value, '9 months');
   assert.equal(rows.find((row) => row.id === 'tail-threshold').value, '50%');
+});
+
+test('nosol-noshop config maps core no-shop cards', () => {
+  const rows = nosolNoshopMod.nosolNoshopConfig.selectRows({
+    cards: [
+      {
+        id: 'prohibit',
+        provision_type: 'COVENANT_NO_SOLICITATION',
+        provision_subtype: 'NOSOL-PROHIBIT',
+        party_scope: 'COMPANY',
+        primary_quote: 'The Company shall not solicit Acquisition Proposals.',
+        features: { prohibitedActions: ['solicit', 'initiate', 'knowingly encourage'] },
+      },
+      {
+        id: 'cease',
+        provision_type: 'COVENANT_NO_SOLICITATION',
+        provision_subtype: 'NOSOL-CEASE',
+        party_scope: 'COMPANY',
+        primary_quote: 'The Company shall cease and terminate all existing discussions.',
+        features: { ceaseDiscussionsProhibitedList: ['cease discussions', 'terminate access'] },
+      },
+    ],
+  });
+  assert.deepEqual(rows.map((row) => row.label), [
+    'No-shop / non-solicit restriction',
+    'Cease discussions',
+  ]);
+  assert.match(rows[0].detail, /solicit; initiate; knowingly encourage/);
+});
+
+test('nosol-noshop config falls back to no-shop quote text', () => {
+  const rows = nosolNoshopMod.nosolNoshopConfig.selectRows({
+    cards: [{
+      id: 'fallback',
+      provision_type: 'COVENANT_NO_SOLICITATION',
+      provision_subtype: 'NOSOL-OTHER',
+      party_scope: 'COMPANY',
+      short_title: 'No-Shop',
+      primary_quote: 'Except as permitted by this Section, the Company shall not solicit or knowingly encourage an Acquisition Proposal.',
+    }],
+  });
+  assert.ok(rows.some((row) => row.id === 'nosol-noshop-prohibit'));
+  assert.ok(rows.some((row) => row.id === 'nosol-noshop-exceptions'));
 });

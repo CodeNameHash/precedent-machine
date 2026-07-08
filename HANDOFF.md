@@ -647,3 +647,5 @@ REVIEW_QUEUE_RESOLUTION {"id":"m2-06-template-table-architecture","kind":"canoni
 2026-07-08: WP-M2-06 Step 6: added the Material Contracts config, `material-contracts`, for the schema-first `ProvisionTable` path. The config uses hydrated `materialContractsBuckets` when present and falls back to canonical bucket synonym matching from `MATERIAL_CONTRACT_BUCKET_META`.
 
 2026-07-08: WP-M2-06 Step 7: added the Tail Fee config, `tail-fee`, for the schema-first `ProvisionTable` path. The config uses `normalizeTermfFeatures` so nested `tailProvision` and flat tail fields both render, with a text fallback for current card rows.
+
+2026-07-08: WP-M2-06 Step 8: added the no-shop core mechanics config, `nosol-noshop`, for the schema-first `ProvisionTable` path. The config covers prohibition, cease-discussions, and no-shop exception rows using NOSOL subtypes plus feature/text fallbacks.
