@@ -1,3 +1,4 @@
+import React from 'react';
 import taxonomy from '../../../lib/taxonomy.js';
 
 const { MATERIAL_CONTRACT_BUCKET_CODES, MATERIAL_CONTRACT_BUCKET_META } = taxonomy;
@@ -39,6 +40,46 @@ function thresholdsByCode(features) {
   }
   return out;
 }
+function matchingBucketCodes(text) {
+  if (!text) return [];
+  return Object.entries(MATERIAL_CONTRACT_BUCKET_META || {})
+    .filter(([code, meta]) => code !== 'OTHER' && (meta.synonyms || []).some((re) => re.test(text)))
+    .map(([code]) => code);
+}
+function coverageRow(rows) {
+  const canonicalCodes = Object.keys(MATERIAL_CONTRACT_BUCKET_CODES || {}).filter((code) => code !== 'OTHER');
+  const presentCodes = new Set(rows.map((row) => row.code).filter(Boolean));
+  const percent = canonicalCodes.length ? Math.round((presentCodes.size / canonicalCodes.length) * 100) : 0;
+  return {
+    id: 'material-contracts-coverage',
+    label: 'Bucket coverage',
+    coverage: `${presentCodes.size}/${canonicalCodes.length} canonical buckets (${percent}%)`,
+    detail: 'Structured buckets mapped from material-contracts features or canonical synonym fallback.',
+    present: true,
+    rollup: true,
+  };
+}
+function withDerivedRows(rows, source) {
+  const fallbackText = textOf(source);
+  const enriched = rows.map((row, index) => {
+    const hits = matchingBucketCodes(row.evidence || fallbackText)
+      .filter((code) => code !== row.code)
+      .map((code) => ({
+        id: `${row.id}-also-${code}`,
+        label: MATERIAL_CONTRACT_BUCKET_CODES[code] || code,
+        present: true,
+        evidence: row.evidence || fallbackText,
+        source,
+      }));
+    return {
+      ...row,
+      ordinal: index,
+      source,
+      alsoCovered: hits,
+    };
+  });
+  return enriched.length ? [coverageRow(enriched), ...enriched] : [];
+}
 function rowFromBucket(item, index, source, thresholds) {
   const tagged = isTagged(item);
   const code = tagged ? String(item.code).toUpperCase() : '';
@@ -48,6 +89,7 @@ function rowFromBucket(item, index, source, thresholds) {
   const threshold = thresholdText((tagged && (item.threshold ?? item.qualifier)) ?? thresholds.get(code));
   return {
     id: `material-contracts-${code || index}-${index}`,
+    code,
     label,
     threshold: threshold || 'No $ threshold',
     evidence: (tagged && item.text) || textOf(source),
@@ -71,6 +113,7 @@ function rowsFromText(source) {
     if (!hit) continue;
     rows.push({
       id: `material-contracts-${code}`,
+      code,
       label: MATERIAL_CONTRACT_BUCKET_CODES[code] || meta.label || code,
       threshold: 'No $ threshold',
       evidence: text,
@@ -78,6 +121,49 @@ function rowsFromText(source) {
     });
   }
   return rows;
+}
+
+function renderBucket(row, ctx) {
+  const primitives = ctx?.primitives || {};
+  if (row.rollup) {
+    const Header = primitives.ComputedRollupHeader;
+    if (!Header) return `${row.label}: ${row.coverage}`;
+    return React.createElement(Header, { label: row.label, value: row.coverage, detail: row.detail, tone: 'info' });
+  }
+  const PillCell = primitives.PillCell;
+  const RomanNumeralOrdinal = primitives.RomanNumeralOrdinal;
+  const CoverageChecklist = primitives.CoverageChecklist;
+  if (!PillCell) return row.label;
+  const bucket = React.createElement(PillCell, {
+    label: row.label,
+    value: row.code,
+    tone: 'present',
+    evidence: row.evidence,
+    source: row.source,
+  });
+  const checklist = row.alsoCovered?.length && CoverageChecklist
+    ? React.createElement(CoverageChecklist, { items: row.alsoCovered, emptyCopy: '' })
+    : null;
+  const body = React.createElement('div', { className: 'space-y-1' }, bucket, checklist);
+  return RomanNumeralOrdinal ? React.createElement(RomanNumeralOrdinal, { index: row.ordinal }, body) : body;
+}
+
+function renderThreshold(row, ctx) {
+  if (row.rollup) return null;
+  const ThresholdCellWithHoverQuote = ctx?.primitives?.ThresholdCellWithHoverQuote;
+  if (!ThresholdCellWithHoverQuote) return row.threshold;
+  return React.createElement(ThresholdCellWithHoverQuote, {
+    threshold: row.threshold,
+    evidence: row.evidence,
+    source: row.source,
+  });
+}
+
+function renderEvidence(row, ctx) {
+  if (row.rollup) return row.detail;
+  const EvidenceHoverSource = ctx?.primitives?.EvidenceHoverSource;
+  if (!EvidenceHoverSource || !row.evidence) return row.evidence;
+  return React.createElement(EvidenceHoverSource, { evidence: row.evidence, source: row.source, as: 'span' }, row.evidence);
 }
 
 const materialContractsConfig = {
@@ -88,14 +174,14 @@ const materialContractsConfig = {
     const source = (reviewDeal?.cards || []).find(isMaterialContractsCard);
     if (!source) return [];
     const featureRows = rowsFromFeatures(source);
-    return featureRows.length ? featureRows : rowsFromText(source);
+    return withDerivedRows(featureRows.length ? featureRows : rowsFromText(source), source);
   },
   columns: [
-    { id: 'bucket', header: 'Bucket', width: '24rem', renderCell: (row) => row.label },
-    { id: 'threshold', header: 'Threshold', width: '12rem', renderCell: (row) => row.threshold },
-    { id: 'evidence', header: 'Evidence', renderCell: (row) => row.evidence },
+    { id: 'bucket', header: 'Bucket', width: '24rem', renderCell: renderBucket },
+    { id: 'threshold', header: 'Threshold', width: '12rem', renderCell: renderThreshold },
+    { id: 'evidence', header: 'Evidence', renderCell: renderEvidence },
   ],
   empty: { copy: 'No material-contract rows found.' },
 };
 
-export { materialContractsConfig };
+export { materialContractsConfig, renderBucket, renderEvidence, renderThreshold };

@@ -389,11 +389,15 @@ test('material-contracts config maps hydrated buckets and thresholds', () => {
       },
     }],
   });
-  assert.deepEqual(rows.map((row) => row.label), [
+  assert.equal(rows[0].label, 'Bucket coverage');
+  assert.match(rows[0].coverage, /2\/\d+ canonical buckets/);
+  const bucketRows = rows.filter((row) => !row.rollup);
+  assert.deepEqual(bucketRows.map((row) => row.label), [
     'Contracts above an aggregate-payments threshold',
     'Indebtedness contracts',
   ]);
-  assert.deepEqual(rows.map((row) => row.threshold), ['$25,000,000', '$5,000,000']);
+  assert.deepEqual(bucketRows.map((row) => row.threshold), ['$25,000,000', '$5,000,000']);
+  assert.deepEqual(bucketRows.map((row) => row.ordinal), [0, 1]);
 });
 
 test('material-contracts config falls back to canonical bucket synonyms in card text', () => {
@@ -409,6 +413,46 @@ test('material-contracts config falls back to canonical bucket synonyms in card 
   assert.ok(rows.some((row) => row.label === 'Indebtedness contracts'));
   assert.ok(rows.some((row) => row.label === 'Joint ventures / partnerships'));
   assert.ok(rows.some((row) => row.label === 'Clinical research organization contracts'));
+  assert.ok(rows.find((row) => row.label === 'Indebtedness contracts').alsoCovered.some((item) => item.label === 'Joint ventures / partnerships'));
+});
+
+test('material-contracts render cells use rollup, ordinal, pill, checklist, threshold, and evidence primitives', () => {
+  const rows = materialContractsMod.materialContractsConfig.selectRows({
+    cards: [{
+      id: 'material-contracts',
+      provision_type: 'REPRESENTATION',
+      provision_subtype: 'REP-T-MATERIAL-CONTRACTS',
+      short_title: 'Material Contracts',
+      primary_quote: 'Material Contracts include credit agreements and joint venture agreements.',
+      features: {
+        materialContractsBuckets: [
+          { code: 'INDEBTEDNESS', label: 'Indebtedness', text: 'credit agreements and joint venture agreements' },
+        ],
+        materialContractsDollarThresholds: [{ bucket: 'INDEBTEDNESS', threshold: '$5,000,000' }],
+      },
+    }],
+  });
+  const bucketColumn = materialContractsMod.materialContractsConfig.columns.find((column) => column.id === 'bucket');
+  const thresholdColumn = materialContractsMod.materialContractsConfig.columns.find((column) => column.id === 'threshold');
+  const evidenceColumn = materialContractsMod.materialContractsConfig.columns.find((column) => column.id === 'evidence');
+  const primitives = {
+    ComputedRollupHeader: ({ label, value }) => React.createElement('section', { 'data-rollup': label }, value),
+    PillCell: ({ label }) => React.createElement('span', { className: 'pill' }, label),
+    RomanNumeralOrdinal: ({ index, children }) => React.createElement('span', { 'data-ordinal': index }, children),
+    CoverageChecklist: ({ items }) => React.createElement('ul', {}, items.map((item) => React.createElement('li', { key: item.id }, item.label))),
+    ThresholdCellWithHoverQuote: ({ threshold }) => React.createElement('span', { 'data-threshold': threshold }, threshold),
+    EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
+  };
+  const rollupHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, bucketColumn.renderCell(rows[0], { primitives })));
+  assert.match(rollupHtml, /data-rollup="Bucket coverage"/);
+  const bucketHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, bucketColumn.renderCell(rows[1], { primitives })));
+  assert.match(bucketHtml, /data-ordinal="0"/);
+  assert.match(bucketHtml, /Indebtedness contracts/);
+  assert.match(bucketHtml, /Joint ventures \/ partnerships/);
+  const thresholdHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, thresholdColumn.renderCell(rows[1], { primitives })));
+  assert.match(thresholdHtml, /data-threshold="\$5,000,000"/);
+  const evidenceHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, evidenceColumn.renderCell(rows[1], { primitives })));
+  assert.match(evidenceHtml, /data-evidence="credit agreements and joint venture agreements"/);
 });
 
 test('tail-fee config maps nested tailProvision mechanics', () => {
