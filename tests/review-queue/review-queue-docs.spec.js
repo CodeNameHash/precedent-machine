@@ -17,7 +17,7 @@ test('first live queue entry validates and gates legacy vocab deletion', () => {
   assert.equal(entry.id, 'authorize-legacy-vocab-deletion');
   assert.equal(entry.kind, 'destructive');
   assert.equal(entry.title, 'Authorize legacy vocab deletion');
-  assert.equal(entry.resolution, null);
+  assert.equal(entry.resolution.choice_key, 'approve');
   assert.ok(entry.summary.includes('does not delete anything by itself'));
   assert.deepEqual(entry.choices.map((choice) => choice.key), ['approve', 'reject', 'defer']);
 });

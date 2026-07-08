@@ -11,6 +11,10 @@ test('review queue page is wired to the backend API and entry component', () => 
   assert.match(page, /fetch\(`\/api\/admin\/review-queue\/\$\{encodeURIComponent\(entry\.id\)\}\/resolve`/);
   assert.match(page, /choice_key: choice\.key/);
   assert.match(page, /resolved_by: 'ben'/);
+  assert.match(page, /Saved: \$\{entry\.title\}/);
+  assert.match(page, /Not saved: \$\{error\.message\}/);
+  assert.match(page, /role="status"/);
+  assert.match(page, /aria-live="polite"/);
 });
 
 test('review queue entry exposes evidence links and choice buttons', () => {

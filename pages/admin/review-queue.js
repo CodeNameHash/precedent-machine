@@ -14,17 +14,17 @@ async function fetchQueue() {
 export default function ReviewQueuePage() {
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [status, setStatus] = useState('');
+  const [status, setStatus] = useState(null);
   const [resolving, setResolving] = useState('');
 
   const loadQueue = useCallback(async () => {
     setLoading(true);
-    setStatus('');
+    setStatus(null);
     try {
       const payload = await fetchQueue();
       setEntries(Array.isArray(payload.entries) ? payload.entries : []);
     } catch (error) {
-      setStatus(error.message);
+      setStatus({ type: 'error', message: `Not saved: ${error.message}` });
     } finally {
       setLoading(false);
     }
@@ -38,7 +38,7 @@ export default function ReviewQueuePage() {
 
   async function resolve(entry, choice) {
     setResolving(`${entry.id}:${choice.key}`);
-    setStatus('');
+    setStatus(null);
     try {
       const response = await fetch(`/api/admin/review-queue/${encodeURIComponent(entry.id)}/resolve`, {
         method: 'POST',
@@ -47,9 +47,9 @@ export default function ReviewQueuePage() {
       });
       if (!response.ok) throw new Error(`Resolve failed: ${response.status}`);
       setEntries((current) => current.filter((item) => item.id !== entry.id));
-      setStatus(`Resolved ${entry.title}.`);
+      setStatus({ type: 'success', message: `Saved: ${entry.title}.` });
     } catch (error) {
-      setStatus(error.message);
+      setStatus({ type: 'error', message: `Not saved: ${error.message}` });
     } finally {
       setResolving('');
     }
@@ -76,7 +76,19 @@ export default function ReviewQueuePage() {
           </button>
         </header>
 
-        {status ? <p className="mb-4 rounded border border-border bg-white p-3 text-sm text-inkLight">{status}</p> : null}
+        {status ? (
+          <p
+            role="status"
+            aria-live="polite"
+            className={`mb-4 rounded border p-3 text-sm ${
+              status.type === 'success'
+                ? 'border-buyer/30 bg-buyer/10 text-buyer'
+                : 'border-red-200 bg-red-50 text-red-700'
+            }`}
+          >
+            {status.message}
+          </p>
+        ) : null}
 
         <main className="space-y-4">
           {loading ? <p className="rounded border border-border bg-white p-4 text-sm text-inkLight">Loading queue...</p> : null}
