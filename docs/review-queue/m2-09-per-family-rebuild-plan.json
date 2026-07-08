@@ -39,7 +39,12 @@
       "codex_action": "halt WP-M2-09 before primitive extraction and leave schema-first default blocked"
     }
   ],
-  "resolution": null,
-  "resolved_at": null,
-  "resolved_by": null
+  "resolution": {
+    "choice_key": "approve",
+    "label": "Approve batch plan",
+    "codex_action": "proceed with WP-M2-09 Steps 2-4 against the approved per-family rebuild plan",
+    "note": "Approved by Ben. Steps 2-3 merged ahead of the click; this confirms the per-family augmentation set and unblocks Step 4."
+  },
+  "resolved_at": "2026-07-08T19:03:24.000Z",
+  "resolved_by": "ben"
 }
