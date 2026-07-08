@@ -141,6 +141,7 @@ import { conditionsSConfig } from '../../components/review/table-configs/conditi
 import { iocExceptionsConfig } from '../../components/review/table-configs/ioc-exceptions.config';
 import { materialContractsConfig } from '../../components/review/table-configs/material-contracts.config';
 import { nosolNoshopConfig } from '../../components/review/table-configs/nosol-noshop.config';
+import { nosolSuperiorConfig } from '../../components/review/table-configs/nosol-superior.config';
 import { tailFeeConfig } from '../../components/review/table-configs/tail-fee.config';
 import { BoundaryAuditPanel } from '../../components/review/BoundaryAuditPanel';
 import { parseReviewRouteQuery, serializeReviewRouteQuery } from '../../lib/review-route';
@@ -11542,6 +11543,7 @@ export default function ReviewPage() {
                       <ProvisionTable config={iocExceptionsConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                       <ProvisionTable config={tailFeeConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                       <ProvisionTable config={nosolNoshopConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
+                      <ProvisionTable config={nosolSuperiorConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                       <ProvisionCardTable reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                     </>
                   ) : null}

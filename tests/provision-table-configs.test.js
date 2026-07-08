@@ -6,12 +6,14 @@ let mod;
 let iocMod;
 let materialContractsMod;
 let nosolNoshopMod;
+let nosolSuperiorMod;
 let tailFeeMod;
 test.before(async () => {
   mod = await import(path.join('..', 'components', 'review', 'table-configs', 'conditions-m.config.js'));
   iocMod = await import(path.join('..', 'components', 'review', 'table-configs', 'ioc-exceptions.config.js'));
   materialContractsMod = await import(path.join('..', 'components', 'review', 'table-configs', 'material-contracts.config.js'));
   nosolNoshopMod = await import(path.join('..', 'components', 'review', 'table-configs', 'nosol-noshop.config.js'));
+  nosolSuperiorMod = await import(path.join('..', 'components', 'review', 'table-configs', 'nosol-superior.config.js'));
   tailFeeMod = await import(path.join('..', 'components', 'review', 'table-configs', 'tail-fee.config.js'));
 });
 
@@ -296,4 +298,47 @@ test('nosol-noshop config falls back to no-shop quote text', () => {
   });
   assert.ok(rows.some((row) => row.id === 'nosol-noshop-prohibit'));
   assert.ok(rows.some((row) => row.id === 'nosol-noshop-exceptions'));
+});
+
+test('nosol-superior config maps superior proposal features', () => {
+  const rows = nosolSuperiorMod.nosolSuperiorConfig.selectRows({
+    cards: [{
+      id: 'superior',
+      provision_type: 'COVENANT_NO_SOLICITATION',
+      provision_subtype: 'NOSOL-SUPERIOR',
+      party_scope: 'COMPANY',
+      primary_quote: 'A Superior Proposal means a bona fide written Acquisition Proposal for 50% or more of the Company assets that is more favorable from a financial point of view.',
+      features: {
+        superiorProposalThresholdPct: 50,
+        superiorProposalTest: 'more favorable from a financial point of view',
+        superiorProposalDeterminer: 'Company Board after consultation with outside legal counsel and financial advisor',
+        fiduciaryEngageStandard: 'could reasonably be expected to lead to a Superior Proposal',
+        fiduciaryFinalStandard: 'constitutes a Superior Proposal',
+      },
+    }],
+  });
+  assert.deepEqual(rows.map((row) => row.label), [
+    'Superior Proposal threshold',
+    'Superior Proposal test',
+    'Determiner',
+    'Engagement standard',
+    'Final determination standard',
+  ]);
+  assert.equal(rows.find((row) => row.id === 'nosol-superior-threshold').detail, '50');
+  assert.match(rows.find((row) => row.id === 'nosol-superior-engage').detail, /could reasonably be expected/);
+});
+
+test('nosol-superior config falls back to definition quote text', () => {
+  const rows = nosolSuperiorMod.nosolSuperiorConfig.selectRows({
+    cards: [{
+      id: 'superior',
+      provision_type: 'DEFINITION',
+      provision_subtype: 'DEF-SUPERIOR',
+      short_title: 'Superior Proposal',
+      primary_quote: 'Superior Proposal means any bona fide written proposal for 75% or more of the Company stock that the Company Board determines in good faith, after consultation with its financial advisor, would result in greater value.',
+    }],
+  });
+  assert.equal(rows.find((row) => row.id === 'nosol-superior-threshold').detail, '75%');
+  assert.match(rows.find((row) => row.id === 'nosol-superior-test').detail, /greater value/);
+  assert.match(rows.find((row) => row.id === 'nosol-superior-determiner').detail, /Company Board determines/);
 });
