@@ -238,6 +238,40 @@ test('M2-08 gap configs map their core schema-card fields', () => {
   assert.match(representationsQualifiersMod.representationsQualifiersConfig.selectRows(reviewDeal)[0].detail, /material respects/);
 });
 
+test('representations-qualifiers config exposes taxonomy-readable signals and hover details', () => {
+  const rows = representationsQualifiersMod.representationsQualifiersConfig.selectRows({
+    cards: [{
+      id: 'rep',
+      provision_type: 'REPRESENTATION',
+      provision_subtype: 'REP-T-SEC',
+      short_title: 'SEC Documents',
+      primary_quote: 'The SEC Documents were accurate in all material respects and to the actual knowledge of the Company.',
+      features: {
+        materialityQualifier: { code: 'MAT_MAE_QUALIFIED', label: 'MAE qualifier', text: 'would not have an MAE' },
+        knowledgeStandard: { code: 'ACTUAL', label: 'Actual knowledge', text: 'actual knowledge' },
+        disclosureScheduleException: 'except as set forth in Section 4.06 of the Company Disclosure Schedule',
+        linkedBringDownStandard: 'in all material respects',
+      },
+    }],
+  });
+  const materiality = rows.find((row) => row.id === 'representations-qualifiers-materiality');
+  const knowledge = rows.find((row) => row.id === 'representations-qualifiers-knowledge');
+  const schedule = rows.find((row) => row.id === 'representations-qualifiers-schedule');
+  const bringDown = rows.find((row) => row.id === 'representations-qualifiers-bringdown');
+  assert.deepEqual(materiality.signals.map((item) => item.label), ['Qualifier: True except where failure would not have an MAE']);
+  assert.deepEqual(knowledge.signals.map((item) => item.label), ['Qualifier: Actual knowledge']);
+  assert.deepEqual(schedule.signals.map((item) => item.label), ['Exception: except as set forth in Section 4.06 of the Company Disclosure Schedule']);
+  assert.deepEqual(bringDown.signals.map((item) => item.label), ['Bring-down: in all material respects']);
+  const primitives = {
+    PillCell: ({ label }) => React.createElement('span', { className: 'pill' }, label),
+    EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
+  };
+  const signalColumn = representationsQualifiersMod.representationsQualifiersConfig.columns.find((column) => column.id === 'signals');
+  const detailColumn = representationsQualifiersMod.representationsQualifiersConfig.columns.find((column) => column.id === 'detail');
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, signalColumn.renderCell(materiality, { primitives }))), /True except where failure would not have an MAE/);
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(knowledge, { primitives }))), /data-evidence="The SEC Documents were accurate/);
+});
+
 test('general-covenants config exposes efforts, consent, knowledge, and deadline signals', () => {
   const rows = generalCovenantsMod.generalCovenantsConfig.selectRows({
     cards: [{
