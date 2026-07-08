@@ -5,6 +5,7 @@ const path = require('node:path');
 let mod;
 let iocMod;
 let materialContractsMod;
+let nosolFiduciaryMod;
 let nosolInterveningMod;
 let nosolNoshopMod;
 let nosolSuperiorMod;
@@ -13,6 +14,7 @@ test.before(async () => {
   mod = await import(path.join('..', 'components', 'review', 'table-configs', 'conditions-m.config.js'));
   iocMod = await import(path.join('..', 'components', 'review', 'table-configs', 'ioc-exceptions.config.js'));
   materialContractsMod = await import(path.join('..', 'components', 'review', 'table-configs', 'material-contracts.config.js'));
+  nosolFiduciaryMod = await import(path.join('..', 'components', 'review', 'table-configs', 'nosol-fiduciary.config.js'));
   nosolInterveningMod = await import(path.join('..', 'components', 'review', 'table-configs', 'nosol-intervening.config.js'));
   nosolNoshopMod = await import(path.join('..', 'components', 'review', 'table-configs', 'nosol-noshop.config.js'));
   nosolSuperiorMod = await import(path.join('..', 'components', 'review', 'table-configs', 'nosol-superior.config.js'));
@@ -386,4 +388,57 @@ test('nosol-intervening config falls back to definition and exception quote text
   assert.match(rows.find((row) => row.id === 'nosol-intervening-definition').detail, /means any material event/);
   assert.match(rows.find((row) => row.id === 'nosol-intervening-scope').detail, /Positive/);
   assert.match(rows.find((row) => row.id === 'nosol-intervening-exceptions').detail, /shall not include/);
+});
+
+test('nosol-fiduciary config maps fiduciary-out features', () => {
+  const rows = nosolFiduciaryMod.nosolFiduciaryConfig.selectRows({
+    cards: [{
+      id: 'match',
+      provision_type: 'COVENANT_NO_SOLICITATION',
+      provision_subtype: 'NOSOL-MATCH',
+      party_scope: 'COMPANY',
+      primary_quote: 'The Company shall give Parent four Business Days notice before making a Change of Recommendation.',
+      features: {
+        fiduciaryEngageStandard: 'could reasonably be expected to lead to a Superior Proposal',
+        fiduciaryFinalStandard: 'constitutes a Superior Proposal',
+        boardChangeForSuperiorProposal: true,
+        noticePeriod: 'four Business Days',
+        noticeContent: 'identity of the person making the proposal and material terms',
+        initialMatchPeriodDays: 4,
+        subsequentMatchPeriodDays: 2,
+        forceTheVote: true,
+        companyTerminationForSuperior: true,
+        representativesStandard: 'not permit to',
+        parentTerminationRightForNonsolicitBreach: 'MATERIAL_WILLFUL_ONLY',
+      },
+    }],
+  });
+  assert.deepEqual(rows.map((row) => row.label), [
+    'Engagement standard',
+    'Final determination standard',
+    'Board change right',
+    'Notice period',
+    'Notice content',
+    'Initial match period',
+    'Subsequent match period',
+    'Force the vote',
+    'Company termination for Superior Proposal',
+    'Representative control standard',
+    'Buyer termination for nonsolicit breach',
+  ]);
+  assert.equal(rows.find((row) => row.id === 'nosol-fiduciary-notice-period').detail, 'four Business Days');
+});
+
+test('nosol-fiduciary config falls back to fiduciary quote text', () => {
+  const rows = nosolFiduciaryMod.nosolFiduciaryConfig.selectRows({
+    cards: [{
+      id: 'recommend',
+      provision_type: 'COVENANT_NO_SOLICITATION',
+      provision_subtype: 'NOSOL-RECOMMEND',
+      primary_quote: 'Before making an Adverse Recommendation Change for a Superior Proposal, the Company shall provide notice identifying the bidder identity and material terms and shall negotiate for four Business Days. The Company shall cause its Representatives not to solicit competing proposals.',
+    }],
+  });
+  assert.match(rows.find((row) => row.id === 'nosol-fiduciary-board-change').detail, /Adverse Recommendation Change/);
+  assert.equal(rows.find((row) => row.id === 'nosol-fiduciary-notice-period').detail, 'four Business Days');
+  assert.match(rows.find((row) => row.id === 'nosol-fiduciary-reps').detail, /Representatives/);
 });
