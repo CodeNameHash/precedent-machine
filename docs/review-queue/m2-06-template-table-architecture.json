@@ -1,0 +1,41 @@
+{
+  "id": "m2-06-template-table-architecture",
+  "created_at": "2026-07-08T15:15:00.000Z",
+  "kind": "canonical",
+  "title": "Approve template-driven ProvisionTable architecture (WP-M2-06)",
+  "summary": "The schema-first review page is now the only render path. It currently has provision cards, but the old review page also had structured analytical tables for conditions, interim covenants, no-shop, employee benefits, SEC meeting, no-other-reps/fraud, and consideration. WP-M2-06 proposes one generic ProvisionTable template driven by table config objects, with configs reading from schema cards and reusing existing table-logic helpers. Approving lets Codex port each table family back into the schema-first page without recreating one bespoke React component per table.",
+  "evidence": [
+    {
+      "label": "Milestone plan",
+      "url": "PLAN-M2-schema-deploy.md"
+    },
+    {
+      "label": "Pure table logic substrate",
+      "url": "components/review/table-logic.js"
+    },
+    {
+      "label": "Schema-first review cards",
+      "url": "components/review/ProvisionCardTable.js"
+    }
+  ],
+  "choices": [
+    {
+      "key": "approve",
+      "label": "Approve template architecture",
+      "codex_action": "proceed with WP-M2-06 table template and config PRs"
+    },
+    {
+      "key": "reject",
+      "label": "Reject",
+      "codex_action": "halt WP-M2-06 and reopen architecture discussion"
+    },
+    {
+      "key": "modify",
+      "label": "Approve with modifications",
+      "codex_action": "await Ben-authored architecture changes before implementation"
+    }
+  ],
+  "resolution": null,
+  "resolved_at": null,
+  "resolved_by": null
+}
