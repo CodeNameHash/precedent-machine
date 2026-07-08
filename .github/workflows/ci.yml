@@ -84,8 +84,21 @@ jobs:
             echo "run=false" >> "$GITHUB_OUTPUT"
             echo "No schema parity relevant files changed; skipping audit."
           fi
+      - name: Detect schema parity env
+        id: parity-env
+        run: |
+          set -euo pipefail
+          url="${SUPABASE_URL:-${NEXT_PUBLIC_SUPABASE_URL:-}}"
+          key="${SUPABASE_SERVICE_ROLE_KEY:-${NEXT_PUBLIC_SUPABASE_ANON_KEY:-}}"
+          if [ -n "${url}" ] && [ -n "${key}" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+            echo "Supabase env vars available for schema parity."
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "Supabase env vars unavailable; skipping schema parity audit."
+          fi
       - name: Schema parity audit
-        if: steps.touch.outputs.run == 'true'
+        if: steps.touch.outputs.run == 'true' && steps.parity-env.outputs.available == 'true'
         run: node scripts/audit/schema-parity.js
   phase-allowlist:
     runs-on: ubuntu-latest
