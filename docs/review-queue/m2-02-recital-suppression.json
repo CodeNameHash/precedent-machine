@@ -1,0 +1,37 @@
+{
+  "id": "m2-02-recital-suppression",
+  "created_at": "2026-07-08T13:48:00.000Z",
+  "kind": "canonical",
+  "title": "Are WHEREAS/preamble/recital paragraphs 'provisions' for parity purposes?",
+  "summary": "Legacy user-mode renders freeform WHEREAS clauses, preamble paragraphs, and recitals inside the DEF section as if they were provisions. Schema-first extraction (correctly, per the M&A canon) treats these as narrative preface — not enforceable provisions — and does not emit cards for them. This creates ~100 diffs in the parity audit that are not real diffs. Ben's counsel view (proposed): recitals are context, not provisions. Approving means: (a) parity audit adds a `recital_suppression` rule that excludes DEF-section cells whose text matches recital patterns (WHEREAS lead-in, preamble, non-numbered paragraph before Section 1) from diff counting; (b) schema-first extraction continues to skip them; (c) if a user genuinely wants to see recitals, they render in admin mode only. Rejecting means: schema-first must emit cards for recitals to match legacy — increases card count by ~100/deal with no analytical value.",
+  "evidence": [
+    {
+      "label": "Sample recital diffs",
+      "url": "docs/schema-migration/phase-8-parity.md"
+    },
+    {
+      "label": "Parent directive",
+      "url": "docs/handoffs/CODEX-DIRECTIVE-M2-02-parity-remediation.md"
+    }
+  ],
+  "choices": [
+    {
+      "key": "approve",
+      "label": "Approve — recitals are not provisions; suppress in audit and user-mode",
+      "codex_action": "add recital_suppression rule to schema-parity.js audit; ensure schema-first render stays as-is"
+    },
+    {
+      "key": "reject",
+      "label": "Reject — recitals must render as provisions",
+      "codex_action": "extend extractor to emit recital cards; back out schema-first skip logic"
+    },
+    {
+      "key": "modify",
+      "label": "Approve with modifications",
+      "codex_action": "await Ben diff"
+    }
+  ],
+  "resolution": null,
+  "resolved_at": null,
+  "resolved_by": null
+}
