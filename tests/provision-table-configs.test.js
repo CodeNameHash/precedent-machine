@@ -10,6 +10,7 @@ let nosolFiduciaryMod;
 let nosolInterveningMod;
 let nosolNoshopMod;
 let nosolSuperiorMod;
+let secMeetingMod;
 let tailFeeMod;
 test.before(async () => {
   mod = await import(path.join('..', 'components', 'review', 'table-configs', 'conditions-m.config.js'));
@@ -20,6 +21,7 @@ test.before(async () => {
   nosolInterveningMod = await import(path.join('..', 'components', 'review', 'table-configs', 'nosol-intervening.config.js'));
   nosolNoshopMod = await import(path.join('..', 'components', 'review', 'table-configs', 'nosol-noshop.config.js'));
   nosolSuperiorMod = await import(path.join('..', 'components', 'review', 'table-configs', 'nosol-superior.config.js'));
+  secMeetingMod = await import(path.join('..', 'components', 'review', 'table-configs', 'sec-meeting.config.js'));
   tailFeeMod = await import(path.join('..', 'components', 'review', 'table-configs', 'tail-fee.config.js'));
 });
 
@@ -490,4 +492,45 @@ test('employee-benefits config falls back to legacy flat standards', () => {
     'Health and welfare benefits',
   ]);
   assert.equal(rows.find((row) => row.id === 'employee-benefits-period').standard, '12');
+});
+
+test('sec-meeting config maps proxy deadlines and adjournment rights', () => {
+  const rows = secMeetingMod.secMeetingConfig.selectRows({
+    cards: [{
+      id: 'proxy',
+      provision_subtype: 'COV-PROXY',
+      primary_quote: 'The Company shall file the proxy statement within 10 business days.',
+      features: {
+        proxyFilingDeadline: { days: 10, unit: 'BUSINESS_DAYS', trigger: 'SIGNING', text: 'file within 10 business days after signing' },
+        mailingDeadline: { text: 'mail as promptly as practicable after SEC clearance' },
+        adjournmentRights: [{ party: 'PARENT', reasons: [{ code: 'SOLICIT_VOTES', label: 'Solicit votes' }], maxDaysTotal: 30, text: 'Parent may require an adjournment to solicit votes.' }],
+      },
+    }],
+  });
+  assert.deepEqual(rows.map((row) => row.label), ['Proxy filing deadline', 'Proxy mailing', 'Adjournment rights']);
+  assert.match(rows.find((row) => row.id === 'sec-meeting-proxy-filing').detail, /10 business days after signing/);
+  assert.match(rows.find((row) => row.id === 'sec-meeting-adjournment-0').detail, /30 days total/);
+});
+
+test('sec-meeting config maps tender-offer SEC filing mechanics', () => {
+  const rows = secMeetingMod.secMeetingConfig.selectRows({
+    cards: [{
+      id: 'offer',
+      provision_subtype: 'STRUCT-OFFER',
+      primary_quote: 'Parent shall file a Schedule TO and the Company shall file a Schedule 14D-9.',
+      features: {
+        scheduleTOFiling: 'Parent files Schedule TO with offer documents.',
+        schedule14D9Filing: 'Company files Schedule 14D-9.',
+        stockholderListCovenant: 'Company provides stockholder lists and security position listings.',
+        tenderOfferMinimumCondition: 'Shares validly tendered and not withdrawn exceed 50%.',
+      },
+    }],
+  });
+  assert.deepEqual(rows.map((row) => row.label), [
+    'Schedule TO / offer documents',
+    'Schedule 14D-9',
+    'Stockholder list / holder communications',
+    'Tender-offer minimum condition',
+  ]);
+  assert.equal(rows.find((row) => row.id === 'sec-meeting-schedule14D9Filing').subject, 'SEC / offer');
 });
