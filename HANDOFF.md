@@ -667,3 +667,5 @@ REVIEW_QUEUE_RESOLUTION {"id":"m2-06-template-table-architecture","kind":"canoni
 2026-07-08: WP-M2-09 Step 3, Conditions family: enriched the mutual, buyer, and seller closing-condition configs with canonical-code, efforts, consent, materiality-scrape, and antitrust-approval signals plus hover-source detail rendering.
 2026-07-08: WP-M2-09 Step 3, Material Contracts family: enriched the material-contracts config with bucket pills, threshold hover evidence, roman ordering, coverage checklist spillovers, and a computed bucket-coverage rollup.
 2026-07-08: WP-M2-09 Step 3, IOC / General Covenants family: enriched IOC exceptions and general covenant configs with efforts, consent, knowledge, and deadline signals plus hover-source rendering for extracted exception/detail text.
+
+2026-07-08: WP-M2-09 Step 3, Fees family: enriched termination fee, tail-fee mechanics, and advisers/fees/expenses configs with primitive-backed signals, threshold cells, and hover-source rendering for fee evidence.

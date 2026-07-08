@@ -588,6 +588,76 @@ test('tail-fee config falls back to tail language in card text', () => {
   assert.equal(rows.find((row) => row.id === 'tail-threshold').value, '50%');
 });
 
+test('termination fee and expense configs expose primitive-backed signals', () => {
+  const primitives = {
+    PillCell: ({ label }) => React.createElement('span', { className: 'pill' }, label),
+    EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
+  };
+  const terminationRows = terminationFeesMod.terminationFeesConfig.selectRows({
+    cards: [{
+      id: 'termf',
+      provision_type: 'TERMINATION_FEE',
+      provision_subtype: 'TERMF-TARGET',
+      primary_quote: 'The Company shall pay a termination fee of $100,000,000 as a condition to termination.',
+      features: {
+        targetTerminationFee: '$100,000,000',
+        feeRequired: true,
+      },
+    }],
+  });
+  const amount = terminationRows.find((row) => row.id === 'termination-fees-target-fee');
+  const feeRequired = terminationRows.find((row) => row.id === 'termination-fees-required');
+  assert.deepEqual(amount.signals.map((item) => item.label), ['Amount: $100,000,000']);
+  assert.deepEqual(feeRequired.signals.map((item) => item.label), ['Condition: Yes']);
+  const termSignals = terminationFeesMod.terminationFeesConfig.columns.find((column) => column.id === 'signals');
+  const termDetail = terminationFeesMod.terminationFeesConfig.columns.find((column) => column.id === 'detail');
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, termSignals.renderCell(feeRequired, { primitives }))), /Condition: Yes/);
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, termDetail.renderCell(amount, { primitives }))), /data-evidence="The Company shall pay a termination fee of \$100,000,000 as a condition to termination\."/);
+
+  const miscRows = advisersFeesExpensesMod.advisersFeesExpensesConfig.selectRows({
+    cards: [{
+      id: 'expense',
+      provision_type: 'MISC_BOILERPLATE',
+      provision_subtype: 'MISC-EXPENSES',
+      primary_quote: 'Each party shall bear its own fees and expenses, except HSR filing fees shall be paid by Parent.',
+      features: {
+        feeExpenseAllocation: 'each party bears its own expenses',
+        feeExpenseExceptions: 'Parent pays HSR filing fees',
+      },
+    }],
+  });
+  const exception = miscRows.find((row) => row.id === 'advisers-fees-expenses-expense-exceptions');
+  assert.deepEqual(exception.signals.map((item) => item.label), ['Expenses: Parent pays HSR filing fees']);
+  const miscSignals = advisersFeesExpensesMod.advisersFeesExpensesConfig.columns.find((column) => column.id === 'signals');
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, miscSignals.renderCell(exception, { primitives }))), /Parent pays HSR filing fees/);
+});
+
+test('tail-fee render cells use threshold and evidence primitives', () => {
+  const rows = tailFeeMod.tailFeeConfig.selectRows({
+    cards: [{
+      id: 'tail',
+      provision_type: 'TERMINATION_FEE',
+      provision_subtype: 'TERMF-TAIL',
+      primary_quote: 'If within 12 months the Company enters into a Company Takeover Proposal for 50% or more, the fee is payable.',
+      features: {
+        tailProvision: { period_months: 12, threshold_percentage: 50, triggers: ['Company Takeover Proposal'] },
+      },
+    }],
+  });
+  const primitives = {
+    PillCell: ({ label }) => React.createElement('span', { className: 'pill' }, label),
+    ThresholdCellWithHoverQuote: ({ threshold, evidence }) => React.createElement('span', { 'data-threshold': threshold, 'data-evidence': evidence }, threshold),
+    EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
+  };
+  const threshold = rows.find((row) => row.id === 'tail-threshold');
+  const signalColumn = tailFeeMod.tailFeeConfig.columns.find((column) => column.id === 'signals');
+  const mechanicColumn = tailFeeMod.tailFeeConfig.columns.find((column) => column.id === 'value');
+  const evidenceColumn = tailFeeMod.tailFeeConfig.columns.find((column) => column.id === 'evidence');
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, signalColumn.renderCell(threshold, { primitives }))), /Threshold % for Company Takeover Proposal: 50%/);
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, mechanicColumn.renderCell(threshold, { primitives }))), /data-threshold="50%"/);
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, evidenceColumn.renderCell(threshold, { primitives }))), /data-evidence="If within 12 months/);
+});
+
 test('nosol-noshop config maps core no-shop cards', () => {
   const rows = nosolNoshopMod.nosolNoshopConfig.selectRows({
     cards: [
