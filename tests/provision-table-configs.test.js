@@ -1145,6 +1145,44 @@ test('employee-benefits config falls back to legacy flat standards', () => {
   assert.equal(rows.find((row) => row.id === 'employee-benefits-period').standard, '12');
 });
 
+test('employee-benefits render cells use pill, grouped-sub-rows, and evidence-hover primitives', () => {
+  const rows = employeeBenefitsMod.employeeBenefitsConfig.selectRows({
+    cards: [{
+      id: 'employee-benefits',
+      provision_subtype: 'COV-EMPLOYEE',
+      primary_quote: 'Continuing Employees shall receive compensation and benefits protections.',
+      features: {
+        compensationItems: [{
+          benefit_types: [{ code: 'BASE_SALARY', label: 'Base salary' }, { code: 'TARGET_BONUS', label: 'Target annual bonus' }],
+          standard_codes: ['NO_LESS_FAVORABLE'],
+          standard_labels: ['No less favourable'],
+          comparison_group: 'pre-closing target employee baseline',
+          bundling: 'aggregate',
+          text: 'base salary and target bonus no less favourable in the aggregate',
+        }],
+      },
+    }],
+  });
+  const baseSalaryRow = rows.find((row) => row.benefit === 'Base salary');
+  assert.equal(baseSalaryRow.bundled, true);
+  assert.deepEqual(baseSalaryRow.siblingElements.map((sibling) => sibling.label), ['Target annual bonus']);
+  const primitives = {
+    PillCell: ({ label }) => React.createElement('span', { className: 'pill' }, label),
+    GroupedSubRows: ({ groups }) => React.createElement('div', { 'data-testid': 'grouped-sub-rows' }, groups.map((group) => group.label).join(', ')),
+    EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
+  };
+  const comparisonColumn = employeeBenefitsMod.employeeBenefitsConfig.columns.find((column) => column.id === 'comparison');
+  const standardColumn = employeeBenefitsMod.employeeBenefitsConfig.columns.find((column) => column.id === 'standard');
+  const detailColumn = employeeBenefitsMod.employeeBenefitsConfig.columns.find((column) => column.id === 'detail');
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, comparisonColumn.renderCell(baseSalaryRow, { primitives }))), /pre-closing target employee baseline/);
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, standardColumn.renderCell(baseSalaryRow, { primitives }))), /No less favourable/);
+  const detailHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(baseSalaryRow, { primitives })));
+  assert.match(detailHtml, /Bundled: aggregate/);
+  assert.match(detailHtml, /data-testid="grouped-sub-rows"/);
+  assert.match(detailHtml, /Bundled with \(same clause \/ standard\)/);
+  assert.match(detailHtml, /data-evidence="base salary and target bonus/);
+});
+
 test('sec-meeting config maps proxy deadlines and adjournment rights', () => {
   const rows = secMeetingMod.secMeetingConfig.selectRows({
     cards: [{
