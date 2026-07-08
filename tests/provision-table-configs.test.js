@@ -238,6 +238,32 @@ test('M2-08 gap configs map their core schema-card fields', () => {
   assert.match(representationsQualifiersMod.representationsQualifiersConfig.selectRows(reviewDeal)[0].detail, /material respects/);
 });
 
+test('general-covenants config exposes efforts, consent, knowledge, and deadline signals', () => {
+  const rows = generalCovenantsMod.generalCovenantsConfig.selectRows({
+    cards: [{
+      id: 'cov-efforts',
+      provision_type: 'COVENANT_INTERIM_OPERATING',
+      provision_subtype: 'IOC-AFFIRMATIVE',
+      short_title: 'Efforts Covenant',
+      primary_quote: 'The Company shall use reasonable best efforts within five business days, subject to Parent consent.',
+      features: {
+        effortsStandard: { code: 'REASONABLE_BEST_EFFORTS', label: 'Reasonable best efforts', text: 'reasonable best efforts' },
+        consentStandard: { code: 'PRIOR_WRITTEN_CONSENT', label: 'Prior written consent', text: 'Parent consent' },
+        knowledgeQualifier: { code: 'KNOWLEDGE_QUALIFIED', label: 'Knowledge qualified', text: 'to the Company Knowledge' },
+        dayCountDeadline: '5 business days',
+        affirmativeCovenants: 'Use reasonable best efforts within five business days.',
+      },
+    }],
+  });
+  const row = rows.find((entry) => entry.label === 'Affirmative covenants');
+  assert.deepEqual(row.signals.map((item) => item.label), [
+    'Efforts: Reasonable best efforts',
+    'Consent: Prior written consent: Parent consent',
+    'Knowledge: Knowledge qualified: to the Company Knowledge',
+    'Deadline: 5 business days',
+  ]);
+});
+
 test('conditions-m config returns no table rows when no closing-condition cards exist', () => {
   assert.deepEqual(mod.conditionsMConfig.selectRows({ cards: [] }), []);
   assert.deepEqual(mod.conditionsMConfig.selectRows({ cards: [{ provision_type: 'REPRESENTATION' }] }), []);
@@ -350,6 +376,31 @@ test('ioc-exceptions config prefers structured feature exceptions', () => {
   assert.deepEqual(rows[0].negative.map((entry) => entry.label), ['Ordinary course']);
 });
 
+test('ioc-exceptions config exposes side-level covenant signals', () => {
+  const rows = iocMod.iocExceptionsConfig.selectRows({
+    cards: [{
+      id: 'ioc-general',
+      provision_type: 'COVENANT_INTERIM_OPERATING',
+      provision_subtype: 'IOC-GENERAL-EXCEPTIONS',
+      party_scope: 'COMPANY',
+      short_title: 'General Exceptions',
+      features: {
+        permittedExceptions: [{ code: 'PRIOR_WRITTEN_CONSENT', label: 'With consent', text: 'with Parent consent' }],
+        effortsStandard: { code: 'REASONABLE_BEST_EFFORTS', label: 'Reasonable best efforts', text: 'reasonable best efforts' },
+        consentStandard: { code: 'PRIOR_WRITTEN_CONSENT', label: 'Prior written consent', text: 'Parent consent' },
+        knowledgeQualifier: { code: 'KNOWLEDGE_QUALIFIED', label: 'Knowledge qualified', text: 'knowledge' },
+        dayCountDeadline: '10 days',
+      },
+    }],
+  });
+  assert.deepEqual(rows[0].signals.map((item) => item.label), [
+    'Efforts: Reasonable best efforts',
+    'Consent: Prior written consent',
+    'Knowledge: Knowledge qualified',
+    'Deadline: 10 days',
+  ]);
+});
+
 test('ioc-exceptions config falls back to splitting general-exceptions card text', () => {
   const rows = iocMod.iocExceptionsConfig.selectRows({
     cards: [
@@ -370,6 +421,50 @@ test('ioc-exceptions config falls back to splitting general-exceptions card text
     'As required by law',
     'With consent',
   ]);
+});
+
+test('ioc and covenant render cells use primitive pills and hover-source wrappers', () => {
+  const primitives = {
+    PillCell: ({ label }) => React.createElement('span', { className: 'pill' }, label),
+    EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
+  };
+  const iocRows = iocMod.iocExceptionsConfig.selectRows({
+    cards: [{
+      id: 'ioc-general',
+      provision_type: 'COVENANT_INTERIM_OPERATING',
+      provision_subtype: 'IOC-GENERAL-EXCEPTIONS',
+      party_scope: 'BUYER',
+      short_title: 'General Exceptions',
+      primary_quote: 'except with Company consent',
+      features: {
+        permittedExceptions: [{ code: 'PRIOR_WRITTEN_CONSENT', label: 'With consent', text: 'Company consent' }],
+        consentStandard: { code: 'PRIOR_WRITTEN_CONSENT', label: 'Prior written consent', text: 'Company consent' },
+      },
+    }],
+  });
+  const iocSignals = iocMod.iocExceptionsConfig.columns.find((column) => column.id === 'signals');
+  const iocPositive = iocMod.iocExceptionsConfig.columns.find((column) => column.id === 'positive');
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, iocSignals.renderCell(iocRows[0], { primitives }))), /Prior written consent/);
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, iocPositive.renderCell(iocRows[0], { primitives }))), /data-evidence="Company consent"/);
+
+  const covenantRows = generalCovenantsMod.generalCovenantsConfig.selectRows({
+    cards: [{
+      id: 'cov-efforts',
+      provision_type: 'COVENANT_INTERIM_OPERATING',
+      provision_subtype: 'IOC-AFFIRMATIVE',
+      short_title: 'Efforts Covenant',
+      primary_quote: 'The Company shall use reasonable best efforts.',
+      features: {
+        effortsStandard: { code: 'REASONABLE_BEST_EFFORTS', label: 'Reasonable best efforts', text: 'reasonable best efforts' },
+        affirmativeCovenants: 'Use reasonable best efforts.',
+      },
+    }],
+  });
+  const covSignals = generalCovenantsMod.generalCovenantsConfig.columns.find((column) => column.id === 'signals');
+  const covDetail = generalCovenantsMod.generalCovenantsConfig.columns.find((column) => column.id === 'detail');
+  const row = covenantRows.find((entry) => entry.label === 'Affirmative covenants');
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, covSignals.renderCell(row, { primitives }))), /Reasonable best efforts/);
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, covDetail.renderCell(row, { primitives }))), /data-evidence="The Company shall use reasonable best efforts\."/);
 });
 
 test('material-contracts config maps hydrated buckets and thresholds', () => {
