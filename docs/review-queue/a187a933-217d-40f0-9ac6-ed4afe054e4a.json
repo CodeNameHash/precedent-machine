@@ -39,7 +39,12 @@
       "codex_action": "await Ben-authored diff to this directive"
     }
   ],
-  "resolution": null,
-  "resolved_at": null,
-  "resolved_by": null
+  "resolution": {
+    "choice_key": "approve",
+    "label": "Approve all three shapes as proposed",
+    "codex_action": "proceed with WP-M2-00 Steps 2-8",
+    "note": "Approved by Ben in Codex after production click failed to persist."
+  },
+  "resolved_at": "2026-07-08T01:40:55.102Z",
+  "resolved_by": "ben"
 }

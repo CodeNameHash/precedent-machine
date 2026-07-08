@@ -35,7 +35,12 @@
       "codex_action": "leave WP-M2-04 legacy vocab deletion blocked pending further Ben review"
     }
   ],
-  "resolution": null,
-  "resolved_at": null,
-  "resolved_by": null
+  "resolution": {
+    "choice_key": "approve",
+    "label": "Authorize deletion workflow",
+    "codex_action": "proceed with WP-M2-04 legacy vocab audit and later destructive deletion PR limited to approved safe items",
+    "note": "Approved by Ben in Codex after production click failed to persist."
+  },
+  "resolved_at": "2026-07-08T01:40:55.102Z",
+  "resolved_by": "ben"
 }

@@ -615,3 +615,7 @@ opinions about what's "normal" in M&A.
 
 
 REVIEW_QUEUE_RESOLUTION {"id":"ed9210c4-76bf-4068-9562-b68869d20c98","kind":"canonical","title":"WP-M2-01 contract: four-action treatment + admin surfaces","choice_key":"approve","codex_action":"proceed with Steps 2-6","resolved_at":"2026-07-07T22:06:59.118Z","resolved_by":"ben"}
+
+REVIEW_QUEUE_RESOLUTION {"id":"a187a933-217d-40f0-9ac6-ed4afe054e4a","kind":"canonical","title":"WP-M2-00 canonical schema: provision identity, provenance, kind, definitions","choice_key":"approve","codex_action":"proceed with WP-M2-00 Steps 2-8","resolved_at":"2026-07-08T01:40:55.102Z","resolved_by":"ben"}
+
+REVIEW_QUEUE_RESOLUTION {"id":"authorize-legacy-vocab-deletion","kind":"destructive","title":"Authorize legacy vocab deletion","choice_key":"approve","codex_action":"proceed with WP-M2-04 legacy vocab audit and later destructive deletion PR limited to approved safe items","resolved_at":"2026-07-08T01:40:55.102Z","resolved_by":"ben"}
