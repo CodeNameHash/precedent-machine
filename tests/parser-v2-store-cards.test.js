@@ -26,7 +26,16 @@ function fixtureProvisions() {
 
 function fakeSupabase(options = {}) {
   const calls = [];
+  // `existingRows` seeds the provision_cards table only (legacy shape, kept
+  // for every pre-existing test in this file). `claimsExistingRows` is the
+  // equivalent seed for the claims table, used by the claims-writer tests;
+  // it defaults to empty so the claims stale-cleanup query never finds
+  // anything to delete unless a test explicitly opts in -- keeping the
+  // pre-existing provision_cards-only assertions (call order, delete
+  // counts) unaffected by the new claims writes.
   const existingRows = options.existingRows || [];
+  const claimsExistingRows = options.claimsExistingRows || [];
+  const rowsByTable = { provision_cards: existingRows, claims: claimsExistingRows };
   return {
     calls,
     from(table) {
@@ -52,28 +61,45 @@ function fakeSupabase(options = {}) {
         },
         select(columns) {
           calls.push({ table, op: 'select', columns });
+          const tableRows = rowsByTable[table] || [];
           return {
             eq(column, value) {
               calls.push({ table, op: 'eq', column, value });
-              return Promise.resolve({
-                data: existingRows.filter((row) => row.deal_id === value || !row.deal_id),
-                error: null,
-              });
+              const filtered = tableRows.filter((row) => row.deal_id === value || !row.deal_id);
+              // Awaitable directly (provision_cards orphan-lookup path:
+              // `await ...select().eq()`) and chainable with `.in()` (claims
+              // stale-lookup path: `...select().eq().in()`).
+              return {
+                in(column2, values) {
+                  calls.push({ table, op: 'in', column: column2, values });
+                  const narrowed = filtered.filter((row) => values.includes(row[column2]));
+                  return Promise.resolve({ data: narrowed, error: null });
+                },
+                then(resolve) {
+                  return Promise.resolve({ data: filtered, error: null }).then(resolve);
+                },
+              };
             },
           };
         },
         upsert(rows, options) {
           calls.push({ table, op: 'upsert', rows, options });
+          const result = {
+            data: rows.map((row, index) => ({
+              id: row.id || `card-${index}`,
+              provision_instance_id: row.provision_instance_id,
+              kind: row.kind,
+            })),
+            error: null,
+          };
+          // Awaitable directly (claims path: `await ...upsert(...)`) and
+          // chainable with `.select()` (cards path: `...upsert(...).select()`).
           return {
             select() {
-              return Promise.resolve({
-                data: rows.map((row, index) => ({
-                  id: `card-${index}`,
-                  provision_instance_id: row.provision_instance_id,
-                  kind: row.kind,
-                })),
-                error: null,
-              });
+              return Promise.resolve(result);
+            },
+            then(resolve) {
+              return Promise.resolve({ error: null }).then(resolve);
             },
           };
         },
