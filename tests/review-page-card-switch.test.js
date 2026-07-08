@@ -32,5 +32,6 @@ test('review page fetches card-backed deal data through the API route', () => {
 
 test('review cards API delegates to the server-side card query helper', () => {
   assert.match(apiSource, /import \{ fetchReviewDealCards \} from '..\/..\/..\/..\/lib\/queries\/review-deal';/);
-  assert.match(apiSource, /const reviewDeal = await fetchReviewDealCards\(dealId, sb\);/);
+  assert.match(apiSource, /const mode = rawMode === 'admin' \? 'admin' : 'user';/);
+  assert.match(apiSource, /const reviewDeal = await fetchReviewDealCards\(dealId, sb, \{ mode \}\);/);
 });

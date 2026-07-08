@@ -13,12 +13,14 @@ export default async function handler(req, res) {
 
   const dealId = Array.isArray(req.query.id) ? req.query.id[0] : req.query.id;
   if (!dealId) return fail(res, 400, 'deal id required');
+  const rawMode = Array.isArray(req.query.mode) ? req.query.mode[0] : req.query.mode;
+  const mode = rawMode === 'admin' ? 'admin' : 'user';
 
   const sb = getServiceSupabase();
   if (!sb) return fail(res, 500, 'Supabase not configured');
 
   try {
-    const reviewDeal = await fetchReviewDealCards(dealId, sb);
+    const reviewDeal = await fetchReviewDealCards(dealId, sb, { mode });
     return res.status(200).json({ reviewDeal });
   } catch (error) {
     return fail(res, 500, error.message || String(error));
