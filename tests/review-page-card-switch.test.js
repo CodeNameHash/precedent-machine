@@ -16,11 +16,15 @@ test('review page imports the provision card table', () => {
 test('review page mounts the first schema structured table config before cards', () => {
   assert.match(reviewPageSource, /import ProvisionTable from '..\/..\/components\/review\/ProvisionTable';/);
   assert.match(reviewPageSource, /import \{ conditionsMConfig \} from '..\/..\/components\/review\/table-configs\/conditions-m\.config';/);
+  assert.match(reviewPageSource, /import \{ conditionsBConfig \} from '..\/..\/components\/review\/table-configs\/conditions-b\.config';/);
   assert.match(reviewPageSource, /<ProvisionTable config=\{conditionsMConfig\} reviewDeal=\{schemaReviewDeal/);
+  assert.match(reviewPageSource, /<ProvisionTable config=\{conditionsBConfig\} reviewDeal=\{schemaReviewDeal/);
   assert.ok(
     reviewPageSource.indexOf('<ProvisionTable config={conditionsMConfig}') <
+      reviewPageSource.indexOf('<ProvisionTable config={conditionsBConfig}') &&
+      reviewPageSource.indexOf('<ProvisionTable config={conditionsBConfig}') <
       reviewPageSource.indexOf('<ProvisionCardTable reviewDeal={schemaReviewDeal'),
-    'structured schema table should render before the raw card list',
+    'structured schema tables should render before the raw card list',
   );
 });
 

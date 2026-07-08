@@ -1,4 +1,5 @@
 import {
+  CANONICAL_CONDITIONS_B,
   CANONICAL_CONDITIONS_M,
   CONDITION_ABSENT_COPY,
   conditionDetailLines,
@@ -35,50 +36,66 @@ function detailText(matches) {
     .join('\n\n');
 }
 
-function selectRows(reviewDeal) {
-  const conditionCards = (reviewDeal?.cards || [])
-    .filter((card) => card?.provision_type === 'CLOSING_CONDITION')
-    .map(cardToProvision);
-  if (!conditionCards.length) return [];
+function createConditionsConfig({ id, title, rows: canonicalRows, empty }) {
+  function selectRows(reviewDeal) {
+    const conditionCards = (reviewDeal?.cards || [])
+      .filter((card) => card?.provision_type === 'CLOSING_CONDITION')
+      .map(cardToProvision);
+    if (!conditionCards.length) return [];
 
-  return CANONICAL_CONDITIONS_M
-    .filter((row) => !row.tenderOnly && !row.requireParentApproval)
-    .map((row, originalIdx) => {
-      const matches = conditionCards.filter((provision) => {
-        const code = provision.features.canonicalCode || null;
-        return conditionRowMatches(row, provision, code);
-      });
-      return {
-        id: `conditions-m-${row.label}`,
-        label: row.label,
-        matches,
-        present: matches.length > 0 || !!row.alwaysRender,
-        detail: detailText(matches),
-        originalIdx,
-      };
-    })
-    .sort((a, b) => (a.present !== b.present ? (a.present ? -1 : 1) : a.originalIdx - b.originalIdx));
+    return canonicalRows
+      .filter((row) => !row.tenderOnly && !row.requireParentApproval)
+      .map((row, originalIdx) => {
+        const matches = conditionCards.filter((provision) => {
+          const code = provision.features.canonicalCode || null;
+          return conditionRowMatches(row, provision, code);
+        });
+        return {
+          id: `${id}-${row.label}`,
+          label: row.label,
+          matches,
+          present: matches.length > 0 || !!row.alwaysRender,
+          detail: detailText(matches),
+          originalIdx,
+        };
+      })
+      .sort((a, b) => (a.present !== b.present ? (a.present ? -1 : 1) : a.originalIdx - b.originalIdx));
+  }
+
+  return {
+    id,
+    title,
+    layoutSlot: 'conditions',
+    selectRows,
+    columns: [
+      {
+        id: 'term',
+        header: 'Term',
+        width: '18rem',
+        renderCell: (row) => row.label,
+      },
+      {
+        id: 'provision',
+        header: 'Provision',
+        renderCell: (row) => row.detail,
+      },
+    ],
+    empty: { copy: empty },
+  };
 }
 
-const conditionsMConfig = {
+const conditionsMConfig = createConditionsConfig({
   id: 'conditions-m',
   title: 'Closing Conditions — Mutual',
-  layoutSlot: 'conditions',
-  selectRows,
-  columns: [
-    {
-      id: 'term',
-      header: 'Term',
-      width: '18rem',
-      renderCell: (row) => row.label,
-    },
-    {
-      id: 'provision',
-      header: 'Provision',
-      renderCell: (row) => row.detail,
-    },
-  ],
-  empty: { copy: 'No mutual closing-condition cards found.' },
-};
+  rows: CANONICAL_CONDITIONS_M,
+  empty: 'No mutual closing-condition cards found.',
+});
 
-export { cardToProvision, conditionsMConfig, selectRows };
+const conditionsBConfig = createConditionsConfig({
+  id: 'conditions-b',
+  title: 'Closing Conditions — Buyer',
+  rows: CANONICAL_CONDITIONS_B,
+  empty: 'No buyer closing-condition cards found.',
+});
+
+export { cardToProvision, conditionsBConfig, conditionsMConfig, createConditionsConfig };

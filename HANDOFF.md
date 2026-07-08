@@ -637,3 +637,5 @@ REVIEW_QUEUE_RESOLUTION {"id":"authorize-legacy-renderer-deletion","kind":"destr
 REVIEW_QUEUE_RESOLUTION {"id":"m2-06-template-table-architecture","kind":"canonical","title":"Approve template-driven ProvisionTable architecture (WP-M2-06)","choice_key":"approve","codex_action":"proceed with WP-M2-06 table template and config PRs","resolved_at":"2026-07-08T15:16:53.526Z","resolved_by":"ben"}
 
 2026-07-08: WP-M2-06 Step 2: added the generic schema-first `ProvisionTable` template and the first config, `conditions-m`, for mutual closing conditions. The review page now renders the mutual conditions structured table above schema cards. Config length: 84 lines, under the 150-line guardrail.
+
+2026-07-08: WP-M2-06 Step 3: added the buyer closing-conditions config, `conditions-b`, reusing the schema-first `ProvisionTable` template. The shared conditions config factory is 101 lines and the buyer binding is 1 line, both under the 150-line guardrail.
