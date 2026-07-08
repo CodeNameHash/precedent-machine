@@ -1,0 +1,27 @@
+{
+  "phase": "WP-M2-08-03-VERIFY",
+  "name": "m2-08-03-verify",
+  "allowed": [
+    ".github/phase-allowlists/wp-m2-08-03-verify.json",
+    "HANDOFF.md",
+    "docs/audit/m2-08-coverage.md",
+    "scripts/audit/m2-08-coverage.js",
+    "tests/audit/m2-08-coverage.spec.js"
+  ],
+  "denied": [
+    "components/review/**",
+    "docs/vocab/FROZEN-*.json",
+    "docs/market-registry/FROZEN-*.json",
+    "docs/schema-shape/*.frozen",
+    "docs/schema-shape/canonical-registry-v1.md",
+    "docs/schema-shape/canonical-definitions.md",
+    "docs/schema-shape/normalized-v1.json",
+    "lib/schema/**",
+    "lib/rubric.js",
+    "lib/vocab/**",
+    "pages/review/[id].js",
+    "supabase/migrations/**",
+    "db/migrations/**"
+  ],
+  "note": "WP-M2-08 Step 3 verifies that every Step 1 legacy layout surface is covered by a mounted schema-first config after Step 2."
+}
