@@ -5,7 +5,10 @@ const {
   buildFeaturesForCard,
   claimOrder,
   groupClaimsByExcerpt,
+  isStructuredObjectAttribute,
+  isTaggedRegistryEntry,
 } = require('../../lib/queries/claims-adapter');
+const { FEATURES } = require('../../lib/schema/features');
 
 function claim(overrides = {}) {
   return {
@@ -124,6 +127,41 @@ test('an attribute with no claims never appears in the rebuilt features object',
   ]);
   assert.equal('carveouts' in features, false);
   assert.equal('litigationObligation' in features, false);
+});
+
+test('scalar object-valued attribute (interestOnLatePayment) with JSON verbatim parses into structured fields, not a JSON blob', () => {
+  const entry = FEATURES.interestOnLatePayment;
+  assert.equal(entry.valueType, 'object');
+  assert.equal(isTaggedRegistryEntry(entry, 'interestOnLatePayment'), false, 'no taxonomy dictionary -- not tag-driven');
+  assert.equal(isStructuredObjectAttribute(entry, 'interestOnLatePayment'), true);
+
+  const features = buildFeaturesForCard([
+    claim({
+      attribute: 'interestOnLatePayment',
+      verbatim: JSON.stringify({ rate: '5% per annum', base: '360-day year' }),
+      evidence_quote: 'interest shall accrue at a rate of 5% per annum, calculated on the basis of a 360-day year',
+    }),
+  ]);
+  const value = features.interestOnLatePayment;
+  assert.equal(Array.isArray(value), false);
+  assert.equal(value.rate, '5% per annum');
+  assert.equal(value.base, '360-day year');
+  assert.equal(typeof value.text, 'string', 'raw verbatim retained for provenance, not surfaced as the primary value');
+});
+
+test('tagged value resolves its code from a raw-code-shaped verbatim when canonical is null, and never leaks "Label: CODE" into read view', () => {
+  const features = buildFeaturesForCard([
+    claim({
+      attribute: 'mergerForm',
+      canonical: null,
+      verbatim: 'REVERSE_TRIANGULAR_MERGER',
+      evidence_quote: 'Merger Sub shall merge with and into the Company, with the Company surviving',
+    }),
+  ]);
+  const value = features.mergerForm;
+  assert.equal(value.code, 'REVERSE_TRIANGULAR_MERGER');
+  assert.equal(value.label, 'Reverse triangular merger');
+  assert.notEqual(value.label, value.code);
 });
 
 test('claimOrder sorts by created_at then id as a stable tiebreak', () => {

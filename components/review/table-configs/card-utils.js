@@ -26,14 +26,43 @@ function valueText(value) {
   if (Array.isArray(value)) return value.map(valueText).filter(Boolean).join('; ');
   if (typeof value === 'object') {
     if (value.value !== undefined) return valueText(value.value);
-    if (value.text || value.label || value.code) return [value.label || value.code, value.text].filter(Boolean).join(': ');
-    return Object.entries(value)
-      .map(([key, val]) => {
-        const rendered = valueText(val);
-        return rendered ? `${key}: ${rendered}` : null;
-      })
-      .filter(Boolean)
-      .join('; ');
+    if (value.label || value.code) {
+      // Tagged value shape { code, label, text, quotes }. Read view shows
+      // the friendly label only; the raw canonical code is kept on the value
+      // object (`.code`) for edit-mode/card-view consumers but must never be
+      // re-appended to this display string. Claims backfills sometimes store
+      // the code itself as `text`/`verbatim` when no distinguishing quote
+      // was captured, which would otherwise double the code onto the label,
+      // e.g. "One-step merger: ONE_STEP_MERGER". Only suppress `.text` when
+      // it's a LITERAL echo of the code or the already-friendly label
+      // (exact string match, no case-folding) -- genuine verbatim prose that
+      // merely overlaps in wording with the label (e.g. label "Reasonable
+      // best efforts" + text "reasonable best efforts" quoted from the
+      // agreement) is real supporting evidence and must still render.
+      const primary = value.label || value.code;
+      const text = value.text ? String(value.text).trim() : null;
+      const textIsRedundant = text !== null && (text === primary || text === value.code);
+      return [primary, textIsRedundant ? null : value.text].filter(Boolean).join(': ');
+    }
+    // No code/label -- either a plain feature object, or a JSON-parsed
+    // structured-object attribute (e.g. interestOnLatePayment { rate, base },
+    // materialContractsDollarThresholds { bucket, threshold }). Render the
+    // meaningful fields rather than falling back to the raw `.text`
+    // (verbatim JSON) bookkeeping field, which is what produced the
+    // raw-JSON-blob read-view bug this helper now avoids.
+    const fieldEntries = Object.entries(value).filter(
+      ([key, val]) => key !== 'text' && key !== 'quotes' && val !== null && val !== undefined && val !== '',
+    );
+    if (fieldEntries.length > 0) {
+      return fieldEntries
+        .map(([key, val]) => {
+          const rendered = valueText(val);
+          return rendered ? `${key}: ${rendered}` : null;
+        })
+        .filter(Boolean)
+        .join('; ');
+    }
+    return value.text ? String(value.text) : null;
   }
   if (typeof value === 'boolean') return value ? 'Yes' : 'No';
   return String(value);
