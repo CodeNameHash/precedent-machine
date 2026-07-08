@@ -1,0 +1,25 @@
+{
+  "phase": "WP-M2-06-15-CFG-CONSIDERATION-HERO",
+  "name": "m2-06-15-cfg-consideration-hero",
+  "allowed": [
+    ".github/phase-allowlists/wp-m2-06-15-cfg-consideration-hero.json",
+    "HANDOFF.md",
+    "components/review/table-configs/consideration-hero.config.js",
+    "pages/review/[id].js",
+    "tests/provision-table-configs.test.js",
+    "tests/review-page-card-switch.test.js"
+  ],
+  "denied": [
+    "docs/vocab/FROZEN-*.json",
+    "docs/market-registry/FROZEN-*.json",
+    "docs/schema-shape/*.frozen",
+    "docs/schema-shape/canonical-registry-v1.md",
+    "docs/schema-shape/canonical-definitions.md",
+    "docs/schema-shape/normalized-v1.json",
+    "lib/schema/**",
+    "lib/parser-v2/**",
+    "supabase/migrations/**",
+    "db/migrations/**"
+  ],
+  "note": "WP-M2-06 Step 15 adds the Consideration schema-first hero table config."
+}
