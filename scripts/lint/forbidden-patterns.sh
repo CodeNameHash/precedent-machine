@@ -116,6 +116,18 @@ function scopedFile(rel) {
   return /OtherCovenants|other-covenants|market-registry|registry|newhome/.test(rel);
 }
 
+// Some globalPatterns are bug-fingerprints from a PAST regression in some
+// OTHER file (a duplicated/mis-copied label), not from the taxonomy
+// dictionary that legitimately defines that label. lib/taxonomy.js is the
+// canonical source of `LITIGATION_OBLIGATION.MANDATORY_DEFEND`'s label text
+// ("Must defend (incl. appeals/final judgment)") -- any edit to the file
+// (even unrelated to this dictionary) puts the whole file in the diff and
+// trips the pattern against its own, correct, single definition. Exempt
+// only that pattern for that file; every other check still applies.
+const FILE_PATTERN_EXEMPTIONS = {
+  'lib/taxonomy.js': ['Must defend \\(incl\\. appeals/final judgment\\)'],
+};
+
 const failures = [];
 for (const rel of changedFiles()) {
   if (
@@ -135,6 +147,7 @@ for (const rel of changedFiles()) {
   if (!fs.existsSync(full) || !fs.statSync(full).isFile()) continue;
   const src = fs.readFileSync(full, 'utf8');
   for (const pattern of globalPatterns) {
+    if ((FILE_PATTERN_EXEMPTIONS[rel] || []).includes(pattern)) continue;
     if (new RegExp(pattern, 'im').test(src)) {
       failures.push(`${rel} :: ${pattern}`);
     }
