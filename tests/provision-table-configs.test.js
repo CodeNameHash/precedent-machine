@@ -440,6 +440,68 @@ test('sec-meeting config exposes proxy and offer signals with hover details', ()
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(schedule14d9, { primitives }))), /data-evidence="The Company shall file the proxy statement/);
 });
 
+test('approvals-votes config exposes approval and vote signals with hover details', () => {
+  const rows = approvalsVotesMod.approvalsVotesConfig.selectRows({
+    cards: [{
+      id: 'vote',
+      provision_type: 'CLOSING_CONDITION',
+      provision_subtype: 'COND-M-STOCKHOLDER',
+      short_title: 'Stockholder Approval',
+      primary_quote: 'The Company Stockholder Approval requires the affirmative vote of a majority of outstanding shares.',
+      features: {
+        approvalDefinition: 'majority of outstanding shares',
+        voteThreshold: 'majority of outstanding shares',
+        shareholderApprovalMethodCompany: 'SPECIAL_MEETING',
+      },
+    }],
+  });
+  const approvalDefinition = rows.find((row) => row.id === 'approvals-votes-approval-definition');
+  const companyMethod = rows.find((row) => row.id === 'approvals-votes-company-method');
+  assert.match(approvalDefinition.signals[0].label, /Approval: majority of outstanding shares/);
+  assert.match(companyMethod.signals[0].label, /Approval: SPECIAL_MEETING/);
+  assert.equal(rows.find((row) => row.id === 'approvals-votes-quorum'), undefined);
+  assert.equal(rows.find((row) => row.id === 'approvals-votes-dual-class'), undefined);
+  const primitives = {
+    PillCell: ({ label }) => React.createElement('span', { className: 'pill' }, label),
+    EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
+  };
+  const signalColumn = approvalsVotesMod.approvalsVotesConfig.columns.find((column) => column.id === 'signals');
+  const detailColumn = approvalsVotesMod.approvalsVotesConfig.columns.find((column) => column.id === 'detail');
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, signalColumn.renderCell(approvalDefinition, { primitives }))), /majority of outstanding shares/);
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(approvalDefinition, { primitives }))), /data-evidence="The Company Stockholder Approval requires/);
+});
+
+test('approvals-votes config groups adjournment rights into grouped subrows', () => {
+  const rows = approvalsVotesMod.approvalsVotesConfig.selectRows({
+    cards: [{
+      id: 'proxy',
+      provision_subtype: 'COV-MEETING',
+      short_title: 'Stockholder Meeting',
+      primary_quote: 'The Company may adjourn the meeting to solicit additional votes, up to 30 days in the aggregate.',
+      features: {
+        adjournmentRights: [{
+          party: 'COMPANY',
+          reasons: [{ code: 'INSUFFICIENT_VOTES', label: 'Insufficient votes' }],
+          maxDaysTotal: 30,
+          text: 'The Company may adjourn to solicit additional votes, up to 30 days in the aggregate.',
+        }],
+      },
+    }],
+  });
+  const adjournmentRow = rows.find((row) => row.id === 'approvals-votes-adjournment');
+  assert.ok(adjournmentRow, 'expected a grouped adjournment row');
+  assert.equal(adjournmentRow.groups.length, 1);
+  assert.equal(adjournmentRow.groups[0].label, 'COMPANY adjournment rights');
+  assert.deepEqual(adjournmentRow.groups[0].rows.map((row) => row.label), ['Insufficient votes']);
+  const primitives = {
+    GroupedSubRows: ({ groups }) => React.createElement('div', { 'data-testid': 'grouped-sub-rows' }, groups.map((group) => `${group.label}:${group.rows.map((r) => r.label).join(',')}`).join('; ')),
+  };
+  const detailColumn = approvalsVotesMod.approvalsVotesConfig.columns.find((column) => column.id === 'detail');
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(adjournmentRow, { primitives })));
+  assert.match(html, /data-testid="grouped-sub-rows"/);
+  assert.match(html, /COMPANY adjournment rights:Insufficient votes/);
+});
+
 test('general-covenants config exposes efforts, consent, knowledge, and deadline signals', () => {
   const rows = generalCovenantsMod.generalCovenantsConfig.selectRows({
     cards: [{
