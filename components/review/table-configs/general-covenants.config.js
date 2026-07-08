@@ -53,6 +53,51 @@ function rowSignals(card) {
   ].filter(Boolean);
 }
 
+// The 10 curated ROWS above collapse the whole covenant pool into one
+// generic row per concept (firstFeature-style) — a family that legacy
+// rendered as ~38 distinct per-clause rows (one per IOC/COV card) shrinks to
+// a fixed 10. IOC-GENERAL-EXCEPTIONS / IOC-NEGATIVE-PREAMBLE are containers
+// already rendered in full by ioc-exceptions.config.js, so exclude them here
+// to avoid a duplicate/empty row; every OTHER card gets its own row below.
+function isPreambleOnlyCard(card) {
+  const code = cardCode(card);
+  return code === 'IOC-GENERAL-EXCEPTIONS' || code === 'IOC-NEGATIVE-PREAMBLE';
+}
+
+function clauseLabel(card) {
+  return card?.short_title || card?.defined_term || cardCode(card) || 'Covenant';
+}
+
+function clauseKind(card) {
+  return cardType(card) === 'COVENANT_INTERIM_OPERATING' ? 'Interim operating' : 'General covenant';
+}
+
+function clauseDetail(card) {
+  const f = cardFeatures(card);
+  return valueText(f.mainConcept) || textOf(card);
+}
+
+function perClauseRows(cards) {
+  return cards
+    .filter((card) => !isPreambleOnlyCard(card))
+    .map((card) => {
+      const detail = clauseDetail(card);
+      if (!detail) return null;
+      return {
+        id: `general-covenants-clause-${card.id}`,
+        label: clauseLabel(card),
+        kind: clauseKind(card),
+        detail,
+        evidence: textOf(card),
+        source: clauseLabel(card),
+        present: true,
+        signals: rowSignals(card),
+        sourceCard: card,
+      };
+    })
+    .filter(Boolean);
+}
+
 function mappedCovenantRows(prefix, cards, specs) {
   return specs
     .map(([id, label, kind, keys]) => {
@@ -92,7 +137,8 @@ const generalCovenantsConfig = {
   title: 'General Covenants',
   layoutSlot: 'covenants',
   selectRows(reviewDeal) {
-    return mappedCovenantRows('general-covenants', selectCards(reviewDeal, isGeneralCovenant), ROWS);
+    const cards = selectCards(reviewDeal, isGeneralCovenant);
+    return [...mappedCovenantRows('general-covenants', cards, ROWS), ...perClauseRows(cards)];
   },
   columns: [
     { id: 'term', header: 'Term', width: '18rem', renderCell: (row) => row.label },
@@ -102,4 +148,4 @@ const generalCovenantsConfig = {
   ],
 };
 
-export { generalCovenantsConfig, renderDetail, renderSignals, rowSignals };
+export { generalCovenantsConfig, perClauseRows, renderDetail, renderSignals, rowSignals };

@@ -70,18 +70,65 @@ function mappedRows(prefix, cards, specs) {
     .filter(Boolean);
 }
 
+// Multi-instance counterpart to firstFeature(): where firstFeature stops at
+// the FIRST card with a non-empty value (dropping every other card's data),
+// allFeatures returns ONE hit PER CARD that has a value for any of the given
+// keys. For families where every card is a genuinely distinct instance (a
+// per-rep qualifier, a per-right termination party, a Company-vs-Parent MAE
+// split), this is what stops N claims from collapsing into a single row.
+function allFeatures(cards, keys) {
+  const list = Array.isArray(keys) ? keys : [keys];
+  const hits = [];
+  for (const card of cards || []) {
+    const features = cardFeatures(card);
+    for (const key of list) {
+      const detail = valueText(features[key]);
+      if (detail) {
+        hits.push({ key, value: features[key], detail, card });
+        break; // first matching alias wins for THIS card; still visit every other card
+      }
+    }
+  }
+  return hits;
+}
+
+// Builds one row per hit (see allFeatures) instead of makeRow's single row.
+// Row ids are suffixed by the source card id so React keys stay stable and
+// unique even when several cards share the same row label.
+function makeRows(prefix, id, label, kind, hits) {
+  return (hits || []).map((hit, index) => ({
+    id: `${prefix}-${id}-${hit?.card?.id || index}`,
+    label,
+    kind,
+    detail: hit.detail,
+    evidence: textOf(hit.card),
+    source: labelOf(hit.card),
+    value: hit.value,
+    featureKey: hit.key,
+    sourceCard: hit.card,
+    present: true,
+  }));
+}
+
+function mappedRowsMulti(prefix, cards, specs) {
+  return specs.flatMap(([id, label, kind, keys]) => makeRows(prefix, id, label, kind, allFeatures(cards, keys || id)));
+}
+
 function selectCards(reviewDeal, predicate) {
   return (reviewDeal?.cards || []).filter(predicate);
 }
 
 export {
+  allFeatures,
   cardCode,
   cardFeatures,
   cardType,
   firstFeature,
   labelOf,
   makeRow,
+  makeRows,
   mappedRows,
+  mappedRowsMulti,
   selectCards,
   textOf,
   valueText,
