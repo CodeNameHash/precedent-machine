@@ -1,0 +1,25 @@
+{
+  "phase": "WP-M2-02-RECITAL-SUPPRESSION",
+  "name": "m2-02-recital-suppression",
+  "allowed": [
+    ".github/phase-allowlists/wp-m2-02-recital-suppression.json",
+    "scripts/audit/schema-parity.js",
+    "tests/schema-parity-audit.test.js",
+    "docs/audit/parity-suppressed-recitals.md"
+  ],
+  "denied": [
+    "docs/vocab/FROZEN-*.json",
+    "docs/market-registry/FROZEN-*.json",
+    "docs/schema-shape/*.frozen",
+    "docs/schema-shape/canonical-registry-v1.md",
+    "docs/schema-shape/canonical-definitions.md",
+    "docs/schema-shape/normalized-v1.json",
+    "lib/parser-v2/**",
+    "lib/schema/**",
+    "pages/**",
+    "components/**",
+    "supabase/migrations/**",
+    "db/migrations/**"
+  ],
+  "note": "WP-M2-02 Step 6 adds recital-user-hidden parity suppression while preserving recital evidence for audit/admin review."
+}
