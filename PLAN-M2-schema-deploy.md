@@ -4,6 +4,8 @@ Goal: every deal renders from the schema-first path. Legacy fallback is dead cod
 
 ## Exit criteria
 
+- WP-M2-00 has shipped: canonical card schema, writer, reader, renderer switch, and corpus backfill are merged.
+- Corpus backfill is green: every live deal has `provision_cards.count(deal_id) ≥ 40`.
 - Every deal in `deals` has `provision_cards.count(deal_id) ≥ 40` (Metsera threshold, per PART 3 §3.5).
 - Full-corpus parity audit: zero diffs between schema-first render and legacy render across all 40 deals.
 - `pages/review/[id].js` legacy fallback branch is deleted; only the schema-first branch remains.
@@ -13,8 +15,23 @@ Goal: every deal renders from the schema-first path. Legacy fallback is dead cod
 
 ## WPs in M2 (do in order — some parallel)
 
+### WP-M2-00: Schema-first render wire-up + corpus backfill
+
+- Status: shipped.
+- Merged PRs:
+  - #187 queue canonical schema decision
+  - #190 canonical provision-card schema
+  - #191 card writer
+  - #192 card reader
+  - #193 card renderer
+  - #194 review page schema/legacy switch
+  - #195 corpus backfill
+- Result: live corpus has 40 deals with a minimum of 237 `provision_cards` rows per deal. See `docs/reprocess/round-m2-00-backfill.md`.
+- Waitlist drain: 0 entries drained in WP-M2-00 because all 175 deferred entries wait on `employment_compensation_structured_object`, not provision identity, provenance, or kind. See `docs/reprocess/round-m2-00-waitlist-drain.md`.
+
 ### WP-M2-01: Reconciliation downstream sweep
 
+- Status: shipped.
 - File: `pm-wp-reconcil-downstream.codex.md` (already staged; drops the "Ben checkpoint" gate — replaced by Review Queue)
 - Modifications from staged version:
   - The "Ben checkpoint after queue population" becomes: Codex creates a Review Queue entry summarizing the queue (deal count, top affected fields), continues to Step B automatically after 30 minutes if no rejection, so Ben can either intervene via Queue or let it run.
