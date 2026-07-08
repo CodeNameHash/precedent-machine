@@ -38,10 +38,10 @@ function card(overrides = {}) {
   };
 }
 
-function fakeSupabase(rows) {
+function fakeSupabase(rows, claims = []) {
   return {
     from(table) {
-      assert.equal(table, 'provision_cards');
+      assert.ok(table === 'provision_cards' || table === 'claims', `unexpected table: ${table}`);
       return {
         select(columns) {
           assert.equal(columns, '*');
@@ -49,7 +49,7 @@ function fakeSupabase(rows) {
             eq(column, value) {
               assert.equal(column, 'deal_id');
               assert.equal(value, 'deal-1');
-              return Promise.resolve({ data: rows, error: null });
+              return Promise.resolve({ data: table === 'provision_cards' ? rows : claims, error: null });
             },
           };
         },
