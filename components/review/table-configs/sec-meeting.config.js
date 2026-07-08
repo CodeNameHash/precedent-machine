@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   deriveSecMeetingSummary,
   enumLabel,
@@ -54,20 +55,21 @@ function hasSecSignal(card) {
 }
 function deadlineRow(id, label, deadline) {
   if (!deadline) return null;
-  return { id: `sec-meeting-${id}`, label, subject: 'Proxy / meeting', detail: formatDeadline(deadline), evidence: deadline.text || formatDeadline(deadline), present: true };
+  const row = { id: `sec-meeting-${id}`, label, subject: 'Proxy / meeting', detail: formatDeadline(deadline), evidence: deadline.text || formatDeadline(deadline), present: true };
+  return withSignal(row);
 }
 function adjournmentRows(rights) {
   return (rights || []).map((right, idx) => {
     const reasons = (right.reasons || []).map((reason) => valueText(reason)).filter(Boolean).join('; ');
     const limits = formatAdjournmentLimits(right).join('; ');
-    return {
+    return withSignal({
       id: `sec-meeting-adjournment-${idx}`,
       label: 'Adjournment rights',
       subject: right.party ? enumLabel(right.party) : 'Meeting',
       detail: [reasons, limits, right.text].filter(Boolean).join('\n'),
       evidence: right.text || reasons || limits,
       present: true,
-    };
+    });
   });
 }
 function directRows(cards) {
@@ -75,16 +77,48 @@ function directRows(cards) {
   for (const [key, label] of DIRECT_ROWS) {
     const hit = firstFeature(cards, key);
     if (!hit) continue;
-    rows.push({
+    rows.push(withSignal({
       id: `sec-meeting-${key}`,
       label,
       subject: key === 'tenderOfferMinimumCondition' ? 'Condition' : 'SEC / offer',
       detail: hit.text,
       evidence: textOf(hit.card),
+      sourceCard: hit.card,
       present: true,
-    });
+    }));
   }
   return rows;
+}
+function signalFor(row) {
+  if (!row?.detail) return null;
+  return {
+    id: `${row.id}-signal`,
+    label: `${row.subject}: ${row.detail}`,
+    value: row.detail,
+    tone: row.subject === 'Condition' ? 'warning' : row.subject === 'Proxy / meeting' ? 'info' : 'neutral',
+    evidence: row.evidence,
+    source: row.sourceCard,
+  };
+}
+function withSignal(row) {
+  return { ...row, signals: [signalFor(row)].filter(Boolean) };
+}
+function renderSignals(row, ctx) {
+  const PillCell = ctx?.primitives?.PillCell;
+  if (!PillCell) return (row.signals || []).map((item) => item.label).join('\n');
+  return (row.signals || []).map((item) => React.createElement(PillCell, {
+    key: item.id,
+    label: item.label,
+    value: item.value,
+    tone: item.tone,
+    evidence: item.evidence,
+    source: item.source,
+  }));
+}
+function renderDetail(row, ctx) {
+  const EvidenceHoverSource = ctx?.primitives?.EvidenceHoverSource;
+  if (!EvidenceHoverSource || !row.evidence) return row.detail;
+  return React.createElement(EvidenceHoverSource, { value: row.detail, evidence: row.evidence, source: row.sourceCard, as: 'span' }, row.detail);
 }
 
 const secMeetingConfig = {
@@ -100,15 +134,16 @@ const secMeetingConfig = {
       deadlineRow('mailing', summary.mailingDeadline?.term || 'Proxy mailing', summary.mailingDeadline),
       deadlineRow('meeting', summary.meetingDeadline?.term || 'Shareholder meeting', summary.meetingDeadline),
       ...adjournmentRows(summary.adjournmentRights),
-      summary.meetingControlNotes ? { id: 'sec-meeting-control', label: 'Meeting control notes', subject: 'Meeting', detail: summary.meetingControlNotes, evidence: summary.meetingControlNotes, present: true } : null,
+      summary.meetingControlNotes ? withSignal({ id: 'sec-meeting-control', label: 'Meeting control notes', subject: 'Meeting', detail: summary.meetingControlNotes, evidence: summary.meetingControlNotes, present: true }) : null,
       ...directRows(cards),
     ].filter(Boolean);
   },
   columns: [
     { id: 'term', header: 'Term', width: '18rem', renderCell: (row) => row.label },
     { id: 'subject', header: 'Subject', width: '12rem', renderCell: (row) => row.subject },
-    { id: 'detail', header: 'Detail', renderCell: (row) => row.detail },
+    { id: 'signals', header: 'Signals', width: '18rem', renderCell: renderSignals },
+    { id: 'detail', header: 'Detail', renderCell: renderDetail },
   ],
 };
 
-export { secMeetingConfig };
+export { renderDetail, renderSignals, secMeetingConfig, signalFor };
