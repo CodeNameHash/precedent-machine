@@ -137,6 +137,7 @@ import ProvisionCardTable from '../../components/review/ProvisionCardTable';
 import ProvisionTable from '../../components/review/ProvisionTable';
 import { conditionsBConfig } from '../../components/review/table-configs/conditions-b.config';
 import { conditionsMConfig } from '../../components/review/table-configs/conditions-m.config';
+import { conditionsSConfig } from '../../components/review/table-configs/conditions-s.config';
 import { BoundaryAuditPanel } from '../../components/review/BoundaryAuditPanel';
 import { parseReviewRouteQuery, serializeReviewRouteQuery } from '../../lib/review-route';
 
@@ -11532,6 +11533,7 @@ export default function ReviewPage() {
                     <>
                       <ProvisionTable config={conditionsMConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                       <ProvisionTable config={conditionsBConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
+                      <ProvisionTable config={conditionsSConfig} reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                       <ProvisionCardTable reviewDeal={schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] }} />
                     </>
                   ) : null}
