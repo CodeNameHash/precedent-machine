@@ -10,7 +10,15 @@ const ROWS = [
   ['governing-law', 'Governing law', 'Boilerplate', ['governingLaw']],
   ['forum', 'Forum / jurisdiction', 'Boilerplate', ['jurisdictionExclusive', 'jurisdictionExclusiveText']],
   ['specific-performance', 'Specific performance', 'Remedies', ['specificPerformance']],
+  ['specific-performance-limitations', 'Specific performance limitations', 'Remedies', ['specificPerformanceLimitations']],
   ['third-party', 'Third-party beneficiaries', 'Boilerplate', ['thirdPartyBeneficiaryExceptions']],
+  // Assignment group (Metsera parity gap root cause 4: "whole sub-section,
+  // no rows" — all five sit on the same MISC-ASSIGN boilerplate card).
+  ['assignment-parent-right', 'Parent assignment right', 'Assignment', ['parentAssignmentRight']],
+  ['assignment-parent-conditions', 'Parent assignment conditions', 'Assignment', ['parentAssignmentConditions']],
+  ['assignment-company-consent', 'Company consent for assignment', 'Assignment', ['companyConsentForAssignment']],
+  ['assignment-exceptions', 'Assignment exceptions', 'Assignment', ['assignmentExceptions']],
+  ['assignment-restrictions', 'Assignment restrictions', 'Assignment', ['assignmentRestrictions']],
 ];
 
 function isMiscFee(card) {

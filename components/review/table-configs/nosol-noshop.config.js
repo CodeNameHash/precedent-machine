@@ -1,9 +1,19 @@
 import React from 'react';
 
 const ROWS = [
-  { id: 'prohibit', label: 'No-shop / non-solicit restriction', codes: ['NOSOL-PROHIBIT'], keys: ['noShopType', 'prohibitedActions', 'mainRestriction'] },
+  // `noShopType`/`prohibitedActions`/`mainRestriction` were guessed aliases
+  // with zero registered/claimed attributes behind them (Metsera parity
+  // audit root cause 1). The real schema attribute for the going-forward
+  // solicitation prohibition is `ceaseDiscussionsProhibitedList` — the same
+  // key the 'cease' row below already used correctly; it also carries claims
+  // on the NOSOL-PROHIBIT card (scoped per-row via `codes`, so 'prohibit' and
+  // 'cease' still render distinct card-specific values).
+  { id: 'prohibit', label: 'No-shop / non-solicit restriction', codes: ['NOSOL-PROHIBIT'], keys: ['ceaseDiscussionsProhibitedList'] },
   { id: 'cease', label: 'Cease discussions', codes: ['NOSOL-CEASE'], keys: ['ceaseDiscussionsProhibitedList', 'ceaseDiscussionsAffiliateStandard', 'ceaseDiscussionsLiability'] },
   { id: 'exceptions', label: 'No-shop exceptions', codes: ['NOSOL-EXCEPT'], keys: ['ceaseDiscussionsExceptions', 'permittedExceptions', 'fiduciaryCarveoutThreshold'] },
+  // Don't-ask-don't-waive / standstill enforcement (Skechers cross-deal
+  // parity gap; no Metsera claim) — lives on its own NOSOL-ENFORCE card.
+  { id: 'standstill-enforce', label: "Don't-ask-don't-waive / standstill enforcement", codes: ['NOSOL-ENFORCE'], keys: ['dontAskDontWaive', 'standstillWaiverConditions'] },
 ];
 
 function cardCode(card) {
@@ -45,6 +55,7 @@ function fallbackMatch(row, card) {
   const text = `${card?.short_title || ''} ${textOf(card)}`;
   if (row.id === 'prohibit') return /no[\s-]*shop|solicit|encourage|initiate|knowingly facilitate/i.test(text);
   if (row.id === 'cease') return /cease|terminate|discontinue/i.test(text) && /discussion|negotiation/i.test(text);
+  if (row.id === 'standstill-enforce') return /standstill|don.?t[- ]ask[- ]don.?t[- ]waive/i.test(text);
   return /except|provided|fiduciary|superior proposal/i.test(text);
 }
 function rowForSpec(spec, cards) {

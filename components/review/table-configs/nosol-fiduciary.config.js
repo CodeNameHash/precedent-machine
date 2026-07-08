@@ -12,6 +12,8 @@ const ROWS = [
   { id: 'termination', label: 'Company termination for Superior Proposal', keys: ['companyTerminationForSuperior', 'companyTerminationForSuperiorConditions'], fallback: terminationFromText },
   { id: 'reps', label: 'Representative control standard', keys: ['representativesStandard', 'representativeBreachIsCompanyBreach'], fallback: repsFromText },
   { id: 'buyer-termination', label: 'Buyer termination for nonsolicit breach', keys: ['parentTerminationRightForNonsolicitBreach'], fallback: buyerTerminationFromText },
+  { id: 'change-of-rec-items', label: 'Change of Recommendation — prohibited actions', keys: ['changeOfRecommendationItems'], fallback: () => null },
+  { id: 'not-change-of-rec-items', label: 'Not a Change of Recommendation', keys: ['notChangeOfRecommendationItems'], fallback: () => null },
 ];
 
 function cardCode(card) {

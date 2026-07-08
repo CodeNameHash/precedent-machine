@@ -8,6 +8,25 @@ const FALLBACK_ITEMS = [
   ['LONG_TERM_INCENTIVE', 'Long-term incentive (LTI) / equity grants', ['ltiStandard', 'longTermIncentiveStandard']],
 ];
 
+// ERISA checklist (Metsera parity gap root cause 4: "none read anywhere").
+// All five sit on the same REP-T-BENEFITS representation card and always
+// render as extra rows below whichever compensationItems/fallback path fired
+// above — unlike FALLBACK_ITEMS, they must not go dead when compensationItems
+// is present, because the ERISA claims live on a different card entirely.
+const ERISA_ITEMS = [
+  ['erisaCompliance', 'ERISA compliance'],
+  ['erisaParachutePayments', 'Parachute payment / Section 280G language'],
+  ['erisaPlansListed', 'ERISA plans listed on disclosure schedule'],
+  ['erisaTitleIVPlans', 'Title IV ERISA plan exposure'],
+  ['erisaMultiemployer', 'Multiemployer plan exposure'],
+];
+
+// 401(k) continuation (Skechers cross-deal parity gap; no Metsera claim).
+// Same "must survive the structured/fallback branch" reasoning as ERISA_ITEMS.
+const CONTINUATION_ITEMS = [
+  ['continued401k', '401(k) plan continuation'],
+];
+
 function cardCode(card) {
   return String(card?.provision_subtype || card?.canonical_code || card?.provision_code || card?.code || '').trim().toUpperCase();
 }
@@ -23,6 +42,15 @@ function isEmployeeBenefitsCard(card) {
   if (card?.provision_type === 'COVENANT_EMPLOYEE_BENEFITS') return true;
   const text = `${card?.short_title || ''} ${textOf(card)}`;
   return /employee\s+matters|continuing\s+employees|compensation\s+and\s+benefits|employee\s+benefits/i.test(text);
+}
+
+// ERISA claims live on the "Employee Benefit Plans; ERISA" representation
+// card (REP-T-BENEFITS), which isEmployeeBenefitsCard() above does not catch
+// (it's a REPRESENTATION card, not a COV-EMPLOYEE covenant card, and its
+// short_title "Employee Benefit Plans" doesn't match the covenant regex).
+function isErisaCard(card) {
+  if (cardCode(card) === 'REP-T-BENEFITS') return true;
+  return /erisa/i.test(`${card?.short_title || ''} ${textOf(card)}`);
 }
 function textOf(card) {
   return String(card?.primary_quote || card?.region_full_text || '').trim();
@@ -120,6 +148,23 @@ function fallbackRows(cards) {
   if (period) rows.unshift({ id: 'employee-benefits-period', benefit: 'Continuation period', comparison: 'All covered employees', standard: period.text, detail: textOf(period.card), evidence: textOf(period.card), present: true });
   return rows;
 }
+function checklistRows(cards, items, comparison) {
+  const rows = [];
+  for (const [key, label] of items) {
+    const hit = firstFeature(cards, [key]);
+    if (!hit) continue;
+    rows.push({
+      id: `employee-benefits-${key}`,
+      benefit: label,
+      comparison,
+      standard: hit.text,
+      detail: textOf(hit.card) || hit.text,
+      evidence: textOf(hit.card),
+      present: true,
+    });
+  }
+  return rows;
+}
 
 const employeeBenefitsConfig = {
   id: 'employee-benefits',
@@ -127,9 +172,15 @@ const employeeBenefitsConfig = {
   layoutSlot: 'covenants',
   selectRows(reviewDeal) {
     const cards = (reviewDeal?.cards || []).filter(isEmployeeBenefitsCard);
-    if (!cards.length) return [];
-    const structured = rowsFromCompensationItems(cards);
-    return structured.length ? structured : fallbackRows(cards);
+    let baseRows = [];
+    if (cards.length) {
+      const structured = rowsFromCompensationItems(cards);
+      baseRows = structured.length ? structured : fallbackRows(cards);
+    }
+    const continuationRows = checklistRows(cards, CONTINUATION_ITEMS, 'All covered employees');
+    const erisaCards = (reviewDeal?.cards || []).filter(isErisaCard);
+    const erisaRows = checklistRows(erisaCards, ERISA_ITEMS, 'ERISA compliance checklist');
+    return [...baseRows, ...continuationRows, ...erisaRows];
   },
   columns: [
     { id: 'benefit', header: 'Benefit Type', width: '15rem', renderCell: (row) => row.benefit },
