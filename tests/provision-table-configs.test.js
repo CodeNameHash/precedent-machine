@@ -840,6 +840,62 @@ test('nosol-fiduciary config falls back to fiduciary quote text', () => {
   assert.match(rows.find((row) => row.id === 'nosol-fiduciary-reps').detail, /Representatives/);
 });
 
+test('nosol configs render signals and hover-source details with primitives', () => {
+  const primitives = {
+    PillCell: ({ label }) => React.createElement('span', { className: 'pill' }, label),
+    EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
+  };
+  const noShopRows = nosolNoshopMod.nosolNoshopConfig.selectRows({
+    cards: [{
+      id: 'prohibit',
+      provision_type: 'COVENANT_NO_SOLICITATION',
+      provision_subtype: 'NOSOL-PROHIBIT',
+      primary_quote: 'The Company shall not solicit or knowingly encourage an Acquisition Proposal.',
+      features: { prohibitedActions: ['solicit', 'knowingly encourage'] },
+    }],
+  });
+  const noShopSignal = nosolNoshopMod.nosolNoshopConfig.columns.find((column) => column.id === 'signals');
+  const noShopDetail = nosolNoshopMod.nosolNoshopConfig.columns.find((column) => column.id === 'detail');
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, noShopSignal.renderCell(noShopRows[0], { primitives }))), /No-shop \/ non-solicit restriction: solicit; knowingly encourage/);
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, noShopDetail.renderCell(noShopRows[0], { primitives }))), /data-evidence="The Company shall not solicit/);
+
+  const superiorRows = nosolSuperiorMod.nosolSuperiorConfig.selectRows({
+    cards: [{
+      id: 'superior',
+      provision_type: 'COVENANT_NO_SOLICITATION',
+      provision_subtype: 'NOSOL-SUPERIOR',
+      primary_quote: 'A Superior Proposal means a proposal for 50% or more of the Company assets.',
+      features: { superiorProposalThresholdPct: '50%' },
+    }],
+  });
+  const superiorSignal = nosolSuperiorMod.nosolSuperiorConfig.columns.find((column) => column.id === 'signals');
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, superiorSignal.renderCell(superiorRows[0], { primitives }))), /Superior Proposal threshold: 50%/);
+
+  const interveningRows = nosolInterveningMod.nosolInterveningConfig.selectRows({
+    cards: [{
+      id: 'intervening',
+      provision_type: 'COVENANT_NO_SOLICITATION',
+      provision_subtype: 'NOSOL-INTERVENING',
+      primary_quote: 'The Company Board may act for an Intervening Event.',
+      features: { interveningEventScope: 'POSITIVE_ONLY' },
+    }],
+  });
+  const interveningSignal = nosolInterveningMod.nosolInterveningConfig.columns.find((column) => column.id === 'signals');
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, interveningSignal.renderCell(interveningRows.find((row) => row.id === 'nosol-intervening-scope'), { primitives }))), /Positive \/ non-Acquisition Proposal events only/);
+
+  const fiduciaryRows = nosolFiduciaryMod.nosolFiduciaryConfig.selectRows({
+    cards: [{
+      id: 'match',
+      provision_type: 'COVENANT_NO_SOLICITATION',
+      provision_subtype: 'NOSOL-MATCH',
+      primary_quote: 'The Company shall give Parent four Business Days notice.',
+      features: { noticePeriod: 'four Business Days' },
+    }],
+  });
+  const fiduciarySignal = nosolFiduciaryMod.nosolFiduciaryConfig.columns.find((column) => column.id === 'signals');
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, fiduciarySignal.renderCell(fiduciaryRows[0], { primitives }))), /Notice period: four Business Days/);
+});
+
 test('employee-benefits config maps structured compensation items', () => {
   const rows = employeeBenefitsMod.employeeBenefitsConfig.selectRows({
     cards: [{
