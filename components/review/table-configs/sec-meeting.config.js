@@ -56,7 +56,13 @@ function hasSecSignal(card) {
 }
 function deadlineRow(id, label, deadline) {
   if (!deadline) return null;
-  const row = { id: `sec-meeting-${id}`, label, subject: 'Proxy / meeting', detail: formatDeadline(deadline), evidence: deadline.text || formatDeadline(deadline), present: true };
+  // `deadline` (the normalised { text, days, unit, trigger } object) rides
+  // along on the row -- not just its formatted string -- so a consumer that
+  // wants the pill-per-part rendering (number / unit pill / "after" /
+  // reference pill) instead of a single flattened string has the pieces
+  // without re-parsing formatDeadline()'s output. See
+  // votes-approvals-meeting.config.js, the only current consumer of this.
+  const row = { id: `sec-meeting-${id}`, label, subject: 'Proxy / meeting', detail: formatDeadline(deadline), evidence: deadline.text || formatDeadline(deadline), present: true, deadline };
   return withSignal(row);
 }
 function adjournmentRows(rights) {
@@ -70,6 +76,10 @@ function adjournmentRows(rights) {
       detail: [reasons, limits, right.text].filter(Boolean).join('\n'),
       evidence: right.text || reasons || limits,
       present: true,
+      // Normalised { party, reasons, maxAdjournments, maxDaysPerAdjournment,
+      // maxDaysTotal, text } -- see deadlineRow()'s `deadline` field above
+      // for why the structured value rides along unflattened.
+      adjournment: right,
     });
   });
 }
