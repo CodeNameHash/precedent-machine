@@ -178,12 +178,12 @@ function renderFooter(reviewDeal, primitives = mockPrimitives()) {
   return html;
 }
 
-test('renders exactly two visible columns worth of content per row (Condition label, Standard/Detail body) grouped into Mutual / Buyer\'s / Seller\'s bands', () => {
+test('renders exactly two visible columns worth of content per row (Condition label, Standard/Detail body) grouped into descriptive Mutual / Buyer / Target bands', () => {
   const reviewDeal = { cards: metseraShapedCards() };
   const { html } = renderBody(reviewDeal);
-  assert.match(html, /<h4>Mutual<\/h4>/);
-  assert.match(html, /<h4>Buyer&#x27;s<\/h4>/);
-  assert.match(html, /<h4>Seller&#x27;s<\/h4>/);
+  assert.match(html, /<h4>Mutual conditions<\/h4>/);
+  assert.match(html, /<h4>Buyer&#x27;s conditions — to Parent \/ Merger Sub&#x27;s obligation<\/h4>/);
+  assert.match(html, /<h4>Target&#x27;s conditions — to the Company&#x27;s obligation<\/h4>/);
   // Each present row renders as label + one body cell -- no third "Kind" column.
   const rowLabelCount = (html.match(/class="row-label"/g) || []).length;
   const rowBodyCount = (html.match(/class="row-body"/g) || []).length;
@@ -209,23 +209,28 @@ test('friendly condition names render as visible text; raw canonical codes (COND
   }
 });
 
-test('bring-down and covenant standards synthesize as short chips, not a clause dump; mainCondition stays behind a collapsed "see text" expander', () => {
+test('standards synthesize to the legacy-matching labels (real vote standard, HSR + scheduled approvals, covenant standard, cert pills); mainCondition stays behind a collapsed "see text" expander', () => {
   const reviewDeal = { cards: metseraShapedCards() };
   const { html } = renderBody(reviewDeal);
+  // Stockholder shows the actual vote standard, not a generic "Approval required".
+  assert.match(html, /Majority of outstanding shares/);
+  assert.ok(!html.includes('Approval required'), 'the generic "Approval required" boolean must be replaced by the real vote standard');
+  // Antitrust: HSR + the scheduled approvals (not a vague catch-all).
+  assert.match(html, /HSR waiting period expired or terminated/);
+  assert.match(html, /Scheduled regulatory approvals/);
+  // Legal restraint, covenant standard (reordered to "In all material respects").
+  assert.match(html, /No legal restraint/);
   assert.match(html, /In all material respects/);
-  assert.match(html, /True except where failure would not have an MAE/);
-  assert.match(html, /All In Material Respects/);
-  assert.match(html, /HSR Act waiting period expired or terminated/);
-  assert.match(html, /Other scheduled regulatory approvals obtained/);
-  assert.match(html, /Approval required/);
-  assert.match(html, /No legal restraint clause/);
-  assert.match(html, /Certification required/);
-  assert.match(html, /Must not be continuing/);
-  assert.match(html, /Standalone MAE condition/);
+  assert.ok(!html.includes('All In Material Respects'), '"All In Material Respects" must be reordered to "In all material respects"');
+  // No MAE carries only the continuing qualifier (the name is the TERM column).
+  assert.match(html, /MAE must be continuing at closing/);
+  // Officer's certificate lists each certified condition as its own pill.
+  assert.match(html, /Reps bring-down/);
+  assert.match(html, /Covenant performance/);
+  assert.match(html, />No MAE</);
 
   // The full mainCondition sentence must be present (nothing dropped) but
   // only inside a collapsed <details>/"see text" block, never as loose text.
-  const clauseSentence = 'The Company Stockholder Approval must have been duly obtained at the Company Stockholder Meeting.';
   assert.match(
     html,
     /<summary class="term-cell-seetext"[^>]*>see text<\/summary><div[^>]*>The Company Stockholder Approval must have been duly obtained at the Company Stockholder Meeting\.<\/div>/,
@@ -234,25 +239,23 @@ test('bring-down and covenant standards synthesize as short chips, not a clause 
   assert.ok(!/<details[^>]*\bopen\b/.test(html), 'the see-text/see-definition details blocks must render collapsed (no open attribute)');
 });
 
-test('defined-term (approvalDefinition) and cited-provisions synthesis show a short inline preview plus a click-to-open expander with the full content', () => {
+test('rep bring-down renders grouped by standard (lowest materiality first), reps as chips, and the legacy "Defined term:" / "Reps covered" lines are gone', () => {
   const reviewDeal = { cards: metseraShapedCards() };
   const { html } = renderBody(reviewDeal);
 
-  // Defined term: short synthesized preview inline, full definition collapsed.
-  assert.match(html, /Defined term:/);
-  assert.match(html, /the adoption of this Agreement by holders of a majority of the outstanding shares of…/);
-  assert.match(html, /<summary class="term-cell-seetext"[^>]*>see definition<\/summary>/);
-  const fullDefinition = 'the adoption of this Agreement by holders of a majority of the outstanding shares of Company Common Stock entitled to vote thereon at the Company Stockholders Meeting';
-  assert.match(html, new RegExp(fullDefinition.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), 'full definition text must be reachable behind the expander');
-  // It must not appear a second time OUTSIDE the collapsed block (i.e. not also inline-dumped).
-  const occurrences = html.split(fullDefinition).length - 1;
-  assert.equal(occurrences, 1, 'full definition text should appear exactly once (inside the collapsed expander), not duplicated inline');
+  // Grouped standard sub-headings.
+  assert.match(html, /True in all material respects/);
+  assert.match(html, /True except where failure would not cause an MAE/);
+  // reps_covered section cites resolve to rep NAMES rendered as chips.
+  assert.match(html, /Organization; Qualification; Standing/);
+  // The material-respects tier (rank 2) renders before the MAE "all others" tier (rank 3).
+  const matIdx = html.indexOf('True in all material respects');
+  const maeIdx = html.indexOf('True except where failure would not cause an MAE');
+  assert.ok(matIdx > -1 && maeIdx > matIdx, 'the material-respects tier must render before the MAE tier');
 
-  // Cited provisions: short preview ("+N more") plus a collapsed full list.
-  assert.match(html, /Reps covered \(3\):/);
-  assert.match(html, /\+1 more/);
-  assert.match(html, /<summary class="term-cell-seetext"[^>]*>see full list<\/summary>/);
-  assert.match(html, /Capitalization; Subsidiaries \(§3\.02\)/);
+  // The redundant legacy lines were removed per review.
+  assert.ok(!html.includes('Defined term:'), 'the defined-term line under Stockholder Approval was dropped');
+  assert.ok(!html.includes('Reps covered ('), 'the inline "Reps covered (N)" line was replaced by the grouped bring-down');
 });
 
 test('coverage footer reports "N of M standard conditions present" and lists absent canonical conditions, greyed, at the bottom (not a mid-table row)', () => {
