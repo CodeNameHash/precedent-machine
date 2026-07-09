@@ -13,9 +13,9 @@ import { splitForCell, valueText } from './card-utils.js';
 // values instead of a raw clause dump.
 
 const GROUP_SPECS = [
-  { id: 'mutual', label: 'Mutual', config: conditionsMConfig, party: 'M' },
-  { id: 'buyer', label: "Buyer's", config: conditionsBConfig, party: 'B' },
-  { id: 'seller', label: "Seller's", config: conditionsSConfig, party: 'S' },
+  { id: 'mutual', label: 'Mutual conditions', config: conditionsMConfig, party: 'M' },
+  { id: 'buyer', label: "Buyer's conditions — to Parent / Merger Sub's obligation", config: conditionsBConfig, party: 'B' },
+  { id: 'seller', label: "Target's conditions — to the Company's obligation", config: conditionsSConfig, party: 'S' },
 ];
 
 // Defensive presentation-layer guard, discovered against live Metsera data:
@@ -143,10 +143,77 @@ function tierMeta(tier) {
 // its own band, so it lists them by name instead of a bare "certification
 // required" boolean.
 const CERT_CERTIFIES = {
-  REP: 'accuracy of representations',
-  COV: 'covenant compliance',
-  MAE: 'no material adverse effect',
+  REP: 'Reps bring-down',
+  COV: 'Covenant performance',
+  MAE: 'No MAE',
 };
+
+// Builds a { "3.02(a)": "Capitalization; Subsidiaries", ... } lookup from the
+// condition card's citedProvisionNames so the bring-down's reps_covered
+// section cites resolve to rep names (ported from the legacy renderer).
+function repNameBySection(matches) {
+  const map = {};
+  for (const provision of matches || []) {
+    const cited = provision?.features?.citedProvisionNames;
+    if (Array.isArray(cited)) {
+      for (const item of cited) {
+        if (item && item.section && item.name) map[String(item.section)] = item.name;
+      }
+    }
+  }
+  return map;
+}
+
+// Replace "Section 3.02(a)" cites in a reps_covered description with the
+// resolved rep names, preserving ranges and free-text qualifiers. Ported from
+// the legacy resolveRepsCoveredText.
+function resolveRepsCovered(text, nameBySec) {
+  let s = String(text || '');
+  if (!s) return s;
+  s = s.replace(
+    /Section\s+(\d+(?:\.\d+)*)((?:\([a-z0-9]+\))+)\s+through\s+Section\s+\1((?:\([a-z0-9]+\))+)/gi,
+    (all, base, from, to) => `${base}${from} through ${to}`,
+  );
+  return s.replace(/Section\s+(\d+(?:\.\d+)*)((?:\([a-z0-9]+\))*)/gi, (all, base, subs) => {
+    const exact = nameBySec[`${base}${subs || ''}`];
+    if (exact) return exact;
+    const byBase = nameBySec[base];
+    if (byBase) return subs ? `${byBase} ${subs}` : byBase;
+    return all;
+  });
+}
+
+// Rep bring-down rendered as Ben's grouped structure: each standard is a
+// sub-heading ordered lowest-materiality-first (de minimis -> material -> MAE
+// "all others" last), with the reps brought down to that standard listed
+// underneath.
+function bringDownNode(matches) {
+  const tiers = (matches || []).flatMap((provision) => (
+    Array.isArray(provision?.features?.bringDownTiers)
+      ? provision.features.bringDownTiers.map((tier) => ({ tier, meta: tierMeta(tier) }))
+      : []
+  ));
+  if (!tiers.length) return null;
+  const nameBySec = repNameBySection(matches);
+  const sorted = tiers.slice().sort((a, b) => a.meta.rank - b.meta.rank);
+  return React.createElement(
+    'div',
+    { className: 'space-y-2' },
+    sorted.map(({ tier, meta }, index) => {
+      const covered = String(tier.reps_covered || tier.repsCovered || '').trim();
+      const general = /^all\s+(?:company\s+|parent\s+)?representations/i.test(covered)
+        || /\ball\s+other\b/i.test(covered)
+        || /representations?\s+(?:and\s+warranties\s+)?other than/i.test(covered);
+      const repsText = general ? 'All other representations' : (covered ? resolveRepsCovered(covered, nameBySec) : 'Specified representations');
+      return React.createElement(
+        'div',
+        { key: `bd-${index}`, className: 'space-y-0.5' },
+        React.createElement('div', { className: 'text-[11px] font-semibold uppercase tracking-wide text-ink' }, meta.label),
+        React.createElement('div', { className: 'max-w-[42rem] text-[11px] leading-5 text-inkLight' }, repsText),
+      );
+    }),
+  );
+}
 
 // Synthesizes the actual stockholder-vote standard from the approval
 // definition, so the chip reads "Majority of outstanding shares" (the thing
@@ -288,27 +355,19 @@ function buildStandardDetail(row, family, ctx, bandFamilies) {
   const matches = row.matches || [];
   const primary = matches[0];
   const chips = [];
+  let mainNode = null;
 
-  if (family === 'REP' || family === 'COV') {
-    // Rep bring-down: order the tiers by the ladder rank so the reading is
-    // fundamental -> capitalization -> general, each with its friendly
-    // standard and tone. Falls back to the single covenant-compliance
-    // standard for covenant rows that carry no tiered bring-down.
-    const tiers = matches.flatMap((provision) => (
-      Array.isArray(provision?.features?.bringDownTiers)
-        ? provision.features.bringDownTiers.map((tier) => ({ tier, provision, meta: tierMeta(tier) }))
-        : []
-    ));
-    if (tiers.length) {
-      tiers
-        .sort((a, b) => a.meta.rank - b.meta.rank)
-        .forEach(({ tier, provision, meta }, index) => {
-          chips.push(mkChip(PillCell, `tier-${index}`, meta.label, meta.tone, provision, taggedEvidence(tier, provision)));
-        });
-    } else {
+  if (family === 'REP') {
+    // Rep bring-down: grouped by standard, lowest-materiality-first, reps under
+    // each (see bringDownNode). Covenant-compliance falls through to a chip.
+    mainNode = bringDownNode(matches);
+    if (!mainNode) {
       const ccs = firstDefined(matches, 'covenantComplianceStandard');
       if (ccs) chips.push(mkChip(PillCell, 'covenant-standard', taggedLabel(ccs) || valueText(ccs), 'info', primary, taggedEvidence(ccs, primary)));
     }
+  } else if (family === 'COV') {
+    const ccs = firstDefined(matches, 'covenantComplianceStandard');
+    if (ccs) chips.push(mkChip(PillCell, 'covenant-standard', taggedLabel(ccs) || valueText(ccs), 'info', primary, taggedEvidence(ccs, primary)));
   } else if (family === 'REG') {
     // Antitrust: HSR plus the SCHEDULED_APPROVALS the agreement lists in a
     // schedule (surfaced with its section reference), not a vague catch-all.
@@ -348,23 +407,23 @@ function buildStandardDetail(row, family, ctx, bandFamilies) {
       chips.push(mkChip(PillCell, 'legal-restraint', present ? 'No legal restraint' : 'No legal restraint (absent)', present ? 'present' : 'missing', primary, details));
     }
   } else if (family === 'MAE') {
-    // Headline the actual condition (No Company/Parent MAE) instead of only
-    // abstract flags, then the continuing-effect qualifier.
-    const mc = String(firstDefined(matches, 'mainCondition') || '');
-    const subject = /\bparent\b/i.test(mc) && !/\bcompany\b/i.test(mc) ? 'Parent' : 'Company';
-    chips.push(mkChip(PillCell, 'mae-head', `No ${subject} Material Adverse Effect`, 'warning', primary, mc || undefined));
-    if (isTruthyBoolLike(firstDefined(matches, 'continuingRequirement'))) {
-      chips.push(mkChip(PillCell, 'mae-continuing', 'Must be continuing at closing', 'neutral', primary));
-    }
+    // The condition name ("No Material Adverse Effect") is already the TERM
+    // column, so the right column only carries the continuing-effect qualifier.
+    const continuing = isTruthyBoolLike(firstDefined(matches, 'continuingRequirement'));
+    chips.push(mkChip(
+      PillCell,
+      'mae-continuing',
+      continuing ? 'MAE must be continuing at closing' : 'Continuing requirement not specified',
+      continuing ? 'warning' : 'neutral',
+      primary,
+      firstDefined(matches, 'mainCondition'),
+    ));
   } else if (family === 'CERT') {
-    // Name the conditions the officer's certificate certifies (the other
-    // substantive families in this same band).
-    const certifies = (bandFamilies || [])
-      .filter((f) => CERT_CERTIFIES[f])
-      .map((f) => CERT_CERTIFIES[f]);
-    const uniq = [...new Set(certifies)];
+    // One pill per condition the officer's certificate certifies (the other
+    // substantive families present in this same band).
+    const uniq = [...new Set((bandFamilies || []).filter((f) => CERT_CERTIFIES[f]).map((f) => CERT_CERTIFIES[f]))];
     if (uniq.length) {
-      chips.push(mkChip(PillCell, 'cert-list', `Certifies ${uniq.join(', ')}`, 'present', primary, firstDefined(matches, 'mainCondition')));
+      uniq.forEach((label, index) => chips.push(mkChip(PillCell, `cert-${index}`, label, 'present', primary, firstDefined(matches, 'mainCondition'))));
     } else if (firstDefined(matches, 'certificationRequired') === true) {
       chips.push(mkChip(PillCell, 'cert-req', "Officer's certificate required", 'present', primary));
     }
@@ -373,14 +432,13 @@ function buildStandardDetail(row, family, ctx, bandFamilies) {
   }
 
   const validChips = chips.filter(Boolean);
-  const definedTerms = definedTermsNode(matches);
   const clause = clauseSeeText(valueText(firstDefined(matches, 'mainCondition')));
 
   return React.createElement(
     'div',
-    { className: 'space-y-1' },
+    { className: 'space-y-1.5' },
     validChips.length ? React.createElement('div', { className: 'flex flex-wrap gap-1' }, validChips) : null,
-    definedTerms,
+    mainNode,
     clause,
   );
 }
