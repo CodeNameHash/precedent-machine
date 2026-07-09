@@ -137,10 +137,17 @@ function renderSignals(row, ctx) {
   }));
 }
 
+// feeTableRows()' detail (formatFeeDetail) is the ONLY place the fee
+// amount/payer/deadline summary is visible — scalarRows' signals mirror
+// their own detail, but the fee rows' signals are trigger-name pills with
+// different content, so the column can't be wholesale relocated behind the
+// row-level expander without hiding the amount itself. Truncate per-cell so
+// the (usually short) computed summary stays inline and only a genuinely
+// long payment-deadline clause spills into "see text".
 function renderDetail(row, ctx) {
-  const EvidenceHoverSource = ctx?.primitives?.EvidenceHoverSource;
-  if (!EvidenceHoverSource || !row.evidence) return row.detail;
-  return React.createElement(EvidenceHoverSource, { evidence: row.evidence, source: row.sourceCard, as: 'span' }, row.detail);
+  const TruncatedWithSeeText = ctx?.primitives?.TruncatedWithSeeText;
+  if (!TruncatedWithSeeText) return row.detail;
+  return React.createElement(TruncatedWithSeeText, { text: row.detail, evidence: row.evidence, source: row.sourceCard });
 }
 
 const terminationFeesConfig = {

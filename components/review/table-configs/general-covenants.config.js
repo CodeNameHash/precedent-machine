@@ -126,10 +126,18 @@ function renderSignals(row, ctx) {
   }));
 }
 
+// Unlike the mapped ROWS above, perClauseRows()' detail can fall all the way
+// back to the entire raw clause text (clauseDetail() -> textOf(card) when
+// mainConcept isn't extracted) — up to the whole covenant's prose. Neither
+// row shape has a redundant pill copy of the value (rowSignals() surfaces
+// efforts/consent/knowledge/deadline meta, not the clause text itself), so
+// the column can't be wholesale relocated like the mae/antitrust/reps
+// families; truncate per-cell instead and keep the same "see text" escape
+// hatch for whatever got cut.
 function renderDetail(row, ctx) {
-  const EvidenceHoverSource = ctx?.primitives?.EvidenceHoverSource;
-  if (!EvidenceHoverSource || !row.evidence) return row.detail;
-  return React.createElement(EvidenceHoverSource, { evidence: row.evidence, source: row.sourceCard, as: 'span' }, row.detail);
+  const TruncatedWithSeeText = ctx?.primitives?.TruncatedWithSeeText;
+  if (!TruncatedWithSeeText) return row.detail;
+  return React.createElement(TruncatedWithSeeText, { text: row.detail, evidence: row.evidence, source: row.sourceCard });
 }
 
 const generalCovenantsConfig = {

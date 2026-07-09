@@ -6,6 +6,7 @@ import {
   isCitableValue,
 } from '../../../lib/citable.js';
 import { HoverSource } from '../shared.js';
+import { splitForCell } from '../table-configs/card-utils.js';
 
 const { MATERIAL_CONTRACT_BUCKET_CODES, MATERIAL_CONTRACT_BUCKET_META } = taxonomy;
 
@@ -70,6 +71,43 @@ export function PillCell({ value, label, tone = 'neutral', evidence, source, quo
         <span className="truncate">{text}</span>
       </span>
     </EvidenceHoverSource>
+  );
+}
+
+// Phase B compact-column reshaping: the per-cell counterpart to
+// ProvisionTable.jsx's FULL_TEXT_COLUMNS. Used by configs where a single
+// "value"/"detail" cell legitimately carries BOTH short scalar rows (a
+// month count, a percentage) AND occasional long prose rows (a raw clause,
+// a concatenated list) — so the whole column can't be wholesale relocated
+// behind a row-level expander without hiding the short values too. Renders
+// the full text inline when short; when it exceeds `max`, shows a
+// truncated preview plus the same "see text" <details> affordance
+// ProvisionTable.jsx uses for whole-column relocation, so nothing is lost,
+// only decluttered.
+export function TruncatedWithSeeText({ text, evidence, source, max = 160, className = '' }) {
+  const { value, short, truncated } = splitForCell(text, max);
+  if (!value) return null;
+  if (!truncated) {
+    return (
+      <EvidenceHoverSource evidence={evidence} source={source} as="span" className={className}>
+        {value}
+      </EvidenceHoverSource>
+    );
+  }
+  return (
+    <span className={className}>
+      <EvidenceHoverSource evidence={evidence || value} source={source} as="span">
+        {short}&hellip;
+      </EvidenceHoverSource>
+      <details className="mt-1">
+        <summary className="term-cell-seetext" style={{ listStyle: 'none' }}>
+          see text
+        </summary>
+        <div className="mt-1 max-w-[42rem] whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight">
+          {value}
+        </div>
+      </details>
+    </span>
   );
 }
 

@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   buildPerShareParts,
   deriveHeadlineConsiderationType,
@@ -92,6 +93,16 @@ function headlineLabel(headlineType, cards, featuresList) {
   return headlineConsiderationLabel(headlineType, featuresList);
 }
 
+// equityAwardTreatment and similar structured attributes fall through
+// valueText()'s "no code/label" branch as a semicolon-joined dump of every
+// field (espp/stockOptions/restrictedStock etc.) — the only place that value
+// is shown at all, so truncate per-cell rather than hide the column.
+function renderDetail(row, ctx) {
+  const TruncatedWithSeeText = ctx?.primitives?.TruncatedWithSeeText;
+  if (!TruncatedWithSeeText) return row.detail;
+  return React.createElement(TruncatedWithSeeText, { text: row.detail, evidence: row.evidence });
+}
+
 const considerationHeroConfig = {
   id: 'consideration-hero',
   title: 'Consideration',
@@ -121,8 +132,8 @@ const considerationHeroConfig = {
   columns: [
     { id: 'term', header: 'Term', width: '18rem', renderCell: (row) => row.label },
     { id: 'kind', header: 'Kind', width: '10rem', renderCell: (row) => row.kind },
-    { id: 'detail', header: 'Detail', renderCell: (row) => row.detail },
+    { id: 'detail', header: 'Detail', renderCell: renderDetail },
   ],
 };
 
-export { considerationHeroConfig };
+export { considerationHeroConfig, renderDetail };

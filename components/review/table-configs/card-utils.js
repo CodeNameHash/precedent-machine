@@ -147,6 +147,21 @@ function selectCards(reviewDeal, predicate) {
   return (reviewDeal?.cards || []).filter(predicate);
 }
 
+// Phase B compact-column reshaping: the pure truncation math behind
+// ProvisionTablePrimitives.jsx's <TruncatedWithSeeText>, split out into
+// plain JS so it's testable under `node --test` without a JSX loader (the
+// primitive itself lives in a .jsx file the test runner can't import
+// directly — see tests/review/provision-table-compact-columns.spec.js).
+// Word-boundary-trims the preview so it never cuts mid-word.
+function splitForCell(text, max = 160) {
+  const value = text === null || text === undefined ? '' : String(text);
+  if (!value) return { value: '', short: '', truncated: false };
+  if (value.length <= max) return { value, short: value, truncated: false };
+  const cut = value.slice(0, max);
+  const short = (cut.replace(/\s+\S*$/, '').trim() || cut.trim());
+  return { value, short, truncated: true };
+}
+
 export {
   allFeatures,
   cardCode,
@@ -159,6 +174,7 @@ export {
   mappedRows,
   mappedRowsMulti,
   selectCards,
+  splitForCell,
   textOf,
   valueText,
 };

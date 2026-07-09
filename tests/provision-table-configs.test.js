@@ -737,6 +737,7 @@ test('ioc and covenant render cells use primitive pills and hover-source wrapper
   const primitives = {
     PillCell: ({ label }) => React.createElement('span', { className: 'pill' }, label),
     EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
+    TruncatedWithSeeText: ({ text, evidence }) => React.createElement('span', { 'data-evidence': evidence }, text),
   };
   const iocRows = iocMod.iocExceptionsConfig.selectRows({
     cards: [{
@@ -902,6 +903,7 @@ test('termination fee and expense configs expose primitive-backed signals', () =
   const primitives = {
     PillCell: ({ label }) => React.createElement('span', { className: 'pill' }, label),
     EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
+    TruncatedWithSeeText: ({ text, evidence }) => React.createElement('span', { 'data-evidence': evidence }, text),
   };
   const terminationRows = terminationFeesMod.terminationFeesConfig.selectRows({
     cards: [{
