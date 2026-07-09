@@ -154,6 +154,8 @@ const CARDS = [
 test('nosol-section groups the four family tables under one section, in precedent order', () => {
   const groups = mod.buildGroups({ cards: CARDS }, { primitives });
   assert.deepEqual(groups.map((g) => g.id), [
+    // Ben (round 6): Go-Shop leads the section (renders "None" when absent).
+    'nosol-go-shop',
     'nosol-no-shop-core',
     'nosol-fiduciary-engagement',
     'nosol-acquisition-proposal',
@@ -168,8 +170,10 @@ test('nosol-section groups the four family tables under one section, in preceden
 test('nosol-section: No-Shop Core Mechanics leads with cease, then the prohibited acts, then the folded-in Representatives control standard (T4) directly under the restriction it enforces, then exceptions', () => {
   const groups = mod.buildGroups({ cards: CARDS }, { primitives });
   const noShopCore = groups.find((g) => g.id === 'nosol-no-shop-core');
-  assert.ok(noShopCore, 'No-Shop Core Mechanics must be the first group');
-  assert.equal(groups[0].id, 'nosol-no-shop-core');
+  assert.ok(noShopCore, 'No-Shop Core Mechanics must lead the substantive groups');
+  // Go-Shop leads with its "None" row; No-Shop Core is the first substantive group.
+  assert.equal(groups[0].id, 'nosol-go-shop');
+  assert.equal(groups[1].id, 'nosol-no-shop-core');
   assert.deepEqual(noShopCore.rows.map((r) => r.id), [
     'nosol-noshop-cease',
     'nosol-noshop-prohibit',

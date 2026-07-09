@@ -1,5 +1,5 @@
 import React from 'react';
-import { splitForCell, textOf, valueText } from './card-utils.js';
+import { firstFeature, splitForCell, textOf, valueText } from './card-utils.js';
 import { nosolNoshopConfig, renderDetail as noshopRenderDetail, renderSignals as noshopRenderSignals } from './nosol-noshop.config.js';
 import { nosolSuperiorConfig, renderSignals as superiorRenderSignals } from './nosol-superior.config.js';
 import { nosolInterveningConfig, renderDetail as interveningRenderDetail, renderSignals as interveningRenderSignals } from './nosol-intervening.config.js';
@@ -371,6 +371,39 @@ function buildAcquisitionProposalGroup(reviewDeal, ctx) {
   return { id: 'nosol-acquisition-proposal', label: 'Acquisition Proposal — Definition', rows };
 }
 
+// Ben (round 6): a Go-Shop subtable at the very TOP of the No-Sol section.
+// When the deal has no go-shop (Metsera), it renders a single explicit "None"
+// row so the absence reads clearly — mirroring the old scheme's goShopDisplay.
+function goShopValue(hit) {
+  if (!hit) return null;
+  const v = valueText(hit.value !== undefined ? hit.value : hit);
+  return v || null;
+}
+function buildGoShopGroup(reviewDeal, ctx) {
+  const cards = reviewDeal?.cards || [];
+  const period = firstFeature(cards, ['goShopPeriodDays', 'goShopWindow']);
+  const excluded = firstFeature(cards, ['goShopExcludedParties']);
+  const extended = firstFeature(cards, ['extendedNegotiatingPeriodDays']);
+  const presentHit = firstFeature(cards, ['goShopPresent']);
+  const presentVal = goShopValue(presentHit);
+  const hasGoShop = /^(true|yes)$/i.test(String(presentVal || '')) || period || excluded || extended;
+  const PillCell = ctx?.primitives?.PillCell;
+  const pill = (label, tone = 'neutral') => (ctx ? (PillCell ? React.createElement(PillCell, { label, tone }) : label) : null);
+  if (!hasGoShop) {
+    return { id: 'nosol-go-shop', label: 'Go-Shop', rows: [{ id: 'nosol-go-shop-none', label: 'Go-shop', children: pill('None', 'missing') }] };
+  }
+  const rows = [];
+  const add = (id, label, hit, unit) => {
+    const v = goShopValue(hit);
+    if (!v) return;
+    rows.push({ id, label, children: pill(unit && /^\d+$/.test(v) ? `${v} ${unit}` : v) });
+  };
+  add('nosol-go-shop-period', 'Go-shop period', period, 'business days');
+  add('nosol-go-shop-excluded', 'Excluded parties', excluded);
+  add('nosol-go-shop-extended', 'Extended negotiating period', extended, 'business days');
+  return { id: 'nosol-go-shop', label: 'Go-Shop', rows };
+}
+
 function buildGroups(reviewDeal, ctx) {
   const rowsBySource = {};
   for (const key of Object.keys(SOURCES)) {
@@ -416,6 +449,10 @@ function buildGroups(reviewDeal, ctx) {
     if (insertAt === -1) groups.push(acqProposalGroup);
     else groups.splice(insertAt, 0, acqProposalGroup);
   }
+
+  // Go-Shop leads the section (with an explicit "None" when absent) -- but only
+  // when there IS a No-Sol section to lead; an empty deal stays empty.
+  if (groups.length) groups.unshift(buildGoShopGroup(reviewDeal, ctx));
 
   return groups;
 }
