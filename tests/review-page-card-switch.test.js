@@ -21,6 +21,7 @@ test('review page mounts the first schema structured table config before cards',
   assert.match(reviewPageSource, /import \{ generalCovenantsConfig \} from '..\/..\/components\/review\/table-configs\/general-covenants\.config';/);
   assert.match(reviewPageSource, /import \{ maeDefinitionsConfig \} from '..\/..\/components\/review\/table-configs\/mae-definitions\.config';/);
   assert.match(reviewPageSource, /import \{ representationsQualifiersConfig \} from '..\/..\/components\/review\/table-configs\/representations-qualifiers\.config';/);
+  assert.match(reviewPageSource, /import \{ parentRepresentationsConfig \} from '..\/..\/components\/review\/table-configs\/representations-qualifiers\.config';/);
   assert.match(reviewPageSource, /import \{ terminationFeesConfig \} from '..\/..\/components\/review\/table-configs\/termination-fees\.config';/);
   assert.match(reviewPageSource, /import \{ terminationRightsConfig \} from '..\/..\/components\/review\/table-configs\/termination-rights\.config';/);
   assert.match(reviewPageSource, /import \{ advisersFeesExpensesConfig \} from '..\/..\/components\/review\/table-configs\/advisers-fees-expenses\.config';/);
@@ -51,8 +52,13 @@ test('review page mounts the first schema structured table config before cards',
     'considerationHeroConfig',
     'equityAwardsConfig',
     'representationsQualifiersConfig',
-    'maeDefinitionsConfig',
+    // F4 R5: Parent/Buyer reps split out of representationsQualifiersConfig
+    // into their own table, mounted immediately after Company reps.
+    'parentRepresentationsConfig',
+    // F4 O1: Material Contracts now renders immediately under Reps, ahead of
+    // MAE (was previously after it).
     'materialContractsConfig',
+    'maeDefinitionsConfig',
     'iocExceptionsConfig',
     'nosolSectionConfig',
     'antitrustRegulatoryConfig',

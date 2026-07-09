@@ -74,16 +74,18 @@ export default function ProvisionTable({ config, reviewDeal, isEdit = false }) {
   if (typeof config.renderBody === 'function') {
     const bodyCtx = { reviewDeal, config, primitives: ProvisionTablePrimitives, isEdit };
     const headerNote = typeof config.deriveHeaderNote === 'function' ? config.deriveHeaderNote(rows) : null;
+    // R3/G-TITLE: config.title already renders once as the collapsible
+    // section <h2> in pages/review/[id].js (same rule as the generic path's
+    // showTitleStrip=false below) -- this strip must never repeat it, and
+    // only survives to carry a headerNote when one is present.
     return (
       <section data-testid={`provision-table-${config.id}`} className="rounded border border-border bg-white shadow-sm">
-        <div className="border-b border-border bg-bg/60 px-3 py-2 flex items-center justify-between gap-3">
-          <p className="font-ui text-[10px] font-medium uppercase tracking-wider text-inkFaint">
-            {config.title}
-          </p>
-          {headerNote ? (
+        {headerNote ? (
+          <div className="border-b border-border bg-bg/60 px-3 py-2 flex items-center justify-between gap-3">
+            <span />
             <p className="font-ui text-[10px] font-medium text-inkFaint whitespace-nowrap">{headerNote}</p>
-          ) : null}
-        </div>
+          </div>
+        ) : null}
         <div data-testid={`provision-table-body-${config.id}`} className="p-3 space-y-4">
           {config.renderBody(rows, bodyCtx)}
         </div>
