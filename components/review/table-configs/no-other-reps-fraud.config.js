@@ -1,6 +1,6 @@
 import React from 'react';
 import { deriveAbrySummary } from '../../../lib/abry.js';
-import { firstFeature, valueText } from './card-utils.js';
+import { valueText } from './card-utils.js';
 
 const ABRY_CODES = ['MISC-ENTIRE', 'REP-T-NOREP', 'REP-B-NOREP', 'REP-B-ANTIRELIANCE'];
 const FEATURE_KEYS = [
@@ -103,27 +103,6 @@ function willfulBreachRow(willfulBreach) {
     present: true,
   };
 }
-// Spec 14's fourth row: extraContractualClaimsWaived is its own boolean
-// claim (whether the non-reliance disclaimer extends to extra-contractual
-// materials like data-room / management-presentation information), distinct
-// from the party-scoped Q1-Q4 rows above -- surfaced directly off the source
-// card(s) rather than through deriveAbrySummary, which only folds this value
-// into the Q2/Q4 scope label and never gives it a standalone row.
-function extraContractualRow(cards) {
-  const hit = firstFeature(cards, ['extraContractualClaimsWaived']);
-  if (!hit) return null;
-  const present = hit.value === true || hit.value === 'true';
-  return {
-    id: 'no-other-reps-fraud-extra-contractual',
-    label: 'Extra-contractual claims waived',
-    kind: 'Extra-contractual',
-    status: present ? 'Present' : 'Not present',
-    detail: hit.detail,
-    evidence: textOf(hit.card),
-    present,
-  };
-}
-
 const noOtherRepsFraudConfig = {
   id: 'no-other-reps-fraud',
   title: 'No Other Reps / Fraud',
@@ -135,7 +114,9 @@ const noOtherRepsFraudConfig = {
     return [
       ...QUESTIONS.map(([key, label, kind]) => questionRow(key, label, kind, summary[key])),
       fraudRow(summary.fraud),
-      extraContractualRow(cards),
+      // extraContractualClaimsWaived row removed (spec #48): it's a
+      // conclusion that follows from the non-reliance / no-other-reps rows
+      // above, not a distinct fact worth its own row.
       willfulBreachRow(summary.willfulBreach),
     ].filter(Boolean);
   },

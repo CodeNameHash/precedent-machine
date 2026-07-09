@@ -237,7 +237,7 @@ function dividerRow(headline) {
 
 function shortStandard(text) {
   if (!text) return null;
-  const { short, truncated } = splitForCell(text, 70);
+  const { short, truncated } = splitForCell(text, 42);
   return truncated ? `${short}…` : short;
 }
 
@@ -307,6 +307,10 @@ const employeeBenefitsConfig = {
     {
       id: 'standard',
       header: 'Standard',
+      // Fixed narrower than Benefit/Reference Group (spec #44: an unbounded
+      // Standard column crowded out the other three). shortStandard()'s
+      // truncation length is tuned to match this width.
+      width: '12rem',
       renderCell(row, ctx) {
         if (row.kind === 'divider') return null;
         // Colour by the shared standard palette so the same standard reads the

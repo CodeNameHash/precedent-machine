@@ -1670,14 +1670,16 @@ test('no-other-reps fraud config maps Abry four-question summary', () => {
     'Seller non-reliance',
     'Buyer no-other-reps',
     'Fraud carve-out',
-    'Extra-contractual claims waived',
     'Willful breach definition',
   ]);
   assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-q1').status, 'Present');
   assert.match(rows.find((row) => row.id === 'no-other-reps-fraud-q2').detail, /data room/);
   assert.match(rows.find((row) => row.id === 'no-other-reps-fraud-q4').detail, /management presentations/);
   assert.match(rows.find((row) => row.id === 'no-other-reps-fraud-fraud').detail, /nothing herein limits liability for Fraud/);
-  assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-extra-contractual').status, 'Present');
+  // extraContractualClaimsWaived row removed (punchlist #48): it's a
+  // conclusion that follows from the non-reliance / no-other-reps rows
+  // above, not a distinct fact worth its own row.
+  assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-extra-contractual'), undefined);
   assert.match(rows.find((row) => row.id === 'no-other-reps-fraud-willful-breach').detail, /intentional and material breach/);
 });
 
@@ -1723,5 +1725,5 @@ test('no-other-reps fraud config routes the Metsera §9.07 Anti-Reliance card (t
   assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-q1').status, 'Present');
   assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-q3').status, 'Present');
   assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-fraud').status, 'Present');
-  assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-extra-contractual').status, 'Present');
+  assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-extra-contractual'), undefined);
 });
