@@ -63,15 +63,27 @@ export function EvidenceHoverSource({ value, evidence, source, quote, highlight,
   );
 }
 
-export function PillCell({ value, label, tone = 'neutral', color, evidence, source, quote, highlight, className = '' }) {
+export function PillCell({ value, label, tone = 'neutral', color, evidence, source, quote, highlight, className = '', wrap = false }) {
   const text = label || textValue(value) || 'Not captured';
   // `color` (a shared standard-colour palette key) wins over `tone` so the same
   // legal standard reads the same colour everywhere it appears.
   const classes = (color && STANDARD_COLORS[color]) || PILL_TONES[tone] || PILL_TONES.neutral;
+  // Default (`wrap` false) keeps every existing pill's single-line
+  // truncate+ellipsis behaviour untouched. `wrap: true` is an opt-in escape
+  // hatch for callers whose label is legitimately long prose (e.g. IOC
+  // exception/restriction taxonomy labels) rather than a short code/value --
+  // `truncate`'s `white-space: nowrap` gives the label an unbreakable
+  // min-content width equal to its full single-line text, which `max-w-full`
+  // cannot shrink below inside a `flex flex-wrap` container, so the pill
+  // pushes past its cell/table edge instead of wrapping. Swapping to
+  // `whitespace-normal break-words` drops that min-content width to its
+  // longest single word, letting the pill wrap onto multiple lines and stay
+  // inside its container instead.
+  const textClass = wrap ? 'whitespace-normal break-words' : 'truncate';
   return (
     <EvidenceHoverSource value={value} evidence={evidence} source={source} quote={quote} highlight={highlight}>
       <span className={`inline-flex max-w-full items-center rounded border px-2 py-0.5 text-[11px] font-medium ${classes} ${className}`.trim()}>
-        <span className="truncate">{text}</span>
+        <span className={textClass}>{text}</span>
       </span>
     </EvidenceHoverSource>
   );
