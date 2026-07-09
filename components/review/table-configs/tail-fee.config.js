@@ -52,57 +52,58 @@ function formatPct(value) {
   if (inner === null) return 'Not specified';
   return /^\d+(\.\d+)?$/.test(String(inner).trim()) ? `${inner}%` : String(inner);
 }
-function formatBool(value) {
-  const inner = scalar(value);
-  if (inner === true || inner === 'true' || inner === 'yes') return 'Same proposal required';
-  if (inner === false || inner === 'false' || inner === 'no') return 'Any later qualifying proposal can trigger';
-  return inner === null ? 'Not specified' : String(inner);
-}
 function formatClauses(value) {
   const list = Array.isArray(value) ? value.filter(Boolean) : [];
   if (!list.length) return 'Not specified';
   return list.map((item) => String(scalar(item) || item).trim()).filter(Boolean).join('\n\n');
 }
-function mechanicTone(id) {
-  if (id === 'tail-same-proposal') return 'warning';
+
+// Punchlist #40: the old "Triggering proposal" row derived a Same-proposal
+// vs Any-proposal binary off tailFeeSameProposalRequired (and, in the old
+// pre-rebuild UI, off text-sniffing "a bona fide" vs "the/such bona fide"
+// phrasing). That framing is wrong for how a tail fee actually works: the
+// fee is triggered by ANY qualifying transaction -- it need NOT be the same
+// proposal that was on the table when the tail period started -- so long as
+// a definitive agreement for it is SIGNED (executed) before the tail window
+// closes; consummation itself can happen after the window ends. Render that
+// fixed, legally-accurate description rather than branching on a flag whose
+// "same vs any" premise doesn't match the mechanic. tailFeeRecognitionEvent
+// (when the extractor captured it) names the deal's actual recognition
+// event ("consummation" vs "definitive agreement later consummated") and is
+// appended as a real per-deal fact on top of the base description.
+function formatTriggerScope(recognitionEvent) {
+  const base = 'Any qualifying transaction triggers the fee -- it need not be the proposal on the table when the tail period began -- so long as a definitive agreement is signed before the tail window closes; closing itself may follow later.';
+  const inner = scalar(recognitionEvent);
+  const recognition = typeof inner === 'string' ? inner.trim() : (inner === null || inner === undefined ? '' : String(inner).trim());
+  return recognition ? `${base} Recognition event per the agreement: ${recognition}.` : base;
+}
+
+function signalTone(id) {
   if (id === 'tail-window' || id === 'tail-threshold') return 'info';
   return 'neutral';
 }
-// 'tail-window'/'tail-threshold'/'tail-same-proposal' values are short
-// scalars (e.g. "12 months") and pass through TruncatedWithSeeText
-// unchanged. 'tail-arming' is the one row whose value is the full joined
-// activating-clauses text (up to ~1,500 chars) — truncation keeps the
-// Mechanic column compact for every row without a per-row special case;
-// the untruncated list is still one click away via "see text".
-function renderMechanic(row, ctx) {
-  const ThresholdCellWithHoverQuote = ctx?.primitives?.ThresholdCellWithHoverQuote;
-  const TruncatedWithSeeText = ctx?.primitives?.TruncatedWithSeeText;
-  if (row.id === 'tail-threshold' && ThresholdCellWithHoverQuote) {
-    return React.createElement(ThresholdCellWithHoverQuote, {
-      threshold: row.value,
-      evidence: row.evidence,
-      source: row.sourceCard,
-    });
-  }
-  if (!TruncatedWithSeeText) return row.value;
-  return React.createElement(TruncatedWithSeeText, { text: row.value, evidence: row.evidence, source: row.sourceCard });
-}
-// Bare value only -- the Term column already names this row, and the
-// Mechanic column already shows the full value; the pill is just a scannable
-// echo of it, not a second, differently-labeled copy. 'tail-arming' is
-// skipped here: its value is the full joined activating-clauses prose (up to
-// ~1,500 chars), and a pill is the wrong shape for a text dump (global rule:
-// pills are for enum/quantitative signals, not full-sentence prose) -- the
-// Mechanic column's truncated "see text" already carries it.
+
+// Punchlist #38/#39: collapse the old Signals + Mechanic columns into ONE
+// "Signals" column -- the two used to show the SAME value twice (once as a
+// pill, once as a Mechanic-column echo) for every row except 'tail-arming',
+// whose long activating-clauses prose only ever showed up in Mechanic (its
+// old Signals cell rendered nothing). Now every row renders its full value
+// in this single column: short scalar rows as a pill, the long-prose
+// 'tail-arming' row through TruncatedWithSeeText's truncate + "see text"
+// affordance (the "termination scenarios" content now lives in the signals
+// column, not a second column).
 function renderSignals(row, ctx) {
-  if (row.id === 'tail-arming') return null;
+  if (row.id === 'tail-arming') {
+    const TruncatedWithSeeText = ctx?.primitives?.TruncatedWithSeeText;
+    if (!TruncatedWithSeeText) return row.value;
+    return React.createElement(TruncatedWithSeeText, { text: row.value, evidence: row.evidence, source: row.sourceCard });
+  }
   const PillCell = ctx?.primitives?.PillCell;
-  const label = row.value;
-  if (!PillCell) return label;
+  if (!PillCell) return row.value;
   return React.createElement(PillCell, {
-    label,
+    label: row.value,
     value: row.value,
-    tone: mechanicTone(row.id),
+    tone: signalTone(row.id),
     evidence: row.evidence,
     source: row.sourceCard,
   });
@@ -122,28 +123,26 @@ const tailFeeConfig = {
       features.tailFeeThresholdPct,
       ...(Array.isArray(features.tailFeeActivatingClauses) ? features.tailFeeActivatingClauses : []),
       features.tailFeeSameProposalRequired,
+      features.tailFeeRecognitionEvent,
     ].some((value) => value !== null && value !== undefined && value !== '');
     if (!hasTail) return [];
     return [
       { id: 'tail-window', label: 'Tail window', value: formatWindow(features.tailFeeWindowMonths), evidence: textOf(source), sourceCard: source, present: true },
       { id: 'tail-threshold', label: 'Threshold % for Company Takeover Proposal', value: formatPct(features.tailFeeThresholdPct), evidence: textOf(source), sourceCard: source, present: true },
       { id: 'tail-arming', label: 'Termination scenarios that arm the tail', value: formatClauses(features.tailFeeActivatingClauses), evidence: textOf(source), sourceCard: source, present: true },
-      { id: 'tail-same-proposal', label: 'Triggering proposal', value: formatBool(features.tailFeeSameProposalRequired), evidence: textOf(source), sourceCard: source, present: true },
+      { id: 'tail-trigger-scope', label: 'Qualifying transaction scope', value: formatTriggerScope(features.tailFeeRecognitionEvent), evidence: textOf(source), sourceCard: source, present: true },
     ];
   },
-  // Tidy per REBUILD-SPECS.md §11: three columns (Term / Signals / Mechanic),
-  // matching the rest of the app's clean-row shape -- the old fourth
-  // "Evidence" column always-rendered the SAME card quote, verbatim, on
-  // every one of the four rows (a straight text dump repeated 4x). Evidence
-  // is still one hover away: PillCell and the Mechanic-column primitives
-  // (ThresholdCellWithHoverQuote / TruncatedWithSeeText) all wrap their
-  // content in EvidenceHoverSource already.
+  // Tidy per REBUILD-SPECS.md §11, revised per punchlist #38: TWO columns
+  // (Term / Signals) -- the old third "Mechanic" column duplicated whatever
+  // Signals already showed for every row but one. Evidence is still one
+  // hover away: PillCell and TruncatedWithSeeText both wrap their content in
+  // EvidenceHoverSource already.
   columns: [
     { id: 'term', header: 'Term', width: '20rem', renderCell: (row) => row.label },
-    { id: 'signals', header: 'Signals', width: '18rem', renderCell: renderSignals },
-    { id: 'value', header: 'Mechanic', renderCell: renderMechanic },
+    { id: 'signals', header: 'Signals', renderCell: renderSignals },
   ],
   empty: { copy: 'No tail-fee mechanics found.' },
 };
 
-export { renderMechanic, renderSignals, tailFeeConfig };
+export { formatTriggerScope, renderSignals, tailFeeConfig };

@@ -1411,11 +1411,15 @@ test('tail-fee config maps nested tailProvision mechanics', () => {
       },
     }],
   });
+  // Punchlist #40: the trigger-scope row no longer branches on
+  // tailFeeSameProposalRequired's same-vs-any framing (that framing doesn't
+  // match how a tail fee actually works) -- it always states the correct
+  // mechanic: any qualifying transaction, signed by the end of the window.
   assert.deepEqual(rows.map((row) => row.value), [
     '12 months',
     '50%',
     'Outside date termination followed by a Company Takeover Proposal',
-    'Any later qualifying proposal can trigger',
+    'Any qualifying transaction triggers the fee -- it need not be the proposal on the table when the tail period began -- so long as a definitive agreement is signed before the tail window closes; closing itself may follow later.',
   ]);
 });
 
@@ -1459,6 +1463,8 @@ test('termination fee and expense configs expose primitive-backed signals', () =
   });
   const amount = terminationRows.find((row) => row.id === 'termination-fees-COMPANY_TERMINATION_FEE');
   const feeRequired = terminationRows.find((row) => row.id === 'termination-fees-required');
+  // row.detail is still computed (other call sites may read it) even though
+  // punchlist #35 dropped its dedicated table column.
   assert.match(amount.detail, /\$100,000,000/);
   // §11 rebuild: the fee amount itself now leads the signals column as its
   // own pill (REBUILD-SPECS.md "Company Termination Fee [$ amount pill]"),
@@ -1466,9 +1472,9 @@ test('termination fee and expense configs expose primitive-backed signals', () =
   assert.deepEqual(amount.signals.map((item) => item.label), ['$100,000,000', 'Company terminates to accept a Superior Proposal']);
   assert.deepEqual(feeRequired.signals.map((item) => item.label), ['Yes']);
   const termSignals = terminationFeesMod.terminationFeesConfig.columns.find((column) => column.id === 'signals');
-  const termDetail = terminationFeesMod.terminationFeesConfig.columns.find((column) => column.id === 'detail');
+  // Punchlist #35: the "Detail" column was removed -- only Term/Signals remain.
+  assert.equal(terminationFeesMod.terminationFeesConfig.columns.find((column) => column.id === 'detail'), undefined);
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, termSignals.renderCell(feeRequired, { primitives }))), /Yes/);
-  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, termDetail.renderCell(amount, { primitives }))), /data-evidence="The Company shall pay a termination fee of \$100,000,000 as a condition to termination\."/);
 
   const miscRows = advisersFeesExpensesMod.advisersFeesExpensesConfig.selectRows({
     cards: [{
@@ -1521,7 +1527,10 @@ test('termination-fees config renders structured fee-table cells, not raw JSON, 
   const companyFee = rows.find((row) => row.id === 'termination-fees-COMPANY_TERMINATION_FEE');
   const expenseFee = rows.find((row) => row.id === 'termination-fees-EXPENSE_REIMBURSEMENT');
   assert.ok(companyFee, 'company termination fee row should render');
-  assert.ok(expenseFee, 'expense reimbursement row should render as its own row, not folded into the company fee row');
+  // Punchlist #37: EXPENSE_REIMBURSEMENT rows are dropped entirely -- the
+  // term reads like a naked-no-vote fee and the underlying fact (the
+  // termination fee is repayable) is trivially always-true.
+  assert.equal(expenseFee, undefined, 'expense reimbursement row must not render');
   // Neither row's detail is the raw claim object serialized inline.
   assert.doesNotMatch(companyFee.detail, /\{"amount"/);
   assert.doesNotMatch(companyFee.detail, /"triggers":\[/);
@@ -1535,10 +1544,9 @@ test('termination-fees config renders structured fee-table cells, not raw JSON, 
     'Company terminates to accept a Superior Proposal',
     'Parent terminates after a recommendation change',
   ]);
-  assert.deepEqual(expenseFee.signals.map((item) => item.label), ['Company fails to promptly make a required payment']);
 });
 
-test('tail-fee render cells use threshold and evidence primitives', () => {
+test('tail-fee render cells use a single Signals column (punchlist #38: no separate Mechanic column)', () => {
   const rows = tailFeeMod.tailFeeConfig.selectRows({
     cards: [{
       id: 'tail',
@@ -1552,25 +1560,28 @@ test('tail-fee render cells use threshold and evidence primitives', () => {
   });
   const primitives = {
     PillCell: ({ label }) => React.createElement('span', { className: 'pill' }, label),
-    ThresholdCellWithHoverQuote: ({ threshold, evidence }) => React.createElement('span', { 'data-threshold': threshold, 'data-evidence': evidence }, threshold),
+    TruncatedWithSeeText: ({ text, evidence }) => React.createElement('span', { 'data-evidence': evidence }, text),
     EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
   };
   const threshold = rows.find((row) => row.id === 'tail-threshold');
   const arming = rows.find((row) => row.id === 'tail-arming');
+  const triggerScope = rows.find((row) => row.id === 'tail-trigger-scope');
   const signalColumn = tailFeeMod.tailFeeConfig.columns.find((column) => column.id === 'signals');
-  const mechanicColumn = tailFeeMod.tailFeeConfig.columns.find((column) => column.id === 'value');
-  // §11 tidy: the old fourth "Evidence" column always-rendered the same
-  // card quote verbatim on every row -- a straight text dump repeated once
-  // per row. Evidence is still reachable via hover on the Signals/Mechanic
-  // primitives themselves (both wrap their content in EvidenceHoverSource),
-  // so there is no longer a dedicated evidence column at all.
+  // §11 tidy, revised per punchlist #38: no dedicated "Mechanic"/'value'
+  // column, and no dedicated "Evidence" column -- everything routes through
+  // one Signals column. Evidence is still reachable via hover on the
+  // PillCell/TruncatedWithSeeText primitives (both wrap content in
+  // EvidenceHoverSource already).
+  assert.equal(tailFeeMod.tailFeeConfig.columns.find((column) => column.id === 'value'), undefined);
   assert.equal(tailFeeMod.tailFeeConfig.columns.find((column) => column.id === 'evidence'), undefined);
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, signalColumn.renderCell(threshold, { primitives }))), /class="pill">50%</);
-  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, mechanicColumn.renderCell(threshold, { primitives }))), /data-threshold="50%"/);
-  // The long-prose "termination scenarios that arm the tail" row is not
-  // crammed into a pill (pills are for enum/quantitative signals, not
-  // full-sentence text dumps) -- its Signals cell renders nothing.
-  assert.equal(signalColumn.renderCell(arming, { primitives }), null);
+  // Punchlist #39: the "termination scenarios that arm the tail" content
+  // now lives IN the signals column (via TruncatedWithSeeText), not off in a
+  // second column, and not dropped.
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, signalColumn.renderCell(arming, { primitives }))), /Company Takeover Proposal/);
+  // Punchlist #40: the renamed trigger-scope row states the corrected
+  // "any qualifying transaction, signed by the tail deadline" mechanic.
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, signalColumn.renderCell(triggerScope, { primitives }))), /Any qualifying transaction triggers the fee/);
 });
 
 test('nosol-noshop config maps core no-shop cards', () => {

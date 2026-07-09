@@ -12,18 +12,22 @@ import { cardCode, cardFeatures, cardType, firstFeature, makeRow, selectCards, t
 // the boilerplate "Effect of Termination" sentence (void-on-termination
 // survival language) is dropped — it isn't a decision-relevant signal and
 // its one substantive fact (willfulBreachException) already has its own row.
+// Punchlist #36: "Interest on late payment" moved to the LAST position --
+// it's a remedy-mechanics footnote, not a headline fact, and reads better
+// after the fee/condition rows above it. Since selectRows() below appends
+// scalarRows() after feeTableRows(), this ordering also puts it at the very
+// bottom of the whole table, not just the scalar-row group.
 const SCALAR_ROWS = [
   ['required', 'Fee required to terminate', 'Condition', ['feeRequired', 'terminationFeeRequired']],
   ['naked-no-vote', 'Naked no-vote fee', 'Condition', ['nakedNoVoteFeePresent', 'nakedNoVoteFee']],
   ['sole-remedy', 'Sole and exclusive remedy', 'Remedy', ['soleRemedy', 'soleAndExclusiveRemedy']],
-  ['interest', 'Interest on late payment', 'Remedy', ['interestOnLatePayment']],
   ['willful-breach', 'Willful-breach exception', 'Remedy', ['willfulBreachException']],
+  ['interest', 'Interest on late payment', 'Remedy', ['interestOnLatePayment']],
 ];
 
 const FEE_TYPE_LABELS = {
   COMPANY_TERMINATION_FEE: 'Company termination fee',
   REVERSE_TERMINATION_FEE: 'Reverse termination fee',
-  EXPENSE_REIMBURSEMENT: 'Expense reimbursement',
   NAKED_NO_VOTE_FEE: 'Naked no-vote fee',
 };
 
@@ -31,8 +35,15 @@ const FEE_TYPE_LABELS = {
 // (tail-fee.config.js, spec §11) — buildTerminationFees() still synthesizes
 // a TAIL_FEE row from the same TERMF-TAIL card this table also reads, so it
 // is dropped here to avoid showing the same mechanics twice.
+//
+// Punchlist #37: EXPENSE_REIMBURSEMENT is also dropped. "Expense
+// reimbursement" as a term reads like a naked-no-vote expense-reimbursement
+// fee (a distinct, real deal term already covered by its own row above) --
+// but this row's actual underlying fact is just "the termination fee is
+// repayable," which is trivially true of every termination fee and adds
+// nothing a reader doesn't already know.
 function isVisibleFeeType(feeRow) {
-  return feeRow.feeType !== 'TAIL_FEE';
+  return feeRow.feeType !== 'TAIL_FEE' && feeRow.feeType !== 'EXPENSE_REIMBURSEMENT';
 }
 
 const PARTY_LABELS = { TARGET: 'Company / Target', BUYER: 'Parent / Buyer' };
@@ -200,19 +211,12 @@ function renderSignals(row, ctx) {
   }));
 }
 
-// feeTableRows()' detail (formatFeeDetail) is the ONLY place the fee
-// amount/payer/deadline summary is visible — scalarRows' signals mirror
-// their own detail, but the fee rows' signals are trigger-name pills with
-// different content, so the column can't be wholesale relocated behind the
-// row-level expander without hiding the amount itself. Truncate per-cell so
-// the (usually short) computed summary stays inline and only a genuinely
-// long payment-deadline clause spills into "see text".
-function renderDetail(row, ctx) {
-  const TruncatedWithSeeText = ctx?.primitives?.TruncatedWithSeeText;
-  if (!TruncatedWithSeeText) return row.detail;
-  return React.createElement(TruncatedWithSeeText, { text: row.detail, evidence: row.evidence, source: row.sourceCard });
-}
-
+// Punchlist #35: the "Detail" column (feeTableRows()' formatFeeDetail prose
+// summary) was an unclear third copy of information the Signals column
+// already carries as pills (amount, triggers) -- dropped as a rendered
+// column. row.detail is still computed and kept on the row data (other
+// call sites / tests read it directly), it just isn't given its own table
+// column any more.
 const terminationFeesConfig = {
   id: 'termination-fees',
   title: 'Termination Fees',
@@ -224,8 +228,7 @@ const terminationFeesConfig = {
   },
   columns: [
     { id: 'term', header: 'Term', width: '18rem', renderCell: (row) => row.label },
-    { id: 'signals', header: 'Signals', width: '18rem', renderCell: renderSignals },
-    { id: 'detail', header: 'Detail', renderCell: renderDetail },
+    { id: 'signals', header: 'Signals', renderCell: renderSignals },
   ],
 };
 
@@ -233,7 +236,6 @@ export {
   combineTermfFeatures,
   feeTableRows,
   formatFeeDetail,
-  renderDetail,
   renderSignals,
   scalarRows,
   terminationFeesConfig,
