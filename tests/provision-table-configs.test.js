@@ -427,7 +427,10 @@ test('structure-mechanics config exposes transaction-form signals and hover deta
   assert.deepEqual(dealStructure.signals.map((item) => item.label), ['TWO_STEP_TENDER_OFFER']);
   assert.match(mergerForm.signals[0].label, /Reverse triangular/);
   assert.deepEqual(section251h.signals.map((item) => item.label), ['Yes']);
-  assert.deepEqual(paymentAgent.signals.map((item) => item.label), ['Yes']);
+  // Payment / exchange mechanics is deliberately dropped from Structure &
+  // Mechanics -- it's a link under Consideration, not a "Yes" boolean row
+  // here (REBUILD-SPECS.md section 1).
+  assert.equal(paymentAgent, undefined);
   const primitives = {
     PillCell: ({ label }) => React.createElement('span', { className: 'pill' }, label),
     EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
@@ -436,6 +439,54 @@ test('structure-mechanics config exposes transaction-form signals and hover deta
   const detailColumn = structureMechanicsMod.structureMechanicsConfig.columns.find((column) => column.id === 'detail');
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, signalColumn.renderCell(mergerForm, { primitives }))), /Reverse triangular/);
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(section251h, { primitives }))), /data-evidence="The merger shall be a reverse triangular merger/);
+});
+
+// Regression: effectiveTimeShort is corrupted on some backfilled cards and
+// renders "Names the Company as the surviving corporation..." instead of the
+// filing mechanic. The config must never surface that sentence as the
+// effective time -- it should fall back to effectiveTime / mainConcept / the
+// clause instead (REBUILD-SPECS.md section 1).
+test('structure-mechanics config skips a corrupted effectiveTimeShort claim and falls back to the filing mechanic', () => {
+  const rows = structureMechanicsMod.structureMechanicsConfig.selectRows({
+    cards: [{
+      id: 'struct-effective-time',
+      provision_type: 'STRUCTURE_MECHANICS',
+      provision_subtype: 'STRUCT-EFFECTIVE-TIME',
+      short_title: 'Effective Time',
+      primary_quote: 'The Merger shall become effective upon filing of the Certificate of Merger with the Delaware Secretary of State.',
+      features: {
+        effectiveTimeShort: 'Names the Company as the surviving corporation of the Merger.',
+        effectiveTime: 'Upon filing of the Certificate of Merger with the Delaware Secretary of State.',
+      },
+    }],
+  });
+  const effectiveTime = rows.find((row) => row.id === 'structure-mechanics-effective-time');
+  assert.ok(effectiveTime, 'effective-time row should still render');
+  assert.doesNotMatch(effectiveTime.detail, /surviving corporation/i);
+  assert.match(effectiveTime.detail, /Upon filing of the Certificate of Merger/);
+  assert.deepEqual(effectiveTime.signals.map((item) => item.label), ['Upon filing of the Certificate of Merger with the Delaware Secretary of State.']);
+});
+
+// Regression: when EVERY effective-time key on the card is corrupted (or
+// missing after filtering), the guard falls all the way back to the card's
+// raw clause text rather than surfacing the corrupted sentence.
+test('structure-mechanics config falls back to the clause when every effective-time key is corrupted', () => {
+  const rows = structureMechanicsMod.structureMechanicsConfig.selectRows({
+    cards: [{
+      id: 'struct-effective-time-clause-only',
+      provision_type: 'STRUCTURE_MECHANICS',
+      provision_subtype: 'STRUCT-EFFECTIVE-TIME',
+      short_title: 'Effective Time',
+      primary_quote: 'The Merger shall become effective upon filing of the Certificate of Merger with the Delaware Secretary of State.',
+      features: {
+        effectiveTimeShort: 'Names the Company as the surviving corporation of the Merger.',
+      },
+    }],
+  });
+  const effectiveTime = rows.find((row) => row.id === 'structure-mechanics-effective-time');
+  assert.ok(effectiveTime, 'effective-time row should still render from the clause fallback');
+  assert.doesNotMatch(effectiveTime.detail, /surviving corporation/i);
+  assert.match(effectiveTime.detail, /upon filing of the Certificate of Merger/i);
 });
 
 // Rebuilt per user feedback to match the legacy pre-schema render: ONE
