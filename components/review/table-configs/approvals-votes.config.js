@@ -18,7 +18,11 @@ const ROWS = [
 function isApproval(card) {
   const type = cardType(card);
   const code = cardCode(card);
-  return type === 'CLOSING_CONDITION' || type === 'STRUCTURE_MECHANICS' || type === 'SEC_FILING_MEETING' || code.includes('VOTE') || /stockholder|shareholder|approval|vote|meeting/i.test(`${card?.short_title || ''} ${textOf(card)}`);
+  // TERMR-MUTUAL ("mutual written consent" termination right) is the sole
+  // home of writtenConsentRequired/executionMethod per extract.js -- it's a
+  // termination-rights card, not a vote/meeting one, so none of the other
+  // predicates below catch it and the row silently never emits.
+  return type === 'CLOSING_CONDITION' || type === 'STRUCTURE_MECHANICS' || type === 'SEC_FILING_MEETING' || code.includes('VOTE') || code === 'TERMR-MUTUAL' || /stockholder|shareholder|approval|vote|meeting/i.test(`${card?.short_title || ''} ${textOf(card)}`);
 }
 
 // No 'signals' column here (unlike most families, ROWS is rendered straight

@@ -5,6 +5,7 @@ import {
   headlineConsiderationLabel,
   numericDollarOnly,
 } from '../table-logic.js';
+import { valueText } from './card-utils.js';
 
 const CONSID_CODES = ['CONSID', 'CONSID-CVR', 'CONSID-EQUITY'];
 const STRUCT_OFFER = 'STRUCT-OFFER';
@@ -21,6 +22,8 @@ const DIRECT_ROWS = [
   ['withholdingProvision', 'Withholding', 'Mechanics'],
   ['equityAwardTreatment', 'Equity-award treatment', 'Awards'],
   ['vestingAcceleration', 'Vesting acceleration', 'Awards'],
+  ['cvrMilestonePayments', 'CVR milestone payments', 'CVR'],
+  ['optionsCvrEarnIn', 'Options earn-in via CVR', 'CVR'],
 ];
 const CVR_ROWS = [
   ['triggers', 'CVR triggers'],
@@ -41,17 +44,13 @@ function cardFeatures(card) {
 function textOf(card) {
   return String(card?.primary_quote || card?.region_full_text || '').trim();
 }
-function valueText(value) {
-  if (value === null || value === undefined || value === '') return null;
-  if (Array.isArray(value)) return value.map(valueText).filter(Boolean).join('; ');
-  if (typeof value === 'object') {
-    if (value.value !== undefined) return valueText(value.value);
-    if (value.text || value.label || value.code) return [value.label || value.code, value.text].filter(Boolean).join(': ');
-    return Object.entries(value).map(([key, val]) => `${key}: ${valueText(val)}`).filter((part) => !part.endsWith(': null')).join('; ');
-  }
-  if (typeof value === 'boolean') return value ? 'Yes' : 'No';
-  return String(value);
-}
+// valueText is imported from card-utils.js (see above) rather than defined
+// locally: this config's own copy was stale -- it rendered `.text` whenever
+// present (no label/code-first priority, no text-vs-code redundancy check),
+// which is what leaked raw `{"espp":"...",...}` JSON for equityAwardTreatment
+// and appended the raw code after the label for vestingAcceleration (e.g.
+// "Accelerates ... : ACCEL_ELSE_DOUBLE_TRIGGER"). card-utils.js's version
+// fixes both.
 function hasConsiderationSignal(card) {
   const code = cardCode(card);
   if (CONSID_CODES.includes(code) || code === STRUCT_OFFER) return true;

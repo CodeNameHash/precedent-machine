@@ -124,6 +124,54 @@ function rowForSpec(spec, cards) {
   };
 }
 
+// willfulBreachException / specificPerformanceMutual live on TERMF-* /
+// MISC-* cards (not TERMR-*), so isTerminationRight() never selects their
+// card and the 8 canonical TERMR_CANONICAL rows never see them --
+// willfulBreachException already has a home under termination-fees, but
+// neither attribute previously had one here. Search the UNFILTERED card
+// list for these two cross-cutting remedy attributes and append them as
+// their own group when present, rather than folding them into the
+// code-matched TERMR_CANONICAL rows above.
+const CROSS_CUTTING_ROWS = [
+  ['willful-breach', 'Willful-breach exception (to sole remedy / fee)', ['willfulBreachException']],
+  ['specific-performance-mutual', 'Specific performance available to both parties', ['specificPerformanceMutual']],
+];
+
+function firstCardWithFeature(cards, keys) {
+  for (const card of cards || []) {
+    const f = cardFeatures(card);
+    for (const key of keys) {
+      if (valueText(f[key]) !== null) return { card, key, raw: f[key] };
+    }
+  }
+  return null;
+}
+
+function crossCuttingRow(id, label, allCards, keys) {
+  const hit = firstCardWithFeature(allCards, keys);
+  if (!hit) return { id: `termination-rights-${id}`, label, present: false };
+  const detail = readableValue(hit.key, hit.raw);
+  const terms = detail ? [detail] : [];
+  return {
+    id: `termination-rights-${id}`,
+    label,
+    value: terms,
+    evidence: textOf(hit.card),
+    source: hit.card,
+    present: true,
+    children: termsChildren(terms),
+  };
+}
+
+function crossCuttingGroup(reviewDeal) {
+  const allCards = reviewDeal?.cards || [];
+  const rows = CROSS_CUTTING_ROWS
+    .map(([id, label, keys]) => crossCuttingRow(id, label, allCards, keys))
+    .filter((row) => row.present);
+  if (!rows.length) return null;
+  return { id: 'remedies', label: 'Remedies (cross-reference)', rows };
+}
+
 function familyGroups(cards) {
   return FAMILY_ORDER
     .map((family) => ({
@@ -141,6 +189,8 @@ const terminationRightsConfig = {
   selectRows(reviewDeal) {
     const cards = selectCards(reviewDeal, isTerminationRight);
     const groups = familyGroups(cards);
+    const remedies = crossCuttingGroup(reviewDeal);
+    if (remedies) groups.push(remedies);
     if (!groups.length) return [];
     return [{ id: 'termination-rights-body', groups }];
   },
@@ -158,8 +208,10 @@ const terminationRightsConfig = {
 };
 
 export {
+  CROSS_CUTTING_ROWS,
   FAMILY_LABELS,
   TERMR_CANONICAL,
+  crossCuttingGroup,
   familyGroups,
   keyTermsForRight,
   rowForSpec,

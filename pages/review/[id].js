@@ -10833,6 +10833,21 @@ export default function ReviewPage() {
     pushReviewRoute({ editProvisionId: null });
   }, [pushReviewRoute]);
 
+  // Both queueProvisionScroll and queueSectionScroll are invoked TWICE per
+  // sidebar click: once synchronously from the click handler
+  // (handleFilterType / handleSidebarSelectProvision), and once more when
+  // pushReviewRoute's URL update round-trips through the router-driven
+  // hydration effect below (it re-derives the same target from
+  // router.query). Each call used to build a brand-new pendingScrollTarget
+  // object, which re-ran the scroll effect and cancelled the in-flight
+  // double-rAF from the first call before it ever painted -- on a page this
+  // data-heavy the cancel/reschedule could repeat for seconds, so the
+  // scroll+expand looked like it silently did nothing. Guard both queuers so
+  // a second call for the SAME target is a no-op against the pending scroll,
+  // letting the first request's rAF pair actually run.
+  const sameScrollTarget = (prev, next) =>
+    !!prev && prev.provisionId === next.provisionId && prev.sectionType === next.sectionType;
+
   const queueProvisionScroll = useCallback((provision) => {
     if (!provision || !provision.id) return;
     // Translate the provision's rendered provision-type into the config.id of
@@ -10847,7 +10862,8 @@ export default function ReviewPage() {
         return next;
       });
     }
-    setPendingScrollTarget({ provisionId: provision.id, sectionType });
+    const target = { provisionId: provision.id, sectionType };
+    setPendingScrollTarget((prev) => (sameScrollTarget(prev, target) ? prev : target));
   }, [renderedSectionTypeForProvision]);
 
   const queueSectionScroll = useCallback((sectionType) => {
@@ -10858,7 +10874,8 @@ export default function ReviewPage() {
       next.delete(sectionType);
       return next;
     });
-    setPendingScrollTarget({ provisionId: null, sectionType });
+    const target = { provisionId: null, sectionType };
+    setPendingScrollTarget((prev) => (sameScrollTarget(prev, target) ? prev : target));
   }, []);
 
   useEffect(() => {
