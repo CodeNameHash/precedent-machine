@@ -166,23 +166,41 @@ function repNameBySection(matches) {
   return map;
 }
 
+// Resolve a "3.05(a)(i)(x)"-style section key to its rep name via PREFIX
+// matching. nameBySec (built from citedProvisionNames) doesn't always carry
+// the exact sub-clause key the bring-down text cites -- real Metsera data has
+// "3.05(a)" cited (-> "No Conflict; Required Filings and Consents") but never
+// the deeper "3.05(a)(i)(x)" the reps_covered sentence names -- so trailing
+// sub-clause parens are stripped one group at a time ("(a)(i)(x)" ->
+// "(a)(i)" -> "(a)" -> none) until a nameBySec hit is found. Returns null
+// (never the bare section string) when nothing resolves.
+function resolveSectionName(base, subs, nameBySec) {
+  const groups = subs ? (subs.match(/\([a-z0-9]+\)/gi) || []) : [];
+  for (let i = groups.length; i >= 0; i -= 1) {
+    const key = `${base}${groups.slice(0, i).join('')}`;
+    if (nameBySec[key]) return nameBySec[key];
+  }
+  return null;
+}
+
 // Replace "Section 3.02(a)" cites in a reps_covered description with the
-// resolved rep names, preserving ranges and free-text qualifiers. Ported from
-// the legacy resolveRepsCoveredText.
+// resolved rep names, preserving free-text qualifiers. Ported from the
+// legacy resolveRepsCoveredText and extended (AC #10) so a "Section 3.02(b)
+// through Section 3.02(e)" range collapses to the single resolved NAME
+// (never a bare "3.02(b) through (e)" section-number chip), and every
+// remaining cite falls through resolveSectionName's prefix matching so a
+// sub-clause the extractor cited deeper than nameBySec knows about (e.g.
+// "3.05(a)(i)(x)") still resolves to a name instead of leaking as text.
 function resolveRepsCovered(text, nameBySec) {
   let s = String(text || '');
   if (!s) return s;
   s = s.replace(
     /Section\s+(\d+(?:\.\d+)*)((?:\([a-z0-9]+\))+)\s+through\s+Section\s+\1((?:\([a-z0-9]+\))+)/gi,
-    (all, base, from, to) => `${base}${from} through ${to}`,
+    (all, base, from) => resolveSectionName(base, from, nameBySec) || `${base}${from}`,
   );
-  return s.replace(/Section\s+(\d+(?:\.\d+)*)((?:\([a-z0-9]+\))*)/gi, (all, base, subs) => {
-    const exact = nameBySec[`${base}${subs || ''}`];
-    if (exact) return exact;
-    const byBase = nameBySec[base];
-    if (byBase) return subs ? `${byBase} ${subs}` : byBase;
-    return all;
-  });
+  return s.replace(/Section\s+(\d+(?:\.\d+)*)((?:\([a-z0-9]+\))*)/gi, (all, base, subs) => (
+    resolveSectionName(base, subs, nameBySec) || all
+  ));
 }
 
 // Some covenant-compliance condition cards (e.g. the buyer-covenant COND-S-COV)
@@ -254,9 +272,14 @@ function bringDownNode(matches, PillCell) {
       const general = /^all\s+(?:company\s+|parent\s+)?representations/i.test(covered)
         || /\ball\s+other\b/i.test(covered)
         || /representations?\s+(?:and\s+warranties\s+)?other than/i.test(covered);
+      // Split the RAW section-cite text into tokens first, THEN resolve each
+      // token to a name -- never the other way round. A resolved rep name can
+      // itself contain the word "and" (e.g. "No Conflict; Required Filings
+      // and Consents"), which the depth-aware splitter would otherwise mistake
+      // for a list separator and cut the name in half.
       const parts = general
         ? ['All other representations']
-        : (covered ? splitBringdownCoveredPills(resolveRepsCovered(covered, nameBySec)) : ['Specified representations']);
+        : (covered ? splitBringdownCoveredPills(covered).map((part) => resolveRepsCovered(part, nameBySec)) : ['Specified representations']);
       const colorKey = standardColorKey(meta.label);
       const repsNode = PillCell
         ? React.createElement(
@@ -496,6 +519,11 @@ function buildStandardDetail(row, family, ctx, bandFamilies) {
     chips.push(...genericChips(PillCell, matches, primary));
   }
 
+  // AC #9: the "see text" affordance follows ONE rule for every family/band --
+  // present iff this row has clause text (mainCondition, falling back to
+  // mainConcept/raw quote text in cardToProvision), absent otherwise. This is
+  // computed once, here, AFTER all family branches above (never inside one of
+  // them), so no family can special-case its way into a different rule.
   const validChips = chips.filter(Boolean);
   const clause = clauseSeeText(valueText(firstDefined(matches, 'mainCondition')));
 

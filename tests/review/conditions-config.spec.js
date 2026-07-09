@@ -258,6 +258,69 @@ test('rep bring-down renders grouped by standard (lowest materiality first), rep
   assert.ok(!html.includes('Reps covered ('), 'the inline "Reps covered (N)" line was replaced by the grouped bring-down');
 });
 
+// Punchlist #10 -- real shape pulled live against Metsera deal
+// 885edae5-49e8-464a-9f33-edd229119d7c: the MAT_ALL_MATERIAL tier's
+// reps_covered cites "Section 3.02(b) through Section 3.02(e)" (a range) and
+// "Section 3.05(a)(i)(x)" (a sub-clause deeper than anything in
+// citedProvisionNames, which only carries "3.02(b)".."3.02(e)" and "3.05(a)").
+// Before the fix these rendered as bare "3.02(b) through (e)" / "Section
+// 3.05(a)(i)(x)" chips; resolveRepsCovered must now resolve both to names.
+test('bring-down PREFIX-matches section cites that outrun nameBySec (range + deep sub-clause) so every rep chip is a NAME, never a bare section ref', () => {
+  const cards = [
+    card({
+      id: 'b-rep-real',
+      provision_subtype: 'COND-B-REP',
+      short_title: 'Accuracy of Target Reps',
+      features: {
+        mainCondition: "The Company's representations and warranties must be true and correct at signing and at the Effective Time, subject to tiered materiality standards.",
+        bringDownTiers: [
+          {
+            standard: 'MAT_ALL_MATERIAL',
+            standard_label: 'In all material respects',
+            reps_covered: 'Section 3.01 first sentence, Section 3.02(b) through Section 3.02(e), Section 3.04, Section 3.05(a)(i)(x), and Section 3.22',
+          },
+        ],
+        citedProvisionNames: [
+          { name: 'Organization; Qualification; Standing', section: '3.01' },
+          { name: 'Authority; Enforceability', section: '3.04' },
+          { name: 'Capitalization; Subsidiaries', section: '3.02(a)' },
+          { name: 'Capitalization; Subsidiaries', section: '3.02(b)' },
+          { name: 'Capitalization; Subsidiaries', section: '3.02(c)' },
+          { name: 'Capitalization; Subsidiaries', section: '3.02(d)' },
+          { name: 'Capitalization; Subsidiaries', section: '3.02(e)' },
+          { name: 'Capitalization; Subsidiaries', section: '3.02' },
+          { name: 'No Conflict; Required Filings and Consents', section: '3.05(a)' },
+          { name: 'Brokers; Finders', section: '3.22' },
+        ],
+      },
+    }),
+  ];
+  const { html } = renderBody({ cards });
+
+  // The range collapses to the single resolved name, not a bare range.
+  assert.match(html, /Capitalization; Subsidiaries/);
+  assert.ok(!html.includes('3.02(b) through'), 'the "Section 3.02(b) through Section 3.02(e)" range must not leak as a bare section-number chip');
+  // The deeper sub-clause resolves via prefix matching to its "3.05(a)" ancestor's name.
+  assert.match(html, /No Conflict; Required Filings and Consents/);
+  assert.ok(!html.includes('3.05(a)(i)(x)'), 'a cited sub-clause deeper than nameBySec knows about must still resolve to a name, never render bare');
+  assert.ok(!/>Section 3\.\d/.test(html), 'no bring-down chip may render a bare "Section 3.x" section reference');
+});
+
+// Punchlist #9: "see text" must not appear on some rows but not others. The
+// uniform rule is "present iff the row has clause text" -- every one of the
+// nine present-row fixture cards carries a mainCondition sentence (real
+// Metsera cards always do, via cardToProvision's mainCondition/mainConcept/
+// raw-quote fallback chain), so every present row must show the affordance;
+// none may be silently dropped by a family-specific branch.
+test('the "see text" clause affordance renders on every present row uniformly (one per row, none skipped by family)', () => {
+  const reviewDeal = { cards: metseraShapedCards() };
+  const { html } = renderBody(reviewDeal);
+  const rowCount = (html.match(/class="row"/g) || []).length;
+  const seeTextCount = (html.match(/class="term-cell-seetext"/g) || []).length;
+  assert.ok(rowCount >= 8, `expected at least 8 present rows, got ${rowCount}`);
+  assert.equal(seeTextCount, rowCount, 'every present row (every family/band) must carry exactly one "see text" affordance -- none more, none fewer');
+});
+
 test('coverage footer reports "N of M standard conditions present" and lists absent canonical conditions, greyed, at the bottom (not a mid-table row)', () => {
   const reviewDeal = { cards: metseraShapedCards() };
   const bodyHtml = renderBody(reviewDeal).html;
