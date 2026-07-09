@@ -76,7 +76,7 @@ function keyTermsForRight(key, card) {
     if (extensionConditions) bits.push(`Extension terms: ${extensionConditions}`);
   } else if (key === 'legal') {
     const finality = readableValue('restraintFinality', f.restraintFinality);
-    bits.push(finality ? `Order must be final & non-appealable: ${finality}` : 'Legal restraint in effect');
+    bits.push(finality || 'Legal restraint in effect');
   } else if (key === 'vote') {
     const threshold = readableValue('voteThreshold', f.voteThreshold);
     bits.push(threshold ? `Required vote: ${threshold}` : 'Required stockholder vote not obtained');
@@ -115,9 +115,21 @@ function keyTermsForRight(key, card) {
 // termination-fees.config.js's renderSignals()).
 // ---------------------------------------------------------------------------
 
+// Punchlist #34: the mini-label + enum-code combination ("Restraint
+// finality: final-and-nonappealable") read as legal jargon stacked on
+// jargon. The enum value IS the fact -- render it as one plain sentence
+// fragment ("Final and unappealable") with no separate label header (see
+// keyTermsNode's 'legal' branch below, which now calls addFact(null, ...)).
+// Covers every restraintFinality enum member (any/final/final-and-
+// nonappealable/permanent), not just the strict one -- and normalizes
+// space/hyphen variants of the same raw text to the same key so freeform
+// extraction text ("final and non-appealable") maps the same as the
+// canonical enum code.
 const RESTRAINT_FINALITY_LABELS = {
-  'final-and-nonappealable': 'Final & non-appealable',
-  'final-and-non-appealable': 'Final & non-appealable',
+  any: 'Any legal restraint (need not be final)',
+  final: 'Order must be final',
+  'final-and-nonappealable': 'Final and unappealable',
+  permanent: 'Permanent injunction or order',
 };
 
 function humanizeToken(raw) {
@@ -129,7 +141,7 @@ function humanizeToken(raw) {
 
 function restraintFinalityLabel(raw) {
   if (!raw) return null;
-  const key = String(raw).toLowerCase();
+  const key = String(raw).trim().toLowerCase().replace(/\s+/g, '-').replace(/final-and-non-appealable/, 'final-and-nonappealable');
   return RESTRAINT_FINALITY_LABELS[key] || humanizeToken(raw);
 }
 
@@ -166,12 +178,16 @@ function isTruthy(raw) {
   return raw === true || raw === 'true' || raw === 'TRUE';
 }
 
+// label is optional -- a fact whose value is already self-explanatory (e.g.
+// the 'legal' restraint-finality fact, punchlist #34) skips the mini-label
+// header entirely rather than stacking a jargon term on top of its own
+// plain-English value.
 function miniBlock(label, node) {
   if (!node) return null;
   return React.createElement(
     'div',
     { className: 'space-y-0.5' },
-    React.createElement('div', { className: 'text-[10px] font-medium uppercase tracking-wider text-inkFaint' }, label),
+    label ? React.createElement('div', { className: 'text-[10px] font-medium uppercase tracking-wider text-inkFaint' }, label) : null,
     node,
   );
 }
@@ -237,8 +253,11 @@ function keyTermsNode(key, card, PillCell) {
       || readableValue('extensionConditions', f.extensionConditions);
     addProse('Extension terms', extensionConditions);
   } else if (key === 'legal') {
+    // Punchlist #34: no "Restraint finality" mini-label -- the plain-English
+    // value (e.g. "Final and unappealable") already says everything the
+    // label would have.
     const finality = restraintFinalityLabel(valueText(f.restraintFinality));
-    addFact('Restraint finality', finality && { label: finality, tone: 'info' });
+    addFact(null, finality && { label: finality, tone: 'info' });
   } else if (key === 'vote') {
     const threshold = valueText(f.voteThreshold);
     const parsed = threshold && parseVoteStandard(threshold);

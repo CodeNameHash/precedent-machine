@@ -114,8 +114,10 @@ test('TruncatedWithSeeText primitive is exported and built on splitForCell', () 
 // -- Category-2 config files wire the new primitive into their compact column -
 
 test('per-cell truncation is wired into every mixed-shape family\'s render function', () => {
+  // termination-fees dropped its 'Detail' column entirely (punchlist #35 --
+  // the Signals column already carries the amount/trigger pills, so there is
+  // no longer a separate long-value cell needing per-cell truncation).
   const configs = [
-    ['termination-fees', 'termination-fees.config.js'],
     ['general-covenants', 'general-covenants.config.js'],
     ['tail-fee', 'tail-fee.config.js'],
     ['consideration-hero', 'consideration-hero.config.js'],
@@ -157,27 +159,12 @@ test('general-covenants perClauseRows detail is routed through TruncatedWithSeeT
   assert.equal(element.props.text, longClause, 'the primitive must receive the untruncated text so it alone decides what to cut');
 });
 
-test('termination-fees fee-amount detail is routed through TruncatedWithSeeText (protects the amount row, not just scalar rows)', async () => {
-  const { terminationFeesConfig } = await import('../../components/review/table-configs/termination-fees.config.js');
-  const rows = terminationFeesConfig.selectRows({
-    cards: [{
-      id: 'termf',
-      provision_type: 'TERMINATION_FEE',
-      provision_subtype: 'TERMF-TARGET',
-      primary_quote: 'The Company shall pay a termination fee of $190,000,000.',
-      features: { terminationFees: { amount: '$190,000,000' } },
-    }],
-  });
-  const amountRow = rows.find((r) => r.id === 'termination-fees-COMPANY_TERMINATION_FEE');
-  assert.ok(amountRow);
-  const TruncatedWithSeeText = () => null;
-  const detailColumn = terminationFeesConfig.columns.find((c) => c.id === 'detail');
-  const element = detailColumn.renderCell(amountRow, { primitives: { TruncatedWithSeeText } });
-  assert.equal(element.type, TruncatedWithSeeText);
-  assert.match(element.props.text, /\$190,000,000/);
-});
+// termination-fees' 'Detail' column (and its TruncatedWithSeeText wiring)
+// was removed outright by punchlist #35 -- superseded by the
+// 'per-cell truncation is wired into every mixed-shape family's render
+// function' test above no longer listing termination-fees at all.
 
-test('tail-fee Mechanic column truncates the arming-clauses row but leaves the threshold row on its dedicated primitive', async () => {
+test('tail-fee Signals column truncates the arming-clauses row but renders the threshold row as a plain pill (punchlist #38: no separate Mechanic column)', async () => {
   const { tailFeeConfig } = await import('../../components/review/table-configs/tail-fee.config.js');
   const longTrigger = 'if the Company enters into, or the Company Board approves or recommends, a Company Takeover Proposal '.repeat(10).trim();
   const rows = tailFeeConfig.selectRows({
@@ -196,14 +183,15 @@ test('tail-fee Mechanic column truncates the arming-clauses row but leaves the t
   assert.ok(armingRow && thresholdRow);
 
   const TruncatedWithSeeText = () => null;
-  const ThresholdCellWithHoverQuote = () => null;
-  const primitives = { TruncatedWithSeeText, ThresholdCellWithHoverQuote };
-  const mechanicColumn = tailFeeConfig.columns.find((c) => c.id === 'value');
-  const armingElement = mechanicColumn.renderCell(armingRow, { primitives });
-  const thresholdElement = mechanicColumn.renderCell(thresholdRow, { primitives });
+  const PillCell = () => null;
+  const primitives = { TruncatedWithSeeText, PillCell };
+  assert.equal(tailFeeConfig.columns.find((c) => c.id === 'value'), undefined, 'the Mechanic/value column no longer exists');
+  const signalColumn = tailFeeConfig.columns.find((c) => c.id === 'signals');
+  const armingElement = signalColumn.renderCell(armingRow, { primitives });
+  const thresholdElement = signalColumn.renderCell(thresholdRow, { primitives });
   assert.equal(armingElement.type, TruncatedWithSeeText, 'only the arming-clauses row should go through the truncation primitive');
   assert.equal(armingElement.props.text, armingRow.value);
-  assert.equal(thresholdElement.type, ThresholdCellWithHoverQuote, 'the threshold row keeps its dedicated ThresholdCellWithHoverQuote, unaffected by Phase B');
+  assert.equal(thresholdElement.type, PillCell, 'short scalar rows render as a plain pill in the single Signals column');
 });
 
 test('consideration-hero and approvals-votes route their sole detail column through TruncatedWithSeeText', async () => {
