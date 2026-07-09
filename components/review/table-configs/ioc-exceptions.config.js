@@ -1,8 +1,11 @@
 import React from 'react';
 import taxonomy from '../../../lib/taxonomy.js';
 import { cardCode, cardFeatures, cardType, textOf, valueText } from './card-utils.js';
+import { standardColorKey } from './standard-colors.js';
 
-const { EXCEPTION_CODES, IOC_AFFIRMATIVE_SCOPE_CODES, IOC_CATEGORY_CODES, labelForCode } = taxonomy;
+const {
+  EFFORTS_STANDARDS, EXCEPTION_CODES, IOC_AFFIRMATIVE_SCOPE_CODES, IOC_CATEGORY_CODES, MATERIALITY_CODES, labelForCode,
+} = taxonomy;
 
 // REBUILD-SPECS.md section 6 ("IOC" -- Ben: "a shit show"). Old shape was a
 // Target/Buyer split of ONLY the general-exceptions preamble text; the other
@@ -26,6 +29,41 @@ const { EXCEPTION_CODES, IOC_AFFIRMATIVE_SCOPE_CODES, IOC_CATEGORY_CODES, labelF
 // mainObligation prose never dumps inline -- it always sits behind an
 // always-collapsed "see text", mirroring conditions.config.js's
 // clauseSeeText (the locked exemplar this file is patterned on).
+//
+// FEEDBACK-3-PUNCHLIST.md round-3 fixes applied here:
+//   - I6 (STRUCT): each negative-covenant row is a real 3-column table --
+//     General category (row label) | Specific restrictions
+//     (restrictionComponents + dollarThreshold pills) | Exceptions
+//     (permittedExceptions pills) -- instead of one cell cramming scope and
+//     exceptions together. mainObligation prose stays behind "see text".
+//   - I2/I4 (DATA): affirmative-limb pills now surface the limb's own
+//     efforts_standard (deriveIocLimbEffortsStandard /
+//     normalizeIocLimbEffortsStandards in lib/parser-v2/extract.js already
+//     stamp exactly one such field per limb) as a coloured standard pill --
+//     EXCEPT the FLAT case (an unqualified duty, e.g. "conduct its business
+//     in the ordinary course"), which carries no efforts pill at all. When a
+//     limb's own obligation text separately carries "in all material
+//     respects" (IOC-MAINTAIN: FLAT efforts_standard, but the text itself
+//     names a materiality standard), that phrase is pulled out and rendered
+//     as its own coloured pill -- the two are independent signals and both
+//     can be true, or neither.
+//   - I3/I5 (COLOURING, G4 audit): the ordinary-course limb (efforts_standard
+//     FLAT, no "material respects" text) never gets a `color` prop -- FLAT is
+//     content ("this is a direct, unqualified duty"), not a graded standard,
+//     and standardColorKey('FLAT') would otherwise false-positive on its
+//     \bflat\b hell-or-high-water pattern. Every other IOC pill in this file
+//     (restriction categories, thresholds, exceptions, scope) stays on plain
+//     `tone`, never `color` -- only a genuine efforts/materiality STANDARD
+//     earns a palette colour.
+//   - I7 (DATA): the near-empty "[PROPOSED] Unclassified" fragments that
+//     carry no restrictionComponents tag (real gap: no provision_subtype was
+//     ever assigned, so the deterministic keyword-tagger never ran against
+//     them) are named from their own primary_quote via sniffFragmentName()
+//     instead of a bare "no structured signal extracted" placeholder --
+//     Metsera's 5.01(k)/(l)/(o) are a tax covenant, a Specified-Contract
+//     amendment restriction, and an insurance-maintenance covenant
+//     respectively. Genuinely signal-free fragments still fall back to the
+//     placeholder; none are ever dropped.
 
 function isIocCard(card) {
   return cardType(card) === 'COVENANT_INTERIM_OPERATING' || /^IOC(?:-|$)/.test(cardCode(card));
@@ -112,9 +150,16 @@ function formatMoney(raw) {
   return typeof raw === 'string' && raw.trim() ? raw.trim() : null;
 }
 
-function pillFor(PillCell, keyId, label, tone, evidence, source) {
+// `color` (a standard-colours.js palette key) is optional and additive to
+// `tone` -- PillCell lets `color` win over `tone` for the chip's classes
+// when both are given. Callers pass it ONLY for a genuine graded standard
+// (I3/I5/G4 -- see the file-header note); every plain-fact pill in this file
+// (restriction categories, thresholds, exceptions, appliesTo scope) omits it.
+function pillFor(PillCell, keyId, label, tone, evidence, source, color) {
   if (!PillCell || !label) return null;
-  return React.createElement(PillCell, { key: keyId, label, tone, evidence, source });
+  const props = { key: keyId, label, tone, evidence, source };
+  if (color) props.color = color;
+  return React.createElement(PillCell, props);
 }
 
 // AC (raw code hidden, exposed only on hover) -- same convention as
@@ -182,6 +227,25 @@ function buildNegativeRow(group) {
   };
 }
 
+// I6 (STRUCT): a small "column" sub-block used inside the negative-covenant
+// row's content cell -- a mini header plus its pills (or a plain "not
+// specified" placeholder), so the two halves (restrictions / exceptions)
+// read as distinct columns even though GroupedSubRows only gives this file
+// ONE physical content cell to work with (label is its own grid column
+// already -- see GroupedSubRows in ProvisionTablePrimitives.jsx). Together
+// the three pieces (label column + these two sub-columns) are the real
+// General category | Specific restrictions | Exceptions table I6 asks for.
+function negativeCovenantColumn(keyId, heading, pills, emptyCopy) {
+  return React.createElement(
+    'div',
+    { key: keyId, className: 'min-w-0' },
+    React.createElement('div', { className: 'mb-1 text-[10px] font-medium uppercase tracking-wider text-inkFaint' }, heading),
+    pills.length
+      ? React.createElement('div', { className: 'flex flex-wrap gap-1' }, pills)
+      : React.createElement('span', { className: 'text-[11px] italic text-inkFaint' }, emptyCopy),
+  );
+}
+
 function renderNegativeRow(entry, ctx) {
   const PillCell = ctx?.primitives?.PillCell;
   const { cards } = entry;
@@ -195,11 +259,16 @@ function renderNegativeRow(entry, ctx) {
   const permittedEntries = dedupeEntries(cards.flatMap((c) => exceptionEntries(cardFeatures(c).permittedExceptions, EXCEPTION_CODES, c)));
   const obligations = cards.map((c) => valueText(cardFeatures(c).mainObligation)).filter(Boolean);
 
-  const pills = [
+  // I3/I5/G4: restriction/threshold/exception pills are plain facts and
+  // categories, not graded standards -- none of them pass a `color`, only a
+  // `tone` (grey/info/green). See the file-header note.
+  const restrictionPills = [
     ...restrictionEntries.map((e, i) => pillFor(PillCell, `${entry.code}-rc-${i}`, e.label, 'neutral', e.evidence, e.source)),
     ...thresholdEntries.map((e, i) => pillFor(PillCell, `${entry.code}-dt-${i}`, e.label, 'info', e.evidence, e.source)),
-    ...permittedEntries.map((e, i) => pillFor(PillCell, `${entry.code}-pe-${i}`, e.label, 'present', e.evidence, e.source)),
   ].filter(Boolean);
+  const exceptionPills = permittedEntries
+    .map((e, i) => pillFor(PillCell, `${entry.code}-pe-${i}`, e.label, 'present', e.evidence, e.source))
+    .filter(Boolean);
 
   return {
     id: entry.id,
@@ -207,10 +276,39 @@ function renderNegativeRow(entry, ctx) {
     children: React.createElement(
       'div',
       { className: 'space-y-1.5' },
-      pills.length ? React.createElement('div', { className: 'flex flex-wrap gap-1' }, pills) : null,
+      React.createElement(
+        'div',
+        { className: 'grid grid-cols-1 gap-2 sm:grid-cols-2', 'data-testid': 'ioc-negative-columns' },
+        negativeCovenantColumn(`${entry.code}-restrictions`, 'Specific restrictions', restrictionPills, 'Not specified'),
+        negativeCovenantColumn(`${entry.code}-exceptions`, 'Exceptions', exceptionPills, 'None specified'),
+      ),
       obligations.length ? seeTextNode(obligations) : null,
     ),
   };
+}
+
+// I7: keyword-name patterns for fragments that carry NO restrictionComponents
+// tag at all -- a genuine extraction gap (no provision_subtype was ever
+// assigned, so the deterministic post-pass keyword-tagger in
+// lib/parser-v2/extract.js never ran a rule against them; see the
+// classifyIocRestrictionComponents keyword set that DOES cover most
+// 5.01(i)-(o)-style fragments). Metsera's ungrouped 5.01(k)/(l)/(o) are a tax
+// covenant, a Specified-Contract amendment restriction, and an
+// insurance-maintenance covenant respectively -- sniffed here from the
+// card's own primary_quote (deterministic, generic across deals; NOT
+// hardcoded to Metsera's section lettering, since a different agreement's
+// tax/Specified-Contract/insurance fragments won't land on (k)/(l)/(o)).
+const FRAGMENT_NAME_PATTERNS = [
+  { test: /\btax\b.{0,60}\b(election|elections|return|returns|liabilit|refund|closing agreement|ruling)/i, label: 'Tax matters' },
+  { test: /specified contract/i, label: 'Specified-contract amendments' },
+  { test: /\binsurance\b/i, label: 'Insurance maintenance' },
+];
+
+function sniffFragmentName(card) {
+  const text = textOf(card);
+  if (!text) return null;
+  const hit = FRAGMENT_NAME_PATTERNS.find(({ test }) => test.test(text));
+  return hit ? hit.label : null;
 }
 
 function buildOtherRestrictionsRow(fragments, ctx) {
@@ -221,13 +319,22 @@ function buildOtherRestrictionsRow(fragments, ctx) {
   const items = fragments.map((card, index) => {
     const entries = exceptionEntries(cardFeatures(card).restrictionComponents, IOC_CATEGORY_CODES, card);
     const section = valueText(cardFeatures(card).sectionNumber) || `Item ${index + 1}`;
+    const sniffedName = entries.length ? null : sniffFragmentName(card);
+    let content;
+    if (entries.length && PillCell) {
+      content = entries.map((e, j) => pillFor(PillCell, `frag-${card.id || index}-${j}`, e.label, 'neutral', e.evidence, e.source));
+    } else if (sniffedName) {
+      // Extraction gap, named rather than dropped or shown as a bare
+      // fragment -- see FRAGMENT_NAME_PATTERNS above (I7).
+      content = React.createElement('span', { className: 'text-[11px] text-ink', title: 'Extraction gap: no provision_subtype assigned; name sniffed from clause text' }, sniffedName);
+    } else {
+      content = React.createElement('span', { className: 'italic text-inkFaint' }, 'no structured signal extracted');
+    }
     return React.createElement(
       'li',
       { key: card.id || index, className: 'flex flex-wrap items-center gap-1 text-[11px]' },
       React.createElement('span', { className: 'text-inkFaint' }, `§${section}`),
-      entries.length && PillCell
-        ? entries.map((e, j) => pillFor(PillCell, `frag-${card.id || index}-${j}`, e.label, 'neutral', e.evidence, e.source))
-        : React.createElement('span', { className: 'italic text-inkFaint' }, 'no structured signal extracted'),
+      content,
     );
   });
   return {
@@ -242,6 +349,31 @@ function buildOtherRestrictionsRow(fragments, ctx) {
   };
 }
 
+// I2/I4: a limb's own efforts_standard (normalizeIocLimbEffortsStandards in
+// lib/parser-v2/extract.js stamps exactly one such field per limb -- see the
+// file-header note) renders as a coloured pill UNLESS it's FLAT (an
+// unqualified duty -- content, not a graded standard; I3/I5/G4 -- and
+// standardColorKey('FLAT') would otherwise false-positive on its own
+// \bflat\b hell-or-high-water pattern, so FLAT is never even passed in).
+function effortsStandardPillFor(PillCell, keyId, standard, card) {
+  const code = standard ? String(standard).toUpperCase() : null;
+  if (!code || code === 'FLAT') return null;
+  const label = labelForCode(code, EFFORTS_STANDARDS);
+  if (!label) return null;
+  return pillFor(PillCell, keyId, label, 'info', textOf(card), card, standardColorKey(label));
+}
+
+// I2: some limbs (e.g. IOC-MAINTAIN) carry "in all material respects" INSIDE
+// the obligation text itself while efforts_standard is FLAT -- materiality is
+// this limb's content, not an efforts qualifier, so the two fields are
+// independent and both may render. Pulled out here as its own coloured
+// standard pill so it isn't lost inside the collapsed "see text" prose.
+function materialRespectsPillFor(PillCell, keyId, obligationText, card) {
+  if (!obligationText || !/in all material respects/i.test(obligationText)) return null;
+  const label = MATERIALITY_CODES.MAT_ALL_MATERIAL;
+  return pillFor(PillCell, keyId, label, 'info', textOf(card), card, standardColorKey(label));
+}
+
 function affirmativeRows(cards, ctx) {
   const PillCell = ctx?.primitives?.PillCell;
   const rows = [];
@@ -254,11 +386,13 @@ function affirmativeRows(cards, ctx) {
     limbs.forEach((limb, limbIndex) => {
       const scopeEntries = exceptionEntries(limb?.appliesTo, IOC_AFFIRMATIVE_SCOPE_CODES, card);
       const carveout = features.ordinaryCourseCarveout === true || limb?.ordinaryCourseCarveout === true;
+      const obligationText = valueText(limb?.obligation) || textOf(card);
       const pills = [
         ...scopeEntries.map((e, i) => pillFor(PillCell, `${card.id}-scope-${limbIndex}-${i}`, e.label, 'neutral', e.evidence, e.source)),
+        effortsStandardPillFor(PillCell, `${card.id}-efforts-${limbIndex}`, limb?.efforts_standard, card),
+        materialRespectsPillFor(PillCell, `${card.id}-materiality-${limbIndex}`, obligationText, card),
         carveout ? pillFor(PillCell, `${card.id}-carveout-${limbIndex}`, 'Ordinary-course carve-out applies', 'present', textOf(card), card) : null,
       ].filter(Boolean);
-      const obligationText = valueText(limb?.obligation) || textOf(card);
       rows.push({
         id: `ioc-aff-${card.id || code}-${limbIndex}`,
         label: covenantLabelNode(card.short_title || card.defined_term || 'Affirmative covenant', code),
@@ -353,12 +487,15 @@ const iocExceptionsConfig = {
 export {
   affirmativeRows,
   buildOtherRestrictionsRow,
+  effortsStandardPillFor,
   exceptionEntries,
   fragmentCards,
   formatMoney,
   iocExceptionsConfig,
   isIocCard,
+  materialRespectsPillFor,
   negativeCovenantGroups,
   renderIocFooter,
   renderNegativeRow,
+  sniffFragmentName,
 };
