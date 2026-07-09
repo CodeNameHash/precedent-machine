@@ -1,19 +1,21 @@
 import React from 'react';
-import { cardCode, cardType, firstFeature, makeRow, selectCards, textOf } from './card-utils.js';
+import { cardCode, cardType, firstFeature, labelOf, makeRow, selectCards, textOf } from './card-utils.js';
 
+// REBUILD-SPECS.md section 13 ("complete garbage" per Ben): this table is
+// scoped to FOUR clean rows -- Financial advisor, Fee/expense allocation,
+// Specific-performance limitations, Assignment. Governing law, forum /
+// jurisdiction, and third-party beneficiaries are generic boilerplate, not
+// adviser/fee/expense content -- they moved to misc-boilerplate.config.js's
+// "Miscellaneous / Boilerplate" table.
 const ROWS = [
   ['fee-expense', 'Fee / expense allocation', 'Expenses', ['feeExpenseAllocation', 'expensesAllocation']],
   ['expense-exceptions', 'Expense exceptions', 'Expenses', ['feeExpenseAllocationExceptions', 'feeExpenseExceptions', 'expenseExceptions']],
-  ['adviser-fees', 'Adviser fees', 'Advisers', ['adviserFees', 'brokerFees', 'financialAdvisorFees']],
-  ['company-adviser', 'Company adviser', 'Advisers', ['companyFinancialAdvisor', 'companyAdvisor']],
-  ['parent-adviser', 'Parent adviser', 'Advisers', ['parentFinancialAdvisor', 'parentAdvisor']],
-  ['governing-law', 'Governing law', 'Boilerplate', ['governingLaw']],
-  ['forum', 'Forum / jurisdiction', 'Boilerplate', ['jurisdictionExclusive', 'jurisdictionExclusiveText']],
   ['specific-performance', 'Specific performance', 'Remedies', ['specificPerformance']],
   ['specific-performance-limitations', 'Specific performance limitations', 'Remedies', ['specificPerformanceLimitations']],
-  ['third-party', 'Third-party beneficiaries', 'Boilerplate', ['thirdPartyBeneficiaryExceptions']],
-  // Assignment group (Metsera parity gap root cause 4: "whole sub-section,
-  // no rows" — all five sit on the same MISC-ASSIGN boilerplate card).
+  // Assignment group: all five sit on the same MISC-ASSIGN boilerplate card
+  // (Metsera parity gap root cause 4: "whole sub-section, no rows"). Kept as
+  // five discrete rows -- each is a distinct fact the review team checks
+  // independently -- clustered under the shared 'Assignment' kind.
   ['assignment-parent-right', 'Parent assignment right', 'Assignment', ['parentAssignmentRight']],
   ['assignment-parent-conditions', 'Parent assignment conditions', 'Assignment', ['parentAssignmentConditions']],
   ['assignment-company-consent', 'Company consent for assignment', 'Assignment', ['companyConsentForAssignment']],
@@ -21,10 +23,73 @@ const ROWS = [
   ['assignment-restrictions', 'Assignment restrictions', 'Assignment', ['assignmentRestrictions']],
 ];
 
-function isMiscFee(card) {
+function isAdvisersFeesCard(card) {
   const type = cardType(card);
   const code = cardCode(card);
-  return type === 'MISC_BOILERPLATE' || code.startsWith('MISC') || /fees|expenses|adviser|advisor|governing law|jurisdiction|specific performance/i.test(`${card?.short_title || ''} ${textOf(card)}`);
+  return type === 'MISC_BOILERPLATE' || code.startsWith('MISC') || /fees|expenses|adviser|advisor|broker|specific performance/i.test(`${card?.short_title || ''} ${textOf(card)}`);
+}
+
+// Financial advisor is a SINGLE clean row per the spec, not three ("Adviser
+// fees" / "Company adviser" / "Parent adviser"). Company/Parent advisor
+// identity and the fee itself render as sub-fact pills under it (global
+// design rule: sub-labelled facts, not separate rows, when a cell has >1
+// fact for the same concept).
+// DATA GAP: no ingestion schema key currently captures adviser identity
+// (no companyFinancialAdvisor/parentFinancialAdvisor/adviserFees key exists
+// in lib/schema/features.generated.js as of this WP) -- this row will not
+// populate until that's added upstream. The nearest real signal today is the
+// no-broker reps (REP-T-BROKERS / REP-B-BROKERS) and the fairness-opinion
+// rep (REP-T-FAIRNESS, which names the advisor in prose, e.g. "Goldman
+// Sachs"), but those live in Representations and are out of this WP's scope
+// to reroute.
+function buildFinancialAdvisorRow(cards) {
+  const companyHit = firstFeature(cards, ['companyFinancialAdvisor', 'companyAdvisor']);
+  const parentHit = firstFeature(cards, ['parentFinancialAdvisor', 'parentAdvisor']);
+  const feesHit = firstFeature(cards, ['adviserFees', 'brokerFees', 'financialAdvisorFees']);
+  if (!companyHit && !parentHit && !feesHit) return null;
+  const primary = companyHit || parentHit || feesHit;
+  const signals = [];
+  if (companyHit) {
+    signals.push({
+      id: 'advisers-fees-expenses-financial-advisor-company',
+      label: `Company: ${companyHit.detail}`,
+      value: companyHit.detail,
+      tone: 'neutral',
+      evidence: textOf(companyHit.card),
+      source: companyHit.card,
+    });
+  }
+  if (parentHit) {
+    signals.push({
+      id: 'advisers-fees-expenses-financial-advisor-parent',
+      label: `Parent: ${parentHit.detail}`,
+      value: parentHit.detail,
+      tone: 'neutral',
+      evidence: textOf(parentHit.card),
+      source: parentHit.card,
+    });
+  }
+  if (feesHit) {
+    signals.push({
+      id: 'advisers-fees-expenses-financial-advisor-fees',
+      label: `Fees: ${feesHit.detail}`,
+      value: feesHit.detail,
+      tone: 'info',
+      evidence: textOf(feesHit.card),
+      source: feesHit.card,
+    });
+  }
+  return {
+    id: 'advisers-fees-expenses-financial-advisor',
+    label: 'Financial advisor',
+    kind: 'Advisers',
+    detail: primary.detail,
+    evidence: textOf(primary.card),
+    source: labelOf(primary.card),
+    sourceCard: primary.card,
+    present: true,
+    signals,
+  };
 }
 
 // Read-view pill is the resolved value alone -- the Term column already
@@ -76,7 +141,9 @@ const advisersFeesExpensesConfig = {
   title: 'Advisers / Fees / Expenses',
   layoutSlot: 'misc',
   selectRows(reviewDeal) {
-    return mappedMiscRows(selectCards(reviewDeal, isMiscFee));
+    const cards = selectCards(reviewDeal, isAdvisersFeesCard);
+    const advisorRow = buildFinancialAdvisorRow(cards);
+    return [...(advisorRow ? [advisorRow] : []), ...mappedMiscRows(cards)];
   },
   columns: [
     { id: 'term', header: 'Term', width: '18rem', renderCell: (row) => row.label },

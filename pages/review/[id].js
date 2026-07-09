@@ -136,6 +136,7 @@ import { EditPanel } from '../../components/review/EditPanel';
 import ProvisionCardTable from '../../components/review/ProvisionCardTable';
 import ProvisionTable from '../../components/review/ProvisionTable';
 import { advisersFeesExpensesConfig } from '../../components/review/table-configs/advisers-fees-expenses.config';
+import { miscBoilerplateConfig } from '../../components/review/table-configs/misc-boilerplate.config';
 import { antitrustRegulatoryConfig } from '../../components/review/table-configs/antitrust-regulatory.config';
 import { considerationHeroConfig } from '../../components/review/table-configs/consideration-hero.config';
 import { conditionsConfig } from '../../components/review/table-configs/conditions.config';
@@ -184,6 +185,7 @@ const REVIEW_TABLE_CONFIGS = [
   antitrustRegulatoryConfig,
   employeeBenefitsConfig,
   advisersFeesExpensesConfig,
+  miscBoilerplateConfig,
   noOtherRepsFraudConfig,
 ];
 
@@ -217,6 +219,11 @@ const SIDEBAR_TYPE_TO_SECTION_ID = {
   __EMPLOYEE_BENEFITS: 'employee-benefits',
   __SEC_MEETING: 'votes-approvals-meeting',
   __ABRY: 'no-other-reps-fraud',
+  // "Miscellaneous / Boilerplate" sidebar entry (SIDEBAR_GROUPS in
+  // components/review/shared.js, types: ['MISC']) previously had no target
+  // section id -- clicking it did nothing. Now routes to the new
+  // misc-boilerplate accordion (governing law / forum / third-party).
+  MISC: 'misc-boilerplate',
 };
 
 function sectionIdForType(type) {
