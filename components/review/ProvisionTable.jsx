@@ -40,6 +40,12 @@ const FULL_TEXT_COLUMNS = {
   'sec-meeting': ['detail'],
   'nosol-noshop': ['detail'],
   'nosol-intervening': ['detail'],
+  // FEEDBACK-2-PUNCHLIST.md item 46: the un-truncated 'detail' column (full
+  // governing-law/forum clause text, assignment restrictions, the
+  // third-party-beneficiaries carve-out summary) was what made this table
+  // read too wide. Same shape as the families above -- 'signals' pills
+  // already carry the readable value.
+  'misc-boilerplate': ['detail'],
 };
 
 function SeeTextExpander({ children }) {

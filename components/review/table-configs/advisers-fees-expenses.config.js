@@ -1,32 +1,22 @@
 import React from 'react';
 import { cardCode, cardType, firstFeature, labelOf, makeRow, selectCards, textOf } from './card-utils.js';
 
-// REBUILD-SPECS.md section 13 ("complete garbage" per Ben): this table is
-// scoped to FOUR clean rows -- Financial advisor, Fee/expense allocation,
-// Specific-performance limitations, Assignment. Governing law, forum /
-// jurisdiction, and third-party beneficiaries are generic boilerplate, not
-// adviser/fee/expense content -- they moved to misc-boilerplate.config.js's
-// "Miscellaneous / Boilerplate" table.
+// REBUILD-SPECS.md section 13 ("complete garbage" per Ben), tightened again
+// per FEEDBACK-2-PUNCHLIST.md item 45: this table is scoped to genuinely
+// adviser/fee/expense-allocation content only -- Financial advisor and
+// Fee/expense allocation. Specific performance and the Assignment group are
+// generic Miscellaneous/boilerplate provisions (not adviser/fee content) and
+// now live on misc-boilerplate.config.js's "Miscellaneous / Boilerplate"
+// table alongside governing law, forum, and third-party beneficiaries.
 const ROWS = [
   ['fee-expense', 'Fee / expense allocation', 'Expenses', ['feeExpenseAllocation', 'expensesAllocation']],
   ['expense-exceptions', 'Expense exceptions', 'Expenses', ['feeExpenseAllocationExceptions', 'feeExpenseExceptions', 'expenseExceptions']],
-  ['specific-performance', 'Specific performance', 'Remedies', ['specificPerformance']],
-  ['specific-performance-limitations', 'Specific performance limitations', 'Remedies', ['specificPerformanceLimitations']],
-  // Assignment group: all five sit on the same MISC-ASSIGN boilerplate card
-  // (Metsera parity gap root cause 4: "whole sub-section, no rows"). Kept as
-  // five discrete rows -- each is a distinct fact the review team checks
-  // independently -- clustered under the shared 'Assignment' kind.
-  ['assignment-parent-right', 'Parent assignment right', 'Assignment', ['parentAssignmentRight']],
-  ['assignment-parent-conditions', 'Parent assignment conditions', 'Assignment', ['parentAssignmentConditions']],
-  ['assignment-company-consent', 'Company consent for assignment', 'Assignment', ['companyConsentForAssignment']],
-  ['assignment-exceptions', 'Assignment exceptions', 'Assignment', ['assignmentExceptions']],
-  ['assignment-restrictions', 'Assignment restrictions', 'Assignment', ['assignmentRestrictions']],
 ];
 
 function isAdvisersFeesCard(card) {
   const type = cardType(card);
   const code = cardCode(card);
-  return type === 'MISC_BOILERPLATE' || code.startsWith('MISC') || /fees|expenses|adviser|advisor|broker|specific performance/i.test(`${card?.short_title || ''} ${textOf(card)}`);
+  return type === 'MISC_BOILERPLATE' || code.startsWith('MISC') || /fees|expenses|adviser|advisor|broker/i.test(`${card?.short_title || ''} ${textOf(card)}`);
 }
 
 // Financial advisor is a SINGLE clean row per the spec, not three ("Adviser
