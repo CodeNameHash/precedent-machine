@@ -228,7 +228,7 @@ const terminationFeesConfig = {
   },
   columns: [
     { id: 'term', header: 'Term', width: '18rem', renderCell: (row) => row.label },
-    { id: 'signals', header: 'Signals', renderCell: renderSignals },
+    { id: 'signals', header: 'Provision', renderCell: renderSignals },
   ],
 };
 

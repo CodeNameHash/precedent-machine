@@ -152,7 +152,7 @@ const secMeetingConfig = {
   columns: [
     { id: 'term', header: 'Term', width: '18rem', renderCell: (row) => row.label },
     { id: 'subject', header: 'Subject', width: '12rem', renderCell: (row) => row.subject },
-    { id: 'signals', header: 'Signals', width: '18rem', renderCell: renderSignals },
+    { id: 'signals', header: 'Provision', width: '18rem', renderCell: renderSignals },
     { id: 'detail', header: 'Detail', renderCell: renderDetail },
   ],
 };

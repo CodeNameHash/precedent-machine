@@ -91,11 +91,11 @@ test('FULL_TEXT_COLUMNS still carries every pre-Phase-B entry (no regression)', 
 
 // -- hideRepeatedTitle wiring (punch-list #22 MAE / #23 material-contracts) -
 
-test('ProvisionTable suppresses the in-table title strip when config.hideRepeatedTitle is set, but keeps it for everyone else', () => {
+test('ProvisionTable never repeats the section title in-table (feedback G3, global); the section <h2> already carries it', () => {
   const body = readSource(provisionTablePath);
-  assert.match(body, /const showTitleStrip = !config\.hideRepeatedTitle;/);
-  assert.match(body, /\{showTitleStrip \? \(/);
-  assert.match(body, /\{config\.title\}/, 'default configs must still render their title once in the chrome strip');
+  assert.match(body, /const showTitleStrip = false;/);
+  // The strip only survives to carry a headerNote when there is one.
+  assert.match(body, /\(showTitleStrip \|\| headerNote\)/);
 });
 
 test('material-contracts config opts out of the duplicate in-table title (punch-list #23)', async () => {

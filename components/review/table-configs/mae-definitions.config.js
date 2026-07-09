@@ -394,7 +394,7 @@ const maeDefinitionsConfig = {
   // generic single-table body -- see the ProvisionTable.jsx renderBody hook.
   columns: [
     { id: 'term', header: 'Term', width: '18rem', renderCell: (row) => row.label },
-    { id: 'signals', header: 'Signals', width: '18rem', renderCell: renderSignals },
+    { id: 'signals', header: 'Provision', width: '18rem', renderCell: renderSignals },
     { id: 'detail', header: 'Detail', renderCell: renderDetail },
   ],
   renderBody,

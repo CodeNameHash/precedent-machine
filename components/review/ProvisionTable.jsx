@@ -118,7 +118,10 @@ export default function ProvisionTable({ config, reviewDeal, isEdit = false }) {
   // list #22 MAE, #23 material-contracts). Configs that don't need a
   // distinct in-table label opt out via hideRepeatedTitle; the strip still
   // renders (for headerNote) when there's something else to show.
-  const showTitleStrip = !config.hideRepeatedTitle;
+  // Feedback G3 (global): the collapsible section <h2> already shows the title,
+  // so the in-table strip repeating it always reads as a copy-paste duplicate.
+  // Never render it; the strip survives only to carry a headerNote when present.
+  const showTitleStrip = false;
 
   return (
     <section data-testid={`provision-table-${config.id}`} className="rounded border border-border bg-white shadow-sm">

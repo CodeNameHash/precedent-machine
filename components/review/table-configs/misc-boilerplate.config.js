@@ -292,7 +292,7 @@ const miscBoilerplateConfig = {
   // width out, not the pill columns themselves.
   columns: [
     { id: 'term', header: 'Term', width: '15rem', renderCell: (row) => row.label },
-    { id: 'signals', header: 'Signals', width: '16rem', renderCell: renderSignals },
+    { id: 'signals', header: 'Provision', width: '16rem', renderCell: renderSignals },
     { id: 'detail', header: 'Detail', renderCell: renderDetail },
   ],
 };

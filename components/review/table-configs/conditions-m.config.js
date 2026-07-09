@@ -195,7 +195,7 @@ function createConditionsConfig({ id, title, rows: canonicalRows, empty }) {
       },
       {
         id: 'signals',
-        header: 'Signals',
+        header: 'Provision',
         width: '18rem',
         renderCell: renderSignals,
       },

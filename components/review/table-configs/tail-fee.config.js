@@ -140,7 +140,7 @@ const tailFeeConfig = {
   // EvidenceHoverSource already.
   columns: [
     { id: 'term', header: 'Term', width: '20rem', renderCell: (row) => row.label },
-    { id: 'signals', header: 'Signals', renderCell: renderSignals },
+    { id: 'signals', header: 'Provision', renderCell: renderSignals },
   ],
   empty: { copy: 'No tail-fee mechanics found.' },
 };
