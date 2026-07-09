@@ -27,12 +27,13 @@ function isMiscFee(card) {
   return type === 'MISC_BOILERPLATE' || code.startsWith('MISC') || /fees|expenses|adviser|advisor|governing law|jurisdiction|specific performance/i.test(`${card?.short_title || ''} ${textOf(card)}`);
 }
 
+// Read-view pill is the resolved value alone -- the Term column already
+// names the row, so a "<Kind>: " prefix only repeated it.
 function miscSignal(row) {
   if (!row?.detail) return null;
-  const label = row.kind === 'Advisers' ? 'Adviser' : row.kind;
   return {
     id: `${row.id}-signal`,
-    label: `${label}: ${row.detail}`,
+    label: row.detail,
     value: row.detail,
     tone: row.kind === 'Expenses' ? 'info' : 'neutral',
     evidence: row.evidence,
@@ -79,7 +80,6 @@ const advisersFeesExpensesConfig = {
   },
   columns: [
     { id: 'term', header: 'Term', width: '18rem', renderCell: (row) => row.label },
-    { id: 'kind', header: 'Kind', width: '10rem', renderCell: (row) => row.kind },
     { id: 'signals', header: 'Signals', width: '18rem', renderCell: renderSignals },
     { id: 'detail', header: 'Detail', renderCell: renderDetail },
   ],

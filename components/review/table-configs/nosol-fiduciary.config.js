@@ -111,9 +111,10 @@ function rowSignal(row) {
   if (!row?.detail) return null;
   const isTiming = /notice|match/i.test(row.label);
   const isTermination = /termination/i.test(row.label);
+  // Bare value only -- the Term column already names this row.
   return {
     id: `${row.id}-signal`,
-    label: `${row.label}: ${row.detail}`,
+    label: row.detail,
     value: row.detail,
     tone: isTermination ? 'warning' : isTiming ? 'info' : 'neutral',
     evidence: row.evidence,

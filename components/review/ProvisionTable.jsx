@@ -67,29 +67,43 @@ export default function ProvisionTable({ config, reviewDeal, isEdit = false }) {
   // isEdit flows into ctx so per-family renderCells can suppress edit-only
   // affordances (e.g. raw canonical-code pills) in the default Reviewer view.
   ctx.isEdit = isEdit;
+  // Grouped/consolidated tables (termination rights, conditions, equity
+  // awards) render a single header-less column whose cell owns its own
+  // internal layout (e.g. GroupedSubRows). Suppress the generic <thead> bar
+  // entirely rather than showing an empty header row above it.
+  const showHeader = columns.some((column) => column.header);
+  // Optional short subtitle next to the section title -- used to hoist a
+  // value that's identical on every row (e.g. the no-shop obligor) out of a
+  // repeated per-row column and into the section chrome instead.
+  const headerNote = typeof config.deriveHeaderNote === 'function' ? config.deriveHeaderNote(rows) : null;
 
   return (
     <section data-testid={`provision-table-${config.id}`} className="rounded border border-border bg-white shadow-sm">
-      <div className="border-b border-border bg-bg/60 px-3 py-2">
+      <div className="border-b border-border bg-bg/60 px-3 py-2 flex items-center justify-between gap-3">
         <p className="font-ui text-[10px] font-medium uppercase tracking-wider text-inkFaint">
           {config.title}
         </p>
+        {headerNote ? (
+          <p className="font-ui text-[10px] font-medium text-inkFaint whitespace-nowrap">{headerNote}</p>
+        ) : null}
       </div>
       <div className="overflow-x-auto">
         <table className="min-w-full text-xs font-ui">
-          <thead className="border-b border-border bg-bg/60">
-            <tr>
-              {columns.map((column) => (
-                <th
-                  key={column.id}
-                  className="px-3 py-2 text-left font-medium uppercase tracking-wider text-inkFaint"
-                  style={column.width ? { width: column.width } : undefined}
-                >
-                  {column.header}
-                </th>
-              ))}
-            </tr>
-          </thead>
+          {showHeader ? (
+            <thead className="border-b border-border bg-bg/60">
+              <tr>
+                {columns.map((column) => (
+                  <th
+                    key={column.id}
+                    className="px-3 py-2 text-left font-medium uppercase tracking-wider text-inkFaint"
+                    style={column.width ? { width: column.width } : undefined}
+                  >
+                    {column.header}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+          ) : null}
           <tbody className="divide-y divide-border">
             {rows.map((row) => {
               const fullTextNodes = fullTextColumns

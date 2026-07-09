@@ -84,7 +84,8 @@ function rowForSpec(spec, cards) {
 function rowSignal(row) {
   if (!row?.detail) return null;
   const tone = row.id.endsWith('threshold') ? 'info' : 'neutral';
-  return { id: `${row.id}-signal`, label: `${row.label}: ${row.detail}`, value: row.detail, tone, evidence: row.evidence, source: row.sourceCards?.[0] };
+  // Bare value only -- the Term column already names this row.
+  return { id: `${row.id}-signal`, label: row.detail, value: row.detail, tone, evidence: row.evidence, source: row.sourceCards?.[0] };
 }
 function renderSignals(row, ctx) {
   const PillCell = ctx?.primitives?.PillCell;

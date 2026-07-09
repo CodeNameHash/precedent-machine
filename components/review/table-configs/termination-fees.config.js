@@ -111,9 +111,10 @@ function scalarRows(cards) {
       return {
         ...row,
         sourceCard: hit.card,
+        // Bare value only -- the Term column already names this row.
         signals: [{
           id: `${row.id}-signal`,
-          label: `${kind}: ${row.detail}`,
+          label: row.detail,
           value: row.detail,
           tone: kind === 'Condition' ? 'warning' : 'neutral',
           evidence: row.evidence,
@@ -161,7 +162,6 @@ const terminationFeesConfig = {
   },
   columns: [
     { id: 'term', header: 'Term', width: '18rem', renderCell: (row) => row.label },
-    { id: 'kind', header: 'Kind', width: '10rem', renderCell: (row) => row.kind },
     { id: 'signals', header: 'Signals', width: '18rem', renderCell: renderSignals },
     { id: 'detail', header: 'Detail', renderCell: renderDetail },
   ],

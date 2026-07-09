@@ -36,22 +36,13 @@ function readableValue(key, value) {
   return (dict && code && labelForCode(String(code), dict)) || rendered;
 }
 
+// Read-view pill is the resolved value alone -- the Term column already
+// names the row, so a "<Kind>: " prefix only repeated it.
 function signalFor(row) {
   if (!row?.detail) return null;
-  const labels = {
-    Efforts: 'Efforts',
-    Timing: 'Timing',
-    Approvals: 'Approval',
-    Litigation: 'Litigation',
-    Process: 'Process',
-    Remedies: 'Remedy',
-    Caps: 'Cap',
-    Conduct: 'Conduct',
-    Termination: 'Termination',
-  };
   return {
     id: `${row.id}-signal`,
-    label: `${labels[row.kind] || row.kind}: ${readableValue(row.featureKey, row.value) || row.detail}`,
+    label: readableValue(row.featureKey, row.value) || row.detail,
     value: row.value || row.detail,
     tone: row.kind === 'Caps' || row.kind === 'Termination' ? 'warning' : row.kind === 'Approvals' ? 'present' : 'info',
     evidence: row.evidence,
@@ -104,7 +95,6 @@ const antitrustRegulatoryConfig = {
   },
   columns: [
     { id: 'term', header: 'Term', width: '18rem', renderCell: (row) => row.label },
-    { id: 'kind', header: 'Kind', width: '10rem', renderCell: (row) => row.kind },
     { id: 'signals', header: 'Signals', width: '18rem', renderCell: renderSignals },
     { id: 'detail', header: 'Detail', renderCell: renderDetail },
   ],

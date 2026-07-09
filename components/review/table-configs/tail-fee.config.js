@@ -87,9 +87,12 @@ function renderMechanic(row, ctx) {
   if (!TruncatedWithSeeText) return row.value;
   return React.createElement(TruncatedWithSeeText, { text: row.value, evidence: row.evidence, source: row.sourceCard });
 }
+// Bare value only -- the Term column already names this row, and the
+// Mechanic column already shows the full value; the pill is just a scannable
+// echo of it, not a second, differently-labeled copy.
 function renderSignals(row, ctx) {
   const PillCell = ctx?.primitives?.PillCell;
-  const label = `${row.label}: ${row.value}`;
+  const label = row.value;
   if (!PillCell) return label;
   return React.createElement(PillCell, {
     label,

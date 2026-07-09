@@ -150,7 +150,6 @@ const generalCovenantsConfig = {
   },
   columns: [
     { id: 'term', header: 'Term', width: '18rem', renderCell: (row) => row.label },
-    { id: 'kind', header: 'Kind', width: '12rem', renderCell: (row) => row.kind },
     { id: 'signals', header: 'Signals', width: '18rem', renderCell: renderSignals },
     { id: 'detail', header: 'Detail', renderCell: renderDetail },
   ],

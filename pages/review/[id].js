@@ -137,12 +137,10 @@ import ProvisionCardTable from '../../components/review/ProvisionCardTable';
 import ProvisionTable from '../../components/review/ProvisionTable';
 import { advisersFeesExpensesConfig } from '../../components/review/table-configs/advisers-fees-expenses.config';
 import { antitrustRegulatoryConfig } from '../../components/review/table-configs/antitrust-regulatory.config';
-import { approvalsVotesConfig } from '../../components/review/table-configs/approvals-votes.config';
 import { considerationHeroConfig } from '../../components/review/table-configs/consideration-hero.config';
-import { conditionsBConfig } from '../../components/review/table-configs/conditions-b.config';
-import { conditionsMConfig } from '../../components/review/table-configs/conditions-m.config';
-import { conditionsSConfig } from '../../components/review/table-configs/conditions-s.config';
+import { conditionsConfig } from '../../components/review/table-configs/conditions.config';
 import { employeeBenefitsConfig } from '../../components/review/table-configs/employee-benefits.config';
+import { equityAwardsConfig } from '../../components/review/table-configs/equity-awards.config';
 import { generalCovenantsConfig } from '../../components/review/table-configs/general-covenants.config';
 import { iocExceptionsConfig } from '../../components/review/table-configs/ioc-exceptions.config';
 import { maeDefinitionsConfig } from '../../components/review/table-configs/mae-definitions.config';
@@ -153,11 +151,11 @@ import { nosolNoshopConfig } from '../../components/review/table-configs/nosol-n
 import { nosolSuperiorConfig } from '../../components/review/table-configs/nosol-superior.config';
 import { noOtherRepsFraudConfig } from '../../components/review/table-configs/no-other-reps-fraud.config';
 import { representationsQualifiersConfig } from '../../components/review/table-configs/representations-qualifiers.config';
-import { secMeetingConfig } from '../../components/review/table-configs/sec-meeting.config';
 import { structureMechanicsConfig } from '../../components/review/table-configs/structure-mechanics.config';
 import { tailFeeConfig } from '../../components/review/table-configs/tail-fee.config';
 import { terminationFeesConfig } from '../../components/review/table-configs/termination-fees.config';
 import { terminationRightsConfig } from '../../components/review/table-configs/termination-rights.config';
+import { votesApprovalsMeetingConfig } from '../../components/review/table-configs/votes-approvals-meeting.config';
 import { BoundaryAuditPanel } from '../../components/review/BoundaryAuditPanel';
 import { parseReviewRouteQuery, serializeReviewRouteQuery } from '../../lib/review-route';
 
@@ -168,10 +166,9 @@ import { parseReviewRouteQuery, serializeReviewRouteQuery } from '../../lib/revi
 const REVIEW_TABLE_CONFIGS = [
   structureMechanicsConfig,
   considerationHeroConfig,
-  conditionsMConfig,
-  conditionsBConfig,
-  conditionsSConfig,
-  approvalsVotesConfig,
+  equityAwardsConfig,
+  conditionsConfig,
+  votesApprovalsMeetingConfig,
   representationsQualifiersConfig,
   maeDefinitionsConfig,
   materialContractsConfig,
@@ -186,7 +183,6 @@ const REVIEW_TABLE_CONFIGS = [
   nosolFiduciaryConfig,
   antitrustRegulatoryConfig,
   employeeBenefitsConfig,
-  secMeetingConfig,
   advisersFeesExpensesConfig,
   noOtherRepsFraudConfig,
 ];
@@ -196,10 +192,10 @@ const REVIEW_TABLE_CONFIGS = [
 const SIDEBAR_TYPE_TO_SECTION_ID = {
   STRUCT: 'structure-mechanics',
   CONSID: 'consideration-hero',
-  COND: 'conditions-m',
-  'COND-M': 'conditions-m',
-  'COND-B': 'conditions-b',
-  'COND-S': 'conditions-s',
+  COND: 'conditions',
+  'COND-M': 'conditions',
+  'COND-B': 'conditions',
+  'COND-S': 'conditions',
   'REP-T': 'representations-qualifiers',
   'REP-B': 'representations-qualifiers',
   'MAE-DEF': 'mae-definitions',
@@ -219,7 +215,7 @@ const SIDEBAR_TYPE_TO_SECTION_ID = {
   NOSOL: 'nosol-noshop',
   ANTI: 'antitrust-regulatory',
   __EMPLOYEE_BENEFITS: 'employee-benefits',
-  __SEC_MEETING: 'sec-meeting',
+  __SEC_MEETING: 'votes-approvals-meeting',
   __ABRY: 'no-other-reps-fraud',
 };
 
