@@ -33,6 +33,12 @@
 - Fix: correct the effective-time extraction so `effectiveTimeShort` captures the effectiveness mechanic (filing of the certificate of merger), not the surviving-entity clause. Re-extract affected cards.
 - Validate: `effectiveTimeShort` on the structure card(s) reads the filing mechanic; the config guard becomes redundant.
 
+### F. Per-rep `linkedBringDownStandard` uniform MAE mis-stamp  [data bug]
+- Today: every Company rep's `linkedBringDownStandard` claim is stamped `MAT_MAE_QUALIFIED` (all 27 identical on Metsera) — a uniform mis-stamp. The AUTHORITATIVE per-rep accuracy standard is the closing-condition `bringDownTiers` (in-all-material-respects / de-minimis / MAE, each with a section-cited `reps_covered` list): on Metsera, §3.01/3.04/3.05/3.22 are in-all-material-respects, §3.02 is de-minimis, all others MAE.
+- Fix: either stop emitting the unreliable per-rep `linkedBringDownStandard` or derive it correctly from the condition tiers at extraction time.
+- Render stopgap already shipped: the Reps table now derives the per-rep "Bringdown: X" pill from `bringDownTiers` (via conditions.config `buildRepBringDownMap`), defaulting to MAE — so the Reps and Conditions sections agree and no rep is wrongly labelled MAE.
+- Validate: re-extract Metsera; per-rep bring-down (if kept) matches the tier mapping, not a uniform MAE.
+
 ## Mechanics
 - Changes live in `lib/rubric.js` (field/vocab defs), `lib/parser-v2/extract.js` (extraction prompts), and normalisation/attribute-mapping. Additive vocab may need a Freeze-Gate PR (canonical vocabulary is freeze-gated).
 - Reprocess: prefer per-type `scripts/reprocess.js` refreshes over full re-ingests (token-conservation window). Run the affected families first on Metsera (golden fixture), validate, then across all 40 deals.
