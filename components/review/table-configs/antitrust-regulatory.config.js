@@ -232,12 +232,74 @@ function hsrDeadlineRow(cards) {
 }
 
 // --- Foreign regulatory filings -------------------------------------------
+//
+// foreignFilingsRequired is really a reference flag (its list content is a
+// scratch note of which jurisdictions apply, not a fact worth rendering
+// verbatim) -- the reader just needs to know foreign filings ARE required.
+// The more useful fact is that the foreign filing TIMELINE is a distinct
+// commitment from the HSR deadline (the former is typically an open-ended
+// "as promptly as reasonably practicable" while HSR carries a fixed
+// business-day count), so this row presents both limbs side by side rather
+// than making the reader cross-reference the separate HSR row above.
+function foreignPresenceLabel(value) {
+  return isFalsy(value) ? 'Not required' : 'Required';
+}
+
+function foreignTimelineLabel(raw) {
+  if (raw === null || raw === undefined || raw === '') return null;
+  if (typeof raw === 'number') return `${raw} days`;
+  if (typeof raw === 'string') {
+    const trimmed = raw.trim();
+    if (!trimmed) return null;
+    const n = parseInt(trimmed, 10);
+    return String(n) === trimmed ? `${n} days` : trimmed;
+  }
+  if (typeof raw === 'object') {
+    const standard = raw.standard || raw.value?.standard;
+    if (standard) return String(standard).trim();
+    const text = raw.text || raw.value?.text;
+    if (text) return String(text).trim();
+    const days = raw.days ?? raw.value?.days ?? (typeof raw.value === 'number' ? raw.value : null);
+    if (typeof days === 'number') return `${days} days`;
+  }
+  return null;
+}
 
 function foreignFilingsRow(cards) {
   const hit = firstFeature(cards, ['foreignFilingsRequired', 'foreignFilings']);
   if (!hit) return null;
-  const label = shortText(readableValue('foreignFilingsRequired', hit.value), 50);
-  if (!label) return null;
+  const signals = [{
+    id: 'antitrust-regulatory-foreign-filings-signal',
+    label: foreignPresenceLabel(hit.value),
+    value: hit.value,
+    tone: isFalsy(hit.value) ? 'missing' : 'present',
+    evidence: textOf(hit.card),
+    source: hit.card,
+  }];
+  const hsrHit = firstFeature(cards, ['hsrFilingDeadlineBusinessDays', 'hsrFilingDeadline', 'exHsrFilingDeadline']);
+  const hsrLimb = hsrHit && (hsrDaysLabel(hsrHit.value) || shortText(hsrHit.detail, 40));
+  if (hsrLimb) {
+    signals.push({
+      id: 'antitrust-regulatory-foreign-filings-hsr-limb',
+      label: `(i) HSR — ${hsrLimb}`,
+      value: hsrHit.value,
+      tone: 'info',
+      evidence: textOf(hsrHit.card),
+      source: hsrHit.card,
+    });
+  }
+  const foreignTimelineHit = firstFeature(cards, ['exHsrFilingDeadline', 'otherRegulatoryFilingDeadlines', 'filingDeadline']);
+  const foreignLimb = foreignTimelineHit && foreignTimelineLabel(foreignTimelineHit.value);
+  if (foreignLimb) {
+    signals.push({
+      id: 'antitrust-regulatory-foreign-filings-foreign-limb',
+      label: `(ii) Foreign — ${foreignLimb}`,
+      value: foreignTimelineHit.value,
+      tone: 'info',
+      evidence: textOf(foreignTimelineHit.card),
+      source: foreignTimelineHit.card,
+    });
+  }
   return {
     id: 'antitrust-regulatory-foreign-filings',
     label: 'Foreign regulatory filings',
@@ -245,18 +307,18 @@ function foreignFilingsRow(cards) {
     evidence: textOf(hit.card),
     source: hit.card,
     present: true,
-    signals: [{
-      id: 'antitrust-regulatory-foreign-filings-signal',
-      label,
-      value: hit.value,
-      tone: 'info',
-      evidence: textOf(hit.card),
-      source: hit.card,
-    }],
+    signals,
   };
 }
 
-// --- Filing / strategy responsibility ------------------------------------
+// --- Strategy control -----------------------------------------------------
+//
+// This is NOT "who files" (a mechanical task) -- it's which party controls
+// the antitrust strategy (litigation posture, remedy negotiation, timing
+// calls). "Filing responsibility" mislabels the concept; the Term column
+// now reads "Strategy control" and the pill is the bare party name (the
+// Term already establishes what's being controlled, so the pill doesn't
+// re-say "controls").
 //
 // Backfilled data carries this control tag in TWO forms for the same
 // concept -- the canonical taxonomy code (CONTROL_PARENT) and a plain,
@@ -264,15 +326,15 @@ function foreignFilingsRow(cards) {
 // it. Both must resolve to the same short pill; DATA gap noted in the WP
 // report (the non-canonical form belongs at extraction/backfill, not here).
 const CONTROL_SHORT_LABELS = {
-  CONTROL_PARENT: 'Parent controls',
-  PARENT_CONTROL: 'Parent controls',
-  CONTROL_COMPANY: 'Company controls',
-  COMPANY_CONTROL: 'Company controls',
-  TARGET_CONTROL: 'Company controls',
-  CONTROL_SHARED: 'Shared control',
-  SHARED_CONTROL: 'Shared control',
-  CONTROL_SILENT: 'Silent on control',
-  SILENT_CONTROL: 'Silent on control',
+  CONTROL_PARENT: 'Parent',
+  PARENT_CONTROL: 'Parent',
+  CONTROL_COMPANY: 'Company',
+  COMPANY_CONTROL: 'Company',
+  TARGET_CONTROL: 'Company',
+  CONTROL_SHARED: 'Shared',
+  SHARED_CONTROL: 'Shared',
+  CONTROL_SILENT: 'Silent',
+  SILENT_CONTROL: 'Silent',
 };
 
 function controlLabel(value) {
@@ -286,20 +348,20 @@ function controlLabel(value) {
   return dictLabel || shortText(valueText(value), 40);
 }
 
-function filingResponsibilityRow(cards) {
+function strategyControlRow(cards) {
   const hit = firstFeature(cards, ['regulatoryStrategyControlTagged', 'controllingParty', 'regulatoryStrategyControl']);
   if (!hit) return null;
   const label = controlLabel(hit.value);
   if (!label) return null;
   return {
-    id: 'antitrust-regulatory-filing-responsibility',
-    label: 'Filing responsibility',
+    id: 'antitrust-regulatory-strategy-control',
+    label: 'Strategy control',
     detail: mainConceptOf(hit.card) || hit.detail,
     evidence: textOf(hit.card),
     source: hit.card,
     present: true,
     signals: [{
-      id: 'antitrust-regulatory-filing-responsibility-signal',
+      id: 'antitrust-regulatory-strategy-control-signal',
       label,
       value: hit.value,
       tone: 'neutral',
@@ -364,12 +426,62 @@ function prohibitionLabel(key, value) {
   return shortText(valueText(value), 50);
 }
 
+// Both pullRefile and timingAgreementsProhibited express a mutual/withheld
+// consent gate on withdrawing an antitrust notification -- but that consent
+// gate often carries a carved-out proviso letting Parent withdraw and
+// refile UNILATERALLY within a short window (typically 2 business days).
+// That proviso is the whole point for deal timing (it lets Parent reset the
+// HSR clock without needing the Company's sign-off) and was previously
+// dropped entirely once the consent-standard pill absorbed the row. Surface
+// it as a second pill on whichever row(s) carry the underlying text --
+// pullRefileText / timingAgreementText live on the same "Timing Agreements"
+// card as the two boolean/coded gates, so both rows check both fields.
+function withdrawalProvisoLabel(text) {
+  if (!text) return null;
+  const str = String(text);
+  if (!/voluntarily withdraw/i.test(str)) return null;
+  if (!/without[^.]{0,40}consent/i.test(str)) return null;
+  const daysMatch = str.match(/refiles?[^.]{0,40}?(\d+)[^.]{0,20}?business\s*days?/i);
+  const days = daysMatch ? daysMatch[1] : null;
+  return days
+    ? `Proviso: may withdraw without consent if refiled within ${days} business day${days === '1' ? '' : 's'}`
+    : 'Proviso: may withdraw without consent (see text)';
+}
+
+function withdrawalProvisoSignal(card, idSuffix) {
+  if (!card) return null;
+  const features = cardFeatures(card);
+  const text = [valueText(features.pullRefileText), valueText(features.timingAgreementText), textOf(card)]
+    .filter(Boolean)
+    .join(' ');
+  const label = withdrawalProvisoLabel(text);
+  if (!label) return null;
+  return {
+    id: `antitrust-regulatory-${idSuffix}-proviso-signal`,
+    label,
+    value: text,
+    tone: 'warning',
+    evidence: textOf(card),
+    source: card,
+  };
+}
+
 function pullRefileRow(cards) {
   const hit = firstFeature(cards, ['pullRefile', 'pullAndRefileRight', 'pullRefileText']);
   if (!hit) return null;
   const label = prohibitionLabel('pullRefile', hit.value);
   if (!label) return null;
   const features = cardFeatures(hit.card);
+  const signals = [{
+    id: 'antitrust-regulatory-pull-refile-signal',
+    label,
+    value: hit.value,
+    tone: 'warning',
+    evidence: textOf(hit.card),
+    source: hit.card,
+  }];
+  const proviso = withdrawalProvisoSignal(hit.card, 'pull-refile');
+  if (proviso) signals.push(proviso);
   return {
     id: 'antitrust-regulatory-pull-refile',
     label: 'Pull-and-refile',
@@ -377,14 +489,7 @@ function pullRefileRow(cards) {
     evidence: textOf(hit.card),
     source: hit.card,
     present: true,
-    signals: [{
-      id: 'antitrust-regulatory-pull-refile-signal',
-      label,
-      value: hit.value,
-      tone: 'warning',
-      evidence: textOf(hit.card),
-      source: hit.card,
-    }],
+    signals,
   };
 }
 
@@ -394,6 +499,16 @@ function timingAgreementsRow(cards) {
   const label = prohibitionLabel('timingAgreementsProhibited', hit.value);
   if (!label) return null;
   const features = cardFeatures(hit.card);
+  const signals = [{
+    id: 'antitrust-regulatory-timing-agreements-signal',
+    label,
+    value: hit.value,
+    tone: 'warning',
+    evidence: textOf(hit.card),
+    source: hit.card,
+  }];
+  const proviso = withdrawalProvisoSignal(hit.card, 'timing-agreements');
+  if (proviso) signals.push(proviso);
   return {
     id: 'antitrust-regulatory-timing-agreements',
     label: 'Timing agreements',
@@ -401,14 +516,7 @@ function timingAgreementsRow(cards) {
     evidence: textOf(hit.card),
     source: hit.card,
     present: true,
-    signals: [{
-      id: 'antitrust-regulatory-timing-agreements-signal',
-      label,
-      value: hit.value,
-      tone: 'warning',
-      evidence: textOf(hit.card),
-      source: hit.card,
-    }],
+    signals,
   };
 }
 
@@ -417,7 +525,7 @@ const ROW_BUILDERS = [
   divestitureCapRow,
   hsrDeadlineRow,
   foreignFilingsRow,
-  filingResponsibilityRow,
+  strategyControlRow,
   clearSkiesRow,
   pullRefileRow,
   timingAgreementsRow,
