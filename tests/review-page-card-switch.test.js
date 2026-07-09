@@ -18,16 +18,15 @@ test('review page mounts the first schema structured table config before cards',
   assert.match(reviewPageSource, /import \{ structureMechanicsConfig \} from '..\/..\/components\/review\/table-configs\/structure-mechanics\.config';/);
   assert.match(reviewPageSource, /import \{ considerationHeroConfig \} from '..\/..\/components\/review\/table-configs\/consideration-hero\.config';/);
   assert.match(reviewPageSource, /import \{ antitrustRegulatoryConfig \} from '..\/..\/components\/review\/table-configs\/antitrust-regulatory\.config';/);
-  assert.match(reviewPageSource, /import \{ approvalsVotesConfig \} from '..\/..\/components\/review\/table-configs\/approvals-votes\.config';/);
   assert.match(reviewPageSource, /import \{ generalCovenantsConfig \} from '..\/..\/components\/review\/table-configs\/general-covenants\.config';/);
   assert.match(reviewPageSource, /import \{ maeDefinitionsConfig \} from '..\/..\/components\/review\/table-configs\/mae-definitions\.config';/);
   assert.match(reviewPageSource, /import \{ representationsQualifiersConfig \} from '..\/..\/components\/review\/table-configs\/representations-qualifiers\.config';/);
   assert.match(reviewPageSource, /import \{ terminationFeesConfig \} from '..\/..\/components\/review\/table-configs\/termination-fees\.config';/);
   assert.match(reviewPageSource, /import \{ terminationRightsConfig \} from '..\/..\/components\/review\/table-configs\/termination-rights\.config';/);
   assert.match(reviewPageSource, /import \{ advisersFeesExpensesConfig \} from '..\/..\/components\/review\/table-configs\/advisers-fees-expenses\.config';/);
-  assert.match(reviewPageSource, /import \{ conditionsMConfig \} from '..\/..\/components\/review\/table-configs\/conditions-m\.config';/);
-  assert.match(reviewPageSource, /import \{ conditionsBConfig \} from '..\/..\/components\/review\/table-configs\/conditions-b\.config';/);
-  assert.match(reviewPageSource, /import \{ conditionsSConfig \} from '..\/..\/components\/review\/table-configs\/conditions-s\.config';/);
+  assert.match(reviewPageSource, /import \{ conditionsConfig \} from '..\/..\/components\/review\/table-configs\/conditions\.config';/);
+  assert.match(reviewPageSource, /import \{ votesApprovalsMeetingConfig \} from '..\/..\/components\/review\/table-configs\/votes-approvals-meeting\.config';/);
+  assert.match(reviewPageSource, /import \{ equityAwardsConfig \} from '..\/..\/components\/review\/table-configs\/equity-awards\.config';/);
   assert.match(reviewPageSource, /import \{ employeeBenefitsConfig \} from '..\/..\/components\/review\/table-configs\/employee-benefits\.config';/);
   assert.match(reviewPageSource, /import \{ iocExceptionsConfig \} from '..\/..\/components\/review\/table-configs\/ioc-exceptions\.config';/);
   assert.match(reviewPageSource, /import \{ materialContractsConfig \} from '..\/..\/components\/review\/table-configs\/material-contracts\.config';/);
@@ -36,7 +35,6 @@ test('review page mounts the first schema structured table config before cards',
   assert.match(reviewPageSource, /import \{ nosolNoshopConfig \} from '..\/..\/components\/review\/table-configs\/nosol-noshop\.config';/);
   assert.match(reviewPageSource, /import \{ nosolSuperiorConfig \} from '..\/..\/components\/review\/table-configs\/nosol-superior\.config';/);
   assert.match(reviewPageSource, /import \{ noOtherRepsFraudConfig \} from '..\/..\/components\/review\/table-configs\/no-other-reps-fraud\.config';/);
-  assert.match(reviewPageSource, /import \{ secMeetingConfig \} from '..\/..\/components\/review\/table-configs\/sec-meeting\.config';/);
   assert.match(reviewPageSource, /import \{ tailFeeConfig \} from '..\/..\/components\/review\/table-configs\/tail-fee\.config';/);
   // Phase A shell-restore: the per-family tables now render through a single
   // collapsible-accordion map over REVIEW_TABLE_CONFIGS rather than 23 literal
@@ -47,10 +45,9 @@ test('review page mounts the first schema structured table config before cards',
   const mountedConfigs = [
     'structureMechanicsConfig',
     'considerationHeroConfig',
-    'conditionsMConfig',
-    'conditionsBConfig',
-    'conditionsSConfig',
-    'approvalsVotesConfig',
+    'equityAwardsConfig',
+    'conditionsConfig',
+    'votesApprovalsMeetingConfig',
     'representationsQualifiersConfig',
     'maeDefinitionsConfig',
     'materialContractsConfig',
@@ -65,7 +62,6 @@ test('review page mounts the first schema structured table config before cards',
     'nosolFiduciaryConfig',
     'antitrustRegulatoryConfig',
     'employeeBenefitsConfig',
-    'secMeetingConfig',
     'advisersFeesExpensesConfig',
     'noOtherRepsFraudConfig',
   ];

@@ -102,7 +102,6 @@ const noOtherRepsFraudConfig = {
   },
   columns: [
     { id: 'question', header: 'Question', width: '18rem', renderCell: (row) => row.label },
-    { id: 'kind', header: 'Type', width: '10rem', renderCell: (row) => row.kind },
     { id: 'status', header: 'Status', width: '8rem', renderCell: (row) => row.status },
     { id: 'detail', header: 'Detail', renderCell: (row) => row.detail },
   ],

@@ -14,11 +14,20 @@ const CONFIGS_BY_SURFACE = {
   'Termination Rights Summary': ['termination-rights.config.js'],
   'Termination Fee Matrix': ['termination-fees.config.js'],
   'General Covenants': ['general-covenants.config.js'],
-  'Approvals / Votes': ['approvals-votes.config.js'],
+  // Consolidated into ONE combined Votes/Approvals + SEC Filing/Meeting
+  // section per user feedback -- both surfaces are now covered by
+  // votes-approvals-meeting.config.js (which wraps approvals-votes.config.js
+  // and sec-meeting.config.js internally; those two keep their own exports
+  // and tests but are no longer mounted directly in the review page).
+  'Approvals / Votes': ['votes-approvals-meeting.config.js'],
   'Advisers / Fees / Expenses': ['advisers-fees-expenses.config.js'],
   'Representation Qualifiers': ['representations-qualifiers.config.js'],
   'Consideration Hero': ['consideration-hero.config.js'],
-  'Closing Conditions': ['conditions-m.config.js', 'conditions-b.config.js', 'conditions-s.config.js'],
+  // Consolidated into ONE grouped table per user feedback -- covered by
+  // conditions.config.js (which wraps conditions-m/b/s.config.js internally;
+  // those three keep their own exports and tests but are no longer mounted
+  // directly in the review page).
+  'Closing Conditions': ['conditions.config.js'],
   'Material Contracts': ['material-contracts.config.js'],
   'No-Shop / Fiduciary-Out Stack': [
     'nosol-noshop.config.js',
@@ -27,7 +36,7 @@ const CONFIGS_BY_SURFACE = {
     'nosol-fiduciary.config.js',
   ],
   'Employee Benefits': ['employee-benefits.config.js'],
-  'SEC Meeting / Tender-Offer Filings': ['sec-meeting.config.js'],
+  'SEC Meeting / Tender-Offer Filings': ['votes-approvals-meeting.config.js'],
   'No Other Reps / Fraud': ['no-other-reps-fraud.config.js'],
 };
 

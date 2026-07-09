@@ -131,7 +131,6 @@ const considerationHeroConfig = {
   },
   columns: [
     { id: 'term', header: 'Term', width: '18rem', renderCell: (row) => row.label },
-    { id: 'kind', header: 'Kind', width: '10rem', renderCell: (row) => row.kind },
     { id: 'detail', header: 'Detail', renderCell: renderDetail },
   ],
 };

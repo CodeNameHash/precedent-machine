@@ -230,7 +230,10 @@ test('M2-08 gap configs map their core schema-card fields', () => {
   assert.equal(structureMechanicsMod.structureMechanicsConfig.selectRows(reviewDeal)[0].detail, 'ONE_STEP_MERGER');
   assert.match(antitrustRegulatoryMod.antitrustRegulatoryConfig.selectRows(reviewDeal)[0].detail, /reasonable best/);
   assert.equal(maeDefinitionsMod.maeDefinitionsConfig.selectRows(reviewDeal)[0].detail, 'TWO_LIMB');
-  assert.equal(terminationRightsMod.terminationRightsConfig.selectRows(reviewDeal)[0].detail, 'June 30, 2026');
+  // termination-rights now renders ONE consolidated grouped row (see the
+  // family-grouped rebuild below) rather than a flat per-concept row list.
+  const termrGroupRows = terminationRightsMod.terminationRightsConfig.selectRows(reviewDeal);
+  assert.equal(termrGroupRows.length, 1);
   assert.match(terminationFeesMod.terminationFeesConfig.selectRows(reviewDeal)[0].detail, /\$100,000,000/);
   assert.match(generalCovenantsMod.generalCovenantsConfig.selectRows(reviewDeal)[0].detail, /reasonable access/);
   assert.match(approvalsVotesMod.approvalsVotesConfig.selectRows(reviewDeal)[0].detail, /majority/);
@@ -258,10 +261,10 @@ test('representations-qualifiers config exposes taxonomy-readable signals and ho
   const knowledge = rows.find((row) => row.id === 'representations-qualifiers-knowledge-rep');
   const schedule = rows.find((row) => row.id === 'representations-qualifiers-schedule');
   const bringDown = rows.find((row) => row.id === 'representations-qualifiers-bringdown-rep');
-  assert.deepEqual(materiality.signals.map((item) => item.label), ['Qualifier: True except where failure would not have an MAE']);
-  assert.deepEqual(knowledge.signals.map((item) => item.label), ['Qualifier: Actual knowledge']);
-  assert.deepEqual(schedule.signals.map((item) => item.label), ['Exception: except as set forth in Section 4.06 of the Company Disclosure Schedule']);
-  assert.deepEqual(bringDown.signals.map((item) => item.label), ['Bring-down: in all material respects']);
+  assert.deepEqual(materiality.signals.map((item) => item.label), ['True except where failure would not have an MAE']);
+  assert.deepEqual(knowledge.signals.map((item) => item.label), ['Actual knowledge']);
+  assert.deepEqual(schedule.signals.map((item) => item.label), ['except as set forth in Section 4.06 of the Company Disclosure Schedule']);
+  assert.deepEqual(bringDown.signals.map((item) => item.label), ['in all material respects']);
   const primitives = {
     PillCell: ({ label }) => React.createElement('span', { className: 'pill' }, label),
     EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
@@ -313,10 +316,10 @@ test('mae-definitions config exposes carve-out and definition signals with hover
   const carveouts = rows.find((row) => row.id === 'mae-definitions-carveouts');
   const disproportionate = rows.find((row) => row.id === 'mae-definitions-disproportionate');
   const preventDelay = rows.find((row) => row.id === 'mae-definitions-prevent-delay');
-  assert.deepEqual(limbs.signals.map((item) => item.label), ['Definition: TWO_LIMB']);
-  assert.deepEqual(carveouts.signals.map((item) => item.label), ['Carve-out: General economic conditions']);
-  assert.deepEqual(disproportionate.signals.map((item) => item.label), ['Exception: except to the extent disproportionate']);
-  assert.deepEqual(preventDelay.signals.map((item) => item.label), ['Definition: prevent or materially delay closing']);
+  assert.deepEqual(limbs.signals.map((item) => item.label), ['TWO_LIMB']);
+  assert.deepEqual(carveouts.signals.map((item) => item.label), ['General economic conditions']);
+  assert.deepEqual(disproportionate.signals.map((item) => item.label), ['except to the extent disproportionate']);
+  assert.deepEqual(preventDelay.signals.map((item) => item.label), ['prevent or materially delay closing']);
   const primitives = {
     PillCell: ({ label }) => React.createElement('span', { className: 'pill' }, label),
     EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
@@ -387,10 +390,10 @@ test('antitrust-regulatory config exposes regulatory signals and hover details',
   const filings = rows.find((row) => row.id === 'antitrust-regulatory-hsr-deadline');
   const approvals = rows.find((row) => row.id === 'antitrust-regulatory-approvals');
   const burdenCap = rows.find((row) => row.id === 'antitrust-regulatory-burden-cap');
-  assert.deepEqual(efforts.signals.map((item) => item.label), ['Efforts: Reasonable best efforts']);
-  assert.deepEqual(filings.signals.map((item) => item.label), ['Timing: 10 business days after signing']);
-  assert.deepEqual(approvals.signals.map((item) => item.label), ['Approval: HSR Act waiting period expired or terminated']);
-  assert.deepEqual(burdenCap.signals.map((item) => item.label), ['Cap: no divestiture of material assets']);
+  assert.deepEqual(efforts.signals.map((item) => item.label), ['Reasonable best efforts']);
+  assert.deepEqual(filings.signals.map((item) => item.label), ['10 business days after signing']);
+  assert.deepEqual(approvals.signals.map((item) => item.label), ['HSR Act waiting period expired or terminated']);
+  assert.deepEqual(burdenCap.signals.map((item) => item.label), ['no divestiture of material assets']);
   const primitives = {
     PillCell: ({ label }) => React.createElement('span', { className: 'pill' }, label),
     EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
@@ -421,10 +424,10 @@ test('structure-mechanics config exposes transaction-form signals and hover deta
   const mergerForm = rows.find((row) => row.id === 'structure-mechanics-merger-form');
   const section251h = rows.find((row) => row.id === 'structure-mechanics-section-251h');
   const paymentAgent = rows.find((row) => row.id === 'structure-mechanics-payment-agent');
-  assert.deepEqual(dealStructure.signals.map((item) => item.label), ['Form: TWO_STEP_TENDER_OFFER']);
+  assert.deepEqual(dealStructure.signals.map((item) => item.label), ['TWO_STEP_TENDER_OFFER']);
   assert.match(mergerForm.signals[0].label, /Reverse triangular/);
-  assert.deepEqual(section251h.signals.map((item) => item.label), ['Tender offer: Yes']);
-  assert.deepEqual(paymentAgent.signals.map((item) => item.label), ['Consideration: Yes']);
+  assert.deepEqual(section251h.signals.map((item) => item.label), ['Yes']);
+  assert.deepEqual(paymentAgent.signals.map((item) => item.label), ['Yes']);
   const primitives = {
     PillCell: ({ label }) => React.createElement('span', { className: 'pill' }, label),
     EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
@@ -435,64 +438,72 @@ test('structure-mechanics config exposes transaction-form signals and hover deta
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(section251h, { primitives }))), /data-evidence="The merger shall be a reverse triangular merger/);
 });
 
-test('termination-rights config exposes timing and right signals with hover details', () => {
+// Rebuilt per user feedback to match the legacy pre-schema render: ONE
+// consolidated table grouped by which side may exercise the right (Mutual /
+// Buyer / Target), each row a canonical termination right with a short
+// bullet list of key terms -- not a flat concept-by-concept grid.
+test('termination-rights config consolidates into ONE row whose groups are keyed by family (Mutual / Buyer / Target)', () => {
   const rows = terminationRightsMod.terminationRightsConfig.selectRows({
     cards: [{
       id: 'termr',
       provision_type: 'TERMINATION_RIGHT',
       provision_subtype: 'TERMR-OUTSIDE',
       short_title: 'Outside Date',
-      primary_quote: 'Either party may terminate after June 30, 2026, subject to a 90-day regulatory extension and a material uncured breach standard.',
+      primary_quote: 'Either party may terminate after June 30, 2026, subject to a 90-day regulatory extension.',
       features: {
-        partyWhoCanTerminate: 'PARTY_MUTUAL',
         outsideDate: 'June 30, 2026',
         extensionPeriod: '90 days',
-        breachStandard: 'material uncured breach',
-        recommendationChangeTermination: true,
       },
     }],
   });
-  const party = rows.find((row) => row.id === 'termination-rights-party-termr');
-  const outsideDate = rows.find((row) => row.id === 'termination-rights-outside-date');
-  const extension = rows.find((row) => row.id === 'termination-rights-extension');
-  const breach = rows.find((row) => row.id === 'termination-rights-breach');
-  const recommendation = rows.find((row) => row.id === 'termination-rights-recommendation');
-  assert.deepEqual(party.signals.map((item) => item.label), ['Right: Mutual (both parties)']);
-  assert.deepEqual(outsideDate.signals.map((item) => item.label), ['Timing: June 30, 2026']);
-  assert.deepEqual(extension.signals.map((item) => item.label), ['Timing: 90 days']);
-  assert.deepEqual(breach.signals.map((item) => item.label), ['Breach: material uncured breach']);
-  assert.deepEqual(recommendation.signals.map((item) => item.label), ['Fiduciary: Yes']);
-  const primitives = {
-    PillCell: ({ label }) => React.createElement('span', { className: 'pill' }, label),
-    EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
-  };
-  const signalColumn = terminationRightsMod.terminationRightsConfig.columns.find((column) => column.id === 'signals');
-  const detailColumn = terminationRightsMod.terminationRightsConfig.columns.find((column) => column.id === 'detail');
-  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, signalColumn.renderCell(party, { primitives }))), /Mutual \(both parties\)/);
-  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(outsideDate, { primitives }))), /data-evidence="Either party may terminate/);
+  assert.equal(rows.length, 1, 'termination rights render as ONE table, not one row per concept');
+  assert.ok(Array.isArray(rows[0].groups), 'the single row carries the family groups for GroupedSubRows to render');
 });
 
-test('termination-rights config renders ONE row per right for partyWhoCanTerminate, not a single collapsed row (Metsera regression: 9 claims across 9 rights were collapsing to 1)', () => {
-  const termrCard = (id, short_title, party) => ({
-    id, provision_type: 'TERMINATION_RIGHT', provision_subtype: 'TERMR-GENERIC', short_title, primary_quote: `${short_title} termination right text.`, features: { partyWhoCanTerminate: party },
-  });
+test('termination-rights familyGroups() groups canonical rights under Mutual / Buyer / Target headers, with absent rights flagged not-present', () => {
+  const cards = [
+    { id: 'outside', provision_type: 'TERMINATION_RIGHT', provision_subtype: 'TERMR-OUTSIDE', short_title: 'Outside Date', primary_quote: 'Outside date text.', features: { outsideDate: 'June 30, 2026' } },
+    { id: 'breach-t', provision_type: 'TERMINATION_RIGHT', provision_subtype: 'TERMR-BREACH-T', short_title: 'Target Breach', primary_quote: 'Target breach text.', features: { curePeriod: '30 days' } },
+    { id: 'superior', provision_type: 'TERMINATION_RIGHT', provision_subtype: 'TERMR-SUPERIOR', short_title: 'Superior Proposal', primary_quote: 'Superior proposal text.', features: { feeRequired: true } },
+  ];
+  const groups = terminationRightsMod.familyGroups(cards);
+  const mutual = groups.find((g) => g.id === 'mutual');
+  const buyer = groups.find((g) => g.id === 'buyer');
+  const target = groups.find((g) => g.id === 'target');
+  assert.ok(mutual, 'Mutual / Either Party group should render');
+  assert.ok(buyer, 'Buyer / Parent group should render');
+  assert.ok(target, 'Target / Company group should render');
+  const outsideRow = mutual.rows.find((r) => r.spec.key === 'outside');
+  const mutualConsentRow = mutual.rows.find((r) => r.spec.key === 'mutual');
+  assert.ok(outsideRow.present, 'Outside Date right has a matching card');
+  assert.ok(!mutualConsentRow.present, 'Mutual consent right has no matching card and should render as not-present');
+  assert.match(outsideRow.value.join(' '), /June 30, 2026/);
+  const breachRow = buyer.rows.find((r) => r.spec.key === 'breachT');
+  assert.match(breachRow.value.join(' '), /30 days/);
+  const superiorRow = target.rows.find((r) => r.spec.key === 'superior');
+  assert.match(superiorRow.value.join(' '), /fee payable/i);
+});
+
+test('termination-rights config renders through GroupedSubRows and preserves evidence per right', () => {
   const rows = terminationRightsMod.terminationRightsConfig.selectRows({
-    cards: [
-      termrCard('termr-breach', 'Target Breach', 'PARTY_BUYER'),
-      termrCard('termr-superior', 'Superior Proposal', 'PARTY_TARGET'),
-      termrCard('termr-outside', 'Outside Date', 'PARTY_MUTUAL'),
-    ],
+    cards: [{
+      id: 'termr',
+      provision_type: 'TERMINATION_RIGHT',
+      provision_subtype: 'TERMR-LEGAL',
+      short_title: 'Legal Restraint',
+      primary_quote: 'Either party may terminate if a final, non-appealable legal restraint is in effect.',
+      features: { restraintFinality: 'final and non-appealable' },
+    }],
   });
-  const partyRows = rows.filter((row) => row.label.startsWith('Party who can terminate'));
-  assert.equal(partyRows.length, 3, 'each termination right should keep its own party row instead of collapsing to 1');
-  assert.deepEqual(new Set(partyRows.map((row) => row.id)), new Set([
-    'termination-rights-party-termr-breach',
-    'termination-rights-party-termr-superior',
-    'termination-rights-party-termr-outside',
-  ]));
-  assert.ok(partyRows.some((row) => row.label.includes('Target Breach') && row.detail === 'PARTY_BUYER'));
-  assert.ok(partyRows.some((row) => row.label.includes('Superior Proposal') && row.detail === 'PARTY_TARGET'));
-  assert.ok(partyRows.some((row) => row.label.includes('Outside Date') && row.detail === 'PARTY_MUTUAL'));
+  const GroupedSubRows = ({ groups }) => React.createElement(
+    'div',
+    null,
+    groups.map((g) => React.createElement('div', { key: g.id }, g.label, g.rows.map((r) => React.createElement('span', { key: r.id }, r.label)))),
+  );
+  const bodyColumn = terminationRightsMod.terminationRightsConfig.columns.find((column) => column.id === 'body');
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, bodyColumn.renderCell(rows[0], { primitives: { GroupedSubRows } })));
+  assert.match(html, /Mutual \/ Either Party/);
+  assert.match(html, /Legal restraint \/ order/);
 });
 
 test('sec-meeting config exposes proxy and offer signals with hover details', () => {
@@ -928,10 +939,10 @@ test('termination fee and expense configs expose primitive-backed signals', () =
   const feeRequired = terminationRows.find((row) => row.id === 'termination-fees-required');
   assert.match(amount.detail, /\$100,000,000/);
   assert.deepEqual(amount.signals.map((item) => item.label), ['Company terminates to accept a Superior Proposal']);
-  assert.deepEqual(feeRequired.signals.map((item) => item.label), ['Condition: Yes']);
+  assert.deepEqual(feeRequired.signals.map((item) => item.label), ['Yes']);
   const termSignals = terminationFeesMod.terminationFeesConfig.columns.find((column) => column.id === 'signals');
   const termDetail = terminationFeesMod.terminationFeesConfig.columns.find((column) => column.id === 'detail');
-  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, termSignals.renderCell(feeRequired, { primitives }))), /Condition: Yes/);
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, termSignals.renderCell(feeRequired, { primitives }))), /Yes/);
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, termDetail.renderCell(amount, { primitives }))), /data-evidence="The Company shall pay a termination fee of \$100,000,000 as a condition to termination\."/);
 
   const miscRows = advisersFeesExpensesMod.advisersFeesExpensesConfig.selectRows({
@@ -947,7 +958,7 @@ test('termination fee and expense configs expose primitive-backed signals', () =
     }],
   });
   const exception = miscRows.find((row) => row.id === 'advisers-fees-expenses-expense-exceptions');
-  assert.deepEqual(exception.signals.map((item) => item.label), ['Expenses: Parent pays HSR filing fees']);
+  assert.deepEqual(exception.signals.map((item) => item.label), ['Parent pays HSR filing fees']);
   const miscSignals = advisersFeesExpensesMod.advisersFeesExpensesConfig.columns.find((column) => column.id === 'signals');
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, miscSignals.renderCell(exception, { primitives }))), /Parent pays HSR filing fees/);
 });
@@ -1021,7 +1032,7 @@ test('tail-fee render cells use threshold and evidence primitives', () => {
   const signalColumn = tailFeeMod.tailFeeConfig.columns.find((column) => column.id === 'signals');
   const mechanicColumn = tailFeeMod.tailFeeConfig.columns.find((column) => column.id === 'value');
   const evidenceColumn = tailFeeMod.tailFeeConfig.columns.find((column) => column.id === 'evidence');
-  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, signalColumn.renderCell(threshold, { primitives }))), /Threshold % for Company Takeover Proposal: 50%/);
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, signalColumn.renderCell(threshold, { primitives }))), /class="pill">50%</);
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, mechanicColumn.renderCell(threshold, { primitives }))), /data-threshold="50%"/);
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, evidenceColumn.renderCell(threshold, { primitives }))), /data-evidence="If within 12 months/);
 });
@@ -1224,7 +1235,7 @@ test('nosol configs render signals and hover-source details with primitives', ()
   });
   const noShopSignal = nosolNoshopMod.nosolNoshopConfig.columns.find((column) => column.id === 'signals');
   const noShopDetail = nosolNoshopMod.nosolNoshopConfig.columns.find((column) => column.id === 'detail');
-  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, noShopSignal.renderCell(noShopRows[0], { primitives }))), /No-shop \/ non-solicit restriction: solicit; knowingly encourage/);
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, noShopSignal.renderCell(noShopRows[0], { primitives }))), /solicit; knowingly encourage/);
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, noShopDetail.renderCell(noShopRows[0], { primitives }))), /data-evidence="The Company shall not solicit/);
 
   const superiorRows = nosolSuperiorMod.nosolSuperiorConfig.selectRows({
@@ -1237,7 +1248,7 @@ test('nosol configs render signals and hover-source details with primitives', ()
     }],
   });
   const superiorSignal = nosolSuperiorMod.nosolSuperiorConfig.columns.find((column) => column.id === 'signals');
-  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, superiorSignal.renderCell(superiorRows[0], { primitives }))), /Superior Proposal threshold: 50%/);
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, superiorSignal.renderCell(superiorRows[0], { primitives }))), /50%/);
 
   const interveningRows = nosolInterveningMod.nosolInterveningConfig.selectRows({
     cards: [{
@@ -1261,7 +1272,7 @@ test('nosol configs render signals and hover-source details with primitives', ()
     }],
   });
   const fiduciarySignal = nosolFiduciaryMod.nosolFiduciaryConfig.columns.find((column) => column.id === 'signals');
-  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, fiduciarySignal.renderCell(fiduciaryRows[0], { primitives }))), /Notice period: four Business Days/);
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, fiduciarySignal.renderCell(fiduciaryRows[0], { primitives }))), /four Business Days/);
 });
 
 test('employee-benefits config maps structured compensation items', () => {

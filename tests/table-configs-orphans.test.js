@@ -27,60 +27,6 @@ test.before(async () => {
   representationsQualifiersMod = await import(path.join('..', 'components', 'review', 'table-configs', 'representations-qualifiers.config.js'));
 });
 
-test('structure-mechanics renders the Employee Equity-Award per-instrument table (Metsera: 3 claims per attribute, 9 total)', () => {
-  const equityCard = {
-    id: 'consid-equity',
-    provision_type: 'CONSIDERATION',
-    provision_subtype: 'CONSID-EQUITY',
-    short_title: 'Treatment of Equity Awards / Stock Plans',
-    primary_quote: 'Each Company Stock Option, Restricted Stock Award, and ESPP right shall be treated as set forth herein.',
-    features: {
-      outstandingInstruments: [
-        { code: 'STOCK_OPTIONS', label: 'Stock Options', text: 'Company Stock Option' },
-        { code: 'RESTRICTED_STOCK', label: 'Restricted Stock Awards', text: 'Company Restricted Stock Award' },
-        { code: 'ESPP', label: 'Employee Stock Purchase Plan rights', text: 'Company ESPP' },
-      ],
-      instrumentTreatments: [
-        { code: 'CASHED_OUT_SPREAD', label: 'Cashed Out at Spread', text: 'cash payment equal to the spread' },
-        { code: 'ACCELERATED_VESTING', label: 'Vesting accelerated and cashed out', text: 'fully vested and cashed out' },
-        { code: 'CANCELLED_NO_CONSIDERATION', label: 'Cancelled without consideration', text: 'ESPP terminates without consideration' },
-      ],
-      instrumentVesting: [
-        { code: 'ACCEL_ELSE_DOUBLE_TRIGGER', label: 'Accelerates if it vests by its terms; otherwise double-trigger', text: 'double-trigger vesting protection' },
-        { code: 'FULLY_ACCELERATED', label: 'Fully accelerated at closing', text: 'fully vested' },
-        { code: 'NO_ACCELERATION', label: 'No acceleration; continues vesting', text: 'no new offering period' },
-      ],
-    },
-  };
-  const rows = structureMechanicsMod.structureMechanicsConfig.selectRows({ cards: [equityCard] });
-  const instrumentRows = rows.filter((row) => row.label.startsWith('Outstanding instrument'));
-  const treatmentRows = rows.filter((row) => row.label.startsWith('Treatment per instrument'));
-  const vestingRows = rows.filter((row) => row.label.startsWith('Vesting per instrument'));
-  assert.equal(instrumentRows.length, 3, 'each outstandingInstruments claim should get its own row');
-  assert.equal(treatmentRows.length, 3, 'each instrumentTreatments claim should get its own row');
-  assert.equal(vestingRows.length, 3, 'each instrumentVesting claim should get its own row');
-  assert.ok(instrumentRows.some((row) => row.detail.includes('Stock Options')));
-  assert.ok(treatmentRows.some((row) => row.detail.includes('Cashed Out at Spread')));
-  assert.ok(vestingRows.some((row) => row.detail.includes('Fully accelerated')));
-});
-
-test('structure-mechanics renders the cutoffTreatment scalar row (Skechers cross-deal gap)', () => {
-  const equityCard = {
-    id: 'consid-equity-cutoff',
-    provision_type: 'CONSIDERATION',
-    provision_subtype: 'CONSID-EQUITY',
-    short_title: 'Treatment of Equity Awards / Stock Plans',
-    primary_quote: 'Each Company RSU shall be treated as set forth herein.',
-    features: {
-      cutoffTreatment: 'each Company RSU, whether vested or unvested, that is outstanding as of the Effective Time shall be cancelled',
-    },
-  };
-  const rows = structureMechanicsMod.structureMechanicsConfig.selectRows({ cards: [equityCard] });
-  const cutoff = rows.find((row) => row.label === 'Award / contribution cutoff treatment');
-  assert.ok(cutoff, 'cutoffTreatment should render a row');
-  assert.match(cutoff.detail, /Company RSU/);
-});
-
 test('employee-benefits renders the ERISA checklist even when compensationItems takes the structured path (Metsera regression: erisa* was unread anywhere)', () => {
   const benefitsCard = {
     id: 'employee-benefits',

@@ -79,7 +79,18 @@ function rowForSpec(spec, cards) {
 function rowSignal(row) {
   if (!row?.detail) return null;
   const tone = row.id.endsWith('exceptions') ? 'warning' : 'info';
-  return { id: `${row.id}-signal`, label: `${row.label}: ${row.detail}`, value: row.detail, tone, evidence: row.evidence, source: row.sourceCards?.[0] };
+  // Read-view pill shows the resolved value alone -- the Term column already
+  // names the row (e.g. "Cease discussions"), so a repeated "<Term>: " prefix
+  // was pure noise.
+  return { id: `${row.id}-signal`, label: row.detail, value: row.detail, tone, evidence: row.evidence, source: row.sourceCards?.[0] };
+}
+// Per user feedback: the obligated party (Target / Company on nearly every
+// deal) was repeated on every row. Hoist it into a single section-level note
+// instead of a per-row column -- still fully visible, just shown once.
+function deriveHeaderNote(rows) {
+  const parties = [...new Set((rows || []).map((row) => row.party).filter(Boolean))];
+  if (parties.length === 0) return null;
+  return `Party: ${parties.join(', ')}`;
 }
 function renderSignals(row, ctx) {
   const PillCell = ctx?.primitives?.PillCell;
@@ -109,13 +120,13 @@ const nosolNoshopConfig = {
     if (!cards.length) return [];
     return ROWS.map((row) => rowForSpec(row, cards)).filter(Boolean);
   },
+  deriveHeaderNote,
   columns: [
     { id: 'term', header: 'Term', width: '18rem', renderCell: (row) => row.label },
-    { id: 'party', header: 'Party', width: '12rem', renderCell: (row) => row.party },
     { id: 'signals', header: 'Signals', width: '18rem', renderCell: renderSignals },
     { id: 'detail', header: 'Detail', renderCell: renderDetail },
   ],
   empty: { copy: 'No no-shop core mechanics found.' },
 };
 
-export { nosolNoshopConfig, renderDetail, renderSignals, rowSignal };
+export { deriveHeaderNote, nosolNoshopConfig, renderDetail, renderSignals, rowSignal };
