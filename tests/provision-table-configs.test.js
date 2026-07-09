@@ -249,7 +249,7 @@ test('consideration hero excludes CONSID-EQUITY entirely (equity-awards.config.j
   assert.equal(rows.find((row) => row.id === 'consideration-hero-optionsCvrEarnIn'), undefined);
 });
 
-test('consideration hero computes the "Up to $X.XX / share" rollup pill from perShareAmount + CVR maxPayment even when both live on the same card (Metsera shape: no separate CONSID-CVR card)', () => {
+test('consideration hero computes the "Up to $X.XX / share" max on the per-share consideration row itself (not a separate row) from perShareAmount + CVR maxPayment, even when both live on the same card (Metsera shape: no separate CONSID-CVR card)', () => {
   const rows = considerationHeroMod.considerationHeroConfig.selectRows({
     cards: [{
       id: 'convert',
@@ -259,9 +259,20 @@ test('consideration hero computes the "Up to $X.XX / share" rollup pill from per
       features: { considerationType: 'cash-with-cvr', perShareAmount: 47.5, maxPayment: '$22.50' },
     }],
   });
-  const rollup = rows.find((row) => row.id === 'consideration-hero-rollup');
-  assert.ok(rollup, 'expected a computed rollup row');
-  assert.equal(rollup.detail, 'Up to $70.00 / share');
+  assert.equal(rows.find((row) => row.id === 'consideration-hero-rollup'), undefined, 'the computed max must not render as its own row');
+  const perShare = rows.find((row) => row.id === 'consideration-hero-per-share');
+  assert.ok(perShare, 'expected a per-share consideration row');
+  assert.equal(perShare.maxDetail, 'Up to $70.00 / share');
+  assert.equal(perShare.detail, '$47.5 in cash + 1 CVR (up to $22.50)');
+
+  const primitives = {
+    PillCell: ({ label, tone }) => React.createElement('span', { 'data-pill': tone }, label),
+  };
+  const detailColumn = considerationHeroMod.considerationHeroConfig.columns.find((c) => c.id === 'detail');
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(perShare, { primitives })));
+  assert.match(html, /\$47\.5 in cash/, 'per-share cash pill still renders');
+  assert.match(html, /1 CVR \(up to \$22\.50\)/, 'CVR pill still renders');
+  assert.match(html, /Up to \$70\.00 \/ share/, 'the computed max renders in the SAME cell as the per-share pills, not a separate row');
 });
 
 test('consideration hero renders "Other provisions in this section" as a link off the CONSID-EXCHANGE card, not a Yes row', () => {
