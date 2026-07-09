@@ -251,6 +251,48 @@ function splitBringdownCoveredPills(group) {
   return parts.length ? parts : [text];
 }
 
+// Short bring-down labels for the per-rep pill on the Representations table
+// (Ben round 6: "Bringdown: MAE"), keyed by tierMeta rank. The Reps table's
+// per-rep linkedBringDownStandard claim is a uniform MAE mis-stamp on Metsera;
+// the AUTHORITATIVE per-rep standard is this closing-condition tiering, so the
+// Reps pill derives from here to stay consistent with the Conditions section.
+const SHORT_BRINGDOWN_BY_RANK = { 0: 'In all respects', 1: 'De minimis', 2: 'In all material respects', 3: 'MAE' };
+function normRepName(name) {
+  return String(name || '')
+    .split(/\s+[—–-]\s+/)[0]
+    .toLowerCase()
+    .replace(/[.;,]+$/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+// Map<normalized rep name, { short, rank, colorKey }> built from the accuracy-
+// of-reps closing-condition bringDownTiers. The MAE "all others" catch-all tier
+// is intentionally NOT mapped -- any rep absent from the map defaults to MAE.
+function buildRepBringDownMap(reviewDeal) {
+  const cards = reviewDeal?.cards || [];
+  const matches = cards.filter((card) => Array.isArray(card?.features?.bringDownTiers) && card.features.bringDownTiers.length);
+  const map = new Map();
+  if (!matches.length) return map;
+  const nameBySec = repNameBySection(matches);
+  const tiers = matches
+    .flatMap((provision) => provision.features.bringDownTiers.map((tier) => ({ tier, meta: tierMeta(tier) })))
+    .sort((a, b) => a.meta.rank - b.meta.rank); // most-stringent first: a rep in >1 tier keeps the most stringent
+  for (const { tier, meta } of tiers) {
+    const covered = String(tier.reps_covered || tier.repsCovered || '').trim();
+    const general = /^all\s+(?:company\s+|parent\s+)?representations/i.test(covered)
+      || /\ball\s+other\b/i.test(covered)
+      || /representations?\s+(?:and\s+warranties\s+)?other than/i.test(covered);
+    if (general || !covered) continue;
+    const short = SHORT_BRINGDOWN_BY_RANK[meta.rank] || meta.label;
+    const colorKey = standardColorKey(meta.label);
+    for (const part of splitBringdownCoveredPills(covered).map((token) => resolveRepsCovered(token, nameBySec))) {
+      const key = normRepName(part);
+      if (key && !map.has(key)) map.set(key, { short, rank: meta.rank, colorKey });
+    }
+  }
+  return map;
+}
+
 // Rep bring-down rendered as Ben's grouped structure: each standard is a
 // sub-heading ordered lowest-materiality-first (de minimis -> material -> MAE
 // "all others" last), with the reps brought down to that standard rendered as
@@ -619,4 +661,4 @@ const conditionsConfig = {
   renderFooter: renderConditionsFooter,
 };
 
-export { CONDITION_FAMILY_LABELS, conditionGroups, conditionsConfig, deriveFamily };
+export { CONDITION_FAMILY_LABELS, buildRepBringDownMap, conditionGroups, conditionsConfig, deriveFamily, normRepName };

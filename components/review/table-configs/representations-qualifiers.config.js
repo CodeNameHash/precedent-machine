@@ -2,6 +2,7 @@ import React from 'react';
 import taxonomy from '../../../lib/taxonomy.js';
 import { knowledgeQualifierDisplay, normalizeQualifierScope, sortByAgreementOrder, withScopeParens } from '../table-logic.js';
 import { standardColorKey } from './standard-colors.js';
+import { buildRepBringDownMap, normRepName } from './conditions.config.js';
 import { cardCode, cardType, firstFeature, labelOf, selectCards, textOf, valueText } from './card-utils.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
@@ -172,35 +173,26 @@ function resolveMateriality(card) {
 }
 
 // -- bring-down standard (what the rep is brought down to at closing) ----------
-// Every rep carries a linkedBringDownStandard claim (MAT_MAE_QUALIFIED /
-// MAT_ALL_MATERIAL / MAT_DE_MINIMIS ...). It's the closing accuracy standard,
-// distinct from the rep's own materiality qualifier -- surfaced as a subtle
-// pill on the rep so the reader sees the standard without cross-referencing
-// the conditions bring-down. Coloured off the same materiality palette so the
-// same standard reads the same colour it does in Conditions.
-const BRINGDOWN_LABELS = {
-  MAT_MAE_QUALIFIED: 'MAE',
-  MAT_ALL_MATERIAL: 'In all material respects',
-  MAT_IN_ALL_MATERIAL_RESPECTS: 'In all material respects',
-  MAT_DE_MINIMIS: 'De minimis',
-  MAT_UNQUALIFIED: 'Unqualified',
-  MAT_TRUE_AND_CORRECT: 'True and correct',
-};
-
-function bringDownCode(value) {
-  if (!value) return null;
-  if (typeof value === 'string') return value.trim();
-  return codeOf(value) || (value.text ? String(value.text).trim() : null);
-}
-
-function resolveBringDown(card) {
-  const hit = firstFeature([card], ['linkedBringDownStandard']);
-  if (!hit) return null;
-  const code = bringDownCode(hit.value);
-  if (!code) return null;
-  const label = BRINGDOWN_LABELS[code] || materialityLabel(code, hit.value) || humanizeCode(code);
-  if (!label) return null;
-  return { label, color: materialityColor(code, label), evidence: textOfValue(hit.value) || textOf(card) };
+// IMPORTANT: the per-rep `linkedBringDownStandard` claim is a UNIFORM MAE
+// mis-stamp on Metsera (all 27 reps read MAT_MAE_QUALIFIED), so it can't be
+// trusted. The AUTHORITATIVE per-rep standard is the accuracy-of-reps closing
+// condition's `bringDownTiers` (in-all-material-respects / de-minimis / MAE,
+// each with a section-cited reps_covered list). We resolve it via the SAME
+// map the Conditions section uses (buildRepBringDownMap) so the two agree, and
+// default to MAE for any rep the tiers don't carve out.
+function resolveBringDown(card, bringDownMap) {
+  if (!bringDownMap) return null;
+  const key = normRepName(labelOf(card));
+  let hit = bringDownMap.get(key);
+  if (!hit) {
+    for (const [name, meta] of bringDownMap) {
+      if (name && (key.includes(name) || name.includes(key))) { hit = meta; break; }
+    }
+  }
+  // Not carved into a specific tier -> MAE (the closing condition's catch-all).
+  const short = hit ? hit.short : 'MAE';
+  const colorKey = hit ? hit.colorKey : 'MAE';
+  return { label: `Bringdown: ${short}`, colorKey, evidence: textOf(card) };
 }
 
 // -- knowledge qualifier --------------------------------------------------------
@@ -465,7 +457,7 @@ function clauseSeeText(text) {
   if (!text) return null;
   return React.createElement(
     'details',
-    { className: 'mt-1' },
+    { className: 'inline-block align-baseline' },
     React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, 'see text'),
     React.createElement(
       'div',
@@ -481,23 +473,22 @@ function renderTerm(row, ctx) {
   const label = row.party ? `${row.label} (${row.party})` : row.label;
   const PillCell = ctx?.primitives?.PillCell;
   const bd = row.bringDown;
-  // Subtle bring-down pill: just the standard the rep is brought down to (no
-  // "bring-down" prefix), sized to sit quietly under the rep name.
-  const bdNode = bd
-    ? React.createElement(
-        'div',
-        { className: 'mt-1 text-[10px]' },
-        PillCell
-          ? React.createElement(PillCell, { label: bd.label, tone: 'neutral', color: bd.color, evidence: bd.evidence, source: row.card })
-          : bd.label,
-      )
+  // Bring-down pill ("Bringdown: MAE") sits on the SAME line as "see text"
+  // (Ben round 6: don't add row height). The clause text expands below.
+  const bdPill = bd
+    ? (PillCell
+        ? React.createElement(PillCell, { label: bd.label, tone: 'neutral', color: bd.colorKey, evidence: bd.evidence, source: row.card })
+        : React.createElement('span', { className: 'text-[10px]' }, bd.label))
+    : null;
+  const seeText = clauseSeeText(row.mainConcept);
+  const inlineRow = (bdPill || seeText)
+    ? React.createElement('div', { className: 'mt-1 flex flex-wrap items-baseline gap-x-2 gap-y-1' }, bdPill, seeText)
     : null;
   return React.createElement(
     'div',
     null,
     React.createElement('span', { className: 'font-medium text-ink', title: cardCode(row.card) || undefined }, label),
-    bdNode,
-    clauseSeeText(row.mainConcept),
+    inlineRow,
   );
 }
 
@@ -741,6 +732,7 @@ function buildRepresentationsConfig({ id, title, partyPrefix, preambleCode }) {
       if (generalExceptionsRow) rows.push(generalExceptionsRow);
       const knowledgeSummaryRow = buildKnowledgeSummaryRow(reviewDeal, id, cards);
       if (knowledgeSummaryRow) rows.push(knowledgeSummaryRow);
+      const bringDownMap = buildRepBringDownMap(reviewDeal);
       for (const card of cards) {
         const term = resolveTerm(card);
         rows.push({
@@ -754,7 +746,7 @@ function buildRepresentationsConfig({ id, title, partyPrefix, preambleCode }) {
           materiality: resolveMateriality(card),
           knowledge: resolveKnowledge(card),
           lookback: resolveLookback(card),
-          bringDown: resolveBringDown(card),
+          bringDown: resolveBringDown(card, bringDownMap),
         });
       }
       return rows;
