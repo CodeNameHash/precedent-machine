@@ -182,51 +182,17 @@ test('plain code-as-verbatim tagged attributes are unaffected by the JSON-envelo
 });
 
 // --- Fix 1b: consideration-hero.config.js's stale local valueText ----------
-
-test('consideration-hero equityAwardTreatment (flat JSON, no envelope) renders structured fields inline, not raw JSON', () => {
-  // Build the equityAwardTreatment value the way the real adapter does (flat
-  // JSON verbatim, no `.value` envelope) rather than hand-authoring the
-  // parsed shape, so this test exercises the exact adapter output.
-  const adapterFeatures = buildFeaturesForCard([
-    claim({
-      attribute: 'equityAwardTreatment',
-      canonical: null,
-      verbatim: JSON.stringify({
-        espp: 'Company ESPP is frozen, no new participants or increased elections are permitted.',
-        stockOptions: 'Company Stock Options are cancelled for cash plus one CVR per underlying share.',
-      }),
-    }),
-  ]);
-  const rows = considerationHeroMod.considerationHeroConfig.selectRows({
-    cards: [{
-      id: 'equity',
-      provision_subtype: 'CONSID-EQUITY',
-      short_title: 'Treatment of Equity Awards',
-      primary_quote: 'Company Options are cancelled...',
-      features: { considerationType: 'cash', equityAwardTreatment: adapterFeatures.equityAwardTreatment },
-    }],
-  });
-  const row = rows.find((r) => r.id === 'consideration-hero-equityAwardTreatment');
-  assert.ok(row, 'equity-award treatment row renders');
-  noJson(row.detail);
-  assert.match(row.detail, /Company ESPP is frozen/);
-});
-
-test('consideration-hero vestingAcceleration does not double the raw canonical code onto the label', () => {
-  const adapterFeatures = buildFeaturesForCard([
-    claim({ attribute: 'vestingAcceleration', canonical: null, verbatim: 'ACCEL_ELSE_DOUBLE_TRIGGER' }),
-  ]);
-  const rows = considerationHeroMod.considerationHeroConfig.selectRows({
-    cards: [{
-      id: 'vest',
-      provision_subtype: 'CONSID-EQUITY',
-      features: { considerationType: 'cash', vestingAcceleration: adapterFeatures.vestingAcceleration },
-    }],
-  });
-  const row = rows.find((r) => r.id === 'consideration-hero-vestingAcceleration');
-  assert.ok(row, 'vesting-acceleration row renders');
-  assert.ok(!row.detail.includes('ACCEL_ELSE_DOUBLE_TRIGGER'), `raw code must not leak after the label, got: ${row.detail}`);
-});
+//
+// The two regression tests that used to live here (equityAwardTreatment /
+// vestingAcceleration rendering on the CONSID-EQUITY card via
+// considerationHeroConfig) were retired by the Consideration rebuild (spec
+// REBUILD-SPECS.md §2): CONSID-EQUITY is now excluded from
+// considerationHeroConfig's selector entirely -- those two fields live
+// exclusively on equity-awards.config.js's "Consideration" / "Vesting
+// Treatment" columns, which route through the SAME card-utils.js valueText
+// this fix hardened, so the underlying JSON-leak / code-doubling fix stays
+// covered (see equity-awards-config.test.js's CVR-entitlement and notes
+// tests, plus the generic valueText coverage in the Fix 1 block above).
 
 // --- Fix 2a: writtenConsentRequired (TERMR-MUTUAL card-selection miss) -----
 
@@ -246,9 +212,13 @@ test('approvals-votes config selects the TERMR-MUTUAL card so writtenConsentRequ
   assert.equal(row.detail, 'Yes');
 });
 
-// --- Fix 2b: CVR milestone / options-earn-in consideration rows -----------
+// --- Fix 2b: CVR milestone consideration row -------------------------------
+// (optionsCvrEarnIn moved off this config entirely under the Consideration
+// rebuild -- spec REBUILD-SPECS.md §2 -- it now renders as equity-awards
+// .config.js's per-instrument "CVR Entitlement" column; see that config's
+// test file for its coverage.)
 
-test('consideration-hero config exposes cvrMilestonePayments and optionsCvrEarnIn rows when present', () => {
+test('consideration-hero config exposes a cvrMilestonePayments row when present', () => {
   const rows = considerationHeroMod.considerationHeroConfig.selectRows({
     cards: [{
       id: 'convert',
@@ -260,16 +230,14 @@ test('consideration-hero config exposes cvrMilestonePayments and optionsCvrEarnI
         cvrMilestonePayments: [
           { code: 'CVR_MILESTONE', label: 'Clinical Trial Milestone Payment', text: '"Clinical Trial Milestone Payment" means $5.00' },
         ],
-        optionsCvrEarnIn: { code: 'MUST_BE_ITM', label: 'Must be in-the-money', text: 'MUST_BE_ITM' },
       },
     }],
   });
   const milestoneRow = rows.find((r) => r.id === 'consideration-hero-cvrMilestonePayments');
   const earnInRow = rows.find((r) => r.id === 'consideration-hero-optionsCvrEarnIn');
   assert.ok(milestoneRow, 'cvrMilestonePayments row renders');
-  assert.ok(earnInRow, 'optionsCvrEarnIn row renders');
   assert.match(milestoneRow.detail, /Clinical Trial Milestone Payment/);
-  assert.match(earnInRow.detail, /Must be in-the-money/);
+  assert.equal(earnInRow, undefined, 'optionsCvrEarnIn must not render on the hero card any more -- it moved to equity-awards.config.js');
 });
 
 // --- Fix 2c: termination-rights cross-cutting remedies group --------------

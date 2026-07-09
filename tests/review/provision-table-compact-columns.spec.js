@@ -210,31 +210,33 @@ test('consideration-hero and approvals-votes route their sole detail column thro
   const { considerationHeroConfig } = await import('../../components/review/table-configs/consideration-hero.config.js');
   const { approvalsVotesConfig } = await import('../../components/review/table-configs/approvals-votes.config.js');
 
+  // NOTE: this fixture used to be a CONSID-EQUITY card asserting an
+  // "Equity-award treatment" row -- retired by the Consideration rebuild
+  // (spec REBUILD-SPECS.md §2), which excludes CONSID-EQUITY from
+  // considerationHeroConfig's selector entirely (equity-awards.config.js
+  // owns it exclusively now, see that config's tests). This structural
+  // assertion (non-pill rows route through TruncatedWithSeeText) still
+  // needs a surviving mixed-shape row, so it uses exchangeRatioText instead.
   const considRows = considerationHeroConfig.selectRows({
     cards: [{
-      id: 'consid-equity',
+      id: 'consid-mixed',
       provision_type: 'CONSIDERATION',
-      provision_subtype: 'CONSID-EQUITY',
-      primary_quote: 'Equity awards convert as follows.',
+      provision_subtype: 'CONSID',
+      primary_quote: 'Each share converts as follows.',
       features: {
-        considerationType: 'CASH',
-        perShareAmount: '$47.50',
-        equityAwardTreatment: {
-          espp: 'Terminated and refunded prior to Closing',
-          stockOptions: 'Cancelled and converted into the right to receive the Option Consideration',
-          restrictedStock: 'Vest in full immediately prior to the Effective Time',
-        },
+        considerationType: 'MIXED',
+        exchangeRatioText: 'Each share of Company Common Stock shall be converted into the right to receive 0.6275 shares of Parent Common Stock, subject to adjustment.',
       },
     }],
   });
-  const equityRow = considRows.find((r) => r.label === 'Equity-award treatment');
-  assert.ok(equityRow, 'expected an equity-award-treatment row');
+  const exchangeRatioRow = considRows.find((r) => r.id === 'consideration-hero-exchangeRatioText');
+  assert.ok(exchangeRatioRow, 'expected an exchange-ratio-formula row');
   const TruncatedWithSeeText = () => null;
-  const considElement = considerationHeroConfig.columns.find((c) => c.id === 'detail').renderCell(equityRow, {
+  const considElement = considerationHeroConfig.columns.find((c) => c.id === 'detail').renderCell(exchangeRatioRow, {
     primitives: { TruncatedWithSeeText },
   });
   assert.equal(considElement.type, TruncatedWithSeeText);
-  assert.equal(considElement.props.text, equityRow.detail);
+  assert.equal(considElement.props.text, exchangeRatioRow.detail);
 
   const voteRows = approvalsVotesConfig.selectRows({
     cards: [{

@@ -214,6 +214,81 @@ test('consideration hero config maps stock/election mechanics and tender-offer p
   assert.match(rows.find((row) => row.id === 'consideration-hero-collar').detail, /SYMMETRIC/);
 });
 
+test('consideration hero excludes CONSID-EQUITY entirely (equity-awards.config.js owns it exclusively, no double-render)', () => {
+  const rows = considerationHeroMod.considerationHeroConfig.selectRows({
+    cards: [
+      {
+        id: 'convert',
+        provision_subtype: 'CONSID-CONVERT',
+        short_title: 'Conversion of Shares',
+        primary_quote: 'Company common stock converts into $47.50 cash plus one CVR.',
+        features: { considerationType: 'cash-with-cvr', perShareAmount: 47.5, maxPayment: '$22.50', appraisalRightsAvailable: true },
+      },
+      {
+        id: 'equity',
+        provision_subtype: 'CONSID-EQUITY',
+        short_title: 'Treatment of Equity Awards / Stock Plans',
+        primary_quote: 'Company equity awards are cancelled or accelerated.',
+        features: {
+          considerationType: 'cash-with-cvr',
+          equityAwardTreatment: { code: 'CASHED_OUT_SPREAD', label: 'Cashed Out at Spread' },
+          vestingAcceleration: { code: 'ACCEL_ELSE_DOUBLE_TRIGGER', label: 'Accelerates on double trigger' },
+          optionsCvrEarnIn: { code: 'MUST_BE_ITM', label: 'Must be in-the-money' },
+          outstandingInstruments: ['ESPP', 'RESTRICTED_STOCK', 'STOCK_OPTIONS'],
+        },
+      },
+    ],
+  });
+  assert.ok(!rows.some((row) => row.evidence && row.evidence.includes('cancelled or accelerated')), 'no row should be sourced from the CONSID-EQUITY card');
+  assert.equal(rows.find((row) => row.id === 'consideration-hero-equityAwardTreatment'), undefined);
+  assert.equal(rows.find((row) => row.id === 'consideration-hero-vestingAcceleration'), undefined);
+  assert.equal(rows.find((row) => row.id === 'consideration-hero-optionsCvrEarnIn'), undefined);
+});
+
+test('consideration hero computes the "Up to $X.XX / share" rollup pill from perShareAmount + CVR maxPayment even when both live on the same card (Metsera shape: no separate CONSID-CVR card)', () => {
+  const rows = considerationHeroMod.considerationHeroConfig.selectRows({
+    cards: [{
+      id: 'convert',
+      provision_subtype: 'CONSID-CONVERT',
+      short_title: 'Conversion of Shares',
+      primary_quote: 'Company common stock converts into $47.50 cash plus one CVR (up to $22.50).',
+      features: { considerationType: 'cash-with-cvr', perShareAmount: 47.5, maxPayment: '$22.50' },
+    }],
+  });
+  const rollup = rows.find((row) => row.id === 'consideration-hero-rollup');
+  assert.ok(rollup, 'expected a computed rollup row');
+  assert.equal(rollup.detail, 'Up to $70.00 / share');
+});
+
+test('consideration hero renders "Other provisions in this section" as a link off the CONSID-EXCHANGE card, not a Yes row', () => {
+  const rows = considerationHeroMod.considerationHeroConfig.selectRows({
+    cards: [
+      {
+        id: 'convert',
+        provision_subtype: 'CONSID-CONVERT',
+        short_title: 'Conversion of Shares',
+        primary_quote: 'Company common stock converts into $47.50 cash.',
+        features: { considerationType: 'cash', perShareAmount: '$47.50' },
+      },
+      {
+        id: 'exchange',
+        provision_subtype: 'CONSID-EXCHANGE',
+        short_title: 'Exchange of Certificates / Payment Mechanics',
+        primary_quote: 'Payment mechanics for exchange of certificates and book-entry shares for cash.',
+        features: { considerationType: 'cash' },
+      },
+    ],
+  });
+  const other = rows.find((row) => row.id === 'consideration-hero-other-provisions');
+  assert.ok(other, 'expected an "other provisions" link row');
+  assert.equal(other.detail, 'Exchange of Certificates / Payment Mechanics');
+  assert.notEqual(other.detail, 'Yes');
+  assert.equal(other.isLink, true);
+  const TruncatedWithSeeText = () => null;
+  const element = considerationHeroMod.considerationHeroConfig.columns.find((c) => c.id === 'detail').renderCell(other, { primitives: {} });
+  assert.notEqual(element, 'Yes');
+});
+
 test('M2-08 gap configs map their core schema-card fields', () => {
   const cards = [
     { id: 'struct', provision_type: 'STRUCTURE_MECHANICS', provision_subtype: 'STRUCT-MERGER', short_title: 'Merger', features: { dealStructure: 'ONE_STEP_MERGER', closingTiming: '2 business days after conditions' } },

@@ -100,16 +100,85 @@ test('cutoffTreatment (e.g. ESPP contribution cutoff) renders as its own note ro
   assert.match(cutoff.treatment, /Company RSU/);
 });
 
-test('config exposes Instrument / Treatment / Vesting columns, no Kind column', () => {
+test('config exposes Equity Type / Consideration / Vesting Treatment / CVR Entitlement / Notes columns (spec REBUILD-SPECS.md §2)', () => {
   const ids = mod.equityAwardsConfig.columns.map((c) => c.id);
-  assert.deepEqual(ids, ['instrument', 'treatment', 'vesting']);
+  assert.deepEqual(ids, ['equityType', 'consideration', 'vestingTreatment', 'cvrEntitlement', 'notes']);
+});
+
+test('CVR Entitlement column is populated from optionsCvrEarnIn on the options row only (ITM-gated CVR earn-in), not on RSA/ESPP rows', () => {
+  const cards = [
+    {
+      id: 'equity-options',
+      provision_type: 'CONSIDERATION',
+      provision_subtype: 'CONSID-EQUITY',
+      short_title: 'Company Stock Options',
+      primary_quote: 'Each Company Stock Option shall be canceled and converted into the right to receive a cash payment equal to the spread, subject to the CVR earn-in.',
+      features: {
+        instrumentType: { code: 'STOCK_OPTIONS', label: 'Stock Options', text: 'Company Stock Option' },
+        equityAwardTreatment: { code: 'CASHED_OUT_SPREAD', label: 'Cashed Out at Spread', text: 'cash payment equal to the spread' },
+        vestingAcceleration: { code: 'FULLY_ACCELERATED', label: 'Fully accelerated at closing', text: 'fully vested' },
+        optionsCvrEarnIn: { code: 'MUST_BE_ITM', label: 'Must be in-the-money', text: 'MUST_BE_ITM' },
+      },
+    },
+    {
+      id: 'equity-rsa',
+      provision_type: 'CONSIDERATION',
+      provision_subtype: 'CONSID-EQUITY',
+      short_title: 'Company Restricted Stock Awards',
+      primary_quote: 'Each Company Restricted Stock Award shall vest in full.',
+      features: {
+        instrumentType: { code: 'RESTRICTED_STOCK', label: 'Restricted Stock Awards', text: 'Company Restricted Stock Award' },
+        equityAwardTreatment: { code: 'CASHED_OUT_AT_CONSIDERATION', label: 'Cashed out at Merger Consideration', text: 'vests in full' },
+      },
+    },
+  ];
+  const rows = mod.equityAwardRows(cards);
+  const options = rows.find((r) => r.instrument.includes('Stock Options'));
+  const rsa = rows.find((r) => r.instrument.includes('Restricted Stock'));
+  assert.ok(options && rsa);
+  assert.match(options.cvrEntitlement, /Must be in-the-money/);
+  assert.equal(rsa.cvrEntitlement, null, 'RSA rows must not carry an options-only CVR earn-in condition');
+});
+
+test('Notes column surfaces espp_treatment on the ESPP row and a double-trigger note on non-ESPP rows with doubleTrigger set', () => {
+  const cards = [
+    {
+      id: 'equity-espp',
+      provision_type: 'CONSIDERATION',
+      provision_subtype: 'CONSID-EQUITY',
+      short_title: 'ESPP',
+      primary_quote: 'The ESPP shall terminate.',
+      features: {
+        instrumentType: { code: 'ESPP', label: 'Employee Stock Purchase Plan rights', text: 'Company ESPP' },
+        equityAwardTreatment: { code: 'CANCELLED_NO_CONSIDERATION', label: 'Cancelled without consideration', text: 'ESPP terminates' },
+        espp_treatment: 'Company ESPP is frozen, no new participants or increased elections are permitted.',
+      },
+    },
+    {
+      id: 'equity-options-dt',
+      provision_type: 'CONSIDERATION',
+      provision_subtype: 'CONSID-EQUITY',
+      short_title: 'Company Stock Options',
+      primary_quote: 'Options are cashed out.',
+      features: {
+        instrumentType: { code: 'STOCK_OPTIONS', label: 'Stock Options', text: 'Company Stock Option' },
+        equityAwardTreatment: { code: 'CASHED_OUT_SPREAD', label: 'Cashed Out at Spread', text: 'cash payment equal to the spread' },
+        doubleTrigger: true,
+      },
+    },
+  ];
+  const rows = mod.equityAwardRows(cards);
+  const espp = rows.find((r) => r.instrument.includes('Employee Stock Purchase Plan'));
+  const options = rows.find((r) => r.instrument.includes('Stock Options'));
+  assert.match(espp.notes, /Company ESPP is frozen/);
+  assert.match(options.notes, /Double-trigger/);
 });
 
 test('renderInstrument surfaces an approximate-pairing flag only when the row is flagged', () => {
   const primitives = {
     EvidenceHoverSource: ({ children }) => React.createElement('span', null, children),
   };
-  const instrumentColumn = mod.equityAwardsConfig.columns.find((c) => c.id === 'instrument');
+  const instrumentColumn = mod.equityAwardsConfig.columns.find((c) => c.id === 'equityType');
   const confident = { instrument: 'Stock Options', approximate: false, evidence: '', sourceCard: null };
   const approximate = { instrument: 'RSAs', approximate: true, evidence: '', sourceCard: null };
   const confidentHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, instrumentColumn.renderCell(confident, { primitives })));

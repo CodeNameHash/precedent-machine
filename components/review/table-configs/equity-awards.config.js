@@ -2,8 +2,14 @@ import React from 'react';
 import { cardCode, cardFeatures, cardType, selectCards, textOf, valueText } from './card-utils.js';
 
 // Employee Equity-Award per-instrument table, rebuilt to match the legacy
-// pre-schema page: ONE row per instrument (instrument | treatment |
-// vesting), not three separately-unzipped lists.
+// pre-schema page: ONE row per instrument (equity type | consideration |
+// vesting treatment | CVR entitlement | notes), not three separately-unzipped
+// lists, and not duplicated on the Consideration headline card any more --
+// consideration-hero.config.js explicitly excludes CONSID-EQUITY from its
+// selector (spec REBUILD-SPECS.md §2), so every equity attribute
+// (equityAwardTreatment, instrumentTreatments, instrumentVesting,
+// outstandingInstruments, espp_treatment, doubleTrigger, vestingAcceleration,
+// optionsCvrEarnIn, optionSpread) is owned exclusively here.
 //
 // Why a per-CARD join is safe here (not a fabricated positional zip):
 // lib/parser-v2/extract.js#expandConsidEquityByInstrument runs as part of
@@ -50,6 +56,41 @@ function matchByCode(instrumentCode, list) {
   return list.find((item) => instrumentKeyOf(item) === instrumentCode) || null;
 }
 
+function isTruthyBoolLike(value) {
+  return value === true || value === 'true';
+}
+
+// CVR ENTITLEMENT column (spec §2): only options carry a CVR earn-in
+// condition -- RSAs/ESPP are simply cashed out/cancelled at closing with no
+// ITM gate. optionsCvrEarnIn is a card-level feature (MUST_BE_ITM on
+// Metsera), so it only attaches to the row whose instrument label reads as
+// an option grant.
+function isOptionsLabel(text) {
+  return /\boption/i.test(String(text || ''));
+}
+function cvrEntitlementFor(instrumentLabel, features) {
+  if (!isOptionsLabel(instrumentLabel)) return null;
+  return valueText(features?.optionsCvrEarnIn) || null;
+}
+
+// NOTES column (spec §2, "free"): surfaces the two per-card facts that don't
+// have a dedicated column -- the ESPP-specific mechanic prose (espp_treatment,
+// only distinct/meaningful on the ESPP row) and the double-trigger flag
+// (doubleTrigger, only meaningful for time-vesting instruments, i.e. not
+// ESPP contribution rights).
+function isEsppLabel(text) {
+  return /espp|employee stock purchase/i.test(String(text || ''));
+}
+function notesFor(instrumentLabel, features) {
+  if (isEsppLabel(instrumentLabel)) {
+    const espp = valueText(features?.espp_treatment);
+    if (espp) return espp;
+  } else if (isTruthyBoolLike(features?.doubleTrigger)) {
+    return 'Double-trigger: acceleration requires a qualifying termination following the change in control.';
+  }
+  return null;
+}
+
 function rowsForCard(card) {
   const f = cardFeatures(card);
   const instruments = asList(f.outstandingInstruments);
@@ -70,6 +111,8 @@ function rowsForCard(card) {
       instrument,
       treatment: treatment || null,
       vesting: vesting || null,
+      cvrEntitlement: cvrEntitlementFor(instrument, f),
+      notes: notesFor(instrument, f),
       evidence,
       sourceCard: card,
       approximate: false,
@@ -87,11 +130,14 @@ function rowsForCard(card) {
     const approximate = !matchedTreatment && !matchedVesting;
     const treatment = matchedTreatment || (approximate ? treatments[index] : null);
     const vesting = matchedVesting || (approximate ? vestings[index] : null);
+    const instrumentLabel = valueText(inst) || `Instrument ${index + 1}`;
     return {
       id: `equity-awards-${card.id || 'card'}-${index}`,
-      instrument: valueText(inst) || `Instrument ${index + 1}`,
+      instrument: instrumentLabel,
       treatment: valueText(treatment) || null,
       vesting: valueText(vesting) || null,
+      cvrEntitlement: cvrEntitlementFor(instrumentLabel, f),
+      notes: notesFor(instrumentLabel, f),
       evidence,
       sourceCard: card,
       approximate,
@@ -110,6 +156,8 @@ function cutoffRow(cards) {
         instrument: 'Award / contribution cutoff treatment',
         treatment: cutoff,
         vesting: null,
+        cvrEntitlement: null,
+        notes: null,
         evidence: textOf(card),
         sourceCard: card,
         approximate: false,
@@ -133,17 +181,24 @@ function cell(text, ctx, row) {
   return React.createElement(EvidenceHoverSource, { evidence: row.evidence, source: row.sourceCard, as: 'span' }, text);
 }
 
+// Approximate-pairing flag, softened (spec §2) from a full amber block per
+// row to a small inline icon carrying the same warning as a native `title`
+// tooltip -- the reviewer still gets the exact same "verify against source
+// text" wording on hover, it just no longer dominates the row.
 function renderInstrument(row, ctx) {
   const label = cell(row.instrument, ctx, row);
   if (!row.approximate) return label;
   return React.createElement(
     'span',
-    { className: 'inline-flex flex-col gap-0.5' },
+    { className: 'inline-flex items-center gap-1' },
     label,
     React.createElement(
       'span',
-      { className: 'inline-flex w-fit items-center rounded border border-amber-200 bg-amber-50 px-1.5 py-0.5 text-[10px] font-medium text-amber-800' },
-      'Approximate pairing — verify against source text',
+      {
+        className: 'inline-flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full border border-amber-300 bg-amber-50 text-[9px] font-semibold leading-none text-amber-700',
+        title: 'Approximate pairing — verify against source text',
+      },
+      '!',
     ),
   );
 }
@@ -156,9 +211,11 @@ const equityAwardsConfig = {
     return equityAwardRows(selectCards(reviewDeal, isEquityAward));
   },
   columns: [
-    { id: 'instrument', header: 'Instrument', width: '16rem', renderCell: renderInstrument },
-    { id: 'treatment', header: 'Treatment', renderCell: (row, ctx) => cell(row.treatment, ctx, row) },
-    { id: 'vesting', header: 'Vesting', renderCell: (row, ctx) => cell(row.vesting, ctx, row) },
+    { id: 'equityType', header: 'Equity Type', width: '14rem', renderCell: renderInstrument },
+    { id: 'consideration', header: 'Consideration', renderCell: (row, ctx) => cell(row.treatment, ctx, row) },
+    { id: 'vestingTreatment', header: 'Vesting Treatment', renderCell: (row, ctx) => cell(row.vesting, ctx, row) },
+    { id: 'cvrEntitlement', header: 'CVR Entitlement', renderCell: (row, ctx) => cell(row.cvrEntitlement, ctx, row) },
+    { id: 'notes', header: 'Notes', renderCell: (row, ctx) => cell(row.notes, ctx, row) },
   ],
 };
 
