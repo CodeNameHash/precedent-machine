@@ -1,5 +1,16 @@
 import React from 'react';
-import { cardCode, cardType, firstFeature, labelOf, makeRow, selectCards, textOf } from './card-utils.js';
+import {
+  buildSectionSubjectResolver,
+  cardCode,
+  cardType,
+  extractSectionCites,
+  firstFeature,
+  labelOf,
+  makeRow,
+  selectCards,
+  stripProposedTitle,
+  textOf,
+} from './card-utils.js';
 
 // REBUILD-SPECS.md section 13 ("complete garbage" per Ben), tightened again
 // per FEEDBACK-2-PUNCHLIST.md item 45: this table is scoped to genuinely
@@ -8,9 +19,11 @@ import { cardCode, cardType, firstFeature, labelOf, makeRow, selectCards, textOf
 // generic Miscellaneous/boilerplate provisions (not adviser/fee content) and
 // now live on misc-boilerplate.config.js's "Miscellaneous / Boilerplate"
 // table alongside governing law, forum, and third-party beneficiaries.
+//
+// Expense exceptions render separately (see buildExpenseExceptionsRow below,
+// AF1) -- not through this generic single-pill mapping.
 const ROWS = [
   ['fee-expense', 'Fee / expense allocation', 'Expenses', ['feeExpenseAllocation', 'expensesAllocation']],
-  ['expense-exceptions', 'Expense exceptions', 'Expenses', ['feeExpenseAllocationExceptions', 'feeExpenseExceptions', 'expenseExceptions']],
 ];
 
 function isAdvisersFeesCard(card) {
@@ -96,6 +109,91 @@ function miscSignal(row) {
   };
 }
 
+// AF1: "Each party bears its own expenses, except [named sections]" --
+// feeExpenseAllocationExceptions was rendering TRUNCATED (e.g. "Except as
+// set forth in Section 6.02" only, dropping the rest of a four-section
+// list), because the exceptions attribute itself is sometimes just the
+// first excerpted phrase. The FULL exception list lives in the base
+// feeExpenseAllocation clause's own lead-in ("Except as set forth in
+// Section 6.02, Section 6.03(b), Section 6.05 and Section 8.02, ..."). Parse
+// every Section citation out of THAT text, then name each one by resolving
+// it against every other card in the deal (D&O indemnification, access to
+// information, effect of termination, etc. are their own cards elsewhere in
+// the deal, not on this Misc-scoped card) via buildSectionSubjectResolver.
+function antitrustFilingFeeCard(allCards) {
+  return (allCards || []).find((card) => {
+    const text = textOf(card);
+    return /\b(HSR|antitrust|foreign merger control)\b/i.test(text) && /filing fee/i.test(text);
+  }) || null;
+}
+
+function buildExpenseExceptionsRow(cards, allCards) {
+  const allocationHit = firstFeature(cards, ['feeExpenseAllocation', 'expensesAllocation']);
+  const cites = allocationHit ? extractSectionCites(allocationHit.detail).filter((cite) => cite.kind === 'Section') : [];
+
+  if (cites.length) {
+    const resolveSection = buildSectionSubjectResolver(allCards);
+    // Recurring extraction gap (same class as IOC's I7): a cited section
+    // sometimes only survives as an unclassified "[PROPOSED]" fragment card
+    // whose own section_ref/heading didn't get tagged with the true
+    // document number. Antitrust/HSR filing-fee allocation is the one
+    // consistently-recurring exception this affects -- when a citation
+    // can't be resolved by heading or section_ref, and a card unambiguously
+    // about antitrust/HSR filing fees exists, use it once (never invented,
+    // never reused across multiple unresolved citations).
+    let fallbackCard = antitrustFilingFeeCard(allCards);
+    const seen = new Set();
+    const facts = cites
+      .filter((cite) => {
+        if (seen.has(cite.number)) return false;
+        seen.add(cite.number);
+        return true;
+      })
+      .map((cite) => {
+        let resolved = resolveSection(cite.number);
+        if (!resolved && fallbackCard) {
+          resolved = {
+            subject: stripProposedTitle(labelOf(fallbackCard)),
+            evidence: textOf(fallbackCard),
+            source: labelOf(fallbackCard),
+            sourceCard: fallbackCard,
+          };
+          fallbackCard = null;
+        }
+        return {
+          id: `advisers-fees-expenses-expense-exceptions-${cite.number}`,
+          label: resolved ? `${cite.display} — ${resolved.subject}` : cite.display,
+          value: resolved ? resolved.subject : cite.display,
+          // G4: named exception sections are plain facts, not a graded
+          // standard (efforts ladder / materiality) -- neutral, not colored.
+          tone: 'neutral',
+          evidence: resolved ? resolved.evidence : allocationHit.detail,
+          source: resolved ? resolved.sourceCard : allocationHit.card,
+        };
+      });
+    return {
+      id: 'advisers-fees-expenses-expense-exceptions',
+      label: 'Expense exceptions',
+      kind: 'Expenses',
+      detail: facts.map((fact) => fact.label).join('; '),
+      evidence: textOf(allocationHit.card),
+      source: labelOf(allocationHit.card),
+      sourceCard: allocationHit.card,
+      present: true,
+      signals: facts,
+    };
+  }
+
+  // No citations to resolve (e.g. "Except as otherwise expressly provided
+  // herein" with no Section list, or an older extraction that only ever
+  // captured the standalone exceptions attribute) -- fall back to the
+  // legacy single-pill rendering of whatever exceptions text exists.
+  const hit = firstFeature(cards, ['feeExpenseAllocationExceptions', 'feeExpenseExceptions', 'expenseExceptions']);
+  const row = makeRow('advisers-fees-expenses', 'expense-exceptions', 'Expense exceptions', 'Expenses', hit);
+  if (!row) return null;
+  return { ...row, sourceCard: hit.card, signals: [miscSignal({ ...row, sourceCard: hit.card })].filter(Boolean) };
+}
+
 function mappedMiscRows(cards) {
   return ROWS
     .map(([id, label, kind, keys]) => {
@@ -132,8 +230,14 @@ const advisersFeesExpensesConfig = {
   layoutSlot: 'misc',
   selectRows(reviewDeal) {
     const cards = selectCards(reviewDeal, isAdvisersFeesCard);
+    // Section-name resolution (AF1) needs every card in the deal, not just
+    // the Misc-scoped ones above -- the sections a fee/expense-allocation
+    // clause excepts (D&O indemnification, access to information, effect of
+    // termination, ...) live on other cards entirely.
+    const allCards = reviewDeal?.cards || [];
     const advisorRow = buildFinancialAdvisorRow(cards);
-    return [...(advisorRow ? [advisorRow] : []), ...mappedMiscRows(cards)];
+    const exceptionsRow = buildExpenseExceptionsRow(cards, allCards);
+    return [...(advisorRow ? [advisorRow] : []), ...mappedMiscRows(cards), ...(exceptionsRow ? [exceptionsRow] : [])];
   },
   columns: [
     { id: 'term', header: 'Term', width: '18rem', renderCell: (row) => row.label },

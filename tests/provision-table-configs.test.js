@@ -14,6 +14,7 @@ let generalCovenantsMod;
 let iocMod;
 let maeDefinitionsMod;
 let materialContractsMod;
+let miscBoilerplateMod;
 let nosolFiduciaryMod;
 let nosolInterveningMod;
 let nosolNoshopMod;
@@ -37,6 +38,7 @@ test.before(async () => {
   iocMod = await import(path.join('..', 'components', 'review', 'table-configs', 'ioc-exceptions.config.js'));
   maeDefinitionsMod = await import(path.join('..', 'components', 'review', 'table-configs', 'mae-definitions.config.js'));
   materialContractsMod = await import(path.join('..', 'components', 'review', 'table-configs', 'material-contracts.config.js'));
+  miscBoilerplateMod = await import(path.join('..', 'components', 'review', 'table-configs', 'misc-boilerplate.config.js'));
   nosolFiduciaryMod = await import(path.join('..', 'components', 'review', 'table-configs', 'nosol-fiduciary.config.js'));
   nosolInterveningMod = await import(path.join('..', 'components', 'review', 'table-configs', 'nosol-intervening.config.js'));
   nosolNoshopMod = await import(path.join('..', 'components', 'review', 'table-configs', 'nosol-noshop.config.js'));
@@ -1968,6 +1970,128 @@ test('termination fee and expense configs expose primitive-backed signals', () =
   assert.deepEqual(exception.signals.map((item) => item.label), ['Parent pays HSR filing fees']);
   const miscSignals = advisersFeesExpensesMod.advisersFeesExpensesConfig.columns.find((column) => column.id === 'signals');
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, miscSignals.renderCell(exception, { primitives }))), /Parent pays HSR filing fees/);
+});
+
+test('AF1: advisers-fees-expenses surfaces the FULL named exception-section list from feeExpenseAllocation, not the truncated feeExpenseAllocationExceptions phrase (real-deal shape)', () => {
+  const cards = [
+    {
+      id: 'expenses',
+      provision_type: 'MISC_BOILERPLATE',
+      provision_subtype: 'MISC-EXPENSES',
+      section_ref: '8.03 | Expenses | h1',
+      short_title: 'Expenses',
+      primary_quote: 'SECTION 8.03. Fees and Expenses. Except as set forth in Section 6.02, Section 6.03(b), Section 6.05 and Section 8.02, all fees and expenses incurred in connection with this Agreement, the Merger and the other Transactions shall be paid by the party incurring such fees or expenses, whether or not the Merger is consummated.',
+      features: {
+        feeExpenseAllocation: 'Except as set forth in Section 6.02, Section 6.03(b), Section 6.05 and Section 8.02, all fees and expenses incurred in connection with this Agreement, the Merger and the other Transactions shall be paid by the party incurring such fees or expenses, whether or not the Merger is consummated.',
+        // The render bug this locks in: the exceptions attribute itself is
+        // truncated to just the first cited section.
+        feeExpenseAllocationExceptions: 'Except as set forth in Section 6.02',
+      },
+    },
+    {
+      id: 'access',
+      provision_type: 'COVENANT_OTHER',
+      provision_subtype: 'COV-ACCESS',
+      section_ref: '6.02 | Access to Information; Confidentiality | h2',
+      short_title: 'Access to Information; Confidentiality',
+      primary_quote: 'SECTION 6.02. Access to Information; Confidentiality. Except if prohibited by any applicable Law, the Company shall afford to Parent reasonable access during normal business hours.',
+    },
+    {
+      id: 'antitrust-fee-fragment',
+      // Mirrors the real-deal I7-class gap: the HSR/foreign-filing-fee
+      // clause only survives as an unclassified fragment whose section_ref
+      // ("6.01") and text carry no clean "SECTION 6.03(b)." heading to
+      // match against -- resolvable only via the antitrust/HSR keyword tier.
+      provision_type: 'ANTITRUST_REGULATORY',
+      provision_subtype: null,
+      section_ref: '6.01 | [PROPOSED] Regulatory Filing Fees | h3',
+      short_title: '[PROPOSED] Regulatory Filing Fees',
+      primary_quote: 'Each party will bear its own costs of preparing its own pre-merger notifications and similar filings and notices in other jurisdictions; provided that Parent shall bear all filing fees payable by Parent or the Company for the filings required under the HSR Act or any applicable Foreign Merger Control Law.',
+    },
+    {
+      id: 'dno',
+      provision_type: 'COVENANT_OTHER',
+      provision_subtype: 'COV-DNO',
+      section_ref: '6.05 | D&O Indemnification and Insurance | h4',
+      short_title: 'D&O Indemnification and Insurance',
+      primary_quote: 'SECTION 6.05. Indemnification. (a) All rights to indemnification and exculpation from liabilities for acts or omissions occurring at or prior to the Effective Time shall survive.',
+    },
+    {
+      id: 'effect-of-termination',
+      // Mirrors the real-deal numbering gap: this card's OWN quoted text
+      // heads with "SECTION 8.02." but its section_ref column (set by
+      // region-grouping, not the true document number) lags at 8.01 --
+      // proving the heading tier is tried before, and wins over, section_ref.
+      provision_type: 'TERMINATION_FEE',
+      provision_subtype: 'TERMF-EFFECT',
+      section_ref: '8.01 | Effect of Termination | h5',
+      short_title: 'Effect of Termination',
+      primary_quote: 'SECTION 8.02. Effect of Termination. (a) In the event of termination of this Agreement by either the Company or Parent, this Agreement shall become void and have no effect.',
+    },
+  ];
+  const rows = advisersFeesExpensesMod.advisersFeesExpensesConfig.selectRows({ cards });
+  const baseRow = rows.find((row) => row.id === 'advisers-fees-expenses-fee-expense');
+  assert.match(baseRow.detail, /each party bears its own expenses|shall be paid by the party incurring/i);
+  const exceptionsRow = rows.find((row) => row.id === 'advisers-fees-expenses-expense-exceptions');
+  assert.ok(exceptionsRow, 'expected an expense-exceptions row');
+  assert.deepEqual(exceptionsRow.signals.map((item) => item.label), [
+    '§6.02 — Access to Information; Confidentiality',
+    '§6.03(b) — Regulatory Filing Fees',
+    '§6.05 — D&O Indemnification and Insurance',
+    '§8.02 — Effect of Termination',
+  ]);
+  exceptionsRow.signals.forEach((item) => assert.equal(item.tone, 'neutral'));
+});
+
+test('TB1: misc-boilerplate third-party-beneficiaries row names WHICH PARTIES benefit under WHICH provision (by subject, not a bare section number), resolving sections from sibling cards outside the Misc set (real-deal shape)', () => {
+  const cards = [
+    {
+      id: 'anti-reliance',
+      provision_type: 'REPRESENTATION',
+      provision_subtype: 'REP-B-ANTIRELIANCE',
+      short_title: 'Anti-Reliance / Exclusivity of Representations',
+      primary_quote: 'SECTION 9.07. Anti-Reliance. This Agreement is not intended to confer upon any Person other than the parties any rights or remedies as a third-party beneficiary.',
+      features: {
+        thirdPartyBeneficiaries: [
+          'holders of CVRs',
+          'holders of Certificates and holders of Book-Entry Shares',
+          'holders of awards under Company Stock Plans',
+        ],
+        thirdPartyBeneficiaryExceptions: [
+          'Section 6.05',
+          'the rights of holders of CVRs to receive payment in accordance with the terms of this Agreement and the CVR Agreement',
+          'following the Effective Time the provisions of Article I shall be enforceable by holders of Certificates and holders of Book-Entry Shares solely to the extent necessary to receive the Merger Consideration to which such holders are entitled to thereunder',
+          'the provisions of Section 2.03 shall be enforceable by holders of awards under Company Stock Plans to the extent necessary to receive the amounts to which such holders are entitled thereunder',
+        ],
+      },
+    },
+    {
+      id: 'dno',
+      provision_type: 'COVENANT_OTHER',
+      provision_subtype: 'COV-DNO',
+      section_ref: '6.05 | D&O Indemnification and Insurance | h1',
+      short_title: 'D&O Indemnification and Insurance',
+      primary_quote: 'SECTION 6.05. Indemnification. (a) All rights to indemnification and exculpation from liabilities for acts or omissions occurring at or prior to the Effective Time shall survive.',
+    },
+    {
+      id: 'equity-awards',
+      provision_type: 'STRUCTURE_MECHANICS',
+      provision_subtype: 'STRUCT-EQUITY',
+      section_ref: '2.03 | Treatment of Equity Awards / Stock Plans | h2',
+      short_title: 'Treatment of Equity Awards / Stock Plans',
+      primary_quote: 'SECTION 2.03. Treatment of Company Equity Awards. (a) Effective as of the Effective Time, each award shall be converted.',
+    },
+  ];
+  const rows = miscBoilerplateMod.miscBoilerplateConfig.selectRows({ cards });
+  const thirdPartyRow = rows.find((row) => row.id === 'misc-boilerplate-third-party');
+  assert.ok(thirdPartyRow, 'expected a third-party-beneficiaries row');
+  assert.deepEqual(thirdPartyRow.signals.map((item) => item.label), [
+    'D&O Indemnification and Insurance (§6.05)',
+    'holders of CVRs',
+    'holders of Certificates and holders of Book-Entry Shares — Article I',
+    'holders of awards under Company Stock Plans — Treatment of Equity Awards / Stock Plans (§2.03)',
+  ]);
+  thirdPartyRow.signals.forEach((item) => assert.equal(item.tone, 'neutral'));
 });
 
 test('termination-fees config renders structured fee-table cells, not raw JSON, across multiple TERMF cards (Metsera regression: terminationFees dumped literal JSON)', () => {

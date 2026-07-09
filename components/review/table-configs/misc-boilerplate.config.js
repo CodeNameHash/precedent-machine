@@ -1,5 +1,17 @@
 import React from 'react';
-import { allFeatures, cardCode, cardType, firstFeature, labelOf, makeRow, selectCards, splitForCell, textOf } from './card-utils.js';
+import {
+  allFeatures,
+  buildSectionSubjectResolver,
+  cardCode,
+  cardType,
+  extractSectionCites,
+  firstFeature,
+  labelOf,
+  makeRow,
+  selectCards,
+  splitForCell,
+  textOf,
+} from './card-utils.js';
 
 // REBUILD-SPECS.md section 13: forum / governing-law selection does not
 // belong on Advisers / Fees / Expenses -- it's generic Misc/Boilerplate
@@ -82,19 +94,6 @@ function mappedBoilerplateRows(cards, specs) {
 // dumping both arrays as prose) is what turns this into "which people, for
 // which provision" per Ben's punchlist -- no new extraction, just better use
 // of data that's already there.
-const SECTION_REF_RE = /\b(Section|Article)s?\s+([0-9]+(?:\.[0-9]+)*(?:\([a-zA-Z0-9]+\))*|[IVXLCivxlc]+)\b/gi;
-
-function allProvisionRefs(text) {
-  const refs = [];
-  let match;
-  SECTION_REF_RE.lastIndex = 0;
-  while ((match = SECTION_REF_RE.exec(text))) {
-    const kind = /article/i.test(match[1]) ? 'Article' : 'Section';
-    refs.push({ text: `${kind} ${match[2]}`, index: match.index });
-  }
-  return refs;
-}
-
 // Nearest-by-distance, not "first in the string" -- when an exception phrase
 // cites more than one beneficiary and more than one section (e.g. "the
 // holders of X ... under Section 2.1 ... and the holders of Y ... under
@@ -108,7 +107,7 @@ function nearestProvisionRef(refs, position) {
     const dist = Math.abs(ref.index - position);
     if (dist < bestDist) {
       bestDist = dist;
-      best = ref.text;
+      best = ref;
     }
   }
   return best;
@@ -140,11 +139,21 @@ function shortenPerson(name) {
   return shortLabel(String(name || '').replace(/\s*\([^)]*\)\s*$/, '').trim());
 }
 
+// TB1: don't show a bare section number -- name what the section IS. When a
+// Section citation resolves to a subject (via buildSectionSubjectResolver,
+// shared with AF1's expense-exceptions naming), pair them as "<subject>
+// (§ref)"; otherwise fall back to the bare ref (never fabricated).
+function formatProvision(ref, subject) {
+  if (!ref) return null;
+  return subject ? `${subject} (${ref})` : ref;
+}
+
 function factLabel(fact) {
   const person = fact.person ? shortenPerson(fact.person) : null;
-  if (person && fact.provisionRef) return `${person} — ${fact.provisionRef}`;
+  const provision = formatProvision(fact.provisionRef, fact.provisionSubject);
+  if (person && provision) return `${person} — ${provision}`;
   if (person) return person;
-  return fact.provisionRef || 'Carve-out';
+  return provision || 'Carve-out';
 }
 
 // One exception phrase can name several beneficiaries (or none) and cite
@@ -152,30 +161,43 @@ function factLabel(fact) {
 // appears in the text, each paired with its nearest section reference; if no
 // beneficiary matches but a section is cited, keep a provision-only fact
 // (still a real carve-out, just not tied to a named party in this data).
-function factsForException(exceptionText, card, beneficiaries, keyPrefix) {
-  const refs = allProvisionRefs(exceptionText);
+// `resolveSection` (see buildSectionSubjectResolver) names each Section
+// citation from ITS OWN card elsewhere in the deal -- e.g. "Section 6.05"
+// becomes "D&O Indemnification and Insurance (§6.05)" -- Article citations
+// are left unresolved (no reliable per-card article heading to match).
+function factsForException(exceptionText, card, beneficiaries, keyPrefix, resolveSection) {
+  const refs = extractSectionCites(exceptionText);
   const lowerText = exceptionText.toLowerCase();
   const facts = [];
   const matchedNames = [];
+  const subjectFor = (ref) => {
+    if (!ref || ref.kind !== 'Section' || !resolveSection) return null;
+    const resolved = resolveSection(ref.number);
+    return resolved ? resolved.subject : null;
+  };
   beneficiaries.forEach((beneficiary, idx) => {
     const core = normalizeBeneficiaryCore(beneficiary.name);
     if (core.length <= 3) return;
     const pos = lowerText.indexOf(core);
     if (pos === -1) return;
     matchedNames.push(beneficiary.name);
+    const ref = nearestProvisionRef(refs, pos);
     facts.push({
       id: `${keyPrefix}-${idx}`,
       person: beneficiary.name,
-      provisionRef: nearestProvisionRef(refs, pos),
+      provisionRef: ref ? ref.display : null,
+      provisionSubject: subjectFor(ref),
       evidence: exceptionText,
       sourceCard: card,
     });
   });
   if (!facts.length && refs.length) {
+    const ref = refs[0];
     facts.push({
       id: `${keyPrefix}-provision`,
       person: null,
-      provisionRef: refs[0].text,
+      provisionRef: ref.display,
+      provisionSubject: subjectFor(ref),
       evidence: exceptionText,
       sourceCard: card,
     });
@@ -183,7 +205,7 @@ function factsForException(exceptionText, card, beneficiaries, keyPrefix) {
   return { facts, matchedNames };
 }
 
-function buildThirdPartyBeneficiaryRow(cards) {
+function buildThirdPartyBeneficiaryRow(cards, allCards) {
   const beneficiaries = [];
   const seenNames = new Set();
   allFeatures(cards, ['thirdPartyBeneficiaries']).forEach((hit) => {
@@ -207,10 +229,15 @@ function buildThirdPartyBeneficiaryRow(cards) {
 
   if (!beneficiaries.length && !exceptions.length) return null;
 
+  // Sections cited within a beneficiary exception (e.g. "Section 6.05") are
+  // resolved against every card in the deal, not just this Misc-scoped set
+  // -- D&O indemnification, CVR payment terms, etc. live on their own cards
+  // elsewhere (see AF1's identical resolver in advisers-fees-expenses.config.js).
+  const resolveSection = buildSectionSubjectResolver(allCards);
   const matchedNames = new Set();
   const facts = [];
   exceptions.forEach((exception, index) => {
-    const result = factsForException(exception.text, exception.card, beneficiaries, `misc-boilerplate-third-party-${index}`);
+    const result = factsForException(exception.text, exception.card, beneficiaries, `misc-boilerplate-third-party-${index}`, resolveSection);
     result.facts.forEach((fact) => facts.push(fact));
     result.matchedNames.forEach((name) => matchedNames.add(name));
   });
@@ -245,7 +272,9 @@ function buildThirdPartyBeneficiaryRow(cards) {
       id: fact.id,
       label: factLabel(fact),
       value: fact.provisionRef || fact.person,
-      tone: fact.person ? 'neutral' : 'info',
+      // G4: which party benefits under which named provision is a plain
+      // fact, not a graded standard -- neutral, not colored, either way.
+      tone: 'neutral',
       evidence: fact.evidence,
       source: fact.sourceCard,
     })),
@@ -277,7 +306,7 @@ const miscBoilerplateConfig = {
   layoutSlot: 'misc',
   selectRows(reviewDeal) {
     const cards = selectCards(reviewDeal, isMiscBoilerplateCard);
-    const thirdPartyRow = buildThirdPartyBeneficiaryRow(cards);
+    const thirdPartyRow = buildThirdPartyBeneficiaryRow(cards, reviewDeal?.cards || []);
     return [
       ...mappedBoilerplateRows(cards, ROWS_TOP),
       ...(thirdPartyRow ? [thirdPartyRow] : []),

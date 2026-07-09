@@ -162,11 +162,93 @@ function splitForCell(text, max = 160) {
   return { value, short, truncated: true };
 }
 
+// Strips the "[PROPOSED]" prefix ingestion attaches to fragment/unclassified
+// cards (see review-deal.js's stripProposedShortTitle) -- used when such a
+// card's own short_title is reused as a resolved SUBJECT name elsewhere
+// (e.g. a section citation resolver), so the raw ingestion marker doesn't
+// leak into read-view prose.
+function stripProposedTitle(title) {
+  return typeof title === 'string' ? title.replace(/^\[PROPOSED\]\s*/, '').trim() : title;
+}
+
+// Extracts every "Section X.Y(z)" / "Article N" citation from a text blob,
+// each carrying a compact display form ("§X.Y(z)" for Sections, the literal
+// "Article N" for Articles) plus its character offset so callers can pair a
+// citation with whichever nearby fact mentions it (see
+// misc-boilerplate.config.js's nearest-by-distance beneficiary pairing).
+// Shared by advisers-fees-expenses.config.js (AF1: naming fee/expense
+// exception sections) and misc-boilerplate.config.js (TB1: naming
+// third-party-beneficiary sections) so both tables resolve section
+// citations the same way.
+// Trailing lookahead (not `\b`) deliberately: `\b` fails right after a
+// subsection paren like "6.03(b)" because ")" and the following "," are
+// both non-word characters, so `\b` never fires there and the match
+// silently backtracks to just "6.03", dropping the "(b)".
+const SECTION_CITE_RE = /\b(Section|Article)s?\s+([0-9]+(?:\.[0-9]+)*(?:\([a-zA-Z0-9]+\))*|[IVXLCivxlc]+)(?![\w(])/g;
+
+function extractSectionCites(text) {
+  if (!text) return [];
+  const refs = [];
+  const re = new RegExp(SECTION_CITE_RE.source, 'gi');
+  let match;
+  while ((match = re.exec(String(text)))) {
+    const isArticle = /article/i.test(match[1]);
+    const number = match[2];
+    refs.push({
+      raw: match[0],
+      number,
+      kind: isArticle ? 'Article' : 'Section',
+      display: isArticle ? `Article ${number}` : `§${number}`,
+      index: match.index,
+    });
+  }
+  return refs;
+}
+
+// Resolves a cited Section NUMBER (e.g. "6.05") to the SUBJECT of that
+// section -- what it's actually about -- by looking across every card in the
+// deal (not just whichever subset the calling table already selected) for a
+// section whose own heading or section_ref matches. Two tiers, both grounded
+// in real per-card data (never fabricated):
+//  1. The card's own quoted text usually starts with its literal heading
+//     ("SECTION 6.05. Indemnification. ...") -- most reliable, since it's
+//     independent of how the ingestion pipeline grouped/labeled the region.
+//  2. The card's section_ref column (e.g. "6.05 | D&O Indemnification and
+//     Insurance | <hash>"), which is usually right but can lag the true
+//     document numbering for fragment/[PROPOSED] cards (see FEEDBACK-3
+//     punchlist item I7 for the same class of gap).
+// Only Section citations are indexed here -- Article citations aren't
+// resolved (no reliable per-card article heading to match against).
+const HEADING_SECTION_RE = /^SECTION\s+([0-9]+(?:\.[0-9]+)*(?:\([a-zA-Z0-9]+\))*)\.?/i;
+
+function buildSectionSubjectResolver(allCards) {
+  const byHeading = new Map();
+  const byRef = new Map();
+  for (const card of allCards || []) {
+    const headingMatch = HEADING_SECTION_RE.exec(textOf(card));
+    if (headingMatch && !byHeading.has(headingMatch[1])) byHeading.set(headingMatch[1], card);
+    const refNumber = String(card?.section_ref || '').split('|')[0].trim();
+    if (refNumber && !byRef.has(refNumber)) byRef.set(refNumber, card);
+  }
+  return function resolveSectionSubject(number) {
+    const card = byHeading.get(number) || byRef.get(number);
+    if (!card) return null;
+    return {
+      subject: stripProposedTitle(labelOf(card)),
+      evidence: textOf(card),
+      source: labelOf(card),
+      sourceCard: card,
+    };
+  };
+}
+
 export {
   allFeatures,
+  buildSectionSubjectResolver,
   cardCode,
   cardFeatures,
   cardType,
+  extractSectionCites,
   firstFeature,
   labelOf,
   makeRow,
@@ -175,6 +257,7 @@ export {
   mappedRowsMulti,
   selectCards,
   splitForCell,
+  stripProposedTitle,
   textOf,
   valueText,
 };
