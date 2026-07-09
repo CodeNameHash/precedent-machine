@@ -5,6 +5,7 @@ import {
   formatAdjournmentLimits,
   formatDeadline,
 } from '../../../lib/sec-meeting.js';
+import { valueText } from './card-utils.js';
 
 const DIRECT_ROWS = [
   ['offerCommencementDeadline', 'Offer commencement'],
@@ -27,13 +28,13 @@ function cardFeatures(card) {
 function textOf(card) {
   return String(card?.primary_quote || card?.region_full_text || '').trim();
 }
-function valueText(value) {
-  if (value === null || value === undefined || value === '') return null;
-  if (Array.isArray(value)) return value.map(valueText).filter(Boolean).join('; ');
-  if (typeof value === 'object') return value.value || value.text || value.label || value.code || formatDeadline(value) || null;
-  if (typeof value === 'boolean') return value ? 'Yes' : 'No';
-  return String(value);
-}
+// valueText is imported from card-utils.js (see above) rather than defined
+// locally: this config's own copy read `.text` before `.label`/`.code` (no
+// redundancy check) and also fell back to formatDeadline(value) for a bare
+// deadline-shaped object with no label/code/text. DIRECT_ROWS keys are all
+// schema `string`-typed in practice, so that formatDeadline fallback was
+// dead code here; deadline rows (proxy/mailing/meeting) format via
+// formatDeadline() directly in deadlineRow(), not through valueText.
 function pseudoProvision(card) {
   const features = cardFeatures(card);
   return { ...card, code: cardCode(card), category: card?.short_title, ai_metadata: { code: cardCode(card), features } };

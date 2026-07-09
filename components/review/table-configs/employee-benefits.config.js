@@ -1,4 +1,5 @@
 import { comparisonGroupForStandardCode } from '../../../lib/employee-benefits.js';
+import { valueText } from './card-utils.js';
 
 const FALLBACK_ITEMS = [
   ['BASE_SALARY', 'Base salary', ['baseSalaryStandard']],
@@ -55,13 +56,11 @@ function isErisaCard(card) {
 function textOf(card) {
   return String(card?.primary_quote || card?.region_full_text || '').trim();
 }
-function valueText(value) {
-  if (value === null || value === undefined || value === '') return null;
-  if (Array.isArray(value)) return value.map(valueText).filter(Boolean).join('; ');
-  if (typeof value === 'object') return value.value || value.label || value.text || value.code || null;
-  if (typeof value === 'boolean') return value ? 'Yes' : 'No';
-  return String(value);
-}
+// valueText is imported from card-utils.js (see above) rather than defined
+// locally: this config's own copy read `.text` before `.label`/`.code` with
+// no redundancy check, so it could leak a raw canonical code or double up
+// text that already matched the label. card-utils.js's version prioritizes
+// label/code and suppresses a `.text` that's a literal echo.
 function firstFeature(cards, keys) {
   for (const card of cards) {
     const features = cardFeatures(card);
