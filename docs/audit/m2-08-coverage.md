@@ -19,7 +19,7 @@ Step 1 gap coverage: 9/9 (100%).
 | 10 | Consideration Hero | mapped | consideration | consideration-hero.config.js | 100% | Schema-first config is present and mounted before the raw card table. |
 | 11 | Closing Conditions | mapped | conditions | conditions-m.config.js, conditions-b.config.js, conditions-s.config.js | 100% | Schema-first config is present and mounted before the raw card table. |
 | 12 | Material Contracts | mapped | reps | material-contracts.config.js | 100% | Schema-first config is present and mounted before the raw card table. |
-| 13 | No-Shop / Fiduciary-Out Stack | mapped | covenants | nosol-noshop.config.js, nosol-superior.config.js, nosol-intervening.config.js, nosol-fiduciary.config.js | 100% | Schema-first config is present and mounted before the raw card table. |
+| 13 | No-Shop / Fiduciary-Out Stack | mapped | covenants | nosol-section.config.js | 100% | Schema-first config is present and mounted before the raw card table. |
 | 14 | Employee Benefits | mapped | covenants | employee-benefits.config.js | 100% | Schema-first config is present and mounted before the raw card table. |
 | 15 | SEC Meeting / Tender-Offer Filings | mapped | covenants | sec-meeting.config.js | 100% | Schema-first config is present and mounted before the raw card table. |
 | 16 | No Other Reps / Fraud | mapped | misc | no-other-reps-fraud.config.js | 100% | Schema-first config is present and mounted before the raw card table. |
