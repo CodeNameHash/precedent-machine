@@ -1,126 +1,62 @@
-# Precedent Machine — PLAN
+# Precedent Machine — PLAN (what's TO DO)
 
-**One page. High level. Points to detail docs. This is the source of truth for what happens next.**
+**One page. Only open work. Done work is deleted, not archived here.**
 
-If you (Ben) want to know "what am I doing / what is Codex doing / what's next" — read this file, nothing else.
+Goal: **Demo Bar** — all 40 deals render from the schema-first path with scale-safe
+canonical output (same legal language → same result on every deal), query works, a
+fresh deal ingests seamlessly, UI homogenized end-to-end.
 
-If Codex wants to know "what do I pick up next" — read this file, then read the detail doc for the current milestone, nothing else.
-
----
-
-## Goal
-
-Get to **Demo Bar** — all 40 deals rendered from the schema-first path, query working, a fresh ingest lands seamlessly, UI homogenized end-to-end. No legacy fallback anywhere on the render path. Backend and admin pages consistent visual language.
-
----
-
-## Milestones (do them in this order)
-
-| # | Milestone | What "done" means | Detail doc |
-|---|-----------|-------------------|------------|
-| M1 | **Review Queue is live** | `/admin/review-queue` renders every open Ben-decision with evidence + click-buttons. All future Ben gates route through it. | `PLAN-M1-review-queue.md` |
-| M2 | **Schema is deployed corpus-wide** | Every deal renders from schema-first path. Legacy fallback is dead code. Reconciliation applied. Parity audit green. | `PLAN-M2-schema-deploy.md` |
-| M3 | **Ingest is seamless** | A brand-new deal ingests end-to-end and shows up identical to any existing deal — no manual steps, no visual difference. Two-pass definitions extraction works. | `PLAN-M3-ingest-seamless.md` |
-| M4 | **Query surface works** | `/query` cross-cutting queries return correct answers on the schema-first data. Query UI polished. | `PLAN-M4-query.md` |
-| M5 | **UI homogenized + demo-ready** | Design tokens applied everywhere. Admin pages consistent. Full-doc overlay. Landing grid. Reports UI polish. Ready to show. | `PLAN-M5-ui-homogenized.md` |
-
-**Independent tracks (can run any time, don't block milestones):**
-
-- `PLAN-TAXONOMY-GAPS.md` — G1–G11 from the taxonomy review. Each gap owns a WP; each WP is slotted into the milestone where it does the most good. Codex reads this and picks up gap-WPs when the current milestone's critical path is idle.
-- `PLAN-EXTRACTION-GAPS.md` — **WP-EXTRACT-GAPS-01**: five render-driven extraction gaps the review-page redesign surfaced (Material-Contracts per-bucket $ thresholds; IOC "in all material respects" standard; IOC 5.01(k)/(l)/(o) classification; corpus-wide third-party-beneficiary attribute-mapping bug; `effectiveTimeShort` corruption). Moves config-layer regex/text-sniff workarounds into structured extraction so all 40 deals render right without per-clause regex. Slots into M2/M3. SPEC-only; runs on Ben's go after the current design pass. Fable end-to-end (extraction-prompt engineering).
+How we work now: Fable (main agent) specs + audits + reviews; parallel work runs on
+Fable/Opus subagents in isolated worktrees; mechanical/tested changes ship to `main`
+on green; canonical-vocab and extraction changes are Fable-authored and gated by
+golden eval + ingest-QA + quote verification, reprocessed per-type (not full
+re-ingest). Frozen files (Phase-0-C @ `1ea062d`) stay frozen.
 
 ---
 
-## Codex autonomy — plain-English rules
+## 1. Canonical layer — the current program (biggest lever for scale)
 
-Replace all previous Inv-25 language. These three rules govern everything.
+Goal: kill render-time regex "bandaids" (~60 found) by driving output from
+extraction-assigned canonical codes through `taxonomy.js` → `labelForCode`, so
+identical clauses render identically across all 40 deals. Detail + inventory:
+`PLAN-CANONICAL-LAYER.md`.
 
-1. **Mechanical + tested = Codex self-merges on green.** Anything with automated test coverage that doesn't touch legal semantics. Ex: build script, audit harness, refactor, allowlist update, doc typo, admin page CSS, adding a new nav entry, exposing a new query executor for an already-defined field.
+**TO DO:**
 
-2. **Canonical semantics = Ben decides.** Anything that changes what a Provision, Claim, Attribute, or canonical value means; anything that adds/removes/renames a canonical vocab entry; anything that changes MAE / carve-out / covenant classification; anything that changes the reconciliation of a raw string to a canonical key. These land in the Review Queue and Ben clicks through.
+1. **Finish interest-rate-basis end-to-end (in flight).** Wiring (extract codebook + rubric feature + schema regen + transition-safe render) is on `wp/canonical-interest` — review the diff, then **run the gated reprocess** (TERMINATION_FEE), confirm codes populate, flip the render off the `summarizeRate` fallback, delete the regex.
+2. **Templatize the loop for the other authored enums.** Same extraction-wire → reprocess → render-swap → cross-deal audit, for: governing law, primary forum, superior-proposal determiner, assignment posture, and the shared solicitation-act vocabulary (no-shop + COR).
+3. **A2 remainder — reconcile the pull-refile / timing-agreement codes.** Extraction assigns two different codes (`MUTUAL_CONSENT` vs `NOT_UNREASONABLY_WITHHELD`) to the SAME clause. Fix in the extraction prompt so one clause → one coherent posture.
+4. **A1 remaining clean deletes.** Concepts whose code already reaches the render — delete the regex, read the code: reps-control standard (`representativesStandardLabel` regex fallback), restraint finality (make extraction emit the enum reliably first).
+5. **Author + wire the harder Section-B concepts** (need more corpus / judgment / discriminators): engagement standard + final-determination standard (refine the existing `fiduciaryOutStandard`/`changeRecStandard` enums with `phase`/`trigger` axes — freeze-gated), notice content, not-a-COR carve-outs, standstill/DADW, superior-proposal test limbs, acceptable-CA terms, acquisition-proposal definition, tail arming (composite), vote standard (data-poor — re-extract `approvalDefinition` first).
+6. **Output layer (Phase 3).** One code→display-bundle registry consumed by ALL configs; delete the duplicated local label maps (`FIDUCIARY_STANDARD_LABELS` ×3, `BOARD_CHANGE_STANDARD_LABELS` ×3, `voteStandard` ×3) so one code → one output everywhere.
+7. **Governance (Phase 4).** CI invariants: every taxonomy dict has a matching schema enum + tag family (collapse the three-place binding to one source); lint fails any render helper that regexes clause text to produce a label.
 
-3. **Destructive delete = Ben decides.** Anything that removes files from the repo (legacy vocab, legacy renderers, deprecated modules). Ben clicks a single "authorize deletion" button in the Review Queue, then Codex opens the delete PR and self-merges on green.
+## 2. Extraction gaps — `PLAN-EXTRACTION-GAPS.md` (WP-EXTRACT-GAPS-01)
 
-**Codex classifies its own PRs.** Every PR body starts with a single line: `Classification: mechanical` | `Classification: canonical (Ben-review)` | `Classification: destructive (Ben-authorize)`. If mechanical: self-merge on green. Otherwise: create a Review Queue entry, wait.
+Structured-extraction fixes the redesign surfaced; feed M2/M3. **TO DO:**
+- Material-Contracts per-bucket TRIGGER (dollar OR non-dollar) as a structured field + the correct per-bucket §3.13 sub-clause quote (some buckets capture the generic lead-in).
+- IOC "in all material respects" standard; classify all 8 of 5.01(i)–(o) (currently `[PROPOSED] Unclassified`).
+- Third-party-beneficiary attribute-mapping bug (`thirdPartyBeneficiaries` = 0 rows corpus-wide; names mis-stamped under `…Exceptions`).
+- `effectiveTimeShort` "surviving corporation" corruption.
+- Per-rep `linkedBringDownStandard` uniform-MAE mis-stamp (item F) — derive from the closing-condition tiers at extraction.
 
-**Ben spot-checks the classifier.** If Codex miscategorizes a PR (says mechanical when it should have been canonical), Ben says so in one line; Codex updates its classifier rules in the same PR that fixes the miscategorization. No process rebuild needed.
+## 3. Milestones remaining
 
-**No more manual "waive threshold" / "unblock this file" ceremonies.** If Codex needs a threshold changed or a file added to an allowlist, it makes the change in the same PR as the work that needs it, classifies the PR appropriately, and moves on.
+- **M2 — schema deployed corpus-wide.** All 39 non-Metsera deals render from the schema-first path with the canonical output above; legacy fallback dead; reconciliation applied; parity audit green. (The canonical program + reprocess is the critical path here.)
+- **M3 — ingest seamless.** A brand-new deal ingests end-to-end and renders identical to existing deals; two-pass definitions extraction.
+- **M4 — query surface.** `/query` cross-cutting queries correct on schema-first data; UI polished.
+- **M5 — UI homogenized + demo-ready.** Extend the review-page polish to all deals; admin pages consistent; full-doc overlay; landing grid; reports UI.
 
----
+## 4. Review-page polish (open items)
 
-## Freeze gates
-
-Freeze gates still exist for the shapes that are already frozen (Phase-0-C is frozen at `1ea062d`). Codex may not edit frozen files. Period. If Codex thinks a frozen file needs to change, it creates a Review Queue entry titled "Unfreeze request: <file>" and stops. Ben reviews.
-
-New freeze gates are only introduced when a milestone explicitly requires one. No speculative gate-creation.
-
----
-
-## Review Queue schema (what M1 builds)
-
-Every Ben-gate produces one Queue entry. Shape:
-
-```
-{
-  "id": "<uuid>",
-  "created_at": "<ISO>",
-  "kind": "canonical" | "destructive" | "unfreeze" | "clarify",
-  "title": "<one line>",
-  "summary": "<3-5 sentences: what is being asked, why now, what breaks if not decided>",
-  "evidence": [
-    {"label": "diff", "url": "<github PR/commit url>"},
-    {"label": "<any file>", "url": "<link>"},
-    {"label": "<audit report>", "url": "<link to md file>"}
-  ],
-  "choices": [
-    {"key": "approve", "label": "Approve as proposed", "codex_action": "self-merge PR #<n>"},
-    {"key": "reject", "label": "Reject", "codex_action": "close PR, comment with reason"},
-    {"key": "modify", "label": "Approve with changes", "codex_action": "await Ben-authored diff, apply, self-merge"}
-  ],
-  "resolution": null,
-  "resolved_at": null,
-  "resolved_by": null
-}
-```
-
-Persisted at `docs/review-queue/*.json`. Rendered at `/admin/review-queue`. Every choice button POSTs to `/api/admin/review-queue/[id]/resolve` which writes back the resolution.
+- Temp "all sections expanded on load" override — revert to per-section collapse memory when ready.
+- No-shop section needs a fuller pass (Ben flagged; more feedback to come).
+- Verify the whole page against the old pre-schema reference (`:3010`) once the canonical output lands, deal-by-deal beyond Metsera.
+- Stale test cleanup: `tests/queries/claims-render-integration.test.js` `/^Carve-out: /` assertion (pre-existing drift, not in the `npm test` glob).
 
 ---
 
-## How Codex works day-to-day
+## Independent tracks
 
-1. Read this file (`PLAN.md`). Identify the current milestone (topmost with unfinished WPs).
-2. Read the milestone's detail doc.
-3. Pick the topmost unfinished WP in the milestone's WP list.
-4. Read that WP's brief (`pm-wp-<slug>.codex.md`).
-5. Execute the WP. Classify the PR. Self-merge OR create Review Queue entry.
-6. Loop.
-
-No consultation with Ben mid-milestone unless the Review Queue system tells Codex to wait.
-
----
-
-## What "on hold pending Ben" looks like
-
-When Codex opens a canonical or destructive PR:
-
-- It classifies the PR body with `Classification: canonical (Ben-review)` or `Classification: destructive (Ben-authorize)`.
-- It creates a `docs/review-queue/<id>.json` file with the full entry in the same PR.
-- It self-merges the Review Queue entry (mechanical: just a JSON file), so the entry appears on `/admin/review-queue`.
-- It leaves the canonical/destructive PR open.
-- Ben opens `/admin/review-queue`, clicks the decision.
-- The click triggers `/api/admin/review-queue/[id]/resolve` which writes the resolution and POSTs to Codex (via the existing HANDOFF file — Codex polls it) that the decision is made.
-- Codex resumes: merges the PR, or closes it, or applies Ben's edit.
-
-**Ben's only tool is `/admin/review-queue`.** No PR-hunt. No "which file was I supposed to edit."
-
----
-
-## Current status (2026-07-07)
-
-- PR #175 merged. PART 3 of master brief describes current state as of the merge.
-- **Next PR:** the one that lands this `PLAN.md`, the milestone detail docs, and starts M1.
-- After that PR merges, Codex runs M1 (Review Queue), then M2 (Schema deploy), etc.
-
-Master brief PART 3 §3.3 (the "Active work-package queue" list) is now **superseded by this PLAN.md**. §3.3 gets a two-line pointer: "See PLAN.md at repo root." Everything else in the master brief (constraints, appendices, invariants) remains authoritative for its own domain.
+- `PLAN-TAXONOMY-GAPS.md` — G1–G11 taxonomy-review gaps; slot into the milestone where each does the most good.
+- Freeze gates persist for already-frozen shapes; new gates only when a milestone requires one.
