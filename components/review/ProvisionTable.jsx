@@ -76,17 +76,28 @@ export default function ProvisionTable({ config, reviewDeal, isEdit = false }) {
   // value that's identical on every row (e.g. the no-shop obligor) out of a
   // repeated per-row column and into the section chrome instead.
   const headerNote = typeof config.deriveHeaderNote === 'function' ? config.deriveHeaderNote(rows) : null;
+  // config.title already renders once as the collapsible section <h2> in
+  // pages/review/[id].js -- this chrome strip used to print it a SECOND
+  // time immediately below, which reads as a copy-paste duplicate (punch-
+  // list #22 MAE, #23 material-contracts). Configs that don't need a
+  // distinct in-table label opt out via hideRepeatedTitle; the strip still
+  // renders (for headerNote) when there's something else to show.
+  const showTitleStrip = !config.hideRepeatedTitle;
 
   return (
     <section data-testid={`provision-table-${config.id}`} className="rounded border border-border bg-white shadow-sm">
-      <div className="border-b border-border bg-bg/60 px-3 py-2 flex items-center justify-between gap-3">
-        <p className="font-ui text-[10px] font-medium uppercase tracking-wider text-inkFaint">
-          {config.title}
-        </p>
-        {headerNote ? (
-          <p className="font-ui text-[10px] font-medium text-inkFaint whitespace-nowrap">{headerNote}</p>
-        ) : null}
-      </div>
+      {(showTitleStrip || headerNote) ? (
+        <div className="border-b border-border bg-bg/60 px-3 py-2 flex items-center justify-between gap-3">
+          {showTitleStrip ? (
+            <p className="font-ui text-[10px] font-medium uppercase tracking-wider text-inkFaint">
+              {config.title}
+            </p>
+          ) : <span />}
+          {headerNote ? (
+            <p className="font-ui text-[10px] font-medium text-inkFaint whitespace-nowrap">{headerNote}</p>
+          ) : null}
+        </div>
+      ) : null}
       <div className="overflow-x-auto">
         <table className="min-w-full text-xs font-ui">
           {showHeader ? (

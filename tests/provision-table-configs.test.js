@@ -1142,6 +1142,35 @@ test('material-contracts coverage footer reports "N of M contract-type buckets c
   assert.match(footerHtml, /Joint ventures \/ partnerships/);
 });
 
+test('material-contracts config: with no structured threshold data, rows surface an honest "see text" fallback rather than a fabricated $ figure (punch-list #24)', () => {
+  const rows = materialContractsMod.materialContractsConfig.selectRows({
+    cards: [{
+      id: 'material-contracts',
+      provision_type: 'REPRESENTATION',
+      provision_subtype: 'REP-T-MATERIAL-CONTRACTS',
+      short_title: 'Material Contracts',
+      primary_quote: 'Material Contracts include any credit agreement providing for indebtedness in excess of $2,000,000.',
+      features: {
+        materialContractsBuckets: [
+          { code: 'INDEBTEDNESS', label: 'Indebtedness', text: 'any credit agreement providing for indebtedness in excess of $2,000,000' },
+        ],
+        // No materialContractsDollarThresholds -- the real-world shape: the
+        // extraction never populates a structured threshold, even though
+        // the $2,000,000 figure is right there in the quote text.
+      },
+    }],
+  });
+  const row = rows.find((r) => r.code === 'INDEBTEDNESS');
+  assert.ok(row);
+  // No fabricated number -- an explicit "not captured" label instead.
+  assert.equal(row.threshold, 'No $ threshold captured -- see text');
+  // The $2,000,000 figure is not lost: it survives on row.evidence, which
+  // ProvisionTable.jsx's FULL_TEXT_COLUMNS['material-contracts'] relocates
+  // into a per-row "see text" expander (asserted structurally above), so
+  // it's still reachable even though it can't render as a structured cell.
+  assert.match(row.evidence, /\$2,000,000/);
+});
+
 test('tail-fee config maps nested tailProvision mechanics', () => {
   const rows = tailFeeMod.tailFeeConfig.selectRows({
     cards: [{

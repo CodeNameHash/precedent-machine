@@ -89,6 +89,20 @@ test('FULL_TEXT_COLUMNS still carries every pre-Phase-B entry (no regression)', 
   }
 });
 
+// -- hideRepeatedTitle wiring (punch-list #22 MAE / #23 material-contracts) -
+
+test('ProvisionTable suppresses the in-table title strip when config.hideRepeatedTitle is set, but keeps it for everyone else', () => {
+  const body = readSource(provisionTablePath);
+  assert.match(body, /const showTitleStrip = !config\.hideRepeatedTitle;/);
+  assert.match(body, /\{showTitleStrip \? \(/);
+  assert.match(body, /\{config\.title\}/, 'default configs must still render their title once in the chrome strip');
+});
+
+test('material-contracts config opts out of the duplicate in-table title (punch-list #23)', async () => {
+  const { materialContractsConfig } = await import('../../components/review/table-configs/material-contracts.config.js');
+  assert.equal(materialContractsConfig.hideRepeatedTitle, true);
+});
+
 test('mixed-shape families (termination-fees, general-covenants, consideration-hero, approvals-votes) are NOT wholesale-relocated', () => {
   // These families have at least one row whose 'detail'/'value' is the ONLY
   // visible copy of the value (no redundant signal pill mirrors it) --

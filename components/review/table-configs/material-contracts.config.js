@@ -42,6 +42,19 @@ function thresholdText(raw) {
   if (typeof raw === 'object') return raw.threshold || raw.value || raw.qualifier || raw.text || raw.label || null;
   return String(raw);
 }
+// EXTRACTION GAP (punch-list #24): Ben expects a structured $ figure on
+// every bucket (the source clauses genuinely carry $2M/$500K/$50K-style
+// thresholds), but no card in production has ever populated a structured
+// threshold attribute -- materialContractsBuckets[].threshold and
+// materialContractsDollarThresholds are both empty in real extraction runs.
+// The dollar figures exist ONLY inside the raw quote text. Do not fabricate
+// a number here: fall back to this explicit "no structured value" label and
+// point at the "see text" affordance below (row.evidence, relocated into a
+// per-row expander by ProvisionTable.jsx's FULL_TEXT_COLUMNS['material-
+// contracts']) where the real $ figures are still readable. Rendering this
+// structurally requires an upstream extract.js/rubric.js change to emit a
+// per-bucket dollarThreshold -- out of scope for this config.
+const NO_THRESHOLD_LABEL = 'No $ threshold captured -- see text';
 function thresholdsByCode(features) {
   const out = new Map();
   const list = Array.isArray(features.materialContractsDollarThresholds) ? features.materialContractsDollarThresholds : [];
@@ -63,7 +76,7 @@ function rowFromBucket(item, index, source, thresholds) {
     id: `material-contracts-${code || index}-${index}`,
     code,
     label,
-    threshold: threshold || 'No $ threshold',
+    threshold: threshold || NO_THRESHOLD_LABEL,
     evidence: (tagged && item.text) || textOf(source),
     source,
     present: true,
@@ -88,7 +101,7 @@ function rowsFromText(source) {
       id: `material-contracts-${code}`,
       code,
       label: MATERIAL_CONTRACT_BUCKET_CODES[code] || meta.label || code,
-      threshold: 'No $ threshold',
+      threshold: NO_THRESHOLD_LABEL,
       evidence: text,
       source,
       present: true,
@@ -154,6 +167,13 @@ const materialContractsConfig = {
   id: 'material-contracts',
   title: 'Material Contracts',
   layoutSlot: 'material-contracts',
+  // Punch-list #23: the section already renders `title` once as the
+  // collapsible <h2> above this table (pages/review/[id].js); ProvisionTable
+  // used to print config.title a second time in its own chrome strip
+  // immediately below, so "Material Contracts" appeared twice back-to-back.
+  // Same fix as the MAE section's title dedup (#22) -- opt out of the
+  // in-table repeat via ProvisionTable's hideRepeatedTitle flag.
+  hideRepeatedTitle: true,
   selectRows(reviewDeal) {
     const source = (reviewDeal?.cards || []).find(isMaterialContractsCard);
     if (!source) return [];
