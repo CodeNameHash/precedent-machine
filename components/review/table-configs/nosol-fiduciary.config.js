@@ -183,7 +183,7 @@ function pctLabel(raw) {
   return /%\s*$/.test(text) ? text : `${text}%`;
 }
 const FIDUCIARY_STANDARD_LABELS = {
-  'is-superior-proposal': 'Superior Proposal only',
+  'is-superior-proposal': 'Is a Superior Proposal (after Parent’s adjustments)',
   'constitutes-or-could-lead-to-superior': 'Constitutes or could lead to a Superior Proposal',
   'constitutes-or-could-reasonably-be-expected-to-lead-to-superior': 'Constitutes or could reasonably be expected to lead to a Superior Proposal',
   'continues-to-constitute-superior': 'Continues to constitute a Superior Proposal',
@@ -200,18 +200,20 @@ function fiduciaryStandardLabel(raw) {
   if (!text) return null;
   return FIDUCIARY_STANDARD_LABELS[text.trim().toLowerCase()] || prettifyCode(text);
 }
-// Ben (round 6): ONE clean pill for the fiduciary-out standard (he keyed the
-// canonical codes deliberately). fiduciaryOutStandard carries several stage-
-// specific values; resolve to the single definitive gate.
+// Canonical-layer (Phase 0): fiduciaryOutStandard already carries an extraction-
+// assigned CODE per stage. Resolve to the single definitive gate by CODE
+// (prefer is-superior-proposal) and map through FIDUCIARY_STANDARD_LABELS --
+// never regex the clause prose. Same code -> same label on any deal.
+function fiduciaryOutCode(item) {
+  if (item && typeof item === 'object') return item.code || item.value || null;
+  return typeof item === 'string' ? item : null;
+}
 function fiduciaryStandardSummary(raw) {
   const items = Array.isArray(raw) ? raw : [raw];
-  const texts = items.map((item) => valueText(item)).filter(Boolean);
-  const joined = texts.join(' ').toLowerCase();
-  if (/is-superior-proposal|is a superior|continues to constitute a superior|after giving effect to all/.test(joined)) return 'Is a Superior Proposal (after Parent’s adjustments)';
-  if (/reasonably be expected to lead to a superior/.test(joined)) return 'Constitutes or could reasonably be expected to lead to a Superior Proposal';
-  if (/lead to a superior/.test(joined)) return 'Constitutes or could lead to a Superior Proposal';
-  const labels = [...new Set(texts.map(fiduciaryStandardLabel).filter(Boolean))];
-  return labels[0] || null;
+  const codes = items.map(fiduciaryOutCode).filter(Boolean).map((code) => String(code).trim().toLowerCase());
+  if (!codes.length) return null;
+  const pick = codes.find((code) => code === 'is-superior-proposal') || codes[0];
+  return FIDUCIARY_STANDARD_LABELS[pick] || prettifyCode(pick);
 }
 function boardChangeStandardLabel(raw) {
   const text = valueText(raw);

@@ -28,6 +28,14 @@ a wrong label, a missing pill, or a silent fall-through to raw text.
 1. **Canonical INPUT code** — what concept/posture is this clause? (`divestitureCapDescription → ANTI_HOHW`). Mostly built + populated.
 2. **Canonical OUTPUT result** — the rendered label/tone/color for that code. **This is the real gap.** The dict labels exist, but only **8 of 28 configs** consume them; the rest hand-roll local `*_LABELS` maps (`FIDUCIARY_STANDARD_LABELS` is defined **three times**; `voteStandard` copy-pasted in 3 files), and my bandaids invent yet another. Result: one code can render 3–4 different strings across the page, and a new deal's clause produces yet another.
 
+## 2b. The code→render path is THREE layers, and the middle one leaks (discovered during Phase 0)
+
+The path is **extraction assigns a code → assembly threads it into `card.features` → render reads it**. The middle layer is inconsistent:
+- **Code reaches render** (assembled as `{code, label, text}`): `fiduciaryOutStandard`, `representativesStandard`, `antitrustEffortsStandard`, material-contract buckets, bring-down tiers. → true "delete-the-regex" Phase-0.
+- **Code dropped at assembly** (arrives as bare `{text}` / string even though `claims.canonical` HAS the code): `divestitureCapDescription` (`ANTI_HOHW`), `pullRefile` (`MUTUAL_CONSENT`), `timingAgreementsProhibited` (`NOT_UNREASONABLY_WITHHELD`). → NOT a render delete; fix = thread the canonical into the feature value in the assembly layer (`lib/queries/claims-adapter.js` / `review-deal.js`), then delete the regex.
+
+So Section A splits: **A1 code-present → delete regex now; A2 code-dropped-at-assembly → plumbing fix first.** The flagship divestiture is A2. Verify "does the code reach the render?" per concept before deleting.
+
 ## 3. Systemic cause (why bandaids proliferated — not 60 isolated mistakes)
 
 Adding one coded feature today means editing **three disconnected places** with
