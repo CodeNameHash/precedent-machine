@@ -162,10 +162,11 @@ function formatMoney(raw) {
 // when both are given. Callers pass it ONLY for a genuine graded standard
 // (I3/I5/G4 -- see the file-header note); every plain-fact pill in this file
 // (restriction categories, thresholds, exceptions, appliesTo scope) omits it.
-function pillFor(PillCell, keyId, label, tone, evidence, source, color) {
+function pillFor(PillCell, keyId, label, tone, evidence, source, color, wrap) {
   if (!PillCell || !label) return null;
   const props = { key: keyId, label, tone, evidence, source };
   if (color) props.color = color;
+  if (wrap) props.wrap = true;
   return React.createElement(PillCell, props);
 }
 
@@ -269,12 +270,21 @@ function renderNegativeRow(entry, ctx) {
   // I3/I5/G4: restriction/threshold/exception pills are plain facts and
   // categories, not graded standards -- none of them pass a `color`, only a
   // `tone` (grey/info/green). See the file-header note.
+  //
+  // `wrap: true` (Ben, Dividends and Distributions): restrictionComponents/
+  // permittedExceptions labels are taxonomy phrases, not short codes -- a
+  // long one (e.g. "Existing equity award exercises, vesting, or
+  // settlement") pushed past this cell/table's right edge instead of
+  // wrapping, because PillCell's default single-line truncate gives the
+  // label an unbreakable min-content width `max-w-full` can't shrink below
+  // inside this column's `flex flex-wrap` container. `wrap: true` lets the
+  // pill wrap onto multiple lines and stay inside the cell instead.
   const restrictionPills = [
-    ...restrictionEntries.map((e, i) => pillFor(PillCell, `${entry.code}-rc-${i}`, e.label, 'neutral', e.evidence, e.source)),
-    ...thresholdEntries.map((e, i) => pillFor(PillCell, `${entry.code}-dt-${i}`, e.label, 'info', e.evidence, e.source)),
+    ...restrictionEntries.map((e, i) => pillFor(PillCell, `${entry.code}-rc-${i}`, e.label, 'neutral', e.evidence, e.source, undefined, true)),
+    ...thresholdEntries.map((e, i) => pillFor(PillCell, `${entry.code}-dt-${i}`, e.label, 'info', e.evidence, e.source, undefined, true)),
   ].filter(Boolean);
   const exceptionPills = permittedEntries
-    .map((e, i) => pillFor(PillCell, `${entry.code}-pe-${i}`, e.label, 'present', e.evidence, e.source))
+    .map((e, i) => pillFor(PillCell, `${entry.code}-pe-${i}`, e.label, 'present', e.evidence, e.source, undefined, true))
     .filter(Boolean);
 
   return {

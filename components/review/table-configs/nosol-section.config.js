@@ -98,15 +98,16 @@ const GROUP_DEFS = [
     items: [
       // WS-G #1: cease existing discussions stated first, then the
       // prohibited acts (rendered as individual pills -- see nosol-noshop's
-      // rowForSpec/renderSignals), then the exceptions in plain language.
+      // rowForSpec/renderSignals), then -- WS-G #3 / T4 -- "Representatives
+      // control standard" folded in here from the Change of Recommendation
+      // bucket (it's a no-shop enforcement mechanic, who the Company must
+      // control, not a change-of-recommendation fact) directly under the
+      // restriction it enforces, and only then the exceptions in plain
+      // language.
       { source: 'noshop', id: 'nosol-noshop-cease' },
       { source: 'noshop', id: 'nosol-noshop-prohibit' },
-      { source: 'noshop', id: 'nosol-noshop-exceptions' },
-      // WS-G #3 / T4: "Representatives control standard" folded in here
-      // from the Change of Recommendation bucket -- it's a no-shop
-      // enforcement mechanic (who the Company must control), not a
-      // change-of-recommendation fact.
       { source: 'fiduciary', id: 'nosol-fiduciary-reps' },
+      { source: 'noshop', id: 'nosol-noshop-exceptions' },
       { source: 'noshop', id: 'nosol-noshop-standstill-enforce' },
     ],
     // Excluded as duplicates: nosol-noshop-matching-period (-> Matching Rights,

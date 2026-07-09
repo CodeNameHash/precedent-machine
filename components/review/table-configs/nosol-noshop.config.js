@@ -133,8 +133,18 @@ function exceptionItemsFor(matches) {
   return items.length ? items : null;
 }
 
+// A card whose own code matches spec.codes is always kept. The regex
+// fallback exists only for decks where extraction never assigned one of
+// these codes at all -- it must NOT also fire alongside a real code match,
+// or a loosely-worded sibling card (e.g. NOSOL-CEASE's "solicitations" text
+// also satisfies the 'prohibit' fallback regex) gets pulled into this row's
+// matches and, since prohibitedActsFor()/detail-join read off `matches` in
+// order, can shadow or blend with the row's own card's content (Metsera:
+// the 'prohibit' row rendered NOSOL-CEASE's ceaseDiscussionsProhibitedList
+// pills instead of NOSOL-PROHIBIT's own -- a stray, mislabeled pill set).
 function rowForSpec(spec, cards) {
-  const matches = cards.filter((card) => spec.codes.includes(cardCode(card)) || fallbackMatch(spec, card));
+  const codeMatches = cards.filter((card) => spec.codes.includes(cardCode(card)));
+  const matches = codeMatches.length ? codeMatches : cards.filter((card) => fallbackMatch(spec, card));
   if (!matches.length) return null;
   const detail = matches
     .map((card) => featureSummary(card, spec.keys) || textOf(card))
@@ -284,27 +294,19 @@ function countListNode(row, ctx) {
 }
 // Long synthesized text (e.g. the Acquisition Proposal definition, or a
 // fiduciary-out standard summary that concatenated two claims) collapses to
-// a truncated preview + click-to-open, instead of one giant pill -- spec:
-// "never a full-sentence text dump inline".
+// a truncated preview instead of one giant pill -- spec: "never a
+// full-sentence text dump inline". This preview never carries its own "see
+// text" toggle: this row's full `detail` is always ALSO rendered behind
+// exactly one "see text" expander elsewhere -- the standalone table's
+// relocated 'detail' column (ProvisionTable.jsx's FULL_TEXT_COLUMNS) or, in
+// the merged nosol-section view, rowNode()'s outer seeText(detail) wrap.
+// Giving this preview its own second toggle duplicated that same full text
+// behind two "see text" disclosures on the same row (Metsera: Cease
+// discussions / standstill enforcement).
 function collapsedTextNode(text) {
-  const { value, short, truncated } = splitForCell(text, 90);
-  if (!value) return null;
-  if (!truncated) return React.createElement('span', { className: 'text-[11px] text-ink' }, value);
-  return React.createElement(
-    'span',
-    null,
-    React.createElement('span', { className: 'text-[11px] text-ink' }, `${short}…`),
-    React.createElement(
-      'details',
-      { className: 'mt-1' },
-      React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, 'see text'),
-      React.createElement(
-        'div',
-        { className: 'mt-1 max-w-[36rem] whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight' },
-        value,
-      ),
-    ),
-  );
+  const { short, truncated } = splitForCell(text, 90);
+  if (!short) return null;
+  return React.createElement('span', { className: 'text-[11px] text-ink' }, truncated ? `${short}…` : short);
 }
 // Each prohibited act (or plain-language exception) renders as its own
 // PillCell in a wrapping row, rather than one pill with a semicolon-joined
