@@ -1,35 +1,44 @@
 import React from 'react';
 import { cardCode, cardFeatures, cardType, selectCards, textOf, valueText } from './card-utils.js';
 
-// Employee Equity-Award per-instrument table, rebuilt to match the legacy
-// pre-schema page: ONE row per instrument (equity type | consideration |
-// vesting treatment | CVR entitlement | notes), not three separately-unzipped
-// lists, and not duplicated on the Consideration headline card any more --
-// consideration-hero.config.js explicitly excludes CONSID-EQUITY from its
-// selector (spec REBUILD-SPECS.md §2), so every equity attribute
-// (equityAwardTreatment, instrumentTreatments, instrumentVesting,
-// outstandingInstruments, espp_treatment, doubleTrigger, vestingAcceleration,
-// optionsCvrEarnIn, optionSpread) is owned exclusively here.
+// Employee Equity-Award per-instrument table (Feedback round 2, items #4-#8).
 //
-// Why a per-CARD join is safe here (not a fabricated positional zip):
-// lib/parser-v2/extract.js#expandConsidEquityByInstrument runs as part of
-// the standard ingest pipeline and splits a multi-instrument CONSID-EQUITY
-// section into ONE PROVISION PER INSTRUMENT before persistence, stamping
-// singular `instrumentType` / `equityAwardTreatment` / `vestingAcceleration`
-// fields (plus singleton outstandingInstruments/instrumentTreatments/
-// instrumentVesting arrays) on each resulting card. So for the expected data
-// shape, each equity-award CARD already IS one instrument -- reading one row
-// per card is a real join grounded in the pipeline's own card boundary, not
-// a guess across independently-ordered claims.
+// THE DATA BUG THIS REPLACES (DATA FINDINGS #5): the previous version built
+// rows by zipping three PARALLEL lists positionally --
+// outstandingInstruments[i] <-> instrumentTreatments[i] <-> instrumentVesting[i].
+// Those lists are independently re-sorted (alphabetically/by canonical code)
+// by claims-adapter.js#buildAttributeValue with no shared index key, so index
+// i of one list is NOT guaranteed to be index i of another. On Metsera that
+// silently paired ESPP with "Accel Else Double Trigger" -- a vesting clause
+// that actually belongs to Stock Options -- because both lists happened to
+// sort ESPP/ACCEL_ELSE_DOUBLE_TRIGGER into the same slot alphabetically.
 //
-// A card that still carries >1 items in these lists (stale/un-expanded data,
-// or a claims backfill that predates the per-instrument split) has no
-// reliable join available -- the claims table re-sorts each attribute's
-// list independently (see claims-adapter.js#buildAttributeValue), so index i
-// of outstandingInstruments is not guaranteed to be index i of
-// instrumentTreatments/instrumentVesting. Rather than silently fabricate
-// that pairing, such rows render with an "approximate pairing" flag so a
-// reviewer can go verify the source text.
+// THE FIX: `equityAwardTreatment` is, for a not-yet-split CONSID-EQUITY card,
+// a single JSON object KEYED BY INSTRUMENT -- e.g. Metsera's real card carries
+// `{ espp: "...", stockOptions: "...", restrictedStock: "..." }`, each value
+// the actual clause prose for THAT instrument. That is the one place the
+// source data ties a treatment description to a NAMED instrument, so it is
+// the reliable join -- not a fabricated pairing across independently-sorted
+// lists. Consideration/vesting short labels are then classified straight off
+// each instrument's OWN prose (see classifyConsiderationType/
+// classifyVestingTreatment below), so "double-trigger" language only ever
+// lands on the instrument whose own clause actually contains it.
+//
+// Two other card shapes are still handled, in priority order:
+//   1. equityAwardTreatment keyed-instrument map (above) -- PREFERRED.
+//   2. A card the pipeline's expandConsidEquityByInstrument() has already
+//      split to one instrument (instrumentType/equityAwardTreatment are
+//      singular tagged values for that one instrument) -- still a confident,
+//      un-guessed join.
+//   3. Legacy un-split, un-keyed data (>1 outstandingInstruments, no
+//      equityAwardTreatment map): pairs by an explicit instrument tag when
+//      present, else degrades to positional order. Per punch-list #4 this no
+//      longer carries a distinct "approximate" warning -- once real deals
+//      carry shape 1, this branch is a rare best-effort fallback, not the
+//      common case worth a dedicated UI treatment for.
+// If an instrument named in outstandingInstruments has no corresponding
+// equityAwardTreatment entry, it is surfaced as its own flagged row rather
+// than silently dropped or guessed (see missingInstrumentRows).
 
 function isEquityAward(card) {
   const code = cardCode(card);
@@ -41,6 +50,11 @@ function asList(value) {
   return value === undefined || value === null || value === '' ? [] : [value];
 }
 
+function codeOf(value) {
+  if (typeof value === 'string') return value.toUpperCase();
+  return value && typeof value === 'object' && !Array.isArray(value) && value.code ? String(value.code).toUpperCase() : null;
+}
+
 function instrumentKeyOf(item) {
   if (!item || typeof item !== 'object') return null;
   const raw = item.instrument || item.instrumentCode || item.for;
@@ -50,57 +64,200 @@ function instrumentKeyOf(item) {
 // Match a treatment/vesting entry to an instrument by an explicit
 // cross-tag (same convention extract.js#pairInstrumentWithTreatment uses)
 // when present. Returns null (no fabricated fallback) when no code-based
-// match exists -- callers decide how to flag that.
+// match exists -- callers decide how to degrade.
 function matchByCode(instrumentCode, list) {
   if (!instrumentCode) return null;
   return list.find((item) => instrumentKeyOf(item) === instrumentCode) || null;
 }
 
-function isTruthyBoolLike(value) {
-  return value === true || value === 'true';
+// --- Instrument-key -> canonical code / friendly label -------------------
+const INSTRUMENT_KEY_META = {
+  espp: { code: 'ESPP', label: 'ESPP (Employee Stock Purchase Plan)' },
+  options: { code: 'STOCK_OPTIONS', label: 'Stock Options' },
+  stockoptions: { code: 'STOCK_OPTIONS', label: 'Stock Options' },
+  restrictedstock: { code: 'RESTRICTED_STOCK', label: 'Restricted Stock Awards' },
+  rsa: { code: 'RESTRICTED_STOCK', label: 'Restricted Stock Awards' },
+  rsas: { code: 'RESTRICTED_STOCK', label: 'Restricted Stock Awards' },
+  restrictedstockunits: { code: 'RSU', label: 'RSUs' },
+  rsu: { code: 'RSU', label: 'RSUs' },
+  rsus: { code: 'RSU', label: 'RSUs' },
+  performancestockunits: { code: 'PSU', label: 'PSUs' },
+  psu: { code: 'PSU', label: 'PSUs' },
+  psus: { code: 'PSU', label: 'PSUs' },
+  sar: { code: 'SAR', label: 'Stock Appreciation Rights' },
+  sars: { code: 'SAR', label: 'Stock Appreciation Rights' },
+  stockappreciationrights: { code: 'SAR', label: 'Stock Appreciation Rights' },
+  phantomstock: { code: 'PHANTOM_STOCK', label: 'Phantom Stock' },
+  dsu: { code: 'DSU', label: 'Deferred Stock Units' },
+  dsus: { code: 'DSU', label: 'Deferred Stock Units' },
+  directorequity: { code: 'DIRECTOR_EQUITY', label: 'Director Equity Awards' },
+  otherequity: { code: 'OTHER_EQUITY', label: 'Other Equity Awards' },
+};
+
+function humanizeInstrumentKey(key) {
+  const spaced = String(key || '')
+    .replace(/[_-]+/g, ' ')
+    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+    .trim();
+  return spaced.replace(/\b\w/g, (ch) => ch.toUpperCase()) || 'Equity Award';
 }
 
-// CVR ENTITLEMENT column (spec §2): only options carry a CVR earn-in
-// condition -- RSAs/ESPP are simply cashed out/cancelled at closing with no
-// ITM gate. optionsCvrEarnIn is a card-level feature (MUST_BE_ITM on
-// Metsera), so it only attaches to the row whose instrument label reads as
-// an option grant.
+function instrumentMetaForKey(key) {
+  return INSTRUMENT_KEY_META[String(key).toLowerCase()] || { code: null, label: humanizeInstrumentKey(key) };
+}
+
+// A card's equityAwardTreatment is a keyed-instrument map (the reliable
+// shape) when it carries fields beyond the tagged-value envelope
+// (code/label/text/quotes) whose values are non-empty prose strings.
+const TAGGED_ENVELOPE_KEYS = new Set(['text', 'quotes', 'code', 'label']);
+function instrumentTreatmentEntries(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return [];
+  return Object.entries(value)
+    .filter(([key, val]) => !TAGGED_ENVELOPE_KEYS.has(key) && typeof val === 'string' && val.trim())
+    .map(([key, val]) => ({ key, text: val.trim() }));
+}
+
+// --- Consideration / Vesting classification (ported, not re-invented, from
+// lib/parser-v2/consideration-equity.js's considerationType()/
+// vestingTreatment() -- same enum families, same pattern rules; copied
+// locally rather than imported so this browser-bundled config doesn't pull
+// in that Node-only extraction module. Applied to the per-INSTRUMENT prose
+// so a clause's own language (e.g. "double-trigger") only ever tags the
+// instrument it actually describes. -------------------------------------
+const ESPP_FROZEN_RE = /terminat|frozen|final\s+(?:investment|offering)|offering\s+period|purchase\s+period/;
+
+function classifyConsiderationType(text, instrumentCode) {
+  const t = String(text || '').toLowerCase();
+  if (instrumentCode === 'ESPP' && ESPP_FROZEN_RE.test(t)) return 'CANCELLATION';
+  if (/cash|spread|exercise\s+price|merger\s+consideration|per\s+share|cvr/.test(t)) return 'CASH';
+  if (/without\s+(?:any\s+)?consideration|no\s+consideration/.test(t)) return 'CANCELLATION';
+  if (/parent\s+(?:stock|equity|award)|buyer\s+(?:stock|equity|award)|assum/.test(t)) return 'STOCK';
+  return null;
+}
+
+function classifyVestingTreatment(text, instrumentCode) {
+  const t = String(text || '').toLowerCase();
+  if (instrumentCode === 'ESPP' && ESPP_FROZEN_RE.test(t)) return 'CANCELLED_NO_CONSIDERATION';
+  if (/double[-\s]?trigger|same\s+vesting\s+schedule/.test(t)) return 'CONTINUED_VESTING';
+  if (/\bassum/.test(t)) return 'ASSUMED_BY_PARENT';
+  if (/\bcontin/.test(t)) return 'CONTINUED_VESTING';
+  if (/pro[-\s]?rata/.test(t)) return 'PRO_RATA_ACCELERATION';
+  if (/without\s+(?:any\s+)?consideration|no\s+consideration/.test(t)) return 'CANCELLED_NO_CONSIDERATION';
+  if (/\brollover\b/.test(t)) return 'ROLLOVER';
+  if (/vest(?:ed)?\s+in\s+full|fully\s+vest/.test(t)) return 'FULLY_VESTED_ACCELERATED';
+  if (/cancel|cash|spread|exercise\s+price/.test(t)) return 'CANCELLED_FOR_CONSIDERATION';
+  return null;
+}
+
+const CONSIDERATION_TYPE_META = {
+  CASH: { label: 'Cash', tone: 'present' },
+  STOCK: { label: 'Parent stock / rollover', tone: 'info' },
+  CANCELLATION: { label: 'Cancelled — no consideration', tone: 'missing' },
+};
+
+const VESTING_TREATMENT_META = {
+  CANCELLED_NO_CONSIDERATION: { label: 'Cancelled — no consideration', tone: 'missing' },
+  CONTINUED_VESTING: { label: 'Continues vesting (double-trigger protection)', tone: 'warning' },
+  ASSUMED_BY_PARENT: { label: 'Assumed by Parent', tone: 'info' },
+  PRO_RATA_ACCELERATION: { label: 'Pro-rata acceleration', tone: 'info' },
+  ROLLOVER: { label: 'Rollover into Parent award', tone: 'info' },
+  FULLY_VESTED_ACCELERATED: { label: 'Fully vested (accelerated)', tone: 'present' },
+  CANCELLED_FOR_CONSIDERATION: { label: 'Cancelled for cash consideration', tone: 'present' },
+};
+
+// CVR ENTITLEMENT column (#7, DATA FINDINGS): only options carry a CVR
+// earn-in condition -- RSAs/ESPP are simply cashed out/cancelled at closing
+// with no ITM gate. optionsCvrEarnIn is a card-level feature (MUST_BE_ITM on
+// Metsera); resolveLabel's generic humanizeCode fallback rendered it as the
+// unfriendly "Must Be Itm" ("ITM" per the punch-list) -- map the known codes
+// to the reviewer-facing phrase explicitly instead.
+const CVR_ENTITLEMENT_LABELS = {
+  MUST_BE_ITM: 'Must be in the money at closing',
+  EARN_IN_ELIGIBLE: 'Earn-in eligible (no in-the-money condition)',
+};
+
 function isOptionsLabel(text) {
   return /\boption/i.test(String(text || ''));
 }
-function cvrEntitlementFor(instrumentLabel, features) {
-  if (!isOptionsLabel(instrumentLabel)) return null;
-  return valueText(features?.optionsCvrEarnIn) || null;
+
+function cvrEntitlementFor(instrumentCode, instrumentLabel, features) {
+  const isOptions = instrumentCode ? instrumentCode === 'STOCK_OPTIONS' : isOptionsLabel(instrumentLabel);
+  if (!isOptions) return null;
+  const raw = features?.optionsCvrEarnIn;
+  const code = codeOf(raw);
+  if (code && CVR_ENTITLEMENT_LABELS[code]) return CVR_ENTITLEMENT_LABELS[code];
+  return valueText(raw) || null;
 }
 
-// NOTES column (spec §2, "free"): surfaces the two per-card facts that don't
-// have a dedicated column -- the ESPP-specific mechanic prose (espp_treatment,
-// only distinct/meaningful on the ESPP row) and the double-trigger flag
-// (doubleTrigger, only meaningful for time-vesting instruments, i.e. not
-// ESPP contribution rights).
-function isEsppLabel(text) {
-  return /espp|employee stock purchase/i.test(String(text || ''));
-}
-function notesFor(instrumentLabel, features) {
-  if (isEsppLabel(instrumentLabel)) {
-    const espp = valueText(features?.espp_treatment);
-    if (espp) return espp;
-  } else if (isTruthyBoolLike(features?.doubleTrigger)) {
-    return 'Double-trigger: acceleration requires a qualifying termination following the change in control.';
+// Instruments named in outstandingInstruments but with no entry in
+// equityAwardTreatment: flagged as their own row (warning tone, honest
+// "not captured" copy) rather than silently dropped or given a fabricated
+// treatment/vesting value.
+function missingInstrumentRows(card, f, coveredCodes) {
+  const outstanding = asList(f.outstandingInstruments);
+  if (!outstanding.length) return [];
+  const evidence = textOf(card);
+  const seen = new Set(coveredCodes);
+  const rows = [];
+  for (const inst of outstanding) {
+    const code = codeOf(inst);
+    if (!code || seen.has(code)) continue;
+    seen.add(code);
+    rows.push({
+      id: `equity-awards-${card.id || 'card'}-gap-${code}`,
+      instrument: valueText(inst) || humanizeInstrumentKey(code),
+      considerationLabel: 'No structured treatment captured for this instrument — see source',
+      considerationTone: 'warning',
+      vestingLabel: null,
+      vestingTone: 'neutral',
+      cvrEntitlement: null,
+      evidence,
+      sourceCard: card,
+      present: true,
+    });
   }
-  return null;
+  return rows;
 }
 
 function rowsForCard(card) {
   const f = cardFeatures(card);
+  const evidence = textOf(card);
+
+  // Shape 1 (preferred, DATA FINDINGS #5): equityAwardTreatment as a real
+  // per-instrument map.
+  const instrumentEntries = instrumentTreatmentEntries(f.equityAwardTreatment);
+  if (instrumentEntries.length) {
+    const rows = instrumentEntries.map(({ key, text }) => {
+      const meta = instrumentMetaForKey(key);
+      const considerationCode = classifyConsiderationType(text, meta.code);
+      const vestingCode = classifyVestingTreatment(text, meta.code);
+      const considerationMeta = considerationCode ? CONSIDERATION_TYPE_META[considerationCode] : null;
+      const vestingMeta = vestingCode ? VESTING_TREATMENT_META[vestingCode] : null;
+      return {
+        id: `equity-awards-${card.id || 'card'}-${key}`,
+        instrument: meta.label,
+        instrumentCode: meta.code,
+        considerationLabel: considerationMeta ? considerationMeta.label : null,
+        considerationTone: considerationMeta ? considerationMeta.tone : 'neutral',
+        vestingLabel: vestingMeta ? vestingMeta.label : null,
+        vestingTone: vestingMeta ? vestingMeta.tone : 'neutral',
+        cvrEntitlement: cvrEntitlementFor(meta.code, meta.label, f),
+        evidence: text,
+        sourceCard: card,
+        present: true,
+      };
+    });
+    const coveredCodes = rows.map((r) => r.instrumentCode).filter(Boolean);
+    return [...rows, ...missingInstrumentRows(card, f, coveredCodes)];
+  }
+
   const instruments = asList(f.outstandingInstruments);
   const treatments = asList(f.instrumentTreatments);
   const vestings = asList(f.instrumentVesting);
-  const evidence = textOf(card);
 
-  // Common / expected case: the pipeline has already split this card down
-  // to one instrument. instrumentType/equityAwardTreatment/vestingAcceleration
-  // are the singular, authoritative fields for that one instrument.
+  // Shape 2: the pipeline has already split this card down to one
+  // instrument. instrumentType/equityAwardTreatment/vestingAcceleration are
+  // the singular, authoritative fields for that one instrument.
   if (instruments.length <= 1) {
     const instrument = valueText(f.instrumentType) || valueText(instruments[0]);
     if (!instrument) return [];
@@ -109,38 +266,37 @@ function rowsForCard(card) {
     return [{
       id: `equity-awards-${card.id || instrument}`,
       instrument,
-      treatment: treatment || null,
-      vesting: vesting || null,
-      cvrEntitlement: cvrEntitlementFor(instrument, f),
-      notes: notesFor(instrument, f),
+      considerationLabel: treatment || null,
+      considerationTone: 'neutral',
+      vestingLabel: vesting || null,
+      vestingTone: 'neutral',
+      cvrEntitlement: cvrEntitlementFor(codeOf(f.instrumentType), instrument, f),
       evidence,
       sourceCard: card,
-      approximate: false,
       present: true,
     }];
   }
 
-  // Un-expanded legacy shape: >1 instrument still on one card. Pair by code
-  // where the source data supports it; otherwise flag the row rather than
-  // guess.
+  // Shape 3: un-expanded legacy data, no equityAwardTreatment map to key
+  // off. Pair by an explicit cross-tag where the data supports it, else
+  // degrade to positional order -- no confidence icon either way (#4).
   return instruments.map((inst, index) => {
     const instrumentCode = instrumentKeyOf(inst) || (inst && inst.code ? String(inst.code).toUpperCase() : null);
     const matchedTreatment = matchByCode(instrumentCode, treatments);
     const matchedVesting = matchByCode(instrumentCode, vestings);
-    const approximate = !matchedTreatment && !matchedVesting;
-    const treatment = matchedTreatment || (approximate ? treatments[index] : null);
-    const vesting = matchedVesting || (approximate ? vestings[index] : null);
+    const treatment = matchedTreatment || treatments[index];
+    const vesting = matchedVesting || vestings[index];
     const instrumentLabel = valueText(inst) || `Instrument ${index + 1}`;
     return {
       id: `equity-awards-${card.id || 'card'}-${index}`,
       instrument: instrumentLabel,
-      treatment: valueText(treatment) || null,
-      vesting: valueText(vesting) || null,
-      cvrEntitlement: cvrEntitlementFor(instrumentLabel, f),
-      notes: notesFor(instrumentLabel, f),
+      considerationLabel: valueText(treatment) || null,
+      considerationTone: 'neutral',
+      vestingLabel: valueText(vesting) || null,
+      vestingTone: 'neutral',
+      cvrEntitlement: cvrEntitlementFor(instrumentCode, instrumentLabel, f),
       evidence,
       sourceCard: card,
-      approximate,
       present: true,
     };
   });
@@ -154,14 +310,18 @@ function cutoffRow(cards) {
       return {
         id: `equity-awards-cutoff-${card.id || 'card'}`,
         instrument: 'Award / contribution cutoff treatment',
-        treatment: cutoff,
-        vesting: null,
+        considerationLabel: cutoff,
+        considerationTone: 'neutral',
+        vestingLabel: null,
+        vestingTone: 'neutral',
         cvrEntitlement: null,
-        notes: null,
         evidence: textOf(card),
         sourceCard: card,
-        approximate: false,
         present: true,
+        // Cutoff clauses are full sentences, not short enum-style facts --
+        // keep this one row on the plain-text cell (still evidence-linked)
+        // instead of squeezing prose into a truncating pill.
+        isLongText: true,
       };
     }
   }
@@ -181,26 +341,18 @@ function cell(text, ctx, row) {
   return React.createElement(EvidenceHoverSource, { evidence: row.evidence, source: row.sourceCard, as: 'span' }, text);
 }
 
-// Approximate-pairing flag, softened (spec §2) from a full amber block per
-// row to a small inline icon carrying the same warning as a native `title`
-// tooltip -- the reviewer still gets the exact same "verify against source
-// text" wording on hover, it just no longer dominates the row.
+// (#8) Consideration / Vesting Treatment render as PillCell chips, coloured
+// by the classification above, instead of plain text.
+function pill(text, tone, ctx, row) {
+  if (!text) return cell(null, ctx, row);
+  const PillCell = ctx?.primitives?.PillCell;
+  if (!PillCell) return cell(text, ctx, row);
+  return React.createElement(PillCell, { label: text, tone: tone || 'neutral', evidence: row.evidence, source: row.sourceCard });
+}
+
+// (#4) No more "Approximate pairing" icon -- plain evidence-linked text.
 function renderInstrument(row, ctx) {
-  const label = cell(row.instrument, ctx, row);
-  if (!row.approximate) return label;
-  return React.createElement(
-    'span',
-    { className: 'inline-flex items-center gap-1' },
-    label,
-    React.createElement(
-      'span',
-      {
-        className: 'inline-flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full border border-amber-300 bg-amber-50 text-[9px] font-semibold leading-none text-amber-700',
-        title: 'Approximate pairing — verify against source text',
-      },
-      '!',
-    ),
-  );
+  return cell(row.instrument, ctx, row);
 }
 
 const equityAwardsConfig = {
@@ -212,11 +364,30 @@ const equityAwardsConfig = {
   },
   columns: [
     { id: 'equityType', header: 'Equity Type', width: '14rem', renderCell: renderInstrument },
-    { id: 'consideration', header: 'Consideration', renderCell: (row, ctx) => cell(row.treatment, ctx, row) },
-    { id: 'vestingTreatment', header: 'Vesting Treatment', renderCell: (row, ctx) => cell(row.vesting, ctx, row) },
+    {
+      id: 'consideration',
+      header: 'Consideration',
+      renderCell: (row, ctx) => (row.isLongText ? cell(row.considerationLabel, ctx, row) : pill(row.considerationLabel, row.considerationTone, ctx, row)),
+    },
+    {
+      id: 'vestingTreatment',
+      header: 'Vesting Treatment',
+      renderCell: (row, ctx) => (row.isLongText ? cell(row.vestingLabel, ctx, row) : pill(row.vestingLabel, row.vestingTone, ctx, row)),
+    },
+    // (#7) "Must be in the money at closing" instead of the raw "ITM" code.
     { id: 'cvrEntitlement', header: 'CVR Entitlement', renderCell: (row, ctx) => cell(row.cvrEntitlement, ctx, row) },
-    { id: 'notes', header: 'Notes', renderCell: (row, ctx) => cell(row.notes, ctx, row) },
+    // (#6) NOTES column removed -- added no value.
   ],
 };
 
-export { equityAwardRows, equityAwardsConfig, isEquityAward, rowsForCard };
+export {
+  classifyConsiderationType,
+  classifyVestingTreatment,
+  cvrEntitlementFor,
+  equityAwardRows,
+  equityAwardsConfig,
+  instrumentMetaForKey,
+  instrumentTreatmentEntries,
+  isEquityAward,
+  rowsForCard,
+};
