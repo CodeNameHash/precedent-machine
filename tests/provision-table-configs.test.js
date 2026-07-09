@@ -364,13 +364,16 @@ test('representations-qualifiers config resolves taxonomy-coded materiality/know
     EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
   };
   const materialityColumn = representationsQualifiersMod.representationsQualifiersConfig.columns.find((column) => column.id === 'materiality');
-  const knowledgeColumn = representationsQualifiersMod.representationsQualifiersConfig.columns.find((column) => column.id === 'knowledge');
   assert.match(
     renderToStaticMarkup(React.createElement(React.Fragment, null, materialityColumn.renderCell(row, { primitives }))),
     /MAE-qualified/,
   );
+  // R2: Knowledge is no longer a per-rep table COLUMN (it distorted the
+  // table's formatting) -- it renders via renderKnowledgePill inside the
+  // Knowledge block instead (see renderBody tests below).
+  assert.equal(representationsQualifiersMod.representationsQualifiersConfig.columns.find((column) => column.id === 'knowledge'), undefined);
   assert.match(
-    renderToStaticMarkup(React.createElement(React.Fragment, null, knowledgeColumn.renderCell(row, { primitives }))),
+    renderToStaticMarkup(React.createElement(React.Fragment, null, representationsQualifiersMod.renderKnowledgePill(row, { primitives }))),
     /Knowledge-qualified/,
   );
 });
@@ -403,13 +406,16 @@ test('representations-qualifiers config renders ONE row per rep card, each resol
   assert.equal(lit.materiality, null, 'Litigation has no materiality qualifier of its own -- must not inherit Capitalization\'s');
 });
 
-// Punch-list #14/#15/#16: the SEC-filings cut-off/portions-excluded carve-out
-// is only ONE of the section's General Exceptions (alongside the disclosure
-// letter) -- it must not be the section headline -- and it renders as a TOP
-// block (kind 'top') ahead of the per-rep rows, with pills (not a bulleted
-// prose list) for the cut-off and portions-excluded content. The Company
-// Disclosure Letter reference must render when present, never "Not present".
-test('representations-qualifiers config title names the reps directly (not a separate "Representation Qualifiers" section) and renders Knowledge/General-Exceptions as a TOP row ahead of the per-rep rows, with pills, and a correctly-resolved disclosure letter reference', () => {
+// R1 (FEEDBACK-3-PUNCHLIST.md): General Exceptions renders as its OWN
+// SEPARATE table at the TOP of the section (SEC-filings cut-off,
+// portions-excluded, disclosure letter) -- no longer folded into a combined
+// "Knowledge & General Exceptions" block. The SEC cut-off/portions-excluded
+// carve-out is only ONE of the section's General Exceptions (alongside the
+// disclosure letter) -- it must not be the section headline -- and pills
+// (not a bulleted prose list) render the cut-off/portions-excluded content.
+// The Company Disclosure Letter reference must render when present, never
+// "Not present".
+test('representations-qualifiers config title names the reps directly (not a separate "Representation Qualifiers" section) and renders General Exceptions as its OWN table ahead of the per-rep rows, with pills, and a correctly-resolved disclosure letter reference', () => {
   assert.equal(representationsQualifiersMod.representationsQualifiersConfig.title, 'Representations & Warranties — Company');
   const rows = representationsQualifiersMod.representationsQualifiersConfig.selectRows({
     cards: [
@@ -436,8 +442,8 @@ test('representations-qualifiers config title names the reps directly (not a sep
       },
     ],
   });
-  assert.equal(rows[0].id, 'representations-qualifiers-top');
-  assert.equal(rows[0].kind, 'top');
+  assert.equal(rows[0].id, 'representations-qualifiers-general-exceptions');
+  assert.equal(rows[0].kind, 'general-exceptions');
   assert.equal(rows[0].secCutoff, 'at least one (1) business day prior to the date of this Agreement');
   assert.deepEqual(rows[0].secExcluded, [
     'disclosures contained in any part entitled "Risk Factors"',
@@ -445,24 +451,25 @@ test('representations-qualifiers config title names the reps directly (not a sep
   ]);
   assert.equal(rows[0].disclosureLetter.label, 'the Company Disclosure Letter');
   assert.equal(rows[1].id, 'representations-qualifiers-org');
+  assert.equal(rows[1].kind, 'rep');
 
   const primitives = {
     PillCell: ({ label, evidence }) => React.createElement('span', { className: 'pill', 'data-evidence': evidence }, label),
   };
-  const lookbackColumn = representationsQualifiersMod.representationsQualifiersConfig.columns.find((column) => column.id === 'lookback');
-  const topHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, lookbackColumn.renderCell(rows[0], { primitives })));
-  assert.match(topHtml, /SEC filings.*cut-off/i);
-  assert.match(topHtml, /<span class="pill"[^>]*>at least one \(1\) business day/);
-  assert.match(topHtml, /SEC filings.*portions excluded/i);
-  assert.match(topHtml, /<span class="pill"[^>]*>disclosures contained in any part entitled/);
-  assert.match(topHtml, /Disclosure letter/);
-  assert.match(topHtml, /<span class="pill"[^>]*>the Company Disclosure Letter/);
-  assert.doesNotMatch(topHtml, /Not present/);
-
-  const termColumn = representationsQualifiersMod.representationsQualifiersConfig.columns.find((column) => column.id === 'term');
-  const termHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, termColumn.renderCell(rows[0], {})));
-  assert.match(termHtml, /Knowledge/);
-  assert.match(termHtml, /General Exceptions/);
+  const bodyHtml = renderToStaticMarkup(representationsQualifiersMod.renderBody(rows, { primitives }));
+  // General Exceptions is its own labelled sub-table, distinct from the
+  // per-rep table below it (two separate <table> elements: General
+  // Exceptions + the per-rep table).
+  assert.equal((bodyHtml.match(/<table/g) || []).length, 2);
+  assert.match(bodyHtml, /General Exceptions/);
+  assert.match(bodyHtml, /SEC Filings/);
+  assert.match(bodyHtml, /Cut-off/i);
+  assert.match(bodyHtml, /<span class="pill"[^>]*>at least one \(1\) business day/);
+  assert.match(bodyHtml, /Portions excluded/i);
+  assert.match(bodyHtml, /<span class="pill"[^>]*>disclosures contained in any part entitled/);
+  assert.match(bodyHtml, /Disclosure Letter/);
+  assert.match(bodyHtml, /<span class="pill"[^>]*>the Company Disclosure Letter/);
+  assert.doesNotMatch(bodyHtml, /Not present/);
 });
 
 // Punch-list #16: when there is truly no disclosure-letter data (and no other
@@ -491,10 +498,12 @@ test('representations-qualifiers config omits the TOP row entirely when the prea
   assert.equal(rows[0].id, 'representations-qualifiers-org');
 });
 
-// Punch-list #14: the Knowledge GROUP (who the qualifier attaches to),
-// derived from the per-rep `knowledgeScope` verbatim text, renders as pills
-// in the TOP row's Knowledge Qualifier column.
-test('representations-qualifiers config derives the Knowledge group from knowledgeScope and renders it as pills in the TOP row', () => {
+// R2 (FEEDBACK-3-PUNCHLIST.md): the Knowledge GROUP (who the qualifier
+// attaches to), derived from the per-rep `knowledgeScope` verbatim text,
+// renders as pills in its OWN Knowledge block/table -- rows, not a squeezed
+// per-rep column. The knowledge-qualified rep itself (SEC Documents) also
+// gets its own ROW in that same Knowledge table.
+test('representations-qualifiers config derives the Knowledge group from knowledgeScope and renders it as ROWS in a dedicated Knowledge block, not a per-rep column', () => {
   const rows = representationsQualifiersMod.representationsQualifiersConfig.selectRows({
     cards: [
       {
@@ -509,16 +518,25 @@ test('representations-qualifiers config derives the Knowledge group from knowled
       },
     ],
   });
-  const top = rows.find((row) => row.kind === 'top');
-  assert.ok(top, 'TOP row should render from knowledgeScope data alone');
-  assert.deepEqual(top.knowledgeGroup, ['the Chief Executive Officer', 'the Chief Financial Officer of the Company']);
+  const knowledgeSummary = rows.find((row) => row.kind === 'knowledge-summary');
+  assert.ok(knowledgeSummary, 'knowledge-summary row should render from knowledgeScope data alone');
+  assert.deepEqual(knowledgeSummary.knowledgeGroup, ['the Chief Executive Officer', 'the Chief Financial Officer of the Company']);
+  // The per-rep row still resolves its own knowledge qualifier data (it just
+  // no longer renders as a table column -- see representations-qualifiers
+  // config renders General Exceptions as its OWN table test for the column
+  // removal assertion).
+  const repRow = rows.find((row) => row.kind === 'rep');
+  assert.equal(repRow.knowledge.label, 'Company knowledge');
+
   const primitives = {
     PillCell: ({ label, evidence }) => React.createElement('span', { className: 'pill', 'data-evidence': evidence }, label),
   };
-  const knowledgeColumn = representationsQualifiersMod.representationsQualifiersConfig.columns.find((column) => column.id === 'knowledge');
-  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, knowledgeColumn.renderCell(top, { primitives })));
+  const html = renderToStaticMarkup(representationsQualifiersMod.renderBody(rows, { primitives }));
   assert.match(html, /Knowledge group/);
   assert.match(html, /Chief Executive Officer/);
+  // The rep row appears as its OWN line/row in the Knowledge block too.
+  assert.match(html, /SEC Documents/);
+  assert.match(html, /Company knowledge/);
 });
 
 // Punch-list #17: lookback must use the absolute lookbackDateISO consistently
