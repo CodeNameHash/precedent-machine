@@ -4,12 +4,12 @@ import { cardCode, cardFeatures, cardType, firstFeature, makeRow, selectCards, t
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
+// REBUILD-SPECS.md section 6: interim-operating-covenant content (ordinary
+// course, negative-covenant restrictions, affirmative limbs) is now owned
+// entirely by ioc-exceptions.config.js's grouped covenant table. The 5 rows
+// below are the genuine COVENANT_OTHER concepts that live in THIS section
+// (§6.01-6.11-style general covenants, not the §5.01 IOC list).
 const ROWS = [
-  ['ordinary-course', 'Ordinary-course covenant', 'Interim operating', ['ordinaryCourseConduct', 'absenceConductedOrdinaryCourse']],
-  ['no-mae', 'No MAE / no changes limb', 'Interim operating', ['aocNoMaePresent']],
-  ['specified-iocs', 'Specified interim operating covenants', 'Interim operating', ['absenceSpecifiedIOCs', 'negativeCovenantBaskets']],
-  ['negative', 'Negative covenant restrictions', 'Restrictions', ['negativeCovenant', 'restrictedActions']],
-  ['affirmative', 'Affirmative covenants', 'Affirmative', ['affirmativeCovenants', 'positiveObligations']],
   ['efforts', 'General efforts standard', 'Efforts', ['effortsStandard', 'reasonableBestEfforts']],
   ['access', 'Access / information rights', 'Access', ['accessRights', 'informationAccess']],
   ['public-statements', 'Public statements', 'Communications', ['publicStatements', 'publicStatementExceptions']],
@@ -17,10 +17,16 @@ const ROWS = [
   ['financing', 'Financing cooperation', 'Financing', ['financingCooperation']],
 ];
 
+// Deliberately excludes COVENANT_INTERIM_OPERATING / IOC-prefixed cards
+// (ioc-exceptions.config.js owns those) and drops the old free-text regex
+// fallback -- that fallback was matching the MISC_BOILERPLATE §9.01 "No
+// Survival / Nonsurvival" card (its repsSurvivalExceptions clause contains
+// the word "covenant") into this table as a bogus "No survival" row.
 function isGeneralCovenant(card) {
   const type = cardType(card);
   const code = cardCode(card);
-  return type === 'COVENANT_OTHER' || type === 'COVENANT_INTERIM_OPERATING' || code.startsWith('COV') || code.startsWith('IOC') || /covenant|ordinary course|access|public statements/i.test(`${card?.short_title || ''} ${textOf(card)}`);
+  if (type === 'COVENANT_INTERIM_OPERATING' || code.startsWith('IOC')) return false;
+  return type === 'COVENANT_OTHER' || code.startsWith('COV');
 }
 
 function readableSignal(key, value) {
@@ -53,23 +59,15 @@ function rowSignals(card) {
   ].filter(Boolean);
 }
 
-// The 10 curated ROWS above collapse the whole covenant pool into one
-// generic row per concept (firstFeature-style) — a family that legacy
-// rendered as ~38 distinct per-clause rows (one per IOC/COV card) shrinks to
-// a fixed 10. IOC-GENERAL-EXCEPTIONS / IOC-NEGATIVE-PREAMBLE are containers
-// already rendered in full by ioc-exceptions.config.js, so exclude them here
-// to avoid a duplicate/empty row; every OTHER card gets its own row below.
-function isPreambleOnlyCard(card) {
-  const code = cardCode(card);
-  return code === 'IOC-GENERAL-EXCEPTIONS' || code === 'IOC-NEGATIVE-PREAMBLE';
-}
-
+// The 5 curated ROWS above collapse the general-covenant pool into one
+// generic row per concept (firstFeature-style); every OTHER COVENANT_OTHER
+// card not covered by a curated row gets its own per-clause row below. (IOC
+// content -- including its own general-exceptions/negative-preamble
+// containers -- never reaches this function: isGeneralCovenant() excludes
+// COVENANT_INTERIM_OPERATING/IOC-prefixed cards entirely, and
+// ioc-exceptions.config.js owns rendering them.)
 function clauseLabel(card) {
   return card?.short_title || card?.defined_term || cardCode(card) || 'Covenant';
-}
-
-function clauseKind(card) {
-  return cardType(card) === 'COVENANT_INTERIM_OPERATING' ? 'Interim operating' : 'General covenant';
 }
 
 function clauseDetail(card) {
@@ -79,14 +77,13 @@ function clauseDetail(card) {
 
 function perClauseRows(cards) {
   return cards
-    .filter((card) => !isPreambleOnlyCard(card))
     .map((card) => {
       const detail = clauseDetail(card);
       if (!detail) return null;
       return {
         id: `general-covenants-clause-${card.id}`,
         label: clauseLabel(card),
-        kind: clauseKind(card),
+        kind: 'General covenant',
         detail,
         evidence: textOf(card),
         source: clauseLabel(card),
