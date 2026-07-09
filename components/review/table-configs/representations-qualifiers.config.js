@@ -9,7 +9,20 @@ const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 // This section IS the Company's (and Parent's) representations and
 // warranties -- not a separate "qualifiers" concept layered on top of them.
 // One row per REPRESENTATION card (one row per rep), never per-attribute:
-// TERM | MATERIALITY QUALIFIER | KNOWLEDGE QUALIFIER | LOOKBACK.
+// TERM | MATERIALITY QUALIFIER | LOOKBACK. Knowledge is presented separately
+// (see R2 below) -- never as a per-rep column.
+//
+// R1/R2 (Feedback round 3): the section renders as THREE stacked blocks via
+// renderBody() rather than one flat <table> --
+//   1. General Exceptions -- its own labelled sub-table (SEC-filings
+//      cut-off/portions-excluded + Disclosure Letter), same "old scheme"
+//      bringdown-box shape as RepGeneralExceptionsTable, sitting at the TOP
+//      of the section.
+//   2. Knowledge -- its own labelled sub-table of ROWS (Knowledge group +
+//      one row per knowledge-qualified rep), never a squeezed column
+//      alongside Materiality/Lookback -- that column was distorting the
+//      per-rep table's formatting.
+//   3. The per-rep table itself -- now just TERM | MATERIALITY | LOOKBACK.
 
 // -- selection ---------------------------------------------------------------
 
@@ -21,8 +34,8 @@ function isRepresentationCard(card) {
 // the SEC-filings carve-out, disclosure-letter and knowledge-scope data for
 // the whole section -- they are not themselves a "rep" with its own
 // materiality/knowledge/lookback, so they're excluded from the per-rep rows
-// and consumed separately below for the section's TOP block (Knowledge group
-// + General Exceptions) and the Knowledge-standard header note.
+// and consumed separately below for the General Exceptions block and the
+// Knowledge block.
 function isPreambleCard(card) {
   return /PREAMBLE$/.test(cardCode(card));
 }
@@ -143,6 +156,11 @@ function resolveMateriality(card) {
 
 // -- knowledge qualifier --------------------------------------------------------
 
+// Per-rep knowledge resolution stays exactly as before -- the DATA (which
+// reps are knowledge-qualified, and how) is unchanged. What changed (R2) is
+// only where it renders: this stays attached to each rep's row (row.knowledge)
+// so it survives for the Knowledge block below, but it is never rendered as
+// its own column in the per-rep table anymore.
 function resolveKnowledge(card) {
   const hit = firstFeature([card], ['knowledgeQualifier']);
   if (!hit) return null;
@@ -263,11 +281,9 @@ function excludedPortionText(item, dict) {
 
 // #16: the Company Disclosure Letter IS referenced throughout the reps
 // (e.g. secs. 3.13(a), 9.03(a)) -- `disclosureLetterReference` on the
-// REP-T-PREAMBLE card is the structured signal for that. The old code never
-// read this field at all and hard-coded "Not present", which is simply
-// wrong whenever the field is populated. Returns null (line omitted by the
-// caller) rather than asserting absence when the field truly is empty --
-// silence is a data gap, not evidence the letter doesn't exist.
+// REP-T-PREAMBLE card is the structured signal for that. Returns null (row
+// omitted by the caller) rather than asserting absence when the field truly
+// is empty -- silence is a data gap, not evidence the letter doesn't exist.
 function disclosureLetterInfo(preamble) {
   if (!preamble) return null;
   const hit = firstFeature([preamble], ['disclosureLetterReference']);
@@ -277,14 +293,13 @@ function disclosureLetterInfo(preamble) {
   return { label: text, evidence: text };
 }
 
-// #14: the old render's TOP-of-section block was the Knowledge group +
-// Knowledge test/standard, plus a "General Exceptions" group -- the
-// SEC-filings cut-off/portions-excluded carve-out is only ONE of those
-// general exceptions (alongside the disclosure letter), never the headline.
-// This single row anchors that block above the per-rep table; the knowledge
-// STANDARD itself continues to surface via deriveHeaderNote (section chrome,
-// also above the table) so it isn't duplicated inline.
-function buildTopRow(reviewDeal, cards) {
+// R1: General Exceptions is its OWN row/block -- SEC-filings cut-off,
+// portions-excluded, and the disclosure letter reference. Knowledge (the
+// group/standard) is a SEPARATE block (buildKnowledgeSummaryRow below); the
+// two used to be folded into one combined "Knowledge & General Exceptions"
+// top row, which read as General Exceptions being an offshoot of Knowledge
+// rather than its own thing.
+function buildGeneralExceptionsRow(reviewDeal) {
   const preamble = (reviewDeal?.cards || []).find((card) => cardCode(card) === 'REP-T-PREAMBLE');
   const cutoffHit = preamble ? firstFeature([preamble], ['secFilingsExceptionLookback']) : null;
   const excludedHit = preamble ? firstFeature([preamble], ['secFilingsExcludedSections']) : null;
@@ -295,20 +310,36 @@ function buildTopRow(reviewDeal, cards) {
     ? excludedRaw.map((item) => excludedPortionText(item, dict)).filter(Boolean)
     : (excludedRaw ? [excludedPortionText(excludedRaw, dict)].filter(Boolean) : []);
   const disclosureLetter = disclosureLetterInfo(preamble);
-  const knowledgeGroup = knowledgeGroupInfo(cards);
-  if (!cutoff && !excluded.length && !disclosureLetter && !knowledgeGroup) return null;
+  if (!cutoff && !excluded.length && !disclosureLetter) return null;
   return {
-    id: 'representations-qualifiers-top',
-    kind: 'top',
+    id: 'representations-qualifiers-general-exceptions',
+    kind: 'general-exceptions',
     present: true,
     card: preamble,
-    label: 'Knowledge & General Exceptions',
+    label: 'General Exceptions',
     secCutoff: cutoff,
     secCutoffQuote: cutoffHit ? textOfValue(cutoffHit.value) : null,
     secExcluded: excluded,
     disclosureLetter,
-    knowledgeGroup: knowledgeGroup ? knowledgeGroup.group : null,
-    knowledgeGroupQuote: knowledgeGroup ? knowledgeGroup.quote : null,
+  };
+}
+
+// R2: Knowledge GROUP (who the qualifier attaches to) is its own row/block,
+// separate from General Exceptions -- see knowledgeTableNode() below, which
+// combines this section-level row with a per-rep row for every knowledge-
+// qualified rep. The knowledge STANDARD (actual / constructive / after
+// reasonable inquiry) continues to surface via deriveHeaderNote in the
+// section chrome, so it isn't repeated inline here.
+function buildKnowledgeSummaryRow(cards) {
+  const knowledgeGroup = knowledgeGroupInfo(cards);
+  if (!knowledgeGroup) return null;
+  return {
+    id: 'representations-qualifiers-knowledge-summary',
+    kind: 'knowledge-summary',
+    present: true,
+    label: 'Knowledge',
+    knowledgeGroup: knowledgeGroup.group,
+    knowledgeGroupQuote: knowledgeGroup.quote,
   };
 }
 
@@ -328,10 +359,9 @@ function clauseSeeText(text) {
   );
 }
 
+// Term cell -- per-rep rows only now (General Exceptions / Knowledge each
+// have their own dedicated block, built separately below).
 function renderTerm(row) {
-  if (row.kind === 'top') {
-    return React.createElement('span', { className: 'font-medium text-ink' }, row.label);
-  }
   const label = row.party ? `${row.label} (${row.party})` : row.label;
   return React.createElement(
     'div',
@@ -342,12 +372,39 @@ function renderTerm(row) {
 }
 
 function renderMateriality(row, ctx) {
-  if (row.kind === 'top') return null;
   const m = row.materiality;
   if (!m) return null;
   const PillCell = ctx?.primitives?.PillCell;
   if (!PillCell) return m.label;
   return React.createElement(PillCell, { label: m.label, tone: 'neutral', color: m.color, evidence: m.evidence, source: row.card });
+}
+
+function renderLookback(row, ctx) {
+  const l = row.lookback;
+  if (!l) return null;
+  const PillCell = ctx?.primitives?.PillCell;
+  if (!PillCell) return l.label;
+  return React.createElement(PillCell, { label: l.label, tone: 'neutral', evidence: l.evidence, source: row.card });
+}
+
+// The per-rep Knowledge pill -- used ONLY inside the Knowledge block's rows
+// (knowledgeTableNode), never as a per-rep table column (R2).
+function renderKnowledgePill(row, ctx) {
+  const k = row.knowledge;
+  if (!k) return null;
+  const PillCell = ctx?.primitives?.PillCell;
+  if (!PillCell) return k.label;
+  return React.createElement(PillCell, { label: k.label, tone: 'info', evidence: k.evidence, source: row.card });
+}
+
+function subLabelBlock(key, label, node) {
+  if (!node) return null;
+  return React.createElement(
+    'div',
+    { key, className: 'space-y-0.5' },
+    React.createElement('div', { className: 'text-[10px] font-medium uppercase tracking-wide text-inkFaint' }, label),
+    React.createElement('div', { className: 'text-[11px] text-ink' }, node),
+  );
 }
 
 // `evidence` is a shared quote for every pill in the list (e.g. the SEC
@@ -367,58 +424,147 @@ function pillList(PillCell, items, evidence, keyPrefix, tone = 'neutral') {
   return React.createElement('div', { className: 'flex flex-wrap gap-1' }, pills);
 }
 
-function renderKnowledge(row, ctx) {
-  const PillCell = ctx?.primitives?.PillCell;
-  if (row.kind === 'top') {
-    // #14: the Knowledge GROUP (who the qualifier attaches to) renders here,
-    // in the Knowledge Qualifier column, above the table -- the Knowledge
-    // STANDARD (actual / constructive / after reasonable inquiry) already
-    // surfaces via deriveHeaderNote in the section chrome directly above,
-    // so it isn't repeated inline.
-    return subLabelBlock('knowledge-group', 'Knowledge group', pillList(PillCell, row.knowledgeGroup, row.knowledgeGroupQuote, 'kg', 'info'));
-  }
-  const k = row.knowledge;
-  if (!k) return null;
-  if (!PillCell) return k.label;
-  return React.createElement(PillCell, { label: k.label, tone: 'info', evidence: k.evidence, source: row.card });
-}
-
-function subLabelBlock(key, label, node) {
-  if (!node) return null;
+// A small labelled Term | Provision box -- the "old scheme" bringdown-table
+// shape (RepGeneralExceptionsTable), reused for both the General Exceptions
+// block and the Knowledge block so the two read as siblings, not one
+// squeezed into the other.
+function sectionBox(key, heading, items) {
   return React.createElement(
     'div',
-    { key, className: 'space-y-0.5' },
-    React.createElement('div', { className: 'text-[10px] font-medium uppercase tracking-wide text-inkFaint' }, label),
-    React.createElement('div', { className: 'text-[11px] text-ink' }, node),
+    { key, className: 'overflow-hidden rounded border border-border' },
+    React.createElement(
+      'div',
+      { className: 'border-b border-border bg-bg/40 px-3 py-1.5 text-[10px] font-medium uppercase tracking-wider text-inkFaint' },
+      heading,
+    ),
+    React.createElement(
+      'div',
+      { className: 'overflow-x-auto' },
+      React.createElement(
+        'table',
+        { className: 'min-w-full text-xs font-ui' },
+        React.createElement(
+          'tbody',
+          { className: 'divide-y divide-border' },
+          items.map((item) => React.createElement(
+            'tr',
+            { key: item.key, className: 'align-top' },
+            React.createElement('td', { className: 'w-[14rem] px-3 py-2 font-medium text-ink whitespace-nowrap' }, item.term),
+            React.createElement('td', { className: 'px-3 py-2 text-ink whitespace-pre-wrap break-words' }, item.node),
+          )),
+        ),
+      ),
+    ),
   );
 }
 
-function renderLookback(row, ctx) {
+// R1: General Exceptions as its own labelled sub-table at the TOP of the
+// section -- SEC Filings (cut-off + portions-excluded sub-lines) and the
+// Disclosure Letter reference, each its own row. Never folded into the
+// per-rep table or glued to the Knowledge block.
+function generalExceptionsTableNode(row, ctx) {
+  if (!row) return null;
   const PillCell = ctx?.primitives?.PillCell;
-  if (row.kind === 'top') {
-    // #14/#15: General Exceptions -- SEC filings is ONE exception among these
-    // (never the section headline), and its cut-off / portions-excluded
-    // content renders as PILLS, not a bulleted prose list.
-    const cutoffNode = pillList(PillCell, row.secCutoff ? [row.secCutoff] : null, row.secCutoffQuote, 'cutoff');
-    const excludedNode = pillList(PillCell, row.secExcluded, null, 'excl');
-    // #16: the Company Disclosure Letter is referenced throughout the reps --
-    // render its resolved reference when present; omit the line entirely
-    // (never assert "Not present") when the field is genuinely empty.
-    const disclosureNode = row.disclosureLetter
-      ? pillList(PillCell, [row.disclosureLetter.label], row.disclosureLetter.evidence, 'disclosure')
-      : null;
-    return React.createElement(
-      'div',
-      { className: 'space-y-1.5' },
-      subLabelBlock('sec-cutoff', 'SEC filings — cut-off', cutoffNode),
-      subLabelBlock('sec-excluded', 'SEC filings — portions excluded', excludedNode),
-      subLabelBlock('disclosure-letter', 'Disclosure letter', disclosureNode),
-    );
+  const cutoffNode = pillList(PillCell, row.secCutoff ? [row.secCutoff] : null, row.secCutoffQuote, 'cutoff');
+  const excludedNode = pillList(PillCell, row.secExcluded, null, 'excl');
+  const secBody = (cutoffNode || excludedNode)
+    ? React.createElement(
+        'div',
+        { className: 'space-y-1.5' },
+        subLabelBlock('sec-cutoff', 'Cut-off', cutoffNode),
+        subLabelBlock('sec-excluded', 'Portions excluded', excludedNode),
+      )
+    : null;
+  const disclosureNode = row.disclosureLetter
+    ? pillList(PillCell, [row.disclosureLetter.label], row.disclosureLetter.evidence, 'disclosure')
+    : null;
+  const items = [];
+  if (secBody) items.push({ key: 'sec', term: 'SEC Filings', node: secBody });
+  if (disclosureNode) items.push({ key: 'disclosure', term: 'Disclosure Letter', node: disclosureNode });
+  if (!items.length) return null;
+  return sectionBox('general-exceptions', 'General Exceptions', items);
+}
+
+// R2: Knowledge as its own ROWS -- the section-level Knowledge group (who
+// the qualifier attaches to), then one row per rep that actually carries a
+// knowledge qualifier. This replaces the old squeezed per-rep Knowledge
+// column entirely.
+function knowledgeTableNode(knowledgeSummaryRow, repRows, ctx) {
+  const PillCell = ctx?.primitives?.PillCell;
+  const items = [];
+  if (knowledgeSummaryRow) {
+    const groupNode = pillList(PillCell, knowledgeSummaryRow.knowledgeGroup, knowledgeSummaryRow.knowledgeGroupQuote, 'kg', 'info');
+    if (groupNode) items.push({ key: 'group', term: 'Knowledge group', node: groupNode });
   }
-  const l = row.lookback;
-  if (!l) return null;
-  if (!PillCell) return l.label;
-  return React.createElement(PillCell, { label: l.label, tone: 'neutral', evidence: l.evidence, source: row.card });
+  for (const row of repRows || []) {
+    if (!row.knowledge) continue;
+    const label = row.party ? `${row.label} (${row.party})` : row.label;
+    items.push({ key: row.id, term: label, node: renderKnowledgePill(row, ctx) });
+  }
+  if (!items.length) return null;
+  return sectionBox('knowledge', 'Knowledge', items);
+}
+
+const REP_TABLE_COLUMNS = [
+  { id: 'term', header: 'Term', width: '18rem' },
+  { id: 'materiality', header: 'Materiality Qualifier', width: '14rem' },
+  { id: 'lookback', header: 'Lookback' },
+];
+
+// The per-rep table -- now just TERM | MATERIALITY | LOOKBACK (R2 drops the
+// Knowledge column; Knowledge renders in its own block above instead).
+function repsTableNode(repRows, ctx) {
+  if (!repRows || !repRows.length) return null;
+  return React.createElement(
+    'table',
+    { className: 'min-w-full text-xs font-ui' },
+    React.createElement(
+      'thead',
+      { className: 'border-b border-border bg-bg/60' },
+      React.createElement(
+        'tr',
+        null,
+        REP_TABLE_COLUMNS.map((column) => React.createElement(
+          'th',
+          {
+            key: column.id,
+            className: 'px-3 py-2 text-left font-medium uppercase tracking-wider text-inkFaint',
+            style: column.width ? { width: column.width } : undefined,
+          },
+          column.header,
+        )),
+      ),
+    ),
+    React.createElement(
+      'tbody',
+      { className: 'divide-y divide-border' },
+      repRows.map((row) => React.createElement(
+        'tr',
+        { key: row.id, className: 'align-top hover:bg-bg/40' },
+        React.createElement('td', { className: 'px-3 py-2 whitespace-normal break-words text-ink' }, renderTerm(row)),
+        React.createElement('td', { className: 'px-3 py-2 whitespace-pre-wrap break-words text-ink' }, renderMateriality(row, ctx)),
+        React.createElement('td', { className: 'px-3 py-2 whitespace-pre-wrap break-words text-ink' }, renderLookback(row, ctx)),
+      )),
+    ),
+  );
+}
+
+// Assembles the three stacked blocks: General Exceptions (R1), Knowledge
+// (R2), then the (now three-column) per-rep table.
+function renderBody(rows, ctx) {
+  const generalExceptions = (rows || []).find((row) => row.kind === 'general-exceptions');
+  const knowledgeSummary = (rows || []).find((row) => row.kind === 'knowledge-summary');
+  const repRows = (rows || []).filter((row) => row.kind === 'rep');
+
+  const sections = [];
+  const geNode = generalExceptionsTableNode(generalExceptions, ctx);
+  if (geNode) sections.push(geNode);
+  const knowledgeNode = knowledgeTableNode(knowledgeSummary, repRows, ctx);
+  if (knowledgeNode) sections.push(knowledgeNode);
+  const repsNode = repsTableNode(repRows, ctx);
+  if (repsNode) sections.push(React.createElement('div', { key: 'reps', className: 'overflow-x-auto' }, repsNode));
+
+  return React.createElement('div', { className: 'space-y-4' }, sections);
 }
 
 // -- config --------------------------------------------------------------------
@@ -430,8 +576,10 @@ const representationsQualifiersConfig = {
   selectRows(reviewDeal) {
     const cards = selectRepCards(reviewDeal);
     const rows = [];
-    const topRow = buildTopRow(reviewDeal, cards);
-    if (topRow) rows.push(topRow);
+    const generalExceptionsRow = buildGeneralExceptionsRow(reviewDeal);
+    if (generalExceptionsRow) rows.push(generalExceptionsRow);
+    const knowledgeSummaryRow = buildKnowledgeSummaryRow(cards);
+    if (knowledgeSummaryRow) rows.push(knowledgeSummaryRow);
     const standardNote = knowledgeStandardNote(cards);
     for (const card of cards) {
       const term = resolveTerm(card);
@@ -458,16 +606,23 @@ const representationsQualifiersConfig = {
     const hit = (rows || []).find((row) => row.knowledgeStandardNote);
     return hit ? `Knowledge standard: ${hit.knowledgeStandardNote}` : null;
   },
+  // Legacy Term/Materiality/Lookback column shape is kept for direct
+  // column-level testing and as the data contract other tooling may still
+  // inspect, but the live page renders via renderBody (below) instead of
+  // ProvisionTable's generic single-table body -- see the ProvisionTable.jsx
+  // renderBody hook (same pattern as mae-definitions.config.js).
   columns: [
     { id: 'term', header: 'Term', width: '16rem', renderCell: renderTerm },
     { id: 'materiality', header: 'Materiality Qualifier', width: '13rem', renderCell: renderMateriality },
-    { id: 'knowledge', header: 'Knowledge Qualifier', width: '13rem', renderCell: renderKnowledge },
     { id: 'lookback', header: 'Lookback', renderCell: renderLookback },
   ],
+  renderBody,
 };
 
 export {
   isRepresentationCard,
+  renderBody,
+  renderKnowledgePill,
   representationsQualifiersConfig,
   resolveKnowledge,
   resolveLookback,
