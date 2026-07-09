@@ -89,8 +89,13 @@ function renderMechanic(row, ctx) {
 }
 // Bare value only -- the Term column already names this row, and the
 // Mechanic column already shows the full value; the pill is just a scannable
-// echo of it, not a second, differently-labeled copy.
+// echo of it, not a second, differently-labeled copy. 'tail-arming' is
+// skipped here: its value is the full joined activating-clauses prose (up to
+// ~1,500 chars), and a pill is the wrong shape for a text dump (global rule:
+// pills are for enum/quantitative signals, not full-sentence prose) -- the
+// Mechanic column's truncated "see text" already carries it.
 function renderSignals(row, ctx) {
+  if (row.id === 'tail-arming') return null;
   const PillCell = ctx?.primitives?.PillCell;
   const label = row.value;
   if (!PillCell) return label;
@@ -101,11 +106,6 @@ function renderSignals(row, ctx) {
     evidence: row.evidence,
     source: row.sourceCard,
   });
-}
-function renderEvidence(row, ctx) {
-  const EvidenceHoverSource = ctx?.primitives?.EvidenceHoverSource;
-  if (!EvidenceHoverSource || !row.evidence) return row.evidence;
-  return React.createElement(EvidenceHoverSource, { evidence: row.evidence, source: row.sourceCard, as: 'span' }, row.evidence);
 }
 
 const tailFeeConfig = {
@@ -131,13 +131,19 @@ const tailFeeConfig = {
       { id: 'tail-same-proposal', label: 'Triggering proposal', value: formatBool(features.tailFeeSameProposalRequired), evidence: textOf(source), sourceCard: source, present: true },
     ];
   },
+  // Tidy per REBUILD-SPECS.md §11: three columns (Term / Signals / Mechanic),
+  // matching the rest of the app's clean-row shape -- the old fourth
+  // "Evidence" column always-rendered the SAME card quote, verbatim, on
+  // every one of the four rows (a straight text dump repeated 4x). Evidence
+  // is still one hover away: PillCell and the Mechanic-column primitives
+  // (ThresholdCellWithHoverQuote / TruncatedWithSeeText) all wrap their
+  // content in EvidenceHoverSource already.
   columns: [
     { id: 'term', header: 'Term', width: '20rem', renderCell: (row) => row.label },
     { id: 'signals', header: 'Signals', width: '18rem', renderCell: renderSignals },
     { id: 'value', header: 'Mechanic', renderCell: renderMechanic },
-    { id: 'evidence', header: 'Evidence', renderCell: renderEvidence },
   ],
   empty: { copy: 'No tail-fee mechanics found.' },
 };
 
-export { renderEvidence, renderMechanic, renderSignals, tailFeeConfig };
+export { renderMechanic, renderSignals, tailFeeConfig };
