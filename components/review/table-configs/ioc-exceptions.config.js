@@ -10,8 +10,9 @@ const { EXCEPTION_CODES, IOC_AFFIRMATIVE_SCOPE_CODES, IOC_CATEGORY_CODES, labelF
 // were rendered nowhere on this table. New shape is the full 24-card IOC
 // family, organized the way a lawyer reads Section 5.01:
 //   - one TERM|RESTRICTION row per NAMED negative covenant (grouped by
-//     canonical code -- Metsera has 3 separate "Mergers, Acquisitions,
-//     Dispositions" cards that collapse into ONE row with combined pills),
+//     canonical code -- Metsera has 3 separate IOC-MERGE cards (the M&A /
+//     dispositions / recapitalization covenant) that collapse into ONE row
+//     with combined pills),
 //   - the near-empty "[PROPOSED] Unclassified 5.01(i)-(o)" fragments (no
 //     provision_subtype, so no covenant name) collapsed under a single
 //     "Other restrictions" band instead of rendering as empty rows,
@@ -117,9 +118,9 @@ function seeTextNode(texts) {
 
 // Groups the NAMED negative covenants (has a real provision_subtype, is not
 // a general-exceptions/affirmative container) by canonical code. Metsera has
-// 3 separate "Mergers, Acquisitions, Dispositions" cards (IOC-MERGE) at
-// 5.01(g)/(d)/(p) that collapse into ONE row here with combined pills,
-// instead of 3 duplicate "Mergers, Acquisitions, Dispositions" rows.
+// 3 separate IOC-MERGE cards at 5.01(g)/(d)/(p) that collapse into ONE row
+// here with combined pills, instead of 3 duplicate rows for the same
+// covenant name.
 function negativeCovenantGroups(cards) {
   const order = [];
   const byCode = new Map();
