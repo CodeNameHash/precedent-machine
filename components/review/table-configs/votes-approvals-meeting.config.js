@@ -1,7 +1,8 @@
 import React from 'react';
 import { approvalsVotesConfig } from './approvals-votes.config.js';
 import { secMeetingConfig } from './sec-meeting.config.js';
-import { enumLabel, formatAdjournmentLimits } from '../../../lib/sec-meeting.js';
+import { enumLabel } from '../../../lib/sec-meeting.js';
+import { cardCode, cardFeatures, textOf, valueText } from './card-utils.js';
 
 // Rebuild target: REBUILD-SPECS.md section 9 ("Ben: really good" in the old
 // site). The old deadline-pill pattern is number + [unit pill] + "after" +
@@ -71,31 +72,131 @@ function deadlinePillNode(deadline, ctx, evidence, source) {
     : deadline.text;
 }
 
-// [reason pill(s)][party pill]["N days total"/"N days each" pill(s)] -- e.g.
-// "[Insufficient votes][Company][15 days total]".
-function adjournmentPillNode(right, ctx, evidence, source) {
+// FEEDBACK-2-PUNCHLIST.md #11: flat sibling pills read as one undifferentiated
+// list -- "[Insufficient votes][Company][15 days total]" doesn't say which
+// pill is the REASON, which is WHO controls the right, and which is the
+// LIMIT. Restructured into the same labelled-group pattern
+// conditions.config.js's rep bring-down uses (bringDownNode there): an
+// uppercase sub-heading naming what the pill(s) below it are, so this reads
+// as three named parts -- Permitted reason / Controlling party /
+// Restriction -- not three interchangeable tags.
+function consentPartyFromText(text) {
+  const match = /without\s+(?:the\s+)?(?:prior\s+)?(?:written\s+)?consent\s+of\s+(?:the\s+)?(Parent|Company)/i.exec(String(text || ''));
+  return match ? match[1] : null;
+}
+
+// "No more than N days[/each/adjournments]" -- optionally suffixed with
+// "without <Party>'s consent" ONLY when the underlying verbatim text
+// actually says so (consentPartyFromText), never fabricated for deals whose
+// adjournment right isn't consent-gated.
+function restrictionLabels(right) {
+  if (!right) return [];
+  const parts = [];
+  if (typeof right.maxDaysTotal === 'number') parts.push(`No more than ${right.maxDaysTotal} days`);
+  if (typeof right.maxDaysPerAdjournment === 'number') parts.push(`No more than ${right.maxDaysPerAdjournment} days each`);
+  if (typeof right.maxAdjournments === 'number') {
+    parts.push(`No more than ${right.maxAdjournments} adjournment${right.maxAdjournments === 1 ? '' : 's'}`);
+  }
+  if (!parts.length) return [];
+  const consentParty = consentPartyFromText(right.text);
+  return consentParty ? parts.map((part) => `${part} without ${consentParty}'s consent`) : parts;
+}
+
+function adjournmentGroupedNode(right, ctx, evidence, source) {
   const PillCell = ctx?.primitives?.PillCell;
   const TruncatedWithSeeText = ctx?.primitives?.TruncatedWithSeeText;
   if (!right) return null;
-  const pills = [];
-  if (PillCell) {
-    (right.reasons || []).forEach((reason, index) => {
-      const label = reason?.label || (reason?.code ? enumLabel(reason.code) : null);
-      if (label) pills.push(React.createElement(PillCell, { key: `reason-${index}`, label, tone: 'warning', evidence: right.text || evidence, source }));
-    });
-    const partyLabel = right.party ? enumLabel(right.party) : null;
-    if (partyLabel) pills.push(React.createElement(PillCell, { key: 'party', label: partyLabel, tone: 'neutral', evidence: right.text || evidence, source }));
-    formatAdjournmentLimits(right).forEach((label, index) => {
-      pills.push(React.createElement(PillCell, { key: `limit-${index}`, label, tone: 'info', evidence: right.text || evidence, source }));
-    });
-  }
-  if (!pills.length) {
+  const reasonLabels = (right.reasons || [])
+    .map((reason) => reason?.label || (reason?.code ? enumLabel(reason.code) : null))
+    .filter(Boolean);
+  const partyLabel = right.party ? enumLabel(right.party) : null;
+  const groups = [
+    reasonLabels.length ? { key: 'reason', heading: 'Permitted reason', tone: 'warning', labels: reasonLabels } : null,
+    partyLabel ? { key: 'party', heading: 'Controlling party', tone: 'neutral', labels: [partyLabel] } : null,
+    restrictionLabels(right).length ? { key: 'restriction', heading: 'Restriction', tone: 'info', labels: restrictionLabels(right) } : null,
+  ].filter(Boolean);
+  if (!groups.length) {
     if (!right.text) return null;
     return TruncatedWithSeeText
       ? React.createElement(TruncatedWithSeeText, { text: right.text, evidence: evidence || right.text, source })
       : right.text;
   }
-  return React.createElement('div', { className: 'flex flex-wrap gap-1' }, pills);
+  if (!PillCell) {
+    return React.createElement(
+      'div',
+      { className: 'space-y-1' },
+      groups.map((group) => React.createElement('div', { key: group.key }, `${group.heading}: ${group.labels.join(', ')}`)),
+    );
+  }
+  return React.createElement(
+    'div',
+    { className: 'space-y-2' },
+    groups.map((group) => React.createElement(
+      'div',
+      { key: group.key, className: 'space-y-1' },
+      React.createElement('div', { className: 'text-[11px] font-semibold uppercase tracking-wide text-inkFaint' }, group.heading),
+      React.createElement(
+        'div',
+        { className: 'flex flex-wrap gap-1' },
+        group.labels.map((label, index) => React.createElement(PillCell, {
+          key: index, label, tone: group.tone, evidence: right.text || evidence, source,
+        })),
+      ),
+    )),
+  );
+}
+
+// FEEDBACK-2-PUNCHLIST.md #13: Parent / Merger Sub's own approval of the
+// merger agreement (COV-SHAPRV-PARENT -- Parent, as sole stockholder of
+// Merger Sub, adopting by written consent or board resolution) belongs
+// here, moved from General Covenants (see general-covenants.config.js's
+// VOTES_OWNED_CODES exclusion). Rendered from the actual
+// parentAdoptionMechanism/parentAdoptionTiming features, NOT as "written
+// consent required" -- that phrasing describes the COMPANY-side approval
+// row above and would wrongly imply the Company also needs written
+// consent. This is Parent/Merger Sub's OWN mechanism, distinct from (and
+// not conditioned on) the Company stockholder vote.
+const PARENT_ADOPTION_MECHANISM_TEXT = {
+  WRITTEN_CONSENT: "in writing by Parent; no separate Parent vote required",
+  SOLE_STOCKHOLDER_ADOPTION: "by Parent, as sole stockholder of Merger Sub; no separate Parent vote required",
+  BOARD_ONLY: 'by Parent board resolution only; no Parent stockholder approval required',
+};
+
+function findParentApprovalCard(reviewDeal) {
+  const cards = reviewDeal?.cards || [];
+  return cards.find((card) => cardCode(card) === 'COV-SHAPRV-PARENT') || null;
+}
+
+function parentApprovalText(card) {
+  const features = cardFeatures(card);
+  const mechanismRaw = features.parentAdoptionMechanism;
+  const mechanismCode = String(mechanismRaw?.code || mechanismRaw?.value || mechanismRaw || '').toUpperCase();
+  const mechanismText = PARENT_ADOPTION_MECHANISM_TEXT[mechanismCode] || null;
+  const timing = valueText(features.parentAdoptionTiming);
+  if (mechanismText) return timing ? `${mechanismText} (${timing})` : mechanismText;
+  return null;
+}
+
+function parentApprovalNode(card, ctx) {
+  const PillCell = ctx?.primitives?.PillCell;
+  const TruncatedWithSeeText = ctx?.primitives?.TruncatedWithSeeText;
+  if (!card) return null;
+  const evidence = textOf(card);
+  const text = parentApprovalText(card);
+  if (text) {
+    return PillCell
+      ? React.createElement(PillCell, { label: text, tone: 'neutral', evidence, source: card })
+      : text;
+  }
+  // No resolvable mechanism code -- fall back to whatever prose the card
+  // does carry (mainConcept) rather than fabricating the written-consent
+  // wording, matching this file's existing "never inline a raw sentence
+  // without the see-text escape hatch" convention.
+  const fallback = valueText(cardFeatures(card).mainConcept) || evidence;
+  if (!fallback) return null;
+  return TruncatedWithSeeText
+    ? React.createElement(TruncatedWithSeeText, { text: fallback, evidence, source: card })
+    : fallback;
 }
 
 // Approval-definition / vote-threshold: synthesized vote-standard pill when
@@ -125,19 +226,14 @@ function boolPillNode(text, ctx, evidence, source) {
     : text;
 }
 
-function textNode(text, ctx, evidence, source) {
-  const TruncatedWithSeeText = ctx?.primitives?.TruncatedWithSeeText;
-  if (!text) return null;
-  return TruncatedWithSeeText
-    ? React.createElement(TruncatedWithSeeText, { text, evidence: evidence || text, source })
-    : text;
-}
-
 // Curated row list: Approval definition, Written consent, Vote threshold,
-// Proxy filing deadline, Mailing, Meeting, Adjournment rights (one row per
-// party/reason combination), Meeting control notes. Each row carries enough
-// of the underlying data (not just a pre-rendered node) for the 'provision'
-// column's renderCell to build the right pill shape per `kind`.
+// Parent / Merger Sub approvals, Proxy filing deadline, Mailing, Meeting,
+// Adjournment rights (one row per party/reason combination). Each row
+// carries enough of the underlying data (not just a pre-rendered node) for
+// the 'provision' column's renderCell to build the right pill shape per
+// `kind`. FEEDBACK-2-PUNCHLIST.md #12: the old "Meeting control notes" row
+// (sec-meeting's meetingControlNotes) added nothing distinguishable from
+// the deadline rows above it and has been dropped entirely.
 function buildRows(reviewDeal) {
   const approvalRows = approvalsVotesConfig.selectRows(reviewDeal) || [];
   const meetingRows = secMeetingConfig.selectRows(reviewDeal) || [];
@@ -149,7 +245,7 @@ function buildRows(reviewDeal) {
   const mailingRow = byId(meetingRows, 'sec-meeting-mailing');
   const meetingRow = byId(meetingRows, 'sec-meeting-meeting');
   const adjournmentRowList = meetingRows.filter((row) => row.id.startsWith('sec-meeting-adjournment-'));
-  const controlRow = byId(meetingRows, 'sec-meeting-control');
+  const parentApprovalCard = findParentApprovalCard(reviewDeal);
 
   const rows = [];
   if (approvalDefRow) {
@@ -176,6 +272,12 @@ function buildRows(reviewDeal) {
       text: voteThresholdRow.detail, fallbackText: approvalDefRow?.detail, evidence: voteThresholdRow.evidence, source: voteThresholdRow.source,
     });
   }
+  if (parentApprovalCard) {
+    rows.push({
+      id: 'votes-approvals-meeting-parent-approval', label: 'Parent / Merger Sub approvals', kind: 'parent-approval',
+      card: parentApprovalCard,
+    });
+  }
   if (proxyRow) {
     rows.push({
       id: 'votes-approvals-meeting-proxy-filing', label: proxyRow.label, kind: 'deadline',
@@ -200,12 +302,6 @@ function buildRows(reviewDeal) {
       adjournment: row.adjournment, evidence: row.evidence, source: row.sourceCard,
     });
   });
-  if (controlRow) {
-    rows.push({
-      id: 'votes-approvals-meeting-control', label: 'Meeting control notes', kind: 'text',
-      text: controlRow.detail, evidence: controlRow.evidence, source: controlRow.sourceCard,
-    });
-  }
   return rows;
 }
 
@@ -214,8 +310,8 @@ function renderProvisionCell(row, ctx) {
     case 'bool': return boolPillNode(row.text, ctx, row.evidence, row.source);
     case 'vote-standard': return voteStandardNode(row.text, row.fallbackText, ctx, row.evidence, row.source);
     case 'deadline': return deadlinePillNode(row.deadline, ctx, row.evidence, row.source);
-    case 'adjournment': return adjournmentPillNode(row.adjournment, ctx, row.evidence, row.source);
-    case 'text': return textNode(row.text, ctx, row.evidence, row.source);
+    case 'adjournment': return adjournmentGroupedNode(row.adjournment, ctx, row.evidence, row.source);
+    case 'parent-approval': return parentApprovalNode(row.card, ctx);
     default: return row.text || null;
   }
 }

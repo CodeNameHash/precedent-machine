@@ -52,7 +52,6 @@ test('review page mounts the first schema structured table config before cards',
     'maeDefinitionsConfig',
     'materialContractsConfig',
     'iocExceptionsConfig',
-    'generalCovenantsConfig',
     'terminationRightsConfig',
     'terminationFeesConfig',
     'tailFeeConfig',
@@ -64,6 +63,10 @@ test('review page mounts the first schema structured table config before cards',
     'employeeBenefitsConfig',
     'advisersFeesExpensesConfig',
     'noOtherRepsFraudConfig',
+    // FEEDBACK-2-PUNCHLIST.md #33: "Other Covenants" (generalCovenantsConfig)
+    // now renders LAST -- a link index into leftover general-covenant
+    // clauses, not interleaved among the substantive sections above.
+    'generalCovenantsConfig',
   ];
   // Every config is enumerated in the ordered REVIEW_TABLE_CONFIGS array.
   const arrayStart = reviewPageSource.indexOf('const REVIEW_TABLE_CONFIGS = [');
