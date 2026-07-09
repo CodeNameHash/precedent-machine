@@ -40,12 +40,12 @@ Structured-extraction fixes the redesign surfaced; feed M2/M3. **TO DO:**
 - `effectiveTimeShort` "surviving corporation" corruption.
 - Per-rep `linkedBringDownStandard` uniform-MAE mis-stamp (item F) — derive from the closing-condition tiers at extraction.
 
-## 3. Milestones remaining
+## 3. Milestones remaining (ship core product first; query is deferred)
 
 - **M2 — schema deployed corpus-wide.** All 39 non-Metsera deals render from the schema-first path with the canonical output above; legacy fallback dead; reconciliation applied; parity audit green. (The canonical program + reprocess is the critical path here.)
 - **M3 — ingest seamless.** A brand-new deal ingests end-to-end and renders identical to existing deals; two-pass definitions extraction.
-- **M4 — query surface.** `/query` cross-cutting queries correct on schema-first data; UI polished.
 - **M5 — UI homogenized + demo-ready.** Extend the review-page polish to all deals; admin pages consistent; full-doc overlay; landing grid; reports UI.
+- **M4 — query surface (AFTER M5).** `/query` cross-cutting queries correct on schema-first data; UI polished. Deferred behind the core review product — do last.
 
 ## 4. Review-page polish (open items)
 
