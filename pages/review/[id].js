@@ -146,10 +146,7 @@ import { generalCovenantsConfig } from '../../components/review/table-configs/ge
 import { iocExceptionsConfig } from '../../components/review/table-configs/ioc-exceptions.config';
 import { maeDefinitionsConfig } from '../../components/review/table-configs/mae-definitions.config';
 import { materialContractsConfig } from '../../components/review/table-configs/material-contracts.config';
-import { nosolFiduciaryConfig } from '../../components/review/table-configs/nosol-fiduciary.config';
-import { nosolInterveningConfig } from '../../components/review/table-configs/nosol-intervening.config';
-import { nosolNoshopConfig } from '../../components/review/table-configs/nosol-noshop.config';
-import { nosolSuperiorConfig } from '../../components/review/table-configs/nosol-superior.config';
+import { nosolSectionConfig } from '../../components/review/table-configs/nosol-section.config';
 import { noOtherRepsFraudConfig } from '../../components/review/table-configs/no-other-reps-fraud.config';
 import { representationsQualifiersConfig } from '../../components/review/table-configs/representations-qualifiers.config';
 import { structureMechanicsConfig } from '../../components/review/table-configs/structure-mechanics.config';
@@ -183,10 +180,7 @@ const REVIEW_TABLE_CONFIGS = [
   terminationRightsConfig,
   terminationFeesConfig,
   tailFeeConfig,
-  nosolNoshopConfig,
-  nosolSuperiorConfig,
-  nosolInterveningConfig,
-  nosolFiduciaryConfig,
+  nosolSectionConfig,
   antitrustRegulatoryConfig,
   employeeBenefitsConfig,
   advisersFeesExpensesConfig,
@@ -218,9 +212,9 @@ const SIDEBAR_TYPE_TO_SECTION_ID = {
   'TERMR-M': 'termination-rights',
   'TERMR-B': 'termination-rights',
   'TERMR-T': 'termination-rights',
-  'NOSOL-T': 'nosol-noshop',
-  'NOSOL-B': 'nosol-noshop',
-  NOSOL: 'nosol-noshop',
+  'NOSOL-T': 'nosol',
+  'NOSOL-B': 'nosol',
+  NOSOL: 'nosol',
   ANTI: 'antitrust-regulatory',
   __EMPLOYEE_BENEFITS: 'employee-benefits',
   __SEC_MEETING: 'votes-approvals-meeting',

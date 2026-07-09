@@ -30,10 +30,12 @@ test('review page mounts the first schema structured table config before cards',
   assert.match(reviewPageSource, /import \{ employeeBenefitsConfig \} from '..\/..\/components\/review\/table-configs\/employee-benefits\.config';/);
   assert.match(reviewPageSource, /import \{ iocExceptionsConfig \} from '..\/..\/components\/review\/table-configs\/ioc-exceptions\.config';/);
   assert.match(reviewPageSource, /import \{ materialContractsConfig \} from '..\/..\/components\/review\/table-configs\/material-contracts\.config';/);
-  assert.match(reviewPageSource, /import \{ nosolFiduciaryConfig \} from '..\/..\/components\/review\/table-configs\/nosol-fiduciary\.config';/);
-  assert.match(reviewPageSource, /import \{ nosolInterveningConfig \} from '..\/..\/components\/review\/table-configs\/nosol-intervening\.config';/);
-  assert.match(reviewPageSource, /import \{ nosolNoshopConfig \} from '..\/..\/components\/review\/table-configs\/nosol-noshop\.config';/);
-  assert.match(reviewPageSource, /import \{ nosolSuperiorConfig \} from '..\/..\/components\/review\/table-configs\/nosol-superior\.config';/);
+  // No-Solicitation is ONE accordion section (FEEDBACK-2-PUNCHLIST #42):
+  // nosol-section.config.js wraps the four per-family configs
+  // (nosol-fiduciary / nosol-intervening / nosol-noshop / nosol-superior) as
+  // sub-groups internally; only its own nosolSectionConfig is mounted on the
+  // page.
+  assert.match(reviewPageSource, /import \{ nosolSectionConfig \} from '..\/..\/components\/review\/table-configs\/nosol-section\.config';/);
   assert.match(reviewPageSource, /import \{ noOtherRepsFraudConfig \} from '..\/..\/components\/review\/table-configs\/no-other-reps-fraud\.config';/);
   assert.match(reviewPageSource, /import \{ tailFeeConfig \} from '..\/..\/components\/review\/table-configs\/tail-fee\.config';/);
   // Phase A shell-restore: the per-family tables now render through a single
@@ -55,10 +57,7 @@ test('review page mounts the first schema structured table config before cards',
     'terminationRightsConfig',
     'terminationFeesConfig',
     'tailFeeConfig',
-    'nosolNoshopConfig',
-    'nosolSuperiorConfig',
-    'nosolInterveningConfig',
-    'nosolFiduciaryConfig',
+    'nosolSectionConfig',
     'antitrustRegulatoryConfig',
     'employeeBenefitsConfig',
     'advisersFeesExpensesConfig',

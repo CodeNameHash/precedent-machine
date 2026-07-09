@@ -29,12 +29,13 @@ const CONFIGS_BY_SURFACE = {
   // directly in the review page).
   'Closing Conditions': ['conditions.config.js'],
   'Material Contracts': ['material-contracts.config.js'],
-  'No-Shop / Fiduciary-Out Stack': [
-    'nosol-noshop.config.js',
-    'nosol-superior.config.js',
-    'nosol-intervening.config.js',
-    'nosol-fiduciary.config.js',
-  ],
+  // Consolidated into ONE "No-Solicitation / No-Shop" section per user
+  // feedback (FEEDBACK-2-PUNCHLIST.md #42) -- covered by
+  // nosol-section.config.js (which wraps nosol-noshop/nosol-superior/
+  // nosol-intervening/nosol-fiduciary.config.js internally as ordered
+  // sub-groups; those four keep their own exports and tests but are no
+  // longer mounted directly in the review page).
+  'No-Shop / Fiduciary-Out Stack': ['nosol-section.config.js'],
   'Employee Benefits': ['employee-benefits.config.js'],
   'SEC Meeting / Tender-Offer Filings': ['votes-approvals-meeting.config.js'],
   'No Other Reps / Fraud': ['no-other-reps-fraud.config.js'],
