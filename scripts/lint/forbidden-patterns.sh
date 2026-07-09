@@ -126,6 +126,13 @@ function scopedFile(rel) {
 // only that pattern for that file; every other check still applies.
 const FILE_PATTERN_EXEMPTIONS = {
   'lib/taxonomy.js': ['Must defend \\(incl\\. appeals/final judgment\\)'],
+  // Same situation as taxonomy.js: this canonical-dictionary PIN test
+  // legitimately asserts `LITIGATION_OBLIGATION.MANDATORY_DEFEND`'s exact label
+  // to catch accidental label drift. Editing an UNRELATED pin in the same file
+  // (e.g. the ANTI_HOHW display-label update) puts the file in the diff and
+  // trips this bug-fingerprint against its own correct assertion. Exempt only
+  // this one pattern for this one file; every other check still applies.
+  'tests/anti-regulatory-efforts.test.js': ['Must defend \\(incl\\. appeals/final judgment\\)'],
 };
 
 const failures = [];
