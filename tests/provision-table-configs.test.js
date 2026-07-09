@@ -2217,6 +2217,80 @@ test('AF1: advisers-fees-expenses surfaces the FULL named exception-section list
   exceptionsRow.signals.forEach((item) => assert.equal(item.tone, 'neutral'));
 });
 
+test('AF2: advisers-fees-expenses expense-exceptions names all four sections on the live Metsera deal shape (885edae5), not just Section 6.02 (FEEDBACK-4 punch-list, deal_id 885edae5-49e8-464a-9f33-edd229119d7c)', () => {
+  // Card ids/short_titles/section_refs/primary_quote text below are copied
+  // verbatim from Metsera's own provision_cards rows (deal_id
+  // 885edae5-49e8-464a-9f33-edd229119d7c), including the claims-table
+  // feeExpenseAllocation verbatim's real embedded line break after "Section
+  // 6.02,". canonical is null on that claim (as in production) -- the row
+  // must resolve purely from parsing this verbatim, never from canonical.
+  const cards = [
+    {
+      id: 'de9bbe2a-1909-4fc4-ad5c-76d69ddb1042',
+      provision_type: 'MISC_BOILERPLATE',
+      provision_subtype: 'MISC-EXPENSES',
+      short_title: 'Expenses',
+      section_ref: '8.03 | Expenses | 090ab0ae929e',
+      primary_quote: 'SECTION 8.03. Fees and Expenses. Except as set forth in Section 6.02,\nSection 6.03(b), Section 6.05 and Section 8.02, all fees and expenses incurred in connection with this Agreement, the Merger and the other Transactions shall be paid by the party incurring such fees or expenses, whether or not the Merger is consummated.',
+      features: {
+        feeExpenseAllocation: 'Except as set forth in Section 6.02,\nSection 6.03(b), Section 6.05 and Section 8.02, all fees and expenses incurred in connection with this Agreement, the Merger and the other Transactions shall be paid by the party incurring such fees or expenses, whether or not the Merger is consummated.',
+      },
+    },
+    {
+      id: '3c3a7b49-4272-4a16-8f7a-ab0d782ae9ce',
+      provision_type: 'COVENANT_OTHER',
+      provision_subtype: 'COV-ACCESS',
+      short_title: 'Access to Information; Confidentiality',
+      section_ref: '6.02 | Access to Information; Confidentiality | 7974ddbe7ddc',
+      primary_quote: 'SECTION 6.02. Access to Information; Confidentiality. ... provided, however, that Parent shall reimburse the Company for any reasonable out-of-pocket expenses incurred by the Company or any Company Subsidiary arising out of affording any such access, furnishing any such information and providing such access...',
+    },
+    {
+      // Real I7-class gap: the HSR/foreign-filing-fee clause survives only
+      // as an unclassified [PROPOSED] fragment whose own section_ref
+      // ("6.01") doesn't carry the true "6.03(b)" document number.
+      id: '71d26b88-c197-49c4-b299-019613ed1a3a',
+      provision_type: 'ANTITRUST_REGULATORY',
+      provision_subtype: null,
+      short_title: '[PROPOSED] Regulatory Filing Fees',
+      section_ref: '6.01 | [PROPOSED] Regulatory Filing Fees | bcc32649481c',
+      primary_quote: 'Each party will bear its own costs of preparing its own pre-merger notifications and similar filings and notices in other jurisdictions and related expenses incurred to obtain all required regulatory approvals under the HSR Act or any applicable Foreign Merger Control Law; provided that Parent shall bear all filing fees payable by Parent or any of its affiliates or the Company or any of its affiliates for the filings required under the HSR Act or any applicable Foreign Merger Control Law.',
+    },
+    {
+      id: 'cdf55b01-83da-496a-a39d-6a545308c505',
+      provision_type: 'COVENANT_OTHER',
+      provision_subtype: 'COV-DO',
+      short_title: 'D&O Indemnification and Insurance',
+      section_ref: '6.05 | D&O Indemnification and Insurance | f864b4997ed0',
+      primary_quote: 'SECTION 6.05. Indemnification. (a) All rights to indemnification and exculpation from liabilities for acts or omissions occurring at or prior to the Effective Time (and rights to advancement of expenses) now existing in favor of any Person... (c) The Company, with Parent\'s prior written consent, may obtain, at or prior to the Effective Time, prepaid (or "tail") directors\' and officers\' liability insurance policies... (f) Parent shall pay all reasonable and documented out-of-pocket expenses, including reasonable attorneys\' fees, that may be incurred by any Indemnified Party in successfully enforcing the indemnity and other obligations provided in this Section 6.05.',
+    },
+    {
+      // Real numbering gap: this card's own quoted text heads with
+      // "SECTION 8.02." but its section_ref column lags at 8.01 (set by
+      // region-grouping, not the true document number) -- proving the
+      // heading tier is tried before, and wins over, section_ref.
+      id: 'bb145166-b14b-49a7-b46a-65386e2cd767',
+      provision_type: 'TERMINATION_FEE',
+      provision_subtype: 'TERMF-EFFECT',
+      short_title: 'Effect of Termination',
+      section_ref: '8.01 | Effect of Termination | 1638d2748e0a',
+      primary_quote: 'SECTION 8.02. Effect of Termination. (a) In the event of termination of this Agreement by either the Company or Parent as provided in Section 8.01, this Agreement shall forthwith become void and have no effect...',
+    },
+  ];
+  const rows = advisersFeesExpensesMod.advisersFeesExpensesConfig.selectRows({ cards });
+  const exceptionsRow = rows.find((row) => row.id === 'advisers-fees-expenses-expense-exceptions');
+  assert.ok(exceptionsRow, 'expected an expense-exceptions row');
+  const labels = exceptionsRow.signals.map((item) => item.label);
+  assert.deepEqual(labels, [
+    '§6.02 — Access to Information; Confidentiality',
+    '§6.03(b) — Regulatory Filing Fees',
+    '§6.05 — D&O Indemnification and Insurance',
+    '§8.02 — Effect of Termination',
+  ]);
+  ['6.02', '6.03', '6.05', '8.02'].forEach((num) => {
+    assert.ok(labels.some((label) => label.includes(num)), `expected a signal naming Section ${num}`);
+  });
+});
+
 test('TB1: misc-boilerplate third-party-beneficiaries row names WHICH PARTIES benefit under WHICH provision (by subject, not a bare section number), resolving sections from sibling cards outside the Misc set (real-deal shape)', () => {
   const cards = [
     {
