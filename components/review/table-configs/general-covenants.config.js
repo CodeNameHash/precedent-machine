@@ -1,21 +1,27 @@
 import React from 'react';
-import taxonomy from '../../../lib/taxonomy.js';
-import { cardCode, cardFeatures, cardType, firstFeature, makeRow, selectCards, textOf, valueText } from './card-utils.js';
-
-const { labelForCode, taxonomyForFeatureKey } = taxonomy;
+import { cardCode, cardFeatures, cardType, firstFeature, selectCards, textOf } from './card-utils.js';
 
 // REBUILD-SPECS.md section 6: interim-operating-covenant content (ordinary
-// course, negative-covenant restrictions, affirmative limbs) is now owned
-// entirely by ioc-exceptions.config.js's grouped covenant table. The 5 rows
-// below are the genuine COVENANT_OTHER concepts that live in THIS section
-// (§6.01-6.11-style general covenants, not the §5.01 IOC list).
+// course, negative-covenant restrictions, affirmative limbs) is owned
+// entirely by ioc-exceptions.config.js's grouped covenant table. The 5
+// curated ROWS below are the genuine COVENANT_OTHER concepts that live in
+// THIS section (§6.01-6.11-style general covenants, not the §5.01 IOC list).
 const ROWS = [
-  ['efforts', 'General efforts standard', 'Efforts', ['effortsStandard', 'reasonableBestEfforts']],
-  ['access', 'Access / information rights', 'Access', ['accessRights', 'informationAccess']],
-  ['public-statements', 'Public statements', 'Communications', ['publicStatements', 'publicStatementExceptions']],
-  ['insurance', 'D&O / insurance covenant', 'Insurance', ['insuranceCap', 'insurancePeriod', 'doInsurance']],
-  ['financing', 'Financing cooperation', 'Financing', ['financingCooperation']],
+  ['efforts', 'General efforts standard', ['effortsStandard', 'reasonableBestEfforts']],
+  ['access', 'Access / information rights', ['accessRights', 'informationAccess']],
+  ['public-statements', 'Public statements', ['publicStatements', 'publicStatementExceptions']],
+  ['insurance', 'D&O / insurance covenant', ['insuranceCap', 'insurancePeriod', 'doInsurance']],
+  ['financing', 'Financing cooperation', ['financingCooperation']],
 ];
+
+// FEEDBACK-2-PUNCHLIST.md #13/#31/#32: stockholders-meeting mechanics
+// (COV-MEETING / COV-PROXY -- already owned by sec-meeting.config.js) and
+// Parent's adoption of the merger agreement (COV-SHAPRV-PARENT, now
+// rendered on votes-approvals-meeting.config.js as its own "Parent / Merger
+// Sub approvals" row) belong in Votes / Approvals / SEC / Meeting, not here.
+// Excluded up front so neither ever falls through to the per-clause
+// fallback below and double-renders on both pages.
+const VOTES_OWNED_CODES = new Set(['COV-MEETING', 'COV-PROXY', 'COV-SHAPRV-PARENT']);
 
 // Deliberately excludes COVENANT_INTERIM_OPERATING / IOC-prefixed cards
 // (ioc-exceptions.config.js owns those) and drops the old free-text regex
@@ -26,130 +32,104 @@ function isGeneralCovenant(card) {
   const type = cardType(card);
   const code = cardCode(card);
   if (type === 'COVENANT_INTERIM_OPERATING' || code.startsWith('IOC')) return false;
+  if (VOTES_OWNED_CODES.has(code)) return false;
   return type === 'COVENANT_OTHER' || code.startsWith('COV');
 }
 
-function readableSignal(key, value) {
-  const rendered = valueText(value);
-  if (!rendered) return null;
-  const dict = taxonomyForFeatureKey(key);
-  return (dict && labelForCode(String(value?.code || value?.value || value), dict)) || rendered;
-}
-
-function signal(key, label, value, card, tone = 'info') {
-  const readable = readableSignal(key, value);
-  if (!readable) return null;
-  return {
-    id: `${card?.id || cardCode(card)}-${key}-${readable}`,
-    label: `${label}: ${readable}`,
-    value,
-    tone,
-    evidence: value?.text || textOf(card),
-    source: card,
-  };
-}
-
-function rowSignals(card) {
-  const f = cardFeatures(card);
-  return [
-    signal('effortsStandard', 'Efforts', f.iocEffortsStandard || f.effortsStandard || f.reasonableBestEfforts, card, 'info'),
-    signal('consentStandard', 'Consent', f.iocConsentStandard || f.consentStandard, card, 'info'),
-    signal('knowledgeQualifier', 'Knowledge', f.knowledgeQualifier, card, 'warning'),
-    signal('dayCountDeadline', 'Deadline', f.dayCountDeadline || f.leadInPeriodDays || f.deadlineDays, card, 'neutral'),
-  ].filter(Boolean);
-}
-
-// The 5 curated ROWS above collapse the general-covenant pool into one
-// generic row per concept (firstFeature-style); every OTHER COVENANT_OTHER
-// card not covered by a curated row gets its own per-clause row below. (IOC
-// content -- including its own general-exceptions/negative-preamble
-// containers -- never reaches this function: isGeneralCovenant() excludes
-// COVENANT_INTERIM_OPERATING/IOC-prefixed cards entirely, and
-// ioc-exceptions.config.js owns rendering them.)
 function clauseLabel(card) {
   return card?.short_title || card?.defined_term || cardCode(card) || 'Covenant';
 }
 
-function clauseDetail(card) {
-  const f = cardFeatures(card);
-  return valueText(f.mainConcept) || textOf(card);
+// FEEDBACK-2-PUNCHLIST.md #30/#33 (Ben: "I don't know why you've got this
+// signals one here, it's weird"): General Covenants is a grab-bag of
+// unrelated clause types (efforts standard, access rights, public
+// statements, D&O insurance, financing cooperation, plus whatever other
+// one-off COV cards a deal has) with no shared structured shape to
+// summarize into a signals-pill grid -- the old grid was pulling
+// efforts/consent/knowledge/deadline meta that frequently didn't apply to
+// the row it sat next to. This is now "Other Covenants": every row is a
+// LINK to its own provision (same pattern as consideration-hero.config.js's
+// "Other provisions in this section" row) instead of a content summary --
+// the table names the provision and carries its full evidence on hover;
+// reading the clause happens through that, not a pill paraphrase.
+// `evidenceOverride` covers curated rows whose card has no primary_quote /
+// region_full_text of its own (textOf(card) empty) -- falls back to the
+// matched feature's own resolved text (firstFeature's `.detail`) so the
+// link's hover never comes up empty when the card-level quote is missing.
+function linkRow(idSuffix, label, card, evidenceOverride) {
+  if (!card) return null;
+  return {
+    id: `general-covenants-${idSuffix}`,
+    label,
+    kind: 'Link',
+    detail: label,
+    isLink: true,
+    evidence: textOf(card) || evidenceOverride || '',
+    sourceCard: card,
+    present: true,
+  };
 }
 
-function perClauseRows(cards) {
+// The 5 curated concepts above render as friendly-labelled links first, so
+// a genuinely mapped clause (e.g. the efforts-standard covenant) shows a
+// readable term instead of falling through to its raw clause title.
+function curatedRows(cards) {
+  const rows = [];
+  const covered = new Set();
+  for (const [id, label, keys] of ROWS) {
+    const hit = firstFeature(cards, keys);
+    if (!hit) continue;
+    const row = linkRow(id, label, hit.card, hit.detail);
+    if (!row) continue;
+    rows.push(row);
+    covered.add(hit.card);
+  }
+  return { rows, covered };
+}
+
+// Every OTHER genuine COVENANT_OTHER card not already covered by a curated
+// row above gets its own link, keyed off the clause's own short title --
+// never a duplicate of a card already surfaced via curatedRows().
+function perClauseRows(cards, covered) {
   return cards
-    .map((card) => {
-      const detail = clauseDetail(card);
-      if (!detail) return null;
-      return {
-        id: `general-covenants-clause-${card.id}`,
-        label: clauseLabel(card),
-        kind: 'General covenant',
-        detail,
-        evidence: textOf(card),
-        source: clauseLabel(card),
-        present: true,
-        signals: rowSignals(card),
-        sourceCard: card,
-      };
-    })
+    .filter((card) => !covered.has(card))
+    .map((card) => linkRow(`clause-${card.id}`, clauseLabel(card), card))
     .filter(Boolean);
 }
 
-function mappedCovenantRows(prefix, cards, specs) {
-  return specs
-    .map(([id, label, kind, keys]) => {
-      const hit = firstFeature(cards, keys || id);
-      const row = makeRow(prefix, id, label, kind, hit);
-      if (!row) return null;
-      return {
-        ...row,
-        signals: rowSignals(hit.card),
-        sourceCard: hit.card,
-      };
-    })
-    .filter(Boolean);
+function renderLink(row, ctx) {
+  const EvidenceHoverSource = ctx?.primitives?.EvidenceHoverSource;
+  const linkNode = React.createElement(
+    'a',
+    {
+      href: '#',
+      onClick: (event) => event.preventDefault(),
+      className: 'inline-flex items-center gap-1 text-[11px] font-medium text-sky-700 underline decoration-sky-300 underline-offset-2 hover:text-sky-800',
+    },
+    row.detail,
+    React.createElement('span', { 'aria-hidden': 'true' }, '→'),
+  );
+  if (!EvidenceHoverSource) return linkNode;
+  return React.createElement(EvidenceHoverSource, { evidence: row.evidence, source: row.sourceCard, as: 'span' }, linkNode);
 }
 
-function renderSignals(row, ctx) {
-  const PillCell = ctx?.primitives?.PillCell;
-  if (!PillCell) return (row.signals || []).map((item) => item.label).join('\n');
-  return (row.signals || []).map((item) => React.createElement(PillCell, {
-    key: item.id,
-    label: item.label,
-    value: item.value,
-    tone: item.tone,
-    evidence: item.evidence,
-    source: item.source,
-  }));
-}
-
-// Unlike the mapped ROWS above, perClauseRows()' detail can fall all the way
-// back to the entire raw clause text (clauseDetail() -> textOf(card) when
-// mainConcept isn't extracted) — up to the whole covenant's prose. Neither
-// row shape has a redundant pill copy of the value (rowSignals() surfaces
-// efforts/consent/knowledge/deadline meta, not the clause text itself), so
-// the column can't be wholesale relocated like the mae/antitrust/reps
-// families; truncate per-cell instead and keep the same "see text" escape
-// hatch for whatever got cut.
-function renderDetail(row, ctx) {
-  const TruncatedWithSeeText = ctx?.primitives?.TruncatedWithSeeText;
-  if (!TruncatedWithSeeText) return row.detail;
-  return React.createElement(TruncatedWithSeeText, { text: row.detail, evidence: row.evidence, source: row.sourceCard });
-}
-
+// FEEDBACK-2-PUNCHLIST.md #33: this section now sits at the VERY END of the
+// page (see REVIEW_TABLE_CONFIGS order in pages/review/[id].js) -- it is
+// deliberately the last thing a reviewer sees, a plain link index into
+// whatever general-covenant clauses didn't already get a home elsewhere.
 const generalCovenantsConfig = {
   id: 'general-covenants',
-  title: 'General Covenants',
+  title: 'Other Covenants',
   layoutSlot: 'covenants',
   selectRows(reviewDeal) {
     const cards = selectCards(reviewDeal, isGeneralCovenant);
-    return [...mappedCovenantRows('general-covenants', cards, ROWS), ...perClauseRows(cards)];
+    const { rows: curated, covered } = curatedRows(cards);
+    return [...curated, ...perClauseRows(cards, covered)];
   },
   columns: [
-    { id: 'term', header: 'Term', width: '18rem', renderCell: (row) => row.label },
-    { id: 'signals', header: 'Signals', width: '18rem', renderCell: renderSignals },
-    { id: 'detail', header: 'Detail', renderCell: renderDetail },
+    { id: 'term', header: 'Provision', width: '20rem', renderCell: (row) => row.label },
+    { id: 'detail', header: 'Link', renderCell: renderLink },
   ],
 };
 
-export { generalCovenantsConfig, perClauseRows, renderDetail, renderSignals, rowSignals };
+export { generalCovenantsConfig, linkRow, perClauseRows, renderLink };

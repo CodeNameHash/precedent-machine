@@ -164,6 +164,12 @@ import { parseReviewRouteQuery, serializeReviewRouteQuery } from '../../lib/revi
 // becomes one collapsible accordion section keyed by its config.id. Kept as a
 // module constant so the collapse/scroll wiring can enumerate section ids
 // without re-listing them.
+// FEEDBACK-2-PUNCHLIST.md #33: generalCovenantsConfig is now "Other
+// Covenants" -- a plain link index into whatever general-covenant clauses
+// weren't already given a home in a more specific section (stockholders-
+// meeting content moved to votesApprovalsMeetingConfig, IOC content stays
+// on iocExceptionsConfig, etc.) -- so it renders LAST, after every other
+// substantive section, not interleaved among them.
 const REVIEW_TABLE_CONFIGS = [
   structureMechanicsConfig,
   considerationHeroConfig,
@@ -174,7 +180,6 @@ const REVIEW_TABLE_CONFIGS = [
   maeDefinitionsConfig,
   materialContractsConfig,
   iocExceptionsConfig,
-  generalCovenantsConfig,
   terminationRightsConfig,
   terminationFeesConfig,
   tailFeeConfig,
@@ -187,6 +192,7 @@ const REVIEW_TABLE_CONFIGS = [
   advisersFeesExpensesConfig,
   miscBoilerplateConfig,
   noOtherRepsFraudConfig,
+  generalCovenantsConfig,
 ];
 
 // Maps a sidebar provision-type key to the config.id of the accordion section

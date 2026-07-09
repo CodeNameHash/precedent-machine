@@ -103,13 +103,19 @@ test('material-contracts config opts out of the duplicate in-table title (punch-
   assert.equal(materialContractsConfig.hideRepeatedTitle, true);
 });
 
-test('mixed-shape families (termination-fees, general-covenants, consideration-hero, approvals-votes) are NOT wholesale-relocated', () => {
+test('mixed-shape families (termination-fees, consideration-hero, approvals-votes) are NOT wholesale-relocated', () => {
   // These families have at least one row whose 'detail'/'value' is the ONLY
   // visible copy of the value (no redundant signal pill mirrors it) --
   // hiding the whole column would drop that value from the compact view.
   // They use the per-cell TruncatedWithSeeText primitive instead (see below).
+  //
+  // general-covenants (FEEDBACK-2-PUNCHLIST.md #30/#33, "Other Covenants")
+  // is no longer in this list: every row is now a short LINK (term + arrow),
+  // not truncatable prose -- there's nothing for whole-column relocation to
+  // drop, so the family doesn't belong to either category any more. See the
+  // link-rendering test below.
   const body = readSource(provisionTablePath);
-  for (const id of ['termination-fees', 'general-covenants', 'consideration-hero', 'approvals-votes']) {
+  for (const id of ['termination-fees', 'consideration-hero', 'approvals-votes']) {
     assert.doesNotMatch(body, new RegExp(`'${id}':\\s*\\[`), `${id} must not be column-relocated -- it needs per-cell truncation, not whole-column hiding`);
   }
 });
@@ -132,7 +138,6 @@ test('per-cell truncation is wired into every mixed-shape family\'s render funct
   // the Signals column already carries the amount/trigger pills, so there is
   // no longer a separate long-value cell needing per-cell truncation).
   const configs = [
-    ['general-covenants', 'general-covenants.config.js'],
     ['tail-fee', 'tail-fee.config.js'],
     ['consideration-hero', 'consideration-hero.config.js'],
     ['approvals-votes', 'approvals-votes.config.js'],
@@ -146,7 +151,14 @@ test('per-cell truncation is wired into every mixed-shape family\'s render funct
 // -- Behavioral: real config modules actually hand the long value to the
 //    primitive (not just a source-level match) ------------------------------
 
-test('general-covenants perClauseRows detail is routed through TruncatedWithSeeText with the full clause text', async () => {
+// FEEDBACK-2-PUNCHLIST.md #30/#33: general-covenants ("Other Covenants") no
+// longer summarizes clause prose into a truncated cell at all -- every row,
+// curated or per-clause fallback, is a plain LINK naming the provision. The
+// full clause text is never dropped (Ben's "do NOT summarise" -- the value
+// must still be reachable), it just moves to `.evidence`, surfaced via the
+// EvidenceHoverSource wrapper on hover instead of an inline "see text"
+// expander.
+test('general-covenants per-clause fallback rows render as links carrying the full clause text as evidence (never summarised, never truncated inline)', async () => {
   const { generalCovenantsConfig } = await import('../../components/review/table-configs/general-covenants.config.js');
   const longClause = 'The Company shall not, and shall cause its Subsidiaries not to, '.repeat(20).trim();
   const rows = generalCovenantsConfig.selectRows({
@@ -161,16 +173,19 @@ test('general-covenants perClauseRows detail is routed through TruncatedWithSeeT
   });
   const row = rows.find((r) => r.id === 'general-covenants-clause-cov-1');
   assert.ok(row, 'expected the per-clause fallback row to render from raw card text');
-  assert.equal(row.detail, longClause, 'row.detail must still carry the FULL text -- truncation happens only at render time');
+  assert.equal(row.label, 'Insurance Covenant', 'the term column names the provision, not a content summary');
+  assert.equal(row.detail, 'Insurance Covenant', 'the link text is the provision name, not the clause prose');
+  assert.equal(row.isLink, true);
+  assert.equal(row.evidence, longClause, 'the FULL untruncated clause text must still be reachable via evidence');
 
   // renderCell returns a React.createElement(...) descriptor -- inspecting
-  // .type/.props tells us exactly what it would hand to the real primitive
+  // .type/.props tells us exactly what it would hand to a real primitive
   // without needing a JSX-capable renderer (see file header).
-  const TruncatedWithSeeText = () => null;
+  const EvidenceHoverSource = ({ children }) => children;
   const detailColumn = generalCovenantsConfig.columns.find((c) => c.id === 'detail');
-  const element = detailColumn.renderCell(row, { primitives: { TruncatedWithSeeText } });
-  assert.equal(element.type, TruncatedWithSeeText);
-  assert.equal(element.props.text, longClause, 'the primitive must receive the untruncated text so it alone decides what to cut');
+  const element = detailColumn.renderCell(row, { primitives: { EvidenceHoverSource } });
+  assert.equal(element.type, EvidenceHoverSource);
+  assert.equal(element.props.evidence, longClause, 'the hover wrapper must receive the untruncated text');
 });
 
 // termination-fees' 'Detail' column (and its TruncatedWithSeeText wiring)

@@ -25,6 +25,7 @@ let structureMechanicsMod;
 let tailFeeMod;
 let terminationFeesMod;
 let terminationRightsMod;
+let votesApprovalsMeetingMod;
 test.before(async () => {
   mod = await import(path.join('..', 'components', 'review', 'table-configs', 'conditions-m.config.js'));
   advisersFeesExpensesMod = await import(path.join('..', 'components', 'review', 'table-configs', 'advisers-fees-expenses.config.js'));
@@ -47,6 +48,7 @@ test.before(async () => {
   tailFeeMod = await import(path.join('..', 'components', 'review', 'table-configs', 'tail-fee.config.js'));
   terminationFeesMod = await import(path.join('..', 'components', 'review', 'table-configs', 'termination-fees.config.js'));
   terminationRightsMod = await import(path.join('..', 'components', 'review', 'table-configs', 'termination-rights.config.js'));
+  votesApprovalsMeetingMod = await import(path.join('..', 'components', 'review', 'table-configs', 'votes-approvals-meeting.config.js'));
 });
 
 function card(overrides = {}) {
@@ -310,7 +312,14 @@ test('M2-08 gap configs map their core schema-card fields', () => {
   const termrGroupRows = terminationRightsMod.terminationRightsConfig.selectRows(reviewDeal);
   assert.equal(termrGroupRows.length, 1);
   assert.match(terminationFeesMod.terminationFeesConfig.selectRows(reviewDeal)[0].detail, /\$100,000,000/);
-  assert.match(generalCovenantsMod.generalCovenantsConfig.selectRows(reviewDeal)[0].detail, /reasonable access/);
+  // FEEDBACK-2-PUNCHLIST.md #30/#33: general-covenants rows are LINKS now
+  // (term = friendly label, not a content summary) -- the underlying
+  // covenant value still survives, just moved to the row's evidence, which
+  // is what the link's hover surfaces.
+  const generalCovenantsRow = generalCovenantsMod.generalCovenantsConfig.selectRows(reviewDeal)[0];
+  assert.equal(generalCovenantsRow.detail, 'Access / information rights');
+  assert.equal(generalCovenantsRow.isLink, true);
+  assert.match(generalCovenantsRow.evidence, /reasonable access/);
   assert.match(approvalsVotesMod.approvalsVotesConfig.selectRows(reviewDeal)[0].detail, /majority/);
   assert.match(advisersFeesExpensesMod.advisersFeesExpensesConfig.selectRows(reviewDeal)[0].detail, /own expenses/);
   // representations-qualifiers renders ONE row per rep card (Term |
@@ -986,7 +995,11 @@ test('general-covenants config never resurrects the MISC §9.01 "No Survival" ca
   assert.deepEqual(rows, [], 'MISC_BOILERPLATE cards are not general covenants, regardless of what words their clause text contains');
 });
 
-test('general-covenants config still renders curated signals for a genuine COVENANT_OTHER card', () => {
+// FEEDBACK-2-PUNCHLIST.md #30: the old signals-pill-grid summary read
+// "weird" (Ben) -- every general-covenants row is now a LINK to its own
+// provision instead, carrying the full clause value on `.evidence` rather
+// than a per-field pill breakdown.
+test('general-covenants config renders the curated efforts covenant as a link (no signals grid)', () => {
   const rows = generalCovenantsMod.generalCovenantsConfig.selectRows({
     cards: [{
       id: 'cov-efforts',
@@ -996,32 +1009,27 @@ test('general-covenants config still renders curated signals for a genuine COVEN
       primary_quote: 'The Company shall use reasonable best efforts within five business days, subject to Parent consent.',
       features: {
         effortsStandard: { code: 'REASONABLE_BEST_EFFORTS', label: 'Reasonable best efforts', text: 'reasonable best efforts' },
-        consentStandard: { code: 'PRIOR_WRITTEN_CONSENT', label: 'Prior written consent', text: 'Parent consent' },
-        knowledgeQualifier: { code: 'KNOWLEDGE_QUALIFIED', label: 'Knowledge qualified', text: 'to the Company Knowledge' },
-        dayCountDeadline: '5 business days',
       },
     }],
   });
   const row = rows.find((entry) => entry.label === 'General efforts standard');
   assert.ok(row, 'curated efforts row should still render for a real COVENANT_OTHER card');
-  assert.deepEqual(row.signals.map((item) => item.label), [
-    'Efforts: Reasonable best efforts',
-    'Consent: Prior written consent: Parent consent',
-    'Knowledge: Knowledge qualified: to the Company Knowledge',
-    'Deadline: 5 business days',
-  ]);
+  assert.equal(row.kind, 'Link');
+  assert.equal(row.isLink, true);
+  assert.equal(row.signals, undefined, 'the signals pill grid is gone -- rows are links now');
+  assert.match(row.evidence, /reasonable best efforts/);
 });
 
 test('general-covenants config renders one row PER genuine COVENANT_OTHER clause not covered by a curated row, and excludes IOC cards from the same mix', () => {
   const rows = generalCovenantsMod.generalCovenantsConfig.selectRows({
     cards: [
       {
-        id: 'cov-parent-adopt',
+        id: 'cov-notice',
         provision_type: 'COVENANT_OTHER',
-        provision_subtype: 'COV-SHAPRV-PARENT',
-        short_title: 'Parent Adoption of Merger Agreement',
-        primary_quote: 'Parent Adoption of Merger Agreement clause text.',
-        features: { mainConcept: 'Parent, as sole stockholder of Merger Sub, must adopt the merger agreement immediately.' },
+        provision_subtype: 'COV-NOTICE',
+        short_title: 'Notice of Certain Events',
+        primary_quote: 'Notice of Certain Events clause text.',
+        features: { mainConcept: 'Each party must promptly notify the other of any event likely to cause a condition to fail.' },
       },
       {
         id: 'cov-maintain',
@@ -1033,12 +1041,104 @@ test('general-covenants config renders one row PER genuine COVENANT_OTHER clause
       },
     ],
   });
-  const parentAdopt = rows.find((row) => row.label === 'Parent Adoption of Merger Agreement');
+  const notice = rows.find((row) => row.label === 'Notice of Certain Events');
   const maintain = rows.find((row) => row.label === 'Maintain Insurance');
-  assert.ok(parentAdopt, 'a genuine COVENANT_OTHER clause not covered by a curated row should get its own per-clause row');
-  assert.equal(parentAdopt.kind, 'General covenant');
-  assert.equal(parentAdopt.detail, 'Parent, as sole stockholder of Merger Sub, must adopt the merger agreement immediately.');
+  assert.ok(notice, 'a genuine COVENANT_OTHER clause not covered by a curated row should get its own per-clause link row');
+  assert.equal(notice.kind, 'Link');
+  assert.equal(notice.isLink, true);
+  assert.match(notice.evidence, /Notice of Certain Events clause text/);
   assert.equal(maintain, undefined, 'the IOC card must not appear here -- ioc-exceptions.config.js owns it');
+});
+
+// FEEDBACK-2-PUNCHLIST.md #13/#31: Parent's adoption of the merger
+// agreement moved OUT of General Covenants entirely -- it now renders only
+// on votes-approvals-meeting.config.js (see the dedicated test below).
+test('general-covenants config excludes Parent/Merger Sub adoption content (moved to votes-approvals-meeting.config.js)', () => {
+  const rows = generalCovenantsMod.generalCovenantsConfig.selectRows({
+    cards: [{
+      id: 'cov-parent-adopt',
+      provision_type: 'COVENANT_OTHER',
+      provision_subtype: 'COV-SHAPRV-PARENT',
+      short_title: 'Parent Adoption of Merger Agreement',
+      primary_quote: 'Parent Adoption of Merger Agreement clause text.',
+      features: { mainConcept: 'Parent, as sole stockholder of Merger Sub, must adopt the merger agreement immediately.' },
+    }],
+  });
+  assert.deepEqual(rows, [], 'COV-SHAPRV-PARENT must not render on General Covenants any more');
+});
+
+// FEEDBACK-2-PUNCHLIST.md #13: Parent / Merger Sub's own approval row, moved
+// here from General Covenants. Wording must NOT say "written consent
+// required" (that phrase describes the Company-side approval row and would
+// wrongly imply the Company needs written consent too).
+test('votes-approvals-meeting config renders a Parent / Merger Sub approvals row sourced from COV-SHAPRV-PARENT, worded distinctly from the Company written-consent row', () => {
+  const rows = votesApprovalsMeetingMod.buildRows({
+    cards: [{
+      id: 'cov-parent-adopt',
+      provision_type: 'COVENANT_OTHER',
+      provision_subtype: 'COV-SHAPRV-PARENT',
+      short_title: 'Parent Adoption of Merger Agreement',
+      primary_quote: 'Parent, as the sole stockholder of Merger Sub, has adopted this Agreement by written consent concurrently with execution.',
+      features: {
+        parentAdoptionMechanism: { code: 'WRITTEN_CONSENT', label: 'Written consent' },
+        parentAdoptionTiming: 'concurrently with execution',
+      },
+    }],
+  });
+  const row = rows.find((entry) => entry.id === 'votes-approvals-meeting-parent-approval');
+  assert.ok(row, 'expected a Parent / Merger Sub approvals row');
+  assert.equal(row.label, 'Parent / Merger Sub approvals');
+  const primitives = { PillCell: ({ label }) => React.createElement('span', null, label) };
+  const provisionColumn = votesApprovalsMeetingMod.votesApprovalsMeetingConfig.columns.find((c) => c.id === 'provision');
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, provisionColumn.renderCell(row, { primitives })));
+  assert.match(html, /in writing by Parent/);
+  assert.match(html, /no separate Parent vote required/);
+  assert.doesNotMatch(html, /written consent required/i);
+});
+
+// FEEDBACK-2-PUNCHLIST.md #12: the "Meeting control notes" row is gone.
+test('votes-approvals-meeting config no longer renders a "Meeting control notes" row', () => {
+  const rows = votesApprovalsMeetingMod.buildRows({
+    cards: [{
+      id: 'proxy',
+      provision_subtype: 'COV-PROXY',
+      primary_quote: 'The Company will control the meeting.',
+      features: { meetingControlNotes: 'The Company controls the timing and conduct of the meeting.' },
+    }],
+  });
+  assert.equal(rows.find((row) => row.label === 'Meeting control notes'), undefined);
+});
+
+// FEEDBACK-2-PUNCHLIST.md #11: adjournment rights render as three labelled
+// parts -- Permitted reason / Controlling party / Restriction -- instead of
+// flat sibling pills.
+test('votes-approvals-meeting config renders adjournment rights as three labelled groups (reason / party / restriction)', () => {
+  const rows = votesApprovalsMeetingMod.buildRows({
+    cards: [{
+      id: 'proxy',
+      provision_subtype: 'COV-PROXY',
+      primary_quote: 'meeting card',
+      features: {
+        adjournmentRights: [{
+          party: 'COMPANY',
+          reasons: [{ code: 'INSUFFICIENT_VOTES', label: 'Insufficient votes' }],
+          maxDaysTotal: 15,
+          text: 'The Company may adjourn the meeting due to insufficient votes for no more than fifteen (15) days in the aggregate without the prior written consent of Parent.',
+        }],
+      },
+    }],
+  });
+  const row = rows.find((entry) => entry.kind === 'adjournment');
+  assert.ok(row, 'expected an adjournment row');
+  const primitives = { PillCell: ({ label }) => React.createElement('span', null, label) };
+  const provisionColumn = votesApprovalsMeetingMod.votesApprovalsMeetingConfig.columns.find((c) => c.id === 'provision');
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, provisionColumn.renderCell(row, { primitives })));
+  assert.match(html, /Permitted reason/);
+  assert.match(html, /Insufficient votes/);
+  assert.match(html, /Controlling party/);
+  assert.match(html, /Company/);
+  assert.match(html, /Restriction/);
+  assert.match(html, /No more than 15 days without Parent(?:&#x27;|')s consent/);
 });
 
 test('conditions-m config returns no table rows when no closing-condition cards exist', () => {
