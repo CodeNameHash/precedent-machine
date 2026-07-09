@@ -8,16 +8,19 @@ const { EXCEPTION_CODES, IOC_AFFIRMATIVE_SCOPE_CODES, IOC_CATEGORY_CODES, labelF
 // Target/Buyer split of ONLY the general-exceptions preamble text; the other
 // 20-odd IOC cards (the actual negative covenants, the affirmative limbs)
 // were rendered nowhere on this table. New shape is the full 24-card IOC
-// family, organized the way a lawyer reads Section 5.01:
+// family, organized the way a lawyer reads Section 5.01 -- and in the same
+// TOP-TO-BOTTOM order the old site used (IocAffirmativeCovenantsTable ahead
+// of IocNegativeCovenantsTable; FEEDBACK-2-PUNCHLIST.md #29):
+//   - the 3 affirmative limbs (IOC-ORDINARY/PRESERVE/MAINTAIN) FIRST, as
+//     their own small "Affirmative covenants" band,
 //   - one TERM|RESTRICTION row per NAMED negative covenant (grouped by
 //     canonical code -- Metsera has 3 separate IOC-MERGE cards (the M&A /
 //     dispositions / recapitalization covenant) that collapse into ONE row
 //     with combined pills),
 //   - the near-empty "[PROPOSED] Unclassified 5.01(i)-(o)" fragments (no
 //     provision_subtype, so no covenant name) collapsed under a single
-//     "Other restrictions" band instead of rendering as empty rows,
-//   - the 3 affirmative limbs (IOC-ORDINARY/PRESERVE/MAINTAIN) as their own
-//     small "Affirmative covenants" band,
+//     lowest-priority "Other restrictions" band instead of rendering as
+//     empty rows,
 //   - the section-wide General Exceptions preamble (IOC-GENERAL-EXCEPTIONS /
 //     IOC-NEGATIVE-PREAMBLE) as a FOOTER strip, never per-row.
 // mainObligation prose never dumps inline -- it always sits behind an
@@ -74,15 +77,38 @@ function dedupeEntries(entries) {
   return out;
 }
 
-// dollarThreshold is a raw number/numeric-string on the card (Metsera:
-// 2000000), occasionally a small tagged object. Always renders as currency,
-// never a bare numeral (parity with the IOC threshold fix elsewhere in the
-// app -- table-logic.js's formatIocThresholdAmount).
+// dollarThreshold is a raw number/numeric-string on the card (Metsera
+// 5.01(d): 2000000 -- the ONLY IOC card carrying one, per
+// FEEDBACK-2-PUNCHLIST.md's DATA FINDINGS #25/#28: 0 canonical claims, the
+// figure only ever landed in the claim's verbatim capture). Always renders
+// as currency, never a bare numeral (parity with the IOC threshold fix
+// elsewhere in the app -- table-logic.js's formatIocThresholdAmount).
 function formatMoney(raw) {
   if (raw === null || raw === undefined || raw === '') return null;
-  if (typeof raw === 'object') return formatMoney(raw.value ?? raw.amount ?? raw.threshold ?? raw.text ?? null);
+  if (typeof raw === 'object') {
+    // Citable-wrapper shape { value: null, quotes: [...] } -- a verbatim-only
+    // claim (no canonical numeral) still carries the figure inside its first
+    // supporting quote. Try that before falling through to the other object
+    // shapes (tagged {code,label,text}, legacy {amount}/{threshold}).
+    if (Array.isArray(raw.quotes) && raw.quotes.length) {
+      const fromQuote = formatMoney(raw.quotes[0]);
+      if (fromQuote) return fromQuote;
+    }
+    return formatMoney(raw.value ?? raw.amount ?? raw.threshold ?? raw.text ?? null);
+  }
   const num = typeof raw === 'number' ? raw : Number(String(raw).replace(/[^0-9.-]/g, ''));
   if (Number.isFinite(num) && num > 0) return `$${num.toLocaleString('en-US')}`;
+  // The claims-adapter (lib/queries/claims-adapter.js's buildRawValue) already
+  // falls back to `claim.verbatim` when `claim.canonical` is null, so most
+  // verbatim-only numbers arrive here as a clean numeral string and are
+  // caught above. This is the last-resort path for the rare case a longer
+  // verbatim sentence slips through uncoerced ("...not to exceed $2,000,000
+  // in the aggregate...") -- pull the first dollar figure out of it directly
+  // instead of dropping the pill.
+  if (typeof raw === 'string') {
+    const match = raw.match(/\$\s?[\d,]+(?:\.\d+)?/);
+    if (match) return match[0].replace(/\s+/g, '');
+  }
   return typeof raw === 'string' && raw.trim() ? raw.trim() : null;
 }
 
@@ -306,10 +332,15 @@ const iocExceptionsConfig = {
         const cards = (row.reviewDeal?.cards || []).filter(isIocCard);
         const negativeRows = negativeCovenantGroups(cards).map((group) => renderNegativeRow(buildNegativeRow(group), ctx));
         const otherRow = buildOtherRestrictionsRow(fragmentCards(cards), ctx);
+        // Old-site render order (OLD-review-page.js's IocAffirmativeCovenantsTable
+        // ahead of IocNegativeCovenantsTable) puts the affirmative limbs FIRST --
+        // REBUILD-SPECS.md section 6 / FEEDBACK-2-PUNCHLIST.md #29. Negative
+        // covenants (the named rows) come next, with the near-empty fragments
+        // collapsed into the lowest-priority "Other restrictions" band last.
         const groups = [
+          { id: 'affirmative', label: 'Affirmative covenants', rows: affirmativeRows(cards, ctx) },
           { id: 'negative', label: 'Negative covenants', rows: negativeRows },
           { id: 'other', label: 'Other restrictions', rows: otherRow ? [otherRow] : [] },
-          { id: 'affirmative', label: 'Affirmative covenants', rows: affirmativeRows(cards, ctx) },
         ];
         return React.createElement(GroupedSubRows, { groups, emptyCopy: 'No interim operating covenants found.' });
       },
