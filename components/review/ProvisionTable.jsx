@@ -59,6 +59,36 @@ export default function ProvisionTable({ config, reviewDeal, isEdit = false }) {
   if (!config || typeof config.selectRows !== 'function') return null;
   const rows = config.selectRows(reviewDeal);
   if (!Array.isArray(rows) || rows.length === 0) return null;
+  // Opt-in escape hatch for families whose rows don't map onto ONE flat
+  // <table> (e.g. mae-definitions splitting Company vs Parent MAE into two
+  // separate <table> sub-sections, matching the legacy per-side render).
+  // config.selectRows keeps returning its normal flat row list -- unit tests
+  // and hasRows checks elsewhere still see the real per-row data -- only the
+  // body markup is swapped out here.
+  if (typeof config.renderBody === 'function') {
+    const bodyCtx = { reviewDeal, config, primitives: ProvisionTablePrimitives, isEdit };
+    const headerNote = typeof config.deriveHeaderNote === 'function' ? config.deriveHeaderNote(rows) : null;
+    return (
+      <section data-testid={`provision-table-${config.id}`} className="rounded border border-border bg-white shadow-sm">
+        <div className="border-b border-border bg-bg/60 px-3 py-2 flex items-center justify-between gap-3">
+          <p className="font-ui text-[10px] font-medium uppercase tracking-wider text-inkFaint">
+            {config.title}
+          </p>
+          {headerNote ? (
+            <p className="font-ui text-[10px] font-medium text-inkFaint whitespace-nowrap">{headerNote}</p>
+          ) : null}
+        </div>
+        <div data-testid={`provision-table-body-${config.id}`} className="p-3 space-y-4">
+          {config.renderBody(rows, bodyCtx)}
+        </div>
+        {typeof config.renderFooter === 'function' ? (
+          <div data-testid={`provision-table-footer-${config.id}`}>
+            {config.renderFooter(rows, bodyCtx)}
+          </div>
+        ) : null}
+      </section>
+    );
+  }
   const allColumns = Array.isArray(config.columns) ? config.columns : [];
   const fullTextIds = FULL_TEXT_COLUMNS[config.id] || [];
   const columns = allColumns.filter((column) => !fullTextIds.includes(column.id));

@@ -4,20 +4,18 @@ import { cardCode, cardFeatures, cardType, firstFeature, makeRow, selectCards, t
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
-// Row order matters: 'test'/'limbs' render first as the MAE Test summary,
-// then the carve-outs table, then the supporting definition detail. The two
-// carveouts-CODE-LIST rows the legacy version force-rendered
-// (disproportionateImpactCarveouts / nonDisproportionateImpactCarveouts) are
-// intentionally dropped from this list: their information now lives as a
+// Row order matters: 'limbs' renders first as the MAE Test summary (the
+// two-limb pill IS the test summary -- fb2 #18 dropped the separate
+// full-definition prose row as a redundant duplicate of it), then the
+// carve-outs table, then the supporting definition detail. The
+// disproportionate-impact rows (clause / scope) are also intentionally
+// dropped from this list (fb2 #20): that information now lives ONLY as a
 // per-row "Disp. carveback applies" pill inside the carve-outs table itself
-// (see carveoutsTableNode) rather than a second, redundant flat pill list.
+// (see carveoutsTableNode) rather than a second, redundant summary row.
 const ROWS = [
-  ['test', 'MAE Test — full definition', 'Definition', ['maeTest', 'mainConcept']],
   ['limbs', 'MAE Test', 'Definition', ['maeLimbType', 'maeLimbs']],
   ['carveouts', 'Carve-outs', 'Carve-outs', ['carveouts', 'maeCarveouts']],
   ['exceptions', 'Exceptions to carve-outs', 'Carve-outs', ['carveoutExceptions', 'maeCarveoutExceptions']],
-  ['disproportionate', 'Disproportionate-impact clause', 'Exceptions', ['disproportionateImpactClause', 'disproportionalityClause']],
-  ['disproportionate-scope', 'Disproportionate-impact scope', 'Exceptions', ['disproportionateImpact', 'disproportionateImpactScope']],
   ['pandemic-cyber', 'Pandemic / cyber carve-outs', 'Carve-outs', ['pandemicCarveout', 'cyberSecurityCarveout']],
   ['prevent-delay', 'Prevent / delay prong', 'Definition', ['preventDelayProng', 'maePreventDelay']],
 ];
@@ -91,6 +89,12 @@ function buildRowsForCards(cards, sidePrefix) {
         value: hit.value,
         featureKey: hit.key,
         sourceCard: hit.card,
+        // Which side (Company / Parent) this row belongs to, or null for a
+        // single-party MAE definition. Drives the two-table split in
+        // renderBody() below; the row's `label`/`id` keep their existing
+        // side-prefixed shape (data contract unchanged for selectRows
+        // consumers/tests) -- renderBody strips the prefix for display.
+        side: sidePrefix || null,
         signals: [signalFor({ ...row, value: hit.value, featureKey: hit.key, sourceCard: hit.card })].filter(Boolean),
       };
     })
@@ -118,12 +122,12 @@ function mappedMaeRows(cards) {
 
 // ---------------------------------------------------------------------------
 // Carve-outs table (spec section 4): one row per carve-out in the tagged
-// `carveouts` list -- CARVE-OUT (resolved taxonomy name) | TEXT (quoted,
-// truncated + "see text") -- with a "Disp. carveback applies" pill on the
-// carve-out name when the disproportionate-impact carveback reaches that
-// specific carve-out. Replaces the old single joined-string pill (which
-// concatenated every carve-out's label into one "A; B; C; ..." pill and lost
-// the per-item quoted text and carveback flag entirely).
+// `carveouts` list -- CARVE-OUT (resolved taxonomy name) only (fb2 #19 drops
+// the raw-code/quoted-text right-hand column entirely) -- with a "Disp.
+// carveback applies" pill on the carve-out name when the disproportionate-
+// impact carveback reaches that specific carve-out. Replaces the old single
+// joined-string pill (which concatenated every carve-out's label into one
+// "A; B; C; ..." pill and lost the per-item carveback flag entirely).
 // ---------------------------------------------------------------------------
 
 function normalizeCarveoutCode(entry) {
@@ -168,16 +172,15 @@ function carveoutHasCarveback(item, code, dispSet) {
   return !!(code && dispSet.has(code));
 }
 
-function carveoutText(item) {
-  if (item && typeof item === 'object' && item.text) return String(item.text).trim() || null;
-  return null;
-}
-
+// fb2 #19: the carve-out NAME alone is sufficient -- the right-hand TEXT
+// column used to show raw stored text when present and, when absent, a raw
+// taxonomy CODE (e.g. ACTS_OF_WAR_TERRORISM), which read worse than showing
+// nothing at all. Dropped entirely; carveoutText() (the old TEXT-column
+// source) goes with it.
 function carveoutsTableNode(row, ctx) {
   const items = Array.isArray(row.value) ? row.value : [];
   if (!items.length) return null;
   const PillCell = ctx?.primitives?.PillCell;
-  const TruncatedWithSeeText = ctx?.primitives?.TruncatedWithSeeText;
   const dict = taxonomyForFeatureKey('carveouts');
   const dispSet = disproportionateCodeSet(row.sourceCard);
 
@@ -190,8 +193,7 @@ function carveoutsTableNode(row, ctx) {
       React.createElement(
         'tr',
         null,
-        React.createElement('th', { className: 'w-[14rem] border-b border-border px-1.5 py-1 text-left font-medium uppercase tracking-wider text-inkFaint' }, 'Carve-out'),
-        React.createElement('th', { className: 'border-b border-border px-1.5 py-1 text-left font-medium uppercase tracking-wider text-inkFaint' }, 'Text'),
+        React.createElement('th', { className: 'border-b border-border px-1.5 py-1 text-left font-medium uppercase tracking-wider text-inkFaint' }, 'Carve-out'),
       ),
     ),
     React.createElement(
@@ -200,7 +202,6 @@ function carveoutsTableNode(row, ctx) {
       items.map((item, index) => {
         const code = normalizeCarveoutCode(item);
         const name = carveoutName(item, dict);
-        const text = carveoutText(item);
         const hasCarveback = carveoutHasCarveback(item, code, dispSet);
         return React.createElement(
           'tr',
@@ -216,15 +217,6 @@ function carveoutsTableNode(row, ctx) {
                 ? React.createElement('div', null, React.createElement(PillCell, { label: 'Disp. carveback applies', tone: 'warning' }))
                 : null,
             ),
-          ),
-          React.createElement(
-            'td',
-            { className: 'border-b border-border/60 px-1.5 py-1.5 align-top text-inkLight' },
-            text
-              ? (TruncatedWithSeeText
-                ? React.createElement(TruncatedWithSeeText, { text, evidence: text, source: row.sourceCard, max: 120 })
-                : React.createElement('span', null, text))
-              : React.createElement('span', { className: 'italic text-inkFaint' }, 'No text captured'),
           ),
         );
       }),
@@ -264,17 +256,6 @@ function renderSignals(row, ctx) {
     }
   }
 
-  // MAE Test full definition: an AI-synthesized sentence (mainConcept /
-  // maeTest), never a full-sentence dump inside a pill -- truncate + "see
-  // text" like every other long-prose field in this rebuild.
-  if (row.featureKey === 'maeTest' || row.featureKey === 'mainConcept') {
-    const TruncatedWithSeeText = ctx?.primitives?.TruncatedWithSeeText;
-    const sig = row.signals && row.signals[0];
-    if (row.detail && TruncatedWithSeeText) {
-      return React.createElement(TruncatedWithSeeText, { text: row.detail, evidence: sig ? sig.evidence : row.detail, source: row.sourceCard, max: 140 });
-    }
-  }
-
   if (!PillCell) return (row.signals || []).map((item) => item.label).join('\n');
   return (row.signals || []).map((item) => React.createElement(PillCell, {
     key: item.id,
@@ -296,6 +277,110 @@ function renderDetail(row, ctx) {
   return React.createElement(EvidenceHoverSource, { value: row.value, evidence: row.evidence, source: row.sourceCard, as: 'span' }, row.detail);
 }
 
+// fb2 #21: legacy :3010 rendered Company MAE and Parent MAE as two entirely
+// separate <table> sub-sections (see OLD-review-page.js MaeSinglePartySummary/
+// MaeDefinitionSummary), never as one table with "Company:"/"Parent:" text
+// prefixes glued onto shared rows. row.label/row.id keep that side prefix
+// (selectRows' existing data contract, depended on by unit tests) -- this
+// display-only helper strips it back off so each side's own table reads
+// with a clean, unprefixed Term column ("MAE Test", not "Company: MAE Test").
+const SIDE_LABEL_PREFIX_RE = /^(?:Company|Parent):\s*/;
+function displayLabel(row) {
+  return row.side ? row.label.replace(SIDE_LABEL_PREFIX_RE, '') : row.label;
+}
+
+// One <table> of Term | Signals rows for a single side's row set (or the
+// single flat row set when a deal only has one MAE definition). The 'detail'
+// feature text -- when there is any beyond what the Signals cell already
+// shows -- collapses behind a per-row "see text" expander under the Term
+// cell, mirroring ProvisionTable.jsx's own FULL_TEXT_COLUMNS/SeeTextExpander
+// treatment (this config bypasses that generic table body via renderBody,
+// so it re-creates the same affordance locally rather than losing it).
+function maeSideTableNode(sideRows, ctx, key) {
+  return React.createElement(
+    'table',
+    { className: 'min-w-full text-xs font-ui', key },
+    React.createElement(
+      'thead',
+      { className: 'border-b border-border bg-bg/60' },
+      React.createElement(
+        'tr',
+        null,
+        React.createElement('th', { className: 'w-[16rem] px-3 py-2 text-left font-medium uppercase tracking-wider text-inkFaint' }, 'Term'),
+        React.createElement('th', { className: 'px-3 py-2 text-left font-medium uppercase tracking-wider text-inkFaint' }, 'Signals'),
+      ),
+    ),
+    React.createElement(
+      'tbody',
+      { className: 'divide-y divide-border' },
+      sideRows.map((row) => {
+        const detailNode = renderDetail(row, ctx);
+        return React.createElement(
+          'tr',
+          { key: row.id, className: 'align-top hover:bg-bg/40' },
+          React.createElement(
+            'td',
+            { className: 'w-[16rem] px-3 py-2 text-ink font-medium whitespace-normal break-words' },
+            displayLabel(row),
+            detailNode
+              ? React.createElement(
+                  'details',
+                  { className: 'mt-1' },
+                  React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, 'see text'),
+                  React.createElement(
+                    'div',
+                    { className: 'mt-1 max-w-[42rem] whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight' },
+                    detailNode,
+                  ),
+                )
+              : null,
+          ),
+          React.createElement(
+            'td',
+            { className: 'px-3 py-2 text-ink whitespace-pre-wrap break-words' },
+            renderSignals(row, ctx),
+          ),
+        );
+      }),
+    ),
+  );
+}
+
+const SIDE_TABLE_HEADING = {
+  Company: 'Company MAE',
+  Parent: 'Parent MAE',
+};
+
+// fb2 #21 + #22: two separate <table> sub-sections when the deal has both a
+// Company and a Parent MAE definition, each headed "Company MAE" / "Parent
+// MAE" -- never "Material Adverse Effect" again (that's already the section
+// title ProvisionTable renders once, above this body). Falls back to a
+// single plain table (no sub-heading) for the single-party case.
+function renderBody(rows, ctx) {
+  const sides = [...new Set((rows || []).map((row) => row.side).filter(Boolean))];
+  if (sides.length < 2) {
+    return maeSideTableNode(rows, ctx, 'mae-single');
+  }
+  return React.createElement(
+    'div',
+    { className: 'space-y-4' },
+    sides.map((side) => React.createElement(
+      'div',
+      { key: side, className: 'overflow-hidden rounded border border-border' },
+      React.createElement(
+        'div',
+        { className: 'border-b border-border bg-bg/40 px-3 py-1.5 text-[10px] font-medium uppercase tracking-wider text-inkFaint' },
+        SIDE_TABLE_HEADING[side] || side,
+      ),
+      React.createElement(
+        'div',
+        { className: 'overflow-x-auto' },
+        maeSideTableNode(rows.filter((row) => row.side === side), ctx, side),
+      ),
+    )),
+  );
+}
+
 const maeDefinitionsConfig = {
   id: 'mae-definitions',
   title: 'Material Adverse Effect',
@@ -303,11 +388,16 @@ const maeDefinitionsConfig = {
   selectRows(reviewDeal) {
     return mappedMaeRows(selectCards(reviewDeal, isMae));
   },
+  // Legacy Term/Signals/Detail column shape is kept for direct column-level
+  // testing and as the data contract other tooling may still inspect, but
+  // the live page renders via renderBody (below) instead of ProvisionTable's
+  // generic single-table body -- see the ProvisionTable.jsx renderBody hook.
   columns: [
     { id: 'term', header: 'Term', width: '18rem', renderCell: (row) => row.label },
     { id: 'signals', header: 'Signals', width: '18rem', renderCell: renderSignals },
     { id: 'detail', header: 'Detail', renderCell: renderDetail },
   ],
+  renderBody,
 };
 
-export { maeDefinitionsConfig, mappedMaeRows, renderDetail, renderSignals, signalFor };
+export { maeDefinitionsConfig, mappedMaeRows, renderBody, renderDetail, renderSignals, signalFor };

@@ -459,11 +459,15 @@ test('mae-definitions config exposes carve-out and definition signals with hover
   });
   const limbs = rows.find((row) => row.id === 'mae-definitions-limbs');
   const carveouts = rows.find((row) => row.id === 'mae-definitions-carveouts');
-  const disproportionate = rows.find((row) => row.id === 'mae-definitions-disproportionate');
   const preventDelay = rows.find((row) => row.id === 'mae-definitions-prevent-delay');
+  // fb2 #20: the disproportionate-impact clause/scope no longer render as
+  // their own summary rows -- that fact now lives ONLY as the per-carve-out
+  // "Disp. carveback applies" pill inside the carve-outs table itself, so
+  // there is no 'mae-definitions-disproportionate' row to find at all.
+  assert.equal(rows.find((row) => row.id === 'mae-definitions-disproportionate'), undefined);
+  assert.equal(rows.find((row) => row.id === 'mae-definitions-disproportionate-scope'), undefined);
   assert.deepEqual(limbs.signals.map((item) => item.label), ['TWO_LIMB']);
   assert.deepEqual(carveouts.signals.map((item) => item.label), ['General economic conditions']);
-  assert.deepEqual(disproportionate.signals.map((item) => item.label), ['except to the extent disproportionate']);
   assert.deepEqual(preventDelay.signals.map((item) => item.label), ['prevent or materially delay closing']);
   const primitives = {
     PillCell: ({ label }) => React.createElement('span', { className: 'pill' }, label),
@@ -473,6 +477,73 @@ test('mae-definitions config exposes carve-out and definition signals with hover
   const detailColumn = maeDefinitionsMod.maeDefinitionsConfig.columns.find((column) => column.id === 'detail');
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, signalColumn.renderCell(carveouts, { primitives }))), /General economic conditions/);
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(preventDelay, { primitives }))), /data-evidence="Material Adverse Effect excludes/);
+});
+
+test('mae-definitions carve-outs table drops the right-hand TEXT column (fb2 #19) -- carve-out name + Disp. carveback pill only', () => {
+  const rows = maeDefinitionsMod.maeDefinitionsConfig.selectRows({
+    cards: [{
+      id: 'mae',
+      provision_type: 'MAE',
+      provision_subtype: 'MAE-DEF',
+      short_title: 'Material Adverse Effect',
+      features: {
+        carveouts: [
+          { code: 'ACTS_OF_WAR_TERRORISM', text: 'acts of war or terrorism' },
+        ],
+        disproportionateImpactCarveouts: ['ACTS_OF_WAR_TERRORISM'],
+      },
+    }],
+  });
+  const carveouts = rows.find((row) => row.id === 'mae-definitions-carveouts');
+  assert.ok(carveouts);
+  const signalColumn = maeDefinitionsMod.maeDefinitionsConfig.columns.find((column) => column.id === 'signals');
+  const primitives = {
+    PillCell: ({ label }) => React.createElement('span', { className: 'pill' }, label),
+  };
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, signalColumn.renderCell(carveouts, { primitives })));
+  assert.doesNotMatch(html, />Text</, 'no TEXT column header');
+  assert.doesNotMatch(html, /acts of war or terrorism/, 'no raw carve-out clause text rendered');
+  assert.match(html, /Disp\. carveback applies/);
+});
+
+test('mae-definitions renderBody renders Company and Parent MAE as two separate <table> sub-sections, each headed distinctly (never repeating the section title) (fb2 #21, #22)', async () => {
+  const rows = maeDefinitionsMod.maeDefinitionsConfig.selectRows({
+    cards: [
+      {
+        id: 'mae-parent',
+        provision_type: 'DEFINITION',
+        provision_subtype: 'DEF-MAE',
+        short_title: 'Material Adverse Effect',
+        defined_term: 'Parent Material Adverse Effect',
+        features: { maeLimbs: 'ONE_LIMB' },
+      },
+      {
+        id: 'mae-company',
+        provision_type: 'DEFINITION',
+        provision_subtype: 'DEF-MAE',
+        short_title: 'Material Adverse Effect',
+        defined_term: 'Company Material Adverse Effect',
+        features: { maeLimbs: 'TWO_LIMB' },
+      },
+    ],
+  });
+  const primitives = {
+    PillCell: ({ label }) => React.createElement('span', { className: 'pill' }, label),
+    EvidenceHoverSource: ({ children }) => React.createElement('span', null, children),
+  };
+  const html = renderToStaticMarkup(maeDefinitionsMod.renderBody(rows, { primitives }));
+  const tableCount = (html.match(/<table/g) || []).length;
+  assert.equal(tableCount, 2, 'Company and Parent must render as two separate <table> elements, not one grouped table');
+  assert.match(html, /Company MAE/);
+  assert.match(html, /Parent MAE/);
+  // The section title "Material Adverse Effect" is rendered once by
+  // ProvisionTable (above renderBody's output) -- renderBody's own markup
+  // must not repeat it as an inner sub-table heading.
+  assert.doesNotMatch(html, /Material Adverse Effect/);
+  // Row labels inside each side's table read as the plain term ("MAE Test"),
+  // not the raw "Company: MAE Test" / "Parent: MAE Test" data-layer prefix.
+  assert.doesNotMatch(html, /Company: MAE Test/);
+  assert.doesNotMatch(html, /Parent: MAE Test/);
 });
 
 test('mae-definitions config splits Company vs Parent DEF-MAE cards into their own row sets, not one side silently absorbing the other (Metsera regression)', () => {
