@@ -1,5 +1,6 @@
+import React from 'react';
 import { deriveAbrySummary } from '../../../lib/abry.js';
-import { valueText } from './card-utils.js';
+import { firstFeature, valueText } from './card-utils.js';
 
 const ABRY_CODES = ['MISC-ENTIRE', 'REP-T-NOREP', 'REP-B-NOREP', 'REP-B-ANTIRELIANCE'];
 const FEATURE_KEYS = [
@@ -34,9 +35,27 @@ function textOf(card) {
 // no redundancy check, so it could leak a raw canonical code or double up
 // text that already matched the label. card-utils.js's version prioritizes
 // label/code and suppresses a `.text` that's a literal echo.
+// The §9.07 "Anti-Reliance / Exclusivity of Representations" card (code
+// REP-B-ANTIRELIANCE, already in ABRY_CODES) stores noOtherRepsParty as a
+// TAGGED value ({ code: 'BOTH', label: 'Both', text: 'BOTH', quotes: [...] })
+// rather than the bare string lib/abry.js's partyOf() expects -- so its Q1-Q4
+// rows silently fell through to "Not present" even though the card WAS being
+// selected. Unwrap to the tagged .code (or .value/.label) before handing the
+// provision to deriveAbrySummary; a plain string passes through untouched.
+function partyCodeOf(raw) {
+  if (raw && typeof raw === 'object' && !Array.isArray(raw)) {
+    if (typeof raw.code === 'string' && raw.code) return raw.code;
+    if (typeof raw.value === 'string' && raw.value) return raw.value;
+    if (typeof raw.label === 'string' && raw.label) return raw.label;
+  }
+  return raw;
+}
 function pseudoProvision(card) {
   const features = cardFeatures(card);
-  return { ...card, code: cardCode(card), category: card?.short_title, ai_metadata: { code: cardCode(card), features } };
+  const normalizedFeatures = 'noOtherRepsParty' in features
+    ? { ...features, noOtherRepsParty: partyCodeOf(features.noOtherRepsParty) }
+    : features;
+  return { ...card, code: cardCode(card), category: card?.short_title, ai_metadata: { code: cardCode(card), features: normalizedFeatures } };
 }
 function hasAbrySignal(card) {
   if (ABRY_CODES.includes(cardCode(card))) return true;
@@ -84,6 +103,26 @@ function willfulBreachRow(willfulBreach) {
     present: true,
   };
 }
+// Spec 14's fourth row: extraContractualClaimsWaived is its own boolean
+// claim (whether the non-reliance disclaimer extends to extra-contractual
+// materials like data-room / management-presentation information), distinct
+// from the party-scoped Q1-Q4 rows above -- surfaced directly off the source
+// card(s) rather than through deriveAbrySummary, which only folds this value
+// into the Q2/Q4 scope label and never gives it a standalone row.
+function extraContractualRow(cards) {
+  const hit = firstFeature(cards, ['extraContractualClaimsWaived']);
+  if (!hit) return null;
+  const present = hit.value === true || hit.value === 'true';
+  return {
+    id: 'no-other-reps-fraud-extra-contractual',
+    label: 'Extra-contractual claims waived',
+    kind: 'Extra-contractual',
+    status: present ? 'Present' : 'Not present',
+    detail: hit.detail,
+    evidence: textOf(hit.card),
+    present,
+  };
+}
 
 const noOtherRepsFraudConfig = {
   id: 'no-other-reps-fraud',
@@ -96,13 +135,37 @@ const noOtherRepsFraudConfig = {
     return [
       ...QUESTIONS.map(([key, label, kind]) => questionRow(key, label, kind, summary[key])),
       fraudRow(summary.fraud),
+      extraContractualRow(cards),
       willfulBreachRow(summary.willfulBreach),
     ].filter(Boolean);
   },
   columns: [
     { id: 'question', header: 'Question', width: '18rem', renderCell: (row) => row.label },
-    { id: 'status', header: 'Status', width: '8rem', renderCell: (row) => row.status },
-    { id: 'detail', header: 'Detail', renderCell: (row) => row.detail },
+    {
+      id: 'status',
+      header: 'Status',
+      width: '8rem',
+      renderCell(row, ctx) {
+        const PillCell = ctx?.primitives?.PillCell;
+        if (!PillCell) return row.status;
+        const isYes = row.status === 'Present' || row.status === 'Defined';
+        return React.createElement(PillCell, {
+          label: isYes ? 'Yes' : row.status,
+          tone: isYes ? 'present' : 'missing',
+          evidence: row.evidence,
+          source: row.source,
+        });
+      },
+    },
+    {
+      id: 'detail',
+      header: 'Detail',
+      renderCell(row, ctx) {
+        const TruncatedWithSeeText = ctx?.primitives?.TruncatedWithSeeText;
+        if (!TruncatedWithSeeText) return row.detail;
+        return React.createElement(TruncatedWithSeeText, { text: row.detail, evidence: row.evidence, source: row.source });
+      },
+    },
   ],
 };
 

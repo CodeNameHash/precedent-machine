@@ -1437,12 +1437,14 @@ test('no-other-reps fraud config maps Abry four-question summary', () => {
     'Seller non-reliance',
     'Buyer no-other-reps',
     'Fraud carve-out',
+    'Extra-contractual claims waived',
     'Willful breach definition',
   ]);
   assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-q1').status, 'Present');
   assert.match(rows.find((row) => row.id === 'no-other-reps-fraud-q2').detail, /data room/);
   assert.match(rows.find((row) => row.id === 'no-other-reps-fraud-q4').detail, /management presentations/);
   assert.match(rows.find((row) => row.id === 'no-other-reps-fraud-fraud').detail, /nothing herein limits liability for Fraud/);
+  assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-extra-contractual').status, 'Present');
   assert.match(rows.find((row) => row.id === 'no-other-reps-fraud-willful-breach').detail, /intentional and material breach/);
 });
 
@@ -1462,4 +1464,31 @@ test('no-other-reps fraud config renders fraud silence as a meaningful row', () 
   assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-q1').status, 'Present');
   assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-q3').status, 'Not present');
   assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-fraud').status, 'Silent');
+});
+
+test('no-other-reps fraud config routes the Metsera §9.07 Anti-Reliance card (tagged noOtherRepsParty value)', () => {
+  // Regression for the live-data routing bug: this card's provision_subtype
+  // (REP-B-ANTIRELIANCE) is already in ABRY_CODES, but noOtherRepsParty
+  // ships as a TAGGED { code, label, text, quotes } value rather than a bare
+  // string, which made lib/abry.js's partyOf() silently drop the hit and
+  // rendered every question row "Not present" even though the card carries
+  // real non-reliance data.
+  const rows = noOtherRepsFraudMod.noOtherRepsFraudConfig.selectRows({
+    cards: [{
+      id: 'anti-reliance',
+      provision_subtype: 'REP-B-ANTIRELIANCE',
+      short_title: 'Anti-Reliance / Exclusivity of Representations',
+      features: {
+        noOtherRepsPresent: true,
+        noOtherRepsParty: { code: 'BOTH', label: 'Both', text: 'BOTH', quotes: ['SECTION 9.07...'] },
+        nonRelianceClause: 'Company-side non-reliance excerpt.\n\nParent-side non-reliance excerpt.',
+        extraContractualClaimsWaived: true,
+        fraudCarveout: 'Except in the case of fraud, neither party has liability.',
+      },
+    }],
+  });
+  assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-q1').status, 'Present');
+  assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-q3').status, 'Present');
+  assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-fraud').status, 'Present');
+  assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-extra-contractual').status, 'Present');
 });
