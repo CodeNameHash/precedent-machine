@@ -17,7 +17,12 @@ const TERMR_CANONICAL = [
   { key: 'breachT', label: 'Company (Target) breach', codes: ['TERMR-BREACH-T'], family: 'buyer' },
   { key: 'recommend', label: 'Change of Recommendation', codes: ['TERMR-RECOMMEND'], family: 'buyer' },
   { key: 'breachB', label: 'Parent (Buyer) breach', codes: ['TERMR-BREACH-B'], family: 'target' },
-  { key: 'superior', label: 'Superior Proposal', codes: ['TERMR-SUPERIOR'], family: 'target' },
+  // WS-G T6: the Company's right to terminate for a Superior Proposal
+  // (TERMR-SUPERIOR) no longer renders as its own standalone row here -- it
+  // now renders INSIDE the Superior Proposal box in the No-Solicitation
+  // section (nosol-section.config.js's 'nosol-superior' group, sourced from
+  // nosol-fiduciary-termination), so it isn't duplicated across two
+  // sections. See nosol-section.config.js's GROUP_DEFS for the fold-in.
 ];
 
 const FAMILY_LABELS = {

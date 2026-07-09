@@ -1,24 +1,32 @@
 import React from 'react';
+import { splitForCell, textOf, valueText } from './card-utils.js';
 import { nosolNoshopConfig, renderDetail as noshopRenderDetail, renderSignals as noshopRenderSignals } from './nosol-noshop.config.js';
 import { nosolSuperiorConfig, renderSignals as superiorRenderSignals } from './nosol-superior.config.js';
 import { nosolInterveningConfig, renderDetail as interveningRenderDetail, renderSignals as interveningRenderSignals } from './nosol-intervening.config.js';
 import { nosolFiduciaryConfig, renderSignals as fiduciaryRenderSignals } from './nosol-fiduciary.config.js';
 
-// Rebuilt per FEEDBACK-2-PUNCHLIST.md #41-#43. Old site: NO-SOLICITATION was
-// ONE section on the page (old NosolFourTables mounted under a single NOSOL
-// header, never as four top-level siblings) -- the current build regressed
-// that into four separate top-level accordion sections (nosol-noshop /
-// nosol-superior / nosol-intervening / nosol-fiduciary). This file restores
-// the single-section structure by wrapping all four as SUB-GROUPS of one
-// "No-Solicitation / No-Shop" accordion entry (#42), reordered to the old
-// precedent reading order (#41): definition -> cease/prohibit ->
-// fiduciary-out/engagement -> notice -> matching -> superior -> intervening
-// -> change-of-rec.
+// Rebuilt per FEEDBACK-2-PUNCHLIST.md #41-#43, reordered again per
+// FEEDBACK-4-PUNCHLIST.md WS-G. Old site: NO-SOLICITATION was ONE section on
+// the page (old NosolFourTables mounted under a single NOSOL header, never
+// as four top-level siblings) -- this file wraps all four per-family
+// configs (nosol-noshop / nosol-superior / nosol-intervening /
+// nosol-fiduciary) as SUB-GROUPS of one "No-Solicitation / No-Shop"
+// accordion entry.
 //
-// Each of the four *.config.js files is UNCHANGED -- same exported name,
-// same selectRows contract, same row ids/order/detail synthesis, so their
-// existing standalone tests (provision-table-configs.test.js,
-// table-configs-orphans.test.js) keep passing unmodified. This file only
+// WS-G reading order (top to bottom): No-Shop Core Mechanics FIRST (cease ->
+// prohibited acts as pills -> exceptions in plain language -> the folded-in
+// Representatives control standard (T4) -> standstill enforcement) ->
+// Fiduciary-Out / Engagement -> Acquisition Proposal - Definition (NEW,
+// built directly from the DEFINITION/NOSOL-ACQPROPOSAL cards -- see
+// buildAcquisitionProposalGroup() below) -> Notice -> Matching Rights ->
+// Superior Proposal (now also carrying the folded-in Company-termination-
+// for-Superior-Proposal row, T6) -> Intervening Event -> Change of
+// Recommendation.
+//
+// Each of the four *.config.js files is UNCHANGED apart from nosol-noshop's
+// prohibited-act/exception rendering (added `.acts`/`.exceptionItems` on the
+// existing 'prohibit'/'exceptions' rows, same ids, same `.detail` synthesis)
+// -- so their existing standalone tests keep passing. This file only
 // reshapes how the SAME rows are grouped/ordered for display, reusing each
 // config's own renderSignals/renderDetail so every pill/collapsed-text/
 // standard-colour/evidence-hover behaviour is byte-for-byte what the
@@ -80,30 +88,25 @@ function byId(rows) {
   return map;
 }
 
-// ── Precedent order (#41): definition -> cease/prohibit -> fiduciary-out/
-// engagement -> notice -> matching -> superior -> intervening -> change-of-rec.
+// ── WS-G reading order: no-shop core mechanics -> fiduciary-out/engagement ->
+// Acquisition Proposal definition (spliced in by buildGroups(), see below) ->
+// notice -> matching -> superior -> intervening -> change-of-rec.
 const GROUP_DEFS = [
-  {
-    id: 'nosol-definitions',
-    label: 'Definitions',
-    items: [
-      { source: 'noshop', id: 'nosol-noshop-acquisition-definition' },
-      // Acquisition-proposal threshold is the quantitative half of the
-      // Acquisition Proposal definition (e.g. 20% of assets) -- no other
-      // config claims acquisitionTransactionPctThreshold, so it belongs here.
-      { source: 'noshop', id: 'nosol-noshop-acquisition-threshold' },
-      { source: 'fiduciary', id: 'nosol-fiduciary-acceptable-confidentiality' },
-    ],
-    // Excluded as duplicates of the above: none (both rows here are unique
-    // to noshop/fiduciary respectively).
-  },
   {
     id: 'nosol-no-shop-core',
     label: 'No-Shop Core Mechanics',
     items: [
-      { source: 'noshop', id: 'nosol-noshop-prohibit' },
+      // WS-G #1: cease existing discussions stated first, then the
+      // prohibited acts (rendered as individual pills -- see nosol-noshop's
+      // rowForSpec/renderSignals), then the exceptions in plain language.
       { source: 'noshop', id: 'nosol-noshop-cease' },
+      { source: 'noshop', id: 'nosol-noshop-prohibit' },
       { source: 'noshop', id: 'nosol-noshop-exceptions' },
+      // WS-G #3 / T4: "Representatives control standard" folded in here
+      // from the Change of Recommendation bucket -- it's a no-shop
+      // enforcement mechanic (who the Company must control), not a
+      // change-of-recommendation fact.
+      { source: 'fiduciary', id: 'nosol-fiduciary-reps' },
       { source: 'noshop', id: 'nosol-noshop-standstill-enforce' },
     ],
     // Excluded as duplicates: nosol-noshop-matching-period (-> Matching Rights,
@@ -114,7 +117,11 @@ const GROUP_DEFS = [
     // standard), nosol-noshop-subsequent-match (-> Matching Rights, sourced
     // from nosol-fiduciary-subsequent-match), nosol-noshop-change-of-rec-count
     // (-> Change of Recommendation, sourced from the fuller
-    // nosol-fiduciary-change-of-rec-items list).
+    // nosol-fiduciary-change-of-rec-items list), nosol-noshop-acquisition-
+    // definition / nosol-noshop-acquisition-threshold (-> Acquisition
+    // Proposal - Definition, superseded there by the DEFINITION-card-backed
+    // block, which is accurate on real deals where these feature keys are
+    // never populated).
   },
   {
     id: 'nosol-fiduciary-engagement',
@@ -129,6 +136,11 @@ const GROUP_DEFS = [
     // fiduciary rows above), nosol-noshop-fiduciary-standard and
     // nosol-superior-fiduciary-standard (same fiduciaryOutStandard key).
   },
+  // Acquisition Proposal - Definition group is spliced in HERE (right after
+  // 'nosol-fiduciary-engagement', before 'nosol-notice') by buildGroups() --
+  // see buildAcquisitionProposalGroup() below. It isn't a GROUP_DEFS entry
+  // because its content comes straight from DEFINITION / NOSOL-ACQPROPOSAL
+  // cards, not from one of the four SOURCES configs' selectRows().
   {
     id: 'nosol-notice',
     label: 'Notice',
@@ -158,10 +170,21 @@ const GROUP_DEFS = [
       { source: 'superior', id: 'nosol-superior-threshold' },
       { source: 'superior', id: 'nosol-superior-test' },
       { source: 'superior', id: 'nosol-superior-determiner' },
+      // WS-G T6: "Company termination for Superior Proposal" folded in here
+      // (sourced directly from the TERMR-SUPERIOR card by nosol-superior's
+      // own terminationRow() -- exact code match, not the cross-family regex
+      // fallback nosol-fiduciary-termination relies on, which fails to
+      // extract anything on real deals like Metsera) so it renders INSIDE
+      // the Superior Proposal box rather than as a standalone
+      // termination-rights row (removed from that file's TERMR_CANONICAL).
+      { source: 'superior', id: 'nosol-superior-termination' },
     ],
     // Excluded as duplicates: nosol-noshop-superior-threshold,
     // nosol-fiduciary-superior-threshold (same superiorProposalThresholdPct
     // key); nosol-fiduciary-superior-test (same superiorProposalTest key).
+    // nosol-fiduciary-termination is also a duplicate of the same concept
+    // (Company termination for Superior Proposal) but is dropped from
+    // display in favour of nosol-superior-termination -- see above.
   },
   {
     id: 'nosol-intervening',
@@ -175,7 +198,8 @@ const GROUP_DEFS = [
     ],
     // Kept as its own standalone block (Ben's explicit preference, see
     // REBUILD-SPECS.md §7): its own definition/scope stay together here
-    // rather than being pulled into the top Definitions bucket.
+    // rather than being pulled into the Acquisition Proposal - Definition
+    // bucket.
   },
   {
     id: 'nosol-change-of-rec',
@@ -183,8 +207,6 @@ const GROUP_DEFS = [
     items: [
       { source: 'fiduciary', id: 'nosol-fiduciary-board-change' },
       { source: 'fiduciary', id: 'nosol-fiduciary-force-vote' },
-      { source: 'fiduciary', id: 'nosol-fiduciary-termination' },
-      { source: 'fiduciary', id: 'nosol-fiduciary-reps' },
       { source: 'fiduciary', id: 'nosol-fiduciary-buyer-termination' },
       { source: 'fiduciary', id: 'nosol-fiduciary-change-of-rec-items' },
       { source: 'fiduciary', id: 'nosol-fiduciary-not-change-of-rec-items' },
@@ -195,15 +217,165 @@ const GROUP_DEFS = [
     // change above); nosol-noshop-change-of-rec-count (same
     // changeOfRecommendationItems key as nosol-fiduciary-change-of-rec-items,
     // which keeps the full per-item list rather than just a count).
+    // Relocated out of this bucket per WS-G: nosol-fiduciary-reps (-> No-Shop
+    // Core Mechanics, T4), nosol-fiduciary-termination (dropped -- superseded
+    // by the more reliable nosol-superior-termination in the Superior
+    // Proposal group, T6).
   },
 ];
+
+// ── Acquisition Proposal - Definition (WS-G #4) ─────────────────────────────
+// NEW sub-block, built directly from DEFINITION / NOSOL-ACQPROPOSAL cards
+// rather than the four SOURCES configs (none of the four owns definitional
+// cards). Surfaces: the percentage trigger, the positive-enumeration
+// transaction types (each a literal keyword match against the verbatim
+// clause -- nothing paraphrased/invented), any exclusion/carve-out tail
+// found in the full text, and the "Qualifying" fiduciary-out subset
+// definition. Renders nothing (and this group is simply omitted) if no
+// matching DEFINITION/NOSOL-ACQPROPOSAL card exists on the deal.
+function acqProposalBaseCard(cards) {
+  const candidates = cards.filter((card) => {
+    const code = String(card?.provision_subtype || '').trim().toUpperCase();
+    const type = String(card?.provision_type || '').trim().toUpperCase();
+    const term = String(card?.defined_term || '').trim().toLowerCase();
+    if (code === 'NOSOL-ACQPROPOSAL') return true;
+    return type === 'DEFINITION' && /company takeover proposal/.test(term) && !/qualifying/.test(term);
+  });
+  if (!candidates.length) return null;
+  // A card's primary_quote/region_full_text is occasionally truncated on
+  // ingestion (seen on Metsera's own DEFINITION-type "Company Takeover
+  // Proposal" card, which cuts off mid-word) while a sibling
+  // NOSOL-ACQPROPOSAL covenant card carries the complete clause -- pick
+  // whichever candidate has the longest text so the % trigger/type/
+  // exclusion extraction below never runs against a cut-off quote.
+  return candidates.reduce((best, card) => (textOf(card).length > textOf(best).length ? card : best));
+}
+function acqProposalQualifyingCard(cards) {
+  const candidates = cards.filter((card) => {
+    const type = String(card?.provision_type || '').trim().toUpperCase();
+    const term = String(card?.defined_term || '').trim().toLowerCase();
+    return type === 'DEFINITION' && /qualifying/.test(term) && /takeover proposal/.test(term);
+  });
+  if (!candidates.length) return null;
+  return candidates.reduce((best, card) => {
+    const bestText = String(best.defined_value || textOf(best));
+    const cardText = String(card.defined_value || textOf(card));
+    return cardText.length > bestText.length ? card : best;
+  });
+}
+const PCT_PATTERN = /(\d{1,3})\s*\)?\s*%/g;
+function extractPctTriggers(text) {
+  const found = new Set();
+  let match = PCT_PATTERN.exec(text);
+  while (match) {
+    found.add(`${Number(match[1])}%`);
+    match = PCT_PATTERN.exec(text);
+  }
+  return [...found];
+}
+// Positive enumeration of transaction TYPES the definition covers -- each
+// pattern is matched against the verbatim clause; only types actually named
+// in the clause render a chip.
+const ACQ_TYPE_SPECS = [
+  { id: 'assets', label: 'Asset acquisition, purchase, sale, license, lease or disposition', pattern: /acquisition, purchase, sale, license, lease or other disposition/i },
+  { id: 'equity', label: 'Equity / voting-power acquisition', pattern: /aggregate voting power of the capital stock/i },
+  { id: 'merger', label: 'Merger, consolidation or business combination', pattern: /merger, consolidation, business combination/i },
+  { id: 'tender', label: 'Tender or exchange offer', pattern: /tender offer, exchange offer/i },
+  { id: 'restructuring', label: 'Recapitalization, liquidation, dissolution or share exchange', pattern: /recapitalization, liquidation, dissolution/i },
+];
+function extractExclusionTail(text) {
+  const patterns = [
+    /other than,?\s+in each case,?\s+the\s+Transactions/i,
+    /shall not be deemed[^.]{0,200}/i,
+    /does not include[^.]{0,200}/i,
+    /\bexcluding\b[^.]{0,200}/i,
+  ];
+  for (const pattern of patterns) {
+    const found = text.match(pattern);
+    if (found) return found[0].replace(/\s+/g, ' ').trim();
+  }
+  return null;
+}
+function acqProposalCollapsedText(text, seeLabel) {
+  const { value, short, truncated } = splitForCell(text, 90);
+  if (!value) return null;
+  if (!truncated) return React.createElement('span', { className: 'text-[11px] text-ink' }, value);
+  return React.createElement(
+    'span',
+    null,
+    React.createElement('span', { className: 'text-[11px] text-ink' }, `${short}…`),
+    React.createElement(
+      'details',
+      { className: 'mt-1' },
+      React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, seeLabel || 'see definition'),
+      React.createElement(
+        'div',
+        { className: 'mt-1 max-w-[36rem] whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight' },
+        value,
+      ),
+    ),
+  );
+}
+function acqProposalChipRow(chips, ctx) {
+  const valid = chips.filter((chip) => chip && chip.label);
+  if (!valid.length) return null;
+  const PillCell = ctx?.primitives?.PillCell;
+  if (!PillCell) return React.createElement('span', { className: 'text-[11px] text-ink' }, valid.map((chip) => chip.label).join(' · '));
+  return React.createElement(
+    'div',
+    { className: 'flex flex-wrap gap-1' },
+    valid.map((chip, index) => React.createElement(PillCell, {
+      key: chip.id || index,
+      label: chip.label,
+      tone: chip.tone || 'neutral',
+      evidence: chip.evidence,
+      source: chip.source,
+    })),
+  );
+}
+function buildAcquisitionProposalGroup(reviewDeal, ctx) {
+  const cards = reviewDeal?.cards || [];
+  const baseCard = acqProposalBaseCard(cards);
+  if (!baseCard) return null;
+  const baseText = textOf(baseCard);
+  const qualifyingCard = acqProposalQualifyingCard(cards);
+
+  const pctChips = extractPctTriggers(baseText).map((pct) => ({ id: `pct-${pct}`, label: `Trigger: ${pct}`, tone: 'info', evidence: baseText, source: baseCard }));
+  const typeChips = ACQ_TYPE_SPECS.filter((spec) => spec.pattern.test(baseText)).map((spec) => ({ id: spec.id, label: spec.label, tone: 'neutral', evidence: baseText, source: baseCard }));
+  const exclusionText = extractExclusionTail(baseText);
+  const exclusionChip = exclusionText
+    ? { id: 'exclusion', label: `Excludes: ${exclusionText.replace(/^other than,?\s+in each case,?\s+/i, '')}`, tone: 'warning', evidence: baseText, source: baseCard }
+    : null;
+
+  const rows = [{
+    id: 'nosol-acqprop-company-takeover',
+    label: 'Company Takeover Proposal — positive enumeration',
+    children: ctx ? React.createElement(
+      'div',
+      { className: 'space-y-1.5' },
+      acqProposalChipRow([...pctChips, ...typeChips, exclusionChip], ctx),
+      acqProposalCollapsedText(baseText, 'see full definition'),
+    ) : null,
+  }];
+
+  if (qualifyingCard) {
+    const qualifyingText = String(qualifyingCard.defined_value ? valueText(qualifyingCard.defined_value) : textOf(qualifyingCard));
+    rows.push({
+      id: 'nosol-acqprop-qualifying',
+      label: 'Qualifying Company Takeover Proposal — fiduciary-out subset',
+      children: ctx ? acqProposalCollapsedText(qualifyingText, 'see full definition') : null,
+    });
+  }
+
+  return { id: 'nosol-acquisition-proposal', label: 'Acquisition Proposal — Definition', rows };
+}
 
 function buildGroups(reviewDeal, ctx) {
   const rowsBySource = {};
   for (const key of Object.keys(SOURCES)) {
     rowsBySource[key] = byId(SOURCES[key].config.selectRows(reviewDeal));
   }
-  return GROUP_DEFS.map((group) => {
+  const groups = GROUP_DEFS.map((group) => {
     const rows = group.items
       .map((item) => {
         const row = rowsBySource[item.source]?.get(item.id);
@@ -217,6 +389,34 @@ function buildGroups(reviewDeal, ctx) {
       .filter(Boolean);
     return { id: group.id, label: group.label, rows };
   }).filter((group) => group.rows.length > 0);
+
+  // WS-G #4: splice the Acquisition Proposal - Definition group in right
+  // before 'nosol-notice' (anchoring on 'nosol-notice' rather than
+  // 'nosol-fiduciary-engagement' -- the latter can render empty and drop out
+  // of `groups` entirely on a deal whose engagement-standard/final-standard
+  // fallback regexes don't match, which would otherwise push this group all
+  // the way to the end instead of into its correct position). The
+  // Acceptable Confidentiality Agreement definition (nosol-fiduciary-
+  // acceptable-confidentiality) is folded in here too -- it's the
+  // confidentiality-agreement defined term a Qualifying bidder's information
+  // exchange is gated on, so it belongs alongside the other No-Sol defined
+  // terms rather than standing alone.
+  const acqProposalGroup = buildAcquisitionProposalGroup(reviewDeal, ctx);
+  if (acqProposalGroup) {
+    const confidentialityRow = rowsBySource.fiduciary?.get('nosol-fiduciary-acceptable-confidentiality');
+    if (confidentialityRow) {
+      acqProposalGroup.rows.push({
+        id: confidentialityRow.id,
+        label: confidentialityRow.label,
+        children: ctx ? rowNode(confidentialityRow, ctx, SOURCES.fiduciary) : null,
+      });
+    }
+    const insertAt = groups.findIndex((group) => group.id === 'nosol-notice');
+    if (insertAt === -1) groups.push(acqProposalGroup);
+    else groups.splice(insertAt, 0, acqProposalGroup);
+  }
+
+  return groups;
 }
 
 const nosolSectionConfig = {

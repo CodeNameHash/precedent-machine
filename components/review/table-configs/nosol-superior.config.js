@@ -88,6 +88,38 @@ function finalFromText(text) {
   const match = text.match(/(?:constitutes|is|would\s+result\s+in)\s+a\s+Superior\s+Proposal/i);
   return match ? match[0].trim() : null;
 }
+// WS-G T6: "Company termination for Superior Proposal" now renders INSIDE
+// this box instead of as a standalone termination-rights row (see
+// termination-rights.config.js's TERMR_CANONICAL, where the 'superior' spec
+// was removed). Sourced by exact code match against the TERMR-SUPERIOR
+// card(s) directly -- NOT via nosol-fiduciary's cross-family regex fallback,
+// which on real deals (e.g. Metsera) fails to match against the concatenated
+// multi-card evidence blob and returns nothing. cardForCodes-style exact
+// matching is reliable regardless of card text content.
+function isTerminationSuperiorCard(card) {
+  return String(card?.provision_subtype || '').trim().toUpperCase() === 'TERMR-SUPERIOR';
+}
+function terminationRow(allCards) {
+  const matches = allCards.filter(isTerminationSuperiorCard);
+  if (!matches.length) return null;
+  // Prefer the fuller of the (typically two) TERMR-SUPERIOR cards -- the
+  // Section 8.01(f) cross-reference is usually a one-line pointer, while the
+  // Section 8.05(b) card carries the actual conditions (board authorization,
+  // §5.02 compliance, concurrent fee payment).
+  const card = matches.reduce((best, candidate) => (textOf(candidate).length > textOf(best).length ? candidate : best));
+  const detail = textOf(card);
+  if (!detail) return null;
+  return {
+    id: 'nosol-superior-termination',
+    label: 'Company termination for Superior Proposal',
+    party: partySide(card),
+    detail,
+    evidence: matches.map(textOf).filter(Boolean).join('\n\n'),
+    sourceCards: matches,
+    present: true,
+  };
+}
+
 function rowForSpec(spec, cards) {
   const evidence = cards.map(textOf).filter(Boolean).join('\n\n');
   const detail = firstFeature(cards, spec.keys) || spec.fallback(evidence);
@@ -162,7 +194,7 @@ function newRow(spec, familyCards) {
 
 function rowSignal(row) {
   if (!row?.detail) return null;
-  const tone = row.id.endsWith('threshold') ? 'info' : 'neutral';
+  const tone = row.id.endsWith('threshold') ? 'info' : row.id.endsWith('termination') ? 'warning' : 'neutral';
   // Bare value only -- the Term column already names this row.
   return { id: `${row.id}-signal`, label: row.detail, value: row.detail, tone, evidence: row.evidence, source: row.sourceCards?.[0] };
 }
@@ -222,9 +254,10 @@ const nosolSuperiorConfig = {
     const cards = allCards.filter(isSuperiorCard);
     const familyCards = allCards.filter(isNosolFamilyCard);
     const rows = ROWS.map((row) => rowForSpec(row, cards)).filter(Boolean);
-    if (!rows.length && !familyCards.length) return [];
+    const terminationRowResult = terminationRow(allCards);
+    if (!rows.length && !familyCards.length && !terminationRowResult) return [];
     const newRows = NEW_ROWS.map((spec) => newRow(spec, familyCards)).filter(Boolean);
-    return [...rows, ...newRows];
+    return [...rows, ...newRows, ...(terminationRowResult ? [terminationRowResult] : [])];
   },
   deriveHeaderNote,
   columns: [
