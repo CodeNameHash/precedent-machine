@@ -44,21 +44,23 @@ test('review page mounts the first schema structured table config before cards',
   assert.match(reviewPageSource, /const REVIEW_TABLE_CONFIGS = \[/);
   assert.match(reviewPageSource, /reviewSections\.map\(\(section\) => \{/);
   assert.match(reviewPageSource, /<ProvisionTable\s+config=\{section\.config\}\s+reviewDeal=\{reviewDealForTables\}\s+isEdit=\{isEdit\}/);
+  // Feedback G1: content order now matches the sidebar's sensible legal order
+  // (reps -> covenants -> antitrust -> SEC -> conditions -> termination).
   const mountedConfigs = [
     'structureMechanicsConfig',
     'considerationHeroConfig',
     'equityAwardsConfig',
-    'conditionsConfig',
-    'votesApprovalsMeetingConfig',
     'representationsQualifiersConfig',
     'maeDefinitionsConfig',
     'materialContractsConfig',
     'iocExceptionsConfig',
+    'nosolSectionConfig',
+    'antitrustRegulatoryConfig',
+    'votesApprovalsMeetingConfig',
+    'conditionsConfig',
     'terminationRightsConfig',
     'terminationFeesConfig',
     'tailFeeConfig',
-    'nosolSectionConfig',
-    'antitrustRegulatoryConfig',
     'employeeBenefitsConfig',
     'advisersFeesExpensesConfig',
     'noOtherRepsFraudConfig',

@@ -167,21 +167,26 @@ import { parseReviewRouteQuery, serializeReviewRouteQuery } from '../../lib/revi
 // meeting content moved to votesApprovalsMeetingConfig, IOC content stays
 // on iocExceptionsConfig, etc.) -- so it renders LAST, after every other
 // substantive section, not interleaved among them.
+// Feedback G1: content section order MUST match the sidebar (SIDEBAR_GROUPS)
+// order — a sensible legal reading order: identity/economics, then reps, then
+// covenants (IOC / no-shop / antitrust), then process (SEC/meeting), then
+// conditions, then termination, then benefits/advisers/misc, with the residual
+// "Other Covenants" links last.
 const REVIEW_TABLE_CONFIGS = [
   structureMechanicsConfig,
   considerationHeroConfig,
   equityAwardsConfig,
-  conditionsConfig,
-  votesApprovalsMeetingConfig,
   representationsQualifiersConfig,
   maeDefinitionsConfig,
   materialContractsConfig,
   iocExceptionsConfig,
+  nosolSectionConfig,
+  antitrustRegulatoryConfig,
+  votesApprovalsMeetingConfig,
+  conditionsConfig,
   terminationRightsConfig,
   terminationFeesConfig,
   tailFeeConfig,
-  nosolSectionConfig,
-  antitrustRegulatoryConfig,
   employeeBenefitsConfig,
   advisersFeesExpensesConfig,
   miscBoilerplateConfig,
