@@ -1502,7 +1502,7 @@ test('material-contracts coverage footer reports "N of M contract-type buckets c
   assert.match(footerHtml, /Joint ventures \/ partnerships/);
 });
 
-test('material-contracts config: with no structured threshold data, rows surface an honest "see text" fallback rather than a fabricated $ figure (punch-list #24)', () => {
+test('material-contracts config (MC1): with no structured threshold data, a bucket whose own text carries an isolatable $ figure gets it regex-mined rather than falling back', () => {
   const rows = materialContractsMod.materialContractsConfig.selectRows({
     cards: [{
       id: 'material-contracts',
@@ -1515,20 +1515,71 @@ test('material-contracts config: with no structured threshold data, rows surface
           { code: 'INDEBTEDNESS', label: 'Indebtedness', text: 'any credit agreement providing for indebtedness in excess of $2,000,000' },
         ],
         // No materialContractsDollarThresholds -- the real-world shape: the
-        // extraction never populates a structured threshold, even though
-        // the $2,000,000 figure is right there in the quote text.
+        // extraction never populates a structured threshold. MC1's fix is a
+        // targeted regex, anchored to the bucket's own taxonomy synonym
+        // ("indebtedness" / "credit agreement"), that recovers the $ figure
+        // from the raw quote text instead of giving up.
       },
     }],
   });
   const row = rows.find((r) => r.code === 'INDEBTEDNESS');
   assert.ok(row);
-  // No fabricated number -- an explicit "not captured" label instead.
-  assert.equal(row.threshold, 'No $ threshold captured -- see text');
-  // The $2,000,000 figure is not lost: it survives on row.evidence, which
-  // ProvisionTable.jsx's FULL_TEXT_COLUMNS['material-contracts'] relocates
-  // into a per-row "see text" expander (asserted structurally above), so
-  // it's still reachable even though it can't render as a structured cell.
+  assert.equal(row.threshold, '$2,000,000');
   assert.match(row.evidence, /\$2,000,000/);
+});
+
+test('material-contracts config (MC1): a bucket whose own clause carries NO $ figure honestly falls back to "see text" instead of borrowing a neighboring clause\'s number', () => {
+  // Two-clause blob styled like real merger-agreement "Specified Contract"
+  // enumerations: clause (i) names a bucket with no dollar figure of its
+  // own (joint ventures), clause (ii) names a different bucket that does
+  // carry one (indebtedness, $2,000,000). A naive "nearest $ anywhere in
+  // the blob" search would misattribute $2,000,000 to the JV clause too --
+  // the per-bucket, clause-anchored mining must not do that.
+  const rows = materialContractsMod.materialContractsConfig.selectRows({
+    cards: [{
+      id: 'material-contracts',
+      provision_type: 'REPRESENTATION',
+      provision_subtype: 'REP-T-MATERIAL-CONTRACTS',
+      short_title: 'Material Contracts',
+      primary_quote: '(i) each joint venture or partnership agreement to which the Company is a party; (ii) each contract evidencing indebtedness in excess of $2,000,000;',
+    }],
+  });
+  const jvRow = rows.find((r) => r.code === 'JV_PARTNERSHIPS');
+  const debtRow = rows.find((r) => r.code === 'INDEBTEDNESS');
+  assert.ok(jvRow);
+  assert.ok(debtRow);
+  assert.equal(jvRow.threshold, 'No $ threshold captured -- see text');
+  assert.equal(debtRow.threshold, '$2,000,000');
+});
+
+test('material-contracts config (MC1, data-grounded): mines per-bucket $ thresholds from a Metsera-shaped numbered "Specified Contract" list, matching the live card\'s clause structure', () => {
+  // Trimmed, faithful excerpt of the shape found on the live Metsera
+  // "Material Contracts" card (deal 885edae5-49e8-464a-9f33-edd229119d7c,
+  // section 3.13) -- a numbered list of Specified Contract clauses where
+  // multiple buckets share the same $2,000,000 figure in different
+  // clauses, one bucket (indebtedness) carries a distinct $500,000, and one
+  // clause (exclusivity/MFN) has no $ figure at all.
+  const primary_quote = '(ii) each Contract that (A) materially restricts the ability of the Company to compete in any business, ' +
+    '(B) requires the Company to conduct business on a "most favored nations" basis, or (C) provides for "exclusivity"; ' +
+    '(vi) each Contract for the purchase, sale or lease of goods or services under which payments in excess of $2,000,000 were made; ' +
+    '(x) each Contract relating to indebtedness with an outstanding principal amount in excess of $500,000; ' +
+    '(xvii) each Contract which provides for a loan or advance in excess of $50,000 to any employee.';
+  const rows = materialContractsMod.materialContractsConfig.selectRows({
+    cards: [{
+      id: 'material-contracts',
+      provision_type: 'REPRESENTATION',
+      provision_subtype: 'REP-T-MATERIAL-CONTRACTS',
+      short_title: 'Material Contracts',
+      primary_quote,
+    }],
+  });
+  const byCode = Object.fromEntries(rows.map((r) => [r.code, r.threshold]));
+  assert.equal(byCode.SUPPLY, '$2,000,000');
+  assert.equal(byCode.INDEBTEDNESS, '$500,000');
+  assert.equal(byCode.EMPLOYEE_LOANS, '$50,000');
+  // Exclusivity/MFN's own clause has no $ figure -- must not pick up a
+  // neighboring clause's $2,000,000 or $500,000.
+  assert.equal(byCode.EXCLUSIVITY_MFN, 'No $ threshold captured -- see text');
 });
 
 test('tail-fee config maps nested tailProvision mechanics', () => {
