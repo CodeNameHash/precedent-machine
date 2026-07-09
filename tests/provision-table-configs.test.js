@@ -748,6 +748,111 @@ test('antitrust-regulatory config exposes regulatory signals and hover details (
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(divestitureCap, { primitives }))), /data-evidence="Parent shall use reasonable best efforts/);
 });
 
+test('antitrust-regulatory foreign filings row renders "Required" plus the HSR and foreign timeline limbs (Feedback-3 A1)', () => {
+  const rows = antitrustRegulatoryMod.antitrustRegulatoryConfig.selectRows({
+    cards: [
+      {
+        id: 'foreign',
+        provision_type: 'ANTITRUST_REGULATORY',
+        provision_subtype: 'ANTI-FOREIGN',
+        short_title: 'Foreign Regulatory Approvals',
+        primary_quote: 'The parties shall make all required filings under applicable foreign antitrust laws.',
+        features: {
+          foreignFilingsRequired: ['EU', 'China SAMR'],
+        },
+      },
+      {
+        id: 'hsr',
+        provision_type: 'ANTITRUST_REGULATORY',
+        provision_subtype: 'ANTI-FILING',
+        short_title: 'HSR Filing Deadline',
+        primary_quote: 'The parties shall file their HSR notifications within 30 business days.',
+        features: {
+          hsrFilingDeadlineBusinessDays: 30,
+          exHsrFilingDeadline: { standard: 'as promptly as reasonably practicable' },
+        },
+      },
+    ],
+  });
+  const foreign = rows.find((row) => row.id === 'antitrust-regulatory-foreign-filings');
+  assert.ok(foreign, 'Foreign regulatory filings row should render');
+  assert.equal(foreign.label, 'Foreign regulatory filings');
+  assert.deepEqual(foreign.signals.map((item) => item.label), [
+    'Required',
+    '(i) HSR — 30 business days',
+    '(ii) Foreign — as promptly as reasonably practicable',
+  ]);
+});
+
+test('antitrust-regulatory strategy control row is labeled "Strategy control" with a bare party pill (Feedback-3 A2)', () => {
+  const rows = antitrustRegulatoryMod.antitrustRegulatoryConfig.selectRows({
+    cards: [{
+      id: 'strategy',
+      provision_type: 'ANTITRUST_REGULATORY',
+      provision_subtype: 'ANTI-COOPERATE',
+      short_title: 'Regulatory Strategy Control',
+      primary_quote: 'Parent shall control and lead all strategy relating to obtaining Antitrust Approvals.',
+      features: {
+        regulatoryStrategyControlTagged: 'PARENT_CONTROL',
+      },
+    }],
+  });
+  const strategyControl = rows.find((row) => row.id === 'antitrust-regulatory-strategy-control');
+  assert.ok(strategyControl, 'Strategy control row should render');
+  assert.equal(strategyControl.label, 'Strategy control');
+  assert.deepEqual(strategyControl.signals.map((item) => item.label), ['Parent']);
+  assert.equal(rows.find((row) => row.label === 'Filing responsibility'), undefined, '"Filing responsibility" wording must not appear');
+});
+
+test('antitrust-regulatory pull-refile and timing-agreements rows surface the unilateral-withdrawal proviso (Feedback-3 A3)', () => {
+  const provisoText = "Neither Party shall withdraw its notification without the prior written consent of the other Party, which consent shall not be unreasonably withheld, conditioned or delayed; provided that Parent may, without the Company's consent, voluntarily withdraw its notification, provided that it refiles within two (2) business days.";
+  const rows = antitrustRegulatoryMod.antitrustRegulatoryConfig.selectRows({
+    cards: [{
+      id: 'timing',
+      provision_type: 'ANTITRUST_REGULATORY',
+      provision_subtype: 'ANTI-TIMING',
+      short_title: 'Timing Agreements',
+      primary_quote: provisoText,
+      features: {
+        pullRefile: { code: 'MUTUAL_CONSENT', label: 'Mutual consent', text: provisoText },
+        timingAgreementsProhibited: { code: 'NOT_UNREASONABLY_WITHHELD', label: 'Consent not to be unreasonably withheld', text: provisoText },
+        pullRefileText: provisoText,
+        timingAgreementText: provisoText,
+      },
+    }],
+  });
+  const pullRefile = rows.find((row) => row.id === 'antitrust-regulatory-pull-refile');
+  const timingAgreements = rows.find((row) => row.id === 'antitrust-regulatory-timing-agreements');
+  assert.ok(pullRefile, 'Pull-and-refile row should render');
+  assert.ok(timingAgreements, 'Timing agreements row should render');
+  assert.deepEqual(pullRefile.signals.map((item) => item.label), [
+    'Mutual consent',
+    'Proviso: may withdraw without consent if refiled within 2 business days',
+  ]);
+  assert.deepEqual(timingAgreements.signals.map((item) => item.label), [
+    'Consent not to be unreasonably withheld',
+    'Proviso: may withdraw without consent if refiled within 2 business days',
+  ]);
+});
+
+test('antitrust-regulatory pull-refile row does not fabricate a proviso pill when the text has no withdrawal carve-out', () => {
+  const rows = antitrustRegulatoryMod.antitrustRegulatoryConfig.selectRows({
+    cards: [{
+      id: 'timing-plain',
+      provision_type: 'ANTITRUST_REGULATORY',
+      provision_subtype: 'ANTI-TIMING',
+      short_title: 'Timing Agreements',
+      primary_quote: 'Neither Party shall withdraw its notification without the prior written consent of the other Party.',
+      features: {
+        pullRefile: { code: 'MUTUAL_CONSENT', label: 'Mutual consent' },
+      },
+    }],
+  });
+  const pullRefile = rows.find((row) => row.id === 'antitrust-regulatory-pull-refile');
+  assert.ok(pullRefile);
+  assert.deepEqual(pullRefile.signals.map((item) => item.label), ['Mutual consent']);
+});
+
 test('structure-mechanics config exposes transaction-form signals and hover details', () => {
   const rows = structureMechanicsMod.structureMechanicsConfig.selectRows({
     cards: [{
