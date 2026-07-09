@@ -1,6 +1,6 @@
 import React from 'react';
 import taxonomy from '../../../lib/taxonomy.js';
-import { knowledgeQualifierDisplay, normalizeQualifierScope, sortByAgreementOrder, withScopeParens } from '../table-logic.js';
+import { deriveKnowledgeHeader, knowledgeQualifierDisplay, normalizeQualifierScope, sortByAgreementOrder, withScopeParens } from '../table-logic.js';
 import { standardColorKey } from './standard-colors.js';
 import { cardCode, cardType, firstFeature, labelOf, selectCards, textOf, valueText } from './card-utils.js';
 
@@ -18,10 +18,11 @@ function isRepresentationCard(card) {
 }
 
 // The Article III / IV preamble cards (REP-T-PREAMBLE, REP-B-PREAMBLE) carry
-// the SEC-filings carve-out and knowledge-scope data for the whole section --
-// they are not themselves a "rep" with its own materiality/knowledge/lookback,
-// so they're excluded from the per-rep rows and consumed separately below for
-// the section's SEC-carve-out summary row and Knowledge-standard header note.
+// the SEC-filings carve-out, disclosure-letter and knowledge-scope data for
+// the whole section -- they are not themselves a "rep" with its own
+// materiality/knowledge/lookback, so they're excluded from the per-rep rows
+// and consumed separately below for the section's TOP block (Knowledge group
+// + General Exceptions) and the Knowledge-standard header note.
 function isPreambleCard(card) {
   return /PREAMBLE$/.test(cardCode(card));
 }
@@ -176,19 +177,19 @@ function formatIsoDate(iso) {
   return `${MONTHS[monthIndex]} ${Number(m[3])}, ${m[1]}`;
 }
 
+// #17: `lookbackPeriod` day-counts are UNRELIABLE (the same anchor date has
+// produced 127 vs 1,282 "days" across rows on the same deal) -- there is no
+// safe way to trust that field, even as a fallback. The absolute
+// `lookbackDateISO` is the only trustworthy signal, so it is used for EVERY
+// row; a rep with no `lookbackDateISO` renders no lookback at all rather
+// than falling back to a day-count that might be wrong, which would also
+// produce the "N days" / "Since <date>" mixture this fix removes.
 function resolveLookback(card) {
   const dateHit = firstFeature([card], ['lookbackDateISO']);
-  if (dateHit) {
-    const formatted = formatIsoDate(dateHit.value);
-    if (formatted) return { label: `Since ${formatted}`, evidence: textOf(card) };
-  }
-  const daysHit = firstFeature([card], ['lookbackPeriod']);
-  if (daysHit) {
-    const n = Number(daysHit.value);
-    const label = Number.isFinite(n) ? `${n.toLocaleString('en-US')} days` : valueText(daysHit.value);
-    if (label) return { label, evidence: textOf(card) };
-  }
-  return null;
+  if (!dateHit) return null;
+  const formatted = formatIsoDate(dateHit.value);
+  if (!formatted) return null;
+  return { label: `Since ${formatted}`, evidence: textOf(card) };
 }
 
 // -- term ------------------------------------------------------------------------
@@ -218,7 +219,35 @@ function knowledgeStandardNote(cards) {
   return valueText(hit.value);
 }
 
-// -- SEC filings / disclosure-schedule carve-out summary row -----------------
+// -- knowledge group (WHO the knowledge qualifier attaches to) ---------------
+
+// `knowledgeScope` is the verbatim core of the deal's "Knowledge" defined
+// term, stamped deterministically (post-pass) onto every knowledge-qualified
+// rep clause -- it is the one reliable source for both the knowledge
+// STANDARD (already surfaced via knowledgeStandardNote/deriveHeaderNote
+// above) and the knowledge GROUP (who it attaches to), via
+// deriveKnowledgeHeader's text parsing. Falls back across every rep card
+// (not just the first) so one rep's corrupted/absent scope text doesn't
+// blank the whole section-level group.
+function knowledgeScopeText(cards) {
+  for (const card of cards || []) {
+    const hit = firstFeature([card], ['knowledgeScope']);
+    if (!hit) continue;
+    const text = textOfValue(hit.value) || (typeof hit.value === 'string' ? hit.value : null);
+    if (text) return text;
+  }
+  return null;
+}
+
+function knowledgeGroupInfo(cards) {
+  const scopeText = knowledgeScopeText(cards);
+  if (!scopeText) return null;
+  const derived = deriveKnowledgeHeader({ knowledgeScope: scopeText });
+  if (!derived.group || !derived.group.length) return null;
+  return { group: derived.group, quote: derived.quote || scopeText };
+}
+
+// -- General Exceptions (SEC filings + disclosure letter) --------------------
 
 // Portions-excluded entries are typically stored as verbatim excerpt text
 // (not codes) -- render the text as-is; fall back to the SEC_FILING_EXCLUSION_
@@ -232,26 +261,54 @@ function excludedPortionText(item, dict) {
   return valueText(item);
 }
 
-function secCarveoutRow(reviewDeal) {
-  const preamble = (reviewDeal?.cards || []).find((card) => cardCode(card) === 'REP-T-PREAMBLE');
+// #16: the Company Disclosure Letter IS referenced throughout the reps
+// (e.g. secs. 3.13(a), 9.03(a)) -- `disclosureLetterReference` on the
+// REP-T-PREAMBLE card is the structured signal for that. The old code never
+// read this field at all and hard-coded "Not present", which is simply
+// wrong whenever the field is populated. Returns null (line omitted by the
+// caller) rather than asserting absence when the field truly is empty --
+// silence is a data gap, not evidence the letter doesn't exist.
+function disclosureLetterInfo(preamble) {
   if (!preamble) return null;
-  const cutoffHit = firstFeature([preamble], ['secFilingsExceptionLookback']);
-  const excludedHit = firstFeature([preamble], ['secFilingsExcludedSections']);
+  const hit = firstFeature([preamble], ['disclosureLetterReference']);
+  if (!hit) return null;
+  const text = textOfValue(hit.value) || (typeof hit.value === 'string' ? hit.value : valueText(hit.value));
+  if (!text) return null;
+  return { label: text, evidence: text };
+}
+
+// #14: the old render's TOP-of-section block was the Knowledge group +
+// Knowledge test/standard, plus a "General Exceptions" group -- the
+// SEC-filings cut-off/portions-excluded carve-out is only ONE of those
+// general exceptions (alongside the disclosure letter), never the headline.
+// This single row anchors that block above the per-rep table; the knowledge
+// STANDARD itself continues to surface via deriveHeaderNote (section chrome,
+// also above the table) so it isn't duplicated inline.
+function buildTopRow(reviewDeal, cards) {
+  const preamble = (reviewDeal?.cards || []).find((card) => cardCode(card) === 'REP-T-PREAMBLE');
+  const cutoffHit = preamble ? firstFeature([preamble], ['secFilingsExceptionLookback']) : null;
+  const excludedHit = preamble ? firstFeature([preamble], ['secFilingsExcludedSections']) : null;
   const cutoff = cutoffHit ? valueText(cutoffHit.value) : null;
   const dict = taxonomyForFeatureKey('secFilingsExcludedSections');
   const excludedRaw = excludedHit ? excludedHit.value : null;
   const excluded = Array.isArray(excludedRaw)
     ? excludedRaw.map((item) => excludedPortionText(item, dict)).filter(Boolean)
     : (excludedRaw ? [excludedPortionText(excludedRaw, dict)].filter(Boolean) : []);
-  if (!cutoff && !excluded.length) return null;
+  const disclosureLetter = disclosureLetterInfo(preamble);
+  const knowledgeGroup = knowledgeGroupInfo(cards);
+  if (!cutoff && !excluded.length && !disclosureLetter && !knowledgeGroup) return null;
   return {
-    id: 'representations-qualifiers-sec-carveout',
-    kind: 'summary',
+    id: 'representations-qualifiers-top',
+    kind: 'top',
     present: true,
     card: preamble,
-    label: 'SEC Filings & Disclosure Schedules',
+    label: 'Knowledge & General Exceptions',
     secCutoff: cutoff,
+    secCutoffQuote: cutoffHit ? textOfValue(cutoffHit.value) : null,
     secExcluded: excluded,
+    disclosureLetter,
+    knowledgeGroup: knowledgeGroup ? knowledgeGroup.group : null,
+    knowledgeGroupQuote: knowledgeGroup ? knowledgeGroup.quote : null,
   };
 }
 
@@ -272,7 +329,7 @@ function clauseSeeText(text) {
 }
 
 function renderTerm(row) {
-  if (row.kind === 'summary') {
+  if (row.kind === 'top') {
     return React.createElement('span', { className: 'font-medium text-ink' }, row.label);
   }
   const label = row.party ? `${row.label} (${row.party})` : row.label;
@@ -285,7 +342,7 @@ function renderTerm(row) {
 }
 
 function renderMateriality(row, ctx) {
-  if (row.kind === 'summary') return null;
+  if (row.kind === 'top') return null;
   const m = row.materiality;
   if (!m) return null;
   const PillCell = ctx?.primitives?.PillCell;
@@ -293,11 +350,35 @@ function renderMateriality(row, ctx) {
   return React.createElement(PillCell, { label: m.label, tone: 'neutral', color: m.color, evidence: m.evidence, source: row.card });
 }
 
+// `evidence` is a shared quote for every pill in the list (e.g. the SEC
+// scope sentence backing a single cut-off pill); when absent, each pill
+// falls back to its OWN label as its evidence -- portions-excluded items are
+// already verbatim excerpt text (see excludedPortionText above), so the pill
+// text itself is the correct hover quote rather than borrowing an unrelated
+// sibling's evidence.
+function pillList(PillCell, items, evidence, keyPrefix, tone = 'neutral') {
+  if (!items || !items.length) return null;
+  const pills = items.map((label, index) => {
+    const itemEvidence = evidence || label;
+    return PillCell
+      ? React.createElement(PillCell, { key: `${keyPrefix}-${index}`, label, tone, evidence: itemEvidence })
+      : React.createElement('span', { key: `${keyPrefix}-${index}` }, label);
+  });
+  return React.createElement('div', { className: 'flex flex-wrap gap-1' }, pills);
+}
+
 function renderKnowledge(row, ctx) {
-  if (row.kind === 'summary') return null;
+  const PillCell = ctx?.primitives?.PillCell;
+  if (row.kind === 'top') {
+    // #14: the Knowledge GROUP (who the qualifier attaches to) renders here,
+    // in the Knowledge Qualifier column, above the table -- the Knowledge
+    // STANDARD (actual / constructive / after reasonable inquiry) already
+    // surfaces via deriveHeaderNote in the section chrome directly above,
+    // so it isn't repeated inline.
+    return subLabelBlock('knowledge-group', 'Knowledge group', pillList(PillCell, row.knowledgeGroup, row.knowledgeGroupQuote, 'kg', 'info'));
+  }
   const k = row.knowledge;
   if (!k) return null;
-  const PillCell = ctx?.primitives?.PillCell;
   if (!PillCell) return k.label;
   return React.createElement(PillCell, { label: k.label, tone: 'info', evidence: k.evidence, source: row.card });
 }
@@ -313,29 +394,29 @@ function subLabelBlock(key, label, node) {
 }
 
 function renderLookback(row, ctx) {
-  if (row.kind === 'summary') {
-    const excludedNode = row.secExcluded && row.secExcluded.length
-      ? React.createElement(
-          'ul',
-          { className: 'list-disc space-y-0.5 pl-4' },
-          row.secExcluded.map((item, index) => React.createElement('li', { key: index }, item)),
-        )
+  const PillCell = ctx?.primitives?.PillCell;
+  if (row.kind === 'top') {
+    // #14/#15: General Exceptions -- SEC filings is ONE exception among these
+    // (never the section headline), and its cut-off / portions-excluded
+    // content renders as PILLS, not a bulleted prose list.
+    const cutoffNode = pillList(PillCell, row.secCutoff ? [row.secCutoff] : null, row.secCutoffQuote, 'cutoff');
+    const excludedNode = pillList(PillCell, row.secExcluded, null, 'excl');
+    // #16: the Company Disclosure Letter is referenced throughout the reps --
+    // render its resolved reference when present; omit the line entirely
+    // (never assert "Not present") when the field is genuinely empty.
+    const disclosureNode = row.disclosureLetter
+      ? pillList(PillCell, [row.disclosureLetter.label], row.disclosureLetter.evidence, 'disclosure')
       : null;
     return React.createElement(
       'div',
       { className: 'space-y-1.5' },
-      subLabelBlock('cutoff', 'Cut-off', row.secCutoff),
-      subLabelBlock('excluded', 'Portions excluded', excludedNode),
-      // The Disclosure Schedule / Company Disclosure Letter is cross-referenced
-      // throughout the reps but its own content is never ingested as a
-      // provision in its own right -- this line reports that data-availability
-      // gap, not a claim that the deal has no disclosure schedules.
-      React.createElement('div', { key: 'schedules', className: 'text-[11px] text-ink' }, 'Disclosure Schedules: Not present'),
+      subLabelBlock('sec-cutoff', 'SEC filings — cut-off', cutoffNode),
+      subLabelBlock('sec-excluded', 'SEC filings — portions excluded', excludedNode),
+      subLabelBlock('disclosure-letter', 'Disclosure letter', disclosureNode),
     );
   }
   const l = row.lookback;
   if (!l) return null;
-  const PillCell = ctx?.primitives?.PillCell;
   if (!PillCell) return l.label;
   return React.createElement(PillCell, { label: l.label, tone: 'neutral', evidence: l.evidence, source: row.card });
 }
@@ -349,8 +430,8 @@ const representationsQualifiersConfig = {
   selectRows(reviewDeal) {
     const cards = selectRepCards(reviewDeal);
     const rows = [];
-    const carveout = secCarveoutRow(reviewDeal);
-    if (carveout) rows.push(carveout);
+    const topRow = buildTopRow(reviewDeal, cards);
+    if (topRow) rows.push(topRow);
     const standardNote = knowledgeStandardNote(cards);
     for (const card of cards) {
       const term = resolveTerm(card);
