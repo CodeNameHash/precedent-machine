@@ -183,11 +183,49 @@ function resolveRepsCovered(text, nameBySec) {
   });
 }
 
+// Reorders adapter labels like "All In Material Respects" into natural
+// "In all material respects" (Ben's read).
+function prettyMaterialityLabel(s) {
+  const str = String(s || '');
+  return str
+    .replace(/^all in (.+?) respects$/i, (m, mid) => `In all ${mid.toLowerCase()} respects`)
+    .replace(/^all in respects$/i, 'In all respects');
+}
+
+// Splits a resolved reps_covered description into one chip per rep, depth- and
+// range-aware so "Capitalization; Subsidiaries" stays whole and "3.02(b)
+// through (e)" isn't split. Ported from the legacy splitBringdownCoveredPills.
+function splitBringdownCoveredPills(group) {
+  const text = String(group || '').trim();
+  if (!text) return [];
+  const parts = [];
+  let cur = '';
+  let depth = 0;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (ch === '(') depth++;
+    if (ch === ')') depth = Math.max(0, depth - 1);
+    const commaBreak = depth === 0 && ch === ',';
+    const andBreak = depth === 0 && /^\s+and\s+/i.test(text.slice(i)) && !/\bthrough\s*$/i.test(cur);
+    if (commaBreak || andBreak) {
+      const clean = cur.trim();
+      if (clean) parts.push(clean);
+      if (andBreak) i += text.slice(i).match(/^\s+and\s+/i)[0].length - 1;
+      cur = '';
+      continue;
+    }
+    cur += ch;
+  }
+  const clean = cur.trim().replace(/^and\s+/i, '');
+  if (clean) parts.push(clean);
+  return parts.length ? parts : [text];
+}
+
 // Rep bring-down rendered as Ben's grouped structure: each standard is a
 // sub-heading ordered lowest-materiality-first (de minimis -> material -> MAE
-// "all others" last), with the reps brought down to that standard listed
-// underneath.
-function bringDownNode(matches) {
+// "all others" last), with the reps brought down to that standard rendered as
+// individual chips underneath.
+function bringDownNode(matches, PillCell) {
   const tiers = (matches || []).flatMap((provision) => (
     Array.isArray(provision?.features?.bringDownTiers)
       ? provision.features.bringDownTiers.map((tier) => ({ tier, meta: tierMeta(tier) }))
@@ -204,12 +242,21 @@ function bringDownNode(matches) {
       const general = /^all\s+(?:company\s+|parent\s+)?representations/i.test(covered)
         || /\ball\s+other\b/i.test(covered)
         || /representations?\s+(?:and\s+warranties\s+)?other than/i.test(covered);
-      const repsText = general ? 'All other representations' : (covered ? resolveRepsCovered(covered, nameBySec) : 'Specified representations');
+      const parts = general
+        ? ['All other representations']
+        : (covered ? splitBringdownCoveredPills(resolveRepsCovered(covered, nameBySec)) : ['Specified representations']);
+      const repsNode = PillCell
+        ? React.createElement(
+            'div',
+            { className: 'flex flex-wrap gap-1' },
+            parts.map((part, partIndex) => React.createElement(PillCell, { key: partIndex, label: part, tone: 'neutral' })),
+          )
+        : React.createElement('div', { className: 'max-w-[42rem] text-[11px] leading-5 text-inkLight' }, parts.join(', '));
       return React.createElement(
         'div',
-        { key: `bd-${index}`, className: 'space-y-0.5' },
-        React.createElement('div', { className: 'text-[11px] font-semibold uppercase tracking-wide text-ink' }, meta.label),
-        React.createElement('div', { className: 'max-w-[42rem] text-[11px] leading-5 text-inkLight' }, repsText),
+        { key: `bd-${index}`, className: 'space-y-1' },
+        React.createElement('div', { className: 'text-[11px] font-semibold uppercase tracking-wide text-inkFaint' }, meta.label),
+        repsNode,
       );
     }),
   );
@@ -359,15 +406,15 @@ function buildStandardDetail(row, family, ctx, bandFamilies) {
 
   if (family === 'REP') {
     // Rep bring-down: grouped by standard, lowest-materiality-first, reps under
-    // each (see bringDownNode). Covenant-compliance falls through to a chip.
-    mainNode = bringDownNode(matches);
+    // each as chips (see bringDownNode). Covenant-compliance falls to a chip.
+    mainNode = bringDownNode(matches, PillCell);
     if (!mainNode) {
       const ccs = firstDefined(matches, 'covenantComplianceStandard');
-      if (ccs) chips.push(mkChip(PillCell, 'covenant-standard', taggedLabel(ccs) || valueText(ccs), 'info', primary, taggedEvidence(ccs, primary)));
+      if (ccs) chips.push(mkChip(PillCell, 'covenant-standard', prettyMaterialityLabel(taggedLabel(ccs) || valueText(ccs)), 'info', primary, taggedEvidence(ccs, primary)));
     }
   } else if (family === 'COV') {
     const ccs = firstDefined(matches, 'covenantComplianceStandard');
-    if (ccs) chips.push(mkChip(PillCell, 'covenant-standard', taggedLabel(ccs) || valueText(ccs), 'info', primary, taggedEvidence(ccs, primary)));
+    if (ccs) chips.push(mkChip(PillCell, 'covenant-standard', prettyMaterialityLabel(taggedLabel(ccs) || valueText(ccs)), 'info', primary, taggedEvidence(ccs, primary)));
   } else if (family === 'REG') {
     // Antitrust: HSR plus the SCHEDULED_APPROVALS the agreement lists in a
     // schedule (surfaced with its section reference), not a vague catch-all.

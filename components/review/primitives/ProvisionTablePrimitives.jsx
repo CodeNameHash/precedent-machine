@@ -173,21 +173,25 @@ export function GroupedSubRows({ groups = [], emptyCopy = 'No grouped rows captu
 export function CoverageFooter({ presentCount = 0, totalCount = 0, absentItems = [], label = 'items present' }) {
   const absent = Array.isArray(absentItems) ? absentItems.filter(Boolean) : [];
   return (
-    <div className="flex flex-wrap items-center gap-2 border-t border-border bg-bg/40 px-3 py-2 text-[11px] text-inkFaint" data-testid="coverage-footer">
+    <div className="border-t border-border bg-bg/40 px-3 py-2 text-[11px] text-inkFaint" data-testid="coverage-footer">
       <span className="font-medium text-ink">{presentCount} of {totalCount} {label}</span>
       {absent.length > 0 ? (
-        <span className="flex flex-wrap items-center gap-1">
-          <span className="text-inkFaint">Absent:</span>
-          {absent.map((item, index) => (
-            <span
-              key={item.id || item.label || index}
-              title={item.code || undefined}
-              className="inline-flex items-center rounded border border-border bg-bg/60 px-1.5 py-0.5 text-inkFaint"
-            >
-              {item.label || `Item ${index + 1}`}
-            </span>
-          ))}
-        </span>
+        <details className="mt-1">
+          <summary className="cursor-pointer text-inkFaint" style={{ listStyle: 'none' }}>
+            {absent.length} not included
+          </summary>
+          <span className="mt-1 flex flex-wrap items-center gap-1">
+            {absent.map((item, index) => (
+              <span
+                key={item.id || item.label || index}
+                title={item.code || undefined}
+                className="inline-flex items-center rounded border border-border bg-bg/60 px-1.5 py-0.5 text-inkFaint"
+              >
+                {item.label || `Item ${index + 1}`}
+              </span>
+            ))}
+          </span>
+        </details>
       ) : null}
     </div>
   );
