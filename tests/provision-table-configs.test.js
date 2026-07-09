@@ -1699,6 +1699,63 @@ test('I7: sniffFragmentName returns null (never a fabricated name) when the frag
   assert.equal(iocMod.sniffFragmentName({ id: 'frag-x', features: { sectionNumber: '5.01(m)' } }), null);
 });
 
+// FEEDBACK-4-PUNCHLIST.md #I8: real Metsera cards for the unclassified
+// 5.01(i)-(o) fragments carry short_title="[PROPOSED] Unclassified" and a
+// pipe-delimited section_ref ("5.01(k) | [PROPOSED] Unclassified | <hash>"),
+// not the features.sectionNumber shape the I7 fixtures above use. All 8
+// sub-clauses must resolve a real title off section_ref, and none may ever
+// render the literal short_title.
+test('I8: all 8 unclassified 5.01(i)-(o) fragments resolve a readable title from section_ref, never the literal short_title', () => {
+  const letters = ['i', 'ii', 'j', 'k', 'l', 'm', 'n', 'o'];
+  const expected = {
+    i: 'Indebtedness',
+    ii: 'Debt securities issuance',
+    j: 'Capital expenditures',
+    k: 'Tax elections / Tax accounting',
+    l: 'Specified Contracts',
+    m: 'Litigation settlements',
+    n: 'Prepayment of indebtedness',
+    o: 'Insurance maintenance',
+  };
+  const fragments = letters.map((letter) => ({
+    id: `frag-501-${letter}`,
+    provision_type: 'COVENANT_INTERIM_OPERATING',
+    short_title: '[PROPOSED] Unclassified',
+    section_ref: `5.01(${letter}) | [PROPOSED] Unclassified | hash-${letter}`,
+    primary_quote: `(${letter}) some clause text`,
+    features: {},
+  }));
+
+  for (const card of fragments) {
+    assert.equal(iocMod.section501SubclauseTitle(card), expected[card.section_ref.match(/5\.01\(([a-z]+)\)/i)[1]]);
+    assert.equal(iocMod.resolveFragmentName(card), expected[card.section_ref.match(/5\.01\(([a-z]+)\)/i)[1]]);
+  }
+
+  const row = iocMod.buildOtherRestrictionsRow(fragments, { primitives: iocPrimitives });
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, row.children));
+  assert.doesNotMatch(html, /\[PROPOSED\] Unclassified/, 'no IOC fragment row ever renders the literal "[PROPOSED] Unclassified" short_title');
+  assert.match(html, /Tax elections \/ Tax accounting/, '5.01(k) renders as a Tax-related title');
+  for (const label of Object.values(expected)) {
+    assert.match(html, new RegExp(label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `${label} renders somewhere in the Other restrictions row`);
+  }
+});
+
+test('I8: an unmapped 5.01 sub-clause letter falls back to a quote-mined title, never the literal short_title', () => {
+  const card = {
+    id: 'frag-501-z',
+    provision_type: 'COVENANT_INTERIM_OPERATING',
+    short_title: '[PROPOSED] Unclassified',
+    section_ref: '5.01(z) | [PROPOSED] Unclassified | hash-z',
+    primary_quote: '(z) enter into any new line of business outside the ordinary course, without the prior written consent of Parent',
+    features: {},
+  };
+  assert.equal(iocMod.section501SubclauseTitle(card), null, 'letter z is not in the deterministic map');
+  const resolved = iocMod.resolveFragmentName(card);
+  assert.ok(resolved, 'a title is still resolved');
+  assert.notEqual(resolved, '[PROPOSED] Unclassified');
+  assert.match(resolved, /new line of business/i);
+});
+
 test('material-contracts config maps hydrated buckets and thresholds, one row per contract type, no mid-table coverage row', () => {
   const rows = materialContractsMod.materialContractsConfig.selectRows({
     cards: [{

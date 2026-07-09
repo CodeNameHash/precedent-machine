@@ -64,6 +64,13 @@ const {
 //     amendment restriction, and an insurance-maintenance covenant
 //     respectively. Genuinely signal-free fragments still fall back to the
 //     placeholder; none are ever dropped.
+//   - I8 (FEEDBACK-4-PUNCHLIST.md, DATA): sniffFragmentName's keyword
+//     patterns only covered 3 of the 8 unclassified 5.01(i)-(o) fragments.
+//     resolveFragmentName() now resolves ALL 8 deterministically off each
+//     card's own section_ref via SECTION_501_SUBCLAUSE_TITLES, falling back
+//     to sniffFragmentName and then a quote-mined phrase for any 5.01
+//     sub-clause letter outside the map -- the literal short_title
+//     "[PROPOSED] Unclassified" is never the row's rendered name.
 
 function isIocCard(card) {
   return cardType(card) === 'COVENANT_INTERIM_OPERATING' || /^IOC(?:-|$)/.test(cardCode(card));
@@ -311,6 +318,59 @@ function sniffFragmentName(card) {
   return hit ? hit.label : null;
 }
 
+// I8 (FEEDBACK-4-PUNCHLIST.md, asked ~5x): the extractor splits Metsera's
+// Section 5.01 negative covenant into per-letter sub-clause cards, (a)-(h) of
+// which the classifier names with a real IOC-* subtype -- (i) through (o) it
+// leaves with provision_subtype=null and short_title stamped
+// "[PROPOSED] Unclassified" by ingestion (review-deal.js's
+// stripProposedShortTitle marker). sniffFragmentName's 3 keyword patterns
+// (I7) only ever covered 3 of these 8 letters; this map is a deterministic,
+// section_ref-keyed name for all 8, read straight off each sub-clause's own
+// quote (see the class comment above FRAGMENT_NAME_PATTERNS for the tax/
+// Specified-Contract/insurance ones -- (i)/(ii)/(j)/(m)/(n) are new here).
+const UNCLASSIFIED_SHORT_TITLE = '[PROPOSED] Unclassified';
+const SECTION_501_SUBCLAUSE_TITLES = {
+  i: 'Indebtedness',
+  ii: 'Debt securities issuance',
+  j: 'Capital expenditures',
+  k: 'Tax elections / Tax accounting',
+  l: 'Specified Contracts',
+  m: 'Litigation settlements',
+  n: 'Prepayment of indebtedness',
+  o: 'Insurance maintenance',
+};
+const SECTION_501_SUBCLAUSE_RE = /5\.01\s*\(([a-z]+)\)/i;
+
+function section501SubclauseTitle(card) {
+  if (card?.short_title !== UNCLASSIFIED_SHORT_TITLE) return null;
+  const match = SECTION_501_SUBCLAUSE_RE.exec(String(card?.section_ref || ''));
+  if (!match) return null;
+  return SECTION_501_SUBCLAUSE_TITLES[match[1].toLowerCase()] || null;
+}
+
+// Last-resort fallback for a 5.01 sub-clause letter this deal's map doesn't
+// carry (a different agreement's lettering/order): the first meaningful
+// phrase off the card's own primary_quote, so an unmapped letter still gets
+// a real title instead of the literal short_title leaking through.
+function firstQuotePhrase(text) {
+  if (!text) return null;
+  const stripped = String(text).replace(/^\(\s*[a-z0-9]+\s*\)\s*/i, '').trim();
+  const phrase = stripped.split(/[,;]| and | or /i)[0].replace(/[.:]\s*$/, '').trim();
+  if (!phrase) return null;
+  const capped = phrase.charAt(0).toUpperCase() + phrase.slice(1);
+  return capped.length > 90 ? `${capped.slice(0, 87)}...` : capped;
+}
+
+// Never lets the literal "[PROPOSED] Unclassified" short_title stand as a
+// row's name: the section_ref map first, sniffFragmentName's keyword
+// patterns second (still useful off-map, e.g. no section_ref at all), then
+// the quote-mined phrase.
+function resolveFragmentName(card) {
+  return section501SubclauseTitle(card)
+    || sniffFragmentName(card)
+    || (card?.short_title === UNCLASSIFIED_SHORT_TITLE ? firstQuotePhrase(textOf(card)) : null);
+}
+
 function buildOtherRestrictionsRow(fragments, ctx) {
   if (!fragments.length) return null;
   const PillCell = ctx?.primitives?.PillCell;
@@ -318,15 +378,15 @@ function buildOtherRestrictionsRow(fragments, ctx) {
   const rangeLabel = sections.length ? `§${sections[0]}–${sections[sections.length - 1]}` : `${fragments.length} items`;
   const items = fragments.map((card, index) => {
     const entries = exceptionEntries(cardFeatures(card).restrictionComponents, IOC_CATEGORY_CODES, card);
-    const section = valueText(cardFeatures(card).sectionNumber) || `Item ${index + 1}`;
-    const sniffedName = entries.length ? null : sniffFragmentName(card);
+    const section = valueText(cardFeatures(card).sectionNumber) || String(card?.section_ref || '').split('|')[0].trim() || `Item ${index + 1}`;
+    const resolvedName = entries.length ? null : resolveFragmentName(card);
     let content;
     if (entries.length && PillCell) {
       content = entries.map((e, j) => pillFor(PillCell, `frag-${card.id || index}-${j}`, e.label, 'neutral', e.evidence, e.source));
-    } else if (sniffedName) {
+    } else if (resolvedName) {
       // Extraction gap, named rather than dropped or shown as a bare
-      // fragment -- see FRAGMENT_NAME_PATTERNS above (I7).
-      content = React.createElement('span', { className: 'text-[11px] text-ink', title: 'Extraction gap: no provision_subtype assigned; name sniffed from clause text' }, sniffedName);
+      // fragment -- see resolveFragmentName above (I7/I8).
+      content = React.createElement('span', { className: 'text-[11px] text-ink', title: 'Extraction gap: no provision_subtype assigned; name resolved from section_ref/clause text' }, resolvedName);
     } else {
       content = React.createElement('span', { className: 'italic text-inkFaint' }, 'no structured signal extracted');
     }
@@ -497,5 +557,7 @@ export {
   negativeCovenantGroups,
   renderIocFooter,
   renderNegativeRow,
+  resolveFragmentName,
+  section501SubclauseTitle,
   sniffFragmentName,
 };
