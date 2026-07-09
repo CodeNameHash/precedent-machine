@@ -10783,21 +10783,11 @@ export default function ReviewPage() {
     const sectionKeys = reviewSectionIds;
     if (sectionKeys.length === 0) return;
     collapseHydratedDealRef.current = dealId;
-    const storageKey = `pm.review.collapsedSections.${dealId}`;
-    try {
-      const saved = window.localStorage.getItem(storageKey);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) {
-          const valid = parsed.filter((key) => sectionKeys.includes(key));
-          setCollapsedSections(new Set(valid));
-          return;
-        }
-      }
-    } catch {
-      // fall back to default collapsed state
-    }
-    setCollapsedSections(new Set(sectionKeys));
+    // Ben (round 5, TEMPORARY): every section starts EXPANDED on load. Skips
+    // the saved-collapsed localStorage restore and the default all-collapsed
+    // state below; in-session collapse toggles still work, a reload re-expands.
+    // Revert this block to restore per-deal collapse persistence.
+    setCollapsedSections(new Set());
   }, [dealId, reviewSectionIds]);
 
   useEffect(() => {
