@@ -394,7 +394,13 @@ test('representations-qualifiers config renders ONE row per rep card, each resol
   assert.equal(lit.materiality, null, 'Litigation has no materiality qualifier of its own -- must not inherit Capitalization\'s');
 });
 
-test('representations-qualifiers config title names the reps directly (not a separate "Representation Qualifiers" section) and renders the SEC-filings/disclosure-schedule carve-out as a summary row ahead of the per-rep rows', () => {
+// Punch-list #14/#15/#16: the SEC-filings cut-off/portions-excluded carve-out
+// is only ONE of the section's General Exceptions (alongside the disclosure
+// letter) -- it must not be the section headline -- and it renders as a TOP
+// block (kind 'top') ahead of the per-rep rows, with pills (not a bulleted
+// prose list) for the cut-off and portions-excluded content. The Company
+// Disclosure Letter reference must render when present, never "Not present".
+test('representations-qualifiers config title names the reps directly (not a separate "Representation Qualifiers" section) and renders Knowledge/General-Exceptions as a TOP row ahead of the per-rep rows, with pills, and a correctly-resolved disclosure letter reference', () => {
   assert.equal(representationsQualifiersMod.representationsQualifiersConfig.title, 'Representations & Warranties — Company');
   const rows = representationsQualifiersMod.representationsQualifiersConfig.selectRows({
     cards: [
@@ -409,6 +415,7 @@ test('representations-qualifiers config title names the reps directly (not a sep
             { code: 'RISK_FACTORS', text: 'disclosures contained in any part entitled "Risk Factors"' },
             { code: 'FORWARD_LOOKING', text: 'any forward-looking statements' },
           ],
+          disclosureLetterReference: 'the Company Disclosure Letter',
         },
       },
       {
@@ -420,25 +427,132 @@ test('representations-qualifiers config title names the reps directly (not a sep
       },
     ],
   });
-  assert.equal(rows[0].id, 'representations-qualifiers-sec-carveout');
-  assert.equal(rows[0].kind, 'summary');
+  assert.equal(rows[0].id, 'representations-qualifiers-top');
+  assert.equal(rows[0].kind, 'top');
   assert.equal(rows[0].secCutoff, 'at least one (1) business day prior to the date of this Agreement');
   assert.deepEqual(rows[0].secExcluded, [
     'disclosures contained in any part entitled "Risk Factors"',
     'any forward-looking statements',
   ]);
+  assert.equal(rows[0].disclosureLetter.label, 'the Company Disclosure Letter');
   assert.equal(rows[1].id, 'representations-qualifiers-org');
 
   const primitives = {
     PillCell: ({ label, evidence }) => React.createElement('span', { className: 'pill', 'data-evidence': evidence }, label),
   };
   const lookbackColumn = representationsQualifiersMod.representationsQualifiersConfig.columns.find((column) => column.id === 'lookback');
-  const carveoutHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, lookbackColumn.renderCell(rows[0], { primitives })));
-  assert.match(carveoutHtml, /Cut-off/);
-  assert.match(carveoutHtml, /at least one \(1\) business day/);
-  assert.match(carveoutHtml, /Portions excluded/);
-  assert.match(carveoutHtml, /Risk Factors/);
-  assert.match(carveoutHtml, /Disclosure Schedules: Not present/);
+  const topHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, lookbackColumn.renderCell(rows[0], { primitives })));
+  assert.match(topHtml, /SEC filings.*cut-off/i);
+  assert.match(topHtml, /<span class="pill"[^>]*>at least one \(1\) business day/);
+  assert.match(topHtml, /SEC filings.*portions excluded/i);
+  assert.match(topHtml, /<span class="pill"[^>]*>disclosures contained in any part entitled/);
+  assert.match(topHtml, /Disclosure letter/);
+  assert.match(topHtml, /<span class="pill"[^>]*>the Company Disclosure Letter/);
+  assert.doesNotMatch(topHtml, /Not present/);
+
+  const termColumn = representationsQualifiersMod.representationsQualifiersConfig.columns.find((column) => column.id === 'term');
+  const termHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, termColumn.renderCell(rows[0], {})));
+  assert.match(termHtml, /Knowledge/);
+  assert.match(termHtml, /General Exceptions/);
+});
+
+// Punch-list #16: when there is truly no disclosure-letter data (and no other
+// General Exceptions content, and no knowledge group), the TOP row must not
+// render at all -- never a fabricated "Not present" placeholder.
+test('representations-qualifiers config omits the TOP row entirely when the preamble has no General-Exceptions or knowledge-group data', () => {
+  const rows = representationsQualifiersMod.representationsQualifiersConfig.selectRows({
+    cards: [
+      {
+        id: 'preamble',
+        provision_type: 'REPRESENTATION',
+        provision_subtype: 'REP-T-PREAMBLE',
+        short_title: 'Reps Preamble',
+        features: {},
+      },
+      {
+        id: 'org',
+        provision_type: 'REPRESENTATION',
+        provision_subtype: 'REP-T-ORG',
+        short_title: 'Organization; Qualification; Standing',
+        features: { materialityQualifier: 'except as would not be material' },
+      },
+    ],
+  });
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0].id, 'representations-qualifiers-org');
+});
+
+// Punch-list #14: the Knowledge GROUP (who the qualifier attaches to),
+// derived from the per-rep `knowledgeScope` verbatim text, renders as pills
+// in the TOP row's Knowledge Qualifier column.
+test('representations-qualifiers config derives the Knowledge group from knowledgeScope and renders it as pills in the TOP row', () => {
+  const rows = representationsQualifiersMod.representationsQualifiersConfig.selectRows({
+    cards: [
+      {
+        id: 'rep-sec',
+        provision_type: 'REPRESENTATION',
+        provision_subtype: 'REP-T-SEC',
+        short_title: 'SEC Documents',
+        features: {
+          knowledgeQualifier: 'Company knowledge',
+          knowledgeScope: 'the actual knowledge of the Chief Executive Officer, the Chief Financial Officer of the Company',
+        },
+      },
+    ],
+  });
+  const top = rows.find((row) => row.kind === 'top');
+  assert.ok(top, 'TOP row should render from knowledgeScope data alone');
+  assert.deepEqual(top.knowledgeGroup, ['the Chief Executive Officer', 'the Chief Financial Officer of the Company']);
+  const primitives = {
+    PillCell: ({ label, evidence }) => React.createElement('span', { className: 'pill', 'data-evidence': evidence }, label),
+  };
+  const knowledgeColumn = representationsQualifiersMod.representationsQualifiersConfig.columns.find((column) => column.id === 'knowledge');
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, knowledgeColumn.renderCell(top, { primitives })));
+  assert.match(html, /Knowledge group/);
+  assert.match(html, /Chief Executive Officer/);
+});
+
+// Punch-list #17: lookback must use the absolute lookbackDateISO consistently
+// -- never a raw day-count, and never a mixture of "N days" / "Since <date>"
+// across rows. A rep with no lookbackDateISO renders no lookback at all
+// rather than falling back to the unreliable lookbackPeriod day-count.
+test('representations-qualifiers config normalizes lookback to a formatted date from lookbackDateISO, never a raw day-count', () => {
+  const rows = representationsQualifiersMod.representationsQualifiersConfig.selectRows({
+    cards: [
+      {
+        id: 'rep-with-date',
+        provision_type: 'REPRESENTATION',
+        provision_subtype: 'REP-T-ORG',
+        short_title: 'Organization',
+        features: { lookbackDateISO: '2023-01-01', lookbackPeriod: 127 },
+      },
+      {
+        id: 'rep-with-inconsistent-days',
+        provision_type: 'REPRESENTATION',
+        provision_subtype: 'REP-T-CAP',
+        short_title: 'Capitalization',
+        features: { lookbackDateISO: '2023-01-01', lookbackPeriod: 1282 },
+      },
+      {
+        id: 'rep-days-only',
+        provision_type: 'REPRESENTATION',
+        provision_subtype: 'REP-T-LIT',
+        short_title: 'Litigation',
+        features: { lookbackPeriod: 400 },
+      },
+    ],
+  });
+  const withDate = rows.find((row) => row.id === 'representations-qualifiers-rep-with-date');
+  const withInconsistentDays = rows.find((row) => row.id === 'representations-qualifiers-rep-with-inconsistent-days');
+  const daysOnly = rows.find((row) => row.id === 'representations-qualifiers-rep-days-only');
+  assert.equal(withDate.lookback.label, 'Since Jan 1, 2023');
+  // Same anchor date, different (unreliable) day counts -- both rows must
+  // resolve to the SAME formatted date, never the raw day-count.
+  assert.equal(withInconsistentDays.lookback.label, 'Since Jan 1, 2023');
+  assert.doesNotMatch(withDate.lookback.label, /\d+\s*days/);
+  assert.doesNotMatch(withInconsistentDays.lookback.label, /\d+\s*days/);
+  // No lookbackDateISO at all -- renders no lookback rather than a day-count.
+  assert.equal(daysOnly.lookback, null);
 });
 
 test('mae-definitions config exposes carve-out and definition signals with hover details', () => {
