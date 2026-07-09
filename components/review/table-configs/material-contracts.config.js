@@ -55,18 +55,24 @@ function thresholdText(raw) {
 // bucket's own taxonomy synonym match, bound the search to the clause the
 // anchor sits in (using the numbered-list markers "(i)"..."(xxi)" this
 // boilerplate reliably uses, falling back to a fixed character window when
-// no such markers exist), and take the $ figure nearest the anchor. A
-// bucket whose own clause has no $ figure (e.g. JV_PARTNERSHIPS,
-// EXCLUSIVITY_MFN on Metsera) honestly falls back to NO_THRESHOLD_LABEL
-// rather than borrowing a neighboring clause's number.
+// no such markers exist), and take the $ figure nearest the anchor.
+// MC3 (punch-list round 4): a bucket whose own clause has no $ figure is not
+// necessarily a data gap -- many buckets (NONCOMPETE, ROFR_ROFN,
+// SINGLE_SOURCE, JV_PARTNERSHIPS, exclusivity, ...) are type-based with NO
+// dollar floor by design ("any Contract that..."). So a missing $ figure
+// falls back through a second, narrower mine for a non-dollar quantitative
+// test (percentage / "top N" gates) anchored the same way, and only then to
+// ANY_LABEL -- never a bare "see text" escape hatch.
 // This is a STOPGAP: it recovers most buckets' thresholds from existing
 // text, but the durable fix is an upstream extract.js/rubric.js change that
-// emits a real per-bucket dollarThreshold at extraction time -- once that
-// lands, thresholdsByCode()/item.threshold will take priority over mining
-// (see mineThresholdFromText() call sites below) and this regex path can be
-// deleted.
-const NO_THRESHOLD_LABEL = 'No $ threshold captured -- see text';
+// emits a real per-bucket dollarThreshold (or explicit "no floor" flag) at
+// extraction time -- once that lands, thresholdsByCode()/item.threshold
+// will take priority over mining (see resolveThreshold() below) and this
+// regex path can be deleted.
+const ANY_LABEL = 'Any';
 const DOLLAR_RE = /\$[\d,]+(?:\.\d+)?/g;
+const PERCENT_RE = /\b\d{1,3}(?:\.\d+)?\s?%/;
+const TOP_N_RE = /\btop\s+(\d+)\b/i;
 // Numbered-list clause markers like "(i)" "(ii)" ... "(xxi)" -- lowercase
 // roman numerals only, so upper-case sub-clause letters such as (A)/(B)/(C)
 // (used for sub-limbs WITHIN one numbered clause, e.g. Metsera clause (xi))
@@ -118,7 +124,7 @@ function clauseWindow(text, markers, anchorIndex) {
 // Anchor on `meta`'s taxonomy synonym for this bucket, bound the search to
 // that clause, and return the nearest $ figure -- or null if the bucket's
 // own clause carries none (an honest "can't isolate it" signal, never a
-// guess). See the stopgap comment above NO_THRESHOLD_LABEL.
+// guess). See the stopgap comment above ANY_LABEL.
 function mineThresholdFromText(text, meta) {
   if (!text || !meta) return null;
   const anchorIndex = earliestSynonymIndex(text, meta.synonyms);
@@ -131,6 +137,57 @@ function mineThresholdFromText(text, meta) {
   if (!inWindow.length) return null;
   inWindow.sort((a, b) => Math.abs(a.index - anchorIndex) - Math.abs(b.index - anchorIndex));
   return inWindow[0].text;
+}
+// Same anchor-and-window approach as mineThresholdFromText, but for the
+// non-dollar quantitative gates a handful of buckets use instead of a $
+// figure (e.g. "top 20 suppliers/customers"). Deliberately narrow --
+// percentage and top-N are unambiguous materiality gates; things like a
+// clause's day/month notice period are NOT a materiality threshold and are
+// left alone rather than guessed at.
+function mineNonDollarTest(text, meta) {
+  if (!text || !meta) return null;
+  const anchorIndex = earliestSynonymIndex(text, meta.synonyms);
+  if (anchorIndex === -1) return null;
+  const markers = findClauseMarkers(text);
+  const [start, end] = clauseWindow(text, markers, anchorIndex);
+  const window = text.slice(start, end);
+  const topMatch = window.match(TOP_N_RE);
+  if (topMatch) return `Top ${topMatch[1]}`;
+  const pctMatch = window.match(PERCENT_RE);
+  if (pctMatch) return pctMatch[0].replace(/\s+/, '');
+  return null;
+}
+function formatDollarAmount(raw) {
+  const digits = String(raw).replace(/[^0-9.]/g, '');
+  if (!digits) return String(raw);
+  const [whole, frac] = digits.split('.');
+  const withCommas = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return `$${withCommas}${frac ? `.${frac}` : ''}`;
+}
+// MC2: dollar figures always render "$" + thousands separators, whether they
+// arrived as a bare digit string ("2000000", the shape a structured
+// threshold or upstream extraction is likeliest to hand back) or already
+// carry a "$" (mined text, which inherits the source document's own commas
+// verbatim and so is usually already formatted -- reformatting is a no-op).
+function formatThresholdDisplay(text) {
+  if (text === null || text === undefined) return text;
+  const str = String(text).trim();
+  if (!str) return str;
+  if (/^\$?[\d,]+(?:\.\d+)?$/.test(str)) return formatDollarAmount(str);
+  if (/\$[\d,]+(?:\.\d+)?/.test(str)) return str.replace(DOLLAR_RE, (m) => formatDollarAmount(m));
+  return str;
+}
+// MC3: the single per-bucket trigger resolver. Priority: a real structured
+// threshold always wins; else mine the bucket's own clause (evidence text,
+// then the full card text) for a $ figure; else mine the same window for a
+// non-dollar quantitative gate; else the bucket is honestly type-based --
+// "Any" contract of that type triggers disclosure, never a bare "see text".
+function resolveThreshold(structuredThreshold, evidenceText, fullText, meta) {
+  if (structuredThreshold) return formatThresholdDisplay(structuredThreshold);
+  const mined = mineThresholdFromText(evidenceText, meta) || mineThresholdFromText(fullText, meta);
+  if (mined) return formatThresholdDisplay(mined);
+  const nonDollar = mineNonDollarTest(evidenceText, meta) || mineNonDollarTest(fullText, meta);
+  return nonDollar || ANY_LABEL;
 }
 function thresholdsByCode(features) {
   const out = new Map();
@@ -151,18 +208,11 @@ function rowFromBucket(item, index, source, thresholds) {
   const evidence = (tagged && item.text) || textOf(source);
   const structuredThreshold = thresholdText((tagged && (item.threshold ?? item.qualifier)) ?? thresholds.get(code));
   const meta = code && MATERIAL_CONTRACT_BUCKET_META[code];
-  // Mining only runs when no real (structured) threshold was extracted --
-  // structured data always wins. Try the bucket's own isolated text first,
-  // then the full card text (still anchored + clause-windowed, so no
-  // cross-bucket misattribution risk) as a second attempt.
-  const mined = !structuredThreshold && meta
-    ? (mineThresholdFromText(evidence, meta) || mineThresholdFromText(textOf(source), meta))
-    : null;
   return {
     id: `material-contracts-${code || index}-${index}`,
     code,
     label,
-    threshold: structuredThreshold || mined || NO_THRESHOLD_LABEL,
+    threshold: resolveThreshold(structuredThreshold, evidence, textOf(source), meta),
     evidence,
     source,
     present: true,
@@ -187,7 +237,7 @@ function rowsFromText(source) {
       id: `material-contracts-${code}`,
       code,
       label: MATERIAL_CONTRACT_BUCKET_CODES[code] || meta.label || code,
-      threshold: mineThresholdFromText(text, meta) || NO_THRESHOLD_LABEL,
+      threshold: resolveThreshold(null, text, text, meta),
       evidence: text,
       source,
       present: true,
@@ -211,14 +261,18 @@ function renderTerm(row, ctx) {
   });
 }
 
+// MC2: threshold text renders in the agreement's normal body font, not the
+// mono/code style ThresholdCellWithHoverQuote hardcodes -- build the same
+// hover-quote affordance directly off EvidenceHoverSource instead.
 function renderThreshold(row, ctx) {
-  const ThresholdCellWithHoverQuote = ctx?.primitives?.ThresholdCellWithHoverQuote;
-  if (!ThresholdCellWithHoverQuote) return row.threshold;
-  return React.createElement(ThresholdCellWithHoverQuote, {
-    threshold: row.threshold,
+  const EvidenceHoverSource = ctx?.primitives?.EvidenceHoverSource;
+  if (!EvidenceHoverSource) return row.threshold;
+  return React.createElement(EvidenceHoverSource, {
     evidence: row.evidence,
     source: row.source,
-  });
+    as: 'span',
+    className: 'text-[11px] text-ink',
+  }, row.threshold);
 }
 
 function renderEvidence(row, ctx) {

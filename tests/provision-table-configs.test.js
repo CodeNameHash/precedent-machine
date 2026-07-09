@@ -1757,13 +1757,15 @@ test('material-contracts render cells: one pill per row (title once), threshold 
   const evidenceColumn = materialContractsMod.materialContractsConfig.columns.find((column) => column.id === 'evidence');
   const primitives = {
     PillCell: ({ label }) => React.createElement('span', { className: 'pill' }, label),
-    ThresholdCellWithHoverQuote: ({ threshold }) => React.createElement('span', { 'data-threshold': threshold }, threshold),
-    EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
+    EvidenceHoverSource: ({ children, evidence, className }) => React.createElement('span', { 'data-evidence': evidence, className }, children),
   };
   const bucketHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, bucketColumn.renderCell(rows[0], { primitives })));
   assert.equal((bucketHtml.match(/Indebtedness contracts/g) || []).length, 1, 'the contract-type title renders exactly once');
   const thresholdHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, thresholdColumn.renderCell(rows[0], { primitives })));
-  assert.match(thresholdHtml, /data-threshold="\$5,000,000"/);
+  // MC2: threshold renders through EvidenceHoverSource in the agreement's
+  // normal body font, never the mono/code style.
+  assert.match(thresholdHtml, /\$5,000,000/);
+  assert.doesNotMatch(thresholdHtml, /font-mono/);
   const evidenceHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, evidenceColumn.renderCell(rows[0], { primitives })));
   assert.match(evidenceHtml, /data-evidence="credit agreements and joint venture agreements"/);
 });
@@ -1831,7 +1833,7 @@ test('material-contracts config (MC1): with no structured threshold data, a buck
   assert.match(row.evidence, /\$2,000,000/);
 });
 
-test('material-contracts config (MC1): a bucket whose own clause carries NO $ figure honestly falls back to "see text" instead of borrowing a neighboring clause\'s number', () => {
+test('material-contracts config (MC3): a bucket whose own clause carries NO $ figure honestly falls back to "Any" (type-based, no dollar floor) instead of borrowing a neighboring clause\'s number or showing "see text"', () => {
   // Two-clause blob styled like real merger-agreement "Specified Contract"
   // enumerations: clause (i) names a bucket with no dollar figure of its
   // own (joint ventures), clause (ii) names a different bucket that does
@@ -1851,7 +1853,7 @@ test('material-contracts config (MC1): a bucket whose own clause carries NO $ fi
   const debtRow = rows.find((r) => r.code === 'INDEBTEDNESS');
   assert.ok(jvRow);
   assert.ok(debtRow);
-  assert.equal(jvRow.threshold, 'No $ threshold captured -- see text');
+  assert.equal(jvRow.threshold, 'Any');
   assert.equal(debtRow.threshold, '$2,000,000');
 });
 
@@ -1880,9 +1882,97 @@ test('material-contracts config (MC1, data-grounded): mines per-bucket $ thresho
   assert.equal(byCode.SUPPLY, '$2,000,000');
   assert.equal(byCode.INDEBTEDNESS, '$500,000');
   assert.equal(byCode.EMPLOYEE_LOANS, '$50,000');
-  // Exclusivity/MFN's own clause has no $ figure -- must not pick up a
-  // neighboring clause's $2,000,000 or $500,000.
-  assert.equal(byCode.EXCLUSIVITY_MFN, 'No $ threshold captured -- see text');
+  // Exclusivity/MFN's own clause has no $ figure and no non-dollar
+  // quantitative test either -- it's type-based ("any Contract that
+  // provides for exclusivity..."), so it must honestly read "Any", never
+  // pick up a neighboring clause's $2,000,000 / $500,000, and never show a
+  // bare "see text".
+  assert.equal(byCode.EXCLUSIVITY_MFN, 'Any');
+});
+
+test('material-contracts config (MC3): non-dollar quantitative gates ("top N") render as a short described test, not "Any" and not a bare "see text"', () => {
+  const primary_quote = '(vi) each supplier contract with any of the top 20 suppliers by aggregate purchase volume; ' +
+    '(xii) each Contract that provides for "exclusivity" or any similar requirement in favor of any third party; ' +
+    '(xxi) each partnership or joint venture agreement to which the Company is a party.';
+  const rows = materialContractsMod.materialContractsConfig.selectRows({
+    cards: [{
+      id: 'material-contracts',
+      provision_type: 'REPRESENTATION',
+      provision_subtype: 'REP-T-MATERIAL-CONTRACTS',
+      short_title: 'Material Contracts',
+      primary_quote,
+    }],
+  });
+  const supplyRow = rows.find((r) => r.code === 'SUPPLY');
+  assert.ok(supplyRow);
+  assert.equal(supplyRow.threshold, 'Top 20');
+  // Exclusivity/MFN in this same blob has no $ figure and no top-N/% test
+  // of its own -- still "Any", never "see text".
+  const exclusivityRow = rows.find((r) => r.code === 'EXCLUSIVITY_MFN');
+  assert.ok(exclusivityRow);
+  assert.equal(exclusivityRow.threshold, 'Any');
+});
+
+test('material-contracts config (MC2): a mined dollar figure with no source commas still renders comma-formatted', () => {
+  const rows = materialContractsMod.materialContractsConfig.selectRows({
+    cards: [{
+      id: 'material-contracts',
+      provision_type: 'REPRESENTATION',
+      provision_subtype: 'REP-T-MATERIAL-CONTRACTS',
+      short_title: 'Material Contracts',
+      primary_quote: 'Material Contracts include any credit agreement providing for indebtedness in excess of $2000000.',
+    }],
+  });
+  const debtRow = rows.find((r) => r.code === 'INDEBTEDNESS');
+  assert.ok(debtRow);
+  assert.equal(debtRow.threshold, '$2,000,000', 'mined figure with no source commas must still render comma-formatted');
+});
+
+test('material-contracts config (MC2): a bare-digit structured threshold renders as currency, not a raw number', () => {
+  const rows = materialContractsMod.materialContractsConfig.selectRows({
+    cards: [{
+      id: 'material-contracts',
+      provision_type: 'REPRESENTATION',
+      provision_subtype: 'REP-T-MATERIAL-CONTRACTS',
+      short_title: 'Material Contracts',
+      primary_quote: 'Material Contracts are listed.',
+      features: {
+        materialContractsBuckets: [
+          { code: 'REAL_ESTATE', label: 'Real estate', text: 'any lease with annual payments in excess of $500,000', threshold: 500000 },
+        ],
+      },
+    }],
+  });
+  const leaseRow = rows.find((r) => r.code === 'REAL_ESTATE');
+  assert.ok(leaseRow);
+  assert.equal(leaseRow.threshold, '$500,000', 'a bare-digit structured threshold must render as currency, not "500000"');
+});
+
+test('material-contracts config (MC3): zero rows render a bare "see text" threshold, across a full Metsera-shaped bucket list', () => {
+  const primary_quote = '(i) each\nContract that would be required to be filed by the Company as a "material contract" pursuant to Item 601(b)(10) of Regulation S-K under the Securities Act; ' +
+    '(ii) each Contract to which the Company is a party that (A) materially restricts the ability of the Company to compete in any business, (B) requires the Company to conduct business on a "most favored nations" basis, or (C) provides for "exclusivity"; ' +
+    '(vii) each Contract that is a "single source" Contract relating to the procurement of materials or services; ' +
+    '(xii) each Contract containing a right of first refusal, right of first negotiation or right of first offer with respect to any equity interest or material assets of the Company; ' +
+    '(xiii) each government contract to which the Company or any Company Subsidiary is a party; ' +
+    '(xvi) each hedging, swap, collar, cap, derivative or similar Contract; ' +
+    '(xxi) each partnership or joint venture agreement to which the Company is a party.';
+  const rows = materialContractsMod.materialContractsConfig.selectRows({
+    cards: [{
+      id: 'material-contracts',
+      provision_type: 'REPRESENTATION',
+      provision_subtype: 'REP-T-MATERIAL-CONTRACTS',
+      short_title: 'Material Contracts',
+      primary_quote,
+    }],
+  });
+  assert.ok(rows.length > 0);
+  assert.ok(rows.every((row) => !/see text/i.test(row.threshold)), `no row may render "see text": ${JSON.stringify(rows.map((r) => [r.code, r.threshold]))}`);
+  const typeBasedCodes = ['SEC_ITEM_601', 'SINGLE_SOURCE', 'ROFR_ROFN', 'GOVERNMENT_CONTRACTS', 'HEDGING', 'JV_PARTNERSHIPS'];
+  for (const code of typeBasedCodes) {
+    const row = rows.find((r) => r.code === code);
+    assert.ok(row, `expected a ${code} row`);
+    assert.equal(row.threshold, 'Any', `${code} is type-based with no dollar floor -- must read "Any"`);
+  }
 });
 
 test('tail-fee config maps nested tailProvision mechanics', () => {
