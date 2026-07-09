@@ -148,13 +148,11 @@ function effortsStandardRow(cards) {
 // rather than a separate concept row, per the consolidation mandate.
 // Ben (round 6): the divestiture-cap pill read as a raw clause fragment. Where
 // the cap gives the buyer broad protection (no obligation to divest / accept
-// conditions), that IS the anti-hell-or-high-water posture -- say so.
-function divestitureCapLabel(rawValue, card) {
-  const t = `${valueText(rawValue) || ''} ${textOf(card) || ''}`.toLowerCase();
-  if (/no obligation|shall not be required|not (?:be )?required to (?:divest|accept|agree|sell|dispose|hold separate|take)|has no obligation|without any obligation/.test(t)) return 'Anti-hell-or-high-water';
-  if (/hell.?or.?high.?water|whatever.*(?:necessary|required)|all actions? necessary|take any and all/.test(t)) return 'Hell-or-high-water';
-  return null;
-}
+// conditions), that IS the anti-hell-or-high-water posture. The canonical
+// code (BURDEN_COMMITMENT.ANTI_HOHW, labelled "Anti-hell-or-high-water" in
+// lib/taxonomy.js) now reaches card.features via the claims adapter, so this
+// row reads the code through readableValue()/labelForCode instead of
+// re-deriving the posture from a render-time regex over the clause text.
 function divestitureCapRow(cards) {
   const capHit = firstFeature(cards, ['divestitureCapDescription', 'burdenCommitment', 'divestitureCap', 'burdensomeConditionLimit']);
   const conditionHit = firstFeature(cards, ['divestitureInCondition']);
@@ -162,7 +160,7 @@ function divestitureCapRow(cards) {
   const primaryCard = capHit?.card || conditionHit.card;
   const signals = [];
   if (capHit) {
-    const label = divestitureCapLabel(capHit.value, capHit.card) || shortText(readableValue(capHit.key, capHit.value), 60);
+    const label = shortText(readableValue(capHit.key, capHit.value), 60);
     if (label) {
       signals.push({
         id: 'antitrust-regulatory-divestiture-cap-signal',
@@ -475,21 +473,19 @@ function withdrawalProvisoSignal(card, idSuffix) {
   };
 }
 
-// Ben (round 6): pull-and-refile and timing agreements are governed by the
-// SAME clause (pullRefileText === timingAgreementText) -- one can't read
-// "Mutual consent" while the other reads "Prohibited". Derive a consistent
-// consent-gate label for both from the shared clause text.
-function consentGateLabel(card, fallbackLabel) {
-  const text = [valueText(cardFeatures(card).pullRefileText), valueText(cardFeatures(card).timingAgreementText), textOf(card)].filter(Boolean).join(' ');
-  if (/without[^.]{0,40}consent/i.test(text)) {
-    return /not[^.]{0,30}unreasonably\s+withheld/i.test(text) ? 'Mutual consent required (not unreasonably withheld)' : 'Mutual consent required';
-  }
-  return fallbackLabel;
-}
+// pull-and-refile and timing agreements each carry their own canonical code
+// (PULL_REFILE / TIMING_AGREEMENT dictionaries), threaded into card.features
+// by the claims adapter. Read each row's label from its own code via
+// prohibitionLabel()/labelForCode -- do NOT force the two rows to a single
+// shared label from a render-time regex over the clause text. When extraction
+// assigns different codes to the same clause (e.g. Metsera: pullRefile
+// MUTUAL_CONSENT vs timingAgreementsProhibited NOT_UNREASONABLY_WITHHELD) the
+// two pills legitimately differ; reconcile that upstream at extraction, not
+// by masking it here.
 function pullRefileRow(cards) {
   const hit = firstFeature(cards, ['pullRefile', 'pullAndRefileRight', 'pullRefileText']);
   if (!hit) return null;
-  const label = consentGateLabel(hit.card, prohibitionLabel('pullRefile', hit.value));
+  const label = prohibitionLabel('pullRefile', hit.value);
   if (!label) return null;
   const features = cardFeatures(hit.card);
   const signals = [{
@@ -516,7 +512,7 @@ function pullRefileRow(cards) {
 function timingAgreementsRow(cards) {
   const hit = firstFeature(cards, ['timingAgreementsProhibited', 'timingAgreement', 'timingAgreementText']);
   if (!hit) return null;
-  const label = consentGateLabel(hit.card, prohibitionLabel('timingAgreementsProhibited', hit.value));
+  const label = prohibitionLabel('timingAgreementsProhibited', hit.value);
   if (!label) return null;
   const features = cardFeatures(hit.card);
   // The 2-business-day withdraw-and-refile proviso is specific to pull-and-

@@ -52,7 +52,7 @@ function condReg(id = 'cond-reg') {
 }
 
 test('canonical antitrust dictionaries are registered and fixed codes are present', () => {
-  assert.equal(BURDEN_COMMITMENT.ANTI_HOHW, 'No obligation to divest or litigate (anti-HOHW)');
+  assert.equal(BURDEN_COMMITMENT.ANTI_HOHW, 'Anti-hell-or-high-water');
   assert.equal(BURDEN_COMMITMENT.SILENT_NO_CAP, 'No express limitation (efforts standard governs)');
   assert.equal(BURDEN_BASELINE.SIZE_NORMALIZED, 'Target deemed buyer-sized');
   assert.equal(LITIGATION_OBLIGATION.MANDATORY_DEFEND, 'Must defend (incl. appeals/final judgment)');
