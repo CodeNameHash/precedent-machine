@@ -171,6 +171,38 @@ function resolveMateriality(card) {
   };
 }
 
+// -- bring-down standard (what the rep is brought down to at closing) ----------
+// Every rep carries a linkedBringDownStandard claim (MAT_MAE_QUALIFIED /
+// MAT_ALL_MATERIAL / MAT_DE_MINIMIS ...). It's the closing accuracy standard,
+// distinct from the rep's own materiality qualifier -- surfaced as a subtle
+// pill on the rep so the reader sees the standard without cross-referencing
+// the conditions bring-down. Coloured off the same materiality palette so the
+// same standard reads the same colour it does in Conditions.
+const BRINGDOWN_LABELS = {
+  MAT_MAE_QUALIFIED: 'MAE',
+  MAT_ALL_MATERIAL: 'In all material respects',
+  MAT_IN_ALL_MATERIAL_RESPECTS: 'In all material respects',
+  MAT_DE_MINIMIS: 'De minimis',
+  MAT_UNQUALIFIED: 'Unqualified',
+  MAT_TRUE_AND_CORRECT: 'True and correct',
+};
+
+function bringDownCode(value) {
+  if (!value) return null;
+  if (typeof value === 'string') return value.trim();
+  return codeOf(value) || (value.text ? String(value.text).trim() : null);
+}
+
+function resolveBringDown(card) {
+  const hit = firstFeature([card], ['linkedBringDownStandard']);
+  if (!hit) return null;
+  const code = bringDownCode(hit.value);
+  if (!code) return null;
+  const label = BRINGDOWN_LABELS[code] || materialityLabel(code, hit.value) || humanizeCode(code);
+  if (!label) return null;
+  return { label, color: materialityColor(code, label), evidence: textOfValue(hit.value) || textOf(card) };
+}
+
 // -- knowledge qualifier --------------------------------------------------------
 
 // Per-rep knowledge resolution stays exactly as before -- the DATA (which
@@ -364,6 +396,19 @@ function excludedPortionText(item, dict) {
   return valueText(item);
 }
 
+// Ben (round 4): the portions-excluded entries render as verbose verbatim
+// ("any exhibits to any Filed Company SEC Documents", "disclosures ... entitled
+// Risk Factors", two forward-looking variants) -- tighten each to a crisp
+// lawyer label, then dedupe (the two forward-looking entries collapse to one).
+function crispExcludedLabel(text) {
+  const t = String(text || '');
+  if (/exhibit/i.test(t)) return 'Exhibits to SEC filings';
+  if (/risk factor/i.test(t)) return 'Risk Factors';
+  if (/forward[- ]?looking/i.test(t)) return 'Forward-looking statements';
+  if (/market risk|quantitative and qualitative/i.test(t)) return 'Market-risk disclosures';
+  return t.trim();
+}
+
 // #16: the Company Disclosure Letter IS referenced throughout the reps
 // (e.g. secs. 3.13(a), 9.03(a)) -- `disclosureLetterReference` on the
 // REP-T-PREAMBLE card is the structured signal for that. Returns null (row
@@ -395,9 +440,10 @@ function buildGeneralExceptionsRow(reviewDeal, idPrefix, preambleCode) {
   const cutoff = cutoffHit ? valueText(cutoffHit.value) : null;
   const dict = taxonomyForFeatureKey('secFilingsExcludedSections');
   const excludedRaw = excludedHit ? excludedHit.value : null;
-  const excluded = Array.isArray(excludedRaw)
+  const excludedRawList = Array.isArray(excludedRaw)
     ? excludedRaw.map((item) => excludedPortionText(item, dict)).filter(Boolean)
     : (excludedRaw ? [excludedPortionText(excludedRaw, dict)].filter(Boolean) : []);
+  const excluded = [...new Set(excludedRawList.map(crispExcludedLabel).filter(Boolean))];
   const disclosureLetter = disclosureLetterInfo(preamble);
   if (!cutoff && !excluded.length && !disclosureLetter) return null;
   return {
@@ -431,12 +477,26 @@ function clauseSeeText(text) {
 
 // Term cell -- per-rep rows only now (General Exceptions / Knowledge each
 // have their own dedicated block, built separately below).
-function renderTerm(row) {
+function renderTerm(row, ctx) {
   const label = row.party ? `${row.label} (${row.party})` : row.label;
+  const PillCell = ctx?.primitives?.PillCell;
+  const bd = row.bringDown;
+  // Subtle bring-down pill: just the standard the rep is brought down to (no
+  // "bring-down" prefix), sized to sit quietly under the rep name.
+  const bdNode = bd
+    ? React.createElement(
+        'div',
+        { className: 'mt-1 text-[10px]' },
+        PillCell
+          ? React.createElement(PillCell, { label: bd.label, tone: 'neutral', color: bd.color, evidence: bd.evidence, source: row.card })
+          : bd.label,
+      )
+    : null;
   return React.createElement(
     'div',
     null,
     React.createElement('span', { className: 'font-medium text-ink', title: cardCode(row.card) || undefined }, label),
+    bdNode,
     clauseSeeText(row.mainConcept),
   );
 }
@@ -577,13 +637,9 @@ function knowledgeTableNode(knowledgeSummaryRow, repRows, ctx) {
         : knowledgeSummaryRow.knowledgePersons;
       items.push({ key: 'persons', term: 'Persons', node });
     }
-    if (knowledgeSummaryRow.knowledgeScope) {
-      items.push({
-        key: 'scope',
-        term: 'Scope',
-        node: React.createElement('span', { className: 'whitespace-pre-wrap break-words' }, knowledgeSummaryRow.knowledgeScope),
-      });
-    }
+    // R5-round4 (Ben): Scope dropped from the Knowledge block -- Standard +
+    // Persons carry it; the full scope sentence stays as the pill hover
+    // evidence rather than its own row.
   }
   for (const row of repRows || []) {
     if (!row.knowledge) continue;
@@ -630,7 +686,7 @@ function repsTableNode(repRows, ctx) {
       repRows.map((row) => React.createElement(
         'tr',
         { key: row.id, className: 'align-top hover:bg-bg/40' },
-        React.createElement('td', { className: 'px-3 py-2 whitespace-normal break-words text-ink' }, renderTerm(row)),
+        React.createElement('td', { className: 'px-3 py-2 whitespace-normal break-words text-ink' }, renderTerm(row, ctx)),
         React.createElement('td', { className: 'px-3 py-2 whitespace-pre-wrap break-words text-ink' }, renderMateriality(row, ctx)),
         React.createElement('td', { className: 'px-3 py-2 whitespace-pre-wrap break-words text-ink' }, renderLookback(row, ctx)),
       )),
@@ -698,6 +754,7 @@ function buildRepresentationsConfig({ id, title, partyPrefix, preambleCode }) {
           materiality: resolveMateriality(card),
           knowledge: resolveKnowledge(card),
           lookback: resolveLookback(card),
+          bringDown: resolveBringDown(card),
         });
       }
       return rows;

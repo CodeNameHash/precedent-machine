@@ -173,9 +173,13 @@ function buildExpenseExceptionsRow(cards, allCards) {
       });
     return {
       id: 'advisers-fees-expenses-expense-exceptions',
-      label: 'Expense exceptions',
+      label: 'Fee / expense allocation',
       kind: 'Expenses',
-      detail: facts.map((fact) => fact.label).join('; '),
+      // Ben (round 4): the Detail column was re-joining the same section pills
+      // ("§6.02 — ...; §6.03(b) — ...") that the Provision column already shows,
+      // and a separate row dumped the whole raw clause. Detail now carries only
+      // the clean base rule; the named sections live solely in the pills.
+      detail: 'Each party bears its own expenses, except:',
       evidence: textOf(allocationHit.card),
       source: labelOf(allocationHit.card),
       sourceCard: allocationHit.card,
@@ -237,7 +241,12 @@ const advisersFeesExpensesConfig = {
     const allCards = reviewDeal?.cards || [];
     const advisorRow = buildFinancialAdvisorRow(cards);
     const exceptionsRow = buildExpenseExceptionsRow(cards, allCards);
-    return [...(advisorRow ? [advisorRow] : []), ...mappedMiscRows(cards), ...(exceptionsRow ? [exceptionsRow] : [])];
+    // Ben (round 4): mappedMiscRows dumped the raw feeExpenseAllocation clause
+    // as its own row/pill, duplicating the clean allocation row below. The
+    // exceptions row (base rule + named-section pills) is the single, clean
+    // presentation; only fall back to the raw mapping when it's absent.
+    const allocationRows = exceptionsRow ? [exceptionsRow] : mappedMiscRows(cards);
+    return [...(advisorRow ? [advisorRow] : []), ...allocationRows];
   },
   columns: [
     { id: 'term', header: 'Term', width: '18rem', renderCell: (row) => row.label },

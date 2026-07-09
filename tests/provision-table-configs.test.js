@@ -458,9 +458,11 @@ test('representations-qualifiers config title names the reps directly (not a sep
   assert.equal(rows[0].id, 'representations-qualifiers-general-exceptions');
   assert.equal(rows[0].kind, 'general-exceptions');
   assert.equal(rows[0].secCutoff, 'at least one (1) business day prior to the date of this Agreement');
+  // Round-4 (Ben): portions-excluded entries are tightened to crisp labels
+  // (and deduped) rather than the verbose verbatim excerpt text.
   assert.deepEqual(rows[0].secExcluded, [
-    'disclosures contained in any part entitled "Risk Factors"',
-    'any forward-looking statements',
+    'Risk Factors',
+    'Forward-looking statements',
   ]);
   assert.equal(rows[0].disclosureLetter.label, 'the Company Disclosure Letter');
   assert.equal(rows[1].id, 'representations-qualifiers-org');
@@ -479,7 +481,7 @@ test('representations-qualifiers config title names the reps directly (not a sep
   assert.match(bodyHtml, /Cut-off/i);
   assert.match(bodyHtml, /<span class="pill"[^>]*>at least one \(1\) business day/);
   assert.match(bodyHtml, /Portions excluded/i);
-  assert.match(bodyHtml, /<span class="pill"[^>]*>disclosures contained in any part entitled/);
+  assert.match(bodyHtml, /<span class="pill"[^>]*>Risk Factors/);
   assert.match(bodyHtml, /Disclosure Letter/);
   assert.match(bodyHtml, /<span class="pill"[^>]*>the Company Disclosure Letter/);
   assert.doesNotMatch(bodyHtml, /Not present/);
@@ -553,7 +555,9 @@ test('representations-qualifiers config surfaces Knowledge Standard/Persons/Scop
   assert.match(html, /Actual knowledge/);
   assert.match(html, /Persons/);
   assert.match(html, /Executive officers/);
-  assert.match(html, /Scope/);
+  // Round-4 (Ben): the standalone "Scope" row is dropped -- Standard/Persons
+  // carry it and the full scope sentence survives as the pill hover evidence.
+  assert.doesNotMatch(html, /<td[^>]*>Scope<\/td>/);
   assert.match(html, /of any Person means/);
   // The rep row appears as its OWN line/row in the Knowledge block too.
   assert.match(html, /SEC Documents/);
@@ -2204,10 +2208,15 @@ test('AF1: advisers-fees-expenses surfaces the FULL named exception-section list
     },
   ];
   const rows = advisersFeesExpensesMod.advisersFeesExpensesConfig.selectRows({ cards });
-  const baseRow = rows.find((row) => row.id === 'advisers-fees-expenses-fee-expense');
-  assert.match(baseRow.detail, /each party bears its own expenses|shall be paid by the party incurring/i);
+  // Round-4: one clean allocation row -- base rule in Detail, named sections
+  // solely as pills. No separate raw-clause row, and Detail no longer re-joins
+  // the pills.
   const exceptionsRow = rows.find((row) => row.id === 'advisers-fees-expenses-expense-exceptions');
-  assert.ok(exceptionsRow, 'expected an expense-exceptions row');
+  assert.ok(exceptionsRow, 'expected the allocation/exceptions row');
+  assert.equal(exceptionsRow.label, 'Fee / expense allocation');
+  assert.match(exceptionsRow.detail, /each party bears its own expenses/i);
+  assert.doesNotMatch(exceptionsRow.detail, /§6\.02|§6\.03|§8\.02/, 'Detail must not duplicate the section pills');
+  assert.equal(rows.find((row) => row.id === 'advisers-fees-expenses-fee-expense'), undefined, 'raw-clause row dropped');
   assert.deepEqual(exceptionsRow.signals.map((item) => item.label), [
     '§6.02 — Access to Information; Confidentiality',
     '§6.03(b) — Regulatory Filing Fees',
