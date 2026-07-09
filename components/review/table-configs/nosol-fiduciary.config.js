@@ -210,6 +210,77 @@ function newRow(spec, familyCards) {
   };
 }
 
+// ── Change-of-Recommendation A–E list ──────────────────────────────────────
+// The (A)–(E) prohibitions of §5.02(e) are stored verbatim (one string per
+// limb) in changeOfRecommendationItems. rowForSpec/firstFeature only ever
+// surfaced the FIRST limb as a giant "see text" pill; Ben wants the whole
+// list, SUMMARIZED. Each verbatim limb maps to a crisp pill (verbatim kept as
+// hover evidence); the (D) reaffirm deadline (arcReaffirmDeadlineDays) is
+// folded into its own pill.
+// Patterns are order-independent and non-colliding (early drafts matched a
+// bare "change"/"modify", which item (D)'s "material change" wrongly tripped).
+const COR_ITEM_SPECS = [
+  { test: /\bwithdraw\b|modify in a manner adverse/i, label: 'Withdraw, qualify or modify the Board Recommendation' },
+  { test: /fail to make the.*recommendation.*proxy|recommendation in the proxy statement/i, label: 'Fail to include the Recommendation in the Proxy Statement' },
+  { test: /approve, recommend or declare advisable|declare advisable/i, label: 'Approve or recommend a Takeover Proposal' },
+  { test: /publicly recommend against|publicly disclosed|reaffirm/i, label: 'Fail to reject a publicly-disclosed Takeover Proposal' },
+  { test: /tender or exchange offer/i, label: 'Fail to recommend against a related tender/exchange offer' },
+];
+const NOT_COR_SPECS = [
+  { test: /14d-9|14e-2|stop.*look.*listen/i, label: 'Required tender-offer disclosures (Rule 14d-9 / 14e-2)' },
+  { test: /required by applicable law|legally required/i, label: 'Disclosures required by applicable law' },
+  { test: /disclosure of information|describes|factual|accurate/i, label: 'Factual disclosures to stockholders (no change to the Recommendation)' },
+];
+function summarizeItem(text, specs) {
+  const t = String(text || '');
+  const letter = (t.match(/^\(([A-Za-z0-9]+)\)/) || [])[1];
+  const spec = specs.find((s) => s.test.test(t));
+  return { letter: letter ? letter.toUpperCase() : null, label: spec ? spec.label : `${splitForCell(t, 70).short}…` };
+}
+function allFeatureItems(cards, keys) {
+  const out = [];
+  const seen = new Set();
+  for (const card of cards) {
+    const features = cardFeatures(card);
+    for (const key of keys) {
+      const raw = features[key];
+      if (raw === null || raw === undefined) continue;
+      for (const item of (Array.isArray(raw) ? raw : [raw])) {
+        const text = valueText(item);
+        const k = String(text || '').trim();
+        if (text && !seen.has(k)) { seen.add(k); out.push({ text, card }); }
+      }
+    }
+  }
+  return out;
+}
+function reaffirmDaysFor(cards) {
+  const n = Number(firstFeature(cards, ['arcReaffirmDeadlineDays']));
+  return Number.isFinite(n) && n > 0 ? n : null;
+}
+function corItemsRow(spec, cards, specs, { reaffirm = false, tone = 'neutral' } = {}) {
+  const raw = allFeatureItems(cards, spec.keys);
+  if (!raw.length) return null;
+  const days = reaffirm ? reaffirmDaysFor(cards) : null;
+  const items = raw.map(({ text, card }, index) => {
+    const s = summarizeItem(text, specs);
+    let label = s.letter ? `${s.letter}. ${s.label}` : s.label;
+    if (days && /reject a publicly-disclosed/i.test(s.label)) label += ` (within ${days} business days)`;
+    return { id: `nosol-fiduciary-${spec.id}-${s.letter || index}`, letter: s.letter, label, tone, evidence: text, source: card };
+  });
+  // Show them in the clause's own A→E order, not the DB feature-array order.
+  items.sort((a, b) => (a.letter || 'Z').localeCompare(b.letter || 'Z'));
+  return {
+    id: `nosol-fiduciary-${spec.id}`,
+    label: spec.label,
+    party: [...new Set(cards.map(partySide))].join(', ') || 'Target / Company',
+    items,
+    evidence: cards.map(textOf).filter(Boolean).join('\n\n'),
+    sourceCards: cards,
+    present: true,
+  };
+}
+
 // Representatives-standard codes (RBE_NOT_TO / INSTRUCT_NOT_TO / CAUSE_NOT_TO)
 // -> a friendly phrase, ported from the legacy representativeStandardDisplay.
 // Render-only: `row.detail` (the tested data field) is untouched.
@@ -265,6 +336,25 @@ function collapsedTextNode(text) {
   );
 }
 function renderSignals(row, ctx) {
+  // A–E Change-of-Recommendation rows carry a summarized item list -> one pill
+  // per limb (verbatim on hover), not a single first-limb "see text" pill.
+  if (Array.isArray(row.items) && row.items.length) {
+    const PillCell = ctx?.primitives?.PillCell;
+    if (!PillCell) return row.items.map((item) => item.label).join('; ');
+    return React.createElement(
+      'div',
+      { className: 'flex flex-wrap gap-1' },
+      row.items.map((item) => React.createElement(PillCell, {
+        key: item.id,
+        label: item.label,
+        value: item.label,
+        tone: item.tone || 'neutral',
+        evidence: item.evidence,
+        source: item.source,
+        wrap: true,
+      })),
+    );
+  }
   const signal = rowSignal(row);
   if (!signal) return '';
   if (String(signal.label).length > 90) return collapsedTextNode(signal.label);
@@ -296,7 +386,11 @@ const nosolFiduciaryConfig = {
     if (!cards.length) return [];
     const familyCards = allCards.filter(isNosolFamilyCard);
     const byId = {};
-    for (const row of ROWS) byId[row.id] = rowForSpec(row, cards);
+    for (const row of ROWS) {
+      if (row.id === 'change-of-rec-items') byId[row.id] = corItemsRow(row, cards, COR_ITEM_SPECS, { reaffirm: true, tone: 'warning' });
+      else if (row.id === 'not-change-of-rec-items') byId[row.id] = corItemsRow(row, cards, NOT_COR_SPECS, { tone: 'info' });
+      else byId[row.id] = rowForSpec(row, cards);
+    }
     for (const spec of NEW_ROWS) byId[spec.id] = newRow(spec, familyCards);
     return ORDERED_IDS.map((id) => byId[id]).filter(Boolean);
   },

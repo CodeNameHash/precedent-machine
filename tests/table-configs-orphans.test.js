@@ -150,10 +150,17 @@ test('nosol-fiduciary renders changeOfRecommendationItems and notChangeOfRecomme
   const rows = nosolFiduciaryMod.nosolFiduciaryConfig.selectRows({ cards: [recCard] });
   const changeRow = rows.find((row) => row.id === 'nosol-fiduciary-change-of-rec-items');
   const notChangeRow = rows.find((row) => row.id === 'nosol-fiduciary-not-change-of-rec-items');
+  // Round-5 (Ben): the A–E list is summarized to one crisp pill per limb
+  // (verbatim kept as each pill's hover evidence), not a single first-limb
+  // "see text" pill.
   assert.ok(changeRow, 'changeOfRecommendationItems should render a row');
-  assert.match(changeRow.detail, /withdraw, amend/);
+  assert.equal(changeRow.items.length, 2);
+  const changeLabels = changeRow.items.map((item) => item.label);
+  assert.ok(changeLabels.some((l) => /Withdraw, qualify or modify the Board Recommendation/.test(l)));
+  assert.ok(changeLabels.some((l) => /Recommendation in the Proxy Statement/.test(l)));
+  assert.match(changeRow.items[0].evidence, /withdraw, amend/);
   assert.ok(notChangeRow, 'notChangeOfRecommendationItems should render a row');
-  assert.match(notChangeRow.detail, /solely describes/);
+  assert.match(notChangeRow.items[0].label, /Factual disclosures to stockholders/);
 });
 
 test('nosol-noshop prohibit row reads the real ceaseDiscussionsProhibitedList attribute, not the stale noShopType/prohibitedActions/mainRestriction keys', () => {
