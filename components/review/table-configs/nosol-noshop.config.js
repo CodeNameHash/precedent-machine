@@ -1,5 +1,18 @@
 import React from 'react';
-import { valueText } from './card-utils.js';
+import { cardFeatures, splitForCell, textOf, valueText } from './card-utils.js';
+import { standardColorKey } from './standard-colors.js';
+
+// Rebuilt per REBUILD-SPECS.md §7: "core mechanics like old" -- the
+// restriction/cease/exceptions/standstill rows below are the existing,
+// tested content (kept byte-for-byte: same ids, same detail synthesis, same
+// rowSignal/renderSignals/renderDetail pipeline) and MECHANIC_ROWS is the
+// new pill strip Ben asked for -- Matching period, Notice, Superior- and
+// Acquisition-proposal thresholds, Fiduciary-out standard, Change-of-
+// Recommendation item count (+ collapsed list), Subsequent match period,
+// plus the Acquisition Proposal definition collapsed underneath its
+// threshold. Mechanic rows render first (the "core mechanics" lede); the
+// restriction rows follow. selectRows/columns/exported name unchanged so
+// pages/review/[id].js and the existing regression tests keep passing.
 
 const ROWS = [
   // `noShopType`/`prohibitedActions`/`mainRestriction` were guessed aliases
@@ -17,14 +30,23 @@ const ROWS = [
   { id: 'standstill-enforce', label: "Don't-ask-don't-waive / standstill enforcement", codes: ['NOSOL-ENFORCE'], keys: ['dontAskDontWaive', 'standstillWaiverConditions'] },
 ];
 
+// New core-mechanics pill rows (spec §7). Structured-key lookups only (no
+// regex-sentence fallback -- these are always short numbers/percentages/
+// codes on real deals, never freeform prose), so on a fixture that doesn't
+// carry these keys they simply don't render (existing ROWS above are
+// unaffected and keep their exact ids/order/detail).
+const MECHANIC_ROWS = [
+  { id: 'matching-period', label: 'Matching period', keys: ['matchingPeriod'], format: daysLabel },
+  { id: 'notice-hours', label: 'Notice', keys: ['discussionInitiationNoticeHours'], format: (raw) => hoursLabel(raw) },
+  { id: 'superior-threshold', label: 'Superior-proposal threshold', keys: ['superiorProposalThresholdPct', 'superiorProposalPercentage'], format: (raw) => pctLabel(raw) },
+  { id: 'acquisition-threshold', label: 'Acquisition-proposal threshold', keys: ['acquisitionTransactionPctThreshold'], format: (raw) => pctLabel(raw) },
+  { id: 'fiduciary-standard', label: 'Fiduciary-out standard', keys: ['fiduciaryOutStandard'], format: (raw) => fiduciaryStandardSummary(raw) },
+  { id: 'subsequent-match', label: 'Subsequent match period', keys: ['subsequentMatchPeriodDays'], format: daysLabel },
+  { id: 'acquisition-definition', label: 'Acquisition Proposal — definition', keys: ['acquisitionTransactionDefinition'], format: (raw) => valueText(raw) },
+];
+
 function cardCode(card) {
   return String(card?.provision_subtype || card?.canonical_code || card?.provision_code || '').trim().toUpperCase();
-}
-function cardFeatures(card) {
-  if (card?.features && typeof card.features === 'object') return card.features;
-  const meta = card?.ai_metadata;
-  if (meta?.features && typeof meta.features === 'object') return meta.features;
-  return {};
 }
 function isNosolCard(card) {
   return card?.provision_type === 'COVENANT_NO_SOLICITATION' || /^NOSOL(?:-|$)/.test(cardCode(card));
@@ -32,9 +54,6 @@ function isNosolCard(card) {
 function partySide(card) {
   const scope = String(card?.party_scope || '').toUpperCase();
   return scope === 'BUYER' || scope === 'PARENT' ? 'Buyer / Parent' : 'Target / Company';
-}
-function textOf(card) {
-  return String(card?.primary_quote || card?.region_full_text || '').trim();
 }
 // valueText is imported from card-utils.js (see above) rather than defined
 // locally: this config's own copy read `.text` before `.label`/`.code` with
@@ -75,6 +94,105 @@ function rowForSpec(spec, cards) {
     present: true,
   };
 }
+
+// ── Core-mechanics pill synthesis ──────────────────────────────────────────
+function unitForDays(evidenceText) {
+  const text = String(evidenceText || '').toLowerCase();
+  if (/business\s*day/.test(text)) return 'business day';
+  if (/calendar\s*day/.test(text)) return 'calendar day';
+  return 'day';
+}
+function daysLabel(raw, evidenceText) {
+  const n = Number(raw);
+  if (!Number.isFinite(n)) return null;
+  const unit = unitForDays(evidenceText);
+  return `${n} ${unit}${n === 1 ? '' : 's'}`;
+}
+function hoursLabel(raw) {
+  const n = Number(raw);
+  return Number.isFinite(n) ? `${n} hour${n === 1 ? '' : 's'}` : null;
+}
+function pctLabel(raw) {
+  const n = Number(raw);
+  if (Number.isFinite(n)) return `${n}%`;
+  const text = valueText(raw);
+  if (!text) return null;
+  return /%\s*$/.test(text) ? text : `${text}%`;
+}
+// Dash-case fiduciaryOutStandard codes seen on real deals -> a friendly
+// phrase. Falls back to a lightly-prettified version of the raw code rather
+// than ever showing it verbatim (global rule: codes are hover-title only).
+const FIDUCIARY_STANDARD_LABELS = {
+  'is-superior-proposal': 'Superior Proposal only',
+  'constitutes-or-could-lead-to-superior': 'Constitutes or could lead to a Superior Proposal',
+  'constitutes-or-could-reasonably-be-expected-to-lead-to-superior': 'Constitutes or could reasonably be expected to lead to a Superior Proposal',
+  'continues-to-constitute-superior': 'Continues to constitute a Superior Proposal',
+};
+function prettifyCode(code) {
+  const s = String(code || '').replace(/[_-]+/g, ' ').replace(/\s+/g, ' ').trim();
+  return s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : null;
+}
+function fiduciaryStandardLabel(raw) {
+  const text = valueText(raw);
+  if (!text) return null;
+  const key = text.trim().toLowerCase();
+  return FIDUCIARY_STANDARD_LABELS[key] || prettifyCode(text);
+}
+// A card can carry more than one fiduciaryOutStandard claim (e.g. engagement-
+// stage vs match-stage wording) -- dedupe and join; the render layer
+// auto-collapses this behind "see text" once it's long.
+function fiduciaryStandardSummary(raw) {
+  const items = Array.isArray(raw) ? raw : [raw];
+  const labels = [...new Set(items.map(fiduciaryStandardLabel).filter(Boolean))];
+  return labels.length ? labels.join(' / ') : null;
+}
+
+function firstHit(cards, keys) {
+  for (const card of cards) {
+    const features = cardFeatures(card);
+    for (const key of keys) {
+      const raw = features[key];
+      if (raw === null || raw === undefined || raw === '' || raw === false) continue;
+      if (Array.isArray(raw) && raw.length === 0) continue;
+      return { card, key, raw };
+    }
+  }
+  return null;
+}
+function mechanicRow(spec, cards) {
+  const hit = firstHit(cards, spec.keys);
+  if (!hit) return null;
+  const formatted = spec.format(hit.raw, textOf(hit.card));
+  if (!formatted) return null;
+  return {
+    id: `nosol-noshop-${spec.id}`,
+    label: spec.label,
+    party: partySide(hit.card),
+    detail: formatted,
+    evidence: textOf(hit.card),
+    sourceCards: [hit.card],
+    present: true,
+  };
+}
+// Change of Recommendation prohibited-action count: a "5 items" pill with
+// the full A-E list behind a "see list" expander, never dumped inline.
+function changeOfRecRow(cards) {
+  const hit = firstHit(cards, ['changeOfRecommendationItems']);
+  if (!hit) return null;
+  const items = (Array.isArray(hit.raw) ? hit.raw : [hit.raw]).map((item) => valueText(item)).filter(Boolean);
+  if (!items.length) return null;
+  return {
+    id: 'nosol-noshop-change-of-rec-count',
+    label: 'Change of Recommendation — prohibited actions',
+    party: partySide(hit.card),
+    detail: `${items.length} item${items.length === 1 ? '' : 's'}`,
+    evidence: textOf(hit.card),
+    sourceCards: [hit.card],
+    present: true,
+    listItems: items,
+  };
+}
+
 function rowSignal(row) {
   if (!row?.detail) return null;
   const tone = row.id.endsWith('exceptions') ? 'warning' : 'info';
@@ -83,23 +201,63 @@ function rowSignal(row) {
   // was pure noise.
   return { id: `${row.id}-signal`, label: row.detail, value: row.detail, tone, evidence: row.evidence, source: row.sourceCards?.[0] };
 }
-// Per user feedback: the obligated party (Target / Company on nearly every
-// deal) was repeated on every row. Hoist it into a single section-level note
-// instead of a per-row column -- still fully visible, just shown once.
-function deriveHeaderNote(rows) {
-  const parties = [...new Set((rows || []).map((row) => row.party).filter(Boolean))];
-  if (parties.length === 0) return null;
-  return `Party: ${parties.join(', ')}`;
+function countListNode(row, ctx) {
+  const PillCell = ctx?.primitives?.PillCell;
+  const pill = PillCell
+    ? React.createElement(PillCell, { label: row.detail, tone: 'info', evidence: row.evidence, source: row.sourceCards?.[0] })
+    : row.detail;
+  return React.createElement(
+    'div',
+    { className: 'space-y-1' },
+    pill,
+    React.createElement(
+      'details',
+      { className: 'mt-1' },
+      React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, 'see list'),
+      React.createElement(
+        'ul',
+        { className: 'mt-1 max-w-[36rem] list-disc pl-4 text-[11px] leading-5 text-inkLight' },
+        row.listItems.map((text, index) => React.createElement('li', { key: index }, text)),
+      ),
+    ),
+  );
+}
+// Long synthesized text (e.g. the Acquisition Proposal definition, or a
+// fiduciary-out standard summary that concatenated two claims) collapses to
+// a truncated preview + click-to-open, instead of one giant pill -- spec:
+// "never a full-sentence text dump inline".
+function collapsedTextNode(text) {
+  const { value, short, truncated } = splitForCell(text, 90);
+  if (!value) return null;
+  if (!truncated) return React.createElement('span', { className: 'text-[11px] text-ink' }, value);
+  return React.createElement(
+    'span',
+    null,
+    React.createElement('span', { className: 'text-[11px] text-ink' }, `${short}…`),
+    React.createElement(
+      'details',
+      { className: 'mt-1' },
+      React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, 'see text'),
+      React.createElement(
+        'div',
+        { className: 'mt-1 max-w-[36rem] whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight' },
+        value,
+      ),
+    ),
+  );
 }
 function renderSignals(row, ctx) {
-  const PillCell = ctx?.primitives?.PillCell;
+  if (row.listItems) return countListNode(row, ctx);
   const signal = rowSignal(row);
   if (!signal) return '';
+  if (String(signal.label).length > 90) return collapsedTextNode(signal.label);
+  const PillCell = ctx?.primitives?.PillCell;
   if (!PillCell) return signal.label;
   return React.createElement(PillCell, {
     label: signal.label,
     value: signal.value,
     tone: signal.tone,
+    color: standardColorKey(signal.label),
     evidence: signal.evidence,
     source: signal.source,
   });
@@ -109,6 +267,14 @@ function renderDetail(row, ctx) {
   if (!EvidenceHoverSource || !row.evidence) return row.detail;
   return React.createElement(EvidenceHoverSource, { value: row.detail, evidence: row.evidence, source: row.sourceCards?.[0], as: 'span' }, row.detail);
 }
+// Per user feedback: the obligated party (Target / Company on nearly every
+// deal) was repeated on every row. Hoist it into a single section-level note
+// instead of a per-row column -- still fully visible, just shown once.
+function deriveHeaderNote(rows) {
+  const parties = [...new Set((rows || []).map((row) => row.party).filter(Boolean))];
+  if (parties.length === 0) return null;
+  return `Party: ${parties.join(', ')}`;
+}
 
 const nosolNoshopConfig = {
   id: 'nosol-noshop',
@@ -117,7 +283,12 @@ const nosolNoshopConfig = {
   selectRows(reviewDeal) {
     const cards = (reviewDeal?.cards || []).filter(isNosolCard);
     if (!cards.length) return [];
-    return ROWS.map((row) => rowForSpec(row, cards)).filter(Boolean);
+    const mechanicRows = [
+      ...MECHANIC_ROWS.map((spec) => mechanicRow(spec, cards)),
+      changeOfRecRow(cards),
+    ].filter(Boolean);
+    const restrictionRows = ROWS.map((row) => rowForSpec(row, cards)).filter(Boolean);
+    return [...mechanicRows, ...restrictionRows];
   },
   deriveHeaderNote,
   columns: [
