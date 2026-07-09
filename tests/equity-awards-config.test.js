@@ -70,6 +70,46 @@ test('equityAwardTreatment keyed-instrument map (real Metsera shape) builds one 
   assert.match(rsa.vestingLabel, /Fully vested/i);
 });
 
+test('EQ1 (feedback round 4): ESPP row sorts to the BOTTOM of the table regardless of its position in equityAwardTreatment\'s own key order', () => {
+  const card = {
+    id: 'consid-equity-mid-espp',
+    provision_type: 'CONSIDERATION',
+    provision_subtype: 'CONSID-EQUITY',
+    short_title: 'Treatment of Equity Awards / Stock Plans',
+    primary_quote: 'SECTION 2.03. Treatment of Company Equity Awards.',
+    features: {
+      equityAwardTreatment: {
+        stockOptions: 'Company Stock Options are cancelled for cash equal to the spread.',
+        espp: 'Company ESPP is frozen and terminates before the Effective Time.',
+        restrictedStock: 'Company Restricted Stock Awards fully vest and receive the Merger Consideration.',
+      },
+    },
+  };
+  const rows = mod.equityAwardRows([card]);
+  assert.equal(rows.length, 3);
+  assert.equal(rows[rows.length - 1].instrument, 'ESPP (Employee Stock Purchase Plan)', 'ESPP must be the last row, even though it was the middle key in equityAwardTreatment');
+  assert.ok(rows.slice(0, -1).every((row) => !/ESPP/i.test(row.instrument)), 'no other row should be pushed below ESPP');
+});
+
+test('EQ1: the cutoffTreatment catch-all row still renders after ESPP -- it is a distinct special row, not a per-instrument one, so it stays last regardless', () => {
+  const card = {
+    id: 'consid-equity-mid-espp-cutoff',
+    provision_type: 'CONSIDERATION',
+    provision_subtype: 'CONSID-EQUITY',
+    features: {
+      equityAwardTreatment: {
+        espp: 'Company ESPP is frozen and terminates before the Effective Time.',
+        stockOptions: 'Company Stock Options are cancelled for cash equal to the spread.',
+      },
+      cutoffTreatment: 'each Company RSU outstanding shall be cancelled',
+    },
+  };
+  const rows = mod.equityAwardRows([card]);
+  assert.equal(rows.length, 3);
+  assert.equal(rows[2].instrument, 'Award / contribution cutoff treatment');
+  assert.match(rows[1].instrument, /ESPP/);
+});
+
 test('CVR Entitlement (#7): only the Stock Options row carries it, and it reads "Must be in the money at closing" not the raw ITM code', () => {
   const rows = mod.equityAwardRows([metseraStyleCard()]);
   const options = rows.find((r) => /Stock Options/.test(r.instrument));

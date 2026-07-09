@@ -27,7 +27,6 @@ const STRUCT_OFFER = 'STRUCT-OFFER';
 const HEADLINE_ROW_ID = 'consideration-hero-headline';
 const PER_SHARE_ROW_ID = 'consideration-hero-per-share';
 const APPRAISAL_ROW_ID = 'consideration-hero-appraisalRightsAvailable';
-const ROLLUP_ROW_ID = 'consideration-hero-rollup';
 const OTHER_PROVISIONS_ROW_ID = 'consideration-hero-other-provisions';
 // Rendered as coloured PillCell chips (not run through TruncatedWithSeeText):
 // short enum/quantitative facts per the global "pills for enum/quantitative
@@ -104,8 +103,19 @@ function resolveCvrMax(cards) {
   const hit = firstFeature(cards, 'maxPayment');
   return hit ? { text: numericDollarOnly(hit.value), card: hit.card } : { text: null, card: null };
 }
+// Feature values sometimes arrive as a bare number/numeric string (Metsera's
+// perShareAmount is stored as 47.5, not "$47.50") -- valueText() renders that
+// unchanged, so a downstream "<perShare> in cash" pill loses its dollar sign
+// entirely. Only prefixes when the text is purely numeric-leading and has no
+// "$" already; text like "$47.50" or "12.00 per share" (already has "$" or
+// is not a bare number) passes through untouched.
+function ensureDollarPrefix(text) {
+  if (!text) return text;
+  const trimmed = String(text).trim();
+  return /^-?\d/.test(trimmed) && !trimmed.startsWith('$') ? `$${trimmed}` : trimmed;
+}
 function perShareParts(features, cards) {
-  const perShare = valueText(features.perShareAmount) || valueText(features.cashAmount) || valueText(features.offerPrice);
+  const perShare = ensureDollarPrefix(valueText(features.perShareAmount) || valueText(features.cashAmount) || valueText(features.offerPrice));
   const joined = `${valueText(features.considerationType) || ''} ${cards.map(textOf).join(' ')}`;
   const hasCvr = /\bCVR\b|contingent value right/i.test(joined) || cards.some((card) => cardCode(card) === 'CONSID-CVR');
   const hasCash = Boolean(perShare) || /\bcash\b|\$\s?\d/i.test(joined);
@@ -153,11 +163,13 @@ function headlineLabel(headlineType, cards, featuresList) {
   return headlineConsiderationLabel(headlineType, featuresList);
 }
 
-// IMPROVEMENT (spec §2): a computed rollup pill showing the maximum
-// per-share value a holder could receive (base cash/stock consideration +
-// the CVR's maximum contingent payment), e.g. "Up to $70.00 / share" for
-// Metsera's $47.50 cash + up to $22.50 CVR. Only renders when BOTH amounts
-// resolve to real numbers -- never fabricates a total from a partial figure.
+// IMPROVEMENT (spec §2): a computed maximum showing the highest per-share
+// value a holder could receive (base cash/stock consideration + the CVR's
+// maximum contingent payment), e.g. "Up to $70.00 / share" for Metsera's
+// $47.50 cash + up to $22.50 CVR. Only computes when BOTH amounts resolve to
+// real numbers -- never fabricates a total from a partial figure. Rendered
+// on the right-hand side of the per-share consideration row itself (not a
+// separate row -- the two figures describe the same economics).
 function parseDollarNumber(raw) {
   if (raw === null || raw === undefined || raw === '') return null;
   const inner = typeof raw === 'object' ? (raw.value ?? raw.text ?? raw.label) : raw;
@@ -167,7 +179,7 @@ function parseDollarNumber(raw) {
   const n = Number.parseFloat(digits);
   return Number.isFinite(n) ? n : null;
 }
-function rollupRow(cards) {
+function computeMaxConsideration(cards) {
   const perShareHit = firstFeature(cards, 'perShareAmount') || firstFeature(cards, 'cashAmount');
   const { text: cvrMaxText, card: cvrMaxCard } = resolveCvrMax(cards);
   const perShareNum = perShareHit ? parseDollarNumber(perShareHit.value) : null;
@@ -175,15 +187,7 @@ function rollupRow(cards) {
   if (perShareNum === null || cvrMaxNum === null) return null;
   const total = perShareNum + cvrMaxNum;
   const evidence = [perShareHit?.card, cvrMaxCard].filter(Boolean).map(textOf).filter(Boolean).join(' ');
-  return {
-    id: ROLLUP_ROW_ID,
-    label: 'Maximum consideration (cash + CVR)',
-    kind: 'Computed',
-    detail: `Up to $${total.toFixed(2)} / share`,
-    isRollup: true,
-    evidence,
-    present: true,
-  };
+  return { detail: `Up to $${total.toFixed(2)} / share`, evidence };
 }
 
 // "Other provisions in this section" (spec §2): payment/exchange mechanics
@@ -215,11 +219,13 @@ function renderPillDetail(row, ctx) {
 // "[$47.50 in cash] + [1 CVR (up to $22.50)]" as distinct pills joined by a
 // plain "+", not one flattened string. row.parts (attached in selectRows)
 // carries buildPerShareParts' own pill/plus split so this stays a pure
-// render of already-computed data.
+// render of already-computed data. When the computed max (cash + CVR max)
+// is available, it renders on the right-hand side of this SAME row -- not
+// as its own row -- since it's just the ceiling of the same economics.
 function renderPerShareDetail(row, ctx) {
   const PillCell = ctx?.primitives?.PillCell;
   if (!PillCell || !Array.isArray(row.parts) || !row.parts.length) return row.detail;
-  return React.createElement(
+  const left = React.createElement(
     'span',
     { className: 'inline-flex flex-wrap items-center gap-1' },
     row.parts.map((part, index) => (
@@ -228,16 +234,19 @@ function renderPerShareDetail(row, ctx) {
         : React.createElement(PillCell, { key: `pill-${index}`, label: part.text, tone: 'present', evidence: row.evidence })
     )),
   );
-}
-
-function renderRollupDetail(row, ctx) {
-  const ComputedRollupHeader = ctx?.primitives?.ComputedRollupHeader;
-  if (ComputedRollupHeader) {
-    return React.createElement(ComputedRollupHeader, { label: 'Computed maximum', value: row.detail, evidence: row.evidence, tone: 'info' });
-  }
-  const PillCell = ctx?.primitives?.PillCell;
-  if (PillCell) return React.createElement(PillCell, { label: row.detail, tone: 'info', evidence: row.evidence });
-  return row.detail;
+  if (!row.maxDetail) return left;
+  const right = React.createElement(
+    'span',
+    { className: 'inline-flex flex-wrap items-center gap-1' },
+    React.createElement('span', { className: 'text-[10px] font-medium uppercase tracking-wider text-inkFaint' }, 'Max:'),
+    React.createElement(PillCell, { label: row.maxDetail, tone: 'info', evidence: row.maxEvidence || row.evidence }),
+  );
+  return React.createElement(
+    'span',
+    { className: 'flex flex-wrap items-center justify-between gap-2' },
+    left,
+    right,
+  );
 }
 
 // Link, not a "Yes" pill: EvidenceHoverSource is the existing lightweight
@@ -265,7 +274,6 @@ function renderLinkDetail(row, ctx) {
 
 function renderDetail(row, ctx) {
   if (row.isLink) return renderLinkDetail(row, ctx);
-  if (row.isRollup) return renderRollupDetail(row, ctx);
   if (row.id === PER_SHARE_ROW_ID && Array.isArray(row.parts)) return renderPerShareDetail(row, ctx);
   if (PILL_DETAIL_IDS.has(row.id)) return renderPillDetail(row, ctx);
   const TruncatedWithSeeText = ctx?.primitives?.TruncatedWithSeeText;
@@ -294,12 +302,16 @@ const considerationHeroConfig = {
       const row = makeRow('per-share', 'Per-share consideration', 'Economics', perShareText, cards[0]);
       if (row) {
         row.parts = parts;
+        // Max consideration (cash + CVR max) renders on the right of THIS
+        // row (see renderPerShareDetail), never as its own row.
+        const max = computeMaxConsideration(cards);
+        if (max) {
+          row.maxDetail = max.detail;
+          row.maxEvidence = max.evidence;
+        }
         rows.push(row);
       }
     }
-
-    const rollup = rollupRow(cards);
-    if (rollup) rows.push(rollup);
 
     for (const [key, label, kind] of DIRECT_ROWS) {
       const hit = firstFeature(cards, key);

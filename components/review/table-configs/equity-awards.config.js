@@ -328,8 +328,23 @@ function cutoffRow(cards) {
   return null;
 }
 
+function isEsppRow(row) {
+  return row.instrumentCode === 'ESPP' || /\bESPP\b/i.test(row.instrument || '');
+}
+
+// ESPP renders last among the per-instrument rows (feedback round 4, EQ1):
+// options/RSAs/RSUs are the higher-value awards readers scan for first, so
+// ESPP -- typically the smallest, most mechanical treatment -- sorts to the
+// bottom regardless of where equityAwardTreatment's own key order (or
+// outstandingInstruments' alphabetical sort) happened to place it.
+function moveEsppToBottom(rows) {
+  const rest = rows.filter((row) => !isEsppRow(row));
+  const espp = rows.filter(isEsppRow);
+  return [...rest, ...espp];
+}
+
 function equityAwardRows(cards) {
-  const rows = (cards || []).flatMap(rowsForCard);
+  const rows = moveEsppToBottom((cards || []).flatMap(rowsForCard));
   const cutoff = cutoffRow(cards || []);
   return cutoff ? [...rows, cutoff] : rows;
 }
