@@ -215,7 +215,8 @@ test('nosol-section: T6 folds "Company termination for Superior Proposal" INSIDE
   const terminationRow = superior.rows.find((r) => r.id === 'nosol-superior-termination');
   assert.ok(terminationRow, 'Company termination for Superior Proposal must render inside the Superior Proposal box');
   const html = renderToStaticMarkup(React.createElement(React.Fragment, null, terminationRow.children));
-  assert.match(html, /Section 8\.02/);
+  // Round-6: renders the crisp "Yes — if it concurrently signs ..." summary.
+  assert.match(html, /Yes — if it concurrently signs the alternative agreement/);
   // Not duplicated elsewhere in the section.
   const allRowIds = groups.flatMap((g) => g.rows.map((r) => r.id));
   assert.equal(allRowIds.filter((id) => id === 'nosol-superior-termination').length, 1);

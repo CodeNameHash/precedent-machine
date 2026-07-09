@@ -93,17 +93,41 @@ const PROHIBITED_ACT_SPECS = [
   { id: 'discussions', label: 'Engage in discussions or negotiations', pattern: /(?:participate|engage)\s+in\s+(?:any\s+)?discussions?(?:\s+or\s+negotiations?)?/i },
 ];
 
+// Ben (round 6): the ceaseDiscussionsProhibitedList entries are stored as long
+// verbatim clause limbs ("directly or indirectly participate in any discussions
+// or negotiations regarding, furnish ..."). Tighten each to a crisp pill; the
+// verbatim stays as the pill's hover evidence.
+const PROHIBIT_ACT_SUMMARY = [
+  { test: /participate\s+in\s+(?:any\s+)?discussions|negotiations|furnish|provide[^.]*information|assist/i, label: 'Participate in discussions / furnish information' },
+  { test: /solicit|initiate|encourage|facilitate/i, label: 'Solicit, initiate, encourage or facilitate a proposal' },
+  { test: /waiver\s+or\s+release|standstill|terminate,?\s+amend|release under any restriction/i, label: 'Grant a waiver / release under a standstill' },
+];
+function summarizeProhibitedAct(text) {
+  const t = String(text || '').trim();
+  // Already-crisp list entries (e.g. "solicit") stay verbatim; only long
+  // verbatim clause limbs get summarized.
+  if (t.length <= 45) return t;
+  const spec = PROHIBIT_ACT_SUMMARY.find((s) => s.test.test(t));
+  return spec ? spec.label : `${splitForCell(t, 60).short}…`;
+}
 function prohibitedActsFor(matches) {
   // Prefer an already-itemized claim (ceaseDiscussionsProhibitedList
-  // extracted as more than one distinct list entry) -- each entry IS already
-  // one discrete prohibited act, so just render each as its own pill rather
-  // than re-deriving from the raw clause.
+  // extracted as more than one distinct list entry). Each entry is one
+  // prohibited act -- summarize it to a crisp pill and dedupe.
   for (const card of matches) {
     const raw = cardFeatures(card).ceaseDiscussionsProhibitedList;
     if (Array.isArray(raw) && raw.length > 1) {
       const items = raw.map((item) => valueText(item)).filter(Boolean);
       if (items.length > 1) {
-        return items.map((label, index) => ({ id: `claimed-${index}`, label, evidence: textOf(card), source: card }));
+        const seen = new Set();
+        const acts = [];
+        items.forEach((verbatim, index) => {
+          const label = summarizeProhibitedAct(verbatim);
+          if (seen.has(label)) return;
+          seen.add(label);
+          acts.push({ id: `claimed-${index}`, label, evidence: verbatim, source: card });
+        });
+        return acts;
       }
     }
   }
@@ -162,7 +186,16 @@ function rowForSpec(spec, cards) {
   };
   if (spec.id === 'prohibit') row.acts = prohibitedActsFor(matches);
   if (spec.id === 'exceptions') row.exceptionItems = exceptionItemsFor(matches);
+  // Ben (round 6): the don't-ask-don't-waive row showed a raw snippet -- give
+  // the actual summary of when the standstill can be waived.
+  if (spec.id === 'standstill-enforce') row.detail = summarizeStandstill(row.detail);
   return row;
+}
+function summarizeStandstill(text) {
+  const t = String(text || '');
+  if (/inconsistent with[^.]*fiduciary|good\s+faith/i.test(t)) return 'Standstill waivable only on a good-faith fiduciary-duty determination by the Board';
+  if (/don.?t[- ]ask[- ]don.?t[- ]waive/i.test(t)) return "Don't-ask-don't-waive: standstill not waived on request";
+  return t;
 }
 
 // ── Core-mechanics pill synthesis ──────────────────────────────────────────
@@ -326,26 +359,23 @@ function chipRowNode(chips, ctx) {
     })),
   );
 }
+// Ben (round 6): "just say 3 exceptions -- show them!" Each plain-language
+// exception renders as its own pill (stacked, since they're full sentences),
+// not a "3 exceptions" count behind a "see exceptions" expander.
 function exceptionsListNode(row, ctx) {
   const PillCell = ctx?.primitives?.PillCell;
-  const label = `${row.exceptionItems.length} exception${row.exceptionItems.length === 1 ? '' : 's'}`;
-  const pill = PillCell
-    ? React.createElement(PillCell, { label, tone: 'warning', evidence: row.evidence, source: row.sourceCards?.[0] })
-    : label;
+  if (!PillCell) return row.exceptionItems.join(' · ');
   return React.createElement(
     'div',
-    { className: 'space-y-1' },
-    pill,
-    React.createElement(
-      'details',
-      { className: 'mt-1' },
-      React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, 'see exceptions'),
-      React.createElement(
-        'ul',
-        { className: 'mt-1 max-w-[36rem] list-disc pl-4 text-[11px] leading-5 text-inkLight' },
-        row.exceptionItems.map((text, index) => React.createElement('li', { key: index }, text)),
-      ),
-    ),
+    { className: 'flex flex-col items-start gap-1' },
+    row.exceptionItems.map((text, index) => React.createElement(PillCell, {
+      key: index,
+      label: text,
+      tone: 'warning',
+      evidence: row.evidence,
+      source: row.sourceCards?.[0],
+      wrap: true,
+    })),
   );
 }
 function renderSignals(row, ctx) {

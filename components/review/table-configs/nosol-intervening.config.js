@@ -99,9 +99,16 @@ function prettifyScope(text) {
   if (code === 'NA') return 'No Intervening Event provision';
   return text;
 }
+// Ben (round 6): render "Yes"/"No", never a bare "true"/"false".
+function yesNo(detail) {
+  const t = String(detail || '').trim().toLowerCase();
+  if (t === 'true') return 'Yes';
+  if (t === 'false') return 'No';
+  return detail;
+}
 function rowForSpec(spec, cards) {
   const evidence = cards.map(textOf).filter(Boolean).join('\n\n');
-  const detail = firstFeature(cards, spec.keys) || spec.fallback(evidence);
+  const detail = yesNo(firstFeature(cards, spec.keys) || spec.fallback(evidence));
   if (!detail) return null;
   return {
     id: `nosol-intervening-${spec.id}`,

@@ -2510,7 +2510,7 @@ test('nosol-superior config maps superior proposal features', () => {
     'Engagement standard',
     'Final determination standard',
   ]);
-  assert.equal(rows.find((row) => row.id === 'nosol-superior-threshold').detail, '50');
+  assert.equal(rows.find((row) => row.id === 'nosol-superior-threshold').detail, '50%');
   assert.match(rows.find((row) => row.id === 'nosol-superior-engage').detail, /could reasonably be expected/);
 });
 
@@ -2526,7 +2526,8 @@ test('nosol-superior config falls back to definition quote text', () => {
   });
   assert.equal(rows.find((row) => row.id === 'nosol-superior-threshold').detail, '75%');
   assert.match(rows.find((row) => row.id === 'nosol-superior-test').detail, /greater value/);
-  assert.match(rows.find((row) => row.id === 'nosol-superior-determiner').detail, /Company Board determines/);
+  // Round-6: determiner renders the clean canonical pill, not the raw sentence.
+  assert.match(rows.find((row) => row.id === 'nosol-superior-determiner').detail, /Company Board — in good faith/);
 });
 
 test('nosol-intervening config maps intervening event features', () => {

@@ -334,6 +334,27 @@ function acqProposalChipRow(chips, ctx) {
     })),
   );
 }
+// Ben (round 6): "remove the language and just have the link." A plain
+// "see definition" disclosure with the full text hidden -- no inline preview
+// sentence before it.
+function seeDefinitionLink(text, ctx) {
+  if (!ctx || !text) return null;
+  return React.createElement(
+    'details',
+    { className: 'mt-1' },
+    React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, 'see definition'),
+    React.createElement('div', { className: 'mt-1 max-w-[36rem] whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight' }, text),
+  );
+}
+// Acceptable Confidentiality Agreement -> key terms as pills (Ben round 6).
+function acaChips(text, card) {
+  const t = String(text || '');
+  const chips = [];
+  if (/customary/i.test(t)) chips.push('Customary confidentiality agreement');
+  if (/no\s+less\s+favo[u]?rable|not\s+materially\s+less/i.test(t)) chips.push('No less favourable in aggregate than Parent’s NDA');
+  if (/standstill/i.test(t)) chips.push('Standstill not required (if Parent’s standstill is released)');
+  return chips.map((label, index) => ({ id: `aca-${index}`, label, tone: 'neutral', evidence: t, source: card }));
+}
 function buildAcquisitionProposalGroup(reviewDeal, ctx) {
   const cards = reviewDeal?.cards || [];
   const baseCard = acqProposalBaseCard(cards);
@@ -350,21 +371,27 @@ function buildAcquisitionProposalGroup(reviewDeal, ctx) {
 
   const rows = [{
     id: 'nosol-acqprop-company-takeover',
-    label: 'Company Takeover Proposal — positive enumeration',
+    label: 'Company Takeover Proposal',
     children: ctx ? React.createElement(
       'div',
       { className: 'space-y-1.5' },
       acqProposalChipRow([...pctChips, ...typeChips, exclusionChip], ctx),
-      acqProposalCollapsedText(baseText, 'see full definition'),
+      seeDefinitionLink(baseText, ctx),
     ) : null,
   }];
 
   if (qualifyingCard) {
     const qualifyingText = String(qualifyingCard.defined_value ? valueText(qualifyingCard.defined_value) : textOf(qualifyingCard));
+    // What "Qualifying" does: it's the gateway a proposal must clear before the
+    // Company may engage (furnish info / negotiate) -- two crisp pills.
+    const qualChips = [
+      { id: 'qual-superior', label: 'Could lead to a Superior Proposal', tone: 'info', evidence: qualifyingText, source: qualifyingCard },
+      { id: 'qual-fiduciary', label: 'Board good-faith determination (fiduciary-out gateway to engage)', tone: 'neutral', evidence: qualifyingText, source: qualifyingCard },
+    ];
     rows.push({
       id: 'nosol-acqprop-qualifying',
-      label: 'Qualifying Company Takeover Proposal — fiduciary-out subset',
-      children: ctx ? acqProposalCollapsedText(qualifyingText, 'see full definition') : null,
+      label: 'Qualifying Company Takeover Proposal',
+      children: ctx ? React.createElement('div', { className: 'space-y-1.5' }, acqProposalChipRow(qualChips, ctx), seeDefinitionLink(qualifyingText, ctx)) : null,
     });
   }
 
@@ -439,10 +466,13 @@ function buildGroups(reviewDeal, ctx) {
   if (acqProposalGroup) {
     const confidentialityRow = rowsBySource.fiduciary?.get('nosol-fiduciary-acceptable-confidentiality');
     if (confidentialityRow) {
+      const chips = acaChips(confidentialityRow.detail, confidentialityRow.sourceCards?.[0]);
       acqProposalGroup.rows.push({
         id: confidentialityRow.id,
-        label: confidentialityRow.label,
-        children: ctx ? rowNode(confidentialityRow, ctx, SOURCES.fiduciary) : null,
+        label: 'Acceptable Confidentiality Agreement',
+        children: ctx
+          ? React.createElement('div', { className: 'space-y-1.5' }, acqProposalChipRow(chips, ctx), seeDefinitionLink(confidentialityRow.detail, ctx))
+          : null,
       });
     }
     const insertAt = groups.findIndex((group) => group.id === 'nosol-notice');

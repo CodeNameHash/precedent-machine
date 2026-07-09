@@ -255,7 +255,10 @@ function resolveLookback(card) {
 
 function resolveTerm(card) {
   const party = cardCode(card).startsWith('REP-B-') ? 'Parent' : null;
-  const mainConcept = valueText(firstFeature([card], ['mainConcept'])?.value) || textOf(card);
+  // "see text" must expand to the ACTUAL rep clause, not the mainConcept
+  // paraphrase (Ben round 6: the summary "isn't the full rep"). textOf(card)
+  // is the card's full primary_quote / region_full_text.
+  const mainConcept = textOf(card) || valueText(firstFeature([card], ['mainConcept'])?.value);
   return { label: labelOf(card), party, mainConcept };
 }
 

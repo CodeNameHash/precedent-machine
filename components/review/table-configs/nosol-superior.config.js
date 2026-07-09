@@ -109,22 +109,51 @@ function terminationRow(allCards) {
   const card = matches.reduce((best, candidate) => (textOf(candidate).length > textOf(best).length ? candidate : best));
   const detail = textOf(card);
   if (!detail) return null;
+  // Ben (round 6): "just say yes or 'yes if it simultaneously signs up'." Kept
+  // under the pill length so it renders as a pill, not a collapsed preview.
+  const summary = 'Yes — if it concurrently signs the alternative agreement (§5.02(a) not breached)';
   return {
     id: 'nosol-superior-termination',
     label: 'Company termination for Superior Proposal',
     party: partySide(card),
-    detail,
+    detail: summary,
     evidence: matches.map(textOf).filter(Boolean).join('\n\n'),
     sourceCards: matches,
     present: true,
   };
 }
 
+// Ben (round 6): the Superior Proposal test is a two-limb standard -- surface
+// each limb as its own crisp pill (Value / Deliverability), like the old
+// scheme's superiorProposalLimbs, rather than dumping the whole definition.
+function superiorTestLimbs(text) {
+  const t = String(text || '');
+  const items = [];
+  if (/greater\s+value|more\s+favo|financial\s+point\s+of\s+view|financially\s+superior/i.test(t)) {
+    items.push({ id: 'nosol-superior-test-value', label: 'Value — greater financial value to stockholders than the deal', tone: 'neutral' });
+  }
+  if (/reasonably\s+likely\s+to\s+be\s+(?:completed|consummated)|deliverab|reasonable\s+likelihood/i.test(t)) {
+    items.push({ id: 'nosol-superior-test-deliverability', label: 'Deliverability — reasonably likely to be completed (financing / regulatory / timing)', tone: 'neutral' });
+  }
+  return items.length ? items : null;
+}
+function cleanDeterminer(text) {
+  const t = String(text || '');
+  if (/good\s+faith/i.test(t) && /(?:outside\s+(?:legal\s+)?counsel|financial\s+advisor)/i.test(t)) {
+    return 'Company Board — in good faith, after outside counsel + financial advisor';
+  }
+  return t;
+}
+function pctFmt(raw) {
+  const t = String(raw || '').trim();
+  return /^\d+$/.test(t) ? `${t}%` : t;
+}
 function rowForSpec(spec, cards) {
   const evidence = cards.map(textOf).filter(Boolean).join('\n\n');
-  const detail = firstFeature(cards, spec.keys) || spec.fallback(evidence);
-  if (!detail) return null;
-  return {
+  const raw = firstFeature(cards, spec.keys) || spec.fallback(evidence);
+  if (!raw) return null;
+  const detail = spec.id === 'determiner' ? cleanDeterminer(raw) : spec.id === 'threshold' ? pctFmt(raw) : raw;
+  const row = {
     id: `nosol-superior-${spec.id}`,
     label: spec.label,
     party: [...new Set(cards.map(partySide))].join(', ') || 'Target / Company',
@@ -133,6 +162,8 @@ function rowForSpec(spec, cards) {
     sourceCards: cards,
     present: true,
   };
+  if (spec.id === 'test') row.items = superiorTestLimbs(raw);
+  return row;
 }
 
 // ── New-row synthesis (short codes -> friendly labels) ─────────────────────
@@ -223,6 +254,16 @@ function collapsedTextNode(text) {
   );
 }
 function renderSignals(row, ctx) {
+  // Two-limb Superior Proposal test -> one pill per limb (Value / Deliverability).
+  if (Array.isArray(row.items) && row.items.length) {
+    const PillCell = ctx?.primitives?.PillCell;
+    if (!PillCell) return row.items.map((item) => item.label).join('; ');
+    return React.createElement(
+      'div',
+      { className: 'flex flex-col items-start gap-1' },
+      row.items.map((item) => React.createElement(PillCell, { key: item.id, label: item.label, tone: item.tone || 'neutral', evidence: row.evidence, source: row.sourceCards?.[0], wrap: true })),
+    );
+  }
   const signal = rowSignal(row);
   if (!signal) return '';
   if (String(signal.label).length > 90) return collapsedTextNode(signal.label);

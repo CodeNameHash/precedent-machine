@@ -131,10 +131,38 @@ function repsFromText(text) {
 function buyerTerminationFromText(text) {
   return sentence(text, /[^.]*Parent[^.]*terminat[^.]*(?:breach|No\s+Solicitation|nonsolicit)[^.]*\.?/i);
 }
+// Ben (round 6): the standard rows must read as clean PILLS, not raw clause
+// dumps behind "see text". Each summarizes its verbatim standard to the
+// canonical phrase (derived from the clause language, not hardcoded).
+function cleanEngageStandard(detail) {
+  const t = String(detail || '');
+  if (/reasonably\s+be\s+expected\s+to\s+lead\s+to\s+a\s+Superior/i.test(t)) return 'Constitutes or could reasonably be expected to lead to a Superior Proposal';
+  if (/constitutes?[^.]*lead\s+to\s+a\s+Superior/i.test(t)) return 'Constitutes or could lead to a Superior Proposal';
+  return t;
+}
+function cleanFinalStandard(detail) {
+  const t = String(detail || '');
+  if (/inconsistent\s+with[^.]*fiduciary\s+duties/i.test(t)) return 'Reasonably likely to be inconsistent with fiduciary duties under applicable law';
+  return t;
+}
+// Bare numeric periods get their unit (Ben round 6: "4" -> "4 business days").
+function withBusinessDays(detail) {
+  const t = String(detail || '').trim();
+  return /^\d+$/.test(t) ? `${t} business day${t === '1' ? '' : 's'}` : t;
+}
+const ROW_CLEANERS = {
+  engage: cleanEngageStandard,
+  final: cleanFinalStandard,
+  'notice-period': withBusinessDays,
+  'initial-match': withBusinessDays,
+  'subsequent-match': withBusinessDays,
+};
 function rowForSpec(spec, cards) {
   const evidence = cards.map(textOf).filter(Boolean).join('\n\n');
-  const detail = firstFeature(cards, spec.keys) || spec.fallback(evidence);
-  if (!detail) return null;
+  const raw = firstFeature(cards, spec.keys) || spec.fallback(evidence);
+  if (!raw) return null;
+  const cleaner = ROW_CLEANERS[spec.id];
+  const detail = cleaner ? cleaner(raw) : raw;
   return {
     id: `nosol-fiduciary-${spec.id}`,
     label: spec.label,
@@ -172,10 +200,18 @@ function fiduciaryStandardLabel(raw) {
   if (!text) return null;
   return FIDUCIARY_STANDARD_LABELS[text.trim().toLowerCase()] || prettifyCode(text);
 }
+// Ben (round 6): ONE clean pill for the fiduciary-out standard (he keyed the
+// canonical codes deliberately). fiduciaryOutStandard carries several stage-
+// specific values; resolve to the single definitive gate.
 function fiduciaryStandardSummary(raw) {
   const items = Array.isArray(raw) ? raw : [raw];
-  const labels = [...new Set(items.map(fiduciaryStandardLabel).filter(Boolean))];
-  return labels.length ? labels.join(' / ') : null;
+  const texts = items.map((item) => valueText(item)).filter(Boolean);
+  const joined = texts.join(' ').toLowerCase();
+  if (/is-superior-proposal|is a superior|continues to constitute a superior|after giving effect to all/.test(joined)) return 'Is a Superior Proposal (after Parent’s adjustments)';
+  if (/reasonably be expected to lead to a superior/.test(joined)) return 'Constitutes or could reasonably be expected to lead to a Superior Proposal';
+  if (/lead to a superior/.test(joined)) return 'Constitutes or could lead to a Superior Proposal';
+  const labels = [...new Set(texts.map(fiduciaryStandardLabel).filter(Boolean))];
+  return labels[0] || null;
 }
 function boardChangeStandardLabel(raw) {
   const text = valueText(raw);
@@ -226,10 +262,11 @@ const COR_ITEM_SPECS = [
   { test: /publicly recommend against|publicly disclosed|reaffirm/i, label: 'Fail to reject a publicly-disclosed Takeover Proposal' },
   { test: /tender or exchange offer/i, label: 'Fail to recommend against a related tender/exchange offer' },
 ];
+// Labels ported from the old scheme's NOSOL_PILL_VOCAB.notChangeOfRecommendationItems.
 const NOT_COR_SPECS = [
-  { test: /14d-9|14e-2|stop.*look.*listen/i, label: 'Required tender-offer disclosures (Rule 14d-9 / 14e-2)' },
-  { test: /required by applicable law|legally required/i, label: 'Disclosures required by applicable law' },
-  { test: /disclosure of information|describes|factual|accurate/i, label: 'Factual disclosures to stockholders (no change to the Recommendation)' },
+  { test: /14d-9|14e-2|1012|regulation m-a|stop,? ?look/i, label: '14d-9 / 14e-2 stop-look-listen compliance' },
+  { test: /factual|accurate|describes|receipt of[^.]*proposal|identity of[^.]*party|material terms/i, label: 'Factually accurate disclosure' },
+  { test: /required by applicable law|comply with applicable law|inconsistent with applicable law|informing any person|existence of the provisions/i, label: 'Routine communications' },
 ];
 function summarizeItem(text, specs) {
   const t = String(text || '');
@@ -276,6 +313,36 @@ function corItemsRow(spec, cards, specs, { reaffirm = false, tone = 'neutral' } 
     party: [...new Set(cards.map(partySide))].join(', ') || 'Target / Company',
     items,
     evidence: cards.map(textOf).filter(Boolean).join('\n\n'),
+    sourceCards: cards,
+    present: true,
+  };
+}
+
+// Notice-content canonical pills, ported from the old scheme's
+// NOSOL_PILL_VOCAB.noticeContent -- the notice-content clause enumerates which
+// facts the notice must carry; each match renders as its own pill (Ben round 6:
+// "you don't have as much detail as the old schema -- get to those pills").
+const NOTICE_CONTENT_VOCAB = [
+  { code: 'IDENTITY', label: 'Identity of the bidder', test: /identity|name of such person|person or group|party making|person making/i },
+  { code: 'MATERIAL_TERMS', label: 'Material terms & conditions', test: /material terms|terms and conditions|basis for|details/i },
+  { code: 'COPIES', label: 'Copies of the proposal', test: /copies|copy|draft|proposed agreements|ancillary documents|relevant documents|documentation|financing commitments|written/i },
+  { code: 'DESCRIPTION', label: 'Description if not in writing', test: /not in writing|oral|description of (?:the )?(?:material )?terms|written summary/i },
+  { code: 'MODIFICATIONS', label: 'Amendments / status updates', test: /amendment|modification|changes?|subsequent|status of any discussions|developments/i },
+];
+function noticeContentRow(cards) {
+  const raw = allFeatureItems(cards, ['noticeContent']);
+  if (!raw.length) return null;
+  const joined = raw.map((entry) => entry.text).join(' ');
+  const items = NOTICE_CONTENT_VOCAB
+    .filter((vocab) => vocab.test.test(joined))
+    .map((vocab) => ({ id: `nosol-fiduciary-notice-content-${vocab.code}`, label: vocab.label, tone: 'info', evidence: raw[0].text, source: raw[0].card }));
+  if (!items.length) return null;
+  return {
+    id: 'nosol-fiduciary-notice-content',
+    label: 'Notice content',
+    party: [...new Set(cards.map(partySide))].join(', ') || 'Target / Company',
+    items,
+    evidence: raw.map((entry) => entry.text).join('\n\n'),
     sourceCards: cards,
     present: true,
   };
@@ -391,6 +458,7 @@ const nosolFiduciaryConfig = {
     for (const row of ROWS) {
       if (row.id === 'change-of-rec-items') byId[row.id] = corItemsRow(row, cards, COR_ITEM_SPECS, { reaffirm: true, tone: 'warning' });
       else if (row.id === 'not-change-of-rec-items') byId[row.id] = corItemsRow(row, cards, NOT_COR_SPECS, { tone: 'info' });
+      else if (row.id === 'notice-content') byId[row.id] = noticeContentRow(cards);
       else byId[row.id] = rowForSpec(row, cards);
     }
     for (const spec of NEW_ROWS) byId[spec.id] = newRow(spec, familyCards);

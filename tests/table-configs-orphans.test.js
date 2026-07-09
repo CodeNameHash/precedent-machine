@@ -160,7 +160,7 @@ test('nosol-fiduciary renders changeOfRecommendationItems and notChangeOfRecomme
   assert.ok(changeLabels.some((l) => /Recommendation in the Proxy Statement/.test(l)));
   assert.match(changeRow.items[0].evidence, /withdraw, amend/);
   assert.ok(notChangeRow, 'notChangeOfRecommendationItems should render a row');
-  assert.match(notChangeRow.items[0].label, /Factual disclosures to stockholders/);
+  assert.match(notChangeRow.items[0].label, /Factually accurate disclosure/);
 });
 
 test('nosol-noshop prohibit row reads the real ceaseDiscussionsProhibitedList attribute, not the stale noShopType/prohibitedActions/mainRestriction keys', () => {
