@@ -10,6 +10,7 @@ const path = require('node:path');
 let structureMechanicsMod;
 let employeeBenefitsMod;
 let advisersFeesExpensesMod;
+let miscBoilerplateMod;
 let nosolFiduciaryMod;
 let nosolNoshopMod;
 let conditionsMod;
@@ -20,6 +21,7 @@ test.before(async () => {
   structureMechanicsMod = await import(path.join('..', 'components', 'review', 'table-configs', 'structure-mechanics.config.js'));
   employeeBenefitsMod = await import(path.join('..', 'components', 'review', 'table-configs', 'employee-benefits.config.js'));
   advisersFeesExpensesMod = await import(path.join('..', 'components', 'review', 'table-configs', 'advisers-fees-expenses.config.js'));
+  miscBoilerplateMod = await import(path.join('..', 'components', 'review', 'table-configs', 'misc-boilerplate.config.js'));
   nosolFiduciaryMod = await import(path.join('..', 'components', 'review', 'table-configs', 'nosol-fiduciary.config.js'));
   nosolNoshopMod = await import(path.join('..', 'components', 'review', 'table-configs', 'nosol-noshop.config.js'));
   conditionsMod = await import(path.join('..', 'components', 'review', 'table-configs', 'conditions-m.config.js'));
@@ -79,7 +81,11 @@ test('employee-benefits renders 401(k) continuation (Skechers cross-deal gap) al
   assert.match(row.detail, /401\(k\)/);
 });
 
-test('advisers-fees-expenses renders the Assignment group (5 keys, Metsera regression: whole sub-section had no rows)', () => {
+// FEEDBACK-2-PUNCHLIST.md item 45: Specific performance and the Assignment
+// group don't belong on Advisers / Fees / Expenses -- they're Miscellaneous
+// / boilerplate provisions. These two regression tests moved to
+// misc-boilerplate accordingly (5-key intent preserved).
+test('misc-boilerplate renders the Assignment group (5 keys, Metsera regression: whole sub-section had no rows)', () => {
   const assignmentCard = {
     id: 'assignment',
     provision_type: 'MISC_BOILERPLATE',
@@ -94,7 +100,7 @@ test('advisers-fees-expenses renders the Assignment group (5 keys, Metsera regre
       assignmentRestrictions: 'Neither this Agreement nor any rights, interests or obligations shall be assigned without prior written consent',
     },
   };
-  const rows = advisersFeesExpensesMod.advisersFeesExpensesConfig.selectRows({ cards: [assignmentCard] });
+  const rows = miscBoilerplateMod.miscBoilerplateConfig.selectRows({ cards: [assignmentCard] });
   const assignmentRows = rows.filter((row) => row.kind === 'Assignment');
   assert.equal(assignmentRows.length, 5, 'all five Assignment-group keys should render rows');
   assert.deepEqual(new Set(assignmentRows.map((row) => row.label)), new Set([
@@ -106,7 +112,7 @@ test('advisers-fees-expenses renders the Assignment group (5 keys, Metsera regre
   ]));
 });
 
-test('advisers-fees-expenses renders specific performance limitations (Skechers cross-deal gap)', () => {
+test('misc-boilerplate renders specific performance limitations (Skechers cross-deal gap)', () => {
   const spCard = {
     id: 'sp',
     provision_type: 'MISC_BOILERPLATE',
@@ -117,7 +123,7 @@ test('advisers-fees-expenses renders specific performance limitations (Skechers 
       specificPerformanceLimitations: 'under no circumstances shall the Company be entitled to receive both a grant of specific performance and monetary damages',
     },
   };
-  const rows = advisersFeesExpensesMod.advisersFeesExpensesConfig.selectRows({ cards: [spCard] });
+  const rows = miscBoilerplateMod.miscBoilerplateConfig.selectRows({ cards: [spCard] });
   const row = rows.find((r) => r.label === 'Specific performance limitations');
   assert.ok(row, 'specificPerformanceLimitations should render a row');
 });
