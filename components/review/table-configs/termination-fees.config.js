@@ -5,12 +5,17 @@ import { cardCode, cardFeatures, cardType, firstFeature, makeRow, selectCards, t
 // Scalar rows read straight off a flat claim attribute that already matches
 // its legacy/UI name 1:1 — no nested-shape bridging needed (that bridging
 // lives in lib/termf.js's routeRawTerminationFees, used by feeTableRows()
-// below for the amount/trigger/tail rows).
+// below for the amount/trigger/tail rows). REBUILD-SPECS.md §11's clean-row
+// list is Company Termination Fee / Willful-breach exception / Interest on
+// late payment / Sole remedy; "Fee required to terminate" and "Naked no-vote
+// fee" are kept alongside them (real per-deal Yes/No facts, not prose) but
+// the boilerplate "Effect of Termination" sentence (void-on-termination
+// survival language) is dropped — it isn't a decision-relevant signal and
+// its one substantive fact (willfulBreachException) already has its own row.
 const SCALAR_ROWS = [
   ['required', 'Fee required to terminate', 'Condition', ['feeRequired', 'terminationFeeRequired']],
   ['naked-no-vote', 'Naked no-vote fee', 'Condition', ['nakedNoVoteFeePresent', 'nakedNoVoteFee']],
   ['sole-remedy', 'Sole and exclusive remedy', 'Remedy', ['soleRemedy', 'soleAndExclusiveRemedy']],
-  ['effect', 'Effect of termination', 'Remedy', ['effectOfTermination']],
   ['interest', 'Interest on late payment', 'Remedy', ['interestOnLatePayment']],
   ['willful-breach', 'Willful-breach exception', 'Remedy', ['willfulBreachException']],
 ];
@@ -20,8 +25,15 @@ const FEE_TYPE_LABELS = {
   REVERSE_TERMINATION_FEE: 'Reverse termination fee',
   EXPENSE_REIMBURSEMENT: 'Expense reimbursement',
   NAKED_NO_VOTE_FEE: 'Naked no-vote fee',
-  TAIL_FEE: 'Tail fee (see Tail Fee Mechanics)',
 };
+
+// Tail-fee mechanics have their own tidied table directly after this one
+// (tail-fee.config.js, spec §11) — buildTerminationFees() still synthesizes
+// a TAIL_FEE row from the same TERMF-TAIL card this table also reads, so it
+// is dropped here to avoid showing the same mechanics twice.
+function isVisibleFeeType(feeRow) {
+  return feeRow.feeType !== 'TAIL_FEE';
+}
 
 const PARTY_LABELS = { TARGET: 'Company / Target', BUYER: 'Parent / Buyer' };
 
@@ -72,6 +84,22 @@ function formatFeeDetail(feeRow) {
   return parts.filter(Boolean).join(' · ') || 'Amount not specified';
 }
 
+// Headline "$ amount pill" (REBUILD-SPECS.md §11: "Company Termination Fee
+// [$ amount pill]") -- the quantitative fact a reader scans for first, ahead
+// of the trigger pills. `amount` already arrives pre-formatted with its `$`
+// sign from the claims data, so this stays a straight pass-through, not a
+// re-derivation.
+function feeAmountSignal(feeRow) {
+  if (!feeRow.amount) return null;
+  const pctSuffix = feeRow.percentEquityValue ? ` (${feeRow.percentEquityValue} of equity value)` : '';
+  return {
+    id: `${feeRow.feeType}-amount`,
+    label: `${feeRow.amount}${pctSuffix}`,
+    value: feeRow.amount,
+    tone: 'present',
+  };
+}
+
 // One pill per trigger (short plain-English name), not the trigger's full
 // verbatim clause text — the clause itself is still reachable via the
 // pill's evidence hover.
@@ -85,9 +113,13 @@ function feeTriggerSignals(feeRow) {
   }));
 }
 
+function feeSignals(feeRow) {
+  return [feeAmountSignal(feeRow), ...feeTriggerSignals(feeRow)].filter(Boolean);
+}
+
 function feeTableRows(cards) {
   const combined = combineTermfFeatures(cards);
-  return buildTerminationFees(combined).map((feeRow) => {
+  return buildTerminationFees(combined).filter(isVisibleFeeType).map((feeRow) => {
     const sourceCard = findSourceCard(cards, feeRow.sourceKey);
     return {
       id: `termination-fees-${feeRow.feeType}`,
@@ -97,9 +129,37 @@ function feeTableRows(cards) {
       evidence: textOf(sourceCard),
       sourceCard,
       present: true,
-      signals: feeTriggerSignals(feeRow),
+      signals: feeSignals(feeRow),
     };
   });
+}
+
+// interestOnLatePayment lands as a { base, rate } claim object; the generic
+// valueText() field-dump ("base: the amount of the payment; rate: the prime
+// rate of...") doubles the field name onto the value exactly like the
+// "efforts standard: efforts standard" pattern the spec calls out elsewhere
+// as a "dull row" to fix. The rate is the operative fact; `base` is near-
+// always the boilerplate "the amount of the payment" and is only appended
+// when it says something else.
+function formatInterestOnLatePayment(raw) {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  const rate = typeof raw.rate === 'string' ? raw.rate.trim() : null;
+  const base = typeof raw.base === 'string' ? raw.base.trim() : null;
+  if (rate && base && !/^the amount of the payment$/i.test(base)) return `${rate}, applied to ${base}`;
+  return rate || base || null;
+}
+
+// A boolean-shaped scalar (soleRemedy, willfulBreachException, feeRequired,
+// nakedNoVoteFeePresent) renders as an affirmative "Yes" pill (present/
+// green) or a "No" pill (missing/grey) so those read the same as every other
+// present/absent flag in the app; a substantive non-boolean fact (the
+// interest formula) gets the neutral quantitative tone (info/blue) instead
+// of the old Condition-vs-Remedy warning/neutral split, which didn't track
+// whether the underlying value was actually true.
+function scalarTone(detail) {
+  if (detail === 'Yes') return 'present';
+  if (detail === 'No') return 'missing';
+  return 'info';
 }
 
 function scalarRows(cards) {
@@ -108,15 +168,17 @@ function scalarRows(cards) {
       const hit = firstFeature(cards, keys || id);
       const row = makeRow('termination-fees', id, label, kind, hit);
       if (!row) return null;
+      const detail = id === 'interest' ? (formatInterestOnLatePayment(hit.value) || row.detail) : row.detail;
       return {
         ...row,
+        detail,
         sourceCard: hit.card,
         // Bare value only -- the Term column already names this row.
         signals: [{
           id: `${row.id}-signal`,
-          label: row.detail,
-          value: row.detail,
-          tone: kind === 'Condition' ? 'warning' : 'neutral',
+          label: detail,
+          value: detail,
+          tone: scalarTone(detail),
           evidence: row.evidence,
           source: row.sourceCard,
         }],

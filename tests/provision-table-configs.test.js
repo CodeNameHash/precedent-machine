@@ -1208,7 +1208,10 @@ test('termination fee and expense configs expose primitive-backed signals', () =
   const amount = terminationRows.find((row) => row.id === 'termination-fees-COMPANY_TERMINATION_FEE');
   const feeRequired = terminationRows.find((row) => row.id === 'termination-fees-required');
   assert.match(amount.detail, /\$100,000,000/);
-  assert.deepEqual(amount.signals.map((item) => item.label), ['Company terminates to accept a Superior Proposal']);
+  // §11 rebuild: the fee amount itself now leads the signals column as its
+  // own pill (REBUILD-SPECS.md "Company Termination Fee [$ amount pill]"),
+  // ahead of the trigger-name pills.
+  assert.deepEqual(amount.signals.map((item) => item.label), ['$100,000,000', 'Company terminates to accept a Superior Proposal']);
   assert.deepEqual(feeRequired.signals.map((item) => item.label), ['Yes']);
   const termSignals = terminationFeesMod.terminationFeesConfig.columns.find((column) => column.id === 'signals');
   const termDetail = terminationFeesMod.terminationFeesConfig.columns.find((column) => column.id === 'detail');
@@ -1273,8 +1276,10 @@ test('termination-fees config renders structured fee-table cells, not raw JSON, 
   assert.match(companyFee.detail, /\$190,000,000/);
   assert.match(companyFee.detail, /within two business days/);
   // Each trigger is its own short, human-readable pill — not the full
-  // verbatim clause text dumped into one cell.
+  // verbatim clause text dumped into one cell — and the amount itself leads
+  // as its own pill (REBUILD-SPECS.md §11).
   assert.deepEqual(companyFee.signals.map((item) => item.label), [
+    '$190,000,000',
     'Company terminates to accept a Superior Proposal',
     'Parent terminates after a recommendation change',
   ]);
@@ -1299,12 +1304,21 @@ test('tail-fee render cells use threshold and evidence primitives', () => {
     EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
   };
   const threshold = rows.find((row) => row.id === 'tail-threshold');
+  const arming = rows.find((row) => row.id === 'tail-arming');
   const signalColumn = tailFeeMod.tailFeeConfig.columns.find((column) => column.id === 'signals');
   const mechanicColumn = tailFeeMod.tailFeeConfig.columns.find((column) => column.id === 'value');
-  const evidenceColumn = tailFeeMod.tailFeeConfig.columns.find((column) => column.id === 'evidence');
+  // §11 tidy: the old fourth "Evidence" column always-rendered the same
+  // card quote verbatim on every row -- a straight text dump repeated once
+  // per row. Evidence is still reachable via hover on the Signals/Mechanic
+  // primitives themselves (both wrap their content in EvidenceHoverSource),
+  // so there is no longer a dedicated evidence column at all.
+  assert.equal(tailFeeMod.tailFeeConfig.columns.find((column) => column.id === 'evidence'), undefined);
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, signalColumn.renderCell(threshold, { primitives }))), /class="pill">50%</);
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, mechanicColumn.renderCell(threshold, { primitives }))), /data-threshold="50%"/);
-  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, evidenceColumn.renderCell(threshold, { primitives }))), /data-evidence="If within 12 months/);
+  // The long-prose "termination scenarios that arm the tail" row is not
+  // crammed into a pill (pills are for enum/quantitative signals, not
+  // full-sentence text dumps) -- its Signals cell renders nothing.
+  assert.equal(signalColumn.renderCell(arming, { primitives }), null);
 });
 
 test('nosol-noshop config maps core no-shop cards', () => {
