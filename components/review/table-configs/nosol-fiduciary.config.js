@@ -341,9 +341,11 @@ function renderSignals(row, ctx) {
   if (Array.isArray(row.items) && row.items.length) {
     const PillCell = ctx?.primitives?.PillCell;
     if (!PillCell) return row.items.map((item) => item.label).join('; ');
+    // Ben (round 6): stack the A–E limbs vertically (one above the other) so
+    // the row doesn't blow out horizontally.
     return React.createElement(
       'div',
-      { className: 'flex flex-wrap gap-1' },
+      { className: 'flex flex-col items-start gap-1' },
       row.items.map((item) => React.createElement(PillCell, {
         key: item.id,
         label: item.label,

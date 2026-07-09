@@ -20,7 +20,12 @@ const CONFIGS_BY_SURFACE = {
   // and sec-meeting.config.js internally; those two keep their own exports
   // and tests but are no longer mounted directly in the review page).
   'Approvals / Votes': ['votes-approvals-meeting.config.js'],
-  'Advisers / Fees / Expenses': ['advisers-fees-expenses.config.js'],
+  // Ben (round 6): the thin fee/expense-allocation row folded INTO the
+  // Miscellaneous / Boilerplate table -- misc-boilerplate.config.js imports
+  // advisers-fees-expenses.config.js's buildExpenseExceptionsRow and renders
+  // it there. advisers-fees-expenses.config.js keeps its own exports/tests but
+  // is no longer mounted directly in the review page.
+  'Advisers / Fees / Expenses': ['misc-boilerplate.config.js'],
   'Representation Qualifiers': ['representations-qualifiers.config.js'],
   'Consideration Hero': ['consideration-hero.config.js'],
   // Consolidated into ONE grouped table per user feedback -- covered by

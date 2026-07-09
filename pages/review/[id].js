@@ -135,7 +135,6 @@ import { FullDocumentView } from '../../components/review/FullDocumentView';
 import { EditPanel } from '../../components/review/EditPanel';
 import ProvisionCardTable from '../../components/review/ProvisionCardTable';
 import ProvisionTable from '../../components/review/ProvisionTable';
-import { advisersFeesExpensesConfig } from '../../components/review/table-configs/advisers-fees-expenses.config';
 import { miscBoilerplateConfig } from '../../components/review/table-configs/misc-boilerplate.config';
 import { antitrustRegulatoryConfig } from '../../components/review/table-configs/antitrust-regulatory.config';
 import { considerationHeroConfig } from '../../components/review/table-configs/consideration-hero.config';
@@ -194,7 +193,6 @@ const REVIEW_TABLE_CONFIGS = [
   terminationFeesConfig,
   tailFeeConfig,
   employeeBenefitsConfig,
-  advisersFeesExpensesConfig,
   miscBoilerplateConfig,
   noOtherRepsFraudConfig,
   generalCovenantsConfig,

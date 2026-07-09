@@ -12,6 +12,19 @@ import {
   splitForCell,
   textOf,
 } from './card-utils.js';
+import { buildExpenseExceptionsRow, isAdvisersFeesCard } from './advisers-fees-expenses.config.js';
+
+// Ben (round 6): "Advisers / Fees / Expenses" is folded INTO this Misc table
+// (it was one thin fee/expense-allocation row). The base rule ("Each party
+// bears its own expenses, except:") moves to the TOP of the Provision cell,
+// with the named exception sections stacked as pills beneath it.
+function buildFeeExpenseRow(reviewDeal) {
+  const allCards = reviewDeal?.cards || [];
+  const feeCards = allCards.filter(isAdvisersFeesCard);
+  const row = buildExpenseExceptionsRow(feeCards, allCards);
+  if (!row) return null;
+  return { ...row, id: 'misc-boilerplate-fee-expense', kind: 'Boilerplate', baseRule: row.detail, detail: null };
+}
 
 // REBUILD-SPECS.md section 13: forum / governing-law selection does not
 // belong on Advisers / Fees / Expenses -- it's generic Misc/Boilerplate
@@ -284,7 +297,7 @@ function buildThirdPartyBeneficiaryRow(cards, allCards) {
 function renderSignals(row, ctx) {
   const PillCell = ctx?.primitives?.PillCell;
   if (!PillCell) return (row.signals || []).map((item) => item.label).join('\n');
-  return (row.signals || []).map((item) => React.createElement(PillCell, {
+  const pills = (row.signals || []).map((item) => React.createElement(PillCell, {
     key: item.id,
     label: item.label,
     value: item.value,
@@ -292,6 +305,17 @@ function renderSignals(row, ctx) {
     evidence: item.evidence,
     source: item.source,
   }));
+  // Fee/expense allocation: base rule on top of the cell, exception pills
+  // stacked beneath (Ben round 6).
+  if (row.baseRule) {
+    return React.createElement(
+      'div',
+      { className: 'space-y-1' },
+      React.createElement('div', { className: 'text-[11px] text-ink' }, row.baseRule),
+      React.createElement('div', { className: 'flex flex-col items-start gap-1' }, pills),
+    );
+  }
+  return pills;
 }
 
 function renderDetail(row, ctx) {
@@ -307,9 +331,11 @@ const miscBoilerplateConfig = {
   selectRows(reviewDeal) {
     const cards = selectCards(reviewDeal, isMiscBoilerplateCard);
     const thirdPartyRow = buildThirdPartyBeneficiaryRow(cards, reviewDeal?.cards || []);
+    const feeRow = buildFeeExpenseRow(reviewDeal);
     return [
       ...mappedBoilerplateRows(cards, ROWS_TOP),
       ...(thirdPartyRow ? [thirdPartyRow] : []),
+      ...(feeRow ? [feeRow] : []),
       ...mappedBoilerplateRows(cards, ROWS_BOTTOM),
     ];
   },

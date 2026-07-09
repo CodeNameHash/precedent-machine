@@ -255,4 +255,4 @@ const advisersFeesExpensesConfig = {
   ],
 };
 
-export { advisersFeesExpensesConfig, miscSignal, renderDetail, renderSignals };
+export { advisersFeesExpensesConfig, buildExpenseExceptionsRow, isAdvisersFeesCard, miscSignal, renderDetail, renderSignals };

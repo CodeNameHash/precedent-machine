@@ -24,7 +24,6 @@ test('review page mounts the first schema structured table config before cards',
   assert.match(reviewPageSource, /import \{ parentRepresentationsConfig \} from '..\/..\/components\/review\/table-configs\/representations-qualifiers\.config';/);
   assert.match(reviewPageSource, /import \{ terminationFeesConfig \} from '..\/..\/components\/review\/table-configs\/termination-fees\.config';/);
   assert.match(reviewPageSource, /import \{ terminationRightsConfig \} from '..\/..\/components\/review\/table-configs\/termination-rights\.config';/);
-  assert.match(reviewPageSource, /import \{ advisersFeesExpensesConfig \} from '..\/..\/components\/review\/table-configs\/advisers-fees-expenses\.config';/);
   assert.match(reviewPageSource, /import \{ conditionsConfig \} from '..\/..\/components\/review\/table-configs\/conditions\.config';/);
   assert.match(reviewPageSource, /import \{ votesApprovalsMeetingConfig \} from '..\/..\/components\/review\/table-configs\/votes-approvals-meeting\.config';/);
   assert.match(reviewPageSource, /import \{ equityAwardsConfig \} from '..\/..\/components\/review\/table-configs\/equity-awards\.config';/);
@@ -68,7 +67,6 @@ test('review page mounts the first schema structured table config before cards',
     'terminationFeesConfig',
     'tailFeeConfig',
     'employeeBenefitsConfig',
-    'advisersFeesExpensesConfig',
     'noOtherRepsFraudConfig',
     // FEEDBACK-2-PUNCHLIST.md #33: "Other Covenants" (generalCovenantsConfig)
     // now renders LAST -- a link index into leftover general-covenant
