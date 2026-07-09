@@ -183,6 +183,16 @@ function resolveRepsCovered(text, nameBySec) {
   });
 }
 
+// Some covenant-compliance condition cards (e.g. the buyer-covenant COND-S-COV)
+// carry no covenantComplianceStandard claim, only the clause text. Sniff the
+// standard from the clause so the row isn't blank (legacy parity).
+function covenantStandardFromText(mc) {
+  const t = String(mc || '').toLowerCase();
+  if (/in all material respects/.test(t)) return 'In all material respects';
+  if (/in all respects/.test(t)) return 'In all respects';
+  return null;
+}
+
 // Reorders adapter labels like "All In Material Respects" into natural
 // "In all material respects" (Ben's read).
 function prettyMaterialityLabel(s) {
@@ -414,7 +424,12 @@ function buildStandardDetail(row, family, ctx, bandFamilies) {
     }
   } else if (family === 'COV') {
     const ccs = firstDefined(matches, 'covenantComplianceStandard');
-    if (ccs) chips.push(mkChip(PillCell, 'covenant-standard', prettyMaterialityLabel(taggedLabel(ccs) || valueText(ccs)), 'info', primary, taggedEvidence(ccs, primary)));
+    if (ccs) {
+      chips.push(mkChip(PillCell, 'covenant-standard', prettyMaterialityLabel(taggedLabel(ccs) || valueText(ccs)), 'info', primary, taggedEvidence(ccs, primary)));
+    } else {
+      const sniffed = covenantStandardFromText(firstDefined(matches, 'mainCondition'));
+      if (sniffed) chips.push(mkChip(PillCell, 'covenant-standard-sniff', sniffed, 'info', primary, firstDefined(matches, 'mainCondition')));
+    }
   } else if (family === 'REG') {
     // Antitrust: HSR plus the SCHEDULED_APPROVALS the agreement lists in a
     // schedule (surfaced with its section reference), not a vague catch-all.
