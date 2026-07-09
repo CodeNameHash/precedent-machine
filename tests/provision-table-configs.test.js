@@ -1220,7 +1220,10 @@ test('conditions-s config maps schema cards to seller-side canonical present row
 // tests exercise the exported row-building/render helpers directly (mirrors
 // how conditions.config.js's own tests exercise conditionGroups()).
 const iocPrimitives = {
-  PillCell: ({ label, tone }) => React.createElement('span', { className: `pill ${tone || ''}`.trim() }, label),
+  // `color` (standard-colors.js palette key) surfaced as a data-attribute so
+  // FEEDBACK-3 round-3 tests can assert exactly which pills carry a graded
+  // standard colour vs plain tone (I3/I5/G4).
+  PillCell: ({ label, tone, color }) => React.createElement('span', { className: `pill ${tone || ''}`.trim(), 'data-color': color || undefined }, label),
   EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
   CoverageFooter: ({ presentCount, totalCount, absentItems, label }) => React.createElement(
     'div',
@@ -1383,6 +1386,122 @@ test('ioc-exceptions config footer lists absent canonical exception codes when t
   assert.match(html, /1 of 4/);
   assert.match(html, /As disclosed/);
   assert.match(html, /As contemplated by this Agreement/);
+});
+
+// FEEDBACK-3-PUNCHLIST.md #I6: negative covenants must render as a real
+// THREE-COLUMN table (General category / Specific restrictions / Exceptions)
+// instead of cramming scope + exceptions into one cell.
+test('I6: ioc-exceptions negative-covenant row renders Specific restrictions and Exceptions as distinct sub-columns', () => {
+  const cards = [
+    { id: 'merge-1', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-MERGE', short_title: 'Mergers / Acquisitions / Dispositions', features: {
+      restrictionComponents: ['ASSET_SALES_LICENSES'],
+      permittedExceptions: [{ code: 'ORDINARY_COURSE', label: 'Ordinary course', text: 'ordinary course of business' }],
+      mainObligation: 'The Company may not sell material assets.',
+    } },
+  ];
+  const [group] = iocMod.negativeCovenantGroups(cards);
+  const row = iocMod.renderNegativeRow({ id: 'ioc-neg-IOC-MERGE', code: group.code, cards: group.cards }, { primitives: iocPrimitives });
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, row.children));
+  const restrictionsIdx = html.indexOf('Specific restrictions');
+  const exceptionsIdx = html.indexOf('Exceptions');
+  const restrictionPillIdx = html.indexOf('Asset sales');
+  const exceptionPillIdx = html.indexOf('Ordinary course');
+  assert.ok(restrictionsIdx >= 0 && exceptionsIdx >= 0, 'both sub-column headings render');
+  assert.ok(restrictionsIdx < exceptionPillIdx, 'the Specific-restrictions heading precedes the Exceptions pill');
+  assert.ok(restrictionsIdx < restrictionPillIdx && restrictionPillIdx < exceptionsIdx, 'the restriction pill renders inside the Specific-restrictions sub-column, not mixed with Exceptions');
+  assert.ok(exceptionsIdx < exceptionPillIdx, 'the exception pill renders after the Exceptions heading');
+});
+
+test('I6: an empty restrictions or exceptions sub-column renders an honest placeholder, not a blank cell', () => {
+  const cards = [
+    { id: 'div-1', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-DIVIDEND', short_title: 'Dividends and Distributions', features: {
+      restrictionComponents: ['ACQUISITIONS'],
+      mainObligation: 'The Company may not declare dividends.',
+    } },
+  ];
+  const [group] = iocMod.negativeCovenantGroups(cards);
+  const row = iocMod.renderNegativeRow({ id: 'ioc-neg-IOC-DIVIDEND', code: group.code, cards: group.cards }, { primitives: iocPrimitives });
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, row.children));
+  assert.match(html, /None specified/, 'no permittedExceptions -> the Exceptions sub-column says so honestly');
+});
+
+// FEEDBACK-3-PUNCHLIST.md #I2/#I4/#I3/#I5 (G4 colouring audit): affirmative
+// limbs surface their OWN efforts_standard as a coloured pill, "in all
+// material respects" is pulled out of the obligation text as its own
+// coloured pill, and the FLAT ordinary-course limb gets no colour at all.
+test('I4: IOC-PRESERVE surfaces its efforts_standard (COMMERCIALLY_REASONABLE_EFFORTS) as a coloured standard pill', () => {
+  const cards = [
+    { id: 'pres', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-PRESERVE', short_title: 'Preservation of Business Relationships', features: {
+      positiveObligations: [{
+        appliesTo: ['SUPPLIERS', 'LICENSORS_LICENSEES'],
+        obligation: 'preserve its present relationships with suppliers and licensors',
+        efforts_standard: 'COMMERCIALLY_REASONABLE_EFFORTS',
+      }],
+    } },
+  ];
+  const rows = iocMod.affirmativeRows(cards, { primitives: iocPrimitives });
+  assert.equal(rows.length, 1);
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, rows[0].children));
+  assert.match(html, /Commercially reasonable efforts/);
+  assert.match(html, /data-color="amber"/, 'the efforts standard earns a palette colour (the efforts-ladder amber)');
+});
+
+test('I2: IOC-MAINTAIN pulls "in all material respects" out of the obligation TEXT as its own coloured pill, even though efforts_standard is FLAT', () => {
+  const cards = [
+    { id: 'maintain', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-MAINTAIN', short_title: 'Maintain Business Organization and Material Assets', features: {
+      positiveObligations: [{
+        appliesTo: ['BUSINESS_ORGANIZATION', 'ASSETS'],
+        obligation: 'maintain its material assets and business organization intact in all material respects',
+        efforts_standard: 'FLAT',
+      }],
+    } },
+  ];
+  const rows = iocMod.affirmativeRows(cards, { primitives: iocPrimitives });
+  assert.equal(rows.length, 1);
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, rows[0].children));
+  assert.match(html, /In all material respects/, 'the materiality phrase is pulled out of the obligation text as a pill');
+  assert.match(html, /data-color="sky"/, 'materiality standards use the accuracy/materiality palette colour');
+  assert.doesNotMatch(html, /Flat \(unqualified obligation\)/, 'FLAT itself never renders as a pill label');
+});
+
+test('I3/I5: the plain ordinary-course limb (FLAT, no "material respects" text) never gets a standard colour', () => {
+  const cards = [
+    { id: 'ord', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-ORDINARY', short_title: 'Ordinary Course Obligation', features: {
+      ordinaryCourseCarveout: true,
+      positiveObligations: [{
+        appliesTo: ['BUSINESS'],
+        obligation: 'conduct its business in the ordinary course',
+        efforts_standard: 'FLAT',
+      }],
+    } },
+  ];
+  const rows = iocMod.affirmativeRows(cards, { primitives: iocPrimitives });
+  assert.equal(rows.length, 1);
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, rows[0].children));
+  assert.doesNotMatch(html, /data-color=/, 'no pill on the ordinary-course row carries a standard colour -- it IS the ordinary course, not a graded standard');
+  assert.match(html, /Ordinary-course carve-out applies/, 'the carve-out fact still renders, just uncoloured');
+});
+
+// FEEDBACK-3-PUNCHLIST.md #I7: the "[PROPOSED] Unclassified" 5.01(k)/(l)/(o)
+// fragments are a genuine extraction gap (no restrictionComponents tag) but
+// their clause text is in primary_quote -- named instead of dropped or shown
+// as a bare, signal-free fragment.
+test('I7: unclassified fragments with no restrictionComponents tag are named from their own primary_quote (tax / Specified-Contract / insurance), never dropped', () => {
+  const fragments = [
+    { id: 'frag-k', provision_type: 'COVENANT_INTERIM_OPERATING', primary_quote: 'make or change any material Tax election, change any annual Tax accounting period, or settle any material Tax liability', features: { sectionNumber: '5.01(k)' } },
+    { id: 'frag-l', provision_type: 'COVENANT_INTERIM_OPERATING', primary_quote: 'amend, modify or waive any material provision of any Specified Contract', features: { sectionNumber: '5.01(l)' } },
+    { id: 'frag-o', provision_type: 'COVENANT_INTERIM_OPERATING', primary_quote: 'fail to maintain in effect its existing insurance policies', features: { sectionNumber: '5.01(o)' } },
+  ];
+  const row = iocMod.buildOtherRestrictionsRow(fragments, { primitives: iocPrimitives });
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, row.children));
+  assert.match(html, /Tax matters/, '5.01(k) named as a tax covenant');
+  assert.match(html, /Specified-contract amendments/, '5.01(l) named as a Specified-Contract amendment restriction');
+  assert.match(html, /Insurance maintenance/, '5.01(o) named as an insurance-maintenance covenant');
+  assert.doesNotMatch(html, /no structured signal extracted/, 'none of the three fall back to the bare placeholder once a name is sniffed');
+});
+
+test('I7: sniffFragmentName returns null (never a fabricated name) when the fragment carries no primary_quote to sniff', () => {
+  assert.equal(iocMod.sniffFragmentName({ id: 'frag-x', features: { sectionNumber: '5.01(m)' } }), null);
 });
 
 test('material-contracts config maps hydrated buckets and thresholds, one row per contract type, no mid-table coverage row', () => {
