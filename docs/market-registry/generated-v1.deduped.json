@@ -14971,6 +14971,41 @@
       "status": "PENDING_REVIEW"
     },
     {
+      "key": "interestRateBasis",
+      "label": "Interest-rate basis on late payment",
+      "data_type": "ENUM",
+      "applies_to": "TERMF",
+      "party_scope": "PER_PARTY",
+      "structural_patterns": [
+        "THREE_STATE",
+        "PARTY_ASYMMETRIC"
+      ],
+      "states": [
+        "PRIME_WSJ",
+        "PRIME_BANK",
+        "US_TREASURY_6MO",
+        "LIBOR",
+        "FIXED"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "interestRateBasis",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve interestRateBasis from lib/schema/features.js; normalise to the INTEREST_RATE_BASIS code before activation. The spread (e.g. +2%) and the named source stay on interestOnLatePayment."
+      },
+      "resolver_notes": "Interest-rate basis on late payment",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features",
+      "merged_from": [],
+      "also_matches_provision_codes": [
+        "TERMF-REVERSE",
+        "TERMF-TARGET"
+      ],
+      "status": "PENDING_REVIEW"
+    },
+    {
       "key": "interimNewContractsScope",
       "label": "Interim new-contracts restriction scope (text)",
       "data_type": "TEXT",

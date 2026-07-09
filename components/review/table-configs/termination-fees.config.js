@@ -1,6 +1,9 @@
 import React from 'react';
 import { buildTerminationFees, normalizeTermfFeatures } from '../../../lib/termf.js';
 import { cardCode, cardFeatures, cardType, firstFeature, makeRow, selectCards, textOf } from './card-utils.js';
+import taxonomy from '../../../lib/taxonomy.js';
+
+const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
 // Scalar rows read straight off a flat claim attribute that already matches
 // its legacy/UI name 1:1 — no nested-shape bridging needed (that bridging
@@ -169,6 +172,31 @@ function formatInterestOnLatePayment(raw) {
   return rate || base || null;
 }
 
+// Stage 4 canonical layer: prefer the extracted `interestRateBasis` code over
+// the summarizeRate() prose regex. The code resolves to a stable display label
+// via INTEREST_RATE_BASIS; the spread (e.g. "+2%") is a scalar rider parsed off
+// the interestOnLatePayment rate prose and appended. Returns null when no code
+// is present (pre-reprocess), so summarizeRate()/formatInterestOnLatePayment()
+// still drive the row until the corpus is reprocessed -- transition-safe.
+function extractSpread(rateRaw) {
+  const rate = rateRaw && typeof rateRaw === 'object' && !Array.isArray(rateRaw) ? rateRaw.rate : rateRaw;
+  const match = String(rate || '').match(/(?:\+|plus)\s*(\d+(?:\.\d+)?)\s*%/i);
+  return match ? `${match[1]}%` : null;
+}
+function formatInterestBasis(cards) {
+  const hit = firstFeature(cards, ['interestRateBasis']);
+  if (!hit) return null;
+  const raw = hit.value;
+  const code = raw && typeof raw === 'object' && !Array.isArray(raw)
+    ? (raw.code || raw.value)
+    : (typeof raw === 'string' ? raw : null);
+  const label = code ? labelForCode(String(code), taxonomyForFeatureKey('interestRateBasis')) : null;
+  if (!label) return null;
+  const rateHit = firstFeature(cards, ['interestOnLatePayment']);
+  const spread = extractSpread(rateHit?.value);
+  return spread ? `${label} + ${spread}` : label;
+}
+
 // A boolean-shaped scalar (soleRemedy, willfulBreachException, feeRequired,
 // nakedNoVoteFeePresent) renders as an affirmative "Yes" pill (present/
 // green) or a "No" pill (missing/grey) so those read the same as every other
@@ -188,7 +216,9 @@ function scalarRows(cards) {
       const hit = firstFeature(cards, keys || id);
       const row = makeRow('termination-fees', id, label, kind, hit);
       if (!row) return null;
-      const detail = id === 'interest' ? (formatInterestOnLatePayment(hit.value) || row.detail) : row.detail;
+      const detail = id === 'interest'
+        ? (formatInterestBasis(cards) || formatInterestOnLatePayment(hit.value) || row.detail)
+        : row.detail;
       return {
         ...row,
         detail,
