@@ -1,5 +1,22 @@
 import React from 'react';
-import { valueText } from './card-utils.js';
+import { cardFeatures, splitForCell, textOf, valueText } from './card-utils.js';
+import { standardColorKey } from './standard-colors.js';
+
+// Rebuilt per REBUILD-SPECS.md §7. The original thirteen rows keep their
+// exact ids/keys/fallback regexes/detail synthesis unchanged (existing
+// tests assert on array order and individual `.detail` values). New rows
+// (spec's explicit field list for this table): Superior-proposal threshold,
+// Superior Proposal test (collapsed), Fiduciary-out standard, Board-change
+// standard, plus the Acceptable Confidentiality Agreement definition
+// (collapsed) -- all structured-key lookups across the wider no-solicitation
+// family, since these live on NOSOL-SUPERIOR/NOSOL-EXCEPT/NOSOL-RECOMMEND/
+// NOSOL-CONFID cards that don't always satisfy this file's narrower
+// isFiduciaryCard() filter. Rendering-only changes: long rows (engagement/
+// final-determination sentences, notice content, the CoR item-list rows)
+// collapse to a truncated "see text" preview instead of one giant pill; the
+// Representatives standard row's raw code (e.g. RBE_NOT_TO) renders as a
+// friendly, coloured label instead of the bare code (global rule: codes are
+// hover-title only); the Party column is dropped in favour of a header note.
 
 const ROWS = [
   { id: 'engage', label: 'Engagement standard', keys: ['fiduciaryEngageStandard', 'engagementStandard'], fallback: engageFromText },
@@ -17,14 +34,33 @@ const ROWS = [
   { id: 'not-change-of-rec-items', label: 'Not a Change of Recommendation', keys: ['notChangeOfRecommendationItems'], fallback: () => null },
 ];
 
+// New rows (spec's explicit field list for this table + the confidentiality
+// definition). Structured-key lookup only.
+const NEW_ROWS = [
+  { id: 'superior-threshold', label: 'Superior-proposal threshold', keys: ['superiorProposalThresholdPct', 'superiorProposalPercentage'], format: pctLabel },
+  { id: 'superior-test', label: 'Superior Proposal test', keys: ['superiorProposalTest'], format: (raw) => valueText(raw) },
+  { id: 'fiduciary-standard', label: 'Fiduciary-out standard', keys: ['fiduciaryOutStandard'], format: fiduciaryStandardSummary },
+  { id: 'board-change-standard', label: 'Board-change standard', keys: ['boardChangeStandard'], format: boardChangeStandardLabel },
+  { id: 'acceptable-confidentiality', label: 'Acceptable Confidentiality Agreement — definition', keys: ['acceptableConfidentialityAgreementDefinition'], format: (raw) => valueText(raw) },
+];
+
+// Reading order: standards/thresholds up front, then the existing mechanics
+// rows in their original relative order (required for the array-order
+// assertion in provision-table-configs.test.js), with the confidentiality
+// definition slotted in next to notice content (both gate engaging a
+// bidder).
+const ORDERED_IDS = [
+  'superior-threshold', 'superior-test', 'fiduciary-standard', 'board-change-standard',
+  'engage', 'final', 'board-change', 'notice-period', 'notice-content', 'acceptable-confidentiality',
+  'initial-match', 'subsequent-match', 'force-vote', 'termination', 'reps', 'buyer-termination',
+  'change-of-rec-items', 'not-change-of-rec-items',
+];
+
 function cardCode(card) {
   return String(card?.provision_subtype || card?.canonical_code || card?.provision_code || '').trim().toUpperCase();
 }
-function cardFeatures(card) {
-  if (card?.features && typeof card.features === 'object') return card.features;
-  const meta = card?.ai_metadata;
-  if (meta?.features && typeof meta.features === 'object') return meta.features;
-  return {};
+function cardType(card) {
+  return String(card?.provision_type || '').trim().toUpperCase();
 }
 function isFiduciaryCard(card) {
   const code = cardCode(card);
@@ -32,12 +68,15 @@ function isFiduciaryCard(card) {
   if (card?.provision_type !== 'COVENANT_NO_SOLICITATION' && !/^NOSOL(?:-|$)/.test(code)) return false;
   return /fiduciary|recommendation|match|notice|representatives?|terminate/i.test(`${card?.short_title || ''} ${textOf(card)}`);
 }
+// Broader than isFiduciaryCard(): the new threshold/test/standard/
+// confidentiality fields live on NOSOL-SUPERIOR / NOSOL-CONFID cards, whose
+// own text doesn't always satisfy isFiduciaryCard's regex.
+function isNosolFamilyCard(card) {
+  return cardType(card) === 'COVENANT_NO_SOLICITATION' || /^NOSOL(?:-|$)/.test(cardCode(card));
+}
 function partySide(card) {
   const scope = String(card?.party_scope || '').toUpperCase();
   return scope === 'BUYER' || scope === 'PARENT' ? 'Buyer / Parent' : 'Target / Company';
-}
-function textOf(card) {
-  return String(card?.primary_quote || card?.region_full_text || '').trim();
 }
 // valueText is imported from card-utils.js (see above) rather than defined
 // locally: this config's own copy read `.text` before `.label`/`.code` with
@@ -106,37 +145,145 @@ function rowForSpec(spec, cards) {
     present: true,
   };
 }
+
+// ── New-row synthesis (short codes -> friendly labels) ─────────────────────
+function pctLabel(raw) {
+  const n = Number(raw);
+  if (Number.isFinite(n)) return `${n}%`;
+  const text = valueText(raw);
+  if (!text) return null;
+  return /%\s*$/.test(text) ? text : `${text}%`;
+}
+const FIDUCIARY_STANDARD_LABELS = {
+  'is-superior-proposal': 'Superior Proposal only',
+  'constitutes-or-could-lead-to-superior': 'Constitutes or could lead to a Superior Proposal',
+  'constitutes-or-could-reasonably-be-expected-to-lead-to-superior': 'Constitutes or could reasonably be expected to lead to a Superior Proposal',
+  'continues-to-constitute-superior': 'Continues to constitute a Superior Proposal',
+};
+const BOARD_CHANGE_STANDARD_LABELS = {
+  INCONSISTENT_FIDUCIARY: 'Inconsistent with fiduciary duties',
+};
+function prettifyCode(code) {
+  const s = String(code || '').replace(/[_-]+/g, ' ').replace(/\s+/g, ' ').trim();
+  return s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : null;
+}
+function fiduciaryStandardLabel(raw) {
+  const text = valueText(raw);
+  if (!text) return null;
+  return FIDUCIARY_STANDARD_LABELS[text.trim().toLowerCase()] || prettifyCode(text);
+}
+function fiduciaryStandardSummary(raw) {
+  const items = Array.isArray(raw) ? raw : [raw];
+  const labels = [...new Set(items.map(fiduciaryStandardLabel).filter(Boolean))];
+  return labels.length ? labels.join(' / ') : null;
+}
+function boardChangeStandardLabel(raw) {
+  const text = valueText(raw);
+  if (!text) return null;
+  return BOARD_CHANGE_STANDARD_LABELS[text.trim().toUpperCase()] || prettifyCode(text);
+}
+function firstHit(cards, keys) {
+  for (const card of cards) {
+    const features = cardFeatures(card);
+    for (const key of keys) {
+      const raw = features[key];
+      if (raw === null || raw === undefined || raw === '' || raw === false) continue;
+      if (Array.isArray(raw) && raw.length === 0) continue;
+      return { card, raw };
+    }
+  }
+  return null;
+}
+function newRow(spec, familyCards) {
+  const hit = firstHit(familyCards, spec.keys);
+  if (!hit) return null;
+  const formatted = spec.format(hit.raw);
+  if (!formatted) return null;
+  return {
+    id: `nosol-fiduciary-${spec.id}`,
+    label: spec.label,
+    party: partySide(hit.card),
+    detail: formatted,
+    evidence: textOf(hit.card),
+    sourceCards: [hit.card],
+    present: true,
+  };
+}
+
+// Representatives-standard codes (RBE_NOT_TO / INSTRUCT_NOT_TO / CAUSE_NOT_TO)
+// -> a friendly phrase, ported from the legacy representativeStandardDisplay.
+// Render-only: `row.detail` (the tested data field) is untouched.
+function representativesStandardLabel(detail) {
+  const text = String(detail || '');
+  const upper = text.trim().toUpperCase();
+  if (upper === 'RBE_NOT_TO' || /reasonable\s+best\s+efforts/i.test(text)) return 'Reasonable best efforts';
+  if (upper === 'INSTRUCT_NOT_TO' || /\binstruct|direct/i.test(text)) return 'Instruct / direct';
+  if (upper === 'CAUSE_NOT_TO' || /\bcause\b/i.test(text)) return 'Cause';
+  if (upper === 'NA') return 'Not applicable';
+  return null;
+}
+const LABEL_OVERRIDES = {
+  'nosol-fiduciary-reps': representativesStandardLabel,
+};
+
 function rowSignal(row) {
   if (!row?.detail) return null;
   const isTiming = /notice|match/i.test(row.label);
   const isTermination = /termination/i.test(row.label);
-  // Bare value only -- the Term column already names this row.
+  const override = LABEL_OVERRIDES[row.id];
+  const label = (override && override(row.detail)) || row.detail;
   return {
     id: `${row.id}-signal`,
-    label: row.detail,
-    value: row.detail,
+    label,
+    value: label,
     tone: isTermination ? 'warning' : isTiming ? 'info' : 'neutral',
     evidence: row.evidence,
     source: row.sourceCards?.[0],
   };
 }
+// Long text (engagement/final-determination sentences, notice content, the
+// CoR item-list rows) collapses to a truncated preview + click-to-open
+// instead of one giant pill (spec: no big text rows).
+function collapsedTextNode(text) {
+  const { value, short, truncated } = splitForCell(text, 90);
+  if (!value) return null;
+  if (!truncated) return React.createElement('span', { className: 'text-[11px] text-ink' }, value);
+  return React.createElement(
+    'span',
+    null,
+    React.createElement('span', { className: 'text-[11px] text-ink' }, `${short}…`),
+    React.createElement(
+      'details',
+      { className: 'mt-1' },
+      React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, 'see text'),
+      React.createElement(
+        'div',
+        { className: 'mt-1 max-w-[36rem] whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight' },
+        value,
+      ),
+    ),
+  );
+}
 function renderSignals(row, ctx) {
-  const PillCell = ctx?.primitives?.PillCell;
   const signal = rowSignal(row);
   if (!signal) return '';
+  if (String(signal.label).length > 90) return collapsedTextNode(signal.label);
+  const PillCell = ctx?.primitives?.PillCell;
   if (!PillCell) return signal.label;
   return React.createElement(PillCell, {
     label: signal.label,
     value: signal.value,
     tone: signal.tone,
+    color: standardColorKey(signal.label),
     evidence: signal.evidence,
     source: signal.source,
   });
 }
-function renderDetail(row, ctx) {
-  const EvidenceHoverSource = ctx?.primitives?.EvidenceHoverSource;
-  if (!EvidenceHoverSource || !row.evidence) return row.detail;
-  return React.createElement(EvidenceHoverSource, { value: row.detail, evidence: row.evidence, source: row.sourceCards?.[0], as: 'span' }, row.detail);
+// Party is uniform across this family -- hoisted into a header note instead
+// of its own column, matching the two-column TERM | PROVISION default.
+function deriveHeaderNote(rows) {
+  const parties = [...new Set((rows || []).map((row) => row.party).filter(Boolean))];
+  return parties.length ? `Party: ${parties.join(', ')}` : null;
 }
 
 const nosolFiduciaryConfig = {
@@ -144,17 +291,21 @@ const nosolFiduciaryConfig = {
   title: 'Fiduciary-Out Mechanics',
   layoutSlot: 'nosol',
   selectRows(reviewDeal) {
-    const cards = (reviewDeal?.cards || []).filter(isFiduciaryCard);
+    const allCards = reviewDeal?.cards || [];
+    const cards = allCards.filter(isFiduciaryCard);
     if (!cards.length) return [];
-    return ROWS.map((row) => rowForSpec(row, cards)).filter(Boolean);
+    const familyCards = allCards.filter(isNosolFamilyCard);
+    const byId = {};
+    for (const row of ROWS) byId[row.id] = rowForSpec(row, cards);
+    for (const spec of NEW_ROWS) byId[spec.id] = newRow(spec, familyCards);
+    return ORDERED_IDS.map((id) => byId[id]).filter(Boolean);
   },
+  deriveHeaderNote,
   columns: [
     { id: 'term', header: 'Term', width: '19rem', renderCell: (row) => row.label },
-    { id: 'party', header: 'Party', width: '12rem', renderCell: (row) => row.party },
-    { id: 'signals', header: 'Signals', width: '18rem', renderCell: renderSignals },
-    { id: 'detail', header: 'Detail', renderCell: renderDetail },
+    { id: 'signals', header: 'Provision', renderCell: renderSignals },
   ],
   empty: { copy: 'No fiduciary-out mechanics found.' },
 };
 
-export { nosolFiduciaryConfig, renderDetail, renderSignals, rowSignal };
+export { nosolFiduciaryConfig, renderSignals, rowSignal };
