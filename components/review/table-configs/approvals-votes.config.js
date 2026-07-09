@@ -1,3 +1,4 @@
+import React from 'react';
 import { cardCode, cardType, mappedRows, selectCards, textOf } from './card-utils.js';
 
 const ROWS = [
@@ -20,6 +21,16 @@ function isApproval(card) {
   return type === 'CLOSING_CONDITION' || type === 'STRUCTURE_MECHANICS' || type === 'SEC_FILING_MEETING' || code.includes('VOTE') || /stockholder|shareholder|approval|vote|meeting/i.test(`${card?.short_title || ''} ${textOf(card)}`);
 }
 
+// No 'signals' column here (unlike most families, ROWS is rendered straight
+// via card-utils.js mappedRows/makeRow with no per-row pill), so 'detail' is
+// the only place the value is visible at all — truncate per-cell and wire up
+// the evidence hover makeRow() already computes but this config never used.
+function renderDetail(row, ctx) {
+  const TruncatedWithSeeText = ctx?.primitives?.TruncatedWithSeeText;
+  if (!TruncatedWithSeeText) return row.detail;
+  return React.createElement(TruncatedWithSeeText, { text: row.detail, evidence: row.evidence });
+}
+
 const approvalsVotesConfig = {
   id: 'approvals-votes',
   title: 'Approvals / Votes',
@@ -30,8 +41,8 @@ const approvalsVotesConfig = {
   columns: [
     { id: 'term', header: 'Term', width: '18rem', renderCell: (row) => row.label },
     { id: 'kind', header: 'Kind', width: '10rem', renderCell: (row) => row.kind },
-    { id: 'detail', header: 'Detail', renderCell: (row) => row.detail },
+    { id: 'detail', header: 'Detail', renderCell: renderDetail },
   ],
 };
 
-export { approvalsVotesConfig };
+export { approvalsVotesConfig, renderDetail };

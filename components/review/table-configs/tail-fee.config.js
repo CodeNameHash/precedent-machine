@@ -68,9 +68,15 @@ function mechanicTone(id) {
   if (id === 'tail-window' || id === 'tail-threshold') return 'info';
   return 'neutral';
 }
+// 'tail-window'/'tail-threshold'/'tail-same-proposal' values are short
+// scalars (e.g. "12 months") and pass through TruncatedWithSeeText
+// unchanged. 'tail-arming' is the one row whose value is the full joined
+// activating-clauses text (up to ~1,500 chars) — truncation keeps the
+// Mechanic column compact for every row without a per-row special case;
+// the untruncated list is still one click away via "see text".
 function renderMechanic(row, ctx) {
   const ThresholdCellWithHoverQuote = ctx?.primitives?.ThresholdCellWithHoverQuote;
-  const EvidenceHoverSource = ctx?.primitives?.EvidenceHoverSource;
+  const TruncatedWithSeeText = ctx?.primitives?.TruncatedWithSeeText;
   if (row.id === 'tail-threshold' && ThresholdCellWithHoverQuote) {
     return React.createElement(ThresholdCellWithHoverQuote, {
       threshold: row.value,
@@ -78,8 +84,8 @@ function renderMechanic(row, ctx) {
       source: row.sourceCard,
     });
   }
-  if (!EvidenceHoverSource || !row.evidence) return row.value;
-  return React.createElement(EvidenceHoverSource, { value: row.value, evidence: row.evidence, source: row.sourceCard, as: 'span' }, row.value);
+  if (!TruncatedWithSeeText) return row.value;
+  return React.createElement(TruncatedWithSeeText, { text: row.value, evidence: row.evidence, source: row.sourceCard });
 }
 function renderSignals(row, ctx) {
   const PillCell = ctx?.primitives?.PillCell;

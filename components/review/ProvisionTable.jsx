@@ -27,6 +27,19 @@ const FULL_TEXT_COLUMNS = {
   'tail-fee': ['evidence'],
   'employee-benefits': ['detail'],
   'no-other-reps-fraud': ['detail'],
+  // Phase B compact-column reshaping. These families all share one shape:
+  // every row's 'signals' pill already embeds the same readable value the
+  // 'detail' column repeats in full, un-truncated prose (see each config's
+  // signalFor()/withSignal() — the pill label is literally `${kind}:
+  // ${value}`). Relocating 'detail' loses nothing visible; it's a verbatim
+  // second copy of what the pill already shows, just wider and unbounded.
+  'mae-definitions': ['detail'],
+  'antitrust-regulatory': ['detail'],
+  'representations-qualifiers': ['detail'],
+  'structure-mechanics': ['detail'],
+  'sec-meeting': ['detail'],
+  'nosol-noshop': ['detail'],
+  'nosol-intervening': ['detail'],
 };
 
 function SeeTextExpander({ children }) {
