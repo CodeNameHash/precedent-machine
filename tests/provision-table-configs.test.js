@@ -313,10 +313,15 @@ test('M2-08 gap configs map their core schema-card fields', () => {
   assert.match(generalCovenantsMod.generalCovenantsConfig.selectRows(reviewDeal)[0].detail, /reasonable access/);
   assert.match(approvalsVotesMod.approvalsVotesConfig.selectRows(reviewDeal)[0].detail, /majority/);
   assert.match(advisersFeesExpensesMod.advisersFeesExpensesConfig.selectRows(reviewDeal)[0].detail, /own expenses/);
-  assert.match(representationsQualifiersMod.representationsQualifiersConfig.selectRows(reviewDeal)[0].detail, /material respects/);
+  // representations-qualifiers renders ONE row per rep card (Term |
+  // Materiality Qualifier | Knowledge Qualifier | Lookback), not a flat
+  // label/detail row -- the materiality cell carries the resolved text.
+  const repRows = representationsQualifiersMod.representationsQualifiersConfig.selectRows(reviewDeal);
+  assert.equal(repRows.length, 1);
+  assert.match(repRows[0].materiality.label, /material respects/);
 });
 
-test('representations-qualifiers config exposes taxonomy-readable signals and hover details', () => {
+test('representations-qualifiers config resolves taxonomy-coded materiality/knowledge pills with hover evidence, and derives the section Knowledge-standard header note', () => {
   const rows = representationsQualifiersMod.representationsQualifiersConfig.selectRows({
     cards: [{
       id: 'rep',
@@ -325,50 +330,115 @@ test('representations-qualifiers config exposes taxonomy-readable signals and ho
       short_title: 'SEC Documents',
       primary_quote: 'The SEC Documents were accurate in all material respects and to the actual knowledge of the Company.',
       features: {
-        materialityQualifier: { code: 'MAT_MAE_QUALIFIED', label: 'MAE qualifier', text: 'would not have an MAE' },
-        knowledgeStandard: { code: 'ACTUAL', label: 'Actual knowledge', text: 'actual knowledge' },
-        disclosureSchedulesException: 'except as set forth in Section 4.06 of the Company Disclosure Schedule',
-        linkedBringDownStandard: 'in all material respects',
+        mainConcept: 'The SEC Documents were accurate in all material respects and to the actual knowledge of the Company.',
+        materialityQualifier: { code: 'MAT_MAE_QUALIFIED', text: 'would not have an MAE' },
+        materialityScopeType: 'PARTIAL',
+        knowledgeQualifier: 'KNOWLEDGE_QUALIFIED',
+        knowledgeScopeType: 'PARTIAL',
+        knowledgeStandard: 'actual-knowledge',
       },
     }],
   });
-  const materiality = rows.find((row) => row.id === 'representations-qualifiers-materiality-rep');
-  const knowledge = rows.find((row) => row.id === 'representations-qualifiers-knowledge-rep');
-  const schedule = rows.find((row) => row.id === 'representations-qualifiers-schedule');
-  const bringDown = rows.find((row) => row.id === 'representations-qualifiers-bringdown-rep');
-  assert.deepEqual(materiality.signals.map((item) => item.label), ['True except where failure would not have an MAE']);
-  assert.deepEqual(knowledge.signals.map((item) => item.label), ['Actual knowledge']);
-  assert.deepEqual(schedule.signals.map((item) => item.label), ['except as set forth in Section 4.06 of the Company Disclosure Schedule']);
-  assert.deepEqual(bringDown.signals.map((item) => item.label), ['in all material respects']);
+  assert.equal(rows.length, 1);
+  const [row] = rows;
+  assert.equal(row.materiality.label, 'MAE-qualified (partial)');
+  assert.equal(row.materiality.color, 'amber');
+  assert.equal(row.materiality.evidence, 'would not have an MAE');
+  assert.equal(row.knowledge.label, 'Knowledge-qualified (partial)');
+  assert.equal(
+    representationsQualifiersMod.representationsQualifiersConfig.deriveHeaderNote(rows),
+    'Knowledge standard: Actual knowledge',
+  );
+
   const primitives = {
-    PillCell: ({ label }) => React.createElement('span', { className: 'pill' }, label),
+    PillCell: ({ label, evidence }) => React.createElement('span', { className: 'pill', 'data-evidence': evidence }, label),
     EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
   };
-  const signalColumn = representationsQualifiersMod.representationsQualifiersConfig.columns.find((column) => column.id === 'signals');
-  const detailColumn = representationsQualifiersMod.representationsQualifiersConfig.columns.find((column) => column.id === 'detail');
-  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, signalColumn.renderCell(materiality, { primitives }))), /True except where failure would not have an MAE/);
-  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(knowledge, { primitives }))), /data-evidence="The SEC Documents were accurate/);
+  const materialityColumn = representationsQualifiersMod.representationsQualifiersConfig.columns.find((column) => column.id === 'materiality');
+  const knowledgeColumn = representationsQualifiersMod.representationsQualifiersConfig.columns.find((column) => column.id === 'knowledge');
+  assert.match(
+    renderToStaticMarkup(React.createElement(React.Fragment, null, materialityColumn.renderCell(row, { primitives }))),
+    /MAE-qualified/,
+  );
+  assert.match(
+    renderToStaticMarkup(React.createElement(React.Fragment, null, knowledgeColumn.renderCell(row, { primitives }))),
+    /Knowledge-qualified/,
+  );
 });
 
-test('representations-qualifiers config renders ONE row per rep for knowledge/materiality/bring-down, not a single collapsed row (Metsera regression: 16/22/37 claims were collapsing to 1)', () => {
+test('representations-qualifiers config renders ONE row per rep card, each resolving its OWN materiality/knowledge independently (Metsera regression: 16/22/37 claims were collapsing to 1)', () => {
   const repCard = (id, short_title, features) => ({
     id, provision_type: 'REPRESENTATION', provision_subtype: 'REP-T-GENERIC', short_title, primary_quote: `${short_title} representation text.`, features,
   });
   const rows = representationsQualifiersMod.representationsQualifiersConfig.selectRows({
     cards: [
-      repCard('rep-org', 'Organization', { knowledgeQualifier: 'Company knowledge', materialityQualifier: 'material respects', linkedBringDownStandard: 'in all material respects' }),
-      repCard('rep-cap', 'Capitalization', { materialityQualifier: 'MAE qualified', linkedBringDownStandard: 'true and correct in all respects' }),
-      repCard('rep-lit', 'Litigation', { knowledgeQualifier: 'to the knowledge of Parent', linkedBringDownStandard: 'accurate as of the Closing Date' }),
+      repCard('rep-org', 'Organization', { knowledgeQualifier: 'Company knowledge', materialityQualifier: 'material respects' }),
+      repCard('rep-cap', 'Capitalization', { materialityQualifier: 'MAE qualified' }),
+      repCard('rep-lit', 'Litigation', { knowledgeQualifier: 'to the knowledge of Parent' }),
     ],
   });
-  const knowledgeRows = rows.filter((row) => row.label.startsWith('Knowledge qualifier'));
-  const materialityRows = rows.filter((row) => row.label.startsWith('Materiality qualifier'));
-  const bringDownRows = rows.filter((row) => row.label.startsWith('Linked bring-down standard'));
-  assert.equal(knowledgeRows.length, 2, 'knowledge qualifier should render one row per rep card that has one, not collapse to 1');
-  assert.equal(materialityRows.length, 2, 'materiality qualifier should render one row per rep card that has one, not collapse to 1');
-  assert.equal(bringDownRows.length, 3, 'bring-down standard should render one row per rep card (all 3 have one), not collapse to 1');
-  assert.deepEqual(new Set(knowledgeRows.map((row) => row.id)), new Set(['representations-qualifiers-knowledge-rep-org', 'representations-qualifiers-knowledge-rep-lit']));
-  assert.ok(bringDownRows.every((row) => row.label.includes('—')), 'per-rep rows should carry the source rep in the label so rows stay distinguishable');
+  assert.equal(rows.length, 3, 'one row per rep card, not collapsed to 1');
+  assert.deepEqual(new Set(rows.map((row) => row.id)), new Set([
+    'representations-qualifiers-rep-org',
+    'representations-qualifiers-rep-cap',
+    'representations-qualifiers-rep-lit',
+  ]));
+  const org = rows.find((row) => row.id === 'representations-qualifiers-rep-org');
+  const cap = rows.find((row) => row.id === 'representations-qualifiers-rep-cap');
+  const lit = rows.find((row) => row.id === 'representations-qualifiers-rep-lit');
+  assert.equal(org.knowledge.label, 'Company knowledge');
+  assert.equal(org.materiality.label, 'material respects');
+  assert.equal(cap.materiality.label, 'MAE qualified');
+  assert.equal(cap.knowledge, null, 'Capitalization has no knowledge qualifier of its own -- must not inherit Organization\'s');
+  assert.equal(lit.knowledge.label, 'to the knowledge of Parent');
+  assert.equal(lit.materiality, null, 'Litigation has no materiality qualifier of its own -- must not inherit Capitalization\'s');
+});
+
+test('representations-qualifiers config title names the reps directly (not a separate "Representation Qualifiers" section) and renders the SEC-filings/disclosure-schedule carve-out as a summary row ahead of the per-rep rows', () => {
+  assert.equal(representationsQualifiersMod.representationsQualifiersConfig.title, 'Representations & Warranties — Company');
+  const rows = representationsQualifiersMod.representationsQualifiersConfig.selectRows({
+    cards: [
+      {
+        id: 'preamble',
+        provision_type: 'REPRESENTATION',
+        provision_subtype: 'REP-T-PREAMBLE',
+        short_title: 'Reps Preamble',
+        features: {
+          secFilingsExceptionLookback: 'at least one (1) business day prior to the date of this Agreement',
+          secFilingsExcludedSections: [
+            { code: 'RISK_FACTORS', text: 'disclosures contained in any part entitled "Risk Factors"' },
+            { code: 'FORWARD_LOOKING', text: 'any forward-looking statements' },
+          ],
+        },
+      },
+      {
+        id: 'org',
+        provision_type: 'REPRESENTATION',
+        provision_subtype: 'REP-T-ORG',
+        short_title: 'Organization; Qualification; Standing',
+        features: { materialityQualifier: 'except as would not be material' },
+      },
+    ],
+  });
+  assert.equal(rows[0].id, 'representations-qualifiers-sec-carveout');
+  assert.equal(rows[0].kind, 'summary');
+  assert.equal(rows[0].secCutoff, 'at least one (1) business day prior to the date of this Agreement');
+  assert.deepEqual(rows[0].secExcluded, [
+    'disclosures contained in any part entitled "Risk Factors"',
+    'any forward-looking statements',
+  ]);
+  assert.equal(rows[1].id, 'representations-qualifiers-org');
+
+  const primitives = {
+    PillCell: ({ label, evidence }) => React.createElement('span', { className: 'pill', 'data-evidence': evidence }, label),
+  };
+  const lookbackColumn = representationsQualifiersMod.representationsQualifiersConfig.columns.find((column) => column.id === 'lookback');
+  const carveoutHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, lookbackColumn.renderCell(rows[0], { primitives })));
+  assert.match(carveoutHtml, /Cut-off/);
+  assert.match(carveoutHtml, /at least one \(1\) business day/);
+  assert.match(carveoutHtml, /Portions excluded/);
+  assert.match(carveoutHtml, /Risk Factors/);
+  assert.match(carveoutHtml, /Disclosure Schedules: Not present/);
 });
 
 test('mae-definitions config exposes carve-out and definition signals with hover details', () => {

@@ -224,7 +224,7 @@ test('antitrust-regulatory renders divestitureInCondition (Skechers cross-deal g
   assert.equal(row.detail, 'Yes');
 });
 
-test('representations-qualifiers renders the solvency representation (Skechers cross-deal gap, PE financing)', () => {
+test('representations-qualifiers renders the solvency representation (Skechers cross-deal gap, PE financing) even with no materiality/knowledge/lookback qualifier data', () => {
   const solvencyCard = {
     id: 'solvency',
     provision_type: 'REPRESENTATION',
@@ -238,7 +238,9 @@ test('representations-qualifiers renders the solvency representation (Skechers c
     },
   };
   const rows = representationsQualifiersMod.representationsQualifiersConfig.selectRows({ cards: [solvencyCard] });
-  const row = rows.find((r) => r.label === 'Solvency representation');
-  assert.ok(row, 'solvency representation should render a row');
-  assert.match(row.detail, /hinder, delay or defraud/);
+  const row = rows.find((r) => r.card && r.card.id === 'solvency');
+  assert.ok(row, 'solvency representation should render a row even without a materiality/knowledge/lookback claim');
+  assert.match(row.label, /Solvency/);
+  assert.equal(row.party, 'Parent');
+  assert.match(row.mainConcept, /hinder, delay or defraud/);
 });
