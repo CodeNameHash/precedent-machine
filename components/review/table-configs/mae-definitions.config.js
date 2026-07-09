@@ -58,13 +58,42 @@ function maeSide(card) {
   return null;
 }
 
+// fb4 #M5: carve-out labels read inconsistently (some SHOUTING, some
+// Title-Casing every word) whenever the raw extracted text/label falls back
+// past the taxonomy dict -- carveoutExceptions/maeCarveoutExceptions in
+// particular have no MAE_CARVEOUT_CODES-style dictionary in taxonomy.js at
+// all (taxonomyForFeatureKey returns null for them), so their labels were
+// rendered completely unnormalized. This is display-only casing cleanup: it
+// never touches row.value/code, only the label string. Known acronyms are
+// kept upper-case wherever they appear; every other word is sentence-cased.
+const CARVEOUT_LABEL_ACRONYMS = new Set(['FDA', 'GAAP', 'MFN', 'COVID', 'SEC', 'HSR', 'GDPR', 'EU', 'UK', 'US', 'IP']);
+
+function sentenceCaseLabel(text) {
+  const trimmed = String(text || '').trim();
+  if (!trimmed) return trimmed;
+  let firstWordSeen = false;
+  return trimmed.replace(/[A-Za-z]+(?:['’][A-Za-z]+)?/g, (word) => {
+    if (CARVEOUT_LABEL_ACRONYMS.has(word.toUpperCase())) return word.toUpperCase();
+    const lower = word.toLowerCase();
+    if (firstWordSeen) return lower;
+    firstWordSeen = true;
+    return lower.charAt(0).toUpperCase() + lower.slice(1);
+  });
+}
+
+// Feature keys with no taxonomy dictionary of their own (see comment above)
+// whose raw text needs the casing cleanup; keys that DO resolve through a
+// dict (e.g. maeLimbType's raw TWO_LIMB/ONE_LIMB code) are left untouched.
+const RAW_TEXT_LABEL_KEYS = new Set(['carveoutExceptions', 'maeCarveoutExceptions']);
+
 function readableValue(key, value) {
   const rendered = valueText(value);
   if (!rendered) return null;
   if (Array.isArray(value)) return value.map((item) => readableValue(key, item)).filter(Boolean).join('; ');
   const code = value?.code || value?.value || (typeof value === 'string' ? value : null);
   const dict = taxonomyForFeatureKey(key);
-  return (dict && code && labelForCode(String(code), dict)) || rendered;
+  const resolved = (dict && code && labelForCode(String(code), dict)) || rendered;
+  return RAW_TEXT_LABEL_KEYS.has(key) ? sentenceCaseLabel(resolved) : resolved;
 }
 
 // Read-view pill is the resolved value alone -- the Term column already
@@ -167,8 +196,8 @@ function carveoutName(item, dict) {
   const code = normalizeCarveoutCode(item);
   const fromDict = code ? labelForCode(code, dict) : null;
   if (fromDict) return fromDict;
-  if (item && typeof item === 'object' && item.label) return String(item.label);
-  return valueText(item) || 'Carve-out';
+  if (item && typeof item === 'object' && item.label) return sentenceCaseLabel(String(item.label));
+  return sentenceCaseLabel(valueText(item)) || 'Carve-out';
 }
 
 function carveoutHasCarveback(item, code, dispSet) {
@@ -297,7 +326,7 @@ function maeSideTableNode(sideRows, ctx, key) {
         'tr',
         null,
         React.createElement('th', { className: 'w-[16rem] px-3 py-2 text-left font-medium uppercase tracking-wider text-inkFaint' }, 'Term'),
-        React.createElement('th', { className: 'px-3 py-2 text-left font-medium uppercase tracking-wider text-inkFaint' }, 'Signals'),
+        React.createElement('th', { className: 'px-3 py-2 text-left font-medium uppercase tracking-wider text-inkFaint' }, 'Provision'),
       ),
     ),
     React.createElement(
@@ -375,6 +404,15 @@ const maeDefinitionsConfig = {
   id: 'mae-definitions',
   title: 'Material Adverse Effect',
   layoutSlot: 'mae',
+  // fb4 #M6/G-TITLE: renderBody's own markup never repeats config.title (see
+  // the tests covering renderBody() directly) -- the live duplicate is
+  // ProvisionTable.jsx's config.renderBody branch, which prints
+  // {config.title} unconditionally and does not check hideRepeatedTitle the
+  // way its generic-table branch does for material-contracts.config.js.
+  // Setting this flag here is the config-side half of that fix; the other
+  // half (ProvisionTable.jsx checking it in the renderBody branch) is out of
+  // scope for this change.
+  hideRepeatedTitle: true,
   selectRows(reviewDeal) {
     return mappedMaeRows(selectCards(reviewDeal, isMae));
   },
