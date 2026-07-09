@@ -57,9 +57,11 @@ test('employee-benefits renders the ERISA checklist even when compensationItems 
   };
   const rows = employeeBenefitsMod.employeeBenefitsConfig.selectRows({ cards: [benefitsCard, erisaCard] });
   assert.ok(rows.some((row) => row.benefit === 'Base salary'), 'structured compensationItems row should still render');
+  // ERISA checklist is intentionally HIDDEN per review ("not important; just
+  // hide it"). The keys/isErisaCard remain in the config for a possible future
+  // standalone table, but no ERISA row is emitted into the benefits table.
   const erisaRows = rows.filter((row) => row.id.startsWith('employee-benefits-erisa'));
-  assert.equal(erisaRows.length, 5, 'all five ERISA checklist keys should render as rows, not go dead behind the structured path');
-  assert.ok(rows.find((row) => row.id === 'employee-benefits-erisaCompliance').detail.includes('ERISA'));
+  assert.equal(erisaRows.length, 0, 'ERISA checklist rows must not render in the benefits table (hidden per review)');
 });
 
 test('employee-benefits renders 401(k) continuation (Skechers cross-deal gap) alongside fallback rows', () => {

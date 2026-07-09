@@ -1,6 +1,7 @@
 import React from 'react';
 import { conditionsBConfig, conditionsMConfig, conditionsSConfig } from './conditions-m.config.js';
 import { splitForCell, valueText } from './card-utils.js';
+import { STANDARD_TEXT, standardColorKey } from './standard-colors.js';
 
 // Consolidates the three party-scoped condition tables (Mutual / Buyer /
 // Seller) into the ONE grouped table the legacy pre-schema page showed,
@@ -94,12 +95,13 @@ function isTruthyBoolLike(value) {
   return value === true || value === 'true';
 }
 
-function mkChip(PillCell, keyId, label, tone, provision, evidence) {
+function mkChip(PillCell, keyId, label, tone, provision, evidence, color) {
   if (!PillCell || !label) return null;
   return React.createElement(PillCell, {
     key: keyId,
     label,
     tone,
+    color,
     evidence: evidence || provision?.full_text,
     source: provision?.sourceCard,
   });
@@ -255,17 +257,18 @@ function bringDownNode(matches, PillCell) {
       const parts = general
         ? ['All other representations']
         : (covered ? splitBringdownCoveredPills(resolveRepsCovered(covered, nameBySec)) : ['Specified representations']);
+      const colorKey = standardColorKey(meta.label);
       const repsNode = PillCell
         ? React.createElement(
             'div',
             { className: 'flex flex-wrap gap-1' },
-            parts.map((part, partIndex) => React.createElement(PillCell, { key: partIndex, label: part, tone: 'neutral' })),
+            parts.map((part, partIndex) => React.createElement(PillCell, { key: partIndex, label: part, tone: 'neutral', color: colorKey })),
           )
         : React.createElement('div', { className: 'max-w-[42rem] text-[11px] leading-5 text-inkLight' }, parts.join(', '));
       return React.createElement(
         'div',
         { key: `bd-${index}`, className: 'space-y-1' },
-        React.createElement('div', { className: 'text-[11px] font-semibold uppercase tracking-wide text-inkFaint' }, meta.label),
+        React.createElement('div', { className: `text-[11px] font-semibold uppercase tracking-wide ${(colorKey && STANDARD_TEXT[colorKey]) || 'text-inkFaint'}` }, meta.label),
         repsNode,
       );
     }),
@@ -420,15 +423,15 @@ function buildStandardDetail(row, family, ctx, bandFamilies) {
     mainNode = bringDownNode(matches, PillCell);
     if (!mainNode) {
       const ccs = firstDefined(matches, 'covenantComplianceStandard');
-      if (ccs) chips.push(mkChip(PillCell, 'covenant-standard', prettyMaterialityLabel(taggedLabel(ccs) || valueText(ccs)), 'info', primary, taggedEvidence(ccs, primary)));
+      if (ccs) chips.push(mkChip(PillCell, 'covenant-standard', prettyMaterialityLabel(taggedLabel(ccs) || valueText(ccs)), 'info', primary, taggedEvidence(ccs, primary), standardColorKey(taggedLabel(ccs) || valueText(ccs))));
     }
   } else if (family === 'COV') {
     const ccs = firstDefined(matches, 'covenantComplianceStandard');
     if (ccs) {
-      chips.push(mkChip(PillCell, 'covenant-standard', prettyMaterialityLabel(taggedLabel(ccs) || valueText(ccs)), 'info', primary, taggedEvidence(ccs, primary)));
+      chips.push(mkChip(PillCell, 'covenant-standard', prettyMaterialityLabel(taggedLabel(ccs) || valueText(ccs)), 'info', primary, taggedEvidence(ccs, primary), standardColorKey(taggedLabel(ccs) || valueText(ccs))));
     } else {
       const sniffed = covenantStandardFromText(firstDefined(matches, 'mainCondition'));
-      if (sniffed) chips.push(mkChip(PillCell, 'covenant-standard-sniff', sniffed, 'info', primary, firstDefined(matches, 'mainCondition')));
+      if (sniffed) chips.push(mkChip(PillCell, 'covenant-standard-sniff', sniffed, 'info', primary, firstDefined(matches, 'mainCondition'), standardColorKey(sniffed)));
     }
   } else if (family === 'REG') {
     // Antitrust: HSR plus the SCHEDULED_APPROVALS the agreement lists in a

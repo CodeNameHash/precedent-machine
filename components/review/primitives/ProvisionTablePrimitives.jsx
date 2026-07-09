@@ -7,6 +7,7 @@ import {
 } from '../../../lib/citable.js';
 import { HoverSource } from '../shared.js';
 import { splitForCell } from '../table-configs/card-utils.js';
+import { STANDARD_COLORS } from '../table-configs/standard-colors.js';
 
 const { MATERIAL_CONTRACT_BUCKET_CODES, MATERIAL_CONTRACT_BUCKET_META } = taxonomy;
 
@@ -62,9 +63,11 @@ export function EvidenceHoverSource({ value, evidence, source, quote, highlight,
   );
 }
 
-export function PillCell({ value, label, tone = 'neutral', evidence, source, quote, highlight, className = '' }) {
+export function PillCell({ value, label, tone = 'neutral', color, evidence, source, quote, highlight, className = '' }) {
   const text = label || textValue(value) || 'Not captured';
-  const classes = PILL_TONES[tone] || PILL_TONES.neutral;
+  // `color` (a shared standard-colour palette key) wins over `tone` so the same
+  // legal standard reads the same colour everywhere it appears.
+  const classes = (color && STANDARD_COLORS[color]) || PILL_TONES[tone] || PILL_TONES.neutral;
   return (
     <EvidenceHoverSource value={value} evidence={evidence} source={source} quote={quote} highlight={highlight}>
       <span className={`inline-flex max-w-full items-center rounded border px-2 py-0.5 text-[11px] font-medium ${classes} ${className}`.trim()}>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { comparisonGroupForStandardCode } from '../../../lib/employee-benefits.js';
 import { cardCode, cardFeatures, splitForCell, textOf, valueText } from './card-utils.js';
+import { standardColorKey } from './standard-colors.js';
 
 // Rebuilt per REBUILD-SPECS.md §12: a real TABLE (BENEFIT | REFERENCE GROUP |
 // STANDARD | PERIOD) for the five compensationItems entries, header line
@@ -223,7 +224,7 @@ function dividerRow(headline) {
   return {
     id: 'employee-benefits-protections-divider',
     kind: 'divider',
-    benefit: 'Other protections & ERISA compliance',
+    benefit: 'Other protections',
     comparison: null,
     standard: null,
     period: null,
@@ -247,11 +248,11 @@ function textCell(text, row, ctx) {
   return React.createElement(EvidenceHoverSource, { evidence: row.evidence, source: row.sourceCard, as: 'span' }, text);
 }
 
-function pillCell(label, tone, row, ctx) {
+function pillCell(label, tone, row, ctx, color) {
   if (!label) return React.createElement('span', { className: 'italic text-inkFaint text-[11px]' }, '—');
   const PillCell = ctx?.primitives?.PillCell;
   if (!PillCell) return label;
-  return React.createElement(PillCell, { label, tone, evidence: row.evidence, source: row.sourceCard });
+  return React.createElement(PillCell, { label, tone, color, evidence: row.evidence, source: row.sourceCard });
 }
 
 const employeeBenefitsConfig = {
@@ -269,9 +270,9 @@ const employeeBenefitsConfig = {
     }
     const continuationRows = checklistRows(cards, CONTINUATION_ITEMS, 'All covered employees', headline);
     const protectionRows = checklistRows(cards, PROTECTION_ITEMS, 'All covered employees', headline);
-    const erisaCards = allCards.filter(isErisaCard);
-    const erisaRows = checklistRows(erisaCards, ERISA_ITEMS, 'ERISA compliance checklist', headline);
-    const belowRows = [...continuationRows, ...protectionRows, ...erisaRows];
+    // ERISA checklist hidden per Ben's review ("not important; just hide it").
+    // ERISA_ITEMS / isErisaCard kept for a possible future standalone table.
+    const belowRows = [...continuationRows, ...protectionRows];
     const divider = belowRows.length ? [dividerRow(headline)] : [];
     return [...baseRows, ...divider, ...belowRows];
   },
@@ -308,7 +309,9 @@ const employeeBenefitsConfig = {
       header: 'Standard',
       renderCell(row, ctx) {
         if (row.kind === 'divider') return null;
-        return pillCell(shortStandard(row.standard), 'present', row, ctx);
+        // Colour by the shared standard palette so the same standard reads the
+        // same colour here and in every other table.
+        return pillCell(shortStandard(row.standard), 'present', row, ctx, standardColorKey(row.standard));
       },
     },
     {
