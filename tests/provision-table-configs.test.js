@@ -582,24 +582,24 @@ test('mae-definitions config exposes carve-out and definition signals with hover
   });
   const limbs = rows.find((row) => row.id === 'mae-definitions-limbs');
   const carveouts = rows.find((row) => row.id === 'mae-definitions-carveouts');
-  const preventDelay = rows.find((row) => row.id === 'mae-definitions-prevent-delay');
   // fb2 #20: the disproportionate-impact clause/scope no longer render as
   // their own summary rows -- that fact now lives ONLY as the per-carve-out
   // "Disp. carveback applies" pill inside the carve-outs table itself, so
   // there is no 'mae-definitions-disproportionate' row to find at all.
   assert.equal(rows.find((row) => row.id === 'mae-definitions-disproportionate'), undefined);
   assert.equal(rows.find((row) => row.id === 'mae-definitions-disproportionate-scope'), undefined);
+  // fb3 #M3: the standalone "prevent-delay" prong row is dropped -- it
+  // restated the second MAE limb already summarized by the "MAE Test" pill
+  // above (TWO_LIMB means the prevent/delay prong is part of the test).
+  assert.equal(rows.find((row) => row.id === 'mae-definitions-prevent-delay'), undefined);
   assert.deepEqual(limbs.signals.map((item) => item.label), ['TWO_LIMB']);
   assert.deepEqual(carveouts.signals.map((item) => item.label), ['General economic conditions']);
-  assert.deepEqual(preventDelay.signals.map((item) => item.label), ['prevent or materially delay closing']);
   const primitives = {
     PillCell: ({ label }) => React.createElement('span', { className: 'pill' }, label),
     EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
   };
   const signalColumn = maeDefinitionsMod.maeDefinitionsConfig.columns.find((column) => column.id === 'signals');
-  const detailColumn = maeDefinitionsMod.maeDefinitionsConfig.columns.find((column) => column.id === 'detail');
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, signalColumn.renderCell(carveouts, { primitives }))), /General economic conditions/);
-  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(preventDelay, { primitives }))), /data-evidence="Material Adverse Effect excludes/);
 });
 
 test('mae-definitions carve-outs table drops the right-hand TEXT column (fb2 #19) -- carve-out name + Disp. carveback pill only', () => {
@@ -627,6 +627,11 @@ test('mae-definitions carve-outs table drops the right-hand TEXT column (fb2 #19
   assert.doesNotMatch(html, />Text</, 'no TEXT column header');
   assert.doesNotMatch(html, /acts of war or terrorism/, 'no raw carve-out clause text rendered');
   assert.match(html, /Disp\. carveback applies/);
+  // fb3 #M2: no redundant "Carve-out" list header (the row above already
+  // reads "Carve-outs") and no <table> wrapper -- a tight scannable <ul>.
+  assert.doesNotMatch(html, /<th[^>]*>Carve-out</, 'no "Carve-out" column header');
+  assert.doesNotMatch(html, /<table/, 'carve-outs render as a list, not a table');
+  assert.match(html, /<ul/, 'carve-outs render as a list');
 });
 
 test('mae-definitions renderBody renders Company and Parent MAE as two separate <table> sub-sections, each headed distinctly (never repeating the section title) (fb2 #21, #22)', async () => {

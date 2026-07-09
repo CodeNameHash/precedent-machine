@@ -12,12 +12,17 @@ const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 // dropped from this list (fb2 #20): that information now lives ONLY as a
 // per-row "Disp. carveback applies" pill inside the carve-outs table itself
 // (see carveoutsTableNode) rather than a second, redundant summary row.
+//
+// fb3 #M3/#M4: the standalone "prevent-delay" and "pandemic-cyber" summary
+// rows are also dropped. The two-limb MAE Test pill above already states
+// whether the prevent/materially-delay-closing prong is part of the test
+// (that's what TWO_LIMB means), and pandemic/cyber are already listed as
+// individual carve-out rows in the carve-outs table -- both standalone rows
+// were restating information already shown elsewhere on this same card.
 const ROWS = [
   ['limbs', 'MAE Test', 'Definition', ['maeLimbType', 'maeLimbs']],
   ['carveouts', 'Carve-outs', 'Carve-outs', ['carveouts', 'maeCarveouts']],
   ['exceptions', 'Exceptions to carve-outs', 'Carve-outs', ['carveoutExceptions', 'maeCarveoutExceptions']],
-  ['pandemic-cyber', 'Pandemic / cyber carve-outs', 'Carve-outs', ['pandemicCarveout', 'cyberSecurityCarveout']],
-  ['prevent-delay', 'Prevent / delay prong', 'Definition', ['preventDelayProng', 'maePreventDelay']],
 ];
 
 // MAE_LIMB_TEXT: friendly translation for the two-limb / one-limb code so
@@ -177,6 +182,12 @@ function carveoutHasCarveback(item, code, dispSet) {
 // taxonomy CODE (e.g. ACTS_OF_WAR_TERRORISM), which read worse than showing
 // nothing at all. Dropped entirely; carveoutText() (the old TEXT-column
 // source) goes with it.
+//
+// fb3 #M2: rendered as a plain scannable LIST, not a <table> -- a one-column
+// table with a "Carve-out" header restated the obvious (the row above this
+// already reads "Carve-outs") and its bordered/padded cells read as a dense
+// block rather than a quick scan. A tight list of names, each inline with
+// its "Disp. carveback applies" pill when present, scans in one pass.
 function carveoutsTableNode(row, ctx) {
   const items = Array.isArray(row.value) ? row.value : [];
   if (!items.length) return null;
@@ -185,42 +196,21 @@ function carveoutsTableNode(row, ctx) {
   const dispSet = disproportionateCodeSet(row.sourceCard);
 
   return React.createElement(
-    'table',
-    { className: 'w-full max-w-[46rem] border-separate border-spacing-0 text-[11px]' },
-    React.createElement(
-      'thead',
-      null,
-      React.createElement(
-        'tr',
-        null,
-        React.createElement('th', { className: 'border-b border-border px-1.5 py-1 text-left font-medium uppercase tracking-wider text-inkFaint' }, 'Carve-out'),
-      ),
-    ),
-    React.createElement(
-      'tbody',
-      null,
-      items.map((item, index) => {
-        const code = normalizeCarveoutCode(item);
-        const name = carveoutName(item, dict);
-        const hasCarveback = carveoutHasCarveback(item, code, dispSet);
-        return React.createElement(
-          'tr',
-          { key: code || `${name}-${index}` },
-          React.createElement(
-            'td',
-            { className: 'border-b border-border/60 px-1.5 py-1.5 align-top' },
-            React.createElement(
-              'div',
-              { className: 'space-y-1' },
-              React.createElement('span', { className: 'text-ink', title: code || undefined }, name),
-              hasCarveback && PillCell
-                ? React.createElement('div', null, React.createElement(PillCell, { label: 'Disp. carveback applies', tone: 'warning' }))
-                : null,
-            ),
-          ),
-        );
-      }),
-    ),
+    'ul',
+    { className: 'max-w-[46rem] divide-y divide-border/40 text-[11px]' },
+    items.map((item, index) => {
+      const code = normalizeCarveoutCode(item);
+      const name = carveoutName(item, dict);
+      const hasCarveback = carveoutHasCarveback(item, code, dispSet);
+      return React.createElement(
+        'li',
+        { key: code || `${name}-${index}`, className: 'flex flex-wrap items-baseline gap-x-2 gap-y-0.5 py-1 first:pt-0 last:pb-0' },
+        React.createElement('span', { className: 'text-ink', title: code || undefined }, name),
+        hasCarveback && PillCell
+          ? React.createElement(PillCell, { label: 'Disp. carveback applies', tone: 'warning' })
+          : null,
+      );
+    }),
   );
 }
 
