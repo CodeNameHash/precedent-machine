@@ -1,5 +1,15 @@
+import React from 'react';
 import { comparisonGroupForStandardCode } from '../../../lib/employee-benefits.js';
-import { valueText } from './card-utils.js';
+import { cardCode, cardFeatures, splitForCell, textOf, valueText } from './card-utils.js';
+
+// Rebuilt per REBUILD-SPECS.md §12: a real TABLE (BENEFIT | REFERENCE GROUP |
+// STANDARD | PERIOD) for the five compensationItems entries, header line
+// "Protection period: N months", and a small pill-based group below the
+// table for continuedService / eligibilityWaiver / severanceProtection / the
+// ERISA checklist. "Reference group" is a column value only -- there is no
+// new section/nav id here, and everything still flows through the single
+// exported `employeeBenefitsConfig` + selectRows contract the page and the
+// existing tests key off of.
 
 const FALLBACK_ITEMS = [
   ['BASE_SALARY', 'Base salary', ['baseSalaryStandard']],
@@ -12,7 +22,7 @@ const FALLBACK_ITEMS = [
 // ERISA checklist (Metsera parity gap root cause 4: "none read anywhere").
 // All five sit on the same REP-T-BENEFITS representation card and always
 // render as extra rows below whichever compensationItems/fallback path fired
-// above — unlike FALLBACK_ITEMS, they must not go dead when compensationItems
+// above -- unlike FALLBACK_ITEMS, they must not go dead when compensationItems
 // is present, because the ERISA claims live on a different card entirely.
 const ERISA_ITEMS = [
   ['erisaCompliance', 'ERISA compliance'],
@@ -28,15 +38,16 @@ const CONTINUATION_ITEMS = [
   ['continued401k', '401(k) plan continuation'],
 ];
 
-function cardCode(card) {
-  return String(card?.provision_subtype || card?.canonical_code || card?.provision_code || card?.code || '').trim().toUpperCase();
-}
-function cardFeatures(card) {
-  if (card?.features && typeof card.features === 'object') return card.features;
-  const meta = card?.ai_metadata;
-  if (meta?.features && typeof meta.features === 'object') return meta.features;
-  return {};
-}
+// Section-level protection claims that live on the same COV-EMPLOYEE card as
+// compensationItems but were never read anywhere before this rebuild (spec
+// §12: "continuedService, eligibilityWaiver, severanceProtection ... as a
+// small group").
+const PROTECTION_ITEMS = [
+  ['continuedService', 'Continued service crediting'],
+  ['eligibilityWaiver', 'Eligibility / waiting-period waiver'],
+  ['severanceProtection', 'Severance protection'],
+];
+
 function isEmployeeBenefitsCard(card) {
   const code = cardCode(card);
   if (code === 'COV-EMPLOYEE') return true;
@@ -53,14 +64,21 @@ function isErisaCard(card) {
   if (cardCode(card) === 'REP-T-BENEFITS') return true;
   return /erisa/i.test(`${card?.short_title || ''} ${textOf(card)}`);
 }
-function textOf(card) {
-  return String(card?.primary_quote || card?.region_full_text || '').trim();
+
+// The headline "protectionPeriodMonths" (12) drives both the section header
+// note and every row's PERIOD column fallback when a row has no per-item
+// timePeriod of its own.
+function headlinePeriod(cards) {
+  for (const card of cards) {
+    const f = cardFeatures(card);
+    const months = typeof f.protectionPeriodMonths === 'number' ? f.protectionPeriodMonths
+      : typeof f.employeeBenefitPeriod === 'number' ? f.employeeBenefitPeriod
+      : null;
+    if (months !== null) return { months, text: `${months} month${months === 1 ? '' : 's'}`, card };
+  }
+  return null;
 }
-// valueText is imported from card-utils.js (see above) rather than defined
-// locally: this config's own copy read `.text` before `.label`/`.code` with
-// no redundancy check, so it could leak a raw canonical code or double up
-// text that already matched the label. card-utils.js's version prioritizes
-// label/code and suppresses a `.text` that's a literal echo.
+
 function firstFeature(cards, keys) {
   for (const card of cards) {
     const features = cardFeatures(card);
@@ -93,18 +111,24 @@ function benefitTypes(raw) {
   if (!Array.isArray(types) || !types.length) return [{ code: itemCode(raw), label: itemLabel(raw, itemCode(raw)) }];
   return types.map((type) => ({ code: type?.code ? String(type.code).toUpperCase() : null, label: type?.label || type?.text || type?.code || 'Compensation / benefit item' }));
 }
+// Period is now its own column (spec §12), so exceptions/bundling/raw text
+// are all that's left for the hidden "detail" full-text column.
 function detailBits(raw) {
   const bits = [];
-  const period = raw?.timePeriod || raw?.time_period;
   const exceptions = valueText(raw?.exceptions);
   const bundling = raw?.bundling ? `Bundling: ${valueText(raw.bundling)}` : null;
-  if (period) bits.push(`Period: ${valueText(period)}`);
   if (exceptions) bits.push(`Exceptions: ${exceptions}`);
   if (bundling) bits.push(bundling);
   if (raw?.text) bits.push(String(raw.text));
   return bits.join('\n');
 }
-function rowsFromCompensationItems(cards) {
+// PERIOD column value: per-item timePeriod when the entry has one, else the
+// section's headline protectionPeriodMonths.
+function periodFor(raw, headline) {
+  const text = valueText(raw?.timePeriod || raw?.time_period);
+  return text || (headline ? headline.text : null) || 'Not specified';
+}
+function rowsFromCompensationItems(cards, headline) {
   const rows = [];
   for (const card of cards) {
     const items = cardFeatures(card).compensationItems;
@@ -113,56 +137,121 @@ function rowsFromCompensationItems(cards) {
       if (!raw || typeof raw !== 'object') continue;
       const stdCode = standardCode(raw);
       const stdLabel = standardLabel(raw, stdCode);
+      const period = periodFor(raw, headline);
       for (const type of benefitTypes(raw)) {
         rows.push({
           id: `employee-benefits-${type.code || rows.length}`,
+          kind: 'item',
           benefit: type.label,
           comparison: raw.comparison_group || raw.comparisonGroup || comparisonGroupForStandardCode(stdCode) || 'Not specified',
           standard: stdLabel || 'Not specified',
+          period,
           detail: detailBits(raw) || 'Present, detail not extracted',
           evidence: raw.text || textOf(card),
+          sourceCard: card,
           present: true,
+          headlineProtectionPeriod: headline?.text || null,
         });
       }
     }
   }
   return rows;
 }
-function fallbackRows(cards) {
+function fallbackRows(cards, headline) {
   const rows = [];
   for (const [code, label, keys] of FALLBACK_ITEMS) {
     const hit = firstFeature(cards, keys);
     if (!hit) continue;
     rows.push({
       id: `employee-benefits-${code}`,
+      kind: 'item',
       benefit: label,
       comparison: 'Not specified',
       standard: hit.text,
+      period: headline ? headline.text : null,
       detail: textOf(hit.card),
       evidence: textOf(hit.card),
+      sourceCard: hit.card,
       present: true,
+      headlineProtectionPeriod: headline?.text || null,
     });
   }
   const period = firstFeature(cards, ['employeeBenefitPeriod', 'protectionPeriod', 'protectionPeriodMonths']);
-  if (period) rows.unshift({ id: 'employee-benefits-period', benefit: 'Continuation period', comparison: 'All covered employees', standard: period.text, detail: textOf(period.card), evidence: textOf(period.card), present: true });
+  if (period) {
+    rows.unshift({
+      id: 'employee-benefits-period',
+      kind: 'item',
+      benefit: 'Continuation period',
+      comparison: 'All covered employees',
+      standard: period.text,
+      period: period.text,
+      detail: textOf(period.card),
+      evidence: textOf(period.card),
+      sourceCard: period.card,
+      present: true,
+      headlineProtectionPeriod: headline?.text || null,
+    });
+  }
   return rows;
 }
-function checklistRows(cards, items, comparison) {
+function checklistRows(cards, items, comparison, headline) {
   const rows = [];
   for (const [key, label] of items) {
     const hit = firstFeature(cards, [key]);
     if (!hit) continue;
     rows.push({
       id: `employee-benefits-${key}`,
+      kind: 'checklist',
       benefit: label,
       comparison,
       standard: hit.text,
+      period: null,
       detail: textOf(hit.card) || hit.text,
       evidence: textOf(hit.card),
+      sourceCard: hit.card,
       present: true,
+      headlineProtectionPeriod: headline?.text || null,
     });
   }
   return rows;
+}
+// Groups the checklist rows (continuedService / eligibilityWaiver /
+// severanceProtection / 401(k) / ERISA) under their own visual band inside
+// the one table this config is allowed to own -- a divider row (styled like
+// an absent row, no pills in the other columns) rather than a second section.
+function dividerRow(headline) {
+  return {
+    id: 'employee-benefits-protections-divider',
+    kind: 'divider',
+    benefit: 'Other protections & ERISA compliance',
+    comparison: null,
+    standard: null,
+    period: null,
+    detail: null,
+    evidence: null,
+    present: false,
+    headlineProtectionPeriod: headline?.text || null,
+  };
+}
+
+function shortStandard(text) {
+  if (!text) return null;
+  const { short, truncated } = splitForCell(text, 70);
+  return truncated ? `${short}…` : short;
+}
+
+function textCell(text, row, ctx) {
+  if (!text) return React.createElement('span', { className: 'italic text-inkFaint text-[11px]' }, '—');
+  const EvidenceHoverSource = ctx?.primitives?.EvidenceHoverSource;
+  if (!EvidenceHoverSource) return text;
+  return React.createElement(EvidenceHoverSource, { evidence: row.evidence, source: row.sourceCard, as: 'span' }, text);
+}
+
+function pillCell(label, tone, row, ctx) {
+  if (!label) return React.createElement('span', { className: 'italic text-inkFaint text-[11px]' }, '—');
+  const PillCell = ctx?.primitives?.PillCell;
+  if (!PillCell) return label;
+  return React.createElement(PillCell, { label, tone, evidence: row.evidence, source: row.sourceCard });
 }
 
 const employeeBenefitsConfig = {
@@ -170,22 +259,80 @@ const employeeBenefitsConfig = {
   title: 'Employee Compensation and Benefits',
   layoutSlot: 'covenants',
   selectRows(reviewDeal) {
-    const cards = (reviewDeal?.cards || []).filter(isEmployeeBenefitsCard);
+    const allCards = reviewDeal?.cards || [];
+    const cards = allCards.filter(isEmployeeBenefitsCard);
+    const headline = headlinePeriod(cards);
     let baseRows = [];
     if (cards.length) {
-      const structured = rowsFromCompensationItems(cards);
-      baseRows = structured.length ? structured : fallbackRows(cards);
+      const structured = rowsFromCompensationItems(cards, headline);
+      baseRows = structured.length ? structured : fallbackRows(cards, headline);
     }
-    const continuationRows = checklistRows(cards, CONTINUATION_ITEMS, 'All covered employees');
-    const erisaCards = (reviewDeal?.cards || []).filter(isErisaCard);
-    const erisaRows = checklistRows(erisaCards, ERISA_ITEMS, 'ERISA compliance checklist');
-    return [...baseRows, ...continuationRows, ...erisaRows];
+    const continuationRows = checklistRows(cards, CONTINUATION_ITEMS, 'All covered employees', headline);
+    const protectionRows = checklistRows(cards, PROTECTION_ITEMS, 'All covered employees', headline);
+    const erisaCards = allCards.filter(isErisaCard);
+    const erisaRows = checklistRows(erisaCards, ERISA_ITEMS, 'ERISA compliance checklist', headline);
+    const belowRows = [...continuationRows, ...protectionRows, ...erisaRows];
+    const divider = belowRows.length ? [dividerRow(headline)] : [];
+    return [...baseRows, ...divider, ...belowRows];
+  },
+  // "Protection period: 12 months" -- hoisted out of every row into the
+  // section chrome (ProvisionTable's headerNote slot) instead of repeated
+  // per row.
+  deriveHeaderNote(rows) {
+    const hit = (rows || []).find((row) => row.headlineProtectionPeriod);
+    return hit ? `Protection period: ${hit.headlineProtectionPeriod}` : null;
   },
   columns: [
-    { id: 'benefit', header: 'Benefit Type', width: '15rem', renderCell: (row) => row.benefit },
-    { id: 'comparison', header: 'Comparison Group', width: '14rem', renderCell: (row) => row.comparison },
-    { id: 'standard', header: 'Standard', width: '14rem', renderCell: (row) => row.standard },
-    { id: 'detail', header: 'Exceptions / Bundling / Text', renderCell: (row) => row.detail },
+    {
+      id: 'benefit',
+      header: 'Benefit',
+      width: '15rem',
+      renderCell(row, ctx) {
+        if (row.kind === 'divider') {
+          return React.createElement('span', { className: 'text-[10px] font-semibold uppercase tracking-wider text-inkFaint' }, row.benefit);
+        }
+        return textCell(row.benefit, row, ctx);
+      },
+    },
+    {
+      id: 'comparison',
+      header: 'Reference Group',
+      width: '14rem',
+      renderCell(row, ctx) {
+        if (row.kind === 'divider') return null;
+        return pillCell(row.comparison, 'neutral', row, ctx);
+      },
+    },
+    {
+      id: 'standard',
+      header: 'Standard',
+      renderCell(row, ctx) {
+        if (row.kind === 'divider') return null;
+        return pillCell(shortStandard(row.standard), 'present', row, ctx);
+      },
+    },
+    {
+      id: 'period',
+      header: 'Period',
+      width: '9rem',
+      renderCell(row, ctx) {
+        if (row.kind === 'divider') return null;
+        return pillCell(row.period, 'neutral', row, ctx);
+      },
+    },
+    // Not shown in the visible grid -- ProvisionTable.jsx's FULL_TEXT_COLUMNS
+    // relocates 'detail' behind a per-row "see text" expander under the
+    // Benefit cell (already wired for config id 'employee-benefits'). This is
+    // how long prose (severanceProtection text, raw clause quotes, bundling
+    // detail) stays out of the always-visible pills per spec §12.
+    {
+      id: 'detail',
+      header: '',
+      renderCell(row) {
+        if (row.kind === 'divider') return null;
+        return row.detail || null;
+      },
+    },
   ],
 };
 
