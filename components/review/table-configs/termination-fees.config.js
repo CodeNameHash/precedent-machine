@@ -152,9 +152,18 @@ function feeTableRows(cards) {
 // as a "dull row" to fix. The rate is the operative fact; `base` is near-
 // always the boilerplate "the amount of the payment" and is only appended
 // when it says something else.
+// Ben (round 6): the rate dumped the whole clause ("the prime rate of Bank of
+// America (or its successors or assigns) in effect on the date...") -> "Prime
+// rate (Bank of America)".
+function summarizeRate(rate) {
+  const t = String(rate || '');
+  if (!/prime rate/i.test(t)) return rate;
+  const bank = t.match(/prime rate of\s+([A-Z][A-Za-z.& ]+?)(?:\s*\(| in effect|,|\.|$)/i);
+  return bank ? `Prime rate (${bank[1].trim()})` : 'Prime rate';
+}
 function formatInterestOnLatePayment(raw) {
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
-  const rate = typeof raw.rate === 'string' ? raw.rate.trim() : null;
+  const rate = typeof raw.rate === 'string' ? summarizeRate(raw.rate.trim()) : null;
   const base = typeof raw.base === 'string' ? raw.base.trim() : null;
   if (rate && base && !/^the amount of the payment$/i.test(base)) return `${rate}, applied to ${base}`;
   return rate || base || null;

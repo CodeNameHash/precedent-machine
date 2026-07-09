@@ -248,16 +248,13 @@ function buildRows(reviewDeal) {
   const parentApprovalCard = findParentApprovalCard(reviewDeal);
 
   const rows = [];
+  // Ben (round 6): make Company vs Parent approvals explicit, and drop the
+  // "Written consent required" row (redundant with the Parent approval row --
+  // Parent adopts by written consent as sole stockholder of Merger Sub).
   if (approvalDefRow) {
     rows.push({
-      id: 'votes-approvals-meeting-approval-definition', label: 'Approval definition', kind: 'vote-standard',
+      id: 'votes-approvals-meeting-approval-definition', label: 'Company stockholder approval', kind: 'vote-standard',
       text: approvalDefRow.detail, evidence: approvalDefRow.evidence, source: approvalDefRow.source,
-    });
-  }
-  if (consentRow) {
-    rows.push({
-      id: 'votes-approvals-meeting-written-consent', label: consentRow.label, kind: 'bool',
-      text: consentRow.detail, evidence: consentRow.evidence, source: consentRow.source,
     });
   }
   if (voteThresholdRow) {
@@ -276,6 +273,12 @@ function buildRows(reviewDeal) {
     rows.push({
       id: 'votes-approvals-meeting-parent-approval', label: 'Parent / Merger Sub approvals', kind: 'parent-approval',
       card: parentApprovalCard,
+    });
+  } else {
+    // Explicit "Not specified" rather than silently omitting the Parent side.
+    rows.push({
+      id: 'votes-approvals-meeting-parent-approval', label: 'Parent / Merger Sub approvals', kind: 'vote-standard',
+      text: 'Not specified',
     });
   }
   if (proxyRow) {

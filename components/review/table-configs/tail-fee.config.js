@@ -67,6 +67,11 @@ function formatPct(value) {
 function simplifyScenario(raw, max = 70) {
   const text = String(scalar(raw) ?? raw ?? '').trim();
   if (!text) return null;
+  // Ben (round 6): summarize the tail-arming scenario to a crisp pill rather
+  // than a truncated prose clause (the full clause stays as hover evidence).
+  if (/(?:un-?withdrawn|not[^.]{0,20}withdrawn)/i.test(text) && /(?:takeover|acquisition)\s+proposal/i.test(text) && /terminat/i.test(text)) {
+    return 'Terminated after an unwithdrawn Takeover Proposal';
+  }
   const bracket = text.match(/\[([^\]]+)\]/);
   if (bracket && bracket[1].trim()) return bracket[1].trim();
   const stripped = text.replace(/^\s*(?:§|Section)\s*[\w.()-]+[:\-]?\s*/i, '').trim() || text;

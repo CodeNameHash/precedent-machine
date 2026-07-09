@@ -103,15 +103,15 @@ test('misc-boilerplate renders the Assignment group (5 keys, Metsera regression:
     },
   };
   const rows = miscBoilerplateMod.miscBoilerplateConfig.selectRows({ cards: [assignmentCard] });
-  const assignmentRows = rows.filter((row) => row.kind === 'Assignment');
-  assert.equal(assignmentRows.length, 5, 'all five Assignment-group keys should render rows');
-  assert.deepEqual(new Set(assignmentRows.map((row) => row.label)), new Set([
-    'Parent assignment right',
-    'Parent assignment conditions',
-    'Company consent for assignment',
-    'Assignment exceptions',
-    'Assignment restrictions',
-  ]));
+  // Round-6 (Ben): the five raw-clause Assignment rows collapse into ONE
+  // "Assignment" row with two crisp pills.
+  const assignment = rows.find((row) => row.id === 'misc-boilerplate-assignment');
+  assert.ok(assignment, 'the summarized Assignment row should render');
+  assert.equal(assignment.label, 'Assignment');
+  assert.deepEqual(assignment.signals.map((item) => item.label), [
+    'Merger Sub may assign to Parent or a wholly-owned subsidiary',
+    "Otherwise, no assignment without the other party's prior written consent",
+  ]);
 });
 
 test('misc-boilerplate renders specific performance limitations (Skechers cross-deal gap)', () => {

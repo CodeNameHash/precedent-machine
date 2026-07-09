@@ -263,14 +263,14 @@ test('consideration hero computes the "Up to $X.XX / share" max on the per-share
   const perShare = rows.find((row) => row.id === 'consideration-hero-per-share');
   assert.ok(perShare, 'expected a per-share consideration row');
   assert.equal(perShare.maxDetail, 'Up to $70.00 / share');
-  assert.equal(perShare.detail, '$47.5 in cash + 1 CVR (up to $22.50)');
+  assert.equal(perShare.detail, '$47.50 in cash + 1 CVR (up to $22.50)');
 
   const primitives = {
     PillCell: ({ label, tone }) => React.createElement('span', { 'data-pill': tone }, label),
   };
   const detailColumn = considerationHeroMod.considerationHeroConfig.columns.find((c) => c.id === 'detail');
   const html = renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(perShare, { primitives })));
-  assert.match(html, /\$47\.5 in cash/, 'per-share cash pill still renders');
+  assert.match(html, /\$47\.50 in cash/, 'per-share cash pill still renders');
   assert.match(html, /1 CVR \(up to \$22\.50\)/, 'CVR pill still renders');
   assert.match(html, /Up to \$70\.00 \/ share/, 'the computed max renders in the SAME cell as the per-share pills, not a separate row');
 });
@@ -868,13 +868,14 @@ test('antitrust-regulatory pull-refile and timing-agreements rows surface the un
   const timingAgreements = rows.find((row) => row.id === 'antitrust-regulatory-timing-agreements');
   assert.ok(pullRefile, 'Pull-and-refile row should render');
   assert.ok(timingAgreements, 'Timing agreements row should render');
+  // Round-6: both rows read the same consent-gate label (same clause); the
+  // 2-business-day withdraw-and-refile proviso is specific to pull-and-refile.
   assert.deepEqual(pullRefile.signals.map((item) => item.label), [
-    'Mutual consent',
+    'Mutual consent required (not unreasonably withheld)',
     'Proviso: may withdraw without consent if refiled within 2 business days',
   ]);
   assert.deepEqual(timingAgreements.signals.map((item) => item.label), [
-    'Consent not to be unreasonably withheld',
-    'Proviso: may withdraw without consent if refiled within 2 business days',
+    'Mutual consent required (not unreasonably withheld)',
   ]);
 });
 
@@ -893,7 +894,7 @@ test('antitrust-regulatory pull-refile row does not fabricate a proviso pill whe
   });
   const pullRefile = rows.find((row) => row.id === 'antitrust-regulatory-pull-refile');
   assert.ok(pullRefile);
-  assert.deepEqual(pullRefile.signals.map((item) => item.label), ['Mutual consent']);
+  assert.deepEqual(pullRefile.signals.map((item) => item.label), ['Mutual consent required']);
 });
 
 test('structure-mechanics config exposes transaction-form signals and hover details', () => {

@@ -52,15 +52,13 @@ const ROWS_TOP = [
 const ROWS_BOTTOM = [
   ['specific-performance', 'Specific performance', 'Remedies', ['specificPerformance']],
   ['specific-performance-limitations', 'Specific performance limitations', 'Remedies', ['specificPerformanceLimitations']],
+  // Assignment: the five raw-clause rows below are replaced by ONE summarized
+  // "Assignment" row (buildAssignmentRow) -- Ben round 6. Kept commented for
+  // provenance.
   // Assignment group: all five sit on the same MISC-ASSIGN boilerplate card
   // (Metsera parity gap root cause 4: "whole sub-section, no rows"). Kept as
   // five discrete rows -- each is a distinct fact the review team checks
   // independently -- clustered under the shared 'Assignment' kind.
-  ['assignment-parent-right', 'Parent assignment right', 'Assignment', ['parentAssignmentRight']],
-  ['assignment-parent-conditions', 'Parent assignment conditions', 'Assignment', ['parentAssignmentConditions']],
-  ['assignment-company-consent', 'Company consent for assignment', 'Assignment', ['companyConsentForAssignment']],
-  ['assignment-exceptions', 'Assignment exceptions', 'Assignment', ['assignmentExceptions']],
-  ['assignment-restrictions', 'Assignment restrictions', 'Assignment', ['assignmentRestrictions']],
 ];
 
 function isMiscBoilerplateCard(card) {
@@ -83,15 +81,41 @@ function miscBoilerplateSignal(row) {
   };
 }
 
+// Ben (round 6): Forum -> "Delaware Court of Chancery; any DE state or federal
+// court" instead of the long verbatim court list.
+function forumLabel(detail, card) {
+  const t = `${detail || ''} ${textOf(card) || ''}`.toLowerCase();
+  if (/court of chancery[^.]*delaware|delaware[^.]*court of chancery/.test(t)) {
+    return /state or federal court/.test(t) ? 'Delaware Court of Chancery; any DE state or federal court' : 'Delaware Court of Chancery';
+  }
+  return detail;
+}
+const ROW_CLEANERS = { forum: forumLabel };
 function mappedBoilerplateRows(cards, specs) {
   return specs
     .map(([id, label, kind, keys]) => {
       const hit = firstFeature(cards, keys || id);
-      const row = makeRow('misc-boilerplate', id, label, kind, hit);
+      let row = makeRow('misc-boilerplate', id, label, kind, hit);
       if (!row) return null;
+      const cleaner = ROW_CLEANERS[id];
+      if (cleaner && row.detail) row = { ...row, detail: cleaner(row.detail, hit.card) };
       return { ...row, sourceCard: hit.card, signals: [miscBoilerplateSignal({ ...row, sourceCard: hit.card })].filter(Boolean) };
     })
     .filter(Boolean);
+}
+// Ben (round 6): collapse the five raw-clause Assignment rows into ONE
+// "Assignment" row with two crisp pills.
+function buildAssignmentRow(cards) {
+  const parentRight = firstFeature(cards, ['parentAssignmentRight', 'parentAssignmentConditions']);
+  const restriction = firstFeature(cards, ['assignmentRestrictions', 'companyConsentForAssignment']);
+  if (!parentRight && !restriction) return null;
+  const card = parentRight?.card || restriction?.card;
+  const evidence = textOf(card);
+  const signals = [];
+  if (parentRight) signals.push({ id: 'misc-assign-parent', label: 'Merger Sub may assign to Parent or a wholly-owned subsidiary', value: 'parent-assign', tone: 'neutral', evidence, source: card });
+  if (restriction) signals.push({ id: 'misc-assign-restrict', label: "Otherwise, no assignment without the other party's prior written consent", value: 'no-assign', tone: 'neutral', evidence, source: card });
+  if (!signals.length) return null;
+  return { id: 'misc-boilerplate-assignment', label: 'Assignment', kind: 'Boilerplate', detail: null, evidence, source: labelOf(card), sourceCard: card, present: true, signals };
 }
 
 // --- Third-party beneficiaries: person(s) + the provision they benefit
@@ -332,11 +356,13 @@ const miscBoilerplateConfig = {
     const cards = selectCards(reviewDeal, isMiscBoilerplateCard);
     const thirdPartyRow = buildThirdPartyBeneficiaryRow(cards, reviewDeal?.cards || []);
     const feeRow = buildFeeExpenseRow(reviewDeal);
+    const assignmentRow = buildAssignmentRow(cards);
     return [
       ...mappedBoilerplateRows(cards, ROWS_TOP),
       ...(thirdPartyRow ? [thirdPartyRow] : []),
       ...(feeRow ? [feeRow] : []),
       ...mappedBoilerplateRows(cards, ROWS_BOTTOM),
+      ...(assignmentRow ? [assignmentRow] : []),
     ];
   },
   // Item 46: narrower Term/Signals columns than the 18rem default other

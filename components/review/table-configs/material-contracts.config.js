@@ -205,7 +205,10 @@ function rowFromBucket(item, index, source, thresholds) {
   const label = (code && MATERIAL_CONTRACT_BUCKET_CODES[code]) ||
     (tagged && item.label) ||
     (typeof item === 'string' ? item : `Contract type ${index + 1}`);
-  const evidence = (tagged && item.text) || textOf(source);
+  // Ben (round 6): the Evidence column must show the PROVISION TEXT, not the
+  // canonical code. The bucket item's `.text` is the code (e.g. "SINGLE_SOURCE");
+  // the actual §3.13 clause lives in `.quotes[0]`.
+  const evidence = (tagged && (Array.isArray(item.quotes) && item.quotes[0])) || (tagged && item.text) || textOf(source);
   const structuredThreshold = thresholdText((tagged && (item.threshold ?? item.qualifier)) ?? thresholds.get(code));
   const meta = code && MATERIAL_CONTRACT_BUCKET_META[code];
   return {

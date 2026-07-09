@@ -146,6 +146,15 @@ function effortsStandardRow(cards) {
 // happen before closing" boolean, previously its own "Divestiture required
 // before consummation" row) as a second qualifier pill on the SAME row
 // rather than a separate concept row, per the consolidation mandate.
+// Ben (round 6): the divestiture-cap pill read as a raw clause fragment. Where
+// the cap gives the buyer broad protection (no obligation to divest / accept
+// conditions), that IS the anti-hell-or-high-water posture -- say so.
+function divestitureCapLabel(rawValue, card) {
+  const t = `${valueText(rawValue) || ''} ${textOf(card) || ''}`.toLowerCase();
+  if (/no obligation|shall not be required|not (?:be )?required to (?:divest|accept|agree|sell|dispose|hold separate|take)|has no obligation|without any obligation/.test(t)) return 'Anti-hell-or-high-water';
+  if (/hell.?or.?high.?water|whatever.*(?:necessary|required)|all actions? necessary|take any and all/.test(t)) return 'Hell-or-high-water';
+  return null;
+}
 function divestitureCapRow(cards) {
   const capHit = firstFeature(cards, ['divestitureCapDescription', 'burdenCommitment', 'divestitureCap', 'burdensomeConditionLimit']);
   const conditionHit = firstFeature(cards, ['divestitureInCondition']);
@@ -153,7 +162,7 @@ function divestitureCapRow(cards) {
   const primaryCard = capHit?.card || conditionHit.card;
   const signals = [];
   if (capHit) {
-    const label = shortText(readableValue(capHit.key, capHit.value), 60);
+    const label = divestitureCapLabel(capHit.value, capHit.card) || shortText(readableValue(capHit.key, capHit.value), 60);
     if (label) {
       signals.push({
         id: 'antitrust-regulatory-divestiture-cap-signal',
@@ -466,10 +475,21 @@ function withdrawalProvisoSignal(card, idSuffix) {
   };
 }
 
+// Ben (round 6): pull-and-refile and timing agreements are governed by the
+// SAME clause (pullRefileText === timingAgreementText) -- one can't read
+// "Mutual consent" while the other reads "Prohibited". Derive a consistent
+// consent-gate label for both from the shared clause text.
+function consentGateLabel(card, fallbackLabel) {
+  const text = [valueText(cardFeatures(card).pullRefileText), valueText(cardFeatures(card).timingAgreementText), textOf(card)].filter(Boolean).join(' ');
+  if (/without[^.]{0,40}consent/i.test(text)) {
+    return /not[^.]{0,30}unreasonably\s+withheld/i.test(text) ? 'Mutual consent required (not unreasonably withheld)' : 'Mutual consent required';
+  }
+  return fallbackLabel;
+}
 function pullRefileRow(cards) {
   const hit = firstFeature(cards, ['pullRefile', 'pullAndRefileRight', 'pullRefileText']);
   if (!hit) return null;
-  const label = prohibitionLabel('pullRefile', hit.value);
+  const label = consentGateLabel(hit.card, prohibitionLabel('pullRefile', hit.value));
   if (!label) return null;
   const features = cardFeatures(hit.card);
   const signals = [{
@@ -496,9 +516,11 @@ function pullRefileRow(cards) {
 function timingAgreementsRow(cards) {
   const hit = firstFeature(cards, ['timingAgreementsProhibited', 'timingAgreement', 'timingAgreementText']);
   if (!hit) return null;
-  const label = prohibitionLabel('timingAgreementsProhibited', hit.value);
+  const label = consentGateLabel(hit.card, prohibitionLabel('timingAgreementsProhibited', hit.value));
   if (!label) return null;
   const features = cardFeatures(hit.card);
+  // The 2-business-day withdraw-and-refile proviso is specific to pull-and-
+  // refile -- it lives on that row only, not duplicated here.
   const signals = [{
     id: 'antitrust-regulatory-timing-agreements-signal',
     label,
@@ -507,8 +529,6 @@ function timingAgreementsRow(cards) {
     evidence: textOf(hit.card),
     source: hit.card,
   }];
-  const proviso = withdrawalProvisoSignal(hit.card, 'timing-agreements');
-  if (proviso) signals.push(proviso);
   return {
     id: 'antitrust-regulatory-timing-agreements',
     label: 'Timing agreements',

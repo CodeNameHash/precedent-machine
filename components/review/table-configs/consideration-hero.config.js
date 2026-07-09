@@ -112,7 +112,10 @@ function resolveCvrMax(cards) {
 function ensureDollarPrefix(text) {
   if (!text) return text;
   const trimmed = String(text).trim();
-  return /^-?\d/.test(trimmed) && !trimmed.startsWith('$') ? `$${trimmed}` : trimmed;
+  if (trimmed.startsWith('$') || !/^-?\d/.test(trimmed)) return trimmed;
+  // Pure numeric amount -> 2-decimal currency (Ben: "$47.5" should be "$47.50").
+  if (/^-?\d+(\.\d+)?$/.test(trimmed)) return `$${Number(trimmed).toFixed(2)}`;
+  return `$${trimmed}`;
 }
 function perShareParts(features, cards) {
   const perShare = ensureDollarPrefix(valueText(features.perShareAmount) || valueText(features.cashAmount) || valueText(features.offerPrice));

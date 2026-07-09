@@ -218,11 +218,22 @@ function carveoutHasCarveback(item, code, dispSet) {
 // block rather than a quick scan. A tight list of names, each inline with
 // its "Disp. carveback applies" pill when present, scans in one pass.
 function carveoutsTableNode(row, ctx) {
-  const items = Array.isArray(row.value) ? row.value : [];
-  if (!items.length) return null;
+  const rawItems = Array.isArray(row.value) ? row.value : [];
+  if (!rawItems.length) return null;
   const PillCell = ctx?.primitives?.PillCell;
   const dict = taxonomyForFeatureKey('carveouts');
   const dispSet = disproportionateCodeSet(row.sourceCard);
+  // Ben (round 6): the extracted `carveouts` list carries duplicates (26 items
+  // on Metsera, several repeated) -- dedupe by resolved carve-out name so each
+  // carve-out renders once.
+  const seen = new Set();
+  const items = rawItems.filter((item) => {
+    const key = String(carveoutName(item, dict) || '').trim().toLowerCase();
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+  if (!items.length) return null;
 
   return React.createElement(
     'ul',
