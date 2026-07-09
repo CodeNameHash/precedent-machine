@@ -162,6 +162,37 @@ export function GroupedSubRows({ groups = [], emptyCopy = 'No grouped rows captu
   );
 }
 
+// A footer STRIP for a ProvisionTable section (rendered by ProvisionTable
+// via config.renderFooter, outside the <table> body -- never a mid-table
+// row). Summarizes how many of a family's canonical/standard items are
+// actually present on this deal, with the absent ones listed (greyed) so
+// the gap is still visible without cluttering the row list with "Not
+// found" filler rows. Built generically (present/total/absentItems) so any
+// config with a canonical checklist -- Closing Conditions today, IOC /
+// Material Contracts later -- can reuse it via the same renderFooter hook.
+export function CoverageFooter({ presentCount = 0, totalCount = 0, absentItems = [], label = 'items present' }) {
+  const absent = Array.isArray(absentItems) ? absentItems.filter(Boolean) : [];
+  return (
+    <div className="flex flex-wrap items-center gap-2 border-t border-border bg-bg/40 px-3 py-2 text-[11px] text-inkFaint" data-testid="coverage-footer">
+      <span className="font-medium text-ink">{presentCount} of {totalCount} {label}</span>
+      {absent.length > 0 ? (
+        <span className="flex flex-wrap items-center gap-1">
+          <span className="text-inkFaint">Absent:</span>
+          {absent.map((item, index) => (
+            <span
+              key={item.id || item.label || index}
+              title={item.code || undefined}
+              className="inline-flex items-center rounded border border-border bg-bg/60 px-1.5 py-0.5 text-inkFaint"
+            >
+              {item.label || `Item ${index + 1}`}
+            </span>
+          ))}
+        </span>
+      ) : null}
+    </div>
+  );
+}
+
 export function RomanNumeralOrdinal({ index = 0, children, className = '' }) {
   return (
     <span className={`inline-flex items-baseline gap-1 ${className}`.trim()} data-testid="roman-numeral-ordinal">

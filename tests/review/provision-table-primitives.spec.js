@@ -58,6 +58,25 @@ test('RomanNumeralOrdinal and ComputedRollupHeader cover legacy ordinal and roll
   assert.match(body, /data-testid="computed-rollup-header"/);
 });
 
+test('CoverageFooter renders as a bottom-of-table footer strip with present/total counts and greyed absent items', () => {
+  const body = source();
+  assert.match(body, /export function CoverageFooter/);
+  assert.match(body, /data-testid="coverage-footer"/);
+  assert.match(body, /border-t border-border/, 'renders as a footer strip (top border, not a table row)');
+  assert.match(body, /\{presentCount\} of \{totalCount\} \{label\}/);
+  assert.match(body, /absent\.map/);
+});
+
+test('ProvisionTable renders config.renderFooter output outside the <table>, as a footer strip', () => {
+  const body = source(provisionTablePath);
+  assert.match(body, /typeof config\.renderFooter === 'function'/);
+  assert.match(body, /config\.renderFooter\(rows, ctx\)/);
+  // The footer wrapper must come after the closing </table>/overflow div, not inside <tbody>.
+  const tableCloseIdx = body.indexOf('</table>');
+  const footerIdx = body.indexOf('config.renderFooter(rows, ctx)');
+  assert.ok(tableCloseIdx > -1 && footerIdx > tableCloseIdx, 'renderFooter must be invoked after the table closes, never as a <tbody> row');
+});
+
 test('material-contract bucket taxonomy is re-exported for table configs', () => {
   const body = source();
   assert.match(body, /MATERIAL_CONTRACT_BUCKET_CODES/);

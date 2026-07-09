@@ -125,6 +125,11 @@ export default function ProvisionTable({ config, reviewDeal, isEdit = false }) {
           </tbody>
         </table>
       </div>
+      {typeof config.renderFooter === 'function' ? (
+        <div data-testid={`provision-table-footer-${config.id}`}>
+          {config.renderFooter(rows, ctx)}
+        </div>
+      ) : null}
     </section>
   );
 }
