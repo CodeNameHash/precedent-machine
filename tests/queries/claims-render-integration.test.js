@@ -122,7 +122,7 @@ test('MAE carve-outs render as a multi-item pill list through the unmodified mae
   assert.ok(limbsRow, 'limbs row must render from the maeLimbs claim');
 });
 
-test('antitrust efforts standard + approvals render through the unmodified antitrust-regulatory config', () => {
+test('antitrust efforts standard renders through the antitrust-regulatory config with no term/value doubling (REBUILD-SPECS.md §8)', () => {
   const antiCard = provisionCard({
     id: 'anti-hsr',
     provision_type: 'ANTITRUST_REGULATORY',
@@ -135,18 +135,14 @@ test('antitrust efforts standard + approvals render through the unmodified antit
       canonical: 'REASONABLE_BEST_EFFORTS', verbatim: 'reasonable best efforts',
       evidence_quote: 'Parent shall use its reasonable best efforts to obtain clearance',
     }),
-    claim({
-      id: 'cl-6', excerpt_id: 'anti-hsr:0', attribute: 'antitrustApprovals',
-      canonical: 'HSR', verbatim: 'HSR clearance',
-      evidence_quote: 'the waiting period under the HSR Act shall have expired or been terminated',
-    }),
   ];
   const reviewDeal = shapeReviewDealRows('deal-1', [antiCard], { claims });
   const rows = antitrustRegulatoryMod.antitrustRegulatoryConfig.selectRows(reviewDeal);
   const efforts = rows.find((row) => row.id === 'antitrust-regulatory-efforts');
-  const approvals = rows.find((row) => row.id === 'antitrust-regulatory-approvals');
-  assert.deepEqual(efforts.signals.map((item) => item.label), ['Efforts: Reasonable best efforts']);
-  assert.deepEqual(approvals.signals.map((item) => item.label), ['Approval: HSR Act waiting period expired or terminated']);
+  // Term column already reads "Efforts standard" -- the pill must be the
+  // resolved value alone, never "Efforts standard: Reasonable best efforts"
+  // / "Reasonable best efforts: reasonable best efforts" doubling.
+  assert.deepEqual(efforts.signals.map((item) => item.label), ['Reasonable best efforts']);
 });
 
 test('material-contracts buckets recover a canonical code from verbatim text when claims.canonical is null', () => {
