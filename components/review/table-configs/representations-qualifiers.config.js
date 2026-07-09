@@ -1,33 +1,50 @@
 import React from 'react';
 import taxonomy from '../../../lib/taxonomy.js';
-import { deriveKnowledgeHeader, knowledgeQualifierDisplay, normalizeQualifierScope, sortByAgreementOrder, withScopeParens } from '../table-logic.js';
+import { knowledgeQualifierDisplay, normalizeQualifierScope, sortByAgreementOrder, withScopeParens } from '../table-logic.js';
 import { standardColorKey } from './standard-colors.js';
 import { cardCode, cardType, firstFeature, labelOf, selectCards, textOf, valueText } from './card-utils.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
-// This section IS the Company's (and Parent's) representations and
-// warranties -- not a separate "qualifiers" concept layered on top of them.
-// One row per REPRESENTATION card (one row per rep), never per-attribute:
-// TERM | MATERIALITY QUALIFIER | LOOKBACK. Knowledge is presented separately
-// (see R2 below) -- never as a per-rep column.
+// This section IS the Company's and Parent's representations and warranties
+// -- not a separate "qualifiers" concept layered on top of them. One row per
+// REPRESENTATION card (one row per rep), never per-attribute: TERM |
+// MATERIALITY QUALIFIER | LOOKBACK. Knowledge is presented separately (see
+// R2/R4 below) -- never as a per-rep column.
 //
-// R1/R2 (Feedback round 3): the section renders as THREE stacked blocks via
-// renderBody() rather than one flat <table> --
+// R5 (Feedback round 4): Company (REP-T-*) and Parent/Buyer (REP-B-*) reps
+// were commingled in one table under provision_type=REPRESENTATION. They now
+// render as TWO independent tables built by buildRepresentationsConfig()
+// below, parametrized by the card-code party prefix rather than duplicating
+// the selection/render logic per party.
+//
+// R1/R2/R4: each table renders as THREE stacked blocks via renderBody()
+// rather than one flat <table> --
 //   1. General Exceptions -- its own labelled sub-table (SEC-filings
 //      cut-off/portions-excluded + Disclosure Letter), same "old scheme"
 //      bringdown-box shape as RepGeneralExceptionsTable, sitting at the TOP
-//      of the section.
-//   2. Knowledge -- its own labelled sub-table of ROWS (Knowledge group +
-//      one row per knowledge-qualified rep), never a squeezed column
-//      alongside Materiality/Lookback -- that column was distorting the
-//      per-rep table's formatting.
+//      of the section. Sourced from that party's own preamble card
+//      (REP-T-PREAMBLE / REP-B-PREAMBLE) -- Parent's preamble carries no
+//      SEC-filings data on Metsera, so this block is simply absent there.
+//   2. Knowledge -- its own labelled sub-table of ROWS (Standard / Persons /
+//      Scope, then one row per knowledge-qualified rep), never a squeezed
+//      column alongside Materiality/Lookback -- that column was distorting
+//      the per-rep table's formatting.
 //   3. The per-rep table itself -- now just TERM | MATERIALITY | LOOKBACK.
 
 // -- selection ---------------------------------------------------------------
 
 function isRepresentationCard(card) {
   return cardType(card) === 'REPRESENTATION' || cardCode(card).startsWith('REP-');
+}
+
+// Strict provision_type match (not isRepresentationCard's looser code-prefix
+// OR) -- REP-B-ANTIRELIANCE carries a REP-B- coded subtype but its
+// provision_type is MISC_BOILERPLATE (it lives under Anti-Reliance in that
+// section, not the Parent reps table); the loose OR would otherwise pull it
+// into this table by code prefix alone. See R5 note in FEEDBACK-4-PUNCHLIST.
+function isPartyRepresentationCard(card, partyPrefix) {
+  return cardType(card) === 'REPRESENTATION' && cardCode(card).startsWith(partyPrefix);
 }
 
 // The Article III / IV preamble cards (REP-T-PREAMBLE, REP-B-PREAMBLE) carry
@@ -40,8 +57,8 @@ function isPreambleCard(card) {
   return /PREAMBLE$/.test(cardCode(card));
 }
 
-function selectRepCards(reviewDeal) {
-  const cards = selectCards(reviewDeal, isRepresentationCard).filter((card) => !isPreambleCard(card));
+function selectRepCards(reviewDeal, partyPrefix) {
+  const cards = selectCards(reviewDeal, (card) => isPartyRepresentationCard(card, partyPrefix)).filter((card) => !isPreambleCard(card));
   return sortByAgreementOrder(cards, (card) => firstFeature([card], ['sectionNumber'])?.value ?? card.section_ref);
 }
 
@@ -218,7 +235,7 @@ function resolveTerm(card) {
   return { label: labelOf(card), party, mainConcept };
 }
 
-// -- section-level Knowledge-standard header note ----------------------------
+// -- section-level Knowledge standard / persons / scope (R4) -----------------
 
 // "actual-knowledge" -> "Actual knowledge" (spec's literal example phrasing).
 function humanizeKnowledgeStandard(raw) {
@@ -230,23 +247,52 @@ function humanizeKnowledgeStandard(raw) {
 function knowledgeStandardNote(cards) {
   const hit = firstFeature(cards, ['knowledgeStandard']);
   if (!hit) return null;
+  const dict = taxonomyForFeatureKey('knowledgeStandard');
   const code = codeOf(hit.value);
-  const dictLabel = code && labelForCode(code, taxonomyForFeatureKey('knowledgeStandard'));
+  const dictLabel = code && labelForCode(code, dict);
   if (dictLabel) return dictLabel;
+  // The claims pipeline's `canonical` is the schema's kebab-case enum
+  // ("actual-knowledge") -- a different vocabulary from taxonomy.js's short
+  // dict keys ("ACTUAL"), so `code` above often misses. The tagged value's
+  // own verbatim `.text` usually carries that short form directly (Metsera:
+  // canonical="actual-knowledge", text="ACTUAL") -- try it before falling
+  // back to a humanized guess, so this doesn't render "Label: RAW_CODE".
+  const rawText = hit.value && typeof hit.value === 'object' ? hit.value.text : null;
+  const textDictLabel = rawText && labelForCode(String(rawText).trim().toUpperCase(), dict);
+  if (textDictLabel) return textDictLabel;
   if (typeof hit.value === 'string') return humanizeKnowledgeStandard(hit.value);
+  if (code) return humanizeKnowledgeStandard(code);
+  if (rawText) return humanizeKnowledgeStandard(rawText);
   return valueText(hit.value);
 }
 
-// -- knowledge group (WHO the knowledge qualifier attaches to) ---------------
+// `knowledgePersons` is a LIST feature (schema valueType 'list', listItemType
+// 'string') restricted to DEF-type cards -- extract.js emits it as bare
+// taxonomy codes ("EXECUTIVE_OFFICERS") rather than tagged {code,label}
+// objects, so each item is humanized through the same taxonomy dict/fallback
+// chain the other qualifier labels use instead of relying on a tagged shape.
+function knowledgePersonsLabel(cards) {
+  const hit = firstFeature(cards, ['knowledgePersons']);
+  if (!hit) return null;
+  const items = Array.isArray(hit.value) ? hit.value : [hit.value];
+  const dict = taxonomyForFeatureKey('knowledgePersons');
+  const labels = items
+    .map((item) => {
+      const code = typeof item === 'string' ? item : codeOf(item);
+      if (!code) return textOfValue(item) || valueText(item);
+      const dictLabel = labelForCode(code, dict);
+      if (dictLabel) return dictLabel;
+      return /^[A-Z0-9_]+$/.test(code) ? humanizeCode(code) : code;
+    })
+    .filter(Boolean);
+  return labels.length ? labels.join(', ') : null;
+}
 
 // `knowledgeScope` is the verbatim core of the deal's "Knowledge" defined
 // term, stamped deterministically (post-pass) onto every knowledge-qualified
-// rep clause -- it is the one reliable source for both the knowledge
-// STANDARD (already surfaced via knowledgeStandardNote/deriveHeaderNote
-// above) and the knowledge GROUP (who it attaches to), via
-// deriveKnowledgeHeader's text parsing. Falls back across every rep card
-// (not just the first) so one rep's corrupted/absent scope text doesn't
-// blank the whole section-level group.
+// rep clause. Falls back across every rep card (not just the first) so one
+// rep's corrupted/absent scope text doesn't blank the whole section-level
+// value.
 function knowledgeScopeText(cards) {
   for (const card of cards || []) {
     const hit = firstFeature([card], ['knowledgeScope']);
@@ -257,12 +303,51 @@ function knowledgeScopeText(cards) {
   return null;
 }
 
-function knowledgeGroupInfo(cards) {
-  const scopeText = knowledgeScopeText(cards);
-  if (!scopeText) return null;
-  const derived = deriveKnowledgeHeader({ knowledgeScope: scopeText });
-  if (!derived.group || !derived.group.length) return null;
-  return { group: derived.group, quote: derived.quote || scopeText };
+// The deal-wide "Knowledge" DEFINITION card (provision_subtype DEF-KNOWLEDGE)
+// is the single most reliable source for Standard/Persons/Scope -- it's
+// where knowledgePersons actually lives (the feature is DEF-only per the
+// schema registry), and Metsera confirms REP-B-* reps carry the scope/
+// scope-type stamp but not their own knowledgeStandard duplicate. Falls back
+// to defined_term text match in case a deal's DEF-KNOWLEDGE card ever ships
+// under a different subtype.
+function findKnowledgeDefinitionCard(reviewDeal) {
+  const cards = reviewDeal?.cards || [];
+  return cards.find((c) => cardCode(c) === 'DEF-KNOWLEDGE')
+    || cards.find((c) => cardType(c) === 'DEFINITION' && String(c?.defined_term || '').trim().toLowerCase() === 'knowledge');
+}
+
+function knowledgeScopeTextAcross(reviewDeal, cards) {
+  const repScope = knowledgeScopeText(cards);
+  if (repScope) return repScope;
+  const defCard = findKnowledgeDefinitionCard(reviewDeal);
+  if (!defCard) return null;
+  const hit = firstFeature([defCard], ['definitionText']);
+  if (!hit) return null;
+  return textOfValue(hit.value) || (typeof hit.value === 'string' ? hit.value : null);
+}
+
+// R4: moves the Knowledge standard OUT of the section header note and INTO
+// this party's Knowledge sub-table, alongside WHO it attaches to (Persons)
+// and the verbatim definition (Scope). Searches the DEF-KNOWLEDGE card first
+// (see findKnowledgeDefinitionCard), then this party's own rep cards, so a
+// deck without a standalone Knowledge definition still surfaces whatever the
+// per-rep stamps carry.
+function buildKnowledgeSummaryRow(reviewDeal, idPrefix, cards) {
+  const defCard = findKnowledgeDefinitionCard(reviewDeal);
+  const searchCards = [defCard, ...cards].filter(Boolean);
+  const standard = knowledgeStandardNote(searchCards);
+  const persons = knowledgePersonsLabel(searchCards);
+  const scope = knowledgeScopeTextAcross(reviewDeal, cards);
+  if (!standard && !persons && !scope) return null;
+  return {
+    id: `${idPrefix}-knowledge-summary`,
+    kind: 'knowledge-summary',
+    present: true,
+    label: 'Knowledge',
+    knowledgeStandard: standard,
+    knowledgePersons: persons,
+    knowledgeScope: scope,
+  };
 }
 
 // -- General Exceptions (SEC filings + disclosure letter) --------------------
@@ -299,8 +384,12 @@ function disclosureLetterInfo(preamble) {
 // two used to be folded into one combined "Knowledge & General Exceptions"
 // top row, which read as General Exceptions being an offshoot of Knowledge
 // rather than its own thing.
-function buildGeneralExceptionsRow(reviewDeal) {
-  const preamble = (reviewDeal?.cards || []).find((card) => cardCode(card) === 'REP-T-PREAMBLE');
+// R5: parametrized by preambleCode so each party reads its OWN preamble card
+// (REP-T-PREAMBLE / REP-B-PREAMBLE) -- Parent's preamble carries no SEC-
+// filings or disclosure-letter data on Metsera, so the Parent table's
+// General Exceptions block is simply absent rather than showing Company's.
+function buildGeneralExceptionsRow(reviewDeal, idPrefix, preambleCode) {
+  const preamble = (reviewDeal?.cards || []).find((card) => cardCode(card) === preambleCode);
   const cutoffHit = preamble ? firstFeature([preamble], ['secFilingsExceptionLookback']) : null;
   const excludedHit = preamble ? firstFeature([preamble], ['secFilingsExcludedSections']) : null;
   const cutoff = cutoffHit ? valueText(cutoffHit.value) : null;
@@ -312,7 +401,7 @@ function buildGeneralExceptionsRow(reviewDeal) {
   const disclosureLetter = disclosureLetterInfo(preamble);
   if (!cutoff && !excluded.length && !disclosureLetter) return null;
   return {
-    id: 'representations-qualifiers-general-exceptions',
+    id: `${idPrefix}-general-exceptions`,
     kind: 'general-exceptions',
     present: true,
     card: preamble,
@@ -321,25 +410,6 @@ function buildGeneralExceptionsRow(reviewDeal) {
     secCutoffQuote: cutoffHit ? textOfValue(cutoffHit.value) : null,
     secExcluded: excluded,
     disclosureLetter,
-  };
-}
-
-// R2: Knowledge GROUP (who the qualifier attaches to) is its own row/block,
-// separate from General Exceptions -- see knowledgeTableNode() below, which
-// combines this section-level row with a per-rep row for every knowledge-
-// qualified rep. The knowledge STANDARD (actual / constructive / after
-// reasonable inquiry) continues to surface via deriveHeaderNote in the
-// section chrome, so it isn't repeated inline here.
-function buildKnowledgeSummaryRow(cards) {
-  const knowledgeGroup = knowledgeGroupInfo(cards);
-  if (!knowledgeGroup) return null;
-  return {
-    id: 'representations-qualifiers-knowledge-summary',
-    kind: 'knowledge-summary',
-    present: true,
-    label: 'Knowledge',
-    knowledgeGroup: knowledgeGroup.group,
-    knowledgeGroupQuote: knowledgeGroup.quote,
   };
 }
 
@@ -485,16 +555,35 @@ function generalExceptionsTableNode(row, ctx) {
   return sectionBox('general-exceptions', 'General Exceptions', items);
 }
 
-// R2: Knowledge as its own ROWS -- the section-level Knowledge group (who
-// the qualifier attaches to), then one row per rep that actually carries a
-// knowledge qualifier. This replaces the old squeezed per-rep Knowledge
-// column entirely.
+// R4: Knowledge as its own ROWS -- Standard / Persons / Scope (the section-
+// level facts about the deal's "Knowledge" defined term), then one row per
+// rep that actually carries a knowledge qualifier. This replaces the old
+// squeezed per-rep Knowledge column (and the regex-derived "Knowledge group"
+// pill list) with the structured knowledgeStandard/knowledgePersons/
+// knowledgeScope claims themselves.
 function knowledgeTableNode(knowledgeSummaryRow, repRows, ctx) {
   const PillCell = ctx?.primitives?.PillCell;
   const items = [];
   if (knowledgeSummaryRow) {
-    const groupNode = pillList(PillCell, knowledgeSummaryRow.knowledgeGroup, knowledgeSummaryRow.knowledgeGroupQuote, 'kg', 'info');
-    if (groupNode) items.push({ key: 'group', term: 'Knowledge group', node: groupNode });
+    if (knowledgeSummaryRow.knowledgeStandard) {
+      const node = PillCell
+        ? React.createElement(PillCell, { label: knowledgeSummaryRow.knowledgeStandard, tone: 'info', evidence: knowledgeSummaryRow.knowledgeScope })
+        : knowledgeSummaryRow.knowledgeStandard;
+      items.push({ key: 'standard', term: 'Standard', node });
+    }
+    if (knowledgeSummaryRow.knowledgePersons) {
+      const node = PillCell
+        ? React.createElement(PillCell, { label: knowledgeSummaryRow.knowledgePersons, tone: 'info', evidence: knowledgeSummaryRow.knowledgeScope })
+        : knowledgeSummaryRow.knowledgePersons;
+      items.push({ key: 'persons', term: 'Persons', node });
+    }
+    if (knowledgeSummaryRow.knowledgeScope) {
+      items.push({
+        key: 'scope',
+        term: 'Scope',
+        node: React.createElement('span', { className: 'whitespace-pre-wrap break-words' }, knowledgeSummaryRow.knowledgeScope),
+      });
+    }
   }
   for (const row of repRows || []) {
     if (!row.knowledge) continue;
@@ -569,58 +658,75 @@ function renderBody(rows, ctx) {
 
 // -- config --------------------------------------------------------------------
 
-const representationsQualifiersConfig = {
+// Legacy Term/Materiality/Lookback column shape is kept for direct
+// column-level testing and as the data contract other tooling may still
+// inspect, but the live page renders via renderBody (below) instead of
+// ProvisionTable's generic single-table body -- see the ProvisionTable.jsx
+// renderBody hook (same pattern as mae-definitions.config.js). Shared by both
+// party configs -- the renderCell functions read from the row, not the party.
+const REP_COLUMNS = [
+  { id: 'term', header: 'Term', width: '16rem', renderCell: renderTerm },
+  { id: 'materiality', header: 'Materiality Qualifier', width: '13rem', renderCell: renderMateriality },
+  { id: 'lookback', header: 'Lookback', renderCell: renderLookback },
+];
+
+// R5: builds ONE party's reps table (General Exceptions + Knowledge +
+// per-rep rows), parametrized by that party's card-code prefix and preamble
+// code rather than duplicating the selection/assembly logic per party.
+function buildRepresentationsConfig({ id, title, partyPrefix, preambleCode }) {
+  return {
+    id,
+    title,
+    layoutSlot: 'reps',
+    selectRows(reviewDeal) {
+      const cards = selectRepCards(reviewDeal, partyPrefix);
+      const rows = [];
+      const generalExceptionsRow = buildGeneralExceptionsRow(reviewDeal, id, preambleCode);
+      if (generalExceptionsRow) rows.push(generalExceptionsRow);
+      const knowledgeSummaryRow = buildKnowledgeSummaryRow(reviewDeal, id, cards);
+      if (knowledgeSummaryRow) rows.push(knowledgeSummaryRow);
+      for (const card of cards) {
+        const term = resolveTerm(card);
+        rows.push({
+          id: `${id}-${card.id}`,
+          kind: 'rep',
+          present: true,
+          card,
+          label: term.label,
+          party: term.party,
+          mainConcept: term.mainConcept,
+          materiality: resolveMateriality(card),
+          knowledge: resolveKnowledge(card),
+          lookback: resolveLookback(card),
+        });
+      }
+      return rows;
+    },
+    columns: REP_COLUMNS,
+    renderBody,
+  };
+}
+
+const representationsQualifiersConfig = buildRepresentationsConfig({
   id: 'representations-qualifiers',
   title: 'Representations & Warranties — Company',
-  layoutSlot: 'reps',
-  selectRows(reviewDeal) {
-    const cards = selectRepCards(reviewDeal);
-    const rows = [];
-    const generalExceptionsRow = buildGeneralExceptionsRow(reviewDeal);
-    if (generalExceptionsRow) rows.push(generalExceptionsRow);
-    const knowledgeSummaryRow = buildKnowledgeSummaryRow(cards);
-    if (knowledgeSummaryRow) rows.push(knowledgeSummaryRow);
-    const standardNote = knowledgeStandardNote(cards);
-    for (const card of cards) {
-      const term = resolveTerm(card);
-      rows.push({
-        id: `representations-qualifiers-${card.id}`,
-        kind: 'rep',
-        present: true,
-        card,
-        label: term.label,
-        party: term.party,
-        mainConcept: term.mainConcept,
-        materiality: resolveMateriality(card),
-        knowledge: resolveKnowledge(card),
-        lookback: resolveLookback(card),
-        knowledgeStandardNote: standardNote,
-      });
-    }
-    return rows;
-  },
-  // "Knowledge standard: Actual knowledge" -- a section-level fact identical
-  // across every rep row, hoisted into the section chrome (ProvisionTable's
-  // headerNote slot) instead of repeated per row.
-  deriveHeaderNote(rows) {
-    const hit = (rows || []).find((row) => row.knowledgeStandardNote);
-    return hit ? `Knowledge standard: ${hit.knowledgeStandardNote}` : null;
-  },
-  // Legacy Term/Materiality/Lookback column shape is kept for direct
-  // column-level testing and as the data contract other tooling may still
-  // inspect, but the live page renders via renderBody (below) instead of
-  // ProvisionTable's generic single-table body -- see the ProvisionTable.jsx
-  // renderBody hook (same pattern as mae-definitions.config.js).
-  columns: [
-    { id: 'term', header: 'Term', width: '16rem', renderCell: renderTerm },
-    { id: 'materiality', header: 'Materiality Qualifier', width: '13rem', renderCell: renderMateriality },
-    { id: 'lookback', header: 'Lookback', renderCell: renderLookback },
-  ],
-  renderBody,
-};
+  partyPrefix: 'REP-T-',
+  preambleCode: 'REP-T-PREAMBLE',
+});
+
+// R5: Buyer/Parent reps (REP-B-*) were previously commingled into the
+// Company table above -- they now render as their own section, mounted
+// immediately after Company reps (see pages/review/[id].js).
+const parentRepresentationsConfig = buildRepresentationsConfig({
+  id: 'parent-representations-qualifiers',
+  title: 'Representations & Warranties — Parent',
+  partyPrefix: 'REP-B-',
+  preambleCode: 'REP-B-PREAMBLE',
+});
 
 export {
   isRepresentationCard,
+  parentRepresentationsConfig,
   renderBody,
   renderKnowledgePill,
   representationsQualifiersConfig,

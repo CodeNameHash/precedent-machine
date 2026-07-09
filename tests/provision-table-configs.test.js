@@ -332,7 +332,7 @@ test('M2-08 gap configs map their core schema-card fields', () => {
   assert.match(repRows[0].materiality.label, /material respects/);
 });
 
-test('representations-qualifiers config resolves taxonomy-coded materiality/knowledge pills with hover evidence, and derives the section Knowledge-standard header note', () => {
+test('representations-qualifiers config resolves taxonomy-coded materiality/knowledge pills with hover evidence, and surfaces the Knowledge standard in the Knowledge sub-table (not a header note)', () => {
   const rows = representationsQualifiersMod.representationsQualifiersConfig.selectRows({
     cards: [{
       id: 'rep',
@@ -350,16 +350,16 @@ test('representations-qualifiers config resolves taxonomy-coded materiality/know
       },
     }],
   });
-  assert.equal(rows.length, 1);
-  const [row] = rows;
+  const row = rows.find((r) => r.kind === 'rep');
   assert.equal(row.materiality.label, 'MAE-qualified (partial)');
   assert.equal(row.materiality.color, 'amber');
   assert.equal(row.materiality.evidence, 'would not have an MAE');
   assert.equal(row.knowledge.label, 'Knowledge-qualified (partial)');
-  assert.equal(
-    representationsQualifiersMod.representationsQualifiersConfig.deriveHeaderNote(rows),
-    'Knowledge standard: Actual knowledge',
-  );
+  // R4: the Knowledge standard is no longer a section headerNote -- it's a
+  // "Standard" row in the Knowledge sub-table (see renderBody tests below).
+  assert.equal(representationsQualifiersMod.representationsQualifiersConfig.deriveHeaderNote, undefined);
+  const knowledgeSummary = rows.find((r) => r.kind === 'knowledge-summary');
+  assert.equal(knowledgeSummary.knowledgeStandard, 'Actual knowledge');
 
   const primitives = {
     PillCell: ({ label, evidence }) => React.createElement('span', { className: 'pill', 'data-evidence': evidence }, label),
@@ -500,12 +500,12 @@ test('representations-qualifiers config omits the TOP row entirely when the prea
   assert.equal(rows[0].id, 'representations-qualifiers-org');
 });
 
-// R2 (FEEDBACK-3-PUNCHLIST.md): the Knowledge GROUP (who the qualifier
-// attaches to), derived from the per-rep `knowledgeScope` verbatim text,
-// renders as pills in its OWN Knowledge block/table -- rows, not a squeezed
-// per-rep column. The knowledge-qualified rep itself (SEC Documents) also
-// gets its own ROW in that same Knowledge table.
-test('representations-qualifiers config derives the Knowledge group from knowledgeScope and renders it as ROWS in a dedicated Knowledge block, not a per-rep column', () => {
+// R4 (FEEDBACK-4-PUNCHLIST.md): the Knowledge STANDARD/PERSONS/SCOPE (who the
+// qualifier attaches to and what it means) render as their own ROWS in a
+// dedicated Knowledge block/table -- rows, not a squeezed per-rep column, and
+// no longer a section headerNote either. The knowledge-qualified rep itself
+// (SEC Documents) also gets its own ROW in that same Knowledge table.
+test('representations-qualifiers config surfaces Knowledge Standard/Persons/Scope as ROWS in a dedicated Knowledge block, not a per-rep column or header note', () => {
   const rows = representationsQualifiersMod.representationsQualifiersConfig.selectRows({
     cards: [
       {
@@ -515,14 +515,18 @@ test('representations-qualifiers config derives the Knowledge group from knowled
         short_title: 'SEC Documents',
         features: {
           knowledgeQualifier: 'Company knowledge',
-          knowledgeScope: 'the actual knowledge of the Chief Executive Officer, the Chief Financial Officer of the Company',
+          knowledgeScope: '"knowledge" of any Person means, with respect to any matter in question, the actual knowledge of such Person\'s executive officers.',
+          knowledgeStandard: 'actual-knowledge',
+          knowledgePersons: ['EXECUTIVE_OFFICERS'],
         },
       },
     ],
   });
   const knowledgeSummary = rows.find((row) => row.kind === 'knowledge-summary');
-  assert.ok(knowledgeSummary, 'knowledge-summary row should render from knowledgeScope data alone');
-  assert.deepEqual(knowledgeSummary.knowledgeGroup, ['the Chief Executive Officer', 'the Chief Financial Officer of the Company']);
+  assert.ok(knowledgeSummary, 'knowledge-summary row should render from knowledgeStandard/knowledgePersons/knowledgeScope data');
+  assert.equal(knowledgeSummary.knowledgeStandard, 'Actual knowledge');
+  assert.equal(knowledgeSummary.knowledgePersons, 'Executive officers');
+  assert.match(knowledgeSummary.knowledgeScope, /executive officers/);
   // The per-rep row still resolves its own knowledge qualifier data (it just
   // no longer renders as a table column -- see representations-qualifiers
   // config renders General Exceptions as its OWN table test for the column
@@ -534,8 +538,12 @@ test('representations-qualifiers config derives the Knowledge group from knowled
     PillCell: ({ label, evidence }) => React.createElement('span', { className: 'pill', 'data-evidence': evidence }, label),
   };
   const html = renderToStaticMarkup(representationsQualifiersMod.renderBody(rows, { primitives }));
-  assert.match(html, /Knowledge group/);
-  assert.match(html, /Chief Executive Officer/);
+  assert.match(html, /Standard/);
+  assert.match(html, /Actual knowledge/);
+  assert.match(html, /Persons/);
+  assert.match(html, /Executive officers/);
+  assert.match(html, /Scope/);
+  assert.match(html, /of any Person means/);
   // The rep row appears as its OWN line/row in the Knowledge block too.
   assert.match(html, /SEC Documents/);
   assert.match(html, /Company knowledge/);

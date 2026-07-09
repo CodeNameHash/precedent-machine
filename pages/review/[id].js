@@ -149,6 +149,7 @@ import { materialContractsConfig } from '../../components/review/table-configs/m
 import { nosolSectionConfig } from '../../components/review/table-configs/nosol-section.config';
 import { noOtherRepsFraudConfig } from '../../components/review/table-configs/no-other-reps-fraud.config';
 import { representationsQualifiersConfig } from '../../components/review/table-configs/representations-qualifiers.config';
+import { parentRepresentationsConfig } from '../../components/review/table-configs/representations-qualifiers.config';
 import { structureMechanicsConfig } from '../../components/review/table-configs/structure-mechanics.config';
 import { tailFeeConfig } from '../../components/review/table-configs/tail-fee.config';
 import { terminationFeesConfig } from '../../components/review/table-configs/termination-fees.config';
@@ -172,13 +173,18 @@ import { parseReviewRouteQuery, serializeReviewRouteQuery } from '../../lib/revi
 // covenants (IOC / no-shop / antitrust), then process (SEC/meeting), then
 // conditions, then termination, then benefits/advisers/misc, with the residual
 // "Other Covenants" links last.
+// O1 (Feedback round 4): Material Contracts moved to render immediately
+// UNDER Reps (Company then Parent), not after MAE -- Company Reps → Parent
+// Reps → Material Contracts → MAE → IOC → ... See SIDEBAR_GROUPS in
+// components/review/shared.js, which stays in lockstep with this order.
 const REVIEW_TABLE_CONFIGS = [
   structureMechanicsConfig,
   considerationHeroConfig,
   equityAwardsConfig,
   representationsQualifiersConfig,
-  maeDefinitionsConfig,
+  parentRepresentationsConfig,
   materialContractsConfig,
+  maeDefinitionsConfig,
   iocExceptionsConfig,
   nosolSectionConfig,
   antitrustRegulatoryConfig,
@@ -204,7 +210,7 @@ const SIDEBAR_TYPE_TO_SECTION_ID = {
   'COND-B': 'conditions',
   'COND-S': 'conditions',
   'REP-T': 'representations-qualifiers',
-  'REP-B': 'representations-qualifiers',
+  'REP-B': 'parent-representations-qualifiers',
   'MAE-DEF': 'mae-definitions',
   'MAE-DEF-P': 'mae-definitions',
   __MATERIAL_CONTRACTS: 'material-contracts',

@@ -28,6 +28,26 @@ const EXPECTED_ORDER = [
   'Termination Fees',
 ];
 
+// F4 O1 (Feedback round 4): the REVIEW page moves Material Contracts to
+// render immediately under Reps, ahead of MAE (it's a Company-reps
+// checklist). lib/sidebar-groups.js feeds the separate compare.js page and
+// is untouched by this change, so its own order (EXPECTED_ORDER above)
+// stays pinned to the pre-O1 reading order.
+const EXPECTED_ORDER_REVIEW_PAGE = [
+  'Structure & Mechanics',
+  'Consideration',
+  'Representations',
+  'Material Contracts',
+  'Material Adverse Effect',
+  'Interim Operating Covenants',
+  'No-Solicitation / No-Shop',
+  'Antitrust / Regulatory',
+  'SEC Filing / Meeting Requirements',
+  'Conditions to Closing',
+  'Termination Rights',
+  'Termination Fees',
+];
+
 test('4a: lib/sidebar-groups.js group order matches the canonical reading order', () => {
   const labels = groupsMod.SIDEBAR_GROUPS.map((g) => g.label);
   assert.deepEqual(labels.slice(0, EXPECTED_ORDER.length), EXPECTED_ORDER);
@@ -42,15 +62,15 @@ test('4a: components/review/shared.js SIDEBAR_GROUPS keeps the same order', () =
   assert.ok(start > 0);
   const body = src.slice(start, src.indexOf('];', start));
   let last = -1;
-  for (const label of EXPECTED_ORDER) {
+  for (const label of EXPECTED_ORDER_REVIEW_PAGE) {
     const idx = body.indexOf(`label: '${label}'`);
     assert.ok(idx >= 0, `group "${label}" present`);
     assert.ok(idx > last, `group "${label}" in canonical position`);
     last = idx;
   }
-  // Material Contracts is its own section between MAE and IOC — no longer a
+  // Material Contracts is its own section between Reps and MAE — no longer a
   // child of Representations.
-  const repsBlock = body.slice(body.indexOf("label: 'Representations'"), body.indexOf("label: 'Material Adverse Effect'"));
+  const repsBlock = body.slice(body.indexOf("label: 'Representations'"), body.indexOf("label: 'Material Contracts'"));
   assert.ok(!repsBlock.includes('__MATERIAL_CONTRACTS'));
   assert.ok(!repsBlock.includes('__ABRY'));
 

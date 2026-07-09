@@ -246,7 +246,9 @@ test('representations-qualifiers renders the solvency representation (Skechers c
       solvencyRepDetails: 'Neither Parent nor Merger Sub is entering into this Agreement or the transactions contemplated hereby with the intent to hinder, delay or defraud creditors',
     },
   };
-  const rows = representationsQualifiersMod.representationsQualifiersConfig.selectRows({ cards: [solvencyCard] });
+  // R5 (Feedback round 4): REP-B-SOLVENCY is a Parent/Buyer rep -- it renders
+  // on parentRepresentationsConfig now, not the Company table.
+  const rows = representationsQualifiersMod.parentRepresentationsConfig.selectRows({ cards: [solvencyCard] });
   const row = rows.find((r) => r.card && r.card.id === 'solvency');
   assert.ok(row, 'solvency representation should render a row even without a materiality/knowledge/lookback claim');
   assert.match(row.label, /Solvency/);
