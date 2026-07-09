@@ -240,6 +240,55 @@ test('consideration-hero config exposes a cvrMilestonePayments row when present'
   assert.equal(earnInRow, undefined, 'optionsCvrEarnIn must not render on the hero card any more -- it moved to equity-awards.config.js');
 });
 
+// Regression (Feedback 2, item #2): when a cvrMilestonePayments item has no
+// usable label (the exhibit-scan defined-term parse came back blank), the
+// old code rendered the bare taxonomy code -- "CVR milestone payments:
+// CVR_MILESTONE" -- which reads as a raw enum error. cvrMilestonePayments
+// has no taxonomy dict to resolve CVR_MILESTONE against, so a label-less
+// item must be dropped rather than surfaced as a code.
+test('consideration-hero config drops a cvrMilestonePayments item with no usable label instead of rendering the bare code', () => {
+  const rows = considerationHeroMod.considerationHeroConfig.selectRows({
+    cards: [{
+      id: 'convert',
+      provision_subtype: 'CONSID-CONVERT',
+      short_title: 'Conversion of Shares',
+      features: {
+        considerationType: 'cash-with-cvr',
+        perShareAmount: '$47.50',
+        cvrMilestonePayments: [
+          { code: 'CVR_MILESTONE', label: '', text: '' },
+        ],
+      },
+    }],
+  });
+  const milestoneRow = rows.find((r) => r.id === 'consideration-hero-cvrMilestonePayments');
+  assert.equal(milestoneRow, undefined, 'a label-less cvrMilestonePayments item must not render as a bare code -- drop the row');
+});
+
+// Regression: a MIX of a good item and a label-less item keeps the good one
+// and drops only the code-only item -- never surfaces the raw code.
+test('consideration-hero config keeps well-labelled cvrMilestonePayments items and drops only the code-only ones', () => {
+  const rows = considerationHeroMod.considerationHeroConfig.selectRows({
+    cards: [{
+      id: 'convert',
+      provision_subtype: 'CONSID-CONVERT',
+      short_title: 'Conversion of Shares',
+      features: {
+        considerationType: 'cash-with-cvr',
+        perShareAmount: '$47.50',
+        cvrMilestonePayments: [
+          { code: 'CVR_MILESTONE', label: 'Clinical Trial Milestone Payment', text: '"Clinical Trial Milestone Payment" means $5.00' },
+          { code: 'CVR_MILESTONE', label: '', text: '' },
+        ],
+      },
+    }],
+  });
+  const milestoneRow = rows.find((r) => r.id === 'consideration-hero-cvrMilestonePayments');
+  assert.ok(milestoneRow, 'cvrMilestonePayments row still renders when at least one item is well-labelled');
+  assert.match(milestoneRow.detail, /Clinical Trial Milestone Payment/);
+  assert.doesNotMatch(milestoneRow.detail, /CVR_MILESTONE/);
+});
+
 // --- Fix 2c: termination-rights cross-cutting remedies group --------------
 
 test('termination-rights config surfaces willfulBreachException and specificPerformanceMutual from MISC/TERMF cards', () => {

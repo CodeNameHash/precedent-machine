@@ -634,6 +634,44 @@ test('structure-mechanics config falls back to the clause when every effective-t
   assert.match(effectiveTime.detail, /upon filing of the Certificate of Merger/i);
 });
 
+// Regression (Feedback 2, item #1): when the FIRST card's effectiveTimeShort
+// is corrupted and that same card ALSO has a mainConcept, the old card-first
+// scan order reached that card's mainConcept fallback before ever checking a
+// SECOND card's good effectiveTimeShort -- surfacing "Defines the Delaware
+// certificate of merger to be filed at closing" instead of the correct
+// filing-mechanic sentence. The scan must be key-first: exhaust
+// effectiveTimeShort across every card before falling to effectiveTime, then
+// mainConcept.
+test('structure-mechanics config prefers a good effectiveTimeShort on a LATER card over an earlier card\'s mainConcept', () => {
+  const rows = structureMechanicsMod.structureMechanicsConfig.selectRows({
+    cards: [{
+      id: 'struct-effective-time-corrupted',
+      provision_type: 'STRUCTURE_MECHANICS',
+      provision_subtype: 'STRUCT-EFFECTIVE-TIME',
+      short_title: 'Effective Time',
+      primary_quote: 'The Certificate of Merger shall be filed at the Closing.',
+      features: {
+        effectiveTimeShort: 'Names the Company as the surviving corporation of the Merger.',
+        mainConcept: 'Defines the Delaware certificate of merger to be filed at closing.',
+      },
+    }, {
+      id: 'struct-effective-time-good',
+      provision_type: 'STRUCTURE_MECHANICS',
+      provision_subtype: 'STRUCT-EFFECTIVE-TIME',
+      short_title: 'Effective Time',
+      primary_quote: 'The Merger shall become effective upon filing of the Certificate of Merger with the Delaware Secretary of State.',
+      features: {
+        effectiveTimeShort: 'Upon filing of the Certificate of Merger with the Delaware Secretary of State.',
+      },
+    }],
+  });
+  const effectiveTime = rows.find((row) => row.id === 'structure-mechanics-effective-time');
+  assert.ok(effectiveTime, 'effective-time row should still render');
+  assert.doesNotMatch(effectiveTime.detail, /surviving corporation/i);
+  assert.doesNotMatch(effectiveTime.detail, /Defines the Delaware certificate/i);
+  assert.match(effectiveTime.detail, /Upon filing of the Certificate of Merger with the Delaware Secretary of State/);
+});
+
 // Rebuilt per user feedback to match the legacy pre-schema render: ONE
 // consolidated table grouped by which side may exercise the right (Mutual /
 // Buyer / Target), each row a canonical termination right with a short

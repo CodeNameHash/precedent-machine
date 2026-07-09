@@ -35,18 +35,23 @@ const ROWS = [
 // Delaware Secretary of State."). This is a DATA bug (real fix belongs at
 // extraction/backfill); this guard is the config-side stopgap: never let a
 // value matching /surviving corporation/i stand in as the effective time.
-// Skip it and keep looking -- across the remaining keys on this card, then
-// across the other cards' effective-time keys, then finally fall back to the
-// raw clause text of the first card that had SOME (corrupted) effective-time
-// claim, so the row still shows the filing-mechanic sentence when present in
-// the source text.
+//
+// A single card's corrupted effectiveTimeShort must never shadow a GOOD
+// effectiveTimeShort sitting on a different card. So this scans KEY-FIRST,
+// CARD-SECOND: every card's effectiveTimeShort (skipping /surviving
+// corporation/i matches), then every card's effectiveTime, then every card's
+// mainConcept -- only once a whole key has come up empty across every card
+// does it move to the next key. Only after all three keys are exhausted does
+// it fall back to the raw clause text of the first card that had SOME
+// (corrupted) effective-time claim, so the row still shows the filing-
+// mechanic sentence when present in the source text.
 const EFFECTIVE_TIME_KEYS = ['effectiveTimeShort', 'effectiveTime', 'mainConcept'];
 const SURVIVING_CORP_RE = /surviving corporation/i;
 
 function effectiveTimeHit(cards) {
-  for (const card of cards) {
-    const features = cardFeatures(card);
-    for (const key of EFFECTIVE_TIME_KEYS) {
+  for (const key of EFFECTIVE_TIME_KEYS) {
+    for (const card of cards) {
+      const features = cardFeatures(card);
       const detail = valueText(features[key]);
       if (detail && !SURVIVING_CORP_RE.test(detail)) return { key, value: features[key], detail, card };
     }
