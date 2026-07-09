@@ -661,33 +661,7 @@ test('sec-meeting config exposes proxy and offer signals with hover details', ()
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(schedule14d9, { primitives }))), /data-evidence="The Company shall file the proxy statement/);
 });
 
-test('general-covenants config exposes efforts, consent, knowledge, and deadline signals', () => {
-  const rows = generalCovenantsMod.generalCovenantsConfig.selectRows({
-    cards: [{
-      id: 'cov-efforts',
-      provision_type: 'COVENANT_INTERIM_OPERATING',
-      provision_subtype: 'IOC-AFFIRMATIVE',
-      short_title: 'Efforts Covenant',
-      primary_quote: 'The Company shall use reasonable best efforts within five business days, subject to Parent consent.',
-      features: {
-        effortsStandard: { code: 'REASONABLE_BEST_EFFORTS', label: 'Reasonable best efforts', text: 'reasonable best efforts' },
-        consentStandard: { code: 'PRIOR_WRITTEN_CONSENT', label: 'Prior written consent', text: 'Parent consent' },
-        knowledgeQualifier: { code: 'KNOWLEDGE_QUALIFIED', label: 'Knowledge qualified', text: 'to the Company Knowledge' },
-        dayCountDeadline: '5 business days',
-        affirmativeCovenants: 'Use reasonable best efforts within five business days.',
-      },
-    }],
-  });
-  const row = rows.find((entry) => entry.label === 'Affirmative covenants');
-  assert.deepEqual(row.signals.map((item) => item.label), [
-    'Efforts: Reasonable best efforts',
-    'Consent: Prior written consent: Parent consent',
-    'Knowledge: Knowledge qualified: to the Company Knowledge',
-    'Deadline: 5 business days',
-  ]);
-});
-
-test('general-covenants config renders one row PER covenant card in addition to the curated summary rows (Metsera regression: 38 IOC/COV cards collapsed into a fixed 10-row table)', () => {
+test('general-covenants config excludes IOC content entirely (REBUILD-SPECS.md section 6: owned by ioc-exceptions.config.js)', () => {
   const covCard = (id, subtype, short_title, mainConcept) => ({
     id, provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: subtype, short_title, primary_quote: `${short_title} clause text.`, features: { mainConcept },
   });
@@ -699,16 +673,79 @@ test('general-covenants config renders one row PER covenant card in addition to 
       { id: 'cov-preamble', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-GENERAL-EXCEPTIONS', short_title: 'General Exceptions', primary_quote: 'Exceptions preamble.', features: {} },
     ],
   });
+  assert.deepEqual(rows, [], 'every COVENANT_INTERIM_OPERATING / IOC-prefixed card must be excluded, not just the preamble container');
+});
+
+test('general-covenants config never resurrects the MISC §9.01 "No Survival" card as a row (its clause text happens to contain the word "covenant")', () => {
+  const rows = generalCovenantsMod.generalCovenantsConfig.selectRows({
+    cards: [{
+      id: 'misc-survival',
+      provision_type: 'MISC_BOILERPLATE',
+      provision_subtype: 'MISC-SURVIVAL',
+      short_title: 'No Survival / Nonsurvival',
+      primary_quote: 'This Section 9.01 shall not limit any covenant or agreement of the parties which by its terms is to be performed after the Effective Time.',
+      features: {
+        mainConcept: 'Representations and warranties do not survive the Effective Time.',
+        repsSurvivalExceptions: 'This Section 9.01 shall not limit any covenant or agreement of the parties which by its terms is to be performed after the Effective Time.',
+      },
+    }],
+  });
+  assert.deepEqual(rows, [], 'MISC_BOILERPLATE cards are not general covenants, regardless of what words their clause text contains');
+});
+
+test('general-covenants config still renders curated signals for a genuine COVENANT_OTHER card', () => {
+  const rows = generalCovenantsMod.generalCovenantsConfig.selectRows({
+    cards: [{
+      id: 'cov-efforts',
+      provision_type: 'COVENANT_OTHER',
+      provision_subtype: 'COV-EFFORTS',
+      short_title: 'Efforts Covenant',
+      primary_quote: 'The Company shall use reasonable best efforts within five business days, subject to Parent consent.',
+      features: {
+        effortsStandard: { code: 'REASONABLE_BEST_EFFORTS', label: 'Reasonable best efforts', text: 'reasonable best efforts' },
+        consentStandard: { code: 'PRIOR_WRITTEN_CONSENT', label: 'Prior written consent', text: 'Parent consent' },
+        knowledgeQualifier: { code: 'KNOWLEDGE_QUALIFIED', label: 'Knowledge qualified', text: 'to the Company Knowledge' },
+        dayCountDeadline: '5 business days',
+      },
+    }],
+  });
+  const row = rows.find((entry) => entry.label === 'General efforts standard');
+  assert.ok(row, 'curated efforts row should still render for a real COVENANT_OTHER card');
+  assert.deepEqual(row.signals.map((item) => item.label), [
+    'Efforts: Reasonable best efforts',
+    'Consent: Prior written consent: Parent consent',
+    'Knowledge: Knowledge qualified: to the Company Knowledge',
+    'Deadline: 5 business days',
+  ]);
+});
+
+test('general-covenants config renders one row PER genuine COVENANT_OTHER clause not covered by a curated row, and excludes IOC cards from the same mix', () => {
+  const rows = generalCovenantsMod.generalCovenantsConfig.selectRows({
+    cards: [
+      {
+        id: 'cov-parent-adopt',
+        provision_type: 'COVENANT_OTHER',
+        provision_subtype: 'COV-SHAPRV-PARENT',
+        short_title: 'Parent Adoption of Merger Agreement',
+        primary_quote: 'Parent Adoption of Merger Agreement clause text.',
+        features: { mainConcept: 'Parent, as sole stockholder of Merger Sub, must adopt the merger agreement immediately.' },
+      },
+      {
+        id: 'cov-maintain',
+        provision_type: 'COVENANT_INTERIM_OPERATING',
+        provision_subtype: 'IOC-MAINTAIN',
+        short_title: 'Maintain Insurance',
+        primary_quote: 'Maintain Insurance clause text.',
+        features: { mainConcept: 'The Company shall maintain existing insurance policies.' },
+      },
+    ],
+  });
+  const parentAdopt = rows.find((row) => row.label === 'Parent Adoption of Merger Agreement');
   const maintain = rows.find((row) => row.label === 'Maintain Insurance');
-  const ordinary = rows.find((row) => row.label === 'Ordinary Course');
-  const dividend = rows.find((row) => row.label === 'Dividends');
-  const preamble = rows.find((row) => row.label === 'General Exceptions');
-  assert.ok(maintain, 'each IOC card should get its own per-clause row');
-  assert.ok(ordinary);
-  assert.ok(dividend);
-  assert.equal(maintain.kind, 'Interim operating');
-  assert.equal(maintain.detail, 'The Company shall maintain existing insurance policies.');
-  assert.equal(preamble, undefined, 'the preamble/general-exceptions container card is rendered by ioc-exceptions.config.js, not duplicated here');
+  assert.ok(parentAdopt, 'a genuine COVENANT_OTHER clause not covered by a curated row should get its own per-clause row');
+  assert.equal(parentAdopt.kind, 'General covenant');
+  assert.equal(parentAdopt.detail, 'Parent, as sole stockholder of Merger Sub, must adopt the merger agreement immediately.');
+  assert.equal(maintain, undefined, 'the IOC card must not appear here -- ioc-exceptions.config.js owns it');
 });
 
 test('conditions-m config returns no table rows when no closing-condition cards exist', () => {
@@ -782,137 +819,140 @@ test('conditions-s config maps schema cards to seller-side canonical present row
   assert.match(rows.find((row) => row.label === 'Financing / Sufficient Funds').detail, /sufficient funds/);
 });
 
-test('ioc-exceptions config prefers structured feature exceptions', () => {
-  const rows = iocMod.iocExceptionsConfig.selectRows({
+// REBUILD-SPECS.md section 6 rebuild: ioc-exceptions.config.js now owns the
+// FULL 24-card IOC family (TERM|RESTRICTION negative-covenant rows, an
+// "Other restrictions" collapse for the near-empty [PROPOSED] Unclassified
+// fragments, an Affirmative-covenants band, and a General-Exceptions FOOTER)
+// instead of just the Target/Buyer general-exceptions preamble split. These
+// tests exercise the exported row-building/render helpers directly (mirrors
+// how conditions.config.js's own tests exercise conditionGroups()).
+const iocPrimitives = {
+  PillCell: ({ label, tone }) => React.createElement('span', { className: `pill ${tone || ''}`.trim() }, label),
+  EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
+  CoverageFooter: ({ presentCount, totalCount, absentItems, label }) => React.createElement(
+    'div',
+    { 'data-testid': 'fake-coverage-footer' },
+    `${presentCount} of ${totalCount} ${label}`,
+    (absentItems || []).map((item) => item.label).join(', '),
+  ),
+};
+
+test('isIocCard matches both COVENANT_INTERIM_OPERATING cards and any IOC-prefixed canonical code', () => {
+  assert.equal(iocMod.isIocCard({ provision_type: 'COVENANT_INTERIM_OPERATING' }), true);
+  assert.equal(iocMod.isIocCard({ provision_subtype: 'IOC-DIVIDEND' }), true);
+  assert.equal(iocMod.isIocCard({ provision_subtype: 'IOC' }), true);
+  assert.equal(iocMod.isIocCard({ provision_type: 'COVENANT_OTHER', provision_subtype: 'COV-ACCESS' }), false);
+});
+
+test('formatMoney always renders IOC dollarThreshold as currency, never a bare numeral', () => {
+  assert.equal(iocMod.formatMoney(2000000), '$2,000,000');
+  assert.equal(iocMod.formatMoney('2000000'), '$2,000,000');
+  assert.equal(iocMod.formatMoney(null), null);
+  assert.equal(iocMod.formatMoney(''), null);
+});
+
+test('ioc-exceptions config groups repeated cards sharing a canonical code into ONE negative-covenant row (Metsera: 3 IOC-MERGE cards)', () => {
+  const cards = [
+    { id: 'merge-1', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-MERGE', short_title: 'Mergers / Acquisitions / Dispositions', features: { restrictionComponents: ['ASSET_SALES_LICENSES'], permittedExceptions: [{ code: 'ORDINARY_COURSE', label: 'Ordinary course', text: 'ordinary course of business' }], mainObligation: 'The Company may not sell material assets.' } },
+    { id: 'merge-2', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-MERGE', short_title: 'Mergers / Acquisitions / Dispositions', features: { restrictionComponents: ['ACQUISITIONS'], dollarThreshold: 2000000, mainObligation: 'The Company may not acquire a business over the threshold.' } },
+    { id: 'merge-3', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-MERGE', short_title: 'Mergers / Acquisitions / Dispositions', features: { restrictionComponents: ['MERGE_DISSOLVE_RECAP'], mainObligation: 'The Company may not merge or consolidate.' } },
+  ];
+  const groups = iocMod.negativeCovenantGroups(cards);
+  assert.equal(groups.length, 1, 'the 3 same-code cards must collapse into ONE row, not 3 duplicate rows');
+  assert.equal(groups[0].code, 'IOC-MERGE');
+  assert.equal(groups[0].cards.length, 3);
+});
+
+test('ioc-exceptions negative-covenant row renders restrictionComponents + dollarThreshold + permittedExceptions pills, with mainObligation always behind an always-collapsed see-text (never dumped inline)', () => {
+  const cards = [
+    { id: 'div-1', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-DIVIDEND', short_title: 'Dividends and Distributions', features: {
+      restrictionComponents: ['ACQUISITIONS'],
+      dollarThreshold: 2000000,
+      permittedExceptions: [{ code: 'TAX_WITHHOLDING', label: 'Tax withholding or similar mandated actions', text: 'tax withholding' }],
+      mainObligation: 'The Company may not declare or pay dividends or distributions.',
+    } },
+  ];
+  const [group] = iocMod.negativeCovenantGroups(cards);
+  const row = iocMod.renderNegativeRow({ id: 'ioc-neg-IOC-DIVIDEND', code: group.code, cards: group.cards }, { primitives: iocPrimitives });
+  assert.equal(row.id, 'ioc-neg-IOC-DIVIDEND');
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, row.children));
+  assert.match(html, /Acquisitions \/ business combinations/, 'restrictionComponents pill resolves via the IOC_CATEGORY taxonomy');
+  assert.match(html, /\$2,000,000/, 'dollarThreshold renders as currency');
+  assert.match(html, /Tax withholding/, 'permittedExceptions pill');
+  assert.match(html, /<details/, 'mainObligation prose sits behind a collapsed <details>');
+  assert.match(html, /see text/);
+});
+
+test('ioc-exceptions config collapses [PROPOSED] Unclassified fragments into a single "Other restrictions" row, not empty per-row output', () => {
+  const cards = [
+    { id: 'frag-1', provision_type: 'COVENANT_INTERIM_OPERATING', features: { sectionNumber: '5.01(i)', restrictionComponents: ['INDEBTEDNESS', 'THIRD_PARTY_OBLIGATIONS'] } },
+    { id: 'frag-2', provision_type: 'COVENANT_INTERIM_OPERATING', features: { sectionNumber: '5.01(k)' } },
+    { id: 'real', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-DIVIDEND', short_title: 'Dividends and Distributions', features: { mainObligation: 'x' } },
+  ];
+  const fragments = iocMod.fragmentCards(cards);
+  assert.equal(fragments.length, 2, 'only the two no-code fragments, not the named IOC-DIVIDEND card');
+  const row = iocMod.buildOtherRestrictionsRow(fragments, { primitives: iocPrimitives });
+  assert.equal(row.id, 'ioc-other-restrictions');
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, row.children));
+  assert.match(html, /2 unclassified fragments/);
+  assert.match(html, /Indebtedness \/ financing/);
+  assert.match(html, /no structured signal extracted/, 'the genuinely empty fragment (5.01(k)) says so, it does not fabricate a pill');
+});
+
+test('ioc-exceptions config renders IOC-ORDINARY/PRESERVE/MAINTAIN as an Affirmative-covenants band with appliesTo scope pills', () => {
+  const cards = [
+    { id: 'ord', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-ORDINARY', short_title: 'Ordinary Course Obligation', features: { ordinaryCourseCarveout: true, positiveObligations: { appliesTo: ['BUSINESS'], obligation: 'conduct its business in the ordinary course' } } },
+    { id: 'pres', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-PRESERVE', short_title: 'Preservation of Business Relationships', features: { positiveObligations: { appliesTo: ['SUPPLIERS', 'LICENSORS_LICENSEES'], obligation: 'preserve relationships with suppliers and licensors' } } },
+    { id: 'neg', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-DIVIDEND', short_title: 'Dividends and Distributions', features: { mainObligation: 'x' } },
+  ];
+  const rows = iocMod.affirmativeRows(cards, { primitives: iocPrimitives });
+  assert.equal(rows.length, 2, 'one row per affirmative limb, the negative-covenant card excluded');
+  const ordinaryHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, rows[0].children));
+  assert.match(ordinaryHtml, /Ordinary-course carve-out applies/);
+  const preserveHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, rows[1].children));
+  assert.match(preserveHtml, /Suppliers/);
+  assert.match(preserveHtml, /Licensors/);
+});
+
+test('ioc-exceptions config selectRows returns rows only when IOC cards exist, and renders the General Exceptions preamble as a FOOTER (not a per-row entry)', () => {
+  const emptyDeal = { cards: [{ id: 'rep', provision_type: 'REPRESENTATION' }] };
+  assert.deepEqual(iocMod.iocExceptionsConfig.selectRows(emptyDeal), []);
+
+  const reviewDeal = {
     cards: [
-      {
-        id: 'ioc-general',
-        provision_type: 'COVENANT_INTERIM_OPERATING',
-        provision_subtype: 'IOC-GENERAL-EXCEPTIONS',
-        party_scope: 'COMPANY',
-        short_title: 'General Exceptions',
-        features: {
-          permittedExceptions: [
-            { code: 'COMPANY_DISCLOSURE_LETTER', label: 'As disclosed', text: 'except as set forth in the Company Disclosure Letter' },
-            { code: 'REQUIRED_BY_AGREEMENT', label: 'As contemplated by this Agreement', text: 'otherwise expressly required by this Agreement' },
-            { code: 'REQUIRED_BY_LAW', label: 'As required by law', text: 'as required by applicable Law' },
-            { code: 'PRIOR_WRITTEN_CONSENT', label: 'With consent', text: 'with Parent consent' },
-          ],
-        },
-      },
-      {
-        id: 'ioc-neg',
-        provision_type: 'COVENANT_INTERIM_OPERATING',
-        provision_subtype: 'IOC-NEGATIVE-PREAMBLE',
-        party_scope: 'COMPANY',
-        short_title: 'Negative Preamble',
-        features: {
-          negativePreambleExceptions: [{ code: 'ORDINARY_COURSE', label: 'Ordinary course', text: 'ordinary course of business' }],
-        },
-      },
+      { id: 'ge', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-GENERAL-EXCEPTIONS', features: {
+        permittedExceptions: [
+          { code: 'COMPANY_DISCLOSURE_LETTER', label: 'As disclosed', text: 'except as set forth in the Company Disclosure Letter' },
+          { code: 'PRIOR_WRITTEN_CONSENT', label: 'With consent', text: 'with Parent consent' },
+          { code: 'REQUIRED_BY_AGREEMENT', label: 'As contemplated by this Agreement', text: 'otherwise expressly required by this Agreement' },
+          { code: 'REQUIRED_BY_LAW', label: 'As required by law', text: 'as required by applicable Law' },
+        ],
+        requiredByLawCarveout: true,
+      } },
     ],
-  });
-  assert.equal(rows.length, 1);
-  assert.equal(rows[0].party, 'Target / Company');
-  assert.deepEqual(rows[0].positive.map((entry) => entry.label), [
-    'As disclosed',
-    'As contemplated by this Agreement',
-    'As required by law',
-    'With consent',
-  ]);
-  assert.deepEqual(rows[0].negative.map((entry) => entry.label), ['Ordinary course']);
-});
-
-test('ioc-exceptions config exposes side-level covenant signals', () => {
-  const rows = iocMod.iocExceptionsConfig.selectRows({
-    cards: [{
-      id: 'ioc-general',
-      provision_type: 'COVENANT_INTERIM_OPERATING',
-      provision_subtype: 'IOC-GENERAL-EXCEPTIONS',
-      party_scope: 'COMPANY',
-      short_title: 'General Exceptions',
-      features: {
-        permittedExceptions: [{ code: 'PRIOR_WRITTEN_CONSENT', label: 'With consent', text: 'with Parent consent' }],
-        effortsStandard: { code: 'REASONABLE_BEST_EFFORTS', label: 'Reasonable best efforts', text: 'reasonable best efforts' },
-        consentStandard: { code: 'PRIOR_WRITTEN_CONSENT', label: 'Prior written consent', text: 'Parent consent' },
-        knowledgeQualifier: { code: 'KNOWLEDGE_QUALIFIED', label: 'Knowledge qualified', text: 'knowledge' },
-        dayCountDeadline: '10 days',
-      },
-    }],
-  });
-  assert.deepEqual(rows[0].signals.map((item) => item.label), [
-    'Efforts: Reasonable best efforts',
-    'Consent: Prior written consent',
-    'Knowledge: Knowledge qualified',
-    'Deadline: 10 days',
-  ]);
-});
-
-test('ioc-exceptions config falls back to splitting general-exceptions card text', () => {
-  const rows = iocMod.iocExceptionsConfig.selectRows({
-    cards: [
-      {
-        id: 'ioc-general',
-        provision_type: 'COVENANT_INTERIM_OPERATING',
-        provision_subtype: 'IOC-GENERAL-EXCEPTIONS',
-        party_scope: 'BUYER',
-        short_title: 'General Exceptions',
-        primary_quote: '(i) except as set forth in the Buyer Disclosure Schedule; (ii) as required by applicable Law; (iii) with the Company consent',
-      },
-    ],
-  });
-  assert.equal(rows.length, 1);
-  assert.equal(rows[0].party, 'Parent / Buyer');
-  assert.deepEqual(rows[0].positive.map((entry) => entry.label), [
-    'As disclosed',
-    'As required by law',
-    'With consent',
-  ]);
-});
-
-test('ioc and covenant render cells use primitive pills and hover-source wrappers', () => {
-  const primitives = {
-    PillCell: ({ label }) => React.createElement('span', { className: 'pill' }, label),
-    EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
-    TruncatedWithSeeText: ({ text, evidence }) => React.createElement('span', { 'data-evidence': evidence }, text),
   };
-  const iocRows = iocMod.iocExceptionsConfig.selectRows({
-    cards: [{
-      id: 'ioc-general',
-      provision_type: 'COVENANT_INTERIM_OPERATING',
-      provision_subtype: 'IOC-GENERAL-EXCEPTIONS',
-      party_scope: 'BUYER',
-      short_title: 'General Exceptions',
-      primary_quote: 'except with Company consent',
-      features: {
-        permittedExceptions: [{ code: 'PRIOR_WRITTEN_CONSENT', label: 'With consent', text: 'Company consent' }],
-        consentStandard: { code: 'PRIOR_WRITTEN_CONSENT', label: 'Prior written consent', text: 'Company consent' },
-      },
-    }],
-  });
-  const iocSignals = iocMod.iocExceptionsConfig.columns.find((column) => column.id === 'signals');
-  const iocPositive = iocMod.iocExceptionsConfig.columns.find((column) => column.id === 'positive');
-  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, iocSignals.renderCell(iocRows[0], { primitives }))), /Prior written consent/);
-  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, iocPositive.renderCell(iocRows[0], { primitives }))), /data-evidence="Company consent"/);
+  const rows = iocMod.iocExceptionsConfig.selectRows(reviewDeal);
+  assert.equal(rows.length, 1, 'selectRows returns a single synthetic body row -- the grouped table is rebuilt at render time (same contract as conditions.config.js)');
+  assert.equal(rows[0].reviewDeal, reviewDeal);
+  const footer = iocMod.renderIocFooter(rows, { primitives: iocPrimitives });
+  const html = renderToStaticMarkup(footer);
+  assert.match(html, /4 of 4/, 'all 4 canonical general-exception codes present');
+  assert.match(html, /Required-by-law carve-out applies/);
+});
 
-  const covenantRows = generalCovenantsMod.generalCovenantsConfig.selectRows({
-    cards: [{
-      id: 'cov-efforts',
-      provision_type: 'COVENANT_INTERIM_OPERATING',
-      provision_subtype: 'IOC-AFFIRMATIVE',
-      short_title: 'Efforts Covenant',
-      primary_quote: 'The Company shall use reasonable best efforts.',
-      features: {
-        effortsStandard: { code: 'REASONABLE_BEST_EFFORTS', label: 'Reasonable best efforts', text: 'reasonable best efforts' },
-        affirmativeCovenants: 'Use reasonable best efforts.',
-      },
-    }],
-  });
-  const covSignals = generalCovenantsMod.generalCovenantsConfig.columns.find((column) => column.id === 'signals');
-  const covDetail = generalCovenantsMod.generalCovenantsConfig.columns.find((column) => column.id === 'detail');
-  const row = covenantRows.find((entry) => entry.label === 'Affirmative covenants');
-  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, covSignals.renderCell(row, { primitives }))), /Reasonable best efforts/);
-  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, covDetail.renderCell(row, { primitives }))), /data-evidence="The Company shall use reasonable best efforts\."/);
+test('ioc-exceptions config footer lists absent canonical exception codes when the deal only has a partial set', () => {
+  const reviewDeal = {
+    cards: [
+      { id: 'ge', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-GENERAL-EXCEPTIONS', features: {
+        permittedExceptions: [{ code: 'REQUIRED_BY_LAW', label: 'As required by law', text: 'as required by applicable Law' }],
+      } },
+    ],
+  };
+  const rows = iocMod.iocExceptionsConfig.selectRows(reviewDeal);
+  const html = renderToStaticMarkup(iocMod.renderIocFooter(rows, { primitives: iocPrimitives }));
+  assert.match(html, /1 of 4/);
+  assert.match(html, /As disclosed/);
+  assert.match(html, /As contemplated by this Agreement/);
 });
 
 test('material-contracts config maps hydrated buckets and thresholds, one row per contract type, no mid-table coverage row', () => {
