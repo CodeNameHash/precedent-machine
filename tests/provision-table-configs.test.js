@@ -840,7 +840,7 @@ test('ioc and covenant render cells use primitive pills and hover-source wrapper
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, covDetail.renderCell(row, { primitives }))), /data-evidence="The Company shall use reasonable best efforts\."/);
 });
 
-test('material-contracts config maps hydrated buckets and thresholds', () => {
+test('material-contracts config maps hydrated buckets and thresholds, one row per contract type, no mid-table coverage row', () => {
   const rows = materialContractsMod.materialContractsConfig.selectRows({
     cards: [{
       id: 'material-contracts',
@@ -857,18 +857,17 @@ test('material-contracts config maps hydrated buckets and thresholds', () => {
       },
     }],
   });
-  assert.equal(rows[0].label, 'Bucket coverage');
-  assert.match(rows[0].coverage, /2\/\d+ canonical buckets/);
-  const bucketRows = rows.filter((row) => !row.rollup);
-  assert.deepEqual(bucketRows.map((row) => row.label), [
+  // No synthetic rollup/coverage row mixed into the row list -- every row is
+  // a real contract-type bucket.
+  assert.ok(!rows.some((row) => row.rollup), 'selectRows must not prepend a mid-table coverage row');
+  assert.deepEqual(rows.map((row) => row.label), [
     'Contracts above an aggregate-payments threshold',
     'Indebtedness contracts',
   ]);
-  assert.deepEqual(bucketRows.map((row) => row.threshold), ['$25,000,000', '$5,000,000']);
-  assert.deepEqual(bucketRows.map((row) => row.ordinal), [0, 1]);
+  assert.deepEqual(rows.map((row) => row.threshold), ['$25,000,000', '$5,000,000']);
 });
 
-test('material-contracts config falls back to canonical bucket synonyms in card text', () => {
+test('material-contracts config falls back to canonical bucket synonyms in card text; each detected bucket is exactly one row (no cross-listing)', () => {
   const rows = materialContractsMod.materialContractsConfig.selectRows({
     cards: [{
       id: 'material-contracts',
@@ -881,10 +880,15 @@ test('material-contracts config falls back to canonical bucket synonyms in card 
   assert.ok(rows.some((row) => row.label === 'Indebtedness contracts'));
   assert.ok(rows.some((row) => row.label === 'Joint ventures / partnerships'));
   assert.ok(rows.some((row) => row.label === 'Clinical research organization contracts'));
-  assert.ok(rows.find((row) => row.label === 'Indebtedness contracts').alsoCovered.some((item) => item.label === 'Joint ventures / partnerships'));
+  // Ben's dedup fix: the old renderer nested every co-occurring bucket under
+  // EACH OTHER row's cell (alsoCovered), so a single card mentioning three
+  // types rendered each title multiple times. The new row shape carries no
+  // such cross-listing field -- each bucket is its own row, once.
+  assert.ok(!('alsoCovered' in rows[0]), 'rows must not carry a cross-listing alsoCovered field');
+  assert.equal(rows.filter((row) => row.label === 'Indebtedness contracts').length, 1);
 });
 
-test('material-contracts render cells use rollup, ordinal, pill, checklist, threshold, and evidence primitives', () => {
+test('material-contracts render cells: one pill per row (title once), threshold and evidence primitives', () => {
   const rows = materialContractsMod.materialContractsConfig.selectRows({
     cards: [{
       id: 'material-contracts',
@@ -904,23 +908,53 @@ test('material-contracts render cells use rollup, ordinal, pill, checklist, thre
   const thresholdColumn = materialContractsMod.materialContractsConfig.columns.find((column) => column.id === 'threshold');
   const evidenceColumn = materialContractsMod.materialContractsConfig.columns.find((column) => column.id === 'evidence');
   const primitives = {
-    ComputedRollupHeader: ({ label, value }) => React.createElement('section', { 'data-rollup': label }, value),
     PillCell: ({ label }) => React.createElement('span', { className: 'pill' }, label),
-    RomanNumeralOrdinal: ({ index, children }) => React.createElement('span', { 'data-ordinal': index }, children),
-    CoverageChecklist: ({ items }) => React.createElement('ul', {}, items.map((item) => React.createElement('li', { key: item.id }, item.label))),
     ThresholdCellWithHoverQuote: ({ threshold }) => React.createElement('span', { 'data-threshold': threshold }, threshold),
     EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
   };
-  const rollupHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, bucketColumn.renderCell(rows[0], { primitives })));
-  assert.match(rollupHtml, /data-rollup="Bucket coverage"/);
-  const bucketHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, bucketColumn.renderCell(rows[1], { primitives })));
-  assert.match(bucketHtml, /data-ordinal="0"/);
-  assert.match(bucketHtml, /Indebtedness contracts/);
-  assert.match(bucketHtml, /Joint ventures \/ partnerships/);
-  const thresholdHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, thresholdColumn.renderCell(rows[1], { primitives })));
+  const bucketHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, bucketColumn.renderCell(rows[0], { primitives })));
+  assert.equal((bucketHtml.match(/Indebtedness contracts/g) || []).length, 1, 'the contract-type title renders exactly once');
+  const thresholdHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, thresholdColumn.renderCell(rows[0], { primitives })));
   assert.match(thresholdHtml, /data-threshold="\$5,000,000"/);
-  const evidenceHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, evidenceColumn.renderCell(rows[1], { primitives })));
+  const evidenceHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, evidenceColumn.renderCell(rows[0], { primitives })));
   assert.match(evidenceHtml, /data-evidence="credit agreements and joint venture agreements"/);
+});
+
+test('material-contracts coverage footer reports "N of M contract-type buckets covered" and lists the not-covered buckets, via config.renderFooter (not a mid-table row)', () => {
+  const rows = materialContractsMod.materialContractsConfig.selectRows({
+    cards: [{
+      id: 'material-contracts',
+      provision_type: 'REPRESENTATION',
+      provision_subtype: 'REP-T-MATERIAL-CONTRACTS',
+      short_title: 'Material Contracts',
+      primary_quote: 'Material Contracts are listed.',
+      features: {
+        materialContractsBuckets: [
+          { code: 'AGGREGATE_PAYMENTS', label: 'Aggregate payments', text: 'aggregate payments contracts' },
+          { code: 'INDEBTEDNESS', label: 'Indebtedness', text: 'indebtedness contracts' },
+        ],
+      },
+    }],
+  });
+  assert.equal(typeof materialContractsMod.materialContractsConfig.renderFooter, 'function');
+  const primitives = {
+    CoverageFooter: ({ presentCount, totalCount, absentItems, label }) => React.createElement(
+      'div',
+      { 'data-testid': 'coverage-footer' },
+      `${presentCount} of ${totalCount} ${label}`,
+      React.createElement('div', { className: 'absent' }, (absentItems || []).map((item) => item.label).join(' | ')),
+    ),
+  };
+  const footerHtml = renderToStaticMarkup(React.createElement(
+    React.Fragment,
+    null,
+    materialContractsMod.materialContractsConfig.renderFooter(rows, { primitives }),
+  ));
+  assert.match(footerHtml, /2 of \d+ contract-type buckets covered/);
+  // The two present buckets are not in the absent list; an untouched
+  // canonical bucket (never mentioned in the fixture) is.
+  assert.ok(!footerHtml.includes('Contracts above an aggregate-payments threshold'));
+  assert.match(footerHtml, /Joint ventures \/ partnerships/);
 });
 
 test('tail-fee config maps nested tailProvision mechanics', () => {

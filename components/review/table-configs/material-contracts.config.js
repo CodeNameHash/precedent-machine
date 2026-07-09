@@ -3,6 +3,18 @@ import taxonomy from '../../../lib/taxonomy.js';
 
 const { MATERIAL_CONTRACT_BUCKET_CODES, MATERIAL_CONTRACT_BUCKET_META } = taxonomy;
 
+// Spec §5 (REBUILD-SPECS.md): Ben's two complaints on the old shape --
+// (1) contract-type titles repeated. The old renderer cross-listed every
+//     OTHER bucket that co-occurred in the same evidence text as a nested
+//     "alsoCovered" checklist item under EACH row (withDerivedRows()), so a
+//     source card mentioning three contract types produced three rows, each
+//     also listing the other two nested underneath -- every title rendered
+//     N times instead of once. Fixed by not cross-listing at all: a detected
+//     bucket is ONE row, full stop.
+// (2) bucket coverage was a synthetic first ROW (ComputedRollupHeader via a
+//     `rollup: true` row prepended to the table body) -- a mid-table row,
+//     not a footer. Fixed by moving coverage to config.renderFooter, reusing
+//     the CoverageFooter primitive exactly as conditions.config.js does.
 function cardCode(card) {
   return String(card?.provision_subtype || card?.canonical_code || card?.provision_code || '').trim().toUpperCase();
 }
@@ -40,46 +52,6 @@ function thresholdsByCode(features) {
   }
   return out;
 }
-function matchingBucketCodes(text) {
-  if (!text) return [];
-  return Object.entries(MATERIAL_CONTRACT_BUCKET_META || {})
-    .filter(([code, meta]) => code !== 'OTHER' && (meta.synonyms || []).some((re) => re.test(text)))
-    .map(([code]) => code);
-}
-function coverageRow(rows) {
-  const canonicalCodes = Object.keys(MATERIAL_CONTRACT_BUCKET_CODES || {}).filter((code) => code !== 'OTHER');
-  const presentCodes = new Set(rows.map((row) => row.code).filter(Boolean));
-  const percent = canonicalCodes.length ? Math.round((presentCodes.size / canonicalCodes.length) * 100) : 0;
-  return {
-    id: 'material-contracts-coverage',
-    label: 'Bucket coverage',
-    coverage: `${presentCodes.size}/${canonicalCodes.length} canonical buckets (${percent}%)`,
-    detail: 'Structured buckets mapped from material-contracts features or canonical synonym fallback.',
-    present: true,
-    rollup: true,
-  };
-}
-function withDerivedRows(rows, source) {
-  const fallbackText = textOf(source);
-  const enriched = rows.map((row, index) => {
-    const hits = matchingBucketCodes(row.evidence || fallbackText)
-      .filter((code) => code !== row.code)
-      .map((code) => ({
-        id: `${row.id}-also-${code}`,
-        label: MATERIAL_CONTRACT_BUCKET_CODES[code] || code,
-        present: true,
-        evidence: row.evidence || fallbackText,
-        source,
-      }));
-    return {
-      ...row,
-      ordinal: index,
-      source,
-      alsoCovered: hits,
-    };
-  });
-  return enriched.length ? [coverageRow(enriched), ...enriched] : [];
-}
 function rowFromBucket(item, index, source, thresholds) {
   const tagged = isTagged(item);
   const code = tagged ? String(item.code).toUpperCase() : '';
@@ -93,6 +65,7 @@ function rowFromBucket(item, index, source, thresholds) {
     label,
     threshold: threshold || 'No $ threshold',
     evidence: (tagged && item.text) || textOf(source),
+    source,
     present: true,
   };
 }
@@ -117,39 +90,29 @@ function rowsFromText(source) {
       label: MATERIAL_CONTRACT_BUCKET_CODES[code] || meta.label || code,
       threshold: 'No $ threshold',
       evidence: text,
+      source,
       present: true,
     });
   }
   return rows;
 }
 
-function renderBucket(row, ctx) {
-  const primitives = ctx?.primitives || {};
-  if (row.rollup) {
-    const Header = primitives.ComputedRollupHeader;
-    if (!Header) return `${row.label}: ${row.coverage}`;
-    return React.createElement(Header, { label: row.label, value: row.coverage, detail: row.detail, tone: 'info' });
-  }
-  const PillCell = primitives.PillCell;
-  const RomanNumeralOrdinal = primitives.RomanNumeralOrdinal;
-  const CoverageChecklist = primitives.CoverageChecklist;
+// One line per contract type: a single pill, the friendly bucket label as
+// its only text. No ordinal wrapper, no nested "also covered" checklist --
+// the title renders exactly once, here.
+function renderTerm(row, ctx) {
+  const PillCell = ctx?.primitives?.PillCell;
   if (!PillCell) return row.label;
-  const bucket = React.createElement(PillCell, {
+  return React.createElement(PillCell, {
     label: row.label,
     value: row.code,
     tone: 'present',
     evidence: row.evidence,
     source: row.source,
   });
-  const checklist = row.alsoCovered?.length && CoverageChecklist
-    ? React.createElement(CoverageChecklist, { items: row.alsoCovered, emptyCopy: '' })
-    : null;
-  const body = React.createElement('div', { className: 'space-y-1' }, bucket, checklist);
-  return RomanNumeralOrdinal ? React.createElement(RomanNumeralOrdinal, { index: row.ordinal }, body) : body;
 }
 
 function renderThreshold(row, ctx) {
-  if (row.rollup) return null;
   const ThresholdCellWithHoverQuote = ctx?.primitives?.ThresholdCellWithHoverQuote;
   if (!ThresholdCellWithHoverQuote) return row.threshold;
   return React.createElement(ThresholdCellWithHoverQuote, {
@@ -160,10 +123,31 @@ function renderThreshold(row, ctx) {
 }
 
 function renderEvidence(row, ctx) {
-  if (row.rollup) return row.detail;
   const EvidenceHoverSource = ctx?.primitives?.EvidenceHoverSource;
   if (!EvidenceHoverSource || !row.evidence) return row.evidence;
   return React.createElement(EvidenceHoverSource, { evidence: row.evidence, source: row.source, as: 'span' }, row.evidence);
+}
+
+// Footer strip (outside the table body, via config.renderFooter -- never a
+// mid-table row): "N of M contract-type buckets covered" plus the
+// not-covered canonical buckets, collapsed. Reuses the CoverageFooter
+// primitive conditions.config.js established, exactly per spec.
+function renderMaterialContractsFooter(rows, ctx) {
+  const CoverageFooter = ctx?.primitives?.CoverageFooter;
+  if (!CoverageFooter) return null;
+  const canonicalEntries = Object.entries(MATERIAL_CONTRACT_BUCKET_META || {}).filter(([code]) => code !== 'OTHER');
+  const presentCodes = new Set((rows || []).map((row) => row.code).filter(Boolean));
+  const presentCount = canonicalEntries.filter(([code]) => presentCodes.has(code)).length;
+  const totalCount = canonicalEntries.length;
+  const absentItems = canonicalEntries
+    .filter(([code]) => !presentCodes.has(code))
+    .map(([code, meta]) => ({ id: code, code, label: MATERIAL_CONTRACT_BUCKET_CODES[code] || meta.label || code }));
+  return React.createElement(CoverageFooter, {
+    presentCount,
+    totalCount,
+    absentItems,
+    label: 'contract-type buckets covered',
+  });
 }
 
 const materialContractsConfig = {
@@ -174,14 +158,15 @@ const materialContractsConfig = {
     const source = (reviewDeal?.cards || []).find(isMaterialContractsCard);
     if (!source) return [];
     const featureRows = rowsFromFeatures(source);
-    return withDerivedRows(featureRows.length ? featureRows : rowsFromText(source), source);
+    return featureRows.length ? featureRows : rowsFromText(source);
   },
   columns: [
-    { id: 'bucket', header: 'Bucket', width: '24rem', renderCell: renderBucket },
+    { id: 'bucket', header: 'Contract Type', width: '24rem', renderCell: renderTerm },
     { id: 'threshold', header: 'Threshold', width: '12rem', renderCell: renderThreshold },
     { id: 'evidence', header: 'Evidence', renderCell: renderEvidence },
   ],
   empty: { copy: 'No material-contract rows found.' },
+  renderFooter: renderMaterialContractsFooter,
 };
 
-export { materialContractsConfig, renderBucket, renderEvidence, renderThreshold };
+export { materialContractsConfig, renderEvidence, renderTerm, renderThreshold };
