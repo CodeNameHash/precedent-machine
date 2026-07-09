@@ -1,6 +1,6 @@
 import React from 'react';
 import taxonomy from '../../../lib/taxonomy.js';
-import { cardCode, cardType, firstFeature, makeRow, selectCards, textOf, valueText } from './card-utils.js';
+import { cardCode, cardFeatures, cardType, firstFeature, makeRow, selectCards, textOf, valueText } from './card-utils.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
@@ -17,12 +17,49 @@ const ROWS = [
   ['board-designation', 'Post-acceptance board designation', 'Tender offer', ['buyerBoardDesignation']],
   ['charter-bylaws', 'Charter / bylaws at close', 'Governance', ['certificateOfIncorporation', 'bylaws', 'governanceAtEffectiveTime']],
   ['directors-officers', 'Directors / officers at close', 'Governance', ['directorsAtEffectiveTime', 'officersAtEffectiveTime']],
-  ['payment-agent', 'Payment / exchange mechanics', 'Consideration mechanics', ['paymentAgent', 'exchangeProcedures', 'lostCertificates', 'appraisalRightsAvailable']],
 ];
+
+// Payment / exchange mechanics (paymentAgent / exchangeProcedures /
+// lostCertificates / appraisalRightsAvailable) is deliberately NOT a row
+// here. Payment mechanics is a link under Consideration's "Other provisions
+// in this section" and appraisal rights is a Consideration signal -- Structure
+// must never show a "Payment / exchange mechanics: Yes" boolean row.
 
 // Equity awards (Outstanding instrument / Treatment / Vesting) render as
 // their own per-instrument table -- see equity-awards.config.js -- not as
 // rows in this generic term/signal grid.
+
+// The effectiveTimeShort claim is corrupted on some backfilled cards -- it
+// renders "Names the Company as the surviving corporation..." instead of the
+// actual filing mechanic ("Upon filing of the Certificate of Merger with the
+// Delaware Secretary of State."). This is a DATA bug (real fix belongs at
+// extraction/backfill); this guard is the config-side stopgap: never let a
+// value matching /surviving corporation/i stand in as the effective time.
+// Skip it and keep looking -- across the remaining keys on this card, then
+// across the other cards' effective-time keys, then finally fall back to the
+// raw clause text of the first card that had SOME (corrupted) effective-time
+// claim, so the row still shows the filing-mechanic sentence when present in
+// the source text.
+const EFFECTIVE_TIME_KEYS = ['effectiveTimeShort', 'effectiveTime', 'mainConcept'];
+const SURVIVING_CORP_RE = /surviving corporation/i;
+
+function effectiveTimeHit(cards) {
+  for (const card of cards) {
+    const features = cardFeatures(card);
+    for (const key of EFFECTIVE_TIME_KEYS) {
+      const detail = valueText(features[key]);
+      if (detail && !SURVIVING_CORP_RE.test(detail)) return { key, value: features[key], detail, card };
+    }
+  }
+  for (const card of cards) {
+    const features = cardFeatures(card);
+    const hasCorruptedClaim = EFFECTIVE_TIME_KEYS.some((key) => valueText(features[key]));
+    if (!hasCorruptedClaim) continue;
+    const clause = textOf(card);
+    if (clause) return { key: 'clause', value: clause, detail: clause, card };
+  }
+  return null;
+}
 
 function isStructure(card) {
   const code = cardCode(card);
@@ -57,7 +94,7 @@ function signalFor(row) {
 function mappedStructureRows(cards) {
   return ROWS
     .map(([id, label, kind, keys]) => {
-      const hit = firstFeature(cards, keys || id);
+      const hit = id === 'effective-time' ? effectiveTimeHit(cards) : firstFeature(cards, keys || id);
       const row = makeRow('structure-mechanics', id, label, kind, hit);
       if (!row) return null;
       return {
@@ -104,4 +141,4 @@ const structureMechanicsConfig = {
   ],
 };
 
-export { isStructure, mappedStructureRows, renderDetail, renderSignals, signalFor, structureMechanicsConfig };
+export { effectiveTimeHit, isStructure, mappedStructureRows, renderDetail, renderSignals, signalFor, structureMechanicsConfig };
