@@ -445,7 +445,7 @@ test('mae-definitions config splits Company vs Parent DEF-MAE cards into their o
   assert.ok(parentLimbs.label.startsWith('Parent:'));
 });
 
-test('antitrust-regulatory config exposes regulatory signals and hover details', () => {
+test('antitrust-regulatory config exposes regulatory signals and hover details (consolidated per REBUILD-SPECS.md §8)', () => {
   const rows = antitrustRegulatoryMod.antitrustRegulatoryConfig.selectRows({
     cards: [{
       id: 'anti',
@@ -463,20 +463,20 @@ test('antitrust-regulatory config exposes regulatory signals and hover details',
   });
   const efforts = rows.find((row) => row.id === 'antitrust-regulatory-efforts');
   const filings = rows.find((row) => row.id === 'antitrust-regulatory-hsr-deadline');
-  const approvals = rows.find((row) => row.id === 'antitrust-regulatory-approvals');
-  const burdenCap = rows.find((row) => row.id === 'antitrust-regulatory-burden-cap');
+  const divestitureCap = rows.find((row) => row.id === 'antitrust-regulatory-divestiture-cap');
+  // Term column already reads "Efforts standard" / "HSR filing deadline" --
+  // pills are the resolved value alone (no "term: value" doubling), and the
+  // HSR deadline is normalized out of raw prose into a clean "N business
+  // days" pill rather than echoing the unparsed clause.
   assert.deepEqual(efforts.signals.map((item) => item.label), ['Reasonable best efforts']);
-  assert.deepEqual(filings.signals.map((item) => item.label), ['10 business days after signing']);
-  assert.deepEqual(approvals.signals.map((item) => item.label), ['HSR Act waiting period expired or terminated']);
-  assert.deepEqual(burdenCap.signals.map((item) => item.label), ['no divestiture of material assets']);
+  assert.deepEqual(filings.signals.map((item) => item.label), ['10 business days']);
+  assert.deepEqual(divestitureCap.signals.map((item) => item.label), ['no divestiture of material assets']);
   const primitives = {
     PillCell: ({ label }) => React.createElement('span', { className: 'pill' }, label),
     EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
   };
-  const signalColumn = antitrustRegulatoryMod.antitrustRegulatoryConfig.columns.find((column) => column.id === 'signals');
   const detailColumn = antitrustRegulatoryMod.antitrustRegulatoryConfig.columns.find((column) => column.id === 'detail');
-  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, signalColumn.renderCell(approvals, { primitives }))), /HSR Act waiting period expired or terminated/);
-  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(burdenCap, { primitives }))), /data-evidence="Parent shall use reasonable best efforts/);
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(divestitureCap, { primitives }))), /data-evidence="Parent shall use reasonable best efforts/);
 });
 
 test('structure-mechanics config exposes transaction-form signals and hover details', () => {

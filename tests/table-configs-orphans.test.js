@@ -207,7 +207,7 @@ test('conditions-m surfaces governmentProceedingConditionPresent as a signal on 
   assert.ok(row.signals.some((signal) => signal.label.startsWith('Government proceeding')), 'governmentProceedingConditionPresent should surface as a signal');
 });
 
-test('antitrust-regulatory renders divestitureInCondition (Skechers cross-deal gap)', () => {
+test('antitrust-regulatory renders divestitureInCondition as a qualifier on the Divestiture cap row (Skechers cross-deal gap; consolidated per REBUILD-SPECS.md §8)', () => {
   const burdenCard = {
     id: 'burden',
     provision_type: 'ANTITRUST_REGULATORY',
@@ -219,9 +219,12 @@ test('antitrust-regulatory renders divestitureInCondition (Skechers cross-deal g
     },
   };
   const rows = antitrustRegulatoryMod.antitrustRegulatoryConfig.selectRows({ cards: [burdenCard] });
-  const row = rows.find((r) => r.label === 'Divestiture required before consummation');
-  assert.ok(row, 'divestitureInCondition should render a row');
-  assert.equal(row.detail, 'Yes');
+  const row = rows.find((r) => r.label === 'Divestiture cap');
+  assert.ok(row, 'divestitureInCondition should still surface a row even with no divestitureCapDescription claim');
+  assert.ok(
+    row.signals.some((signal) => signal.label === 'Required before consummation'),
+    'divestitureInCondition should render as a qualifier pill on the consolidated Divestiture cap row',
+  );
 });
 
 test('representations-qualifiers renders the solvency representation (Skechers cross-deal gap, PE financing)', () => {
