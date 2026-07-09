@@ -114,11 +114,51 @@ function taggedEvidence(item, provision) {
   return (Array.isArray(quotes) ? quotes[0] : quotes) || provision?.full_text;
 }
 
-function tierTone(standard) {
-  const code = String(standard || '').toUpperCase();
-  if (code.includes('MAE')) return 'warning';
-  if (code.includes('DE_MINIMIS')) return 'neutral';
-  return 'info';
+// Bring-down ladder: each rep-accuracy tier's canonical standard mapped to a
+// friendly phrase, a tone, and a stringency RANK so the tiers render in the
+// order a lawyer reads a bring-down (fundamental -> capitalization -> general
+// material -> MAE-qualified), not the arbitrary order they were extracted in.
+const BRINGDOWN_STANDARDS = {
+  ALL_RESPECTS: { label: 'True in all respects', tone: 'info', rank: 0 },
+  MAT_ALL_RESPECTS: { label: 'True in all respects', tone: 'info', rank: 0 },
+  DE_MINIMIS: { label: 'True except for de minimis inaccuracies', tone: 'neutral', rank: 1 },
+  ALL_RESPECTS_DE_MINIMIS: { label: 'True except for de minimis inaccuracies', tone: 'neutral', rank: 1 },
+  MAT_ALL_RESPECTS_DE_MINIMIS: { label: 'True except for de minimis inaccuracies', tone: 'neutral', rank: 1 },
+  ALL_MATERIAL: { label: 'True in all material respects', tone: 'info', rank: 2 },
+  MAT_ALL_MATERIAL: { label: 'True in all material respects', tone: 'info', rank: 2 },
+  MAE_QUALIFIED: { label: 'True except where failure would not cause an MAE', tone: 'warning', rank: 3 },
+  MAT_MAE_QUALIFIED: { label: 'True except where failure would not cause an MAE', tone: 'warning', rank: 3 },
+};
+
+function tierCode(tier) {
+  return String((tier && (tier.standard || tier.code || tier.label)) || '').toUpperCase();
+}
+
+function tierMeta(tier) {
+  return BRINGDOWN_STANDARDS[tierCode(tier)]
+    || { label: taggedLabel(tier) || 'Bring-down standard', tone: 'info', rank: 9 };
+}
+
+// The officer's-certificate row certifies the OTHER substantive conditions in
+// its own band, so it lists them by name instead of a bare "certification
+// required" boolean.
+const CERT_CERTIFIES = {
+  REP: 'accuracy of representations',
+  COV: 'covenant compliance',
+  MAE: 'no material adverse effect',
+};
+
+// Synthesizes the actual stockholder-vote standard from the approval
+// definition, so the chip reads "Majority of outstanding shares" (the thing
+// that matters) rather than a generic "Approval required" boolean.
+function voteStandard(def) {
+  if (!def) return null;
+  const t = String(def).toLowerCase();
+  if (/two-?thirds|2\/3|66\s*2\/3|sixty-?six and two-?thirds/.test(t)) return 'Two-thirds of outstanding shares';
+  if (/majority of (the )?(issued and )?outstanding/.test(t)) return 'Majority of outstanding shares';
+  if (/majority of[^.]*(votes? cast|voting power)/.test(t)) return 'Majority of voting power';
+  if (/majority/.test(t)) return 'Majority stockholder approval';
+  return null;
 }
 
 // Small, always-collapsed "see text" affordance for the AI's synthesized
@@ -240,76 +280,95 @@ function genericChips(PillCell, matches, primary) {
   return chips;
 }
 
-// Standard/Detail column synthesis, keyed by canonical family. Universal
-// flags (certificationRequired, continuingRequirement, maeStandaloneCondition)
-// apply regardless of family since they can appear on any condition card.
-function buildStandardDetail(row, family, ctx) {
+// Standard/Detail column synthesis, keyed by canonical family. `bandFamilies`
+// is the list of substantive families present in this row's band, used by the
+// officer's-certificate row to name what it certifies.
+function buildStandardDetail(row, family, ctx, bandFamilies) {
   const PillCell = ctx?.primitives?.PillCell;
   const matches = row.matches || [];
   const primary = matches[0];
   const chips = [];
 
-  const certificationRequired = firstDefined(matches, 'certificationRequired');
-  if (typeof certificationRequired === 'boolean') {
-    chips.push(mkChip(PillCell, 'flag-cert', certificationRequired ? 'Certification required' : 'No certification required', certificationRequired ? 'present' : 'missing', primary));
-  }
-  const continuingRequirement = firstDefined(matches, 'continuingRequirement');
-  if (typeof continuingRequirement === 'boolean') {
-    chips.push(mkChip(PillCell, 'flag-continuing', continuingRequirement ? 'Must not be continuing' : 'Continuing not required', continuingRequirement ? 'warning' : 'neutral', primary));
-  }
-  const maeStandalone = firstDefined(matches, 'maeStandaloneCondition');
-  if (isTruthyBoolLike(maeStandalone)) {
-    chips.push(mkChip(PillCell, 'flag-mae-standalone', 'Standalone MAE condition', 'info', primary));
-  }
-
   if (family === 'REP' || family === 'COV') {
+    // Rep bring-down: order the tiers by the ladder rank so the reading is
+    // fundamental -> capitalization -> general, each with its friendly
+    // standard and tone. Falls back to the single covenant-compliance
+    // standard for covenant rows that carry no tiered bring-down.
     const tiers = matches.flatMap((provision) => (
       Array.isArray(provision?.features?.bringDownTiers)
-        ? provision.features.bringDownTiers.map((tier) => ({ tier, provision }))
+        ? provision.features.bringDownTiers.map((tier) => ({ tier, provision, meta: tierMeta(tier) }))
         : []
     ));
     if (tiers.length) {
-      tiers.forEach(({ tier, provision }, index) => {
-        const label = taggedLabel(tier) || 'Bring-down standard';
-        chips.push(mkChip(PillCell, `tier-${index}`, label, tierTone(tier.standard), provision, taggedEvidence(tier, provision)));
-      });
+      tiers
+        .sort((a, b) => a.meta.rank - b.meta.rank)
+        .forEach(({ tier, provision, meta }, index) => {
+          chips.push(mkChip(PillCell, `tier-${index}`, meta.label, meta.tone, provision, taggedEvidence(tier, provision)));
+        });
     } else {
       const ccs = firstDefined(matches, 'covenantComplianceStandard');
       if (ccs) chips.push(mkChip(PillCell, 'covenant-standard', taggedLabel(ccs) || valueText(ccs), 'info', primary, taggedEvidence(ccs, primary)));
     }
   } else if (family === 'REG') {
+    // Antitrust: HSR plus the SCHEDULED_APPROVALS the agreement lists in a
+    // schedule (surfaced with its section reference), not a vague catch-all.
     const approvals = matches.flatMap((provision) => (
       Array.isArray(provision?.features?.antitrustApprovals)
         ? provision.features.antitrustApprovals.map((approval) => ({ approval, provision }))
         : []
     ));
+    const sectionRef = firstDefined(matches, 'sectionNumber');
     if (approvals.length) {
       approvals.forEach(({ approval, provision }, index) => {
-        chips.push(mkChip(PillCell, `approval-${index}`, taggedLabel(approval) || valueText(approval), 'present', provision, taggedEvidence(approval, provision)));
+        const code = String((approval && (approval.code || approval.standard || approval.label)) || '').toUpperCase();
+        let label = taggedLabel(approval) || valueText(approval);
+        if (code.includes('HSR')) label = 'HSR waiting period expired or terminated';
+        else if (code.includes('SCHEDUL')) label = sectionRef ? `Scheduled regulatory approvals (§${sectionRef})` : 'Scheduled regulatory approvals';
+        chips.push(mkChip(PillCell, `approval-${index}`, label, 'present', provision, taggedEvidence(approval, provision)));
       });
     } else {
-      const regulatoryApprovals = firstDefined(matches, 'regulatoryApprovals');
-      if (regulatoryApprovals) {
-        chips.push(mkChip(PillCell, 'regulatory-approvals', valueText(regulatoryApprovals), 'neutral', primary));
-      } else {
-        const hsr = firstDefined(matches, 'hsrClearance');
-        if (typeof hsr === 'boolean') {
-          chips.push(mkChip(PillCell, 'hsr-clearance', hsr ? 'HSR clearance' : 'No HSR clearance condition', hsr ? 'present' : 'missing', primary));
-        }
+      const hsr = firstDefined(matches, 'hsrClearance');
+      if (typeof hsr === 'boolean') {
+        chips.push(mkChip(PillCell, 'hsr-clearance', hsr ? 'HSR waiting period expired or terminated' : 'No HSR clearance condition', hsr ? 'present' : 'missing', primary));
       }
     }
   } else if (family === 'STOCKHOLDER') {
-    const required = firstDefined(matches, 'stockholderApprovalRequired');
-    if (typeof required === 'boolean') {
-      chips.push(mkChip(PillCell, 'stockholder-required', required ? 'Approval required' : 'Approval not required', required ? 'present' : 'missing', primary));
+    // Show the actual vote standard ("Majority of outstanding shares"), not a
+    // generic "Approval required"; the full definition stays in the collapse.
+    const def = firstDefined(matches, 'approvalDefinition');
+    const std = voteStandard(def);
+    if (std) chips.push(mkChip(PillCell, 'vote-std', std, 'present', primary, def ? String(def) : undefined));
+    else if (firstDefined(matches, 'stockholderApprovalRequired') === true) {
+      chips.push(mkChip(PillCell, 'vote-req', 'Stockholder approval required', 'present', primary));
     }
   } else if (family === 'LEGAL') {
     const present = firstDefined(matches, 'absenceOfEnjoiningOrderPresent');
     if (typeof present === 'boolean') {
       const details = firstDefined(matches, 'absenceOfEnjoiningOrderDetails');
-      chips.push(mkChip(PillCell, 'legal-restraint', present ? 'No legal restraint clause' : 'No legal restraint clause absent', present ? 'present' : 'missing', primary, details));
+      chips.push(mkChip(PillCell, 'legal-restraint', present ? 'No legal restraint' : 'No legal restraint (absent)', present ? 'present' : 'missing', primary, details));
     }
-  } else if (family !== 'MAE' && family !== 'CERT') {
+  } else if (family === 'MAE') {
+    // Headline the actual condition (No Company/Parent MAE) instead of only
+    // abstract flags, then the continuing-effect qualifier.
+    const mc = String(firstDefined(matches, 'mainCondition') || '');
+    const subject = /\bparent\b/i.test(mc) && !/\bcompany\b/i.test(mc) ? 'Parent' : 'Company';
+    chips.push(mkChip(PillCell, 'mae-head', `No ${subject} Material Adverse Effect`, 'warning', primary, mc || undefined));
+    if (isTruthyBoolLike(firstDefined(matches, 'continuingRequirement'))) {
+      chips.push(mkChip(PillCell, 'mae-continuing', 'Must be continuing at closing', 'neutral', primary));
+    }
+  } else if (family === 'CERT') {
+    // Name the conditions the officer's certificate certifies (the other
+    // substantive families in this same band).
+    const certifies = (bandFamilies || [])
+      .filter((f) => CERT_CERTIFIES[f])
+      .map((f) => CERT_CERTIFIES[f]);
+    const uniq = [...new Set(certifies)];
+    if (uniq.length) {
+      chips.push(mkChip(PillCell, 'cert-list', `Certifies ${uniq.join(', ')}`, 'present', primary, firstDefined(matches, 'mainCondition')));
+    } else if (firstDefined(matches, 'certificationRequired') === true) {
+      chips.push(mkChip(PillCell, 'cert-req', "Officer's certificate required", 'present', primary));
+    }
+  } else {
     chips.push(...genericChips(PillCell, matches, primary));
   }
 
@@ -326,16 +385,6 @@ function buildStandardDetail(row, family, ctx) {
   );
 }
 
-function buildGroupRow(row, ctx) {
-  const code = row.matches?.[0]?.features?.canonicalCode || null;
-  const family = deriveFamily(row, code);
-  return {
-    id: row.id,
-    label: conditionLabelNode(row, code, family),
-    children: buildStandardDetail(row, family, ctx),
-  };
-}
-
 // Splits each party band's full canonical row list (present + absent, as
 // createConditionsConfig already computes it) into rows that actually have
 // a matching card (rendered inline, synthesized) vs rows with none --
@@ -350,7 +399,16 @@ function conditionGroups(reviewDeal, ctx) {
       matches: (row.matches || []).filter((provision) => bandAligned(provision, spec.party)),
     }));
     const presentRows = allRows.filter((row) => (row.matches || []).length > 0);
-    const rows = presentRows.map((row) => buildGroupRow(row, ctx));
+    const withFamily = presentRows.map((row) => {
+      const code = row.matches?.[0]?.features?.canonicalCode || null;
+      return { row, code, family: deriveFamily(row, code) };
+    });
+    const bandFamilies = withFamily.map((x) => x.family).filter(Boolean);
+    const rows = withFamily.map(({ row, code, family }) => ({
+      id: row.id,
+      label: conditionLabelNode(row, code, family),
+      children: buildStandardDetail(row, family, ctx, bandFamilies),
+    }));
     return { id: spec.id, label: spec.label, rows, allRows, presentRows };
   });
 }
