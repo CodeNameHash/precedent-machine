@@ -921,6 +921,14 @@ test('formatMoney always renders IOC dollarThreshold as currency, never a bare n
   assert.equal(iocMod.formatMoney(''), null);
 });
 
+test('formatMoney recovers the figure from a verbatim-only claim (Metsera 5.01(d): dollarThreshold has 0 canonical claims)', () => {
+  // Citable-wrapper shape a legacy ai_metadata.features path could still hand
+  // back when canonical extraction failed but a quote was captured.
+  assert.equal(iocMod.formatMoney({ value: null, quotes: ['shall not exceed $2,000,000 in the aggregate'] }), '$2,000,000');
+  // A longer verbatim sentence that slipped past Number() coercion.
+  assert.equal(iocMod.formatMoney('shall not exceed $2,000,000 in the aggregate'), '$2,000,000');
+});
+
 test('ioc-exceptions config groups repeated cards sharing a canonical code into ONE negative-covenant row (Metsera: 3 IOC-MERGE cards)', () => {
   const cards = [
     { id: 'merge-1', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-MERGE', short_title: 'Mergers / Acquisitions / Dispositions', features: { restrictionComponents: ['ASSET_SALES_LICENSES'], permittedExceptions: [{ code: 'ORDINARY_COURSE', label: 'Ordinary course', text: 'ordinary course of business' }], mainObligation: 'The Company may not sell material assets.' } },
@@ -982,6 +990,35 @@ test('ioc-exceptions config renders IOC-ORDINARY/PRESERVE/MAINTAIN as an Affirma
   const preserveHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, rows[1].children));
   assert.match(preserveHtml, /Suppliers/);
   assert.match(preserveHtml, /Licensors/);
+});
+
+// FEEDBACK-2-PUNCHLIST.md #29: old site rendered IocAffirmativeCovenantsTable
+// ABOVE IocNegativeCovenantsTable -- the rebuilt table's group order must
+// match (Affirmative first, Negative second, the near-empty fragments'
+// "Other restrictions" band last), not bury the affirmative limbs at the
+// bottom.
+test('ioc-exceptions config body renders Affirmative covenants FIRST, then Negative covenants, then Other restrictions', () => {
+  const reviewDeal = {
+    cards: [
+      { id: 'div-1', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-DIVIDEND', short_title: 'Dividends and Distributions', features: { mainObligation: 'The Company may not declare dividends.' } },
+      { id: 'frag-k', provision_type: 'COVENANT_INTERIM_OPERATING', features: { sectionNumber: '5.01(k)' } },
+      { id: 'ord', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-ORDINARY', short_title: 'Ordinary Course Obligation', features: { positiveObligations: { appliesTo: ['BUSINESS'], obligation: 'conduct its business in the ordinary course' } } },
+    ],
+  };
+  const GroupedSubRows = ({ groups }) => React.createElement(
+    'div',
+    null,
+    groups.filter((g) => g.rows.length).map((g) => React.createElement('div', { key: g.id, 'data-group': g.id }, g.label)),
+  );
+  const rows = iocMod.iocExceptionsConfig.selectRows(reviewDeal);
+  const bodyColumn = iocMod.iocExceptionsConfig.columns.find((column) => column.id === 'body');
+  const html = renderToStaticMarkup(bodyColumn.renderCell(rows[0], { primitives: { ...iocPrimitives, GroupedSubRows } }));
+  const affIdx = html.indexOf('Affirmative covenants');
+  const negIdx = html.indexOf('Negative covenants');
+  const otherIdx = html.indexOf('Other restrictions');
+  assert.ok(affIdx >= 0 && negIdx >= 0 && otherIdx >= 0, 'all three bands render when all three kinds of card are present');
+  assert.ok(affIdx < negIdx, 'Affirmative covenants band renders before Negative covenants');
+  assert.ok(negIdx < otherIdx, 'Negative covenants band renders before Other restrictions');
 });
 
 test('ioc-exceptions config selectRows returns rows only when IOC cards exist, and renders the General Exceptions preamble as a FOOTER (not a per-row entry)', () => {
