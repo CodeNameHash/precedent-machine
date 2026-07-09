@@ -1018,11 +1018,17 @@ test('termination-rights config consolidates into ONE row whose groups are keyed
   assert.ok(Array.isArray(rows[0].groups), 'the single row carries the family groups for GroupedSubRows to render');
 });
 
+// WS-G T6: TERMR-SUPERIOR is no longer one of the canonical termination-rights
+// rows -- "Company termination for Superior Proposal" now renders inside the
+// No-Solicitation section's Superior Proposal box instead (see
+// nosol-superior.config.js's terminationRow()/nosol-section.config.js). The
+// Target / Company family group's only remaining canonical right is
+// TERMR-BREACH-B (Parent/Buyer breach).
 test('termination-rights familyGroups() groups canonical rights under Mutual / Buyer / Target headers, with absent rights flagged not-present', () => {
   const cards = [
     { id: 'outside', provision_type: 'TERMINATION_RIGHT', provision_subtype: 'TERMR-OUTSIDE', short_title: 'Outside Date', primary_quote: 'Outside date text.', features: { outsideDate: 'June 30, 2026' } },
     { id: 'breach-t', provision_type: 'TERMINATION_RIGHT', provision_subtype: 'TERMR-BREACH-T', short_title: 'Target Breach', primary_quote: 'Target breach text.', features: { curePeriod: '30 days' } },
-    { id: 'superior', provision_type: 'TERMINATION_RIGHT', provision_subtype: 'TERMR-SUPERIOR', short_title: 'Superior Proposal', primary_quote: 'Superior proposal text.', features: { feeRequired: true } },
+    { id: 'breach-b', provision_type: 'TERMINATION_RIGHT', provision_subtype: 'TERMR-BREACH-B', short_title: 'Buyer Breach', primary_quote: 'Buyer breach text.', features: { curePeriod: '45 days' } },
   ];
   const groups = terminationRightsMod.familyGroups(cards);
   const mutual = groups.find((g) => g.id === 'mutual');
@@ -1038,8 +1044,10 @@ test('termination-rights familyGroups() groups canonical rights under Mutual / B
   assert.match(outsideRow.value.join(' '), /June 30, 2026/);
   const breachRow = buyer.rows.find((r) => r.spec.key === 'breachT');
   assert.match(breachRow.value.join(' '), /30 days/);
+  const breachBRow = target.rows.find((r) => r.spec.key === 'breachB');
+  assert.match(breachBRow.value.join(' '), /45 days/);
   const superiorRow = target.rows.find((r) => r.spec.key === 'superior');
-  assert.match(superiorRow.value.join(' '), /fee payable/i);
+  assert.equal(superiorRow, undefined, 'TERMR-SUPERIOR is no longer a termination-rights canonical row (moved into the Superior Proposal box, WS-G T6)');
 });
 
 test('termination-rights config renders through GroupedSubRows and preserves evidence per right', () => {
@@ -2384,7 +2392,11 @@ test('nosol configs render signals and hover-source details with primitives', ()
   });
   const noShopSignal = nosolNoshopMod.nosolNoshopConfig.columns.find((column) => column.id === 'signals');
   const noShopDetail = nosolNoshopMod.nosolNoshopConfig.columns.find((column) => column.id === 'detail');
-  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, noShopSignal.renderCell(noShopRows[0], { primitives }))), /solicit; knowingly encourage/);
+  // WS-G #1b: each prohibited act renders as its own pill, not a
+  // semicolon-joined blob.
+  const noShopHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, noShopSignal.renderCell(noShopRows[0], { primitives })));
+  assert.match(noShopHtml, /class="pill">solicit</);
+  assert.match(noShopHtml, /class="pill">knowingly encourage</);
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, noShopDetail.renderCell(noShopRows[0], { primitives }))), /data-evidence="The Company shall not solicit/);
 
   const superiorRows = nosolSuperiorMod.nosolSuperiorConfig.selectRows({

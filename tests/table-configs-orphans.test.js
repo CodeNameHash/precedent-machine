@@ -6,6 +6,8 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const path = require('node:path');
+const React = require('react');
+const { renderToStaticMarkup } = require('react-dom/server');
 
 let structureMechanicsMod;
 let employeeBenefitsMod;
@@ -177,6 +179,66 @@ test('nosol-noshop prohibit row reads the real ceaseDiscussionsProhibitedList at
   assert.ok(prohibit);
   assert.match(prohibit.detail, /directly or indirectly participate/);
   assert.doesNotMatch(prohibit.detail, /should not be read/);
+});
+
+// FEEDBACK-4-PUNCHLIST.md WS-G #1b: real deals (Metsera) leave
+// ceaseDiscussionsProhibitedList unpopulated, so the individual prohibited
+// acts have to come from keyword detection over the verbatim "shall not ...
+// solicit, initiate or knowingly facilitate ... furnish ... information ...
+// participate in discussions" clause -- each act renders as its own pill,
+// never one semicolon-joined blob.
+test('nosol-noshop prohibit row splits the verbatim prohibition clause into individual act pills when no structured claim exists', () => {
+  const prohibitCard = {
+    id: 'prohibit-metsera-shaped',
+    provision_type: 'COVENANT_NO_SOLICITATION',
+    provision_subtype: 'NOSOL-PROHIBIT',
+    short_title: 'Solicitation Prohibition',
+    primary_quote: 'The Company shall not, directly or indirectly, (i) solicit, initiate or knowingly encourage or knowingly facilitate the making of any inquiry, offer or proposal which constitutes a Company Takeover Proposal or (ii) participate in any discussions or negotiations regarding, or furnish to any Person any information with respect to, any Company Takeover Proposal.',
+    features: {},
+  };
+  const rows = nosolNoshopMod.nosolNoshopConfig.selectRows({ cards: [prohibitCard] });
+  const prohibit = rows.find((row) => row.id === 'nosol-noshop-prohibit');
+  assert.ok(prohibit);
+  assert.ok(Array.isArray(prohibit.acts), 'row.acts should be populated from keyword detection');
+  assert.deepEqual(prohibit.acts.map((act) => act.label), [
+    'Solicit',
+    'Initiate',
+    'Knowingly facilitate / encourage',
+    'Provide information',
+    'Engage in discussions or negotiations',
+  ]);
+
+  const PillCell = ({ label }) => React.createElement('span', { className: 'pill' }, label);
+  const signalColumn = nosolNoshopMod.nosolNoshopConfig.columns.find((column) => column.id === 'signals');
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, signalColumn.renderCell(prohibit, { primitives: { PillCell } })));
+  assert.equal((html.match(/class="pill"/g) || []).length, 5, 'each prohibited act renders as its own pill, not one joined string');
+  assert.match(html, /class="pill">Solicit</);
+  assert.match(html, /class="pill">Engage in discussions or negotiations</);
+});
+
+// WS-G #1c: exceptions must read as plain lawyer language describing what
+// the exception actually permits, not the raw statutory clause dumped
+// inline.
+test('nosol-noshop exceptions row describes each carve-out in plain lawyer language, not raw statutory text', () => {
+  const exceptCard = {
+    id: 'except-metsera-shaped',
+    provision_type: 'COVENANT_NO_SOLICITATION',
+    provision_subtype: 'NOSOL-EXCEPT',
+    short_title: 'Exceptions / Fiduciary Out',
+    primary_quote: 'the Company may contact the Person making any Company Takeover Proposal solely to clarify the terms and conditions thereof, and in response to a Qualifying Company Takeover Proposal, the Company may (A) furnish information with respect to the Company to such Person pursuant to an Acceptable Confidentiality Agreement so long as the Company also provides Parent, within twenty-four (24) hours, and (B) participate in discussions or negotiations with such Person regarding such Qualifying Company Takeover Proposal.',
+    features: {},
+  };
+  const rows = nosolNoshopMod.nosolNoshopConfig.selectRows({ cards: [exceptCard] });
+  const exceptions = rows.find((row) => row.id === 'nosol-noshop-exceptions');
+  assert.ok(exceptions);
+  assert.deepEqual(exceptions.exceptionItems, [
+    "Contact the bidder solely to clarify the proposal's terms, or request that an oral proposal be put in writing",
+    'Furnish confidential information to a Qualifying bidder under an Acceptable Confidentiality Agreement (Parent must receive the same information within 24 hours)',
+    'Participate in discussions or negotiations with a Qualifying bidder',
+  ]);
+  for (const item of exceptions.exceptionItems) {
+    assert.doesNotMatch(item, /Person making|thereof|pursuant to/i, 'exception text must be plain language, not lifted statutory phrasing');
+  }
 });
 
 test('nosol-noshop renders the dontAskDontWaive standstill-enforcement row (Skechers cross-deal gap)', () => {

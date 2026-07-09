@@ -123,20 +123,99 @@ const CARDS = [
       acceptableConfidentialityAgreementDefinition: 'a confidentiality agreement no less favorable to the Company than the Existing NDA.',
     },
   },
+  // WS-G T6: TERMR-SUPERIOR card so "Company termination for Superior
+  // Proposal" folds into the Superior Proposal box (nosol-superior-
+  // termination), sourced by exact code match rather than nosol-fiduciary's
+  // cross-family regex fallback.
+  {
+    id: 'termr-superior',
+    provision_type: 'TERMINATION_RIGHT',
+    provision_subtype: 'TERMR-SUPERIOR',
+    primary_quote: 'The Company may terminate this Agreement to enter into a Superior Proposal only if the Company Board has authorized entry into a definitive agreement and the Company has paid the termination fee due under Section 8.02.',
+  },
+  // WS-G #4: DEFINITION cards driving the new Acquisition Proposal -
+  // Definition sub-block.
+  {
+    id: 'def-acqproposal',
+    provision_type: 'DEFINITION',
+    provision_subtype: 'DEF-ACQPROPOSAL',
+    defined_term: 'Company Takeover Proposal',
+    primary_quote: '"Company Takeover Proposal" means any inquiry, proposal or offer relating to (i) any direct or indirect acquisition, purchase, sale, license, lease or other disposition of twenty percent (20%) or more of the assets of the Company, (ii) any merger, consolidation, business combination or tender offer, exchange offer that would result in any Person owning twenty percent (20%) or more of the aggregate voting power of the capital stock of the Company, or (iii) any combination of the foregoing, other than, in each case, the Transactions.',
+  },
+  {
+    id: 'def-qualifying-acqproposal',
+    provision_type: 'DEFINITION',
+    provision_subtype: 'DEF-ACQPROPOSAL',
+    defined_term: 'Qualifying Company Takeover Proposal',
+    defined_value: 'a Company Takeover Proposal that the Company Board determines in good faith, after consultation with outside counsel and its financial advisor, constitutes or could reasonably be expected to lead to a Superior Proposal and in respect of which failure to act would be inconsistent with its fiduciary duties.',
+  },
 ];
 
 test('nosol-section groups the four family tables under one section, in precedent order', () => {
   const groups = mod.buildGroups({ cards: CARDS }, { primitives });
   assert.deepEqual(groups.map((g) => g.id), [
-    'nosol-definitions',
     'nosol-no-shop-core',
     'nosol-fiduciary-engagement',
+    'nosol-acquisition-proposal',
     'nosol-notice',
     'nosol-matching',
     'nosol-superior',
     'nosol-intervening',
     'nosol-change-of-rec',
   ]);
+});
+
+test('nosol-section: No-Shop Core Mechanics leads with cease, then prohibited acts, then exceptions, then the folded-in Representatives control standard (T4)', () => {
+  const groups = mod.buildGroups({ cards: CARDS }, { primitives });
+  const noShopCore = groups.find((g) => g.id === 'nosol-no-shop-core');
+  assert.ok(noShopCore, 'No-Shop Core Mechanics must be the first group');
+  assert.equal(groups[0].id, 'nosol-no-shop-core');
+  assert.deepEqual(noShopCore.rows.map((r) => r.id), [
+    'nosol-noshop-cease',
+    'nosol-noshop-prohibit',
+    'nosol-noshop-exceptions',
+    'nosol-fiduciary-reps',
+    'nosol-noshop-standstill-enforce',
+  ]);
+});
+
+test('nosol-section: Acquisition Proposal - Definition surfaces the 20% trigger, transaction types, and the "other than the Transactions" exclusion', () => {
+  const groups = mod.buildGroups({ cards: CARDS }, { primitives });
+  const acqGroup = groups.find((g) => g.id === 'nosol-acquisition-proposal');
+  assert.ok(acqGroup, 'Acquisition Proposal - Definition group must render');
+  const takeoverRow = acqGroup.rows.find((r) => r.id === 'nosol-acqprop-company-takeover');
+  assert.ok(takeoverRow);
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, takeoverRow.children));
+  assert.match(html, /Trigger: 20%/);
+  assert.match(html, /Merger, consolidation or business combination/);
+  assert.match(html, /Excludes: the Transactions/);
+  const qualifyingRow = acqGroup.rows.find((r) => r.id === 'nosol-acqprop-qualifying');
+  assert.ok(qualifyingRow, 'Qualifying Company Takeover Proposal row must render');
+  const qualifyingHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, qualifyingRow.children));
+  assert.match(qualifyingHtml, /inconsistent with its fiduciary duties/);
+});
+
+test('nosol-section places the Acquisition Proposal - Definition group after Fiduciary-Out / Engagement and before Notice', () => {
+  const groups = mod.buildGroups({ cards: CARDS }, { primitives });
+  const ids = groups.map((g) => g.id);
+  const engagementIdx = ids.indexOf('nosol-fiduciary-engagement');
+  const acqIdx = ids.indexOf('nosol-acquisition-proposal');
+  const noticeIdx = ids.indexOf('nosol-notice');
+  assert.ok(engagementIdx < acqIdx && acqIdx < noticeIdx);
+});
+
+test('nosol-section: T6 folds "Company termination for Superior Proposal" INSIDE the Superior Proposal box, not as a standalone row', () => {
+  const groups = mod.buildGroups({ cards: CARDS }, { primitives });
+  const superior = groups.find((g) => g.id === 'nosol-superior');
+  assert.ok(superior);
+  const terminationRow = superior.rows.find((r) => r.id === 'nosol-superior-termination');
+  assert.ok(terminationRow, 'Company termination for Superior Proposal must render inside the Superior Proposal box');
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, terminationRow.children));
+  assert.match(html, /Section 8\.02/);
+  // Not duplicated elsewhere in the section.
+  const allRowIds = groups.flatMap((g) => g.rows.map((r) => r.id));
+  assert.equal(allRowIds.filter((id) => id === 'nosol-superior-termination').length, 1);
+  assert.equal(allRowIds.includes('nosol-fiduciary-termination'), false, 'the fiduciary-sourced duplicate must not also render');
 });
 
 test('nosol-section dedupes cross-config facts: each duplicated concept appears exactly once', () => {
