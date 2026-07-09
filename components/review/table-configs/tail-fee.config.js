@@ -52,10 +52,32 @@ function formatPct(value) {
   if (inner === null) return 'Not specified';
   return /^\d+(\.\d+)?$/.test(String(inner).trim()) ? `${inner}%` : String(inner);
 }
+// Punchlist TF1 (round 3): "Termination scenarios" must render as
+// individual PILLS, simplified -- not a long prose blob (the previous
+// '\n\n'-joined single string, shown via TruncatedWithSeeText's "see text"
+// expander, read as a wall of legal prose). Each scenario becomes its own
+// short label:
+//  - a bracketed short name attached to a section ref ("§8.01(d) [No-Vote]")
+//    surfaces just the bracketed name ("No-Vote");
+//  - a bare leading section reference ("Section 8.01(d): ...") is stripped;
+//  - anything still long after that (e.g. the raw-text fallback path, which
+//    has no structured scenario list to draw on) is capped at a short
+//    label length -- the full clause is never lost, it stays reachable as
+//    the pill's hover evidence.
+function simplifyScenario(raw, max = 70) {
+  const text = String(scalar(raw) ?? raw ?? '').trim();
+  if (!text) return null;
+  const bracket = text.match(/\[([^\]]+)\]/);
+  if (bracket && bracket[1].trim()) return bracket[1].trim();
+  const stripped = text.replace(/^\s*(?:§|Section)\s*[\w.()-]+[:\-]?\s*/i, '').trim() || text;
+  if (stripped.length <= max) return stripped;
+  const cut = stripped.slice(0, max).replace(/\s+\S*$/, '').trim();
+  return `${cut || stripped.slice(0, max)}…`;
+}
+
 function formatClauses(value) {
   const list = Array.isArray(value) ? value.filter(Boolean) : [];
-  if (!list.length) return 'Not specified';
-  return list.map((item) => String(scalar(item) || item).trim()).filter(Boolean).join('\n\n');
+  return list.map((item) => simplifyScenario(item)).filter(Boolean);
 }
 
 // Punchlist #40: the old "Triggering proposal" row derived a Same-proposal
@@ -65,17 +87,21 @@ function formatClauses(value) {
 // fee is triggered by ANY qualifying transaction -- it need NOT be the same
 // proposal that was on the table when the tail period started -- so long as
 // a definitive agreement for it is SIGNED (executed) before the tail window
-// closes; consummation itself can happen after the window ends. Render that
-// fixed, legally-accurate description rather than branching on a flag whose
-// "same vs any" premise doesn't match the mechanic. tailFeeRecognitionEvent
-// (when the extractor captured it) names the deal's actual recognition
-// event ("consummation" vs "definitive agreement later consummated") and is
-// appended as a real per-deal fact on top of the base description.
+// closes; consummation itself can happen after the window ends.
+//
+// Punchlist TF2 (round 3): render that mechanic as ONE short, clear
+// statement, not the verbose full-sentence explanation above (which read as
+// a legal-drafting paragraph, not a table cell). tailFeeRecognitionEvent
+// (when the extractor captured a short one) is appended as a brief
+// parenthetical; a long/unparsed value is dropped from the cell rather than
+// inflating it back into prose -- it's still reachable via the pill's hover
+// evidence (primary_quote).
 function formatTriggerScope(recognitionEvent) {
-  const base = 'Any qualifying transaction triggers the fee -- it need not be the proposal on the table when the tail period began -- so long as a definitive agreement is signed before the tail window closes; closing itself may follow later.';
+  const base = 'Any qualifying transaction signed within the tail period';
   const inner = scalar(recognitionEvent);
   const recognition = typeof inner === 'string' ? inner.trim() : (inner === null || inner === undefined ? '' : String(inner).trim());
-  return recognition ? `${base} Recognition event per the agreement: ${recognition}.` : base;
+  if (recognition && recognition.length <= 60) return `${base} (recognition event: ${recognition})`;
+  return base;
 }
 
 function signalTone(id) {
@@ -85,20 +111,32 @@ function signalTone(id) {
 
 // Punchlist #38/#39: collapse the old Signals + Mechanic columns into ONE
 // "Signals" column -- the two used to show the SAME value twice (once as a
-// pill, once as a Mechanic-column echo) for every row except 'tail-arming',
-// whose long activating-clauses prose only ever showed up in Mechanic (its
-// old Signals cell rendered nothing). Now every row renders its full value
-// in this single column: short scalar rows as a pill, the long-prose
-// 'tail-arming' row through TruncatedWithSeeText's truncate + "see text"
-// affordance (the "termination scenarios" content now lives in the signals
-// column, not a second column).
+// pill, once as a Mechanic-column echo) for every row. Punchlist TF1 (round
+// 3) revises the 'tail-arming' row specifically: it no longer joins its
+// scenarios into one long string behind a "see text" expander -- each
+// scenario in row.value (an array; see formatClauses/simplifyScenario
+// above) renders as its OWN short pill, so the row reads as a set of
+// discrete facts rather than a prose blob. Falls back to a plain
+// '·'-joined text line when no PillCell primitive is supplied (matches the
+// fallback convention used elsewhere in this file).
 function renderSignals(row, ctx) {
-  if (row.id === 'tail-arming') {
-    const TruncatedWithSeeText = ctx?.primitives?.TruncatedWithSeeText;
-    if (!TruncatedWithSeeText) return row.value;
-    return React.createElement(TruncatedWithSeeText, { text: row.value, evidence: row.evidence, source: row.sourceCard });
-  }
   const PillCell = ctx?.primitives?.PillCell;
+  if (row.id === 'tail-arming') {
+    const items = Array.isArray(row.value) ? row.value.filter(Boolean) : [];
+    if (!items.length) return 'Not specified';
+    if (!PillCell) return items.join(' · ');
+    return React.createElement(
+      'div',
+      { className: 'flex flex-wrap gap-1' },
+      items.map((item, index) => React.createElement(PillCell, {
+        key: index,
+        label: item,
+        tone: 'neutral',
+        evidence: row.evidence,
+        source: row.sourceCard,
+      })),
+    );
+  }
   if (!PillCell) return row.value;
   return React.createElement(PillCell, {
     label: row.value,
@@ -129,7 +167,7 @@ const tailFeeConfig = {
     return [
       { id: 'tail-window', label: 'Tail window', value: formatWindow(features.tailFeeWindowMonths), evidence: textOf(source), sourceCard: source, present: true },
       { id: 'tail-threshold', label: 'Threshold % for Company Takeover Proposal', value: formatPct(features.tailFeeThresholdPct), evidence: textOf(source), sourceCard: source, present: true },
-      { id: 'tail-arming', label: 'Termination scenarios that arm the tail', value: formatClauses(features.tailFeeActivatingClauses), evidence: textOf(source), sourceCard: source, present: true },
+      { id: 'tail-arming', label: 'Termination scenarios', value: formatClauses(features.tailFeeActivatingClauses), evidence: textOf(source), sourceCard: source, present: true },
       { id: 'tail-trigger-scope', label: 'Qualifying transaction scope', value: formatTriggerScope(features.tailFeeRecognitionEvent), evidence: textOf(source), sourceCard: source, present: true },
     ];
   },

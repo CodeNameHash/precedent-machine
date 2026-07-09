@@ -2,6 +2,8 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const React = require('react');
+const { renderToStaticMarkup } = require('react-dom/server');
 
 // Phase B compact-column reshaping. ProvisionTable.jsx and
 // ProvisionTablePrimitives.jsx use JSX syntax the plain `node --test`
@@ -137,8 +139,11 @@ test('per-cell truncation is wired into every mixed-shape family\'s render funct
   // termination-fees dropped its 'Detail' column entirely (punchlist #35 --
   // the Signals column already carries the amount/trigger pills, so there is
   // no longer a separate long-value cell needing per-cell truncation).
+  // tail-fee is no longer in this list (punchlist TF1, round 3): its
+  // 'tail-arming' row now renders individual PillCell pills per scenario
+  // instead of one long string through TruncatedWithSeeText -- see the
+  // dedicated tail-fee pill test below.
   const configs = [
-    ['tail-fee', 'tail-fee.config.js'],
     ['consideration-hero', 'consideration-hero.config.js'],
     ['approvals-votes', 'approvals-votes.config.js'],
   ];
@@ -193,7 +198,7 @@ test('general-covenants per-clause fallback rows render as links carrying the fu
 // 'per-cell truncation is wired into every mixed-shape family's render
 // function' test above no longer listing termination-fees at all.
 
-test('tail-fee Signals column truncates the arming-clauses row but renders the threshold row as a plain pill (punchlist #38: no separate Mechanic column)', async () => {
+test('tail-fee Signals column renders the arming row as one pill per scenario and the threshold row as a plain pill (punchlist TF1, round 3: no more prose blob)', async () => {
   const { tailFeeConfig } = await import('../../components/review/table-configs/tail-fee.config.js');
   const longTrigger = 'if the Company enters into, or the Company Board approves or recommends, a Company Takeover Proposal '.repeat(10).trim();
   const rows = tailFeeConfig.selectRows({
@@ -203,24 +208,30 @@ test('tail-fee Signals column truncates the arming-clauses row but renders the t
       provision_subtype: 'TERMF-TAIL',
       primary_quote: longTrigger,
       features: {
-        tailProvision: { period_months: 12, threshold_percentage: 50, triggers: [longTrigger] },
+        tailProvision: { period_months: 12, threshold_percentage: 50, triggers: ['Outside date termination', longTrigger] },
       },
     }],
   });
   const armingRow = rows.find((r) => r.id === 'tail-arming');
   const thresholdRow = rows.find((r) => r.id === 'tail-threshold');
   assert.ok(armingRow && thresholdRow);
+  // The arming row's value is an array of short, simplified scenario labels
+  // -- never the raw, unbounded clause text -- one entry per pill.
+  assert.ok(Array.isArray(armingRow.value), 'tail-arming row.value is an array (one entry per pill)');
+  assert.equal(armingRow.value[0], 'Outside date termination');
+  assert.ok(armingRow.value[1].length <= 71, 'a long raw-text scenario is capped to a short pill label, not dumped in full');
 
-  const TruncatedWithSeeText = () => null;
-  const PillCell = () => null;
-  const primitives = { TruncatedWithSeeText, PillCell };
+  const PillCell = ({ label }) => React.createElement('span', { className: 'pill' }, label);
+  const primitives = { PillCell };
   assert.equal(tailFeeConfig.columns.find((c) => c.id === 'value'), undefined, 'the Mechanic/value column no longer exists');
   const signalColumn = tailFeeConfig.columns.find((c) => c.id === 'signals');
   const armingElement = signalColumn.renderCell(armingRow, { primitives });
   const thresholdElement = signalColumn.renderCell(thresholdRow, { primitives });
-  assert.equal(armingElement.type, TruncatedWithSeeText, 'only the arming-clauses row should go through the truncation primitive');
-  assert.equal(armingElement.props.text, armingRow.value);
   assert.equal(thresholdElement.type, PillCell, 'short scalar rows render as a plain pill in the single Signals column');
+  const armingHtml = renderToStaticMarkup(armingElement);
+  // One pill per scenario, not one long joined string.
+  assert.equal((armingHtml.match(/class="pill"/g) || []).length, armingRow.value.length);
+  assert.match(armingHtml, /Outside date termination/);
 });
 
 test('consideration-hero and approvals-votes route their sole detail column through TruncatedWithSeeText', async () => {

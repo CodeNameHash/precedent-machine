@@ -1062,6 +1062,44 @@ test('termination-rights config renders through GroupedSubRows and preserves evi
   assert.match(html, /Legal restraint \/ order/);
 });
 
+// Punchlist T2 (round 3): the "Legal restraint / order" row's visible
+// content must be ONLY the short finality phrase -- no trailing text.
+// Exercises the real keyTermsNode/PillCell pipeline (not the label-only
+// fake GroupedSubRows above) so the actual cell text is asserted.
+test('termination-rights "legal" row renders ONLY the finality phrase, never the raw restraintFinality text as trailing content', () => {
+  const PillCell = ({ label }) => React.createElement('span', { className: 'pill' }, label);
+  const legalSpec = terminationRightsMod.TERMR_CANONICAL.find((spec) => spec.key === 'legal');
+
+  const cleanCard = {
+    id: 'termr-legal-clean',
+    provision_type: 'TERMINATION_RIGHT',
+    provision_subtype: 'TERMR-LEGAL',
+    primary_quote: 'Either party may terminate if a final, non-appealable legal restraint is in effect.',
+    features: { restraintFinality: 'final-and-nonappealable' },
+  };
+  const cleanRow = terminationRightsMod.rowForSpec(legalSpec, [cleanCard], PillCell);
+  const cleanHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, cleanRow.children));
+  assert.match(cleanHtml, /Final and unappealable/);
+  assert.equal(cleanHtml.replace(/<[^>]+>/g, '').trim(), 'Final and unappealable');
+
+  // Legacy/free-text extraction sometimes lands the WHOLE clause sentence
+  // in restraintFinality instead of the short enum code -- the old
+  // humanizeToken() fallback dumped that entire sentence into the cell.
+  // Keyword matching must still resolve it to the short phrase, with
+  // nothing extra trailing after it.
+  const freeTextCard = {
+    id: 'termr-legal-freetext',
+    provision_type: 'TERMINATION_RIGHT',
+    provision_subtype: 'TERMR-LEGAL',
+    primary_quote: 'A final, non-appealable order of a Governmental Entity restrains the Merger.',
+    features: { restraintFinality: 'A final, non-appealable order, decree, ruling or other action of any Governmental Entity of competent jurisdiction permanently restraining, enjoining or otherwise prohibiting consummation of the Merger shall be in effect.' },
+  };
+  const freeTextRow = terminationRightsMod.rowForSpec(legalSpec, [freeTextCard], PillCell);
+  const freeTextHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, freeTextRow.children));
+  const freeTextContent = freeTextHtml.replace(/<[^>]+>/g, '').trim();
+  assert.equal(freeTextContent, 'Final and unappealable', 'unrecognized free-text restraintFinality must resolve to the short phrase, never leak the raw clause sentence');
+});
+
 test('sec-meeting config exposes proxy and offer signals with hover details', () => {
   const rows = secMeetingMod.secMeetingConfig.selectRows({
     cards: [{
@@ -1850,11 +1888,14 @@ test('tail-fee config maps nested tailProvision mechanics', () => {
   // tailFeeSameProposalRequired's same-vs-any framing (that framing doesn't
   // match how a tail fee actually works) -- it always states the correct
   // mechanic: any qualifying transaction, signed by the end of the window.
+  // Punchlist TF1/TF2 (round 3): the arming row's value is now an array of
+  // short scenario labels (one per pill), and the trigger-scope row is one
+  // short, clear statement instead of the old verbose paragraph.
   assert.deepEqual(rows.map((row) => row.value), [
     '12 months',
     '50%',
-    'Outside date termination followed by a Company Takeover Proposal',
-    'Any qualifying transaction triggers the fee -- it need not be the proposal on the table when the tail period began -- so long as a definitive agreement is signed before the tail window closes; closing itself may follow later.',
+    ['Outside date termination followed by a Company Takeover Proposal'],
+    'Any qualifying transaction signed within the tail period',
   ]);
 });
 
@@ -2010,13 +2051,15 @@ test('tail-fee render cells use a single Signals column (punchlist #38: no separ
   assert.equal(tailFeeMod.tailFeeConfig.columns.find((column) => column.id === 'value'), undefined);
   assert.equal(tailFeeMod.tailFeeConfig.columns.find((column) => column.id === 'evidence'), undefined);
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, signalColumn.renderCell(threshold, { primitives }))), /class="pill">50%</);
-  // Punchlist #39: the "termination scenarios that arm the tail" content
-  // now lives IN the signals column (via TruncatedWithSeeText), not off in a
-  // second column, and not dropped.
-  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, signalColumn.renderCell(arming, { primitives }))), /Company Takeover Proposal/);
-  // Punchlist #40: the renamed trigger-scope row states the corrected
-  // "any qualifying transaction, signed by the tail deadline" mechanic.
-  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, signalColumn.renderCell(triggerScope, { primitives }))), /Any qualifying transaction triggers the fee/);
+  // Punchlist #39: the "termination scenarios" content lives IN the signals
+  // column, not off in a second column, and not dropped. Punchlist TF1
+  // (round 3): it now renders as its own pill per scenario, not prose
+  // through TruncatedWithSeeText.
+  const armingHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, signalColumn.renderCell(arming, { primitives })));
+  assert.match(armingHtml, /class="pill">Company Takeover Proposal</);
+  // Punchlist #40/TF2 (round 3): the trigger-scope row states the
+  // corrected mechanic as one short, clear statement.
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, signalColumn.renderCell(triggerScope, { primitives }))), /Any qualifying transaction signed within the tail period/);
 });
 
 test('nosol-noshop config maps core no-shop cards', () => {

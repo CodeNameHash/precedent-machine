@@ -132,17 +132,33 @@ const RESTRAINT_FINALITY_LABELS = {
   permanent: 'Permanent injunction or order',
 };
 
-function humanizeToken(raw) {
-  const s = String(raw || '').trim();
-  if (!s) return null;
-  if (/\s/.test(s)) return s.replace(/^./, (c) => c.toUpperCase());
-  return s.replace(/[_-]+/g, ' ').trim().replace(/^./, (c) => c.toUpperCase());
-}
-
+// Punchlist T2 (round 3): the row must read ONLY "Final and unappealable"
+// (or one of the other three enum phrases) -- no trailing text. Real
+// extraction occasionally lands the verbatim clause sentence in this field
+// instead of the short enum code (legacy free-text vocab), and the old
+// humanizeToken() fallback below dumped that whole sentence into the cell
+// as "trailing text" after what looked like a label. Match by KEYWORD
+// (not just an exact normalized string) so both the clean enum code and a
+// free-text sentence containing the same signal resolve to the same short
+// phrase; anything that matches no known signal returns null rather than
+// ever echoing the raw value.
 function restraintFinalityLabel(raw) {
-  if (!raw) return null;
-  const key = String(raw).trim().toLowerCase().replace(/\s+/g, '-').replace(/final-and-non-appealable/, 'final-and-nonappealable');
-  return RESTRAINT_FINALITY_LABELS[key] || humanizeToken(raw);
+  const text = String(raw || '').trim();
+  if (!text) return null;
+  const normalized = text.toLowerCase().replace(/\s+/g, '-').replace(/final-and-non-appealable/, 'final-and-nonappealable');
+  if (RESTRAINT_FINALITY_LABELS[normalized]) return RESTRAINT_FINALITY_LABELS[normalized];
+  const lower = text.toLowerCase();
+  // Free-text clause sentences punctuate between "final" and "non-appealable"
+  // ("a final, non-appealable order...") so this checks for the
+  // non/unappealable signal alone -- it's the distinguishing term; "final" by
+  // itself is also checked below for the standalone (non-strict) case.
+  if (/non[\s-]*appealable|unappealable/.test(lower)) {
+    return RESTRAINT_FINALITY_LABELS['final-and-nonappealable'];
+  }
+  if (/\bpermanent(?:ly)?\b/.test(lower)) return RESTRAINT_FINALITY_LABELS.permanent;
+  if (/\bfinal\b/.test(lower)) return RESTRAINT_FINALITY_LABELS.final;
+  if (/\bany\b/.test(lower)) return RESTRAINT_FINALITY_LABELS.any;
+  return null;
 }
 
 // Appends a unit word ("months"/"days") to a bare number, leaving a value
@@ -255,8 +271,12 @@ function keyTermsNode(key, card, PillCell) {
   } else if (key === 'legal') {
     // Punchlist #34: no "Restraint finality" mini-label -- the plain-English
     // value (e.g. "Final and unappealable") already says everything the
-    // label would have.
-    const finality = restraintFinalityLabel(valueText(f.restraintFinality));
+    // label would have. Punchlist T2 (round 3): the fact chip must be ONE
+    // of the fixed short phrases, never the raw restraintFinality value --
+    // when a value is present but unrecognized, fall back to a fixed
+    // generic phrase instead of leaking raw clause text as trailing content.
+    const rawFinality = valueText(f.restraintFinality);
+    const finality = restraintFinalityLabel(rawFinality) || (rawFinality ? 'Legal restraint in effect' : null);
     addFact(null, finality && { label: finality, tone: 'info' });
   } else if (key === 'vote') {
     const threshold = valueText(f.voteThreshold);
