@@ -6,20 +6,22 @@
 
 ## Scope — five gaps (2 fragile-stopgaps + 3 data bugs)
 
-### A. Material-Contracts per-bucket dollar thresholds  [add structured field]
-- Today: NO `dollarThreshold` on the material-contracts card. `material-contracts.config.js` regex-mines the $ figure per bucket from `primary_quote` (anchored to each clause). Works for Metsera (8/17 buckets), brittle elsewhere.
-- Fix: add a structured `materialContractThresholds` array — `{ bucketCode, amount, currency }` per bucket — to the material-contracts extraction (`lib/rubric.js` field def + `lib/parser-v2/extract.js` prompt). Render reads the field; keep the regex mine only as a last-resort fallback.
-- Validate: golden eval on the material-contracts family; assert Metsera's 8 known thresholds ($500k / $2M / $50k per their buckets) come through structurally.
+### A. Material-Contracts per-bucket TRIGGER (dollar OR non-dollar)  [add structured field]
+- Today: NO structured trigger on the material-contracts card. `material-contracts.config.js` regex-mines the $ figure per bucket from each bucket's `evidence_quote` (anchored to each clause). Works for Metsera's dollar-gated buckets, brittle elsewhere.
+- Refined by round-4 probe: Metsera's `materialContractsBuckets` = 20 canonical buckets, and each bucket's trigger DIFFERS in kind — some are dollar-gated (INDEBTEDNESS, capex ~$2M), MANY are pure type-based with no dollar floor ("any" contract of that type — NONCOMPETE, ROFR_ROFN, SINGLE_SOURCE, JV_PARTNERSHIPS, exclusivity), some carry other quantitative tests (term length, top-N). So the field must capture a per-bucket trigger of any kind, not just a dollar amount.
+- Fix: add a structured `materialContractTriggers` array — `{ bucketCode, triggerType: 'DOLLAR'|'ANY'|'OTHER', amount?, currency?, description? }` per bucket — to the material-contracts extraction (`lib/rubric.js` field def + `lib/parser-v2/extract.js` prompt). Render reads the field; keep the regex mine only as a last-resort fallback. (A config-layer stopgap doing exactly this per-bucket mine + "Any" fallback ships in WS-D of the round-4 render work.)
+- Validate: golden eval on the material-contracts family; assert dollar buckets carry the $ figure and type-based buckets carry `ANY`.
 
 ### B. IOC materiality qualifier ("in all material respects")  [add structured field]
 - Today: IOC-MAINTAIN carries "in all material respects" ONLY inside `positiveObligations.obligation` free text; `efforts_standard` is coded `FLAT`. `ioc-exceptions.config.js` sniffs the phrase from text.
 - Fix: extract a structured materiality/performance-standard field on IOC affirmative covenants (distinct from `efforts_standard`), so "in all material respects" is a first-class value.
 - Validate: re-extract Metsera IOC; IOC-MAINTAIN carries a structured `MAT_ALL_MATERIAL` (or equivalent) standard.
 
-### C. IOC 5.01(k)/(l)/(o) unclassified clauses  [fix classification coverage]
-- Today: these three 5.01 sub-covenants extracted ONLY a `sectionNumber` — no `restrictionComponents`/category/mainObligation — despite full clause text in `primary_quote` (k = tax covenant, l = Specified-Contract amendment restriction, o = insurance-maintenance covenant). Config sniffs a name from the quote as a stopgap.
-- Fix: the IOC extraction must classify EVERY 5.01 sub-clause (the (i)–(o)+ list) with at least a category + restrictionComponents. Investigate why (k)/(l)/(o) fell through while (i)/(j)/(m)/(n) got tags.
-- Validate: re-extract Metsera IOC; all 19 negative covenants (incl. k/l/o) carry a category/restriction, none reduced to a bare section number.
+### C. IOC 5.01 unclassified sub-clauses  [fix classification coverage]
+- Refined by round-4 probe: it's NOT just (k)/(l)/(o) — ALL EIGHT of 5.01(i),(ii),(j),(k),(l),(m),(n),(o) come through as cards with `provision_subtype=null` and `short_title='[PROPOSED] Unclassified'`. Only their `section_ref` (e.g. "5.01(k)") and `primary_quote` are populated; the classifier assigned no subtype. Meanings are unambiguous from the quotes: (i) indebtedness, (ii) debt-securities issuance, (j) capital expenditures, (k) tax elections/accounting, (l) Specified Contracts, (m) litigation settlements, (n) prepayment of indebtedness, (o) insurance maintenance.
+- Fix: the IOC extraction/classifier must assign a canonical subtype + category + restrictionComponents to EVERY 5.01 sub-clause. Investigate why (a)–(h) classified but (i)–(o) fell through to `[PROPOSED] Unclassified`.
+- Validate: re-extract Metsera IOC; every 5.01 sub-clause carries a subtype, none reduced to "[PROPOSED] Unclassified".
+- Render stopgap already shipped: WS-E of the round-4 work names all 8 from their `section_ref` so no fragment renders while the extraction fix is pending.
 
 ### D. Third-party-beneficiary attribute mapping bug  [data bug + backfill]
 - Today: **corpus-wide bug** — every third-party-beneficiary claim is stamped `attribute='thirdPartyBeneficiaryExceptions'`; `attribute='thirdPartyBeneficiaries'` (the beneficiary NAMES: Indemnified Persons/D&Os, Debt Financing Sources) has **zero rows across the entire claims table**. `misc-boilerplate.config.js` therefore can never populate the beneficiary-name half of the row.
