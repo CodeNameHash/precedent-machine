@@ -27,6 +27,7 @@ Get to **Demo Bar** — all 40 deals rendered from the schema-first path, query 
 **Independent tracks (can run any time, don't block milestones):**
 
 - `PLAN-TAXONOMY-GAPS.md` — G1–G11 from the taxonomy review. Each gap owns a WP; each WP is slotted into the milestone where it does the most good. Codex reads this and picks up gap-WPs when the current milestone's critical path is idle.
+- `PLAN-EXTRACTION-GAPS.md` — **WP-EXTRACT-GAPS-01**: five render-driven extraction gaps the review-page redesign surfaced (Material-Contracts per-bucket $ thresholds; IOC "in all material respects" standard; IOC 5.01(k)/(l)/(o) classification; corpus-wide third-party-beneficiary attribute-mapping bug; `effectiveTimeShort` corruption). Moves config-layer regex/text-sniff workarounds into structured extraction so all 40 deals render right without per-clause regex. Slots into M2/M3. SPEC-only; runs on Ben's go after the current design pass. Fable end-to-end (extraction-prompt engineering).
 
 ---
 
