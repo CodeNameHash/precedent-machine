@@ -5,7 +5,10 @@ import {
   headlineConsiderationLabel,
   numericDollarOnly,
 } from '../table-logic.js';
+import taxonomy from '../../../lib/taxonomy.js';
 import { valueText } from './card-utils.js';
+
+const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
 // Consideration headline card, spec REBUILD-SPECS.md §2. Old page = a
 // HEADLINE card (per-share economics + appraisal rights + a Cash/Stock/CVR
@@ -116,6 +119,28 @@ function firstFeature(cards, key) {
   }
   return undefined;
 }
+// cvrMilestonePayments items ({code, label, text}) sometimes arrive with an
+// empty `label` (the defined-term parse in extract.js's exhibit scan came
+// back blank for that item) -- valueText() then falls back to the bare
+// taxonomy code ("CVR_MILESTONE"), which reads as a raw enum error, not a
+// value. cvrMilestonePayments has no taxonomy dict (taxonomyForFeatureKey
+// returns null for it -- there is no CVR_MILESTONE -> friendly-label
+// mapping anywhere in lib/taxonomy.js), so labelForCode is tried first for
+// forward-compatibility but is expected to come back empty here; items that
+// resolve to nothing better than the bare code are dropped rather than
+// rendered. If every item on the card is code-only, the whole row is
+// dropped -- a bare code adds nothing.
+function meaningfulCvrMilestones(value) {
+  const items = Array.isArray(value) ? value : [value];
+  const dict = taxonomyForFeatureKey('cvrMilestonePayments');
+  return items.filter((item) => {
+    if (!item || typeof item !== 'object') return Boolean(valueText(item));
+    const code = item.code || null;
+    const resolved = item.label || (code && dict && labelForCode(String(code), dict)) || null;
+    return Boolean(resolved) && resolved !== code;
+  });
+}
+
 function hasCvrSignal(cards) {
   return cards.some((card) => cardCode(card) === 'CONSID-CVR' || /\bCVR\b|contingent value right/i.test(`${valueText(cardFeatures(card).considerationType) || ''} ${textOf(card)}`));
 }
@@ -278,7 +303,13 @@ const considerationHeroConfig = {
 
     for (const [key, label, kind] of DIRECT_ROWS) {
       const hit = firstFeature(cards, key);
-      if (hit) rows.push(makeRow(key, label, kind, hit.value, hit.card));
+      if (!hit) continue;
+      if (key === 'cvrMilestonePayments') {
+        const items = meaningfulCvrMilestones(hit.value);
+        if (items.length) rows.push(makeRow(key, label, kind, items, hit.card));
+        continue;
+      }
+      rows.push(makeRow(key, label, kind, hit.value, hit.card));
     }
     const cvrCard = cards.find((card) => cardCode(card) === 'CONSID-CVR');
     if (cvrCard) {
