@@ -76,6 +76,16 @@ Consequence for this plan: the triples reference `source_provision_id` = the **u
 - Run the end-to-end ingest smoke (Metsera golden fixture) → assert it produces `claims`, renders identically, and the ingest QA harness checks claim population (fail on regression).
 - Cross-deal query sanity: run a sample benchmark query (e.g. `effortsStandard` canonical distribution across 40 deals) directly against `claims` — proves the query/compare substrate works.
 
+### Phase 7 — Metsera parity gate (ACCEPTANCE — do not call this done without it)
+
+The finalized review page must render **at least everything the pre-schema (legacy) page did**, and ideally more (the claims layer + schema augmentations should make it richer, not just equal). Reference deal: **Metsera** (Ben's golden fixture).
+
+- Pull the pre-schema legacy render of Metsera (an old production deployment before WP-M2-00, same technique used for the Chevron old/new comparison) and the finalized new page side by side.
+- Field-by-field, per family: confirm nothing the legacy page showed is missing from the new page. Any gap → fix (render or backfill) before sign-off.
+- Enumerate the *additions* the new page brings (canonical pills, thresholds, coverage, hover-source, cross-deal-comparable claims) so the "better, not just equal" claim is evidenced, not asserted.
+- Extend the same check to 2-3 other deals to catch family-specific gaps Metsera doesn't exercise.
+- Output a parity report: legacy signal → new-page location (or "intentionally dropped, why"), plus the additions list. Zero unexplained drops = gate passes.
+
 ### Phase 6 — Query surface (M4 payoff)
 - `/query` and market-distance analysis now have their substrate: the normalised, canonical, indexed `claims` table. M4 builds on this.
 
