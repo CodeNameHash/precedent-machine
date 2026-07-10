@@ -124,3 +124,62 @@ Source: `Merger Agreement, ACME/Widget, dated 2025-03-03`
   - Claims describe the shape of the defined term.
 - **Edge** — the operative Provision carries `references_definition → definition-Provision(Termination Fee)`.
 - Nothing was removed from the operative Excerpt. Both Provisions coexist against the same source bytes.
+
+---
+
+## 8. Canonical-coding model — concept → code → render
+
+Section 3 defines Canonical as "the normalised enum value" reached via a Normalizer resolving Verbatim text. The Section-B feature families below are a stricter case of the same idea: instead of a post-hoc regex/Normalizer resolving free text after the fact, the extraction model is asked to assign the Canonical **at extraction time**, from a fixed codebook embedded in the prompt. Concept, code, and render are one continuous chain with no separate normalization pass.
+
+### 8.1 The six hops
+
+```
+1. Rubric declares the feature `type`.
+   list-tagged (list of coded items) or tagged (single coded scalar) is what
+   makes a feature taxonomy-coded. Plain list/text/string does NOT get codes.
+   — lib/rubric.js
+
+2. Pipeline propagates the type.
+   scripts/schema-inventory.js scans rubric -> inventory;
+   scripts/generate-registry.js reads the inventory + featureKeyMappings
+   (key -> codebook) -> lib/schema/features.generated.js + tags.generated.js.
+   Drift-guarded by tests/registry-generated-drift.test.js.
+   NOTE: lib/schema/features.js (the persistence gate the prompt reads) is
+   HAND-CURATED, not generated -- must be kept in sync by hand.
+
+3. Prompt requests codes.
+   lib/schema/prompt.js valueShape emits "array of tagged objects
+   {code,label,text}" (list-tagged) / "tagged object {code,label,text}"
+   (tagged), keyed on the rubric type via schemaFeatureFor's legacyType.
+   Codebook embedded from TAGS.
+
+4. Extraction assigns codes.
+   Model returns {code,label,text}; lands in provisions.ai_metadata.features.
+
+5. Claims materialization.
+   store-claims.js atomicValues reads .code -> claims.canonical. Extracts
+   codes from list, scalar, and citable-wrapped shapes.
+
+6. Render.
+   claims-adapter -> labelForCode(code, taxonomyForFeatureKey(key)) ->
+   canonical pill. Transition-safe: falls back to prior text when code
+   is absent.
+```
+
+### 8.2 What `list-tagged` / `tagged` means
+
+A rubric feature's `type` is the gate. Only `list-tagged` (a list where each item is a coded object) and `tagged` (a single coded scalar) cause the prompt to request `{code, label, text}` and embed the feature's codebook. Every other rubric `type` — `list`, `text`, `string`, etc. — is extracted as free text only and never receives a Canonical code, regardless of whether a taxonomy dictionary exists for that key.
+
+### 8.3 Coded Section-B feature families
+
+The following feature keys are coded so far, each backed by a dictionary in `lib/taxonomy.js` and registered in `taxonomyForFeatureKey`:
+
+- **INTEREST_RATE_BASIS** — rubric type `tagged`, feature key `interestRateBasis` (TERMF). WSJ/named-bank prime, Treasury, LIBOR, or fixed rate.
+- **SOLICITATION_ACT** — rubric type `list-tagged`, 15 codes spanning prohibit / cease / change-of-recommendation acts. **Shared by two feature keys** on NOSOL: `ceaseDiscussionsProhibitedList` and `changeOfRecommendationItems`. The extraction prompt scopes each key to its own code subset (prohibit/cease codes for the no-shop list, COR codes for the change-of-recommendation list) — a COR item must never be tagged with a pure no-shop code or vice versa.
+- **SUPERIOR_DETERMINER** — rubric type `tagged`, feature key `superiorProposalDeterminer` (NOSOL). Who decides a proposal is superior (Board only / Board with advisors) plus advisor tier. The qualifying threshold percentage is a separate scalar (`superiorProposalThresholdPct`), not part of this code.
+- **GOVERNING_LAW** — rubric type `tagged`, feature key `governingLaw` (MISC).
+- **ASSIGNMENT_PARENT_EXCEPTION** — rubric type `list-tagged`, feature key `parentAssignmentConditions` (MISC).
+
+### 8.4 `labelForCode` — code to rendered pill
+
+`lib/taxonomy.js`'s `labelForCode(code, dict)` looks up a code against the dictionary returned by `taxonomyForFeatureKey(key)` and returns the canonical label string. Review-table configs (e.g. `components/review/table-configs/nosol-noshop.config.js`, `misc-boilerplate.config.js`) call it to render a canonical pill instead of a regex-derived label. Every render site is **transition-safe**: if a provision's `claims.canonical` has no code yet (pre-reprocess, or extraction didn't populate one), the config falls back to the prior regex-derived text rather than showing nothing. The regex fallbacks are kept in place until a corpus-wide reprocess confirms codes are populated on all deals, at which point they can be deleted (see `provision-processing-flow.md` § 8, Corpus plan).

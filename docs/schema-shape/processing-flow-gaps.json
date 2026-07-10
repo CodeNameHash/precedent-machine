@@ -101,6 +101,34 @@
       "owning_wp": "WP-DEFINITIONS-AS-PROVISIONS-01",
       "phase": "0.5",
       "status": "open"
+    },
+    {
+      "id": "GAP-A",
+      "title": "Reprocess does not materialize claims",
+      "problem": "scripts/reprocess.js writes Provisions only (ai_metadata.features gets codes). It does not materialize claims -- a separate step (scripts/backfill/extract-to-cards.js -> store-cards.js -> storeClaimsForDeal). Render reads Claims, so codes do not appear until claims are re-materialized. Critical -- corpus-blocking.",
+      "fix": "Build a robust post-reprocess claims-rematerialize step -- wire reprocess.js to call the claims writer, or ship a standalone claims-only rematerialize (buildClaimRowsForCard + upsertClaims, matching cards to provisions by short_title==category). Test on >=3 deals before the corpus run.",
+      "owning_wp": "WP-CLAIMS-REMATERIALIZE-01",
+      "phase": "pre-corpus",
+      "status": "open"
+    },
+    {
+      "id": "GAP-B",
+      "title": "extract-to-cards.js fails on NOSOL (region_hash collision)",
+      "problem": "extract-to-cards.js fails on Metsera NOSOL with the provision_cards_deal_region_hash_unique constraint -- provisions and cards out of sync (15 provisions vs 22 cards, NULL region_ids). The claims-only rematerialize (bypasses card rewrite) is the path that worked.",
+      "fix": "Fix extract-to-cards.js's region_hash handling for NULL region_id deals, or standardize on the claims-only rematerialize as the supported path.",
+      "owning_wp": "WP-CLAIMS-REMATERIALIZE-01",
+      "phase": "pre-corpus",
+      "status": "open",
+      "depends_on": ["GAP-A"]
+    },
+    {
+      "id": "GAP-C",
+      "title": "NOSOL reprocess churns extraction",
+      "problem": "Repeated NOSOL reprocess runs on Metsera moved the QA nosol count 22 -> 16 -> 15 across runs. Duplicate cards pre-exist (Change-of-Rec x4, Disclosure x3).",
+      "fix": "Validate card stability across repeated reprocess runs before scaling to the full corpus; may need NOSOL provision de-duplication.",
+      "owning_wp": "WP-NOSOL-DEDUP-01",
+      "phase": "pre-corpus",
+      "status": "open"
     }
   ]
 }
