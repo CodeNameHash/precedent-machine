@@ -3,6 +3,7 @@ import { approvalsVotesConfig } from './approvals-votes.config.js';
 import { secMeetingConfig } from './sec-meeting.config.js';
 import { enumLabel } from '../../../lib/sec-meeting.js';
 import { cardCode, cardFeatures, textOf, valueText } from './card-utils.js';
+import { voteStandard } from './vote-standard.js';
 
 // Rebuild target: REBUILD-SPECS.md section 9 ("Ben: really good" in the old
 // site). The old deadline-pill pattern is number + [unit pill] + "after" +
@@ -19,20 +20,9 @@ import { cardCode, cardFeatures, textOf, valueText } from './card-utils.js';
 
 // Synthesizes the actual stockholder-vote standard from a definition/
 // threshold sentence, so the pill reads "Majority of outstanding shares"
-// (the thing that matters) instead of the full defined-term prose. Copied
-// from conditions.config.js's voteStandard() (the locked exemplar for this
-// approach) rather than imported -- that file's exports are the closing-
-// conditions contract, and this is a small (6-line) pure function, not a
-// shared primitive.
-function voteStandard(def) {
-  if (!def) return null;
-  const t = String(def).toLowerCase();
-  if (/two-?thirds|2\/3|66\s*2\/3|sixty-?six and two-?thirds/.test(t)) return 'Two-thirds of outstanding shares';
-  if (/majority of (the )?(issued and )?outstanding/.test(t)) return 'Majority of outstanding shares';
-  if (/majority of[^.]*(votes? cast|voting power)/.test(t)) return 'Majority of voting power';
-  if (/majority/.test(t)) return 'Majority stockholder approval';
-  return null;
-}
+// (the thing that matters) instead of the full defined-term prose. The
+// synthesizer now lives in ./vote-standard.js — one shared definition across
+// conditions, votes-approvals-meeting, and termination-rights.
 
 function byId(rows, id) {
   return (rows || []).find((row) => row.id === id) || null;

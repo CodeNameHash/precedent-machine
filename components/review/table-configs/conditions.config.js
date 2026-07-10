@@ -2,6 +2,7 @@ import React from 'react';
 import { conditionsBConfig, conditionsMConfig, conditionsSConfig } from './conditions-m.config.js';
 import { splitForCell, valueText } from './card-utils.js';
 import { STANDARD_TEXT, standardColorKey } from './standard-colors.js';
+import { voteStandard } from './vote-standard.js';
 
 // Consolidates the three party-scoped condition tables (Mutual / Buyer /
 // Seller) into the ONE grouped table the legacy pre-schema page showed,
@@ -342,16 +343,9 @@ function bringDownNode(matches, PillCell) {
 
 // Synthesizes the actual stockholder-vote standard from the approval
 // definition, so the chip reads "Majority of outstanding shares" (the thing
-// that matters) rather than a generic "Approval required" boolean.
-function voteStandard(def) {
-  if (!def) return null;
-  const t = String(def).toLowerCase();
-  if (/two-?thirds|2\/3|66\s*2\/3|sixty-?six and two-?thirds/.test(t)) return 'Two-thirds of outstanding shares';
-  if (/majority of (the )?(issued and )?outstanding/.test(t)) return 'Majority of outstanding shares';
-  if (/majority of[^.]*(votes? cast|voting power)/.test(t)) return 'Majority of voting power';
-  if (/majority/.test(t)) return 'Majority stockholder approval';
-  return null;
-}
+// that matters) rather than a generic "Approval required" boolean. The
+// synthesizer itself now lives in ./vote-standard.js (shared with
+// votes-approvals-meeting + termination-rights).
 
 // Small, always-collapsed "see text" affordance for the AI's synthesized
 // mainCondition sentence. Distinct from TruncatedWithSeeText: that helper

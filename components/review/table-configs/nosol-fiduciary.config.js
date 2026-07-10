@@ -1,6 +1,7 @@
 import React from 'react';
 import { cardFeatures, splitForCell, textOf, valueText } from './card-utils.js';
 import { standardColorKey } from './standard-colors.js';
+import { BOARD_CHANGE_STANDARD_LABELS } from './board-change-standard.js';
 
 // Rebuilt per REBUILD-SPECS.md §7. The original thirteen rows keep their
 // exact ids/keys/fallback regexes/detail synthesis unchanged (existing
@@ -188,9 +189,6 @@ const FIDUCIARY_STANDARD_LABELS = {
   'constitutes-or-could-reasonably-be-expected-to-lead-to-superior': 'Constitutes or could reasonably be expected to lead to a Superior Proposal',
   'continues-to-constitute-superior': 'Continues to constitute a Superior Proposal',
 };
-const BOARD_CHANGE_STANDARD_LABELS = {
-  INCONSISTENT_FIDUCIARY: 'Inconsistent with fiduciary duties',
-};
 function prettifyCode(code) {
   const s = String(code || '').replace(/[_-]+/g, ' ').replace(/\s+/g, ' ').trim();
   return s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : null;
@@ -350,17 +348,30 @@ function noticeContentRow(cards) {
   };
 }
 
-// Representatives-standard codes (RBE_NOT_TO / INSTRUCT_NOT_TO / CAUSE_NOT_TO)
-// -> a friendly phrase, ported from the legacy representativeStandardDisplay.
-// Render-only: `row.detail` (the tested data field) is untouched.
+// Representatives-standard codes (RBE_NOT_TO / INSTRUCT_NOT_TO / CAUSE_NOT_TO /
+// NA) -> a friendly phrase. Resolves PURELY by the extraction-assigned code.
+// The former `||` regex fallbacks over clause prose (/reasonable best efforts/,
+// /instruct|direct/, /cause/) were Metsera-calibrated bandaids that a
+// differently-drafted, legally-identical clause would mis-hit -- deleted so the
+// same code yields the same label on any deal. Codes are hover-title only; an
+// unrecognized value renders nothing here. Render-only: `row.detail` (the
+// tested data field) is untouched.
+//
+// NOTE: these short display labels are deliberately NOT the longer
+// REPRESENTATIVES_STANDARDS taxonomy labels (e.g. "Company must use reasonable
+// best efforts to cause Representatives not to engage"). Routing through
+// labelForCode(code, taxonomyForFeatureKey('representativesStandard')) would
+// change what the pill shows, so the existing display strings are preserved
+// here verbatim.
+const REPRESENTATIVES_STANDARD_DISPLAY = {
+  RBE_NOT_TO: 'Reasonable best efforts',
+  INSTRUCT_NOT_TO: 'Instruct / direct',
+  CAUSE_NOT_TO: 'Cause',
+  NA: 'Not applicable',
+};
 function representativesStandardLabel(detail) {
-  const text = String(detail || '');
-  const upper = text.trim().toUpperCase();
-  if (upper === 'RBE_NOT_TO' || /reasonable\s+best\s+efforts/i.test(text)) return 'Reasonable best efforts';
-  if (upper === 'INSTRUCT_NOT_TO' || /\binstruct|direct/i.test(text)) return 'Instruct / direct';
-  if (upper === 'CAUSE_NOT_TO' || /\bcause\b/i.test(text)) return 'Cause';
-  if (upper === 'NA') return 'Not applicable';
-  return null;
+  const code = String(detail || '').trim().toUpperCase();
+  return REPRESENTATIVES_STANDARD_DISPLAY[code] || null;
 }
 const LABEL_OVERRIDES = {
   'nosol-fiduciary-reps': representativesStandardLabel,

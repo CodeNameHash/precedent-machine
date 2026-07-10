@@ -1,6 +1,7 @@
 import React from 'react';
 import { cardFeatures, splitForCell, textOf, valueText } from './card-utils.js';
 import { standardColorKey } from './standard-colors.js';
+import { BOARD_CHANGE_STANDARD_LABELS } from './board-change-standard.js';
 
 // Rebuilt per REBUILD-SPECS.md §7. The five original rows (threshold, test,
 // determiner, engage, final) keep their exact ids/keys/fallback-regex/detail
@@ -172,9 +173,6 @@ const FIDUCIARY_STANDARD_LABELS = {
   'constitutes-or-could-lead-to-superior': 'Constitutes or could lead to a Superior Proposal',
   'constitutes-or-could-reasonably-be-expected-to-lead-to-superior': 'Constitutes or could reasonably be expected to lead to a Superior Proposal',
   'continues-to-constitute-superior': 'Continues to constitute a Superior Proposal',
-};
-const BOARD_CHANGE_STANDARD_LABELS = {
-  INCONSISTENT_FIDUCIARY: 'Inconsistent with fiduciary duties',
 };
 function prettifyCode(code) {
   const s = String(code || '').replace(/[_-]+/g, ' ').replace(/\s+/g, ' ').trim();

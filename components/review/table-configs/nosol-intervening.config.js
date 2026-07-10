@@ -1,6 +1,7 @@
 import React from 'react';
 import { cardFeatures, splitForCell, textOf, valueText } from './card-utils.js';
 import { standardColorKey } from './standard-colors.js';
+import { BOARD_CHANGE_STANDARD_LABELS } from './board-change-standard.js';
 
 // Rebuilt per REBUILD-SPECS.md §7. Kept as its own standalone span block
 // (Ben likes Intervening Event separate from the other No-Solicitation
@@ -122,9 +123,6 @@ function rowForSpec(spec, cards) {
 }
 
 // ── New-row synthesis (short codes -> friendly labels) ─────────────────────
-const BOARD_CHANGE_STANDARD_LABELS = {
-  INCONSISTENT_FIDUCIARY: 'Inconsistent with fiduciary duties',
-};
 function prettifyCode(code) {
   const s = String(code || '').replace(/[_-]+/g, ' ').replace(/\s+/g, ' ').trim();
   return s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : null;

@@ -114,8 +114,11 @@ test('MAE carve-outs render as a multi-item pill list through the unmodified mae
   assert.equal(carveoutsRow.signals.length, 1);
   // readableValue resolves the taxonomy label from `code` — codes never
   // surface raw, even for the claim whose canonical came back null and had
-  // to be recovered via the synonym fallback (ACTS_OF_WAR_TERRORISM).
-  assert.match(carveoutsRow.signals[0].label, /^Carve-out: /);
+  // to be recovered via the synonym fallback (ACTS_OF_WAR_TERRORISM). The
+  // legacy "Carve-out: " prefix was dropped in 2a84027; the label is now the
+  // resolved taxonomy phrases joined with "; ", so assert on the resolved
+  // ECONOMY_GENERAL label at the head instead of the removed prefix.
+  assert.match(carveoutsRow.signals[0].label, /^General economic conditions/);
   assert.doesNotMatch(carveoutsRow.signals[0].label, /ECONOMY_GENERAL|ACTS_OF_WAR_TERRORISM|PANDEMIC/);
 
   const limbsRow = rows.find((row) => row.id === 'mae-definitions-limbs');

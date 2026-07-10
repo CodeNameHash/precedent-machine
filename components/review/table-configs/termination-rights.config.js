@@ -1,6 +1,7 @@
 import React from 'react';
 import taxonomy from '../../../lib/taxonomy.js';
 import { cardCode, cardFeatures, cardType, selectCards, textOf, valueText } from './card-utils.js';
+import { voteStandard } from './vote-standard.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
@@ -183,17 +184,10 @@ function formatIsoDate(iso) {
   return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
 }
 
-// Lightweight vote-standard sniff (mirrors conditions.config.js's local
-// voteStandard() at a smaller scope -- that helper isn't exported, so this
-// stays a local duplicate rather than a new cross-config dependency).
-function parseVoteStandard(text) {
-  const t = String(text || '').toLowerCase();
-  if (/two-?thirds|2\/3|66\s*2\/3|sixty-?six and two-?thirds/.test(t)) return 'Two-thirds of outstanding shares';
-  if (/majority of (the )?(issued and )?outstanding/.test(t)) return 'Majority of outstanding shares';
-  if (/majority of[^.]*(votes? cast|voting power)/.test(t)) return 'Majority of voting power';
-  if (/majority/.test(t)) return 'Majority stockholder approval';
-  return null;
-}
+// Vote-standard sniff now shared via ./vote-standard.js (one definition across
+// conditions, votes-approvals-meeting, and termination-rights). The sole call
+// site guards with `threshold && ...`, so the dropped `!def` early-return in
+// the former local copy never changed output.
 
 function isTruthy(raw) {
   return raw === true || raw === 'true' || raw === 'TRUE';
@@ -285,7 +279,7 @@ function keyTermsNode(key, card, PillCell) {
     addFact(null, finality && { label: finality, tone: 'info' });
   } else if (key === 'vote') {
     const threshold = valueText(f.voteThreshold);
-    const parsed = threshold && parseVoteStandard(threshold);
+    const parsed = threshold && voteStandard(threshold);
     addFact('Vote threshold', (parsed || threshold) && { label: parsed || 'Stockholder vote not obtained', tone: 'warning' });
     addProse('Vote requirement', threshold);
   } else if (key === 'breachT' || key === 'breachB') {
