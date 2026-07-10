@@ -205,3 +205,28 @@ Forced categorization is what buys cross-deal comparability — the whole point 
 - **Altitude-2 residual (feature level).** For each coded feature, an explicit `OTHER` outcome (either a reserved `OTHER` code in the vocabulary or an allowed "no code, verbatim only" return) when no codebook entry fits. The residual value is **captured and flagged for review**, not dropped to the regex fallback.
 
 **The feedback loop.** The Canonical Vocabulary is closed and freeze-gated (Section 5) precisely so the model cannot invent codes. Residuals are therefore the signal for what the vocabulary is missing: the pile of flagged residuals is reviewed, and genuine recurring variants become new codes via a Freeze Gate PR. The loop is **residual → review → Freeze Gate PR to add frozen codes**. This keeps the taxonomy honest: it neither force-fits (altitude residuals absorb the misfits) nor sprawls (only the freeze gate can widen a vocabulary).
+
+### 8.6 Provision granularity and the two identity axes
+
+**A Provision is the smallest independently-comparable contractual concept, not a structural container.** The unit you categorize and compare on is not the Article or Section as the document labels it — it is the concept a lawyer would line up like-for-like across deals. Granularity is therefore concept-driven, and it cuts in both directions:
+
+- **Reps explode.** One "Article — Representations and Warranties" Section becomes one Provision per individual rep (organization, capitalization, authority, no-conflict, litigation, tax, …). This is real: `splitUmbrellaRep` in `lib/parser-v2/extract.js` performs the explosion, and the rubric carries one concept row per rep (`REP-T-ORG`, `REP-T-CAP`, `REP-T-AUTH`, `REP-T-NOCONFLICT`, …).
+- **A no-shop does the opposite.** It stays a single Provision; its variation is captured as coded features *inside* the clause (the `SOLICITATION_ACT` list, the superior-proposal determiner). Splitting it into sub-provisions would scatter what is really one comparable concept.
+
+The rule: split to the level at which the comparison question is asked, no finer.
+
+**Two orthogonal identity axes.** A Provision carries both, and they must not be collapsed into one label:
+
+- **Scope — whose obligation is this?** Carried by `party` on the provision type: `REP-T` / `IOC-T` are `party: 'target'`, `REP-B` / `IOC-B` are `party: 'buyer'`. This lets "the target's litigation rep across deals" be queried independently of "the buyer's".
+- **Concept identity — which concept is this?** The individual rep type, the specific covenant, and so on.
+
+**What actually persists (verified).** There is **no single `concept_key` column today.** The persisted cross-deal identity is the pair **(`provisions.type`, `provisions.category`)** — e.g. `type = REP-T`, `category = "Organization; Qualification; Standing"`. `type` is the family-plus-scope bucket (backed by `provision_types.key`, which carries the `party` scope); `category` is the individual concept label (backed by `provision_categories.label`). The rubric's per-concept keys (`REP-T-ORG`) and their `aliases` list (`['Organization and Standing', 'Due Organization']`) are the classifier's **synonym-resolution vocabulary** — they map varied source headings onto one canonical `category` — but they are not themselves a stored column. A clean single-field `concept_key` join surface is **aspirational**: today cross-deal comparison keys on the `(type, category)` pair, and its reliability depends on `category` being normalized consistently across deals.
+
+### 8.7 Two kinds of canonical — enum codes vs numeric normalization
+
+Section 3's "Canonical" covers two mechanically different cases. §§ 8.1–8.4 document only the first; comparison of reps and economic terms depends on the second.
+
+- **(a) Enum codes — for categorical attributes** whose legal meaning is a closed set of terms of art. The Section-B families, plus per-rep qualifiers such as materiality scrape and the bring-down standard. The rubric already codes knowledge- and materiality-qualifier scope as `ENTIRE_REP` / `PARTIAL` enums (`knowledgeScopeType`, `materialityScopeType`). These get a codebook; `labelForCode` renders a pill.
+- **(b) Numeric normalization — for thresholds, baskets, lookbacks, survival periods.** The Canonical is a normalized **number plus unit**, NOT a code: `"$5,000,000"` → `5000000` (USD); `"twenty-four (24) months"` → `24` (months). No bucketing, so the values keep full ordering and range queries ("every deal with survival > 18 months"). Forcing a number into an enum would destroy exactly the comparison you want.
+
+**Both kinds sit on top of a byte-preserved Verbatim.** The Excerpt text is never altered. The code or the normalized number is an **index laid over the raw clause, never a replacement**. Categorization and normalization add a queryable handle; they never flatten or discard the underlying terms, so nothing is lost by coding — the verbatim is always there to read.
