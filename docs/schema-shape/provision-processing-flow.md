@@ -201,6 +201,12 @@ Reading the pipeline against the Taxonomy surfaces the following weak points. Ea
 **Fix.** Validate card stability across repeated reprocess runs before scaling to the full corpus; likely needs NOSOL provision de-duplication.
 **Owning WP candidate:** `WP-NOSOL-DEDUP-01`.
 
+### GAP-E. Residual capture is silent-drop-to-fallback, with no feedback loop (proposed)
+
+**Problem.** Forced categorization needs an escape hatch at both coding altitudes (§ 7): an `unclassified` / `other` outcome at the provision level, and an `OTHER` / no-code outcome at the feature level, for the cases where nothing in the vocabulary truly fits. Today the only escape hatch is the transition-safe regex fallback — a migration artefact that **silently degrades to prior text**. When the model sees a value that fits no code, that fact is not captured, not flagged, and not surfaced for review. Nothing feeds vocabulary expansion, so misfits are invisible and the vocabulary cannot learn what it is missing. A plausible-but-wrong forced code reads as correct and is worse than no code.
+**Fix.** Make residuals first-class at both altitudes: an explicit `unclassified` provision bucket and an explicit `OTHER` / verbatim-only feature outcome, both **captured and flagged for review** rather than dropped. Add the feedback loop `residual → review → Freeze Gate PR to add frozen codes`, so recurring residual variants become new codes and the Canonical Vocabulary widens only through the freeze gate. See `provision-taxonomy-triple-model.md` § 8.5.
+**Owning WP candidate:** `WP-RESIDUAL-CAPTURE-01`. Proposed — not yet built.
+
 ---
 
 ## 5. Proposed WP-PROCESSING-FLOW-MAP-01
@@ -246,7 +252,14 @@ Reading the pipeline against the Taxonomy surfaces the following weak points. Ea
 
 ## 7. Canonical-coding pipeline (Section-B taxonomy)
 
-Companion detail to Section 2's generic 8-stage pipeline. Canonical-coding is not a new top-level stage — it is a stricter version of stage 3 (Provision classification declares which features are coded), stage 4 (Claim extraction assigns the code at extraction time instead of leaving it to a later Normalizer), and stage 5 (Normalisation materializes the code into `claims.canonical`), plus a render step that sits after stage 8. See `provision-taxonomy-triple-model.md` § 8 for the full model (concept → code → render, `list-tagged`/`tagged`, the coded feature families, `labelForCode`).
+Companion detail to Section 2's generic 8-stage pipeline. Canonical-coding is **not a new top-level stage** — it is a stricter mode of the stages already in Section 2. Its only real effect is to pull the normalization decision forward: instead of stage 4 extracting free text and stage 5 mapping it to a Canonical after the fact via a Normalizer, the closed codebook is handed to the model inside the stage-4 extraction call and the model assigns the Canonical itself. For a coded feature the code *is* the Canonical, and stage 5 degrades to a validation that the returned code is legal. Render (`labelForCode`) then sits after stage 8 in the review UI. See `provision-taxonomy-triple-model.md` § 8 for the full model.
+
+**Two altitudes of categorization.** Coding happens at two distinct altitudes, which must not be conflated:
+
+- **Altitude 1 — provision-type bucketing (stage 3, Classify).** Binds a Section to *which contractual concept it is* (No-Shop, MAC, termination fee, boilerplate). This picks the bucket, which determines the rubric — and therefore the coded features — that apply downstream.
+- **Altitude 2 — feature coding (stage 4, Extract).** *Within* the chosen bucket, the rubric declares which features are coded via the `list-tagged` / `tagged` flag. Only flagged features get a codebook embedded in the prompt and a `{code, label, text}` return shape; everything else is free text.
+
+Altitude 1 chooses the concept; the concept's rubric declares its coded features; altitude 2 fills the codes.
 
 Verified end-to-end on the Metsera deal (2026-07-10):
 

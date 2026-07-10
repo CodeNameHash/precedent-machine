@@ -129,6 +129,15 @@
       "owning_wp": "WP-NOSOL-DEDUP-01",
       "phase": "pre-corpus",
       "status": "open"
+    },
+    {
+      "id": "GAP-E",
+      "title": "Residual capture is silent-drop-to-fallback, no feedback loop",
+      "problem": "Forced categorization needs a residual bucket at both coding altitudes -- an unclassified/other outcome at the provision level and an OTHER/no-code outcome at the feature level. Today the only escape hatch is the transition-safe regex fallback, a migration artifact that silently degrades to prior text. When the model sees a value that fits no code, that fact is not captured, flagged, or surfaced for review, so nothing feeds vocabulary expansion. A plausible-but-wrong forced code reads as correct and is worse than no code.",
+      "fix": "Make residuals first-class at both altitudes: an explicit unclassified provision bucket and an explicit OTHER/verbatim-only feature outcome, both captured and flagged for review rather than dropped. Add the feedback loop residual -> review -> Freeze Gate PR to add frozen codes, so the Canonical Vocabulary widens only through the freeze gate. See provision-taxonomy-triple-model.md sec 8.5.",
+      "owning_wp": "WP-RESIDUAL-CAPTURE-01",
+      "phase": "proposed",
+      "status": "open"
     }
   ]
 }
