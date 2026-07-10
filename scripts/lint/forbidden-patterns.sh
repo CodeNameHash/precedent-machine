@@ -113,6 +113,13 @@ function changedFiles() {
 }
 
 function scopedFile(rel) {
+  // Scoped patterns (console.log, TSA / market TODO-FIXME) target RUNTIME domain
+  // code, not build tooling. Build scripts under scripts/ legitimately use
+  // console.log for progress output (e.g. generate-registry.js prints what it
+  // generated), and the bare `registry` alternative below matches their names.
+  // Exclude scripts/ so editing a build script doesn't trip the ban against its
+  // own pre-existing, legitimate output.
+  if (rel.startsWith('scripts/')) return false;
   return /OtherCovenants|other-covenants|market-registry|registry|newhome/.test(rel);
 }
 
