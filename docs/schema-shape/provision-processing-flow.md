@@ -183,6 +183,24 @@ Reading the pipeline against the Taxonomy surfaces the following weak points. Ea
 **Fix.** Add `kind` field to Provision; add `references_definition` edge array. Migration sets `kind=operative` on every existing Provision. Freeze Gate PR required.
 **Owning WP candidate:** `WP-DEFINITIONS-AS-PROVISIONS-01` in Phase 0.5. This is the parent WP; G8 and G10 are sub-goals.
 
+### GAP-A. Reprocess does not materialize claims (critical — corpus-blocking)
+
+**Problem.** `scripts/reprocess.js` writes Provisions only (`ai_metadata.features` gets codes). It does not materialize `claims` — that is a separate step (`scripts/backfill/extract-to-cards.js` → `store-cards.js` → `storeClaimsForDeal`). Render reads Claims, so codes do not appear on screen until claims are re-materialized, even though extraction succeeded.
+**Fix.** Build a robust post-reprocess claims-rematerialize step — either wire `reprocess.js` to call the claims writer directly, or ship a standalone claims-only rematerialize (`buildClaimRowsForCard` + `upsertClaims`, matching cards to provisions by `short_title==category`, no card rewrite). Must be tested on ≥3 deals before the corpus run in Section 8.
+**Owning WP candidate:** `WP-CLAIMS-REMATERIALIZE-01`. Corpus-blocking — do not run the corpus reprocess unattended until this exists and is proven.
+
+### GAP-B. `extract-to-cards.js` fails on NOSOL (region_hash collision)
+
+**Problem.** `extract-to-cards.js` — the card-rewriting path referenced in GAP-A — fails on NOSOL provisions with the `provision_cards_deal_region_hash_unique` constraint. Verified on Metsera: provisions and cards were out of sync (15 provisions vs 22 cards, NULL region_ids). The claims-only rematerialize (bypasses card rewrite entirely) is the path that worked.
+**Fix.** Either fix `extract-to-cards.js`'s region_hash handling for deals with NULL region_ids, or standardize on the claims-only rematerialize as the supported path — folds into GAP-A's fix.
+**Owning WP candidate:** folds into `WP-CLAIMS-REMATERIALIZE-01`.
+
+### GAP-C. NOSOL reprocess churns extraction
+
+**Problem.** Repeated NOSOL reprocess runs on Metsera moved the QA nosol count across runs (22 → 16 → 15). Duplicate cards pre-exist (Change-of-Recommendation ×4, Disclosure ×3). Card/claim stability across repeated reprocess is not yet validated.
+**Fix.** Validate card stability across repeated reprocess runs before scaling to the full corpus; likely needs NOSOL provision de-duplication.
+**Owning WP candidate:** `WP-NOSOL-DEDUP-01`.
+
 ---
 
 ## 5. Proposed WP-PROCESSING-FLOW-MAP-01
@@ -223,3 +241,30 @@ Reading the pipeline against the Taxonomy surfaces the following weak points. Ea
 - **Master brief Section 2.9** — Phase 0-D structure. WP-PROCESSING-FLOW-MAP-01 slots here.
 - **Phase 0.5 WP-DEFINITIONS-AS-PROVISIONS-01** — realises Provision `kind` field, `references_definition` edge, two-pass extraction, and DealProfile branch. Behind Freeze Gate PR.
 - **Frozen status** — this document becomes FROZEN under G-0C once approved, alongside the Taxonomy file.
+
+---
+
+## 7. Canonical-coding pipeline (Section-B taxonomy)
+
+Companion detail to Section 2's generic 8-stage pipeline. Canonical-coding is not a new top-level stage — it is a stricter version of stage 3 (Provision classification declares which features are coded), stage 4 (Claim extraction assigns the code at extraction time instead of leaving it to a later Normalizer), and stage 5 (Normalisation materializes the code into `claims.canonical`), plus a render step that sits after stage 8. See `provision-taxonomy-triple-model.md` § 8 for the full model (concept → code → render, `list-tagged`/`tagged`, the coded feature families, `labelForCode`).
+
+Verified end-to-end on the Metsera deal (2026-07-10):
+
+1. **Rubric declares the feature `type`** — `list-tagged` or `tagged` on the feature entry in `lib/rubric.js` is what makes a feature taxonomy-coded.
+2. **Registry pipeline propagates the type** — `scripts/schema-inventory.js` → `scripts/generate-registry.js` → `lib/schema/features.generated.js` / `tags.generated.js`, drift-guarded by `tests/registry-generated-drift.test.js`. `lib/schema/features.js` (the persistence gate the prompt actually reads) is hand-curated and must be kept in sync by hand.
+3. **Prompt requests codes** — `lib/schema/prompt.js` `valueShape` emits a coded-object shape (`{code,label,text}`, single or array) keyed on the rubric type, with the codebook embedded from the feature's taxonomy dictionary.
+4. **Extraction assigns codes** — the model returns `{code,label,text}`, landing in `provisions.ai_metadata.features`.
+5. **Claims materialization** — `store-claims.js` `atomicValues` reads `.code` off list, scalar, and citable-wrapped shapes into `claims.canonical`.
+6. **Render** — `lib/queries/claims-adapter.js` calls `labelForCode(code, taxonomyForFeatureKey(key))` to produce the canonical pill, falling back to the prior text when no code is present yet.
+
+## 8. Corpus plan (proposed)
+
+Proposed plan for scaling canonical-coding from the proven Metsera case to the full corpus. Not yet executed — for review before the corpus reprocess runs.
+
+**Prereq.** Build and test a robust claims-only rematerialize (GAP-A / GAP-B above) on approximately 3 deals, to validate that card↔provision matching by `short_title==category` holds beyond Metsera.
+
+**Then, in order:**
+1. `reprocess.js --all --types NOSOL,MISC,TERMF --apply` — extraction pass, writes codes into `provisions.ai_metadata`.
+2. Claims-only rematerialize, run across all deals — moves codes from provisions into `claims.canonical`.
+3. Verify code population and spot-check quality per deal.
+4. Delete the render-time regex fallbacks named in `provision-taxonomy-triple-model.md` § 8.4 — only once corpus-wide code population is confirmed; the regexes stay as the transition-safe path until then.
