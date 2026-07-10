@@ -7,7 +7,7 @@
     "lib/vocab/ioc-categories.js"
   ],
   "input_field_count": 1327,
-  "field_count": 694,
+  "field_count": 695,
   "fields": [
     {
       "key": "absenceConductedOrdinaryCourse",
@@ -1935,6 +1935,54 @@
           {
             "origin": "rubric-features",
             "key": "rubric.misc.assignment_exceptions",
+            "merge_rule": "cross-origin"
+          }
+        ]
+      },
+      "status": "PENDING_REVIEW"
+    },
+    {
+      "key": "assignmentProvisos",
+      "label": "Assignment provisos (list)",
+      "data_type": "ENUM_MULTI",
+      "applies_to": "MISC",
+      "party_scope": "PARENT_ONLY",
+      "structural_patterns": [
+        "THREE_STATE",
+        "PARTY_ASYMMETRIC"
+      ],
+      "states": [
+        "PRESENT",
+        "ABSENT",
+        "UNKNOWN"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "assignmentProvisos",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve assignmentProvisos from lib/schema/features.js; normalise to ENUM_MULTI before activation."
+      },
+      "resolver_notes": "Assignment provisos (list)",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features",
+      "merged_from": [
+        {
+          "origin": "rubric-features",
+          "key": "rubric.misc.assignment_provisos",
+          "merge_rule": "cross-origin"
+        }
+      ],
+      "also_matches_provision_codes": [
+        "MISC"
+      ],
+      "provenance": {
+        "source_of_truth": "schema-features",
+        "absorbed_from": [
+          {
+            "origin": "rubric-features",
+            "key": "rubric.misc.assignment_provisos",
             "merge_rule": "cross-origin"
           }
         ]

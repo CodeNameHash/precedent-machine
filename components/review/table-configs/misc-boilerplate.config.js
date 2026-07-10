@@ -150,13 +150,39 @@ function assignmentParentCodeLabels(cards) {
   }
   return labels.length ? labels : null;
 }
+// Canonical layer: assignmentProvisos is a LIST feature (ASSIGNMENT_PROVISO
+// codes: NO_RELEASE / NO_DELAY_IMPEDE). One pill per item, preferring the
+// canonical code label when extraction assigned one; falling back to the
+// item's own verbatim text when it didn't -- transition-safe, and unlike
+// parentAssignmentConditions there is no prior hardcoded proviso pill to
+// fall back to since this feature was previously unwired.
+function assignmentProvisoSignals(cards, evidence, card) {
+  const hits = allFeatures(cards, ['assignmentProvisos']);
+  if (!hits.length) return [];
+  const dict = taxonomyForFeatureKey('assignmentProvisos');
+  const seen = new Set();
+  const signals = [];
+  for (const hit of hits) {
+    const items = Array.isArray(hit.value) ? hit.value : [hit.value];
+    for (const item of items) {
+      const code = item && typeof item === 'object' && !Array.isArray(item) ? item.code : null;
+      const text = item && typeof item === 'object' && !Array.isArray(item) ? item.text : item;
+      const label = (code ? labelForCode(String(code), dict) : null) || (typeof text === 'string' ? text.trim() : null);
+      if (!label || seen.has(label)) continue;
+      seen.add(label);
+      signals.push({ id: `misc-assign-proviso-${signals.length}`, label, value: 'assign-proviso', tone: 'neutral', evidence, source: card });
+    }
+  }
+  return signals;
+}
 // Ben (round 6): collapse the five raw-clause Assignment rows into ONE
 // "Assignment" row with two crisp pills.
 function buildAssignmentRow(cards) {
   const parentRight = firstFeature(cards, ['parentAssignmentRight', 'parentAssignmentConditions']);
   const restriction = firstFeature(cards, ['assignmentRestrictions', 'companyConsentForAssignment']);
-  if (!parentRight && !restriction) return null;
-  const card = parentRight?.card || restriction?.card;
+  const provisoHit = firstFeature(cards, ['assignmentProvisos']);
+  if (!parentRight && !restriction && !provisoHit) return null;
+  const card = parentRight?.card || restriction?.card || provisoHit?.card;
   const evidence = textOf(card);
   const signals = [];
   if (parentRight) {
@@ -170,6 +196,7 @@ function buildAssignmentRow(cards) {
     }
   }
   if (restriction) signals.push({ id: 'misc-assign-restrict', label: "Otherwise, no assignment without the other party's prior written consent", value: 'no-assign', tone: 'neutral', evidence, source: card });
+  signals.push(...assignmentProvisoSignals(cards, evidence, card));
   if (!signals.length) return null;
   return { id: 'misc-boilerplate-assignment', label: 'Assignment', kind: 'Boilerplate', detail: null, evidence, source: labelOf(card), sourceCard: card, present: true, signals };
 }

@@ -3903,37 +3903,6 @@
         ]
       },
       {
-        "family": "PRIMARY_FORUM",
-        "kind": "string_map",
-        "size": 4,
-        "codes": [
-          {
-            "code": "DE_CHANCERY",
-            "label": "Delaware Court of Chancery",
-            "description": null,
-            "line": 1047
-          },
-          {
-            "code": "NY_MANHATTAN",
-            "label": "New York courts (Borough of Manhattan)",
-            "description": null,
-            "line": 1048
-          },
-          {
-            "code": "MARYLAND_BALTIMORE",
-            "label": "Circuit Court for Baltimore City",
-            "description": null,
-            "line": 1049
-          },
-          {
-            "code": "FOREIGN_COURT",
-            "label": "Non-U.S. court",
-            "description": null,
-            "line": 1050
-          }
-        ]
-      },
-      {
         "family": "SOLICITATION_ACT",
         "kind": "string_map",
         "size": 15,
@@ -3942,91 +3911,91 @@
             "code": "SOLICIT_INITIATE",
             "label": "Solicit / initiate / knowingly encourage or facilitate an Acquisition Proposal",
             "description": null,
-            "line": 1063
+            "line": 1054
           },
           {
             "code": "DISCUSS_NEGOTIATE",
             "label": "Engage in or continue discussions or negotiations",
             "description": null,
-            "line": 1064
+            "line": 1055
           },
           {
             "code": "FURNISH_INFORMATION",
             "label": "Furnish non-public information / afford diligence access",
             "description": null,
-            "line": 1065
+            "line": 1056
           },
           {
             "code": "ENTER_ALT_AGREEMENT",
             "label": "Enter into an LOI / acquisition / merger agreement (other than an ACA)",
             "description": null,
-            "line": 1066
+            "line": 1057
           },
           {
             "code": "APPROVE_ENDORSE",
             "label": "Approve / endorse / recommend / declare advisable a proposal",
             "description": null,
-            "line": 1067
+            "line": 1058
           },
           {
             "code": "WAIVE_STANDSTILL",
             "label": "Waive / terminate / modify or fail to enforce a standstill",
             "description": null,
-            "line": 1068
+            "line": 1059
           },
           {
             "code": "SUBMIT_TO_VOTE",
             "label": "Submit a competing proposal to the stockholder vote",
             "description": null,
-            "line": 1069
+            "line": 1060
           },
           {
             "code": "RESOLVE_AGREE_FOREGOING",
             "label": "Resolve / agree / authorize / publicly propose to do any of the foregoing",
             "description": null,
-            "line": 1070
+            "line": 1061
           },
           {
             "code": "CEASE_EXISTING_ACTIVITY",
             "label": "Immediately cease existing solicitations / discussions / negotiations",
             "description": null,
-            "line": 1072
+            "line": 1063
           },
           {
             "code": "TERMINATE_DATAROOM",
             "label": "Terminate physical / electronic data-room access",
             "description": null,
-            "line": 1073
+            "line": 1064
           },
           {
             "code": "REQUEST_RETURN_DESTROY",
             "label": "Request return or destruction of previously furnished information",
             "description": null,
-            "line": 1074
+            "line": 1065
           },
           {
             "code": "WITHDRAW_QUALIFY_REC",
             "label": "Withhold / withdraw / qualify / modify the Board Recommendation adverse to Parent",
             "description": null,
-            "line": 1076
+            "line": 1067
           },
           {
             "code": "FAIL_TO_INCLUDE_REC",
             "label": "Fail to include the Board Recommendation in the Proxy / 14D-9 / Info Statement",
             "description": null,
-            "line": 1077
+            "line": 1068
           },
           {
             "code": "FAIL_TO_REAFFIRM",
             "label": "Fail to publicly reaffirm the Recommendation on request",
             "description": null,
-            "line": 1078
+            "line": 1069
           },
           {
             "code": "TENDER_OFFER_ACTION",
             "label": "Fail to recommend against a tender / exchange offer within the required period",
             "description": null,
-            "line": 1079
+            "line": 1070
           }
         ]
       },
@@ -4039,25 +4008,25 @@
             "code": "BOARD_LEGAL_AND_FINANCIAL",
             "label": "Board, in good faith, after outside legal counsel and financial advisor",
             "description": null,
-            "line": 1085
+            "line": 1076
           },
           {
             "code": "BOARD_LEGAL_ONLY",
             "label": "Board, after outside legal counsel only",
             "description": null,
-            "line": 1086
+            "line": 1077
           },
           {
             "code": "BOARD_ONLY",
             "label": "Board’s good-faith judgment (no advisor reference)",
             "description": null,
-            "line": 1087
+            "line": 1078
           },
           {
             "code": "COMMITTEE",
             "label": "A committee (Special / Strategic Review) decides",
             "description": null,
-            "line": 1088
+            "line": 1079
           }
         ]
       },
@@ -4070,19 +4039,19 @@
             "code": "AFFILIATE_SUBSIDIARY",
             "label": "Parent may assign to a wholly-owned subsidiary / affiliate",
             "description": null,
-            "line": 1093
+            "line": 1084
           },
           {
             "code": "FINANCING_SOURCE_PLEDGE",
             "label": "Parent may collaterally assign / pledge to financing sources",
             "description": null,
-            "line": 1094
+            "line": 1085
           },
           {
             "code": "POST_CLOSING_SUCCESSOR",
             "label": "Assignment permitted from and after the Effective Time (successor)",
             "description": null,
-            "line": 1095
+            "line": 1086
           }
         ]
       },
@@ -4095,13 +4064,13 @@
             "code": "NO_RELEASE",
             "label": "Assignment does not relieve Parent of its obligations",
             "description": null,
-            "line": 1098
+            "line": 1089
           },
           {
             "code": "NO_DELAY_IMPEDE",
             "label": "Assignment must not prevent / impede / delay the closing",
             "description": null,
-            "line": 1099
+            "line": 1090
           }
         ]
       },
@@ -7648,12 +7617,6 @@
         ]
       },
       {
-        "key": "primaryForum",
-        "families": [
-          "PRIMARY_FORUM"
-        ]
-      },
-      {
         "key": "ceaseDiscussionsProhibitedList",
         "families": [
           "SOLICITATION_ACT"
@@ -8365,7 +8328,7 @@
       "aocCitedCovenantNames",
       "reapplied_corrections"
     ],
-    "validatedRubricKeys": 469
+    "validatedRubricKeys": 470
   },
   "ui": {
     "files": [
@@ -8458,7 +8421,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 33,
+            "line": 36,
             "kind": "keys_array"
           }
         ]
@@ -8483,7 +8446,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 27,
+            "line": 30,
             "kind": "keys_array"
           }
         ]
@@ -8493,7 +8456,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 23,
+            "line": 26,
             "kind": "keys_array"
           }
         ]
@@ -8678,7 +8641,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 10,
+            "line": 13,
             "kind": "keys_array"
           }
         ]
@@ -8688,12 +8651,12 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 11,
+            "line": 14,
             "kind": "keys_array"
           },
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 32,
+            "line": 35,
             "kind": "keys_array"
           },
           {
@@ -8703,7 +8666,7 @@
           },
           {
             "file": "components/review/table-configs/nosol-superior.config.js",
-            "line": 20,
+            "line": 23,
             "kind": "keys_array"
           }
         ]
@@ -8768,7 +8731,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/antitrust-regulatory.config.js",
-            "line": 67,
+            "line": 64,
             "kind": "features_property"
           }
         ]
@@ -8803,7 +8766,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 9,
+            "line": 12,
             "kind": "keys_array"
           }
         ]
@@ -8813,7 +8776,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 11,
+            "line": 14,
             "kind": "keys_array"
           }
         ]
@@ -8823,7 +8786,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 9,
+            "line": 12,
             "kind": "keys_array"
           },
           {
@@ -8838,12 +8801,12 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 7,
+            "line": 10,
             "kind": "keys_array"
           },
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 8,
+            "line": 11,
             "kind": "keys_array"
           }
         ]
@@ -8853,7 +8816,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 27,
+            "line": 30,
             "kind": "keys_array"
           }
         ]
@@ -8863,12 +8826,12 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 9,
+            "line": 12,
             "kind": "keys_array"
           },
           {
             "file": "components/review/table-configs/nosol-superior.config.js",
-            "line": 14,
+            "line": 17,
             "kind": "keys_array"
           }
         ]
@@ -8898,7 +8861,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/antitrust-regulatory.config.js",
-            "line": 266,
+            "line": 258,
             "kind": "features_property"
           }
         ]
@@ -8908,7 +8871,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/antitrust-regulatory.config.js",
-            "line": 265,
+            "line": 258,
             "kind": "features_property"
           }
         ]
@@ -8993,7 +8956,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 23,
+            "line": 26,
             "kind": "keys_array"
           }
         ]
@@ -9003,7 +8966,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 23,
+            "line": 26,
             "kind": "keys_array"
           }
         ]
@@ -9098,7 +9061,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 19,
+            "line": 22,
             "kind": "keys_array"
           }
         ]
@@ -9108,7 +9071,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/antitrust-regulatory.config.js",
-            "line": 66,
+            "line": 63,
             "kind": "features_property"
           }
         ]
@@ -9118,7 +9081,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 14,
+            "line": 17,
             "kind": "keys_array"
           }
         ]
@@ -9148,12 +9111,12 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 7,
+            "line": 10,
             "kind": "keys_array"
           },
           {
             "file": "components/review/table-configs/nosol-superior.config.js",
-            "line": 12,
+            "line": 15,
             "kind": "keys_array"
           }
         ]
@@ -9203,7 +9166,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 11,
+            "line": 14,
             "kind": "keys_array"
           }
         ]
@@ -9213,12 +9176,12 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 7,
+            "line": 10,
             "kind": "keys_array"
           },
           {
             "file": "components/review/table-configs/nosol-superior.config.js",
-            "line": 12,
+            "line": 15,
             "kind": "keys_array"
           }
         ]
@@ -9228,12 +9191,12 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 9,
+            "line": 12,
             "kind": "keys_array"
           },
           {
             "file": "components/review/table-configs/nosol-superior.config.js",
-            "line": 14,
+            "line": 17,
             "kind": "keys_array"
           }
         ]
@@ -9243,17 +9206,17 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 31,
+            "line": 34,
             "kind": "keys_array"
           },
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 25,
+            "line": 28,
             "kind": "keys_array"
           },
           {
             "file": "components/review/table-configs/nosol-superior.config.js",
-            "line": 16,
+            "line": 19,
             "kind": "keys_array"
           }
         ]
@@ -9263,7 +9226,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 19,
+            "line": 22,
             "kind": "keys_array"
           }
         ]
@@ -9273,7 +9236,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 20,
+            "line": 23,
             "kind": "keys_array"
           }
         ]
@@ -9333,7 +9296,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 16,
+            "line": 19,
             "kind": "keys_array"
           }
         ]
@@ -9628,7 +9591,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 16,
+            "line": 19,
             "kind": "keys_array"
           },
           {
@@ -9638,7 +9601,7 @@
           },
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 18,
+            "line": 21,
             "kind": "keys_array"
           }
         ]
@@ -9803,7 +9766,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 28,
+            "line": 31,
             "kind": "keys_array"
           }
         ]
@@ -9813,7 +9776,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 14,
+            "line": 17,
             "kind": "keys_array"
           }
         ]
@@ -9823,7 +9786,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 12,
+            "line": 15,
             "kind": "keys_array"
           },
           {
@@ -9913,7 +9876,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/ioc-exceptions.config.js",
-            "line": 242,
+            "line": 243,
             "kind": "features_property"
           }
         ]
@@ -9998,7 +9961,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 25,
+            "line": 28,
             "kind": "keys_array"
           }
         ]
@@ -10038,7 +10001,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 11,
+            "line": 14,
             "kind": "keys_array"
           },
           {
@@ -10088,7 +10051,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/ioc-exceptions.config.js",
-            "line": 239,
+            "line": 240,
             "kind": "features_property"
           },
           {
@@ -10138,12 +10101,12 @@
         "hits": [
           {
             "file": "components/review/table-configs/antitrust-regulatory.config.js",
-            "line": 314,
+            "line": 306,
             "kind": "features_property"
           },
           {
             "file": "components/review/table-configs/antitrust-regulatory.config.js",
-            "line": 340,
+            "line": 335,
             "kind": "features_property"
           }
         ]
@@ -10203,7 +10166,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 24,
+            "line": 27,
             "kind": "keys_array"
           }
         ]
@@ -10213,7 +10176,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 24,
+            "line": 27,
             "kind": "keys_array"
           }
         ]
@@ -10428,7 +10391,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 14,
+            "line": 17,
             "kind": "keys_array"
           },
           {
@@ -10468,7 +10431,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 18,
+            "line": 21,
             "kind": "keys_array"
           }
         ]
@@ -10478,12 +10441,12 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 17,
+            "line": 20,
             "kind": "keys_array"
           },
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 26,
+            "line": 29,
             "kind": "keys_array"
           }
         ]
@@ -10503,7 +10466,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-superior.config.js",
-            "line": 10,
+            "line": 13,
             "kind": "keys_array"
           }
         ]
@@ -10513,17 +10476,17 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 29,
+            "line": 32,
             "kind": "keys_array"
           },
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 21,
+            "line": 24,
             "kind": "keys_array"
           },
           {
             "file": "components/review/table-configs/nosol-superior.config.js",
-            "line": 7,
+            "line": 10,
             "kind": "keys_array"
           }
         ]
@@ -10533,12 +10496,12 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 30,
+            "line": 33,
             "kind": "keys_array"
           },
           {
             "file": "components/review/table-configs/nosol-superior.config.js",
-            "line": 9,
+            "line": 12,
             "kind": "keys_array"
           }
         ]
@@ -10548,17 +10511,17 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 29,
+            "line": 32,
             "kind": "keys_array"
           },
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 21,
+            "line": 24,
             "kind": "keys_array"
           },
           {
             "file": "components/review/table-configs/nosol-superior.config.js",
-            "line": 7,
+            "line": 10,
             "kind": "keys_array"
           }
         ]
@@ -10663,12 +10626,12 @@
         "hits": [
           {
             "file": "components/review/table-configs/antitrust-regulatory.config.js",
-            "line": 316,
+            "line": 307,
             "kind": "features_property"
           },
           {
             "file": "components/review/table-configs/antitrust-regulatory.config.js",
-            "line": 359,
+            "line": 356,
             "kind": "features_property"
           }
         ]

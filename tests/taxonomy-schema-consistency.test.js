@@ -11,11 +11,6 @@
    rather than hand-copying the switch, so this test can't silently drift
    from lib/taxonomy.js as cases are added/removed.
 
-   Two keys currently fail this check — see KNOWN_TAXONOMY_ONLY_KEYS below.
-   Per the task instructions, these are NOT "fixed" by editing taxonomy.js or
-   features.js (that's a legal/product judgment call, not a mechanical one);
-   they're allowlisted here with a TODO so the test stays green while the gap
-   stays visible.
    Run: npm test */
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -23,19 +18,11 @@ const assert = require('node:assert/strict');
 const taxonomy = require('../lib/taxonomy.js');
 const { FEATURES } = require('../lib/schema/features.js');
 
-// TODO(taxonomy/schema reconciliation): these two feature keys are wired
-// into taxonomy.js's taxonomyForFeatureKey() switch (and, for
-// assignmentProvisos, LIST_TAXONOMY_KEYS) but have no lib/schema/features.js
-// entry and no other call site in the codebase (grepped: no extract.js
-// codebook reference, no review table-config usage, no other lib/ usage) as
-// of this writing. They read as orphaned/never-finished wiring rather than
-// intentional taxonomy-only fields. Needs a human call: either register a
-// FEATURES entry (if the field is still meant to ship) or delete the dead
-// switch cases from taxonomy.js. Left un-fixed here per task scope.
-const KNOWN_TAXONOMY_ONLY_KEYS = new Set([
-  'assignmentProvisos', // -> ASSIGNMENT_PROVISO dict; no schema entry, no other usage found.
-  'primaryForum', // -> PRIMARY_FORUM dict; schema has forumCourts/forumFallback instead, no direct primaryForum entry or other usage found.
-]);
+// assignmentProvisos was reconciled with a lib/schema/features.js entry
+// (list-tagged, ASSIGNMENT_PROVISO), and primaryForum was deleted from
+// taxonomy.js entirely (forum is modeled by forumCourts/forumFallback
+// instead) — both previously-allowlisted keys are gone as of this writing.
+const KNOWN_TAXONOMY_ONLY_KEYS = new Set([]);
 
 function taxonomyFeatureKeys() {
   const src = taxonomy.taxonomyForFeatureKey.toString();

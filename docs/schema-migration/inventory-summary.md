@@ -1,24 +1,24 @@
 # WP-SCHEMA P1 Inventory Summary
 
-Generated: 2026-07-10T06:41:47.985Z
+Generated: 2026-07-10T12:14:54.696Z
 
 ## Counts
 
-- Distinct feature-like keys: 517
-- Keys in 2 or more source families: 471
-- Keys in only 1 source family: 46
+- Distinct feature-like keys: 516
+- Keys in 2 or more source families: 472
+- Keys in only 1 source family: 44
 - Cross-source type mismatches: 6
 - Schema shape mismatches: 33
 - Provision types in rubric: 19
 - Canonical codes in rubric: 276
-- Taxonomy families exported: 55
+- Taxonomy families exported: 54
 - Curated expected-set codes: 38
 
 ## Naming Distribution
 
 | Convention |Count |
 | --- |--- |
-| camelCase |486 |
+| camelCase |485 |
 | lowercase |24 |
 | snake_case |7 |
 
@@ -28,9 +28,9 @@ Generated: 2026-07-10T06:41:47.985Z
 | --- |--- |
 | category_summary_features_js |216 |
 | expected_sets_js |194 |
-| feature_validation_js |481 |
-| rubric_js |469 |
-| taxonomy_js |56 |
+| feature_validation_js |482 |
+| rubric_js |470 |
+| taxonomy_js |55 |
 | ui |181 |
 
 ## Top 20 Highest-Appearance Keys
@@ -118,7 +118,6 @@ Keys in only one source family. These are candidates for dead-code review, not a
 | alsoSurfacedAs |ui |2 |
 | amendmentsRequirement |category_summary_features_js |1 |
 | appliesTo |taxonomy_js |1 |
-| assignmentProvisos |taxonomy_js |1 |
 | baseSalaryStandard |category_summary_features_js |1 |
 | benefitsStandard |category_summary_features_js |1 |
 | bonusStandard |category_summary_features_js |1 |
@@ -141,7 +140,6 @@ Keys in only one source family. These are candidates for dead-code review, not a
 | maeStandaloneCondition |category_summary_features_js |2 |
 | materialityQualifiers |taxonomy_js |1 |
 | partOfRep |ui |1 |
-| primaryForum |taxonomy_js |1 |
 | proposedCode |feature_validation_js |1 |
 | proposedLabel |feature_validation_js |1 |
 | proviso |ui |1 |
