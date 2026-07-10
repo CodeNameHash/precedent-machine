@@ -12,7 +12,11 @@ const path = require('path');
 const vm = require('vm');
 
 const ROOT = process.cwd();
-const OUT_DIR = path.join(ROOT, 'docs/schema-migration');
+// Output dir is overridable so the registry drift-guard test can regenerate
+// the inventory into a temp dir without clobbering the committed artifacts.
+const OUT_DIR = process.env.SCHEMA_INVENTORY_OUT
+  ? path.resolve(process.env.SCHEMA_INVENTORY_OUT)
+  : path.join(ROOT, 'docs/schema-migration');
 
 const FILES = {
   rubric: path.join(ROOT, 'lib/rubric.js'),

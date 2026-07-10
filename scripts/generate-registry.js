@@ -12,11 +12,20 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = process.cwd();
-const MIGRATION_DIR = path.join(ROOT, 'docs/schema-migration');
+// Input (inventory) and output (generated registry) dirs are overridable so
+// the registry drift-guard test can run the full rubric -> inventory ->
+// registry pipeline into a temp dir and diff it against the committed files
+// without clobbering anything on disk.
+const MIGRATION_DIR = process.env.SCHEMA_REGISTRY_IN
+  ? path.resolve(process.env.SCHEMA_REGISTRY_IN)
+  : path.join(ROOT, 'docs/schema-migration');
+const OUT_DIR = process.env.SCHEMA_REGISTRY_OUT
+  ? path.resolve(process.env.SCHEMA_REGISTRY_OUT)
+  : path.join(ROOT, 'lib/schema');
 const INVENTORY_JSONL = path.join(MIGRATION_DIR, 'inventory.jsonl');
 const SOURCE_INVENTORY = path.join(MIGRATION_DIR, 'source-inventory.json');
-const FEATURES_GENERATED = path.join(ROOT, 'lib/schema/features.generated.js');
-const TAGS_GENERATED = path.join(ROOT, 'lib/schema/tags.generated.js');
+const FEATURES_GENERATED = path.join(OUT_DIR, 'features.generated.js');
+const TAGS_GENERATED = path.join(OUT_DIR, 'tags.generated.js');
 const DELETIONS = path.join(MIGRATION_DIR, 'deletions.md');
 const PHASE_NOTES = path.join(MIGRATION_DIR, 'phase-3-notes.md');
 
@@ -283,7 +292,12 @@ function supplementalFeature({
   description,
   valueType = 'string',
   unit = null,
+  enumSet = null,
   provisionTypes,
+  provisionCodes = null,
+  presence = 'rare',
+  citable = false,
+  requiredEvidence = false,
   displayGroup,
   displayOrder,
   formatter = null,
@@ -296,16 +310,16 @@ function supplementalFeature({
     description,
     valueType,
     unit,
-    enumSet: null,
+    enumSet,
     objectShape: null,
     listItemType,
     listItemTagFamily: null,
     provisionTypes,
-    provisionCodes: null,
-    presence: 'rare',
+    provisionCodes,
+    presence,
     presenceCondition: null,
-    requiredEvidence: false,
-    citable: false,
+    requiredEvidence,
+    citable,
     displayGroup,
     displayOrder,
     benchmarkable,
@@ -481,6 +495,168 @@ function supplementalLiveFeatures(validTypes) {
   };
 }
 
+// Keys landed directly in lib/schema/features.js by the phase-0-C registry
+// reconciliation (and follow-on reviewer additions) before this generator
+// carried the field shapes to support them (enumSet, provisionCodes,
+// presence, citable). Declared here — rather than in lib/rubric.js's
+// FEATURES arrays — because they are not raw per-provision extraction
+// targets: they are review-UI / reconciliation-derived signals (aliases,
+// merges, rendering lookups) layered on top of extracted values. See
+// docs/schema-shape/normalized-v1.json entries with
+// provenance.origin === 'phase-0-C-reconciliation' / 'reviewer-added' for
+// the audit trail.
+function supplementalReconciliationFeatures() {
+  return {
+    antitrustEffortsStandard: supplementalFeature({
+      key: 'antitrustEffortsStandard',
+      label: 'Antitrust efforts standard',
+      description: 'TODO: describe Antitrust efforts standard.',
+      valueType: 'enum',
+      enumSet: ['best-efforts', 'commercially-reasonable-efforts', 'flat', 'good-faith-efforts', 'reasonable-best-efforts', 'reasonable-efforts'],
+      provisionTypes: ['ANTI'],
+      provisionCodes: ['ANTI-BURDEN', 'ANTI-EFFORTS', 'ANTI-FOREIGN', 'ANTI-INFO', 'ANTI-LITIGATION', 'ANTI-NOTIFY'],
+      presence: 'often',
+      citable: true,
+      displayGroup: 'Regulatory',
+      displayOrder: 90018,
+      benchmarkable: true,
+      formatter: 'enum_titlecase',
+    }),
+    divestitureInCondition: supplementalFeature({
+      key: 'divestitureInCondition',
+      label: 'Divestiture concept appears in conditionality',
+      description: 'TODO: describe Divestiture concept appears in conditionality.',
+      valueType: 'boolean',
+      provisionTypes: ['ANTI', 'COND-B', 'COND-M', 'COND-S'],
+      provisionCodes: ['ANTI-BURDEN', 'COND-B-CERT', 'COND-B-COV', 'COND-B-MAE', 'COND-B-REP', 'COND-M-LEGAL', 'COND-M-STOCKHOLDER'],
+      presence: 'often',
+      citable: true,
+      displayGroup: 'Regulatory',
+      displayOrder: 90019,
+      benchmarkable: true,
+    }),
+    tenderOffer: supplementalFeature({
+      key: 'tenderOffer',
+      label: 'Tender offer present',
+      description: 'TODO: describe Tender offer present.',
+      valueType: 'boolean',
+      provisionTypes: ['STRUCT'],
+      provisionCodes: ['STRUCT-OFFER'],
+      presence: 'often',
+      citable: true,
+      displayGroup: 'Structure',
+      displayOrder: 90020,
+      benchmarkable: true,
+    }),
+    absenceConductedOrdinaryCourse: supplementalFeature({
+      key: 'absenceConductedOrdinaryCourse',
+      label: 'Absence-of-changes — conducted in ordinary course',
+      description: 'TODO: describe Absence-of-changes — conducted in ordinary course.',
+      valueType: 'boolean',
+      provisionTypes: ['REP-T'],
+      provisionCodes: ['REP-T-AUTH', 'REP-T-BENEFITS', 'REP-T-BROKERS', 'REP-T-CAP', 'REP-T-COMPLY', 'REP-T-LIT', 'REP-T-NOCHANGE', 'REP-T-NOCONFLICT', 'REP-T-ORG', 'REP-T-TAX'],
+      presence: 'often',
+      citable: true,
+      displayGroup: 'Representations',
+      displayOrder: 90021,
+      benchmarkable: true,
+    }),
+    absenceSpecifiedIOCReferences: supplementalFeature({
+      key: 'absenceSpecifiedIOCReferences',
+      label: 'Absence-of-changes — specified IOC references',
+      description: 'TODO: describe Absence-of-changes — specified IOC references.',
+      valueType: 'string',
+      provisionTypes: ['REP-T'],
+      provisionCodes: ['REP-T-AUTH', 'REP-T-BENEFITS', 'REP-T-BROKERS', 'REP-T-CAP', 'REP-T-COMPLY', 'REP-T-LIT', 'REP-T-NOCHANGE', 'REP-T-NOCONFLICT', 'REP-T-ORG', 'REP-T-TAX'],
+      presence: 'often',
+      displayGroup: 'Representations',
+      displayOrder: 90022,
+    }),
+    feeExpenseAllocationExceptions: supplementalFeature({
+      key: 'feeExpenseAllocationExceptions',
+      label: 'Fee / expense allocation exceptions',
+      description: 'TODO: describe Fee / expense allocation exceptions.',
+      valueType: 'string',
+      provisionTypes: ['MISC'],
+      presence: 'often',
+      displayGroup: 'Boilerplate',
+      displayOrder: 90023,
+    }),
+    absenceSpecifiedIOCs: supplementalFeature({
+      key: 'absenceSpecifiedIOCs',
+      label: 'Absence-of-changes — specified IOCs absent',
+      description: 'TODO: describe Absence-of-changes — specified IOCs absent.',
+      valueType: 'boolean',
+      provisionTypes: ['REP-T'],
+      provisionCodes: ['REP-T-AUTH', 'REP-T-BENEFITS', 'REP-T-BROKERS', 'REP-T-CAP', 'REP-T-COMPLY', 'REP-T-LIT', 'REP-T-NOCHANGE', 'REP-T-NOCONFLICT', 'REP-T-ORG', 'REP-T-TAX'],
+      presence: 'often',
+      citable: true,
+      displayGroup: 'Representations',
+      displayOrder: 90024,
+      benchmarkable: true,
+    }),
+    interveningEventExceptions: supplementalFeature({
+      key: 'interveningEventExceptions',
+      label: 'Intervening Event exceptions',
+      description: 'TODO: describe Intervening Event exceptions.',
+      valueType: 'string',
+      provisionTypes: ['NOSOL'],
+      provisionCodes: ['NOSOL-ACQPROPOSAL', 'NOSOL-CEASE', 'NOSOL-EXCEPT', 'NOSOL-MATCH', 'NOSOL-NOTICE', 'NOSOL-PROHIBIT', 'NOSOL-RECOMMEND', 'NOSOL-SUPERIOR'],
+      presence: 'often',
+      displayGroup: 'Fiduciary out',
+      displayOrder: 90027,
+    }),
+    notificationCovenantFailureStandard: supplementalFeature({
+      key: 'notificationCovenantFailureStandard',
+      label: 'Notification covenant — covenant-failure standard',
+      description: 'TODO: describe Notification covenant — covenant-failure standard.',
+      valueType: 'enum',
+      enumSet: ['ALL_IN_MATERIAL_RESPECTS', 'EACH_IN_MATERIAL_RESPECTS', 'HYBRID'],
+      provisionTypes: ['COV'],
+      presence: 'often',
+      citable: true,
+      displayGroup: 'Interim covenants',
+      displayOrder: 90028,
+      formatter: 'enum_titlecase',
+    }),
+    buyerEffortsCap: supplementalFeature({
+      key: 'buyerEffortsCap',
+      label: 'Buyer antitrust efforts cap / prohibited remedy limit',
+      description: 'TODO: describe Buyer antitrust efforts cap / prohibited remedy limit.',
+      valueType: 'string',
+      provisionTypes: ['ANTI'],
+      provisionCodes: ['ANTI-BURDEN', 'ANTI-EFFORTS'],
+      presence: 'often',
+      citable: true,
+      displayGroup: 'Regulatory',
+      displayOrder: 90029,
+    }),
+    targetEffortsCap: supplementalFeature({
+      key: 'targetEffortsCap',
+      label: 'Target antitrust efforts cap / prohibited remedy limit',
+      description: 'TODO: describe Target antitrust efforts cap / prohibited remedy limit.',
+      valueType: 'string',
+      provisionTypes: ['ANTI'],
+      provisionCodes: ['ANTI-BURDEN', 'ANTI-EFFORTS'],
+      presence: 'often',
+      citable: true,
+      displayGroup: 'Regulatory',
+      displayOrder: 90030,
+    }),
+    nominalTargetParty: supplementalFeature({
+      key: 'nominalTargetParty',
+      label: 'Nominal target party for role coding',
+      description: 'TODO: describe Nominal target party for role coding.',
+      valueType: 'string',
+      provisionTypes: ['STRUCT'],
+      provisionCodes: ['STRUCT-MERGER'],
+      presence: 'often',
+      displayGroup: 'Structure',
+      displayOrder: 90031,
+    }),
+  };
+}
+
 function stringifyObject(name, value) {
   return `const ${name} = ${JSON.stringify(value, null, 2)};\n\nmodule.exports = { ${name} };\n`;
 }
@@ -543,6 +719,7 @@ function main() {
     features[row.key] = buildFeature(row, sourceInventory, getDisplayOrder, featureTagFamily, validTypes);
   }
   Object.assign(features, supplementalLiveFeatures(validTypes));
+  Object.assign(features, supplementalReconciliationFeatures());
 
   const tags = buildTags(sourceInventory, featureTagFamily);
   writeGeneratedFile(FEATURES_GENERATED, 'FEATURES', features);

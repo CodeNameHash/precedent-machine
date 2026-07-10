@@ -33,92 +33,106 @@
         "key": "IOC",
         "label": "Interim Operating Covenants",
         "mode": "single",
-        "party": "target",
+        "party": null,
         "line": 45
+      },
+      {
+        "key": "IOC-T",
+        "label": "Interim Operating Covenants (Target)",
+        "mode": "single",
+        "party": "target",
+        "line": 52
+      },
+      {
+        "key": "IOC-B",
+        "label": "Interim Operating Covenants (Buyer)",
+        "mode": "single",
+        "party": "buyer",
+        "line": 59
       },
       {
         "key": "NOSOL",
         "label": "No-Solicitation / No-Shop",
         "mode": "multi",
         "party": "target",
-        "line": 52
+        "line": 66
       },
       {
         "key": "ANTI",
         "label": "Antitrust / Regulatory Efforts",
         "mode": "multi",
         "party": "mutual",
-        "line": 59
+        "line": 73
       },
       {
         "key": "COND-M",
         "label": "Conditions to Closing (Mutual)",
         "mode": "single",
         "party": "mutual",
-        "line": 66
+        "line": 80
       },
       {
         "key": "COND-B",
         "label": "Conditions to Closing (Buyer)",
         "mode": "single",
         "party": "buyer",
-        "line": 73
+        "line": 87
       },
       {
         "key": "COND-S",
         "label": "Conditions to Closing (Seller/Target)",
         "mode": "single",
         "party": "target",
-        "line": 80
+        "line": 94
       },
       {
         "key": "COND",
         "label": "Condition Modifiers",
         "mode": "single",
         "party": null,
-        "line": 87
+        "line": 101
       },
       {
         "key": "TERMR",
         "label": "Termination Rights",
         "mode": "single",
         "party": null,
-        "line": 94
+        "line": 108
       },
       {
         "key": "TERMF",
         "label": "Termination Fees & Expenses",
         "mode": "single",
         "party": null,
-        "line": 101
+        "line": 115
       },
       {
         "key": "DEF",
         "label": "Definitions",
         "mode": "single",
         "party": null,
-        "line": 108
+        "line": 122
       },
       {
         "key": "COV",
         "label": "Other Covenants (Additional Agreements)",
         "mode": "single",
         "party": null,
-        "line": 115
+        "line": 129
       },
       {
         "key": "MISC",
         "label": "Miscellaneous / Boilerplate",
         "mode": "single",
         "party": null,
-        "line": 122
+        "line": 136
       },
       {
         "key": "OTHER",
         "label": "Other Provisions",
         "mode": "single",
         "party": null,
-        "line": 129
+        "line": 143
       }
     ],
     "codes": [
@@ -133,7 +147,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 143
+        "line": 157
       },
       {
         "code": "STRUCT-OFFER",
@@ -149,7 +163,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 151
+        "line": 165
       },
       {
         "code": "STRUCT-CLOSING",
@@ -162,7 +176,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 159
+        "line": 173
       },
       {
         "code": "STRUCT-EFFTIME",
@@ -175,7 +189,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 167
+        "line": 181
       },
       {
         "code": "STRUCT-EFFECTS",
@@ -188,7 +202,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 175
+        "line": 189
       },
       {
         "code": "STRUCT-CHARTER",
@@ -201,7 +215,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 183
+        "line": 197
       },
       {
         "code": "STRUCT-DIRECTORS",
@@ -213,7 +227,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 191
+        "line": 205
       },
       {
         "code": "STRUCT-ACTIONS",
@@ -226,7 +240,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 199
+        "line": 213
       },
       {
         "code": "CONSID-CONVERT",
@@ -240,7 +254,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 209
+        "line": 223
       },
       {
         "code": "CONSID-EXCHANGE",
@@ -255,7 +269,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 217
+        "line": 231
       },
       {
         "code": "CONSID-EQUITY",
@@ -269,7 +283,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 225
+        "line": 239
       },
       {
         "code": "CONSID-DISSENT",
@@ -282,7 +296,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 233
+        "line": 247
       },
       {
         "code": "CONSID-WITHHOLD",
@@ -295,7 +309,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 241
+        "line": 255
       },
       {
         "code": "CONSID-ADJUST",
@@ -308,7 +322,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 249
+        "line": 263
       },
       {
         "code": "CONSID-CVR",
@@ -321,7 +335,7 @@
         ],
         "frequency": "occasional",
         "industries": [],
-        "line": 258
+        "line": 272
       },
       {
         "code": "CONSID-COLLAR",
@@ -336,7 +350,7 @@
         ],
         "frequency": "occasional",
         "industries": [],
-        "line": 266
+        "line": 280
       },
       {
         "code": "CONSID-TICKING",
@@ -349,7 +363,7 @@
         ],
         "frequency": "occasional",
         "industries": [],
-        "line": 274
+        "line": 288
       },
       {
         "code": "CONSID-EXCHANGE-RATIO",
@@ -363,7 +377,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 282
+        "line": 296
       },
       {
         "code": "CONSID-WALKAWAY",
@@ -376,7 +390,7 @@
         ],
         "frequency": "occasional",
         "industries": [],
-        "line": 290
+        "line": 304
       },
       {
         "code": "REP-T-ORG",
@@ -389,7 +403,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 300
+        "line": 314
       },
       {
         "code": "REP-T-CAP",
@@ -402,7 +416,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 308
+        "line": 322
       },
       {
         "code": "REP-T-AUTH",
@@ -416,7 +430,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 316
+        "line": 330
       },
       {
         "code": "REP-T-NOCONFLICT",
@@ -430,7 +444,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 324
+        "line": 338
       },
       {
         "code": "REP-T-SEC",
@@ -444,7 +458,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 332
+        "line": 346
       },
       {
         "code": "REP-T-FINSTMT",
@@ -458,7 +472,7 @@
         "industries": [
           "energy"
         ],
-        "line": 340
+        "line": 354
       },
       {
         "code": "REP-T-NOCHANGE",
@@ -471,7 +485,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 348
+        "line": 362
       },
       {
         "code": "REP-T-NOLIAB",
@@ -483,7 +497,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 356
+        "line": 370
       },
       {
         "code": "REP-T-LIT",
@@ -497,7 +511,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 364
+        "line": 378
       },
       {
         "code": "REP-T-COMPLY",
@@ -511,7 +525,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 372
+        "line": 386
       },
       {
         "code": "REP-T-BENEFITS",
@@ -525,7 +539,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 380
+        "line": 394
       },
       {
         "code": "REP-T-LABOR",
@@ -539,7 +553,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 388
+        "line": 402
       },
       {
         "code": "REP-T-TAX",
@@ -552,7 +566,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 396
+        "line": 410
       },
       {
         "code": "REP-T-CONTRACTS",
@@ -565,7 +579,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 404
+        "line": 418
       },
       {
         "code": "REP-T-IP",
@@ -578,7 +592,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 412
+        "line": 426
       },
       {
         "code": "REP-T-PROPERTY",
@@ -592,7 +606,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 420
+        "line": 434
       },
       {
         "code": "REP-T-ENV",
@@ -605,7 +619,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 428
+        "line": 442
       },
       {
         "code": "REP-T-INSURANCE",
@@ -618,7 +632,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 436
+        "line": 450
       },
       {
         "code": "REP-T-BROKERS",
@@ -631,7 +645,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 444
+        "line": 458
       },
       {
         "code": "REP-T-ANTICORR",
@@ -645,7 +659,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 452
+        "line": 466
       },
       {
         "code": "REP-T-PRIVACY",
@@ -660,7 +674,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 460
+        "line": 474
       },
       {
         "code": "REP-T-TAKEOVER",
@@ -674,7 +688,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 468
+        "line": 482
       },
       {
         "code": "REP-T-FAIRNESS",
@@ -687,7 +701,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 476
+        "line": 490
       },
       {
         "code": "REP-T-RPT",
@@ -701,7 +715,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 484
+        "line": 498
       },
       {
         "code": "REP-T-PROXY",
@@ -714,7 +728,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 492
+        "line": 506
       },
       {
         "code": "REP-T-NOREP",
@@ -727,7 +741,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 500
+        "line": 514
       },
       {
         "code": "REP-T-PRODUCT",
@@ -741,7 +755,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 508
+        "line": 522
       },
       {
         "code": "REP-T-SUPPLY",
@@ -756,7 +770,7 @@
         "industries": [
           "pharma"
         ],
-        "line": 516
+        "line": 530
       },
       {
         "code": "REP-T-FDA",
@@ -777,7 +791,7 @@
         "industries": [
           "pharma"
         ],
-        "line": 524
+        "line": 538
       },
       {
         "code": "REP-T-CONTROLS",
@@ -791,7 +805,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 541
+        "line": 555
       },
       {
         "code": "REP-T-SANCTIONS",
@@ -807,7 +821,7 @@
         "industries": [
           "pharma"
         ],
-        "line": 549
+        "line": 563
       },
       {
         "code": "REP-T-OIL",
@@ -822,7 +836,7 @@
         "industries": [
           "energy"
         ],
-        "line": 557
+        "line": 571
       },
       {
         "code": "REP-T-WELLS",
@@ -837,7 +851,7 @@
         "industries": [
           "energy"
         ],
-        "line": 565
+        "line": 579
       },
       {
         "code": "REP-T-RESERVE",
@@ -852,7 +866,7 @@
         "industries": [
           "energy"
         ],
-        "line": 573
+        "line": 587
       },
       {
         "code": "REP-T-REGSTATUS",
@@ -867,7 +881,7 @@
         "industries": [
           "energy"
         ],
-        "line": 581
+        "line": 595
       },
       {
         "code": "REP-T-CONSENT",
@@ -881,7 +895,7 @@
         "industries": [
           "energy"
         ],
-        "line": 589
+        "line": 603
       },
       {
         "code": "REP-T-CLINICAL",
@@ -897,7 +911,7 @@
         "industries": [
           "pharma"
         ],
-        "line": 598
+        "line": 612
       },
       {
         "code": "REP-T-HEALTHCARE",
@@ -914,7 +928,7 @@
         "industries": [
           "pharma"
         ],
-        "line": 606
+        "line": 620
       },
       {
         "code": "REP-T-HEALTHLAWS",
@@ -930,7 +944,7 @@
         "industries": [
           "pharma"
         ],
-        "line": 614
+        "line": 628
       },
       {
         "code": "REP-B-ORG",
@@ -942,7 +956,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 624
+        "line": 638
       },
       {
         "code": "REP-B-AUTH",
@@ -955,7 +969,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 632
+        "line": 646
       },
       {
         "code": "REP-B-NOCONFLICT",
@@ -968,7 +982,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 640
+        "line": 654
       },
       {
         "code": "REP-B-LIT",
@@ -981,7 +995,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 648
+        "line": 662
       },
       {
         "code": "REP-B-BROKERS",
@@ -994,7 +1008,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 656
+        "line": 670
       },
       {
         "code": "REP-B-FUNDS",
@@ -1008,7 +1022,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 664
+        "line": 678
       },
       {
         "code": "REP-B-MERGESUB",
@@ -1021,7 +1035,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 672
+        "line": 686
       },
       {
         "code": "REP-B-PROXY",
@@ -1034,7 +1048,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 680
+        "line": 694
       },
       {
         "code": "REP-B-VOTE",
@@ -1047,7 +1061,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 688
+        "line": 702
       },
       {
         "code": "REP-B-NOINTEREST",
@@ -1060,7 +1074,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 696
+        "line": 710
       },
       {
         "code": "REP-B-NOREP",
@@ -1073,7 +1087,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 704
+        "line": 718
       },
       {
         "code": "REP-B-CAP",
@@ -1085,7 +1099,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 712
+        "line": 726
       },
       {
         "code": "REP-B-SEC",
@@ -1098,7 +1112,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 720
+        "line": 734
       },
       {
         "code": "REP-B-NOCHANGE",
@@ -1110,7 +1124,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 728
+        "line": 742
       },
       {
         "code": "REP-B-NOLIAB",
@@ -1122,7 +1136,7 @@
         ],
         "frequency": "industry-specific",
         "industries": [],
-        "line": 736
+        "line": 750
       },
       {
         "code": "REP-B-TAX",
@@ -1134,7 +1148,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 744
+        "line": 758
       },
       {
         "code": "REP-B-COMPLY",
@@ -1146,7 +1160,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 752
+        "line": 766
       },
       {
         "code": "REP-B-BENEFITS",
@@ -1158,7 +1172,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 760
+        "line": 774
       },
       {
         "code": "REP-B-ENV",
@@ -1172,7 +1186,7 @@
         "industries": [
           "energy"
         ],
-        "line": 768
+        "line": 782
       },
       {
         "code": "REP-B-IP",
@@ -1187,7 +1201,7 @@
         "industries": [
           "energy"
         ],
-        "line": 776
+        "line": 790
       },
       {
         "code": "REP-B-CONTRACTS",
@@ -1201,7 +1215,7 @@
         "industries": [
           "energy"
         ],
-        "line": 784
+        "line": 798
       },
       {
         "code": "REP-B-SOLVENCY",
@@ -1214,7 +1228,7 @@
         ],
         "frequency": "industry-specific",
         "industries": [],
-        "line": 792
+        "line": 806
       },
       {
         "code": "REP-B-LABOR",
@@ -1227,7 +1241,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 800
+        "line": 814
       },
       {
         "code": "REP-B-EQUITY",
@@ -1239,7 +1253,7 @@
         ],
         "frequency": "industry-specific",
         "industries": [],
-        "line": 808
+        "line": 822
       },
       {
         "code": "REP-B-FAIRNESS",
@@ -1251,7 +1265,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 816
+        "line": 830
       },
       {
         "code": "REP-B-NORIGHTS",
@@ -1266,7 +1280,33 @@
         "industries": [
           "energy"
         ],
-        "line": 824
+        "line": 838
+      },
+      {
+        "code": "REP-B-SUBSIDIARIES",
+        "type": "REP-B",
+        "label": "Subsidiaries (public buyer)",
+        "description": "Buyer representations regarding ownership, validity, and liens on significant subsidiaries",
+        "aliases": [
+          "Buyer Subsidiaries",
+          "Subsidiaries"
+        ],
+        "frequency": "common",
+        "industries": [],
+        "line": 846
+      },
+      {
+        "code": "REP-B-REALPROPERTY",
+        "type": "REP-B",
+        "label": "Real Property (public buyer)",
+        "description": "Buyer real property ownership, leasehold, condemnation, and lease compliance representations",
+        "aliases": [
+          "Buyer Real Property",
+          "Real Property"
+        ],
+        "frequency": "industry-specific",
+        "industries": [],
+        "line": 854
       },
       {
         "code": "IOC-ORDINARY",
@@ -1279,7 +1319,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 834
+        "line": 864
       },
       {
         "code": "IOC-EXISTENCE",
@@ -1293,7 +1333,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 842
+        "line": 872
       },
       {
         "code": "IOC-PRESERVE",
@@ -1307,7 +1347,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 850
+        "line": 880
       },
       {
         "code": "IOC-MAINTAIN",
@@ -1321,7 +1361,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 858
+        "line": 888
       },
       {
         "code": "IOC-NEWLINE",
@@ -1334,7 +1374,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 866
+        "line": 896
       },
       {
         "code": "IOC-NOACTION",
@@ -1346,7 +1386,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 874
+        "line": 904
       },
       {
         "code": "IOC-OTHER-AFFIRMATIVE",
@@ -1356,7 +1396,7 @@
         "aliases": [],
         "frequency": "common",
         "industries": [],
-        "line": 882
+        "line": 912
       },
       {
         "code": "IOC-AFFIRMATIVE",
@@ -1366,7 +1406,7 @@
         "aliases": [],
         "frequency": "common",
         "industries": [],
-        "line": 890
+        "line": 920
       },
       {
         "code": "IOC-GENERAL-EXCEPTIONS",
@@ -1376,7 +1416,7 @@
         "aliases": [],
         "frequency": "common",
         "industries": [],
-        "line": 898
+        "line": 928
       },
       {
         "code": "IOC-POSITIVE-PREAMBLE",
@@ -1386,7 +1426,7 @@
         "aliases": [],
         "frequency": "common",
         "industries": [],
-        "line": 910
+        "line": 940
       },
       {
         "code": "IOC-NEGATIVE-PREAMBLE",
@@ -1396,7 +1436,7 @@
         "aliases": [],
         "frequency": "common",
         "industries": [],
-        "line": 918
+        "line": 948
       },
       {
         "code": "IOC-CHARTER",
@@ -1410,12 +1450,12 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 926
+        "line": 956
       },
       {
         "code": "IOC-MERGE",
         "type": "IOC",
-        "label": "Mergers, Acquisitions, Dispositions",
+        "label": "Acquisition / Disposition Covenant",
         "description": "No mergers, acquisitions, sales of material assets",
         "aliases": [
           "No Acquisitions",
@@ -1424,7 +1464,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 934
+        "line": 964
       },
       {
         "code": "IOC-ISSUE",
@@ -1437,7 +1477,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 942
+        "line": 972
       },
       {
         "code": "IOC-REPURCHASE",
@@ -1450,7 +1490,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 950
+        "line": 980
       },
       {
         "code": "IOC-DIVIDEND",
@@ -1463,7 +1503,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 958
+        "line": 988
       },
       {
         "code": "IOC-SPLIT",
@@ -1476,7 +1516,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 966
+        "line": 996
       },
       {
         "code": "IOC-DEBT",
@@ -1490,7 +1530,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 974
+        "line": 1004
       },
       {
         "code": "IOC-LIEN",
@@ -1503,7 +1543,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 982
+        "line": 1012
       },
       {
         "code": "IOC-CAPEX",
@@ -1516,7 +1556,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 990
+        "line": 1020
       },
       {
         "code": "IOC-COMP",
@@ -1530,7 +1570,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 998
+        "line": 1028
       },
       {
         "code": "IOC-HIRE",
@@ -1543,7 +1583,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1006
+        "line": 1036
       },
       {
         "code": "IOC-SETTLE",
@@ -1556,7 +1596,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1014
+        "line": 1044
       },
       {
         "code": "IOC-TAX",
@@ -1569,7 +1609,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1022
+        "line": 1052
       },
       {
         "code": "IOC-ACCOUNTING",
@@ -1582,7 +1622,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1030
+        "line": 1060
       },
       {
         "code": "IOC-CONTRACT",
@@ -1595,7 +1635,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1038
+        "line": 1068
       },
       {
         "code": "IOC-IP",
@@ -1608,7 +1648,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1046
+        "line": 1076
       },
       {
         "code": "IOC-INSURANCE",
@@ -1620,7 +1660,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1054
+        "line": 1084
       },
       {
         "code": "IOC-REALPROP",
@@ -1633,7 +1673,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1062
+        "line": 1092
       },
       {
         "code": "IOC-WAIVE",
@@ -1646,7 +1686,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1070
+        "line": 1100
       },
       {
         "code": "IOC-AFFILIATE",
@@ -1659,7 +1699,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1078
+        "line": 1108
       },
       {
         "code": "IOC-ENVIRO",
@@ -1671,7 +1711,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1086
+        "line": 1116
       },
       {
         "code": "IOC-COMMIT",
@@ -1684,7 +1724,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1094
+        "line": 1124
       },
       {
         "code": "IOC-CLINICAL",
@@ -1699,7 +1739,7 @@
         "industries": [
           "pharma"
         ],
-        "line": 1103
+        "line": 1133
       },
       {
         "code": "IOC-PRODUCT",
@@ -1714,7 +1754,7 @@
         "industries": [
           "pharma"
         ],
-        "line": 1111
+        "line": 1141
       },
       {
         "code": "IOC-REGAUTH",
@@ -1729,7 +1769,7 @@
         "industries": [
           "pharma"
         ],
-        "line": 1119
+        "line": 1149
       },
       {
         "code": "NOSOL-PROHIBIT",
@@ -1743,7 +1783,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1129
+        "line": 1159
       },
       {
         "code": "NOSOL-CEASE",
@@ -1756,7 +1796,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1137
+        "line": 1167
       },
       {
         "code": "NOSOL-EXCEPT",
@@ -1770,7 +1810,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1145
+        "line": 1175
       },
       {
         "code": "NOSOL-SUPERIOR",
@@ -1783,7 +1823,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1153
+        "line": 1183
       },
       {
         "code": "NOSOL-ACQPROPOSAL",
@@ -1797,7 +1837,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1161
+        "line": 1191
       },
       {
         "code": "NOSOL-NOTICE",
@@ -1810,7 +1850,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1169
+        "line": 1199
       },
       {
         "code": "NOSOL-DISCLOSE",
@@ -1823,7 +1863,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1177
+        "line": 1207
       },
       {
         "code": "NOSOL-MATCH",
@@ -1837,7 +1877,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1185
+        "line": 1215
       },
       {
         "code": "NOSOL-NEGOTIATE",
@@ -1850,7 +1890,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1193
+        "line": 1223
       },
       {
         "code": "NOSOL-REMATCH",
@@ -1864,7 +1904,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1201
+        "line": 1231
       },
       {
         "code": "NOSOL-RECOMMEND",
@@ -1878,7 +1918,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1209
+        "line": 1239
       },
       {
         "code": "NOSOL-INTERVENING",
@@ -1891,7 +1931,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1217
+        "line": 1247
       },
       {
         "code": "NOSOL-WINDOW",
@@ -1906,7 +1946,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1225
+        "line": 1255
       },
       {
         "code": "NOSOL-ENFORCE",
@@ -1919,7 +1959,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1233
+        "line": 1263
       },
       {
         "code": "NOSOL-WAIVER",
@@ -1933,7 +1973,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1241
+        "line": 1271
       },
       {
         "code": "NOSOL-INFORMATION",
@@ -1946,7 +1986,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1249
+        "line": 1279
       },
       {
         "code": "NOSOL-CONFID",
@@ -1959,7 +1999,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1257
+        "line": 1287
       },
       {
         "code": "ANTI-EFFORTS",
@@ -1973,7 +2013,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 1270
+        "line": 1300
       },
       {
         "code": "ANTI-BURDEN",
@@ -1988,7 +2028,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 1279
+        "line": 1309
       },
       {
         "code": "ANTI-NOACTION",
@@ -2001,7 +2041,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1288
+        "line": 1318
       },
       {
         "code": "ANTI-FILING",
@@ -2018,7 +2058,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1297
+        "line": 1327
       },
       {
         "code": "ANTI-COOPERATE",
@@ -2033,7 +2073,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1306
+        "line": 1336
       },
       {
         "code": "ANTI-INFO",
@@ -2046,7 +2086,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1315
+        "line": 1345
       },
       {
         "code": "ANTI-FOREIGN",
@@ -2061,7 +2101,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1324
+        "line": 1354
       },
       {
         "code": "ANTI-INTERIM",
@@ -2074,7 +2114,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1333
+        "line": 1363
       },
       {
         "code": "ANTI-NOTIFY",
@@ -2087,7 +2127,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1342
+        "line": 1372
       },
       {
         "code": "ANTI-LITIGATION",
@@ -2100,7 +2140,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1351
+        "line": 1381
       },
       {
         "code": "ANTI-CONSULT",
@@ -2113,7 +2153,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1360
+        "line": 1390
       },
       {
         "code": "ANTI-TIMING",
@@ -2126,7 +2166,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1369
+        "line": 1399
       },
       {
         "code": "COND-M-LEGAL",
@@ -2140,7 +2180,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 1380
+        "line": 1410
       },
       {
         "code": "COND-M-REG",
@@ -2156,7 +2196,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1388
+        "line": 1418
       },
       {
         "code": "COND-M-STOCKHOLDER",
@@ -2169,7 +2209,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 1399
+        "line": 1429
       },
       {
         "code": "COND-M-S4",
@@ -2182,7 +2222,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1407
+        "line": 1437
       },
       {
         "code": "COND-M-LISTING",
@@ -2196,7 +2236,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1415
+        "line": 1445
       },
       {
         "code": "COND-B-REP",
@@ -2209,7 +2249,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1425
+        "line": 1455
       },
       {
         "code": "COND-B-COV",
@@ -2222,7 +2262,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1433
+        "line": 1463
       },
       {
         "code": "COND-B-MAE",
@@ -2236,7 +2276,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1441
+        "line": 1471
       },
       {
         "code": "COND-B-CERT",
@@ -2249,7 +2289,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1449
+        "line": 1479
       },
       {
         "code": "COND-B-DISSENT",
@@ -2262,7 +2302,7 @@
         ],
         "frequency": "industry-specific",
         "industries": [],
-        "line": 1457
+        "line": 1487
       },
       {
         "code": "COND-S-REP",
@@ -2275,7 +2315,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1467
+        "line": 1497
       },
       {
         "code": "COND-S-COV",
@@ -2288,7 +2328,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1475
+        "line": 1505
       },
       {
         "code": "COND-S-CERT",
@@ -2301,7 +2341,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1483
+        "line": 1513
       },
       {
         "code": "COND-S-FUNDS",
@@ -2314,7 +2354,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1491
+        "line": 1521
       },
       {
         "code": "COND-M-PREAMBLE",
@@ -2327,7 +2367,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1504
+        "line": 1534
       },
       {
         "code": "COND-B-PREAMBLE",
@@ -2340,7 +2380,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1512
+        "line": 1542
       },
       {
         "code": "COND-S-PREAMBLE",
@@ -2353,7 +2393,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1520
+        "line": 1550
       },
       {
         "code": "COND-FRUSTRATE",
@@ -2366,7 +2406,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1530
+        "line": 1560
       },
       {
         "code": "COND-TAXOPINION",
@@ -2379,7 +2419,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1538
+        "line": 1568
       },
       {
         "code": "TERMR-PREAMBLE",
@@ -2392,7 +2432,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1548
+        "line": 1578
       },
       {
         "code": "TERMR-MUTUAL",
@@ -2404,7 +2444,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 1556
+        "line": 1586
       },
       {
         "code": "TERMR-OUTSIDE",
@@ -2419,7 +2459,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 1564
+        "line": 1594
       },
       {
         "code": "TERMR-EXTENSION",
@@ -2432,7 +2472,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1572
+        "line": 1602
       },
       {
         "code": "TERMR-LEGAL",
@@ -2445,7 +2485,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1580
+        "line": 1610
       },
       {
         "code": "TERMR-VOTE",
@@ -2458,7 +2498,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1588
+        "line": 1618
       },
       {
         "code": "TERMR-BREACH-T",
@@ -2471,7 +2511,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1596
+        "line": 1626
       },
       {
         "code": "TERMR-BREACH-B",
@@ -2484,7 +2524,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1604
+        "line": 1634
       },
       {
         "code": "TERMR-SUPERIOR",
@@ -2497,7 +2537,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1612
+        "line": 1642
       },
       {
         "code": "TERMR-RECOMMEND",
@@ -2510,7 +2550,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1620
+        "line": 1650
       },
       {
         "code": "TERMF-TARGET",
@@ -2524,7 +2564,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1630
+        "line": 1660
       },
       {
         "code": "TERMF-REVERSE",
@@ -2538,7 +2578,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1638
+        "line": 1668
       },
       {
         "code": "TERMF-EXPENSE",
@@ -2550,7 +2590,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1646
+        "line": 1676
       },
       {
         "code": "TERMF-TAIL",
@@ -2564,7 +2604,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1654
+        "line": 1684
       },
       {
         "code": "TERMF-EFFECT",
@@ -2577,7 +2617,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1662
+        "line": 1692
       },
       {
         "code": "TERMF-SOLE",
@@ -2591,7 +2631,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1670
+        "line": 1700
       },
       {
         "code": "DEF-MAE",
@@ -2605,7 +2645,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1681
+        "line": 1711
       },
       {
         "code": "DEF-MAE-CARVEOUT",
@@ -2619,7 +2659,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1689
+        "line": 1719
       },
       {
         "code": "DEF-MAE-DISPROP",
@@ -2632,7 +2672,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1697
+        "line": 1727
       },
       {
         "code": "DEF-MAE-CLINICAL",
@@ -2648,7 +2688,7 @@
         "industries": [
           "pharma"
         ],
-        "line": 1706
+        "line": 1736
       },
       {
         "code": "DEF-SUPERIOR",
@@ -2661,7 +2701,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1714
+        "line": 1744
       },
       {
         "code": "DEF-ACQPROPOSAL",
@@ -2675,7 +2715,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1722
+        "line": 1752
       },
       {
         "code": "DEF-INTERVENING",
@@ -2687,7 +2727,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1730
+        "line": 1760
       },
       {
         "code": "DEF-KNOWLEDGE",
@@ -2701,7 +2741,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1738
+        "line": 1768
       },
       {
         "code": "DEF-ORDINARY",
@@ -2714,7 +2754,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1746
+        "line": 1776
       },
       {
         "code": "DEF-BURDENSOME",
@@ -2726,7 +2766,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1754
+        "line": 1784
       },
       {
         "code": "DEF-WILLFUL",
@@ -2740,7 +2780,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1762
+        "line": 1792
       },
       {
         "code": "DEF-SUBSIDIARY",
@@ -2752,7 +2792,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1771
+        "line": 1801
       },
       {
         "code": "DEF-AFFILIATE",
@@ -2764,7 +2804,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1779
+        "line": 1809
       },
       {
         "code": "DEF-PERSON",
@@ -2776,7 +2816,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1787
+        "line": 1817
       },
       {
         "code": "DEF-REPRESENTATIVE",
@@ -2788,7 +2828,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1795
+        "line": 1825
       },
       {
         "code": "DEF-COMPANY",
@@ -2801,7 +2841,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1803
+        "line": 1833
       },
       {
         "code": "DEF-LIEN",
@@ -2814,7 +2854,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1812
+        "line": 1842
       },
       {
         "code": "DEF-PERMITLIEN",
@@ -2827,7 +2867,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1820
+        "line": 1850
       },
       {
         "code": "DEF-CONTRACT",
@@ -2839,7 +2879,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1828
+        "line": 1858
       },
       {
         "code": "DEF-MATCONTRACT",
@@ -2852,7 +2892,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1836
+        "line": 1866
       },
       {
         "code": "DEF-INDEBTEDNESS",
@@ -2864,7 +2904,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1844
+        "line": 1874
       },
       {
         "code": "DEF-BUSINESSDAY",
@@ -2876,7 +2916,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1852
+        "line": 1882
       },
       {
         "code": "DEF-MERGERCONSID",
@@ -2890,7 +2930,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1861
+        "line": 1891
       },
       {
         "code": "DEF-EQUITYAWARD",
@@ -2903,7 +2943,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1869
+        "line": 1899
       },
       {
         "code": "DEF-DISSENTING",
@@ -2916,7 +2956,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1877
+        "line": 1907
       },
       {
         "code": "DEF-GOVAUTH",
@@ -2929,7 +2969,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1886
+        "line": 1916
       },
       {
         "code": "DEF-LAW",
@@ -2941,7 +2981,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1894
+        "line": 1924
       },
       {
         "code": "DEF-PERMIT",
@@ -2954,7 +2994,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1902
+        "line": 1932
       },
       {
         "code": "DEF-REQUIREDAPPROVAL",
@@ -2967,7 +3007,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1910
+        "line": 1940
       },
       {
         "code": "DEF-BENEFITPLAN",
@@ -2980,7 +3020,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1919
+        "line": 1949
       },
       {
         "code": "DEF-COMPANYEMPLOYEE",
@@ -2993,7 +3033,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1927
+        "line": 1957
       },
       {
         "code": "DEF-TAX",
@@ -3005,7 +3045,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1936
+        "line": 1966
       },
       {
         "code": "DEF-TAXRETURN",
@@ -3017,7 +3057,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1944
+        "line": 1974
       },
       {
         "code": "DEF-GENERAL",
@@ -3029,7 +3069,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1953
+        "line": 1983
       },
       {
         "code": "DEF-INTERP",
@@ -3042,7 +3082,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1961
+        "line": 1991
       },
       {
         "code": "DEF-MADE-AVAILABLE",
@@ -3055,7 +3095,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1969
+        "line": 1999
       },
       {
         "code": "DEF-DISCLOSURELETTER",
@@ -3069,7 +3109,20 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1977
+        "line": 2007
+      },
+      {
+        "code": "DEF-ENVIRONMENTAL-CLAIMS",
+        "type": "DEF",
+        "label": "Environmental Claims",
+        "description": "Definition of environmental claims, notices, proceedings, and liabilities",
+        "aliases": [
+          "Environmental Claims",
+          "Environmental Claim Definition"
+        ],
+        "frequency": "industry-specific",
+        "industries": [],
+        "line": 2015
       },
       {
         "code": "COV-ACCESS",
@@ -3082,7 +3135,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1987
+        "line": 2025
       },
       {
         "code": "COV-PROXY",
@@ -3095,7 +3148,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1995
+        "line": 2033
       },
       {
         "code": "COV-MEETING",
@@ -3109,7 +3162,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 2003
+        "line": 2041
       },
       {
         "code": "COV-SHAPRV-PARENT",
@@ -3123,7 +3176,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2015
+        "line": 2053
       },
       {
         "code": "COV-PUBLICITY",
@@ -3137,7 +3190,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 2023
+        "line": 2061
       },
       {
         "code": "COV-INDEMN",
@@ -3151,7 +3204,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 2031
+        "line": 2069
       },
       {
         "code": "COV-EMPLOYEE",
@@ -3165,7 +3218,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 2039
+        "line": 2077
       },
       {
         "code": "COV-TAKEOVER",
@@ -3178,7 +3231,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2047
+        "line": 2085
       },
       {
         "code": "COV-NOTIFY",
@@ -3191,7 +3244,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2055
+        "line": 2093
       },
       {
         "code": "COV-LITNOTIFY",
@@ -3204,7 +3257,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2063
+        "line": 2101
       },
       {
         "code": "COV-16B",
@@ -3218,7 +3271,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2071
+        "line": 2109
       },
       {
         "code": "COV-RESIGN",
@@ -3231,7 +3284,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2079
+        "line": 2117
       },
       {
         "code": "COV-FINANCING",
@@ -3245,7 +3298,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2087
+        "line": 2125
       },
       {
         "code": "COV-DELIST",
@@ -3259,7 +3312,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2095
+        "line": 2133
       },
       {
         "code": "COV-LIST",
@@ -3272,7 +3325,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2103
+        "line": 2141
       },
       {
         "code": "COV-FURTHER",
@@ -3285,7 +3338,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2111
+        "line": 2149
       },
       {
         "code": "COV-SECREPORT",
@@ -3298,7 +3351,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2119
+        "line": 2157
       },
       {
         "code": "COV-TAXMATTERS",
@@ -3311,7 +3364,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2127
+        "line": 2165
       },
       {
         "code": "COV-DEBT",
@@ -3325,7 +3378,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2135
+        "line": 2173
       },
       {
         "code": "COV-MERGESUB",
@@ -3338,7 +3391,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2143
+        "line": 2181
       },
       {
         "code": "COV-DIVIDEND",
@@ -3351,7 +3404,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2151
+        "line": 2189
       },
       {
         "code": "COV-CONSENT",
@@ -3364,7 +3417,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2159
+        "line": 2197
       },
       {
         "code": "COV-PAYOFF",
@@ -3377,7 +3430,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2167
+        "line": 2205
       },
       {
         "code": "COV-CVR",
@@ -3393,7 +3446,7 @@
         "industries": [
           "pharma"
         ],
-        "line": 2175
+        "line": 2213
       },
       {
         "code": "COV-FDACOMMS",
@@ -3409,7 +3462,7 @@
         "industries": [
           "pharma"
         ],
-        "line": 2184
+        "line": 2222
       },
       {
         "code": "MISC-SURVIVAL",
@@ -3422,7 +3475,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 2194
+        "line": 2232
       },
       {
         "code": "MISC-NOTICES",
@@ -3435,7 +3488,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 2202
+        "line": 2240
       },
       {
         "code": "MISC-ENTIRE",
@@ -3448,7 +3501,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 2210
+        "line": 2248
       },
       {
         "code": "MISC-GOVLAW",
@@ -3461,7 +3514,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 2218
+        "line": 2256
       },
       {
         "code": "MISC-JURISD",
@@ -3475,7 +3528,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2226
+        "line": 2264
       },
       {
         "code": "MISC-JURY",
@@ -3488,7 +3541,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 2234
+        "line": 2272
       },
       {
         "code": "MISC-ASSIGN",
@@ -3501,7 +3554,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 2242
+        "line": 2280
       },
       {
         "code": "MISC-SEVER",
@@ -3513,7 +3566,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 2250
+        "line": 2288
       },
       {
         "code": "MISC-EXPENSES",
@@ -3526,7 +3579,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2258
+        "line": 2296
       },
       {
         "code": "MISC-COUNTER",
@@ -3539,7 +3592,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 2266
+        "line": 2304
       },
       {
         "code": "MISC-SPECIFIC",
@@ -3553,7 +3606,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 2274
+        "line": 2312
       },
       {
         "code": "MISC-THIRDPARTY",
@@ -3565,7 +3618,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2282
+        "line": 2320
       },
       {
         "code": "MISC-AMEND",
@@ -3578,7 +3631,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2290
+        "line": 2328
       },
       {
         "code": "MISC-WAIVER",
@@ -3591,7 +3644,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2298
+        "line": 2336
       },
       {
         "code": "MISC-CONSTRUCT",
@@ -3604,7 +3657,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2314
+        "line": 2352
       },
       {
         "code": "COV-APPRAISAL",
@@ -3618,7 +3671,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 2324
+        "line": 2362
       },
       {
         "code": "COV-PAYAGENT",
@@ -3632,7 +3685,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 2332
+        "line": 2370
       },
       {
         "code": "COV-MARKETING",
@@ -3645,7 +3698,7 @@
         ],
         "frequency": "occasional",
         "industries": [],
-        "line": 2340
+        "line": 2378
       },
       {
         "code": "COV-DO",
@@ -3659,7 +3712,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 2348
+        "line": 2386
       },
       {
         "code": "TERMF-RTF-ANTI",
@@ -3673,7 +3726,7 @@
         ],
         "frequency": "occasional",
         "industries": [],
-        "line": 2356
+        "line": 2394
       },
       {
         "code": "TERMF-REIMBURSE",
@@ -3686,7 +3739,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2364
+        "line": 2402
       },
       {
         "code": "REP-B-ANTIRELIANCE",
@@ -3700,7 +3753,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2372
+        "line": 2410
       },
       {
         "code": "REP-T-SUFFICIENCY",
@@ -3713,7 +3766,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2380
+        "line": 2418
       },
       {
         "code": "REP-T-TOP-CUSTOMERS",
@@ -3727,7 +3780,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2388
+        "line": 2426
       },
       {
         "code": "REP-T-MATERIAL-CONTRACTS",
@@ -3740,7 +3793,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 2396
+        "line": 2434
       },
       {
         "code": "REP-T-PREAMBLE",
@@ -3754,7 +3807,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 2408
+        "line": 2446
       },
       {
         "code": "REP-B-PREAMBLE",
@@ -3768,13 +3821,290 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 2416
+        "line": 2454
       }
     ],
     "featureSchemaCount": 68
   },
   "taxonomy": {
     "families": [
+      {
+        "family": "INTEREST_RATE_BASIS",
+        "kind": "string_map",
+        "size": 5,
+        "codes": [
+          {
+            "code": "PRIME_WSJ",
+            "label": "Prime rate (as published in The Wall Street Journal)",
+            "description": null,
+            "line": 1027
+          },
+          {
+            "code": "PRIME_BANK",
+            "label": "Prime rate (a named bank)",
+            "description": null,
+            "line": 1028
+          },
+          {
+            "code": "US_TREASURY_6MO",
+            "label": "6-month U.S. Treasury rate",
+            "description": null,
+            "line": 1029
+          },
+          {
+            "code": "LIBOR",
+            "label": "3-month LIBOR",
+            "description": null,
+            "line": 1030
+          },
+          {
+            "code": "FIXED",
+            "label": "Fixed rate per annum",
+            "description": null,
+            "line": 1031
+          }
+        ]
+      },
+      {
+        "family": "GOVERNING_LAW",
+        "kind": "string_map",
+        "size": 5,
+        "codes": [
+          {
+            "code": "DELAWARE",
+            "label": "Delaware",
+            "description": null,
+            "line": 1037
+          },
+          {
+            "code": "NEW_YORK",
+            "label": "New York",
+            "description": null,
+            "line": 1038
+          },
+          {
+            "code": "MARYLAND",
+            "label": "Maryland",
+            "description": null,
+            "line": 1039
+          },
+          {
+            "code": "SPLIT_FINANCING",
+            "label": "Split (primary state; New York for Financing-Source claims)",
+            "description": null,
+            "line": 1040
+          },
+          {
+            "code": "FOREIGN",
+            "label": "Non-U.S.",
+            "description": null,
+            "line": 1041
+          }
+        ]
+      },
+      {
+        "family": "PRIMARY_FORUM",
+        "kind": "string_map",
+        "size": 4,
+        "codes": [
+          {
+            "code": "DE_CHANCERY",
+            "label": "Delaware Court of Chancery",
+            "description": null,
+            "line": 1047
+          },
+          {
+            "code": "NY_MANHATTAN",
+            "label": "New York courts (Borough of Manhattan)",
+            "description": null,
+            "line": 1048
+          },
+          {
+            "code": "MARYLAND_BALTIMORE",
+            "label": "Circuit Court for Baltimore City",
+            "description": null,
+            "line": 1049
+          },
+          {
+            "code": "FOREIGN_COURT",
+            "label": "Non-U.S. court",
+            "description": null,
+            "line": 1050
+          }
+        ]
+      },
+      {
+        "family": "SOLICITATION_ACT",
+        "kind": "string_map",
+        "size": 15,
+        "codes": [
+          {
+            "code": "SOLICIT_INITIATE",
+            "label": "Solicit / initiate / knowingly encourage or facilitate an Acquisition Proposal",
+            "description": null,
+            "line": 1063
+          },
+          {
+            "code": "DISCUSS_NEGOTIATE",
+            "label": "Engage in or continue discussions or negotiations",
+            "description": null,
+            "line": 1064
+          },
+          {
+            "code": "FURNISH_INFORMATION",
+            "label": "Furnish non-public information / afford diligence access",
+            "description": null,
+            "line": 1065
+          },
+          {
+            "code": "ENTER_ALT_AGREEMENT",
+            "label": "Enter into an LOI / acquisition / merger agreement (other than an ACA)",
+            "description": null,
+            "line": 1066
+          },
+          {
+            "code": "APPROVE_ENDORSE",
+            "label": "Approve / endorse / recommend / declare advisable a proposal",
+            "description": null,
+            "line": 1067
+          },
+          {
+            "code": "WAIVE_STANDSTILL",
+            "label": "Waive / terminate / modify or fail to enforce a standstill",
+            "description": null,
+            "line": 1068
+          },
+          {
+            "code": "SUBMIT_TO_VOTE",
+            "label": "Submit a competing proposal to the stockholder vote",
+            "description": null,
+            "line": 1069
+          },
+          {
+            "code": "RESOLVE_AGREE_FOREGOING",
+            "label": "Resolve / agree / authorize / publicly propose to do any of the foregoing",
+            "description": null,
+            "line": 1070
+          },
+          {
+            "code": "CEASE_EXISTING_ACTIVITY",
+            "label": "Immediately cease existing solicitations / discussions / negotiations",
+            "description": null,
+            "line": 1072
+          },
+          {
+            "code": "TERMINATE_DATAROOM",
+            "label": "Terminate physical / electronic data-room access",
+            "description": null,
+            "line": 1073
+          },
+          {
+            "code": "REQUEST_RETURN_DESTROY",
+            "label": "Request return or destruction of previously furnished information",
+            "description": null,
+            "line": 1074
+          },
+          {
+            "code": "WITHDRAW_QUALIFY_REC",
+            "label": "Withhold / withdraw / qualify / modify the Board Recommendation adverse to Parent",
+            "description": null,
+            "line": 1076
+          },
+          {
+            "code": "FAIL_TO_INCLUDE_REC",
+            "label": "Fail to include the Board Recommendation in the Proxy / 14D-9 / Info Statement",
+            "description": null,
+            "line": 1077
+          },
+          {
+            "code": "FAIL_TO_REAFFIRM",
+            "label": "Fail to publicly reaffirm the Recommendation on request",
+            "description": null,
+            "line": 1078
+          },
+          {
+            "code": "TENDER_OFFER_ACTION",
+            "label": "Fail to recommend against a tender / exchange offer within the required period",
+            "description": null,
+            "line": 1079
+          }
+        ]
+      },
+      {
+        "family": "SUPERIOR_DETERMINER",
+        "kind": "string_map",
+        "size": 4,
+        "codes": [
+          {
+            "code": "BOARD_LEGAL_AND_FINANCIAL",
+            "label": "Board, in good faith, after outside legal counsel and financial advisor",
+            "description": null,
+            "line": 1085
+          },
+          {
+            "code": "BOARD_LEGAL_ONLY",
+            "label": "Board, after outside legal counsel only",
+            "description": null,
+            "line": 1086
+          },
+          {
+            "code": "BOARD_ONLY",
+            "label": "Board’s good-faith judgment (no advisor reference)",
+            "description": null,
+            "line": 1087
+          },
+          {
+            "code": "COMMITTEE",
+            "label": "A committee (Special / Strategic Review) decides",
+            "description": null,
+            "line": 1088
+          }
+        ]
+      },
+      {
+        "family": "ASSIGNMENT_PARENT_EXCEPTION",
+        "kind": "string_map",
+        "size": 3,
+        "codes": [
+          {
+            "code": "AFFILIATE_SUBSIDIARY",
+            "label": "Parent may assign to a wholly-owned subsidiary / affiliate",
+            "description": null,
+            "line": 1093
+          },
+          {
+            "code": "FINANCING_SOURCE_PLEDGE",
+            "label": "Parent may collaterally assign / pledge to financing sources",
+            "description": null,
+            "line": 1094
+          },
+          {
+            "code": "POST_CLOSING_SUCCESSOR",
+            "label": "Assignment permitted from and after the Effective Time (successor)",
+            "description": null,
+            "line": 1095
+          }
+        ]
+      },
+      {
+        "family": "ASSIGNMENT_PROVISO",
+        "kind": "string_map",
+        "size": 2,
+        "codes": [
+          {
+            "code": "NO_RELEASE",
+            "label": "Assignment does not relieve Parent of its obligations",
+            "description": null,
+            "line": 1098
+          },
+          {
+            "code": "NO_DELAY_IMPEDE",
+            "label": "Assignment must not prevent / impede / delay the closing",
+            "description": null,
+            "line": 1099
+          }
+        ]
+      },
       {
         "family": "EXCEPTION_CODES",
         "kind": "string_map",
@@ -4246,7 +4576,7 @@
         "codes": [
           {
             "code": "ANTI_HOHW",
-            "label": "No obligation to divest or litigate (anti-HOHW)",
+            "label": "Anti-hell-or-high-water",
             "description": null,
             "line": 178
           },
@@ -7120,6 +7450,12 @@
         ]
       },
       {
+        "key": "divestitureCapDescription",
+        "families": [
+          "BURDEN_COMMITMENT"
+        ]
+      },
+      {
         "key": "burdenBaseline",
         "families": [
           "BURDEN_BASELINE"
@@ -7138,6 +7474,12 @@
         ]
       },
       {
+        "key": "regulatoryCooperationScope",
+        "families": [
+          "CONSULTATION_TIER"
+        ]
+      },
+      {
         "key": "pullRefile",
         "families": [
           "PULL_REFILE"
@@ -7145,6 +7487,12 @@
       },
       {
         "key": "timingAgreement",
+        "families": [
+          "TIMING_AGREEMENT"
+        ]
+      },
+      {
+        "key": "timingAgreementsProhibited",
         "families": [
           "TIMING_AGREEMENT"
         ]
@@ -7286,6 +7634,54 @@
         "families": [
           "ANTITRUST_APPROVAL_CODES"
         ]
+      },
+      {
+        "key": "interestRateBasis",
+        "families": [
+          "INTEREST_RATE_BASIS"
+        ]
+      },
+      {
+        "key": "governingLaw",
+        "families": [
+          "GOVERNING_LAW"
+        ]
+      },
+      {
+        "key": "primaryForum",
+        "families": [
+          "PRIMARY_FORUM"
+        ]
+      },
+      {
+        "key": "ceaseDiscussionsProhibitedList",
+        "families": [
+          "SOLICITATION_ACT"
+        ]
+      },
+      {
+        "key": "changeOfRecommendationItems",
+        "families": [
+          "SOLICITATION_ACT"
+        ]
+      },
+      {
+        "key": "superiorProposalDeterminer",
+        "families": [
+          "SUPERIOR_DETERMINER"
+        ]
+      },
+      {
+        "key": "parentAssignmentConditions",
+        "families": [
+          "ASSIGNMENT_PARENT_EXCEPTION"
+        ]
+      },
+      {
+        "key": "assignmentProvisos",
+        "families": [
+          "ASSIGNMENT_PROVISO"
+        ]
       }
     ]
   },
@@ -7379,7 +7775,7 @@
       {
         "code": "IOC-MERGE",
         "type": "IOC",
-        "label": "Mergers, Acquisitions, Dispositions",
+        "label": "Acquisition / Disposition Covenant",
         "line": 65
       },
       {
@@ -7969,25 +8365,59 @@
       "aocCitedCovenantNames",
       "reapplied_corrections"
     ],
-    "validatedRubricKeys": 466
+    "validatedRubricKeys": 469
   },
   "ui": {
     "files": [
       "components/review/AddSectionItem.js",
-      "components/review/ConsiderationTables.js",
+      "components/review/BoundaryAuditPanel.js",
       "components/review/DocPopUnder.js",
       "components/review/EditPanel.js",
-      "components/review/EmployeeBenefitsTable.js",
+      "components/review/ElectionCard.jsx",
       "components/review/FullDocumentView.js",
-      "components/review/NoOtherRepsFraudTable.js",
-      "components/review/NosolFourTables.js",
-      "components/review/SecMeetingTable.js",
+      "components/review/ProvisionCardTable.jsx",
+      "components/review/ProvisionSubRowTable.jsx",
+      "components/review/ProvisionTable.jsx",
       "components/review/Sidebar.js",
       "components/review/TermCell.js",
       "components/review/TrustStrip.js",
+      "components/review/primitives/ProvisionTablePrimitives.jsx",
       "components/review/provision-family.js",
       "components/review/shared.js",
+      "components/review/table-configs/advisers-fees-expenses.config.js",
+      "components/review/table-configs/antitrust-regulatory.config.js",
+      "components/review/table-configs/approvals-votes.config.js",
+      "components/review/table-configs/board-change-standard.js",
+      "components/review/table-configs/card-utils.js",
+      "components/review/table-configs/conditions-b.config.js",
+      "components/review/table-configs/conditions-m.config.js",
+      "components/review/table-configs/conditions-s.config.js",
+      "components/review/table-configs/conditions.config.js",
+      "components/review/table-configs/consideration-hero.config.js",
+      "components/review/table-configs/employee-benefits.config.js",
+      "components/review/table-configs/equity-awards.config.js",
+      "components/review/table-configs/general-covenants.config.js",
+      "components/review/table-configs/ioc-exceptions.config.js",
+      "components/review/table-configs/mae-definitions.config.js",
+      "components/review/table-configs/material-contracts.config.js",
+      "components/review/table-configs/misc-boilerplate.config.js",
+      "components/review/table-configs/no-other-reps-fraud.config.js",
+      "components/review/table-configs/nosol-fiduciary.config.js",
+      "components/review/table-configs/nosol-intervening.config.js",
+      "components/review/table-configs/nosol-noshop.config.js",
+      "components/review/table-configs/nosol-section.config.js",
+      "components/review/table-configs/nosol-superior.config.js",
+      "components/review/table-configs/representations-qualifiers.config.js",
+      "components/review/table-configs/sec-meeting.config.js",
+      "components/review/table-configs/standard-colors.js",
+      "components/review/table-configs/structure-mechanics.config.js",
+      "components/review/table-configs/tail-fee.config.js",
+      "components/review/table-configs/termination-fees.config.js",
+      "components/review/table-configs/termination-rights.config.js",
+      "components/review/table-configs/vote-standard.js",
+      "components/review/table-configs/votes-approvals-meeting.config.js",
       "components/review/table-logic.js",
+      "pages/review/[id]/needs-review.js",
       "pages/review/[id]/provision/[provisionId].js",
       "pages/review/[id].js",
       "pages/review/index.js"
@@ -7998,7 +8428,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 2478,
+            "line": 2822,
             "kind": "keys_array"
           }
         ]
@@ -8008,7 +8438,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 2476,
+            "line": 2819,
             "kind": "keys_array"
           }
         ]
@@ -8018,7 +8448,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 2477,
+            "line": 2821,
             "kind": "keys_array"
           }
         ]
@@ -8027,8 +8457,8 @@
         "key": "acceptableConfidentialityAgreementDefinition",
         "hits": [
           {
-            "file": "components/review/NosolFourTables.js",
-            "line": 61,
+            "file": "components/review/table-configs/nosol-fiduciary.config.js",
+            "line": 33,
             "kind": "keys_array"
           }
         ]
@@ -8038,13 +8468,33 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 2869,
+            "line": 3238,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2868,
+            "line": 3237,
             "kind": "object_key_literal"
+          }
+        ]
+      },
+      {
+        "key": "acquisitionTransactionDefinition",
+        "hits": [
+          {
+            "file": "components/review/table-configs/nosol-noshop.config.js",
+            "line": 27,
+            "kind": "keys_array"
+          }
+        ]
+      },
+      {
+        "key": "acquisitionTransactionPctThreshold",
+        "hits": [
+          {
+            "file": "components/review/table-configs/nosol-noshop.config.js",
+            "line": 23,
+            "kind": "keys_array"
           }
         ]
       },
@@ -8053,7 +8503,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3180,
+            "line": 3542,
             "kind": "keys_array"
           }
         ]
@@ -8063,12 +8513,12 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3160,
+            "line": 3526,
             "kind": "keys_array"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3170,
+            "line": 3534,
             "kind": "keys_array"
           }
         ]
@@ -8078,7 +8528,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3176,
+            "line": 3540,
             "kind": "keys_array"
           }
         ]
@@ -8088,37 +8538,37 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 887,
+            "line": 987,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 887,
+            "line": 989,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 888,
+            "line": 990,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 1101,
+            "line": 1197,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 1101,
+            "line": 1197,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 1348,
+            "line": 1403,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 1349,
+            "line": 1403,
             "kind": "features_property"
           }
         ]
@@ -8128,12 +8578,12 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 2524,
+            "line": 2872,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2524,
+            "line": 2873,
             "kind": "features_property"
           }
         ]
@@ -8143,17 +8593,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3183,
-            "kind": "keys_array"
-          }
-        ]
-      },
-      {
-        "key": "antiClubbingWaiverPermitted",
-        "hits": [
-          {
-            "file": "components/review/NosolFourTables.js",
-            "line": 52,
+            "line": 3544,
             "kind": "keys_array"
           }
         ]
@@ -8163,8 +8603,18 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3206,
+            "line": 3567,
             "kind": "keys_array"
+          }
+        ]
+      },
+      {
+        "key": "antitrustApprovals",
+        "hits": [
+          {
+            "file": "components/review/table-configs/conditions.config.js",
+            "line": 324,
+            "kind": "features_property"
           }
         ]
       },
@@ -8173,7 +8623,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 2483,
+            "line": 2831,
             "kind": "keys_array"
           }
         ]
@@ -8183,7 +8633,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 2481,
+            "line": 2830,
             "kind": "keys_array"
           }
         ]
@@ -8193,7 +8643,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 2500,
+            "line": 2849,
             "kind": "features_property"
           }
         ]
@@ -8203,13 +8653,78 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 2875,
+            "line": 3244,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2874,
+            "line": 3243,
             "kind": "object_key_literal"
+          }
+        ]
+      },
+      {
+        "key": "boardChangeForInterveningEvent",
+        "hits": [
+          {
+            "file": "components/review/table-configs/nosol-intervening.config.js",
+            "line": 7,
+            "kind": "keys_array"
+          }
+        ]
+      },
+      {
+        "key": "boardChangeForSuperiorProposal",
+        "hits": [
+          {
+            "file": "components/review/table-configs/nosol-fiduciary.config.js",
+            "line": 10,
+            "kind": "keys_array"
+          }
+        ]
+      },
+      {
+        "key": "boardChangeStandard",
+        "hits": [
+          {
+            "file": "components/review/table-configs/nosol-fiduciary.config.js",
+            "line": 11,
+            "kind": "keys_array"
+          },
+          {
+            "file": "components/review/table-configs/nosol-fiduciary.config.js",
+            "line": 32,
+            "kind": "keys_array"
+          },
+          {
+            "file": "components/review/table-configs/nosol-intervening.config.js",
+            "line": 16,
+            "kind": "keys_array"
+          },
+          {
+            "file": "components/review/table-configs/nosol-superior.config.js",
+            "line": 20,
+            "kind": "keys_array"
+          }
+        ]
+      },
+      {
+        "key": "bringDownTiers",
+        "hits": [
+          {
+            "file": "components/review/table-configs/conditions.config.js",
+            "line": 146,
+            "kind": "features_property"
+          },
+          {
+            "file": "components/review/table-configs/conditions.config.js",
+            "line": 154,
+            "kind": "features_property"
+          },
+          {
+            "file": "components/review/table-configs/conditions.config.js",
+            "line": 177,
+            "kind": "features_property"
           }
         ]
       },
@@ -8218,7 +8733,22 @@
         "hits": [
           {
             "file": "components/review/EditPanel.js",
-            "line": 905,
+            "line": 926,
+            "kind": "features_property"
+          },
+          {
+            "file": "components/review/table-configs/conditions-m.config.js",
+            "line": 79,
+            "kind": "features_property"
+          },
+          {
+            "file": "components/review/table-configs/conditions-m.config.js",
+            "line": 96,
+            "kind": "features_property"
+          },
+          {
+            "file": "components/review/table-configs/conditions-m.config.js",
+            "line": 152,
             "kind": "features_property"
           }
         ]
@@ -8228,8 +8758,18 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3190,
+            "line": 3554,
             "kind": "keys_array"
+          }
+        ]
+      },
+      {
+        "key": "capDetail",
+        "hits": [
+          {
+            "file": "components/review/table-configs/antitrust-regulatory.config.js",
+            "line": 67,
+            "kind": "features_property"
           }
         ]
       },
@@ -8238,13 +8778,23 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3282,
+            "line": 3638,
             "kind": "object_key_literal"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3287,
+            "line": 3646,
             "kind": "object_key_literal"
+          }
+        ]
+      },
+      {
+        "key": "cashAmount",
+        "hits": [
+          {
+            "file": "components/review/table-configs/consideration-hero.config.js",
+            "line": 76,
+            "kind": "features_property"
           }
         ]
       },
@@ -8252,8 +8802,8 @@
         "key": "ceaseDiscussionsAffiliateStandard",
         "hits": [
           {
-            "file": "components/review/NosolFourTables.js",
-            "line": 34,
+            "file": "components/review/table-configs/nosol-noshop.config.js",
+            "line": 9,
             "kind": "keys_array"
           }
         ]
@@ -8262,8 +8812,8 @@
         "key": "ceaseDiscussionsExceptions",
         "hits": [
           {
-            "file": "components/review/NosolFourTables.js",
-            "line": 41,
+            "file": "components/review/table-configs/nosol-noshop.config.js",
+            "line": 11,
             "kind": "keys_array"
           }
         ]
@@ -8272,9 +8822,14 @@
         "key": "ceaseDiscussionsLiability",
         "hits": [
           {
-            "file": "components/review/NosolFourTables.js",
-            "line": 39,
+            "file": "components/review/table-configs/nosol-noshop.config.js",
+            "line": 9,
             "kind": "keys_array"
+          },
+          {
+            "file": "components/review/table-logic.js",
+            "line": 1106,
+            "kind": "features_property"
           }
         ]
       },
@@ -8282,8 +8837,13 @@
         "key": "ceaseDiscussionsProhibitedList",
         "hits": [
           {
-            "file": "components/review/NosolFourTables.js",
-            "line": 32,
+            "file": "components/review/table-configs/nosol-noshop.config.js",
+            "line": 7,
+            "kind": "keys_array"
+          },
+          {
+            "file": "components/review/table-configs/nosol-noshop.config.js",
+            "line": 8,
             "kind": "keys_array"
           }
         ]
@@ -8292,8 +8852,8 @@
         "key": "changeOfRecommendationItems",
         "hits": [
           {
-            "file": "components/review/NosolFourTables.js",
-            "line": 42,
+            "file": "components/review/table-configs/nosol-fiduciary.config.js",
+            "line": 27,
             "kind": "keys_array"
           }
         ]
@@ -8302,8 +8862,13 @@
         "key": "changeRecStandard",
         "hits": [
           {
-            "file": "components/review/NosolFourTables.js",
-            "line": 55,
+            "file": "components/review/table-configs/nosol-fiduciary.config.js",
+            "line": 9,
+            "kind": "keys_array"
+          },
+          {
+            "file": "components/review/table-configs/nosol-superior.config.js",
+            "line": 14,
             "kind": "keys_array"
           }
         ]
@@ -8313,7 +8878,37 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 924,
+            "line": 1024,
+            "kind": "features_property"
+          }
+        ]
+      },
+      {
+        "key": "citedProvisionNames",
+        "hits": [
+          {
+            "file": "components/review/table-configs/conditions.config.js",
+            "line": 258,
+            "kind": "features_property"
+          }
+        ]
+      },
+      {
+        "key": "clearSkiesCompanyScope",
+        "hits": [
+          {
+            "file": "components/review/table-configs/antitrust-regulatory.config.js",
+            "line": 266,
+            "kind": "features_property"
+          }
+        ]
+      },
+      {
+        "key": "clearSkiesParentScope",
+        "hits": [
+          {
+            "file": "components/review/table-configs/antitrust-regulatory.config.js",
+            "line": 265,
             "kind": "features_property"
           }
         ]
@@ -8323,7 +8918,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 2892,
+            "line": 3257,
             "kind": "features_property"
           }
         ]
@@ -8333,12 +8928,12 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 2897,
+            "line": 3260,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2896,
+            "line": 3260,
             "kind": "object_key_literal"
           }
         ]
@@ -8348,17 +8943,17 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 2895,
+            "line": 3259,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2898,
+            "line": 3262,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2897,
+            "line": 3261,
             "kind": "object_key_literal"
           }
         ]
@@ -8368,7 +8963,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3128,
+            "line": 3495,
             "kind": "keys_array"
           }
         ]
@@ -8378,7 +8973,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3156,
+            "line": 3520,
             "kind": "keys_array"
           }
         ]
@@ -8388,7 +8983,27 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3147,
+            "line": 3513,
+            "kind": "keys_array"
+          }
+        ]
+      },
+      {
+        "key": "companyTerminationForSuperior",
+        "hits": [
+          {
+            "file": "components/review/table-configs/nosol-fiduciary.config.js",
+            "line": 23,
+            "kind": "keys_array"
+          }
+        ]
+      },
+      {
+        "key": "companyTerminationForSuperiorConditions",
+        "hits": [
+          {
+            "file": "components/review/table-configs/nosol-fiduciary.config.js",
+            "line": 23,
             "kind": "keys_array"
           }
         ]
@@ -8398,12 +9013,22 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 603,
+            "line": 697,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 606,
+            "line": 697,
+            "kind": "features_property"
+          }
+        ]
+      },
+      {
+        "key": "considerationType",
+        "hits": [
+          {
+            "file": "components/review/table-configs/consideration-hero.config.js",
+            "line": 77,
             "kind": "features_property"
           }
         ]
@@ -8413,7 +9038,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3214,
+            "line": 3573,
             "kind": "keys_array"
           }
         ]
@@ -8423,7 +9048,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3202,
+            "line": 3564,
             "kind": "keys_array"
           }
         ]
@@ -8433,7 +9058,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3195,
+            "line": 3558,
             "kind": "keys_array"
           }
         ]
@@ -8443,7 +9068,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3198,
+            "line": 3561,
             "kind": "keys_array"
           }
         ]
@@ -8453,7 +9078,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 2936,
+            "line": 3309,
             "kind": "object_key_literal"
           }
         ]
@@ -8463,7 +9088,37 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3211,
+            "line": 3570,
+            "kind": "keys_array"
+          }
+        ]
+      },
+      {
+        "key": "discussionInitiationNoticeHours",
+        "hits": [
+          {
+            "file": "components/review/table-configs/nosol-noshop.config.js",
+            "line": 19,
+            "kind": "keys_array"
+          }
+        ]
+      },
+      {
+        "key": "divestitureCapDescription",
+        "hits": [
+          {
+            "file": "components/review/table-configs/antitrust-regulatory.config.js",
+            "line": 66,
+            "kind": "features_property"
+          }
+        ]
+      },
+      {
+        "key": "dontAskDontWaive",
+        "hits": [
+          {
+            "file": "components/review/table-configs/nosol-noshop.config.js",
+            "line": 14,
             "kind": "keys_array"
           }
         ]
@@ -8473,7 +9128,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 2776,
+            "line": 3132,
             "kind": "features_property"
           }
         ]
@@ -8483,7 +9138,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 2789,
+            "line": 3150,
             "kind": "features_property"
           }
         ]
@@ -8492,8 +9147,13 @@
         "key": "engagementStandard",
         "hits": [
           {
-            "file": "components/review/NosolFourTables.js",
-            "line": 47,
+            "file": "components/review/table-configs/nosol-fiduciary.config.js",
+            "line": 7,
+            "kind": "keys_array"
+          },
+          {
+            "file": "components/review/table-configs/nosol-superior.config.js",
+            "line": 12,
             "kind": "keys_array"
           }
         ]
@@ -8503,7 +9163,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3132,
+            "line": 3502,
             "kind": "keys_array"
           }
         ]
@@ -8513,17 +9173,37 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3185,
+            "line": 3550,
             "kind": "keys_array"
           }
         ]
       },
       {
-        "key": "extendedNegotiatingPeriodDays",
+        "key": "extensionMonths",
         "hits": [
           {
-            "file": "components/review/NosolFourTables.js",
-            "line": 256,
+            "file": "pages/review/[id].js",
+            "line": 4610,
+            "kind": "features_property"
+          }
+        ]
+      },
+      {
+        "key": "extensionPeriod",
+        "hits": [
+          {
+            "file": "pages/review/[id].js",
+            "line": 4610,
+            "kind": "features_property"
+          }
+        ]
+      },
+      {
+        "key": "fiduciaryCarveoutThreshold",
+        "hits": [
+          {
+            "file": "components/review/table-configs/nosol-noshop.config.js",
+            "line": 11,
             "kind": "keys_array"
           }
         ]
@@ -8532,8 +9212,13 @@
         "key": "fiduciaryEngageStandard",
         "hits": [
           {
-            "file": "components/review/NosolFourTables.js",
-            "line": 47,
+            "file": "components/review/table-configs/nosol-fiduciary.config.js",
+            "line": 7,
+            "kind": "keys_array"
+          },
+          {
+            "file": "components/review/table-configs/nosol-superior.config.js",
+            "line": 12,
             "kind": "keys_array"
           }
         ]
@@ -8542,8 +9227,33 @@
         "key": "fiduciaryFinalStandard",
         "hits": [
           {
-            "file": "components/review/NosolFourTables.js",
-            "line": 55,
+            "file": "components/review/table-configs/nosol-fiduciary.config.js",
+            "line": 9,
+            "kind": "keys_array"
+          },
+          {
+            "file": "components/review/table-configs/nosol-superior.config.js",
+            "line": 14,
+            "kind": "keys_array"
+          }
+        ]
+      },
+      {
+        "key": "fiduciaryOutStandard",
+        "hits": [
+          {
+            "file": "components/review/table-configs/nosol-fiduciary.config.js",
+            "line": 31,
+            "kind": "keys_array"
+          },
+          {
+            "file": "components/review/table-configs/nosol-noshop.config.js",
+            "line": 25,
+            "kind": "keys_array"
+          },
+          {
+            "file": "components/review/table-configs/nosol-superior.config.js",
+            "line": 16,
             "kind": "keys_array"
           }
         ]
@@ -8552,8 +9262,8 @@
         "key": "forceTheVote",
         "hits": [
           {
-            "file": "components/review/NosolFourTables.js",
-            "line": 63,
+            "file": "components/review/table-configs/nosol-fiduciary.config.js",
+            "line": 19,
             "kind": "keys_array"
           }
         ]
@@ -8562,8 +9272,8 @@
         "key": "forceTheVoteDetails",
         "hits": [
           {
-            "file": "components/review/NosolFourTables.js",
-            "line": 63,
+            "file": "components/review/table-configs/nosol-fiduciary.config.js",
+            "line": 20,
             "kind": "keys_array"
           }
         ]
@@ -8573,7 +9283,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 5504,
+            "line": 6003,
             "kind": "features_property"
           }
         ]
@@ -8583,7 +9293,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 5507,
+            "line": 6004,
             "kind": "features_property"
           }
         ]
@@ -8593,7 +9303,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 5501,
+            "line": 6002,
             "kind": "features_property"
           }
         ]
@@ -8603,38 +9313,8 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 5506,
+            "line": 6004,
             "kind": "features_property"
-          }
-        ]
-      },
-      {
-        "key": "goShopExcludedParties",
-        "hits": [
-          {
-            "file": "components/review/NosolFourTables.js",
-            "line": 254,
-            "kind": "keys_array"
-          }
-        ]
-      },
-      {
-        "key": "goShopPeriodDays",
-        "hits": [
-          {
-            "file": "components/review/NosolFourTables.js",
-            "line": 252,
-            "kind": "keys_array"
-          }
-        ]
-      },
-      {
-        "key": "goShopWindow",
-        "hits": [
-          {
-            "file": "components/review/NosolFourTables.js",
-            "line": 252,
-            "kind": "keys_array"
           }
         ]
       },
@@ -8643,7 +9323,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3138,
+            "line": 3506,
             "kind": "keys_array"
           }
         ]
@@ -8652,8 +9332,8 @@
         "key": "initialMatchPeriodDays",
         "hits": [
           {
-            "file": "components/review/NosolFourTables.js",
-            "line": 53,
+            "file": "components/review/table-configs/nosol-fiduciary.config.js",
+            "line": 16,
             "kind": "keys_array"
           }
         ]
@@ -8663,7 +9343,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3174,
+            "line": 3538,
             "kind": "keys_array"
           }
         ]
@@ -8672,8 +9352,18 @@
         "key": "interveningEventDefinition",
         "hits": [
           {
-            "file": "components/review/NosolFourTables.js",
-            "line": 60,
+            "file": "components/review/table-configs/nosol-intervening.config.js",
+            "line": 9,
+            "kind": "keys_array"
+          }
+        ]
+      },
+      {
+        "key": "interveningEventProvision",
+        "hits": [
+          {
+            "file": "components/review/table-configs/nosol-intervening.config.js",
+            "line": 7,
             "kind": "keys_array"
           }
         ]
@@ -8682,8 +9372,18 @@
         "key": "interveningEventScope",
         "hits": [
           {
-            "file": "components/review/NosolFourTables.js",
-            "line": 61,
+            "file": "components/review/table-configs/nosol-intervening.config.js",
+            "line": 11,
+            "kind": "keys_array"
+          }
+        ]
+      },
+      {
+        "key": "interveningEventTermination",
+        "hits": [
+          {
+            "file": "components/review/table-configs/nosol-intervening.config.js",
+            "line": 14,
             "kind": "keys_array"
           }
         ]
@@ -8693,7 +9393,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 5948,
+            "line": 6475,
             "kind": "features_property"
           }
         ]
@@ -8703,12 +9403,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 5976,
-            "kind": "features_property"
-          },
-          {
-            "file": "pages/review/[id].js",
-            "line": 6830,
+            "line": 6490,
             "kind": "features_property"
           }
         ]
@@ -8718,38 +9413,23 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3130,
+            "line": 3499,
             "kind": "keys_array"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3204,
+            "line": 3565,
             "kind": "keys_array"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3206,
+            "line": 3566,
             "kind": "keys_array"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3207,
+            "line": 3568,
             "kind": "keys_array"
-          }
-        ]
-      },
-      {
-        "key": "lookbackPeriod",
-        "hits": [
-          {
-            "file": "pages/review/[id].js",
-            "line": 6846,
-            "kind": "features_property"
-          },
-          {
-            "file": "pages/review/[id].js",
-            "line": 6847,
-            "kind": "features_property"
           }
         ]
       },
@@ -8758,7 +9438,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3129,
+            "line": 3499,
             "kind": "keys_array"
           }
         ]
@@ -8768,12 +9448,12 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3158,
+            "line": 3523,
             "kind": "keys_array"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3168,
+            "line": 3531,
             "kind": "keys_array"
           }
         ]
@@ -8782,88 +9462,98 @@
         "key": "mainConcept",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 789,
+            "file": "components/review/table-configs/conditions-m.config.js",
+            "line": 35,
+            "kind": "features_property"
+          },
+          {
+            "file": "components/review/table-logic.js",
+            "line": 1105,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2050,
+            "line": 898,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2050,
+            "line": 2388,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2051,
+            "line": 2388,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2052,
+            "line": 2388,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2053,
+            "line": 2390,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2780,
+            "line": 2391,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2796,
+            "line": 3138,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2840,
+            "line": 3152,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2841,
+            "line": 3197,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2879,
+            "line": 3199,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2908,
+            "line": 3248,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2911,
+            "line": 3274,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2915,
+            "line": 3277,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2878,
+            "line": 3282,
+            "kind": "features_property"
+          },
+          {
+            "file": "pages/review/[id].js",
+            "line": 3247,
             "kind": "object_key_literal"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2913,
+            "line": 3280,
             "kind": "object_key_literal"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2915,
+            "line": 3282,
             "kind": "object_key_literal"
           }
         ]
@@ -8872,23 +9562,28 @@
         "key": "mainCondition",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 791,
+            "file": "components/review/table-configs/conditions-m.config.js",
+            "line": 35,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2057,
+            "line": 900,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2057,
+            "line": 2398,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2058,
+            "line": 2399,
+            "kind": "features_property"
+          },
+          {
+            "file": "pages/review/[id].js",
+            "line": 2399,
             "kind": "features_property"
           }
         ]
@@ -8898,22 +9593,22 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 789,
+            "line": 898,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2055,
+            "line": 2395,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2055,
+            "line": 2397,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2056,
+            "line": 2397,
             "kind": "features_property"
           }
         ]
@@ -8923,7 +9618,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3138,
+            "line": 3507,
             "kind": "keys_array"
           }
         ]
@@ -8932,8 +9627,18 @@
         "key": "matchingPeriod",
         "hits": [
           {
-            "file": "components/review/NosolFourTables.js",
-            "line": 53,
+            "file": "components/review/table-configs/nosol-fiduciary.config.js",
+            "line": 16,
+            "kind": "keys_array"
+          },
+          {
+            "file": "components/review/table-configs/nosol-intervening.config.js",
+            "line": 20,
+            "kind": "keys_array"
+          },
+          {
+            "file": "components/review/table-configs/nosol-noshop.config.js",
+            "line": 18,
             "kind": "keys_array"
           }
         ]
@@ -8942,8 +9647,18 @@
         "key": "materialContractsBuckets",
         "hits": [
           {
+            "file": "components/review/table-configs/material-contracts.config.js",
+            "line": 136,
+            "kind": "features_property"
+          },
+          {
+            "file": "components/review/table-configs/material-contracts.config.js",
+            "line": 136,
+            "kind": "features_property"
+          },
+          {
             "file": "pages/review/[id].js",
-            "line": 3215,
+            "line": 3574,
             "kind": "keys_array"
           }
         ]
@@ -8952,8 +9667,18 @@
         "key": "materialContractsDollarThresholds",
         "hits": [
           {
+            "file": "components/review/table-configs/material-contracts.config.js",
+            "line": 105,
+            "kind": "features_property"
+          },
+          {
+            "file": "components/review/table-configs/material-contracts.config.js",
+            "line": 106,
+            "kind": "features_property"
+          },
+          {
             "file": "pages/review/[id].js",
-            "line": 3216,
+            "line": 3578,
             "kind": "keys_array"
           }
         ]
@@ -8963,7 +9688,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3218,
+            "line": 3580,
             "kind": "keys_array"
           }
         ]
@@ -8973,7 +9698,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 5948,
+            "line": 6470,
             "kind": "features_property"
           }
         ]
@@ -8983,7 +9708,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3125,
+            "line": 3493,
             "kind": "keys_array"
           }
         ]
@@ -8993,12 +9718,12 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3165,
+            "line": 3529,
             "kind": "keys_array"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3171,
+            "line": 3535,
             "kind": "keys_array"
           }
         ]
@@ -9008,12 +9733,12 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3159,
+            "line": 3524,
             "kind": "keys_array"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3169,
+            "line": 3532,
             "kind": "keys_array"
           }
         ]
@@ -9023,12 +9748,12 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 2859,
+            "line": 3237,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2859,
+            "line": 3237,
             "kind": "object_key_literal"
           }
         ]
@@ -9038,7 +9763,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3125,
+            "line": 3492,
             "kind": "keys_array"
           }
         ]
@@ -9048,7 +9773,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 2891,
+            "line": 3256,
             "kind": "features_property"
           }
         ]
@@ -9058,7 +9783,17 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3630,
+            "line": 4003,
+            "kind": "features_property"
+          }
+        ]
+      },
+      {
+        "key": "noOtherRepsParty",
+        "hits": [
+          {
+            "file": "components/review/table-configs/no-other-reps-fraud.config.js",
+            "line": 40,
             "kind": "features_property"
           }
         ]
@@ -9067,8 +9802,8 @@
         "key": "notChangeOfRecommendationItems",
         "hits": [
           {
-            "file": "components/review/NosolFourTables.js",
-            "line": 44,
+            "file": "components/review/table-configs/nosol-fiduciary.config.js",
+            "line": 28,
             "kind": "keys_array"
           }
         ]
@@ -9077,8 +9812,8 @@
         "key": "noticeContent",
         "hits": [
           {
-            "file": "components/review/NosolFourTables.js",
-            "line": 48,
+            "file": "components/review/table-configs/nosol-fiduciary.config.js",
+            "line": 14,
             "kind": "keys_array"
           }
         ]
@@ -9087,8 +9822,13 @@
         "key": "noticePeriod",
         "hits": [
           {
-            "file": "components/review/NosolFourTables.js",
-            "line": 48,
+            "file": "components/review/table-configs/nosol-fiduciary.config.js",
+            "line": 12,
+            "kind": "keys_array"
+          },
+          {
+            "file": "components/review/table-configs/nosol-intervening.config.js",
+            "line": 20,
             "kind": "keys_array"
           }
         ]
@@ -9098,7 +9838,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3177,
+            "line": 3541,
             "kind": "keys_array"
           }
         ]
@@ -9108,12 +9848,12 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 2863,
+            "line": 3237,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2862,
+            "line": 3237,
             "kind": "object_key_literal"
           }
         ]
@@ -9123,12 +9863,12 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 2865,
+            "line": 3237,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2865,
+            "line": 3237,
             "kind": "object_key_literal"
           }
         ]
@@ -9138,12 +9878,12 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 2867,
+            "line": 3237,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2866,
+            "line": 3237,
             "kind": "object_key_literal"
           }
         ]
@@ -9152,14 +9892,29 @@
         "key": "offerPrice",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 2864,
+            "file": "components/review/table-configs/consideration-hero.config.js",
+            "line": 76,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2864,
+            "line": 3237,
+            "kind": "features_property"
+          },
+          {
+            "file": "pages/review/[id].js",
+            "line": 3237,
             "kind": "object_key_literal"
+          }
+        ]
+      },
+      {
+        "key": "ordinaryCourseCarveout",
+        "hits": [
+          {
+            "file": "components/review/table-configs/ioc-exceptions.config.js",
+            "line": 242,
+            "kind": "features_property"
           }
         ]
       },
@@ -9168,7 +9923,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3151,
+            "line": 3515,
             "kind": "keys_array"
           }
         ]
@@ -9178,8 +9933,43 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3380,
+            "line": 4607,
+            "kind": "features_property"
+          },
+          {
+            "file": "pages/review/[id].js",
+            "line": 3740,
             "kind": "object_key_literal"
+          }
+        ]
+      },
+      {
+        "key": "outsideDateMonthsPostSigning",
+        "hits": [
+          {
+            "file": "pages/review/[id].js",
+            "line": 4606,
+            "kind": "features_property"
+          }
+        ]
+      },
+      {
+        "key": "parentAdoptionMechanism",
+        "hits": [
+          {
+            "file": "components/review/table-configs/votes-approvals-meeting.config.js",
+            "line": 99,
+            "kind": "features_property"
+          }
+        ]
+      },
+      {
+        "key": "parentAdoptionTiming",
+        "hits": [
+          {
+            "file": "components/review/table-configs/votes-approvals-meeting.config.js",
+            "line": 104,
+            "kind": "features_property"
           }
         ]
       },
@@ -9188,7 +9978,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3140,
+            "line": 3508,
             "kind": "keys_array"
           }
         ]
@@ -9198,7 +9988,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3142,
+            "line": 3509,
             "kind": "keys_array"
           }
         ]
@@ -9207,8 +9997,8 @@
         "key": "parentTerminationRightForNonsolicitBreach",
         "hits": [
           {
-            "file": "components/review/NosolFourTables.js",
-            "line": 65,
+            "file": "components/review/table-configs/nosol-fiduciary.config.js",
+            "line": 25,
             "kind": "keys_array"
           }
         ]
@@ -9218,7 +10008,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 2523,
+            "line": 2870,
             "kind": "features_property"
           }
         ]
@@ -9228,7 +10018,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3146,
+            "line": 3512,
             "kind": "keys_array"
           }
         ]
@@ -9238,7 +10028,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3152,
+            "line": 3517,
             "kind": "keys_array"
           }
         ]
@@ -9247,23 +10037,28 @@
         "key": "permittedExceptions",
         "hits": [
           {
+            "file": "components/review/table-configs/nosol-noshop.config.js",
+            "line": 11,
+            "kind": "keys_array"
+          },
+          {
             "file": "pages/review/[id].js",
-            "line": 911,
+            "line": 1011,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 912,
+            "line": 1017,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 916,
+            "line": 1020,
             "kind": "object_key_literal"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 920,
+            "line": 1023,
             "kind": "object_key_literal"
           }
         ]
@@ -9273,8 +10068,18 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3220,
+            "line": 3585,
             "kind": "keys_array"
+          }
+        ]
+      },
+      {
+        "key": "perShareAmount",
+        "hits": [
+          {
+            "file": "components/review/table-configs/consideration-hero.config.js",
+            "line": 76,
+            "kind": "features_property"
           }
         ]
       },
@@ -9282,23 +10087,23 @@
         "key": "positiveObligations",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 890,
+            "file": "components/review/table-configs/ioc-exceptions.config.js",
+            "line": 239,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 891,
+            "line": 991,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 1349,
+            "line": 991,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 1349,
+            "line": 1404,
             "kind": "features_property"
           }
         ]
@@ -9308,7 +10113,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 924,
+            "line": 1024,
             "kind": "features_property"
           }
         ]
@@ -9318,13 +10123,28 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3157,
+            "line": 3522,
             "kind": "keys_array"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3166,
+            "line": 3530,
             "kind": "keys_array"
+          }
+        ]
+      },
+      {
+        "key": "pullRefileText",
+        "hits": [
+          {
+            "file": "components/review/table-configs/antitrust-regulatory.config.js",
+            "line": 314,
+            "kind": "features_property"
+          },
+          {
+            "file": "components/review/table-configs/antitrust-regulatory.config.js",
+            "line": 340,
+            "kind": "features_property"
           }
         ]
       },
@@ -9333,7 +10153,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3131,
+            "line": 3500,
             "kind": "keys_array"
           }
         ]
@@ -9343,8 +10163,38 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3136,
+            "line": 3504,
             "kind": "keys_array"
+          }
+        ]
+      },
+      {
+        "key": "region_id",
+        "hits": [
+          {
+            "file": "components/review/EditPanel.js",
+            "line": 533,
+            "kind": "features_property"
+          }
+        ]
+      },
+      {
+        "key": "regionId",
+        "hits": [
+          {
+            "file": "components/review/EditPanel.js",
+            "line": 534,
+            "kind": "features_property"
+          }
+        ]
+      },
+      {
+        "key": "representativeBreachConditions",
+        "hits": [
+          {
+            "file": "components/review/table-logic.js",
+            "line": 1111,
+            "kind": "features_property"
           }
         ]
       },
@@ -9352,8 +10202,8 @@
         "key": "representativeBreachIsCompanyBreach",
         "hits": [
           {
-            "file": "components/review/NosolFourTables.js",
-            "line": 39,
+            "file": "components/review/table-configs/nosol-fiduciary.config.js",
+            "line": 24,
             "kind": "keys_array"
           }
         ]
@@ -9362,8 +10212,8 @@
         "key": "representativesStandard",
         "hits": [
           {
-            "file": "components/review/NosolFourTables.js",
-            "line": 34,
+            "file": "components/review/table-configs/nosol-fiduciary.config.js",
+            "line": 24,
             "kind": "keys_array"
           }
         ]
@@ -9373,7 +10223,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3402,
+            "line": 3766,
             "kind": "object_key_literal"
           }
         ]
@@ -9383,7 +10233,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3406,
+            "line": 3768,
             "kind": "object_key_literal"
           }
         ]
@@ -9393,7 +10243,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3396,
+            "line": 3762,
             "kind": "object_key_literal"
           }
         ]
@@ -9403,12 +10253,12 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 2872,
+            "line": 3241,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2871,
+            "line": 3240,
             "kind": "object_key_literal"
           }
         ]
@@ -9418,12 +10268,12 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 2870,
+            "line": 3239,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2869,
+            "line": 3238,
             "kind": "object_key_literal"
           }
         ]
@@ -9433,12 +10283,12 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 6118,
+            "line": 6645,
             "kind": "object_key_literal"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3194,
+            "line": 3556,
             "kind": "keys_array"
           }
         ]
@@ -9448,7 +10298,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 5075,
+            "line": 5556,
             "kind": "keys_array"
           }
         ]
@@ -9458,7 +10308,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 5075,
+            "line": 5554,
             "kind": "keys_array"
           }
         ]
@@ -9468,7 +10318,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 5073,
+            "line": 5551,
             "kind": "keys_array"
           }
         ]
@@ -9478,22 +10328,17 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 5074,
+            "line": 5552,
             "kind": "keys_array"
           }
         ]
       },
       {
-        "key": "secFilingsLookbackMonths",
+        "key": "section_number",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 6845,
-            "kind": "features_property"
-          },
-          {
-            "file": "pages/review/[id].js",
-            "line": 6848,
+            "file": "components/review/table-logic.js",
+            "line": 1098,
             "kind": "features_property"
           }
         ]
@@ -9505,6 +10350,16 @@
             "file": "components/review/provision-family.js",
             "line": 11,
             "kind": "features_property"
+          },
+          {
+            "file": "components/review/table-configs/conditions-m.config.js",
+            "line": 36,
+            "kind": "features_property"
+          },
+          {
+            "file": "components/review/table-logic.js",
+            "line": 1098,
+            "kind": "features_property"
           }
         ]
       },
@@ -9513,7 +10368,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3145,
+            "line": 3511,
             "kind": "keys_array"
           }
         ]
@@ -9523,7 +10378,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3184,
+            "line": 3549,
             "kind": "keys_array"
           }
         ]
@@ -9533,8 +10388,28 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3205,
+            "line": 3565,
             "kind": "keys_array"
+          }
+        ]
+      },
+      {
+        "key": "source_section",
+        "hits": [
+          {
+            "file": "components/review/table-logic.js",
+            "line": 1099,
+            "kind": "features_property"
+          }
+        ]
+      },
+      {
+        "key": "sourceSection",
+        "hits": [
+          {
+            "file": "components/review/table-logic.js",
+            "line": 1098,
+            "kind": "features_property"
           }
         ]
       },
@@ -9543,28 +10418,23 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3186,
+            "line": 3551,
             "kind": "keys_array"
           }
         ]
       },
       {
-        "key": "standstillWaiver",
+        "key": "standstillWaiverConditions",
         "hits": [
           {
-            "file": "components/review/NosolFourTables.js",
-            "line": 50,
+            "file": "components/review/table-configs/nosol-noshop.config.js",
+            "line": 14,
             "kind": "keys_array"
-          }
-        ]
-      },
-      {
-        "key": "standstillWaiverPermitted",
-        "hits": [
+          },
           {
-            "file": "components/review/NosolFourTables.js",
-            "line": 49,
-            "kind": "keys_array"
+            "file": "components/review/table-logic.js",
+            "line": 1106,
+            "kind": "features_property"
           }
         ]
       },
@@ -9573,7 +10443,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3132,
+            "line": 3501,
             "kind": "keys_array"
           }
         ]
@@ -9583,12 +10453,12 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 2874,
+            "line": 3242,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2873,
+            "line": 3241,
             "kind": "object_key_literal"
           }
         ]
@@ -9597,8 +10467,8 @@
         "key": "subsequentMatchingPeriod",
         "hits": [
           {
-            "file": "components/review/NosolFourTables.js",
-            "line": 54,
+            "file": "components/review/table-configs/nosol-fiduciary.config.js",
+            "line": 18,
             "kind": "keys_array"
           }
         ]
@@ -9607,8 +10477,13 @@
         "key": "subsequentMatchPeriodDays",
         "hits": [
           {
-            "file": "components/review/NosolFourTables.js",
-            "line": 54,
+            "file": "components/review/table-configs/nosol-fiduciary.config.js",
+            "line": 17,
+            "kind": "keys_array"
+          },
+          {
+            "file": "components/review/table-configs/nosol-noshop.config.js",
+            "line": 26,
             "kind": "keys_array"
           }
         ]
@@ -9618,7 +10493,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 792,
+            "line": 900,
             "kind": "features_property"
           }
         ]
@@ -9627,8 +10502,8 @@
         "key": "superiorProposalDeterminer",
         "hits": [
           {
-            "file": "components/review/NosolFourTables.js",
-            "line": 59,
+            "file": "components/review/table-configs/nosol-superior.config.js",
+            "line": 10,
             "kind": "keys_array"
           }
         ]
@@ -9637,8 +10512,18 @@
         "key": "superiorProposalPercentage",
         "hits": [
           {
-            "file": "components/review/NosolFourTables.js",
-            "line": 58,
+            "file": "components/review/table-configs/nosol-fiduciary.config.js",
+            "line": 29,
+            "kind": "keys_array"
+          },
+          {
+            "file": "components/review/table-configs/nosol-noshop.config.js",
+            "line": 21,
+            "kind": "keys_array"
+          },
+          {
+            "file": "components/review/table-configs/nosol-superior.config.js",
+            "line": 7,
             "kind": "keys_array"
           }
         ]
@@ -9647,13 +10532,13 @@
         "key": "superiorProposalTest",
         "hits": [
           {
-            "file": "components/review/NosolFourTables.js",
-            "line": 56,
+            "file": "components/review/table-configs/nosol-fiduciary.config.js",
+            "line": 30,
             "kind": "keys_array"
           },
           {
-            "file": "components/review/NosolFourTables.js",
-            "line": 58,
+            "file": "components/review/table-configs/nosol-superior.config.js",
+            "line": 9,
             "kind": "keys_array"
           }
         ]
@@ -9662,9 +10547,94 @@
         "key": "superiorProposalThresholdPct",
         "hits": [
           {
-            "file": "components/review/NosolFourTables.js",
-            "line": 57,
+            "file": "components/review/table-configs/nosol-fiduciary.config.js",
+            "line": 29,
             "kind": "keys_array"
+          },
+          {
+            "file": "components/review/table-configs/nosol-noshop.config.js",
+            "line": 21,
+            "kind": "keys_array"
+          },
+          {
+            "file": "components/review/table-configs/nosol-superior.config.js",
+            "line": 7,
+            "kind": "keys_array"
+          }
+        ]
+      },
+      {
+        "key": "tailFeeActivatingClauses",
+        "hits": [
+          {
+            "file": "components/review/table-configs/tail-fee.config.js",
+            "line": 102,
+            "kind": "features_property"
+          },
+          {
+            "file": "components/review/table-configs/tail-fee.config.js",
+            "line": 102,
+            "kind": "features_property"
+          },
+          {
+            "file": "components/review/table-configs/tail-fee.config.js",
+            "line": 118,
+            "kind": "features_property"
+          }
+        ]
+      },
+      {
+        "key": "tailFeeRecognitionEvent",
+        "hits": [
+          {
+            "file": "components/review/table-configs/tail-fee.config.js",
+            "line": 104,
+            "kind": "features_property"
+          },
+          {
+            "file": "components/review/table-configs/tail-fee.config.js",
+            "line": 120,
+            "kind": "features_property"
+          }
+        ]
+      },
+      {
+        "key": "tailFeeSameProposalRequired",
+        "hits": [
+          {
+            "file": "components/review/table-configs/tail-fee.config.js",
+            "line": 103,
+            "kind": "features_property"
+          }
+        ]
+      },
+      {
+        "key": "tailFeeThresholdPct",
+        "hits": [
+          {
+            "file": "components/review/table-configs/tail-fee.config.js",
+            "line": 101,
+            "kind": "features_property"
+          },
+          {
+            "file": "components/review/table-configs/tail-fee.config.js",
+            "line": 113,
+            "kind": "features_property"
+          }
+        ]
+      },
+      {
+        "key": "tailFeeWindowMonths",
+        "hits": [
+          {
+            "file": "components/review/table-configs/tail-fee.config.js",
+            "line": 100,
+            "kind": "features_property"
+          },
+          {
+            "file": "components/review/table-configs/tail-fee.config.js",
+            "line": 107,
+            "kind": "features_property"
           }
         ]
       },
@@ -9673,7 +10643,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3126,
+            "line": 3493,
             "kind": "keys_array"
           }
         ]
@@ -9683,8 +10653,23 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3139,
+            "line": 3507,
             "kind": "keys_array"
+          }
+        ]
+      },
+      {
+        "key": "timingAgreementText",
+        "hits": [
+          {
+            "file": "components/review/table-configs/antitrust-regulatory.config.js",
+            "line": 316,
+            "kind": "features_property"
+          },
+          {
+            "file": "components/review/table-configs/antitrust-regulatory.config.js",
+            "line": 359,
+            "kind": "features_property"
           }
         ]
       },
@@ -9693,7 +10678,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3212,
+            "line": 3570,
             "kind": "keys_array"
           }
         ]
@@ -9703,7 +10688,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3127,
+            "line": 3494,
             "kind": "keys_array"
           }
         ]
@@ -9713,7 +10698,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3150,
+            "line": 3514,
             "kind": "keys_array"
           }
         ]
@@ -9723,27 +10708,27 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3614,
+            "line": 3982,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3614,
+            "line": 3985,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3124,
+            "line": 3491,
             "kind": "keys_array"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3182,
+            "line": 3544,
             "kind": "keys_array"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3189,
+            "line": 3553,
             "kind": "keys_array"
           }
         ]
@@ -9753,7 +10738,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3603,
+            "line": 3971,
             "kind": "features_property"
           }
         ]
@@ -9763,7 +10748,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 2486,
+            "line": 2835,
             "kind": "keys_array"
           }
         ]
@@ -9773,7 +10758,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3129,
+            "line": 3497,
             "kind": "keys_array"
           }
         ]
@@ -9783,7 +10768,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3137,
+            "line": 3505,
             "kind": "keys_array"
           }
         ]
