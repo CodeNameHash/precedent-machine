@@ -133,6 +133,18 @@ const FILE_PATTERN_EXEMPTIONS = {
   // trips this bug-fingerprint against its own correct assertion. Exempt only
   // this one pattern for this one file; every other check still applies.
   'tests/anti-regulatory-efforts.test.js': ['Must defend \\(incl\\. appeals/final judgment\\)'],
+  // Same false-positive class: extract.js legitimately describes the
+  // "Burdensome Condition" closing-condition feature in its extraction PROMPT
+  // guidance (burdensomeConditionPresent). Editing extract.js for any reason
+  // (e.g. adding a new codebook) puts the file in the diff and trips this
+  // bug-fingerprint against its own correct prompt text. Exempt only this
+  // pattern for this file.
+  // extract.js embeds every codebook LABEL into the extraction prompt, so it
+  // legitimately contains taxonomy label strings (the IOC-MERGE label
+  // "Mergers, Acquisitions, Dispositions", the burdensome-condition prompt).
+  // Both are bug-fingerprints meant for OTHER files; exempt only these two
+  // patterns for this one file.
+  'lib/parser-v2/extract.js': ['burdensome.*closing.condition', 'Mergers,\\s*Acquisitions,\\s*Dispositions'],
 };
 
 const failures = [];
