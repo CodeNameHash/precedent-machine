@@ -86,7 +86,7 @@ export function DocPopUnder({ open, dealId, provision, quote, sourceText, docTit
         <div className="flex items-center justify-between gap-3 px-5 py-3 border-b border-border shrink-0">
           <div className="min-w-0">
             <p className="text-[10px] font-ui uppercase tracking-wider text-inkFaint">
-              {docTitle || 'Agreement'} &middot; see text
+              {docTitle || 'Agreement'} &middot; See provision
             </p>
             {provision && (
               <p className="text-sm font-ui text-ink truncate">

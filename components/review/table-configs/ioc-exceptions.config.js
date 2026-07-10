@@ -186,7 +186,7 @@ function seeTextNode(texts) {
   return React.createElement(
     'details',
     { className: 'mt-1' },
-    React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, 'see text'),
+    React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, 'See provision'),
     React.createElement(
       'div',
       { className: 'mt-1 max-w-[42rem] whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight' },
@@ -265,7 +265,15 @@ function renderNegativeRow(entry, ctx) {
     return money ? { code: `threshold-${money}`, label: `Threshold: ${money}`, evidence: textOf(c), source: c } : null;
   }).filter(Boolean));
   const permittedEntries = dedupeEntries(cards.flatMap((c) => exceptionEntries(cardFeatures(c).permittedExceptions, EXCEPTION_CODES, c)));
-  const obligations = cards.map((c) => valueText(cardFeatures(c).mainObligation)).filter(Boolean);
+  // Ben: "see text" must expand to the ACTUAL negative-covenant clause, not
+  // mainObligation -- lib/schema/features.js documents mainObligation as a
+  // "one-sentence summary of what the sub-clause restricts or requires", an
+  // AI paraphrase, not verbatim clause text (same class of bug already fixed
+  // on representations-qualifiers.config.js's per-rep clause -- "the summary
+  // isn't the full rep"). textOf(c) (primary_quote / region_full_text) is
+  // the card's real clause; mainObligation is kept only as a last-resort
+  // fallback for the rare card with no captured quote at all.
+  const obligations = cards.map((c) => textOf(c) || valueText(cardFeatures(c).mainObligation)).filter(Boolean);
 
   // I3/I5/G4: restriction/threshold/exception pills are plain facts and
   // categories, not graded standards -- none of them pass a `color`, only a

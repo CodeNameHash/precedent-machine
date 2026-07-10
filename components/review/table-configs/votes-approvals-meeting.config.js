@@ -179,10 +179,14 @@ function parentApprovalNode(card, ctx) {
       : text;
   }
   // No resolvable mechanism code -- fall back to whatever prose the card
-  // does carry (mainConcept) rather than fabricating the written-consent
-  // wording, matching this file's existing "never inline a raw sentence
-  // without the see-text escape hatch" convention.
-  const fallback = valueText(cardFeatures(card).mainConcept) || evidence;
+  // does carry rather than fabricating the written-consent wording, matching
+  // this file's existing "never inline a raw sentence without the see-text
+  // escape hatch" convention. The real clause (evidence = textOf(card)) is
+  // preferred over mainConcept -- mainConcept is documented (lib/schema/
+  // features.js) as an AI paraphrase "used ... when no more specific
+  // structured field explains the provision", and the "see text" escape
+  // hatch must always show the actual provision text, not a summary of it.
+  const fallback = evidence || valueText(cardFeatures(card).mainConcept);
   if (!fallback) return null;
   return TruncatedWithSeeText
     ? React.createElement(TruncatedWithSeeText, { text: fallback, evidence, source: card })

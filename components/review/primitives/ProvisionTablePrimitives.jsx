@@ -116,7 +116,7 @@ export function TruncatedWithSeeText({ text, evidence, source, max = 160, classN
       </EvidenceHoverSource>
       <details className="mt-1">
         <summary className="term-cell-seetext" style={{ listStyle: 'none' }}>
-          see text
+          See provision
         </summary>
         <div className="mt-1 max-w-[42rem] whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight">
           {value}

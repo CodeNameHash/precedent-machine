@@ -1488,7 +1488,7 @@ test('ioc-exceptions negative-covenant row renders restrictionComponents + dolla
   assert.match(html, /\$2,000,000/, 'dollarThreshold renders as currency');
   assert.match(html, /Tax withholding/, 'permittedExceptions pill');
   assert.match(html, /<details/, 'mainObligation prose sits behind a collapsed <details>');
-  assert.match(html, /see text/);
+  assert.match(html, /See provision/);
 });
 
 test('ioc-exceptions config collapses [PROPOSED] Unclassified fragments into a single "Other restrictions" row, not empty per-row output', () => {

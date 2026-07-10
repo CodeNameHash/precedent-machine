@@ -358,7 +358,7 @@ function clauseSeeText(text) {
   return React.createElement(
     'details',
     { className: 'mt-1' },
-    React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, 'see text'),
+    React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, 'See provision'),
     React.createElement(
       'div',
       { className: 'mt-1 max-w-[42rem] whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight' },

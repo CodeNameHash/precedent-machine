@@ -34,6 +34,14 @@ function isFalsy(value) {
   return false;
 }
 
+// Fallback ONLY -- lib/schema/features.js documents mainConcept as "Fallback
+// one-sentence provision summary ... when no more specific structured field
+// explains the provision." It is an AI paraphrase, not verbatim clause text,
+// so every detail: assignment below must try the real structured value
+// first and only fall through to this when nothing else was extracted
+// (Ben: the "see text" affordance must ALWAYS show the real provision text,
+// never a summary -- same fix already applied to representations-qualifiers
+// config's per-rep clause -- "the summary isn't the full rep").
 function mainConceptOf(card) {
   return valueText(cardFeatures(card).mainConcept) || null;
 }
@@ -124,7 +132,7 @@ function effortsStandardRow(cards) {
   return {
     id: 'antitrust-regulatory-efforts',
     label: 'Efforts standard',
-    detail: mainConceptOf(hit.card) || valueText(hit.value),
+    detail: valueText(hit.value) || mainConceptOf(hit.card),
     evidence: textOf(hit.card),
     source: hit.card,
     present: true,
@@ -186,7 +194,7 @@ function divestitureCapRow(cards) {
   return {
     id: 'antitrust-regulatory-divestiture-cap',
     label: 'Divestiture cap',
-    detail: mainConceptOf(capHit?.card) || (capHit && valueText(cardFeatures(capHit.card).capDetail)) || capHit?.detail || mainConceptOf(conditionHit?.card) || conditionHit?.detail,
+    detail: (capHit && valueText(cardFeatures(capHit.card).capDetail)) || capHit?.detail || conditionHit?.detail || mainConceptOf(capHit?.card) || mainConceptOf(conditionHit?.card),
     evidence: textOf(primaryCard),
     source: primaryCard,
     present: true,
@@ -223,7 +231,7 @@ function hsrDeadlineRow(cards) {
   return {
     id: 'antitrust-regulatory-hsr-deadline',
     label: 'HSR filing deadline',
-    detail: mainConceptOf(hit.card) || hit.detail,
+    detail: hit.detail || mainConceptOf(hit.card),
     evidence: textOf(hit.card),
     source: hit.card,
     present: true,
@@ -310,7 +318,7 @@ function foreignFilingsRow(cards) {
   return {
     id: 'antitrust-regulatory-foreign-filings',
     label: 'Foreign regulatory filings',
-    detail: mainConceptOf(hit.card) || hit.detail,
+    detail: hit.detail || mainConceptOf(hit.card),
     evidence: textOf(hit.card),
     source: hit.card,
     present: true,
@@ -363,7 +371,7 @@ function strategyControlRow(cards) {
   return {
     id: 'antitrust-regulatory-strategy-control',
     label: 'Strategy control',
-    detail: mainConceptOf(hit.card) || hit.detail,
+    detail: hit.detail || mainConceptOf(hit.card),
     evidence: textOf(hit.card),
     source: hit.card,
     present: true,
@@ -391,7 +399,7 @@ function clearSkiesRow(cards) {
   return {
     id: 'antitrust-regulatory-clear-skies',
     label: 'Clear-skies covenant',
-    detail: mainConceptOf(hit.card) || scope || hit.detail,
+    detail: scope || hit.detail || mainConceptOf(hit.card),
     evidence: textOf(hit.card),
     source: hit.card,
     present: true,
@@ -501,7 +509,7 @@ function pullRefileRow(cards) {
   return {
     id: 'antitrust-regulatory-pull-refile',
     label: 'Pull-and-refile',
-    detail: mainConceptOf(hit.card) || valueText(features.pullRefileText) || hit.detail,
+    detail: valueText(features.pullRefileText) || hit.detail || mainConceptOf(hit.card),
     evidence: textOf(hit.card),
     source: hit.card,
     present: true,
@@ -528,7 +536,7 @@ function timingAgreementsRow(cards) {
   return {
     id: 'antitrust-regulatory-timing-agreements',
     label: 'Timing agreements',
-    detail: mainConceptOf(hit.card) || valueText(features.timingAgreementText) || hit.detail,
+    detail: valueText(features.timingAgreementText) || hit.detail || mainConceptOf(hit.card),
     evidence: textOf(hit.card),
     source: hit.card,
     present: true,

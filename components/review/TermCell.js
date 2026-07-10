@@ -58,7 +58,7 @@ export function TermCell({ provision, quote, children, className = '', seeText =
       }}
       title="Show this passage in the full agreement text"
     >
-      see text
+      See provision
     </button>
   ) : null;
 

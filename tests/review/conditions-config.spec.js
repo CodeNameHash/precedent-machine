@@ -233,7 +233,7 @@ test('standards synthesize to the legacy-matching labels (real vote standard, HS
   // only inside a collapsed <details>/"see text" block, never as loose text.
   assert.match(
     html,
-    /<summary class="term-cell-seetext"[^>]*>see text<\/summary><div[^>]*>The Company Stockholder Approval must have been duly obtained at the Company Stockholder Meeting\.<\/div>/,
+    /<summary class="term-cell-seetext"[^>]*>See provision<\/summary><div[^>]*>The Company Stockholder Approval must have been duly obtained at the Company Stockholder Meeting\.<\/div>/,
     'mainCondition must sit inside an unopened <details>/"see text" block',
   );
   assert.ok(!/<details[^>]*\bopen\b/.test(html), 'the see-text/see-definition details blocks must render collapsed (no open attribute)');

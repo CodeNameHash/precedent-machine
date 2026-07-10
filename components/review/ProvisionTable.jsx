@@ -52,7 +52,7 @@ function SeeTextExpander({ children }) {
   return (
     <details className="mt-1">
       <summary className="term-cell-seetext" style={{ listStyle: 'none' }}>
-        see text
+        See provision
       </summary>
       <div className="mt-1 max-w-[42rem] whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight">
         {children}
