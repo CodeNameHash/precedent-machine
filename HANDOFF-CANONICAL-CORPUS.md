@@ -1,12 +1,33 @@
-# Handoff — canonical-coding corpus rollout
+# Handoff — canonical-coding corpus rollout, then the rest of the plan
 
 **For a fresh Claude Code app session. Self-contained: assume no prior conversation.**
 Written 2026-07-10. Owner: Ben (monitoring from elsewhere). Main-agent role: Fable/Opus
 specs + reviews + audits; production on Codex/Sonnet.
 
+**Your remit is the whole of `PLAN.md`, not just the corpus task.** § 3 below is the
+immediate critical path (canonical-coding corpus, PLAN § 1). When it is done and Ben has
+signed off the go/no-go checkpoints, keep going down `PLAN.md`: residual capture (§ 2),
+comparison surface (§ 3), extraction gaps (§ 4), then milestones M2 → M3 → M5 → M4. `PLAN.md`
+is the standing driver; § 7 of this handoff tells you how to continue past the corpus work
+and keep `PLAN.md` current.
+
 ---
 
-## 0. Read these first (in order)
+## 0. Bootstrap (run first)
+
+```bash
+# from the repo root
+git fetch origin
+git checkout canonical-coding-corpus     # doc/plan commits live here, off c97a1c9
+git pull --ff-only origin canonical-coding-corpus
+npm install
+npm test && npm run build                # confirm green baseline before any change
+```
+
+If the branch has since merged to `main`, use `main` instead. Do NOT push to `main`;
+push feature branches and open PRs for Ben to merge.
+
+## 0b. Read these first (in order)
 
 1. `CLAUDE.md` — routing + watchdog protocol (spec-first, diff review, mechanical gates,
    live verification, two-strike escalation). Every delegated change passes these.
@@ -21,11 +42,11 @@ specs + reviews + audits; production on Codex/Sonnet.
 
 ## 1. Repo / branch state
 
-- Design docs updated on branch **`worktree-agent-ad1fd7f796326777b`**, 3 doc-only commits
-  ahead of `c97a1c9`: `3f418fa`, `1778dd1`, `0cfc145` (canonical-coding docs + PLAN
-  rewrite + this handoff). **Not merged, not pushed.** Ben decides when these land on
-  `main`. If starting fresh, either continue on a branch off these commits or cherry-pick
-  the doc commits after they merge.
+- Remote: `github.com/CodeNameHash/precedent-machine`. Work branch
+  **`canonical-coding-corpus`** (pushed), 4 doc/plan-only commits ahead of `c97a1c9`:
+  `3f418fa`, `1778dd1`, `0cfc145`, `d24f2b9` (canonical-coding docs + PLAN rewrite + this
+  handoff). No code changed yet. Ben decides when these land on `main` (open a PR when he
+  asks).
 - `main` tracks production (Vercel). Never push to `main` without Ben.
 - Frozen files (Phase-0-C @ `1ea062d`) stay frozen.
 - Gate before any merge: `npm test` (node:test) + `npm run build`, both green.
@@ -129,3 +150,49 @@ plausible-but-wrong taxonomy reads as correct and corrupts the product.
   parity report (legacy signal → new-page location; zero unexplained drops).
 - Any legal-judgment call (reps/IOC codebooks, `concept_key` decision, residual vocab):
   surfaced to Ben before it lands, not decided by a cheap model.
+
+## 7. Continuing past the corpus work (drive the rest of PLAN.md)
+
+Once TASK 1–3 are done and Ben has signed off, do not stop. `PLAN.md` is the standing
+backlog; work it top-down, keeping the same spec-first + gated discipline. Order:
+
+1. **PLAN § 2 — residual capture (GAP-E / TASK 4).** Proposed; Fable specs the design,
+   Codex implements the plumbing.
+2. **PLAN § 3 — comparison surface (TASK 5).** Numeric-normalization canonical kind; the
+   `concept_key` decision; then reps/IOC feature coding (Fable-authored legal work — declare
+   the closed features `list-tagged`/`tagged`, author codebooks, golden-eval-gated).
+3. **PLAN § 4 — extraction gaps** (`PLAN-EXTRACTION-GAPS.md`): Material-Contracts trigger,
+   IOC standard + 5.01(i)–(o) classification, third-party-beneficiary mapping bug,
+   `effectiveTimeShort` corruption, per-rep bring-down mis-stamp.
+4. **Milestones M2 → M3 → M5 → M4** (PLAN "Milestones remaining"). M2 (schema deployed
+   corpus-wide) is largely the payoff of TASK 3. M3 folds the claim writer into the ingest
+   persist stage so fresh deals render at the Claim level (`PLAN-CLAIMS-LAYER.md` Phase 4–5).
+   M5 is UI homogenization + demo polish. M4 (query surface) is last, built on the `claims`
+   substrate. Detailed sub-plans: `PLAN-M2-schema-deploy.md`, `PLAN-M3-ingest-seamless.md`,
+   `PLAN-M5-ui-homogenized.md`, `PLAN-M4-query.md`; taxonomy gaps G1–G11 in
+   `PLAN-TAXONOMY-GAPS.md`.
+
+**Keep the plan current.** As work lands, delete done items from `PLAN.md` (it tracks only
+open work) and update `processing-flow-gaps.json` gap `status` fields. When a new gap is
+found, add it to the flow doc § 4 + the gaps JSON (parser-safe format — see the two admin
+docs). Open a PR per shippable unit; let Ben merge. Re-read `PLAN.md` at the start of each
+session so you always resume from the current front of the backlog.
+
+## 8. Paste-into-a-fresh-session prompt
+
+Give the new Claude Code app session this, verbatim:
+
+```
+You are the main agent (Fable/Opus) for the Precedent Machine repo. Read, in order:
+HANDOFF-CANONICAL-CORPUS.md, then CLAUDE.md, then PLAN.md, then
+docs/schema-shape/provision-taxonomy-triple-model.md and
+docs/schema-shape/provision-processing-flow.md. Run the Bootstrap in the handoff § 0 to
+get a green baseline. Then execute the task queue in handoff § 3 starting at TASK 1
+(claims-only rematerialize), following the watchdog protocol in CLAUDE.md: write
+acceptance criteria before delegating, route production to Codex/Sonnet, review every
+diff, run the gates (npm test + npm run build, plus ingest-qa / golden eval where noted),
+verify live in-browser. Do NOT run reprocess.js --all until TASK 1 is proven on 3 deals.
+Do NOT push to main or make legal-judgment taxonomy calls without me. Stop at each
+go/no-go checkpoint in handoff § 6 and report. When the corpus work is signed off,
+continue down PLAN.md per handoff § 7 and keep PLAN.md current.
+```
