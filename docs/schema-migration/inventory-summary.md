@@ -1,62 +1,62 @@
 # WP-SCHEMA P1 Inventory Summary
 
-Generated: 2026-07-05T12:56:21.078Z
+Generated: 2026-07-10T06:41:47.985Z
 
 ## Counts
 
-- Distinct feature-like keys: 507
-- Keys in 2 or more source families: 467
-- Keys in only 1 source family: 40
+- Distinct feature-like keys: 517
+- Keys in 2 or more source families: 471
+- Keys in only 1 source family: 46
 - Cross-source type mismatches: 6
 - Schema shape mismatches: 33
-- Provision types in rubric: 17
-- Canonical codes in rubric: 273
-- Taxonomy families exported: 48
+- Provision types in rubric: 19
+- Canonical codes in rubric: 276
+- Taxonomy families exported: 55
 - Curated expected-set codes: 38
 
 ## Naming Distribution
 
 | Convention |Count |
 | --- |--- |
-| camelCase |480 |
+| camelCase |486 |
 | lowercase |24 |
-| snake_case |3 |
+| snake_case |7 |
 
 ## Source Coverage
 
 | Source |Keys |
 | --- |--- |
 | category_summary_features_js |216 |
-| expected_sets_js |192 |
-| feature_validation_js |478 |
-| rubric_js |466 |
-| taxonomy_js |45 |
-| ui |146 |
+| expected_sets_js |194 |
+| feature_validation_js |481 |
+| rubric_js |469 |
+| taxonomy_js |56 |
+| ui |181 |
 
 ## Top 20 Highest-Appearance Keys
 
 | Key |Appearances |Sources |
 | --- |--- |--- |
-| mainConcept |108 |expected_sets_js, feature_validation_js, rubric_js, ui |
+| mainConcept |110 |expected_sets_js, feature_validation_js, rubric_js, ui |
 | scheduleReference |28 |category_summary_features_js, expected_sets_js, feature_validation_js, rubric_js |
 | materialityQualifier |25 |category_summary_features_js, expected_sets_js, feature_validation_js, rubric_js, taxonomy_js, ui |
 | crossReferences |23 |expected_sets_js, feature_validation_js, rubric_js |
+| noOtherRepsParty |21 |expected_sets_js, feature_validation_js, rubric_js, ui |
 | partyWhoCanTerminate |21 |category_summary_features_js, expected_sets_js, feature_validation_js, rubric_js, taxonomy_js |
 | extraContractualClaimsWaived |20 |expected_sets_js, feature_validation_js, rubric_js |
 | fraudCarveout |20 |expected_sets_js, feature_validation_js, rubric_js |
 | nonRelianceClause |20 |expected_sets_js, feature_validation_js, rubric_js |
-| noOtherRepsParty |20 |expected_sets_js, feature_validation_js, rubric_js |
 | noOtherRepsPresent |20 |expected_sets_js, feature_validation_js, rubric_js |
 | bringDownStandard |19 |category_summary_features_js, expected_sets_js, feature_validation_js, rubric_js, taxonomy_js |
-| knowledgeScope |19 |expected_sets_js, feature_validation_js, rubric_js, ui |
+| knowledgeScope |18 |expected_sets_js, feature_validation_js, rubric_js, ui |
 | linkedBringDownStandard |18 |expected_sets_js, feature_validation_js, rubric_js, taxonomy_js |
 | knowledgeQualifier |17 |expected_sets_js, feature_validation_js, rubric_js, ui |
+| materialContractsBuckets |17 |expected_sets_js, feature_validation_js, rubric_js, taxonomy_js, ui |
 | materialityScrape |17 |expected_sets_js, feature_validation_js, rubric_js, taxonomy_js |
 | knowledgeScopeType |16 |expected_sets_js, feature_validation_js, rubric_js |
+| mainCondition |16 |expected_sets_js, feature_validation_js, rubric_js, ui |
+| materialContractsDollarThresholds |16 |expected_sets_js, feature_validation_js, rubric_js, ui |
 | materialityScopeType |16 |expected_sets_js, feature_validation_js, rubric_js |
-| faultBasedExclusion |15 |category_summary_features_js, expected_sets_js, feature_validation_js, rubric_js |
-| mainCondition |15 |expected_sets_js, feature_validation_js, rubric_js, ui |
-| materialContractsBuckets |15 |expected_sets_js, feature_validation_js, rubric_js, taxonomy_js, ui |
 
 ## Cross-Source Type Mismatches
 
@@ -118,9 +118,11 @@ Keys in only one source family. These are candidates for dead-code review, not a
 | alsoSurfacedAs |ui |2 |
 | amendmentsRequirement |category_summary_features_js |1 |
 | appliesTo |taxonomy_js |1 |
+| assignmentProvisos |taxonomy_js |1 |
 | baseSalaryStandard |category_summary_features_js |1 |
 | benefitsStandard |category_summary_features_js |1 |
 | bonusStandard |category_summary_features_js |1 |
+| cashAmount |ui |1 |
 | chapeauProviso |ui |1 |
 | closingConditionsPrecedent |category_summary_features_js |1 |
 | closingDeadline |ui |1 |
@@ -139,14 +141,18 @@ Keys in only one source family. These are candidates for dead-code review, not a
 | maeStandaloneCondition |category_summary_features_js |2 |
 | materialityQualifiers |taxonomy_js |1 |
 | partOfRep |ui |1 |
+| primaryForum |taxonomy_js |1 |
 | proposedCode |feature_validation_js |1 |
 | proposedLabel |feature_validation_js |1 |
 | proviso |ui |1 |
 | reapplied_corrections |feature_validation_js |1 |
+| region_id |ui |1 |
+| regionId |ui |1 |
 | relatedDefinitions |feature_validation_js |1 |
+| section_number |ui |1 |
 | severanceStandard |category_summary_features_js |1 |
 | sort_order |feature_validation_js |1 |
-| sourceSection |feature_validation_js |1 |
+| source_section |ui |1 |
 | sourceSectionTitle |feature_validation_js |1 |
 | sourceSectionType |feature_validation_js |1 |
 | startChar |feature_validation_js |1 |
@@ -159,8 +165,13 @@ Keys in only one source family. These are candidates for dead-code review, not a
 ## UI-Only Keys
 
 - alsoSurfacedAs
+- cashAmount
 - chapeauProviso
 - closingDeadline
 - partOfRep
 - proviso
+- region_id
+- regionId
+- section_number
+- source_section
 - triggerTerminationClauses
