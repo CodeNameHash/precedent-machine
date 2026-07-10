@@ -2,6 +2,9 @@ import React from 'react';
 import { cardFeatures, splitForCell, textOf, valueText } from './card-utils.js';
 import { standardColorKey } from './standard-colors.js';
 import { BOARD_CHANGE_STANDARD_LABELS } from './board-change-standard.js';
+import taxonomy from '../../../lib/taxonomy.js';
+
+const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
 // Rebuilt per REBUILD-SPECS.md §7. The original thirteen rows keep their
 // exact ids/keys/fallback regexes/detail synthesis unchanged (existing
@@ -285,7 +288,12 @@ function allFeatureItems(cards, keys) {
       for (const item of (Array.isArray(raw) ? raw : [raw])) {
         const text = valueText(item);
         const k = String(text || '').trim();
-        if (text && !seen.has(k)) { seen.add(k); out.push({ text, card }); }
+        // `item` (the raw tagged value, carrying `.code` when the canonical
+        // layer assigned one) is kept alongside `text` so corItemsRow() can
+        // prefer labelForCode() over the regex-summarized fallback -- an
+        // additive field existing callers (which only destructure
+        // {text, card}) are unaffected by.
+        if (text && !seen.has(k)) { seen.add(k); out.push({ text, card, item }); }
       }
     }
   }
@@ -295,13 +303,24 @@ function reaffirmDaysFor(cards) {
   const n = Number(firstFeature(cards, ['arcReaffirmDeadlineDays']));
   return Number.isFinite(n) && n > 0 ? n : null;
 }
+// Canonical layer: only changeOfRecommendationItems carries a
+// SOLICITATION_ACT code today; notChangeOfRecommendationItems has no
+// taxonomy mapping (taxonomyForFeatureKey returns null for it), so this
+// naturally no-ops for that spec and corItemsRow() falls through to
+// summarizeItem() unchanged.
+function corItemCodeLabel(spec, item) {
+  const dict = taxonomyForFeatureKey(spec.keys?.[0]);
+  const code = dict && item && typeof item === 'object' && !Array.isArray(item) ? item.code : null;
+  return code ? labelForCode(String(code), dict) : null;
+}
 function corItemsRow(spec, cards, specs, { reaffirm = false, tone = 'neutral' } = {}) {
   const raw = allFeatureItems(cards, spec.keys);
   if (!raw.length) return null;
   const days = reaffirm ? reaffirmDaysFor(cards) : null;
-  const items = raw.map(({ text, card }, index) => {
+  const items = raw.map(({ text, card, item }, index) => {
     const s = summarizeItem(text, specs);
-    let label = s.letter ? `${s.letter}. ${s.label}` : s.label;
+    const canonical = corItemCodeLabel(spec, item);
+    let label = s.letter ? `${s.letter}. ${canonical || s.label}` : (canonical || s.label);
     if (days && /reject a publicly-disclosed/i.test(s.label)) label += ` (within ${days} business days)`;
     return { id: `nosol-fiduciary-${spec.id}-${s.letter || index}`, letter: s.letter, label, tone, evidence: text, source: card };
   });

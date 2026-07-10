@@ -2,6 +2,9 @@ import React from 'react';
 import { cardFeatures, splitForCell, textOf, valueText } from './card-utils.js';
 import { standardColorKey } from './standard-colors.js';
 import { BOARD_CHANGE_STANDARD_LABELS } from './board-change-standard.js';
+import taxonomy from '../../../lib/taxonomy.js';
+
+const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
 // Rebuilt per REBUILD-SPECS.md §7. The five original rows (threshold, test,
 // determiner, engage, final) keep their exact ids/keys/fallback-regex/detail
@@ -149,11 +152,33 @@ function pctFmt(raw) {
   const t = String(raw || '').trim();
   return /^\d+$/.test(t) ? `${t}%` : t;
 }
+// Canonical layer: superiorProposalDeterminer can carry an extraction-
+// assigned SUPERIOR_DETERMINER code (either on a tagged {code,label,text}
+// object, or -- back-compat -- as a bare code string). labelForCode()
+// validates against the dict before returning, so a real prose determiner
+// sentence (which never matches a dict key) safely falls through to null,
+// leaving cleanDeterminer()'s regex-based summary as the transition-safe
+// fallback.
+function determinerCodeLabel(cards) {
+  const dict = taxonomyForFeatureKey('superiorProposalDeterminer');
+  for (const card of cards) {
+    const raw = cardFeatures(card).superiorProposalDeterminer;
+    if (raw === null || raw === undefined || raw === '') continue;
+    const code = raw && typeof raw === 'object' && !Array.isArray(raw)
+      ? (raw.code || raw.value)
+      : (typeof raw === 'string' ? raw : null);
+    const label = code ? labelForCode(String(code), dict) : null;
+    if (label) return label;
+  }
+  return null;
+}
 function rowForSpec(spec, cards) {
   const evidence = cards.map(textOf).filter(Boolean).join('\n\n');
   const raw = firstFeature(cards, spec.keys) || spec.fallback(evidence);
   if (!raw) return null;
-  const detail = spec.id === 'determiner' ? cleanDeterminer(raw) : spec.id === 'threshold' ? pctFmt(raw) : raw;
+  const detail = spec.id === 'determiner'
+    ? (determinerCodeLabel(cards) || cleanDeterminer(raw))
+    : spec.id === 'threshold' ? pctFmt(raw) : raw;
   const row = {
     id: `nosol-superior-${spec.id}`,
     label: spec.label,

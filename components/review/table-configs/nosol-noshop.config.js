@@ -1,6 +1,9 @@
 import React from 'react';
 import { cardFeatures, splitForCell, textOf, valueText } from './card-utils.js';
 import { standardColorKey } from './standard-colors.js';
+import taxonomy from '../../../lib/taxonomy.js';
+
+const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
 // Rebuilt per REBUILD-SPECS.md §7: "core mechanics like old" -- the
 // restriction/cease/exceptions/standstill rows below are the existing,
@@ -110,6 +113,16 @@ function summarizeProhibitedAct(text) {
   const spec = PROHIBIT_ACT_SUMMARY.find((s) => s.test.test(t));
   return spec ? spec.label : `${splitForCell(t, 60).short}…`;
 }
+// Canonical layer: an item's `.code` (assigned by extraction against the
+// SOLICITATION_ACT vocabulary) resolves to a stable, cross-deal-identical
+// label via labelForCode() -- preferred over the regex-driven
+// summarizeProhibitedAct() below, which is deal-specific phrasing guesswork.
+// Returns null when the item carries no valid code, so callers fall back to
+// summarizeProhibitedAct() exactly as before (transition-safe pre-reprocess).
+function prohibitedActCodeLabel(item) {
+  const code = item && typeof item === 'object' && !Array.isArray(item) ? item.code : null;
+  return code ? labelForCode(String(code), taxonomyForFeatureKey('ceaseDiscussionsProhibitedList')) : null;
+}
 function prohibitedActsFor(matches) {
   // Prefer an already-itemized claim (ceaseDiscussionsProhibitedList
   // extracted as more than one distinct list entry). Each entry is one
@@ -117,13 +130,15 @@ function prohibitedActsFor(matches) {
   for (const card of matches) {
     const raw = cardFeatures(card).ceaseDiscussionsProhibitedList;
     if (Array.isArray(raw) && raw.length > 1) {
-      const items = raw.map((item) => valueText(item)).filter(Boolean);
-      if (items.length > 1) {
+      const entries = raw
+        .map((item) => ({ item, verbatim: valueText(item) }))
+        .filter((entry) => entry.verbatim);
+      if (entries.length > 1) {
         const seen = new Set();
         const acts = [];
-        items.forEach((verbatim, index) => {
-          const label = summarizeProhibitedAct(verbatim);
-          if (seen.has(label)) return;
+        entries.forEach(({ item, verbatim }, index) => {
+          const label = prohibitedActCodeLabel(item) || summarizeProhibitedAct(verbatim);
+          if (!label || seen.has(label)) return;
           seen.add(label);
           acts.push({ id: `claimed-${index}`, label, evidence: verbatim, source: card });
         });
@@ -277,12 +292,21 @@ function mechanicRow(spec, cards) {
     present: true,
   };
 }
+// Canonical layer: prefer an item's `.code` (SOLICITATION_ACT vocabulary)
+// over its raw verbatim text -- same code reads identically across deals.
+// Falls back to valueText(item) (the pre-canonical rendering) when no valid
+// code is present, so the item count / listed text stay transition-safe.
+function changeOfRecItemLabel(item) {
+  const code = item && typeof item === 'object' && !Array.isArray(item) ? item.code : null;
+  const canonical = code ? labelForCode(String(code), taxonomyForFeatureKey('changeOfRecommendationItems')) : null;
+  return canonical || valueText(item);
+}
 // Change of Recommendation prohibited-action count: a "5 items" pill with
 // the full A-E list behind a "see list" expander, never dumped inline.
 function changeOfRecRow(cards) {
   const hit = firstHit(cards, ['changeOfRecommendationItems']);
   if (!hit) return null;
-  const items = (Array.isArray(hit.raw) ? hit.raw : [hit.raw]).map((item) => valueText(item)).filter(Boolean);
+  const items = (Array.isArray(hit.raw) ? hit.raw : [hit.raw]).map(changeOfRecItemLabel).filter(Boolean);
   if (!items.length) return null;
   return {
     id: 'nosol-noshop-change-of-rec-count',

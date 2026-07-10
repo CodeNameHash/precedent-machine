@@ -13,6 +13,9 @@ import {
   textOf,
 } from './card-utils.js';
 import { buildExpenseExceptionsRow, isAdvisersFeesCard } from './advisers-fees-expenses.config.js';
+import taxonomy from '../../../lib/taxonomy.js';
+
+const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
 // Ben (round 6): "Advisers / Fees / Expenses" is folded INTO this Misc table
 // (it was one thin fee/expense-allocation row). The base rule ("Each party
@@ -91,6 +94,20 @@ function forumLabel(detail, card) {
   return detail;
 }
 const ROW_CLEANERS = { forum: forumLabel };
+// Canonical layer: governingLaw can carry an extraction-assigned
+// GOVERNING_LAW code (tagged {code,label,text} object, or -- back-compat --
+// a bare code string). labelForCode() validates against the dict before
+// returning, so a raw prose/state-name value (which never matches a dict
+// key like 'DELAWARE') safely returns null, leaving row.detail's existing
+// valueText() rendering as the transition-safe fallback.
+function governingLawCodeLabel(hit) {
+  if (!hit) return null;
+  const raw = hit.value;
+  const code = raw && typeof raw === 'object' && !Array.isArray(raw)
+    ? (raw.code || raw.value)
+    : (typeof raw === 'string' ? raw : null);
+  return code ? labelForCode(String(code), taxonomyForFeatureKey('governingLaw')) : null;
+}
 function mappedBoilerplateRows(cards, specs) {
   return specs
     .map(([id, label, kind, keys]) => {
@@ -99,9 +116,39 @@ function mappedBoilerplateRows(cards, specs) {
       if (!row) return null;
       const cleaner = ROW_CLEANERS[id];
       if (cleaner && row.detail) row = { ...row, detail: cleaner(row.detail, hit.card) };
+      if (id === 'governing-law') {
+        const canonical = governingLawCodeLabel(hit);
+        if (canonical) row = { ...row, detail: canonical };
+      }
       return { ...row, sourceCard: hit.card, signals: [miscBoilerplateSignal({ ...row, sourceCard: hit.card })].filter(Boolean) };
     })
     .filter(Boolean);
+}
+// Canonical layer: parentAssignmentConditions is a LIST feature whose items
+// can carry an extraction-assigned ASSIGNMENT_PARENT_EXCEPTION code. When at
+// least one item resolves to a canonical label, those labels replace the
+// single hardcoded "Merger Sub may assign..." pill below with one pill per
+// distinct exception. Returns null (no codes found anywhere) so
+// buildAssignmentRow() keeps its exact pre-canonical single pill --
+// transition-safe. Reads parentAssignmentConditions directly (via
+// allFeatures, across every card) rather than through the parentRight
+// alias-hit above, so a code on this key is never shadowed by a same-card
+// parentAssignmentRight boolean claim.
+function assignmentParentCodeLabels(cards) {
+  const hits = allFeatures(cards, ['parentAssignmentConditions']);
+  if (!hits.length) return null;
+  const dict = taxonomyForFeatureKey('parentAssignmentConditions');
+  const seen = new Set();
+  const labels = [];
+  for (const hit of hits) {
+    const items = Array.isArray(hit.value) ? hit.value : [hit.value];
+    for (const item of items) {
+      const code = item && typeof item === 'object' && !Array.isArray(item) ? item.code : null;
+      const label = code ? labelForCode(String(code), dict) : null;
+      if (label && !seen.has(label)) { seen.add(label); labels.push(label); }
+    }
+  }
+  return labels.length ? labels : null;
 }
 // Ben (round 6): collapse the five raw-clause Assignment rows into ONE
 // "Assignment" row with two crisp pills.
@@ -112,7 +159,16 @@ function buildAssignmentRow(cards) {
   const card = parentRight?.card || restriction?.card;
   const evidence = textOf(card);
   const signals = [];
-  if (parentRight) signals.push({ id: 'misc-assign-parent', label: 'Merger Sub may assign to Parent or a wholly-owned subsidiary', value: 'parent-assign', tone: 'neutral', evidence, source: card });
+  if (parentRight) {
+    const canonicalLabels = assignmentParentCodeLabels(cards);
+    if (canonicalLabels) {
+      canonicalLabels.forEach((label, index) => {
+        signals.push({ id: `misc-assign-parent-${index}`, label, value: 'parent-assign', tone: 'neutral', evidence, source: card });
+      });
+    } else {
+      signals.push({ id: 'misc-assign-parent', label: 'Merger Sub may assign to Parent or a wholly-owned subsidiary', value: 'parent-assign', tone: 'neutral', evidence, source: card });
+    }
+  }
   if (restriction) signals.push({ id: 'misc-assign-restrict', label: "Otherwise, no assignment without the other party's prior written consent", value: 'no-assign', tone: 'neutral', evidence, source: card });
   if (!signals.length) return null;
   return { id: 'misc-boilerplate-assignment', label: 'Assignment', kind: 'Boilerplate', detail: null, evidence, source: labelOf(card), sourceCard: card, present: true, signals };
