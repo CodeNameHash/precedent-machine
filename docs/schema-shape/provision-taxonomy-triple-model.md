@@ -131,6 +131,17 @@ Source: `Merger Agreement, ACME/Widget, dated 2025-03-03`
 
 Section 3 defines Canonical as "the normalised enum value" reached via a Normalizer resolving Verbatim text. The Section-B feature families below are a stricter case of the same idea: instead of a post-hoc regex/Normalizer resolving free text after the fact, the extraction model is asked to assign the Canonical **at extraction time**, from a fixed codebook embedded in the prompt. Concept, code, and render are one continuous chain with no separate normalization pass.
 
+**Coding is not a new pipeline stage.** It is a stricter mode of the existing stages 3 → 4 → 5 (see `provision-processing-flow.md` § 2). Its only real effect is to pull the normalization decision *forward*: rather than stage 4 extracting free text and stage 5 mapping it to a Canonical after the fact via a Normalizer, the closed codebook is handed to the model inside the stage-4 extraction call and the model assigns the Canonical itself. For a coded feature the code *is* the Canonical, and stage 5 degrades to a validation that the returned code is legal.
+
+### 8.0 Two altitudes of categorization
+
+Coding happens at two distinct altitudes. They are easy to conflate; they are not the same operation.
+
+- **Altitude 1 — provision-type bucketing (stage 3, Classify).** A Section is bound to *which contractual concept it is an instance of*: No-Shop, MAC, termination fee, governing-law/boilerplate, and so on. This picks the bucket. The bucket determines which rubric — and therefore which coded features — applies downstream.
+- **Altitude 2 — feature coding (stage 4, Extract).** *Within* the chosen bucket, the rubric for that provision type declares which of its features are coded. The `list-tagged` / `tagged` flag on a rubric feature entry is the switch (see § 8.2). Only flagged features get a codebook and a `{code, label, text}` shape; everything else is extracted as free text.
+
+Altitude 1 chooses the concept; the concept's rubric declares its coded features; altitude 2 fills the codes. The six hops in § 8.1 trace altitude 2, which is where "concept → code" completes.
+
 ### 8.1 The six hops
 
 ```
@@ -183,3 +194,14 @@ The following feature keys are coded so far, each backed by a dictionary in `lib
 ### 8.4 `labelForCode` — code to rendered pill
 
 `lib/taxonomy.js`'s `labelForCode(code, dict)` looks up a code against the dictionary returned by `taxonomyForFeatureKey(key)` and returns the canonical label string. Review-table configs (e.g. `components/review/table-configs/nosol-noshop.config.js`, `misc-boilerplate.config.js`) call it to render a canonical pill instead of a regex-derived label. Every render site is **transition-safe**: if a provision's `claims.canonical` has no code yet (pre-reprocess, or extraction didn't populate one), the config falls back to the prior regex-derived text rather than showing nothing. The regex fallbacks are kept in place until a corpus-wide reprocess confirms codes are populated on all deals, at which point they can be deleted (see `provision-processing-flow.md` § 8, Corpus plan).
+
+### 8.5 Residual buckets and the vocabulary feedback loop (PROPOSED — not yet built)
+
+Forced categorization is what buys cross-deal comparability — the whole point of coding is to answer "show me every deal where X". But forcing a value into the nearest code when nothing truly fits is the opposite of useful: a plausible-but-wrong code reads as correct and is worse than no code at all. The guardrail is an explicit **residual bucket at each altitude**, plus a loop that turns residuals into new frozen codes rather than dropping them.
+
+**Status: this is a design target, not the current behaviour.** Today the only escape hatch is the transition-safe regex fallback in § 8.4 — a migration artefact that silently degrades to prior text. There is no capture of "the model saw this and nothing fit", and no review surface fed by it. The mechanism below is proposed; it is tracked as GAP-E in `provision-processing-flow.md` § 4 and `processing-flow-gaps.json`.
+
+- **Altitude-1 residual (provision level).** An explicit `unclassified` / `other` bucket so a Section that is not a recognised concept is not force-fit into the nearest provision type. Such Sections are retained and flagged, never silently coerced.
+- **Altitude-2 residual (feature level).** For each coded feature, an explicit `OTHER` outcome (either a reserved `OTHER` code in the vocabulary or an allowed "no code, verbatim only" return) when no codebook entry fits. The residual value is **captured and flagged for review**, not dropped to the regex fallback.
+
+**The feedback loop.** The Canonical Vocabulary is closed and freeze-gated (Section 5) precisely so the model cannot invent codes. Residuals are therefore the signal for what the vocabulary is missing: the pile of flagged residuals is reviewed, and genuine recurring variants become new codes via a Freeze Gate PR. The loop is **residual → review → Freeze Gate PR to add frozen codes**. This keeps the taxonomy honest: it neither force-fits (altitude residuals absorb the misfits) nor sprawls (only the freeze gate can widen a vocabulary).
