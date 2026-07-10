@@ -261,6 +261,8 @@ Companion detail to Section 2's generic 8-stage pipeline. Canonical-coding is **
 
 Altitude 1 chooses the concept; the concept's rubric declares its coded features; altitude 2 fills the codes.
 
+**Provision granularity (what altitude 1 operates on).** A Provision is the smallest independently-comparable contractual concept, not a structural container — so classification granularity is concept-driven, not pinned to the Article/Section the document happens to use. It cuts both ways: a Reps Section **explodes** into one Provision per individual rep (real: `splitUmbrellaRep` in `lib/parser-v2/extract.js`; the rubric carries one concept row per rep — `REP-T-ORG`, `REP-T-CAP`, …), whereas a no-shop **stays one Provision** with its variation captured as coded features inside (the `SOLICITATION_ACT` list, the superior-proposal determiner). Split to the level at which the comparison question is asked, no finer. Two orthogonal axes ride on each Provision: **scope** (`party` on the provision type — `REP-T`/`IOC-T` = target, `REP-B`/`IOC-B` = buyer) and **concept identity** (which rep/covenant). The persisted cross-deal identity is the pair `(provisions.type, provisions.category)` — there is no single `concept_key` column today; see `provision-taxonomy-triple-model.md` § 8.6 for the verified field mapping and § 8.7 for the enum-code vs numeric-normalization distinction.
+
 Verified end-to-end on the Metsera deal (2026-07-10):
 
 1. **Rubric declares the feature `type`** — `list-tagged` or `tagged` on the feature entry in `lib/rubric.js` is what makes a feature taxonomy-coded.
