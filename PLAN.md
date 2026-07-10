@@ -11,7 +11,9 @@ Codex/Sonnet with acceptance criteria written first; mechanical changes ship to
 `main` on green (`npm test` + `npm run build`); canonical-vocab and extraction
 changes are Fable-authored and gated by golden eval + ingest-QA + quote
 verification, reprocessed per-type (`scripts/reprocess.js`), not full re-ingest.
-Frozen files (Phase-0-C @ `1ea062d`) stay frozen. Never push to `main` without Ben.
+Frozen files (Phase-0-C @ `1ea062d`) stay frozen. Green, tested, mechanical work
+ships to `main` on its own; corpus-scale runs, taxonomy/vocabulary design, and
+irreversible or user-facing-risky changes wait for Ben's explicit go.
 
 Design source of truth: `docs/schema-shape/provision-taxonomy-triple-model.md` (§ 8
 canonical-coding model) and `docs/schema-shape/provision-processing-flow.md` (§ 7
