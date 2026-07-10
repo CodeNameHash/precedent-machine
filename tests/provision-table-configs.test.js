@@ -943,6 +943,11 @@ test('structure-mechanics config exposes transaction-form signals and hover deta
 // filing mechanic. The config must never surface that sentence as the
 // effective time -- it should fall back to effectiveTime / mainConcept / the
 // clause instead (REBUILD-SPECS.md section 1).
+//
+// No primary_quote on this card -- deliberately, so this test exercises the
+// STRUCTURED-key fallback tier (effectiveTimeShort -> effectiveTime ->
+// mainConcept) in isolation. See the "prefers the real clause text" test
+// below for the real-text-wins tier that now runs ahead of this one.
 test('structure-mechanics config skips a corrupted effectiveTimeShort claim and falls back to the filing mechanic', () => {
   const rows = structureMechanicsMod.structureMechanicsConfig.selectRows({
     cards: [{
@@ -950,7 +955,6 @@ test('structure-mechanics config skips a corrupted effectiveTimeShort claim and 
       provision_type: 'STRUCTURE_MECHANICS',
       provision_subtype: 'STRUCT-EFFECTIVE-TIME',
       short_title: 'Effective Time',
-      primary_quote: 'The Merger shall become effective upon filing of the Certificate of Merger with the Delaware Secretary of State.',
       features: {
         effectiveTimeShort: 'Names the Company as the surviving corporation of the Merger.',
         effectiveTime: 'Upon filing of the Certificate of Merger with the Delaware Secretary of State.',
@@ -962,6 +966,39 @@ test('structure-mechanics config skips a corrupted effectiveTimeShort claim and 
   assert.doesNotMatch(effectiveTime.detail, /surviving corporation/i);
   assert.match(effectiveTime.detail, /Upon filing of the Certificate of Merger/);
   assert.deepEqual(effectiveTime.signals.map((item) => item.label), ['Upon filing of the Certificate of Merger with the Delaware Secretary of State.']);
+});
+
+// Fix 2 (See-provision fidelity): the real clause text (primary_quote) must
+// win over a CLEAN effectiveTimeShort/effectiveTime AI summary once it clears
+// the surviving-corporation guard -- mirrors the IOC fix (textOf(c) ||
+// valueText(mainObligation)). The structured keys stay as the fallback tier
+// for cards with no captured quote at all (see the tests above/below).
+test('structure-mechanics config prefers the real clause text over a clean effectiveTimeShort/effectiveTime summary once the guard passes', () => {
+  const rows = structureMechanicsMod.structureMechanicsConfig.selectRows({
+    cards: [{
+      id: 'struct-effective-time-real-text',
+      provision_type: 'STRUCTURE_MECHANICS',
+      provision_subtype: 'STRUCT-EFFECTIVE-TIME',
+      short_title: 'Effective Time',
+      primary_quote: 'The Merger shall become effective at the Effective Time, which shall occur upon the filing of the Certificate of Merger with the Secretary of State of the State of Delaware, or at such later time as Parent and the Company shall agree and specify in the Certificate of Merger.',
+      features: {
+        effectiveTimeShort: 'Upon filing of the Certificate of Merger with the Delaware Secretary of State.',
+        effectiveTime: 'Upon filing of the Certificate of Merger with the Delaware Secretary of State.',
+      },
+    }],
+  });
+  const effectiveTime = rows.find((row) => row.id === 'structure-mechanics-effective-time');
+  assert.ok(effectiveTime, 'effective-time row should still render');
+  assert.match(
+    effectiveTime.detail,
+    /or at such later time as Parent and the Company shall agree/,
+    'the real clause text -- not the AI summary -- must win once it clears the surviving-corporation guard',
+  );
+  assert.notEqual(
+    effectiveTime.detail,
+    'Upon filing of the Certificate of Merger with the Delaware Secretary of State.',
+    'the bare AI summary sentence must not stand in once real clause text exists',
+  );
 });
 
 // Regression: when EVERY effective-time key on the card is corrupted (or
@@ -994,6 +1031,10 @@ test('structure-mechanics config falls back to the clause when every effective-t
 // filing-mechanic sentence. The scan must be key-first: exhaust
 // effectiveTimeShort across every card before falling to effectiveTime, then
 // mainConcept.
+//
+// No primary_quote on either card -- deliberately, so this test exercises
+// the STRUCTURED-key fallback tier in isolation (the real-text tier that now
+// runs ahead of it is covered by its own dedicated test above).
 test('structure-mechanics config prefers a good effectiveTimeShort on a LATER card over an earlier card\'s mainConcept', () => {
   const rows = structureMechanicsMod.structureMechanicsConfig.selectRows({
     cards: [{
@@ -1001,7 +1042,6 @@ test('structure-mechanics config prefers a good effectiveTimeShort on a LATER ca
       provision_type: 'STRUCTURE_MECHANICS',
       provision_subtype: 'STRUCT-EFFECTIVE-TIME',
       short_title: 'Effective Time',
-      primary_quote: 'The Certificate of Merger shall be filed at the Closing.',
       features: {
         effectiveTimeShort: 'Names the Company as the surviving corporation of the Merger.',
         mainConcept: 'Defines the Delaware certificate of merger to be filed at closing.',
@@ -1011,7 +1051,6 @@ test('structure-mechanics config prefers a good effectiveTimeShort on a LATER ca
       provision_type: 'STRUCTURE_MECHANICS',
       provision_subtype: 'STRUCT-EFFECTIVE-TIME',
       short_title: 'Effective Time',
-      primary_quote: 'The Merger shall become effective upon filing of the Certificate of Merger with the Delaware Secretary of State.',
       features: {
         effectiveTimeShort: 'Upon filing of the Certificate of Merger with the Delaware Secretary of State.',
       },

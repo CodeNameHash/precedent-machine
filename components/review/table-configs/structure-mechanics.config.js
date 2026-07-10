@@ -34,21 +34,33 @@ const ROWS = [
 // actual filing mechanic ("Upon filing of the Certificate of Merger with the
 // Delaware Secretary of State."). This is a DATA bug (real fix belongs at
 // extraction/backfill); this guard is the config-side stopgap: never let a
-// value matching /surviving corporation/i stand in as the effective time.
+// value matching /surviving corporation/i stand in as the effective time --
+// whether that value is the real clause text or one of the AI-synthesized
+// keys below.
 //
-// A single card's corrupted effectiveTimeShort must never shadow a GOOD
-// effectiveTimeShort sitting on a different card. So this scans KEY-FIRST,
-// CARD-SECOND: every card's effectiveTimeShort (skipping /surviving
-// corporation/i matches), then every card's effectiveTime, then every card's
-// mainConcept -- only once a whole key has come up empty across every card
-// does it move to the next key. Only after all three keys are exhausted does
-// it fall back to the raw clause text of the first card that had SOME
-// (corrupted) effective-time claim, so the row still shows the filing-
-// mechanic sentence when present in the source text.
+// Tier order (mirrors the IOC fix, textOf(c) || valueText(mainObligation)):
+// the real captured clause text (primary_quote/region_full_text) wins FIRST,
+// card-by-card, whenever it clears the guard -- effectiveTimeShort/
+// effectiveTime/mainConcept are documented in lib/schema/features.js as
+// one-sentence AI summaries, not verbatim text. Only once NO card carries a
+// guard-clean quote does this fall to the structured-key tier: a single
+// card's corrupted effectiveTimeShort must never shadow a GOOD
+// effectiveTimeShort sitting on a different card, so that tier scans
+// KEY-FIRST, CARD-SECOND -- every card's effectiveTimeShort (skipping
+// /surviving corporation/i matches), then every card's effectiveTime, then
+// every card's mainConcept -- only once a whole key has come up empty across
+// every card does it move to the next key. Only after all three keys are
+// exhausted does it fall back to the raw clause text of the first card that
+// had SOME (corrupted) effective-time claim, so the row still shows the
+// filing-mechanic sentence when present in the source text.
 const EFFECTIVE_TIME_KEYS = ['effectiveTimeShort', 'effectiveTime', 'mainConcept'];
 const SURVIVING_CORP_RE = /surviving corporation/i;
 
 function effectiveTimeHit(cards) {
+  for (const card of cards) {
+    const clause = textOf(card);
+    if (clause && !SURVIVING_CORP_RE.test(clause)) return { key: 'clause', value: clause, detail: clause, card };
+  }
   for (const key of EFFECTIVE_TIME_KEYS) {
     for (const card of cards) {
       const features = cardFeatures(card);

@@ -313,8 +313,13 @@ function keyTermsNode(key, card, PillCell) {
   }
 
   if (!factBlocks.length && !proseBlocks.length) {
-    const mainConcept = valueText(f.mainConcept) || valueText(f.terminationTriggers);
-    addProse('Detail', mainConcept);
+    // Last-resort detail (no bespoke fact/prose branch above fired): prefer
+    // the real clause text over mainConcept's one-sentence AI summary --
+    // mirrors the IOC fix (textOf(c) || valueText(mainObligation)). Falls
+    // back to the summary/terminationTriggers only when no quote was ever
+    // captured on this card.
+    const detail = textOf(card) || valueText(f.mainConcept) || valueText(f.terminationTriggers);
+    addProse('Detail', detail);
   }
   if (!factBlocks.length && !proseBlocks.length) {
     return React.createElement('span', { className: 'italic text-inkFaint' }, 'Present, detail not extracted');

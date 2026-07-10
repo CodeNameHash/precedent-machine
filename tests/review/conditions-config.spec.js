@@ -32,7 +32,12 @@ function metseraShapedCards() {
       id: 'stockholder',
       provision_subtype: 'COND-M-STOCKHOLDER',
       short_title: 'Stockholder Approval',
-      primary_quote: 'The Company Stockholder Approval must have been duly obtained at the Company Stockholder Meeting.',
+      // Deliberately DIFFERENT from features.mainCondition below (Punchlist
+      // #9 real-text-first fix): primary_quote is the real captured clause,
+      // mainCondition is the AI's one-sentence summary. cardToProvision must
+      // prefer the real clause for the "see text" block, falling back to the
+      // summary only when no quote was captured at all.
+      primary_quote: 'Section 7.01(a) The Company Stockholder Approval, as defined in Section 2.03 hereof, shall have been duly obtained by the affirmative vote of the holders of a majority of the outstanding shares of Company Common Stock entitled to vote thereon at the Company Stockholders Meeting or any adjournment or postponement thereof, in accordance with the DGCL and the Company Charter.',
       features: {
         mainCondition: 'The Company Stockholder Approval must have been duly obtained at the Company Stockholder Meeting.',
         stockholderApprovalRequired: true,
@@ -229,12 +234,18 @@ test('standards synthesize to the legacy-matching labels (real vote standard, HS
   assert.match(html, /Covenant performance/);
   assert.match(html, />No MAE</);
 
-  // The full mainCondition sentence must be present (nothing dropped) but
-  // only inside a collapsed <details>/"see text" block, never as loose text.
+  // Punchlist #9 (real-text-first): the REAL clause (primary_quote) must
+  // render inside the collapsed "see text" block, not the AI's mainCondition
+  // summary -- only inside a collapsed <details>/"see text" block, never as
+  // loose text.
   assert.match(
     html,
-    /<summary class="term-cell-seetext"[^>]*>See provision<\/summary><div[^>]*>The Company Stockholder Approval must have been duly obtained at the Company Stockholder Meeting\.<\/div>/,
-    'mainCondition must sit inside an unopened <details>/"see text" block',
+    /<summary class="term-cell-seetext"[^>]*>See provision<\/summary><div[^>]*>Section 7\.01\(a\) The Company Stockholder Approval, as defined in Section 2\.03 hereof, shall have been duly obtained by the affirmative vote of the holders of a majority of the outstanding shares of Company Common Stock entitled to vote thereon at the Company Stockholders Meeting or any adjournment or postponement thereof, in accordance with the DGCL and the Company Charter\.<\/div>/,
+    'the real clause (primary_quote) must sit inside an unopened <details>/"see text" block',
+  );
+  assert.ok(
+    !html.includes('The Company Stockholder Approval must have been duly obtained at the Company Stockholder Meeting.'),
+    'the AI mainCondition summary must not render once real clause text (primary_quote) exists',
   );
   assert.ok(!/<details[^>]*\bopen\b/.test(html), 'the see-text/see-definition details blocks must render collapsed (no open attribute)');
 });

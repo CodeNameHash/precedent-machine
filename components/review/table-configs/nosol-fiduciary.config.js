@@ -2,6 +2,7 @@ import React from 'react';
 import { cardFeatures, splitForCell, textOf, valueText } from './card-utils.js';
 import { standardColorKey } from './standard-colors.js';
 import { BOARD_CHANGE_STANDARD_LABELS } from './board-change-standard.js';
+import { FIDUCIARY_STANDARD_LABELS } from './fiduciary-standard-labels.js';
 import taxonomy from '../../../lib/taxonomy.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
@@ -186,12 +187,6 @@ function pctLabel(raw) {
   if (!text) return null;
   return /%\s*$/.test(text) ? text : `${text}%`;
 }
-const FIDUCIARY_STANDARD_LABELS = {
-  'is-superior-proposal': 'Is a Superior Proposal (after Parent’s adjustments)',
-  'constitutes-or-could-lead-to-superior': 'Constitutes or could lead to a Superior Proposal',
-  'constitutes-or-could-reasonably-be-expected-to-lead-to-superior': 'Constitutes or could reasonably be expected to lead to a Superior Proposal',
-  'continues-to-constitute-superior': 'Continues to constitute a Superior Proposal',
-};
 function prettifyCode(code) {
   const s = String(code || '').replace(/[_-]+/g, ' ').replace(/\s+/g, ' ').trim();
   return s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : null;

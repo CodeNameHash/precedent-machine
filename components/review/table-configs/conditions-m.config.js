@@ -32,7 +32,15 @@ function cardToProvision(card) {
     features: {
       ...features,
       canonicalCode: code,
-      mainCondition: features.mainCondition || features.mainConcept || textOf(card),
+      // Ben: "see text" (and every other mainCondition consumer -- the
+      // covenant-standard sniff, conditionDetailLines' "Condition:" line)
+      // must show the REAL clause, not the AI's one-sentence summary --
+      // mainCondition/mainConcept are documented in lib/schema/features.js
+      // as fallback one-sentence summaries, not verbatim text. Mirrors the
+      // IOC fix (textOf(c) || valueText(mainObligation)): the real captured
+      // quote/region wins whenever one exists; the AI summary is the last
+      // resort for the rare card with no captured text at all.
+      mainCondition: textOf(card) || features.mainCondition || features.mainConcept,
       sectionNumber: features.sectionNumber || card.section_ref || '',
     },
   };
