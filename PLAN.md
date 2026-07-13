@@ -60,6 +60,16 @@ before scaling; add NOSOL provision de-duplication if not.
 `reprocess.js --all --types NOSOL,MISC,TERMF --apply` → claims-only rematerialize across
 all 40 → verify code population + spot-check quality per deal → flip renders off the regex
 fallbacks and **delete the regexes** (only after codes confirmed corpus-wide).
+The per-deal verification report must include a **card-less provision count** per deal
+(provisions with no matching card — deferred to M3, but counted and visible now).
+
+**1.4 Ben-gated duplicate-card prune (keep / re-home / delete ladder).** Deterministic
+prune of pre-existing duplicate NOSOL cards, decided per card by Ben (Metsera + Kraft
+decisions logged 2026-07 checkpoint; re-homes become generalized new titles for the corpus
+run). Hard gates: dry-run table on the 3 pilots FIRST, DB backup before any destructive
+pass, any card carrying a human correction is skipped and flagged, and Ben signs off on the
+dry-run before anything is deleted. **Standing rule: orphaned human corrections are
+preserved and surfaced, never deleted.**
 
 ## 2. Residual capture + feedback loop (GAP-E — PROPOSED, makes forced categorization safe)
 
@@ -131,7 +141,10 @@ uniform-MAE mis-stamp.
   the critical path.
 - **M3 — ingest seamless.** Fresh deal ingests end-to-end and renders identical; two-pass
   definitions extraction; ingest path writes `claims` so fresh deals render at the Claim
-  level (`PLAN-CLAIMS-LAYER.md` Phase 4).
+  level (`PLAN-CLAIMS-LAYER.md` Phase 4). **Card-less provisions** (provisions with no
+  card, so no claims/render today) are handled here, not in the §1.3 corpus run — known
+  cases: Metsera `Standstill Waiver / Don't-Ask-Don't-Waive`, Kraft `[PROPOSED] Publicity`;
+  the §1.3 report counts them per deal so the M3 backlog is sized from real data.
 - **M5 — UI homogenized + demo-ready.** Review-page polish to all deals; admin pages
   consistent; full-doc overlay; landing grid; reports UI.
 - **M4 — query surface (AFTER M5).** `/query` cross-cutting queries on schema-first data,
