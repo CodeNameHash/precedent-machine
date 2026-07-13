@@ -1,0 +1,495 @@
+#!/usr/bin/env node
+/* ─────────────────────────────────────────────────────────────────────────
+   scripts/reprocess/rematerialize-claims.js — claims-only rematerialize
+   (GAP-A/GAP-B).
+
+   scripts/reprocess.js writes `provisions` only; `claims` (what the review
+   UI actually reads, see lib/queries/claims-adapter.js) go stale after a
+   type refresh. This script re-runs the EXISTING claim writer
+   (lib/parser-v2/store-claims.js) for one or more deals WITHOUT rewriting
+   any `provision_cards` row — it only needs to figure out, deterministically,
+   which stored `provisions` row now corresponds to each existing
+   `provision_cards` row.
+
+   Match ladder (per deal, per provision_type bucket):
+     1. unique short_title === category
+     2. unique exact region_full_text === full_text
+     3. unique normalizeHead(region_full_text) === normalizeHead(full_text)
+
+   The ladder never guesses: any leftover ambiguity, or any unmatched
+   provision that carries coded (taxonomy-tagged) features, is a hard stop —
+   the whole run exits 1 and writes nothing, even under --apply.
+
+   DRY-RUN IS THE DEFAULT: prints the full plan, writes nothing. --apply
+   performs the writes (claims upsert + stale-claim cleanup on matched cards
+   only), and only if every requested deal cleared the ladder with zero
+   ambiguities and zero coverage failures.
+
+   Usage:
+     node scripts/reprocess/rematerialize-claims.js --deal <uuid>[,<uuid>...]
+     node scripts/reprocess/rematerialize-claims.js --deal <uuid> --apply
+     node scripts/reprocess/rematerialize-claims.js --all --json
+   ───────────────────────────────────────────────────────────────────────── */
+
+const fs = require('fs');
+const path = require('path');
+const { FEATURES } = require('../../lib/schema/features');
+const {
+  atomicValues,
+  buildClaimRowsForCard,
+  upsertClaims,
+  deleteStaleClaimsForSurvivors,
+} = require('../../lib/parser-v2/store-claims');
+const { provisionType } = require('../../lib/parser-v2/store-cards');
+
+/* ── pure helpers (exported for tests — no DB, no LLM) ───────────────────── */
+
+function isPlainObject(value) {
+  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+}
+
+function trimmedOrNull(value) {
+  if (typeof value !== 'string') return null;
+  const trimmed = value.trim();
+  return trimmed ? trimmed : null;
+}
+
+// Strips a leading section-heading line: "Section 5.02 No Solicitation. ",
+// "SECTION 5.02. ", etc. — anything from the start through the first period
+// that is followed by whitespace, provided the line opens with the word
+// "Section" (any case). No heading present -> no-op.
+function stripHeading(s) {
+  const m = s.match(/^(?:SECTION|Section)\s+[0-9]+(?:\.[0-9]+)*(?:\([A-Za-z0-9]+\))*\s*[^\n]*?\.\s+/);
+  return m ? s.slice(m[0].length) : s;
+}
+
+// Repeatedly strips leading subsection markers: "(a) ", "(i) ", "(A) ",
+// "(1) ", and bare pinpoint refs like "5.02(f) " or "5.02 ".
+function stripLeadingMarkers(s) {
+  let out = s;
+  for (;;) {
+    let m = out.match(/^\([A-Za-z0-9]+\)\s*/);
+    if (m) { out = out.slice(m[0].length); continue; }
+    m = out.match(/^[0-9]+(?:\.[0-9]+)+(?:\([A-Za-z0-9]+\))?\s*/);
+    if (m) { out = out.slice(m[0].length); continue; }
+    break;
+  }
+  return out;
+}
+
+// Normalizes a provision/card text down to a comparable "head": strips the
+// section heading line and any leading subsection markers, lowercases,
+// collapses whitespace, and takes the first 200 characters. Deterministic,
+// no fuzzy matching.
+function normalizeHead(text) {
+  if (typeof text !== 'string') return '';
+  let s = text.trim();
+  if (!s) return '';
+  s = stripHeading(s);
+  s = stripLeadingMarkers(s);
+  s = s.toLowerCase().replace(/\s+/g, ' ').trim();
+  return s.slice(0, 200);
+}
+
+function groupBy(items, keyFn) {
+  const map = new Map();
+  for (const item of items) {
+    const key = keyFn(item);
+    if (!key) continue;
+    if (!map.has(key)) map.set(key, []);
+    map.get(key).push(item);
+  }
+  return map;
+}
+
+// Applies one rung of the ladder to a pool of unmatched cards/provisions.
+// Only keys that resolve to exactly one card AND exactly one provision are
+// matched; everything else (including keys absent on one side) is left in
+// the pool for the next rung.
+function applyRung(cardsPool, provisionsPool, cardKeyFn, provKeyFn, rung) {
+  const cardMap = groupBy(cardsPool, cardKeyFn);
+  const provMap = groupBy(provisionsPool, provKeyFn);
+  const matchedCardIds = new Set();
+  const matchedProvisionIds = new Set();
+  const matches = [];
+  for (const [key, cGroup] of cardMap.entries()) {
+    const pGroup = provMap.get(key);
+    if (pGroup && cGroup.length === 1 && pGroup.length === 1) {
+      matches.push({ card: cGroup[0], provision: pGroup[0], rung, key });
+      matchedCardIds.add(cGroup[0].id);
+      matchedProvisionIds.add(pGroup[0].id);
+    }
+  }
+  return {
+    matches,
+    remainingCards: cardsPool.filter((c) => !matchedCardIds.has(c.id)),
+    remainingProvisions: provisionsPool.filter((p) => !matchedProvisionIds.has(p.id)),
+  };
+}
+
+const RUNG_DEFS = [
+  { rung: 1, name: 'title', cardKey: (c) => trimmedOrNull(c.short_title), provKey: (p) => trimmedOrNull(p.category) },
+  { rung: 2, name: 'text', cardKey: (c) => trimmedOrNull(c.region_full_text), provKey: (p) => trimmedOrNull(p.full_text) },
+  { rung: 3, name: 'head', cardKey: (c) => normalizeHead(c.region_full_text) || null, provKey: (p) => normalizeHead(p.full_text) || null },
+];
+
+// Matches all cards/provisions of a SINGLE (deal, type) bucket. Returns
+// { matches, ambiguities, unmatchedCards, unmatchedProvisions }.
+// `matches` entries: { card, provision, rung, key }.
+// `ambiguities` entries: { rung, key, cardIds, provisionIds } — a key that,
+// after the FULL ladder ran, still maps to more than one card or more than
+// one provision (including "same provision claimed by two cards").
+function matchTypeBucket(cards, provisions) {
+  const matches = [];
+  let remCards = cards;
+  let remProvisions = provisions;
+
+  for (const { rung, cardKey, provKey } of RUNG_DEFS) {
+    const result = applyRung(remCards, remProvisions, cardKey, provKey, rung);
+    matches.push(...result.matches);
+    remCards = result.remainingCards;
+    remProvisions = result.remainingProvisions;
+  }
+
+  const ambiguities = [];
+  for (const { rung, cardKey, provKey } of RUNG_DEFS) {
+    const cardMap = groupBy(remCards, cardKey);
+    const provMap = groupBy(remProvisions, provKey);
+    for (const [key, cGroup] of cardMap.entries()) {
+      const pGroup = provMap.get(key);
+      if (pGroup && (cGroup.length > 1 || pGroup.length > 1)) {
+        ambiguities.push({
+          rung,
+          key,
+          cardIds: cGroup.map((c) => c.id),
+          provisionIds: pGroup.map((p) => p.id),
+        });
+      }
+    }
+  }
+
+  return { matches, ambiguities, unmatchedCards: remCards, unmatchedProvisions: remProvisions };
+}
+
+// Matches every card to at most one provision, and vice versa, WITHIN the
+// same type bucket. provision_cards.provision_type carries CARD-MODEL types
+// (COVENANT_NO_SOLICITATION, TERMINATION_FEE, ...) while provisions.type
+// carries RUBRIC types (NOSOL, TERMF, REP-T, ...) — disjoint vocabularies.
+// Provisions are therefore mapped through the SAME provisionType() helper
+// store-cards.js used to mint provision_type at ingest (baseType + TYPE_MAP,
+// unknowns -> MISC_BOILERPLATE), so the bucket predicate mirrors how the
+// cards were created. A provisions row carries `type`, which provisionType()
+// reads directly. Returns the union across all buckets present in either
+// input.
+function matchCardsToProvisions(cards, provisions) {
+  const provisionTypeOf = new Map(provisions.map((p) => [p, provisionType(p)]));
+  const types = new Set([
+    ...cards.map((c) => c.provision_type),
+    ...provisionTypeOf.values(),
+  ]);
+
+  const matches = [];
+  const ambiguities = [];
+  const unmatchedCards = [];
+  const unmatchedProvisions = [];
+
+  for (const type of types) {
+    const bucketCards = cards.filter((c) => c.provision_type === type);
+    const bucketProvisions = provisions.filter((p) => provisionTypeOf.get(p) === type);
+    const result = matchTypeBucket(bucketCards, bucketProvisions);
+    matches.push(...result.matches);
+    ambiguities.push(...result.ambiguities.map((a) => ({ ...a, type })));
+    unmatchedCards.push(...result.unmatchedCards);
+    unmatchedProvisions.push(...result.unmatchedProvisions);
+  }
+
+  return { matches, ambiguities, unmatchedCards, unmatchedProvisions };
+}
+
+// Does a `feature -> raw value` pair carry a taxonomy-coded value that the
+// claim writer would materialise into claims.canonical? Decided by the
+// writer itself: a feature is coded iff its registry entry is a tag-family
+// list (listItemTagFamily set — a wired family belongs on this provision
+// even if this extraction returned no codes), or atomicValues() (the exact
+// routine store-claims.js uses) yields any atom with a non-null canonical.
+// Shape-sniffing for {code,label,text} is deliberately NOT used here: plain
+// citable values ({text, value, quotes}) carry a `text` key without being
+// coded, and would false-positive.
+function provisionHasCodedFeatures(provision) {
+  const features = provision && provision.ai_metadata && provision.ai_metadata.features;
+  if (!features || typeof features !== 'object') return false;
+  for (const [key, value] of Object.entries(features)) {
+    const registryEntry = FEATURES[key];
+    if (registryEntry && registryEntry.listItemTagFamily) return true;
+    if (!registryEntry) continue; // unknown keys never materialise
+    if (atomicValues(value, registryEntry).some((atom) => atom.canonical != null)) return true;
+  }
+  return false;
+}
+
+// Builds the full per-deal plan: match ladder + coverage check. Never
+// touches the network. `cards` / `provisions` are the raw rows selected for
+// one deal.
+function buildDealPlan(dealId, cards, provisions, options = {}) {
+  const { matches, ambiguities, unmatchedCards, unmatchedProvisions } = matchCardsToProvisions(cards, provisions);
+
+  const coverageFailures = unmatchedProvisions
+    .filter(provisionHasCodedFeatures)
+    .map((p) => ({ provisionId: p.id, type: p.type, category: p.category }));
+
+  const runId = options.runId || `rematerialize-claims-${Date.now()}`;
+  const claimOptions = { extractorName: 'rematerialize-claims', runId };
+
+  const claimRows = [];
+  const unknownAttributes = [];
+  for (const { card, provision } of matches) {
+    const perProvisionOptions = {
+      ...claimOptions,
+      extractionVersion: provision.extraction_version,
+      extractedAt: provision.extracted_at,
+    };
+    const { rows, unknownAttributes: unknown } = buildClaimRowsForCard(dealId, card, provision, perProvisionOptions);
+    claimRows.push(...rows);
+    unknownAttributes.push(...unknown);
+  }
+
+  const matchedExcerptIds = matches.map((m) => m.card.excerpt_id);
+  const keepClaimIds = new Set(claimRows.map((r) => r.id));
+
+  const rungCounts = { 1: 0, 2: 0, 3: 0 };
+  for (const m of matches) rungCounts[m.rung] += 1;
+
+  const ok = ambiguities.length === 0 && coverageFailures.length === 0;
+
+  return {
+    dealId,
+    cardsTotal: cards.length,
+    provisionsTotal: provisions.length,
+    matches,
+    ambiguities,
+    unmatchedCards,
+    unmatchedProvisions,
+    coverageFailures,
+    rungCounts,
+    claimRows,
+    unknownAttributes,
+    matchedExcerptIds,
+    keepClaimIds,
+    ok,
+  };
+}
+
+/* ── output formatting ───────────────────────────────────────────────────── */
+
+function formatDealTable(plan) {
+  const withCoded = plan.unmatchedProvisions.filter(provisionHasCodedFeatures).length;
+  const withoutCoded = plan.unmatchedProvisions.length - withCoded;
+  const lines = [];
+  lines.push(`  cards: ${plan.cardsTotal}  provisions: ${plan.provisionsTotal}`);
+  lines.push(`  matched: ${plan.matches.length} (r1: ${plan.rungCounts[1]}, r2: ${plan.rungCounts[2]}, r3: ${plan.rungCounts[3]})`);
+  lines.push(`  unmatched cards: ${plan.unmatchedCards.length}`);
+  lines.push(`  unmatched provisions: ${plan.unmatchedProvisions.length} (with coded features: ${withCoded}, without: ${withoutCoded})`);
+  lines.push(`  ambiguities: ${plan.ambiguities.length}`);
+  if (plan.ambiguities.length > 0) {
+    for (const a of plan.ambiguities) {
+      lines.push(`    ! rung ${a.rung} type ${a.type} key=${JSON.stringify(a.key).slice(0, 80)} cards=${a.cardIds.length} provisions=${a.provisionIds.length}`);
+    }
+  }
+  if (plan.coverageFailures.length > 0) {
+    lines.push(`  coverage failures: ${plan.coverageFailures.length}`);
+    for (const f of plan.coverageFailures) {
+      lines.push(`    ! provision ${f.provisionId} (${f.type} / ${f.category}) unmatched but carries coded features`);
+    }
+  }
+  lines.push(`  claims to upsert: ${plan.claimRows.length}`);
+  if (plan.unknownAttributes.length > 0) {
+    lines.push(`  registry-unknown attributes skipped: ${[...new Set(plan.unknownAttributes)].join(', ')}`);
+  }
+  return lines.join('\n');
+}
+
+/* ── CLI / DB plumbing ───────────────────────────────────────────────────── */
+
+function loadDotEnvLocal() {
+  const p = path.join(__dirname, '..', '..', '.env.local');
+  if (!fs.existsSync(p)) return;
+  for (const line of fs.readFileSync(p, 'utf-8').split('\n')) {
+    const m = line.match(/^([A-Z0-9_]+)=(.*)$/);
+    if (m && !(m[1] in process.env)) process.env[m[1]] = m[2].replace(/^"|"$/g, '');
+  }
+}
+
+function usage() {
+  console.error(
+    'Usage: node scripts/reprocess/rematerialize-claims.js ' +
+    '(--deal <uuid>[,<uuid>...] | --all) [--apply] [--json] [--run-id <id>]',
+  );
+  process.exit(1);
+}
+
+function parseArgs(argv) {
+  const args = { deals: [], all: false, apply: false, json: false, runId: null };
+  for (let i = 2; i < argv.length; i += 1) {
+    const a = argv[i];
+    if (a === '--deal') {
+      const raw = argv[++i] || '';
+      args.deals.push(...raw.split(',').map((s) => s.trim()).filter(Boolean));
+    } else if (a === '--all') {
+      args.all = true;
+    } else if (a === '--apply') {
+      args.apply = true;
+    } else if (a === '--json') {
+      args.json = true;
+    } else if (a === '--run-id') {
+      args.runId = argv[++i];
+    } else {
+      console.error(`Unknown arg: ${a}`);
+      usage();
+    }
+  }
+  if (!args.all && args.deals.length === 0) usage();
+  return args;
+}
+
+async function fetchDeals(sb, args) {
+  let query = sb.from('deals').select('id, acquirer, target');
+  if (!args.all) query = query.in('id', args.deals);
+  const { data, error } = await query;
+  if (error) throw new Error(`Deal fetch failed: ${error.message}`);
+  if (!data || data.length === 0) {
+    throw new Error(args.all ? 'No deals in the corpus.' : `No deal(s) found for id(s): ${args.deals.join(', ')}`);
+  }
+  return data;
+}
+
+async function fetchProvisions(sb, dealId) {
+  const { data, error } = await sb
+    .from('provisions')
+    .select('id, type, category, full_text, ai_metadata, extraction_version, extracted_at')
+    .eq('deal_id', dealId);
+  if (error) throw new Error(`Provision fetch failed: ${error.message}`);
+  return data || [];
+}
+
+async function fetchCards(sb, dealId) {
+  const { data, error } = await sb
+    .from('provision_cards')
+    .select('id, excerpt_id, provision_instance_id, region_id, provision_type, short_title, region_full_text')
+    .eq('deal_id', dealId);
+  if (error) throw new Error(`Card fetch failed: ${error.message}`);
+  return data || [];
+}
+
+async function writeDealClaims(sb, plan) {
+  await upsertClaims(sb, plan.claimRows);
+  const staleDeleted = await deleteStaleClaimsForSurvivors(
+    sb,
+    plan.dealId,
+    plan.matchedExcerptIds,
+    plan.keepClaimIds,
+  );
+  return staleDeleted;
+}
+
+function writeReportFile(report) {
+  const dir = path.join(__dirname, '..', '..', 'reports');
+  fs.mkdirSync(dir, { recursive: true });
+  const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const file = path.join(dir, `rematerialize-claims-${stamp}.json`);
+  fs.writeFileSync(file, JSON.stringify(report, null, 2));
+  return file;
+}
+
+function planToReportEntry(deal, plan) {
+  return {
+    dealId: plan.dealId,
+    acquirer: deal.acquirer || null,
+    target: deal.target || null,
+    cardsTotal: plan.cardsTotal,
+    provisionsTotal: plan.provisionsTotal,
+    matched: plan.matches.length,
+    rungCounts: plan.rungCounts,
+    unmatchedCards: plan.unmatchedCards.length,
+    unmatchedProvisions: plan.unmatchedProvisions.length,
+    ambiguities: plan.ambiguities,
+    coverageFailures: plan.coverageFailures,
+    claimsToUpsert: plan.claimRows.length,
+    ok: plan.ok,
+  };
+}
+
+async function main() {
+  loadDotEnvLocal();
+  const args = parseArgs(process.argv);
+
+  const { createClient } = require('@supabase/supabase-js');
+  const dbUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!dbUrl || !key) { console.error('Supabase creds required (env / .env.local).'); process.exit(1); }
+  const sb = createClient(dbUrl, key);
+
+  const deals = await fetchDeals(sb, args);
+  console.log(`Rematerialize claims — ${deals.length} deal(s), ${args.apply ? 'APPLY' : 'dry-run'}`);
+
+  const plans = [];
+  for (const deal of deals) {
+    console.log(`\n═══ ${deal.acquirer || '?'} / ${deal.target || '?'} (${deal.id}) ═══`);
+    const [provisions, cards] = await Promise.all([
+      fetchProvisions(sb, deal.id),
+      fetchCards(sb, deal.id),
+    ]);
+    const plan = buildDealPlan(deal.id, cards, provisions, { runId: args.runId });
+    console.log(formatDealTable(plan));
+    plans.push({ deal, plan });
+  }
+
+  const anyFailed = plans.some(({ plan }) => !plan.ok);
+  const report = {
+    generatedAt: new Date().toISOString(),
+    apply: args.apply,
+    ok: !anyFailed,
+    deals: plans.map(({ deal, plan }) => planToReportEntry(deal, plan)),
+  };
+
+  console.log('\n── summary ──');
+  console.log(`  ${plans.length} deal(s), ${plans.filter(({ plan }) => plan.ok).length} clean, ${plans.filter(({ plan }) => !plan.ok).length} with ambiguity/coverage failures`);
+
+  if (args.json) {
+    console.log(JSON.stringify(report, null, 2));
+  }
+
+  if (anyFailed) {
+    console.error('\nAmbiguity or coverage failure detected — exiting 1, writing nothing.');
+    process.exitCode = 1;
+    return;
+  }
+
+  if (!args.apply) {
+    console.log('\nDry-run complete: no writes. Re-run with --apply to commit.');
+    return;
+  }
+
+  for (const { plan } of plans) {
+    const staleDeleted = await writeDealClaims(sb, plan);
+    plan.staleDeleted = staleDeleted;
+    console.log(`  deal ${plan.dealId}: upserted ${plan.claimRows.length} claim(s), deleted ${staleDeleted} stale claim(s).`);
+  }
+
+  report.deals = plans.map(({ deal, plan }) => ({ ...planToReportEntry(deal, plan), staleDeleted: plan.staleDeleted }));
+  const reportFile = writeReportFile(report);
+  console.log(`\nReport written: ${reportFile}`);
+}
+
+module.exports = {
+  normalizeHead,
+  matchCardsToProvisions,
+  matchTypeBucket,
+  provisionHasCodedFeatures,
+  buildDealPlan,
+  formatDealTable,
+  parseArgs,
+};
+
+if (require.main === module) {
+  main().catch((e) => { console.error(e.message); process.exit(1); });
+}
