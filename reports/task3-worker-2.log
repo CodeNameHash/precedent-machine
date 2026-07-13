@@ -1,0 +1,546 @@
+──── WORKER2 deal: M.D.C. Holdings, Inc.
+Reprocess (types: NOSOL, MISC, TERMF) — 1 deal(s), APPLY
+
+═══ SH Residential Holdings, LLC / M.D.C. Holdings, Inc. (1e4b7102-7890-451a-b8d0-8357120fc371) ═══
+  → NOSOL …   (LLM backend: claude-cli)
+[validate] auto-wrapped citable field "representativesStandard" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "arcReaffirmDeadlineDays" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "representativeBreachIsCompanyBreach" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "standstillWaiver" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "standstillWaiverPermitted" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "antiClubbingWaiverPermitted" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "informationRights" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "confidentialityRequired" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "informationRights" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "confidentialityRequired" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "informationSharingObligationPresent" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "confidentialityRequired" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "discussionInitiationNoticePresent" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "discussionInitiationNoticeHours" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "infoRequiredBidderIdentity" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "infoRequiredCommunicationsDrafts" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "noConflictingAgreementsPresent" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "interveningEventProvision" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "boardChangeForInterveningEvent" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "boardChangeForSuperiorProposal" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "interveningEventProvision" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "boardChangeForInterveningEvent" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "boardChangeStandard" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "noticePeriod" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "matchingPeriod" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "initialMatchPeriodDays" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "matchingPeriod" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "initialMatchPeriodDays" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "subsequentMatching" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "subsequentMatchingPeriod" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "subsequentMatchPeriodDays" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "tenderOfferDisclosurePermitted" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "legallyRequiredDisclosurePermitted" (bare value -> { value, quotes: [] })
+done in 376s: +15 / -13, corrections re-applied: 0
+    + [NOSOL] Standstill Waiver / Don't-Ask-Don't-Waive (724 chars, features: antiClubbingWaiverConditions,antiClubbingWaiverPermitted,flags,mainConcept,standstillWaiver,standstillWaiverConditions,standstillWaiverPermitted)
+    + [NOSOL] Provision of Information to Bidder (1029 chars, features: confidentialityRequired,informationRights,informationSharingObligationPresent,informationSharingObligationScope,informationSharingObligationTiming,mainConcept)
+    + [NOSOL] Confidentiality Agreement Requirement (732 chars, features: confidentialityRequired,mainConcept)
+    + [NOSOL] Intervening Event (1858 chars, features: boardChangeForInterveningEvent,boardChangeStandard,flags,interveningEventProvision,interveningEventScope,interveningEventTermination,mainConcept)
+    + [NOSOL] Negotiation Period (1701 chars, features: initialMatchPeriodDays,mainConcept,matchingPeriod)
+    - [NOSOL] Solicitation Prohibition (features: ceaseDiscussionsLiability,mainConcept,representativeBreachConditions,representativeBreachIsCompanyBreach)
+    - [NOSOL] Change of Recommendation (features: legallyRequiredDisclosurePermitted,mainConcept,notChangeOfRecommendationItems,safeDisclosureCarveoutLanguage,tenderOfferDisclosurePermitted,tenderOfferDisclosureScope)
+    - [NOSOL] Enforcement of Standstills (features: antiClubbingWaiverConditions,antiClubbingWaiverPermitted,flags,mainConcept,standstillWaiverConditions,standstillWaiverPermitted)
+    ~ [NOSOL] Disclosure of Terms: text 1742 → 1742 chars; -features discussionInitiationNoticeHours,discussionInitiationNoticePresent,discussionInitiationNoticeText
+    ~ [NOSOL] Solicitation Prohibition: text 2865 → 3293 chars; +features arcReaffirmDeadlineDays,changeOfRecommendationItems,flags,notChangeOfRecommendationItems
+    ~ [NOSOL] Solicitation Prohibition: text 245 → 484 chars; +features ceaseDiscussionsLiability,representativeBreachIsCompanyBreach
+    ~ [NOSOL] Exceptions / Fiduciary Out: -features informationSharingObligationPresent,informationSharingObligationScope,informationSharingObligationTiming
+    ~ [NOSOL] Change of Recommendation: +features boardChangeForInterveningEvent,interveningEventProvision
+    ~ [NOSOL] Change of Recommendation: text 3293 → 2474 chars; +features legallyRequiredDisclosurePermitted,safeDisclosureCarveoutLanguage,tenderOfferDisclosurePermitted,tenderOfferDisclosureScope; -features arcReaffirmDeadlineDays,changeOfRecommendationItems
+    = 4 unchanged
+  → MISC … [validate] auto-wrapped citable field "governingLaw" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "governingLaw" (bare value -> { value, quotes: [] })
+[store] differentiated 2 same-category provision name(s)
+done in 318s: +12 / -12, corrections re-applied: 0
+    + [MISC] [PROPOSED] Financing Source Provisions (3120 chars, features: forumCourts,governingLaw,jurisdictionExclusive,juryWaiver,mainConcept,sectionNumber,thirdPartyBeneficiaries)
+    - [MISC] [PROPOSED] Certain Financing Provisions (features: flags,forumCourts,governingLaw,jurisdiction,jurisdictionExclusive,juryWaiver,mainConcept,sectionNumber,thirdPartyBeneficiaries,thirdPartyBeneficiaryExceptions)
+    ~ [MISC] No Survival / Nonsurvival: -features repsSurvivalDuration,repsSurvivalPresent
+    ~ [MISC] Rules of Construction; Interpretation — Interpretation: +features flags
+    ~ [MISC] Counterparts: -features flags
+    ~ [MISC] Severability: -features flags
+    ~ [MISC] Assignment; Successors: +features assignmentProvisos; -features bondSecurityRequiredForSP,flags
+    ~ [MISC] [PROPOSED] Guaranty: +features fraudCarveout; -features assignmentRestrictions,noSetoffPresent,thirdPartyBeneficiaries
+    = 5 unchanged
+  → TERMF … done in 317s: +4 / -5, corrections re-applied: 0
+    - [TERMF] Expense Reimbursement (features: expenseReimbursement,mainConcept)
+    ~ [TERMF] Effect of Termination: text 1156 → 1143 chars
+    ~ [TERMF] Company Termination Fee: text 4047 → 2284 chars; +features interestRateBasis
+    = 2 unchanged
+  QA counts: total 295 → 296, nosol 13 → 15, termf 5 → 4
+──── done: M.D.C. Holdings, Inc. (exit 0)
+──── WORKER2 deal: Red Hat, Inc.
+Reprocess (types: NOSOL, MISC, TERMF) — 1 deal(s), APPLY
+
+═══ International Business Machines Corporation / Red Hat, Inc. (2b9a6571-6fe7-4aac-931d-a96ab227ea43) ═══
+  → NOSOL …   (LLM backend: claude-cli)
+[validate] auto-wrapped citable field "interveningEventScope" (bare value -> { value, quotes: [] })
+done in 478s: +17 / -16, corrections re-applied: 0
+    + [NOSOL] Change of Recommendation (2947 chars, features: boardChangeForSuperiorProposal,boardChangeStandard,changeRecStandard,companyTerminationForSuperior,companyTerminationForSuperiorConditions,fiduciaryFinalStandard,mainConcept)
+    + [NOSOL] Change of Recommendation (580 chars, features: legallyRequiredDisclosurePermitted,mainConcept,notChangeOfRecommendationItems,safeDisclosureCarveoutLanguage,tenderOfferDisclosurePermitted,tenderOfferDisclosureScope)
+    - [NOSOL] Provision of Information to Bidder (features: informationRights,informationSharingObligationPresent,informationSharingObligationScope,informationSharingObligationTiming,mainConcept)
+    ~ [NOSOL] Cease Existing Discussions: text 1343 → 1818 chars
+    ~ [NOSOL] Enforcement of Standstills: +features noConflictingAgreementsPresent,noConflictingAgreementsScope
+    ~ [NOSOL] Standstill Waiver / Don't-Ask-Don't-Waive: +features flags
+    ~ [NOSOL] Exceptions / Fiduciary Out: +features ceaseDiscussionsExceptions; -features acceptableConfidentialityAgreementDefinition,flags
+    ~ [NOSOL] Confidentiality Agreement Requirement: text 911 → 1726 chars; +features flags
+    ~ [NOSOL] Change of Recommendation: text 2851 → 1089 chars; -features boardChangeForSuperiorProposal,boardChangeStandard,changeRecStandard,companyTerminationForSuperior,companyTerminationForSuperiorConditions,fiduciaryFinalStandard,legallyRequiredDisclosurePermitted,notChangeOfRecommendationItems,safeDisclosureCarveoutLanguage,tenderOfferDisclosurePermitted,tenderOfferDisclosureScope
+    ~ [NOSOL] Negotiation Period: text 481 → 1105 chars; +features initialMatchPeriodDays,noticeContent,noticePeriod
+    ~ [NOSOL] Matching Rights: text 435 → 438 chars; +features matchingPeriod; -features initialMatchPeriodDays,materialImprovementStandard
+    ~ [NOSOL] Subsequent Matching / Amendment Rights: text 554 → 786 chars; +features flags,materialImprovementStandard
+    ~ [NOSOL] Intervening Event: text 3702 → 3711 chars; +features changeRecStandard,materialImprovementStandard
+    ~ [NOSOL] Notice to Counterparty: text 924 → 552 chars; +features infoRequiredBidderIdentity; -features noticeContent,noticePeriod
+    ~ [NOSOL] Disclosure of Terms: text 998 → 1297 chars; +features discussionInitiationNoticeHours; -features noticeContent
+    = 3 unchanged
+  → MISC … [validate] auto-wrapped citable field "governingLaw" (bare value -> { value, quotes: [] })
+done in 186s: +11 / -11, corrections re-applied: 0
+    ~ [MISC] No Survival / Nonsurvival: -features repsSurvivalExceptions,repsSurvivalPresent
+    ~ [MISC] Assignment; Successors: +features assignmentProvisos
+    ~ [MISC] Jurisdiction; Venue: +features forumCourts,forumFallback
+    = 8 unchanged
+  → TERMF … done in 269s: +4 / -4, corrections re-applied: 0
+    ~ [TERMF] Company Termination Fee: text 3483 → 2341 chars; +features interestRateBasis
+    ~ [TERMF] Tail Provision: text 934 → 2323 chars
+    = 2 unchanged
+  QA counts: total 242 → 243, nosol 16 → 17
+──── done: Red Hat, Inc. (exit 0)
+──── WORKER2 deal: Covance Inc.
+Reprocess (types: NOSOL, MISC, TERMF) — 1 deal(s), APPLY
+
+═══ Laboratory Corporation of America Holdings / Covance Inc. (4f015417-0845-406a-b6ea-e606faf37e46) ═══
+  → NOSOL …   (LLM backend: claude-cli)
+[store] deduped 1 duplicate NOSOL provision(s)
+done in 315s: +14 / -16, corrections re-applied: 0
+    - [NOSOL] Change of Recommendation (features: flags,legallyRequiredDisclosurePermitted,mainConcept,notChangeOfRecommendationItems,safeDisclosureCarveoutLanguage,tenderOfferDisclosurePermitted,tenderOfferDisclosureScope)
+    - [NOSOL] Negotiation Period (features: fiduciaryFinalStandard,initialMatchPeriodDays,mainConcept,matchingPeriod)
+    ~ [NOSOL] Solicitation Prohibition: text 1327 → 1898 chars
+    ~ [NOSOL] Cease Existing Discussions: text 792 → 791 chars; +features ceaseDiscussionsProhibitedList
+    ~ [NOSOL] Notice to Counterparty: -features infoRequiredBidderIdentity,infoRequiredCommunicationsDrafts
+    ~ [NOSOL] Exceptions / Fiduciary Out: +features boardChangeStandard,engagementStandard,superiorProposalDeterminer; -features confidentialityRequired,flags,informationRights,informationSharingObligationPresent,informationSharingObligationTiming
+    ~ [NOSOL] Provision of Information to Bidder: +features informationSharingObligationPresent
+    ~ [NOSOL] Confidentiality Agreement Requirement: text 217 → 448 chars
+    ~ [NOSOL] Change of Recommendation: text 2043 → 3555 chars; +features legallyRequiredDisclosurePermitted,notChangeOfRecommendationItems,safeDisclosureCarveoutLanguage,tenderOfferDisclosurePermitted,tenderOfferDisclosureScope; -features flags,noticePeriod
+    ~ [NOSOL] Matching Rights: text 228 → 1176 chars; +features fiduciaryFinalStandard,initialMatchPeriodDays,noticeContent,noticePeriod
+    ~ [NOSOL] Enforcement of Standstills: -features flags
+    ~ [NOSOL] Standstill Waiver / Don't-Ask-Don't-Waive: -features dontAskDontWaive,flags
+    = 4 unchanged
+  → MISC … [validate] auto-wrapped citable field "governingLaw" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "parentAssignmentRight" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "companyConsentForAssignment" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "governingLaw" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "jurisdictionExclusive" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "specificPerformance" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "juryWaiver" (bare value -> { value, quotes: [] })
+done in 247s: +12 / -13, corrections re-applied: 0 (1 unmatched)
+    + [MISC] [PROPOSED] Financing Sources Protections; Non-Recourse (1084 chars, features: flags,mainConcept,sectionNumber,thirdPartyBeneficiaries)
+    - [MISC] Expenses (features: feeExpenseAllocation,flags,mainConcept,sectionNumber)
+    - [MISC] [PROPOSED] Financing Source Non-Recourse Protections (features: flags,mainConcept,sectionNumber,thirdPartyBeneficiaries)
+    ~ [MISC] No Survival / Nonsurvival: text 361 → 358 chars; -features repsSurvivalExceptions,repsSurvivalPresent
+    ~ [MISC] Notices: text 1562 → 1493 chars
+    ~ [MISC] Rules of Construction; Interpretation: text 2742 → 2728 chars
+    ~ [MISC] [PROPOSED] Consents and Approvals: text 214 → 212 chars
+    ~ [MISC] Counterparts: text 391 → 389 chars
+    ~ [MISC] Entire Agreement: text 3459 → 3450 chars; +features extraContractualClaimsWaived,noOtherRepsParty,noOtherRepsPresent,nonRelianceClause
+    ~ [MISC] Governing Law: text 352 → 350 chars
+    ~ [MISC] Assignment; Successors: text 958 → 954 chars; +features assignmentProvisos
+    ~ [MISC] Specific Performance; Enforcement: text 3788 → 3778 chars; +features forumCourts,forumFallback,governingLaw; -features bondSecurityRequiredForSP
+    ~ [MISC] Waiver of Jury Trial: text 1042 → 1039 chars
+    ~ [MISC] Severability: text 675 → 672 chars
+    = 0 unchanged
+  → TERMF … done in 587s: +7 / -7, corrections re-applied: 0
+    ~ [TERMF] Company Termination Fee: text 4302 → 4134 chars; +features interestRateBasis
+    ~ [TERMF] Tail Provision: text 1989 → 2771 chars
+    ~ [TERMF] Reverse Termination Fee: text 1508 → 3202 chars; +features interestRateBasis
+    = 4 unchanged
+  QA counts: total 261 → 258, nosol 16 → 14
+──── done: Covance Inc. (exit 0)
+──── WORKER2 deal: Noble Africa LLC
+Reprocess (types: NOSOL, MISC, TERMF) — 1 deal(s), APPLY
+
+═══ ENDRA Life Sciences Inc. / Noble Africa LLC (65a3e3c8-91e6-4075-bad0-4e3c4d1b43b9) ═══
+  → NOSOL …   (LLM backend: claude-cli)
+done in 183s: +8 / -1, corrections re-applied: 0
+    + [NOSOL] Solicitation Prohibition (1537 chars, features: acquisitionTransactionDefinition,flags,mainConcept,representativesStandard)
+    + [NOSOL] Acquisition Proposal Definition (441 chars, features: acquisitionTransactionDefinition,mainConcept)
+    + [NOSOL] Cease Existing Discussions (240 chars, features: ceaseDiscussionsAffiliateStandard,ceaseDiscussionsProhibitedList,mainConcept)
+    + [NOSOL] Notice to Counterparty (485 chars, features: discussionInitiationNoticeHours,discussionInitiationNoticePresent,discussionInitiationNoticeText,flags,infoRequiredBidderIdentity,mainConcept,noticeContent)
+    + [NOSOL] Disclosure of Terms (261 chars, features: infoRequiredCommunicationsDrafts,mainConcept,noticeContent)
+    + [NOSOL] Exceptions / Fiduciary Out (1031 chars, features: boardChangeStandard,fiduciaryCarveoutThreshold,fiduciaryEngageStandard,fiduciaryOutStandard,flags,informationRights,mainConcept,superiorProposalDeterminer)
+    + [NOSOL] Provision of Information to Bidder (1027 chars, features: informationRights,mainConcept)
+    + [NOSOL] Confidentiality Agreement Requirement (166 chars, features: acceptableConfidentialityAgreementDefinition,confidentialityRequired,flags,mainConcept)
+    - [NOSOL] No-Solicitation / No-Shop (features: none)
+    = 0 unchanged
+  → MISC … [validate] auto-wrapped citable field "specificPerformance" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "specificPerformanceMutual" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "governingLaw" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "jurisdictionExclusive" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "juryWaiver" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "companyConsentForAssignment" (bare value -> { value, quotes: [] })
+done in 206s: +16 / -16, corrections re-applied: 0
+    + [MISC] No Survival / Nonsurvival (857 chars, features: fraudCarveout,mainConcept,sectionNumber)
+    + [MISC] Notices (1880 chars, features: mainConcept,noticesAddress,sectionNumber)
+    + [MISC] Rules of Construction; Interpretation (1911 chars, features: mainConcept,sectionNumber)
+    + [MISC] Rules of Construction; Interpretation (540 chars, features: mainConcept,sectionNumber)
+    + [MISC] Counterparts (664 chars, features: counterparts,mainConcept,sectionNumber)
+    + [MISC] Entire Agreement (1327 chars, features: mainConcept,sectionNumber,thirdPartyBeneficiaries,thirdPartyBeneficiaryExceptions)
+    + [MISC] Severability (866 chars, features: mainConcept,sectionNumber,severability)
+    + [MISC] Specific Performance; Enforcement (2094 chars, features: mainConcept,sectionNumber,specificPerformance,specificPerformanceMutual)
+    + [MISC] Governing Law (604 chars, features: governingLaw,mainConcept,sectionNumber)
+    + [MISC] Jurisdiction; Venue (3501 chars, features: forumCourts,forumFallback,jurisdictionExclusive,juryWaiver,mainConcept,sectionNumber)
+    + [MISC] Assignment; Successors (588 chars, features: assignmentRestrictions,companyConsentForAssignment,flags,mainConcept,sectionNumber)
+    + [MISC] [PROPOSED] Non-Recourse (1776 chars, features: flags,mainConcept,sectionNumber)
+    + [MISC] [PROPOSED] Company and PubCo Disclosure Letters (1402 chars, features: flags,mainConcept,sectionNumber)
+    - [MISC] Unclassified (features: sectionNumber)
+    - [MISC] Unclassified (features: sectionNumber)
+    - [MISC] Unclassified (features: sectionNumber)
+    - [MISC] Unclassified (features: sectionNumber)
+    - [MISC] Unclassified (features: sectionNumber)
+    - [MISC] Unclassified (features: sectionNumber)
+    - [MISC] Unclassified (features: sectionNumber)
+    - [MISC] Unclassified (features: sectionNumber)
+    - [MISC] Unclassified (features: sectionNumber)
+    - [MISC] Unclassified (features: sectionNumber)
+    - [MISC] Unclassified (features: sectionNumber)
+    - [MISC] Unclassified (features: sectionNumber)
+    - [MISC] Unclassified (features: sectionNumber)
+    ~ [MISC] Expenses: +features feeExpenseAllocation,mainConcept
+    ~ [MISC] Amendment; Modification: +features amendmentsRequirement,mainConcept
+    ~ [MISC] Waiver; Extension: +features flags,mainConcept,waiverStandard
+    = 0 unchanged
+  → TERMF … [validate] auto-wrapped citable field "willfulBreachException" (bare value -> { value, quotes: [] })
+done in 31s: +1 / -1, corrections re-applied: 0
+    + [TERMF] Effect of Termination (711 chars, features: effectOfTermination,mainConcept,willfulBreachException)
+    - [TERMF] Termination Fees & Expenses (features: none)
+    = 0 unchanged
+  QA counts: total 330 → 337, nosol 1 → 8
+──── done: Noble Africa LLC (exit 0)
+──── WORKER2 deal: SkyWater Technology, Inc.
+Reprocess (types: NOSOL, MISC, TERMF) — 1 deal(s), APPLY
+
+═══ IonQ, Inc. / SkyWater Technology, Inc. (13894e33-b5b6-4412-96bb-940b841d5130) ═══
+  → NOSOL …   (LLM backend: claude-cli)
+[validate] auto-wrapped citable field "representativesStandard" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "representativesStandard" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "boardChangeStandard" (bare value -> { value, quotes: [] })
+[store] deduped 1 duplicate NOSOL provision(s)
+done in 225s: +9 / -8, corrections re-applied: 0
+    + [NOSOL] Confidentiality Agreement Requirement (1088 chars, features: acceptableConfidentialityAgreementDefinition,confidentialityRequired,flags,mainConcept)
+    + [NOSOL] Disclosure of Terms (1128 chars, features: infoRequiredCommunicationsDrafts,informationSharingObligationPresent,informationSharingObligationScope,informationSharingObligationTiming,mainConcept)
+    - [NOSOL] Solicitation Prohibition (features: ceaseDiscussionsAffiliateStandard,mainConcept)
+    ~ [NOSOL] Cease Existing Discussions: text 1279 → 1246 chars
+    ~ [NOSOL] Enforcement of Standstills: +features dontAskDontWaive
+    ~ [NOSOL] Solicitation Prohibition: text 1554 → 2337 chars; +features ceaseDiscussionsAffiliateStandard; -features flags,noConflictingAgreementsPresent,noConflictingAgreementsScope
+    ~ [NOSOL] Change of Recommendation: +features boardChangeStandard; -features flags
+    ~ [NOSOL] Exceptions / Fiduciary Out: +features flags,superiorProposalDeterminer; -features acceptableConfidentialityAgreementDefinition,confidentialityRequired,discussionInitiationNoticePresent,discussionInitiationNoticeText,informationRights
+    ~ [NOSOL] Provision of Information to Bidder: text 2239 → 1959 chars; -features acceptableConfidentialityAgreementDefinition,confidentialityRequired,engagementStandard,fiduciaryEngageStandard,informationSharingObligationPresent,informationSharingObligationScope,informationSharingObligationTiming
+    ~ [NOSOL] Notice to Counterparty: text 2106 → 2102 chars
+    = 0 unchanged
+  → MISC … [validate] auto-wrapped citable field "governingLaw" (bare value -> { value, quotes: [] })
+[store] differentiated 2 same-category provision name(s)
+done in 263s: +14 / -14, corrections re-applied: 0
+    + [MISC] [PROPOSED] Equity Investment (Antitrust Remedy) / Standstill (8255 chars, features: flags,mainConcept,sectionNumber)
+    + [MISC] Jurisdiction; Venue (2307 chars, features: forumCourts,forumFallback,jurisdiction,jurisdictionExclusive,mainConcept,sectionNumber,specificPerformance,specificPerformanceMutual)
+    + [MISC] Rules of Construction; Interpretation — Captions (157 chars, features: mainConcept,sectionNumber)
+    + [MISC] Rules of Construction; Interpretation — Interpretation (4768 chars, features: flags,mainConcept,sectionNumber)
+    - [MISC] [PROPOSED] Equity Investment (features: feeExpenseAllocation,flags,mainConcept,sectionNumber)
+    - [MISC] Rules of Construction; Interpretation (features: mainConcept,sectionNumber)
+    - [MISC] Rules of Construction; Interpretation (features: flags,mainConcept,sectionNumber)
+    - [MISC] Specific Performance; Enforcement (features: forumCourts,forumFallback,jurisdictionExclusive,mainConcept,sectionNumber,specificPerformance,specificPerformanceMutual)
+    ~ [MISC] No Survival / Nonsurvival: -features repsSurvivalPresent
+    ~ [MISC] Assignment; Successors: +features assignmentProvisos,parentAssignmentConditions,parentAssignmentRight
+    = 8 unchanged
+  → TERMF … done in 254s: +3 / -3, corrections re-applied: 0
+    ~ [TERMF] Effect of Termination: text 540 → 540 chars
+    ~ [TERMF] Company Termination Fee: text 2836 → 2831 chars; +features interestRateBasis
+    ~ [TERMF] Tail Provision: text 1822 → 1509 chars
+    = 0 unchanged
+  QA counts: total 320 → 321, nosol 8 → 9
+──── done: SkyWater Technology, Inc. (exit 0)
+──── WORKER2 deal: Skechers U.S.A., Inc.
+Reprocess (types: NOSOL, MISC, TERMF) — 1 deal(s), APPLY
+
+═══ Beach Acquisition Co Parent, LLC / Skechers U.S.A., Inc. (af4940e1-a645-437c-acfa-4a53e8d9f7ac) ═══
+  → NOSOL …   (LLM backend: claude-cli)
+[validate] auto-wrapped citable field "interveningEventScope" (bare value -> { value, quotes: [] })
+[store] deduped 1 duplicate NOSOL provision(s)
+done in 459s: +15 / -16, corrections re-applied: 0
+    + [NOSOL] Go-Shop / Window Shop (829 chars, features: extendedNegotiatingPeriodDays,flags,goShopPeriodDays,mainConcept)
+    - [NOSOL] Change of Recommendation (features: legallyRequiredDisclosurePermitted,mainConcept,notChangeOfRecommendationItems,safeDisclosureCarveoutLanguage,tenderOfferDisclosurePermitted,tenderOfferDisclosureScope)
+    - [NOSOL] Standstill Waiver / Don't-Ask-Don't-Waive (features: dontAskDontWaive,flags,mainConcept,standstillWaiver)
+    ~ [NOSOL] Solicitation Prohibition: text 2126 → 2127 chars; -features ceaseDiscussionsExceptions
+    ~ [NOSOL] Cease Existing Discussions: text 900 → 1458 chars; +features ceaseDiscussionsProhibitedList,representativeBreachConditions,representativesStandard; -features ceaseDiscussionsLiability
+    ~ [NOSOL] Exceptions / Fiduciary Out: text 2840 → 2840 chars; +features superiorProposalDeterminer; -features confidentialityRequired,fiduciaryFinalStandard,informationRights
+    ~ [NOSOL] Provision of Information to Bidder: text 1257 → 1914 chars; +features confidentialityRequired
+    ~ [NOSOL] Confidentiality Agreement Requirement: text 805 → 1307 chars; +features flags
+    ~ [NOSOL] Change of Recommendation: text 2050 → 2054 chars; -features flags
+    ~ [NOSOL] Change of Recommendation: text 1411 → 2218 chars; +features legallyRequiredDisclosurePermitted,notChangeOfRecommendationItems,safeDisclosureCarveoutLanguage,tenderOfferDisclosurePermitted,tenderOfferDisclosureScope; -features boardChangeForSuperiorProposal,boardChangeStandard,companyTerminationForSuperior,companyTerminationForSuperiorConditions,fiduciaryFinalStandard
+    ~ [NOSOL] Intervening Event: text 2252 → 2454 chars; +features changeRecStandard; -features boardChangeStandard,flags
+    ~ [NOSOL] Matching Rights: text 413 → 2286 chars; +features boardChangeForSuperiorProposal,boardChangeStandard,changeRecStandard,companyTerminationForSuperior,companyTerminationForSuperiorConditions,fiduciaryFinalStandard,superiorProposalDeterminer; -features initialMatchPeriodDays,matchingPeriod
+    ~ [NOSOL] Negotiation Period: text 344 → 1247 chars; +features infoRequiredBidderIdentity,infoRequiredCommunicationsDrafts,initialMatchPeriodDays,matchingPeriod,noticeContent
+    ~ [NOSOL] Subsequent Matching / Amendment Rights: text 387 → 758 chars; +features materialImprovementStandard
+    ~ [NOSOL] Notice to Counterparty: +features informationSharingObligationPresent,informationSharingObligationTiming; -features infoRequiredBidderIdentity,noticeContent
+    ~ [NOSOL] Disclosure of Terms: text 816 → 391 chars; +features flags; -features infoRequiredCommunicationsDrafts
+    = 1 unchanged
+  → MISC … [validate] auto-wrapped citable field "parentAssignmentRight" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "companyConsentForAssignment" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "specificPerformance" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "specificPerformanceMutual" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "companyRightToForceClose" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "governingLaw" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "jurisdictionExclusive" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "juryWaiver" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "governingLaw" (bare value -> { value, quotes: [] })
+done in 312s: +15 / -15, corrections re-applied: 0
+    + [MISC] [PROPOSED] Debt Financing Sources / Lender Protective Provisions (3941 chars, features: amendmentsRequirement,forumCourts,governingLaw,jurisdiction,jurisdictionExclusive,juryWaiver,mainConcept,sectionNumber,thirdPartyBeneficiaries)
+    - [MISC] [PROPOSED] Debt Financing Sources (features: amendmentsRequirement,flags,forumCourts,forumFallback,governingLaw,jurisdiction,jurisdictionExclusive,juryWaiver,mainConcept,sectionNumber,thirdPartyBeneficiaries,thirdPartyBeneficiaryExceptions)
+    ~ [MISC] No Survival / Nonsurvival: -features repsSurvivalDuration,repsSurvivalExceptions,repsSurvivalPresent
+    ~ [MISC] Assignment; Successors: +features assignmentProvisos
+    ~ [MISC] Jurisdiction; Venue: -features jurisdiction
+    ~ [MISC] [PROPOSED] No Recourse: -features noExcusePostClosingPresent
+    = 10 unchanged
+  → TERMF … done in 423s: +5 / -6, corrections re-applied: 0
+    - [TERMF] Expense Reimbursement (features: expenseReimbursement,mainConcept)
+    ~ [TERMF] Company Termination Fee: text 4033 → 2739 chars; +features interestRateBasis; -features nakedNoVoteFee
+    ~ [TERMF] Reverse Termination Fee: text 2652 → 2197 chars; +features interestRateBasis
+    = 3 unchanged
+  QA counts: total 354 → 352, nosol 16 → 15, termf 6 → 5
+──── done: Skechers U.S.A., Inc. (exit 0)
+──── WORKER2 deal: Bioverativ Inc.
+Reprocess (types: NOSOL, MISC, TERMF) — 1 deal(s), APPLY
+
+═══ Sanofi / Bioverativ Inc. (555579a6-6a11-45b3-9da9-43e1b49a6e89) ═══
+  → NOSOL …   (LLM backend: claude-cli)
+[validate] auto-wrapped citable field "representativesStandard" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "boardChangeStandard" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "boardChangeStandard" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "boardChangeStandard" (bare value -> { value, quotes: [] })
+done in 395s: +16 / -16, corrections re-applied: 0
+    + [NOSOL] Change of Recommendation (1138 chars, features: flags,legallyRequiredDisclosurePermitted,mainConcept,notChangeOfRecommendationItems,safeDisclosureCarveoutLanguage,tenderOfferDisclosurePermitted,tenderOfferDisclosureScope)
+    - [NOSOL] Exceptions / Fiduciary Out (features: flags,legallyRequiredDisclosurePermitted,mainConcept,safeDisclosureCarveoutLanguage,tenderOfferDisclosurePermitted,tenderOfferDisclosureScope)
+    ~ [NOSOL] Solicitation Prohibition: +features ceaseDiscussionsProhibitedList
+    ~ [NOSOL] Cease Existing Discussions: text 977 → 978 chars
+    ~ [NOSOL] Exceptions / Fiduciary Out: +features engagementStandard,superiorProposalDeterminer
+    ~ [NOSOL] Provision of Information to Bidder: +features confidentialityRequired
+    ~ [NOSOL] Confidentiality Agreement Requirement: text 450 → 601 chars
+    ~ [NOSOL] Change of Recommendation: text 2408 → 2409 chars; -features flags
+    ~ [NOSOL] Change of Recommendation: text 1081 → 1082 chars; +features superiorProposalDeterminer; -features changeRecStandard,fiduciaryCarveoutThreshold
+    ~ [NOSOL] Intervening Event: +features noticeContent; -features changeRecStandard
+    ~ [NOSOL] Matching Rights: text 2194 → 979 chars; +features initialMatchPeriodDays,matchingPeriod; -features confidentialityRequired,noticePeriod
+    ~ [NOSOL] Negotiation Period: text 1214 → 1215 chars; +features boardChangeStandard; -features initialMatchPeriodDays
+    ~ [NOSOL] Subsequent Matching / Amendment Rights: -features materialImprovementStandard
+    = 4 unchanged
+  → MISC … [validate] auto-wrapped citable field "governingLaw" (bare value -> { value, quotes: [] })
+done in 218s: +12 / -13, corrections re-applied: 0
+    - [MISC] Expenses (features: feeExpenseAllocation,flags,mainConcept,sectionNumber)
+    ~ [MISC] Notices: text 1681 → 1654 chars
+    ~ [MISC] No Survival / Nonsurvival: text 416 → 390 chars; +features repsSurvivalDuration
+    ~ [MISC] Amendment; Modification: text 1601 → 1510 chars
+    ~ [MISC] Assignment; Successors: text 2768 → 2739 chars; +features assignmentProvisos
+    ~ [MISC] Governing Law: text 1373 → 1346 chars
+    ~ [MISC] Jurisdiction; Venue: text 1509 → 1481 chars; +features forumCourts,forumFallback
+    ~ [MISC] Waiver of Jury Trial: text 825 → 799 chars
+    ~ [MISC] Specific Performance; Enforcement: text 1699 → 1670 chars; -features bondSecurityRequiredForSP
+    ~ [MISC] Severability: text 906 → 879 chars; +features flags
+    ~ [MISC] Entire Agreement: text 850 → 824 chars
+    ~ [MISC] Rules of Construction; Interpretation: text 1419 → 1390 chars; +features flags
+    ~ [MISC] Counterparts: text 1099 → 1070 chars; +features flags
+    = 0 unchanged
+  → TERMF … done in 271s: +5 / -4, corrections re-applied: 0
+    + [TERMF] Expense Reimbursement (240 chars, features: mainConcept)
+    ~ [TERMF] Company Termination Fee: text 3378 → 3173 chars; +features interestRateBasis
+    = 3 unchanged
+  QA counts: termf 4 → 5
+──── done: Bioverativ Inc. (exit 0)
+──── WORKER2 deal: Endeavor Group Holdings, Inc.
+Reprocess (types: NOSOL, MISC, TERMF) — 1 deal(s), APPLY
+
+═══ Wildcat EGH Holdco, L.P. / Endeavor Group Holdings, Inc. (0a043659-68fb-4d20-98e6-b926aa758799) ═══
+  → NOSOL …   (LLM backend: claude-cli)
+[validate] auto-wrapped citable field "representativesStandard" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "standstillWaiver" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "standstillWaiverPermitted" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "boardChangeStandard" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "representativesStandard" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "confidentialityRequired" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "informationRights" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "informationSharingObligationPresent" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "confidentialityRequired" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "noticePeriod" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "infoRequiredBidderIdentity" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "infoRequiredCommunicationsDrafts" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "infoRequiredBidderIdentity" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "infoRequiredCommunicationsDrafts" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "informationSharingObligationPresent" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "boardChangeForSuperiorProposal" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "companyTerminationForSuperior" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "tenderOfferDisclosurePermitted" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "infoRequiredBidderIdentity" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "infoRequiredCommunicationsDrafts" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "matchingPeriod" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "initialMatchPeriodDays" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "subsequentMatching" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "subsequentMatchingPeriod" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "subsequentMatchPeriodDays" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "matchingPeriod" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "interveningEventProvision" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "boardChangeForInterveningEvent" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "acquisitionTransactionPctThreshold" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "superiorProposalThresholdPct" (bare value -> { value, quotes: [] })
+done in 345s: +16 / -16, corrections re-applied: 0
+    ~ [NOSOL] Cease Existing Discussions: text 793 → 797 chars
+    ~ [NOSOL] Enforcement of Standstills: text 384 → 1118 chars
+    ~ [NOSOL] Standstill Waiver / Don't-Ask-Don't-Waive: +features boardChangeStandard
+    ~ [NOSOL] Solicitation Prohibition: text 1172 → 1177 chars; +features representativesStandard; -features noConflictingAgreementsPresent,noConflictingAgreementsScope
+    ~ [NOSOL] Exceptions / Fiduciary Out: text 1588 → 2331 chars; +features confidentialityRequired,flags,superiorProposalDeterminer
+    ~ [NOSOL] Provision of Information to Bidder: +features flags; -features confidentialityRequired
+    ~ [NOSOL] Confidentiality Agreement Requirement: text 93 → 553 chars
+    ~ [NOSOL] Notice to Counterparty: text 1818 → 1822 chars; +features noticePeriod
+    ~ [NOSOL] Disclosure of Terms: text 999 → 634 chars; -features informationSharingObligationTiming,noticeContent
+    ~ [NOSOL] Change of Recommendation: text 3512 → 3774 chars
+    ~ [NOSOL] Matching Rights: text 2078 → 1032 chars; -features initialMatchPeriodDays,matchingPeriod,noticePeriod
+    ~ [NOSOL] Subsequent Matching / Amendment Rights: +features flags
+    ~ [NOSOL] Intervening Event: text 4136 → 6826 chars; +features initialMatchPeriodDays
+    ~ [NOSOL] Acquisition Proposal Definition: text 1877 → 1765 chars
+    ~ [NOSOL] Superior Proposal Definition: text 922 → 928 chars; +features flags; -features fiduciaryFinalStandard
+    = 1 unchanged
+  → MISC … [validate] auto-wrapped citable field "parentAssignmentRight" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "companyConsentForAssignment" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "governingLaw" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "governingLaw" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "jurisdictionExclusive" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "juryWaiver" (bare value -> { value, quotes: [] })
+done in 468s: +19 / -19, corrections re-applied: 0
+    + [MISC] [PROPOSED] Company Disclosure Letter (1693 chars, features: mainConcept,sectionNumber)
+    + [MISC] [PROPOSED] Financing Sources Provisions (7822 chars, features: amendmentsRequirement,flags,forumCourts,governingLaw,jurisdiction,jurisdictionExclusive,juryWaiver,mainConcept,sectionNumber,thirdPartyBeneficiaries)
+    + [MISC] [PROPOSED] Company Subsidiaries; TKO/JV Carve-Out (5183 chars, features: flags,mainConcept,sectionNumber)
+    + [MISC] [PROPOSED] Designated Individuals Carve-Out (1676 chars, features: flags,mainConcept,sectionNumber)
+    + [MISC] [PROPOSED] Special Committee Authority; Governance Carve-Out (1584 chars, features: flags,mainConcept,sectionNumber)
+    - [MISC] Rules of Construction; Interpretation (features: mainConcept,sectionNumber)
+    - [MISC] Unclassified (features: sectionNumber)
+    - [MISC] Unclassified (features: sectionNumber)
+    - [MISC] Unclassified (features: sectionNumber)
+    - [MISC] Unclassified (features: sectionNumber)
+    ~ [MISC] No Survival / Nonsurvival: -features repsSurvivalDuration,repsSurvivalExceptions
+    ~ [MISC] Rules of Construction; Interpretation: +features flags
+    ~ [MISC] Assignment; Successors: +features assignmentProvisos,flags
+    ~ [MISC] Specific Performance; Enforcement: -features flags
+    ~ [MISC] Waiver; Extension: +features flags
+    ~ [MISC] [PROPOSED] Non-Recourse: +features flags; -features noExcusePostClosingPresent
+    = 8 unchanged
+  → TERMF … done in 312s: +5 / -2, corrections re-applied: 0
+    + [TERMF] Company Termination Fee (868 chars, features: companyTerminationFee,interestOnLatePayment,interestRateBasis,mainConcept)
+    + [TERMF] Reverse Termination Fee (1004 chars, features: interestOnLatePayment,interestRateBasis,mainConcept,reverseTerminationFee)
+    + [TERMF] Expense Reimbursement (1362 chars, features: expenseReimbursement,mainConcept)
+    + [TERMF] Effect of Termination (1068 chars, features: effectOfTermination,mainConcept,willfulBreachException)
+    + [TERMF] Sole and Exclusive Remedy (7219 chars, features: mainConcept,soleAndExclusiveRemedy)
+    - [TERMF] Termination Fees & Expenses (features: none)
+    - [TERMF] Termination Fees & Expenses (features: none)
+    = 0 unchanged
+  QA counts: total 353 → 356, termf 2 → 5
+──── done: Endeavor Group Holdings, Inc. (exit 0)
+──── WORKER2 deal: Modiv Industrial, Inc.
+Reprocess (types: NOSOL, MISC, TERMF) — 1 deal(s), APPLY
+
+═══ Global Net Lease, Inc. / Modiv Industrial, Inc. (dfaa71fa-9723-4794-825d-bd5024aa0b5d) ═══
+  → NOSOL …   (LLM backend: claude-cli)
+done in 365s: +14 / -17, corrections re-applied: 0
+    + [NOSOL] Standstill Waiver / Don't-Ask-Don't-Waive (454 chars, features: mainConcept,standstillWaiver,standstillWaiverConditions,standstillWaiverPermitted)
+    - [NOSOL] Notice to Counterparty (features: discussionInitiationNoticeHours,discussionInitiationNoticePresent,discussionInitiationNoticeText,infoRequiredCommunicationsDrafts,informationSharingObligationPresent,informationSharingObligationScope,mainConcept)
+    - [NOSOL] Disclosure of Terms (features: mainConcept,noConflictingAgreementsPresent,noConflictingAgreementsScope)
+    - [NOSOL] Change of Recommendation (features: legallyRequiredDisclosurePermitted,mainConcept,notChangeOfRecommendationItems,safeDisclosureCarveoutLanguage,tenderOfferDisclosurePermitted,tenderOfferDisclosureScope)
+    - [NOSOL] [PROPOSED] Ownership Limit Waiver Restriction (features: flags,mainConcept)
+    ~ [NOSOL] Cease Existing Discussions: text 535 → 445 chars; -features ceaseDiscussionsExceptions,ceaseDiscussionsProhibitedList,representativesStandard
+    ~ [NOSOL] Solicitation Prohibition: -features ceaseDiscussionsAffiliateStandard,noConflictingAgreementsPresent,noConflictingAgreementsScope
+    ~ [NOSOL] Exceptions / Fiduciary Out: text 2729 → 2716 chars; +features superiorProposalDeterminer; -features notChangeOfRecommendationItems
+    ~ [NOSOL] Provision of Information to Bidder: text 1146 → 1912 chars
+    ~ [NOSOL] Confidentiality Agreement Requirement: text 543 → 1711 chars; +features flags
+    ~ [NOSOL] Notice to Counterparty: text 556 → 543 chars
+    ~ [NOSOL] Disclosure of Terms: text 563 → 1658 chars; +features informationSharingObligationPresent,informationSharingObligationScope,informationSharingObligationTiming,noConflictingAgreementsPresent,noConflictingAgreementsScope
+    ~ [NOSOL] Change of Recommendation: text 977 → 4535 chars; +features boardChangeForInterveningEvent,boardChangeForSuperiorProposal,boardChangeStandard,changeRecStandard,companyTerminationForSuperior,companyTerminationForSuperiorConditions,fiduciaryFinalStandard,legallyRequiredDisclosurePermitted,notChangeOfRecommendationItems,safeDisclosureCarveoutLanguage,tenderOfferDisclosurePermitted,tenderOfferDisclosureScope; -features noConflictingAgreementsPresent,noConflictingAgreementsScope
+    ~ [NOSOL] Intervening Event: +features flags; -features boardChangeStandard,changeRecStandard
+    ~ [NOSOL] Matching Rights: text 2101 → 2088 chars; -features changeRecStandard,fiduciaryFinalStandard,noticePeriod
+    ~ [NOSOL] Negotiation Period: text 580 → 1275 chars
+    ~ [NOSOL] Enforcement of Standstills: text 467 → 928 chars; +features flags; -features dontAskDontWaive,standstillWaiverPermitted
+    = 1 unchanged
+  → MISC … [validate] auto-wrapped citable field "companyConsentForAssignment" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "governingLaw" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "jurisdictionExclusive" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "juryWaiver" (bare value -> { value, quotes: [] })
+done in 177s: +11 / -11, corrections re-applied: 0
+    ~ [MISC] No Survival / Nonsurvival: -features repsSurvivalDuration,repsSurvivalExceptions,repsSurvivalPresent
+    ~ [MISC] Governing Law: +features flags,jurisdiction
+    ~ [MISC] Third-Party Beneficiaries: -features noOtherRepsParty,noOtherRepsPresent,nonRelianceClause
+    ~ [MISC] Specific Performance; Enforcement: -features bondSecurityRequiredForSP,flags,specificPerformanceLimitations
+    = 7 unchanged
+  → TERMF … [validate] auto-wrapped citable field "soleAndExclusiveRemedy" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "willfulBreachException" (bare value -> { value, quotes: [] })
+done in 287s: +5 / -6, corrections re-applied: 0
+    - [TERMF] Expense Reimbursement (features: mainConcept)
+    ~ [TERMF] Company Termination Fee: +features interestRateBasis
+    ~ [TERMF] Reverse Termination Fee: +features interestRateBasis
+    ~ [TERMF] Tail Provision: text 855 → 1814 chars
+    ~ [TERMF] Effect of Termination: text 3854 → 758 chars; -features willfulBreachException
+    ~ [TERMF] Sole and Exclusive Remedy: text 1622 → 3095 chars
+    = 0 unchanged
+  QA counts: total 366 → 362, nosol 17 → 14, termf 6 → 5
+──── done: Modiv Industrial, Inc. (exit 0)
+──── WORKER2 deal: United Homes Group, Inc.
+Reprocess (types: NOSOL, MISC, TERMF) — 1 deal(s), APPLY
+
+═══ Stanley Martin Homes, LLC / United Homes Group, Inc. (aad132ee-8a43-436d-b6a8-5604b7dfee01) ═══
+  → NOSOL …   (LLM backend: claude-cli)
+done in 443s: +17 / -14, corrections re-applied: 0
+    + [NOSOL] Change of Recommendation (2158 chars, features: legallyRequiredDisclosurePermitted,mainConcept,notChangeOfRecommendationItems,safeDisclosureCarveoutLanguage,tenderOfferDisclosurePermitted,tenderOfferDisclosureScope)
+    + [NOSOL] Superior Proposal Definition (990 chars, features: boardChangeForSuperiorProposal,boardChangeStandard,companyTerminationForSuperior,companyTerminationForSuperiorConditions,fiduciaryFinalStandard,mainConcept,superiorProposalDeterminer)
+    + [NOSOL] Notice to Counterparty (404 chars, features: discussionInitiationNoticeHours,discussionInitiationNoticePresent,discussionInitiationNoticeText,infoRequiredBidderIdentity,mainConcept,noticeContent)
+    ~ [NOSOL] Solicitation Prohibition: text 1558 → 1496 chars; +features ceaseDiscussionsAffiliateStandard,flags; -features noConflictingAgreementsPresent,noConflictingAgreementsScope
+    ~ [NOSOL] Cease Existing Discussions: -features ceaseDiscussionsAffiliateStandard
+    ~ [NOSOL] Standstill Waiver / Don't-Ask-Don't-Waive: +features flags
+    ~ [NOSOL] Exceptions / Fiduciary Out: text 1980 → 1437 chars; +features superiorProposalDeterminer; -features discussionInitiationNoticePresent
+    ~ [NOSOL] Provision of Information to Bidder: text 651 → 859 chars
+    ~ [NOSOL] Confidentiality Agreement Requirement: text 151 → 608 chars
+    ~ [NOSOL] Change of Recommendation: text 4046 → 1856 chars; +features flags; -features legallyRequiredDisclosurePermitted,noConflictingAgreementsPresent,noConflictingAgreementsScope,notChangeOfRecommendationItems,safeDisclosureCarveoutLanguage,tenderOfferDisclosurePermitted,tenderOfferDisclosureScope
+    ~ [NOSOL] Intervening Event: text 2358 → 2344 chars; +features boardChangeForInterveningEvent,noticeContent,subsequentMatchPeriodDays; -features boardChangeStandard
+    ~ [NOSOL] Notice to Counterparty: text 418 → 731 chars; +features infoRequiredCommunicationsDrafts; -features discussionInitiationNoticeHours,discussionInitiationNoticePresent,discussionInitiationNoticeText,flags
+    ~ [NOSOL] Negotiation Period: text 751 → 968 chars; -features initialMatchPeriodDays
+    ~ [NOSOL] Matching Rights: text 3168 → 925 chars; +features changeRecStandard,superiorProposalDeterminer; -features boardChangeForSuperiorProposal,boardChangeStandard,companyTerminationForSuperior,companyTerminationForSuperiorConditions,initialMatchPeriodDays,noticeContent,noticePeriod
+    ~ [NOSOL] Subsequent Matching / Amendment Rights: text 740 → 267 chars
+    ~ [NOSOL] Disclosure of Terms: text 1942 → 824 chars; -features infoRequiredBidderIdentity,noticeContent
+    = 1 unchanged
+  → MISC … [validate] auto-wrapped citable field "companyConsentForAssignment" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "governingLaw" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "jurisdictionExclusive" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "juryWaiver" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "specificPerformance" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "specificPerformanceMutual" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "companyRightToForceClose" (bare value -> { value, quotes: [] })
+done in 196s: +13 / -13, corrections re-applied: 0
+    ~ [MISC] Notices: -features flags
+    ~ [MISC] No Survival / Nonsurvival: -features repsSurvivalDuration,repsSurvivalExceptions,repsSurvivalPresent
+    ~ [MISC] Assignment; Successors: -features flags,thirdPartyBeneficiaryExceptions
+    ~ [MISC] Specific Performance; Enforcement: -features bondSecurityRequiredForSP,specificPerformanceLimitations
+    ~ [MISC] [PROPOSED] No Recourse: -features thirdPartyBeneficiaries,thirdPartyBeneficiaryExceptions
+    = 8 unchanged
+  → TERMF … [validate] auto-wrapped citable field "willfulBreachException" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "soleAndExclusiveRemedy" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "willfulBreachException" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "soleAndExclusiveRemedy" (bare value -> { value, quotes: [] })
+[validate] auto-wrapped citable field "willfulBreachException" (bare value -> { value, quotes: [] })
+done in 253s: +9 / -10, corrections re-applied: 0
+    + [TERMF] Acquirer Expense Reimbursement (1591 chars, features: mainConcept)
+    - [TERMF] Sole and Exclusive Remedy (features: mainConcept)
+    - [TERMF] [PROPOSED] Fee Provisions Integral to Transaction (features: mainConcept)
+    ~ [TERMF] Effect of Termination: text 781 → 735 chars
+    ~ [TERMF] Expense Reimbursement: text 1897 → 275 chars; -features expenseReimbursement
+    ~ [TERMF] Company Termination Fee: text 1854 → 891 chars; +features interestRateBasis
+    ~ [TERMF] Tail Provision: text 930 → 915 chars
+    ~ [TERMF] Reverse Termination Fee: text 601 → 586 chars; +features interestRateBasis
+    ~ [TERMF] Sole and Exclusive Remedy: text 269 → 473 chars
+    ~ [TERMF] Sole and Exclusive Remedy: text 1455 → 1438 chars; +features willfulBreachException
+    ~ [TERMF] Sole and Exclusive Remedy: text 1261 → 1245 chars; +features willfulBreachException
+    = 0 unchanged
+  QA counts: total 359 → 361, nosol 14 → 17, termf 10 → 9
+──── done: United Homes Group, Inc. (exit 0)

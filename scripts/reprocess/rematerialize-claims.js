@@ -324,13 +324,13 @@ function loadDotEnvLocal() {
 function usage() {
   console.error(
     'Usage: node scripts/reprocess/rematerialize-claims.js ' +
-    '(--deal <uuid>[,<uuid>...] | --all) [--apply] [--json] [--run-id <id>]',
+    '(--deal <uuid>[,<uuid>...] | --all) [--apply] [--partial] [--json] [--run-id <id>]',
   );
   process.exit(1);
 }
 
 function parseArgs(argv) {
-  const args = { deals: [], all: false, apply: false, json: false, runId: null };
+  const args = { deals: [], all: false, apply: false, json: false, runId: null, partial: false };
   for (let i = 2; i < argv.length; i += 1) {
     const a = argv[i];
     if (a === '--deal') {
@@ -340,6 +340,8 @@ function parseArgs(argv) {
       args.all = true;
     } else if (a === '--apply') {
       args.apply = true;
+    } else if (a === '--partial') {
+      args.partial = true;
     } else if (a === '--json') {
       args.json = true;
     } else if (a === '--run-id') {
@@ -460,10 +462,20 @@ async function main() {
     console.log(JSON.stringify(report, null, 2));
   }
 
-  if (anyFailed) {
+  if (anyFailed && !args.partial) {
     console.error('\nAmbiguity or coverage failure detected — exiting 1, writing nothing.');
+    console.error('(To materialize the unambiguous matches anyway and report the rest, re-run with --partial.)');
     process.exitCode = 1;
     return;
+  }
+  if (anyFailed && args.partial) {
+    // --partial: claimRows/matchedExcerptIds are built from unique-rung
+    // matches ONLY, so writing them involves no guessing. Ambiguous cards are
+    // untouched (their claims stay stale until a prune resolves the dup) and
+    // card-less coded provisions are reported as the per-deal card-less
+    // count. This is the corpus mode; the strict default is the pilot
+    // acceptance mode.
+    console.log('\n--partial: materializing unambiguous matches; ambiguities and card-less provisions reported, not written.');
   }
 
   if (!args.apply) {

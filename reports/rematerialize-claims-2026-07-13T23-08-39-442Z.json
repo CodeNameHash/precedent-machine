@@ -1,0 +1,53 @@
+{
+  "generatedAt": "2026-07-13T23:08:36.162Z",
+  "apply": true,
+  "ok": false,
+  "deals": [
+    {
+      "dealId": "8cd0787f-4ca0-40fe-aebf-6f88c0b101da",
+      "acquirer": "Rocket Companies, Inc.",
+      "target": "Mr. Cooper Group Inc.",
+      "cardsTotal": 326,
+      "provisionsTotal": 343,
+      "matched": 324,
+      "rungCounts": {
+        "1": 158,
+        "2": 166,
+        "3": 0
+      },
+      "unmatchedCards": 2,
+      "unmatchedProvisions": 19,
+      "ambiguities": [],
+      "coverageFailures": [
+        {
+          "provisionId": "2358c088-c1dd-41a4-817e-785a574c2cfa",
+          "type": "ANTI",
+          "category": "Timing Agreements"
+        }
+      ],
+      "claimsToUpsert": 1928,
+      "ok": false,
+      "staleDeleted": 0
+    },
+    {
+      "dealId": "13894e33-b5b6-4412-96bb-940b841d5130",
+      "acquirer": "IonQ, Inc.",
+      "target": "SkyWater Technology, Inc.",
+      "cardsTotal": 314,
+      "provisionsTotal": 321,
+      "matched": 313,
+      "rungCounts": {
+        "1": 121,
+        "2": 191,
+        "3": 1
+      },
+      "unmatchedCards": 1,
+      "unmatchedProvisions": 8,
+      "ambiguities": [],
+      "coverageFailures": [],
+      "claimsToUpsert": 1887,
+      "ok": true,
+      "staleDeleted": 0
+    }
+  ]
+}

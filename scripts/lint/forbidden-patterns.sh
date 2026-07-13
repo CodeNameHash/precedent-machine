@@ -164,6 +164,7 @@ for (const rel of changedFiles()) {
     rel.startsWith('.git/') ||
     rel.startsWith('.claude/') ||
     rel.startsWith('.vercel/') ||
+    rel.startsWith('reports/backups/') || // raw DB dumps: agreement text legitimately hits bug-fingerprints
     rel.startsWith('scripts/lint/') ||
     rel === 'pm-master-straitjacket.codex.md'
   ) {
