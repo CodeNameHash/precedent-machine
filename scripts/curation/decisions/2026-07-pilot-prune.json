@@ -1,0 +1,21 @@
+{
+  "label": "2026-07 pilot prune (Ben checkpoint decisions)",
+  "deals": {
+    "885edae5-49e8-464a-9f33-edd229119d7c": [
+      { "card": "bdffefa4", "action": "delete", "note": "dup Acquisition Proposal Definition; verbatim inside Superior Proposal Definition provision" },
+      { "card": "4fb2ecfc", "action": "delete", "note": "dup Change of Recommendation; verbatim inside Matching Rights + Change of Recommendation provisions" },
+      { "card": "7056dd75", "action": "delete", "note": "dup Change of Recommendation (state-takeover-statute sentence); 2026-07-13 API check: NOT verbatim in any current provision — expect NEEDS-RECONFIRM" },
+      { "card": "1ffdc8b7", "action": "delete", "note": "dup Change of Recommendation; verbatim inside Intervening Event provision" },
+      { "card": "dd53cc5c", "action": "keep", "note": "Intervening Event DEFINITION is a distinct concept from the s5.02(f) operative card — both stay" },
+      { "card": "3e9c3dea", "action": "rehome", "newTitle": "Information Parity to Parent", "note": "bidder info must also go to Parent; distinct concept, new corpus title" },
+      { "card": "99d79c27", "action": "rehome", "newTitle": "No Restrictive Agreements", "note": "covenant not to enter agreements restricting info to Parent; sits beside Acceptable Confidentiality Agreement" }
+    ],
+    "c7c16365-c9cf-4bfb-93a6-1575084d717c": [
+      { "card": "94100326", "action": "delete", "note": "dup Change of Recommendation; verbatim inside kept Change of Recommendation provision" },
+      { "card": "0f8f680d", "action": "delete", "note": "dup Change of Recommendation; NOTE: only covering row is SECTION-LEFTOVER 'Uncovered text — No Solicitation (#4)'" },
+      { "card": "af93a266", "action": "delete", "note": "dup Solicitation Prohibition; verbatim inside kept Solicitation Prohibition provision" },
+      { "card": "d6e5b7b9", "action": "rehome", "newTitle": "Content of Notice of Adverse Recommendation Change", "note": "distinct from bid notice (Notice to Counterparty)" },
+      { "card": "10792e76", "action": "verify-then-hold", "mustContainInKeptRow": "will be deemed to be a breach of this Section 5.05 by Kraft", "addToRow": { "titleOfKeptCard": "Solicitation Prohibition", "text": "It is understood that any violation of the restrictions set forth in this Section 5.05 by any Kraft Transaction Representative or by an Kraft Subsidiary will be deemed to be a breach of this Section 5.05 by Kraft." }, "note": "Representatives-violation-is-breach attribution rule; 2026-07-13 API check: NOT covered by kept provision — Ben must confirm coverage or approve the addToRow" }
+    ]
+  }
+}
