@@ -245,8 +245,10 @@ function buildDealPlan(dealId, cards, provisions, options = {}) {
   for (const { card, provision } of matches) {
     const perProvisionOptions = {
       ...claimOptions,
-      extractionVersion: provision.extraction_version,
-      extractedAt: provision.extracted_at,
+      // provisions carries no extraction_version/extracted_at columns —
+      // version lives in ai_metadata when stamped; created_at is the row time.
+      extractionVersion: (provision.ai_metadata && provision.ai_metadata.extraction_version) || null,
+      extractedAt: provision.extracted_at || provision.created_at || null,
     };
     const { rows, unknownAttributes: unknown } = buildClaimRowsForCard(dealId, card, provision, perProvisionOptions);
     claimRows.push(...rows);
@@ -365,7 +367,7 @@ async function fetchDeals(sb, args) {
 async function fetchProvisions(sb, dealId) {
   const { data, error } = await sb
     .from('provisions')
-    .select('id, type, category, full_text, ai_metadata, extraction_version, extracted_at')
+    .select('id, type, category, full_text, ai_metadata, created_at')
     .eq('deal_id', dealId);
   if (error) throw new Error(`Provision fetch failed: ${error.message}`);
   return data || [];

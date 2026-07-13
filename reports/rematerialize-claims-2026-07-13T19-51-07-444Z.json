@@ -1,0 +1,67 @@
+{
+  "generatedAt": "2026-07-13T19:50:57.891Z",
+  "apply": true,
+  "ok": true,
+  "deals": [
+    {
+      "dealId": "885edae5-49e8-464a-9f33-edd229119d7c",
+      "acquirer": "Pfizer Inc.",
+      "target": "Metsera, Inc.",
+      "cardsTotal": 303,
+      "provisionsTotal": 300,
+      "matched": 299,
+      "rungCounts": {
+        "1": 137,
+        "2": 161,
+        "3": 1
+      },
+      "unmatchedCards": 4,
+      "unmatchedProvisions": 1,
+      "ambiguities": [],
+      "coverageFailures": [],
+      "claimsToUpsert": 1998,
+      "ok": true,
+      "staleDeleted": 1819
+    },
+    {
+      "dealId": "dc042001-b987-404f-bd02-41e1939fb914",
+      "acquirer": "Chevron Corporation",
+      "target": "Anadarko Petroleum Corporation",
+      "cardsTotal": 272,
+      "provisionsTotal": 280,
+      "matched": 272,
+      "rungCounts": {
+        "1": 144,
+        "2": 128,
+        "3": 0
+      },
+      "unmatchedCards": 0,
+      "unmatchedProvisions": 8,
+      "ambiguities": [],
+      "coverageFailures": [],
+      "claimsToUpsert": 1713,
+      "ok": true,
+      "staleDeleted": 1576
+    },
+    {
+      "dealId": "c7c16365-c9cf-4bfb-93a6-1575084d717c",
+      "acquirer": "H.J. Heinz Holding Corporation",
+      "target": "Kraft Foods Group, Inc.",
+      "cardsTotal": 415,
+      "provisionsTotal": 412,
+      "matched": 412,
+      "rungCounts": {
+        "1": 154,
+        "2": 258,
+        "3": 0
+      },
+      "unmatchedCards": 3,
+      "unmatchedProvisions": 0,
+      "ambiguities": [],
+      "coverageFailures": [],
+      "claimsToUpsert": 1960,
+      "ok": true,
+      "staleDeleted": 1800
+    }
+  ]
+}
