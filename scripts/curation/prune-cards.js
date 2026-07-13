@@ -130,6 +130,11 @@ function planDecision(dealId, decision, cards, provisions, corrections) {
     flagged: false,
     write: null,
   };
+  // Echo any ack fields onto the entry unconditionally, even when the gate
+  // they target never trips — a stale ack must stay visible in the report,
+  // per spec, rather than silently vanishing.
+  if (decision.ackHumanCorrection) entry.ackHumanCorrection = decision.ackHumanCorrection;
+  if (decision.ackUncovered) entry.ackUncovered = decision.ackUncovered;
 
   if (decision.action === 'keep') {
     return { ...entry, status: 'KEEP', ok: true };
@@ -148,20 +153,37 @@ function planDecision(dealId, decision, cards, provisions, corrections) {
   }
 
   if (decision.action === 'delete' || decision.action === 'rehome') {
-    // Human-correction gate: SKIP + flag, never override, regardless of
-    // verification outcome.
-    if (humanCorrectionFlag(card, provisions, corrections)) {
-      return { ...entry, status: 'FLAGGED-HUMAN-CORRECTION', flagged: true, ok: false };
+    // Human-correction gate: SKIP + flag, never override — UNLESS Ben has
+    // explicitly acked this exact card via ackHumanCorrection, in which case
+    // the block converts into a planned write and normal action processing
+    // (coverage verification for delete; title patch for rehome) continues.
+    const humanFlagged = humanCorrectionFlag(card, provisions, corrections);
+    if (humanFlagged) {
+      if (!decision.ackHumanCorrection) {
+        return { ...entry, status: 'FLAGGED-HUMAN-CORRECTION', flagged: true, ok: false };
+      }
+      entry.flagged = true;
     }
 
     if (decision.action === 'delete') {
       const { covered, coveringIds } = textCovered(card.region_full_text, provisions);
       if (!covered) {
+        // Uncovered-delete gate: blocked by default (NEEDS-RECONFIRM) unless
+        // Ben has explicitly acked the content loss via ackUncovered.
+        if (decision.ackUncovered) {
+          return {
+            ...entry,
+            status: 'PLANNED-DELETE-UNCOVERED',
+            coveringProvisionIds: coveringIds,
+            write: { op: 'delete', table: 'provision_cards', id: card.id },
+            ok: true,
+          };
+        }
         return { ...entry, status: 'NEEDS-RECONFIRM', coveringProvisionIds: coveringIds, ok: false };
       }
       return {
         ...entry,
-        status: 'PLANNED-DELETE',
+        status: humanFlagged ? 'ACKED-HUMAN-CORRECTION' : 'PLANNED-DELETE',
         coveringProvisionIds: coveringIds,
         write: { op: 'delete', table: 'provision_cards', id: card.id },
         ok: true,
@@ -171,7 +193,7 @@ function planDecision(dealId, decision, cards, provisions, corrections) {
     // rehome: title-only patch, never a delete, no verification defined.
     return {
       ...entry,
-      status: 'PLANNED-REHOME',
+      status: humanFlagged ? 'ACKED-HUMAN-CORRECTION' : 'PLANNED-REHOME',
       oldTitle: card.short_title,
       newTitle: decision.newTitle,
       write: { op: 'update', table: 'provision_cards', id: card.id, patch: { short_title: decision.newTitle } },
@@ -245,13 +267,16 @@ function shortId(id) {
 
 function formatEntryLine(e) {
   const flags = [];
-  if (e.flagged) flags.push('FLAGGED-HUMAN-CORRECTION');
+  if (e.status === 'FLAGGED-HUMAN-CORRECTION') flags.push('FLAGGED-HUMAN-CORRECTION');
+  if (e.flagged && e.ackHumanCorrection) flags.push(`ACKED-HUMAN-CORRECTION (ack: ${e.ackHumanCorrection})`);
   if (e.status === 'ERROR-AMBIGUOUS') flags.push(`ambiguous (${(e.candidates || []).map(shortId).join(', ')})`);
   if (e.status === 'ERROR-MISSING') flags.push('missing card');
 
-  const verification = e.coveringProvisionIds && e.coveringProvisionIds.length > 0
-    ? `covered by [${e.coveringProvisionIds.map(shortId).join(', ')}]`
-    : (e.status === 'NEEDS-RECONFIRM' || e.status === 'NOT-COVERED' ? 'NOT-FOUND' : '—');
+  const verification = e.status === 'PLANNED-DELETE-UNCOVERED'
+    ? `NOT-FOUND (acked: ${e.ackUncovered})`
+    : (e.coveringProvisionIds && e.coveringProvisionIds.length > 0
+      ? `covered by [${e.coveringProvisionIds.map(shortId).join(', ')}]`
+      : (e.status === 'NEEDS-RECONFIRM' || e.status === 'NOT-COVERED' ? 'NOT-FOUND' : '—'));
 
   const write = e.write
     ? (e.write.op === 'delete' ? 'DELETE provision_cards' : `UPDATE provision_cards.short_title -> "${e.write.patch.short_title}"`)

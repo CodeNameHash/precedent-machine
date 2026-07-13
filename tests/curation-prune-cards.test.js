@@ -9,6 +9,7 @@ const {
   plannedWrites,
   checkBackupGate,
   executeWrites,
+  formatDealTable,
 } = require('../scripts/curation/prune-cards');
 
 const DEAL_A = '885edae5-49e8-464a-9f33-edd229119d7c';
@@ -302,4 +303,188 @@ test('textCovered: whitespace and case differences do not defeat the substring c
   const { covered, coveringIds } = textCovered('with odd spacing and mixed case', provisions);
   assert.equal(covered, true);
   assert.deepEqual(coveringIds, ['prov-1']);
+});
+
+// ---------------------------------------------------------------------------
+// 9. Explicit acknowledgment overrides (Ben sign-off follow-up).
+// ---------------------------------------------------------------------------
+
+const ACK_HC = 'ben 2026-07-13 — reviewed, delete anyway';
+const ACK_UNCOV = 'ben 2026-07-13 — content loss confirmed';
+
+test('ackHumanCorrection: converts FLAGGED-HUMAN-CORRECTION into a planned delete when the text IS covered', () => {
+  const cards = [card()];
+  const provisions = [provision({ ai_metadata: { user_corrected: true } })];
+  const decisions = [{ card: 'bdffefa4', action: 'delete', note: 'dup', ackHumanCorrection: ACK_HC }];
+  const plan = buildDealPlan(DEAL_A, decisions, cards, provisions, []);
+  assert.equal(plan.ok, true);
+  const [entry] = plan.entries;
+  assert.equal(entry.status, 'ACKED-HUMAN-CORRECTION');
+  assert.equal(entry.flagged, true);
+  assert.equal(entry.ackHumanCorrection, ACK_HC);
+  assert.deepEqual(entry.write, { op: 'delete', table: 'provision_cards', id: cards[0].id });
+});
+
+test('ackHumanCorrection: converts the block, but the delete still needs its OWN coverage verification — uncovered text without ackUncovered stays blocked', () => {
+  const cards = [card()];
+  // category fallback keeps the human-correction match alive even though the
+  // provision's full_text no longer overlaps the card's region text at all —
+  // that's what makes the *delete's own* coverage check fail independently.
+  const provisions = [provision({
+    category: card().short_title,
+    ai_metadata: { user_corrected: true },
+    full_text: 'Totally unrelated text with no overlap at all.',
+  })];
+  const decisions = [{ card: 'bdffefa4', action: 'delete', note: 'dup', ackHumanCorrection: ACK_HC }];
+  const plan = buildDealPlan(DEAL_A, decisions, cards, provisions, []);
+  assert.equal(plan.ok, false);
+  const [entry] = plan.entries;
+  assert.equal(entry.status, 'NEEDS-RECONFIRM');
+  assert.equal(entry.flagged, true);
+  assert.equal(entry.ackHumanCorrection, ACK_HC);
+  assert.equal(entry.write, null);
+});
+
+test('ackHumanCorrection: without the field, behavior is exactly as today (still FLAGGED, still blocked)', () => {
+  const cards = [card()];
+  const provisions = [provision({ ai_metadata: { user_corrected: true } })];
+  const decisions = [{ card: 'bdffefa4', action: 'delete', note: 'dup' }];
+  const plan = buildDealPlan(DEAL_A, decisions, cards, provisions, []);
+  assert.equal(plan.ok, false);
+  const [entry] = plan.entries;
+  assert.equal(entry.status, 'FLAGGED-HUMAN-CORRECTION');
+  assert.equal(entry.ackHumanCorrection, undefined);
+  assert.equal(entry.write, null);
+});
+
+test('ackUncovered: converts NEEDS-RECONFIRM into PLANNED-DELETE-UNCOVERED with the delete write planned', () => {
+  const cards = [card()];
+  const provisions = [provision({ full_text: 'Totally unrelated text with no overlap at all.' })];
+  const decisions = [{ card: 'bdffefa4', action: 'delete', note: 'dup', ackUncovered: ACK_UNCOV }];
+  const plan = buildDealPlan(DEAL_A, decisions, cards, provisions, []);
+  assert.equal(plan.ok, true);
+  const [entry] = plan.entries;
+  assert.equal(entry.status, 'PLANNED-DELETE-UNCOVERED');
+  assert.equal(entry.ackUncovered, ACK_UNCOV);
+  assert.deepEqual(entry.write, { op: 'delete', table: 'provision_cards', id: cards[0].id });
+  const line = formatDealTable(plan);
+  assert.match(line, /verify: NOT-FOUND \(acked: ben 2026-07-13/);
+});
+
+test('ackUncovered: without the field, behavior is exactly as today (still NEEDS-RECONFIRM, still blocked)', () => {
+  const cards = [card()];
+  const provisions = [provision({ full_text: 'Totally unrelated text with no overlap at all.' })];
+  const decisions = [{ card: 'bdffefa4', action: 'delete', note: 'dup' }];
+  const plan = buildDealPlan(DEAL_A, decisions, cards, provisions, []);
+  assert.equal(plan.ok, false);
+  const [entry] = plan.entries;
+  assert.equal(entry.status, 'NEEDS-RECONFIRM');
+  assert.equal(entry.ackUncovered, undefined);
+});
+
+test('both gates trip on one card: ackHumanCorrection ALONE still blocks (ackUncovered also required)', () => {
+  const cards = [card()];
+  const provisions = [provision({
+    category: card().short_title,
+    ai_metadata: { user_corrected: true },
+    full_text: 'Totally unrelated text with no overlap at all.',
+  })];
+  const decisions = [{ card: 'bdffefa4', action: 'delete', note: 'dup', ackHumanCorrection: ACK_HC }];
+  const plan = buildDealPlan(DEAL_A, decisions, cards, provisions, []);
+  assert.equal(plan.ok, false);
+  assert.equal(plan.entries[0].status, 'NEEDS-RECONFIRM');
+});
+
+test('both gates trip on one card: ackUncovered ALONE still blocks (ackHumanCorrection also required)', () => {
+  const cards = [card()];
+  const provisions = [provision({
+    category: card().short_title,
+    ai_metadata: { user_corrected: true },
+    full_text: 'Totally unrelated text with no overlap at all.',
+  })];
+  const decisions = [{ card: 'bdffefa4', action: 'delete', note: 'dup', ackUncovered: ACK_UNCOV }];
+  const plan = buildDealPlan(DEAL_A, decisions, cards, provisions, []);
+  assert.equal(plan.ok, false);
+  assert.equal(plan.entries[0].status, 'FLAGGED-HUMAN-CORRECTION');
+  assert.equal(plan.entries[0].write, null);
+});
+
+test('both gates trip on one card: BOTH acks together unblock fully (ok, write planned)', () => {
+  const cards = [card()];
+  const provisions = [provision({
+    category: card().short_title,
+    ai_metadata: { user_corrected: true },
+    full_text: 'Totally unrelated text with no overlap at all.',
+  })];
+  const decisions = [{
+    card: 'bdffefa4',
+    action: 'delete',
+    note: 'dup',
+    ackHumanCorrection: ACK_HC,
+    ackUncovered: ACK_UNCOV,
+  }];
+  const plan = buildDealPlan(DEAL_A, decisions, cards, provisions, []);
+  assert.equal(plan.ok, true);
+  const [entry] = plan.entries;
+  assert.equal(entry.status, 'PLANNED-DELETE-UNCOVERED');
+  assert.equal(entry.flagged, true);
+  assert.equal(entry.ackHumanCorrection, ACK_HC);
+  assert.equal(entry.ackUncovered, ACK_UNCOV);
+  assert.deepEqual(entry.write, { op: 'delete', table: 'provision_cards', id: cards[0].id });
+});
+
+test('ackHumanCorrection on a rehome: converts the block and the title patch still plans', () => {
+  const cards = [card({ short_title: 'No Restrictive Agreements' })];
+  const provisions = [provision({ category: 'Something Else Entirely', full_text: 'unrelated' })];
+  const corrections = [{ before: { category: 'No Restrictive Agreements' }, after: { category: 'Confidentiality Covenant' } }];
+  const decisions = [{ card: 'bdffefa4', action: 'rehome', newTitle: 'New Title', note: 'x', ackHumanCorrection: ACK_HC }];
+  const plan = buildDealPlan(DEAL_A, decisions, cards, provisions, corrections);
+  assert.equal(plan.ok, true);
+  const [entry] = plan.entries;
+  assert.equal(entry.status, 'ACKED-HUMAN-CORRECTION');
+  assert.deepEqual(entry.write, {
+    op: 'update',
+    table: 'provision_cards',
+    id: cards[0].id,
+    patch: { short_title: 'New Title' },
+  });
+});
+
+test('acks are inert when the gate they target never trips: echoed on the entry, no status change', () => {
+  const cards = [card()];
+  const provisions = [provision()]; // covered, no human correction
+  const decisions = [{
+    card: 'bdffefa4',
+    action: 'delete',
+    note: 'dup',
+    ackHumanCorrection: ACK_HC,
+    ackUncovered: ACK_UNCOV,
+  }];
+  const plan = buildDealPlan(DEAL_A, decisions, cards, provisions, []);
+  assert.equal(plan.ok, true);
+  const [entry] = plan.entries;
+  assert.equal(entry.status, 'PLANNED-DELETE'); // unchanged status — neither gate tripped
+  assert.equal(entry.flagged, false); // gate never tripped, so not flagged
+  assert.equal(entry.ackHumanCorrection, ACK_HC); // still echoed — stale ack stays visible
+  assert.equal(entry.ackUncovered, ACK_UNCOV);
+});
+
+test('whole-run ok is true when every gate that trips has a matching ack (fully-acked file)', () => {
+  const cardHC = card({ id: 'aaaaaaaa-1111-4000-8000-000000000001' });
+  const provisionsHC = [provision({ ai_metadata: { user_corrected: true } })];
+  const decisionsHC = [{ card: 'aaaaaaaa', action: 'delete', note: 'dup', ackHumanCorrection: ACK_HC }];
+
+  const cardBoth = card({ id: 'bbbbbbbb-2222-4000-8000-000000000002', short_title: 'Other Card' });
+  const provisionsBoth = [provision({ id: 'prov-2', category: 'Other Card', ai_metadata: { user_corrected: true }, full_text: 'nothing overlapping whatsoever' })];
+  const decisionsBoth = [{
+    card: 'bbbbbbbb',
+    action: 'delete',
+    note: 'dup',
+    ackHumanCorrection: ACK_HC,
+    ackUncovered: ACK_UNCOV,
+  }];
+
+  const plan = buildDealPlan(DEAL_A, [...decisionsHC, ...decisionsBoth], [cardHC, cardBoth], [...provisionsHC, ...provisionsBoth], []);
+  assert.equal(plan.ok, true);
+  assert.ok(plan.entries.every((e) => e.ok));
 });
