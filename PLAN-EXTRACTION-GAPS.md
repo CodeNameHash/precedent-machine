@@ -23,17 +23,19 @@
 - Validate: re-extract Metsera IOC; every 5.01 sub-clause carries a subtype, none reduced to "[PROPOSED] Unclassified".
 - Render stopgap already shipped: WS-E of the round-4 work names all 8 from their `section_ref` so no fragment renders while the extraction fix is pending.
 
-### D. Third-party-beneficiary attribute mapping bug  [data bug + backfill]
+### D. Third-party-beneficiary attribute mapping bug  [RESOLVED — verified 2026-07-14]
+- **Verified fixed by the TASK 3 corpus re-extraction + rematerialize**: `thirdPartyBeneficiaries` now has 128 claims across 37 deals; Metsera's rows carry named parties ("holders of Certificates and holders of Book-Entry Shares", "holders of awards under Company Stock Plans"). Original description kept below for history.
 - Today: **corpus-wide bug** — every third-party-beneficiary claim is stamped `attribute='thirdPartyBeneficiaryExceptions'`; `attribute='thirdPartyBeneficiaries'` (the beneficiary NAMES: Indemnified Persons/D&Os, Debt Financing Sources) has **zero rows across the entire claims table**. `misc-boilerplate.config.js` therefore can never populate the beneficiary-name half of the row.
 - Fix: correct the extraction/normalisation attribute mapping so beneficiary names land under `thirdPartyBeneficiaries` (and exceptions stay under `…Exceptions`). Backfill/reprocess so existing deals get the split.
 - Validate: `select count(*) from claims where attribute='thirdPartyBeneficiaries'` > 0; Metsera third-party-beneficiary row shows named parties.
 
-### E. `effectiveTimeShort` corruption ("surviving corporation")  [re-extract]
+### E. `effectiveTimeShort` corruption ("surviving corporation")  [RESOLVED — verified 2026-07-14]
+- **Verified fixed by the TASK 3 corpus re-extraction**: 24 `effectiveTimeShort` claims corpus-wide, zero containing surviving-entity text; Metsera reads the filing mechanic. The `structure-mechanics.config.js` guard is now redundant (removal queued as mechanical cleanup). Original description kept below for history.
 - Today: some STRUCTURE_MECHANICS cards have `effectiveTimeShort = "Names the Company as the surviving corporation in the merger"` — that is the surviving-ENTITY fact, not the effective TIME. `structure-mechanics.config.js` guards against it (prefers the good "Upon filing of the Certificate of Merger…" value on another card).
 - Fix: correct the effective-time extraction so `effectiveTimeShort` captures the effectiveness mechanic (filing of the certificate of merger), not the surviving-entity clause. Re-extract affected cards.
 - Validate: `effectiveTimeShort` on the structure card(s) reads the filing mechanic; the config guard becomes redundant.
 
-### F. Per-rep `linkedBringDownStandard` uniform MAE mis-stamp  [data bug]
+### F. Per-rep `linkedBringDownStandard` uniform MAE mis-stamp  [data bug — still open, re-verified 2026-07-14: Metsera 35/37 uniform MAT_MAE_QUALIFIED; REP families were outside the TASK 3 reprocess scope; drop-vs-derive decision queued for Ben]
 - Today: every Company rep's `linkedBringDownStandard` claim is stamped `MAT_MAE_QUALIFIED` (all 27 identical on Metsera) — a uniform mis-stamp. The AUTHORITATIVE per-rep accuracy standard is the closing-condition `bringDownTiers` (in-all-material-respects / de-minimis / MAE, each with a section-cited `reps_covered` list): on Metsera, §3.01/3.04/3.05/3.22 are in-all-material-respects, §3.02 is de-minimis, all others MAE.
 - Fix: either stop emitting the unreliable per-rep `linkedBringDownStandard` or derive it correctly from the condition tiers at extraction time.
 - Render stopgap already shipped: the Reps table now derives the per-rep "Bringdown: X" pill from `bringDownTiers` (via conditions.config `buildRepBringDownMap`), defaulting to MAE — so the Reps and Conditions sections agree and no rep is wrongly labelled MAE.
