@@ -124,7 +124,71 @@ test('matchTypeBucket: rung 3 matches when heads agree despite differing titles 
   })];
   const { matches } = matchTypeBucket(cards, provisions);
   assert.equal(matches.length, 1);
-  assert.equal(matches[0].rung, 3);
+  assert.equal(matches[0].rung, 4);
+});
+
+test('matchTypeBucket: rung 4 strips a leading sub-heading phrase so 200-char heads agree', () => {
+  const operative = 'Except as provided by Section 5.3(d), at no time after the date hereof may the Company Board or a committee thereof withhold, withdraw, amend, qualify or modify, or publicly propose to withhold, withdraw, amend, qualify or modify, the Company Board Recommendation in a manner adverse to Parent in any material respect, or fail to make the Company Board Recommendation in the Proxy Statement.';
+  const cards = [card({
+    short_title: 'Change of Recommendation',
+    region_full_text: operative,
+  })];
+  const provisions = [provision({
+    category: 'COR (operative)',
+    full_text: `(c) No Change in Company Board Recommendation or Entry into an Alternative Acquisition Agreement. ${operative} And more trailing text beyond the head window.`,
+  })];
+  const { matches } = matchTypeBucket(cards, provisions);
+  assert.equal(matches.length, 1);
+  assert.equal(matches[0].rung, 4);
+});
+
+test('matchTypeBucket: rung 5 unique containment catches short and elided card texts', () => {
+  const provText = 'During the period commencing with the execution and delivery of this Agreement, Parent shall not terminate, amend, modify or waive any provision of any standstill agreement, and Parent shall enforce each such agreement to the fullest extent permitted.';
+  const cards = [
+    card({ id: 'card-elided', short_title: 'Enforcement of Standstills', region_full_text: '(f) During the period commencing with the execution and delivery of this Agreement, Parent shall not terminate, amend, modify or waive any provision ... shall enforce each such agreement to the fullest extent permitted.' }),
+  ];
+  const provisions = [
+    provision({ id: 'prov-parent', category: 'Enforcement of Standstills', full_text: provText }),
+    provision({ id: 'prov-company', category: 'Enforcement of Standstills', full_text: provText.replace(/Parent/g, 'the Company') }),
+  ];
+  const { matches } = matchTypeBucket(cards, provisions);
+  assert.equal(matches.length, 1);
+  assert.equal(matches[0].rung, 5);
+  assert.equal(matches[0].provision.id, 'prov-parent');
+});
+
+test('matchTypeBucket: rung 5 never matches when a card is contained in two provisions', () => {
+  const shared = 'each party hereto shall make or cause to be made an appropriate filing of a Notification and Report Form pursuant to the HSR Act with respect to the Transactions promptly';
+  const cards = [card({ id: 'card-x', short_title: 'Filing', region_full_text: shared })];
+  const provisions = [
+    provision({ id: 'p1', category: 'A', full_text: `Alpha. ${shared} tail one.` }),
+    provision({ id: 'p2', category: 'B', full_text: `Beta. ${shared} tail two.` }),
+  ];
+  const { matches, unmatchedCards } = matchTypeBucket(cards, provisions);
+  assert.equal(matches.length, 0);
+  assert.equal(unmatchedCards.length, 1);
+});
+
+test('normalizeHead: does NOT strip a leading operative sentence as a heading', () => {
+  const head = normalizeHead('The Company shall not solicit. Further obligations follow here.');
+  assert.ok(head.startsWith('the company shall not solicit.'));
+});
+
+test('matchTypeBucket: rung 3 pairs identical text by title when two categories share the text', () => {
+  const sharedText = 'Without limiting the generality of the foregoing, each party shall make an appropriate HSR filing.';
+  const cards = [
+    card({ id: 'card-rfd', short_title: 'Regulatory Filing Deadline', region_full_text: sharedText }),
+    card({ id: 'card-rfd-2', short_title: 'Regulatory Filing Deadline', region_full_text: 'A completely different second card that blocks rung 1 title uniqueness for this shared title.' }),
+  ];
+  const provisions = [
+    provision({ id: 'prov-title-match', category: 'Regulatory Filing Deadline', full_text: sharedText }),
+    provision({ id: 'prov-other-cat', category: 'Foreign Regulatory Approvals', full_text: sharedText }),
+  ];
+  const { matches } = matchTypeBucket(cards, provisions);
+  const r3 = matches.find((m) => m.rung === 3);
+  assert.ok(r3, 'expected a rung-3 text+title match');
+  assert.equal(r3.card.id, 'card-rfd');
+  assert.equal(r3.provision.id, 'prov-title-match');
 });
 
 // ---------------------------------------------------------------------------

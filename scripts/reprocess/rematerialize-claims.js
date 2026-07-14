@@ -77,18 +77,88 @@ function stripLeadingMarkers(s) {
   return out;
 }
 
+// Strips a leading sub-heading PHRASE like "No Change in Company Board
+// Recommendation or Entry into an Alternative Acquisition Agreement. " /
+// "Certain Disclosures. " / "Notice. " — a short capitalized phrase ending
+// in a period that contains no operative verb. Provision full_text often
+// carries these where the matching card text starts at the operative words,
+// which defeated head comparison (corpus run 2026-07-13). Deterministic:
+// both sides are normalized identically, and the unique-both-sides rule
+// still guards against collisions.
+const HEADING_VERBS = /\b(shall|will|may|must|agree|agrees|is|are|was|were|has|have|hereby)\b/i;
+function stripHeadingPhrase(s) {
+  const m = s.match(/^([A-Z][^.!?]{0,120})\.\s+/);
+  if (m && !HEADING_VERBS.test(m[1])) return s.slice(m[0].length);
+  return s;
+}
+
 // Normalizes a provision/card text down to a comparable "head": strips the
-// section heading line and any leading subsection markers, lowercases,
-// collapses whitespace, and takes the first 200 characters. Deterministic,
-// no fuzzy matching.
+// section heading line, any leading subsection markers, and any leading
+// sub-heading phrases, lowercases, collapses whitespace, and takes the
+// first 200 characters. (Longer heads were tried and regress: a side whose
+// whole normalized text is shorter than the window can never equal a longer
+// head — reciprocal/short/elided cases are rung 5's job instead.)
 function normalizeHead(text) {
   if (typeof text !== 'string') return '';
   let s = text.trim();
   if (!s) return '';
   s = stripHeading(s);
-  s = stripLeadingMarkers(s);
+  for (;;) {
+    const before = s;
+    s = stripLeadingMarkers(s);
+    s = stripHeadingPhrase(s);
+    if (s === before) break;
+  }
   s = s.toLowerCase().replace(/\s+/g, ' ').trim();
   return s.slice(0, 200);
+}
+
+// Full-text normalization for the containment rung: same stripping as the
+// head, no truncation.
+function normalizeFull(text) {
+  if (typeof text !== 'string') return '';
+  return text.trim().toLowerCase().replace(/\s+/g, ' ').trim();
+}
+
+// Rung 5 — unique fragment containment. Card region text is often an
+// assembled excerpt (sometimes with " ... " elisions) of one provision's
+// full_text. A card matches iff EVERY ellipsis-separated fragment of its
+// normalized text appears in exactly ONE unmatched provision's normalized
+// full text, AND that provision contains exactly one such card
+// (unique-both-sides — never a guess).
+function containmentFragments(text) {
+  if (typeof text !== 'string') return [];
+  return text
+    .split(/\s*(?:\.\.\.|…)\s*/)
+    .map((f) => normalizeFull(stripLeadingMarkers(stripHeading(f.trim()))))
+    .filter((f) => f.length >= 20);
+}
+
+function applyContainmentRung(cardsPool, provisionsPool) {
+  const provFull = new Map(provisionsPool.map((p) => [p, normalizeFull(p.full_text)]));
+  const candidates = new Map(); // card -> [provisions containing all fragments]
+  for (const c of cardsPool) {
+    const frags = containmentFragments(c.region_full_text);
+    if (!frags.length) continue;
+    const hits = provisionsPool.filter((p) => frags.every((f) => provFull.get(p).includes(f)));
+    if (hits.length === 1) candidates.set(c, hits[0]);
+  }
+  const provCounts = new Map();
+  for (const p of candidates.values()) provCounts.set(p, (provCounts.get(p) || 0) + 1);
+  const matches = [];
+  const matchedCardIds = new Set();
+  const matchedProvisionIds = new Set();
+  for (const [c, p] of candidates.entries()) {
+    if (provCounts.get(p) !== 1) continue;
+    matches.push({ card: c, provision: p, rung: 5, key: `contain:${p.id}` });
+    matchedCardIds.add(c.id);
+    matchedProvisionIds.add(p.id);
+  }
+  return {
+    matches,
+    remainingCards: cardsPool.filter((c) => !matchedCardIds.has(c.id)),
+    remainingProvisions: provisionsPool.filter((p) => !matchedProvisionIds.has(p.id)),
+  };
 }
 
 function groupBy(items, keyFn) {
@@ -130,7 +200,17 @@ function applyRung(cardsPool, provisionsPool, cardKeyFn, provKeyFn, rung) {
 const RUNG_DEFS = [
   { rung: 1, name: 'title', cardKey: (c) => trimmedOrNull(c.short_title), provKey: (p) => trimmedOrNull(p.category) },
   { rung: 2, name: 'text', cardKey: (c) => trimmedOrNull(c.region_full_text), provKey: (p) => trimmedOrNull(p.full_text) },
-  { rung: 3, name: 'head', cardKey: (c) => normalizeHead(c.region_full_text) || null, provKey: (p) => normalizeHead(p.full_text) || null },
+  // Tie-break: identical text stored under two categories (deliberate
+  // double-categorization) — pair the one whose title also agrees.
+  {
+    rung: 3,
+    name: 'text+title',
+    cardKey: (c) => (trimmedOrNull(c.region_full_text) && trimmedOrNull(c.short_title))
+      ? `${trimmedOrNull(c.region_full_text)} ${trimmedOrNull(c.short_title)}` : null,
+    provKey: (p) => (trimmedOrNull(p.full_text) && trimmedOrNull(p.category))
+      ? `${trimmedOrNull(p.full_text)} ${trimmedOrNull(p.category)}` : null,
+  },
+  { rung: 4, name: 'head', cardKey: (c) => normalizeHead(c.region_full_text) || null, provKey: (p) => normalizeHead(p.full_text) || null },
 ];
 
 // Matches all cards/provisions of a SINGLE (deal, type) bucket. Returns
@@ -146,6 +226,13 @@ function matchTypeBucket(cards, provisions) {
 
   for (const { rung, cardKey, provKey } of RUNG_DEFS) {
     const result = applyRung(remCards, remProvisions, cardKey, provKey, rung);
+    matches.push(...result.matches);
+    remCards = result.remainingCards;
+    remProvisions = result.remainingProvisions;
+  }
+
+  {
+    const result = applyContainmentRung(remCards, remProvisions);
     matches.push(...result.matches);
     remCards = result.remainingCards;
     remProvisions = result.remainingProvisions;
@@ -258,7 +345,7 @@ function buildDealPlan(dealId, cards, provisions, options = {}) {
   const matchedExcerptIds = matches.map((m) => m.card.excerpt_id);
   const keepClaimIds = new Set(claimRows.map((r) => r.id));
 
-  const rungCounts = { 1: 0, 2: 0, 3: 0 };
+  const rungCounts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
   for (const m of matches) rungCounts[m.rung] += 1;
 
   const ok = ambiguities.length === 0 && coverageFailures.length === 0;
@@ -288,7 +375,7 @@ function formatDealTable(plan) {
   const withoutCoded = plan.unmatchedProvisions.length - withCoded;
   const lines = [];
   lines.push(`  cards: ${plan.cardsTotal}  provisions: ${plan.provisionsTotal}`);
-  lines.push(`  matched: ${plan.matches.length} (r1: ${plan.rungCounts[1]}, r2: ${plan.rungCounts[2]}, r3: ${plan.rungCounts[3]})`);
+  lines.push(`  matched: ${plan.matches.length} (r1: ${plan.rungCounts[1]}, r2: ${plan.rungCounts[2]}, r3: ${plan.rungCounts[3]}, r4: ${plan.rungCounts[4]}, r5: ${plan.rungCounts[5]})`);
   lines.push(`  unmatched cards: ${plan.unmatchedCards.length}`);
   lines.push(`  unmatched provisions: ${plan.unmatchedProvisions.length} (with coded features: ${withCoded}, without: ${withoutCoded})`);
   lines.push(`  ambiguities: ${plan.ambiguities.length}`);
