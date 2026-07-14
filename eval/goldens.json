@@ -47,6 +47,131 @@
       "min_coverage_pct": 90,
       "min_quote_verified_pct": 94,
       "max_schema_error_rows": 5
+    },
+    "Concho": {
+      "_why": "P5 corpus-representative pin (2026-07-14). Reciprocal deal (ConocoPhillips/Concho, all-stock merger-of-equals) — the Company AND Parent each carry their own no-solicit/cease-discussions/change-of-recommendation/superior-proposal obligations, so NOSOL exercises the '(Parent)'-scoped-row convention Metsera doesn't (Metsera is one-sided). TERMF is symmetric too: both a Company Termination Fee and a Reverse Termination Fee, each with FIXED 8%/annum late-interest — exercises the reciprocal-fee-table shape. Assignment clause is mutual-consent-only with no Parent-affiliate carve-out, so parentAssignmentConditions is a genuine null (not pinned) rather than a Boilerplate MISC prefix miss. Verified via ingest-qa.js: all 8 gates PASS (canonical rate 0.95, 0 unverified quotes, 0 duplicate clauses) — no soft-gate exclusion needed on any family.",
+      "min_provisions": 250,
+      "min_def_count": 90,
+      "min_coverage_pct": 90,
+      "min_quote_verified_pct": 95,
+      "max_schema_error_rows": 5,
+      "min_nosol_provisions": 20,
+      "min_termr_canonical_codes": 4,
+      "termf_required_categories": [
+        "Company Termination Fee",
+        "Reverse Termination Fee",
+        "Expense Reimbursement",
+        "Tail Provision",
+        "Sole and Exclusive Remedy",
+        "Effect of Termination"
+      ],
+      "required_features": {
+        "NOSOL": [
+          "ceaseDiscussionsProhibitedList",
+          "changeOfRecommendationItems",
+          "superiorProposalDeterminer"
+        ],
+        "MISC": [
+          "governingLaw"
+        ],
+        "TERMF": [
+          "companyTerminationFee",
+          "reverseTerminationFee",
+          "interestRateBasis"
+        ]
+      }
+    },
+    "Pharmasset": {
+      "_why": "P5 corpus-representative pin (2026-07-14). Tender-offer deal (Gilead/Pharmasset, Schedule 14D-9 mechanics) — changeOfRecommendationItems includes the tender-offer-specific 'fail to recommend against the tender/exchange offer within the required 10-business-day window' act, which stock-vote deals don't have. TERMF is one-sided (Company Termination Fee $331,900,000 only, no reverse fee — verified genuine: no TERMF-REVERSE row exists at all, not a miss) and governingLaw is SPLIT_FINANCING (Delaware primary, New York carve-out for Financing-Source claims) — exercises the split-governing-law object shape. Verified via ingest-qa.js: all 8 gates PASS (canonical rate 0.93, 0 unverified quotes, 0 duplicate clauses).",
+      "min_provisions": 200,
+      "min_def_count": 60,
+      "min_coverage_pct": 90,
+      "min_quote_verified_pct": 95,
+      "max_schema_error_rows": 5,
+      "min_nosol_provisions": 12,
+      "min_termr_canonical_codes": 4,
+      "termf_required_categories": [
+        "Company Termination Fee",
+        "Expense Reimbursement",
+        "Tail Provision",
+        "Sole and Exclusive Remedy",
+        "Effect of Termination"
+      ],
+      "required_features": {
+        "NOSOL": [
+          "ceaseDiscussionsProhibitedList",
+          "changeOfRecommendationItems",
+          "superiorProposalDeterminer"
+        ],
+        "MISC": [
+          "governingLaw",
+          "parentAssignmentConditions"
+        ],
+        "TERMF": [
+          "companyTerminationFee",
+          "interestRateBasis"
+        ]
+      }
+    },
+    "Kraft": {
+      "_why": "P5 corpus-representative pin (2026-07-14). Stock-for-stock deal (H.J. Heinz/Kraft Foods, all-shares reverse-Morris-trust-style combination) — largest DEF count of the four (223) and a LIBOR-basis late-payment rate (3-month LIBOR + 250bps), distinct from the FIXED/PRIME/Treasury bases on the other three pinned deals. Company Termination Fee is $1,200,000,000, one-sided (no reverse fee — verified genuine, no TERMF-REVERSE row despite the stock-for-stock structure). Assignment clause is mutual-consent-only like Concho's, so parentAssignmentConditions is not pinned (genuine null). Verified via ingest-qa.js: all 8 gates PASS (canonical rate 0.85, 0 unverified quotes, 0 duplicate clauses).",
+      "min_provisions": 350,
+      "min_def_count": 150,
+      "min_coverage_pct": 90,
+      "min_quote_verified_pct": 95,
+      "max_schema_error_rows": 5,
+      "min_nosol_provisions": 10,
+      "min_termr_canonical_codes": 6,
+      "termf_required_categories": [
+        "Company Termination Fee",
+        "Tail Provision",
+        "Expense Reimbursement",
+        "Sole and Exclusive Remedy",
+        "Effect of Termination"
+      ],
+      "required_features": {
+        "NOSOL": [
+          "ceaseDiscussionsProhibitedList",
+          "changeOfRecommendationItems",
+          "superiorProposalDeterminer"
+        ],
+        "MISC": [
+          "governingLaw"
+        ],
+        "TERMF": [
+          "companyTerminationFee",
+          "interestRateBasis"
+        ]
+      }
+    },
+    "Anadarko": {
+      "_why": "P5 corpus-representative pin (2026-07-14). Oldest-vintage deal of the four (Chevron/Anadarko, 2019 agreement) — thinner NOSOL family (12 rows vs 19-29 on the other three) and no Expense-Reimbursement or Sole-and-Exclusive-Remedy TERMF rows at all (verified genuine: those categories/codes don't exist corpus-side for this deal, an older/leaner boilerplate style, not an extraction miss). Its 'Change of Recommendation' category rows are termination-RIGHT provisions (partyWhoCanTerminate / triggerEvents) rather than an itemized what-constitutes-a-COR list, so changeOfRecommendationItems is deliberately NOT pinned here (genuine structural absence of that list feature, confirmed by reading both rows' full ai_metadata) — this is exactly the kind of edge case the corpus-representative expansion is meant to surface. Company Termination Fee is $1,000,000,000 with a 6-month-Treasury-plus-3% late rate (US_TREASURY_6MO), the one interest-rate basis not otherwise exercised by Concho/Pharmasset/Kraft. Verified via ingest-qa.js: all 8 gates PASS (canonical rate 0.94, 0 unverified quotes, 0 duplicate clauses).",
+      "min_provisions": 240,
+      "min_def_count": 80,
+      "min_coverage_pct": 90,
+      "min_quote_verified_pct": 95,
+      "max_schema_error_rows": 5,
+      "min_nosol_provisions": 10,
+      "min_termr_canonical_codes": 4,
+      "termf_required_categories": [
+        "Company Termination Fee",
+        "Tail Provision",
+        "Effect of Termination"
+      ],
+      "required_features": {
+        "NOSOL": [
+          "ceaseDiscussionsProhibitedList",
+          "superiorProposalDeterminer"
+        ],
+        "MISC": [
+          "governingLaw",
+          "parentAssignmentConditions"
+        ],
+        "TERMF": [
+          "companyTerminationFee",
+          "interestRateBasis"
+        ]
+      }
     }
   }
 }
