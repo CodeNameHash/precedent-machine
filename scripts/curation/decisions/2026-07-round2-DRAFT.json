@@ -1,0 +1,23 @@
+{
+  "label": "2026-07 round-2 corpus prune — DRAFT for Ben sign-off (not approved, do not --apply)",
+  "deals": {
+    "c34415ed-44f7-432f-8d7c-6464b0310239": [
+      { "card": "b6f353e2", "action": "delete", "note": "Landos: stale mis-titled 'Disclosure of Terms' card whose text is the old long carve of the Notification-of-Proposals clause; blocks the true Notice card (dfe1ac55) from matching provision 355c6464. NOT verbatim-covered (re-extraction re-carved the clause) — requires Ben ackUncovered before it will execute." }
+    ],
+    "7dc3a05f-b170-4d59-a255-b7103cca16e1": [
+      { "card": "7309b39f", "action": "delete", "note": "TopBuild: Parent-side tail dup; verbatim inside kept Reverse Termination Fee provision e06e2d20. Deleting frees 8ba3dcf3 to pair with the Tail Provision row 9fce96fe at rung 1." },
+      { "card": "0acfee2c", "action": "delete", "note": "TopBuild: force-the-vote proviso; verbatim inside kept Intervening Event provision 00467dda." },
+      { "card": "360b7fd6", "action": "delete", "note": "TopBuild: no-alternative-agreement covenant fragment; verbatim inside kept Intervening Event provision 00467dda. Alternative if Ben prefers: re-home as its own 'Force the Vote / No Alternative Agreement' row." },
+      { "card": "ca9e4d4c", "action": "delete", "note": "TopBuild: 167-char inform-Representatives-of-obligations sentence; verbatim inside kept Superior Proposal Definition row 1de6dcb8. Alternative if Ben prefers: re-home beside 'Breach by Representatives' as an obligations-notice row." }
+    ],
+    "a267309a-fc22-4160-a652-1144fc64e9cf": [
+      { "card": "71cf5c45", "action": "delete", "note": "Concho: Parent-side inform-third-party proviso; verbatim inside kept Solicitation Prohibition provision 3b49171d. Frees 1cc83639 to pair with Exceptions / Fiduciary Out row af1b8c9d at rung 1." },
+      { "card": "a26babab", "action": "delete", "note": "Concho: Company-side no-info-until-confidentiality proviso; verbatim inside kept Exceptions / Fiduciary Out provision af1b8c9d." },
+      { "card": "c42e9451", "action": "delete", "note": "Concho: Parent-side twin of a26babab; verbatim inside kept (Parent) Exceptions / Fiduciary Out provision d43585a0." }
+    ],
+    "c750afb9-73fc-4043-a9d7-269506a6e00e": [
+      { "card": "f008725e", "action": "delete", "note": "Starwood: Marriott fiduciary-COR passage; verbatim inside kept Change of Recommendation provision 9843cdfd." },
+      { "card": "76c01cf5", "action": "delete", "note": "Starwood: matching-rights timing fragment; verbatim inside kept Notice to Counterparty 2486e454 (and Negotiation Period 28e4bc84)." }
+    ]
+  }
+}
