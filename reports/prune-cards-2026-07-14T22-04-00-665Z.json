@@ -1,0 +1,389 @@
+{
+  "generatedAt": "2026-07-14T22:04:00.655Z",
+  "label": "2026-07 round-2 corpus prune — Ben-approved 2026-07-14 (A with A6/A7 flipped to keep+scope, B acked, C '(Parent)' convention, D go)",
+  "apply": false,
+  "ok": true,
+  "deals": [
+    {
+      "dealId": "c34415ed-44f7-432f-8d7c-6464b0310239",
+      "entries": [
+        {
+          "dealId": "c34415ed-44f7-432f-8d7c-6464b0310239",
+          "cardRef": "b6f353e2",
+          "action": "delete",
+          "note": "Landos: stale mis-titled 'Disclosure of Terms' card (old long carve of Notification-of-Proposals); blocks dfe1ac55 from matching provision 355c6464.",
+          "cardId": "b6f353e2-2e48-4ddf-8ff1-1e4c28b15995",
+          "shortTitle": "Disclosure of Terms",
+          "coveringProvisionIds": [],
+          "flagged": false,
+          "write": {
+            "op": "delete",
+            "table": "provision_cards",
+            "id": "b6f353e2-2e48-4ddf-8ff1-1e4c28b15995"
+          },
+          "ackUncovered": "ben 2026-07-14 — content-loss acked in round-2 sign-off ('agree on rest'); operative content re-extracted across 355c6464/295e29c2/dd9e5ab3",
+          "status": "PLANNED-DELETE-UNCOVERED",
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    {
+      "dealId": "7dc3a05f-b170-4d59-a255-b7103cca16e1",
+      "entries": [
+        {
+          "dealId": "7dc3a05f-b170-4d59-a255-b7103cca16e1",
+          "cardRef": "7309b39f",
+          "action": "delete",
+          "note": "TopBuild: Parent-side tail dup; verbatim inside kept Reverse Termination Fee provision e06e2d20. Frees 8ba3dcf3 to pair with Tail Provision row 9fce96fe.",
+          "cardId": "7309b39f-47d1-4982-88bc-24b8297d8eb3",
+          "shortTitle": "Tail Provision",
+          "coveringProvisionIds": [
+            "e06e2d20-dd3a-43ab-9ae5-4d6ca6379e4f"
+          ],
+          "flagged": false,
+          "write": {
+            "op": "delete",
+            "table": "provision_cards",
+            "id": "7309b39f-47d1-4982-88bc-24b8297d8eb3"
+          },
+          "status": "PLANNED-DELETE",
+          "ok": true
+        },
+        {
+          "dealId": "7dc3a05f-b170-4d59-a255-b7103cca16e1",
+          "cardRef": "0acfee2c",
+          "action": "delete",
+          "note": "TopBuild: hard force-the-vote proviso (Ben note recorded: termination rights in Art VI attach to counterparty CoR, no self-exit for superior — hard FTV both sides); verbatim inside kept Intervening Event provision 00467dda.",
+          "cardId": "0acfee2c-67cf-452b-96ee-da83eb791c26",
+          "shortTitle": "Change of Recommendation",
+          "coveringProvisionIds": [
+            "00467dda-64a0-4f7e-90a2-24d6a27a354e"
+          ],
+          "flagged": false,
+          "write": {
+            "op": "delete",
+            "table": "provision_cards",
+            "id": "0acfee2c-67cf-452b-96ee-da83eb791c26"
+          },
+          "status": "PLANNED-DELETE",
+          "ok": true
+        },
+        {
+          "dealId": "7dc3a05f-b170-4d59-a255-b7103cca16e1",
+          "cardRef": "360b7fd6",
+          "action": "delete",
+          "note": "TopBuild: no-alternative-agreement fragment; verbatim inside kept Intervening Event provision 00467dda.",
+          "cardId": "360b7fd6-0c8f-441a-b397-799bc5f81dc9",
+          "shortTitle": "Solicitation Prohibition",
+          "coveringProvisionIds": [
+            "00467dda-64a0-4f7e-90a2-24d6a27a354e"
+          ],
+          "flagged": false,
+          "write": {
+            "op": "delete",
+            "table": "provision_cards",
+            "id": "360b7fd6-0c8f-441a-b397-799bc5f81dc9"
+          },
+          "status": "PLANNED-DELETE",
+          "ok": true
+        },
+        {
+          "dealId": "7dc3a05f-b170-4d59-a255-b7103cca16e1",
+          "cardRef": "ca9e4d4c",
+          "action": "delete",
+          "note": "TopBuild: inform-Representatives sentence; verbatim inside kept Superior Proposal Definition row 1de6dcb8.",
+          "cardId": "ca9e4d4c-6011-4b53-913e-ca941941f637",
+          "shortTitle": "Solicitation Prohibition",
+          "coveringProvisionIds": [
+            "1de6dcb8-bb2a-4af7-bb23-fcd36db32f1b"
+          ],
+          "flagged": false,
+          "write": {
+            "op": "delete",
+            "table": "provision_cards",
+            "id": "ca9e4d4c-6011-4b53-913e-ca941941f637"
+          },
+          "status": "PLANNED-DELETE",
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    {
+      "dealId": "a267309a-fc22-4160-a652-1144fc64e9cf",
+      "entries": [
+        {
+          "dealId": "a267309a-fc22-4160-a652-1144fc64e9cf",
+          "cardRef": "71cf5c45",
+          "action": "delete",
+          "note": "Concho: Parent-side inform-third-party proviso — a proviso of the Solicitation Prohibition concept, not a better rendering of Fiduciary Out; verbatim inside kept Parent Solicitation Prohibition 3b49171d. Frees 1cc83639 to pair with af1b8c9d.",
+          "cardId": "71cf5c45-d2bf-415e-8fc2-ef79754f9880",
+          "shortTitle": "Exceptions / Fiduciary Out",
+          "coveringProvisionIds": [
+            "3b49171d-3821-42d5-8e25-747db41e480a"
+          ],
+          "flagged": false,
+          "write": {
+            "op": "delete",
+            "table": "provision_cards",
+            "id": "71cf5c45-d2bf-415e-8fc2-ef79754f9880"
+          },
+          "status": "PLANNED-DELETE",
+          "ok": true
+        },
+        {
+          "dealId": "a267309a-fc22-4160-a652-1144fc64e9cf",
+          "cardRef": "c42e9451",
+          "action": "rehome",
+          "note": "Concho: KEPT per Ben snip point — the card's confidentiality-gate text is the better rendering of the info-to-bidder concept than the re-extracted parity fragment; scoped (Parent) per convention C.",
+          "cardId": "c42e9451-3fcb-4539-9edf-3f57fc21fd70",
+          "shortTitle": "Provision of Information to Bidder",
+          "coveringProvisionIds": [],
+          "flagged": false,
+          "write": {
+            "op": "update",
+            "table": "provision_cards",
+            "id": "c42e9451-3fcb-4539-9edf-3f57fc21fd70",
+            "patch": {
+              "short_title": "Provision of Information to Bidder (Parent)"
+            }
+          },
+          "status": "PLANNED-REHOME",
+          "oldTitle": "Provision of Information to Bidder",
+          "newTitle": "Provision of Information to Bidder (Parent)",
+          "ok": true
+        },
+        {
+          "dealId": "a267309a-fc22-4160-a652-1144fc64e9cf",
+          "action": "recat-provision",
+          "note": "Concho: Parent-side info-to-bidder provision, scoped per convention C; pairs with c42e9451 at rung 1.",
+          "provisionRef": "3244b377",
+          "cardId": "3244b377-a120-4125-99bf-37bf44a81aa0",
+          "shortTitle": "Provision of Information to Bidder",
+          "coveringProvisionIds": [],
+          "flagged": false,
+          "status": "PLANNED-RECAT-PROVISION",
+          "oldCategory": "Provision of Information to Bidder",
+          "newCategory": "Provision of Information to Bidder (Parent)",
+          "write": {
+            "op": "update",
+            "table": "provisions",
+            "id": "3244b377-a120-4125-99bf-37bf44a81aa0",
+            "patch": {
+              "category": "Provision of Information to Bidder (Parent)"
+            }
+          },
+          "ok": true
+        },
+        {
+          "dealId": "a267309a-fc22-4160-a652-1144fc64e9cf",
+          "action": "recat-provision",
+          "note": "Concho: Parent-side fiduciary-out row, scoped per convention C (card-less; M3 mints its card).",
+          "provisionRef": "d43585a0",
+          "cardId": "d43585a0-af15-451d-941d-764aa3763737",
+          "shortTitle": "Exceptions / Fiduciary Out",
+          "coveringProvisionIds": [],
+          "flagged": false,
+          "status": "PLANNED-RECAT-PROVISION",
+          "oldCategory": "Exceptions / Fiduciary Out",
+          "newCategory": "Exceptions / Fiduciary Out (Parent)",
+          "write": {
+            "op": "update",
+            "table": "provisions",
+            "id": "d43585a0-af15-451d-941d-764aa3763737",
+            "patch": {
+              "category": "Exceptions / Fiduciary Out (Parent)"
+            }
+          },
+          "ok": true
+        },
+        {
+          "dealId": "a267309a-fc22-4160-a652-1144fc64e9cf",
+          "cardRef": "e95d4167",
+          "action": "rehome",
+          "note": "Concho: Parent-side standstill-enforcement card, scoped per convention C.",
+          "cardId": "e95d4167-3f1f-4d83-a501-ab4b4af94789",
+          "shortTitle": "Enforcement of Standstills",
+          "coveringProvisionIds": [],
+          "flagged": false,
+          "write": {
+            "op": "update",
+            "table": "provision_cards",
+            "id": "e95d4167-3f1f-4d83-a501-ab4b4af94789",
+            "patch": {
+              "short_title": "Enforcement of Standstills (Parent)"
+            }
+          },
+          "status": "PLANNED-REHOME",
+          "oldTitle": "Enforcement of Standstills",
+          "newTitle": "Enforcement of Standstills (Parent)",
+          "ok": true
+        },
+        {
+          "dealId": "a267309a-fc22-4160-a652-1144fc64e9cf",
+          "action": "recat-provision",
+          "note": "Concho: Parent-side standstill-enforcement provision; pairs with e95d4167 at rung 1.",
+          "provisionRef": "20bec332",
+          "cardId": "20bec332-6878-4bf7-8eaa-abc8bde2ff8e",
+          "shortTitle": "Enforcement of Standstills",
+          "coveringProvisionIds": [],
+          "flagged": false,
+          "status": "PLANNED-RECAT-PROVISION",
+          "oldCategory": "Enforcement of Standstills",
+          "newCategory": "Enforcement of Standstills (Parent)",
+          "write": {
+            "op": "update",
+            "table": "provisions",
+            "id": "20bec332-6878-4bf7-8eaa-abc8bde2ff8e",
+            "patch": {
+              "category": "Enforcement of Standstills (Parent)"
+            }
+          },
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    {
+      "dealId": "c750afb9-73fc-4043-a9d7-269506a6e00e",
+      "entries": [
+        {
+          "dealId": "c750afb9-73fc-4043-a9d7-269506a6e00e",
+          "cardRef": "f008725e",
+          "action": "delete",
+          "note": "Starwood: Marriott fiduciary-COR passage; verbatim inside kept Marriott COR provision 9843cdfd.",
+          "cardId": "f008725e-086f-472c-9f67-38a5e4a95905",
+          "shortTitle": "Change of Recommendation",
+          "coveringProvisionIds": [
+            "9843cdfd-9e51-4227-831c-503d368006c3"
+          ],
+          "flagged": false,
+          "write": {
+            "op": "delete",
+            "table": "provision_cards",
+            "id": "f008725e-086f-472c-9f67-38a5e4a95905"
+          },
+          "status": "PLANNED-DELETE",
+          "ok": true
+        },
+        {
+          "dealId": "c750afb9-73fc-4043-a9d7-269506a6e00e",
+          "cardRef": "76c01cf5",
+          "action": "delete",
+          "note": "Starwood: matching-rights timing fragment; verbatim inside kept Notice to Counterparty 2486e454 / Negotiation Period 28e4bc84.",
+          "cardId": "76c01cf5-c304-4a94-bc1b-38829bdadfcb",
+          "shortTitle": "Notice to Counterparty",
+          "coveringProvisionIds": [
+            "9843cdfd-9e51-4227-831c-503d368006c3",
+            "2486e454-3da0-4c0e-b017-dc2854b2290c",
+            "28e4bc84-d638-4bef-a765-f4483dcda829"
+          ],
+          "flagged": false,
+          "write": {
+            "op": "delete",
+            "table": "provision_cards",
+            "id": "76c01cf5-c304-4a94-bc1b-38829bdadfcb"
+          },
+          "status": "PLANNED-DELETE",
+          "ok": true
+        },
+        {
+          "dealId": "c750afb9-73fc-4043-a9d7-269506a6e00e",
+          "cardRef": "1ee8f6bf",
+          "action": "rehome",
+          "note": "Starwood: Marriott-side 14d-9 passage of the Marriott COR machinery, scoped per convention C; pairs with recat'd 9843cdfd.",
+          "cardId": "1ee8f6bf-1317-4f8e-b83a-4b5a49cd45ac",
+          "shortTitle": "Change of Recommendation",
+          "coveringProvisionIds": [],
+          "flagged": false,
+          "write": {
+            "op": "update",
+            "table": "provision_cards",
+            "id": "1ee8f6bf-1317-4f8e-b83a-4b5a49cd45ac",
+            "patch": {
+              "short_title": "Change of Recommendation (Parent)"
+            }
+          },
+          "status": "PLANNED-REHOME",
+          "oldTitle": "Change of Recommendation",
+          "newTitle": "Change of Recommendation (Parent)",
+          "ok": true
+        },
+        {
+          "dealId": "c750afb9-73fc-4043-a9d7-269506a6e00e",
+          "action": "recat-provision",
+          "note": "Starwood: Marriott COR row, scoped per convention C.",
+          "provisionRef": "9843cdfd",
+          "cardId": "9843cdfd-9e51-4227-831c-503d368006c3",
+          "shortTitle": "Change of Recommendation",
+          "coveringProvisionIds": [],
+          "flagged": false,
+          "status": "PLANNED-RECAT-PROVISION",
+          "oldCategory": "Change of Recommendation",
+          "newCategory": "Change of Recommendation (Parent)",
+          "write": {
+            "op": "update",
+            "table": "provisions",
+            "id": "9843cdfd-9e51-4227-831c-503d368006c3",
+            "patch": {
+              "category": "Change of Recommendation (Parent)"
+            }
+          },
+          "ok": true
+        },
+        {
+          "dealId": "c750afb9-73fc-4043-a9d7-269506a6e00e",
+          "cardRef": "5201f757",
+          "action": "rehome",
+          "note": "Starwood: Marriott-side 24h notice obligation, scoped per convention C (its provision twin is Starwood-side; Marriott row card-less until M3).",
+          "cardId": "5201f757-5128-4e10-995c-16cdea416cea",
+          "shortTitle": "Notice to Counterparty",
+          "coveringProvisionIds": [],
+          "flagged": false,
+          "write": {
+            "op": "update",
+            "table": "provision_cards",
+            "id": "5201f757-5128-4e10-995c-16cdea416cea",
+            "patch": {
+              "short_title": "Notice to Counterparty (Parent)"
+            }
+          },
+          "status": "PLANNED-REHOME",
+          "oldTitle": "Notice to Counterparty",
+          "newTitle": "Notice to Counterparty (Parent)",
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    {
+      "dealId": "cf32899a-37c6-4147-8350-4a2e132a30db",
+      "entries": [
+        {
+          "dealId": "cf32899a-37c6-4147-8350-4a2e132a30db",
+          "action": "recat-provision",
+          "note": "Cooper: director/officer-violation-is-company-breach rule — generalizes Ben's Kraft 10792e76 decision (D: go). Resolves the Solicitation Prohibition title collision so d0458c88 pairs with 19a89efc.",
+          "provisionRef": "6ac86d53",
+          "cardId": "6ac86d53-2793-47e0-8893-5248ac9c81fc",
+          "shortTitle": "Solicitation Prohibition",
+          "coveringProvisionIds": [],
+          "flagged": false,
+          "status": "PLANNED-RECAT-PROVISION",
+          "oldCategory": "Solicitation Prohibition",
+          "newCategory": "Breach by Representatives",
+          "write": {
+            "op": "update",
+            "table": "provisions",
+            "id": "6ac86d53-2793-47e0-8893-5248ac9c81fc",
+            "patch": {
+              "category": "Breach by Representatives"
+            }
+          },
+          "ok": true
+        }
+      ],
+      "ok": true
+    }
+  ]
+}

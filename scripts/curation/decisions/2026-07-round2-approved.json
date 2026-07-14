@@ -1,0 +1,32 @@
+{
+  "label": "2026-07 round-2 corpus prune — Ben-approved 2026-07-14 (A with A6/A7 flipped to keep+scope, B acked, C '(Parent)' convention, D go)",
+  "deals": {
+    "c34415ed-44f7-432f-8d7c-6464b0310239": [
+      { "card": "b6f353e2", "action": "delete", "note": "Landos: stale mis-titled 'Disclosure of Terms' card (old long carve of Notification-of-Proposals); blocks dfe1ac55 from matching provision 355c6464.", "ackUncovered": "ben 2026-07-14 — content-loss acked in round-2 sign-off ('agree on rest'); operative content re-extracted across 355c6464/295e29c2/dd9e5ab3" }
+    ],
+    "7dc3a05f-b170-4d59-a255-b7103cca16e1": [
+      { "card": "7309b39f", "action": "delete", "note": "TopBuild: Parent-side tail dup; verbatim inside kept Reverse Termination Fee provision e06e2d20. Frees 8ba3dcf3 to pair with Tail Provision row 9fce96fe." },
+      { "card": "0acfee2c", "action": "delete", "note": "TopBuild: hard force-the-vote proviso (Ben note recorded: termination rights in Art VI attach to counterparty CoR, no self-exit for superior — hard FTV both sides); verbatim inside kept Intervening Event provision 00467dda." },
+      { "card": "360b7fd6", "action": "delete", "note": "TopBuild: no-alternative-agreement fragment; verbatim inside kept Intervening Event provision 00467dda." },
+      { "card": "ca9e4d4c", "action": "delete", "note": "TopBuild: inform-Representatives sentence; verbatim inside kept Superior Proposal Definition row 1de6dcb8." }
+    ],
+    "a267309a-fc22-4160-a652-1144fc64e9cf": [
+      { "card": "71cf5c45", "action": "delete", "note": "Concho: Parent-side inform-third-party proviso — a proviso of the Solicitation Prohibition concept, not a better rendering of Fiduciary Out; verbatim inside kept Parent Solicitation Prohibition 3b49171d. Frees 1cc83639 to pair with af1b8c9d." },
+      { "card": "c42e9451", "action": "rehome", "newTitle": "Provision of Information to Bidder (Parent)", "note": "Concho: KEPT per Ben snip point — the card's confidentiality-gate text is the better rendering of the info-to-bidder concept than the re-extracted parity fragment; scoped (Parent) per convention C." },
+      { "provision": "3244b377", "action": "recat-provision", "newCategory": "Provision of Information to Bidder (Parent)", "note": "Concho: Parent-side info-to-bidder provision, scoped per convention C; pairs with c42e9451 at rung 1." },
+      { "provision": "d43585a0", "action": "recat-provision", "newCategory": "Exceptions / Fiduciary Out (Parent)", "note": "Concho: Parent-side fiduciary-out row, scoped per convention C (card-less; M3 mints its card)." },
+      { "card": "e95d4167", "action": "rehome", "newTitle": "Enforcement of Standstills (Parent)", "note": "Concho: Parent-side standstill-enforcement card, scoped per convention C." },
+      { "provision": "20bec332", "action": "recat-provision", "newCategory": "Enforcement of Standstills (Parent)", "note": "Concho: Parent-side standstill-enforcement provision; pairs with e95d4167 at rung 1." }
+    ],
+    "c750afb9-73fc-4043-a9d7-269506a6e00e": [
+      { "card": "f008725e", "action": "delete", "note": "Starwood: Marriott fiduciary-COR passage; verbatim inside kept Marriott COR provision 9843cdfd." },
+      { "card": "76c01cf5", "action": "delete", "note": "Starwood: matching-rights timing fragment; verbatim inside kept Notice to Counterparty 2486e454 / Negotiation Period 28e4bc84." },
+      { "card": "1ee8f6bf", "action": "rehome", "newTitle": "Change of Recommendation (Parent)", "note": "Starwood: Marriott-side 14d-9 passage of the Marriott COR machinery, scoped per convention C; pairs with recat'd 9843cdfd." },
+      { "provision": "9843cdfd", "action": "recat-provision", "newCategory": "Change of Recommendation (Parent)", "note": "Starwood: Marriott COR row, scoped per convention C." },
+      { "card": "5201f757", "action": "rehome", "newTitle": "Notice to Counterparty (Parent)", "note": "Starwood: Marriott-side 24h notice obligation, scoped per convention C (its provision twin is Starwood-side; Marriott row card-less until M3)." }
+    ],
+    "cf32899a-37c6-4147-8350-4a2e132a30db": [
+      { "provision": "6ac86d53", "action": "recat-provision", "newCategory": "Breach by Representatives", "note": "Cooper: director/officer-violation-is-company-breach rule — generalizes Ben's Kraft 10792e76 decision (D: go). Resolves the Solicitation Prohibition title collision so d0458c88 pairs with 19a89efc." }
+    ]
+  }
+}

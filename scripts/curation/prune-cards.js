@@ -106,6 +106,62 @@ function planDecision(dealId, decision, cards, provisions, corrections) {
     note: decision.note || null,
   };
 
+  // recat-provision: rename a provision's category (the concept label the
+  // match ladder keys on). References a PROVISION, not a card; the only
+  // write is provisions.category. Same Ben-gating as everything else: the
+  // human-correction gate applies (user_corrected provision, or a
+  // corrections row touching either the old or new category).
+  if (decision.action === 'recat-provision') {
+    const presolved = resolveCardRef(decision.provision, provisions);
+    if (!presolved.ok) {
+      return {
+        ...base,
+        provisionRef: decision.provision,
+        cardId: null,
+        shortTitle: null,
+        status: presolved.reason === 'ambiguous' ? 'ERROR-AMBIGUOUS' : 'ERROR-MISSING',
+        candidates: presolved.candidates,
+        coveringProvisionIds: [],
+        flagged: false,
+        write: null,
+        ok: false,
+      };
+    }
+    const prov = presolved.card; // resolveCardRef is id-prefix generic
+    const touchedByHuman = (prov.ai_metadata && prov.ai_metadata.user_corrected === true)
+      || (corrections || []).some((c) => {
+        const cats = [c && c.before && c.before.category, c && c.after && c.after.category];
+        return cats.includes(prov.category) || cats.includes(decision.newCategory);
+      });
+    if (touchedByHuman && !decision.ackHumanCorrection) {
+      return {
+        ...base,
+        provisionRef: decision.provision,
+        cardId: prov.id,
+        shortTitle: prov.category,
+        coveringProvisionIds: [],
+        status: 'FLAGGED-HUMAN-CORRECTION',
+        flagged: true,
+        write: null,
+        ok: false,
+      };
+    }
+    return {
+      ...base,
+      provisionRef: decision.provision,
+      cardId: prov.id,
+      shortTitle: prov.category,
+      coveringProvisionIds: [],
+      flagged: touchedByHuman,
+      ...(decision.ackHumanCorrection ? { ackHumanCorrection: decision.ackHumanCorrection } : {}),
+      status: 'PLANNED-RECAT-PROVISION',
+      oldCategory: prov.category,
+      newCategory: decision.newCategory,
+      write: { op: 'update', table: 'provisions', id: prov.id, patch: { category: decision.newCategory } },
+      ok: true,
+    };
+  }
+
   const resolved = resolveCardRef(decision.card, cards);
   if (!resolved.ok) {
     return {
@@ -279,7 +335,11 @@ function formatEntryLine(e) {
       : (e.status === 'NEEDS-RECONFIRM' || e.status === 'NOT-COVERED' ? 'NOT-FOUND' : '—'));
 
   const write = e.write
-    ? (e.write.op === 'delete' ? 'DELETE provision_cards' : `UPDATE provision_cards.short_title -> "${e.write.patch.short_title}"`)
+    ? (e.write.op === 'delete'
+      ? 'DELETE provision_cards'
+      : (e.write.table === 'provisions'
+        ? `UPDATE provisions.category -> "${e.write.patch.category}"`
+        : `UPDATE provision_cards.short_title -> "${e.write.patch.short_title}"`))
     : (e.action === 'rehome' && e.newTitle ? `(would UPDATE short_title -> "${e.newTitle}")` : 'none');
 
   return `  ${shortId(e.cardId)}  ${(e.shortTitle || '(unresolved)').padEnd(40)}  ${e.action.padEnd(17)}  ${e.status.padEnd(24)}  verify: ${verification}  write: ${write}${flags.length ? `  [${flags.join('; ')}]` : ''}`;
@@ -384,13 +444,22 @@ async function dumpBackup(sb, dealIds, backupPath) {
   return payload;
 }
 
-// Executes rehomes, then deletes — and ONLY the writes plannedWrites()
-// surfaces (i.e. nothing at all unless the whole run is clean). The only
-// table ever written is provision_cards.
+// Executes recats, then rehomes, then deletes — and ONLY the writes
+// plannedWrites() surfaces (i.e. nothing at all unless the whole run is
+// clean). The only tables ever written are provision_cards and
+// provisions (category column only, via recat-provision).
 async function executeWrites(sb, plan) {
   const writes = plannedWrites(plan);
-  const rehomes = writes.filter((w) => w.write.op === 'update');
+  const recats = writes.filter((w) => w.write.op === 'update' && w.write.table === 'provisions');
+  const rehomes = writes.filter((w) => w.write.op === 'update' && w.write.table === 'provision_cards');
   const deletes = writes.filter((w) => w.write.op === 'delete');
+
+  let recatted = 0;
+  for (const e of recats) {
+    const { error } = await sb.from('provisions').update(e.write.patch).eq('id', e.write.id);
+    if (error) throw new Error(`Recat failed for provision ${e.write.id}: ${error.message}`);
+    recatted += 1;
+  }
 
   let rehomed = 0;
   for (const e of rehomes) {
@@ -406,7 +475,7 @@ async function executeWrites(sb, plan) {
     deleted += 1;
   }
 
-  return { rehomed, deleted };
+  return { recatted, rehomed, deleted };
 }
 
 function writeReportFile(report) {
@@ -496,7 +565,7 @@ async function main() {
   }
 
   const result = await executeWrites(sb, plan);
-  console.log(`Executed: ${result.rehomed} rehome(s), ${result.deleted} delete(s).`);
+  console.log(`Executed: ${result.recatted} recat(s), ${result.rehomed} rehome(s), ${result.deleted} delete(s).`);
   report.executed = result;
   const reportFile = writeReportFile(report);
   console.log(`Report written: ${reportFile}`);

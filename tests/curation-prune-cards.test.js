@@ -226,7 +226,7 @@ test('executeWrites: zero DB calls happen when the plan is not ok', async () => 
   };
   const notOkPlan = { ok: false, dealPlans: [{ entries: [{ write: { op: 'delete', table: 'provision_cards', id: 'x' } }] }] };
   const result = await executeWrites(sb, notOkPlan);
-  assert.deepEqual(result, { rehomed: 0, deleted: 0 });
+  assert.deepEqual(result, { recatted: 0, rehomed: 0, deleted: 0 });
   assert.equal(calls.length, 0);
 });
 
@@ -252,8 +252,56 @@ test('checkBackupGate: a fresh backup path under --apply is ok; dry-run needs no
 });
 
 // ---------------------------------------------------------------------------
-// 8. No writes ever against tables other than provision_cards.
+// 8. No writes ever against tables other than provision_cards (and
+//    provisions.category, only via an explicit recat-provision decision).
 // ---------------------------------------------------------------------------
+
+test('recat-provision: plans a category-only provisions patch; human-correction gate applies', () => {
+  const prov = provision({ id: 'cccc1111-0000-4000-8000-000000000009', category: 'Solicitation Prohibition' });
+  const decisions = [
+    { provision: 'cccc1111', action: 'recat-provision', newCategory: 'Breach by Representatives', note: 'generalize Kraft decision' },
+  ];
+  const plan = buildDealPlan(DEAL_A, decisions, [], [prov], []);
+  assert.equal(plan.ok, true);
+  const entry = plan.entries[0];
+  assert.equal(entry.status, 'PLANNED-RECAT-PROVISION');
+  assert.deepEqual(entry.write, {
+    op: 'update', table: 'provisions', id: prov.id, patch: { category: 'Breach by Representatives' },
+  });
+
+  // gate: a corrections row touching the OLD category blocks without ack
+  const corrections = [{ before: { category: 'Solicitation Prohibition' }, after: {} }];
+  const blocked = buildDealPlan(DEAL_A, decisions, [], [prov], corrections);
+  assert.equal(blocked.ok, false);
+  assert.equal(blocked.entries[0].status, 'FLAGGED-HUMAN-CORRECTION');
+
+  // acked: proceeds, ack echoed
+  const acked = buildDealPlan(DEAL_A, [{ ...decisions[0], ackHumanCorrection: 'ben test' }], [], [prov], corrections);
+  assert.equal(acked.ok, true);
+  assert.equal(acked.entries[0].status, 'PLANNED-RECAT-PROVISION');
+  assert.equal(acked.entries[0].ackHumanCorrection, 'ben test');
+});
+
+test('executeWrites: recats write provisions.category, everything else stays on provision_cards', async () => {
+  const calls = [];
+  const sb = {
+    from(table) {
+      return {
+        update: (patch) => { calls.push([table, 'update', patch]); return { eq: () => Promise.resolve({ error: null }) }; },
+        delete: () => { calls.push([table, 'delete']); return { eq: () => Promise.resolve({ error: null }) }; },
+      };
+    },
+  };
+  const prov = provision({ id: 'cccc1111-0000-4000-8000-000000000009', category: 'Old Cat' });
+  const runPlan = buildRunPlan(
+    { label: 'test', deals: { [DEAL_A]: [{ provision: 'cccc1111', action: 'recat-provision', newCategory: 'New Cat' }] } },
+    { [DEAL_A]: { cards: [], provisions: [prov], corrections: [] } },
+  );
+  assert.equal(runPlan.ok, true);
+  const result = await executeWrites(sb, runPlan);
+  assert.equal(result.recatted, 1);
+  assert.deepEqual(calls, [['provisions', 'update', { category: 'New Cat' }]]);
+});
 
 test('executeWrites: only ever calls sb.from("provision_cards") — never any other table', async () => {
   const calls = [];
