@@ -1,0 +1,164 @@
+mint-cards — 40 deal(s), dry-run
+mint-cards — 40 deal(s)
+  minted: 20  skipped-ambiguous: 3  skipped-title-taken: 27  skipped-region-hash-taken: 0  post-check-failed: 8
+
+deal 1e4b7102-7890-451a-b8d0-8357120fc371 — clean (1 candidate(s))
+  00e74aa6  Intervening Event                         len=1858    SKIPPED-TITLE-TAKEN           coded: boardChangeStandard,interveningEventScope  write: none
+
+deal 86a01770-f565-47c5-8e7d-2a75a66b5e8b — clean (1 candidate(s))
+  01e46e09  Change of Recommendation                  len=4126    SKIPPED-TITLE-TAKEN           coded: boardChangeStandard,superiorProposalDeterminer  write: none
+
+deal fc03e7e3-e9ca-4936-bb9a-282a6276783a — clean (7 candidate(s))
+  c90eed5a  Superior Proposal Definition              len=1177    SKIPPED-TITLE-TAKEN           coded: superiorProposalDeterminer  write: none
+  ef48cd8e  Change of Recommendation                  len=7108    SKIPPED-TITLE-TAKEN           coded: boardChangeStandard,changeOfRecommendationItems  write: none
+  00dfd281  Intervening Event                         len=1731    SKIPPED-TITLE-TAKEN           coded: boardChangeStandard,interveningEventScope  write: none
+  503aaf8f  Solicitation Prohibition                  len=2913    MINTED                        coded: representativesStandard,ceaseDiscussionsProhibitedList  write: INSERT parser_regions(mint:503aaf8f-e3b6-4e72-9d46-a47633a8e1e1) + INSERT provision_cards (excerpt_id=fc03e7e3-e9ca-4936-bb9a-282a6276783a:8e6c939821ed | Solicitation Prohibition | 8e6c939821ed:8e6c939821ed:0)
+  3f2e3bf2  Cease Existing Discussions                len=1119    MINTED                        coded: ceaseDiscussionsProhibitedList  write: INSERT parser_regions(mint:3f2e3bf2-12e5-4429-bc40-a8b9c9f4b0d2) + INSERT provision_cards (excerpt_id=fc03e7e3-e9ca-4936-bb9a-282a6276783a:c223607cf8d3 | Cease Existing Discussions | c223607cf8d3:c223607cf8d3:0)
+  a1236fe3  Exceptions / Fiduciary Out                len=4387    MINTED                        coded: fiduciaryOutStandard,superiorProposalDeterminer  write: INSERT parser_regions(mint:a1236fe3-6f63-42b7-805f-48d5d0e85b24) + INSERT provision_cards (excerpt_id=fc03e7e3-e9ca-4936-bb9a-282a6276783a:21d6d50d3235 | Exceptions / Fiduciary Out | 21d6d50d3235:21d6d50d3235:0)
+  32088238  Matching Rights                           len=1950    MINTED                        coded: boardChangeStandard,superiorProposalDeterminer  write: INSERT parser_regions(mint:32088238-6999-4965-b825-ca93cf081823) + INSERT provision_cards (excerpt_id=fc03e7e3-e9ca-4936-bb9a-282a6276783a:38e06e4791f1 | Matching Rights | 38e06e4791f1:38e06e4791f1:0)
+
+deal 1f80bec7-294b-4590-b861-2c156e75aadc — clean (0 candidate(s))
+  (no card-less coded provisions found)
+
+deal 2c143f44-6aa9-40d9-a92f-30d48aa603fd — clean (0 candidate(s))
+  (no card-less coded provisions found)
+
+deal ad35e712-a0c1-4fd4-a1fe-9aac5ce13e56 — clean (0 candidate(s))
+  (no card-less coded provisions found)
+
+deal 667447f0-ff25-4de2-a1b5-e5f099ecd366 — clean (0 candidate(s))
+  (no card-less coded provisions found)
+
+deal 00d49e6a-3a99-4164-8417-76bf2713a3ec — clean (0 candidate(s))
+  (no card-less coded provisions found)
+
+deal 885edae5-49e8-464a-9f33-edd229119d7c — clean (0 candidate(s))
+  (no card-less coded provisions found)
+
+deal dc042001-b987-404f-bd02-41e1939fb914 — clean (0 candidate(s))
+  (no card-less coded provisions found)
+
+deal 65a3e3c8-91e6-4075-bad0-4e3c4d1b43b9 — clean (3 candidate(s))
+  2a7cbacf  Solicitation Prohibition                  len=1537    MINTED                        coded: representativesStandard  write: INSERT parser_regions(mint:2a7cbacf-6a07-4ada-97a9-3f7ab00185ed) + INSERT provision_cards (excerpt_id=65a3e3c8-91e6-4075-bad0-4e3c4d1b43b9:06ef5c201416 | Solicitation Prohibition | 06ef5c201416:06ef5c201416:0)
+  93599d55  Cease Existing Discussions                len=240     MINTED                        coded: ceaseDiscussionsProhibitedList  write: INSERT parser_regions(mint:93599d55-c31b-414b-b5be-f2ec530403dc) + INSERT provision_cards (excerpt_id=65a3e3c8-91e6-4075-bad0-4e3c4d1b43b9:673dcf54999f | Cease Existing Discussions | 673dcf54999f:673dcf54999f:0)
+  0961e2f8  Exceptions / Fiduciary Out                len=1031    MINTED                        coded: boardChangeStandard,fiduciaryOutStandard,superiorProposalDeterminer  write: INSERT parser_regions(mint:0961e2f8-ece7-423b-8a83-39bbfe7a9273) + INSERT provision_cards (excerpt_id=65a3e3c8-91e6-4075-bad0-4e3c4d1b43b9:8b862324e3c5 | Exceptions / Fiduciary Out | 8b862324e3c5:8b862324e3c5:0)
+
+deal f9c61065-a935-42a3-bc90-2f5a76670191 — clean (0 candidate(s))
+  (no card-less coded provisions found)
+
+deal a1b07312-5ab1-4d6e-b173-6eccb5173d36 — NOT CLEAN (7 candidate(s))
+  5724a3c8  Intervening Event                         len=2140    SKIPPED-TITLE-TAKEN           coded: boardChangeStandard  write: none
+  c797598d  Superior Proposal Definition              len=738     SKIPPED-TITLE-TAKEN           coded: superiorProposalDeterminer  write: none
+  506b7861  Company Termination Fee                   len=512     SKIPPED-TITLE-TAKEN           coded: interestRateBasis  write: none
+  4f1e446c  Change of Recommendation                  len=1709    POST-CHECK-FAILED             coded: changeOfRecommendationItems  write: none  [provision 4f1e446c-3823-4a61-bd5b-c70011a804a8: minted card did not match any provision post-mint]
+  132ddc7e  Exceptions / Fiduciary Out                len=1615    POST-CHECK-FAILED             coded: fiduciaryOutStandard  write: none  [provision 4f1e446c-3823-4a61-bd5b-c70011a804a8: minted card did not match any provision post-mint]
+  9a39d257  Exceptions / Fiduciary Out                len=3061    POST-CHECK-FAILED             coded: boardChangeStandard  write: none  [provision 4f1e446c-3823-4a61-bd5b-c70011a804a8: minted card did not match any provision post-mint]
+  127f8687  Cease Existing Discussions                len=809     POST-CHECK-FAILED             coded: ceaseDiscussionsProhibitedList  write: none  [provision 4f1e446c-3823-4a61-bd5b-c70011a804a8: minted card did not match any provision post-mint]
+
+deal 555579a6-6a11-45b3-9da9-43e1b49a6e89 — clean (0 candidate(s))
+  (no card-less coded provisions found)
+
+deal b57d0d65-d9d6-4e77-8e2e-08da4eb58f81 — clean (0 candidate(s))
+  (no card-less coded provisions found)
+
+deal 13211d88-4f16-4730-bb70-fb1ef6ab3735 — clean (5 candidate(s))
+  dc1b5936  Change of Recommendation                  len=6877    SKIPPED-TITLE-TAKEN           coded: boardChangeStandard,superiorProposalDeterminer,changeOfRecommendationItems  write: none
+  4b5d26ec  Cease Existing Discussions                len=705     MINTED                        coded: ceaseDiscussionsProhibitedList  write: INSERT parser_regions(mint:4b5d26ec-3851-418b-98bf-c1aee2ce1a5d) + INSERT provision_cards (excerpt_id=13211d88-4f16-4730-bb70-fb1ef6ab3735:bba8c3fcd474 | Cease Existing Discussions | bba8c3fcd474:bba8c3fcd474:0)
+  8e49d18f  Solicitation Prohibition                  len=3390    MINTED                        coded: representativesStandard,ceaseDiscussionsProhibitedList  write: INSERT parser_regions(mint:8e49d18f-a17e-4603-b8a3-3fa756ae0b46) + INSERT provision_cards (excerpt_id=13211d88-4f16-4730-bb70-fb1ef6ab3735:bdf4ce626097 | Solicitation Prohibition | bdf4ce626097:bdf4ce626097:0)
+  ee839d62  Exceptions / Fiduciary Out                len=1980    MINTED                        coded: fiduciaryOutStandard,superiorProposalDeterminer  write: INSERT parser_regions(mint:ee839d62-20f4-4b1e-af37-343734a0a259) + INSERT provision_cards (excerpt_id=13211d88-4f16-4730-bb70-fb1ef6ab3735:ea0f1b330b55 | Exceptions / Fiduciary Out | ea0f1b330b55:ea0f1b330b55:0)
+  49f2345d  Intervening Event                         len=3575    MINTED                        coded: boardChangeStandard,interveningEventScope  write: INSERT parser_regions(mint:49f2345d-13a8-407c-bbcd-4705a7b645e6) + INSERT provision_cards (excerpt_id=13211d88-4f16-4730-bb70-fb1ef6ab3735:6c2fc3a44aa5 | Intervening Event | 6c2fc3a44aa5:6c2fc3a44aa5:0)
+
+deal eee4f270-4f7b-48b8-a66d-4d1a0ddc82d7 — clean (2 candidate(s))
+  c13a2809  Exceptions / Fiduciary Out                len=2909    SKIPPED-TITLE-TAKEN           coded: boardChangeStandard,superiorProposalDeterminer  write: none
+  ed6af96c  Matching Rights                           len=1220    MINTED                        coded: boardChangeStandard,superiorProposalDeterminer  write: INSERT parser_regions(mint:ed6af96c-22c9-400e-91e0-a653f06723f8) + INSERT provision_cards (excerpt_id=eee4f270-4f7b-48b8-a66d-4d1a0ddc82d7:8f4f39f19489 | Matching Rights | 8f4f39f19489:8f4f39f19489:0)
+
+deal 0d38cc1f-2f49-47ee-bc21-de68d7884b90 — clean (0 candidate(s))
+  (no card-less coded provisions found)
+
+deal 8cd0787f-4ca0-40fe-aebf-6f88c0b101da — clean (1 candidate(s))
+  2358c088  Timing Agreements                         len=689     MINTED                        coded: pullRefile,timingAgreement,consultationTier  write: INSERT parser_regions(mint:2358c088-c1dd-41a4-817e-785a574c2cfa) + INSERT provision_cards (excerpt_id=8cd0787f-4ca0-40fe-aebf-6f88c0b101da:0313f5c4401e | Timing Agreements | 0313f5c4401e:0313f5c4401e:0)
+
+deal bb5f062d-2818-4f9f-b968-ad9980445b6f — NOT CLEAN (5 candidate(s))
+  52a0881d  Superior Proposal Definition              len=2867    SKIPPED-TITLE-TAKEN           coded: boardChangeStandard,superiorProposalDeterminer  write: none
+  eb25ed79  Cease Existing Discussions                len=1132    POST-CHECK-FAILED             coded: representativesStandard  write: none  [provision c82cdf50-cb55-4417-8c5a-8253308c12af: minted card did not match any provision post-mint]
+  33fcd946  Solicitation Prohibition                  len=831     POST-CHECK-FAILED             coded: representativesStandard,ceaseDiscussionsProhibitedList  write: none  [provision c82cdf50-cb55-4417-8c5a-8253308c12af: minted card did not match any provision post-mint]
+  c82cdf50  Exceptions / Fiduciary Out                len=2111    POST-CHECK-FAILED             coded: fiduciaryOutStandard,superiorProposalDeterminer  write: none  [provision c82cdf50-cb55-4417-8c5a-8253308c12af: minted card did not match any provision post-mint]
+  dfb36fe9  Intervening Event                         len=1927    POST-CHECK-FAILED             coded: boardChangeStandard,interveningEventScope  write: none  [provision c82cdf50-cb55-4417-8c5a-8253308c12af: minted card did not match any provision post-mint]
+
+deal 13894e33-b5b6-4412-96bb-940b841d5130 — clean (0 candidate(s))
+  (no card-less coded provisions found)
+
+deal 2b9a6571-6fe7-4aac-931d-a96ab227ea43 — clean (1 candidate(s))
+  567cd8b2  Change of Recommendation                  len=2947    SKIPPED-TITLE-TAKEN           coded: boardChangeStandard  write: none
+
+deal c7c16365-c9cf-4bfb-93a6-1575084d717c — clean (0 candidate(s))
+  (no card-less coded provisions found)
+
+deal 0a043659-68fb-4d20-98e6-b926aa758799 — clean (2 candidate(s))
+  53c63fd5  Company Termination Fee                   len=868     MINTED                        coded: interestRateBasis  write: INSERT parser_regions(mint:53c63fd5-d460-4659-b237-dff036dd44b8) + INSERT provision_cards (excerpt_id=0a043659-68fb-4d20-98e6-b926aa758799:c15f9d1d67f3 | Company Termination Fee | c15f9d1d67f3:c15f9d1d67f3:0)
+  157abff1  Reverse Termination Fee                   len=1004    MINTED                        coded: interestRateBasis  write: INSERT parser_regions(mint:157abff1-18ef-4430-afc2-e0c0399e3097) + INSERT provision_cards (excerpt_id=0a043659-68fb-4d20-98e6-b926aa758799:f7818b7845f3 | Reverse Termination Fee | f7818b7845f3:f7818b7845f3:0)
+
+deal c34415ed-44f7-432f-8d7c-6464b0310239 — clean (0 candidate(s))
+  (no card-less coded provisions found)
+
+deal af4940e1-a645-437c-acfa-4a53e8d9f7ac — clean (0 candidate(s))
+  (no card-less coded provisions found)
+
+deal 448e524f-19b0-4b5c-837b-7d5cabbc0fb0 — clean (0 candidate(s))
+  (no card-less coded provisions found)
+
+deal 4f015417-0845-406a-b6ea-e606faf37e46 — clean (1 candidate(s))
+  038d4eca  Interim Compliance                        len=1043    MINTED                        coded: appliesToParty  write: INSERT parser_regions(mint:038d4eca-e27e-46f4-9b7a-94f9a00b41e2) + INSERT provision_cards (excerpt_id=4f015417-0845-406a-b6ea-e606faf37e46:0546b0eb3e0c | Interim Compliance | 0546b0eb3e0c:0546b0eb3e0c:0)
+
+deal df393645-86f4-4ae2-861e-35777e93583e — clean (1 candidate(s))
+  63000976  Exceptions / Fiduciary Out                len=698     SKIPPED-TITLE-TAKEN           coded: fiduciaryOutStandard  write: none
+
+deal 7dc3a05f-b170-4d59-a255-b7103cca16e1 — clean (8 candidate(s))
+  1cb455a9  Solicitation Prohibition                  len=1258    SKIPPED-AMBIGUOUS             coded: ceaseDiscussionsProhibitedList  write: none
+  1606523d  Cease Existing Discussions                len=2227    SKIPPED-TITLE-TAKEN           coded: representativesStandard,ceaseDiscussionsProhibitedList  write: none
+  b70adc75  Solicitation Prohibition                  len=1256    SKIPPED-AMBIGUOUS             coded: ceaseDiscussionsProhibitedList  write: none
+  52ab5e97  Exceptions / Fiduciary Out                len=2763    SKIPPED-TITLE-TAKEN           coded: fiduciaryOutStandard,superiorProposalDeterminer  write: none
+  ecb43804  Superior Proposal Definition              len=1895    SKIPPED-TITLE-TAKEN           coded: superiorProposalDeterminer  write: none
+  49bd1a89  Change of Recommendation                  len=2343    SKIPPED-TITLE-TAKEN           coded: changeOfRecommendationItems  write: none
+  007426c2  Matching Rights                           len=1604    SKIPPED-TITLE-TAKEN           coded: boardChangeStandard,superiorProposalDeterminer  write: none
+  0badd048  Intervening Event                         len=4453    SKIPPED-TITLE-TAKEN           coded: boardChangeStandard,interveningEventScope  write: none
+
+deal 320a3899-0d74-42d6-a412-3a962997d6ca — clean (0 candidate(s))
+  (no card-less coded provisions found)
+
+deal dfaa71fa-9723-4794-825d-bd5024aa0b5d — clean (0 candidate(s))
+  (no card-less coded provisions found)
+
+deal cf32899a-37c6-4147-8350-4a2e132a30db — clean (1 candidate(s))
+  6ac86d53  Breach by Representatives                 len=456     MINTED                        coded: representativesStandard  write: INSERT parser_regions(mint:6ac86d53-2793-47e0-8893-5248ac9c81fc) + INSERT provision_cards (excerpt_id=cf32899a-37c6-4147-8350-4a2e132a30db:551388d2373c | Breach by Representatives | 551388d2373c:551388d2373c:0)
+
+deal 1dfb11d5-99d3-4f2b-8229-6e61e8af2eea — clean (0 candidate(s))
+  (no card-less coded provisions found)
+
+deal a267309a-fc22-4160-a652-1144fc64e9cf — clean (2 candidate(s))
+  af1b8c9d  Exceptions / Fiduciary Out                len=3292    SKIPPED-TITLE-TAKEN           coded: fiduciaryOutStandard  write: none
+  b3640c12  Governing Law                             len=3082    MINTED                        coded: governingLaw  write: INSERT parser_regions(mint:b3640c12-50fc-4d01-94b1-77b946540f2e) + INSERT provision_cards (excerpt_id=a267309a-fc22-4160-a652-1144fc64e9cf:b9c429b4b16a | Governing Law | b9c429b4b16a:b9c429b4b16a:0)
+
+deal bf31d586-c0bc-4ed2-8d46-e69451a05756 — clean (0 candidate(s))
+  (no card-less coded provisions found)
+
+deal ce061fd0-a437-4d20-8a84-fdd6296aa5a0 — clean (0 candidate(s))
+  (no card-less coded provisions found)
+
+deal 6369cc9c-3cb7-40b6-9227-2b9b0361c2a3 — clean (4 candidate(s))
+  de69db73  Change of Recommendation                  len=954     SKIPPED-TITLE-TAKEN           coded: changeOfRecommendationItems  write: none
+  77dfa82a  Intervening Event                         len=2169    SKIPPED-TITLE-TAKEN           coded: boardChangeStandard  write: none
+  8085bdc0  Superior Proposal Definition              len=1755    MINTED                        coded: boardChangeStandard,superiorProposalDeterminer  write: INSERT parser_regions(mint:8085bdc0-efbd-435f-aef5-a12b6a7ba1a7) + INSERT provision_cards (excerpt_id=6369cc9c-3cb7-40b6-9227-2b9b0361c2a3:b7f57d17fdb1 | Superior Proposal Definition | b7f57d17fdb1:b7f57d17fdb1:0)
+  d73d5aff  Matching Rights                           len=781     MINTED                        coded: superiorProposalDeterminer  write: INSERT parser_regions(mint:d73d5aff-224c-44b3-91db-56c9fde08b50) + INSERT provision_cards (excerpt_id=6369cc9c-3cb7-40b6-9227-2b9b0361c2a3:41174546027a | Matching Rights | 41174546027a:41174546027a:0)
+
+deal aad132ee-8a43-436d-b6a8-5604b7dfee01 — clean (1 candidate(s))
+  aa9ef879  Superior Proposal Definition              len=990     SKIPPED-TITLE-TAKEN           coded: boardChangeStandard,superiorProposalDeterminer  write: none
+
+deal c750afb9-73fc-4043-a9d7-269506a6e00e — clean (5 candidate(s))
+  4f20760e  Exceptions / Fiduciary Out                len=1506    SKIPPED-TITLE-TAKEN           coded: fiduciaryOutStandard,superiorProposalDeterminer  write: none
+  2b374cb6  Change of Recommendation                  len=932     SKIPPED-AMBIGUOUS             coded: changeOfRecommendationItems  write: none
+  4042f3dd  Exceptions / Fiduciary Out                len=2021    SKIPPED-TITLE-TAKEN           coded: boardChangeStandard,superiorProposalDeterminer  write: none
+  85f4c9c1  Superior Proposal Definition              len=1078    SKIPPED-TITLE-TAKEN           coded: superiorProposalDeterminer  write: none
+  b8461669  Intervening Event                         len=2207    SKIPPED-TITLE-TAKEN           coded: boardChangeStandard,interveningEventScope  write: none
+
+Dry-run complete: no writes. Re-run with --apply --backup <path> to commit.
