@@ -82,7 +82,7 @@
       "fix": "/admin/processing-flow — mermaid + stage cards + gap panel. Deep-links to Provision-instance detail pages.",
       "owning_wp": "WP-PROCESSING-FLOW-MAP-01",
       "phase": "0-D",
-      "status": "scheduled"
+      "status": "done"
     },
     {
       "id": "G10",
@@ -109,7 +109,7 @@
       "fix": "Build a robust post-reprocess claims-rematerialize step -- wire reprocess.js to call the claims writer, or ship a standalone claims-only rematerialize (buildClaimRowsForCard + upsertClaims, matching cards to provisions by short_title==category). Test on >=3 deals before the corpus run.",
       "owning_wp": "WP-CLAIMS-REMATERIALIZE-01",
       "phase": "pre-corpus",
-      "status": "open"
+      "status": "done"
     },
     {
       "id": "GAP-B",
@@ -118,7 +118,7 @@
       "fix": "Fix extract-to-cards.js's region_hash handling for NULL region_id deals, or standardize on the claims-only rematerialize as the supported path.",
       "owning_wp": "WP-CLAIMS-REMATERIALIZE-01",
       "phase": "pre-corpus",
-      "status": "open",
+      "status": "done",
       "depends_on": ["GAP-A"]
     },
     {
@@ -128,7 +128,7 @@
       "fix": "Validate card stability across repeated reprocess runs before scaling to the full corpus; may need NOSOL provision de-duplication.",
       "owning_wp": "WP-NOSOL-DEDUP-01",
       "phase": "pre-corpus",
-      "status": "open"
+      "status": "partial"
     },
     {
       "id": "GAP-E",
