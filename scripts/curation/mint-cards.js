@@ -701,11 +701,29 @@ async function main() {
   const runPlan = buildRunPlan(dealIds, dealDataById);
   console.log(formatRunReport(runPlan));
 
+  // The full dealPlans embed whole provision/card/region rows (raw text and
+  // ai_metadata) — serializing them verbatim produced 160 MB report files.
+  // The persisted report carries a slim projection; the full objects stay
+  // in-memory only.
+  const slimEntry = (e) => ({
+    provisionId: e.provision ? e.provision.id : (e.provisionId || null),
+    category: e.provision ? e.provision.category : (e.category || null),
+    type: e.provision ? e.provision.type : (e.type || null),
+    status: e.status,
+    codedKeys: e.codedKeys || null,
+    textLen: e.provision && typeof e.provision.full_text === 'string' ? e.provision.full_text.length : null,
+    excerptId: e.cardRow ? e.cardRow.excerpt_id : null,
+    regionKey: e.regionRow ? e.regionRow.region_key : null,
+  });
   const report = {
     generatedAt: new Date().toISOString(),
     apply: args.apply,
     summary: summarize(runPlan),
-    deals: runPlan.dealPlans,
+    deals: runPlan.dealPlans.map((dp) => ({
+      dealId: dp.dealId,
+      ok: dp.ok,
+      entries: (dp.entries || []).map(slimEntry),
+    })),
   };
 
   if (args.json) console.log(JSON.stringify(report, null, 2));
