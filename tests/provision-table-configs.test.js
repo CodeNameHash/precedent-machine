@@ -27,6 +27,7 @@ let tailFeeMod;
 let terminationFeesMod;
 let terminationRightsMod;
 let votesApprovalsMeetingMod;
+let cardUtilsMod;
 test.before(async () => {
   mod = await import(path.join('..', 'components', 'review', 'table-configs', 'conditions-m.config.js'));
   advisersFeesExpensesMod = await import(path.join('..', 'components', 'review', 'table-configs', 'advisers-fees-expenses.config.js'));
@@ -51,6 +52,26 @@ test.before(async () => {
   terminationFeesMod = await import(path.join('..', 'components', 'review', 'table-configs', 'termination-fees.config.js'));
   terminationRightsMod = await import(path.join('..', 'components', 'review', 'table-configs', 'termination-rights.config.js'));
   votesApprovalsMeetingMod = await import(path.join('..', 'components', 'review', 'table-configs', 'votes-approvals-meeting.config.js'));
+  cardUtilsMod = await import(path.join('..', 'components', 'review', 'table-configs', 'card-utils.js'));
+});
+
+// Canonical partySide (card-utils.js) — the single source of truth that
+// replaced the four byte-identical copies in the nosol-*.config.js files.
+test('partySide resolves party from party_scope, fixes MUTUAL, and falls back to the code suffix', () => {
+  const { partySide } = cardUtilsMod;
+  // party_scope wins
+  assert.equal(partySide({ party_scope: 'PARENT' }), 'Buyer / Parent');
+  assert.equal(partySide({ party_scope: 'BUYER' }), 'Buyer / Parent');
+  assert.equal(partySide({ party_scope: 'COMPANY' }), 'Target / Company');
+  // MUTUAL/BOTH — the four old copies mislabeled these as Target
+  assert.equal(partySide({ party_scope: 'MUTUAL' }), 'Mutual / Either Party');
+  assert.equal(partySide({ party_scope: 'BOTH' }), 'Mutual / Either Party');
+  // suffix fallback when party_scope is absent
+  assert.equal(partySide({ provision_subtype: 'NOSOL-B' }), 'Buyer / Parent');
+  assert.equal(partySide({ provision_subtype: 'IOC-T' }), 'Target / Company');
+  assert.equal(partySide({ provision_subtype: 'TERMR-M' }), 'Mutual / Either Party');
+  // unknown/one-sided default
+  assert.equal(partySide({}), 'Target / Company');
 });
 
 function card(overrides = {}) {

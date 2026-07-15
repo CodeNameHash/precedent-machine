@@ -1,5 +1,5 @@
 import React from 'react';
-import { cardFeatures, splitForCell, textOf, valueText } from './card-utils.js';
+import { cardFeatures, partySide, splitForCell, textOf, valueText } from './card-utils.js';
 import { standardColorKey } from './standard-colors.js';
 import { BOARD_CHANGE_STANDARD_LABELS } from './board-change-standard.js';
 import { FIDUCIARY_STANDARD_LABELS } from './fiduciary-standard-labels.js';
@@ -53,10 +53,6 @@ function isSuperiorCard(card) {
 // Proposal" in their own text and so don't satisfy isSuperiorCard's regex.
 function isNosolFamilyCard(card) {
   return cardType(card) === 'COVENANT_NO_SOLICITATION' || /^NOSOL(?:-|$)/.test(cardCode(card));
-}
-function partySide(card) {
-  const scope = String(card?.party_scope || '').toUpperCase();
-  return scope === 'BUYER' || scope === 'PARENT' ? 'Buyer / Parent' : 'Target / Company';
 }
 // valueText is imported from card-utils.js (see above) rather than defined
 // locally: this config's own copy read `.text` before `.label`/`.code` with

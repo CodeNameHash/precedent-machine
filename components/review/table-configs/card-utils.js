@@ -242,6 +242,35 @@ function buildSectionSubjectResolver(allCards) {
   };
 }
 
+// Canonical party-side label. Single source of truth for "whose obligation
+// is this" across the review UI — replaces the byte-identical partySide()
+// copies that had drifted into the four nosol-*.config.js files. Reads the
+// card's party_scope first, then falls back to a -T/-S / -B/-P / -M suffix
+// on the provision code (e.g. NOSOL-B, IOC-T) so party still resolves when
+// party_scope is absent. Unknown/one-sided defaults to Target (most
+// single-party covenants bind the target). MUTUAL/BOTH now render as
+// "Mutual / Either Party" (the four old copies mislabeled mutual as Target).
+const PARTY_SIDE_LABELS = {
+  BUYER: 'Buyer / Parent',
+  PARENT: 'Buyer / Parent',
+  ACQUIRER: 'Buyer / Parent',
+  MUTUAL: 'Mutual / Either Party',
+  BOTH: 'Mutual / Either Party',
+  COMPANY: 'Target / Company',
+  TARGET: 'Target / Company',
+  SELLER: 'Target / Company',
+};
+
+function partySide(card) {
+  const scope = String(card?.party_scope || '').toUpperCase();
+  if (PARTY_SIDE_LABELS[scope]) return PARTY_SIDE_LABELS[scope];
+  const code = cardCode(card);
+  if (/-(?:B|P)$/.test(code)) return 'Buyer / Parent';
+  if (/-M$/.test(code)) return 'Mutual / Either Party';
+  if (/-(?:T|S)$/.test(code)) return 'Target / Company';
+  return 'Target / Company';
+}
+
 export {
   allFeatures,
   buildSectionSubjectResolver,
@@ -255,6 +284,7 @@ export {
   makeRows,
   mappedRows,
   mappedRowsMulti,
+  partySide,
   selectCards,
   splitForCell,
   stripProposedTitle,
