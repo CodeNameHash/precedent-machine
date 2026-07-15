@@ -17,3 +17,7 @@ scripts/_tmp_*
 # stray agent scratch (never commit)
 scratchpad/
 reports/backups/
+# machine run-artifacts (dry-run/apply reports) — keep .md summaries + decisions, drop timestamped json
+reports/prune-cards-*.json
+reports/mint-cards-*.json
+reports/rematerialize-claims-*.json
