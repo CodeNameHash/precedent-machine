@@ -4033,25 +4033,49 @@
       {
         "family": "FORCE_THE_VOTE",
         "kind": "string_map",
-        "size": 3,
+        "size": 7,
         "codes": [
           {
-            "code": "FTV_HARD",
-            "label": "Hard force-the-vote (vote survives recommendation change; no company termination right for a Superior Proposal)",
+            "code": "FTV_HARD_TARGET",
+            "label": "Hard force-the-vote, TARGET — the target company's stockholder vote survives an Adverse Recommendation Change AND the target has no self-termination right to accept a Superior Proposal (cannot escape the vote by walking away for a competing deal)",
             "description": null,
-            "line": 1110
+            "line": 1117
           },
           {
-            "code": "FTV_SOFT",
-            "label": "Soft force-the-vote (vote survives recommendation change, but company may terminate to accept a Superior Proposal)",
+            "code": "FTV_HARD_ACQUIRER",
+            "label": "Hard force-the-vote, ACQUIRER/ISSUER — the acquirer/issuer's OWN stockholder vote (e.g. a share-issuance or reverse-merger vote) survives an Adverse Recommendation Change with no self-termination-for-Superior escape for that party",
             "description": null,
-            "line": 1111
+            "line": 1118
+          },
+          {
+            "code": "FTV_HARD_BOTH",
+            "label": "Hard force-the-vote, BOTH parties — each party's stockholder vote survives an Adverse Recommendation Change and neither has a self-termination-for-Superior escape (dual-approval / merger of equals)",
+            "description": null,
+            "line": 1119
+          },
+          {
+            "code": "FTV_SOFT_TARGET",
+            "label": "Soft force-the-vote, TARGET — the target's vote survives an Adverse Recommendation Change but the target may terminate to accept a Superior Proposal",
+            "description": null,
+            "line": 1120
+          },
+          {
+            "code": "FTV_SOFT_ACQUIRER",
+            "label": "Soft force-the-vote, ACQUIRER/ISSUER — the acquirer/issuer's own vote survives an Adverse Recommendation Change but that party may terminate to accept a Superior Proposal",
+            "description": null,
+            "line": 1121
+          },
+          {
+            "code": "FTV_SOFT_BOTH",
+            "label": "Soft force-the-vote, BOTH parties — each party's vote survives an Adverse Recommendation Change but each retains a Superior-Proposal termination right",
+            "description": null,
+            "line": 1122
           },
           {
             "code": "FTV_NONE",
-            "label": "No force-the-vote (no vote-survives-recommendation-change covenant)",
+            "label": "No force-the-vote (no vote-survives-recommendation-change covenant on any party)",
             "description": null,
-            "line": 1112
+            "line": 1123
           }
         ]
       },
@@ -4064,19 +4088,19 @@
             "code": "AFFILIATE_SUBSIDIARY",
             "label": "Parent may assign to a wholly-owned subsidiary / affiliate",
             "description": null,
-            "line": 1117
+            "line": 1128
           },
           {
             "code": "FINANCING_SOURCE_PLEDGE",
             "label": "Parent may collaterally assign / pledge to financing sources",
             "description": null,
-            "line": 1118
+            "line": 1129
           },
           {
             "code": "POST_CLOSING_SUCCESSOR",
             "label": "Assignment permitted from and after the Effective Time (successor)",
             "description": null,
-            "line": 1119
+            "line": 1130
           }
         ]
       },
@@ -4089,13 +4113,13 @@
             "code": "NO_RELEASE",
             "label": "Assignment does not relieve Parent of its obligations",
             "description": null,
-            "line": 1122
+            "line": 1133
           },
           {
             "code": "NO_DELAY_IMPEDE",
             "label": "Assignment must not prevent / impede / delay the closing",
             "description": null,
-            "line": 1123
+            "line": 1134
           }
         ]
       },
