@@ -76,6 +76,60 @@ test('planReapplication merges sequential corrections, latest field wins, report
   assert.equal(unmatched[0].correction_id, 'c3');
 });
 
+// ---------------------------------------------------------------------------
+// DATA-2 hardening: raised category-match floor (0.45), a runner-up margin
+// (0.15), and a fragment re-check against before.full_text. Unmatched is the
+// safe outcome -- callers preserve/surface it, never guess.
+// ---------------------------------------------------------------------------
+
+test('DATA-2: a confident, unambiguous match still works under the raised floor + margin + fragment guards', () => {
+  const correction = { before: { category: 'Company Termination Fee', full_text: FEE_TEXT }, after: {} };
+  const fresh = [
+    { id: 'p1', category: 'Company Termination Fee', full_text: FEE_TEXT.replace('$6,900,000', '$6.9 million') },
+    { id: 'p2', category: 'Tail Provision', full_text: 'completely different tail language about twelve month periods' },
+  ];
+  const m = matchCorrectionToProvision(correction, fresh);
+  assert.equal(m.provision.id, 'p1');
+});
+
+test('DATA-2: an ambiguous near-tie between two textually-similar siblings in the same category is rejected (unmatched), not guessed', () => {
+  const correction = { before: { category: 'Company Termination Fee', full_text: FEE_TEXT }, after: {} };
+  const fresh = [
+    {
+      id: 'p1',
+      category: 'Company Termination Fee',
+      full_text: 'If the Company terminates this Agreement to enter a Superior Proposal prior to the Stockholder Vote, the Company shall pay Parent a termination fee of $6,900,000 in cash within two Business Days.',
+    },
+    {
+      id: 'p2',
+      category: 'Company Termination Fee',
+      full_text: 'If the Company terminates this Agreement to enter a Superior Proposal after the No-Shop Period Start Date, the Company shall pay Parent a termination fee of $6,900,000 in cash within three Business Days.',
+    },
+  ];
+  // Sanity: both siblings clear the (raised) category-match floor on their own --
+  // the near-tie margin guard, not the floor, is what must reject this.
+  const solo1 = matchCorrectionToProvision(correction, [fresh[0]]);
+  const solo2 = matchCorrectionToProvision(correction, [fresh[1]]);
+  assert.ok(solo1 && solo1.provision.id === 'p1');
+  assert.ok(solo2 && solo2.provision.id === 'p2');
+
+  assert.equal(matchCorrectionToProvision(correction, fresh), null);
+});
+
+test('DATA-2: a wrong-provision graft is prevented -- vocabulary-overlapping but substantively different sibling text fails the fragment re-check', () => {
+  const correction = { before: { category: 'Company Termination Fee', full_text: FEE_TEXT }, after: {} };
+  // Reuses much of the same vocabulary (pay/Company/Parent/termination/fee/
+  // cash/Business/Days/Agreement) reordered around a different dollar figure
+  // and a different trigger (breach, not a Superior Proposal) -- clears the
+  // Jaccard category floor but shares no real contiguous text with `before`.
+  const wrongSibling = {
+    id: 'wrong',
+    category: 'Company Termination Fee',
+    full_text: 'Parent shall pay the Company a termination fee of $9,100,000 in cash within three Business Days if Parent terminates this Agreement following a material breach by Parent of its covenants.',
+  };
+  assert.equal(matchCorrectionToProvision(correction, [wrongSibling]), null);
+});
+
 test('a feature re-set after deletion is not deleted', () => {
   const corrections = [
     {

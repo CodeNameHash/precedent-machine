@@ -1,0 +1,26 @@
+{
+  "label": "2026-07-15 Safe Disclosure Carve-out recat DRAFT (awaiting Ben review — do not apply)",
+  "deals": {
+    "448e524f-19b0-4b5c-837b-7d5cabbc0fb0": [
+      { "provision": "d29989a3", "action": "recat-provision", "newCategory": "Safe Disclosure Carve-out", "note": "Shire/Dyax. Row is Section 6.2(d) 'Certain Permitted Disclosure' in full and nothing else: board may comply with disclosure obligations incl. Rule 14d-9 / 14e-2(a) positions and make 'stop-look-and-listen' communications under Rule 14d-9(f), with COR-consequence proviso. Pure carve-out; current 'Uncovered text' bucket is a leftover label." }
+    ],
+    "a267309a-fc22-4160-a652-1144fc64e9cf": [
+      { "provision": "87e7867d", "action": "recat-provision", "newCategory": "Safe Disclosure Carve-out", "note": "ConocoPhillips/Concho, PARENT side. Row is only Section 6.4(e)(i): Parent Board may make disclosures necessary to comply with Rule 14d-9 / 14e-2(a) or Joint Proxy Statement law, with deemed-COR proviso. Pure carve-out (unlike company-side sibling af1b8c9d, which also carries the full fiduciary-out and is excluded). NOTE for Ben: parent-side row — decide whether the '(Parent)' suffix convention applies." }
+    ],
+    "bb5f062d-2818-4f9f-b968-ad9980445b6f": [
+      { "provision": "4ac4810e", "action": "recat-provision", "newCategory": "Safe Disclosure Carve-out", "note": "Creek/Catalent. Row is Section 5.03(d) in full: nothing prohibits complying with disclosure obligations incl. Rule 14e-2(a) / 14d-9 / Item 1012(a) Reg M-A positions, fiduciary-duty disclosures, and 'stop, look and listen' communications under Rule 14d-9(f). Pure carve-out; deal's operative COR is separate (f8efb0bc)." }
+    ],
+    "c7c16365-c9cf-4bfb-93a6-1575084d717c": [
+      { "provision": "987e6e06", "action": "recat-provision", "newCategory": "Safe Disclosure Carve-out", "note": "Heinz/Kraft. Row is Section 5.05(g) in full: Kraft Board may take/disclose a Rule 14e-2(a) / 14d-9 position and make 'stop, look and listen' communications under Rule 14d-9(b), plus the no-deemed-COR clause. Pure carve-out; current 'Uncovered text' bucket is a leftover label." }
+    ],
+    "2b9a6571-6fe7-4aac-931d-a96ab227ea43": [
+      { "provision": "169e2698", "action": "recat-provision", "newCategory": "Safe Disclosure Carve-out", "note": "IBM/Red Hat. Row is Section 4.02(f) in full: Company may disclose a Rule 14d-9 / 14e-2(a) position or legally required disclosure, with COR-effect proviso. Pure carve-out. NOTE: same text also lives in COR-category row fb3378cd (merged set, untouched per Ben) — after recat these two rows carry the same clause under two categories." }
+    ],
+    "bf31d586-c0bc-4ed2-8d46-e69451a05756": [
+      { "provision": "4b323e4e", "action": "recat-provision", "newCategory": "Safe Disclosure Carve-out", "note": "Sophos/SecureWorks. Row is Section 6.02(g) in full: Rule 14d-9 / 14e-2(a) / Item 1012(a) positions, 'stop, look and listen' under Rule 14d-9(f), legally required disclosures, plus the factually-accurate-statement safe harbor (not deemed COR). Pure carve-out; trailing 'Section 6.03' heading is a parse artifact." }
+    ],
+    "13211d88-4f16-4730-bb70-fb1ef6ab3735": [
+      { "provision": "79414996", "action": "recat-provision", "newCategory": "Safe Disclosure Carve-out", "note": "Hearts/HireRight — the sweep-flagged 'Disclosure of Terms' misclassification. Row = tail of the Section 5.3 notice covenant + '(f) Certain Disclosures' carve-out (Rule 14e-2(a) / 14d-9 positions incl. 'stop, look and listen' under Rule 14d-9(f)). 'Disclosure of Terms' is wrong either way (the notice-content text is about notifying Parent, and is fully duplicated inside sibling 2a6b3192 'Notice to Counterparty'); the row's distinctive content is the carve-out. NOTE for Ben: row is a duplicate sub-window of 2a6b3192 and its (f) text is truncated after clause (i) — consider whether it should instead be pruned as a duplicate card/provision." }
+    ]
+  }
+}

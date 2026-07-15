@@ -380,3 +380,121 @@ test('storeProvisionCards re-ingest cascades claims for a card that is genuinely
   assert.equal(sb.tables.claims.length, 2, 'the orphaned TERMR card\'s 6 claims must cascade away, leaving only the DEF card\'s 2');
   assert.ok(sb.tables.claims.every((row) => row.attribute === 'canonicalTerm' || row.attribute === 'definitionText'));
 });
+
+// ---------------------------------------------------------------------------
+// TAX-1: flag-only freeze gate at persistence. An invented model code must
+// still be stored verbatim in claims.canonical (never dropped, rejected, or
+// rewritten) -- but it must be console.warn'd and tallied in `invalidCodes`
+// so a caller can surface counts, while a legitimate code produces neither.
+// ---------------------------------------------------------------------------
+
+test('buildClaimRowsForCard: a valid taxonomy code produces no warning and no invalidCodes entry', () => {
+  const originalWarn = console.warn;
+  const warnings = [];
+  console.warn = (...args) => warnings.push(args.join(' '));
+  try {
+    const prov = richProvision(); // carveouts: PANDEMIC, ECONOMY_GENERAL -- both real EXCEPTION_CODES.
+    const [cardRow] = buildProvisionCardRows(DEAL_ID, [prov], { model: 'test', extractedAt: '2026-07-08T00:00:00.000Z' });
+    const { rows, invalidCodes } = buildClaimRowsForCard(DEAL_ID, cardRow, prov, { model: 'test' });
+
+    assert.deepEqual(invalidCodes, []);
+    assert.equal(warnings.length, 0);
+    const carveoutRows = rows.filter((row) => row.attribute === 'carveouts');
+    assert.deepEqual(carveoutRows.map((row) => row.canonical).sort(), ['ECONOMY_GENERAL', 'PANDEMIC']);
+  } finally {
+    console.warn = originalWarn;
+  }
+});
+
+test('buildClaimRowsForCard: an invented code is still stored verbatim, but warned and tallied (flag-only, non-breaking)', () => {
+  const originalWarn = console.warn;
+  const warnings = [];
+  console.warn = (...args) => warnings.push(args.join(' '));
+  try {
+    const prov = richProvision({
+      type: 'TERMF',
+      code: 'TERMF-REVERSE',
+      features: {
+        // interestRateBasis: valueType 'object', taxonomy dict INTEREST_RATE_BASIS
+        // has PRIME_WSJ/PRIME_BANK/US_TREASURY_6MO/LIBOR/FIXED -- PRIME_BLOOMBERG
+        // is invented (live-confirmed invented code from TAX-1 / verify-correctness #6).
+        interestRateBasis: {
+          code: 'PRIME_BLOOMBERG',
+          label: 'Bloomberg BTMM',
+          text: 'the U.S. prime rate as published on the Bloomberg screen BTMM',
+        },
+      },
+    });
+    const [cardRow] = buildProvisionCardRows(DEAL_ID, [prov], { model: 'test', extractedAt: '2026-07-08T00:00:00.000Z' });
+    const { rows, invalidCodes } = buildClaimRowsForCard(DEAL_ID, cardRow, prov, { model: 'test' });
+
+    // Flag-only: the row is still written with the invented code, unchanged.
+    assert.equal(rows.length, 1);
+    assert.equal(rows[0].attribute, 'interestRateBasis');
+    assert.equal(rows[0].canonical, 'PRIME_BLOOMBERG');
+    assert.equal(rows[0].verbatim, 'the U.S. prime rate as published on the Bloomberg screen BTMM');
+
+    // But it's flagged: warned once, and tallied for the caller.
+    assert.equal(invalidCodes.length, 1);
+    assert.deepEqual(invalidCodes[0], {
+      dealId: DEAL_ID,
+      attribute: 'interestRateBasis',
+      code: 'PRIME_BLOOMBERG',
+      excerptId: cardRow.excerpt_id,
+    });
+    assert.equal(warnings.length, 1);
+    assert.match(warnings[0], /invalid taxonomy code "PRIME_BLOOMBERG"/);
+    assert.match(warnings[0], /interestRateBasis/);
+  } finally {
+    console.warn = originalWarn;
+  }
+});
+
+test('buildClaimRowsForDeal: aggregates invalidCodes across cards alongside unknownAttributeCounts', () => {
+  const originalWarn = console.warn;
+  console.warn = () => {};
+  try {
+    const goodProv = richProvision();
+    const badProv = richProvision({
+      type: 'REP-T',
+      code: 'REP-T-KNOW',
+      region_id: '00000000-0000-4000-8000-000000000099',
+      features: {
+        representativesStandard: { code: 'INFORM', label: 'Inform', text: 'shall inform its Representatives' },
+      },
+    });
+    const cardRows = buildProvisionCardRows(DEAL_ID, [goodProv, badProv], { model: 'test', extractedAt: '2026-07-08T00:00:00.000Z' });
+    const { invalidCodes, unknownAttributeCounts } = buildClaimRowsForDeal(DEAL_ID, cardRows, [goodProv, badProv], { model: 'test' });
+
+    assert.equal(invalidCodes.length, 1);
+    assert.equal(invalidCodes[0].code, 'INFORM');
+    assert.equal(invalidCodes[0].attribute, 'representativesStandard');
+    // notARealFeatureKey (from goodProv's richProvision features) still tracked
+    // independently of invalidCodes -- badProv's features override replaces the
+    // whole bag, so only goodProv contributes this unknown key.
+    assert.equal(unknownAttributeCounts.get('notARealFeatureKey'), 1);
+  } finally {
+    console.warn = originalWarn;
+  }
+});
+
+test('storeClaimsForDeal: surfaces invalidCodes in its return value without altering the stored row', async () => {
+  const originalWarn = console.warn;
+  console.warn = () => {};
+  try {
+    const sb = inMemorySupabase();
+    const prov = richProvision({
+      features: {
+        interestRateBasis: { code: 'PRIME_BLOOMBERG', label: 'Bloomberg', text: 'Bloomberg screen BTMM' },
+      },
+    });
+    const result = await storeProvisionCards(DEAL_ID, [prov], sb, { extractedAt: '2026-07-08T00:00:00.000Z', replaceDeal: true });
+
+    assert.equal(result.claims.invalidCodes.length, 1);
+    assert.equal(result.claims.invalidCodes[0].code, 'PRIME_BLOOMBERG');
+    const storedRow = sb.tables.claims.find((row) => row.attribute === 'interestRateBasis');
+    assert.equal(storedRow.canonical, 'PRIME_BLOOMBERG', 'invented code is stored verbatim, never dropped or rewritten');
+  } finally {
+    console.warn = originalWarn;
+  }
+});
