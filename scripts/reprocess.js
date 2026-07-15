@@ -172,6 +172,7 @@ module.exports = {
   countsForTypes,
   formatClassifyDiff,
   classifiedByTally,
+  classifyFromStoredText,
 };
 
 /* ── CLI / DB / LLM plumbing ─────────────────────────────────────────────── */
@@ -287,7 +288,7 @@ async function fetchAllTypes(sb, dealId) {
  * Parse + classify a deal's STORED full_text (no fetch), cache-assisted.
  * Returns { classified, compact, sections, articles }.
  */
-async function classifyFromStoredText(sb, deal, client, prior) {
+async function classifyFromStoredText(sb, deal, client, prior, { persistRegions = true } = {}) {
   const { cleanText, parseStructure } = require('../lib/parser-v2/structural');
   const { classifySections } = require('../lib/parser-v2/classify');
   const fullText = deal.metadata && deal.metadata.full_text;
@@ -296,6 +297,13 @@ async function classifyFromStoredText(sb, deal, client, prior) {
   const { sections, articles, regions } = parseStructure(cleaned);
   if (sections.length === 0) throw new Error('Parser found no sections in stored full_text');
   const classified = await classifySections(sections, articles, client, { prior });
+  // A --classify-only dry-run must be a true dry-run: persistParserRegions
+  // performs a real upsert into parser_regions, so it is skipped (along
+  // with region-id attachment, which needs the persisted rows) unless the
+  // caller is actually committing.
+  if (!persistRegions) {
+    return { classified, compact: toCompactSections(classified), sections, articles };
+  }
   const persistedRegions = await persistParserRegions(sb, deal.id, cleaned, regions, sections);
   const withRegions = attachRegionIdsToSections(classified, persistedRegions.rows);
   return { classified: withRegions, compact: toCompactSections(withRegions), sections, articles };
@@ -325,7 +333,7 @@ async function reclassifyDeal(sb, deal, client, apply) {
     console.log('  no prior snapshot — every non-deterministic section will need the AI');
   }
 
-  const { compact } = await classifyFromStoredText(sb, deal, client, prior);
+  const { compact } = await classifyFromStoredText(sb, deal, client, prior, { persistRegions: apply });
   const tally = classifiedByTally(compact);
   console.log(`  classified ${compact.length} sections (${Object.entries(tally).map(([k, n]) => `${k}: ${n}`).join(', ')})`);
 

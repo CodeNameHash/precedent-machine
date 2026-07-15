@@ -216,3 +216,69 @@ test('classifyBreakdown and classifiedByTally count by field', () => {
   assert.deepStrictEqual(classifyBreakdown(compact), { COV: 2, TERMF: 1 });
   assert.deepStrictEqual(classifiedByTally(compact), { regex: 1, cache: 1, ai: 1 });
 });
+
+// ---------------------------------------------------------------------------
+// Regression: --classify-only dry-run purity. classifyFromStoredText used to
+// call persistParserRegions (a real parser_regions upsert) unconditionally,
+// so `reprocess.js --classify-only` WITHOUT --apply wrote to the DB while
+// printing "dry-run: no writes". Found by the P8 coverage investigation,
+// 2026-07-15. persistRegions:false must never touch the supabase client.
+// ---------------------------------------------------------------------------
+
+const { classifyFromStoredText } = require('../scripts/reprocess');
+
+const DRYRUN_FILLER = ' The parties agree to the covenants and undertakings set forth herein, subject to the terms and conditions of this Agreement and applicable Law, in each case as more fully described below.'.repeat(3);
+
+function dryrunDealFixture() {
+  const doc = [
+    'AGREEMENT AND PLAN OF MERGER, dated as of July 30, 2018 (this "Agreement"), among EXAMPLE PARENT INC. and EXAMPLE TARGET, INC.',
+    '',
+    'ARTICLE IX',
+    '',
+    'TERMINATION',
+    '',
+    `9.5. Effect of Termination and Abandonment. In the event of termination of this Agreement, this Agreement shall be of no further force and effect.${DRYRUN_FILLER}`,
+    '',
+    `9.6. Governing Law. This Agreement shall be governed by the Laws of the State of Delaware.${DRYRUN_FILLER}`,
+  ].join('\n');
+  return { id: 'deal-dryrun-fixture', metadata: { full_text: doc } };
+}
+
+function poisonedSb(label) {
+  return {
+    from() { throw new Error(`${label}: supabase client must not be touched`); },
+    rpc() { throw new Error(`${label}: supabase client must not be touched`); },
+  };
+}
+
+function poisonedClient(label) {
+  return {
+    complete() { throw new Error(`${label}: LLM client must not be called`); },
+    completeJson() { throw new Error(`${label}: LLM client must not be called`); },
+    chat() { throw new Error(`${label}: LLM client must not be called`); },
+  };
+}
+
+test('classifyFromStoredText with persistRegions:false performs zero supabase calls', async () => {
+  const deal = dryrunDealFixture();
+  // Build a prior cache that covers every parsed section so no AI call happens.
+  const { cleanText: ct, parseStructure: ps } = require('../lib/parser-v2/structural');
+  const { sections } = ps(ct(deal.metadata.full_text));
+  assert.ok(sections.length >= 2, 'fixture parses into sections');
+  const compactPrior = sections.map((s) => ({
+    section_number: s.number,
+    title: s.title,
+    type: 'MISC',
+    text_hash: sectionTextHash(s.text),
+  }));
+  const prior = buildPriorLookup(compactPrior);
+
+  const out = await classifyFromStoredText(
+    poisonedSb('dry-run'),
+    deal,
+    poisonedClient('dry-run'),
+    prior,
+    { persistRegions: false },
+  );
+  assert.ok(Array.isArray(out.compact) && out.compact.length === sections.length);
+});
