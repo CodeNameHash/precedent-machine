@@ -1,14 +1,14 @@
 # Market Registry Merge Report
 
-input rows: 1327
+input rows: 1328
 output rows: 683
 mechanical merges: 701
-flagged near-duplicates: 59
-groups untouched: 158
+flagged near-duplicates: 58
+groups untouched: 159
 
 ## REQUIRES_REVIEWER_DECISION
 
-- 59 rows in generated-v1.deduped.json carry review_flag=REQUIRES_REVIEWER_DECISION.
+- 58 rows in generated-v1.deduped.json carry review_flag=REQUIRES_REVIEWER_DECISION.
 
 ## Mechanical Merge Groups
 

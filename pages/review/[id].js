@@ -505,6 +505,7 @@ const FEATURE_DISPLAY_ORDER = {
     'interveningEventTermination',
     'forceTheVote',
     'forceTheVoteDetails',
+    'forceTheVoteType',
   ],
   // Canonical ANTI display order: effortsStandard first (the headline), then
   // the burden cap / divestiture limit fields, then No Inconsistent Action

@@ -7,7 +7,7 @@
     "lib/vocab/ioc-categories.js"
   ],
   "generated_at": "2026-07-06T20:11:24.931Z",
-  "field_count": 1328,
+  "field_count": 1329,
   "fields": [
     {
       "key": "absenceOfChangesExceptions",
@@ -8112,6 +8112,42 @@
       "resolver_notes": "Force the Vote - verbatim language and any exceptions",
       "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
       "origin": "schema-features"
+    },
+    {
+      "key": "forceTheVoteType",
+      "label": "Force the Vote — hard/soft code (FTV_HARD / FTV_SOFT / FTV_NONE)",
+      "data_type": "ENUM",
+      "applies_to": "NOSOL",
+      "party_scope": "PER_PARTY",
+      "structural_patterns": [
+        "THREE_STATE",
+        "CONDITIONAL_TRIGGERED"
+      ],
+      "states": [
+        "FTV_HARD",
+        "FTV_SOFT",
+        "FTV_NONE"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "forceTheVoteType",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve forceTheVoteType from lib/schema/features.js; tagged {code,label,text} object — normalise to the FORCE_THE_VOTE code (lib/taxonomy.js) before activation."
+      },
+      "resolver_notes": "Coded force-the-vote posture. Discriminator between FTV_HARD and FTV_SOFT is the existence of a company self-termination right to accept a Superior Proposal; FTV_NONE = no vote-survives-ARC covenant.",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features",
+      "merged_from": [],
+      "also_matches_provision_codes": [
+        "NOSOL"
+      ],
+      "provenance": {
+        "source_of_truth": "schema-features",
+        "absorbed_from": []
+      },
+      "status": "PENDING_REVIEW"
     },
     {
       "key": "foreignFilingsRequired",
