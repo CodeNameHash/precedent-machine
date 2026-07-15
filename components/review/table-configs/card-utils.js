@@ -1,3 +1,5 @@
+import { partyScopeFromCode, partyLabel } from '../../../lib/party-scope.js';
+
 function cardCode(card) {
   return String(card?.provision_subtype || card?.canonical_code || card?.provision_code || card?.code || '').trim().toUpperCase();
 }
@@ -244,30 +246,25 @@ function buildSectionSubjectResolver(allCards) {
 
 // Canonical party-side label. Single source of truth for "whose obligation
 // is this" across the review UI — replaces the byte-identical partySide()
-// copies that had drifted into the four nosol-*.config.js files. Reads the
-// card's party_scope first, then falls back to a -T/-S / -B/-P / -M suffix
-// on the provision code (e.g. NOSOL-B, IOC-T) so party still resolves when
-// party_scope is absent. Unknown/one-sided defaults to Target (most
-// single-party covenants bind the target). MUTUAL/BOTH now render as
-// "Mutual / Either Party" (the four old copies mislabeled mutual as Target).
-const PARTY_SIDE_LABELS = {
-  BUYER: 'Buyer / Parent',
-  PARENT: 'Buyer / Parent',
-  ACQUIRER: 'Buyer / Parent',
-  MUTUAL: 'Mutual / Either Party',
-  BOTH: 'Mutual / Either Party',
-  COMPANY: 'Target / Company',
-  TARGET: 'Target / Company',
-  SELLER: 'Target / Company',
-};
-
+// copies that had drifted into the four nosol-*.config.js files.
+//
+// The party token in the provision code/subtype (REP-B-ORG, COND-S-*,
+// TERMF-TARGET, IOC-T ...) is the RELIABLE signal — the stored
+// party_scope is a uniform 'MUTUAL' default baked in by store-cards.js, so it
+// is treated as no-signal unless it's an explicit NON-mutual value. Codes
+// with no party token (IOC-ISSUE, NOSOL-PROHIBIT — category-based subtypes
+// whose party lived on the now-dropped provision type) default to Target,
+// which is correct for the overwhelming single-party majority; the rare
+// buyer-side / merger-of-equals cases are recovered when store-cards re-mints
+// party_scope from the richer prov.type. See lib/party-scope.js.
 function partySide(card) {
+  const fromCode = partyLabel(partyScopeFromCode(cardCode(card)));
+  if (fromCode) return fromCode;
   const scope = String(card?.party_scope || '').toUpperCase();
-  if (PARTY_SIDE_LABELS[scope]) return PARTY_SIDE_LABELS[scope];
-  const code = cardCode(card);
-  if (/-(?:B|P)$/.test(code)) return 'Buyer / Parent';
-  if (/-M$/.test(code)) return 'Mutual / Either Party';
-  if (/-(?:T|S)$/.test(code)) return 'Target / Company';
+  if (scope && scope !== 'MUTUAL') {
+    const lbl = partyLabel(scope);
+    if (lbl) return lbl;
+  }
   return 'Target / Company';
 }
 

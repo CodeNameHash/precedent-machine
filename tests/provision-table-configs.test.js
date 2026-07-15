@@ -57,20 +57,25 @@ test.before(async () => {
 
 // Canonical partySide (card-utils.js) — the single source of truth that
 // replaced the four byte-identical copies in the nosol-*.config.js files.
-test('partySide resolves party from party_scope, fixes MUTUAL, and falls back to the code suffix', () => {
+// The provision CODE token is authoritative; the stored party_scope is a
+// uniform 'MUTUAL' default (store-cards.js) so it is treated as no-signal
+// unless it is an explicit NON-mutual value.
+test('partySide derives party from the code token and ignores the MUTUAL default', () => {
   const { partySide } = cardUtilsMod;
-  // party_scope wins
-  assert.equal(partySide({ party_scope: 'PARENT' }), 'Buyer / Parent');
-  assert.equal(partySide({ party_scope: 'BUYER' }), 'Buyer / Parent');
-  assert.equal(partySide({ party_scope: 'COMPANY' }), 'Target / Company');
-  // MUTUAL/BOTH — the four old copies mislabeled these as Target
-  assert.equal(partySide({ party_scope: 'MUTUAL' }), 'Mutual / Either Party');
-  assert.equal(partySide({ party_scope: 'BOTH' }), 'Mutual / Either Party');
-  // suffix fallback when party_scope is absent
-  assert.equal(partySide({ provision_subtype: 'NOSOL-B' }), 'Buyer / Parent');
-  assert.equal(partySide({ provision_subtype: 'IOC-T' }), 'Target / Company');
-  assert.equal(partySide({ provision_subtype: 'TERMR-M' }), 'Mutual / Either Party');
-  // unknown/one-sided default
+  // code token (embedded or trailing) wins — these all carry party_scope=MUTUAL in stored data
+  assert.equal(partySide({ provision_subtype: 'REP-B-ORG', party_scope: 'MUTUAL' }), 'Buyer / Parent');
+  assert.equal(partySide({ provision_subtype: 'REP-T-SANCTIONS', party_scope: 'MUTUAL' }), 'Target / Company');
+  assert.equal(partySide({ provision_subtype: 'COND-B-PREAMBLE', party_scope: 'MUTUAL' }), 'Buyer / Parent');
+  assert.equal(partySide({ provision_subtype: 'COND-S-PREAMBLE', party_scope: 'MUTUAL' }), 'Target / Company');
+  assert.equal(partySide({ provision_subtype: 'COND-M-STOCKHOLDER', party_scope: 'MUTUAL' }), 'Mutual / Either Party');
+  assert.equal(partySide({ provision_subtype: 'TERMF-TARGET', party_scope: 'MUTUAL' }), 'Target / Company');
+  assert.equal(partySide({ provision_subtype: 'COV-SHAPRV-PARENT', party_scope: 'MUTUAL' }), 'Buyer / Parent');
+  // category-based subtypes with no party token (IOC/NOSOL) default to Target,
+  // NOT Mutual — this is the regression the earlier Layer-1 version introduced
+  assert.equal(partySide({ provision_subtype: 'NOSOL-PROHIBIT', party_scope: 'MUTUAL' }), 'Target / Company');
+  assert.equal(partySide({ provision_subtype: 'IOC-ISSUE', party_scope: 'MUTUAL' }), 'Target / Company');
+  // an explicit non-mutual party_scope is honored when the code has no token
+  assert.equal(partySide({ provision_subtype: 'IOC-ISSUE', party_scope: 'PARENT' }), 'Buyer / Parent');
   assert.equal(partySide({}), 'Target / Company');
 });
 
