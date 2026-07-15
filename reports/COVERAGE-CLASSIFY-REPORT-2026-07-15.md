@@ -108,3 +108,23 @@ which is blocked until `reprocess.js`'s dry-run path is fixed to gate
 - Cox Enterprises — **BLOCKED**: same dry-run-purity failure; not run. Current coverage 90.3%.
 - Modiv Industrial — **BLOCKED**: same dry-run-purity failure; not run. Current coverage 93.9%.
 - CSRA — **BLOCKED**: same dry-run-purity failure; not run. Current coverage 93.8%.
+
+---
+
+## Addendum (post-fix): classify-only dry-runs executed 2026-07-15
+
+Run after the dry-run purity fix (db97149). Verdicts:
+
+| deal | diff | verdict |
+|---|---|---|
+| M.D.C. Holdings | none | no-action — coverage gap is structural (unclassifiable content), not a classification miss |
+| Forest City | +Annex-A defined-terms index → DEF | SAFE-ADDITIVE (queued for Ben go) |
+| HireRight | none | no-action — structural |
+| Landos Biopharma | parse yields only 6 sections; would DROP most existing classifications | **BLOCKED — stored full_text/parse regression; investigate before any classify apply** |
+| Cox Enterprises | §2–§3 churn STRUCT/CONSID/REP-T → OTHER | churn — document appears to embed a governance/stockholders agreement; Ben call on document-type handling |
+| Modiv Industrial | none | no-action — structural |
+| CSRA | subtype codes only (STRUCT-OFFER, COV-MEETING, MISC-AMEND) | SAFE-ADDITIVE-adjacent (code refinement; queued) |
+
+Conclusion: classify passes will not close the coverage% soft-gate shortfalls — those
+are structural. The actionable outcomes are the Landos parse regression (new finding,
+needs investigation) and the Cox document-type question.
