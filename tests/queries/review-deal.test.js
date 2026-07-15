@@ -174,3 +174,17 @@ test('filterRowsForMode does not mutate the source row array', () => {
   assert.equal(filtered.length, 1);
   assert.equal(filtered[0].provision_instance_id, 'b');
 });
+
+test('resolvedReferences carries only the light preview projection, not full definition rows', () => {
+  const rows = [
+    { provision_instance_id: 'def-1', kind: 'definition', short_title: 'MAE', defined_term: 'Material Adverse Effect', defined_value: 'means ...', primary_quote: 'q', region_full_text: 'X'.repeat(5000), ai_metadata: { features: { a: 1 } }, provenance: { source_doc_id: 'd' }, references: null, excerpt_id: 'e-def' },
+    { provision_instance_id: 'op-1', kind: 'cross-reference', short_title: 'Op', references: JSON.stringify(['def-1']), excerpt_id: 'e-op' },
+  ];
+  const shaped = shapeReviewDealRows('deal-x', rows, {});
+  const op = shaped.cards.find((c) => c.provision_instance_id === 'op-1');
+  assert.equal(op.resolvedReferences.length, 1);
+  const ref = op.resolvedReferences[0];
+  assert.deepEqual(Object.keys(ref).sort(), ['defined_term', 'defined_value', 'primary_quote', 'provision_instance_id', 'short_title']);
+  assert.equal(ref.region_full_text, undefined);
+  assert.equal(ref.ai_metadata, undefined);
+});
