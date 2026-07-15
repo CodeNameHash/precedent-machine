@@ -536,3 +536,24 @@ test('detectAncillaryRegions does not keep charter article definitions as merger
   assert.ok(Math.abs(spans[0][0] - charterAt) < 200, `span start ${spans[0][0]} vs charter ${charterAt}`);
   assert.equal(spans[0][1], source.length);
 });
+
+// ── EXT-2: quote-gate head fallback only forgives a SHORT tail ──────────────
+test('quoteAppearsIn: long quote with a genuine head but a FABRICATED tail is rejected', () => {
+  const source = normalizeForMatch('the Company shall give Parent written notice at least four Business Days in advance to the effect that the Company Board has resolved to effect a Company Board Recommendation Change');
+  // genuine first ~90 chars, then a fabricated parenthetical that appears nowhere
+  const q = normalizeForMatch('the Company shall give Parent written notice at least four Business Days in advance (the "Notice Period") and thereupon may terminate');
+  assert.equal(quoteAppearsIn(q, source), false);
+});
+
+test('quoteAppearsIn: long quote whose only divergence is a SHORT trailing truncation still verifies', () => {
+  const source = normalizeForMatch('subject to the terms hereof the Company shall not solicit initiate or knowingly facilitate any inquiries regarding a Company Takeover Proposal, and any rules promulgated thereunder shall apply.');
+  // quote is the same up to a ~10-char trailing clause that got cut
+  const q = normalizeForMatch('subject to the terms hereof the Company shall not solicit initiate or knowingly facilitate any inquiries regarding a Company Takeover Proposal, and any');
+  assert.equal(quoteAppearsIn(q, source), true);
+});
+
+test('quoteAppearsIn: short quote behavior is unchanged (exact containment still required)', () => {
+  const source = normalizeForMatch('the closing shall occur on the Closing Date as defined herein');
+  assert.equal(quoteAppearsIn(normalizeForMatch('the closing shall occur on the Closing Date'), source), true);
+  assert.equal(quoteAppearsIn(normalizeForMatch('the closing shall occur on some other date'), source), false);
+});
