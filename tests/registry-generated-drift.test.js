@@ -145,3 +145,42 @@ test('generator output is a superset of the persistence-gate key set', () => {
     fs.rmSync(tmp, { recursive: true, force: true });
   }
 });
+
+test('hand-maintained tags.js has no drift from the generated tag registry (TAGS superset)', () => {
+  const { tmp, freshTagsPath } = regenerateIntoTemp();
+  try {
+    const freshTags = loadMap(freshTagsPath, 'TAGS');
+    // The persistence gate for tags: lib/schema/index.js, prompt.js, and
+    // validation.js all resolve tags through this hand-maintained map (not
+    // tags.generated.js). A regen must never leave it missing a tag family
+    // the generator produces -- that silently zeroes out the "(N registered
+    // tags)" prompt hint and getTag()/registryHasTagCode() lookups for the
+    // affected family.
+    const handTags = require(path.join(REPO_ROOT, 'lib/schema/tags.js')).TAGS;
+
+    const missingFromHand = Object.keys(freshTags).filter((k) => !(k in handTags));
+    assert.deepEqual(
+      missingFromHand,
+      [],
+      `tags.js is missing tag keys that a fresh regen produces (hand registry has drifted -- port these entries into lib/schema/tags.js): ${missingFromHand.join(', ')}`,
+    );
+
+    // Content parity for every key the generator knows about, adjusting for
+    // the one documented additive hand override (tags.js appends
+    // "permittedExceptions" to every EXCEPTION_CODES tag's appearsOn -- see
+    // the loop at the bottom of that file). Any other divergence is drift.
+    for (const key of Object.keys(freshTags)) {
+      const expected = { ...freshTags[key], appearsOn: [...freshTags[key].appearsOn] };
+      if (expected.family === 'EXCEPTION_CODES' && !expected.appearsOn.includes('permittedExceptions')) {
+        expected.appearsOn = [...expected.appearsOn, 'permittedExceptions'];
+      }
+      assert.deepStrictEqual(
+        handTags[key],
+        expected,
+        `hand tags.js entry "${key}" drifted from the generated tag registry (beyond the documented EXCEPTION_CODES/permittedExceptions override). Regenerate and re-port if this is a legitimate generator change, or fix the hand edit.`,
+      );
+    }
+  } finally {
+    fs.rmSync(tmp, { recursive: true, force: true });
+  }
+});
