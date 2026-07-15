@@ -201,6 +201,14 @@
           "forceTheVoteType": "FTV_SOFT"
         }
       }
+    },
+    "Noble Africa": {
+      "_why": "FTV codebook golden (2026-07-15 sweep + full-text review). Reverse merger: the forced vote is PubCo's (ENDRA Life Sciences, the public issuer/acquirer), NOT a target lock-in. Sec 7.2(b) force-the-vote ('PubCo's obligation to ... hold the PubCo Special Meeting and submit for the approval of the PubCo Stockholders ... shall not be affected by any PubCo Change in Recommendation ... regardless of whether or not there shall have occurred any PubCo Change in Recommendation') coexists with NO PubCo self-termination-for-Superior-Proposal right in Article IX (Sec 9.1(a)-(g); the board may change its recommendation, but only the counterparty (the Company / Noble Africa) may terminate on that change under Sec 9.1(g)) — HARD. The 2026-07-15 regex sweep initially coded this NONE because the clause is phrased 'shall not be affected by ... regardless of whether', not 'Notwithstanding any Adverse Recommendation Change'. NOTE: acquirer/issuer-side forced vote — party attribution (buyer vs seller) to be added to the codebook per Ben 2026-07-15.",
+      "feature_code_pins": {
+        "NOSOL": {
+          "forceTheVoteType": "FTV_HARD"
+        }
+      }
     }
   }
 }
