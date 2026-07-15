@@ -1,7 +1,9 @@
 import fs from 'fs';
+import { isResidualCaptureEnabled } from '../../../../lib/schema-loss/residuals.js';
 
 const OBSERVATIONS_FILE = 'docs/schema-shape/unmapped-observations.json';
 const WARNINGS_FILE = 'docs/schema-shape/claim-integrity-warnings.jsonl';
+const FEATURE_RESIDUALS_FILE = 'docs/schema-shape/feature-residuals.json';
 const DEFAULT_LIMIT = 100;
 
 function readJson(file, fallback) {
@@ -33,6 +35,37 @@ export function readSchemaLossQueue(query = {}) {
       offset,
       limit,
       entries: entries.slice(offset, offset + limit),
+    };
+  }
+  if (dimension === 'C') {
+    // GAP-E feature residuals (P7): flag-gated at READ time, not just at
+    // write time, so a stale artifact from a prior flag-on run can never
+    // leak entries once the flag is back off -- "flag off -> zero behavior
+    // change" holds regardless of what's on disk.
+    if (!isResidualCaptureEnabled()) {
+      return {
+        dimension: 'C',
+        label: 'Feature residuals (verbatim-only)',
+        enabled: false,
+        total: 0,
+        offset,
+        limit,
+        entries: [],
+        note: 'Residual capture is disabled (RESIDUAL_CAPTURE_ENABLED is not set).',
+      };
+    }
+    const residuals = readJson(FEATURE_RESIDUALS_FILE, { entries: [] });
+    const entries = residuals.entries || [];
+    return {
+      dimension: 'C',
+      label: 'Feature residuals (verbatim-only)',
+      enabled: true,
+      total: entries.length,
+      offset,
+      limit,
+      entries: entries.slice(offset, offset + limit),
+      meta: residuals.source || {},
+      note: residuals.note || null,
     };
   }
   const queue = readJson(OBSERVATIONS_FILE, { clusters: [] });

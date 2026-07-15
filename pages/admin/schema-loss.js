@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import AdminNav from '../../components/admin/AdminNav';
 import ClusterPane from '../../components/admin/schema-loss/ClusterPane';
 import DecisionRouter from '../../components/admin/schema-loss/DecisionRouter';
+import FeatureResidualPane from '../../components/admin/schema-loss/FeatureResidualPane';
 import IntegrityWarningPane from '../../components/admin/schema-loss/IntegrityWarningPane';
 import QueueSidebar from '../../components/admin/schema-loss/QueueSidebar';
 
@@ -18,6 +19,26 @@ export default function SchemaLossPage() {
   const [queue, setQueue] = useState({ entries: [] });
   const [selected, setSelected] = useState(null);
   const [status, setStatus] = useState('');
+  // GAP-E residual-capture plumbing (P7): Dimension C ("Feature residuals")
+  // is flag-gated (RESIDUAL_CAPTURE_ENABLED) and stays entirely absent from
+  // this page -- not just empty, absent -- when the flag is off. This is a
+  // one-time probe fetch (independent of the `dimension` toggle state
+  // above) purely to learn whether the tab should exist at all.
+  const [residualCaptureEnabled, setResidualCaptureEnabled] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchQueue('C')
+      .then((nextQueue) => {
+        if (!cancelled) setResidualCaptureEnabled(Boolean(nextQueue.enabled));
+      })
+      .catch(() => {
+        if (!cancelled) setResidualCaptureEnabled(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -84,6 +105,7 @@ export default function SchemaLossPage() {
         {[
           ['A', 'Uncovered text'],
           ['B', 'Suspect Claims'],
+          ...(residualCaptureEnabled ? [['C', 'Feature residuals']] : []),
         ].map(([value, label]) => (
           <button
             key={value}
@@ -101,8 +123,17 @@ export default function SchemaLossPage() {
       <main className="grid gap-4 lg:grid-cols-[320px_minmax(0,1fr)]">
         <QueueSidebar dimension={dimension} entries={queue.entries || []} selectedId={selectedId} onSelect={setSelected} />
         <div className="space-y-4">
-          {dimension === 'B' ? <IntegrityWarningPane entry={selected} /> : <ClusterPane entry={selected} />}
-          <DecisionRouter dimension={dimension} entry={selected} onDecision={decide} status={status} />
+          {dimension === 'C' ? (
+            <FeatureResidualPane entry={selected} />
+          ) : dimension === 'B' ? (
+            <IntegrityWarningPane entry={selected} />
+          ) : (
+            <ClusterPane entry={selected} />
+          )}
+          {/* Dimension C is read-only by design (P7 scope line: a read path,
+              not a new write requirement) -- no DecisionRouter, no route to
+              force a code onto a residual. */}
+          {dimension === 'C' ? null : <DecisionRouter dimension={dimension} entry={selected} onDecision={decide} status={status} />}
         </div>
       </main>
     </div>
