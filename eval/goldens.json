@@ -174,7 +174,7 @@
       },
       "feature_code_pins": {
         "NOSOL": {
-          "forceTheVoteType": "FTV_SOFT_TARGET"
+          "forceTheVoteType": "FTV_SOFT"
         }
       }
     },
@@ -182,7 +182,7 @@
       "_why": "FTV codebook golden (2026-07-15 sweep). QXO/TopBuild is the corpus's ONLY hard force-the-vote: the vote-survives-ARC covenant ('neither a Company Adverse Recommendation Change nor a Company Intervening Event Recommendation Change shall limit the Company's obligation to submit this Agreement to the stockholders') coexists with NO company self-termination-for-Superior-Proposal right anywhere in the deal (no TERMR/Superior Proposal row; only Intervening-Event board-recommendation-change language). Pin arms on the first NOSOL re-extract carrying forceTheVoteType.",
       "feature_code_pins": {
         "NOSOL": {
-          "forceTheVoteType": "FTV_HARD_TARGET"
+          "forceTheVoteType": "FTV_HARD"
         }
       }
     },
@@ -190,7 +190,7 @@
       "_why": "FTV codebook golden (2026-07-15 sweep). LabCorp/Covance: explicit FTV clause ('Notwithstanding any Adverse Recommendation Change, the Company shall nonetheless submit this Agreement to the Company's stockholders for adoption') coexisting with a TERMR/Superior Proposal company self-termination right (f) — the canonical SOFT pattern.",
       "feature_code_pins": {
         "NOSOL": {
-          "forceTheVoteType": "FTV_SOFT_TARGET"
+          "forceTheVoteType": "FTV_SOFT"
         }
       }
     },
@@ -198,7 +198,7 @@
       "_why": "FTV codebook golden (2026-07-15 sweep). Verizon/Frontier: 'Notwithstanding any Adverse Recommendation Change ... the Company shall take all necessary actions ... to duly call, give notice of, convene and hold a meeting of its stockholders' coexisting with a TERMR/Superior Proposal company self-termination right (ii) — SOFT.",
       "feature_code_pins": {
         "NOSOL": {
-          "forceTheVoteType": "FTV_SOFT_TARGET"
+          "forceTheVoteType": "FTV_SOFT"
         }
       }
     },
@@ -206,7 +206,7 @@
       "_why": "FTV codebook golden (2026-07-15 sweep + full-text review). Reverse merger: the forced vote is PubCo's (ENDRA Life Sciences, the public issuer/acquirer), NOT a target lock-in. Sec 7.2(b) force-the-vote ('PubCo's obligation to ... hold the PubCo Special Meeting and submit for the approval of the PubCo Stockholders ... shall not be affected by any PubCo Change in Recommendation ... regardless of whether or not there shall have occurred any PubCo Change in Recommendation') coexists with NO PubCo self-termination-for-Superior-Proposal right in Article IX (Sec 9.1(a)-(g); the board may change its recommendation, but only the counterparty (the Company / Noble Africa) may terminate on that change under Sec 9.1(g)) — HARD. The 2026-07-15 regex sweep initially coded this NONE because the clause is phrased 'shall not be affected by ... regardless of whether', not 'Notwithstanding any Adverse Recommendation Change'. NOTE: acquirer/issuer-side forced vote — party attribution (buyer vs seller) to be added to the codebook per Ben 2026-07-15.",
       "feature_code_pins": {
         "NOSOL": {
-          "forceTheVoteType": "FTV_HARD_ACQUIRER"
+          "forceTheVoteType": "FTV_HARD"
         }
       }
     }

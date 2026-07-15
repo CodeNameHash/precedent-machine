@@ -8115,7 +8115,7 @@
     },
     {
       "key": "forceTheVoteType",
-      "label": "Force the Vote — strength + party code (FTV_HARD/SOFT_TARGET/ACQUIRER/BOTH, or FTV_NONE)",
+      "label": "Force the Vote — strength code (FTV_HARD / FTV_SOFT / FTV_NONE)",
       "data_type": "ENUM",
       "applies_to": "NOSOL",
       "party_scope": "PER_PARTY",
@@ -8124,12 +8124,8 @@
         "CONDITIONAL_TRIGGERED"
       ],
       "states": [
-        "FTV_HARD_TARGET",
-        "FTV_HARD_ACQUIRER",
-        "FTV_HARD_BOTH",
-        "FTV_SOFT_TARGET",
-        "FTV_SOFT_ACQUIRER",
-        "FTV_SOFT_BOTH",
+        "FTV_HARD",
+        "FTV_SOFT",
         "FTV_NONE"
       ],
       "source_file": "lib/schema/features.js",
@@ -8140,7 +8136,7 @@
         "stateful_test_deal_ids_required": true,
         "notes": "Resolve forceTheVoteType from lib/schema/features.js; tagged {code,label,text} object — normalise to the FORCE_THE_VOTE code (lib/taxonomy.js), which now encodes strength+party, before activation."
       },
-      "resolver_notes": "Coded force-the-vote posture on two axes — strength (HARD/SOFT: does the obligated party have a self-termination-for-Superior escape?) and party (TARGET/ACQUIRER/BOTH: whose stockholder vote is force-locked). FTV_NONE = no vote-survives-ARC covenant, party-free.",
+      "resolver_notes": "Coded force-the-vote strength (HARD/SOFT/NONE — does the obligated party have a self-termination-for-Superior escape?). Party is NOT in this code; it rides the row via appliesToParty (PARTY_COMPANY/PARENT/MUTUAL). Both-sided deals get one force-the-vote row per party.",
       "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
       "origin": "schema-features",
       "merged_from": [],
