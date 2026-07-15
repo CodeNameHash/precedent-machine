@@ -6,6 +6,31 @@ const { slugToKind } = require('../../../lib/query/types');
 const DEAL_SELECT = 'id, acquirer, target, value_usd, announce_date, sector, metadata';
 const PROVISION_SELECT = 'id, deal_id, type, category, full_text, ai_metadata, created_at';
 
+// PostgREST caps an unranged select() at 1000 rows. The corpus has ~12,600
+// provisions across 40 deals, so a single unpaginated fetch here silently
+// ran EVERY query against only the oldest 1000 rows (6 of 40 deals) — no
+// error, just wrong/empty answers for the other 34. Page through like the
+// claims reader in lib/queries/review-deal.js.
+const PROVISION_PAGE_SIZE = 1000;
+
+async function fetchAllProvisions(sb) {
+  const out = [];
+  let offset = 0;
+  for (;;) {
+    const { data, error } = await sb
+      .from('provisions')
+      .select(PROVISION_SELECT)
+      .order('created_at', { ascending: true })
+      .order('id', { ascending: true })
+      .range(offset, offset + PROVISION_PAGE_SIZE - 1);
+    if (error) throw new Error(error.message);
+    out.push(...(data || []));
+    if (!data || data.length < PROVISION_PAGE_SIZE) break;
+    offset += PROVISION_PAGE_SIZE;
+  }
+  return out;
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'GET' && req.method !== 'POST') return res.status(405).json({ error: 'GET or POST only' });
   const sb = getServiceSupabase();
@@ -28,12 +53,11 @@ export default async function handler(req, res) {
       if (!payload && source.query_payload) payload = source.query_payload;
     }
 
-    const [{ data: deals, error: dErr }, { data: provisions, error: pErr }] = await Promise.all([
+    const [{ data: deals, error: dErr }, provisions] = await Promise.all([
       sb.from('deals').select(DEAL_SELECT).order('announce_date', { ascending: false }),
-      sb.from('provisions').select(PROVISION_SELECT).order('created_at', { ascending: true }),
+      fetchAllProvisions(sb),
     ]);
     if (dErr) throw new Error(dErr.message);
-    if (pErr) throw new Error(pErr.message);
 
     const result = await runQuery(kind, payload, { context: { deals: deals || [], provisions: provisions || [] } });
     if (savedQuery) {
