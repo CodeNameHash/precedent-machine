@@ -47,6 +47,7 @@ const {
   diffClassifications,
 } = require('../lib/parser-v2/snapshot');
 const { attachRegionIdsToSections, persistParserRegions } = require('../lib/parser-v2/region-store');
+const { MODEL_READONLY_KEYS } = require('../lib/schema/prompt');
 
 /* ── pure helpers (exported for tests — no DB, no LLM) ───────────────────── */
 
@@ -78,6 +79,94 @@ function parseTypesArg(value) {
 function expandGroup(type) {
   const { expandTypeGroup } = require('../lib/parser-v2/extract');
   return expandTypeGroup(type);
+}
+
+/* ── EXT-4 guard: per-type reprocess vs. cross-type post-pass features ───────
+   linkBringDownToReps / linkKnowledgeScopeToReps / resolveCondCitedProvisionNames
+   (lib/parser-v2/extract.js:5140/5144/5171) stamp these features onto REP/COND
+   provisions from OUTSIDE their own type's extraction, and run ONLY in the
+   all-types extractProvisions() path — never in runExtractTypePhase() (see
+   lib/parser-v2/run-extract.js:134-137, which deliberately skips them). A
+   per-type --apply reprocess deletes + reinserts the affected type's
+   provisions (storeProvisionsForType) without re-running these passes, so
+   the features are stripped. All three are MODEL_READONLY
+   (lib/schema/prompt.js MODEL_READONLY_KEYS), so the per-type extraction LLM
+   is not even allowed to repopulate them afterward — the loss is permanent
+   short of a full all-types re-ingest. */
+const CROSS_TYPE_POST_PASS_FEATURES = {
+  // linkBringDownToReps (extract.js:6993) — stamped onto REP-T/REP-B.
+  linkedBringDownStandard: ['REP-T', 'REP-B'],
+  // linkKnowledgeScopeToReps (extract.js:6712) — stamped onto REP-T/REP-B.
+  knowledgeScope: ['REP-T', 'REP-B'],
+  // resolveCondCitedProvisionNames (extract.js:6380) — stamped onto any
+  // provision whose type starts with "COND" (COND, COND-M, COND-B, COND-S).
+  citedProvisionNames: ['COND', 'COND-M', 'COND-B', 'COND-S'],
+};
+
+/**
+ * Given the requested --types (already validated/uppercased, pre-group-
+ * expansion), returns the list of { feature, types } conflicts where a
+ * requested type (after group expansion, e.g. COND -> COND-M/COND-B/COND-S)
+ * would strip a MODEL_READONLY cross-type post-pass feature. Empty array
+ * means the per-type reprocess is safe (e.g. NOSOL/MISC/TERMF — the happy
+ * path — never conflicts).
+ */
+function stripRiskConflicts(types) {
+  const requested = new Set();
+  for (const t of types || []) {
+    for (const g of expandGroup(t)) requested.add(g);
+  }
+  const conflicts = [];
+  for (const [feature, affectedTypes] of Object.entries(CROSS_TYPE_POST_PASS_FEATURES)) {
+    // Only guard features that are actually locked (MODEL_READONLY) today —
+    // if a feature is ever promoted off that list, per-type reprocess could
+    // legitimately repopulate it and this guard should stand down for it.
+    if (!MODEL_READONLY_KEYS.has(feature)) continue;
+    const hitTypes = affectedTypes.filter((t) => requested.has(t));
+    if (hitTypes.length > 0) conflicts.push({ feature, types: hitTypes });
+  }
+  return conflicts;
+}
+
+/** Human-readable refusal message for a non-empty stripRiskConflicts() result. */
+function formatStripRiskError(conflicts) {
+  const lines = conflicts.map(
+    (c) => `  - "${c.feature}" (MODEL_READONLY) is populated only by the all-types cross-type ` +
+      `post-pass and would be permanently stripped from: ${c.types.join(', ')}`,
+  );
+  return (
+    `Refusing per-type --apply reprocess: it would unrecoverably strip cross-type ` +
+    `post-pass feature(s):\n${lines.join('\n')}\n` +
+    `Re-run with --allow-strip to override (data loss is permanent for MODEL_READONLY ` +
+    `keys until a full all-types re-ingest), or use a full all-types reprocess/ingest instead.`
+  );
+}
+
+/* ── DATA-1 (GAP-A) end-of-run warning ────────────────────────────────────── */
+
+/**
+ * Prominent warning printed after a per-type --apply extraction (not
+ * --classify-only), naming the exact rematerialize command to run. This
+ * script writes `provisions` only — `claims` (what the review UI and
+ * precedent search actually read) go stale immediately and stay stale until
+ * scripts/reprocess/rematerialize-claims.js is run by hand. See
+ * reports/CODEBASE-REVIEW-2026-07-15.md DATA-1 — wiring it in automatically
+ * is a bigger decision left to Ben; this only makes the gap loud.
+ */
+function formatRematerializeWarning(dealIds) {
+  const ids = (dealIds || []).join(',');
+  return (
+    '\n' +
+    '⚠ ⚠ ⚠  WARNING: claims are NOT materialized by this run  ⚠ ⚠ ⚠\n' +
+    'This --apply reprocess wrote `provisions` only. `claims` (what the review UI\n' +
+    'and precedent search actually read) are now STALE for the deal(s) above and\n' +
+    'will keep serving old codes until you rematerialize them. Run:\n' +
+    '\n' +
+    `  node scripts/reprocess/rematerialize-claims.js --deal ${ids} --apply\n` +
+    '\n' +
+    '(dry-run first without --apply to review the plan). This does NOT happen\n' +
+    'automatically — ship nothing as "done" until that command has been run.\n'
+  );
 }
 
 /**
@@ -173,6 +262,10 @@ module.exports = {
   formatClassifyDiff,
   classifiedByTally,
   classifyFromStoredText,
+  stripRiskConflicts,
+  formatStripRiskError,
+  CROSS_TYPE_POST_PASS_FEATURES,
+  formatRematerializeWarning,
 };
 
 /* ── CLI / DB / LLM plumbing ─────────────────────────────────────────────── */
@@ -198,7 +291,7 @@ function usage() {
 function parseArgs(argv) {
   const args = {
     deal: null, all: false, typesRaw: [], classifyOnly: false,
-    apply: false, dryRun: false, backend: 'claude', model: null,
+    apply: false, dryRun: false, backend: 'claude', model: null, allowStrip: false,
   };
   for (let i = 2; i < argv.length; i++) {
     const a = argv[i];
@@ -210,6 +303,7 @@ function parseArgs(argv) {
     else if (a === '--dry-run') args.dryRun = true;
     else if (a === '--backend') args.backend = argv[++i];
     else if (a === '--model') args.model = argv[++i];
+    else if (a === '--allow-strip') args.allowStrip = true;
     else { console.error(`Unknown arg: ${a}`); usage(); }
   }
   if (!args.deal && !args.all) usage();
@@ -456,6 +550,24 @@ async function main() {
   if (!dbUrl || !key) { console.error('Supabase creds required (env / .env.local).'); process.exit(1); }
   const sb = createClient(dbUrl, key);
 
+  // EXT-4 guard: refuse a per-type --apply reprocess that would strip
+  // MODEL_READONLY cross-type post-pass features (see stripRiskConflicts
+  // above). Does not apply to --classify-only (no provision writes) or to
+  // dry-runs (no writes at all) — only a committing per-type extract can
+  // actually strip anything.
+  if (apply && !args.classifyOnly) {
+    const conflicts = stripRiskConflicts(args.types);
+    if (conflicts.length > 0 && !args.allowStrip) {
+      console.error(formatStripRiskError(conflicts));
+      process.exit(1);
+    }
+    if (conflicts.length > 0 && args.allowStrip) {
+      console.warn(`--allow-strip set: proceeding despite feature-strip risk on ${
+        conflicts.map((c) => `${c.feature} (${c.types.join(', ')})`).join('; ')
+      }`);
+    }
+  }
+
   const deals = await fetchDeals(sb, args);
   const mode = args.classifyOnly ? 'classify-only' : `types: ${args.types.join(', ')}`;
   console.log(`Reprocess (${mode}) — ${deals.length} deal(s), ${apply ? 'APPLY' : 'dry-run'}`);
@@ -484,6 +596,16 @@ async function main() {
   if (!apply && !args.classifyOnly) {
     console.log('\nDry-run complete: no writes, no LLM calls. Re-run with --apply to execute.');
   }
+
+  // DATA-1 (GAP-A): a per-type/--apply extraction writes `provisions` only —
+  // `claims` (what the review UI actually reads, lib/queries/claims-adapter.js)
+  // go stale immediately and are NOT materialized by this script. Make that
+  // gap loud rather than silent; do not auto-run the rematerialize (a bigger
+  // wiring decision — see reports/CODEBASE-REVIEW-2026-07-15.md DATA-1).
+  if (apply && !args.classifyOnly) {
+    console.warn(formatRematerializeWarning(deals.map((d) => d.id)));
+  }
+
   if (!allOk) process.exitCode = 1;
 }
 

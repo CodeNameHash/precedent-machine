@@ -24,6 +24,9 @@ const {
   countsForTypes,
   formatClassifyDiff,
   classifiedByTally,
+  stripRiskConflicts,
+  formatStripRiskError,
+  formatRematerializeWarning,
 } = require('../scripts/reprocess');
 
 const { classifySections } = require('../lib/parser-v2/classify');
@@ -176,6 +179,65 @@ test('formatClassifyDiff renders terse change lines', () => {
 });
 
 /* ── planning helpers ────────────────────────────────────────────────────── */
+
+/* ── EXT-4 guard: stripRiskConflicts ──────────────────────────────────────── */
+
+test('stripRiskConflicts: happy path (NOSOL/MISC/TERMF) has zero conflicts', () => {
+  assert.deepStrictEqual(stripRiskConflicts(['NOSOL']), []);
+  assert.deepStrictEqual(stripRiskConflicts(['MISC']), []);
+  assert.deepStrictEqual(stripRiskConflicts(['TERMF']), []);
+  assert.deepStrictEqual(stripRiskConflicts(['NOSOL', 'MISC', 'TERMF']), []);
+});
+
+test('stripRiskConflicts: flags REP-T and REP-B for linkedBringDownStandard + knowledgeScope', () => {
+  const conflicts = stripRiskConflicts(['REP-T']);
+  const byFeature = Object.fromEntries(conflicts.map((c) => [c.feature, c.types]));
+  assert.deepStrictEqual(byFeature.linkedBringDownStandard, ['REP-T']);
+  assert.deepStrictEqual(byFeature.knowledgeScope, ['REP-T']);
+  assert.ok(!('citedProvisionNames' in byFeature));
+
+  const both = stripRiskConflicts(['REP-T', 'REP-B']);
+  const byFeature2 = Object.fromEntries(both.map((c) => [c.feature, c.types]));
+  assert.deepStrictEqual(byFeature2.linkedBringDownStandard.sort(), ['REP-B', 'REP-T']);
+});
+
+test('stripRiskConflicts: COND (group-expanded to COND-M/COND-B/COND-S) flags citedProvisionNames', () => {
+  const conflicts = stripRiskConflicts(['COND']);
+  assert.equal(conflicts.length, 1);
+  assert.equal(conflicts[0].feature, 'citedProvisionNames');
+  assert.deepStrictEqual(conflicts[0].types.sort(), ['COND', 'COND-B', 'COND-M', 'COND-S']);
+});
+
+test('stripRiskConflicts: a mixed request only flags the affected type', () => {
+  const conflicts = stripRiskConflicts(['REP-T', 'NOSOL']);
+  assert.equal(conflicts.length, 2); // linkedBringDownStandard + knowledgeScope, both on REP-T only
+  for (const c of conflicts) assert.deepStrictEqual(c.types, ['REP-T']);
+});
+
+test('stripRiskConflicts: unrelated REP/COND-adjacent types are not flagged (DEF, REP-B untouched by COND request)', () => {
+  assert.deepStrictEqual(stripRiskConflicts(['DEF']), []);
+});
+
+test('formatStripRiskError names the feature and the type, and mentions --allow-strip', () => {
+  const msg = formatStripRiskError(stripRiskConflicts(['REP-T']));
+  assert.match(msg, /linkedBringDownStandard/);
+  assert.match(msg, /knowledgeScope/);
+  assert.match(msg, /REP-T/);
+  assert.match(msg, /--allow-strip/);
+});
+
+/* ── DATA-1: rematerialize-claims warning ─────────────────────────────────── */
+
+test('formatRematerializeWarning names the exact rematerialize command with the reprocessed deal ids', () => {
+  const msg = formatRematerializeWarning(['deal-a', 'deal-b']);
+  assert.match(msg, /claims are NOT materialized/);
+  assert.match(msg, /node scripts\/reprocess\/rematerialize-claims\.js --deal deal-a,deal-b --apply/);
+});
+
+test('formatRematerializeWarning handles a single deal id', () => {
+  const msg = formatRematerializeWarning(['only-deal']);
+  assert.match(msg, /--deal only-deal --apply/);
+});
 
 test('parseTypesArg splits, uppercases, dedupes, validates', () => {
   assert.deepStrictEqual(parseTypesArg('termf,anti'), ['TERMF', 'ANTI']);

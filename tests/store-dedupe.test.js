@@ -59,6 +59,42 @@ test('dedupeProvisions drops identical text under different categories', () => {
   assert.deepEqual(dedupeProvisions(provisions), [provisions[0]]);
 });
 
+test('dedupeProvisions keeps two provisions with identical text but DIFFERENT codes (EXT-5)', () => {
+  const provisions = [
+    { type: 'NOSOL', code: 'NOSOL-CEASE-DISC', category: 'Cease Discussions', full_text: 'The Company shall immediately cease all discussions.' },
+    { type: 'NOSOL', code: 'NOSOL-DATA-ROOM', category: 'Data Room Access Termination', full_text: 'The Company shall immediately cease all discussions.' },
+  ];
+
+  assert.deepEqual(dedupeProvisions(provisions), provisions);
+});
+
+test('dedupeProvisions keeps identical-text provisions with different codes even across types (2nd pass)', () => {
+  const provisions = [
+    { type: 'COND-B-REP', code: 'COND-B-REP-BRINGDOWN', category: 'Bring-down', full_text: 'Same minimal clause span.' },
+    { type: 'COND-S-REP', code: 'COND-S-REP-BRINGDOWN', category: 'Bring-down', full_text: 'Same minimal clause span.' },
+  ];
+
+  assert.deepEqual(dedupeProvisions(provisions), provisions);
+});
+
+test('dedupeProvisions still drops identical text with the SAME code (no change for real duplicates)', () => {
+  const provisions = [
+    { type: 'NOSOL', code: 'NOSOL-CEASE-DISC', category: 'Cease Discussions', full_text: 'The Company shall immediately cease all discussions.' },
+    { type: 'NOSOL', code: 'NOSOL-CEASE-DISC', category: 'Cease Discussions', full_text: 'The Company shall immediately cease all discussions.' },
+  ];
+
+  assert.deepEqual(dedupeProvisions(provisions), [provisions[0]]);
+});
+
+test('dedupeProvisions resolves the code via features.canonicalCode when prov.code is absent', () => {
+  const provisions = [
+    { type: 'IOC-T', category: 'Restriction A', full_text: 'Shared clause text.', features: { canonicalCode: 'IOC-ACCOUNTING' } },
+    { type: 'IOC-T', category: 'Restriction B', full_text: 'Shared clause text.', features: { canonicalCode: 'IOC-DIVIDENDS' } },
+  ];
+
+  assert.deepEqual(dedupeProvisions(provisions), provisions);
+});
+
 test('dedupeProvisions never merges empty or missing full_text provisions', () => {
   const provisions = [
     { type: 'EQUITY', category: 'Blank A', full_text: '' },
