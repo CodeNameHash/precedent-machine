@@ -236,8 +236,13 @@ function FeatureFieldEditor({ field, value, onChange, onAddCustomOption }) {
     effType = 'tagged';
   }
 
+  // Stable id for the primary control so labelEl's htmlFor programmatically
+  // associates the field name with its input for screen-reader users (P-a11y
+  // item 2). For fields with more than one sub-control (list, list-tagged),
+  // the container is instead marked as a labelled group via aria-labelledby.
+  const fieldId = `field-${field.key}`;
   const labelEl = (
-    <label className="block text-[11px] font-ui text-inkLight mb-0.5" title={field.label || label}>
+    <label htmlFor={fieldId} className="block text-[11px] font-ui text-inkLight mb-0.5" title={field.label || label}>
       {label}
     </label>
   );
@@ -270,6 +275,7 @@ function FeatureFieldEditor({ field, value, onChange, onAddCustomOption }) {
     return (
       <div className="space-y-1">
         <select
+          id={opts.id}
           value={pickValue}
           onChange={(e) => {
             const choice = e.target.value;
@@ -405,6 +411,7 @@ function FeatureFieldEditor({ field, value, onChange, onAddCustomOption }) {
       <div className="space-y-1">
         {labelEl}
         <select
+          id={fieldId}
           value={pickValue}
           onChange={(e) => {
             const choice = e.target.value;
@@ -451,11 +458,12 @@ function FeatureFieldEditor({ field, value, onChange, onAddCustomOption }) {
       <div>
         {labelEl}
         {taxonomyEntries
-          ? renderTaggedPicker(item, (next) => onChange(next), { small: false })
+          ? renderTaggedPicker(item, (next) => onChange(next), { small: false, id: fieldId })
           : (
             // No taxonomy in scope — fall back to plain text input but with
             // the tagged shape so the rest of the renderer is consistent.
             <input
+              id={fieldId}
               value={item.text || ''}
               onChange={(e) => {
                 const text = e.target.value;
@@ -482,7 +490,7 @@ function FeatureFieldEditor({ field, value, onChange, onAddCustomOption }) {
     return (
       <div>
         {labelEl}
-        <div className="space-y-1.5">
+        <div className="space-y-1.5" role="group" aria-labelledby={fieldId}>
           {items.length === 0 && (
             <p className="text-[11px] font-ui text-inkFaint italic">None</p>
           )}
@@ -541,7 +549,7 @@ function FeatureFieldEditor({ field, value, onChange, onAddCustomOption }) {
     return (
       <div>
         {labelEl}
-        <div className="space-y-1">
+        <div className="space-y-1" role="group" aria-labelledby={fieldId}>
           {items.length === 0 && (
             <p className="text-[11px] font-ui text-inkFaint italic">None</p>
           )}
@@ -589,6 +597,7 @@ function FeatureFieldEditor({ field, value, onChange, onAddCustomOption }) {
       <div>
         {labelEl}
         <input
+          id={fieldId}
           value={inner == null || typeof inner === 'object' ? '' : String(inner)}
           onChange={(e) => {
             const v = e.target.value;
@@ -612,6 +621,7 @@ function FeatureFieldEditor({ field, value, onChange, onAddCustomOption }) {
       <div>
         {labelEl}
         <textarea
+          id={fieldId}
           value={display}
           onChange={(e) => {
             const t = e.target.value;
@@ -636,6 +646,7 @@ function FeatureFieldEditor({ field, value, onChange, onAddCustomOption }) {
     <div>
       {labelEl}
       <input
+        id={fieldId}
         value={value == null ? '' : String(value)}
         onChange={(e) => {
           const v = e.target.value;

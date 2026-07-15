@@ -240,7 +240,19 @@ export default function HomePage() {
                     </thead>
                     <tbody>
                       {!data ? Array.from({ length: 6 }).map((_, i) => <tr key={i}><td colSpan="6" className="rowLoading" /></tr>) : visibleDeals.map((deal) => (
-                        <tr key={deal.id} onClick={() => router.push(`/review/${deal.id}`)}>
+                        <tr
+                          key={deal.id}
+                          onClick={() => router.push(`/review/${deal.id}`)}
+                          role="button"
+                          tabIndex={0}
+                          onKeyDown={(e) => {
+                            if (e.target !== e.currentTarget) return;
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              router.push(`/review/${deal.id}`);
+                            }
+                          }}
+                        >
                           <td onClick={(e) => e.stopPropagation()}>
                             <input type="checkbox" checked={selected.has(deal.id)} onChange={() => setSelected((prev) => {
                               const next = new Set(prev);

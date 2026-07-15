@@ -858,7 +858,7 @@ function MaterialContractsCompare({ deals, perDealProvs }) {
           {presentCodes.length} bucket{presentCodes.length === 1 ? '' : 's'}
         </span>
       </header>
-      <div style={{ border: '1px solid var(--line)', borderRadius: 8, overflow: 'hidden', background: 'var(--surface)' }}>
+      <div style={{ border: '1px solid var(--line)', borderRadius: 8, overflow: 'auto', background: 'var(--surface)' }}>
         <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0, fontSize: 12.5, tableLayout: 'fixed' }}>
           <colgroup>
             <col style={{ width: 260 }} />
@@ -964,7 +964,13 @@ function RepsCompare({ side, deals, perDealProvs, onSelectRow }) {
     const threshold = compactValueText(f.dollarThreshold, 'dollarThreshold');
 
     return (
-      <div onClick={onClick} style={{ cursor: onClick ? 'pointer' : 'default', display: 'flex', flexDirection: 'column', gap: 5 }}>
+      <div
+        onClick={onClick}
+        style={{ cursor: onClick ? 'pointer' : 'default', display: 'flex', flexDirection: 'column', gap: 5 }}
+        role={onClick ? 'button' : undefined}
+        tabIndex={onClick ? 0 : undefined}
+        onKeyDown={onClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(e); } } : undefined}
+      >
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
           {matLabel && <ComparePill>Materiality: {matLabel}</ComparePill>}
           {knowLabel && <ComparePill>Knowledge: {knowLabel}</ComparePill>}
@@ -994,7 +1000,7 @@ function RepsCompare({ side, deals, perDealProvs, onSelectRow }) {
           {rowOrder.length} rep{rowOrder.length === 1 ? '' : 's'}
         </span>
       </header>
-      <div style={{ border: '1px solid var(--line)', borderRadius: 8, overflow: 'hidden', background: 'var(--surface)' }}>
+      <div style={{ border: '1px solid var(--line)', borderRadius: 8, overflow: 'auto', background: 'var(--surface)' }}>
         <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0, fontSize: 12.5, tableLayout: 'fixed' }}>
           <colgroup>
             <col style={{ width: 240 }} />
@@ -1124,7 +1130,13 @@ function IocCellContent({ provision, onClick }) {
     }}>{children}</span>
   );
   return (
-    <div onClick={onClick} style={{ cursor: onClick ? 'pointer' : 'default', display: 'flex', flexDirection: 'column', gap: 4 }}>
+    <div
+      onClick={onClick}
+      style={{ cursor: onClick ? 'pointer' : 'default', display: 'flex', flexDirection: 'column', gap: 4 }}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={onClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(e); } } : undefined}
+    >
       <div style={{ fontSize: 12, lineHeight: 1.4 }}>
         <SubLabel>Exceptions</SubLabel>
         {exceptionsText ? (
@@ -1200,7 +1212,7 @@ function IocNegativeCovenantsCompare({ side, deals, perDealProvs, onSelectRow })
           {totalRows} categor{totalRows === 1 ? 'y' : 'ies'}
         </span>
       </header>
-      <div style={{ border: '1px solid var(--line)', borderRadius: 8, overflow: 'hidden', background: 'var(--surface)' }}>
+      <div style={{ border: '1px solid var(--line)', borderRadius: 8, overflow: 'auto', background: 'var(--surface)' }}>
         <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0, fontSize: 12.5, tableLayout: 'fixed' }}>
           <colgroup>
             <col style={{ width: 280 }} />
@@ -1331,7 +1343,7 @@ function CanonicalConditionsCompare({ family, deals, perDealProvs, onSelectRow }
           {visibleRows.length} canonical condition{visibleRows.length === 1 ? '' : 's'}
         </span>
       </header>
-      <div style={{ border: '1px solid var(--line)', borderRadius: 8, overflow: 'hidden', background: 'var(--surface)' }}>
+      <div style={{ border: '1px solid var(--line)', borderRadius: 8, overflow: 'auto', background: 'var(--surface)' }}>
         <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0, fontSize: 12.5, tableLayout: 'fixed' }}>
           <colgroup>
             <col style={{ width: 260 }} />
@@ -1644,7 +1656,7 @@ function SummaryMatrix({
           style={{
             border: '1px solid var(--line)',
             borderRadius: 8,
-            overflow: 'hidden',
+            overflow: 'auto',
             background: 'var(--surface)',
           }}
         >

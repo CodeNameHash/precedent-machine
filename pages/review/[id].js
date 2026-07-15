@@ -4301,6 +4301,9 @@ function StructTable({ provisions, onSelectProvision }) {
               <td
                 className={`px-3 py-2 text-ink ${detailsClickable ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
                 onClick={detailsClickable ? () => showEvidence(rowQuote) : undefined}
+                role={detailsClickable ? 'button' : undefined}
+                tabIndex={detailsClickable ? 0 : undefined}
+                onKeyDown={detailsClickable ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showEvidence(rowQuote); } } : undefined}
               >
                 <HoverSource quote={rowQuote} as="div">
                   {cells.length === 1 ? (
@@ -4960,6 +4963,9 @@ function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision, hide
                       <td
                         className={`px-3 py-2 align-top text-ink whitespace-pre-wrap break-words ${clickable ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
                         onClick={onClick}
+                        role={clickable ? 'button' : undefined}
+                        tabIndex={clickable ? 0 : undefined}
+                        onKeyDown={clickable ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showEvidence(quote); } } : undefined}
                       >
                         <HoverSource quote={quote} as="div">
                           {customNode !== null && customNode !== undefined
@@ -5501,6 +5507,9 @@ function TermfTailMechanics({ provisions, allProvisions }) {
         <td
           className={`px-3 py-2 text-ink ${clickable ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
           onClick={clickable ? () => showEvidence(quote) : undefined}
+          role={clickable ? 'button' : undefined}
+          tabIndex={clickable ? 0 : undefined}
+          onKeyDown={clickable ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showEvidence(quote); } } : undefined}
         >
           <HoverSource quote={quote} as="div">{children}</HoverSource>
         </td>
@@ -5650,6 +5659,9 @@ function TermfRemedyEffect({ provisions }) {
         <td
           className={`px-3 py-2 text-ink ${clickable ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
           onClick={clickable ? () => showEvidence(quote) : undefined}
+          role={clickable ? 'button' : undefined}
+          tabIndex={clickable ? 0 : undefined}
+          onKeyDown={clickable ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showEvidence(quote); } } : undefined}
         >
           <HoverSource quote={quote} as="div">{children}</HoverSource>
         </td>
@@ -6101,6 +6113,9 @@ function TermrRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
       <td
         className={`px-3 py-2 text-ink ${className || ''} ${clickable ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
         onClick={clickable ? () => showEvidence(quote) : undefined}
+        role={clickable ? 'button' : undefined}
+        tabIndex={clickable ? 0 : undefined}
+        onKeyDown={clickable ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showEvidence(quote); } } : undefined}
       >
         <HoverSource quote={quote} as="div">{children}</HoverSource>
       </td>
@@ -6218,6 +6233,9 @@ function TermrRebuiltSummary({ provisions, allProvisions, onSelectProvision }) {
                 <td
                   className={`px-3 py-2 text-ink ${faultText && showEvidence ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
                   onClick={faultText && showEvidence ? () => showEvidence(faultText) : undefined}
+                  role={faultText && showEvidence ? 'button' : undefined}
+                  tabIndex={faultText && showEvidence ? 0 : undefined}
+                  onKeyDown={faultText && showEvidence ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showEvidence(faultText); } } : undefined}
                 >
                   <HoverSource quote={faultText} as="div">
                     {faultStandard}
@@ -7393,6 +7411,9 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
                             <span
                               className={s.quote && showEvidence ? 'cursor-pointer hover:bg-yellow-50' : ''}
                               onClick={s.quote && showEvidence ? () => showEvidence(s.quote) : undefined}
+                              role={s.quote && showEvidence ? 'button' : undefined}
+                              tabIndex={s.quote && showEvidence ? 0 : undefined}
+                              onKeyDown={s.quote && showEvidence ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showEvidence(s.quote); } } : undefined}
                             >
                               {s.node || <span className="text-inkFaint/70 italic">—</span>}
                             </span>
@@ -7416,6 +7437,9 @@ function RepGeneralExceptionsTable({ provisions, dealAnnounceDate }) {
                     <span
                       className={disclosureQuote && showEvidence ? 'cursor-pointer hover:bg-yellow-50' : ''}
                       onClick={disclosureQuote && showEvidence ? () => showEvidence(disclosureQuote) : undefined}
+                      role={disclosureQuote && showEvidence ? 'button' : undefined}
+                      tabIndex={disclosureQuote && showEvidence ? 0 : undefined}
+                      onKeyDown={disclosureQuote && showEvidence ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showEvidence(disclosureQuote); } } : undefined}
                     >
                       {disclosureStandard
                         ? <span>{disclosureStandard}</span>
@@ -7593,6 +7617,14 @@ function RepMaterialContractsTable({ provisions, onSelectProvision }) {
                         <span
                           className={clickable ? 'cursor-pointer hover:bg-yellow-50' : ''}
                           onClick={(row.thrQuotes && row.thrQuotes[0] && showEvidence) ? () => showEvidence(row.thrQuotes[0]) : (clickable ? () => showEvidence(quote) : undefined)}
+                          role={clickable ? 'button' : undefined}
+                          tabIndex={clickable ? 0 : undefined}
+                          onKeyDown={clickable ? (e) => {
+                            if (e.key !== 'Enter' && e.key !== ' ') return;
+                            e.preventDefault();
+                            if (row.thrQuotes && row.thrQuotes[0] && showEvidence) showEvidence(row.thrQuotes[0]);
+                            else showEvidence(quote);
+                          } : undefined}
                         >
                           {row.thrText}
                         </span>
@@ -8620,6 +8652,9 @@ function DefaultFeatureRow({ label, provisions, keys }) {
       <td
         className={`px-3 py-2 text-ink whitespace-pre-wrap break-words ${clickable ? 'cursor-pointer hover:bg-yellow-50' : ''}`}
         onClick={clickable ? () => showEvidence(quote) : undefined}
+        role={clickable ? 'button' : undefined}
+        tabIndex={clickable ? 0 : undefined}
+        onKeyDown={clickable ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showEvidence(quote); } } : undefined}
       >
         <HoverSource quote={hover.quote} highlight={hover.highlight} as="div">
           {renderSummaryRowValue(hit, keys && keys[0])}
@@ -9509,6 +9544,15 @@ function DocumentRenderer({
             ref={el => { if (provisionRefs.current) provisionRefs.current[p.id] = el; }}
             className={`relative ${tc.bg} border-l-2 ${tc.border} px-1 -mx-1 cursor-pointer transition-colors hover:opacity-90`}
             onClick={() => onEditProvision(p)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.target !== e.currentTarget) return;
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onEditProvision(p);
+              }
+            }}
           >
             {/* Floating label */}
             <span className="block mb-1 -ml-1">
