@@ -21,7 +21,16 @@ pipeline, § 4 gaps). Process audit: canonical-coding audit, 2026-07-10.
 
 ---
 
-## Status — what's proven
+## Status — what's proven (updated 2026-07-15)
+
+**M2 parity gate: PASSED** (`reports/PARITY-GATE-2026-07-15.md` — zero unexplained drops
+across all 40 deals, data-level). Corpus rollout complete: codes live corpus-wide, two
+Ben-gated prune rounds executed, extraction gaps D/E verified resolved, numeric-
+normalization substrate built (column migration pending, item 2 of the queue), GAP-E
+plumbing shipped flag-off. **All pending decisions are consolidated in
+`reports/BEN-QUEUE-2026-07-15.md`** — every item is a pure sign-off.
+
+### Previously proven
 
 The canonical-coding loop (concept → code → render) is proven end-to-end on **Metsera**:
 rubric `list-tagged`/`tagged` flag → registry regen → prompt embeds codebook →
