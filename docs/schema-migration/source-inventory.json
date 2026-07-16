@@ -4031,6 +4031,31 @@
         ]
       },
       {
+        "family": "FORCE_THE_VOTE",
+        "kind": "string_map",
+        "size": 3,
+        "codes": [
+          {
+            "code": "FTV_HARD",
+            "label": "Hard force-the-vote — the obligated party's stockholder vote survives an Adverse Recommendation Change AND that party has no self-termination right to accept a Superior Proposal (cannot escape the vote by walking away for a competing deal)",
+            "description": null,
+            "line": 1116
+          },
+          {
+            "code": "FTV_SOFT",
+            "label": "Soft force-the-vote — the obligated party's vote survives an Adverse Recommendation Change but that party may terminate to accept a Superior Proposal",
+            "description": null,
+            "line": 1117
+          },
+          {
+            "code": "FTV_NONE",
+            "label": "No force-the-vote (no vote-survives-recommendation-change covenant)",
+            "description": null,
+            "line": 1118
+          }
+        ]
+      },
+      {
         "family": "ASSIGNMENT_PARENT_EXCEPTION",
         "kind": "string_map",
         "size": 3,
@@ -4039,19 +4064,19 @@
             "code": "AFFILIATE_SUBSIDIARY",
             "label": "Parent may assign to a wholly-owned subsidiary / affiliate",
             "description": null,
-            "line": 1084
+            "line": 1123
           },
           {
             "code": "FINANCING_SOURCE_PLEDGE",
             "label": "Parent may collaterally assign / pledge to financing sources",
             "description": null,
-            "line": 1085
+            "line": 1124
           },
           {
             "code": "POST_CLOSING_SUCCESSOR",
             "label": "Assignment permitted from and after the Effective Time (successor)",
             "description": null,
-            "line": 1086
+            "line": 1125
           }
         ]
       },
@@ -4064,13 +4089,13 @@
             "code": "NO_RELEASE",
             "label": "Assignment does not relieve Parent of its obligations",
             "description": null,
-            "line": 1089
+            "line": 1128
           },
           {
             "code": "NO_DELAY_IMPEDE",
             "label": "Assignment must not prevent / impede / delay the closing",
             "description": null,
-            "line": 1090
+            "line": 1129
           }
         ]
       },
@@ -7635,6 +7660,12 @@
         ]
       },
       {
+        "key": "forceTheVoteType",
+        "families": [
+          "FORCE_THE_VOTE"
+        ]
+      },
+      {
         "key": "parentAssignmentConditions",
         "families": [
           "ASSIGNMENT_PARENT_EXCEPTION"
@@ -7941,6 +7972,7 @@
           "interveningEventProvision",
           "forceTheVote",
           "forceTheVoteDetails",
+          "forceTheVoteType",
           "goShopPresent",
           "goShopPeriodDays",
           "goShopWindow",
@@ -8328,7 +8360,7 @@
       "aocCitedCovenantNames",
       "reapplied_corrections"
     ],
-    "validatedRubricKeys": 470
+    "validatedRubricKeys": 471
   },
   "ui": {
     "files": [
@@ -8352,13 +8384,12 @@
       "components/review/table-configs/approvals-votes.config.js",
       "components/review/table-configs/board-change-standard.js",
       "components/review/table-configs/card-utils.js",
-      "components/review/table-configs/conditions-b.config.js",
       "components/review/table-configs/conditions-m.config.js",
-      "components/review/table-configs/conditions-s.config.js",
       "components/review/table-configs/conditions.config.js",
       "components/review/table-configs/consideration-hero.config.js",
       "components/review/table-configs/employee-benefits.config.js",
       "components/review/table-configs/equity-awards.config.js",
+      "components/review/table-configs/fiduciary-standard-labels.js",
       "components/review/table-configs/general-covenants.config.js",
       "components/review/table-configs/ioc-exceptions.config.js",
       "components/review/table-configs/mae-definitions.config.js",
@@ -8391,7 +8422,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 2822,
+            "line": 2823,
             "kind": "keys_array"
           }
         ]
@@ -8401,7 +8432,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 2819,
+            "line": 2820,
             "kind": "keys_array"
           }
         ]
@@ -8411,7 +8442,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 2821,
+            "line": 2822,
             "kind": "keys_array"
           }
         ]
@@ -8421,7 +8452,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 36,
+            "line": 37,
             "kind": "keys_array"
           }
         ]
@@ -8431,12 +8462,12 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3238,
+            "line": 3239,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3237,
+            "line": 3238,
             "kind": "object_key_literal"
           }
         ]
@@ -8446,7 +8477,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 30,
+            "line": 31,
             "kind": "keys_array"
           }
         ]
@@ -8456,7 +8487,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 26,
+            "line": 27,
             "kind": "keys_array"
           }
         ]
@@ -8466,7 +8497,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3542,
+            "line": 3551,
             "kind": "keys_array"
           }
         ]
@@ -8476,12 +8507,12 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3526,
+            "line": 3532,
             "kind": "keys_array"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3534,
+            "line": 3541,
             "kind": "keys_array"
           }
         ]
@@ -8491,7 +8522,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3540,
+            "line": 3545,
             "kind": "keys_array"
           }
         ]
@@ -8501,12 +8532,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 987,
-            "kind": "features_property"
-          },
-          {
-            "file": "pages/review/[id].js",
-            "line": 989,
+            "line": 988,
             "kind": "features_property"
           },
           {
@@ -8516,22 +8542,27 @@
           },
           {
             "file": "pages/review/[id].js",
-            "line": 1197,
+            "line": 991,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 1197,
+            "line": 1198,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 1403,
+            "line": 1198,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 1403,
+            "line": 1404,
+            "kind": "features_property"
+          },
+          {
+            "file": "pages/review/[id].js",
+            "line": 1404,
             "kind": "features_property"
           }
         ]
@@ -8541,12 +8572,12 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 2872,
+            "line": 2873,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2873,
+            "line": 2874,
             "kind": "features_property"
           }
         ]
@@ -8556,7 +8587,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3544,
+            "line": 3553,
             "kind": "keys_array"
           }
         ]
@@ -8566,7 +8597,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3567,
+            "line": 3572,
             "kind": "keys_array"
           }
         ]
@@ -8586,7 +8617,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 2831,
+            "line": 2832,
             "kind": "keys_array"
           }
         ]
@@ -8596,7 +8627,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 2830,
+            "line": 2831,
             "kind": "keys_array"
           }
         ]
@@ -8606,7 +8637,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 2849,
+            "line": 2850,
             "kind": "features_property"
           }
         ]
@@ -8616,12 +8647,12 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3244,
+            "line": 3245,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3243,
+            "line": 3244,
             "kind": "object_key_literal"
           }
         ]
@@ -8641,7 +8672,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 13,
+            "line": 14,
             "kind": "keys_array"
           }
         ]
@@ -8651,12 +8682,12 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 14,
+            "line": 15,
             "kind": "keys_array"
           },
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 35,
+            "line": 36,
             "kind": "keys_array"
           },
           {
@@ -8666,7 +8697,7 @@
           },
           {
             "file": "components/review/table-configs/nosol-superior.config.js",
-            "line": 23,
+            "line": 24,
             "kind": "keys_array"
           }
         ]
@@ -8696,22 +8727,22 @@
         "hits": [
           {
             "file": "components/review/EditPanel.js",
-            "line": 926,
+            "line": 931,
             "kind": "features_property"
           },
           {
             "file": "components/review/table-configs/conditions-m.config.js",
-            "line": 79,
+            "line": 76,
             "kind": "features_property"
           },
           {
             "file": "components/review/table-configs/conditions-m.config.js",
-            "line": 96,
+            "line": 98,
             "kind": "features_property"
           },
           {
             "file": "components/review/table-configs/conditions-m.config.js",
-            "line": 152,
+            "line": 146,
             "kind": "features_property"
           }
         ]
@@ -8721,7 +8752,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3554,
+            "line": 3562,
             "kind": "keys_array"
           }
         ]
@@ -8741,12 +8772,12 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3638,
+            "line": 3645,
             "kind": "object_key_literal"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3646,
+            "line": 3654,
             "kind": "object_key_literal"
           }
         ]
@@ -8766,7 +8797,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 12,
+            "line": 13,
             "kind": "keys_array"
           }
         ]
@@ -8776,7 +8807,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 14,
+            "line": 15,
             "kind": "keys_array"
           }
         ]
@@ -8786,7 +8817,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 12,
+            "line": 13,
             "kind": "keys_array"
           },
           {
@@ -8801,12 +8832,12 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 10,
+            "line": 11,
             "kind": "keys_array"
           },
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 11,
+            "line": 12,
             "kind": "keys_array"
           }
         ]
@@ -8816,7 +8847,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 30,
+            "line": 31,
             "kind": "keys_array"
           }
         ]
@@ -8826,12 +8857,12 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 12,
+            "line": 13,
             "kind": "keys_array"
           },
           {
             "file": "components/review/table-configs/nosol-superior.config.js",
-            "line": 17,
+            "line": 18,
             "kind": "keys_array"
           }
         ]
@@ -8841,7 +8872,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 1024,
+            "line": 1025,
             "kind": "features_property"
           }
         ]
@@ -8881,7 +8912,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3257,
+            "line": 3258,
             "kind": "features_property"
           }
         ]
@@ -8891,27 +8922,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3260,
-            "kind": "features_property"
-          },
-          {
-            "file": "pages/review/[id].js",
-            "line": 3260,
-            "kind": "object_key_literal"
-          }
-        ]
-      },
-      {
-        "key": "closingTiming",
-        "hits": [
-          {
-            "file": "pages/review/[id].js",
-            "line": 3259,
-            "kind": "features_property"
-          },
-          {
-            "file": "pages/review/[id].js",
-            "line": 3262,
+            "line": 3261,
             "kind": "features_property"
           },
           {
@@ -8922,11 +8933,31 @@
         ]
       },
       {
+        "key": "closingTiming",
+        "hits": [
+          {
+            "file": "pages/review/[id].js",
+            "line": 3260,
+            "kind": "features_property"
+          },
+          {
+            "file": "pages/review/[id].js",
+            "line": 3263,
+            "kind": "features_property"
+          },
+          {
+            "file": "pages/review/[id].js",
+            "line": 3262,
+            "kind": "object_key_literal"
+          }
+        ]
+      },
+      {
         "key": "collarType",
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3495,
+            "line": 3502,
             "kind": "keys_array"
           }
         ]
@@ -8936,7 +8967,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3520,
+            "line": 3525,
             "kind": "keys_array"
           }
         ]
@@ -8946,7 +8977,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3513,
+            "line": 3519,
             "kind": "keys_array"
           }
         ]
@@ -8956,7 +8987,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 26,
+            "line": 27,
             "kind": "keys_array"
           }
         ]
@@ -8966,7 +8997,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 26,
+            "line": 27,
             "kind": "keys_array"
           }
         ]
@@ -8976,12 +9007,12 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 697,
+            "line": 698,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 697,
+            "line": 698,
             "kind": "features_property"
           }
         ]
@@ -9001,7 +9032,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3573,
+            "line": 3581,
             "kind": "keys_array"
           }
         ]
@@ -9011,7 +9042,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3564,
+            "line": 3568,
             "kind": "keys_array"
           }
         ]
@@ -9021,7 +9052,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3558,
+            "line": 3566,
             "kind": "keys_array"
           }
         ]
@@ -9031,7 +9062,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3561,
+            "line": 3567,
             "kind": "keys_array"
           }
         ]
@@ -9041,7 +9072,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3309,
+            "line": 3310,
             "kind": "object_key_literal"
           }
         ]
@@ -9051,7 +9082,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3570,
+            "line": 3578,
             "kind": "keys_array"
           }
         ]
@@ -9061,7 +9092,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 22,
+            "line": 23,
             "kind": "keys_array"
           }
         ]
@@ -9081,7 +9112,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 17,
+            "line": 18,
             "kind": "keys_array"
           }
         ]
@@ -9091,7 +9122,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3132,
+            "line": 3133,
             "kind": "features_property"
           }
         ]
@@ -9101,7 +9132,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3150,
+            "line": 3151,
             "kind": "features_property"
           }
         ]
@@ -9111,12 +9142,12 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 10,
+            "line": 11,
             "kind": "keys_array"
           },
           {
             "file": "components/review/table-configs/nosol-superior.config.js",
-            "line": 15,
+            "line": 16,
             "kind": "keys_array"
           }
         ]
@@ -9126,7 +9157,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3502,
+            "line": 3508,
             "kind": "keys_array"
           }
         ]
@@ -9136,7 +9167,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3550,
+            "line": 3555,
             "kind": "keys_array"
           }
         ]
@@ -9146,7 +9177,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 4610,
+            "line": 4627,
             "kind": "features_property"
           }
         ]
@@ -9156,7 +9187,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 4610,
+            "line": 4628,
             "kind": "features_property"
           }
         ]
@@ -9166,7 +9197,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 14,
+            "line": 15,
             "kind": "keys_array"
           }
         ]
@@ -9176,12 +9207,12 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 10,
+            "line": 11,
             "kind": "keys_array"
           },
           {
             "file": "components/review/table-configs/nosol-superior.config.js",
-            "line": 15,
+            "line": 16,
             "kind": "keys_array"
           }
         ]
@@ -9191,12 +9222,12 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 12,
+            "line": 13,
             "kind": "keys_array"
           },
           {
             "file": "components/review/table-configs/nosol-superior.config.js",
-            "line": 17,
+            "line": 18,
             "kind": "keys_array"
           }
         ]
@@ -9206,17 +9237,17 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 34,
+            "line": 35,
             "kind": "keys_array"
           },
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 28,
+            "line": 29,
             "kind": "keys_array"
           },
           {
             "file": "components/review/table-configs/nosol-superior.config.js",
-            "line": 19,
+            "line": 20,
             "kind": "keys_array"
           }
         ]
@@ -9226,7 +9257,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 22,
+            "line": 23,
             "kind": "keys_array"
           }
         ]
@@ -9236,7 +9267,17 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 23,
+            "line": 24,
+            "kind": "keys_array"
+          }
+        ]
+      },
+      {
+        "key": "forceTheVoteType",
+        "hits": [
+          {
+            "file": "components/review/table-configs/nosol-fiduciary.config.js",
+            "line": 24,
             "kind": "keys_array"
           }
         ]
@@ -9246,7 +9287,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 6003,
+            "line": 6045,
             "kind": "features_property"
           }
         ]
@@ -9256,7 +9297,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 6004,
+            "line": 6046,
             "kind": "features_property"
           }
         ]
@@ -9266,7 +9307,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 6002,
+            "line": 6043,
             "kind": "features_property"
           }
         ]
@@ -9276,7 +9317,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 6004,
+            "line": 6045,
             "kind": "features_property"
           }
         ]
@@ -9286,7 +9327,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3506,
+            "line": 3511,
             "kind": "keys_array"
           }
         ]
@@ -9296,7 +9337,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 19,
+            "line": 20,
             "kind": "keys_array"
           }
         ]
@@ -9306,7 +9347,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3538,
+            "line": 3544,
             "kind": "keys_array"
           }
         ]
@@ -9356,7 +9397,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 6475,
+            "line": 6516,
             "kind": "features_property"
           }
         ]
@@ -9366,7 +9407,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 6490,
+            "line": 6539,
             "kind": "features_property"
           }
         ]
@@ -9376,22 +9417,22 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3499,
+            "line": 3505,
             "kind": "keys_array"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3565,
+            "line": 3570,
             "kind": "keys_array"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3566,
+            "line": 3572,
             "kind": "keys_array"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3568,
+            "line": 3575,
             "kind": "keys_array"
           }
         ]
@@ -9401,7 +9442,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3499,
+            "line": 3504,
             "kind": "keys_array"
           }
         ]
@@ -9411,12 +9452,12 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3523,
+            "line": 3530,
             "kind": "keys_array"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3531,
+            "line": 3537,
             "kind": "keys_array"
           }
         ]
@@ -9426,7 +9467,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/conditions-m.config.js",
-            "line": 35,
+            "line": 36,
             "kind": "features_property"
           },
           {
@@ -9436,27 +9477,22 @@
           },
           {
             "file": "pages/review/[id].js",
-            "line": 898,
+            "line": 899,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2388,
+            "line": 2389,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2388,
+            "line": 2389,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2388,
-            "kind": "features_property"
-          },
-          {
-            "file": "pages/review/[id].js",
-            "line": 2390,
+            "line": 2389,
             "kind": "features_property"
           },
           {
@@ -9466,57 +9502,62 @@
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3138,
+            "line": 2392,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3152,
+            "line": 3139,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3197,
+            "line": 3153,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3199,
+            "line": 3198,
+            "kind": "features_property"
+          },
+          {
+            "file": "pages/review/[id].js",
+            "line": 3200,
+            "kind": "features_property"
+          },
+          {
+            "file": "pages/review/[id].js",
+            "line": 3249,
+            "kind": "features_property"
+          },
+          {
+            "file": "pages/review/[id].js",
+            "line": 3275,
+            "kind": "features_property"
+          },
+          {
+            "file": "pages/review/[id].js",
+            "line": 3278,
+            "kind": "features_property"
+          },
+          {
+            "file": "pages/review/[id].js",
+            "line": 3283,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
             "line": 3248,
-            "kind": "features_property"
-          },
-          {
-            "file": "pages/review/[id].js",
-            "line": 3274,
-            "kind": "features_property"
-          },
-          {
-            "file": "pages/review/[id].js",
-            "line": 3277,
-            "kind": "features_property"
-          },
-          {
-            "file": "pages/review/[id].js",
-            "line": 3282,
-            "kind": "features_property"
-          },
-          {
-            "file": "pages/review/[id].js",
-            "line": 3247,
             "kind": "object_key_literal"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3280,
+            "line": 3281,
             "kind": "object_key_literal"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3282,
+            "line": 3283,
             "kind": "object_key_literal"
           }
         ]
@@ -9526,17 +9567,12 @@
         "hits": [
           {
             "file": "components/review/table-configs/conditions-m.config.js",
-            "line": 35,
+            "line": 36,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 900,
-            "kind": "features_property"
-          },
-          {
-            "file": "pages/review/[id].js",
-            "line": 2398,
+            "line": 901,
             "kind": "features_property"
           },
           {
@@ -9546,7 +9582,12 @@
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2399,
+            "line": 2400,
+            "kind": "features_property"
+          },
+          {
+            "file": "pages/review/[id].js",
+            "line": 2400,
             "kind": "features_property"
           }
         ]
@@ -9556,22 +9597,22 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 898,
+            "line": 899,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2395,
+            "line": 2396,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2397,
+            "line": 2398,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 2397,
+            "line": 2398,
             "kind": "features_property"
           }
         ]
@@ -9581,7 +9622,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3507,
+            "line": 3511,
             "kind": "keys_array"
           }
         ]
@@ -9591,7 +9632,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 19,
+            "line": 20,
             "kind": "keys_array"
           },
           {
@@ -9601,7 +9642,7 @@
           },
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 21,
+            "line": 22,
             "kind": "keys_array"
           }
         ]
@@ -9621,7 +9662,7 @@
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3574,
+            "line": 3586,
             "kind": "keys_array"
           }
         ]
@@ -9641,7 +9682,7 @@
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3578,
+            "line": 3588,
             "kind": "keys_array"
           }
         ]
@@ -9651,7 +9692,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3580,
+            "line": 3590,
             "kind": "keys_array"
           }
         ]
@@ -9661,7 +9702,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 6470,
+            "line": 6512,
             "kind": "features_property"
           }
         ]
@@ -9671,7 +9712,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3493,
+            "line": 3500,
             "kind": "keys_array"
           }
         ]
@@ -9681,12 +9722,12 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3529,
+            "line": 3535,
             "kind": "keys_array"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3535,
+            "line": 3542,
             "kind": "keys_array"
           }
         ]
@@ -9696,12 +9737,12 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3524,
+            "line": 3531,
             "kind": "keys_array"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3532,
+            "line": 3540,
             "kind": "keys_array"
           }
         ]
@@ -9711,12 +9752,12 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3237,
+            "line": 3238,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3237,
+            "line": 3238,
             "kind": "object_key_literal"
           }
         ]
@@ -9726,7 +9767,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3492,
+            "line": 3498,
             "kind": "keys_array"
           }
         ]
@@ -9736,7 +9777,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3256,
+            "line": 3257,
             "kind": "features_property"
           }
         ]
@@ -9746,7 +9787,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 4003,
+            "line": 4012,
             "kind": "features_property"
           }
         ]
@@ -9766,7 +9807,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 31,
+            "line": 32,
             "kind": "keys_array"
           }
         ]
@@ -9776,7 +9817,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 17,
+            "line": 18,
             "kind": "keys_array"
           }
         ]
@@ -9786,7 +9827,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 15,
+            "line": 16,
             "kind": "keys_array"
           },
           {
@@ -9801,7 +9842,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3541,
+            "line": 3547,
             "kind": "keys_array"
           }
         ]
@@ -9811,12 +9852,12 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3237,
+            "line": 3238,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3237,
+            "line": 3238,
             "kind": "object_key_literal"
           }
         ]
@@ -9826,12 +9867,12 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3237,
+            "line": 3238,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3237,
+            "line": 3238,
             "kind": "object_key_literal"
           }
         ]
@@ -9841,12 +9882,12 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3237,
+            "line": 3238,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3237,
+            "line": 3238,
             "kind": "object_key_literal"
           }
         ]
@@ -9861,12 +9902,12 @@
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3237,
+            "line": 3238,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3237,
+            "line": 3238,
             "kind": "object_key_literal"
           }
         ]
@@ -9886,7 +9927,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3515,
+            "line": 3523,
             "kind": "keys_array"
           }
         ]
@@ -9896,12 +9937,12 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 4607,
+            "line": 4626,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3740,
+            "line": 3749,
             "kind": "object_key_literal"
           }
         ]
@@ -9911,7 +9952,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 4606,
+            "line": 4626,
             "kind": "features_property"
           }
         ]
@@ -9941,7 +9982,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3508,
+            "line": 3513,
             "kind": "keys_array"
           }
         ]
@@ -9951,7 +9992,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3509,
+            "line": 3514,
             "kind": "keys_array"
           }
         ]
@@ -9961,7 +10002,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 28,
+            "line": 29,
             "kind": "keys_array"
           }
         ]
@@ -9971,7 +10012,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 2870,
+            "line": 2871,
             "kind": "features_property"
           }
         ]
@@ -9981,7 +10022,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3512,
+            "line": 3517,
             "kind": "keys_array"
           }
         ]
@@ -9991,7 +10032,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3517,
+            "line": 3524,
             "kind": "keys_array"
           }
         ]
@@ -10001,27 +10042,27 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 14,
+            "line": 15,
             "kind": "keys_array"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 1011,
+            "line": 1012,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 1017,
+            "line": 1018,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 1020,
+            "line": 1021,
             "kind": "object_key_literal"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 1023,
+            "line": 1024,
             "kind": "object_key_literal"
           }
         ]
@@ -10031,7 +10072,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3585,
+            "line": 3591,
             "kind": "keys_array"
           }
         ]
@@ -10056,17 +10097,17 @@
           },
           {
             "file": "pages/review/[id].js",
-            "line": 991,
+            "line": 992,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 991,
+            "line": 992,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 1404,
+            "line": 1405,
             "kind": "features_property"
           }
         ]
@@ -10076,7 +10117,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 1024,
+            "line": 1025,
             "kind": "features_property"
           }
         ]
@@ -10086,12 +10127,12 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3522,
+            "line": 3527,
             "kind": "keys_array"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3530,
+            "line": 3536,
             "kind": "keys_array"
           }
         ]
@@ -10116,7 +10157,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3500,
+            "line": 3507,
             "kind": "keys_array"
           }
         ]
@@ -10126,7 +10167,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3504,
+            "line": 3509,
             "kind": "keys_array"
           }
         ]
@@ -10136,7 +10177,7 @@
         "hits": [
           {
             "file": "components/review/EditPanel.js",
-            "line": 533,
+            "line": 531,
             "kind": "features_property"
           }
         ]
@@ -10146,7 +10187,7 @@
         "hits": [
           {
             "file": "components/review/EditPanel.js",
-            "line": 534,
+            "line": 531,
             "kind": "features_property"
           }
         ]
@@ -10166,7 +10207,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 27,
+            "line": 28,
             "kind": "keys_array"
           }
         ]
@@ -10176,7 +10217,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 27,
+            "line": 28,
             "kind": "keys_array"
           }
         ]
@@ -10186,7 +10227,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3766,
+            "line": 3770,
             "kind": "object_key_literal"
           }
         ]
@@ -10196,7 +10237,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3768,
+            "line": 3777,
             "kind": "object_key_literal"
           }
         ]
@@ -10206,7 +10247,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3762,
+            "line": 3768,
             "kind": "object_key_literal"
           }
         ]
@@ -10216,12 +10257,12 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3241,
+            "line": 3242,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3240,
+            "line": 3241,
             "kind": "object_key_literal"
           }
         ]
@@ -10231,12 +10272,12 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3239,
+            "line": 3240,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3238,
+            "line": 3239,
             "kind": "object_key_literal"
           }
         ]
@@ -10246,12 +10287,12 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 6645,
+            "line": 6691,
             "kind": "object_key_literal"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3556,
+            "line": 3565,
             "kind": "keys_array"
           }
         ]
@@ -10261,7 +10302,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 5556,
+            "line": 5583,
             "kind": "keys_array"
           }
         ]
@@ -10271,7 +10312,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 5554,
+            "line": 5583,
             "kind": "keys_array"
           }
         ]
@@ -10281,7 +10322,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 5551,
+            "line": 5582,
             "kind": "keys_array"
           }
         ]
@@ -10291,7 +10332,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 5552,
+            "line": 5582,
             "kind": "keys_array"
           }
         ]
@@ -10316,7 +10357,7 @@
           },
           {
             "file": "components/review/table-configs/conditions-m.config.js",
-            "line": 36,
+            "line": 37,
             "kind": "features_property"
           },
           {
@@ -10331,7 +10372,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3511,
+            "line": 3516,
             "kind": "keys_array"
           }
         ]
@@ -10341,7 +10382,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3549,
+            "line": 3555,
             "kind": "keys_array"
           }
         ]
@@ -10351,7 +10392,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3565,
+            "line": 3570,
             "kind": "keys_array"
           }
         ]
@@ -10381,7 +10422,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3551,
+            "line": 3557,
             "kind": "keys_array"
           }
         ]
@@ -10391,7 +10432,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 17,
+            "line": 18,
             "kind": "keys_array"
           },
           {
@@ -10406,7 +10447,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3501,
+            "line": 3507,
             "kind": "keys_array"
           }
         ]
@@ -10416,12 +10457,12 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3242,
+            "line": 3243,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3241,
+            "line": 3242,
             "kind": "object_key_literal"
           }
         ]
@@ -10431,7 +10472,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 21,
+            "line": 22,
             "kind": "keys_array"
           }
         ]
@@ -10441,12 +10482,12 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 20,
+            "line": 21,
             "kind": "keys_array"
           },
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 29,
+            "line": 30,
             "kind": "keys_array"
           }
         ]
@@ -10456,7 +10497,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 900,
+            "line": 901,
             "kind": "features_property"
           }
         ]
@@ -10466,7 +10507,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-superior.config.js",
-            "line": 13,
+            "line": 14,
             "kind": "keys_array"
           }
         ]
@@ -10476,17 +10517,17 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 32,
+            "line": 33,
             "kind": "keys_array"
           },
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 24,
+            "line": 25,
             "kind": "keys_array"
           },
           {
             "file": "components/review/table-configs/nosol-superior.config.js",
-            "line": 10,
+            "line": 11,
             "kind": "keys_array"
           }
         ]
@@ -10496,12 +10537,12 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 33,
+            "line": 34,
             "kind": "keys_array"
           },
           {
             "file": "components/review/table-configs/nosol-superior.config.js",
-            "line": 12,
+            "line": 13,
             "kind": "keys_array"
           }
         ]
@@ -10511,17 +10552,17 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 32,
+            "line": 33,
             "kind": "keys_array"
           },
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 24,
+            "line": 25,
             "kind": "keys_array"
           },
           {
             "file": "components/review/table-configs/nosol-superior.config.js",
-            "line": 10,
+            "line": 11,
             "kind": "keys_array"
           }
         ]
@@ -10606,7 +10647,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3493,
+            "line": 3500,
             "kind": "keys_array"
           }
         ]
@@ -10616,7 +10657,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3507,
+            "line": 3512,
             "kind": "keys_array"
           }
         ]
@@ -10641,7 +10682,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3570,
+            "line": 3579,
             "kind": "keys_array"
           }
         ]
@@ -10651,7 +10692,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3494,
+            "line": 3501,
             "kind": "keys_array"
           }
         ]
@@ -10661,7 +10702,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3514,
+            "line": 3521,
             "kind": "keys_array"
           }
         ]
@@ -10671,27 +10712,27 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3982,
+            "line": 3998,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3985,
+            "line": 3999,
             "kind": "features_property"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3491,
+            "line": 3496,
             "kind": "keys_array"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3544,
+            "line": 3552,
             "kind": "keys_array"
           },
           {
             "file": "pages/review/[id].js",
-            "line": 3553,
+            "line": 3560,
             "kind": "keys_array"
           }
         ]
@@ -10701,7 +10742,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3971,
+            "line": 3981,
             "kind": "features_property"
           }
         ]
@@ -10711,7 +10752,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 2835,
+            "line": 2836,
             "kind": "keys_array"
           }
         ]
@@ -10721,7 +10762,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3497,
+            "line": 3503,
             "kind": "keys_array"
           }
         ]
@@ -10731,7 +10772,7 @@
         "hits": [
           {
             "file": "pages/review/[id].js",
-            "line": 3505,
+            "line": 3510,
             "kind": "keys_array"
           }
         ]

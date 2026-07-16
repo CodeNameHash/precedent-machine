@@ -187,6 +187,34 @@ async function evalDeal(sb, targetName, golden) {
     }
   }
 
+  // feature_code_pins: { TYPE: { featureKey: "EXPECTED_CODE" } } — pins the
+  // canonical code of a coded (tagged) feature. Written for codebook rollouts
+  // that change FUTURE extraction only: while no provision of the type group
+  // carries the feature yet (pre-re-extract), the pin passes as "armed"; the
+  // moment any provision carries a non-null value, every occurrence must
+  // resolve to the pinned code. Accepts tagged {code,label,text} objects,
+  // bare code strings, and citable-wrapped values.
+  if (golden.feature_code_pins) {
+    for (const [typePrefix, pins] of Object.entries(golden.feature_code_pins)) {
+      const group = provs.filter((p) => String(p.type).startsWith(typePrefix));
+      for (const [key, expected] of Object.entries(pins)) {
+        const codes = [];
+        for (const p of group) {
+          const v = unwrap(((p.ai_metadata || {}).features || {})[key]);
+          if (v === null || v === undefined || v === '') continue;
+          const code = typeof v === 'object' ? v.code : v;
+          if (code) codes.push(String(code).trim().toUpperCase());
+        }
+        if (codes.length === 0) {
+          check(results, `${typePrefix} "${key}" pinned to ${expected}`, true, 'not yet extracted (pin armed)');
+        } else {
+          const ok = codes.every((c) => c === expected);
+          check(results, `${typePrefix} "${key}" pinned to ${expected}`, ok, codes.join(', '));
+        }
+      }
+    }
+  }
+
   if (golden.max_schema_error_rows !== undefined) {
     let errRows = 0;
     for (const p of provs) if (validateProvisionRow(p).errors.length) errRows += 1;

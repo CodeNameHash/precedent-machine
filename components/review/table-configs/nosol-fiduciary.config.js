@@ -31,7 +31,7 @@ const ROWS = [
   { id: 'notice-content', label: 'Notice content', keys: ['noticeContent'], fallback: noticeContentFromText },
   { id: 'initial-match', label: 'Initial match period', keys: ['initialMatchPeriodDays', 'matchingPeriod'], fallback: matchFromText },
   { id: 'subsequent-match', label: 'Subsequent match period', keys: ['subsequentMatchPeriodDays', 'subsequentMatchingPeriod'], fallback: subsequentMatchFromText },
-  { id: 'force-vote', label: 'Force the vote', keys: ['forceTheVote', 'forceTheVoteDetails'], fallback: forceVoteFromText },
+  { id: 'force-vote', label: 'Force the vote', keys: ['forceTheVote', 'forceTheVoteDetails', 'forceTheVoteType'], fallback: forceVoteFromText },
   { id: 'termination', label: 'Company termination for Superior Proposal', keys: ['companyTerminationForSuperior', 'companyTerminationForSuperiorConditions'], fallback: terminationFromText },
   { id: 'reps', label: 'Representative control standard', keys: ['representativesStandard', 'representativeBreachIsCompanyBreach'], fallback: repsFromText },
   { id: 'buyer-termination', label: 'Buyer termination for nonsolicit breach', keys: ['parentTerminationRightForNonsolicitBreach'], fallback: buyerTerminationFromText },

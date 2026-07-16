@@ -1,24 +1,24 @@
 # WP-SCHEMA P1 Inventory Summary
 
-Generated: 2026-07-10T12:14:54.696Z
+Generated: 2026-07-15T12:54:32.222Z
 
 ## Counts
 
-- Distinct feature-like keys: 516
-- Keys in 2 or more source families: 472
+- Distinct feature-like keys: 517
+- Keys in 2 or more source families: 473
 - Keys in only 1 source family: 44
 - Cross-source type mismatches: 6
 - Schema shape mismatches: 33
 - Provision types in rubric: 19
 - Canonical codes in rubric: 276
-- Taxonomy families exported: 54
+- Taxonomy families exported: 55
 - Curated expected-set codes: 38
 
 ## Naming Distribution
 
 | Convention |Count |
 | --- |--- |
-| camelCase |485 |
+| camelCase |486 |
 | lowercase |24 |
 | snake_case |7 |
 
@@ -26,12 +26,12 @@ Generated: 2026-07-10T12:14:54.696Z
 
 | Source |Keys |
 | --- |--- |
-| category_summary_features_js |216 |
-| expected_sets_js |194 |
-| feature_validation_js |482 |
-| rubric_js |470 |
-| taxonomy_js |55 |
-| ui |181 |
+| category_summary_features_js |217 |
+| expected_sets_js |195 |
+| feature_validation_js |483 |
+| rubric_js |471 |
+| taxonomy_js |56 |
+| ui |182 |
 
 ## Top 20 Highest-Appearance Keys
 
