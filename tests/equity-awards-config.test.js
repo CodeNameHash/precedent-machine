@@ -278,3 +278,58 @@ test('the cutoff row stays on the plain-text cell, not squeezed into a pill', ()
   assert.doesNotMatch(html, /data-pill/);
   assert.match(html, /Company RSU/);
 });
+
+// Real Skechers shape (verified against live claims data): un-split
+// CONSID-EQUITY card, NO equityAwardTreatment map (extracted as prose), and
+// outstandingInstruments / instrumentTreatments / instrumentVesting as three
+// independently-ordered tagged lists with no cross-tag. The only join the
+// source data supports is the instrument each clause NAMES in its own text
+// ("each Company RSA…", "each Company PSA…", "…Company ESPP"). Positional
+// zipping cross-wired the live page: the RSU row carried the RSA clause's
+// consideration and the PSA clause's vesting.
+test('shape-3 lists pair by the instrument named in each clause text, not by index', () => {
+  const card = {
+    id: 'consid-equity-skechers',
+    provision_type: 'CONSIDERATION',
+    provision_subtype: 'CONSID-EQUITY',
+    features: {
+      equityAwardTreatment: 'Company RSAs and qualifying Company RSUs fully vest and are cashed out; PSAs are replaced with retention awards.',
+      outstandingInstruments: [
+        { code: 'RSUs', label: 'Restricted Stock Units (RSUs)', text: 'each Company RSU, whether vested or unvested, that is outstanding' },
+        { code: 'PSUs', label: 'Performance Stock Units (PSUs)', text: 'each Company PSA' },
+        { code: 'RESTRICTED_STOCK', label: 'Restricted Stock Awards', text: 'each Company RSA, whether vested or unvested, that is outstanding' },
+        { code: 'ESPP', label: 'Employee Stock Purchase Plan rights', text: "each participant's then-outstanding share purchase right under the Company ESPP" },
+      ],
+      instrumentTreatments: [
+        { code: 'ACCELERATED_VESTING', label: 'Vesting accelerated and cashed out', text: 'each Company RSA, whether vested or unvested, shall be fully vested, cancelled and converted into the right to receive the Cash Election Consideration' },
+        { code: 'REPLACEMENT_AWARDS', label: 'Cancelled and replaced with retention awards', text: 'each Company PSA shall be cancelled and replaced with a right to receive the Company PSA Consideration' },
+        { code: 'CASHED_OUT_AT_CONSIDERATION', label: 'Cashed out at Merger Consideration', text: "each participant's then-outstanding share purchase right under the Company ESPP shall be automatically exercised" },
+        { code: 'ACCELERATED_VESTING', label: 'Vesting accelerated and cashed out', text: 'each Company RSU, whether vested or unvested, shall be fully vested, cancelled and converted into the right to receive the Cash Election Consideration' },
+      ],
+      instrumentVesting: [
+        { code: 'FULLY_ACCELERATED', label: 'Fully Accelerated', text: 'each Company RSA, whether vested or unvested, shall be fully vested' },
+        { code: 'TIME_BASED_VESTING', label: 'Time Based Vesting', text: 'Such replacement award shall be subject to the same service-based vesting conditions as were applicable to the replaced Company PSA' },
+        { code: 'FULLY_ACCELERATED', label: 'Fully Accelerated', text: "each participant's then-outstanding share purchase right under the Company ESPP shall be automatically exercised" },
+        { code: 'FULLY_ACCELERATED', label: 'Fully Accelerated', text: 'each Company RSU, whether vested or unvested, that was granted on or before the date of this Agreement shall be fully vested' },
+      ],
+    },
+  };
+  const rows = mod.equityAwardRows([card]);
+  const find = (prefix) => rows.find((r) => String(r.instrument).startsWith(prefix));
+
+  const rsu = find('Restricted Stock Units (RSUs)');
+  assert.match(rsu.considerationLabel || '', /Company RSU/);
+  assert.match(rsu.vestingLabel || '', /Company RSU/);
+
+  const psu = find('Performance Stock Units (PSUs)');
+  assert.match(psu.considerationLabel || '', /Company PSA/);
+  assert.match(psu.vestingLabel || '', /Company PSA/);
+
+  const rsa = find('Restricted Stock Awards');
+  assert.match(rsa.considerationLabel || '', /Company RSA/);
+  assert.match(rsa.vestingLabel || '', /Company RSA/);
+
+  const espp = find('Employee Stock Purchase Plan rights');
+  assert.match(espp.considerationLabel || '', /ESPP/);
+  assert.match(espp.vestingLabel || '', /ESPP/);
+});
