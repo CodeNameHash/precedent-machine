@@ -430,7 +430,9 @@ export default function MergertraceStyles() {
         border-radius: 0 !important;
         box-shadow: 0 2px 10px rgba(31, 31, 31, 0.12) !important;
         color: #1F1F1F !important;
-        font-family: var(--mtx-serif) !important;
+        /* Ben (round 2): same voice as the "see provision" expansion —
+           sans 12px, not serif. */
+        font-family: var(--mtx-sans) !important;
         font-size: 12px !important;
         line-height: 1.6 !important;
       }
@@ -457,13 +459,14 @@ export default function MergertraceStyles() {
       }
 
       /* "see text" expander + footers pick the Mergertrace meta voice. */
+      /* Ben (round 2): less prominent — smaller, lighter, greyer. */
       .mtx .term-cell-seetext {
         font-family: var(--mtx-sans);
-        font-weight: 700;
-        font-size: 9px;
+        font-weight: 600;
+        font-size: 8px;
         letter-spacing: 0.08em;
         text-transform: uppercase;
-        color: #6B6B6B;
+        color: #9A9A9A;
       }
       .mtx .term-cell-seetext:hover { color: #1F1F1F; }
       /* The expander's revealed body is VALUE content (the full clause

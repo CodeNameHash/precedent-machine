@@ -119,10 +119,13 @@ export default function DealHeader({ deal, view, onToggleView, hasAgreementText,
           matters from md up, where this stays a single fixed-height row
           exactly as before. Below md the toggle and a condensed metric line
           wrap onto their own row rather than disappearing. */}
-      <div className="flex flex-wrap md:flex-nowrap items-center gap-x-6 gap-y-2 px-5 lg:px-8 py-3 md:py-0 md:h-[108px]">
+      <div className="flex flex-wrap md:flex-nowrap items-center gap-x-6 gap-y-2 px-5 lg:px-8 py-3 md:py-2 md:min-h-[108px]">
         {/* Identity */}
         <div className="shrink-0 min-w-0">
-          <div className="mtx-meta-label text-[10px] tracking-[0.18em]">{String(eyebrow).toUpperCase()}</div>
+          <div className="flex items-baseline gap-2">
+            <a href="/" className="mtx-meta-label text-[10px] tracking-[0.18em] hover:text-[#1F1F1F]">← CORPUS</a>
+            <span className="mtx-meta-label text-[10px] tracking-[0.18em]">{String(eyebrow).toUpperCase()}</span>
+          </div>
           {/* Ben (Mergertrace round 1): title in the metric-value voice
               (Inter bold, same family as the "Sep 21, 2025" numerals), sized
               down so the full masthead fits; acquirer at the SAME size as
@@ -150,15 +153,18 @@ export default function DealHeader({ deal, view, onToggleView, hasAgreementText,
 
         {/* Metric columns — full detail, md+ (the strip's own overflow-x-auto
             absorbs the squeeze between md and lg). */}
-        <div className="hidden md:flex items-stretch h-full flex-1 min-w-0 overflow-x-auto mtx-scrollbar-thin">
+        {/* Ben (round 2): at squeezed widths the strip previously clipped —
+            metrics now WRAP onto extra lines (auto-height masthead) instead
+            of hiding behind an overflow scroll. */}
+        <div className="hidden md:flex flex-wrap items-center flex-1 min-w-0 gap-y-1">
           {/* mx-auto centres the strip when it fits and degrades to a clean
               left-origin scroll when it overflows (justify-center would clip
               the leading columns). */}
-          <div className="flex items-stretch h-full mx-auto">
+          <div className="flex flex-wrap items-center mx-auto gap-y-1">
             {metrics.map((m, i) => (
               <div
                 key={m.label}
-                className="flex flex-col justify-center px-3 lg:px-4 shrink-0"
+                className="flex flex-col justify-center px-3 lg:px-4 shrink-0 py-1"
                 style={i !== 0 ? { borderLeft: '1px solid #E0E0E0' } : undefined}
               >
                 <div className="mtx-meta-label text-[9px] tracking-[0.14em] whitespace-nowrap">{m.label}</div>

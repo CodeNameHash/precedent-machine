@@ -189,6 +189,23 @@ export default function ReviewV2Page() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sectionKey, view]);
 
+  // Masthead is auto-height now (metrics wrap at narrow widths) — publish
+  // its live height as a CSS var so the sticky nav offset tracks it.
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined;
+    const el = document.querySelector('header.mtx-masthead');
+    if (!el || typeof ResizeObserver === 'undefined') return undefined;
+    const apply = () => document.documentElement.style.setProperty('--mtx-head-h', `${el.offsetHeight}px`);
+    apply();
+    const ro = new ResizeObserver(apply);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [view]);
+
+  const setAllSections = useCallback((open) => {
+    document.querySelectorAll('details.mtx-section').forEach((d) => { d.open = open; });
+  }, []);
+
   const jump = useCallback((id) => {
     const el = document.getElementById(`sec-${id}`);
     if (!el) return;
@@ -230,7 +247,14 @@ export default function ReviewV2Page() {
       ) : (
         <div className="flex flex-1 min-h-0">
           <ProvisionNav sections={sections} activeId={activeId} onJump={jump} />
-          <main className="flex-1 min-w-0 px-5 lg:px-9 pt-6 pb-7">
+          <main className="relative flex-1 min-w-0 px-5 lg:px-9 pt-6 pb-7">
+            {/* Collapse/expand all — absolutely positioned top-right so the
+                main content doesn't move down (Ben round 2). */}
+            <div className="absolute right-5 lg:right-9 top-1.5 flex items-center gap-2 z-10">
+              <button type="button" onClick={() => setAllSections(false)} className="mtx-meta-label text-[9px] tracking-[0.12em] hover:text-[#1F1F1F]">COLLAPSE ALL</button>
+              <span className="text-[9px] text-[#E0E0E0]">|</span>
+              <button type="button" onClick={() => setAllSections(true)} className="mtx-meta-label text-[9px] tracking-[0.12em] hover:text-[#1F1F1F]">EXPAND ALL</button>
+            </div>
             {cardsError ? (
               <p className="mtx-meta-label text-[10px] tracking-[0.16em] py-4">
                 Provision cards unavailable: {cardsError}

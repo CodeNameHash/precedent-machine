@@ -212,10 +212,9 @@ export default function HomePage() {
                       <option value="value_asc">Value low</option>
                       <option value="name_asc">Name</option>
                     </select>
-                    <div className="newQuery">
-                      <button type="button" onClick={() => setNewOpen((v) => !v)}>+ New query</button>
-                      {newOpen && <NewQueryMenu deals={deals} kinds={queryKinds} />}
-                    </div>
+                    {/* Ben (2026-07-16): query examples hidden until the
+                        query feature is fully built — NewQueryMenu and its
+                        wiring are kept intact for the re-enable. */}
                   </div>
                 </div>
 
