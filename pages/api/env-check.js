@@ -10,8 +10,14 @@ export default function handler(req, res) {
     if (v.startsWith('eyJ')) return 'jwt';
     return 'other';
   };
+  // Names only (no values): every env var whose name looks Supabase-ish,
+  // to catch spelling variants that the exact-name lookups below miss.
+  const supabaseishNames = Object.keys(process.env)
+    .filter((k) => /SU[PB]A?B?A?SE|SERVICE_ROLE/i.test(k))
+    .sort();
   res.json({
     vercelEnv: process.env.VERCEL_ENV || null,
+    supabaseishNames,
     has_NEXT_PUBLIC_SUPABASE_URL: Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL),
     has_SUPABASE_URL: Boolean(process.env.SUPABASE_URL),
     has_NEXT_PUBLIC_SUPABASE_ANON_KEY: Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY),
