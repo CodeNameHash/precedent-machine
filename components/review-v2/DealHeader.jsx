@@ -50,8 +50,14 @@ function factScalar(fact) {
   return fact;
 }
 
-// Build the metric-column list from whatever the deal row actually carries.
-export function deriveMetrics(deal) {
+// Build the metric-column list. Deal-level basics (date, value, structure,
+// sector) come from the deal row; CONSIDERATION and PER SHARE come from the
+// EXTRACTED cards (`extracted`, derived by deriveExtractedHeaderFacts from
+// the same consideration-hero rows the Consideration table renders).
+// metadata.deal_facts / headlineConsiderationType are FALLBACKS only — they
+// are stale or absent on many deals (Metsera carries a legacy CASH headline
+// although the extracted deal is cash + CVR).
+export function deriveMetrics(deal, extracted = {}) {
   if (!deal) return [];
   const meta = deal.metadata && typeof deal.metadata === 'object' ? deal.metadata : {};
   const facts = meta.deal_facts && typeof meta.deal_facts === 'object' ? meta.deal_facts : {};
@@ -63,8 +69,8 @@ export function deriveMetrics(deal) {
   const value = formatDealValue(factScalar(facts.value_usd) ?? deal.value_usd);
   if (value) metrics.push({ label: 'Deal value', value });
 
-  const considerationFact = factScalar(facts.consideration);
-  const considerationRaw = considerationFact
+  const considerationRaw = extracted.consideration
+    || factScalar(facts.consideration)
     || meta.headlineConsiderationType
     || meta.headline_consideration_type
     || null;
@@ -73,7 +79,8 @@ export function deriveMetrics(deal) {
     metrics.push({ label: 'Consideration', value: CONSIDERATION_LABELS[key] || String(considerationRaw) });
   }
 
-  const perShare = factScalar(facts.price_per_share) ?? factScalar(facts.per_share);
+  const perShare = extracted.perShare
+    ?? (factScalar(facts.price_per_share) ?? factScalar(facts.per_share));
   if (perShare) metrics.push({ label: 'Per share', value: String(perShare) });
 
   const termFee = factScalar(facts.termination_fee);
@@ -92,13 +99,16 @@ export function deriveStatus(deal) {
   return deal?.announce_date ? 'ANNOUNCED' : 'PENDING';
 }
 
-export default function DealHeader({ deal, view, onToggleView, hasAgreementText }) {
+export default function DealHeader({ deal, view, onToggleView, hasAgreementText, extracted }) {
   const meta = deal?.metadata && typeof deal.metadata === 'object' ? deal.metadata : {};
   const eyebrow = deal?.agreement_type || 'MERGER BRIEF';
   const targetName = meta.target_display || deal?.target || 'Loading…';
   const acquirerName = meta.acquirer_display || deal?.acquirer || null;
-  const metrics = deriveMetrics(deal);
-  const status = deal ? deriveStatus(deal) : null;
+  const metrics = deriveMetrics(deal, extracted || {});
+  const rawStatus = deal ? deriveStatus(deal) : null;
+  // 'ANNOUNCED' next to the 'Announced <date>' metric read as a duplicate —
+  // only surface the chip when the status says something the date doesn't.
+  const status = rawStatus === 'ANNOUNCED' && deal?.announce_date ? null : rawStatus;
   const compactValue = formatDealValue(deal?.value_usd);
   const inAgreement = view === 'agreement';
 

@@ -15,7 +15,14 @@ import ProvisionNav from '../../components/review-v2/ProvisionNav';
 import AgreementView from '../../components/review-v2/AgreementView';
 import MergertraceStyles from '../../components/review-v2/MergertraceStyles';
 import MaeSection from '../../components/review-v2/MaeSection';
-import { buildReviewV2Sections, EMPTY_REVIEW_DEAL, MAE_SECTION_ID } from '../../components/review-v2/sectionList';
+import ProvisionIndex, { DefinitionsSection } from '../../components/review-v2/ProvisionIndex';
+import {
+  buildReviewV2Sections,
+  deriveExtractedHeaderFacts,
+  groupCardsBySection,
+  EMPTY_REVIEW_DEAL,
+  MAE_SECTION_ID,
+} from '../../components/review-v2/sectionList';
 
 const FONTS_HREF =
   'https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap';
@@ -26,7 +33,7 @@ function LoadingLine({ children }) {
   );
 }
 
-function SectionBlock({ section, reviewDeal }) {
+function SectionBlock({ section, reviewDeal, sectionCards }) {
   return (
     <section id={`sec-${section.id}`} className="scroll-mt-28">
       <div className="flex items-center gap-2.5 pb-2 border-b-2 border-black">
@@ -34,11 +41,16 @@ function SectionBlock({ section, reviewDeal }) {
         <h2 className="text-base font-bold tracking-tight text-[#1F1F1F]">{section.title}</h2>
       </div>
       <div className="mt-4">
-        {section.id === MAE_SECTION_ID ? (
+        {section.id === '__definitions' ? (
+          <DefinitionsSection definitions={reviewDeal.definitions} />
+        ) : section.id === MAE_SECTION_ID ? (
           <MaeSection config={section.config} reviewDeal={reviewDeal} />
         ) : (
           <ProvisionTable config={section.config} reviewDeal={reviewDeal} isEdit={false} />
         )}
+        {section.id !== '__definitions' && sectionCards && sectionCards.length ? (
+          <ProvisionIndex cards={sectionCards} sectionTitle={section.title} />
+        ) : null}
       </div>
     </section>
   );
@@ -121,7 +133,18 @@ export default function ReviewV2Page() {
 
   /* ── Sections ── */
   const reviewDealForTables = useMemo(() => reviewDeal || EMPTY_REVIEW_DEAL, [reviewDeal]);
-  const sections = useMemo(() => buildReviewV2Sections(reviewDealForTables, deal), [reviewDealForTables, deal]);
+  const sections = useMemo(() => {
+    const base = buildReviewV2Sections(reviewDealForTables, deal);
+    // Defined terms — same payload, own section at the end (v1 exposes
+    // these through its sidebar Definitions group; without this they were
+    // unreachable from v2 entirely).
+    if ((reviewDealForTables.definitions || []).length > 0) {
+      base.push({ id: '__definitions', title: 'Definitions', config: null, dot: '#8A8782' });
+    }
+    return base;
+  }, [reviewDealForTables, deal]);
+  const cardsBySection = useMemo(() => groupCardsBySection(reviewDealForTables), [reviewDealForTables]);
+  const extractedFacts = useMemo(() => deriveExtractedHeaderFacts(reviewDealForTables), [reviewDealForTables]);
 
   /* ── View toggle ── */
   const [view, setView] = useState('summary');
@@ -180,6 +203,7 @@ export default function ReviewV2Page() {
         view={view}
         onToggleView={toggleView}
         hasAgreementText={hasAgreementText}
+        extracted={extractedFacts}
       />
 
       {dealError ? (
@@ -210,7 +234,12 @@ export default function ReviewV2Page() {
 
             <div className="space-y-10 max-w-3xl">
               {sections.map((section) => (
-                <SectionBlock key={section.id} section={section} reviewDeal={reviewDealForTables} />
+                <SectionBlock
+                  key={section.id}
+                  section={section}
+                  reviewDeal={reviewDealForTables}
+                  sectionCards={cardsBySection.get(section.id) || null}
+                />
               ))}
             </div>
 

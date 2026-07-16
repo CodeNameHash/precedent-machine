@@ -59,6 +59,68 @@ export const EMPTY_REVIEW_DEAL = { sections: [], definitions: [], cardCount: 0, 
 // the generic ProvisionTable (see SectionBlock in pages/review-v2/[id].js).
 export const MAE_SECTION_ID = maeDefinitionsConfig.id;
 
+// ── Per-section provision index ─────────────────────────────────────────
+// Groups the raw cards by the section that presents them, so each section
+// can render a "Provisions in this section" drill-down under its summary
+// table (the detail layer v1 exposes via its sidebar type-groups).
+// SYNC POINT: card provision_type values come from lib/parser-v2/
+// store-cards.js CARD_TYPE mapping.
+const CARD_TYPE_TO_SECTION = {
+  STRUCTURE_MECHANICS: 'structure-mechanics',
+  CONSIDERATION: 'consideration-hero',
+  REPRESENTATION: 'representations-qualifiers',
+  COVENANT_INTERIM_OPERATING: 'ioc-exceptions',
+  COVENANT_NO_SOLICITATION: 'nosol',
+  ANTITRUST_REGULATORY: 'antitrust-regulatory',
+  CLOSING_CONDITION: 'conditions',
+  TERMINATION_RIGHT: 'termination-rights',
+  TERMINATION_FEE: 'termination-fees',
+  COVENANT_OTHER: 'general-covenants',
+  COVENANT_EMPLOYEE_BENEFITS: 'employee-benefits',
+  MISC_BOILERPLATE: 'misc-boilerplate',
+};
+
+export function groupCardsBySection(reviewDeal) {
+  const rd = reviewDeal || EMPTY_REVIEW_DEAL;
+  const bySection = new Map();
+  for (const card of rd.cards || []) {
+    const type = card && card.provision_type;
+    if (!type || type === 'DEFINITION') continue; // definitions get their own section
+    let sectionId = CARD_TYPE_TO_SECTION[type] || '__other';
+    // Party-split overrides mirroring the v1 sidebar: buyer reps + equity.
+    if (type === 'REPRESENTATION' && /^REP-B/.test(String(card.provision_subtype || ''))) {
+      sectionId = 'parent-representations-qualifiers';
+    }
+    if (type === 'CONSIDERATION' && String(card.provision_subtype || '') === 'CONSID-EQUITY') {
+      sectionId = 'equity-awards';
+    }
+    if (!bySection.has(sectionId)) bySection.set(sectionId, []);
+    bySection.get(sectionId).push(card);
+  }
+  return bySection;
+}
+
+// Masthead facts from the EXTRACTED data (the same consideration-hero rows
+// the Consideration table renders), NOT deal.metadata.deal_facts — that
+// side-channel is stale or absent on many deals (Metsera carries a legacy
+// headlineConsiderationType of CASH although the deal is cash + CVR).
+export function deriveExtractedHeaderFacts(reviewDeal) {
+  const rd = reviewDeal || EMPTY_REVIEW_DEAL;
+  let rows = [];
+  try {
+    rows = considerationHeroConfig.selectRows(rd) || [];
+  } catch {
+    rows = [];
+  }
+  const byId = new Map(rows.map((r) => [r.id, r]));
+  const headline = byId.get('consideration-hero-headline');
+  const perShare = byId.get('consideration-hero-per-share');
+  return {
+    consideration: (headline && headline.detail) || null,
+    perShare: (perShare && perShare.detail) || null,
+  };
+}
+
 // Returns [{ id, title, config, dot }] for the configs that have rows on
 // this deal, in render order. Same selection semantics as the v1 page's
 // reviewSections memo (selectRows failure => treated as empty). `deal` (the
