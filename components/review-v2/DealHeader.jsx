@@ -86,8 +86,8 @@ export function deriveMetrics(deal, extracted = {}) {
   const termFee = factScalar(facts.termination_fee);
   if (termFee) metrics.push({ label: 'Termination fee', value: String(termFee) });
 
-  if (meta.merger_form) metrics.push({ label: 'Structure', value: titleCase(meta.merger_form) });
-  if (deal.sector) metrics.push({ label: 'Sector', value: deal.sector });
+  if (meta.merger_form) metrics.push({ label: 'Structure', value: titleCase(meta.merger_form), priority: 2 });
+  if (deal.sector) metrics.push({ label: 'Sector', value: deal.sector, priority: 3 });
 
   return metrics;
 }
@@ -119,13 +119,10 @@ export default function DealHeader({ deal, view, onToggleView, hasAgreementText,
           matters from md up, where this stays a single fixed-height row
           exactly as before. Below md the toggle and a condensed metric line
           wrap onto their own row rather than disappearing. */}
-      <div className="flex flex-wrap md:flex-nowrap items-center gap-x-6 gap-y-2 px-5 lg:px-8 py-3 md:py-2 md:min-h-[108px]">
+      <div className="flex flex-wrap md:flex-nowrap items-center gap-x-4 lg:gap-x-6 px-5 lg:px-8 py-3 md:py-0 md:h-[108px]">
         {/* Identity */}
         <div className="shrink-0 min-w-0">
-          <div className="flex items-baseline gap-2">
-            <a href="/" className="mtx-meta-label text-[10px] tracking-[0.18em] hover:text-[#1F1F1F]">← CORPUS</a>
-            <span className="mtx-meta-label text-[10px] tracking-[0.18em]">{String(eyebrow).toUpperCase()}</span>
-          </div>
+          <div className="mtx-meta-label text-[10px] tracking-[0.18em]">{String(eyebrow).toUpperCase()}</div>
           {/* Ben (Mergertrace round 1): title in the metric-value voice
               (Inter bold, same family as the "Sep 21, 2025" numerals), sized
               down so the full masthead fits; acquirer at the SAME size as
@@ -153,22 +150,26 @@ export default function DealHeader({ deal, view, onToggleView, hasAgreementText,
 
         {/* Metric columns — full detail, md+ (the strip's own overflow-x-auto
             absorbs the squeeze between md and lg). */}
-        {/* Ben (round 2): at squeezed widths the strip previously clipped —
-            metrics now WRAP onto extra lines (auto-height masthead) instead
-            of hiding behind an overflow scroll. */}
-        <div className="hidden md:flex flex-wrap items-center flex-1 min-w-0 gap-y-1">
+        {/* Ben (round 3): masthead height is FIXED — the strip must never
+            grow the bar. Values shrink and truncate at narrow widths
+            (full value on hover); the two lowest-priority columns drop
+            below lg/xl. */}
+        <div className="hidden md:flex items-stretch h-full flex-1 min-w-0 overflow-hidden">
           {/* mx-auto centres the strip when it fits and degrades to a clean
               left-origin scroll when it overflows (justify-center would clip
               the leading columns). */}
-          <div className="flex flex-wrap items-center mx-auto gap-y-1">
+          <div className="flex items-stretch h-full mx-auto min-w-0">
             {metrics.map((m, i) => (
               <div
                 key={m.label}
-                className="flex flex-col justify-center px-3 lg:px-4 shrink-0 py-1"
+                className={`flex flex-col justify-center px-2 lg:px-4 min-w-0 ${m.priority === 3 ? 'hidden xl:flex' : m.priority === 2 ? 'hidden lg:flex' : ''}`}
                 style={i !== 0 ? { borderLeft: '1px solid #E0E0E0' } : undefined}
               >
                 <div className="mtx-meta-label text-[9px] tracking-[0.14em] whitespace-nowrap">{m.label}</div>
-                <div className="text-base lg:text-lg font-bold leading-tight text-[#1F1F1F] mt-0.5 whitespace-nowrap">
+                <div
+                  className="text-sm lg:text-base font-bold leading-tight text-[#1F1F1F] mt-0.5 whitespace-nowrap truncate max-w-[16rem]"
+                  title={m.value}
+                >
                   {m.value}
                 </div>
               </div>

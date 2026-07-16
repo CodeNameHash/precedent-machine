@@ -22,10 +22,19 @@ export default function Layout({ children }) {
         className="sticky top-0 z-50 bg-surface border-b border-line flex items-center justify-between"
         style={{ height: 56, padding: '0 22px' }}
       >
-        <Link href="/" className="rec-wordmark">
-          <span className="mark" />
-          Corpus
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link href="/" className="rec-wordmark">
+            <span className="mark" />
+            Corpus
+          </Link>
+          <Link
+            href="/"
+            className="text-xs font-ui text-inkLight hover:text-ink"
+            style={{ letterSpacing: '.04em' }}
+          >
+            Deals
+          </Link>
+        </div>
         <div className="flex items-center gap-4">
           <ViewModeToggle />
           {user && (
