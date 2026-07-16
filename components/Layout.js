@@ -32,7 +32,7 @@ export default function Layout({ children }) {
             className="text-xs font-ui text-inkLight hover:text-ink"
             style={{ letterSpacing: '.04em' }}
           >
-            Deals
+            Return to Index
           </Link>
         </div>
         <div className="flex items-center gap-4">

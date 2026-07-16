@@ -101,7 +101,6 @@ export function deriveStatus(deal) {
 
 export default function DealHeader({ deal, view, onToggleView, hasAgreementText, extracted }) {
   const meta = deal?.metadata && typeof deal.metadata === 'object' ? deal.metadata : {};
-  const eyebrow = deal?.agreement_type || 'MERGER BRIEF';
   const targetName = meta.target_display || deal?.target || 'Loading…';
   const acquirerName = meta.acquirer_display || deal?.acquirer || null;
   const metrics = deriveMetrics(deal, extracted || {});
@@ -122,7 +121,6 @@ export default function DealHeader({ deal, view, onToggleView, hasAgreementText,
       <div className="flex flex-wrap md:flex-nowrap items-center gap-x-4 lg:gap-x-6 px-5 lg:px-8 py-3 md:py-0 md:h-[108px]">
         {/* Identity */}
         <div className="shrink-0 min-w-0">
-          <div className="mtx-meta-label text-[10px] tracking-[0.18em]">{String(eyebrow).toUpperCase()}</div>
           {/* Ben (Mergertrace round 1): title in the metric-value voice
               (Inter bold, same family as the "Sep 21, 2025" numerals), sized
               down so the full masthead fits; acquirer at the SAME size as
