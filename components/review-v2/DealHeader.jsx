@@ -1,0 +1,188 @@
+// Review V2 ("Mergertrace") masthead — ported from the design-lab
+// DealHeader prototype, fed by real deal data. Sticky 108px bar: identity
+// block, metric columns, and the Full Agreement / Back to Summary toggle.
+
+function formatDealValue(raw) {
+  const n = Number(raw);
+  if (!Number.isFinite(n) || n <= 0) return null;
+  if (n >= 1e9) {
+    const b = n / 1e9;
+    return `$${b >= 100 ? Math.round(b) : b.toFixed(1)}B`;
+  }
+  if (n >= 1e6) {
+    const m = n / 1e6;
+    return `$${m >= 100 ? Math.round(m) : m.toFixed(1)}M`;
+  }
+  return `$${Math.round(n).toLocaleString('en-US')}`;
+}
+
+function formatDate(raw) {
+  if (!raw) return null;
+  const d = new Date(raw);
+  if (Number.isNaN(d.getTime())) return null;
+  // Date-only strings parse as UTC midnight; format in UTC so the calendar
+  // date survives the NYC offset.
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+}
+
+const CONSIDERATION_LABELS = {
+  CASH: 'Cash',
+  STOCK: 'Stock',
+  MIXED: 'Mixed cash/stock',
+  MIXED_ELECTION: 'Mixed election',
+  CASH_PLUS_CVR: 'Cash + CVR',
+  STOCK_PLUS_CVR: 'Stock + CVR',
+  MIXED_PLUS_CVR: 'Mixed + CVR',
+};
+
+function titleCase(raw) {
+  return String(raw)
+    .toLowerCase()
+    .split(/[_\s]+/)
+    .filter(Boolean)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
+}
+
+function factScalar(fact) {
+  if (fact === null || fact === undefined) return null;
+  if (typeof fact === 'object') return fact.summary ?? fact.value ?? fact.label ?? fact.text ?? null;
+  return fact;
+}
+
+// Build the metric-column list from whatever the deal row actually carries.
+export function deriveMetrics(deal) {
+  if (!deal) return [];
+  const meta = deal.metadata && typeof deal.metadata === 'object' ? deal.metadata : {};
+  const facts = meta.deal_facts && typeof meta.deal_facts === 'object' ? meta.deal_facts : {};
+  const metrics = [];
+
+  const announced = formatDate(deal.announce_date);
+  if (announced) metrics.push({ label: 'Announced', value: announced });
+
+  const value = formatDealValue(factScalar(facts.value_usd) ?? deal.value_usd);
+  if (value) metrics.push({ label: 'Deal value', value });
+
+  const considerationFact = factScalar(facts.consideration);
+  const considerationRaw = considerationFact
+    || meta.headlineConsiderationType
+    || meta.headline_consideration_type
+    || null;
+  if (considerationRaw) {
+    const key = String(considerationRaw).toUpperCase();
+    metrics.push({ label: 'Consideration', value: CONSIDERATION_LABELS[key] || String(considerationRaw) });
+  }
+
+  const perShare = factScalar(facts.price_per_share) ?? factScalar(facts.per_share);
+  if (perShare) metrics.push({ label: 'Per share', value: String(perShare) });
+
+  const termFee = factScalar(facts.termination_fee);
+  if (termFee) metrics.push({ label: 'Termination fee', value: String(termFee) });
+
+  if (meta.merger_form) metrics.push({ label: 'Structure', value: titleCase(meta.merger_form) });
+  if (deal.sector) metrics.push({ label: 'Sector', value: deal.sector });
+
+  return metrics;
+}
+
+export function deriveStatus(deal) {
+  const facts = deal?.metadata?.deal_facts;
+  const factStatus = factScalar(facts && facts.status);
+  if (factStatus) return String(factStatus).toUpperCase();
+  return deal?.announce_date ? 'ANNOUNCED' : 'PENDING';
+}
+
+export default function DealHeader({ deal, view, onToggleView, hasAgreementText }) {
+  const meta = deal?.metadata && typeof deal.metadata === 'object' ? deal.metadata : {};
+  const eyebrow = deal?.agreement_type || 'MERGER BRIEF';
+  const targetName = meta.target_display || deal?.target || 'Loading…';
+  const acquirerName = meta.acquirer_display || deal?.acquirer || null;
+  const metrics = deriveMetrics(deal);
+  const status = deal ? deriveStatus(deal) : null;
+  const compactValue = formatDealValue(deal?.value_usd);
+  const inAgreement = view === 'agreement';
+
+  return (
+    <header className="mtx-masthead sticky top-0 z-30 bg-white border-b border-[#E0E0E0]">
+      {/* Below md the row wraps (auto height) instead of clipping at a fixed
+          108px — ProvisionNav's hardcoded top-[108px]/calc(100vh-108px) only
+          matters from md up, where this stays a single fixed-height row
+          exactly as before. Below md the toggle and a condensed metric line
+          wrap onto their own row rather than disappearing. */}
+      <div className="flex flex-wrap md:flex-nowrap items-center gap-x-6 gap-y-2 px-5 lg:px-8 py-3 md:py-0 md:h-[108px]">
+        {/* Identity */}
+        <div className="shrink-0 min-w-0">
+          <div className="mtx-meta-label text-[10px] tracking-[0.18em]">{String(eyebrow).toUpperCase()}</div>
+          <h1 className="mtx-serif text-xl lg:text-2xl font-bold leading-tight tracking-tight text-[#1F1F1F] mt-0.5 truncate">
+            {targetName}
+          </h1>
+          <div className="hidden sm:flex items-center gap-1.5 mt-1.5 whitespace-nowrap">
+            {acquirerName ? (
+              <span className="text-[10px] text-[#6B6B6B]">Acquired by {acquirerName}</span>
+            ) : null}
+            {status ? (
+              <>
+                <span aria-hidden="true" className="text-[10px] text-[#6B6B6B]">→</span>
+                <span className="inline-flex items-center px-2 py-0.5 border border-[#BDBDBD] text-[9px] font-bold uppercase tracking-wider text-[#1F1F1F]">
+                  {status}
+                </span>
+              </>
+            ) : null}
+          </div>
+        </div>
+
+        {/* Metric columns — full detail, md+ (the strip's own overflow-x-auto
+            absorbs the squeeze between md and lg). */}
+        <div className="hidden md:flex items-stretch h-full flex-1 min-w-0 overflow-x-auto mtx-scrollbar-thin">
+          {/* mx-auto centres the strip when it fits and degrades to a clean
+              left-origin scroll when it overflows (justify-center would clip
+              the leading columns). */}
+          <div className="flex items-stretch h-full mx-auto">
+            {metrics.map((m, i) => (
+              <div
+                key={m.label}
+                className="flex flex-col justify-center px-3 lg:px-4 shrink-0"
+                style={i !== 0 ? { borderLeft: '1px solid #E0E0E0' } : undefined}
+              >
+                <div className="mtx-meta-label text-[9px] tracking-[0.14em] whitespace-nowrap">{m.label}</div>
+                <div className="text-base lg:text-lg font-bold leading-tight text-[#1F1F1F] mt-0.5 whitespace-nowrap">
+                  {m.value}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Condensed metric line — below md only, replaces the full grid. */}
+        {compactValue ? (
+          <div className="flex md:hidden items-center gap-1.5 text-[#6B6B6B] min-w-0">
+            <span className="mtx-serif text-base font-bold text-[#1F1F1F] whitespace-nowrap">{compactValue}</span>
+          </div>
+        ) : null}
+
+        {/* Action button — same slot toggles between the two views. Always
+            reachable: below md it wraps onto its own line via flex-wrap on
+            the parent rather than being hidden. */}
+        <div className="flex items-center gap-2 shrink-0 ml-auto md:ml-auto lg:ml-0">
+          {hasAgreementText ? (
+            <button
+              type="button"
+              onClick={onToggleView}
+              className="inline-flex items-center gap-1.5 px-3 py-2 border border-[#1F1F1F] text-[10px] font-bold uppercase tracking-wider text-[#1F1F1F] hover:bg-[#1F1F1F] hover:text-white transition whitespace-nowrap"
+            >
+              {inAgreement ? '← Back to Summary' : 'Full Merger Agreement →'}
+            </button>
+          ) : (
+            <button
+              type="button"
+              disabled
+              className="inline-flex items-center gap-1.5 px-3 py-2 border border-[#E0E0E0] text-[10px] font-bold uppercase tracking-wider text-[#6B6B6B] opacity-60 cursor-not-allowed whitespace-nowrap"
+            >
+              Full Merger Agreement <span className="normal-case font-medium tracking-normal">(no source text)</span>
+            </button>
+          )}
+        </div>
+      </div>
+    </header>
+  );
+}

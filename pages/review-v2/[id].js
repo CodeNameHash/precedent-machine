@@ -1,0 +1,230 @@
+// Review V2 — "Mergertrace" alternate design for the deal review page.
+// Same data as pages/review/[id].js (deal row, /api/review/<id>/cards,
+// /api/agreement-source), same 21 table configs rendered through the same
+// ProvisionTable — only the shell, chrome and skin differ. Additive route:
+// the v1 page is untouched.
+
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useRouter } from 'next/router';
+import Head from 'next/head';
+import { useDeal } from '../../lib/useSupabaseData';
+import { useUser } from '../../lib/useUser';
+import ProvisionTable from '../../components/review/ProvisionTable';
+import DealHeader from '../../components/review-v2/DealHeader';
+import ProvisionNav from '../../components/review-v2/ProvisionNav';
+import AgreementView from '../../components/review-v2/AgreementView';
+import MergertraceStyles from '../../components/review-v2/MergertraceStyles';
+import MaeSection from '../../components/review-v2/MaeSection';
+import { buildReviewV2Sections, EMPTY_REVIEW_DEAL, MAE_SECTION_ID } from '../../components/review-v2/sectionList';
+
+const FONTS_HREF =
+  'https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap';
+
+function LoadingLine({ children }) {
+  return (
+    <p className="mtx-meta-label text-[10px] tracking-[0.16em] px-5 lg:px-9 py-10">{children}</p>
+  );
+}
+
+function SectionBlock({ section, reviewDeal }) {
+  return (
+    <section id={`sec-${section.id}`} className="scroll-mt-28">
+      <div className="flex items-center gap-2.5 pb-2 border-b-2 border-black">
+        <span className="w-2.5 h-2.5" style={{ background: section.dot, borderRadius: '9999px' }} />
+        <h2 className="text-base font-bold tracking-tight text-[#1F1F1F]">{section.title}</h2>
+      </div>
+      <div className="mt-4">
+        {section.id === MAE_SECTION_ID ? (
+          <MaeSection config={section.config} reviewDeal={reviewDeal} />
+        ) : (
+          <ProvisionTable config={section.config} reviewDeal={reviewDeal} isEdit={false} />
+        )}
+      </div>
+    </section>
+  );
+}
+
+export default function ReviewV2Page() {
+  const router = useRouter();
+  // Tolerate stray punctuation glued onto the id (e.g. a trailing "." from a
+  // link in prose) — extract the first UUID-shaped token.
+  const dealId = useMemo(() => {
+    if (!router.isReady || !router.query.id) return null;
+    const raw = String(router.query.id);
+    const m = raw.match(/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/);
+    return m ? m[0] : raw;
+  }, [router.isReady, router.query.id]);
+  useUser({ redirectTo: '/login' });
+
+  // With junk after the uuid in the path (e.g. a trailing "."), Next's router
+  // never hydrates the query (isReady stays false) and the page hangs on
+  // Loading — normalise the URL itself on mount.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const m = window.location.pathname.match(
+      /^\/review-v2\/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})(.+)$/,
+    );
+    if (m) router.replace(`/review-v2/${m[1]}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const { deal, loading: dealLoading, error: dealError } = useDeal(dealId);
+
+  /* ── Cards payload (same fetch/normalisation as v1) ── */
+  const [reviewDeal, setReviewDeal] = useState(null);
+  const [cardsLoading, setCardsLoading] = useState(false);
+  const [cardsError, setCardsError] = useState(null);
+
+  useEffect(() => {
+    if (!router.isReady || !dealId) {
+      setReviewDeal(null);
+      setCardsLoading(false);
+      setCardsError(null);
+      return undefined;
+    }
+    let cancelled = false;
+    setCardsLoading(true);
+    setCardsError(null);
+    fetch(`/api/review/${encodeURIComponent(dealId)}/cards`)
+      .then(async (response) => {
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(payload.error || `HTTP ${response.status}`);
+        return payload.reviewDeal || null;
+      })
+      .then((next) => {
+        if (!cancelled) setReviewDeal(next);
+      })
+      .catch((error) => {
+        if (!cancelled) {
+          setReviewDeal(null);
+          setCardsError(error.message || String(error));
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setCardsLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [router.isReady, dealId]);
+
+  /* ── Agreement source ── */
+  const [agreementSource, setAgreementSource] = useState(null);
+
+  useEffect(() => {
+    if (!dealId) return;
+    fetch(`/api/agreement-source?deal_id=${dealId}`)
+      .then((r) => r.json())
+      .then((d) => setAgreementSource(d.agreement_source || null))
+      .catch(() => setAgreementSource(null));
+  }, [dealId]);
+
+  /* ── Sections ── */
+  const reviewDealForTables = useMemo(() => reviewDeal || EMPTY_REVIEW_DEAL, [reviewDeal]);
+  const sections = useMemo(() => buildReviewV2Sections(reviewDealForTables, deal), [reviewDealForTables, deal]);
+
+  /* ── View toggle ── */
+  const [view, setView] = useState('summary');
+  const hasAgreementText = Boolean(agreementSource && agreementSource.full_text);
+  const toggleView = useCallback(() => {
+    setView((v) => (v === 'summary' ? 'agreement' : 'summary'));
+  }, []);
+  useEffect(() => {
+    if (typeof window !== 'undefined') window.scrollTo(0, 0);
+  }, [view]);
+
+  /* ── Scrollspy ── */
+  const [activeId, setActiveId] = useState(null);
+  const sectionKey = sections.map((s) => s.id).join(',');
+
+  useEffect(() => {
+    if (view !== 'summary' || sections.length === 0) return undefined;
+    if (!activeId || !sections.some((s) => s.id === activeId)) setActiveId(sections[0].id);
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) setActiveId(e.target.id.replace('sec-', ''));
+        });
+      },
+      { rootMargin: '-30% 0px -60% 0px' },
+    );
+    sections.forEach((s) => {
+      const el = document.getElementById(`sec-${s.id}`);
+      if (el) obs.observe(el);
+    });
+    return () => obs.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sectionKey, view]);
+
+  const jump = useCallback((id) => {
+    const el = document.getElementById(`sec-${id}`);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, []);
+
+  const pageTitle = deal
+    ? `${deal.metadata?.target_display || deal.target} — Review V2`
+    : 'Deal Review V2';
+
+  return (
+    <div className="mtx min-h-screen flex flex-col bg-white">
+      <Head>
+        <title>{pageTitle}</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="stylesheet" href={FONTS_HREF} />
+      </Head>
+      <MergertraceStyles />
+
+      <DealHeader
+        deal={deal}
+        view={view}
+        onToggleView={toggleView}
+        hasAgreementText={hasAgreementText}
+      />
+
+      {dealError ? (
+        <LoadingLine>Failed to load deal: {String(dealError)}</LoadingLine>
+      ) : dealLoading && !deal ? (
+        <LoadingLine>Loading deal…</LoadingLine>
+      ) : view === 'agreement' ? (
+        <div className="flex flex-1 min-h-0">
+          <AgreementView agreementSource={agreementSource} />
+        </div>
+      ) : (
+        <div className="flex flex-1 min-h-0">
+          <ProvisionNav sections={sections} activeId={activeId} onJump={jump} />
+          <main className="flex-1 min-w-0 px-5 lg:px-9 pt-6 pb-7">
+            {cardsError ? (
+              <p className="mtx-meta-label text-[10px] tracking-[0.16em] py-4">
+                Provision cards unavailable: {cardsError}
+              </p>
+            ) : null}
+            {cardsLoading ? (
+              <p className="mtx-meta-label text-[10px] tracking-[0.16em] py-4">Loading provisions…</p>
+            ) : null}
+            {!cardsLoading && !cardsError && sections.length === 0 ? (
+              <p className="mtx-meta-label text-[10px] tracking-[0.16em] py-4">
+                No extracted provisions for this deal.
+              </p>
+            ) : null}
+
+            <div className="space-y-10 max-w-3xl">
+              {sections.map((section) => (
+                <SectionBlock key={section.id} section={section} reviewDeal={reviewDealForTables} />
+              ))}
+            </div>
+
+            <footer className="mt-12 pt-4 border-t border-[#E0E0E0] flex items-center justify-between">
+              <p className="mtx-meta-label text-[9px] tracking-wider">
+                Corpus · For internal review · Privileged &amp; confidential
+              </p>
+              <p className="text-[9px] text-[#6B6B6B]">
+                Updated {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+              </p>
+            </footer>
+          </main>
+        </div>
+      )}
+    </div>
+  );
+}
