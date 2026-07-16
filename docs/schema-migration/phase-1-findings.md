@@ -31,6 +31,8 @@ Recommendation for Phase 3: use camelCase for canonical `FeatureDef.key`, becaus
 | scheduleReference |28 |category_summary_features_js, expected_sets_js, feature_validation_js, rubric_js |
 | materialityQualifier |25 |category_summary_features_js, expected_sets_js, feature_validation_js, rubric_js, taxonomy_js, ui |
 | crossReferences |23 |expected_sets_js, feature_validation_js, rubric_js |
+| fiduciaryOutStandard |21 |category_summary_features_js, expected_sets_js, feature_validation_js, rubric_js, ui |
+| matchingPeriod |21 |category_summary_features_js, expected_sets_js, feature_validation_js, rubric_js, ui |
 | noOtherRepsParty |21 |expected_sets_js, feature_validation_js, rubric_js, ui |
 | partyWhoCanTerminate |21 |category_summary_features_js, expected_sets_js, feature_validation_js, rubric_js, taxonomy_js |
 | extraContractualClaimsWaived |20 |expected_sets_js, feature_validation_js, rubric_js |
@@ -38,15 +40,13 @@ Recommendation for Phase 3: use camelCase for canonical `FeatureDef.key`, becaus
 | nonRelianceClause |20 |expected_sets_js, feature_validation_js, rubric_js |
 | noOtherRepsPresent |20 |expected_sets_js, feature_validation_js, rubric_js |
 | bringDownStandard |19 |category_summary_features_js, expected_sets_js, feature_validation_js, rubric_js, taxonomy_js |
+| initialMatchPeriodDays |19 |category_summary_features_js, expected_sets_js, feature_validation_js, rubric_js, ui |
+| boardChangeStandard |18 |category_summary_features_js, expected_sets_js, feature_validation_js, rubric_js, ui |
 | knowledgeScope |18 |expected_sets_js, feature_validation_js, rubric_js, ui |
 | linkedBringDownStandard |18 |expected_sets_js, feature_validation_js, rubric_js, taxonomy_js |
 | knowledgeQualifier |17 |expected_sets_js, feature_validation_js, rubric_js, ui |
 | materialContractsBuckets |17 |expected_sets_js, feature_validation_js, rubric_js, taxonomy_js, ui |
 | materialityScrape |17 |expected_sets_js, feature_validation_js, rubric_js, taxonomy_js |
-| knowledgeScopeType |16 |expected_sets_js, feature_validation_js, rubric_js |
-| mainCondition |16 |expected_sets_js, feature_validation_js, rubric_js, ui |
-| materialContractsDollarThresholds |16 |expected_sets_js, feature_validation_js, rubric_js, ui |
-| materialityScopeType |16 |expected_sets_js, feature_validation_js, rubric_js |
 
 ## Missing-Feature Patterns To Audit In Phase 3
 
