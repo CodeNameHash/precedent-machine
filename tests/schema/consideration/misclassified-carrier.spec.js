@@ -39,3 +39,20 @@ test('converter skips when the only instrument mention is negated', () => {
   assert.doesNotThrow(() => convertConsiderationEquityProvisions([prov]));
   assert.equal(prov.features.considerationEquity, undefined);
 });
+
+// Bioverativ round 2: definitions are routinely tagged with the topical code
+// of the concept they define, so a DEF row can arrive with code
+// CONSID-EQUITY while naming instruments ('"Company Equity Awards" means the
+// Company Stock Options and the Company Restricted Stock Units.'). It
+// carries no treatment and must not be converted — only CONSID-typed
+// provisions are treatment carriers.
+test('converter skips a DEF-typed provision tagged CONSID-EQUITY', () => {
+  const prov = {
+    type: 'DEF',
+    code: 'CONSID-EQUITY',
+    text: '"Company Equity Awards" means the Company Stock Options and the Company Restricted Stock Units.',
+    features: { canonicalTerm: 'Company Equity Awards' },
+  };
+  assert.doesNotThrow(() => convertConsiderationEquityProvisions([prov]));
+  assert.equal(prov.features.considerationEquity, undefined);
+});
