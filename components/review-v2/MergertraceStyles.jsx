@@ -477,6 +477,12 @@ export default function MergertraceStyles() {
         border-color: #E0E0E0;
       }
 
+      /* Collapsible sections: hide the default marker, rotate the caret
+         when closed. */
+      .mtx details.mtx-section > summary::-webkit-details-marker { display: none; }
+      .mtx details.mtx-section:not([open]) .mtx-section-caret { transform: rotate(-90deg); }
+      .mtx details.mtx-section > summary:hover h2 { color: #000; }
+
       /* Full-bleed: neutralise the app Layout's padded grey canvas on this
          page only (the .mtx root sits directly inside Layout's <main>). */
       main:has(> .mtx) {

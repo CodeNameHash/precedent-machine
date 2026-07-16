@@ -567,19 +567,12 @@ function buildIocExceptionsRows(cards, ctx) {
 // affirmative-covenants band, so the old bottom-strip CoverageFooter count
 // (which never enumerated the present items) would just be a redundant
 // second display of the same 4 codes.
-function renderIocFooter(rows, ctx) {
-  const PillCell = ctx?.primitives?.PillCell;
-  const reviewDeal = rows && rows[0] && rows[0].reviewDeal;
-  if (!reviewDeal) return null;
-  const geCards = (reviewDeal.cards || []).filter((card) => GENERAL_EXCEPTION_CODES.has(cardCode(card)));
-  if (!geCards.length) return null;
-  const requiredByLawCarveout = geCards.some((c) => cardFeatures(c).requiredByLawCarveout === true);
-  if (!requiredByLawCarveout || !PillCell) return null;
-  return React.createElement(
-    'div',
-    { className: 'flex flex-wrap gap-1 border-t border-border bg-bg/40 px-3 py-2' },
-    pillFor(PillCell, 'required-by-law-carveout', 'Required-by-law carve-out applies', 'info'),
-  );
+// Ben (Mergertrace round 1): the standalone "Required-by-law carve-out
+// applies" footer pill was a redundant third display of a fact the
+// Exceptions band already shows ("As required by law" pill in the intro/
+// chapeau row) — dropped entirely.
+function renderIocFooter() {
+  return null;
 }
 
 const iocExceptionsConfig = {

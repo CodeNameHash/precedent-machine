@@ -34,13 +34,22 @@ function LoadingLine({ children }) {
 }
 
 function SectionBlock({ section, reviewDeal, sectionCards }) {
+  // Ben (Mergertrace round 1): every section collapsible. Native <details>
+  // (open by default) so the scrollspy/anchor <section> wrapper and the
+  // sec-<id> ids are untouched; ProvisionNav's jump() re-opens a collapsed
+  // section before scrolling.
   return (
     <section id={`sec-${section.id}`} className="scroll-mt-28">
-      <div className="flex items-center gap-2.5 pb-2 border-b-2 border-black">
-        <span className="w-2.5 h-2.5" style={{ background: section.dot, borderRadius: '9999px' }} />
-        <h2 className="text-base font-bold tracking-tight text-[#1F1F1F]">{section.title}</h2>
-      </div>
-      <div className="mt-4">
+      <details open className="mtx-section">
+        <summary
+          className="flex items-center gap-2.5 pb-2 border-b-2 border-black cursor-pointer select-none"
+          style={{ listStyle: 'none' }}
+        >
+          <span className="w-2.5 h-2.5" style={{ background: section.dot, borderRadius: '9999px' }} />
+          <h2 className="text-base font-bold tracking-tight text-[#1F1F1F]">{section.title}</h2>
+          <span aria-hidden="true" className="mtx-section-caret ml-auto text-[10px] text-[#6B6B6B]">▾</span>
+        </summary>
+        <div className="mt-4">
         {section.id === '__definitions' ? (
           <DefinitionsSection definitions={reviewDeal.definitions} />
         ) : section.id === MAE_SECTION_ID ? (
@@ -51,7 +60,8 @@ function SectionBlock({ section, reviewDeal, sectionCards }) {
         {section.id !== '__definitions' && sectionCards && sectionCards.length ? (
           <ProvisionIndex cards={sectionCards} sectionTitle={section.title} />
         ) : null}
-      </div>
+        </div>
+      </details>
     </section>
   );
 }
@@ -181,7 +191,10 @@ export default function ReviewV2Page() {
 
   const jump = useCallback((id) => {
     const el = document.getElementById(`sec-${id}`);
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (!el) return;
+    const det = el.querySelector('details.mtx-section');
+    if (det && !det.open) det.open = true;
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, []);
 
   const pageTitle = deal

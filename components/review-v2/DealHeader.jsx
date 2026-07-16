@@ -123,12 +123,19 @@ export default function DealHeader({ deal, view, onToggleView, hasAgreementText,
         {/* Identity */}
         <div className="shrink-0 min-w-0">
           <div className="mtx-meta-label text-[10px] tracking-[0.18em]">{String(eyebrow).toUpperCase()}</div>
-          <h1 className="mtx-serif text-xl lg:text-2xl font-bold leading-tight tracking-tight text-[#1F1F1F] mt-0.5 truncate">
+          {/* Ben (Mergertrace round 1): title in the metric-value voice
+              (Inter bold, same family as the "Sep 21, 2025" numerals), sized
+              down so the full masthead fits; acquirer at the SAME size as
+              the target. */}
+          <h1 className="text-base lg:text-lg font-bold leading-tight tracking-tight text-[#1F1F1F] mt-0.5">
             {targetName}
           </h1>
-          <div className="hidden sm:flex items-center gap-1.5 mt-1.5 whitespace-nowrap">
+          <div className="hidden sm:flex items-baseline gap-1.5 mt-0.5 whitespace-nowrap">
             {acquirerName ? (
-              <span className="text-[10px] text-[#6B6B6B]">Acquired by {acquirerName}</span>
+              <span className="text-base lg:text-lg font-bold leading-tight tracking-tight text-[#1F1F1F]">
+                <span className="mtx-meta-label text-[9px] tracking-[0.14em] mr-1.5 align-middle">ACQUIRED BY</span>
+                {acquirerName}
+              </span>
             ) : null}
             {status ? (
               <>
