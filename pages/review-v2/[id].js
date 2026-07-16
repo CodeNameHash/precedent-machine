@@ -16,6 +16,7 @@ import AgreementView from '../../components/review-v2/AgreementView';
 import MergertraceStyles from '../../components/review-v2/MergertraceStyles';
 import MaeSection from '../../components/review-v2/MaeSection';
 import ProvisionIndex, { DefinitionsSection } from '../../components/review-v2/ProvisionIndex';
+import ClauseSidebar from '../../components/review-v2/ClauseSidebar';
 import {
   buildReviewV2Sections,
   deriveExtractedHeaderFacts,
@@ -33,7 +34,7 @@ function LoadingLine({ children }) {
   );
 }
 
-function SectionBlock({ section, reviewDeal, sectionCards }) {
+function SectionBlock({ section, reviewDeal, sectionCards, onSelectCard, selectedCardId }) {
   // Ben (Mergertrace round 1): every section collapsible. Native <details>
   // (open by default) so the scrollspy/anchor <section> wrapper and the
   // sec-<id> ids are untouched; ProvisionNav's jump() re-opens a collapsed
@@ -58,7 +59,7 @@ function SectionBlock({ section, reviewDeal, sectionCards }) {
           <ProvisionTable config={section.config} reviewDeal={reviewDeal} isEdit={false} />
         )}
         {section.id !== '__definitions' && sectionCards && sectionCards.length ? (
-          <ProvisionIndex cards={sectionCards} sectionTitle={section.title} />
+          <ProvisionIndex cards={sectionCards} sectionTitle={section.title} onSelect={onSelectCard} selectedId={selectedCardId} />
         ) : null}
         </div>
       </details>
@@ -202,6 +203,17 @@ export default function ReviewV2Page() {
     return () => ro.disconnect();
   }, [view]);
 
+  /* ── Clause sidebar selection (reader mode) ── */
+  const [selectedCard, setSelectedCard] = useState(null);
+  const selectCard = useCallback((card) => {
+    setSelectedCard((cur) => (cur && (cur.id || cur.provision_instance_id) === (card.id || card.provision_instance_id) ? null : card));
+  }, []);
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') setSelectedCard(null); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
   const setAllSections = useCallback((open) => {
     document.querySelectorAll('details.mtx-section').forEach((d) => { d.open = open; });
   }, []);
@@ -276,6 +288,8 @@ export default function ReviewV2Page() {
                   section={section}
                   reviewDeal={reviewDealForTables}
                   sectionCards={cardsBySection.get(section.id) || null}
+                  onSelectCard={selectCard}
+                  selectedCardId={selectedCard ? (selectedCard.id || selectedCard.provision_instance_id) : null}
                 />
               ))}
             </div>
@@ -289,6 +303,14 @@ export default function ReviewV2Page() {
               </p>
             </footer>
           </main>
+          {selectedCard ? (
+            <ClauseSidebar
+              card={selectedCard}
+              dealId={dealId}
+              dealSector={deal ? deal.sector : null}
+              onClose={() => setSelectedCard(null)}
+            />
+          ) : null}
         </div>
       )}
     </div>

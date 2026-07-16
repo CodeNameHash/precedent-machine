@@ -18,7 +18,7 @@ function sectionRefLabel(ref) {
   return first ? `§${first}` : '';
 }
 
-export default function ProvisionIndex({ cards, sectionTitle }) {
+export default function ProvisionIndex({ cards, sectionTitle, onSelect, selectedId }) {
   const list = (cards || []).filter((c) => c && (c.short_title || c.defined_term));
   if (!list.length) return null;
   return (
@@ -35,8 +35,15 @@ export default function ProvisionIndex({ cards, sectionTitle }) {
             <tbody className="divide-y divide-border">
               {list.map((card) => {
                 const text = card.region_full_text || card.primary_quote || '';
+                const cardKey = card.id || card.provision_instance_id;
+                const isSel = selectedId && cardKey === selectedId;
                 return (
-                  <tr key={card.id || card.provision_instance_id} className="align-top">
+                  <tr
+                    key={cardKey}
+                    className="align-top"
+                    onClick={onSelect ? () => onSelect(card) : undefined}
+                    style={onSelect ? { cursor: 'pointer', ...(isSel ? { background: 'rgba(47,109,181,.07)', boxShadow: 'inset 2px 0 0 #2F6DB5' } : {}) } : undefined}
+                  >
                     <td className="px-3 py-2 align-top" style={{ width: '5rem' }}>
                       <span className="mtx-mono text-[11px] text-[#6B6B6B] whitespace-nowrap">{sectionRefLabel(card.section_ref)}</span>
                     </td>
