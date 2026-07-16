@@ -1,5 +1,5 @@
 import React from 'react';
-import { cardFeatures, splitForCell, textOf, valueText } from './card-utils.js';
+import { cardFeatures, partySide, splitForCell, textOf, valueText } from './card-utils.js';
 import { standardColorKey } from './standard-colors.js';
 import { BOARD_CHANGE_STANDARD_LABELS } from './board-change-standard.js';
 
@@ -47,10 +47,6 @@ function isInterveningCard(card) {
   if (['NOSOL-INTERVENING', 'DEF-INTERVENING'].includes(code)) return true;
   if (card?.provision_type !== 'COVENANT_NO_SOLICITATION' && !/^NOSOL(?:-|$)/.test(code)) return false;
   return /intervening\s+event/i.test(`${card?.short_title || ''} ${textOf(card)}`);
-}
-function partySide(card) {
-  const scope = String(card?.party_scope || '').toUpperCase();
-  return scope === 'BUYER' || scope === 'PARENT' ? 'Buyer / Parent' : 'Target / Company';
 }
 // textOf is imported from card-utils.js (see above) rather than defined
 // locally, for the same reason as valueText below.

@@ -77,9 +77,19 @@ function isIocCard(card) {
 }
 
 // Container codes that carry the section-wide exceptions preamble (rendered
-// as the footer strip, never as a negative-covenant row) vs. the affirmative
-// limbs (rendered as their own band, never as a negative-covenant row).
-const GENERAL_EXCEPTION_CODES = new Set(['IOC-GENERAL-EXCEPTIONS', 'IOC-EXCEPTIONS', 'IOC-NEGATIVE-PREAMBLE']);
+// as their own "Exceptions" band -- see buildIocExceptionsRows below -- never
+// as a negative-covenant row) vs. the affirmative limbs (rendered as their
+// own band, never as a negative-covenant row). Split into the POSITIVE side
+// (the IOC intro / consolidated "General Exceptions" row -- the chapeau that
+// precedes the affirmative duties) and the NEGATIVE side (the
+// IOC-NEGATIVE-PREAMBLE lead-in to the enumerated restrictions) so the
+// Exceptions band can tell whether the two sides carry the identical
+// carve-out set (Metsera: both preambles list the same 4 codes --
+// COMPANY_DISCLOSURE_LETTER / REQUIRED_BY_AGREEMENT / REQUIRED_BY_LAW /
+// PRIOR_WRITTEN_CONSENT) or genuinely diverge.
+const POSITIVE_EXCEPTION_CODES = new Set(['IOC-GENERAL-EXCEPTIONS', 'IOC-EXCEPTIONS', 'IOC-POSITIVE-PREAMBLE']);
+const NEGATIVE_EXCEPTION_CODES = new Set(['IOC-NEGATIVE-PREAMBLE']);
+const GENERAL_EXCEPTION_CODES = new Set([...POSITIVE_EXCEPTION_CODES, ...NEGATIVE_EXCEPTION_CODES]);
 const AFFIRMATIVE_CODES = new Set([
   'IOC-ORDINARY', 'IOC-PRESERVE', 'IOC-MAINTAIN', 'IOC-NOACTION',
   'IOC-AFFIRMATIVE', 'IOC-OTHER-AFFIRMATIVE', 'IOC-POSITIVE-PREAMBLE',
@@ -486,38 +496,89 @@ function affirmativeRows(cards, ctx) {
   return rows;
 }
 
-const GENERAL_EXCEPTION_CANONICAL_CODES = ['COMPANY_DISCLOSURE_LETTER', 'PRIOR_WRITTEN_CONSENT', 'REQUIRED_BY_AGREEMENT', 'REQUIRED_BY_LAW'];
+// FIX (General Exceptions showing only 1 of N): the section-wide carve-out
+// codes were only ever surfaced through the bottom CoverageFooter strip,
+// which renders a bare "N of M general exceptions apply to the covenants
+// above" COUNT -- it never lists which items are actually present (only the
+// ABSENT ones, behind a collapsed details). For Metsera that read as
+// "4 of 4 apply" with no visible enumeration at all, i.e. the 4 distinct
+// carve-outs (COMPANY_DISCLOSURE_LETTER "As disclosed" / REQUIRED_BY_AGREEMENT
+// "As contemplated by this Agreement" / REQUIRED_BY_LAW "As required by law" /
+// PRIOR_WRITTEN_CONSENT "With Parent's consent") collapsed down to that one
+// summary line. This helper builds the actual pill row(s) so every distinct
+// exception renders -- see exceptionsRow/buildIocExceptionsRows below, wired
+// into the 'exceptions' group in the table body (never re-introduces true
+// duplicates: dedupeEntries collapses by CODE, and REQUIRED_BY_AGREEMENT is
+// never aliased into COMPANY_DISCLOSURE_LETTER or any other code here).
+function exceptionsRow(id, label, entries, ctx) {
+  const PillCell = ctx?.primitives?.PillCell;
+  if (!entries.length) return null;
+  const pills = entries
+    .map((e, i) => pillFor(PillCell, `${id}-${i}`, e.label, 'present', e.evidence, e.source, undefined, true))
+    .filter(Boolean);
+  return {
+    id,
+    label: covenantLabelNode(label, null),
+    children: pills.length
+      ? React.createElement('div', { className: 'flex flex-wrap gap-1' }, pills)
+      : React.createElement('span', { className: 'text-[11px] italic text-inkFaint' }, 'None specified'),
+  };
+}
 
+// Builds the "Exceptions" band's row(s). Some deals (Metsera) carry the
+// SAME chapeau exceptions on both the affirmative-side preamble
+// (IOC-GENERAL-EXCEPTIONS) and the negative-side preamble
+// (IOC-NEGATIVE-PREAMBLE) -- in that case show ONE shared row so the two
+// sides' identical carve-out list isn't duplicated. Other deals extract them
+// as genuinely separate sets (e.g. the negative preamble narrows or extends
+// the affirmative one) -- in that case each side gets its own row. Detected
+// by comparing the two sides' DISTINCT CODE SETS (not label text, which can
+// carry immaterial per-clause quote differences), so equal-content preambles
+// with slightly different verbatim quotes still collapse to the shared row.
+function buildIocExceptionsRows(cards, ctx) {
+  const posCards = cards.filter((c) => POSITIVE_EXCEPTION_CODES.has(cardCode(c)));
+  const negCards = cards.filter((c) => NEGATIVE_EXCEPTION_CODES.has(cardCode(c)));
+  const posEntries = dedupeEntries(posCards.flatMap((c) => exceptionEntries(cardFeatures(c).permittedExceptions, EXCEPTION_CODES, c)));
+  const negEntries = dedupeEntries(negCards.flatMap((c) => exceptionEntries(cardFeatures(c).permittedExceptions, EXCEPTION_CODES, c)));
+  if (!posEntries.length && !negEntries.length) return [];
+
+  const posCodes = new Set(posEntries.map((e) => e.code));
+  const negCodes = new Set(negEntries.map((e) => e.code));
+  const sameSet = posEntries.length > 0 && negEntries.length > 0
+    && posCodes.size === negCodes.size
+    && [...posCodes].every((code) => negCodes.has(code));
+
+  if (sameSet) {
+    const row = exceptionsRow('ioc-exceptions-shared', 'Applies to affirmative & negative covenants', posEntries, ctx);
+    return row ? [row] : [];
+  }
+
+  const rows = [];
+  const affRow = exceptionsRow('ioc-exceptions-affirmative', 'Exceptions to affirmative covenants', posEntries, ctx);
+  if (affRow) rows.push(affRow);
+  const negRow = exceptionsRow('ioc-exceptions-negative', 'Exceptions to negative covenants', negEntries, ctx);
+  if (negRow) rows.push(negRow);
+  return rows;
+}
+
+// Footer now carries ONLY the "required-by-law carve-out" note -- the
+// distinct general-exceptions items themselves are visible inline in the
+// 'exceptions' group (buildIocExceptionsRows above), immediately after the
+// affirmative-covenants band, so the old bottom-strip CoverageFooter count
+// (which never enumerated the present items) would just be a redundant
+// second display of the same 4 codes.
 function renderIocFooter(rows, ctx) {
-  const CoverageFooter = ctx?.primitives?.CoverageFooter;
   const PillCell = ctx?.primitives?.PillCell;
   const reviewDeal = rows && rows[0] && rows[0].reviewDeal;
-  if (!CoverageFooter || !reviewDeal) return null;
+  if (!reviewDeal) return null;
   const geCards = (reviewDeal.cards || []).filter((card) => GENERAL_EXCEPTION_CODES.has(cardCode(card)));
   if (!geCards.length) return null;
-  const entries = dedupeEntries(geCards.flatMap((c) => exceptionEntries(cardFeatures(c).permittedExceptions, EXCEPTION_CODES, c)));
-  const presentCodes = new Set(entries.map((e) => e.code));
-  const presentCount = GENERAL_EXCEPTION_CANONICAL_CODES.filter((code) => presentCodes.has(code)).length;
-  const absentItems = GENERAL_EXCEPTION_CANONICAL_CODES
-    .filter((code) => !presentCodes.has(code))
-    .map((code) => ({ id: code, code, label: labelForCode(code, EXCEPTION_CODES) || code }));
   const requiredByLawCarveout = geCards.some((c) => cardFeatures(c).requiredByLawCarveout === true);
+  if (!requiredByLawCarveout || !PillCell) return null;
   return React.createElement(
     'div',
-    null,
-    React.createElement(CoverageFooter, {
-      presentCount,
-      totalCount: GENERAL_EXCEPTION_CANONICAL_CODES.length,
-      absentItems,
-      label: 'general exceptions apply to the covenants above',
-    }),
-    requiredByLawCarveout && PillCell
-      ? React.createElement(
-          'div',
-          { className: 'flex flex-wrap gap-1 border-t border-border bg-bg/40 px-3 py-2' },
-          pillFor(PillCell, 'required-by-law-carveout', 'Required-by-law carve-out applies', 'info'),
-        )
-      : null,
+    { className: 'flex flex-wrap gap-1 border-t border-border bg-bg/40 px-3 py-2' },
+    pillFor(PillCell, 'required-by-law-carveout', 'Required-by-law carve-out applies', 'info'),
   );
 }
 
@@ -544,13 +605,21 @@ const iocExceptionsConfig = {
         const cards = (row.reviewDeal?.cards || []).filter(isIocCard);
         const negativeRows = negativeCovenantGroups(cards).map((group) => renderNegativeRow(buildNegativeRow(group), ctx));
         const otherRow = buildOtherRestrictionsRow(fragmentCards(cards), ctx);
+        const exceptionsRows = buildIocExceptionsRows(cards, ctx);
         // Old-site render order (OLD-review-page.js's IocAffirmativeCovenantsTable
         // ahead of IocNegativeCovenantsTable) puts the affirmative limbs FIRST --
-        // REBUILD-SPECS.md section 6 / FEEDBACK-2-PUNCHLIST.md #29. Negative
+        // REBUILD-SPECS.md section 6 / FEEDBACK-2-PUNCHLIST.md #29. The
+        // section-wide "Exceptions" band comes right after the affirmative
+        // covenants -- and before the negative covenants -- so a reader sees
+        // the chapeau carve-outs before the enumerated restrictions they
+        // qualify (this used to render only as a bottom-of-table coverage
+        // count, well AFTER both the negative covenants AND the unclassified
+        // fragments; see buildIocExceptionsRows' header comment). Negative
         // covenants (the named rows) come next, with the near-empty fragments
         // collapsed into the lowest-priority "Other restrictions" band last.
         const groups = [
           { id: 'affirmative', label: 'Affirmative covenants', rows: affirmativeRows(cards, ctx) },
+          { id: 'exceptions', label: 'Exceptions', rows: exceptionsRows },
           { id: 'negative', label: 'Negative covenants', rows: negativeRows },
           { id: 'other', label: 'Other restrictions', rows: otherRow ? [otherRow] : [] },
         ];
@@ -564,6 +633,7 @@ const iocExceptionsConfig = {
 
 export {
   affirmativeRows,
+  buildIocExceptionsRows,
   buildOtherRestrictionsRow,
   effortsStandardPillFor,
   exceptionEntries,

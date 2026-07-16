@@ -27,6 +27,7 @@ let tailFeeMod;
 let terminationFeesMod;
 let terminationRightsMod;
 let votesApprovalsMeetingMod;
+let cardUtilsMod;
 test.before(async () => {
   mod = await import(path.join('..', 'components', 'review', 'table-configs', 'conditions-m.config.js'));
   advisersFeesExpensesMod = await import(path.join('..', 'components', 'review', 'table-configs', 'advisers-fees-expenses.config.js'));
@@ -51,6 +52,31 @@ test.before(async () => {
   terminationFeesMod = await import(path.join('..', 'components', 'review', 'table-configs', 'termination-fees.config.js'));
   terminationRightsMod = await import(path.join('..', 'components', 'review', 'table-configs', 'termination-rights.config.js'));
   votesApprovalsMeetingMod = await import(path.join('..', 'components', 'review', 'table-configs', 'votes-approvals-meeting.config.js'));
+  cardUtilsMod = await import(path.join('..', 'components', 'review', 'table-configs', 'card-utils.js'));
+});
+
+// Canonical partySide (card-utils.js) — the single source of truth that
+// replaced the four byte-identical copies in the nosol-*.config.js files.
+// The provision CODE token is authoritative; the stored party_scope is a
+// uniform 'MUTUAL' default (store-cards.js) so it is treated as no-signal
+// unless it is an explicit NON-mutual value.
+test('partySide derives party from the code token and ignores the MUTUAL default', () => {
+  const { partySide } = cardUtilsMod;
+  // code token (embedded or trailing) wins — these all carry party_scope=MUTUAL in stored data
+  assert.equal(partySide({ provision_subtype: 'REP-B-ORG', party_scope: 'MUTUAL' }), 'Buyer / Parent');
+  assert.equal(partySide({ provision_subtype: 'REP-T-SANCTIONS', party_scope: 'MUTUAL' }), 'Target / Company');
+  assert.equal(partySide({ provision_subtype: 'COND-B-PREAMBLE', party_scope: 'MUTUAL' }), 'Buyer / Parent');
+  assert.equal(partySide({ provision_subtype: 'COND-S-PREAMBLE', party_scope: 'MUTUAL' }), 'Target / Company');
+  assert.equal(partySide({ provision_subtype: 'COND-M-STOCKHOLDER', party_scope: 'MUTUAL' }), 'Mutual / Either Party');
+  assert.equal(partySide({ provision_subtype: 'TERMF-TARGET', party_scope: 'MUTUAL' }), 'Target / Company');
+  assert.equal(partySide({ provision_subtype: 'COV-SHAPRV-PARENT', party_scope: 'MUTUAL' }), 'Buyer / Parent');
+  // category-based subtypes with no party token (IOC/NOSOL) default to Target,
+  // NOT Mutual — this is the regression the earlier Layer-1 version introduced
+  assert.equal(partySide({ provision_subtype: 'NOSOL-PROHIBIT', party_scope: 'MUTUAL' }), 'Target / Company');
+  assert.equal(partySide({ provision_subtype: 'IOC-ISSUE', party_scope: 'MUTUAL' }), 'Target / Company');
+  // an explicit non-mutual party_scope is honored when the code has no token
+  assert.equal(partySide({ provision_subtype: 'IOC-ISSUE', party_scope: 'PARENT' }), 'Buyer / Parent');
+  assert.equal(partySide({}), 'Target / Company');
 });
 
 function card(overrides = {}) {
@@ -1566,12 +1592,15 @@ test('ioc-exceptions config renders IOC-ORDINARY/PRESERVE/MAINTAIN as an Affirma
 // match (Affirmative first, Negative second, the near-empty fragments'
 // "Other restrictions" band last), not bury the affirmative limbs at the
 // bottom.
-test('ioc-exceptions config body renders Affirmative covenants FIRST, then Negative covenants, then Other restrictions', () => {
+test('ioc-exceptions config body renders Affirmative covenants FIRST, then Exceptions, then Negative covenants, then Other restrictions', () => {
   const reviewDeal = {
     cards: [
       { id: 'div-1', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-DIVIDEND', short_title: 'Dividends and Distributions', features: { mainObligation: 'The Company may not declare dividends.' } },
       { id: 'frag-k', provision_type: 'COVENANT_INTERIM_OPERATING', features: { sectionNumber: '5.01(k)' } },
       { id: 'ord', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-ORDINARY', short_title: 'Ordinary Course Obligation', features: { positiveObligations: { appliesTo: ['BUSINESS'], obligation: 'conduct its business in the ordinary course' } } },
+      { id: 'ge', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-GENERAL-EXCEPTIONS', features: {
+        permittedExceptions: [{ code: 'REQUIRED_BY_LAW', label: 'As required by law', text: 'as required by applicable Law' }],
+      } },
     ],
   };
   const GroupedSubRows = ({ groups }) => React.createElement(
@@ -1583,14 +1612,24 @@ test('ioc-exceptions config body renders Affirmative covenants FIRST, then Negat
   const bodyColumn = iocMod.iocExceptionsConfig.columns.find((column) => column.id === 'body');
   const html = renderToStaticMarkup(bodyColumn.renderCell(rows[0], { primitives: { ...iocPrimitives, GroupedSubRows } }));
   const affIdx = html.indexOf('Affirmative covenants');
+  const excIdx = html.indexOf('>Exceptions<');
   const negIdx = html.indexOf('Negative covenants');
   const otherIdx = html.indexOf('Other restrictions');
-  assert.ok(affIdx >= 0 && negIdx >= 0 && otherIdx >= 0, 'all three bands render when all three kinds of card are present');
-  assert.ok(affIdx < negIdx, 'Affirmative covenants band renders before Negative covenants');
+  assert.ok(affIdx >= 0 && excIdx >= 0 && negIdx >= 0 && otherIdx >= 0, 'all four bands render when all four kinds of card are present');
+  assert.ok(affIdx < excIdx, 'Affirmative covenants band renders before the Exceptions band');
+  assert.ok(excIdx < negIdx, 'the Exceptions band renders before Negative covenants -- the reader sees the chapeau carve-outs before the enumerated restrictions they qualify');
   assert.ok(negIdx < otherIdx, 'Negative covenants band renders before Other restrictions');
 });
 
-test('ioc-exceptions config selectRows returns rows only when IOC cards exist, and renders the General Exceptions preamble as a FOOTER (not a per-row entry)', () => {
+// FIX (General Exceptions showing only 1 of N): the section-wide carve-outs
+// used to surface ONLY through the bottom CoverageFooter strip, which just
+// printed a bare "N of 4" COUNT and never listed the present items (only the
+// absent ones, behind a details) -- so all 4 distinct Metsera carve-outs
+// collapsed to that one summary line. They now render as real pills in the
+// body's dedicated "Exceptions" group (buildIocExceptionsRows), positioned
+// right after Affirmative covenants; the footer is left carrying only the
+// unrelated "required-by-law carve-out" note.
+test('ioc-exceptions config selectRows returns rows only when IOC cards exist, and renders the General Exceptions preamble as its own Exceptions group (not a per-row entry)', () => {
   const emptyDeal = { cards: [{ id: 'rep', provision_type: 'REPRESENTATION' }] };
   assert.deepEqual(iocMod.iocExceptionsConfig.selectRows(emptyDeal), []);
 
@@ -1610,25 +1649,70 @@ test('ioc-exceptions config selectRows returns rows only when IOC cards exist, a
   const rows = iocMod.iocExceptionsConfig.selectRows(reviewDeal);
   assert.equal(rows.length, 1, 'selectRows returns a single synthetic body row -- the grouped table is rebuilt at render time (same contract as conditions.config.js)');
   assert.equal(rows[0].reviewDeal, reviewDeal);
+
+  const exceptionsRows = iocMod.buildIocExceptionsRows(reviewDeal.cards, { primitives: iocPrimitives });
+  assert.equal(exceptionsRows.length, 1, 'a lone positive-side preamble (no negative-side card) renders one row');
+  const bodyHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, exceptionsRows.map((r) => r.children)));
+  assert.match(bodyHtml, /As disclosed/, 'COMPANY_DISCLOSURE_LETTER renders');
+  assert.match(bodyHtml, /With consent/, 'PRIOR_WRITTEN_CONSENT renders');
+  assert.match(bodyHtml, /As contemplated by this Agreement/, 'REQUIRED_BY_AGREEMENT renders -- must NOT be aliased into COMPANY_DISCLOSURE_LETTER');
+  assert.match(bodyHtml, /As required by law/, 'REQUIRED_BY_LAW renders');
+
   const footer = iocMod.renderIocFooter(rows, { primitives: iocPrimitives });
-  const html = renderToStaticMarkup(footer);
-  assert.match(html, /4 of 4/, 'all 4 canonical general-exception codes present');
-  assert.match(html, /Required-by-law carve-out applies/);
+  const footerHtml = renderToStaticMarkup(footer);
+  assert.match(footerHtml, /Required-by-law carve-out applies/);
 });
 
-test('ioc-exceptions config footer lists absent canonical exception codes when the deal only has a partial set', () => {
-  const reviewDeal = {
-    cards: [
-      { id: 'ge', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-GENERAL-EXCEPTIONS', features: {
-        permittedExceptions: [{ code: 'REQUIRED_BY_LAW', label: 'As required by law', text: 'as required by applicable Law' }],
-      } },
-    ],
-  };
-  const rows = iocMod.iocExceptionsConfig.selectRows(reviewDeal);
-  const html = renderToStaticMarkup(iocMod.renderIocFooter(rows, { primitives: iocPrimitives }));
-  assert.match(html, /1 of 4/);
+// Metsera: the SAME 4 carve-outs are extracted on both the positive-side
+// preamble (IOC-GENERAL-EXCEPTIONS) and the negative-side preamble
+// (IOC-NEGATIVE-PREAMBLE), with slightly different verbatim quotes -- the two
+// sides must collapse into ONE shared row (detected by comparing code SETS,
+// not quote text), not render as two duplicate lists.
+test('ioc-exceptions config renders ONE shared Exceptions row when the affirmative and negative preambles carry the same code set', () => {
+  const cards = [
+    { id: 'ge', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-GENERAL-EXCEPTIONS', features: {
+      permittedExceptions: [
+        { code: 'COMPANY_DISCLOSURE_LETTER', label: 'As disclosed', text: 'matters set forth in Section 5.01 of the Company Disclosure Letter' },
+        { code: 'REQUIRED_BY_AGREEMENT', label: 'As contemplated by this Agreement', text: 'otherwise expressly required by this Agreement' },
+        { code: 'REQUIRED_BY_LAW', label: 'As required by law', text: 'required by applicable Law' },
+        { code: 'PRIOR_WRITTEN_CONSENT', label: "With Parent's consent", text: 'with the prior written consent of Parent' },
+      ],
+    } },
+    { id: 'neg-pre', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-NEGATIVE-PREAMBLE', features: {
+      permittedExceptions: [
+        { code: 'COMPANY_DISCLOSURE_LETTER', label: 'As disclosed', text: 'matters set forth in Section 5.01 of the Company Disclosure Letter' },
+        { code: 'REQUIRED_BY_AGREEMENT', label: 'As contemplated by this Agreement', text: 'otherwise expressly required by this Agreement' },
+        { code: 'REQUIRED_BY_LAW', label: 'As required by law', text: 'required by applicable Law' },
+        { code: 'PRIOR_WRITTEN_CONSENT', label: "With Parent's consent", text: 'without the prior written consent of Parent' },
+      ],
+    } },
+  ];
+  const rows = iocMod.buildIocExceptionsRows(cards, { primitives: iocPrimitives });
+  assert.equal(rows.length, 1, 'equal code sets on both sides collapse to a single shared row, not two duplicate rows');
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, rows[0].label, rows[0].children));
+  assert.match(html, /applies to affirmative (&amp;|&) negative covenants/i);
   assert.match(html, /As disclosed/);
   assert.match(html, /As contemplated by this Agreement/);
+  assert.match(html, /As required by law/);
+  assert.match(html, /With Parent(&#x27;|')s consent/);
+});
+
+test('ioc-exceptions config renders TWO Exceptions rows when the affirmative and negative preambles carry genuinely different code sets', () => {
+  const cards = [
+    { id: 'ge', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-GENERAL-EXCEPTIONS', features: {
+      permittedExceptions: [{ code: 'REQUIRED_BY_LAW', label: 'As required by law', text: 'as required by applicable Law' }],
+    } },
+    { id: 'neg-pre', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-NEGATIVE-PREAMBLE', features: {
+      permittedExceptions: [{ code: 'PRIOR_WRITTEN_CONSENT', label: 'With consent', text: 'with Parent consent' }],
+    } },
+  ];
+  const rows = iocMod.buildIocExceptionsRows(cards, { primitives: iocPrimitives });
+  assert.equal(rows.length, 2, 'genuinely different code sets render as two distinct rows');
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, rows.map((r) => React.createElement(React.Fragment, { key: r.id }, r.label, r.children))));
+  assert.match(html, /Exceptions to affirmative covenants/);
+  assert.match(html, /Exceptions to negative covenants/);
+  assert.match(html, /As required by law/);
+  assert.match(html, /With consent/);
 });
 
 // FEEDBACK-3-PUNCHLIST.md #I6: negative covenants must render as a real
