@@ -164,6 +164,64 @@ export function deriveConsiderationElectionLabel(provisions) {
   return null;
 }
 
+/* ══════════════════════════════════════════════════════════════════════════
+ * ELECTION-REDO-SPEC-2026-07-16 step 4 — UI wiring.
+ * findElectionMechanism scans a deal's cards for the first true election
+ * mechanism (2+ options); electionAttributionLabel maps a Consideration-hero
+ * headline feature key (perShareAmount, exchangeRatio, …) to the option
+ * label it belongs to, so the existing table rows can carry a
+ * "→ Cash Election" pill instead of rendering both options' numbers with no
+ * attribution (the bug this redo kills). Self-contained (no import of
+ * lib/parser-v2/elections.js — this file stays dependency-free per the
+ * header comment) but mirrors its option-type normalization.
+ * ══════════════════════════════════════════════════════════════════════════ */
+export function findElectionMechanism(cards) {
+  const list = Array.isArray(cards) ? cards : [];
+  for (const card of list) {
+    const features = card && typeof card.features === 'object' ? card.features : {};
+    const mechanism = card?.consideration_equity?.election_mechanism
+      || card?.considerationEquity?.electionMechanism
+      || features?.considerationEquity?.electionMechanism
+      || card?.electionMechanism
+      || null;
+    const options = Array.isArray(mechanism?.options) ? mechanism.options : [];
+    if (mechanism && options.length >= 2) return mechanism;
+  }
+  return null;
+}
+
+const CASH_ATTRIBUTION_KEYS = new Set(['perShareAmount', 'cashAmount', 'offerPrice']);
+const STOCK_ATTRIBUTION_KEYS = new Set(['exchangeRatio', 'exchangeRatioText']);
+const ATTRIBUTION_TOLERANCE = 0.005;
+
+function numericFromFeature(raw) {
+  if (raw === null || raw === undefined || raw === '') return null;
+  const inner = typeof raw === 'object' ? (raw.value ?? raw.text ?? raw.label ?? null) : raw;
+  if (inner === null || inner === undefined || inner === '') return null;
+  const digits = String(inner).replace(/[^0-9.\-]/g, '');
+  if (!digits) return null;
+  const n = Number.parseFloat(digits);
+  return Number.isFinite(n) ? n : null;
+}
+
+export function electionAttributionLabel(mechanism, featureKey, featureValue) {
+  if (!mechanism) return null;
+  const field = CASH_ATTRIBUTION_KEYS.has(featureKey)
+    ? 'cash_per_share'
+    : (STOCK_ATTRIBUTION_KEYS.has(featureKey) ? 'stock_per_share' : null);
+  if (!field) return null;
+  const camelField = field === 'cash_per_share' ? 'cashPerShare' : 'stockPerShare';
+  const value = numericFromFeature(featureValue);
+  const options = Array.isArray(mechanism.options) ? mechanism.options : [];
+  const numericOptions = options.filter((o) => typeof (o[field] ?? o[camelField]) === 'number');
+  let match = null;
+  if (value !== null) {
+    match = numericOptions.find((o) => Math.abs((o[field] ?? o[camelField]) - value) <= ATTRIBUTION_TOLERANCE) || null;
+  }
+  if (!match) return null;
+  return match.option_label || match.optionLabel || electionLabelFromCode(match.option_type || match.optionType);
+}
+
 export function termCellHoverQuote(provision) {
   const t = provision && typeof provision.full_text === 'string' ? provision.full_text.trim() : '';
   return t ? provision.full_text : null;

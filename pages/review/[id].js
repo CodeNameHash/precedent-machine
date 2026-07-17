@@ -135,6 +135,8 @@ import { FullDocumentView } from '../../components/review/FullDocumentView';
 import { EditPanel } from '../../components/review/EditPanel';
 import ProvisionCardTable from '../../components/review/ProvisionCardTable';
 import ProvisionTable from '../../components/review/ProvisionTable';
+import ElectionCard from '../../components/review/ElectionCard';
+import { findElectionMechanism } from '../../components/review/table-logic';
 import { miscBoilerplateConfig } from '../../components/review/table-configs/misc-boilerplate.config';
 import { antitrustRegulatoryConfig } from '../../components/review/table-configs/antitrust-regulatory.config';
 import { considerationHeroConfig } from '../../components/review/table-configs/consideration-hero.config';
@@ -10806,6 +10808,16 @@ export default function ReviewPage() {
     () => schemaReviewDeal || { sections: [], definitions: [], cardCount: 0, cards: [] },
     [schemaReviewDeal],
   );
+  // ELECTION-REDO-SPEC-2026-07-16 step 4: leads the Consideration section
+  // with an Election block (options by name, default treatment, proration)
+  // when this deal carries a true election mechanism (2+ options). Reuses
+  // the same card-scanning logic the Consideration-hero table uses to
+  // attribute its own rows, so the card and the table rows always agree on
+  // which deals get election UI.
+  const dealElectionMechanism = useMemo(
+    () => findElectionMechanism(reviewDealForTables.cards || []),
+    [reviewDealForTables],
+  );
   const reviewSections = useMemo(() => {
     return REVIEW_TABLE_CONFIGS
       .map((config) => {
@@ -11760,11 +11772,16 @@ export default function ReviewPage() {
                               <span className="rule" />
                             </button>
                             {!collapsed && (
-                              <ProvisionTable
-                                config={section.config}
-                                reviewDeal={reviewDealForTables}
-                                isEdit={isEdit}
-                              />
+                              <>
+                                {section.id === considerationHeroConfig.id && dealElectionMechanism && (
+                                  <ElectionCard election={dealElectionMechanism} />
+                                )}
+                                <ProvisionTable
+                                  config={section.config}
+                                  reviewDeal={reviewDealForTables}
+                                  isEdit={isEdit}
+                                />
+                              </>
                             )}
                           </div>
                         );

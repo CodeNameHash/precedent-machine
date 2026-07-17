@@ -244,6 +244,52 @@ test('consideration hero config maps stock/election mechanics and tender-offer p
   assert.match(rows.find((row) => row.id === 'consideration-hero-collar').detail, /SYMMETRIC/);
 });
 
+test('ELECTION-REDO-SPEC-2026-07-16: consideration hero tags per-share / exchange-ratio rows with their election option via appliesTo attribution', () => {
+  const rows = considerationHeroMod.considerationHeroConfig.selectRows({
+    cards: [
+      {
+        id: 'consid',
+        provision_subtype: 'CONSID',
+        primary_quote: 'Each Company Share converts into $505.00 in cash or 20.200 Parent Shares.',
+        features: {
+          considerationType: 'mixed-cash-and-stock',
+          perShareAmount: '$505.00',
+          exchangeRatio: 20.2,
+        },
+      },
+      {
+        id: 'election',
+        provision_subtype: 'CONSID-ELECTION',
+        primary_quote: 'Cash Election or Stock Election.',
+        features: {
+          considerationEquity: {
+            electionMechanism: {
+              electionType: 'CASH_OR_STOCK',
+              options: [
+                { optionType: 'CASH_ELECTION', optionLabel: 'Cash Election', cashPerShare: 505, stockPerShare: null },
+                { optionType: 'STOCK_ELECTION', optionLabel: 'Stock Election', cashPerShare: null, stockPerShare: 20.2 },
+              ],
+            },
+          },
+        },
+      },
+    ],
+  });
+  const perShareRow = rows.find((row) => row.id === 'consideration-hero-per-share');
+  const exchangeRatioRow = rows.find((row) => row.id === 'consideration-hero-exchangeRatio');
+  assert.equal(perShareRow.electionOption, 'Cash Election');
+  assert.equal(exchangeRatioRow.electionOption, 'Stock Election');
+
+  const primitives = {
+    PillCell: ({ label, tone }) => React.createElement('span', { 'data-pill': tone }, label),
+  };
+  const detailColumn = considerationHeroMod.considerationHeroConfig.columns.find((c) => c.id === 'detail');
+  const perShareHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(perShareRow, { primitives })));
+  assert.match(perShareHtml, /→ Cash Election/);
+  const exchangeRatioHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(exchangeRatioRow, { primitives })));
+  assert.match(exchangeRatioHtml, /→ Stock Election/);
+});
+
 test('consideration hero excludes CONSID-EQUITY entirely (equity-awards.config.js owns it exclusively, no double-render)', () => {
   const rows = considerationHeroMod.considerationHeroConfig.selectRows({
     cards: [
