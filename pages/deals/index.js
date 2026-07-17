@@ -1,9 +1,26 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useDeals } from '../../lib/useSupabaseData';
 import { useViewMode } from '../../components/ViewModeContext';
 import { SkeletonTable, EmptyState, ErrorState, Breadcrumbs } from '../../components/UI';
 import { useUser } from '../../lib/useUser';
+
+// Small badge: how many corrections are sitting in the weekly review queue
+// (pages/corrections-review.js). Editors only — see docs/handoffs/
+// CORRECT-TAB-SPEC-2026-07-17.md's "deals index shows a small badge" line.
+function usePendingCorrectionsCount(enabled) {
+  const [count, setCount] = useState(null);
+  useEffect(() => {
+    if (!enabled) { setCount(null); return undefined; }
+    let cancelled = false;
+    fetch('/api/corrections?status=pending&limit=1000')
+      .then((r) => r.json())
+      .then((data) => { if (!cancelled) setCount(Array.isArray(data.corrections) ? data.corrections.length : 0); })
+      .catch(() => { if (!cancelled) setCount(null); });
+    return () => { cancelled = true; };
+  }, [enabled]);
+  return count;
+}
 
 export default function Deals() {
   const { user } = useUser({ redirectTo: '/login' });
@@ -35,11 +52,23 @@ export default function Deals() {
   };
 
   const { isEdit } = useViewMode();
+  const pendingCorrections = usePendingCorrectionsCount(isEdit);
   return (
     <div className="space-y-6">
       <Breadcrumbs items={[{ label: 'Dashboard', href: '/' }, { label: 'Deals' }]} />
       <div className="flex items-center justify-between">
-        <h1 className="font-display text-2xl text-ink">Deals</h1>
+        <div className="flex items-center gap-3">
+          <h1 className="font-display text-2xl text-ink">Deals</h1>
+          {isEdit && pendingCorrections ? (
+            <Link
+              href="/corrections-review"
+              className="inline-flex items-center px-2 py-0.5 text-xs font-ui rounded-full bg-amber-100 text-amber-800 hover:bg-amber-200 transition-colors"
+              title="Pending corrections awaiting weekly review"
+            >
+              {pendingCorrections} pending correction{pendingCorrections === 1 ? '' : 's'}
+            </Link>
+          ) : null}
+        </div>
         {isEdit ? (
           <button
             onClick={() => setShowForm(!showForm)}

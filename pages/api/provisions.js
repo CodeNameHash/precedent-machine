@@ -1,11 +1,7 @@
 import { getServiceSupabase } from '../../lib/supabase';
-import { diffCorrectionType, logCorrection } from './corrections';
-import { mergeProvisionAiMetadata } from '../../lib/provision-metadata-locks';
+import { applyProvisionPatch } from '../../lib/provisions/apply-patch';
 
 const IMMUTABLE_FIELDS = ['deal_id'];
-
-// Fields snapshotted into before/after for correction logging
-const TRACKED_FIELDS = ['type', 'category', 'full_text', 'ai_favorability', 'prohibition', 'exceptions'];
 
 function includeStaging(req) {
   return req.query.includeStaging === '1' || req.query.include_staging === '1';
@@ -27,25 +23,6 @@ async function dealIsStaging(sb, dealId) {
   const { data, error } = await sb.from('deals').select('id, metadata').eq('id', dealId).single();
   if (error) throw new Error(error.message);
   return isStagingDeal(data);
-}
-
-function snapshot(provision) {
-  if (!provision) return null;
-  const snap = {};
-  for (const k of TRACKED_FIELDS) {
-    if (k in provision) snap[k] = provision[k];
-  }
-  // Hoist ai_metadata.features into snap.features so diffCorrectionType
-  // (which looks for a top-level "features" key) can detect feature edits.
-  const meta = provision && provision.ai_metadata;
-  let parsed = meta;
-  if (typeof meta === 'string') {
-    try { parsed = JSON.parse(meta); } catch { parsed = null; }
-  }
-  if (parsed && typeof parsed === 'object' && parsed.features) {
-    snap.features = parsed.features;
-  }
-  return snap;
 }
 
 function metaObject(value) {
@@ -256,54 +233,17 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'id is required for PATCH' });
     }
 
-    // Capture the "before" state for correction logging — best effort.
-    let beforeRow = null;
-    try {
-      const { data: pre } = await sb.from('provisions').select('*').eq('id', id).single();
-      beforeRow = pre || null;
-    } catch (err) {
-      console.warn('[provisions PATCH] failed to fetch before-state:', err?.message || err);
-    }
-
-    // Merge ai_metadata against the existing row so feature edits don't blow
-    // away other metadata (rubric_code, ingestion flags, etc.).
-    if ('ai_metadata' in safeUpdates && safeUpdates.ai_metadata && typeof safeUpdates.ai_metadata === 'object') {
-      let existingMeta = beforeRow ? beforeRow.ai_metadata : null;
-      if (typeof existingMeta === 'string') {
-        try { existingMeta = JSON.parse(existingMeta); } catch { existingMeta = null; }
-      }
-      safeUpdates.ai_metadata = mergeProvisionAiMetadata(existingMeta, safeUpdates.ai_metadata);
-    }
-
-    const { data, error } = await sb.from('provisions').update(safeUpdates).eq('id', id).select().single();
+    // Shared apply-and-log core (lib/provisions/apply-patch.js) — same path
+    // the Correct-tab submit/review routes use for approved-editor
+    // corrections, so the corrections table stays the single source of
+    // truth (see docs/handoffs/CORRECT-TAB-SPEC-2026-07-17.md).
+    const { provision: data, error } = await applyProvisionPatch(sb, {
+      id,
+      updates: safeUpdates,
+      reason,
+      user_id,
+    });
     if (error) return res.status(500).json({ error: error.message });
-
-    // Log the correction (best-effort, never fails the PATCH).
-    try {
-      const before = snapshot(beforeRow);
-      const after = snapshot(data);
-      const correction_type = diffCorrectionType(before, after);
-      if (correction_type) {
-        await logCorrection(sb, {
-          provision_id: id,
-          deal_id: data?.deal_id || beforeRow?.deal_id || null,
-          correction_type,
-          before,
-          after,
-          context: {
-            // Original AI classification (the state before user touched it).
-            // Useful for future learning: "what did the model originally say?"
-            original_ai_type: beforeRow?.type || null,
-            original_ai_category: beforeRow?.category || null,
-            original_ai_favorability: beforeRow?.ai_favorability || null,
-          },
-          reason: reason || null,
-          user_id: user_id || null,
-        });
-      }
-    } catch (err) {
-      console.warn('[provisions PATCH] correction logging failed:', err?.message || err);
-    }
 
     return res.json({ provision: data });
   }
