@@ -105,12 +105,23 @@ function stripHtml(html) {
     .replace(/&nbsp;/gi, ' ').replace(/&amp;/gi, '&').replace(/&lt;/gi, '<').replace(/&gt;/gi, '>')
     .replace(/&quot;/gi, '"').replace(/&#39;/gi, "'").replace(/&rsquo;/gi, "'").replace(/&lsquo;/gi, "'")
     .replace(/&ldquo;/gi, '"').replace(/&rdquo;/gi, '"').replace(/&mdash;/gi, '—').replace(/&ndash;/gi, '–')
+    // Invisible directional/zero-width marks appear as NAMED entities in some
+    // EDGAR exhibits (Summit Materials salts 99 "&lrm;" through its headings
+    // and cross-references). Left undecoded they poison section parsing,
+    // coverage, and quote verification — drop the invisible ones, space the
+    // space-like ones.
+    .replace(/&(?:lrm|rlm|zwnj|zwj|ZeroWidthSpace|NegativeThinSpace);/g, '')
+    .replace(/&(?:ensp|emsp|thinsp|hairsp|numsp|puncsp);/g, ' ')
+    .replace(/&sect;/gi, '§')
     // Decode remaining numeric entities to their actual characters. SEC filings
     // encode the curly quotes that DELIMIT every defined term as &#8220;/&#8221;
     // (and singles as &#8216;/&#8217;); deleting them made inline/parenthetical
     // definitions unfindable. Decode hex and decimal forms instead of dropping.
     .replace(/&#x([0-9a-fA-F]+);/g, (_, h) => fromCp(parseInt(h, 16)))
     .replace(/&#(\d+);/g, (_, n) => fromCp(parseInt(n, 10)))
+    // The numeric decode above can EMIT invisible marks (&#8206; -> U+200E);
+    // strip the raw characters too so neither form survives.
+    .replace(/[\u200B-\u200F\u2060\uFEFF]/g, '')
     .replace(/\t+/g, ' ').replace(/ +/g, ' ').replace(/\n{3,}/g, '\n\n')
     .trim();
 }
