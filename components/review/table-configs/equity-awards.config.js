@@ -70,6 +70,62 @@ function matchByCode(instrumentCode, list) {
   return list.find((item) => instrumentKeyOf(item) === instrumentCode) || null;
 }
 
+// --- Text-mention pairing (Skechers cross-wire fix) -----------------------
+// Legacy shape-3 cards carry outstandingInstruments / instrumentTreatments /
+// instrumentVesting as three independent tagged lists with NO cross-tag.
+// The lists are independently re-ordered by the claims adapter, so pairing
+// by index cross-wires rows (Skechers: the RSU row showed the RSA clause's
+// consideration and the PSA clause's vesting). The one place the source
+// data ties a clause to its instrument is the clause PROSE itself ("each
+// Company RSA ...", "each Company PSA ...", "... under the Company ESPP").
+// Match each instrument to the entry whose own text names it — and names NO
+// OTHER outstanding instrument, so a multi-instrument sentence never gets
+// claimed on a guess. Unmatched slots degrade to the old positional order.
+const INSTRUMENT_MENTION_RES = {
+  RESTRICTED_STOCK: /\brsas?\b|restricted\s+stock\s+award/i,
+  RSU: /\brsus?\b|restricted\s+stock\s+unit/i,
+  PSU: /\bpsus?\b|\bpsas?\b|performance\s+(?:stock|share|unit)/i,
+  ESPP: /\bespp\b|stock\s+purchase\s+plan/i,
+  STOCK_OPTIONS: /\boptions?\b/i,
+  SAR: /\bsars?\b|stock\s+appreciation/i,
+  PHANTOM_STOCK: /phantom\s+stock/i,
+  DSU: /\bdsus?\b|deferred\s+stock\s+unit/i,
+};
+
+function entryText(item) {
+  if (typeof item === 'string') return item;
+  if (item && typeof item === 'object') return String(item.text || item.label || '');
+  return '';
+}
+
+function pairListByMention(instrumentCodes, list) {
+  const claimed = new Set();
+  const matches = instrumentCodes.map((code, i) => {
+    const re = code ? INSTRUMENT_MENTION_RES[code] : null;
+    if (!re) return null;
+    for (let j = 0; j < list.length; j += 1) {
+      if (claimed.has(j)) continue;
+      const text = entryText(list[j]);
+      if (!re.test(text)) continue;
+      const mentionsOther = instrumentCodes.some((other, k) =>
+        k !== i && other && INSTRUMENT_MENTION_RES[other] && INSTRUMENT_MENTION_RES[other].test(text));
+      if (mentionsOther) continue;
+      claimed.add(j);
+      return list[j];
+    }
+    return null;
+  });
+  // Positional fallback over the UNCLAIMED remainder for instruments with
+  // no unique text match — same behavior as before for data with no
+  // instrument mentions at all.
+  let cursor = 0;
+  return matches.map((m) => {
+    if (m) return m;
+    while (cursor < list.length && claimed.has(cursor)) cursor += 1;
+    return cursor < list.length ? list[cursor++] : undefined;
+  });
+}
+
 // --- Instrument-key -> canonical code / friendly label -------------------
 const INSTRUMENT_KEY_META = {
   espp: { code: 'ESPP', label: 'ESPP (Employee Stock Purchase Plan)' },
@@ -278,14 +334,23 @@ function rowsForCard(card) {
   }
 
   // Shape 3: un-expanded legacy data, no equityAwardTreatment map to key
-  // off. Pair by an explicit cross-tag where the data supports it, else
-  // degrade to positional order -- no confidence icon either way (#4).
+  // off. Pair by an explicit cross-tag where the data supports it, then by
+  // the instrument named in the entry's own clause text (see
+  // pairListByMention), else degrade to positional order -- no confidence
+  // icon either way (#4).
+  const instrumentCodes = instruments.map((inst) => {
+    const raw = instrumentKeyOf(inst) || (inst && inst.code ? String(inst.code).toUpperCase() : null);
+    const meta = raw ? INSTRUMENT_KEY_META[String(raw).toLowerCase()] : null;
+    return (meta && meta.code) || raw;
+  });
+  const treatmentsByMention = pairListByMention(instrumentCodes, treatments);
+  const vestingsByMention = pairListByMention(instrumentCodes, vestings);
   return instruments.map((inst, index) => {
-    const instrumentCode = instrumentKeyOf(inst) || (inst && inst.code ? String(inst.code).toUpperCase() : null);
+    const instrumentCode = instrumentCodes[index];
     const matchedTreatment = matchByCode(instrumentCode, treatments);
     const matchedVesting = matchByCode(instrumentCode, vestings);
-    const treatment = matchedTreatment || treatments[index];
-    const vesting = matchedVesting || vestings[index];
+    const treatment = matchedTreatment || treatmentsByMention[index];
+    const vesting = matchedVesting || vestingsByMention[index];
     const instrumentLabel = valueText(inst) || `Instrument ${index + 1}`;
     return {
       id: `equity-awards-${card.id || 'card'}-${index}`,

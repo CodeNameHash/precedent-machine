@@ -11,6 +11,7 @@ const assert = require('node:assert/strict');
 const {
   extractProvisionsForType,
   detectIocPartyFlipLetter,
+  detectIocPartyFlipIndex,
   splitSubClauses,
 } = require('../lib/parser-v2/extract.js');
 
@@ -60,6 +61,25 @@ test('detectIocPartyFlipLetter: single-party section (no second name) returns nu
     '(b) issue any equity securities except as permitted by this Agreement.';
   const parts = splitSubClauses(text, 'IOC');
   assert.equal(detectIocPartyFlipLetter(parts), null);
+});
+
+// Regression: on the REAL Starwood/Marriott §4.1 the splitter emits the roman
+// sub-items (i)...(xv) under (a) as TOP-LEVEL parts (letters 'i', 'ii', ...),
+// not nested 'a.i' letters. A lexicographic letter comparison ('i' >= 'b')
+// would wrongly flip the FIRST party's own sub-items; the flip must be
+// positional — the flip part and everything AFTER it in document order.
+test('detectIocPartyFlipIndex: flip is positional — top-level roman parts before the flip clause stay put', () => {
+  const parts = [
+    { letter: 'a', text: '(a) Conduct of Business by Starwood. Starwood shall not:' },
+    { letter: 'i', text: '(i) declare any dividend;' },
+    { letter: 'ii', text: '(ii) issue any shares;' },
+    { letter: 'xv', text: '(xv) authorize any of the foregoing.' },
+    { letter: 'b', text: '(b) Conduct of Business by Marriott. Marriott shall not:' },
+    { letter: 'i', text: '(i) declare any dividend;' },
+    { letter: 'c', text: '(c) Control of Other Party\'s Business.' },
+  ];
+  assert.equal(detectIocPartyFlipIndex(parts), 4);
+  assert.equal(detectIocPartyFlipLetter(parts), 'b');
 });
 
 test('mirrored IOC section: sub-clause (a) stays IOC-T, sub-clause (b) and its roman descendants flip to IOC-B', async () => {

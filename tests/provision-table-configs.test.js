@@ -1658,9 +1658,11 @@ test('ioc-exceptions config selectRows returns rows only when IOC cards exist, a
   assert.match(bodyHtml, /As contemplated by this Agreement/, 'REQUIRED_BY_AGREEMENT renders -- must NOT be aliased into COMPANY_DISCLOSURE_LETTER');
   assert.match(bodyHtml, /As required by law/, 'REQUIRED_BY_LAW renders');
 
+  // Ben (Mergertrace round 1): the standalone footer pill was a redundant
+  // display of the REQUIRED_BY_LAW carve-out the Exceptions band already
+  // shows ("As required by law" pill above) — the footer now renders nothing.
   const footer = iocMod.renderIocFooter(rows, { primitives: iocPrimitives });
-  const footerHtml = renderToStaticMarkup(footer);
-  assert.match(footerHtml, /Required-by-law carve-out applies/);
+  assert.equal(footer, null);
 });
 
 // Metsera: the SAME 4 carve-outs are extracted on both the positive-side

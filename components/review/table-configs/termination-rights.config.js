@@ -252,6 +252,23 @@ function keyTermsNode(key, card, PillCell) {
   if (key === 'outside') {
     const outsideDate = readableValue('outsideDate', f.outsideDate || f.outsideDateISO) || formatIsoDate(f.outsideDateISO);
     addFact('Outside date', outsideDate && { label: outsideDate, tone: 'info' });
+    // Ben (Mergertrace round 3): make explicit that reaching the outside
+    // date does NOT terminate automatically — a party must elect. Who may
+    // elect comes from the extracted partyWhoCanTerminate tag; the
+    // fault-based exclusion (breaching party can't use it) rides along.
+    const whoRaw = f.partyWhoCanTerminate;
+    const whoCode = String(whoRaw?.code || whoRaw?.value || whoRaw || '').toUpperCase();
+    const WHO_LABELS = {
+      PARTY_MUTUAL: 'Either party may elect (not automatic)',
+      PARTY_COMPANY: 'Company may elect (not automatic)',
+      PARTY_PARENT: 'Parent may elect (not automatic)',
+    };
+    const whoLabel = WHO_LABELS[whoCode]
+      || (whoRaw?.label ? `${whoRaw.label} may elect (not automatic)` : null);
+    addFact('Exercised by', whoLabel && { label: whoLabel, tone: 'neutral' });
+    if (f.faultBasedExclusion === true || f.faultBasedExclusion === 'true') {
+      addFact(null, { label: 'Not available to a party whose breach caused the delay', tone: 'warning' });
+    }
     const periodFromSigning = withUnit(readableValue('outsideDateMonthsPostSigning', f.outsideDateMonthsPostSigning || f.outsideDateMonths), 'month');
     addFact('Period from signing', periodFromSigning && { label: periodFromSigning, tone: 'neutral' });
     const extensionMonths = withUnit(readableValue('extensionMonths', f.extensionMonths || f.extensionPeriod), 'month');
@@ -261,6 +278,28 @@ function keyTermsNode(key, card, PillCell) {
       const extensionAvail = readableValue('extensionAvailable', f.extensionAvailable);
       addFact('Extension', extensionAvail && { label: extensionAvail, tone: 'neutral' });
     }
+    // Ben (Mergertrace round 3): make the extension MECHANISM explicit —
+    // automatic (conditions-triggered, no election) vs a party's option,
+    // and whose option. Derived deterministically from the extension
+    // clause's own wording (Metsera: "the Outside Date shall automatically
+    // be extended to June 21, 2026"); no match → no chip, the prose stays
+    // behind "see extension terms".
+    const extensionProse = [
+      valueText(f.outsideDateExtensionConditions),
+      valueText(f.extensionConditions),
+      valueText(f.outsideDateExtension),
+      textOf(card),
+    ].filter(Boolean).join(' ');
+    let extensionBy = null;
+    if (/shall\s+(?:automatically\s+be|be\s+automatically)\s+extended|shall\s+automatically\s+extend/i.test(extensionProse)) {
+      extensionBy = 'Automatic (no election required)';
+    } else if (/(?:either|each)\s+(?:party|of\s+Parent\s+or\s+the\s+Company)[^.]{0,80}?may[^.]{0,40}?extend/i.test(extensionProse)) {
+      extensionBy = 'Either party may elect to extend';
+    } else {
+      const single = extensionProse.match(/(Parent|the\s+Company|Company)[^.]{0,60}?may[^.]{0,40}?extend/i);
+      if (single) extensionBy = `${/parent/i.test(single[1]) ? 'Parent' : 'Company'} may elect to extend`;
+    }
+    addFact('Extension by', extensionBy && { label: extensionBy, tone: extensionBy.startsWith('Automatic') ? 'info' : 'neutral' });
     const extendedTo = readableValue('extendedOutsideDate', f.extendedOutsideDate) || formatIsoDate(f.extendedOutsideDateISO);
     addFact('Extended to', extendedTo && { label: extendedTo, tone: 'info' });
     const extensionConditions = readableValue('outsideDateExtensionConditions', f.outsideDateExtensionConditions)

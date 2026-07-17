@@ -102,8 +102,16 @@ function stripHtml(html) {
     .replace(/&rdquo;/gi, '"')
     .replace(/&mdash;/gi, '—')
     .replace(/&ndash;/gi, '–')
+    // Invisible directional/zero-width marks appear as NAMED entities in some
+    // EDGAR exhibits (Summit Materials salts 99 "&lrm;" through its headings
+    // and cross-references) — drop the invisible, space the space-like.
+    .replace(/&(?:lrm|rlm|zwnj|zwj|ZeroWidthSpace|NegativeThinSpace);/g, '')
+    .replace(/&(?:ensp|emsp|thinsp|hairsp|numsp|puncsp);/g, ' ')
+    .replace(/&sect;/gi, '§')
     .replace(/&#x([0-9a-fA-F]+);/g, (_, h) => fromCp(parseInt(h, 16)))
     .replace(/&#(\d+);/g, (_, n) => fromCp(parseInt(n, 10)))
+    // The numeric decode can EMIT invisible marks (&#8206; -> U+200E).
+    .replace(/[\u200B-\u200F\u2060\uFEFF]/g, '')
     .replace(/\t+/g, ' ')
     .replace(/ +/g, ' ')
     .replace(/\n{3,}/g, '\n\n')
