@@ -34,6 +34,41 @@ function sectionRefLabel(ref) {
 
 const LAB = 'text-[8px] font-bold uppercase tracking-[0.14em] text-[#9A9A9A] mb-1.5';
 const SEL = 'w-full border border-[#E0E0E0] bg-white text-[10px] px-1.5 py-1 text-[#1F1F1F]';
+const INPUT = 'w-full border border-[#E0E0E0] bg-white text-[10px] px-1.5 py-1 text-[#1F1F1F] placeholder:text-[#B0B0B0]';
+
+const EDITOR_KEY_STORAGE = 'mtx_editor_key';
+
+const WRONG_KINDS = [
+  { key: '', label: 'Select…' },
+  { key: 'code', label: 'Code / classification' },
+  { key: 'party', label: 'Party' },
+  { key: 'value', label: 'Value' },
+  { key: 'quote', label: 'Quote / clause text' },
+  { key: 'other', label: 'Other' },
+];
+
+// Best-effort "attribute — current value" label for the claim dropdown.
+// Mirrors the shapes lib/queries/claims-adapter.js's buildFeaturesForCard
+// produces: tagged { code, label, text }, plain scalars, or arrays of
+// either. Never throws on an unexpected shape — worst case shows "(set)".
+function featureValueText(value) {
+  if (value === null || value === undefined) return '';
+  if (Array.isArray(value)) return value.map(featureValueText).filter(Boolean).join('; ');
+  if (typeof value === 'object') {
+    if (value.label) return String(value.label);
+    if (value.text) return String(value.text);
+    if (value.code) return String(value.code);
+    return '(set)';
+  }
+  return String(value);
+}
+
+function cardClaimOptions(card) {
+  const features = (card && card.features && typeof card.features === 'object') ? card.features : {};
+  return Object.keys(features)
+    .sort()
+    .map((attribute) => ({ attribute, valueText: featureValueText(features[attribute]) }));
+}
 
 const SIZE_BUCKETS = [
   { key: '', label: 'Any size' },
@@ -42,6 +77,159 @@ const SIZE_BUCKETS = [
   { key: '5to20', label: '$5–20B', minValue: 5e9, maxValue: 20e9 },
   { key: 'gt20', label: '> $20B', minValue: 20e9, maxValue: null },
 ];
+
+// The Correct tab: propose a fix, submitted through POST
+// /api/corrections/submit. Approved editors (a valid x-editor-key, resolved
+// server-side against the EDITOR_KEYS env var) apply immediately through
+// the existing provisions PATCH + logCorrection machinery; everyone else's
+// correction queues for the weekly review (pages/corrections-review.js).
+// The response never distinguishes "no key" from "wrong key" — only
+// applied-vs-queued is shown, per the spec.
+function CorrectTab({ card, dealId }) {
+  const [kind, setKind] = useState('');
+  const [claimAttribute, setClaimAttribute] = useState('');
+  const [proposed, setProposed] = useState('');
+  const [rationale, setRationale] = useState('');
+  const [name, setName] = useState('');
+  const [editorKey, setEditorKey] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [result, setResult] = useState(null); // { outcome: 'applied' | 'pending' | 'error', text }
+
+  useEffect(() => {
+    try {
+      const stored = window.localStorage.getItem(EDITOR_KEY_STORAGE);
+      if (stored) setEditorKey(stored);
+    } catch {
+      // localStorage unavailable — the key field just stays empty.
+    }
+  }, []);
+
+  const claimOptions = useMemo(() => cardClaimOptions(card), [card]);
+  const canSubmit = kind && proposed.trim() && rationale.trim() && !submitting;
+
+  const submit = async () => {
+    if (!canSubmit) return;
+    setSubmitting(true);
+    setResult(null);
+    try {
+      const res = await fetch('/api/corrections/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-editor-key': editorKey },
+        body: JSON.stringify({
+          card_id: card.id || card.provision_instance_id || null,
+          deal_id: dealId,
+          target: { kind, claim_attribute: kind === 'value' ? (claimAttribute || undefined) : undefined },
+          proposed: proposed.trim(),
+          rationale: rationale.trim(),
+          submitted_by: name.trim() || undefined,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setResult({ outcome: 'error', text: data.error || 'Submission failed — try again.' });
+        return;
+      }
+      if (editorKey.trim()) {
+        try { window.localStorage.setItem(EDITOR_KEY_STORAGE, editorKey.trim()); } catch { /* ignore */ }
+      }
+      if (data.outcome === 'applied') {
+        setResult({ outcome: 'applied', text: 'Applied to the corpus.' });
+      } else {
+        setResult({ outcome: 'pending', text: 'Queued for weekly review.' });
+      }
+      setProposed('');
+      setRationale('');
+    } catch (err) {
+      setResult({ outcome: 'error', text: err.message || 'Submission failed — try again.' });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="px-3.5 py-4" style={{ fontFamily: 'var(--mtx-sans)' }} data-testid="correct-tab">
+      <div className="mb-3">
+        <div className={LAB}>What&apos;s wrong</div>
+        <select className={SEL} value={kind} onChange={(e) => setKind(e.target.value)} aria-label="What's wrong">
+          {WRONG_KINDS.map((w) => <option key={w.key} value={w.key}>{w.label}</option>)}
+        </select>
+      </div>
+
+      {kind === 'value' && claimOptions.length > 0 ? (
+        <div className="mb-3">
+          <div className={LAB}>Claim</div>
+          <select className={SEL} value={claimAttribute} onChange={(e) => setClaimAttribute(e.target.value)} aria-label="Claim">
+            <option value="">Select a claim…</option>
+            {claimOptions.map((c) => (
+              <option key={c.attribute} value={c.attribute}>{c.attribute} — {c.valueText || '(not set)'}</option>
+            ))}
+          </select>
+        </div>
+      ) : null}
+
+      <div className="mb-3">
+        <div className={LAB}>Proposed fix</div>
+        <textarea
+          className={`${INPUT} min-h-[60px] resize-y`}
+          value={proposed}
+          onChange={(e) => setProposed(e.target.value)}
+          placeholder="What should this say instead?"
+        />
+      </div>
+
+      <div className="mb-3">
+        <div className={LAB}>Rationale (required)</div>
+        <textarea
+          className={`${INPUT} min-h-[50px] resize-y`}
+          value={rationale}
+          onChange={(e) => setRationale(e.target.value)}
+          placeholder="Why is the current extraction wrong?"
+        />
+      </div>
+
+      <div className="mb-3 grid grid-cols-2 gap-1.5">
+        <div>
+          <div className={LAB}>Your name</div>
+          <input className={INPUT} value={name} onChange={(e) => setName(e.target.value)} placeholder="optional" />
+        </div>
+        <div>
+          <div className={LAB}>Editor key</div>
+          <input
+            type="password"
+            className={INPUT}
+            value={editorKey}
+            onChange={(e) => setEditorKey(e.target.value)}
+            placeholder="approved editors only"
+          />
+        </div>
+      </div>
+
+      <button
+        type="button"
+        onClick={submit}
+        disabled={!canSubmit}
+        className="w-full py-1.5 text-[9px] font-bold uppercase tracking-[0.12em] text-white bg-[#1F1F1F] disabled:bg-[#C7C7C7] disabled:cursor-not-allowed"
+      >
+        {submitting ? 'Submitting…' : 'Submit correction'}
+      </button>
+
+      {result ? (
+        <div
+          data-testid="correct-tab-result"
+          data-outcome={result.outcome}
+          className="mt-3 text-[10px] leading-relaxed px-2 py-1.5"
+          style={{
+            color: result.outcome === 'applied' ? '#1F6D3F' : result.outcome === 'pending' ? '#2F6DB5' : '#B14E63',
+            background: result.outcome === 'applied' ? 'rgba(31,109,63,.08)' : result.outcome === 'pending' ? 'rgba(47,109,181,.08)' : 'rgba(177,78,99,.08)',
+            border: `1px solid ${result.outcome === 'applied' ? 'rgba(31,109,63,.25)' : result.outcome === 'pending' ? 'rgba(47,109,181,.25)' : 'rgba(177,78,99,.25)'}`,
+          }}
+        >
+          {result.text}
+        </div>
+      ) : null}
+    </div>
+  );
+}
 
 export default function ClauseSidebar({ card, dealId, dealSector, onClose }) {
   const { isEdit } = useViewMode();
@@ -122,12 +310,7 @@ export default function ClauseSidebar({ card, dealId, dealSector, onClose }) {
       </div>
 
       {tab === 'correct' ? (
-        <div className="px-3.5 py-4 text-[11px] text-[#6B6B6B] leading-relaxed">
-          <div className={LAB}>Correction panel — phase 2</div>
-          Live correction lands here next: what&apos;s wrong (code / party / value / quote),
-          the fix, and the rationale that feeds the weekly review queue. For now, use the
-          v1 edit page for urgent fixes.
-        </div>
+        <CorrectTab card={card} dealId={dealId} />
       ) : (
         <>
           <div className="px-3.5 py-3 border-b border-[#E0E0E0]">
