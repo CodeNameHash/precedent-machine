@@ -56,3 +56,23 @@ test('converter skips a DEF-typed provision tagged CONSID-EQUITY', () => {
   assert.doesNotThrow(() => convertConsiderationEquityProvisions([prov]));
   assert.equal(prov.features.considerationEquity, undefined);
 });
+
+// CSRA 2026-07-17: two AI-emitted entries for the SAME instrument resolve to
+// the same clause span — collapse instead of failing the duplicate-key
+// invariant.
+test('converter collapses duplicate same-instrument same-span rows', () => {
+  const prov = {
+    type: 'CONSID',
+    code: 'CONSID-EQUITY',
+    text: '(b) Each Company RSU Award outstanding immediately prior to the Effective Time shall be cancelled and converted into the right to receive cash.',
+    features: {
+      outstandingInstruments: [
+        { code: 'RSU', label: 'RSUs', text: 'Each Company RSU Award outstanding' },
+        { code: 'RSU', label: 'Restricted Stock Units', text: 'Company RSU Award' },
+      ],
+    },
+  };
+  assert.doesNotThrow(() => convertConsiderationEquityProvisions([prov]));
+  const rows = prov.features.considerationTreatments;
+  assert.equal(rows.filter((t) => t.instrumentType === 'RSU').length, 1);
+});
