@@ -2,6 +2,8 @@ import React from 'react';
 import {
   buildPerShareParts,
   deriveHeadlineConsiderationType,
+  electionAttributionLabel,
+  findElectionMechanism,
   headlineConsiderationLabel,
   numericDollarOnly,
 } from '../table-logic.js';
@@ -87,10 +89,12 @@ function hasConsiderationSignal(card) {
   if (['considerationType', 'perShareAmount', 'cashAmount', 'exchangeRatio', 'offerConsideration', 'offerPrice'].some((key) => valueText(features[key]))) return true;
   return /\bconsideration|per share|exchange ratio|CVR|offer price/i.test(`${card?.short_title || ''} ${textOf(card)}`);
 }
-function makeRow(id, label, kind, value, card) {
+function makeRow(id, label, kind, value, card, electionOption) {
   const detail = valueText(value);
   if (!detail) return null;
-  return { id: `consideration-hero-${id}`, label, kind, detail, evidence: textOf(card), present: true };
+  const row = { id: `consideration-hero-${id}`, label, kind, detail, evidence: textOf(card), present: true };
+  if (electionOption) row.electionOption = electionOption;
+  return row;
 }
 // Shared with the rollup: CVR max is normally read off a dedicated
 // CONSID-CVR card, but several deals (Metsera included) fold the CVR max
@@ -275,13 +279,39 @@ function renderLinkDetail(row, ctx) {
   return React.createElement(EvidenceHoverSource, { evidence: row.evidence, source: row.sourceCard, as: 'span' }, linkNode);
 }
 
+// ELECTION-REDO-SPEC-2026-07-16 step 4: "tag the existing Consideration table
+// rows with their option (→ Cash Election pill) using the appliesTo
+// attribution." Renders as a small trailing badge next to whatever the row
+// already shows -- never replaces the row's own detail, just attributes it.
+function renderElectionAttributionBadge(row, ctx) {
+  if (!row.electionOption) return null;
+  const PillCell = ctx?.primitives?.PillCell;
+  const label = `→ ${row.electionOption}`;
+  if (!PillCell) {
+    return React.createElement('span', { className: 'ml-1.5 text-[10px] font-ui text-sky-700' }, label);
+  }
+  return React.createElement(PillCell, { label, tone: 'info', evidence: row.evidence });
+}
+
 function renderDetail(row, ctx) {
-  if (row.isLink) return renderLinkDetail(row, ctx);
-  if (row.id === PER_SHARE_ROW_ID && Array.isArray(row.parts)) return renderPerShareDetail(row, ctx);
-  if (PILL_DETAIL_IDS.has(row.id)) return renderPillDetail(row, ctx);
-  const TruncatedWithSeeText = ctx?.primitives?.TruncatedWithSeeText;
-  if (!TruncatedWithSeeText) return row.detail;
-  return React.createElement(TruncatedWithSeeText, { text: row.detail, evidence: row.evidence });
+  let base;
+  if (row.isLink) base = renderLinkDetail(row, ctx);
+  else if (row.id === PER_SHARE_ROW_ID && Array.isArray(row.parts)) base = renderPerShareDetail(row, ctx);
+  else if (PILL_DETAIL_IDS.has(row.id)) base = renderPillDetail(row, ctx);
+  else {
+    const TruncatedWithSeeText = ctx?.primitives?.TruncatedWithSeeText;
+    base = TruncatedWithSeeText
+      ? React.createElement(TruncatedWithSeeText, { text: row.detail, evidence: row.evidence })
+      : row.detail;
+  }
+  const badge = renderElectionAttributionBadge(row, ctx);
+  if (!badge) return base;
+  return React.createElement(
+    'span',
+    { className: 'inline-flex flex-wrap items-center gap-1.5' },
+    base,
+    badge,
+  );
 }
 
 const considerationHeroConfig = {
@@ -299,10 +329,18 @@ const considerationHeroConfig = {
     const rows = [];
     if (headline) rows.push(makeRow('headline', 'Consideration type', 'Summary', headline, cards[0]));
 
-    const parts = perShareParts(featuresList.reduce((acc, features) => ({ ...acc, ...features }), {}), cards);
+    // ELECTION-REDO-SPEC-2026-07-16 step 4: the deal's election mechanism
+    // (if any true election exists), used to tag the rows below with
+    // "→ Cash Election" / "→ Stock Election" pills via appliesTo
+    // attribution -- the un-attributed-rows bug this redo kills.
+    const electionMechanism = findElectionMechanism(allCards);
+    const mergedFeatures = featuresList.reduce((acc, features) => ({ ...acc, ...features }), {});
+
+    const parts = perShareParts(mergedFeatures, cards);
     const perShareText = parts.map((part) => part.text).join(' ');
     if (perShareText) {
-      const row = makeRow('per-share', 'Per-share consideration', 'Economics', perShareText, cards[0]);
+      const perShareRawValue = mergedFeatures.perShareAmount ?? mergedFeatures.cashAmount ?? mergedFeatures.offerPrice;
+      const row = makeRow('per-share', 'Per-share consideration', 'Economics', perShareText, cards[0], electionAttributionLabel(electionMechanism, 'perShareAmount', perShareRawValue));
       if (row) {
         row.parts = parts;
         // Max consideration (cash + CVR max) renders on the right of THIS
@@ -324,7 +362,7 @@ const considerationHeroConfig = {
         if (items.length) rows.push(makeRow(key, label, kind, items, hit.card));
         continue;
       }
-      rows.push(makeRow(key, label, kind, hit.value, hit.card));
+      rows.push(makeRow(key, label, kind, hit.value, hit.card, electionAttributionLabel(electionMechanism, key, hit.value)));
     }
     const cvrCard = cards.find((card) => cardCode(card) === 'CONSID-CVR');
     if (cvrCard) {
