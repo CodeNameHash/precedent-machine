@@ -24,10 +24,11 @@ verified against live DB state, not agent self-reports.
   Verve, Starwood, Red Hat, Bridge, Cooper Tire, Summit) or dispositioned.
 - **Open items, all explained**: Redfin 92% coverage + QXO's missing
   bring-down tiers (the two pinned fixtures of the mid-provision-loss
-  class — see span-accounting spec); Noble Africa re-ingest in flight
-  (document proven CORRECT — a 12-exhibit-trailer reverse merger the old
-  parser couldn't scope; current parser built for exactly this shape);
-  9 deals × 1–3 honest quote flags per above.
+  class — see span-accounting spec); 8 deals × 1–3 honest quote flags per
+  above. Noble Africa CLOSED post-report: document proven correct (a
+  12-exhibit-trailer reverse merger), re-ingested green — 383 provisions,
+  98.3% coverage, 0 quote flags, canonical 0.83 — after one added
+  coverage rule for form-of exhibit stub trailers (ff8e60a).
 
 ## Defect ledger (found by gates, fixed this program)
 
