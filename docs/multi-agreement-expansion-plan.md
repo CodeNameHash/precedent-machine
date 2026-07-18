@@ -129,6 +129,61 @@ the existing 150+ test files and all call sites keep working — the refactor
 is move-and-alias, not rewrite. New call sites take an `agreementType`
 parameter and go through `lib/agreement-types/index.js`.
 
+### 3a. Isolation principle: hard-split taxonomies, linkers added consciously later
+
+**Decision (Ben, 2026-07-18): per-type taxonomies are fully independent —
+no shared code dictionaries, no `common/` vocabulary module. Cross-type
+equivalences are added later as explicit, reviewed linkers, never inherited
+implicitly.**
+
+The mechanism layer (parser, verification, QA runner, query engine, UI
+components) is shared; the *semantic* layer (rubric families, sub-codes,
+taxonomy dictionaries, synonyms/regexes, party vocabulary) is not. Each
+agreement type owns its complete dictionary set, authored from that type's
+own corpus, even where a concept looks identical across types (e.g. efforts
+standards appear in both merger covenants and CVR diligence clauses — the
+CVR module still gets its own `EFFORTS_STANDARDS` with its own codes and
+synonyms).
+
+Rationale — the cross-contamination vectors a shared dictionary opens:
+
+1. **Prompt/classifier bleed.** Code dictionaries (labels, descriptions,
+   synonym regexes) are fed to the LLM classifier and extraction prompts.
+   A shared dictionary means merger-tuned synonyms silently shape how CVR
+   clauses are coded — and worse, a later tweak made to fix a CVR edge case
+   silently re-codes merger provisions across the whole corpus, invisibly
+   to anyone not re-running merger evals.
+2. **False equivalence in precedent data.** A shared code asserts "these
+   mean the same thing" by construction. If a merger IOC efforts standard
+   and a CVR diligence standard share `EFFORTS-CRE`, every cross-type query
+   treats them as comparable whether or not that's legally sound. A wrong
+   equivalence baked into search results reads as correct — the exact
+   failure mode the routing rules exist to prevent.
+3. **Coupled review surface.** With a split, a taxonomy diff touches
+   exactly one agreement type and can be reviewed against that type's
+   goldens alone. With sharing, every dictionary change requires re-running
+   every type's eval harness to prove non-regression.
+
+Consequences elsewhere in this plan:
+
+- No `common/` taxonomy module. Duplication between type modules is
+  accepted and is not a smell to be refactored away.
+- **Namespaced codes everywhere**: all CVR codes carry the `CVR-` prefix
+  (families and taxonomy codes alike), so no string can collide with or be
+  mistaken for a merger code, and provenance is legible in raw data.
+- **Linkers are a product feature, not plumbing** (Phase 5): a
+  `taxonomy_crosswalk` table mapping code ↔ code across types, each row a
+  deliberate, Fable-reviewed (and Ben-approved) legal-judgment call, with a
+  rationale string. Cross-type queries route exclusively through the
+  crosswalk; absence of a row means "not comparable," which is the safe
+  default. Linkers are added only after both taxonomies have stabilized
+  against their golden corpora.
+- Shared *storage structures* (e.g. `provision_cards`, or reusing the
+  `definition_components` table shape for Net Sales) are fine: rows are
+  namespaced by document → agreement type, and a table schema carries no
+  semantics into prompts or search. The split applies to meaning, not
+  mechanics.
+
 ### Database changes (one migration)
 
 1. Add `documents.agreement_type text NOT NULL DEFAULT 'merger'` (or on
@@ -203,11 +258,12 @@ real agreements before freezing):
 | `CVR-MISC` | Boilerplate / other | Governing law, notices, disputes — the no-orphans catch-all, mirroring `OTHER` |
 
 Taxonomy dictionaries to author (the `lib/taxonomy.js` equivalents):
-efforts-standard codes (reuse/extend the existing `EFFORTS_STANDARDS`
-dictionary — deliberate overlap with merger vocab aids cross-type search),
-milestone-trigger codes (regulatory agency × event × deadline structure),
-net-sales-definition components (deductions list is highly stereotyped),
-transferability codes, acting-holder-threshold buckets.
+CVR-native efforts-standard codes (authored fresh from CVR agreements — do
+NOT reuse or extend the merger `EFFORTS_STANDARDS` dictionary; see the
+isolation principle in §3a), milestone-trigger codes (regulatory agency ×
+event × deadline structure), net-sales-definition components (deductions
+list is highly stereotyped), transferability codes,
+acting-holder-threshold buckets.
 
 Party vocabulary module: `PARENT`, `RIGHTS_AGENT`, `HOLDERS` (+
 `HOLDER_REP` / `ACTING_HOLDERS`); mutual/N-A as today.
@@ -283,15 +339,30 @@ rights; disposition-of-product obligations; per-CVR amount vs. milestone.
   agreement) with cross-links between `CONSID-CVR` cards and the CVR
   document's milestone cards.
 
-### Phase 5 — Cross-type leverage (the differentiator)
+### Phase 5 — Consciously-added linkers (the differentiator, and the last thing built)
 
-- Link `CONSID-CVR` provisions in merger agreements to the sibling CVR
-  agreement's cards; surface in both directions.
+Per the isolation principle (§3a), nothing in Phases 0–4 creates any
+semantic connection between the merger and CVR taxonomies. Phase 5 adds
+those connections explicitly, one reviewed decision at a time, only after
+both taxonomies have stabilized against their golden corpora:
+
+- **Document-level linker** (safe, semantic-free, can ship first): link
+  `CONSID-CVR` provisions in merger agreements to the sibling CVR
+  agreement's cards via the shared `deal_id` — this asserts only "these
+  documents belong to the same deal," not that any codes are equivalent.
+- **`taxonomy_crosswalk` table**: `(from_type, from_code, to_type, to_code,
+  relationship, rationale, reviewed_by, reviewed_at)`. Each row is a
+  deliberate legal-judgment call (Fable-drafted, Ben-approved). Cross-type
+  queries route exclusively through this table; no row = not comparable.
+  Candidate first rows: merger `EFFORTS-*` ↔ CVR efforts codes,
+  `CONSID-CVR` sub-features ↔ `CVR-MILE`/`CVR-PAY` features.
 - Market-baseline families for CVR features so `MARKET_RANGE` queries work
-  ("what % of biopharma CVRs since 2020 are transferable?", "distribution of
-  acting-holder thresholds").
-- Compare view: allow cross-type deal comparison (a deal's merger + CVR
-  terms as one column).
+  within the CVR corpus ("what % of biopharma CVRs since 2020 are
+  transferable?", "distribution of acting-holder thresholds") — this is
+  single-type and needs no crosswalk.
+- Compare view: cross-type deal comparison (a deal's merger + CVR terms as
+  one column) — document-level join only; any feature-level alignment rows
+  come from the crosswalk.
 
 ---
 
@@ -316,9 +387,14 @@ rights; disposition-of-product obligations; per-CVR amount vs. milestone.
 1. **Phase 0 regression risk on the merger pipeline** — mitigated by the
    zero-diff golden-eval gate; the refactor is not allowed to change merger
    output at all.
-2. **Taxonomy drift between types** (e.g. two efforts-standard dictionaries
-   diverging) — shared dictionaries live in a `common/` module; per-type
-   modules extend rather than fork them.
+2. **Cross-contamination between type taxonomies** — the primary design
+   risk, addressed structurally by the isolation principle (§3a): fully
+   independent per-type dictionaries, namespaced codes, and cross-type
+   equivalence only via explicit crosswalk rows added after stabilization.
+   The residual risk is intentional duplication drifting *within* a type's
+   own corpus semantics — acceptable, because each type is reviewed against
+   its own goldens and the crosswalk (not shared labels) carries any
+   cross-type claims.
 3. **CVR corpus is small** (~10–20 well-known public agreements per recent
    5-year window) — that's fine; precedent value per document is high, and
    small corpus means the golden set covers a large fraction of it.
