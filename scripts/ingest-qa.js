@@ -40,6 +40,7 @@
 const fs = require('fs');
 const path = require('path');
 const { verifyDealQuotes, computeCoverage } = require('../lib/verification');
+const { resolveBuyerDisplay, SHELL_NAME_REGEX } = require('../lib/query/types');
 
 const PAGE_SIZE = 1000;
 
@@ -199,6 +200,67 @@ function evaluateGates(metrics, gates) {
   return { checks, ok: checks.every((c) => c.pass) };
 }
 
+/* ── deal-metadata gate group (Ben addendum — persistence enforcement) ──────
+   These gate the DEAL ROW's metadata, not the provisions: a clean ingest
+   that would ship a blank index cell (buyer name, value, type, profile,
+   signing date) must exit 1. advisors_found is informational-only — many
+   filings genuinely omit firm names from the notices section, so it is
+   printed but never gates. Pure / DB-independent so both the CLI and
+   pages/api/ingest/from-url.js's response payload can share one
+   definition. ─────────────────────────────────────────────────────────── */
+
+function hasAdvisorsFound(meta) {
+  const v2 = meta && meta.advisors_v2;
+  if (v2 && ((Array.isArray(v2.buyer_firms) && v2.buyer_firms.length) || (Array.isArray(v2.seller_firms) && v2.seller_firms.length))) return true;
+  return Array.isArray(meta && meta.advisors) && meta.advisors.length > 0;
+}
+
+function evaluateDealMetadataGates(deal) {
+  const meta = deal && deal.metadata && typeof deal.metadata === 'object' ? deal.metadata : {};
+
+  const buyerDisplay = resolveBuyerDisplay(deal);
+  const buyerDisplayPass = !!buyerDisplay && !SHELL_NAME_REGEX.test(String(buyerDisplay));
+
+  const valueUsd = deal && deal.value_usd;
+  const valueProvenanceKind = meta.value_provenance && meta.value_provenance.kind;
+  const valuePass = (valueUsd !== null && valueUsd !== undefined) || valueProvenanceKind === 'no_stated_value';
+
+  const considerationType = meta.headlineConsiderationType || null;
+  const considerationTypePass = !!considerationType;
+
+  const buyerProfile = meta.buyer_profile || null;
+  const buyerProfilePass = buyerProfile === 'strategic' || buyerProfile === 'financial';
+
+  const signingDate = (deal && deal.announce_date) || null;
+  const signingDatePass = /^\d{4}-\d{2}-\d{2}/.test(String(signingDate || ''));
+
+  const advisorsFound = hasAdvisorsFound(meta);
+
+  const checks = [
+    { label: 'buyer_display', gated: true, pass: buyerDisplayPass, value: buyerDisplay || '(none)' },
+    { label: 'value', gated: true, pass: valuePass, value: valueUsd ?? (valueProvenanceKind || '(none)') },
+    { label: 'consideration_type', gated: true, pass: considerationTypePass, value: considerationType || '(none)' },
+    { label: 'buyer_profile', gated: true, pass: buyerProfilePass, value: buyerProfile || '(none)' },
+    { label: 'signing_date', gated: true, pass: signingDatePass, value: signingDate || '(none)' },
+    { label: 'advisors_found', gated: false, pass: advisorsFound, value: advisorsFound ? 'yes' : 'no' },
+  ];
+  const gated = checks.filter((c) => c.gated);
+  return { checks, ok: gated.every((c) => c.pass) };
+}
+
+function printDealMetadataScorecard(metaEval, { staging } = {}) {
+  console.log('  ── deal metadata (buyer/value/type/profile/signing_date) ──');
+  for (const c of metaEval.checks) {
+    const status = c.gated ? (c.pass ? 'PASS' : 'FAIL') : (c.pass ? 'info: yes' : 'info: no');
+    console.log(`  ${c.label.padEnd(20)} ${String(c.value).slice(0, 40).padStart(20)}   ${status}`);
+  }
+  if (staging) {
+    console.log('  (staging deal — metadata gates printed but not counted toward overall PASS/FAIL)');
+  } else {
+    console.log(`  METADATA GATE RESULT: ${metaEval.ok ? 'PASS' : 'FAIL'}`);
+  }
+}
+
 /* ── formatting ──────────────────────────────────────────────────────────── */
 
 function fmtNum(n) {
@@ -287,7 +349,12 @@ async function qaOneDeal(sb, deal, gateOverrides) {
   const evalResult = evaluateGates(metrics, gateOverrides);
   const label = `${deal.acquirer || '?'} / ${deal.target || '?'}`;
   printScorecard(label, metrics, evalResult);
-  return evalResult.ok;
+
+  const staging = meta.ingest_status === 'staging';
+  const metaEval = evaluateDealMetadataGates(deal);
+  printDealMetadataScorecard(metaEval, { staging });
+
+  return evalResult.ok && (staging || metaEval.ok);
 }
 
 async function main() {
@@ -300,7 +367,7 @@ async function main() {
   if (!dbUrl || !key) { console.error('Supabase creds required (env / .env.local).'); process.exit(1); }
   const sb = createClient(dbUrl, key);
 
-  const { data: deals, error } = await sb.from('deals').select('id, acquirer, target, metadata');
+  const { data: deals, error } = await sb.from('deals').select('id, acquirer, target, value_usd, announce_date, metadata');
   if (error) { console.error(`Deal fetch failed: ${error.message}`); process.exit(1); }
 
   const targets = (deals || []).filter((d) => {
@@ -339,6 +406,9 @@ module.exports = {
   provisionCode,
   computeCanonicalRate,
   evaluateGates,
+  hasAdvisorsFound,
+  evaluateDealMetadataGates,
+  printDealMetadataScorecard,
   fetchAllProvisions,
   findDotEnvLocal,
   loadDotEnvLocal,
