@@ -1040,12 +1040,15 @@ test('structure-mechanics config skips a corrupted effectiveTimeShort claim and 
   assert.deepEqual(effectiveTime.signals.map((item) => item.label), ['Upon filing of the Certificate of Merger with the Delaware Secretary of State.']);
 });
 
-// Fix 2 (See-provision fidelity): the real clause text (primary_quote) must
-// win over a CLEAN effectiveTimeShort/effectiveTime AI summary once it clears
-// the surviving-corporation guard -- mirrors the IOC fix (textOf(c) ||
-// valueText(mainObligation)). The structured keys stay as the fallback tier
-// for cards with no captured quote at all (see the tests above/below).
-test('structure-mechanics config prefers the real clause text over a clean effectiveTimeShort/effectiveTime summary once the guard passes', () => {
+// Round 3 (Metsera, item 1c): the corpus reprocess fixed the corrupted
+// effectiveTimeShort claims that the old clause-first tier order was a
+// stopgap for, so a CLEAN effectiveTimeShort/effectiveTime AI summary must
+// now win over the raw clause text once it clears the surviving-corporation
+// guard -- the short claim is what Ben wants in the row; the full ~780-char
+// clause dump is available behind "See provision". The clause tier is now
+// the fallback for cards with no clean structured value at all (see the
+// test below).
+test('structure-mechanics config prefers a clean effectiveTimeShort/effectiveTime summary over the raw clause text', () => {
   const rows = structureMechanicsMod.structureMechanicsConfig.selectRows({
     cards: [{
       id: 'struct-effective-time-real-text',
@@ -1061,15 +1064,15 @@ test('structure-mechanics config prefers the real clause text over a clean effec
   });
   const effectiveTime = rows.find((row) => row.id === 'structure-mechanics-effective-time');
   assert.ok(effectiveTime, 'effective-time row should still render');
-  assert.match(
-    effectiveTime.detail,
-    /or at such later time as Parent and the Company shall agree/,
-    'the real clause text -- not the AI summary -- must win once it clears the surviving-corporation guard',
-  );
-  assert.notEqual(
+  assert.equal(
     effectiveTime.detail,
     'Upon filing of the Certificate of Merger with the Delaware Secretary of State.',
-    'the bare AI summary sentence must not stand in once real clause text exists',
+    'the short AI summary -- not the raw ~780-char clause -- must win once it clears the surviving-corporation guard',
+  );
+  assert.doesNotMatch(
+    effectiveTime.detail,
+    /or at such later time as Parent and the Company shall agree/,
+    'the raw clause text must stay behind See provision, not inline in the row',
   );
 });
 
@@ -1105,8 +1108,8 @@ test('structure-mechanics config falls back to the clause when every effective-t
 // mainConcept.
 //
 // No primary_quote on either card -- deliberately, so this test exercises
-// the STRUCTURED-key fallback tier in isolation (the real-text tier that now
-// runs ahead of it is covered by its own dedicated test above).
+// the STRUCTURED-key tier (now the first tier) in isolation from the clause
+// tier, which is covered by its own dedicated tests above/below.
 test('structure-mechanics config prefers a good effectiveTimeShort on a LATER card over an earlier card\'s mainConcept', () => {
   const rows = structureMechanicsMod.structureMechanicsConfig.selectRows({
     cards: [{
@@ -1409,6 +1412,33 @@ test('votes-approvals-meeting config renders a Parent / Merger Sub approvals row
   assert.match(html, /in writing by Parent/);
   assert.match(html, /no separate Parent vote required/);
   assert.doesNotMatch(html, /written consent required/i);
+});
+
+// Item 7 (round 3, QXO card 50c90c2d): COV-SHAPRV-PARENT with NO
+// parentAdoptionMechanism claim, whose clause reads "Parent will cause a
+// written consent to be executed by all of the record holders of the stock
+// of Titanium Merger Sub to adopt and approve this Agreement..." -- the
+// existing "sole stockholder" deterministic pattern doesn't match this
+// phrasing, so before the fix the row fell to the raw TruncatedWithSeeText
+// clause dump instead of a short pill.
+test('votes-approvals-meeting config resolves QXO\'s "written consent by all record holders" Merger Sub adoption phrasing to a short pill, not a raw clause dump', () => {
+  const rows = votesApprovalsMeetingMod.buildRows({
+    cards: [{
+      id: 'cov-parent-adopt-qxo',
+      provision_type: 'COVENANT_OTHER',
+      provision_subtype: 'COV-SHAPRV-PARENT',
+      short_title: 'Parent Adoption of Merger Agreement',
+      primary_quote: 'Parent will cause a written consent to be executed by all of the record holders of the stock of Titanium Merger Sub to adopt and approve this Agreement immediately following the execution of this Agreement.',
+      features: {},
+    }],
+  });
+  const row = rows.find((entry) => entry.id === 'votes-approvals-meeting-parent-approval');
+  assert.ok(row, 'expected a Parent / Merger Sub approvals row');
+  const primitives = { PillCell: ({ label }) => React.createElement('span', null, label) };
+  const provisionColumn = votesApprovalsMeetingMod.votesApprovalsMeetingConfig.columns.find((c) => c.id === 'provision');
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, provisionColumn.renderCell(row, { primitives })));
+  assert.match(html, /Merger Sub stockholders adopt by written consent \(immediately after signing\)/);
+  assert.doesNotMatch(html, /Titanium Merger Sub to adopt and approve this Agreement/, 'the raw clause must not render inline any more');
 });
 
 // FEEDBACK-2-PUNCHLIST.md #12: the "Meeting control notes" row is gone.

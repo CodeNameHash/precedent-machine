@@ -140,7 +140,17 @@ export default function ProvisionTable({ config, reviewDeal, isEdit = false }) {
         </div>
       ) : null}
       <div className="overflow-x-auto">
-        <table className="min-w-full text-xs font-ui">
+        <table className={`min-w-full text-xs font-ui${config.fixedLayout ? ' table-fixed' : ''}`}>
+          {config.fixedLayout ? (
+            <colgroup>
+              {columns.map((column) => (
+                <col
+                  key={`col-${column.id}`}
+                  style={column.width ? { width: column.width, maxWidth: column.maxWidth } : undefined}
+                />
+              ))}
+            </colgroup>
+          ) : null}
           {showHeader ? (
             <thead className="border-b border-border bg-bg/60">
               <tr>

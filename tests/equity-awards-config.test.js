@@ -333,3 +333,59 @@ test('shape-3 lists pair by the instrument named in each clause text, not by ind
   assert.match(espp.considerationLabel || '', /ESPP/);
   assert.match(espp.vestingLabel || '', /ESPP/);
 });
+
+// Item 5 (round 3, QXO card 7c4ff1fb): equityAwardTreatment is a keyed map
+// (shape 1) covering psus/rsus/options/restrictedStock, but
+// outstandingInstruments stores plural string codes "PSUs"/"RSUs" which
+// codeOf() only uppercases to PSUS/RSUS -- NOT the canonical PSU/RSU the
+// keyed map's rows carry. Before the fix this produced two spurious
+// "No structured treatment captured" gap rows duplicating the PSU/RSU rows
+// already built from the map.
+test('Item 5: outstandingInstruments plural string codes (PSUs/RSUs) do not spawn duplicate gap rows for instruments already covered by the equityAwardTreatment map', () => {
+  const card = {
+    id: 'consid-equity-qxo',
+    provision_type: 'CONSIDERATION',
+    provision_subtype: 'CONSID-EQUITY',
+    short_title: 'Treatment of Equity Awards',
+    primary_quote: 'Treatment of equity awards.',
+    features: {
+      equityAwardTreatment: {
+        psus: 'Each Company PSU award will be converted into an adjusted Parent RSU award, retaining the same vesting conditions.',
+        rsus: 'Each Company RSU award will be converted into an adjusted Parent RSU award, retaining the existing time-based vesting conditions.',
+        options: 'Each Company Option will be assumed and converted into an option to purchase Parent shares.',
+        restrictedStock: 'Each Company restricted stock award will be assumed and converted into a Parent restricted stock award.',
+      },
+      outstandingInstruments: ['PSUs', 'RSUs', 'Options', { code: 'RESTRICTED_STOCK', label: 'Restricted Stock', text: 'RESTRICTED_STOCK' }],
+    },
+  };
+  const rows = mod.equityAwardRows([card]);
+  const psuRows = rows.filter((r) => /^PSUs$/.test(r.instrument));
+  const rsuRows = rows.filter((r) => /^RSUs$/.test(r.instrument));
+  assert.equal(psuRows.length, 1, 'PSUs must render exactly one row, not a real row plus a gap-row duplicate');
+  assert.equal(rsuRows.length, 1, 'RSUs must render exactly one row, not a real row plus a gap-row duplicate');
+  const gapRows = rows.filter((r) => /No structured treatment captured/.test(r.considerationLabel || ''));
+  assert.equal(gapRows.length, 0, 'every outstanding instrument is covered by the map -- no gap rows should render at all');
+});
+
+// Item 5, secondary (QXO): the classifiers missed QXO's "converted into an
+// adjusted Parent ... award" / "retaining the existing ... vesting" phrasing,
+// so the shape-1 PSU/RSU rows rendered "--" instead of pills.
+test('Item 5: classifyConsiderationType covers "converted into an adjusted Parent award" phrasing (QXO)', () => {
+  const text = 'Each Company PSU award will be converted into an adjusted Parent RSU award.';
+  assert.equal(mod.classifyConsiderationType(text, 'PSU'), 'STOCK');
+});
+
+test('Item 5: classifyConsiderationType covers plain "parent shares" phrasing', () => {
+  const text = 'Each award will be converted into parent shares at the exchange ratio.';
+  assert.equal(mod.classifyConsiderationType(text, 'RSU'), 'STOCK');
+});
+
+test('Item 5: classifyVestingTreatment covers "retaining the existing ... vesting" phrasing (QXO)', () => {
+  const text = 'The replacement award will be subject to the same terms, retaining the existing time-based vesting conditions.';
+  assert.equal(mod.classifyVestingTreatment(text, 'RSU'), 'CONTINUED_VESTING');
+});
+
+test('Item 5: classifyVestingTreatment covers "same terms and conditions" phrasing', () => {
+  const text = 'The award continues on the same terms and conditions as in effect immediately prior to the Effective Time.';
+  assert.equal(mod.classifyVestingTreatment(text, 'PSU'), 'CONTINUED_VESTING');
+});

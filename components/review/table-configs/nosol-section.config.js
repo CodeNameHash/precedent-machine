@@ -264,7 +264,13 @@ function acqProposalQualifyingCard(cards) {
     return cardText.length > bestText.length ? card : best;
   });
 }
-const PCT_PATTERN = /(\d{1,3})\s*\)?\s*%/g;
+// Item 14 (round 3, Theravance): the old pattern harvested EVERY "NN%" in the
+// clause, including percentages that are part of a definitional carve-out
+// rather than an acquisition trigger (Theravance's continuity-of-ownership
+// carve -- "...will not own, directly or indirectly, at least 80% of the
+// surviving company..." -- is not itself a trigger). Every real trigger limb
+// on Theravance/Metsera/QXO uses "NN% or more" phrasing; restrict to that.
+const PCT_PATTERN = /(\d{1,3})\s*\)?\s*%\s*\)?\s+or\s+more/gi;
 function extractPctTriggers(text) {
   const found = new Set();
   let match = PCT_PATTERN.exec(text);
@@ -518,4 +524,4 @@ const nosolSectionConfig = {
   empty: { copy: 'No no-solicitation provisions found.' },
 };
 
-export { buildGroups, nosolSectionConfig };
+export { buildGroups, extractPctTriggers, nosolSectionConfig };

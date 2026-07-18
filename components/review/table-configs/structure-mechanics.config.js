@@ -29,30 +29,33 @@ const ROWS = [
 // their own per-instrument table -- see equity-awards.config.js -- not as
 // rows in this generic term/signal grid.
 
-// The effectiveTimeShort claim is corrupted on some backfilled cards -- it
-// renders "Names the Company as the surviving corporation..." instead of the
-// actual filing mechanic ("Upon filing of the Certificate of Merger with the
-// Delaware Secretary of State."). This is a DATA bug (real fix belongs at
-// extraction/backfill); this guard is the config-side stopgap: never let a
-// value matching /surviving corporation/i stand in as the effective time --
-// whether that value is the real clause text or one of the AI-synthesized
-// keys below.
+// The effectiveTimeShort claim was corrupted on some backfilled cards -- it
+// used to render "Names the Company as the surviving corporation..." instead
+// of the actual filing mechanic ("Upon filing of the Certificate of Merger
+// with the Delaware Secretary of State."). This is a DATA bug (real fix
+// belongs at extraction/backfill); this guard is the config-side stopgap:
+// never let a value matching /surviving corporation/i stand in as the
+// effective time -- whether that value is the real clause text or one of
+// the AI-synthesized keys below.
 //
-// Tier order (mirrors the IOC fix, textOf(c) || valueText(mainObligation)):
-// the real captured clause text (primary_quote/region_full_text) wins FIRST,
-// card-by-card, whenever it clears the guard -- effectiveTimeShort/
-// effectiveTime/mainConcept are documented in lib/schema/features.js as
-// one-sentence AI summaries, not verbatim text. Only once NO card carries a
-// guard-clean quote does this fall to the structured-key tier: a single
-// card's corrupted effectiveTimeShort must never shadow a GOOD
-// effectiveTimeShort sitting on a different card, so that tier scans
-// KEY-FIRST, CARD-SECOND -- every card's effectiveTimeShort (skipping
-// /surviving corporation/i matches), then every card's effectiveTime, then
-// every card's mainConcept -- only once a whole key has come up empty across
-// every card does it move to the next key. Only after all three keys are
-// exhausted does it fall back to the raw clause text of the first card that
-// had SOME (corrupted) effective-time claim, so the row still shows the
-// filing-mechanic sentence when present in the source text.
+// Round 3 (Metsera): the corpus reprocess has since fixed the corrupted
+// effectiveTimeShort claims, so a deal with a clean short claim
+// ("Upon filing of the Certificate of Merger...") was being shadowed by its
+// OWN raw ~780-char clause text because the clause-first tier ran before the
+// structured-key tier. Tier order is now:
+// 1. Structured keys first, KEY-FIRST / CARD-SECOND -- every card's
+//    effectiveTimeShort (skipping /surviving corporation/i matches), then
+//    every card's effectiveTime, then every card's mainConcept -- only once
+//    a whole key has come up empty across every card does it move to the
+//    next key. This is the common case and produces the short, human
+//    sentence Ben wants.
+// 2. The real captured clause text (primary_quote/region_full_text) second,
+//    card-by-card, whenever it clears the guard -- used only when no card
+//    has a clean structured value.
+// 3. Only after all three keys AND the clause tier are exhausted does this
+//    fall back to the raw clause text of the first card that had SOME
+//    (corrupted) effective-time claim, so the row still shows the
+//    filing-mechanic sentence when present in the source text.
 const EFFECTIVE_TIME_KEYS = ['effectiveTimeShort', 'effectiveTime', 'mainConcept'];
 const SURVIVING_CORP_RE = /surviving corporation/i;
 
@@ -72,16 +75,16 @@ const EFFECTIVE_TIME_CODE_RE = /EFF(?:TIME|ECTIVE)/i;
 function effectiveTimeHit(cards) {
   const candidates = cards.filter((card) => EFFECTIVE_TIME_CODE_RE.test(cardCode(card)));
   const pool = candidates.length ? candidates : cards;
-  for (const card of pool) {
-    const clause = textOf(card);
-    if (clause && !SURVIVING_CORP_RE.test(clause)) return { key: 'clause', value: clause, detail: clause, card };
-  }
   for (const key of EFFECTIVE_TIME_KEYS) {
     for (const card of pool) {
       const features = cardFeatures(card);
       const detail = valueText(features[key]);
       if (detail && !SURVIVING_CORP_RE.test(detail)) return { key, value: features[key], detail, card };
     }
+  }
+  for (const card of pool) {
+    const clause = textOf(card);
+    if (clause && !SURVIVING_CORP_RE.test(clause)) return { key: 'clause', value: clause, detail: clause, card };
   }
   for (const card of pool) {
     const features = cardFeatures(card);

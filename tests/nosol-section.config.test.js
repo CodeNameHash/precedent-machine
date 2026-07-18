@@ -199,6 +199,19 @@ test('nosol-section: Acquisition Proposal - Definition surfaces the 20% trigger,
   assert.match(qualifyingHtml, /inconsistent with its fiduciary duties/);
 });
 
+// Item 14 (round 3, Theravance NOSOL-ACQPROPOSAL): limbs (1)-(4) all use
+// "20% or more" of revenues/assets/voting power; the 80% appears ONLY in a
+// definitional continuity-of-ownership carve-out ("...shareholders of the
+// Company immediately prior to such transaction will not own, directly or
+// indirectly, at least 80% of the surviving company...") -- not a trigger.
+// The old harvest-every-percentage regex rendered both "Trigger: 20%" and
+// "Trigger: 80%"; only the "NN% or more" trigger phrasing should chip.
+test('nosol-section extractPctTriggers only chips "NN% or more" trigger phrasing, not an unrelated "at least NN%" continuity-of-ownership carve-out', () => {
+  const clause = '"Company Takeover Proposal" means any inquiry, proposal or offer relating to (i) any direct or indirect acquisition of assets representing 20% or more of the consolidated assets of the Company, (ii) any acquisition of 20% or more of the outstanding voting power of the Company, (iii) any tender or exchange offer that if consummated would result in beneficial ownership of 20% or more of the Company, or (iv) any merger, consolidation, business combination, recapitalization, liquidation, dissolution or similar transaction involving the Company in which the shareholders of the Company immediately prior to such transaction will not own, directly or indirectly, at least 80% of the surviving company.';
+  const triggers = mod.extractPctTriggers(clause);
+  assert.deepEqual(triggers, ['20%'], 'only the "20% or more" trigger limbs chip -- the 80% continuity carve-out is not a trigger');
+});
+
 test('nosol-section places the Acquisition Proposal - Definition group after Fiduciary-Out / Engagement and before Notice', () => {
   const groups = mod.buildGroups({ cards: CARDS }, { primitives });
   const ids = groups.map((g) => g.id);
