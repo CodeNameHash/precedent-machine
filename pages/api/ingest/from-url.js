@@ -20,7 +20,6 @@ import { fromCp } from '../../../lib/html-entities';
 import https from 'https';
 import http from 'http';
 import { getServiceSupabase } from '../../../lib/supabase';
-import { MERGER_FORMS } from '../../../lib/taxonomy';
 
 const { parseStructure, cleanText, displayCleanText } = require('../../../lib/parser-v2/structural');
 const { classifySections } = require('../../../lib/parser-v2/classify');
@@ -29,6 +28,8 @@ const { validateProvisions } = require('../../../lib/parser-v2/validate');
 const { storeProvisions } = require('../../../lib/parser-v2/store');
 const { extractAdvisors } = require('../../../lib/parser-v2/advisors');
 const { buildPartiesFact, buildValueUsdFact, mergeDealFacts } = require('../../../lib/deal-facts');
+const { extractDealMetadata: sharedExtractDealMetadata } = require('../../../lib/ingest/deal-metadata-prompt');
+const { evaluateDealMetadataGates } = require('../../../scripts/ingest-qa');
 
 export const config = {
   maxDuration: 300,
@@ -133,62 +134,44 @@ function metadataWithDealFacts(base, meta, sourceUrl) {
   });
 }
 
-async function extractDealMetadata(client, text) {
-  // Use the first ~10k chars — that's where preamble + corpuss + Article 1 live.
-  const preamble = text.substring(0, 10000);
-
-  const mergerFormCodes = Object.keys(MERGER_FORMS);
-
-  const prompt = `You are extracting structured metadata from the preamble of a merger or acquisition agreement.
-
-Return ONLY a JSON object with these fields. Use null for any field you cannot determine confidently.
-
-{
-  "acquirer": "string — the buyer / parent entity legal name (e.g. 'Pfizer Inc.')",
-  "target": "string — the target / company legal name (e.g. 'Metsera, Inc.')",
-  "signing_date": "YYYY-MM-DD — the agreement signing/execution date from the preamble",
-  "value_usd": number or null — total transaction equity value in USD if stated; otherwise null,
-  "sector": "string — single short label like 'Biopharma', 'Technology', 'Financial Services'",
-  "merger_form": "one of: ${mergerFormCodes.join(', ')} — pick the best match",
-  "parent_entity": "string or null — the ULTIMATE PARENT on whose behalf the acquisition is made. NEVER the merger sub and NEVER an intermediate holding shell: if the signatory is a merger sub formed by a public parent for this transaction (e.g. 'Bespin Subsidiary, LLC' formed by 'AbbVie Inc.'), parent_entity is the parent ('AbbVie Inc.'), not the sub. If the filed acquirer already IS the ultimate parent (no separate parent named), repeat the acquirer's name here.",
-  "target_entity": "string or null — the target's clean legal entity name (usually same as target)",
-  "acquirer_display": "string or null — short colloquial/market name for the acquirer's ultimate parent with no Inc./Corp./LLC/L.P./plc suffix, e.g. 'AbbVie', 'Pfizer', 'Red Hat'",
-  "target_display": "string or null — short colloquial/market name for the target with no Inc./Corp./LLC/L.P./plc suffix, e.g. 'Metsera'"
+// Best-effort sibling-exhibit fetch for the value-derivation ladder's tier
+// (b): look in the same EDGAR filing index as the agreement exhibit for an
+// EX-99.1-style press-release exhibit, extract the stated transaction value
+// with a quote. Returns null (never throws) — deriveValue() falls through
+// to 'no_stated_value' when this comes back empty.
+async function fetchPressReleaseForDeal(client, sourceUrl) {
+  if (!sourceUrl) return null;
+  try {
+    const idxUrl = sourceUrl.replace(/\/[^/]*$/, '/');
+    const idxHtml = await fetchUrl(idxUrl);
+    const hrefs = [...idxHtml.matchAll(/href="([^"]+)"/gi)].map((m) => m[1]);
+    const exhibitHref = hrefs.find((h) => /ex-?99/i.test(h));
+    if (!exhibitHref) return null;
+    const exhibitUrl = new URL(exhibitHref, idxUrl).toString();
+    const html = await fetchUrl(exhibitUrl);
+    const text = stripHtml(html).slice(0, 6000);
+    if (text.length < 200) return null;
+    const prompt = `Extract the stated aggregate transaction value (in USD) from this press release, if any is stated. Return ONLY JSON: {"value_usd": number or null, "quote": "string or null — the exact sentence stating the value"}.\n\nPress release text:\n"""\n${text}\n"""\n\nReturn ONLY the JSON object, no prose, no markdown fence.`;
+    const resp = await client.messages.create({ model: MODEL, max_tokens: 300, messages: [{ role: 'user', content: prompt }] });
+    const raw = resp.content?.[0]?.text || '{}';
+    const jsonMatch = raw.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) return null;
+    const parsed = JSON.parse(jsonMatch[0]);
+    if (typeof parsed.value_usd === 'number' && parsed.value_usd > 0) {
+      return { value_usd: parsed.value_usd, source_url: exhibitUrl, quote: parsed.quote || null };
+    }
+    return null;
+  } catch {
+    return null;
+  }
 }
 
-Agreement text (preamble):
-"""
-${preamble}
-"""
-
-Return ONLY the JSON object, no prose, no markdown fence.`;
-
-  const resp = await client.messages.create({
+async function extractDealMetadata(client, text, opts = {}) {
+  return sharedExtractDealMetadata(client, text, {
     model: MODEL,
-    max_tokens: 600,
-    messages: [{ role: 'user', content: prompt }],
+    sourceUrl: opts.sourceUrl || null,
+    fetchPressRelease: opts.skipPressReleaseFetch ? undefined : () => fetchPressReleaseForDeal(client, opts.sourceUrl),
   });
-
-  const raw = resp.content?.[0]?.text || '{}';
-  // Tolerate the model wrapping the JSON in a code fence.
-  const jsonMatch = raw.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) {
-    throw new Error('Metadata extraction did not return JSON');
-  }
-  const parsed = JSON.parse(jsonMatch[0]);
-
-  return {
-    acquirer: parsed.acquirer || null,
-    target: parsed.target || null,
-    signing_date: parsed.signing_date || null,
-    value_usd: typeof parsed.value_usd === 'number' ? parsed.value_usd : null,
-    sector: parsed.sector || null,
-    merger_form: parsed.merger_form || null,
-    parent_entity: parsed.parent_entity || null,
-    target_entity: parsed.target_entity || null,
-    acquirer_display: parsed.acquirer_display || null,
-    target_display: parsed.target_display || null,
-  };
 }
 
 async function runParserPipeline(client, fullText, dealId, title, sb, dealMeta = {}) {
@@ -283,7 +266,7 @@ export default async function handler(req, res) {
     let refreshedMetadata = null;
 
     if (!targetDealId) {
-      createdMetadata = await extractDealMetadata(client, fullText);
+      createdMetadata = await extractDealMetadata(client, fullText, { sourceUrl });
 
       if (!createdMetadata.acquirer || !createdMetadata.target) {
         return res.status(422).json({
@@ -307,6 +290,10 @@ export default async function handler(req, res) {
           target_entity: createdMetadata.target_entity,
           acquirer_display: createdMetadata.acquirer_display,
           target_display: createdMetadata.target_display,
+          ...(createdMetadata.ultimateParent ? { ultimateParent: createdMetadata.ultimateParent } : {}),
+          buyer_is_shell: createdMetadata.buyer_is_shell,
+          buyer_profile: createdMetadata.buyer_profile,
+          value_provenance: createdMetadata.value_provenance,
         }, createdMetadata, sourceUrl),
       };
 
@@ -319,7 +306,7 @@ export default async function handler(req, res) {
       targetDealId = newDeal.id;
     } else {
       try {
-        refreshedMetadata = await extractDealMetadata(client, fullText);
+        refreshedMetadata = await extractDealMetadata(client, fullText, { sourceUrl: sourceUrl || existingDeal?.metadata?.source_url || null });
       } catch (metadataErr) {
         console.warn('[from-url] existing-deal metadata refresh failed:', metadataErr.message);
       }
@@ -334,6 +321,10 @@ export default async function handler(req, res) {
         ...(basis.target_entity ? { target_entity: basis.target_entity } : {}),
         ...(basis.acquirer_display ? { acquirer_display: basis.acquirer_display } : {}),
         ...(basis.target_display ? { target_display: basis.target_display } : {}),
+        ...(basis.ultimateParent ? { ultimateParent: basis.ultimateParent } : {}),
+        ...(basis.buyer_is_shell !== undefined ? { buyer_is_shell: basis.buyer_is_shell } : {}),
+        ...(basis.buyer_profile ? { buyer_profile: basis.buyer_profile } : {}),
+        ...(basis.value_provenance ? { value_provenance: basis.value_provenance } : {}),
         ingested_at: new Date().toISOString(),
       }, refreshedMetadata, sourceUrl || existingDeal?.metadata?.source_url || null);
       const updateRow = {
@@ -355,6 +346,25 @@ export default async function handler(req, res) {
     const signingDate = existingDeal ? existingDeal.announce_date : createdMetadata.signing_date;
     const parseResult = await runParserPipeline(client, fullText, targetDealId, title, sb, { signingDate });
 
+    // Deal-metadata QA gates (buyer_display/value/consideration_type/
+    // buyer_profile/signing_date — advisors_found informational only), so
+    // the admin UI can flag a clean ingest that would ship a blank index
+    // cell immediately rather than waiting on a separate ingest-qa run.
+    let qaGates = null;
+    try {
+      const { data: gateDeal, error: gateErr } = await sb
+        .from('deals')
+        .select('id, acquirer, target, value_usd, announce_date, metadata')
+        .eq('id', targetDealId)
+        .single();
+      if (!gateErr && gateDeal) {
+        const evalResult = evaluateDealMetadataGates(gateDeal);
+        qaGates = { ok: evalResult.ok, checks: evalResult.checks };
+      }
+    } catch (gateEvalErr) {
+      console.warn('[from-url] deal-metadata QA gate evaluation failed:', gateEvalErr.message);
+    }
+
     return res.status(200).json({
       success: true,
       deal_id: targetDealId,
@@ -363,6 +373,7 @@ export default async function handler(req, res) {
       provisions_inserted: parseResult.insertedCount,
       provisions_deleted: parseResult.deletedCount,
       advisors_found: parseResult.advisors.length,
+      qa_gates: qaGates,
     });
   } catch (err) {
     console.error('[from-url] error:', err);
