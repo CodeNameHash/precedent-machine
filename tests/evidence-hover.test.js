@@ -61,7 +61,7 @@ test('evidenceHover: no evidence and no provision full_text returns all-null', (
    evidenceHover so bolding applies wherever these shared row/cell renderers
    are used — pages/review/[id].js is JSX and can't be imported under
    node --test (see tests/fb3-wiring.test.js for the established pattern). */
-const reviewSrc = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
+const reviewSrc = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review-v1', '[id].js'), 'utf8');
 
 test('DefaultFeatureRow renders the VALUE cell HoverSource with evidenceHover\'s quote + highlight', () => {
   const start = reviewSrc.indexOf('function DefaultFeatureRow(');

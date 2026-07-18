@@ -213,6 +213,8 @@ function printScorecard(label, metrics, evalResult) {
     console.log(`  ${c.label.padEnd(20)} ${String(fmtNum(c.value)).padStart(8)}  ${c.op}${fmtNum(c.threshold)}   ${status}`);
   }
   console.log('  ── informational (not gated) ──');
+  console.log(`  raw coverage %       ${String(fmtNum(metrics.rawCoveragePct)).padStart(8)}   (vs total document incl. cover/TOC/signatures/exhibits)`);
+  console.log(`  excluded chars       ${String(fmtNum(metrics.excludedChars)).padStart(8)}   (${(metrics.excludedRegions || []).map((r) => r.label).join(', ') || 'none'})`);
   console.log(`  IOC (T/B)            ${String(metrics.counts.ioc).padStart(8)}`);
   console.log(`  NOSOL                 ${String(metrics.counts.nosol).padStart(8)}`);
   console.log(`  TERMR (all)          ${String(metrics.counts.termr).padStart(8)}`);
@@ -275,6 +277,9 @@ async function qaOneDeal(sb, deal, gateOverrides) {
   const metrics = {
     counts,
     coveragePct: coverage.pct,
+    rawCoveragePct: coverage.rawPct,
+    excludedChars: coverage.excludedChars,
+    excludedRegions: coverage.excludedRegions,
     unverified: verification.unverified,
     duplicates,
     canonicalRate,

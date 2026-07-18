@@ -2,6 +2,8 @@ import React from 'react';
 import {
   buildPerShareParts,
   deriveHeadlineConsiderationType,
+  electionAttributionLabel,
+  findElectionMechanism,
   headlineConsiderationLabel,
   numericDollarOnly,
 } from '../table-logic.js';
@@ -87,10 +89,12 @@ function hasConsiderationSignal(card) {
   if (['considerationType', 'perShareAmount', 'cashAmount', 'exchangeRatio', 'offerConsideration', 'offerPrice'].some((key) => valueText(features[key]))) return true;
   return /\bconsideration|per share|exchange ratio|CVR|offer price/i.test(`${card?.short_title || ''} ${textOf(card)}`);
 }
-function makeRow(id, label, kind, value, card) {
+function makeRow(id, label, kind, value, card, electionOption) {
   const detail = valueText(value);
   if (!detail) return null;
-  return { id: `consideration-hero-${id}`, label, kind, detail, evidence: textOf(card), present: true };
+  const row = { id: `consideration-hero-${id}`, label, kind, detail, evidence: textOf(card), present: true };
+  if (electionOption) row.electionOption = electionOption;
+  return row;
 }
 // Shared with the rollup: CVR max is normally read off a dedicated
 // CONSID-CVR card, but several deals (Metsera included) fold the CVR max
@@ -117,11 +121,31 @@ function ensureDollarPrefix(text) {
   if (/^-?\d+(\.\d+)?$/.test(trimmed)) return `$${Number(trimmed).toFixed(2)}`;
   return `$${trimmed}`;
 }
+// A genuine per-share price/formula is short -- "$47.50", "20.200 Parent
+// Shares", "$0.50 plus contingent consideration per Exhibit A". Ben
+// (Bioverativ, round 2): one deal's "offerPrice" feature was corrupted --
+// it held the tender-offer COMMENCEMENT clause ("...as promptly as
+// practicable but in no event later than fifteen (15) Business Days after
+// the date of this Agreement, Merger Sub shall..."), which starts with a
+// bare "01" digit and (via ensureDollarPrefix) rendered as "$01, as
+// promptly as practicable..." -- a paragraph masquerading as a price. Only
+// treat offerPrice as a per-share proxy when it's actually price-shaped.
+function looksLikePriceValue(text) {
+  const trimmed = String(text || '').trim();
+  if (!trimmed || trimmed.length > 40) return false;
+  return /^\$?[\d,]+(\.\d+)?/.test(trimmed);
+}
 function perShareParts(features, cards) {
-  const perShare = ensureDollarPrefix(valueText(features.perShareAmount) || valueText(features.cashAmount) || valueText(features.offerPrice));
-  const joined = `${valueText(features.considerationType) || ''} ${cards.map(textOf).join(' ')}`;
-  const hasCvr = /\bCVR\b|contingent value right/i.test(joined) || cards.some((card) => cardCode(card) === 'CONSID-CVR');
-  const hasCash = Boolean(perShare) || /\bcash\b|\$\s?\d/i.test(joined);
+  const offerPriceText = valueText(features.offerPrice);
+  const perShare = ensureDollarPrefix(
+    valueText(features.perShareAmount)
+    || valueText(features.cashAmount)
+    || (looksLikePriceValue(offerPriceText) ? offerPriceText : null),
+  );
+  const cvrCards = cvrCandidateCards(cards);
+  const joined = `${valueText(features.considerationType) || ''} ${cvrCards.map(textOf).join(' ')}`;
+  const hasCvr = /\bCVR\b|contingent value right/i.test(joined) || cvrCards.some((card) => cardCode(card) === 'CONSID-CVR');
+  const hasCash = Boolean(perShare) || /\bcash\b|\$\s?\d/i.test(joined) || /all-cash|all cash/i.test(valueText(features.considerationType) || '');
   const cvrMax = resolveCvrMax(cards).text;
   return buildPerShareParts({ perShareText: perShare, hasCvr, hasCash, cvrMaxText: cvrMax });
 }
@@ -154,8 +178,20 @@ function meaningfulCvrMilestones(value) {
   });
 }
 
+// Ben (Bioverativ, round 2): hasCvrSignal used to scan EVERY card
+// hasConsiderationSignal pulled in -- including reps/definitions matched by
+// its own loose fallback regex -- for the bare substring "CVR". A
+// capitalization rep's boilerplate ("no stock appreciation rights,
+// contingent value rights, phantom stock...") false-positived a plain
+// all-cash deal into "Cash + CVR" on the masthead. Only cards that could
+// genuinely describe the deal's OWN consideration structure (CONSID_CODES)
+// get to vote on whether a CVR exists.
+function cvrCandidateCards(cards) {
+  return cards.filter((card) => CONSID_CODES.includes(cardCode(card)));
+}
 function hasCvrSignal(cards) {
-  return cards.some((card) => cardCode(card) === 'CONSID-CVR' || /\bCVR\b|contingent value right/i.test(`${valueText(cardFeatures(card).considerationType) || ''} ${textOf(card)}`));
+  const candidates = cvrCandidateCards(cards);
+  return candidates.some((card) => cardCode(card) === 'CONSID-CVR' || /\bCVR\b|contingent value right/i.test(`${valueText(cardFeatures(card).considerationType) || ''} ${textOf(card)}`));
 }
 function headlineLabel(headlineType, cards, featuresList) {
   if (hasCvrSignal(cards)) {
@@ -275,13 +311,41 @@ function renderLinkDetail(row, ctx) {
   return React.createElement(EvidenceHoverSource, { evidence: row.evidence, source: row.sourceCard, as: 'span' }, linkNode);
 }
 
+// ELECTION-REDO-SPEC-2026-07-16 step 4: "tag the existing Consideration table
+// rows with their option (→ Cash Election pill) using the appliesTo
+// attribution." Renders as a small trailing badge next to whatever the row
+// already shows -- never replaces the row's own detail, just attributes it.
+function renderElectionAttributionBadge(row, ctx) {
+  if (!row.electionOption) return null;
+  const PillCell = ctx?.primitives?.PillCell;
+  const label = `→ ${row.electionOption}`;
+  if (!PillCell) {
+    return React.createElement('span', { className: 'ml-1.5 text-[10px] font-ui text-sky-700' }, label);
+  }
+  return React.createElement(PillCell, { label, tone: 'info', evidence: row.evidence });
+}
+
 function renderDetail(row, ctx) {
-  if (row.isLink) return renderLinkDetail(row, ctx);
-  if (row.id === PER_SHARE_ROW_ID && Array.isArray(row.parts)) return renderPerShareDetail(row, ctx);
-  if (PILL_DETAIL_IDS.has(row.id)) return renderPillDetail(row, ctx);
-  const TruncatedWithSeeText = ctx?.primitives?.TruncatedWithSeeText;
-  if (!TruncatedWithSeeText) return row.detail;
-  return React.createElement(TruncatedWithSeeText, { text: row.detail, evidence: row.evidence });
+let base;
+  if (row.isLink) base = renderLinkDetail(row, ctx);
+  else if (row.id === PER_SHARE_ROW_ID && Array.isArray(row.parts)) base = renderPerShareDetail(row, ctx);
+  else if (PILL_DETAIL_IDS.has(row.id)) base = renderPillDetail(row, ctx);
+  else {
+    // Ben (Bioverativ): this header table can carry very long prose values —
+    // clamp to ~3 lines with the standard "see provision" expander.
+    const ClampedWithSeeText = ctx?.primitives?.ClampedWithSeeText;
+    base = ClampedWithSeeText
+      ? React.createElement(ClampedWithSeeText, { text: row.detail, evidence: row.evidence, source: row.sourceCard })
+      : row.detail;
+  }
+  const badge = renderElectionAttributionBadge(row, ctx);
+  if (!badge) return base;
+  return React.createElement(
+    'span',
+    { className: 'inline-flex flex-wrap items-center gap-1.5' },
+    base,
+    badge,
+  );
 }
 
 const considerationHeroConfig = {
@@ -299,10 +363,18 @@ const considerationHeroConfig = {
     const rows = [];
     if (headline) rows.push(makeRow('headline', 'Consideration type', 'Summary', headline, cards[0]));
 
-    const parts = perShareParts(featuresList.reduce((acc, features) => ({ ...acc, ...features }), {}), cards);
+    // ELECTION-REDO-SPEC-2026-07-16 step 4: the deal's election mechanism
+    // (if any true election exists), used to tag the rows below with
+    // "→ Cash Election" / "→ Stock Election" pills via appliesTo
+    // attribution -- the un-attributed-rows bug this redo kills.
+    const electionMechanism = findElectionMechanism(allCards);
+    const mergedFeatures = featuresList.reduce((acc, features) => ({ ...acc, ...features }), {});
+
+    const parts = perShareParts(mergedFeatures, cards);
     const perShareText = parts.map((part) => part.text).join(' ');
     if (perShareText) {
-      const row = makeRow('per-share', 'Per-share consideration', 'Economics', perShareText, cards[0]);
+      const perShareRawValue = mergedFeatures.perShareAmount ?? mergedFeatures.cashAmount ?? mergedFeatures.offerPrice;
+      const row = makeRow('per-share', 'Per-share consideration', 'Economics', perShareText, cards[0], electionAttributionLabel(electionMechanism, 'perShareAmount', perShareRawValue));
       if (row) {
         row.parts = parts;
         // Max consideration (cash + CVR max) renders on the right of THIS
@@ -324,7 +396,11 @@ const considerationHeroConfig = {
         if (items.length) rows.push(makeRow(key, label, kind, items, hit.card));
         continue;
       }
-      rows.push(makeRow(key, label, kind, hit.value, hit.card));
+// Ben (Bioverativ, round 2): 'offerPrice' occasionally arrives corrupted —
+      // a whole unrelated clause instead of a price. A genuine price never
+      // runs to multiple sentences; a >200-char value here is prose, so drop.
+      if (key === 'offerPrice' && String(valueText(hit.value) || '').length > 200) continue;
+      rows.push(makeRow(key, label, kind, hit.value, hit.card, electionAttributionLabel(electionMechanism, key, hit.value)));
     }
     const cvrCard = cards.find((card) => cardCode(card) === 'CONSID-CVR');
     if (cvrCard) {

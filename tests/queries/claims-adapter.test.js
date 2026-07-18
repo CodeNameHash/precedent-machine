@@ -170,3 +170,50 @@ test('claimOrder sorts by created_at then id as a stable tiebreak', () => {
   const c = claim({ id: 'c', created_at: '2026-07-08T00:00:00.000Z' });
   assert.deepEqual([a, b, c].sort(claimOrder).map((x) => x.id), ['b', 'c', 'a']);
 });
+
+// Regression (QXO/TopBuild Employee Benefits): store-claims' tagged branch
+// flattens a rich structured object (a compensationItems entry has 'text'
+// PLUS item/item_label/standard_code/standard_label) into a text-only
+// verbatim with canonical=null — the structure survives only in
+// provenance.feature_value. The adapter must rebuild the entry from there,
+// not degrade it to a raw clause blob with every structured column empty.
+test('rich structured object flattened to text verbatim is rebuilt from provenance.feature_value', () => {
+  const featureValue = {
+    item: 'BASE_SALARY',
+    text: '(i) a base salary or regular hourly wage rate, as applicable, that is not less than…',
+    item_label: 'Base salary',
+    standard_code: 'NO_LESS_FAVORABLE',
+    standard_label: 'No less favorable than current',
+  };
+  const features = buildFeaturesForCard([
+    claim({
+      attribute: 'compensationItems',
+      canonical: null,
+      verbatim: featureValue.text,
+      provenance: { feature_key: 'compensationItems', feature_value: featureValue },
+    }),
+  ]);
+  const items = features.compensationItems;
+  const entry = Array.isArray(items) ? items[0] : items;
+  assert.equal(entry.item, 'BASE_SALARY');
+  assert.equal(entry.item_label, 'Base salary');
+  assert.equal(entry.standard_code, 'NO_LESS_FAVORABLE');
+  assert.equal(entry.standard_label, 'No less favorable than current');
+});
+
+test('pure tagged provenance feature_value (keys ⊆ code/label/text/quotes) keeps the tagged path', () => {
+  const features = buildFeaturesForCard([
+    claim({
+      attribute: 'mergerForm',
+      canonical: 'REVERSE_TRIANGULAR_MERGER',
+      verbatim: 'Reverse triangular merger',
+      provenance: {
+        feature_key: 'mergerForm',
+        feature_value: { code: 'REVERSE_TRIANGULAR_MERGER', label: 'Reverse triangular merger', text: 'Merger Sub shall merge with and into the Company' },
+      },
+    }),
+  ]);
+  const value = features.mergerForm;
+  assert.equal(value.code, 'REVERSE_TRIANGULAR_MERGER');
+  assert.equal(value.label, 'Reverse triangular merger');
+});

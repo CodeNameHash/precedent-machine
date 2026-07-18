@@ -89,7 +89,7 @@ test('ANTI prompt contains digest markers, HSR split, and both CRITICAL warnings
 });
 
 test('UI source wires the custom ANTI grouped table renderer and removes terminated-party breach carveout row', () => {
-  const reviewSrc = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
+  const reviewSrc = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review-v1', '[id].js'), 'utf8');
   const summarySrc = fs.readFileSync(path.join(__dirname, '..', 'lib', 'category-summary-features.js'), 'utf8');
   const tableLogicSrc = fs.readFileSync(path.join(__dirname, '..', 'components', 'review', 'table-logic.js'), 'utf8');
   assert.match(reviewSrc, /function AntitrustSummaryTable/);

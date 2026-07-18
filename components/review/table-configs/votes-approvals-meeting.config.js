@@ -164,6 +164,19 @@ function parentApprovalText(card) {
   const mechanismText = PARENT_ADOPTION_MECHANISM_TEXT[mechanismCode] || null;
   const timing = valueText(features.parentAdoptionTiming);
   if (mechanismText) return timing ? `${mechanismText} (${timing})` : mechanismText;
+  // Ben (Mergertrace round 1): no structured mechanism claim on the card
+  // (Metsera) left this row dumping raw clause prose while every sibling
+  // renders a pill. Derive the standard sole-stockholder-adoption mechanism
+  // deterministically from the clause's own unambiguous wording; anything
+  // that doesn't match stays on the see-text fallback rather than guessing.
+  const clause = textOf(card);
+  if (/as\s+(?:the\s+)?sole\s+stockholder\s+of\s+(?:the\s+)?merger\s+sub/i.test(clause)
+    && /\b(?:adopt|approv)/i.test(clause)) {
+    const immediate = /immediately\s+(?:following|after)\s+(?:the\s+)?execution/i.test(clause);
+    return immediate
+      ? 'Parent adopts as sole stockholder of Merger Sub (immediately after signing)'
+      : 'Parent adopts as sole stockholder of Merger Sub';
+  }
   return null;
 }
 
@@ -252,16 +265,20 @@ function buildRows(reviewDeal) {
     });
   }
   if (voteThresholdRow) {
-    // DATA GAP (flagged in the work-package report, not fixed here): the
-    // voteThreshold claim on this deal is mis-routed -- its verbatim is the
-    // vote-FAILURE termination condition, not a threshold description. It
-    // never resolves to a vote-standard match, so this row falls back to
-    // the (correct) standard already synthesized on the approval-definition
-    // row rather than showing a "see text" link to unrelated prose.
-    rows.push({
-      id: 'votes-approvals-meeting-vote-threshold', label: 'Vote threshold', kind: 'vote-standard',
-      text: voteThresholdRow.detail, fallbackText: approvalDefRow?.detail, evidence: voteThresholdRow.evidence, source: voteThresholdRow.source,
-    });
+    // Ben (Mergertrace round 1): "Vote threshold" duplicated the standard
+    // already shown on the Company-stockholder-approval row whenever the
+    // threshold claim resolves to the SAME vote standard (or resolves to
+    // nothing and falls back to the approval row's text — Metsera). Only a
+    // threshold that GENUINELY differs earns its own row, labelled with the
+    // party so it reads unambiguously as the Company's vote.
+    const thresholdStd = voteStandard(voteThresholdRow.detail);
+    const approvalStd = voteStandard(approvalDefRow?.detail);
+    if (thresholdStd && thresholdStd !== approvalStd) {
+      rows.push({
+        id: 'votes-approvals-meeting-vote-threshold', label: 'Company vote threshold', kind: 'vote-standard',
+        text: voteThresholdRow.detail, evidence: voteThresholdRow.evidence, source: voteThresholdRow.source,
+      });
+    }
   }
   if (parentApprovalCard) {
     rows.push({

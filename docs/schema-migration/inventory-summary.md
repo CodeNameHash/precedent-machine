@@ -1,6 +1,6 @@
 # WP-SCHEMA P1 Inventory Summary
 
-Generated: 2026-07-16T09:37:27.371Z
+Generated: 2026-07-18T18:41:20.695Z
 
 ## Counts
 
@@ -11,7 +11,7 @@ Generated: 2026-07-16T09:37:27.371Z
 - Schema shape mismatches: 33
 - Provision types in rubric: 22
 - Canonical codes in rubric: 276
-- Taxonomy families exported: 55
+- Taxonomy families exported: 58
 - Curated expected-set codes: 38
 
 ## Naming Distribution
@@ -30,7 +30,7 @@ Generated: 2026-07-16T09:37:27.371Z
 | expected_sets_js |195 |
 | feature_validation_js |483 |
 | rubric_js |471 |
-| taxonomy_js |56 |
+| taxonomy_js |59 |
 | ui |182 |
 
 ## Top 20 Highest-Appearance Keys
@@ -52,9 +52,9 @@ Generated: 2026-07-16T09:37:27.371Z
 | bringDownStandard |19 |category_summary_features_js, expected_sets_js, feature_validation_js, rubric_js, taxonomy_js |
 | initialMatchPeriodDays |19 |category_summary_features_js, expected_sets_js, feature_validation_js, rubric_js, ui |
 | boardChangeStandard |18 |category_summary_features_js, expected_sets_js, feature_validation_js, rubric_js, ui |
+| knowledgeQualifier |18 |expected_sets_js, feature_validation_js, rubric_js, taxonomy_js, ui |
 | knowledgeScope |18 |expected_sets_js, feature_validation_js, rubric_js, ui |
 | linkedBringDownStandard |18 |expected_sets_js, feature_validation_js, rubric_js, taxonomy_js |
-| knowledgeQualifier |17 |expected_sets_js, feature_validation_js, rubric_js, ui |
 | materialContractsBuckets |17 |expected_sets_js, feature_validation_js, rubric_js, taxonomy_js, ui |
 | materialityScrape |17 |expected_sets_js, feature_validation_js, rubric_js, taxonomy_js |
 

@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const parser = require('next/dist/compiled/babel/parser');
 
-const REVIEW_PAGE = 'pages/review/[id].js';
+const REVIEW_PAGE = 'pages/review-v1/[id].js';
 const INVENTORY_OUT = 'docs/audit/m2-09-legacy-inventory.md';
 const PRIMITIVES_OUT = 'docs/audit/m2-09-primitives-needed.md';
 

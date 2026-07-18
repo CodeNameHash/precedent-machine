@@ -46,6 +46,21 @@ function valueText(value) {
       const textIsRedundant = text !== null && (text === primary || text === value.code);
       return [primary, textIsRedundant ? null : value.text].filter(Boolean).join(': ');
     }
+    // Election-mechanism objects (prorationMechanics / electionMechanics --
+    // { text, quotes, electionType, electionDeadline,
+    // oversubscriptionTreatment }) carry a genuine human-readable prose
+    // summary in `.text`; electionType/electionDeadline/
+    // oversubscriptionTreatment are per-option METADATA annotations, not a
+    // substitute for it. Ben (Skechers, round 2): the row rendered
+    // "electionType: MIXED_ELECTION; electionDeadline: Election Deadline"
+    // instead of the actual proration language because the generic
+    // field-listing fallback below picked those keys up ahead of `.text`.
+    // Only kicks in when `.text` is actually populated -- a bare
+    // {electionType, oversubscriptionTreatment} with no text still falls
+    // through to the field-listing below, same as before.
+    if (value.text && ('electionType' in value || 'electionDeadline' in value || 'oversubscriptionTreatment' in value)) {
+      return String(value.text).trim() || null;
+    }
     // No code/label -- either a plain feature object, or a JSON-parsed
     // structured-object attribute (e.g. interestOnLatePayment { rate, base },
     // materialContractsDollarThresholds { bucket, threshold }). Render the

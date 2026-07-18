@@ -97,7 +97,7 @@ export function DocPopUnder({ open, dealId, provision, quote, sourceText, docTit
           <div className="flex items-center gap-2 shrink-0">
             {provision && dealId && (
               <Link
-                href={`/review/${dealId}/provision/${provision.id}${isEdit ? '?mode=edit' : ''}`}
+                href={`/review-v1/${dealId}/provision/${provision.id}${isEdit ? '?mode=edit' : ''}`}
                 className="px-2.5 py-1 text-[11px] font-ui border border-border rounded hover:bg-bg transition-colors"
               >
                 Open provision card

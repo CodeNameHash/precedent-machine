@@ -59,6 +59,47 @@ test('headline consideration labels humanize mixed and election values', () => {
   );
 });
 
+test('ELECTION-REDO-SPEC-2026-07-16: findElectionMechanism scans cards for the first true (2+ option) election mechanism', () => {
+  assert.equal(logic.findElectionMechanism([]), null);
+  assert.equal(logic.findElectionMechanism([{ id: 'no-election' }]), null);
+  // A carrier with only one option is not a true election (matches the
+  // enforceElectionInvariants "at least two options" rule) -- must be
+  // skipped, not returned.
+  assert.equal(
+    logic.findElectionMechanism([{
+      consideration_equity: { election_mechanism: { options: [{ option_type: 'CASH_ELECTION' }] } },
+    }]),
+    null,
+  );
+  const mechanism = { election_type: 'CASH_OR_STOCK', options: [{ option_type: 'CASH_ELECTION' }, { option_type: 'STOCK_ELECTION' }] };
+  assert.equal(
+    logic.findElectionMechanism([{ id: 'other' }, { consideration_equity: { election_mechanism: mechanism } }]),
+    mechanism,
+  );
+  // camelCase (features.considerationEquity.electionMechanism) shape from
+  // the extraction pipeline resolves the same way as the snake_case API
+  // shape.
+  assert.equal(
+    logic.findElectionMechanism([{ features: { considerationEquity: { electionMechanism: mechanism } } }]),
+    mechanism,
+  );
+});
+
+test('ELECTION-REDO-SPEC-2026-07-16: electionAttributionLabel ties a headline feature value to the option it belongs to', () => {
+  const mechanism = {
+    options: [
+      { option_type: 'CASH_ELECTION', option_label: 'Cash Election', cash_per_share: 505 },
+      { option_type: 'STOCK_ELECTION', option_label: 'Stock Election', stock_per_share: 20.2 },
+    ],
+  };
+  assert.equal(logic.electionAttributionLabel(mechanism, 'perShareAmount', '$505.00'), 'Cash Election');
+  assert.equal(logic.electionAttributionLabel(mechanism, 'exchangeRatio', 20.2), 'Stock Election');
+  // Unmatched values and unrelated feature keys never guess.
+  assert.equal(logic.electionAttributionLabel(mechanism, 'perShareAmount', '$999.00'), null);
+  assert.equal(logic.electionAttributionLabel(mechanism, 'appraisalRightsAvailable', true), null);
+  assert.equal(logic.electionAttributionLabel(null, 'perShareAmount', '$505.00'), null);
+});
+
 test('CONSID schema includes stock-deal feature keys', () => {
   const keys = new Set(getFeaturesForType('CONSID').map((f) => f.key));
   for (const key of [
@@ -122,7 +163,7 @@ test('TERMF dollar formatter strips words and preserves numeric dollars', () => 
 });
 
 test('IOC-B and IOC-T legacy table wiring is retired behind schema cards', () => {
-  const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
+  const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review-v1', '[id].js'), 'utf8');
   assert.match(src, /<ProvisionCardTable reviewDeal=\{reviewDealForTables/, 'schema card table remains the user render path');
   assert.doesNotMatch(src, /iocProvisions=\{allFilteredIocProvisions\}/);
   assert.doesNotMatch(src, /side=\{iocSide\}/);

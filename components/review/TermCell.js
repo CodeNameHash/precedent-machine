@@ -43,7 +43,7 @@ export function TermCell({ provision, quote, children, className = '', seeText =
     return <Tag className={className}>{children}</Tag>;
   }
 
-  const href = `/review/${dealId}/provision/${provision.id}${isEdit ? '?mode=edit' : ''}`;
+  const href = `/review-v1/${dealId}/provision/${provision.id}${isEdit ? '?mode=edit' : ''}`;
   const hasText = !!(quote && String(quote).trim()) || !!(provision.full_text && provision.full_text.trim());
   const showSeeText = seeText && hasText && typeof openSeeText === 'function';
   const seeTextQuote = quote || provision.full_text;

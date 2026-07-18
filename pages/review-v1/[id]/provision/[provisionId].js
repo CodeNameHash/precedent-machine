@@ -74,7 +74,7 @@ function PartCard({ part, dealId, isEdit, onSeeText, showHeader }) {
             <span className={`rec-fav-pill ${fav.cls}`}>{fav.label}</span>
             {isEdit && (
               <Link
-                href={`/review/${dealId}?mode=edit&edit=${part.id}`}
+                href={`/review-v1/${dealId}?mode=edit&edit=${part.id}`}
                 className="ml-auto text-[11px] font-ui text-accent hover:underline"
               >
                 Edit &rarr;
@@ -168,7 +168,7 @@ export default function ProvisionCardPage() {
           description="This provision may have been deleted, or the link is out of date."
           action={
             <Link
-              href={dealId ? `/review/${dealId}` : '/deals'}
+              href={dealId ? `/review-v1/${dealId}` : '/deals'}
               className="inline-block px-4 py-2 text-sm font-ui bg-accent text-white rounded hover:bg-accent/90 transition-colors"
             >
               &larr; Back to review
@@ -189,7 +189,7 @@ export default function ProvisionCardPage() {
         items={[
           { label: 'Dashboard', href: '/' },
           { label: 'Deals', href: '/deals' },
-          { label: dealLabel, href: `/review/${dealId}` },
+          { label: dealLabel, href: `/review-v1/${dealId}` },
           { label: typeLabel(target.type) },
         ]}
       />
@@ -209,7 +209,7 @@ export default function ProvisionCardPage() {
           </p>
         </div>
         <Link
-          href={`/review/${dealId}${isEdit ? '?mode=edit' : ''}`}
+          href={`/review-v1/${dealId}${isEdit ? '?mode=edit' : ''}`}
           className="shrink-0 px-3 py-1.5 text-xs font-ui border border-border rounded hover:bg-bg transition-colors"
         >
           &larr; Back to review

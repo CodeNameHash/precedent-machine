@@ -13,6 +13,14 @@
      node scripts/ingest-local.js --url <EX-2.1 url> [--backend claude|codex] [--model sonnet]
      node scripts/ingest-local.js --manifest <path.json> [--backend claude]   # batch
 
+   Checkpointing: each LLM-heavy stage (classify, extraction strategies,
+   inline defs) writes its raw output to .ingest-checkpoints/<dealId>/ as it
+   completes. If a run fails AFTER extraction (post-processing, invariants,
+   store), rerun the same command with --resume to reload the completed
+   stages instead of re-paying the LLM cost. Checkpoints are keyed to a hash
+   of the agreement text and cleared automatically on success; reuse is
+   opt-in because a checkpoint can't know whether the CODE changed under it.
+
    Credentials from env / .env.local only.
    ───────────────────────────────────────────────────────────────────────── */
 
@@ -28,6 +36,7 @@ const { extractProvisions } = require('../lib/parser-v2/extract');
 const { validateProvisions } = require('../lib/parser-v2/validate');
 const { storeProvisions } = require('../lib/parser-v2/store');
 const { toCompactSections, classifyBreakdown } = require('../lib/parser-v2/snapshot');
+const { createExtractionCheckpoint, inputHashFor } = require('../lib/parser-v2/extraction-checkpoint');
 const { attachRegionIdsToSections, persistParserRegions } = require('../lib/parser-v2/region-store');
 const { extractAdvisors } = require('../lib/parser-v2/advisors');
 const { MERGER_FORMS } = require('../lib/taxonomy');
@@ -96,12 +105,23 @@ function stripHtml(html) {
     .replace(/&nbsp;/gi, ' ').replace(/&amp;/gi, '&').replace(/&lt;/gi, '<').replace(/&gt;/gi, '>')
     .replace(/&quot;/gi, '"').replace(/&#39;/gi, "'").replace(/&rsquo;/gi, "'").replace(/&lsquo;/gi, "'")
     .replace(/&ldquo;/gi, '"').replace(/&rdquo;/gi, '"').replace(/&mdash;/gi, '—').replace(/&ndash;/gi, '–')
+    // Invisible directional/zero-width marks appear as NAMED entities in some
+    // EDGAR exhibits (Summit Materials salts 99 "&lrm;" through its headings
+    // and cross-references). Left undecoded they poison section parsing,
+    // coverage, and quote verification — drop the invisible ones, space the
+    // space-like ones.
+    .replace(/&(?:lrm|rlm|zwnj|zwj|ZeroWidthSpace|NegativeThinSpace);/g, '')
+    .replace(/&(?:ensp|emsp|thinsp|hairsp|numsp|puncsp);/g, ' ')
+    .replace(/&sect;/gi, '§')
     // Decode remaining numeric entities to their actual characters. SEC filings
     // encode the curly quotes that DELIMIT every defined term as &#8220;/&#8221;
     // (and singles as &#8216;/&#8217;); deleting them made inline/parenthetical
     // definitions unfindable. Decode hex and decimal forms instead of dropping.
     .replace(/&#x([0-9a-fA-F]+);/g, (_, h) => fromCp(parseInt(h, 16)))
     .replace(/&#(\d+);/g, (_, n) => fromCp(parseInt(n, 10)))
+    // The numeric decode above can EMIT invisible marks (&#8206; -> U+200E);
+    // strip the raw characters too so neither form survives.
+    .replace(/[\u200B-\u200F\u2060\uFEFF]/g, '')
     .replace(/\t+/g, ' ').replace(/ +/g, ' ').replace(/\n{3,}/g, '\n\n')
     .trim();
 }
@@ -168,17 +188,36 @@ Return ONLY the JSON object, no prose, no markdown fence.`;
 }
 
 // ── the parser pipeline (mirrors runParserPipeline in from-url.js) ─────────
-async function runParserPipeline(client, fullText, dealId, title, sb, dealMeta = {}) {
+async function runParserPipeline(client, fullText, dealId, title, sb, dealMeta = {}, pipelineOpts = {}) {
   const cleaned = cleanText(fullText);
   const { sections, articles, regions } = parseStructure(cleaned);
   if (sections.length === 0) throw new Error('Parser found no sections in the agreement text');
-  const classifiedSections = await classifySections(sections, articles, client);
+
+  // Stage checkpointing: the LLM-heavy stages (classify + the extraction
+  // strategies) persist their raw output as they complete, so a failure in
+  // deterministic post-processing or store doesn't force a full re-extract.
+  // Reuse is opt-in via --resume; the checkpoint is cleared after a
+  // successful store so stale stages can't leak into a later rerun.
+  const checkpoint = pipelineOpts.checkpointDir
+    ? createExtractionCheckpoint({
+      dir: pipelineOpts.checkpointDir,
+      key: dealId,
+      inputHash: inputHashFor(cleaned),
+      resume: Boolean(pipelineOpts.resume),
+    })
+    : null;
+
+  let classifiedSections = checkpoint ? checkpoint.load('classify') : null;
+  if (!classifiedSections) {
+    classifiedSections = await classifySections(sections, articles, client);
+    if (checkpoint) checkpoint.save('classify', classifiedSections);
+  }
   const persistedRegions = await persistParserRegions(sb, dealId, cleaned, regions, sections);
   const sectionsForExtract = attachRegionIdsToSections(
     classifiedSections.map((s) => ({ ...s, provision_type: s.provisionType })),
     persistedRegions.rows,
   );
-  const provisions = await extractProvisions(sectionsForExtract, client, cleaned, dealMeta);
+  const provisions = await extractProvisions(sectionsForExtract, client, cleaned, dealMeta, { checkpoint });
   const validation = validateProvisions(provisions, cleaned, sectionsForExtract);
   const finalProvisions = validation.provisions;
   const displayText = displayCleanText(fullText);
@@ -193,10 +232,11 @@ async function runParserPipeline(client, fullText, dealId, title, sb, dealMeta =
     classified_sections: compactSections,
     classify_breakdown: classifyBreakdown(compactSections),
   });
+  if (checkpoint) checkpoint.clear();
   return { insertedCount: (storeResult && storeResult.insertedCount) || 0, advisors };
 }
 
-async function ingestOne(sb, client, url, existingDealId = null) {
+async function ingestOne(sb, client, url, existingDealId = null, pipelineOpts = {}) {
   const t0 = Date.now();
   const html = await fetchUrl(url);
   const fullText = stripHtml(html);
@@ -226,7 +266,7 @@ async function ingestOne(sb, client, url, existingDealId = null) {
     };
     await sb.from('deals').update(updateRow).eq('id', existingDealId);
     const title = `${existing.acquirer} / ${existing.target}`;
-    const parseResult = await runParserPipeline(client, fullText, existingDealId, title, sb, { signingDate: meta.signing_date });
+    const parseResult = await runParserPipeline(client, fullText, existingDealId, title, sb, { signingDate: meta.signing_date }, pipelineOpts);
     // Stamp reingested_at only AFTER storeProvisions succeeded. Stamping it
     // up front (old behaviour) made an aborted re-ingest indistinguishable
     // from a successful one: the deal carried a fresh reingested_at while the
@@ -258,7 +298,7 @@ async function ingestOne(sb, client, url, existingDealId = null) {
   if (insErr) throw new Error(`Deal insert failed: ${insErr.message}`);
 
   const title = `${meta.acquirer} / ${meta.target}`;
-  const parseResult = await runParserPipeline(client, fullText, newDeal.id, title, sb, { signingDate: meta.signing_date });
+  const parseResult = await runParserPipeline(client, fullText, newDeal.id, title, sb, { signingDate: meta.signing_date }, pipelineOpts);
   return { deal_id: newDeal.id, title, sector: meta.sector, inserted: parseResult.insertedCount, timing_ms: Date.now() - t0 };
 }
 
@@ -389,7 +429,15 @@ async function prepareDealForIngest(sb, client, url, options = {}) {
 }
 
 function parseArgs(argv) {
-  const args = { url: null, manifest: null, backend: 'claude', model: 'sonnet', dealId: null };
+  const args = {
+    url: null,
+    manifest: null,
+    backend: 'claude',
+    model: 'sonnet',
+    dealId: null,
+    resume: false,
+    checkpointDir: path.join(__dirname, '..', '.ingest-checkpoints'),
+  };
   for (let i = 2; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--url') args.url = argv[++i];
@@ -397,6 +445,8 @@ function parseArgs(argv) {
     else if (a === '--backend') args.backend = argv[++i];
     else if (a === '--model') args.model = argv[++i];
     else if (a === '--deal-id') args.dealId = argv[++i];
+    else if (a === '--resume') args.resume = true;
+    else if (a === '--checkpoint-dir') args.checkpointDir = argv[++i];
     else { console.error(`Unknown arg: ${a}`); process.exit(1); }
   }
   if (!args.url && !args.manifest) { console.error('Provide --url <ex21-url> or --manifest <path.json>'); process.exit(1); }
@@ -426,7 +476,7 @@ async function main() {
   for (const url of urls) {
     process.stdout.write(`→ ingesting ${url.slice(-60)} … `);
     try {
-      const r = await ingestOne(sb, client, url, args.dealId || null);
+      const r = await ingestOne(sb, client, url, args.dealId || null, { checkpointDir: args.checkpointDir, resume: args.resume });
       console.log(`done in ${Math.round(r.timing_ms / 1000)}s: ${r.title} [${r.sector}] +${r.inserted} provisions (deal ${r.deal_id})`);
     } catch (err) {
       console.log(`FAILED: ${err.message}`);

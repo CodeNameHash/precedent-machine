@@ -1,60 +1,12 @@
 import { getServiceSupabase } from '../../lib/supabase';
+import { diffCorrectionType, logCorrection } from '../../lib/corrections/log';
 
-/**
- * Determine the correction_type from a before/after diff.
- * Exported-ish helper used by both this route and provisions.js.
- */
-export function diffCorrectionType(before, after) {
-  const tracked = ['type', 'category', 'full_text', 'ai_favorability', 'features'];
-  const changed = tracked.filter(k => {
-    const b = before ? before[k] : undefined;
-    const a = after ? after[k] : undefined;
-    // Treat null/undefined/'' as equivalent for comparison purposes
-    const norm = v => (v === null || v === undefined ? '' : v);
-    if (Array.isArray(b) || Array.isArray(a)) {
-      return JSON.stringify(b || []) !== JSON.stringify(a || []);
-    }
-    if (typeof b === 'object' || typeof a === 'object') {
-      return JSON.stringify(b) !== JSON.stringify(a);
-    }
-    return norm(b) !== norm(a);
-  });
-
-  if (changed.length === 0) return null;
-  if (changed.length > 1) return 'multi_change';
-  switch (changed[0]) {
-    case 'type': return 'type_change';
-    case 'category': return 'category_change';
-    case 'full_text': return 'text_change';
-    case 'ai_favorability': return 'favorability_change';
-    case 'features': return 'feature_change';
-    default: return 'multi_change';
-  }
-}
-
-/**
- * Best-effort insert into the corrections table.
- * If the table doesn't exist (or any other error), log to console and
- * return null without throwing — Phase 1 must not break edits.
- */
-export async function logCorrection(sb, payload) {
-  if (!sb) return null;
-  try {
-    const { data, error } = await sb
-      .from('corrections')
-      .insert(payload)
-      .select()
-      .single();
-    if (error) {
-      console.warn('[corrections] insert failed (table may not exist yet):', error.message);
-      return null;
-    }
-    return data;
-  } catch (err) {
-    console.warn('[corrections] insert threw:', err?.message || err);
-    return null;
-  }
-}
+// Re-exported for backward compatibility (pages/api/provisions.js and other
+// existing callers import these two names from this module). The
+// implementations live in lib/corrections/log.js (CommonJS) so they can be
+// required directly from tests and from other CommonJS lib/ modules — see
+// that file's header comment.
+export { diffCorrectionType, logCorrection };
 
 export default async function handler(req, res) {
   const sb = getServiceSupabase();
@@ -93,7 +45,7 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'GET') {
-    const { deal_id, provision_id, correction_type, limit, summary } = req.query;
+    const { deal_id, provision_id, correction_type, status, limit, summary, order } = req.query;
     const lim = Math.min(parseInt(limit, 10) || 100, 1000);
 
     // Summary mode: aggregate stats
@@ -156,7 +108,11 @@ export default async function handler(req, res) {
       if (deal_id) q = q.eq('deal_id', deal_id);
       if (provision_id) q = q.eq('provision_id', provision_id);
       if (correction_type) q = q.eq('correction_type', correction_type);
-      q = q.order('created_at', { ascending: false }).limit(lim);
+      // `status` is a newer column (supabase/corrections-status-schema.sql);
+      // filter by it when the caller asks (the corrections-review page lists
+      // status='pending' oldest-first via ?status=pending&order=asc).
+      if (status) q = q.eq('status', status);
+      q = q.order('created_at', { ascending: order === 'asc' }).limit(lim);
       const { data, error } = await q;
       if (error) {
         console.warn('[corrections] list read failed:', error.message);

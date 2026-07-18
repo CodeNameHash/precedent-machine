@@ -39,7 +39,7 @@ test('legacy JSX audit markdown includes source ranges and primitive consumers',
   const inventory = inventoryMarkdown(components, '2026-07-08T00:00:00.000Z');
   const primitives = primitivesMarkdown(primitiveRows(components), '2026-07-08T00:00:00.000Z');
   assert.match(inventory, /RepMaterialContractsTable/);
-  assert.match(inventory, /Source: `pages\/review\/\[id\]\.js:/);
+  assert.match(inventory, /Source: `pages\/review-v1\/\[id\]\.js:/);
   assert.match(inventory, /Named legacy components not present/);
   assert.match(primitives, /ThresholdCellWithHoverQuote/);
   assert.match(primitives, /EvidenceHoverSource/);

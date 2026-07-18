@@ -503,6 +503,23 @@ function renderMateriality(row, ctx) {
   return React.createElement(PillCell, { label: m.label, tone: 'neutral', color: m.color, evidence: m.evidence, source: row.card });
 }
 
+// Ben (Mergertrace round 1): one QUALIFIERS column per rep row — the
+// materiality pill and the rep's own knowledge-qualifier pill side by side,
+// identical for the Company and Parent tables (shared renderer). Knowledge
+// stops being listed per-rep inside the Knowledge block above; that block
+// keeps only the deal-level Standard / Persons facts.
+function renderQualifiers(row, ctx) {
+  const materiality = renderMateriality(row, ctx);
+  const knowledge = renderKnowledgePill(row, ctx);
+  if (!materiality && !knowledge) return null;
+  return React.createElement(
+    'div',
+    { className: 'flex flex-wrap items-start gap-1' },
+    materiality,
+    knowledge,
+  );
+}
+
 function renderLookback(row, ctx) {
   const l = row.lookback;
   if (!l) return null;
@@ -635,18 +652,16 @@ function knowledgeTableNode(knowledgeSummaryRow, repRows, ctx) {
     // Persons carry it; the full scope sentence stays as the pill hover
     // evidence rather than its own row.
   }
-  for (const row of repRows || []) {
-    if (!row.knowledge) continue;
-    const label = row.party ? `${row.label} (${row.party})` : row.label;
-    items.push({ key: row.id, term: label, node: renderKnowledgePill(row, ctx) });
-  }
+  // Per-rep knowledge qualifiers moved into the main table's QUALIFIERS
+  // column (Ben, Mergertrace round 1) — this block keeps only the
+  // deal-level Standard / Persons facts about the defined term.
   if (!items.length) return null;
   return sectionBox('knowledge', 'Knowledge', items);
 }
 
 const REP_TABLE_COLUMNS = [
   { id: 'term', header: 'Term', width: '18rem' },
-  { id: 'materiality', header: 'Materiality Qualifier', width: '14rem' },
+  { id: 'materiality', header: 'Qualifiers', width: '16rem' },
   { id: 'lookback', header: 'Lookback' },
 ];
 
@@ -681,7 +696,7 @@ function repsTableNode(repRows, ctx) {
         'tr',
         { key: row.id, className: 'align-top hover:bg-bg/40' },
         React.createElement('td', { className: 'px-3 py-2 whitespace-normal break-words text-ink' }, renderTerm(row, ctx)),
-        React.createElement('td', { className: 'px-3 py-2 whitespace-pre-wrap break-words text-ink' }, renderMateriality(row, ctx)),
+        React.createElement('td', { className: 'px-3 py-2 whitespace-pre-wrap break-words text-ink' }, renderQualifiers(row, ctx)),
         React.createElement('td', { className: 'px-3 py-2 whitespace-pre-wrap break-words text-ink' }, renderLookback(row, ctx)),
       )),
     ),
@@ -716,7 +731,7 @@ function renderBody(rows, ctx) {
 // party configs -- the renderCell functions read from the row, not the party.
 const REP_COLUMNS = [
   { id: 'term', header: 'Term', width: '16rem', renderCell: renderTerm },
-  { id: 'materiality', header: 'Materiality Qualifier', width: '13rem', renderCell: renderMateriality },
+  { id: 'materiality', header: 'Qualifiers', width: '15rem', renderCell: renderQualifiers },
   { id: 'lookback', header: 'Lookback', renderCell: renderLookback },
 ];
 
