@@ -18,16 +18,30 @@ const {
   parseArgs,
 } = require('../scripts/backfill-deal-display');
 
-test('spec tables carry the exact counts the handoff doc pins', () => {
-  // 4 confident buyer-display fixes + Superior (VERIFY) + United Homes (ultimateParent-only, non-verify)
-  assert.equal(BUYER_DISPLAY_ROWS.filter((r) => !r.verify && !r.ultimateParentOnly).length, 4);
-  assert.equal(BUYER_DISPLAY_ROWS.filter((r) => r.verify).length, 1);
-  assert.equal(BUYER_DISPLAY_ROWS.find((r) => r.idPrefix === '667447f0').verify, true);
+test('spec tables carry the exact counts after the Ben review round (PR-sourced, no VERIFY rows remain)', () => {
+  // 6 confident buyer-display rows (Envestnet, Endeavor, HireRight, EWC,
+  // Superior, Sekisui/MDC) + United Homes (ultimateParent-only) — 0 VERIFY.
+  assert.equal(BUYER_DISPLAY_ROWS.filter((r) => !r.verify && !r.ultimateParentOnly).length, 6);
+  assert.equal(BUYER_DISPLAY_ROWS.filter((r) => r.verify).length, 0);
+  assert.equal(BUYER_DISPLAY_ROWS.find((r) => r.idPrefix === '667447f0').verify, false);
+  assert.equal(BUYER_DISPLAY_ROWS.find((r) => r.idPrefix === '667447f0').acquirerDisplay, 'Oaktree-led lender group');
+  // MDC's acquirer_display was ALREADY correct in the live corpus — this row
+  // only backfills the missing top-level ultimateParent key (see live dry run).
+  assert.equal(BUYER_DISPLAY_ROWS.find((r) => r.idPrefix === '1e4b7102').acquirerDisplay, 'Sekisui House');
 
-  // 6 confident value rows + 7 VERIFY rows = 13 total (spec's null-value-row count)
+  // All 13 value rows resolved via PR — 0 VERIFY remain.
   assert.equal(VALUE_ROWS.length, 13);
-  assert.equal(VALUE_ROWS.filter((r) => !r.verify).length, 6);
-  assert.equal(VALUE_ROWS.filter((r) => r.verify).length, 7);
+  assert.equal(VALUE_ROWS.filter((r) => r.verify).length, 0);
+  assert.equal(VALUE_ROWS.filter((r) => r.provenance.kind === 'press_release').length, 12);
+  assert.equal(VALUE_ROWS.filter((r) => r.provenance.kind === 'no_stated_value').length, 1);
+  const superiorValue = VALUE_ROWS.find((r) => r.idPrefix === '667447f0');
+  assert.equal(superiorValue.valueUsd, null);
+  assert.equal(superiorValue.provenance.kind, 'no_stated_value');
+  // Every resolved row carries a real source_url (SEC EX-99.1) for the provenance.
+  for (const row of VALUE_ROWS) {
+    assert.ok(row.provenance.sourceUrl, `${row.label} missing provenance.sourceUrl`);
+    assert.match(row.provenance.sourceUrl, /^https:\/\/www\.sec\.gov\//);
+  }
 
   // 13 headlineConsiderationType gaps
   assert.equal(TYPE_GAP_DEALS.length, 13);
@@ -36,13 +50,9 @@ test('spec tables carry the exact counts the handoff doc pins', () => {
   assert.equal(FINANCIAL_BUYER_ID_PREFIXES.size, 8);
 });
 
-test('VERIFY rows never carry a value to write, even if inspected directly', () => {
-  for (const row of VALUE_ROWS.filter((r) => r.verify)) {
-    assert.equal(row.valueUsd, undefined);
-  }
-  for (const row of BUYER_DISPLAY_ROWS.filter((r) => r.verify)) {
-    assert.equal(row.acquirerDisplay, null);
-  }
+test('no remaining VERIFY rows in either section after the Ben review round', () => {
+  assert.equal(VALUE_ROWS.filter((r) => r.verify).length, 0);
+  assert.equal(BUYER_DISPLAY_ROWS.filter((r) => r.verify).length, 0);
 });
 
 /* ── considerationType classifier — pinned fixtures matching the live corpus ── */
@@ -137,7 +147,7 @@ function fixtureDeals() {
   ];
 }
 
-test('planBuyerDisplay marks Envestnet as WILL WRITE and Superior as VERIFY (never written)', () => {
+test('planBuyerDisplay marks Envestnet and (post review-round) Superior as WILL WRITE', () => {
   const rows = planBuyerDisplay(fixtureDeals());
   const envestnet = rows.find((r) => r.idPrefix === '1f80bec7');
   assert.equal(envestnet.found, true);
@@ -145,19 +155,33 @@ test('planBuyerDisplay marks Envestnet as WILL WRITE and Superior as VERIFY (nev
   assert.equal(envestnet.acquirerDisplay, 'Bain Capital');
 
   const superior = rows.find((r) => r.idPrefix === '667447f0');
-  assert.equal(superior.verify, true);
-  assert.equal(superior.willWrite, false);
+  assert.equal(superior.verify, false);
+  assert.equal(superior.willWrite, true);
+  assert.equal(superior.acquirerDisplay, 'Oaktree-led lender group');
 });
 
-test('planValue marks the 6 confident rows WILL WRITE and all 7 VERIFY rows never willWrite', () => {
+test('planBuyerDisplay marks an already-correct row (Sekisui House / MDC) as a no-op, not a write', () => {
+  const deals = [
+    { id: '1e4b7102-eeee', acquirer: 'SH Residential Holdings, LLC', target: 'M.D.C. Holdings, Inc.', metadata: { acquirer_display: 'Sekisui House', ultimateParent: 'Sekisui House' } },
+  ];
+  const rows = planBuyerDisplay(deals);
+  const mdc = rows.find((r) => r.idPrefix === '1e4b7102');
+  assert.equal(mdc.willWrite, false);
+  assert.equal(mdc.noOpAlreadyCorrect, true);
+});
+
+test('planValue marks all 13 rows WILL WRITE post review-round, including Superior as a sourced no_stated_value write', () => {
   const rows = planValue(fixtureDeals());
   const envestnetValue = rows.find((r) => r.idPrefix === '1f80bec7');
   assert.equal(envestnetValue.willWrite, true);
   assert.equal(envestnetValue.valueUsd, 4_500_000_000);
 
-  for (const row of rows.filter((r) => r.verify)) {
-    assert.equal(row.willWrite, false);
-  }
+  const superiorValue = rows.find((r) => r.idPrefix === '667447f0');
+  assert.equal(superiorValue.willWrite, true);
+  assert.equal(superiorValue.valueUsd, null);
+  assert.equal(superiorValue.provenance.kind, 'no_stated_value');
+
+  assert.equal(rows.filter((r) => r.found).every((r) => r.willWrite), true);
 });
 
 test('planType derives live from stored CONSID provisions and flags a MISMATCH against the spec cross-check', () => {

@@ -12,6 +12,9 @@ const {
   parseDealMetadataResponse,
   parseSponsorResponse,
   extractDealMetadata,
+  hasTransactionFormationLanguage,
+  hasPreExistingEntityLanguage,
+  shouldPierceShell,
 } = require('../lib/ingest/deal-metadata-prompt');
 
 test('isShellName flags transaction-vehicle naming, not operating companies', () => {
@@ -121,6 +124,51 @@ test('parseSponsorResponse tolerates a code-fenced response and null sponsor', (
   assert.deepEqual(parseSponsorResponse('{"sponsor_name": null}'), { sponsor_name: null });
 });
 
+// ── shell-piercing rule (Ben, 2026-07-18): pierce ONLY deal-formed SPVs ─────
+
+test('hasTransactionFormationLanguage matches the verbatim "formed solely" rep (verified against EWC/Superior agreements)', () => {
+  const ewcRep = 'Each Buyer Party has been formed solely for the purpose of engaging in the Transactions, and, prior to the Effective Time, none of the Buyer Parties will have engaged in any other business activities.';
+  const superiorRep = 'Merger Sub was formed solely for purposes of engaging in the transactions contemplated by this Agreement and has not conducted any business prior to the date of this Agreement.';
+  assert.equal(hasTransactionFormationLanguage(ewcRep), true);
+  assert.equal(hasTransactionFormationLanguage(superiorRep), true);
+  assert.equal(hasTransactionFormationLanguage('An ordinary operating-company merger agreement with no formation rep.'), false);
+});
+
+test('hasPreExistingEntityLanguage recognizes a real/pre-existing operating company', () => {
+  assert.equal(hasPreExistingEntityLanguage('Stanley Martin Homes, LLC is engaged in the business of homebuilding and has operated since 1966.'), true);
+  assert.equal(hasPreExistingEntityLanguage('SH Residential Holdings, LLC, a Delaware limited liability company ("Parent")'), false);
+});
+
+test('shouldPierceShell: never pierces a name that is not shell-shaped', () => {
+  assert.deepEqual(shouldPierceShell('Pfizer Inc.', 'anything'), { pierce: false, reason: 'not-shell-shaped' });
+  assert.deepEqual(shouldPierceShell('Stanley Martin Homes, LLC', 'is engaged in the business of homebuilding'), { pierce: false, reason: 'not-shell-shaped' });
+});
+
+test('shouldPierceShell: never pierces when the text affirmatively describes a pre-existing entity, even if the name is shell-shaped', () => {
+  // A hypothetical pre-existing holdco whose name happens to contain "Holdco".
+  const result = shouldPierceShell('ABC Holdco, LLC', 'ABC Holdco, LLC is engaged in the business of manufacturing and has operated since 1998.');
+  assert.equal(result.pierce, false);
+  assert.equal(result.reason, 'pre-existing-entity-language');
+});
+
+test('shouldPierceShell: pierces with high confidence when the text states the entity was formed for the transaction (EWC/Superior case)', () => {
+  const result = shouldPierceShell('Glow Midco, LLC', 'Each Buyer Party has been formed solely for the purpose of engaging in the Transactions.');
+  assert.equal(result.pierce, true);
+  assert.equal(result.reason, 'transaction-formed-language');
+});
+
+test('shouldPierceShell: falls back to the naming heuristic when neither signal is present (Envestnet/Endeavor case — sponsor SPV naming, unusual formation-rep wording)', () => {
+  const result = shouldPierceShell('BCPE Pequod Buyer, Inc.', 'Notices shall be sent c/o Bain Capital Private Equity. No formation rep present in this excerpt.');
+  assert.equal(result.pierce, true);
+  assert.equal(result.reason, 'shell-name-heuristic (no formation/pre-existing language found in the checked text)');
+});
+
+test('shouldPierceShell: falls back to the naming heuristic when no text is available at all', () => {
+  const result = shouldPierceShell('Hearts Parent, LLC', null);
+  assert.equal(result.pierce, true);
+  assert.equal(result.reason, 'shell-name-heuristic (no formation/pre-existing language found in the checked text)');
+});
+
 // ── extractDealMetadata orchestration (mocked client) ──────────────────────
 
 function makeClient(responses) {
@@ -179,6 +227,22 @@ test('extractDealMetadata leaves strategic deals alone and marks buyer_profile s
   const meta = await extractDealMetadata(client, 'ordinary operating-company merger agreement text', {});
   assert.equal(meta.buyer_profile, 'strategic');
   assert.equal(meta.sponsor_second_pass, undefined);
+});
+
+test('extractDealMetadata never pierces a shell-shaped name that the text confirms is a pre-existing entity, even if the LLM says buyer_is_shell', async () => {
+  const baseResponse = JSON.stringify({
+    acquirer: 'ABC Holdco, LLC',
+    target: 'Target Inc.',
+    buyer_is_shell: true, // model over-eager on the name pattern
+    acquirer_display: null,
+  });
+  const client = makeClient([baseResponse]); // only ONE call — sponsor pass must be skipped
+  const text = `${'x'.repeat(11000)} ABC Holdco, LLC is engaged in the business of manufacturing and has operated since 1998. The Guarantor hereby delivers this limited guarantee.`;
+  const meta = await extractDealMetadata(client, text, {});
+  assert.equal(meta.acquirer_display, null); // never overwritten with a sponsor name
+  assert.equal(meta.shell_piercing_signal, 'pre-existing-entity-language');
+  assert.equal(meta.buyer_profile, 'strategic'); // not financial despite guarantee language + buyer_is_shell
+  assert.equal(client.calls.length, 1);
 });
 
 test('extractDealMetadata derives value_usd via the ladder when no stated value exists', async () => {

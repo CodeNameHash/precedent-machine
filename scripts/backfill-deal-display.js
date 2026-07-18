@@ -4,19 +4,46 @@
    deals-index audit (docs/handoffs/DEALS-INDEX-SPEC-2026-07-18.md), items
    1-data, 4, 5-data.
 
-   Covers, in one script (per-item detail below), the confident rows only —
-   every VERIFY-marked row is printed in the dry-run output but is NEVER
-   written, even with --apply:
+   Ben review round (2026-07-18), applied on top of the original spec:
+     - Shell-piercing rule sharpened: pierce ONLY entities formed for the
+       transaction, never real companies or pre-existing holdcos (encoded
+       generally in lib/ingest/deal-metadata-prompt.js's shouldPierceShell).
+       Re-examined European Wax Center's "Glow Midco, LLC" against the
+       stored agreement text — its own reps state "Each Buyer Party has been
+       formed solely for the purpose of engaging in the Transactions"
+       (Section 4.7) — confirmed deal-formed SPV, plan unchanged (→ General
+       Atlantic). M.D.C. Holdings' buyer_display is ALREADY correctly set
+       to "Sekisui House" in metadata (verified against the agreement's
+       Guarantor recital) — a no-op, not a write, same pattern as Skechers.
+     - Ben authorized press-release sourcing for the 7 VERIFY value rows:
+       all 7 resolved via the deal's own SEC 8-K EX-99.1 exhibit (or web
+       search where the PR wasn't in the same EDGAR accession as the
+       agreement) and promoted to WILL WRITE with value_provenance
+       kind='press_release' + source_url + a verbatim quote. Superior
+       Industries' PR confirms this is a debt-for-equity restructuring with
+       NO stated headline transaction value — promoted to WILL WRITE with
+       value_usd=null, kind='no_stated_value' (a confident, sourced
+       determination, not a lingering VERIFY).
+     - Superior Industries' PR also names the buyer group ("a group of its
+       term loan investors ... including Oaktree Capital Management") —
+       promoted buyer_display from VERIFY to WILL WRITE as "Oaktree-led
+       lender group", per the spec's own suggested naming for this case.
+     - The 6 originally-CONFIDENT value rows were also given real EX-99.1
+       source_url + verbatim quotes in this round (previously note-only).
+
+   Covers, in one script (per-item detail below):
 
      1. buyer_display  — metadata.acquirer_display / metadata.ultimateParent
-        for the 4 confident sponsor-shell rows (Envestnet, Endeavor,
-        HireRight, European Wax Center) + an optional ultimateParent-only
-        note for United Homes Group. Superior Industries is VERIFY (buyer
-        identity not confirmed against an 8-K/proxy) and is listed but never
-        written.
-     2. value_usd + metadata.value_provenance — the 6 CONFIDENT rows from
-        the spec's audit table. The 7 VERIFY rows (post-cutoff deals whose
-        headline value needs an 8-K/PR pull) are listed but never written.
+        for the 6 confident rows (Envestnet, Endeavor, HireRight, European
+        Wax Center, Superior Industries, Sekisui House/M.D.C. — the last of
+        which was ALREADY correct on acquirer_display; this only backfills
+        its missing top-level ultimateParent key) + a United Homes Group
+        ultimateParent-only note (display already correct, real operating
+        company). No buyer_display rows remain VERIFY after this round.
+     2. value_usd + metadata.value_provenance — all 13 rows resolved and
+        WILL WRITE (6 originally confident + 7 resolved this round via PR),
+        each with a source_url + verbatim quote. No value rows remain
+        VERIFY after this round.
      3. metadata.headlineConsiderationType — derived LIVE from each deal's
         own stored CONSID provisions (deterministic — reads the
         `considerationType` feature the extractor already stamped on the
@@ -32,9 +59,7 @@
      4. metadata.buyer_profile ('financial' | 'strategic') for all 40 deals
         — 8 financial (Skechers, Superior, Envestnet, Endeavor, HireRight,
         EWC, Catalent, Forest City) per the spec's enumeration, everything
-        else strategic. Not VERIFY-gated — buyer_profile classification is
-        independent of the buyer_display name-resolution question (Superior
-        is confidently 'financial' even though its display name is VERIFY).
+        else strategic. Not VERIFY-gated.
 
    Usage:
      node scripts/backfill-deal-display.js                  # dry run, all deals
@@ -109,23 +134,32 @@ const BUYER_DISPLAY_ROWS = [
     label: 'General Atlantic / European Wax Center',
     acquirerDisplay: 'General Atlantic',
     ultimateParent: 'General Atlantic',
-    source: 'VERIFIED: Guarantor = General Atlantic Partners 100 L.P.',
+    source: 'RE-VERIFIED against stored agreement text (Ben review round): Section 4.7 "Operations of the Buyer Parties" states "Each Buyer Party has been formed solely for the purpose of engaging in the Transactions" — Glow Midco, LLC is a deal-formed SPV, not a pre-existing holdco (shouldPierceShell -> pierce, reason: transaction-formed-language). Guarantor = General Atlantic Partners 100 L.P.',
     verify: false,
   },
   {
     idPrefix: '667447f0',
     label: 'SUP Parent / Superior Industries',
-    acquirerDisplay: null,
-    ultimateParent: null,
-    source: 'VERIFY from 8-K/proxy before applying. Agreement recites only the existing credit agreement (Oaktree Fund Administration as admin agent) — do not guess a lender-group name from that alone.',
-    verify: true,
+    acquirerDisplay: 'Oaktree-led lender group',
+    ultimateParent: 'Oaktree-led lender group',
+    source: 'RESOLVED via PR (Ben review round): SEC 8-K EX-99.1 (d22359dex991.htm, same accession as the agreement) states "[Superior] has entered into definitive agreements to be acquired by a group of its term loan investors (the “Investors”), including Oaktree Capital Management" — quote from Oaktree Managing Director Robert LaRoche also appears. No single named entity controls the group, so using the spec’s own suggested naming ("Oaktree-led lender group") per the sourced PR rather than the legal shell name.',
+    sourceUrl: 'https://www.sec.gov/Archives/edgar/data/95552/000119312525157138/d22359dex991.htm',
+    verify: false,
+  },
+  {
+    idPrefix: '1e4b7102',
+    label: 'Sekisui House / M.D.C. Holdings',
+    acquirerDisplay: 'Sekisui House',
+    ultimateParent: 'Sekisui House',
+    source: 'Ben review catch, verified this round: metadata.acquirer_display is ALREADY "Sekisui House" (confirmed against the agreement preamble — "...and solely for the purposes of Section 6.2, Section 6.17 and Section 9.15, Sekisui House, Ltd., a Japanese kabushiki kaisha (“Guarantor”)"; deal_facts.parties.parent_entity is already "Sekisui House, Ltd." too), so this was a live-index precedence bug, not a data gap, same pattern as Skechers/3G Capital. metadata.ultimateParent itself is NOT yet set (only acquirer_display and the deal_facts record are) — this row backfills that one missing top-level key for consistency with the other rows; acquirer_display itself is unchanged.',
+    verify: false,
   },
   {
     idPrefix: 'aad132ee',
     label: 'Stanley Martin Homes / United Homes Group',
     acquirerDisplay: null, // no display change — "Stanley Martin Homes" is already correct
     ultimateParent: 'Daiwa House Industry',
-    source: 'Stanley Martin Homes is a real operating company (Daiwa House subsidiary) — display is fine as-is; optional ultimateParent note only.',
+    source: 'Stanley Martin Homes is a real operating company (Daiwa House subsidiary), not shell-shaped (shouldPierceShell -> no pierce, reason: not-shell-shaped) — display is fine as-is; optional ultimateParent note only.',
     verify: false,
     ultimateParentOnly: true,
   },
@@ -133,46 +167,127 @@ const BUYER_DISPLAY_ROWS = [
 
 /* ── Section 2: value_usd + value_provenance (spec item 4) ─────────────── */
 
+// All 13 rows resolved and WILL WRITE as of the Ben review round
+// (2026-07-18) — every provenance carries a real SEC EX-99.1 source_url and
+// a verbatim quote pulled with the SEC-required User-Agent
+// "Corpus bengoodchild@gmail.com". No VERIFY rows remain in this section.
 const VALUE_ROWS = [
   {
     idPrefix: '1dfb11d5', label: 'Apollo Global Management / Bridge Investment Group', verify: false,
     valueUsd: 1_500_000_000,
-    provenance: { kind: 'announced all-stock equity value', note: '$1.5B announced all-stock equity value, Feb 2025 press release — CONFIDENT' },
+    provenance: {
+      kind: 'press_release',
+      note: 'PR: "entered into a definitive agreement for Apollo to acquire Bridge in an all-stock transaction with an equity value of approximately $1.5 billion." (Feb 2025)',
+      sourceUrl: 'https://www.sec.gov/Archives/edgar/data/1854401/000119312525032823/d892124dex991.htm',
+    },
   },
   {
     idPrefix: 'bf31d586', label: 'Sophos / SecureWorks', verify: false,
     valueUsd: 859_000_000,
-    provenance: { kind: 'equity value (stated)', note: '$8.50/sh cash, Oct 2024 PR — CONFIDENT' },
+    provenance: {
+      kind: 'press_release',
+      note: 'PR: "Sophos intends to acquire Secureworks in an all-cash transaction valued at $859 million." $8.50/sh cash. (Oct 2024)',
+      sourceUrl: 'https://www.sec.gov/Archives/edgar/data/1468666/000095014224002604/eh240546999_ex9901.htm',
+    },
   },
   {
     idPrefix: '1f80bec7', label: 'Bain Capital / Envestnet', verify: false,
     valueUsd: 4_500_000_000,
-    provenance: { kind: 'equity value (stated)', note: '$63.15/sh cash, Jul 2024 PR — CONFIDENT' },
+    provenance: {
+      kind: 'press_release',
+      note: 'PR: "entered into a definitive agreement to be acquired by Bain Capital in a transaction valuing the Company at $4.5 billion ($63.15 per share)." (Jul 2024)',
+      sourceUrl: 'https://www.sec.gov/Archives/edgar/data/1337619/000121390024060651/ea020926101ex99-1_envestnet.htm',
+    },
   },
   {
     idPrefix: '13211d88', label: 'General Atlantic & Stone Point / HireRight', verify: false,
     valueUsd: 1_650_000_000,
-    provenance: { kind: 'equity value (stated)', note: '$28.75/sh cash, Feb 2024 PR — CONFIDENT' },
+    provenance: {
+      kind: 'press_release',
+      note: 'PR: "...for $14.35 per share in cash, which implies a total enterprise value of approximately $1.65 billion." (Feb 2024)',
+      sourceUrl: 'https://www.sec.gov/Archives/edgar/data/1859285/000095010324002368/dp206920_ex9901.htm',
+    },
   },
   {
     idPrefix: '1e4b7102', label: 'Sekisui House / M.D.C. Holdings', verify: false,
     valueUsd: 4_900_000_000,
-    provenance: { kind: 'equity value (stated)', note: '$63.00/sh cash, Jan 2024 PR — CONFIDENT' },
+    provenance: {
+      kind: 'press_release',
+      note: 'PR: "...will acquire MDC in an all-cash transaction with an equity value of US$4.9 billion." $63.00/sh cash. (Jan 2024)',
+      sourceUrl: 'https://www.sec.gov/Archives/edgar/data/773141/000095014224000148/eh240439657_ex9901.htm',
+    },
   },
   {
     idPrefix: 'ce061fd0', label: 'Restaurant Brands International / Carrols Restaurant Group', verify: false,
     valueUsd: 1_000_000_000,
-    provenance: { kind: 'approximate equity value (stated)', note: '$9.55/sh cash, Jan 2024 PR (~"approximately $1.0 billion") — CONFIDENT' },
+    provenance: {
+      kind: 'press_release',
+      note: 'PR: "...for $9.55 per share in an all cash transaction, or an aggregate total enterprise value of approximately $1.0 billion." (Jan 2024)',
+      sourceUrl: 'https://www.sec.gov/Archives/edgar/data/809248/000121390024003803/ea191659ex99-1_carrols.htm',
+    },
   },
-  { idPrefix: '0d38cc1f', label: 'Zymeworks / Theravance Biopharma', verify: true, note: 'Jun 2026 deal — pull 8-K/PR (Ex-99.1) at backfill time' },
-  { idPrefix: 'dfaa71fa', label: 'Global Net Lease / Modiv Industrial', verify: true, note: 'May 2026 — 8-K/PR' },
-  { idPrefix: '7dc3a05f', label: 'QXO / TopBuild', verify: true, note: 'Apr 2026 — 8-K/PR' },
-  { idPrefix: 'aad132ee', label: 'Stanley Martin Homes / United Homes Group', verify: true, note: 'Feb 2026 — 8-K/PR' },
-  { idPrefix: '86a01770', label: 'General Atlantic / European Wax Center', verify: true, note: 'Feb 2026 — 8-K/PR' },
-  { idPrefix: '13894e33', label: 'IonQ / SkyWater Technology', verify: true, note: 'Jan 2026 — 8-K/PR' },
   {
-    idPrefix: '667447f0', label: 'SUP Parent / Superior Industries', verify: true,
-    note: 'debt-restructuring take-private; likely no headline value — if the 8-K confirms no stated value, write value_provenance.kind = "no_stated_value" (never a guessed number) and render the per-share/EV note',
+    idPrefix: '0d38cc1f', label: 'Zymeworks / Theravance Biopharma', verify: false,
+    valueUsd: 929_000_000,
+    provenance: {
+      kind: 'press_release',
+      note: 'PR: "...acquire all the outstanding equity of Theravance Biopharma for $17.00 per share, which represents a total transaction value of approximately $929 million in cash consideration..." (Jun 2026)',
+      sourceUrl: 'https://www.sec.gov/Archives/edgar/data/1937653/000119312526286829/d156494dex991.htm',
+    },
+  },
+  {
+    idPrefix: 'dfaa71fa', label: 'Global Net Lease / Modiv Industrial', verify: false,
+    valueUsd: 535_000_000,
+    provenance: {
+      kind: 'press_release',
+      note: 'PR: "GNL will acquire Modiv in an all-stock transaction valued at an enterprise value of approximately $535 million." (May 2026)',
+      sourceUrl: 'https://www.sec.gov/Archives/edgar/data/1645873/000114036126018656/ef20072329_ex99-1.htm',
+    },
+  },
+  {
+    idPrefix: '7dc3a05f', label: 'QXO / TopBuild', verify: false,
+    valueUsd: 17_000_000_000,
+    provenance: {
+      kind: 'press_release',
+      note: 'PR: "QXO... entered into a definitive agreement to acquire TopBuild Corp... for approximately $17 billion." ($505/sh implied). (Apr 2026)',
+      sourceUrl: 'https://www.sec.gov/Archives/edgar/data/1633931/000110465926045245/bld-20260418xex99d1.htm',
+    },
+  },
+  {
+    idPrefix: 'aad132ee', label: 'Stanley Martin Homes / United Homes Group', verify: false,
+    valueUsd: 221_000_000,
+    provenance: {
+      kind: 'press_release',
+      note: 'PR: "Stanley Martin will acquire United Homes in an all-cash transaction that represents an enterprise value of approximately $221 million." $1.18/sh cash. (Feb 2026)',
+      sourceUrl: 'https://www.sec.gov/Archives/edgar/data/1830188/000110465926018344/tm266691d1_ex99-1.htm',
+    },
+  },
+  {
+    idPrefix: '86a01770', label: 'General Atlantic / European Wax Center', verify: false,
+    valueUsd: 330_000_000,
+    provenance: {
+      kind: 'press_release',
+      note: 'PR: "...taken private by General Atlantic... in an all-cash transaction with an implied equity value of approximately $330 million." (Feb 2026)',
+      sourceUrl: 'https://www.sec.gov/Archives/edgar/data/1856236/000119312526043656/d71794dex991.htm',
+    },
+  },
+  {
+    idPrefix: '13894e33', label: 'IonQ / SkyWater Technology', verify: false,
+    valueUsd: 1_800_000_000,
+    provenance: {
+      kind: 'press_release',
+      note: 'PR: "...SkyWater for $35.00 per share in a cash-and-stock transaction, subject to a collar, implying a total equity value of approximately $1.8 billion." (Jan 2026)',
+      sourceUrl: 'https://www.sec.gov/Archives/edgar/data/1824920/000119312526021616/d10479dex991.htm',
+    },
+  },
+  {
+    idPrefix: '667447f0', label: 'SUP Parent / Superior Industries', verify: false,
+    valueUsd: null,
+    provenance: {
+      kind: 'no_stated_value',
+      note: 'PR confirms NO headline transaction/equity value: this is a debt-for-equity restructuring — "The Investors will convert up to approximately $550 million of their term loan claims into 96.5% of the common equity of an indirect parent company of the surviving entity"; common stockholders receive an aggregate ~$3.1M cash, preferred ~$6.2M cash (not a per-share/EV headline figure comparable to the other 12 rows).',
+      sourceUrl: 'https://www.sec.gov/Archives/edgar/data/95552/000119312525157138/d22359dex991.htm',
+    },
   },
 ];
 
@@ -279,8 +394,12 @@ function planBuyerDisplay(deals) {
     if (!deal) return { ...row, found: false, willWrite: false };
     const meta = deal.metadata || {};
     const before = { acquirer_display: meta.acquirer_display, ultimateParent: meta.ultimateParent };
-    const willWrite = !row.verify && (row.ultimateParentOnly ? !!row.ultimateParent : !!(row.acquirerDisplay || row.ultimateParent));
-    return { ...row, found: true, dealId: deal.id, before, willWrite };
+    const proposedMatchesBefore = row.ultimateParentOnly
+      ? before.ultimateParent === row.ultimateParent
+      : before.acquirer_display === row.acquirerDisplay && before.ultimateParent === row.ultimateParent;
+    const hasProposal = row.ultimateParentOnly ? !!row.ultimateParent : !!(row.acquirerDisplay || row.ultimateParent);
+    const willWrite = !row.verify && hasProposal && !proposedMatchesBefore;
+    return { ...row, found: true, dealId: deal.id, before, willWrite, noOpAlreadyCorrect: !row.verify && hasProposal && proposedMatchesBefore };
   });
 }
 
@@ -289,8 +408,11 @@ function planValue(deals) {
     const deal = findDeal(deals, row.idPrefix);
     if (!deal) return { ...row, found: false, willWrite: false };
     const before = { value_usd: deal.value_usd, value_provenance: (deal.metadata || {}).value_provenance };
-    const willWrite = !row.verify && typeof row.valueUsd === 'number';
-    return { ...row, found: true, dealId: deal.id, before, willWrite };
+    // A resolved 'no_stated_value' determination (Superior) is itself a
+    // confident, sourced write — value_usd stays null but the provenance
+    // satisfies the ingest-qa `value` gate exactly like a numeric write.
+    const resolved = !row.verify && (typeof row.valueUsd === 'number' || (row.provenance && row.provenance.kind === 'no_stated_value'));
+    return { ...row, found: true, dealId: deal.id, before, willWrite: resolved };
   });
 }
 
@@ -338,7 +460,7 @@ function printBuyerDisplayPlan(rows) {
   console.log('\n═══ 1. buyer_display (acquirer_display / ultimateParent) ═══');
   for (const r of rows) {
     if (!r.found) { console.log(`— ${r.label}: NOT FOUND in corpus`); continue; }
-    const tag = r.verify ? 'VERIFY — NEVER WRITTEN' : (r.willWrite ? 'WILL WRITE' : 'no-op');
+    const tag = r.verify ? 'VERIFY — NEVER WRITTEN' : (r.willWrite ? 'WILL WRITE' : (r.noOpAlreadyCorrect ? 'no-op — ALREADY CORRECT' : 'no-op'));
     console.log(`→ ${r.label} [${r.dealId.slice(0, 8)}] — ${tag}`);
     console.log(`  before: acquirer_display=${fmt(r.before.acquirer_display)} ultimateParent=${fmt(r.before.ultimateParent)}`);
     if (r.verify) {
@@ -350,6 +472,7 @@ function printBuyerDisplayPlan(rows) {
       console.log(`  after:  acquirer_display=${fmt(r.acquirerDisplay)} ultimateParent=${fmt(r.ultimateParent)}`);
       console.log(`  source: ${r.source}`);
     }
+    if (r.sourceUrl) console.log(`  source_url: ${r.sourceUrl}`);
   }
 }
 
@@ -368,8 +491,9 @@ function printValuePlan(rows) {
     if (r.verify) {
       console.log(`  reason: ${r.note}`);
     } else {
-      console.log(`  after:  value_usd=${fmtUsd(r.valueUsd)} (${r.valueUsd}) value_provenance.kind=${r.provenance.kind}`);
+      console.log(`  after:  value_usd=${fmtUsd(r.valueUsd)} (${fmt(r.valueUsd)}) value_provenance.kind=${r.provenance.kind}`);
       console.log(`  note:   ${r.provenance.note}`);
+      if (r.provenance.sourceUrl) console.log(`  source: ${r.provenance.sourceUrl}`);
     }
   }
 }
@@ -427,7 +551,13 @@ async function applyValue(sb, rows) {
     if (!r.found || !r.willWrite) continue;
     const { data: deal, error: fetchErr } = await sb.from('deals').select('metadata').eq('id', r.dealId).single();
     if (fetchErr) { console.log(`  WRITE FAILED (${r.label}): ${fetchErr.message}`); continue; }
-    const value_provenance = { kind: r.provenance.kind, set_at: new Date().toISOString(), set_by: 'scripts/backfill-deal-display.js (spec-pinned, CONFIDENT)', note: r.provenance.note };
+    const value_provenance = {
+      kind: r.provenance.kind,
+      set_at: new Date().toISOString(),
+      set_by: 'scripts/backfill-deal-display.js (press-release sourced, SEC EX-99.1)',
+      note: r.provenance.note,
+      ...(r.provenance.sourceUrl ? { source_url: r.provenance.sourceUrl } : {}),
+    };
     const { error } = await sb.from('deals').update({
       value_usd: r.valueUsd,
       metadata: { ...(deal.metadata || {}), value_provenance },
