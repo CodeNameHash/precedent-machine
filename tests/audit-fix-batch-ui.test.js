@@ -21,7 +21,7 @@ test.before(async () => {
   mod = await import(path.join('..', 'components', 'review', 'table-logic.js'));
 });
 
-const SRC_PATH = path.join(__dirname, '..', 'pages', 'review', '[id].js');
+const SRC_PATH = path.join(__dirname, '..', 'pages', 'review-v1', '[id].js');
 const src = () => fs.readFileSync(SRC_PATH, 'utf8');
 
 // Slice out one top-level function's source text by name, bounded by the

@@ -133,6 +133,18 @@ test('TruncatedWithSeeText primitive is exported and built on splitForCell', () 
   assert.match(body, /<details/);
 });
 
+// -- ClampedWithSeeText primitive wiring (Ben, Bioverativ: very long prose
+//    values on the consideration/structure header tables) -------------------
+
+test('ClampedWithSeeText primitive is exported, CSS-line-clamps rather than char-truncates, and reuses the "see provision" expander', () => {
+  const body = readSource(primitivesPath);
+  assert.match(body, /export function ClampedWithSeeText/);
+  assert.match(body, /WebkitLineClamp/);
+  assert.match(body, /term-cell-seetext/);
+  assert.match(body, /See provision/);
+  assert.match(body, /<details/);
+});
+
 // -- Category-2 config files wire the new primitive into their compact column -
 
 test('per-cell truncation is wired into every mixed-shape family\'s render function', () => {
@@ -144,13 +156,17 @@ test('per-cell truncation is wired into every mixed-shape family\'s render funct
   // instead of one long string through TruncatedWithSeeText -- see the
   // dedicated tail-fee pill test below.
   const configs = [
-    ['consideration-hero', 'consideration-hero.config.js'],
     ['approvals-votes', 'approvals-votes.config.js'],
   ];
   for (const [, file] of configs) {
     const body = readSource(path.join(__dirname, '..', '..', 'components', 'review', 'table-configs', file));
     assert.match(body, /ctx\?\.primitives\?\.TruncatedWithSeeText/, `${file} should route its compact value column through TruncatedWithSeeText`);
   }
+  // consideration-hero (Ben, Bioverativ: very long prose values) routes
+  // through the line-clamp counterpart instead — see the dedicated test
+  // below and the ClampedWithSeeText primitive test.
+  const considBody = readSource(path.join(__dirname, '..', '..', 'components', 'review', 'table-configs', 'consideration-hero.config.js'));
+  assert.match(considBody, /ctx\?\.primitives\?\.ClampedWithSeeText/, 'consideration-hero.config.js should route its compact value column through ClampedWithSeeText');
 });
 
 // -- Behavioral: real config modules actually hand the long value to the
@@ -234,7 +250,7 @@ test('tail-fee Signals column renders the arming row as one pill per scenario an
   assert.match(armingHtml, /Outside date termination/);
 });
 
-test('consideration-hero and approvals-votes route their sole detail column through TruncatedWithSeeText', async () => {
+test('consideration-hero routes its sole detail column through ClampedWithSeeText; approvals-votes still through TruncatedWithSeeText', async () => {
   const { considerationHeroConfig } = await import('../../components/review/table-configs/consideration-hero.config.js');
   const { approvalsVotesConfig } = await import('../../components/review/table-configs/approvals-votes.config.js');
 
@@ -259,11 +275,11 @@ test('consideration-hero and approvals-votes route their sole detail column thro
   });
   const exchangeRatioRow = considRows.find((r) => r.id === 'consideration-hero-exchangeRatioText');
   assert.ok(exchangeRatioRow, 'expected an exchange-ratio-formula row');
-  const TruncatedWithSeeText = () => null;
+  const ClampedWithSeeText = () => null;
   const considElement = considerationHeroConfig.columns.find((c) => c.id === 'detail').renderCell(exchangeRatioRow, {
-    primitives: { TruncatedWithSeeText },
+    primitives: { ClampedWithSeeText },
   });
-  assert.equal(considElement.type, TruncatedWithSeeText);
+  assert.equal(considElement.type, ClampedWithSeeText);
   assert.equal(considElement.props.text, exchangeRatioRow.detail);
 
   const voteRows = approvalsVotesConfig.selectRows({

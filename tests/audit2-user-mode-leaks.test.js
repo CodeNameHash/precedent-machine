@@ -98,7 +98,7 @@ test('filterProvisionsForViewMode repeated on 5 (Skechers-scale) IOC provisions 
    pages/review/[id].js is JSX and not directly importable under node:test
    (documented convention, see tests/fb3-chrome.test.js's header). */
 
-const REVIEW_PATH = path.join(__dirname, '..', 'pages', 'review', '[id].js');
+const REVIEW_PATH = path.join(__dirname, '..', 'pages', 'review-v1', '[id].js');
 const reviewSrc = () => fs.readFileSync(REVIEW_PATH, 'utf8');
 
 test('PreambleCard renders its Edit button only when onEdit is passed (component contract unchanged)', () => {

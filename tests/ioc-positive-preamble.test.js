@@ -72,7 +72,7 @@ test('IOC prompt asks for includedObligations and party_role', () => {
 });
 
 test('review page directly renders IOC-POSITIVE-PREAMBLE and suppresses heading-only IOC rows', () => {
-  const src = fs.readFileSync(path.join(ROOT, 'pages/review/[id].js'), 'utf8');
+  const src = fs.readFileSync(path.join(ROOT, 'pages/review-v1/[id].js'), 'utf8');
   assert.match(src, /IOC_POSITIVE_PREAMBLE_BUCKET/);
   assert.match(src, /bucket\.synthetic/);
   assert.match(src, /positiveObligationLimbsForDisplay/);

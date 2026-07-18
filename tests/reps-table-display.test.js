@@ -43,14 +43,14 @@ test('2a regression: no quote for empty/placeholder rows (no popover wiring)', (
 });
 
 test('2a regression: legacy table branch is retired and schema card render path remains active', () => {
-  const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
+  const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review-v1', '[id].js'), 'utf8');
   assert.match(src, /<ProvisionCardTable reviewDeal=\{reviewDealForTables/, 'schema card table remains the user render path');
   assert.doesNotMatch(src, /function ProvisionTable\(/, 'legacy ProvisionTable branch must stay deleted');
 });
 
 /* ── 2b: column order — Knowledge next to Materiality ─────────────────── */
 test('2b: REP column order puts knowledgeQualifier immediately after materialityQualifier', () => {
-  const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
+  const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review-v1', '[id].js'), 'utf8');
   for (const key of ["'REP-T'", "'REP-B'"]) {
     const m = src.match(new RegExp(`${key}: \\[([^\\]]+)\\]`));
     assert.ok(m, `${key} display order present`);
@@ -122,7 +122,7 @@ test('fb3: knowledge header falls back to legacy fields when no DEF scope exists
 });
 
 test('fb3: SEC Cut-Off display path wraps the value in HoverSource with fallback quote', () => {
-  const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
+  const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review-v1', '[id].js'), 'utf8');
   assert.match(src, /quote:\s*extractQuote\(lookbackRaw\)\s*\|\|\s*scopeQuote\s*\|\|\s*secCutoffFallbackQuote/);
   assert.match(src, /<HoverSource quote=\{s\.quote\} as="div">\s*<span[\s\S]*?\{s\.node \|\| <span className="text-inkFaint\/70 italic">—<\/span>\}/);
 });

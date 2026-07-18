@@ -234,7 +234,7 @@ function Drilldown({ item, onClose }) {
     <aside className="drawer">
       <button type="button" onClick={onClose}>Close</button>
       <h2>Provision card</h2>
-      {item.card_id && item.deal_id && <Link href={`/review/${item.deal_id}/provision/${item.card_id}`}>Open deal review</Link>}
+      {item.card_id && item.deal_id && <Link href={`/review-v1/${item.deal_id}/provision/${item.card_id}`}>Open deal review</Link>}
       <pre>{item.primary_quote?.text || item.verbatim_quote || JSON.stringify(item, null, 2)}</pre>
       <style jsx>{`
         .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(520px, 92vw); background: #fff; border-left: 1px solid var(--line); box-shadow: -18px 0 60px rgba(0,0,0,.16); z-index: 40; padding: 22px; overflow: auto; }

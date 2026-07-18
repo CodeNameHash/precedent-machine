@@ -121,11 +121,31 @@ function ensureDollarPrefix(text) {
   if (/^-?\d+(\.\d+)?$/.test(trimmed)) return `$${Number(trimmed).toFixed(2)}`;
   return `$${trimmed}`;
 }
+// A genuine per-share price/formula is short -- "$47.50", "20.200 Parent
+// Shares", "$0.50 plus contingent consideration per Exhibit A". Ben
+// (Bioverativ, round 2): one deal's "offerPrice" feature was corrupted --
+// it held the tender-offer COMMENCEMENT clause ("...as promptly as
+// practicable but in no event later than fifteen (15) Business Days after
+// the date of this Agreement, Merger Sub shall..."), which starts with a
+// bare "01" digit and (via ensureDollarPrefix) rendered as "$01, as
+// promptly as practicable..." -- a paragraph masquerading as a price. Only
+// treat offerPrice as a per-share proxy when it's actually price-shaped.
+function looksLikePriceValue(text) {
+  const trimmed = String(text || '').trim();
+  if (!trimmed || trimmed.length > 40) return false;
+  return /^\$?[\d,]+(\.\d+)?/.test(trimmed);
+}
 function perShareParts(features, cards) {
-  const perShare = ensureDollarPrefix(valueText(features.perShareAmount) || valueText(features.cashAmount) || valueText(features.offerPrice));
-  const joined = `${valueText(features.considerationType) || ''} ${cards.map(textOf).join(' ')}`;
-  const hasCvr = /\bCVR\b|contingent value right/i.test(joined) || cards.some((card) => cardCode(card) === 'CONSID-CVR');
-  const hasCash = Boolean(perShare) || /\bcash\b|\$\s?\d/i.test(joined);
+  const offerPriceText = valueText(features.offerPrice);
+  const perShare = ensureDollarPrefix(
+    valueText(features.perShareAmount)
+    || valueText(features.cashAmount)
+    || (looksLikePriceValue(offerPriceText) ? offerPriceText : null),
+  );
+  const cvrCards = cvrCandidateCards(cards);
+  const joined = `${valueText(features.considerationType) || ''} ${cvrCards.map(textOf).join(' ')}`;
+  const hasCvr = /\bCVR\b|contingent value right/i.test(joined) || cvrCards.some((card) => cardCode(card) === 'CONSID-CVR');
+  const hasCash = Boolean(perShare) || /\bcash\b|\$\s?\d/i.test(joined) || /all-cash|all cash/i.test(valueText(features.considerationType) || '');
   const cvrMax = resolveCvrMax(cards).text;
   return buildPerShareParts({ perShareText: perShare, hasCvr, hasCash, cvrMaxText: cvrMax });
 }
@@ -158,8 +178,20 @@ function meaningfulCvrMilestones(value) {
   });
 }
 
+// Ben (Bioverativ, round 2): hasCvrSignal used to scan EVERY card
+// hasConsiderationSignal pulled in -- including reps/definitions matched by
+// its own loose fallback regex -- for the bare substring "CVR". A
+// capitalization rep's boilerplate ("no stock appreciation rights,
+// contingent value rights, phantom stock...") false-positived a plain
+// all-cash deal into "Cash + CVR" on the masthead. Only cards that could
+// genuinely describe the deal's OWN consideration structure (CONSID_CODES)
+// get to vote on whether a CVR exists.
+function cvrCandidateCards(cards) {
+  return cards.filter((card) => CONSID_CODES.includes(cardCode(card)));
+}
 function hasCvrSignal(cards) {
-  return cards.some((card) => cardCode(card) === 'CONSID-CVR' || /\bCVR\b|contingent value right/i.test(`${valueText(cardFeatures(card).considerationType) || ''} ${textOf(card)}`));
+  const candidates = cvrCandidateCards(cards);
+  return candidates.some((card) => cardCode(card) === 'CONSID-CVR' || /\bCVR\b|contingent value right/i.test(`${valueText(cardFeatures(card).considerationType) || ''} ${textOf(card)}`));
 }
 function headlineLabel(headlineType, cards, featuresList) {
   if (hasCvrSignal(cards)) {
@@ -294,14 +326,16 @@ function renderElectionAttributionBadge(row, ctx) {
 }
 
 function renderDetail(row, ctx) {
-  let base;
+let base;
   if (row.isLink) base = renderLinkDetail(row, ctx);
   else if (row.id === PER_SHARE_ROW_ID && Array.isArray(row.parts)) base = renderPerShareDetail(row, ctx);
   else if (PILL_DETAIL_IDS.has(row.id)) base = renderPillDetail(row, ctx);
   else {
-    const TruncatedWithSeeText = ctx?.primitives?.TruncatedWithSeeText;
-    base = TruncatedWithSeeText
-      ? React.createElement(TruncatedWithSeeText, { text: row.detail, evidence: row.evidence })
+    // Ben (Bioverativ): this header table can carry very long prose values —
+    // clamp to ~3 lines with the standard "see provision" expander.
+    const ClampedWithSeeText = ctx?.primitives?.ClampedWithSeeText;
+    base = ClampedWithSeeText
+      ? React.createElement(ClampedWithSeeText, { text: row.detail, evidence: row.evidence, source: row.sourceCard })
       : row.detail;
   }
   const badge = renderElectionAttributionBadge(row, ctx);
@@ -362,6 +396,10 @@ const considerationHeroConfig = {
         if (items.length) rows.push(makeRow(key, label, kind, items, hit.card));
         continue;
       }
+// Ben (Bioverativ, round 2): 'offerPrice' occasionally arrives corrupted —
+      // a whole unrelated clause instead of a price. A genuine price never
+      // runs to multiple sentences; a >200-char value here is prose, so drop.
+      if (key === 'offerPrice' && String(valueText(hit.value) || '').length > 200) continue;
       rows.push(makeRow(key, label, kind, hit.value, hit.card, electionAttributionLabel(electionMechanism, key, hit.value)));
     }
     const cvrCard = cards.find((card) => cardCode(card) === 'CONSID-CVR');

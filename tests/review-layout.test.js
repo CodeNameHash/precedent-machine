@@ -93,7 +93,7 @@ test('4b: seller/target children come before buyer/parent in every split group',
 });
 
 test('4a: review page sorts rendered sections by SIDEBAR_GROUPS order (synthesized groups included)', () => {
-  const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
+  const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review-v1', '[id].js'), 'utf8');
   // filteredProvsByType must re-order its entries by TYPE_SORT_ORDER before
   // returning — otherwise synthesized empty sections (IOC-B, NOSOL-B, TERMR
   // children) fall to the bottom of the page.
@@ -102,7 +102,7 @@ test('4a: review page sorts rendered sections by SIDEBAR_GROUPS order (synthesiz
 });
 
 test('review page no longer renders legacy empty buyer-side section placeholders', () => {
-  const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
+  const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review-v1', '[id].js'), 'utf8');
   assert.doesNotMatch(src, /'IOC \(Buyer\)'/);
   assert.doesNotMatch(src, /'No-Shop \(Buyer\)'/);
   assert.doesNotMatch(src, /\{' — None'\}/);
@@ -110,7 +110,7 @@ test('review page no longer renders legacy empty buyer-side section placeholders
 });
 
 test('IOC side gate treats single-item filter arrays as child clicks', () => {
-  const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
+  const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review-v1', '[id].js'), 'utf8');
   const start = src.indexOf('const iocSide = (() =>');
   assert.ok(start > 0);
   const body = src.slice(start, src.indexOf('})();', start));
@@ -120,7 +120,7 @@ test('IOC side gate treats single-item filter arrays as child clicks', () => {
 });
 
 test('sidebar provision clicks scroll without narrowing the review list', () => {
-  const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
+  const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review-v1', '[id].js'), 'utf8');
 
   const filteredStart = src.indexOf('const filteredProvisions = useMemo(() =>');
   assert.ok(filteredStart > 0);
@@ -143,7 +143,7 @@ test('sidebar provision clicks scroll without narrowing the review list', () => 
 });
 
 test('sidebar section clicks and direct links scroll without filtering the page', () => {
-  const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
+  const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review-v1', '[id].js'), 'utf8');
   const filterStart = src.indexOf('const handleFilterType = useCallback((type) =>');
   assert.ok(filterStart > 0);
   const filterBody = src.slice(filterStart, src.indexOf('/* ── Sidebar provision click', filterStart));
@@ -162,7 +162,7 @@ test('sidebar section clicks and direct links scroll without filtering the page'
 });
 
 test('MAE definition side detection reads the defined term before generic category/code', () => {
-  const reviewSrc = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
+  const reviewSrc = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review-v1', '[id].js'), 'utf8');
   const sidebarSrc = fs.readFileSync(path.join(__dirname, '..', 'lib', 'sidebar-groups.js'), 'utf8');
   const start = reviewSrc.indexOf('function maeDefinitionSide(p)');
   assert.ok(start > 0);
@@ -181,7 +181,7 @@ test('MAE definition side detection reads the defined term before generic catego
 });
 
 test('MAE carve-out rows render the title without a duplicate code badge', () => {
-  const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
+  const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review-v1', '[id].js'), 'utf8');
   const start = src.indexOf('function MaeSinglePartySummary');
   assert.ok(start > 0);
   const body = src.slice(start, src.indexOf('function labelForCarveoutCode', start));
@@ -194,7 +194,7 @@ test('MAE carve-out rows render the title without a duplicate code badge', () =>
 });
 
 test('review hero uses display party names while preserving contractual parent detail', () => {
-  const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
+  const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review-v1', '[id].js'), 'utf8');
   assert.match(src, /const displayAcquirer = getDisplayAcquirer\(deal\)/);
   assert.match(src, /const displayTarget = getDisplayTarget\(deal\)/);
   assert.match(src, /\{displayAcquirer\} <span className="vs">acquires<\/span> \{displayTarget\}/);

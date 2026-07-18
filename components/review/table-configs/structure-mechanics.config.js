@@ -56,19 +56,34 @@ const ROWS = [
 const EFFECTIVE_TIME_KEYS = ['effectiveTimeShort', 'effectiveTime', 'mainConcept'];
 const SURVIVING_CORP_RE = /surviving corporation/i;
 
+// Ben (TopBuild vs Metsera, round 2): the clause-first scan below used to
+// run over EVERY structure-mechanics card for the whole deal (STRUCT-MERGER,
+// STRUCT-CLOSING, STRUCT-CHARTER, ...), in array order -- so on a deal whose
+// first card or two happened to mention "surviving corporation" (normal
+// merger-structure language), the scan fell through to the NEXT card's raw
+// clause, even when that card was about something else entirely (Closing,
+// not Effective Time). TopBuild's "Effective time" row was showing a
+// mid-sentence fragment of the CLOSING clause for exactly this reason. Only
+// cards that are actually coded as the effective-time provision get to
+// supply their clause text; the full-deal scan is now a last resort, used
+// only when the deal carries no such card at all.
+const EFFECTIVE_TIME_CODE_RE = /EFF(?:TIME|ECTIVE)/i;
+
 function effectiveTimeHit(cards) {
-  for (const card of cards) {
+  const candidates = cards.filter((card) => EFFECTIVE_TIME_CODE_RE.test(cardCode(card)));
+  const pool = candidates.length ? candidates : cards;
+  for (const card of pool) {
     const clause = textOf(card);
     if (clause && !SURVIVING_CORP_RE.test(clause)) return { key: 'clause', value: clause, detail: clause, card };
   }
   for (const key of EFFECTIVE_TIME_KEYS) {
-    for (const card of cards) {
+    for (const card of pool) {
       const features = cardFeatures(card);
       const detail = valueText(features[key]);
       if (detail && !SURVIVING_CORP_RE.test(detail)) return { key, value: features[key], detail, card };
     }
   }
-  for (const card of cards) {
+  for (const card of pool) {
     const features = cardFeatures(card);
     const hasCorruptedClaim = EFFECTIVE_TIME_KEYS.some((key) => valueText(features[key]));
     if (!hasCorruptedClaim) continue;
@@ -108,8 +123,14 @@ function signalFor(row) {
   };
 }
 
+// Tagged-value code, tolerating a bare string/other shape.
+function rowCode(value) {
+  if (value && typeof value === 'object') return value.code || value.value || null;
+  return typeof value === 'string' ? value : null;
+}
+
 function mappedStructureRows(cards) {
-  return ROWS
+  const rows = ROWS
     .map(([id, label, kind, keys]) => {
       const hit = id === 'effective-time' ? effectiveTimeHit(cards) : firstFeature(cards, keys || id);
       const row = makeRow('structure-mechanics', id, label, kind, hit);
@@ -123,6 +144,18 @@ function mappedStructureRows(cards) {
       };
     })
     .filter(Boolean);
+  // Ben (Bioverativ, round 2): tender-offer deals collapse "deal structure"
+  // and "merger form" into the SAME concept (TWO_STEP_TENDER_OFFER on both)
+  // -- unlike a one-step merger, where they're genuinely distinct
+  // (ONE_STEP_MERGER vs REVERSE_TRIANGULAR_MERGER). Two rows saying the same
+  // thing is duplicative; drop merger-form when its code matches
+  // deal-structure's.
+  const dealStructureRow = rows.find((r) => r.id === 'structure-mechanics-deal-structure');
+  const dealStructureCode = dealStructureRow && rowCode(dealStructureRow.value);
+  if (dealStructureCode) {
+    return rows.filter((r) => r.id !== 'structure-mechanics-merger-form' || rowCode(r.value) !== dealStructureCode);
+  }
+  return rows;
 }
 
 function renderSignals(row, ctx) {
@@ -138,6 +171,14 @@ function renderSignals(row, ctx) {
   }));
 }
 
+// NOTE: this 'detail' column never renders inline -- structure-mechanics is
+// in ProvisionTable.jsx's FULL_TEXT_COLUMNS, so every row's detail is
+// relocated behind the label's OWN collapsed "See provision" link (built
+// from this exact output). A ClampedWithSeeText clamp+expander here would
+// just nest a second, pointless "See provision" inside that already-
+// collapsed one -- the VISIBLE long-prose surface for this table is the
+// Provision/signals column (renderSignals/signalFor's fallback to
+// row.detail as the pill label), not this one.
 function renderDetail(row, ctx) {
   const EvidenceHoverSource = ctx?.primitives?.EvidenceHoverSource;
   if (!EvidenceHoverSource || !row.evidence) return row.detail;

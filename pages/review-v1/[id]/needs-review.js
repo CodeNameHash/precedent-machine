@@ -33,7 +33,7 @@ export default function NeedsReviewPage() {
       <Breadcrumbs items={[
         { label: 'Dashboard', href: '/' },
         { label: 'Review', href: '/review' },
-        { label: deal ? `${deal.acquirer} / ${deal.target}` : 'Deal', href: dealId ? `/review/${dealId}` : '/review' },
+        { label: deal ? `${deal.acquirer} / ${deal.target}` : 'Deal', href: dealId ? `/review-v1/${dealId}` : '/review' },
         { label: 'Needs Review' },
       ]} />
 
@@ -46,7 +46,7 @@ export default function NeedsReviewPage() {
         </div>
         {dealId && (
           <Link
-            href={`/review/${dealId}`}
+            href={`/review-v1/${dealId}`}
             className="rounded border border-border px-3 py-1.5 text-sm font-ui text-inkLight hover:border-accent hover:text-ink"
           >
             Back to review
@@ -87,7 +87,7 @@ export default function NeedsReviewPage() {
                   <td className="px-4 py-3 font-ui text-amber-700">{row.state}</td>
                   <td className="px-4 py-3 text-right">
                     <Link
-                      href={isEdit ? `/review/${dealId}?mode=edit&edit=${row.provision_id}` : `/review/${dealId}/provision/${row.provision_id}`}
+                      href={isEdit ? `/review-v1/${dealId}?mode=edit&edit=${row.provision_id}` : `/review-v1/${dealId}/provision/${row.provision_id}`}
                       className="inline-flex rounded bg-accent px-3 py-1.5 text-xs font-ui text-white hover:bg-accent/90"
                     >
                       Open

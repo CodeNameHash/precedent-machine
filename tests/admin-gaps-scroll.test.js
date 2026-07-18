@@ -42,7 +42,7 @@ test('admin gaps surfaces schema-backed main concepts in review items', () => {
 });
 
 test('review and compare feature fallback rendering use the schema renderer', () => {
-  const reviewSource = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
+  const reviewSource = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review-v1', '[id].js'), 'utf8');
   const compareSource = fs.readFileSync(path.join(__dirname, '..', 'pages', 'compare.js'), 'utf8');
   const summarySource = fs.readFileSync(path.join(__dirname, '..', 'lib', 'schema', 'summary.js'), 'utf8');
 

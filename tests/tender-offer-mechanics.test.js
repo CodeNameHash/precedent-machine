@@ -85,7 +85,7 @@ test('company action, stockholder-list, directors, and 251(h) snippets map to th
 });
 
 test('review and compare surfaces include tender-offer mechanics fields', () => {
-  const reviewSrc = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
+  const reviewSrc = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review-v1', '[id].js'), 'utf8');
   assert.match(reviewSrc, /STRUCT-OFFER/);
   assert.match(reviewSrc, /offerCommencementDeadline/);
   assert.match(reviewSrc, /schedule14D9Filing/);

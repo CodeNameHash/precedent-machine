@@ -3858,31 +3858,31 @@
             "code": "PRIME_WSJ",
             "label": "Prime rate (as published in The Wall Street Journal)",
             "description": null,
-            "line": 1085
+            "line": 1027
           },
           {
             "code": "PRIME_BANK",
             "label": "Prime rate (a named bank)",
             "description": null,
-            "line": 1086
+            "line": 1028
           },
           {
             "code": "US_TREASURY_6MO",
             "label": "6-month U.S. Treasury rate",
             "description": null,
-            "line": 1087
+            "line": 1029
           },
           {
             "code": "LIBOR",
             "label": "3-month LIBOR",
             "description": null,
-            "line": 1088
+            "line": 1030
           },
           {
             "code": "FIXED",
             "label": "Fixed rate per annum",
             "description": null,
-            "line": 1089
+            "line": 1031
           }
         ]
       },
@@ -3895,31 +3895,31 @@
             "code": "DELAWARE",
             "label": "Delaware",
             "description": null,
-            "line": 1095
+            "line": 1037
           },
           {
             "code": "NEW_YORK",
             "label": "New York",
             "description": null,
-            "line": 1096
+            "line": 1038
           },
           {
             "code": "MARYLAND",
             "label": "Maryland",
             "description": null,
-            "line": 1097
+            "line": 1039
           },
           {
             "code": "SPLIT_FINANCING",
             "label": "Split (primary state; New York for Financing-Source claims)",
             "description": null,
-            "line": 1098
+            "line": 1040
           },
           {
             "code": "FOREIGN",
             "label": "Non-U.S.",
             "description": null,
-            "line": 1099
+            "line": 1041
           }
         ]
       },
@@ -3932,91 +3932,91 @@
             "code": "SOLICIT_INITIATE",
             "label": "Solicit / initiate / knowingly encourage or facilitate an Acquisition Proposal",
             "description": null,
-            "line": 1112
+            "line": 1054
           },
           {
             "code": "DISCUSS_NEGOTIATE",
             "label": "Engage in or continue discussions or negotiations",
             "description": null,
-            "line": 1113
+            "line": 1055
           },
           {
             "code": "FURNISH_INFORMATION",
             "label": "Furnish non-public information / afford diligence access",
             "description": null,
-            "line": 1114
+            "line": 1056
           },
           {
             "code": "ENTER_ALT_AGREEMENT",
             "label": "Enter into an LOI / acquisition / merger agreement (other than an ACA)",
             "description": null,
-            "line": 1115
+            "line": 1057
           },
           {
             "code": "APPROVE_ENDORSE",
             "label": "Approve / endorse / recommend / declare advisable a proposal",
             "description": null,
-            "line": 1116
+            "line": 1058
           },
           {
             "code": "WAIVE_STANDSTILL",
             "label": "Waive / terminate / modify or fail to enforce a standstill",
             "description": null,
-            "line": 1117
+            "line": 1059
           },
           {
             "code": "SUBMIT_TO_VOTE",
             "label": "Submit a competing proposal to the stockholder vote",
             "description": null,
-            "line": 1118
+            "line": 1060
           },
           {
             "code": "RESOLVE_AGREE_FOREGOING",
             "label": "Resolve / agree / authorize / publicly propose to do any of the foregoing",
             "description": null,
-            "line": 1119
+            "line": 1061
           },
           {
             "code": "CEASE_EXISTING_ACTIVITY",
             "label": "Immediately cease existing solicitations / discussions / negotiations",
             "description": null,
-            "line": 1121
+            "line": 1063
           },
           {
             "code": "TERMINATE_DATAROOM",
             "label": "Terminate physical / electronic data-room access",
             "description": null,
-            "line": 1122
+            "line": 1064
           },
           {
             "code": "REQUEST_RETURN_DESTROY",
             "label": "Request return or destruction of previously furnished information",
             "description": null,
-            "line": 1123
+            "line": 1065
           },
           {
             "code": "WITHDRAW_QUALIFY_REC",
             "label": "Withhold / withdraw / qualify / modify the Board Recommendation adverse to Parent",
             "description": null,
-            "line": 1125
+            "line": 1067
           },
           {
             "code": "FAIL_TO_INCLUDE_REC",
             "label": "Fail to include the Board Recommendation in the Proxy / 14D-9 / Info Statement",
             "description": null,
-            "line": 1126
+            "line": 1068
           },
           {
             "code": "FAIL_TO_REAFFIRM",
             "label": "Fail to publicly reaffirm the Recommendation on request",
             "description": null,
-            "line": 1127
+            "line": 1069
           },
           {
             "code": "TENDER_OFFER_ACTION",
             "label": "Fail to recommend against a tender / exchange offer within the required period",
             "description": null,
-            "line": 1128
+            "line": 1070
           }
         ]
       },
@@ -4029,25 +4029,25 @@
             "code": "BOARD_LEGAL_AND_FINANCIAL",
             "label": "Board, in good faith, after outside legal counsel and financial advisor",
             "description": null,
-            "line": 1134
+            "line": 1076
           },
           {
             "code": "BOARD_LEGAL_ONLY",
             "label": "Board, after outside legal counsel only",
             "description": null,
-            "line": 1135
+            "line": 1077
           },
           {
             "code": "BOARD_ONLY",
             "label": "Board’s good-faith judgment (no advisor reference)",
             "description": null,
-            "line": 1136
+            "line": 1078
           },
           {
             "code": "COMMITTEE",
             "label": "A committee (Special / Strategic Review) decides",
             "description": null,
-            "line": 1137
+            "line": 1079
           }
         ]
       },
@@ -4060,19 +4060,19 @@
             "code": "FTV_HARD",
             "label": "Hard force-the-vote — the obligated party's stockholder vote survives an Adverse Recommendation Change AND that party has no self-termination right to accept a Superior Proposal (cannot escape the vote by walking away for a competing deal)",
             "description": null,
-            "line": 1174
+            "line": 1116
           },
           {
             "code": "FTV_SOFT",
             "label": "Soft force-the-vote — the obligated party's vote survives an Adverse Recommendation Change but that party may terminate to accept a Superior Proposal",
             "description": null,
-            "line": 1175
+            "line": 1117
           },
           {
             "code": "FTV_NONE",
             "label": "No force-the-vote (no vote-survives-recommendation-change covenant)",
             "description": null,
-            "line": 1176
+            "line": 1118
           }
         ]
       },
@@ -4085,19 +4085,19 @@
             "code": "AFFILIATE_SUBSIDIARY",
             "label": "Parent may assign to a wholly-owned subsidiary / affiliate",
             "description": null,
-            "line": 1181
+            "line": 1123
           },
           {
             "code": "FINANCING_SOURCE_PLEDGE",
             "label": "Parent may collaterally assign / pledge to financing sources",
             "description": null,
-            "line": 1182
+            "line": 1124
           },
           {
             "code": "POST_CLOSING_SUCCESSOR",
             "label": "Assignment permitted from and after the Effective Time (successor)",
             "description": null,
-            "line": 1183
+            "line": 1125
           }
         ]
       },
@@ -4110,13 +4110,13 @@
             "code": "NO_RELEASE",
             "label": "Assignment does not relieve Parent of its obligations",
             "description": null,
-            "line": 1186
+            "line": 1128
           },
           {
             "code": "NO_DELAY_IMPEDE",
             "label": "Assignment must not prevent / impede / delay the closing",
             "description": null,
-            "line": 1187
+            "line": 1129
           }
         ]
       },
@@ -4274,79 +4274,79 @@
             "code": "MAT_ALL_RESPECTS",
             "label": "True and correct in all respects",
             "description": null,
-            "line": 129
+            "line": 71
           },
           {
             "code": "MAT_ALL_RESPECTS_DE_MINIMIS",
             "label": "True except for de minimis inaccuracies",
             "description": null,
-            "line": 130
+            "line": 72
           },
           {
             "code": "MAT_ALL_MATERIAL",
             "label": "In all material respects",
             "description": null,
-            "line": 131
+            "line": 73
           },
           {
             "code": "MAT_MATERIAL_TO_COMPANY",
             "label": "Materiality to the Company (whole rep)",
             "description": null,
-            "line": 140
+            "line": 82
           },
           {
             "code": "MAT_MATERIAL_INLINE",
             "label": "Materiality inline within the rep",
             "description": null,
-            "line": 141
+            "line": 83
           },
           {
             "code": "MAT_MAE_QUALIFIED",
             "label": "True except where failure would not have an MAE",
             "description": null,
-            "line": 142
+            "line": 84
           },
           {
             "code": "MAT_MAE_AGGREGATE",
             "label": "Would not, individually or in aggregate, have MAE",
             "description": null,
-            "line": 105
+            "line": 85
           },
           {
             "code": "MAT_DE_MINIMIS",
             "label": "Except for de minimis inaccuracies",
             "description": null,
-            "line": 144
+            "line": 86
           },
           {
             "code": "MAT_MATERIALITY_SCRAPE",
             "label": "Materiality qualifiers disregarded for bring-down",
             "description": null,
-            "line": 145
+            "line": 87
           },
           {
             "code": "MAT_KNOWLEDGE",
             "label": "Knowledge qualifier (best knowledge / actual knowledge)",
             "description": null,
-            "line": 146
+            "line": 88
           },
           {
             "code": "MAT_WILLFUL_BREACH",
             "label": "Willful breach standard",
             "description": null,
-            "line": 147
+            "line": 89
           },
           {
             "code": "MAT_INTENTIONAL_BREACH",
             "label": "Intentional breach standard",
             "description": null,
-            "line": 148
+            "line": 90
           },
           {
             "code": "MAT_NO_QUALIFIER",
             "label": "No materiality qualifier",
             "description": null,
-            "line": 149
+            "line": 91
           }
         ]
       },
@@ -4359,37 +4359,37 @@
             "code": "PRIOR_WRITTEN",
             "label": "Prior written consent",
             "description": null,
-            "line": 157
+            "line": 99
           },
           {
             "code": "NOT_UNREASONABLY_WITHHELD",
             "label": "Consent not to be unreasonably withheld, conditioned, or delayed",
             "description": null,
-            "line": 158
+            "line": 100
           },
           {
             "code": "SOLE_DISCRETION",
             "label": "In sole discretion",
             "description": null,
-            "line": 159
+            "line": 101
           },
           {
             "code": "REASONABLE_CONSENT",
             "label": "Reasonable consent",
             "description": null,
-            "line": 160
+            "line": 102
           },
           {
             "code": "AUTOMATIC_DEEMED",
             "label": "Deemed given after X days",
             "description": null,
-            "line": 161
+            "line": 103
           },
           {
             "code": "NO_CONSENT_REQUIRED",
             "label": "No consent required",
             "description": null,
-            "line": 162
+            "line": 104
           }
         ]
       },
@@ -4402,43 +4402,43 @@
             "code": "BEST_EFFORTS",
             "label": "Best efforts",
             "description": null,
-            "line": 170
+            "line": 112
           },
           {
             "code": "REASONABLE_BEST_EFFORTS",
             "label": "Reasonable best efforts",
             "description": null,
-            "line": 171
+            "line": 113
           },
           {
             "code": "COMMERCIALLY_REASONABLE_EFFORTS",
             "label": "Commercially reasonable efforts",
             "description": null,
-            "line": 172
+            "line": 114
           },
           {
             "code": "REASONABLE_EFFORTS",
             "label": "Reasonable efforts",
             "description": null,
-            "line": 172
+            "line": 114
           },
           {
             "code": "GOOD_FAITH_EFFORTS",
             "label": "Good faith efforts",
             "description": null,
-            "line": 174
+            "line": 116
           },
           {
             "code": "HELL_OR_HIGH_WATER",
             "label": "Hell or high water",
             "description": null,
-            "line": 175
+            "line": 117
           },
           {
             "code": "FLAT",
             "label": "Flat (unqualified obligation)",
             "description": null,
-            "line": 182
+            "line": 124
           }
         ]
       },
@@ -4451,25 +4451,25 @@
             "code": "CAUSE_NOT_TO",
             "label": "Company must cause Representatives not to engage",
             "description": null,
-            "line": 195
+            "line": 137
           },
           {
             "code": "RBE_NOT_TO",
             "label": "Company must use reasonable best efforts to cause Representatives not to engage",
             "description": null,
-            "line": 196
+            "line": 138
           },
           {
             "code": "INSTRUCT_NOT_TO",
             "label": "Company must instruct Representatives not to engage",
             "description": null,
-            "line": 197
+            "line": 139
           },
           {
             "code": "NA",
             "label": "Not applicable",
             "description": null,
-            "line": 198
+            "line": 140
           }
         ]
       },
@@ -4482,19 +4482,19 @@
             "code": "POSITIVE_ONLY",
             "label": "Positive events only (excludes Acquisition Proposal-related events)",
             "description": null,
-            "line": 202
+            "line": 144
           },
           {
             "code": "BOTH",
             "label": "Both positive and negative events",
             "description": null,
-            "line": 203
+            "line": 145
           },
           {
             "code": "NA",
             "label": "Not applicable",
             "description": null,
-            "line": 198
+            "line": 140
           }
         ]
       },
@@ -4507,19 +4507,19 @@
             "code": "PARTY_PARENT",
             "label": "Applies to Parent / Buyer only",
             "description": null,
-            "line": 212
+            "line": 154
           },
           {
             "code": "PARTY_COMPANY",
             "label": "Applies to Company / Target only",
             "description": null,
-            "line": 213
+            "line": 155
           },
           {
             "code": "PARTY_MUTUAL",
             "label": "Applies to both parties (mutual)",
             "description": null,
-            "line": 214
+            "line": 156
           }
         ]
       },
@@ -4532,55 +4532,55 @@
             "code": "CONTROL_PARENT",
             "label": "Parent / Buyer controls strategy",
             "description": null,
-            "line": 224
+            "line": 166
           },
           {
             "code": "CONTROL_COMPANY",
             "label": "Company / Target controls strategy",
             "description": null,
-            "line": 225
+            "line": 167
           },
           {
             "code": "CONTROL_SHARED",
             "label": "Mutual / shared control",
             "description": null,
-            "line": 226
+            "line": 168
           },
           {
             "code": "CONTROL_SILENT",
             "label": "Agreement is silent on control",
             "description": null,
-            "line": 227
+            "line": 169
           },
           {
             "code": "BUYER_WITH_SETTLEMENT_GAG",
             "label": "Buyer controls; seller barred from offers/settlement except as directed",
             "description": null,
-            "line": 228
+            "line": 170
           },
           {
             "code": "BUYER_LEAD",
             "label": "Buyer takes the lead",
             "description": null,
-            "line": 229
+            "line": 171
           },
           {
             "code": "PRINCIPAL_WITH_VETO",
             "label": "Principal party controls subject to counterparty veto",
             "description": null,
-            "line": 230
+            "line": 172
           },
           {
             "code": "JURISDICTION_SPLIT",
             "label": "Control split by jurisdiction",
             "description": null,
-            "line": 231
+            "line": 173
           },
           {
             "code": "SELLER_LED",
             "label": "Seller / Target leads strategy",
             "description": null,
-            "line": 232
+            "line": 174
           }
         ]
       },
@@ -4593,55 +4593,55 @@
             "code": "ANTI_HOHW",
             "label": "Anti-hell-or-high-water",
             "description": null,
-            "line": 236
+            "line": 178
           },
           {
             "code": "NO_LITIGATION_ONLY",
             "label": "No obligation to litigate",
             "description": null,
-            "line": 237
+            "line": 179
           },
           {
             "code": "CAPPED_QUANTITATIVE",
             "label": "Divestiture cap: quantitative (revenue/EBITDA/units/NPV/formula)",
             "description": null,
-            "line": 238
+            "line": 180
           },
           {
             "code": "BURDENSOME_CONDITION",
             "label": "Burdensome-condition / MAE-style cap",
             "description": null,
-            "line": 239
+            "line": 181
           },
           {
             "code": "PRECEDENT_COMPARABILITY",
             "label": "Capped by precedent-deal remedies / consent decree",
             "description": null,
-            "line": 240
+            "line": 182
           },
           {
             "code": "BUYER_DISCRETION",
             "label": "Subjective buyer-discretion cap",
             "description": null,
-            "line": 241
+            "line": 183
           },
           {
             "code": "NAMED_ASSET_CARVEOUT",
             "label": "Named-asset carve-out / carve-in (modifier)",
             "description": null,
-            "line": 242
+            "line": 184
           },
           {
             "code": "EXPRESS_HOHW",
             "label": "Hell-or-high-water (express take-all-steps)",
             "description": null,
-            "line": 243
+            "line": 185
           },
           {
             "code": "SILENT_NO_CAP",
             "label": "No express limitation (efforts standard governs)",
             "description": null,
-            "line": 244
+            "line": 186
           }
         ]
       },
@@ -4654,37 +4654,37 @@
             "code": "TARGET_ONLY",
             "label": "Target only",
             "description": null,
-            "line": 248
+            "line": 190
           },
           {
             "code": "BUYER_ONLY",
             "label": "Buyer only",
             "description": null,
-            "line": 249
+            "line": 191
           },
           {
             "code": "COMBINED_ENTITY",
             "label": "Combined entity",
             "description": null,
-            "line": 250
+            "line": 192
           },
           {
             "code": "SIZE_NORMALIZED",
             "label": "Target deemed buyer-sized",
             "description": null,
-            "line": 251
+            "line": 193
           },
           {
             "code": "WITH_SYNERGIES",
             "label": "With synergies",
             "description": null,
-            "line": 252
+            "line": 194
           },
           {
             "code": "DE_MINIMIS_FLOOR",
             "label": "De minimis floor",
             "description": null,
-            "line": 253
+            "line": 195
           }
         ]
       },
@@ -4697,37 +4697,37 @@
             "code": "MANDATORY_DEFEND",
             "label": "Must defend (incl. appeals/final judgment)",
             "description": null,
-            "line": 257
+            "line": 199
           },
           {
             "code": "RIGHT_NOT_OBLIGATION",
             "label": "Right but not obligation (elective offense / mandatory defense)",
             "description": null,
-            "line": 258
+            "line": 200
           },
           {
             "code": "MERITS_GATED",
             "label": "Merits-gated",
             "description": null,
-            "line": 259
+            "line": 201
           },
           {
             "code": "TIME_BOUNDED",
             "label": "Time-bounded",
             "description": null,
-            "line": 260
+            "line": 202
           },
           {
             "code": "EXPRESS_NONE",
             "label": "Expressly no obligation",
             "description": null,
-            "line": 261
+            "line": 203
           },
           {
             "code": "SILENT",
             "label": "Silent",
             "description": null,
-            "line": 227
+            "line": 169
           }
         ]
       },
@@ -4740,55 +4740,55 @@
             "code": "RESTRAINT_IN_EFFECT",
             "label": "Fails only on restraint in effect",
             "description": null,
-            "line": 266
+            "line": 208
           },
           {
             "code": "SUIT_SEEKING",
             "label": "Fails on suit merely seeking relief",
             "description": null,
-            "line": 267
+            "line": 209
           },
           {
             "code": "AGENCIES_NAMED",
             "label": "Agencies named",
             "description": null,
-            "line": 268
+            "line": 210
           },
           {
             "code": "US_EU",
             "label": "US / EU",
             "description": null,
-            "line": 269
+            "line": 211
           },
           {
             "code": "SCHEDULED_JURISDICTIONS",
             "label": "Scheduled jurisdictions",
             "description": null,
-            "line": 270
+            "line": 212
           },
           {
             "code": "ANY_AUTHORITY",
             "label": "Any authority",
             "description": null,
-            "line": 271
+            "line": 213
           },
           {
             "code": "THREATENED_INCLUDED",
             "label": "Threatened included",
             "description": null,
-            "line": 272
+            "line": 214
           },
           {
             "code": "MATERIALITY_GATED",
             "label": "Materiality gated",
             "description": null,
-            "line": 273
+            "line": 215
           },
           {
             "code": "ANTI_DOUBLE_COUNT_CARVEOUT",
             "label": "Antitrust double-count carve-out",
             "description": null,
-            "line": 274
+            "line": 216
           }
         ]
       },
@@ -4801,37 +4801,37 @@
             "code": "NOTICE_CONSULT",
             "label": "Notice and consultation",
             "description": null,
-            "line": 278
+            "line": 220
           },
           {
             "code": "GOOD_FAITH_VIEWS",
             "label": "Consider views in good faith",
             "description": null,
-            "line": 279
+            "line": 221
           },
           {
             "code": "INCORPORATE_COMMENTS",
             "label": "Incorporate reasonable comments",
             "description": null,
-            "line": 280
+            "line": 222
           },
           {
             "code": "PARTICIPATE",
             "label": "Reasonable opportunity to participate",
             "description": null,
-            "line": 281
+            "line": 223
           },
           {
             "code": "CONSENT_NOT_UNREASONABLE",
             "label": "Consent not to be unreasonably withheld",
             "description": null,
-            "line": 282
+            "line": 224
           },
           {
             "code": "CONSENT_SOLE",
             "label": "Consent in sole discretion",
             "description": null,
-            "line": 283
+            "line": 225
           }
         ]
       },
@@ -4844,25 +4844,25 @@
             "code": "BUYER_UNILATERAL_GF",
             "label": "Buyer may pull-and-refile (good-faith gated)",
             "description": null,
-            "line": 287
+            "line": 229
           },
           {
             "code": "SELLER_CONSENT_GATED",
             "label": "Seller consent gated",
             "description": null,
-            "line": 288
+            "line": 230
           },
           {
             "code": "MUTUAL_CONSENT",
             "label": "Mutual consent",
             "description": null,
-            "line": 289
+            "line": 231
           },
           {
             "code": "SILENT",
             "label": "Silent",
             "description": null,
-            "line": 227
+            "line": 169
           }
         ]
       },
@@ -4875,37 +4875,37 @@
             "code": "BARRED_MUTUAL_CONSENT",
             "label": "Barred absent mutual consent",
             "description": null,
-            "line": 294
+            "line": 236
           },
           {
             "code": "NOT_UNREASONABLY_WITHHELD",
             "label": "Consent not to be unreasonably withheld",
             "description": null,
-            "line": 158
+            "line": 100
           },
           {
             "code": "BUYER_ONLY_RESTRICTED",
             "label": "Buyer only restricted",
             "description": null,
-            "line": 296
+            "line": 238
           },
           {
             "code": "CAPPED_DISCRETION",
             "label": "Capped discretion",
             "description": null,
-            "line": 297
+            "line": 239
           },
           {
             "code": "BUYER_OPTION_CONSULT",
             "label": "Buyer option after consultation",
             "description": null,
-            "line": 298
+            "line": 240
           },
           {
             "code": "SILENT",
             "label": "Silent",
             "description": null,
-            "line": 227
+            "line": 169
           }
         ]
       },
@@ -4918,13 +4918,13 @@
             "code": "HSR",
             "label": "HSR Act waiting period expired or terminated",
             "description": null,
-            "line": 312
+            "line": 254
           },
           {
             "code": "SCHEDULED_APPROVALS",
             "label": "Other scheduled regulatory approvals obtained",
             "description": null,
-            "line": 313
+            "line": 255
           }
         ]
       },
@@ -4937,19 +4937,19 @@
             "code": "PARTY_MUTUAL",
             "label": "Mutual (both parties)",
             "description": null,
-            "line": 214
+            "line": 156
           },
           {
             "code": "PARTY_BUYER",
             "label": "Buyer / Parent only",
             "description": null,
-            "line": 326
+            "line": 268
           },
           {
             "code": "PARTY_TARGET",
             "label": "Target / Company only",
             "description": null,
-            "line": 327
+            "line": 269
           }
         ]
       },
@@ -4962,220 +4962,61 @@
             "code": "STOCK_OPTIONS",
             "label": "Stock Options",
             "description": null,
-            "line": 335
+            "line": 277
           },
           {
             "code": "RSUs",
             "label": "Restricted Stock Units (RSUs)",
             "description": null,
-            "line": 336
+            "line": 278
           },
           {
             "code": "PSUs",
             "label": "Performance Stock Units (PSUs)",
             "description": null,
-            "line": 337
+            "line": 279
           },
           {
             "code": "RESTRICTED_STOCK",
             "label": "Restricted Stock Awards",
             "description": null,
-            "line": 338
+            "line": 280
           },
           {
             "code": "WARRANTS",
             "label": "Warrants",
             "description": null,
-            "line": 339
+            "line": 281
           },
           {
             "code": "ESPP",
             "label": "Employee Stock Purchase Plan rights",
             "description": null,
-            "line": 340
+            "line": 282
           },
           {
             "code": "CONVERTIBLE_NOTES",
             "label": "Convertible Notes",
             "description": null,
-            "line": 341
+            "line": 283
           },
           {
             "code": "SARS",
             "label": "Stock Appreciation Rights",
             "description": null,
-            "line": 342
+            "line": 284
           },
           {
             "code": "PHANTOM_STOCK",
             "label": "Phantom Stock",
             "description": null,
-            "line": 343
+            "line": 285
           },
           {
             "code": "DEFERRED_COMPENSATION",
             "label": "Deferred Compensation Awards",
             "description": null,
-            "line": 344
-          }
-        ]
-      },
-      {
-        "family": "KNOWLEDGE_QUALIFIER_CODES",
-        "kind": "string_map",
-        "size": 1,
-        "codes": [
-          {
-            "code": "KNOWLEDGE_QUALIFIED",
-            "label": "Knowledge-qualified",
-            "description": null,
-            "line": 75
-          }
-        ]
-      },
-      {
-        "family": "UNDISCLOSED_LIABILITIES_EXCEPTION_CODES",
-        "kind": "string_map",
-        "size": 18,
-        "codes": [
-          {
-            "code": "BALANCE_SHEET_DISCLOSED",
-            "label": "Reflected or reserved on the balance sheet",
-            "description": null,
-            "line": 93
-          },
-          {
-            "code": "BALANCE_SHEET_RESERVED",
-            "label": "Reflected or reserved on the balance sheet",
-            "description": null,
-            "line": 94
-          },
-          {
-            "code": "ORDINARY_COURSE_SINCE_DATE",
-            "label": "Incurred in the ordinary course since the balance-sheet date",
-            "description": null,
-            "line": 95
-          },
-          {
-            "code": "GENERAL_ORDINARY_COURSE",
-            "label": "Incurred in the ordinary course since the balance-sheet date",
-            "description": null,
-            "line": 96
-          },
-          {
-            "code": "TRANSACTION_RELATED",
-            "label": "Incurred in connection with the transactions",
-            "description": null,
-            "line": 97
-          },
-          {
-            "code": "TRANSACTION_EXPENSES",
-            "label": "Incurred in connection with the transactions",
-            "description": null,
-            "line": 98
-          },
-          {
-            "code": "CONTRACT_OBLIGATIONS",
-            "label": "Future performance under existing contracts",
-            "description": null,
-            "line": 99
-          },
-          {
-            "code": "CONTRACTS",
-            "label": "Future performance under existing contracts",
-            "description": null,
-            "line": 42
-          },
-          {
-            "code": "MATERIAL_CONTRACT_PERFORMANCE",
-            "label": "Future performance under existing contracts",
-            "description": null,
-            "line": 101
-          },
-          {
-            "code": "MAE_THRESHOLD",
-            "label": "Would not reasonably be expected to have an MAE",
-            "description": null,
-            "line": 102
-          },
-          {
-            "code": "MAE",
-            "label": "Would not reasonably be expected to have an MAE",
-            "description": null,
-            "line": 103
-          },
-          {
-            "code": "MAE_EXCEPTION",
-            "label": "Would not reasonably be expected to have an MAE",
-            "description": null,
-            "line": 104
-          },
-          {
-            "code": "MAT_MAE_AGGREGATE",
-            "label": "Would not reasonably be expected to have an MAE",
-            "description": null,
-            "line": 105
-          },
-          {
-            "code": "PAID_OR_DISCHARGED",
-            "label": "Since paid or discharged",
-            "description": null,
-            "line": 106
-          },
-          {
-            "code": "FINANCIAL_STATEMENTS",
-            "label": "Disclosed in SEC financial statements or notes",
-            "description": null,
-            "line": 107
-          },
-          {
-            "code": "ORDINARY_COURSE",
-            "label": "Incurred in the ordinary course since the balance-sheet date",
-            "description": null,
-            "line": 27
-          },
-          {
-            "code": "DISCLOSURE_SCHEDULE",
-            "label": "As disclosed",
-            "description": null,
-            "line": 28
-          },
-          {
-            "code": "OTHER",
-            "label": "Other exception",
-            "description": null,
-            "line": 63
-          }
-        ]
-      },
-      {
-        "family": "ABSENCE_OF_CHANGES_EXCEPTION_CODES",
-        "kind": "string_map",
-        "size": 4,
-        "codes": [
-          {
-            "code": "GENERAL_ORDINARY_COURSE",
-            "label": "Operations in the ordinary course",
-            "description": null,
-            "line": 96
-          },
-          {
-            "code": "ORDINARY_COURSE",
-            "label": "Operations in the ordinary course",
-            "description": null,
-            "line": 27
-          },
-          {
-            "code": "SPECIFIED_IOCS",
-            "label": "Actions permitted or required by the interim operating covenants",
-            "description": null,
-            "line": 120
-          },
-          {
-            "code": "OTHER",
-            "label": "Other exception",
-            "description": null,
-            "line": 63
+            "line": 286
           }
         ]
       },
@@ -5188,61 +5029,61 @@
             "code": "CASHED_OUT_AT_CONSIDERATION",
             "label": "Cashed out at Merger Consideration",
             "description": null,
-            "line": 352
+            "line": 294
           },
           {
             "code": "CASHED_OUT_SPREAD",
             "label": "Cashed Out at Spread",
             "description": null,
-            "line": 353
+            "line": 295
           },
           {
             "code": "ACCELERATED_VESTING",
             "label": "Vesting accelerated and cashed out",
             "description": null,
-            "line": 354
+            "line": 296
           },
           {
             "code": "PARTIAL_ACCELERATION",
             "label": "Partial vesting acceleration",
             "description": null,
-            "line": 355
+            "line": 297
           },
           {
             "code": "ASSUMED_BY_BUYER",
             "label": "Assumed and converted to buyer equity",
             "description": null,
-            "line": 356
+            "line": 298
           },
           {
             "code": "CANCELLED_NO_CONSIDERATION",
             "label": "Cancelled without consideration",
             "description": null,
-            "line": 357
+            "line": 299
           },
           {
             "code": "CONTINUED_VESTING",
             "label": "Continues vesting on original schedule (no change)",
             "description": null,
-            "line": 358
+            "line": 300
           },
           {
             "code": "REPLACEMENT_AWARDS",
             "label": "Cancelled and replaced with retention awards",
             "description": null,
-            "line": 359
+            "line": 301
           },
           {
             "code": "DOUBLE_TRIGGER",
             "label": "Double-trigger acceleration (closing + qualifying termination)",
             "description": null,
-            "line": 360
+            "line": 302
           },
           {
             "code": "PARACHUTE_LIMITED",
             "label": "Subject to 280G parachute payment limits",
             "description": null,
-            "line": 361
+            "line": 303
           }
         ]
       },
@@ -5255,49 +5096,49 @@
             "code": "FULLY_ACCELERATED",
             "label": "Fully accelerated at closing",
             "description": null,
-            "line": 369
+            "line": 311
           },
           {
             "code": "PARTIALLY_ACCELERATED",
             "label": "Partially accelerated at closing",
             "description": null,
-            "line": 370
+            "line": 312
           },
           {
             "code": "DOUBLE_TRIGGER_ACCEL",
             "label": "Acceleration on double trigger (closing + termination)",
             "description": null,
-            "line": 371
+            "line": 313
           },
           {
             "code": "ACCEL_ELSE_DOUBLE_TRIGGER",
             "label": "Accelerates if it vests by its terms; otherwise rolls over subject to double-trigger vesting",
             "description": null,
-            "line": 375
+            "line": 317
           },
           {
             "code": "NO_ACCELERATION",
             "label": "No acceleration; continues vesting",
             "description": null,
-            "line": 376
+            "line": 318
           },
           {
             "code": "TIME_BASED_VESTING",
             "label": "Time-based vesting per original schedule",
             "description": null,
-            "line": 377
+            "line": 319
           },
           {
             "code": "PERFORMANCE_DEEMED_ACHIEVED",
             "label": "Performance conditions deemed achieved",
             "description": null,
-            "line": 378
+            "line": 320
           },
           {
             "code": "PERFORMANCE_PRORATED",
             "label": "Performance conditions prorated",
             "description": null,
-            "line": 379
+            "line": 321
           }
         ]
       },
@@ -5310,43 +5151,43 @@
             "code": "NO_LESS_FAVORABLE",
             "label": "No less favorable than current",
             "description": null,
-            "line": 393
+            "line": 335
           },
           {
             "code": "SUBSTANTIALLY_SIMILAR",
             "label": "Substantially similar to current",
             "description": null,
-            "line": 394
+            "line": 336
           },
           {
             "code": "SUBSTANTIALLY_COMPARABLE",
             "label": "Substantially comparable to current",
             "description": null,
-            "line": 395
+            "line": 337
           },
           {
             "code": "IN_THE_AGGREGATE",
             "label": "In the aggregate (rebalancing permitted)",
             "description": null,
-            "line": 396
+            "line": 338
           },
           {
             "code": "COMPARABLE_TO_BUYER_EMPLOYEES",
             "label": "Comparable to similarly situated buyer employees",
             "description": null,
-            "line": 397
+            "line": 339
           },
           {
             "code": "BUYER_DISCRETION",
             "label": "At buyer's discretion",
             "description": null,
-            "line": 241
+            "line": 183
           },
           {
             "code": "TARGET_BASELINE",
             "label": "At target's pre-closing levels",
             "description": null,
-            "line": 399
+            "line": 341
           }
         ]
       },
@@ -5359,61 +5200,61 @@
             "code": "BASE_SALARY",
             "label": "Base salary",
             "description": null,
-            "line": 403
+            "line": 345
           },
           {
             "code": "TARGET_BONUS",
             "label": "Target annual bonus / cash incentive",
             "description": null,
-            "line": 404
+            "line": 346
           },
           {
             "code": "ANNUAL_BONUS_PAID",
             "label": "Earned annual bonus (pro-rata)",
             "description": null,
-            "line": 405
+            "line": 347
           },
           {
             "code": "LONG_TERM_INCENTIVE",
             "label": "Long-term incentive (LTI) / equity grants",
             "description": null,
-            "line": 406
+            "line": 348
           },
           {
             "code": "HEALTH_WELFARE",
             "label": "Health and welfare benefits",
             "description": null,
-            "line": 407
+            "line": 349
           },
           {
             "code": "RETIREMENT",
             "label": "Retirement / 401(k) benefits",
             "description": null,
-            "line": 408
+            "line": 350
           },
           {
             "code": "SEVERANCE",
             "label": "Severance / change-in-control protection",
             "description": null,
-            "line": 409
+            "line": 351
           },
           {
             "code": "PTO",
             "label": "Paid time off / vacation",
             "description": null,
-            "line": 410
+            "line": 352
           },
           {
             "code": "EQUITY_AWARDS",
             "label": "Equity / stock awards (new grants)",
             "description": null,
-            "line": 411
+            "line": 353
           },
           {
             "code": "OTHER_BENEFITS",
             "label": "Other benefits",
             "description": null,
-            "line": 412
+            "line": 354
           }
         ]
       },
@@ -5426,67 +5267,67 @@
             "code": "ONE_STEP_MERGER",
             "label": "One-step merger",
             "description": null,
-            "line": 430
+            "line": 372
           },
           {
             "code": "TWO_STEP_TENDER_OFFER",
             "label": "Two-step tender offer",
             "description": null,
-            "line": 434
+            "line": 376
           },
           {
             "code": "REVERSE_TRIANGULAR_MERGER",
             "label": "Reverse triangular merger",
             "description": null,
-            "line": 438
+            "line": 380
           },
           {
             "code": "FORWARD_TRIANGULAR_MERGER",
             "label": "Forward triangular merger",
             "description": null,
-            "line": 442
+            "line": 384
           },
           {
             "code": "DOUBLE_DUMMY",
             "label": "Double dummy",
             "description": null,
-            "line": 446
+            "line": 388
           },
           {
             "code": "ASSET_PURCHASE",
             "label": "Asset purchase",
             "description": null,
-            "line": 450
+            "line": 392
           },
           {
             "code": "STOCK_PURCHASE",
             "label": "Stock purchase",
             "description": null,
-            "line": 454
+            "line": 396
           },
           {
             "code": "SCHEME_OF_ARRANGEMENT",
             "label": "Scheme of arrangement",
             "description": null,
-            "line": 458
+            "line": 400
           },
           {
             "code": "AMALGAMATION",
             "label": "Amalgamation",
             "description": null,
-            "line": 462
+            "line": 404
           },
           {
             "code": "STATUTORY_MERGER",
             "label": "Statutory merger",
             "description": null,
-            "line": 466
+            "line": 408
           },
           {
             "code": "REDOMICILIATION",
             "label": "Redomiciliation / Reincorporation",
             "description": null,
-            "line": 470
+            "line": 412
           },
           {
             "code": "OTHER",
@@ -5505,67 +5346,67 @@
             "code": "ONE_STEP_MERGER",
             "label": "One-step merger",
             "description": null,
-            "line": 430
+            "line": 372
           },
           {
             "code": "TWO_STEP_TENDER_OFFER",
             "label": "Two-step tender offer",
             "description": null,
-            "line": 434
+            "line": 376
           },
           {
             "code": "REVERSE_TRIANGULAR_MERGER",
             "label": "Reverse triangular merger",
             "description": null,
-            "line": 438
+            "line": 380
           },
           {
             "code": "FORWARD_TRIANGULAR_MERGER",
             "label": "Forward triangular merger",
             "description": null,
-            "line": 442
+            "line": 384
           },
           {
             "code": "DOUBLE_DUMMY",
             "label": "Double dummy",
             "description": null,
-            "line": 446
+            "line": 388
           },
           {
             "code": "ASSET_PURCHASE",
             "label": "Asset purchase",
             "description": null,
-            "line": 450
+            "line": 392
           },
           {
             "code": "STOCK_PURCHASE",
             "label": "Stock purchase",
             "description": null,
-            "line": 454
+            "line": 396
           },
           {
             "code": "SCHEME_OF_ARRANGEMENT",
             "label": "Scheme of arrangement",
             "description": null,
-            "line": 458
+            "line": 400
           },
           {
             "code": "AMALGAMATION",
             "label": "Amalgamation",
             "description": null,
-            "line": 462
+            "line": 404
           },
           {
             "code": "STATUTORY_MERGER",
             "label": "Statutory merger",
             "description": null,
-            "line": 466
+            "line": 408
           },
           {
             "code": "REDOMICILIATION",
             "label": "Redomiciliation / Reincorporation",
             "description": null,
-            "line": 470
+            "line": 412
           },
           {
             "code": "OTHER",
@@ -5584,157 +5425,157 @@
             "code": "ECONOMY_GENERAL",
             "label": "General economic conditions",
             "description": null,
-            "line": 488
+            "line": 430
           },
           {
             "code": "INDUSTRY_GENERAL",
             "label": "Industry-wide conditions",
             "description": null,
-            "line": 492
+            "line": 434
           },
           {
             "code": "FINANCIAL_MARKETS",
             "label": "Financial / capital / credit market conditions",
             "description": null,
-            "line": 496
+            "line": 438
           },
           {
             "code": "ACTS_OF_WAR_TERRORISM",
             "label": "Acts of war, armed hostilities, or terrorism",
             "description": null,
-            "line": 500
+            "line": 442
           },
           {
             "code": "NATURAL_DISASTERS",
             "label": "Natural disasters or acts of God",
             "description": null,
-            "line": 504
+            "line": 446
           },
           {
             "code": "PANDEMIC",
             "label": "Pandemic / epidemic / public health crisis",
             "description": null,
-            "line": 508
+            "line": 450
           },
           {
             "code": "ANNOUNCEMENT_OR_PENDENCY",
             "label": "Announcement or pendency of the transaction",
             "description": null,
-            "line": 512
+            "line": 454
           },
           {
             "code": "COMPLIANCE_WITH_AGREEMENT",
             "label": "Compliance with the terms of this Agreement",
             "description": null,
-            "line": 516
+            "line": 458
           },
           {
             "code": "ACTIONS_REQUESTED_BY_PARENT",
             "label": "Actions taken at the request or with consent of Parent",
             "description": null,
-            "line": 520
+            "line": 462
           },
           {
             "code": "CHANGE_IN_LAW",
             "label": "Changes in applicable law or regulation",
             "description": null,
-            "line": 524
+            "line": 466
           },
           {
             "code": "CHANGE_IN_GAAP",
             "label": "Changes in GAAP or accounting principles",
             "description": null,
-            "line": 528
+            "line": 470
           },
           {
             "code": "STOCK_PRICE_CHANGES",
             "label": "Changes in the trading price or volume of stock",
             "description": null,
-            "line": 532
+            "line": 474
           },
           {
             "code": "FAILURE_TO_MEET_PROJECTIONS",
             "label": "Failure to meet internal projections or forecasts",
             "description": null,
-            "line": 536
+            "line": 478
           },
           {
             "code": "PRICING_MFN",
             "label": "Most-favored-nation pricing actions",
             "description": null,
-            "line": 540
+            "line": 482
           },
           {
             "code": "EXECUTIVE_ACTION",
             "label": "Executive orders / sanctions / tariffs",
             "description": null,
-            "line": 544
+            "line": 486
           },
           {
             "code": "TARIFFS",
             "label": "Tariffs / trade barriers",
             "description": null,
-            "line": 548
+            "line": 490
           },
           {
             "code": "GOVERNMENT_SHUTDOWNS",
             "label": "Government shutdowns / civil unrest",
             "description": null,
-            "line": 552
+            "line": 494
           },
           {
             "code": "CLINICAL_RESULTS",
             "label": "Clinical trial results (life sciences)",
             "description": null,
-            "line": 556
+            "line": 498
           },
           {
             "code": "FDA_DISCUSSIONS",
             "label": "FDA discussions or correspondence (life sciences)",
             "description": null,
-            "line": 560
+            "line": 502
           },
           {
             "code": "FDA_APPROVALS_COMPETITOR_ENTRY",
             "label": "FDA approvals of competitor products / competitor entry",
             "description": null,
-            "line": 564
+            "line": 506
           },
           {
             "code": "SUPPLY_CHAIN",
             "label": "Supply chain disruptions",
             "description": null,
-            "line": 568
+            "line": 510
           },
           {
             "code": "PRICING_REIMBURSEMENT",
             "label": "Pricing / reimbursement changes (healthcare)",
             "description": null,
-            "line": 572
+            "line": 514
           },
           {
             "code": "MEDICAL_ORGS_STATEMENTS",
             "label": "Statements by medical / scientific organizations",
             "description": null,
-            "line": 576
+            "line": 518
           },
           {
             "code": "PATENTS_EXCLUSIVITY",
             "label": "Patent expirations / loss of exclusivity",
             "description": null,
-            "line": 580
+            "line": 522
           },
           {
             "code": "PARENT_ACTIONS_OR_INACTION",
             "label": "Acts or omissions of Parent / Buyer",
             "description": null,
-            "line": 584
+            "line": 526
           },
           {
             "code": "EMPLOYEE_DEPARTURES",
             "label": "Loss of employees or executive departures",
             "description": null,
-            "line": 588
+            "line": 530
           },
           {
             "code": "OTHER",
@@ -5753,157 +5594,157 @@
             "code": "ECONOMY_GENERAL",
             "label": "General economic conditions",
             "description": null,
-            "line": 488
+            "line": 430
           },
           {
             "code": "INDUSTRY_GENERAL",
             "label": "Industry-wide conditions",
             "description": null,
-            "line": 492
+            "line": 434
           },
           {
             "code": "FINANCIAL_MARKETS",
             "label": "Financial / capital / credit market conditions",
             "description": null,
-            "line": 496
+            "line": 438
           },
           {
             "code": "ACTS_OF_WAR_TERRORISM",
             "label": "Acts of war, armed hostilities, or terrorism",
             "description": null,
-            "line": 500
+            "line": 442
           },
           {
             "code": "NATURAL_DISASTERS",
             "label": "Natural disasters or acts of God",
             "description": null,
-            "line": 504
+            "line": 446
           },
           {
             "code": "PANDEMIC",
             "label": "Pandemic / epidemic / public health crisis",
             "description": null,
-            "line": 508
+            "line": 450
           },
           {
             "code": "ANNOUNCEMENT_OR_PENDENCY",
             "label": "Announcement or pendency of the transaction",
             "description": null,
-            "line": 512
+            "line": 454
           },
           {
             "code": "COMPLIANCE_WITH_AGREEMENT",
             "label": "Compliance with the terms of this Agreement",
             "description": null,
-            "line": 516
+            "line": 458
           },
           {
             "code": "ACTIONS_REQUESTED_BY_PARENT",
             "label": "Actions taken at the request or with consent of Parent",
             "description": null,
-            "line": 520
+            "line": 462
           },
           {
             "code": "CHANGE_IN_LAW",
             "label": "Changes in applicable law or regulation",
             "description": null,
-            "line": 524
+            "line": 466
           },
           {
             "code": "CHANGE_IN_GAAP",
             "label": "Changes in GAAP or accounting principles",
             "description": null,
-            "line": 528
+            "line": 470
           },
           {
             "code": "STOCK_PRICE_CHANGES",
             "label": "Changes in the trading price or volume of stock",
             "description": null,
-            "line": 532
+            "line": 474
           },
           {
             "code": "FAILURE_TO_MEET_PROJECTIONS",
             "label": "Failure to meet internal projections or forecasts",
             "description": null,
-            "line": 536
+            "line": 478
           },
           {
             "code": "PRICING_MFN",
             "label": "Most-favored-nation pricing actions",
             "description": null,
-            "line": 540
+            "line": 482
           },
           {
             "code": "EXECUTIVE_ACTION",
             "label": "Executive orders / sanctions / tariffs",
             "description": null,
-            "line": 544
+            "line": 486
           },
           {
             "code": "TARIFFS",
             "label": "Tariffs / trade barriers",
             "description": null,
-            "line": 548
+            "line": 490
           },
           {
             "code": "GOVERNMENT_SHUTDOWNS",
             "label": "Government shutdowns / civil unrest",
             "description": null,
-            "line": 552
+            "line": 494
           },
           {
             "code": "CLINICAL_RESULTS",
             "label": "Clinical trial results (life sciences)",
             "description": null,
-            "line": 556
+            "line": 498
           },
           {
             "code": "FDA_DISCUSSIONS",
             "label": "FDA discussions or correspondence (life sciences)",
             "description": null,
-            "line": 560
+            "line": 502
           },
           {
             "code": "FDA_APPROVALS_COMPETITOR_ENTRY",
             "label": "FDA approvals of competitor products / competitor entry",
             "description": null,
-            "line": 564
+            "line": 506
           },
           {
             "code": "SUPPLY_CHAIN",
             "label": "Supply chain disruptions",
             "description": null,
-            "line": 568
+            "line": 510
           },
           {
             "code": "PRICING_REIMBURSEMENT",
             "label": "Pricing / reimbursement changes (healthcare)",
             "description": null,
-            "line": 572
+            "line": 514
           },
           {
             "code": "MEDICAL_ORGS_STATEMENTS",
             "label": "Statements by medical / scientific organizations",
             "description": null,
-            "line": 576
+            "line": 518
           },
           {
             "code": "PATENTS_EXCLUSIVITY",
             "label": "Patent expirations / loss of exclusivity",
             "description": null,
-            "line": 580
+            "line": 522
           },
           {
             "code": "PARENT_ACTIONS_OR_INACTION",
             "label": "Acts or omissions of Parent / Buyer",
             "description": null,
-            "line": 584
+            "line": 526
           },
           {
             "code": "EMPLOYEE_DEPARTURES",
             "label": "Loss of employees or executive departures",
             "description": null,
-            "line": 588
+            "line": 530
           },
           {
             "code": "OTHER",
@@ -5922,79 +5763,79 @@
             "code": "ACQUISITIONS",
             "label": "Acquisitions / business combinations",
             "description": null,
-            "line": 604
+            "line": 546
           },
           {
             "code": "ASSET_SALES_LICENSES",
             "label": "Asset sales / divestitures / licenses",
             "description": null,
-            "line": 617
+            "line": 559
           },
           {
             "code": "MERGE_DISSOLVE_RECAP",
             "label": "Merger / consolidation / liquidation / recapitalization",
             "description": null,
-            "line": 631
+            "line": 573
           },
           {
             "code": "INDEBTEDNESS",
             "label": "Indebtedness / financing",
             "description": null,
-            "line": 644
+            "line": 586
           },
           {
             "code": "THIRD_PARTY_OBLIGATIONS",
             "label": "Guarantees / third-party obligations",
             "description": null,
-            "line": 648
+            "line": 590
           },
           {
             "code": "LOANS_ADVANCES_CONTRIBUTIONS",
             "label": "Loans / advances / capital contributions",
             "description": null,
-            "line": 652
+            "line": 594
           },
           {
             "code": "CAPEX",
             "label": "Capital expenditures",
             "description": null,
-            "line": 656
+            "line": 598
           },
           {
             "code": "LITIGATION_SETTLEMENTS",
             "label": "Litigation settlements",
             "description": null,
-            "line": 660
+            "line": 602
           },
           {
             "code": "NEW_CONTRACTS",
             "label": "New material contracts",
             "description": null,
-            "line": 664
+            "line": 606
           },
           {
             "code": "CONTRACT_AMENDMENTS",
             "label": "Contract amendments / terminations",
             "description": null,
-            "line": 668
+            "line": 610
           },
           {
             "code": "EMPLOYEE_COMP",
             "label": "Employee compensation / benefit increases",
             "description": null,
-            "line": 672
+            "line": 614
           },
           {
             "code": "REAL_ESTATE",
             "label": "Real estate / leases",
             "description": null,
-            "line": 676
+            "line": 618
           },
           {
             "code": "IP_LICENSES",
             "label": "Intellectual property licenses / assignments",
             "description": null,
-            "line": 680
+            "line": 622
           },
           {
             "code": "OTHER",
@@ -6013,79 +5854,79 @@
             "code": "ACQUISITIONS",
             "label": "Acquisitions / business combinations",
             "description": null,
-            "line": 604
+            "line": 546
           },
           {
             "code": "ASSET_SALES_LICENSES",
             "label": "Asset sales / divestitures / licenses",
             "description": null,
-            "line": 617
+            "line": 559
           },
           {
             "code": "MERGE_DISSOLVE_RECAP",
             "label": "Merger / consolidation / liquidation / recapitalization",
             "description": null,
-            "line": 631
+            "line": 573
           },
           {
             "code": "INDEBTEDNESS",
             "label": "Indebtedness / financing",
             "description": null,
-            "line": 644
+            "line": 586
           },
           {
             "code": "THIRD_PARTY_OBLIGATIONS",
             "label": "Guarantees / third-party obligations",
             "description": null,
-            "line": 648
+            "line": 590
           },
           {
             "code": "LOANS_ADVANCES_CONTRIBUTIONS",
             "label": "Loans / advances / capital contributions",
             "description": null,
-            "line": 652
+            "line": 594
           },
           {
             "code": "CAPEX",
             "label": "Capital expenditures",
             "description": null,
-            "line": 656
+            "line": 598
           },
           {
             "code": "LITIGATION_SETTLEMENTS",
             "label": "Litigation settlements",
             "description": null,
-            "line": 660
+            "line": 602
           },
           {
             "code": "NEW_CONTRACTS",
             "label": "New material contracts",
             "description": null,
-            "line": 664
+            "line": 606
           },
           {
             "code": "CONTRACT_AMENDMENTS",
             "label": "Contract amendments / terminations",
             "description": null,
-            "line": 668
+            "line": 610
           },
           {
             "code": "EMPLOYEE_COMP",
             "label": "Employee compensation / benefit increases",
             "description": null,
-            "line": 672
+            "line": 614
           },
           {
             "code": "REAL_ESTATE",
             "label": "Real estate / leases",
             "description": null,
-            "line": 676
+            "line": 618
           },
           {
             "code": "IP_LICENSES",
             "label": "Intellectual property licenses / assignments",
             "description": null,
-            "line": 680
+            "line": 622
           },
           {
             "code": "OTHER",
@@ -6104,169 +5945,169 @@
             "code": "AGGREGATE_PAYMENTS",
             "label": "Contracts above an aggregate-payments threshold",
             "description": null,
-            "line": 696
+            "line": 638
           },
           {
             "code": "INDEBTEDNESS",
             "label": "Indebtedness contracts",
             "description": null,
-            "line": 644
+            "line": 586
           },
           {
             "code": "JV_PARTNERSHIPS",
             "label": "Joint ventures / partnerships",
             "description": null,
-            "line": 704
+            "line": 646
           },
           {
             "code": "MA_AGREEMENTS",
             "label": "M&A / acquisition agreements",
             "description": null,
-            "line": 708
+            "line": 650
           },
           {
             "code": "IP_LICENSES_IN",
             "label": "Inbound IP licenses",
             "description": null,
-            "line": 712
+            "line": 654
           },
           {
             "code": "IP_LICENSES_OUT",
             "label": "Outbound IP licenses",
             "description": null,
-            "line": 716
+            "line": 658
           },
           {
             "code": "SUPPLY",
             "label": "Supplier agreements",
             "description": null,
-            "line": 720
+            "line": 662
           },
           {
             "code": "MANUFACTURE",
             "label": "Manufacturing agreements",
             "description": null,
-            "line": 724
+            "line": 666
           },
           {
             "code": "DISTRIBUTION",
             "label": "Distribution / reseller agreements",
             "description": null,
-            "line": 728
+            "line": 670
           },
           {
             "code": "COLLABORATION",
             "label": "Collaboration / R&D agreements",
             "description": null,
-            "line": 732
+            "line": 674
           },
           {
             "code": "SETTLEMENT",
             "label": "Settlement / consent agreements",
             "description": null,
-            "line": 736
+            "line": 678
           },
           {
             "code": "NONCOMPETE",
             "label": "Non-competition / non-solicitation agreements",
             "description": null,
-            "line": 740
+            "line": 682
           },
           {
             "code": "REAL_ESTATE",
             "label": "Real estate leases",
             "description": null,
-            "line": 676
+            "line": 618
           },
           {
             "code": "EMPLOYMENT_KEY",
             "label": "Key employment / executive agreements",
             "description": null,
-            "line": 748
+            "line": 690
           },
           {
             "code": "GOVERNMENT_CONTRACTS",
             "label": "Government contracts",
             "description": null,
-            "line": 752
+            "line": 694
           },
           {
             "code": "AFFILIATE_TRANSACTIONS",
             "label": "Affiliate / related-party transactions",
             "description": null,
-            "line": 759
+            "line": 701
           },
           {
             "code": "EXCLUSIVITY_MFN",
             "label": "Exclusivity / most-favored-nation / standstill",
             "description": null,
-            "line": 763
+            "line": 705
           },
           {
             "code": "CAPEX_COMMITMENTS",
             "label": "Capital expenditure commitments",
             "description": null,
-            "line": 767
+            "line": 709
           },
           {
             "code": "DATA_PRIVACY",
             "label": "Data privacy / security agreements",
             "description": null,
-            "line": 771
+            "line": 713
           },
           {
             "code": "VOTING_REGISTRATION_RIGHTS",
             "label": "Voting / registration-rights / stockholder agreements",
             "description": null,
-            "line": 775
+            "line": 717
           },
           {
             "code": "SEC_ITEM_601",
             "label": "SEC Item 601(b) contracts",
             "description": null,
-            "line": 781
+            "line": 723
           },
           {
             "code": "IP_DEVELOPMENT",
             "label": "IP development contracts",
             "description": null,
-            "line": 785
+            "line": 727
           },
           {
             "code": "SINGLE_SOURCE",
             "label": "Single source procurement contracts",
             "description": null,
-            "line": 789
+            "line": 731
           },
           {
             "code": "CRO",
             "label": "Clinical research organization contracts",
             "description": null,
-            "line": 793
+            "line": 735
           },
           {
             "code": "MA_ONGOING_OBLIGATIONS",
             "label": "M&A agreements with ongoing obligations",
             "description": null,
-            "line": 797
+            "line": 739
           },
           {
             "code": "ROFR_ROFN",
             "label": "Agreements with ROFO/ROFN",
             "description": null,
-            "line": 801
+            "line": 743
           },
           {
             "code": "HEDGING",
             "label": "Hedging and derivative contracts",
             "description": null,
-            "line": 805
+            "line": 747
           },
           {
             "code": "EMPLOYEE_LOANS",
             "label": "Employee loans and advances",
             "description": null,
-            "line": 809
+            "line": 751
           },
           {
             "code": "OTHER",
@@ -6285,169 +6126,169 @@
             "code": "AGGREGATE_PAYMENTS",
             "label": "Contracts above an aggregate-payments threshold",
             "description": null,
-            "line": 696
+            "line": 638
           },
           {
             "code": "INDEBTEDNESS",
             "label": "Indebtedness contracts",
             "description": null,
-            "line": 644
+            "line": 586
           },
           {
             "code": "JV_PARTNERSHIPS",
             "label": "Joint ventures / partnerships",
             "description": null,
-            "line": 704
+            "line": 646
           },
           {
             "code": "MA_AGREEMENTS",
             "label": "M&A / acquisition agreements",
             "description": null,
-            "line": 708
+            "line": 650
           },
           {
             "code": "IP_LICENSES_IN",
             "label": "Inbound IP licenses",
             "description": null,
-            "line": 712
+            "line": 654
           },
           {
             "code": "IP_LICENSES_OUT",
             "label": "Outbound IP licenses",
             "description": null,
-            "line": 716
+            "line": 658
           },
           {
             "code": "SUPPLY",
             "label": "Supplier agreements",
             "description": null,
-            "line": 720
+            "line": 662
           },
           {
             "code": "MANUFACTURE",
             "label": "Manufacturing agreements",
             "description": null,
-            "line": 724
+            "line": 666
           },
           {
             "code": "DISTRIBUTION",
             "label": "Distribution / reseller agreements",
             "description": null,
-            "line": 728
+            "line": 670
           },
           {
             "code": "COLLABORATION",
             "label": "Collaboration / R&D agreements",
             "description": null,
-            "line": 732
+            "line": 674
           },
           {
             "code": "SETTLEMENT",
             "label": "Settlement / consent agreements",
             "description": null,
-            "line": 736
+            "line": 678
           },
           {
             "code": "NONCOMPETE",
             "label": "Non-competition / non-solicitation agreements",
             "description": null,
-            "line": 740
+            "line": 682
           },
           {
             "code": "REAL_ESTATE",
             "label": "Real estate leases",
             "description": null,
-            "line": 676
+            "line": 618
           },
           {
             "code": "EMPLOYMENT_KEY",
             "label": "Key employment / executive agreements",
             "description": null,
-            "line": 748
+            "line": 690
           },
           {
             "code": "GOVERNMENT_CONTRACTS",
             "label": "Government contracts",
             "description": null,
-            "line": 752
+            "line": 694
           },
           {
             "code": "AFFILIATE_TRANSACTIONS",
             "label": "Affiliate / related-party transactions",
             "description": null,
-            "line": 759
+            "line": 701
           },
           {
             "code": "EXCLUSIVITY_MFN",
             "label": "Exclusivity / most-favored-nation / standstill",
             "description": null,
-            "line": 763
+            "line": 705
           },
           {
             "code": "CAPEX_COMMITMENTS",
             "label": "Capital expenditure commitments",
             "description": null,
-            "line": 767
+            "line": 709
           },
           {
             "code": "DATA_PRIVACY",
             "label": "Data privacy / security agreements",
             "description": null,
-            "line": 771
+            "line": 713
           },
           {
             "code": "VOTING_REGISTRATION_RIGHTS",
             "label": "Voting / registration-rights / stockholder agreements",
             "description": null,
-            "line": 775
+            "line": 717
           },
           {
             "code": "SEC_ITEM_601",
             "label": "SEC Item 601(b) contracts",
             "description": null,
-            "line": 781
+            "line": 723
           },
           {
             "code": "IP_DEVELOPMENT",
             "label": "IP development contracts",
             "description": null,
-            "line": 785
+            "line": 727
           },
           {
             "code": "SINGLE_SOURCE",
             "label": "Single source procurement contracts",
             "description": null,
-            "line": 789
+            "line": 731
           },
           {
             "code": "CRO",
             "label": "Clinical research organization contracts",
             "description": null,
-            "line": 793
+            "line": 735
           },
           {
             "code": "MA_ONGOING_OBLIGATIONS",
             "label": "M&A agreements with ongoing obligations",
             "description": null,
-            "line": 797
+            "line": 739
           },
           {
             "code": "ROFR_ROFN",
             "label": "Agreements with ROFO/ROFN",
             "description": null,
-            "line": 801
+            "line": 743
           },
           {
             "code": "HEDGING",
             "label": "Hedging and derivative contracts",
             "description": null,
-            "line": 805
+            "line": 747
           },
           {
             "code": "EMPLOYEE_LOANS",
             "label": "Employee loans and advances",
             "description": null,
-            "line": 809
+            "line": 751
           },
           {
             "code": "OTHER",
@@ -6466,43 +6307,43 @@
             "code": "DIVEST",
             "label": "Divestitures",
             "description": null,
-            "line": 918
+            "line": 860
           },
           {
             "code": "CONDUCT_REMEDY",
             "label": "Conduct remedy",
             "description": null,
-            "line": 919
+            "line": 861
           },
           {
             "code": "LITIGATE",
             "label": "Obligation to litigate",
             "description": null,
-            "line": 920
+            "line": 862
           },
           {
             "code": "FINANCIAL_REMEDY",
             "label": "Financial remedy / payment",
             "description": null,
-            "line": 921
+            "line": 863
           },
           {
             "code": "BEHAVIORAL_REMEDY",
             "label": "Behavioral remedy",
             "description": null,
-            "line": 922
+            "line": 864
           },
           {
             "code": "MULTIPLE",
             "label": "Multiple required remedies",
             "description": null,
-            "line": 923
+            "line": 865
           },
           {
             "code": "NONE",
             "label": "No required remedies",
             "description": null,
-            "line": 261
+            "line": 203
           },
           {
             "code": "OTHER",
@@ -6521,43 +6362,43 @@
             "code": "DIVEST",
             "label": "Divestitures",
             "description": null,
-            "line": 918
+            "line": 860
           },
           {
             "code": "CONDUCT_REMEDY",
             "label": "Conduct remedy",
             "description": null,
-            "line": 919
+            "line": 861
           },
           {
             "code": "LITIGATE",
             "label": "Obligation to litigate",
             "description": null,
-            "line": 920
+            "line": 862
           },
           {
             "code": "FINANCIAL_REMEDY",
             "label": "Financial remedy / payment",
             "description": null,
-            "line": 921
+            "line": 863
           },
           {
             "code": "BEHAVIORAL_REMEDY",
             "label": "Behavioral remedy",
             "description": null,
-            "line": 922
+            "line": 864
           },
           {
             "code": "MULTIPLE",
             "label": "Multiple required remedies",
             "description": null,
-            "line": 923
+            "line": 865
           },
           {
             "code": "NONE",
             "label": "No required remedies",
             "description": null,
-            "line": 261
+            "line": 203
           },
           {
             "code": "OTHER",
@@ -6576,67 +6417,67 @@
             "code": "SUPERIOR_PROPOSAL",
             "label": "Company terminates to accept a Superior Proposal",
             "description": null,
-            "line": 936
+            "line": 878
           },
           {
             "code": "RECOMMENDATION_CHANGE",
             "label": "Parent terminates after the Board changes its recommendation",
             "description": null,
-            "line": 940
+            "line": 882
           },
           {
             "code": "NO_SOLICIT_BREACH",
             "label": "Company breaches the no-shop / non-solicitation covenant",
             "description": null,
-            "line": 944
+            "line": 886
           },
           {
             "code": "NAKED_NO_VOTE",
             "label": "Stockholders vote the deal down with no competing proposal on the table",
             "description": null,
-            "line": 948
+            "line": 890
           },
           {
             "code": "TAIL",
             "label": "Deal terminated, and the Company signs or closes an alternative deal within the tail period",
             "description": null,
-            "line": 952
+            "line": 894
           },
           {
             "code": "NO_VOTE",
             "label": "Stockholders fail to approve the deal",
             "description": null,
-            "line": 948
+            "line": 890
           },
           {
             "code": "OUTSIDE_DATE",
             "label": "Deal not closed by the outside date",
             "description": null,
-            "line": 960
+            "line": 902
           },
           {
             "code": "COMPANY_BREACH",
             "label": "Parent terminates for the Company's uncured breach",
             "description": null,
-            "line": 964
+            "line": 906
           },
           {
             "code": "PARENT_BREACH",
             "label": "Company terminates for Parent's uncured breach",
             "description": null,
-            "line": 968
+            "line": 910
           },
           {
             "code": "ANTITRUST_FAILURE",
             "label": "Antitrust / regulatory approval not obtained",
             "description": null,
-            "line": 972
+            "line": 914
           },
           {
             "code": "FINANCING_FAILURE",
             "label": "Parent fails to close when required / financing not funded",
             "description": null,
-            "line": 976
+            "line": 918
           },
           {
             "code": "OTHER",
@@ -6655,67 +6496,67 @@
             "code": "SUPERIOR_PROPOSAL",
             "label": "Company terminates to accept a Superior Proposal",
             "description": null,
-            "line": 936
+            "line": 878
           },
           {
             "code": "RECOMMENDATION_CHANGE",
             "label": "Parent terminates after the Board changes its recommendation",
             "description": null,
-            "line": 940
+            "line": 882
           },
           {
             "code": "NO_SOLICIT_BREACH",
             "label": "Company breaches the no-shop / non-solicitation covenant",
             "description": null,
-            "line": 944
+            "line": 886
           },
           {
             "code": "NAKED_NO_VOTE",
             "label": "Stockholders vote the deal down with no competing proposal on the table",
             "description": null,
-            "line": 948
+            "line": 890
           },
           {
             "code": "TAIL",
             "label": "Deal terminated, and the Company signs or closes an alternative deal within the tail period",
             "description": null,
-            "line": 952
+            "line": 894
           },
           {
             "code": "NO_VOTE",
             "label": "Stockholders fail to approve the deal",
             "description": null,
-            "line": 948
+            "line": 890
           },
           {
             "code": "OUTSIDE_DATE",
             "label": "Deal not closed by the outside date",
             "description": null,
-            "line": 960
+            "line": 902
           },
           {
             "code": "COMPANY_BREACH",
             "label": "Parent terminates for the Company's uncured breach",
             "description": null,
-            "line": 964
+            "line": 906
           },
           {
             "code": "PARENT_BREACH",
             "label": "Company terminates for Parent's uncured breach",
             "description": null,
-            "line": 968
+            "line": 910
           },
           {
             "code": "ANTITRUST_FAILURE",
             "label": "Antitrust / regulatory approval not obtained",
             "description": null,
-            "line": 972
+            "line": 914
           },
           {
             "code": "FINANCING_FAILURE",
             "label": "Parent fails to close when required / financing not funded",
             "description": null,
-            "line": 976
+            "line": 918
           },
           {
             "code": "OTHER",
@@ -6734,25 +6575,25 @@
             "code": "ACTUAL",
             "label": "Actual knowledge",
             "description": null,
-            "line": 988
+            "line": 930
           },
           {
             "code": "CONSTRUCTIVE",
             "label": "Constructive knowledge",
             "description": null,
-            "line": 989
+            "line": 931
           },
           {
             "code": "AFTER_INQUIRY",
             "label": "Knowledge after reasonable inquiry",
             "description": null,
-            "line": 990
+            "line": 932
           },
           {
             "code": "NA",
             "label": "Not applicable / silent",
             "description": null,
-            "line": 198
+            "line": 140
           }
         ]
       },
@@ -6765,25 +6606,25 @@
             "code": "ACTUAL",
             "label": "Actual knowledge",
             "description": null,
-            "line": 988
+            "line": 930
           },
           {
             "code": "CONSTRUCTIVE",
             "label": "Constructive knowledge",
             "description": null,
-            "line": 989
+            "line": 931
           },
           {
             "code": "AFTER_INQUIRY",
             "label": "Knowledge after reasonable inquiry",
             "description": null,
-            "line": 990
+            "line": 932
           },
           {
             "code": "NA",
             "label": "Not applicable / silent",
             "description": null,
-            "line": 198
+            "line": 140
           }
         ]
       },
@@ -6796,67 +6637,67 @@
             "code": "CEO",
             "label": "Chief Executive Officer",
             "description": null,
-            "line": 1003
+            "line": 945
           },
           {
             "code": "CFO",
             "label": "Chief Financial Officer",
             "description": null,
-            "line": 1004
+            "line": 946
           },
           {
             "code": "COO",
             "label": "Chief Operating Officer",
             "description": null,
-            "line": 1005
+            "line": 947
           },
           {
             "code": "CLO",
             "label": "Chief Legal Officer",
             "description": null,
-            "line": 1006
+            "line": 948
           },
           {
             "code": "GENERAL_COUNSEL",
             "label": "General Counsel",
             "description": null,
-            "line": 1007
+            "line": 949
           },
           {
             "code": "CHIEF_MEDICAL_OFFICER",
             "label": "Chief Medical Officer",
             "description": null,
-            "line": 1008
+            "line": 950
           },
           {
             "code": "CHIEF_SCIENTIFIC_OFFICER",
             "label": "Chief Scientific Officer",
             "description": null,
-            "line": 1009
+            "line": 951
           },
           {
             "code": "CHIEF_TECHNOLOGY_OFFICER",
             "label": "Chief Technology Officer",
             "description": null,
-            "line": 1010
+            "line": 952
           },
           {
             "code": "CHIEF_COMMERCIAL_OFFICER",
             "label": "Chief Commercial Officer",
             "description": null,
-            "line": 1011
+            "line": 953
           },
           {
             "code": "EXECUTIVE_OFFICERS",
             "label": "Executive officers",
             "description": null,
-            "line": 1012
+            "line": 954
           },
           {
             "code": "NAMED_SCHEDULE_LIST",
             "label": "Persons listed on Disclosure Letter",
             "description": null,
-            "line": 1013
+            "line": 955
           },
           {
             "code": "OTHER",
@@ -6875,67 +6716,67 @@
             "code": "CEO",
             "label": "Chief Executive Officer",
             "description": null,
-            "line": 1003
+            "line": 945
           },
           {
             "code": "CFO",
             "label": "Chief Financial Officer",
             "description": null,
-            "line": 1004
+            "line": 946
           },
           {
             "code": "COO",
             "label": "Chief Operating Officer",
             "description": null,
-            "line": 1005
+            "line": 947
           },
           {
             "code": "CLO",
             "label": "Chief Legal Officer",
             "description": null,
-            "line": 1006
+            "line": 948
           },
           {
             "code": "GENERAL_COUNSEL",
             "label": "General Counsel",
             "description": null,
-            "line": 1007
+            "line": 949
           },
           {
             "code": "CHIEF_MEDICAL_OFFICER",
             "label": "Chief Medical Officer",
             "description": null,
-            "line": 1008
+            "line": 950
           },
           {
             "code": "CHIEF_SCIENTIFIC_OFFICER",
             "label": "Chief Scientific Officer",
             "description": null,
-            "line": 1009
+            "line": 951
           },
           {
             "code": "CHIEF_TECHNOLOGY_OFFICER",
             "label": "Chief Technology Officer",
             "description": null,
-            "line": 1010
+            "line": 952
           },
           {
             "code": "CHIEF_COMMERCIAL_OFFICER",
             "label": "Chief Commercial Officer",
             "description": null,
-            "line": 1011
+            "line": 953
           },
           {
             "code": "EXECUTIVE_OFFICERS",
             "label": "Executive officers",
             "description": null,
-            "line": 1012
+            "line": 954
           },
           {
             "code": "NAMED_SCHEDULE_LIST",
             "label": "Persons listed on Disclosure Letter",
             "description": null,
-            "line": 1013
+            "line": 955
           },
           {
             "code": "OTHER",
@@ -6954,25 +6795,25 @@
             "code": "RISK_FACTORS",
             "label": "Risk Factors",
             "description": null,
-            "line": 1024
+            "line": 966
           },
           {
             "code": "FORWARD_LOOKING",
             "label": "Forward-Looking Statements",
             "description": null,
-            "line": 1028
+            "line": 970
           },
           {
             "code": "MARKET_RISK_DISCLOSURES",
             "label": "Quantitative & Qualitative Market-Risk Disclosures",
             "description": null,
-            "line": 1032
+            "line": 974
           },
           {
             "code": "EXHIBITS",
             "label": "Exhibits to Filed SEC Documents",
             "description": null,
-            "line": 1036
+            "line": 978
           },
           {
             "code": "OTHER",
@@ -6991,25 +6832,25 @@
             "code": "RISK_FACTORS",
             "label": "Risk Factors",
             "description": null,
-            "line": 1024
+            "line": 966
           },
           {
             "code": "FORWARD_LOOKING",
             "label": "Forward-Looking Statements",
             "description": null,
-            "line": 1028
+            "line": 970
           },
           {
             "code": "MARKET_RISK_DISCLOSURES",
             "label": "Quantitative & Qualitative Market-Risk Disclosures",
             "description": null,
-            "line": 1032
+            "line": 974
           },
           {
             "code": "EXHIBITS",
             "label": "Exhibits to Filed SEC Documents",
             "description": null,
-            "line": 1036
+            "line": 978
           },
           {
             "code": "OTHER",
@@ -7028,19 +6869,19 @@
             "code": "GENERAL_ORDINARY_COURSE",
             "label": "General operating covenant",
             "description": null,
-            "line": 96
+            "line": 841
           },
           {
             "code": "SPECIFIED_IOCS",
             "label": "Specific IOCs",
             "description": null,
-            "line": 120
+            "line": 845
           },
           {
             "code": "HYBRID",
             "label": "Hybrid (General operating covenant and specific IOCs cited)",
             "description": null,
-            "line": 907
+            "line": 849
           }
         ]
       },
@@ -7053,19 +6894,19 @@
             "code": "GENERAL_ORDINARY_COURSE",
             "label": "General operating covenant",
             "description": null,
-            "line": 96
+            "line": 841
           },
           {
             "code": "SPECIFIED_IOCS",
             "label": "Specific IOCs",
             "description": null,
-            "line": 120
+            "line": 845
           },
           {
             "code": "HYBRID",
             "label": "Hybrid (General operating covenant and specific IOCs cited)",
             "description": null,
-            "line": 907
+            "line": 849
           }
         ]
       },
@@ -7078,37 +6919,37 @@
             "code": "FLAT",
             "label": "Flat",
             "description": null,
-            "line": 182
+            "line": 124
           },
           {
             "code": "MATERIAL",
             "label": "Material",
             "description": null,
-            "line": 131
+            "line": 73
           },
           {
             "code": "MATERIAL_RESPECTS",
             "label": "Material respects",
             "description": null,
-            "line": 836
+            "line": 778
           },
           {
             "code": "REASONABLE_BEST_EFFORTS",
             "label": "Reasonable best efforts",
             "description": null,
-            "line": 171
+            "line": 113
           },
           {
             "code": "COMMERCIALLY_REASONABLE_EFFORTS",
             "label": "Commercially reasonable efforts",
             "description": null,
-            "line": 172
+            "line": 114
           },
           {
             "code": "BEST_EFFORTS",
             "label": "Best efforts",
             "description": null,
-            "line": 170
+            "line": 112
           },
           {
             "code": "ORDINARY_COURSE",
@@ -7127,37 +6968,37 @@
             "code": "FLAT",
             "label": "Flat",
             "description": null,
-            "line": 182
+            "line": 124
           },
           {
             "code": "MATERIAL",
             "label": "Material",
             "description": null,
-            "line": 131
+            "line": 73
           },
           {
             "code": "MATERIAL_RESPECTS",
             "label": "Material respects",
             "description": null,
-            "line": 836
+            "line": 778
           },
           {
             "code": "REASONABLE_BEST_EFFORTS",
             "label": "Reasonable best efforts",
             "description": null,
-            "line": 171
+            "line": 113
           },
           {
             "code": "COMMERCIALLY_REASONABLE_EFFORTS",
             "label": "Commercially reasonable efforts",
             "description": null,
-            "line": 172
+            "line": 114
           },
           {
             "code": "BEST_EFFORTS",
             "label": "Best efforts",
             "description": null,
-            "line": 170
+            "line": 112
           },
           {
             "code": "ORDINARY_COURSE",
@@ -7176,73 +7017,73 @@
             "code": "BUSINESS",
             "label": "Business / operations",
             "description": null,
-            "line": 850
+            "line": 792
           },
           {
             "code": "BUSINESS_ORGANIZATION",
             "label": "Business organization",
             "description": null,
-            "line": 851
+            "line": 793
           },
           {
             "code": "ASSETS",
             "label": "Assets",
             "description": null,
-            "line": 852
+            "line": 794
           },
           {
             "code": "PROPERTIES",
             "label": "Properties",
             "description": null,
-            "line": 853
+            "line": 795
           },
           {
             "code": "OFFICERS_KEY_EMPLOYEES",
             "label": "Officers / key employees",
             "description": null,
-            "line": 854
+            "line": 796
           },
           {
             "code": "CUSTOMERS",
             "label": "Customers",
             "description": null,
-            "line": 855
+            "line": 797
           },
           {
             "code": "SUPPLIERS",
             "label": "Suppliers",
             "description": null,
-            "line": 856
+            "line": 798
           },
           {
             "code": "EMPLOYEES",
             "label": "Employees",
             "description": null,
-            "line": 397
+            "line": 339
           },
           {
             "code": "GOVERNMENTAL_ENTITIES",
             "label": "Governmental entities",
             "description": null,
-            "line": 858
+            "line": 800
           },
           {
             "code": "LICENSORS_LICENSEES",
             "label": "Licensors / licensees",
             "description": null,
-            "line": 859
+            "line": 801
           },
           {
             "code": "COLLABORATORS",
             "label": "Collaborators / partners",
             "description": null,
-            "line": 860
+            "line": 802
           },
           {
             "code": "OTHER_RELATIONSHIPS",
             "label": "Other business relationships",
             "description": null,
-            "line": 861
+            "line": 803
           }
         ]
       },
@@ -7255,73 +7096,73 @@
             "code": "BUSINESS",
             "label": "Business / operations",
             "description": null,
-            "line": 850
+            "line": 792
           },
           {
             "code": "BUSINESS_ORGANIZATION",
             "label": "Business organization",
             "description": null,
-            "line": 851
+            "line": 793
           },
           {
             "code": "ASSETS",
             "label": "Assets",
             "description": null,
-            "line": 852
+            "line": 794
           },
           {
             "code": "PROPERTIES",
             "label": "Properties",
             "description": null,
-            "line": 853
+            "line": 795
           },
           {
             "code": "OFFICERS_KEY_EMPLOYEES",
             "label": "Officers / key employees",
             "description": null,
-            "line": 854
+            "line": 796
           },
           {
             "code": "CUSTOMERS",
             "label": "Customers",
             "description": null,
-            "line": 855
+            "line": 797
           },
           {
             "code": "SUPPLIERS",
             "label": "Suppliers",
             "description": null,
-            "line": 856
+            "line": 798
           },
           {
             "code": "EMPLOYEES",
             "label": "Employees",
             "description": null,
-            "line": 397
+            "line": 339
           },
           {
             "code": "GOVERNMENTAL_ENTITIES",
             "label": "Governmental entities",
             "description": null,
-            "line": 858
+            "line": 800
           },
           {
             "code": "LICENSORS_LICENSEES",
             "label": "Licensors / licensees",
             "description": null,
-            "line": 859
+            "line": 801
           },
           {
             "code": "COLLABORATORS",
             "label": "Collaborators / partners",
             "description": null,
-            "line": 860
+            "line": 802
           },
           {
             "code": "OTHER_RELATIONSHIPS",
             "label": "Other business relationships",
             "description": null,
-            "line": 861
+            "line": 803
           }
         ]
       },
@@ -7340,7 +7181,7 @@
             "code": "ORDINARY_COURSE_PAST_PRACTICE",
             "label": "Ordinary course consistent with past practice",
             "description": null,
-            "line": 875
+            "line": 817
           },
           {
             "code": "REQUIRED_BY_LAW",
@@ -7352,25 +7193,25 @@
             "code": "PERMITTED_BY_LAW",
             "label": "Permitted by law",
             "description": null,
-            "line": 877
+            "line": 819
           },
           {
             "code": "DISCLOSED_IN_SCHEDULE",
             "label": "Disclosed in Disclosure Letter / Schedule",
             "description": null,
-            "line": 878
+            "line": 820
           },
           {
             "code": "WITH_CONSENT",
             "label": "With Parent / Buyer consent",
             "description": null,
-            "line": 879
+            "line": 821
           },
           {
             "code": "CONTEMPLATED_BY_AGREEMENT",
             "label": "Contemplated by this Agreement",
             "description": null,
-            "line": 880
+            "line": 822
           },
           {
             "code": "EXISTING_CONTRACTS",
@@ -7382,19 +7223,19 @@
             "code": "EXISTING_BENEFIT_PLANS",
             "label": "Existing benefit plans",
             "description": null,
-            "line": 882
+            "line": 824
           },
           {
             "code": "COMPLIANCE_WITH_ORDER",
             "label": "Required by court order / governmental order",
             "description": null,
-            "line": 883
+            "line": 825
           },
           {
             "code": "PANDEMIC",
             "label": "Pandemic / health emergency response",
             "description": null,
-            "line": 508
+            "line": 450
           },
           {
             "code": "COMPANY_DISCLOSURE_LETTER",
@@ -7418,7 +7259,7 @@
             "code": "OTHER_SPECIFIC",
             "label": "Other specific exceptions",
             "description": null,
-            "line": 895
+            "line": 837
           }
         ]
       },
@@ -7437,7 +7278,7 @@
             "code": "ORDINARY_COURSE_PAST_PRACTICE",
             "label": "Ordinary course consistent with past practice",
             "description": null,
-            "line": 875
+            "line": 817
           },
           {
             "code": "REQUIRED_BY_LAW",
@@ -7449,25 +7290,25 @@
             "code": "PERMITTED_BY_LAW",
             "label": "Permitted by law",
             "description": null,
-            "line": 877
+            "line": 819
           },
           {
             "code": "DISCLOSED_IN_SCHEDULE",
             "label": "Disclosed in Disclosure Letter / Schedule",
             "description": null,
-            "line": 878
+            "line": 820
           },
           {
             "code": "WITH_CONSENT",
             "label": "With Parent / Buyer consent",
             "description": null,
-            "line": 879
+            "line": 821
           },
           {
             "code": "CONTEMPLATED_BY_AGREEMENT",
             "label": "Contemplated by this Agreement",
             "description": null,
-            "line": 880
+            "line": 822
           },
           {
             "code": "EXISTING_CONTRACTS",
@@ -7479,19 +7320,19 @@
             "code": "EXISTING_BENEFIT_PLANS",
             "label": "Existing benefit plans",
             "description": null,
-            "line": 882
+            "line": 824
           },
           {
             "code": "COMPLIANCE_WITH_ORDER",
             "label": "Required by court order / governmental order",
             "description": null,
-            "line": 883
+            "line": 825
           },
           {
             "code": "PANDEMIC",
             "label": "Pandemic / health emergency response",
             "description": null,
-            "line": 508
+            "line": 450
           },
           {
             "code": "COMPANY_DISCLOSURE_LETTER",
@@ -7515,7 +7356,7 @@
             "code": "OTHER_SPECIFIC",
             "label": "Other specific exceptions",
             "description": null,
-            "line": 895
+            "line": 837
           }
         ]
       }
@@ -7675,24 +7516,6 @@
         "key": "partyWhoCanTerminate",
         "families": [
           "TERMINATION_PARTY"
-        ]
-      },
-      {
-        "key": "knowledgeQualifier",
-        "families": [
-          "KNOWLEDGE_QUALIFIER_CODES"
-        ]
-      },
-      {
-        "key": "undisclosedLiabilitiesExceptions",
-        "families": [
-          "UNDISCLOSED_LIABILITIES_EXCEPTION_CODES"
-        ]
-      },
-      {
-        "key": "absenceOfChangesExceptions",
-        "families": [
-          "ABSENCE_OF_CHANGES_EXCEPTION_CODES"
         ]
       },
       {
@@ -8738,18 +8561,19 @@
       "components/review/table-configs/vote-standard.js",
       "components/review/table-configs/votes-approvals-meeting.config.js",
       "components/review/table-logic.js",
-      "pages/review/[id]/needs-review.js",
-      "pages/review/[id]/provision/[provisionId].js",
       "pages/review/[id].js",
-      "pages/review/index.js"
+      "pages/review/index.js",
+      "pages/review-v1/[id]/needs-review.js",
+      "pages/review-v1/[id]/provision/[provisionId].js",
+      "pages/review-v1/[id].js"
     ],
     "referencedKeys": [
       {
         "key": "absenceOfChangesExceptions",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 2825,
+            "file": "pages/review-v1/[id].js",
+            "line": 2823,
             "kind": "keys_array"
           }
         ]
@@ -8758,8 +8582,8 @@
         "key": "absenceOfChangesStartDate",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 2822,
+            "file": "pages/review-v1/[id].js",
+            "line": 2820,
             "kind": "keys_array"
           }
         ]
@@ -8768,8 +8592,8 @@
         "key": "absenceOfChangesType",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 2824,
+            "file": "pages/review-v1/[id].js",
+            "line": 2822,
             "kind": "keys_array"
           }
         ]
@@ -8788,13 +8612,13 @@
         "key": "acceptanceAndPaymentMechanics",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3241,
+            "file": "pages/review-v1/[id].js",
+            "line": 3239,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 3240,
+            "file": "pages/review-v1/[id].js",
+            "line": 3238,
             "kind": "object_key_literal"
           }
         ]
@@ -8823,8 +8647,8 @@
         "key": "additionalTerms",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3553,
+            "file": "pages/review-v1/[id].js",
+            "line": 3551,
             "kind": "keys_array"
           }
         ]
@@ -8833,13 +8657,13 @@
         "key": "adjournmentRights",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3534,
+            "file": "pages/review-v1/[id].js",
+            "line": 3532,
             "kind": "keys_array"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 3543,
+            "file": "pages/review-v1/[id].js",
+            "line": 3541,
             "kind": "keys_array"
           }
         ]
@@ -8848,8 +8672,8 @@
         "key": "advancementOfExpenses",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3547,
+            "file": "pages/review-v1/[id].js",
+            "line": 3545,
             "kind": "keys_array"
           }
         ]
@@ -8858,38 +8682,38 @@
         "key": "affirmativeLimbs",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
+            "line": 988,
+            "kind": "features_property"
+          },
+          {
+            "file": "pages/review-v1/[id].js",
             "line": 990,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 992,
+            "file": "pages/review-v1/[id].js",
+            "line": 991,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 993,
+            "file": "pages/review-v1/[id].js",
+            "line": 1198,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 1200,
+            "file": "pages/review-v1/[id].js",
+            "line": 1198,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 1200,
+            "file": "pages/review-v1/[id].js",
+            "line": 1404,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 1406,
-            "kind": "features_property"
-          },
-          {
-            "file": "pages/review/[id].js",
-            "line": 1406,
+            "file": "pages/review-v1/[id].js",
+            "line": 1404,
             "kind": "features_property"
           }
         ]
@@ -8898,13 +8722,13 @@
         "key": "alsoSurfacedAs",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 2875,
+            "file": "pages/review-v1/[id].js",
+            "line": 2873,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 2876,
+            "file": "pages/review-v1/[id].js",
+            "line": 2874,
             "kind": "features_property"
           }
         ]
@@ -8913,8 +8737,8 @@
         "key": "amount",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3555,
+            "file": "pages/review-v1/[id].js",
+            "line": 3553,
             "kind": "keys_array"
           }
         ]
@@ -8923,8 +8747,8 @@
         "key": "antiRelianceRepText",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3574,
+            "file": "pages/review-v1/[id].js",
+            "line": 3572,
             "kind": "keys_array"
           }
         ]
@@ -8943,8 +8767,8 @@
         "key": "aocCitedCovenantNames",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 2834,
+            "file": "pages/review-v1/[id].js",
+            "line": 2832,
             "kind": "keys_array"
           }
         ]
@@ -8953,8 +8777,8 @@
         "key": "aocNoMaePresent",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 2833,
+            "file": "pages/review-v1/[id].js",
+            "line": 2831,
             "kind": "keys_array"
           }
         ]
@@ -8963,8 +8787,8 @@
         "key": "aocNoMaeSinceDate",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 2852,
+            "file": "pages/review-v1/[id].js",
+            "line": 2850,
             "kind": "features_property"
           }
         ]
@@ -8973,13 +8797,13 @@
         "key": "backendMergerMechanic",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3247,
+            "file": "pages/review-v1/[id].js",
+            "line": 3245,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 3246,
+            "file": "pages/review-v1/[id].js",
+            "line": 3244,
             "kind": "object_key_literal"
           }
         ]
@@ -9078,8 +8902,8 @@
         "key": "cap",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3564,
+            "file": "pages/review-v1/[id].js",
+            "line": 3562,
             "kind": "keys_array"
           }
         ]
@@ -9098,13 +8922,13 @@
         "key": "carveouts",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3647,
+            "file": "pages/review-v1/[id].js",
+            "line": 3645,
             "kind": "object_key_literal"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 3656,
+            "file": "pages/review-v1/[id].js",
+            "line": 3654,
             "kind": "object_key_literal"
           }
         ]
@@ -9114,7 +8938,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/consideration-hero.config.js",
-            "line": 79,
+            "line": 76,
             "kind": "features_property"
           }
         ]
@@ -9149,7 +8973,7 @@
           },
           {
             "file": "components/review/table-logic.js",
-            "line": 1149,
+            "line": 1106,
             "kind": "features_property"
           }
         ]
@@ -9198,8 +9022,8 @@
         "key": "chapeauProviso",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 1027,
+            "file": "pages/review-v1/[id].js",
+            "line": 1025,
             "kind": "features_property"
           }
         ]
@@ -9238,8 +9062,8 @@
         "key": "closingDeadline",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3260,
+            "file": "pages/review-v1/[id].js",
+            "line": 3258,
             "kind": "features_property"
           }
         ]
@@ -9248,13 +9072,13 @@
         "key": "closingLocation",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3263,
+            "file": "pages/review-v1/[id].js",
+            "line": 3261,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 3263,
+            "file": "pages/review-v1/[id].js",
+            "line": 3261,
             "kind": "object_key_literal"
           }
         ]
@@ -9263,18 +9087,18 @@
         "key": "closingTiming",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
+            "line": 3260,
+            "kind": "features_property"
+          },
+          {
+            "file": "pages/review-v1/[id].js",
+            "line": 3263,
+            "kind": "features_property"
+          },
+          {
+            "file": "pages/review-v1/[id].js",
             "line": 3262,
-            "kind": "features_property"
-          },
-          {
-            "file": "pages/review/[id].js",
-            "line": 3265,
-            "kind": "features_property"
-          },
-          {
-            "file": "pages/review/[id].js",
-            "line": 3264,
             "kind": "object_key_literal"
           }
         ]
@@ -9283,8 +9107,8 @@
         "key": "collarType",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3504,
+            "file": "pages/review-v1/[id].js",
+            "line": 3502,
             "kind": "keys_array"
           }
         ]
@@ -9293,8 +9117,8 @@
         "key": "commencement",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3527,
+            "file": "pages/review-v1/[id].js",
+            "line": 3525,
             "kind": "keys_array"
           }
         ]
@@ -9303,8 +9127,8 @@
         "key": "companyConsent",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3521,
+            "file": "pages/review-v1/[id].js",
+            "line": 3519,
             "kind": "keys_array"
           }
         ]
@@ -9333,13 +9157,13 @@
         "key": "compensationItems",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 700,
+            "file": "pages/review-v1/[id].js",
+            "line": 698,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 700,
+            "file": "pages/review-v1/[id].js",
+            "line": 698,
             "kind": "features_property"
           }
         ]
@@ -9349,7 +9173,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/consideration-hero.config.js",
-            "line": 80,
+            "line": 77,
             "kind": "features_property"
           }
         ]
@@ -9358,8 +9182,8 @@
         "key": "coverage",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3583,
+            "file": "pages/review-v1/[id].js",
+            "line": 3581,
             "kind": "keys_array"
           }
         ]
@@ -9368,8 +9192,8 @@
         "key": "coversExpenses",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3570,
+            "file": "pages/review-v1/[id].js",
+            "line": 3568,
             "kind": "keys_array"
           }
         ]
@@ -9378,8 +9202,8 @@
         "key": "coversMergerConsideration",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3568,
+            "file": "pages/review-v1/[id].js",
+            "line": 3566,
             "kind": "keys_array"
           }
         ]
@@ -9388,8 +9212,8 @@
         "key": "coversReverseTermFee",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3569,
+            "file": "pages/review-v1/[id].js",
+            "line": 3567,
             "kind": "keys_array"
           }
         ]
@@ -9398,8 +9222,8 @@
         "key": "dealStructure",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3312,
+            "file": "pages/review-v1/[id].js",
+            "line": 3310,
             "kind": "object_key_literal"
           }
         ]
@@ -9408,8 +9232,8 @@
         "key": "definition",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3580,
+            "file": "pages/review-v1/[id].js",
+            "line": 3578,
             "kind": "keys_array"
           }
         ]
@@ -9448,8 +9272,8 @@
         "key": "effectiveTimeShort",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3135,
+            "file": "pages/review-v1/[id].js",
+            "line": 3133,
             "kind": "features_property"
           }
         ]
@@ -9458,8 +9282,8 @@
         "key": "effectsOfMergerReference",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3153,
+            "file": "pages/review-v1/[id].js",
+            "line": 3151,
             "kind": "features_property"
           }
         ]
@@ -9483,8 +9307,8 @@
         "key": "escalationFormula",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3510,
+            "file": "pages/review-v1/[id].js",
+            "line": 3508,
             "kind": "keys_array"
           }
         ]
@@ -9493,8 +9317,8 @@
         "key": "exceptions",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3557,
+            "file": "pages/review-v1/[id].js",
+            "line": 3555,
             "kind": "keys_array"
           }
         ]
@@ -9503,8 +9327,8 @@
         "key": "extensionMonths",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 4629,
+            "file": "pages/review-v1/[id].js",
+            "line": 4627,
             "kind": "features_property"
           }
         ]
@@ -9513,8 +9337,8 @@
         "key": "extensionPeriod",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 4630,
+            "file": "pages/review-v1/[id].js",
+            "line": 4628,
             "kind": "features_property"
           }
         ]
@@ -9613,8 +9437,8 @@
         "key": "frustrationApplies",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 6047,
+            "file": "pages/review-v1/[id].js",
+            "line": 6045,
             "kind": "features_property"
           }
         ]
@@ -9623,8 +9447,8 @@
         "key": "frustrationLanguage",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 6048,
+            "file": "pages/review-v1/[id].js",
+            "line": 6046,
             "kind": "features_property"
           }
         ]
@@ -9633,8 +9457,8 @@
         "key": "frustrationOfConditionsPresent",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 6045,
+            "file": "pages/review-v1/[id].js",
+            "line": 6043,
             "kind": "features_property"
           }
         ]
@@ -9643,8 +9467,8 @@
         "key": "frustrationTest",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 6047,
+            "file": "pages/review-v1/[id].js",
+            "line": 6045,
             "kind": "features_property"
           }
         ]
@@ -9653,8 +9477,8 @@
         "key": "holder",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3513,
+            "file": "pages/review-v1/[id].js",
+            "line": 3511,
             "kind": "keys_array"
           }
         ]
@@ -9673,8 +9497,8 @@
         "key": "insuranceCap",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3546,
+            "file": "pages/review-v1/[id].js",
+            "line": 3544,
             "kind": "keys_array"
           }
         ]
@@ -9723,8 +9547,8 @@
         "key": "knowledgeQualifier",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 6518,
+            "file": "pages/review-v1/[id].js",
+            "line": 6516,
             "kind": "features_property"
           }
         ]
@@ -9733,8 +9557,8 @@
         "key": "knowledgeScope",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 6541,
+            "file": "pages/review-v1/[id].js",
+            "line": 6539,
             "kind": "features_property"
           }
         ]
@@ -9743,23 +9567,23 @@
         "key": "language",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3507,
+            "file": "pages/review-v1/[id].js",
+            "line": 3505,
             "kind": "keys_array"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
+            "line": 3570,
+            "kind": "keys_array"
+          },
+          {
+            "file": "pages/review-v1/[id].js",
             "line": 3572,
             "kind": "keys_array"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 3574,
-            "kind": "keys_array"
-          },
-          {
-            "file": "pages/review/[id].js",
-            "line": 3577,
+            "file": "pages/review-v1/[id].js",
+            "line": 3575,
             "kind": "keys_array"
           }
         ]
@@ -9768,8 +9592,8 @@
         "key": "lowerBound",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3506,
+            "file": "pages/review-v1/[id].js",
+            "line": 3504,
             "kind": "keys_array"
           }
         ]
@@ -9778,13 +9602,13 @@
         "key": "mailingDeadline",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3532,
+            "file": "pages/review-v1/[id].js",
+            "line": 3530,
             "kind": "keys_array"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 3539,
+            "file": "pages/review-v1/[id].js",
+            "line": 3537,
             "kind": "keys_array"
           }
         ]
@@ -9799,92 +9623,92 @@
           },
           {
             "file": "components/review/table-logic.js",
-            "line": 1149,
+            "line": 1105,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 901,
+            "file": "pages/review-v1/[id].js",
+            "line": 899,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
+            "line": 2389,
+            "kind": "features_property"
+          },
+          {
+            "file": "pages/review-v1/[id].js",
+            "line": 2389,
+            "kind": "features_property"
+          },
+          {
+            "file": "pages/review-v1/[id].js",
+            "line": 2389,
+            "kind": "features_property"
+          },
+          {
+            "file": "pages/review-v1/[id].js",
             "line": 2391,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 2391,
+            "file": "pages/review-v1/[id].js",
+            "line": 2392,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 2391,
+            "file": "pages/review-v1/[id].js",
+            "line": 3139,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 2393,
+            "file": "pages/review-v1/[id].js",
+            "line": 3153,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 2394,
+            "file": "pages/review-v1/[id].js",
+            "line": 3198,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 3141,
-            "kind": "features_property"
-          },
-          {
-            "file": "pages/review/[id].js",
-            "line": 3155,
-            "kind": "features_property"
-          },
-          {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3200,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 3202,
+            "file": "pages/review-v1/[id].js",
+            "line": 3249,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 3251,
+            "file": "pages/review-v1/[id].js",
+            "line": 3275,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 3277,
+            "file": "pages/review-v1/[id].js",
+            "line": 3278,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 3280,
-            "kind": "features_property"
-          },
-          {
-            "file": "pages/review/[id].js",
-            "line": 3285,
-            "kind": "features_property"
-          },
-          {
-            "file": "pages/review/[id].js",
-            "line": 3250,
-            "kind": "object_key_literal"
-          },
-          {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3283,
+            "kind": "features_property"
+          },
+          {
+            "file": "pages/review-v1/[id].js",
+            "line": 3248,
             "kind": "object_key_literal"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 3285,
+            "file": "pages/review-v1/[id].js",
+            "line": 3281,
+            "kind": "object_key_literal"
+          },
+          {
+            "file": "pages/review-v1/[id].js",
+            "line": 3283,
             "kind": "object_key_literal"
           }
         ]
@@ -9898,23 +9722,23 @@
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 903,
+            "file": "pages/review-v1/[id].js",
+            "line": 901,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 2401,
+            "file": "pages/review-v1/[id].js",
+            "line": 2399,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 2402,
+            "file": "pages/review-v1/[id].js",
+            "line": 2400,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 2402,
+            "file": "pages/review-v1/[id].js",
+            "line": 2400,
             "kind": "features_property"
           }
         ]
@@ -9923,23 +9747,23 @@
         "key": "mainObligation",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 901,
+            "file": "pages/review-v1/[id].js",
+            "line": 899,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
+            "line": 2396,
+            "kind": "features_property"
+          },
+          {
+            "file": "pages/review-v1/[id].js",
             "line": 2398,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 2400,
-            "kind": "features_property"
-          },
-          {
-            "file": "pages/review/[id].js",
-            "line": 2400,
+            "file": "pages/review-v1/[id].js",
+            "line": 2398,
             "kind": "features_property"
           }
         ]
@@ -9948,8 +9772,8 @@
         "key": "marketOutHolder",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3513,
+            "file": "pages/review-v1/[id].js",
+            "line": 3511,
             "kind": "keys_array"
           }
         ]
@@ -9988,8 +9812,8 @@
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 3588,
+            "file": "pages/review-v1/[id].js",
+            "line": 3586,
             "kind": "keys_array"
           }
         ]
@@ -10008,8 +9832,8 @@
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 3590,
+            "file": "pages/review-v1/[id].js",
+            "line": 3588,
             "kind": "keys_array"
           }
         ]
@@ -10018,8 +9842,8 @@
         "key": "materialContractsRedactionsPermitted",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3592,
+            "file": "pages/review-v1/[id].js",
+            "line": 3590,
             "kind": "keys_array"
           }
         ]
@@ -10028,8 +9852,8 @@
         "key": "materialityQualifier",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 6514,
+            "file": "pages/review-v1/[id].js",
+            "line": 6512,
             "kind": "features_property"
           }
         ]
@@ -10038,8 +9862,8 @@
         "key": "maxPayment",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3502,
+            "file": "pages/review-v1/[id].js",
+            "line": 3500,
             "kind": "keys_array"
           }
         ]
@@ -10048,13 +9872,13 @@
         "key": "meetingControlNotes",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3537,
+            "file": "pages/review-v1/[id].js",
+            "line": 3535,
             "kind": "keys_array"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 3544,
+            "file": "pages/review-v1/[id].js",
+            "line": 3542,
             "kind": "keys_array"
           }
         ]
@@ -10063,13 +9887,13 @@
         "key": "meetingDeadline",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3533,
+            "file": "pages/review-v1/[id].js",
+            "line": 3531,
             "kind": "keys_array"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 3542,
+            "file": "pages/review-v1/[id].js",
+            "line": 3540,
             "kind": "keys_array"
           }
         ]
@@ -10078,13 +9902,13 @@
         "key": "mergerForm",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3240,
+            "file": "pages/review-v1/[id].js",
+            "line": 3238,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 3240,
+            "file": "pages/review-v1/[id].js",
+            "line": 3238,
             "kind": "object_key_literal"
           }
         ]
@@ -10093,8 +9917,8 @@
         "key": "milestones",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3500,
+            "file": "pages/review-v1/[id].js",
+            "line": 3498,
             "kind": "keys_array"
           }
         ]
@@ -10103,8 +9927,8 @@
         "key": "mutualClosingDeadlineAfterConditionsDays",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3259,
+            "file": "pages/review-v1/[id].js",
+            "line": 3257,
             "kind": "features_property"
           }
         ]
@@ -10113,8 +9937,8 @@
         "key": "nakedNoVoteFeeAmount",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 4014,
+            "file": "pages/review-v1/[id].js",
+            "line": 4012,
             "kind": "features_property"
           }
         ]
@@ -10168,8 +9992,8 @@
         "key": "notificationConsequences",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3549,
+            "file": "pages/review-v1/[id].js",
+            "line": 3547,
             "kind": "keys_array"
           }
         ]
@@ -10178,13 +10002,13 @@
         "key": "offerCommencementDeadline",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3240,
+            "file": "pages/review-v1/[id].js",
+            "line": 3238,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 3240,
+            "file": "pages/review-v1/[id].js",
+            "line": 3238,
             "kind": "object_key_literal"
           }
         ]
@@ -10193,13 +10017,13 @@
         "key": "offerConditionsReference",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3240,
+            "file": "pages/review-v1/[id].js",
+            "line": 3238,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 3240,
+            "file": "pages/review-v1/[id].js",
+            "line": 3238,
             "kind": "object_key_literal"
           }
         ]
@@ -10208,13 +10032,13 @@
         "key": "offerExpirationAndExtension",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3240,
+            "file": "pages/review-v1/[id].js",
+            "line": 3238,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 3240,
+            "file": "pages/review-v1/[id].js",
+            "line": 3238,
             "kind": "object_key_literal"
           }
         ]
@@ -10224,17 +10048,17 @@
         "hits": [
           {
             "file": "components/review/table-configs/consideration-hero.config.js",
-            "line": 80,
+            "line": 76,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 3240,
+            "file": "pages/review-v1/[id].js",
+            "line": 3238,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 3240,
+            "file": "pages/review-v1/[id].js",
+            "line": 3238,
             "kind": "object_key_literal"
           }
         ]
@@ -10253,8 +10077,8 @@
         "key": "otherAgentFormulation",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3525,
+            "file": "pages/review-v1/[id].js",
+            "line": 3523,
             "kind": "keys_array"
           }
         ]
@@ -10263,13 +10087,13 @@
         "key": "outsideDateMonths",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 4628,
+            "file": "pages/review-v1/[id].js",
+            "line": 4626,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 3751,
+            "file": "pages/review-v1/[id].js",
+            "line": 3749,
             "kind": "object_key_literal"
           }
         ]
@@ -10278,8 +10102,8 @@
         "key": "outsideDateMonthsPostSigning",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 4628,
+            "file": "pages/review-v1/[id].js",
+            "line": 4626,
             "kind": "features_property"
           }
         ]
@@ -10308,8 +10132,8 @@
         "key": "parentInfoRights",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3515,
+            "file": "pages/review-v1/[id].js",
+            "line": 3513,
             "kind": "keys_array"
           }
         ]
@@ -10318,8 +10142,8 @@
         "key": "parentParticipationOrControl",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3516,
+            "file": "pages/review-v1/[id].js",
+            "line": 3514,
             "kind": "keys_array"
           }
         ]
@@ -10338,8 +10162,8 @@
         "key": "partOfRep",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 2873,
+            "file": "pages/review-v1/[id].js",
+            "line": 2871,
             "kind": "features_property"
           }
         ]
@@ -10348,8 +10172,8 @@
         "key": "paymentConsent",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3519,
+            "file": "pages/review-v1/[id].js",
+            "line": 3517,
             "kind": "keys_array"
           }
         ]
@@ -10358,8 +10182,8 @@
         "key": "periodBusinessDays",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3526,
+            "file": "pages/review-v1/[id].js",
+            "line": 3524,
             "kind": "keys_array"
           }
         ]
@@ -10373,23 +10197,23 @@
             "kind": "keys_array"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 1014,
+            "file": "pages/review-v1/[id].js",
+            "line": 1012,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 1020,
+            "file": "pages/review-v1/[id].js",
+            "line": 1018,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 1023,
+            "file": "pages/review-v1/[id].js",
+            "line": 1021,
             "kind": "object_key_literal"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 1026,
+            "file": "pages/review-v1/[id].js",
+            "line": 1024,
             "kind": "object_key_literal"
           }
         ]
@@ -10398,8 +10222,8 @@
         "key": "permittedRedactionsDefinition",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3593,
+            "file": "pages/review-v1/[id].js",
+            "line": 3591,
             "kind": "keys_array"
           }
         ]
@@ -10409,7 +10233,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/consideration-hero.config.js",
-            "line": 79,
+            "line": 76,
             "kind": "features_property"
           }
         ]
@@ -10423,18 +10247,18 @@
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 994,
+            "file": "pages/review-v1/[id].js",
+            "line": 992,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 994,
+            "file": "pages/review-v1/[id].js",
+            "line": 992,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 1407,
+            "file": "pages/review-v1/[id].js",
+            "line": 1405,
             "kind": "features_property"
           }
         ]
@@ -10443,8 +10267,8 @@
         "key": "proviso",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 1027,
+            "file": "pages/review-v1/[id].js",
+            "line": 1025,
             "kind": "features_property"
           }
         ]
@@ -10453,13 +10277,13 @@
         "key": "proxyFilingDeadline",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3529,
+            "file": "pages/review-v1/[id].js",
+            "line": 3527,
             "kind": "keys_array"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 3538,
+            "file": "pages/review-v1/[id].js",
+            "line": 3536,
             "kind": "keys_array"
           }
         ]
@@ -10483,8 +10307,8 @@
         "key": "rate",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3509,
+            "file": "pages/review-v1/[id].js",
+            "line": 3507,
             "kind": "keys_array"
           }
         ]
@@ -10493,8 +10317,8 @@
         "key": "ratioType",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3511,
+            "file": "pages/review-v1/[id].js",
+            "line": 3509,
             "kind": "keys_array"
           }
         ]
@@ -10524,7 +10348,7 @@
         "hits": [
           {
             "file": "components/review/table-logic.js",
-            "line": 1150,
+            "line": 1111,
             "kind": "features_property"
           }
         ]
@@ -10553,8 +10377,8 @@
         "key": "repsSurvivalDuration",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3772,
+            "file": "pages/review-v1/[id].js",
+            "line": 3770,
             "kind": "object_key_literal"
           }
         ]
@@ -10563,8 +10387,8 @@
         "key": "repsSurvivalExceptions",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3779,
+            "file": "pages/review-v1/[id].js",
+            "line": 3777,
             "kind": "object_key_literal"
           }
         ]
@@ -10573,8 +10397,8 @@
         "key": "repsSurvivalPresent",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3770,
+            "file": "pages/review-v1/[id].js",
+            "line": 3768,
             "kind": "object_key_literal"
           }
         ]
@@ -10583,13 +10407,13 @@
         "key": "schedule14D9Filing",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3244,
+            "file": "pages/review-v1/[id].js",
+            "line": 3242,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 3243,
+            "file": "pages/review-v1/[id].js",
+            "line": 3241,
             "kind": "object_key_literal"
           }
         ]
@@ -10598,13 +10422,13 @@
         "key": "scheduleTOFiling",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3242,
+            "file": "pages/review-v1/[id].js",
+            "line": 3240,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 3241,
+            "file": "pages/review-v1/[id].js",
+            "line": 3239,
             "kind": "object_key_literal"
           }
         ]
@@ -10613,13 +10437,13 @@
         "key": "scope",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 6693,
+            "file": "pages/review-v1/[id].js",
+            "line": 6691,
             "kind": "object_key_literal"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 3567,
+            "file": "pages/review-v1/[id].js",
+            "line": 3565,
             "kind": "keys_array"
           }
         ]
@@ -10628,8 +10452,8 @@
         "key": "secFilingsCarvedOutReps",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 5585,
+            "file": "pages/review-v1/[id].js",
+            "line": 5583,
             "kind": "keys_array"
           }
         ]
@@ -10638,8 +10462,8 @@
         "key": "secFilingsExceptionCarvedOutReps",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 5585,
+            "file": "pages/review-v1/[id].js",
+            "line": 5583,
             "kind": "keys_array"
           }
         ]
@@ -10648,8 +10472,8 @@
         "key": "secFilingsExceptionExclusions",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 5584,
+            "file": "pages/review-v1/[id].js",
+            "line": 5582,
             "kind": "keys_array"
           }
         ]
@@ -10658,8 +10482,8 @@
         "key": "secFilingsExcludedSections",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 5584,
+            "file": "pages/review-v1/[id].js",
+            "line": 5582,
             "kind": "keys_array"
           }
         ]
@@ -10669,7 +10493,7 @@
         "hits": [
           {
             "file": "components/review/table-logic.js",
-            "line": 1139,
+            "line": 1098,
             "kind": "features_property"
           }
         ]
@@ -10689,7 +10513,7 @@
           },
           {
             "file": "components/review/table-logic.js",
-            "line": 1138,
+            "line": 1098,
             "kind": "features_property"
           }
         ]
@@ -10698,8 +10522,8 @@
         "key": "settlementConsent",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3518,
+            "file": "pages/review-v1/[id].js",
+            "line": 3516,
             "kind": "keys_array"
           }
         ]
@@ -10708,8 +10532,8 @@
         "key": "soleRemedy",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3557,
+            "file": "pages/review-v1/[id].js",
+            "line": 3555,
             "kind": "keys_array"
           }
         ]
@@ -10718,8 +10542,8 @@
         "key": "solvencyRepDetails",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3572,
+            "file": "pages/review-v1/[id].js",
+            "line": 3570,
             "kind": "keys_array"
           }
         ]
@@ -10729,7 +10553,7 @@
         "hits": [
           {
             "file": "components/review/table-logic.js",
-            "line": 1140,
+            "line": 1099,
             "kind": "features_property"
           }
         ]
@@ -10739,7 +10563,7 @@
         "hits": [
           {
             "file": "components/review/table-logic.js",
-            "line": 1139,
+            "line": 1098,
             "kind": "features_property"
           }
         ]
@@ -10748,8 +10572,8 @@
         "key": "specificPerformanceBar",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3559,
+            "file": "pages/review-v1/[id].js",
+            "line": 3557,
             "kind": "keys_array"
           }
         ]
@@ -10764,7 +10588,7 @@
           },
           {
             "file": "components/review/table-logic.js",
-            "line": 1149,
+            "line": 1106,
             "kind": "features_property"
           }
         ]
@@ -10773,8 +10597,8 @@
         "key": "startDate",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3509,
+            "file": "pages/review-v1/[id].js",
+            "line": 3507,
             "kind": "keys_array"
           }
         ]
@@ -10783,13 +10607,13 @@
         "key": "stockholderListCovenant",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3245,
+            "file": "pages/review-v1/[id].js",
+            "line": 3243,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 3244,
+            "file": "pages/review-v1/[id].js",
+            "line": 3242,
             "kind": "object_key_literal"
           }
         ]
@@ -10823,8 +10647,8 @@
         "key": "summary",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 903,
+            "file": "pages/review-v1/[id].js",
+            "line": 901,
             "kind": "features_property"
           }
         ]
@@ -10973,8 +10797,8 @@
         "key": "term",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3502,
+            "file": "pages/review-v1/[id].js",
+            "line": 3500,
             "kind": "keys_array"
           }
         ]
@@ -10983,8 +10807,8 @@
         "key": "threshold",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3514,
+            "file": "pages/review-v1/[id].js",
+            "line": 3512,
             "kind": "keys_array"
           }
         ]
@@ -11008,8 +10832,8 @@
         "key": "topCustomersSuppliersDefinition",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3581,
+            "file": "pages/review-v1/[id].js",
+            "line": 3579,
             "kind": "keys_array"
           }
         ]
@@ -11018,8 +10842,8 @@
         "key": "transferable",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3503,
+            "file": "pages/review-v1/[id].js",
+            "line": 3501,
             "kind": "keys_array"
           }
         ]
@@ -11028,8 +10852,8 @@
         "key": "transferAgentException",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3523,
+            "file": "pages/review-v1/[id].js",
+            "line": 3521,
             "kind": "keys_array"
           }
         ]
@@ -11038,28 +10862,28 @@
         "key": "triggers",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 4000,
+            "file": "pages/review-v1/[id].js",
+            "line": 3998,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 4001,
+            "file": "pages/review-v1/[id].js",
+            "line": 3999,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 3498,
+            "file": "pages/review-v1/[id].js",
+            "line": 3496,
             "kind": "keys_array"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 3554,
+            "file": "pages/review-v1/[id].js",
+            "line": 3552,
             "kind": "keys_array"
           },
           {
-            "file": "pages/review/[id].js",
-            "line": 3562,
+            "file": "pages/review-v1/[id].js",
+            "line": 3560,
             "kind": "keys_array"
           }
         ]
@@ -11068,8 +10892,8 @@
         "key": "triggerTerminationClauses",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3983,
+            "file": "pages/review-v1/[id].js",
+            "line": 3981,
             "kind": "features_property"
           }
         ]
@@ -11078,8 +10902,8 @@
         "key": "undisclosedLiabilitiesExceptions",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 2838,
+            "file": "pages/review-v1/[id].js",
+            "line": 2836,
             "kind": "keys_array"
           }
         ]
@@ -11088,8 +10912,8 @@
         "key": "upperBound",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3505,
+            "file": "pages/review-v1/[id].js",
+            "line": 3503,
             "kind": "keys_array"
           }
         ]
@@ -11098,8 +10922,8 @@
         "key": "value",
         "hits": [
           {
-            "file": "pages/review/[id].js",
-            "line": 3512,
+            "file": "pages/review-v1/[id].js",
+            "line": 3510,
             "kind": "keys_array"
           }
         ]
