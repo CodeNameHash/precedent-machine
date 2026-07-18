@@ -152,6 +152,13 @@ const FILE_PATTERN_EXEMPTIONS = {
   // Both are bug-fingerprints meant for OTHER files; exempt only these two
   // patterns for this one file.
   'lib/parser-v2/extract.js': ['burdensome.*closing.condition', 'Mergers,\\s*Acquisitions,\\s*Dispositions'],
+  // Same false-positive class again: this test asserts IOC-MERGE's real
+  // taxonomy fallback label ("Mergers, Acquisitions, Dispositions", the
+  // exact string extract.js's own exemption above documents as the
+  // legitimate source) resolves correctly across three sibling section
+  // fragments that share it. Genuine taxonomy fixture, not the past
+  // duplicated-label regression this pattern fingerprints.
+  'tests/audit-fix-batch-ui.test.js': ['Mergers,\\s*Acquisitions,\\s*Dispositions'],
 };
 
 const failures = [];

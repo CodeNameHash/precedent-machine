@@ -1,59 +1,56 @@
 // Review V2 ("Mergertrace") — Election summary card, Consideration section.
-// Fed by deriveElectionSummary(reviewDeal) (sectionList.js): two option
-// columns (label + per-share/per-option economics in mono, straight off the
-// CONSID card's already-extracted features and quoted text) plus a footer
-// row for the default/no-election treatment and proration note. NO new
-// extraction — this is a presentation layer over data already on the card.
+// Fed by deriveElectionSummary(reviewDeal) (sectionList.js): the cash/stock
+// (or cash/mixed, etc.) option split, each option's economics rendered as
+// the SAME green "present" PillCell every cash deal's per-share
+// consideration row uses (renderPerShareDetail in consideration-hero.config
+// .js), plus a single compact caption line folding in the default/no-
+// election treatment and the proration note — no separate spanning row.
+// NO new extraction — this is a presentation layer over data already on
+// the card.
+//
+// Round 2 (Ben): no "Election" header strip; economics are pills, not mono
+// text; the option split IS the card (no separate "economics rows" nested
+// under it); proration folds into the one caption line instead of its own
+// bordered block.
 //
 // Styled to match every other .mtx table on the page (MergertraceStyles):
-// grey #F6F6F6 header strip, white body, 1px #E0E0E0 borders, sharp corners.
-// Reuses the same EvidenceHoverSource hover-quote affordance as MaeSection.
+// white body, 1px #E0E0E0 borders, sharp corners. Reuses the same
+// PillCell/EvidenceHoverSource primitives as every other table.
 
-import { EvidenceHoverSource } from '../review/primitives/ProvisionTablePrimitives';
+import { PillCell, EvidenceHoverSource } from '../review/primitives/ProvisionTablePrimitives';
 
 export default function ElectionCard({ election }) {
   if (!election || !Array.isArray(election.options) || election.options.length < 2) return null;
   const { options, defaultTreatment, isProrated, prorationNote, evidence, sourceCard } = election;
 
+  const caption = [
+    defaultTreatment ? <>If no election: treated as <span className="font-medium text-ink">{defaultTreatment}</span></> : null,
+    isProrated ? 'subject to proration' : null,
+  ].filter(Boolean);
+
   return (
     <section data-testid="provision-table-election" className="border border-border bg-white mb-3.5">
-      <div className="border-b border-border bg-paper2 px-3 py-1.5">
-        <p>Election</p>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2">
-        {options.map((option, index) => (
-          <div
-            key={option.label}
-            className={`px-3.5 py-3 ${index > 0 ? 'sm:border-l border-t sm:border-t-0 border-border' : ''}`}
-          >
-            <p className="text-[11px] font-semibold text-ink">{option.label}</p>
-            <EvidenceHoverSource evidence={evidence} source={sourceCard} highlight={null} as="p">
-              <p className="mtx-mono mt-1 text-sm text-ink">
-                {option.economics || 'See source'}
-              </p>
-            </EvidenceHoverSource>
+      <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-border">
+        {options.map((option) => (
+          <div key={option.label} className="px-3.5 py-3">
+            <p className="text-[11px] font-semibold text-ink mb-1.5">{option.label}</p>
+            <PillCell
+              label={option.economics || 'See source'}
+              tone="present"
+              evidence={evidence}
+              source={sourceCard}
+            />
           </div>
         ))}
       </div>
 
-      {(defaultTreatment || isProrated) && (
-        <div className="border-t border-border bg-paper2 px-3.5 py-2 space-y-1">
-          {defaultTreatment ? (
-            <p className="text-[11px] text-inkLight">
-              If no election: treated as <span className="font-medium text-ink">{defaultTreatment}</span>
-            </p>
-          ) : null}
-          {isProrated ? (
-            <EvidenceHoverSource evidence={prorationNote} source={sourceCard} highlight={null} as="p">
-              <p className="text-[11px] text-inkLight">
-                Subject to proration
-                {prorationNote ? <span className="text-inkFaint"> — see proration mechanics</span> : null}
-              </p>
-            </EvidenceHoverSource>
-          ) : null}
-        </div>
-      )}
+      {caption.length ? (
+        <EvidenceHoverSource evidence={prorationNote} source={sourceCard} highlight={null} as="p">
+          <p className="border-t border-border px-3.5 py-1.5 text-[10px] text-inkFaint">
+            {caption.reduce((acc, part, i) => (i === 0 ? [part] : [...acc, ' · ', part]), [])}
+          </p>
+        </EvidenceHoverSource>
+      ) : null}
     </section>
   );
 }

@@ -122,15 +122,20 @@ export function deriveExtractedHeaderFacts(reviewDeal) {
   };
 }
 
-// ── Closing timing summary (Structure & Mechanics section) ──────────────
-// Ben: "closing timing stuff isn't summarized." A compact row set — Outside
-// Date (+ extension, when present), Marketing Period / Ticking Fee (when
-// coded), Closing mechanics — pulled straight off cards already on the
-// deal (TERMR-OUTSIDE, COV-MARKETING, CONSID-TICKING, STRUCT-CLOSING). NO
-// new extraction: every value is an existing feature or the card's own
-// quoted text. Same selectRows-try/catch-empty shape as
-// deriveExtractedHeaderFacts above. Rows are omitted silently when a deal
-// doesn't carry the underlying card/feature.
+// ── Closing timing rows (folded into the Structure & Mechanics table) ────
+// Ben: "closing timing stuff isn't summarized" (round 1), then "belongs
+// inside Structure & Mechanics with the other timing rows, not floating
+// first" (round 2) -- these render as ORDINARY rows in the SAME
+// structure-mechanics table (see configDecorations.js), not a separate
+// card. Outside Date (+ extension, when present) and Marketing Period /
+// Ticking Fee (when coded) — pulled straight off cards already on the deal
+// (TERMR-OUTSIDE, COV-MARKETING, CONSID-TICKING). NO new extraction: every
+// value is an existing feature or the card's own quoted text. No separate
+// "Closing mechanics" row -- that's the table's own existing
+// 'structure-mechanics-closing-timing' row (STRUCT-CLOSING's closingTiming
+// feature); duplicating it here would be exactly the redundant-row problem
+// Ben flagged elsewhere. Rows are omitted silently when a deal doesn't
+// carry the underlying card/feature.
 function closingCardCode(card) {
   return String(card?.provision_subtype || card?.canonical_code || card?.provision_code || card?.code || '').trim().toUpperCase();
 }
@@ -141,7 +146,20 @@ function formatIsoDateReadable(iso) {
   return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
 }
 
-export function deriveClosingTimingSummary(reviewDeal) {
+// structure-mechanics' visible content lives in the SIGNALS ("Provision")
+// column -- its 'detail' column is relocated behind a collapsed per-row
+// "See provision" link (FULL_TEXT_COLUMNS in ProvisionTable.jsx), same as
+// every other row in this table. A row with no signal renders BLANK, not
+// "verbose" -- these synthetic rows need the same visible pill every other
+// structure-mechanics row gets.
+function closingTimingRow(id, label, detail, card) {
+  return {
+    id, label, kind: 'Closing', detail, evidence: textOf(card), sourceCard: card,
+    signals: [{ id: `${id}-signal`, label: detail, value: detail, tone: 'neutral', evidence: textOf(card), source: card }],
+  };
+}
+
+export function deriveClosingTimingRows(reviewDeal) {
   const cards = (reviewDeal && reviewDeal.cards) || [];
   const rows = [];
 
@@ -150,19 +168,19 @@ export function deriveClosingTimingSummary(reviewDeal) {
     const f = outsideCard.features || {};
     const dateText = valueText(f.outsideDate) || formatIsoDateReadable(f.outsideDateISO);
     if (dateText) {
-      let value = dateText;
+      let detail = dateText;
       const months = typeof f.outsideDateMonthsPostSigning === 'number' ? f.outsideDateMonthsPostSigning : null;
-      if (months !== null) value += ` (~${months} month${months === 1 ? '' : 's'} post-signing)`;
+      if (months !== null) detail += ` (~${months} month${months === 1 ? '' : 's'} post-signing)`;
       const extText = valueText(f.extensionConditions) || valueText(f.outsideDateExtensionConditions);
       const extMonths = typeof f.extensionMonths === 'number' ? f.extensionMonths : null;
       if (extText || extMonths !== null) {
         let ext = extText || 'Extension available';
         if (extMonths !== null) ext += ` (+${extMonths} month${extMonths === 1 ? '' : 's'})`;
-        value += ` — ${ext}`;
+        detail += ` — ${ext}`;
       } else if (f.outsideDateExtension === true) {
-        value += ' — extension available';
+        detail += ' — extension available';
       }
-      rows.push({ id: 'closing-timing-outside-date', label: 'Outside Date', value, evidence: textOf(outsideCard), sourceCard: outsideCard });
+      rows.push(closingTimingRow('structure-mechanics-outside-date', 'Outside Date', detail, outsideCard));
     }
   }
 
@@ -171,22 +189,15 @@ export function deriveClosingTimingSummary(reviewDeal) {
     const f = marketingCard.features || {};
     const period = valueText(f.periodBusinessDays);
     const commencement = valueText(f.commencement);
-    const value = [period ? `${period} business days` : null, commencement].filter(Boolean).join(' — ');
-    if (value) rows.push({ id: 'closing-timing-marketing', label: 'Marketing period', value, evidence: textOf(marketingCard), sourceCard: marketingCard });
+    const detail = [period ? `${period} business days` : null, commencement].filter(Boolean).join(' — ');
+    if (detail) rows.push(closingTimingRow('structure-mechanics-marketing-period', 'Marketing period', detail, marketingCard));
   }
 
   const tickingCard = cards.find((c) => closingCardCode(c) === 'CONSID-TICKING');
   if (tickingCard) {
     const f = tickingCard.features || {};
     const rate = valueText(f.rate);
-    if (rate) rows.push({ id: 'closing-timing-ticking', label: 'Ticking fee', value: rate, evidence: textOf(tickingCard), sourceCard: tickingCard });
-  }
-
-  const closingCard = cards.find((c) => closingCardCode(c) === 'STRUCT-CLOSING');
-  if (closingCard) {
-    const f = closingCard.features || {};
-    const value = valueText(f.closingTiming) || valueText(f.mainConcept);
-    if (value) rows.push({ id: 'closing-timing-mechanics', label: 'Closing mechanics', value, evidence: textOf(closingCard), sourceCard: closingCard });
+    if (rate) rows.push(closingTimingRow('structure-mechanics-ticking-fee', 'Ticking fee', rate, tickingCard));
   }
 
   return rows;

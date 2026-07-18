@@ -18,21 +18,18 @@ import AgreementView from '../../components/review-v2/AgreementView';
 import MergertraceStyles from '../../components/review-v2/MergertraceStyles';
 import MaeSection from '../../components/review-v2/MaeSection';
 import ElectionCard from '../../components/review-v2/ElectionCard';
-import ClosingTimingSummary from '../../components/review-v2/ClosingTimingSummary';
 import ProvisionIndex, { DefinitionsSection } from '../../components/review-v2/ProvisionIndex';
 import ClauseSidebar from '../../components/review-v2/ClauseSidebar';
 import {
   buildReviewV2Sections,
   deriveExtractedHeaderFacts,
   deriveElectionSummary,
-  deriveClosingTimingSummary,
   groupCardsBySection,
   EMPTY_REVIEW_DEAL,
   MAE_SECTION_ID,
 } from '../../components/review-v2/sectionList';
 
 const CONSIDERATION_SECTION_ID = 'consideration-hero';
-const STRUCTURE_SECTION_ID = 'structure-mechanics';
 
 const FONTS_HREF =
   'https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap';
@@ -43,7 +40,7 @@ function LoadingLine({ children }) {
   );
 }
 
-function SectionBlock({ section, reviewDeal, sectionCards, onSelectCard, selectedCardId, election, closingTiming }) {
+function SectionBlock({ section, reviewDeal, sectionCards, onSelectCard, selectedCardId, election }) {
   // Ben (Mergertrace round 1): every section collapsible. Native <details>
   // (open by default) so the scrollspy/anchor <section> wrapper and the
   // sec-<id> ids are untouched; ProvisionNav's jump() re-opens a collapsed
@@ -67,7 +64,6 @@ function SectionBlock({ section, reviewDeal, sectionCards, onSelectCard, selecte
         ) : (
           <>
             {section.id === CONSIDERATION_SECTION_ID && election ? <ElectionCard election={election} /> : null}
-            {section.id === STRUCTURE_SECTION_ID && closingTiming ? <ClosingTimingSummary rows={closingTiming} /> : null}
             <ProvisionTable config={section.config} reviewDeal={reviewDeal} isEdit={false} />
           </>
         )}
@@ -170,7 +166,6 @@ export default function ReviewPage() {
   const cardsBySection = useMemo(() => groupCardsBySection(reviewDealForTables), [reviewDealForTables]);
   const extractedFacts = useMemo(() => deriveExtractedHeaderFacts(reviewDealForTables), [reviewDealForTables]);
   const election = useMemo(() => deriveElectionSummary(reviewDealForTables), [reviewDealForTables]);
-  const closingTiming = useMemo(() => deriveClosingTimingSummary(reviewDealForTables), [reviewDealForTables]);
 
   /* ── View toggle ── */
   const [view, setView] = useState('summary');
@@ -306,7 +301,6 @@ export default function ReviewPage() {
                   onSelectCard={selectCard}
                   selectedCardId={selectedCard ? (selectedCard.id || selectedCard.provision_instance_id) : null}
                   election={section.id === CONSIDERATION_SECTION_ID ? election : null}
-                  closingTiming={section.id === STRUCTURE_SECTION_ID ? closingTiming : null}
                 />
               ))}
             </div>
