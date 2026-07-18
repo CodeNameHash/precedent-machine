@@ -2,8 +2,13 @@ import { useEffect, useMemo, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import MergertraceStyles from '../components/review-v2/MergertraceStyles';
+import { COLUMNS, getColumn, defaultVisibleKeys, signedYear } from '../lib/deals-index-columns';
 
 HomePage.noLayout = true;
+
+const COLUMNS_STORAGE_KEY = 'deals_index_columns_v1';
+const VALUE_BANDS = ['<$1B', '$1B-$10B', '>$10B'];
 
 function encodePayload(payload) {
   return btoa(JSON.stringify(payload)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
@@ -11,22 +16,101 @@ function encodePayload(payload) {
 
 function fmtMoney(value) {
   const n = Number(value);
-  if (!Number.isFinite(n) || n <= 0) return '-';
+  if (!Number.isFinite(n) || n <= 0) return null;
   if (n >= 1e9) return `$${(n / 1e9).toFixed(n >= 10e9 ? 0 : 1).replace(/\.0$/, '')}B`;
   if (n >= 1e6) return `$${(n / 1e6).toFixed(0)}M`;
   return `$${n.toLocaleString()}`;
 }
 
-function fmtDate(date) {
-  if (!date) return '-';
-  return String(date).slice(0, 7);
+// "May 4, 2025" — full date, not the old month-year slice. The T00:00:00
+// suffix keeps Date() in local time so the day doesn't shift across the UTC
+// boundary.
+function fmtFullDate(date) {
+  if (!date) return null;
+  const d = new Date(`${date}T00:00:00`);
+  if (Number.isNaN(d.getTime())) return null;
+  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
 function queryHref(kind, payload) {
   return `/query/${kind}/adhoc?payload=${encodePayload(payload)}`;
 }
 
-const FIELD_PATH = 'field_path';
+function readColumnsFromStorage() {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = window.localStorage.getItem(COLUMNS_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) && parsed.length ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+function renderCell(col, deal) {
+  if (col.key === 'deal') {
+    return <><b>{deal.buyer_display || 'Buyer'}</b> {' / '}{deal.target_display || 'Target'}</>;
+  }
+  if (col.key === 'signed') {
+    const full = fmtFullDate(deal.signing_date);
+    return <span className="mono">{full || '-'}</span>;
+  }
+  if (col.key === 'value') {
+    const money = fmtMoney(deal.value);
+    if (money) return <span className="mono">{money}</span>;
+    if (deal.value_provenance && deal.value_provenance.kind === 'no_stated_value') {
+      return <span className="mono naVal" title={deal.value_provenance.note || 'No stated headline transaction value'}>n/a</span>;
+    }
+    return <span className="mono">-</span>;
+  }
+  if (['law_firm_buyer', 'law_firm_target', 'lawyers_buyer', 'lawyers_target'].includes(col.key)) {
+    const value = col.accessor(deal);
+    if (value) return value;
+    return <span className="muted" title="not extracted for this deal">&mdash;</span>;
+  }
+  const value = col.accessor(deal);
+  return value == null || value === '' ? '-' : value;
+}
+
+function ColumnHeaderPopover({ col, sort, onSort, activeFilters, options, onToggleFilter, onClearFilter, isOpen, onToggleOpen }) {
+  const activeSort = sort.key === col.key;
+  const filterCount = (activeFilters || []).length;
+  return (
+    <th className={activeSort || filterCount ? 'active' : ''}>
+      <div className="thWrap">
+        <button type="button" className="thBtn" onClick={(e) => { e.stopPropagation(); onToggleOpen(col.key); }}>
+          <span>{col.label}</span>
+          {col.coverage ? <span className="coverage">{col.coverage}</span> : null}
+          {activeSort ? <span className="marker">{sort.dir === 'asc' ? '▲' : '▼'}</span> : null}
+          {filterCount ? <span className="funnel" title={`${filterCount} filter${filterCount > 1 ? 's' : ''} active`}>&#9660;</span> : null}
+        </button>
+        {isOpen && (
+          <div className="popover" onClick={(e) => e.stopPropagation()}>
+            {col.sortable && (
+              <div className="popSort">
+                <button type="button" className={activeSort && sort.dir === 'asc' ? 'sel' : ''} onClick={() => onSort(col.key, 'asc')}>Sort ascending</button>
+                <button type="button" className={activeSort && sort.dir === 'desc' ? 'sel' : ''} onClick={() => onSort(col.key, 'desc')}>Sort descending</button>
+              </div>
+            )}
+            {col.filterable && (
+              <div className="popList">
+                {(options || []).length === 0 && <div className="popEmpty">No values</div>}
+                {(options || []).map((opt) => (
+                  <label key={opt}>
+                    <input type="checkbox" checked={(activeFilters || []).includes(opt)} onChange={() => onToggleFilter(col.key, opt)} />
+                    <span>{opt}</span>
+                  </label>
+                ))}
+                {filterCount > 0 && <button type="button" className="popClear" onClick={() => onClearFilter(col.key)}>Clear filter</button>}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </th>
+  );
+}
 
 export default function HomePage() {
   const router = useRouter();
@@ -34,10 +118,11 @@ export default function HomePage() {
   const [error, setError] = useState(null);
   const [selected, setSelected] = useState(() => new Set());
   const [search, setSearch] = useState('');
-  const [filters, setFilters] = useState({ sector: '', year: '', size: '' });
-  const [sort, setSort] = useState('signing_desc');
-  const [newOpen, setNewOpen] = useState(false);
-  const [queryKinds, setQueryKinds] = useState([]);
+  const [sort, setSort] = useState({ key: 'signed', dir: 'desc' });
+  const [filters, setFilters] = useState({});
+  const [visibleCols, setVisibleCols] = useState(() => defaultVisibleKeys());
+  const [openHeader, setOpenHeader] = useState(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   useEffect(() => {
     fetch('/api/home')
@@ -50,52 +135,95 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-    fetch('/api/query/kinds')
-      .then((res) => res.json())
-      .then((json) => setQueryKinds(Array.isArray(json.kinds) ? json.kinds : []))
-      .catch(() => setQueryKinds([]));
+    const stored = readColumnsFromStorage();
+    if (stored) setVisibleCols(stored);
   }, []);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try { window.localStorage.setItem(COLUMNS_STORAGE_KEY, JSON.stringify(visibleCols)); } catch {}
+  }, [visibleCols]);
+
+  // Read URL params once router is ready: new form (sort=<key>_<dir>,
+  // f_<key>=csv) plus back-compat for the old dropdown params.
+  useEffect(() => {
     if (!router.isReady) return;
-    setFilters({
-      sector: typeof router.query.sector === 'string' ? router.query.sector : '',
-      year: typeof router.query.year === 'string' ? router.query.year : '',
-      size: typeof router.query.size === 'string' ? router.query.size : '',
-    });
-    setSort(typeof router.query.sort === 'string' ? router.query.sort : 'signing_desc');
+    const q = router.query;
+    const nextFilters = {};
+    if (typeof q.sector === 'string' && q.sector) nextFilters.sector = q.sector.split(',');
+    if (typeof q.year === 'string' && q.year) nextFilters.signed = q.year.split(',');
+    if (typeof q.size === 'string' && q.size) nextFilters.value = q.size.split(',');
+    for (const [key, value] of Object.entries(q)) {
+      if (key.startsWith('f_') && typeof value === 'string' && value) {
+        nextFilters[key.slice(2)] = value.split(',').filter(Boolean);
+      }
+    }
+    setFilters(nextFilters);
+
+    if (typeof q.sort === 'string' && q.sort) {
+      const m = q.sort.match(/^(.+)_(asc|desc)$/);
+      if (m && getColumn(m[1])) {
+        setSort({ key: m[1], dir: m[2] });
+      } else if (q.sort === 'signing_desc') setSort({ key: 'signed', dir: 'desc' });
+      else if (q.sort === 'value_desc') setSort({ key: 'value', dir: 'desc' });
+      else if (q.sort === 'value_asc') setSort({ key: 'value', dir: 'asc' });
+      else if (q.sort === 'name_asc') setSort({ key: 'deal', dir: 'asc' });
+    }
   }, [router.isReady]);
 
   useEffect(() => {
     if (!router.isReady) return;
     const query = {};
-    if (filters.sector) query.sector = filters.sector;
-    if (filters.year) query.year = filters.year;
-    if (filters.size) query.size = filters.size;
-    if (sort !== 'signing_desc') query.sort = sort;
+    if (sort.key !== 'signed' || sort.dir !== 'desc') query.sort = `${sort.key}_${sort.dir}`;
+    for (const [key, values] of Object.entries(filters)) {
+      if (Array.isArray(values) && values.length) query[`f_${key}`] = values.join(',');
+    }
     const same = Object.keys(query).length === Object.keys(router.query).length &&
       Object.keys(query).every((key) => router.query[key] === query[key]);
     if (!same) router.replace({ pathname: '/', query }, undefined, { shallow: true });
   }, [filters, sort, router.isReady]);
 
   const deals = data?.deals || [];
-  const years = useMemo(() => [...new Set(deals.map((deal) => deal.signing_date && String(deal.signing_date).slice(0, 4)).filter(Boolean))].sort().reverse(), [deals]);
-  const sectors = useMemo(() => [...new Set(deals.map((deal) => deal.sector).filter(Boolean))].sort(), [deals]);
-  const sizes = ['<$1B', '$1B-$10B', '>$10B'];
+
+  const columnOptions = useMemo(() => {
+    const map = {};
+    for (const col of COLUMNS) {
+      if (!col.filterable) continue;
+      if (col.filterType === 'band') { map[col.key] = VALUE_BANDS; continue; }
+      if (col.filterType === 'year') {
+        map[col.key] = [...new Set(deals.map(signedYear).filter(Boolean))].sort().reverse();
+        continue;
+      }
+      const getter = col.filterValue || col.accessor;
+      map[col.key] = [...new Set(deals.map((deal) => getter(deal)).filter(Boolean))].sort();
+    }
+    return map;
+  }, [deals]);
 
   const visibleDeals = useMemo(() => {
-    const rows = deals.filter((deal) => {
-      if (filters.sector && deal.sector !== filters.sector) return false;
-      if (filters.year && String(deal.signing_date || '').slice(0, 4) !== filters.year) return false;
-      if (filters.size && deal.value_band !== filters.size) return false;
+    let rows = deals.filter((deal) => {
+      for (const [key, allowed] of Object.entries(filters)) {
+        if (!Array.isArray(allowed) || !allowed.length) continue;
+        const col = getColumn(key);
+        if (!col) continue;
+        const getter = col.filterValue || col.accessor;
+        if (!allowed.includes(getter(deal))) return false;
+      }
       return true;
     });
-    return [...rows].sort((a, b) => {
-      if (sort === 'value_desc') return Number(b.value || 0) - Number(a.value || 0);
-      if (sort === 'value_asc') return Number(a.value || 0) - Number(b.value || 0);
-      if (sort === 'name_asc') return a.deal_name.localeCompare(b.deal_name);
-      return String(b.signing_date || '').localeCompare(String(a.signing_date || ''));
-    });
+    const sortCol = getColumn(sort.key);
+    if (sortCol) {
+      const getter = sortCol.sortValue || sortCol.accessor;
+      rows = [...rows].sort((a, b) => {
+        const av = getter(a);
+        const bv = getter(b);
+        let cmp;
+        if (typeof av === 'number' || typeof bv === 'number') cmp = (Number(av) || 0) - (Number(bv) || 0);
+        else cmp = String(av || '').localeCompare(String(bv || ''));
+        return sort.dir === 'asc' ? cmp : -cmp;
+      });
+    }
+    return rows;
   }, [deals, filters, sort]);
 
   const suggestions = useMemo(() => {
@@ -127,22 +255,46 @@ export default function HomePage() {
     if (first) router.push(first.href);
   }
 
+  function handleSort(key, dir) {
+    setSort({ key, dir });
+    setOpenHeader(null);
+  }
+
+  function handleToggleFilter(key, value) {
+    setFilters((prev) => {
+      const current = Array.isArray(prev[key]) ? prev[key] : [];
+      const next = current.includes(value) ? current.filter((v) => v !== value) : [...current, value];
+      return { ...prev, [key]: next };
+    });
+  }
+
+  function handleClearFilter(key) {
+    setFilters((prev) => ({ ...prev, [key]: [] }));
+  }
+
+  function toggleColumn(key) {
+    setVisibleCols((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]));
+  }
+
+  const activeColumns = COLUMNS.filter((col) => visibleCols.includes(col.key));
+
   return (
     <>
       <Head>
         <title>Corpus</title>
       </Head>
-      <div className="nh">
+      <MergertraceStyles />
+      <div className="mtx nh" onClick={() => { setOpenHeader(null); setPickerOpen(false); }}>
         <header className="top">
           <Link href="/" className="brand"><span />Corpus</Link>
-          <form className="search" onSubmit={submitSearch}>
+          <form className="search" onSubmit={submitSearch} onClick={(e) => e.stopPropagation()}>
             <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search deals, provisions, defined terms" />
             {suggestions.length > 0 && (
               <div className="suggestions">
                 {suggestions.map((hit, index) => (
                   <button key={`${hit.type}-${hit.href}-${index}`} type="button" onClick={() => router.push(hit.href)}>
                     <b>{hit.label}</b>
-                    <small>{hit.type} · {hit.detail}</small>
+                    <small>{hit.type} &middot; {hit.detail}</small>
                   </button>
                 ))}
               </div>
@@ -154,38 +306,6 @@ export default function HomePage() {
 
         {error ? <main className="wrap"><div className="empty">{error}</div></main> : (
           <main>
-            <section className="editorial">
-              <div className="wrap">
-                <div className="sectionHead">
-                  <h1>Featured queries</h1>
-                  <p>Cross-deal outputs from the current corpus.</p>
-                </div>
-                <div className="tiles">
-                  {(data?.featured_queries || Array.from({ length: 6 })).map((query, index) => query ? (
-                    <Link key={query.id} href={query.disabled ? '/' : query.href} className={`tile ${query.disabled ? 'disabled' : ''}`}>
-                      <small>{query.query_kind.replace(/_/g, ' ')}</small>
-                      <strong>{query.title}</strong>
-                      <span>{query.preview}</span>
-                    </Link>
-                  ) : <div key={index} className="tile loading" />)}
-                </div>
-
-                <div className="sectionHead snapshotsHead">
-                  <h2>Market snapshots</h2>
-                  <p>Live-computed from populated structured fields.</p>
-                </div>
-                <div className="snapshots">
-                  {(data?.market_snapshots || Array.from({ length: 6 })).map((snap, index) => snap ? (
-                    <Link key={snap.title} href={snap.href || '/'} className="snapshot">
-                      <small>{snap.provision_type.replace(/_/g, ' ')}</small>
-                      <strong>{snap.title}</strong>
-                      <SnapshotBody snap={snap} />
-                    </Link>
-                  ) : <div key={index} className="snapshot loading" />)}
-                </div>
-              </div>
-            </section>
-
             <section className="operational">
               <div className="wrap">
                 <div className="opsHead">
@@ -193,28 +313,21 @@ export default function HomePage() {
                     <h2>Deals ({deals.length})</h2>
                     <p>{visibleDeals.length} visible</p>
                   </div>
-                  <div className="filters">
-                    <select value={filters.sector} onChange={(e) => setFilters((f) => ({ ...f, sector: e.target.value }))}>
-                      <option value="">Sector</option>
-                      {sectors.map((sector) => <option key={sector} value={sector}>{sector}</option>)}
-                    </select>
-                    <select value={filters.year} onChange={(e) => setFilters((f) => ({ ...f, year: e.target.value }))}>
-                      <option value="">Year</option>
-                      {years.map((year) => <option key={year} value={year}>{year}</option>)}
-                    </select>
-                    <select value={filters.size} onChange={(e) => setFilters((f) => ({ ...f, size: e.target.value }))}>
-                      <option value="">Size</option>
-                      {sizes.map((size) => <option key={size} value={size}>{size}</option>)}
-                    </select>
-                    <select value={sort} onChange={(e) => setSort(e.target.value)}>
-                      <option value="signing_desc">Newest</option>
-                      <option value="value_desc">Value high</option>
-                      <option value="value_asc">Value low</option>
-                      <option value="name_asc">Name</option>
-                    </select>
-                    {/* Ben (2026-07-16): query examples hidden until the
-                        query feature is fully built — NewQueryMenu and its
-                        wiring are kept intact for the re-enable. */}
+                  <div className="opsActions" onClick={(e) => e.stopPropagation()}>
+                    <button type="button" className="gearBtn" onClick={() => setPickerOpen((v) => !v)} title="Choose columns">
+                      Columns
+                    </button>
+                    {pickerOpen && (
+                      <div className="picker">
+                        {COLUMNS.map((col) => (
+                          <label key={col.key}>
+                            <input type="checkbox" checked={visibleCols.includes(col.key)} onChange={() => toggleColumn(col.key)} />
+                            <span>{col.label}</span>
+                            {col.coverage ? <small>{col.coverage}</small> : null}
+                          </label>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -228,17 +341,26 @@ export default function HomePage() {
                 <div className="tableShell">
                   <table>
                     <thead>
-                      <tr>
-                        <th />
-                        <th>Deal name</th>
-                        <th>Parties</th>
-                        <th>Signing</th>
-                        <th>Value</th>
-                        <th>Type</th>
+                      <tr onClick={(e) => e.stopPropagation()}>
+                        <th className="checkCol" />
+                        {activeColumns.map((col) => (
+                          <ColumnHeaderPopover
+                            key={col.key}
+                            col={col}
+                            sort={sort}
+                            onSort={handleSort}
+                            activeFilters={filters[col.key]}
+                            options={columnOptions[col.key]}
+                            onToggleFilter={handleToggleFilter}
+                            onClearFilter={handleClearFilter}
+                            isOpen={openHeader === col.key}
+                            onToggleOpen={(key) => setOpenHeader((prev) => (prev === key ? null : key))}
+                          />
+                        ))}
                       </tr>
                     </thead>
                     <tbody>
-                      {!data ? Array.from({ length: 6 }).map((_, i) => <tr key={i}><td colSpan="6" className="rowLoading" /></tr>) : visibleDeals.map((deal) => (
+                      {!data ? Array.from({ length: 6 }).map((_, i) => <tr key={i}><td colSpan={activeColumns.length + 1} className="rowLoading" /></tr>) : visibleDeals.map((deal) => (
                         <tr
                           key={deal.id}
                           onClick={() => router.push(`/review/${deal.id}`)}
@@ -252,7 +374,7 @@ export default function HomePage() {
                             }
                           }}
                         >
-                          <td onClick={(e) => e.stopPropagation()}>
+                          <td className="checkCol" onClick={(e) => e.stopPropagation()}>
                             <input type="checkbox" checked={selected.has(deal.id)} onChange={() => setSelected((prev) => {
                               const next = new Set(prev);
                               if (next.has(deal.id)) next.delete(deal.id);
@@ -260,11 +382,9 @@ export default function HomePage() {
                               return next;
                             })} />
                           </td>
-                          <td><b>{deal.deal_name}</b></td>
-                          <td>{deal.parties}</td>
-                          <td>{fmtDate(deal.signing_date)}</td>
-                          <td>{fmtMoney(deal.value)}</td>
-                          <td>{deal.consideration_type || '-'}</td>
+                          {activeColumns.map((col) => (
+                            <td key={col.key}>{renderCell(col, deal)}</td>
+                          ))}
                         </tr>
                       ))}
                     </tbody>
@@ -276,110 +396,66 @@ export default function HomePage() {
         )}
       </div>
       <style jsx global>{`
-        .nh { min-height: 100vh; background: var(--paper); color: var(--ink); }
+        .nh { min-height: 100vh; background: var(--paper); color: var(--ink); font-family: var(--mtx-sans); }
         .top { height: 64px; display: grid; grid-template-columns: 180px minmax(260px, 1fr) auto auto; gap: 18px; align-items: center; padding: 0 28px; border-bottom: 1px solid var(--line); background: var(--surface); position: sticky; top: 0; z-index: 20; }
-        .brand { color: var(--ink); text-decoration: none; font-size: 22px; font-weight: 600; display: inline-flex; align-items: center; gap: 9px; }
-        .brand span { width: 9px; height: 9px; border-radius: 2px; background: var(--accent); display: inline-block; }
+        .brand { color: var(--ink); text-decoration: none; font-size: 20px; font-weight: 650; display: inline-flex; align-items: center; gap: 9px; font-family: var(--mtx-sans); }
+        .brand span { width: 8px; height: 8px; border-radius: 0; background: var(--accent); display: inline-block; }
         .search { position: relative; }
-        .search input, select, .newQuery button { width: 100%; border: 1px solid var(--line); background: #fff; border-radius: 7px; height: 34px; padding: 0 11px; font: inherit; font-size: 13px; color: var(--ink); }
-        .suggestions { position: absolute; top: 39px; left: 0; right: 0; background: #fff; border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 18px 50px rgba(0,0,0,.12); overflow: hidden; z-index: 30; }
-        .suggestions button { width: 100%; display: flex; justify-content: space-between; gap: 14px; padding: 10px 12px; border: 0; background: #fff; text-align: left; cursor: pointer; }
+        .search input { width: 100%; border: 1px solid var(--line); background: #fff; border-radius: 0; height: 34px; padding: 0 11px; font: inherit; font-size: 13px; color: var(--ink); font-family: var(--mtx-sans); }
+        .suggestions { position: absolute; top: 39px; left: 0; right: 0; background: #fff; border: 1px solid var(--line); border-radius: 0; box-shadow: 0 12px 32px rgba(0,0,0,.10); overflow: hidden; z-index: 30; }
+        .suggestions button { width: 100%; display: flex; justify-content: space-between; gap: 14px; padding: 10px 12px; border: 0; background: #fff; text-align: left; cursor: pointer; font-family: var(--mtx-sans); }
         .suggestions button:hover { background: var(--paper-2); }
         .suggestions small { color: var(--ink-light); white-space: nowrap; }
         .nav, .login { color: var(--accent-deep); font-size: 13px; font-weight: 600; text-decoration: none; }
         .login { color: var(--ink-light); }
         .wrap { max-width: 1280px; margin: 0 auto; padding: 0 34px; }
-        .editorial { padding: 40px 0 38px; background: linear-gradient(#fff, var(--paper)); border-bottom: 1px solid var(--line); }
-        .sectionHead, .opsHead { display: flex; align-items: flex-end; justify-content: space-between; gap: 22px; margin-bottom: 18px; }
-        h1, h2 { font-size: 24px; line-height: 1.1; margin: 0; font-weight: 650; letter-spacing: 0; }
-        p { margin: 5px 0 0; color: var(--ink-light); font-size: 13px; }
-        .tiles, .snapshots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-        .tile, .snapshot { min-height: 142px; border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 16px; text-decoration: none; color: var(--ink); display: flex; flex-direction: column; gap: 10px; }
-        .tile:hover, .snapshot:hover { border-color: var(--accent); }
-        .tile small, .snapshot small { font-family: var(--font-mono); font-size: 10px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: .12em; }
-        .tile strong, .snapshot strong { font-size: 17px; line-height: 1.2; }
-        .tile span { color: var(--ink-light); font-size: 13px; margin-top: auto; }
-        .disabled { opacity: .45; pointer-events: none; }
-        .snapshotsHead { margin-top: 32px; }
-        .snapshot { min-height: 160px; }
-        .spark { display: flex; align-items: flex-end; gap: 4px; height: 48px; margin-top: auto; }
-        .bar { flex: 1; min-width: 8px; background: var(--accent); border-radius: 3px 3px 0 0; opacity: .82; }
-        .metric { margin-top: auto; font-size: 24px; font-weight: 650; }
-        .metric small { display: block; margin-top: 4px; }
         .operational { padding: 34px 0 80px; }
-        .filters { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
-        .filters select { width: auto; min-width: 108px; }
-        .newQuery { position: relative; }
-        .newQuery button { min-width: 112px; cursor: pointer; color: #fff; background: var(--accent); border-color: var(--accent); }
-        .nh .menu { position: absolute; right: 0; top: 40px; width: 240px; background: #fff; border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 18px 50px rgba(0,0,0,.12); z-index: 10; overflow: hidden; }
-        .nh .menu a { display: block; padding: 10px 12px; color: var(--ink); text-decoration: none; font-size: 13px; }
-        .nh .menu a:hover { background: var(--paper-2); }
+        .opsHead { display: flex; align-items: flex-end; justify-content: space-between; gap: 22px; margin-bottom: 18px; }
+        h2 { font-size: 22px; line-height: 1.1; margin: 0; font-weight: 650; font-family: var(--mtx-sans); }
+        p { margin: 5px 0 0; color: var(--ink-light); font-size: 13px; }
+        .opsActions { position: relative; }
+        .gearBtn { border: 1px solid var(--line); background: #fff; border-radius: 0; height: 32px; padding: 0 12px; font-size: 12px; font-weight: 600; font-family: var(--mtx-sans); color: var(--ink); cursor: pointer; }
+        .gearBtn:hover { border-color: var(--accent); }
+        .picker { position: absolute; right: 0; top: 38px; width: 240px; background: #fff; border: 1px solid var(--line); border-radius: 0; box-shadow: 0 12px 32px rgba(0,0,0,.10); z-index: 40; padding: 6px 0; max-height: 340px; overflow-y: auto; }
+        .picker label { display: flex; align-items: center; gap: 8px; padding: 7px 12px; font-size: 12px; cursor: pointer; }
+        .picker label:hover { background: var(--paper-2); }
+        .picker small { margin-left: auto; color: var(--ink-faint); font-family: var(--mtx-mono); font-size: 10px; }
         .bulk { display: flex; gap: 10px; margin: -4px 0 12px; }
-        .bulk a { border: 1px solid var(--accent); color: var(--accent-deep); background: #fff; border-radius: 7px; padding: 8px 11px; text-decoration: none; font-size: 13px; font-weight: 600; }
-        .tableShell { border: 1px solid var(--line); border-radius: 8px; overflow: auto; background: #fff; }
+        .bulk a { border: 1px solid var(--accent); color: var(--accent-deep); background: #fff; border-radius: 0; padding: 8px 11px; text-decoration: none; font-size: 13px; font-weight: 600; }
+        .tableShell { border: 1px solid var(--line); border-radius: 0; overflow: auto; background: #fff; }
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        th { text-align: left; color: var(--ink-faint); font-size: 11px; text-transform: uppercase; letter-spacing: .1em; background: var(--paper-2); }
+        th { text-align: left; color: var(--ink-faint); font-size: 9px; text-transform: uppercase; letter-spacing: .14em; background: var(--paper-2); font-weight: 700; font-family: var(--mtx-sans); position: relative; }
+        th.checkCol, td.checkCol { width: 34px; }
         th, td { padding: 10px 12px; border-bottom: 1px solid var(--line-soft); white-space: nowrap; }
+        td { font-family: var(--mtx-sans); }
+        td .mono, .mono { font-family: var(--mtx-mono); font-variant-numeric: tabular-nums; }
+        td .muted { color: var(--ink-faint); }
+        td .naVal { color: var(--ink-light); cursor: help; }
         tbody tr { cursor: pointer; }
-        tbody tr:hover { background: color-mix(in srgb, var(--accent) 5%, #fff); }
+        tbody tr:hover { background: var(--paper-2); }
         .rowLoading { height: 38px; background: linear-gradient(90deg, var(--line-soft), #fff, var(--line-soft)); }
-        .empty { margin-top: 40px; border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 24px; color: var(--seller); }
+        .empty { margin-top: 40px; border: 1px solid var(--line); background: #fff; border-radius: 0; padding: 24px; }
+        .thWrap { position: relative; }
+        .thBtn { display: flex; align-items: center; gap: 6px; border: 0; background: transparent; cursor: pointer; padding: 0; font: inherit; text-transform: inherit; letter-spacing: inherit; color: inherit; font-family: var(--mtx-sans); }
+        th.active .thBtn { color: var(--ink); }
+        .thBtn .coverage { font-family: var(--mtx-mono); font-size: 9px; color: var(--ink-faint); text-transform: none; letter-spacing: normal; }
+        .thBtn .marker, .thBtn .funnel { font-size: 8px; }
+        .popover { position: absolute; top: 100%; left: 0; margin-top: 6px; width: 220px; background: #fff; border: 1px solid var(--line); border-radius: 0; box-shadow: 0 12px 32px rgba(0,0,0,.12); z-index: 40; padding: 6px 0; text-transform: none; letter-spacing: normal; font-weight: 400; }
+        .popSort { display: flex; flex-direction: column; border-bottom: 1px solid var(--line-soft); padding-bottom: 4px; margin-bottom: 4px; }
+        .popSort button { text-align: left; border: 0; background: transparent; padding: 7px 12px; font-size: 12px; cursor: pointer; font-family: var(--mtx-sans); color: var(--ink); }
+        .popSort button:hover, .popSort button.sel { background: var(--paper-2); }
+        .popList { max-height: 220px; overflow-y: auto; }
+        .popList label { display: flex; align-items: center; gap: 8px; padding: 6px 12px; font-size: 12px; cursor: pointer; }
+        .popList label:hover { background: var(--paper-2); }
+        .popEmpty { padding: 8px 12px; font-size: 12px; color: var(--ink-faint); }
+        .popClear { width: 100%; text-align: left; border: 0; border-top: 1px solid var(--line-soft); background: transparent; padding: 7px 12px; font-size: 12px; cursor: pointer; color: var(--ink-light); margin-top: 4px; font-family: var(--mtx-sans); }
+        .popClear:hover { color: var(--ink); }
         @media (max-width: 820px) {
           .top { grid-template-columns: 1fr; height: auto; padding: 14px; }
-          .tiles, .snapshots { grid-template-columns: 1fr; }
-          .sectionHead, .opsHead { align-items: flex-start; flex-direction: column; }
+          .opsHead { align-items: flex-start; flex-direction: column; }
           .wrap { padding: 0 16px; }
-          .filters { justify-content: flex-start; }
         }
       `}</style>
     </>
   );
-}
-
-function SnapshotBody({ snap }) {
-  const result = snap.result;
-  if (!result) return <span className="metric">No data<small>{snap.error || 'Not populated'}</small></span>;
-  if (result.stats) {
-    const median = result.stats.median == null ? '-' : Number(result.stats.median).toFixed(1).replace(/\.0$/, '');
-    return (
-      <>
-        <span className="metric">{median}<small>n={result.n}</small></span>
-        <Bars items={result.distribution.map((x) => x.count)} />
-      </>
-    );
-  }
-  const top = result.distribution?.[0];
-  return (
-    <>
-      <span className="metric">{top ? `${Math.round(top.percent * 100)}%` : '-'}<small>{top ? top.value : `n=${result.n}`}</small></span>
-      <Bars items={(result.distribution || []).map((x) => x.count)} />
-    </>
-  );
-}
-
-function Bars({ items }) {
-  const max = Math.max(1, ...items);
-  return <span className="spark">{items.slice(0, 10).map((count, i) => <span key={i} className="bar" style={{ height: `${Math.max(6, (count / max) * 48)}px` }} />)}</span>;
-}
-
-function NewQueryMenu({ deals, kinds }) {
-  const ids = (deals || []).slice(0, 4).map((deal) => deal.id);
-  const firstId = ids[0];
-  const defaults = {
-    DEAL_COMPARE: ['Deal compare', { deal_ids: ids.slice(0, 4), provision_types: ['CONSIDERATION', 'TERMINATION_FEE'], highlight_deltas: true, included_field_groups: ['primary'] }],
-    PROVISION_CROSS_CUT: ['Provision cross-cut', { provision_type: 'COVENANT_NO_SOLICITATION', provision_subtype: null, deal_ids: ids, columns: ['go_shop', 'matching_rights_days'], sort_by: 'deal_signing_date_desc' }],
-    MARKET_RANGE: ['Market range', { provision_type: 'TERMINATION_FEE', [FIELD_PATH]: 'fee_amount_percent', deal_filter: {}, chart_kind: 'HISTOGRAM' }],
-    FILTER_THEN_LIST: ['Filter then list', { filters: [], sort_by: 'deal_signing_date_desc', columns: ['deal_name', 'signing_date', 'consideration_type', 'total_deal_value'] }],
-    DEAL_TO_MARKET: ['Deal to market', { deal_id: firstId, comparison_set_filter: {}, provision_types: null }],
-  };
-  const source = Array.isArray(kinds) && kinds.length
-    ? kinds.map((item) => [defaults[item.kind]?.[0] || item.kind.replace(/_/g, ' ').toLowerCase(), item.slug, defaults[item.kind]?.[1] || {}])
-    : [
-        ['Deal compare', 'deal-compare', defaults.DEAL_COMPARE[1]],
-        ['Provision cross-cut', 'provision-cross-cut', defaults.PROVISION_CROSS_CUT[1]],
-        ['Market range', 'market-range', defaults.MARKET_RANGE[1]],
-        ['Filter then list', 'filter-then-list', defaults.FILTER_THEN_LIST[1]],
-        ['Deal to market', 'deal-to-market', defaults.DEAL_TO_MARKET[1]],
-      ];
-  return <div className="menu">{source.map(([label, kind, payload]) => <Link key={kind} href={queryHref(kind, payload)}>{label}</Link>)}</div>;
 }
