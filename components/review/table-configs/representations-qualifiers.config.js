@@ -418,6 +418,55 @@ function disclosureLetterInfo(preamble) {
   return { label: text, evidence: text };
 }
 
+// Item 12 (round 3, Theravance): secFilingsExceptionLookback often stores
+// the raw phrase ("since the Applicable Date") rather than the literal date
+// -- but the resolving fact usually exists elsewhere on the deal (e.g.
+// REP-T-SEC's/DEF-GENERAL's own clause text: '...since January 1, 2024 (the
+// "Applicable Date")...'). This is a render-time resolution over data
+// already on the deal -- no new extraction.
+const DATE_LOOKBACK_TERM_RE = /\bthe\s+([A-Z][A-Za-z ]*?Date)\b/;
+const LITERAL_DATE_RE = /\b(?:19|20)\d{2}\b|January|February|March|April|May|June|July|August|September|October|November|December/;
+const MONTH_ABBREV = {
+  january: 'Jan', february: 'Feb', march: 'Mar', april: 'Apr', may: 'May', june: 'Jun',
+  july: 'Jul', august: 'Aug', september: 'Sep', october: 'Oct', november: 'Nov', december: 'Dec',
+};
+function formatShortDate(dateText) {
+  const m = String(dateText || '').match(/([A-Za-z]+)\s+(\d{1,2}),\s*(\d{4})/);
+  if (!m) return dateText;
+  const abbrev = MONTH_ABBREV[m[1].toLowerCase()] || m[1];
+  return `${abbrev} ${Number(m[2])}, ${m[3]}`;
+}
+function escapeRegExp(s) {
+  return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+// Only resolve when the stored phrase names a "the <Something> Date" term
+// AND carries no literal date itself -- a cutoff that already has a real
+// date should never be overwritten.
+function resolveDateLookback(cutoff, reviewDeal) {
+  if (!cutoff || LITERAL_DATE_RE.test(cutoff)) return null;
+  const termMatch = cutoff.match(DATE_LOOKBACK_TERM_RE);
+  if (!termMatch) return null;
+  const term = termMatch[1].trim();
+  const escapedTerm = escapeRegExp(term);
+  const sinceRe = new RegExp(`since\\s+([A-Za-z]+\\s+\\d{1,2},\\s*\\d{4})\\s*\\(the\\s+[“"]${escapedTerm}[”"]\\)`, 'i');
+  const meansRe = new RegExp(`[“"]${escapedTerm}[”"]\\s+means\\s+([A-Za-z]+\\s+\\d{1,2},\\s*\\d{4})`, 'i');
+  const sources = [
+    ...(reviewDeal?.cards || []).map((card) => textOf(card)),
+    ...(Array.isArray(reviewDeal?.definitions) ? reviewDeal.definitions : []).map((def) => String(def?.defined_value || '')),
+  ];
+  for (const text of sources) {
+    if (!text) continue;
+    const hit = text.match(sinceRe) || text.match(meansRe);
+    if (hit) {
+      const sentenceMatch = text.slice(0, hit.index + hit[0].length).match(/[^.]*$/);
+      const tailMatch = text.slice(hit.index + hit[0].length).match(/^[^.]*\./);
+      const sentence = `${(sentenceMatch ? sentenceMatch[0] : '')}${tailMatch ? tailMatch[0] : ''}`.trim();
+      return { term, date: hit[1], sentence: sentence || hit[0] };
+    }
+  }
+  return null;
+}
+
 // R1: General Exceptions is its OWN row/block -- SEC-filings cut-off,
 // portions-excluded, and the disclosure letter reference. Knowledge (the
 // group/standard) is a SEPARATE block (buildKnowledgeSummaryRow below); the
@@ -432,7 +481,13 @@ function buildGeneralExceptionsRow(reviewDeal, idPrefix, preambleCode) {
   const preamble = (reviewDeal?.cards || []).find((card) => cardCode(card) === preambleCode);
   const cutoffHit = preamble ? firstFeature([preamble], ['secFilingsExceptionLookback']) : null;
   const excludedHit = preamble ? firstFeature([preamble], ['secFilingsExcludedSections']) : null;
-  const cutoff = cutoffHit ? valueText(cutoffHit.value) : null;
+  let cutoff = cutoffHit ? valueText(cutoffHit.value) : null;
+  let cutoffQuote = cutoffHit ? textOfValue(cutoffHit.value) : null;
+  const resolvedLookback = cutoff ? resolveDateLookback(cutoff, reviewDeal) : null;
+  if (resolvedLookback) {
+    cutoff = `since ${formatShortDate(resolvedLookback.date)} (the "${resolvedLookback.term}")`;
+    cutoffQuote = resolvedLookback.sentence;
+  }
   const dict = taxonomyForFeatureKey('secFilingsExcludedSections');
   const excludedRaw = excludedHit ? excludedHit.value : null;
   const excludedRawList = Array.isArray(excludedRaw)
@@ -448,7 +503,7 @@ function buildGeneralExceptionsRow(reviewDeal, idPrefix, preambleCode) {
     card: preamble,
     label: 'General Exceptions',
     secCutoff: cutoff,
-    secCutoffQuote: cutoffHit ? textOfValue(cutoffHit.value) : null,
+    secCutoffQuote: cutoffQuote,
     secExcluded: excluded,
     disclosureLetter,
   };
