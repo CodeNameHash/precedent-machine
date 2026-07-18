@@ -139,6 +139,14 @@ function renderSignals(row, ctx) {
 }
 
 function renderDetail(row, ctx) {
+  // Ben (Bioverativ): this header table can carry very long prose values
+  // (e.g. closing timing / effects-of-merger clause dumps) -- clamp to
+  // ~3 lines with the standard "see provision" expander instead of letting
+  // the full clause run unbounded down the page.
+  const ClampedWithSeeText = ctx?.primitives?.ClampedWithSeeText;
+  if (ClampedWithSeeText) {
+    return React.createElement(ClampedWithSeeText, { text: row.detail, evidence: row.evidence, source: row.sourceCard });
+  }
   const EvidenceHoverSource = ctx?.primitives?.EvidenceHoverSource;
   if (!EvidenceHoverSource || !row.evidence) return row.detail;
   return React.createElement(EvidenceHoverSource, { value: row.value, evidence: row.evidence, source: row.sourceCard, as: 'span' }, row.detail);

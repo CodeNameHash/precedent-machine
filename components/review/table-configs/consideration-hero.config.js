@@ -279,9 +279,13 @@ function renderDetail(row, ctx) {
   if (row.isLink) return renderLinkDetail(row, ctx);
   if (row.id === PER_SHARE_ROW_ID && Array.isArray(row.parts)) return renderPerShareDetail(row, ctx);
   if (PILL_DETAIL_IDS.has(row.id)) return renderPillDetail(row, ctx);
-  const TruncatedWithSeeText = ctx?.primitives?.TruncatedWithSeeText;
-  if (!TruncatedWithSeeText) return row.detail;
-  return React.createElement(TruncatedWithSeeText, { text: row.detail, evidence: row.evidence });
+  // Ben (Bioverativ): this header table can carry very long prose values
+  // (a raw clause dump) -- clamp to ~3 lines with the standard "see
+  // provision" expander rather than a hard character cut, so the row still
+  // shows real running text instead of an arbitrary mid-word truncation.
+  const ClampedWithSeeText = ctx?.primitives?.ClampedWithSeeText;
+  if (!ClampedWithSeeText) return row.detail;
+  return React.createElement(ClampedWithSeeText, { text: row.detail, evidence: row.evidence, source: row.sourceCard });
 }
 
 const considerationHeroConfig = {

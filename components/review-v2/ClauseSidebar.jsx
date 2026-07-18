@@ -387,7 +387,7 @@ export default function ClauseSidebar({ card, dealId, dealSector, onClose }) {
               {stats.peers.slice(0, 6).map((p) => (
                 <Link
                   key={p.deal_id}
-                  href={`/review-v2/${p.deal_id}`}
+                  href={`/review/${p.deal_id}`}
                   className="flex items-baseline justify-between py-1 border-b border-dotted border-[#E0E0E0] last:border-b-0 hover:bg-[#F6F6F6]"
                 >
                   <span className="text-[10px] text-[#1F1F1F] min-w-0 truncate pr-2">{p.acquirer} / {p.target}</span>

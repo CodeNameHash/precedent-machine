@@ -1,6 +1,6 @@
 # WP-SCHEMA P1 Inventory Summary
 
-Generated: 2026-07-16T09:37:27.371Z
+Generated: 2026-07-18T14:06:57.868Z
 
 ## Counts
 

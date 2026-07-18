@@ -126,6 +126,48 @@ export function TruncatedWithSeeText({ text, evidence, source, max = 160, classN
   );
 }
 
+// Line-clamp counterpart to TruncatedWithSeeText, for header-table value
+// cells that can carry very long prose (Ben, Bioverativ: consideration-hero
+// rows). Same "see provision" reveal affordance and term-cell-seetext class,
+// but the collapsed preview is the FULL text visually clipped to `lines`
+// lines via CSS line-clamp rather than a hard character cut -- short values
+// render unclamped and untouched. Opt-in: existing TruncatedWithSeeText call
+// sites are unaffected; only configs that explicitly reach for this get the
+// clamp.
+export function ClampedWithSeeText({ text, evidence, source, lines = 3, className = '' }) {
+  const value = text === null || text === undefined ? '' : String(text);
+  if (!value) return null;
+  // Rough long-value heuristic: ~3 lines at typical table-cell width is
+  // comfortably north of 200 characters for this font/size.
+  if (value.length <= 200) {
+    return (
+      <EvidenceHoverSource evidence={evidence} source={source} as="span" className={className}>
+        {value}
+      </EvidenceHoverSource>
+    );
+  }
+  return (
+    <span className={className}>
+      <EvidenceHoverSource evidence={evidence || value} source={source} as="p">
+        <p
+          className="whitespace-pre-wrap break-words"
+          style={{ display: '-webkit-box', WebkitLineClamp: lines, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
+        >
+          {value}
+        </p>
+      </EvidenceHoverSource>
+      <details className="mt-1">
+        <summary className="term-cell-seetext" style={{ listStyle: 'none' }}>
+          See provision
+        </summary>
+        <div className="mt-1 max-w-[42rem] whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight">
+          {value}
+        </div>
+      </details>
+    </span>
+  );
+}
+
 export function ThresholdCellWithHoverQuote({ value, threshold, evidence, source, label = 'No threshold', className = '' }) {
   const text = textValue(threshold ?? value);
   if (!text) return <span className="text-inkFaint italic">{label}</span>;

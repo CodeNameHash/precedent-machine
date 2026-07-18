@@ -4,7 +4,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 
 const repoRoot = path.resolve(__dirname, '..');
-const reviewPagePath = path.join(repoRoot, 'pages/review/[id].js');
+const reviewPagePath = path.join(repoRoot, 'pages/review-v1/[id].js');
 const apiPath = path.join(repoRoot, 'pages/api/review/[id]/cards.js');
 const reviewPageSource = fs.readFileSync(reviewPagePath, 'utf8');
 const apiSource = fs.readFileSync(apiPath, 'utf8');

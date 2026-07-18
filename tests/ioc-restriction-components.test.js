@@ -72,7 +72,7 @@ test('stampIocRestrictionComponents is idempotent — skips a provision that alr
 /* ── Wiring: restrictionComponents pills on the IOC negative-covenants table
    (pages/review/[id].js is JSX and can't be imported under node --test —
    see tests/fb3-wiring.test.js for the established source-text pattern). */
-const reviewSrc = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
+const reviewSrc = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review-v1', '[id].js'), 'utf8');
 
 test('IocNegativeCovenantsTableSingle renders restrictionComponents pills in the strict Provision column', () => {
   const start = reviewSrc.indexOf('function IocNegativeCovenantsTableSingle(');

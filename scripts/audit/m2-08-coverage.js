@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { SURFACES } = require('./layout-slot-inventory');
 
-const REVIEW_PAGE = 'pages/review/[id].js';
+const REVIEW_PAGE = 'pages/review-v1/[id].js';
 const OUT = 'docs/audit/m2-08-coverage.md';
 
 const CONFIGS_BY_SURFACE = {

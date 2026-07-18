@@ -44,7 +44,7 @@ function definedTerms(provisions, dealsById) {
       type: 'term',
       label: String(label).slice(0, 120),
       detail: deal ? dealName(deal) : 'Defined term',
-      href: `/review/${provision.deal_id}/provision/${provision.id}`,
+      href: `/review-v1/${provision.deal_id}/provision/${provision.id}`,
     });
   }
   return out.slice(0, 80);
@@ -57,7 +57,7 @@ function provisionHits(provisions, dealsById) {
       type: 'provision',
       label: provision.category || provision.type || 'Provision',
       detail: deal ? dealName(deal) : 'Provision',
-      href: `/review/${provision.deal_id}/provision/${provision.id}`,
+      href: `/review-v1/${provision.deal_id}/provision/${provision.id}`,
     };
   });
 }

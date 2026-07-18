@@ -66,9 +66,9 @@ test('summarizeSchemaCoverage returns per-feature empty-state counts', () => {
 
 test('P7 schema coverage API, needs-review page, and render chips are wired', () => {
   const api = fs.readFileSync(path.join(__dirname, '..', 'pages', 'api', 'schema-coverage.js'), 'utf8');
-  const needsReview = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id]', 'needs-review.js'), 'utf8');
+  const needsReview = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review-v1', '[id]', 'needs-review.js'), 'utf8');
   const shared = fs.readFileSync(path.join(__dirname, '..', 'components', 'review', 'shared.js'), 'utf8');
-  const review = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
+  const review = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review-v1', '[id].js'), 'utf8');
 
   assert.match(api, /summarizeSchemaCoverage\(provisions\)/);
   assert.match(api, /range\(from, from \+ PAGE_SIZE - 1\)/);
@@ -80,5 +80,5 @@ test('P7 schema coverage API, needs-review page, and render chips are wired', ()
   assert.match(shared, /export function EmptyFeatureState/);
   assert.match(shared, /schemaRenderFeatureValue\(featureKey, value\)/);
   assert.match(review, /<EmptyFeatureState state=\{emptyState\}/);
-  assert.match(review, /\/review\/\$\{dealId\}\/needs-review/);
+  assert.match(review, /\/review-v1\/\$\{dealId\}\/needs-review/);
 });

@@ -151,7 +151,7 @@ export default function CorrectionsReviewPage() {
           {rows.map((row) => (
             <div key={row.id} className="p-4 flex flex-col gap-2">
               <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <Link href={`/review-v2/${row.deal_id}`} className="text-sm font-ui font-medium text-ink hover:underline">
+                <Link href={`/review/${row.deal_id}`} className="text-sm font-ui font-medium text-ink hover:underline">
                   Deal {String(row.deal_id || '').slice(0, 8)}
                 </Link>
                 <span className="text-xs font-mono text-inkFaint">

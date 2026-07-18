@@ -29,6 +29,11 @@ const FILES = {
 const UI_DIRS = [
   path.join(ROOT, 'components/review'),
   path.join(ROOT, 'pages/review'),
+  // The legacy monolithic review page moved to pages/review-v1/[id].js when
+  // the Mergertrace design was promoted to the production /review/[id]
+  // route — keep scanning it so its literal feature-key references still
+  // feed the inventory (otherwise a regen would silently drop them).
+  path.join(ROOT, 'pages/review-v1'),
 ];
 
 function read(file) {

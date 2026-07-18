@@ -14,7 +14,7 @@ const assert = require('node:assert/strict');
 const path = require('path');
 const fs = require('fs');
 
-const REVIEW_PATH = path.join(__dirname, '..', 'pages', 'review', '[id].js');
+const REVIEW_PATH = path.join(__dirname, '..', 'pages', 'review-v1', '[id].js');
 const src = fs.readFileSync(REVIEW_PATH, 'utf8');
 
 function slice(marker, len) {

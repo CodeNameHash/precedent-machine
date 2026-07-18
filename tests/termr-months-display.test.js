@@ -15,7 +15,7 @@ const path = require('path');
 
 const { computeOutsideDateMonths } = require('../lib/parser-v2/extract.js');
 
-const reviewSrc = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
+const reviewSrc = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review-v1', '[id].js'), 'utf8');
 
 function sliceFn(name) {
   const start = reviewSrc.indexOf(`function ${name}(`);

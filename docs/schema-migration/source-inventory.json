@@ -8561,17 +8561,18 @@
       "components/review/table-configs/vote-standard.js",
       "components/review/table-configs/votes-approvals-meeting.config.js",
       "components/review/table-logic.js",
-      "pages/review/[id]/needs-review.js",
-      "pages/review/[id]/provision/[provisionId].js",
       "pages/review/[id].js",
-      "pages/review/index.js"
+      "pages/review/index.js",
+      "pages/review-v1/[id]/needs-review.js",
+      "pages/review-v1/[id]/provision/[provisionId].js",
+      "pages/review-v1/[id].js"
     ],
     "referencedKeys": [
       {
         "key": "absenceOfChangesExceptions",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 2823,
             "kind": "keys_array"
           }
@@ -8581,7 +8582,7 @@
         "key": "absenceOfChangesStartDate",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 2820,
             "kind": "keys_array"
           }
@@ -8591,7 +8592,7 @@
         "key": "absenceOfChangesType",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 2822,
             "kind": "keys_array"
           }
@@ -8611,12 +8612,12 @@
         "key": "acceptanceAndPaymentMechanics",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3239,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3238,
             "kind": "object_key_literal"
           }
@@ -8646,7 +8647,7 @@
         "key": "additionalTerms",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3551,
             "kind": "keys_array"
           }
@@ -8656,12 +8657,12 @@
         "key": "adjournmentRights",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3532,
             "kind": "keys_array"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3541,
             "kind": "keys_array"
           }
@@ -8671,7 +8672,7 @@
         "key": "advancementOfExpenses",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3545,
             "kind": "keys_array"
           }
@@ -8681,37 +8682,37 @@
         "key": "affirmativeLimbs",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 988,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 990,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 991,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 1198,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 1198,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 1404,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 1404,
             "kind": "features_property"
           }
@@ -8721,12 +8722,12 @@
         "key": "alsoSurfacedAs",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 2873,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 2874,
             "kind": "features_property"
           }
@@ -8736,7 +8737,7 @@
         "key": "amount",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3553,
             "kind": "keys_array"
           }
@@ -8746,7 +8747,7 @@
         "key": "antiRelianceRepText",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3572,
             "kind": "keys_array"
           }
@@ -8766,7 +8767,7 @@
         "key": "aocCitedCovenantNames",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 2832,
             "kind": "keys_array"
           }
@@ -8776,7 +8777,7 @@
         "key": "aocNoMaePresent",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 2831,
             "kind": "keys_array"
           }
@@ -8786,7 +8787,7 @@
         "key": "aocNoMaeSinceDate",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 2850,
             "kind": "features_property"
           }
@@ -8796,12 +8797,12 @@
         "key": "backendMergerMechanic",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3245,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3244,
             "kind": "object_key_literal"
           }
@@ -8901,7 +8902,7 @@
         "key": "cap",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3562,
             "kind": "keys_array"
           }
@@ -8921,12 +8922,12 @@
         "key": "carveouts",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3645,
             "kind": "object_key_literal"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3654,
             "kind": "object_key_literal"
           }
@@ -9021,7 +9022,7 @@
         "key": "chapeauProviso",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 1025,
             "kind": "features_property"
           }
@@ -9061,7 +9062,7 @@
         "key": "closingDeadline",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3258,
             "kind": "features_property"
           }
@@ -9071,12 +9072,12 @@
         "key": "closingLocation",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3261,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3261,
             "kind": "object_key_literal"
           }
@@ -9086,17 +9087,17 @@
         "key": "closingTiming",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3260,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3263,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3262,
             "kind": "object_key_literal"
           }
@@ -9106,7 +9107,7 @@
         "key": "collarType",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3502,
             "kind": "keys_array"
           }
@@ -9116,7 +9117,7 @@
         "key": "commencement",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3525,
             "kind": "keys_array"
           }
@@ -9126,7 +9127,7 @@
         "key": "companyConsent",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3519,
             "kind": "keys_array"
           }
@@ -9156,12 +9157,12 @@
         "key": "compensationItems",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 698,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 698,
             "kind": "features_property"
           }
@@ -9181,7 +9182,7 @@
         "key": "coverage",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3581,
             "kind": "keys_array"
           }
@@ -9191,7 +9192,7 @@
         "key": "coversExpenses",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3568,
             "kind": "keys_array"
           }
@@ -9201,7 +9202,7 @@
         "key": "coversMergerConsideration",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3566,
             "kind": "keys_array"
           }
@@ -9211,7 +9212,7 @@
         "key": "coversReverseTermFee",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3567,
             "kind": "keys_array"
           }
@@ -9221,7 +9222,7 @@
         "key": "dealStructure",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3310,
             "kind": "object_key_literal"
           }
@@ -9231,7 +9232,7 @@
         "key": "definition",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3578,
             "kind": "keys_array"
           }
@@ -9271,7 +9272,7 @@
         "key": "effectiveTimeShort",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3133,
             "kind": "features_property"
           }
@@ -9281,7 +9282,7 @@
         "key": "effectsOfMergerReference",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3151,
             "kind": "features_property"
           }
@@ -9306,7 +9307,7 @@
         "key": "escalationFormula",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3508,
             "kind": "keys_array"
           }
@@ -9316,7 +9317,7 @@
         "key": "exceptions",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3555,
             "kind": "keys_array"
           }
@@ -9326,7 +9327,7 @@
         "key": "extensionMonths",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 4627,
             "kind": "features_property"
           }
@@ -9336,7 +9337,7 @@
         "key": "extensionPeriod",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 4628,
             "kind": "features_property"
           }
@@ -9436,7 +9437,7 @@
         "key": "frustrationApplies",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 6045,
             "kind": "features_property"
           }
@@ -9446,7 +9447,7 @@
         "key": "frustrationLanguage",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 6046,
             "kind": "features_property"
           }
@@ -9456,7 +9457,7 @@
         "key": "frustrationOfConditionsPresent",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 6043,
             "kind": "features_property"
           }
@@ -9466,7 +9467,7 @@
         "key": "frustrationTest",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 6045,
             "kind": "features_property"
           }
@@ -9476,7 +9477,7 @@
         "key": "holder",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3511,
             "kind": "keys_array"
           }
@@ -9496,7 +9497,7 @@
         "key": "insuranceCap",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3544,
             "kind": "keys_array"
           }
@@ -9546,7 +9547,7 @@
         "key": "knowledgeQualifier",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 6516,
             "kind": "features_property"
           }
@@ -9556,7 +9557,7 @@
         "key": "knowledgeScope",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 6539,
             "kind": "features_property"
           }
@@ -9566,22 +9567,22 @@
         "key": "language",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3505,
             "kind": "keys_array"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3570,
             "kind": "keys_array"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3572,
             "kind": "keys_array"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3575,
             "kind": "keys_array"
           }
@@ -9591,7 +9592,7 @@
         "key": "lowerBound",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3504,
             "kind": "keys_array"
           }
@@ -9601,12 +9602,12 @@
         "key": "mailingDeadline",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3530,
             "kind": "keys_array"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3537,
             "kind": "keys_array"
           }
@@ -9626,87 +9627,87 @@
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 899,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 2389,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 2389,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 2389,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 2391,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 2392,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3139,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3153,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3198,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3200,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3249,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3275,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3278,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3283,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3248,
             "kind": "object_key_literal"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3281,
             "kind": "object_key_literal"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3283,
             "kind": "object_key_literal"
           }
@@ -9721,22 +9722,22 @@
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 901,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 2399,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 2400,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 2400,
             "kind": "features_property"
           }
@@ -9746,22 +9747,22 @@
         "key": "mainObligation",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 899,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 2396,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 2398,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 2398,
             "kind": "features_property"
           }
@@ -9771,7 +9772,7 @@
         "key": "marketOutHolder",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3511,
             "kind": "keys_array"
           }
@@ -9811,7 +9812,7 @@
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3586,
             "kind": "keys_array"
           }
@@ -9831,7 +9832,7 @@
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3588,
             "kind": "keys_array"
           }
@@ -9841,7 +9842,7 @@
         "key": "materialContractsRedactionsPermitted",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3590,
             "kind": "keys_array"
           }
@@ -9851,7 +9852,7 @@
         "key": "materialityQualifier",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 6512,
             "kind": "features_property"
           }
@@ -9861,7 +9862,7 @@
         "key": "maxPayment",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3500,
             "kind": "keys_array"
           }
@@ -9871,12 +9872,12 @@
         "key": "meetingControlNotes",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3535,
             "kind": "keys_array"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3542,
             "kind": "keys_array"
           }
@@ -9886,12 +9887,12 @@
         "key": "meetingDeadline",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3531,
             "kind": "keys_array"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3540,
             "kind": "keys_array"
           }
@@ -9901,12 +9902,12 @@
         "key": "mergerForm",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3238,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3238,
             "kind": "object_key_literal"
           }
@@ -9916,7 +9917,7 @@
         "key": "milestones",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3498,
             "kind": "keys_array"
           }
@@ -9926,7 +9927,7 @@
         "key": "mutualClosingDeadlineAfterConditionsDays",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3257,
             "kind": "features_property"
           }
@@ -9936,7 +9937,7 @@
         "key": "nakedNoVoteFeeAmount",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 4012,
             "kind": "features_property"
           }
@@ -9991,7 +9992,7 @@
         "key": "notificationConsequences",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3547,
             "kind": "keys_array"
           }
@@ -10001,12 +10002,12 @@
         "key": "offerCommencementDeadline",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3238,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3238,
             "kind": "object_key_literal"
           }
@@ -10016,12 +10017,12 @@
         "key": "offerConditionsReference",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3238,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3238,
             "kind": "object_key_literal"
           }
@@ -10031,12 +10032,12 @@
         "key": "offerExpirationAndExtension",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3238,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3238,
             "kind": "object_key_literal"
           }
@@ -10051,12 +10052,12 @@
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3238,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3238,
             "kind": "object_key_literal"
           }
@@ -10076,7 +10077,7 @@
         "key": "otherAgentFormulation",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3523,
             "kind": "keys_array"
           }
@@ -10086,12 +10087,12 @@
         "key": "outsideDateMonths",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 4626,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3749,
             "kind": "object_key_literal"
           }
@@ -10101,7 +10102,7 @@
         "key": "outsideDateMonthsPostSigning",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 4626,
             "kind": "features_property"
           }
@@ -10131,7 +10132,7 @@
         "key": "parentInfoRights",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3513,
             "kind": "keys_array"
           }
@@ -10141,7 +10142,7 @@
         "key": "parentParticipationOrControl",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3514,
             "kind": "keys_array"
           }
@@ -10161,7 +10162,7 @@
         "key": "partOfRep",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 2871,
             "kind": "features_property"
           }
@@ -10171,7 +10172,7 @@
         "key": "paymentConsent",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3517,
             "kind": "keys_array"
           }
@@ -10181,7 +10182,7 @@
         "key": "periodBusinessDays",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3524,
             "kind": "keys_array"
           }
@@ -10196,22 +10197,22 @@
             "kind": "keys_array"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 1012,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 1018,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 1021,
             "kind": "object_key_literal"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 1024,
             "kind": "object_key_literal"
           }
@@ -10221,7 +10222,7 @@
         "key": "permittedRedactionsDefinition",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3591,
             "kind": "keys_array"
           }
@@ -10246,17 +10247,17 @@
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 992,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 992,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 1405,
             "kind": "features_property"
           }
@@ -10266,7 +10267,7 @@
         "key": "proviso",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 1025,
             "kind": "features_property"
           }
@@ -10276,12 +10277,12 @@
         "key": "proxyFilingDeadline",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3527,
             "kind": "keys_array"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3536,
             "kind": "keys_array"
           }
@@ -10306,7 +10307,7 @@
         "key": "rate",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3507,
             "kind": "keys_array"
           }
@@ -10316,7 +10317,7 @@
         "key": "ratioType",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3509,
             "kind": "keys_array"
           }
@@ -10376,7 +10377,7 @@
         "key": "repsSurvivalDuration",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3770,
             "kind": "object_key_literal"
           }
@@ -10386,7 +10387,7 @@
         "key": "repsSurvivalExceptions",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3777,
             "kind": "object_key_literal"
           }
@@ -10396,7 +10397,7 @@
         "key": "repsSurvivalPresent",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3768,
             "kind": "object_key_literal"
           }
@@ -10406,12 +10407,12 @@
         "key": "schedule14D9Filing",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3242,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3241,
             "kind": "object_key_literal"
           }
@@ -10421,12 +10422,12 @@
         "key": "scheduleTOFiling",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3240,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3239,
             "kind": "object_key_literal"
           }
@@ -10436,12 +10437,12 @@
         "key": "scope",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 6691,
             "kind": "object_key_literal"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3565,
             "kind": "keys_array"
           }
@@ -10451,7 +10452,7 @@
         "key": "secFilingsCarvedOutReps",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 5583,
             "kind": "keys_array"
           }
@@ -10461,7 +10462,7 @@
         "key": "secFilingsExceptionCarvedOutReps",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 5583,
             "kind": "keys_array"
           }
@@ -10471,7 +10472,7 @@
         "key": "secFilingsExceptionExclusions",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 5582,
             "kind": "keys_array"
           }
@@ -10481,7 +10482,7 @@
         "key": "secFilingsExcludedSections",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 5582,
             "kind": "keys_array"
           }
@@ -10521,7 +10522,7 @@
         "key": "settlementConsent",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3516,
             "kind": "keys_array"
           }
@@ -10531,7 +10532,7 @@
         "key": "soleRemedy",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3555,
             "kind": "keys_array"
           }
@@ -10541,7 +10542,7 @@
         "key": "solvencyRepDetails",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3570,
             "kind": "keys_array"
           }
@@ -10571,7 +10572,7 @@
         "key": "specificPerformanceBar",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3557,
             "kind": "keys_array"
           }
@@ -10596,7 +10597,7 @@
         "key": "startDate",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3507,
             "kind": "keys_array"
           }
@@ -10606,12 +10607,12 @@
         "key": "stockholderListCovenant",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3243,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3242,
             "kind": "object_key_literal"
           }
@@ -10646,7 +10647,7 @@
         "key": "summary",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 901,
             "kind": "features_property"
           }
@@ -10796,7 +10797,7 @@
         "key": "term",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3500,
             "kind": "keys_array"
           }
@@ -10806,7 +10807,7 @@
         "key": "threshold",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3512,
             "kind": "keys_array"
           }
@@ -10831,7 +10832,7 @@
         "key": "topCustomersSuppliersDefinition",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3579,
             "kind": "keys_array"
           }
@@ -10841,7 +10842,7 @@
         "key": "transferable",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3501,
             "kind": "keys_array"
           }
@@ -10851,7 +10852,7 @@
         "key": "transferAgentException",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3521,
             "kind": "keys_array"
           }
@@ -10861,27 +10862,27 @@
         "key": "triggers",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3998,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3999,
             "kind": "features_property"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3496,
             "kind": "keys_array"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3552,
             "kind": "keys_array"
           },
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3560,
             "kind": "keys_array"
           }
@@ -10891,7 +10892,7 @@
         "key": "triggerTerminationClauses",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3981,
             "kind": "features_property"
           }
@@ -10901,7 +10902,7 @@
         "key": "undisclosedLiabilitiesExceptions",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 2836,
             "kind": "keys_array"
           }
@@ -10911,7 +10912,7 @@
         "key": "upperBound",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3503,
             "kind": "keys_array"
           }
@@ -10921,7 +10922,7 @@
         "key": "value",
         "hits": [
           {
-            "file": "pages/review/[id].js",
+            "file": "pages/review-v1/[id].js",
             "line": 3510,
             "kind": "keys_array"
           }

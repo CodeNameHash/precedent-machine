@@ -61,7 +61,7 @@ test('buildAntitrustSummaryRows Litigation row falls back to parentLitigationObl
 
 /* ── (a) render-side: "Silent" for the absent case, pinned via source text ── */
 
-const REVIEW_PATH = path.join(__dirname, '..', 'pages', 'review', '[id].js');
+const REVIEW_PATH = path.join(__dirname, '..', 'pages', 'review-v1', '[id].js');
 const reviewSrc = () => fs.readFileSync(REVIEW_PATH, 'utf8');
 
 test('renderAntiHitValue renders "Silent" for the Litigation row specifically when hit is absent', () => {

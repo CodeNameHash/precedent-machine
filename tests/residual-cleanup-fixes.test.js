@@ -331,7 +331,7 @@ test('termination-rights crossCuttingGroup returns null when neither attribute i
 // mounting the component -- see tests/review-page-card-switch.test.js). -----
 
 test('review page dedupes repeated scroll-target requests so a redundant queueSectionScroll/queueProvisionScroll call does not cancel an in-flight scroll', () => {
-  const reviewPageSource = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review', '[id].js'), 'utf8');
+  const reviewPageSource = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review-v1', '[id].js'), 'utf8');
   assert.match(
     reviewPageSource,
     /const sameScrollTarget = \(prev, next\) =>\s*\n\s*!!prev && prev\.provisionId === next\.provisionId && prev\.sectionType === next\.sectionType;/,
