@@ -1,12 +1,77 @@
 import { getServiceSupabase } from '../../lib/supabase';
-const { runQuery } = require('../../lib/query/engine');
-const { featuredQueries, encodePayload } = require('../../lib/query/fixtures');
-const { dealRow, dealName, featureDefsForWpType, kindToSlug } = require('../../lib/query/types');
+const { dealRow, dealName, resolveBuyerDisplay, resolveTargetDisplay } = require('../../lib/query/types');
 const { getFeatures } = require('../../lib/feature-compare');
+const { getDisplayAdvisors } = require('../../lib/canonical-advisors');
+const { QUALITY_METRICS_TABLE } = require('../../lib/deal-quality-metrics');
 
-const DEAL_SELECT = 'id, acquirer, target, value_usd, announce_date, sector, metadata';
-const PROVISION_SELECT = 'id, deal_id, type, category, full_text, ai_metadata, created_at';
-const FIELD_PATH = 'field_path';
+// DEALS-INDEX-SPEC item 8 (F1): targeted metadata->> selects instead of the
+// whole `metadata` column. The 40 deals' full metadata totals ~31.7MB
+// (full_text + classified_sections + extraction_runs) that this endpoint
+// never uses — this select ships only the keys dealRow()/dealName()/the
+// column registry actually read.
+const DEAL_SELECT = [
+  'id',
+  'acquirer',
+  'target',
+  'value_usd',
+  'announce_date',
+  'sector',
+  'ingest_status:metadata->>ingest_status',
+  'acquirer_display:metadata->>acquirer_display',
+  'ultimateParent:metadata->>ultimateParent',
+  'ultimate_parent:metadata->>ultimate_parent',
+  'parent_entity:metadata->>parent_entity',
+  'target_display:metadata->>target_display',
+  'target_entity:metadata->>target_entity',
+  'headlineConsiderationType:metadata->>headlineConsiderationType',
+  'considerationType:metadata->>considerationType',
+  'deal_facts:metadata->deal_facts',
+  'buyer_profile:metadata->>buyer_profile',
+  'merger_form:metadata->>merger_form',
+  'value_provenance:metadata->value_provenance',
+  'advisors_v2:metadata->advisors_v2',
+  'advisors:metadata->advisors',
+].join(', ');
+
+// F2: slim provisions select — drop full_text (nothing here reads it;
+// getFeatures() reads ai_metadata) and page past Supabase's silent 1000-row
+// cap so the search index covers the full corpus (12,786 rows @ 2026-07-18),
+// not just the first ~8%.
+const PROVISION_SELECT = 'id, deal_id, type, category, ai_metadata';
+const PROVISION_PAGE_SIZE = 1000;
+
+function isStagingDeal(row) {
+  return row && row.ingest_status === 'staging';
+}
+
+function rowToDeal(row) {
+  const metadata = {
+    ...(row.ingest_status ? { ingest_status: row.ingest_status } : {}),
+    ...(row.acquirer_display ? { acquirer_display: row.acquirer_display } : {}),
+    ...(row.ultimateParent ? { ultimateParent: row.ultimateParent } : {}),
+    ...(row.ultimate_parent ? { ultimate_parent: row.ultimate_parent } : {}),
+    ...(row.parent_entity ? { parent_entity: row.parent_entity } : {}),
+    ...(row.target_display ? { target_display: row.target_display } : {}),
+    ...(row.target_entity ? { target_entity: row.target_entity } : {}),
+    ...(row.headlineConsiderationType ? { headlineConsiderationType: row.headlineConsiderationType } : {}),
+    ...(row.considerationType ? { considerationType: row.considerationType } : {}),
+    ...(row.deal_facts ? { deal_facts: row.deal_facts } : {}),
+    ...(row.buyer_profile ? { buyer_profile: row.buyer_profile } : {}),
+    ...(row.merger_form ? { merger_form: row.merger_form } : {}),
+    ...(row.value_provenance ? { value_provenance: row.value_provenance } : {}),
+    ...(row.advisors_v2 ? { advisors_v2: row.advisors_v2 } : {}),
+    ...(row.advisors ? { advisors: row.advisors } : {}),
+  };
+  return {
+    id: row.id,
+    acquirer: row.acquirer,
+    target: row.target,
+    value_usd: row.value_usd,
+    announce_date: row.announce_date,
+    sector: row.sector,
+    metadata,
+  };
+}
 
 function sizeBand(value) {
   const n = Number(value);
@@ -16,17 +81,31 @@ function sizeBand(value) {
   return '>$10B';
 }
 
-function publicDeal(deal) {
+function publicDeal(deal, provisionCounts) {
   const row = dealRow(deal);
+  const meta = deal.metadata || {};
+  const advisors = getDisplayAdvisors(meta);
+  const valueProvenance = meta.value_provenance && typeof meta.value_provenance === 'object' ? meta.value_provenance : null;
   return {
     id: deal.id,
     deal_name: row.deal_name,
-    parties: row.deal_name,
+    buyer_display: resolveBuyerDisplay(deal),
+    target_display: resolveTargetDisplay(deal),
     signing_date: row.signing_date,
     value: row.total_deal_value,
     value_band: sizeBand(row.total_deal_value),
+    value_provenance: valueProvenance,
     consideration_type: row.consideration_type,
+    buyer_profile: meta.buyer_profile || null,
     sector: deal.sector || null,
+    merger_form: meta.merger_form || null,
+    advisors: {
+      buyer_firms: advisors.buyerFirms,
+      seller_firms: advisors.sellerFirms,
+      buyer_lawyers: advisors.buyerLawyers || [],
+      seller_lawyers: advisors.sellerLawyers || [],
+    },
+    provision_count: provisionCounts.has(deal.id) ? provisionCounts.get(deal.id) : null,
   };
 }
 
@@ -62,99 +141,41 @@ function provisionHits(provisions, dealsById) {
   });
 }
 
-async function featuredFromDb(sb) {
+// Pages past Supabase's silent 1000-row cap. Deliberately SERIAL (one
+// in-flight request at a time) rather than fanning out all pages in
+// parallel — this shared Supabase instance is concurrency-sensitive, and a
+// single request should never multiply its own connection footprint. ~13
+// round trips over 12,786 rows @ 2026-07-18; still cheaper than the payload
+// the old whole-metadata select carried per deal.
+async function fetchAllProvisions(sb) {
+  const out = [];
+  let offset = 0;
+  for (;;) {
+    const { data, error } = await sb
+      .from('provisions')
+      .select(PROVISION_SELECT)
+      .order('created_at', { ascending: true })
+      .range(offset, offset + PROVISION_PAGE_SIZE - 1);
+    if (error) throw new Error(error.message);
+    out.push(...(data || []));
+    if (!data || data.length < PROVISION_PAGE_SIZE) break;
+    offset += PROVISION_PAGE_SIZE;
+  }
+  return out;
+}
+
+async function fetchProvisionCounts(sb, dealIds) {
+  const counts = new Map();
+  if (!dealIds.length) return counts;
   const { data, error } = await sb
-    .from('saved_queries')
-    .select('*')
-    .eq('is_featured', true)
-    .order('updated_at', { ascending: false })
-    .limit(6);
-  if (error) return null;
-  if (!data || data.length === 0) return null;
-  return data.map((row) => ({
-    id: row.id,
-    query_kind: row.query_kind,
-    title: row.title,
-    description: row.description,
-    href: `/query/${kindToSlug(row.query_kind)}/${row.id}`,
-    preview: row.description || 'Saved corpus query',
-  }));
-}
-
-const SNAPSHOT_PREFERRED = [
-  { title: 'Median term fee', provision_type: 'TERMINATION_FEE', [FIELD_PATH]: 'fee_amount_percent', chart_kind: 'HISTOGRAM' },
-  { title: 'Outside date extensions', provision_type: 'TERMINATION_RIGHT', [FIELD_PATH]: 'outside_date_extension_months', chart_kind: 'HISTOGRAM' },
-  { title: 'Go-shop presence', provision_type: 'COVENANT_NO_SOLICITATION', [FIELD_PATH]: 'go_shop', chart_kind: 'BAR' },
-  { title: 'Matching rights days', provision_type: 'COVENANT_NO_SOLICITATION', [FIELD_PATH]: 'matching_rights_days', chart_kind: 'HISTOGRAM' },
-  { title: 'No-shop type distribution', provision_type: 'COVENANT_NO_SOLICITATION', [FIELD_PATH]: 'no_shop_type', chart_kind: 'BAR' },
-  { title: 'MAE carve-out count', provision_type: 'REPRESENTATION', [FIELD_PATH]: 'maeLimbs', chart_kind: 'BAR' },
-];
-
-const SNAPSHOT_TYPES = [
-  'TERMINATION_FEE',
-  'TERMINATION_RIGHT',
-  'COVENANT_NO_SOLICITATION',
-  'REPRESENTATION',
-  'CONSIDERATION',
-  'COVENANT_INTERIM_OPERATING',
-  'CLOSING_CONDITION',
-];
-
-const SNAPSHOT_FIELD_TYPES = new Set(['boolean', 'enum', 'currency', 'percentage', 'duration', 'number', 'decimal', 'int', 'tagged', 'object']);
-
-function chartKindFor(def) {
-  return ['boolean', 'enum', 'tagged', 'object'].includes(def.type) ? 'BAR' : 'HISTOGRAM';
-}
-
-async function buildSnapshots(context) {
-  const byKey = new Map();
-  for (const preferred of SNAPSHOT_PREFERRED) byKey.set(`${preferred.provision_type}:${preferred.field_path}`, { ...preferred, preferred: true });
-  for (const provisionType of SNAPSHOT_TYPES) {
-    for (const def of featureDefsForWpType(provisionType)) {
-      if (!SNAPSHOT_FIELD_TYPES.has(def.type)) continue;
-      const key = `${provisionType}:${def.key}`;
-      if (!byKey.has(key)) {
-        byKey.set(key, {
-          title: def.label,
-          provision_type: provisionType,
-          [FIELD_PATH]: def.key,
-          chart_kind: chartKindFor(def),
-          preferred: false,
-        });
-      }
-    }
+    .from(QUALITY_METRICS_TABLE)
+    .select('deal_id, provision_count')
+    .in('deal_id', dealIds);
+  if (error) return counts;
+  for (const row of data || []) {
+    if (row && row.deal_id) counts.set(row.deal_id, Number(row.provision_count) || 0);
   }
-
-  const scored = [];
-  for (const snap of byKey.values()) {
-    const payload = {
-      provision_type: snap.provision_type,
-      [FIELD_PATH]: snap.field_path,
-      deal_filter: {},
-      chart_kind: snap.chart_kind,
-    };
-    try {
-      const result = await runQuery('MARKET_RANGE', payload, { context });
-      if (result.n > 0) scored.push({ ...snap, payload, result });
-    } catch {
-      // Missing optional schema fields degrade by disappearing from the live set.
-    }
-  }
-
-  scored.sort((a, b) => {
-    const preferred = Number(b.preferred) - Number(a.preferred);
-    if (preferred) return preferred;
-    return b.result.n - a.result.n || a.title.localeCompare(b.title);
-  });
-
-  return scored.slice(0, 6).map((snap) => ({
-    title: snap.title,
-    provision_type: snap.provision_type,
-    [FIELD_PATH]: snap.field_path,
-    chart_kind: snap.chart_kind,
-    href: `/query/market-range/adhoc?payload=${encodePayload(snap.payload)}`,
-    result: snap.result,
-  }));
+  return counts;
 }
 
 export default async function handler(req, res) {
@@ -163,31 +184,37 @@ export default async function handler(req, res) {
   if (!sb) return res.status(500).json({ error: 'Supabase not configured' });
 
   try {
-    const [{ data: deals, error: dErr }, { data: provisions, error: pErr }] = await Promise.all([
-      sb.from('deals').select(DEAL_SELECT).order('announce_date', { ascending: false }),
-      sb.from('provisions').select(PROVISION_SELECT).order('created_at', { ascending: true }),
-    ]);
+    // Deliberately serial (not Promise.all-fanned-out): one Supabase
+    // round trip in flight at a time per request, out of respect for a
+    // shared instance that concurrent load can overwhelm.
+    const { data: dealRows, error: dErr } = await sb
+      .from('deals').select(DEAL_SELECT).order('announce_date', { ascending: false });
     if (dErr) throw new Error(dErr.message);
-    if (pErr) throw new Error(pErr.message);
 
-    const context = { deals: deals || [], provisions: provisions || [] };
-    const snapshots = await buildSnapshots(context);
+    // F5: staging deals never belong on the public index.
+    const liveRows = (dealRows || []).filter((row) => !isStagingDeal(row));
+    const deals = liveRows.map(rowToDeal);
+    const dealsById = new Map(deals.map((deal) => [deal.id, deal]));
 
-    const dealsById = new Map((deals || []).map((deal) => [deal.id, deal]));
-    const dbFeatured = await featuredFromDb(sb);
+    const provisions = await fetchAllProvisions(sb);
+    const provisionCounts = await fetchProvisionCounts(sb, deals.map((deal) => deal.id));
+
     const searchIndex = [
-      ...(deals || []).map((deal) => ({ type: 'deal', label: dealName(deal), detail: [deal.sector, deal.announce_date].filter(Boolean).join(' · '), href: `/review/${deal.id}` })),
+      ...deals.map((deal) => ({ type: 'deal', label: dealName(deal), detail: [deal.sector, deal.announce_date].filter(Boolean).join(' · '), href: `/review/${deal.id}` })),
       ...provisionHits(provisions, dealsById),
       ...definedTerms(provisions, dealsById),
     ];
 
+    // F4: this endpoint is not user-personalized — let the Vercel CDN cache
+    // it and revalidate in the background instead of hitting Supabase cold
+    // on every request.
+    res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=86400');
+
     return res.status(200).json({
-      featured_queries: dbFeatured || featuredQueries(deals || []),
-      market_snapshots: snapshots,
-      deals: (deals || []).map(publicDeal),
+      deals: deals.map((deal) => publicDeal(deal, provisionCounts)),
       search_index: searchIndex,
     });
   } catch (err) {
-    return res.status(500).json({ error: err.message || 'newhome failed' });
+    return res.status(500).json({ error: err.message || 'home failed' });
   }
 }

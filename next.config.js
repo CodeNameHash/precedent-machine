@@ -21,6 +21,9 @@ const nextConfig = {
       { source: '/newhome', destination: '/', permanent: true },
       { source: '/newhome/library', destination: '/library', permanent: true },
       { source: '/newhome/query/:kind/:id', destination: '/query/:kind/:id', permanent: true },
+      // pages/deals/index.js (legacy Tailwind deals index) is deleted —
+      // DEALS-INDEX-SPEC-2026-07-18 item 0. `/` is the one canonical index.
+      { source: '/deals', destination: '/', permanent: false },
     ];
   },
 };
