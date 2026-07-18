@@ -6,7 +6,7 @@ verified against live DB state, not agent self-reports.
 
 ## Corpus state
 
-- **30 of 40 deals pass every QA gate** (21 at program start under the old
+- **31 of 40 deals pass every QA gate** (updated post-Noble-Africa) (21 at program start under the old
   metric; the gates themselves got stricter along the way).
 - **Zero hallucinated quotes corpus-wide.** The Phase 5 adversarial audit
   read all 15 residual unverified-quote flags: 0 hallucinated,
