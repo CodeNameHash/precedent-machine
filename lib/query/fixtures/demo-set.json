@@ -1,0 +1,579 @@
+[
+  {
+    "id": "force-the-vote",
+    "title": "Force-the-vote provisions",
+    "question": "Which deals have force-the-vote provisions?",
+    "kind": "FILTER_THEN_LIST",
+    "payload": {
+      "filters": [
+        {
+          "provision_type": "COVENANT_NO_SOLICITATION",
+          "field": "forceTheVote",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "sort_by": "deal_signing_date_desc",
+      "columns": [
+        "deal_name"
+      ]
+    },
+    "expected": {
+      "total_matches": 11,
+      "deal_names_contains": [
+        "Chevron Corporation / Anadarko Petroleum Corporation",
+        "ENDRA Life Sciences Inc. / Noble Africa LLC",
+        "General Dynamics Corporation / CSRA Inc.",
+        "Hearts Parent, LLC / HireRight Holdings Corporation",
+        "Hewlett Packard Enterprise Company / Juniper Networks, Inc.",
+        "IonQ, Inc. / SkyWater Technology, Inc.",
+        "Laboratory Corporation of America Holdings / Covance Inc.",
+        "Marriott International, Inc. / Starwood Hotels & Resorts Worldwide, Inc.",
+        "QXO, Inc. / TopBuild Corp.",
+        "Quikrete Holdings, Inc. / Summit Materials, Inc.",
+        "Rocket Companies, Inc. / Mr. Cooper Group Inc."
+      ]
+    },
+    "notes": "WP-1 query #1. Confirmed live 2026-07-18."
+  },
+  {
+    "id": "fee-pct-over-3pct",
+    "title": "Termination fees over 3% of deal value",
+    "question": "Company termination fees over 3% of deal value",
+    "kind": "FILTER_THEN_LIST",
+    "payload": {
+      "filters": [
+        {
+          "provision_type": "TERMINATION_FEE",
+          "field": "feePctOfDealValue",
+          "op": "gt",
+          "value": 3
+        }
+      ],
+      "sort_by": "deal_signing_date_desc",
+      "columns": [
+        "deal_name"
+      ]
+    },
+    "expected": {
+      "total_matches": 12,
+      "deal_names_contains": [
+        "Beach Acquisition Co Parent, LLC / Skechers U.S.A., Inc.",
+        "Bespin Subsidiary, LLC / Landos Biopharma, Inc.",
+        "Chevron Corporation / Anadarko Petroleum Corporation",
+        "Eli Lilly and Company / Verve Therapeutics, Inc.",
+        "Gilead Sciences, Inc. / Pharmasset, Inc.",
+        "Marriott International, Inc. / Starwood Hotels & Resorts Worldwide, Inc.",
+        "Merck & Co., Inc. / Prometheus Biosciences, Inc.",
+        "QXO, Inc. / TopBuild Corp.",
+        "Rocket Companies, Inc. / Mr. Cooper Group Inc.",
+        "Rocket Companies, Inc. / Redfin Corporation",
+        "Shire plc / Dyax Corp.",
+        "Zymeworks Inc. / Theravance Biopharma, Inc."
+      ]
+    },
+    "notes": "WP-1 query #2. Gap G-A: feePctOfDealValue is a query-time-derived field (lib/query/derived-fields.js), NOT a canonical extracted field — companyTerminationFee.amount / deals.value_usd. expected pinned via --update against the live corpus."
+  },
+  {
+    "id": "fee-pct-market-range",
+    "title": "Market range: termination fee as % of deal value",
+    "question": "Market range: termination fee as % of deal value",
+    "kind": "MARKET_RANGE",
+    "payload": {
+      "provision_type": "TERMINATION_FEE",
+      "field_path": "feePctOfDealValue",
+      "deal_filter": {},
+      "chart_kind": "HISTOGRAM"
+    },
+    "expected": {
+      "n": 29,
+      "median": 2.91
+    },
+    "notes": "WP-1 query #3. Same derived field as #2 (G-A)."
+  },
+  {
+    "id": "go-shop-periods",
+    "title": "Go-shop periods",
+    "question": "Which deals have go-shop periods, and how long?",
+    "kind": "FILTER_THEN_LIST",
+    "payload": {
+      "filters": [
+        {
+          "provision_type": "COVENANT_NO_SOLICITATION",
+          "field": "goShopPresent",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "sort_by": "deal_signing_date_desc",
+      "columns": [
+        "deal_name"
+      ]
+    },
+    "expected": {
+      "total_matches": 1,
+      "deal_names_contains": [
+        "Restaurant Brands International Inc. / Carrols Restaurant Group, Inc."
+      ]
+    },
+    "notes": "WP-1 query #4. Gap G-D: only 1/40 true in ai_metadata (spec expects Carrols only) — a corpus-truth finding, not a query bug. See G-D sweep note in the PR description."
+  },
+  {
+    "id": "match-right-windows",
+    "title": "Match-right initial windows",
+    "question": "Match-right initial windows across the corpus",
+    "kind": "MARKET_RANGE",
+    "payload": {
+      "provision_type": "COVENANT_NO_SOLICITATION",
+      "field_path": "initialMatchPeriodDays",
+      "deal_filter": {},
+      "chart_kind": "HISTOGRAM"
+    },
+    "expected": {
+      "n": 33,
+      "median": 4
+    },
+    "notes": "WP-1 query #5."
+  },
+  {
+    "id": "consideration-mix",
+    "title": "Cash vs stock vs mixed vs cash+CVR mix",
+    "question": "Cash vs stock vs mixed vs cash+CVR mix across the corpus",
+    "kind": "MARKET_RANGE",
+    "payload": {
+      "provision_type": "CONSIDERATION",
+      "field_path": "considerationType",
+      "deal_filter": {},
+      "chart_kind": "BAR"
+    },
+    "expected": {
+      "n": 37,
+      "top_value": "all-cash",
+      "top_count": 17
+    },
+    "notes": "WP-1 query #6."
+  },
+  {
+    "id": "cvr-deals",
+    "title": "Deals including CVRs",
+    "question": "Which deals include CVRs?",
+    "kind": "FILTER_THEN_LIST",
+    "payload": {
+      "filters": [
+        {
+          "provision_type": "COVENANT_OTHER",
+          "field": "cvrIncluded",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "sort_by": "deal_signing_date_desc",
+      "columns": [
+        "deal_name"
+      ]
+    },
+    "expected": {
+      "total_matches": 3,
+      "deal_names_contains": [
+        "Bespin Subsidiary, LLC / Landos Biopharma, Inc.",
+        "Pfizer Inc. / Metsera, Inc.",
+        "Zymeworks Inc. / Theravance Biopharma, Inc."
+      ]
+    },
+    "notes": "WP-1 query #7."
+  },
+  {
+    "id": "non-electing-holder-consideration",
+    "title": "Non-electing holder consideration in mixed-election deals",
+    "question": "In mixed-election deals, what do non-electing holders receive?",
+    "kind": "PROVISION_CROSS_CUT",
+    "payload": {
+      "provision_type": "CONSIDERATION",
+      "deal_ids": "@all_deals",
+      "columns": [
+        "prorationMechanics"
+      ],
+      "sort_by": "deal_signing_date_desc"
+    },
+    "expected": {
+      "non_null_rows": 2
+    },
+    "notes": "WP-1 query #8. Gap G-B: no electionDefaultConsideration canonical field — answer is verbatim prorationMechanics text (Ben's default: keep prose). Executor fix: PROVISION_CROSS_CUT picked provisions[0] for the deal/type regardless of whether it carried the requested column (lib/query/executors/provision-cross-cut.js representativeProvision()) — a deal can have more than one CONSIDERATION card (headline per-share terms vs. election/proration mechanics), and the wrong one was always winning. Fixed to prefer a candidate that actually has data for a requested column."
+  },
+  {
+    "id": "outside-date-months",
+    "title": "Outside dates: months from signing",
+    "question": "Outside dates: months from signing, across the corpus",
+    "kind": "MARKET_RANGE",
+    "payload": {
+      "provision_type": "TERMINATION_RIGHT",
+      "field_path": "outsideDateMonthsPostSigning",
+      "deal_filter": {},
+      "chart_kind": "HISTOGRAM"
+    },
+    "expected": {
+      "n": 20,
+      "median": 9
+    },
+    "notes": "WP-1 query #9. Gap G-C turned out to already be satisfied: outsideDateMonthsPostSigning is an existing canonical field computed at extraction time by a deterministic post-pass (lib/parser-v2/extract.js computeOutsideDateMonths) off outsideDateISO/extendedOutsideDateISO and the deal's signing date — no new query-time derivation needed. Confirmed live 2026-07-18: n=20, stats {min:5, p25:6, median:9, p75:12, max:18}."
+  },
+  {
+    "id": "outside-date-extension",
+    "title": "Outside date extension availability",
+    "question": "Which deals allow extension of the outside date, and by how much?",
+    "kind": "FILTER_THEN_LIST",
+    "payload": {
+      "filters": [
+        {
+          "provision_type": "TERMINATION_RIGHT",
+          "field": "outsideDateExtension",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "sort_by": "deal_signing_date_desc",
+      "columns": [
+        "deal_name"
+      ]
+    },
+    "expected": {
+      "total_matches": 14,
+      "deal_names_contains": [
+        "Amazon.com, Inc. / Whole Foods Market, Inc.",
+        "Antlia Holdings LLC / Forest City Realty Trust, Inc.",
+        "Bespin Subsidiary, LLC / Landos Biopharma, Inc.",
+        "Chevron Corporation / Anadarko Petroleum Corporation",
+        "Creek Parent, Inc. / Catalent, Inc.",
+        "Eli Lilly and Company / Verve Therapeutics, Inc.",
+        "Hewlett Packard Enterprise Company / Juniper Networks, Inc.",
+        "Quikrete Holdings, Inc. / Summit Materials, Inc.",
+        "Rocket Companies, Inc. / Mr. Cooper Group Inc.",
+        "SH Residential Holdings, LLC / M.D.C. Holdings, Inc.",
+        "Sanofi / Bioverativ Inc.",
+        "Shire plc / Dyax Corp.",
+        "The Goodyear Tire & Rubber Company / Cooper Tire & Rubber Company",
+        "Wildcat EGH Holdco, L.P. / Endeavor Group Holdings, Inc."
+      ]
+    },
+    "notes": "WP-1 query #10."
+  },
+  {
+    "id": "reverse-termination-fees",
+    "title": "Reverse termination fees",
+    "question": "Reverse termination fees: who has one and how large?",
+    "kind": "PROVISION_CROSS_CUT",
+    "payload": {
+      "provision_type": "TERMINATION_FEE",
+      "deal_ids": "@all_deals",
+      "columns": [
+        "reverseTerminationFee"
+      ],
+      "sort_by": "deal_signing_date_desc"
+    },
+    "expected": {
+      "non_null_rows": 12
+    },
+    "notes": "WP-1 query #11. Registry gap: the normalized-v1.json canonical key \"reverseFeeAmount\" is claimed by two rows with different alias sets (a legacy flat-amount row and the current TERMF-REVERSE rich-object {amount, triggers[], payment_deadline} row); resolveFeatureValue was re-deriving aliases from the bare key string and landing on the wrong row, silently dropping the \"reverseTerminationFee\" alias. Fixed in lib/query/resolve.js (reuse the already-resolved entry's own alias list). Also: the registry's declared type ('object'/'usd') never matched this amount-object shape, so lib/query/types.js valueFromRaw always returned null for it — added amountObjectValue() to extract .amount/.value/.rate from these shapes (companyTerminationFee/reverseTerminationFee/expenseReimbursement all affected). 12/15 spec estimate — the gap is deals whose reverseTerminationFee object has triggers but a null amount (verbatim says \"reimbursement of expenses\" style, not a fixed dollar figure), correctly excluded rather than fabricated."
+  },
+  {
+    "id": "superior-proposal-thresholds",
+    "title": "Superior-proposal definition thresholds",
+    "question": "Superior-proposal definition thresholds (% of assets/equity)",
+    "kind": "MARKET_RANGE",
+    "payload": {
+      "provision_type": "DEFINITION",
+      "field_path": "superiorProposalPercentage",
+      "deal_filter": {},
+      "chart_kind": "HISTOGRAM"
+    },
+    "expected": {
+      "n": 20,
+      "median": 50
+    },
+    "notes": "WP-1 query #12. superiorProposalPercentage is defined on both NOSOL and DEF provision families in lib/rubric.js; DEFINITION picked as the natural home for a defined-term threshold. Live check (2026-07-18) resolves it here."
+  },
+  {
+    "id": "intervening-event-outs",
+    "title": "Intervening-event outs",
+    "question": "Which agreements have intervening-event outs (vs superior-proposal-only)?",
+    "kind": "FILTER_THEN_LIST",
+    "payload": {
+      "filters": [
+        {
+          "provision_type": "COVENANT_NO_SOLICITATION",
+          "field": "interveningEventProvision",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "sort_by": "deal_signing_date_desc",
+      "columns": [
+        "deal_name"
+      ]
+    },
+    "expected": {
+      "total_matches": 31,
+      "deal_names_contains": [
+        "Amazon.com, Inc. / Whole Foods Market, Inc.",
+        "Antlia Holdings LLC / Forest City Realty Trust, Inc.",
+        "Apollo Global Management, Inc. / Bridge Investment Group Holdings Inc.",
+        "BCPE Pequod Buyer, Inc. / Envestnet, Inc.",
+        "Beach Acquisition Co Parent, LLC / Skechers U.S.A., Inc.",
+        "Bespin Subsidiary, LLC / Landos Biopharma, Inc.",
+        "Charter Communications, Inc. / Cox Enterprises, Inc.",
+        "ConocoPhillips / Concho Resources Inc.",
+        "Creek Parent, Inc. / Catalent, Inc.",
+        "Eli Lilly and Company / Verve Therapeutics, Inc.",
+        "General Dynamics Corporation / CSRA Inc.",
+        "Gilead Sciences, Inc. / Pharmasset, Inc.",
+        "Global Net Lease, Inc. / Modiv Industrial, Inc.",
+        "Glow Midco, LLC / European Wax Center, Inc.",
+        "Hearts Parent, LLC / HireRight Holdings Corporation",
+        "Hewlett Packard Enterprise Company / Juniper Networks, Inc.",
+        "International Business Machines Corporation / Red Hat, Inc.",
+        "Marriott International, Inc. / Starwood Hotels & Resorts Worldwide, Inc.",
+        "Merck & Co., Inc. / Prometheus Biosciences, Inc.",
+        "Pfizer Inc. / Metsera, Inc.",
+        "QXO, Inc. / TopBuild Corp.",
+        "Quikrete Holdings, Inc. / Summit Materials, Inc.",
+        "Restaurant Brands International Inc. / Carrols Restaurant Group, Inc.",
+        "Rocket Companies, Inc. / Redfin Corporation",
+        "SH Residential Holdings, LLC / M.D.C. Holdings, Inc.",
+        "SUP Parent Holdings, LLC / Superior Industries International, Inc.",
+        "Sanofi / Bioverativ Inc.",
+        "Stanley Martin Homes, LLC / United Homes Group, Inc.",
+        "The Goodyear Tire & Rubber Company / Cooper Tire & Rubber Company",
+        "Wildcat EGH Holdco, L.P. / Endeavor Group Holdings, Inc.",
+        "Zymeworks Inc. / Theravance Biopharma, Inc."
+      ]
+    },
+    "notes": "WP-1 query #13."
+  },
+  {
+    "id": "financing-cooperation",
+    "title": "Financing-cooperation covenants",
+    "question": "Financing-cooperation covenants: which deals, and is breach a closing condition?",
+    "kind": "PROVISION_CROSS_CUT",
+    "payload": {
+      "provision_type": "COVENANT_OTHER",
+      "deal_ids": "@all_deals",
+      "columns": [
+        "financingCooperationPresent",
+        "financingCooperationBreachIsCondition"
+      ],
+      "sort_by": "deal_signing_date_desc"
+    },
+    "expected": {
+      "non_null_rows": 25
+    },
+    "notes": "WP-1 query #14. Registry gap: normalized-v1.json merges the legacy percent-typed 'financingCooperation' key and the current boolean 'financingCooperationPresent' key as aliases of one canonical entry (type 'percent'); a boolean {value:true/false} raw answer under either alias was being run through the numeric extractor and always returning null. Fixed in lib/query/types.js valueFromRaw (numeric-typed branch falls back to boolValue() before giving up, rather than fabricating a number or dropping a real true/false)."
+  },
+  {
+    "id": "mae-pandemic-carveouts",
+    "title": "MAE definitions with pandemic carveouts",
+    "question": "MAE definitions with pandemic carveouts",
+    "kind": "FILTER_THEN_LIST",
+    "payload": {
+      "filters": [
+        {
+          "provision_type": "DEFINITION",
+          "field": "pandemicCarveout",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "sort_by": "deal_signing_date_desc",
+      "columns": [
+        "deal_name"
+      ]
+    },
+    "expected": {
+      "total_matches": 22,
+      "deal_names_contains": [
+        "Amazon.com, Inc. / Whole Foods Market, Inc.",
+        "Antlia Holdings LLC / Forest City Realty Trust, Inc.",
+        "Apollo Global Management, Inc. / Bridge Investment Group Holdings Inc.",
+        "BCPE Pequod Buyer, Inc. / Envestnet, Inc.",
+        "Beach Acquisition Co Parent, LLC / Skechers U.S.A., Inc.",
+        "Bespin Subsidiary, LLC / Landos Biopharma, Inc.",
+        "Charter Communications, Inc. / Cox Enterprises, Inc.",
+        "Creek Parent, Inc. / Catalent, Inc.",
+        "ENDRA Life Sciences Inc. / Noble Africa LLC",
+        "Eli Lilly and Company / Verve Therapeutics, Inc.",
+        "Global Net Lease, Inc. / Modiv Industrial, Inc.",
+        "Glow Midco, LLC / European Wax Center, Inc.",
+        "H.J. Heinz Holding Corporation / Kraft Foods Group, Inc.",
+        "Hearts Parent, LLC / HireRight Holdings Corporation",
+        "IonQ, Inc. / SkyWater Technology, Inc.",
+        "Merck & Co., Inc. / Prometheus Biosciences, Inc.",
+        "Pfizer Inc. / Metsera, Inc.",
+        "QXO, Inc. / TopBuild Corp.",
+        "Rocket Companies, Inc. / Redfin Corporation",
+        "Sophos Inc. / SecureWorks Corp.",
+        "The Goodyear Tire & Rubber Company / Cooper Tire & Rubber Company",
+        "Verizon Communications Inc. / Frontier Communications Parent, Inc."
+      ]
+    },
+    "notes": "WP-1 query #15. pandemicCarveout is defined on both IOC and DEF; DEFINITION picked to match the MAE-definition framing in the question."
+  },
+  {
+    "id": "disproportionate-impact-writebacks",
+    "title": "MAE carveouts with disproportionate-impact write-backs",
+    "question": "MAE carveouts with disproportionate-impact write-backs",
+    "kind": "FILTER_THEN_LIST",
+    "payload": {
+      "filters": [
+        {
+          "provision_type": "DEFINITION",
+          "field": "disproportionateImpact",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "sort_by": "deal_signing_date_desc",
+      "columns": [
+        "deal_name"
+      ]
+    },
+    "expected": {
+      "total_matches": 31,
+      "deal_names_contains": [
+        "Amazon.com, Inc. / Whole Foods Market, Inc.",
+        "Antlia Holdings LLC / Forest City Realty Trust, Inc.",
+        "Apollo Global Management, Inc. / Bridge Investment Group Holdings Inc.",
+        "BCPE Pequod Buyer, Inc. / Envestnet, Inc.",
+        "Beach Acquisition Co Parent, LLC / Skechers U.S.A., Inc.",
+        "Bespin Subsidiary, LLC / Landos Biopharma, Inc.",
+        "Charter Communications, Inc. / Cox Enterprises, Inc.",
+        "Chevron Corporation / Anadarko Petroleum Corporation",
+        "Creek Parent, Inc. / Catalent, Inc.",
+        "ENDRA Life Sciences Inc. / Noble Africa LLC",
+        "Eli Lilly and Company / Verve Therapeutics, Inc.",
+        "General Dynamics Corporation / CSRA Inc.",
+        "Gilead Sciences, Inc. / Pharmasset, Inc.",
+        "Global Net Lease, Inc. / Modiv Industrial, Inc.",
+        "Glow Midco, LLC / European Wax Center, Inc.",
+        "H.J. Heinz Holding Corporation / Kraft Foods Group, Inc.",
+        "Hearts Parent, LLC / HireRight Holdings Corporation",
+        "Hewlett Packard Enterprise Company / Juniper Networks, Inc.",
+        "International Business Machines Corporation / Red Hat, Inc.",
+        "IonQ, Inc. / SkyWater Technology, Inc.",
+        "Laboratory Corporation of America Holdings / Covance Inc.",
+        "Marriott International, Inc. / Starwood Hotels & Resorts Worldwide, Inc.",
+        "Merck & Co., Inc. / Prometheus Biosciences, Inc.",
+        "Pfizer Inc. / Metsera, Inc.",
+        "QXO, Inc. / TopBuild Corp.",
+        "Rocket Companies, Inc. / Redfin Corporation",
+        "Sanofi / Bioverativ Inc.",
+        "Shire plc / Dyax Corp.",
+        "Sophos Inc. / SecureWorks Corp.",
+        "The Goodyear Tire & Rubber Company / Cooper Tire & Rubber Company",
+        "Verizon Communications Inc. / Frontier Communications Parent, Inc."
+      ]
+    },
+    "notes": "WP-1 query #16."
+  },
+  {
+    "id": "burdensome-condition-cap",
+    "title": "Burdensome-condition caps",
+    "question": "Regulatory efforts: who took a burdensome-condition cap?",
+    "kind": "FILTER_THEN_LIST",
+    "payload": {
+      "filters": [
+        {
+          "provision_type": "ANTITRUST_REGULATORY",
+          "field": "burdensomeConditionPresent",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "sort_by": "deal_signing_date_desc",
+      "columns": [
+        "deal_name"
+      ]
+    },
+    "expected": {
+      "total_matches": 12,
+      "deal_names_contains": [
+        "Amazon.com, Inc. / Whole Foods Market, Inc.",
+        "Beach Acquisition Co Parent, LLC / Skechers U.S.A., Inc.",
+        "Chevron Corporation / Anadarko Petroleum Corporation",
+        "Gilead Sciences, Inc. / Pharmasset, Inc.",
+        "Glow Midco, LLC / European Wax Center, Inc.",
+        "International Business Machines Corporation / Red Hat, Inc.",
+        "IonQ, Inc. / SkyWater Technology, Inc.",
+        "Laboratory Corporation of America Holdings / Covance Inc.",
+        "Sanofi / Bioverativ Inc.",
+        "Sophos Inc. / SecureWorks Corp.",
+        "The Goodyear Tire & Rubber Company / Cooper Tire & Rubber Company",
+        "Verizon Communications Inc. / Frontier Communications Parent, Inc."
+      ]
+    },
+    "notes": "WP-1 query #17."
+  },
+  {
+    "id": "hsr-filing-deadlines",
+    "title": "HSR filing deadlines",
+    "question": "HSR filing deadlines (business days) across the corpus",
+    "kind": "MARKET_RANGE",
+    "payload": {
+      "provision_type": "ANTITRUST_REGULATORY",
+      "field_path": "hsrFilingDeadlineBusinessDays",
+      "deal_filter": {},
+      "chart_kind": "HISTOGRAM"
+    },
+    "expected": {
+      "n": 19,
+      "median": 10
+    },
+    "notes": "WP-1 query #18. Two registry gaps compounded here: (1) 'hsrFilingDeadlineBusinessDays' is merged into the legacy 'hsrFilingDeadline' (ISO-date-ish object) canonical entry, and when a provision carried BOTH raw keys, alias resolution always picked whichever was listed first rather than the literally-requested one — fixed in lib/query/resolve.js resolveFeatureValue (try the requested alias first). (2) the merged entry's declared type ('date') doesn't fit the business-day-count shape at all, and its deadline-object raw shape ({days, text, unit}) has no top-level 'value', which was leaking the raw object itself into results ([object Object] in the histogram) for deals whose HSR covenant only has effort-standard prose (\"as promptly as practicable\") and no fixed day count. Fixed with a query-layer type override (lib/query/types.js FIELD_TYPE_OVERRIDES, scoped to this one field alias) plus a defensive rule in valueFromRaw: never return a bare object as a query cell value. n=19 matches the spec's own coverage estimate exactly and is the correct count of deals with an actual extracted business-day figure (an earlier intermediate fix left n at 25 by letting prose-only deals leak in as text \"data points\" — corrected)."
+  },
+  {
+    "id": "deal-protection-compare-2025-tech",
+    "title": "Deal-protection package compare (Redfin / Mr. Cooper / Juniper)",
+    "question": "Compare the deal-protection package of the three 2025 Rocket-adjacent / recent tech deals",
+    "kind": "DEAL_COMPARE",
+    "payload": {
+      "deal_ids": [
+        "@deal:Redfin",
+        "@deal:Mr. Cooper",
+        "@deal:Juniper"
+      ],
+      "provision_types": [
+        "TERMINATION_FEE",
+        "COVENANT_NO_SOLICITATION"
+      ],
+      "highlight_deltas": true,
+      "included_field_groups": [
+        "primary",
+        "qualifiers"
+      ]
+    },
+    "expected": {
+      "row_count": 2,
+      "deal_names_contains": [
+        "Hewlett Packard Enterprise Company / Juniper Networks, Inc.",
+        "Rocket Companies, Inc. / Mr. Cooper Group Inc.",
+        "Rocket Companies, Inc. / Redfin Corporation"
+      ],
+      "cards_present": true
+    },
+    "notes": "WP-1 query #19."
+  },
+  {
+    "id": "metsera-vs-market",
+    "title": "Metsera / Pfizer vs market",
+    "question": "How does Metsera / Pfizer sit vs market?",
+    "kind": "DEAL_TO_MARKET",
+    "payload": {
+      "deal_id": "@deal:Metsera",
+      "comparison_set_filter": {},
+      "provision_types": null
+    },
+    "expected": {
+      "deal_name_contains": "Metsera, Inc.",
+      "min_scorecard": 14
+    },
+    "notes": "WP-1 query #20."
+  }
+]

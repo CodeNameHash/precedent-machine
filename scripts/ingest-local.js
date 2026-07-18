@@ -39,9 +39,9 @@ const { toCompactSections, classifyBreakdown } = require('../lib/parser-v2/snaps
 const { createExtractionCheckpoint, inputHashFor } = require('../lib/parser-v2/extraction-checkpoint');
 const { attachRegionIdsToSections, persistParserRegions } = require('../lib/parser-v2/region-store');
 const { extractAdvisors } = require('../lib/parser-v2/advisors');
-const { MERGER_FORMS } = require('../lib/taxonomy');
 const { fromCp } = require('../lib/html-entities');
 const { buildPartiesFact, buildValueUsdFact, mergeDealFacts } = require('../lib/deal-facts');
+const { extractDealMetadata: sharedExtractDealMetadata } = require('../lib/ingest/deal-metadata-prompt');
 
 function findDotEnvLocal(start = path.join(__dirname, '..')) {
   let dir = start;
@@ -142,49 +142,43 @@ function metadataWithDealFacts(base, meta, sourceUrl, valueOverride = null) {
   });
 }
 
-async function extractDealMetadata(client, text) {
-  const preamble = text.substring(0, 10000);
-  const mergerFormCodes = Object.keys(MERGER_FORMS);
-  const prompt = `You are extracting structured metadata from the preamble of a merger or acquisition agreement.
-
-Return ONLY a JSON object with these fields. Use null for any field you cannot determine confidently.
-
-{
-  "acquirer": "string — the buyer / parent entity legal name",
-  "target": "string — the target / company legal name",
-  "signing_date": "YYYY-MM-DD — the agreement signing/execution date",
-  "value_usd": number or null,
-  "sector": "string — single short label like 'Biopharma', 'Technology', 'Financial Services'",
-  "merger_form": "one of: ${mergerFormCodes.join(', ')} — pick the best match",
-  "parent_entity": "string or null — the ULTIMATE PARENT on whose behalf the acquisition is made. NEVER the merger sub and NEVER an intermediate holding shell: if the signatory is a merger sub formed by a public parent for this transaction (e.g. 'Bespin Subsidiary, LLC' formed by 'AbbVie Inc.'), parent_entity is the parent ('AbbVie Inc.'), not the sub. If the filed acquirer already IS the ultimate parent (no separate parent named), repeat the acquirer's name here.",
-  "target_entity": "string or null — the target's clean legal entity name (usually same as target)",
-  "acquirer_display": "string or null — short colloquial/market name for the acquirer's ultimate parent with no Inc./Corp./LLC/L.P./plc suffix, e.g. 'AbbVie', 'Pfizer', 'Red Hat'",
-  "target_display": "string or null — short colloquial/market name for the target with no Inc./Corp./LLC/L.P./plc suffix, e.g. 'Metsera'"
+// Best-effort sibling-exhibit fetch for the value-derivation ladder's tier
+// (b): look in the same EDGAR filing index as the agreement exhibit for an
+// EX-99.1-style press-release exhibit, extract the stated transaction value
+// with a quote. Returns null (never throws) on any failure — deriveValue()
+// falls through to 'no_stated_value' when this comes back empty.
+async function fetchPressReleaseForDeal(client, sourceUrl) {
+  if (!sourceUrl) return null;
+  try {
+    const idxUrl = sourceUrl.replace(/\/[^/]*$/, '/');
+    const idxHtml = await fetchUrl(idxUrl);
+    const hrefs = [...idxHtml.matchAll(/href="([^"]+)"/gi)].map((m) => m[1]);
+    const exhibitHref = hrefs.find((h) => /ex-?99/i.test(h));
+    if (!exhibitHref) return null;
+    const exhibitUrl = new URL(exhibitHref, idxUrl).toString();
+    const html = await fetchUrl(exhibitUrl);
+    const text = stripHtml(html).slice(0, 6000);
+    if (text.length < 200) return null;
+    const prompt = `Extract the stated aggregate transaction value (in USD) from this press release, if any is stated. Return ONLY JSON: {"value_usd": number or null, "quote": "string or null — the exact sentence stating the value"}.\n\nPress release text:\n"""\n${text}\n"""\n\nReturn ONLY the JSON object, no prose, no markdown fence.`;
+    const resp = await client.messages.create({ model: 'meta', max_tokens: 300, messages: [{ role: 'user', content: prompt }] });
+    const raw = (resp.content && resp.content[0] && resp.content[0].text) || '{}';
+    const jsonMatch = raw.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) return null;
+    const parsed = JSON.parse(jsonMatch[0]);
+    if (typeof parsed.value_usd === 'number' && parsed.value_usd > 0) {
+      return { value_usd: parsed.value_usd, source_url: exhibitUrl, quote: parsed.quote || null };
+    }
+    return null;
+  } catch {
+    return null;
+  }
 }
 
-Agreement text (preamble):
-"""
-${preamble}
-"""
-
-Return ONLY the JSON object, no prose, no markdown fence.`;
-  const resp = await client.messages.create({ model: 'meta', max_tokens: 600, messages: [{ role: 'user', content: prompt }] });
-  const raw = (resp.content && resp.content[0] && resp.content[0].text) || '{}';
-  const jsonMatch = raw.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) throw new Error('Metadata extraction did not return JSON');
-  const parsed = JSON.parse(jsonMatch[0]);
-  return {
-    acquirer: parsed.acquirer || null,
-    target: parsed.target || null,
-    signing_date: parsed.signing_date || null,
-    value_usd: typeof parsed.value_usd === 'number' ? parsed.value_usd : null,
-    sector: parsed.sector || null,
-    merger_form: parsed.merger_form || null,
-    parent_entity: parsed.parent_entity || null,
-    target_entity: parsed.target_entity || null,
-    acquirer_display: parsed.acquirer_display || null,
-    target_display: parsed.target_display || null,
-  };
+async function extractDealMetadata(client, text, opts = {}) {
+  return sharedExtractDealMetadata(client, text, {
+    sourceUrl: opts.sourceUrl || null,
+    fetchPressRelease: opts.skipPressReleaseFetch ? undefined : (meta) => fetchPressReleaseForDeal(client, opts.sourceUrl),
+  });
 }
 
 // ── the parser pipeline (mirrors runParserPipeline in from-url.js) ─────────
@@ -241,7 +235,7 @@ async function ingestOne(sb, client, url, existingDealId = null, pipelineOpts = 
   const html = await fetchUrl(url);
   const fullText = stripHtml(html);
   if (fullText.length < 5000) throw new Error(`Fetched text too short (${fullText.length} chars) — wrong URL?`);
-  const meta = await extractDealMetadata(client, fullText);
+  const meta = await extractDealMetadata(client, fullText, { sourceUrl: url });
   if (!meta.acquirer || !meta.target) throw new Error('Could not identify acquirer/target from the preamble');
 
   // In-place re-ingest: reuse the existing deal row (URLs stay valid; manual
@@ -259,6 +253,10 @@ async function ingestOne(sb, client, url, existingDealId = null, pipelineOpts = 
       target_entity: meta.target_entity,
       acquirer_display: meta.acquirer_display,
       target_display: meta.target_display,
+      ...(meta.ultimateParent ? { ultimateParent: meta.ultimateParent } : {}),
+      buyer_is_shell: meta.buyer_is_shell,
+      buyer_profile: meta.buyer_profile,
+      value_provenance: meta.value_provenance,
     }, meta, url);
     const updateRow = {
       metadata: mergedMeta,
@@ -293,6 +291,10 @@ async function ingestOne(sb, client, url, existingDealId = null, pipelineOpts = 
       target_entity: meta.target_entity,
       acquirer_display: meta.acquirer_display,
       target_display: meta.target_display,
+      ...(meta.ultimateParent ? { ultimateParent: meta.ultimateParent } : {}),
+      buyer_is_shell: meta.buyer_is_shell,
+      buyer_profile: meta.buyer_profile,
+      value_provenance: meta.value_provenance,
     }, meta, url),
   }).select().single();
   if (insErr) throw new Error(`Deal insert failed: ${insErr.message}`);
@@ -350,7 +352,7 @@ async function prepareDealForIngest(sb, client, url, options = {}) {
   const html = await fetchUrl(url);
   const fullText = stripHtml(html);
   if (fullText.length < 5000) throw new Error(`Fetched text too short (${fullText.length} chars) — wrong URL?`);
-  const meta = await extractDealMetadata(client, fullText);
+  const meta = await extractDealMetadata(client, fullText, { sourceUrl: url });
   if (!meta.acquirer || !meta.target) throw new Error('Could not identify acquirer/target from the preamble');
 
   const existingByParties = await findExistingCleanDealByParties(sb, meta);
@@ -377,7 +379,11 @@ async function prepareDealForIngest(sb, client, url, options = {}) {
 
   const title = `${meta.acquirer} / ${meta.target}`;
   const candidateValue = options.seed_ingest && options.seed_ingest.candidate_deal_value_usd;
+  const usedCandidateValue = !meta.value_usd && !!candidateValue;
   const valueUsd = meta.value_usd || candidateValue || null;
+  const valueProvenance = usedCandidateValue
+    ? { kind: 'seed_ingest_candidate', set_at: new Date().toISOString(), set_by: 'ingest_metadata', note: 'value_usd not stated in agreement; taken from seed_ingest candidate metadata' }
+    : meta.value_provenance;
   const { data: newDeal, error: insErr } = await sb.from('deals').insert({
     acquirer: meta.acquirer,
     target: meta.target,
@@ -397,6 +403,10 @@ async function prepareDealForIngest(sb, client, url, options = {}) {
       target_entity: meta.target_entity,
       acquirer_display: meta.acquirer_display,
       target_display: meta.target_display,
+      ...(meta.ultimateParent ? { ultimateParent: meta.ultimateParent } : {}),
+      buyer_is_shell: meta.buyer_is_shell,
+      buyer_profile: meta.buyer_profile,
+      value_provenance: valueProvenance,
       classified_sections: compactSections,
       classify_run_at: new Date().toISOString(),
       classify_breakdown: classifyBreakdown(compactSections),
