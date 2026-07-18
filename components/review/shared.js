@@ -9,6 +9,7 @@ import {
   getCitableValue,
   getCitableQuotes,
   getCitableText,
+  focusSnippet,
   TOOLTIP_MAX,
 } from '../../lib/citable';
 import { taxonomyForFeatureKey, labelForCode } from '../../lib/taxonomy';
@@ -193,8 +194,13 @@ export function renderHighlighted(text, highlight) {
  * popover for ~2.5s — the underlying tap action still fires normally.
  * `highlight` (audit block 9b): an optional string (the cell's resolved
  * value/qualifier text) — case-insensitive matches inside the popover quote
- * render in <strong> so the applicable phrase jumps out. */
-export function HoverSource({ quote, children, as = 'span', className, align = 'left', highlight }) {
+ * render in <strong> so the applicable phrase jumps out.
+ * `sourceLabel` (Item 13): an optional short string identifying WHICH
+ * provision/rep the quote belongs to (e.g. "§3.6 Compliance — MAE
+ * qualifier"), rendered as a non-italic bold first line above the quote —
+ * without it a popover opening on a rep's boilerplate reads as unmoored
+ * from the row it's attached to. */
+export function HoverSource({ quote, children, as = 'span', className, align = 'left', highlight, sourceLabel }) {
   const [show, setShow] = useState(false);
   // Fixed-position coords computed from the trigger rect on show, so the
   // popover renders above the table's overflow clip rather than inside it.
@@ -206,7 +212,17 @@ export function HoverSource({ quote, children, as = 'span', className, align = '
     return <Tag className={className}>{children}</Tag>;
   }
   const trimmed = quote.trim().replace(/\s+/g, ' ');
-  const display = trimmed.length > TOOLTIP_MAX ? trimmed.slice(0, TOOLTIP_MAX) + '…' : trimmed;
+  // Item 13: when the quote is longer than the popover budget AND a
+  // `highlight` needle is set, center the excerpt on the match (via the
+  // existing lib/citable.js#focusSnippet, previously unused here) instead
+  // of always truncating from the head -- so a qualifier's own language is
+  // visible with surrounding context rather than the opening boilerplate of
+  // the rep/clause it was pulled from.
+  let display = trimmed;
+  if (trimmed.length > TOOLTIP_MAX) {
+    const centered = highlight ? focusSnippet(trimmed, highlight) : null;
+    display = (centered && centered.length <= TOOLTIP_MAX ? centered : trimmed.slice(0, TOOLTIP_MAX)) + '…';
+  }
   const clearHideTimer = () => {
     if (hideTimerRef.current) {
       clearTimeout(hideTimerRef.current);
@@ -263,6 +279,7 @@ export function HoverSource({ quote, children, as = 'span', className, align = '
             bottom: pos.bottom,
           }}
         >
+          {sourceLabel ? <span className="block not-italic font-bold text-amber-950 mb-1">{sourceLabel}</span> : null}
           &ldquo;{renderHighlighted(display, highlight)}&rdquo;
         </span>
       )}

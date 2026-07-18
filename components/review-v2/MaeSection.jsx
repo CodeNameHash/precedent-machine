@@ -86,9 +86,28 @@ function hasCarveback(item, code, dispSet) {
   return !!(code && dispSet.has(code));
 }
 
+// Item 10 (round 3): the old version read ONLY item.quotes[0] and ignored
+// item.text entirely -- MAE carve-out pills' quotes array is almost always
+// EMPTY, so this returned null and every call site fell straight to
+// row.evidence (the full MAE definition clause), which is the exact "hover
+// shows the start of the whole definition" bug Ben reported. Prefer the
+// item's own per-item text before falling back to row.evidence -- that
+// fallback is now the LAST resort, only when the item truly has no text of
+// its own. Same non-echo rule as lib/citable.js#getTaggedItemQuote (never
+// return a `.text` that's merely the code/label echoed back), but without
+// that helper's isTaggedItem() gate -- carve-out items here aren't always
+// canonically coded, and an untagged item's own text is still better
+// evidence than the whole definition's head.
+function nonEchoText(item) {
+  if (!item || typeof item !== 'object' || typeof item.text !== 'string') return null;
+  const t = item.text.trim();
+  if (!t) return null;
+  if (t === String(item.code || '').trim() || t === String(item.label || '').trim()) return null;
+  return t;
+}
 function itemQuote(item) {
   if (item && typeof item === 'object' && Array.isArray(item.quotes) && item.quotes[0]) return item.quotes[0];
-  return null;
+  return nonEchoText(item);
 }
 
 function seeTextNode(text) {

@@ -77,6 +77,36 @@ test('ProvisionTable renders config.renderFooter output outside the <table>, as 
   assert.ok(tableCloseIdx > -1 && footerIdx > tableCloseIdx, 'renderFooter must be invoked after the table closes, never as a <tbody> row');
 });
 
+// Item 10 (round 3): evidenceQuote() must check a tagged item's OWN quote
+// (getTaggedItemQuote) between the citable check and the array/source
+// fallbacks -- so a COR/MAE pill's per-item text wins over the whole card's
+// primary_quote/region_full_text.
+test('evidenceQuote checks a tagged item\'s own quote (getTaggedItemQuote) before falling to the array/source fallbacks', () => {
+  const body = source();
+  assert.match(body, /getTaggedItemQuote/);
+  assert.match(body, /isTaggedItem/);
+  const fn = body.match(/function evidenceQuote\([\s\S]*?\n\}/);
+  assert.ok(fn, 'evidenceQuote() must still exist');
+  const citableIdx = fn[0].indexOf('getCitableText(value)');
+  const taggedIdx = fn[0].indexOf('getTaggedItemQuote(value)');
+  const sourceIdx = fn[0].indexOf('source?.primary_quote');
+  assert.ok(citableIdx > -1 && taggedIdx > -1 && sourceIdx > -1, 'all three tiers must be present');
+  assert.ok(citableIdx < taggedIdx && taggedIdx < sourceIdx, 'order must be: citable check, then tagged-item check, then the array/source fallback');
+});
+
+// Item 13: EvidenceHoverSource/PillCell forward an optional sourceLabel
+// (explicit, or defaulted from source.short_title + the pill's own label)
+// down into HoverSource, which renders it as a bold first line in the
+// popover so a reader can tell which provision/rep a quote belongs to.
+test('EvidenceHoverSource and PillCell forward sourceLabel (explicit or defaulted from source.short_title) into HoverSource', () => {
+  const body = source();
+  assert.match(body, /function defaultSourceLabel\(/);
+  assert.match(body, /export function EvidenceHoverSource\(\{[\s\S]*?sourceLabel[\s\S]*?\}\)/);
+  assert.match(body, /<HoverSource quote=\{resolved\}[\s\S]*?sourceLabel=\{label\}/);
+  assert.match(body, /export function PillCell\(\{[\s\S]*?sourceLabel[\s\S]*?\}\)/);
+  assert.match(body, /<EvidenceHoverSource[\s\S]*?sourceLabel=\{sourceLabel\}[\s\S]*?pillLabel=\{text\}/);
+});
+
 test('material-contract bucket taxonomy is re-exported for table configs', () => {
   const body = source();
   assert.match(body, /MATERIAL_CONTRACT_BUCKET_CODES/);

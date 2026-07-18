@@ -550,12 +550,22 @@ function renderTerm(row, ctx) {
   );
 }
 
+// Item 13: the rep-qualifier pill's popover otherwise opens on the full
+// clause (evidence: textOfValue(hit.value) || textOf(card)) with no
+// indication of WHICH rep it belongs to -- pass the row's own rep label
+// explicitly so the popover's first line reads e.g. "Organization;
+// Qualification; Standing — MAE qualifier" instead of a bare quote.
+function repSourceLabel(row, qualifierName) {
+  const repLabel = row.party ? `${row.label} (${row.party})` : row.label;
+  return repLabel ? `${repLabel} — ${qualifierName}` : qualifierName;
+}
+
 function renderMateriality(row, ctx) {
   const m = row.materiality;
   if (!m) return null;
   const PillCell = ctx?.primitives?.PillCell;
   if (!PillCell) return m.label;
-  return React.createElement(PillCell, { label: m.label, tone: 'neutral', color: m.color, evidence: m.evidence, source: row.card });
+  return React.createElement(PillCell, { label: m.label, tone: 'neutral', color: m.color, evidence: m.evidence, source: row.card, sourceLabel: repSourceLabel(row, 'materiality qualifier') });
 }
 
 // Ben (Mergertrace round 1): one QUALIFIERS column per rep row — the
@@ -580,7 +590,7 @@ function renderLookback(row, ctx) {
   if (!l) return null;
   const PillCell = ctx?.primitives?.PillCell;
   if (!PillCell) return l.label;
-  return React.createElement(PillCell, { label: l.label, tone: 'neutral', evidence: l.evidence, source: row.card });
+  return React.createElement(PillCell, { label: l.label, tone: 'neutral', evidence: l.evidence, source: row.card, sourceLabel: repSourceLabel(row, 'lookback') });
 }
 
 // The per-rep Knowledge pill -- used ONLY inside the Knowledge block's rows
@@ -590,7 +600,7 @@ function renderKnowledgePill(row, ctx) {
   if (!k) return null;
   const PillCell = ctx?.primitives?.PillCell;
   if (!PillCell) return k.label;
-  return React.createElement(PillCell, { label: k.label, tone: 'info', evidence: k.evidence, source: row.card });
+  return React.createElement(PillCell, { label: k.label, tone: 'info', evidence: k.evidence, source: row.card, sourceLabel: repSourceLabel(row, 'knowledge qualifier') });
 }
 
 function subLabelBlock(key, label, node) {
