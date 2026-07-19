@@ -5,11 +5,26 @@
 // pages/query/index.js so QueryLaunchBox doesn't have to import a page
 // module to reuse the same dropdowns.
 //
-// Presentation only — see lib/query/filter-labels.js for the natural-
-// language mapping. The underlying filter payload shape (provision_type/
-// field/op/value) is unchanged; these just render nicer controls over it.
+// Ben's query-surface UX pass (2026-07-19):
+//   1. The "value" control offers REAL options derived from the field
+//      selected on the left — fetched from /api/query/field-options (backed
+//      by lib/query/field-meta.js: taxonomy dicts for coded fields, observed
+//      corpus values for plain enums). No more free-text field/value boxes
+//      for coded data.
+//   2. No coder-speak: booleans render as a single has/does-not-have choice
+//      (no operator dropdown, no Yes/No), coded fields render "is"/"is not"
+//      + a real value picker, numerics render a quantifier
+//      (at least/at most/exactly/between) + a unit-hinted number input.
+// The underlying filter payload shape (provision_type/field/op/value) is
+// UNCHANGED — see lib/query/filter-labels.js's header for how the op
+// vocabulary here maps 1:1 onto lib/query/executors/filter-then-list.js's
+// testOp(), including 'between' (already engine-supported, just newly
+// exposed in the UI).
 
-import { OPERATOR_LABELS, humanizeKey } from '../../lib/query/filter-labels';
+import { useEffect, useState } from 'react';
+import {
+  OPERATOR_LABELS, NUMERIC_TYPES, humanizeKey, lowerFirst, sentenceForFilter,
+} from '../../lib/query/filter-labels';
 
 // Kept in sync with lib/query/types.js PROVISION_CARD_TYPES — duplicated
 // here (not imported) so client bundles that only need the dropdown list
@@ -41,9 +56,10 @@ export function ProvisionTypeSelect({ value, onChange, className = 'mtx-select',
 }
 
 // Boolean-aware value input: a bare true/false renders as a Yes/No select
-// (matches formatValue()'s Yes/No on the result page and describeFilter()'s
-// value label); anything else stays a free-text value input, since filter
-// values can be numbers or strings too.
+// (matches formatValue() on the result page); anything else stays a
+// free-text value input. Kept for the one remaining non-filter caller
+// (MARKET_RANGE's field-path input never runs through this) and for
+// backward compatibility — filter ROWS now use FilterRow below instead.
 export function FilterValueInput({ value, onChange, placeholder = 'value' }) {
   const isBool = value === 'true' || value === 'false' || value === true || value === false;
   if (isBool) {
@@ -56,4 +72,250 @@ export function FilterValueInput({ value, onChange, placeholder = 'value' }) {
     );
   }
   return <input className="mtx-input" value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} />;
+}
+
+// ── Dependent field/value options (item 1) ─────────────────────────────────
+// Module-scope caches so every FilterRow on the page shares one in-flight
+// fetch per (provision_type) / (provision_type, field) pair instead of each
+// row re-fetching the same options independently.
+const fieldsCache = new Map(); // provisionType -> Promise<fieldMeta[]>
+const valueCache = new Map(); // `${provisionType}::${field}` -> Promise<{type,unit,label,options}>
+
+function fetchFields(provisionType) {
+  if (!provisionType) return Promise.resolve([]);
+  if (!fieldsCache.has(provisionType)) {
+    fieldsCache.set(provisionType, fetch(`/api/query/field-options?provision_type=${encodeURIComponent(provisionType)}`)
+      .then((r) => r.json())
+      .then((json) => json.fields || [])
+      .catch(() => []));
+  }
+  return fieldsCache.get(provisionType);
+}
+
+function fetchValueOptions(provisionType, field) {
+  if (!provisionType || !field) return Promise.resolve(null);
+  const key = `${provisionType}::${field}`;
+  if (!valueCache.has(key)) {
+    valueCache.set(key, fetch(`/api/query/field-options?provision_type=${encodeURIComponent(provisionType)}&field=${encodeURIComponent(field)}`)
+      .then((r) => r.json())
+      .catch(() => ({ type: 'string', unit: null, label: humanizeKey(field), options: [] })));
+  }
+  return valueCache.get(key);
+}
+
+// The list of real, selectable fields for a provision_type — powers the
+// FilterRow field dropdown below. Exposed separately in case a caller wants
+// the raw list (e.g. to render a summary) without the full row UI.
+export function useFieldsForProvisionType(provisionType) {
+  const [fields, setFields] = useState([]);
+  useEffect(() => {
+    let alive = true;
+    setFields([]);
+    fetchFields(provisionType).then((f) => { if (alive) setFields(f); });
+    return () => { alive = false; };
+  }, [provisionType]);
+  return fields;
+}
+
+function useFieldMeta(provisionType, field) {
+  const [meta, setMeta] = useState(null);
+  useEffect(() => {
+    let alive = true;
+    setMeta(null);
+    fetchValueOptions(provisionType, field).then((m) => { if (alive) setMeta(m); });
+    return () => { alive = false; };
+  }, [provisionType, field]);
+  return meta;
+}
+
+// Coerces a builder row's UI-friendly value (real boolean, or a [lo,hi]
+// array for a 'between' quantifier) into the exact primitive shape the
+// engine expects. Numeric-looking strings still coerce to Number as before
+// — this only ADDS a boolean short-circuit so a real `true`/`false` (which
+// FilterRow now sets directly) doesn't fall through to `Number(true) === 1`.
+export function coerceFilterForPayload(f) {
+  if (f.op === 'between' && Array.isArray(f.value)) {
+    return { ...f, value: f.value.map((v) => (v === '' || v === null || v === undefined ? null : Number(v))) };
+  }
+  if (typeof f.value === 'boolean') return { ...f };
+  if (f.value === 'true') return { ...f, value: true };
+  if (f.value === 'false') return { ...f, value: false };
+  const numeric = Number(f.value);
+  return { ...f, value: (f.value === '' || Number.isNaN(numeric)) ? f.value : numeric };
+}
+
+function BooleanControl({ filter, onChange, fieldLabel }) {
+  const truthy = filter.value === true || filter.value === 'true';
+  const label = lowerFirst(fieldLabel || humanizeKey(filter.field));
+  return (
+    <div className="boolToggle">
+      <button type="button" className={`boolBtn${truthy ? ' boolBtnOn' : ''}`} onClick={() => onChange({ op: 'eq', value: true })}>Has {label}</button>
+      <button type="button" className={`boolBtn${!truthy ? ' boolBtnOn' : ''}`} onClick={() => onChange({ op: 'eq', value: false })}>Does not have {label}</button>
+      <style jsx>{`
+        .boolToggle { display: flex; gap: 6px; }
+        .boolBtn { border: 1px solid var(--line, #E0E0E0); background: #fff; color: var(--ink, #1F1F1F); font-family: var(--mtx-sans); font-size: 12px; font-weight: 600; padding: 6px 10px; cursor: pointer; }
+        .boolBtn:hover { background: var(--paper-2, #F6F6F6); }
+        .boolBtnOn { background: var(--ink, #1F1F1F); color: #fff; border-color: var(--ink, #1F1F1F); }
+      `}</style>
+    </div>
+  );
+}
+
+const NUMERIC_QUANTIFIERS = ['at least', 'at most', 'exactly', 'between'];
+const QUANTIFIER_TO_OP = { 'at least': 'gte', 'at most': 'lte', exactly: 'eq', between: 'between' };
+
+function quantifierForOp(op) {
+  if (op === 'lte') return 'at most';
+  if (op === 'eq') return 'exactly';
+  if (op === 'between') return 'between';
+  return 'at least';
+}
+
+function NumericControl({ filter, onChange, unit }) {
+  const quantifier = quantifierForOp(filter.op);
+  const setQuantifier = (q) => {
+    const op = QUANTIFIER_TO_OP[q];
+    if (op === 'between') {
+      const lo = Array.isArray(filter.value) ? filter.value[0] : filter.value;
+      onChange({ op, value: [lo ?? '', ''] });
+    } else {
+      const val = Array.isArray(filter.value) ? filter.value[0] : filter.value;
+      onChange({ op, value: val ?? '' });
+    }
+  };
+  const unitPrefix = unit === '$' ? '$' : null;
+  const unitSuffix = unit && unit !== '$' ? unit : null;
+  const [lo, hi] = filter.op === 'between'
+    ? (Array.isArray(filter.value) ? filter.value : ['', ''])
+    : [filter.value ?? '', null];
+
+  return (
+    <div className="numRow">
+      <select className="mtx-select" value={quantifier} onChange={(e) => setQuantifier(e.target.value)}>
+        {NUMERIC_QUANTIFIERS.map((q) => <option key={q} value={q}>{q}</option>)}
+      </select>
+      {unitPrefix && <span className="numUnit">{unitPrefix}</span>}
+      <input
+        className="mtx-input numInput"
+        type="number"
+        value={lo === null || lo === undefined ? '' : lo}
+        onChange={(e) => (filter.op === 'between' ? onChange({ value: [e.target.value, hi] }) : onChange({ value: e.target.value }))}
+      />
+      {unitSuffix && <span className="numUnit">{unitSuffix}</span>}
+      {filter.op === 'between' && (
+        <>
+          <span className="numAnd">and</span>
+          {unitPrefix && <span className="numUnit">{unitPrefix}</span>}
+          <input className="mtx-input numInput" type="number" value={hi === null || hi === undefined ? '' : hi} onChange={(e) => onChange({ value: [lo, e.target.value] })} />
+          {unitSuffix && <span className="numUnit">{unitSuffix}</span>}
+        </>
+      )}
+      <style jsx>{`
+        .numRow { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+        .numInput { width: 110px; }
+        .numUnit { font-size: 12px; color: var(--ink-light, #6B6B6B); font-family: var(--mtx-sans); }
+        .numAnd { font-size: 12px; color: var(--ink-light, #6B6B6B); font-family: var(--mtx-sans); }
+      `}</style>
+    </div>
+  );
+}
+
+function CodedControl({ filter, onChange, options }) {
+  const negated = filter.op === 'neq';
+  return (
+    <div className="codedRow">
+      <select className="mtx-select" value={negated ? 'is not' : 'is'} onChange={(e) => onChange({ op: e.target.value === 'is not' ? 'neq' : 'eq' })}>
+        <option value="is">is</option>
+        <option value="is not">is not</option>
+      </select>
+      <select className="mtx-select" value={filter.value === null || filter.value === undefined ? '' : String(filter.value)} onChange={(e) => onChange({ value: e.target.value })}>
+        {options.map((o) => <option key={o.code} value={o.code}>{o.label}</option>)}
+      </select>
+      <style jsx>{`
+        .codedRow { display: flex; gap: 6px; }
+      `}</style>
+    </div>
+  );
+}
+
+function FreeTextControl({ filter, onChange }) {
+  return <input className="mtx-input" value={filter.value === null || filter.value === undefined ? '' : filter.value} onChange={(e) => onChange({ op: 'contains', value: e.target.value })} placeholder="value" />;
+}
+
+// One full filter row: provision type -> field (real options for that
+// provision type) -> a value control shaped for the field's TYPE
+// (boolean/numeric/coded/free-text), plus a live natural-language preview.
+// This is the single implementation both pages/query/index.js's
+// FilterListBuilder and components/query/QueryLaunchBox.jsx render, so the
+// two builders can't drift on phrasing or available options.
+export function FilterRow({ filter, onChange, onRemove, provisionTypes = PROVISION_TYPES, showPreview = true }) {
+  const fields = useFieldsForProvisionType(filter.provision_type);
+  const fieldMeta = useFieldMeta(filter.provision_type, filter.field);
+  const meta = fieldMeta || { type: null, unit: null, options: [], label: humanizeKey(filter.field) };
+
+  // Once this provision_type's field list resolves, default an empty (or no
+  // longer valid, e.g. after switching provision type) field selection to
+  // the first real field rather than leaving the dropdown on a blank value.
+  useEffect(() => {
+    if (fields.length && (!filter.field || !fields.some((f) => f.key === filter.field))) {
+      onChange({ field: fields[0].key, op: 'eq', value: '' });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fields]);
+
+  // Once the selected field's metadata resolves, normalize op/value into a
+  // shape that control renders correctly and that a fresh row can run
+  // immediately without extra clicks (mirrors the old FilterValueInput's
+  // "boolean defaults to a valid Yes/No" behavior, extended to coded/numeric).
+  useEffect(() => {
+    if (!fieldMeta) return;
+    if (fieldMeta.type === 'boolean') {
+      if (filter.value !== true && filter.value !== false) onChange({ op: 'eq', value: true });
+    } else if (NUMERIC_TYPES.has(fieldMeta.type)) {
+      if (!['gte', 'lte', 'eq', 'between'].includes(filter.op)) onChange({ op: 'gte', value: typeof filter.value === 'boolean' ? '' : (filter.value ?? '') });
+    } else if (fieldMeta.options && fieldMeta.options.length) {
+      const codes = fieldMeta.options.map((o) => o.code);
+      if (!codes.includes(String(filter.value))) onChange({ op: filter.op === 'neq' ? 'neq' : 'eq', value: fieldMeta.options[0].code });
+    } else if (filter.op !== 'contains') {
+      onChange({ op: 'contains', value: typeof filter.value === 'boolean' ? '' : (filter.value ?? '') });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fieldMeta && fieldMeta.type, fieldMeta && fieldMeta.options && fieldMeta.options.length]);
+
+  return (
+    <div className="filterRow">
+      <div className="filterControls">
+        <ProvisionTypeSelect
+          value={filter.provision_type}
+          onChange={(pt) => onChange({ provision_type: pt, field: '', op: 'eq', value: '' })}
+          types={provisionTypes}
+        />
+        <select
+          className="mtx-select"
+          value={filter.field || ''}
+          disabled={!fields.length}
+          onChange={(e) => onChange({ field: e.target.value, op: 'eq', value: '' })}
+        >
+          {!fields.length && <option value="">Loading fields…</option>}
+          {fields.map((f) => <option key={f.key} value={f.key}>{f.label}</option>)}
+        </select>
+        {meta.type === 'boolean' ? (
+          <BooleanControl filter={filter} onChange={onChange} fieldLabel={meta.label} />
+        ) : meta.type && NUMERIC_TYPES.has(meta.type) ? (
+          <NumericControl filter={filter} onChange={onChange} unit={meta.unit} />
+        ) : meta.options && meta.options.length ? (
+          <CodedControl filter={filter} onChange={onChange} options={meta.options} />
+        ) : (
+          <FreeTextControl filter={filter} onChange={onChange} />
+        )}
+        {onRemove && <button type="button" className="mtx-btn" onClick={onRemove}>Remove</button>}
+      </div>
+      {showPreview && <p className="filterPreview">{sentenceForFilter(filter, meta)}</p>}
+      <style jsx>{`
+        .filterRow { display: flex; flex-direction: column; gap: 6px; }
+        .filterControls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+        .filterPreview { margin: 0; font-size: 11px; color: var(--ink-light, #6B6B6B); font-family: var(--mtx-sans); }
+      `}</style>
+    </div>
+  );
 }
