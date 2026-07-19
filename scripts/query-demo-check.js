@@ -84,6 +84,14 @@ async function fetchAllProvisions(sb) {
   return out;
 }
 
+// WP-7 (M5-06) demo-dryrun: staging deals (ingest_status: 'staging') must
+// never surface in a query result, including this gate — mirrors the
+// pages/api/home.js / pages/api/query/run.js isStagingDeal pattern.
+function isStagingDeal(deal) {
+  const meta = deal && deal.metadata && typeof deal.metadata === 'object' ? deal.metadata : {};
+  return meta.ingest_status === 'staging';
+}
+
 function loadDemoSet() {
   const raw = fs.readFileSync(DEMO_SET_PATH, 'utf8');
   const parsed = JSON.parse(raw);
@@ -104,11 +112,19 @@ async function main() {
   }
   const sb = createClient(dbUrl, key);
 
-  const { data: deals, error } = await sb.from('deals').select(DEAL_SELECT).order('announce_date', { ascending: false });
+  const { data: dealRows, error } = await sb.from('deals').select(DEAL_SELECT).order('announce_date', { ascending: false });
   if (error) { console.error(`Deal fetch failed: ${error.message}`); process.exit(1); }
-  const provisions = await fetchAllProvisions(sb);
-  const context = { deals: deals || [], provisions };
-  console.log(`Live corpus: ${context.deals.length} deals, ${context.provisions.length} provisions.\n`);
+  const allProvisions = await fetchAllProvisions(sb);
+
+  // Staging deals (WP-7 demo-dryrun's DRYRUN-<timestamp> deal) must be
+  // invisible here too — the corpus queries must still answer correctly
+  // with a staging deal present in the DB.
+  const stagingCount = (dealRows || []).filter(isStagingDeal).length;
+  const deals = (dealRows || []).filter((deal) => !isStagingDeal(deal));
+  const liveDealIds = new Set(deals.map((deal) => deal.id));
+  const provisions = (allProvisions || []).filter((p) => liveDealIds.has(p.deal_id));
+  const context = { deals, provisions };
+  console.log(`Live corpus: ${context.deals.length} deals, ${context.provisions.length} provisions.${stagingCount ? ` (excluded ${stagingCount} staging deal${stagingCount === 1 ? '' : 's'})` : ''}\n`);
 
   let entries = loadDemoSet();
   if (args.query) entries = entries.filter((e) => e.id === args.query);
@@ -178,4 +194,4 @@ if (require.main === module) {
   main().catch((e) => { console.error(e); process.exit(1); });
 }
 
-module.exports = { loadDemoSet, findDotEnvLocal, loadDotEnvLocal };
+module.exports = { loadDemoSet, findDotEnvLocal, loadDotEnvLocal, isStagingDeal };

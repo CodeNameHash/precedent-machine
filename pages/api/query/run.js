@@ -20,6 +20,15 @@ const PROVISION_SELECT = 'id, deal_id, type, category, full_text, ai_metadata, c
 // claims reader in lib/queries/review-deal.js.
 const PROVISION_PAGE_SIZE = 1000;
 
+// WP-7 (M5-06) demo-dryrun: staging deals (ingest_status: 'staging', e.g.
+// the demo dry-run's DRYRUN-<timestamp> deal) must never surface in a query
+// result. Mirrors the pages/api/home.js / pages/api/deals.js isStagingDeal
+// pattern — local, not shared, per this repo's existing convention.
+function isStagingDeal(deal) {
+  const meta = deal && deal.metadata && typeof deal.metadata === 'object' ? deal.metadata : {};
+  return meta.ingest_status === 'staging';
+}
+
 async function fetchAllProvisions(sb) {
   const out = [];
   let offset = 0;
@@ -58,12 +67,17 @@ async function loadContext(sb) {
   }
   if (contextCacheInflight) return contextCacheInflight;
   contextCacheInflight = (async () => {
-    const [{ data: deals, error: dErr }, provisions] = await Promise.all([
+    const [{ data: dealRows, error: dErr }, allProvisions] = await Promise.all([
       sb.from('deals').select(DEAL_SELECT).order('announce_date', { ascending: false }),
       fetchAllProvisions(sb),
     ]);
     if (dErr) throw new Error(dErr.message);
-    const entry = { deals: deals || [], provisions: provisions || [], fetchedAt: Date.now() };
+    // Staging deals (WP-7 demo-dryrun) never belong in query context —
+    // filter here so the CACHED context is always staging-free.
+    const deals = (dealRows || []).filter((deal) => !isStagingDeal(deal));
+    const liveDealIds = new Set(deals.map((deal) => deal.id));
+    const provisions = (allProvisions || []).filter((p) => liveDealIds.has(p.deal_id));
+    const entry = { deals, provisions, fetchedAt: Date.now() };
     contextCache = entry;
     return entry;
   })();

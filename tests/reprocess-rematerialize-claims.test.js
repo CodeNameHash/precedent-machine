@@ -78,6 +78,52 @@ test('matchTypeBucket: a duplicated title does not match at rung 1, falls throug
   assert.equal(byCard['card-b'], 'prov-b');
 });
 
+// mint-cards.js builds candidate card rows BEFORE insert — they carry no
+// .id at all (the DB assigns it on insert). applyRung/applyContainmentRung
+// used to track "already matched" via `Set.add(card.id)` /
+// `pool.filter((c) => !matchedIds.has(c.id))`; with every id-less card's
+// .id equal to `undefined`, the Set collapsed to a single `undefined` key
+// after the FIRST rung-1 match, and the pool filter then evicted EVERY
+// remaining id-less card — including ones that were never actually
+// matched — before rung 2 ever ran. Fixed by tracking matched objects by
+// reference instead of by .id (2026-07-19, live-gate run 2 diagnosis).
+test('matchTypeBucket: id-less cards (mint-cards.js pre-insert rows) — rung 1 matches some, rung 2 still sees the rest (none evaporate)', () => {
+  const cards = [
+    // Rung 1: unique titles, matched first — this is what used to poison
+    // the id-based Set with `undefined`.
+    card({ id: undefined, excerpt_id: 'excerpt-a', short_title: 'Title A', region_full_text: 'Body text alpha, wholly distinct.' }),
+    card({ id: undefined, excerpt_id: 'excerpt-b', short_title: 'Title B', region_full_text: 'Body text bravo, wholly distinct.' }),
+    // Rung 2: duplicate titles ("Title DUP") so rung 1 can't resolve them —
+    // must survive into rung 2's exact-text match. Under the bug these
+    // vanished from the pool entirely (not even reported as unmatched)
+    // once the two rung-1 matches above collided on the `undefined` id key.
+    card({ id: undefined, excerpt_id: 'excerpt-c', short_title: 'Title DUP', region_full_text: 'Body text charlie, wholly distinct.' }),
+    card({ id: undefined, excerpt_id: 'excerpt-d', short_title: 'Title DUP', region_full_text: 'Body text delta, wholly distinct.' }),
+  ];
+  const provisions = [
+    provision({ id: undefined, category: 'Title A', full_text: 'Body text alpha, wholly distinct.' }),
+    provision({ id: undefined, category: 'Title B', full_text: 'Body text bravo, wholly distinct.' }),
+    provision({ id: undefined, category: 'Title DUP', full_text: 'Body text charlie, wholly distinct.' }),
+    provision({ id: undefined, category: 'Title DUP', full_text: 'Body text delta, wholly distinct.' }),
+  ];
+
+  const { matches, ambiguities, unmatchedCards, unmatchedProvisions } = matchTypeBucket(cards, provisions);
+
+  assert.equal(matches.length, 4, `expected all 4 pairs matched (2 at rung 1, 2 at rung 2), got ${matches.length} — a lower count means cards evaporated from the pool`);
+  const byRung = matches.reduce((acc, m) => { acc[m.rung] = (acc[m.rung] || 0) + 1; return acc; }, {});
+  assert.equal(byRung[1], 2, 'Title A / Title B should match at rung 1');
+  assert.equal(byRung[2], 2, 'the two Title DUP cards should fall through to rung 2 (exact text) — this is the rung the bug made unreachable');
+  assert.deepEqual(ambiguities, []);
+  assert.deepEqual(unmatchedCards, []);
+  assert.deepEqual(unmatchedProvisions, []);
+
+  const byExcerptId = Object.fromEntries(matches.map((m) => [m.card.excerpt_id, m.provision.category]));
+  assert.equal(byExcerptId['excerpt-a'], 'Title A');
+  assert.equal(byExcerptId['excerpt-b'], 'Title B');
+  assert.equal(byExcerptId['excerpt-c'], 'Title DUP');
+  assert.equal(byExcerptId['excerpt-d'], 'Title DUP');
+});
+
 // ---------------------------------------------------------------------------
 // 2. Rung 2 — exact text match (titles differ, so rung 1 can't touch them).
 // ---------------------------------------------------------------------------
