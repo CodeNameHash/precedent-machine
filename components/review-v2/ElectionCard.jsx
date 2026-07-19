@@ -20,8 +20,26 @@
 import { PillCell, EvidenceHoverSource } from '../review/primitives/ProvisionTablePrimitives';
 
 export default function ElectionCard({ election }) {
-  if (!election || !Array.isArray(election.options) || election.options.length < 2) return null;
-  const { options, defaultTreatment, isProrated, prorationNote, evidence, sourceCard } = election;
+  if (!election) return null;
+
+  // FIX 4(c): the deal affirmatively states there's no election / no
+  // proration (SkyWater/IonQ) -- one quiet line, no options grid, never
+  // nothing at all.
+  if (election.noElection) {
+    return (
+      <section data-testid="provision-table-election" className="border border-border bg-white mb-3.5">
+        <EvidenceHoverSource evidence={election.evidence} source={election.sourceCard} highlight={null} as="p">
+          <p className="px-3.5 py-2.5 text-[11px] text-inkFaint">Fixed mixed consideration — no election, no proration</p>
+        </EvidenceHoverSource>
+      </section>
+    );
+  }
+
+  if (!Array.isArray(election.options) || election.options.length < 2) return null;
+  const {
+    options, defaultTreatment, isProrated, prorationNote, evidence, sourceCard,
+    caps, electionDeadline, oversubscriptionTreatment,
+  } = election;
 
   const caption = [
     defaultTreatment ? <>If no election: treated as <span className="font-medium text-ink">{defaultTreatment}</span></> : null,
@@ -43,6 +61,41 @@ export default function ElectionCard({ election }) {
           </div>
         ))}
       </div>
+
+      {/* FIX 4(b): structured proration detail -- caps as pills, deadline
+          and oversubscription treatment as short lines -- replacing the
+          bare "subject to proration" flag with what the cap/deadline/
+          oversubscription text actually says. No header row, no duplicate
+          rows: pills + text, same .mtx idiom as the rest of the card. */}
+      {Array.isArray(caps) && caps.length ? (
+        <div className="border-t border-border px-3.5 py-2 flex flex-wrap gap-1.5">
+          {caps.map((cap) => (
+            <PillCell
+              key={cap.label}
+              label={`${cap.label}: ${cap.figure}`}
+              tone="info"
+              evidence={prorationNote || evidence}
+              source={sourceCard}
+            />
+          ))}
+        </div>
+      ) : null}
+
+      {electionDeadline ? (
+        <EvidenceHoverSource evidence={electionDeadline} source={sourceCard} highlight={null} as="p">
+          <p className="border-t border-border px-3.5 py-1.5 text-[10px] text-inkFaint">
+            <span className="font-medium text-ink">Election deadline: </span>{electionDeadline}
+          </p>
+        </EvidenceHoverSource>
+      ) : null}
+
+      {oversubscriptionTreatment ? (
+        <EvidenceHoverSource evidence={oversubscriptionTreatment} source={sourceCard} highlight={null} as="p">
+          <p className="border-t border-border px-3.5 py-1.5 text-[10px] text-inkFaint">
+            <span className="font-medium text-ink">Oversubscription: </span>{oversubscriptionTreatment}
+          </p>
+        </EvidenceHoverSource>
+      ) : null}
 
       {caption.length ? (
         <EvidenceHoverSource evidence={prorationNote} source={sourceCard} highlight={null} as="p">
