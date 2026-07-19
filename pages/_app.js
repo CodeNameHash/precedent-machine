@@ -1,4 +1,5 @@
 import '../styles/globals.css';
+import '../styles/mtx-fonts.css';
 import { UserProvider } from '../lib/useUser';
 import { ToastProvider } from '../lib/useToast';
 import { ViewModeProvider } from '../components/ViewModeContext';

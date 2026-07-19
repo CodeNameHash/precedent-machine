@@ -10,6 +10,8 @@ import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { useDeal } from '../../lib/useSupabaseData';
+import { reconstructReviewDeal } from '../../lib/queries/reconstruct-review-deal';
+import { useLazyAgreementSource } from '../../lib/useLazyAgreementSource';
 import { useUser } from '../../lib/useUser';
 import ProvisionTable from '../../components/review/ProvisionTable';
 import DealHeader from '../../components/review-v2/DealHeader';
@@ -21,7 +23,6 @@ import ElectionCard from '../../components/review-v2/ElectionCard';
 import ProvisionIndex, { DefinitionsSection } from '../../components/review-v2/ProvisionIndex';
 import ClauseSidebar from '../../components/review-v2/ClauseSidebar';
 import SourceOverlay from '../../components/review-v2/SourceOverlay';
-import { MTX_FONTS_HREF } from '../../components/chrome/mtxFonts';
 import { resolveCardSourceSpan } from '../../lib/parser-v2/resolve-source-span';
 import {
   buildReviewV2Sections,
@@ -34,7 +35,12 @@ import {
 
 const CONSIDERATION_SECTION_ID = 'consideration-hero';
 
-const FONTS_HREF = MTX_FONTS_HREF;
+// Q7 (perf quick-wins): Tinos/Inter/IBM Plex Mono are self-hosted (see
+// styles/mtx-fonts.css, imported globally in pages/_app.js) — no external
+// fonts.googleapis.com <link> needed here anymore. components/chrome/
+// mtxFonts.js's MtxFontLinks/MTX_FONTS_HREF (added on main after this page
+// already self-hosted) is superseded by the same global stylesheet — see
+// the merge-resolution commit for the rest of that cleanup.
 
 function LoadingLine({ children }) {
   return (
@@ -109,7 +115,11 @@ export default function ReviewPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const { deal, loading: dealLoading, error: dealError } = useDeal(dealId);
+  // Q3 (perf quick-wins): this page's DealHeader/sectionList only read
+  // scalars + deal_facts/advisors_v2/merger_form/topology — use the slim
+  // ?view=header response instead of the full deal row (which ships
+  // metadata.full_text/classified_sections/extraction_runs, 735KB-1.5MB raw).
+  const { deal, loading: dealLoading, error: dealError } = useDeal(dealId, { view: 'header' });
 
   /* ── Cards payload (same fetch/normalisation as v1) ── */
   const [reviewDeal, setReviewDeal] = useState(null);
@@ -130,7 +140,10 @@ export default function ReviewPage() {
       .then(async (response) => {
         const payload = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(payload.error || `HTTP ${response.status}`);
-        return payload.reviewDeal || null;
+        // Q1/Q2: the API no longer ships sections[]/definitions[] (verbatim
+        // duplicates of cards[]) or per-card resolvedReferences/
+        // region_full_text — rebuild them client-side.
+        return payload.reviewDeal ? reconstructReviewDeal(payload.reviewDeal) : null;
       })
       .then((next) => {
         if (!cancelled) setReviewDeal(next);
@@ -149,16 +162,16 @@ export default function ReviewPage() {
     };
   }, [router.isReady, dealId]);
 
-  /* ── Agreement source ── */
-  const [agreementSource, setAgreementSource] = useState(null);
-
-  useEffect(() => {
-    if (!dealId) return;
-    fetch(`/api/agreement-source?deal_id=${dealId}`)
-      .then((r) => r.json())
-      .then((d) => setAgreementSource(d.agreement_source || null))
-      .catch(() => setAgreementSource(null));
-  }, [dealId]);
+  /* ── Agreement source (Q4, perf quick-wins) ── deferred to
+     requestIdleCallback after the tables above have rendered; ensureLoaded()
+     fetches immediately on-demand if the overlay/agreement view is opened
+     before idle fires. */
+  const {
+    agreementSource,
+    loading: sourceLoading,
+    attempted: sourceAttempted,
+    ensureLoaded: ensureAgreementSourceLoaded,
+  } = useLazyAgreementSource(dealId);
 
   /* ── Sections ── */
   const reviewDealForTables = useMemo(() => reviewDeal || EMPTY_REVIEW_DEAL, [reviewDeal]);
@@ -178,10 +191,21 @@ export default function ReviewPage() {
 
   /* ── View toggle ── */
   const [view, setView] = useState('summary');
-  const hasAgreementText = Boolean(agreementSource && agreementSource.full_text);
+  // Q4: before the lazy fetch has resolved, assume optimistically that
+  // source text exists (most deals have it) so the "Full Merger Agreement"
+  // affordance and view-in-agreement links stay clickable pre-idle; once the
+  // fetch resolves, reflect reality (a deal that genuinely has no source
+  // text reverts to the disabled state).
+  const hasAgreementText = sourceAttempted
+    ? Boolean(agreementSource && agreementSource.full_text)
+    : true;
   const toggleView = useCallback(() => {
-    setView((v) => (v === 'summary' ? 'agreement' : 'summary'));
-  }, []);
+    setView((v) => {
+      const next = v === 'summary' ? 'agreement' : 'summary';
+      if (next === 'agreement') ensureAgreementSourceLoaded();
+      return next;
+    });
+  }, [ensureAgreementSourceLoaded]);
   useEffect(() => {
     if (typeof window !== 'undefined') window.scrollTo(0, 0);
   }, [view]);
@@ -257,35 +281,50 @@ export default function ReviewPage() {
      highlight. The overlay itself only takes {start, end}; resolution
      (offsets → exact-quote → region → unresolved, per
      lib/parser-v2/resolve-source-span.js) happens here, at the one place
-     that holds both a card and the agreement's full_text. */
-  const [sourceOverlay, setSourceOverlay] = useState(null); // { start, end, status, sectionRef, title } | null
+     that holds both a card and the agreement's full_text.
+
+     Q4 (perf quick-wins): fullText may not have arrived yet (lazy fetch) —
+     openSourceOverlay stores the raw card immediately (so the overlay opens
+     with a loading state) and kicks off ensureAgreementSourceLoaded(); span
+     resolution is a useMemo that re-runs once fullText lands. */
+  const [overlayCard, setOverlayCard] = useState(null);
   const [unresolvedCount, setUnresolvedCount] = useState(0);
+  const warnedCardIdsRef = useRef(new Set());
   const fullText = agreementSource && agreementSource.full_text ? agreementSource.full_text : '';
 
   const openSourceOverlay = useCallback((card) => {
     if (!card) return;
-    const resolved = resolveCardSourceSpan(card, fullText);
-    if (resolved.status === 'unresolved') {
+    setOverlayCard(card);
+    ensureAgreementSourceLoaded();
+  }, [ensureAgreementSourceLoaded]);
+  const closeSourceOverlay = useCallback(() => setOverlayCard(null), []);
+
+  const resolvedOverlay = useMemo(() => {
+    if (!overlayCard || !fullText) return null;
+    return resolveCardSourceSpan(overlayCard, fullText);
+  }, [overlayCard, fullText]);
+
+  useEffect(() => {
+    if (!overlayCard || !resolvedOverlay) return;
+    const cardId = overlayCard.id || overlayCard.provision_instance_id;
+    if (resolvedOverlay.status === 'unresolved' && !warnedCardIdsRef.current.has(cardId)) {
+      warnedCardIdsRef.current.add(cardId);
       // eslint-disable-next-line no-console
-      console.warn('[SourceOverlay] unresolved span for card', card.id || card.provision_instance_id, card.section_ref);
+      console.warn('[SourceOverlay] unresolved span for card', cardId, overlayCard.section_ref);
       setUnresolvedCount((n) => n + 1);
     }
-    setSourceOverlay({
-      start: resolved.start,
-      end: resolved.end,
-      status: resolved.status,
-      sectionRef: card.section_ref,
-      title: card.short_title || card.defined_term || card.section_ref,
-    });
-  }, [fullText]);
-  const closeSourceOverlay = useCallback(() => setSourceOverlay(null), []);
+  }, [overlayCard, resolvedOverlay]);
 
-  /* ── Deep-link: /review/[id]?card=<card_id> opens the overlay directly. ── */
+  const sourceOverlayLoading = Boolean(overlayCard) && !fullText && (sourceLoading || !sourceAttempted);
+
+  /* ── Deep-link: /review/[id]?card=<card_id> opens the overlay directly
+     (fetches the agreement source on-demand — deep links are explicit
+     intent, don't wait on idle/fullText to arrive first). ── */
   const openedFromQueryRef = useRef(false);
   useEffect(() => {
     if (!router.isReady || openedFromQueryRef.current) return;
     const cardParam = router.query.card;
-    if (!cardParam || !reviewDeal || !fullText) return;
+    if (!cardParam || !reviewDeal) return;
     const target = String(cardParam);
     const match = (reviewDeal.cards || []).find(
       (c) => String(c.id || c.provision_instance_id) === target,
@@ -294,7 +333,7 @@ export default function ReviewPage() {
       openedFromQueryRef.current = true;
       openSourceOverlay(match);
     }
-  }, [router.isReady, router.query.card, reviewDeal, fullText, openSourceOverlay]);
+  }, [router.isReady, router.query.card, reviewDeal, openSourceOverlay]);
 
   const setAllSections = useCallback((open) => {
     document.querySelectorAll('details.mtx-section').forEach((d) => { d.open = open; });
@@ -316,9 +355,6 @@ export default function ReviewPage() {
     <div className="mtx min-h-screen flex flex-col bg-white">
       <Head>
         <title>{pageTitle}</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="stylesheet" href={FONTS_HREF} />
       </Head>
       <MergertraceStyles />
 
@@ -336,7 +372,7 @@ export default function ReviewPage() {
         <LoadingLine>Loading deal…</LoadingLine>
       ) : view === 'agreement' ? (
         <div className="flex flex-1 min-h-0">
-          <AgreementView agreementSource={agreementSource} />
+          <AgreementView agreementSource={agreementSource} loading={sourceLoading || !sourceAttempted} />
         </div>
       ) : (
         <div className="flex flex-1 min-h-0">
@@ -399,16 +435,17 @@ export default function ReviewPage() {
       )}
 
       <SourceOverlay
-        open={Boolean(sourceOverlay)}
+        open={Boolean(overlayCard)}
         onClose={closeSourceOverlay}
         fullText={fullText}
-        start={sourceOverlay ? sourceOverlay.start : null}
-        end={sourceOverlay ? sourceOverlay.end : null}
-        status={sourceOverlay ? sourceOverlay.status : null}
-        sectionRef={sourceOverlay ? sourceOverlay.sectionRef : null}
-        title={sourceOverlay ? sourceOverlay.title : null}
+        start={resolvedOverlay ? resolvedOverlay.start : null}
+        end={resolvedOverlay ? resolvedOverlay.end : null}
+        status={resolvedOverlay ? resolvedOverlay.status : null}
+        sectionRef={overlayCard ? overlayCard.section_ref : null}
+        title={overlayCard ? (overlayCard.short_title || overlayCard.defined_term || overlayCard.section_ref) : null}
         agreementTitle={agreementSource ? agreementSource.title : null}
         unresolvedCount={unresolvedCount}
+        loading={sourceOverlayLoading}
       />
     </div>
   );

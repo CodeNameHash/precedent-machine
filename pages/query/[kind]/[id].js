@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import MergertraceStyles from '../../../components/review-v2/MergertraceStyles';
 import AppHeader from '../../../components/chrome/AppHeader';
-import { MtxFontLinks } from '../../../components/chrome/mtxFonts';
 const { toCsv, resultToCsvRows, csvFilename } = require('../../../lib/query/csv');
 const { describeFilter } = require('../../../lib/query/filter-labels');
 
@@ -95,7 +94,6 @@ export default function QueryPage() {
     <>
       <Head>
         <title>{`${title} · Corpus`}</title>
-        <MtxFontLinks />
       </Head>
       <MergertraceStyles />
       <div className="mtx qp">

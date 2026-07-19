@@ -38,6 +38,7 @@ export default function SourceOverlay({
   title,
   agreementTitle,
   unresolvedCount = 0,
+  loading = false,
 }) {
   const markRef = useRef(null);
   const scrolledRef = useRef(false);
@@ -115,7 +116,12 @@ export default function SourceOverlay({
 
         <div className="mtx-source-overlay-body mtx-scrollbar-thin">
           {!strippedText ? (
-            <p className="mtx-meta-label text-[10px] tracking-[0.14em]">No source text available for this deal.</p>
+            // Q4 (perf quick-wins): source text is fetched lazily; the
+            // overlay can open before it arrives (cold on-demand fetch) —
+            // show a loading state rather than claiming there's no source.
+            <p className="mtx-meta-label text-[10px] tracking-[0.14em]" data-testid={loading ? 'source-overlay-loading' : undefined}>
+              {loading ? 'Loading source document…' : 'No source text available for this deal.'}
+            </p>
           ) : (
             <pre className="mtx-doc-pane">
               {before}
