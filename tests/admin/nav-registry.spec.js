@@ -7,7 +7,13 @@ const registry = require('../../docs/admin/nav-registry.json');
 function pageFileForHref(href) {
   if (href === '/') return 'pages/index.js';
   if (!href.startsWith('/admin/')) return null;
-  return `pages${href}.js`;
+  // Next.js resolves a directory route to either `<href>.js` or
+  // `<href>/index.js` — prefer the flat file (the existing convention here)
+  // but fall back to the index.js form (e.g. pages/admin/reports/index.js,
+  // paired with pages/admin/reports/[kind].js for per-kind detail pages).
+  const flat = `pages${href}.js`;
+  if (fs.existsSync(flat)) return flat;
+  return `pages${href}/index.js`;
 }
 
 test('nav-registry.json is well-formed', () => {
@@ -65,6 +71,7 @@ test('nav-registry render snapshot', () => {
     'schema:60:Schema loss audit:/admin/schema-loss',
     'schema:70:Review queue:/admin/review-queue',
     'search:10:Search / Review:/',
+    'system:10:Reports:/admin/reports',
   ]);
 });
 

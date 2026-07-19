@@ -58,6 +58,10 @@ Gap review: Review extraction coverage gaps and route follow-up work.
 
 Search / Review: Return to the main deal search and review workspace.
 
+## reports
+
+Reports: Review persisted producer run reports: ingest QA, coverage audit, rematerialize, and mint-cards.
+
 ## API: pages/api/admin/audit/decision.js
 
 Serves the admin route `/api/admin/audit/decision` for the admin workflow associated with its filename.
@@ -141,6 +145,10 @@ Serves the admin route `/api/admin/schema-loss/queue` for Dimension A and Dimens
 ## API: pages/api/admin/schema-loss/rerun.js
 
 Serves the admin route `/api/admin/schema-loss/rerun` for manual audit re-runs.
+
+## API: pages/api/admin/reports.js
+
+Serves the admin route `/api/admin/reports` for the admin workflow associated with its filename.
 
 ## API: pages/api/admin/store-agreement.js
 

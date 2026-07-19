@@ -27,7 +27,7 @@ function sectionRefLabel(ref) {
 // captured text (the more complete extraction of the two); this is a
 // render-time dedupe over stored duplicate rows, not a data delete. Logic
 // lives in provisionIndexHelpers.js (plain JS, unit-tested directly).
-export default function ProvisionIndex({ cards, sectionTitle, onSelect, selectedId }) {
+export default function ProvisionIndex({ cards, sectionTitle, onSelect, selectedId, onViewInAgreement }) {
   const withTitle = (cards || []).filter((c) => c && (c.short_title || c.defined_term));
   const list = dedupeBySectionAndTitle(withTitle);
   if (!list.length) return null;
@@ -58,7 +58,19 @@ export default function ProvisionIndex({ cards, sectionTitle, onSelect, selected
                       <span className="mtx-mono text-[11px] text-[#6B6B6B] whitespace-nowrap">{sectionRefLabel(card.section_ref)}</span>
                     </td>
                     <td className="px-3 py-2 align-top">
-                      <span className="font-medium text-ink">{card.short_title || card.defined_term}</span>
+                      <div className="flex items-baseline justify-between gap-2">
+                        <span className="font-medium text-ink">{card.short_title || card.defined_term}</span>
+                        {onViewInAgreement ? (
+                          <button
+                            type="button"
+                            className="mtx-view-in-agreement shrink-0"
+                            onClick={(e) => { e.stopPropagation(); onViewInAgreement(card); }}
+                            data-testid="view-in-agreement-row"
+                          >
+                            View in agreement ↗
+                          </button>
+                        ) : null}
+                      </div>
                       {text ? (
                         <details className="mt-1">
                           <summary className="term-cell-seetext" style={{ listStyle: 'none' }}>read clause</summary>

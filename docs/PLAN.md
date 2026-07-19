@@ -1,62 +1,72 @@
 # PLAN — single source of truth for what happens next
 
-Maintained by Fable; updated as items land. Last update: 2026-07-18
-(post route-swap merge to main, PR #258). Corpus program (Phases 0–5)
-is COMPLETE — see docs/reports/PHASE-5-REPORT-2026-07-18.md.
+Maintained by Fable; updated as items land. Last update: 2026-07-19
+(post PR #261: WP-2 query UI + review-feedback r3 + span-accounting
+report layer merged to main). Corpus program (Phases 0–5) is COMPLETE —
+see docs/reports/PHASE-5-REPORT-2026-07-18.md.
 
-## Now in flight (Fable investigations → spec → Sonnet implementation)
+## Merged to main (this program)
 
-1. **Review-page feedback round 3** — 10 items (outside-date placement,
-   closing/effective-time brevity, column-width system incl. phone,
-   masthead degradation rule, QXO PSU/RSU duplicate rows, NOSOL
-   repetition, parent-approvals dump, see-provision left-column move,
-   termination-trigger repeats, MAE carve-out mouseover shows item
-   extract not definition head). Output:
-   docs/handoffs/UI-FEEDBACK-R3-SPEC-*.md → implementation package(s).
-2. **Deals index overhaul** — real-buyer naming (shell→parent, e.g.
-   Beach→3G), parties dedupe, full dates, no empty value/type,
-   public/private column, header-based filter/sort, user-editable
-   columns (law firms/lawyers), remove query examples, load-time
-   profiling, .mtx conformance. HARD RULE: every data fix ships BOTH
-   corpus backfill AND the ingest-pipeline change + ingest-qa gate so
-   future deals can't regress. Output: docs/handoffs/DEALS-INDEX-SPEC-*.md.
-3. **M4/M5 reconciled plan** — query surface + demo polish, reshaped per
-   Ben: M4-03 (20 demo queries correct) → M4-04 (query UI on .mtx) →
-   M4-02 (normalizer badges); M5 keeps full-doc overlay, reports UI,
-   demo dry-run CI gate; drops tokens/landing-grid (superseded); defers
-   admin-queue polish. Output: docs/handoffs/M4-M5-RECONCILED-PLAN-*.md
-   incl. the 20 demo queries.
+- PR #258 — Mergertrace route swap (+ r1/r2 polish).
+- PR #259 — Package A (deals index perf: 31.7MB→95.6KB payload,
+  1000-row-cap fix, staging filter, cache headers) — urgent post
+  Supabase Disk IO incident.
+- PR #260 — Package B (deal-metadata persistence: shared ingest prompt,
+  shell-buyer resolution SPV-only, PR value ladder, backfill 72 rows,
+  ingest-qa gates) + WP-1 (20 demo queries green).
+- PR #261 — WP-2 (query UI on .mtx primitives, CSV export, demo tiles),
+  review-feedback r3 (all 16 items, screenshot-verified 1440+390px),
+  span accounting Parts 1–3 (report-only), scoped TOOLTIP_MAX lint
+  exemption (legacy /review-v1 only importer).
+
+## Now in flight
+
+1. **WP-5 — full-doc overlay** (M5-03): client-side only; data path
+   (card primary_quote offsets) confirmed complete. Sonnet worktree →
+   Fable review.
+2. **WP-6 — reports UI + run_reports migration** (M5-05): Ben OK'd the
+   table. Deliver migration SQL for Ben + UI reading run_reports.
 
 ## Queued behind those (order)
 
-4. **Security batch** — Piece 1: Fable writes supabase/rls-lockdown SQL +
-   verifies no client-side reads of post-Jul-2 tables → Ben runs SQL
-   (2 min, no downtime). Piece 2: legacy JWT rotation — Ben live,
-   ~10-min window, brief outage (rotate → paste new anon+service keys
-   into Vercel → redeploy; Fable verifies before/after). DO BEFORE DEMO.
-5. **Span-accounting merge** — worktree delivered (Parts 1–2 + baseline;
-   3,360 sections, 952 flagged incl. ~470 retroactive noise; NEW finding:
-   Dyax §5.1 80k mega-section boundary defect). Fable review → merge →
-   triage the 482 genuine under-coverage flags → enforcement flag on →
-   coverage gate 95→98. Also resolves: QXO bring-down tiers (#10,
-   feature-level loss), Redfin 92% (partly locate artifact — verify),
-   quote repetition-loop/elision flags (12 remaining, 0 hallucinated).
-6. **Implementation waves from specs 1–3** (Sonnet agents, Fable
-   diff-review each): review-page fixes → index UI + data backfill
-   packages → M4-03 executors → M5-03 overlay + M5-05 reports UI →
-   M4-04 query UI → M4-02 badges → M5-06 demo dry-run CI gate.
-7. **Recitals-as-deal-facts** extraction addition (Ben-approved).
-8. **Proration depth** — real cap values (Maximum Cash Election Number,
-   aggregate pools) via defined-term extraction; 2 deals affected.
+3. **WP-3 — normalizer badges** (M4-02): read-path provenance display;
+   provenance already written at ingest.
+4. **WP-4 — M4-01 delta** (~20% remaining).
+5. **WP-7 — demo dry-run CI gate** (M5-06): prod DB + staging tags,
+   staging-invisibility assertion + idempotent teardown (Fable
+   recommendation, standing unless Ben objects).
+6. **Span-residual triage** — 482 genuine under-coverage sections;
+   Dyax §5.1 80k mega-section boundary defect; then enforcement flag →
+   coverage gate 95→98. Resolves #10 (QXO bring-down tiers) and the
+   Redfin 92% fixture. Fable verification still owed on agent claim
+   that Redfin/QXO stored TEXT is already whole (feature- vs
+   text-level loss).
+7. **r3 data repairs (dry-runs delivered, NOT applied)** —
+   scripts/cleanup-fragment-definitions.js (junk list entries); termf
+   trigger recode (optional). Side-finding: Theravance 52/57
+   definition rows have defined_term=NULL — needs its own fix.
+8. **Recitals-as-deal-facts** extraction addition (Ben-approved).
+9. **Proration depth** — real cap values via defined-term extraction;
+   2 deals affected.
+10. **F3 materialized snapshots** for /api/home cold-load (7.8s → target
+   sub-second).
+
+## Security close-out (2026-07-18/19)
+
+- RLS lockdown: DONE — Ben ran supabase/rls-lockdown-2026-07.sql;
+  service-role access verified (12,403 cards readable).
+- JWT rotation: MOOT — legacy JWT keys were platform-disabled
+  2026-04-20; production runs on sb_publishable_/sb_secret_ keys.
+  Do NOT replace Vercel env vars with JWT-format keys.
+- Compute upgrade: deferred by Ben.
 
 ## Ben's open items (his side)
 
-- [x] EDITOR_KEYS + corrections migration (done, redeploying)
-- [ ] Feedback on deployed production Mergertrace
-- [ ] Security Piece 1: run RLS SQL when Fable clears it
-- [ ] Security Piece 2: name a 10-min window
-- [ ] Endeavor proposed-codes curation session (~30 min, 112 codes)
-- [ ] M4-03 will surface canonical-field decisions (est. 3–6 approvals)
+- [ ] Feedback on deployed production (post-#261 deploy)
+- [ ] Run the run_reports migration SQL when WP-6 delivers it
+- [ ] Endeavor proposed-codes curation session (~30 min, 112 codes +
+      hellOrHighWater claims-vs-features disagreement)
+- [ ] Compute upgrade (deferred, his call on timing)
 
 ## Standing rules
 
@@ -64,6 +74,10 @@ is COMPLETE — see docs/reports/PHASE-5-REPORT-2026-07-18.md.
   mechanical gates (tests/build/ingest-qa/eval) → live verification.
 - Never merge unreviewed delegate output. Data fixes must persist at
   ingest, not just backfill. Dry-run before every corpus write.
+- DB concurrency 1 for agent sweeps (post Disk IO incident).
+- Treat agent completion notifications as claims, not facts — verify
+  state (DB/git) before acting on them.
 - Deferred/not-planned: M5-04 admin-queue polish; #12 structured-claims
-  store rework (layers on span accounting); coverage-gate tightening
-  until span baseline is clean.
+  store rework (layers on span accounting; includes moving full_text
+  out of deals.metadata for Disk IO); #13 enforcement phase; #14
+  party-token lint; coverage-gate tightening until span baseline clean.
