@@ -761,6 +761,22 @@ export default function MergertraceStyles() {
         text-decoration: underline;
       }
 
+      /* Sidebar corpus-context status line (ClauseSidebar's
+         CorpusContextStatus): subtle pulsing dot for the in-flight state --
+         quiet enough not to compete with the identity label above it. */
+      .mtx-loading-dot {
+        display: inline-block;
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: #9A9A9A;
+        animation: mtx-loading-dot-pulse 1.1s ease-in-out infinite;
+      }
+      @keyframes mtx-loading-dot-pulse {
+        0%, 100% { opacity: 0.25; }
+        50% { opacity: 1; }
+      }
+
       /* Full-bleed: neutralise the app Layout's padded grey canvas on this
          page only (the .mtx root sits directly inside Layout's <main>). */
       main:has(> .mtx) {
