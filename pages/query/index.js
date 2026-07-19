@@ -66,7 +66,11 @@ export default function QueryIndexPage() {
   const [demoError, setDemoError] = useState(null);
   const [savedQueries, setSavedQueries] = useState(null);
   const [featured, setFeatured] = useState(null);
-  const [deals, setDeals] = useState([]);
+  // null = still loading (distinguishes "no deals yet" from "API hasn't
+  // resolved" for the deal pickers below — r9 owner feedback: the picker
+  // rendered an empty box with no affordance while /api/deals was in
+  // flight).
+  const [deals, setDeals] = useState(null);
   const [kindSchemas, setKindSchemas] = useState(null);
 
   useEffect(() => {
@@ -367,8 +371,8 @@ function BuilderSection({ deals, schemas, router }) {
           <div className="row">
             <label className="mtx-meta-label">Deal
               <select className="mtx-select" value={dtmDealId} onChange={(e) => setDtmDealId(e.target.value)}>
-                <option value="">Select a deal…</option>
-                {deals.map((d) => <option key={d.id} value={d.id}>{dealLabel(d)}</option>)}
+                <option value="">{deals === null ? 'Loading deals…' : 'Select a deal…'}</option>
+                {(deals || []).slice().sort((a, b) => dealLabel(a).localeCompare(dealLabel(b))).map((d) => <option key={d.id} value={d.id}>{dealLabel(d)}</option>)}
               </select>
             </label>
           </div>
@@ -417,25 +421,57 @@ function FilterListBuilder({ filters, setFilters, provisionTypes }) {
   );
 }
 
+// r9 owner feedback: "can't see the drop down of deals" (empty box while
+// /api/deals is in flight — no loading affordance) and "selection should be
+// more powerful — searchable list". Rebuilt with an explicit loading state,
+// a name filter, a selected-count readout, and a bordered/scrollable list
+// that reads as a control even before any deals exist. `deals === null`
+// means the fetch hasn't resolved yet (see the QueryIndexPage state comment
+// above); `deals === []` means it resolved to nothing.
 function DealMultiSelect({ deals, selected, onChange, label }) {
+  const [query, setQuery] = useState('');
+  const loading = deals === null;
+  const sorted = useMemo(() => (deals || []).slice().sort((a, b) => dealLabel(a).localeCompare(dealLabel(b))), [deals]);
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return sorted;
+    return sorted.filter((d) => dealLabel(d).toLowerCase().includes(q));
+  }, [sorted, query]);
   const toggle = (id) => {
     onChange(selected.includes(id) ? selected.filter((x) => x !== id) : [...selected, id]);
   };
   return (
     <div className="dms">
-      <span className="mtx-meta-label">{label}</span>
+      <span className="mtx-meta-label">{label}{selected.length > 0 && <span className="count"> — {selected.length} selected</span>}</span>
+      <input
+        type="text"
+        className="mtx-input search"
+        placeholder="Search deals by name…"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        disabled={loading}
+      />
       <div className="list">
-        {deals.map((d) => (
-          <label key={d.id} className="opt">
-            <input type="checkbox" checked={selected.includes(d.id)} onChange={() => toggle(d.id)} />
-            <span>{dealLabel(d)}</span>
-          </label>
-        ))}
+        {loading ? (
+          <div className="msg">Loading deals…</div>
+        ) : filtered.length === 0 ? (
+          <div className="msg">{sorted.length === 0 ? 'No deals available.' : 'No deals match your search.'}</div>
+        ) : (
+          filtered.map((d) => (
+            <label key={d.id} className="opt">
+              <input type="checkbox" checked={selected.includes(d.id)} onChange={() => toggle(d.id)} />
+              <span>{dealLabel(d)}</span>
+            </label>
+          ))
+        )}
       </div>
       <style jsx>{`
         .dms { display: flex; flex-direction: column; gap: 6px; font-family: var(--mtx-sans); }
-        .list { max-height: 180px; overflow: auto; border: 1px solid var(--line); padding: 8px; display: flex; flex-direction: column; gap: 4px; }
+        .count { font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--ink-light); }
+        .search { margin: 0; }
+        .list { min-height: 90px; max-height: 180px; overflow: auto; border: 1px solid var(--line); background: #fff; padding: 8px; display: flex; flex-direction: column; gap: 4px; }
         .opt { display: flex; align-items: center; gap: 8px; font-size: 12px; font-family: var(--mtx-sans); }
+        .msg { font-size: 12px; color: var(--ink-light); font-family: var(--mtx-sans); padding: 4px 2px; }
       `}</style>
     </div>
   );
