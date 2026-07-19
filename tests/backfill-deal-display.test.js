@@ -19,9 +19,9 @@ const {
 } = require('../scripts/backfill-deal-display');
 
 test('spec tables carry the exact counts after the Ben review round (PR-sourced, no VERIFY rows remain)', () => {
-  // 6 confident buyer-display rows (Envestnet, Endeavor, HireRight, EWC,
-  // Superior, Sekisui/MDC) + United Homes (ultimateParent-only) — 0 VERIFY.
-  assert.equal(BUYER_DISPLAY_ROWS.filter((r) => !r.verify && !r.ultimateParentOnly).length, 6);
+  // 7 confident buyer-display rows (Envestnet, Endeavor, HireRight, EWC,
+  // Superior, Sekisui/MDC, Catalent) + United Homes (ultimateParent-only) — 0 VERIFY.
+  assert.equal(BUYER_DISPLAY_ROWS.filter((r) => !r.verify && !r.ultimateParentOnly).length, 7);
   assert.equal(BUYER_DISPLAY_ROWS.find((r) => r.idPrefix === '667447f0').verify, false);
   assert.equal(BUYER_DISPLAY_ROWS.find((r) => r.idPrefix === '667447f0').acquirerDisplay, 'Oaktree-led lender group');
   // MDC's acquirer_display was ALREADY correct in the live corpus — this row
@@ -31,13 +31,14 @@ test('spec tables carry the exact counts after the Ben review round (PR-sourced,
   // deals-index round (2026-07-19): Catalent (bb5f062d) was in
   // FINANCIAL_BUYER_ID_PREFIXES from the start but had NO buyer-display row
   // at all — the root cause of the shell "Creek Parent, Inc." showing on
-  // the live index. Added here VERIFY-gated (never written by --apply)
-  // because this environment has no DB/full_text access to confirm the
-  // agreement's own Guarantor recital the way every other row here does.
+  // the live index. Added VERIFY-gated pending live-text confirmation, then
+  // promoted to WILL WRITE (Fable, 2026-07-19) after confirming the stored
+  // agreement's own definitions section: '"Investor" means Novo Holdings
+  // A/S' (char ~324189 of full_text).
   const catalent = BUYER_DISPLAY_ROWS.find((r) => r.idPrefix === 'bb5f062d');
   assert.ok(catalent, 'Catalent must have a buyer-display row now');
-  assert.equal(catalent.verify, true);
-  assert.equal(catalent.acquirerDisplay, 'Novo Holdings');
+  assert.equal(catalent.verify, false);
+  assert.equal(catalent.acquirerDisplay, 'Novo Holdings A/S');
 
   // All 13 value rows resolved via PR — 0 VERIFY remain.
   assert.equal(VALUE_ROWS.length, 13);
@@ -60,11 +61,9 @@ test('spec tables carry the exact counts after the Ben review round (PR-sourced,
   assert.equal(FINANCIAL_BUYER_ID_PREFIXES.size, 8);
 });
 
-test('no remaining VALUE_ROWS VERIFY rows; exactly one BUYER_DISPLAY_ROWS VERIFY row (Catalent, pending live-text verification)', () => {
+test('no remaining VERIFY rows in either section (Catalent promoted after live-text verification)', () => {
   assert.equal(VALUE_ROWS.filter((r) => r.verify).length, 0);
-  const verifyRows = BUYER_DISPLAY_ROWS.filter((r) => r.verify);
-  assert.equal(verifyRows.length, 1);
-  assert.equal(verifyRows[0].idPrefix, 'bb5f062d');
+  assert.equal(BUYER_DISPLAY_ROWS.filter((r) => r.verify).length, 0);
 });
 
 /* ── considerationType classifier — pinned fixtures matching the live corpus ── */
@@ -172,15 +171,16 @@ test('planBuyerDisplay marks Envestnet and (post review-round) Superior as WILL 
   assert.equal(superior.acquirerDisplay, 'Oaktree-led lender group');
 });
 
-test('planBuyerDisplay: Catalent (VERIFY row) is found but never willWrite, even with --apply semantics', () => {
+test('planBuyerDisplay: Catalent (promoted from VERIFY, 2026-07-19) is found and willWrite', () => {
   const deals = [
     { id: 'bb5f062d-cccc', acquirer: 'Creek Parent, Inc.', target: 'Catalent, Inc.', metadata: {} },
   ];
   const rows = planBuyerDisplay(deals);
   const catalent = rows.find((r) => r.idPrefix === 'bb5f062d');
   assert.equal(catalent.found, true);
-  assert.equal(catalent.verify, true);
-  assert.equal(catalent.willWrite, false, 'VERIFY rows never write, regardless of --apply');
+  assert.equal(catalent.verify, false);
+  assert.equal(catalent.willWrite, true);
+  assert.equal(catalent.acquirerDisplay, 'Novo Holdings A/S');
 });
 
 test('planBuyerDisplay marks an already-correct row (Sekisui House / MDC) as a no-op, not a write', () => {

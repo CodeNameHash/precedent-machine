@@ -312,6 +312,42 @@ test('wrapped firm names join; email lines are not firms; same firm merges', () 
   assert.deepEqual(v2.seller_lawyers, ['James P. Dougherty', 'Benjamin L. Stulberg']);
 });
 
+// Summit Materials shape (2026-07-19 law-firms backfill investigation): the
+// continuation line starts with "&" instead of the prior line ending with
+// one ("Davis Polk\n& Wardwell LLP") — the join heuristic only checked the
+// trailing-punctuation case and split this into two fake firms ("Davis
+// Polk", "Wardwell LLP").
+const AMPERSAND_LEAD_WRAP = `
+Notices. All notices shall be given, if to Parent, to:
+
+Quikrete
+Holdings, Inc.
+
+with a copy to:
+
+Troutman Sanders LLP
+600 Peachtree St. NE
+Attention: David Ghegan
+
+if to the Company, to:
+
+Summit Materials,
+Inc.
+
+with a copy to:
+
+Davis Polk
+& Wardwell LLP
+450 Lexington Avenue
+Attention: James P. Dougherty
+`;
+
+test('firm name wrapped BEFORE a leading "&" continuation line joins into one firm (Summit Materials shape)', () => {
+  const deal = DEAL('Quikrete Holdings, Inc.', 'Summit Materials, Inc.');
+  const v2 = buildAdvisorsV2([{ id: 'p1', full_text: AMPERSAND_LEAD_WRAP }], deal);
+  assert.deepEqual(v2.seller_firms, ['Davis Polk & Wardwell LLP']);
+});
+
 // ── Attention-name capture unit tests ───────────────────────────────────────
 
 test('extractAttentionNames handles wrapped names and stop lines', () => {
