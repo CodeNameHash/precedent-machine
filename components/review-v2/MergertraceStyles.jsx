@@ -590,6 +590,98 @@ export default function MergertraceStyles() {
         z-index: 39;
       }
 
+      /* ── SourceOverlay (WP-5 / M5-03) — full-doc overlay, exact span highlight ── */
+      .mtx-source-overlay-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(31, 31, 31, 0.5);
+        z-index: 50;
+        display: flex;
+        align-items: stretch;
+        justify-content: center;
+      }
+      .mtx-source-overlay {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        max-width: 920px;
+        margin: 0 auto;
+        background: #FFFFFF;
+        box-shadow: 0 0 60px rgba(0, 0, 0, 0.3);
+      }
+      .mtx-source-overlay-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 16px 24px;
+        border-bottom: 2px solid #1F1F1F;
+        background: #FFFFFF;
+      }
+      .mtx-source-overlay-notice {
+        margin: 0;
+        padding: 10px 24px;
+        background: rgba(177, 78, 99, 0.08);
+        border-bottom: 1px solid rgba(177, 78, 99, 0.25);
+        color: #B14E63;
+        font-family: var(--mtx-sans);
+        font-size: 11px;
+        line-height: 1.5;
+      }
+      .mtx-source-overlay-body {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        padding: 24px 32px 48px;
+        background: #FFFFFF;
+      }
+      .mtx-doc-pane {
+        font-family: var(--mtx-serif);
+        font-size: 13.5px;
+        line-height: 1.75;
+        color: #1F1F1F;
+        white-space: pre-wrap;
+        word-break: break-word;
+        margin: 0;
+      }
+      .mtx-doc-highlight {
+        background: #FDE68A;
+        box-shadow: 0 0 0 3px #FDE68A;
+        border-radius: 2px;
+        color: inherit;
+        scroll-margin: 96px;
+      }
+      .mtx-source-overlay-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 8px 24px;
+        border-top: 1px solid #E0E0E0;
+        background: #F6F6F6;
+        font-family: var(--mtx-sans);
+        font-size: 9px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #6B6B6B;
+      }
+      .mtx-view-in-agreement {
+        font-family: var(--mtx-sans);
+        font-size: 9px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #2F6DB5;
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+      }
+      .mtx-view-in-agreement:hover {
+        text-decoration: underline;
+      }
+
       /* Full-bleed: neutralise the app Layout's padded grey canvas on this
          page only (the .mtx root sits directly inside Layout's <main>). */
       main:has(> .mtx) {
