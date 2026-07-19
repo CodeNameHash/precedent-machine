@@ -4,6 +4,7 @@ import { standardColorKey } from './standard-colors.js';
 import { BOARD_CHANGE_STANDARD_LABELS } from './board-change-standard.js';
 import { FIDUCIARY_STANDARD_LABELS } from './fiduciary-standard-labels.js';
 import taxonomy from '../../../lib/taxonomy.js';
+import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
@@ -258,7 +259,7 @@ function collapsedTextNode(text) {
     React.createElement(
       'details',
       { className: 'mt-1' },
-      React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, 'see definition'),
+      React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, 'See provision'),
       React.createElement(
         'div',
         { className: 'mt-1 max-w-[36rem] whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight' },
@@ -315,8 +316,9 @@ const nosolSuperiorConfig = {
     return [...rows, ...newRows, ...(terminationRowResult ? [terminationRowResult] : [])];
   },
   deriveHeaderNote,
+  fixedLayout: true,
   columns: [
-    { id: 'term', header: 'Term', width: '18rem', renderCell: (row) => row.label },
+    { id: 'term', header: 'Term', width: TERM_COL_WIDTH, maxWidth: TERM_COL_MAX, renderCell: (row) => row.label },
     { id: 'signals', header: 'Provision', renderCell: renderSignals },
   ],
   empty: { copy: 'No Superior Proposal mechanics found.' },

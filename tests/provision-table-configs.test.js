@@ -559,6 +559,80 @@ test('representations-qualifiers config title names the reps directly (not a sep
   assert.doesNotMatch(bodyHtml, /Not present/);
 });
 
+// Item 12 (round 3, Theravance): secFilingsExceptionLookback stores the raw
+// phrase "since the Applicable Date" -- the resolving date lives on the
+// deal's own REP-T-SEC clause text ('...since January 1, 2024 (the
+// "Applicable Date")...'). The General Exceptions cut-off pill must resolve
+// to the actual date, with the resolving sentence (not the preamble) as its
+// evidence.
+test('Item 12: General Exceptions SEC cut-off resolves "since the Applicable Date" to the actual date found on another card', () => {
+  const rows = representationsQualifiersMod.representationsQualifiersConfig.selectRows({
+    cards: [
+      {
+        id: 'preamble',
+        provision_type: 'REPRESENTATION',
+        provision_subtype: 'REP-T-PREAMBLE',
+        short_title: 'Reps Preamble',
+        primary_quote: 'Preamble clause text.',
+        features: {
+          secFilingsExceptionLookback: 'since the Applicable Date',
+        },
+      },
+      {
+        id: 'sec',
+        provision_type: 'REPRESENTATION',
+        provision_subtype: 'REP-T-SEC',
+        short_title: 'SEC Filings',
+        primary_quote: 'The Company has filed all forms, reports, schedules, statements and other documents required to be filed by it with the U.S. Securities and Exchange Commission (the "SEC") since January 1, 2024 (the "Applicable Date"), each of which complied in all material respects with the applicable requirements of the Exchange Act.',
+        features: {},
+      },
+    ],
+  });
+  const row = rows.find((r) => r.kind === 'general-exceptions');
+  assert.ok(row, 'expected a General Exceptions row');
+  assert.equal(row.secCutoff, 'since Jan 1, 2024 (the "Applicable Date")');
+  assert.match(row.secCutoffQuote, /since January 1, 2024 \(the "Applicable Date"\)/);
+  assert.doesNotMatch(row.secCutoffQuote, /Preamble clause text/);
+});
+
+// No literal date found anywhere on the deal -- must keep current behavior
+// (raw phrase, unresolved) rather than fabricating a date.
+test('Item 12: General Exceptions SEC cut-off keeps the raw phrase when no resolving date exists on the deal', () => {
+  const rows = representationsQualifiersMod.representationsQualifiersConfig.selectRows({
+    cards: [
+      {
+        id: 'preamble',
+        provision_type: 'REPRESENTATION',
+        provision_subtype: 'REP-T-PREAMBLE',
+        short_title: 'Reps Preamble',
+        features: { secFilingsExceptionLookback: 'since the Applicable Date' },
+      },
+    ],
+  });
+  const row = rows.find((r) => r.kind === 'general-exceptions');
+  assert.ok(row);
+  assert.equal(row.secCutoff, 'since the Applicable Date');
+});
+
+// A cut-off phrase that already carries a literal date must never be
+// overwritten/re-resolved.
+test('Item 12: a cut-off phrase that already has a literal date is left untouched', () => {
+  const rows = representationsQualifiersMod.representationsQualifiersConfig.selectRows({
+    cards: [
+      {
+        id: 'preamble',
+        provision_type: 'REPRESENTATION',
+        provision_subtype: 'REP-T-PREAMBLE',
+        short_title: 'Reps Preamble',
+        features: { secFilingsExceptionLookback: 'since January 1, 2024' },
+      },
+    ],
+  });
+  const row = rows.find((r) => r.kind === 'general-exceptions');
+  assert.ok(row);
+  assert.equal(row.secCutoff, 'since January 1, 2024');
+});
+
 // Punch-list #16: when there is truly no disclosure-letter data (and no other
 // General Exceptions content, and no knowledge group), the TOP row must not
 // render at all -- never a fabricated "Not present" placeholder.
@@ -1040,12 +1114,15 @@ test('structure-mechanics config skips a corrupted effectiveTimeShort claim and 
   assert.deepEqual(effectiveTime.signals.map((item) => item.label), ['Upon filing of the Certificate of Merger with the Delaware Secretary of State.']);
 });
 
-// Fix 2 (See-provision fidelity): the real clause text (primary_quote) must
-// win over a CLEAN effectiveTimeShort/effectiveTime AI summary once it clears
-// the surviving-corporation guard -- mirrors the IOC fix (textOf(c) ||
-// valueText(mainObligation)). The structured keys stay as the fallback tier
-// for cards with no captured quote at all (see the tests above/below).
-test('structure-mechanics config prefers the real clause text over a clean effectiveTimeShort/effectiveTime summary once the guard passes', () => {
+// Round 3 (Metsera, item 1c): the corpus reprocess fixed the corrupted
+// effectiveTimeShort claims that the old clause-first tier order was a
+// stopgap for, so a CLEAN effectiveTimeShort/effectiveTime AI summary must
+// now win over the raw clause text once it clears the surviving-corporation
+// guard -- the short claim is what Ben wants in the row; the full ~780-char
+// clause dump is available behind "See provision". The clause tier is now
+// the fallback for cards with no clean structured value at all (see the
+// test below).
+test('structure-mechanics config prefers a clean effectiveTimeShort/effectiveTime summary over the raw clause text', () => {
   const rows = structureMechanicsMod.structureMechanicsConfig.selectRows({
     cards: [{
       id: 'struct-effective-time-real-text',
@@ -1061,15 +1138,15 @@ test('structure-mechanics config prefers the real clause text over a clean effec
   });
   const effectiveTime = rows.find((row) => row.id === 'structure-mechanics-effective-time');
   assert.ok(effectiveTime, 'effective-time row should still render');
-  assert.match(
-    effectiveTime.detail,
-    /or at such later time as Parent and the Company shall agree/,
-    'the real clause text -- not the AI summary -- must win once it clears the surviving-corporation guard',
-  );
-  assert.notEqual(
+  assert.equal(
     effectiveTime.detail,
     'Upon filing of the Certificate of Merger with the Delaware Secretary of State.',
-    'the bare AI summary sentence must not stand in once real clause text exists',
+    'the short AI summary -- not the raw ~780-char clause -- must win once it clears the surviving-corporation guard',
+  );
+  assert.doesNotMatch(
+    effectiveTime.detail,
+    /or at such later time as Parent and the Company shall agree/,
+    'the raw clause text must stay behind See provision, not inline in the row',
   );
 });
 
@@ -1105,8 +1182,8 @@ test('structure-mechanics config falls back to the clause when every effective-t
 // mainConcept.
 //
 // No primary_quote on either card -- deliberately, so this test exercises
-// the STRUCTURED-key fallback tier in isolation (the real-text tier that now
-// runs ahead of it is covered by its own dedicated test above).
+// the STRUCTURED-key tier (now the first tier) in isolation from the clause
+// tier, which is covered by its own dedicated tests above/below.
 test('structure-mechanics config prefers a good effectiveTimeShort on a LATER card over an earlier card\'s mainConcept', () => {
   const rows = structureMechanicsMod.structureMechanicsConfig.selectRows({
     cards: [{
@@ -1409,6 +1486,33 @@ test('votes-approvals-meeting config renders a Parent / Merger Sub approvals row
   assert.match(html, /in writing by Parent/);
   assert.match(html, /no separate Parent vote required/);
   assert.doesNotMatch(html, /written consent required/i);
+});
+
+// Item 7 (round 3, QXO card 50c90c2d): COV-SHAPRV-PARENT with NO
+// parentAdoptionMechanism claim, whose clause reads "Parent will cause a
+// written consent to be executed by all of the record holders of the stock
+// of Titanium Merger Sub to adopt and approve this Agreement..." -- the
+// existing "sole stockholder" deterministic pattern doesn't match this
+// phrasing, so before the fix the row fell to the raw TruncatedWithSeeText
+// clause dump instead of a short pill.
+test('votes-approvals-meeting config resolves QXO\'s "written consent by all record holders" Merger Sub adoption phrasing to a short pill, not a raw clause dump', () => {
+  const rows = votesApprovalsMeetingMod.buildRows({
+    cards: [{
+      id: 'cov-parent-adopt-qxo',
+      provision_type: 'COVENANT_OTHER',
+      provision_subtype: 'COV-SHAPRV-PARENT',
+      short_title: 'Parent Adoption of Merger Agreement',
+      primary_quote: 'Parent will cause a written consent to be executed by all of the record holders of the stock of Titanium Merger Sub to adopt and approve this Agreement immediately following the execution of this Agreement.',
+      features: {},
+    }],
+  });
+  const row = rows.find((entry) => entry.id === 'votes-approvals-meeting-parent-approval');
+  assert.ok(row, 'expected a Parent / Merger Sub approvals row');
+  const primitives = { PillCell: ({ label }) => React.createElement('span', null, label) };
+  const provisionColumn = votesApprovalsMeetingMod.votesApprovalsMeetingConfig.columns.find((c) => c.id === 'provision');
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, provisionColumn.renderCell(row, { primitives })));
+  assert.match(html, /Merger Sub stockholders adopt by written consent \(immediately after signing\)/);
+  assert.doesNotMatch(html, /Titanium Merger Sub to adopt and approve this Agreement/, 'the raw clause must not render inline any more');
 });
 
 // FEEDBACK-2-PUNCHLIST.md #12: the "Meeting control notes" row is gone.
@@ -2800,6 +2904,74 @@ test('nosol-fiduciary config falls back to fiduciary quote text', () => {
   assert.match(rows.find((row) => row.id === 'nosol-fiduciary-board-change').detail, /Adverse Recommendation Change/);
   assert.equal(rows.find((row) => row.id === 'nosol-fiduciary-notice-period').detail, 'four Business Days');
   assert.match(rows.find((row) => row.id === 'nosol-fiduciary-reps').detail, /Representatives/);
+});
+
+// Item 6 (round 3, QXO): NOSOL-RECOMMEND (68d853e1, texts without
+// enumerators) and NOSOL-DISCLOSE (5a9a201d, texts prefixed "(A) "/"(B) "/
+// ...) carry the SAME six changeOfRecommendationItems limbs. The old
+// exact-verbatim dedup in allFeatureItems() let the "(A) " prefixes defeat
+// it, doubling every pill. corItemsRow must dedupe by canonical label/code
+// identity, keeping the lettered entry, so each limb renders exactly once.
+test('Item 6: change-of-recommendation items carried on two cards (with/without letter prefixes) dedupe to one pill per limb, keeping the lettered label', () => {
+  const rows = nosolFiduciaryMod.nosolFiduciaryConfig.selectRows({
+    cards: [{
+      id: 'nosol-recommend-qxo',
+      provision_type: 'COVENANT_NO_SOLICITATION',
+      provision_subtype: 'NOSOL-RECOMMEND',
+      primary_quote: 'Change of Recommendation prohibitions.',
+      features: {
+        changeOfRecommendationItems: [
+          'withdraw or modify the Board Recommendation in a manner adverse to Parent',
+          'approve, recommend or declare advisable any Takeover Proposal',
+        ],
+      },
+    }, {
+      id: 'nosol-disclose-qxo',
+      provision_type: 'COVENANT_NO_SOLICITATION',
+      provision_subtype: 'NOSOL-DISCLOSE',
+      primary_quote: 'Change of Recommendation prohibitions (disclosure schedule copy).',
+      features: {
+        changeOfRecommendationItems: [
+          '(A) withdraw or modify the Board Recommendation in a manner adverse to Parent',
+          '(B) approve, recommend or declare advisable any Takeover Proposal',
+        ],
+      },
+    }],
+  });
+  const row = rows.find((r) => r.id === 'nosol-fiduciary-change-of-rec-items');
+  assert.ok(row, 'expected the change-of-recommendation row');
+  assert.equal(row.items.length, 2, 'each limb must render exactly once, not once per source card');
+  assert.deepEqual(row.items.map((i) => i.letter), ['A', 'B'], 'the lettered entry must win the dedup so A-E ordering is preserved');
+});
+
+// Item 15 (round 3, Theravance NOSOL-RECOMMEND): notChangeOfRecommendationItems
+// has THREE genuinely distinct verbatims; items 1 ("stop-look-and-listen ...
+// Rule 14d-9(f)") and 3 ("a position contemplated by Rule 14d-9, Rule
+// 14e-2(a) or Item 1012 of Regulation M-A") both match NOT_COR_SPECS[0], so
+// the SAME rendered label appeared twice even though the texts differ (a
+// label collision, not a text collision -- allFeatureItems' text-keyed dedup
+// can't catch it). Same fix as item 6: dedupe post-summarization.
+test('Item 15: two distinct verbatims that summarize to the same label dedupe to one pill (Theravance 14d-9/14e-2 case)', () => {
+  const rows = nosolFiduciaryMod.nosolFiduciaryConfig.selectRows({
+    cards: [{
+      id: 'nosol-recommend-thera',
+      provision_type: 'COVENANT_NO_SOLICITATION',
+      provision_subtype: 'NOSOL-RECOMMEND',
+      primary_quote: 'Not a Change of Recommendation.',
+      features: {
+        notChangeOfRecommendationItems: [
+          'taking and disclosing a position with respect to a tender or exchange offer in a stop-look-and-listen communication pursuant to Rule 14d-9(f) under the Exchange Act',
+          'informing any Person of the existence of the provisions contained in this Section',
+          'taking a position contemplated by Rule 14d-9, Rule 14e-2(a) or Item 1012 of Regulation M-A under the Exchange Act',
+        ],
+      },
+    }],
+  });
+  const row = rows.find((r) => r.id === 'nosol-fiduciary-not-change-of-rec-items');
+  assert.ok(row, 'expected the not-change-of-recommendation row');
+  const stopLookLabels = row.items.filter((i) => /14d-9 \/ 14e-2 stop-look-listen compliance/i.test(i.label));
+  assert.equal(stopLookLabels.length, 1, 'the two distinct verbatims that both summarize to the 14d-9/14e-2 label must render as ONE pill, not two');
+  assert.equal(row.items.length, 2, 'three source verbatims collapse to two distinct pills (14d-9/14e-2 + routine communications)');
 });
 
 test('nosol configs render signals and hover-source details with primitives', () => {

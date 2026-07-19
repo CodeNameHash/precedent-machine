@@ -162,6 +162,18 @@ function instrumentMetaForKey(key) {
   return INSTRUMENT_KEY_META[String(key).toLowerCase()] || { code: null, label: humanizeInstrumentKey(key) };
 }
 
+// (Item 5) codeOf() only uppercases -- outstandingInstruments' stored codes
+// are plural strings like "PSUs"/"RSUs" that uppercase to PSUS/RSUS, which
+// are NOT the canonical PSU/RSU codes equityAwardTreatment rows carry.
+// Resolve through the same INSTRUMENT_KEY_META dict the rest of this file
+// uses so a raw code that happens to be a known key (case-insensitively)
+// normalizes to its canonical form before being compared/deduped.
+function normalizeInstrumentCode(raw) {
+  if (!raw) return raw;
+  const meta = INSTRUMENT_KEY_META[String(raw).toLowerCase()];
+  return (meta && meta.code) || raw;
+}
+
 // A card's equityAwardTreatment is a keyed-instrument map (the reliable
 // shape) when it carries fields beyond the tagged-value envelope
 // (code/label/text/quotes) whose values are non-empty prose strings.
@@ -187,7 +199,10 @@ function classifyConsiderationType(text, instrumentCode) {
   if (instrumentCode === 'ESPP' && ESPP_FROZEN_RE.test(t)) return 'CANCELLATION';
   if (/cash|spread|exercise\s+price|merger\s+consideration|per\s+share|cvr/.test(t)) return 'CASH';
   if (/without\s+(?:any\s+)?consideration|no\s+consideration/.test(t)) return 'CANCELLATION';
-  if (/parent\s+(?:stock|equity|award)|buyer\s+(?:stock|equity|award)|assum/.test(t)) return 'STOCK';
+  // (Item 5, QXO) "converted into ... adjusted [Parent/Buyer] award" and
+  // plain "parent shares" phrasing weren't covered by the original
+  // stock/equity/award alternation.
+  if (/parent\s+(?:stock|shares?|equity|award)|buyer\s+(?:stock|equity|award)|assum|convert(?:ed)?\s+into\s+(?:an?\s+)?adjusted/.test(t)) return 'STOCK';
   return null;
 }
 
@@ -195,6 +210,11 @@ function classifyVestingTreatment(text, instrumentCode) {
   const t = String(text || '').toLowerCase();
   if (instrumentCode === 'ESPP' && ESPP_FROZEN_RE.test(t)) return 'CANCELLED_NO_CONSIDERATION';
   if (/double[-\s]?trigger|same\s+vesting\s+schedule/.test(t)) return 'CONTINUED_VESTING';
+  // (Item 5, QXO) "retain(s)/retaining the existing/same ... vesting" and
+  // "same terms and conditions" read as continued vesting too -- checked
+  // before the cancel|cash|spread rule below so it isn't shadowed by the
+  // generic CANCELLED_FOR_CONSIDERATION catch-all.
+  if (/retain(?:s|ing)?\s+(?:the\s+)?(?:existing|same)[\s\S]{0,40}vesting|same\s+terms\s+and\s+conditions/.test(t)) return 'CONTINUED_VESTING';
   if (/\bassum/.test(t)) return 'ASSUMED_BY_PARENT';
   if (/\bcontin/.test(t)) return 'CONTINUED_VESTING';
   if (/pro[-\s]?rata/.test(t)) return 'PRO_RATA_ACCELERATION';
@@ -220,6 +240,77 @@ const VESTING_TREATMENT_META = {
   FULLY_VESTED_ACCELERATED: { label: 'Fully vested (accelerated)', tone: 'present' },
   CANCELLED_FOR_CONSIDERATION: { label: 'Cancelled for cash consideration', tone: 'present' },
 };
+
+// (Item 11, round 3) Reverse lookup: canonical instrument code -> friendly
+// label, built off the same INSTRUMENT_KEY_META dict shape-1 uses.
+const INSTRUMENT_CODE_TO_LABEL = Object.fromEntries(
+  Object.values(INSTRUMENT_KEY_META).map((meta) => [meta.code, meta.label]),
+);
+
+// (Item 11) Shape-3/shape-2 legacy tagged treatment/vesting entries carry
+// their OWN canonical code (matchedEntry.code) when the extractor assigned
+// one -- map straight to the same pill meta shape-1 uses, so shape-3 gets
+// identical pills for identical underlying facts instead of a re-derived
+// classification. Unknown/missing codes fall through to text
+// classification, then to the entry's own short label -- text (the verbose
+// clause prose) is NEVER used as a label.
+const TREATMENT_CODE_TO_META = {
+  CASHED_OUT_SPREAD: CONSIDERATION_TYPE_META.CASH,
+  CASHED_OUT: CONSIDERATION_TYPE_META.CASH,
+  CASHED_OUT_AT_MERGER_CONSIDERATION: CONSIDERATION_TYPE_META.CASH,
+  ASSUMED_BY_BUYER: CONSIDERATION_TYPE_META.STOCK,
+  CANCELLED_NO_CONSIDERATION: CONSIDERATION_TYPE_META.CANCELLATION,
+};
+const VESTING_CODE_TO_META = {
+  FULLY_ACCELERATED: VESTING_TREATMENT_META.FULLY_VESTED_ACCELERATED,
+  NO_ACCELERATION: { label: 'No acceleration', tone: 'neutral' },
+  TIME_BASED_VESTING: VESTING_TREATMENT_META.CONTINUED_VESTING,
+  PERFORMANCE_DEEMED_ACHIEVED: { label: 'Performance deemed achieved (at target)', tone: 'info' },
+};
+
+// (Item 11) Instrument cell: label only, NEVER `.text` -- resolved code's
+// friendly label wins, else the entry's own short `.label`, else
+// valueText(inst) split before the first ": " (valueText joins a tagged
+// value's label and text into ONE "label: text" string; taking only the
+// portion before the colon recovers just the label half without ever
+// showing the verbose clause prose that follows it).
+// Returns null (never a synthetic placeholder) when there is truly no
+// instrument data -- callers decide their own fallback text, and shape-2's
+// `if (!instrument) return [];` guard depends on a falsy result here when
+// the card carries no instrument at all (e.g. a cutoff-only card).
+function instrumentDisplayLabel(inst, code) {
+  if (code && INSTRUMENT_CODE_TO_LABEL[code]) return INSTRUMENT_CODE_TO_LABEL[code];
+  if (inst && typeof inst === 'object' && !Array.isArray(inst) && typeof inst.label === 'string' && inst.label.trim()) {
+    return inst.label.trim();
+  }
+  const vt = valueText(inst);
+  if (!vt) return null;
+  const sep = vt.indexOf(': ');
+  return sep === -1 ? vt : vt.slice(0, sep);
+}
+
+// (Item 11) Consideration/Vesting cells: resolve a pill meta {label, tone}
+// in priority order -- (a) the matched entry's own canonical code via
+// codeMetaMap; (b) unknown/missing code -> classify the entry's OWN text
+// via classifyFn; (c) still nothing -> the entry's short `.label` alone.
+// `.text` (verbose clause prose) is NEVER used as the label -- only ever as
+// a classifier input or as evidence.
+function resolveEntryPillMeta(entry, codeMetaMap, classifyFn, instrumentCode) {
+  const code = entry && typeof entry === 'object' && !Array.isArray(entry) && entry.code
+    ? String(entry.code).toUpperCase() : null;
+  if (code && codeMetaMap[code]) return codeMetaMap[code];
+  const text = entry && typeof entry === 'object' && !Array.isArray(entry) ? entry.text : null;
+  if (text) {
+    const classified = classifyFn(text, instrumentCode);
+    if (classified) {
+      const table = classifyFn === classifyVestingTreatment ? VESTING_TREATMENT_META : CONSIDERATION_TYPE_META;
+      if (table[classified]) return table[classified];
+    }
+  }
+  const label = entry && typeof entry === 'object' && !Array.isArray(entry) ? entry.label : (typeof entry === 'string' ? entry : null);
+  if (label && String(label).trim()) return { label: String(label).trim(), tone: 'neutral' };
+  return null;
+}
 
 // CVR ENTITLEMENT column (#7, DATA FINDINGS): only options carry a CVR
 // earn-in condition -- RSAs/ESPP are simply cashed out/cancelled at closing
@@ -253,10 +344,10 @@ function missingInstrumentRows(card, f, coveredCodes) {
   const outstanding = asList(f.outstandingInstruments);
   if (!outstanding.length) return [];
   const evidence = textOf(card);
-  const seen = new Set(coveredCodes);
+  const seen = new Set(coveredCodes.map(normalizeInstrumentCode));
   const rows = [];
   for (const inst of outstanding) {
-    const code = codeOf(inst);
+    const code = normalizeInstrumentCode(codeOf(inst));
     if (!code || seen.has(code)) continue;
     seen.add(code);
     rows.push({
@@ -303,7 +394,7 @@ function rowsForCard(card) {
         present: true,
       };
     });
-    const coveredCodes = rows.map((r) => r.instrumentCode).filter(Boolean);
+    const coveredCodes = rows.map((r) => normalizeInstrumentCode(r.instrumentCode)).filter(Boolean);
     return [...rows, ...missingInstrumentRows(card, f, coveredCodes)];
   }
 
@@ -314,19 +405,28 @@ function rowsForCard(card) {
   // Shape 2: the pipeline has already split this card down to one
   // instrument. instrumentType/equityAwardTreatment/vestingAcceleration are
   // the singular, authoritative fields for that one instrument.
+  // (Item 11) Same valueText(label:text) leak as shape 3 -- label-only via
+  // instrumentDisplayLabel/resolveEntryPillMeta, never the raw joined
+  // "Label: verbose clause text" string.
   if (instruments.length <= 1) {
-    const instrument = valueText(f.instrumentType) || valueText(instruments[0]);
+    const instRaw = f.instrumentType || instruments[0];
+    const instCode = codeOf(f.instrumentType) || instrumentKeyOf(instruments[0])
+      || (instruments[0] && instruments[0].code ? String(instruments[0].code).toUpperCase() : null);
+    const instrument = instrumentDisplayLabel(instRaw, instCode) || valueText(instRaw);
     if (!instrument) return [];
-    const treatment = valueText(f.equityAwardTreatment) || valueText(treatments[0]);
-    const vesting = valueText(f.vestingAcceleration) || valueText(vestings[0]);
+    const treatmentEntry = f.equityAwardTreatment || treatments[0];
+    const vestingEntry = f.vestingAcceleration || vestings[0];
+    const considerationMeta = resolveEntryPillMeta(treatmentEntry, TREATMENT_CODE_TO_META, classifyConsiderationType, instCode);
+    const vestingMeta = resolveEntryPillMeta(vestingEntry, VESTING_CODE_TO_META, classifyVestingTreatment, instCode);
     return [{
       id: `equity-awards-${card.id || instrument}`,
       instrument,
-      considerationLabel: treatment || null,
-      considerationTone: 'neutral',
-      vestingLabel: vesting || null,
-      vestingTone: 'neutral',
-      cvrEntitlement: cvrEntitlementFor(codeOf(f.instrumentType), instrument, f),
+      instrumentCode: instCode,
+      considerationLabel: considerationMeta ? considerationMeta.label : null,
+      considerationTone: considerationMeta ? considerationMeta.tone : 'neutral',
+      vestingLabel: vestingMeta ? vestingMeta.label : null,
+      vestingTone: vestingMeta ? vestingMeta.tone : 'neutral',
+      cvrEntitlement: cvrEntitlementFor(instCode, instrument, f),
       evidence,
       sourceCard: card,
       present: true,
@@ -351,14 +451,19 @@ function rowsForCard(card) {
     const matchedVesting = matchByCode(instrumentCode, vestings);
     const treatment = matchedTreatment || treatmentsByMention[index];
     const vesting = matchedVesting || vestingsByMention[index];
-    const instrumentLabel = valueText(inst) || `Instrument ${index + 1}`;
+    // (Item 11) Instrument cell: label only, resolved code's friendly label
+    // first -- never valueText(inst)'s joined "Label: verbose text" blob.
+    const instrumentLabel = instrumentDisplayLabel(inst, instrumentCode) || `Instrument ${index + 1}`;
+    const considerationMeta = resolveEntryPillMeta(treatment, TREATMENT_CODE_TO_META, classifyConsiderationType, instrumentCode);
+    const vestingMeta = resolveEntryPillMeta(vesting, VESTING_CODE_TO_META, classifyVestingTreatment, instrumentCode);
     return {
       id: `equity-awards-${card.id || 'card'}-${index}`,
       instrument: instrumentLabel,
-      considerationLabel: valueText(treatment) || null,
-      considerationTone: 'neutral',
-      vestingLabel: valueText(vesting) || null,
-      vestingTone: 'neutral',
+      instrumentCode,
+      considerationLabel: considerationMeta ? considerationMeta.label : null,
+      considerationTone: considerationMeta ? considerationMeta.tone : 'neutral',
+      vestingLabel: vestingMeta ? vestingMeta.label : null,
+      vestingTone: vestingMeta ? vestingMeta.tone : 'neutral',
       cvrEntitlement: cvrEntitlementFor(instrumentCode, instrumentLabel, f),
       evidence,
       sourceCard: card,
@@ -427,7 +532,10 @@ function pill(text, tone, ctx, row) {
   if (!text) return cell(null, ctx, row);
   const PillCell = ctx?.primitives?.PillCell;
   if (!PillCell) return cell(text, ctx, row);
-  return React.createElement(PillCell, { label: text, tone: tone || 'neutral', evidence: row.evidence, source: row.sourceCard });
+  // (Item 2) wrap:true lets long pill labels break onto multiple lines
+  // instead of forcing min-content overflow -- required now that the
+  // consideration/vesting/CVR columns share a fixed percentage width.
+  return React.createElement(PillCell, { label: text, tone: tone || 'neutral', evidence: row.evidence, source: row.sourceCard, wrap: true });
 }
 
 // (#4) No more "Approximate pairing" icon -- plain evidence-linked text.
@@ -442,20 +550,28 @@ const equityAwardsConfig = {
   selectRows(reviewDeal) {
     return equityAwardRows(selectCards(reviewDeal, isEquityAward));
   },
+  // (Item 2) Equal, fixed widths for the three treatment columns so they no
+  // longer resize per-deal from an auto-layout table sizing off content
+  // (Metsera 172/212/158px vs QXO 268/159/115px at 1440px for the same
+  // three columns pre-fix). table-fixed + percentage colgroup widths keep
+  // them equal at every viewport and kill the 390px horizontal scroll.
+  fixedLayout: true,
   columns: [
-    { id: 'equityType', header: 'Equity Type', width: '14rem', renderCell: renderInstrument },
+    { id: 'equityType', header: 'Equity Type', width: '30%', renderCell: renderInstrument },
     {
       id: 'consideration',
       header: 'Consideration',
+      width: '24%',
       renderCell: (row, ctx) => (row.isLongText ? cell(row.considerationLabel, ctx, row) : pill(row.considerationLabel, row.considerationTone, ctx, row)),
     },
     {
       id: 'vestingTreatment',
       header: 'Vesting Treatment',
+      width: '24%',
       renderCell: (row, ctx) => (row.isLongText ? cell(row.vestingLabel, ctx, row) : pill(row.vestingLabel, row.vestingTone, ctx, row)),
     },
     // (#7) "Must be in the money at closing" instead of the raw "ITM" code.
-    { id: 'cvrEntitlement', header: 'CVR Entitlement', renderCell: (row, ctx) => cell(row.cvrEntitlement, ctx, row) },
+    { id: 'cvrEntitlement', header: 'CVR Entitlement', width: '22%', renderCell: (row, ctx) => cell(row.cvrEntitlement, ctx, row) },
     // (#6) NOTES column removed -- added no value.
   ],
 };

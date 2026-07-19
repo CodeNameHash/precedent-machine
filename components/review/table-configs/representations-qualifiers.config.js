@@ -4,6 +4,7 @@ import { knowledgeQualifierDisplay, normalizeQualifierScope, sortByAgreementOrde
 import { standardColorKey } from './standard-colors.js';
 import { buildRepBringDownMap, normRepName } from './conditions.config.js';
 import { cardCode, cardType, firstFeature, labelOf, selectCards, textOf, valueText } from './card-utils.js';
+import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
@@ -418,6 +419,55 @@ function disclosureLetterInfo(preamble) {
   return { label: text, evidence: text };
 }
 
+// Item 12 (round 3, Theravance): secFilingsExceptionLookback often stores
+// the raw phrase ("since the Applicable Date") rather than the literal date
+// -- but the resolving fact usually exists elsewhere on the deal (e.g.
+// REP-T-SEC's/DEF-GENERAL's own clause text: '...since January 1, 2024 (the
+// "Applicable Date")...'). This is a render-time resolution over data
+// already on the deal -- no new extraction.
+const DATE_LOOKBACK_TERM_RE = /\bthe\s+([A-Z][A-Za-z ]*?Date)\b/;
+const LITERAL_DATE_RE = /\b(?:19|20)\d{2}\b|January|February|March|April|May|June|July|August|September|October|November|December/;
+const MONTH_ABBREV = {
+  january: 'Jan', february: 'Feb', march: 'Mar', april: 'Apr', may: 'May', june: 'Jun',
+  july: 'Jul', august: 'Aug', september: 'Sep', october: 'Oct', november: 'Nov', december: 'Dec',
+};
+function formatShortDate(dateText) {
+  const m = String(dateText || '').match(/([A-Za-z]+)\s+(\d{1,2}),\s*(\d{4})/);
+  if (!m) return dateText;
+  const abbrev = MONTH_ABBREV[m[1].toLowerCase()] || m[1];
+  return `${abbrev} ${Number(m[2])}, ${m[3]}`;
+}
+function escapeRegExp(s) {
+  return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+// Only resolve when the stored phrase names a "the <Something> Date" term
+// AND carries no literal date itself -- a cutoff that already has a real
+// date should never be overwritten.
+function resolveDateLookback(cutoff, reviewDeal) {
+  if (!cutoff || LITERAL_DATE_RE.test(cutoff)) return null;
+  const termMatch = cutoff.match(DATE_LOOKBACK_TERM_RE);
+  if (!termMatch) return null;
+  const term = termMatch[1].trim();
+  const escapedTerm = escapeRegExp(term);
+  const sinceRe = new RegExp(`since\\s+([A-Za-z]+\\s+\\d{1,2},\\s*\\d{4})\\s*\\(the\\s+[“"]${escapedTerm}[”"]\\)`, 'i');
+  const meansRe = new RegExp(`[“"]${escapedTerm}[”"]\\s+means\\s+([A-Za-z]+\\s+\\d{1,2},\\s*\\d{4})`, 'i');
+  const sources = [
+    ...(reviewDeal?.cards || []).map((card) => textOf(card)),
+    ...(Array.isArray(reviewDeal?.definitions) ? reviewDeal.definitions : []).map((def) => String(def?.defined_value || '')),
+  ];
+  for (const text of sources) {
+    if (!text) continue;
+    const hit = text.match(sinceRe) || text.match(meansRe);
+    if (hit) {
+      const sentenceMatch = text.slice(0, hit.index + hit[0].length).match(/[^.]*$/);
+      const tailMatch = text.slice(hit.index + hit[0].length).match(/^[^.]*\./);
+      const sentence = `${(sentenceMatch ? sentenceMatch[0] : '')}${tailMatch ? tailMatch[0] : ''}`.trim();
+      return { term, date: hit[1], sentence: sentence || hit[0] };
+    }
+  }
+  return null;
+}
+
 // R1: General Exceptions is its OWN row/block -- SEC-filings cut-off,
 // portions-excluded, and the disclosure letter reference. Knowledge (the
 // group/standard) is a SEPARATE block (buildKnowledgeSummaryRow below); the
@@ -432,7 +482,13 @@ function buildGeneralExceptionsRow(reviewDeal, idPrefix, preambleCode) {
   const preamble = (reviewDeal?.cards || []).find((card) => cardCode(card) === preambleCode);
   const cutoffHit = preamble ? firstFeature([preamble], ['secFilingsExceptionLookback']) : null;
   const excludedHit = preamble ? firstFeature([preamble], ['secFilingsExcludedSections']) : null;
-  const cutoff = cutoffHit ? valueText(cutoffHit.value) : null;
+  let cutoff = cutoffHit ? valueText(cutoffHit.value) : null;
+  let cutoffQuote = cutoffHit ? textOfValue(cutoffHit.value) : null;
+  const resolvedLookback = cutoff ? resolveDateLookback(cutoff, reviewDeal) : null;
+  if (resolvedLookback) {
+    cutoff = `since ${formatShortDate(resolvedLookback.date)} (the "${resolvedLookback.term}")`;
+    cutoffQuote = resolvedLookback.sentence;
+  }
   const dict = taxonomyForFeatureKey('secFilingsExcludedSections');
   const excludedRaw = excludedHit ? excludedHit.value : null;
   const excludedRawList = Array.isArray(excludedRaw)
@@ -448,7 +504,7 @@ function buildGeneralExceptionsRow(reviewDeal, idPrefix, preambleCode) {
     card: preamble,
     label: 'General Exceptions',
     secCutoff: cutoff,
-    secCutoffQuote: cutoffHit ? textOfValue(cutoffHit.value) : null,
+    secCutoffQuote: cutoffQuote,
     secExcluded: excluded,
     disclosureLetter,
   };
@@ -495,12 +551,22 @@ function renderTerm(row, ctx) {
   );
 }
 
+// Item 13: the rep-qualifier pill's popover otherwise opens on the full
+// clause (evidence: textOfValue(hit.value) || textOf(card)) with no
+// indication of WHICH rep it belongs to -- pass the row's own rep label
+// explicitly so the popover's first line reads e.g. "Organization;
+// Qualification; Standing — MAE qualifier" instead of a bare quote.
+function repSourceLabel(row, qualifierName) {
+  const repLabel = row.party ? `${row.label} (${row.party})` : row.label;
+  return repLabel ? `${repLabel} — ${qualifierName}` : qualifierName;
+}
+
 function renderMateriality(row, ctx) {
   const m = row.materiality;
   if (!m) return null;
   const PillCell = ctx?.primitives?.PillCell;
   if (!PillCell) return m.label;
-  return React.createElement(PillCell, { label: m.label, tone: 'neutral', color: m.color, evidence: m.evidence, source: row.card });
+  return React.createElement(PillCell, { label: m.label, tone: 'neutral', color: m.color, evidence: m.evidence, source: row.card, sourceLabel: repSourceLabel(row, 'materiality qualifier') });
 }
 
 // Ben (Mergertrace round 1): one QUALIFIERS column per rep row — the
@@ -525,7 +591,7 @@ function renderLookback(row, ctx) {
   if (!l) return null;
   const PillCell = ctx?.primitives?.PillCell;
   if (!PillCell) return l.label;
-  return React.createElement(PillCell, { label: l.label, tone: 'neutral', evidence: l.evidence, source: row.card });
+  return React.createElement(PillCell, { label: l.label, tone: 'neutral', evidence: l.evidence, source: row.card, sourceLabel: repSourceLabel(row, 'lookback') });
 }
 
 // The per-rep Knowledge pill -- used ONLY inside the Knowledge block's rows
@@ -535,7 +601,7 @@ function renderKnowledgePill(row, ctx) {
   if (!k) return null;
   const PillCell = ctx?.primitives?.PillCell;
   if (!PillCell) return k.label;
-  return React.createElement(PillCell, { label: k.label, tone: 'info', evidence: k.evidence, source: row.card });
+  return React.createElement(PillCell, { label: k.label, tone: 'info', evidence: k.evidence, source: row.card, sourceLabel: repSourceLabel(row, 'knowledge qualifier') });
 }
 
 function subLabelBlock(key, label, node) {
@@ -569,6 +635,14 @@ function pillList(PillCell, items, evidence, keyPrefix, tone = 'neutral') {
 // shape (RepGeneralExceptionsTable), reused for both the General Exceptions
 // block and the Knowledge block so the two read as siblings, not one
 // squeezed into the other.
+// Item 3 (round 3): table-fixed + the SAME shared TERM_COL token as the
+// per-rep table below (REP_TABLE_COLUMNS) -- the old `w-[14rem]` +
+// `whitespace-nowrap` box never shrank at any viewport (fixed 14rem
+// regardless of screen width) while every sibling table's first column DID
+// shrink, which is exactly the "reps boxes don't shrink at all" jitter
+// Ben flagged. `whitespace-normal break-words` (replacing `whitespace-
+// nowrap`) lets long Knowledge Standard/Persons labels wrap instead of
+// forcing the column wide.
 function sectionBox(key, heading, items) {
   return React.createElement(
     'div',
@@ -583,14 +657,27 @@ function sectionBox(key, heading, items) {
       { className: 'overflow-x-auto' },
       React.createElement(
         'table',
-        { className: 'min-w-full text-xs font-ui' },
+        { className: 'min-w-full table-fixed text-xs font-ui' },
+        React.createElement(
+          'colgroup',
+          null,
+          React.createElement('col', { style: { width: TERM_COL_WIDTH, maxWidth: TERM_COL_MAX } }),
+          React.createElement('col', null),
+        ),
         React.createElement(
           'tbody',
           { className: 'divide-y divide-border' },
           items.map((item) => React.createElement(
             'tr',
             { key: item.key, className: 'align-top' },
-            React.createElement('td', { className: 'w-[14rem] px-3 py-2 font-medium text-ink whitespace-nowrap' }, item.term),
+            React.createElement(
+              'td',
+              { className: 'px-3 py-2 font-medium text-ink whitespace-normal break-words' },
+              item.term,
+              // Item 8: an optional per-item "See provision" expander under
+              // the LABEL (left) cell, matching every other family.
+              item.seeText || null,
+            ),
             React.createElement('td', { className: 'px-3 py-2 text-ink whitespace-pre-wrap break-words' }, item.node),
           )),
         ),
@@ -620,8 +707,8 @@ function generalExceptionsTableNode(row, ctx) {
     ? pillList(PillCell, [row.disclosureLetter.label], row.disclosureLetter.evidence, 'disclosure')
     : null;
   const items = [];
-  if (secBody) items.push({ key: 'sec', term: 'SEC Filings', node: secBody });
-  if (disclosureNode) items.push({ key: 'disclosure', term: 'Disclosure Letter', node: disclosureNode });
+  if (secBody) items.push({ key: 'sec', term: 'SEC Filings', node: secBody, seeText: clauseSeeText(row.secCutoffQuote || textOf(row.card)) });
+  if (disclosureNode) items.push({ key: 'disclosure', term: 'Disclosure Letter', node: disclosureNode, seeText: clauseSeeText(row.disclosureLetter?.evidence) });
   if (!items.length) return null;
   return sectionBox('general-exceptions', 'General Exceptions', items);
 }
@@ -640,13 +727,13 @@ function knowledgeTableNode(knowledgeSummaryRow, repRows, ctx) {
       const node = PillCell
         ? React.createElement(PillCell, { label: knowledgeSummaryRow.knowledgeStandard, tone: 'info', evidence: knowledgeSummaryRow.knowledgeScope })
         : knowledgeSummaryRow.knowledgeStandard;
-      items.push({ key: 'standard', term: 'Standard', node });
+      items.push({ key: 'standard', term: 'Standard', node, seeText: clauseSeeText(knowledgeSummaryRow.knowledgeScope) });
     }
     if (knowledgeSummaryRow.knowledgePersons) {
       const node = PillCell
         ? React.createElement(PillCell, { label: knowledgeSummaryRow.knowledgePersons, tone: 'info', evidence: knowledgeSummaryRow.knowledgeScope })
         : knowledgeSummaryRow.knowledgePersons;
-      items.push({ key: 'persons', term: 'Persons', node });
+      items.push({ key: 'persons', term: 'Persons', node, seeText: clauseSeeText(knowledgeSummaryRow.knowledgeScope) });
     }
     // R5-round4 (Ben): Scope dropped from the Knowledge block -- Standard +
     // Persons carry it; the full scope sentence stays as the pill hover
@@ -659,9 +746,13 @@ function knowledgeTableNode(knowledgeSummaryRow, repRows, ctx) {
   return sectionBox('knowledge', 'Knowledge', items);
 }
 
+// Item 3: the per-rep table's Term column uses the SAME shared token as
+// every other family's first column (and sectionBox's Knowledge/General-
+// Exceptions boxes above, via table-fixed + colgroup) -- Ben's specific ask
+// was that these two match exactly.
 const REP_TABLE_COLUMNS = [
-  { id: 'term', header: 'Term', width: '18rem' },
-  { id: 'materiality', header: 'Qualifiers', width: '16rem' },
+  { id: 'term', header: 'Term', width: TERM_COL_WIDTH, maxWidth: TERM_COL_MAX },
+  { id: 'materiality', header: 'Qualifiers' },
   { id: 'lookback', header: 'Lookback' },
 ];
 
@@ -671,7 +762,15 @@ function repsTableNode(repRows, ctx) {
   if (!repRows || !repRows.length) return null;
   return React.createElement(
     'table',
-    { className: 'min-w-full text-xs font-ui' },
+    { className: 'min-w-full table-fixed text-xs font-ui' },
+    React.createElement(
+      'colgroup',
+      null,
+      REP_TABLE_COLUMNS.map((column) => React.createElement('col', {
+        key: `col-${column.id}`,
+        style: column.width ? { width: column.width, maxWidth: column.maxWidth } : undefined,
+      })),
+    ),
     React.createElement(
       'thead',
       { className: 'border-b border-border bg-bg/60' },
@@ -730,8 +829,8 @@ function renderBody(rows, ctx) {
 // renderBody hook (same pattern as mae-definitions.config.js). Shared by both
 // party configs -- the renderCell functions read from the row, not the party.
 const REP_COLUMNS = [
-  { id: 'term', header: 'Term', width: '16rem', renderCell: renderTerm },
-  { id: 'materiality', header: 'Qualifiers', width: '15rem', renderCell: renderQualifiers },
+  { id: 'term', header: 'Term', width: TERM_COL_WIDTH, maxWidth: TERM_COL_MAX, renderCell: renderTerm },
+  { id: 'materiality', header: 'Qualifiers', renderCell: renderQualifiers },
   { id: 'lookback', header: 'Lookback', renderCell: renderLookback },
 ];
 

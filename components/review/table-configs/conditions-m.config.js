@@ -9,6 +9,7 @@ import {
 } from '../../../lib/canonical-conditions.js';
 import taxonomy from '../../../lib/taxonomy.js';
 import { cardFeatures } from './card-utils.js';
+import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
@@ -194,17 +195,18 @@ function createConditionsConfig({ id, title, rows: canonicalRows, empty }) {
     title,
     layoutSlot: 'conditions',
     selectRows,
+    fixedLayout: true,
     columns: [
       {
         id: 'term',
         header: 'Term',
-        width: '18rem',
+        width: TERM_COL_WIDTH,
+        maxWidth: TERM_COL_MAX,
         renderCell: (row) => row.label,
       },
       {
         id: 'signals',
         header: 'Provision',
-        width: '18rem',
         renderCell: renderSignals,
       },
       {

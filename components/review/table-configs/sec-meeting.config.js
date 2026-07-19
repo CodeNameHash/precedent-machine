@@ -6,6 +6,7 @@ import {
   formatDeadline,
 } from '../../../lib/sec-meeting.js';
 import { valueText } from './card-utils.js';
+import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
 
 const DIRECT_ROWS = [
   ['offerCommencementDeadline', 'Offer commencement'],
@@ -149,10 +150,11 @@ const secMeetingConfig = {
       ...directRows(cards),
     ].filter(Boolean);
   },
+  fixedLayout: true,
   columns: [
-    { id: 'term', header: 'Term', width: '18rem', renderCell: (row) => row.label },
+    { id: 'term', header: 'Term', width: TERM_COL_WIDTH, maxWidth: TERM_COL_MAX, renderCell: (row) => row.label },
     { id: 'subject', header: 'Subject', width: '12rem', renderCell: (row) => row.subject },
-    { id: 'signals', header: 'Provision', width: '18rem', renderCell: renderSignals },
+    { id: 'signals', header: 'Provision', renderCell: renderSignals },
     { id: 'detail', header: 'Detail', renderCell: renderDetail },
   ],
 };

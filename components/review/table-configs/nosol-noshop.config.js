@@ -3,6 +3,7 @@ import { cardFeatures, partySide, splitForCell, textOf, valueText } from './card
 import { standardColorKey } from './standard-colors.js';
 import { FIDUCIARY_STANDARD_LABELS } from './fiduciary-standard-labels.js';
 import taxonomy from '../../../lib/taxonomy.js';
+import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
@@ -328,7 +329,7 @@ function countListNode(row, ctx) {
     React.createElement(
       'details',
       { className: 'mt-1' },
-      React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, 'see list'),
+      React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, 'See provision'),
       React.createElement(
         'ul',
         { className: 'mt-1 max-w-[36rem] list-disc pl-4 text-[11px] leading-5 text-inkLight' },
@@ -437,9 +438,10 @@ const nosolNoshopConfig = {
     return [...mechanicRows, ...restrictionRows];
   },
   deriveHeaderNote,
+  fixedLayout: true,
   columns: [
-    { id: 'term', header: 'Term', width: '18rem', renderCell: (row) => row.label },
-    { id: 'signals', header: 'Provision', width: '18rem', renderCell: renderSignals },
+    { id: 'term', header: 'Term', width: TERM_COL_WIDTH, maxWidth: TERM_COL_MAX, renderCell: (row) => row.label },
+    { id: 'signals', header: 'Provision', renderCell: renderSignals },
     { id: 'detail', header: 'Detail', renderCell: renderDetail },
   ],
   empty: { copy: 'No no-shop core mechanics found.' },

@@ -125,13 +125,19 @@ export default function DealHeader({ deal, view, onToggleView, hasAgreementText,
               (Inter bold, same family as the "Sep 21, 2025" numerals), sized
               down so the full masthead fits; acquirer at the SAME size as
               the target. */}
-          <h1 className="text-base lg:text-lg font-bold leading-tight tracking-tight text-[#1F1F1F] mt-0.5">
+          <h1 className="min-w-0 truncate text-base lg:text-lg font-bold leading-tight tracking-tight text-[#1F1F1F] mt-0.5">
             {targetName}
           </h1>
-          <div className="hidden sm:flex items-baseline gap-1.5 mt-0.5 whitespace-nowrap">
+          {/* Item 4 (round 3): party names survive LAST at narrow widths --
+              this line is always visible now (no `hidden sm:`). Below sm the
+              "ACQUIRED BY" eyebrow label hides and a plain "/" separator
+              takes its place, so the narrowest layout still reads
+              "Metsera / Pfizer" instead of losing the acquirer entirely. */}
+          <div className="flex items-baseline gap-1.5 mt-0.5 min-w-0">
             {acquirerName ? (
-              <span className="text-base lg:text-lg font-bold leading-tight tracking-tight text-[#1F1F1F]">
-                <span className="mtx-meta-label text-[9px] tracking-[0.14em] mr-1.5 align-middle">ACQUIRED BY</span>
+              <span className="min-w-0 truncate text-base lg:text-lg font-bold leading-tight tracking-tight text-[#1F1F1F]">
+                <span className="hidden sm:inline mtx-meta-label text-[9px] tracking-[0.14em] mr-1.5 align-middle">ACQUIRED BY</span>
+                <span className="sm:hidden mr-1 text-[#6B6B6B]" aria-hidden="true">/</span>
                 {acquirerName}
               </span>
             ) : null}
@@ -175,10 +181,14 @@ export default function DealHeader({ deal, view, onToggleView, hasAgreementText,
           </div>
         </div>
 
-        {/* Condensed metric line — below md only, replaces the full grid. */}
+        {/* Condensed metric line — between ~480px and md only. Item 4: below
+            480px this also disappears so ONLY "Metsera / Pfizer" (+ the
+            toggle button, wrapped to its own row) survives at the
+            narrowest widths -- matches the metric strip's own Inter
+            font-bold styling, never the mtx-serif (Tinos/Times) face. */}
         {compactValue ? (
-          <div className="flex md:hidden items-center gap-1.5 text-[#6B6B6B] min-w-0">
-            <span className="mtx-serif text-base font-bold text-[#1F1F1F] whitespace-nowrap">{compactValue}</span>
+          <div className="hidden min-[480px]:flex md:hidden items-center gap-1.5 text-[#6B6B6B] min-w-0">
+            <span className="font-ui text-base font-bold text-[#1F1F1F] whitespace-nowrap">{compactValue}</span>
           </div>
         ) : null}
 

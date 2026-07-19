@@ -3,11 +3,14 @@ import {
   getCitableQuotes,
   getCitableText,
   getCitableValue,
+  getTaggedItemQuote,
   isCitableValue,
+  isTaggedItem,
 } from '../../../lib/citable.js';
 import { HoverSource } from '../shared.js';
 import { splitForCell } from '../table-configs/card-utils.js';
 import { STANDARD_COLORS } from '../table-configs/standard-colors.js';
+import { TERM_GRID_COLUMN } from '../table-configs/layout.js';
 
 const { MATERIAL_CONTRACT_BUCKET_CODES, MATERIAL_CONTRACT_BUCKET_META } = taxonomy;
 
@@ -32,6 +35,15 @@ function evidenceQuote(value, evidence, source) {
   if (typeof evidence === 'string' && evidence.trim()) return evidence.trim();
   const citable = getCitableText(value);
   if (citable) return citable;
+  // Item 10: a TAGGED item (COR pill, MAE carve-out pill, ...) carries its
+  // OWN verbatim on `.text` -- almost always with `quotes: []` (empty, not
+  // absent). Prefer that per-item quote over the array/source fallbacks
+  // below, which otherwise land on the whole card's primary_quote (the head
+  // of the definition/clause the item is only one line of).
+  if (isTaggedItem(value)) {
+    const tagged = getTaggedItemQuote(value);
+    if (tagged) return tagged;
+  }
   const quotes = Array.isArray(evidence) ? evidence : getCitableQuotes(evidence);
   if (quotes.length) return quotes[0];
   return source?.primary_quote || source?.full_text || source?.region_full_text || null;
@@ -54,16 +66,28 @@ function romanize(index) {
   return out || String(index + 1);
 }
 
-export function EvidenceHoverSource({ value, evidence, source, quote, highlight, children, as = 'span', className }) {
+// Item 13: default sourceLabel to `${source.short_title} — ${pillLabel}`
+// when both exist and the caller hasn't passed one explicitly -- callers
+// with a more specific label (e.g. a rep-qualifier row's own rep name) pass
+// `sourceLabel` directly and win over this default.
+function defaultSourceLabel(source, pillLabel) {
+  const title = source && typeof source.short_title === 'string' ? source.short_title.trim() : '';
+  const label = typeof pillLabel === 'string' ? pillLabel.trim() : '';
+  if (title && label) return `${title} — ${label}`;
+  return title || null;
+}
+
+export function EvidenceHoverSource({ value, evidence, source, quote, highlight, sourceLabel, pillLabel, children, as = 'span', className }) {
   const resolved = quote || evidenceQuote(value, evidence, source);
+  const label = sourceLabel !== undefined ? sourceLabel : defaultSourceLabel(source, pillLabel);
   return (
-    <HoverSource quote={resolved} highlight={highlight === undefined ? textValue(value) : highlight} as={as} className={className}>
+    <HoverSource quote={resolved} highlight={highlight === undefined ? textValue(value) : highlight} sourceLabel={label} as={as} className={className}>
       {children}
     </HoverSource>
   );
 }
 
-export function PillCell({ value, label, tone = 'neutral', color, evidence, source, quote, highlight, className = '', wrap = false }) {
+export function PillCell({ value, label, tone = 'neutral', color, evidence, source, quote, highlight, sourceLabel, className = '', wrap = false }) {
   const text = label || textValue(value) || 'Not captured';
   // `color` (a shared standard-colour palette key) wins over `tone` so the same
   // legal standard reads the same colour everywhere it appears.
@@ -81,7 +105,7 @@ export function PillCell({ value, label, tone = 'neutral', color, evidence, sour
   // inside its container instead.
   const textClass = wrap ? 'whitespace-normal break-words' : 'truncate';
   return (
-    <EvidenceHoverSource value={value} evidence={evidence} source={source} quote={quote} highlight={highlight}>
+    <EvidenceHoverSource value={value} evidence={evidence} source={source} quote={quote} highlight={highlight} sourceLabel={sourceLabel} pillLabel={text}>
       <span className={`inline-flex max-w-full items-center rounded border px-2 py-0.5 text-[11px] font-medium ${classes} ${className}`.trim()}>
         <span className={textClass}>{text}</span>
       </span>
@@ -205,8 +229,20 @@ export function GroupedSubRows({ groups = [], emptyCopy = 'No grouped rows captu
           </div>
           <div className="divide-y divide-border">
             {group.rows.map((row, rowIndex) => (
-              <div key={row.id || row.label || rowIndex} className="grid grid-cols-[minmax(8rem,14rem)_1fr] gap-2 px-2 py-1.5">
-                <span className="text-[11px] font-medium text-ink">{row.label || `Row ${rowIndex + 1}`}</span>
+              <div
+                key={row.id || row.label || rowIndex}
+                className="grid gap-2 px-2 py-1.5"
+                style={{ gridTemplateColumns: `${TERM_GRID_COLUMN} 1fr` }}
+              >
+                <span>
+                  <span className="text-[11px] font-medium text-ink">{row.label || `Row ${rowIndex + 1}`}</span>
+                  {/* Item 8: an optional per-row "See provision" expander,
+                      rendered under the LABEL (left) cell -- callers
+                      (nosol-section.config.js#rowNode, conditions/
+                      termination-rights row builders) pass row.seeText
+                      instead of appending it to the right/value cell. */}
+                  {row.seeText || null}
+                </span>
                 <EvidenceHoverSource value={row.value} evidence={row.evidence} source={row.source} as="span" className="text-xs text-ink">
                   {row.children || textValue(row.value) || row.detail || <span className="text-inkFaint italic">Not captured</span>}
                 </EvidenceHoverSource>

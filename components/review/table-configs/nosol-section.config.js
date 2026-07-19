@@ -69,6 +69,11 @@ const SOURCES = {
   fiduciary: { config: nosolFiduciaryConfig, renderSignals: fiduciaryRenderSignals, renderDetail: null },
 };
 
+// Item 8 (round 3): returns { signal, seeText } separately -- the signal
+// pill stays the row's VALUE (right) cell content, but the "See provision"
+// expander now renders under the LABEL (left) cell via GroupedSubRows'
+// row.seeText, matching every other family instead of being appended after
+// the pill in the value cell.
 function rowNode(row, ctx, source) {
   const signal = source.renderSignals(row, ctx);
   const detail = source.renderDetail ? source.renderDetail(row, ctx) : null;
@@ -76,8 +81,7 @@ function rowNode(row, ctx, source) {
   // what's already inline in the pill -- still shown today in the standalone
   // tables via the same "see text" affordance, so kept for parity; only
   // skipped here if renderDetail returned nothing at all.
-  if (!detail) return signal;
-  return React.createElement(React.Fragment, null, signal, seeText(detail));
+  return { signal, seeText: detail ? seeText(detail) : null };
 }
 
 function byId(rows) {
@@ -264,7 +268,13 @@ function acqProposalQualifyingCard(cards) {
     return cardText.length > bestText.length ? card : best;
   });
 }
-const PCT_PATTERN = /(\d{1,3})\s*\)?\s*%/g;
+// Item 14 (round 3, Theravance): the old pattern harvested EVERY "NN%" in the
+// clause, including percentages that are part of a definitional carve-out
+// rather than an acquisition trigger (Theravance's continuity-of-ownership
+// carve -- "...will not own, directly or indirectly, at least 80% of the
+// surviving company..." -- is not itself a trigger). Every real trigger limb
+// on Theravance/Metsera/QXO uses "NN% or more" phrasing; restrict to that.
+const PCT_PATTERN = /(\d{1,3})\s*\)?\s*%\s*\)?\s+or\s+more/gi;
 function extractPctTriggers(text) {
   const found = new Set();
   let match = PCT_PATTERN.exec(text);
@@ -308,7 +318,7 @@ function acqProposalCollapsedText(text, seeLabel) {
     React.createElement(
       'details',
       { className: 'mt-1' },
-      React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, seeLabel || 'see definition'),
+      React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, seeLabel || 'See provision'),
       React.createElement(
         'div',
         { className: 'mt-1 max-w-[36rem] whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight' },
@@ -342,7 +352,7 @@ function seeDefinitionLink(text, ctx) {
   return React.createElement(
     'details',
     { className: 'mt-1' },
-    React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, 'see definition'),
+    React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, 'See provision'),
     React.createElement('div', { className: 'mt-1 max-w-[36rem] whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight' }, text),
   );
 }
@@ -441,10 +451,12 @@ function buildGroups(reviewDeal, ctx) {
       .map((item) => {
         const row = rowsBySource[item.source]?.get(item.id);
         if (!row) return null;
+        const node = ctx ? rowNode(row, ctx, SOURCES[item.source]) : null;
         return {
           id: row.id,
           label: row.label,
-          children: ctx ? rowNode(row, ctx, SOURCES[item.source]) : null,
+          children: node ? node.signal : null,
+          seeText: node ? node.seeText : null,
         };
       })
       .filter(Boolean);
@@ -518,4 +530,4 @@ const nosolSectionConfig = {
   empty: { copy: 'No no-solicitation provisions found.' },
 };
 
-export { buildGroups, nosolSectionConfig };
+export { buildGroups, extractPctTriggers, nosolSectionConfig };

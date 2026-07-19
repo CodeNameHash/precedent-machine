@@ -199,6 +199,19 @@ test('nosol-section: Acquisition Proposal - Definition surfaces the 20% trigger,
   assert.match(qualifyingHtml, /inconsistent with its fiduciary duties/);
 });
 
+// Item 14 (round 3, Theravance NOSOL-ACQPROPOSAL): limbs (1)-(4) all use
+// "20% or more" of revenues/assets/voting power; the 80% appears ONLY in a
+// definitional continuity-of-ownership carve-out ("...shareholders of the
+// Company immediately prior to such transaction will not own, directly or
+// indirectly, at least 80% of the surviving company...") -- not a trigger.
+// The old harvest-every-percentage regex rendered both "Trigger: 20%" and
+// "Trigger: 80%"; only the "NN% or more" trigger phrasing should chip.
+test('nosol-section extractPctTriggers only chips "NN% or more" trigger phrasing, not an unrelated "at least NN%" continuity-of-ownership carve-out', () => {
+  const clause = '"Company Takeover Proposal" means any inquiry, proposal or offer relating to (i) any direct or indirect acquisition of assets representing 20% or more of the consolidated assets of the Company, (ii) any acquisition of 20% or more of the outstanding voting power of the Company, (iii) any tender or exchange offer that if consummated would result in beneficial ownership of 20% or more of the Company, or (iv) any merger, consolidation, business combination, recapitalization, liquidation, dissolution or similar transaction involving the Company in which the shareholders of the Company immediately prior to such transaction will not own, directly or indirectly, at least 80% of the surviving company.';
+  const triggers = mod.extractPctTriggers(clause);
+  assert.deepEqual(triggers, ['20%'], 'only the "20% or more" trigger limbs chip -- the 80% continuity carve-out is not a trigger');
+});
+
 test('nosol-section places the Acquisition Proposal - Definition group after Fiduciary-Out / Engagement and before Notice', () => {
   const groups = mod.buildGroups({ cards: CARDS }, { primitives });
   const ids = groups.map((g) => g.id);
@@ -284,4 +297,21 @@ test('nosol-section renders as a single ProvisionTable section with a nested Gro
 
 test('nosol-section returns no rows when none of the four family configs have data', () => {
   assert.deepEqual(mod.nosolSectionConfig.selectRows({ cards: [] }), []);
+});
+
+// Item 8 (round 3): rowNode() used to append the relocated 'detail' clause
+// AFTER the signal pill inside the row's value cell. It now returns
+// { signal, seeText } separately -- children stays the value-cell content
+// (the signal pill only); seeText is a distinct node meant for
+// GroupedSubRows' row.seeText (rendered under the LABEL/left cell).
+test('Item 8: buildGroups rows carry seeText SEPARATELY from children (not appended after the signal pill)', () => {
+  const groups = mod.buildGroups({ cards: CARDS }, { primitives });
+  const noShopCore = groups.find((g) => g.id === 'nosol-no-shop-core');
+  assert.ok(noShopCore, 'No-Shop Core Mechanics group must render');
+  const prohibitRow = noShopCore.rows.find((r) => r.id === 'nosol-noshop-prohibit');
+  assert.ok(prohibitRow, 'expected the prohibited-acts row');
+  assert.ok(prohibitRow.seeText, 'the row must carry a seeText node for its relocated detail');
+  const seeTextHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, prohibitRow.seeText));
+  assert.match(seeTextHtml, /term-cell-seetext/);
+  assert.match(seeTextHtml, />See provision</);
 });
