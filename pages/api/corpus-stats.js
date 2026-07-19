@@ -5,14 +5,43 @@
 // list, refinable by the full deal-fact filter vocabulary: sector, signing
 // year, deal size, law firm (either side), buyer, and merger form.
 //
+// Sidebar redesign (Ben, "corpus context, not verbatim"): three optional
+// query params add a `rowContext` block scoped to exactly what a clicked
+// row needs, alongside the unchanged "Refine the peer set" summary below:
+//   - featureKeys=csv  -> per-key value distributions (categorical, this
+//                          deal's own value flagged) OR a numeric
+//                          min/median/max + this deal's position, for
+//                          attributes whose registry valueType is 'number'
+//                          (or that carry a nested numeric field, e.g.
+//                          companyTerminationFee.amount).
+//   - itemCode=CODE    -> instrument-scoped equity distribution.
+//                          equityAwardTreatment is unstructured prose
+//                          (claims.canonical is always null for it),
+//                          classified into consideration/vesting pills
+//                          client-side by components/review/table-configs/
+//                          equity-awards.config.js. Reused HERE
+//                          (rowsForCard) against every peer deal's
+//                          reconstructed features so the corpus
+//                          distribution is classified by the exact same
+//                          logic the table itself uses, not a second,
+//                          drifting copy of the regexes.
+//   - itemLabel=text   -> drill-down item frequency ("appears in 31 of 40
+//                          deals") for one list entry (e.g. one NOSOL
+//                          prohibited act), matched by taxonomy code when
+//                          itemCode is also given, else by resolved label.
+//
 // Cheap by design: provision_cards is ~6k rows and claims ~70k; both hits
 // are single-column filters, the group-by happens here, and the response is
 // a small summary. The corpus only changes on re-extract/correction, so the
-// response is edge-cacheable per query string.
+// response is edge-cacheable per query string. rowContext reuses the SAME
+// single claims fetch as the existing featureSummary/peers logic (one
+// `sb.from('claims')` call total) -- see the perf note in the handler below.
 import { getServiceSupabase } from '../../lib/supabase';
+import { rowsForCard as equityRowsForCard } from '../../components/review/table-configs/equity-awards.config.js';
 
 const { FEATURES } = require('../../lib/schema/features');
 const taxonomy = require('../../lib/taxonomy');
+const { buildFeaturesForCard } = require('../../lib/queries/claims-adapter');
 
 const CACHE = 's-maxage=3600, stale-while-revalidate=86400';
 
@@ -109,6 +138,172 @@ function similarity(deal, subject) {
   return score;
 }
 
+// -- rowContext helpers (sidebar redesign) ---------------------------------
+
+// Best-effort numeric extraction for a claim: canonical first (many number
+// attributes DO carry a parseable canonical), then a nested numeric field
+// off the rich provenance.feature_value (e.g. companyTerminationFee's
+// `{ amount, percentage_of_equity, ... }`), then a $/,-stripped scan of the
+// raw verbatim text. Returns null rather than a guess when nothing parses.
+function extractNumeric(claim) {
+  if (claim.canonical !== null && claim.canonical !== undefined) {
+    const n = Number(claim.canonical);
+    if (Number.isFinite(n)) return n;
+  }
+  const fv = claim.provenance && typeof claim.provenance === 'object' ? claim.provenance.feature_value : null;
+  const payload = fv && typeof fv === 'object' && fv.value && typeof fv.value === 'object' ? fv.value : fv;
+  if (payload && typeof payload === 'object') {
+    for (const key of ['amount', 'value', 'days', 'months', 'percentage_of_equity']) {
+      const raw = payload[key];
+      if (typeof raw === 'number' && Number.isFinite(raw)) return raw;
+      if (typeof raw === 'string') {
+        const m = raw.replace(/[$,]/g, '').match(/-?\d+(\.\d+)?/);
+        if (m) return Number(m[0]);
+      }
+    }
+  }
+  if (typeof claim.verbatim === 'string') {
+    const m = claim.verbatim.replace(/[$,]/g, '').match(/-?\d+(\.\d+)?/);
+    if (m) return Number(m[0]);
+  }
+  return null;
+}
+
+function median(sortedNums) {
+  if (!sortedNums.length) return null;
+  const mid = Math.floor(sortedNums.length / 2);
+  return sortedNums.length % 2 ? sortedNums[mid] : (sortedNums[mid - 1] + sortedNums[mid]) / 2;
+}
+
+function isNumericAttribute(attribute, sampleClaims) {
+  const entry = FEATURES[attribute];
+  if (entry && entry.valueType === 'number') return true;
+  if (entry && entry.valueType === 'object') {
+    // e.g. companyTerminationFee: an 'object' attribute whose canonical is
+    // always null but whose feature_value carries a numeric `amount`.
+    return sampleClaims.some((cl) => extractNumeric(cl) !== null && !cl.canonical);
+  }
+  return false;
+}
+
+// One featureKey's corpus distribution: categorical value/counts (this
+// deal's own value flagged) for enum/coded attributes, or a numeric
+// min/median/max + this deal's position for number-valued ones. peerClaims
+// is already scoped to the peer set + this attribute.
+function buildFeatureDistribution(attribute, peerClaims, subjectDealId) {
+  const label = attributeLabel(attribute);
+  if (isNumericAttribute(attribute, peerClaims)) {
+    const byDeal = new Map();
+    for (const cl of peerClaims) {
+      if (byDeal.has(cl.deal_id)) continue; // one value per deal
+      const n = extractNumeric(cl);
+      if (n !== null) byDeal.set(cl.deal_id, n);
+    }
+    const nums = [...byDeal.values()].sort((a, b) => a - b);
+    if (!nums.length) return null;
+    const thisDealValue = subjectDealId && byDeal.has(subjectDealId) ? byDeal.get(subjectDealId) : null;
+    const rank = thisDealValue !== null ? nums.filter((n) => n <= thisDealValue).length : null;
+    return {
+      attribute,
+      label,
+      kind: 'numeric',
+      unit: (FEATURES[attribute] && FEATURES[attribute].unit) || null,
+      min: nums[0],
+      median: median(nums),
+      max: nums[nums.length - 1],
+      count: nums.length,
+      thisDealValue,
+      thisDealRank: rank,
+    };
+  }
+  const counts = new Map();
+  let thisDealValue = null;
+  for (const cl of peerClaims) {
+    if (cl.canonical === null || cl.canonical === undefined) continue;
+    counts.set(cl.canonical, (counts.get(cl.canonical) || 0) + 1);
+    if (subjectDealId && cl.deal_id === subjectDealId && thisDealValue === null) thisDealValue = cl.canonical;
+  }
+  if (!counts.size) return null;
+  const values = [...counts.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .map(([value, count]) => ({ value, label: valueLabel(attribute, value), count, isThisDeal: value === thisDealValue }));
+  return {
+    attribute,
+    label,
+    kind: 'categorical',
+    values,
+    total: values.reduce((a, v) => a + v.count, 0),
+    thisDealValue: thisDealValue !== null ? valueLabel(attribute, thisDealValue) : null,
+  };
+}
+
+// Instrument-scoped equity distribution (item 2 of the redesign): re-run the
+// SAME classification the Equity Awards table uses (equity-awards.config.js
+// rowsForCard) against every peer deal's reconstructed features, then tally
+// consideration/vesting labels for just the one instrument code clicked.
+function buildInstrumentDistribution(itemCode, peerClaims, peerIds) {
+  const claimsByDeal = new Map();
+  for (const cl of peerClaims) {
+    if (!peerIds.has(cl.deal_id)) continue;
+    if (!claimsByDeal.has(cl.deal_id)) claimsByDeal.set(cl.deal_id, []);
+    claimsByDeal.get(cl.deal_id).push(cl);
+  }
+  const considerationCounts = new Map();
+  const vestingCounts = new Map();
+  let dealsWithInstrument = 0;
+  for (const [dealId, dealClaims] of claimsByDeal) {
+    let features;
+    try {
+      features = buildFeaturesForCard(dealClaims);
+    } catch {
+      continue;
+    }
+    let rows;
+    try {
+      rows = equityRowsForCard({ id: dealId, features });
+    } catch {
+      continue;
+    }
+    const matches = (rows || []).filter((r) => r.instrumentCode === itemCode);
+    if (!matches.length) continue;
+    dealsWithInstrument += 1;
+    for (const row of matches) {
+      if (row.considerationLabel) considerationCounts.set(row.considerationLabel, (considerationCounts.get(row.considerationLabel) || 0) + 1);
+      if (row.vestingLabel) vestingCounts.set(row.vestingLabel, (vestingCounts.get(row.vestingLabel) || 0) + 1);
+    }
+  }
+  const toList = (m) => [...m.entries()].sort((a, b) => b[1] - a[1]).map(([label, count]) => ({ label, count }));
+  return {
+    itemCode,
+    dealsWithInstrument,
+    peerSetSize: claimsByDeal.size,
+    considerationDistribution: toList(considerationCounts),
+    vestingDistribution: toList(vestingCounts),
+  };
+}
+
+// Drill-down item frequency (item 4 of the redesign): how many peer deals'
+// claims for `listAttribute` carry this exact item, matched by taxonomy
+// code first (stable across deals' varying phrasing), else by resolved
+// label text (case-insensitive).
+function buildItemFrequency(listAttribute, itemLabel, itemCode, peerClaims, peerIds, peerSetSize) {
+  const wantLabel = String(itemLabel || '').trim().toLowerCase();
+  const dealsWithItem = new Set();
+  for (const cl of peerClaims) {
+    if (!peerIds.has(cl.deal_id)) continue;
+    if (cl.attribute !== listAttribute) continue;
+    const code = cl.canonical ? String(cl.canonical) : null;
+    if (itemCode && code && code.toUpperCase() === String(itemCode).toUpperCase()) {
+      dealsWithItem.add(cl.deal_id);
+      continue;
+    }
+    const resolvedLabel = code ? valueLabel(listAttribute, code) : null;
+    const candidateLabels = [resolvedLabel, cl.verbatim].filter(Boolean).map((s) => String(s).trim().toLowerCase());
+    if (wantLabel && candidateLabels.includes(wantLabel)) dealsWithItem.add(cl.deal_id);
+  }
+  return { label: itemLabel, count: dealsWithItem.size, peerSetSize };
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET');
@@ -148,17 +343,25 @@ export default async function handler(req, res) {
     const peerIds = new Set(peerSet.map((d) => d.id));
     const dealsWithCode = new Set((cards || []).map((c) => c.deal_id).filter((id) => peerIds.has(id)));
 
+    // One claims fetch serves BOTH the legacy featureSummary/peers logic
+    // below (which only ever wanted coded/canonical values) AND the new
+    // rowContext logic (which also needs uncoded attributes like
+    // equityAwardTreatment -- claims.canonical is always null there, the
+    // structure lives in provenance.feature_value/verbatim instead). Widen
+    // the select + drop the `.not('canonical', 'is', null)` filter that used
+    // to run server-side; featureSummary re-applies the same null check
+    // itself so its behavior is unchanged.
     const { data: claims, error: claimsErr } = await sb
       .from('claims')
-      .select('deal_id, attribute, canonical')
+      .select('deal_id, attribute, canonical, verbatim, evidence_quote, provenance, id, created_at')
       .eq('provenance->>code', code)
-      .not('canonical', 'is', null)
       .limit(4000);
     if (claimsErr) throw new Error(claimsErr.message);
 
     const byAttribute = new Map();
     for (const cl of claims || []) {
       if (!peerIds.has(cl.deal_id)) continue;
+      if (cl.canonical === null || cl.canonical === undefined) continue;
       if (!byAttribute.has(cl.attribute)) byAttribute.set(cl.attribute, new Map());
       const values = byAttribute.get(cl.attribute);
       values.set(cl.canonical, (values.get(cl.canonical) || 0) + 1);
@@ -202,6 +405,37 @@ export default async function handler(req, res) {
       lawFirmCoverage: [...firmsByDeal.values()].filter((f) => f.length).length,
     };
 
+    // rowContext: scoped corpus context for the specific row/item clicked in
+    // the sidebar, built off the SAME `claims` fetch above (no extra query).
+    const requestedFeatureKeys = req.query.featureKeys
+      ? String(req.query.featureKeys).split(',').map((s) => s.trim()).filter(Boolean)
+      : [];
+    const itemCode = req.query.itemCode ? String(req.query.itemCode).trim() : null;
+    const itemLabel = req.query.itemLabel ? String(req.query.itemLabel).trim() : null;
+
+    let rowContext = null;
+    if (requestedFeatureKeys.length || itemCode || itemLabel) {
+      rowContext = {};
+      if (requestedFeatureKeys.length) {
+        rowContext.features = requestedFeatureKeys
+          .map((attribute) => {
+            const peerClaims = (claims || []).filter((cl) => cl.attribute === attribute && peerIds.has(cl.deal_id));
+            return buildFeatureDistribution(attribute, peerClaims, subjectDealId);
+          })
+          .filter(Boolean);
+      }
+      if (itemCode && !itemLabel) {
+        const equityClaims = (claims || []).filter((cl) => cl.attribute === 'equityAwardTreatment');
+        rowContext.instrument = buildInstrumentDistribution(itemCode, equityClaims, peerIds);
+      }
+      if (itemLabel) {
+        const listAttribute = requestedFeatureKeys[0] || null;
+        if (listAttribute) {
+          rowContext.itemFrequency = buildItemFrequency(listAttribute, itemLabel, itemCode, claims || [], peerIds, peerSet.length);
+        }
+      }
+    }
+
     res.setHeader('Cache-Control', CACHE);
     return res.status(200).json({
       code,
@@ -210,6 +444,7 @@ export default async function handler(req, res) {
       featureSummary,
       peers,
       options,
+      rowContext,
     });
   } catch (error) {
     return res.status(500).json({ error: error.message || String(error) });
