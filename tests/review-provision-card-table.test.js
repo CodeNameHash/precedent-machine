@@ -26,10 +26,14 @@ test('ProvisionCardTable hover-expands cross references and shows provenance', (
   // Perf fix (Jul 2026): resolvedReferences is no longer read as a static
   // field pre-computed for every card — it's resolved on demand at hover
   // time via useDefinitionResolver (idle-chunked prewarm + on-demand
-  // fallback), so the count badge uses card.references directly and the
-  // resolved text only appears once resolveReferences(card) has been
-  // called (see CrossReferenceBadge/onMouseEnter).
+  // fallback). The badge count comes from getResolvableCount (a cheap
+  // Map-membership count — NOT card.references.length, which would show a
+  // badge for cards whose references are all dangling and previously
+  // rendered no badge at all); the resolved definitions' text only appears
+  // once resolveReferences(card) has been called (see CrossReferenceBadge/
+  // onMouseEnter).
   assert.match(src, /useDefinitionResolver/);
+  assert.match(src, /getResolvableCount\(card\)/);
   assert.match(src, /resolveReferences\(card\)/);
   assert.match(src, /onMouseEnter/);
   assert.match(src, /data-testid="card-crossref-hover"/);

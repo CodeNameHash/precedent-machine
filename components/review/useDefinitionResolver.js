@@ -23,9 +23,36 @@ import { buildDefinitionsIndex, resolveCardReferences } from '../../lib/queries/
 
 const IDLE_CHUNK_SIZE = 40;
 
+// DOM-parity fix: the old eager pass hid the "N definitions" badge entirely
+// when a card's references were all dangling (resolvedReferences.length ===
+// 0 — e.g. a reference to a definition that got pruned/renamed). Showing
+// card.references.length instead (the cheap, always-available count) would
+// surface a badge for cards that previously rendered NO badge at all — a
+// real DOM diff. This still needs a per-card "does at least one reference
+// resolve" answer, but ONLY a Map.has() membership check (no
+// projectDefinitionReference text copying) — O(total references across all
+// cards), independent of how large each definition's text is, so it's safe
+// to do eagerly alongside the definitions index.
+function countResolvableReferences(cards, definitionsById) {
+  const counts = new Map();
+  for (const card of cards) {
+    if (!Array.isArray(card.references) || card.references.length === 0) continue;
+    let n = 0;
+    for (const id of card.references) if (definitionsById.has(id)) n += 1;
+    const key = card.provision_instance_id || card.id;
+    if (key) counts.set(key, n);
+  }
+  return counts;
+}
+
 export function useDefinitionResolver(cards) {
   const list = Array.isArray(cards) ? cards : [];
   const definitionsById = useMemo(() => buildDefinitionsIndex(list), [list]);
+  const resolvableCounts = useMemo(() => countResolvableReferences(list, definitionsById), [list, definitionsById]);
+  const getResolvableCount = useCallback((card) => {
+    const key = card && (card.provision_instance_id || card.id);
+    return key ? (resolvableCounts.get(key) || 0) : 0;
+  }, [resolvableCounts]);
   const cacheRef = useRef(new Map());
   // Bumped whenever the idle sweep resolves a new batch, so components
   // relying on a "has this warmed yet" render (rather than just calling
@@ -88,5 +115,5 @@ export function useDefinitionResolver(cards) {
     };
   }, [list, definitionsById]);
 
-  return { resolveReferences };
+  return { resolveReferences, getResolvableCount };
 }

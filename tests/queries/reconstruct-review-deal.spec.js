@@ -211,3 +211,35 @@ test('trimReviewDealForWire omits transactionSteps when absent (no stray key)', 
   const trimmed = trimReviewDealForWire(shaped);
   assert.equal('transactionSteps' in trimmed, false);
 });
+
+// DOM-parity regression (caught in Playwright hover verification against
+// real Cox data, post-perf-fix): a card whose references are ALL dangling
+// (point at a definition id that doesn't exist — pruned/renamed) must
+// resolve to zero resolvedReferences, same as the old eager pass. This is
+// what components/review/useDefinitionResolver.js's getResolvableCount
+// gates the "N definitions" badge on — using card.references.length there
+// instead would surface a badge for a card that previously rendered none
+// at all.
+test('resolveCardReferences returns zero resolvedReferences for an all-dangling-references card', () => {
+  const card = baseRow({
+    id: 'orphan', provision_instance_id: 'orphan', kind: 'cross-reference',
+    references: ['missing-def-1', 'missing-def-2'],
+  });
+  const definitionsById = buildDefinitionsIndex([card]); // no definition cards at all
+  const resolved = resolveCardReferences(card, definitionsById);
+  assert.equal(resolved.resolvedReferences.length, 0);
+  assert.deepEqual(resolved.unresolvedReferences, ['missing-def-1', 'missing-def-2']);
+});
+
+test('resolveCardReferences returns only the resolvable subset for a mixed resolved/dangling card', () => {
+  const def = baseRow({ id: 'def-1', provision_instance_id: 'def-1', kind: 'definition', defined_term: 'Term' });
+  const card = baseRow({
+    id: 'mixed', provision_instance_id: 'mixed', kind: 'cross-reference',
+    references: ['def-1', 'missing-def'],
+  });
+  const definitionsById = buildDefinitionsIndex([def, card]);
+  const resolved = resolveCardReferences(card, definitionsById);
+  assert.equal(resolved.resolvedReferences.length, 1);
+  assert.equal(resolved.resolvedReferences[0].provision_instance_id, 'def-1');
+  assert.deepEqual(resolved.unresolvedReferences, ['missing-def']);
+});

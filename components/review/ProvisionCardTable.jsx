@@ -50,16 +50,22 @@ function DefinitionPreview({ references = [] }) {
 // pre-computed for every card before first render (see
 // lib/queries/reconstruct-review-deal.js's header comment — this was the
 // Cox 13.9s DOMContentLoaded regression). It's hover-preview content only,
-// so resolve it lazily: the count badge uses card.references (always
-// present, zero cost — no lookup needed), and the actual resolved
-// definitions (the text-bearing part) are only computed the first time this
-// card is hovered, via the resolver's cache (warm from the idle sweep, or
-// computed on the spot — O(references-on-this-card) either way, never a
-// scan of all definitions).
-function CrossReferenceBadge({ card, resolveReferences }) {
-  const referenceIds = Array.isArray(card.references) ? card.references : [];
+// so resolve it lazily: the count badge uses getResolvableCount (a cheap
+// Map-membership count, no definition-text copying — see
+// useDefinitionResolver.js), and the actual resolved definitions (the
+// text-bearing part) are only computed the first time this card is
+// hovered, via the resolver's cache (warm from the idle sweep, or computed
+// on the spot — O(references-on-this-card) either way, never a scan of all
+// definitions).
+function CrossReferenceBadge({ card, resolveReferences, getResolvableCount }) {
   const [hoverResolved, setHoverResolved] = useState(null);
-  if (!referenceIds.length) return null;
+  // DOM parity with the old eager pass: the badge only appears when at
+  // least one reference actually resolves (matches resolvedReferences.length
+  // from before — not card.references.length, which would surface a badge
+  // for cards whose references are all dangling and previously showed no
+  // badge at all).
+  const resolvableCount = getResolvableCount(card);
+  if (resolvableCount === 0) return null;
 
   const handleEnter = () => {
     if (hoverResolved) return;
@@ -69,14 +75,14 @@ function CrossReferenceBadge({ card, resolveReferences }) {
   return (
     <div className="group relative mt-3 inline-flex" onMouseEnter={handleEnter} onFocus={handleEnter}>
       <span className="rounded border border-buyer/20 bg-buyer/10 px-2 py-1 font-ui text-xs text-buyer">
-        {referenceIds.length} definition{referenceIds.length === 1 ? '' : 's'}
+        {resolvableCount} definition{resolvableCount === 1 ? '' : 's'}
       </span>
       <DefinitionPreview references={hoverResolved || []} />
     </div>
   );
 }
 
-function ProvisionCard({ card, resolveReferences }) {
+function ProvisionCard({ card, resolveReferences, getResolvableCount }) {
   const provenance = card.provenance || {};
   return (
     <article data-testid="provision-card" className="relative rounded border border-border bg-white p-3 shadow-sm">
@@ -103,7 +109,7 @@ function ProvisionCard({ card, resolveReferences }) {
       )}
 
       {card.kind === 'cross-reference' ? (
-        <CrossReferenceBadge card={card} resolveReferences={resolveReferences} />
+        <CrossReferenceBadge card={card} resolveReferences={resolveReferences} getResolvableCount={getResolvableCount} />
       ) : null}
 
       <details data-testid="provision-card-provenance" className="mt-3 rounded border border-border bg-bg/50 px-3 py-2">
@@ -127,14 +133,14 @@ export default function ProvisionCardTable({ reviewDeal }) {
   const shaped = reconstructReviewDeal(reviewDeal) || reviewDeal;
   const sections = Array.isArray(shaped?.sections) ? shaped.sections : [];
   const definitions = Array.isArray(shaped?.definitions) ? shaped.definitions : [];
-  const { resolveReferences } = useDefinitionResolver(shaped?.cards);
+  const { resolveReferences, getResolvableCount } = useDefinitionResolver(shaped?.cards);
   return (
     <div data-testid="provision-card-table" className="space-y-6">
       {definitions.length ? (
         <section data-testid="definition-card-tab" className="space-y-3">
           <h2 className="font-display text-lg text-ink">Definitions</h2>
           <div className="grid gap-3 md:grid-cols-2">
-            {definitions.map((card) => <ProvisionCard key={`def-${card.provision_instance_id}`} card={card} resolveReferences={resolveReferences} />)}
+            {definitions.map((card) => <ProvisionCard key={`def-${card.provision_instance_id}`} card={card} resolveReferences={resolveReferences} getResolvableCount={getResolvableCount} />)}
           </div>
         </section>
       ) : null}
@@ -144,7 +150,7 @@ export default function ProvisionCardTable({ reviewDeal }) {
           <h2 className="font-display text-lg text-ink">{section.title || section.sectionRef}</h2>
           <div className="grid gap-3">
             {(section.cards || []).map((card) => (
-              <ProvisionCard key={card.provision_instance_id || card.id} card={card} resolveReferences={resolveReferences} />
+              <ProvisionCard key={card.provision_instance_id || card.id} card={card} resolveReferences={resolveReferences} getResolvableCount={getResolvableCount} />
             ))}
           </div>
         </section>
