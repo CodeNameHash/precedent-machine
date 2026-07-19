@@ -23,9 +23,11 @@ const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
 // Same friendly translation the v1 config uses for the raw limb code (that
 // map isn't exported, so it's mirrored here — display-only).
+// FIX 2 (Fable legal sign-off, verbatim wording -- mirrors the v1 config's
+// same fix): the old text had ONE_LIMB and TWO_LIMB's meanings backwards.
 const MAE_LIMB_TEXT = {
-  TWO_LIMB: 'Two-limb: effect on the entity + ability to consummate',
-  ONE_LIMB: 'One-limb: ability to consummate only',
+  ONE_LIMB: 'One limb — effect on the business, condition or results of operations',
+  TWO_LIMB: 'Two limbs — business effect + ability to consummate',
 };
 
 const LIMB_ROW_KEYS = new Set(['maeLimbType', 'maeLimbs']);
