@@ -6,6 +6,11 @@ import MergertraceStyles from '../../../components/review-v2/MergertraceStyles';
 import AppHeader from '../../../components/chrome/AppHeader';
 const { toCsv, resultToCsvRows, csvFilename } = require('../../../lib/query/csv');
 const { describeFilter } = require('../../../lib/query/filter-labels');
+// E5 (2026-07-19 pre-demo audit): the review page's own "same label path"
+// for bare enum codes ("ALL_CASH" -> "All cash") — reused here rather than
+// re-implemented so the query surface never drifts from the review page's
+// mapping.
+const { prettifyEnumValue } = require('../../../components/review/shared');
 
 QueryPage.noLayout = true;
 
@@ -197,7 +202,7 @@ function DealCompare({ result, onOpen }) {
             {result.rows.map((row) => <tr key={row.provision_type}>
               <th>{row.provision_type.replace(/_/g, ' ')}</th>
               {row.cells.map((cell) => <td key={cell.deal_id} className={cell.delta_severity.toLowerCase()} onClick={() => onOpen(cell)}>
-                {cell.key_fields.map((field) => <div key={field.field}><b>{field.label}</b><span className="mtx-mono">{formatValue(field.value)}{field._prov && <ProvBadge prov={field._prov} />}</span></div>)}
+                {cell.key_fields.map((field) => <div key={field.field}><b>{field.label}</b><span className="mtx-mono">{formatValue(field.value, field.field)}{field._prov && <ProvBadge prov={field._prov} />}</span></div>)}
                 {cell.primary_quote?.text && <small className="mtx-serif">{cell.primary_quote.text.slice(0, 220)}</small>}
               </td>)}
             </tr>)}
@@ -216,7 +221,7 @@ function CrossCut({ result, onOpen }) {
           <thead><tr><th>Deal</th><th>Signing</th>{result.columns.map((col) => <th key={col.field}>{col.label}</th>)}</tr></thead>
           <tbody>{result.rows.map((row) => <tr key={row.deal_id}>
             <td>{row.deal_name}</td><td className="mtx-mono">{row.signing_date || '-'}</td>
-            {row.cells.map((cell, i) => <td key={i} className="mtx-mono mtx-prov-cell" title={cell.verbatim_quote || ''} onClick={() => onOpen({ ...cell, card_id: row.card_id, deal_id: row.deal_id })}>{formatValue(cell.value)}{cell._prov && <ProvBadge prov={cell._prov} />}</td>)}
+            {row.cells.map((cell, i) => <td key={i} className="mtx-mono mtx-prov-cell" title={cell.verbatim_quote || ''} onClick={() => onOpen({ ...cell, card_id: row.card_id, deal_id: row.deal_id })}>{formatValue(cell.value, result.columns[i] && result.columns[i].field)}{cell._prov && <ProvBadge prov={cell._prov} />}</td>)}
           </tr>)}</tbody>
         </table>
       </div>
@@ -240,7 +245,7 @@ function MarketRange({ result, onOpen }) {
       </div>
       <details>
         <summary>Underlying deals</summary>
-        <table className="mtx-table"><tbody>{result.deal_points.map((point) => <tr key={`${point.deal_id}-${point.card_id}`} onClick={() => onOpen(point)}><td>{point.deal_name}</td><td className="mtx-mono mtx-prov-cell">{formatValue(point.value)}{point._prov && <ProvBadge prov={point._prov} />}</td><td className="mtx-mono">{point.quote_section_ref || '-'}</td></tr>)}</tbody></table>
+        <table className="mtx-table"><tbody>{result.deal_points.map((point) => <tr key={`${point.deal_id}-${point.card_id}`} onClick={() => onOpen(point)}><td>{point.deal_name}</td><td className="mtx-mono mtx-prov-cell">{formatValue(point.value, result.field_path)}{point._prov && <ProvBadge prov={point._prov} />}</td><td className="mtx-mono">{point.quote_section_ref || '-'}</td></tr>)}</tbody></table>
       </details>
     </Panel>
   );
@@ -251,11 +256,23 @@ function FilterList({ result }) {
     <Panel>
       <div className="chips">{result.filters_applied.map((f, i) => <span key={i} className="mtx-badge filterChip" title={`${f.field} ${f.op} ${String(f.value)}`}>{describeFilter(f).text}</span>)}</div>
       <table className="mtx-table"><thead><tr><th>Deal</th><th>Signing</th><th>Value</th><th>Consideration</th><th>Matched hits</th></tr></thead>
-        <tbody>{result.rows.map((row) => <tr key={row.deal_id} onClick={() => { window.location.href = `/review/${row.deal_id}`; }}><td>{row.deal_name}</td><td className="mtx-mono">{row.signing_date || '-'}</td><td className="mtx-mono">{formatValue(row.columns.total_deal_value)}</td><td>{row.columns.consideration_type || '-'}</td><td className="mtx-mono">{row.matched_provision_hits.length} matches</td></tr>)}</tbody>
+        <tbody>{result.rows.map((row) => <tr key={row.deal_id} onClick={() => { window.location.href = `/review/${row.deal_id}`; }}><td>{row.deal_name}</td><td className="mtx-mono">{row.signing_date || '-'}</td><td className="mtx-mono">{formatValue(row.columns.total_deal_value, 'total_deal_value')}</td><td>{prettifyEnumValue('considerationType', row.columns.consideration_type) || '-'}</td><td className="mtx-mono">{pluralize(row.matched_provision_hits.length, 'match', 'matches')}</td></tr>)}</tbody>
       </table>
     </Panel>
   );
 }
+
+// E5 (2026-07-19 pre-demo audit): DEAL_TO_MARKET's status is an internal
+// scoreValue() enum (lib/query/market-baseline.js), not a provision feature
+// — no taxonomy dictionary applies, so it needs its own small label map
+// rather than routing through prettifyEnumValue.
+const STATUS_LABELS = {
+  MARKET: 'Market',
+  OFF_MARKET: 'Off-market',
+  UNUSUAL: 'Unusual',
+  MISSING: 'Missing',
+  NOT_APPLICABLE: 'Not applicable',
+};
 
 function DealToMarket({ result, onOpen }) {
   const order = ['UNUSUAL', 'OFF_MARKET', 'MARKET', 'MISSING'];
@@ -267,7 +284,7 @@ function DealToMarket({ result, onOpen }) {
       {order.map((status) => {
         const rows = result.scorecard.filter((row) => row.status === status);
         if (!rows.length) return null;
-        return <section key={status}><h2>{status.replace(/_/g, '-')} ({rows.length})</h2><table className="mtx-table"><tbody>{rows.map((row) => <tr key={`${row.provision_type}-${row.field_path}`} className={status.toLowerCase()} onClick={() => onOpen(row)}><td>{row.field_label}</td><td className="mtx-mono mtx-prov-cell">{formatValue(row.deal_value)}{row._prov && <ProvBadge prov={row._prov} />}</td><td className="mtx-mono">{baseline(row.baseline_stats)}</td><td>{row.status}</td></tr>)}</tbody></table></section>;
+        return <section key={status}><h2>{STATUS_LABELS[status] || status.replace(/_/g, '-')} ({rows.length})</h2><table className="mtx-table"><tbody>{rows.map((row) => <tr key={`${row.provision_type}-${row.field_path}`} className={status.toLowerCase()} onClick={() => onOpen(row)}><td>{row.field_label}</td><td className="mtx-mono mtx-prov-cell">{formatValue(row.deal_value, row.field_path)}{row._prov && <ProvBadge prov={row._prov} />}</td><td className="mtx-mono">{baseline(row.baseline_stats)}</td><td>{STATUS_LABELS[row.status] || row.status}</td></tr>)}</tbody></table></section>;
       })}
     </Panel>
   );
@@ -312,17 +329,56 @@ function Drilldown({ item, onClose }) {
   );
 }
 
-function formatValue(value) {
+// E1/B3 (2026-07-19 pre-demo audit): a raw feature/deal-meta value can be a
+// bare USD amount (companyTerminationFee's amount, deals.value_usd) with no
+// type tag telling this generic renderer "this one's money" — every query
+// tile (DEAL_COMPARE cells, FILTER_THEN_LIST's Value column, MARKET_RANGE,
+// DEAL_TO_MARKET) hits the same formatValue() with just a bare number, so a
+// $65.5M fee or an $11.5B deal value rendered as "65533735"/"11500000000".
+// Percentages/day-counts/etc. never realistically reach 7 figures, so
+// >= 1e6 is a safe, field-agnostic money signal — same threshold/shape as
+// components/review-v2/DealHeader.jsx's formatDealValue(), reused here
+// rather than reinvented (that component isn't importable into this page's
+// bundle cleanly, so the small pure function is duplicated, not re-derived).
+function trimOneDecimal(x) {
+  const s = x.toFixed(1);
+  return s.endsWith('.0') ? s.slice(0, -2) : s;
+}
+
+function formatMoney(n) {
+  const sign = n < 0 ? '-' : '';
+  const abs = Math.abs(n);
+  if (abs >= 1e9) {
+    const b = abs / 1e9;
+    return `${sign}$${b >= 100 ? Math.round(b) : trimOneDecimal(b)}B`;
+  }
+  const m = abs / 1e6;
+  return `${sign}$${m >= 100 ? Math.round(m) : trimOneDecimal(m)}M`;
+}
+
+// `fieldPath` is optional — pass the requesting field/column key (e.g.
+// 'considerationType', 'goShopPresent') so bare enum codes route through
+// the same label path the review page uses (prettifyEnumValue) instead of
+// rendering the raw extraction code. Callers with no field context (or a
+// field prettifyEnumValue doesn't recognize) get the value back unchanged.
+function formatValue(value, fieldPath) {
   if (value === null || value === undefined || value === '') return '-';
   if (typeof value === 'boolean') return value ? 'Yes' : 'No';
-  if (typeof value === 'number') return round(value);
-  return String(value);
+  if (typeof value === 'number') {
+    if (Math.abs(value) >= 1e6) return formatMoney(value);
+    return round(value);
+  }
+  return prettifyEnumValue(fieldPath || '', String(value));
 }
 
 function round(value) {
   const n = Number(value);
   if (!Number.isFinite(n)) return '-';
   return n.toFixed(2).replace(/\.00$/, '').replace(/(\.\d)0$/, '$1');
+}
+
+function pluralize(n, singular, plural) {
+  return `${n} ${n === 1 ? singular : (plural || `${singular}s`)}`;
 }
 
 function baseline(stats) {

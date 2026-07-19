@@ -6,6 +6,16 @@ function fail(res, status, error) {
   return res.status(status).json({ error });
 }
 
+// E4 (2026-07-19 pre-demo audit): a non-uuid `id` (garbage in the URL, a
+// stray trailing token, a hand-typed slug) reached fetchReviewDealCards()'s
+// Supabase `.eq('id', dealId)` queries unchecked. Postgres's uuid column
+// rejects the literal at the SQL level ("invalid input syntax for type
+// uuid"), which surfaced as a generic thrown Error and got mapped to a 500
+// below — reads as a server bug, not "this deal doesn't exist". Reject the
+// obviously-malformed shape up front as a 404, same as a well-formed uuid
+// that just doesn't match any row.
+const UUID_RE = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET');
@@ -14,6 +24,7 @@ export default async function handler(req, res) {
 
   const dealId = Array.isArray(req.query.id) ? req.query.id[0] : req.query.id;
   if (!dealId) return fail(res, 400, 'deal id required');
+  if (!UUID_RE.test(dealId)) return fail(res, 404, 'Deal not found');
   const rawMode = Array.isArray(req.query.mode) ? req.query.mode[0] : req.query.mode;
   const mode = rawMode === 'admin' ? 'admin' : 'user';
 
