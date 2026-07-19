@@ -22,7 +22,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import { describeFilter } from '../../lib/query/filter-labels';
-import { PROVISION_TYPES, OpSelect, ProvisionTypeSelect, FilterValueInput, FieldSelect } from './QueryFilterControls';
+import { PROVISION_TYPES, OpSelect, ProvisionTypeSelect, FieldSelect, KindTabs, ValueControl, defaultsForField, opsForFieldType } from './QueryFilterControls';
+import { fieldOption } from '../../lib/query/field-options';
 // Reuses the deals-index column registry's consideration-type label map
 // (the "existing field-label helper" for deal-level values — item 3's ask
 // to check before writing new ones) so "CASH_PLUS_CVR" reads as
@@ -158,12 +159,11 @@ export default function QueryLaunchBox({ deals: dealsProp, showTitle = true, def
           </div>
         )}
 
-        <label className="mtx-meta-label qlbKind">
-          Query type
-          <select className="mtx-select" value={kind} onChange={(e) => setKind(e.target.value)}>
-            {Object.keys(KIND_LABELS).map((k) => <option key={k} value={k}>{KIND_LABELS[k]}</option>)}
-          </select>
-        </label>
+        {/* Ben r7: query types as TABS to flick between, not a dropdown. */}
+        <div className="qlbKindTabs">
+          <span className="mtx-meta-label">Query type</span>
+          <KindTabs kinds={Object.keys(KIND_LABELS)} labels={KIND_LABELS} value={kind} onChange={setKind} />
+        </div>
 
         {/* Deal-type filter — available at this first stage, not buried
             below provision-level fields (Ben's explicit ask). Works for
@@ -192,15 +192,27 @@ export default function QueryLaunchBox({ deals: dealsProp, showTitle = true, def
 
         {kind === 'FILTER_THEN_LIST' && (
           <div className="qlbFilters">
+            {/* Ben r7: each refinement is its own bordered BLOCK, with a
+                "+" to add more filters. Value control is registry-typed
+                (Yes/No, enum options, number) — never raw free text for a
+                field that has real options. */}
             {filters.map((f, i) => (
-              <div className="qlbRow" key={i}>
-                <ProvisionTypeSelect value={f.provision_type} onChange={(v) => update(i, { provision_type: v, field: '' })} types={PROVISION_TYPES} />
-                <FieldSelect provisionType={f.provision_type} value={f.field} onChange={(v) => update(i, { field: v })} />
-                <OpSelect value={f.op} onChange={(v) => update(i, { op: v })} />
-                <FilterValueInput value={f.value} onChange={(v) => update(i, { value: v })} />
+              <div className="qlbBlock" key={i}>
+                <div className="qlbRow">
+                  <ProvisionTypeSelect value={f.provision_type} onChange={(v) => update(i, { provision_type: v, field: '', value: '' })} types={PROVISION_TYPES} />
+                  <FieldSelect provisionType={f.provision_type} value={f.field} onChange={(v) => update(i, { field: v, ...defaultsForField(f.provision_type, v) })} />
+                  <OpSelect value={f.op} onChange={(v) => update(i, { op: v })} ops={opsForFieldType(fieldOption(f.provision_type, f.field)?.type)} />
+                  <ValueControl provisionType={f.provision_type} fieldKey={f.field} value={f.value} onChange={(v) => update(i, { value: v })} />
+                </div>
+                {filters.length > 1 && (
+                  <button type="button" className="qlbBlockRemove" aria-label="Remove filter" onClick={() => setFilters(filters.filter((_, idx) => idx !== i))}>×</button>
+                )}
               </div>
             ))}
-            <p className="qlbPreview">{describeFilter(filters[0]).text}{dealTypes.length ? ` · Deal type · is one of · ${dealTypes.map((t) => considerationTypeDisplay(t) || t).join(', ')}` : ''}</p>
+            <button type="button" className="qlbAddFilter" onClick={() => setFilters([...filters, { provision_type: filters[filters.length - 1]?.provision_type || 'COVENANT_NO_SOLICITATION', field: '', op: 'eq', value: '' }])}>
+              + Add a filter
+            </button>
+            <p className="qlbPreview">{filters.map((f) => describeFilter(f).text).join(' · and · ')}{dealTypes.length ? ` · Deal type · is one of · ${dealTypes.map((t) => considerationTypeDisplay(t) || t).join(', ')}` : ''}</p>
           </div>
         )}
 
@@ -225,8 +237,12 @@ export default function QueryLaunchBox({ deals: dealsProp, showTitle = true, def
         .qlb { border: 1px solid var(--line, #E0E0E0); background: #fff; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; font-family: var(--mtx-sans); }
         .qlbHead h2 { margin: 0 0 3px; font-size: 14px; font-weight: 700; color: var(--ink, #1F1F1F); font-family: var(--mtx-sans); }
         .qlbHead p { margin: 0; font-size: 12px; color: var(--ink-light, #6B6B6B); font-family: var(--mtx-sans); }
-        .qlbKind { max-width: 260px; }
-        .qlbKind select { width: 100%; margin-top: 6px; }
+        .qlbKindTabs { display: flex; flex-direction: column; gap: 6px; }
+        .qlbBlock { position: relative; border: 1px solid var(--line, #E0E0E0); background: var(--paper-2, #FAFAFA); padding: 10px 34px 10px 10px; }
+        .qlbBlockRemove { position: absolute; top: 6px; right: 8px; border: 0; background: transparent; color: var(--ink-light, #6B6B6B); font-size: 14px; cursor: pointer; padding: 2px 4px; }
+        .qlbBlockRemove:hover { color: #B14E63; }
+        .qlbAddFilter { align-self: flex-start; border: 1px dashed var(--line, #E0E0E0); background: #fff; color: var(--ink, #1F1F1F); font-family: var(--mtx-sans); font-size: 12px; padding: 6px 12px; cursor: pointer; }
+        .qlbAddFilter:hover { background: var(--paper-2, #F6F6F6); border-color: var(--ink-light, #6B6B6B); }
         .qlbDealType { display: flex; flex-direction: column; gap: 6px; }
         .qlbChips { display: flex; flex-wrap: wrap; gap: 6px; }
         .qlbChip { border: 1px solid var(--line, #E0E0E0); background: #fff; color: var(--ink, #1F1F1F); font-family: var(--mtx-sans); font-size: 12px; font-weight: 600; padding: 5px 10px; cursor: pointer; }

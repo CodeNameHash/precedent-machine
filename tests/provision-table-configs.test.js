@@ -3207,3 +3207,58 @@ test('no-other-reps fraud config routes the Metsera §9.07 Anti-Reliance card (t
   assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-fraud').status, 'Present');
   assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-extra-contractual'), undefined);
 });
+
+// QXO/TopBuild (r7): two-party IOC decks — §4.1 Interim Operations of the
+// Company + §4.2 Interim Operations of Parent, every card baked
+// party_scope=MUTUAL, positive covenants living on subtype-less chapeau
+// cards whose limb payloads are double-JSON-encoded, and the Parent chapeau
+// mis-stamped with section_ref 4.1 (party MUST resolve from the clause
+// text, never the ref).
+function qxoFixture() {
+  return [
+    {
+      id: 'ch-t', provision_type: 'COVENANT_INTERIM_OPERATING', party_scope: 'MUTUAL',
+      short_title: 'General / Preamble', section_ref: '4.1 | General / Preamble | h1',
+      primary_quote: '4.1 Interim Operations of the Company. From the date of this Agreement the Company covenants and agrees as follows',
+      features: { positiveObligations: [{ text: '{"appliesTo":["PROPERTIES","ASSETS"],"obligation":"maintain all leases and all personal property material to the Company"}' }] },
+    },
+    {
+      id: 'ch-b', provision_type: 'COVENANT_INTERIM_OPERATING', party_scope: 'MUTUAL',
+      short_title: 'General / Preamble', section_ref: '4.1 | General / Preamble | h2',
+      primary_quote: '4.2 Interim Operations of Parent. From the date of this Agreement Parent covenants and agrees as follows',
+      features: { positiveObligations: [{ text: '{"appliesTo":["PROPERTIES","ASSETS"],"obligation":"maintain all leases and all personal property material to Parent"}' }] },
+    },
+    { id: 'n-t', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-CHARTER', party_scope: 'MUTUAL', short_title: 'Charter / Bylaws Amendments', section_ref: '4.1(i) | Charter / Bylaws Amendments | h3', features: {} },
+    { id: 'n-b', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-CHARTER', party_scope: 'MUTUAL', short_title: 'Charter / Bylaws Amendments', section_ref: '4.2(i) | Charter / Bylaws Amendments | h4', features: {} },
+  ];
+}
+
+test('r7: two-party IOC deck resolves band->party labels from band order, chapeau party from text', () => {
+  const cards = qxoFixture();
+  const map = iocMod.bandPartyLabels(cards);
+  assert.ok(map, 'two named-negative bands -> party map');
+  assert.equal(map.get('4.1'), 'Company');
+  assert.equal(map.get('4.2'), 'Parent');
+  assert.equal(iocMod.cardPartyFromText(cards[0]), 'Company');
+  assert.equal(iocMod.cardPartyFromText(cards[1]), 'Parent', 'Parent chapeau resolves from TEXT despite its section_ref saying 4.1');
+});
+
+test('r7: chapeau positive covenants render as affirmative rows (double-encoded limbs unwrapped), never as fragments', () => {
+  const cards = qxoFixture();
+  assert.equal(iocMod.fragmentCards(cards).length, 0, 'chapeau cards are not unclassified fragments');
+  const rows = iocMod.affirmativeRows(cards, { primitives: iocPrimitives });
+  assert.equal(rows.length, 2, 'one affirmative row per party chapeau limb');
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, rows.map((r, i) => React.createElement('div', { key: i }, r.label, r.children))));
+  assert.match(html, /Company — ordinary course &amp; preservation/);
+  assert.match(html, /Parent — ordinary course &amp; preservation/);
+  assert.match(html, /maintain all leases/, 'double-encoded limb obligation is unwrapped and rendered');
+  assert.match(html, /Properties/i, 'appliesTo scope resolves to pills after unwrapping');
+});
+
+test('r7: single-band deck gets no party map and renders exactly as before', () => {
+  const cards = [
+    { id: 'm1', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-MERGE', section_ref: '5.01(g) | M&A | x', features: {} },
+    { id: 'm2', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-DIVIDEND', section_ref: '5.01(e) | Dividends | y', features: {} },
+  ];
+  assert.equal(iocMod.bandPartyLabels(cards), null);
+});

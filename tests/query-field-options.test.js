@@ -22,8 +22,13 @@ function regenerate() {
   for (const pt of types.PROVISION_CARD_TYPES) {
     const derived = Object.entries(DERIVED_FIELDS)
       .filter(([, def]) => !def.provisionType || def.provisionType === pt)
-      .map(([key, def]) => ({ key, label: cleanLabel(def.label) || key }));
-    const defs = types.featureDefsForWpType(pt).map((d) => ({ key: d.key, label: cleanLabel(d.label) || d.key }));
+      .map(([key, def]) => ({ key, label: cleanLabel(def.label) || key, type: def.type || 'text' }));
+    const defs = types.featureDefsForWpType(pt).map((d) => ({
+      key: d.key,
+      label: cleanLabel(d.label) || d.key,
+      type: d.type || 'text',
+      ...(Array.isArray(d.options) && d.options.length ? { options: d.options } : {}),
+    }));
     const seen = new Set();
     map[pt] = [...derived, ...defs]
       .filter((o) => o.key && !seen.has(o.key) && seen.add(o.key))

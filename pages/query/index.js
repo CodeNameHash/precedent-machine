@@ -5,7 +5,8 @@ import { useRouter } from 'next/router';
 import MergertraceStyles from '../../components/review-v2/MergertraceStyles';
 import AppHeader from '../../components/chrome/AppHeader';
 import { humanizeKey, describeFilter } from '../../lib/query/filter-labels';
-import { PROVISION_TYPES, OpSelect, ProvisionTypeSelect, FilterValueInput, FieldSelect } from '../../components/query/QueryFilterControls';
+import { PROVISION_TYPES, OpSelect, ProvisionTypeSelect, FieldSelect, KindTabs, ValueControl, defaultsForField, opsForFieldType } from '../../components/query/QueryFilterControls';
+import { fieldOption } from '../../lib/query/field-options';
 
 QueryIndexPage.noLayout = true;
 
@@ -305,9 +306,7 @@ function BuilderSection({ deals, schemas, router }) {
       <div className="builder">
         <label className="mtx-meta-label">
           Kind
-          <select className="mtx-select" value={kind} onChange={(e) => setKind(e.target.value)}>
-            {Object.keys(KIND_LABELS).map((k) => <option key={k} value={k}>{KIND_LABELS[k]}</option>)}
-          </select>
+          <KindTabs kinds={Object.keys(KIND_LABELS)} labels={KIND_LABELS} value={kind} onChange={setKind} />
         </label>
         {requiredSentence && <p className="req">{requiredSentence}</p>}
 
@@ -386,10 +385,10 @@ function FilterListBuilder({ filters, setFilters, provisionTypes }) {
     <div className="fb">
       {filters.map((f, i) => (
         <div className="frow" key={i}>
-          <ProvisionTypeSelect value={f.provision_type} onChange={(v) => update(i, { provision_type: v, field: '' })} types={provisionTypes} />
-          <FieldSelect provisionType={f.provision_type} value={f.field} onChange={(v) => update(i, { field: v })} />
-          <OpSelect value={f.op} onChange={(v) => update(i, { op: v })} />
-          <FilterValueInput value={f.value} onChange={(v) => update(i, { value: v })} />
+          <ProvisionTypeSelect value={f.provision_type} onChange={(v) => update(i, { provision_type: v, field: '', value: '' })} types={provisionTypes} />
+          <FieldSelect provisionType={f.provision_type} value={f.field} onChange={(v) => update(i, { field: v, ...defaultsForField(f.provision_type, v) })} />
+          <OpSelect value={f.op} onChange={(v) => update(i, { op: v })} ops={opsForFieldType(fieldOption(f.provision_type, f.field)?.type)} />
+          <ValueControl provisionType={f.provision_type} fieldKey={f.field} value={f.value} onChange={(v) => update(i, { value: v })} />
           <span className="preview">{describeFilter(f).text}</span>
           <button type="button" className="mtx-btn" onClick={() => setFilters(filters.filter((_, idx) => idx !== i))}>Remove</button>
         </div>
