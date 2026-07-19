@@ -3243,16 +3243,33 @@ test('r7: two-party IOC deck resolves band->party labels from band order, chapea
   assert.equal(iocMod.cardPartyFromText(cards[1]), 'Parent', 'Parent chapeau resolves from TEXT despite its section_ref saying 4.1');
 });
 
-test('r7: chapeau positive covenants render as affirmative rows (double-encoded limbs unwrapped), never as fragments', () => {
+test('r7/r8: chapeau positive covenants render as affirmative rows (double-encoded limbs unwrapped), never as fragments', () => {
   const cards = qxoFixture();
   assert.equal(iocMod.fragmentCards(cards).length, 0, 'chapeau cards are not unclassified fragments');
   const rows = iocMod.affirmativeRows(cards, { primitives: iocPrimitives });
   assert.equal(rows.length, 2, 'one affirmative row per party chapeau limb');
   const html = renderToStaticMarkup(React.createElement(React.Fragment, null, rows.map((r, i) => React.createElement('div', { key: i }, r.label, r.children))));
-  assert.match(html, /Company — ordinary course &amp; preservation/);
-  assert.match(html, /Parent — ordinary course &amp; preservation/);
+  assert.match(html, /Maintain all leases and all personal property/, 'limb-derived row title (r8: no five identical "Ordinary course" rows)');
   assert.match(html, /maintain all leases/, 'double-encoded limb obligation is unwrapped and rendered');
   assert.match(html, /Properties/i, 'appliesTo scope resolves to pills after unwrapping');
+});
+
+// r8: two-party decks split into two SECTIONS ("— Target" / "— Parent"),
+// mirroring the reps tables, instead of per-party bands in one section.
+test('r8: partitionIocCardsByParty routes chapeau cards by TEXT and enumerated cards by band; sections gate on it', () => {
+  const cards = qxoFixture();
+  const split = iocMod.partitionIocCardsByParty(cards);
+  assert.ok(split);
+  assert.deepEqual(split.Company.map((c) => c.id).sort(), ['ch-t', 'n-t']);
+  assert.deepEqual(split.Parent.map((c) => c.id).sort(), ['ch-b', 'n-b'], 'Parent chapeau routed by text despite section_ref 4.1');
+  const reviewDeal = { cards };
+  assert.equal(iocMod.iocExceptionsConfig.selectRows(reviewDeal).length, 1, 'target section renders');
+  assert.equal(iocMod.parentIocExceptionsConfig.selectRows(reviewDeal).length, 1, 'parent section renders on two-party decks');
+  const singleBand = { cards: [
+    { id: 'm1', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-MERGE', section_ref: '5.01(g) | M&A | x', features: {} },
+  ] };
+  assert.equal(iocMod.iocExceptionsConfig.selectRows(singleBand).length, 1, 'single-band deck keeps everything in the target section');
+  assert.equal(iocMod.parentIocExceptionsConfig.selectRows(singleBand).length, 0, 'no parent section on single-band decks');
 });
 
 test('r7: single-band deck gets no party map and renders exactly as before', () => {

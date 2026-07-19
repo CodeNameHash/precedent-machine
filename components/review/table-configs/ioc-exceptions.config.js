@@ -265,6 +265,33 @@ function bandPartyLabels(cards) {
   return new Map([[bands[0], 'Company'], [bands[1], 'Parent']]);
 }
 
+// Ben r8: two-party decks render as TWO SECTIONS ("Interim Operating
+// Covenants — Target" / "— Parent"), the same shape the reps tables use —
+// not one section with per-party bands. This partitions the IOC deck:
+//  - a card whose own text carries chapeau party language wins (QXO's
+//    Parent chapeau is mis-stamped section_ref 4.1 — text beats refs);
+//  - otherwise the card's section band decides (first band = target).
+// Returns null for single-band decks: everything stays in the one
+// (target) section exactly as before.
+function partitionIocCardsByParty(cards) {
+  const partyByBand = bandPartyLabels(cards);
+  if (!partyByBand) return null;
+  const out = { Company: [], Parent: [] };
+  for (const card of cards) {
+    const textParty = cardPartyFromText(card);
+    const bandParty = partyByBand.get(sectionBand(card));
+    out[textParty || bandParty || 'Company'].push(card);
+  }
+  return out;
+}
+
+function iocCardsForParty(reviewDeal, party) {
+  const cards = (reviewDeal?.cards || []).filter(isIocCard);
+  const split = partitionIocCardsByParty(cards);
+  if (!split) return party === 'Company' ? cards : [];
+  return split[party] || [];
+}
+
 // Groups the NAMED negative covenants (has a real provision_subtype, is not
 // a general-exceptions/affirmative container) by (section band, canonical
 // code) -- see sectionBand's doc comment above for why band is part of the
@@ -532,11 +559,13 @@ function buildOtherRestrictionsRows(fragments, ctx) {
       || (entries.length ? entries[0].label : null)
       || (section ? `§${section}` : `Item ${index + 1}`);
     const label = section && !name.startsWith('§') ? `${name} · §${section}` : name;
-    const pills = (entries.length && PillCell)
+    // r8 duplicate audit: never repeat the row's own name as a pill.
+    const pillEntries = entries.filter((e) => e.label !== name);
+    const pills = (pillEntries.length && PillCell)
       ? React.createElement(
         'div',
         { className: 'flex flex-wrap gap-1' },
-        entries.map((e, j) => pillFor(PillCell, `frag-${card.id || index}-${j}`, e.label, 'neutral', e.evidence, e.source, undefined, true)),
+        pillEntries.map((e, j) => pillFor(PillCell, `frag-${card.id || index}-${j}`, e.label, 'neutral', e.evidence, e.source, undefined, true)),
       )
       : null;
     const clause = textOf(card);
@@ -595,6 +624,20 @@ function normalizeLimb(limb) {
   return limb;
 }
 
+// Short row title off a limb's own obligation text ("maintain all leases
+// and all personal property (reasonable wear and tear excepted) that..."
+// -> "Maintain all leases and all personal property"). First clause only,
+// parentheticals stripped, sentence-cased, bounded.
+function limbShortTitle(limb) {
+  const raw = valueText(limb?.obligation);
+  if (!raw) return null;
+  let t = String(raw).replace(/\([^)]*\)/g, ' ').replace(/\s+/g, ' ').trim();
+  t = t.split(/[,;]/)[0].trim();
+  if (t.length > 64) t = `${t.slice(0, 64).replace(/\s+\S*$/, '')}…`;
+  if (!t) return null;
+  return t.charAt(0).toUpperCase() + t.slice(1);
+}
+
 function affirmativeRows(cards, ctx) {
   const PillCell = ctx?.primitives?.PillCell;
   const rows = [];
@@ -614,12 +657,14 @@ function affirmativeRows(cards, ctx) {
     // Chapeau cards contain their own party language, so text attribution
     // works even where the section_ref is wrong (QXO's Parent chapeau is
     // stamped section_ref 4.1).
-    const party = cardPartyFromText(card);
     const genericTitle = /general|preamble/i.test(String(card.short_title || ''));
-    const rowTitle = genericTitle
-      ? (party ? `${party} — ordinary course & preservation` : 'Ordinary course & preservation')
-      : (card.short_title || card.defined_term || 'Affirmative covenant');
     limbs.forEach((limb, limbIndex) => {
+      // r8 duplicate audit: a chapeau card carries SEVERAL limbs — five
+      // identical "Ordinary course & preservation" rows read as duplicates.
+      // Each limb row takes a short title from its own obligation text.
+      const rowTitle = genericTitle
+        ? (limbShortTitle(limb) || `Ordinary course & preservation${limbs.length > 1 ? ` (${limbIndex + 1})` : ''}`)
+        : (card.short_title || card.defined_term || 'Affirmative covenant');
       const scopeEntries = exceptionEntries(limb?.appliesTo, IOC_AFFIRMATIVE_SCOPE_CODES, card);
       const carveout = features.ordinaryCourseCarveout === true || limb?.ordinaryCourseCarveout === true;
       const obligationText = valueText(limb?.obligation) || textOf(card);
@@ -725,82 +770,88 @@ function renderIocFooter() {
   return null;
 }
 
-const iocExceptionsConfig = {
-  id: 'ioc-exceptions',
-  title: 'Interim Operating Covenants',
-  layoutSlot: 'ioc',
-  // Row-shape independent of ctx (primitives) so hasRows checks in
-  // pages/review/[id].js (which call selectRows without ctx) still work; the
-  // actual grouped body is rebuilt with primitives at render time via the
-  // 'body' column below (same contract as conditions.config.js).
-  selectRows(reviewDeal) {
-    const cards = (reviewDeal?.cards || []).filter(isIocCard);
-    if (!cards.length) return [];
-    return [{ id: 'ioc-body', reviewDeal }];
-  },
-  columns: [
-    {
-      id: 'body',
-      header: '',
-      renderCell(row, ctx) {
-        const GroupedSubRows = ctx?.primitives?.GroupedSubRows;
-        if (!GroupedSubRows) return null;
-        const cards = (row.reviewDeal?.cards || []).filter(isIocCard);
-        const negativeRows = negativeCovenantGroups(cards).map((group) => renderNegativeRow(buildNegativeRow(group), ctx));
-        const otherRows = buildOtherRestrictionsRows(fragmentCards(cards), ctx);
-        const exceptionsRows = buildIocExceptionsRows(cards, ctx);
-        // Old-site render order (OLD-review-page.js's IocAffirmativeCovenantsTable
-        // ahead of IocNegativeCovenantsTable) puts the affirmative limbs FIRST --
-        // REBUILD-SPECS.md section 6 / FEEDBACK-2-PUNCHLIST.md #29. The
-        // section-wide "Exceptions" band comes right after the affirmative
-        // covenants -- and before the negative covenants -- so a reader sees
-        // the chapeau carve-outs before the enumerated restrictions they
-        // qualify (this used to render only as a bottom-of-table coverage
-        // count, well AFTER both the negative covenants AND the unclassified
-        // fragments; see buildIocExceptionsRows' header comment). Negative
-        // covenants (the named rows) come next, with the near-empty fragments
-        // collapsed into the lowest-priority "Other restrictions" band last.
-        // Two-party decks (QXO: §4.1 Company + §4.2 Parent) split the
-        // negative covenants into one labelled band PER PARTY — otherwise
-        // "Charter / Bylaws Amendments" renders twice with no way to tell
-        // whose covenant it is. Single-band decks keep the single
-        // "Negative covenants" band exactly as before.
-        const partyByBand = bandPartyLabels(cards);
-        const negativeGroups = partyByBand
-          ? [...partyByBand.entries()].map(([band, party]) => ({
-            id: `negative-${band}`,
-            label: `Negative covenants — ${party}`,
-            rows: negativeRows.filter((r) => r.band === band),
-          }))
-          : [{ id: 'negative', label: 'Negative covenants', rows: negativeRows }];
-        const groups = [
-          { id: 'affirmative', label: 'Affirmative covenants', rows: affirmativeRows(cards, ctx) },
-          { id: 'exceptions', label: 'Exceptions', rows: exceptionsRows },
-          ...negativeGroups,
-          { id: 'other', label: 'Other restrictions', rows: otherRows },
-        ];
-        // Item 2 (r5): same onSelectCard/resolveCard/selectedCardId wiring
-        // conditions.config.js/nosol-section.config.js use -- only rows that
-        // set `card` above (negativeRows today) resolve to a real card;
-        // others render exactly as before (no dead cursor).
-        return React.createElement(GroupedSubRows, {
-          groups,
-          emptyCopy: 'No interim operating covenants found.',
-          onSelectCard: ctx.onSelectCard,
-          resolveCard: ctx.resolveCard,
-          selectedCardId: ctx.selectedCardId,
-        });
-      },
+// Ben r8: the section itself is party-scoped ("— Target" / "— Parent",
+// mirroring the reps tables), so the body renders ONE plain band set — no
+// per-party band labels inside a section. The parent section only surfaces
+// on two-party decks (selectRows returns [] otherwise, so hasRows hides it).
+function buildIocConfig({ id, title, party }) {
+  return {
+    id,
+    title,
+    layoutSlot: 'ioc',
+    // Row-shape independent of ctx (primitives) so hasRows checks in
+    // pages/review/[id].js (which call selectRows without ctx) still work;
+    // the actual grouped body is rebuilt with primitives at render time via
+    // the 'body' column below (same contract as conditions.config.js).
+    selectRows(reviewDeal) {
+      const cards = iocCardsForParty(reviewDeal, party);
+      if (!cards.length) return [];
+      return [{ id: `${id}-body`, reviewDeal }];
     },
-  ],
-  renderFooter: renderIocFooter,
-  empty: { copy: 'No IOC cards found.' },
-};
+    columns: [
+      {
+        id: 'body',
+        header: '',
+        renderCell(row, ctx) {
+          const GroupedSubRows = ctx?.primitives?.GroupedSubRows;
+          if (!GroupedSubRows) return null;
+          const cards = iocCardsForParty(row.reviewDeal, party);
+          const negativeRows = negativeCovenantGroups(cards).map((group) => renderNegativeRow(buildNegativeRow(group), ctx));
+          const otherRows = buildOtherRestrictionsRows(fragmentCards(cards), ctx);
+          const exceptionsRows = buildIocExceptionsRows(cards, ctx);
+          // Old-site render order (OLD-review-page.js's
+          // IocAffirmativeCovenantsTable ahead of IocNegativeCovenantsTable)
+          // puts the affirmative limbs FIRST -- REBUILD-SPECS.md section 6 /
+          // FEEDBACK-2-PUNCHLIST.md #29. The section-wide "Exceptions" band
+          // comes right after the affirmative covenants -- and before the
+          // negative covenants -- so a reader sees the chapeau carve-outs
+          // before the enumerated restrictions they qualify. Negative
+          // covenants (the named rows) come next, with the near-empty
+          // fragments in the lowest-priority "Other restrictions" band last.
+          const groups = [
+            { id: 'affirmative', label: 'Affirmative covenants', rows: affirmativeRows(cards, ctx) },
+            { id: 'exceptions', label: 'Exceptions', rows: exceptionsRows },
+            { id: 'negative', label: 'Negative covenants', rows: negativeRows },
+            { id: 'other', label: 'Other restrictions', rows: otherRows },
+          ];
+          // Item 2 (r5): same onSelectCard/resolveCard/selectedCardId wiring
+          // conditions.config.js/nosol-section.config.js use -- only rows
+          // that set `card` above resolve to a real card; others render
+          // exactly as before (no dead cursor).
+          return React.createElement(GroupedSubRows, {
+            groups,
+            emptyCopy: 'No interim operating covenants found.',
+            onSelectCard: ctx.onSelectCard,
+            resolveCard: ctx.resolveCard,
+            selectedCardId: ctx.selectedCardId,
+          });
+        },
+      },
+    ],
+  };
+}
+
+// Single-band decks (the overwhelming majority) show everything here — an
+// interim-operating section IS the target's conduct covenant on those deals.
+const iocExceptionsConfig = buildIocConfig({
+  id: 'ioc-exceptions',
+  title: 'Interim Operating Covenants — Target',
+  party: 'Company',
+});
+
+const parentIocExceptionsConfig = buildIocConfig({
+  id: 'parent-ioc-exceptions',
+  title: 'Interim Operating Covenants — Parent',
+  party: 'Parent',
+});
 
 export {
   affirmativeRows,
   buildIocExceptionsRows,
   bandPartyLabels,
+  parentIocExceptionsConfig,
+  partitionIocCardsByParty,
+  iocCardsForParty,
   buildOtherRestrictionsRows,
   cardPartyFromText,
   normalizeLimb,

@@ -13,7 +13,7 @@ import {
 } from '../review/table-configs/representations-qualifiers.config';
 import { materialContractsConfig } from '../review/table-configs/material-contracts.config';
 import { maeDefinitionsConfig } from '../review/table-configs/mae-definitions.config';
-import { iocExceptionsConfig } from '../review/table-configs/ioc-exceptions.config';
+import { iocExceptionsConfig, parentIocExceptionsConfig, partitionIocCardsByParty, isIocCard } from '../review/table-configs/ioc-exceptions.config';
 import { nosolSectionConfig } from '../review/table-configs/nosol-section.config';
 import { antitrustRegulatoryConfig } from '../review/table-configs/antitrust-regulatory.config';
 import { votesApprovalsMeetingConfig } from '../review/table-configs/votes-approvals-meeting.config';
@@ -36,6 +36,7 @@ export const REVIEW_V2_CONFIGS = [
   materialContractsConfig,
   maeDefinitionsConfig,
   iocExceptionsConfig,
+  parentIocExceptionsConfig,
   nosolSectionConfig,
   antitrustRegulatoryConfig,
   votesApprovalsMeetingConfig,
@@ -97,6 +98,15 @@ export function groupCardsBySection(reviewDeal) {
     }
     if (!bySection.has(sectionId)) bySection.set(sectionId, []);
     bySection.get(sectionId).push(card);
+  }
+  // Party-split override for two-party IOC decks (r8, mirroring the reps
+  // split above): partition needs the whole IOC deck for band ordering, so
+  // it runs as a post-pass rather than per-card.
+  const iocCards = (rd.cards || []).filter(isIocCard);
+  const iocSplit = partitionIocCardsByParty(iocCards);
+  if (iocSplit && iocSplit.Parent.length) {
+    bySection.set('ioc-exceptions', iocSplit.Company);
+    bySection.set('parent-ioc-exceptions', iocSplit.Parent);
   }
   return bySection;
 }
