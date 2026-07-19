@@ -132,6 +132,13 @@ function scopedFile(rel) {
 // trips the pattern against its own, correct, single definition. Exempt
 // only that pattern for that file; every other check still applies.
 const FILE_PATTERN_EXEMPTIONS = {
+  // TOOLTIP_MAX=600 is the bug-fingerprint for tooltip truncation on the
+  // NEW (Mergertrace) review surface — item 8 of UI-FEEDBACK-R3 killed
+  // tooltips there entirely. The constant legitimately survives in
+  // lib/citable.js solely for the legacy /review-v1 fallback page (its only
+  // remaining importer). Exempt the definition site; any NEW usage in v2
+  // components still trips the invariant.
+  'lib/citable.js': ['TOOLTIP_MAX\\s*=\\s*600'],
   'lib/taxonomy.js': ['Must defend \\(incl\\. appeals/final judgment\\)'],
   // Same situation as taxonomy.js: this canonical-dictionary PIN test
   // legitimately asserts `LITIGATION_OBLIGATION.MANDATORY_DEFEND`'s exact label
