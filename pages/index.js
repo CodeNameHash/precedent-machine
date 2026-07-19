@@ -4,6 +4,20 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import MergertraceStyles from '../components/review-v2/MergertraceStyles';
 import { COLUMNS, getColumn, defaultVisibleKeys, signedYear } from '../lib/deals-index-columns';
+import { getServiceSupabase } from '../lib/supabase';
+const { getHomeStaticProps } = require('../lib/home-static-props');
+
+// F3: ISR snapshot — fetches the same { deals, search_index } shape as
+// /api/home server-side at build/revalidate time, so the deals table
+// renders with real data on first paint with no client fetch wait. The
+// client-side fetch in HomePage still runs and hydrates over this if
+// there's a fresher payload; the table itself never re-blanks in between
+// (see the `data` fallback in the fetch effect below). Fail-soft logic
+// (Supabase env absent at build time, etc.) lives in
+// lib/home-static-props.js so it's unit-testable without a JSX transform.
+export async function getStaticProps() {
+  return getHomeStaticProps(getServiceSupabase);
+}
 
 HomePage.noLayout = true;
 
@@ -112,9 +126,14 @@ function ColumnHeaderPopover({ col, sort, onSort, activeFilters, options, onTogg
   );
 }
 
-export default function HomePage() {
+export default function HomePage({ initialData }) {
   const router = useRouter();
-  const [data, setData] = useState(null);
+  // F3: seed from the ISR snapshot (getStaticProps) so first paint already
+  // has the deal table, instead of starting blank and waiting on the
+  // client-side /api/home fetch below. The fetch effect only replaces
+  // `data` on success — a slower/failing client fetch never blanks a table
+  // that's already showing snapshot data.
+  const [data, setData] = useState(() => initialData || null);
   const [error, setError] = useState(null);
   const [selected, setSelected] = useState(() => new Set());
   const [search, setSearch] = useState('');
@@ -304,7 +323,10 @@ export default function HomePage() {
           <span className="login">Login</span>
         </header>
 
-        {error ? <main className="wrap"><div className="empty">{error}</div></main> : (
+        {/* F3: a failed client refresh should never blank a table that
+            already has snapshot/prior data — only show the error state when
+            there's truly nothing to render. */}
+        {error && !data ? <main className="wrap"><div className="empty">{error}</div></main> : (
           <main>
             <section className="operational">
               <div className="wrap">
