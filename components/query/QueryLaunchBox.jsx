@@ -23,12 +23,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import {
   ProvisionTypeSelect, FilterRow, coerceFilterForPayload, KindTabs,
+  DealFiltersBlock, buildDealFilterPayload, describeDealFilters,
 } from './QueryFilterControls';
-// Reuses the deals-index column registry's consideration-type label map
-// (the "existing field-label helper" for deal-level values — item 3's ask
-// to check before writing new ones) so "CASH_PLUS_CVR" reads as
-// "Cash + CVR" here the same way it does in the corpus table's Type column.
-import { considerationTypeDisplay } from '../../lib/deals-index-columns';
 
 const KIND_LABELS = {
   FILTER_THEN_LIST: 'Filter then list',
@@ -49,25 +45,6 @@ function encodePayloadClient(payload) {
   return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
-// Mirrors lib/query/types.js's considerationTypeRaw() resolution order
-// (headlineConsiderationType -> considerationType -> deal_facts.consideration
-// .summary) so the deal-type options offered here, and the deal_filter they
-// build, line up with what the query engine actually reads server-side.
-// Duplicated rather than imported: that module pulls in rubric.js/
-// expected-sets.js (Node-oriented, heavy for a client bundle) — see the
-// same tradeoff noted in components/query/QueryFilterControls.jsx.
-const NUMERIC_LEADING_RE = /^[\s$0-9.,%-]/;
-function dealConsiderationType(deal) {
-  const meta = deal && deal.metadata && typeof deal.metadata === 'object' ? deal.metadata : {};
-  const enumValue = meta.headlineConsiderationType || meta.considerationType || meta.consideration_type || null;
-  if (enumValue) return enumValue;
-  const facts = meta.deal_facts && typeof meta.deal_facts === 'object' ? meta.deal_facts : {};
-  const consideration = facts.consideration && typeof facts.consideration === 'object' ? facts.consideration : {};
-  const summary = consideration.summary;
-  if (typeof summary === 'string' && summary.trim() && !NUMERIC_LEADING_RE.test(summary.trim())) return summary;
-  return deal && deal.consideration_type ? deal.consideration_type : null;
-}
-
 function dealLabel(deal) {
   const meta = deal && deal.metadata && typeof deal.metadata === 'object' ? deal.metadata : {};
   const acquirer = meta.acquirer_display || deal.acquirer || 'Buyer';
@@ -79,7 +56,7 @@ export default function QueryLaunchBox({ deals: dealsProp, showTitle = true, def
   const router = useRouter();
   const [deals, setDeals] = useState(dealsProp || null);
   const [kind, setKind] = useState(defaultKind);
-  const [dealTypes, setDealTypes] = useState([]);
+  const [dealFilterValues, setDealFilterValues] = useState({ consideration_type: '', buyer: '', law_firm: '', sector: '', signing_year: '' });
   const [filters, setFilters] = useState([{ provision_type: 'COVENANT_NO_SOLICITATION', field: 'forceTheVote', op: 'eq', value: 'true' }]);
   const [mrProvisionType, setMrProvisionType] = useState('TERMINATION_FEE');
   const [mrField, setMrField] = useState('companyTerminationFee');
@@ -91,20 +68,7 @@ export default function QueryLaunchBox({ deals: dealsProp, showTitle = true, def
     fetch('/api/deals').then((r) => r.json()).then((json) => setDeals(json.deals || json.rows || [])).catch(() => setDeals([]));
   }, [dealsProp]);
 
-  const dealTypeOptions = useMemo(() => {
-    const types = new Set();
-    for (const deal of deals || []) {
-      const t = dealConsiderationType(deal);
-      if (t) types.add(t);
-    }
-    return [...types].sort();
-  }, [deals]);
-
-  const toggleDealType = (type) => {
-    setDealTypes((prev) => (prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]));
-  };
-
-  const dealFilter = dealTypes.length ? { consideration_type: dealTypes } : {};
+  const dealFilter = useMemo(() => buildDealFilterPayload(dealFilterValues), [dealFilterValues]);
 
   const update = (i, patch) => setFilters(filters.map((f, idx) => (idx === i ? { ...f, ...patch } : f)));
 
@@ -153,9 +117,9 @@ export default function QueryLaunchBox({ deals: dealsProp, showTitle = true, def
     <div className="mtx">
       <div className="qlb">
         {showTitle && (
-          <div className="qlbHead">
-            <h2>Launch a query</h2>
-            <p>Pick what to run, filter by type of deal, go.</p>
+          <div className="qlbTitleBar">
+            <span>Launch a query</span>
+            <span className="qlbTitleSub">Pick a query type, filter the deals, go.</span>
           </div>
         )}
 
@@ -169,26 +133,10 @@ export default function QueryLaunchBox({ deals: dealsProp, showTitle = true, def
             every kind since it narrows deal_filter, which every inline
             kind here reads the same way (lib/query/executors/shared.js
             comparisonDeals()). */}
-        <div className="qlbDealType">
-          <span className="mtx-meta-label">Type of deal</span>
-          {dealTypeOptions.length === 0 ? (
-            <p className="qlbMuted">Loading deal types…</p>
-          ) : (
-            <div className="qlbChips">
-              {dealTypeOptions.map((t) => (
-                <button
-                  key={t}
-                  type="button"
-                  className={`qlbChip${dealTypes.includes(t) ? ' qlbChipOn' : ''}`}
-                  onClick={() => toggleDealType(t)}
-                >
-                  {considerationTypeDisplay(t) || t}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+        <DealFiltersBlock deals={deals || []} values={dealFilterValues} onChange={setDealFilterValues} />
 
+        {/* Fixed-height stage so flicking tabs/selectors never grows the page. */}
+        <div className="qlbStage">
         {kind === 'FILTER_THEN_LIST' && (
           <div className="qlbFilters">
             {/* Ben r7: each refinement is its own bordered BLOCK, with a
@@ -205,8 +153,8 @@ export default function QueryLaunchBox({ deals: dealsProp, showTitle = true, def
             <button type="button" className="qlbAddFilter" onClick={() => setFilters([...filters, { provision_type: filters[filters.length - 1]?.provision_type || 'COVENANT_NO_SOLICITATION', field: '', op: null, value: '' }])}>
               + Add a filter
             </button>
-            {dealTypes.length > 0 && (
-              <p className="qlbPreview">— and the deal type is one of {dealTypes.map((t) => considerationTypeDisplay(t) || t).join(', ')}</p>
+            {describeDealFilters(dealFilterValues).length > 0 && (
+              <p className="qlbPreview">— and the {describeDealFilters(dealFilterValues).join(', and the ')}</p>
             )}
           </div>
         )}
@@ -219,8 +167,9 @@ export default function QueryLaunchBox({ deals: dealsProp, showTitle = true, def
         )}
 
         {!INLINE_KINDS.has(kind) && (
-          <p className="qlbMuted">{KIND_LABELS[kind]} needs a deal picker — running it opens the full builder with this kind and your deal-type filter carried over.</p>
+          <p className="qlbMuted">{KIND_LABELS[kind]} needs a deal picker — running it opens the full builder with this kind and your deal filters carried over.</p>
         )}
+        </div>
 
         {error && <div className="qlbErr">{error}</div>}
 
@@ -229,10 +178,12 @@ export default function QueryLaunchBox({ deals: dealsProp, showTitle = true, def
         </button>
       </div>
       <style jsx>{`
-        .qlb { border: 1px solid var(--line, #E0E0E0); background: #fff; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; font-family: var(--mtx-sans); }
-        .qlbHead h2 { margin: 0 0 3px; font-size: 14px; font-weight: 700; color: var(--ink, #1F1F1F); font-family: var(--mtx-sans); }
-        .qlbHead p { margin: 0; font-size: 12px; color: var(--ink-light, #6B6B6B); font-family: var(--mtx-sans); }
+        .qlb { border: 1px solid var(--line, #E0E0E0); background: #fff; display: flex; flex-direction: column; gap: 12px; font-family: var(--mtx-sans); padding: 0 0 14px; }
+        .qlb > :global(*) { margin-left: 16px; margin-right: 16px; }
+        .qlbTitleBar { display: flex; align-items: baseline; gap: 10px; margin: 0 !important; padding: 7px 16px; border-bottom: 1px solid var(--line, #E0E0E0); background: var(--paper-2, #F6F6F6); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink, #1F1F1F); }
+        .qlbTitleSub { font-weight: 400; text-transform: none; letter-spacing: 0; font-size: 11px; color: var(--ink-light, #6B6B6B); }
         .qlbKindTabs { display: flex; flex-direction: column; gap: 6px; }
+        .qlbStage { min-height: 150px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
         .qlbBlock { position: relative; border: 1px solid var(--line, #E0E0E0); background: var(--paper-2, #FAFAFA); padding: 10px; }
         .qlbAddFilter { align-self: flex-start; border: 1px dashed var(--line, #E0E0E0); background: #fff; color: var(--ink, #1F1F1F); font-family: var(--mtx-sans); font-size: 12px; padding: 6px 12px; cursor: pointer; }
         .qlbAddFilter:hover { background: var(--paper-2, #F6F6F6); border-color: var(--ink-light, #6B6B6B); }

@@ -22,6 +22,8 @@
 // exposed in the UI).
 
 import { useEffect, useState } from 'react';
+import { getDisplayAdvisors } from '../../lib/canonical-advisors';
+import { considerationTypeDisplay } from '../../lib/deals-index-columns';
 import {
   OPERATOR_LABELS, NUMERIC_TYPES, humanizeKey, lowerFirst, sentenceForFilter,
 } from '../../lib/query/filter-labels';
@@ -343,6 +345,125 @@ export function KindTabs({ kinds, labels, value, onChange }) {
         .qkTab { padding: 7px 14px; font-size: 12px; color: #6B6B6B; background: transparent; border: 0; border-right: 1px solid #E0E0E0; cursor: pointer; font-family: var(--mtx-sans); }
         .qkTab:hover { color: #1F1F1F; background: #F6F6F6; }
         .qkTabOn { color: #1F1F1F; font-weight: 600; box-shadow: inset 0 -2px 0 #1F1F1F; background: #FFFFFF; }
+      `}</style>
+    </div>
+  );
+}
+
+// ── Deal filters (Ben r8) ────────────────────────────────────────────────
+// "Don't say type of deal — say deal filters" with real dropdowns:
+// Consideration type / Buyer / Law firm always visible, plus a dashed "+"
+// that reveals more facets (Sector, Signing year). Values feed the query
+// engine's deal_filter (lib/query/executors/shared.js comparisonDeals),
+// which resolves buyer against acquirer/display names and law firms via
+// the canonical advisor forms — the same strings shown here.
+
+// Works over BOTH deal payload shapes: /api/home rows (buyer_display,
+// consideration_type, advisors.{buyer_firms,seller_firms}, signing_date)
+// and /api/deals rows (acquirer, metadata.*, announce_date).
+export function dealFilterOptions(deals) {
+  const considerations = new Set();
+  const buyers = new Set();
+  const lawFirms = new Set();
+  const sectors = new Set();
+  const years = new Set();
+  for (const deal of deals || []) {
+    const meta = deal.metadata && typeof deal.metadata === 'object' ? deal.metadata : {};
+    const cons = deal.consideration_type || meta.headlineConsiderationType || meta.considerationType || null;
+    if (cons) considerations.add(cons);
+    const buyer = deal.buyer_display || meta.acquirer_display || deal.acquirer || null;
+    if (buyer) buyers.add(buyer);
+    if (deal.advisors && typeof deal.advisors === 'object') {
+      for (const f of [...(deal.advisors.buyer_firms || []), ...(deal.advisors.seller_firms || [])]) lawFirms.add(f);
+    } else if (meta.advisors_v2) {
+      const adv = getDisplayAdvisors(meta);
+      for (const f of [...(adv.buyerFirms || []), ...(adv.sellerFirms || [])]) lawFirms.add(f);
+    }
+    if (deal.sector) sectors.add(deal.sector);
+    const date = deal.signing_date || deal.announce_date;
+    if (date) years.add(Number(String(date).slice(0, 4)));
+  }
+  const sorted = (set) => [...set].filter(Boolean).sort();
+  return {
+    consideration_type: sorted(considerations),
+    buyer: sorted(buyers),
+    law_firm: sorted(lawFirms),
+    sector: sorted(sectors),
+    signing_year: [...years].filter(Boolean).sort((a, b) => b - a),
+  };
+}
+
+const DEAL_FACETS = [
+  { key: 'consideration_type', label: 'Consideration type', display: (v) => considerationTypeDisplay(v) || humanizeKey(v) },
+  { key: 'buyer', label: 'Buyer', display: (v) => v },
+  { key: 'law_firm', label: 'Law firm', display: (v) => v },
+  { key: 'sector', label: 'Sector', display: (v) => v },
+  { key: 'signing_year', label: 'Signing year', display: (v) => String(v) },
+];
+const BASE_FACETS = ['consideration_type', 'buyer', 'law_firm'];
+
+export function buildDealFilterPayload(values) {
+  const out = {};
+  for (const facet of DEAL_FACETS) {
+    const v = values[facet.key];
+    if (v === '' || v === null || v === undefined) continue;
+    out[facet.key] = [facet.key === 'signing_year' ? Number(v) : v];
+  }
+  return out;
+}
+
+export function describeDealFilters(values) {
+  const parts = [];
+  for (const facet of DEAL_FACETS) {
+    const v = values[facet.key];
+    if (v === '' || v === null || v === undefined) continue;
+    parts.push(`${facet.label.toLowerCase()} is ${facet.display(v)}`);
+  }
+  return parts;
+}
+
+export function DealFiltersBlock({ deals, values, onChange }) {
+  const options = dealFilterOptions(deals);
+  const [extraFacets, setExtraFacets] = useState([]);
+  const visible = DEAL_FACETS.filter((f) => BASE_FACETS.includes(f.key) || extraFacets.includes(f.key) || values[f.key]);
+  const hidden = DEAL_FACETS.filter((f) => !visible.includes(f));
+  return (
+    <div className="dfb">
+      <span className="mtx-meta-label">Deal filters</span>
+      <div className="dfbRow">
+        {visible.map((facet) => (
+          <label key={facet.key} className="dfbFacet">
+            <span className="dfbLabel">{facet.label}</span>
+            <select
+              className="mtx-select"
+              value={values[facet.key] ?? ''}
+              onChange={(e) => onChange({ ...values, [facet.key]: e.target.value })}
+            >
+              <option value="">Any</option>
+              {(options[facet.key] || []).map((v) => (
+                <option key={v} value={v}>{facet.display(v)}</option>
+              ))}
+            </select>
+          </label>
+        ))}
+        {hidden.length > 0 && (
+          <button
+            type="button"
+            className="dfbAdd"
+            title={`Add a filter: ${hidden.map((f) => f.label).join(', ')}`}
+            onClick={() => setExtraFacets([...extraFacets, hidden[0].key])}
+          >
+            +
+          </button>
+        )}
+      </div>
+      <style jsx>{`
+        .dfb { display: flex; flex-direction: column; gap: 6px; }
+        .dfbRow { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
+        .dfbFacet { display: flex; flex-direction: column; gap: 3px; }
+        .dfbLabel { font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em; color: #6B6B6B; font-family: var(--mtx-sans); }
+        .dfbAdd { width: 34px; height: 30px; border: 1px dashed #E0E0E0; background: #fff; color: #6B6B6B; font-size: 15px; cursor: pointer; font-family: var(--mtx-sans); }
+        .dfbAdd:hover { color: #1F1F1F; border-color: #6B6B6B; background: #F6F6F6; }
       `}</style>
     </div>
   );

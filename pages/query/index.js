@@ -7,6 +7,7 @@ import AppHeader from '../../components/chrome/AppHeader';
 import { humanizeKey } from '../../lib/query/filter-labels';
 import {
   PROVISION_TYPES, ProvisionTypeSelect, FilterRow, coerceFilterForPayload, KindTabs,
+  DealFiltersBlock, buildDealFilterPayload,
 } from '../../components/query/QueryFilterControls';
 
 QueryIndexPage.noLayout = true;
@@ -228,6 +229,7 @@ function SavedSection({ rows }) {
 
 function BuilderSection({ deals, schemas, router }) {
   const [kind, setKind] = useState('FILTER_THEN_LIST');
+  const [dealFilterValues, setDealFilterValues] = useState({ consideration_type: '', buyer: '', law_firm: '', sector: '', signing_year: '' });
   const [error, setError] = useState(null);
   const [running, setRunning] = useState(false);
 
@@ -253,12 +255,13 @@ function BuilderSection({ deals, schemas, router }) {
     if (kind === 'FILTER_THEN_LIST') {
       return {
         filters: filters.map(coerceFilterForPayload),
+        deal_filter: buildDealFilterPayload(dealFilterValues),
         sort_by: 'deal_signing_date_desc',
         columns: ['deal_name', 'signing_date', 'consideration_type', 'total_deal_value'],
       };
     }
     if (kind === 'MARKET_RANGE') {
-      return { provision_type: mrProvisionType, field_path: mrField, deal_filter: {}, chart_kind: mrChart };
+      return { provision_type: mrProvisionType, field_path: mrField, deal_filter: buildDealFilterPayload(dealFilterValues), chart_kind: mrChart };
     }
     if (kind === 'PROVISION_CROSS_CUT') {
       return {
@@ -310,8 +313,13 @@ function BuilderSection({ deals, schemas, router }) {
           <span className="mtx-meta-label">Query type</span>
           <KindTabs kinds={Object.keys(KIND_LABELS)} labels={KIND_LABELS} value={kind} onChange={setKind} />
         </div>
+        <DealFiltersBlock deals={deals || []} values={dealFilterValues} onChange={setDealFilterValues} />
         {requiredSentence && <p className="req">{requiredSentence}</p>}
 
+        {/* Fixed-height stage: flicking query-type tabs must not resize the
+            page (Ben r8). Sized to the tallest kind body; shorter kinds pad
+            up instead of collapsing the section. */}
+        <div className="stage">
         {kind === 'FILTER_THEN_LIST' && (
           <FilterListBuilder filters={filters} setFilters={setFilters} provisionTypes={PROVISION_TYPES} />
         )}
@@ -365,12 +373,15 @@ function BuilderSection({ deals, schemas, router }) {
             </label>
           </div>
         )}
+        </div>
+
 
         {error && <div className="err">{error}</div>}
         <button type="button" className="mtx-btn mtx-btn-primary" disabled={running} onClick={run}>{running ? 'Running…' : 'Build & run'}</button>
       </div>
       <style jsx>{`
         .builder { border: 1px solid var(--line); background: #fff; padding: 20px; display: flex; flex-direction: column; gap: 14px; max-width: 720px; font-family: var(--mtx-sans); }
+        .stage { min-height: 340px; display: flex; flex-direction: column; gap: 14px; align-items: stretch; }
         .builder > label { max-width: 320px; font-family: var(--mtx-sans); }
         .builder select, .builder input { width: 100%; margin-top: 6px; }
         .req { margin: 0; font-size: 12px; color: var(--ink-light); font-family: var(--mtx-sans); line-height: 1.5; }
