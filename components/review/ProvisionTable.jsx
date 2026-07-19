@@ -1,5 +1,6 @@
+import { Fragment, useState } from 'react';
 import * as ProvisionTablePrimitives from './primitives/ProvisionTablePrimitives';
-import { buildCardIndex, resolveRowCard } from '../review-v2/provisionIndexHelpers.js';
+import { buildCardIndex, resolveRowCard, resolveRowFocus } from '../review-v2/provisionIndexHelpers.js';
 
 /*
 Config shape:
@@ -49,16 +50,26 @@ const FULL_TEXT_COLUMNS = {
   'misc-boilerplate': ['detail'],
 };
 
-function SeeTextExpander({ children }) {
+// Sidebar feedback package (Ben, r5), item 4: "See provision" used to be a
+// <details> nested inside the row's first <td>, so its expanded content was
+// squeezed into that one column's width (max-w-[42rem] was a band-aid for
+// that, not a real fix) -- it visibly distorted the table. Now it's a plain
+// toggle button in the first cell; the expanded text renders in a SEPARATE
+// full-width <tr><td colSpan={columns.length}> immediately below the row,
+// so the table's own column layout is never touched by what's inside the
+// expansion. Only one row expands at a time (expandedRowId in the component
+// below) -- clicking another row's toggle (or the same one again) closes it.
+function SeeProvisionToggle({ open, onToggle }) {
   return (
-    <details className="mt-1">
-      <summary className="term-cell-seetext" style={{ listStyle: 'none' }}>
-        See provision
-      </summary>
-      <div className="mt-1 max-w-[42rem] whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight">
-        {children}
-      </div>
-    </details>
+    <button
+      type="button"
+      className="term-cell-seetext mt-1 block"
+      style={{ listStyle: 'none' }}
+      onClick={(e) => { e.stopPropagation(); onToggle(); }}
+      aria-expanded={open}
+    >
+      {open ? 'Hide provision' : 'See provision'}
+    </button>
   );
 }
 
@@ -82,6 +93,10 @@ function fallbackEvidenceText(row) {
 }
 
 export default function ProvisionTable({ config, reviewDeal, isEdit = false, sectionCards = null, onSelectCard = null, selectedCardId = null }) {
+  // Item 4 (r5): tracks which row's "See provision" expansion is open, keyed
+  // by row.id||row.label -- must be called unconditionally (rules of hooks),
+  // ahead of the early-return guards below.
+  const [expandedRowId, setExpandedRowId] = useState(null);
   if (!config || typeof config.selectRows !== 'function') return null;
   const rows = config.selectRows(reviewDeal);
   if (!Array.isArray(rows) || rows.length === 0) return null;
@@ -220,25 +235,42 @@ export default function ProvisionTable({ config, reviewDeal, isEdit = false, sec
               const isSelectedRow = Boolean(rowCardKey) && selectedCardId === rowCardKey;
               const baseRowClass = row.present ? 'align-top hover:bg-bg/40' : 'align-top bg-bg/30 text-inkFaint';
               const rowClass = rowCard ? `${baseRowClass} mtx-row-clickable` : baseRowClass;
+              const rowKey = row.id || row.label;
+              const hasExpansion = fullTextNodes.length > 0 || Boolean(fallbackText);
+              const isExpanded = hasExpansion && expandedRowId === rowKey;
               return (
-                <tr
-                  key={row.id || row.label}
-                  className={rowClass}
-                  onClick={rowCard ? () => onSelectCard(rowCard) : undefined}
-                  style={rowCard ? { cursor: 'pointer', ...(isSelectedRow ? { background: 'rgba(47,109,181,.07)', boxShadow: 'inset 2px 0 0 #2F6DB5' } : {}) } : undefined}
-                >
-                  {columns.map((column, colIdx) => (
-                    <td key={`${row.id || row.label}-${column.id}`} className="px-3 py-2 whitespace-pre-wrap break-words text-ink">
-                      {column.renderCell ? column.renderCell(row, ctx) : null}
-                      {colIdx === 0 && fullTextNodes.length > 0 ? (
-                        <SeeTextExpander>{fullTextNodes}</SeeTextExpander>
-                      ) : null}
-                      {colIdx === 0 && fullTextNodes.length === 0 && fallbackText ? (
-                        <SeeTextExpander>{fallbackText}</SeeTextExpander>
-                      ) : null}
-                    </td>
-                  ))}
-                </tr>
+                <Fragment key={rowKey}>
+                  <tr
+                    className={rowClass}
+                    onClick={rowCard ? () => onSelectCard(rowCard, resolveRowFocus(row)) : undefined}
+                    style={rowCard ? { cursor: 'pointer', ...(isSelectedRow ? { background: 'rgba(47,109,181,.07)', boxShadow: 'inset 2px 0 0 #2F6DB5' } : {}) } : undefined}
+                  >
+                    {columns.map((column, colIdx) => (
+                      <td key={`${rowKey}-${column.id}`} className="px-3 py-2 whitespace-pre-wrap break-words text-ink">
+                        {column.renderCell ? column.renderCell(row, ctx) : null}
+                        {colIdx === 0 && hasExpansion ? (
+                          <SeeProvisionToggle
+                            open={isExpanded}
+                            onToggle={() => setExpandedRowId((cur) => (cur === rowKey ? null : rowKey))}
+                          />
+                        ) : null}
+                      </td>
+                    ))}
+                  </tr>
+                  {/* Item 4 (r5): the expansion is now a full-width row (colSpan
+                      across every visible column) beneath the clicked row,
+                      instead of a <details> squeezed into column 0 -- the
+                      table's own column widths are never distorted by it. */}
+                  {isExpanded ? (
+                    <tr key={`${rowKey}-expansion`} className="mtx-provision-expansion-row bg-bg/20">
+                      <td colSpan={columns.length} className="px-3 py-3 border-t border-dashed border-border">
+                        <div className="max-w-none whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight">
+                          {fullTextNodes.length > 0 ? fullTextNodes : fallbackText}
+                        </div>
+                      </td>
+                    </tr>
+                  ) : null}
+                </Fragment>
               );
             })}
           </tbody>
