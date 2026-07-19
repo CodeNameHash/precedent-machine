@@ -9,6 +9,7 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+import Link from 'next/link';
 import { useDeal } from '../../lib/useSupabaseData';
 import { reconstructReviewDeal } from '../../lib/queries/reconstruct-review-deal';
 import { useLazyAgreementSource } from '../../lib/useLazyAgreementSource';
@@ -120,6 +121,16 @@ export default function ReviewPage() {
   // ?view=header response instead of the full deal row (which ships
   // metadata.full_text/classified_sections/extraction_runs, 735KB-1.5MB raw).
   const { deal, loading: dealLoading, error: dealError } = useDeal(dealId, { view: 'header' });
+
+  // E4 (2026-07-19 pre-demo audit): an unknown/garbage deal id used to
+  // render the masthead + nav chrome forever with no deal data and no
+  // explicit message — useFetch() (lib/useSupabaseData.js) resolved a 404
+  // as a "successful" fetch (data = { error }, so `deal` fell through to
+  // null with `loading: false` and `error: null`), which this page never
+  // distinguished from a normal empty/loading state. Now that useFetch
+  // surfaces non-2xx as a real error, `notFound` covers both a genuine 404
+  // (dealError set) and the same "resolved, but nothing came back" shape.
+  const notFound = router.isReady && Boolean(dealId) && !dealLoading && (Boolean(dealError) || !deal);
 
   /* ── Cards payload (same fetch/normalisation as v1) ── */
   const [reviewDeal, setReviewDeal] = useState(null);
@@ -350,6 +361,23 @@ export default function ReviewPage() {
   const pageTitle = deal
     ? `${deal.metadata?.target_display || deal.target} — Review`
     : 'Deal Review';
+
+  // E4: clean not-found state instead of the masthead/nav chrome rendering
+  // around an empty deal indefinitely. All hooks above run unconditionally
+  // on every render regardless of this branch, so it's safe here.
+  if (notFound) {
+    return (
+      <div className="mtx min-h-screen flex flex-col items-center justify-center bg-white gap-3">
+        <Head>
+          <title>Deal not found</title>
+        </Head>
+        <MergertraceStyles />
+        <p className="mtx-meta-label text-[11px] tracking-[0.18em]">DEAL NOT FOUND</p>
+        <p className="font-ui text-sm text-inkMid">This deal doesn&rsquo;t exist, or the link is broken.</p>
+        <Link href="/review" className="mtx-btn">Back to deals</Link>
+      </div>
+    );
+  }
 
   return (
     <div className="mtx min-h-screen flex flex-col bg-white">
