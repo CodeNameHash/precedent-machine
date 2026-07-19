@@ -25,6 +25,12 @@ export default function EntryPane({
   onSelectRaw,
   onSelectCandidate,
   onResolve,
+  rationale = '',
+  onRationaleChange,
+  decidedByName = '',
+  onDecidedByNameChange,
+  editorKey = '',
+  onEditorKeyChange,
 }) {
   if (!entry) {
     return <main className="p-6 text-sm text-inkLight">Select a queue entry.</main>;
@@ -81,16 +87,52 @@ export default function EntryPane({
         )}
       </section>
       <CrossDealPreview entry={entry} />
+      <section className="rounded border border-border bg-white p-4">
+        <h2 className="font-display text-lg text-ink">Decision</h2>
+        <div className="mt-3">
+          <label className="block text-xs font-semibold text-inkLight" htmlFor="reconcile-rationale">Rationale (required)</label>
+          <textarea
+            id="reconcile-rationale"
+            className="mt-1 w-full min-h-[50px] resize-y rounded border border-border px-2 py-1 text-sm"
+            value={rationale}
+            onChange={(e) => onRationaleChange && onRationaleChange(e.target.value)}
+            placeholder="Why is this the right resolution?"
+          />
+        </div>
+        <div className="mt-3 grid gap-2 md:grid-cols-2">
+          <div>
+            <label className="block text-xs font-semibold text-inkLight" htmlFor="reconcile-decided-by">Your name</label>
+            <input
+              id="reconcile-decided-by"
+              className="mt-1 w-full rounded border border-border px-2 py-1 text-sm"
+              value={decidedByName}
+              onChange={(e) => onDecidedByNameChange && onDecidedByNameChange(e.target.value)}
+              placeholder="used if no editor key is set"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-inkLight" htmlFor="reconcile-editor-key">Editor key</label>
+            <input
+              id="reconcile-editor-key"
+              type="password"
+              className="mt-1 w-full rounded border border-border px-2 py-1 text-sm"
+              value={editorKey}
+              onChange={(e) => onEditorKeyChange && onEditorKeyChange(e.target.value)}
+              placeholder="approved editors only"
+            />
+          </div>
+        </div>
+      </section>
       {message ? (
         <div className={`rounded border px-3 py-2 text-sm ${message.tone === 'error' ? 'border-red-200 bg-red-50 text-red-700' : 'border-green-200 bg-green-50 text-green-800'}`}>
           {message.text}
         </div>
       ) : null}
       <div className="flex flex-wrap gap-2">
-        <button type="button" className="rounded border border-border px-3 py-1 text-sm disabled:opacity-50" disabled={!selectedCandidate || isResolving} onClick={() => onResolve('MERGE')}>Merge</button>
-        <button type="button" className="rounded border border-border px-3 py-1 text-sm disabled:opacity-50" disabled={!selectedCandidate || isResolving} onClick={() => onResolve('PROMOTE')}>Promote</button>
-        <button type="button" className="rounded border border-border px-3 py-1 text-sm disabled:opacity-50" disabled={isResolving} onClick={() => onResolve('SPLIT')}>Split</button>
-        <button type="button" className="rounded border border-border px-3 py-1 text-sm disabled:opacity-50" disabled={isResolving} onClick={() => onResolve('FREEFORM')}>Freeform</button>
+        <button type="button" className="rounded border border-border px-3 py-1 text-sm disabled:opacity-50" disabled={!selectedCandidate || !rationale.trim() || isResolving} onClick={() => onResolve('MERGE')}>Merge</button>
+        <button type="button" className="rounded border border-border px-3 py-1 text-sm disabled:opacity-50" disabled={!selectedCandidate || !rationale.trim() || isResolving} onClick={() => onResolve('PROMOTE')}>Promote</button>
+        <button type="button" className="rounded border border-border px-3 py-1 text-sm disabled:opacity-50" disabled={!rationale.trim() || isResolving} onClick={() => onResolve('SPLIT')}>Split</button>
+        <button type="button" className="rounded border border-border px-3 py-1 text-sm disabled:opacity-50" disabled={!rationale.trim() || isResolving} onClick={() => onResolve('FREEFORM')}>Freeform</button>
       </div>
       <SplitFlow entry={entry} />
     </main>

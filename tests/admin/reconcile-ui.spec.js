@@ -6,6 +6,11 @@ test('PH0C-D: reconcile page exposes queue and decision API logs one row', () =>
   const page = fs.readFileSync('pages/admin/registry/reconcile.js', 'utf8');
   const sidebar = fs.readFileSync('components/admin/reconcile/QueueSidebar.jsx', 'utf8');
   const decide = fs.readFileSync('pages/api/admin/reconcile/decide.js', 'utf8');
+  // Decision logic (field_key/raw_value/targetCanonicalKey matching,
+  // decided_by, claim_ids, version bump) moved to lib/schema-shape/
+  // reconcile-decide.js (WP-4 delta) so it's unit-testable outside the
+  // Next.js build transform — decide.js is now a thin route wrapper.
+  const decideLib = fs.readFileSync('lib/schema-shape/reconcile-decide.js', 'utf8');
   assert.match(page, /EntryPane/);
   assert.match(page, /group: 'field_key'/);
   assert.match(page, /selectedRawId/);
@@ -15,10 +20,16 @@ test('PH0C-D: reconcile page exposes queue and decision API logs one row', () =>
   assert.match(decide, /reconciliation-log\.jsonl/);
   assert.match(decide, /failAfterPrepare/);
   assert.match(decide, /applyResolution/);
-  assert.match(decide, /field_key/);
-  assert.match(decide, /raw_value/);
-  assert.match(decide, /targetCanonicalKey/);
   assert.match(decide, /process\.env\.VERCEL/);
+  assert.match(decide, /reconcile-decide/);
+  assert.match(decideLib, /field_key/);
+  assert.match(decideLib, /raw_value/);
+  assert.match(decideLib, /targetCanonicalKey/);
+  assert.match(decideLib, /decided_by/);
+  assert.match(decideLib, /claim_ids/);
+  assert.match(decideLib, /bumpVersion/);
+  assert.match(page, /x-editor-key/);
+  assert.match(page, /decided_by/);
 });
 
 test('PH0C-D: queue API supports grouped slices for bulk triage', () => {
@@ -35,7 +46,8 @@ test('PH0C-D: reconcile actions expose disabled states and feedback copy', () =>
   assert.match(pane, /Select a suggested match before Merge or Promote/);
   assert.match(pane, /rawGroups\.map/);
   assert.match(pane, /message\.tone === 'error'/);
-  assert.match(pane, /disabled=\{!selectedCandidate \|\| isResolving\}/);
+  assert.match(pane, /disabled=\{!selectedCandidate \|\| !rationale\.trim\(\) \|\| isResolving\}/);
+  assert.match(pane, /Rationale \(required\)/);
 });
 
 test('PH0C-D: AdminNav includes Reconcile after Audit', () => {
