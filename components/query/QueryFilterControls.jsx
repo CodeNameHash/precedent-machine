@@ -319,3 +319,31 @@ export function FilterRow({ filter, onChange, onRemove, provisionTypes = PROVISI
     </div>
   );
 }
+
+// Query kinds as TABS (Ben r7), not a dropdown — one click to flick between
+// query types. Styled on the .mtx tokens the review page uses. Shared by
+// the full builder and the index QueryLaunchBox.
+export function KindTabs({ kinds, labels, value, onChange }) {
+  return (
+    <div className="qkTabs" role="tablist">
+      {kinds.map((k) => (
+        <button
+          key={k}
+          type="button"
+          role="tab"
+          aria-selected={k === value}
+          className={`qkTab${k === value ? ' qkTabOn' : ''}`}
+          onClick={() => onChange(k)}
+        >
+          {labels[k] || humanizeKey(k)}
+        </button>
+      ))}
+      <style jsx>{`
+        .qkTabs { display: flex; flex-wrap: wrap; border: 1px solid #E0E0E0; background: #FFFFFF; }
+        .qkTab { padding: 7px 14px; font-size: 12px; color: #6B6B6B; background: transparent; border: 0; border-right: 1px solid #E0E0E0; cursor: pointer; font-family: var(--mtx-sans); }
+        .qkTab:hover { color: #1F1F1F; background: #F6F6F6; }
+        .qkTabOn { color: #1F1F1F; font-weight: 600; box-shadow: inset 0 -2px 0 #1F1F1F; background: #FFFFFF; }
+      `}</style>
+    </div>
+  );
+}

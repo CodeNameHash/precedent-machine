@@ -1709,7 +1709,7 @@ test('ioc-exceptions negative-covenant row renders restrictionComponents + dolla
   assert.match(html, /See provision/);
 });
 
-test('ioc-exceptions config collapses [PROPOSED] Unclassified fragments into a single "Other restrictions" row, not empty per-row output', () => {
+test('ioc-exceptions config promotes each [PROPOSED] Unclassified fragment to its own named "Other restrictions" row (Ben r6: no "(N fragments)" bundle)', () => {
   const cards = [
     { id: 'frag-1', provision_type: 'COVENANT_INTERIM_OPERATING', features: { sectionNumber: '5.01(i)', restrictionComponents: ['INDEBTEDNESS', 'THIRD_PARTY_OBLIGATIONS'] } },
     { id: 'frag-2', provision_type: 'COVENANT_INTERIM_OPERATING', features: { sectionNumber: '5.01(k)' } },
@@ -1717,12 +1717,13 @@ test('ioc-exceptions config collapses [PROPOSED] Unclassified fragments into a s
   ];
   const fragments = iocMod.fragmentCards(cards);
   assert.equal(fragments.length, 2, 'only the two no-code fragments, not the named IOC-DIVIDEND card');
-  const row = iocMod.buildOtherRestrictionsRow(fragments, { primitives: iocPrimitives });
-  assert.equal(row.id, 'ioc-other-restrictions');
-  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, row.children));
-  assert.match(html, /2 unclassified fragments/);
-  assert.match(html, /Indebtedness \/ financing/);
-  assert.match(html, /no structured signal extracted/, 'the genuinely empty fragment (5.01(k)) says so, it does not fabricate a pill');
+  const rows = iocMod.buildOtherRestrictionsRows(fragments, { primitives: iocPrimitives });
+  assert.equal(rows.length, 2, 'one row per fragment, never a single bundle row');
+  assert.equal(rows[0].card, fragments[0], 'each row wires its own card for the sidebar');
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, rows.map((r, i) => React.createElement('div', { key: i }, r.label, r.children))));
+  assert.doesNotMatch(html, /fragments\)/, 'no "(N fragments)" bundle label anywhere');
+  assert.match(html, /Indebtedness \/ financing/, 'tagged fragment renders its restrictionComponents pills');
+  assert.match(html, /5\.01\(k\)/, 'the untagged, unquotable fragment still surfaces as its own row named by section');
 });
 
 test('ioc-exceptions config renders IOC-ORDINARY/PRESERVE/MAINTAIN as an Affirmative-covenants band with appliesTo scope pills', () => {
@@ -1974,12 +1975,12 @@ test('I7: unclassified fragments with no restrictionComponents tag are named fro
     { id: 'frag-l', provision_type: 'COVENANT_INTERIM_OPERATING', primary_quote: 'amend, modify or waive any material provision of any Specified Contract', features: { sectionNumber: '5.01(l)' } },
     { id: 'frag-o', provision_type: 'COVENANT_INTERIM_OPERATING', primary_quote: 'fail to maintain in effect its existing insurance policies', features: { sectionNumber: '5.01(o)' } },
   ];
-  const row = iocMod.buildOtherRestrictionsRow(fragments, { primitives: iocPrimitives });
-  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, row.children));
+  const rows = iocMod.buildOtherRestrictionsRows(fragments, { primitives: iocPrimitives });
+  assert.equal(rows.length, 3, 'one row per fragment');
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, rows.map((r, i) => React.createElement('div', { key: i }, r.label, r.children))));
   assert.match(html, /Tax matters/, '5.01(k) named as a tax covenant');
   assert.match(html, /Specified-contract amendments/, '5.01(l) named as a Specified-Contract amendment restriction');
   assert.match(html, /Insurance maintenance/, '5.01(o) named as an insurance-maintenance covenant');
-  assert.doesNotMatch(html, /no structured signal extracted/, 'none of the three fall back to the bare placeholder once a name is sniffed');
 });
 
 test('I7: sniffFragmentName returns null (never a fabricated name) when the fragment carries no primary_quote to sniff', () => {
@@ -2018,12 +2019,13 @@ test('I8: all 8 unclassified 5.01(i)-(o) fragments resolve a readable title from
     assert.equal(iocMod.resolveFragmentName(card), expected[card.section_ref.match(/5\.01\(([a-z]+)\)/i)[1]]);
   }
 
-  const row = iocMod.buildOtherRestrictionsRow(fragments, { primitives: iocPrimitives });
-  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, row.children));
+  const rows = iocMod.buildOtherRestrictionsRows(fragments, { primitives: iocPrimitives });
+  assert.equal(rows.length, 8, 'all 8 sub-clauses surface as individual rows');
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, rows.map((r, i) => React.createElement('div', { key: i }, r.label, r.children))));
   assert.doesNotMatch(html, /\[PROPOSED\] Unclassified/, 'no IOC fragment row ever renders the literal "[PROPOSED] Unclassified" short_title');
   assert.match(html, /Tax elections \/ Tax accounting/, '5.01(k) renders as a Tax-related title');
   for (const label of Object.values(expected)) {
-    assert.match(html, new RegExp(label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `${label} renders somewhere in the Other restrictions row`);
+    assert.match(html, new RegExp(label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `${label} renders as its own Other-restrictions row`);
   }
 });
 
@@ -3204,4 +3206,59 @@ test('no-other-reps fraud config routes the Metsera §9.07 Anti-Reliance card (t
   assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-q3').status, 'Present');
   assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-fraud').status, 'Present');
   assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-extra-contractual'), undefined);
+});
+
+// QXO/TopBuild (r7): two-party IOC decks — §4.1 Interim Operations of the
+// Company + §4.2 Interim Operations of Parent, every card baked
+// party_scope=MUTUAL, positive covenants living on subtype-less chapeau
+// cards whose limb payloads are double-JSON-encoded, and the Parent chapeau
+// mis-stamped with section_ref 4.1 (party MUST resolve from the clause
+// text, never the ref).
+function qxoFixture() {
+  return [
+    {
+      id: 'ch-t', provision_type: 'COVENANT_INTERIM_OPERATING', party_scope: 'MUTUAL',
+      short_title: 'General / Preamble', section_ref: '4.1 | General / Preamble | h1',
+      primary_quote: '4.1 Interim Operations of the Company. From the date of this Agreement the Company covenants and agrees as follows',
+      features: { positiveObligations: [{ text: '{"appliesTo":["PROPERTIES","ASSETS"],"obligation":"maintain all leases and all personal property material to the Company"}' }] },
+    },
+    {
+      id: 'ch-b', provision_type: 'COVENANT_INTERIM_OPERATING', party_scope: 'MUTUAL',
+      short_title: 'General / Preamble', section_ref: '4.1 | General / Preamble | h2',
+      primary_quote: '4.2 Interim Operations of Parent. From the date of this Agreement Parent covenants and agrees as follows',
+      features: { positiveObligations: [{ text: '{"appliesTo":["PROPERTIES","ASSETS"],"obligation":"maintain all leases and all personal property material to Parent"}' }] },
+    },
+    { id: 'n-t', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-CHARTER', party_scope: 'MUTUAL', short_title: 'Charter / Bylaws Amendments', section_ref: '4.1(i) | Charter / Bylaws Amendments | h3', features: {} },
+    { id: 'n-b', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-CHARTER', party_scope: 'MUTUAL', short_title: 'Charter / Bylaws Amendments', section_ref: '4.2(i) | Charter / Bylaws Amendments | h4', features: {} },
+  ];
+}
+
+test('r7: two-party IOC deck resolves band->party labels from band order, chapeau party from text', () => {
+  const cards = qxoFixture();
+  const map = iocMod.bandPartyLabels(cards);
+  assert.ok(map, 'two named-negative bands -> party map');
+  assert.equal(map.get('4.1'), 'Company');
+  assert.equal(map.get('4.2'), 'Parent');
+  assert.equal(iocMod.cardPartyFromText(cards[0]), 'Company');
+  assert.equal(iocMod.cardPartyFromText(cards[1]), 'Parent', 'Parent chapeau resolves from TEXT despite its section_ref saying 4.1');
+});
+
+test('r7: chapeau positive covenants render as affirmative rows (double-encoded limbs unwrapped), never as fragments', () => {
+  const cards = qxoFixture();
+  assert.equal(iocMod.fragmentCards(cards).length, 0, 'chapeau cards are not unclassified fragments');
+  const rows = iocMod.affirmativeRows(cards, { primitives: iocPrimitives });
+  assert.equal(rows.length, 2, 'one affirmative row per party chapeau limb');
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, rows.map((r, i) => React.createElement('div', { key: i }, r.label, r.children))));
+  assert.match(html, /Company — ordinary course &amp; preservation/);
+  assert.match(html, /Parent — ordinary course &amp; preservation/);
+  assert.match(html, /maintain all leases/, 'double-encoded limb obligation is unwrapped and rendered');
+  assert.match(html, /Properties/i, 'appliesTo scope resolves to pills after unwrapping');
+});
+
+test('r7: single-band deck gets no party map and renders exactly as before', () => {
+  const cards = [
+    { id: 'm1', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-MERGE', section_ref: '5.01(g) | M&A | x', features: {} },
+    { id: 'm2', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-DIVIDEND', section_ref: '5.01(e) | Dividends | y', features: {} },
+  ];
+  assert.equal(iocMod.bandPartyLabels(cards), null);
 });

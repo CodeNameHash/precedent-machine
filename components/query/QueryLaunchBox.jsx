@@ -22,7 +22,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import {
-  ProvisionTypeSelect, FilterRow, coerceFilterForPayload,
+  ProvisionTypeSelect, FilterRow, coerceFilterForPayload, KindTabs,
 } from './QueryFilterControls';
 // Reuses the deals-index column registry's consideration-type label map
 // (the "existing field-label helper" for deal-level values — item 3's ask
@@ -159,12 +159,10 @@ export default function QueryLaunchBox({ deals: dealsProp, showTitle = true, def
           </div>
         )}
 
-        <label className="mtx-meta-label qlbKind">
-          Query type
-          <select className="mtx-select" value={kind} onChange={(e) => setKind(e.target.value)}>
-            {Object.keys(KIND_LABELS).map((k) => <option key={k} value={k}>{KIND_LABELS[k]}</option>)}
-          </select>
-        </label>
+        <div className="qlbKindTabs">
+          <span className="mtx-meta-label">Query type</span>
+          <KindTabs kinds={Object.keys(KIND_LABELS)} labels={KIND_LABELS} value={kind} onChange={setKind} />
+        </div>
 
         {/* Deal-type filter — available at this first stage, not buried
             below provision-level fields (Ben's explicit ask). Works for
@@ -193,9 +191,20 @@ export default function QueryLaunchBox({ deals: dealsProp, showTitle = true, def
 
         {kind === 'FILTER_THEN_LIST' && (
           <div className="qlbFilters">
+            {/* Ben r7: each refinement is its own bordered BLOCK, with a
+                "+" to add more filters and a per-block remove. */}
             {filters.map((f, i) => (
-              <FilterRow key={i} filter={f} onChange={(patch) => update(i, patch)} />
+              <div className="qlbBlock" key={i}>
+                <FilterRow
+                  filter={f}
+                  onChange={(patch) => update(i, patch)}
+                  onRemove={filters.length > 1 ? () => setFilters(filters.filter((_, idx) => idx !== i)) : null}
+                />
+              </div>
             ))}
+            <button type="button" className="qlbAddFilter" onClick={() => setFilters([...filters, { provision_type: filters[filters.length - 1]?.provision_type || 'COVENANT_NO_SOLICITATION', field: '', op: null, value: '' }])}>
+              + Add a filter
+            </button>
             {dealTypes.length > 0 && (
               <p className="qlbPreview">— and the deal type is one of {dealTypes.map((t) => considerationTypeDisplay(t) || t).join(', ')}</p>
             )}
@@ -223,8 +232,10 @@ export default function QueryLaunchBox({ deals: dealsProp, showTitle = true, def
         .qlb { border: 1px solid var(--line, #E0E0E0); background: #fff; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; font-family: var(--mtx-sans); }
         .qlbHead h2 { margin: 0 0 3px; font-size: 14px; font-weight: 700; color: var(--ink, #1F1F1F); font-family: var(--mtx-sans); }
         .qlbHead p { margin: 0; font-size: 12px; color: var(--ink-light, #6B6B6B); font-family: var(--mtx-sans); }
-        .qlbKind { max-width: 260px; }
-        .qlbKind select { width: 100%; margin-top: 6px; }
+        .qlbKindTabs { display: flex; flex-direction: column; gap: 6px; }
+        .qlbBlock { position: relative; border: 1px solid var(--line, #E0E0E0); background: var(--paper-2, #FAFAFA); padding: 10px; }
+        .qlbAddFilter { align-self: flex-start; border: 1px dashed var(--line, #E0E0E0); background: #fff; color: var(--ink, #1F1F1F); font-family: var(--mtx-sans); font-size: 12px; padding: 6px 12px; cursor: pointer; }
+        .qlbAddFilter:hover { background: var(--paper-2, #F6F6F6); border-color: var(--ink-light, #6B6B6B); }
         .qlbDealType { display: flex; flex-direction: column; gap: 6px; }
         .qlbChips { display: flex; flex-wrap: wrap; gap: 6px; }
         .qlbChip { border: 1px solid var(--line, #E0E0E0); background: #fff; color: var(--ink, #1F1F1F); font-family: var(--mtx-sans); font-size: 12px; font-weight: 600; padding: 5px 10px; cursor: pointer; }

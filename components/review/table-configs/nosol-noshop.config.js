@@ -465,9 +465,12 @@ function renderSignals(row, ctx) {
   if (row.exceptionItems && row.exceptionItems.length) return exceptionsListNode(row, ctx);
   const signal = rowSignal(row);
   if (!signal) return '';
-  if (String(signal.label).length > 90) return collapsedTextNode(signal.label);
   const PillCell = ctx?.primitives?.PillCell;
   if (!PillCell) return signal.label;
+  // Long signals (e.g. standstill/don't-ask-don't-waive enforcement
+  // language) stay in pill form too — a wrapping pill, not truncated
+  // prose (Ben r6: "they need to be in pill form").
+  const isLong = String(signal.label).length > 90;
   return React.createElement(PillCell, {
     label: signal.label,
     value: signal.value,
@@ -475,6 +478,7 @@ function renderSignals(row, ctx) {
     color: standardColorKey(signal.label),
     evidence: signal.evidence,
     source: signal.source,
+    ...(isLong ? { wrap: true } : {}),
   });
 }
 function renderDetail(row, ctx) {

@@ -6,7 +6,7 @@ import MergertraceStyles from '../../components/review-v2/MergertraceStyles';
 import AppHeader from '../../components/chrome/AppHeader';
 import { humanizeKey } from '../../lib/query/filter-labels';
 import {
-  PROVISION_TYPES, ProvisionTypeSelect, FilterRow, coerceFilterForPayload,
+  PROVISION_TYPES, ProvisionTypeSelect, FilterRow, coerceFilterForPayload, KindTabs,
 } from '../../components/query/QueryFilterControls';
 
 QueryIndexPage.noLayout = true;
@@ -305,12 +305,11 @@ function BuilderSection({ deals, schemas, router }) {
     <section>
       <SectionHeader title="Build a query" subtitle="Pick a kind, fill in the fields, run. The payload is validated on the server before it renders." />
       <div className="builder">
-        <label className="mtx-meta-label">
-          Kind
-          <select className="mtx-select" value={kind} onChange={(e) => setKind(e.target.value)}>
-            {Object.keys(KIND_LABELS).map((k) => <option key={k} value={k}>{KIND_LABELS[k]}</option>)}
-          </select>
-        </label>
+        {/* Ben r7: query types are tabs, not a dropdown. */}
+        <div className="kindTabs">
+          <span className="mtx-meta-label">Query type</span>
+          <KindTabs kinds={Object.keys(KIND_LABELS)} labels={KIND_LABELS} value={kind} onChange={setKind} />
+        </div>
         {requiredSentence && <p className="req">{requiredSentence}</p>}
 
         {kind === 'FILTER_THEN_LIST' && (
@@ -396,11 +395,12 @@ function FilterListBuilder({ filters, setFilters, provisionTypes }) {
           />
         </div>
       ))}
-      <button type="button" className="mtx-btn" onClick={() => setFilters([...filters, { provision_type: 'CONSIDERATION', field: '', op: 'eq', value: '' }])}>+ Add filter</button>
+      <button type="button" className="addFilter" onClick={() => setFilters([...filters, { provision_type: 'CONSIDERATION', field: '', op: 'eq', value: '' }])}>+ Add a filter</button>
       <style jsx>{`
-        .fb { display: flex; flex-direction: column; gap: 14px; }
-        .frow { border-bottom: 1px solid var(--line); padding-bottom: 12px; }
-        .frow:last-of-type { border-bottom: none; padding-bottom: 0; }
+        .fb { display: flex; flex-direction: column; gap: 10px; }
+        .frow { border: 1px solid var(--line); background: var(--paper-2, #FAFAFA); padding: 10px; }
+        .addFilter { align-self: flex-start; border: 1px dashed var(--line); background: #fff; color: var(--ink); font-family: var(--mtx-sans); font-size: 12px; padding: 6px 12px; cursor: pointer; }
+        .addFilter:hover { background: var(--paper-2, #F6F6F6); border-color: var(--ink-light); }
       `}</style>
     </div>
   );

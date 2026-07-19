@@ -231,6 +231,40 @@ function sectionBand(card) {
   return match ? match[1] : (ref || 'default');
 }
 
+// Party attribution for two-party IOC decks (QXO/TopBuild: §4.1 Interim
+// Operations of the Company + §4.2 Interim Operations of Parent).
+// party_scope is baked MUTUAL on every IOC card (same limitation the
+// ClauseSidebar's section-band disambiguation works around, PR #267), so:
+//  - a card whose own text carries the chapeau language resolves by TEXT
+//    ("the Company covenants and agrees" / "Interim Operations of Parent").
+//    Section refs are NOT trustworthy for chapeau cards — QXO's Parent
+//    chapeau (quote: "4.2 Interim Operations of Parent") carries
+//    section_ref "4.1".
+//  - enumerated restriction cards (no chapeau language of their own)
+//    resolve by band ORDER: in agreement convention the target's conduct
+//    section precedes the parent's. Applied ONLY when exactly two bands
+//    exist; single-band decks (the overwhelming majority) get no party
+//    labels and render exactly as before.
+const COMPANY_CHAPEAU_RE = /interim operations of the company|the company covenants and agrees/i;
+const PARENT_CHAPEAU_RE = /interim operations of (the )?parent|parent covenants and agrees/i;
+
+function cardPartyFromText(card) {
+  const t = textOf(card) || '';
+  if (PARENT_CHAPEAU_RE.test(t)) return 'Parent';
+  if (COMPANY_CHAPEAU_RE.test(t)) return 'Company';
+  return null;
+}
+
+function bandPartyLabels(cards) {
+  const namedNegative = cards.filter((c) => {
+    const code = cardCode(c);
+    return code && code !== 'IOC' && !GENERAL_EXCEPTION_CODES.has(code) && !AFFIRMATIVE_CODES.has(code);
+  });
+  const bands = [...new Set(namedNegative.map(sectionBand))].sort((a, b) => parseFloat(a) - parseFloat(b));
+  if (bands.length !== 2) return null;
+  return new Map([[bands[0], 'Company'], [bands[1], 'Parent']]);
+}
+
 // Groups the NAMED negative covenants (has a real provision_subtype, is not
 // a general-exceptions/affirmative container) by (section band, canonical
 // code) -- see sectionBand's doc comment above for why band is part of the
@@ -260,6 +294,10 @@ function fragmentCards(cards) {
   return cards.filter((card) => {
     const code = cardCode(card);
     if (GENERAL_EXCEPTION_CODES.has(code) || AFFIRMATIVE_CODES.has(code)) return false;
+    // No-code cards carrying positiveObligations are the deck's affirmative
+    // covenants (QXO's chapeau cards) — affirmativeRows renders them; they
+    // are not unclassified fragments.
+    if (asList(cardFeatures(card).positiveObligations).length) return false;
     return !code || code === 'IOC';
   });
 }
@@ -271,6 +309,7 @@ function buildNegativeRow(group) {
     // collision on any two-party IOC deck, since both groups shared one id).
     id: `ioc-neg-${group.band}-${group.code}`,
     code: group.code,
+    band: group.band,
     cards: group.cards,
   };
 }
@@ -396,6 +435,7 @@ function renderNegativeRow(entry, ctx) {
     // same card this row's pills/obligations text were built from.
     card: primary || null,
     evidence: obligations[0] || null,
+    band: entry.band || null,
   };
 }
 
@@ -476,42 +516,43 @@ function resolveFragmentName(card) {
     || (card?.short_title === UNCLASSIFIED_SHORT_TITLE ? firstQuotePhrase(textOf(card)) : null);
 }
 
-function buildOtherRestrictionsRow(fragments, ctx) {
-  if (!fragments.length) return null;
+// Ben (r6): no more "§5.01(i)–5.01(o) (8 fragments)" bundle row — every
+// fragment is a real restriction and gets its OWN named row (resolved via
+// the section-ref map / keyword sniffing / quote mining above), with its
+// pills, its clause behind the standard see-text expander, and its card
+// wired for the sidebar. Returns an ARRAY of rows for the "Other
+// restrictions" band.
+function buildOtherRestrictionsRows(fragments, ctx) {
+  if (!fragments.length) return [];
   const PillCell = ctx?.primitives?.PillCell;
-  const sections = fragments.map((c) => valueText(cardFeatures(c).sectionNumber)).filter(Boolean);
-  const rangeLabel = sections.length ? `§${sections[0]}–${sections[sections.length - 1]}` : `${fragments.length} items`;
-  const items = fragments.map((card, index) => {
+  return fragments.map((card, index) => {
     const entries = exceptionEntries(cardFeatures(card).restrictionComponents, IOC_CATEGORY_CODES, card);
-    const section = valueText(cardFeatures(card).sectionNumber) || String(card?.section_ref || '').split('|')[0].trim() || `Item ${index + 1}`;
-    const resolvedName = entries.length ? null : resolveFragmentName(card);
-    let content;
-    if (entries.length && PillCell) {
-      content = entries.map((e, j) => pillFor(PillCell, `frag-${card.id || index}-${j}`, e.label, 'neutral', e.evidence, e.source));
-    } else if (resolvedName) {
-      // Extraction gap, named rather than dropped or shown as a bare
-      // fragment -- see resolveFragmentName above (I7/I8).
-      content = React.createElement('span', { className: 'text-[11px] text-ink', title: 'Extraction gap: no provision_subtype assigned; name resolved from section_ref/clause text' }, resolvedName);
-    } else {
-      content = React.createElement('span', { className: 'italic text-inkFaint' }, 'no structured signal extracted');
-    }
-    return React.createElement(
-      'li',
-      { key: card.id || index, className: 'flex flex-wrap items-center gap-1 text-[11px]' },
-      React.createElement('span', { className: 'text-inkFaint' }, `§${section}`),
-      content,
-    );
+    const section = valueText(cardFeatures(card).sectionNumber) || String(card?.section_ref || '').split('|')[0].trim() || null;
+    const name = resolveFragmentName(card)
+      || (entries.length ? entries[0].label : null)
+      || (section ? `§${section}` : `Item ${index + 1}`);
+    const label = section && !name.startsWith('§') ? `${name} · §${section}` : name;
+    const pills = (entries.length && PillCell)
+      ? React.createElement(
+        'div',
+        { className: 'flex flex-wrap gap-1' },
+        entries.map((e, j) => pillFor(PillCell, `frag-${card.id || index}-${j}`, e.label, 'neutral', e.evidence, e.source, undefined, true)),
+      )
+      : null;
+    const clause = textOf(card);
+    return {
+      id: `ioc-frag-${card.id || index}`,
+      label: covenantLabelNode(label, null),
+      children: React.createElement(
+        'div',
+        { className: 'space-y-1.5' },
+        pills,
+        clause ? seeTextNode([clause]) : null,
+      ),
+      card,
+      evidence: clause || null,
+    };
   });
-  return {
-    id: 'ioc-other-restrictions',
-    label: covenantLabelNode(`${rangeLabel} (${fragments.length} fragments)`, null),
-    children: React.createElement(
-      'details',
-      { className: 'mt-1' },
-      React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, `${fragments.length} unclassified fragments — see items`),
-      React.createElement('ul', { className: 'mt-1 space-y-1 list-none pl-0' }, items),
-    ),
-  };
 }
 
 // I2/I4: a limb's own efforts_standard (normalizeIocLimbEffortsStandards in
@@ -539,15 +580,45 @@ function materialRespectsPillFor(PillCell, keyId, obligationText, card) {
   return pillFor(PillCell, keyId, label, 'info', textOf(card), card, standardColorKey(label));
 }
 
+// Some decks (QXO) park the positive obligations on the section's chapeau
+// card with NO provision_subtype at all — and each limb's payload arrives
+// double-encoded, as { text: '{"appliesTo":[...],"obligation":"..."}' }.
+// Unwrap that inner JSON so appliesTo/obligation resolve like a structured
+// limb; anything unparseable stays as-is (falls back to the card text).
+function normalizeLimb(limb) {
+  if (limb && typeof limb.text === 'string' && limb.text.trim().startsWith('{')) {
+    try {
+      const parsed = JSON.parse(limb.text);
+      if (parsed && typeof parsed === 'object') return { ...limb, ...parsed };
+    } catch { /* not JSON — keep the raw limb */ }
+  }
+  return limb;
+}
+
 function affirmativeRows(cards, ctx) {
   const PillCell = ctx?.primitives?.PillCell;
   const rows = [];
   for (const card of cards) {
     const code = cardCode(card);
-    if (!AFFIRMATIVE_CODES.has(code)) continue;
     const features = cardFeatures(card);
-    const limbs = asList(features.positiveObligations);
+    const rawLimbs = asList(features.positiveObligations);
+    // Subtype-coded affirmative cards as before, PLUS chapeau/no-code cards
+    // that carry positiveObligations (QXO: subtype-less "General / Preamble"
+    // cards are the ONLY place its ordinary-course/preservation duties
+    // live — previously they never rendered anywhere).
+    const isAffirmative = AFFIRMATIVE_CODES.has(code)
+      || ((!code || code === 'IOC') && rawLimbs.length > 0);
+    if (!isAffirmative) continue;
+    const limbs = rawLimbs.map(normalizeLimb);
     if (!limbs.length) continue;
+    // Chapeau cards contain their own party language, so text attribution
+    // works even where the section_ref is wrong (QXO's Parent chapeau is
+    // stamped section_ref 4.1).
+    const party = cardPartyFromText(card);
+    const genericTitle = /general|preamble/i.test(String(card.short_title || ''));
+    const rowTitle = genericTitle
+      ? (party ? `${party} — ordinary course & preservation` : 'Ordinary course & preservation')
+      : (card.short_title || card.defined_term || 'Affirmative covenant');
     limbs.forEach((limb, limbIndex) => {
       const scopeEntries = exceptionEntries(limb?.appliesTo, IOC_AFFIRMATIVE_SCOPE_CODES, card);
       const carveout = features.ordinaryCourseCarveout === true || limb?.ordinaryCourseCarveout === true;
@@ -560,7 +631,9 @@ function affirmativeRows(cards, ctx) {
       ].filter(Boolean);
       rows.push({
         id: `ioc-aff-${card.id || code}-${limbIndex}`,
-        label: covenantLabelNode(card.short_title || card.defined_term || 'Affirmative covenant', code),
+        label: covenantLabelNode(rowTitle, code),
+        card,
+        evidence: obligationText || null,
         children: React.createElement(
           'div',
           { className: 'space-y-1.5' },
@@ -674,7 +747,7 @@ const iocExceptionsConfig = {
         if (!GroupedSubRows) return null;
         const cards = (row.reviewDeal?.cards || []).filter(isIocCard);
         const negativeRows = negativeCovenantGroups(cards).map((group) => renderNegativeRow(buildNegativeRow(group), ctx));
-        const otherRow = buildOtherRestrictionsRow(fragmentCards(cards), ctx);
+        const otherRows = buildOtherRestrictionsRows(fragmentCards(cards), ctx);
         const exceptionsRows = buildIocExceptionsRows(cards, ctx);
         // Old-site render order (OLD-review-page.js's IocAffirmativeCovenantsTable
         // ahead of IocNegativeCovenantsTable) puts the affirmative limbs FIRST --
@@ -687,11 +760,24 @@ const iocExceptionsConfig = {
         // fragments; see buildIocExceptionsRows' header comment). Negative
         // covenants (the named rows) come next, with the near-empty fragments
         // collapsed into the lowest-priority "Other restrictions" band last.
+        // Two-party decks (QXO: §4.1 Company + §4.2 Parent) split the
+        // negative covenants into one labelled band PER PARTY — otherwise
+        // "Charter / Bylaws Amendments" renders twice with no way to tell
+        // whose covenant it is. Single-band decks keep the single
+        // "Negative covenants" band exactly as before.
+        const partyByBand = bandPartyLabels(cards);
+        const negativeGroups = partyByBand
+          ? [...partyByBand.entries()].map(([band, party]) => ({
+            id: `negative-${band}`,
+            label: `Negative covenants — ${party}`,
+            rows: negativeRows.filter((r) => r.band === band),
+          }))
+          : [{ id: 'negative', label: 'Negative covenants', rows: negativeRows }];
         const groups = [
           { id: 'affirmative', label: 'Affirmative covenants', rows: affirmativeRows(cards, ctx) },
           { id: 'exceptions', label: 'Exceptions', rows: exceptionsRows },
-          { id: 'negative', label: 'Negative covenants', rows: negativeRows },
-          { id: 'other', label: 'Other restrictions', rows: otherRow ? [otherRow] : [] },
+          ...negativeGroups,
+          { id: 'other', label: 'Other restrictions', rows: otherRows },
         ];
         // Item 2 (r5): same onSelectCard/resolveCard/selectedCardId wiring
         // conditions.config.js/nosol-section.config.js use -- only rows that
@@ -714,7 +800,10 @@ const iocExceptionsConfig = {
 export {
   affirmativeRows,
   buildIocExceptionsRows,
-  buildOtherRestrictionsRow,
+  bandPartyLabels,
+  buildOtherRestrictionsRows,
+  cardPartyFromText,
+  normalizeLimb,
   effortsStandardPillFor,
   exceptionEntries,
   fragmentCards,
