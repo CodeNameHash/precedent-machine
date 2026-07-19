@@ -14,6 +14,15 @@ const PROVISION_SELECT = 'id, deal_id, type, category, full_text, ai_metadata, c
 // claims reader in lib/queries/review-deal.js.
 const PROVISION_PAGE_SIZE = 1000;
 
+// WP-7 (M5-06) demo-dryrun: staging deals (ingest_status: 'staging', e.g.
+// the demo dry-run's DRYRUN-<timestamp> deal) must never surface in a query
+// result. Mirrors the pages/api/home.js / pages/api/deals.js isStagingDeal
+// pattern — local, not shared, per this repo's existing convention.
+function isStagingDeal(deal) {
+  const meta = deal && deal.metadata && typeof deal.metadata === 'object' ? deal.metadata : {};
+  return meta.ingest_status === 'staging';
+}
+
 async function fetchAllProvisions(sb) {
   const out = [];
   let offset = 0;
@@ -54,13 +63,19 @@ export default async function handler(req, res) {
       if (!payload && source.query_payload) payload = source.query_payload;
     }
 
-    const [{ data: deals, error: dErr }, provisions] = await Promise.all([
+    const [{ data: dealRows, error: dErr }, allProvisions] = await Promise.all([
       sb.from('deals').select(DEAL_SELECT).order('announce_date', { ascending: false }),
       fetchAllProvisions(sb),
     ]);
     if (dErr) throw new Error(dErr.message);
 
-    const result = await runQuery(kind, payload, { context: { deals: deals || [], provisions: provisions || [] } });
+    // Staging deals (WP-7 demo-dryrun) never belong in a query result —
+    // exclude both the deal row and its provisions from context.
+    const deals = (dealRows || []).filter((deal) => !isStagingDeal(deal));
+    const liveDealIds = new Set(deals.map((deal) => deal.id));
+    const provisions = (allProvisions || []).filter((p) => liveDealIds.has(p.deal_id));
+
+    const result = await runQuery(kind, payload, { context: { deals, provisions } });
     // WP-3 (M4-02): one extra, serial, read-only batch fetch — never
     // per-cell — to resolve each cell's `_prov.extraction_version` off
     // provision_cards.provenance. No-ops (issues zero queries) when the
