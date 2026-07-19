@@ -274,12 +274,99 @@ function rowIdentityLabel(rowFocus, card) {
   return rowFocus.label || (card && (card.short_title || card.defined_term)) || 'Provision';
 }
 
+// "This deal" lead line (sidebar r6, Ben: "clearer on what this deal's
+// treatment is, as compared to alternatives") -- a bold, left-accented block
+// that always sits above the peer-set distribution, distinct from it.
+function ThisDealLead({ children }) {
+  if (!children) return null;
+  return (
+    <div className="mb-2 pl-2 border-l-2 border-[#1F1F1F]" data-testid="this-deal-lead">
+      {children}
+    </div>
+  );
+}
+
+// One deal row inside an expanded option -- deal name + two quiet links.
+// "See provision →" only renders when a cardId resolved server-side (not
+// every claim has one -- see pages/api/corpus-stats.js's cardIdForClaim).
+function DealsExpandList({ deals }) {
+  if (!deals || !deals.length) return null;
+  return (
+    <div className="mt-1 mb-1.5 pl-3 border-l-2 border-[#E0E0E0] space-y-1" data-testid="option-deals-list">
+      {deals.map((d) => (
+        <div key={d.id} className="flex items-center justify-between gap-2 text-[12px] text-[#1F1F1F] py-0.5">
+          <span className="min-w-0 truncate pr-2">
+            {d.name}
+            {d.value ? <span className="mtx-mono text-[#9A9A9A]"> · {d.value}</span> : null}
+          </span>
+          <span className="flex items-center gap-2 shrink-0">
+            <Link href={`/review/${d.id}`} className="text-[10.5px] text-[#9A9A9A] hover:text-[#1F1F1F]" data-testid="see-deal-link">
+              See deal →
+            </Link>
+            {d.cardId ? (
+              <Link href={`/review/${d.id}?card=${d.cardId}`} className="text-[10.5px] text-[#9A9A9A] hover:text-[#1F1F1F]" data-testid="see-provision-link">
+                See provision →
+              </Link>
+            ) : null}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// One clickable/expandable distribution option row (sidebar r6, item 1b):
+// click -> indented DealsExpandList of the deals behind this option.
+// Options with no resolvable deals list (shouldn't normally happen -- every
+// counted value comes from at least one claim) render inert, no chevron.
+function OptionRow({ label, count, isThisDeal, deals, open, onToggle }) {
+  const hasDeals = Array.isArray(deals) && deals.length > 0;
+  return (
+    <div>
+      <button
+        type="button"
+        onClick={hasDeals ? onToggle : undefined}
+        aria-expanded={hasDeals ? open : undefined}
+        disabled={!hasDeals}
+        className={`w-full flex items-center justify-between gap-2 text-left py-0.5 ${hasDeals ? 'cursor-pointer hover:bg-[#F6F6F6]' : 'cursor-default'}`}
+        data-testid="distribution-option-row"
+      >
+        <span className={`${BODY} ${isThisDeal ? 'font-bold' : ''} text-[#1F1F1F]`}>
+          {label} — {count}
+          {isThisDeal ? <span className="text-[9px] text-[#2F6DB5] font-bold uppercase ml-1">This deal</span> : null}
+        </span>
+        {hasDeals ? (
+          <span
+            className="text-[9px] text-[#9A9A9A] shrink-0 transition-transform inline-block"
+            style={open ? { transform: 'rotate(90deg)' } : undefined}
+            aria-hidden="true"
+          >
+            ›
+          </span>
+        ) : null}
+      </button>
+      {hasDeals && open ? <DealsExpandList deals={deals} /> : null}
+    </div>
+  );
+}
+
+function useOpenOptions() {
+  const [openKeys, setOpenKeys] = useState(() => new Set());
+  const toggle = (key) => setOpenKeys((prev) => {
+    const next = new Set(prev);
+    if (next.has(key)) next.delete(key); else next.add(key);
+    return next;
+  });
+  return [openKeys, toggle];
+}
+
 // (b) CORPUS CONTEXT — one categorical or numeric feature's distribution
-// across the peer set, from /api/corpus-stats' rowContext.features[]. Shown
-// as a single wrapped line ("One-step merger — 24 · Two-step tender — 9 ·
-// Double merger — 4", per Ben's spec) with this deal's own value bolded,
-// or (numeric) min/median/max + this deal's own position.
+// across the peer set, from /api/corpus-stats' rowContext.features[]. This
+// deal's own treatment leads as a bold, left-accented line; the distribution
+// itself sits under an "Across the peer set" micro-label, and every option
+// is now a clickable row that expands to the deals behind it (sidebar r6).
 function FeatureDistribution({ feature }) {
+  const [openKeys, toggle] = useOpenOptions();
   if (!feature) return null;
   if (feature.kind === 'numeric') {
     if (feature.min === null || feature.min === undefined) return null;
@@ -288,36 +375,63 @@ function FeatureDistribution({ feature }) {
       if (feature.unit) return `${Math.round(n).toLocaleString('en-US')} ${feature.unit}`;
       return fmtValue(n) || Math.round(n).toLocaleString('en-US');
     };
+    const hasValues = Array.isArray(feature.values) && feature.values.length > 0;
+    const allPointsDeals = hasValues
+      ? feature.values.map((v) => ({ id: v.dealId, name: v.dealName, cardId: v.cardId, value: fmtN(v.value) }))
+      : [];
     return (
-      <div className="mb-2.5" data-testid="feature-distribution-numeric">
-        <div className="text-[10px] text-[#6B6B6B] mb-1">{feature.label}</div>
+      <div className="mb-3" data-testid="feature-distribution-numeric">
+        {feature.thisDealValue !== null && feature.thisDealValue !== undefined ? (
+          <ThisDealLead>
+            <div className="text-[13px] font-bold text-[#1F1F1F]">This deal: {fmtN(feature.thisDealValue)}</div>
+            {feature.thisDealRank !== null && feature.count > 1 ? (
+              <div className="text-[10px] text-[#6B6B6B]">
+                higher than {Math.max(0, feature.thisDealRank - 1)} of {feature.count - 1} other peers
+              </div>
+            ) : null}
+          </ThisDealLead>
+        ) : null}
+        <div className={LAB_SM}>Across the peer set</div>
+        <div className="text-[10px] text-[#6B6B6B] mb-1 mt-1">{feature.label}</div>
         <div className={`${BODY} text-[#1F1F1F]`}>
           Min {fmtN(feature.min)} <span className="text-[#B0B0B0]">·</span> Median {fmtN(feature.median)} <span className="text-[#B0B0B0]">·</span> Max {fmtN(feature.max)}
         </div>
-        {feature.thisDealValue !== null && feature.thisDealValue !== undefined ? (
-          <div className="text-[11px] text-[#2F6DB5] font-semibold mt-1">
-            This deal: {fmtN(feature.thisDealValue)}
-            {feature.thisDealRank !== null && feature.count > 1
-              ? ` — higher than ${Math.max(0, feature.thisDealRank - 1)} of ${feature.count - 1} other peers`
-              : ''}
-          </div>
+        <div className="text-[9px] text-[#9A9A9A] mt-0.5 mb-1">{feature.count} peer deals with a captured value</div>
+        {hasValues ? (
+          <OptionRow
+            label="All data points"
+            count={allPointsDeals.length}
+            isThisDeal={false}
+            deals={allPointsDeals}
+            open={openKeys.has('__all__')}
+            onToggle={() => toggle('__all__')}
+          />
         ) : null}
-        <div className="text-[9px] text-[#9A9A9A] mt-0.5">{feature.count} peer deals with a captured value</div>
       </div>
     );
   }
   if (!feature.values || !feature.values.length) return null;
   const shown = feature.values.slice(0, 6);
   return (
-    <div className="mb-2.5" data-testid="feature-distribution-categorical">
-      <div className="text-[10px] text-[#6B6B6B] mb-1">{feature.label}</div>
-      <div className={`${BODY} text-[#1F1F1F]`}>
-        {shown.map((v, i) => (
-          <span key={v.value} style={v.isThisDeal ? { fontWeight: 700, color: '#1F1F1F' } : undefined}>
-            {v.label} — {v.count}
-            {v.isThisDeal ? <span className="text-[9px] text-[#2F6DB5] font-bold uppercase"> (this deal)</span> : null}
-            {i < shown.length - 1 ? <span className="text-[#B0B0B0]"> · </span> : null}
-          </span>
+    <div className="mb-3" data-testid="feature-distribution-categorical">
+      {feature.thisDealValue ? (
+        <ThisDealLead>
+          <div className="text-[13px] font-bold text-[#1F1F1F]">This deal: {feature.thisDealValue}</div>
+        </ThisDealLead>
+      ) : null}
+      <div className={LAB_SM}>Across the peer set</div>
+      <div className="text-[10px] text-[#6B6B6B] mb-1 mt-1">{feature.label}</div>
+      <div>
+        {shown.map((v) => (
+          <OptionRow
+            key={v.value}
+            label={v.label}
+            count={v.count}
+            isThisDeal={v.isThisDeal}
+            deals={v.deals}
+            open={openKeys.has(v.value)}
+            onToggle={() => toggle(v.value)}
+          />
         ))}
       </div>
       <div className="text-[9px] text-[#9A9A9A] mt-0.5">of {feature.total} peer deals with a captured value</div>
@@ -325,35 +439,56 @@ function FeatureDistribution({ feature }) {
   );
 }
 
-// Instrument-scoped equity distribution (item 2): consideration/vesting
-// treatment counts for ONE instrument (e.g. Stock Options), never blended
-// with other instruments. rowContext.instrument comes from re-running
-// equity-awards.config.js's own classification against every peer deal —
-// see pages/api/corpus-stats.js's buildInstrumentDistribution.
+// Instrument-scoped equity distribution (item 2) — the PSU example from
+// Ben's feedback: consideration/vesting treatment counts for ONE instrument
+// (e.g. Stock Options / PSUs), never blended with other instruments.
+// rowContext.instrument comes from re-running equity-awards.config.js's own
+// classification against every peer deal — see pages/api/corpus-stats.js's
+// buildInstrumentDistribution. This deal's own consideration/vesting labels
+// lead the block (r6); every other label is a clickable option row.
 function InstrumentDistribution({ instrument }) {
+  const [openKeys, toggle] = useOpenOptions();
   if (!instrument || !instrument.dealsWithInstrument) return null;
-  const line = (list) => (
-    <div className={`${BODY} text-[#1F1F1F]`}>
-      {list.map((v, i) => (
-        <span key={v.label}>
-          {v.label} — {v.count}
-          {i < list.length - 1 ? <span className="text-[#B0B0B0]"> · </span> : null}
-        </span>
-      ))}
+  const list = (items, prefix) => (
+    <div>
+      {items.map((v) => {
+        const key = `${prefix}:${v.label}`;
+        return (
+          <OptionRow
+            key={key}
+            label={v.label}
+            count={v.count}
+            isThisDeal={Boolean(v.isThisDeal)}
+            deals={v.deals}
+            open={openKeys.has(key)}
+            onToggle={() => toggle(key)}
+          />
+        );
+      })}
     </div>
   );
+  const thisDeal = instrument.thisDeal;
   return (
     <div data-testid="instrument-distribution">
+      {thisDeal ? (
+        <ThisDealLead>
+          <div className="text-[13px] font-bold text-[#1F1F1F]">
+            This deal:{' '}
+            {[thisDeal.considerationLabel, thisDeal.vestingLabel].filter(Boolean).join(' · ') || '—'}
+          </div>
+        </ThisDealLead>
+      ) : null}
+      <div className={LAB_SM}>Across the peer set</div>
       {instrument.considerationDistribution.length ? (
-        <div className="mb-2">
+        <div className="mb-2 mt-1.5">
           <div className="text-[10px] text-[#6B6B6B] mb-1">Consideration</div>
-          {line(instrument.considerationDistribution)}
+          {list(instrument.considerationDistribution, 'consid')}
         </div>
       ) : null}
       {instrument.vestingDistribution.length ? (
         <div className="mb-2">
           <div className="text-[10px] text-[#6B6B6B] mb-1">Vesting treatment</div>
-          {line(instrument.vestingDistribution)}
+          {list(instrument.vestingDistribution, 'vest')}
         </div>
       ) : null}
       <div className="text-[9px] text-[#9A9A9A]">

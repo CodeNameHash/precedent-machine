@@ -623,7 +623,8 @@ function buildGeneralExceptionsRow(reviewDeal, idPrefix, preambleCode) {
 // below the bring-down pill (block-level, not squeezed beside label text);
 // the expansion content is appended by repsTableNode as a sibling <tr>.
 function renderTerm(row, ctx) {
-  const label = row.party ? `${row.label} (${row.party})` : row.label;
+  // r9: the section title already carries the party — no per-row suffix.
+  const label = row.label;
   const PillCell = ctx?.primitives?.PillCell;
   const SeeProvisionToggle = ctx?.SeeProvisionToggle;
   const bd = row.bringDown;
@@ -657,7 +658,7 @@ function renderTerm(row, ctx) {
 // explicitly so the popover's first line reads e.g. "Organization;
 // Qualification; Standing — MAE qualifier" instead of a bare quote.
 function repSourceLabel(row, qualifierName) {
-  const repLabel = row.party ? `${row.label} (${row.party})` : row.label;
+  const repLabel = row.label;
   return repLabel ? `${repLabel} — ${qualifierName}` : qualifierName;
 }
 
@@ -984,7 +985,7 @@ function repsTableNode(repRows, ctx) {
           // labelled bits (materiality standard, knowledge qualifier,
           // lookback date) each with its own corpus distribution, instead
           // of a single undifferentiated "this row" block.
-          onClick: rowCard ? () => ctx.onSelectCard(rowCard, resolveRowFocus({ label: row.party ? `${row.label} (${row.party})` : row.label, itemCode: cardCode(row.card), featureKeys: ['materialityQualifier', 'knowledgeQualifier', 'lookbackDateISO'] })) : undefined,
+          onClick: rowCard ? () => ctx.onSelectCard(rowCard, resolveRowFocus({ label: row.label, itemCode: cardCode(row.card), featureKeys: ['materialityQualifier', 'knowledgeQualifier', 'lookbackDateISO'] })) : undefined,
           style: rowCard ? { cursor: 'pointer', ...(isSelectedRow ? { background: 'rgba(47,109,181,.07)', boxShadow: 'inset 2px 0 0 #2F6DB5' } : {}) } : undefined,
         },
         React.createElement('td', { className: 'px-3 py-2 whitespace-normal break-words text-ink' }, renderTerm(row, ctx)),

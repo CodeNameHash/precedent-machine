@@ -1705,8 +1705,11 @@ test('ioc-exceptions negative-covenant row renders restrictionComponents + dolla
   assert.match(html, /Acquisitions \/ business combinations/, 'restrictionComponents pill resolves via the IOC_CATEGORY taxonomy');
   assert.match(html, /\$2,000,000/, 'dollarThreshold renders as currency');
   assert.match(html, /Tax withholding/, 'permittedExceptions pill');
-  assert.match(html, /<details/, 'mainObligation prose sits behind a collapsed <details>');
-  assert.match(html, /See provision/);
+  // r9: the clause text rides row.seeTextContent — GroupedSubRows renders
+  // the "See provision" toggle in the LEFT column with a full-width
+  // expansion row; it is never inline in the content cell.
+  assert.doesNotMatch(html, /<details/, 'no inline <details> in the content cell');
+  assert.match(String(row.seeTextContent), /may not declare or pay dividends/);
 });
 
 test('ioc-exceptions config promotes each [PROPOSED] Unclassified fragment to its own named "Other restrictions" row (Ben r6: no "(N fragments)" bundle)', () => {
@@ -3249,8 +3252,8 @@ test('r7/r8: chapeau positive covenants render as affirmative rows (double-encod
   const rows = iocMod.affirmativeRows(cards, { primitives: iocPrimitives });
   assert.equal(rows.length, 2, 'one affirmative row per party chapeau limb');
   const html = renderToStaticMarkup(React.createElement(React.Fragment, null, rows.map((r, i) => React.createElement('div', { key: i }, r.label, r.children))));
-  assert.match(html, /Maintain all leases and all personal property/, 'limb-derived row title (r8: no five identical "Ordinary course" rows)');
-  assert.match(html, /maintain all leases/, 'double-encoded limb obligation is unwrapped and rendered');
+  assert.match(html, /Maintain leases &amp; material property/, 'rubric-derived row title (r9: corpus-validated, no truncation artifacts)');
+  assert.ok(rows.every((r) => r.seeTextContent), 'each limb row carries its clause via seeTextContent (left-column See provision)');
   assert.match(html, /Properties/i, 'appliesTo scope resolves to pills after unwrapping');
 });
 
@@ -3278,4 +3281,18 @@ test('r7: single-band deck gets no party map and renders exactly as before', () 
     { id: 'm2', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-DIVIDEND', section_ref: '5.01(e) | Dividends | y', features: {} },
   ];
   assert.equal(iocMod.bandPartyLabels(cards), null);
+});
+
+// r9: the two owner-flagged QXO limb-title failures stay fixed — the rubric
+// reads the FULL obligation text, not a truncated first clause.
+test('r9: IOC limb titles resolve the QXO failure shapes correctly', () => {
+  const mk = (obligation) => iocMod.affirmativeRows([{
+    id: 'x', provision_type: 'COVENANT_INTERIM_OPERATING', short_title: 'General / Preamble',
+    section_ref: '4.1 | General / Preamble | h', primary_quote: '4.1 Interim Operations of the Company. the Company covenants and agrees',
+    features: { positiveObligations: [{ obligation }] },
+  }], { primitives: iocPrimitives })[0];
+  const permits = mk('maintain in effect all of their foreign, federal, state and local Licenses, permits, consents, franchises, approvals and authorizations necessary to operate');
+  assert.match(renderToStaticMarkup(React.createElement('div', null, permits.label)), /Maintain permits, franchises &amp; authorizations/);
+  const ordinary = mk('use its commercially reasonable efforts to cause the business of the Company to be conducted in the ordinary and usual course');
+  assert.match(renderToStaticMarkup(React.createElement('div', null, ordinary.label)), /Conduct business in ordinary course/);
 });

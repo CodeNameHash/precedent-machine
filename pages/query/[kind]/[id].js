@@ -1,16 +1,28 @@
-import { useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import MergertraceStyles from '../../../components/review-v2/MergertraceStyles';
 import AppHeader from '../../../components/chrome/AppHeader';
 const { toCsv, resultToCsvRows, csvFilename } = require('../../../lib/query/csv');
-const { describeFilter } = require('../../../lib/query/filter-labels');
+const { humanizeKey } = require('../../../lib/query/filter-labels');
 // E5 (2026-07-19 pre-demo audit): the review page's own "same label path"
 // for bare enum codes ("ALL_CASH" -> "All cash") — reused here rather than
 // re-implemented so the query surface never drifts from the review page's
 // mapping.
 const { prettifyEnumValue } = require('../../../components/review/shared');
+// R (2026-07-19 query-results overhaul): the Consideration cell used to
+// route DEAL-level codes (STOCK/MIXED_ELECTION/CASH_PLUS_CVR) through
+// prettifyEnumValue('considerationType', …), which is tuned for the
+// PROVISION-level considerationType enum vocabulary (cash-with-cvr, etc)
+// and echoes the deal-level codes back unhumanized. The deals index page
+// already solved "deal-level consideration code -> label" — reuse it here
+// instead of growing a second mapping.
+const { considerationTypeDisplay } = require('../../../lib/deals-index-columns');
+// R (2026-07-19 query-results overhaul): item 1 — human titles. Pulled out
+// into a plain-Node module (lib/query/result-title.js) rather than defined
+// inline, so the title logic can be unit-tested without a JSX/Next runtime.
+const { resultTitle, kindLabel } = require('../../../lib/query/result-title');
 
 QueryPage.noLayout = true;
 
@@ -18,10 +30,6 @@ function decodePayload(value) {
   if (!value) return null;
   const padded = String(value).replace(/-/g, '+').replace(/_/g, '/').padEnd(Math.ceil(String(value).length / 4) * 4, '=');
   return JSON.parse(atob(padded));
-}
-
-function kindLabel(kind) {
-  return String(kind || 'Query').replace(/_/g, ' ').replace(/-/g, ' ');
 }
 
 function downloadCsv(result) {
@@ -68,7 +76,7 @@ export default function QueryPage() {
       .catch((err) => setError(err.message));
   }, [router.isReady, kind, id, payload]);
 
-  const title = useMemo(() => savedQuery?.title || (result ? kindLabel(result.kind) : kindLabel(kind)), [savedQuery, result, kind]);
+  const title = useMemo(() => savedQuery?.title || (result ? resultTitle(result) : kindLabel(kind)), [savedQuery, result, kind]);
   const canPersist = !!(result && currentPayload);
   const saveQuery = async (duplicate = false) => {
     if (!canPersist) return;
@@ -128,7 +136,7 @@ export default function QueryPage() {
       </div>
       <style jsx>{`
         .qp { min-height: 100vh; background: var(--paper); color: var(--ink); font-family: var(--mtx-sans); }
-        .pageTitle h1 { margin: 0; font-size: 18px; text-transform: capitalize; font-family: var(--mtx-sans); font-weight: 650; color: var(--ink); }
+        .pageTitle h1 { margin: 0; font-size: 18px; font-family: var(--mtx-sans); font-weight: 650; color: var(--ink); }
         .pageTitle p { margin: 3px 0 0; color: var(--ink-light); font-size: 12px; font-family: var(--mtx-sans); }
         .actions { border-bottom: 1px solid var(--line); background: #fff; }
         .actionsInner { display: flex; justify-content: flex-end; gap: 10px; padding: 12px 34px; }
@@ -251,12 +259,164 @@ function MarketRange({ result, onOpen }) {
   );
 }
 
+// R (2026-07-19 query-results overhaul): item 6 — the always-visible base
+// columns plus whatever feature columns the payload asked for (row.columns'
+// keys — the result row shape is { deal_id, deal_name, signing_date,
+// total_deal_value, columns:{...} }, distinct from the deals-index row
+// shape, so this deliberately does NOT reuse lib/deals-index-columns'
+// accessors). 'consideration_type' is a base column even though it lives
+// inside row.columns (the query builder always requests it for display).
+const FILTER_LIST_BASE_COLUMNS = [
+  { key: 'deal_name', label: 'Deal', locked: true },
+  { key: 'signing_date', label: 'Signing', mono: true },
+  { key: 'total_deal_value', label: 'Value', mono: true },
+  { key: 'consideration_type', label: 'Consideration' },
+];
+const FILTER_LIST_BASE_KEYS = new Set(FILTER_LIST_BASE_COLUMNS.map((col) => col.key));
+
+function filterListColumnValue(row, key) {
+  if (key === 'deal_name') return row.deal_name;
+  if (key === 'signing_date') return row.signing_date;
+  if (key === 'total_deal_value') return row.total_deal_value;
+  return row.columns ? row.columns[key] : undefined;
+}
+
+function filterListColumnDisplay(row, key) {
+  const value = filterListColumnValue(row, key);
+  if (key === 'consideration_type') return value ? (considerationTypeDisplay(value) || humanizeKey(value)) : '-';
+  if (key === 'signing_date') return value || '-';
+  return formatValue(value, key);
+}
+
+function availableFilterListColumns(result) {
+  const extra = new Set();
+  for (const row of result.rows || []) {
+    for (const key of Object.keys(row.columns || {})) {
+      if (!FILTER_LIST_BASE_KEYS.has(key)) extra.add(key);
+    }
+  }
+  return [...FILTER_LIST_BASE_COLUMNS, ...[...extra].map((key) => ({ key, label: humanizeKey(key) }))];
+}
+
+// R (2026-07-19 query-results overhaul): item 3 — "N matched hits" told Ben
+// nothing; each hit now carries its own citable quote (filter-then-list.js
+// executor change) and expands, collapsed by default, into the actual
+// provision span(s) that made the deal match: field label, humanized value,
+// the quote text, and its section reference — same clause-block treatment
+// as the review page (serif, left-bordered).
 function FilterList({ result }) {
+  const allColumns = useMemo(() => availableFilterListColumns(result), [result]);
+  const [visible, setVisible] = useState(() => new Set(allColumns.map((col) => col.key)));
+  const [columnsOpen, setColumnsOpen] = useState(false);
+  const [sort, setSort] = useState(null);
+  const [expanded, setExpanded] = useState(() => new Set());
+
+  const toggleColumn = (key) => setVisible((prev) => {
+    const next = new Set(prev);
+    if (next.has(key)) next.delete(key); else next.add(key);
+    return next;
+  });
+
+  const toggleSort = (key) => setSort((prev) => {
+    if (!prev || prev.key !== key) return { key, dir: 'asc' };
+    if (prev.dir === 'asc') return { key, dir: 'desc' };
+    return null;
+  });
+
+  const toggleExpanded = (dealId) => setExpanded((prev) => {
+    const next = new Set(prev);
+    if (next.has(dealId)) next.delete(dealId); else next.add(dealId);
+    return next;
+  });
+
+  const rows = useMemo(() => {
+    const base = result.rows || [];
+    if (!sort) return base;
+    const sorted = [...base].sort((a, b) => {
+      const av = filterListColumnValue(a, sort.key);
+      const bv = filterListColumnValue(b, sort.key);
+      if (av == null && bv == null) return 0;
+      if (av == null) return 1;
+      if (bv == null) return -1;
+      if (typeof av === 'number' && typeof bv === 'number') return av - bv;
+      return String(av).localeCompare(String(bv));
+    });
+    if (sort.dir === 'desc') sorted.reverse();
+    return sorted;
+  }, [result.rows, sort]);
+
+  const visibleColumns = allColumns.filter((col) => visible.has(col.key));
+
   return (
     <Panel>
-      <div className="chips">{result.filters_applied.map((f, i) => <span key={i} className="mtx-badge filterChip" title={`${f.field} ${f.op} ${String(f.value)}`}>{describeFilter(f).text}</span>)}</div>
-      <table className="mtx-table"><thead><tr><th>Deal</th><th>Signing</th><th>Value</th><th>Consideration</th><th>Matched hits</th></tr></thead>
-        <tbody>{result.rows.map((row) => <tr key={row.deal_id} onClick={() => { window.location.href = `/review/${row.deal_id}`; }}><td>{row.deal_name}</td><td className="mtx-mono">{row.signing_date || '-'}</td><td className="mtx-mono">{formatValue(row.columns.total_deal_value, 'total_deal_value')}</td><td>{prettifyEnumValue('considerationType', row.columns.consideration_type) || '-'}</td><td className="mtx-mono">{pluralize(row.matched_provision_hits.length, 'match', 'matches')}</td></tr>)}</tbody>
+      <div className="listHead">
+        <p className="rowCount">{pluralize(result.rows.length, 'deal')}</p>
+        <div className="colPicker">
+          <button type="button" className="mtx-btn" onClick={() => setColumnsOpen((v) => !v)}>Columns</button>
+          {columnsOpen && (
+            <div className="colPopover" onMouseLeave={() => setColumnsOpen(false)}>
+              {allColumns.map((col) => (
+                <label key={col.key}>
+                  <input type="checkbox" checked={visible.has(col.key)} disabled={col.locked} onChange={() => toggleColumn(col.key)} />
+                  {col.label}
+                </label>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+      <table className="mtx-table">
+        <thead>
+          <tr>
+            <th className="expandCol" />
+            {visibleColumns.map((col) => (
+              <th key={col.key} className="sortable" onClick={() => toggleSort(col.key)}>
+                {col.label}{sort && sort.key === col.key ? (sort.dir === 'asc' ? ' ▲' : ' ▼') : ''}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => {
+            const hits = row.matched_provision_hits || [];
+            const isOpen = expanded.has(row.deal_id);
+            return (
+              <Fragment key={row.deal_id}>
+                <tr>
+                  <td className="expandCol">
+                    {hits.length > 0 && (
+                      <button type="button" className="term-cell-seetext" onClick={() => toggleExpanded(row.deal_id)}>
+                        {isOpen ? '▾ hide' : '▸ show'} provision{hits.length === 1 ? '' : 's'}
+                      </button>
+                    )}
+                  </td>
+                  {visibleColumns.map((col) => (
+                    <td
+                      key={col.key}
+                      className={col.mono ? 'mtx-mono' : ''}
+                      onClick={col.key === 'deal_name' ? () => { window.location.href = `/review/${row.deal_id}`; } : undefined}
+                    >
+                      {filterListColumnDisplay(row, col.key)}
+                    </td>
+                  ))}
+                </tr>
+                {isOpen && hits.length > 0 && (
+                  <tr className="hitsRow">
+                    <td colSpan={visibleColumns.length + 1}>
+                      {hits.map((hit, i) => (
+                        <div key={i} className="hitBlock">
+                          <div className="hitLabel"><b>{humanizeKey(hit.field)}</b><span className="mtx-mono">{formatValue(hit.value, hit.field)}</span></div>
+                          {hit.quote?.text && <blockquote className="mtx-serif">{hit.quote.text}</blockquote>}
+                          {hit.quote?.section_ref && <div className="hitSection mtx-mono">{hit.quote.section_ref}</div>}
+                        </div>
+                      ))}
+                    </td>
+                  </tr>
+                )}
+              </Fragment>
+            );
+          })}
+        </tbody>
       </table>
     </Panel>
   );
@@ -305,9 +465,27 @@ function Panel({ children }) {
     .mtx.qp .chart { height: 210px; display: flex; align-items: flex-end; gap: 8px; border-bottom: 1px solid #E0E0E0; padding: 12px 0; }
     .mtx.qp .chart button { flex: 1; min-width: 20px; border: 0; background: #1F1F1F; color: #fff; border-radius: 0; cursor: pointer; }
     .mtx.qp .stats, .mtx.qp .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
-    .mtx .filterChip { text-transform: none; letter-spacing: 0.01em; font-weight: 500; }
     .mtx.qp .stats span { border: 1px solid #E0E0E0; padding: 5px 9px; font-size: 12px; color: #1F1F1F; }
     .mtx.qp h2 { font-size: 13px; margin: 22px 0 8px; font-family: var(--mtx-sans); text-transform: uppercase; letter-spacing: 0.08em; color: #6B6B6B; }
+
+    /* item 6 — Columns popover + client sort (FILTER_THEN_LIST only). */
+    .mtx.qp .listHead { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .mtx.qp .rowCount { margin: 0; font-family: var(--mtx-sans); font-size: 12px; color: #6B6B6B; }
+    .mtx.qp .colPicker { position: relative; }
+    .mtx.qp .colPopover { position: absolute; right: 0; top: calc(100% + 4px); z-index: 6; background: #fff; border: 1px solid #E0E0E0; padding: 8px 10px; min-width: 180px; box-shadow: 0 4px 14px rgba(0,0,0,0.08); }
+    .mtx.qp .colPopover label { display: flex; align-items: center; gap: 8px; font-family: var(--mtx-sans); font-size: 12px; color: #1F1F1F; padding: 4px 0; cursor: pointer; }
+    .mtx.qp .mtx-table th.sortable { cursor: pointer; user-select: none; }
+    .mtx.qp .mtx-table th.expandCol, .mtx.qp .mtx-table td.expandCol { width: 1%; white-space: nowrap; }
+
+    /* item 3 — expandable provision spans, collapsed by default. Same
+       "see text" affordance the review page uses (.term-cell-seetext). */
+    .mtx.qp .mtx-table td.expandCol { cursor: default; }
+    .mtx.qp .hitsRow td { cursor: default; padding: 0; background: #FAFAF9; }
+    .mtx.qp .hitBlock { padding: 12px 18px; border-top: 1px solid #EDEDEC; }
+    .mtx.qp .hitBlock:first-child { border-top: none; }
+    .mtx.qp .hitLabel { display: flex; justify-content: space-between; gap: 12px; font-family: var(--mtx-sans); font-size: 12px; color: #1F1F1F; margin-bottom: 6px; }
+    .mtx.qp .hitBlock blockquote { margin: 0 0 6px; padding: 6px 0 6px 12px; border-left: 2px solid #1F1F1F; font-family: var(--mtx-serif); font-size: 13px; line-height: 1.5; color: #1F1F1F; }
+    .mtx.qp .hitSection { font-size: 11px; color: #6B6B6B; }
   `}</style></div>;
 }
 
@@ -319,10 +497,10 @@ function Drilldown({ item, onClose }) {
         <button type="button" className="mtx-btn" onClick={onClose}>Close</button>
         <h2>Provision card</h2>
         {item.card_id && item.deal_id && <Link href={`/review/${item.deal_id}`} className="mtx-btn">Open deal review</Link>}
-        <pre>{item.primary_quote?.text || item.verbatim_quote || JSON.stringify(item, null, 2)}</pre>
+        <pre className="mtx-serif">{item.primary_quote?.text || item.verbatim_quote || JSON.stringify(item, null, 2)}</pre>
         <style jsx>{`
-          h2 { margin: 14px 0 14px; font-size: 15px; }
-          pre { white-space: pre-wrap; font-family: var(--mtx-serif); line-height: 1.5; color: #1F1F1F; margin-top: 12px; }
+          h2 { margin: 14px 0 14px; font-size: 15px; font-family: var(--mtx-sans); }
+          pre { white-space: pre-wrap; line-height: 1.5; color: #1F1F1F; margin-top: 12px; }
         `}</style>
       </aside>
     </>
@@ -356,11 +534,22 @@ function formatMoney(n) {
   return `${sign}$${m >= 100 ? Math.round(m) : trimOneDecimal(m)}M`;
 }
 
+// UPPER_SNAKE (or PascalCase-ish ALL-CAPS) is never a legitimate display
+// string on this page — it's always a raw enum/code that slipped through.
+const RAW_CODE_RE = /^[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)*$/;
+
 // `fieldPath` is optional — pass the requesting field/column key (e.g.
 // 'considerationType', 'goShopPresent') so bare enum codes route through
 // the same label path the review page uses (prettifyEnumValue) instead of
 // rendering the raw extraction code. Callers with no field context (or a
 // field prettifyEnumValue doesn't recognize) get the value back unchanged.
+//
+// R (2026-07-19 query-results overhaul): item 4 — prettifyEnumValue's own
+// per-field taxonomy branches (e.g. considerationType) can still echo an
+// UPPER_SNAKE code back unchanged when a value falls outside that branch's
+// own vocabulary (deal-level codes like STOCK/MIXED_ELECTION hitting the
+// provision-level considerationType dictionary). Never let a raw code reach
+// the page across ANY query kind — humanize it as a last resort.
 function formatValue(value, fieldPath) {
   if (value === null || value === undefined || value === '') return '-';
   if (typeof value === 'boolean') return value ? 'Yes' : 'No';
@@ -368,7 +557,9 @@ function formatValue(value, fieldPath) {
     if (Math.abs(value) >= 1e6) return formatMoney(value);
     return round(value);
   }
-  return prettifyEnumValue(fieldPath || '', String(value));
+  const pretty = prettifyEnumValue(fieldPath || '', String(value));
+  if (typeof pretty === 'string' && RAW_CODE_RE.test(pretty)) return humanizeKey(pretty);
+  return pretty;
 }
 
 function round(value) {

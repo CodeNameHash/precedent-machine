@@ -30,6 +30,16 @@
 //                          prohibited act), matched by taxonomy code when
 //                          itemCode is also given, else by resolved label.
 //
+// Sidebar redesign r6 (Ben, "clearer on this deal's treatment vs
+// alternatives, click an option to see its deals"): every categorical value/
+// instrument consideration-or-vesting label now carries `deals: [{ id,
+// name, cardId }]` (name = "<acquirer_display||acquirer> /
+// <target_display||target>", cardId resolved via claims.excerpt_id ->
+// provision_cards.id where available), and numeric distributions carry a
+// capped-at-40 `values: [{ value, dealId, dealName, cardId }]` point list.
+// The client renders these as expandable option rows with "See deal"/"See
+// provision" links -- see components/review-v2/ClauseSidebar.jsx.
+//
 // Cheap by design: provision_cards is ~6k rows and claims ~70k; both hits
 // are single-column filters, the group-by happens here, and the response is
 // a small summary. The corpus only changes on re-extract/correction, so the
@@ -204,23 +214,67 @@ function isNumericAttribute(attribute, sampleClaims) {
   return false;
 }
 
+// "<acquirer_display||acquirer> / <target_display||target>" — same flat
+// metadata fields pages/api/deals.js and lib/home-data.js already read
+// (metadata.acquirer_display / metadata.target_display), not the deeper
+// deal_facts.parties resolution lib/deal-display.js does for the main
+// review header -- this is a compact peer-list label, not the canonical
+// display name, so the simple flat fallback is enough.
+function dealLabel(deal) {
+  const meta = (deal && deal.metadata) || {};
+  const acquirer = meta.acquirer_display || deal.acquirer;
+  const target = meta.target_display || deal.target;
+  return [acquirer, target].filter(Boolean).join(' / ') || deal.id;
+}
+
+function buildDealsById(deals) {
+  const map = new Map();
+  for (const d of deals) map.set(d.id, { id: d.id, name: dealLabel(d) });
+  return map;
+}
+
+// provision_cards.id (the id `?card=` deep-links expect) is NOT what claims
+// carry directly -- claims reference provision_cards.excerpt_id (the
+// re-ingest-stable anchor), not the card's uuid primary key. cardIdByKey is
+// built once per request from the SAME provision_cards fetch already used
+// for dealsWithCode, keyed `${deal_id}|${excerpt_id}` -> card id.
+function cardIdForClaim(claim, cardIdByKey) {
+  if (!claim || !claim.excerpt_id) return null;
+  return cardIdByKey.get(`${claim.deal_id}|${claim.excerpt_id}`) || null;
+}
+
+function dealEntryForClaim(claim, dealsById, cardIdByKey) {
+  const d = dealsById.get(claim.deal_id);
+  return { id: claim.deal_id, name: d ? d.name : claim.deal_id, cardId: cardIdForClaim(claim, cardIdByKey) };
+}
+
 // One featureKey's corpus distribution: categorical value/counts (this
 // deal's own value flagged) for enum/coded attributes, or a numeric
 // min/median/max + this deal's position for number-valued ones. peerClaims
-// is already scoped to the peer set + this attribute.
-function buildFeatureDistribution(attribute, peerClaims, subjectDealId) {
+// is already scoped to the peer set + this attribute. Each distribution
+// option/point also carries the deals behind it (sidebar redesign, item 1:
+// click an option -> expand its deals -> "See deal"/"See provision").
+function buildFeatureDistribution(attribute, peerClaims, subjectDealId, dealsById, cardIdByKey) {
   const label = attributeLabel(attribute);
   if (isNumericAttribute(attribute, peerClaims)) {
     const byDeal = new Map();
+    const claimByDeal = new Map();
     for (const cl of peerClaims) {
       if (byDeal.has(cl.deal_id)) continue; // one value per deal
       const n = extractNumeric(cl);
-      if (n !== null) byDeal.set(cl.deal_id, n);
+      if (n !== null) { byDeal.set(cl.deal_id, n); claimByDeal.set(cl.deal_id, cl); }
     }
     const nums = [...byDeal.values()].sort((a, b) => a - b);
     if (!nums.length) return null;
     const thisDealValue = subjectDealId && byDeal.has(subjectDealId) ? byDeal.get(subjectDealId) : null;
     const rank = thisDealValue !== null ? nums.filter((n) => n <= thisDealValue).length : null;
+    const values = [...byDeal.entries()]
+      .map(([dealId, value]) => {
+        const d = dealsById.get(dealId);
+        return { value, dealId, dealName: d ? d.name : dealId, cardId: cardIdForClaim(claimByDeal.get(dealId), cardIdByKey) };
+      })
+      .sort((a, b) => a.value - b.value)
+      .slice(0, 40);
     return {
       attribute,
       label,
@@ -232,19 +286,30 @@ function buildFeatureDistribution(attribute, peerClaims, subjectDealId) {
       count: nums.length,
       thisDealValue,
       thisDealRank: rank,
+      values,
     };
   }
   const counts = new Map();
+  const dealsByValue = new Map(); // value -> Map(dealId -> {id,name,cardId})
   let thisDealValue = null;
   for (const cl of peerClaims) {
     if (cl.canonical === null || cl.canonical === undefined) continue;
     counts.set(cl.canonical, (counts.get(cl.canonical) || 0) + 1);
+    if (!dealsByValue.has(cl.canonical)) dealsByValue.set(cl.canonical, new Map());
+    const dmap = dealsByValue.get(cl.canonical);
+    if (!dmap.has(cl.deal_id)) dmap.set(cl.deal_id, dealEntryForClaim(cl, dealsById, cardIdByKey));
     if (subjectDealId && cl.deal_id === subjectDealId && thisDealValue === null) thisDealValue = cl.canonical;
   }
   if (!counts.size) return null;
   const values = [...counts.entries()]
     .sort((a, b) => b[1] - a[1])
-    .map(([value, count]) => ({ value, label: valueLabel(attribute, value), count, isThisDeal: value === thisDealValue }));
+    .map(([value, count]) => ({
+      value,
+      label: valueLabel(attribute, value),
+      count,
+      isThisDeal: value === thisDealValue,
+      deals: [...(dealsByValue.get(value) || new Map()).values()],
+    }));
   return {
     attribute,
     label,
@@ -259,7 +324,7 @@ function buildFeatureDistribution(attribute, peerClaims, subjectDealId) {
 // SAME classification the Equity Awards table uses (equity-awards.config.js
 // rowsForCard) against every peer deal's reconstructed features, then tally
 // consideration/vesting labels for just the one instrument code clicked.
-function buildInstrumentDistribution(itemCode, peerClaims, peerIds) {
+function buildInstrumentDistribution(itemCode, peerClaims, peerIds, dealsById, cardIdByKey, subjectDealId) {
   const claimsByDeal = new Map();
   for (const cl of peerClaims) {
     if (!peerIds.has(cl.deal_id)) continue;
@@ -267,8 +332,14 @@ function buildInstrumentDistribution(itemCode, peerClaims, peerIds) {
     claimsByDeal.get(cl.deal_id).push(cl);
   }
   const considerationCounts = new Map();
+  const considerationDeals = new Map(); // label -> Map(dealId -> entry)
   const vestingCounts = new Map();
+  const vestingDeals = new Map();
   let dealsWithInstrument = 0;
+  // This-deal's own treatment for the lead line (sidebar redesign, item 1) --
+  // same instrument-row shape as every peer, just for subjectDealId.
+  let thisDealConsideration = null;
+  let thisDealVesting = null;
   for (const [dealId, dealClaims] of claimsByDeal) {
     let features;
     try {
@@ -285,18 +356,43 @@ function buildInstrumentDistribution(itemCode, peerClaims, peerIds) {
     const matches = (rows || []).filter((r) => r.instrumentCode === itemCode);
     if (!matches.length) continue;
     dealsWithInstrument += 1;
+    // Instrument rows aren't tied to one specific claim -- best-effort: the
+    // first claim in this deal's code-scoped set that resolves to a card id.
+    const cardId = dealClaims.map((cl) => cardIdForClaim(cl, cardIdByKey)).find(Boolean) || null;
+    const d = dealsById.get(dealId);
+    const dealEntry = { id: dealId, name: d ? d.name : dealId, cardId };
+    if (subjectDealId && dealId === subjectDealId) {
+      thisDealConsideration = matches[0].considerationLabel || null;
+      thisDealVesting = matches[0].vestingLabel || null;
+    }
     for (const row of matches) {
-      if (row.considerationLabel) considerationCounts.set(row.considerationLabel, (considerationCounts.get(row.considerationLabel) || 0) + 1);
-      if (row.vestingLabel) vestingCounts.set(row.vestingLabel, (vestingCounts.get(row.vestingLabel) || 0) + 1);
+      if (row.considerationLabel) {
+        considerationCounts.set(row.considerationLabel, (considerationCounts.get(row.considerationLabel) || 0) + 1);
+        if (!considerationDeals.has(row.considerationLabel)) considerationDeals.set(row.considerationLabel, new Map());
+        considerationDeals.get(row.considerationLabel).set(dealId, dealEntry);
+      }
+      if (row.vestingLabel) {
+        vestingCounts.set(row.vestingLabel, (vestingCounts.get(row.vestingLabel) || 0) + 1);
+        if (!vestingDeals.has(row.vestingLabel)) vestingDeals.set(row.vestingLabel, new Map());
+        vestingDeals.get(row.vestingLabel).set(dealId, dealEntry);
+      }
     }
   }
-  const toList = (m) => [...m.entries()].sort((a, b) => b[1] - a[1]).map(([label, count]) => ({ label, count }));
+  const toList = (counts, dealsMap, thisDealLabel) => [...counts.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .map(([label, count]) => ({
+      label,
+      count,
+      deals: [...(dealsMap.get(label) || new Map()).values()],
+      isThisDeal: thisDealLabel !== null && label === thisDealLabel,
+    }));
   return {
     itemCode,
     dealsWithInstrument,
     peerSetSize: claimsByDeal.size,
-    considerationDistribution: toList(considerationCounts),
-    vestingDistribution: toList(vestingCounts),
+    considerationDistribution: toList(considerationCounts, considerationDeals, thisDealConsideration),
+    vestingDistribution: toList(vestingCounts, vestingDeals, thisDealVesting),
+    thisDeal: (thisDealConsideration || thisDealVesting) ? { considerationLabel: thisDealConsideration, vestingLabel: thisDealVesting } : null,
   };
 }
 
@@ -348,7 +444,11 @@ export default async function handler(req, res) {
   try {
     const [{ data: deals, error: dealsErr }, { data: cards, error: cardsErr }] = await Promise.all([
       sb.from('deals').select('id, acquirer, target, sector, value_usd, announce_date, metadata'),
-      sb.from('provision_cards').select('deal_id, provision_subtype').eq('provision_subtype', code),
+      // id + excerpt_id: additive columns beyond the pre-existing deal_id/
+      // provision_subtype select, needed to resolve claims.excerpt_id ->
+      // provision_cards.id (the card uuid `?card=` deep-links expect) --
+      // see cardIdByKey below. Still the one query, still scoped to `code`.
+      sb.from('provision_cards').select('deal_id, provision_subtype, id, excerpt_id').eq('provision_subtype', code),
     ]);
     if (dealsErr) throw new Error(dealsErr.message);
     if (cardsErr) throw new Error(cardsErr.message);
@@ -356,6 +456,11 @@ export default async function handler(req, res) {
     const stagingFree = (deals || []).filter((d) => !(d.metadata && d.metadata.ingest_status === 'staging'));
     const firmsByDeal = new Map(stagingFree.map((d) => [d.id, dealFirms(d)]));
     const subject = subjectDealId ? stagingFree.find((d) => d.id === subjectDealId) : null;
+    const dealsById = buildDealsById(stagingFree);
+    const cardIdByKey = new Map();
+    for (const c of cards || []) {
+      if (c.excerpt_id) cardIdByKey.set(`${c.deal_id}|${c.excerpt_id}`, c.id);
+    }
 
     const peerSet = stagingFree.filter((d) => dealPassesFilters(d, filters, firmsByDeal));
     const peerIds = new Set(peerSet.map((d) => d.id));
@@ -371,7 +476,11 @@ export default async function handler(req, res) {
     // itself so its behavior is unchanged.
     const { data: claims, error: claimsErr } = await sb
       .from('claims')
-      .select('deal_id, attribute, canonical, verbatim, evidence_quote, provenance, id, created_at')
+      // excerpt_id: additive column, the durable anchor into provision_cards
+      // (claims reference provision_cards.excerpt_id, not its uuid `id`
+      // directly) -- needed to resolve a per-deal cardId for rowContext's
+      // deal lists. See cardIdForClaim/cardIdByKey above.
+      .select('deal_id, attribute, canonical, verbatim, evidence_quote, provenance, id, created_at, excerpt_id')
       .eq('provenance->>code', code)
       .limit(4000);
     if (claimsErr) throw new Error(claimsErr.message);
@@ -438,7 +547,7 @@ export default async function handler(req, res) {
         rowContext.features = requestedFeatureKeys
           .map((attribute) => {
             const peerClaims = (claims || []).filter((cl) => cl.attribute === attribute && peerIds.has(cl.deal_id));
-            return buildFeatureDistribution(attribute, peerClaims, subjectDealId);
+            return buildFeatureDistribution(attribute, peerClaims, subjectDealId, dealsById, cardIdByKey);
           })
           .filter(Boolean);
       }
@@ -451,7 +560,7 @@ export default async function handler(req, res) {
         // those parallel-claim shapes (shape 2/3) to classify per
         // instrument. Filtering to one attribute here under-counted every
         // deal that hadn't been re-extracted onto the keyed-map shape.
-        rowContext.instrument = buildInstrumentDistribution(itemCode, claims || [], peerIds);
+        rowContext.instrument = buildInstrumentDistribution(itemCode, claims || [], peerIds, dealsById, cardIdByKey, subjectDealId);
       }
       if (itemLabel) {
         const listAttribute = requestedFeatureKeys[0] || null;
