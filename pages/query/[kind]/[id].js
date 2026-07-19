@@ -127,6 +127,44 @@ export default function QueryPage() {
   );
 }
 
+// WP-3 (M4-02) normalizer badges: a small hover/click marker on any
+// value-bearing query-result cell, showing the registry's canonical key,
+// the raw alias actually matched on the provision, the registry version,
+// and the extractor version + run id (pages/api/query/run.js attaches
+// these server-side — see lib/query/prov.js). Renders nothing when the
+// cell carries no `_prov` (empty cells, or results predating WP-3).
+function ProvBadge({ prov }) {
+  const [open, setOpen] = useState(false);
+  if (!prov) return null;
+  const showsAlias = prov.matched_key && prov.matched_key !== prov.canonical_key;
+  return (
+    <span className="mtx-prov-cell" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
+      <button
+        type="button"
+        className="mtx-prov-trigger"
+        aria-expanded={open}
+        aria-label="Normalizer provenance"
+        onClick={(e) => { e.stopPropagation(); setOpen((v) => !v); }}
+      >i</button>
+      {open && (
+        <span className="mtx-prov-popover" onClick={(e) => e.stopPropagation()}>
+          <dl>
+            <dt>Key</dt>
+            <dd>
+              {prov.canonical_key || '—'}
+              {showsAlias && <><span className="mtx-prov-arrow">&larr;</span>{prov.matched_key}</>}
+            </dd>
+            <dt>Registry version</dt>
+            <dd>{prov.registry_version || '—'}</dd>
+            <dt>Extractor</dt>
+            <dd>{prov.extraction_version || '—'}{prov.extraction_run_id ? ` · run ${prov.extraction_run_id}` : ''}</dd>
+          </dl>
+        </span>
+      )}
+    </span>
+  );
+}
+
 function ResultView({ result, onOpen }) {
   if (result.kind === 'DEAL_COMPARE') return <DealCompare result={result} onOpen={onOpen} />;
   if (result.kind === 'PROVISION_CROSS_CUT') return <CrossCut result={result} onOpen={onOpen} />;
@@ -147,7 +185,7 @@ function DealCompare({ result, onOpen }) {
             {result.rows.map((row) => <tr key={row.provision_type}>
               <th>{row.provision_type.replace(/_/g, ' ')}</th>
               {row.cells.map((cell) => <td key={cell.deal_id} className={cell.delta_severity.toLowerCase()} onClick={() => onOpen(cell)}>
-                {cell.key_fields.map((field) => <div key={field.field}><b>{field.label}</b><span className="mtx-mono">{formatValue(field.value)}</span></div>)}
+                {cell.key_fields.map((field) => <div key={field.field}><b>{field.label}</b><span className="mtx-mono">{formatValue(field.value)}{field._prov && <ProvBadge prov={field._prov} />}</span></div>)}
                 {cell.primary_quote?.text && <small className="mtx-serif">{cell.primary_quote.text.slice(0, 220)}</small>}
               </td>)}
             </tr>)}
@@ -166,7 +204,7 @@ function CrossCut({ result, onOpen }) {
           <thead><tr><th>Deal</th><th>Signing</th>{result.columns.map((col) => <th key={col.field}>{col.label}</th>)}</tr></thead>
           <tbody>{result.rows.map((row) => <tr key={row.deal_id}>
             <td>{row.deal_name}</td><td className="mtx-mono">{row.signing_date || '-'}</td>
-            {row.cells.map((cell, i) => <td key={i} className="mtx-mono" title={cell.verbatim_quote || ''} onClick={() => onOpen({ ...cell, card_id: row.card_id, deal_id: row.deal_id })}>{formatValue(cell.value)}</td>)}
+            {row.cells.map((cell, i) => <td key={i} className="mtx-mono mtx-prov-cell" title={cell.verbatim_quote || ''} onClick={() => onOpen({ ...cell, card_id: row.card_id, deal_id: row.deal_id })}>{formatValue(cell.value)}{cell._prov && <ProvBadge prov={cell._prov} />}</td>)}
           </tr>)}</tbody>
         </table>
       </div>
@@ -190,7 +228,7 @@ function MarketRange({ result, onOpen }) {
       </div>
       <details>
         <summary>Underlying deals</summary>
-        <table className="mtx-table"><tbody>{result.deal_points.map((point) => <tr key={`${point.deal_id}-${point.card_id}`} onClick={() => onOpen(point)}><td>{point.deal_name}</td><td className="mtx-mono">{formatValue(point.value)}</td><td className="mtx-mono">{point.quote_section_ref || '-'}</td></tr>)}</tbody></table>
+        <table className="mtx-table"><tbody>{result.deal_points.map((point) => <tr key={`${point.deal_id}-${point.card_id}`} onClick={() => onOpen(point)}><td>{point.deal_name}</td><td className="mtx-mono mtx-prov-cell">{formatValue(point.value)}{point._prov && <ProvBadge prov={point._prov} />}</td><td className="mtx-mono">{point.quote_section_ref || '-'}</td></tr>)}</tbody></table>
       </details>
     </Panel>
   );
@@ -217,7 +255,7 @@ function DealToMarket({ result, onOpen }) {
       {order.map((status) => {
         const rows = result.scorecard.filter((row) => row.status === status);
         if (!rows.length) return null;
-        return <section key={status}><h2>{status.replace(/_/g, '-')} ({rows.length})</h2><table className="mtx-table"><tbody>{rows.map((row) => <tr key={`${row.provision_type}-${row.field_path}`} className={status.toLowerCase()} onClick={() => onOpen(row)}><td>{row.field_label}</td><td className="mtx-mono">{formatValue(row.deal_value)}</td><td className="mtx-mono">{baseline(row.baseline_stats)}</td><td>{row.status}</td></tr>)}</tbody></table></section>;
+        return <section key={status}><h2>{status.replace(/_/g, '-')} ({rows.length})</h2><table className="mtx-table"><tbody>{rows.map((row) => <tr key={`${row.provision_type}-${row.field_path}`} className={status.toLowerCase()} onClick={() => onOpen(row)}><td>{row.field_label}</td><td className="mtx-mono mtx-prov-cell">{formatValue(row.deal_value)}{row._prov && <ProvBadge prov={row._prov} />}</td><td className="mtx-mono">{baseline(row.baseline_stats)}</td><td>{row.status}</td></tr>)}</tbody></table></section>;
       })}
     </Panel>
   );

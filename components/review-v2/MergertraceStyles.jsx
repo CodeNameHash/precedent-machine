@@ -590,6 +590,75 @@ export default function MergertraceStyles() {
         z-index: 39;
       }
 
+      /* ── Normalizer provenance badge (WP-3 / M4-02) — hover/click marker on
+         value-bearing query-result cells, showing canonical ← raw alias,
+         registry version, and extraction version + run id. ── */
+      .mtx-prov-cell {
+        position: relative;
+      }
+      .mtx-prov-trigger {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 13px;
+        height: 13px;
+        margin-left: 6px;
+        border: 1px solid rgba(31, 31, 31, 0.3);
+        border-radius: 50%;
+        background: rgba(31, 31, 31, 0.04);
+        color: #6B6B6B;
+        font-family: var(--mtx-sans);
+        font-size: 9px;
+        font-weight: 700;
+        line-height: 1;
+        cursor: pointer;
+        vertical-align: middle;
+        padding: 0;
+      }
+      .mtx-prov-trigger:hover,
+      .mtx-prov-trigger[aria-expanded='true'] {
+        background: #1F1F1F;
+        border-color: #1F1F1F;
+        color: #FFFFFF;
+      }
+      .mtx-prov-popover {
+        position: absolute;
+        z-index: 20;
+        top: calc(100% + 6px);
+        left: 0;
+        min-width: 220px;
+        max-width: 320px;
+        background: #FFFFFF;
+        border: 1px solid #1F1F1F;
+        box-shadow: 0 6px 20px rgba(31, 31, 31, 0.18);
+        padding: 10px 12px;
+        font-family: var(--mtx-sans);
+        font-size: 11px;
+        line-height: 1.6;
+        color: #1F1F1F;
+        white-space: normal;
+        cursor: default;
+      }
+      .mtx-prov-popover dt {
+        font-size: 9px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #6B6B6B;
+        margin-top: 6px;
+      }
+      .mtx-prov-popover dt:first-child { margin-top: 0; }
+      .mtx-prov-popover dd {
+        margin: 1px 0 0;
+        font-family: var(--mtx-mono);
+        word-break: break-word;
+      }
+      .mtx-prov-popover .mtx-prov-arrow {
+        color: #6B6B6B;
+        margin: 0 4px;
+        font-family: var(--mtx-sans);
+      }
+
       /* ── SourceOverlay (WP-5 / M5-03) — full-doc overlay, exact span highlight ── */
       .mtx-source-overlay-backdrop {
         position: fixed;
