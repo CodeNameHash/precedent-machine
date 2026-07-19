@@ -133,9 +133,89 @@ function rowCode(value) {
   return typeof value === 'string' ? value : null;
 }
 
-function mappedStructureRows(cards) {
+// FIX 9 (Fable investigation): when a deal's transaction_steps rows
+// outnumber the mergerForm CLAIMS (e.g. SkyWater/IonQ's two-step structure
+// -- a first-step reverse-triangular merger followed by a second-step
+// forward merger into an LLC subsidiary -- carries only one, or zero,
+// mergerForm claims because the single-card extraction never modeled a
+// second step), the single mergerForm claim under-describes the real
+// mechanics. Prefer deriving one natural-language line per step instead.
+function isMergerSubEntity(name) {
+  return /merger\s*sub/i.test(String(name || ''));
+}
+// Reverse triangular: a merger sub merges INTO the target and the target
+// survives (the classic first-step acquisition merger). Forward / second-
+// step: the (now wholly-owned) surviving entity from step 1 merges INTO a
+// second merger sub -- typically an LLC -- which survives; extract.js/
+// topology-detector.js label this step_kind SUBSEQUENT_MERGER. Falls back to
+// a bare "Merger" when neither entity name nor step_kind is conclusive,
+// rather than guessing.
+function stepMergerFormLabel(step) {
+  const kind = String(step?.step_kind || '').toUpperCase();
+  const disappearing = step?.disappearing_entity || null;
+  const surviving = step?.surviving_entity || null;
+  if (/SUBSEQUENT/.test(kind) || (surviving && isMergerSubEntity(surviving))) return 'Forward merger';
+  if (/MERGER/.test(kind) && disappearing && isMergerSubEntity(disappearing) && surviving && !isMergerSubEntity(surviving)) {
+    return 'Reverse triangular merger';
+  }
+  return kind.includes('MERGER') ? 'Merger' : (kind ? prettifyStepKind(kind) : 'Merger');
+}
+function prettifyStepKind(kind) {
+  const s = String(kind || '').replace(/_/g, ' ').trim();
+  return s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : 'Step';
+}
+function stepLine(step, index) {
+  const form = stepMergerFormLabel(step);
+  const disappearing = step?.disappearing_entity;
+  const surviving = step?.surviving_entity;
+  let detail = '';
+  if (disappearing && surviving) detail = ` (${disappearing} into ${surviving}; ${surviving} survives)`;
+  else if (surviving) detail = ` (${surviving} survives)`;
+  return `Step ${index + 1} — ${form}${detail}`;
+}
+function mergerFormClaimCount(cards) {
+  let count = 0;
+  for (const card of cards) {
+    const raw = cardFeatures(card).mergerForm;
+    if (raw !== null && raw !== undefined && raw !== '') count += 1;
+  }
+  return count;
+}
+function stepsMergerFormRow(steps) {
+  if (!Array.isArray(steps) || !steps.length) return null;
+  const ordered = [...steps].sort((a, b) => (Number(a.step_order) || 0) - (Number(b.step_order) || 0));
+  const lines = ordered.map((step, index) => stepLine(step, index));
+  return {
+    id: 'structure-mechanics-merger-form',
+    label: 'Merger form',
+    kind: 'Transaction form',
+    detail: lines.join('\n'),
+    evidence: null,
+    source: null,
+    present: true,
+    value: null,
+    featureKey: 'transactionSteps',
+    sourceCard: null,
+    signals: lines.map((line, index) => ({
+      id: `structure-mechanics-merger-form-step-${index}`,
+      label: line,
+      value: line,
+      tone: 'info',
+      evidence: null,
+      source: null,
+    })),
+  };
+}
+
+function mappedStructureRows(cards, transactionSteps) {
   const rows = ROWS
     .map(([id, label, kind, keys]) => {
+      // FIX 9: the steps-derived row wins over the single-claim row for
+      // 'merger-form' whenever the deal's transaction_steps genuinely carry
+      // MORE structure than the mergerForm claims do.
+      if (id === 'merger-form' && Array.isArray(transactionSteps) && transactionSteps.length > mergerFormClaimCount(cards)) {
+        return stepsMergerFormRow(transactionSteps);
+      }
       const hit = id === 'effective-time' ? effectiveTimeHit(cards) : firstFeature(cards, keys || id);
       const row = makeRow('structure-mechanics', id, label, kind, hit);
       if (!row) return null;
@@ -153,7 +233,9 @@ function mappedStructureRows(cards) {
   // -- unlike a one-step merger, where they're genuinely distinct
   // (ONE_STEP_MERGER vs REVERSE_TRIANGULAR_MERGER). Two rows saying the same
   // thing is duplicative; drop merger-form when its code matches
-  // deal-structure's.
+  // deal-structure's. (Only applies to the single-claim shape -- the
+  // steps-derived row has no `.value` code to compare, so it's never
+  // dropped here.)
   const dealStructureRow = rows.find((r) => r.id === 'structure-mechanics-deal-structure');
   const dealStructureCode = dealStructureRow && rowCode(dealStructureRow.value);
   if (dealStructureCode) {
@@ -194,7 +276,7 @@ const structureMechanicsConfig = {
   title: 'Structure & Mechanics',
   layoutSlot: 'deal-mechanics',
   selectRows(reviewDeal) {
-    return mappedStructureRows(selectCards(reviewDeal, isStructure));
+    return mappedStructureRows(selectCards(reviewDeal, isStructure), reviewDeal?.transactionSteps);
   },
   // Item 3: shared TERM_COL width/cap token so this table's first column
   // resolves to the SAME real width as every sibling table, at every
@@ -207,4 +289,7 @@ const structureMechanicsConfig = {
   ],
 };
 
-export { effectiveTimeHit, isStructure, mappedStructureRows, renderDetail, renderSignals, signalFor, structureMechanicsConfig };
+export {
+  effectiveTimeHit, isStructure, mappedStructureRows, mergerFormClaimCount, renderDetail, renderSignals,
+  signalFor, stepLine, stepMergerFormLabel, stepsMergerFormRow, structureMechanicsConfig,
+};

@@ -167,6 +167,24 @@ test('FILTER_THEN_LIST filters deals by resolved feature aliases', async () => {
   assert.deepEqual(result.rows.map((row) => row.deal_id).sort(), ['d1', 'd3']);
 });
 
+test('FILTER_THEN_LIST deal_filter.consideration_type filters by type of deal (QueryLaunchBox deal-type filter)', async () => {
+  const result = await runQuery('FILTER_THEN_LIST', {
+    filters: [],
+    deal_filter: { consideration_type: ['Cash'] },
+    columns: ['deal_name', 'consideration_type'],
+  }, { context });
+  assert.deepEqual(result.rows.map((row) => row.deal_id), ['d1']);
+});
+
+test('MARKET_RANGE deal_filter.consideration_type narrows the comparison set the same way', async () => {
+  const result = await runQuery('MARKET_RANGE', {
+    provision_type: 'TERMINATION_FEE',
+    field_path: 'feePercentage',
+    deal_filter: { consideration_type: ['Stock'] },
+  }, { context });
+  assert.deepEqual(result.deal_points.map((point) => point.deal_id), ['d2']);
+});
+
 test('DEAL_TO_MARKET returns per-feature comparisons with corpus baselines', async () => {
   const result = await runQuery('DEAL_TO_MARKET', {
     deal_id: 'd1',

@@ -3,22 +3,13 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import MergertraceStyles from '../../components/review-v2/MergertraceStyles';
+import AppHeader from '../../components/chrome/AppHeader';
+import { MtxFontLinks } from '../../components/chrome/mtxFonts';
+import { humanizeKey, describeFilter } from '../../lib/query/filter-labels';
+import { PROVISION_TYPES, OpSelect, ProvisionTypeSelect, FilterValueInput } from '../../components/query/QueryFilterControls';
 
 QueryIndexPage.noLayout = true;
 
-// Kept in sync with lib/query/types.js PROVISION_CARD_TYPES — duplicated
-// here rather than imported so the builder stays a pure client bundle (the
-// server lib pulls in rubric.js/expected-sets.js, which are Node-oriented
-// and unnecessary weight for a dropdown list).
-const PROVISION_TYPES = [
-  'CONSIDERATION', 'REPRESENTATION', 'MATERIAL_CONTRACT', 'CLOSING_CONDITION',
-  'COVENANT_INTERIM_OPERATING', 'COVENANT_NO_SOLICITATION', 'COVENANT_OTHER',
-  'TERMINATION_RIGHT', 'TERMINATION_FEE', 'DEFINITION', 'ANTITRUST_REGULATORY',
-  'SEC_FILING_MEETING', 'EMPLOYEE_BENEFITS', 'STRUCTURE_MECHANICS', 'MAE',
-  'NO_OTHER_REPS', 'MISC_BOILERPLATE',
-];
-
-const OPS = ['eq', 'neq', 'gt', 'gte', 'lt', 'lte', 'contains'];
 const KIND_LABELS = {
   DEAL_COMPARE: 'Deal compare',
   PROVISION_CROSS_CUT: 'Provision cross-cut',
@@ -26,6 +17,37 @@ const KIND_LABELS = {
   FILTER_THEN_LIST: 'Filter then list',
   DEAL_TO_MARKET: 'Deal to market',
 };
+
+// requiredFieldSentence: "filters, sort_by, columns" -> "the filters, the
+// sort order, and the columns to show" — item 4's ask to replace the terse
+// "required fields: X, Y" enum dump with a plain sentence. Kept local (not
+// in lib/query/filter-labels.js) since it's schema-key -> prose, a
+// different job than the field-value humanizing that module does.
+const REQUIRED_FIELD_PHRASES = {
+  filters: 'the filters',
+  sort_by: 'the sort order',
+  columns: 'the columns to show',
+  deal_ids: 'the deals',
+  provision_types: 'the provision types',
+  provision_type: 'the provision type',
+  field_path: 'the field to chart',
+  deal_filter: 'the deal filter',
+  chart_kind: 'the chart type',
+  highlight_deltas: 'whether to highlight differences',
+  included_field_groups: 'the field groups to include',
+  deal_id: 'the deal',
+  comparison_set_filter: 'the comparison set',
+};
+
+function requiredFieldsSentence(fields) {
+  if (!fields || !fields.length) return null;
+  const phrases = fields.map((f) => REQUIRED_FIELD_PHRASES[f] || humanizeKey(f).toLowerCase());
+  let list;
+  if (phrases.length === 1) list = phrases[0];
+  else if (phrases.length === 2) list = `${phrases[0]} and ${phrases[1]}`;
+  else list = `${phrases.slice(0, -1).join(', ')}, and ${phrases[phrases.length - 1]}`;
+  return `This query needs ${list} before it can run.`;
+}
 
 function dealLabel(deal) {
   return `${deal.acquirer || 'Buyer'} / ${deal.target || 'Target'}`;
@@ -58,35 +80,39 @@ export default function QueryIndexPage() {
 
   return (
     <>
-      <Head><title>Query · Mergertrace</title></Head>
+      <Head>
+        <title>Query · Corpus</title>
+        <MtxFontLinks />
+      </Head>
       <MergertraceStyles />
-      <div className="mtx qi">
-        <header className="top">
-          <Link href="/" className="brand"><span />Mergertrace</Link>
-          <div>
-            <h1>Query</h1>
-            <p>Structured queries across the precedent corpus</p>
-          </div>
-          <Link href="/library" className="mtx-btn">Library</Link>
-        </header>
+      <div className="mtx nh">
+        <AppHeader
+          active="query"
+          center={(
+            <div className="pageTitle">
+              <h1>Query</h1>
+              <p>Structured queries across the precedent corpus.</p>
+            </div>
+          )}
+        />
         <main>
-          <DemoSetSection queries={demoQueries} error={demoError} />
-          <FeaturedSection rows={featured} />
-          <SavedSection rows={savedQueries} />
-          <BuilderSection deals={deals} schemas={kindSchemas} router={router} />
+          <div className="wrap">
+            {/* Item 2: Build a Query first, then Saved Queries, then
+                everything else (featured picks, the demo tile wall). */}
+            <BuilderSection deals={deals} schemas={kindSchemas} router={router} />
+            <SavedSection rows={savedQueries} />
+            <FeaturedSection rows={featured} />
+            <DemoSetSection queries={demoQueries} error={demoError} />
+          </div>
         </main>
       </div>
       <style jsx>{`
-        .qi { min-height: 100vh; }
-        .top { height: 72px; display: grid; grid-template-columns: 170px 1fr auto; gap: 12px; align-items: center; padding: 0 28px; border-bottom: 1px solid #E0E0E0; background: #fff; position: sticky; top: 0; z-index: 10; }
-        .brand { color: #1F1F1F; text-decoration: none; font-size: 20px; font-weight: 650; display: inline-flex; align-items: center; gap: 9px; font-family: var(--mtx-sans); }
-        .brand span { width: 9px; height: 9px; background: #1F1F1F; display: inline-block; }
-        h1 { margin: 0; font-size: 18px; font-family: var(--mtx-sans); }
-        p { margin: 3px 0 0; color: #6B6B6B; font-size: 12px; }
-        main { max-width: 1280px; margin: 0 auto; padding: 32px; display: flex; flex-direction: column; gap: 36px; }
+        .nh { min-height: 100vh; background: var(--paper); color: var(--ink); font-family: var(--mtx-sans); }
+        .pageTitle h1 { margin: 0; font-size: 18px; font-family: var(--mtx-sans); font-weight: 650; color: var(--ink); }
+        .pageTitle p { margin: 3px 0 0; color: var(--ink-light); font-size: 12px; font-family: var(--mtx-sans); }
+        .wrap { max-width: 1280px; margin: 0 auto; padding: 34px; display: flex; flex-direction: column; gap: 36px; }
         @media (max-width: 900px) {
-          .top { grid-template-columns: 1fr; height: auto; padding: 14px; }
-          main { padding: 16px; }
+          .wrap { padding: 16px; }
         }
       `}</style>
     </>
@@ -99,8 +125,8 @@ function SectionHeader({ title, subtitle }) {
       <h2>{title}</h2>
       {subtitle && <p>{subtitle}</p>}
       <style jsx>{`
-        .sh h2 { margin: 0 0 4px; font-family: var(--mtx-sans); font-size: 15px; font-weight: 700; }
-        .sh p { margin: 0 0 14px; color: #6B6B6B; font-size: 12px; }
+        .sh h2 { margin: 0 0 4px; font-family: var(--mtx-sans); font-size: 15px; font-weight: 700; color: var(--ink); }
+        .sh p { margin: 0 0 14px; color: var(--ink-light); font-size: 12px; font-family: var(--mtx-sans); }
       `}</style>
     </div>
   );
@@ -111,7 +137,7 @@ function DemoSetSection({ queries, error }) {
     <section>
       <SectionHeader title="Demo queries" subtitle="20 pinned corpus questions (WP-1 demo set) — one click to run." />
       {error && <div className="err">{error}</div>}
-      {!queries ? <p className="muted">Loading demo set...</p> : (
+      {!queries ? <p className="muted">Loading demo set…</p> : (
         <div className="tiles">
           {queries.map((q) => (
             q.href ? (
@@ -124,7 +150,7 @@ function DemoSetSection({ queries, error }) {
               <div key={q.id} className="tile tile-disabled" title={q.error}>
                 <span className="mtx-badge">{KIND_LABELS[q.kind] || q.kind}</span>
                 <h3>{q.title}</h3>
-                <p className="err-small">Unresolved: {q.error}</p>
+                <p className="err-small">This query can&rsquo;t run right now: {q.error}</p>
               </div>
             )
           ))}
@@ -132,14 +158,14 @@ function DemoSetSection({ queries, error }) {
       )}
       <style jsx>{`
         .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
-        .tile { display: block; border: 1px solid #E0E0E0; background: #fff; padding: 14px; text-decoration: none; color: #1F1F1F; }
-        .tile:hover { background: #F6F6F6; }
+        .tile { display: block; border: 1px solid var(--line); background: #fff; padding: 14px; text-decoration: none; color: var(--ink); font-family: var(--mtx-sans); }
+        .tile:hover { background: var(--paper-2); }
         .tile-disabled { opacity: 0.55; cursor: not-allowed; }
-        .tile h3 { margin: 10px 0 6px; font-size: 13px; font-weight: 650; }
-        .tile p { margin: 0; font-size: 12px; color: #6B6B6B; line-height: 1.4; }
+        .tile h3 { margin: 10px 0 6px; font-size: 13px; font-weight: 650; font-family: var(--mtx-sans); }
+        .tile p { margin: 0; font-size: 12px; color: var(--ink-light); line-height: 1.4; font-family: var(--mtx-sans); }
         .err-small { color: #B14E63; }
-        .err { border: 1px solid #E0E0E0; background: #fff; padding: 12px; color: #B14E63; font-size: 13px; }
-        .muted { color: #6B6B6B; font-size: 13px; }
+        .err { border: 1px solid var(--line); background: #fff; padding: 12px; color: #B14E63; font-size: 13px; font-family: var(--mtx-sans); }
+        .muted { color: var(--ink-light); font-size: 13px; font-family: var(--mtx-sans); }
       `}</style>
     </section>
   );
@@ -150,7 +176,7 @@ function FeaturedSection({ rows }) {
   return (
     <section>
       <SectionHeader title="Featured" subtitle="Admin-curated queries." />
-      {!rows ? <p className="muted">Loading...</p> : (
+      {!rows ? <p className="muted">Loading…</p> : (
         <table className="mtx-table">
           <thead><tr><th>Title</th><th>Kind</th><th>Description</th></tr></thead>
           <tbody>
@@ -165,8 +191,8 @@ function FeaturedSection({ rows }) {
         </table>
       )}
       <style jsx>{`
-        .muted { color: #6B6B6B; font-size: 13px; }
-        td :global(a) { color: #1F1F1F; font-weight: 650; text-decoration: none; }
+        .muted { color: var(--ink-light); font-size: 13px; font-family: var(--mtx-sans); }
+        td :global(a) { color: var(--ink); font-weight: 650; text-decoration: none; }
       `}</style>
     </section>
   );
@@ -176,7 +202,7 @@ function SavedSection({ rows }) {
   return (
     <section>
       <SectionHeader title="Saved queries" subtitle="Your saved-query library." />
-      {!rows ? <p className="muted">Loading...</p> : rows.length === 0 ? <p className="muted">No saved queries yet — save one from any result page.</p> : (
+      {!rows ? <p className="muted">Loading…</p> : rows.length === 0 ? <p className="muted">No saved queries yet — save one from any result page.</p> : (
         <table className="mtx-table">
           <thead><tr><th>Title</th><th>Kind</th><th>Last run</th><th>Runs</th></tr></thead>
           <tbody>
@@ -192,12 +218,13 @@ function SavedSection({ rows }) {
         </table>
       )}
       <style jsx>{`
-        .muted { color: #6B6B6B; font-size: 13px; }
-        td :global(a) { color: #1F1F1F; font-weight: 650; text-decoration: none; }
+        .muted { color: var(--ink-light); font-size: 13px; font-family: var(--mtx-sans); }
+        td :global(a) { color: var(--ink); font-weight: 650; text-decoration: none; }
       `}</style>
     </section>
   );
 }
+
 
 function BuilderSection({ deals, schemas, router }) {
   const [kind, setKind] = useState('FILTER_THEN_LIST');
@@ -266,17 +293,17 @@ function BuilderSection({ deals, schemas, router }) {
       const slug = kind.toLowerCase().replace(/_/g, '-');
       router.push(`/query/${slug}/adhoc?payload=${encodePayloadClient(payload)}`);
     } catch (err) {
-      setError(err.message || 'Invalid payload');
+      setError(err.message || 'That combination of fields isn’t valid — check the values above and try again.');
     } finally {
       setRunning(false);
     }
   };
 
-  const requiredFields = schema?.schema?.required || [];
+  const requiredSentence = requiredFieldsSentence(schema?.schema?.required);
 
   return (
     <section>
-      <SectionHeader title="Build a query" subtitle="Pick a kind, fill in the fields, run. Payload is validated server-side before it renders." />
+      <SectionHeader title="Build a query" subtitle="Pick a kind, fill in the fields, run. The payload is validated on the server before it renders." />
       <div className="builder">
         <label className="mtx-meta-label">
           Kind
@@ -284,20 +311,16 @@ function BuilderSection({ deals, schemas, router }) {
             {Object.keys(KIND_LABELS).map((k) => <option key={k} value={k}>{KIND_LABELS[k]}</option>)}
           </select>
         </label>
-        {requiredFields.length > 0 && (
-          <p className="req">Required fields: <span className="mtx-mono">{requiredFields.join(', ')}</span></p>
-        )}
+        {requiredSentence && <p className="req">{requiredSentence}</p>}
 
         {kind === 'FILTER_THEN_LIST' && (
-          <FilterListBuilder filters={filters} setFilters={setFilters} provisionTypes={PROVISION_TYPES} ops={OPS} />
+          <FilterListBuilder filters={filters} setFilters={setFilters} provisionTypes={PROVISION_TYPES} />
         )}
 
         {kind === 'MARKET_RANGE' && (
           <div className="row">
             <label className="mtx-meta-label">Provision type
-              <select className="mtx-select" value={mrProvisionType} onChange={(e) => setMrProvisionType(e.target.value)}>
-                {PROVISION_TYPES.map((t) => <option key={t} value={t}>{t.replace(/_/g, ' ')}</option>)}
-              </select>
+              <ProvisionTypeSelect value={mrProvisionType} onChange={setMrProvisionType} />
             </label>
             <label className="mtx-meta-label">Field path
               <input className="mtx-input" value={mrField} onChange={(e) => setMrField(e.target.value)} placeholder="e.g. companyTerminationFee" />
@@ -315,9 +338,7 @@ function BuilderSection({ deals, schemas, router }) {
         {kind === 'PROVISION_CROSS_CUT' && (
           <div className="row">
             <label className="mtx-meta-label">Provision type
-              <select className="mtx-select" value={ccProvisionType} onChange={(e) => setCcProvisionType(e.target.value)}>
-                {PROVISION_TYPES.map((t) => <option key={t} value={t}>{t.replace(/_/g, ' ')}</option>)}
-              </select>
+              <ProvisionTypeSelect value={ccProvisionType} onChange={setCcProvisionType} />
             </label>
             <label className="mtx-meta-label">Columns (comma-separated field paths)
               <input className="mtx-input" value={ccColumns} onChange={(e) => setCcColumns(e.target.value)} />
@@ -350,38 +371,36 @@ function BuilderSection({ deals, schemas, router }) {
         <button type="button" className="mtx-btn mtx-btn-primary" disabled={running} onClick={run}>{running ? 'Running…' : 'Build & run'}</button>
       </div>
       <style jsx>{`
-        .builder { border: 1px solid #E0E0E0; background: #fff; padding: 20px; display: flex; flex-direction: column; gap: 14px; max-width: 720px; }
-        .builder > label { max-width: 320px; }
+        .builder { border: 1px solid var(--line); background: #fff; padding: 20px; display: flex; flex-direction: column; gap: 14px; max-width: 720px; font-family: var(--mtx-sans); }
+        .builder > label { max-width: 320px; font-family: var(--mtx-sans); }
         .builder select, .builder input { width: 100%; margin-top: 6px; }
-        .req { margin: 0; font-size: 11px; color: #6B6B6B; }
+        .req { margin: 0; font-size: 12px; color: var(--ink-light); font-family: var(--mtx-sans); line-height: 1.5; }
         .row { display: flex; flex-direction: column; gap: 14px; }
-        .err { border: 1px solid rgba(177, 78, 99, 0.3); background: rgba(177, 78, 99, 0.06); padding: 10px; color: #B14E63; font-size: 13px; }
+        .err { border: 1px solid rgba(177, 78, 99, 0.3); background: rgba(177, 78, 99, 0.06); padding: 10px; color: #B14E63; font-size: 13px; font-family: var(--mtx-sans); }
       `}</style>
     </section>
   );
 }
 
-function FilterListBuilder({ filters, setFilters, provisionTypes, ops }) {
+function FilterListBuilder({ filters, setFilters, provisionTypes }) {
   const update = (i, patch) => setFilters(filters.map((f, idx) => (idx === i ? { ...f, ...patch } : f)));
   return (
     <div className="fb">
       {filters.map((f, i) => (
         <div className="frow" key={i}>
-          <select className="mtx-select" value={f.provision_type} onChange={(e) => update(i, { provision_type: e.target.value })}>
-            {provisionTypes.map((t) => <option key={t} value={t}>{t.replace(/_/g, ' ')}</option>)}
-          </select>
+          <ProvisionTypeSelect value={f.provision_type} onChange={(v) => update(i, { provision_type: v })} types={provisionTypes} />
           <input className="mtx-input" value={f.field} onChange={(e) => update(i, { field: e.target.value })} placeholder="field path" />
-          <select className="mtx-select" value={f.op} onChange={(e) => update(i, { op: e.target.value })}>
-            {ops.map((op) => <option key={op} value={op}>{op}</option>)}
-          </select>
-          <input className="mtx-input" value={f.value} onChange={(e) => update(i, { value: e.target.value })} placeholder="value" />
+          <OpSelect value={f.op} onChange={(v) => update(i, { op: v })} />
+          <FilterValueInput value={f.value} onChange={(v) => update(i, { value: v })} />
+          <span className="preview">{describeFilter(f).text}</span>
           <button type="button" className="mtx-btn" onClick={() => setFilters(filters.filter((_, idx) => idx !== i))}>Remove</button>
         </div>
       ))}
       <button type="button" className="mtx-btn" onClick={() => setFilters([...filters, { provision_type: 'CONSIDERATION', field: '', op: 'eq', value: '' }])}>+ Add filter</button>
       <style jsx>{`
         .fb { display: flex; flex-direction: column; gap: 8px; }
-        .frow { display: grid; grid-template-columns: 1.4fr 1fr 0.7fr 1fr auto; gap: 8px; align-items: center; }
+        .frow { display: grid; grid-template-columns: 1.4fr 1fr 0.9fr 1fr auto; gap: 8px; align-items: center; }
+        .preview { grid-column: 1 / -1; font-size: 11px; color: var(--ink-light); font-family: var(--mtx-sans); }
       `}</style>
     </div>
   );
@@ -403,9 +422,9 @@ function DealMultiSelect({ deals, selected, onChange, label }) {
         ))}
       </div>
       <style jsx>{`
-        .dms { display: flex; flex-direction: column; gap: 6px; }
-        .list { max-height: 180px; overflow: auto; border: 1px solid #E0E0E0; padding: 8px; display: flex; flex-direction: column; gap: 4px; }
-        .opt { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+        .dms { display: flex; flex-direction: column; gap: 6px; font-family: var(--mtx-sans); }
+        .list { max-height: 180px; overflow: auto; border: 1px solid var(--line); padding: 8px; display: flex; flex-direction: column; gap: 4px; }
+        .opt { display: flex; align-items: center; gap: 8px; font-size: 12px; font-family: var(--mtx-sans); }
       `}</style>
     </div>
   );

@@ -5,6 +5,12 @@ const { slugToKind } = require('../../../lib/query/types');
 const { attachExtractionVersions } = require('../../../lib/query/prov');
 
 const DEAL_SELECT = 'id, acquirer, target, value_usd, announce_date, sector, metadata';
+// Trimmed to the columns the query engine actually reads: types.js/
+// derived-fields.js pull ai_metadata + full_text (quote text and
+// spanHash()-keyed provenance joins in lib/query/prov.js both need
+// full_text, so it stays), category/type drive classification, created_at
+// is select-order-only (kept cheap, dropping it would only save pagination
+// stability). No column here is unused by lib/query/**.
 const PROVISION_SELECT = 'id, deal_id, type, category, full_text, ai_metadata, created_at';
 
 // PostgREST caps an unranged select() at 1000 rows. The corpus has ~12,600
@@ -32,6 +38,42 @@ async function fetchAllProvisions(sb) {
   return out;
 }
 
+// ── Module-level context cache ───────────────────────────────────────────
+// Every query run — regardless of kind — re-fetched the ENTIRE deals table
+// plus every provision row (paginated, ~12,600 rows with full_text) before
+// doing any query work. That's a multi-second full-corpus fetch on every
+// click into a saved/adhoc query. Cache the (deals, provisions) pair at
+// module scope for a short TTL: warm hits (same serverless instance, within
+// the window) skip both fetches entirely. Cold starts / a fresh Lambda
+// instance still pay the full fetch once — this does not fix that, only
+// repeat hits within an instance's lifetime.
+const CONTEXT_CACHE_TTL_MS = 60_000;
+let contextCache = null; // { deals, provisions, fetchedAt }
+let contextCacheInflight = null; // Promise, so concurrent cold requests share one fetch
+
+async function loadContext(sb) {
+  const now = Date.now();
+  if (contextCache && now - contextCache.fetchedAt < CONTEXT_CACHE_TTL_MS) {
+    return contextCache;
+  }
+  if (contextCacheInflight) return contextCacheInflight;
+  contextCacheInflight = (async () => {
+    const [{ data: deals, error: dErr }, provisions] = await Promise.all([
+      sb.from('deals').select(DEAL_SELECT).order('announce_date', { ascending: false }),
+      fetchAllProvisions(sb),
+    ]);
+    if (dErr) throw new Error(dErr.message);
+    const entry = { deals: deals || [], provisions: provisions || [], fetchedAt: Date.now() };
+    contextCache = entry;
+    return entry;
+  })();
+  try {
+    return await contextCacheInflight;
+  } finally {
+    contextCacheInflight = null;
+  }
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'GET' && req.method !== 'POST') return res.status(405).json({ error: 'GET or POST only' });
   const sb = getServiceSupabase();
@@ -54,13 +96,9 @@ export default async function handler(req, res) {
       if (!payload && source.query_payload) payload = source.query_payload;
     }
 
-    const [{ data: deals, error: dErr }, provisions] = await Promise.all([
-      sb.from('deals').select(DEAL_SELECT).order('announce_date', { ascending: false }),
-      fetchAllProvisions(sb),
-    ]);
-    if (dErr) throw new Error(dErr.message);
+    const { deals, provisions } = await loadContext(sb);
 
-    const result = await runQuery(kind, payload, { context: { deals: deals || [], provisions: provisions || [] } });
+    const result = await runQuery(kind, payload, { context: { deals, provisions } });
     // WP-3 (M4-02): one extra, serial, read-only batch fetch — never
     // per-cell — to resolve each cell's `_prov.extraction_version` off
     // provision_cards.provenance. No-ops (issues zero queries) when the

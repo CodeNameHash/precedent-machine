@@ -230,18 +230,91 @@ function electionEconomicsFor(label, nextLabel, fullText, features) {
   return null;
 }
 
+// FIX 4(a): a plain % or share-count figure sitting near a "Maximum <Kind>
+// Election Number/Cap" label in the card's own text -- e.g. QXO's "45%
+// Maximum Cash Election Number / 55% Maximum Stock Election Number" or
+// Skechers' "Maximum Equity Election Cap (29,920,623 shares)". Mined from
+// text (never guessed) because no structured per-cap field exists upstream.
+const CAP_LABEL_RE = /Maximum\s+([A-Za-z]+)\s+Election\s+(Number|Cap)/gi;
+// Real drafting puts the % figure a full clause BEFORE the "(the
+// "Maximum ... Election Number")" defined-term parenthetical it's naming
+// (QXO: "forty-five percent (45%) of the aggregate ... (the "Maximum Cash
+// Election Number")" -- ~170 chars apart) and puts a share-count cap AFTER
+// its own label instead (Skechers: "Maximum Equity Election Cap
+// (29,920,623 shares)"). Search both directions with a wide-enough window
+// to span the QXO-style backward gap.
+function findNearbyCapFigure(text, index) {
+  const window = text.slice(Math.max(0, index - 260), index + 60);
+  const pct = window.match(/(\d{1,3}(?:\.\d+)?)\s?%/);
+  if (pct) return `${pct[1]}%`;
+  const shares = window.match(/([\d,]{4,})\s+(?:shares|Parent Shares|Company Shares|Merger Sub Shares)/i);
+  if (shares) return `${shares[1]} shares`;
+  return null;
+}
+function deriveProrationCaps(text) {
+  if (!text) return [];
+  const caps = [];
+  const seen = new Set();
+  const re = new RegExp(CAP_LABEL_RE.source, 'gi');
+  let m = re.exec(text);
+  while (m) {
+    const label = `Maximum ${m[1]} Election ${m[2]}`;
+    if (!seen.has(label)) {
+      seen.add(label);
+      const figure = findNearbyCapFigure(text, m.index);
+      if (figure) caps.push({ label, figure });
+    }
+    m = re.exec(text);
+  }
+  return caps;
+}
+
+// FIX 4(c): phrasing an agreement uses to affirmatively rule OUT election
+// mechanics entirely (SkyWater/IonQ: "No election shall be made available
+// ... no proration shall apply") -- distinct from simply lacking structured
+// election data, which is an extraction gap rather than a real "no election"
+// deal term.
+const NO_ELECTION_RE = /no\s+election\s+shall\s+be\s+made\s+available|no\s+proration\s+shall\s+apply/i;
+
 export function deriveElectionSummary(reviewDeal) {
   const cards = (reviewDeal && reviewDeal.cards) || [];
-  const electionCard = cards.find((c) => {
-    const code = cardCodeUpper(c);
-    if (!/^CONSID/.test(code)) return false;
-    const pm = c.features && c.features.prorationMechanics;
-    return Boolean(pm && typeof pm === 'object' && pm.electionType);
-  });
-  if (!electionCard) return null;
+  const considCards = cards.filter((c) => /^CONSID/.test(cardCodeUpper(c)));
+  if (!considCards.length) return null;
+
+  function pmOf(card) {
+    const pm = card.features && card.features.prorationMechanics;
+    return pm && typeof pm === 'object' ? pm : {};
+  }
+  function isProratedCard(card) {
+    return Boolean(card.features && card.features.proration) || Boolean(pmOf(card).text);
+  }
+
+  // FIX 4(a): merge election/proration signal across ALL CONSID cards, not
+  // just the first one that happens to carry prorationMechanics.electionType
+  // -- Skechers' card 2.7 has proration:false and would otherwise hide card
+  // 2.9's real proration + Maximum Equity Election Cap. Prefer a card that
+  // is BOTH prorated AND carries an electionType; fall back to the first
+  // card with an electionType at all.
+  const withElectionType = considCards.filter((c) => Boolean(pmOf(c).electionType));
+  const electionCard = withElectionType.find(isProratedCard) || withElectionType[0] || null;
+
+  if (!electionCard) {
+    // FIX 4(c): no card has structured election data -- if a card
+    // affirmatively states there's no election/no proration, say so
+    // explicitly instead of rendering nothing.
+    const noElectionCard = considCards.find((c) => NO_ELECTION_RE.test(String(c.region_full_text || c.primary_quote || '')));
+    if (noElectionCard) {
+      return {
+        noElection: true,
+        evidence: noElectionCard.primary_quote || noElectionCard.region_full_text || null,
+        sourceCard: noElectionCard,
+      };
+    }
+    return null;
+  }
 
   const features = electionCard.features || {};
-  const pm = features.prorationMechanics || {};
+  const pm = pmOf(electionCard);
   const fullText = electionCard.region_full_text || electionCard.primary_quote || '';
 
   // Distinct "X Election" defined terms, in first-seen order — the two real
@@ -283,6 +356,12 @@ export function deriveElectionSummary(reviewDeal) {
     defaultTreatment,
     isProrated,
     prorationNote: pm.text || null,
+    // FIX 4(b): structured proration detail -- caps, election deadline,
+    // oversubscription treatment -- mined off this same card so ElectionCard
+    // can render more than the bare "subject to proration" flag.
+    caps: deriveProrationCaps(pm.text || fullText),
+    electionDeadline: pm.electionDeadline || null,
+    oversubscriptionTreatment: pm.oversubscriptionTreatment || null,
     evidence: electionCard.primary_quote || electionCard.region_full_text || null,
     sourceCard: electionCard,
   };

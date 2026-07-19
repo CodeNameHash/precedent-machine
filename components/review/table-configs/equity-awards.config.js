@@ -178,10 +178,20 @@ function normalizeInstrumentCode(raw) {
 // shape) when it carries fields beyond the tagged-value envelope
 // (code/label/text/quotes) whose values are non-empty prose strings.
 const TAGGED_ENVELOPE_KEYS = new Set(['text', 'quotes', 'code', 'label']);
+// FIX 5 (Fable investigation): the old filter accepted ANY non-envelope
+// string key as an instrument -- SkyWater's equityAwardTreatment carries a
+// single `{ summary: "..." }` shape (a card-level narrative, not a
+// per-instrument map), which used to register "summary" as a fake
+// instrument (coveredCodes=[null]) and misfire shape-1, hiding the card's
+// REAL structured data (instrumentTreatments, instrumentVesting,
+// espp_treatment) that shape-3 would otherwise have rendered correctly.
+// Whitelist against the same INSTRUMENT_KEY_META dict instrumentMetaForKey()
+// already resolves labels through, so only genuine per-instrument keys
+// (espp, stockOptions, restrictedStock, rsu, ...) count as shape 1.
 function instrumentTreatmentEntries(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return [];
   return Object.entries(value)
-    .filter(([key, val]) => !TAGGED_ENVELOPE_KEYS.has(key) && typeof val === 'string' && val.trim())
+    .filter(([key, val]) => !TAGGED_ENVELOPE_KEYS.has(key) && typeof val === 'string' && val.trim() && INSTRUMENT_KEY_META[String(key).toLowerCase()])
     .map(([key, val]) => ({ key, text: val.trim() }));
 }
 

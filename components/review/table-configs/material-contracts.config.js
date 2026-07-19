@@ -31,6 +31,21 @@ function isMaterialContractsCard(card) {
     code === 'REP-T-MATERIAL-CONTRACTS' ||
     /material\s+contracts?/i.test(title);
 }
+// FIX 1 (Fable investigation): the real "Material Contracts" rep card
+// (provision_type REPRESENTATION, subtype REP-T-MATERIAL-CONTRACTS -- e.g.
+// QXO/TopBuild §3.1(p), carrying materialContractsBuckets) must always win
+// over an unrelated DEFINITION card whose title merely matches the loose
+// /material\s+contracts?/i regex (e.g. an inline "Material Contract" defined
+// term embedded in a Supplier Contracts definition). provenance.source_doc_
+// offset_start is 0 corpus-wide so array order/position can't be used as a
+// tiebreak -- selection must be structural (provision_type/subtype/kind),
+// never sort-based.
+function isMaterialContractsRepCard(card) {
+  const type = String(card?.provision_type || card?.type || '').trim().toUpperCase();
+  return card?.kind !== 'definition' &&
+    type === 'REPRESENTATION' &&
+    cardCode(card) === 'REP-T-MATERIAL-CONTRACTS';
+}
 function isTagged(item) {
   return item && typeof item === 'object' && !Array.isArray(item) && typeof item.code === 'string';
 }
@@ -318,7 +333,13 @@ const materialContractsConfig = {
   // in-table repeat via ProvisionTable's hideRepeatedTitle flag.
   hideRepeatedTitle: true,
   selectRows(reviewDeal) {
-    const source = (reviewDeal?.cards || []).find(isMaterialContractsCard);
+    const cards = reviewDeal?.cards || [];
+    // FIX 1: the REP-T-MATERIAL-CONTRACTS rep card always wins; only fall
+    // back to the looser title-regex match (excluding definition cards) when
+    // no such rep card exists on the deal.
+    const source = cards.find(isMaterialContractsRepCard) ||
+      cards.find((card) => card?.kind !== 'definition' && isMaterialContractsCard(card)) ||
+      cards.find(isMaterialContractsCard);
     if (!source) return [];
     const featureRows = rowsFromFeatures(source);
     return featureRows.length ? featureRows : rowsFromText(source);
