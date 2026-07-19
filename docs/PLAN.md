@@ -32,7 +32,21 @@ see docs/reports/PHASE-5-REPORT-2026-07-18.md.
   hash join matches nothing) — extraction_version renders "—" until
   #12 lands.
 
-## Roadmap to demo-ready (2026-07-19, Ben away window)
+## Demo-night ledger (2026-07-19/20, demo 9am ET)
+
+SHIPPED to main tonight: PR #265 (query redesign + LaunchBox + r4 fixes),
+#266 (WP-7 dry-run gate + matcher fix), #267 (row-scoped sidebar +
+party-scope + columns pkg), #268 (NOSOL classifier fix; Frontier 0->16,
+SecureWorks 0->14 cards), #269 (review-page perf: payloads -72%, fonts
+self-hosted, Cox 1.4-2.5s), #270 (Catalent buyer + shell-regex parity,
+law firms 40/40 + advisors 23/23 applied, column signals fix).
+IN FLIGHT: wave-4 Fable adversarial audit (GO/NO-GO due before freeze
+~7:30am ET). DEFERRED post-demo: render-parity audit tool merge; Summit
+NOSOL prune flips (substantive-richness reading, Fable sign-off); zero
+source_doc_offset_start backfill; ingest-mints-cards pipeline fix (#22);
+QXO COND-B tiers (#10); #12/#13/#14 structural items.
+
+## (superseded) Roadmap to demo-ready
 
 Wave 1 — in flight now (each: agent → Fable review → merge → deploy):
 1. r4 render fixes (9 items: material contracts, MAE labels, fonts,
