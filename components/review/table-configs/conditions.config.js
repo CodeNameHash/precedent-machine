@@ -566,7 +566,6 @@ function buildStandardDetail(row, family, ctx, bandFamilies) {
   // other family -- so this returns { node, seeText } instead of one node.
   const validChips = chips.filter(Boolean);
   const mainConditionText = valueText(firstDefined(matches, 'mainCondition'));
-  const clause = clauseSeeText(mainConditionText);
 
   const node = React.createElement(
     'div',
@@ -578,7 +577,12 @@ function buildStandardDetail(row, family, ctx, bandFamilies) {
   // this row's chips/text were built FROM (see mkChip's provision?.sourceCard
   // above), so it's the correct clicked-through card for THIS row, not the
   // whole Closing Conditions section.
-  return { node, seeText: clause, card: primary?.sourceCard || null, evidence: mainConditionText || primary?.full_text || null };
+  // Item 2 (r6): seeTextContent is raw text -- GroupedSubRows renders the
+  // full-width expansion itself now, rather than receiving a pre-built
+  // <details> node (clauseSeeText stays defined/used elsewhere in this file
+  // for the smaller nested Defined-term / Reps-covered expanders, which are
+  // not the row-level "whole column squeezed" defect this fixes).
+  return { node, seeTextContent: mainConditionText, card: primary?.sourceCard || null, evidence: mainConditionText || primary?.full_text || null };
 }
 
 // Splits each party band's full canonical row list (present + absent, as
@@ -606,7 +610,11 @@ function conditionGroups(reviewDeal, ctx) {
         id: row.id,
         label: conditionLabelNode(row, code, family),
         children: detail.node,
-        seeText: detail.seeText,
+        // Item 2 (r6): raw expansion text (not a pre-rendered <details>
+        // node) -- GroupedSubRows renders this in its own full-width block
+        // below the row instead of squeezed inline into the label cell (see
+        // GroupedSubRows in ProvisionTablePrimitives.jsx).
+        seeTextContent: detail.seeTextContent,
         // Item 2 (r5): wires each condition row to its own backing card --
         // see GroupedSubRows in ProvisionTablePrimitives.jsx.
         card: detail.card,

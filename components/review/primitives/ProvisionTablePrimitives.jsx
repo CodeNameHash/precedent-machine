@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import taxonomy from '../../../lib/taxonomy.js';
 import {
   getCitableQuotes,
@@ -226,6 +227,18 @@ export function CoverageChecklist({ items = [], emptyCopy = 'No checklist items 
 // conditions configs, as of this change) render exactly as before: no click
 // handler, no cursor-pointer, no dead affordance.
 export function GroupedSubRows({ groups = [], emptyCopy = 'No grouped rows captured.', onSelectCard, resolveCard, selectedCardId }) {
+  // Item 2 (r6): conditions.config.js's row.seeText used to be a whole
+  // pre-rendered <details> node squeezed inline into the label cell's own
+  // grid column -- the same "expansion distorts the column it's inside"
+  // defect flagged on the reps table and ported off ProvisionTable.jsx's
+  // generic path there. GroupedSubRows owns its own expandedRowId here
+  // (it's a real component, not a bare renderCell function, so it can hold
+  // this state itself rather than needing it threaded in) -- callers that
+  // pass raw expansion content via row.seeTextContent get the SAME
+  // full-width block-below-the-row treatment; callers still passing a
+  // pre-rendered row.seeText node (nosol-section.config.js,
+  // termination-rights) fall back to the prior inline rendering unchanged.
+  const [expandedRowId, setExpandedRowId] = useState(null);
   const visibleGroups = Array.isArray(groups) ? groups.filter((group) => group && Array.isArray(group.rows) && group.rows.length) : [];
   if (!visibleGroups.length) return <EmptyStateBranch copy={emptyCopy} />;
   return (
@@ -240,28 +253,51 @@ export function GroupedSubRows({ groups = [], emptyCopy = 'No grouped rows captu
               const rowCard = onSelectCard && typeof resolveCard === 'function' ? resolveCard(row) : null;
               const rowCardKey = rowCard ? (rowCard.id || rowCard.provision_instance_id) : null;
               const isSelectedRow = Boolean(rowCardKey) && selectedCardId === rowCardKey;
+              const rowKey = row.id || row.label || rowIndex;
+              const hasFullWidthExpansion = Boolean(row.seeTextContent);
+              const isExpanded = hasFullWidthExpansion && expandedRowId === rowKey;
               return (
-                <div
-                  key={row.id || row.label || rowIndex}
-                  className={`grid gap-2 px-2 py-1.5${rowCard ? ' mtx-row-clickable' : ''}`}
-                  style={{
-                    gridTemplateColumns: `${TERM_GRID_COLUMN} 1fr`,
-                    ...(rowCard ? { cursor: 'pointer', ...(isSelectedRow ? { background: 'rgba(47,109,181,.07)', boxShadow: 'inset 2px 0 0 #2F6DB5' } : {}) } : {}),
-                  }}
-                  onClick={rowCard ? () => onSelectCard(rowCard, resolveRowFocus(row)) : undefined}
-                >
-                  <span>
-                    <span className="text-[11px] font-medium text-ink">{row.label || `Row ${rowIndex + 1}`}</span>
-                    {/* Item 8: an optional per-row "See provision" expander,
-                        rendered under the LABEL (left) cell -- callers
-                        (nosol-section.config.js#rowNode, conditions/
-                        termination-rights row builders) pass row.seeText
-                        instead of appending it to the right/value cell. */}
-                    {row.seeText || null}
-                  </span>
-                  <EvidenceHoverSource value={row.value} evidence={row.evidence} source={row.source} as="span" className="text-xs text-ink">
-                    {row.children || textValue(row.value) || row.detail || <span className="text-inkFaint italic">Not captured</span>}
-                  </EvidenceHoverSource>
+                <div key={rowKey}>
+                  <div
+                    className={`grid gap-2 px-2 py-1.5${rowCard ? ' mtx-row-clickable' : ''}`}
+                    style={{
+                      gridTemplateColumns: `${TERM_GRID_COLUMN} 1fr`,
+                      ...(rowCard ? { cursor: 'pointer', ...(isSelectedRow ? { background: 'rgba(47,109,181,.07)', boxShadow: 'inset 2px 0 0 #2F6DB5' } : {}) } : {}),
+                    }}
+                    onClick={rowCard ? () => onSelectCard(rowCard, resolveRowFocus(row)) : undefined}
+                  >
+                    <span>
+                      <span className="text-[11px] font-medium text-ink">{row.label || `Row ${rowIndex + 1}`}</span>
+                      {hasFullWidthExpansion ? (
+                        <button
+                          type="button"
+                          className="term-cell-seetext mt-1 block"
+                          style={{ listStyle: 'none' }}
+                          onClick={(e) => { e.stopPropagation(); setExpandedRowId((cur) => (cur === rowKey ? null : rowKey)); }}
+                          aria-expanded={isExpanded}
+                        >
+                          {isExpanded ? 'Hide provision' : 'See provision'}
+                        </button>
+                      ) : (
+                        /* Item 8: an optional per-row "See provision" expander,
+                           rendered under the LABEL (left) cell -- legacy
+                           callers (nosol-section.config.js#rowNode,
+                           termination-rights row builders) pass a
+                           pre-rendered row.seeText node instead. */
+                        row.seeText || null
+                      )}
+                    </span>
+                    <EvidenceHoverSource value={row.value} evidence={row.evidence} source={row.source} as="span" className="text-xs text-ink">
+                      {row.children || textValue(row.value) || row.detail || <span className="text-inkFaint italic">Not captured</span>}
+                    </EvidenceHoverSource>
+                  </div>
+                  {isExpanded ? (
+                    <div className="mtx-provision-expansion-row border-t border-dashed border-border bg-bg/20 px-2 py-2">
+                      <div className="whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight">
+                        {row.seeTextContent}
+                      </div>
+                    </div>
+                  ) : null}
                 </div>
               );
             })}

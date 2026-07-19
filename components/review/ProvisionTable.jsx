@@ -73,6 +73,45 @@ function SeeProvisionToggle({ open, onToggle }) {
   );
 }
 
+// R6 item 2: configs with their own custom renderBody (reps, MAE, conditions
+// -- anything that doesn't go through the generic <tr> loop below) were each
+// growing their own bespoke in-cell <details> expansion, squeezed into
+// whichever column happened to hold the toggle -- the exact "distorts the
+// table" defect the generic path's colSpan expansion (below) was built to
+// fix. These two are exported so any renderBody config can reuse the SAME
+// full-width expansion row instead of reinventing an in-cell one: a config
+// renders <SeeProvisionToggle> in its label cell (wired to
+// ctx.expandedRowId/ctx.setExpandedRowId, threaded onto bodyCtx below) and,
+// immediately below that row, an <ExpansionRow> spanning every column.
+function ExpansionRow({ rowKey, colSpan, children }) {
+  if (!children) return null;
+  return (
+    <tr key={`${rowKey}-expansion`} className="mtx-provision-expansion-row bg-bg/20">
+      <td colSpan={colSpan} className="px-3 py-3 border-t border-dashed border-border">
+        <div className="max-w-none whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight">
+          {children}
+        </div>
+      </td>
+    </tr>
+  );
+}
+
+// Companion to ExpansionRow's full text: renders the sub-fact/portion that a
+// pill or column is actually keyed off (e.g. the SEC-filings cut-off phrase)
+// as a labelled, highlighted callout BENEATH the full clause text -- so the
+// reader sees the whole provision AND which portion the row's pill is
+// pointing at, rather than the portion standing in for the whole provision
+// (r6 item 1b).
+function PortionExcludedNote({ label = 'Portion excluded', text }) {
+  if (!text) return null;
+  return (
+    <div className="mt-2 rounded border border-amber-200 bg-amber-50 px-2 py-1.5">
+      <div className="text-[10px] font-medium uppercase tracking-wide text-amber-700">{label}</div>
+      <div className="mt-0.5 text-[11px] leading-5 text-amber-900">{text}</div>
+    </div>
+  );
+}
+
 // Item 8: a row's provision text used to reach the reader through whatever
 // ad-hoc affordance its own renderCell happened to wire up -- a right-column
 // TruncatedWithSeeText/ClampedWithSeeText, a mouse-over-only HoverSource
@@ -119,6 +158,15 @@ export default function ProvisionTable({ config, reviewDeal, isEdit = false, sec
     bodyCtx.resolveCard = resolveCard;
     bodyCtx.onSelectCard = onSelectCard;
     bodyCtx.selectedCardId = selectedCardId;
+    // R6 item 2: same expandedRowId/setExpandedRowId the generic path below
+    // uses for its full-width colSpan expansion -- threaded onto bodyCtx so
+    // a config's own renderBody can reuse SeeProvisionToggle/ExpansionRow
+    // instead of building its own in-cell <details> expansion.
+    bodyCtx.expandedRowId = expandedRowId;
+    bodyCtx.setExpandedRowId = setExpandedRowId;
+    bodyCtx.SeeProvisionToggle = SeeProvisionToggle;
+    bodyCtx.ExpansionRow = ExpansionRow;
+    bodyCtx.PortionExcludedNote = PortionExcludedNote;
     const headerNote = typeof config.deriveHeaderNote === 'function' ? config.deriveHeaderNote(rows) : null;
     // R3/G-TITLE: config.title already renders once as the collapsible
     // section <h2> in pages/review/[id].js (same rule as the generic path's
