@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import MergertraceStyles from '../../../components/review-v2/MergertraceStyles';
+const { toCsv, resultToCsvRows, csvFilename } = require('../../../lib/query/csv');
 
 QueryPage.noLayout = true;
 
@@ -13,6 +15,20 @@ function decodePayload(value) {
 
 function kindLabel(kind) {
   return String(kind || 'Query').replace(/_/g, ' ').replace(/-/g, ' ');
+}
+
+function downloadCsv(result) {
+  const rows = resultToCsvRows(result);
+  if (!rows.length) return;
+  const blob = new Blob([toCsv(rows)], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = csvFilename(result.kind);
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
 }
 
 export default function QueryPage() {
@@ -74,17 +90,19 @@ export default function QueryPage() {
 
   return (
     <>
-      <Head><title>{`${title} · Corpus`}</title></Head>
-      <div className="qp">
+      <Head><title>{`${title} · Mergertrace`}</title></Head>
+      <MergertraceStyles />
+      <div className="mtx qp">
         <header className="top">
-          <Link href="/" className="brand"><span />Corpus</Link>
+          <Link href="/query" className="brand"><span />Mergertrace</Link>
           <div>
             <h1>{title}</h1>
             <p>{id === 'adhoc' ? 'Ad hoc query' : 'Saved query'}</p>
           </div>
-          <button type="button" onClick={() => navigator.clipboard?.writeText(window.location.href)}>Share</button>
-          <button type="button" disabled={!canPersist || saving || id !== 'adhoc'} onClick={() => saveQuery(false)}>{saving ? 'Saving' : 'Save'}</button>
-          <button type="button" disabled={!canPersist || saving} onClick={() => saveQuery(true)}>Duplicate</button>
+          <button type="button" className="mtx-btn" onClick={() => navigator.clipboard?.writeText(window.location.href)}>Share</button>
+          <button type="button" className="mtx-btn" disabled={!result} onClick={() => downloadCsv(result)}>Export CSV</button>
+          <button type="button" className="mtx-btn" disabled={!canPersist || saving || id !== 'adhoc'} onClick={() => saveQuery(false)}>{saving ? 'Saving' : 'Save'}</button>
+          <button type="button" className="mtx-btn mtx-btn-primary" disabled={!canPersist || saving} onClick={() => saveQuery(true)}>Duplicate</button>
         </header>
         <main>
           {error ? <div className="empty">{error}</div> : !result ? <div className="empty">Loading query...</div> : <ResultView result={result} onOpen={setActive} />}
@@ -92,16 +110,15 @@ export default function QueryPage() {
         {active && <Drilldown item={active} onClose={() => setActive(null)} />}
       </div>
       <style jsx>{`
-        .qp { min-height: 100vh; background: var(--paper); color: var(--ink); }
-        .top { height: 72px; display: grid; grid-template-columns: 170px 1fr auto auto auto; gap: 12px; align-items: center; padding: 0 28px; border-bottom: 1px solid var(--line); background: #fff; position: sticky; top: 0; z-index: 10; }
-        .brand { color: var(--ink); text-decoration: none; font-size: 22px; font-weight: 650; display: inline-flex; align-items: center; gap: 9px; }
-        .brand span { width: 9px; height: 9px; border-radius: 2px; background: var(--accent); display: inline-block; }
-        h1 { margin: 0; font-size: 20px; text-transform: capitalize; }
-        p { margin: 3px 0 0; color: var(--ink-light); font-size: 12px; }
-        button, a.action { border: 1px solid var(--line); background: #fff; border-radius: 7px; height: 34px; padding: 0 11px; color: var(--ink); font: inherit; font-size: 13px; text-decoration: none; display: inline-flex; align-items: center; }
+        .qp { min-height: 100vh; }
+        .top { height: 72px; display: grid; grid-template-columns: 170px 1fr auto auto auto auto; gap: 12px; align-items: center; padding: 0 28px; border-bottom: 1px solid #E0E0E0; background: #fff; position: sticky; top: 0; z-index: 10; }
+        .brand { color: #1F1F1F; text-decoration: none; font-size: 20px; font-weight: 650; display: inline-flex; align-items: center; gap: 9px; font-family: var(--mtx-sans); }
+        .brand span { width: 9px; height: 9px; background: #1F1F1F; display: inline-block; }
+        h1 { margin: 0; font-size: 18px; text-transform: capitalize; font-family: var(--mtx-sans); }
+        p { margin: 3px 0 0; color: #6B6B6B; font-size: 12px; }
         main { max-width: 1280px; margin: 0 auto; padding: 32px; }
-        .empty { border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 24px; color: var(--ink-light); }
-        @media (max-width: 820px) {
+        .empty { border: 1px solid #E0E0E0; background: #fff; padding: 24px; color: #6B6B6B; }
+        @media (max-width: 900px) {
           .top { grid-template-columns: 1fr; height: auto; padding: 14px; }
           main { padding: 16px; }
         }
@@ -124,14 +141,14 @@ function DealCompare({ result, onOpen }) {
   return (
     <Panel>
       <div className="scroll">
-        <table>
+        <table className="mtx-table">
           <thead><tr><th>Provision</th>{result.columns.map((col) => <th key={col.deal_id}>{col.deal_name}<small>{col.signing_date}</small></th>)}</tr></thead>
           <tbody>
             {result.rows.map((row) => <tr key={row.provision_type}>
               <th>{row.provision_type.replace(/_/g, ' ')}</th>
               {row.cells.map((cell) => <td key={cell.deal_id} className={cell.delta_severity.toLowerCase()} onClick={() => onOpen(cell)}>
-                {cell.key_fields.map((field) => <div key={field.field}><b>{field.label}</b><span>{formatValue(field.value)}</span></div>)}
-                {cell.primary_quote?.text && <small>{cell.primary_quote.text.slice(0, 220)}</small>}
+                {cell.key_fields.map((field) => <div key={field.field}><b>{field.label}</b><span className="mtx-mono">{formatValue(field.value)}</span></div>)}
+                {cell.primary_quote?.text && <small className="mtx-serif">{cell.primary_quote.text.slice(0, 220)}</small>}
               </td>)}
             </tr>)}
           </tbody>
@@ -145,11 +162,11 @@ function CrossCut({ result, onOpen }) {
   return (
     <Panel>
       <div className="scroll">
-        <table>
+        <table className="mtx-table">
           <thead><tr><th>Deal</th><th>Signing</th>{result.columns.map((col) => <th key={col.field}>{col.label}</th>)}</tr></thead>
           <tbody>{result.rows.map((row) => <tr key={row.deal_id}>
-            <td>{row.deal_name}</td><td>{row.signing_date || '-'}</td>
-            {row.cells.map((cell, i) => <td key={i} title={cell.verbatim_quote || ''} onClick={() => onOpen({ ...cell, card_id: row.card_id, deal_id: row.deal_id })}>{formatValue(cell.value)}</td>)}
+            <td>{row.deal_name}</td><td className="mtx-mono">{row.signing_date || '-'}</td>
+            {row.cells.map((cell, i) => <td key={i} className="mtx-mono" title={cell.verbatim_quote || ''} onClick={() => onOpen({ ...cell, card_id: row.card_id, deal_id: row.deal_id })}>{formatValue(cell.value)}</td>)}
           </tr>)}</tbody>
         </table>
       </div>
@@ -168,12 +185,12 @@ function MarketRange({ result, onOpen }) {
         </button>)}
       </div>
       <div className="stats">
-        <b>n={result.n}</b>
-        {result.stats && <><span>median {round(result.stats.median)}</span><span>p25 {round(result.stats.p25)}</span><span>p75 {round(result.stats.p75)}</span><span>range {round(result.stats.min)}-{round(result.stats.max)}</span></>}
+        <b className="mtx-mono">n={result.n}</b>
+        {result.stats && <><span className="mtx-mono">median {round(result.stats.median)}</span><span className="mtx-mono">p25 {round(result.stats.p25)}</span><span className="mtx-mono">p75 {round(result.stats.p75)}</span><span className="mtx-mono">range {round(result.stats.min)}-{round(result.stats.max)}</span></>}
       </div>
       <details>
         <summary>Underlying deals</summary>
-        <table><tbody>{result.deal_points.map((point) => <tr key={`${point.deal_id}-${point.card_id}`} onClick={() => onOpen(point)}><td>{point.deal_name}</td><td>{formatValue(point.value)}</td><td>{point.quote_section_ref || '-'}</td></tr>)}</tbody></table>
+        <table className="mtx-table"><tbody>{result.deal_points.map((point) => <tr key={`${point.deal_id}-${point.card_id}`} onClick={() => onOpen(point)}><td>{point.deal_name}</td><td className="mtx-mono">{formatValue(point.value)}</td><td className="mtx-mono">{point.quote_section_ref || '-'}</td></tr>)}</tbody></table>
       </details>
     </Panel>
   );
@@ -182,9 +199,9 @@ function MarketRange({ result, onOpen }) {
 function FilterList({ result }) {
   return (
     <Panel>
-      <div className="chips">{result.filters_applied.map((f, i) => <span key={i}>{f.field} {f.op} {String(f.value)}</span>)}</div>
-      <table><thead><tr><th>Deal</th><th>Signing</th><th>Value</th><th>Consideration</th><th>Matched hits</th></tr></thead>
-        <tbody>{result.rows.map((row) => <tr key={row.deal_id} onClick={() => { window.location.href = `/review/${row.deal_id}`; }}><td>{row.deal_name}</td><td>{row.signing_date || '-'}</td><td>{formatValue(row.columns.total_deal_value)}</td><td>{row.columns.consideration_type || '-'}</td><td>{row.matched_provision_hits.length} matches</td></tr>)}</tbody>
+      <div className="chips">{result.filters_applied.map((f, i) => <span key={i} className="mtx-badge">{f.field} {f.op} {String(f.value)}</span>)}</div>
+      <table className="mtx-table"><thead><tr><th>Deal</th><th>Signing</th><th>Value</th><th>Consideration</th><th>Matched hits</th></tr></thead>
+        <tbody>{result.rows.map((row) => <tr key={row.deal_id} onClick={() => { window.location.href = `/review/${row.deal_id}`; }}><td>{row.deal_name}</td><td className="mtx-mono">{row.signing_date || '-'}</td><td className="mtx-mono">{formatValue(row.columns.total_deal_value)}</td><td>{row.columns.consideration_type || '-'}</td><td className="mtx-mono">{row.matched_provision_hits.length} matches</td></tr>)}</tbody>
       </table>
     </Panel>
   );
@@ -195,12 +212,12 @@ function DealToMarket({ result, onOpen }) {
   return (
     <Panel>
       <div className="chips">
-        <span>{result.summary.market_count} Market</span><span>{result.summary.off_market_count} Off-market</span><span>{result.summary.unusual_count} Unusual</span><span>{result.summary.missing_count} Missing</span>
+        <span className="mtx-badge">{result.summary.market_count} Market</span><span className="mtx-badge">{result.summary.off_market_count} Off-market</span><span className="mtx-badge">{result.summary.unusual_count} Unusual</span><span className="mtx-badge">{result.summary.missing_count} Missing</span>
       </div>
       {order.map((status) => {
         const rows = result.scorecard.filter((row) => row.status === status);
         if (!rows.length) return null;
-        return <section key={status}><h2>{status.replace(/_/g, '-')} ({rows.length})</h2><table><tbody>{rows.map((row) => <tr key={`${row.provision_type}-${row.field_path}`} className={status.toLowerCase()} onClick={() => onOpen(row)}><td>{row.field_label}</td><td>{formatValue(row.deal_value)}</td><td>{baseline(row.baseline_stats)}</td><td>{row.status}</td></tr>)}</tbody></table></section>;
+        return <section key={status}><h2>{status.replace(/_/g, '-')} ({rows.length})</h2><table className="mtx-table"><tbody>{rows.map((row) => <tr key={`${row.provision_type}-${row.field_path}`} className={status.toLowerCase()} onClick={() => onOpen(row)}><td>{row.field_label}</td><td className="mtx-mono">{formatValue(row.deal_value)}</td><td className="mtx-mono">{baseline(row.baseline_stats)}</td><td>{row.status}</td></tr>)}</tbody></table></section>;
       })}
     </Panel>
   );
@@ -208,42 +225,39 @@ function DealToMarket({ result, onOpen }) {
 
 function Panel({ children }) {
   return <div className="panel">{children}<style jsx global>{`
-    .qp .panel { border: 1px solid var(--line); border-radius: 8px; background: #fff; overflow: hidden; padding: 18px; }
-    .qp .scroll { overflow-x: auto; }
-    .qp table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    .qp th, .qp td { border-bottom: 1px solid var(--line-soft); padding: 10px; text-align: left; vertical-align: top; }
-    .qp th { color: var(--ink-faint); text-transform: uppercase; font-size: 11px; letter-spacing: .1em; background: var(--paper-2); }
-    .qp th small { display: block; margin-top: 4px; color: var(--ink-light); text-transform: none; letter-spacing: 0; }
-    .qp td { cursor: pointer; }
-    .qp td div { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
-    .qp td small { color: var(--ink-light); display: block; margin-top: 8px; line-height: 1.35; }
-    .qp .major, .qp .unusual { background: color-mix(in srgb, var(--seller) 12%, #fff); }
-    .qp .minor, .qp .off_market { background: #fff7e4; }
-    .qp .trivial, .qp .market { background: var(--paper); }
-    .qp .missing { background: color-mix(in srgb, var(--accent) 10%, #fff); }
-    .qp .chart { height: 210px; display: flex; align-items: flex-end; gap: 8px; border-bottom: 1px solid var(--line); padding: 12px 0; }
-    .qp .chart button { flex: 1; min-width: 20px; border: 0; background: var(--accent); color: #fff; border-radius: 4px 4px 0 0; cursor: pointer; }
-    .qp .stats, .qp .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
-    .qp .stats span, .qp .chips span { border: 1px solid var(--line); border-radius: 999px; padding: 5px 9px; font-size: 12px; color: var(--ink-mid); }
-    .qp h2 { font-size: 14px; margin: 22px 0 8px; }
+    .mtx .qp .panel { border: 1px solid #E0E0E0; background: #fff; overflow: hidden; padding: 18px; }
+    .mtx .qp .scroll { overflow-x: auto; }
+    .mtx .qp .mtx-table th small { display: block; margin-top: 4px; color: #6B6B6B; text-transform: none; letter-spacing: 0; }
+    .mtx .qp .mtx-table td { cursor: pointer; }
+    .mtx .qp .mtx-table td div { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
+    .mtx .qp .mtx-table td small { color: #6B6B6B; display: block; margin-top: 8px; line-height: 1.35; }
+    .mtx .qp .major, .mtx .qp .unusual { background: rgba(177, 78, 99, 0.08); }
+    .mtx .qp .minor, .mtx .qp .off_market { background: rgba(168, 122, 46, 0.08); }
+    .mtx .qp .trivial, .mtx .qp .market { background: #FFFFFF; }
+    .mtx .qp .missing { background: rgba(31, 31, 31, 0.05); }
+    .mtx .qp .chart { height: 210px; display: flex; align-items: flex-end; gap: 8px; border-bottom: 1px solid #E0E0E0; padding: 12px 0; }
+    .mtx .qp .chart button { flex: 1; min-width: 20px; border: 0; background: #1F1F1F; color: #fff; border-radius: 0; cursor: pointer; }
+    .mtx .qp .stats, .mtx .qp .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
+    .mtx .qp .stats span { border: 1px solid #E0E0E0; padding: 5px 9px; font-size: 12px; color: #1F1F1F; }
+    .mtx .qp h2 { font-size: 13px; margin: 22px 0 8px; font-family: var(--mtx-sans); text-transform: uppercase; letter-spacing: 0.08em; color: #6B6B6B; }
   `}</style></div>;
 }
 
 function Drilldown({ item, onClose }) {
   return (
-    <aside className="drawer">
-      <button type="button" onClick={onClose}>Close</button>
-      <h2>Provision card</h2>
-      {item.card_id && item.deal_id && <Link href={`/review-v1/${item.deal_id}/provision/${item.card_id}`}>Open deal review</Link>}
-      <pre>{item.primary_quote?.text || item.verbatim_quote || JSON.stringify(item, null, 2)}</pre>
-      <style jsx>{`
-        .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(520px, 92vw); background: #fff; border-left: 1px solid var(--line); box-shadow: -18px 0 60px rgba(0,0,0,.16); z-index: 40; padding: 22px; overflow: auto; }
-        button { float: right; border: 1px solid var(--line); background: #fff; border-radius: 7px; height: 32px; padding: 0 10px; }
-        h2 { margin: 8px 0 14px; }
-        a { color: var(--accent-deep); font-weight: 650; }
-        pre { white-space: pre-wrap; font-family: var(--font-sans); line-height: 1.45; color: var(--ink-mid); }
-      `}</style>
-    </aside>
+    <>
+      <div className="mtx-drawer-backdrop" onClick={onClose} />
+      <aside className="mtx-drawer">
+        <button type="button" className="mtx-btn" onClick={onClose}>Close</button>
+        <h2>Provision card</h2>
+        {item.card_id && item.deal_id && <Link href={`/review/${item.deal_id}`} className="mtx-btn">Open deal review</Link>}
+        <pre>{item.primary_quote?.text || item.verbatim_quote || JSON.stringify(item, null, 2)}</pre>
+        <style jsx>{`
+          h2 { margin: 14px 0 14px; font-size: 15px; }
+          pre { white-space: pre-wrap; font-family: var(--mtx-serif); line-height: 1.5; color: #1F1F1F; margin-top: 12px; }
+        `}</style>
+      </aside>
+    </>
   );
 }
 
