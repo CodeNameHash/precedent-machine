@@ -15,7 +15,48 @@ const {
   hasTransactionFormationLanguage,
   hasPreExistingEntityLanguage,
   shouldPierceShell,
+  buildNoticesExcerpt,
+  extractLawFirms,
 } = require('../lib/ingest/deal-metadata-prompt');
+
+// Condensed real-shape Notices section, same fixture pattern as
+// tests/notice-advisors.test.js's STANDARD fixture.
+const NOTICES_FIXTURE = `
+Section 9.2. Notices. All notices must be in writing, in each case to:
+(i) if to Parent or Purchaser, to:
+
+BuyerCo Inc.
+1 Main Street
+New York, NY 10001
+
+Attention: General Counsel
+with a copy (which shall not constitute notice) to:
+
+Paul, Weiss, Rifkind, Wharton & Garrison LLP
+
+1285 Avenue of the Americas
+
+New York, New York 10019
+
+Attention: Krishna Veeraraghavan; Benjamin Goodchild
+
+(ii) if to the Company, to:
+
+TargetCo Inc.
+2 Side Street
+Boston, MA 02110
+
+Attention: Chief Executive Officer
+with a copy (which shall not constitute notice) to:
+
+Cooley LLP
+
+55 Hudson Yards
+
+New York, New York 10001
+
+Attention: Kevin Cooper
+`;
 
 test('isShellName flags transaction-vehicle naming, not operating companies', () => {
   assert.equal(isShellName('BCPE Pequod Buyer, Inc.'), true); // spec's own Envestnet example — "Buyer" in the name is exactly the shell signal
@@ -258,4 +299,56 @@ test('extractDealMetadata derives value_usd via the ladder when no stated value 
   const meta = await extractDealMetadata(client, 'x'.repeat(11000), {});
   assert.equal(meta.value_usd, 150_000_000);
   assert.equal(meta.value_provenance.kind, 'derived_per_share');
+});
+
+/* ── law firms (metadata.law_firms) ─────────────────────────────────────── */
+
+test('buildNoticesExcerpt finds the Notices section and returns null when no "if to" header exists anywhere', () => {
+  const excerpt = buildNoticesExcerpt(`${'x'.repeat(500)}${NOTICES_FIXTURE}${'y'.repeat(500)}`);
+  assert.ok(excerpt);
+  assert.match(excerpt, /if to Parent or Purchaser/);
+  assert.equal(buildNoticesExcerpt('no notices section here at all'), null);
+  assert.equal(buildNoticesExcerpt(''), null);
+});
+
+test('buildNoticesExcerpt skips an unrelated "notices" mention that has no nearby "if to" header', () => {
+  const decoy = 'This Section requires prompt notices of any material adverse change.' + 'z'.repeat(4000);
+  const text = decoy + NOTICES_FIXTURE;
+  const excerpt = buildNoticesExcerpt(text);
+  assert.ok(excerpt);
+  assert.match(excerpt, /if to Parent or Purchaser/, 'must land on the real Notices section, not the decoy mention');
+});
+
+test('extractLawFirms pulls acquirer/target firm names out of the Notices excerpt via the shared deterministic parser', () => {
+  const meta = { acquirer: 'BuyerCo Inc.', target: 'TargetCo Inc.' };
+  const firms = extractLawFirms(NOTICES_FIXTURE, meta);
+  assert.deepEqual(firms.acquirer, ['Paul, Weiss, Rifkind, Wharton & Garrison LLP']);
+  assert.deepEqual(firms.target, ['Cooley LLP']);
+});
+
+test('extractLawFirms returns empty arrays (never throws) when the agreement has no locatable Notices section', () => {
+  const firms = extractLawFirms('an agreement with no notices section', { acquirer: 'A', target: 'B' });
+  assert.deepEqual(firms, { target: [], acquirer: [] });
+});
+
+test('extractDealMetadata persists metadata.law_firms = { target, acquirer } deterministically alongside the base pass', async () => {
+  const baseResponse = JSON.stringify({
+    acquirer: 'BuyerCo Inc.',
+    target: 'TargetCo Inc.',
+    buyer_is_shell: false,
+    acquirer_display: 'BuyerCo',
+  });
+  const client = makeClient([baseResponse]); // no LLM call for law-firm extraction — deterministic only
+  const text = `${NOTICES_FIXTURE}${'x'.repeat(11000)}`;
+  const meta = await extractDealMetadata(client, text, {});
+  assert.deepEqual(meta.law_firms.acquirer, ['Paul, Weiss, Rifkind, Wharton & Garrison LLP']);
+  assert.deepEqual(meta.law_firms.target, ['Cooley LLP']);
+  assert.equal(client.calls.length, 1, 'law-firm extraction must not consume an extra LLM call');
+});
+
+test('extractDealMetadata still sets metadata.law_firms = { target: [], acquirer: [] } when no Notices section is found', async () => {
+  const baseResponse = JSON.stringify({ acquirer: 'A Inc.', target: 'B Inc.', buyer_is_shell: false });
+  const client = makeClient([baseResponse]);
+  const meta = await extractDealMetadata(client, 'x'.repeat(11000), {});
+  assert.deepEqual(meta.law_firms, { target: [], acquirer: [] });
 });
