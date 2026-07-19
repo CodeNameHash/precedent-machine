@@ -232,11 +232,25 @@ async function runParserPipeline(client, fullText, dealId, title, sb, dealMeta =
 
 async function ingestOne(sb, client, url, existingDealId = null, pipelineOpts = {}) {
   const t0 = Date.now();
-  const html = await fetchUrl(url);
+  // pipelineOpts.file: read a committed local fixture instead of fetching
+  // over HTTP (scripts/demo-dryrun.js / WP-7 — the demo dry-run ingests a
+  // pinned __fixtures__/demo-deal/ agreement, never a live EDGAR URL, so
+  // repeated CI runs don't depend on network access to sec.gov). `url` is
+  // still threaded through for provenance metadata when given alongside
+  // --file (e.g. --source-url); it is never fetched in that case.
+  const html = pipelineOpts.file ? fs.readFileSync(pipelineOpts.file, 'utf-8') : await fetchUrl(url);
   const fullText = stripHtml(html);
   if (fullText.length < 5000) throw new Error(`Fetched text too short (${fullText.length} chars) — wrong URL?`);
   const meta = await extractDealMetadata(client, fullText, { sourceUrl: url });
   if (!meta.acquirer || !meta.target) throw new Error('Could not identify acquirer/target from the preamble');
+
+  // pipelineOpts.staging: WP-7 demo-dryrun naming/metadata contract — the
+  // resulting deal must be unambiguously a staging/dry-run row (excluded
+  // from every query/index surface, safe to identify and tear down) and
+  // never mistaken for a real corpus deal.
+  if (pipelineOpts.staging) {
+    meta.target = pipelineOpts.stagingName || `DRYRUN-${Date.now()}`;
+  }
 
   // In-place re-ingest: reuse the existing deal row (URLs stay valid; manual
   // deal-level edits and metadata keys survive via the merge below +
@@ -295,6 +309,11 @@ async function ingestOne(sb, client, url, existingDealId = null, pipelineOpts = 
       buyer_is_shell: meta.buyer_is_shell,
       buyer_profile: meta.buyer_profile,
       value_provenance: meta.value_provenance,
+      // Additive, staging-only: never set for a normal --url/--manifest
+      // ingest. Mirrors the pages/api/home.js / pages/api/deals.js /
+      // pages/api/query/run.js `ingest_status === 'staging'` filter
+      // contract so this deal is invisible on every query/index surface.
+      ...(pipelineOpts.staging ? { ingest_status: 'staging', dryrun: true, staged_at: new Date().toISOString() } : {}),
     }, meta, url),
   }).select().single();
   if (insErr) throw new Error(`Deal insert failed: ${insErr.message}`);
@@ -447,6 +466,15 @@ function parseArgs(argv) {
     dealId: null,
     resume: false,
     checkpointDir: path.join(__dirname, '..', '.ingest-checkpoints'),
+    // Additive (WP-7 / M5-06 demo-dryrun): --file reads a committed local
+    // fixture instead of fetching a URL; --staging tags the resulting deal
+    // as a staging/dry-run row (DRYRUN-<timestamp> target name,
+    // ingest_status: 'staging', dryrun: true); --source-url is optional
+    // provenance metadata to pair with --file. None of these change
+    // --url/--manifest behavior.
+    file: null,
+    staging: false,
+    sourceUrl: null,
   };
   for (let i = 2; i < argv.length; i++) {
     const a = argv[i];
@@ -457,9 +485,12 @@ function parseArgs(argv) {
     else if (a === '--deal-id') args.dealId = argv[++i];
     else if (a === '--resume') args.resume = true;
     else if (a === '--checkpoint-dir') args.checkpointDir = argv[++i];
+    else if (a === '--file') args.file = argv[++i];
+    else if (a === '--staging') args.staging = true;
+    else if (a === '--source-url') args.sourceUrl = argv[++i];
     else { console.error(`Unknown arg: ${a}`); process.exit(1); }
   }
-  if (!args.url && !args.manifest) { console.error('Provide --url <ex21-url> or --manifest <path.json>'); process.exit(1); }
+  if (!args.url && !args.manifest && !args.file) { console.error('Provide --url <ex21-url> or --manifest <path.json> or --file <local path>'); process.exit(1); }
   if (args.dealId && !args.url) { console.error('--deal-id requires --url'); process.exit(1); }
   return args;
 }
@@ -475,6 +506,25 @@ async function main() {
     ? createCodexCliClient({ model: args.model !== 'sonnet' ? args.model : undefined })
     : createClaudeCliClient({ model: args.model });
   console.log(`Backend: ${client.backend}${args.model ? ` (${args.model})` : ''}`);
+
+  // --file is a separate branch, not folded into the --url/--manifest loop
+  // below, so that loop's behavior (and its `urls` derivation) is untouched.
+  if (args.file) {
+    process.stdout.write(`→ ingesting local fixture ${args.file}${args.staging ? ' (staging)' : ''} … `);
+    try {
+      const r = await ingestOne(sb, client, args.sourceUrl || null, args.dealId || null, {
+        checkpointDir: args.checkpointDir,
+        resume: args.resume,
+        file: args.file,
+        staging: args.staging,
+      });
+      console.log(`done in ${Math.round(r.timing_ms / 1000)}s: ${r.title} [${r.sector}] +${r.inserted} provisions (deal ${r.deal_id})`);
+    } catch (err) {
+      console.log(`FAILED: ${err.message}`);
+      process.exitCode = 1;
+    }
+    return;
+  }
 
   const manifestRows = args.manifest ? JSON.parse(fs.readFileSync(args.manifest, 'utf-8')) : null;
   const urls = manifestRows

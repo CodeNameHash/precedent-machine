@@ -32,9 +32,14 @@ const ROWS = [
 // (there's no MAE_CARVEOUT-style dictionary for maeLimbType/maeLimbs, so the
 // raw code -- TWO_LIMB / ONE_LIMB -- is what row.signals[0].label carries;
 // this map is display-only and never touches the row's underlying data).
+// FIX 2 (Fable legal sign-off, verbatim wording -- corpus-wide semantic
+// error): ONE_LIMB does NOT mean "ability to consummate only" -- it means
+// the MAE test looks solely at effect on the business/condition/results of
+// operations. TWO_LIMB adds the ability-to-consummate prong on top of that.
+// The old text had ONE_LIMB and TWO_LIMB's actual meanings backwards.
 const MAE_LIMB_TEXT = {
-  TWO_LIMB: 'Two-limb: effect on the entity + ability to consummate',
-  ONE_LIMB: 'One-limb: ability to consummate only',
+  ONE_LIMB: 'One limb — effect on the business, condition or results of operations',
+  TWO_LIMB: 'Two limbs — business effect + ability to consummate',
 };
 
 function isMae(card) {

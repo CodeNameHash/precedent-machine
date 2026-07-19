@@ -3,7 +3,10 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import MergertraceStyles from '../../../components/review-v2/MergertraceStyles';
+import AppHeader from '../../../components/chrome/AppHeader';
+import { MtxFontLinks } from '../../../components/chrome/mtxFonts';
 const { toCsv, resultToCsvRows, csvFilename } = require('../../../lib/query/csv');
+const { describeFilter } = require('../../../lib/query/filter-labels');
 
 QueryPage.noLayout = true;
 
@@ -90,37 +93,48 @@ export default function QueryPage() {
 
   return (
     <>
-      <Head><title>{`${title} · Mergertrace`}</title></Head>
+      <Head>
+        <title>{`${title} · Corpus`}</title>
+        <MtxFontLinks />
+      </Head>
       <MergertraceStyles />
       <div className="mtx qp">
-        <header className="top">
-          <Link href="/query" className="brand"><span />Mergertrace</Link>
-          <div>
-            <h1>{title}</h1>
-            <p>{id === 'adhoc' ? 'Ad hoc query' : 'Saved query'}</p>
+        <AppHeader
+          active="query"
+          center={(
+            <div className="pageTitle">
+              <h1>{title}</h1>
+              <p>{id === 'adhoc' ? 'Ad hoc query — not saved yet.' : 'Saved query.'}</p>
+            </div>
+          )}
+        />
+        <div className="actions">
+          <div className="wrap actionsInner">
+            <button type="button" className="mtx-btn" onClick={() => navigator.clipboard?.writeText(window.location.href)}>Share</button>
+            <button type="button" className="mtx-btn" disabled={!result} onClick={() => downloadCsv(result)}>Export CSV</button>
+            <button type="button" className="mtx-btn" disabled={!canPersist || saving || id !== 'adhoc'} onClick={() => saveQuery(false)}>{saving ? 'Saving…' : 'Save'}</button>
+            <button type="button" className="mtx-btn mtx-btn-primary" disabled={!canPersist || saving} onClick={() => saveQuery(true)}>Duplicate</button>
           </div>
-          <button type="button" className="mtx-btn" onClick={() => navigator.clipboard?.writeText(window.location.href)}>Share</button>
-          <button type="button" className="mtx-btn" disabled={!result} onClick={() => downloadCsv(result)}>Export CSV</button>
-          <button type="button" className="mtx-btn" disabled={!canPersist || saving || id !== 'adhoc'} onClick={() => saveQuery(false)}>{saving ? 'Saving' : 'Save'}</button>
-          <button type="button" className="mtx-btn mtx-btn-primary" disabled={!canPersist || saving} onClick={() => saveQuery(true)}>Duplicate</button>
-        </header>
+        </div>
         <main>
-          {error ? <div className="empty">{error}</div> : !result ? <div className="empty">Loading query...</div> : <ResultView result={result} onOpen={setActive} />}
+          <div className="wrap">
+            {error ? <div className="empty">{error}</div> : !result ? <div className="empty">Loading query…</div> : <ResultView result={result} onOpen={setActive} />}
+          </div>
         </main>
         {active && <Drilldown item={active} onClose={() => setActive(null)} />}
       </div>
       <style jsx>{`
-        .qp { min-height: 100vh; }
-        .top { height: 72px; display: grid; grid-template-columns: 170px 1fr auto auto auto auto; gap: 12px; align-items: center; padding: 0 28px; border-bottom: 1px solid #E0E0E0; background: #fff; position: sticky; top: 0; z-index: 10; }
-        .brand { color: #1F1F1F; text-decoration: none; font-size: 20px; font-weight: 650; display: inline-flex; align-items: center; gap: 9px; font-family: var(--mtx-sans); }
-        .brand span { width: 9px; height: 9px; background: #1F1F1F; display: inline-block; }
-        h1 { margin: 0; font-size: 18px; text-transform: capitalize; font-family: var(--mtx-sans); }
-        p { margin: 3px 0 0; color: #6B6B6B; font-size: 12px; }
-        main { max-width: 1280px; margin: 0 auto; padding: 32px; }
-        .empty { border: 1px solid #E0E0E0; background: #fff; padding: 24px; color: #6B6B6B; }
+        .qp { min-height: 100vh; background: var(--paper); color: var(--ink); font-family: var(--mtx-sans); }
+        .pageTitle h1 { margin: 0; font-size: 18px; text-transform: capitalize; font-family: var(--mtx-sans); font-weight: 650; color: var(--ink); }
+        .pageTitle p { margin: 3px 0 0; color: var(--ink-light); font-size: 12px; font-family: var(--mtx-sans); }
+        .actions { border-bottom: 1px solid var(--line); background: #fff; }
+        .actionsInner { display: flex; justify-content: flex-end; gap: 10px; padding: 12px 34px; }
+        main { padding: 0; }
+        .wrap { max-width: 1280px; margin: 0 auto; padding: 32px 34px; }
+        .empty { border: 1px solid var(--line); background: #fff; padding: 24px; color: var(--ink-light); font-family: var(--mtx-sans); }
         @media (max-width: 900px) {
-          .top { grid-template-columns: 1fr; height: auto; padding: 14px; }
-          main { padding: 16px; }
+          .actionsInner { padding: 12px 16px; flex-wrap: wrap; }
+          .wrap { padding: 16px; }
         }
       `}</style>
     </>
@@ -237,7 +251,7 @@ function MarketRange({ result, onOpen }) {
 function FilterList({ result }) {
   return (
     <Panel>
-      <div className="chips">{result.filters_applied.map((f, i) => <span key={i} className="mtx-badge">{f.field} {f.op} {String(f.value)}</span>)}</div>
+      <div className="chips">{result.filters_applied.map((f, i) => <span key={i} className="mtx-badge filterChip" title={`${f.field} ${f.op} ${String(f.value)}`}>{describeFilter(f).text}</span>)}</div>
       <table className="mtx-table"><thead><tr><th>Deal</th><th>Signing</th><th>Value</th><th>Consideration</th><th>Matched hits</th></tr></thead>
         <tbody>{result.rows.map((row) => <tr key={row.deal_id} onClick={() => { window.location.href = `/review/${row.deal_id}`; }}><td>{row.deal_name}</td><td className="mtx-mono">{row.signing_date || '-'}</td><td className="mtx-mono">{formatValue(row.columns.total_deal_value)}</td><td>{row.columns.consideration_type || '-'}</td><td className="mtx-mono">{row.matched_provision_hits.length} matches</td></tr>)}</tbody>
       </table>
@@ -276,6 +290,7 @@ function Panel({ children }) {
     .mtx .qp .chart { height: 210px; display: flex; align-items: flex-end; gap: 8px; border-bottom: 1px solid #E0E0E0; padding: 12px 0; }
     .mtx .qp .chart button { flex: 1; min-width: 20px; border: 0; background: #1F1F1F; color: #fff; border-radius: 0; cursor: pointer; }
     .mtx .qp .stats, .mtx .qp .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
+    .mtx .filterChip { text-transform: none; letter-spacing: 0.01em; font-weight: 500; }
     .mtx .qp .stats span { border: 1px solid #E0E0E0; padding: 5px 9px; font-size: 12px; color: #1F1F1F; }
     .mtx .qp h2 { font-size: 13px; margin: 22px 0 8px; font-family: var(--mtx-sans); text-transform: uppercase; letter-spacing: 0.08em; color: #6B6B6B; }
   `}</style></div>;

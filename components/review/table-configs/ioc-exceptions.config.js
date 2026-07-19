@@ -264,17 +264,54 @@ function negativeCovenantColumn(keyId, heading, pills, emptyCopy) {
   );
 }
 
+// FIX 7 (Fable investigation): MONETARY_THRESHOLD used to render TWICE --
+// once as a generic "Below monetary threshold" pill in Exceptions, again as
+// a "Threshold: $X" pill in Specific Restrictions, always the same figure.
+// dollarFromText pulls the exception's OWN verbatim $ figure (preferred
+// source of truth for what that exception actually caps at) before falling
+// back to the card's dollarThreshold; parseDollarNumber lets the two
+// figures be compared numerically (not string-equal, so "$1,000,000" and
+// "$1,000,000.00" still match) to decide whether the restriction pill is a
+// true duplicate (suppress it) or a genuinely different number (keep both).
+const DOLLAR_FIGURE_RE = /\$[\d,]+(?:\.\d+)?/;
+function dollarFromText(text) {
+  if (!text) return null;
+  const m = String(text).match(DOLLAR_FIGURE_RE);
+  return m ? m[0] : null;
+}
+function parseDollarNumber(str) {
+  if (!str) return null;
+  const digits = String(str).replace(/[^0-9.]/g, '');
+  return digits ? Number(digits) : null;
+}
+
 function renderNegativeRow(entry, ctx) {
   const PillCell = ctx?.primitives?.PillCell;
   const { cards } = entry;
   const primary = cards[0];
   const label = primary?.short_title || primary?.defined_term || entry.code;
   const restrictionEntries = dedupeEntries(cards.flatMap((c) => exceptionEntries(cardFeatures(c).restrictionComponents, IOC_CATEGORY_CODES, c)));
+  const cardDollarThreshold = cards.map((c) => formatMoney(cardFeatures(c).dollarThreshold)).find(Boolean) || null;
   const thresholdEntries = dedupeEntries(cards.map((c) => {
     const money = formatMoney(cardFeatures(c).dollarThreshold);
-    return money ? { code: `threshold-${money}`, label: `Threshold: ${money}`, evidence: textOf(c), source: c } : null;
+    return money ? { code: `threshold-${money}`, label: `Threshold: ${money}`, evidence: textOf(c), source: c, amount: money } : null;
   }).filter(Boolean));
-  const permittedEntries = dedupeEntries(cards.flatMap((c) => exceptionEntries(cardFeatures(c).permittedExceptions, EXCEPTION_CODES, c)));
+  const rawPermittedEntries = dedupeEntries(cards.flatMap((c) => exceptionEntries(cardFeatures(c).permittedExceptions, EXCEPTION_CODES, c)));
+
+  // Resolve the MONETARY_THRESHOLD exception's own $ figure and rewrite its
+  // label to "Below $X"; track the amount so the restriction-column
+  // Threshold pill can be suppressed when it's the same figure.
+  let monetaryExceptionAmount = null;
+  const permittedEntries = rawPermittedEntries.map((e) => {
+    if (e.code !== 'MONETARY_THRESHOLD') return e;
+    const amount = dollarFromText(e.evidence) || cardDollarThreshold;
+    if (!amount) return e;
+    monetaryExceptionAmount = amount;
+    return { ...e, label: `Below ${amount}` };
+  });
+  const visibleThresholdEntries = monetaryExceptionAmount
+    ? thresholdEntries.filter((t) => parseDollarNumber(t.amount) !== parseDollarNumber(monetaryExceptionAmount))
+    : thresholdEntries;
   // Ben: "see text" must expand to the ACTUAL negative-covenant clause, not
   // mainObligation -- lib/schema/features.js documents mainObligation as a
   // "one-sentence summary of what the sub-clause restricts or requires", an
@@ -299,7 +336,7 @@ function renderNegativeRow(entry, ctx) {
   // pill wrap onto multiple lines and stay inside the cell instead.
   const restrictionPills = [
     ...restrictionEntries.map((e, i) => pillFor(PillCell, `${entry.code}-rc-${i}`, e.label, 'neutral', e.evidence, e.source, undefined, true)),
-    ...thresholdEntries.map((e, i) => pillFor(PillCell, `${entry.code}-dt-${i}`, e.label, 'info', e.evidence, e.source, undefined, true)),
+    ...visibleThresholdEntries.map((e, i) => pillFor(PillCell, `${entry.code}-dt-${i}`, e.label, 'info', e.evidence, e.source, undefined, true)),
   ].filter(Boolean);
   const exceptionPills = permittedEntries
     .map((e, i) => pillFor(PillCell, `${entry.code}-pe-${i}`, e.label, 'present', e.evidence, e.source, undefined, true))

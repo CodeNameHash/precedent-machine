@@ -37,7 +37,10 @@ const CONSIDERATION_SECTION_ID = 'consideration-hero';
 
 // Q7 (perf quick-wins): Tinos/Inter/IBM Plex Mono are self-hosted (see
 // styles/mtx-fonts.css, imported globally in pages/_app.js) — no external
-// fonts.googleapis.com <link> needed here anymore.
+// fonts.googleapis.com <link> needed here anymore. components/chrome/
+// mtxFonts.js's MtxFontLinks/MTX_FONTS_HREF (added on main after this page
+// already self-hosted) is superseded by the same global stylesheet — see
+// the merge-resolution commit for the rest of that cleanup.
 
 function LoadingLine({ children }) {
   return (
