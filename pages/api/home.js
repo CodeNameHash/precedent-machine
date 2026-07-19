@@ -1,182 +1,5 @@
 import { getServiceSupabase } from '../../lib/supabase';
-const { dealRow, dealName, resolveBuyerDisplay, resolveTargetDisplay } = require('../../lib/query/types');
-const { getFeatures } = require('../../lib/feature-compare');
-const { getDisplayAdvisors } = require('../../lib/canonical-advisors');
-const { QUALITY_METRICS_TABLE } = require('../../lib/deal-quality-metrics');
-
-// DEALS-INDEX-SPEC item 8 (F1): targeted metadata->> selects instead of the
-// whole `metadata` column. The 40 deals' full metadata totals ~31.7MB
-// (full_text + classified_sections + extraction_runs) that this endpoint
-// never uses — this select ships only the keys dealRow()/dealName()/the
-// column registry actually read.
-const DEAL_SELECT = [
-  'id',
-  'acquirer',
-  'target',
-  'value_usd',
-  'announce_date',
-  'sector',
-  'ingest_status:metadata->>ingest_status',
-  'acquirer_display:metadata->>acquirer_display',
-  'ultimateParent:metadata->>ultimateParent',
-  'ultimate_parent:metadata->>ultimate_parent',
-  'parent_entity:metadata->>parent_entity',
-  'target_display:metadata->>target_display',
-  'target_entity:metadata->>target_entity',
-  'headlineConsiderationType:metadata->>headlineConsiderationType',
-  'considerationType:metadata->>considerationType',
-  'deal_facts:metadata->deal_facts',
-  'buyer_profile:metadata->>buyer_profile',
-  'merger_form:metadata->>merger_form',
-  'value_provenance:metadata->value_provenance',
-  'advisors_v2:metadata->advisors_v2',
-  'advisors:metadata->advisors',
-].join(', ');
-
-// F2: slim provisions select — drop full_text (nothing here reads it;
-// getFeatures() reads ai_metadata) and page past Supabase's silent 1000-row
-// cap so the search index covers the full corpus (12,786 rows @ 2026-07-18),
-// not just the first ~8%.
-const PROVISION_SELECT = 'id, deal_id, type, category, ai_metadata';
-const PROVISION_PAGE_SIZE = 1000;
-
-function isStagingDeal(row) {
-  return row && row.ingest_status === 'staging';
-}
-
-function rowToDeal(row) {
-  const metadata = {
-    ...(row.ingest_status ? { ingest_status: row.ingest_status } : {}),
-    ...(row.acquirer_display ? { acquirer_display: row.acquirer_display } : {}),
-    ...(row.ultimateParent ? { ultimateParent: row.ultimateParent } : {}),
-    ...(row.ultimate_parent ? { ultimate_parent: row.ultimate_parent } : {}),
-    ...(row.parent_entity ? { parent_entity: row.parent_entity } : {}),
-    ...(row.target_display ? { target_display: row.target_display } : {}),
-    ...(row.target_entity ? { target_entity: row.target_entity } : {}),
-    ...(row.headlineConsiderationType ? { headlineConsiderationType: row.headlineConsiderationType } : {}),
-    ...(row.considerationType ? { considerationType: row.considerationType } : {}),
-    ...(row.deal_facts ? { deal_facts: row.deal_facts } : {}),
-    ...(row.buyer_profile ? { buyer_profile: row.buyer_profile } : {}),
-    ...(row.merger_form ? { merger_form: row.merger_form } : {}),
-    ...(row.value_provenance ? { value_provenance: row.value_provenance } : {}),
-    ...(row.advisors_v2 ? { advisors_v2: row.advisors_v2 } : {}),
-    ...(row.advisors ? { advisors: row.advisors } : {}),
-  };
-  return {
-    id: row.id,
-    acquirer: row.acquirer,
-    target: row.target,
-    value_usd: row.value_usd,
-    announce_date: row.announce_date,
-    sector: row.sector,
-    metadata,
-  };
-}
-
-function sizeBand(value) {
-  const n = Number(value);
-  if (!Number.isFinite(n)) return null;
-  if (n < 1e9) return '<$1B';
-  if (n < 1e10) return '$1B-$10B';
-  return '>$10B';
-}
-
-function publicDeal(deal, provisionCounts) {
-  const row = dealRow(deal);
-  const meta = deal.metadata || {};
-  const advisors = getDisplayAdvisors(meta);
-  const valueProvenance = meta.value_provenance && typeof meta.value_provenance === 'object' ? meta.value_provenance : null;
-  return {
-    id: deal.id,
-    deal_name: row.deal_name,
-    buyer_display: resolveBuyerDisplay(deal),
-    target_display: resolveTargetDisplay(deal),
-    signing_date: row.signing_date,
-    value: row.total_deal_value,
-    value_band: sizeBand(row.total_deal_value),
-    value_provenance: valueProvenance,
-    consideration_type: row.consideration_type,
-    buyer_profile: meta.buyer_profile || null,
-    sector: deal.sector || null,
-    merger_form: meta.merger_form || null,
-    advisors: {
-      buyer_firms: advisors.buyerFirms,
-      seller_firms: advisors.sellerFirms,
-      buyer_lawyers: advisors.buyerLawyers || [],
-      seller_lawyers: advisors.sellerLawyers || [],
-    },
-    provision_count: provisionCounts.has(deal.id) ? provisionCounts.get(deal.id) : null,
-  };
-}
-
-function definedTerms(provisions, dealsById) {
-  const out = [];
-  for (const provision of provisions || []) {
-    if (provision.type !== 'DEF') continue;
-    const features = getFeatures(provision);
-    const label = features.mainConcept && typeof features.mainConcept === 'object' && 'value' in features.mainConcept
-      ? features.mainConcept.value
-      : features.mainConcept;
-    if (!label) continue;
-    const deal = dealsById.get(provision.deal_id);
-    out.push({
-      type: 'term',
-      label: String(label).slice(0, 120),
-      detail: deal ? dealName(deal) : 'Defined term',
-      href: `/review-v1/${provision.deal_id}/provision/${provision.id}`,
-    });
-  }
-  return out.slice(0, 80);
-}
-
-function provisionHits(provisions, dealsById) {
-  return (provisions || []).slice(0, 250).map((provision) => {
-    const deal = dealsById.get(provision.deal_id);
-    return {
-      type: 'provision',
-      label: provision.category || provision.type || 'Provision',
-      detail: deal ? dealName(deal) : 'Provision',
-      href: `/review-v1/${provision.deal_id}/provision/${provision.id}`,
-    };
-  });
-}
-
-// Pages past Supabase's silent 1000-row cap. Deliberately SERIAL (one
-// in-flight request at a time) rather than fanning out all pages in
-// parallel — this shared Supabase instance is concurrency-sensitive, and a
-// single request should never multiply its own connection footprint. ~13
-// round trips over 12,786 rows @ 2026-07-18; still cheaper than the payload
-// the old whole-metadata select carried per deal.
-async function fetchAllProvisions(sb) {
-  const out = [];
-  let offset = 0;
-  for (;;) {
-    const { data, error } = await sb
-      .from('provisions')
-      .select(PROVISION_SELECT)
-      .order('created_at', { ascending: true })
-      .range(offset, offset + PROVISION_PAGE_SIZE - 1);
-    if (error) throw new Error(error.message);
-    out.push(...(data || []));
-    if (!data || data.length < PROVISION_PAGE_SIZE) break;
-    offset += PROVISION_PAGE_SIZE;
-  }
-  return out;
-}
-
-async function fetchProvisionCounts(sb, dealIds) {
-  const counts = new Map();
-  if (!dealIds.length) return counts;
-  const { data, error } = await sb
-    .from(QUALITY_METRICS_TABLE)
-    .select('deal_id, provision_count')
-    .in('deal_id', dealIds);
-  if (error) return counts;
-  for (const row of data || []) {
-    if (row && row.deal_id) counts.set(row.deal_id, Number(row.provision_count) || 0);
-  }
-  return counts;
-}
+const { fetchHomeData } = require('../../lib/home-data');
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).json({ error: 'GET only' });
@@ -184,36 +7,16 @@ export default async function handler(req, res) {
   if (!sb) return res.status(500).json({ error: 'Supabase not configured' });
 
   try {
-    // Deliberately serial (not Promise.all-fanned-out): one Supabase
-    // round trip in flight at a time per request, out of respect for a
-    // shared instance that concurrent load can overwhelm.
-    const { data: dealRows, error: dErr } = await sb
-      .from('deals').select(DEAL_SELECT).order('announce_date', { ascending: false });
-    if (dErr) throw new Error(dErr.message);
-
-    // F5: staging deals never belong on the public index.
-    const liveRows = (dealRows || []).filter((row) => !isStagingDeal(row));
-    const deals = liveRows.map(rowToDeal);
-    const dealsById = new Map(deals.map((deal) => [deal.id, deal]));
-
-    const provisions = await fetchAllProvisions(sb);
-    const provisionCounts = await fetchProvisionCounts(sb, deals.map((deal) => deal.id));
-
-    const searchIndex = [
-      ...deals.map((deal) => ({ type: 'deal', label: dealName(deal), detail: [deal.sector, deal.announce_date].filter(Boolean).join(' · '), href: `/review/${deal.id}` })),
-      ...provisionHits(provisions, dealsById),
-      ...definedTerms(provisions, dealsById),
-    ];
+    const payload = await fetchHomeData(sb);
 
     // F4: this endpoint is not user-personalized — let the Vercel CDN cache
     // it and revalidate in the background instead of hitting Supabase cold
-    // on every request.
+    // on every request. No cookies/auth/headers influence the response (the
+    // service-role client reads the same public rows for every caller), so
+    // it's safe to cache at the edge without a Vary header.
     res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=86400');
 
-    return res.status(200).json({
-      deals: deals.map((deal) => publicDeal(deal, provisionCounts)),
-      search_index: searchIndex,
-    });
+    return res.status(200).json(payload);
   } catch (err) {
     return res.status(500).json({ error: err.message || 'home failed' });
   }
