@@ -154,7 +154,10 @@ function mockPrimitives() {
           g.rows.map((r) => React.createElement(
             'div',
             { key: r.id, className: 'row' },
-            React.createElement('span', { className: 'row-label' }, r.label),
+            // Item 8 (round 3): row.seeText renders under the LABEL cell now
+            // (matching the real GroupedSubRows primitive), not appended to
+            // the body cell.
+            React.createElement('span', { className: 'row-label' }, r.label, r.seeText || null),
             React.createElement('span', { className: 'row-body' }, r.children),
           )),
         )),

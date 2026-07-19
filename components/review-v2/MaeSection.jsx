@@ -114,7 +114,7 @@ function seeTextNode(text) {
   if (!text) return null;
   return (
     <details className="mt-1">
-      <summary className="term-cell-seetext" style={{ listStyle: 'none' }}>see text</summary>
+      <summary className="term-cell-seetext" style={{ listStyle: 'none' }}>See provision</summary>
       <div className="mt-1 max-w-[42rem] whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight">{text}</div>
     </details>
   );
@@ -173,7 +173,10 @@ export default function MaeSection({ config = maeDefinitionsConfig, reviewDeal }
             const sig = row.signals && row.signals[0];
             return (
               <tr key={row.id} className="align-top">
-                <td className={TD_CLASS}>{row.side || 'Company'}</td>
+                <td className={TD_CLASS}>
+                  {row.side || 'Company'}
+                  {seeTextNode(row.evidence)}
+                </td>
                 <td className={TD_CLASS}>
                   <EvidenceHoverSource
                     value={row.value}
@@ -185,7 +188,6 @@ export default function MaeSection({ config = maeDefinitionsConfig, reviewDeal }
                   >
                     {summary}
                   </EvidenceHoverSource>
-                  {seeTextNode(row.evidence)}
                 </td>
               </tr>
             );
@@ -230,6 +232,7 @@ export default function MaeSection({ config = maeDefinitionsConfig, reviewDeal }
                     >
                       <span title={code || undefined}>{name}</span>
                     </EvidenceHoverSource>
+                    {seeTextNode(itemQuote(item) || row.evidence)}
                   </td>
                   <td className={TD_CLASS}>
                     <PillCell
@@ -252,7 +255,10 @@ export default function MaeSection({ config = maeDefinitionsConfig, reviewDeal }
         <MaeTableCard testId="provision-table-mae-carveout-exceptions" title="Exceptions to carve-outs" headers={['Party', 'Exception']} widths={['12rem']}>
           {exceptionRows.map((row) => (
             <tr key={row.id} className="align-top">
-              <td className={TD_CLASS}>{row.side || 'Company'}</td>
+              <td className={TD_CLASS}>
+                {row.side || 'Company'}
+                {seeTextNode(row.evidence)}
+              </td>
               <td className={TD_CLASS}>
                 <EvidenceHoverSource value={row.value} evidence={row.evidence} source={row.sourceCard} highlight={null} as="span">
                   {row.detail}

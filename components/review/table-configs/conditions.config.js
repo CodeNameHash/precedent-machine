@@ -382,7 +382,7 @@ function definitionNode(text) {
     React.createElement(
       'details',
       { className: 'mt-1' },
-      React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, 'see definition'),
+      React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, 'See provision'),
       React.createElement(
         'div',
         { className: 'mt-1 max-w-[36rem] whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight' },
@@ -425,7 +425,7 @@ function definedTermsNode(matches) {
       React.createElement(
         'details',
         { className: 'mt-1' },
-        React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, 'see full list'),
+        React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, 'See provision'),
         React.createElement(
           'ul',
           { className: 'mt-1 max-w-[36rem] list-disc pl-4 text-[11px] leading-5 text-inkLight' },
@@ -560,16 +560,20 @@ function buildStandardDetail(row, family, ctx, bandFamilies) {
   // mainConcept/raw quote text in cardToProvision), absent otherwise. This is
   // computed once, here, AFTER all family branches above (never inside one of
   // them), so no family can special-case its way into a different rule.
+  // Item 8 (round 3): the clause expander used to be appended INSIDE this
+  // node (the row's value/right cell); it now renders separately, under the
+  // row's LABEL (left) cell via GroupedSubRows' row.seeText, matching every
+  // other family -- so this returns { node, seeText } instead of one node.
   const validChips = chips.filter(Boolean);
   const clause = clauseSeeText(valueText(firstDefined(matches, 'mainCondition')));
 
-  return React.createElement(
+  const node = React.createElement(
     'div',
     { className: 'space-y-1.5' },
     validChips.length ? React.createElement('div', { className: 'flex flex-wrap gap-1' }, validChips) : null,
     mainNode,
-    clause,
   );
+  return { node, seeText: clause };
 }
 
 // Splits each party band's full canonical row list (present + absent, as
@@ -591,11 +595,15 @@ function conditionGroups(reviewDeal, ctx) {
       return { row, code, family: deriveFamily(row, code) };
     });
     const bandFamilies = withFamily.map((x) => x.family).filter(Boolean);
-    const rows = withFamily.map(({ row, code, family }) => ({
-      id: row.id,
-      label: conditionLabelNode(row, code, family),
-      children: buildStandardDetail(row, family, ctx, bandFamilies),
-    }));
+    const rows = withFamily.map(({ row, code, family }) => {
+      const detail = buildStandardDetail(row, family, ctx, bandFamilies);
+      return {
+        id: row.id,
+        label: conditionLabelNode(row, code, family),
+        children: detail.node,
+        seeText: detail.seeText,
+      };
+    });
     return { id: spec.id, label: spec.label, rows, allRows, presentRows };
   });
 }

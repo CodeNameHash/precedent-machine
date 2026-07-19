@@ -655,7 +655,14 @@ function sectionBox(key, heading, items) {
           items.map((item) => React.createElement(
             'tr',
             { key: item.key, className: 'align-top' },
-            React.createElement('td', { className: 'w-[14rem] px-3 py-2 font-medium text-ink whitespace-nowrap' }, item.term),
+            React.createElement(
+              'td',
+              { className: 'w-[14rem] px-3 py-2 font-medium text-ink whitespace-nowrap' },
+              item.term,
+              // Item 8: an optional per-item "See provision" expander under
+              // the LABEL (left) cell, matching every other family.
+              item.seeText || null,
+            ),
             React.createElement('td', { className: 'px-3 py-2 text-ink whitespace-pre-wrap break-words' }, item.node),
           )),
         ),
@@ -685,8 +692,8 @@ function generalExceptionsTableNode(row, ctx) {
     ? pillList(PillCell, [row.disclosureLetter.label], row.disclosureLetter.evidence, 'disclosure')
     : null;
   const items = [];
-  if (secBody) items.push({ key: 'sec', term: 'SEC Filings', node: secBody });
-  if (disclosureNode) items.push({ key: 'disclosure', term: 'Disclosure Letter', node: disclosureNode });
+  if (secBody) items.push({ key: 'sec', term: 'SEC Filings', node: secBody, seeText: clauseSeeText(row.secCutoffQuote || textOf(row.card)) });
+  if (disclosureNode) items.push({ key: 'disclosure', term: 'Disclosure Letter', node: disclosureNode, seeText: clauseSeeText(row.disclosureLetter?.evidence) });
   if (!items.length) return null;
   return sectionBox('general-exceptions', 'General Exceptions', items);
 }
@@ -705,13 +712,13 @@ function knowledgeTableNode(knowledgeSummaryRow, repRows, ctx) {
       const node = PillCell
         ? React.createElement(PillCell, { label: knowledgeSummaryRow.knowledgeStandard, tone: 'info', evidence: knowledgeSummaryRow.knowledgeScope })
         : knowledgeSummaryRow.knowledgeStandard;
-      items.push({ key: 'standard', term: 'Standard', node });
+      items.push({ key: 'standard', term: 'Standard', node, seeText: clauseSeeText(knowledgeSummaryRow.knowledgeScope) });
     }
     if (knowledgeSummaryRow.knowledgePersons) {
       const node = PillCell
         ? React.createElement(PillCell, { label: knowledgeSummaryRow.knowledgePersons, tone: 'info', evidence: knowledgeSummaryRow.knowledgeScope })
         : knowledgeSummaryRow.knowledgePersons;
-      items.push({ key: 'persons', term: 'Persons', node });
+      items.push({ key: 'persons', term: 'Persons', node, seeText: clauseSeeText(knowledgeSummaryRow.knowledgeScope) });
     }
     // R5-round4 (Ben): Scope dropped from the Knowledge block -- Standard +
     // Persons carry it; the full scope sentence stays as the pill hover

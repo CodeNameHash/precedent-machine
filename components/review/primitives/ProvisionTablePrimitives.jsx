@@ -229,7 +229,15 @@ export function GroupedSubRows({ groups = [], emptyCopy = 'No grouped rows captu
           <div className="divide-y divide-border">
             {group.rows.map((row, rowIndex) => (
               <div key={row.id || row.label || rowIndex} className="grid grid-cols-[minmax(8rem,14rem)_1fr] gap-2 px-2 py-1.5">
-                <span className="text-[11px] font-medium text-ink">{row.label || `Row ${rowIndex + 1}`}</span>
+                <span>
+                  <span className="text-[11px] font-medium text-ink">{row.label || `Row ${rowIndex + 1}`}</span>
+                  {/* Item 8: an optional per-row "See provision" expander,
+                      rendered under the LABEL (left) cell -- callers
+                      (nosol-section.config.js#rowNode, conditions/
+                      termination-rights row builders) pass row.seeText
+                      instead of appending it to the right/value cell. */}
+                  {row.seeText || null}
+                </span>
                 <EvidenceHoverSource value={row.value} evidence={row.evidence} source={row.source} as="span" className="text-xs text-ink">
                   {row.children || textValue(row.value) || row.detail || <span className="text-inkFaint italic">Not captured</span>}
                 </EvidenceHoverSource>

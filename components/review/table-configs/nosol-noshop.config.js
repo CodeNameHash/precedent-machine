@@ -328,7 +328,7 @@ function countListNode(row, ctx) {
     React.createElement(
       'details',
       { className: 'mt-1' },
-      React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, 'see list'),
+      React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, 'See provision'),
       React.createElement(
         'ul',
         { className: 'mt-1 max-w-[36rem] list-disc pl-4 text-[11px] leading-5 text-inkLight' },

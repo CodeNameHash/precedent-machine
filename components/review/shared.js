@@ -1,4 +1,4 @@
-import { useState, useRef, useContext, createContext } from 'react';
+import { useState, useContext, createContext } from 'react';
 import { renderFeatureValue as schemaRenderFeatureValue } from '../../lib/schema';
 import {
   getAiMetadata,
@@ -9,8 +9,6 @@ import {
   getCitableValue,
   getCitableQuotes,
   getCitableText,
-  focusSnippet,
-  TOOLTIP_MAX,
 } from '../../lib/citable';
 import { taxonomyForFeatureKey, labelForCode } from '../../lib/taxonomy';
 import { isFlagItem } from '../../lib/flag-item';
@@ -197,94 +195,24 @@ export function renderHighlighted(text, highlight) {
  * render in <strong> so the applicable phrase jumps out.
  * `sourceLabel` (Item 13): an optional short string identifying WHICH
  * provision/rep the quote belongs to (e.g. "§3.6 Compliance — MAE
- * qualifier"), rendered as a non-italic bold first line above the quote —
- * without it a popover opening on a rep's boilerplate reads as unmoored
- * from the row it's attached to. */
-export function HoverSource({ quote, children, as = 'span', className, align = 'left', highlight, sourceLabel }) {
-  const [show, setShow] = useState(false);
-  // Fixed-position coords computed from the trigger rect on show, so the
-  // popover renders above the table's overflow clip rather than inside it.
-  const [pos, setPos] = useState(null);
-  const hideTimerRef = useRef(null);
-  const triggerRef = useRef(null);
+ * qualifier").
+ *
+ * Item 8 (round 3, stage 2): the mouse-over popover is DEAD. Rows with only
+ * pills (equity-awards, termination-fees, votes deadlines, ...) used to
+ * expose their underlying clause ONLY through this hover -- no click-
+ * through, invisible on touch/keyboard nav. That affordance is replaced
+ * corpus-wide by the left-column "See provision" expander (ProvisionTable.jsx,
+ * MaeSection.jsx, GroupedSubRows' row.seeText, reps' clauseSeeText/
+ * sectionBox), which is always reachable and shows the full untruncated
+ * text (so the sourceLabel/highlight-centering machinery added for Item 13
+ * has nothing left to serve here -- the expander body IS the full context).
+ * HoverSource keeps its full prop signature (quote/highlight/sourceLabel/
+ * align) so its 50+ call sites need no changes, but renders children with NO
+ * popover, no hover/touch listeners, and no popover-only state -- a plain
+ * pass-through wrapper. Do NOT delete the component; only its rendering. */
+export function HoverSource({ quote, children, as = 'span', className }) {
   const Tag = as;
-  if (!quote || typeof quote !== 'string' || !quote.trim()) {
-    return <Tag className={className}>{children}</Tag>;
-  }
-  const trimmed = quote.trim().replace(/\s+/g, ' ');
-  // Item 13: when the quote is longer than the popover budget AND a
-  // `highlight` needle is set, center the excerpt on the match (via the
-  // existing lib/citable.js#focusSnippet, previously unused here) instead
-  // of always truncating from the head -- so a qualifier's own language is
-  // visible with surrounding context rather than the opening boilerplate of
-  // the rep/clause it was pulled from.
-  let display = trimmed;
-  if (trimmed.length > TOOLTIP_MAX) {
-    const centered = highlight ? focusSnippet(trimmed, highlight) : null;
-    display = (centered && centered.length <= TOOLTIP_MAX ? centered : trimmed.slice(0, TOOLTIP_MAX)) + '…';
-  }
-  const clearHideTimer = () => {
-    if (hideTimerRef.current) {
-      clearTimeout(hideTimerRef.current);
-      hideTimerRef.current = null;
-    }
-  };
-  // Compute fixed coords from the trigger rect. Flip ABOVE the trigger when it
-  // sits in the lower 45% of the viewport so the popover never falls off (or
-  // gets clipped at) the bottom of the table / screen.
-  const computePos = () => {
-    const el = triggerRef.current;
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    const flipUp = r.bottom > window.innerHeight * 0.55;
-    const left = align === 'right' ? undefined : Math.min(r.left, window.innerWidth - 500);
-    const right = align === 'right' ? Math.max(8, window.innerWidth - r.right) : undefined;
-    setPos({
-      left,
-      right,
-      top: flipUp ? undefined : r.bottom + 4,
-      bottom: flipUp ? window.innerHeight - r.top + 4 : undefined,
-    });
-  };
-  const open = () => {
-    if (triggerRef.current && triggerRef.current.closest && triggerRef.current.closest('.term-cell-label')) return;
-    clearHideTimer();
-    computePos();
-    setShow(true);
-  };
-  const handleTouchStart = () => {
-    open();
-    // Auto-hide after 2.5s so the popover doesn't linger after the user taps
-    // through to the evidence view.
-    hideTimerRef.current = setTimeout(() => setShow(false), 2500);
-  };
-  return (
-    <Tag
-      ref={triggerRef}
-      className={className}
-      onMouseEnter={open}
-      onMouseLeave={() => setShow(false)}
-      onTouchStart={handleTouchStart}
-    >
-      {children}
-      {show && pos && (
-        <span
-          role="tooltip"
-          className="fixed z-[100] max-w-[480px] min-w-[280px] bg-amber-50 border border-amber-300 rounded shadow-lg px-3 py-2 text-[11px] italic text-amber-900 font-body whitespace-pre-wrap break-words leading-relaxed"
-          style={{
-            pointerEvents: 'none',
-            left: pos.left,
-            right: pos.right,
-            top: pos.top,
-            bottom: pos.bottom,
-          }}
-        >
-          {sourceLabel ? <span className="block not-italic font-bold text-amber-950 mb-1">{sourceLabel}</span> : null}
-          &ldquo;{renderHighlighted(display, highlight)}&rdquo;
-        </span>
-      )}
-    </Tag>
-  );
+  return <Tag className={className}>{children}</Tag>;
 }
 
 /* ── Label-column CAP for review tables. Per review feedback the columns

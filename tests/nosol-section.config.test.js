@@ -298,3 +298,20 @@ test('nosol-section renders as a single ProvisionTable section with a nested Gro
 test('nosol-section returns no rows when none of the four family configs have data', () => {
   assert.deepEqual(mod.nosolSectionConfig.selectRows({ cards: [] }), []);
 });
+
+// Item 8 (round 3): rowNode() used to append the relocated 'detail' clause
+// AFTER the signal pill inside the row's value cell. It now returns
+// { signal, seeText } separately -- children stays the value-cell content
+// (the signal pill only); seeText is a distinct node meant for
+// GroupedSubRows' row.seeText (rendered under the LABEL/left cell).
+test('Item 8: buildGroups rows carry seeText SEPARATELY from children (not appended after the signal pill)', () => {
+  const groups = mod.buildGroups({ cards: CARDS }, { primitives });
+  const noShopCore = groups.find((g) => g.id === 'nosol-no-shop-core');
+  assert.ok(noShopCore, 'No-Shop Core Mechanics group must render');
+  const prohibitRow = noShopCore.rows.find((r) => r.id === 'nosol-noshop-prohibit');
+  assert.ok(prohibitRow, 'expected the prohibited-acts row');
+  assert.ok(prohibitRow.seeText, 'the row must carry a seeText node for its relocated detail');
+  const seeTextHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, prohibitRow.seeText));
+  assert.match(seeTextHtml, /term-cell-seetext/);
+  assert.match(seeTextHtml, />See provision</);
+});
