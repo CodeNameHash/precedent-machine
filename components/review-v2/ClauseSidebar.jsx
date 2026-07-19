@@ -458,12 +458,16 @@ function ItemDrillBlock({ drill, rowContext, loading, error, onBack }) {
 // "This clause" block and RowFocusBlock's always-visible verbatim.
 function ViewClauseExpander({ quote, usingParentFallback, onViewInAgreement, card }) {
   if (!quote) return null;
+  const sectionRef = card ? sectionRefLabel(card.section_ref) : null;
   return (
     <details data-testid="view-clause-expander">
+      {/* Quiet, ancillary affordance — sentence case, normal weight (the
+          uppercase/bold/letter-spaced version visually dominated the panel
+          despite being 10px). */}
       <summary
-        className="cursor-pointer select-none px-3.5 py-2.5 border-b border-[#E0E0E0] text-[10px] font-bold uppercase tracking-[0.14em] text-[#6B6B6B] hover:text-[#1F1F1F] flex items-center justify-between"
+        className="cursor-pointer select-none px-3.5 py-2.5 border-b border-[#E0E0E0] text-[10.5px] text-[#6B6B6B] hover:text-[#1F1F1F] flex items-center justify-between"
       >
-        <span>View clause</span>
+        <span>View clause{sectionRef ? ` · ${sectionRef}` : ''}</span>
         {onViewInAgreement ? (
           <button
             type="button"
@@ -559,7 +563,12 @@ export default function ClauseSidebar({ card, rowFocus = null, dealId, dealSecto
     let cancelled = false;
     setLoading(true);
     setError(null);
-    fetch(`/api/corpus-stats?${query}`)
+    // Bound the request: without an abort, a hung backend (e.g. the DB
+    // stalling) leaves the fetch promise pending forever and the sidebar
+    // stuck on "Loading corpus…" with no way out.
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 20000);
+    fetch(`/api/corpus-stats?${query}`, { signal: controller.signal })
       .then(async (r) => {
         const payload = await r.json().catch(() => ({}));
         if (!r.ok) throw new Error(payload.error || `HTTP ${r.status}`);
@@ -570,9 +579,13 @@ export default function ClauseSidebar({ card, rowFocus = null, dealId, dealSecto
         cacheRef.current.set(query, next);
         setStats(next);
       })
-      .catch((e) => { if (!cancelled) { setStats(null); setError(e.message); } })
-      .finally(() => { if (!cancelled) setLoading(false); });
-    return () => { cancelled = true; };
+      .catch((e) => {
+        if (cancelled) return;
+        setStats(null);
+        setError(e.name === 'AbortError' ? 'timed out — corpus data is temporarily unavailable' : e.message);
+      })
+      .finally(() => { clearTimeout(timer); if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; clearTimeout(timer); controller.abort(); };
   }, [query]);
 
   const quote = card ? (card.primary_quote || card.region_full_text || '') : '';
@@ -595,9 +608,12 @@ export default function ClauseSidebar({ card, rowFocus = null, dealId, dealSecto
   // no layout jump. The empty state below is the "nothing selected" content.
   const fullBody = card ? (
     <>
+      {/* Lead with the human label only ("RSUs", "Deal structure — One-step
+          merger") — no machine codes or section refs in the header (Ben:
+          "no CONSID-EQUITY · §1.5"). The section ref lives inside the
+          View clause expander, next to the text it locates. */}
       <div className="px-3.5 py-3 border-b border-[#E0E0E0]" data-testid="row-identity">
-        <div className="mtx-mono text-[9.5px] text-[#6B6B6B]">{code} · {sectionRefLabel(card.section_ref)}</div>
-        <div className="text-[14px] font-bold text-[#1F1F1F] mt-0.5">{identityLabel}</div>
+        <div className="text-[14px] font-bold text-[#1F1F1F]">{identityLabel}</div>
       </div>
 
       {tab === 'correct' ? (
