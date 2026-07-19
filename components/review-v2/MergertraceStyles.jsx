@@ -134,12 +134,13 @@ export default function MergertraceStyles() {
         background: #F6F6F6;
       }
 
-      /* Body cells: 12px ink (the Affirmative-covenants "value" size —
-         GroupedSubRows' text-xs row values — is the standard for every
-         table's content), #E0E0E0 row rules, EXPLICIT white body (grey
-         lives only on thead/title bars), paper-2 hover. */
+      /* Body cells: 13px ink (Item 6 r6: body text UP a notch from the old
+         12px value voice; pills stay at 12px — at/below body size, never
+         above — and the ancillary voices [9px headers, 8px see-provision,
+         10px footers] stay small), #E0E0E0 row rules, EXPLICIT white body
+         (grey lives only on thead/title bars), paper-2 hover. */
       .mtx [data-testid^='provision-table-'] table {
-        font-size: 12px;
+        font-size: 13px;
         color: #1F1F1F;
         background: #FFFFFF;
       }
@@ -167,11 +168,32 @@ export default function MergertraceStyles() {
         background: rgba(47, 109, 181, .08);
       }
       /* First column reads as a LABEL (the Affirmative-covenants row-label
-         size/weight — GroupedSubRows' text-[11px] font-medium). */
+         size/weight). Item 6 (r6): labels ride the body bump one notch too
+         (11px → 12px), staying one step under the 13px value voice. */
       .mtx [data-testid^='provision-table-'] tbody > tr > td:first-child {
-        font-size: 11px;
+        font-size: 12px;
         font-weight: 500;
         color: #1F1F1F;
+      }
+      /* Item 6 (r6): GroupedSubRows hardcodes Tailwind sizes on its label
+         (text-[11px] font-medium) and value (text-xs) spans, which would
+         pin them below the lifted scale — bring them up to the same
+         12px-label / 13px-value voice as the generic path. The
+         "See provision" button in the label cell is .term-cell-seetext
+         (8px, ancillary) and keeps its own size. */
+      .mtx [data-testid='grouped-sub-rows'] .grid > span:first-child > span.font-medium {
+        font-size: 12px;
+      }
+      .mtx [data-testid='grouped-sub-rows'] .grid > span.text-xs {
+        font-size: 13px;
+      }
+      /* Item 6 (r6): the full-width "See provision" expansion (both the
+         generic/renderBody <tr colSpan> form and GroupedSubRows' block
+         form) is VALUE content — same 13px as every other value cell. The
+         PortionExcludedNote callout inside keeps its own smaller sizes. */
+      .mtx tr.mtx-provision-expansion-row > td > div,
+      .mtx div.mtx-provision-expansion-row > div {
+        font-size: 13px;
       }
 
       /* ── Multi-table sections: no outer card ─────────────────────────────
@@ -306,10 +328,11 @@ export default function MergertraceStyles() {
         }
       }
 
-      /* Pills → sharp rectangles, 12px medium Inter (pill text is table
-         VALUE content, same size as every other value cell), sentence case
-         as authored (NO uppercase transform — header rows and meta labels
-         keep theirs via .mtx-meta-label / the thead rules). */
+      /* Pills → sharp rectangles, 12px medium Inter (Item 6 r6: pills sit
+         AT/BELOW body size — body is now 13px, pills hold at 12px, never
+         above the running text), sentence case as authored (NO uppercase
+         transform — header rows and meta labels keep theirs via
+         .mtx-meta-label / the thead rules). */
       .mtx [data-testid^='provision-table-'] span.inline-flex.border {
         border-radius: 0 !important;
         font-family: var(--mtx-sans);
@@ -441,9 +464,10 @@ export default function MergertraceStyles() {
         box-shadow: 0 2px 10px rgba(31, 31, 31, 0.12) !important;
         color: #1F1F1F !important;
         /* Ben (round 2): same voice as the "see provision" expansion —
-           sans 12px, not serif. */
+           sans, not serif. Item 6 (r6): rides the body bump to 13px so the
+           tie to the expansion voice holds. */
         font-family: var(--mtx-sans) !important;
-        font-size: 12px !important;
+        font-size: 13px !important;
         line-height: 1.6 !important;
       }
       .mtx span[role='tooltip'] strong {
@@ -480,10 +504,10 @@ export default function MergertraceStyles() {
       }
       .mtx .term-cell-seetext:hover { color: #1F1F1F; }
       /* The expander's revealed body is VALUE content (the full clause
-         text) — same 12px as every other value cell, not the 11px the
-         reused ProvisionTable/MaeSection markup ships (text-[11px]). */
+         text) — same 13px as every other value cell (Item 6 r6), not the
+         11px the reused ProvisionTable/MaeSection markup ships. */
       .mtx [data-testid^='provision-table-'] details > div {
-        font-size: 12px;
+        font-size: 13px;
       }
       .mtx [data-testid^='coverage-footer'],
       .mtx [data-testid^='provision-table-footer-'] {

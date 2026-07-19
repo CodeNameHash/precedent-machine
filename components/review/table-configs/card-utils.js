@@ -283,14 +283,63 @@ function partySide(card) {
   return 'Target / Company';
 }
 
+// Item 3 (r6): the approved threshold-phrasing rule, in ONE place so every
+// config that renders a dollar-amount pill uses the exact same two labels
+// instead of each growing its own wording ("Threshold: $X" on one config,
+// "Below $X" on another, for what's semantically the same kind of figure).
+// - A monetary EXCEPTION (an amount below which something is excused/
+//   permitted) always reads "Below $X".
+// - A monetary TRIGGER/RESTRICTION (an amount that activates an obligation
+//   or restriction) reads "Trigger: $Y" -- and per the rule, a config should
+//   only render this pill at all when there's no monetary-exception pill
+//   already carrying the same figure (see ioc-exceptions.config.js's
+//   dedupe: a restrictions-side pill exists only when there's no exception
+//   pill, or the amounts differ).
+function belowThresholdLabel(amount) {
+  return amount ? `Below ${amount}` : null;
+}
+function triggerThresholdLabel(amount) {
+  return amount ? `Trigger: ${amount}` : null;
+}
+
+// Item 7 (r6): table headers NEVER render with an ellipsis. The shared
+// header form is "Main (qualifier)":
+// - a clean parenthetical qualifier comes back as its own `qualifier` line
+//   (ProvisionTable.jsx renders it as a second header line -- the "two-line
+//   wrap where clean" branch);
+// - a qualifier that itself arrives truncated ("..." / the Unicode
+//   ellipsis) is OMITTED entirely rather than shown cut off;
+// - a bare header that arrives ellipsized loses the trailing ellipsis (and
+//   any dangling word fragment before it stays -- we can't reconstruct what
+//   was cut, but we never SHOW the "...").
+// Lives here (plain JS) so node:test can exercise it directly; every thead
+// -- ProvisionTable.jsx's generic path and any config-local header row --
+// must route header strings through this, never its own truncation.
+const TRAILING_ELLIPSIS_RE = /\s*(?:\.{3}|…)\s*$/;
+function headerLines(header) {
+  if (typeof header !== 'string') return { main: header, qualifier: null };
+  const raw = header.trim();
+  const m = raw.match(/^(.*\S)\s*\(([^)]*)\)$/);
+  if (m) {
+    const qualifier = m[2].trim();
+    return {
+      main: m[1].replace(TRAILING_ELLIPSIS_RE, '').trim(),
+      qualifier: qualifier && !/(?:\.{3}|…)/.test(qualifier) ? qualifier : null,
+    };
+  }
+  return { main: raw.replace(TRAILING_ELLIPSIS_RE, '').trim(), qualifier: null };
+}
+
 export {
   allFeatures,
+  belowThresholdLabel,
   buildSectionSubjectResolver,
   cardCode,
   cardFeatures,
   cardType,
   extractSectionCites,
   firstFeature,
+  headerLines,
   labelOf,
   makeRow,
   makeRows,
@@ -301,5 +350,6 @@ export {
   splitForCell,
   stripProposedTitle,
   textOf,
+  triggerThresholdLabel,
   valueText,
 };

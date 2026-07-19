@@ -531,10 +531,13 @@ test('representations-qualifiers config title names the reps directly (not a sep
   assert.equal(rows[0].kind, 'general-exceptions');
   assert.equal(rows[0].secCutoff, 'at least one (1) business day prior to the date of this Agreement');
   // Round-4 (Ben): portions-excluded entries are tightened to crisp labels
-  // (and deduped) rather than the verbose verbatim excerpt text.
+  // (and deduped) rather than the verbose verbatim excerpt text. Round-6
+  // (Ben, item 1c): each entry now also carries its OWN verbatim as
+  // `evidence` -- an OTHER-coded/unlabeled item's crisp display label alone
+  // was an unclickable dead end (hovering it just echoed the label back).
   assert.deepEqual(rows[0].secExcluded, [
-    'Risk Factors',
-    'Forward-looking statements',
+    { label: 'Risk Factors', evidence: 'disclosures contained in any part entitled "Risk Factors"' },
+    { label: 'Forward-looking statements', evidence: 'any forward-looking statements' },
   ]);
   assert.equal(rows[0].disclosureLetter.label, 'the Company Disclosure Letter');
   assert.equal(rows[1].id, 'representations-qualifiers-org');

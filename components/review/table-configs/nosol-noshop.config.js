@@ -123,15 +123,21 @@ function prohibitedActCodeLabel(item) {
 }
 function prohibitedActsFor(matches) {
   // Prefer an already-itemized claim (ceaseDiscussionsProhibitedList
-  // extracted as more than one distinct list entry). Each entry is one
-  // prohibited act -- summarize it to a crisp pill and dedupe.
+  // extracted as one or more distinct list entries). Each entry is one
+  // prohibited/cease act -- summarize it to a crisp pill and dedupe.
+  // Item 4 (r6): originally required raw.length > 1 AND entries.length > 1,
+  // which silently starved any card whose ceaseDiscussionsProhibitedList
+  // carries exactly ONE itemized, coded entry (e.g. SkyWater's NOSOL-ENFORCE
+  // card: a single WAIVE_STANDSTILL item) back to the long-form text
+  // fallback below -- a single coded act is still a pill, not a reason to
+  // fall through to raw prose.
   for (const card of matches) {
     const raw = cardFeatures(card).ceaseDiscussionsProhibitedList;
-    if (Array.isArray(raw) && raw.length > 1) {
+    if (Array.isArray(raw) && raw.length >= 1) {
       const entries = raw
         .map((item) => ({ item, verbatim: valueText(item) }))
         .filter((entry) => entry.verbatim);
-      if (entries.length > 1) {
+      if (entries.length >= 1) {
         const seen = new Set();
         const acts = [];
         entries.forEach(({ item, verbatim }, index) => {
@@ -244,7 +250,14 @@ function rowForSpec(spec, cards) {
     featureKeys: spec.keys || null,
     present: true,
   };
-  if (spec.id === 'prohibit') row.acts = prohibitedActsFor(matches);
+  // Item 4 (r6): 'cease' (immediate cease-existing-activity obligations --
+  // CEASE_EXISTING_ACTIVITY / TERMINATE_DATAROOM / REQUEST_RETURN_DESTROY)
+  // and 'standstill-enforce' (WAIVE_STANDSTILL) carry the exact same
+  // itemized, taxonomy-coded ceaseDiscussionsProhibitedList shape as
+  // 'prohibit' -- they were just never wired to prohibitedActsFor(), so they
+  // fell all the way through to the long-form raw-text row render below even
+  // when the coded pills were sitting right there in the claim.
+  if (spec.id === 'prohibit' || spec.id === 'cease' || spec.id === 'standstill-enforce') row.acts = prohibitedActsFor(matches);
   if (spec.id === 'exceptions') row.exceptionItems = exceptionItemsFor(matches);
   // Ben (round 6): the don't-ask-don't-waive row showed a raw snippet -- give
   // the actual summary of when the standstill can be waived.
