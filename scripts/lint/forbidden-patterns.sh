@@ -147,6 +147,12 @@ const FILE_PATTERN_EXEMPTIONS = {
     'field_path\\s*:\\s*[\'"][a-z_]+[\'"]',
     'provision_type\\s*:\\s*[\'"][A-Z_]+[\'"]\\s*,\\s*field_path',
   ],
+  // Same class: result-title.test.js's MARKET_RANGE fixture must carry a
+  // literal payload field_path to assert the human title derives from it.
+  // Production query code stays covered by the invariant.
+  'tests/query/result-title.test.js': [
+    'field_path\\s*:\\s*[\'"][a-z_]+[\'"]',
+  ],
   // Same class: wp-query.test.js fixtures deliberately carry raw snake_case
   // feature keys / payload field_paths because they test the alias-resolution
   // and deal_filter payload contracts end to end. Production query code stays
