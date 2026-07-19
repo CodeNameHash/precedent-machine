@@ -300,18 +300,24 @@ test('nosol-section returns no rows when none of the four family configs have da
 });
 
 // Item 8 (round 3): rowNode() used to append the relocated 'detail' clause
-// AFTER the signal pill inside the row's value cell. It now returns
-// { signal, seeText } separately -- children stays the value-cell content
-// (the signal pill only); seeText is a distinct node meant for
-// GroupedSubRows' row.seeText (rendered under the LABEL/left cell).
-test('Item 8: buildGroups rows carry seeText SEPARATELY from children (not appended after the signal pill)', () => {
+// AFTER the signal pill inside the row's value cell. Item 2 (r6): the
+// relocated detail is now passed RAW as row.seeTextContent -- GroupedSubRows
+// owns the toggle and the shared full-width block-below-the-row expansion
+// (no more per-config in-cell <details>); children stays the value-cell
+// content (the signal pill only).
+test('Item 8/r6-2: buildGroups rows carry raw seeTextContent SEPARATELY from children (no in-cell details node)', () => {
   const groups = mod.buildGroups({ cards: CARDS }, { primitives });
   const noShopCore = groups.find((g) => g.id === 'nosol-no-shop-core');
   assert.ok(noShopCore, 'No-Shop Core Mechanics group must render');
   const prohibitRow = noShopCore.rows.find((r) => r.id === 'nosol-noshop-prohibit');
   assert.ok(prohibitRow, 'expected the prohibited-acts row');
-  assert.ok(prohibitRow.seeText, 'the row must carry a seeText node for its relocated detail');
-  const seeTextHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, prohibitRow.seeText));
-  assert.match(seeTextHtml, /term-cell-seetext/);
-  assert.match(seeTextHtml, />See provision</);
+  assert.equal(prohibitRow.seeText, undefined, 'legacy pre-rendered seeText must be gone');
+  assert.ok(prohibitRow.seeTextContent, 'the row must carry raw seeTextContent for the shared full-width expansion');
+  const contentHtml = renderToStaticMarkup(React.createElement(React.Fragment, null, prohibitRow.seeTextContent));
+  // Raw detail content only -- the toggle/summary chrome belongs to
+  // GroupedSubRows now, so the content itself must NOT ship its own
+  // <details>/"See provision" affordance.
+  assert.doesNotMatch(contentHtml, /term-cell-seetext/);
+  assert.doesNotMatch(contentHtml, />See provision</);
+  assert.ok(contentHtml.length > 0, 'detail content must be non-empty');
 });

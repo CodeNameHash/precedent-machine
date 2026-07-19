@@ -57,7 +57,7 @@ function sectionRefLabel(ref) {
 
 const LAB = 'text-[9px] font-bold uppercase tracking-[0.14em] text-[#9A9A9A] mb-1.5';
 const LAB_SM = 'text-[8.5px] font-bold uppercase tracking-[0.14em] text-[#9A9A9A]';
-const BODY = 'text-[13px] leading-5'; // matches the table body bump (Ben r6: bigger body text; pills stay 12px, ancillary stays small)
+const BODY = 'text-[12px] leading-5'; // matches ProvisionTable's td text-xs body size
 const SEL = 'w-full border border-[#E0E0E0] bg-white text-[10px] px-1.5 py-1 text-[#1F1F1F]';
 const INPUT = 'w-full border border-[#E0E0E0] bg-white text-[10px] px-1.5 py-1 text-[#1F1F1F] placeholder:text-[#B0B0B0]';
 
@@ -458,16 +458,12 @@ function ItemDrillBlock({ drill, rowContext, loading, error, onBack }) {
 // "This clause" block and RowFocusBlock's always-visible verbatim.
 function ViewClauseExpander({ quote, usingParentFallback, onViewInAgreement, card }) {
   if (!quote) return null;
-  const sectionRef = card ? sectionRefLabel(card.section_ref) : null;
   return (
     <details data-testid="view-clause-expander">
-      {/* Quiet, ancillary affordance — sentence case, normal weight (the
-          uppercase/bold/letter-spaced version visually dominated the panel
-          despite being 10px). */}
       <summary
-        className="cursor-pointer select-none px-3.5 py-2.5 border-b border-[#E0E0E0] text-[10.5px] text-[#6B6B6B] hover:text-[#1F1F1F] flex items-center justify-between"
+        className={`cursor-pointer select-none px-3.5 py-2.5 border-b border-[#E0E0E0] ${LAB_SM} hover:text-[#1F1F1F] flex items-center justify-between`}
       >
-        <span>View clause{sectionRef ? ` · ${sectionRef}` : ''}</span>
+        <span>View clause</span>
         {onViewInAgreement ? (
           <button
             type="button"
@@ -489,6 +485,40 @@ function ViewClauseExpander({ quote, usingParentFallback, onViewInAgreement, car
       </div>
     </details>
   );
+}
+
+// Visible failure state (Ben, DB-down incident): the corpus-stats fetch
+// used to fail silently-empty whenever the focused row had no rowFocus (the
+// only error surface was inside the collapsed "Refine the peer set"
+// disclosure, invisible unless a user happened to expand it). This renders
+// right under the row identity, always mounted regardless of rowFocus, so a
+// failed or timed-out fetch is never silent: a quiet retry line on error, a
+// subtle loading indicator while in flight, nothing when idle/succeeded.
+function CorpusContextStatus({ loading, error, onRetry }) {
+  if (error) {
+    return (
+      <div className="px-3.5 py-2 border-b border-[#E0E0E0] flex items-center justify-between gap-2" data-testid="corpus-context-status-error">
+        <span className="text-[10px] text-[#B14E63]">Couldn&apos;t load corpus context</span>
+        <button
+          type="button"
+          onClick={onRetry}
+          className="text-[9px] font-bold uppercase tracking-[0.1em] text-[#2F6DB5] hover:underline shrink-0"
+          data-testid="corpus-context-retry"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+  if (loading) {
+    return (
+      <div className="px-3.5 py-2 border-b border-[#E0E0E0] flex items-center gap-1.5" data-testid="corpus-context-status-loading">
+        <span className="mtx-loading-dot" aria-hidden="true" />
+        <span className="text-[9.5px] text-[#9A9A9A]">Loading corpus context…</span>
+      </div>
+    );
+  }
+  return null;
 }
 
 // Sidebar feedback package (Ben, r5), item 3: quiet .mtx empty state shown
@@ -521,6 +551,11 @@ export default function ClauseSidebar({ card, rowFocus = null, dealId, dealSecto
   // client-side" per spec. Keyed by the exact query string, so different
   // filter/row/drill combinations each get their own cached response.
   const cacheRef = useRef(new Map());
+
+  // Bumped by retry() to force a re-fetch of the current query, bypassing
+  // the response cache -- the DB-down incident showed a failed fetch had no
+  // visible recovery path (see CorpusContextStatus below).
+  const [retryNonce, setRetryNonce] = useState(0);
 
   const code = card ? String(card.provision_subtype || '').toUpperCase() : null;
   const rowKey = rowFocus ? `${rowFocus.label || ''}|${rowFocus.itemCode || ''}` : '';
@@ -556,18 +591,22 @@ export default function ClauseSidebar({ card, rowFocus = null, dealId, dealSecto
     return params.toString();
   }, [code, dealId, filters, rowFocus, drill]);
 
+  // Corpus-stats fetch timeout: the DB-down incident showed a stalled
+  // request just spins forever with no visible failure -- bound it so a
+  // hung backend surfaces as a retryable error instead of infinite loading.
+  const CORPUS_STATS_TIMEOUT_MS = 15000;
+
   useEffect(() => {
-    if (!query) { setStats(null); return undefined; }
-    const cached = cacheRef.current.get(query);
+    if (!query) { setStats(null); setError(null); setLoading(false); return undefined; }
+    // retryNonce > 0 means the user explicitly asked to retry -- always
+    // bypass the cache in that case so a stale failure/hang isn't replayed.
+    const cached = retryNonce === 0 ? cacheRef.current.get(query) : null;
     if (cached) { setStats(cached); setError(null); setLoading(false); return undefined; }
     let cancelled = false;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), CORPUS_STATS_TIMEOUT_MS);
     setLoading(true);
     setError(null);
-    // Bound the request: without an abort, a hung backend (e.g. the DB
-    // stalling) leaves the fetch promise pending forever and the sidebar
-    // stuck on "Loading corpus…" with no way out.
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 20000);
     fetch(`/api/corpus-stats?${query}`, { signal: controller.signal })
       .then(async (r) => {
         const payload = await r.json().catch(() => ({}));
@@ -582,11 +621,13 @@ export default function ClauseSidebar({ card, rowFocus = null, dealId, dealSecto
       .catch((e) => {
         if (cancelled) return;
         setStats(null);
-        setError(e.name === 'AbortError' ? 'timed out — corpus data is temporarily unavailable' : e.message);
+        setError(e.name === 'AbortError' ? 'Timed out' : (e.message || 'Request failed'));
       })
-      .finally(() => { clearTimeout(timer); if (!cancelled) setLoading(false); });
-    return () => { cancelled = true; clearTimeout(timer); controller.abort(); };
-  }, [query]);
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; clearTimeout(timeoutId); controller.abort(); };
+  }, [query, retryNonce]);
+
+  const retry = () => setRetryNonce((n) => n + 1);
 
   const quote = card ? (card.primary_quote || card.region_full_text || '') : '';
   const opts = (stats && stats.options) || { sectors: [], buyers: [], lawFirms: [], forms: [], lawFirmCoverage: 0 };
@@ -600,6 +641,9 @@ export default function ClauseSidebar({ card, rowFocus = null, dealId, dealSecto
   const usingParentFallback = drill ? (!drill.quote && Boolean(quote)) : (rowFocus ? (!rowQuote && Boolean(quote)) : false);
 
   const identityLabel = rowIdentityLabel(rowFocus, card);
+  // Ancillary, muted, END-of-identity-block only -- the machine type code
+  // (e.g. CONSID-EQUITY) never renders; the section ref may, small and quiet.
+  const sectionRefText = card ? sectionRefLabel(card.section_ref) : '';
   const rowContext = stats && stats.rowContext;
 
   // Item 3 (r5): the panel is always mounted now (pages/review/[id].js keeps
@@ -608,13 +652,14 @@ export default function ClauseSidebar({ card, rowFocus = null, dealId, dealSecto
   // no layout jump. The empty state below is the "nothing selected" content.
   const fullBody = card ? (
     <>
-      {/* Lead with the human label only ("RSUs", "Deal structure — One-step
-          merger") — no machine codes or section refs in the header (Ben:
-          "no CONSID-EQUITY · §1.5"). The section ref lives inside the
-          View clause expander, next to the text it locates. */}
       <div className="px-3.5 py-3 border-b border-[#E0E0E0]" data-testid="row-identity">
-        <div className="text-[14px] font-bold text-[#1F1F1F]">{identityLabel}</div>
+        <div className="text-[15px] font-bold text-[#1F1F1F] leading-tight">{identityLabel}</div>
+        {sectionRefText ? (
+          <div className="mtx-mono text-[9px] text-[#9A9A9A] mt-1" data-testid="row-identity-section-ref">{sectionRefText}</div>
+        ) : null}
       </div>
+
+      <CorpusContextStatus loading={loading} error={error} onRetry={retry} />
 
       {tab === 'correct' ? (
         <CorrectTab card={card} dealId={dealId} />

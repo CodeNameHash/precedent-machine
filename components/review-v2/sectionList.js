@@ -276,6 +276,52 @@ function deriveProrationCaps(text) {
 // deal term.
 const NO_ELECTION_RE = /no\s+election\s+shall\s+be\s+made\s+available|no\s+proration\s+shall\s+apply/i;
 
+// Item 5 (r6): "no election" deals are still FIXED MIXED consideration --
+// every holder gets the exact same cash-plus-stock split, they just don't
+// get to CHOOSE it. Ben: the old noElection branch below short-circuited to
+// ONLY the "no election / no proration" note, dropping the actual per-share
+// cash figure and exchange ratio (SkyWater: $15.00 cash + the Exchange
+// Ratio in Parent stock) that a reviewer needs to see immediately, not just
+// several rows down in the Consideration table. Mirrors the money-shape
+// normalisation consideration-hero.config.js's ensureDollarPrefix()
+// applies (a bare numeric perShareAmount like `15` needs a "$" + 2 decimals,
+// not just string coercion).
+function moneyLabel(raw) {
+  if (raw === null || raw === undefined || raw === '') return null;
+  const trimmed = String(raw).trim();
+  if (!trimmed) return null;
+  if (trimmed.startsWith('$')) return trimmed;
+  if (/^-?\d+(\.\d+)?$/.test(trimmed)) return `$${Number(trimmed).toFixed(2)}`;
+  return trimmed;
+}
+function stockRatioText(raw) {
+  if (raw === null || raw === undefined) return null;
+  if (typeof raw === 'string') return raw.trim() || null;
+  if (typeof raw === 'object') return (raw.text || raw.label || '').trim() || null;
+  return null;
+}
+function deriveFixedMixedSplit(considCards) {
+  let cash = null;
+  let cashCard = null;
+  let stock = null;
+  let stockCard = null;
+  for (const card of considCards) {
+    const f = (card && card.features) || {};
+    if (!cash) {
+      const label = moneyLabel(f.perShareAmount ?? f.cashAmount);
+      if (label) { cash = label; cashCard = card; }
+    }
+    if (!stock) {
+      const text = stockRatioText(f.exchangeRatio) || stockRatioText(f.exchangeRatioText);
+      if (text) { stock = text; stockCard = card; }
+    }
+  }
+  const parts = [];
+  if (cash) parts.push({ label: 'Cash', value: cash, card: cashCard });
+  if (stock) parts.push({ label: 'Stock', value: stock, card: stockCard });
+  return parts.length ? parts : null;
+}
+
 export function deriveElectionSummary(reviewDeal) {
   const cards = (reviewDeal && reviewDeal.cards) || [];
   const considCards = cards.filter((c) => /^CONSID/.test(cardCodeUpper(c)));
@@ -304,27 +350,14 @@ export function deriveElectionSummary(reviewDeal) {
     // explicitly instead of rendering nothing.
     const noElectionCard = considCards.find((c) => NO_ELECTION_RE.test(String(c.region_full_text || c.primary_quote || '')));
     if (noElectionCard) {
-      // Ben (r6): "it doesn't even show the consideration split — you need
-      // the values!!" A fixed-mixed deal still HAS economics: pull the
-      // per-share cash amount and exchange ratio off whichever CONSID card
-      // carries them and surface both as split pills next to the caption.
-      const splitParts = [];
-      const cashCard = considCards.find((c) => valueText(c.features?.cashAmount) || valueText(c.features?.perShareAmount));
-      const cashVal = cashCard ? (c => c.features?.cashAmount ?? c.features?.perShareAmount)(cashCard) : null;
-      if (cashVal !== null && cashVal !== undefined && Number.isFinite(Number(cashVal))) {
-        splitParts.push({ label: `${moneyPerShare(cashVal).replace(' / share', '')} in cash per share`, sourceCard: cashCard });
-      } else if (cashVal) {
-        splitParts.push({ label: `${valueText(cashVal)} in cash per share`, sourceCard: cashCard });
-      }
-      const ratioCard = considCards.find((c) => valueText(c.features?.exchangeRatio) || valueText(c.features?.exchangeRatioText));
-      const ratioVal = ratioCard ? valueText(ratioCard.features?.exchangeRatio) || valueText(ratioCard.features?.exchangeRatioText) : null;
-      if (ratioVal) {
-        const bare = String(ratioVal).match(/^[\d.]+$/) ? `${ratioVal} shares of Parent stock per share` : ratioVal;
-        splitParts.push({ label: bare, sourceCard: ratioCard });
-      }
       return {
         noElection: true,
-        split: splitParts,
+        // Item 5 (r6): the actual fixed cash/stock split, when the deck
+        // carries it -- ElectionCard renders these as the SAME kind of
+        // value pills a true two-option election shows, with the
+        // no-election/no-proration note as a secondary line beneath rather
+        // than the only thing on the card.
+        fixedSplit: deriveFixedMixedSplit(considCards),
         evidence: noElectionCard.primary_quote || noElectionCard.region_full_text || null,
         sourceCard: noElectionCard,
       };

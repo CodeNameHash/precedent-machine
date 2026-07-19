@@ -576,21 +576,27 @@ function buildGeneralExceptionsRow(reviewDeal, idPrefix, preambleCode) {
   }
   const dict = taxonomyForFeatureKey('secFilingsExcludedSections');
   const excludedRaw = excludedHit ? excludedHit.value : null;
-  const excludedRawList = Array.isArray(excludedRaw)
-    ? excludedRaw.map((item) => excludedPortionText(item, dict)).filter(Boolean)
-    : (excludedRaw ? [excludedPortionText(excludedRaw, dict)].filter(Boolean) : []);
-  // Keep each crisp label paired with its verbose source text (dedupe by
-  // label, first raw text wins) so the pill can hover to the real excluded
-  // portion — a crisp label whose raw text IS the label (e.g. a bare
-  // "Other" taxonomy code) carries no own-evidence and falls back to the
-  // list-level evidence at render time.
-  const excludedByLabel = new Map();
-  for (const raw of excludedRawList) {
-    const label = crispExcludedLabel(raw);
-    if (!label || excludedByLabel.has(label)) continue;
-    excludedByLabel.set(label, raw !== label ? raw : null);
+  const excludedRawList = Array.isArray(excludedRaw) ? excludedRaw : (excludedRaw ? [excludedRaw] : []);
+  // Item 1c (r6): these items are frequently tagged `code: "OTHER"` (SkyWater:
+  // both "Risk factors" and "Forward-looking statements" carve-outs land on
+  // the generic OTHER code, since secFilingsExcludedSections' dict only
+  // covers a handful of named buckets) -- crispExcludedLabel() collapses the
+  // raw verbatim clause fragment down to a short lawyer label for DISPLAY,
+  // but the pill's clickable evidence must still be the item's own verbatim
+  // text, not the crisp label repeated back at itself (that read as an
+  // unclickable/opaque dead-end, especially for OTHER-coded items with no
+  // dict label of their own). Keep {label, evidence} pairs per item instead
+  // of collapsing to a flat label-only array.
+  const seenExcludedLabels = new Set();
+  const excluded = [];
+  for (const item of excludedRawList) {
+    const verbatim = excludedPortionText(item, dict);
+    if (!verbatim) continue;
+    const label = crispExcludedLabel(verbatim);
+    if (!label || seenExcludedLabels.has(label)) continue;
+    seenExcludedLabels.add(label);
+    excluded.push({ label, evidence: verbatim });
   }
-  const excluded = [...excludedByLabel.entries()].map(([label, evidence]) => ({ label, evidence }));
   const disclosureLetter = disclosureLetterInfo(preamble);
   if (!cutoff && !excluded.length && !disclosureLetter) return null;
   return {
@@ -608,36 +614,34 @@ function buildGeneralExceptionsRow(reviewDeal, idPrefix, preambleCode) {
 
 // -- rendering ---------------------------------------------------------------
 
-function clauseSeeText(text) {
-  if (!text) return null;
-  return React.createElement(
-    'details',
-    { className: 'inline-block align-baseline' },
-    React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, 'See provision'),
-    React.createElement(
-      'div',
-      { className: 'mt-1 max-w-[42rem] whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight' },
-      text,
-    ),
-  );
-}
-
-// Term cell -- per-rep rows only now (General Exceptions / Knowledge each
-// have their own dedicated block, built separately below).
+// Item 1a/2 (r6): the per-rep "See provision" toggle used to render an
+// inline <details> right beside the bring-down pill (clauseSeeText, now
+// removed) -- moved to the SAME full-width <tr><td colSpan> expansion
+// pattern the General Exceptions/Knowledge blocks now use above, ported
+// from ProvisionTable.jsx's generic path (ctx.SeeProvisionToggle /
+// ctx.ExpansionRow). The toggle itself still sits on the row's own line
+// below the bring-down pill (block-level, not squeezed beside label text);
+// the expansion content is appended by repsTableNode as a sibling <tr>.
 function renderTerm(row, ctx) {
   const label = row.party ? `${row.label} (${row.party})` : row.label;
   const PillCell = ctx?.primitives?.PillCell;
+  const SeeProvisionToggle = ctx?.SeeProvisionToggle;
   const bd = row.bringDown;
-  // Bring-down pill ("Bringdown: MAE") sits on the SAME line as "see text"
-  // (Ben round 6: don't add row height). The clause text expands below.
   const bdPill = bd
     ? (PillCell
         ? React.createElement(PillCell, { label: bd.label, tone: 'neutral', color: bd.colorKey, evidence: bd.evidence, source: row.card })
         : React.createElement('span', { className: 'text-[10px]' }, bd.label))
     : null;
-  const seeText = clauseSeeText(row.mainConcept);
-  const inlineRow = (bdPill || seeText)
-    ? React.createElement('div', { className: 'mt-1 flex flex-wrap items-baseline gap-x-2 gap-y-1' }, bdPill, seeText)
+  const hasExpansion = Boolean(row.mainConcept) && Boolean(SeeProvisionToggle);
+  const isExpanded = hasExpansion && ctx?.expandedRowId === row.id;
+  const toggle = hasExpansion
+    ? React.createElement(SeeProvisionToggle, {
+        open: isExpanded,
+        onToggle: () => ctx.setExpandedRowId((cur) => (cur === row.id ? null : row.id)),
+      })
+    : null;
+  const inlineRow = (bdPill || toggle)
+    ? React.createElement('div', { className: 'mt-1 flex flex-wrap items-baseline gap-x-2 gap-y-1' }, bdPill, toggle)
     : null;
   return React.createElement(
     'div',
@@ -716,14 +720,18 @@ function subLabelBlock(key, label, node) {
 // already verbatim excerpt text (see excludedPortionText above), so the pill
 // text itself is the correct hover quote rather than borrowing an unrelated
 // sibling's evidence.
+// Item 1c (r6): items may now be plain label strings (legacy shape) OR
+// {label, evidence} pairs -- buildGeneralExceptionsRow's secExcluded entries
+// carry their OWN verbatim per item (an OTHER-coded item's crisp label
+// alone was a dead end: hovering/clicking it just echoed the same label
+// back). An object entry's own evidence always wins over the shared
+// `evidence` param.
 function pillList(PillCell, items, evidence, keyPrefix, tone = 'neutral') {
   if (!items || !items.length) return null;
-  const pills = items.map((item, index) => {
-    // Items are plain labels or { label, evidence } pairs — a pair's own
-    // evidence wins (Ben r6: hovering "Other" must show the actual excluded
-    // portion / clause, not nothing), then the list-level evidence.
-    const label = typeof item === 'object' && item !== null ? item.label : item;
-    const itemEvidence = (typeof item === 'object' && item !== null && item.evidence) || evidence || label;
+  const pills = items.map((entry, index) => {
+    const isEntryObject = entry && typeof entry === 'object';
+    const label = isEntryObject ? entry.label : entry;
+    const itemEvidence = (isEntryObject && entry.evidence) || evidence || label;
     return PillCell
       ? React.createElement(PillCell, { key: `${keyPrefix}-${index}`, label, tone, evidence: itemEvidence })
       : React.createElement('span', { key: `${keyPrefix}-${index}` }, label);
@@ -748,21 +756,21 @@ function pillList(PillCell, items, evidence, keyPrefix, tone = 'neutral') {
 // ClauseSidebar when the item carries a `card` -- used by the Knowledge
 // block's Standard/Persons rows (General Exceptions items don't set `card`,
 // so they render exactly as before: no click affordance).
-// Ben r6: "See provision" expansion must NOT inflate the left label column —
-// same colSpan-row mechanism ProvisionTable.jsx uses (the IOC fix): the
-// toggle sits on its own line under the label, and the clause text renders
-// as a separate full-width row spanning both columns. Stateful, so it's a
-// real component rather than a plain helper.
-function SectionBoxTable({ heading, items, ctx }) {
-  const [openKeys, setOpenKeys] = React.useState(() => new Set());
-  const toggle = (key) => setOpenKeys((prev) => {
-    const next = new Set(prev);
-    if (next.has(key)) next.delete(key); else next.add(key);
-    return next;
-  });
+// Item 1/2 (r6): "See provision" moves OUT of the label cell's inline
+// <details> and into the SAME full-width <tr><td colSpan> expansion pattern
+// ProvisionTable.jsx's generic path uses (ctx.SeeProvisionToggle /
+// ctx.ExpansionRow, threaded onto bodyCtx by ProvisionTable.jsx) -- own line
+// below the row instead of squeezed beside the label text, and it always
+// shows the FULL backing provision (item.fullText), with the specific
+// sub-fact the row's pill is keyed off rendered as a highlighted "portion"
+// callout beneath rather than standing in for the whole clause.
+function sectionBox(key, heading, items, ctx) {
+  const SeeProvisionToggle = ctx?.SeeProvisionToggle;
+  const ExpansionRow = ctx?.ExpansionRow;
+  const PortionExcludedNote = ctx?.PortionExcludedNote;
   return React.createElement(
     'div',
-    { className: 'overflow-hidden rounded border border-border' },
+    { key, className: 'overflow-hidden rounded border border-border' },
     React.createElement(
       'div',
       { className: 'border-b border-border bg-bg/40 px-3 py-1.5 text-[10px] font-medium uppercase tracking-wider text-inkFaint' },
@@ -783,65 +791,54 @@ function SectionBoxTable({ heading, items, ctx }) {
         React.createElement(
           'tbody',
           { className: 'divide-y divide-border' },
-          items.flatMap((item) => {
+          items.map((item) => {
             const rowCard = ctx?.onSelectCard && item.card ? item.card : null;
             const rowCardKey = rowCard ? (rowCard.id || rowCard.provision_instance_id) : null;
             const isSelectedRow = Boolean(rowCardKey) && ctx?.selectedCardId === rowCardKey;
-            const isOpen = openKeys.has(item.key);
-            const mainRow = React.createElement(
-              'tr',
-              {
-                key: item.key,
-                className: `align-top${rowCard ? ' mtx-row-clickable' : ''}`,
-                onClick: rowCard ? () => ctx.onSelectCard(rowCard, resolveRowFocus({ label: item.term, evidence: item.quote })) : undefined,
-                style: rowCard ? { cursor: 'pointer', ...(isSelectedRow ? { background: 'rgba(47,109,181,.07)', boxShadow: 'inset 2px 0 0 #2F6DB5' } : {}) } : undefined,
-              },
+            const rowKey = item.key;
+            const hasExpansion = Boolean(item.fullText) && Boolean(SeeProvisionToggle) && Boolean(ExpansionRow);
+            const isExpanded = hasExpansion && ctx?.expandedRowId === rowKey;
+            return React.createElement(
+              React.Fragment,
+              { key: rowKey },
               React.createElement(
-                'td',
-                { className: 'px-3 py-2 font-medium text-ink whitespace-normal break-words' },
-                item.term,
-                // Toggle on its OWN line under the label (block, not glued
-                // inline after the term text).
-                item.clause
-                  ? React.createElement(
-                    'div',
-                    { className: 'mt-0.5' },
-                    React.createElement('button', {
-                      type: 'button',
-                      className: 'term-cell-seetext',
-                      onClick: (e) => { e.stopPropagation(); toggle(item.key); },
-                      'aria-expanded': isOpen,
-                    }, isOpen ? 'Hide provision' : 'See provision'),
-                  )
-                  : null,
-              ),
-              React.createElement('td', { className: 'px-3 py-2 text-ink whitespace-pre-wrap break-words' }, item.node),
-            );
-            const clauseRow = isOpen && item.clause
-              ? React.createElement(
                 'tr',
-                { key: `${item.key}-clause` },
+                {
+                  className: `align-top${rowCard ? ' mtx-row-clickable' : ''}`,
+                  onClick: rowCard ? () => ctx.onSelectCard(rowCard, resolveRowFocus({ label: item.term, evidence: item.quote })) : undefined,
+                  style: rowCard ? { cursor: 'pointer', ...(isSelectedRow ? { background: 'rgba(47,109,181,.07)', boxShadow: 'inset 2px 0 0 #2F6DB5' } : {}) } : undefined,
+                },
                 React.createElement(
                   'td',
-                  { colSpan: 2, className: 'px-3 py-2' },
-                  React.createElement(
-                    'div',
-                    { className: 'whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight border-l-2 border-border pl-2.5' },
-                    item.clause,
-                  ),
+                  { className: 'px-3 py-2 font-medium text-ink whitespace-normal break-words' },
+                  item.term,
+                  // Item 1a/2 (r6): the toggle is a block-level element on
+                  // its own line below the label, not inline beside it, and
+                  // its expansion renders as a full-width row below (never
+                  // squeezed into this cell).
+                  hasExpansion ? React.createElement(SeeProvisionToggle, {
+                    open: isExpanded,
+                    onToggle: () => ctx.setExpandedRowId((cur) => (cur === rowKey ? null : rowKey)),
+                  }) : null,
                 ),
-              )
-              : null;
-            return clauseRow ? [mainRow, clauseRow] : [mainRow];
+                React.createElement('td', { className: 'px-3 py-2 text-ink whitespace-pre-wrap break-words' }, item.node),
+              ),
+              isExpanded ? React.createElement(
+                ExpansionRow,
+                { rowKey, colSpan: 2 },
+                React.createElement(
+                  React.Fragment,
+                  null,
+                  item.fullText,
+                  item.portionText ? React.createElement(PortionExcludedNote, { label: item.portionLabel, text: item.portionText }) : null,
+                ),
+              ) : null,
+            );
           }),
         ),
       ),
     ),
   );
-}
-
-function sectionBox(key, heading, items, ctx) {
-  return React.createElement(SectionBoxTable, { key, heading, items, ctx });
 }
 
 // R1: General Exceptions as its own labelled sub-table at the TOP of the
@@ -864,12 +861,17 @@ function generalExceptionsTableNode(row, ctx) {
   const disclosureNode = row.disclosureLetter
     ? pillList(PillCell, [row.disclosureLetter.label], row.disclosureLetter.evidence, 'disclosure')
     : null;
+  // Item 1b (r6): "See provision" must show the FULL backing provision, not
+  // the sub-fact quote alone (was: cutoffQuote, a ~7-word fragment like
+  // "prior to the date of this agreement" standing in for the whole
+  // preamble clause). The preamble card's own full quote is that provision;
+  // the sub-fact that the row's pill is actually keyed off (the cut-off
+  // phrase / the disclosure-letter reference) renders as a highlighted
+  // "portion excluded" callout beneath it instead of replacing it.
+  const fullCardText = textOf(row.card);
   const items = [];
-  // Ben r6: expanding must show the FULL provision (the whole general-
-  // exceptions chapeau — cut-off AND excluded portions), never just the
-  // resolved cut-off sentence fragment.
-  if (secBody) items.push({ key: 'sec', term: 'SEC Filings', node: secBody, clause: textOf(row.card) || row.secCutoffQuote, card: row.card, quote: row.secCutoffQuote });
-  if (disclosureNode) items.push({ key: 'disclosure', term: 'Disclosure Letter', node: disclosureNode, clause: row.disclosureLetter?.evidence || textOf(row.card), card: row.card, quote: row.disclosureLetter?.evidence });
+  if (secBody) items.push({ key: 'sec', term: 'SEC Filings', node: secBody, card: row.card, quote: row.secCutoffQuote, fullText: fullCardText, portionLabel: 'Cut-off phrase excluded', portionText: row.secCutoffQuote });
+  if (disclosureNode) items.push({ key: 'disclosure', term: 'Disclosure Letter', node: disclosureNode, card: row.card, quote: row.disclosureLetter?.evidence, fullText: fullCardText, portionLabel: 'Disclosure letter reference', portionText: row.disclosureLetter?.evidence !== fullCardText ? row.disclosureLetter?.evidence : null });
   if (!items.length) return null;
   return sectionBox('general-exceptions', 'General Exceptions', items, ctx);
 }
@@ -891,13 +893,13 @@ function knowledgeTableNode(knowledgeSummaryRow, repRows, ctx) {
       // Item 2 (r5): "knowledge standard rows" must be clickable per the
       // sidebar feedback package -- sourceCard/quote wired above in
       // buildKnowledgeSummaryRow flow through sectionBox's ctx wiring.
-      items.push({ key: 'standard', term: 'Standard', node, clause: knowledgeSummaryRow.knowledgeScope, card: knowledgeSummaryRow.standardCard, quote: knowledgeSummaryRow.knowledgeScope });
+      items.push({ key: 'standard', term: 'Standard', node, card: knowledgeSummaryRow.standardCard, quote: knowledgeSummaryRow.knowledgeScope, fullText: knowledgeSummaryRow.knowledgeScope });
     }
     if (knowledgeSummaryRow.knowledgePersons) {
       const node = PillCell
         ? React.createElement(PillCell, { label: knowledgeSummaryRow.knowledgePersons, tone: 'info', evidence: knowledgeSummaryRow.knowledgeScope })
         : knowledgeSummaryRow.knowledgePersons;
-      items.push({ key: 'persons', term: 'Persons', node, clause: knowledgeSummaryRow.knowledgeScope, card: knowledgeSummaryRow.personsCard, quote: knowledgeSummaryRow.knowledgeScope });
+      items.push({ key: 'persons', term: 'Persons', node, card: knowledgeSummaryRow.personsCard, quote: knowledgeSummaryRow.knowledgeScope, fullText: knowledgeSummaryRow.knowledgeScope });
     }
     // R5-round4 (Ben): Scope dropped from the Knowledge block -- Standard +
     // Persons carry it; the full scope sentence stays as the pill hover
@@ -964,10 +966,18 @@ function repsTableNode(repRows, ctx) {
         const rowCard = ctx.onSelectCard && row.card ? row.card : null;
         const rowCardKey = rowCard ? (rowCard.id || rowCard.provision_instance_id) : null;
         const isSelectedRow = Boolean(rowCardKey) && ctx.selectedCardId === rowCardKey;
+        // Item 2 (r6): full-width expansion row, ported from
+        // ProvisionTable.jsx's generic path -- ctx.ExpansionRow is threaded
+        // onto bodyCtx by ProvisionTable.jsx itself, same as
+        // ctx.SeeProvisionToggle consumed inside renderTerm() above.
+        const ExpansionRow = ctx.ExpansionRow;
+        const isExpanded = Boolean(row.mainConcept) && Boolean(ExpansionRow) && ctx.expandedRowId === row.id;
         return React.createElement(
+        React.Fragment,
+        { key: row.id },
+        React.createElement(
         'tr',
         {
-          key: row.id,
           className: `align-top hover:bg-bg/40${rowCard ? ' mtx-row-clickable' : ''}`,
           // Sidebar redesign item 3: thread the rep's own qualifier
           // attributes through so ClauseSidebar can break the row into
@@ -980,6 +990,8 @@ function repsTableNode(repRows, ctx) {
         React.createElement('td', { className: 'px-3 py-2 whitespace-normal break-words text-ink' }, renderTerm(row, ctx)),
         React.createElement('td', { className: 'px-3 py-2 whitespace-pre-wrap break-words text-ink' }, renderQualifiers(row, ctx)),
         React.createElement('td', { className: 'px-3 py-2 whitespace-pre-wrap break-words text-ink' }, renderLookback(row, ctx)),
+        ),
+        isExpanded ? React.createElement(ExpansionRow, { rowKey: row.id, colSpan: REP_TABLE_COLUMNS.length }, row.mainConcept) : null,
         );
       }),
     ),

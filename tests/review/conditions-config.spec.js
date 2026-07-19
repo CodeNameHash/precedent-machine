@@ -154,10 +154,31 @@ function mockPrimitives() {
           g.rows.map((r) => React.createElement(
             'div',
             { key: r.id, className: 'row' },
-            // Item 8 (round 3): row.seeText renders under the LABEL cell now
-            // (matching the real GroupedSubRows primitive), not appended to
-            // the body cell.
-            React.createElement('span', { className: 'row-label' }, r.label, r.seeText || null),
+            // Item 8 (round 3): row.seeText/seeTextContent renders under the
+            // LABEL cell now (matching the real GroupedSubRows primitive),
+            // not appended to the body cell. Item 2 (r6): the real primitive
+            // now renders seeTextContent behind a click-to-open full-width
+            // expansion (JS state, same as ProvisionTable.jsx's generic
+            // path) rather than a semantic <details> that's always in the
+            // static-rendered DOM -- this mock keeps the old always-visible
+            // <details>/<summary> shape (content immediately present in
+            // renderToStaticMarkup output) purely so these data-plumbing
+            // unit tests can assert on the resolved text without simulating
+            // a click; the REAL interactive toggle/full-width-row behavior
+            // is covered by Playwright against the live page, not here.
+            React.createElement(
+              'span',
+              { className: 'row-label' },
+              r.label,
+              r.seeTextContent
+                ? React.createElement(
+                    'details',
+                    null,
+                    React.createElement('summary', { className: 'term-cell-seetext' }, 'See provision'),
+                    React.createElement('div', null, r.seeTextContent),
+                  )
+                : (r.seeText || null),
+            ),
             React.createElement('span', { className: 'row-body' }, r.children),
           )),
         )),

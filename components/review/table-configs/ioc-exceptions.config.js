@@ -1,6 +1,6 @@
 import React from 'react';
 import taxonomy from '../../../lib/taxonomy.js';
-import { cardCode, cardFeatures, cardType, textOf, valueText } from './card-utils.js';
+import { belowThresholdLabel, cardCode, cardFeatures, cardType, textOf, triggerThresholdLabel, valueText } from './card-utils.js';
 import { standardColorKey } from './standard-colors.js';
 
 const {
@@ -342,6 +342,12 @@ function negativeCovenantColumn(keyId, heading, pills, emptyCopy) {
 // figures be compared numerically (not string-equal, so "$1,000,000" and
 // "$1,000,000.00" still match) to decide whether the restriction pill is a
 // true duplicate (suppress it) or a genuinely different number (keep both).
+// Item 3 (r6): the restriction-side pill's wording is now the shared
+// triggerThresholdLabel() helper ("Trigger: $Y", card-utils.js) -- the
+// approved cross-config rule -- instead of this config's own "Threshold:
+// $X" string, so every family renders the identical two threshold
+// phrasings (monetary exception = "Below $X", restriction/trigger with no
+// matching exception, or a different figure, = "Trigger: $Y").
 const DOLLAR_FIGURE_RE = /\$[\d,]+(?:\.\d+)?/;
 function dollarFromText(text) {
   if (!text) return null;
@@ -354,13 +360,6 @@ function parseDollarNumber(str) {
   return digits ? Number(digits) : null;
 }
 
-// One canonical phrasing for the dollar-threshold fact wherever it appears
-// (restriction column and exceptions column previously said "Threshold: $X"
-// vs "Below $X" for the same thing, which made cross-deal scanning hard).
-function belowThresholdLabel(money) {
-  return `Below ${money}`;
-}
-
 function renderNegativeRow(entry, ctx) {
   const PillCell = ctx?.primitives?.PillCell;
   const { cards } = entry;
@@ -370,7 +369,7 @@ function renderNegativeRow(entry, ctx) {
   const cardDollarThreshold = cards.map((c) => formatMoney(cardFeatures(c).dollarThreshold)).find(Boolean) || null;
   const thresholdEntries = dedupeEntries(cards.map((c) => {
     const money = formatMoney(cardFeatures(c).dollarThreshold);
-    return money ? { code: `threshold-${money}`, label: belowThresholdLabel(money), evidence: textOf(c), source: c, amount: money } : null;
+    return money ? { code: `threshold-${money}`, label: triggerThresholdLabel(money), evidence: textOf(c), source: c, amount: money } : null;
   }).filter(Boolean));
   const rawPermittedEntries = dedupeEntries(cards.flatMap((c) => exceptionEntries(cardFeatures(c).permittedExceptions, EXCEPTION_CODES, c)));
 
@@ -804,10 +803,10 @@ export {
   bandPartyLabels,
   buildOtherRestrictionsRows,
   cardPartyFromText,
+  normalizeLimb,
   effortsStandardPillFor,
   exceptionEntries,
   fragmentCards,
-  normalizeLimb,
   formatMoney,
   iocExceptionsConfig,
   isIocCard,

@@ -25,28 +25,35 @@ export default function ElectionCard({ election }) {
   // FIX 4(c): the deal affirmatively states there's no election / no
   // proration (SkyWater/IonQ) -- one quiet line, no options grid, never
   // nothing at all.
+  // Item 5 (r6): that quiet line used to be the ONLY thing this card
+  // rendered, dropping the actual fixed cash-plus-stock split (SkyWater:
+  // $15.00 per share in cash + the Exchange Ratio in Parent stock) a
+  // reviewer needs to see immediately. When deriveElectionSummary resolved
+  // a fixedSplit (sectionList.js), render it as the SAME green "present"
+  // value pills every mixed-consideration deal's split uses, with the
+  // no-election/no-proration note demoted to a secondary caption line
+  // beneath -- never the whole card.
   if (election.noElection) {
-    // Ben r6: the split VALUES render as pills ahead of the caption — a
-    // fixed-mixed deal's economics ($X cash + Y shares per share) are the
-    // headline, "no election, no proration" is the footnote.
-    const split = Array.isArray(election.split) ? election.split : [];
+    const split = Array.isArray(election.fixedSplit) ? election.fixedSplit : null;
     return (
       <section data-testid="provision-table-election" className="border border-border bg-white mb-3.5">
-        {split.length ? (
-          <div className="px-3.5 pt-2.5 flex flex-wrap gap-1.5" data-testid="no-election-split">
+        {split ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-border">
             {split.map((part) => (
-              <PillCell
-                key={part.label}
-                label={part.label}
-                tone="present"
-                evidence={election.evidence}
-                source={part.sourceCard || election.sourceCard}
-              />
+              <div key={part.label} className="px-3.5 py-3">
+                <p className="text-[11px] font-semibold text-ink mb-1.5">{part.label}</p>
+                <PillCell
+                  label={part.value}
+                  tone="present"
+                  evidence={election.evidence}
+                  source={part.card || election.sourceCard}
+                />
+              </div>
             ))}
           </div>
         ) : null}
         <EvidenceHoverSource evidence={election.evidence} source={election.sourceCard} highlight={null} as="p">
-          <p className="px-3.5 py-2.5 text-[11px] text-inkFaint">Fixed mixed consideration — no election, no proration</p>
+          <p className={`px-3.5 py-2.5 text-[11px] text-inkFaint${split ? ' border-t border-border' : ''}`}>Fixed mixed consideration — no election, no proration</p>
         </EvidenceHoverSource>
       </section>
     );

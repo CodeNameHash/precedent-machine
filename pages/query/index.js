@@ -4,9 +4,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import MergertraceStyles from '../../components/review-v2/MergertraceStyles';
 import AppHeader from '../../components/chrome/AppHeader';
-import { humanizeKey, describeFilter } from '../../lib/query/filter-labels';
-import { PROVISION_TYPES, OpSelect, ProvisionTypeSelect, FieldSelect, KindTabs, ValueControl, defaultsForField, opsForFieldType } from '../../components/query/QueryFilterControls';
-import { fieldOption } from '../../lib/query/field-options';
+import { humanizeKey } from '../../lib/query/filter-labels';
+import {
+  PROVISION_TYPES, ProvisionTypeSelect, FilterRow, coerceFilterForPayload, KindTabs,
+} from '../../components/query/QueryFilterControls';
 
 QueryIndexPage.noLayout = true;
 
@@ -251,7 +252,7 @@ function BuilderSection({ deals, schemas, router }) {
   const buildPayload = () => {
     if (kind === 'FILTER_THEN_LIST') {
       return {
-        filters: filters.map((f) => ({ ...f, value: f.value === 'true' ? true : f.value === 'false' ? false : (Number.isNaN(Number(f.value)) || f.value === '' ? f.value : Number(f.value)) })),
+        filters: filters.map(coerceFilterForPayload),
         sort_by: 'deal_signing_date_desc',
         columns: ['deal_name', 'signing_date', 'consideration_type', 'total_deal_value'],
       };
@@ -304,10 +305,11 @@ function BuilderSection({ deals, schemas, router }) {
     <section>
       <SectionHeader title="Build a query" subtitle="Pick a kind, fill in the fields, run. The payload is validated on the server before it renders." />
       <div className="builder">
-        <label className="mtx-meta-label">
-          Kind
+        {/* Ben r7: query types are tabs, not a dropdown. */}
+        <div className="kindTabs">
+          <span className="mtx-meta-label">Query type</span>
           <KindTabs kinds={Object.keys(KIND_LABELS)} labels={KIND_LABELS} value={kind} onChange={setKind} />
-        </label>
+        </div>
         {requiredSentence && <p className="req">{requiredSentence}</p>}
 
         {kind === 'FILTER_THEN_LIST' && (
@@ -385,19 +387,20 @@ function FilterListBuilder({ filters, setFilters, provisionTypes }) {
     <div className="fb">
       {filters.map((f, i) => (
         <div className="frow" key={i}>
-          <ProvisionTypeSelect value={f.provision_type} onChange={(v) => update(i, { provision_type: v, field: '', value: '' })} types={provisionTypes} />
-          <FieldSelect provisionType={f.provision_type} value={f.field} onChange={(v) => update(i, { field: v, ...defaultsForField(f.provision_type, v) })} />
-          <OpSelect value={f.op} onChange={(v) => update(i, { op: v })} ops={opsForFieldType(fieldOption(f.provision_type, f.field)?.type)} />
-          <ValueControl provisionType={f.provision_type} fieldKey={f.field} value={f.value} onChange={(v) => update(i, { value: v })} />
-          <span className="preview">{describeFilter(f).text}</span>
-          <button type="button" className="mtx-btn" onClick={() => setFilters(filters.filter((_, idx) => idx !== i))}>Remove</button>
+          <FilterRow
+            filter={f}
+            onChange={(patch) => update(i, patch)}
+            onRemove={filters.length > 1 ? () => setFilters(filters.filter((_, idx) => idx !== i)) : undefined}
+            provisionTypes={provisionTypes}
+          />
         </div>
       ))}
-      <button type="button" className="mtx-btn" onClick={() => setFilters([...filters, { provision_type: 'CONSIDERATION', field: '', op: 'eq', value: '' }])}>+ Add filter</button>
+      <button type="button" className="addFilter" onClick={() => setFilters([...filters, { provision_type: 'CONSIDERATION', field: '', op: 'eq', value: '' }])}>+ Add a filter</button>
       <style jsx>{`
-        .fb { display: flex; flex-direction: column; gap: 8px; }
-        .frow { display: grid; grid-template-columns: 1.4fr 1fr 0.9fr 1fr auto; gap: 8px; align-items: center; }
-        .preview { grid-column: 1 / -1; font-size: 11px; color: var(--ink-light); font-family: var(--mtx-sans); }
+        .fb { display: flex; flex-direction: column; gap: 10px; }
+        .frow { border: 1px solid var(--line); background: var(--paper-2, #FAFAFA); padding: 10px; }
+        .addFilter { align-self: flex-start; border: 1px dashed var(--line); background: #fff; color: var(--ink); font-family: var(--mtx-sans); font-size: 12px; padding: 6px 12px; cursor: pointer; }
+        .addFilter:hover { background: var(--paper-2, #F6F6F6); border-color: var(--ink-light); }
       `}</style>
     </div>
   );

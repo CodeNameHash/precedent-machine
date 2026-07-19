@@ -21,9 +21,9 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
-import { describeFilter } from '../../lib/query/filter-labels';
-import { PROVISION_TYPES, OpSelect, ProvisionTypeSelect, FieldSelect, KindTabs, ValueControl, defaultsForField, opsForFieldType } from './QueryFilterControls';
-import { fieldOption } from '../../lib/query/field-options';
+import {
+  ProvisionTypeSelect, FilterRow, coerceFilterForPayload, KindTabs,
+} from './QueryFilterControls';
 // Reuses the deals-index column registry's consideration-type label map
 // (the "existing field-label helper" for deal-level values — item 3's ask
 // to check before writing new ones) so "CASH_PLUS_CVR" reads as
@@ -111,7 +111,7 @@ export default function QueryLaunchBox({ deals: dealsProp, showTitle = true, def
   const buildPayload = () => {
     if (kind === 'FILTER_THEN_LIST') {
       return {
-        filters: filters.map((f) => ({ ...f, value: f.value === 'true' ? true : f.value === 'false' ? false : (Number.isNaN(Number(f.value)) || f.value === '' ? f.value : Number(f.value)) })),
+        filters: filters.map(coerceFilterForPayload),
         deal_filter: dealFilter,
         sort_by: 'deal_signing_date_desc',
         columns: ['deal_name', 'signing_date', 'consideration_type', 'total_deal_value'],
@@ -159,7 +159,6 @@ export default function QueryLaunchBox({ deals: dealsProp, showTitle = true, def
           </div>
         )}
 
-        {/* Ben r7: query types as TABS to flick between, not a dropdown. */}
         <div className="qlbKindTabs">
           <span className="mtx-meta-label">Query type</span>
           <KindTabs kinds={Object.keys(KIND_LABELS)} labels={KIND_LABELS} value={kind} onChange={setKind} />
@@ -193,26 +192,22 @@ export default function QueryLaunchBox({ deals: dealsProp, showTitle = true, def
         {kind === 'FILTER_THEN_LIST' && (
           <div className="qlbFilters">
             {/* Ben r7: each refinement is its own bordered BLOCK, with a
-                "+" to add more filters. Value control is registry-typed
-                (Yes/No, enum options, number) — never raw free text for a
-                field that has real options. */}
+                "+" to add more filters and a per-block remove. */}
             {filters.map((f, i) => (
               <div className="qlbBlock" key={i}>
-                <div className="qlbRow">
-                  <ProvisionTypeSelect value={f.provision_type} onChange={(v) => update(i, { provision_type: v, field: '', value: '' })} types={PROVISION_TYPES} />
-                  <FieldSelect provisionType={f.provision_type} value={f.field} onChange={(v) => update(i, { field: v, ...defaultsForField(f.provision_type, v) })} />
-                  <OpSelect value={f.op} onChange={(v) => update(i, { op: v })} ops={opsForFieldType(fieldOption(f.provision_type, f.field)?.type)} />
-                  <ValueControl provisionType={f.provision_type} fieldKey={f.field} value={f.value} onChange={(v) => update(i, { value: v })} />
-                </div>
-                {filters.length > 1 && (
-                  <button type="button" className="qlbBlockRemove" aria-label="Remove filter" onClick={() => setFilters(filters.filter((_, idx) => idx !== i))}>×</button>
-                )}
+                <FilterRow
+                  filter={f}
+                  onChange={(patch) => update(i, patch)}
+                  onRemove={filters.length > 1 ? () => setFilters(filters.filter((_, idx) => idx !== i)) : null}
+                />
               </div>
             ))}
-            <button type="button" className="qlbAddFilter" onClick={() => setFilters([...filters, { provision_type: filters[filters.length - 1]?.provision_type || 'COVENANT_NO_SOLICITATION', field: '', op: 'eq', value: '' }])}>
+            <button type="button" className="qlbAddFilter" onClick={() => setFilters([...filters, { provision_type: filters[filters.length - 1]?.provision_type || 'COVENANT_NO_SOLICITATION', field: '', op: null, value: '' }])}>
               + Add a filter
             </button>
-            <p className="qlbPreview">{filters.map((f) => describeFilter(f).text).join(' · and · ')}{dealTypes.length ? ` · Deal type · is one of · ${dealTypes.map((t) => considerationTypeDisplay(t) || t).join(', ')}` : ''}</p>
+            {dealTypes.length > 0 && (
+              <p className="qlbPreview">— and the deal type is one of {dealTypes.map((t) => considerationTypeDisplay(t) || t).join(', ')}</p>
+            )}
           </div>
         )}
 
@@ -238,9 +233,7 @@ export default function QueryLaunchBox({ deals: dealsProp, showTitle = true, def
         .qlbHead h2 { margin: 0 0 3px; font-size: 14px; font-weight: 700; color: var(--ink, #1F1F1F); font-family: var(--mtx-sans); }
         .qlbHead p { margin: 0; font-size: 12px; color: var(--ink-light, #6B6B6B); font-family: var(--mtx-sans); }
         .qlbKindTabs { display: flex; flex-direction: column; gap: 6px; }
-        .qlbBlock { position: relative; border: 1px solid var(--line, #E0E0E0); background: var(--paper-2, #FAFAFA); padding: 10px 34px 10px 10px; }
-        .qlbBlockRemove { position: absolute; top: 6px; right: 8px; border: 0; background: transparent; color: var(--ink-light, #6B6B6B); font-size: 14px; cursor: pointer; padding: 2px 4px; }
-        .qlbBlockRemove:hover { color: #B14E63; }
+        .qlbBlock { position: relative; border: 1px solid var(--line, #E0E0E0); background: var(--paper-2, #FAFAFA); padding: 10px; }
         .qlbAddFilter { align-self: flex-start; border: 1px dashed var(--line, #E0E0E0); background: #fff; color: var(--ink, #1F1F1F); font-family: var(--mtx-sans); font-size: 12px; padding: 6px 12px; cursor: pointer; }
         .qlbAddFilter:hover { background: var(--paper-2, #F6F6F6); border-color: var(--ink-light, #6B6B6B); }
         .qlbDealType { display: flex; flex-direction: column; gap: 6px; }

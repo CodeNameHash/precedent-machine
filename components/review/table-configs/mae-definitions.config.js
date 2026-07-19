@@ -359,10 +359,22 @@ function maeSideTableNode(sideRows, ctx, key) {
         const rowCard = ctx.onSelectCard && typeof ctx.resolveCard === 'function' ? ctx.resolveCard(row) : null;
         const rowCardKey = rowCard ? (rowCard.id || rowCard.provision_instance_id) : null;
         const isSelectedRow = Boolean(rowCardKey) && ctx.selectedCardId === rowCardKey;
+        // Item 2 (r6): the in-cell <details> expansion (squeezed into the
+        // w-[16rem] Term column, same defect class flagged on the reps
+        // table) is replaced by the same full-width <tr><td colSpan>
+        // expansion ProvisionTable.jsx's generic path uses, ported via
+        // ctx.SeeProvisionToggle/ctx.ExpansionRow (threaded onto bodyCtx by
+        // ProvisionTable.jsx itself).
+        const SeeProvisionToggle = ctx.SeeProvisionToggle;
+        const ExpansionRow = ctx.ExpansionRow;
+        const hasExpansion = Boolean(detailNode) && Boolean(SeeProvisionToggle) && Boolean(ExpansionRow);
+        const isExpanded = hasExpansion && ctx.expandedRowId === row.id;
         return React.createElement(
+          React.Fragment,
+          { key: row.id },
+          React.createElement(
           'tr',
           {
-            key: row.id,
             className: `align-top hover:bg-bg/40${rowCard ? ' mtx-row-clickable' : ''}`,
             onClick: rowCard ? () => ctx.onSelectCard(rowCard, resolveRowFocus(row)) : undefined,
             style: rowCard ? { cursor: 'pointer', ...(isSelectedRow ? { background: 'rgba(47,109,181,.07)', boxShadow: 'inset 2px 0 0 #2F6DB5' } : {}) } : undefined,
@@ -371,24 +383,18 @@ function maeSideTableNode(sideRows, ctx, key) {
             'td',
             { className: 'w-[16rem] px-3 py-2 text-ink font-medium whitespace-normal break-words' },
             displayLabel(row),
-            detailNode
-              ? React.createElement(
-                  'details',
-                  { className: 'mt-1' },
-                  React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, 'See provision'),
-                  React.createElement(
-                    'div',
-                    { className: 'mt-1 max-w-[42rem] whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight' },
-                    detailNode,
-                  ),
-                )
-              : null,
+            hasExpansion ? React.createElement(SeeProvisionToggle, {
+              open: isExpanded,
+              onToggle: () => ctx.setExpandedRowId((cur) => (cur === row.id ? null : row.id)),
+            }) : null,
           ),
           React.createElement(
             'td',
             { className: 'px-3 py-2 text-ink whitespace-pre-wrap break-words' },
             renderSignals(row, ctx),
           ),
+          ),
+          isExpanded ? React.createElement(ExpansionRow, { rowKey: row.id, colSpan: 2 }, detailNode) : null,
         );
       }),
     ),
