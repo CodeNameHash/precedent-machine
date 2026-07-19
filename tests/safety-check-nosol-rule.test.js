@@ -75,6 +75,18 @@ test('safety check does not double-report a section already stored as NOSOL', ()
   assert.equal(flips.length, 0);
 });
 
+test('safety check reports NOTHING for employee/proxy solicitation titles (bare-solicitation guard)', () => {
+  const deals = [{
+    id: 'd5', acquirer: 'A', target: 'B',
+    metadata: { classified_sections: [
+      section({ sectionNumber: '6.9', title: 'Non-Solicitation of Employees', type: 'COV', text: 'no-hire covenant text' }),
+      section({ sectionNumber: '6.4', title: 'Solicitation of Proxies', type: 'COV', text: 'proxy solicitation mechanics' }),
+    ] },
+  }];
+  const flips = computeFlips(deals, oldTryDeterministic);
+  assert.equal(flips.length, 0);
+});
+
 test('sanity: computeFlips is driven by the REAL new tryDeterministic export (regression guard)', () => {
   // Confirms the wiring — computeFlips uses lib/parser-v2/classify's
   // current (post-fix) tryDeterministic internally, not a copy.
