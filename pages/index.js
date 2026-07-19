@@ -3,6 +3,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import MergertraceStyles from '../components/review-v2/MergertraceStyles';
+import QueryLaunchBox from '../components/query/QueryLaunchBox';
 import { COLUMNS, getColumn, defaultVisibleKeys, signedYear } from '../lib/deals-index-columns';
 import { getServiceSupabase } from '../lib/supabase';
 const { getHomeStaticProps } = require('../lib/home-static-props');
@@ -330,11 +331,11 @@ export default function HomePage({ initialData }) {
           <main>
             <section className="operational">
               <div className="wrap">
+                <h2 className="launchTitle">Launch Query</h2>
+                <QueryLaunchBox />
                 <div className="opsHead">
-                  <div>
-                    <h2>Deals ({deals.length})</h2>
-                    <p>{visibleDeals.length} visible</p>
-                  </div>
+                  <div />
+
                   <div className="opsActions" onClick={(e) => e.stopPropagation()}>
                     <button type="button" className="gearBtn" onClick={() => setPickerOpen((v) => !v)} title="Choose columns">
                       Columns
@@ -432,7 +433,8 @@ export default function HomePage({ initialData }) {
         .login { color: var(--ink-light); }
         .wrap { max-width: 1280px; margin: 0 auto; padding: 0 34px; }
         .operational { padding: 34px 0 80px; }
-        .opsHead { display: flex; align-items: flex-end; justify-content: space-between; gap: 22px; margin-bottom: 18px; }
+        .launchTitle { font-size: 22px; line-height: 1.1; margin: 0 0 12px; font-weight: 650; font-family: var(--mtx-sans); }
+        .opsHead { display: flex; align-items: flex-end; justify-content: space-between; gap: 22px; margin: 26px 0 18px; }
         h2 { font-size: 22px; line-height: 1.1; margin: 0; font-weight: 650; font-family: var(--mtx-sans); }
         p { margin: 5px 0 0; color: var(--ink-light); font-size: 13px; }
         .opsActions { position: relative; }
