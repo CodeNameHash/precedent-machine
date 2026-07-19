@@ -163,6 +163,36 @@ const BUYER_DISPLAY_ROWS = [
     verify: false,
     ultimateParentOnly: true,
   },
+  {
+    idPrefix: 'bb5f062d',
+    label: 'Novo Holdings A/S / Catalent, Inc.',
+    acquirerDisplay: 'Novo Holdings',
+    ultimateParent: 'Novo Holdings',
+    // deals-index round (Ben, 2026-07-19): Catalent was IN buyer_profile's
+    // FINANCIAL_BUYER_ID_PREFIXES set below from the start of this script
+    // (comment already said "Catalent — Novo Holdings"), but this deal was
+    // simply never given a BUYER_DISPLAY_ROWS entry in this file's earlier
+    // rounds — an omission, not a considered VERIFY/skip decision. That's
+    // why the index showed the raw filed acquirer ("Creek Parent, Inc.", a
+    // shell -- SHELL_NAME_REGEX matches "Parent") instead of a real display
+    // name: resolveBuyerDisplay() (lib/query/types.js) falls through
+    // acquirer_display -> ultimateParent -> ultimate_parent -> parent_entity
+    // -> deal.acquirer, and with none of the metadata keys ever set, it
+    // lands on deal.acquirer itself, which firstNonShellCandidate() lets
+    // through anyway because it is the LAST candidate in the chain (no
+    // later non-null candidate to prefer).
+    // "Novo Holdings" is the real acquirer per public reporting (Novo
+    // Holdings A/S's binding offer for Catalent, Inc., announced Feb 2024,
+    // subsequently assigned to Novo Nordisk for three manufacturing sites)
+    // -- kept VERIFY-gated (never written by --apply) because this
+    // environment has no Supabase/full_text access to confirm the
+    // Guarantor/Equity-Investor recital wording against the STORED
+    // agreement text, unlike the other rows in this file which quote the
+    // agreement verbatim. Promote to verify: false once checked against
+    // the stored agreement (same process as the other rows here).
+    source: 'UNVERIFIED against stored agreement text (no DB access in this environment) — public-record buyer is Novo Holdings A/S; verify the agreement\'s own Guarantor/Equity Investor recital before promoting.',
+    verify: true,
+  },
 ];
 
 /* ── Section 2: value_usd + value_provenance (spec item 4) ─────────────── */

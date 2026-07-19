@@ -22,12 +22,22 @@ test('spec tables carry the exact counts after the Ben review round (PR-sourced,
   // 6 confident buyer-display rows (Envestnet, Endeavor, HireRight, EWC,
   // Superior, Sekisui/MDC) + United Homes (ultimateParent-only) — 0 VERIFY.
   assert.equal(BUYER_DISPLAY_ROWS.filter((r) => !r.verify && !r.ultimateParentOnly).length, 6);
-  assert.equal(BUYER_DISPLAY_ROWS.filter((r) => r.verify).length, 0);
   assert.equal(BUYER_DISPLAY_ROWS.find((r) => r.idPrefix === '667447f0').verify, false);
   assert.equal(BUYER_DISPLAY_ROWS.find((r) => r.idPrefix === '667447f0').acquirerDisplay, 'Oaktree-led lender group');
   // MDC's acquirer_display was ALREADY correct in the live corpus — this row
   // only backfills the missing top-level ultimateParent key (see live dry run).
   assert.equal(BUYER_DISPLAY_ROWS.find((r) => r.idPrefix === '1e4b7102').acquirerDisplay, 'Sekisui House');
+
+  // deals-index round (2026-07-19): Catalent (bb5f062d) was in
+  // FINANCIAL_BUYER_ID_PREFIXES from the start but had NO buyer-display row
+  // at all — the root cause of the shell "Creek Parent, Inc." showing on
+  // the live index. Added here VERIFY-gated (never written by --apply)
+  // because this environment has no DB/full_text access to confirm the
+  // agreement's own Guarantor recital the way every other row here does.
+  const catalent = BUYER_DISPLAY_ROWS.find((r) => r.idPrefix === 'bb5f062d');
+  assert.ok(catalent, 'Catalent must have a buyer-display row now');
+  assert.equal(catalent.verify, true);
+  assert.equal(catalent.acquirerDisplay, 'Novo Holdings');
 
   // All 13 value rows resolved via PR — 0 VERIFY remain.
   assert.equal(VALUE_ROWS.length, 13);
@@ -50,9 +60,11 @@ test('spec tables carry the exact counts after the Ben review round (PR-sourced,
   assert.equal(FINANCIAL_BUYER_ID_PREFIXES.size, 8);
 });
 
-test('no remaining VERIFY rows in either section after the Ben review round', () => {
+test('no remaining VALUE_ROWS VERIFY rows; exactly one BUYER_DISPLAY_ROWS VERIFY row (Catalent, pending live-text verification)', () => {
   assert.equal(VALUE_ROWS.filter((r) => r.verify).length, 0);
-  assert.equal(BUYER_DISPLAY_ROWS.filter((r) => r.verify).length, 0);
+  const verifyRows = BUYER_DISPLAY_ROWS.filter((r) => r.verify);
+  assert.equal(verifyRows.length, 1);
+  assert.equal(verifyRows[0].idPrefix, 'bb5f062d');
 });
 
 /* ── considerationType classifier — pinned fixtures matching the live corpus ── */
@@ -158,6 +170,17 @@ test('planBuyerDisplay marks Envestnet and (post review-round) Superior as WILL 
   assert.equal(superior.verify, false);
   assert.equal(superior.willWrite, true);
   assert.equal(superior.acquirerDisplay, 'Oaktree-led lender group');
+});
+
+test('planBuyerDisplay: Catalent (VERIFY row) is found but never willWrite, even with --apply semantics', () => {
+  const deals = [
+    { id: 'bb5f062d-cccc', acquirer: 'Creek Parent, Inc.', target: 'Catalent, Inc.', metadata: {} },
+  ];
+  const rows = planBuyerDisplay(deals);
+  const catalent = rows.find((r) => r.idPrefix === 'bb5f062d');
+  assert.equal(catalent.found, true);
+  assert.equal(catalent.verify, true);
+  assert.equal(catalent.willWrite, false, 'VERIFY rows never write, regardless of --apply');
 });
 
 test('planBuyerDisplay marks an already-correct row (Sekisui House / MDC) as a no-op, not a write', () => {
