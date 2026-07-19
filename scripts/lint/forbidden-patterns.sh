@@ -139,6 +139,14 @@ const FILE_PATTERN_EXEMPTIONS = {
   // remaining importer). Exempt the definition site; any NEW usage in v2
   // components still trips the invariant.
   'lib/citable.js': ['TOOLTIP_MAX\\s*=\\s*600'],
+  // The WP-3 alias-fixture test PROVES alias→canonical resolution: it must
+  // reference a raw snake_case feature key (go_shop) verbatim to assert that
+  // _prov surfaces both matched_key (raw) and canonical_key. The raw-key
+  // fingerprint is aimed at production query code, which stays covered.
+  'tests/query/normalizer-badges.test.js': [
+    'field_path\\s*:\\s*[\'"][a-z_]+[\'"]',
+    'provision_type\\s*:\\s*[\'"][A-Z_]+[\'"]\\s*,\\s*field_path',
+  ],
   'lib/taxonomy.js': ['Must defend \\(incl\\. appeals/final judgment\\)'],
   // Same situation as taxonomy.js: this canonical-dictionary PIN test
   // legitimately asserts `LITIGATION_OBLIGATION.MANDATORY_DEFEND`'s exact label
