@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { reconstructReviewDeal } from '../../lib/queries/reconstruct-review-deal';
+import { useDefinitionResolver } from './useDefinitionResolver';
 
 function humanKind(kind) {
   return String(kind || 'standard').replace(/-/g, ' ');
@@ -44,9 +46,38 @@ function DefinitionPreview({ references = [] }) {
   );
 }
 
-function ProvisionCard({ card }) {
+// PERF REGRESSION FIX (Jul 2026, post-review): resolvedReferences used to be
+// pre-computed for every card before first render (see
+// lib/queries/reconstruct-review-deal.js's header comment — this was the
+// Cox 13.9s DOMContentLoaded regression). It's hover-preview content only,
+// so resolve it lazily: the count badge uses card.references (always
+// present, zero cost — no lookup needed), and the actual resolved
+// definitions (the text-bearing part) are only computed the first time this
+// card is hovered, via the resolver's cache (warm from the idle sweep, or
+// computed on the spot — O(references-on-this-card) either way, never a
+// scan of all definitions).
+function CrossReferenceBadge({ card, resolveReferences }) {
+  const referenceIds = Array.isArray(card.references) ? card.references : [];
+  const [hoverResolved, setHoverResolved] = useState(null);
+  if (!referenceIds.length) return null;
+
+  const handleEnter = () => {
+    if (hoverResolved) return;
+    setHoverResolved(resolveReferences(card).resolvedReferences);
+  };
+
+  return (
+    <div className="group relative mt-3 inline-flex" onMouseEnter={handleEnter} onFocus={handleEnter}>
+      <span className="rounded border border-buyer/20 bg-buyer/10 px-2 py-1 font-ui text-xs text-buyer">
+        {referenceIds.length} definition{referenceIds.length === 1 ? '' : 's'}
+      </span>
+      <DefinitionPreview references={hoverResolved || []} />
+    </div>
+  );
+}
+
+function ProvisionCard({ card, resolveReferences }) {
   const provenance = card.provenance || {};
-  const refs = card.resolvedReferences || [];
   return (
     <article data-testid="provision-card" className="relative rounded border border-border bg-white p-3 shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -71,13 +102,8 @@ function ProvisionCard({ card }) {
         <p className="mt-3 whitespace-pre-wrap break-words text-sm leading-6 text-inkLight">{card.primary_quote}</p>
       )}
 
-      {card.kind === 'cross-reference' && refs.length ? (
-        <div className="group relative mt-3 inline-flex">
-          <span className="rounded border border-buyer/20 bg-buyer/10 px-2 py-1 font-ui text-xs text-buyer">
-            {refs.length} definition{refs.length === 1 ? '' : 's'}
-          </span>
-          <DefinitionPreview references={refs} />
-        </div>
+      {card.kind === 'cross-reference' ? (
+        <CrossReferenceBadge card={card} resolveReferences={resolveReferences} />
       ) : null}
 
       <details data-testid="provision-card-provenance" className="mt-3 rounded border border-border bg-bg/50 px-3 py-2">
@@ -95,17 +121,20 @@ function ProvisionCard({ card }) {
 export default function ProvisionCardTable({ reviewDeal }) {
   // Q1: reviewDeal.sections/.definitions may arrive missing (trimmed API
   // response, not yet reconstructed by the caller) — rebuild them from
-  // cards[] defensively so this component works with either shape.
+  // cards[] defensively so this component works with either shape. This is
+  // O(n) only (no reference resolution) — see reconstructReviewDeal's
+  // header comment.
   const shaped = reconstructReviewDeal(reviewDeal) || reviewDeal;
   const sections = Array.isArray(shaped?.sections) ? shaped.sections : [];
   const definitions = Array.isArray(shaped?.definitions) ? shaped.definitions : [];
+  const { resolveReferences } = useDefinitionResolver(shaped?.cards);
   return (
     <div data-testid="provision-card-table" className="space-y-6">
       {definitions.length ? (
         <section data-testid="definition-card-tab" className="space-y-3">
           <h2 className="font-display text-lg text-ink">Definitions</h2>
           <div className="grid gap-3 md:grid-cols-2">
-            {definitions.map((card) => <ProvisionCard key={`def-${card.provision_instance_id}`} card={card} />)}
+            {definitions.map((card) => <ProvisionCard key={`def-${card.provision_instance_id}`} card={card} resolveReferences={resolveReferences} />)}
           </div>
         </section>
       ) : null}
@@ -115,7 +144,7 @@ export default function ProvisionCardTable({ reviewDeal }) {
           <h2 className="font-display text-lg text-ink">{section.title || section.sectionRef}</h2>
           <div className="grid gap-3">
             {(section.cards || []).map((card) => (
-              <ProvisionCard key={card.provision_instance_id || card.id} card={card} />
+              <ProvisionCard key={card.provision_instance_id || card.id} card={card} resolveReferences={resolveReferences} />
             ))}
           </div>
         </section>

@@ -1,7 +1,11 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 
-const { reconstructReviewDeal } = require('../../lib/queries/reconstruct-review-deal');
+const {
+  reconstructReviewDeal,
+  buildDefinitionsIndex,
+  resolveCardReferences,
+} = require('../../lib/queries/reconstruct-review-deal');
 const { shapeReviewDealRows } = require('../../lib/queries/review-deal');
 const { trimReviewDealForWire } = require('../../lib/queries/review-deal-wire');
 
@@ -35,8 +39,12 @@ function baseRow(overrides = {}) {
 
 // End-to-end: build a reviewDeal the way fetchReviewDealCards would, trim it
 // the way the API route does, then reconstruct it the way the client does —
-// the result must be indistinguishable from the untrimmed shape.
-test('trim + reconstruct round-trips to the same sections/definitions/resolvedReferences', () => {
+// sections/definitions/region_full_text must be indistinguishable from the
+// untrimmed shape. resolvedReferences is NO LONGER part of
+// reconstructReviewDeal's output (perf fix, see reconstruct-review-deal.js's
+// header comment) — it's resolved separately, on demand, via
+// buildDefinitionsIndex/resolveCardReferences (covered below).
+test('trim + reconstruct round-trips to the same sections/definitions, region_full_text', () => {
   const def = baseRow({
     id: 'def-mae', provision_instance_id: 'def-mae', kind: 'definition',
     section_ref: 'Article I', short_title: 'MAE', defined_term: 'Material Adverse Effect',
@@ -63,19 +71,67 @@ test('trim + reconstruct round-trips to the same sections/definitions/resolvedRe
 
   const rebuilt = reconstructReviewDeal(JSON.parse(JSON.stringify(trimmed)));
 
+  // reconstructReviewDeal itself must NOT attach resolvedReferences/
+  // unresolvedReferences (that's the whole point of the fix).
+  for (const card of rebuilt.cards) {
+    assert.equal(card.resolvedReferences, undefined);
+    assert.equal(card.unresolvedReferences, undefined);
+  }
+
   assert.deepEqual(
     rebuilt.sections.map((s) => s.sectionRef),
     original.sections.map((s) => s.sectionRef),
   );
   assert.equal(rebuilt.definitions.length, original.definitions.length);
 
-  const rebuiltCovenant = rebuilt.cards.find((c) => c.provision_instance_id === 'ioc-mae');
-  const originalCovenant = original.cards.find((c) => c.provision_instance_id === 'ioc-mae');
-  assert.deepEqual(rebuiltCovenant.resolvedReferences, originalCovenant.resolvedReferences);
-  assert.deepEqual(rebuiltCovenant.unresolvedReferences, originalCovenant.unresolvedReferences);
-
   const rebuiltDef = rebuilt.cards.find((c) => c.provision_instance_id === 'def-mae');
   assert.equal(rebuiltDef.region_full_text, rebuiltDef.primary_quote);
+
+  // On-demand resolution (what ProvisionCardTable's hover preview now calls)
+  // still reproduces exactly what the old eager pass computed.
+  const definitionsById = buildDefinitionsIndex(rebuilt.cards);
+  const rebuiltCovenant = rebuilt.cards.find((c) => c.provision_instance_id === 'ioc-mae');
+  const originalCovenant = original.cards.find((c) => c.provision_instance_id === 'ioc-mae');
+  const resolved = resolveCardReferences(rebuiltCovenant, definitionsById);
+  assert.deepEqual(resolved.resolvedReferences, originalCovenant.resolvedReferences);
+  assert.deepEqual(resolved.unresolvedReferences, originalCovenant.unresolvedReferences);
+});
+
+// PERF REGRESSION test: reconstructReviewDeal must be O(n) — independent of
+// how many definitions exist or how many references each cross-reference
+// card carries. Cox-scale-and-then-some: 443 definitions (each with a
+// multi-KB defined_value, matching real MAE-style definitions), 626 cards,
+// a third of which cross-reference 8 definitions apiece — this is the exact
+// shape that measured 13.9s DOMContentLoaded before the fix.
+test('reconstructReviewDeal stays fast (no resolvedReferences pass) at Cox-adversarial scale', () => {
+  const BIG_DEFINITION_TEXT = 'means, with respect to any Person, any event, change, effect, occurrence, fact, condition, development or circumstance '.repeat(60); // ~7.5KB
+  const DEF_COUNT = 443;
+  const CARD_COUNT = 626;
+  const defs = Array.from({ length: DEF_COUNT }, (_, i) => baseRow({
+    id: `def-${i}`, provision_instance_id: `def-${i}`, kind: 'definition',
+    section_ref: 'Article I', short_title: `Term ${i}`, defined_term: `Term ${i}`,
+    defined_value: BIG_DEFINITION_TEXT, offset: i,
+  }));
+  const rows = Array.from({ length: CARD_COUNT - DEF_COUNT }, (_, i) => baseRow({
+    id: `card-${i}`, provision_instance_id: `card-${i}`,
+    kind: i % 3 === 0 ? 'cross-reference' : 'standard',
+    section_ref: `Section ${1 + (i % 40)}.0${1 + (i % 9)}`, short_title: `Provision ${i}`,
+    primary_quote: 'clause text',
+    references: i % 3 === 0 ? Array.from({ length: 8 }, (_, j) => `def-${(i + j) % DEF_COUNT}`) : [],
+    offset: 1000 + i,
+  }));
+  const shaped = shapeReviewDealRows('deal-cox', [...defs, ...rows]);
+  const trimmed = JSON.parse(JSON.stringify(trimReviewDealForWire(shaped)));
+
+  const t0 = process.hrtime.bigint();
+  const rebuilt = reconstructReviewDeal(trimmed);
+  const elapsedMs = Number(process.hrtime.bigint() - t0) / 1e6;
+
+  assert.equal(rebuilt.cards.length, CARD_COUNT);
+  assert.equal(rebuilt.definitions.length, DEF_COUNT);
+  // Generous CI-safe ceiling — this ran in under 5ms in local profiling; the
+  // regression it's guarding against took 13,900ms in production.
+  assert.ok(elapsedMs < 500, `reconstructReviewDeal took ${elapsedMs.toFixed(1)}ms — must stay O(n), no resolvedReferences pass`);
 });
 
 test('divergent region_full_text is shipped on the wire and survives reconstruction', () => {

@@ -23,10 +23,29 @@ test('ProvisionCardTable gives definitions their own section and visual treatmen
 });
 
 test('ProvisionCardTable hover-expands cross references and shows provenance', () => {
-  assert.match(src, /card\.resolvedReferences/);
+  // Perf fix (Jul 2026): resolvedReferences is no longer read as a static
+  // field pre-computed for every card — it's resolved on demand at hover
+  // time via useDefinitionResolver (idle-chunked prewarm + on-demand
+  // fallback), so the count badge uses card.references directly and the
+  // resolved text only appears once resolveReferences(card) has been
+  // called (see CrossReferenceBadge/onMouseEnter).
+  assert.match(src, /useDefinitionResolver/);
+  assert.match(src, /resolveReferences\(card\)/);
+  assert.match(src, /onMouseEnter/);
   assert.match(src, /data-testid="card-crossref-hover"/);
   assert.match(src, /group-hover:block/);
   assert.match(src, /data-testid="provision-card-provenance"/);
   assert.match(src, /provenance\.source_doc_id/);
   assert.match(src, /card\.provision_instance_id/);
+});
+
+test('ProvisionCardTable no longer computes resolvedReferences eagerly for every card up front', () => {
+  const reconstructSrc = fs.readFileSync('lib/queries/reconstruct-review-deal.js', 'utf8');
+  const fnStart = reconstructSrc.indexOf('function reconstructReviewDeal(');
+  assert.ok(fnStart >= 0, 'reconstructReviewDeal not found');
+  const fnEnd = reconstructSrc.indexOf('\nmodule.exports', fnStart);
+  const fnBody = reconstructSrc.slice(fnStart, fnEnd >= 0 ? fnEnd : undefined);
+  assert.doesNotMatch(fnBody, /resolvedReferences/, 'reconstructReviewDeal must not attach resolvedReferences eagerly');
+  assert.match(reconstructSrc, /function resolveCardReferences/);
+  assert.match(reconstructSrc, /function buildDefinitionsIndex/);
 });
