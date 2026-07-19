@@ -8,7 +8,11 @@ test('ProvisionCardTable exposes the schema-first card surface', () => {
   assert.match(src, /data-testid="provision-card-table"/);
   assert.match(src, /data-testid="provision-card-section"/);
   assert.match(src, /data-testid="provision-card"/);
-  assert.match(src, /reviewDeal\?\.sections/);
+  // Q1 (perf quick-wins): sections/definitions are reconstructed from
+  // cards[] client-side rather than read directly off reviewDeal, since the
+  // API no longer ships them verbatim.
+  assert.match(src, /reconstructReviewDeal/);
+  assert.match(src, /shaped\?\.sections/);
 });
 
 test('ProvisionCardTable gives definitions their own section and visual treatment', () => {

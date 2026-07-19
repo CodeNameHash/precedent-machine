@@ -1,3 +1,5 @@
+import { reconstructReviewDeal } from '../../lib/queries/reconstruct-review-deal';
+
 function humanKind(kind) {
   return String(kind || 'standard').replace(/-/g, ' ');
 }
@@ -91,8 +93,12 @@ function ProvisionCard({ card }) {
 }
 
 export default function ProvisionCardTable({ reviewDeal }) {
-  const sections = Array.isArray(reviewDeal?.sections) ? reviewDeal.sections : [];
-  const definitions = Array.isArray(reviewDeal?.definitions) ? reviewDeal.definitions : [];
+  // Q1: reviewDeal.sections/.definitions may arrive missing (trimmed API
+  // response, not yet reconstructed by the caller) — rebuild them from
+  // cards[] defensively so this component works with either shape.
+  const shaped = reconstructReviewDeal(reviewDeal) || reviewDeal;
+  const sections = Array.isArray(shaped?.sections) ? shaped.sections : [];
+  const definitions = Array.isArray(shaped?.definitions) ? shaped.definitions : [];
   return (
     <div data-testid="provision-card-table" className="space-y-6">
       {definitions.length ? (
