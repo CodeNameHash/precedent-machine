@@ -3296,3 +3296,24 @@ test('r9: IOC limb titles resolve the QXO failure shapes correctly', () => {
   const ordinary = mk('use its commercially reasonable efforts to cause the business of the Company to be conducted in the ordinary and usual course');
   assert.match(renderToStaticMarkup(React.createElement('div', null, ordinary.label)), /Conduct business in ordinary course/);
 });
+
+// r10: scope materiality ("licenses that are material to the Company, taken
+// as a whole") is its own pill, distinct from the performance-standard
+// "in all material respects" pill — and a limb can carry both.
+test('r10: scope-materiality pill fires on object-scope qualifiers, not performance-standard language', () => {
+  const mk = (obligation) => iocMod.affirmativeRows([{
+    id: 'x', provision_type: 'COVENANT_INTERIM_OPERATING', short_title: 'General / Preamble',
+    section_ref: '4.1 | General / Preamble | h', primary_quote: '4.1 Interim Operations of the Company. the Company covenants and agrees',
+    features: { positiveObligations: [{ obligation }] },
+  }], { primitives: iocPrimitives })[0];
+  const permits = mk('maintain in effect all of their foreign, federal, state and local Licenses, permits, consents, franchises, approvals and authorizations that are material to the Company and its Subsidiaries, taken as a whole');
+  const permitsHtml = renderToStaticMarkup(React.createElement('div', null, permits.children));
+  assert.match(permitsHtml, /Material items only/, 'scope qualifier renders its own pill');
+  assert.doesNotMatch(permitsHtml, /material respects/i, 'the performance-standard pill must NOT fire on a scope qualifier');
+  const both = mk('maintain its material assets and business organization intact in all material respects');
+  const bothHtml = renderToStaticMarkup(React.createElement('div', null, both.children));
+  assert.match(bothHtml, /Material items only/, 'Metsera-shape limb carries the scope pill');
+  assert.match(bothHtml, /material respects/i, '…and the performance pill — both are real');
+  const plain = mk('preserve their business organizations, assets and lines of business intact');
+  assert.doesNotMatch(renderToStaticMarkup(React.createElement('div', null, plain.children)), /Material items only/, 'unqualified limbs get no scope pill');
+});
