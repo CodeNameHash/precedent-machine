@@ -191,3 +191,23 @@ test('trimmed cards payload stays under the 300KB gz budget at Metsera scale', (
 
   assert.ok(gz.length <= 300 * 1024, `expected <=300KB gz, got ${(gz.length / 1024).toFixed(1)}KB`);
 });
+
+// Regression guard for the merge with origin/main's FIX 9
+// (fetchReviewDealCards started also returning reviewDeal.transactionSteps
+// — structure-mechanics.config.js reads it to render multi-step mergers).
+// trimReviewDealForWire's allowlist must not silently drop it.
+test('trimReviewDealForWire passes transactionSteps through unchanged', () => {
+  const shaped = shapeReviewDealRows('deal-1', [baseRow()]);
+  const withSteps = { ...shaped, transactionSteps: [{ id: 'step-1', step_order: 1, kind: 'merger' }, { id: 'step-2', step_order: 2, kind: 'merger' }] };
+  const trimmed = trimReviewDealForWire(withSteps);
+  assert.deepEqual(trimmed.transactionSteps, withSteps.transactionSteps);
+
+  const rebuilt = reconstructReviewDeal(JSON.parse(JSON.stringify(trimmed)));
+  assert.deepEqual(rebuilt.transactionSteps, withSteps.transactionSteps);
+});
+
+test('trimReviewDealForWire omits transactionSteps when absent (no stray key)', () => {
+  const shaped = shapeReviewDealRows('deal-1', [baseRow()]);
+  const trimmed = trimReviewDealForWire(shaped);
+  assert.equal('transactionSteps' in trimmed, false);
+});
