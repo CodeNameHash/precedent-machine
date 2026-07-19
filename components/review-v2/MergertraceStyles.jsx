@@ -486,6 +486,110 @@ export default function MergertraceStyles() {
       .mtx details.mtx-section:not([open]) .mtx-section-caret { transform: rotate(-90deg); }
       .mtx details.mtx-section > summary:hover h2 { color: #000; }
 
+      /* ── Generic .mtx primitives (WP-2 / M4-04 + M5-01 remnant) ──────────
+         Standalone table/input/button/badge/drawer primitives for pages
+         built fresh on .mtx (the query UI, and future admin/query pages)
+         rather than re-skinning reused v1 markup by testid. Reuse the
+         existing custom properties only — no new color/spacing/type
+         values introduced here. */
+
+      .mtx .mtx-table { width: 100%; border-collapse: collapse; font-family: var(--mtx-sans); font-size: 12px; background: #FFFFFF; border: 1px solid #E0E0E0; }
+      .mtx .mtx-table th, .mtx .mtx-table td { border-bottom: 1px solid #E0E0E0; padding: 10px 12px; text-align: left; vertical-align: top; }
+      .mtx .mtx-table thead th {
+        background: #F6F6F6;
+        font-family: var(--mtx-sans);
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #6B6B6B;
+        border-color: #E0E0E0;
+      }
+      .mtx .mtx-table tbody tr { background: #FFFFFF; }
+      .mtx .mtx-table tbody tr:hover { background: #F6F6F6; }
+      .mtx .mtx-table td.mtx-mono, .mtx .mtx-table th.mtx-mono { font-family: var(--mtx-mono); font-variant-numeric: tabular-nums; }
+      .mtx .mtx-table tbody tr td:first-child { font-weight: 500; }
+
+      .mtx .mtx-input, .mtx .mtx-select, .mtx textarea.mtx-input {
+        font-family: var(--mtx-sans);
+        font-size: 13px;
+        color: #1F1F1F;
+        background: #FFFFFF;
+        border: 1px solid #E0E0E0;
+        border-radius: 0;
+        height: 36px;
+        padding: 0 10px;
+      }
+      .mtx textarea.mtx-input { height: auto; padding: 8px 10px; line-height: 1.5; }
+      .mtx .mtx-input::placeholder { color: #9A9A9A; }
+      .mtx .mtx-input:focus, .mtx .mtx-select:focus {
+        outline: none;
+        border-color: #1F1F1F;
+      }
+      .mtx label.mtx-meta-label { display: block; font-size: 9px; margin-bottom: 6px; }
+
+      .mtx .mtx-btn {
+        font-family: var(--mtx-sans);
+        font-size: 12px;
+        font-weight: 600;
+        color: #1F1F1F;
+        background: #FFFFFF;
+        border: 1px solid #E0E0E0;
+        border-radius: 0;
+        height: 34px;
+        padding: 0 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        text-decoration: none;
+      }
+      .mtx .mtx-btn:hover { background: #F6F6F6; }
+      .mtx .mtx-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+      .mtx .mtx-btn-primary {
+        background: #1F1F1F;
+        color: #FFFFFF;
+        border-color: #1F1F1F;
+      }
+      .mtx .mtx-btn-primary:hover { background: #000000; }
+
+      .mtx .mtx-badge {
+        display: inline-flex;
+        align-items: center;
+        font-family: var(--mtx-sans);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: #4A4A4A;
+        background: rgba(31, 31, 31, 0.05);
+        border: 1px solid rgba(31, 31, 31, 0.18);
+        border-radius: 0;
+        padding: 3px 7px;
+      }
+      .mtx .mtx-badge-mono { font-family: var(--mtx-mono); text-transform: none; letter-spacing: 0; }
+
+      .mtx .mtx-drawer {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: min(520px, 92vw);
+        background: #FFFFFF;
+        border-left: 1px solid #E0E0E0;
+        box-shadow: -18px 0 60px rgba(31, 31, 31, 0.16);
+        z-index: 40;
+        padding: 22px;
+        overflow: auto;
+        font-family: var(--mtx-sans);
+      }
+      .mtx .mtx-drawer-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(31, 31, 31, 0.28);
+        z-index: 39;
+      }
+
       /* Full-bleed: neutralise the app Layout's padded grey canvas on this
          page only (the .mtx root sits directly inside Layout's <main>). */
       main:has(> .mtx) {

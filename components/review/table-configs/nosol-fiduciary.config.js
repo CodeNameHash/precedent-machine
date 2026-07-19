@@ -4,6 +4,7 @@ import { standardColorKey } from './standard-colors.js';
 import { BOARD_CHANGE_STANDARD_LABELS } from './board-change-standard.js';
 import { FIDUCIARY_STANDARD_LABELS } from './fiduciary-standard-labels.js';
 import taxonomy from '../../../lib/taxonomy.js';
+import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
@@ -308,13 +309,45 @@ function corItemsRow(spec, cards, specs, { reaffirm = false, tone = 'neutral' } 
   const raw = allFeatureItems(cards, spec.keys);
   if (!raw.length) return null;
   const days = reaffirm ? reaffirmDaysFor(cards) : null;
-  const items = raw.map(({ text, card, item }, index) => {
+  const mapped = raw.map(({ text, card, item }, index) => {
     const s = summarizeItem(text, specs);
     const canonical = corItemCodeLabel(spec, item);
-    let label = s.letter ? `${s.letter}. ${canonical || s.label}` : (canonical || s.label);
+    const baseLabel = canonical || s.label;
+    let label = s.letter ? `${s.letter}. ${baseLabel}` : baseLabel;
     if (days && /reject a publicly-disclosed/i.test(s.label)) label += ` (within ${days} business days)`;
-    return { id: `nosol-fiduciary-${spec.id}-${s.letter || index}`, letter: s.letter, label, tone, evidence: text, source: card };
+    const code = item && typeof item === 'object' && !Array.isArray(item) ? item.code : null;
+    return { id: `nosol-fiduciary-${spec.id}-${s.letter || index}`, letter: s.letter, label, baseLabel, code, tone, evidence: text, source: card };
   });
+  // (Items 6 & 15) Two cards can carry the SAME list -- e.g. QXO's
+  // NOSOL-DISCLOSE repeats NOSOL-RECOMMEND's changeOfRecommendationItems
+  // verbatim, its texts prefixed "(A) "/"(B) "/... where NOSOL-RECOMMEND's
+  // are bare -- and Theravance's notChangeOfRecommendationItems can hold two
+  // genuinely-different verbatims that both match the SAME regex spec
+  // (label collision, not a text collision). allFeatureItems' exact-
+  // verbatim-text dedup catches neither case. Dedupe here by canonical
+  // identity instead: item.code when the canonical layer assigned one, else
+  // the final rendered label with its letter prefix stripped (baseLabel).
+  // Keep the lettered entry (its A-E ordering drives the sort below) and
+  // fold the other's text into evidence so nothing captured is lost.
+  const seen = new Map();
+  const items = [];
+  for (const it of mapped) {
+    const key = it.code || it.baseLabel.toLowerCase();
+    const existing = seen.get(key);
+    if (!existing) {
+      seen.set(key, it);
+      items.push(it);
+      continue;
+    }
+    if (!existing.letter && it.letter) {
+      existing.letter = it.letter;
+      existing.id = it.id;
+      existing.label = it.label;
+    }
+    if (it.evidence && it.evidence !== existing.evidence) {
+      existing.evidence = `${existing.evidence}\n\n${it.evidence}`;
+    }
+  }
   // Show them in the clause's own A→E order, not the DB feature-array order.
   items.sort((a, b) => (a.letter || 'Z').localeCompare(b.letter || 'Z'));
   return {
@@ -488,8 +521,9 @@ const nosolFiduciaryConfig = {
     return ORDERED_IDS.map((id) => byId[id]).filter(Boolean);
   },
   deriveHeaderNote,
+  fixedLayout: true,
   columns: [
-    { id: 'term', header: 'Term', width: '19rem', renderCell: (row) => row.label },
+    { id: 'term', header: 'Term', width: TERM_COL_WIDTH, maxWidth: TERM_COL_MAX, renderCell: (row) => row.label },
     { id: 'signals', header: 'Provision', renderCell: renderSignals },
   ],
   empty: { copy: 'No fiduciary-out mechanics found.' },

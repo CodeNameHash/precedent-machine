@@ -2,6 +2,7 @@ import React from 'react';
 import { comparisonGroupForStandardCode } from '../../../lib/employee-benefits.js';
 import { cardCode, cardFeatures, splitForCell, textOf, valueText } from './card-utils.js';
 import { standardColorKey } from './standard-colors.js';
+import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
 
 // Rebuilt per REBUILD-SPECS.md §12: a real TABLE (BENEFIT | REFERENCE GROUP |
 // STANDARD | PERIOD) for the five compensationItems entries, header line
@@ -283,11 +284,13 @@ const employeeBenefitsConfig = {
     const hit = (rows || []).find((row) => row.headlineProtectionPeriod);
     return hit ? `Protection period: ${hit.headlineProtectionPeriod}` : null;
   },
+  fixedLayout: true,
   columns: [
     {
       id: 'benefit',
       header: 'Benefit',
-      width: '15rem',
+      width: TERM_COL_WIDTH,
+      maxWidth: TERM_COL_MAX,
       renderCell(row, ctx) {
         if (row.kind === 'divider') {
           return React.createElement('span', { className: 'text-[10px] font-semibold uppercase tracking-wider text-inkFaint' }, row.benefit);

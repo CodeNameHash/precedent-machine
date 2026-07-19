@@ -14,6 +14,7 @@ import {
 } from './card-utils.js';
 import { buildExpenseExceptionsRow, isAdvisersFeesCard } from './advisers-fees-expenses.config.js';
 import taxonomy from '../../../lib/taxonomy.js';
+import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
@@ -454,9 +455,10 @@ const miscBoilerplateConfig = {
   // detail column (governing-law/forum clause text, assignment restrictions,
   // the old third-party-beneficiaries raw dump) was what blew this table's
   // width out, not the pill columns themselves.
+  fixedLayout: true,
   columns: [
-    { id: 'term', header: 'Term', width: '15rem', renderCell: (row) => row.label },
-    { id: 'signals', header: 'Provision', width: '16rem', renderCell: renderSignals },
+    { id: 'term', header: 'Term', width: TERM_COL_WIDTH, maxWidth: TERM_COL_MAX, renderCell: (row) => row.label },
+    { id: 'signals', header: 'Provision', renderCell: renderSignals },
     { id: 'detail', header: 'Detail', renderCell: renderDetail },
   ],
 };

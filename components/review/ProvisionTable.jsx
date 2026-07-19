@@ -61,6 +61,25 @@ function SeeTextExpander({ children }) {
   );
 }
 
+// Item 8: a row's provision text used to reach the reader through whatever
+// ad-hoc affordance its own renderCell happened to wire up -- a right-column
+// TruncatedWithSeeText/ClampedWithSeeText, a mouse-over-only HoverSource
+// with no click-through, or (for FULL_TEXT_COLUMNS families) the left-column
+// expander above. Rows with only pills (equity-awards, termination-fees,
+// votes deadlines, ...) exposed the clause ONLY via the hover popover, which
+// is being killed in this same pass. This is the universal fallback: any
+// row whose renderCell(s) produced no fullTextNodes but DOES carry evidence
+// (an explicit row.evidence string, else the source card's own text) still
+// gets the SAME left-column "See provision" expander every other family
+// gets -- one consistent place to find the underlying provision, everywhere.
+function textOfSourceCard(card) {
+  return String(card?.primary_quote || card?.region_full_text || '').trim();
+}
+function fallbackEvidenceText(row) {
+  if (typeof row?.evidence === 'string' && row.evidence.trim()) return row.evidence.trim();
+  return textOfSourceCard(row?.sourceCard) || null;
+}
+
 export default function ProvisionTable({ config, reviewDeal, isEdit = false }) {
   if (!config || typeof config.selectRows !== 'function') return null;
   const rows = config.selectRows(reviewDeal);
@@ -140,7 +159,17 @@ export default function ProvisionTable({ config, reviewDeal, isEdit = false }) {
         </div>
       ) : null}
       <div className="overflow-x-auto">
-        <table className="min-w-full text-xs font-ui">
+        <table className={`min-w-full text-xs font-ui${config.fixedLayout ? ' table-fixed' : ''}`}>
+          {config.fixedLayout ? (
+            <colgroup>
+              {columns.map((column) => (
+                <col
+                  key={`col-${column.id}`}
+                  style={column.width ? { width: column.width, maxWidth: column.maxWidth } : undefined}
+                />
+              ))}
+            </colgroup>
+          ) : null}
           {showHeader ? (
             <thead className="border-b border-border bg-bg/60">
               <tr>
@@ -161,6 +190,7 @@ export default function ProvisionTable({ config, reviewDeal, isEdit = false }) {
               const fullTextNodes = fullTextColumns
                 .map((column) => (column.renderCell ? column.renderCell(row, ctx) : null))
                 .filter(Boolean);
+              const fallbackText = fullTextNodes.length === 0 ? fallbackEvidenceText(row) : null;
               return (
                 <tr key={row.id || row.label} className={row.present ? 'align-top hover:bg-bg/40' : 'align-top bg-bg/30 text-inkFaint'}>
                   {columns.map((column, colIdx) => (
@@ -168,6 +198,9 @@ export default function ProvisionTable({ config, reviewDeal, isEdit = false }) {
                       {column.renderCell ? column.renderCell(row, ctx) : null}
                       {colIdx === 0 && fullTextNodes.length > 0 ? (
                         <SeeTextExpander>{fullTextNodes}</SeeTextExpander>
+                      ) : null}
+                      {colIdx === 0 && fullTextNodes.length === 0 && fallbackText ? (
+                        <SeeTextExpander>{fallbackText}</SeeTextExpander>
                       ) : null}
                     </td>
                   ))}

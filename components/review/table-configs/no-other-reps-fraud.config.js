@@ -1,6 +1,7 @@
 import React from 'react';
 import { deriveAbrySummary } from '../../../lib/abry.js';
 import { valueText } from './card-utils.js';
+import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
 
 const ABRY_CODES = ['MISC-ENTIRE', 'REP-T-NOREP', 'REP-B-NOREP', 'REP-B-ANTIRELIANCE'];
 const FEATURE_KEYS = [
@@ -120,8 +121,9 @@ const noOtherRepsFraudConfig = {
       willfulBreachRow(summary.willfulBreach),
     ].filter(Boolean);
   },
+  fixedLayout: true,
   columns: [
-    { id: 'question', header: 'Question', width: '18rem', renderCell: (row) => row.label },
+    { id: 'question', header: 'Question', width: TERM_COL_WIDTH, maxWidth: TERM_COL_MAX, renderCell: (row) => row.label },
     {
       id: 'status',
       header: 'Status',

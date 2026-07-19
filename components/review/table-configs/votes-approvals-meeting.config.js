@@ -3,6 +3,7 @@ import { approvalsVotesConfig } from './approvals-votes.config.js';
 import { secMeetingConfig } from './sec-meeting.config.js';
 import { enumLabel } from '../../../lib/sec-meeting.js';
 import { cardCode, cardFeatures, textOf, valueText } from './card-utils.js';
+import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
 import { voteStandard } from './vote-standard.js';
 
 // Rebuild target: REBUILD-SPECS.md section 9 ("Ben: really good" in the old
@@ -177,6 +178,17 @@ function parentApprovalText(card) {
       ? 'Parent adopts as sole stockholder of Merger Sub (immediately after signing)'
       : 'Parent adopts as sole stockholder of Merger Sub';
   }
+  // (Item 7, QXO) "sole stockholder" phrasing doesn't cover the
+  // written-consent-by-all-record-holders mechanic QXO's §4.15 uses --
+  // Parent causing a written consent to be executed by ALL record holders
+  // of Merger Sub's stock, rather than acting as sole stockholder itself.
+  if (/cause\s+a\s+written\s+consent\s+to\s+be\s+executed\s+by\s+all\s+of\s+the\s+(?:record\s+)?(?:holders|stockholders)\b[\s\S]{0,120}?\bMerger\s+Sub\b/i.test(clause)
+    && /\b(?:adopt|approv)/i.test(clause)) {
+    const immediate = /immediately\s+(?:following|after)\s+(?:the\s+)?execution/i.test(clause);
+    return immediate
+      ? 'Merger Sub stockholders adopt by written consent (immediately after signing)'
+      : 'Merger Sub stockholders adopt by written consent';
+  }
   return null;
 }
 
@@ -337,8 +349,9 @@ const votesApprovalsMeetingConfig = {
   selectRows(reviewDeal) {
     return buildRows(reviewDeal);
   },
+  fixedLayout: true,
   columns: [
-    { id: 'term', header: 'Term', width: '16rem', renderCell: (row) => row.label },
+    { id: 'term', header: 'Term', width: TERM_COL_WIDTH, maxWidth: TERM_COL_MAX, renderCell: (row) => row.label },
     { id: 'provision', header: 'Provision', renderCell: renderProvisionCell },
   ],
 };

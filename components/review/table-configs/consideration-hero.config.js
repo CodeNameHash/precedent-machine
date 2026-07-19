@@ -9,6 +9,7 @@ import {
 } from '../table-logic.js';
 import taxonomy from '../../../lib/taxonomy.js';
 import { valueText } from './card-utils.js';
+import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
@@ -414,8 +415,9 @@ const considerationHeroConfig = {
 
     return rows.filter(Boolean);
   },
+  fixedLayout: true,
   columns: [
-    { id: 'term', header: 'Term', width: '18rem', renderCell: (row) => row.label },
+    { id: 'term', header: 'Term', width: TERM_COL_WIDTH, maxWidth: TERM_COL_MAX, renderCell: (row) => row.label },
     { id: 'detail', header: 'Detail', renderCell: renderDetail },
   ],
 };

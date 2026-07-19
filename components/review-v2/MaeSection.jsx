@@ -17,6 +17,7 @@ import taxonomy from '../../lib/taxonomy.js';
 import { maeDefinitionsConfig } from '../review/table-configs/mae-definitions.config';
 import { cardFeatures } from '../review/table-configs/card-utils';
 import { PillCell, EvidenceHoverSource } from '../review/primitives/ProvisionTablePrimitives';
+import { TERM_COL_WIDTH, TERM_COL_MAX } from '../review/table-configs/layout.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
@@ -86,16 +87,35 @@ function hasCarveback(item, code, dispSet) {
   return !!(code && dispSet.has(code));
 }
 
+// Item 10 (round 3): the old version read ONLY item.quotes[0] and ignored
+// item.text entirely -- MAE carve-out pills' quotes array is almost always
+// EMPTY, so this returned null and every call site fell straight to
+// row.evidence (the full MAE definition clause), which is the exact "hover
+// shows the start of the whole definition" bug Ben reported. Prefer the
+// item's own per-item text before falling back to row.evidence -- that
+// fallback is now the LAST resort, only when the item truly has no text of
+// its own. Same non-echo rule as lib/citable.js#getTaggedItemQuote (never
+// return a `.text` that's merely the code/label echoed back), but without
+// that helper's isTaggedItem() gate -- carve-out items here aren't always
+// canonically coded, and an untagged item's own text is still better
+// evidence than the whole definition's head.
+function nonEchoText(item) {
+  if (!item || typeof item !== 'object' || typeof item.text !== 'string') return null;
+  const t = item.text.trim();
+  if (!t) return null;
+  if (t === String(item.code || '').trim() || t === String(item.label || '').trim()) return null;
+  return t;
+}
 function itemQuote(item) {
   if (item && typeof item === 'object' && Array.isArray(item.quotes) && item.quotes[0]) return item.quotes[0];
-  return null;
+  return nonEchoText(item);
 }
 
 function seeTextNode(text) {
   if (!text) return null;
   return (
     <details className="mt-1">
-      <summary className="term-cell-seetext" style={{ listStyle: 'none' }}>see text</summary>
+      <summary className="term-cell-seetext" style={{ listStyle: 'none' }}>See provision</summary>
       <div className="mt-1 max-w-[42rem] whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight">{text}</div>
     </details>
   );
@@ -104,7 +124,13 @@ function seeTextNode(text) {
 const TH_CLASS = 'px-3 py-2 text-left font-medium uppercase tracking-wider text-inkFaint';
 const TD_CLASS = 'px-3 py-2 whitespace-pre-wrap break-words text-ink align-top';
 
-// One bordered Mergertrace table card: grey title strip + thead + white body.
+// Item 3 (round 3): table-fixed + colgroup, same shared TERM_COL token every
+// other family's first column uses -- an auto-layout `<th style={{width}}>`
+// is only ever a hint the browser overrides from cell content (measured
+// live: this table's first column didn't line up with siblings at any
+// viewport). The FIRST column always gets the shared Party/Carve-out width;
+// any additional caller-supplied `widths` entries (index 1+) still apply
+// as explicit per-column widths, unspecified columns get the remainder.
 function MaeTableCard({ testId, title, headers, children, widths = [] }) {
   return (
     <section data-testid={testId} className="border border-border bg-white">
@@ -112,11 +138,21 @@ function MaeTableCard({ testId, title, headers, children, widths = [] }) {
         <p>{title}</p>
       </div>
       <div className="overflow-x-auto">
-        <table className="min-w-full text-xs font-ui">
+        <table className="min-w-full table-fixed text-xs font-ui">
+          <colgroup>
+            {headers.map((header, index) => (
+              <col
+                key={`col-${header}`}
+                style={index === 0
+                  ? { width: TERM_COL_WIDTH, maxWidth: TERM_COL_MAX }
+                  : (widths[index] ? { width: widths[index] } : undefined)}
+              />
+            ))}
+          </colgroup>
           <thead className="border-b border-border">
             <tr>
-              {headers.map((header, index) => (
-                <th key={header} className={TH_CLASS} style={widths[index] ? { width: widths[index] } : undefined}>
+              {headers.map((header) => (
+                <th key={header} className={TH_CLASS}>
                   {header}
                 </th>
               ))}
@@ -154,7 +190,10 @@ export default function MaeSection({ config = maeDefinitionsConfig, reviewDeal }
             const sig = row.signals && row.signals[0];
             return (
               <tr key={row.id} className="align-top">
-                <td className={TD_CLASS}>{row.side || 'Company'}</td>
+                <td className={TD_CLASS}>
+                  {row.side || 'Company'}
+                  {seeTextNode(row.evidence)}
+                </td>
                 <td className={TD_CLASS}>
                   <EvidenceHoverSource
                     value={row.value}
@@ -166,7 +205,6 @@ export default function MaeSection({ config = maeDefinitionsConfig, reviewDeal }
                   >
                     {summary}
                   </EvidenceHoverSource>
-                  {seeTextNode(row.evidence)}
                 </td>
               </tr>
             );
@@ -211,6 +249,7 @@ export default function MaeSection({ config = maeDefinitionsConfig, reviewDeal }
                     >
                       <span title={code || undefined}>{name}</span>
                     </EvidenceHoverSource>
+                    {seeTextNode(itemQuote(item) || row.evidence)}
                   </td>
                   <td className={TD_CLASS}>
                     <PillCell
@@ -233,7 +272,10 @@ export default function MaeSection({ config = maeDefinitionsConfig, reviewDeal }
         <MaeTableCard testId="provision-table-mae-carveout-exceptions" title="Exceptions to carve-outs" headers={['Party', 'Exception']} widths={['12rem']}>
           {exceptionRows.map((row) => (
             <tr key={row.id} className="align-top">
-              <td className={TD_CLASS}>{row.side || 'Company'}</td>
+              <td className={TD_CLASS}>
+                {row.side || 'Company'}
+                {seeTextNode(row.evidence)}
+              </td>
               <td className={TD_CLASS}>
                 <EvidenceHoverSource value={row.value} evidence={row.evidence} source={row.sourceCard} highlight={null} as="span">
                   {row.detail}
