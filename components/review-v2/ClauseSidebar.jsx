@@ -231,7 +231,7 @@ function CorrectTab({ card, dealId }) {
   );
 }
 
-export default function ClauseSidebar({ card, dealId, dealSector, onClose }) {
+export default function ClauseSidebar({ card, dealId, dealSector, onClose, onViewInAgreement }) {
   const { isEdit } = useViewMode();
   const [tab, setTab] = useState('context');
   const [filters, setFilters] = useState({ sector: '', yearFrom: '', size: '', lawFirm: '', buyer: '', form: '' });
@@ -401,7 +401,19 @@ export default function ClauseSidebar({ card, dealId, dealSector, onClose }) {
 
           {quote ? (
             <div className="px-3.5 py-3">
-              <div className={LAB}>This clause</div>
+              <div className="flex items-center justify-between mb-1.5">
+                <div className={`${LAB} mb-0`}>This clause</div>
+                {onViewInAgreement ? (
+                  <button
+                    type="button"
+                    className="mtx-view-in-agreement"
+                    onClick={() => onViewInAgreement(card)}
+                    data-testid="view-in-agreement"
+                  >
+                    View in agreement ↗
+                  </button>
+                ) : null}
+              </div>
               <div className="text-[11px] leading-5 text-[#1F1F1F] whitespace-pre-wrap break-words border-l-2 border-[#1F1F1F] bg-[#F6F6F6] px-2.5 py-2 max-h-56 overflow-y-auto mtx-scrollbar-thin">
                 {quote.slice(0, 1600)}{quote.length > 1600 ? '…' : ''}
               </div>

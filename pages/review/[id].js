@@ -6,7 +6,7 @@
 // kept, unchanged, at /review-v1/[id] as a fallback; /review-v2/[id]
 // redirects here.
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { useDeal } from '../../lib/useSupabaseData';
@@ -20,6 +20,8 @@ import MaeSection from '../../components/review-v2/MaeSection';
 import ElectionCard from '../../components/review-v2/ElectionCard';
 import ProvisionIndex, { DefinitionsSection } from '../../components/review-v2/ProvisionIndex';
 import ClauseSidebar from '../../components/review-v2/ClauseSidebar';
+import SourceOverlay from '../../components/review-v2/SourceOverlay';
+import { resolveCardSourceSpan } from '../../lib/parser-v2/resolve-source-span';
 import {
   buildReviewV2Sections,
   deriveExtractedHeaderFacts,
@@ -40,7 +42,7 @@ function LoadingLine({ children }) {
   );
 }
 
-function SectionBlock({ section, reviewDeal, sectionCards, onSelectCard, selectedCardId, election }) {
+function SectionBlock({ section, reviewDeal, sectionCards, onSelectCard, selectedCardId, election, onViewInAgreement }) {
   // Ben (Mergertrace round 1): every section collapsible. Native <details>
   // (open by default) so the scrollspy/anchor <section> wrapper and the
   // sec-<id> ids are untouched; ProvisionNav's jump() re-opens a collapsed
@@ -68,7 +70,7 @@ function SectionBlock({ section, reviewDeal, sectionCards, onSelectCard, selecte
           </>
         )}
         {section.id !== '__definitions' && sectionCards && sectionCards.length ? (
-          <ProvisionIndex cards={sectionCards} sectionTitle={section.title} onSelect={onSelectCard} selectedId={selectedCardId} />
+          <ProvisionIndex cards={sectionCards} sectionTitle={section.title} onSelect={onSelectCard} selectedId={selectedCardId} onViewInAgreement={onViewInAgreement} />
         ) : null}
         </div>
       </details>
@@ -224,6 +226,49 @@ export default function ReviewPage() {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
+  /* ── Source overlay (WP-5 / M5-03) — full-doc overlay, exact span
+     highlight. The overlay itself only takes {start, end}; resolution
+     (offsets → exact-quote → region → unresolved, per
+     lib/parser-v2/resolve-source-span.js) happens here, at the one place
+     that holds both a card and the agreement's full_text. */
+  const [sourceOverlay, setSourceOverlay] = useState(null); // { start, end, status, sectionRef, title } | null
+  const [unresolvedCount, setUnresolvedCount] = useState(0);
+  const fullText = agreementSource && agreementSource.full_text ? agreementSource.full_text : '';
+
+  const openSourceOverlay = useCallback((card) => {
+    if (!card) return;
+    const resolved = resolveCardSourceSpan(card, fullText);
+    if (resolved.status === 'unresolved') {
+      // eslint-disable-next-line no-console
+      console.warn('[SourceOverlay] unresolved span for card', card.id || card.provision_instance_id, card.section_ref);
+      setUnresolvedCount((n) => n + 1);
+    }
+    setSourceOverlay({
+      start: resolved.start,
+      end: resolved.end,
+      status: resolved.status,
+      sectionRef: card.section_ref,
+      title: card.short_title || card.defined_term || card.section_ref,
+    });
+  }, [fullText]);
+  const closeSourceOverlay = useCallback(() => setSourceOverlay(null), []);
+
+  /* ── Deep-link: /review/[id]?card=<card_id> opens the overlay directly. ── */
+  const openedFromQueryRef = useRef(false);
+  useEffect(() => {
+    if (!router.isReady || openedFromQueryRef.current) return;
+    const cardParam = router.query.card;
+    if (!cardParam || !reviewDeal || !fullText) return;
+    const target = String(cardParam);
+    const match = (reviewDeal.cards || []).find(
+      (c) => String(c.id || c.provision_instance_id) === target,
+    );
+    if (match) {
+      openedFromQueryRef.current = true;
+      openSourceOverlay(match);
+    }
+  }, [router.isReady, router.query.card, reviewDeal, fullText, openSourceOverlay]);
+
   const setAllSections = useCallback((open) => {
     document.querySelectorAll('details.mtx-section').forEach((d) => { d.open = open; });
   }, []);
@@ -301,6 +346,7 @@ export default function ReviewPage() {
                   onSelectCard={selectCard}
                   selectedCardId={selectedCard ? (selectedCard.id || selectedCard.provision_instance_id) : null}
                   election={section.id === CONSIDERATION_SECTION_ID ? election : null}
+                  onViewInAgreement={hasAgreementText ? openSourceOverlay : null}
                 />
               ))}
             </div>
@@ -320,10 +366,24 @@ export default function ReviewPage() {
               dealId={dealId}
               dealSector={deal ? deal.sector : null}
               onClose={() => setSelectedCard(null)}
+              onViewInAgreement={hasAgreementText ? openSourceOverlay : null}
             />
           ) : null}
         </div>
       )}
+
+      <SourceOverlay
+        open={Boolean(sourceOverlay)}
+        onClose={closeSourceOverlay}
+        fullText={fullText}
+        start={sourceOverlay ? sourceOverlay.start : null}
+        end={sourceOverlay ? sourceOverlay.end : null}
+        status={sourceOverlay ? sourceOverlay.status : null}
+        sectionRef={sourceOverlay ? sourceOverlay.sectionRef : null}
+        title={sourceOverlay ? sourceOverlay.title : null}
+        agreementTitle={agreementSource ? agreementSource.title : null}
+        unresolvedCount={unresolvedCount}
+      />
     </div>
   );
 }
