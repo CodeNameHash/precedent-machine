@@ -89,6 +89,58 @@ export function resolveRowCard(row, cardsById) {
   return candidate;
 }
 
+// Sidebar feedback package (Ben, r5): row-scoped sidebar content. A row's
+// own label/feature-key(s)/item-code/verbatim, when it carries any of them,
+// so ClauseSidebar can render a focused "this row" section instead of
+// showing every claim on the parent card. Row shapes vary a lot across
+// table-configs (see resolveRowCard's doc comment above) -- this reads the
+// handful of field names configs already use for a row's own display label
+// and evidence text rather than requiring every config to adopt one shape:
+//   - label: row.label (most configs) or row.instrument (equity-awards) or
+//     row.term (legacy column contract)
+//   - featureKeys: row.featureKeys (array) or row.featureKey (singular,
+//     mae-definitions/antitrust/representations-qualifiers row shape)
+//   - itemCode: row.itemCode, row.code, or row.instrumentCode
+//   - quote: row.evidence when it's a non-empty string (already the
+//     row-specific verbatim text convention -- see ProvisionTable.jsx's
+//     fallbackEvidenceText) -- NOT row.value, which is often a coded label,
+//     not clause prose.
+// Returns null when the row carries none of the above, so ClauseSidebar
+// falls back to showing only the parent card (unchanged behaviour).
+export function resolveRowFocus(row) {
+  if (!row) return null;
+  const label = row.label || row.instrument || row.term || null;
+  const featureKeys = Array.isArray(row.featureKeys) && row.featureKeys.length
+    ? row.featureKeys
+    : (row.featureKey ? [row.featureKey] : null);
+  const itemCode = row.itemCode || row.code || row.instrumentCode || null;
+  const quote = (typeof row.evidence === 'string' && row.evidence.trim()) ? row.evidence.trim() : null;
+  if (!label && !featureKeys && !itemCode && !quote) return null;
+  return { label, featureKeys, itemCode, quote };
+}
+
+// Pulls the row-specific verbatim quote(s) for a set of featureKeys off a
+// card's claims-adapter-built `features` map (lib/queries/claims-adapter.js
+// buildFeaturesForCard) -- tagged/object feature values carry a `.quotes`
+// array (one evidence_quote per backing claim; see buildTaggedValue/
+// buildObjectItemValue). List-valued features are arrays of such objects.
+// Returns the first non-empty quote found across the given keys, or null.
+export function cardFeatureQuote(card, featureKeys) {
+  if (!card || !Array.isArray(featureKeys) || !featureKeys.length) return null;
+  const features = (card.features && typeof card.features === 'object') ? card.features : {};
+  for (const key of featureKeys) {
+    const value = features[key];
+    if (!value) continue;
+    const items = Array.isArray(value) ? value : [value];
+    for (const item of items) {
+      const quotes = item && typeof item === 'object' && Array.isArray(item.quotes) ? item.quotes : null;
+      const hit = quotes && quotes.find((q) => typeof q === 'string' && q.trim());
+      if (hit) return hit.trim();
+    }
+  }
+  return null;
+}
+
 export function dedupeBySectionAndTitle(cards) {
   const byKey = new Map();
   for (const card of cards || []) {

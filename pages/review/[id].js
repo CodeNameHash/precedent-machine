@@ -62,7 +62,7 @@ function SectionBlock({ section, reviewDeal, sectionCards, onSelectCard, selecte
         {section.id === '__definitions' ? (
           <DefinitionsSection definitions={reviewDeal.definitions} />
         ) : section.id === MAE_SECTION_ID ? (
-          <MaeSection config={section.config} reviewDeal={reviewDeal} />
+          <MaeSection config={section.config} reviewDeal={reviewDeal} onSelectCard={onSelectCard} selectedCardId={selectedCardId} />
         ) : (
           <>
             {section.id === CONSIDERATION_SECTION_ID && election ? <ElectionCard election={election} /> : null}
@@ -222,16 +222,36 @@ export default function ReviewPage() {
     return () => ro.disconnect();
   }, [view]);
 
-  /* ── Clause sidebar selection (reader mode) ── */
-  const [selectedCard, setSelectedCard] = useState(null);
-  const selectCard = useCallback((card) => {
-    setSelectedCard((cur) => (cur && (cur.id || cur.provision_instance_id) === (card.id || card.provision_instance_id) ? null : card));
+  /* ── Clause sidebar selection (reader mode) ──
+     Sidebar feedback package (Ben, r5), item 1: selection now carries an
+     optional rowFocus alongside the card (the row's label/featureKeys/
+     itemCode/quote -- see resolveRowFocus in provisionIndexHelpers.js) so
+     ClauseSidebar can scope its content to the clicked row rather than the
+     whole parent card. Item 3: the panel itself is now always mounted (see
+     the unconditional <ClauseSidebar> below) -- clearing selection swaps
+     back to the sidebar's own empty state instead of unmounting, so there's
+     no layout jump. */
+  const [selection, setSelection] = useState({ card: null, rowFocus: null });
+  const selectedCard = selection.card;
+  const selectedRowFocus = selection.rowFocus;
+  const selectCard = useCallback((card, rowFocus = null) => {
+    setSelection((cur) => {
+      const curKey = cur.card ? (cur.card.id || cur.card.provision_instance_id) : null;
+      const nextKey = card ? (card.id || card.provision_instance_id) : null;
+      const sameRow = curKey && curKey === nextKey && (cur.rowFocus || null)?.label === (rowFocus || null)?.label
+        && (cur.rowFocus || null)?.itemCode === (rowFocus || null)?.itemCode;
+      if (sameRow) return { card: null, rowFocus: null };
+      return { card, rowFocus: rowFocus || null };
+    });
+  }, []);
+  const clearSelection = useCallback(() => {
+    setSelection({ card: null, rowFocus: null });
   }, []);
   useEffect(() => {
-    const onKey = (e) => { if (e.key === 'Escape') setSelectedCard(null); };
+    const onKey = (e) => { if (e.key === 'Escape') clearSelection(); };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, []);
+  }, [clearSelection]);
 
   /* ── Source overlay (WP-5 / M5-03) — full-doc overlay, exact span
      highlight. The overlay itself only takes {start, end}; resolution
@@ -367,15 +387,14 @@ export default function ReviewPage() {
               </p>
             </footer>
           </main>
-          {selectedCard ? (
-            <ClauseSidebar
-              card={selectedCard}
-              dealId={dealId}
-              dealSector={deal ? deal.sector : null}
-              onClose={() => setSelectedCard(null)}
-              onViewInAgreement={hasAgreementText ? openSourceOverlay : null}
-            />
-          ) : null}
+          <ClauseSidebar
+            card={selectedCard}
+            rowFocus={selectedRowFocus}
+            dealId={dealId}
+            dealSector={deal ? deal.sector : null}
+            onClose={clearSelection}
+            onViewInAgreement={hasAgreementText ? openSourceOverlay : null}
+          />
         </div>
       )}
 

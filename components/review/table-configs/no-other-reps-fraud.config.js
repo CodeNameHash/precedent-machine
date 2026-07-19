@@ -77,6 +77,13 @@ function questionRow(key, label, kind, entry) {
     status: present ? 'Present' : 'Not present',
     detail: quoteOrDetail(entry),
     evidence: present ? entry.quote || '' : '',
+    // Item 2 (r5): lib/abry.js's deriveAbrySummary threads the ORIGINATING
+    // card back as entry.provision (a spread copy of the card via
+    // pseudoProvision -- see lib/abry.js's q1-q4 builders) even though the
+    // summary itself is a cross-provision rollup. Wiring it here is what
+    // makes each Q1-Q4/fraud/willful-breach row clickable to the actual
+    // card that answered it, instead of staying an inert rollup row.
+    sourceCard: present ? (entry.provision || null) : null,
     present,
   };
 }
@@ -89,6 +96,7 @@ function fraudRow(fraud) {
     status: present ? 'Present' : 'Silent',
     detail: present ? fraud.quote : 'Silent on fraud',
     evidence: present ? fraud.quote : '',
+    sourceCard: present ? (fraud.provision || null) : null,
     present: true,
   };
 }
@@ -101,6 +109,7 @@ function willfulBreachRow(willfulBreach) {
     status: 'Defined',
     detail: willfulBreach.quote,
     evidence: willfulBreach.quote,
+    sourceCard: willfulBreach.provision || null,
     present: true,
   };
 }

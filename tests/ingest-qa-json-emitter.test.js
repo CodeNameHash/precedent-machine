@@ -53,6 +53,7 @@ const GOLDEN_PASS_OUTPUT = [
   '  buyer_profile                   strategic   PASS',
   '  signing_date                   2025-01-01   PASS',
   '  advisors_found                        yes   info: yes',
+  '  law_firms_found                        no   info: no',
   '  METADATA GATE RESULT: PASS',
 ].join('\n');
 
@@ -117,8 +118,10 @@ test('buildDealResult shape matches the spec: {dealId, counts, rawCoveragePct, e
   assert.equal(result.rawCoveragePct, 90);
   assert.deepEqual(result.excludedRegions, [{ label: 'cover_toc', length: 1200 }]);
   assert.ok(Array.isArray(result.checks));
-  // 8 gate checks + 6 metadata checks
-  assert.equal(result.checks.length, 8 + 6);
+  // 8 gate checks + 7 metadata checks (buyer_display, value,
+  // consideration_type, buyer_profile, signing_date, advisors_found,
+  // law_firms_found)
+  assert.equal(result.checks.length, 8 + 7);
   assert.ok(result.checks.every((c) => c.group === 'gate' || c.group === 'metadata'));
   assert.ok(result.checks.some((c) => c.label === 'REP-T' && c.group === 'gate'));
   assert.ok(result.checks.some((c) => c.label === 'buyer_display' && c.group === 'metadata'));

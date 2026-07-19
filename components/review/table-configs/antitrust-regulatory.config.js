@@ -556,8 +556,14 @@ const ROW_BUILDERS = [
   timingAgreementsRow,
 ];
 
+// Item 2 (r5): every row builder above already sets `source` (the card the
+// HoverSource popover reads) but resolveRowCard (provisionIndexHelpers.js)
+// only reads card/sourceCard/sourceCards -- copy `source` onto `sourceCard`
+// here, once, rather than touching all eight row builders individually.
 function mappedAntitrustRows(cards) {
-  return ROW_BUILDERS.map((build) => build(cards)).filter(Boolean);
+  return ROW_BUILDERS.map((build) => build(cards)).filter(Boolean).map((row) => (
+    row.sourceCard || !row.source ? row : { ...row, sourceCard: row.source }
+  ));
 }
 
 function renderSignals(row, ctx) {

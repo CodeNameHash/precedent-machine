@@ -5,6 +5,7 @@ import { standardColorKey } from './standard-colors.js';
 import { buildRepBringDownMap, normRepName } from './conditions.config.js';
 import { cardCode, cardType, firstFeature, labelOf, selectCards, textOf, valueText } from './card-utils.js';
 import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
+import { resolveRowFocus } from '../../review-v2/provisionIndexHelpers.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
@@ -369,16 +370,58 @@ function knowledgeScopeText(cards) {
 // scope-type stamp but not their own knowledgeStandard duplicate. Falls back
 // to defined_term text match in case a deal's DEF-KNOWLEDGE card ever ships
 // under a different subtype.
-function findKnowledgeDefinitionCard(reviewDeal) {
-  const cards = reviewDeal?.cards || [];
-  return cards.find((c) => cardCode(c) === 'DEF-KNOWLEDGE')
-    || cards.find((c) => cardType(c) === 'DEFINITION' && String(c?.defined_term || '').trim().toLowerCase() === 'knowledge');
+//
+// Party-scope bug (found during the Cox/Charter live IOC fix's spot-check,
+// same defect class as negativeCovenantGroups' sectionBand): some decks
+// define "Knowledge" TWICE, once per party -- Cox/Charter has two
+// DEF-KNOWLEDGE cards, defined_term "Cabot's Knowledge" and "Columbus's
+// Knowledge" respectively, both stamped party_scope 'N_A' and section_ref
+// 'DEF' (no reliable structured party signal), sitting at ADJACENT indices
+// in reviewDeal.cards (both in the back-of-agreement Definitions article,
+// nowhere near either party's own Article of reps -- so document-order
+// proximity to partyCards is NOT a usable signal here, unlike
+// negativeCovenantGroups' section-number band). The old unconditional
+// `.find()` handed BOTH the Company AND Parent Knowledge rows the SAME
+// first-found card, so e.g. the Parent table's "Standard" row could show
+// the Company's ("Cabot") scope text.
+//
+// The one reliable signal left is the candidate's OWN defined_term: when a
+// deal party-qualifies "Knowledge" at all, it does so with a leading proper
+// noun ("Cabot's Knowledge") that also appears throughout that same party's
+// OTHER cards (rep clauses reference "Cabot" by name constantly). Score
+// each candidate by how often its leading defined_term token appears across
+// partyCards' own text and pick the best match; ties/zero-signal fall back
+// to the first candidate (old behaviour) rather than guessing further.
+function candidateNameToken(card) {
+  const match = String(card?.defined_term || '').match(/^([A-Z][A-Za-z.&]{2,})/);
+  return match ? match[1] : null;
+}
+
+function findKnowledgeDefinitionCard(reviewDeal, partyCards) {
+  const allCards = reviewDeal?.cards || [];
+  const candidates = allCards.filter((c) => cardCode(c) === 'DEF-KNOWLEDGE'
+    || (cardType(c) === 'DEFINITION' && String(c?.defined_term || '').trim().toLowerCase() === 'knowledge'));
+  if (candidates.length <= 1) return candidates[0] || null;
+  const partyText = (Array.isArray(partyCards) ? partyCards : [])
+    .map((c) => `${c?.short_title || ''} ${textOf(c)}`)
+    .join(' ');
+  let best = candidates[0];
+  let bestScore = 0;
+  for (const candidate of candidates) {
+    const token = candidateNameToken(candidate);
+    if (!token || !partyText) continue;
+    const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const matches = partyText.match(new RegExp(`\\b${escaped}\\b`, 'g'));
+    const score = matches ? matches.length : 0;
+    if (score > bestScore) { bestScore = score; best = candidate; }
+  }
+  return best;
 }
 
 function knowledgeScopeTextAcross(reviewDeal, cards) {
   const repScope = knowledgeScopeText(cards);
   if (repScope) return repScope;
-  const defCard = findKnowledgeDefinitionCard(reviewDeal);
+  const defCard = findKnowledgeDefinitionCard(reviewDeal, cards);
   if (!defCard) return null;
   const hit = firstFeature([defCard], ['definitionText']);
   if (!hit) return null;
@@ -392,12 +435,20 @@ function knowledgeScopeTextAcross(reviewDeal, cards) {
 // deck without a standalone Knowledge definition still surfaces whatever the
 // per-rep stamps carry.
 function buildKnowledgeSummaryRow(reviewDeal, idPrefix, cards) {
-  const defCard = findKnowledgeDefinitionCard(reviewDeal);
+  const defCard = findKnowledgeDefinitionCard(reviewDeal, cards);
   const searchCards = [defCard, ...cards].filter(Boolean);
   const standard = knowledgeStandardNote(searchCards);
   const persons = knowledgePersonsLabel(searchCards);
   const scope = knowledgeScopeTextAcross(reviewDeal, cards);
   if (!standard && !persons && !scope) return null;
+  // Item 2 (r5): most decks have no standalone DEF-KNOWLEDGE card (Standard/
+  // Persons come off a per-rep stamp instead -- see the doc comment above),
+  // so defCard alone left the Standard/Persons rows permanently un-clickable
+  // on those decks. firstFeature() already resolves (and discards) the
+  // actual backing card for each fact -- re-derive it here per sub-fact so
+  // "no DEF-KNOWLEDGE card" doesn't mean "no click affordance".
+  const standardHit = firstFeature(searchCards, ['knowledgeStandard']);
+  const personsHit = firstFeature(searchCards, ['knowledgePersons']);
   return {
     id: `${idPrefix}-knowledge-summary`,
     kind: 'knowledge-summary',
@@ -406,6 +457,9 @@ function buildKnowledgeSummaryRow(reviewDeal, idPrefix, cards) {
     knowledgeStandard: standard,
     knowledgePersons: persons,
     knowledgeScope: scope,
+    sourceCard: defCard,
+    standardCard: (standardHit && standardHit.card) || defCard || null,
+    personsCard: (personsHit && personsHit.card) || defCard || null,
   };
 }
 
@@ -674,7 +728,12 @@ function pillList(PillCell, items, evidence, keyPrefix, tone = 'neutral') {
 // Ben flagged. `whitespace-normal break-words` (replacing `whitespace-
 // nowrap`) lets long Knowledge Standard/Persons labels wrap instead of
 // forcing the column wide.
-function sectionBox(key, heading, items) {
+// Item 2 (r5): optional ctx (resolveCard/onSelectCard/selectedCardId, same
+// contract as ProvisionTable.jsx's generic <tr> loop) wires each item to the
+// ClauseSidebar when the item carries a `card` -- used by the Knowledge
+// block's Standard/Persons rows (General Exceptions items don't set `card`,
+// so they render exactly as before: no click affordance).
+function sectionBox(key, heading, items, ctx) {
   return React.createElement(
     'div',
     { key, className: 'overflow-hidden rounded border border-border' },
@@ -698,19 +757,29 @@ function sectionBox(key, heading, items) {
         React.createElement(
           'tbody',
           { className: 'divide-y divide-border' },
-          items.map((item) => React.createElement(
-            'tr',
-            { key: item.key, className: 'align-top' },
-            React.createElement(
-              'td',
-              { className: 'px-3 py-2 font-medium text-ink whitespace-normal break-words' },
-              item.term,
-              // Item 8: an optional per-item "See provision" expander under
-              // the LABEL (left) cell, matching every other family.
-              item.seeText || null,
-            ),
-            React.createElement('td', { className: 'px-3 py-2 text-ink whitespace-pre-wrap break-words' }, item.node),
-          )),
+          items.map((item) => {
+            const rowCard = ctx?.onSelectCard && item.card ? item.card : null;
+            const rowCardKey = rowCard ? (rowCard.id || rowCard.provision_instance_id) : null;
+            const isSelectedRow = Boolean(rowCardKey) && ctx?.selectedCardId === rowCardKey;
+            return React.createElement(
+              'tr',
+              {
+                key: item.key,
+                className: `align-top${rowCard ? ' mtx-row-clickable' : ''}`,
+                onClick: rowCard ? () => ctx.onSelectCard(rowCard, resolveRowFocus({ label: item.term, evidence: item.quote })) : undefined,
+                style: rowCard ? { cursor: 'pointer', ...(isSelectedRow ? { background: 'rgba(47,109,181,.07)', boxShadow: 'inset 2px 0 0 #2F6DB5' } : {}) } : undefined,
+              },
+              React.createElement(
+                'td',
+                { className: 'px-3 py-2 font-medium text-ink whitespace-normal break-words' },
+                item.term,
+                // Item 8: an optional per-item "See provision" expander under
+                // the LABEL (left) cell, matching every other family.
+                item.seeText || null,
+              ),
+              React.createElement('td', { className: 'px-3 py-2 text-ink whitespace-pre-wrap break-words' }, item.node),
+            );
+          }),
         ),
       ),
     ),
@@ -738,10 +807,10 @@ function generalExceptionsTableNode(row, ctx) {
     ? pillList(PillCell, [row.disclosureLetter.label], row.disclosureLetter.evidence, 'disclosure')
     : null;
   const items = [];
-  if (secBody) items.push({ key: 'sec', term: 'SEC Filings', node: secBody, seeText: clauseSeeText(row.secCutoffQuote || textOf(row.card)) });
-  if (disclosureNode) items.push({ key: 'disclosure', term: 'Disclosure Letter', node: disclosureNode, seeText: clauseSeeText(row.disclosureLetter?.evidence) });
+  if (secBody) items.push({ key: 'sec', term: 'SEC Filings', node: secBody, seeText: clauseSeeText(row.secCutoffQuote || textOf(row.card)), card: row.card, quote: row.secCutoffQuote });
+  if (disclosureNode) items.push({ key: 'disclosure', term: 'Disclosure Letter', node: disclosureNode, seeText: clauseSeeText(row.disclosureLetter?.evidence), card: row.card, quote: row.disclosureLetter?.evidence });
   if (!items.length) return null;
-  return sectionBox('general-exceptions', 'General Exceptions', items);
+  return sectionBox('general-exceptions', 'General Exceptions', items, ctx);
 }
 
 // R4: Knowledge as its own ROWS -- Standard / Persons / Scope (the section-
@@ -758,13 +827,16 @@ function knowledgeTableNode(knowledgeSummaryRow, repRows, ctx) {
       const node = PillCell
         ? React.createElement(PillCell, { label: knowledgeSummaryRow.knowledgeStandard, tone: 'info', evidence: knowledgeSummaryRow.knowledgeScope })
         : knowledgeSummaryRow.knowledgeStandard;
-      items.push({ key: 'standard', term: 'Standard', node, seeText: clauseSeeText(knowledgeSummaryRow.knowledgeScope) });
+      // Item 2 (r5): "knowledge standard rows" must be clickable per the
+      // sidebar feedback package -- sourceCard/quote wired above in
+      // buildKnowledgeSummaryRow flow through sectionBox's ctx wiring.
+      items.push({ key: 'standard', term: 'Standard', node, seeText: clauseSeeText(knowledgeSummaryRow.knowledgeScope), card: knowledgeSummaryRow.standardCard, quote: knowledgeSummaryRow.knowledgeScope });
     }
     if (knowledgeSummaryRow.knowledgePersons) {
       const node = PillCell
         ? React.createElement(PillCell, { label: knowledgeSummaryRow.knowledgePersons, tone: 'info', evidence: knowledgeSummaryRow.knowledgeScope })
         : knowledgeSummaryRow.knowledgePersons;
-      items.push({ key: 'persons', term: 'Persons', node, seeText: clauseSeeText(knowledgeSummaryRow.knowledgeScope) });
+      items.push({ key: 'persons', term: 'Persons', node, seeText: clauseSeeText(knowledgeSummaryRow.knowledgeScope), card: knowledgeSummaryRow.personsCard, quote: knowledgeSummaryRow.knowledgeScope });
     }
     // R5-round4 (Ben): Scope dropped from the Knowledge block -- Standard +
     // Persons carry it; the full scope sentence stays as the pill hover
@@ -774,7 +846,7 @@ function knowledgeTableNode(knowledgeSummaryRow, repRows, ctx) {
   // column (Ben, Mergertrace round 1) — this block keeps only the
   // deal-level Standard / Persons facts about the defined term.
   if (!items.length) return null;
-  return sectionBox('knowledge', 'Knowledge', items);
+  return sectionBox('knowledge', 'Knowledge', items, ctx);
 }
 
 // Item 3: the per-rep table's Term column uses the SAME shared token as
@@ -822,13 +894,28 @@ function repsTableNode(repRows, ctx) {
     React.createElement(
       'tbody',
       { className: 'divide-y divide-border' },
-      repRows.map((row) => React.createElement(
+      repRows.map((row) => {
+        // Item 1/2 (r5): one row IS one rep card here (unlike MAE/equity-
+        // awards, where several rows share a parent card) -- resolveRowFocus
+        // has no row-specific quote to add beyond the card's own
+        // primary_quote, so ClauseSidebar's existing parent-quote fallback
+        // is already the correct row-scoped content.
+        const rowCard = ctx.onSelectCard && row.card ? row.card : null;
+        const rowCardKey = rowCard ? (rowCard.id || rowCard.provision_instance_id) : null;
+        const isSelectedRow = Boolean(rowCardKey) && ctx.selectedCardId === rowCardKey;
+        return React.createElement(
         'tr',
-        { key: row.id, className: 'align-top hover:bg-bg/40' },
+        {
+          key: row.id,
+          className: `align-top hover:bg-bg/40${rowCard ? ' mtx-row-clickable' : ''}`,
+          onClick: rowCard ? () => ctx.onSelectCard(rowCard, resolveRowFocus({ label: row.party ? `${row.label} (${row.party})` : row.label, itemCode: cardCode(row.card) })) : undefined,
+          style: rowCard ? { cursor: 'pointer', ...(isSelectedRow ? { background: 'rgba(47,109,181,.07)', boxShadow: 'inset 2px 0 0 #2F6DB5' } : {}) } : undefined,
+        },
         React.createElement('td', { className: 'px-3 py-2 whitespace-normal break-words text-ink' }, renderTerm(row, ctx)),
         React.createElement('td', { className: 'px-3 py-2 whitespace-pre-wrap break-words text-ink' }, renderQualifiers(row, ctx)),
         React.createElement('td', { className: 'px-3 py-2 whitespace-pre-wrap break-words text-ink' }, renderLookback(row, ctx)),
-      )),
+        );
+      }),
     ),
   );
 }

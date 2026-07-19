@@ -18,6 +18,7 @@ import { maeDefinitionsConfig } from '../review/table-configs/mae-definitions.co
 import { cardFeatures } from '../review/table-configs/card-utils';
 import { PillCell, EvidenceHoverSource } from '../review/primitives/ProvisionTablePrimitives';
 import { TERM_COL_WIDTH, TERM_COL_MAX } from '../review/table-configs/layout.js';
+import { resolveRowFocus } from './provisionIndexHelpers.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
@@ -167,7 +168,26 @@ function MaeTableCard({ testId, title, headers, children, widths = [] }) {
   );
 }
 
-export default function MaeSection({ config = maeDefinitionsConfig, reviewDeal }) {
+// Item 2 (r5): MaeSection is the actual component the live /review/[id]
+// page mounts for the MAE section (pages/review/[id].js's SectionBlock
+// special-cases MAE_SECTION_ID to <MaeSection>, never <ProvisionTable>) --
+// mae-definitions.config.js's own renderBody/maeSideTableNode wiring is
+// unreachable from here, so the click affordance has to be added directly
+// on this component's own <tr>s. row.sourceCard is already the real card
+// object (buildRowsForCards sets it), so no cardsById lookup is needed.
+function rowTrProps(row, onSelectCard, selectedCardId, rowFocus) {
+  const card = row.sourceCard || null;
+  if (!onSelectCard || !card) return { className: 'align-top' };
+  const cardKey = card.id || card.provision_instance_id;
+  const isSelected = Boolean(cardKey) && selectedCardId === cardKey;
+  return {
+    className: `align-top mtx-row-clickable`,
+    onClick: () => onSelectCard(card, rowFocus || resolveRowFocus(row)),
+    style: { cursor: 'pointer', ...(isSelected ? { background: 'rgba(47,109,181,.07)', boxShadow: 'inset 2px 0 0 #2F6DB5' } : {}) },
+  };
+}
+
+export default function MaeSection({ config = maeDefinitionsConfig, reviewDeal, onSelectCard = null, selectedCardId = null }) {
   let rows = [];
   try {
     rows = config.selectRows(reviewDeal) || [];
@@ -191,7 +211,7 @@ export default function MaeSection({ config = maeDefinitionsConfig, reviewDeal }
             const summary = MAE_LIMB_TEXT[code] || row.detail || 'Not captured';
             const sig = row.signals && row.signals[0];
             return (
-              <tr key={row.id} className="align-top">
+              <tr key={row.id} {...rowTrProps(row, onSelectCard, selectedCardId, resolveRowFocus({ ...row, label: `${row.side || 'Company'} MAE test` }))}>
                 <td className={TD_CLASS}>
                   {row.side || 'Company'}
                   {seeTextNode(row.evidence)}
@@ -240,8 +260,9 @@ export default function MaeSection({ config = maeDefinitionsConfig, reviewDeal }
               const code = normalizeCode(item);
               const name = carveoutName(item, dict);
               const carveback = hasCarveback(item, code, dispSet);
+              const itemFocus = resolveRowFocus({ label: name, itemCode: code, evidence: itemQuote(item) || row.evidence });
               return (
-                <tr key={code || `${name}-${index}`} className="align-top">
+                <tr key={code || `${name}-${index}`} {...rowTrProps(row, onSelectCard, selectedCardId, itemFocus)}>
                   <td className={TD_CLASS}>
                     <EvidenceHoverSource
                       evidence={itemQuote(item) || row.evidence}
@@ -273,7 +294,7 @@ export default function MaeSection({ config = maeDefinitionsConfig, reviewDeal }
       {exceptionRows.length ? (
         <MaeTableCard testId="provision-table-mae-carveout-exceptions" title="Exceptions to carve-outs" headers={['Party', 'Exception']} widths={['12rem']}>
           {exceptionRows.map((row) => (
-            <tr key={row.id} className="align-top">
+            <tr key={row.id} {...rowTrProps(row, onSelectCard, selectedCardId, resolveRowFocus({ ...row, label: `${row.side || 'Company'} MAE exceptions` }))}>
               <td className={TD_CLASS}>
                 {row.side || 'Company'}
                 {seeTextNode(row.evidence)}

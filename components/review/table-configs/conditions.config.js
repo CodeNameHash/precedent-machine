@@ -565,7 +565,8 @@ function buildStandardDetail(row, family, ctx, bandFamilies) {
   // row's LABEL (left) cell via GroupedSubRows' row.seeText, matching every
   // other family -- so this returns { node, seeText } instead of one node.
   const validChips = chips.filter(Boolean);
-  const clause = clauseSeeText(valueText(firstDefined(matches, 'mainCondition')));
+  const mainConditionText = valueText(firstDefined(matches, 'mainCondition'));
+  const clause = clauseSeeText(mainConditionText);
 
   const node = React.createElement(
     'div',
@@ -573,7 +574,11 @@ function buildStandardDetail(row, family, ctx, bandFamilies) {
     validChips.length ? React.createElement('div', { className: 'flex flex-wrap gap-1' }, validChips) : null,
     mainNode,
   );
-  return { node, seeText: clause };
+  // Item 2 (r5): the row's own card/quote -- matches[0] is the provision
+  // this row's chips/text were built FROM (see mkChip's provision?.sourceCard
+  // above), so it's the correct clicked-through card for THIS row, not the
+  // whole Closing Conditions section.
+  return { node, seeText: clause, card: primary?.sourceCard || null, evidence: mainConditionText || primary?.full_text || null };
 }
 
 // Splits each party band's full canonical row list (present + absent, as
@@ -602,6 +607,10 @@ function conditionGroups(reviewDeal, ctx) {
         label: conditionLabelNode(row, code, family),
         children: detail.node,
         seeText: detail.seeText,
+        // Item 2 (r5): wires each condition row to its own backing card --
+        // see GroupedSubRows in ProvisionTablePrimitives.jsx.
+        card: detail.card,
+        evidence: detail.evidence,
       };
     });
     return { id: spec.id, label: spec.label, rows, allRows, presentRows };
@@ -652,6 +661,12 @@ const conditionsConfig = {
         return React.createElement(GroupedSubRows, {
           groups: groups.map((group) => ({ id: group.id, label: group.label, rows: group.rows })),
           emptyCopy: 'No closing conditions found.',
+          // Item 2 (r5): same onSelectCard/resolveCard/selectedCardId wiring
+          // nosol-section.config.js's buildGroups() already uses -- resolveCard
+          // just needs row.card, which conditionGroups() now sets above.
+          onSelectCard: ctx.onSelectCard,
+          resolveCard: ctx.resolveCard,
+          selectedCardId: ctx.selectedCardId,
         });
       },
     },
