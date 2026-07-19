@@ -102,8 +102,11 @@ export function groupCardsBySection(reviewDeal) {
   // Party-split override for two-party IOC decks (r8, mirroring the reps
   // split above): partition needs the whole IOC deck for band ordering, so
   // it runs as a post-pass rather than per-card.
+  // Full deck passed alongside: codename decks (Rocket/Mr. Cooper's
+  // "Conduct of Maverick"/"Conduct of Cavalier") resolve the covenantor's
+  // party off the deal's own REP-T/REP-B rep cards.
   const iocCards = (rd.cards || []).filter(isIocCard);
-  const iocSplit = partitionIocCardsByParty(iocCards);
+  const iocSplit = partitionIocCardsByParty(iocCards, rd.cards || []);
   if (iocSplit && iocSplit.Parent.length) {
     bySection.set('ioc-exceptions', iocSplit.Company);
     bySection.set('parent-ioc-exceptions', iocSplit.Parent);
