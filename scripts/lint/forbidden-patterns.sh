@@ -147,6 +147,14 @@ const FILE_PATTERN_EXEMPTIONS = {
     'field_path\\s*:\\s*[\'"][a-z_]+[\'"]',
     'provision_type\\s*:\\s*[\'"][A-Z_]+[\'"]\\s*,\\s*field_path',
   ],
+  // Same class: wp-query.test.js fixtures deliberately carry raw snake_case
+  // feature keys / payload field_paths because they test the alias-resolution
+  // and deal_filter payload contracts end to end. Production query code stays
+  // covered by the invariant.
+  'tests/query/wp-query.test.js': [
+    'field_path\\s*:\\s*[\'"][a-z_]+[\'"]',
+    'provision_type\\s*:\\s*[\'"][A-Z_]+[\'"]\\s*,\\s*field_path',
+  ],
   'lib/taxonomy.js': ['Must defend \\(incl\\. appeals/final judgment\\)'],
   // Same situation as taxonomy.js: this canonical-dictionary PIN test
   // legitimately asserts `LITIGATION_OBLIGATION.MANDATORY_DEFEND`'s exact label
