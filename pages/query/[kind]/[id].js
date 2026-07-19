@@ -406,6 +406,10 @@ function FilterList({ result }) {
                       {hits.map((hit, i) => (
                         <div key={i} className="hitBlock">
                           <div className="hitLabel"><b>{humanizeKey(hit.field)}</b><span className="mtx-mono">{formatValue(hit.value, hit.field)}</span></div>
+                          {/* r10c: the standard is a property of an obligation —
+                              say what it attaches to, never just that the words
+                              occur somewhere in the family. */}
+                          {hit.attaches_to && <div className="hitAttach">Attaches to: {hit.attaches_to}</div>}
                           {hit.quote?.text && <blockquote className="mtx-serif">{hit.quote.text}</blockquote>}
                           {hit.quote?.section_ref && <div className="hitSection mtx-mono">{hit.quote.section_ref}</div>}
                         </div>
@@ -484,6 +488,7 @@ function Panel({ children }) {
     .mtx.qp .hitBlock { padding: 12px 18px; border-top: 1px solid #EDEDEC; }
     .mtx.qp .hitBlock:first-child { border-top: none; }
     .mtx.qp .hitLabel { display: flex; justify-content: space-between; gap: 12px; font-family: var(--mtx-sans); font-size: 12px; color: #1F1F1F; margin-bottom: 6px; }
+    .mtx.qp .hitAttach { font-family: var(--mtx-sans); font-size: 11px; color: #6B6B6B; margin: -2px 0 6px; }
     .mtx.qp .hitBlock blockquote { margin: 0 0 6px; padding: 6px 0 6px 12px; border-left: 2px solid #1F1F1F; font-family: var(--mtx-serif); font-size: 13px; line-height: 1.5; color: #1F1F1F; }
     .mtx.qp .hitSection { font-size: 11px; color: #6B6B6B; }
   `}</style></div>;
