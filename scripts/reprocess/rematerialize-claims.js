@@ -41,6 +41,7 @@ const {
   deleteStaleClaimsForSurvivors,
 } = require('../../lib/parser-v2/store-claims');
 const { provisionType } = require('../../lib/parser-v2/store-cards');
+const { persistReport, resolveReportDbFlag } = require('../../lib/reports/persist-report');
 
 /* ── pure helpers (exported for tests — no DB, no LLM) ───────────────────── */
 
@@ -417,7 +418,7 @@ function usage() {
 }
 
 function parseArgs(argv) {
-  const args = { deals: [], all: false, apply: false, json: false, runId: null, partial: false };
+  const args = { deals: [], all: false, apply: false, json: false, runId: null, partial: false, reportDb: null };
   for (let i = 2; i < argv.length; i += 1) {
     const a = argv[i];
     if (a === '--deal') {
@@ -433,6 +434,10 @@ function parseArgs(argv) {
       args.json = true;
     } else if (a === '--run-id') {
       args.runId = argv[++i];
+    } else if (a === '--report-db') {
+      args.reportDb = true;
+    } else if (a === '--no-report-db') {
+      args.reportDb = false;
     } else {
       console.error(`Unknown arg: ${a}`);
       usage();
@@ -579,6 +584,17 @@ async function main() {
   report.deals = plans.map(({ deal, plan }) => ({ ...planToReportEntry(deal, plan), staleDeleted: plan.staleDeleted }));
   const reportFile = writeReportFile(report);
   console.log(`\nReport written: ${reportFile}`);
+
+  if (resolveReportDbFlag(args)) {
+    const summary = {
+      dealCount: report.deals.length,
+      cleanCount: report.deals.filter((d) => d.ok).length,
+      failedCount: report.deals.filter((d) => !d.ok).length,
+      apply: report.apply,
+      pass: report.ok,
+    };
+    await persistReport(sb, { kind: 'rematerialize-claims', generatedAt: report.generatedAt, summary, payload: report });
+  }
 }
 
 module.exports = {

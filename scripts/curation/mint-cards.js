@@ -92,6 +92,7 @@ const {
   provisionHasCodedFeatures,
 } = require('../reprocess/rematerialize-claims');
 const { checkBackupGate } = require('./prune-cards');
+const { persistReport, resolveReportDbFlag } = require('../../lib/reports/persist-report');
 
 /* ── pure helpers (exported for tests — no DB, no network) ───────────────── */
 
@@ -500,7 +501,7 @@ function usage() {
 
 function parseArgs(argv) {
   const args = {
-    deals: [], all: false, apply: false, backup: null, json: false,
+    deals: [], all: false, apply: false, backup: null, json: false, reportDb: null,
   };
   for (let i = 2; i < argv.length; i += 1) {
     const a = argv[i];
@@ -515,6 +516,10 @@ function parseArgs(argv) {
       args.backup = argv[++i];
     } else if (a === '--json') {
       args.json = true;
+    } else if (a === '--report-db') {
+      args.reportDb = true;
+    } else if (a === '--no-report-db') {
+      args.reportDb = false;
     } else {
       console.error(`Unknown arg: ${a}`);
       usage();
@@ -728,9 +733,19 @@ async function main() {
 
   if (args.json) console.log(JSON.stringify(report, null, 2));
 
+  const reportDb = resolveReportDbFlag(args);
+
   if (!args.apply) {
     console.log('\nDry-run complete: no writes. Re-run with --apply --backup <path> to commit.');
     writeReportFile(report);
+    if (reportDb) {
+      await persistReport(sb, {
+        kind: 'mint-cards',
+        generatedAt: report.generatedAt,
+        summary: { ...report.summary, apply: false },
+        payload: report,
+      });
+    }
     return;
   }
 
@@ -742,6 +757,14 @@ async function main() {
   report.executed = result;
   const reportFile = writeReportFile(report);
   console.log(`Report written: ${reportFile}`);
+  if (reportDb) {
+    await persistReport(sb, {
+      kind: 'mint-cards',
+      generatedAt: report.generatedAt,
+      summary: { ...report.summary, apply: true, dealErrors: result.dealErrors.length },
+      payload: report,
+    });
+  }
   if (result.dealErrors.length > 0) process.exitCode = 1;
 }
 

@@ -30,6 +30,7 @@ const { createClient } = require('@supabase/supabase-js');
 const { createClaudeCliClient, createCodexCliClient } = require('../lib/llm-cli-client');
 const { computeCoverage, normalizeForMatch } = require('../lib/verification');
 const { loadDotEnvLocal, findDotEnvLocal } = require('./ingest-local.js');
+const { persistReport, resolveReportDbFlag } = require('../lib/reports/persist-report');
 
 const MIN_GAP_AUDIT_CHARS = 1500;
 
@@ -120,12 +121,14 @@ async function auditDeal(sb, client, deal) {
 }
 
 function parseArgs(argv) {
-  const args = { deal: null, all: false, backend: 'claude' };
+  const args = { deal: null, all: false, backend: 'claude', reportDb: null };
   for (let i = 2; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--deal') args.deal = argv[++i];
     else if (a === '--all') args.all = true;
     else if (a === '--backend') args.backend = argv[++i];
+    else if (a === '--report-db') args.reportDb = true;
+    else if (a === '--no-report-db') args.reportDb = false;
     else { console.error(`Unknown arg: ${a}`); process.exit(1); }
   }
   if (!args.deal && !args.all) { console.error('Provide --deal <name> or --all'); process.exit(1); }
@@ -158,10 +161,22 @@ async function main() {
   const flaggedExclusions = all.flatMap((d) => (d.excluded || []).filter((r) => r.verdict && r.verdict.classification === 'SUBSTANTIVE_DEAL_CONTENT').map((r) => ({ deal: d.deal, ...r })));
   const missedContent = all.flatMap((d) => (d.gaps || []).filter((g) => g.verdict && g.verdict.classification === 'SUBSTANTIVE_DEAL_CONTENT').map((g) => ({ deal: d.deal, ...g })));
 
-  const ts = new Date().toISOString().replace(/[:.]/g, '-');
+  const generatedAt = new Date().toISOString();
+  const ts = generatedAt.replace(/[:.]/g, '-');
   const reportPath = path.join(__dirname, '..', 'reports', `coverage-audit-${ts}.json`);
+  const reportPayload = { generatedAt, flaggedExclusions, missedContent, deals: all };
   fs.mkdirSync(path.dirname(reportPath), { recursive: true });
-  fs.writeFileSync(reportPath, JSON.stringify({ flaggedExclusions, missedContent, deals: all }, null, 2));
+  fs.writeFileSync(reportPath, JSON.stringify(reportPayload, null, 2));
+
+  if (resolveReportDbFlag(args)) {
+    const summary = {
+      dealsAudited: all.length,
+      flaggedExclusions: flaggedExclusions.length,
+      missedContent: missedContent.length,
+      pass: flaggedExclusions.length === 0,
+    };
+    await persistReport(sb, { kind: 'coverage-audit', generatedAt, summary, payload: reportPayload });
+  }
 
   console.log(`\n── summary ──`);
   console.log(`  deals audited: ${all.length}`);
