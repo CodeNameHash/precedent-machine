@@ -62,7 +62,7 @@ function SectionBlock({ section, reviewDeal, sectionCards, onSelectCard, selecte
         {section.id === '__definitions' ? (
           <DefinitionsSection definitions={reviewDeal.definitions} />
         ) : section.id === MAE_SECTION_ID ? (
-          <MaeSection config={section.config} reviewDeal={reviewDeal} />
+          <MaeSection config={section.config} reviewDeal={reviewDeal} onSelectCard={onSelectCard} selectedCardId={selectedCardId} />
         ) : (
           <>
             {section.id === CONSIDERATION_SECTION_ID && election ? <ElectionCard election={election} /> : null}

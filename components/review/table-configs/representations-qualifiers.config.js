@@ -399,6 +399,14 @@ function buildKnowledgeSummaryRow(reviewDeal, idPrefix, cards) {
   const persons = knowledgePersonsLabel(searchCards);
   const scope = knowledgeScopeTextAcross(reviewDeal, cards);
   if (!standard && !persons && !scope) return null;
+  // Item 2 (r5): most decks have no standalone DEF-KNOWLEDGE card (Standard/
+  // Persons come off a per-rep stamp instead -- see the doc comment above),
+  // so defCard alone left the Standard/Persons rows permanently un-clickable
+  // on those decks. firstFeature() already resolves (and discards) the
+  // actual backing card for each fact -- re-derive it here per sub-fact so
+  // "no DEF-KNOWLEDGE card" doesn't mean "no click affordance".
+  const standardHit = firstFeature(searchCards, ['knowledgeStandard']);
+  const personsHit = firstFeature(searchCards, ['knowledgePersons']);
   return {
     id: `${idPrefix}-knowledge-summary`,
     kind: 'knowledge-summary',
@@ -407,10 +415,9 @@ function buildKnowledgeSummaryRow(reviewDeal, idPrefix, cards) {
     knowledgeStandard: standard,
     knowledgePersons: persons,
     knowledgeScope: scope,
-    // Item 2 (r5): the knowledge-definition card searched above -- threaded
-    // through so the Standard/Persons rows in knowledgeTableNode can open
-    // the ClauseSidebar scoped to THIS card, not the whole reps table.
     sourceCard: defCard,
+    standardCard: (standardHit && standardHit.card) || defCard || null,
+    personsCard: (personsHit && personsHit.card) || defCard || null,
   };
 }
 
@@ -781,13 +788,13 @@ function knowledgeTableNode(knowledgeSummaryRow, repRows, ctx) {
       // Item 2 (r5): "knowledge standard rows" must be clickable per the
       // sidebar feedback package -- sourceCard/quote wired above in
       // buildKnowledgeSummaryRow flow through sectionBox's ctx wiring.
-      items.push({ key: 'standard', term: 'Standard', node, seeText: clauseSeeText(knowledgeSummaryRow.knowledgeScope), card: knowledgeSummaryRow.sourceCard, quote: knowledgeSummaryRow.knowledgeScope });
+      items.push({ key: 'standard', term: 'Standard', node, seeText: clauseSeeText(knowledgeSummaryRow.knowledgeScope), card: knowledgeSummaryRow.standardCard, quote: knowledgeSummaryRow.knowledgeScope });
     }
     if (knowledgeSummaryRow.knowledgePersons) {
       const node = PillCell
         ? React.createElement(PillCell, { label: knowledgeSummaryRow.knowledgePersons, tone: 'info', evidence: knowledgeSummaryRow.knowledgeScope })
         : knowledgeSummaryRow.knowledgePersons;
-      items.push({ key: 'persons', term: 'Persons', node, seeText: clauseSeeText(knowledgeSummaryRow.knowledgeScope), card: knowledgeSummaryRow.sourceCard, quote: knowledgeSummaryRow.knowledgeScope });
+      items.push({ key: 'persons', term: 'Persons', node, seeText: clauseSeeText(knowledgeSummaryRow.knowledgeScope), card: knowledgeSummaryRow.personsCard, quote: knowledgeSummaryRow.knowledgeScope });
     }
     // R5-round4 (Ben): Scope dropped from the Knowledge block -- Standard +
     // Persons carry it; the full scope sentence stays as the pill hover
