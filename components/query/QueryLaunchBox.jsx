@@ -118,14 +118,16 @@ export default function QueryLaunchBox({ deals: dealsProp, showTitle = true, def
       <div className="qlb">
         {showTitle && (
           <div className="qlbTitleBar">
-            <span>Launch a query</span>
+            <span>Launch Query</span>
             <span className="qlbTitleSub">Pick a query type, filter the deals, go.</span>
           </div>
         )}
 
-        <div className="qlbKindTabs">
-          <span className="mtx-meta-label">Query type</span>
+        <div className="qlbTabsRow">
           <KindTabs kinds={Object.keys(KIND_LABELS)} labels={KIND_LABELS} value={kind} onChange={setKind} />
+          <button type="button" className="mtx-btn mtx-btn-primary qlbRun" disabled={running} onClick={run}>
+            {running ? 'Running…' : INLINE_KINDS.has(kind) ? 'Run query' : 'Open full builder →'}
+          </button>
         </div>
 
         {/* Deal-type filter — available at this first stage, not buried
@@ -173,18 +175,17 @@ export default function QueryLaunchBox({ deals: dealsProp, showTitle = true, def
 
         {error && <div className="qlbErr">{error}</div>}
 
-        <button type="button" className="mtx-btn mtx-btn-primary" disabled={running} onClick={run}>
-          {running ? 'Running…' : INLINE_KINDS.has(kind) ? 'Run query' : 'Open full builder →'}
-        </button>
+
       </div>
       <style jsx>{`
-        .qlb { border: 1px solid var(--line, #E0E0E0); background: #fff; display: flex; flex-direction: column; gap: 12px; font-family: var(--mtx-sans); padding: 0 0 14px; }
+        .qlb { border: 1px solid var(--line, #E0E0E0); background: #fff; display: flex; flex-direction: column; gap: 8px; font-family: var(--mtx-sans); padding: 0 0 10px; }
         .qlb > :global(*) { margin-left: 16px; margin-right: 16px; }
         .qlbTitleBar { display: flex; align-items: baseline; gap: 10px; margin: 0 !important; padding: 7px 16px; border-bottom: 1px solid var(--line, #E0E0E0); background: var(--paper-2, #F6F6F6); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink, #1F1F1F); }
         .qlbTitleSub { font-weight: 400; text-transform: none; letter-spacing: 0; font-size: 11px; color: var(--ink-light, #6B6B6B); }
-        .qlbKindTabs { display: flex; flex-direction: column; gap: 6px; }
-        .qlbStage { min-height: 150px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
-        .qlbBlock { position: relative; border: 1px solid var(--line, #E0E0E0); background: var(--paper-2, #FAFAFA); padding: 10px; }
+        .qlbTabsRow { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+        .qlbRun { flex: 0 0 auto; }
+        .qlbStage { height: 96px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
+        .qlbBlock { position: relative; border: 1px solid var(--line, #E0E0E0); background: var(--paper-2, #FAFAFA); padding: 6px 8px; }
         .qlbAddFilter { align-self: flex-start; border: 1px dashed var(--line, #E0E0E0); background: #fff; color: var(--ink, #1F1F1F); font-family: var(--mtx-sans); font-size: 12px; padding: 6px 12px; cursor: pointer; }
         .qlbAddFilter:hover { background: var(--paper-2, #F6F6F6); border-color: var(--ink-light, #6B6B6B); }
         .qlbDealType { display: flex; flex-direction: column; gap: 6px; }

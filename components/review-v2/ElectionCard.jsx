@@ -19,6 +19,43 @@
 
 import { PillCell, EvidenceHoverSource } from '../review/primitives/ProvisionTablePrimitives';
 
+// Ben r9: "election deadline should just say 5 BDs after company
+// stockholder meeting" — collapse the boilerplate timing clause to its one
+// operative fact. Deterministic parse; the full verbatim stays on hover
+// (EvidenceHoverSource) so nothing is lost. Falls back to the raw text
+// whenever the pattern doesn't match.
+const WORD_NUMS = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10 };
+export function summarizeElectionDeadline(text) {
+  const t = String(text || '');
+  const m = t.match(/(?:(\w+)\s*)?\((\d+)\)\s*business days?\s*(prior to|before|after|following)\s*(?:the date of\s*)?the\s+([A-Z][\w\s]*?(?:Meeting|Effective Time|Closing))/i)
+    || t.match(/(\w+|\d+)\s*business days?\s*(?:()|)(prior to|before|after|following)\s*(?:the date of\s*)?the\s+([A-Z][\w\s]*?(?:Meeting|Effective Time|Closing))/i);
+  if (!m) return t;
+  const parts = m.slice(1).filter((x) => x !== undefined);
+  const numRaw = parts[0];
+  const num = /^\d+$/.test(numRaw) ? numRaw : (parts[1] && /^\d+$/.test(parts[1]) ? parts[1] : WORD_NUMS[String(numRaw).toLowerCase()] || numRaw);
+  const rel = parts.find((x) => /prior to|before|after|following/i.test(x)) || 'before';
+  const anchor = parts[parts.length - 1].trim();
+  return `${num} business days ${/prior|before/i.test(rel) ? 'before' : 'after'} the ${anchor}`;
+}
+
+// Ben r9: "oversubscription should be clear how that works — not just
+// produce the text." The standard mechanics: if one side's elections
+// exceed its cap, the other side gets its chosen form in full and the
+// oversubscribed side is prorated back to the cap. Detected from the
+// clause shape; raw text on hover; falls back to the verbatim when the
+// clause doesn't match the standard shape.
+export function summarizeOversubscription(text) {
+  const t = String(text || '');
+  const cashOver = /Cash Election Shares exceeds the Maximum Cash/i.test(t);
+  const stockOver = /Stock Election Shares exceeds the Maximum Stock/i.test(t);
+  if (cashOver && stockOver) {
+    return 'If either side is oversubscribed, the undersubscribed side receives its chosen form in full and the oversubscribed elections are prorated back to the cap (part paid in the other form).';
+  }
+  if (cashOver) return 'If cash elections exceed the cap, stock elections are honored in full and cash elections are prorated back to the cap.';
+  if (stockOver) return 'If stock elections exceed the cap, cash elections are honored in full and stock elections are prorated back to the cap.';
+  return t;
+}
+
 export default function ElectionCard({ election }) {
   if (!election) return null;
 
@@ -108,7 +145,7 @@ export default function ElectionCard({ election }) {
       {electionDeadline ? (
         <EvidenceHoverSource evidence={electionDeadline} source={sourceCard} highlight={null} as="p">
           <p className="border-t border-border px-3.5 py-1.5 text-[10px] text-inkFaint">
-            <span className="font-medium text-ink">Election deadline: </span>{electionDeadline}
+            <span className="font-medium text-ink">Election deadline: </span>{summarizeElectionDeadline(electionDeadline)}
           </p>
         </EvidenceHoverSource>
       ) : null}
@@ -116,7 +153,7 @@ export default function ElectionCard({ election }) {
       {oversubscriptionTreatment ? (
         <EvidenceHoverSource evidence={oversubscriptionTreatment} source={sourceCard} highlight={null} as="p">
           <p className="border-t border-border px-3.5 py-1.5 text-[10px] text-inkFaint">
-            <span className="font-medium text-ink">Oversubscription: </span>{oversubscriptionTreatment}
+            <span className="font-medium text-ink">Oversubscription: </span>{summarizeOversubscription(oversubscriptionTreatment)}
           </p>
         </EvidenceHoverSource>
       ) : null}

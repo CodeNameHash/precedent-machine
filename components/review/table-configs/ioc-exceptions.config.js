@@ -186,25 +186,6 @@ function covenantLabelNode(label, code) {
   return React.createElement('span', { title: code || undefined }, label);
 }
 
-// Small, always-collapsed "see text" affordance for mainObligation prose --
-// ported verbatim from conditions.config.js's clauseSeeText so the AI's
-// clause sentence never dumps inline (REBUILD-SPECS.md global rule + the
-// section-6-specific "mainObligation prose behind see text (NEVER dump)").
-function seeTextNode(texts) {
-  const joined = texts.filter(Boolean).join('\n\n');
-  if (!joined) return null;
-  return React.createElement(
-    'details',
-    { className: 'mt-1' },
-    React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, 'See provision'),
-    React.createElement(
-      'div',
-      { className: 'mt-1 max-w-[42rem] whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight' },
-      joined,
-    ),
-  );
-}
-
 // Party-scope bug (Ben, Cox/Charter live report): "No New Lines of
 // Business" showed BOTH parties' clause text concatenated into ONE row --
 // Cabot's (Target/Company side) "(xvi) engage in any business other than
@@ -456,8 +437,11 @@ function renderNegativeRow(entry, ctx) {
         negativeCovenantColumn(`${entry.code}-restrictions`, 'Specific restrictions', restrictionPills, 'Not specified'),
         negativeCovenantColumn(`${entry.code}-exceptions`, 'Exceptions', exceptionPills, 'None specified'),
       ),
-      obligations.length ? seeTextNode(obligations) : null,
     ),
+    // r9: "See provision" lives in the LEFT column (GroupedSubRows'
+    // seeTextContent contract) with the full-width expansion row — never
+    // under the results.
+    seeTextContent: obligations.length ? obligations.join('\n\n') : null,
     // Item 2 (r5): `primary` is cards[0] for this covenant-code group -- the
     // same card this row's pills/obligations text were built from.
     card: primary || null,
@@ -576,8 +560,8 @@ function buildOtherRestrictionsRows(fragments, ctx) {
         'div',
         { className: 'space-y-1.5' },
         pills,
-        clause ? seeTextNode([clause]) : null,
       ),
+      seeTextContent: clause || null,
       card,
       evidence: clause || null,
     };
@@ -683,8 +667,8 @@ function affirmativeRows(cards, ctx) {
           'div',
           { className: 'space-y-1.5' },
           pills.length ? React.createElement('div', { className: 'flex flex-wrap gap-1' }, pills) : null,
-          obligationText ? seeTextNode([obligationText]) : null,
         ),
+        seeTextContent: obligationText || null,
       });
     });
   }

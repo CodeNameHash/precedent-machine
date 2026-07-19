@@ -93,7 +93,10 @@ function hasConsiderationSignal(card) {
 function makeRow(id, label, kind, value, card, electionOption) {
   const detail = valueText(value);
   if (!detail) return null;
-  const row = { id: `consideration-hero-${id}`, label, kind, detail, evidence: textOf(card), present: true };
+  // r9: thread the owning card so the generic table's row-click wiring
+  // resolves — "why can't I click Appraisal rights and see the sidebar?"
+  // Every direct row here reads off exactly one card, so this is safe.
+  const row = { id: `consideration-hero-${id}`, label, kind, detail, evidence: textOf(card), present: true, card: card || null };
   if (electionOption) row.electionOption = electionOption;
   return row;
 }
