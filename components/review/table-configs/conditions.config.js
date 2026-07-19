@@ -1,6 +1,6 @@
 import React from 'react';
 import { conditionsBConfig, conditionsMConfig, conditionsSConfig } from './conditions-m.config.js';
-import { splitForCell, valueText } from './card-utils.js';
+import { splitForCell, triggerThresholdLabel, valueText } from './card-utils.js';
 import { STANDARD_TEXT, standardColorKey } from './standard-colors.js';
 import { voteStandard } from './vote-standard.js';
 
@@ -448,14 +448,21 @@ function definedTermsNode(matches) {
 // to design against). Surfaces whatever short structured fields exist
 // instead of silently showing nothing.
 const GENERIC_FIELDS = [
-  ['dollarThreshold', 'Threshold'],
   ['curePeriod', 'Cure period'],
   ['cureDays', 'Cure period'],
   ['scheduleReference', 'Schedule reference'],
 ];
 
+// Item 3 (r6): a closing condition's dollarThreshold is a monetary TRIGGER
+// (the figure that activates the condition), not a monetary EXCEPTION -- it
+// gets the shared triggerThresholdLabel() ("Trigger: $X") rather than this
+// generic loop's own "Threshold: $X" wording, so it reads identically to
+// every other config's trigger-amount pill (ioc-exceptions.config.js).
 function genericChips(PillCell, matches, primary) {
   const chips = [];
+  const dollarRaw = firstDefined(matches, 'dollarThreshold');
+  const dollarText = dollarRaw === undefined ? null : valueText(dollarRaw);
+  if (dollarText) chips.push(mkChip(PillCell, 'generic-dollarThreshold', triggerThresholdLabel(dollarText), 'neutral', primary));
   for (const [key, label] of GENERIC_FIELDS) {
     const raw = firstDefined(matches, key);
     if (raw === undefined) continue;

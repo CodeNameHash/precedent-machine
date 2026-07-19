@@ -283,8 +283,28 @@ function partySide(card) {
   return 'Target / Company';
 }
 
+// Item 3 (r6): the approved threshold-phrasing rule, in ONE place so every
+// config that renders a dollar-amount pill uses the exact same two labels
+// instead of each growing its own wording ("Threshold: $X" on one config,
+// "Below $X" on another, for what's semantically the same kind of figure).
+// - A monetary EXCEPTION (an amount below which something is excused/
+//   permitted) always reads "Below $X".
+// - A monetary TRIGGER/RESTRICTION (an amount that activates an obligation
+//   or restriction) reads "Trigger: $Y" -- and per the rule, a config should
+//   only render this pill at all when there's no monetary-exception pill
+//   already carrying the same figure (see ioc-exceptions.config.js's
+//   dedupe: a restrictions-side pill exists only when there's no exception
+//   pill, or the amounts differ).
+function belowThresholdLabel(amount) {
+  return amount ? `Below ${amount}` : null;
+}
+function triggerThresholdLabel(amount) {
+  return amount ? `Trigger: ${amount}` : null;
+}
+
 export {
   allFeatures,
+  belowThresholdLabel,
   buildSectionSubjectResolver,
   cardCode,
   cardFeatures,
@@ -301,5 +321,6 @@ export {
   splitForCell,
   stripProposedTitle,
   textOf,
+  triggerThresholdLabel,
   valueText,
 };
