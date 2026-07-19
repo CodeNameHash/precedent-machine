@@ -216,6 +216,19 @@ function hasAdvisorsFound(meta) {
   return Array.isArray(meta && meta.advisors) && meta.advisors.length > 0;
 }
 
+// law_firms_found — same family/posture as advisors_found: informational
+// only, never gates. metadata.law_firms = { target: [...], acquirer: [...] }
+// is populated deterministically at ingest time by
+// lib/ingest/deal-metadata-prompt.js's extractLawFirms() from the Notices
+// section; many filings' notices text genuinely doesn't parse cleanly
+// (irregular formatting, no "if to ... :" headers), so a blank result is a
+// real, expected outcome, not a defect worth failing the ingest over.
+function hasLawFirmsFound(meta) {
+  const lf = meta && meta.law_firms;
+  if (!lf || typeof lf !== 'object') return false;
+  return (Array.isArray(lf.target) && lf.target.length > 0) || (Array.isArray(lf.acquirer) && lf.acquirer.length > 0);
+}
+
 function evaluateDealMetadataGates(deal) {
   const meta = deal && deal.metadata && typeof deal.metadata === 'object' ? deal.metadata : {};
 
@@ -236,6 +249,7 @@ function evaluateDealMetadataGates(deal) {
   const signingDatePass = /^\d{4}-\d{2}-\d{2}/.test(String(signingDate || ''));
 
   const advisorsFound = hasAdvisorsFound(meta);
+  const lawFirmsFound = hasLawFirmsFound(meta);
 
   const checks = [
     { label: 'buyer_display', gated: true, pass: buyerDisplayPass, value: buyerDisplay || '(none)' },
@@ -244,6 +258,7 @@ function evaluateDealMetadataGates(deal) {
     { label: 'buyer_profile', gated: true, pass: buyerProfilePass, value: buyerProfile || '(none)' },
     { label: 'signing_date', gated: true, pass: signingDatePass, value: signingDate || '(none)' },
     { label: 'advisors_found', gated: false, pass: advisorsFound, value: advisorsFound ? 'yes' : 'no' },
+    { label: 'law_firms_found', gated: false, pass: lawFirmsFound, value: lawFirmsFound ? 'yes' : 'no' },
   ];
   const gated = checks.filter((c) => c.gated);
   return { checks, ok: gated.every((c) => c.pass) };
@@ -460,6 +475,7 @@ module.exports = {
   computeCanonicalRate,
   evaluateGates,
   hasAdvisorsFound,
+  hasLawFirmsFound,
   evaluateDealMetadataGates,
   printDealMetadataScorecard,
   fetchAllProvisions,
