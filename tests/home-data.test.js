@@ -102,6 +102,54 @@ test('fetchHomeData: shapes deals + search_index, filters staging deals', async 
   assert.ok(payload.search_index.some((hit) => hit.type === 'deal'));
 });
 
+test('fetchHomeData: computes company/reverse termination fee, outside date, go-shop scalars from provisions (never ships raw features)', async () => {
+  const { fetchHomeData } = require('../lib/home-data');
+  const dealRow = { ...sampleDealRow(), value_usd: 1_000_000_000 };
+  const provisions = [
+    {
+      id: 'p-termf-target', deal_id: 'deal-1', type: 'TERMINATION_FEE', category: 'TERMF-TARGET',
+      ai_metadata: { features: { companyTerminationFee: { amount: '$30,000,000', triggers: [] } } },
+    },
+    {
+      id: 'p-termf-reverse', deal_id: 'deal-1', type: 'TERMINATION_FEE', category: 'TERMF-REVERSE',
+      ai_metadata: { features: { reverseTerminationFee: { amount: '$60,000,000' } } },
+    },
+    {
+      id: 'p-termr-outside', deal_id: 'deal-1', type: 'TERMINATION_RIGHT', category: 'TERMR-OUTSIDE',
+      ai_metadata: { features: { outsideDateMonthsPostSigning: 9 } },
+    },
+    {
+      id: 'p-goshop', deal_id: 'deal-1', type: 'COVENANT_NO_SOLICITATION', category: 'NOSOL-ACQPROPOSAL',
+      ai_metadata: { features: { goShopPresent: true, goShopPeriodDays: 30 } },
+    },
+  ];
+  const sb = fakeSupabase({ deals: [dealRow], provisions, qualityMetrics: [] });
+
+  const payload = await fetchHomeData(sb);
+  const deal = payload.deals[0];
+
+  assert.deepEqual(deal.termination_fee, { amount: 30_000_000, pct: 3 }, '30M / 1B deal value = 3%');
+  assert.deepEqual(deal.reverse_termination_fee, { amount: 60_000_000 });
+  assert.equal(deal.outside_date_months, 9);
+  assert.equal(deal.go_shop, true);
+
+  // Payload discipline: the raw features object must never leak into the
+  // public payload, only the derived scalars.
+  const json = JSON.stringify(payload);
+  assert.ok(!json.includes('goShopPeriodDays'), 'raw provision features must not appear in the public payload');
+});
+
+test('fetchHomeData: a deal with no matching provisions gets null signals, not crashes', async () => {
+  const { fetchHomeData } = require('../lib/home-data');
+  const sb = fakeSupabase({ deals: [sampleDealRow()], provisions: [], qualityMetrics: [] });
+  const payload = await fetchHomeData(sb);
+  const deal = payload.deals[0];
+  assert.equal(deal.termination_fee, null);
+  assert.equal(deal.reverse_termination_fee, null);
+  assert.equal(deal.outside_date_months, null);
+  assert.equal(deal.go_shop, null);
+});
+
 test('pages/api/home.js and getStaticProps both build the payload via fetchHomeData (single source of truth)', async () => {
   // Both pages/api/home.js and lib/home-static-props.js require lib/home-data
   // — assert they resolve to the exact same file (Node's require cache
