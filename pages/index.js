@@ -54,15 +54,15 @@ function renderCell(col, deal) {
   }
   if (col.key === 'signed') {
     const full = fmtFullDate(deal.signing_date);
-    return <span className="mono">{full || '-'}</span>;
+    return <span>{full || '-'}</span>;
   }
   if (col.key === 'value') {
     const money = fmtMoney(deal.value);
-    if (money) return <span className="mono">{money}</span>;
+    if (money) return <span className="numCell">{money}</span>;
     if (deal.value_provenance && deal.value_provenance.kind === 'no_stated_value') {
-      return <span className="mono naVal" title={deal.value_provenance.note || 'No stated headline transaction value'}>n/a</span>;
+      return <span className="numCell naVal" title={deal.value_provenance.note || 'No stated headline transaction value'}>n/a</span>;
     }
-    return <span className="mono">-</span>;
+    return <span className="numCell">-</span>;
   }
   if (['law_firm_buyer', 'law_firm_target', 'lawyers_buyer', 'lawyers_target'].includes(col.key)) {
     const value = col.accessor(deal);
@@ -428,7 +428,7 @@ export default function HomePage() {
         th.checkCol, td.checkCol { width: 34px; }
         th, td { padding: 10px 12px; border-bottom: 1px solid var(--line-soft); white-space: nowrap; }
         td { font-family: var(--mtx-sans); }
-        td .mono, .mono { font-family: var(--mtx-mono); font-variant-numeric: tabular-nums; }
+        td .numCell, .numCell { font-variant-numeric: tabular-nums; }
         td .muted { color: var(--ink-faint); }
         td .naVal { color: var(--ink-light); cursor: help; }
         tbody tr { cursor: pointer; }
