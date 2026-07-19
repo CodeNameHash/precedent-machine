@@ -75,7 +75,7 @@ test('details-sibling fallback: no claim quote anywhere still quotes the Details
 
 // r10b: conflicting values across cards resolve by majority-of-evidence,
 // never by card order.
-test('conflicting field values across cards: majority evidence-backed value wins regardless of order', () => {
+test('conflicting field values across cards: every distinct value surfaces as its own hit, labelled with what it attaches to', () => {
   const mk = (id, value, quote) => ({
     id, deal_id: 'd1', type: 'ANTI', category: 'Antitrust',
     full_text: `clause ${id} long text`,
@@ -86,16 +86,23 @@ test('conflicting field values across cards: majority evidence-backed value wins
     mk('p-main-1', 'REASONABLE_BEST_EFFORTS', 'each party shall use reasonable best efforts to obtain approvals'),
     mk('p-main-2', 'REASONABLE_BEST_EFFORTS', 'reasonable best efforts to consummate the transactions'),
   ];
-  const result = executeFilterThenList(
+  const rbe = executeFilterThenList(
     { filters: [{ provision_type: 'ANTITRUST_REGULATORY', field: 'effortsStandard', op: 'contains', value: 'REASONABLE_BEST' }], columns: [] },
     { deals, provisions },
   );
-  assert.equal(result.rows.length, 1, 'deal matches on the majority value');
-  const [hit] = result.rows[0].matched_provision_hits;
-  assert.equal(hit.card_id, 'p-main-1', 'anchors to the majority value\'s first evidence-backed carrier, not the first card');
-  const miss = executeFilterThenList(
+  assert.equal(rbe.rows.length, 1, 'deal matches when any obligation carries the value');
+  const rbeHits = rbe.rows[0].matched_provision_hits;
+  assert.equal(rbeHits.length, 1, 'duplicate same-value cards collapse to one hit');
+  assert.equal(rbeHits[0].card_id, 'p-main-1', 'the value\'s first evidence-backed carrier anchors the hit');
+  assert.ok(rbeHits[0].attaches_to, 'the hit names what the standard attaches to');
+  // r10c (Ben): the CRE cooperation clause is a REAL obligation with a real
+  // standard — the deal DOES answer for it, honestly labelled, instead of
+  // being vote-suppressed by the majority.
+  const cre = executeFilterThenList(
     { filters: [{ provision_type: 'ANTITRUST_REGULATORY', field: 'effortsStandard', op: 'eq', value: 'COMMERCIALLY_REASONABLE_EFFORTS' }], columns: [] },
     { deals, provisions },
   );
-  assert.equal(miss.rows.length, 0, 'the outlier carve-out value no longer answers for the deal');
+  assert.equal(cre.rows.length, 1, 'clause-level truth: the carve-out obligation matches');
+  assert.equal(cre.rows[0].matched_provision_hits[0].card_id, 'p-outlier');
+  assert.match(cre.rows[0].matched_provision_hits[0].quote.text, /commercially reasonable efforts to cooperate/, 'quotes the obligation it attaches to');
 });
