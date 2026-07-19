@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import MergertraceStyles from '../components/review-v2/MergertraceStyles';
 import QueryLaunchBox from '../components/query/QueryLaunchBox';
+import { buildDealFilterPayload } from '../components/query/QueryFilterControls';
 import { COLUMNS, getColumn, defaultVisibleKeys, signedYear } from '../lib/deals-index-columns';
 import { getServiceSupabase } from '../lib/supabase';
 const { getHomeStaticProps } = require('../lib/home-static-props');
@@ -49,6 +50,46 @@ function fmtFullDate(date) {
 
 function queryHref(kind, payload) {
   return `/query/${kind}/adhoc?payload=${encodePayload(payload)}`;
+}
+
+// Ben: "if someone types a type of provision it should load a query page
+// that summarizes how that term operates across the corpus" — not a
+// per-deal hit. A small vocabulary of provision-type synonyms; the first
+// match against the typed search string wins. `label`/`plural` drive the
+// "How <label> operate(s) across the corpus" sentence below.
+const PROVISION_VOCAB = [
+  { type: 'MATERIAL_CONTRACT', patterns: [/material contracts?/], label: 'material contracts', plural: true },
+  { type: 'TERMINATION_FEE', patterns: [/termination fees?/], label: 'termination fees', plural: true },
+  { type: 'COVENANT_NO_SOLICITATION', patterns: [/no.shop/, /no.solicitation/, /\bnosol\b/], label: 'no-shop / no-solicitation covenants', plural: true },
+  { type: 'REPRESENTATION', patterns: [/^reps$/, /representations?/], label: 'representations', plural: true },
+  { type: 'MAE', patterns: [/\bmae\b/, /material adverse effect/], label: 'the MAE standard', plural: false },
+  { type: 'COVENANT_INTERIM_OPERATING', patterns: [/interim operating/, /\bioc\b/], label: 'interim operating covenants', plural: true },
+  { type: 'ANTITRUST_REGULATORY', patterns: [/antitrust/, /regulatory approval/], label: 'antitrust / regulatory provisions', plural: true },
+  { type: 'CLOSING_CONDITION', patterns: [/closing conditions?/, /^conditions?$/], label: 'closing conditions', plural: true },
+  { type: 'TERMINATION_RIGHT', patterns: [/termination rights?/], label: 'termination rights', plural: true },
+  { type: 'CONSIDERATION', patterns: [/consideration/], label: 'consideration', plural: false },
+];
+
+function matchProvisionVocab(query) {
+  const q = query.trim().toLowerCase();
+  if (q.length < 3) return null;
+  for (const entry of PROVISION_VOCAB) {
+    if (entry.patterns.some((re) => re.test(q))) return entry;
+  }
+  return null;
+}
+
+// Module-scope so repeated searches for the same provision type share one
+// fetch instead of re-hitting /api/query/field-options every keystroke.
+const crossCutColumnsCache = new Map();
+function fieldsForCrossCut(provisionType) {
+  if (!crossCutColumnsCache.has(provisionType)) {
+    crossCutColumnsCache.set(provisionType, fetch(`/api/query/field-options?provision_type=${encodeURIComponent(provisionType)}`)
+      .then((r) => r.json())
+      .then((json) => (json.fields || []).slice(0, 4).map((f) => f.key))
+      .catch(() => []));
+  }
+  return crossCutColumnsCache.get(provisionType);
 }
 
 function readColumnsFromStorage() {
@@ -143,6 +184,31 @@ export default function HomePage({ initialData }) {
   const [visibleCols, setVisibleCols] = useState(() => defaultVisibleKeys());
   const [openHeader, setOpenHeader] = useState(null);
   const [pickerOpen, setPickerOpen] = useState(false);
+
+  // Deal-filter state, lifted out of QueryLaunchBox so a DEAL_TO_MARKET row
+  // pick (handled here, via the table) can build the same deal_filter the
+  // box's own inline kinds (FILTER_THEN_LIST, MARKET_RANGE) use.
+  const [dealFilterValues, setDealFilterValues] = useState({ consideration_type: '', buyer: '', law_firm: '', sector: '', signing_year: '' });
+  const dealFilter = useMemo(() => buildDealFilterPayload(dealFilterValues), [dealFilterValues]);
+
+  // Pick-mode: DEAL_TO_MARKET and DEAL_COMPARE use the main table as their
+  // deal picker instead of a second picker inside the launch box (Ben:
+  // "they should just use the main deal list below as the picker"). `pickMode`
+  // is null or the active kind; `pickSelection` accumulates clicked deal ids
+  // for DEAL_COMPARE (DEAL_TO_MARKET fires immediately on the first click).
+  const [pickMode, setPickMode] = useState(null);
+  const [pickSelection, setPickSelection] = useState([]);
+  const [crossCutRunning, setCrossCutRunning] = useState(false);
+
+  const cancelPick = () => { setPickMode(null); setPickSelection([]); };
+  const handleRequestDealPick = (kind) => { setPickMode(kind); setPickSelection([]); };
+
+  useEffect(() => {
+    if (!pickMode) return undefined;
+    const onKeyDown = (e) => { if (e.key === 'Escape') cancelPick(); };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [pickMode]);
 
   useEffect(() => {
     fetch('/api/home')
@@ -254,6 +320,27 @@ export default function HomePage({ initialData }) {
       .slice(0, 15);
   }, [search, data]);
 
+  // Ben: typing a provision type (e.g. "material contracts") shouldn't just
+  // surface one deal that happens to mention it — it should offer a
+  // corpus-wide summary of how that term operates. This is the FIRST
+  // suggestion row when it matches; per-deal hits still follow below it.
+  const crossCutMatch = useMemo(() => matchProvisionVocab(search), [search]);
+
+  function runCrossCutTerm(entry) {
+    if (!entry || crossCutRunning) return;
+    setCrossCutRunning(true);
+    fieldsForCrossCut(entry.type).then((columns) => {
+      const payload = {
+        provision_type: entry.type,
+        provision_subtype: null,
+        deal_ids: deals.map((d) => d.id),
+        columns,
+        sort_by: 'deal_signing_date_desc',
+      };
+      router.push(queryHref('provision-cross-cut', payload));
+    }).finally(() => setCrossCutRunning(false));
+  }
+
   const selectedIds = [...selected].filter((id) => deals.some((deal) => deal.id === id));
   const compareHref = queryHref('deal-compare', {
     deal_ids: selectedIds.slice(0, 4),
@@ -271,6 +358,7 @@ export default function HomePage({ initialData }) {
 
   function submitSearch(e) {
     e.preventDefault();
+    if (crossCutMatch) { runCrossCutTerm(crossCutMatch); return; }
     const first = suggestions[0];
     if (first) router.push(first.href);
   }
@@ -309,8 +397,14 @@ export default function HomePage({ initialData }) {
           <Link href="/" className="brand"><span />Corpus</Link>
           <form className="search" onSubmit={submitSearch} onClick={(e) => e.stopPropagation()}>
             <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search deals, provisions, defined terms" />
-            {suggestions.length > 0 && (
+            {(crossCutMatch || suggestions.length > 0) && (
               <div className="suggestions">
+                {crossCutMatch && (
+                  <button type="button" className="crossCutHit" disabled={crossCutRunning} onClick={() => runCrossCutTerm(crossCutMatch)}>
+                    <b>How {crossCutMatch.label} {crossCutMatch.plural ? 'operate' : 'operates'} across the corpus →</b>
+                    <small>provision cross-cut &middot; every deal in the corpus</small>
+                  </button>
+                )}
                 {suggestions.map((hit, index) => (
                   <button key={`${hit.type}-${hit.href}-${index}`} type="button" onClick={() => router.push(hit.href)}>
                     <b>{hit.label}</b>
@@ -331,86 +425,125 @@ export default function HomePage({ initialData }) {
           <main>
             <section className="operational">
               <div className="wrap">
-                <QueryLaunchBox showTitle />
-                <div className="opsHead">
-                  <div />
+                <div className="corpusSurface">
+                  <QueryLaunchBox
+                    showTitle
+                    bordered={false}
+                    dealFilterValues={dealFilterValues}
+                    onDealFilterValuesChange={setDealFilterValues}
+                    onRequestDealPick={handleRequestDealPick}
+                    pickSelection={pickSelection}
+                  />
+                  {pickMode && (
+                    <div className="pickBanner" onClick={(e) => e.stopPropagation()}>
+                      <span>
+                        {pickMode === 'DEAL_TO_MARKET' && 'Pick a deal below to run deal-to-market for it.'}
+                        {pickMode === 'DEAL_COMPARE' && `Click deals below to compare${pickSelection.length ? ` — ${pickSelection.length} selected` : ''}.`}
+                      </span>
+                      <button type="button" className="pickCancel" onClick={cancelPick}>Cancel (Esc)</button>
+                    </div>
+                  )}
+                  <div className="opsHead">
+                    <div />
 
-                  <div className="opsActions" onClick={(e) => e.stopPropagation()}>
-                    <button type="button" className="gearBtn" onClick={() => setPickerOpen((v) => !v)} title="Choose columns">
-                      Columns
-                    </button>
-                    {pickerOpen && (
-                      <div className="picker">
-                        {COLUMNS.map((col) => (
-                          <label key={col.key}>
-                            <input type="checkbox" checked={visibleCols.includes(col.key)} onChange={() => toggleColumn(col.key)} />
-                            <span>{col.label}</span>
-                            {col.coverage ? <small>{col.coverage}</small> : null}
-                          </label>
-                        ))}
-                      </div>
-                    )}
+                    <div className="opsActions" onClick={(e) => e.stopPropagation()}>
+                      <button type="button" className="gearBtn" onClick={() => setPickerOpen((v) => !v)} title="Choose columns">
+                        Columns
+                      </button>
+                      {pickerOpen && (
+                        <div className="picker">
+                          {COLUMNS.map((col) => (
+                            <label key={col.key}>
+                              <input type="checkbox" checked={visibleCols.includes(col.key)} onChange={() => toggleColumn(col.key)} />
+                              <span>{col.label}</span>
+                              {col.coverage ? <small>{col.coverage}</small> : null}
+                            </label>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
 
-                {selectedIds.length >= 2 && (
-                  <div className="bulk">
-                    <Link href={compareHref}>+ Compare selected deals</Link>
-                    <Link href={crossCutHref}>+ Cross-cut selected deals</Link>
-                  </div>
-                )}
+                  {selectedIds.length >= 2 && (
+                    <div className="bulk">
+                      <Link href={compareHref}>+ Compare selected deals</Link>
+                      <Link href={crossCutHref}>+ Cross-cut selected deals</Link>
+                    </div>
+                  )}
 
-                <div className="tableShell">
-                  <table>
-                    <thead>
-                      <tr onClick={(e) => e.stopPropagation()}>
-                        <th className="checkCol" />
-                        {activeColumns.map((col) => (
-                          <ColumnHeaderPopover
-                            key={col.key}
-                            col={col}
-                            sort={sort}
-                            onSort={handleSort}
-                            activeFilters={filters[col.key]}
-                            options={columnOptions[col.key]}
-                            onToggleFilter={handleToggleFilter}
-                            onClearFilter={handleClearFilter}
-                            isOpen={openHeader === col.key}
-                            onToggleOpen={(key) => setOpenHeader((prev) => (prev === key ? null : key))}
-                          />
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {!data ? Array.from({ length: 6 }).map((_, i) => <tr key={i}><td colSpan={activeColumns.length + 1} className="rowLoading" /></tr>) : visibleDeals.map((deal) => (
+                  <div className="tableShell">
+                    <table>
+                      <thead>
+                        <tr onClick={(e) => e.stopPropagation()}>
+                          <th className="checkCol" />
+                          {activeColumns.map((col) => (
+                            <ColumnHeaderPopover
+                              key={col.key}
+                              col={col}
+                              sort={sort}
+                              onSort={handleSort}
+                              activeFilters={filters[col.key]}
+                              options={columnOptions[col.key]}
+                              onToggleFilter={handleToggleFilter}
+                              onClearFilter={handleClearFilter}
+                              isOpen={openHeader === col.key}
+                              onToggleOpen={(key) => setOpenHeader((prev) => (prev === key ? null : key))}
+                            />
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {!data ? Array.from({ length: 6 }).map((_, i) => <tr key={i}><td colSpan={activeColumns.length + 1} className="rowLoading" /></tr>) : visibleDeals.map((deal) => {
+                          const picked = pickMode === 'DEAL_COMPARE' && pickSelection.includes(deal.id);
+                          const rowAction = () => {
+                            if (pickMode === 'DEAL_TO_MARKET') {
+                              const payload = { deal_id: deal.id, comparison_set_filter: dealFilter, provision_types: null };
+                              router.push(queryHref('deal-to-market', payload));
+                              cancelPick();
+                              return;
+                            }
+                            if (pickMode === 'DEAL_COMPARE') {
+                              setPickSelection((prev) => (prev.includes(deal.id) ? prev.filter((id) => id !== deal.id) : [...prev, deal.id]));
+                              return;
+                            }
+                            router.push(`/review/${deal.id}`);
+                          };
+                          return (
                         <tr
                           key={deal.id}
-                          onClick={() => router.push(`/review/${deal.id}`)}
+                          className={picked ? 'rowPicked' : undefined}
+                          onClick={rowAction}
                           role="button"
                           tabIndex={0}
                           onKeyDown={(e) => {
                             if (e.target !== e.currentTarget) return;
                             if (e.key === 'Enter' || e.key === ' ') {
                               e.preventDefault();
-                              router.push(`/review/${deal.id}`);
+                              rowAction();
                             }
                           }}
                         >
                           <td className="checkCol" onClick={(e) => e.stopPropagation()}>
-                            <input type="checkbox" checked={selected.has(deal.id)} onChange={() => setSelected((prev) => {
-                              const next = new Set(prev);
-                              if (next.has(deal.id)) next.delete(deal.id);
-                              else next.add(deal.id);
-                              return next;
-                            })} />
+                            {pickMode === 'DEAL_COMPARE' ? (
+                              <span className={`pickMark${picked ? ' pickMarkOn' : ''}`}>{picked ? '✓' : ''}</span>
+                            ) : (
+                              <input type="checkbox" checked={selected.has(deal.id)} onChange={() => setSelected((prev) => {
+                                const next = new Set(prev);
+                                if (next.has(deal.id)) next.delete(deal.id);
+                                else next.add(deal.id);
+                                return next;
+                              })} />
+                            )}
                           </td>
                           {activeColumns.map((col) => (
                             <td key={col.key}>{renderCell(col, deal)}</td>
                           ))}
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </section>
@@ -428,11 +561,21 @@ export default function HomePage({ initialData }) {
         .suggestions button { width: 100%; display: flex; justify-content: space-between; gap: 14px; padding: 10px 12px; border: 0; background: #fff; text-align: left; cursor: pointer; font-family: var(--mtx-sans); }
         .suggestions button:hover { background: var(--paper-2); }
         .suggestions small { color: var(--ink-light); white-space: nowrap; }
+        .crossCutHit { background: var(--paper-2, #F6F6F6) !important; border-bottom: 1px solid var(--line) !important; }
+        .crossCutHit b { color: var(--accent-deep); }
         .nav, .login { color: var(--accent-deep); font-size: 13px; font-weight: 600; text-decoration: none; }
         .login { color: var(--ink-light); }
         .wrap { max-width: 1280px; margin: 0 auto; padding: 0 34px; }
         .operational { padding: 34px 0 80px; }
-        .opsHead { display: flex; align-items: flex-end; justify-content: space-between; gap: 22px; margin: 26px 0 18px; }
+        /* Launch box + table read as ONE surface (Ben: "this needs to be
+           way better integrated with the site as a whole") — a single
+           outer border with quiet 1px dividers between sections instead of
+           separate bordered blocks with gaps between them. */
+        .corpusSurface { border: 1px solid var(--line); background: #fff; }
+        .pickBanner { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 16px; background: var(--paper-2, #F6F6F6); border-top: 1px solid var(--line); font-size: 12px; color: var(--ink); font-family: var(--mtx-sans); }
+        .pickCancel { border: 1px solid var(--line); background: #fff; font-size: 11px; font-weight: 600; padding: 4px 10px; cursor: pointer; font-family: var(--mtx-sans); color: var(--ink-light); }
+        .pickCancel:hover { color: var(--ink); border-color: var(--ink-light); }
+        .opsHead { display: flex; align-items: flex-end; justify-content: space-between; gap: 22px; margin: 0; padding: 12px 16px; border-top: 1px solid var(--line); }
         h2 { font-size: 22px; line-height: 1.1; margin: 0; font-weight: 650; font-family: var(--mtx-sans); }
         p { margin: 5px 0 0; color: var(--ink-light); font-size: 13px; }
         .opsActions { position: relative; }
@@ -442,9 +585,13 @@ export default function HomePage({ initialData }) {
         .picker label { display: flex; align-items: center; gap: 8px; padding: 7px 12px; font-size: 12px; cursor: pointer; }
         .picker label:hover { background: var(--paper-2); }
         .picker small { margin-left: auto; color: var(--ink-faint); font-family: var(--mtx-mono); font-size: 10px; }
-        .bulk { display: flex; gap: 10px; margin: -4px 0 12px; }
+        .bulk { display: flex; gap: 10px; margin: 0; padding: 0 16px 12px; }
         .bulk a { border: 1px solid var(--accent); color: var(--accent-deep); background: #fff; border-radius: 0; padding: 8px 11px; text-decoration: none; font-size: 13px; font-weight: 600; }
-        .tableShell { border: 1px solid var(--line); border-radius: 0; overflow: auto; background: #fff; }
+        .tableShell { border: none; border-top: 1px solid var(--line); border-radius: 0; overflow: auto; background: #fff; }
+        .rowPicked { background: rgba(31, 31, 31, 0.05); }
+        .rowPicked:hover { background: rgba(31, 31, 31, 0.08); }
+        .pickMark { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border: 1px solid var(--line); color: var(--ink); font-size: 11px; font-weight: 700; }
+        .pickMarkOn { background: var(--ink); color: #fff; border-color: var(--ink); }
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
         th { text-align: left; color: var(--ink-faint); font-size: 9px; text-transform: uppercase; letter-spacing: .14em; background: var(--paper-2); font-weight: 700; font-family: var(--mtx-sans); position: relative; }
         th.checkCol, td.checkCol { width: 34px; }

@@ -422,6 +422,11 @@ export function describeDealFilters(values) {
   return parts;
 }
 
+// Ben's info-hierarchy note ("why is the text on deal filters so big —
+// think about hierarchy"): this block sits below the query-type tabs and
+// must read as visually SECONDARY to them — smaller labels, compact
+// selects (overriding the global 13px/36px .mtx-select via :global()), and
+// a quieter section label than the tabs' bold uppercase treatment.
 export function DealFiltersBlock({ deals, values, onChange }) {
   const options = dealFilterOptions(deals);
   const [extraFacets, setExtraFacets] = useState([]);
@@ -429,7 +434,7 @@ export function DealFiltersBlock({ deals, values, onChange }) {
   const hidden = DEAL_FACETS.filter((f) => !visible.includes(f));
   return (
     <div className="dfb">
-      <span className="mtx-meta-label">Deal filters</span>
+      <span className="dfbSectionLabel">Deal filters</span>
       <div className="dfbRow">
         {visible.map((facet) => (
           <label key={facet.key} className="dfbFacet">
@@ -458,12 +463,16 @@ export function DealFiltersBlock({ deals, values, onChange }) {
         )}
       </div>
       <style jsx>{`
-        .dfb { display: flex; flex-direction: column; gap: 6px; }
-        .dfbRow { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
-        .dfbFacet { display: flex; flex-direction: column; gap: 3px; }
-        .dfbLabel { font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em; color: #6B6B6B; font-family: var(--mtx-sans); }
-        .dfbAdd { width: 34px; height: 30px; border: 1px dashed #E0E0E0; background: #fff; color: #6B6B6B; font-size: 15px; cursor: pointer; font-family: var(--mtx-sans); }
+        .dfb { display: flex; flex-direction: column; gap: 4px; }
+        .dfbSectionLabel { font-family: var(--mtx-sans); font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; font-size: 9px; color: #9A9A9A; }
+        .dfbRow { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end; }
+        .dfbFacet { display: flex; flex-direction: column; gap: 2px; }
+        .dfbLabel { font-size: 8px; text-transform: uppercase; letter-spacing: 0.08em; color: #9A9A9A; font-family: var(--mtx-sans); }
+        .dfbAdd { width: 26px; height: 24px; border: 1px dashed #E0E0E0; background: #fff; color: #6B6B6B; font-size: 13px; line-height: 1; cursor: pointer; font-family: var(--mtx-sans); }
         .dfbAdd:hover { color: #1F1F1F; border-color: #6B6B6B; background: #F6F6F6; }
+        /* Compact selects — this block is secondary to the query-type tabs
+           above it, so it must not compete on size. */
+        .dfbRow :global(select.mtx-select) { font-size: 11px; height: 24px; padding: 0 6px; min-width: 0; }
       `}</style>
     </div>
   );
