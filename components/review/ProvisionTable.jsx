@@ -1,6 +1,7 @@
 import { Fragment, useState } from 'react';
 import * as ProvisionTablePrimitives from './primitives/ProvisionTablePrimitives';
 import { buildCardIndex, resolveRowCard, resolveRowFocus } from '../review-v2/provisionIndexHelpers.js';
+import { headerLines } from './table-configs/card-utils.js';
 
 /*
 Config shape:
@@ -255,15 +256,26 @@ export default function ProvisionTable({ config, reviewDeal, isEdit = false, sec
           {showHeader ? (
             <thead className="border-b border-border bg-bg/60">
               <tr>
-                {columns.map((column) => (
-                  <th
-                    key={column.id}
-                    className="px-3 py-2 text-left font-medium uppercase tracking-wider text-inkFaint"
-                    style={column.width ? { width: column.width } : undefined}
-                  >
-                    {column.header}
-                  </th>
-                ))}
+                {columns.map((column) => {
+                  // R6 item 7: headers never show "..." -- headerLines()
+                  // (card-utils.js) splits a clean "Main (qualifier)" onto
+                  // two lines and drops an already-truncated qualifier
+                  // entirely; the th wraps (no nowrap/truncate) so a long
+                  // main label breaks across lines instead of clipping.
+                  const { main, qualifier } = headerLines(column.header);
+                  return (
+                    <th
+                      key={column.id}
+                      className="px-3 py-2 text-left font-medium uppercase tracking-wider text-inkFaint whitespace-normal break-words"
+                      style={column.width ? { width: column.width } : undefined}
+                    >
+                      {main}
+                      {qualifier ? (
+                        <span className="block font-normal normal-case tracking-normal text-inkFaint">{qualifier}</span>
+                      ) : null}
+                    </th>
+                  );
+                })}
               </tr>
             </thead>
           ) : null}

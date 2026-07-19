@@ -302,6 +302,34 @@ function triggerThresholdLabel(amount) {
   return amount ? `Trigger: ${amount}` : null;
 }
 
+// Item 7 (r6): table headers NEVER render with an ellipsis. The shared
+// header form is "Main (qualifier)":
+// - a clean parenthetical qualifier comes back as its own `qualifier` line
+//   (ProvisionTable.jsx renders it as a second header line -- the "two-line
+//   wrap where clean" branch);
+// - a qualifier that itself arrives truncated ("..." / the Unicode
+//   ellipsis) is OMITTED entirely rather than shown cut off;
+// - a bare header that arrives ellipsized loses the trailing ellipsis (and
+//   any dangling word fragment before it stays -- we can't reconstruct what
+//   was cut, but we never SHOW the "...").
+// Lives here (plain JS) so node:test can exercise it directly; every thead
+// -- ProvisionTable.jsx's generic path and any config-local header row --
+// must route header strings through this, never its own truncation.
+const TRAILING_ELLIPSIS_RE = /\s*(?:\.{3}|…)\s*$/;
+function headerLines(header) {
+  if (typeof header !== 'string') return { main: header, qualifier: null };
+  const raw = header.trim();
+  const m = raw.match(/^(.*\S)\s*\(([^)]*)\)$/);
+  if (m) {
+    const qualifier = m[2].trim();
+    return {
+      main: m[1].replace(TRAILING_ELLIPSIS_RE, '').trim(),
+      qualifier: qualifier && !/(?:\.{3}|…)/.test(qualifier) ? qualifier : null,
+    };
+  }
+  return { main: raw.replace(TRAILING_ELLIPSIS_RE, '').trim(), qualifier: null };
+}
+
 export {
   allFeatures,
   belowThresholdLabel,
@@ -311,6 +339,7 @@ export {
   cardType,
   extractSectionCites,
   firstFeature,
+  headerLines,
   labelOf,
   makeRow,
   makeRows,
