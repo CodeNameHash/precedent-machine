@@ -504,8 +504,8 @@ async function handleQa(sb, job) {
   const dealId = await resolveDealId(sb, job);
   const deal = await fetchDeal(sb, dealId);
   const coverageBackfill = await refreshCoverageBackfillsForDeal(sb, deal);
-  const ok = await qaOneDeal(sb, deal, null);
-  const result = { deal_id: dealId, ok, coverage_backfill: coverageBackfill };
+  const { ok, result: qaResult } = await qaOneDeal(sb, deal, null);
+  const result = { deal_id: dealId, ok, coverage_backfill: coverageBackfill, qa: qaResult };
   await insertArtifact(sb, job, 'qa-result', ok ? 'QA passed' : 'QA needs review', result);
   if (!ok) {
     await updateCandidate(sb, job.candidate_id, {
