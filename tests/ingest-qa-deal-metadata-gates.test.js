@@ -1,7 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 
-const { evaluateDealMetadataGates, hasAdvisorsFound } = require('../scripts/ingest-qa');
+const { evaluateDealMetadataGates, hasAdvisorsFound, hasLawFirmsFound } = require('../scripts/ingest-qa');
 
 function cleanDeal(overrides = {}) {
   const { metadata: metadataOverrides, ...rest } = overrides;
@@ -80,4 +80,21 @@ test('hasAdvisorsFound reads either advisors_v2 firms or the legacy advisors arr
   assert.equal(hasAdvisorsFound({ advisors_v2: { buyer_firms: [], seller_firms: [] } }), false);
   assert.equal(hasAdvisorsFound({ advisors: [{ firm: 'Paul, Weiss' }] }), true);
   assert.equal(hasAdvisorsFound({}), false);
+});
+
+// law_firms_found — same soft-check family as advisors_found (Ben,
+// deals-index round 2026-07-19: metadata.law_firms is populated at ingest
+// time by lib/ingest/deal-metadata-prompt.js's extractLawFirms()).
+test('law_firms_found is informational only — never affects overall ok', () => {
+  const noFirms = evaluateDealMetadataGates(cleanDeal({ metadata: {} }));
+  assert.equal(noFirms.checks.find((c) => c.label === 'law_firms_found').gated, false);
+  assert.equal(noFirms.ok, true); // every gated check still passes despite missing law firms
+});
+
+test('hasLawFirmsFound reads metadata.law_firms.{target,acquirer}', () => {
+  assert.equal(hasLawFirmsFound({ law_firms: { target: ['Cooley LLP'], acquirer: [] } }), true);
+  assert.equal(hasLawFirmsFound({ law_firms: { target: [], acquirer: ['Paul, Weiss'] } }), true);
+  assert.equal(hasLawFirmsFound({ law_firms: { target: [], acquirer: [] } }), false);
+  assert.equal(hasLawFirmsFound({}), false);
+  assert.equal(hasLawFirmsFound({ law_firms: null }), false);
 });

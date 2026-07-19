@@ -79,7 +79,7 @@ function renderCell(col, deal) {
     }
     return <span className="numCell">-</span>;
   }
-  if (['law_firm_buyer', 'law_firm_target', 'lawyers_buyer', 'lawyers_target'].includes(col.key)) {
+  if (['law_firm_buyer', 'law_firm_target', 'lawyers_buyer', 'lawyers_target', 'reverse_fee', 'go_shop'].includes(col.key)) {
     const value = col.accessor(deal);
     if (value) return value;
     return <span className="muted" title="not extracted for this deal">&mdash;</span>;
