@@ -5,6 +5,7 @@ import { standardColorKey } from './standard-colors.js';
 import { buildRepBringDownMap, normRepName } from './conditions.config.js';
 import { cardCode, cardType, firstFeature, labelOf, selectCards, textOf, valueText } from './card-utils.js';
 import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
+import { resolveRowFocus } from '../../review-v2/provisionIndexHelpers.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
@@ -406,6 +407,10 @@ function buildKnowledgeSummaryRow(reviewDeal, idPrefix, cards) {
     knowledgeStandard: standard,
     knowledgePersons: persons,
     knowledgeScope: scope,
+    // Item 2 (r5): the knowledge-definition card searched above -- threaded
+    // through so the Standard/Persons rows in knowledgeTableNode can open
+    // the ClauseSidebar scoped to THIS card, not the whole reps table.
+    sourceCard: defCard,
   };
 }
 
@@ -674,7 +679,12 @@ function pillList(PillCell, items, evidence, keyPrefix, tone = 'neutral') {
 // Ben flagged. `whitespace-normal break-words` (replacing `whitespace-
 // nowrap`) lets long Knowledge Standard/Persons labels wrap instead of
 // forcing the column wide.
-function sectionBox(key, heading, items) {
+// Item 2 (r5): optional ctx (resolveCard/onSelectCard/selectedCardId, same
+// contract as ProvisionTable.jsx's generic <tr> loop) wires each item to the
+// ClauseSidebar when the item carries a `card` -- used by the Knowledge
+// block's Standard/Persons rows (General Exceptions items don't set `card`,
+// so they render exactly as before: no click affordance).
+function sectionBox(key, heading, items, ctx) {
   return React.createElement(
     'div',
     { key, className: 'overflow-hidden rounded border border-border' },
@@ -698,19 +708,29 @@ function sectionBox(key, heading, items) {
         React.createElement(
           'tbody',
           { className: 'divide-y divide-border' },
-          items.map((item) => React.createElement(
-            'tr',
-            { key: item.key, className: 'align-top' },
-            React.createElement(
-              'td',
-              { className: 'px-3 py-2 font-medium text-ink whitespace-normal break-words' },
-              item.term,
-              // Item 8: an optional per-item "See provision" expander under
-              // the LABEL (left) cell, matching every other family.
-              item.seeText || null,
-            ),
-            React.createElement('td', { className: 'px-3 py-2 text-ink whitespace-pre-wrap break-words' }, item.node),
-          )),
+          items.map((item) => {
+            const rowCard = ctx?.onSelectCard && item.card ? item.card : null;
+            const rowCardKey = rowCard ? (rowCard.id || rowCard.provision_instance_id) : null;
+            const isSelectedRow = Boolean(rowCardKey) && ctx?.selectedCardId === rowCardKey;
+            return React.createElement(
+              'tr',
+              {
+                key: item.key,
+                className: `align-top${rowCard ? ' mtx-row-clickable' : ''}`,
+                onClick: rowCard ? () => ctx.onSelectCard(rowCard, resolveRowFocus({ label: item.term, evidence: item.quote })) : undefined,
+                style: rowCard ? { cursor: 'pointer', ...(isSelectedRow ? { background: 'rgba(47,109,181,.07)', boxShadow: 'inset 2px 0 0 #2F6DB5' } : {}) } : undefined,
+              },
+              React.createElement(
+                'td',
+                { className: 'px-3 py-2 font-medium text-ink whitespace-normal break-words' },
+                item.term,
+                // Item 8: an optional per-item "See provision" expander under
+                // the LABEL (left) cell, matching every other family.
+                item.seeText || null,
+              ),
+              React.createElement('td', { className: 'px-3 py-2 text-ink whitespace-pre-wrap break-words' }, item.node),
+            );
+          }),
         ),
       ),
     ),
@@ -738,10 +758,10 @@ function generalExceptionsTableNode(row, ctx) {
     ? pillList(PillCell, [row.disclosureLetter.label], row.disclosureLetter.evidence, 'disclosure')
     : null;
   const items = [];
-  if (secBody) items.push({ key: 'sec', term: 'SEC Filings', node: secBody, seeText: clauseSeeText(row.secCutoffQuote || textOf(row.card)) });
-  if (disclosureNode) items.push({ key: 'disclosure', term: 'Disclosure Letter', node: disclosureNode, seeText: clauseSeeText(row.disclosureLetter?.evidence) });
+  if (secBody) items.push({ key: 'sec', term: 'SEC Filings', node: secBody, seeText: clauseSeeText(row.secCutoffQuote || textOf(row.card)), card: row.card, quote: row.secCutoffQuote });
+  if (disclosureNode) items.push({ key: 'disclosure', term: 'Disclosure Letter', node: disclosureNode, seeText: clauseSeeText(row.disclosureLetter?.evidence), card: row.card, quote: row.disclosureLetter?.evidence });
   if (!items.length) return null;
-  return sectionBox('general-exceptions', 'General Exceptions', items);
+  return sectionBox('general-exceptions', 'General Exceptions', items, ctx);
 }
 
 // R4: Knowledge as its own ROWS -- Standard / Persons / Scope (the section-
@@ -758,13 +778,16 @@ function knowledgeTableNode(knowledgeSummaryRow, repRows, ctx) {
       const node = PillCell
         ? React.createElement(PillCell, { label: knowledgeSummaryRow.knowledgeStandard, tone: 'info', evidence: knowledgeSummaryRow.knowledgeScope })
         : knowledgeSummaryRow.knowledgeStandard;
-      items.push({ key: 'standard', term: 'Standard', node, seeText: clauseSeeText(knowledgeSummaryRow.knowledgeScope) });
+      // Item 2 (r5): "knowledge standard rows" must be clickable per the
+      // sidebar feedback package -- sourceCard/quote wired above in
+      // buildKnowledgeSummaryRow flow through sectionBox's ctx wiring.
+      items.push({ key: 'standard', term: 'Standard', node, seeText: clauseSeeText(knowledgeSummaryRow.knowledgeScope), card: knowledgeSummaryRow.sourceCard, quote: knowledgeSummaryRow.knowledgeScope });
     }
     if (knowledgeSummaryRow.knowledgePersons) {
       const node = PillCell
         ? React.createElement(PillCell, { label: knowledgeSummaryRow.knowledgePersons, tone: 'info', evidence: knowledgeSummaryRow.knowledgeScope })
         : knowledgeSummaryRow.knowledgePersons;
-      items.push({ key: 'persons', term: 'Persons', node, seeText: clauseSeeText(knowledgeSummaryRow.knowledgeScope) });
+      items.push({ key: 'persons', term: 'Persons', node, seeText: clauseSeeText(knowledgeSummaryRow.knowledgeScope), card: knowledgeSummaryRow.sourceCard, quote: knowledgeSummaryRow.knowledgeScope });
     }
     // R5-round4 (Ben): Scope dropped from the Knowledge block -- Standard +
     // Persons carry it; the full scope sentence stays as the pill hover
@@ -774,7 +797,7 @@ function knowledgeTableNode(knowledgeSummaryRow, repRows, ctx) {
   // column (Ben, Mergertrace round 1) — this block keeps only the
   // deal-level Standard / Persons facts about the defined term.
   if (!items.length) return null;
-  return sectionBox('knowledge', 'Knowledge', items);
+  return sectionBox('knowledge', 'Knowledge', items, ctx);
 }
 
 // Item 3: the per-rep table's Term column uses the SAME shared token as
@@ -822,13 +845,28 @@ function repsTableNode(repRows, ctx) {
     React.createElement(
       'tbody',
       { className: 'divide-y divide-border' },
-      repRows.map((row) => React.createElement(
+      repRows.map((row) => {
+        // Item 1/2 (r5): one row IS one rep card here (unlike MAE/equity-
+        // awards, where several rows share a parent card) -- resolveRowFocus
+        // has no row-specific quote to add beyond the card's own
+        // primary_quote, so ClauseSidebar's existing parent-quote fallback
+        // is already the correct row-scoped content.
+        const rowCard = ctx.onSelectCard && row.card ? row.card : null;
+        const rowCardKey = rowCard ? (rowCard.id || rowCard.provision_instance_id) : null;
+        const isSelectedRow = Boolean(rowCardKey) && ctx.selectedCardId === rowCardKey;
+        return React.createElement(
         'tr',
-        { key: row.id, className: 'align-top hover:bg-bg/40' },
+        {
+          key: row.id,
+          className: `align-top hover:bg-bg/40${rowCard ? ' mtx-row-clickable' : ''}`,
+          onClick: rowCard ? () => ctx.onSelectCard(rowCard, resolveRowFocus({ label: row.party ? `${row.label} (${row.party})` : row.label, itemCode: cardCode(row.card) })) : undefined,
+          style: rowCard ? { cursor: 'pointer', ...(isSelectedRow ? { background: 'rgba(47,109,181,.07)', boxShadow: 'inset 2px 0 0 #2F6DB5' } : {}) } : undefined,
+        },
         React.createElement('td', { className: 'px-3 py-2 whitespace-normal break-words text-ink' }, renderTerm(row, ctx)),
         React.createElement('td', { className: 'px-3 py-2 whitespace-pre-wrap break-words text-ink' }, renderQualifiers(row, ctx)),
         React.createElement('td', { className: 'px-3 py-2 whitespace-pre-wrap break-words text-ink' }, renderLookback(row, ctx)),
-      )),
+        );
+      }),
     ),
   );
 }

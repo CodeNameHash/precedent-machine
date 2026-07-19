@@ -396,6 +396,10 @@ function rowForSpec(spec, cards, PillCell) {
     value: terms,
     evidence: card ? textOf(card) : null,
     source: card,
+    // Item 2 (r5): resolveRowCard reads card/sourceCard/sourceCards --
+    // `source` above is the HoverSource-popover contract, this is the
+    // ClauseSidebar click-through one.
+    sourceCard: card,
     present: Boolean(card),
     children: keyTermsNode(spec.key, card, PillCell),
   };
@@ -437,6 +441,7 @@ function crossCuttingRow(id, label, allCards, keys, PillCell) {
     value: terms,
     evidence: textOf(hit.card),
     source: hit.card,
+    sourceCard: hit.card,
     present: true,
     children: pillRow(PillCell, [chip]) || React.createElement('span', { className: 'italic text-inkFaint' }, 'Present, detail not extracted'),
   };
@@ -491,7 +496,15 @@ const terminationRightsConfig = {
         // pre-built version is the fallback when no PillCell is supplied.
         const PillCell = ctx?.primitives?.PillCell;
         const groups = PillCell ? buildGroups(row.reviewDeal, row.cards, PillCell) : row.groups;
-        return React.createElement(GroupedSubRows, { groups, emptyCopy: 'No termination rights found.' });
+        // Item 2 (r5): same onSelectCard/resolveCard/selectedCardId wiring
+        // as conditions.config.js/ioc-exceptions.config.js.
+        return React.createElement(GroupedSubRows, {
+          groups,
+          emptyCopy: 'No termination rights found.',
+          onSelectCard: ctx.onSelectCard,
+          resolveCard: ctx.resolveCard,
+          selectedCardId: ctx.selectedCardId,
+        });
       },
     },
   ],

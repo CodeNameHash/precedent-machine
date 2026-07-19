@@ -10,6 +10,7 @@ import {
 import { HoverSource } from '../shared.js';
 import { splitForCell } from '../table-configs/card-utils.js';
 import { STANDARD_COLORS } from '../table-configs/standard-colors.js';
+import { resolveRowFocus } from '../../review-v2/provisionIndexHelpers.js';
 import { TERM_GRID_COLUMN } from '../table-configs/layout.js';
 
 const { MATERIAL_CONTRACT_BUCKET_CODES, MATERIAL_CONTRACT_BUCKET_META } = taxonomy;
@@ -247,7 +248,7 @@ export function GroupedSubRows({ groups = [], emptyCopy = 'No grouped rows captu
                     gridTemplateColumns: `${TERM_GRID_COLUMN} 1fr`,
                     ...(rowCard ? { cursor: 'pointer', ...(isSelectedRow ? { background: 'rgba(47,109,181,.07)', boxShadow: 'inset 2px 0 0 #2F6DB5' } : {}) } : {}),
                   }}
-                  onClick={rowCard ? () => onSelectCard(rowCard) : undefined}
+                  onClick={rowCard ? () => onSelectCard(rowCard, resolveRowFocus(row)) : undefined}
                 >
                   <span>
                     <span className="text-[11px] font-medium text-ink">{row.label || `Row ${rowIndex + 1}`}</span>

@@ -356,6 +356,10 @@ function renderNegativeRow(entry, ctx) {
       ),
       obligations.length ? seeTextNode(obligations) : null,
     ),
+    // Item 2 (r5): `primary` is cards[0] for this covenant-code group -- the
+    // same card this row's pills/obligations text were built from.
+    card: primary || null,
+    evidence: obligations[0] || null,
   };
 }
 
@@ -653,7 +657,17 @@ const iocExceptionsConfig = {
           { id: 'negative', label: 'Negative covenants', rows: negativeRows },
           { id: 'other', label: 'Other restrictions', rows: otherRow ? [otherRow] : [] },
         ];
-        return React.createElement(GroupedSubRows, { groups, emptyCopy: 'No interim operating covenants found.' });
+        // Item 2 (r5): same onSelectCard/resolveCard/selectedCardId wiring
+        // conditions.config.js/nosol-section.config.js use -- only rows that
+        // set `card` above (negativeRows today) resolve to a real card;
+        // others render exactly as before (no dead cursor).
+        return React.createElement(GroupedSubRows, {
+          groups,
+          emptyCopy: 'No interim operating covenants found.',
+          onSelectCard: ctx.onSelectCard,
+          resolveCard: ctx.resolveCard,
+          selectedCardId: ctx.selectedCardId,
+        });
       },
     },
   ],

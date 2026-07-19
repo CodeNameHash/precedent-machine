@@ -233,6 +233,7 @@ function rowFromBucket(item, index, source, thresholds) {
     threshold: resolveThreshold(structuredThreshold, evidence, textOf(source), meta),
     evidence,
     source,
+    sourceCard: source,
     present: true,
   };
 }
@@ -258,6 +259,7 @@ function rowsFromText(source) {
       threshold: resolveThreshold(null, text, text, meta),
       evidence: text,
       source,
+      sourceCard: source,
       present: true,
     });
   }
