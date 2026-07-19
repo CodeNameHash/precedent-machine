@@ -299,20 +299,51 @@ function knowledgeStandardNote(cards) {
 // taxonomy codes ("EXECUTIVE_OFFICERS") rather than tagged {code,label}
 // objects, so each item is humanized through the same taxonomy dict/fallback
 // chain the other qualifier labels use instead of relying on a tagged shape.
+// FIX 6 (Fable investigation): per-party NAMED_SCHEDULE_LIST claims (one for
+// the Company's own schedule, one for the Parent's) resolve through the same
+// taxonomy dict to the IDENTICAL label ("Persons listed on Disclosure
+// Letter"), so a straight join produced that label twice on SkyWater. Dedupe
+// identical resolved labels; when an item's own verbatim text distinguishes
+// Company vs Parent, suffix the (deduped) label accordingly rather than
+// silently collapsing genuinely different schedules into one line.
+const PARTY_HINT_RE = /\b(company|target)\b|\b(parent|buyer|acquiror|acquirer)\b/i;
+function partySuffixFor(item) {
+  const text = textOfValue(item) || (item && typeof item === 'object' ? `${item.text || ''} ${(item.quotes || []).join(' ')}` : '');
+  if (!text) return null;
+  if (/\b(company|target)\b/i.test(text)) return 'Company';
+  if (/\b(parent|buyer|acquiror|acquirer)\b/i.test(text)) return 'Parent';
+  return null;
+}
 function knowledgePersonsLabel(cards) {
   const hit = firstFeature(cards, ['knowledgePersons']);
   if (!hit) return null;
   const items = Array.isArray(hit.value) ? hit.value : [hit.value];
   const dict = taxonomyForFeatureKey('knowledgePersons');
-  const labels = items
+  const resolved = items
     .map((item) => {
       const code = typeof item === 'string' ? item : codeOf(item);
-      if (!code) return textOfValue(item) || valueText(item);
-      const dictLabel = labelForCode(code, dict);
-      if (dictLabel) return dictLabel;
-      return /^[A-Z0-9_]+$/.test(code) ? humanizeCode(code) : code;
+      let label;
+      if (!code) label = textOfValue(item) || valueText(item);
+      else {
+        const dictLabel = labelForCode(code, dict);
+        label = dictLabel || (/^[A-Z0-9_]+$/.test(code) ? humanizeCode(code) : code);
+      }
+      return label ? { label, suffix: partySuffixFor(item) } : null;
     })
     .filter(Boolean);
+  // Dedupe by (label, suffix) pair -- two items that resolve to the same
+  // label but distinguish by party both survive as "Label (Company)" /
+  // "Label (Parent)"; two items with the same label and no distinguishing
+  // verbatim collapse to one plain "Label" entry.
+  const seen = new Set();
+  const labels = [];
+  for (const { label, suffix } of resolved) {
+    const display = suffix ? `${label} (${suffix})` : label;
+    const key = `${label}::${suffix || ''}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    labels.push(display);
+  }
   return labels.length ? labels.join(', ') : null;
 }
 
