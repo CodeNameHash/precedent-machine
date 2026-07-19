@@ -147,18 +147,26 @@ function applyContainmentRung(cardsPool, provisionsPool) {
   const provCounts = new Map();
   for (const p of candidates.values()) provCounts.set(p, (provCounts.get(p) || 0) + 1);
   const matches = [];
-  const matchedCardIds = new Set();
-  const matchedProvisionIds = new Set();
+  // Track matched CARDS/PROVISIONS by object reference, not by .id. Freshly
+  // minted rows (mint-cards.js, pre-insert) have no .id yet — the DB
+  // assigns it on insert — so an id-keyed Set collapsed every id-less card
+  // to the single key `undefined` after the first match, silently evicting
+  // every other still-unmatched id-less card from the pool before the next
+  // rung ran. Reference tracking has no such collision (also immune to a
+  // hypothetical duplicate id). Existing corpus flows never hit this
+  // because DB-loaded cards always carry a real id.
+  const matchedCards = new Set();
+  const matchedProvisions = new Set();
   for (const [c, p] of candidates.entries()) {
     if (provCounts.get(p) !== 1) continue;
     matches.push({ card: c, provision: p, rung: 5, key: `contain:${p.id}` });
-    matchedCardIds.add(c.id);
-    matchedProvisionIds.add(p.id);
+    matchedCards.add(c);
+    matchedProvisions.add(p);
   }
   return {
     matches,
-    remainingCards: cardsPool.filter((c) => !matchedCardIds.has(c.id)),
-    remainingProvisions: provisionsPool.filter((p) => !matchedProvisionIds.has(p.id)),
+    remainingCards: cardsPool.filter((c) => !matchedCards.has(c)),
+    remainingProvisions: provisionsPool.filter((p) => !matchedProvisions.has(p)),
   };
 }
 
@@ -180,21 +188,25 @@ function groupBy(items, keyFn) {
 function applyRung(cardsPool, provisionsPool, cardKeyFn, provKeyFn, rung) {
   const cardMap = groupBy(cardsPool, cardKeyFn);
   const provMap = groupBy(provisionsPool, provKeyFn);
-  const matchedCardIds = new Set();
-  const matchedProvisionIds = new Set();
+  // Reference tracking, not .id tracking — see the comment in
+  // applyContainmentRung above for why: id-less (pre-insert) cards would
+  // otherwise all collapse to the Set key `undefined` after the first
+  // match and vanish from every later rung's pool.
+  const matchedCards = new Set();
+  const matchedProvisions = new Set();
   const matches = [];
   for (const [key, cGroup] of cardMap.entries()) {
     const pGroup = provMap.get(key);
     if (pGroup && cGroup.length === 1 && pGroup.length === 1) {
       matches.push({ card: cGroup[0], provision: pGroup[0], rung, key });
-      matchedCardIds.add(cGroup[0].id);
-      matchedProvisionIds.add(pGroup[0].id);
+      matchedCards.add(cGroup[0]);
+      matchedProvisions.add(pGroup[0]);
     }
   }
   return {
     matches,
-    remainingCards: cardsPool.filter((c) => !matchedCardIds.has(c.id)),
-    remainingProvisions: provisionsPool.filter((p) => !matchedProvisionIds.has(p.id)),
+    remainingCards: cardsPool.filter((c) => !matchedCards.has(c)),
+    remainingProvisions: provisionsPool.filter((p) => !matchedProvisions.has(p)),
   };
 }
 
