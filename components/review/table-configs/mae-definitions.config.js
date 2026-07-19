@@ -2,6 +2,7 @@ import React from 'react';
 import taxonomy from '../../../lib/taxonomy.js';
 import { cardCode, cardFeatures, cardType, firstFeature, makeRow, selectCards, textOf, valueText } from './card-utils.js';
 import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
+import { resolveRowFocus } from '../../review-v2/provisionIndexHelpers.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
@@ -351,9 +352,21 @@ function maeSideTableNode(sideRows, ctx, key) {
       { className: 'divide-y divide-border' },
       sideRows.map((row) => {
         const detailNode = renderDetail(row, ctx);
+        // Item 2 (r5): wires each MAE-test/carve-out row to the ClauseSidebar
+        // the same way ProvisionTable.jsx's generic <tr> loop does -- rows
+        // already carry sourceCard/featureKey (buildRowsForCards above), so
+        // this only needed the click affordance, not new row data.
+        const rowCard = ctx.onSelectCard && typeof ctx.resolveCard === 'function' ? ctx.resolveCard(row) : null;
+        const rowCardKey = rowCard ? (rowCard.id || rowCard.provision_instance_id) : null;
+        const isSelectedRow = Boolean(rowCardKey) && ctx.selectedCardId === rowCardKey;
         return React.createElement(
           'tr',
-          { key: row.id, className: 'align-top hover:bg-bg/40' },
+          {
+            key: row.id,
+            className: `align-top hover:bg-bg/40${rowCard ? ' mtx-row-clickable' : ''}`,
+            onClick: rowCard ? () => ctx.onSelectCard(rowCard, resolveRowFocus(row)) : undefined,
+            style: rowCard ? { cursor: 'pointer', ...(isSelectedRow ? { background: 'rgba(47,109,181,.07)', boxShadow: 'inset 2px 0 0 #2F6DB5' } : {}) } : undefined,
+          },
           React.createElement(
             'td',
             { className: 'w-[16rem] px-3 py-2 text-ink font-medium whitespace-normal break-words' },

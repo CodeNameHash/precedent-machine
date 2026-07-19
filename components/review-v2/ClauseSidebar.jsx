@@ -14,6 +14,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useViewMode } from '../ViewModeContext';
+import { cardFeatureQuote } from './provisionIndexHelpers.js';
 
 function fmtValue(raw) {
   const n = Number(raw);
@@ -231,7 +232,76 @@ function CorrectTab({ card, dealId }) {
   );
 }
 
-export default function ClauseSidebar({ card, dealId, dealSector, onClose, onViewInAgreement }) {
+// Sidebar feedback package (Ben, r5), item 1: the row-scoped focus block
+// rendered above the (now-collapsed) full parent-card body when a row
+// carries rowFocus context. Pills come from the SAME card.features map the
+// Correct tab's claim dropdown already reads (cardClaimOptions/
+// featureValueText above) -- filtered to just the row's own featureKeys so
+// a PSU row shows PSU values, not RSU/options too. The verbatim quote
+// prefers the row's own evidence text, then the specific claim's quote
+// (cardFeatureQuote, keyed off featureKeys), and only falls back to the
+// parent card's primary_quote -- clearly labelled as such -- when neither
+// exists.
+function RowFocusBlock({ rowFocus, card }) {
+  if (!rowFocus) return null;
+  const features = (card && card.features && typeof card.features === 'object') ? card.features : {};
+  const pills = (rowFocus.featureKeys || [])
+    .map((key) => ({ key, text: featureValueText(features[key]) }))
+    .filter((p) => p.text);
+  const rowQuote = rowFocus.quote || cardFeatureQuote(card, rowFocus.featureKeys);
+  const parentQuote = card ? (card.primary_quote || card.region_full_text || '') : '';
+  const usingParentFallback = !rowQuote && Boolean(parentQuote);
+  const displayQuote = rowQuote || parentQuote;
+
+  return (
+    <div className="px-3.5 py-3 border-b-2 border-[#1F1F1F]" data-testid="row-focus-block">
+      <div className={LAB}>Selected row{rowFocus.itemCode ? ` · ${rowFocus.itemCode}` : ''}</div>
+      <div className="text-[13px] font-bold text-[#1F1F1F] mb-1.5">{rowFocus.label || 'This row'}</div>
+      {pills.length ? (
+        <div className="flex flex-wrap gap-1 mb-2">
+          {pills.map((p) => (
+            <span
+              key={p.key}
+              className="border px-1.5 py-0.5 text-[8.5px]"
+              style={{ color: '#1F1F1F', borderColor: 'rgba(31,31,31,.25)', background: 'rgba(31,31,31,.05)' }}
+            >
+              {p.text}
+            </span>
+          ))}
+        </div>
+      ) : null}
+      {displayQuote ? (
+        <>
+          <div className="text-[9px] text-[#6B6B6B] mb-1">
+            {usingParentFallback ? 'Parent provision text (row-specific quote unavailable)' : 'This row’s verbatim clause'}
+          </div>
+          <div className="text-[11px] leading-5 text-[#1F1F1F] whitespace-pre-wrap break-words border-l-2 border-[#1F1F1F] bg-[#F6F6F6] px-2.5 py-2 max-h-48 overflow-y-auto mtx-scrollbar-thin">
+            {displayQuote.slice(0, 1600)}{displayQuote.length > 1600 ? '…' : ''}
+          </div>
+        </>
+      ) : (
+        <div className="text-[10px] text-[#9A9A9A]">No verbatim text captured for this row.</div>
+      )}
+    </div>
+  );
+}
+
+// Sidebar feedback package (Ben, r5), item 3: quiet .mtx empty state shown
+// while the panel is open but nothing is selected -- the panel itself is
+// always mounted (pages/review/[id].js no longer conditionally renders
+// ClauseSidebar), so this replaces the old "just don't render" behaviour
+// and keeps the layout from jumping when a selection is cleared.
+function EmptyState() {
+  return (
+    <div className="flex-1 flex items-center justify-center px-6 py-10" data-testid="clause-sidebar-empty">
+      <p className="text-[10px] text-[#9A9A9A] text-center leading-relaxed" style={{ fontFamily: 'var(--mtx-sans)' }}>
+        Click a row for corpus context.
+      </p>
+    </div>
+  );
+}
+
+export default function ClauseSidebar({ card, rowFocus = null, dealId, dealSector, onClose, onViewInAgreement }) {
   const { isEdit } = useViewMode();
   const [tab, setTab] = useState('context');
   const [filters, setFilters] = useState({ sector: '', yearFrom: '', size: '', lawFirm: '', buyer: '', form: '' });
@@ -273,37 +343,16 @@ export default function ClauseSidebar({ card, dealId, dealSector, onClose, onVie
     return () => { cancelled = true; };
   }, [query]);
 
-  if (!card) return null;
-  const quote = card.primary_quote || card.region_full_text || '';
+  const quote = card ? (card.primary_quote || card.region_full_text || '') : '';
   const opts = (stats && stats.options) || { sectors: [], buyers: [], lawFirms: [], forms: [], lawFirmCoverage: 0 };
   const setF = (key) => (e) => setFilters((f) => ({ ...f, [key]: e.target.value }));
 
-  return (
-    <aside
-      className="hidden lg:flex flex-col w-[320px] shrink-0 border-l border-[#E0E0E0] bg-white sticky overflow-y-auto mtx-scrollbar-thin"
-      style={{ top: 'var(--mtx-head-h, 108px)', height: 'calc(100vh - var(--mtx-head-h, 108px))', fontFamily: 'var(--mtx-sans)' }}
-      data-testid="clause-sidebar"
-    >
-      <div className="flex border-b border-[#E0E0E0]">
-        <button
-          type="button"
-          onClick={() => setTab('context')}
-          className={`flex-1 py-2 text-[8.5px] font-bold uppercase tracking-[0.14em] border-b-2 ${tab === 'context' ? 'text-[#1F1F1F] border-black' : 'text-[#9A9A9A] border-transparent'}`}
-        >
-          Corpus context
-        </button>
-        {isEdit ? (
-          <button
-            type="button"
-            onClick={() => setTab('correct')}
-            className={`flex-1 py-2 text-[8.5px] font-bold uppercase tracking-[0.14em] border-b-2 ${tab === 'correct' ? 'text-[#1F1F1F] border-black' : 'text-[#9A9A9A] border-transparent'}`}
-          >
-            Correct ✎
-          </button>
-        ) : null}
-        <button type="button" onClick={onClose} aria-label="Close sidebar" className="px-3 text-[#9A9A9A] hover:text-[#1F1F1F] text-xs">✕</button>
-      </div>
-
+  // Item 3 (r5): the panel is always mounted now (pages/review/[id].js keeps
+  // ClauseSidebar rendered unconditionally) so selecting/clearing a row swaps
+  // content in place instead of the whole <aside> mounting/unmounting --
+  // no layout jump. The empty state below is the "nothing selected" content.
+  const fullBody = card ? (
+    <>
       <div className="px-3.5 py-3 border-b border-[#E0E0E0]">
         <div className="mtx-mono text-[9px] text-[#6B6B6B]">{code} · {sectionRefLabel(card.section_ref)}</div>
         <div className="text-[13px] font-bold text-[#1F1F1F] mt-0.5">{card.short_title || card.defined_term}</div>
@@ -420,6 +469,59 @@ export default function ClauseSidebar({ card, dealId, dealSector, onClose, onVie
             </div>
           ) : null}
         </>
+      )}
+    </>
+  ) : null;
+
+  return (
+    <aside
+      className="hidden lg:flex flex-col w-[320px] shrink-0 border-l border-[#E0E0E0] bg-white sticky overflow-y-auto mtx-scrollbar-thin"
+      style={{ top: 'var(--mtx-head-h, 108px)', height: 'calc(100vh - var(--mtx-head-h, 108px))', fontFamily: 'var(--mtx-sans)' }}
+      data-testid="clause-sidebar"
+    >
+      {card ? (
+        <div className="flex border-b border-[#E0E0E0]">
+          <button
+            type="button"
+            onClick={() => setTab('context')}
+            className={`flex-1 py-2 text-[8.5px] font-bold uppercase tracking-[0.14em] border-b-2 ${tab === 'context' ? 'text-[#1F1F1F] border-black' : 'text-[#9A9A9A] border-transparent'}`}
+          >
+            Corpus context
+          </button>
+          {isEdit ? (
+            <button
+              type="button"
+              onClick={() => setTab('correct')}
+              className={`flex-1 py-2 text-[8.5px] font-bold uppercase tracking-[0.14em] border-b-2 ${tab === 'correct' ? 'text-[#1F1F1F] border-black' : 'text-[#9A9A9A] border-transparent'}`}
+            >
+              Correct ✎
+            </button>
+          ) : null}
+          <button type="button" onClick={onClose} aria-label="Close sidebar" className="px-3 text-[#9A9A9A] hover:text-[#1F1F1F] text-xs">✕</button>
+        </div>
+      ) : (
+        <div className="border-b border-[#E0E0E0] px-3.5 py-2">
+          <span className="text-[8.5px] font-bold uppercase tracking-[0.14em] text-[#9A9A9A]">Corpus context</span>
+        </div>
+      )}
+
+      {card ? (
+        <>
+          {rowFocus ? <RowFocusBlock rowFocus={rowFocus} card={card} /> : null}
+          {rowFocus && tab === 'context' ? (
+            <details className="group" open>
+              <summary
+                className="cursor-pointer select-none px-3.5 py-2 border-b border-[#E0E0E0] text-[9px] font-bold uppercase tracking-[0.14em] text-[#6B6B6B] hover:text-[#1F1F1F]"
+                data-testid="full-provision-disclosure"
+              >
+                Full provision
+              </summary>
+              {fullBody}
+            </details>
+          ) : fullBody}
+        </>
+      ) : (
+        <EmptyState />
       )}
     </aside>
   );
