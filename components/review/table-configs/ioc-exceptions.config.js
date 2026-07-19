@@ -608,14 +608,48 @@ function normalizeLimb(limb) {
   return limb;
 }
 
-// Short row title off a limb's own obligation text ("maintain all leases
-// and all personal property (reasonable wear and tear excepted) that..."
-// -> "Maintain all leases and all personal property"). First clause only,
-// parentheticals stripped, sentence-cased, bounded.
+// Deterministic title rubric for IOC affirmative-covenant limbs (r9).
+// Validated against all 128 affirmative limbs extracted corpus-wide
+// (40 deals, production API, 2026-07-19): full coverage, zero fallbacks.
+// Ordered, first match wins, applied to the FULL obligation text — never a
+// truncated first clause (truncation caused the QXO failures: "maintain in
+// effect all of their foreign[, federal...] Licenses, permits..." cut
+// before the operative nouns, and an efforts-wrapper clause titled by its
+// "commercially reasonable efforts" preamble instead of its subject).
+// Five corpus limbs bundle several duties in one clause (compound
+// preserve+retain+property shapes — IonQ, CSRA, Cooper Tire, Starwood,
+// Summit); the rubric picks the dominant duty and the full clause stays
+// one click away behind See provision.
+const IOC_LIMB_TITLE_RUBRIC = [
+  { test: /status of the company as a reit|qualif(y|ied) as a reit/i, title: 'Maintain REIT qualification' },
+  { test: /adversely affects? the ability .{0,60}regulatory approvals?/i, title: 'Not impede regulatory approvals' },
+  { test: /prompt written notice/i, title: 'Notify of customer/relationship issues' },
+  { test: /anti-corruption|economic sanctions|\bsanctions\b/i, title: 'Comply with anti-corruption & sanctions laws' },
+  { test: /\bcomply\b[\s\S]{0,60}\blaws?\b/i, title: 'Comply with applicable laws' },
+  { test: /existence in good standing/i, title: 'Maintain corporate existence & good standing' },
+  // Negative-lookahead guard: a bare license/permit keyword inside a broad
+  // "preserve business organization ... relationships with ..." omnibus
+  // list (Endeavor, EWC, Skechers, Carrols) must not claim this title.
+  {
+    test: /^(?![\s\S]*\b(?:business organizations?|relationships?\s+with)\b)[\s\S]*\b(?:franchis|permits?\b|licen[cs]es?\b|approvals?\b|authoriz)/i,
+    title: 'Maintain permits, franchises & authorizations',
+  },
+  { test: /\blease|\bpersonal property\b|good repair/i, title: 'Maintain leases & material property' },
+  { test: /keep available the services|retain the services|retain [\s\S]{0,20}officers/i, title: 'Retain officers & key employees' },
+  { test: /preserve|goodwill|business organization|business relationship|relationships?\s+with/i, title: 'Preserve business organization & relationships' },
+  { test: /ordinary (and usual )?course/i, title: 'Conduct business in ordinary course' },
+];
+
 function limbShortTitle(limb) {
   const raw = valueText(limb?.obligation);
   if (!raw) return null;
-  let t = String(raw).replace(/\([^)]*\)/g, ' ').replace(/\s+/g, ' ').trim();
+  const full = String(raw);
+  for (const rule of IOC_LIMB_TITLE_RUBRIC) {
+    if (rule.test.test(full)) return rule.title;
+  }
+  // Corpus-wide the rubric never misses (0/128); a future outlier still
+  // gets a readable first-clause title rather than nothing.
+  let t = full.replace(/\([^)]*\)/g, ' ').replace(/\s+/g, ' ').trim();
   t = t.split(/[,;]/)[0].trim();
   if (t.length > 64) t = `${t.slice(0, 64).replace(/\s+\S*$/, '')}…`;
   if (!t) return null;
