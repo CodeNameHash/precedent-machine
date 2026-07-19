@@ -1,0 +1,86 @@
+/* Q7 (perf quick-wins, Jul 2026): self-hosted replacement for the
+   fonts.googleapis.com <link> previously fetched by pages/review/[id].js
+   (Tinos/Inter/IBM Plex Mono — the "Mergertrace" type system used wherever
+   components/review-v2/MergertraceStyles.jsx's --mtx-serif/--mtx-sans/
+   --mtx-mono vars are in scope: /review/[id], /, and /query/*, all of which
+   render <MergertraceStyles/>). Self-hosting removes the render-blocking
+   cross-origin request (DNS + connect + TLS to fonts.googleapis.com, then a
+   second round trip to fonts.gstatic.com for the actual woff2) in favor of
+   same-origin files served from public/fonts/, cached at the CDN edge like
+   any other static asset.
+
+   Files are the "latin" subset only (the app is English-language M&A
+   filings) — see public/fonts/README for provenance. font-display: swap
+   avoids invisible text while each family loads.
+
+   Imported once, globally, via pages/_app.js's styles/globals.css so every
+   page that references --mtx-serif/--mtx-sans/--mtx-mono resolves to a real
+   loaded font instead of silently falling back to the system sans (the
+   pre-existing gap on / and /query/*, which render MergertraceStyles but
+   never fetched these families at all). @font-face declarations are inert
+   until something on the page actually uses the family, so this adds no
+   load cost to pages that don't render Mergertrace-styled UI. */
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/inter-variable.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Tinos';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/tinos-normal-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Tinos';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/tinos-normal-700.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Tinos';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/tinos-italic-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Tinos';
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/tinos-italic-700.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/ibm-plex-mono-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/ibm-plex-mono-500.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/ibm-plex-mono-600.woff2') format('woff2');
+}
