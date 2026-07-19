@@ -40,6 +40,55 @@ export function sectionRefNumber(ref) {
   return String(ref || '').split('|')[0].trim();
 }
 
+// Item 17 (r4): wires ProvisionTable summary rows to the same ClauseSidebar
+// ProvisionIndex rows already open -- see components/review/ProvisionTable.jsx
+// and pages/review/[id].js. Summary rows carry their source card under one of
+// a few shapes depending on which table-configs helper built the row:
+// card-utils.js's makeRows()/buildSectionSubjectResolver() set `sourceCard`
+// (singular, an object), the nosol-*.config.js allFeatures()-based builders
+// set `sourceCards` (plural array -- first element is the row's primary
+// source), and GroupedSubRows children set `card` directly once threaded
+// through by their owning config (see nosol-section.config.js's buildGroups).
+export function cardKey(card) {
+  return card ? String(card.id || card.provision_instance_id || '') : '';
+}
+
+// Index a section's own card list by id/provision_instance_id -- so a
+// resolved row hands back the SAME object reference (or at least the same
+// section's copy) ProvisionIndex/onSelectCard already operate on. Selection
+// equality (`cur.id === card.id`) and the sidebar's own props don't require
+// referential identity, but keying off the section's card list (rather than
+// trusting whatever the row closed over) keeps resolution consistent with
+// what's actually listed in "Provisions in this section".
+export function buildCardIndex(cards) {
+  const byId = new Map();
+  for (const card of cards || []) {
+    const key = cardKey(card);
+    if (key) byId.set(key, card);
+  }
+  return byId;
+}
+
+// Resolves a ProvisionTable row to the card its ClauseSidebar should open
+// for, or null when the row carries no identifiable source card (rows built
+// purely from cross-card rollups/computed values with no single owning
+// card must NOT become clickable -- see ProvisionTable.jsx's dead-cursor
+// guard). cardsById is typically the section's own sectionCards, built via
+// buildCardIndex() above.
+export function resolveRowCard(row, cardsById) {
+  if (!row) return null;
+  const candidate = row.card || row.sourceCard || (Array.isArray(row.sourceCards) ? row.sourceCards[0] : null);
+  if (!candidate) return null;
+  const key = cardKey(candidate);
+  if (!key) return null;
+  if (cardsById && cardsById.has(key)) return cardsById.get(key);
+  // Not indexed under this section's card list (shouldn't normally happen --
+  // the row's source card comes from the same reviewDeal.cards the section
+  // was grouped from) -- fall back to the candidate itself rather than
+  // silently dropping the click affordance.
+  return candidate;
+}
+
 export function dedupeBySectionAndTitle(cards) {
   const byKey = new Map();
   for (const card of cards || []) {

@@ -66,7 +66,14 @@ function SectionBlock({ section, reviewDeal, sectionCards, onSelectCard, selecte
         ) : (
           <>
             {section.id === CONSIDERATION_SECTION_ID && election ? <ElectionCard election={election} /> : null}
-            <ProvisionTable config={section.config} reviewDeal={reviewDeal} isEdit={false} />
+            <ProvisionTable
+              config={section.config}
+              reviewDeal={reviewDeal}
+              isEdit={false}
+              sectionCards={sectionCards}
+              onSelectCard={onSelectCard}
+              selectedCardId={selectedCardId}
+            />
           </>
         )}
         {section.id !== '__definitions' && sectionCards && sectionCards.length ? (

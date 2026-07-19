@@ -156,6 +156,16 @@ export default function MergertraceStyles() {
       .mtx [data-testid^='provision-table-'] tbody tr:hover {
         background: #F6F6F6;
       }
+      /* Item 17 (r4): summary-table rows that resolve to a card (wired to
+         open the ClauseSidebar, see ProvisionTable.jsx/GroupedSubRows) get a
+         distinct hover tint over the generic row hover above, plus a pointer
+         cursor set inline -- matching the accent colour ProvisionIndex uses
+         for its own row selection so the affordance reads as "the same
+         clickable thing" corpus-wide. */
+      .mtx [data-testid^='provision-table-'] tbody tr.mtx-row-clickable:hover,
+      .mtx [data-testid='grouped-sub-rows'] .mtx-row-clickable:hover {
+        background: rgba(47, 109, 181, .08);
+      }
       /* First column reads as a LABEL (the Affirmative-covenants row-label
          size/weight — GroupedSubRows' text-[11px] font-medium). */
       .mtx [data-testid^='provision-table-'] tbody > tr > td:first-child {
