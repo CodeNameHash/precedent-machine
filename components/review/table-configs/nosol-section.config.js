@@ -464,6 +464,16 @@ function buildGroups(reviewDeal, ctx) {
           // resolveCard usage). row.sourceCards is the plural shape allFeatures()
           // (card-utils.js) attaches -- first element is the row's primary source.
           card: (row.sourceCards && row.sourceCards[0]) || row.sourceCard || null,
+          // Sidebar redesign items 2/4: carry the ORIGINAL row's own claim
+          // attribute(s) and any drill-down items through to this mapped
+          // row too -- resolveRowFocus(row) runs against THIS object (see
+          // GroupedSubRows/ProvisionTablePrimitives.jsx), not the row built
+          // by rowForSpec() above, so without this the corpus-context
+          // scoping and the prohibited-act/exception drill-down were
+          // silently dropped for every grouped nosol row.
+          featureKeys: row.featureKeys || null,
+          items: row.acts || row.exceptionItems || null,
+          evidence: row.evidence || null,
         };
       })
       .filter(Boolean);

@@ -237,6 +237,11 @@ function rowForSpec(spec, cards) {
     detail: detail || 'Present, detail not extracted',
     evidence: matches.map(textOf).filter(Boolean).join('\n\n'),
     sourceCards: matches,
+    // Sidebar redesign item 2/4: thread the row's own claim attribute(s)
+    // through to resolveRowFocus/ClauseSidebar so corpus context can be
+    // scoped to exactly this row's feature (e.g.
+    // ceaseDiscussionsProhibitedList), not a generic parent-card summary.
+    featureKeys: spec.keys || null,
     present: true,
   };
   if (spec.id === 'prohibit') row.acts = prohibitedActsFor(matches);

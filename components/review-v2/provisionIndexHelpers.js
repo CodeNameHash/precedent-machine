@@ -105,8 +105,33 @@ export function resolveRowCard(row, cardsById) {
 //     row-specific verbatim text convention -- see ProvisionTable.jsx's
 //     fallbackEvidenceText) -- NOT row.value, which is often a coded label,
 //     not clause prose.
+//   - items: row.items, else row.acts (nosol-noshop prohibited acts), else
+//     row.exceptionItems (nosol-noshop exceptions), normalized to
+//     { label, itemCode, quote } -- sidebar redesign item 4 (progressive
+//     drill-down): list-type row values carry their own children so
+//     ClauseSidebar can render each as a clickable "drill in" item without
+//     every table-config having to wire its own click handler per pill.
+//     Plain-string items (legacy exceptionItems shape) get no itemCode/quote.
 // Returns null when the row carries none of the above, so ClauseSidebar
 // falls back to showing only the parent card (unchanged behaviour).
+function normalizeRowItems(row) {
+  const raw = row.items || row.acts || row.exceptionItems;
+  if (!Array.isArray(raw) || !raw.length) return null;
+  return raw
+    .map((item) => {
+      if (typeof item === 'string') return { label: item, itemCode: null, quote: null };
+      if (!item || typeof item !== 'object') return null;
+      const label = item.label || null;
+      if (!label) return null;
+      return {
+        label,
+        itemCode: item.code || item.itemCode || null,
+        quote: (typeof item.evidence === 'string' && item.evidence.trim()) ? item.evidence.trim() : null,
+      };
+    })
+    .filter(Boolean);
+}
+
 export function resolveRowFocus(row) {
   if (!row) return null;
   const label = row.label || row.instrument || row.term || null;
@@ -115,8 +140,9 @@ export function resolveRowFocus(row) {
     : (row.featureKey ? [row.featureKey] : null);
   const itemCode = row.itemCode || row.code || row.instrumentCode || null;
   const quote = (typeof row.evidence === 'string' && row.evidence.trim()) ? row.evidence.trim() : null;
-  if (!label && !featureKeys && !itemCode && !quote) return null;
-  return { label, featureKeys, itemCode, quote };
+  const items = normalizeRowItems(row);
+  if (!label && !featureKeys && !itemCode && !quote && !items) return null;
+  return { label, featureKeys, itemCode, quote, items };
 }
 
 // Pulls the row-specific verbatim quote(s) for a set of featureKeys off a

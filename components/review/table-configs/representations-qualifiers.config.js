@@ -908,7 +908,12 @@ function repsTableNode(repRows, ctx) {
         {
           key: row.id,
           className: `align-top hover:bg-bg/40${rowCard ? ' mtx-row-clickable' : ''}`,
-          onClick: rowCard ? () => ctx.onSelectCard(rowCard, resolveRowFocus({ label: row.party ? `${row.label} (${row.party})` : row.label, itemCode: cardCode(row.card) })) : undefined,
+          // Sidebar redesign item 3: thread the rep's own qualifier
+          // attributes through so ClauseSidebar can break the row into
+          // labelled bits (materiality standard, knowledge qualifier,
+          // lookback date) each with its own corpus distribution, instead
+          // of a single undifferentiated "this row" block.
+          onClick: rowCard ? () => ctx.onSelectCard(rowCard, resolveRowFocus({ label: row.party ? `${row.label} (${row.party})` : row.label, itemCode: cardCode(row.card), featureKeys: ['materialityQualifier', 'knowledgeQualifier', 'lookbackDateISO'] })) : undefined,
           style: rowCard ? { cursor: 'pointer', ...(isSelectedRow ? { background: 'rgba(47,109,181,.07)', boxShadow: 'inset 2px 0 0 #2F6DB5' } : {}) } : undefined,
         },
         React.createElement('td', { className: 'px-3 py-2 whitespace-normal break-words text-ink' }, renderTerm(row, ctx)),
