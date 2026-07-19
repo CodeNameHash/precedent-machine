@@ -167,6 +167,20 @@ test('FILTER_THEN_LIST filters deals by resolved feature aliases', async () => {
   assert.deepEqual(result.rows.map((row) => row.deal_id).sort(), ['d1', 'd3']);
 });
 
+test('FILTER_THEN_LIST hits carry a citable quote (query-results overhaul item 3 — provision spans replace "N matched hits")', async () => {
+  const result = await runQuery('FILTER_THEN_LIST', {
+    filters: [{ provision_type: 'COVENANT_NO_SOLICITATION', field: 'go_shop', op: 'eq', value: true }],
+    columns: ['deal_name', 'signing_date', 'consideration_type', 'total_deal_value'],
+  }, { context });
+  const row = result.rows.find((r) => r.deal_id === 'd1');
+  assert.ok(row, 'expected d1 to match the go_shop filter');
+  assert.equal(row.matched_provision_hits.length, 1);
+  const [hit] = row.matched_provision_hits;
+  assert.ok(hit.quote, 'hit should carry a quote object');
+  assert.equal(typeof hit.quote.text, 'string');
+  assert.ok(hit.quote.text.length > 0);
+});
+
 test('FILTER_THEN_LIST deal_filter.consideration_type filters by type of deal (QueryLaunchBox deal-type filter)', async () => {
   const result = await runQuery('FILTER_THEN_LIST', {
     filters: [],
