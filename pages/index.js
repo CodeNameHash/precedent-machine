@@ -332,7 +332,7 @@ export default function HomePage({ initialData }) {
             <section className="operational">
               <div className="wrap">
                 <h2 className="launchTitle">Launch Query</h2>
-                <QueryLaunchBox />
+                <QueryLaunchBox showTitle={false} />
                 <div className="opsHead">
                   <div />
 
