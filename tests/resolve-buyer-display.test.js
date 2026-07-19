@@ -35,3 +35,21 @@ test('resolveBuyerDisplay returns null when there is no candidate at all', () =>
   assert.equal(resolveBuyerDisplay({ metadata: {} }), null);
   assert.equal(resolveBuyerDisplay(null), null);
 });
+
+// Regression (2026-07-19 law-firms/deals-index live tail): bare "holdings"
+// is a real corporate suffix, not a shell-vehicle signal on its own —
+// "Novo Holdings A/S" is the actual verified acquirer of Catalent, and was
+// being wrongly skipped in favor of the raw filed shell name "Creek Parent,
+// Inc." because the two SHELL_NAME_REGEX copies (this file and
+// lib/ingest/deal-metadata-prompt.js) had drifted apart.
+test('SHELL_NAME_REGEX no longer flags bare "Holdings" as shell-shaped (Novo Holdings A/S case)', () => {
+  assert.equal(SHELL_NAME_REGEX.test('Novo Holdings A/S'), false);
+  assert.equal(SHELL_NAME_REGEX.test('HireRight Holdings Corporation'), false);
+  // "Holdco" remains a strong deal-vehicle signal and still matches.
+  assert.equal(SHELL_NAME_REGEX.test('Wildcat EGH Holdco, L.P.'), true);
+});
+
+test('resolveBuyerDisplay: Catalent case — Novo Holdings A/S (real name containing "Holdings") is preferred over the raw filed shell "Creek Parent, Inc."', () => {
+  const deal = { acquirer: 'Creek Parent, Inc.', metadata: { acquirer_display: 'Novo Holdings A/S', ultimateParent: 'Novo Holdings A/S' } };
+  assert.equal(resolveBuyerDisplay(deal), 'Novo Holdings A/S');
+});
