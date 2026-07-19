@@ -4,8 +4,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import MergertraceStyles from '../../components/review-v2/MergertraceStyles';
 import AppHeader from '../../components/chrome/AppHeader';
-import { humanizeKey, describeFilter } from '../../lib/query/filter-labels';
-import { PROVISION_TYPES, OpSelect, ProvisionTypeSelect, FilterValueInput } from '../../components/query/QueryFilterControls';
+import { humanizeKey } from '../../lib/query/filter-labels';
+import {
+  PROVISION_TYPES, ProvisionTypeSelect, FilterRow, coerceFilterForPayload,
+} from '../../components/query/QueryFilterControls';
 
 QueryIndexPage.noLayout = true;
 
@@ -250,7 +252,7 @@ function BuilderSection({ deals, schemas, router }) {
   const buildPayload = () => {
     if (kind === 'FILTER_THEN_LIST') {
       return {
-        filters: filters.map((f) => ({ ...f, value: f.value === 'true' ? true : f.value === 'false' ? false : (Number.isNaN(Number(f.value)) || f.value === '' ? f.value : Number(f.value)) })),
+        filters: filters.map(coerceFilterForPayload),
         sort_by: 'deal_signing_date_desc',
         columns: ['deal_name', 'signing_date', 'consideration_type', 'total_deal_value'],
       };
@@ -386,19 +388,19 @@ function FilterListBuilder({ filters, setFilters, provisionTypes }) {
     <div className="fb">
       {filters.map((f, i) => (
         <div className="frow" key={i}>
-          <ProvisionTypeSelect value={f.provision_type} onChange={(v) => update(i, { provision_type: v })} types={provisionTypes} />
-          <input className="mtx-input" value={f.field} onChange={(e) => update(i, { field: e.target.value })} placeholder="field path" />
-          <OpSelect value={f.op} onChange={(v) => update(i, { op: v })} />
-          <FilterValueInput value={f.value} onChange={(v) => update(i, { value: v })} />
-          <span className="preview">{describeFilter(f).text}</span>
-          <button type="button" className="mtx-btn" onClick={() => setFilters(filters.filter((_, idx) => idx !== i))}>Remove</button>
+          <FilterRow
+            filter={f}
+            onChange={(patch) => update(i, patch)}
+            onRemove={filters.length > 1 ? () => setFilters(filters.filter((_, idx) => idx !== i)) : undefined}
+            provisionTypes={provisionTypes}
+          />
         </div>
       ))}
       <button type="button" className="mtx-btn" onClick={() => setFilters([...filters, { provision_type: 'CONSIDERATION', field: '', op: 'eq', value: '' }])}>+ Add filter</button>
       <style jsx>{`
-        .fb { display: flex; flex-direction: column; gap: 8px; }
-        .frow { display: grid; grid-template-columns: 1.4fr 1fr 0.9fr 1fr auto; gap: 8px; align-items: center; }
-        .preview { grid-column: 1 / -1; font-size: 11px; color: var(--ink-light); font-family: var(--mtx-sans); }
+        .fb { display: flex; flex-direction: column; gap: 14px; }
+        .frow { border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+        .frow:last-of-type { border-bottom: none; padding-bottom: 0; }
       `}</style>
     </div>
   );

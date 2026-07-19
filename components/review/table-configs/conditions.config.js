@@ -1,6 +1,6 @@
 import React from 'react';
 import { conditionsBConfig, conditionsMConfig, conditionsSConfig } from './conditions-m.config.js';
-import { splitForCell, valueText } from './card-utils.js';
+import { splitForCell, triggerThresholdLabel, valueText } from './card-utils.js';
 import { STANDARD_TEXT, standardColorKey } from './standard-colors.js';
 import { voteStandard } from './vote-standard.js';
 
@@ -448,14 +448,21 @@ function definedTermsNode(matches) {
 // to design against). Surfaces whatever short structured fields exist
 // instead of silently showing nothing.
 const GENERIC_FIELDS = [
-  ['dollarThreshold', 'Threshold'],
   ['curePeriod', 'Cure period'],
   ['cureDays', 'Cure period'],
   ['scheduleReference', 'Schedule reference'],
 ];
 
+// Item 3 (r6): a closing condition's dollarThreshold is a monetary TRIGGER
+// (the figure that activates the condition), not a monetary EXCEPTION -- it
+// gets the shared triggerThresholdLabel() ("Trigger: $X") rather than this
+// generic loop's own "Threshold: $X" wording, so it reads identically to
+// every other config's trigger-amount pill (ioc-exceptions.config.js).
 function genericChips(PillCell, matches, primary) {
   const chips = [];
+  const dollarRaw = firstDefined(matches, 'dollarThreshold');
+  const dollarText = dollarRaw === undefined ? null : valueText(dollarRaw);
+  if (dollarText) chips.push(mkChip(PillCell, 'generic-dollarThreshold', triggerThresholdLabel(dollarText), 'neutral', primary));
   for (const [key, label] of GENERIC_FIELDS) {
     const raw = firstDefined(matches, key);
     if (raw === undefined) continue;
@@ -566,7 +573,6 @@ function buildStandardDetail(row, family, ctx, bandFamilies) {
   // other family -- so this returns { node, seeText } instead of one node.
   const validChips = chips.filter(Boolean);
   const mainConditionText = valueText(firstDefined(matches, 'mainCondition'));
-  const clause = clauseSeeText(mainConditionText);
 
   const node = React.createElement(
     'div',
@@ -578,7 +584,12 @@ function buildStandardDetail(row, family, ctx, bandFamilies) {
   // this row's chips/text were built FROM (see mkChip's provision?.sourceCard
   // above), so it's the correct clicked-through card for THIS row, not the
   // whole Closing Conditions section.
-  return { node, seeText: clause, card: primary?.sourceCard || null, evidence: mainConditionText || primary?.full_text || null };
+  // Item 2 (r6): seeTextContent is raw text -- GroupedSubRows renders the
+  // full-width expansion itself now, rather than receiving a pre-built
+  // <details> node (clauseSeeText stays defined/used elsewhere in this file
+  // for the smaller nested Defined-term / Reps-covered expanders, which are
+  // not the row-level "whole column squeezed" defect this fixes).
+  return { node, seeTextContent: mainConditionText, card: primary?.sourceCard || null, evidence: mainConditionText || primary?.full_text || null };
 }
 
 // Splits each party band's full canonical row list (present + absent, as
@@ -606,7 +617,11 @@ function conditionGroups(reviewDeal, ctx) {
         id: row.id,
         label: conditionLabelNode(row, code, family),
         children: detail.node,
-        seeText: detail.seeText,
+        // Item 2 (r6): raw expansion text (not a pre-rendered <details>
+        // node) -- GroupedSubRows renders this in its own full-width block
+        // below the row instead of squeezed inline into the label cell (see
+        // GroupedSubRows in ProvisionTablePrimitives.jsx).
+        seeTextContent: detail.seeTextContent,
         // Item 2 (r5): wires each condition row to its own backing card --
         // see GroupedSubRows in ProvisionTablePrimitives.jsx.
         card: detail.card,
