@@ -388,6 +388,7 @@ function buildAcquisitionProposalGroup(reviewDeal, ctx) {
       acqProposalChipRow([...pctChips, ...typeChips, exclusionChip], ctx),
       seeDefinitionLink(baseText, ctx),
     ) : null,
+    card: baseCard,
   }];
 
   if (qualifyingCard) {
@@ -402,6 +403,7 @@ function buildAcquisitionProposalGroup(reviewDeal, ctx) {
       id: 'nosol-acqprop-qualifying',
       label: 'Qualifying Company Takeover Proposal',
       children: ctx ? React.createElement('div', { className: 'space-y-1.5' }, acqProposalChipRow(qualChips, ctx), seeDefinitionLink(qualifyingText, ctx)) : null,
+      card: qualifyingCard,
     });
   }
 
@@ -433,7 +435,7 @@ function buildGoShopGroup(reviewDeal, ctx) {
   const add = (id, label, hit, unit) => {
     const v = goShopValue(hit);
     if (!v) return;
-    rows.push({ id, label, children: pill(unit && /^\d+$/.test(v) ? `${v} ${unit}` : v) });
+    rows.push({ id, label, children: pill(unit && /^\d+$/.test(v) ? `${v} ${unit}` : v), card: hit?.card || null });
   };
   add('nosol-go-shop-period', 'Go-shop period', period, 'business days');
   add('nosol-go-shop-excluded', 'Excluded parties', excluded);
@@ -457,6 +459,11 @@ function buildGroups(reviewDeal, ctx) {
           label: row.label,
           children: node ? node.signal : null,
           seeText: node ? node.seeText : null,
+          // Item 17 (r4): the row's source card, so GroupedSubRows can wire
+          // this sub-row to the ClauseSidebar (see ProvisionTablePrimitives's
+          // resolveCard usage). row.sourceCards is the plural shape allFeatures()
+          // (card-utils.js) attaches -- first element is the row's primary source.
+          card: (row.sourceCards && row.sourceCards[0]) || row.sourceCard || null,
         };
       })
       .filter(Boolean);
@@ -485,6 +492,7 @@ function buildGroups(reviewDeal, ctx) {
         children: ctx
           ? React.createElement('div', { className: 'space-y-1.5' }, acqProposalChipRow(chips, ctx), seeDefinitionLink(confidentialityRow.detail, ctx))
           : null,
+        card: (confidentialityRow.sourceCards && confidentialityRow.sourceCards[0]) || confidentialityRow.sourceCard || null,
       });
     }
     const insertAt = groups.findIndex((group) => group.id === 'nosol-notice');
@@ -523,6 +531,11 @@ const nosolSectionConfig = {
         return React.createElement(GroupedSubRows, {
           groups,
           emptyCopy: 'No no-solicitation provisions found.',
+          // Item 17 (r4): wire each sub-row to the ClauseSidebar via the
+          // resolver/selection ProvisionTable.jsx puts on ctx.
+          onSelectCard: ctx?.onSelectCard,
+          resolveCard: ctx?.resolveCard,
+          selectedCardId: ctx?.selectedCardId,
         });
       },
     },

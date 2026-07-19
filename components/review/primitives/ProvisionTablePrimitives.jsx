@@ -217,7 +217,14 @@ export function CoverageChecklist({ items = [], emptyCopy = 'No checklist items 
   );
 }
 
-export function GroupedSubRows({ groups = [], emptyCopy = 'No grouped rows captured.' }) {
+// Item 17 (r4): optional onSelectCard/resolveCard/selectedCardId wire each
+// grouped sub-row to the ClauseSidebar, the same way ProvisionTable.jsx's
+// generic <tr> loop does -- see nosol-section.config.js's buildGroups(),
+// which threads a `card` field onto the rows it hands GroupedSubRows.
+// Callers that don't pass onSelectCard (ioc-exceptions, termination-rights,
+// conditions configs, as of this change) render exactly as before: no click
+// handler, no cursor-pointer, no dead affordance.
+export function GroupedSubRows({ groups = [], emptyCopy = 'No grouped rows captured.', onSelectCard, resolveCard, selectedCardId }) {
   const visibleGroups = Array.isArray(groups) ? groups.filter((group) => group && Array.isArray(group.rows) && group.rows.length) : [];
   if (!visibleGroups.length) return <EmptyStateBranch copy={emptyCopy} />;
   return (
@@ -228,26 +235,35 @@ export function GroupedSubRows({ groups = [], emptyCopy = 'No grouped rows captu
             {group.label || `Group ${groupIndex + 1}`}
           </div>
           <div className="divide-y divide-border">
-            {group.rows.map((row, rowIndex) => (
-              <div
-                key={row.id || row.label || rowIndex}
-                className="grid gap-2 px-2 py-1.5"
-                style={{ gridTemplateColumns: `${TERM_GRID_COLUMN} 1fr` }}
-              >
-                <span>
-                  <span className="text-[11px] font-medium text-ink">{row.label || `Row ${rowIndex + 1}`}</span>
-                  {/* Item 8: an optional per-row "See provision" expander,
-                      rendered under the LABEL (left) cell -- callers
-                      (nosol-section.config.js#rowNode, conditions/
-                      termination-rights row builders) pass row.seeText
-                      instead of appending it to the right/value cell. */}
-                  {row.seeText || null}
-                </span>
-                <EvidenceHoverSource value={row.value} evidence={row.evidence} source={row.source} as="span" className="text-xs text-ink">
-                  {row.children || textValue(row.value) || row.detail || <span className="text-inkFaint italic">Not captured</span>}
-                </EvidenceHoverSource>
-              </div>
-            ))}
+            {group.rows.map((row, rowIndex) => {
+              const rowCard = onSelectCard && typeof resolveCard === 'function' ? resolveCard(row) : null;
+              const rowCardKey = rowCard ? (rowCard.id || rowCard.provision_instance_id) : null;
+              const isSelectedRow = Boolean(rowCardKey) && selectedCardId === rowCardKey;
+              return (
+                <div
+                  key={row.id || row.label || rowIndex}
+                  className={`grid gap-2 px-2 py-1.5${rowCard ? ' mtx-row-clickable' : ''}`}
+                  style={{
+                    gridTemplateColumns: `${TERM_GRID_COLUMN} 1fr`,
+                    ...(rowCard ? { cursor: 'pointer', ...(isSelectedRow ? { background: 'rgba(47,109,181,.07)', boxShadow: 'inset 2px 0 0 #2F6DB5' } : {}) } : {}),
+                  }}
+                  onClick={rowCard ? () => onSelectCard(rowCard) : undefined}
+                >
+                  <span>
+                    <span className="text-[11px] font-medium text-ink">{row.label || `Row ${rowIndex + 1}`}</span>
+                    {/* Item 8: an optional per-row "See provision" expander,
+                        rendered under the LABEL (left) cell -- callers
+                        (nosol-section.config.js#rowNode, conditions/
+                        termination-rights row builders) pass row.seeText
+                        instead of appending it to the right/value cell. */}
+                    {row.seeText || null}
+                  </span>
+                  <EvidenceHoverSource value={row.value} evidence={row.evidence} source={row.source} as="span" className="text-xs text-ink">
+                    {row.children || textValue(row.value) || row.detail || <span className="text-inkFaint italic">Not captured</span>}
+                  </EvidenceHoverSource>
+                </div>
+              );
+            })}
           </div>
         </div>
       ))}
