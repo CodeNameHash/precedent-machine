@@ -11,6 +11,7 @@
 // 1px #E0E0E0 borders, meta-label voice) skin it like every other card.
 
 import React from 'react';
+import { dedupeBySectionAndTitle, isFragmentDefinedTerm } from './provisionIndexHelpers.js';
 
 function sectionRefLabel(ref) {
   // section_ref shape: "1.01 | The Merger | ee3def9710d0" — show §number only.
@@ -18,8 +19,17 @@ function sectionRefLabel(ref) {
   return first ? `§${first}` : '';
 }
 
+// Item 16.2 (round 3): dedupe the per-section provision index by
+// (section_ref number, short_title) -- ingestion sometimes stores TWO
+// cards for the same provision (Theravance: two 6.1 "Information to
+// Regulators" cards, 5eea8833… and a2e67986…), which reads out as a
+// duplicated entry in the section list. Keep the card with the LONGER
+// captured text (the more complete extraction of the two); this is a
+// render-time dedupe over stored duplicate rows, not a data delete. Logic
+// lives in provisionIndexHelpers.js (plain JS, unit-tested directly).
 export default function ProvisionIndex({ cards, sectionTitle, onSelect, selectedId }) {
-  const list = (cards || []).filter((c) => c && (c.short_title || c.defined_term));
+  const withTitle = (cards || []).filter((c) => c && (c.short_title || c.defined_term));
+  const list = dedupeBySectionAndTitle(withTitle);
   if (!list.length) return null;
   return (
     <details className="mt-3">
@@ -67,8 +77,13 @@ export default function ProvisionIndex({ cards, sectionTitle, onSelect, selected
   );
 }
 
+// Item 16.1 (round 3): fragment defined terms are ingestion junk -- see
+// provisionIndexHelpers.js#isFragmentDefinedTerm for the full rule and
+// rationale. Filtered defensively at render time (never deleted here --
+// see the dry-run scripts/cleanup-fragment-definitions.js for the
+// data-side cleanup).
 export function DefinitionsSection({ definitions }) {
-  const list = (definitions || []).filter((d) => d && d.defined_term);
+  const list = (definitions || []).filter((d) => d && d.defined_term && !isFragmentDefinedTerm(d.defined_term));
   if (!list.length) return null;
   const sorted = [...list].sort((a, b) => String(a.defined_term).localeCompare(String(b.defined_term)));
   return (
