@@ -1,7 +1,15 @@
 /* ─── Fonts: Corpus rebrand (Hanken Grotesk + Spline Sans Mono) ───
-   Loaded via _document.js <link> as the primary path; this @import
-   is a safety net for any standalone CSS consumers. */
-@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500&display=swap');
+   PERF FIX (Jul 2026, post-review): this used to @import the same fonts a
+   SECOND time (pages/_document.js also loaded them via an external
+   <link rel="stylesheet">, "as the primary path" per the comment this
+   replaces) — both render-blocking fetches to fonts.googleapis.com on
+   EVERY page. Live measurement (Playwright, prod build, real Cox/Metsera
+   data) found that external link hanging ~12.7s before failing in a
+   network-restricted environment, which dwarfed and was misattributed to
+   an unrelated client-side computation — see
+   lib/queries/reconstruct-review-deal.js's header comment for that
+   (separately real, separately fixed) issue. Self-hosted now, alongside
+   the Q7 Tinos/Inter/IBM Plex Mono fonts — see styles/mtx-fonts.css. */
 
 @tailwind base;
 @tailwind components;

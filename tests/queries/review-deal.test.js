@@ -38,18 +38,39 @@ function card(overrides = {}) {
   };
 }
 
+// Q5 (perf quick-wins): claims are fetched with a narrowed select (see
+// CLAIMS_SELECT in lib/queries/review-deal.js) rather than '*', and the
+// claims query is paginated (.order().range()) — support both chains so
+// this fake exercises the real query shape fetchDealClaims builds.
 function fakeSupabase(rows, claims = []) {
   return {
     from(table) {
       assert.ok(table === 'provision_cards' || table === 'claims', `unexpected table: ${table}`);
       return {
         select(columns) {
-          assert.equal(columns, '*');
+          if (table === 'provision_cards') {
+            assert.equal(columns, '*');
+            return {
+              eq(column, value) {
+                assert.equal(column, 'deal_id');
+                assert.equal(value, 'deal-1');
+                return Promise.resolve({ data: rows, error: null });
+              },
+            };
+          }
           return {
             eq(column, value) {
               assert.equal(column, 'deal_id');
               assert.equal(value, 'deal-1');
-              return Promise.resolve({ data: table === 'provision_cards' ? rows : claims, error: null });
+              return {
+                order() {
+                  return {
+                    range(start, end) {
+                      return Promise.resolve({ data: claims.slice(start, end + 1), error: null });
+                    },
+                  };
+                },
+              };
             },
           };
         },

@@ -114,7 +114,7 @@ function Paragraph({ block, blockKey }) {
   return <p className="mtx-doc-body">{renderInline(block.inline, blockKey)}</p>;
 }
 
-export default function AgreementView({ agreementSource }) {
+export default function AgreementView({ agreementSource, loading = false }) {
   const fullText = agreementSource?.full_text || '';
   const blocks = useMemo(() => parseFormattedDocument(fullText), [fullText]);
 
@@ -132,9 +132,15 @@ export default function AgreementView({ agreementSource }) {
   }
 
   if (!fullText) {
+    // Q4 (perf quick-wins): source text is fetched lazily — before it
+    // arrives (or while a cold on-demand fetch is in flight) show a loading
+    // state rather than the "unavailable" message, which is only accurate
+    // once the fetch has actually resolved.
     return (
       <main className="flex-1 min-w-0 px-5 lg:px-9 pt-6 pb-7">
-        <p className="mtx-meta-label text-[10px] tracking-[0.14em]">No source text available for this deal.</p>
+        <p className="mtx-meta-label text-[10px] tracking-[0.14em]" data-testid={loading ? 'agreement-view-loading' : undefined}>
+          {loading ? 'Loading source document…' : 'No source text available for this deal.'}
+        </p>
       </main>
     );
   }

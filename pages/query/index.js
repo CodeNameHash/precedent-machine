@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import MergertraceStyles from '../../components/review-v2/MergertraceStyles';
 import AppHeader from '../../components/chrome/AppHeader';
-import { MtxFontLinks } from '../../components/chrome/mtxFonts';
 import { humanizeKey, describeFilter } from '../../lib/query/filter-labels';
 import { PROVISION_TYPES, OpSelect, ProvisionTypeSelect, FilterValueInput } from '../../components/query/QueryFilterControls';
 
@@ -82,7 +81,6 @@ export default function QueryIndexPage() {
     <>
       <Head>
         <title>Query · Corpus</title>
-        <MtxFontLinks />
       </Head>
       <MergertraceStyles />
       <div className="mtx nh">

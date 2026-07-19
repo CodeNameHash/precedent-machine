@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useCallback, useRef, useContext, createCo
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { useDeal, useProvisions } from '../../lib/useSupabaseData';
+import { reconstructReviewDeal } from '../../lib/queries/reconstruct-review-deal';
 import { useUser } from '../../lib/useUser';
 import { useToast } from '../../lib/useToast';
 import { Breadcrumbs, SkeletonCard, EmptyState } from '../../components/UI';
@@ -10292,7 +10293,10 @@ export default function ReviewPage() {
         if (!response.ok) {
           throw new Error(payload.error || `HTTP ${response.status}`);
         }
-        return payload.reviewDeal || null;
+        // Q1/Q2 (perf quick-wins): the API no longer ships sections[]/
+        // definitions[] or per-card resolvedReferences/region_full_text —
+        // rebuild them client-side (same shape as before).
+        return payload.reviewDeal ? reconstructReviewDeal(payload.reviewDeal) : null;
       })
       .then((nextReviewDeal) => {
         if (!cancelled) setSchemaReviewDeal(nextReviewDeal);

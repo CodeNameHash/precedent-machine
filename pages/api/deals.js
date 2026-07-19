@@ -1,5 +1,6 @@
 import { getServiceSupabase } from '../../lib/supabase';
 const { QUALITY_METRICS_TABLE } = require('../../lib/deal-quality-metrics');
+const { DEAL_HEADER_SELECT, headerRowToDeal } = require('../../lib/queries/deal-header');
 
 const DEAL_LIST_SELECT = [
   'id',
@@ -27,6 +28,17 @@ const DEAL_LIST_SELECT = [
   'considerationType:metadata->>considerationType',
   'consideration_type:metadata->>consideration_type',
 ].join(', ');
+
+// Q3 (perf quick-wins, Jul 2026): /api/deals?id=<id> did select('*'), which
+// on a deal row ships metadata.full_text + classified_sections +
+// extraction_runs — 735KB-1.5MB raw for the review page's masthead, which
+// reads only a couple KB of scalars. ?view=header is an ADDITIVE opt-in
+// (see lib/queries/deal-header.js): the default (no `view`, or any value
+// other than 'header') response is completely unchanged so EditPanel/admin
+// flows keep full metadata.
+function isHeaderView(req) {
+  return req.query.view === 'header';
+}
 
 function includeStaging(req) {
   return req.query.includeStaging === '1' || req.query.include_staging === '1';
@@ -94,7 +106,35 @@ export default async function handler(req, res) {
   if (req.method === 'GET') {
     const { id } = req.query;
     const showStaging = includeStaging(req);
+    // Q6 (perf quick-wins): deal rows carry no per-viewer content — safe to
+    // cache successful reads at the CDN edge with SWR, same as the
+    // cards/agreement-source routes. Set only on success paths below so a
+    // transient 404 (e.g. a deal mid-promotion out of staging) never gets
+    // cached.
+    const cacheOnSuccess = () => res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=3600');
     if (id) {
+      // Q3: ?view=header is additive — slim deal for the review-page
+      // masthead (no full_text/classified_sections/extraction_runs). Any
+      // other/absent `view` value keeps the unchanged full select('*') so
+      // EditPanel/admin flows keep full metadata.
+      if (isHeaderView(req)) {
+        const { data, error } = await sb.from('deals')
+          .select(DEAL_HEADER_SELECT)
+          .eq('id', id).single();
+        if (error) return res.status(404).json({ error: error.message });
+        if (!showStaging && data.ingest_status === 'staging') return res.status(404).json({ error: 'Deal is staging' });
+        const { data: topologyRows, error: topologyErr } = await sb
+          .from('deal_topology')
+          .select('*, primary_step:transaction_steps(*)')
+          .eq('deal_id', id)
+          .limit(1);
+        const shaped = headerRowToDeal(data);
+        if (!topologyErr && topologyRows && topologyRows[0]) {
+          shaped.deal_topology = topologyRows[0];
+        }
+        cacheOnSuccess();
+        return res.json({ deal: shaped });
+      }
       const { data, error } = await sb.from('deals')
         .select('*')
         .eq('id', id).single();
@@ -108,6 +148,7 @@ export default async function handler(req, res) {
       if (!topologyErr && topologyRows && topologyRows[0]) {
         data.deal_topology = topologyRows[0];
       }
+      cacheOnSuccess();
       return res.json({ deal: data });
     }
     const { data, error } = await sb.from('deals')
@@ -117,6 +158,7 @@ export default async function handler(req, res) {
     const rows = showStaging ? (data || []) : (data || []).filter((deal) => !isStagingDeal({ metadata: { ingest_status: deal.ingest_status } }));
     const provisionCounts = await fetchProvisionCounts(sb, rows.map((deal) => deal.id).filter(Boolean));
     const deals = rows.map((row) => listRowToDeal(row, provisionCounts));
+    cacheOnSuccess();
     return res.json({ deals });
   }
 
