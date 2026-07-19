@@ -320,26 +320,54 @@ test('isCleanSkipError is missing-table OR missing-column, and correctly rejects
   assert.equal(isCleanSkipError({ code: '42P01' }), true);
   assert.equal(isCleanSkipError({ code: '42703' }), true);
   assert.equal(isCleanSkipError({ message: 'connection reset' }), false);
-  // The exact DEFECT 3 repro: an error with an EMPTY message but a real
-  // 42703 code must still classify as a clean skip (code alone is enough —
-  // the fix must not depend on message content being present).
+  // Defense-in-depth: an error with an EMPTY message but a real 42703 code
+  // must still classify as a clean skip (code alone is enough — the fix
+  // must not depend on message content being present). Kept as a generic
+  // regression guard even though DEFECT 3's actual root cause (below)
+  // turned out not to be a missing-table/missing-column case at all.
   assert.equal(isCleanSkipError({ code: '42703', message: '' }), true);
 });
 
-test('countByDealId: DEFECT 3 repro — an empty-message 42703 error clean-skips (returns null), not a thrown failure', async () => {
-  const dealId = 'deal-defect3';
+test('countByDealId selects "*", never a named column — deal_quality_metrics has no "id" column (its PK is deal_id, not id)', async () => {
+  const dealId = 'deal-defect3-cols';
   const fakeSb = {
     from(table) {
       assert.equal(table, 'deal_quality_metrics');
       return {
-        select() {
-          return { eq: () => Promise.resolve({ count: null, error: { code: '42703', message: '' } }) };
+        select(cols, opts) {
+          assert.equal(cols, '*');
+          assert.deepEqual(opts, { count: 'exact', head: true });
+          return { eq: () => Promise.resolve({ count: 1, error: null }) };
         },
       };
     },
   };
   const count = await countByDealId(fakeSb, 'deal_quality_metrics', dealId);
-  assert.equal(count, null);
+  assert.equal(count, 1);
+});
+
+test('countByDealId: DEFECT 3 real root cause (live-gate run 2) — selecting a column a table does not have (\'id\' on deal_quality_metrics, whose PK is deal_id) fails a HEAD request with an empty-body error; select(\'*\') sidesteps it entirely', async () => {
+  const dealId = 'deal-defect3-real';
+  // Reproduces the actual bug: querying the NAMED column 'id' on a HEAD
+  // request against a table that has no such column returns PostgREST's
+  // empty-body error (`{"message":""}` — no usable code either, since a
+  // HEAD response never carries a body to explain itself). This is why the
+  // 42P01/42703 clean-skip classification alone did NOT fix the original
+  // symptom: the error shape from THIS bug doesn't reliably carry a code at
+  // all. The real fix is structural — never select('id', ...) here.
+  const fakeSb = {
+    from() {
+      return {
+        select(cols) {
+          if (cols === 'id') return { eq: () => Promise.resolve({ count: null, error: { message: '' } }) };
+          if (cols === '*') return { eq: () => Promise.resolve({ count: 0, error: null }) };
+          throw new Error(`unexpected select(${JSON.stringify(cols)})`);
+        },
+      };
+    },
+  };
+  const count = await countByDealId(fakeSb, 'deal_quality_metrics', dealId);
+  assert.equal(count, 0); // succeeds — countByDealId never takes the select('id', ...) path
 });
 
 test('countByDealId: a genuinely unexplained error still fails, and the thrown message carries the FULL stringified error (not just a possibly-empty .message)', async () => {

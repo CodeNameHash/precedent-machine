@@ -353,18 +353,24 @@ async function checkStagingInvisible(sb, dealId) {
 
 async function countByDealId(sb, table, dealId) {
   try {
-    const { count, error } = await sb.from(table).select('id', { count: 'exact', head: true }).eq('deal_id', dealId);
+    // DEFECT 3 root cause (2026-07-19 live-gate finding, run 2, confirmed):
+    // NOT a missing table/column — deal_quality_metrics exists and its
+    // deal_id column exists (it's the PRIMARY KEY,
+    // supabase/deal-quality-metrics-schema.sql:5). The bug was selecting a
+    // NAMED column ('id') that table doesn't have (its PK is `deal_id`, not
+    // `id`) on a HEAD request — PostgREST returns an empty-body error for
+    // that combination, which is exactly the `{"message":""}` observed.
+    // select('*', ...) with head:true still returns zero response BODY (a
+    // HEAD request never has one) but doesn't require the named column to
+    // exist, and count comes back correctly via the Content-Range header
+    // either way. Verified directly against the live DB.
+    const { count, error } = await sb.from(table).select('*', { count: 'exact', head: true }).eq('deal_id', dealId);
     if (error) {
-      // DEFECT 3 (2026-07-19 live-gate finding, run 1): deal_quality_metrics
-      // failed this count with an EMPTY error.message ("deal_quality_metrics
-      // count failed: "), which flunked the teardown step even though every
-      // table's residual rows were genuinely 0. Two fixes: (a) always
-      // surface the FULL stringified error, not just .message, so a blank-
-      // message error is actually diagnosable next time; (b) treat both a
-      // missing TABLE and a missing COLUMN as a clean skip, not a failure —
-      // some supabase/*.sql migrations (e.g. deal-quality-metrics-schema.sql)
-      // may never have been applied in a given env, so either the table or
-      // its deal_id column can legitimately not exist.
+      // Keep the missing-table/missing-column clean-skip classification as
+      // defense — some supabase/*.sql migrations may genuinely not be
+      // applied in a given env — and always surface the FULL stringified
+      // error (not just .message, which can be empty) for whatever case
+      // isn't one of those two.
       if (isCleanSkipError(error)) return null;
       throw new Error(`${table} count failed: ${JSON.stringify(error)}`);
     }
