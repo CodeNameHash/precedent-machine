@@ -312,13 +312,18 @@ rights; disposition-of-product obligations; per-CVR amount vs. milestone.
   which is itself a finding), `CVR-AGENT ≥ 1`, `CVR-DEF ≥ 10`, coverage
   ≥ 90% (short stereotyped documents should beat the merger 85% bar), zero
   unverified quotes.
-- Golden corpus: 6–8 hand-audited CVR agreements spanning the structural
-  space. Candidates: **BMS/Celgene** (listed, tradeable, sales+regulatory
-  milestones — the famous miss), **Sanofi/Genzyme** (listed, multi-milestone),
-  **Alexion/Achillion** (private-style regulatory milestones),
-  **AstraZeneca/CinCor** (single regulatory milestone, non-transferable),
-  **Ipsen/Albireo**, **Novartis/Chinook**, plus one older/atypical one for
-  variance. Hand-audit is Fable + Ben spot-check, same as the merger goldens.
+- Golden corpus (per Ben, 2026-07-19, from the DealPointData CVR export
+  x-ref): **core set = the CVR deals that overlap the existing deal corpus**,
+  currently four — **AbbVie/Landos** (2024), **Eli Lilly/Verve** (2025),
+  **Pfizer/Metsera** (2025), **Zymeworks/Theravance** (2026). Three of the
+  four are Paul, Weiss deals. Supplement to 6–8 with additional Paul, Weiss
+  CVR deals; the DealPointData export carries no counsel column, so the
+  supplement list comes from firm records / announcement research, not the
+  export. (Structural-variance candidates like BMS/Celgene (listed,
+  tradeable) and Sanofi/Genzyme remain fallbacks if the PW supplement
+  doesn't cover the tradeable-CVR shape.) Re-run the overlap check against
+  the live DB before freezing — the x-ref used a 4-day-old roster snapshot.
+  Hand-audit is Fable + Ben spot-check, same as the merger goldens.
 - Extend `scripts/eval.js` goldens format with an `agreementType` field
   (defaulting to merger for existing entries).
 
