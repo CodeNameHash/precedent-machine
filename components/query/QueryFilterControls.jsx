@@ -10,6 +10,7 @@
 // field/op/value) is unchanged; these just render nicer controls over it.
 
 import { OPERATOR_LABELS, humanizeKey } from '../../lib/query/filter-labels';
+import { FIELD_OPTIONS_BY_PROVISION_TYPE } from '../../lib/query/field-options';
 
 // Kept in sync with lib/query/types.js PROVISION_CARD_TYPES — duplicated
 // here (not imported) so client bundles that only need the dropdown list
@@ -28,6 +29,26 @@ export function OpSelect({ value, onChange, className = 'mtx-select' }) {
   return (
     <select className={className} value={value} onChange={(e) => onChange(e.target.value)}>
       {OPS.map((op) => <option key={op} value={op}>{OPERATOR_LABELS[op]}</option>)}
+    </select>
+  );
+}
+
+// Dependent field dropdown (Ben r6): offers the fields that actually exist
+// for the selected provision type — from the generated client-safe map —
+// instead of a free-text "field path" input. A value not in the list (hand-
+// built payload, older saved query) gets its own "custom" option so nothing
+// breaks; a type with no mapped fields falls back to the free-text input.
+export function FieldSelect({ provisionType, value, onChange, className = 'mtx-select' }) {
+  const options = FIELD_OPTIONS_BY_PROVISION_TYPE[provisionType] || [];
+  if (!options.length) {
+    return <input className="mtx-input" value={value} onChange={(e) => onChange(e.target.value)} placeholder="field" />;
+  }
+  const known = options.some((o) => o.key === value);
+  return (
+    <select className={className} value={value} onChange={(e) => onChange(e.target.value)}>
+      {!known && value ? <option value={value}>{humanizeKey(value)}</option> : null}
+      {!value ? <option value="">Choose a field…</option> : null}
+      {options.map((o) => <option key={o.key} value={o.key}>{o.label}</option>)}
     </select>
   );
 }

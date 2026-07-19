@@ -579,7 +579,18 @@ function buildGeneralExceptionsRow(reviewDeal, idPrefix, preambleCode) {
   const excludedRawList = Array.isArray(excludedRaw)
     ? excludedRaw.map((item) => excludedPortionText(item, dict)).filter(Boolean)
     : (excludedRaw ? [excludedPortionText(excludedRaw, dict)].filter(Boolean) : []);
-  const excluded = [...new Set(excludedRawList.map(crispExcludedLabel).filter(Boolean))];
+  // Keep each crisp label paired with its verbose source text (dedupe by
+  // label, first raw text wins) so the pill can hover to the real excluded
+  // portion — a crisp label whose raw text IS the label (e.g. a bare
+  // "Other" taxonomy code) carries no own-evidence and falls back to the
+  // list-level evidence at render time.
+  const excludedByLabel = new Map();
+  for (const raw of excludedRawList) {
+    const label = crispExcludedLabel(raw);
+    if (!label || excludedByLabel.has(label)) continue;
+    excludedByLabel.set(label, raw !== label ? raw : null);
+  }
+  const excluded = [...excludedByLabel.entries()].map(([label, evidence]) => ({ label, evidence }));
   const disclosureLetter = disclosureLetterInfo(preamble);
   if (!cutoff && !excluded.length && !disclosureLetter) return null;
   return {
@@ -707,8 +718,12 @@ function subLabelBlock(key, label, node) {
 // sibling's evidence.
 function pillList(PillCell, items, evidence, keyPrefix, tone = 'neutral') {
   if (!items || !items.length) return null;
-  const pills = items.map((label, index) => {
-    const itemEvidence = evidence || label;
+  const pills = items.map((item, index) => {
+    // Items are plain labels or { label, evidence } pairs — a pair's own
+    // evidence wins (Ben r6: hovering "Other" must show the actual excluded
+    // portion / clause, not nothing), then the list-level evidence.
+    const label = typeof item === 'object' && item !== null ? item.label : item;
+    const itemEvidence = (typeof item === 'object' && item !== null && item.evidence) || evidence || label;
     return PillCell
       ? React.createElement(PillCell, { key: `${keyPrefix}-${index}`, label, tone, evidence: itemEvidence })
       : React.createElement('span', { key: `${keyPrefix}-${index}` }, label);
@@ -733,10 +748,21 @@ function pillList(PillCell, items, evidence, keyPrefix, tone = 'neutral') {
 // ClauseSidebar when the item carries a `card` -- used by the Knowledge
 // block's Standard/Persons rows (General Exceptions items don't set `card`,
 // so they render exactly as before: no click affordance).
-function sectionBox(key, heading, items, ctx) {
+// Ben r6: "See provision" expansion must NOT inflate the left label column —
+// same colSpan-row mechanism ProvisionTable.jsx uses (the IOC fix): the
+// toggle sits on its own line under the label, and the clause text renders
+// as a separate full-width row spanning both columns. Stateful, so it's a
+// real component rather than a plain helper.
+function SectionBoxTable({ heading, items, ctx }) {
+  const [openKeys, setOpenKeys] = React.useState(() => new Set());
+  const toggle = (key) => setOpenKeys((prev) => {
+    const next = new Set(prev);
+    if (next.has(key)) next.delete(key); else next.add(key);
+    return next;
+  });
   return React.createElement(
     'div',
-    { key, className: 'overflow-hidden rounded border border-border' },
+    { className: 'overflow-hidden rounded border border-border' },
     React.createElement(
       'div',
       { className: 'border-b border-border bg-bg/40 px-3 py-1.5 text-[10px] font-medium uppercase tracking-wider text-inkFaint' },
@@ -757,11 +783,12 @@ function sectionBox(key, heading, items, ctx) {
         React.createElement(
           'tbody',
           { className: 'divide-y divide-border' },
-          items.map((item) => {
+          items.flatMap((item) => {
             const rowCard = ctx?.onSelectCard && item.card ? item.card : null;
             const rowCardKey = rowCard ? (rowCard.id || rowCard.provision_instance_id) : null;
             const isSelectedRow = Boolean(rowCardKey) && ctx?.selectedCardId === rowCardKey;
-            return React.createElement(
+            const isOpen = openKeys.has(item.key);
+            const mainRow = React.createElement(
               'tr',
               {
                 key: item.key,
@@ -773,17 +800,48 @@ function sectionBox(key, heading, items, ctx) {
                 'td',
                 { className: 'px-3 py-2 font-medium text-ink whitespace-normal break-words' },
                 item.term,
-                // Item 8: an optional per-item "See provision" expander under
-                // the LABEL (left) cell, matching every other family.
-                item.seeText || null,
+                // Toggle on its OWN line under the label (block, not glued
+                // inline after the term text).
+                item.clause
+                  ? React.createElement(
+                    'div',
+                    { className: 'mt-0.5' },
+                    React.createElement('button', {
+                      type: 'button',
+                      className: 'term-cell-seetext',
+                      onClick: (e) => { e.stopPropagation(); toggle(item.key); },
+                      'aria-expanded': isOpen,
+                    }, isOpen ? 'Hide provision' : 'See provision'),
+                  )
+                  : null,
               ),
               React.createElement('td', { className: 'px-3 py-2 text-ink whitespace-pre-wrap break-words' }, item.node),
             );
+            const clauseRow = isOpen && item.clause
+              ? React.createElement(
+                'tr',
+                { key: `${item.key}-clause` },
+                React.createElement(
+                  'td',
+                  { colSpan: 2, className: 'px-3 py-2' },
+                  React.createElement(
+                    'div',
+                    { className: 'whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight border-l-2 border-border pl-2.5' },
+                    item.clause,
+                  ),
+                ),
+              )
+              : null;
+            return clauseRow ? [mainRow, clauseRow] : [mainRow];
           }),
         ),
       ),
     ),
   );
+}
+
+function sectionBox(key, heading, items, ctx) {
+  return React.createElement(SectionBoxTable, { key, heading, items, ctx });
 }
 
 // R1: General Exceptions as its own labelled sub-table at the TOP of the
@@ -807,8 +865,11 @@ function generalExceptionsTableNode(row, ctx) {
     ? pillList(PillCell, [row.disclosureLetter.label], row.disclosureLetter.evidence, 'disclosure')
     : null;
   const items = [];
-  if (secBody) items.push({ key: 'sec', term: 'SEC Filings', node: secBody, seeText: clauseSeeText(row.secCutoffQuote || textOf(row.card)), card: row.card, quote: row.secCutoffQuote });
-  if (disclosureNode) items.push({ key: 'disclosure', term: 'Disclosure Letter', node: disclosureNode, seeText: clauseSeeText(row.disclosureLetter?.evidence), card: row.card, quote: row.disclosureLetter?.evidence });
+  // Ben r6: expanding must show the FULL provision (the whole general-
+  // exceptions chapeau — cut-off AND excluded portions), never just the
+  // resolved cut-off sentence fragment.
+  if (secBody) items.push({ key: 'sec', term: 'SEC Filings', node: secBody, clause: textOf(row.card) || row.secCutoffQuote, card: row.card, quote: row.secCutoffQuote });
+  if (disclosureNode) items.push({ key: 'disclosure', term: 'Disclosure Letter', node: disclosureNode, clause: row.disclosureLetter?.evidence || textOf(row.card), card: row.card, quote: row.disclosureLetter?.evidence });
   if (!items.length) return null;
   return sectionBox('general-exceptions', 'General Exceptions', items, ctx);
 }
@@ -830,13 +891,13 @@ function knowledgeTableNode(knowledgeSummaryRow, repRows, ctx) {
       // Item 2 (r5): "knowledge standard rows" must be clickable per the
       // sidebar feedback package -- sourceCard/quote wired above in
       // buildKnowledgeSummaryRow flow through sectionBox's ctx wiring.
-      items.push({ key: 'standard', term: 'Standard', node, seeText: clauseSeeText(knowledgeSummaryRow.knowledgeScope), card: knowledgeSummaryRow.standardCard, quote: knowledgeSummaryRow.knowledgeScope });
+      items.push({ key: 'standard', term: 'Standard', node, clause: knowledgeSummaryRow.knowledgeScope, card: knowledgeSummaryRow.standardCard, quote: knowledgeSummaryRow.knowledgeScope });
     }
     if (knowledgeSummaryRow.knowledgePersons) {
       const node = PillCell
         ? React.createElement(PillCell, { label: knowledgeSummaryRow.knowledgePersons, tone: 'info', evidence: knowledgeSummaryRow.knowledgeScope })
         : knowledgeSummaryRow.knowledgePersons;
-      items.push({ key: 'persons', term: 'Persons', node, seeText: clauseSeeText(knowledgeSummaryRow.knowledgeScope), card: knowledgeSummaryRow.personsCard, quote: knowledgeSummaryRow.knowledgeScope });
+      items.push({ key: 'persons', term: 'Persons', node, clause: knowledgeSummaryRow.knowledgeScope, card: knowledgeSummaryRow.personsCard, quote: knowledgeSummaryRow.knowledgeScope });
     }
     // R5-round4 (Ben): Scope dropped from the Knowledge block -- Standard +
     // Persons carry it; the full scope sentence stays as the pill hover

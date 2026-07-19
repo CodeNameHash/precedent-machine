@@ -315,6 +315,13 @@ function parseDollarNumber(str) {
   return digits ? Number(digits) : null;
 }
 
+// One canonical phrasing for the dollar-threshold fact wherever it appears
+// (restriction column and exceptions column previously said "Threshold: $X"
+// vs "Below $X" for the same thing, which made cross-deal scanning hard).
+function belowThresholdLabel(money) {
+  return `Below ${money}`;
+}
+
 function renderNegativeRow(entry, ctx) {
   const PillCell = ctx?.primitives?.PillCell;
   const { cards } = entry;
@@ -324,7 +331,7 @@ function renderNegativeRow(entry, ctx) {
   const cardDollarThreshold = cards.map((c) => formatMoney(cardFeatures(c).dollarThreshold)).find(Boolean) || null;
   const thresholdEntries = dedupeEntries(cards.map((c) => {
     const money = formatMoney(cardFeatures(c).dollarThreshold);
-    return money ? { code: `threshold-${money}`, label: `Threshold: ${money}`, evidence: textOf(c), source: c, amount: money } : null;
+    return money ? { code: `threshold-${money}`, label: belowThresholdLabel(money), evidence: textOf(c), source: c, amount: money } : null;
   }).filter(Boolean));
   const rawPermittedEntries = dedupeEntries(cards.flatMap((c) => exceptionEntries(cardFeatures(c).permittedExceptions, EXCEPTION_CODES, c)));
 
@@ -337,7 +344,7 @@ function renderNegativeRow(entry, ctx) {
     const amount = dollarFromText(e.evidence) || cardDollarThreshold;
     if (!amount) return e;
     monetaryExceptionAmount = amount;
-    return { ...e, label: `Below ${amount}` };
+    return { ...e, label: belowThresholdLabel(amount) };
   });
   const visibleThresholdEntries = monetaryExceptionAmount
     ? thresholdEntries.filter((t) => parseDollarNumber(t.amount) !== parseDollarNumber(monetaryExceptionAmount))
@@ -470,42 +477,43 @@ function resolveFragmentName(card) {
     || (card?.short_title === UNCLASSIFIED_SHORT_TITLE ? firstQuotePhrase(textOf(card)) : null);
 }
 
-function buildOtherRestrictionsRow(fragments, ctx) {
-  if (!fragments.length) return null;
+// Ben (r6): no more "§5.01(i)–5.01(o) (8 fragments)" bundle row — every
+// fragment is a real restriction and gets its OWN named row (resolved via
+// the section-ref map / keyword sniffing / quote mining above), with its
+// pills, its clause behind the standard see-text expander, and its card
+// wired for the sidebar. Returns an ARRAY of rows for the "Other
+// restrictions" band.
+function buildOtherRestrictionsRows(fragments, ctx) {
+  if (!fragments.length) return [];
   const PillCell = ctx?.primitives?.PillCell;
-  const sections = fragments.map((c) => valueText(cardFeatures(c).sectionNumber)).filter(Boolean);
-  const rangeLabel = sections.length ? `§${sections[0]}–${sections[sections.length - 1]}` : `${fragments.length} items`;
-  const items = fragments.map((card, index) => {
+  return fragments.map((card, index) => {
     const entries = exceptionEntries(cardFeatures(card).restrictionComponents, IOC_CATEGORY_CODES, card);
-    const section = valueText(cardFeatures(card).sectionNumber) || String(card?.section_ref || '').split('|')[0].trim() || `Item ${index + 1}`;
-    const resolvedName = entries.length ? null : resolveFragmentName(card);
-    let content;
-    if (entries.length && PillCell) {
-      content = entries.map((e, j) => pillFor(PillCell, `frag-${card.id || index}-${j}`, e.label, 'neutral', e.evidence, e.source));
-    } else if (resolvedName) {
-      // Extraction gap, named rather than dropped or shown as a bare
-      // fragment -- see resolveFragmentName above (I7/I8).
-      content = React.createElement('span', { className: 'text-[11px] text-ink', title: 'Extraction gap: no provision_subtype assigned; name resolved from section_ref/clause text' }, resolvedName);
-    } else {
-      content = React.createElement('span', { className: 'italic text-inkFaint' }, 'no structured signal extracted');
-    }
-    return React.createElement(
-      'li',
-      { key: card.id || index, className: 'flex flex-wrap items-center gap-1 text-[11px]' },
-      React.createElement('span', { className: 'text-inkFaint' }, `§${section}`),
-      content,
-    );
+    const section = valueText(cardFeatures(card).sectionNumber) || String(card?.section_ref || '').split('|')[0].trim() || null;
+    const name = resolveFragmentName(card)
+      || (entries.length ? entries[0].label : null)
+      || (section ? `§${section}` : `Item ${index + 1}`);
+    const label = section && !name.startsWith('§') ? `${name} · §${section}` : name;
+    const pills = (entries.length && PillCell)
+      ? React.createElement(
+        'div',
+        { className: 'flex flex-wrap gap-1' },
+        entries.map((e, j) => pillFor(PillCell, `frag-${card.id || index}-${j}`, e.label, 'neutral', e.evidence, e.source, undefined, true)),
+      )
+      : null;
+    const clause = textOf(card);
+    return {
+      id: `ioc-frag-${card.id || index}`,
+      label: covenantLabelNode(label, null),
+      children: React.createElement(
+        'div',
+        { className: 'space-y-1.5' },
+        pills,
+        clause ? seeTextNode([clause]) : null,
+      ),
+      card,
+      evidence: clause || null,
+    };
   });
-  return {
-    id: 'ioc-other-restrictions',
-    label: covenantLabelNode(`${rangeLabel} (${fragments.length} fragments)`, null),
-    children: React.createElement(
-      'details',
-      { className: 'mt-1' },
-      React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, `${fragments.length} unclassified fragments — see items`),
-      React.createElement('ul', { className: 'mt-1 space-y-1 list-none pl-0' }, items),
-    ),
-  };
 }
 
 // I2/I4: a limb's own efforts_standard (normalizeIocLimbEffortsStandards in
@@ -668,7 +676,7 @@ const iocExceptionsConfig = {
         if (!GroupedSubRows) return null;
         const cards = (row.reviewDeal?.cards || []).filter(isIocCard);
         const negativeRows = negativeCovenantGroups(cards).map((group) => renderNegativeRow(buildNegativeRow(group), ctx));
-        const otherRow = buildOtherRestrictionsRow(fragmentCards(cards), ctx);
+        const otherRows = buildOtherRestrictionsRows(fragmentCards(cards), ctx);
         const exceptionsRows = buildIocExceptionsRows(cards, ctx);
         // Old-site render order (OLD-review-page.js's IocAffirmativeCovenantsTable
         // ahead of IocNegativeCovenantsTable) puts the affirmative limbs FIRST --
@@ -685,7 +693,7 @@ const iocExceptionsConfig = {
           { id: 'affirmative', label: 'Affirmative covenants', rows: affirmativeRows(cards, ctx) },
           { id: 'exceptions', label: 'Exceptions', rows: exceptionsRows },
           { id: 'negative', label: 'Negative covenants', rows: negativeRows },
-          { id: 'other', label: 'Other restrictions', rows: otherRow ? [otherRow] : [] },
+          { id: 'other', label: 'Other restrictions', rows: otherRows },
         ];
         // Item 2 (r5): same onSelectCard/resolveCard/selectedCardId wiring
         // conditions.config.js/nosol-section.config.js use -- only rows that
@@ -708,7 +716,7 @@ const iocExceptionsConfig = {
 export {
   affirmativeRows,
   buildIocExceptionsRows,
-  buildOtherRestrictionsRow,
+  buildOtherRestrictionsRows,
   effortsStandardPillFor,
   exceptionEntries,
   fragmentCards,

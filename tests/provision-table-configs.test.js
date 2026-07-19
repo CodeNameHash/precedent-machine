@@ -532,10 +532,13 @@ test('representations-qualifiers config title names the reps directly (not a sep
   assert.equal(rows[0].secCutoff, 'at least one (1) business day prior to the date of this Agreement');
   // Round-4 (Ben): portions-excluded entries are tightened to crisp labels
   // (and deduped) rather than the verbose verbatim excerpt text.
-  assert.deepEqual(rows[0].secExcluded, [
+  // r6: each crisp label keeps its verbose source text as pill evidence so
+  // "Other"-style entries hover to the real excluded portion.
+  assert.deepEqual(rows[0].secExcluded.map((e) => e.label), [
     'Risk Factors',
     'Forward-looking statements',
   ]);
+  assert.ok(rows[0].secExcluded.every((e) => 'evidence' in e));
   assert.equal(rows[0].disclosureLetter.label, 'the Company Disclosure Letter');
   assert.equal(rows[1].id, 'representations-qualifiers-org');
   assert.equal(rows[1].kind, 'rep');
@@ -1706,7 +1709,7 @@ test('ioc-exceptions negative-covenant row renders restrictionComponents + dolla
   assert.match(html, /See provision/);
 });
 
-test('ioc-exceptions config collapses [PROPOSED] Unclassified fragments into a single "Other restrictions" row, not empty per-row output', () => {
+test('ioc-exceptions config promotes each [PROPOSED] Unclassified fragment to its own named "Other restrictions" row (Ben r6: no "(N fragments)" bundle)', () => {
   const cards = [
     { id: 'frag-1', provision_type: 'COVENANT_INTERIM_OPERATING', features: { sectionNumber: '5.01(i)', restrictionComponents: ['INDEBTEDNESS', 'THIRD_PARTY_OBLIGATIONS'] } },
     { id: 'frag-2', provision_type: 'COVENANT_INTERIM_OPERATING', features: { sectionNumber: '5.01(k)' } },
@@ -1714,12 +1717,13 @@ test('ioc-exceptions config collapses [PROPOSED] Unclassified fragments into a s
   ];
   const fragments = iocMod.fragmentCards(cards);
   assert.equal(fragments.length, 2, 'only the two no-code fragments, not the named IOC-DIVIDEND card');
-  const row = iocMod.buildOtherRestrictionsRow(fragments, { primitives: iocPrimitives });
-  assert.equal(row.id, 'ioc-other-restrictions');
-  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, row.children));
-  assert.match(html, /2 unclassified fragments/);
-  assert.match(html, /Indebtedness \/ financing/);
-  assert.match(html, /no structured signal extracted/, 'the genuinely empty fragment (5.01(k)) says so, it does not fabricate a pill');
+  const rows = iocMod.buildOtherRestrictionsRows(fragments, { primitives: iocPrimitives });
+  assert.equal(rows.length, 2, 'one row per fragment, never a single bundle row');
+  assert.equal(rows[0].card, fragments[0], 'each row wires its own card for the sidebar');
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, rows.map((r, i) => React.createElement('div', { key: i }, r.label, r.children))));
+  assert.doesNotMatch(html, /fragments\)/, 'no "(N fragments)" bundle label anywhere');
+  assert.match(html, /Indebtedness \/ financing/, 'tagged fragment renders its restrictionComponents pills');
+  assert.match(html, /5\.01\(k\)/, 'the untagged, unquotable fragment still surfaces as its own row named by section');
 });
 
 test('ioc-exceptions config renders IOC-ORDINARY/PRESERVE/MAINTAIN as an Affirmative-covenants band with appliesTo scope pills', () => {
@@ -1971,12 +1975,12 @@ test('I7: unclassified fragments with no restrictionComponents tag are named fro
     { id: 'frag-l', provision_type: 'COVENANT_INTERIM_OPERATING', primary_quote: 'amend, modify or waive any material provision of any Specified Contract', features: { sectionNumber: '5.01(l)' } },
     { id: 'frag-o', provision_type: 'COVENANT_INTERIM_OPERATING', primary_quote: 'fail to maintain in effect its existing insurance policies', features: { sectionNumber: '5.01(o)' } },
   ];
-  const row = iocMod.buildOtherRestrictionsRow(fragments, { primitives: iocPrimitives });
-  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, row.children));
+  const rows = iocMod.buildOtherRestrictionsRows(fragments, { primitives: iocPrimitives });
+  assert.equal(rows.length, 3, 'one row per fragment');
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, rows.map((r, i) => React.createElement('div', { key: i }, r.label, r.children))));
   assert.match(html, /Tax matters/, '5.01(k) named as a tax covenant');
   assert.match(html, /Specified-contract amendments/, '5.01(l) named as a Specified-Contract amendment restriction');
   assert.match(html, /Insurance maintenance/, '5.01(o) named as an insurance-maintenance covenant');
-  assert.doesNotMatch(html, /no structured signal extracted/, 'none of the three fall back to the bare placeholder once a name is sniffed');
 });
 
 test('I7: sniffFragmentName returns null (never a fabricated name) when the fragment carries no primary_quote to sniff', () => {
@@ -2015,12 +2019,13 @@ test('I8: all 8 unclassified 5.01(i)-(o) fragments resolve a readable title from
     assert.equal(iocMod.resolveFragmentName(card), expected[card.section_ref.match(/5\.01\(([a-z]+)\)/i)[1]]);
   }
 
-  const row = iocMod.buildOtherRestrictionsRow(fragments, { primitives: iocPrimitives });
-  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, row.children));
+  const rows = iocMod.buildOtherRestrictionsRows(fragments, { primitives: iocPrimitives });
+  assert.equal(rows.length, 8, 'all 8 sub-clauses surface as individual rows');
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, rows.map((r, i) => React.createElement('div', { key: i }, r.label, r.children))));
   assert.doesNotMatch(html, /\[PROPOSED\] Unclassified/, 'no IOC fragment row ever renders the literal "[PROPOSED] Unclassified" short_title');
   assert.match(html, /Tax elections \/ Tax accounting/, '5.01(k) renders as a Tax-related title');
   for (const label of Object.values(expected)) {
-    assert.match(html, new RegExp(label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `${label} renders somewhere in the Other restrictions row`);
+    assert.match(html, new RegExp(label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `${label} renders as its own Other-restrictions row`);
   }
 });
 

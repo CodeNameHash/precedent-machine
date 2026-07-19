@@ -304,8 +304,27 @@ export function deriveElectionSummary(reviewDeal) {
     // explicitly instead of rendering nothing.
     const noElectionCard = considCards.find((c) => NO_ELECTION_RE.test(String(c.region_full_text || c.primary_quote || '')));
     if (noElectionCard) {
+      // Ben (r6): "it doesn't even show the consideration split — you need
+      // the values!!" A fixed-mixed deal still HAS economics: pull the
+      // per-share cash amount and exchange ratio off whichever CONSID card
+      // carries them and surface both as split pills next to the caption.
+      const splitParts = [];
+      const cashCard = considCards.find((c) => valueText(c.features?.cashAmount) || valueText(c.features?.perShareAmount));
+      const cashVal = cashCard ? (c => c.features?.cashAmount ?? c.features?.perShareAmount)(cashCard) : null;
+      if (cashVal !== null && cashVal !== undefined && Number.isFinite(Number(cashVal))) {
+        splitParts.push({ label: `${moneyPerShare(cashVal).replace(' / share', '')} in cash per share`, sourceCard: cashCard });
+      } else if (cashVal) {
+        splitParts.push({ label: `${valueText(cashVal)} in cash per share`, sourceCard: cashCard });
+      }
+      const ratioCard = considCards.find((c) => valueText(c.features?.exchangeRatio) || valueText(c.features?.exchangeRatioText));
+      const ratioVal = ratioCard ? valueText(ratioCard.features?.exchangeRatio) || valueText(ratioCard.features?.exchangeRatioText) : null;
+      if (ratioVal) {
+        const bare = String(ratioVal).match(/^[\d.]+$/) ? `${ratioVal} shares of Parent stock per share` : ratioVal;
+        splitParts.push({ label: bare, sourceCard: ratioCard });
+      }
       return {
         noElection: true,
+        split: splitParts,
         evidence: noElectionCard.primary_quote || noElectionCard.region_full_text || null,
         sourceCard: noElectionCard,
       };

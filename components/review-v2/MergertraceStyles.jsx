@@ -139,7 +139,7 @@ export default function MergertraceStyles() {
          table's content), #E0E0E0 row rules, EXPLICIT white body (grey
          lives only on thead/title bars), paper-2 hover. */
       .mtx [data-testid^='provision-table-'] table {
-        font-size: 12px;
+        font-size: 13px;
         color: #1F1F1F;
         background: #FFFFFF;
       }

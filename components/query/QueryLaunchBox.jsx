@@ -22,7 +22,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import { describeFilter } from '../../lib/query/filter-labels';
-import { PROVISION_TYPES, OpSelect, ProvisionTypeSelect, FilterValueInput } from './QueryFilterControls';
+import { PROVISION_TYPES, OpSelect, ProvisionTypeSelect, FilterValueInput, FieldSelect } from './QueryFilterControls';
 // Reuses the deals-index column registry's consideration-type label map
 // (the "existing field-label helper" for deal-level values — item 3's ask
 // to check before writing new ones) so "CASH_PLUS_CVR" reads as
@@ -194,8 +194,8 @@ export default function QueryLaunchBox({ deals: dealsProp, showTitle = true, def
           <div className="qlbFilters">
             {filters.map((f, i) => (
               <div className="qlbRow" key={i}>
-                <ProvisionTypeSelect value={f.provision_type} onChange={(v) => update(i, { provision_type: v })} types={PROVISION_TYPES} />
-                <input className="mtx-input" value={f.field} onChange={(e) => update(i, { field: e.target.value })} placeholder="field path" />
+                <ProvisionTypeSelect value={f.provision_type} onChange={(v) => update(i, { provision_type: v, field: '' })} types={PROVISION_TYPES} />
+                <FieldSelect provisionType={f.provision_type} value={f.field} onChange={(v) => update(i, { field: v })} />
                 <OpSelect value={f.op} onChange={(v) => update(i, { op: v })} />
                 <FilterValueInput value={f.value} onChange={(v) => update(i, { value: v })} />
               </div>

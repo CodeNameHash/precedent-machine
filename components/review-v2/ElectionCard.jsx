@@ -26,8 +26,25 @@ export default function ElectionCard({ election }) {
   // proration (SkyWater/IonQ) -- one quiet line, no options grid, never
   // nothing at all.
   if (election.noElection) {
+    // Ben r6: the split VALUES render as pills ahead of the caption — a
+    // fixed-mixed deal's economics ($X cash + Y shares per share) are the
+    // headline, "no election, no proration" is the footnote.
+    const split = Array.isArray(election.split) ? election.split : [];
     return (
       <section data-testid="provision-table-election" className="border border-border bg-white mb-3.5">
+        {split.length ? (
+          <div className="px-3.5 pt-2.5 flex flex-wrap gap-1.5" data-testid="no-election-split">
+            {split.map((part) => (
+              <PillCell
+                key={part.label}
+                label={part.label}
+                tone="present"
+                evidence={election.evidence}
+                source={part.sourceCard || election.sourceCard}
+              />
+            ))}
+          </div>
+        ) : null}
         <EvidenceHoverSource evidence={election.evidence} source={election.sourceCard} highlight={null} as="p">
           <p className="px-3.5 py-2.5 text-[11px] text-inkFaint">Fixed mixed consideration — no election, no proration</p>
         </EvidenceHoverSource>

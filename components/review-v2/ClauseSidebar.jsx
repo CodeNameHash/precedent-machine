@@ -57,7 +57,7 @@ function sectionRefLabel(ref) {
 
 const LAB = 'text-[9px] font-bold uppercase tracking-[0.14em] text-[#9A9A9A] mb-1.5';
 const LAB_SM = 'text-[8.5px] font-bold uppercase tracking-[0.14em] text-[#9A9A9A]';
-const BODY = 'text-[12px] leading-5'; // matches ProvisionTable's td text-xs body size
+const BODY = 'text-[13px] leading-5'; // matches the table body bump (Ben r6: bigger body text; pills stay 12px, ancillary stays small)
 const SEL = 'w-full border border-[#E0E0E0] bg-white text-[10px] px-1.5 py-1 text-[#1F1F1F]';
 const INPUT = 'w-full border border-[#E0E0E0] bg-white text-[10px] px-1.5 py-1 text-[#1F1F1F] placeholder:text-[#B0B0B0]';
 
