@@ -41,6 +41,7 @@ const fs = require('fs');
 const path = require('path');
 const { verifyDealQuotes, computeCoverage } = require('../lib/verification');
 const { resolveBuyerDisplay, SHELL_NAME_REGEX } = require('../lib/query/types');
+const { persistReport, resolveReportDbFlag } = require('../lib/reports/persist-report');
 
 const PAGE_SIZE = 1000;
 
@@ -288,7 +289,7 @@ function printScorecard(label, metrics, evalResult) {
 /* ── CLI / DB plumbing ───────────────────────────────────────────────────── */
 
 function parseArgs(argv) {
-  const args = { deal: null, all: false, gates: {} };
+  const args = { deal: null, all: false, gates: {}, json: null, reportDb: null };
   for (let i = 2; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--deal') args.deal = argv[++i];
@@ -298,6 +299,9 @@ function parseArgs(argv) {
     else if (a === '--min-def') args.gates.def = Number(argv[++i]);
     else if (a === '--min-cond') args.gates.cond = Number(argv[++i]);
     else if (a === '--min-coverage') args.gates.coverage = Number(argv[++i]);
+    else if (a === '--json') args.json = argv[++i];
+    else if (a === '--report-db') args.reportDb = true;
+    else if (a === '--no-report-db') args.reportDb = false;
     else { console.error(`Unknown arg: ${a}`); process.exit(1); }
   }
   if (!args.deal && !args.all) {
@@ -323,6 +327,31 @@ async function fetchAllProvisions(sb, dealId) {
     offset += PAGE_SIZE;
   }
   return out;
+}
+
+// Structured (JSON-emittable) per-deal result, built from the same metrics/
+// evalResult/metaEval qaOneDeal already computes — pure, DB-free, and
+// separate from the console printers so the console output they drive stays
+// byte-identical. Shape per docs/handoffs/M4-M5-RECONCILED-PLAN-2026-07-18.md
+// §7 item 2: {dealId, counts, rawCoveragePct, excludedRegions, checks[], pass}.
+// `checks[]` merges the gate checks and the deal-metadata checks, tagged by
+// `group`, so the admin UI can render both in one per-deal gate table.
+function buildDealResult(deal, metrics, evalResult, metaEval, { staging } = {}) {
+  const pass = evalResult.ok && (staging || metaEval.ok);
+  return {
+    dealId: deal.id,
+    label: `${deal.acquirer || '?'} / ${deal.target || '?'}`,
+    staging: !!staging,
+    counts: metrics.counts,
+    coveragePct: metrics.coveragePct,
+    rawCoveragePct: metrics.rawCoveragePct,
+    excludedRegions: metrics.excludedRegions,
+    checks: [
+      ...evalResult.checks.map((c) => ({ ...c, group: 'gate' })),
+      ...metaEval.checks.map((c) => ({ ...c, group: 'metadata' })),
+    ],
+    pass,
+  };
 }
 
 async function qaOneDeal(sb, deal, gateOverrides) {
@@ -354,7 +383,8 @@ async function qaOneDeal(sb, deal, gateOverrides) {
   const metaEval = evaluateDealMetadataGates(deal);
   printDealMetadataScorecard(metaEval, { staging });
 
-  return evalResult.ok && (staging || metaEval.ok);
+  const result = buildDealResult(deal, metrics, evalResult, metaEval, { staging });
+  return { ok: result.pass, result };
 }
 
 async function main() {
@@ -381,19 +411,42 @@ async function main() {
   }
 
   let allOk = true;
+  const dealResults = [];
   for (const deal of targets) {
     try {
-      const ok = await qaOneDeal(sb, deal, args.gates);
+      const { ok, result } = await qaOneDeal(sb, deal, args.gates);
       if (!ok) allOk = false;
+      dealResults.push(result);
     } catch (err) {
       console.log(`\n═══ ${deal.acquirer || '?'} / ${deal.target || '?'} ═══`);
       console.log(`  ERROR: ${err.message}`);
       allOk = false;
+      dealResults.push({ dealId: deal.id, label: `${deal.acquirer || '?'} / ${deal.target || '?'}`, error: err.message, pass: false });
     }
   }
 
   console.log(`\n${targets.length} deal${targets.length === 1 ? '' : 's'} checked. Overall: ${allOk ? 'PASS' : 'FAIL'}`);
   if (!allOk) process.exitCode = 1;
+
+  // Structured JSON emitter (docs/handoffs/M4-M5-RECONCILED-PLAN-2026-07-18.md
+  // §7 item 2) — output plumbing only, built AFTER every console print above
+  // so nothing here can perturb the PASS-path console byte-identity.
+  const structured = { generatedAt: new Date().toISOString(), deals: dealResults, pass: allOk };
+
+  if (args.json) {
+    fs.mkdirSync(path.dirname(args.json), { recursive: true });
+    fs.writeFileSync(args.json, JSON.stringify(structured, null, 2));
+  }
+
+  if (resolveReportDbFlag(args)) {
+    const summary = {
+      dealCount: dealResults.length,
+      passCount: dealResults.filter((d) => d.pass).length,
+      failCount: dealResults.filter((d) => !d.pass).length,
+      pass: allOk,
+    };
+    await persistReport(sb, { kind: 'ingest-qa', generatedAt: structured.generatedAt, summary, payload: structured });
+  }
 }
 
 module.exports = {
@@ -413,7 +466,9 @@ module.exports = {
   findDotEnvLocal,
   loadDotEnvLocal,
   printScorecard,
+  buildDealResult,
   qaOneDeal,
+  parseArgs,
   DEFAULT_GATES,
 };
 

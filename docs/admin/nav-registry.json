@@ -110,5 +110,13 @@
     "group": "search",
     "order": 10,
     "description": "Return to the main deal search and review workspace."
+  },
+  {
+    "id": "reports",
+    "label": "Reports",
+    "href": "/admin/reports",
+    "group": "system",
+    "order": 10,
+    "description": "Review persisted producer run reports: ingest QA, coverage audit, rematerialize, and mint-cards."
   }
 ]
