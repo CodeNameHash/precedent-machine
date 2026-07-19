@@ -23,7 +23,7 @@ export default function ProvisionNav({ sections, activeId, onJump }) {
               className="w-2 h-2 shrink-0"
               style={{ background: s.dot, borderRadius: '9999px' }}
             />
-            <span className={`text-[11px] leading-tight ${activeId === s.id ? 'font-bold text-[#1F1F1F]' : 'text-[#6B6B6B]'}`}>
+            <span className={`text-[13px] leading-snug ${activeId === s.id ? 'font-bold text-[#1F1F1F]' : 'text-[#6B6B6B]'}`}>
               {s.title}
             </span>
           </button>

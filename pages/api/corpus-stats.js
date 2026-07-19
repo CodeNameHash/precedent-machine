@@ -544,9 +544,23 @@ export default async function handler(req, res) {
     if (requestedFeatureKeys.length || itemCode || itemLabel) {
       rowContext = {};
       if (requestedFeatureKeys.length) {
+        // r11 (Ben: "No corpus comparison captured — surely we have notice
+        // period coded?"): the main claims fetch is scoped to the CLICKED
+        // card's subtype code, but peer deals park the same attribute on
+        // sibling subtypes (noticePeriod/matchingPeriod live across the
+        // NOSOL family) — the code-scoped pool came back empty for exactly
+        // the well-covered keys. Fetch the requested attributes UNSCOPED
+        // by code (single-column .in() filter, small result, edge-cached
+        // like everything else here) and build distributions from that.
+        const { data: attrClaims, error: attrErr } = await sb
+          .from('claims')
+          .select('deal_id, attribute, canonical, verbatim, evidence_quote, provenance, id, created_at, excerpt_id')
+          .in('attribute', requestedFeatureKeys)
+          .limit(4000);
+        if (attrErr) throw new Error(attrErr.message);
         rowContext.features = requestedFeatureKeys
           .map((attribute) => {
-            const peerClaims = (claims || []).filter((cl) => cl.attribute === attribute && peerIds.has(cl.deal_id));
+            const peerClaims = (attrClaims || []).filter((cl) => cl.attribute === attribute && peerIds.has(cl.deal_id));
             return buildFeatureDistribution(attribute, peerClaims, subjectDealId, dealsById, cardIdByKey);
           })
           .filter(Boolean);
