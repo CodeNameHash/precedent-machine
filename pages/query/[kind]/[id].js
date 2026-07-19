@@ -115,7 +115,7 @@ export default function QueryPage() {
           center={(
             <div className="pageTitle">
               <h1>{title}</h1>
-              <p>{id === 'adhoc' ? 'Ad hoc query — not saved yet.' : 'Saved query.'}</p>
+              <p className="mtx-meta-label">{id === 'adhoc' ? 'Ad hoc query — not saved yet.' : 'Saved query.'}</p>
             </div>
           )}
         />
@@ -136,13 +136,19 @@ export default function QueryPage() {
       </div>
       <style jsx>{`
         .qp { min-height: 100vh; background: var(--paper); color: var(--ink); font-family: var(--mtx-sans); }
+        /* Same pageTitle voice as /query's own AppHeader center slot: 18px
+           650-weight Inter h1 (the DealHeader identity block's h1 sits in
+           the same 16-18px bold range), with the subtitle riding the
+           app's meta-label voice (9px uppercase, 0.14em tracking, grey) —
+           the same treatment DealHeader gives its "ACQUIRED BY" eyebrow —
+           rather than a plain lowercase sentence. */
         .pageTitle h1 { margin: 0; font-size: 18px; font-family: var(--mtx-sans); font-weight: 650; color: var(--ink); }
-        .pageTitle p { margin: 3px 0 0; color: var(--ink-light); font-size: 12px; font-family: var(--mtx-sans); }
-        .actions { border-bottom: 1px solid var(--line); background: #fff; }
+        .pageTitle p { margin: 4px 0 0; font-size: 9px; letter-spacing: 0.14em; }
+        .actions { border-bottom: 1px solid var(--line); background: var(--paper); }
         .actionsInner { display: flex; justify-content: flex-end; gap: 10px; padding: 12px 34px; }
         main { padding: 0; }
-        .wrap { max-width: 1280px; margin: 0 auto; padding: 32px 34px; }
-        .empty { border: 1px solid var(--line); background: #fff; padding: 24px; color: var(--ink-light); font-family: var(--mtx-sans); }
+        .wrap { max-width: 1280px; margin: 0 auto; padding: 32px 34px; display: flex; flex-direction: column; gap: 4px; }
+        .empty { border: 1px solid var(--line); background: var(--paper); padding: 24px; color: var(--ink-light); font-family: var(--mtx-sans); }
         @media (max-width: 900px) {
           .actionsInner { padding: 12px 16px; flex-wrap: wrap; }
           .wrap { padding: 16px; }
@@ -199,31 +205,26 @@ function ResultView({ result, onOpen }) {
   return <pre>{JSON.stringify(result, null, 2)}</pre>;
 }
 
-function DealCompare({ result, onOpen }) {
-  if (result.columns.length < 2) return <Panel>Less than 2 deals selected. Add another deal to compare.</Panel>;
-  return (
-    <Panel>
-      <div className="scroll">
-        <table className="mtx-table">
-          <thead><tr><th>Provision</th>{result.columns.map((col) => <th key={col.deal_id}>{col.deal_name}<small>{col.signing_date}</small></th>)}</tr></thead>
-          <tbody>
-            {result.rows.map((row) => <tr key={row.provision_type}>
-              <th>{row.provision_type.replace(/_/g, ' ')}</th>
-              {row.cells.map((cell) => <td key={cell.deal_id} className={cell.delta_severity.toLowerCase()} onClick={() => onOpen(cell)}>
-                {cell.key_fields.map((field) => <div key={field.field}><b>{field.label}</b><span className="mtx-mono">{formatValue(field.value, field.field)}{field._prov && <ProvBadge prov={field._prov} />}</span></div>)}
-                {cell.primary_quote?.text && <small className="mtx-serif">{cell.primary_quote.text.slice(0, 220)}</small>}
-              </td>)}
-            </tr>)}
-          </tbody>
-        </table>
-      </div>
-    </Panel>
-  );
+function DealCompare({ result }) {
+  // Deal-compare renders on the review page now (Ben: "just the normal deal
+  // review page but with an extra column for the added deal(s)") — this
+  // renderer only forwards to /review/<primary>?compare=<rest>. The
+  // executor is untouched; result.columns keeps carrying the deal ids.
+  const router = useRouter();
+  const ids = (result.columns || []).map((col) => col.deal_id).filter(Boolean);
+  const enough = ids.length >= 2;
+  useEffect(() => {
+    if (!enough) return;
+    router.replace(`/review/${ids[0]}?compare=${ids.slice(1).join(',')}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [enough, ids.join(',')]);
+  if (!enough) return <Panel>Less than 2 deals selected. Add another deal to compare.</Panel>;
+  return <Panel>Opening review comparison…</Panel>;
 }
 
 function CrossCut({ result, onOpen }) {
   return (
-    <Panel>
+    <Panel title={`Provision cross-cut — ${pluralize(result.rows.length, 'deal')}`}>
       <div className="scroll">
         <table className="mtx-table">
           <thead><tr><th>Deal</th><th>Signing</th>{result.columns.map((col) => <th key={col.field}>{col.label}</th>)}</tr></thead>
@@ -237,25 +238,49 @@ function CrossCut({ result, onOpen }) {
   );
 }
 
+// R (2026-07-19 query-results overhaul): item 2 — the min/median/max stat
+// strip now reads as review-page fact tiles (DealHeader's metric-column
+// voice: 9px uppercase label over a bold value, divided by a 1px rule)
+// instead of the old bordered pill-per-stat row.
+function FactTile({ label, value }) {
+  return (
+    <div className="factTile">
+      <p className="factLabel">{label}</p>
+      <p className="factValue mtx-mono">{value}</p>
+    </div>
+  );
+}
+
 function MarketRange({ result, onOpen }) {
-  const counts = result.stats ? result.distribution.map((x) => x.count) : result.distribution.map((x) => x.count);
+  const counts = result.distribution.map((x) => x.count);
   const max = Math.max(1, ...counts);
   return (
-    <Panel>
-      <div className="chart">
-        {(result.distribution || []).map((bucket, i) => <button key={i} type="button" style={{ height: `${Math.max(12, (bucket.count / max) * 170)}px` }} title={bucket.value || `${bucket.bucket_min} to ${bucket.bucket_max}`}>
-          <span>{bucket.count}</span>
-        </button>)}
-      </div>
-      <div className="stats">
-        <b className="mtx-mono">n={result.n}</b>
-        {result.stats && <><span className="mtx-mono">median {round(result.stats.median)}</span><span className="mtx-mono">p25 {round(result.stats.p25)}</span><span className="mtx-mono">p75 {round(result.stats.p75)}</span><span className="mtx-mono">range {round(result.stats.min)}-{round(result.stats.max)}</span></>}
-      </div>
-      <details>
-        <summary>Underlying deals</summary>
-        <table className="mtx-table"><tbody>{result.deal_points.map((point) => <tr key={`${point.deal_id}-${point.card_id}`} onClick={() => onOpen(point)}><td>{point.deal_name}</td><td className="mtx-mono mtx-prov-cell">{formatValue(point.value, result.field_path)}{point._prov && <ProvBadge prov={point._prov} />}</td><td className="mtx-mono">{point.quote_section_ref || '-'}</td></tr>)}</tbody></table>
+    <>
+      <Panel title="Distribution">
+        <div className="panelPad">
+          <div className="chart">
+            {(result.distribution || []).map((bucket, i) => <button key={i} type="button" style={{ height: `${Math.max(12, (bucket.count / max) * 170)}px` }} title={bucket.value || `${bucket.bucket_min} to ${bucket.bucket_max}`}>
+              <span>{bucket.count}</span>
+            </button>)}
+          </div>
+          <div className="factTiles">
+            <FactTile label="N" value={result.n} />
+            {result.stats && <>
+              <FactTile label="Median" value={round(result.stats.median)} />
+              <FactTile label="P25" value={round(result.stats.p25)} />
+              <FactTile label="P75" value={round(result.stats.p75)} />
+              <FactTile label="Range" value={`${round(result.stats.min)}–${round(result.stats.max)}`} />
+            </>}
+          </div>
+        </div>
+      </Panel>
+      <details className="subPanel">
+        <summary className="subPanelTitleBar">{`Underlying deals — ${result.deal_points.length}`}</summary>
+        <div className="subPanelBody">
+          <table className="mtx-table"><tbody>{result.deal_points.map((point) => <tr key={`${point.deal_id}-${point.card_id}`} onClick={() => onOpen(point)}><td>{point.deal_name}</td><td className="mtx-mono mtx-prov-cell">{formatValue(point.value, result.field_path)}{point._prov && <ProvBadge prov={point._prov} />}</td><td className="mtx-mono">{point.quote_section_ref || '-'}</td></tr>)}</tbody></table>
+        </div>
       </details>
-    </Panel>
+    </>
   );
 }
 
@@ -348,9 +373,8 @@ function FilterList({ result }) {
   const visibleColumns = allColumns.filter((col) => visible.has(col.key));
 
   return (
-    <Panel>
+    <Panel title={`Matching deals — ${result.rows.length}`}>
       <div className="listHead">
-        <p className="rowCount">{pluralize(result.rows.length, 'deal')}</p>
         <div className="colPicker">
           <button type="button" className="mtx-btn" onClick={() => setColumnsOpen((v) => !v)}>Columns</button>
           {columnsOpen && (
@@ -438,60 +462,97 @@ const STATUS_LABELS = {
   NOT_APPLICABLE: 'Not applicable',
 };
 
-function DealToMarket({ result, onOpen }) {
-  const order = ['UNUSUAL', 'OFF_MARKET', 'MARKET', 'MISSING'];
-  return (
-    <Panel>
-      <div className="chips">
-        <span className="mtx-badge">{result.summary.market_count} Market</span><span className="mtx-badge">{result.summary.off_market_count} Off-market</span><span className="mtx-badge">{result.summary.unusual_count} Unusual</span><span className="mtx-badge">{result.summary.missing_count} Missing</span>
-      </div>
-      {order.map((status) => {
-        const rows = result.scorecard.filter((row) => row.status === status);
-        if (!rows.length) return null;
-        return <section key={status}><h2>{STATUS_LABELS[status] || status.replace(/_/g, '-')} ({rows.length})</h2><table className="mtx-table"><tbody>{rows.map((row) => <tr key={`${row.provision_type}-${row.field_path}`} className={status.toLowerCase()} onClick={() => onOpen(row)}><td>{row.field_label}</td><td className="mtx-mono mtx-prov-cell">{formatValue(row.deal_value, row.field_path)}{row._prov && <ProvBadge prov={row._prov} />}</td><td className="mtx-mono">{baseline(row.baseline_stats)}</td><td>{STATUS_LABELS[row.status] || row.status}</td></tr>)}</tbody></table></section>;
-      })}
-    </Panel>
-  );
+function DealToMarket({ result }) {
+  // Deal-to-market renders on the review page now (?market=1: a Market
+  // column per section + an "Off-market terms" section on top) — this
+  // renderer only forwards there. The executor is untouched;
+  // result.deal_id is the payload's deal_id echoed back (see
+  // lib/query/executors/deal-to-market.js).
+  const router = useRouter();
+  const dealId = result.deal_id || (result.deal && result.deal.deal_id) || null;
+  useEffect(() => {
+    if (dealId) router.replace(`/review/${dealId}?market=1`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dealId]);
+  if (!dealId) return <Panel>Deal not found in this result — re-run the query with a deal selected.</Panel>;
+  return <Panel>Opening review comparison…</Panel>;
 }
 
-function Panel({ children }) {
-  return <div className="panel">{children}<style jsx global>{`
-    .mtx.qp .panel { border: 1px solid #E0E0E0; background: #fff; overflow: hidden; padding: 18px; }
+// R (2026-07-19 render-parity pass): every result section now reads as a
+// review-page SECTION card — a grey uppercase title bar (same voice as the
+// reused ProvisionTable's own `[data-testid^='provision-table-'] > div:
+// first-child:has(> p)` title-bar rule in MergertraceStyles) over a white
+// body, all colors/sizes pulled from the .mtx custom properties rather than
+// restated as one-off hex. `title` is optional so DealCompare/DealToMarket
+// (owned by the render-swap in flight elsewhere) keep their existing
+// untitled/padded card look unchanged.
+function Panel({ title, children }) {
+  return (
+    <div className={`panel${title ? ' panelTitled' : ''}`}>
+      {title && <div className="panelTitleBar"><p>{title}</p></div>}
+      {title ? <div className="panelBody">{children}</div> : children}
+      <style jsx global>{`
+    .mtx.qp .panel { border: 1px solid var(--line); background: var(--paper); overflow: hidden; }
+    .mtx.qp .panel:not(.panelTitled) { padding: 18px; }
+    .mtx.qp .panelTitleBar { background: var(--paper-2); border-bottom: 1px solid var(--line); padding: 8px 12px; }
+    .mtx.qp .panelTitleBar p { margin: 0; font-family: var(--mtx-sans); font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-light); }
+    .mtx.qp .panelBody .mtx-table { border: 0; }
+    .mtx.qp .panelPad { padding: 18px; }
     .mtx.qp .scroll { overflow-x: auto; }
-    .mtx.qp .mtx-table th small { display: block; margin-top: 4px; color: #6B6B6B; text-transform: none; letter-spacing: 0; }
-    .mtx.qp .mtx-table td { cursor: pointer; }
+    .mtx.qp .mtx-table th small { display: block; margin-top: 4px; color: var(--ink-light); text-transform: none; letter-spacing: 0; }
+    .mtx.qp .mtx-table td { cursor: pointer; padding: 8px 12px; font-size: 13px; }
+    .mtx.qp .mtx-table th { padding: 8px 12px; }
     .mtx.qp .mtx-table td div { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
-    .mtx.qp .mtx-table td small { color: #6B6B6B; display: block; margin-top: 8px; line-height: 1.35; }
+    .mtx.qp .mtx-table td small { color: var(--ink-light); display: block; margin-top: 8px; line-height: 1.35; }
     .mtx.qp .major, .mtx.qp .unusual { background: rgba(177, 78, 99, 0.08); }
     .mtx.qp .minor, .mtx.qp .off_market { background: rgba(168, 122, 46, 0.08); }
-    .mtx.qp .trivial, .mtx.qp .market { background: #FFFFFF; }
+    .mtx.qp .trivial, .mtx.qp .market { background: var(--paper); }
     .mtx.qp .missing { background: rgba(31, 31, 31, 0.05); }
-    .mtx.qp .chart { height: 210px; display: flex; align-items: flex-end; gap: 8px; border-bottom: 1px solid #E0E0E0; padding: 12px 0; }
-    .mtx.qp .chart button { flex: 1; min-width: 20px; border: 0; background: #1F1F1F; color: #fff; border-radius: 0; cursor: pointer; }
-    .mtx.qp .stats, .mtx.qp .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
-    .mtx.qp .stats span { border: 1px solid #E0E0E0; padding: 5px 9px; font-size: 12px; color: #1F1F1F; }
-    .mtx.qp h2 { font-size: 13px; margin: 22px 0 8px; font-family: var(--mtx-sans); text-transform: uppercase; letter-spacing: 0.08em; color: #6B6B6B; }
+    .mtx.qp .chart { height: 210px; display: flex; align-items: flex-end; gap: 8px; border-bottom: 1px solid var(--line); padding: 12px 0; }
+    .mtx.qp .chart button { flex: 1; min-width: 20px; border: 0; background: var(--ink); color: var(--paper); border-radius: 0; cursor: pointer; }
+    .mtx.qp .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
+    .mtx.qp h2 { font-size: 13px; margin: 22px 0 8px; font-family: var(--mtx-sans); text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-light); }
+
+    /* item 2 — market-range stat strip as review-page fact tiles: 9px
+       uppercase label over a bold value, DealHeader's metric-column voice. */
+    .mtx.qp .factTiles { display: flex; flex-wrap: wrap; margin-top: 14px; }
+    .mtx.qp .factTile { padding: 0 16px; }
+    .mtx.qp .factTile:first-child { padding-left: 0; }
+    .mtx.qp .factTile + .factTile { border-left: 1px solid var(--line); }
+    .mtx.qp .factLabel { margin: 0; font-family: var(--mtx-sans); font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-light); }
+    .mtx.qp .factValue { margin: 4px 0 0; font-size: 15px; font-weight: 700; color: var(--ink); }
+
+    /* Underlying-deals disclosure — same grey title-bar voice as a Panel,
+       via native <details>/<summary> so it stays collapsed by default. */
+    .mtx.qp .subPanel { border: 1px solid var(--line); background: var(--paper); margin-top: 18px; }
+    .mtx.qp .subPanelTitleBar { display: block; background: var(--paper-2); border-bottom: 1px solid var(--line); padding: 8px 12px; font-family: var(--mtx-sans); font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-light); cursor: pointer; list-style: none; }
+    .mtx.qp .subPanelTitleBar::-webkit-details-marker { display: none; }
+    .mtx.qp .subPanelBody .mtx-table { border: 0; }
 
     /* item 6 — Columns popover + client sort (FILTER_THEN_LIST only). */
-    .mtx.qp .listHead { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-    .mtx.qp .rowCount { margin: 0; font-family: var(--mtx-sans); font-size: 12px; color: #6B6B6B; }
+    .mtx.qp .listHead { display: flex; align-items: center; justify-content: flex-end; padding: 10px 12px; border-bottom: 1px solid var(--line); }
     .mtx.qp .colPicker { position: relative; }
-    .mtx.qp .colPopover { position: absolute; right: 0; top: calc(100% + 4px); z-index: 6; background: #fff; border: 1px solid #E0E0E0; padding: 8px 10px; min-width: 180px; box-shadow: 0 4px 14px rgba(0,0,0,0.08); }
-    .mtx.qp .colPopover label { display: flex; align-items: center; gap: 8px; font-family: var(--mtx-sans); font-size: 12px; color: #1F1F1F; padding: 4px 0; cursor: pointer; }
+    .mtx.qp .colPopover { position: absolute; right: 0; top: calc(100% + 4px); z-index: 6; background: var(--paper); border: 1px solid var(--line); padding: 8px 10px; min-width: 180px; box-shadow: 0 4px 14px rgba(0,0,0,0.08); }
+    .mtx.qp .colPopover label { display: flex; align-items: center; gap: 8px; font-family: var(--mtx-sans); font-size: 12px; color: var(--ink); padding: 4px 0; cursor: pointer; }
     .mtx.qp .mtx-table th.sortable { cursor: pointer; user-select: none; }
     .mtx.qp .mtx-table th.expandCol, .mtx.qp .mtx-table td.expandCol { width: 1%; white-space: nowrap; }
 
     /* item 3 — expandable provision spans, collapsed by default. Same
-       "see text" affordance the review page uses (.term-cell-seetext). */
+       "see text" affordance the review page uses (.term-cell-seetext), and
+       the quote itself now takes the review page's exact clause-block
+       treatment (ClauseSidebar.jsx: border-l-2 border-[#1F1F1F]
+       bg-[#F6F6F6] px-2.5 py-2) rather than a one-off tint. */
     .mtx.qp .mtx-table td.expandCol { cursor: default; }
-    .mtx.qp .hitsRow td { cursor: default; padding: 0; background: #FAFAF9; }
-    .mtx.qp .hitBlock { padding: 12px 18px; border-top: 1px solid #EDEDEC; }
+    .mtx.qp .hitsRow td { cursor: default; padding: 0; background: var(--paper); }
+    .mtx.qp .hitBlock { padding: 12px 18px; border-top: 1px solid var(--line); }
     .mtx.qp .hitBlock:first-child { border-top: none; }
-    .mtx.qp .hitLabel { display: flex; justify-content: space-between; gap: 12px; font-family: var(--mtx-sans); font-size: 12px; color: #1F1F1F; margin-bottom: 6px; }
-    .mtx.qp .hitAttach { font-family: var(--mtx-sans); font-size: 11px; color: #6B6B6B; margin: -2px 0 6px; }
-    .mtx.qp .hitBlock blockquote { margin: 0 0 6px; padding: 6px 0 6px 12px; border-left: 2px solid #1F1F1F; font-family: var(--mtx-serif); font-size: 13px; line-height: 1.5; color: #1F1F1F; }
-    .mtx.qp .hitSection { font-size: 11px; color: #6B6B6B; }
-  `}</style></div>;
+    .mtx.qp .hitLabel { display: flex; justify-content: space-between; gap: 12px; font-family: var(--mtx-sans); font-size: 12px; color: var(--ink); margin-bottom: 6px; }
+    .mtx.qp .hitAttach { font-family: var(--mtx-sans); font-size: 11px; color: var(--ink-light); margin: -2px 0 6px; }
+    .mtx.qp .hitBlock blockquote { margin: 0 0 6px; padding: 8px 10px; border-left: 2px solid var(--ink); background: var(--paper-2); font-family: var(--mtx-serif); font-size: 13px; line-height: 1.5; color: var(--ink); }
+    .mtx.qp .hitSection { font-size: 11px; color: var(--ink-light); }
+  `}</style>
+    </div>
+  );
 }
 
 function Drilldown({ item, onClose }) {
@@ -505,7 +566,7 @@ function Drilldown({ item, onClose }) {
         <pre className="mtx-serif">{item.primary_quote?.text || item.verbatim_quote || JSON.stringify(item, null, 2)}</pre>
         <style jsx>{`
           h2 { margin: 14px 0 14px; font-size: 15px; font-family: var(--mtx-sans); }
-          pre { white-space: pre-wrap; line-height: 1.5; color: #1F1F1F; margin-top: 12px; }
+          pre { white-space: pre-wrap; line-height: 1.5; color: var(--ink); margin-top: 12px; }
         `}</style>
       </aside>
     </>

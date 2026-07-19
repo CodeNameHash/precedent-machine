@@ -33,6 +33,19 @@ import {
   EMPTY_REVIEW_DEAL,
   MAE_SECTION_ID,
 } from '../../components/review-v2/sectionList';
+// Compare/market modes (?compare=<dealId>[,<dealId2>] / ?market=1) — the
+// deal-compare and deal-to-market query kinds render HERE now, as extra
+// columns on the normal review page (Ben: "they should look EXACTLY like
+// the main review page in terms of the main body").
+import {
+  parseCompareIds,
+  useComparedDeals,
+  useSectionMarketStats,
+  useDealToMarket,
+  dominantSectionCode,
+} from '../../components/review-v2/compareData';
+import CompareSectionColumn, { ColumnHeaderBand } from '../../components/review-v2/CompareColumn';
+import { MarketSectionColumn, OffMarketSection } from '../../components/review-v2/MarketColumn';
 
 const CONSIDERATION_SECTION_ID = 'consideration-hero';
 
@@ -49,11 +62,42 @@ function LoadingLine({ children }) {
   );
 }
 
-function SectionBlock({ section, reviewDeal, sectionCards, onSelectCard, selectedCardId, election, onViewInAgreement }) {
+function SectionBlock({ section, reviewDeal, sectionCards, onSelectCard, selectedCardId, election, onViewInAgreement, extraColumns = null }) {
   // Ben (Mergertrace round 1): every section collapsible. Native <details>
   // (open by default) so the scrollspy/anchor <section> wrapper and the
   // sec-<id> ids are untouched; ProvisionNav's jump() re-opens a collapsed
   // section before scrolling.
+  //
+  // Compare/market modes: `extraColumns` ([{ key, header, body }]) renders
+  // a per-section CSS grid — the primary deal's body exactly as today in a
+  // wide first track, one narrow (340px) track per compared-deal/Market
+  // column beside it, horizontal scroll when the tracks overflow. Section
+  // alignment is per-section: each grid row IS one section, so the primary
+  // and compared columns always sit side by side for the same section.
+  const primaryBody = (
+    <>
+      {section.id === '__definitions' ? (
+        <DefinitionsSection definitions={reviewDeal.definitions} />
+      ) : section.id === MAE_SECTION_ID ? (
+        <MaeSection config={section.config} reviewDeal={reviewDeal} onSelectCard={onSelectCard} selectedCardId={selectedCardId} />
+      ) : (
+        <>
+          {section.id === CONSIDERATION_SECTION_ID && election ? <ElectionCard election={election} /> : null}
+          <ProvisionTable
+            config={section.config}
+            reviewDeal={reviewDeal}
+            isEdit={false}
+            sectionCards={sectionCards}
+            onSelectCard={onSelectCard}
+            selectedCardId={selectedCardId}
+          />
+        </>
+      )}
+      {section.id !== '__definitions' && sectionCards && sectionCards.length ? (
+        <ProvisionIndex cards={sectionCards} sectionTitle={section.title} onSelect={onSelectCard} selectedId={selectedCardId} onViewInAgreement={onViewInAgreement} />
+      ) : null}
+    </>
+  );
   return (
     <section id={`sec-${section.id}`} className="scroll-mt-28">
       <details open className="mtx-section">
@@ -65,28 +109,25 @@ function SectionBlock({ section, reviewDeal, sectionCards, onSelectCard, selecte
           <h2 className="text-base font-bold tracking-tight text-[#1F1F1F]">{section.title}</h2>
           <span aria-hidden="true" className="mtx-section-caret ml-auto text-[10px] text-[#6B6B6B]">▾</span>
         </summary>
-        <div className="mt-4">
-        {section.id === '__definitions' ? (
-          <DefinitionsSection definitions={reviewDeal.definitions} />
-        ) : section.id === MAE_SECTION_ID ? (
-          <MaeSection config={section.config} reviewDeal={reviewDeal} onSelectCard={onSelectCard} selectedCardId={selectedCardId} />
+        {extraColumns && extraColumns.length ? (
+          <div className="mt-4 overflow-x-auto">
+            <div
+              className="grid gap-6 items-start"
+              style={{ gridTemplateColumns: `minmax(420px, 1fr) repeat(${extraColumns.length}, 340px)` }}
+              data-testid={`compare-grid-${section.id}`}
+            >
+              <div className="min-w-0">{primaryBody}</div>
+              {extraColumns.map((col) => (
+                <div key={col.key} className="min-w-0">
+                  {col.header}
+                  {col.body}
+                </div>
+              ))}
+            </div>
+          </div>
         ) : (
-          <>
-            {section.id === CONSIDERATION_SECTION_ID && election ? <ElectionCard election={election} /> : null}
-            <ProvisionTable
-              config={section.config}
-              reviewDeal={reviewDeal}
-              isEdit={false}
-              sectionCards={sectionCards}
-              onSelectCard={onSelectCard}
-              selectedCardId={selectedCardId}
-            />
-          </>
+          <div className="mt-4">{primaryBody}</div>
         )}
-        {section.id !== '__definitions' && sectionCards && sectionCards.length ? (
-          <ProvisionIndex cards={sectionCards} sectionTitle={section.title} onSelect={onSelectCard} selectedId={selectedCardId} onViewInAgreement={onViewInAgreement} />
-        ) : null}
-        </div>
       </details>
     </section>
   );
@@ -199,6 +240,46 @@ export default function ReviewPage() {
   const cardsBySection = useMemo(() => groupCardsBySection(reviewDealForTables), [reviewDealForTables]);
   const extractedFacts = useMemo(() => deriveExtractedHeaderFacts(reviewDealForTables), [reviewDealForTables]);
   const election = useMemo(() => deriveElectionSummary(reviewDealForTables), [reviewDealForTables]);
+
+  /* ── Compare / market modes ──
+     ?compare=<dealId>[,<dealId2>]: one narrow column per compared deal
+     beside each section (same configs, same components, read-only).
+     ?market=1: a "Market" column per section (corpus-stats for the
+     section's dominant subtype) + an "Off-market terms" section on top
+     (DEAL_TO_MARKET executor output, commercial fields excluded). The
+     provisions nav, scrollspy and corpus sidebar all keep operating on the
+     PRIMARY deal only. */
+  const compareIds = useMemo(
+    () => (router.isReady ? parseCompareIds(router.query.compare, dealId) : []),
+    [router.isReady, router.query.compare, dealId],
+  );
+  const marketMode = router.isReady && ['1', 'true'].includes(String(router.query.market || ''));
+  const comparedDeals = useComparedDeals(compareIds);
+  const sectionCodes = useMemo(() => {
+    if (!marketMode) return [];
+    return sections
+      .filter((s) => s.id !== '__definitions')
+      .map((s) => ({ sectionId: s.id, code: dominantSectionCode(cardsBySection.get(s.id)) }));
+  }, [marketMode, sections, cardsBySection]);
+  const marketStats = useSectionMarketStats(marketMode, dealId, sectionCodes);
+  const dealToMarket = useDealToMarket(marketMode, dealId);
+  const extraColumnCount = comparedDeals.length + (marketMode ? 1 : 0);
+  const buildExtraColumns = useCallback((section) => {
+    if (!extraColumnCount) return null;
+    const cols = comparedDeals.map((col, i) => ({
+      key: `cmp-${col.id}`,
+      header: <ColumnHeaderBand label={col.name || `Compared deal ${i + 1}`} href={`/review/${col.id}`} />,
+      body: <CompareSectionColumn section={section} column={col} />,
+    }));
+    if (marketMode) {
+      cols.push({
+        key: 'market',
+        header: <ColumnHeaderBand label="Market" uppercase />,
+        body: <MarketSectionColumn entry={marketStats[section.id]} />,
+      });
+    }
+    return cols;
+  }, [extraColumnCount, comparedDeals, marketMode, marketStats]);
 
   /* ── View toggle ── */
   const [view, setView] = useState('summary');
@@ -429,7 +510,8 @@ export default function ReviewPage() {
               </p>
             ) : null}
 
-            <div className="space-y-10 max-w-3xl mx-auto">
+            <div className={extraColumnCount ? 'space-y-10' : 'space-y-10 max-w-3xl mx-auto'}>
+              {marketMode ? <OffMarketSection data={dealToMarket} /> : null}
               {sections.map((section) => (
                 <SectionBlock
                   key={section.id}
@@ -440,6 +522,7 @@ export default function ReviewPage() {
                   selectedCardId={selectedCard ? (selectedCard.id || selectedCard.provision_instance_id) : null}
                   election={section.id === CONSIDERATION_SECTION_ID ? election : null}
                   onViewInAgreement={hasAgreementText ? openSourceOverlay : null}
+                  extraColumns={buildExtraColumns(section)}
                 />
               ))}
             </div>
