@@ -3236,7 +3236,11 @@ function qxoFixture() {
   ];
 }
 
-test('r7: two-party IOC deck resolves band->party labels from band order, chapeau party from text', () => {
+test('r7/audit: two-party IOC deck resolves band->party labels from TEXT EVIDENCE (chapeau titles), never band order', () => {
+  // Post-Fable-audit: QXO must KEEP its correct labels, but they now come
+  // from the "Interim Operations of the Company/Parent" chapeau text (with
+  // the Parent chapeau's evidence attributed via its quote-head "4.2", not
+  // its mis-stamped section_ref) — band order alone proves nothing.
   const cards = qxoFixture();
   const map = iocMod.bandPartyLabels(cards);
   assert.ok(map, 'two named-negative bands -> party map');
@@ -3281,6 +3285,130 @@ test('r7: single-band deck gets no party map and renders exactly as before', () 
     { id: 'm2', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-DIVIDEND', section_ref: '5.01(e) | Dividends | y', features: {} },
   ];
   assert.equal(iocMod.bandPartyLabels(cards), null);
+});
+
+// ---------------------------------------------------------------------------
+// Fable audit (2026-07-19): party attribution needs POSITIVE EVIDENCE — the
+// old "first band = target" ordering fallback inverted Heinz/Kraft, stamped
+// "— Parent" on Zymeworks' mutual §5.2, and stamped "— Parent" on ENDRA's
+// PubCo §6.2. Fixtures below are cut down from those cached corpus decks.
+
+// Renders the full IOC body cell so the per-band group labels (the
+// Ben-facing "Negative covenants — …" headings) can be asserted directly.
+function renderIocBody(cards) {
+  const reviewDeal = { cards };
+  const rows = iocMod.iocExceptionsConfig.selectRows(reviewDeal);
+  assert.equal(rows.length, 1, 'target section renders');
+  const GroupedSubRows = ({ groups }) => React.createElement(
+    'div',
+    null,
+    groups.map((g) => React.createElement('section', { key: g.id }, React.createElement('h4', null, g.label), g.rows.map((r) => React.createElement('div', { key: r.id }, r.label, r.children)))),
+  );
+  return renderToStaticMarkup(iocMod.iocExceptionsConfig.columns[0].renderCell(rows[0], { primitives: { ...iocPrimitives, GroupedSubRows } }));
+}
+
+// Heinz/Kraft (corpus c7c16365): the agreement enumerates the ACQUIRER'S
+// covenants FIRST — §5.02 "Heinz Forbearances" restricts Heinz (the buyer),
+// §5.03 "Kraft Forbearances" restricts Kraft (the target) — so band order
+// inverted BOTH sections. The chapeau titles name the covenantor by defined
+// term; the deck's own REP-T/REP-B rep cards resolve whose name it is.
+function heinzKraftFixture() {
+  const rep = (id, subtype, quote) => ({ id, provision_type: 'REPRESENTATION', provision_subtype: subtype, section_ref: `3.x | ${id}`, primary_quote: quote, features: {} });
+  return [
+    {
+      id: 'pre-52', provision_type: 'COVENANT_INTERIM_OPERATING', short_title: 'General / Preamble', section_ref: '1.01 | General / Preamble | h1',
+      primary_quote: 'SECTION 5.02. Heinz Forbearances. During the period from the date of this Agreement to the Effective Time, Heinz shall not, and shall not permit any Heinz Subsidiary to:', features: {},
+    },
+    {
+      id: 'pre-53', provision_type: 'COVENANT_INTERIM_OPERATING', short_title: 'General / Preamble', section_ref: '1.01 | General / Preamble | h2',
+      primary_quote: 'SECTION 5.03. Kraft Forbearances. During the period from the date of this Agreement to the Effective Time, Kraft shall not, and shall not permit any Kraft Subsidiary to:', features: {},
+    },
+    { id: 'n-52', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-SPLIT', short_title: 'Stock Splits / Reclassifications', section_ref: '5.02(b) | Stock Splits | h3', primary_quote: '(b) adjust, split, combine or reclassify any Heinz Capital Stock, other than pursuant to the Pre-Closing Distribution;', features: {} },
+    { id: 'n-53', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-COMP', short_title: 'Compensation and Benefits', section_ref: '5.03(f) | Compensation | h4', primary_quote: '(f) with respect to any Kraft Benefit Plan that is a Defined Benefit Plan, materially change any actuarial assumption;', features: {} },
+    rep('rep-t-1', 'REP-T-ORG', 'Kraft is duly organized and validly existing. Kraft has requisite corporate power.'),
+    rep('rep-t-2', 'REP-T-CAP', 'The authorized capital stock of Kraft consists of shares of Kraft Common Stock.'),
+    rep('rep-t-3', 'REP-T-LITIG', 'There is no Action pending against Kraft or any Kraft Subsidiary.'),
+    rep('rep-b-1', 'REP-B-ORG', 'Heinz is duly organized and validly existing. Heinz has requisite corporate power.'),
+    rep('rep-b-2', 'REP-B-CAP', 'The authorized capital stock of Heinz consists of shares of Heinz Capital Stock.'),
+    rep('rep-b-3', 'REP-B-LITIG', 'There is no Action pending against Heinz or any Heinz Subsidiary.'),
+  ];
+}
+
+test('audit: Heinz/Kraft — acquirer-first ordering never inverts labels; rep-mining resolves the codename covenantors correctly', () => {
+  const cards = heinzKraftFixture();
+  const iocCards = cards.filter(iocMod.isIocCard);
+  const map = iocMod.bandPartyLabels(iocCards, cards);
+  assert.ok(map);
+  assert.equal(map.get('5.02'), 'Parent', '§5.02 Heinz Forbearances = the BUYER\'S covenants (old band-order fallback said Company)');
+  assert.equal(map.get('5.03'), 'Company', '§5.03 Kraft Forbearances = the TARGET\'S covenants (old band-order fallback said Parent)');
+  const split = iocMod.partitionIocCardsByParty(iocCards, cards);
+  assert.ok(split);
+  assert.ok(split.Parent.some((c) => c.id === 'n-52'), 'Heinz restriction routed to the Parent section');
+  assert.ok(split.Company.some((c) => c.id === 'n-53'), 'Kraft restriction routed to the Target section');
+  assert.ok(split.Parent.some((c) => c.id === 'pre-52'), 'Heinz chapeau follows its quote-head band despite its 1.01 section_ref');
+});
+
+test('audit: Heinz/Kraft WITHOUT resolving evidence falls back to NEUTRAL section-ref band labels — never a guessed party', () => {
+  // Strip the rep cards: the codename tier can no longer resolve, and band
+  // order must NOT fill the gap. No split, no "— Target"/"— Parent" bands.
+  const iocCards = heinzKraftFixture().filter(iocMod.isIocCard);
+  const map = iocMod.bandPartyLabels(iocCards, iocCards);
+  assert.equal(map.get('5.02'), null);
+  assert.equal(map.get('5.03'), null);
+  assert.equal(iocMod.partitionIocCardsByParty(iocCards, iocCards), null, 'no party split without evidence');
+  const html = renderIocBody(iocCards);
+  assert.match(html, /Negative covenants — §5\.02/, 'neutral band label carries the section ref');
+  assert.match(html, /Negative covenants — §5\.03/);
+  assert.doesNotMatch(html, /Negative covenants — Parent/, 'no guessed party label');
+});
+
+// Zymeworks/Theravance (corpus 0d38cc1f): §5.1 is the Company's conduct
+// section; §5.2 is a MUTUAL "Each of the Parties agrees" covenant that the
+// order fallback used to render under "— Parent". Note the §5.2 chapeau is
+// mis-stamped section_ref 5.1 — its quote-head "Section 5.2" places it.
+test('audit: Zymeworks mutual band renders as "Both parties", never Parent', () => {
+  const cards = [
+    {
+      id: 'ch-t', provision_type: 'COVENANT_INTERIM_OPERATING', short_title: 'General / Preamble', section_ref: '5.1 | General / Preamble | z1',
+      primary_quote: 'Section 5.1 Conduct of Business of the Company Pending the Merger. From the date of this Agreement until the Effective Time, the Company shall not:', features: {},
+    },
+    {
+      id: 'ch-m', provision_type: 'COVENANT_INTERIM_OPERATING', short_title: 'General / Preamble', section_ref: '5.1 | General / Preamble | z2',
+      primary_quote: 'Section 5.2 Conduct of Business of the Parties Pending the Merger.', features: {},
+    },
+    { id: 'n-t', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-CHARTER', short_title: 'Charter / Bylaws Amendments', section_ref: '5.1(i) | Charter | z3', primary_quote: '(i) amend, adopt any amendment to or otherwise change its Memorandum and Articles of Association;', features: {} },
+    { id: 'n-m', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-MERGE', short_title: 'Mergers, Acquisitions, Dispositions', section_ref: '5.2(b) | M&A | z4', primary_quote: '(b) Each of the Parties agrees to not engage in an acquisition of assets, merge with another entity, or obtain a controlling interest in an entity;', features: {} },
+  ];
+  const map = iocMod.bandPartyLabels(cards);
+  assert.equal(map.get('5.1'), 'Company');
+  assert.equal(map.get('5.2'), 'Mutual', 'each-of-the-Parties language resolves the band as mutual');
+  assert.equal(iocMod.partitionIocCardsByParty(cards), null, 'a mutual band is not a Parent section');
+  const html = renderIocBody(cards);
+  assert.match(html, /Negative covenants — Target/);
+  assert.match(html, /Negative covenants — Both parties/, 'Ben-facing legal English, no machine codes');
+  assert.doesNotMatch(html, /Negative covenants — Parent/);
+});
+
+// ENDRA/Renergen (corpus 65a3e3c8): §6.2 restricts PubCo (the new holding
+// company) — nothing in its text supports a "Parent" label, so it stays
+// neutral even though §6.1 resolves to the Company by its own title.
+test('audit: ENDRA PubCo band stays NEUTRAL — one resolved band never back-fills the other by inference', () => {
+  const cards = [
+    {
+      id: 'title-61', provision_type: 'COVENANT_INTERIM_OPERATING', short_title: 'General / Preamble', section_ref: 'IOC-T | General / Preamble | e0',
+      primary_quote: '6.1. Conduct of Business by the Company and the Company Subsidiaries.', features: {},
+    },
+    { id: 'n-61', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-MERGE', short_title: 'Mergers, Acquisitions, Dispositions', section_ref: '6.1(i) | M&A | e1', primary_quote: '(i) sell, assign, lease, sublease, exclusively license, or otherwise dispose of any material assets;', features: {} },
+    { id: 'n-62', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-LIEN', short_title: 'Liens and Encumbrances', section_ref: '6.2(xi) | Liens | e2', primary_quote: '(xi) create any Liens on any material property or material assets of PubCo;', features: {} },
+  ];
+  const map = iocMod.bandPartyLabels(cards);
+  assert.equal(map.get('6.1'), 'Company', 'the §6.1 title card resolves its band via its quote-head section number');
+  assert.equal(map.get('6.2'), null, 'PubCo band has no Company/Parent evidence');
+  assert.equal(iocMod.partitionIocCardsByParty(cards), null);
+  const html = renderIocBody(cards);
+  assert.match(html, /Negative covenants — Target/);
+  assert.match(html, /Negative covenants — §6\.2/, 'neutral section-ref label, not a guessed Parent');
+  assert.doesNotMatch(html, /Negative covenants — Parent/);
 });
 
 // r9: the two owner-flagged QXO limb-title failures stay fixed — the rubric

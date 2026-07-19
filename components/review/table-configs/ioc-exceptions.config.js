@@ -215,17 +215,27 @@ function sectionBand(card) {
 // Party attribution for two-party IOC decks (QXO/TopBuild: §4.1 Interim
 // Operations of the Company + §4.2 Interim Operations of Parent).
 // party_scope is baked MUTUAL on every IOC card (same limitation the
-// ClauseSidebar's section-band disambiguation works around, PR #267), so:
-//  - a card whose own text carries the chapeau language resolves by TEXT
-//    ("the Company covenants and agrees" / "Interim Operations of Parent").
-//    Section refs are NOT trustworthy for chapeau cards — QXO's Parent
-//    chapeau (quote: "4.2 Interim Operations of Parent") carries
-//    section_ref "4.1".
-//  - enumerated restriction cards (no chapeau language of their own)
-//    resolve by band ORDER: in agreement convention the target's conduct
-//    section precedes the parent's. Applied ONLY when exactly two bands
-//    exist; single-band decks (the overwhelming majority) get no party
-//    labels and render exactly as before.
+// ClauseSidebar's section-band disambiguation works around, PR #267), so a
+// card whose own text carries the chapeau language resolves by TEXT
+// ("the Company covenants and agrees" / "Interim Operations of Parent").
+// Section refs are NOT trustworthy for chapeau cards — QXO's Parent
+// chapeau (quote: "4.2 Interim Operations of Parent") carries
+// section_ref "4.1".
+//
+// Fable audit (2026-07-19): band ORDER is not evidence. The old fallback
+// ("first band = target") stamped Company/Parent on any exactly-two-band
+// deck and got it wrong three ways in the corpus:
+//  - Heinz/Kraft enumerates the ACQUIRER'S covenants FIRST (§5.02 "Heinz
+//    Forbearances" restricts Heinz, the buyer; §5.03 "Kraft Forbearances"
+//    restricts Kraft, the target) — the ordering convention inverted BOTH
+//    sections;
+//  - Zymeworks' §5.2 is a mutual "Each of the Parties agrees" covenant that
+//    rendered under "— Parent";
+//  - ENDRA's §6.2 restricts PubCo (the new holding company), not Parent.
+// A band now gets a party ONLY on positive evidence from clause text (the
+// evidence tiers in bandPartyLabels below); a band with no evidence stays
+// null and renders under a NEUTRAL section-ref band label, never a guessed
+// party. A wrong party attribution is worse than a neutral label.
 const COMPANY_CHAPEAU_RE = /interim operations of the company|the company covenants and agrees/i;
 const PARENT_CHAPEAU_RE = /interim operations of (the )?parent|parent covenants and agrees/i;
 
@@ -236,14 +246,145 @@ function cardPartyFromText(card) {
   return null;
 }
 
-function bandPartyLabels(cards) {
+// Band-level party evidence (corpus-validated against all 10 real two-band
+// decks, 2026-07-19). Three generic text tiers, checked per band:
+//  - conduct-section titles ("Conduct of the Company" / "Conduct of Parent
+//    Business" / "Conduct of Business by the Company" / "Interim Operations
+//    of Parent") — the section's own name says whose covenants these are;
+//  - preamble disclosure-letter references ("Schedule 6.2(a) of the Parent
+//    Disclosure Letter") — a party's IOC carve-outs live in ITS OWN
+//    disclosure letter (TopBuild resolves both bands this way even though
+//    its §6.2 chapeau is mis-stamped section_ref 6.1);
+//  - mutual covenant language ("Each of the Parties agrees", "Conduct of
+//    Business of the Parties") — binds both parties, so the band is neither
+//    Company's nor Parent's alone (Zymeworks §5.2).
+// Deliberately NOT evidence: consent-counterparty phrasing ("the Company
+// shall otherwise consent") — ENDRA's §6.2 (PubCo's covenants, consented by
+// the Company) proves it points at the wrong species of counterparty.
+const COMPANY_BAND_RE = /conduct of (?:business(?:es)? (?:of|by) )?the compan(?:y|ies)\b|conduct of company business|interim operations of the company|the company covenants and agrees|company disclosure (?:letter|schedule)/i;
+const PARENT_BAND_RE = /conduct of (?:business(?:es)? (?:of|by) )?(?:the )?parent\b|conduct of parent business|interim operations of (?:the )?parent|parent covenants and agrees|parent disclosure (?:letter|schedule)/i;
+const MUTUAL_BAND_RE = /each of the parties|each party (?:agrees|shall)|the parties (?:shall|agree)\b|neither party (?:shall|will)|conduct of business(?:es)? of the parties/i;
+
+// Chapeau/preamble cards routinely carry a WRONG section_ref (QXO's Parent
+// chapeau: quote "4.2 Interim Operations of Parent", ref "4.1"; ENDRA's §6.1
+// title card: ref "IOC-T"). When a card's quote OPENS with its own section
+// number, that number names the band the evidence belongs to — trust it over
+// the stamped ref. Enumerated restriction cards open with "(a) ..." and
+// never match, so they keep resolving off section_ref as before.
+const QUOTE_HEAD_SECTION_RE = /^["'\s]*(?:section\s*)?(\d+\.\d+)/i;
+function quoteHeadBand(text) {
+  const match = QUOTE_HEAD_SECTION_RE.exec(String(text || '').slice(0, 40));
+  return match ? match[1] : null;
+}
+
+// Codename decks (Rocket/Mr. Cooper: "Conduct of Maverick" / "Conduct of
+// Cavalier"; Charter/Cox: "Conduct of Business by the Cabot Parties";
+// Heinz/Kraft: "Heinz Forbearances" / "Kraft Forbearances") name the
+// covenantor by DEFINED TERM, not "Company"/"Parent" — no generic regex can
+// place them. The chapeau title yields the covenantor's name; the deck's own
+// party-coded rep cards then say whose name it is: REP-T (target reps) text
+// is dominated by the target's defined term, REP-B by the buyer's
+// (corpus-measured separation is >4x on every codename deck; the 2x gate
+// below keeps a genuinely ambiguous name unresolved rather than guessed).
+const PARTY_NAME_STOPWORDS = new Set(['company', 'companies', 'parent', 'parents', 'party', 'parties', 'business', 'businesses', 'merger', 'mergers', 'buyer', 'seller']);
+const CONDUCT_NAME_RES = [
+  /[Cc]onduct of (?:the )?[Bb]usiness(?:es)? (?:of|by) (?:the )?([A-Z][a-z]+)/,
+  /[Cc]onduct of (?:the )?([A-Z][a-z]+)/,
+  /\b([A-Z][a-z]+) Forbearances/,
+];
+function conductNameFromText(text) {
+  const head = String(text || '').slice(0, 120);
+  for (const re of CONDUCT_NAME_RES) {
+    const match = re.exec(head);
+    if (match && !PARTY_NAME_STOPWORDS.has(match[1].toLowerCase())) return match[1];
+  }
+  return null;
+}
+
+// Second codename source: a band's own preamble carve-out points at the
+// covenantor's disclosure letter by defined term ("as set forth in Section
+// 5.3(a) of the Columbus Disclosure Schedule" — Charter/Cox's §5.3, whose
+// chapeau title card never made it into the deck). Same principle as the
+// generic Company/Parent disclosure-letter tier above, resolved through
+// rep-mining. All matches are collected (not just the first): a band whose
+// cards reference BOTH parties' disclosure letters yields conflicting
+// mined parties and stays null rather than guessed.
+const DISCLOSURE_NAME_RE = /\b([A-Z][a-z]+) Disclosure (?:Letter|Schedule)/g;
+function disclosureNamesFromText(text) {
+  const out = [];
+  for (const match of String(text || '').matchAll(DISCLOSURE_NAME_RE)) {
+    if (!PARTY_NAME_STOPWORDS.has(match[1].toLowerCase())) out.push(match[1]);
+  }
+  return out;
+}
+
+function partyForDealName(name, allCards) {
+  if (!name || !Array.isArray(allCards) || !allCards.length) return null;
+  const nameRe = new RegExp(`\\b${name}\\b`, 'g');
+  const density = (cardSet) => {
+    let hits = 0;
+    let chars = 0;
+    for (const c of cardSet) {
+      const t = textOf(c) || '';
+      chars += t.length;
+      hits += (t.match(nameRe) || []).length;
+    }
+    return chars ? (hits * 1000) / chars : 0;
+  };
+  const targetReps = allCards.filter((c) => /^REP-T/.test(String(c?.provision_subtype || '')));
+  const buyerReps = allCards.filter((c) => /^REP-B/.test(String(c?.provision_subtype || '')));
+  if (targetReps.length < 3 || buyerReps.length < 3) return null;
+  const t = density(targetReps);
+  const b = density(buyerReps);
+  if (t > 2 * b && t > 0.5) return 'Company';
+  if (b > 2 * t && b > 0.5) return 'Parent';
+  return null;
+}
+
+// Map of band -> 'Company' | 'Parent' | 'Mutual' | null for exactly-two-band
+// decks (null map for every other deck shape, exactly as before). Every
+// value is EVIDENCE-BACKED: text votes first, codename+rep-mining second,
+// null when neither resolves. Conflicting votes within a band, or both
+// bands claiming the same party, resolve to null — neutral beats guessed.
+// `allCards` (the full deal deck, optional) is only consulted for the
+// codename tier; without it those bands simply stay null.
+function bandPartyLabels(cards, allCards) {
   const namedNegative = cards.filter((c) => {
     const code = cardCode(c);
     return code && code !== 'IOC' && !GENERAL_EXCEPTION_CODES.has(code) && !AFFIRMATIVE_CODES.has(code);
   });
   const bands = [...new Set(namedNegative.map(sectionBand))].sort((a, b) => parseFloat(a) - parseFloat(b));
   if (bands.length !== 2) return null;
-  return new Map([[bands[0], 'Company'], [bands[1], 'Parent']]);
+  const bandSet = new Set(bands);
+  const votes = new Map(bands.map((band) => [band, new Set()]));
+  const names = new Map(bands.map((band) => [band, new Set()]));
+  for (const card of cards) {
+    const text = textOf(card) || '';
+    const band = [quoteHeadBand(text), sectionBand(card)].find((b) => b && bandSet.has(b));
+    if (!band) continue;
+    if (COMPANY_BAND_RE.test(text)) votes.get(band).add('Company');
+    if (PARENT_BAND_RE.test(text)) votes.get(band).add('Parent');
+    if (MUTUAL_BAND_RE.test(text)) votes.get(band).add('Mutual');
+    const conductName = conductNameFromText(text);
+    if (conductName) names.get(band).add(conductName);
+    for (const dlName of disclosureNamesFromText(text)) names.get(band).add(dlName);
+  }
+  const out = new Map();
+  for (const band of bands) {
+    const bandVotes = votes.get(band);
+    let party = bandVotes.size === 1 ? [...bandVotes][0] : null;
+    if (!party && bandVotes.size === 0) {
+      const minedParties = new Set([...names.get(band)].map((name) => partyForDealName(name, allCards)).filter(Boolean));
+      if (minedParties.size === 1) party = [...minedParties][0];
+    }
+    out.set(band, party);
+  }
+  const [first, second] = bands.map((band) => out.get(band));
+  if (first && first === second && first !== 'Mutual') {
+    out.set(bands[0], null);
+    out.set(bands[1], null);
+  }
+  return out;
 }
 
 // Ben r8: two-party decks render as TWO SECTIONS ("Interim Operating
@@ -251,16 +392,23 @@ function bandPartyLabels(cards) {
 // not one section with per-party bands. This partitions the IOC deck:
 //  - a card whose own text carries chapeau party language wins (QXO's
 //    Parent chapeau is mis-stamped section_ref 4.1 — text beats refs);
-//  - otherwise the card's section band decides (first band = target).
-// Returns null for single-band decks: everything stays in the one
-// (target) section exactly as before.
-function partitionIocCardsByParty(cards) {
-  const partyByBand = bandPartyLabels(cards);
+//  - otherwise the card's band decides (quote-head section first, stamped
+//    ref second — same trust order the evidence pass uses).
+// Returns null for single-band decks (everything stays in the one target
+// section exactly as before) AND — post-audit — for any two-band deck whose
+// bands do not BOTH resolve to Company and Parent by evidence: those decks
+// stay one section, with per-band neutral/mutual band labels inside it
+// (negativeBandLabel below), instead of a party split nothing supports.
+function partitionIocCardsByParty(cards, allCards) {
+  const partyByBand = bandPartyLabels(cards, allCards);
   if (!partyByBand) return null;
+  const parties = [...partyByBand.values()];
+  if (!(parties.includes('Company') && parties.includes('Parent'))) return null;
   const out = { Company: [], Parent: [] };
   for (const card of cards) {
     const textParty = cardPartyFromText(card);
-    const bandParty = partyByBand.get(sectionBand(card));
+    const band = [quoteHeadBand(textOf(card)), sectionBand(card)].find((b) => b && partyByBand.has(b));
+    const bandParty = band ? partyByBand.get(band) : null;
     out[textParty || bandParty || 'Company'].push(card);
   }
   return out;
@@ -268,9 +416,19 @@ function partitionIocCardsByParty(cards) {
 
 function iocCardsForParty(reviewDeal, party) {
   const cards = (reviewDeal?.cards || []).filter(isIocCard);
-  const split = partitionIocCardsByParty(cards);
+  const split = partitionIocCardsByParty(cards, reviewDeal?.cards);
   if (!split) return party === 'Company' ? cards : [];
   return split[party] || [];
+}
+
+// Ben-facing band heading for an unsplit multi-band deck's negative
+// covenants. Legal English only — a band with no evidence carries its
+// section ref, never a machine code and never a guessed party.
+function negativeBandLabel(party, band) {
+  if (party === 'Company') return 'Negative covenants — Target';
+  if (party === 'Parent') return 'Negative covenants — Parent';
+  if (party === 'Mutual') return 'Negative covenants — Both parties';
+  return `Negative covenants — §${band}`;
 }
 
 // Groups the NAMED negative covenants (has a real provision_subtype, is not
@@ -833,6 +991,22 @@ function buildIocConfig({ id, title, party }) {
           if (!GroupedSubRows) return null;
           const cards = iocCardsForParty(row.reviewDeal, party);
           const negativeRows = negativeCovenantGroups(cards).map((group) => renderNegativeRow(buildNegativeRow(group), ctx));
+          // Post-audit: a two-band deck that did NOT split into party
+          // sections (no evidence for a clean Company/Parent partition —
+          // Heinz/Kraft-without-reps, Zymeworks' mutual §5.2, ENDRA's PubCo
+          // §6.2) still renders BOTH bands here, so the negative covenants
+          // split into one band-labelled group each: the party where
+          // evidence resolves one, "Both parties" for mutual language, the
+          // bare section ref otherwise. Split decks and single-band decks
+          // see exactly one band and keep the plain label as before.
+          const partyByBand = bandPartyLabels(cards, row.reviewDeal?.cards);
+          const negativeGroups = partyByBand
+            ? [...partyByBand.keys()].map((band) => ({
+              id: `negative-${band}`,
+              label: negativeBandLabel(partyByBand.get(band), band),
+              rows: negativeRows.filter((r) => r.band === band),
+            })).filter((group) => group.rows.length)
+            : [{ id: 'negative', label: 'Negative covenants', rows: negativeRows }];
           const otherRows = buildOtherRestrictionsRows(fragmentCards(cards), ctx);
           const exceptionsRows = buildIocExceptionsRows(cards, ctx);
           // Old-site render order (OLD-review-page.js's
@@ -847,7 +1021,7 @@ function buildIocConfig({ id, title, party }) {
           const groups = [
             { id: 'affirmative', label: 'Affirmative covenants', rows: affirmativeRows(cards, ctx) },
             { id: 'exceptions', label: 'Exceptions', rows: exceptionsRows },
-            { id: 'negative', label: 'Negative covenants', rows: negativeRows },
+            ...negativeGroups,
             { id: 'other', label: 'Other restrictions', rows: otherRows },
           ];
           // Item 2 (r5): same onSelectCard/resolveCard/selectedCardId wiring
@@ -899,6 +1073,7 @@ export {
   iocExceptionsConfig,
   isIocCard,
   materialRespectsPillFor,
+  negativeBandLabel,
   negativeCovenantGroups,
   renderIocFooter,
   renderNegativeRow,

@@ -39,6 +39,36 @@ test('title variant: "Acquisition Proposals; Change in Recommendation" (already 
   assert.equal(tryDeterministic(sec('6.02', 'Acquisition Proposals; Change in Recommendation'), 'COV').type, 'NOSOL');
 });
 
+test('title variant: plain "Non-Solicitation" (deal protection; only the bare-solicitation rule reaches it — the hyphen defeats the literal-"no" rule) -> NOSOL', () => {
+  assert.equal(tryDeterministic(sec('5.3', 'Non-Solicitation'), 'COV').type, 'NOSOL');
+  assert.equal(tryDeterministic(sec('5.3', 'Non-Solicitation'), null).type, 'NOSOL');
+});
+
+test('title variants still NOSOL despite guard words appearing elsewhere in the corpus: "No Solicitation" / "No Solicitation of Acquisition Proposals"', () => {
+  assert.equal(tryDeterministic(sec('6.02', 'No Solicitation'), 'COV').type, 'NOSOL');
+  assert.equal(tryDeterministic(sec('6.02', 'No Solicitation of Acquisition Proposals'), 'COV').type, 'NOSOL');
+});
+
+test('guard: "Non-Solicitation of Employees" (employee non-solicit, NOT the no-shop) must NOT classify NOSOL via the title rule', () => {
+  const r = tryDeterministic(sec('6.9', 'Non-Solicitation of Employees'), 'COV');
+  assert.notEqual(r && r.type, 'NOSOL');
+  assert.equal(r.type, 'COV'); // falls through to article context
+  // With no article context it must fall through to the AI pass, not NOSOL.
+  assert.equal(tryDeterministic(sec('6.9', 'Non-Solicitation of Employees'), null), null);
+});
+
+test('guard: "Solicitation of Proxies" (proxy covenant, NOT the no-shop) must NOT classify NOSOL via the title rule', () => {
+  const r = tryDeterministic(sec('6.4', 'Solicitation of Proxies'), 'COV');
+  assert.notEqual(r && r.type, 'NOSOL');
+  assert.equal(tryDeterministic(sec('6.4', 'Solicitation of Proxies'), null), null);
+});
+
+test('guard: other employee/personnel/no-hire phrasings never reach NOSOL through the bare-solicitation rule', () => {
+  for (const title of ['Non-Solicitation of Personnel', 'No Hire; Non-Solicitation of Employees', 'Employee Non-Solicitation']) {
+    assert.equal(tryDeterministic(sec('6.9', title), null), null, title);
+  }
+});
+
 test('NOSOL-M / NOSOL-B still win over the generic bare-solicitation rule for party-scoped titles', () => {
   assert.equal(tryDeterministic(sec('6.4', 'No Solicitation by Parent'), 'COV').type, 'NOSOL-B');
   assert.equal(tryDeterministic(sec('6.4', 'Mutual Non-Solicitation'), 'COV').type, 'NOSOL-M');
