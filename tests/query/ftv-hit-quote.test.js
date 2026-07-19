@@ -72,3 +72,30 @@ test('details-sibling fallback: no claim quote anywhere still quotes the Details
   const [hit] = result.rows[0].matched_provision_hits;
   assert.match(hit.quote.text, /shall submit this Agreement/, 'Details sibling wins over raw full_text');
 });
+
+// r10b: conflicting values across cards resolve by majority-of-evidence,
+// never by card order.
+test('conflicting field values across cards: majority evidence-backed value wins regardless of order', () => {
+  const mk = (id, value, quote) => ({
+    id, deal_id: 'd1', type: 'ANTI', category: 'Antitrust',
+    full_text: `clause ${id} long text`,
+    ai_metadata: { features: { effortsStandard: { value, ...(quote ? { quotes: [quote] } : {}) } } },
+  });
+  const provisions = [
+    mk('p-outlier', 'COMMERCIALLY_REASONABLE_EFFORTS', 'the parties shall use commercially reasonable efforts to cooperate'),
+    mk('p-main-1', 'REASONABLE_BEST_EFFORTS', 'each party shall use reasonable best efforts to obtain approvals'),
+    mk('p-main-2', 'REASONABLE_BEST_EFFORTS', 'reasonable best efforts to consummate the transactions'),
+  ];
+  const result = executeFilterThenList(
+    { filters: [{ provision_type: 'ANTITRUST_REGULATORY', field: 'effortsStandard', op: 'contains', value: 'REASONABLE_BEST' }], columns: [] },
+    { deals, provisions },
+  );
+  assert.equal(result.rows.length, 1, 'deal matches on the majority value');
+  const [hit] = result.rows[0].matched_provision_hits;
+  assert.equal(hit.card_id, 'p-main-1', 'anchors to the majority value\'s first evidence-backed carrier, not the first card');
+  const miss = executeFilterThenList(
+    { filters: [{ provision_type: 'ANTITRUST_REGULATORY', field: 'effortsStandard', op: 'eq', value: 'COMMERCIALLY_REASONABLE_EFFORTS' }], columns: [] },
+    { deals, provisions },
+  );
+  assert.equal(miss.rows.length, 0, 'the outlier carve-out value no longer answers for the deal');
+});
