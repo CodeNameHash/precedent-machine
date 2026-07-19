@@ -18,37 +18,43 @@ see docs/reports/PHASE-5-REPORT-2026-07-18.md.
   review-feedback r3 (all 16 items, screenshot-verified 1440+390px),
   span accounting Parts 1–3 (report-only), scoped TOOLTIP_MAX lint
   exemption (legacy /review-v1 only importer).
+- PR #262 — WP-5 (full-doc overlay: SourceOverlay + resolve-source-span,
+  ?card= deep-link; 5/5 verbatim gate, 10/400 unresolved = pre-existing
+  Redfin/Noble elision defects) + WP-6 (run_reports writer fail-soft,
+  /admin/reports UI, ingest-qa --json; review-caught fix: ingest-worker
+  handleQa boolean-return QA-gate bypass). KEY FINDING: primary_quote
+  offsets are region-relative, not absolute — plan doc was wrong;
+  resolver validates before trusting.
+- PR #263 — WP-4 (decided_by actor, claim_ids linkage, _meta.version
+  bump on every reconcile decision) + WP-3 (normalizer _prov badges on
+  query cells; alias fixture; CSV isolation). KEY FINDING: no reliable
+  provisions→provision_cards join exists (region_id spaces disjoint,
+  hash join matches nothing) — extraction_version renders "—" until
+  #12 lands.
 
 ## Now in flight
 
-1. **WP-5 — full-doc overlay** (M5-03): client-side only; data path
-   (card primary_quote offsets) confirmed complete. Sonnet worktree →
-   Fable review.
-2. **WP-6 — reports UI + run_reports migration** (M5-05): Ben OK'd the
-   table. Deliver migration SQL for Ben + UI reading run_reports.
+1. **WP-7 — demo dry-run CI gate** (M5-06, last M4/M5 package): prod DB
+   + staging tags, staging-invisibility hard assertion, idempotent
+   teardown, extraction on --backend codex; CI job lands non-required
+   until Ben confirms B-env.
 
-## Queued behind those (order)
+## Queued behind that (order)
 
-3. **WP-3 — normalizer badges** (M4-02): read-path provenance display;
-   provenance already written at ingest.
-4. **WP-4 — M4-01 delta** (~20% remaining).
-5. **WP-7 — demo dry-run CI gate** (M5-06): prod DB + staging tags,
-   staging-invisibility assertion + idempotent teardown (Fable
-   recommendation, standing unless Ben objects).
-6. **Span-residual triage** — 482 genuine under-coverage sections;
+2. **Span-residual triage** — 482 genuine under-coverage sections;
    Dyax §5.1 80k mega-section boundary defect; then enforcement flag →
    coverage gate 95→98. Resolves #10 (QXO bring-down tiers) and the
    Redfin 92% fixture. Fable verification still owed on agent claim
    that Redfin/QXO stored TEXT is already whole (feature- vs
    text-level loss).
-7. **r3 data repairs (dry-runs delivered, NOT applied)** —
+3. **r3 data repairs (dry-runs delivered, NOT applied)** —
    scripts/cleanup-fragment-definitions.js (junk list entries); termf
    trigger recode (optional). Side-finding: Theravance 52/57
    definition rows have defined_term=NULL — needs its own fix.
-8. **Recitals-as-deal-facts** extraction addition (Ben-approved).
-9. **Proration depth** — real cap values via defined-term extraction;
+4. **Recitals-as-deal-facts** extraction addition (Ben-approved).
+5. **Proration depth** — real cap values via defined-term extraction;
    2 deals affected.
-10. **F3 materialized snapshots** for /api/home cold-load (7.8s → target
+6. **F3 materialized snapshots** for /api/home cold-load (7.8s → target
    sub-second).
 
 ## Security close-out (2026-07-18/19)
