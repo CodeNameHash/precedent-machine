@@ -229,7 +229,7 @@ function CodedControl({ filter, onChange, options }) {
         <option value="is not">is not</option>
       </select>
       <select className="mtx-select" value={filter.value === null || filter.value === undefined ? '' : String(filter.value)} onChange={(e) => onChange({ value: e.target.value })}>
-        {options.map((o) => <option key={o.code} value={o.code}>{o.label}</option>)}
+        {options.map((o) => <option key={o.code} value={o.code} title={o.description || undefined}>{o.label}</option>)}
       </select>
       <style jsx>{`
         .codedRow { display: flex; gap: 6px; }
@@ -258,7 +258,7 @@ export function FilterRow({ filter, onChange, onRemove, provisionTypes = PROVISI
   // the first real field rather than leaving the dropdown on a blank value.
   useEffect(() => {
     if (fields.length && (!filter.field || !fields.some((f) => f.key === filter.field))) {
-      onChange({ field: fields[0].key, op: 'eq', value: '' });
+      onChange({ field: fields[0].key, op: null, value: '' });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fields]);
@@ -287,14 +287,14 @@ export function FilterRow({ filter, onChange, onRemove, provisionTypes = PROVISI
       <div className="filterControls">
         <ProvisionTypeSelect
           value={filter.provision_type}
-          onChange={(pt) => onChange({ provision_type: pt, field: '', op: 'eq', value: '' })}
+          onChange={(pt) => onChange({ provision_type: pt, field: '', op: null, value: '' })}
           types={provisionTypes}
         />
         <select
           className="mtx-select"
           value={filter.field || ''}
           disabled={!fields.length}
-          onChange={(e) => onChange({ field: e.target.value, op: 'eq', value: '' })}
+          onChange={(e) => onChange({ field: e.target.value, op: null, value: '' })}
         >
           {!fields.length && <option value="">Loading fields…</option>}
           {fields.map((f) => <option key={f.key} value={f.key}>{f.label}</option>)}
