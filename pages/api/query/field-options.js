@@ -21,14 +21,32 @@ export default async function handler(req, res) {
   const { provision_type: provisionType, field } = req.query;
   if (!provisionType) return res.status(400).json({ error: 'provision_type is required' });
 
-  const sb = getServiceSupabase();
-  if (!sb) return res.status(500).json({ error: 'Supabase not configured' });
-
-  try {
-    const { provisions } = await loadContext(sb);
-    if (!field) {
+  // The fields list is pure registry/rubric metadata — no corpus needed, so
+  // it answers even when Supabase is down/unconfigured (fail-soft: the
+  // builder's field dropdown must never depend on DB availability).
+  if (!field) {
+    try {
       return res.status(200).json({ fields: fieldsForProvisionType(provisionType) });
+    } catch (err) {
+      return res.status(400).json({ error: err.message || 'field-options failed' });
     }
+  }
+
+  // Value options: type/unit/label are static metadata too; only the coded
+  // options list needs the corpus. If the DB is down (or Supabase isn't
+  // configured), degrade to an empty options list rather than erroring — the
+  // client then falls back to a free-text input for coded fields while
+  // boolean/numeric controls still render correctly.
+  let provisions = [];
+  const sb = getServiceSupabase();
+  if (sb) {
+    try {
+      ({ provisions } = await loadContext(sb));
+    } catch {
+      provisions = [];
+    }
+  }
+  try {
     return res.status(200).json(valueOptionsForField(provisionType, field, provisions));
   } catch (err) {
     return res.status(400).json({ error: err.message || 'field-options failed' });
