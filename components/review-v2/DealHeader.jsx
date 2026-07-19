@@ -170,8 +170,12 @@ export default function DealHeader({ deal, view, onToggleView, hasAgreementText,
                 style={i !== 0 ? { borderLeft: '1px solid #E0E0E0' } : undefined}
               >
                 <div className="mtx-meta-label text-[9px] tracking-[0.14em] whitespace-nowrap">{m.label}</div>
+                {/* r11 (Ben): never "…" — values wrap to two tight lines
+                    inside the fixed bar (overflow simply hides, no
+                    ellipsis); full value stays on hover. */}
                 <div
-                  className="text-sm lg:text-base font-bold leading-tight text-[#1F1F1F] mt-0.5 whitespace-nowrap truncate max-w-[16rem]"
+                  className="text-xs lg:text-sm font-bold leading-tight text-[#1F1F1F] mt-0.5 break-words max-w-[13rem] overflow-hidden"
+                  style={{ maxHeight: '2.4em' }}
                   title={m.value}
                 >
                   {m.value}

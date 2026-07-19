@@ -267,6 +267,8 @@ export default function ReviewPage() {
      back to the sidebar's own empty state instead of unmounting, so there's
      no layout jump. */
   const [selection, setSelection] = useState({ card: null, rowFocus: null });
+  // r11: corpus sidebar can be tucked away via the mid-height arrow.
+  const [sidebarHidden, setSidebarHidden] = useState(false);
   const selectedCard = selection.card;
   const selectedRowFocus = selection.rowFocus;
   const selectCard = useCallback((card, rowFocus = null) => {
@@ -427,7 +429,7 @@ export default function ReviewPage() {
               </p>
             ) : null}
 
-            <div className="space-y-10 max-w-3xl">
+            <div className="space-y-10 max-w-3xl mx-auto">
               {sections.map((section) => (
                 <SectionBlock
                   key={section.id}
@@ -451,14 +453,28 @@ export default function ReviewPage() {
               </p>
             </footer>
           </main>
-          <ClauseSidebar
-            card={selectedCard}
-            rowFocus={selectedRowFocus}
-            dealId={dealId}
-            dealSector={deal ? deal.sector : null}
-            onClose={clearSelection}
-            onViewInAgreement={hasAgreementText ? openSourceOverlay : null}
-          />
+          {/* r11: mid-height arrow to hide/show the corpus sidebar. */}
+          <div className="relative hidden lg:block">
+            <button
+              type="button"
+              aria-label={sidebarHidden ? 'Show corpus sidebar' : 'Hide corpus sidebar'}
+              onClick={() => setSidebarHidden((v) => !v)}
+              className="absolute top-1/2 -translate-y-1/2 -left-3 z-20 w-6 h-10 border border-[#E0E0E0] bg-white text-[#6B6B6B] hover:text-[#1F1F1F] text-[11px] leading-none"
+              data-testid="corpus-sidebar-toggle"
+            >
+              {sidebarHidden ? '‹' : '›'}
+            </button>
+          </div>
+          {!sidebarHidden && (
+            <ClauseSidebar
+              card={selectedCard}
+              rowFocus={selectedRowFocus}
+              dealId={dealId}
+              dealSector={deal ? deal.sector : null}
+              onClose={clearSelection}
+              onViewInAgreement={hasAgreementText ? openSourceOverlay : null}
+            />
+          )}
         </div>
       )}
 
