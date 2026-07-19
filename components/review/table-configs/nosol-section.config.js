@@ -43,20 +43,6 @@ import { nosolFiduciaryConfig, renderSignals as fiduciaryRenderSignals } from '.
 // deliberately excluded as a same-concept duplicate of an included row
 // (see the "excluded as duplicate" comments per bucket).
 
-function seeText(node) {
-  if (!node) return null;
-  return React.createElement(
-    'details',
-    { className: 'mt-1' },
-    React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, 'See provision'),
-    React.createElement(
-      'div',
-      { className: 'mt-1 max-w-[36rem] whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight' },
-      node,
-    ),
-  );
-}
-
 // Mirrors ProvisionTable.jsx's FULL_TEXT_COLUMNS relocation: nosol-noshop and
 // nosol-intervening have a third 'detail' column whose renderCell is meant to
 // render behind a per-row "see text" toggle rather than inline (see that
@@ -69,11 +55,15 @@ const SOURCES = {
   fiduciary: { config: nosolFiduciaryConfig, renderSignals: fiduciaryRenderSignals, renderDetail: null },
 };
 
-// Item 8 (round 3): returns { signal, seeText } separately -- the signal
-// pill stays the row's VALUE (right) cell content, but the "See provision"
-// expander now renders under the LABEL (left) cell via GroupedSubRows'
-// row.seeText, matching every other family instead of being appended after
-// the pill in the value cell.
+// Item 8 (round 3): returns { signal, seeTextContent } separately -- the
+// signal pill stays the row's VALUE (right) cell content, the "See
+// provision" toggle renders under the LABEL (left) cell.
+// Item 2 (r6) audit completion: this was the last row-level "See provision"
+// still built as its own in-cell <details> squeezed into the label column
+// (the local seeText() helper, now removed). Passing the raw detail node as
+// row.seeTextContent hands it to GroupedSubRows' shared full-width
+// block-below-the-row expansion instead -- the same pattern the reps/MAE/
+// conditions tables were ported to in this batch.
 function rowNode(row, ctx, source) {
   const signal = source.renderSignals(row, ctx);
   const detail = source.renderDetail ? source.renderDetail(row, ctx) : null;
@@ -81,7 +71,7 @@ function rowNode(row, ctx, source) {
   // what's already inline in the pill -- still shown today in the standalone
   // tables via the same "see text" affordance, so kept for parity; only
   // skipped here if renderDetail returned nothing at all.
-  return { signal, seeText: detail ? seeText(detail) : null };
+  return { signal, seeTextContent: detail || null };
 }
 
 function byId(rows) {
@@ -458,7 +448,7 @@ function buildGroups(reviewDeal, ctx) {
           id: row.id,
           label: row.label,
           children: node ? node.signal : null,
-          seeText: node ? node.seeText : null,
+          seeTextContent: node ? node.seeTextContent : null,
           // Item 17 (r4): the row's source card, so GroupedSubRows can wire
           // this sub-row to the ClauseSidebar (see ProvisionTablePrimitives's
           // resolveCard usage). row.sourceCards is the plural shape allFeatures()
