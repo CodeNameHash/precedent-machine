@@ -145,6 +145,11 @@ function similarity(deal, subject) {
 // off the rich provenance.feature_value (e.g. companyTerminationFee's
 // `{ amount, percentage_of_equity, ... }`), then a $/,-stripped scan of the
 // raw verbatim text. Returns null rather than a guess when nothing parses.
+function looksLikeJsonVerbatim(verbatim) {
+  const trimmed = verbatim.trim();
+  return trimmed.startsWith('{') && trimmed.endsWith('}');
+}
+
 function extractNumeric(claim) {
   if (claim.canonical !== null && claim.canonical !== undefined) {
     const n = Number(claim.canonical);
@@ -153,7 +158,14 @@ function extractNumeric(claim) {
   const fv = claim.provenance && typeof claim.provenance === 'object' ? claim.provenance.feature_value : null;
   const payload = fv && typeof fv === 'object' && fv.value && typeof fv.value === 'object' ? fv.value : fv;
   if (payload && typeof payload === 'object') {
-    for (const key of ['amount', 'value', 'days', 'months', 'percentage_of_equity']) {
+    // ONLY 'amount'/'value' -- these are the field's headline dollar/day
+    // figure. Deliberately NOT 'percentage_of_equity'/'days'/'months' here:
+    // those are real fields on the SAME object but a different unit (e.g.
+    // companyTerminationFee.percentage_of_equity is a percent, not a
+    // dollar amount) — falling through to them mixed units into one
+    // min/median/max and produced a bogus $7.01 "minimum fee" that was
+    // actually a 7.01% figure from a claim with no `amount` set.
+    for (const key of ['amount', 'value']) {
       const raw = payload[key];
       if (typeof raw === 'number' && Number.isFinite(raw)) return raw;
       if (typeof raw === 'string') {
@@ -162,7 +174,13 @@ function extractNumeric(claim) {
       }
     }
   }
-  if (typeof claim.verbatim === 'string') {
+  // Free-text verbatim (prose, or a bare number/code) only -- NOT a
+  // JSON-encoded blob. A JSON verbatim already had its shot via the
+  // `payload` branch above; scanning its raw text for "the first digit
+  // run" picks up whatever field happens to sort first in the JSON (e.g.
+  // percentage_of_equity's "7.01%" ahead of a later `amount` field),
+  // producing a bogus outlier completely unrelated to the headline figure.
+  if (typeof claim.verbatim === 'string' && !looksLikeJsonVerbatim(claim.verbatim)) {
     const m = claim.verbatim.replace(/[$,]/g, '').match(/-?\d+(\.\d+)?/);
     if (m) return Number(m[0]);
   }
@@ -425,8 +443,15 @@ export default async function handler(req, res) {
           .filter(Boolean);
       }
       if (itemCode && !itemLabel) {
-        const equityClaims = (claims || []).filter((cl) => cl.attribute === 'equityAwardTreatment');
-        rowContext.instrument = buildInstrumentDistribution(itemCode, equityClaims, peerIds);
+        // ALL claims for this code (not just equityAwardTreatment) --
+        // buildFeaturesForCard needs outstandingInstruments/
+        // instrumentTreatments/instrumentVesting/instrumentType/
+        // vestingAcceleration too, since most deals' equityAwardTreatment
+        // is unstructured prose (shape 1) and rowsForCard falls back to
+        // those parallel-claim shapes (shape 2/3) to classify per
+        // instrument. Filtering to one attribute here under-counted every
+        // deal that hadn't been re-extracted onto the keyed-map shape.
+        rowContext.instrument = buildInstrumentDistribution(itemCode, claims || [], peerIds);
       }
       if (itemLabel) {
         const listAttribute = requestedFeatureKeys[0] || null;
