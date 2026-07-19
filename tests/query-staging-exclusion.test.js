@@ -29,15 +29,30 @@ function readSource(relPath) {
   return fs.readFileSync(path.join(__dirname, '..', relPath), 'utf8');
 }
 
-test('pages/api/query/run.js excludes staging deals from query context (deals AND their provisions)', () => {
+// pages/api/query/run.js's original inline (deals, provisions) cache — with
+// the staging-deal filtering below — was extracted to
+// lib/query/context-cache.js (query-surface UX pass, item 1) so
+// pages/api/query/field-options.js can share the same warm cache instead of
+// opening a second full-corpus fetch path. run.js still consumes the
+// filtered `{ deals, provisions }` it gets back; the staging-exclusion
+// LOGIC itself now lives in the shared module, so this checks each file for
+// the half of the guarantee it's responsible for.
+test('pages/api/query/run.js hands runQuery the shared, staging-filtered query context', () => {
   const src = readSource('pages/api/query/run.js');
+  assert.match(src, /require\(['"].*lib\/query\/context-cache['"]\)/);
+  // The filtered `deals` (not a raw fetch) must be what's handed to
+  // runQuery — guards against a future edit re-introducing an unfiltered
+  // deal set into the query context.
+  assert.match(src, /context:\s*{\s*deals,\s*provisions\s*}/);
+});
+
+test('lib/query/context-cache.js excludes staging deals from the shared query context (deals AND their provisions)', () => {
+  const src = readSource('lib/query/context-cache.js');
   assert.match(src, /isStagingDeal/);
   assert.match(src, /ingest_status\s*===\s*'staging'/);
-  // The filtered `deals` (not the raw fetch) must be what's handed to
-  // runQuery, and provisions must be scoped to the filtered deal ids —
-  // guards against a future edit re-introducing the raw `dealRows`/
-  // `allProvisions` into the query context.
-  assert.match(src, /context:\s*{\s*deals,\s*provisions\s*}/);
+  // Provisions must be scoped to the filtered deal ids, not the raw
+  // paginated fetch — guards against a future edit re-introducing
+  // unfiltered `dealRows`/`allProvisions` into the cached context.
   assert.match(src, /liveDealIds\.has\(p\.deal_id\)/);
 });
 

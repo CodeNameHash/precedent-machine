@@ -21,8 +21,9 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
-import { describeFilter } from '../../lib/query/filter-labels';
-import { PROVISION_TYPES, OpSelect, ProvisionTypeSelect, FilterValueInput } from './QueryFilterControls';
+import {
+  ProvisionTypeSelect, FilterRow, coerceFilterForPayload,
+} from './QueryFilterControls';
 // Reuses the deals-index column registry's consideration-type label map
 // (the "existing field-label helper" for deal-level values — item 3's ask
 // to check before writing new ones) so "CASH_PLUS_CVR" reads as
@@ -110,7 +111,7 @@ export default function QueryLaunchBox({ deals: dealsProp, showTitle = true, def
   const buildPayload = () => {
     if (kind === 'FILTER_THEN_LIST') {
       return {
-        filters: filters.map((f) => ({ ...f, value: f.value === 'true' ? true : f.value === 'false' ? false : (Number.isNaN(Number(f.value)) || f.value === '' ? f.value : Number(f.value)) })),
+        filters: filters.map(coerceFilterForPayload),
         deal_filter: dealFilter,
         sort_by: 'deal_signing_date_desc',
         columns: ['deal_name', 'signing_date', 'consideration_type', 'total_deal_value'],
@@ -193,14 +194,11 @@ export default function QueryLaunchBox({ deals: dealsProp, showTitle = true, def
         {kind === 'FILTER_THEN_LIST' && (
           <div className="qlbFilters">
             {filters.map((f, i) => (
-              <div className="qlbRow" key={i}>
-                <ProvisionTypeSelect value={f.provision_type} onChange={(v) => update(i, { provision_type: v })} types={PROVISION_TYPES} />
-                <input className="mtx-input" value={f.field} onChange={(e) => update(i, { field: e.target.value })} placeholder="field path" />
-                <OpSelect value={f.op} onChange={(v) => update(i, { op: v })} />
-                <FilterValueInput value={f.value} onChange={(v) => update(i, { value: v })} />
-              </div>
+              <FilterRow key={i} filter={f} onChange={(patch) => update(i, patch)} />
             ))}
-            <p className="qlbPreview">{describeFilter(filters[0]).text}{dealTypes.length ? ` · Deal type · is one of · ${dealTypes.map((t) => considerationTypeDisplay(t) || t).join(', ')}` : ''}</p>
+            {dealTypes.length > 0 && (
+              <p className="qlbPreview">— and the deal type is one of {dealTypes.map((t) => considerationTypeDisplay(t) || t).join(', ')}</p>
+            )}
           </div>
         )}
 
