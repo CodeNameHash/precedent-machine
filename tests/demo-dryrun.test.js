@@ -18,6 +18,10 @@ const {
   DIRECT_DEAL_ID_TABLES,
   parseArgs,
   isMissingTableError,
+  isMissingColumnError,
+  isCleanSkipError,
+  QA_STAGING_NAME_PREFIX,
+  countByDealId,
   teardownStagingDeal,
   checkStagingInvisible,
   checkReviewSurface,
@@ -293,4 +297,68 @@ test('checkReviewSurface resolves at least one card span and throws when there a
     claims: [],
   });
   await assert.rejects(() => checkReviewSurface(sbEmpty, dealId), /0 cards/);
+});
+
+// ── DEFECT 1/2/3 fixes (2026-07-19 live-gate run 1 findings) ───────────────
+
+test('QA_STAGING_NAME_PREFIX is the substring ingest-local.js --staging stamps into the deal target name', () => {
+  // ingest-qa.js's --deal flag matches by NAME SUBSTRING (see DEFECT 1),
+  // not by id — this constant is what makes that substring resolve to
+  // exactly our staging deal and nothing else.
+  assert.equal(QA_STAGING_NAME_PREFIX, 'DRYRUN');
+});
+
+test('isMissingColumnError recognizes 42703 and the PostgREST "column ... does not exist" message shapes', () => {
+  assert.equal(isMissingColumnError({ code: '42703' }), true);
+  assert.equal(isMissingColumnError({ message: 'column "deal_id" of relation "x" does not exist' }), true);
+  assert.equal(isMissingColumnError({ message: "Could not find the 'deal_id' column of 'x' in the schema cache" }), true);
+  assert.equal(isMissingColumnError({ message: 'permission denied' }), false);
+  assert.equal(isMissingColumnError(null), false);
+});
+
+test('isCleanSkipError is missing-table OR missing-column, and correctly rejects a genuinely unexplained error', () => {
+  assert.equal(isCleanSkipError({ code: '42P01' }), true);
+  assert.equal(isCleanSkipError({ code: '42703' }), true);
+  assert.equal(isCleanSkipError({ message: 'connection reset' }), false);
+  // The exact DEFECT 3 repro: an error with an EMPTY message but a real
+  // 42703 code must still classify as a clean skip (code alone is enough —
+  // the fix must not depend on message content being present).
+  assert.equal(isCleanSkipError({ code: '42703', message: '' }), true);
+});
+
+test('countByDealId: DEFECT 3 repro — an empty-message 42703 error clean-skips (returns null), not a thrown failure', async () => {
+  const dealId = 'deal-defect3';
+  const fakeSb = {
+    from(table) {
+      assert.equal(table, 'deal_quality_metrics');
+      return {
+        select() {
+          return { eq: () => Promise.resolve({ count: null, error: { code: '42703', message: '' } }) };
+        },
+      };
+    },
+  };
+  const count = await countByDealId(fakeSb, 'deal_quality_metrics', dealId);
+  assert.equal(count, null);
+});
+
+test('countByDealId: a genuinely unexplained error still fails, and the thrown message carries the FULL stringified error (not just a possibly-empty .message)', async () => {
+  const dealId = 'deal-defect3b';
+  const fakeSb = {
+    from() {
+      return {
+        select() {
+          return { eq: () => Promise.resolve({ count: null, error: { code: 'XX000', message: '', details: 'unexpected server error' } }) };
+        },
+      };
+    },
+  };
+  await assert.rejects(
+    () => countByDealId(fakeSb, 'some_table', dealId),
+    (err) => {
+      assert.match(err.message, /some_table count failed/);
+      assert.match(err.message, /unexpected server error/); // full error surfaced, not swallowed by an empty .message
+      return true;
+    },
+  );
 });

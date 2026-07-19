@@ -35,9 +35,22 @@
    and CI runs it under a `demo-dryrun` concurrency group so two runs can
    never race the same staging deal. Never runs DDL. Never touches a row
    whose deal_id isn't the staging deal id THIS run created.
+
+   KNOWN PIPELINE GAP (2026-07-19 live-gate finding, tracked separately —
+   not fixed in this WP): production ingest does NOT mint provision_cards.
+   The only card writers are scripts/curation/mint-cards.js,
+   scripts/backfill/extract-to-cards.js, and
+   scripts/reprocess/rematerialize-claims.js — every existing corpus deal
+   got its cards via a one-off backfill, not via scripts/ingest-local.js /
+   pages/api/ingest/from-url.js. A freshly-ingested deal renders EMPTY on
+   /review until one of those runs. This script's MATERIALIZE step papers
+   over that for the dry-run's own staging deal only (mint-cards --deal
+   <dealId> --apply); it does not touch, and is not a fix for, the real
+   ingest pipeline.
    ───────────────────────────────────────────────────────────────────────── */
 
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
 const { execFileSync } = require('child_process');
 
@@ -48,7 +61,13 @@ const { persistReport, resolveReportDbFlag } = require('../lib/reports/persist-r
 const DEFAULT_FIXTURE = path.join(__dirname, '..', '__fixtures__', 'demo-deal', 'landos-abbvie-agreement.txt');
 const INGEST_LOCAL = path.join(__dirname, 'ingest-local.js');
 const INGEST_QA = path.join(__dirname, 'ingest-qa.js');
+const MINT_CARDS = path.join(__dirname, 'curation', 'mint-cards.js');
 const QUERY_DEMO_CHECK = path.join(__dirname, 'query-demo-check.js');
+
+// The unique substring ingest-local.js --staging stamps into the deal's
+// `target` field (DRYRUN-<timestamp>) — see DEFECT 1 below for why this
+// matters: ingest-qa.js's --deal flag matches by NAME SUBSTRING, not id.
+const QA_STAGING_NAME_PREFIX = 'DRYRUN';
 
 // ── deal_id-keyed tables (teardown target list) ────────────────────────────
 // Every table in supabase/*.sql carrying a direct `deal_id` column, cascade
@@ -169,25 +188,86 @@ function runIngestLocal({ fixture, backend }) {
 }
 
 // ── step 2: QA gate ──────────────────────────────────────────────────────────
+// DEFECT 1 (2026-07-19 live-gate finding, run 1): ingest-qa.js's --deal flag
+// matches by NAME SUBSTRING against `${acquirer} ${target}` (ingest-qa.js
+// main(), ~line 404), not by id. Passing the deal UUID matched ZERO deals —
+// ingest-qa.js prints "No deal matches" and exits 0 — so this step reported
+// a vacuous PASS having checked nothing. Fixed by: (1) matching on
+// QA_STAGING_NAME_PREFIX ("DRYRUN", the unique substring --staging stamps
+// into the deal's target name) instead of the id, and (2) reading the
+// --json structured result (scripts/ingest-qa.js's WP-6 JSON emitter) and
+// HARD-ASSERTING exactly one deal was checked and it's the one we created —
+// zero (or more than one) deals checked is now itself a step failure,
+// independent of whatever exit code ingest-qa.js returns.
 function runIngestQa({ dealId }) {
+  const jsonPath = path.join(os.tmpdir(), `demo-dryrun-qa-${dealId}.json`);
   const cmd = process.execPath;
-  const cmdArgs = [INGEST_QA, '--deal', dealId, '--no-report-db'];
+  const cmdArgs = [INGEST_QA, '--deal', QA_STAGING_NAME_PREFIX, '--json', jsonPath, '--no-report-db'];
+  let stdout = '';
   try {
-    const stdout = execFileSync(cmd, cmdArgs, { encoding: 'utf-8', stdio: ['ignore', 'pipe', 'pipe'] });
-    process.stdout.write(stdout);
-    return { pass: true, stdout };
+    stdout = execFileSync(cmd, cmdArgs, { encoding: 'utf-8', stdio: ['ignore', 'pipe', 'pipe'] });
+  } catch (err) {
+    // ingest-qa.js exits 1 on a gate FAIL — that's the expected outcome for
+    // the deliberately-broken-fixture negative test. Still read the --json
+    // file below (it's written unconditionally before exit) rather than
+    // treating a nonzero exit alone as the failure signal.
+    stdout = (err.stdout || '') + (err.stderr || '');
+  }
+  process.stdout.write(stdout);
+
+  let structured;
+  try {
+    structured = JSON.parse(fs.readFileSync(jsonPath, 'utf-8'));
+  } catch (err) {
+    throw new Error(`ingest-qa.js did not produce a readable --json report at ${jsonPath}: ${err.message}\nstdout tail:\n${stdout.trim().split('\n').slice(-15).join('\n')}`);
+  } finally {
+    try { fs.unlinkSync(jsonPath); } catch { /* best effort cleanup, not load-bearing */ }
+  }
+
+  if (!Array.isArray(structured.deals) || structured.deals.length !== 1) {
+    throw new Error(`ingest-qa checked ${structured.deals ? structured.deals.length : 0} deal(s) matching --deal "${QA_STAGING_NAME_PREFIX}" (expected exactly 1 — our staging deal) — zero (or ambiguous multiple) deals checked is a hard failure, not a pass`);
+  }
+  const dealResult = structured.deals[0];
+  if (dealResult.dealId !== dealId) {
+    throw new Error(`ingest-qa checked deal ${dealResult.dealId}, not our staging deal ${dealId} — --deal "${QA_STAGING_NAME_PREFIX}" resolved to the wrong row`);
+  }
+  if (dealResult.pass !== true) {
+    throw new Error(`ingest-qa gate FAILED for deal ${dealId}:\n${JSON.stringify(dealResult.checks || [], null, 2).slice(0, 2000)}`);
+  }
+
+  return { pass: true, dealId: dealResult.dealId, counts: dealResult.counts, coveragePct: dealResult.coveragePct };
+}
+
+// ── step 2.5: materialize (mint-cards) ──────────────────────────────────────
+// DEFECT 2 (2026-07-19 live-gate finding, run 1): the review-surface step
+// got 0 cards because NO ingest path mints provision_cards — see the KNOWN
+// PIPELINE GAP note in this file's header. Every existing corpus deal has
+// cards only because of a one-off backfill (mint-cards.js /
+// extract-to-cards.js / rematerialize-claims.js); a fresh ingest never
+// calls any of them. This step runs mint-cards.js scoped strictly to the
+// staging dealId so the review-surface step has something to check — it is
+// NOT a fix for the ingest pipeline itself (out of scope for this WP).
+function runMintCards({ dealId }) {
+  const backupPath = path.join(os.tmpdir(), `demo-dryrun-mint-backup-${dealId}.json`);
+  const cmd = process.execPath;
+  const cmdArgs = [MINT_CARDS, '--deal', dealId, '--apply', '--backup', backupPath, '--no-report-db'];
+  let stdout;
+  try {
+    stdout = execFileSync(cmd, cmdArgs, { encoding: 'utf-8', stdio: ['ignore', 'pipe', 'pipe'] });
   } catch (err) {
     const out = (err.stdout || '') + (err.stderr || '');
-    process.stdout.write(out);
-    // A gate FAIL is a legitimate, expected outcome for this step (it's what
-    // the deliberately-broken-fixture acceptance test exercises) — surface
-    // it as a normal thrown error so the caller marks the step failed and
-    // still runs teardown, rather than crashing on an unexpected exception
-    // shape. Keep a tail of the scorecard in the message so the structured
-    // JSON result carries the actual gate failures, not just "it failed".
-    const tail = out.trim().split('\n').slice(-15).join('\n');
-    throw new Error(`ingest-qa gate failed for deal ${dealId}:\n${tail}`);
+    throw new Error(`mint-cards.js failed for deal ${dealId}: ${out.trim().slice(-2000) || err.message}`);
+  } finally {
+    try { fs.unlinkSync(backupPath); } catch { /* best effort — backup is a mandatory --apply gate, not something we need to keep */ }
   }
+  process.stdout.write(stdout);
+
+  const m = stdout.match(/Executed: minted (\d+) card\(s\), inserted (\d+) region\(s\), reused (\d+) region\(s\)\./);
+  if (!m) throw new Error(`Could not parse a minted-card count out of mint-cards.js output for deal ${dealId}:\n${stdout.trim().slice(-2000)}`);
+  const minted = Number(m[1]);
+  if (minted === 0) throw new Error(`mint-cards.js minted 0 cards for staging deal ${dealId} — nothing for the review-surface step to check (expected >0 coded provisions on a fresh ingest)`);
+
+  return { minted, regionsInserted: Number(m[2]), regionsReused: Number(m[3]) };
 }
 
 // ── step 3: review surface ──────────────────────────────────────────────────
@@ -275,12 +355,22 @@ async function countByDealId(sb, table, dealId) {
   try {
     const { count, error } = await sb.from(table).select('id', { count: 'exact', head: true }).eq('deal_id', dealId);
     if (error) {
-      if (isMissingTableError(error)) return null; // table not in this env — nothing to count
-      throw new Error(`${table} count failed: ${error.message}`);
+      // DEFECT 3 (2026-07-19 live-gate finding, run 1): deal_quality_metrics
+      // failed this count with an EMPTY error.message ("deal_quality_metrics
+      // count failed: "), which flunked the teardown step even though every
+      // table's residual rows were genuinely 0. Two fixes: (a) always
+      // surface the FULL stringified error, not just .message, so a blank-
+      // message error is actually diagnosable next time; (b) treat both a
+      // missing TABLE and a missing COLUMN as a clean skip, not a failure —
+      // some supabase/*.sql migrations (e.g. deal-quality-metrics-schema.sql)
+      // may never have been applied in a given env, so either the table or
+      // its deal_id column can legitimately not exist.
+      if (isCleanSkipError(error)) return null;
+      throw new Error(`${table} count failed: ${JSON.stringify(error)}`);
     }
     return count || 0;
   } catch (err) {
-    if (isMissingTableError(err)) return null;
+    if (isCleanSkipError(err)) return null;
     throw err;
   }
 }
@@ -291,12 +381,26 @@ function isMissingTableError(error) {
   return error.code === '42P01' || /does not exist|Could not find the table|schema cache/i.test(message);
 }
 
+// Postgres 42703 (undefined_column) / PostgREST's "Could not find the '<col>'
+// column" message — a table that exists but lacks a deal_id column (a
+// migration applied out of order, or never applied at all) is just as much
+// a clean skip for teardown-verification purposes as a wholly missing table.
+function isMissingColumnError(error) {
+  if (!error) return false;
+  const message = error.message || String(error);
+  return error.code === '42703' || (/column/i.test(message) && /does not exist/i.test(message)) || /Could not find the '.+' column/i.test(message);
+}
+
+function isCleanSkipError(error) {
+  return isMissingTableError(error) || isMissingColumnError(error);
+}
+
 async function safeDelete(sb, table, column, value) {
   try {
     const { error } = await sb.from(table).delete().eq(column, value);
-    if (error && !isMissingTableError(error)) throw new Error(`${table} delete failed: ${error.message}`);
+    if (error && !isCleanSkipError(error)) throw new Error(`${table} delete failed: ${JSON.stringify(error)}`);
   } catch (err) {
-    if (!isMissingTableError(err)) throw err;
+    if (!isCleanSkipError(err)) throw err;
   }
 }
 
@@ -304,9 +408,9 @@ async function safeDeleteIn(sb, table, column, values) {
   if (!values || values.length === 0) return;
   try {
     const { error } = await sb.from(table).delete().in(column, values);
-    if (error && !isMissingTableError(error)) throw new Error(`${table} delete failed: ${error.message}`);
+    if (error && !isCleanSkipError(error)) throw new Error(`${table} delete failed: ${JSON.stringify(error)}`);
   } catch (err) {
-    if (!isMissingTableError(err)) throw err;
+    if (!isCleanSkipError(err)) throw err;
   }
 }
 
@@ -314,12 +418,12 @@ async function safeSelect(sb, table, column, filterCol, filterVal) {
   try {
     const { data, error } = await sb.from(table).select(column).eq(filterCol, filterVal);
     if (error) {
-      if (isMissingTableError(error)) return [];
-      throw new Error(`${table} select failed: ${error.message}`);
+      if (isCleanSkipError(error)) return [];
+      throw new Error(`${table} select failed: ${JSON.stringify(error)}`);
     }
     return data || [];
   } catch (err) {
-    if (isMissingTableError(err)) return [];
+    if (isCleanSkipError(err)) return [];
     throw err;
   }
 }
@@ -401,6 +505,10 @@ async function runDemoDryrun(sb, args) {
     const qaStep = newStep('qa');
     steps.push(qaStep);
     await timed(qaStep, () => runIngestQa({ dealId }));
+
+    const materializeStep = newStep('materialize');
+    steps.push(materializeStep);
+    await timed(materializeStep, () => runMintCards({ dealId }));
 
     const reviewStep = newStep('review-surface');
     steps.push(reviewStep);
@@ -509,12 +617,17 @@ module.exports = {
   timed,
   runIngestLocal,
   runIngestQa,
+  runMintCards,
+  countByDealId,
   checkReviewSurface,
   runQueryDemoCheck,
   checkStagingInvisible,
   teardownStagingDeal,
   runDemoDryrun,
   isMissingTableError,
+  isMissingColumnError,
+  isCleanSkipError,
+  QA_STAGING_NAME_PREFIX,
   findDotEnvLocal,
   loadDotEnvLocal,
 };
