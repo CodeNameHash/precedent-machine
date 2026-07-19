@@ -593,6 +593,23 @@ function materialRespectsPillFor(PillCell, keyId, obligationText, card) {
   return pillFor(PillCell, keyId, label, 'info', textOf(card), card, standardColorKey(label));
 }
 
+// r10 (Ben, QXO permits limb): SCOPE materiality is a different species
+// from the performance-standard pill above — "licenses ... that are
+// material to the Company, taken as a whole" narrows WHICH objects the
+// duty covers (only material permits/assets/relationships), it does not
+// soften how strictly the duty must be performed. Rendering the
+// "in all material respects" pill there would misstate the covenant, so
+// this is its own pill with its own detector. Pattern validated against
+// all 128 corpus limbs (21 hits across 13 deals; zero false positives on
+// "materially different"/"material adverse"; the 23 performance-only
+// limbs are untouched). A limb can legitimately carry BOTH (Metsera:
+// "maintain its material assets ... intact in all material respects").
+const SCOPE_MATERIALITY_RE = /that (?:are|is) material to|material to (?:the )?(?:company|parent|it)\b[^.]{0,40}taken as a whole|\bmaterial (?:permits?|licen[cs]es?|leases?|contracts?|assets?|properties|franchises?|rights|relationships?|customers?|vendors?|suppliers?|aspects)\b/i;
+function scopeMaterialityPillFor(PillCell, keyId, obligationText, card) {
+  if (!obligationText || !SCOPE_MATERIALITY_RE.test(obligationText)) return null;
+  return pillFor(PillCell, keyId, 'Material items only', 'info', textOf(card), card);
+}
+
 // Some decks (QXO) park the positive obligations on the section's chapeau
 // card with NO provision_subtype at all — and each limb's payload arrives
 // double-encoded, as { text: '{"appliesTo":[...],"obligation":"..."}' }.
@@ -690,6 +707,7 @@ function affirmativeRows(cards, ctx) {
         ...scopeEntries.map((e, i) => pillFor(PillCell, `${card.id}-scope-${limbIndex}-${i}`, e.label, 'neutral', e.evidence, e.source)),
         effortsStandardPillFor(PillCell, `${card.id}-efforts-${limbIndex}`, limb?.efforts_standard, card),
         materialRespectsPillFor(PillCell, `${card.id}-materiality-${limbIndex}`, obligationText, card),
+        scopeMaterialityPillFor(PillCell, `${card.id}-scope-mat-${limbIndex}`, obligationText, card),
         carveout ? pillFor(PillCell, `${card.id}-carveout-${limbIndex}`, 'Ordinary-course carve-out applies', 'present', textOf(card), card) : null,
       ].filter(Boolean);
       rows.push({
@@ -873,6 +891,7 @@ export {
   buildOtherRestrictionsRows,
   cardPartyFromText,
   normalizeLimb,
+  scopeMaterialityPillFor,
   effortsStandardPillFor,
   exceptionEntries,
   fragmentCards,
