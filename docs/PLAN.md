@@ -32,30 +32,52 @@ see docs/reports/PHASE-5-REPORT-2026-07-18.md.
   hash join matches nothing) — extraction_version renders "—" until
   #12 lands.
 
-## Now in flight
+## Roadmap to demo-ready (2026-07-19, Ben away window)
 
-1. **WP-7 — demo dry-run CI gate** (M5-06, last M4/M5 package): prod DB
-   + staging tags, staging-invisibility hard assertion, idempotent
-   teardown, extraction on --backend codex; CI job lands non-required
-   until Ben confirms B-env.
+Wave 1 — in flight now (each: agent → Fable review → merge → deploy):
+1. r4 render fixes (9 items: material contracts, MAE labels, fonts,
+   election/proration, equity shapes, knowledge dedupe, IOC thresholds,
+   NOSOL pills, two-step merger from transaction_steps).
+2. Query redesign (chrome parity, section order, natural-language
+   filters, fonts, perf) + QueryLaunchBox component.
+3. Render-parity audit tool (Class A wrong-card / Class B
+   structured-but-unrendered; calibrated on 4 known bugs).
+4. Review-page speed investigation (Fable): measure → quick wins vs
+   structural (deferred provision payloads, ISR like the index).
+5. WP-7 green run #2 → final review → PR with matcher fix.
 
-## Queued behind that (order)
+Wave 2 — sequenced behind wave 1 merges:
+6. Index integration: QueryLaunchBox embed + drop "Deals (40)/visible".
+7. Sidebar row-granularity: rowFocus (click PSU row → PSU-only sidebar),
+   wire reps/MAE/IOC/conditions families, empty-state sidebar on load,
+   see-provision as full-width colspan row.
+8. Columns package: law firms (ingest prompt + gate + backfill),
+   natural-language merger form, drop Provisions, add termF $/%, RTF,
+   outside date, go-shop.
+9. Review-page perf implementation per investigation.
 
-2. **Span-residual triage** — 482 genuine under-coverage sections;
-   Dyax §5.1 80k mega-section boundary defect; then enforcement flag →
-   coverage gate 95→98. Resolves #10 (QXO bring-down tiers) and the
-   Redfin 92% fixture. Fable verification still owed on agent claim
-   that Redfin/QXO stored TEXT is already whole (feature- vs
-   text-level loss).
-3. **r3 data repairs (dry-runs delivered, NOT applied)** —
-   scripts/cleanup-fragment-definitions.js (junk list entries); termf
-   trigger recode (optional). Side-finding: Theravance 52/57
-   definition rows have defined_term=NULL — needs its own fix.
-4. **Recitals-as-deal-facts** extraction addition (Ben-approved).
-5. **Proration depth** — real cap values via defined-term extraction;
-   2 deals affected.
-6. **F3 materialized snapshots** for /api/home cold-load (7.8s → target
-   sub-second).
+Wave 3 — data quality (pipeline runs, QA-gated):
+10. NOSOL re-extraction cohort (9 deals; Frontier has zero NOSOL cards)
+    + QXO COND-B tiers (#10) + optional equity summary-shape deals.
+11. Data hygiene: orphaned election_mechanisms rows, Skechers
+    is_prorated=false, zero source_doc_offset_start backfill. NOTE:
+    corpus writes may be classifier-blocked → may become Ben-run SQL.
+12. Render-parity audit findings triage → fix batch.
+
+Wave 4 — pre-demo: full corpus visual sweep + Fable adversarial audit
+(standing rule 6), deploy, live verification.
+
+## Ben gates (his side, in priority order)
+
+- [ ] Run supabase/schema-06-run-reports.sql (2 min — /admin/reports and
+      demo-dryrun report rows silently skip until then)
+- [ ] B-env decision: make WP-7 CI job required? (currently non-required,
+      prod+staging-tag)
+- [ ] Possible SQL approvals for wave-3 data-hygiene writes if the
+      permission layer blocks agent-side writes again
+- [ ] What/when is the demo — affects polish vs data-depth prioritization
+- [ ] Endeavor curation session (112 codes; data quality, not blocking)
+- [ ] Deployed-site feedback rounds as waves land
 
 ## Security close-out (2026-07-18/19)
 
