@@ -21,6 +21,7 @@ import ElectionCard from '../../components/review-v2/ElectionCard';
 import ProvisionIndex, { DefinitionsSection } from '../../components/review-v2/ProvisionIndex';
 import ClauseSidebar from '../../components/review-v2/ClauseSidebar';
 import SourceOverlay from '../../components/review-v2/SourceOverlay';
+import { MTX_FONTS_HREF } from '../../components/chrome/mtxFonts';
 import { resolveCardSourceSpan } from '../../lib/parser-v2/resolve-source-span';
 import {
   buildReviewV2Sections,
@@ -33,8 +34,7 @@ import {
 
 const CONSIDERATION_SECTION_ID = 'consideration-hero';
 
-const FONTS_HREF =
-  'https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap';
+const FONTS_HREF = MTX_FONTS_HREF;
 
 function LoadingLine({ children }) {
   return (
