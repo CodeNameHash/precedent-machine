@@ -10,6 +10,7 @@ import {
 import { HoverSource } from '../shared.js';
 import { splitForCell } from '../table-configs/card-utils.js';
 import { STANDARD_COLORS } from '../table-configs/standard-colors.js';
+import { TERM_GRID_COLUMN } from '../table-configs/layout.js';
 
 const { MATERIAL_CONTRACT_BUCKET_CODES, MATERIAL_CONTRACT_BUCKET_META } = taxonomy;
 
@@ -228,7 +229,11 @@ export function GroupedSubRows({ groups = [], emptyCopy = 'No grouped rows captu
           </div>
           <div className="divide-y divide-border">
             {group.rows.map((row, rowIndex) => (
-              <div key={row.id || row.label || rowIndex} className="grid grid-cols-[minmax(8rem,14rem)_1fr] gap-2 px-2 py-1.5">
+              <div
+                key={row.id || row.label || rowIndex}
+                className="grid gap-2 px-2 py-1.5"
+                style={{ gridTemplateColumns: `${TERM_GRID_COLUMN} 1fr` }}
+              >
                 <span>
                   <span className="text-[11px] font-medium text-ink">{row.label || `Row ${rowIndex + 1}`}</span>
                   {/* Item 8: an optional per-row "See provision" expander,

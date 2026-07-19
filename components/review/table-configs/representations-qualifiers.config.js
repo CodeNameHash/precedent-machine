@@ -4,6 +4,7 @@ import { knowledgeQualifierDisplay, normalizeQualifierScope, sortByAgreementOrde
 import { standardColorKey } from './standard-colors.js';
 import { buildRepBringDownMap, normRepName } from './conditions.config.js';
 import { cardCode, cardType, firstFeature, labelOf, selectCards, textOf, valueText } from './card-utils.js';
+import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
@@ -634,6 +635,14 @@ function pillList(PillCell, items, evidence, keyPrefix, tone = 'neutral') {
 // shape (RepGeneralExceptionsTable), reused for both the General Exceptions
 // block and the Knowledge block so the two read as siblings, not one
 // squeezed into the other.
+// Item 3 (round 3): table-fixed + the SAME shared TERM_COL token as the
+// per-rep table below (REP_TABLE_COLUMNS) -- the old `w-[14rem]` +
+// `whitespace-nowrap` box never shrank at any viewport (fixed 14rem
+// regardless of screen width) while every sibling table's first column DID
+// shrink, which is exactly the "reps boxes don't shrink at all" jitter
+// Ben flagged. `whitespace-normal break-words` (replacing `whitespace-
+// nowrap`) lets long Knowledge Standard/Persons labels wrap instead of
+// forcing the column wide.
 function sectionBox(key, heading, items) {
   return React.createElement(
     'div',
@@ -648,7 +657,13 @@ function sectionBox(key, heading, items) {
       { className: 'overflow-x-auto' },
       React.createElement(
         'table',
-        { className: 'min-w-full text-xs font-ui' },
+        { className: 'min-w-full table-fixed text-xs font-ui' },
+        React.createElement(
+          'colgroup',
+          null,
+          React.createElement('col', { style: { width: TERM_COL_WIDTH, maxWidth: TERM_COL_MAX } }),
+          React.createElement('col', null),
+        ),
         React.createElement(
           'tbody',
           { className: 'divide-y divide-border' },
@@ -657,7 +672,7 @@ function sectionBox(key, heading, items) {
             { key: item.key, className: 'align-top' },
             React.createElement(
               'td',
-              { className: 'w-[14rem] px-3 py-2 font-medium text-ink whitespace-nowrap' },
+              { className: 'px-3 py-2 font-medium text-ink whitespace-normal break-words' },
               item.term,
               // Item 8: an optional per-item "See provision" expander under
               // the LABEL (left) cell, matching every other family.
@@ -731,9 +746,13 @@ function knowledgeTableNode(knowledgeSummaryRow, repRows, ctx) {
   return sectionBox('knowledge', 'Knowledge', items);
 }
 
+// Item 3: the per-rep table's Term column uses the SAME shared token as
+// every other family's first column (and sectionBox's Knowledge/General-
+// Exceptions boxes above, via table-fixed + colgroup) -- Ben's specific ask
+// was that these two match exactly.
 const REP_TABLE_COLUMNS = [
-  { id: 'term', header: 'Term', width: '18rem' },
-  { id: 'materiality', header: 'Qualifiers', width: '16rem' },
+  { id: 'term', header: 'Term', width: TERM_COL_WIDTH, maxWidth: TERM_COL_MAX },
+  { id: 'materiality', header: 'Qualifiers' },
   { id: 'lookback', header: 'Lookback' },
 ];
 
@@ -743,7 +762,15 @@ function repsTableNode(repRows, ctx) {
   if (!repRows || !repRows.length) return null;
   return React.createElement(
     'table',
-    { className: 'min-w-full text-xs font-ui' },
+    { className: 'min-w-full table-fixed text-xs font-ui' },
+    React.createElement(
+      'colgroup',
+      null,
+      REP_TABLE_COLUMNS.map((column) => React.createElement('col', {
+        key: `col-${column.id}`,
+        style: column.width ? { width: column.width, maxWidth: column.maxWidth } : undefined,
+      })),
+    ),
     React.createElement(
       'thead',
       { className: 'border-b border-border bg-bg/60' },
@@ -802,8 +829,8 @@ function renderBody(rows, ctx) {
 // renderBody hook (same pattern as mae-definitions.config.js). Shared by both
 // party configs -- the renderCell functions read from the row, not the party.
 const REP_COLUMNS = [
-  { id: 'term', header: 'Term', width: '16rem', renderCell: renderTerm },
-  { id: 'materiality', header: 'Qualifiers', width: '15rem', renderCell: renderQualifiers },
+  { id: 'term', header: 'Term', width: TERM_COL_WIDTH, maxWidth: TERM_COL_MAX, renderCell: renderTerm },
+  { id: 'materiality', header: 'Qualifiers', renderCell: renderQualifiers },
   { id: 'lookback', header: 'Lookback', renderCell: renderLookback },
 ];
 

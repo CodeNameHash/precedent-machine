@@ -1,6 +1,7 @@
 import React from 'react';
 import taxonomy from '../../../lib/taxonomy.js';
 import { cardCode, cardFeatures, cardType, firstFeature, selectCards, splitForCell, textOf, valueText } from './card-utils.js';
+import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
 import { standardColorKey } from './standard-colors.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
@@ -587,9 +588,10 @@ const antitrustRegulatoryConfig = {
   selectRows(reviewDeal) {
     return mappedAntitrustRows(selectCards(reviewDeal, isAntitrust));
   },
+  fixedLayout: true,
   columns: [
-    { id: 'term', header: 'Term', width: '18rem', renderCell: (row) => row.label },
-    { id: 'signals', header: 'Provision', width: '18rem', renderCell: renderSignals },
+    { id: 'term', header: 'Term', width: TERM_COL_WIDTH, maxWidth: TERM_COL_MAX, renderCell: (row) => row.label },
+    { id: 'signals', header: 'Provision', renderCell: renderSignals },
     { id: 'detail', header: 'Detail', renderCell: renderDetail },
   ],
 };

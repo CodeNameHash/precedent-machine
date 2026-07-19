@@ -1,5 +1,6 @@
 import React from 'react';
 import { normalizeTermfFeatures } from '../../../lib/termf.js';
+import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
 
 function cardCode(card) {
   return String(card?.provision_subtype || card?.canonical_code || card?.provision_code || '').trim().toUpperCase();
@@ -181,8 +182,9 @@ const tailFeeConfig = {
   // Signals already showed for every row but one. Evidence is still one
   // hover away: PillCell and TruncatedWithSeeText both wrap their content in
   // EvidenceHoverSource already.
+  fixedLayout: true,
   columns: [
-    { id: 'term', header: 'Term', width: '20rem', renderCell: (row) => row.label },
+    { id: 'term', header: 'Term', width: TERM_COL_WIDTH, maxWidth: TERM_COL_MAX, renderCell: (row) => row.label },
     { id: 'signals', header: 'Provision', renderCell: renderSignals },
   ],
   empty: { copy: 'No tail-fee mechanics found.' },

@@ -2,6 +2,7 @@ import React from 'react';
 import { cardFeatures, partySide, splitForCell, textOf, valueText } from './card-utils.js';
 import { standardColorKey } from './standard-colors.js';
 import { BOARD_CHANGE_STANDARD_LABELS } from './board-change-standard.js';
+import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
 
 // Rebuilt per REBUILD-SPECS.md §7. Kept as its own standalone span block
 // (Ben likes Intervening Event separate from the other No-Solicitation
@@ -236,9 +237,10 @@ const nosolInterveningConfig = {
     return ORDERED_IDS.map((id) => byId[id]).filter(Boolean);
   },
   deriveHeaderNote,
+  fixedLayout: true,
   columns: [
-    { id: 'term', header: 'Term', width: '18rem', renderCell: (row) => row.label },
-    { id: 'signals', header: 'Provision', width: '18rem', renderCell: renderSignals },
+    { id: 'term', header: 'Term', width: TERM_COL_WIDTH, maxWidth: TERM_COL_MAX, renderCell: (row) => row.label },
+    { id: 'signals', header: 'Provision', renderCell: renderSignals },
     { id: 'detail', header: 'Detail', renderCell: renderDetail },
   ],
   empty: { copy: 'No Intervening Event mechanics found.' },

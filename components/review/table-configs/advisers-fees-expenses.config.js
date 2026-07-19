@@ -11,6 +11,7 @@ import {
   stripProposedTitle,
   textOf,
 } from './card-utils.js';
+import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
 
 // REBUILD-SPECS.md section 13 ("complete garbage" per Ben), tightened again
 // per FEEDBACK-2-PUNCHLIST.md item 45: this table is scoped to genuinely
@@ -248,9 +249,10 @@ const advisersFeesExpensesConfig = {
     const allocationRows = exceptionsRow ? [exceptionsRow] : mappedMiscRows(cards);
     return [...(advisorRow ? [advisorRow] : []), ...allocationRows];
   },
+  fixedLayout: true,
   columns: [
-    { id: 'term', header: 'Term', width: '18rem', renderCell: (row) => row.label },
-    { id: 'signals', header: 'Provision', width: '18rem', renderCell: renderSignals },
+    { id: 'term', header: 'Term', width: TERM_COL_WIDTH, maxWidth: TERM_COL_MAX, renderCell: (row) => row.label },
+    { id: 'signals', header: 'Provision', renderCell: renderSignals },
     { id: 'detail', header: 'Detail', renderCell: renderDetail },
   ],
 };

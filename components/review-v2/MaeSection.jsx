@@ -17,6 +17,7 @@ import taxonomy from '../../lib/taxonomy.js';
 import { maeDefinitionsConfig } from '../review/table-configs/mae-definitions.config';
 import { cardFeatures } from '../review/table-configs/card-utils';
 import { PillCell, EvidenceHoverSource } from '../review/primitives/ProvisionTablePrimitives';
+import { TERM_COL_WIDTH, TERM_COL_MAX } from '../review/table-configs/layout.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
@@ -123,7 +124,13 @@ function seeTextNode(text) {
 const TH_CLASS = 'px-3 py-2 text-left font-medium uppercase tracking-wider text-inkFaint';
 const TD_CLASS = 'px-3 py-2 whitespace-pre-wrap break-words text-ink align-top';
 
-// One bordered Mergertrace table card: grey title strip + thead + white body.
+// Item 3 (round 3): table-fixed + colgroup, same shared TERM_COL token every
+// other family's first column uses -- an auto-layout `<th style={{width}}>`
+// is only ever a hint the browser overrides from cell content (measured
+// live: this table's first column didn't line up with siblings at any
+// viewport). The FIRST column always gets the shared Party/Carve-out width;
+// any additional caller-supplied `widths` entries (index 1+) still apply
+// as explicit per-column widths, unspecified columns get the remainder.
 function MaeTableCard({ testId, title, headers, children, widths = [] }) {
   return (
     <section data-testid={testId} className="border border-border bg-white">
@@ -131,11 +138,21 @@ function MaeTableCard({ testId, title, headers, children, widths = [] }) {
         <p>{title}</p>
       </div>
       <div className="overflow-x-auto">
-        <table className="min-w-full text-xs font-ui">
+        <table className="min-w-full table-fixed text-xs font-ui">
+          <colgroup>
+            {headers.map((header, index) => (
+              <col
+                key={`col-${header}`}
+                style={index === 0
+                  ? { width: TERM_COL_WIDTH, maxWidth: TERM_COL_MAX }
+                  : (widths[index] ? { width: widths[index] } : undefined)}
+              />
+            ))}
+          </colgroup>
           <thead className="border-b border-border">
             <tr>
-              {headers.map((header, index) => (
-                <th key={header} className={TH_CLASS} style={widths[index] ? { width: widths[index] } : undefined}>
+              {headers.map((header) => (
+                <th key={header} className={TH_CLASS}>
                   {header}
                 </th>
               ))}

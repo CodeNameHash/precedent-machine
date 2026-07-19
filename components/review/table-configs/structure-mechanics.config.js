@@ -1,6 +1,7 @@
 import React from 'react';
 import taxonomy from '../../../lib/taxonomy.js';
 import { cardCode, cardFeatures, cardType, firstFeature, makeRow, selectCards, textOf, valueText } from './card-utils.js';
+import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
@@ -195,9 +196,13 @@ const structureMechanicsConfig = {
   selectRows(reviewDeal) {
     return mappedStructureRows(selectCards(reviewDeal, isStructure));
   },
+  // Item 3: shared TERM_COL width/cap token so this table's first column
+  // resolves to the SAME real width as every sibling table, at every
+  // viewport (table-fixed + colgroup, not an auto-layout th hint).
+  fixedLayout: true,
   columns: [
-    { id: 'term', header: 'Term', width: '18rem', renderCell: (row) => row.label },
-    { id: 'signals', header: 'Provision', width: '18rem', renderCell: renderSignals },
+    { id: 'term', header: 'Term', width: TERM_COL_WIDTH, maxWidth: TERM_COL_MAX, renderCell: (row) => row.label },
+    { id: 'signals', header: 'Provision', renderCell: renderSignals },
     { id: 'detail', header: 'Detail', renderCell: renderDetail },
   ],
 };

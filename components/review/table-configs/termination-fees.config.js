@@ -1,6 +1,7 @@
 import React from 'react';
 import { buildTerminationFees, normalizeTermfFeatures } from '../../../lib/termf.js';
 import { cardCode, cardFeatures, cardType, firstFeature, makeRow, selectCards, textOf } from './card-utils.js';
+import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
 import taxonomy from '../../../lib/taxonomy.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
@@ -265,8 +266,9 @@ const terminationFeesConfig = {
     if (!cards.length) return [];
     return [...feeTableRows(cards), ...scalarRows(cards)];
   },
+  fixedLayout: true,
   columns: [
-    { id: 'term', header: 'Term', width: '18rem', renderCell: (row) => row.label },
+    { id: 'term', header: 'Term', width: TERM_COL_WIDTH, maxWidth: TERM_COL_MAX, renderCell: (row) => row.label },
     { id: 'signals', header: 'Provision', renderCell: renderSignals },
   ],
 };

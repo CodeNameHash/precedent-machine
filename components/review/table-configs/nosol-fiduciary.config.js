@@ -4,6 +4,7 @@ import { standardColorKey } from './standard-colors.js';
 import { BOARD_CHANGE_STANDARD_LABELS } from './board-change-standard.js';
 import { FIDUCIARY_STANDARD_LABELS } from './fiduciary-standard-labels.js';
 import taxonomy from '../../../lib/taxonomy.js';
+import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
@@ -520,8 +521,9 @@ const nosolFiduciaryConfig = {
     return ORDERED_IDS.map((id) => byId[id]).filter(Boolean);
   },
   deriveHeaderNote,
+  fixedLayout: true,
   columns: [
-    { id: 'term', header: 'Term', width: '19rem', renderCell: (row) => row.label },
+    { id: 'term', header: 'Term', width: TERM_COL_WIDTH, maxWidth: TERM_COL_MAX, renderCell: (row) => row.label },
     { id: 'signals', header: 'Provision', renderCell: renderSignals },
   ],
   empty: { copy: 'No fiduciary-out mechanics found.' },

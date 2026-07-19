@@ -3,6 +3,7 @@ import { approvalsVotesConfig } from './approvals-votes.config.js';
 import { secMeetingConfig } from './sec-meeting.config.js';
 import { enumLabel } from '../../../lib/sec-meeting.js';
 import { cardCode, cardFeatures, textOf, valueText } from './card-utils.js';
+import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
 import { voteStandard } from './vote-standard.js';
 
 // Rebuild target: REBUILD-SPECS.md section 9 ("Ben: really good" in the old
@@ -348,8 +349,9 @@ const votesApprovalsMeetingConfig = {
   selectRows(reviewDeal) {
     return buildRows(reviewDeal);
   },
+  fixedLayout: true,
   columns: [
-    { id: 'term', header: 'Term', width: '16rem', renderCell: (row) => row.label },
+    { id: 'term', header: 'Term', width: TERM_COL_WIDTH, maxWidth: TERM_COL_MAX, renderCell: (row) => row.label },
     { id: 'provision', header: 'Provision', renderCell: renderProvisionCell },
   ],
 };
