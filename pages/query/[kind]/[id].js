@@ -275,22 +275,22 @@ function DealToMarket({ result, onOpen }) {
 
 function Panel({ children }) {
   return <div className="panel">{children}<style jsx global>{`
-    .mtx .qp .panel { border: 1px solid #E0E0E0; background: #fff; overflow: hidden; padding: 18px; }
-    .mtx .qp .scroll { overflow-x: auto; }
-    .mtx .qp .mtx-table th small { display: block; margin-top: 4px; color: #6B6B6B; text-transform: none; letter-spacing: 0; }
-    .mtx .qp .mtx-table td { cursor: pointer; }
-    .mtx .qp .mtx-table td div { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
-    .mtx .qp .mtx-table td small { color: #6B6B6B; display: block; margin-top: 8px; line-height: 1.35; }
-    .mtx .qp .major, .mtx .qp .unusual { background: rgba(177, 78, 99, 0.08); }
-    .mtx .qp .minor, .mtx .qp .off_market { background: rgba(168, 122, 46, 0.08); }
-    .mtx .qp .trivial, .mtx .qp .market { background: #FFFFFF; }
-    .mtx .qp .missing { background: rgba(31, 31, 31, 0.05); }
-    .mtx .qp .chart { height: 210px; display: flex; align-items: flex-end; gap: 8px; border-bottom: 1px solid #E0E0E0; padding: 12px 0; }
-    .mtx .qp .chart button { flex: 1; min-width: 20px; border: 0; background: #1F1F1F; color: #fff; border-radius: 0; cursor: pointer; }
-    .mtx .qp .stats, .mtx .qp .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
+    .mtx.qp .panel { border: 1px solid #E0E0E0; background: #fff; overflow: hidden; padding: 18px; }
+    .mtx.qp .scroll { overflow-x: auto; }
+    .mtx.qp .mtx-table th small { display: block; margin-top: 4px; color: #6B6B6B; text-transform: none; letter-spacing: 0; }
+    .mtx.qp .mtx-table td { cursor: pointer; }
+    .mtx.qp .mtx-table td div { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
+    .mtx.qp .mtx-table td small { color: #6B6B6B; display: block; margin-top: 8px; line-height: 1.35; }
+    .mtx.qp .major, .mtx.qp .unusual { background: rgba(177, 78, 99, 0.08); }
+    .mtx.qp .minor, .mtx.qp .off_market { background: rgba(168, 122, 46, 0.08); }
+    .mtx.qp .trivial, .mtx.qp .market { background: #FFFFFF; }
+    .mtx.qp .missing { background: rgba(31, 31, 31, 0.05); }
+    .mtx.qp .chart { height: 210px; display: flex; align-items: flex-end; gap: 8px; border-bottom: 1px solid #E0E0E0; padding: 12px 0; }
+    .mtx.qp .chart button { flex: 1; min-width: 20px; border: 0; background: #1F1F1F; color: #fff; border-radius: 0; cursor: pointer; }
+    .mtx.qp .stats, .mtx.qp .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
     .mtx .filterChip { text-transform: none; letter-spacing: 0.01em; font-weight: 500; }
-    .mtx .qp .stats span { border: 1px solid #E0E0E0; padding: 5px 9px; font-size: 12px; color: #1F1F1F; }
-    .mtx .qp h2 { font-size: 13px; margin: 22px 0 8px; font-family: var(--mtx-sans); text-transform: uppercase; letter-spacing: 0.08em; color: #6B6B6B; }
+    .mtx.qp .stats span { border: 1px solid #E0E0E0; padding: 5px 9px; font-size: 12px; color: #1F1F1F; }
+    .mtx.qp h2 { font-size: 13px; margin: 22px 0 8px; font-family: var(--mtx-sans); text-transform: uppercase; letter-spacing: 0.08em; color: #6B6B6B; }
   `}</style></div>;
 }
 
