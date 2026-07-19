@@ -164,10 +164,52 @@ const EXCEPTION_SPECS = [
   { id: 'negotiate', pattern: /participate in discussions or negotiations/i, label: 'Participate in discussions or negotiations with a Qualifying bidder' },
 ];
 
+// FIX 8 (Fable investigation): the 3 hardcoded EXCEPTION_SPECS regex glosses
+// missed most real drafting (SkyWater matches 0/3, QXO 1/3), collapsing to
+// the raw-text fallback on the majority of deals. Render canonical taxonomy
+// codes off ceaseDiscussionsExceptions/permittedExceptions FIRST -- these
+// are the same claim codes extraction already assigns, cross-deal-stable,
+// and cover far more drafting variety than 3 hand-picked patterns ever
+// could. The legacy regex glosses stay as a second-tier fallback (still
+// useful pre-reprocess or on a deck that genuinely carries no coded
+// exceptions), and the existing collapsed-raw-text rendering remains the
+// final fallback (null) when neither source yields anything.
+function taxonomyEntriesFromMatches(matches, keys) {
+  const out = [];
+  for (const card of matches) {
+    const features = cardFeatures(card);
+    for (const key of keys) {
+      const raw = features[key];
+      if (raw === null || raw === undefined || raw === '') continue;
+      const dict = taxonomyForFeatureKey(key);
+      const list = Array.isArray(raw) ? raw : [raw];
+      for (const item of list) {
+        const tagged = item && typeof item === 'object' && !Array.isArray(item);
+        const code = tagged ? item.code : (typeof item === 'string' ? item : null);
+        const dictLabel = code ? labelForCode(String(code), dict) : null;
+        const label = dictLabel || (tagged ? item.label : null);
+        if (!label) continue;
+        const evidence = (tagged && (item.text || (Array.isArray(item.quotes) && item.quotes[0]))) || textOf(card);
+        out.push({ code: code || label, label, evidence, source: card });
+      }
+    }
+  }
+  const seen = new Set();
+  return out.filter((entry) => {
+    if (seen.has(entry.label)) return false;
+    seen.add(entry.label);
+    return true;
+  });
+}
 function exceptionItemsFor(matches) {
+  const canonical = taxonomyEntriesFromMatches(matches, ['ceaseDiscussionsExceptions', 'permittedExceptions']);
+  if (canonical.length) return canonical;
+  // Legacy fallback keeps its original plain-string-array shape (no
+  // per-item evidence/source split) -- transition-safe for callers/tests
+  // that pre-date FIX 8's canonical path.
   const text = matches.map(textOf).filter(Boolean).join('\n\n');
-  const items = EXCEPTION_SPECS.filter((spec) => spec.pattern.test(text)).map((spec) => spec.label);
-  return items.length ? items : null;
+  const legacy = EXCEPTION_SPECS.filter((spec) => spec.pattern.test(text)).map((spec) => spec.label);
+  return legacy.length ? legacy : null;
 }
 
 // A card whose own code matches spec.codes is always kept. The regex
@@ -375,18 +417,26 @@ function chipRowNode(chips, ctx) {
 // Ben (round 6): "just say 3 exceptions -- show them!" Each plain-language
 // exception renders as its own pill (stacked, since they're full sentences),
 // not a "3 exceptions" count behind a "see exceptions" expander.
+// Items are either plain strings (legacy EXCEPTION_SPECS glosses, or the
+// pre-FIX-8 shape) or { code, label, evidence, source } entries (FIX 8's
+// canonical taxonomy-coded exceptions) -- each entry's own evidence/source
+// wins when present so a pill hovers to the specific clause it came from,
+// falling back to the row-level evidence/source for plain strings.
 function exceptionsListNode(row, ctx) {
   const PillCell = ctx?.primitives?.PillCell;
-  if (!PillCell) return row.exceptionItems.join(' · ');
+  const items = row.exceptionItems.map((item) => (typeof item === 'string'
+    ? { label: item, evidence: row.evidence, source: row.sourceCards?.[0] }
+    : { label: item.label, evidence: item.evidence || row.evidence, source: item.source || row.sourceCards?.[0], code: item.code }));
+  if (!PillCell) return items.map((item) => item.label).join(' · ');
   return React.createElement(
     'div',
     { className: 'flex flex-col items-start gap-1' },
-    row.exceptionItems.map((text, index) => React.createElement(PillCell, {
-      key: index,
-      label: text,
+    items.map((item, index) => React.createElement(PillCell, {
+      key: item.code || index,
+      label: item.label,
       tone: 'warning',
-      evidence: row.evidence,
-      source: row.sourceCards?.[0],
+      evidence: item.evidence,
+      source: item.source,
       wrap: true,
     })),
   );
