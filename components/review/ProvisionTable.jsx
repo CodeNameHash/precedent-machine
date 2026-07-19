@@ -1,4 +1,5 @@
 import * as ProvisionTablePrimitives from './primitives/ProvisionTablePrimitives';
+import { buildCardIndex, resolveRowCard } from '../review-v2/provisionIndexHelpers.js';
 
 /*
 Config shape:
@@ -80,10 +81,18 @@ function fallbackEvidenceText(row) {
   return textOfSourceCard(row?.sourceCard) || null;
 }
 
-export default function ProvisionTable({ config, reviewDeal, isEdit = false }) {
+export default function ProvisionTable({ config, reviewDeal, isEdit = false, sectionCards = null, onSelectCard = null, selectedCardId = null }) {
   if (!config || typeof config.selectRows !== 'function') return null;
   const rows = config.selectRows(reviewDeal);
   if (!Array.isArray(rows) || rows.length === 0) return null;
+  // Item 17 (r4): the same source-card resolution the ProvisionIndex
+  // "see provision" evidence path uses (provisionIndexHelpers.js), reused
+  // here so a summary-row click opens the ClauseSidebar for the CARD that
+  // backs it -- see resolveRowCard()'s doc comment for the row shapes it
+  // reads. cardsById is scoped to THIS section's own card list, matching the
+  // spec's "find the matching card from the section's cards".
+  const cardsById = buildCardIndex(sectionCards);
+  const resolveCard = (row) => (onSelectCard ? resolveRowCard(row, cardsById) : null);
   // Opt-in escape hatch for families whose rows don't map onto ONE flat
   // <table> (e.g. mae-definitions splitting Company vs Parent MAE into two
   // separate <table> sub-sections, matching the legacy per-side render).
@@ -92,6 +101,9 @@ export default function ProvisionTable({ config, reviewDeal, isEdit = false }) {
   // body markup is swapped out here.
   if (typeof config.renderBody === 'function') {
     const bodyCtx = { reviewDeal, config, primitives: ProvisionTablePrimitives, isEdit };
+    bodyCtx.resolveCard = resolveCard;
+    bodyCtx.onSelectCard = onSelectCard;
+    bodyCtx.selectedCardId = selectedCardId;
     const headerNote = typeof config.deriveHeaderNote === 'function' ? config.deriveHeaderNote(rows) : null;
     // R3/G-TITLE: config.title already renders once as the collapsible
     // section <h2> in pages/review/[id].js (same rule as the generic path's
@@ -124,6 +136,13 @@ export default function ProvisionTable({ config, reviewDeal, isEdit = false }) {
   // isEdit flows into ctx so per-family renderCells can suppress edit-only
   // affordances (e.g. raw canonical-code pills) in the default Reviewer view.
   ctx.isEdit = isEdit;
+  // Item 17 (r4): custom renderCell paths (e.g. nosol-section.config.js's
+  // GroupedSubRows body) get the same resolver/selection wiring the generic
+  // <tr> loop below uses, so a config that threads `card`/`sourceCard`/
+  // `sourceCards` onto its own row shape can wire its own click affordance.
+  ctx.resolveCard = resolveCard;
+  ctx.onSelectCard = onSelectCard;
+  ctx.selectedCardId = selectedCardId;
   // Grouped/consolidated tables (termination rights, conditions, equity
   // awards) render a single header-less column whose cell owns its own
   // internal layout (e.g. GroupedSubRows). Suppress the generic <thead> bar
@@ -191,8 +210,23 @@ export default function ProvisionTable({ config, reviewDeal, isEdit = false }) {
                 .map((column) => (column.renderCell ? column.renderCell(row, ctx) : null))
                 .filter(Boolean);
               const fallbackText = fullTextNodes.length === 0 ? fallbackEvidenceText(row) : null;
+              // Item 17 (r4): reuse the same source-card resolution
+              // ProvisionIndex's "see provision" path uses -- a row only
+              // becomes clickable when it resolves to an actual card, so
+              // rows with no identifiable source (cross-card rollups,
+              // computed-only values) never get a dead cursor-pointer.
+              const rowCard = resolveCard(row);
+              const rowCardKey = rowCard ? (rowCard.id || rowCard.provision_instance_id) : null;
+              const isSelectedRow = Boolean(rowCardKey) && selectedCardId === rowCardKey;
+              const baseRowClass = row.present ? 'align-top hover:bg-bg/40' : 'align-top bg-bg/30 text-inkFaint';
+              const rowClass = rowCard ? `${baseRowClass} mtx-row-clickable` : baseRowClass;
               return (
-                <tr key={row.id || row.label} className={row.present ? 'align-top hover:bg-bg/40' : 'align-top bg-bg/30 text-inkFaint'}>
+                <tr
+                  key={row.id || row.label}
+                  className={rowClass}
+                  onClick={rowCard ? () => onSelectCard(rowCard) : undefined}
+                  style={rowCard ? { cursor: 'pointer', ...(isSelectedRow ? { background: 'rgba(47,109,181,.07)', boxShadow: 'inset 2px 0 0 #2F6DB5' } : {}) } : undefined}
+                >
                   {columns.map((column, colIdx) => (
                     <td key={`${row.id || row.label}-${column.id}`} className="px-3 py-2 whitespace-pre-wrap break-words text-ink">
                       {column.renderCell ? column.renderCell(row, ctx) : null}
