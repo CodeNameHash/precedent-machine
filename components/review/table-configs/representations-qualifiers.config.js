@@ -370,16 +370,58 @@ function knowledgeScopeText(cards) {
 // scope-type stamp but not their own knowledgeStandard duplicate. Falls back
 // to defined_term text match in case a deal's DEF-KNOWLEDGE card ever ships
 // under a different subtype.
-function findKnowledgeDefinitionCard(reviewDeal) {
-  const cards = reviewDeal?.cards || [];
-  return cards.find((c) => cardCode(c) === 'DEF-KNOWLEDGE')
-    || cards.find((c) => cardType(c) === 'DEFINITION' && String(c?.defined_term || '').trim().toLowerCase() === 'knowledge');
+//
+// Party-scope bug (found during the Cox/Charter live IOC fix's spot-check,
+// same defect class as negativeCovenantGroups' sectionBand): some decks
+// define "Knowledge" TWICE, once per party -- Cox/Charter has two
+// DEF-KNOWLEDGE cards, defined_term "Cabot's Knowledge" and "Columbus's
+// Knowledge" respectively, both stamped party_scope 'N_A' and section_ref
+// 'DEF' (no reliable structured party signal), sitting at ADJACENT indices
+// in reviewDeal.cards (both in the back-of-agreement Definitions article,
+// nowhere near either party's own Article of reps -- so document-order
+// proximity to partyCards is NOT a usable signal here, unlike
+// negativeCovenantGroups' section-number band). The old unconditional
+// `.find()` handed BOTH the Company AND Parent Knowledge rows the SAME
+// first-found card, so e.g. the Parent table's "Standard" row could show
+// the Company's ("Cabot") scope text.
+//
+// The one reliable signal left is the candidate's OWN defined_term: when a
+// deal party-qualifies "Knowledge" at all, it does so with a leading proper
+// noun ("Cabot's Knowledge") that also appears throughout that same party's
+// OTHER cards (rep clauses reference "Cabot" by name constantly). Score
+// each candidate by how often its leading defined_term token appears across
+// partyCards' own text and pick the best match; ties/zero-signal fall back
+// to the first candidate (old behaviour) rather than guessing further.
+function candidateNameToken(card) {
+  const match = String(card?.defined_term || '').match(/^([A-Z][A-Za-z.&]{2,})/);
+  return match ? match[1] : null;
+}
+
+function findKnowledgeDefinitionCard(reviewDeal, partyCards) {
+  const allCards = reviewDeal?.cards || [];
+  const candidates = allCards.filter((c) => cardCode(c) === 'DEF-KNOWLEDGE'
+    || (cardType(c) === 'DEFINITION' && String(c?.defined_term || '').trim().toLowerCase() === 'knowledge'));
+  if (candidates.length <= 1) return candidates[0] || null;
+  const partyText = (Array.isArray(partyCards) ? partyCards : [])
+    .map((c) => `${c?.short_title || ''} ${textOf(c)}`)
+    .join(' ');
+  let best = candidates[0];
+  let bestScore = 0;
+  for (const candidate of candidates) {
+    const token = candidateNameToken(candidate);
+    if (!token || !partyText) continue;
+    const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const matches = partyText.match(new RegExp(`\\b${escaped}\\b`, 'g'));
+    const score = matches ? matches.length : 0;
+    if (score > bestScore) { bestScore = score; best = candidate; }
+  }
+  return best;
 }
 
 function knowledgeScopeTextAcross(reviewDeal, cards) {
   const repScope = knowledgeScopeText(cards);
   if (repScope) return repScope;
-  const defCard = findKnowledgeDefinitionCard(reviewDeal);
+  const defCard = findKnowledgeDefinitionCard(reviewDeal, cards);
   if (!defCard) return null;
   const hit = firstFeature([defCard], ['definitionText']);
   if (!hit) return null;
@@ -393,7 +435,7 @@ function knowledgeScopeTextAcross(reviewDeal, cards) {
 // deck without a standalone Knowledge definition still surfaces whatever the
 // per-rep stamps carry.
 function buildKnowledgeSummaryRow(reviewDeal, idPrefix, cards) {
-  const defCard = findKnowledgeDefinitionCard(reviewDeal);
+  const defCard = findKnowledgeDefinitionCard(reviewDeal, cards);
   const searchCards = [defCard, ...cards].filter(Boolean);
   const standard = knowledgeStandardNote(searchCards);
   const persons = knowledgePersonsLabel(searchCards);

@@ -205,24 +205,51 @@ function seeTextNode(texts) {
   );
 }
 
+// Party-scope bug (Ben, Cox/Charter live report): "No New Lines of
+// Business" showed BOTH parties' clause text concatenated into ONE row --
+// Cabot's (Target/Company side) "(xvi) engage in any business other than
+// the Cabot Business..." AND Columbus's (Parent side) "(v) engage in any
+// material business other than the business of Columbus...". Root cause:
+// negativeCovenantGroups grouped by CODE ALONE, and IOC-* codes carry no
+// party token (unlike REP-T-/REP-B-, COND-M-/COND-S-) -- store-cards also
+// bakes party_scope to a uniform 'MUTUAL' default (see lib/party-scope.js),
+// so neither the code nor the stored scope can tell Cabot's IOC-NEWLINE
+// card apart from Columbus's IOC-NEWLINE card. On a two-party IOC deck
+// (Cox/Charter mirrors each party's negative covenants under its OWN
+// numbered section -- 5.2(*) for Cabot, 5.3(*) for Columbus), the one
+// generally-available signal that keeps them apart is the section_ref's
+// leading section number: cards in the SAME party's covenant enumeration
+// always share it. Single-party decks (the overwhelming majority --
+// Metsera's 3 IOC-MERGE cards at 5.01(g)/(d)/(p) all share section "5.01")
+// still collapse into one row exactly as before; this only stops a
+// cross-PARTY collapse, never a same-party, same-code, different-sub-clause
+// collapse (that's still the intended "3 cards -> 1 row" behaviour this
+// function's original comment describes).
+function sectionBand(card) {
+  const ref = String(card?.section_ref || '').trim();
+  const match = ref.match(/^(\d+(?:\.\d+)?)/);
+  return match ? match[1] : (ref || 'default');
+}
+
 // Groups the NAMED negative covenants (has a real provision_subtype, is not
-// a general-exceptions/affirmative container) by canonical code. Metsera has
-// 3 separate IOC-MERGE cards at 5.01(g)/(d)/(p) that collapse into ONE row
-// here with combined pills, instead of 3 duplicate rows for the same
-// covenant name.
+// a general-exceptions/affirmative container) by (section band, canonical
+// code) -- see sectionBand's doc comment above for why band is part of the
+// key, not just code.
 function negativeCovenantGroups(cards) {
   const order = [];
-  const byCode = new Map();
+  const byKey = new Map();
   for (const card of cards) {
     const code = cardCode(card);
     if (!code || code === 'IOC' || GENERAL_EXCEPTION_CODES.has(code) || AFFIRMATIVE_CODES.has(code)) continue;
-    if (!byCode.has(code)) {
-      byCode.set(code, []);
-      order.push(code);
+    const band = sectionBand(card);
+    const key = `${band}::${code}`;
+    if (!byKey.has(key)) {
+      byKey.set(key, { code, band, cards: [] });
+      order.push(key);
     }
-    byCode.get(code).push(card);
+    byKey.get(key).cards.push(card);
   }
-  return order.map((code) => ({ code, cards: byCode.get(code) }));
+  return order.map((key) => byKey.get(key));
 }
 
 // The "[PROPOSED] Unclassified" 5.01(i)-(o) fragments: no provision_subtype
@@ -239,7 +266,10 @@ function fragmentCards(cards) {
 
 function buildNegativeRow(group) {
   return {
-    id: `ioc-neg-${group.code}`,
+    // band included so two parties' same-code covenant each get a distinct,
+    // stable React key (previously `ioc-neg-${code}` -- a real key
+    // collision on any two-party IOC deck, since both groups shared one id).
+    id: `ioc-neg-${group.band}-${group.code}`,
     code: group.code,
     cards: group.cards,
   };
