@@ -24,6 +24,9 @@ export default async function handler(req, res) {
         return res.json({ agreement_source: null });
       }
 
+      // Q6 (perf quick-wins): agreement full_text is deal_id-scoped, not
+      // per-viewer — safe to cache at the CDN edge with SWR.
+      res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=3600');
       return res.json({
         agreement_source: {
           id: deal.id,
