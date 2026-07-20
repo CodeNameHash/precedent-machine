@@ -1,11 +1,11 @@
 # PLAN — handoff-ready work packages (Codex agent team)
 
-Last update: 2026-07-20, post PR #301 + the r19 build round. This doc is
-written to be handed to a Codex (gpt-5.x) agent team COLD: each work
-package below is self-contained — task, file paths, evidence, and
-acceptance criteria — because Codex agents get no conversation history.
-Copy a package verbatim into a `codex exec` prompt and it should stand
-alone. Never include secrets (.env.local values) in any prompt.
+Last update: 2026-07-20, PR #303 row-level market context, drill-down sidebar,
+and “What’s market?” entry point. This doc is written to be handed to a Codex
+(gpt-5.x) agent team COLD: each work package below is self-contained — task,
+file paths, evidence, and acceptance criteria — because Codex agents get no
+conversation history. Copy a package verbatim into a `codex exec` prompt and it
+should stand alone. Never include secrets (.env.local values) in any prompt.
 
 ## Repo primer (include with every handed-off package)
 
@@ -59,6 +59,41 @@ alone. Never include secrets (.env.local values) in any prompt.
       NOT_AVAILABLE, 7 UNRESOLVED-as-data-gaps, none forced SILENT;
       `scripts/code-appraisal-rights.js` awaits Ben review + --apply
       (step 7 of the runbook).
+
+## r20 row-by-row market round — PR #303 (2026-07-20)
+
+- [x] One dependency-light `rowMarketContext` resolver defines the row-level
+      market result consumed by compact compare cells and detailed market
+      drill-downs. Multi-feature rows resolve in declared row order, with
+      treatment / exception / metric roles and stable market keys.
+- [x] Categorical batch summaries now count distinct deals rather than claims.
+      A displayed value bucket cannot exceed the peer-set size; list-valued
+      attributes may place one deal in several buckets, but never twice in one
+      bucket. The response includes a market-stats schema version.
+- [x] IOC exception prevalence uses deals containing the selected term as its
+      denominator, rather than claim totals or the full corpus by accident.
+- [x] Compare-to-market cells are enhanced with a “See all treatments & deals”
+      action. In market mode the ordinary clause sidebar is suppressed and the
+      dedicated market drill-down shows treatments, exceptions, numeric ranges,
+      and supporting deals when those deal lists are present in row context.
+- [x] The index query box has a first-class “What’s market?” input. Blank input
+      opens the M&A market-overview landing page; recognized and open-ended term
+      questions resolve through `lib/query/whats-market.js` and the same corpus
+      query vocabulary.
+- [x] `pages/query/whats-market/adhoc.js` provides the full provision-family
+      overview and routes users into the existing cross-deal treatment pages.
+- [ ] Follow-up MKT-1: enrich `corpus-stats-batch` with per-value deal/card lists
+      for every requested row. The market sidebar already renders those lists,
+      but compact batch responses can currently show counts without deal names.
+- [ ] Follow-up MKT-2: replace section-level `dominantSectionCode()` selection
+      with per-row provision-code requests. Stable row keys and one resolver are
+      in place, but heterogeneous sections can still inherit the section modal
+      subtype until this request layer is completed.
+- [ ] Follow-up MKT-3: replace the temporary global UI bridge with direct props
+      in `CompareColumn.jsx`, `pages/review/[id].js`, and `QueryLaunchBox.jsx`
+      when a normal checked-out worktree is available. The bridge exists because
+      the connector only permits whole-file writes for those large files; keep
+      behavior tests around the shared resolver before removing it.
 
 ## Ben runbook (his machine; all dry-run first)
 
