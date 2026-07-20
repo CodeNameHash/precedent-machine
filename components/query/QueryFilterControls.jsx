@@ -481,6 +481,26 @@ export function buildDealFilterPayload(values) {
   return out;
 }
 
+export function dealMatchesDealFilter(deal, filter = {}) {
+  const meta = deal.metadata && typeof deal.metadata === 'object' ? deal.metadata : {};
+  const consideration = deal.consideration_type || meta.headlineConsiderationType || meta.considerationType || null;
+  const buyer = deal.buyer_display || meta.acquirer_display || deal.acquirer || null;
+  const date = deal.signing_date || deal.announce_date || null;
+  const year = date ? Number(String(date).slice(0, 4)) : null;
+  const advisors = deal.advisors && typeof deal.advisors === 'object'
+    ? [...(deal.advisors.buyer_firms || []), ...(deal.advisors.seller_firms || [])]
+    : (() => {
+      const resolved = getDisplayAdvisors(meta);
+      return [...(resolved.buyerFirms || []), ...(resolved.sellerFirms || [])];
+    })();
+  if (filter.consideration_type?.length && !filter.consideration_type.includes(consideration)) return false;
+  if (filter.buyer?.length && !filter.buyer.includes(buyer)) return false;
+  if (filter.law_firm?.length && !filter.law_firm.some((firm) => advisors.includes(firm))) return false;
+  if (filter.sector?.length && !filter.sector.includes(deal.sector)) return false;
+  if (filter.signing_year?.length && !filter.signing_year.includes(year)) return false;
+  return true;
+}
+
 export function describeDealFilters(values) {
   const parts = [];
   for (const facet of DEAL_FACETS) {

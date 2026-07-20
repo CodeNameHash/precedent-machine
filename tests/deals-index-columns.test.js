@@ -10,29 +10,27 @@ const {
   valueBand,
   signedYear,
   mergerFormDisplay,
-  terminationFeeDisplay,
-  reverseFeeDisplay,
-  outsideDateDisplay,
-  goShopDisplay,
+  structureDisplay,
 } = require('../lib/deals-index-columns');
 
-test('default-visible columns match the spec: Deal, Signed, Value, Type, Buyer type, Sector, Company termination fee, Outside date', () => {
-  assert.deepEqual(defaultVisibleKeys(), ['deal', 'signed', 'value', 'type', 'buyer_type', 'sector', 'term_fee', 'outside_date']);
+test('default-visible columns are deal descriptors, including consideration and structure', () => {
+  assert.deepEqual(defaultVisibleKeys(), ['deal', 'signed', 'value', 'type', 'structure', 'buyer_type', 'sector']);
+  assert.equal(getColumn('type').label, 'Consideration');
 });
 
-test('picker-only columns exist for law firm / lawyer / merger form / reverse fee / go-shop (Provisions column removed)', () => {
+test('picker-only columns are advisers and detailed merger form', () => {
   const pickerOnly = COLUMNS.filter((c) => !c.defaultVisible).map((c) => c.key);
   assert.deepEqual(
     pickerOnly.sort(),
-    ['law_firm_buyer', 'law_firm_target', 'lawyers_buyer', 'lawyers_target', 'merger_form', 'reverse_fee', 'go_shop'].sort(),
+    ['law_firm_buyer', 'law_firm_target', 'lawyers_buyer', 'lawyers_target', 'merger_form'].sort(),
   );
-  assert.equal(getColumn('provisions'), null, 'the Provisions column must be removed entirely');
 });
 
-test('advisor columns carry the 17/40 coverage badge', () => {
-  for (const key of ['law_firm_buyer', 'law_firm_target', 'lawyers_buyer', 'lawyers_target']) {
-    assert.equal(getColumn(key).coverage, '17/40');
+test('provision terms and stale coverage badges are absent from the column registry', () => {
+  for (const key of ['term_fee', 'reverse_fee', 'outside_date', 'go_shop', 'provisions']) {
+    assert.equal(getColumn(key), null, `${key} must not be a deal-list column`);
   }
+  assert.ok(COLUMNS.every((column) => !Object.prototype.hasOwnProperty.call(column, 'coverage')));
 });
 
 test('considerationTypeDisplay maps the enum to display labels', () => {
@@ -80,51 +78,16 @@ test('merger_form column accessor renders the natural-language label, not the ra
   assert.equal(col.accessor({ merger_form: 'REVERSE_TRIANGULAR_MERGER' }), 'Reverse triangular merger');
 });
 
-test('terminationFeeDisplay renders "$X (Y%)", "$X" alone, or null', () => {
-  assert.equal(terminationFeeDisplay({ amount: 412_000_000, pct: 1.8 }), '$412M (1.8%)');
-  assert.equal(terminationFeeDisplay({ amount: 412_000_000, pct: null }), '$412M');
-  assert.equal(terminationFeeDisplay({ amount: 2_500_000_000, pct: 2.5 }), '$2.5B (2.5%)');
-  assert.equal(terminationFeeDisplay(null), null);
-  assert.equal(terminationFeeDisplay({ amount: null }), null);
-});
+test('structureDisplay and the Structure column use friendly canonical taxonomy labels', () => {
+  assert.equal(structureDisplay('ONE_STEP_MERGER'), 'One-step merger');
+  assert.equal(structureDisplay('TWO_STEP_TENDER_OFFER'), 'Two-step tender offer');
+  assert.equal(structureDisplay('SCHEME'), 'Scheme of arrangement');
+  assert.equal(structureDisplay('OTHER'), 'Other');
+  assert.equal(structureDisplay(null), null);
 
-test('reverseFeeDisplay renders a dollar amount or null (page renders null as a dash)', () => {
-  assert.equal(reverseFeeDisplay({ amount: 850_000_000 }), '$850M');
-  assert.equal(reverseFeeDisplay(null), null);
-  assert.equal(reverseFeeDisplay({ amount: null }), null);
-});
-
-test('outsideDateDisplay renders whole months from signing, or null', () => {
-  assert.equal(outsideDateDisplay(9), '9 mo');
-  assert.equal(outsideDateDisplay(0), '0 mo');
-  assert.equal(outsideDateDisplay(null), null);
-});
-
-test('goShopDisplay renders Yes/No/null (null = no go-shop covenant found on the deal)', () => {
-  assert.equal(goShopDisplay(true), 'Yes');
-  assert.equal(goShopDisplay(false), 'No');
-  assert.equal(goShopDisplay(null), null);
-});
-
-test('term_fee, reverse_fee, outside_date, go_shop columns are sortable and, where filterable, use enum filtering', () => {
-  for (const key of ['term_fee', 'reverse_fee', 'outside_date', 'go_shop']) {
-    const col = getColumn(key);
-    assert.ok(col, `${key} column exists`);
-    assert.equal(col.sortable, true, `${key} is sortable`);
-  }
-  assert.equal(getColumn('outside_date').filterable, true);
-  assert.equal(getColumn('outside_date').filterType, 'enum');
-  assert.equal(getColumn('go_shop').filterable, true);
-  assert.equal(getColumn('go_shop').filterType, 'enum');
-  // Dollar-amount columns are not enum-filterable (too many distinct values).
-  assert.equal(getColumn('term_fee').filterable, false);
-  assert.equal(getColumn('reverse_fee').filterable, false);
-});
-
-test('term_fee / reverse_fee sortValue sorts on the raw numeric amount, not the formatted string', () => {
-  const feeCol = getColumn('term_fee');
-  const a = { termination_fee: { amount: 100_000_000 } };
-  const b = { termination_fee: { amount: 500_000_000 } };
-  assert.ok(feeCol.sortValue(a) < feeCol.sortValue(b));
-  assert.equal(feeCol.sortValue({ termination_fee: null }), 0);
+  const col = getColumn('structure');
+  assert.equal(col.accessor({ structure: 'ONE_STEP_MERGER' }), 'One-step merger');
+  assert.equal(col.filterable, true);
+  assert.equal(col.filterType, 'enum');
+  assert.equal(col.defaultVisible, true);
 });

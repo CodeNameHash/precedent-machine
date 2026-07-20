@@ -102,52 +102,47 @@ test('fetchHomeData: shapes deals + search_index, filters staging deals', async 
   assert.ok(payload.search_index.some((hit) => hit.type === 'deal'));
 });
 
-test('fetchHomeData: computes company/reverse termination fee, outside date, go-shop scalars from provisions (never ships raw features)', async () => {
+test('fetchHomeData: derives canonical deal structure from provisions and omits provision-term payload', async () => {
   const { fetchHomeData } = require('../lib/home-data');
-  const dealRow = { ...sampleDealRow(), value_usd: 1_000_000_000 };
   const provisions = [
     {
-      id: 'p-termf-target', deal_id: 'deal-1', type: 'TERMINATION_FEE', category: 'TERMF-TARGET',
-      ai_metadata: { features: { companyTerminationFee: { amount: '$30,000,000', triggers: [] } } },
+      id: 'p-structure', deal_id: 'deal-1', type: 'STRUCT', category: 'The Merger',
+      ai_metadata: { features: { dealStructure: { value: 'TWO_STEP_TENDER_OFFER', quotes: ['the Offer followed by the Merger'] } } },
     },
     {
-      id: 'p-termf-reverse', deal_id: 'deal-1', type: 'TERMINATION_FEE', category: 'TERMF-REVERSE',
-      ai_metadata: { features: { reverseTerminationFee: { amount: '$60,000,000' } } },
-    },
-    {
-      id: 'p-termr-outside', deal_id: 'deal-1', type: 'TERMINATION_RIGHT', category: 'TERMR-OUTSIDE',
-      ai_metadata: { features: { outsideDateMonthsPostSigning: 9 } },
-    },
-    {
-      id: 'p-goshop', deal_id: 'deal-1', type: 'COVENANT_NO_SOLICITATION', category: 'NOSOL-ACQPROPOSAL',
-      ai_metadata: { features: { goShopPresent: true, goShopPeriodDays: 30 } },
+      id: 'p-terms', deal_id: 'deal-1', type: 'TERMINATION_FEE', category: 'TERMF-TARGET',
+      ai_metadata: { features: { companyTerminationFee: { amount: '$30,000,000' }, goShopPresent: true } },
     },
   ];
-  const sb = fakeSupabase({ deals: [dealRow], provisions, qualityMetrics: [] });
+  const sb = fakeSupabase({ deals: [sampleDealRow()], provisions, qualityMetrics: [] });
 
   const payload = await fetchHomeData(sb);
   const deal = payload.deals[0];
 
-  assert.deepEqual(deal.termination_fee, { amount: 30_000_000, pct: 3 }, '30M / 1B deal value = 3%');
-  assert.deepEqual(deal.reverse_termination_fee, { amount: 60_000_000 });
-  assert.equal(deal.outside_date_months, 9);
-  assert.equal(deal.go_shop, true);
-
-  // Payload discipline: the raw features object must never leak into the
-  // public payload, only the derived scalars.
-  const json = JSON.stringify(payload);
-  assert.ok(!json.includes('goShopPeriodDays'), 'raw provision features must not appear in the public payload');
+  assert.equal(deal.structure, 'TWO_STEP_TENDER_OFFER');
+  for (const key of ['termination_fee', 'reverse_termination_fee', 'outside_date_months', 'go_shop']) {
+    assert.equal(Object.prototype.hasOwnProperty.call(deal, key), false, `${key} must not ship on the deal index payload`);
+  }
+  assert.ok(!JSON.stringify(payload).includes('companyTerminationFee'), 'raw provision features must not leak into the payload');
 });
 
-test('fetchHomeData: a deal with no matching provisions gets null signals, not crashes', async () => {
+test('fetchHomeData: a deal with no canonical structure provision gets null structure', async () => {
   const { fetchHomeData } = require('../lib/home-data');
   const sb = fakeSupabase({ deals: [sampleDealRow()], provisions: [], qualityMetrics: [] });
   const payload = await fetchHomeData(sb);
   const deal = payload.deals[0];
-  assert.equal(deal.termination_fee, null);
-  assert.equal(deal.reverse_termination_fee, null);
-  assert.equal(deal.outside_date_months, null);
-  assert.equal(deal.go_shop, null);
+  assert.equal(deal.structure, null);
+});
+
+test('computeDealStructures unwraps tagged/citable values and prefers a specific code over OTHER', () => {
+  const { computeDealStructures } = require('../lib/home-data');
+  const structures = computeDealStructures([
+    { deal_id: 'deal-1', ai_metadata: { features: { dealStructure: 'OTHER' } } },
+    { deal_id: 'deal-1', ai_metadata: { features: { dealStructure: { value: { code: 'ONE_STEP_MERGER' } } } } },
+    { deal_id: 'deal-2', ai_metadata: { features: { dealStructure: { code: 'TWO_STEP_TENDER_OFFER' } } } },
+  ]);
+  assert.equal(structures.get('deal-1'), 'ONE_STEP_MERGER');
+  assert.equal(structures.get('deal-2'), 'TWO_STEP_TENDER_OFFER');
 });
 
 test('pages/api/home.js and getStaticProps both build the payload via fetchHomeData (single source of truth)', async () => {
