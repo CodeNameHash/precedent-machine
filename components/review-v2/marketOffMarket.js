@@ -5,25 +5,17 @@
 // (pages/review/[id].js). Split out of CompareColumn.jsx/compareData.js into
 // its own file, with NO React/fetch imports (mirrors compareRowUnion.js's
 // own "no React, no fetches" rule), so the classification rule itself has
-// real behavioral test coverage under this repo's plain node:test runner --
-// CompareColumn.jsx uses real JSX and can't be dynamically imported there
-// (see tests/mae-section-item-quote.test.js's header comment for why).
+// real behavioral test coverage under this repo's plain node:test runner.
 //
-// marketSummaryForRow resolves a union row's matching corpus-stats
-// featureSummary entry via its own featureKeys -- the same per-row
-// attribute scoping several table configs already thread for ClauseSidebar
-// (e.g. ioc-exceptions.config.js's renderNegativeRow/exceptionsRow). A row
-// with no featureKeys, or whose featureKeys match nothing in this section's
-// featureSummary, resolves to null -- callers render "No market data" /
-// never flag off-market in that case, never a guess.
+// Row lookup now routes through rowMarketContext.js. That resolver matches all
+// declared feature keys, assigns treatment/exception roles, and is shared by
+// compact compare cells and detailed market drill-downs. This compatibility
+// export intentionally returns the primary summary for existing callers.
 import { normalizeLabelKey } from './compareRowUnion.js';
+import { marketSummaryForRowContext } from './rowMarketContext.js';
 
 export function marketSummaryForRow(row, marketColumn) {
-  if (!row || !marketColumn || !marketColumn.stats) return null;
-  const keys = Array.isArray(row.featureKeys) ? row.featureKeys : null;
-  if (!keys || !keys.length) return null;
-  const summaries = Array.isArray(marketColumn.stats.featureSummary) ? marketColumn.stats.featureSummary : [];
-  return summaries.find((f) => keys.includes(f.attribute)) || null;
+  return marketSummaryForRowContext(row, marketColumn);
 }
 
 // Coded/categorical off-market rule (r18): this deal's own headline value
