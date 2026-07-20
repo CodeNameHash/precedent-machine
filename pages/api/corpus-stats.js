@@ -54,6 +54,11 @@ const taxonomy = require('../../lib/taxonomy');
 const { buildFeaturesForCard } = require('../../lib/queries/claims-adapter');
 
 const CACHE = 's-maxage=3600, stale-while-revalidate=86400';
+// Version-keyed requests (`&v=<corpus version>` from /api/corpus-version)
+// are immutable: the version is part of the edge-cache key, and any corpus
+// change mints a new version — so these can cache for a week with no
+// staleness risk beyond corpus-version's own 60s probe window.
+const VERSIONED_CACHE = 's-maxage=604800, stale-while-revalidate=604800';
 
 // The claims fetch filters on provenance->>code — an expression Postgres has
 // no index for, so a cold (uncached) call scans the claims table. When the
@@ -592,7 +597,7 @@ export default async function handler(req, res) {
       }
     }
 
-    res.setHeader('Cache-Control', CACHE);
+    res.setHeader('Cache-Control', req.query.v ? VERSIONED_CACHE : CACHE);
     return res.status(200).json({
       code,
       peerSetSize: peerSet.length,
