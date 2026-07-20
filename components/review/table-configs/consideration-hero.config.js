@@ -114,37 +114,104 @@ function allProrationMechanics(cards) {
   }
   return hits;
 }
-function summarizeProrationMechanism(mechanicsList) {
+// r17 (Ben): "the oversubscription rows look generic — check they are
+// technically correct, there are different types of proration." One shared
+// clause-shape detector for the OVERSUBSCRIPTION clause, used by both this
+// config's proration row and review-v2/ElectionCard.jsx. Distinct shapes,
+// each corpus-verified against the deck that carries it:
+//   - two-sided caps (QXO/TopBuild §2.1(b)(ii)(E)/(F): cash cap AND stock
+//     cap, whichever side oversubscribes is prorated back, balance paid in
+//     the other form; the undersubscribed side is honored in full);
+//   - one-sided cash or stock cap (same family, only one side capped);
+//   - one-sided equity/mixed cap (3G/Skechers §2.9(a): mixed elections
+//     prorated per holder back to the Maximum Equity Election Cap, the
+//     remainder converted into the cash election consideration; the cash
+//     side is uncapped and never prorated).
+// Returns NULL when no shape is confidently detected -- callers must then
+// show the verbatim clause behind "See provision" with NO derived sentence
+// (a generic line that reads as extracted is worse than none).
+export function summarizeOversubscription(text) {
+  const t = String(text || '');
+  const cashOver = /Cash Election Shares exceeds the Maximum Cash/i.test(t);
+  const stockOver = /Stock Election Shares exceeds the Maximum Stock/i.test(t);
+  const mixedOver = /Mixed Election Shares exceeds the Maximum (?:Equity|Mixed)[\w ]*?(?:Cap|Number)/i.test(t);
+  if (cashOver && stockOver) {
+    return 'If either side is oversubscribed, the other side receives its chosen form in full and the oversubscribed elections are prorated back to the cap (balance paid in the other form).';
+  }
+  if (cashOver) return 'If cash elections exceed the cap, stock elections are honored in full and cash elections are prorated back to the cap (balance paid in stock).';
+  if (stockOver) return 'If stock elections exceed the cap, cash elections are honored in full and stock elections are prorated back to the cap (balance paid in cash).';
+  if (mixedOver) {
+    const remainderCash = /remaining[\s\S]{0,120}?Cash (?:Election )?Consideration/i.test(t);
+    return `If mixed (cash + stock) elections exceed the equity election cap, each holder's mixed elections are prorated back to the cap pro rata${remainderCash ? ', with the remainder paid as the cash election consideration' : ''}.`;
+  }
+  return null;
+}
+// r17: election-deadline summarizer, moved here from review-v2/ElectionCard
+// so it is shared and node-testable (ElectionCard.jsx is JSX). Collapses the
+// boilerplate timing clause to its one operative fact ("5 business days
+// before the Company Stockholder Meeting"). Extended for the Skechers shape
+// ("five Business Days preceding the anticipated Closing Date"). Returns
+// NULL when the pattern doesn't match -- the caller keeps the verbatim
+// clause behind See provision and renders no derived sentence. (It used to
+// return the raw text, which on Skechers echoed the bare defined term
+// "Election Deadline" as if it were an extracted date.)
+const WORD_NUMS = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10 };
+const DEADLINE_ANCHOR = '((?:anticipated\\s+)?[A-Z][\\w\\s]*?(?:Meeting|Effective Time|Date|Closing))';
+export function summarizeElectionDeadline(text) {
+  const t = String(text || '');
+  const m = t.match(new RegExp(`(?:(\\w+)\\s*)?\\((\\d+)\\)\\s*business days?\\s*(prior to|before|after|following|preceding)\\s*(?:the date of\\s*)?the\\s+${DEADLINE_ANCHOR}`, 'i'))
+    || t.match(new RegExp(`(\\w+|\\d+)\\s+business days?\\s*(prior to|before|after|following|preceding)\\s*(?:the date of\\s*)?the\\s+${DEADLINE_ANCHOR}`, 'i'));
+  if (!m) return null;
+  const parts = m.slice(1).filter((x) => x !== undefined);
+  const numRaw = parts[0];
+  const num = /^\d+$/.test(numRaw) ? numRaw : (parts[1] && /^\d+$/.test(parts[1]) ? parts[1] : WORD_NUMS[String(numRaw).toLowerCase()] || numRaw);
+  const rel = parts.find((x) => /prior to|before|after|following|preceding/i.test(x)) || 'before';
+  const anchor = parts[parts.length - 1].trim();
+  return `${num} business days ${/prior|before|preceding/i.test(rel) ? 'before' : 'after'} the ${anchor}`;
+}
+// `extraClauseText` (r17): the owning cards' verbatim quotes. The
+// non-election default sometimes lives OUTSIDE the mechanics object -- QXO
+// routes non-electing holders WITH the stock side ("shall be deemed to be
+// Company Shares in respect of which Stock Elections have been made"),
+// stated in §2.1(b)(ii)(B), not in prorationMechanics -- which matters:
+// deemed-stock shares share in any stock-side proration.
+function summarizeProrationMechanism(mechanicsList, extraClauseText) {
   const list = (mechanicsList || []).filter(Boolean);
   if (!list.length) return null;
   const overs = list.map((m) => String(m.oversubscriptionTreatment || '')).join('\n');
   const texts = list.map((m) => String(m.text || '')).join('\n');
   const all = `${overs}\n${texts}`;
+  const withCards = `${all}\n${String(extraClauseText || '')}`;
   const parts = [];
-  // -- oversubscription / cut-back shape (same detection family as
-  // review-v2 ElectionCard's summarizeOversubscription) --
-  const cashOver = /Cash Election Shares exceeds the Maximum Cash/i.test(overs);
-  const stockOver = /Stock Election Shares exceeds the Maximum Stock/i.test(overs);
-  const mixedOver = /Mixed Election Shares exceeds the Maximum (?:Equity|Mixed)[\w ]*?(?:Cap|Number)/i.test(overs);
-  if (cashOver && stockOver) {
-    parts.push('If either side is oversubscribed, the other side receives its chosen form in full and the oversubscribed elections are prorated back to the cap (balance paid in the other form).');
-  } else if (cashOver) {
-    parts.push('If cash elections exceed the cap, stock elections are honored in full and cash elections are prorated back to the cap (balance paid in stock).');
-  } else if (stockOver) {
-    parts.push('If stock elections exceed the cap, cash elections are honored in full and stock elections are prorated back to the cap (balance paid in cash).');
-  } else if (mixedOver) {
-    const remainderCash = /remaining[\s\S]{0,120}?Cash (?:Election )?Consideration/i.test(overs);
-    parts.push(`If mixed (cash + stock) elections exceed the equity election cap, each holder's mixed elections are prorated back to the cap pro rata${remainderCash ? ', with the remainder paid as the cash election consideration' : ''}.`);
-  }
-  if (!parts.length) return null; // no confident mechanism -> show nothing new
-  // -- election caps, when the clause states them as percentages --
+  const mechanism = summarizeOversubscription(overs);
+  if (!mechanism) return null; // no confident mechanism -> show nothing new
+  parts.push(mechanism);
+  // -- election caps, when the clause states them as percentages. Name the
+  // denominator when the clause caps a NUMBER OF SHARES (QXO: "45% of the
+  // aggregate number of Company Shares issued and outstanding") -- a
+  // by-shares cap is not the same thing as a cap on aggregate value. --
   const capCash = all.match(/\((\d{1,2}(?:\.\d+)?)%\)[^"“]{0,220}?["“]Maximum Cash Election/i);
   const capStock = all.match(/\((\d{1,2}(?:\.\d+)?)%\)[^"“]{0,320}?["“]Maximum Stock Election/i);
-  if (capCash && capStock) parts.unshift(`Caps: ${capCash[1]}% cash / ${capStock[1]}% stock.`);
-  // -- non-election default, read off the clause's own "Non-Election
-  // Shares ... right to receive the X Consideration" shape --
+  if (capCash && capStock) {
+    const byShares = /%\)\s*of the aggregate number of [\w\s]{0,60}?Shares issued and outstanding/i.test(all);
+    const stockCapFlex = /Maximum Stock Election Number|Stock Consideration/i.test(all) && /may be increased \(but not decreased\) by Parent/i.test(all);
+    parts.unshift(`Caps: ${capCash[1]}% cash / ${capStock[1]}% stock${byShares ? ' of outstanding shares' : ''}${stockCapFlex ? ' (Parent may increase the stock cap)' : ''}.`);
+  }
+  // -- non-election default. Two corpus shapes: (a) Skechers "Non-Election
+  // Shares ... right to receive the X Consideration"; (b) QXO "deemed to be
+  // ... Shares in respect of which Stock Elections have been made" (the
+  // deemed side then participates in that side's proration). --
   const nonElection = all.match(/Non-Election Shares[\s\S]{0,220}?right to receive (?:the )?([A-Z][\w -]*?Consideration)/);
-  if (nonElection) parts.push(`Shares with no valid election receive the ${nonElection[1]}.`);
+  if (nonElection) {
+    parts.push(`Shares with no valid election receive the ${nonElection[1]}.`);
+  } else {
+    const deemed = withCards.match(/deemed to be [^.]{0,160}?(Stock|Cash) Elections? (?:have|has) been made/i);
+    if (deemed) {
+      const side = deemed[1];
+      const sideProrated = (side === 'Stock' && /Stock Election Shares exceeds the Maximum Stock/i.test(overs)) || (side === 'Cash' && /Cash Election Shares exceeds the Maximum Cash/i.test(overs));
+      parts.push(`Shares with no valid election are deemed ${side} Elections${sideProrated ? ' (and are prorated with that side if it is oversubscribed)' : ''}.`);
+    }
+  }
   return parts.join(' ');
 }
 // Full source language backing the mechanism line: every mechanics object's
@@ -500,7 +567,7 @@ const considerationHeroConfig = {
       // rendering when no mechanism can be confidently derived.
       if (key === 'prorationMechanics') {
         const hits = allProrationMechanics(cards);
-        const summary = summarizeProrationMechanism(hits.map((h) => h.value));
+        const summary = summarizeProrationMechanism(hits.map((h) => h.value), hits.map((h) => textOf(h.card)).join('\n'));
         if (summary) {
           const row = makeRow(key, label, kind, summary, hits[0]?.card || hit.card, electionAttributionLabel(electionMechanism, key, hit.value));
           if (row) {

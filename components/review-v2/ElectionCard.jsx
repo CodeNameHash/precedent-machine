@@ -3,60 +3,40 @@
 // (or cash/mixed, etc.) option split, each option's economics rendered as
 // the SAME green "present" PillCell every cash deal's per-share
 // consideration row uses (renderPerShareDetail in consideration-hero.config
-// .js), plus a single compact caption line folding in the default/no-
-// election treatment and the proration note — no separate spanning row.
+// .js), plus the election-mechanics facts as NORMAL table rows beneath.
 // NO new extraction — this is a presentation layer over data already on
 // the card.
 //
 // Round 2 (Ben): no "Election" header strip; economics are pills, not mono
 // text; the option split IS the card (no separate "economics rows" nested
-// under it); proration folds into the one caption line instead of its own
-// bordered block.
+// under it).
+//
+// r9 (Ben): deadline/oversubscription collapse to their operative fact —
+// derived deterministically from the clause shape, never paraphrased.
+//
+// r17 (Ben): "the oversubscription rows look generic … lacks see provision
+// — can we add that and make them look more like normal table rows?" The
+// deadline / oversubscription / caps / no-election facts now render through
+// the shared GroupedSubRows primitive — label column, value, the standard
+// left-column "See provision" toggle with the full-width expansion carrying
+// the verbatim clause (the same seeTextContent contract every other grouped
+// table uses). Row building + clause-shape summaries live in
+// electionRows.js / consideration-hero.config.js (plain JS, node-testable);
+// when no clause shape is confidently detected the row shows NO derived
+// sentence — just the verbatim clause behind See provision.
 //
 // Styled to match every other .mtx table on the page (MergertraceStyles):
 // white body, 1px #E0E0E0 borders, sharp corners. Reuses the same
-// PillCell/EvidenceHoverSource primitives as every other table.
+// PillCell/EvidenceHoverSource/GroupedSubRows primitives as every other
+// table.
 
-import { PillCell, EvidenceHoverSource } from '../review/primitives/ProvisionTablePrimitives';
+import { PillCell, EvidenceHoverSource, GroupedSubRows } from '../review/primitives/ProvisionTablePrimitives';
+import { buildElectionMechanicsRows } from './electionRows';
+// Re-exported for back-compat: these lived here through r16 (now shared,
+// plain-JS and node-testable in consideration-hero.config.js).
+export { summarizeElectionDeadline, summarizeOversubscription } from '../review/table-configs/consideration-hero.config.js';
 
-// Ben r9: "election deadline should just say 5 BDs after company
-// stockholder meeting" — collapse the boilerplate timing clause to its one
-// operative fact. Deterministic parse; the full verbatim stays on hover
-// (EvidenceHoverSource) so nothing is lost. Falls back to the raw text
-// whenever the pattern doesn't match.
-const WORD_NUMS = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10 };
-export function summarizeElectionDeadline(text) {
-  const t = String(text || '');
-  const m = t.match(/(?:(\w+)\s*)?\((\d+)\)\s*business days?\s*(prior to|before|after|following)\s*(?:the date of\s*)?the\s+([A-Z][\w\s]*?(?:Meeting|Effective Time|Closing))/i)
-    || t.match(/(\w+|\d+)\s*business days?\s*(?:()|)(prior to|before|after|following)\s*(?:the date of\s*)?the\s+([A-Z][\w\s]*?(?:Meeting|Effective Time|Closing))/i);
-  if (!m) return t;
-  const parts = m.slice(1).filter((x) => x !== undefined);
-  const numRaw = parts[0];
-  const num = /^\d+$/.test(numRaw) ? numRaw : (parts[1] && /^\d+$/.test(parts[1]) ? parts[1] : WORD_NUMS[String(numRaw).toLowerCase()] || numRaw);
-  const rel = parts.find((x) => /prior to|before|after|following/i.test(x)) || 'before';
-  const anchor = parts[parts.length - 1].trim();
-  return `${num} business days ${/prior|before/i.test(rel) ? 'before' : 'after'} the ${anchor}`;
-}
-
-// Ben r9: "oversubscription should be clear how that works — not just
-// produce the text." The standard mechanics: if one side's elections
-// exceed its cap, the other side gets its chosen form in full and the
-// oversubscribed side is prorated back to the cap. Detected from the
-// clause shape; raw text on hover; falls back to the verbatim when the
-// clause doesn't match the standard shape.
-export function summarizeOversubscription(text) {
-  const t = String(text || '');
-  const cashOver = /Cash Election Shares exceeds the Maximum Cash/i.test(t);
-  const stockOver = /Stock Election Shares exceeds the Maximum Stock/i.test(t);
-  if (cashOver && stockOver) {
-    return 'If either side is oversubscribed, the undersubscribed side receives its chosen form in full and the oversubscribed elections are prorated back to the cap (part paid in the other form).';
-  }
-  if (cashOver) return 'If cash elections exceed the cap, stock elections are honored in full and cash elections are prorated back to the cap.';
-  if (stockOver) return 'If stock elections exceed the cap, cash elections are honored in full and stock elections are prorated back to the cap.';
-  return t;
-}
-
-export default function ElectionCard({ election }) {
+export default function ElectionCard({ election, onSelectCard, selectedCardId }) {
   if (!election) return null;
 
   // FIX 4(c): the deal affirmatively states there's no election / no
@@ -97,15 +77,40 @@ export default function ElectionCard({ election }) {
   }
 
   if (!Array.isArray(election.options) || election.options.length < 2) return null;
-  const {
-    options, defaultTreatment, isProrated, prorationNote, evidence, sourceCard,
-    caps, electionDeadline, oversubscriptionTreatment,
-  } = election;
+  const { options, evidence, sourceCard } = election;
 
-  const caption = [
-    defaultTreatment ? <>If no election: treated as <span className="font-medium text-ink">{defaultTreatment}</span></> : null,
-    isProrated ? 'subject to proration' : null,
-  ].filter(Boolean);
+  // r17: caps/deadline/oversubscription/default as GroupedSubRows rows.
+  // Caps render as the same info pills they were before, now inside the
+  // row's value cell; rows with no confidently-derived sentence show a
+  // muted pointer (the verbatim clause is behind See provision) — never a
+  // generic line that reads as if it were extracted.
+  const mechanicsRows = buildElectionMechanicsRows(election).map((row) => {
+    if (Array.isArray(row.caps) && row.caps.length) {
+      return {
+        ...row,
+        children: (
+          <span className="inline-flex flex-wrap items-center gap-1.5">
+            {row.caps.map((cap) => (
+              <PillCell
+                key={cap.label}
+                label={`${cap.label}: ${cap.figure}`}
+                tone="info"
+                evidence={row.evidence}
+                source={row.card}
+              />
+            ))}
+          </span>
+        ),
+      };
+    }
+    if (!row.value) {
+      return {
+        ...row,
+        children: <span className="text-[11px] italic text-inkFaint">Full clause text behind “See provision”</span>,
+      };
+    }
+    return row;
+  });
 
   return (
     <section data-testid="provision-table-election" className="border border-border bg-white mb-3.5">
@@ -123,47 +128,15 @@ export default function ElectionCard({ election }) {
         ))}
       </div>
 
-      {/* FIX 4(b): structured proration detail -- caps as pills, deadline
-          and oversubscription treatment as short lines -- replacing the
-          bare "subject to proration" flag with what the cap/deadline/
-          oversubscription text actually says. No header row, no duplicate
-          rows: pills + text, same .mtx idiom as the rest of the card. */}
-      {Array.isArray(caps) && caps.length ? (
-        <div className="border-t border-border px-3.5 py-2 flex flex-wrap gap-1.5">
-          {caps.map((cap) => (
-            <PillCell
-              key={cap.label}
-              label={`${cap.label}: ${cap.figure}`}
-              tone="info"
-              evidence={prorationNote || evidence}
-              source={sourceCard}
-            />
-          ))}
+      {mechanicsRows.length ? (
+        <div className="border-t border-border px-2 py-2" data-testid="election-mechanics-rows">
+          <GroupedSubRows
+            groups={[{ id: 'election-mechanics', label: 'Election mechanics', rows: mechanicsRows }]}
+            onSelectCard={onSelectCard}
+            resolveCard={onSelectCard ? (row) => row.card || sourceCard || null : undefined}
+            selectedCardId={selectedCardId}
+          />
         </div>
-      ) : null}
-
-      {electionDeadline ? (
-        <EvidenceHoverSource evidence={electionDeadline} source={sourceCard} highlight={null} as="p">
-          <p className="border-t border-border px-3.5 py-1.5 text-[10px] text-inkFaint">
-            <span className="font-medium text-ink">Election deadline: </span>{summarizeElectionDeadline(electionDeadline)}
-          </p>
-        </EvidenceHoverSource>
-      ) : null}
-
-      {oversubscriptionTreatment ? (
-        <EvidenceHoverSource evidence={oversubscriptionTreatment} source={sourceCard} highlight={null} as="p">
-          <p className="border-t border-border px-3.5 py-1.5 text-[10px] text-inkFaint">
-            <span className="font-medium text-ink">Oversubscription: </span>{summarizeOversubscription(oversubscriptionTreatment)}
-          </p>
-        </EvidenceHoverSource>
-      ) : null}
-
-      {caption.length ? (
-        <EvidenceHoverSource evidence={prorationNote} source={sourceCard} highlight={null} as="p">
-          <p className="border-t border-border px-3.5 py-1.5 text-[10px] text-inkFaint">
-            {caption.reduce((acc, part, i) => (i === 0 ? [part] : [...acc, ' · ', part]), [])}
-          </p>
-        </EvidenceHoverSource>
       ) : null}
     </section>
   );
