@@ -7,6 +7,7 @@ import {
   DealFiltersBlock, buildDealFilterPayload, describeDealFilters,
   dealMatchesDealFilter, useFieldsForProvisionType,
 } from './QueryFilterControls';
+import DealPicker from './DealPicker';
 
 const KIND_LABELS = {
   FILTER_THEN_LIST: 'Find deals',
@@ -16,7 +17,7 @@ const KIND_LABELS = {
   DEAL_TO_MARKET: 'Deal vs market',
 };
 
-const INLINE_KINDS = new Set(['FILTER_THEN_LIST', 'MARKET_RANGE', 'PROVISION_CROSS_CUT', 'DEAL_COMPARE']);
+const INLINE_KINDS = new Set(['FILTER_THEN_LIST', 'MARKET_RANGE', 'PROVISION_CROSS_CUT', 'DEAL_COMPARE', 'DEAL_TO_MARKET']);
 const PICK_MODE_KINDS = new Set(['DEAL_TO_MARKET', 'DEAL_COMPARE']);
 const EXAMPLES = [
   'Market range for termination fees as a percentage of deal value',
@@ -48,7 +49,7 @@ export default function QueryLaunchBox({
   const [interpretation, setInterpretation] = useState(null);
   const [kind, setKind] = useState('FILTER_THEN_LIST');
   const [manualOpen, setManualOpen] = useState(false);
-  const [internalDealFilterValues, setInternalDealFilterValues] = useState({ consideration_type: '', buyer: '', law_firm: '', sector: '', signing_year: '' });
+  const [internalDealFilterValues, setInternalDealFilterValues] = useState({ consideration_type: '', buyer: '', law_firm: '', lawyer: '', merger_form: '', sector: '', signing_year: '', search: '' });
   const dealFilterValues = dealFilterValuesProp || internalDealFilterValues;
   const setDealFilterValues = onDealFilterValuesChange || setInternalDealFilterValues;
   const [filters, setFilters] = useState([{ provision_type: 'COVENANT_NO_SOLICITATION', field: 'forceTheVote', op: 'eq', value: true }]);
@@ -56,6 +57,7 @@ export default function QueryLaunchBox({
   const [mrField, setMrField] = useState('feePctOfDealValue');
   const [ccProvisionType, setCcProvisionType] = useState('COVENANT_NO_SOLICITATION');
   const [ccField, setCcField] = useState('initialMatchPeriodDays');
+  const [dtmDealId, setDtmDealId] = useState('');
   const [running, setRunning] = useState(false);
   const [error, setError] = useState(null);
 
@@ -127,6 +129,13 @@ export default function QueryLaunchBox({
         included_field_groups: ['primary', 'qualifiers'],
       };
     }
+    if (kind === 'DEAL_TO_MARKET') {
+      return {
+        deal_id: dtmDealId,
+        comparison_set_filter: dealFilter,
+        provision_types: null,
+      };
+    }
     return null;
   };
 
@@ -178,7 +187,6 @@ export default function QueryLaunchBox({
   };
 
   const runManual = () => {
-    if (kind === 'DEAL_TO_MARKET') return;
     if (kind === 'DEAL_COMPARE' && pickSelection.length < 2) return;
     const payload = buildManualPayload();
     if (!payload || !INLINE_KINDS.has(kind)) return;
@@ -186,12 +194,12 @@ export default function QueryLaunchBox({
   };
 
   const manualDisabled = running
-    || kind === 'DEAL_TO_MARKET'
+    || (kind === 'DEAL_TO_MARKET' && !dtmDealId)
     || (kind === 'DEAL_COMPARE' && pickSelection.length < 2)
     || (kind === 'MARKET_RANGE' && !mrField)
     || (kind === 'PROVISION_CROSS_CUT' && (!ccField || !filteredDealIds.length));
   const manualRunLabel = running ? 'Running...'
-    : kind === 'DEAL_TO_MARKET' ? 'Pick a deal below'
+    : kind === 'DEAL_TO_MARKET' ? (dtmDealId ? 'Run deal vs market' : 'Select a deal')
     : kind === 'DEAL_COMPARE' ? (pickSelection.length >= 2 ? `Compare ${pickSelection.length} deals` : 'Select 2 or more deals below')
     : kind === 'PROVISION_CROSS_CUT' && !filteredDealIds.length ? 'No deals match filters'
     : 'Run query';
@@ -313,7 +321,10 @@ export default function QueryLaunchBox({
               )}
 
               {kind === 'DEAL_TO_MARKET' && (
-                <p className="qlbMuted">Pick a deal in the table below. It will be checked against {filterDescription.length ? 'the selected deal filters' : 'the full corpus'}.</p>
+                <div className="qlbDealPicker">
+                  <DealPicker deals={deals} value={dtmDealId} onChange={setDtmDealId} label="Deal to benchmark" />
+                  <p className="qlbMuted">Or pick a row below. The comparison keeps {filterDescription.length ? 'the selected deal filters' : 'the full corpus'}.</p>
+                </div>
               )}
 
               {kind === 'DEAL_COMPARE' && (
@@ -365,7 +376,7 @@ export default function QueryLaunchBox({
         .qlbManual summary::before { content: '+'; color: var(--accent-deep, #6F263D); font-weight: 700; }
         .qlbManual[open] summary::before { content: '−'; }
         .qlbManual summary span { font-size: 11px; font-weight: 400; color: var(--ink-faint, #9A9A9A); }
-        .qlbManualBody { display: flex; flex-direction: column; gap: 16px; margin-top: 15px; padding: 16px; border: 1px solid var(--line, #E0E0E0); background: #FCFCFC; }
+        .qlbManualBody { display: flex; flex-direction: column; gap: 16px; margin-top: 15px; padding: 18px; border: 1px solid var(--line, #E0E0E0); border-top: 2px solid var(--ink, #1F1F1F); background: #F8F8F8; }
         .qlbManualSection { display: flex; align-items: flex-start; gap: 12px; }
         .qlbBlock { border: 1px solid var(--line, #E0E0E0); background: #fff; padding: 10px; }
         .qlbFilters { display: flex; flex-direction: column; gap: 8px; }
@@ -375,6 +386,7 @@ export default function QueryLaunchBox({
         .qlbRow label { display: flex; min-width: 0; flex-direction: column; gap: 5px; }
         .qlbRow label > span { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; color: var(--ink-faint, #9A9A9A); }
         .qlbMuted { margin: 0; font-size: 12px; line-height: 1.5; color: var(--ink-light, #6B6B6B); }
+        .qlbDealPicker { max-width: 620px; display: flex; flex-direction: column; gap: 8px; }
         .qlbManualFooter { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding-top: 12px; border-top: 1px solid var(--line, #E0E0E0); }
         .qlbManualFooter > span { font-size: 11px; color: var(--ink-light, #6B6B6B); }
         .qlbManualFooter :global(.mtx-btn) { min-height: 38px; }

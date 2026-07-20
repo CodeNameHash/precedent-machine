@@ -151,6 +151,7 @@ function formatUnit(unit, value) {
     elapsed_hours: singular ? 'hour' : 'hours',
     business_days: singular ? 'business day' : 'business days',
     calendar_days: singular ? 'calendar day' : 'calendar days',
+    days_equivalent: singular ? 'day' : 'days',
     months: singular ? 'month' : 'months',
     years: singular ? 'year' : 'years',
     percent: '%',
@@ -194,10 +195,10 @@ function subjectText(result, kind) {
   if (kind === 'presence') return 'This deal: present';
   if (kind === 'money') {
     if (!Number.isFinite(subject.rawUsd)) return 'This deal: value not extracted';
-    const relative = Number.isFinite(subject.percentOfDealValue)
-      ? ` · ${formatPercent(subject.percentOfDealValue)} of ${formatBasis(subject.dealValueBasis)}`
-      : ' · relative value unavailable';
-    return `This deal: ${formatMoney(subject.rawUsd)}${relative}`;
+    if (Number.isFinite(subject.percentOfDealValue)) {
+      return `This deal: ${formatPercent(subject.percentOfDealValue)} of ${formatBasis(subject.dealValueBasis)} · ${formatMoney(subject.rawUsd)} raw`;
+    }
+    return `This deal: relative value unavailable · ${formatMoney(subject.rawUsd)} raw`;
   }
   if (kind === 'categorical') return subject.value == null ? 'This deal: value not extracted' : `This deal: ${formatMarketValue(subject.value)}`;
   if (kind === 'multi_select') {
@@ -295,12 +296,42 @@ function MetricResult({ spec, result, showLabel }) {
   );
 }
 
-export function MarketMetricCell({ resolution, data, onRetry = null }) {
-  registerTypedRowMarketContext(resolution, data);
-  if (!resolution) return <p className="text-[10px] text-[#8A8782]">Market metric not configured.</p>;
+function LegacyMarketSummary({ summary }) {
+  if (!summary) return null;
+  if (summary.kind === 'numeric') {
+    const formatted = formatNumericMarketSummary(summary);
+    if (!formatted) return null;
+    return (
+      <div>
+        <p className="text-[11px] font-semibold text-[#1F1F1F]">{formatted.headline}</p>
+        {formatted.range ? <p className="mt-0.5 text-[9px] text-[#8A8782]">Range {formatted.range}</p> : null}
+      </div>
+    );
+  }
+  const values = Array.isArray(summary.values) ? summary.values : [];
+  if (!values.length) return null;
+  const [top, ...rest] = values;
+  const denominator = top.denominator ?? summary.denominator ?? summary.total;
+  return (
+    <div>
+      <p className="text-[11px] font-semibold text-[#1F1F1F]">
+        {top.label || formatMarketValue(top.value)}{Number.isFinite(top.count) ? ` · ${top.count}${Number.isFinite(denominator) ? `/${denominator}` : ''}` : ''}
+      </p>
+      {rest.length ? <p className="mt-0.5 text-[9px] text-[#8A8782]">{rest.slice(0, 2).map((item) => `${item.label || formatMarketValue(item.value)} · ${item.count}`).join(' · ')}</p> : null}
+    </div>
+  );
+}
+
+export function MarketMetricCell({ resolution, data, onRetry = null, fallbackSummary = null }) {
+  registerTypedRowMarketContext(resolution, data, fallbackSummary);
+  if (!resolution) return fallbackSummary ? <LegacyMarketSummary summary={fallbackSummary} /> : <p className="text-[10px] text-[#8A8782]">Market metric not configured.</p>;
   if (data?.loading) return <p className="text-[10px] text-[#8A8782]">Loading comparison…</p>;
   if (data?.error) return <ErrorNote onRetry={onRetry}>Market comparison unavailable</ErrorNote>;
   const responseRow = data?.byRow?.[resolution.rowKey];
+  const substantive = resolution.metrics.filter((spec) => spec.comparison?.kind !== 'presence');
+  const prevalence = resolution.metrics.filter((spec) => spec.comparison?.kind === 'presence');
+  const availableSubstantive = substantive.filter((spec) => responseRow?.metrics?.[spec.metricKey]);
+  const availablePrevalence = prevalence.filter((spec) => responseRow?.metrics?.[spec.metricKey]);
   return (
     <div
       className="space-y-2"
@@ -308,13 +339,20 @@ export function MarketMetricCell({ resolution, data, onRetry = null }) {
       data-market-row-key={resolution.rowKey}
       data-market-provision-codes={resolution.metrics[0]?.cohort?.provisionCodes?.join(',') || undefined}
     >
-      {resolution.metrics.map((spec) => (
+      {availableSubstantive.map((spec) => (
         <MetricResult
           key={spec.metricKey}
           spec={spec}
           result={responseRow?.metrics?.[spec.metricKey]}
-          showLabel={resolution.metrics.length > 1}
+          showLabel={availableSubstantive.length > 1}
         />
+      ))}
+      {!availableSubstantive.length && fallbackSummary ? <LegacyMarketSummary summary={fallbackSummary} /> : null}
+      {!availableSubstantive.length && !fallbackSummary ? <p className="text-[10px] text-[#8A8782]">Term detail is not yet structured.</p> : null}
+      {availablePrevalence.map((spec) => (
+        <div key={spec.metricKey} className="pt-1 border-t border-[#EDEDEC] text-[9px] text-[#8A8782]">
+          <MetricResult spec={spec} result={responseRow?.metrics?.[spec.metricKey]} showLabel={false} />
+        </div>
       ))}
       {resolution.errors?.length ? <p className="text-[9px] text-[#B14E63]">Metric contract needs attention.</p> : null}
     </div>

@@ -38,7 +38,10 @@ function CategoricalDistribution({ summary, defaultDenominator }) {
           <details key={`${summary.attribute || 'value'}-${value.value || value.label || index}`} className="py-2" open={index === 0}>
             <summary className="cursor-pointer list-none">
               <div className="flex items-start justify-between gap-3">
-                <span className="text-[11px] font-medium text-ink">{value.label || value.value || 'Not captured'}</span>
+                <span className="text-[11px] font-medium text-ink">
+                  {value.label || value.value || 'Not captured'}
+                  {(summary.subjectValues || []).map(String).includes(String(value.value)) ? <span className="ml-1.5 text-[8px] font-bold uppercase tracking-wider text-[#2F6DB5]">Current deal</span> : null}
+                </span>
                 <CountLine count={value.count} denominator={denominator} />
               </div>
             </summary>
@@ -54,13 +57,60 @@ function CategoricalDistribution({ summary, defaultDenominator }) {
   );
 }
 
+function NumericRangeScale({ summary, formatted }) {
+  const min = Number(summary.min);
+  const max = Number(summary.max);
+  if (!Number.isFinite(min) || !Number.isFinite(max) || min === max) return null;
+  const position = (value) => `${Math.max(0, Math.min(100, ((Number(value) - min) / (max - min)) * 100))}%`;
+  const ticks = [
+    { key: 'min', label: 'Min', value: summary.min },
+    { key: 'p25', label: 'P25', value: summary.p25 },
+    { key: 'median', label: 'Median', value: summary.median },
+    { key: 'mean', label: 'Mean', value: summary.mean },
+    { key: 'p75', label: 'P75', value: summary.p75 },
+    { key: 'max', label: 'Max', value: summary.max },
+  ].filter((tick) => Number.isFinite(Number(tick.value)));
+  const formatTick = (tick) => {
+    const unit = summary.unit;
+    if (unit === 'percent') return `${Number(tick.value).toLocaleString('en-US', { maximumFractionDigits: 2 })}%`;
+    if (unit === 'days_equivalent') return `${Number(tick.value).toLocaleString('en-US', { maximumFractionDigits: 2 })}d`;
+    return Number(tick.value).toLocaleString('en-US', { maximumFractionDigits: 2 });
+  };
+  return (
+    <div className="mt-3 mb-3" data-testid="market-range-scale">
+      <div className="relative h-5">
+        <div className="absolute left-0 right-0 top-2 h-[2px] bg-[#D7D7D7]" />
+        {ticks.map((tick) => (
+          <div key={tick.key} className="absolute top-0 -translate-x-1/2" style={{ left: position(tick.value) }} title={`${tick.label} ${formatTick(tick)}`}>
+            <div className={`mx-auto h-4 ${tick.key === 'median' ? 'w-[2px] bg-[#1F1F1F]' : 'w-px bg-[#9A9A9A]'}`} />
+          </div>
+        ))}
+        {Number.isFinite(Number(summary.subjectValue)) ? (
+          <div className="absolute top-[3px] -translate-x-1/2" style={{ left: position(summary.subjectValue) }} title="Current deal">
+            <div className="h-2.5 w-2.5 rounded-full border-2 border-white bg-[#2F6DB5] shadow" />
+          </div>
+        ) : null}
+      </div>
+      <div className="mt-1 grid grid-cols-3 gap-x-2 gap-y-1">
+        {ticks.map((tick) => (
+          <div key={`legend-${tick.key}`} className="text-[8px] text-inkFaint">
+            <span className="font-bold uppercase tracking-wide">{tick.label}</span> {formatTick(tick)}
+          </div>
+        ))}
+      </div>
+      {summary.subjectLabel ? <div className="mt-2 text-[9px] font-semibold text-[#2F6DB5]">Current deal · {summary.subjectLabel}</div> : null}
+      {!summary.subjectLabel && formatted?.range ? <div className="mt-2 text-[9px] text-inkFaint">{formatted.range}</div> : null}
+    </div>
+  );
+}
+
 function NumericDistribution({ summary }) {
   const formatted = formatNumericMarketSummary(summary);
   if (!formatted) return <p className="text-[11px] italic text-inkFaint">No numeric market data captured.</p>;
   return (
-    <div className="border border-border bg-paper2 px-3 py-2">
+    <div className="border border-border bg-paper2 px-3 py-3">
       <div className="text-sm font-semibold text-ink">{formatted.headline}</div>
-      {formatted.range ? <div className="mt-1 text-[10px] text-inkLight">{formatted.range}</div> : null}
+      <NumericRangeScale summary={summary} formatted={formatted} />
       {Number.isFinite(summary.count) ? <div className="mt-1 text-[9px] uppercase tracking-wider text-inkFaint">{summary.count} deals with a captured value</div> : null}
     </div>
   );
@@ -109,19 +159,17 @@ export default function MarketDrilldownSidebar({ context, onClose }) {
           {onClose ? <button type="button" onClick={onClose} aria-label="Close market detail" className="text-lg leading-none text-inkLight hover:text-ink">×</button> : null}
         </div>
 
-        <div className="border border-border bg-paper2 px-3 py-2">
-          <div className="text-[11px] font-medium text-ink">
-            {Number.isFinite(context.termDealCount) && Number.isFinite(context.peerSetSize)
-              ? `${context.termDealCount} of ${context.peerSetSize} deals contain this term`
-              : 'Corpus prevalence unavailable'}
-          </div>
-          {context.scopeNote ? <div className="mt-1 text-[9px] text-inkFaint">{context.scopeNote}</div> : null}
-          {context.truncated ? <div className="mt-1 text-[9px] font-medium text-[#B14E63]">Some underlying records may be truncated.</div> : null}
-        </div>
-
+        <DistributionSection title="Market ranges" summaries={context.metrics} denominator={termDenominator} />
         <DistributionSection title="Treatments" summaries={context.treatments} denominator={termDenominator} />
         <DistributionSection title="Exceptions" summaries={context.exceptions} denominator={termDenominator} />
-        <DistributionSection title="Market ranges" summaries={context.metrics} denominator={termDenominator} />
+
+        <div className="border-t border-border pt-3 text-[9px] text-inkFaint">
+          {Number.isFinite(context.termDealCount) && Number.isFinite(context.peerSetSize)
+            ? `${context.termDealCount} of ${context.peerSetSize} deals contain this term`
+            : 'Corpus prevalence unavailable'}
+          {context.scopeNote ? <div className="mt-1">{context.scopeNote}</div> : null}
+          {context.truncated ? <div className="mt-1 font-medium text-[#B14E63]">Some underlying records may be truncated.</div> : null}
+        </div>
 
         {Array.isArray(context.deals) && context.deals.length ? (
           <section className="border-t border-border pt-4">

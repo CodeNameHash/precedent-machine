@@ -136,6 +136,9 @@ function typedMetricSummary(spec, result) {
   }
   if (kind === 'categorical' || kind === 'multi_select') {
     const distribution = result.distribution || {};
+    const subjectValues = kind === 'multi_select'
+      ? (Array.isArray(result?.subject?.values) ? result.subject.values : [])
+      : (result?.subject?.value == null ? [] : [result.subject.value]);
     return {
       attribute,
       label,
@@ -145,6 +148,8 @@ function typedMetricSummary(spec, result) {
         label: String(item?.label ?? item?.value ?? 'Not captured'),
         denominator: distribution.denominatorCount ?? coverage.presentCount ?? null,
       })),
+      subjectValues,
+      subjectLabel: subjectValues.map((value) => String(value)).join(', ') || null,
     };
   }
   if (kind === 'money') {
@@ -165,33 +170,52 @@ function typedMetricSummary(spec, result) {
       unit: 'percent',
       ...stats,
       count: stats.n,
+      subjectValue: Number.isFinite(result?.subject?.percentOfDealValue) ? result.subject.percentOfDealValue : null,
+      subjectLabel: Number.isFinite(result?.subject?.percentOfDealValue) ? `${result.subject.percentOfDealValue}%` : null,
     };
   }
   const distribution = result.distribution || {};
   const cohort = Array.isArray(distribution.cohorts) ? distribution.cohorts[0] : null;
   if (!cohort?.stats) return null;
+  const unit = cohort.semantics?.unit || spec.semantics?.unit || null;
+  const subjectValue = Number.isFinite(result?.subject?.value) ? result.subject.value : null;
+  const unitLabel = unit === 'days_equivalent' ? (Math.abs(subjectValue) === 1 ? 'day' : 'days')
+    : unit === 'business_days' ? (Math.abs(subjectValue) === 1 ? 'business day' : 'business days')
+    : unit === 'elapsed_hours' ? (Math.abs(subjectValue) === 1 ? 'hour' : 'hours')
+    : unit === 'months' ? (Math.abs(subjectValue) === 1 ? 'month' : 'months')
+    : unit === 'years' ? (Math.abs(subjectValue) === 1 ? 'year' : 'years')
+    : unit === 'percent' ? '%' : '';
   return {
     attribute,
     label,
     kind: 'numeric',
-    unit: cohort.semantics?.unit || spec.semantics?.unit || null,
+    unit,
     ...cohort.stats,
     count: cohort.stats.n,
+    subjectValue,
+    subjectLabel: subjectValue === null ? null : (unitLabel === '%' ? `${subjectValue}%` : `${subjectValue}${unitLabel ? ` ${unitLabel}` : ''}`),
   };
 }
 
-export function buildTypedRowMarketContext(resolution, data) {
+export function buildTypedRowMarketContext(resolution, data, fallbackSummary = null) {
   if (!resolution?.rowKey || data?.loading || data?.error) return null;
   const responseRow = data?.byRow?.[resolution.rowKey];
-  if (!responseRow) return null;
   const entries = (resolution.metrics || [])
-    .map((spec) => ({ spec, summary: typedMetricSummary(spec, responseRow.metrics?.[spec.metricKey]) }))
+    .map((spec) => ({ spec, summary: typedMetricSummary(spec, responseRow?.metrics?.[spec.metricKey]) }))
     .filter((entry) => entry.summary);
+  const hasSubstantiveTyped = entries.some(({ spec }) => spec.comparison?.kind !== 'presence');
+  if (!hasSubstantiveTyped && fallbackSummary) {
+    entries.unshift({
+      spec: { comparison: { kind: fallbackSummary.kind === 'numeric' ? 'numeric' : 'categorical' }, label: fallbackSummary.label },
+      summary: fallbackSummary,
+    });
+  }
   if (!entries.length) return null;
   const isException = (spec) => /exception/i.test(`${spec.metricKey || ''} ${spec.label || ''}`);
   const treatments = entries
     .filter(({ spec }) => !isException(spec)
-      && (spec.comparison?.kind === 'presence' || !['numeric', 'duration', 'money'].includes(spec.comparison?.kind)))
+      && spec.comparison?.kind !== 'presence'
+      && !['numeric', 'duration', 'money'].includes(spec.comparison?.kind))
     .map(({ summary }) => summary);
   const exceptions = entries
     .filter(({ spec }) => isException(spec))
@@ -200,11 +224,11 @@ export function buildTypedRowMarketContext(resolution, data) {
   const metrics = entries
     .filter(({ spec, summary }) => ['numeric', 'duration', 'money'].includes(spec.comparison?.kind) && !exceptionSet.has(summary))
     .map(({ summary }) => summary);
-  const results = entries.map(({ spec }) => responseRow.metrics?.[spec.metricKey]).filter(Boolean);
+  const results = entries.map(({ spec }) => responseRow?.metrics?.[spec.metricKey]).filter(Boolean);
   const presenceResult = entries
     .find(({ spec }) => spec.comparison?.kind === 'presence')
     ?.spec;
-  const presence = presenceResult ? responseRow.metrics?.[presenceResult.metricKey] : null;
+  const presence = presenceResult ? responseRow?.metrics?.[presenceResult.metricKey] : null;
   const peerSetSize = presence?.prevalence?.eligibleCount
     ?? presence?.coverage?.eligibleCount
     ?? results.find((result) => Number.isFinite(result?.coverage?.eligibleCount))?.coverage.eligibleCount
@@ -219,18 +243,20 @@ export function buildTypedRowMarketContext(resolution, data) {
     peerSetSize,
     termDealCount,
     scope: 'typed-row-metric',
-    scopeNote: '',
+    scopeNote: metrics.some((summary) => summary.unit === 'days_equivalent')
+      ? 'Hours are converted at 24 hours per day so notice periods can be compared on one day scale.'
+      : '',
     treatments,
     exceptions,
     metrics,
-    primarySummary: treatments[0] || metrics[0] || exceptions[0] || entries[0].summary,
+    primarySummary: metrics[0] || treatments[0] || exceptions[0] || entries[0].summary,
     deals: [],
     truncated: false,
   };
 }
 
-export function registerTypedRowMarketContext(resolution, data) {
-  const context = buildTypedRowMarketContext(resolution, data);
+export function registerTypedRowMarketContext(resolution, data, fallbackSummary = null) {
+  const context = buildTypedRowMarketContext(resolution, data, fallbackSummary);
   if (typeof window === 'undefined' || !resolution?.rowKey) return context;
   const registry = window.__MTX_ROW_MARKET_CONTEXTS__ || (window.__MTX_ROW_MARKET_CONTEXTS__ = {});
   const key = `typed-row:${resolution.rowKey}`;

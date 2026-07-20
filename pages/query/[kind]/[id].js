@@ -9,6 +9,9 @@ import MergertraceStyles from '../../../components/review-v2/MergertraceStyles';
 // out of components/Layout.js so both surfaces share one implementation),
 // not the generic Corpus/Query/Library AppHeader this page used before.
 import TopBar from '../../../components/chrome/TopBar';
+import {
+  DealFiltersBlock, buildDealFilterPayload, dealMatchesDealFilter,
+} from '../../../components/query/QueryFilterControls';
 const { toCsv, resultToCsvRows, csvFilename } = require('../../../lib/query/csv');
 const { humanizeKey } = require('../../../lib/query/filter-labels');
 // E5 (2026-07-19 pre-demo audit): the review page's own "same label path"
@@ -52,6 +55,10 @@ function decodePayload(value) {
   if (!value) return null;
   const padded = String(value).replace(/-/g, '+').replace(/_/g, '/').padEnd(Math.ceil(String(value).length / 4) * 4, '=');
   return JSON.parse(atob(padded));
+}
+
+function encodePayload(value) {
+  return btoa(JSON.stringify(value)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
 // Thin wrapper: any decode failure (bad base64, truncated JSON, garbage
@@ -122,6 +129,11 @@ export default function QueryPage() {
   const [error, setError] = useState(null);
   const [active, setActive] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [refinementDeals, setRefinementDeals] = useState([]);
+
+  useEffect(() => {
+    fetch('/api/deals').then((response) => response.json()).then((json) => setRefinementDeals(json.deals || [])).catch(() => setRefinementDeals([]));
+  }, []);
 
   useEffect(() => {
     if (!router.isReady || !kind) return;
@@ -220,7 +232,10 @@ export default function QueryPage() {
         </div>
         <div className="body">
           <div className="wrap">
-            {error ? <div className="empty">{error}</div> : !result ? <div className="empty">Loading query…</div> : <ResultView result={result} onOpen={setActive} />}
+            {error ? <div className="empty">{error}</div> : !result ? <div className="empty">Loading query…</div> : <>
+              {currentPayload && <ResultRefinements key={JSON.stringify(currentPayload)} result={result} payload={currentPayload} deals={refinementDeals} />}
+              <ResultView result={result} onOpen={setActive} />
+            </>}
           </div>
         </div>
         {active && <Drilldown item={active} onClose={() => setActive(null)} />}
@@ -247,6 +262,70 @@ export default function QueryPage() {
         }
       `}</style>
     </>
+  );
+}
+
+function valuesFromDealFilter(filter = {}) {
+  const first = (value) => (Array.isArray(value) ? (value[0] ?? '') : (value ?? ''));
+  return {
+    search: first(filter.search),
+    buyer: first(filter.buyer),
+    sector: first(filter.sector),
+    signing_year: first(filter.signing_year),
+    merger_form: first(filter.merger_form),
+    law_firm: first(filter.law_firm),
+    lawyer: first(filter.lawyer),
+  };
+}
+
+function ResultRefinements({ result, payload, deals }) {
+  const router = useRouter();
+  const sourceFilter = payload.deal_filter || payload.comparison_set_filter || {};
+  const [values, setValues] = useState(() => valuesFromDealFilter(sourceFilter));
+  const currentSide = /reverse/i.test(payload.field_path || '') ? 'reverse' : 'company';
+  const [feeSide, setFeeSide] = useState(currentSide);
+  const apply = () => {
+    const dealFilter = buildDealFilterPayload(values);
+    const next = { ...payload };
+    if (result.kind === 'MARKET_RANGE' || result.kind === 'FILTER_THEN_LIST') next.deal_filter = dealFilter;
+    if (result.kind === 'DEAL_TO_MARKET') next.comparison_set_filter = dealFilter;
+    if (result.kind === 'PROVISION_CROSS_CUT') {
+      const existing = new Set(payload.deal_ids || []);
+      next.deal_ids = deals.filter((deal) => (!existing.size || existing.has(deal.id)) && dealMatchesDealFilter(deal, dealFilter)).map((deal) => deal.id);
+    }
+    if (result.kind === 'MARKET_RANGE' && result.provision_type === 'TERMINATION_FEE') {
+      next.field_path = feeSide === 'reverse' ? 'reverseFeePctOfDealValue' : 'feePctOfDealValue';
+      next.chart_kind = 'HISTOGRAM';
+    }
+    const slug = result.kind.toLowerCase().replace(/_/g, '-');
+    router.push(`/query/${slug}/adhoc?payload=${encodePayload(next)}`);
+  };
+  if (result.kind === 'DEAL_COMPARE') return null;
+  return (
+    <div className="refinements">
+      <DealFiltersBlock
+        deals={deals}
+        values={values}
+        onChange={setValues}
+        facetKeys={['buyer', 'sector', 'signing_year', 'merger_form', 'law_firm', 'lawyer']}
+        showSearch
+        expandAll
+      />
+      <div className="refinementActions">
+        {result.kind === 'MARKET_RANGE' && result.provision_type === 'TERMINATION_FEE' && (
+          <label><span>Fee side</span><select className="mtx-select" value={feeSide} onChange={(event) => setFeeSide(event.target.value)}><option value="company">Company / target fee</option><option value="reverse">Reverse / buyer fee</option></select></label>
+        )}
+        <button type="button" className="mtx-btn" onClick={apply}>Apply refinements</button>
+      </div>
+      <style jsx>{`
+        .refinements { margin-bottom: 16px; border: 1px solid var(--line); background: #fff; padding: 12px 14px; display: flex; align-items: flex-end; justify-content: space-between; gap: 14px; }
+        .refinements :global(.dfb) { flex: 1; }
+        .refinementActions { display: flex; align-items: flex-end; gap: 8px; }
+        .refinementActions label { display: flex; flex-direction: column; gap: 2px; font: 8px var(--mtx-sans); text-transform: uppercase; letter-spacing: .08em; color: var(--ink-faint); }
+        .refinementActions :global(.mtx-select) { height: 28px; min-height: 28px; font-size: 11px; }
+        @media (max-width: 900px) { .refinements { align-items: stretch; flex-direction: column; } .refinementActions { justify-content: flex-end; } }
+      `}</style>
+    </div>
   );
 }
 
@@ -345,7 +424,7 @@ function CrossCut({ result, onOpen }) {
                   const i = columnIndex.get(col.field);
                   const cell = row.cells[i] || {};
                   return (
-                    <td key={col.field} className="mtx-prov-cell" title={cell.verbatim_quote || ''} onClick={() => onOpen({ ...cell, card_id: row.card_id, deal_id: row.deal_id })}>
+                    <td key={col.field} className="mtx-prov-cell" title={cell.verbatim_quote || ''} onClick={() => onOpen({ ...cell, card_id: cell.card_id || row.card_id, deal_id: row.deal_id })}>
                       {formatValue(cell.value, col.field)}{cell._prov && <ProvBadge prov={cell._prov} />}
                     </td>
                   );
@@ -387,7 +466,7 @@ function formatStat(value, fieldKind) {
   const n = Number(value);
   if (!Number.isFinite(n)) return '-';
   if (fieldKind === 'usd') return formatMoney(n);
-  if (fieldKind === 'percent') return `${round(n)}%`;
+  if (fieldKind === 'percent' || fieldKind === 'percentage') return `${round(n)}%`;
   return round(n);
 }
 
@@ -403,16 +482,29 @@ function formatPercentStat(value) {
   return formatPercentValue(n) || '-';
 }
 
+function dealValueBasisLabel(value) {
+  if (value === 'equity_value') return 'equity value';
+  if (value === 'enterprise_value') return 'enterprise value';
+  if (value === 'headline_transaction_value') return 'headline transaction value';
+  if (value === 'mixed') return 'mixed recorded value bases';
+  return 'recorded deal value, basis not identified';
+}
+
 function MarketRange({ result, onOpen }) {
-  const counts = result.distribution.map((x) => x.count);
+  const percentagePrimary = result.primary_basis === 'percent_of_deal_value';
+  const distribution = (percentagePrimary && result.percentDistribution) || result.distribution || [];
+  const primaryStats = (percentagePrimary && result.percentStats) || result.stats;
+  const primaryKind = percentagePrimary ? 'percentage' : result.field_kind;
+  const counts = distribution.map((x) => x.count);
   const max = Math.max(1, ...counts);
-  const fieldKind = result.field_kind;
+  const fieldKind = primaryKind;
   return (
     <>
       <Panel title="Distribution">
         <div className="panelPad">
+          {percentagePrimary && <p className="percentCaption">Percentage of each deal&apos;s {dealValueBasisLabel(result.deal_value_basis)}</p>}
           <div className="chart">
-            {(result.distribution || []).map((bucket, i) => {
+            {distribution.map((bucket, i) => {
               // Min bar height only applies to buckets that actually have
               // deals in them -- a genuinely empty bucket (count 0) used to
               // get the same 12px floor as a 1-count bucket, reading as a
@@ -434,12 +526,12 @@ function MarketRange({ result, onOpen }) {
             })}
           </div>
           <div className="factTiles">
-            <FactTile label="N" value={result.n} />
-            {result.stats && <>
-              <FactTile label="Median" value={formatStat(result.stats.median, fieldKind)} />
-              <FactTile label="P25" value={formatStat(result.stats.p25, fieldKind)} />
-              <FactTile label="P75" value={formatStat(result.stats.p75, fieldKind)} />
-              <FactTile label="Range" value={`${formatStat(result.stats.min, fieldKind)}–${formatStat(result.stats.max, fieldKind)}`} />
+            <FactTile label="N" value={primaryStats?.n ?? result.n} />
+            {primaryStats && <>
+              <FactTile label="Median" value={formatStat(primaryStats.median, fieldKind)} />
+              <FactTile label="P25" value={formatStat(primaryStats.p25, fieldKind)} />
+              <FactTile label="P75" value={formatStat(primaryStats.p75, fieldKind)} />
+              <FactTile label="Range" value={`${formatStat(primaryStats.min, fieldKind)}–${formatStat(primaryStats.max, fieldKind)}`} />
             </>}
           </div>
           {/* r13 item 1: the percent-of-deal-value basis "is how we compare
@@ -450,7 +542,7 @@ function MarketRange({ result, onOpen }) {
           {result.percentStats && (
             <div className="percentBand">
               <p className="percentCaption">
-                As % of each deal&apos;s value
+                USD amounts, secondary to the comparable percentage
                 {result.percentStats.excludedCount > 0 && (
                   <span className="percentExcluded">
                     {` (${result.percentStats.n} of ${result.n} deals; ${result.percentStats.excludedCount} excluded — no deal value)`}
@@ -458,11 +550,11 @@ function MarketRange({ result, onOpen }) {
                 )}
               </p>
               <div className="factTiles">
-                <FactTile label="N" value={result.percentStats.n} />
-                <FactTile label="Median" value={formatPercentStat(result.percentStats.median)} />
-                <FactTile label="P25" value={formatPercentStat(result.percentStats.p25)} />
-                <FactTile label="P75" value={formatPercentStat(result.percentStats.p75)} />
-                <FactTile label="Range" value={`${formatPercentStat(result.percentStats.min)}–${formatPercentStat(result.percentStats.max)}`} />
+                <FactTile label="N" value={result.stats?.n || 0} />
+                <FactTile label="Median" value={formatStat(result.stats?.median, result.field_kind)} />
+                <FactTile label="P25" value={formatStat(result.stats?.p25, result.field_kind)} />
+                <FactTile label="P75" value={formatStat(result.stats?.p75, result.field_kind)} />
+                <FactTile label="Range" value={`${formatStat(result.stats?.min, result.field_kind)}–${formatStat(result.stats?.max, result.field_kind)}`} />
               </div>
             </div>
           )}
@@ -477,16 +569,29 @@ function MarketRange({ result, onOpen }) {
         <summary className="subPanelTitleBar">{`Underlying deals — ${result.deal_points.length}`}</summary>
         <div className="subPanelBody">
           <table className="mtx-table">
-            {result.percentStats && <thead><tr><th>Deal</th><th>Value</th><th>Section</th><th>% of deal value</th></tr></thead>}
+            <thead><tr>
+              <th>Deal</th>
+              {percentagePrimary && <th>% of deal value</th>}
+              <th>{percentagePrimary ? 'USD amount' : 'Value'}</th>
+              {result.fee_context && <th>Fee source</th>}
+              {result.fee_context && <th>Triggers</th>}
+              <th>Section</th>
+            </tr></thead>
             <tbody>
-              {result.deal_points.map((point) => (
-                <tr key={`${point.deal_id}-${point.card_id}`} onClick={() => onOpen(point)}>
-                  <td>{point.deal_name}</td>
-                  <td className="mtx-prov-cell">{formatValue(point.value, result.field_path)}{point._prov && <ProvBadge prov={point._prov} />}</td>
-                  <td className="mtx-mono">{point.quote_section_ref || '-'}</td>
-                  {result.percentStats && <td>{point.percent == null ? '—' : formatPercentStat(point.percent)}</td>}
-                </tr>
-              ))}
+              {result.deal_points.map((point) => {
+                const pct = point.percent_of_deal_value ?? (result.field_kind === 'percentage' ? point.value : null);
+                const amount = point.amount_usd ?? (result.percentStats ? point.value : null);
+                return (
+                  <tr key={`${point.deal_id}-${point.card_id}`} onClick={() => onOpen(point)}>
+                    <td>{point.deal_name}</td>
+                    {percentagePrimary && <td title={`Basis: ${dealValueBasisLabel(point.deal_value_basis)}`}>{pct == null ? '—' : formatPercentStat(Number(pct))}</td>}
+                    <td className="mtx-prov-cell">{percentagePrimary ? (amount == null ? '—' : formatMoney(amount)) : formatValue(point.value, result.field_path)}{point._prov && <ProvBadge prov={point._prov} />}</td>
+                    {result.fee_context && <td>{point.fee_source || result.fee_context.label}</td>}
+                    {result.fee_context && <td title={(point.triggers || []).map((trigger) => trigger.text).join('\n')}>{(point.triggers || []).map((trigger) => trigger.label).join('; ') || '—'}</td>}
+                    <td className="mtx-mono">{point.quote_section_ref || '-'}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

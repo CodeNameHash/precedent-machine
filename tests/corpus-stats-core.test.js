@@ -16,6 +16,7 @@ const {
   DEFAULT_PER_CODE_CARDS_LIMIT,
   scopeClaimsForContext,
   buildCategoricalDealDistribution,
+  buildNumericAttributeSummary,
   MIN_SCOPED_DEALS,
 } = require('../lib/queries/corpus-stats-core');
 
@@ -281,7 +282,7 @@ test('buildCategoricalDealDistribution never exceeds the peer-set size -- the <=
   }
 });
 
-test('buildCategoricalDealDistribution surfaces an explicit "none captured" bucket for present-but-uncaptured deals, without inflating other buckets', () => {
+test('buildCategoricalDealDistribution surfaces a neutral missing bucket for present-but-unextracted deals, without inflating other buckets', () => {
   const claims = [
     claim('d1', 'materialityQualifier', 'MAT_MAE_AGGREGATE', 'REP-T-SANCTIONS'),
   ];
@@ -293,8 +294,25 @@ test('buildCategoricalDealDistribution surfaces an explicit "none captured" buck
   ]);
   const dist = buildCategoricalDealDistribution('materialityQualifier', claims, null, dealsByIdFixture(['d1', 'd2']), new Map(), { presentDealEntries });
   assert.equal(dist.total, 2, 'both deals counted -- one captured, one honestly labelled none-captured');
-  const noneBucket = dist.values.find((v) => v.label.startsWith('None captured'));
-  assert.ok(noneBucket, 'the none-captured bucket renders rather than silently shrinking the denominator');
+  const noneBucket = dist.values.find((v) => v.label === 'Not extracted');
+  assert.ok(noneBucket, 'the neutral missing bucket renders rather than silently shrinking the denominator');
   assert.equal(noneBucket.count, 1);
   assert.deepEqual(noneBucket.deals.map((d) => d.id), ['d2']);
+});
+
+test('a true no-qualifier value stays distinct from the neutral not-extracted bucket', () => {
+  const claims = [claim('d1', 'materialityQualifier', 'MAT_NO_QUALIFIER', 'REP-T-SANCTIONS')];
+  const presentDealEntries = new Map([
+    ['d1', { id: 'd1', name: 'Deal d1', cardId: null }],
+    ['d2', { id: 'd2', name: 'Deal d2', cardId: null }],
+  ]);
+  const dist = buildCategoricalDealDistribution('materialityQualifier', claims, null, dealsByIdFixture(['d1', 'd2']), new Map(), { presentDealEntries });
+  assert.equal(dist.values.filter((value) => value.label === 'Not extracted').length, 1);
+  assert.equal(dist.values.filter((value) => /No materiality qualifier/i.test(value.label)).length, 1);
+});
+
+test('numeric attribute summaries include the arithmetic mean', () => {
+  const claims = [2, 4, 9].map((value, index) => claim(`d${index + 1}`, 'noticePeriod', value, 'NOSOL-RECOMMEND'));
+  const summary = buildNumericAttributeSummary('noticePeriod', claims, new Set(['d1', 'd2', 'd3']), [deal('d1'), deal('d2'), deal('d3')]);
+  assert.equal(summary.mean, 5);
 });

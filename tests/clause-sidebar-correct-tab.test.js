@@ -83,3 +83,17 @@ test('Correct tab reuses the sidebar\'s existing LAB/SEL style constants', () =>
   assert.match(SOURCE, /className={LAB}/);
   assert.match(SOURCE, /className={SEL}/);
 });
+
+test('current deal values are marked inline and numeric context shows all six statistics', () => {
+  assert.doesNotMatch(SOURCE, /function ThisDealPill/);
+  assert.match(SOURCE, /this-deal-inline-marker/);
+  assert.match(SOURCE, /function NumericScale\(\{ min, p25, median, mean, p75, max, value, format \}\)/);
+  for (const label of ['Min', 'P25', 'Median', 'Mean', 'P75', 'Max']) assert.match(SOURCE, new RegExp(`label: '${label}'`));
+});
+
+test('row corpus context supports local bringdown treatment and item frequency', () => {
+  assert.match(SOURCE, /function CurrentTreatmentBlock/);
+  assert.match(SOURCE, /No peer treatment inferred/);
+  assert.match(SOURCE, /function ItemFrequencySummary/);
+  assert.match(SOURCE, /row-item-frequency/);
+});

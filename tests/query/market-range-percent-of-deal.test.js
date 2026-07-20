@@ -96,3 +96,26 @@ test('MARKET_RANGE does not add percentStats for a non-money field', () => {
   assert.equal(result.percentStats, null);
   assert.equal(result.deal_points.every((point) => !('percent' in point) || point.percent === undefined), true);
 });
+
+test('termination-fee percentage results retain fee side, USD amount and nested triggers', () => {
+  const feeDeals = [{
+    id: 'd1', acquirer: 'Shell Buyer, Inc.', target: 'Target, Inc.', value_usd: 1_000_000_000,
+    metadata: { acquirer_display: 'Acme', target_display: 'Target' },
+  }];
+  const feeProvisions = [{
+    id: 'p1', deal_id: 'd1', type: 'TERMF', category: 'Termination fee',
+    ai_metadata: { features: { companyTerminationFee: {
+      amount: '$30,000,000', triggers: [{ code: 'SUPERIOR_PROPOSAL', label: 'Superior proposal', text: 'Company terminates for a Superior Proposal.' }],
+    } } },
+  }];
+  const result = executeMarketRange(
+    { provision_type: 'TERMINATION_FEE', field_path: 'feePctOfDealValue', deal_filter: {} },
+    { deals: feeDeals, provisions: feeProvisions },
+  );
+  assert.equal(result.primary_basis, 'percent_of_deal_value');
+  assert.equal(result.fee_context.label, 'Company / target termination fee');
+  assert.equal(result.deal_points[0].deal_name, 'Acme / Target');
+  assert.equal(result.deal_points[0].value, 3);
+  assert.equal(result.deal_points[0].amount_usd, 30_000_000);
+  assert.equal(result.deal_points[0].triggers[0].label, 'Superior proposal');
+});

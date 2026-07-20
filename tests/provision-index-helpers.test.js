@@ -101,3 +101,13 @@ test('resolveRowFocus preserves the exact feature key attached by the table row'
   assert.equal(focus.itemCode, null);
   assert.match(focus.quote, /four business days/);
 });
+
+test('resolveRowFocus preserves local current-deal treatment without inventing a corpus feature key', () => {
+  const focus = mod.resolveRowFocus({
+    label: 'Capitalization',
+    featureKeys: [],
+    currentTreatments: [{ label: 'Bringdown', value: 'MAE', quote: 'subject to an MAE standard' }],
+  });
+  assert.equal(focus.featureKeys, null);
+  assert.deepEqual(focus.currentTreatments, [{ label: 'Bringdown', value: 'MAE', quote: 'subject to an MAE standard' }]);
+});

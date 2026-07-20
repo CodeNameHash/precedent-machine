@@ -104,6 +104,20 @@ test('termination fee as a percentage of deal value selects the derived numeric 
   assert.equal(result.payload.chart_kind, 'HISTOGRAM');
 });
 
+test('termination-fee market checks default to comparable deal-size percentages for each fee side', () => {
+  const company = interpretDeterministically('What is the market range for company termination fees?', { deals, catalog });
+  assert.equal(company.payload.field_path, 'feePctOfDealValue');
+  const reverse = interpretDeterministically('What is the market range for reverse termination fees?', { deals, catalog });
+  assert.equal(reverse.payload.field_path, 'reverseFeePctOfDealValue');
+});
+
+test('termination-fee percentage predicates filter on the relative metric', () => {
+  const result = interpretDeterministically('Which deals have company termination fees over 3% of deal value?', { deals, catalog });
+  assert.deepEqual(result.payload.filters, [{
+    provision_type: 'TERMINATION_FEE', field: 'feePctOfDealValue', op: 'gt', value: 3,
+  }]);
+});
+
 test('ambiguous matching-rights plural asks initial versus subsequent', () => {
   const result = interpretDeterministically('Compare matching-rights periods across the corpus', { deals, catalog });
   assert.equal(result.status, 'needs_clarification');

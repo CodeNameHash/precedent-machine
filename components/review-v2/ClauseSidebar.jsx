@@ -12,7 +12,7 @@
 //   (b) CORPUS CONTEXT       -- value distribution across the peer set for
 //                               exactly this row's feature(s)/instrument,
 //                               this deal's own value highlighted; numeric
-//                               features show min/median/max + position
+//                               features show six-stat range + position
 //   (c) Refine the peer set -- the pre-existing filterable summary, kept
 //                               but collapsed by default (secondary now)
 //   (d) View clause          -- collapsed verbatim quote, on demand only
@@ -327,11 +327,13 @@ function OptionRow({ label, count, isThisDeal, deals, open, onToggle }) {
         className={`w-full flex items-center justify-between gap-2 text-left py-0.5 ${hasDeals ? 'cursor-pointer hover:bg-[#F6F6F6]' : 'cursor-default'}`}
         data-testid="distribution-option-row"
       >
-        {/* Sidebar redesign C.3: this deal's own variant is subtly bolded
-            in the list -- the ThisDealPill above already states it clearly,
-            so no redundant "This deal" tag repeats it here. */}
-        <span className={`${BODY} ${isThisDeal ? 'font-semibold' : ''} text-[#1F1F1F]`}>
-          {label} — {count}
+        <span className={`${BODY} ${isThisDeal ? 'font-semibold' : ''} text-[#1F1F1F] flex items-center gap-1.5 min-w-0`}>
+          <span>{label} — {count}</span>
+          {isThisDeal ? (
+            <span className="text-[8px] font-bold uppercase tracking-[0.1em] text-[#2F6DB5] shrink-0" data-testid="this-deal-inline-marker">
+              This deal
+            </span>
+          ) : null}
         </span>
         {hasDeals ? (
           <span
@@ -500,56 +502,67 @@ function orderedByFavorability(feature, itemCode) {
   return { values: withTiers.map((x) => x.v), hasFavorabilityOrder: true };
 }
 
-// Item 4 (sidebar redesign, Ben): compact visual scale for numeric/time/$/%
-// blocks -- a horizontal track, min/median/max ticks, and this deal's own
-// marker. Pure CSS (percentage-positioned divs), no chart library, matches
-// the panel's flat black/white/gray site voice. Renders nothing (rather
-// than a degenerate single-point scale) when min===max.
-function NumericScale({ min, median, max, value }) {
-  if (min === null || min === undefined || max === null || max === undefined || min === max) return null;
-  const pct = (v) => Math.max(0, Math.min(100, ((v - min) / (max - min)) * 100));
-  const ticks = [{ at: min, key: 'min' }];
-  if (median !== null && median !== undefined && median > min && median < max) ticks.push({ at: median, key: 'median' });
-  ticks.push({ at: max, key: 'max' });
+// Compact six-stat numeric graph. The current deal is marked on the same
+// scale, while the labelled values below make overlapping percentiles
+// legible even when several ticks land on the same point.
+function NumericScale({ min, p25, median, mean, p75, max, value, format }) {
+  if (min === null || min === undefined || max === null || max === undefined) return null;
+  const samePoint = min === max;
+  const pct = (v) => (samePoint ? 50 : Math.max(0, Math.min(100, ((v - min) / (max - min)) * 100)));
+  const stats = [
+    { key: 'min', label: 'Min', value: min },
+    { key: 'p25', label: 'P25', value: p25 },
+    { key: 'median', label: 'Median', value: median },
+    { key: 'mean', label: 'Mean', value: mean },
+    { key: 'p75', label: 'P75', value: p75 },
+    { key: 'max', label: 'Max', value: max },
+  ].filter((stat) => stat.value !== null && stat.value !== undefined);
   return (
-    <div className="relative h-4 mt-1.5 mb-1" data-testid="numeric-scale">
-      <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[2px] bg-[#E0E0E0]" />
-      {ticks.map((t) => (
-        <div key={t.key} className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2" style={{ left: `${pct(t.at)}%` }}>
-          <div className="w-[1.5px] h-2.5 bg-[#B0B0B0]" />
-        </div>
-      ))}
+    <div className="mt-1.5 mb-1.5" data-testid="numeric-scale">
+      <div className="relative h-5">
+        <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[2px] bg-[#E0E0E0]" />
+        {stats.map((stat) => (
+          <div
+            key={stat.key}
+            className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2"
+            style={{ left: `${pct(stat.value)}%` }}
+            title={`${stat.label}: ${format(stat.value)}`}
+          >
+            <div className="w-[1.5px] h-2.5 bg-[#B0B0B0]" />
+          </div>
+        ))}
+        {value !== null && value !== undefined ? (
+          <div
+            className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2"
+            style={{ left: `${pct(value)}%` }}
+            data-testid="numeric-scale-marker"
+          >
+            <div className="w-2.5 h-2.5 rounded-full bg-[#1F1F1F] ring-2 ring-white shadow" />
+          </div>
+        ) : null}
+      </div>
       {value !== null && value !== undefined ? (
-        <div
-          className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2"
-          style={{ left: `${pct(value)}%` }}
-          data-testid="numeric-scale-marker"
-          title="This deal"
-        >
-          <div className="w-2.5 h-2.5 rounded-full bg-[#1F1F1F] ring-2 ring-white shadow" />
+        <div className="flex items-center gap-1 text-[9px] font-semibold text-[#1F1F1F] mb-1" data-testid="numeric-this-deal-inline">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#1F1F1F]" />
+          This deal: {format(value)}
         </div>
       ) : null}
-    </div>
-  );
-}
-
-// A clear pill stating THIS deal's own value (sidebar redesign, item 3) --
-// distinct from (and above) the peer-set list, never just a bold text line.
-function ThisDealPill({ value }) {
-  if (value === null || value === undefined || value === '') return null;
-  return (
-    <div className="inline-flex items-center gap-1.5 mb-2 max-w-full px-2 py-1 bg-[#1F1F1F] text-white" data-testid="this-deal-pill">
-      <span className="text-[8px] font-bold uppercase tracking-[0.12em] opacity-70 shrink-0">This deal</span>
-      <span className="text-[11.5px] font-bold truncate">{value}</span>
+      <div className="grid grid-cols-3 gap-x-2 gap-y-0.5" data-testid="numeric-six-stat-summary">
+        {stats.map((stat) => (
+          <div key={stat.key} className="text-[8.5px] text-[#6B6B6B]">
+            <span className="text-[#9A9A9A]">{stat.label}</span> {format(stat.value)}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
 
 // (b) CORPUS CONTEXT — one categorical or numeric feature's distribution
 // across the peer set, from /api/corpus-stats' rowContext.features[]. Layout
-// per block (sidebar redesign r18): BlockHeader -> ThisDealPill -> ordered
+// per block (sidebar redesign r18): BlockHeader -> ordered
 // variant list (most -> least buyer-favorable when a favorability model
-// exists) or the numeric min/median/max + NumericScale -- see the module
+// exists) or the six-stat NumericScale -- see the module
 // header above for the exact ordering table and the "Across the peer set"/
 // "Corpus context" label removal (Ben, "dead words").
 function FeatureDistribution({ feature, itemCode }) {
@@ -569,13 +582,16 @@ function FeatureDistribution({ feature, itemCode }) {
     return (
       <div className="mb-4" data-testid="feature-distribution-numeric">
         <BlockHeader>{blockHeaderLabel(feature)}</BlockHeader>
-        {feature.thisDealValue !== null && feature.thisDealValue !== undefined ? (
-          <ThisDealPill value={fmtN(feature.thisDealValue)} />
-        ) : null}
-        <NumericScale min={feature.min} median={feature.median} max={feature.max} value={feature.thisDealValue} />
-        <div className={`${BODY} text-[#1F1F1F]`}>
-          Min {fmtN(feature.min)} <span className="text-[#B0B0B0]">·</span> Median {fmtN(feature.median)} <span className="text-[#B0B0B0]">·</span> Max {fmtN(feature.max)}
-        </div>
+        <NumericScale
+          min={feature.min}
+          p25={feature.p25}
+          median={feature.median}
+          mean={feature.mean}
+          p75={feature.p75}
+          max={feature.max}
+          value={feature.thisDealValue}
+          format={fmtN}
+        />
         {feature.thisDealRank !== null && feature.thisDealRank !== undefined && feature.count > 1 ? (
           <div className="text-[10px] text-[#6B6B6B] mt-0.5">
             higher than {Math.max(0, feature.thisDealRank - 1)} of {feature.count - 1} other peers
@@ -606,7 +622,6 @@ function FeatureDistribution({ feature, itemCode }) {
   return (
     <div className="mb-4" data-testid="feature-distribution-categorical">
       <BlockHeader>{blockHeaderLabel(feature)}</BlockHeader>
-      {feature.thisDealValue ? <ThisDealPill value={feature.thisDealValue} /> : null}
       {hasFavorabilityOrder ? (
         <div className="text-[9px] text-[#9A9A9A] mb-1" data-testid="favorability-caption">
           ordered most → least buyer-favorable
@@ -660,13 +675,8 @@ function InstrumentDistribution({ instrument }) {
       })}
     </div>
   );
-  const thisDeal = instrument.thisDeal;
-  const thisDealValue = thisDeal
-    ? ([thisDeal.considerationLabel, thisDeal.vestingLabel].filter(Boolean).join(' · ') || null)
-    : null;
   return (
     <div data-testid="instrument-distribution">
-      <ThisDealPill value={thisDealValue} />
       {instrument.considerationDistribution.length ? (
         <div className="mb-3">
           <BlockHeader>Consideration</BlockHeader>
@@ -730,6 +740,35 @@ function rowRequestedCorpusContext(rowFocus) {
   return false;
 }
 
+function CurrentTreatmentBlock({ treatments }) {
+  if (!Array.isArray(treatments) || !treatments.length) return null;
+  return (
+    <div className="mb-4" data-testid="current-deal-treatments">
+      {treatments.map((treatment, index) => (
+        <div key={`${treatment.label}-${index}`} className={index ? 'mt-3' : ''}>
+          <BlockHeader>{treatment.label}</BlockHeader>
+          <div className={`${BODY} text-[#1F1F1F]`}>
+            <span className="text-[#6B6B6B]">Current deal:</span> <strong>{treatment.value}</strong>
+          </div>
+        </div>
+      ))}
+      <div className="text-[9px] text-[#9A9A9A] mt-0.5">Current treatment only. No peer treatment inferred.</div>
+    </div>
+  );
+}
+
+function ItemFrequencySummary({ frequency }) {
+  if (!frequency) return null;
+  return (
+    <div className="mb-4" data-testid="row-item-frequency">
+      <BlockHeader>{frequency.label || 'Selected item'}</BlockHeader>
+      <div className={`${BODY} text-[#1F1F1F]`}>
+        Appears in <strong>{frequency.count} of {frequency.peerSetSize}</strong> peer deals
+      </div>
+    </div>
+  );
+}
+
 // (b) full corpus-context block: instrument distribution (if any) + each
 // requested feature's distribution (if any) + clickable drill-down items
 // (if any). Distinct loading/error/empty states so a row that genuinely has
@@ -738,6 +777,9 @@ function rowRequestedCorpusContext(rowFocus) {
 function RowCorpusContext({ rowFocus, rowContext, loading, error, onDrillItem }) {
   const hasInstrument = rowContext && rowContext.instrument && rowContext.instrument.dealsWithInstrument > 0;
   const hasFeatures = rowContext && Array.isArray(rowContext.features) && rowContext.features.some((f) => f);
+  const itemFrequency = rowContext && rowContext.itemFrequency;
+  const currentTreatments = rowFocus && rowFocus.currentTreatments;
+  const hasCurrentTreatments = Array.isArray(currentTreatments) && currentTreatments.length > 0;
   const hasItems = rowFocus && Array.isArray(rowFocus.items) && rowFocus.items.length > 0;
   const requested = rowRequestedCorpusContext(rowFocus);
   // Sidebar redesign r18, item 1 (Ben, "dead words"): the "Corpus context"
@@ -746,20 +788,22 @@ function RowCorpusContext({ rowFocus, rowContext, loading, error, onDrillItem })
   // what each block is, so a generic label above them added nothing.
   return (
     <div className="px-3.5 py-3 border-b-2 border-[#1F1F1F]" data-testid="row-corpus-context">
+      {hasCurrentTreatments ? <CurrentTreatmentBlock treatments={currentTreatments} /> : null}
       {loading ? (
         <div className="text-[11px] text-[#9A9A9A]">Loading corpus…</div>
       ) : error ? (
         <div className="text-[11px] text-[#B14E63]">Corpus context unavailable: {error}</div>
-      ) : hasInstrument || hasFeatures ? (
+      ) : hasInstrument || hasFeatures || itemFrequency ? (
         <>
+          {itemFrequency ? <ItemFrequencySummary frequency={itemFrequency} /> : null}
           {hasInstrument ? <InstrumentDistribution instrument={rowContext.instrument} /> : null}
           {hasFeatures ? rowContext.features.filter(Boolean).map((f) => <FeatureDistribution key={f.attribute} feature={f} itemCode={rowFocus && rowFocus.itemCode} />) : null}
         </>
       ) : requested ? (
         <div className="text-[11px] text-[#9A9A9A]" data-testid="row-corpus-context-empty-genuine">No corpus comparison captured for this row yet.</div>
-      ) : (
+      ) : !hasCurrentTreatments ? (
         <div className="text-[10px] text-[#B0B0B0]" data-testid="row-corpus-context-empty-uncomparable">This row doesn&apos;t map to a single comparable feature.</div>
-      )}
+      ) : null}
       {hasItems ? <div className="mt-1"><DrillItemsList items={rowFocus.items} onDrillItem={onDrillItem} /></div> : null}
     </div>
   );
@@ -883,7 +927,7 @@ function CommonFeatureSummary({ feature }) {
       <div className="mb-2" data-testid="common-feature-summary-numeric">
         <div className="text-[9px] text-[#6B6B6B] mb-1">{feature.label}</div>
         <div className="text-[9px] text-[#1F1F1F]">
-          Min {format(feature.min)} <span className="text-[#B0B0B0]">·</span> Median {format(feature.median)} <span className="text-[#B0B0B0]">·</span> Max {format(feature.max)}
+          Min {format(feature.min)} <span className="text-[#B0B0B0]">·</span> Median {format(feature.median)} <span className="text-[#B0B0B0]">·</span> Mean {format(feature.mean)} <span className="text-[#B0B0B0]">·</span> Max {format(feature.max)}
         </div>
         {feature.p25 !== null && feature.p75 !== null ? (
           <div className="text-[8.5px] text-[#6B6B6B] mt-0.5">Middle 50%: {format(feature.p25)}–{format(feature.p75)}</div>
@@ -1046,7 +1090,12 @@ function ClauseSidebarContent({ card, rowFocus = null, dealId, dealSector, onClo
   const strictDurationActive = Boolean(rowContext?.features?.some((feature) => feature?.strictDurationCohort));
   const commonFeatureSummary = Array.isArray(stats?.featureSummary)
     ? stats.featureSummary
-      .map(normalizeFeatureSummary)
+      .map((raw) => {
+        const normalized = normalizeFeatureSummary(raw);
+        if (!normalized || normalized.kind !== 'numeric') return normalized;
+        const mean = raw?.mean === null || raw?.mean === undefined ? null : Number(raw.mean);
+        return { ...normalized, mean: Number.isFinite(mean) ? mean : null };
+      })
       .filter((feature) => feature && (feature.kind === 'numeric'
         ? [feature.min, feature.median, feature.max].some((value) => value !== null)
         : feature.values.length > 0))

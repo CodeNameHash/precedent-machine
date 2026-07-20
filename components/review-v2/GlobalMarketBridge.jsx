@@ -135,6 +135,7 @@ export default function GlobalMarketBridge() {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [marketContext, setMarketContext] = useState(null);
+  const [sidebarHidden, setSidebarHidden] = useState(false);
   const [launcherHost, setLauncherHost] = useState(null);
   const [question, setQuestion] = useState('');
 
@@ -207,6 +208,7 @@ export default function GlobalMarketBridge() {
             const labelCell = row && row.querySelector('td:first-child');
             const label = labelCell ? plainText(labelCell.textContent && labelCell.textContent.trim()) : null;
             setMarketContext(sanitizeContext(match, label));
+            setSidebarHidden(false);
           } catch (error) {
             // eslint-disable-next-line no-console
             console.error('[GlobalMarketBridge] row click failed', error);
@@ -250,11 +252,21 @@ export default function GlobalMarketBridge() {
         launcherHost,
       ) : null}
       {marketMode ? createPortal(
-        <div style={{ position: 'fixed', right: 0, top: 'var(--mtx-head-h,72px)', zIndex: 40 }}>
-          <MarketSidebarBoundary resetKey={marketContext && marketContext.marketKey}>
-            <MarketDrilldownSidebar context={marketContext} onClose={() => setMarketContext(null)} />
-          </MarketSidebarBoundary>
-        </div>,
+        sidebarHidden ? (
+          <button
+            type="button"
+            onClick={() => setSidebarHidden(false)}
+            aria-label="Show market detail"
+            style={{ position: 'fixed', right: 0, top: '50%', zIndex: 40, transform: 'translateY(-50%)', writingMode: 'vertical-rl', padding: '12px 8px', border: '1px solid #9A9A9A', borderRight: 0, background: '#fff', color: '#1F1F1F', fontSize: 9, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', cursor: 'pointer' }}
+            data-testid="market-sidebar-show"
+          >Market detail</button>
+        ) : (
+          <div style={{ position: 'fixed', right: 0, top: 'var(--mtx-head-h,72px)', zIndex: 40 }}>
+            <MarketSidebarBoundary resetKey={marketContext && marketContext.marketKey}>
+              <MarketDrilldownSidebar context={marketContext} onClose={() => setSidebarHidden(true)} />
+            </MarketSidebarBoundary>
+          </div>
+        ),
         document.body,
       ) : null}
     </>

@@ -9,6 +9,7 @@ function normalizeUnit(unit) {
   if (!value) return null;
   if (value === 'business_days') return 'business days';
   if (value === 'calendar_days') return 'calendar days';
+  if (value === 'days_equivalent') return 'days';
   if (value === 'usd' || value === 'currency' || value === 'dollars') return 'usd';
   return value.replaceAll('_', ' ');
 }

@@ -2,6 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 
 const {
+  durationInDays,
   normalizeDurationClaim,
   selectDurationCohort,
 } = require('../lib/queries/corpus-duration');
@@ -30,6 +31,17 @@ test('normalizeDurationClaim preserves business, calendar and elapsed clocks', (
   assert.deepEqual(normalizeDurationClaim(claim('c', 'NOSOL-INTERVENING', 96, 'at least 96 hours written notice')), {
     value: 96,
     unit: 'elapsed_hours',
+  });
+});
+
+test('durationInDays converts 24 elapsed hours to one comparable day', () => {
+  assert.deepEqual(durationInDays({ value: 24, unit: 'elapsed_hours' }), {
+    value: 1,
+    unit: 'days_equivalent',
+  });
+  assert.deepEqual(durationInDays({ value: 48, unit: 'elapsed_hours' }), {
+    value: 2,
+    unit: 'days_equivalent',
   });
 });
 
@@ -82,7 +94,7 @@ test('normalizeDurationClaim fails closed on conflicting or missing clock eviden
   }, 'four Business Days prior notice'), null);
 });
 
-test('QXO business-day cohort excludes hour, calendar, unknown-clock and different-trigger claims', () => {
+test('QXO notice cohort compares hour and day clocks on the explicit 24-hour day scale', () => {
   const claims = [
     claim('qxo', 'NOSOL-INTERVENING', 4, null, 'qxo-intervening'),
     claim('qxo', 'NOSOL-NOTICE', 24, 'within 24 hours'),
@@ -105,13 +117,19 @@ test('QXO business-day cohort excludes hour, calendar, unknown-clock and differe
   });
 
   assert.equal(reason, null);
-  assert.equal(cohort.unit, 'business_days');
+  assert.equal(cohort.unit, 'days_equivalent');
   assert.equal(cohort.triggerCode, 'NOSOL-INTERVENING');
   assert.equal(cohort.subjectValue, 4);
-  assert.deepEqual(cohort.entries.map((entry) => entry.duration.value).sort((a, b) => a - b), [3, 4, 5]);
-  assert.deepEqual(cohort.entries.map((entry) => entry.claim.deal_id).sort(), ['peer-business-3', 'peer-business-5', 'qxo']);
+  assert.deepEqual(cohort.entries.map((entry) => entry.duration.value).sort((a, b) => a - b), [3, 4, 4, 4, 5]);
+  assert.deepEqual(cohort.entries.map((entry) => entry.claim.deal_id).sort(), [
+    'peer-business-3',
+    'peer-business-5',
+    'peer-calendar',
+    'peer-hours',
+    'qxo',
+  ]);
   assert.equal(cohort.eligibleDealCount, 6);
-  assert.equal(cohort.excludedDealCount, 3);
+  assert.equal(cohort.excludedDealCount, 1);
 });
 
 test('an exact subject-code claim with an unknown clock does not fall back to a different trigger', () => {

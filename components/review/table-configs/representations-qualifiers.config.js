@@ -914,7 +914,12 @@ function sectionBox(key, heading, items, ctx) {
                 'tr',
                 {
                   className: `align-top${rowCard ? ' mtx-row-clickable' : ''}`,
-                  onClick: rowCard ? () => ctx.onSelectCard(rowCard, resolveRowFocus({ label: item.term, evidence: item.quote })) : undefined,
+                  onClick: rowCard ? () => ctx.onSelectCard(rowCard, resolveRowFocus({
+                    label: item.term,
+                    evidence: item.quote,
+                    featureKeys: item.featureKeys,
+                    itemCode: cardCode(rowCard),
+                  })) : undefined,
                   style: rowCard ? { cursor: 'pointer', ...(isSelectedRow ? { background: 'rgba(47,109,181,.07)', boxShadow: 'inset 2px 0 0 #2F6DB5' } : {}) } : undefined,
                 },
                 React.createElement(
@@ -1002,7 +1007,15 @@ function knowledgeTableNode(knowledgeSummaryRow, repRows, ctx) {
       // Item 2 (r5): "knowledge standard rows" must be clickable per the
       // sidebar feedback package -- sourceCard/quote wired above in
       // buildKnowledgeSummaryRow flow through sectionBox's ctx wiring.
-      items.push({ key: 'standard', term: 'Standard', node, card: knowledgeSummaryRow.standardCard, quote: knowledgeSummaryRow.knowledgeScope, fullText: knowledgeSummaryRow.knowledgeScope });
+      items.push({
+        key: 'standard',
+        term: 'Standard',
+        node,
+        card: knowledgeSummaryRow.standardCard,
+        quote: knowledgeSummaryRow.knowledgeScope,
+        fullText: knowledgeSummaryRow.knowledgeScope,
+        featureKeys: ['knowledgeStandard'],
+      });
     }
     if (knowledgeSummaryRow.knowledgePersons) {
       // Ben (Skechers r16, item 3): one pill PER person/role, never a single
@@ -1017,7 +1030,15 @@ function knowledgeTableNode(knowledgeSummaryRow, repRows, ctx) {
       const node = PillCell
         ? pillList(PillCell, entries, knowledgeSummaryRow.knowledgeScope, 'knowledge-person', 'info')
         : knowledgeSummaryRow.knowledgePersons;
-      items.push({ key: 'persons', term: 'Persons', node, card: knowledgeSummaryRow.personsCard, quote: knowledgeSummaryRow.knowledgeScope, fullText: knowledgeSummaryRow.knowledgeScope });
+      items.push({
+        key: 'persons',
+        term: 'Persons',
+        node,
+        card: knowledgeSummaryRow.personsCard,
+        quote: knowledgeSummaryRow.knowledgeScope,
+        fullText: knowledgeSummaryRow.knowledgeScope,
+        featureKeys: ['knowledgePersons'],
+      });
     }
     // R5-round4 (Ben): Scope dropped from the Knowledge block -- Standard +
     // Persons carry it; the full scope sentence stays as the pill hover
@@ -1102,7 +1123,7 @@ function repsTableNode(repRows, ctx) {
           // labelled bits (materiality standard, knowledge qualifier,
           // lookback date) each with its own corpus distribution, instead
           // of a single undifferentiated "this row" block.
-          onClick: rowCard ? () => ctx.onSelectCard(rowCard, resolveRowFocus({ label: row.label, itemCode: cardCode(row.card), featureKeys: ['materialityQualifier', 'knowledgeQualifier', 'lookbackDateISO'] })) : undefined,
+          onClick: rowCard ? () => ctx.onSelectCard(rowCard, resolveRowFocus(row)) : undefined,
           style: rowCard ? { cursor: 'pointer', ...(isSelectedRow ? { background: 'rgba(47,109,181,.07)', boxShadow: 'inset 2px 0 0 #2F6DB5' } : {}) } : undefined,
         },
         React.createElement('td', { className: 'px-3 py-2 whitespace-normal break-words text-ink' }, renderTerm(row, ctx)),
@@ -1164,8 +1185,19 @@ function buildRepresentationsConfig({ id, title, partyPrefix, preambleCode }) {
       const knowledgeSummaryRow = buildKnowledgeSummaryRow(reviewDeal, id, cards);
       if (knowledgeSummaryRow) rows.push(knowledgeSummaryRow);
       const bringDownMap = buildRepBringDownMap(reviewDeal);
+      const hasBringDownContext = (reviewDeal?.cards || []).some((card) => (
+        Array.isArray(card?.features?.bringDownTiers) && card.features.bringDownTiers.length > 0
+      ));
       for (const card of cards) {
         const term = resolveTerm(card);
+        const materiality = resolveMateriality(card);
+        const knowledge = resolveKnowledge(card);
+        const lookback = resolveLookback(card);
+        const bringDown = hasBringDownContext ? resolveBringDown(card, bringDownMap) : null;
+        const featureKeys = [];
+        if (materiality) featureKeys.push('materialityQualifier');
+        if (knowledge) featureKeys.push('knowledgeQualifier');
+        if (lookback) featureKeys.push('lookbackDateISO');
         rows.push({
           id: `${id}-${card.id}`,
           kind: 'rep',
@@ -1174,10 +1206,17 @@ function buildRepresentationsConfig({ id, title, partyPrefix, preambleCode }) {
           label: term.label,
           party: term.party,
           mainConcept: term.mainConcept,
-          materiality: resolveMateriality(card),
-          knowledge: resolveKnowledge(card),
-          lookback: resolveLookback(card),
-          bringDown: resolveBringDown(card, bringDownMap),
+          materiality,
+          knowledge,
+          lookback,
+          bringDown,
+          featureKeys,
+          itemCode: featureKeys.length ? cardCode(card) : null,
+          currentTreatments: bringDown ? [{
+            label: 'Bringdown',
+            value: bringDown.label.replace(/^Bringdown:\s*/, ''),
+            quote: bringDown.evidence || null,
+          }] : [],
         });
       }
       return rows;

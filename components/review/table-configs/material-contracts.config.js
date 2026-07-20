@@ -229,6 +229,8 @@ function rowFromBucket(item, index, source, thresholds) {
   return {
     id: `material-contracts-${code || index}-${index}`,
     code,
+    itemCode: code || null,
+    featureKeys: ['materialContractsBuckets'],
     label,
     threshold: resolveThreshold(structuredThreshold, evidence, textOf(source), meta),
     evidence,
@@ -255,6 +257,8 @@ function rowsFromText(source) {
     rows.push({
       id: `material-contracts-${code}`,
       code,
+      itemCode: code,
+      featureKeys: ['materialContractsBuckets'],
       label: MATERIAL_CONTRACT_BUCKET_CODES[code] || meta.label || code,
       threshold: resolveThreshold(null, text, text, meta),
       evidence: text,

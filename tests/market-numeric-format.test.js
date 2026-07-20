@@ -26,6 +26,8 @@ test('formatNumericValueForUnit preserves duration clocks and unit suffixes', ()
   assert.equal(mod.formatNumericValueForUnit(1, 'business_days'), '1 business day');
   assert.equal(mod.formatNumericValueForUnit(4, 'calendar_days'), '4 calendar days');
   assert.equal(mod.formatNumericValueForUnit(24, 'elapsed_hours'), '24 hours');
+  assert.equal(mod.formatNumericValueForUnit(1, 'days_equivalent'), '1 day');
+  assert.equal(mod.formatNumericValueForUnit(2, 'days_equivalent'), '2 days');
   assert.equal(mod.formatNumericValueForUnit(6, 'months'), '6 months');
   assert.equal(mod.formatNumericValueForUnit(3.1, 'percent'), '3.1%');
 });
