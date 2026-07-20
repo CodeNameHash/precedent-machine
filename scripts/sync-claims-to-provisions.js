@@ -91,24 +91,41 @@ function claimQuote(cl) {
   return cl.evidence_quote || cl.verbatim || null;
 }
 
+
+// Supabase caps every query at 1000 rows by default -- a multi-deal
+// provisions fetch silently truncates past that (the bug that made this
+// script report "no NOSOL provisions" for deals whose rows fell beyond the
+// cap). Page through with .range() until a short page.
+async function fetchAllRows(query) {
+  const PAGE = 1000;
+  const out = [];
+  for (let from = 0; ; from += PAGE) {
+    const { data, error } = await query.range(from, from + PAGE - 1);
+    if (error) throw new Error(error.message);
+    out.push(...(data || []));
+    if (!data || data.length < PAGE) return out;
+  }
+}
+
 async function main() {
   const sb = getServiceSupabase();
   if (!sb) { console.error('Supabase not configured (need .env.local)'); process.exit(1); }
   console.log(`fields: ${FIELDS.join(', ')}`);
 
-  const { data: claims, error: cErr } = await sb
+  const claims = await fetchAllRows(sb
     .from('claims')
     .select('deal_id, attribute, canonical, verbatim, evidence_quote, provenance')
-    .in('attribute', FIELDS);
-  if (cErr) throw new Error(cErr.message);
+    .in('attribute', FIELDS)
+    .order('id'));
   console.log(`claims rows: ${(claims || []).length}`);
 
   const dealIds = [...new Set((claims || []).map((c) => c.deal_id))];
-  const { data: provisions, error: pErr } = await sb
+  const provisions = await fetchAllRows(sb
     .from('provisions')
     .select('id, deal_id, type, category, full_text, ai_metadata')
-    .in('deal_id', dealIds);
-  if (pErr) throw new Error(pErr.message);
+    .in('deal_id', dealIds)
+    .order('id'));
+  console.log(`provisions loaded: ${provisions.length}`);
 
   const metaOf = (p) => {
     let m = p.ai_metadata;

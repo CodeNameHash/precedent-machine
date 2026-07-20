@@ -56,15 +56,31 @@ const sameTags = (a, b) => {
   return JSON.stringify(av) === JSON.stringify(bv);
 };
 
+
+// Supabase caps every query at 1000 rows by default -- a multi-deal
+// provisions fetch silently truncates past that (the bug that made this
+// script report "no NOSOL provisions" for deals whose rows fell beyond the
+// cap). Page through with .range() until a short page.
+async function fetchAllRows(query) {
+  const PAGE = 1000;
+  const out = [];
+  for (let from = 0; ; from += PAGE) {
+    const { data, error } = await query.range(from, from + PAGE - 1);
+    if (error) throw new Error(error.message);
+    out.push(...(data || []));
+    if (!data || data.length < PAGE) return out;
+  }
+}
+
 async function main() {
   const sb = getServiceSupabase();
   if (!sb) { console.error('Supabase not configured (need .env.local)'); process.exit(1); }
 
-  const { data: provisions, error } = await sb
+  const provisions = await fetchAllRows(sb
     .from('provisions')
     .select('id, deal_id, type, full_text, ai_metadata')
-    .ilike('type', '%IOC%');
-  if (error) throw new Error(error.message);
+    .ilike('type', '%IOC%')
+    .order('id'));
   console.log(`IOC-family provisions: ${(provisions || []).length}`);
 
   const plan = [];
