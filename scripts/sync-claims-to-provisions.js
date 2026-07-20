@@ -34,6 +34,18 @@
  * Default field set = the top query-relevant invisible fields from the
  * audit. Requires SUPABASE env (.env.local, service key).
  */
+// Plain `node` never loads .env.local (only Next.js does) -- same tiny
+// loader every other DB script in scripts/ carries (see scripts/eval.js).
+const fs = require('fs');
+const path = require('path');
+(() => {
+  const p = path.join(__dirname, '..', '.env.local');
+  if (!fs.existsSync(p)) return;
+  for (const line of fs.readFileSync(p, 'utf-8').split('\n')) {
+    const m = line.match(/^([A-Z0-9_]+)=(.*)$/);
+    if (m && !(m[1] in process.env)) process.env[m[1]] = m[2].replace(/^"|"$/g, '');
+  }
+})();
 const { getServiceSupabase } = require('../lib/supabase');
 
 const APPLY = process.argv.includes('--apply');
