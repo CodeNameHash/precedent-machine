@@ -140,20 +140,20 @@ test('numeric filters phrase as quantifiers with unit-aware values, including be
   const f = { provision_type: 'TERMINATION_FEE', field: 'companyTerminationFee' };
   assert.equal(
     sentenceForFilter({ ...f, op: 'gte', value: 100000000 }, meta),
-    'Termination fee: Company Termination Fee is at least $100M',
+    'Termination Fees: Company Termination Fee is at least $100M',
   );
   assert.equal(
     sentenceForFilter({ ...f, op: 'eq', value: 3500000 }, meta),
-    'Termination fee: Company Termination Fee is exactly $3.5M',
+    'Termination Fees: Company Termination Fee is exactly $3.5M',
   );
   assert.equal(
     sentenceForFilter({ ...f, op: 'between', value: [50000000, 150000000] }, meta),
-    'Termination fee: Company Termination Fee is between $50M and $150M',
+    'Termination Fees: Company Termination Fee is between $50M and $150M',
   );
   const days = { type: 'duration', label: 'Tail period', unit: 'days', options: [] };
   assert.equal(
     sentenceForFilter({ provision_type: 'TERMINATION_FEE', field: 'tailPeriod', op: 'lte', value: 12 }, days),
-    'Termination fee: Tail period is at most 12 days',
+    'Termination Fees: Tail period is at most 12 days',
   );
 });
 

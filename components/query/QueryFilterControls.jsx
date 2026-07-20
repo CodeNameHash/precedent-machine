@@ -51,7 +51,7 @@ export function OpSelect({ value, onChange, className = 'mtx-select' }) {
 
 export function ProvisionTypeSelect({ value, onChange, className = 'mtx-select', types = PROVISION_TYPES }) {
   return (
-    <select className={className} value={value} onChange={(e) => onChange(e.target.value)}>
+    <select className={className} value={value} title={provisionTypeLabel(value)} onChange={(e) => onChange(e.target.value)}>
       {types.map((t) => <option key={t} value={t}>{provisionTypeLabel(t)}</option>)}
     </select>
   );
@@ -136,25 +136,37 @@ function useFieldMeta(provisionType, field) {
 // — this only ADDS a boolean short-circuit so a real `true`/`false` (which
 // FilterRow now sets directly) doesn't fall through to `Number(true) === 1`.
 export function coerceFilterForPayload(f) {
-  if (f.op === 'between' && Array.isArray(f.value)) {
-    return { ...f, value: f.value.map((v) => (v === '' || v === null || v === undefined ? null : Number(v))) };
+  // SHOW_ALL (Ben r15, item 7): the agreed payload shape with the engine is
+  // { provision_type, field, mode: 'all' } — no op/value. The executor lists
+  // every deal and annotates has/hasn't + value instead of gating.
+  if (f.mode === 'all') {
+    return { provision_type: f.provision_type, field: f.field, mode: 'all' };
   }
-  if (typeof f.value === 'boolean') return { ...f };
-  if (f.value === 'true') return { ...f, value: true };
-  if (f.value === 'false') return { ...f, value: false };
-  const numeric = Number(f.value);
-  return { ...f, value: (f.value === '' || Number.isNaN(numeric)) ? f.value : numeric };
+  const { mode, ...rest } = f;
+  if (rest.op === 'between' && Array.isArray(rest.value)) {
+    return { ...rest, value: rest.value.map((v) => (v === '' || v === null || v === undefined ? null : Number(v))) };
+  }
+  if (typeof rest.value === 'boolean') return { ...rest };
+  if (rest.value === 'true') return { ...rest, value: true };
+  if (rest.value === 'false') return { ...rest, value: false };
+  const numeric = Number(rest.value);
+  return { ...rest, value: (rest.value === '' || Number.isNaN(numeric)) ? rest.value : numeric };
 }
 
+// Three states (Ben r15, item 7): Has / Doesn't have / Show all. "Show all"
+// isn't a gate — it lists every deal annotated with whether it has the term
+// (payload: { provision_type, field, mode: 'all' }).
 function BooleanControl({ filter, onChange, fieldLabel }) {
+  const showAll = filter.mode === 'all';
   const truthy = filter.value === true || filter.value === 'true';
   const label = lowerFirst(fieldLabel || humanizeKey(filter.field));
   return (
     <div className="boolToggle">
-      <button type="button" className={`boolBtn${truthy ? ' boolBtnOn' : ''}`} onClick={() => onChange({ op: 'eq', value: true })}>Has {label}</button>
-      <button type="button" className={`boolBtn${!truthy ? ' boolBtnOn' : ''}`} onClick={() => onChange({ op: 'eq', value: false })}>Does not have {label}</button>
+      <button type="button" className={`boolBtn${!showAll && truthy ? ' boolBtnOn' : ''}`} onClick={() => onChange({ mode: undefined, op: 'eq', value: true })}>Has {label}</button>
+      <button type="button" className={`boolBtn${!showAll && !truthy ? ' boolBtnOn' : ''}`} onClick={() => onChange({ mode: undefined, op: 'eq', value: false })}>Doesn&rsquo;t have {label}</button>
+      <button type="button" className={`boolBtn${showAll ? ' boolBtnOn' : ''}`} title="List every deal and show whether each one has it" onClick={() => onChange({ mode: 'all', op: null, value: '' })}>Show all</button>
       <style jsx>{`
-        .boolToggle { display: flex; gap: 6px; }
+        .boolToggle { display: flex; gap: 6px; flex-wrap: wrap; }
         .boolBtn { border: 1px solid var(--line, #E0E0E0); background: #fff; color: var(--ink, #1F1F1F); font-family: var(--mtx-sans); font-size: 12px; font-weight: 600; padding: 6px 10px; cursor: pointer; }
         .boolBtn:hover { background: var(--paper-2, #F6F6F6); }
         .boolBtnOn { background: var(--ink, #1F1F1F); color: #fff; border-color: var(--ink, #1F1F1F); }
@@ -232,24 +244,40 @@ function NumericControl({ filter, onChange, unit }) {
 function CodedControl({
   filter, onChange, options, loading = false,
 }) {
+  const showAll = filter.mode === 'all';
   const negated = filter.op === 'neq';
+  const modeValue = showAll ? 'show all' : negated ? 'is not' : 'is';
+  const setMode = (v) => {
+    if (v === 'show all') { onChange({ mode: 'all', op: null, value: '' }); return; }
+    onChange({ mode: undefined, op: v === 'is not' ? 'neq' : 'eq', value: filter.mode === 'all' ? (options[0] ? options[0].code : '') : filter.value });
+  };
   return (
     <div className="codedRow">
-      <select className="mtx-select" value={negated ? 'is not' : 'is'} onChange={(e) => onChange({ op: e.target.value === 'is not' ? 'neq' : 'eq' })}>
+      <select className="mtx-select" value={modeValue} onChange={(e) => setMode(e.target.value)}>
         <option value="is">is</option>
         <option value="is not">is not</option>
+        <option value="show all">show all</option>
       </select>
-      {loading ? (
+      {showAll ? (
+        <span className="codedAllHint">every deal, annotated</span>
+      ) : loading ? (
         <select className="mtx-select" value="" disabled>
           <option value="">Loading options…</option>
         </select>
       ) : (
-        <select className="mtx-select" value={filter.value === null || filter.value === undefined ? '' : String(filter.value)} onChange={(e) => onChange({ value: e.target.value })}>
+        <select
+          className="mtx-select"
+          value={filter.value === null || filter.value === undefined ? '' : String(filter.value)}
+          title={(options.find((o) => String(o.code) === String(filter.value)) || {}).label}
+          onChange={(e) => onChange({ value: e.target.value })}
+        >
           {options.map((o) => <option key={o.code} value={o.code} title={o.description || undefined}>{o.label}</option>)}
         </select>
       )}
       <style jsx>{`
-        .codedRow { display: flex; gap: 6px; }
+        .codedRow { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; min-width: 0; max-width: 100%; }
+        .codedRow :global(select.mtx-select) { max-width: 100%; min-width: 0; text-overflow: ellipsis; }
+        .codedAllHint { font-size: 11px; color: var(--ink-light, #6B6B6B); font-family: var(--mtx-sans); }
       `}</style>
     </div>
   );
@@ -304,6 +332,7 @@ export function FilterRow({ filter, onChange, onRemove, provisionTypes = PROVISI
   // "boolean defaults to a valid Yes/No" behavior, extended to coded/numeric).
   useEffect(() => {
     if (!fieldMeta) return;
+    if (filter.mode === 'all') return; // SHOW_ALL needs no op/value normalization
     if (fieldMeta.type === 'boolean') {
       if (filter.value !== true && filter.value !== false) onChange({ op: 'eq', value: true });
     } else if (NUMERIC_TYPES.has(fieldMeta.type)) {
@@ -329,6 +358,7 @@ export function FilterRow({ filter, onChange, onRemove, provisionTypes = PROVISI
           className="mtx-select"
           value={filter.field || ''}
           disabled={!fields.length}
+          title={(fields.find((f) => f.key === filter.field) || {}).label}
           onChange={(e) => onChange({ field: e.target.value, op: null, value: '' })}
         >
           {!fields.length && <option value="">Loading fields…</option>}
@@ -349,8 +379,12 @@ export function FilterRow({ filter, onChange, onRemove, provisionTypes = PROVISI
       </div>
       {showPreview && <p className="filterPreview">{sentenceForFilter(filter, meta)}</p>}
       <style jsx>{`
-        .filterRow { display: flex; flex-direction: column; gap: 6px; }
-        .filterControls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+        .filterRow { display: flex; flex-direction: column; gap: 6px; min-width: 0; max-width: 100%; }
+        .filterControls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; max-width: 100%; }
+        /* Mobile (Ben r15 addendum): closed controls never overflow their
+           container — long option labels truncate cleanly inside the select
+           (full text via the title attribute; the native popup is fine). */
+        .filterControls :global(select.mtx-select), .filterControls :global(input.mtx-input) { max-width: 100%; min-width: 0; text-overflow: ellipsis; }
         .filterPreview { margin: 0; font-size: 11px; color: var(--ink-light, #6B6B6B); font-family: var(--mtx-sans); }
       `}</style>
     </div>
@@ -469,7 +503,7 @@ export function DealFiltersBlock({ deals, values, onChange }) {
   const hidden = DEAL_FACETS.filter((f) => !visible.includes(f));
   return (
     <div className="dfb">
-      <span className="dfbSectionLabel">Deal filters</span>
+      <span className="dfbSectionLabel">Deal filters <em className="dfbOptional">· optional — narrow which deals count</em></span>
       <div className="dfbRow">
         {visible.map((facet) => (
           <label key={facet.key} className="dfbFacet">
@@ -500,8 +534,10 @@ export function DealFiltersBlock({ deals, values, onChange }) {
       <style jsx>{`
         .dfb { display: flex; flex-direction: column; gap: 4px; }
         .dfbSectionLabel { font-family: var(--mtx-sans); font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; font-size: 9px; color: #9A9A9A; }
-        .dfbRow { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end; }
-        .dfbFacet { display: flex; flex-direction: column; gap: 2px; }
+        .dfbOptional { font-style: normal; font-weight: 400; text-transform: none; letter-spacing: 0; font-size: 10px; color: #9A9A9A; }
+        .dfbRow { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end; min-width: 0; max-width: 100%; }
+        .dfbFacet { display: flex; flex-direction: column; gap: 2px; min-width: 0; max-width: 100%; }
+        .dfbFacet :global(select.mtx-select) { max-width: 100%; text-overflow: ellipsis; }
         .dfbLabel { font-size: 8px; text-transform: uppercase; letter-spacing: 0.08em; color: #9A9A9A; font-family: var(--mtx-sans); }
         .dfbAdd { width: 26px; height: 24px; border: 1px dashed #E0E0E0; background: #fff; color: #6B6B6B; font-size: 13px; line-height: 1; cursor: pointer; font-family: var(--mtx-sans); }
         .dfbAdd:hover { color: #1F1F1F; border-color: #6B6B6B; background: #F6F6F6; }

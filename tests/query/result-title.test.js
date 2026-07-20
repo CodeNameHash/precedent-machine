@@ -41,8 +41,18 @@ test('resultTitle: FILTER_THEN_LIST — no filters falls back to "All deals"', (
 });
 
 test('resultTitle: MARKET_RANGE', () => {
+  // r15 item 1: user-facing kind language is "Benchmark", never the
+  // machine-y "Market range".
   const result = { kind: 'MARKET_RANGE', field_path: 'terminationFeePercentEquityValue' };
-  assert.equal(resultTitle(result), 'Market range — Termination fee percent equity value');
+  assert.equal(resultTitle(result), 'Benchmark — Termination fee percent equity value');
+});
+
+test('resultTitle: FILTER_THEN_LIST — single SHOW_ALL filter reads "<Field> across all deals"', () => {
+  const result = {
+    kind: 'FILTER_THEN_LIST',
+    filters_applied: [{ provision_type: 'COVENANT_NO_SOLICITATION', field: 'forceTheVote', mode: 'all' }],
+  };
+  assert.equal(resultTitle(result), 'Force the vote across all deals');
 });
 
 test('resultTitle: DEAL_COMPARE joins deal names with " vs "', () => {
