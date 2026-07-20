@@ -290,8 +290,9 @@ test('material-contract bucket thresholds use their own structured threshold and
   });
   const subject = deal('qxo', 17e9, 'headline_transaction_value');
   const peer = deal('peer', 10e9, 'headline_transaction_value');
+  const specifiedYearPeer = deal('specified-year-peer', 20e9, 'headline_transaction_value');
   const dataset = {
-    deals: [subject, peer],
+    deals: [subject, peer, specifiedYearPeer],
     cards: [],
     claims: [
       {
@@ -304,6 +305,11 @@ test('material-contract bucket thresholds use their own structured threshold and
         verbatim: 'Customer contracts above $5,000,000 per annum',
         provenance: { feature_value: { code: 'CUSTOMER', threshold: '$5,000,000', text: 'payments in excess of $5,000,000 per annum' } },
       },
+      {
+        id: 'specified-year-customer', deal_id: specifiedYearPeer.id, attribute: 'materialContractsBuckets', canonical: 'CUSTOMER',
+        verbatim: 'Customer contracts involving more than $40,000,000 in 2025',
+        provenance: { feature_value: { code: 'CUSTOMER', threshold: '$40,000,000', text: 'receipts of more than $40,000,000 in 2025' } },
+      },
     ],
   };
   const result = calculateMarketStats({
@@ -315,6 +321,8 @@ test('material-contract bucket thresholds use their own structured threshold and
   const cohort = result.distribution.normalised.cohorts[0];
   assert.equal(cohort.basis, 'headline_transaction_value');
   assert.equal(cohort.percent.stats.median, 0.05);
+  assert.equal(cohort.percent.stats.n, 1);
+  assert.deepEqual(result.distribution.normalised.exclusions, [{ reason: 'incompatible_cadence', count: 1 }]);
 });
 
 test('one row can carry presence plus a conditional value metric without overwrite', () => {

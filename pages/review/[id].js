@@ -40,6 +40,7 @@ import {
 import {
   parseCompareIds,
   useComparedDeals,
+  useRowMarketStats,
   useSectionMarketStats,
   useDealToMarket,
   dominantSectionCode,
@@ -48,6 +49,10 @@ import {
 } from '../../components/review-v2/compareData';
 import { UnifiedCompareSection, UnifiedDefinitionsSection, CompareMasthead, collectOffMarketEntries } from '../../components/review-v2/CompareColumn';
 import { OffMarketSection } from '../../components/review-v2/MarketColumn';
+import {
+  buildMarketMetricBatchRequest,
+  resolveMarketSectionRows,
+} from '../../lib/market-metrics';
 
 const CONSIDERATION_SECTION_ID = 'consideration-hero';
 
@@ -66,7 +71,7 @@ function LoadingLine({ children }) {
 
 function SectionBlock({
   section, reviewDeal, sectionCards, onSelectCard, selectedCardId, election, onViewInAgreement,
-  compare = null, marketColumn = null, onMarketRetry = null,
+  compare = null, marketColumn = null, typedMarket = null, onMarketRetry = null,
 }) {
   // Ben (Mergertrace round 1): every section collapsible. Native <details>
   // (open by default) so the scrollspy/anchor <section> wrapper and the
@@ -86,7 +91,7 @@ function SectionBlock({
   // SAME table, headed "MARKET — N deals", rather than a side column next
   // to a second copy of the table. `compare` and `marketColumn` are
   // independent — either, both, or neither can be active for a section.
-  const unified = Boolean(compare) || Boolean(marketColumn);
+  const unified = Boolean(compare) || Boolean(marketColumn) || Boolean(typedMarket);
   const primaryTables = unified ? (
     section.id === '__definitions' ? (
       <UnifiedDefinitionsSection
@@ -94,6 +99,8 @@ function SectionBlock({
         primaryReviewDeal={reviewDeal}
         comparedColumns={compare ? compare.columns : []}
         onRetry={compare ? compare.retry : null}
+        typedMarket={typedMarket}
+        onMarketRetry={onMarketRetry}
       />
     ) : (
       <UnifiedCompareSection
@@ -107,6 +114,7 @@ function SectionBlock({
         onSelectCard={onSelectCard}
         selectedCardId={selectedCardId}
         marketColumn={marketColumn}
+        typedMarket={typedMarket}
         onMarketRetry={onMarketRetry}
       />
     )
@@ -289,7 +297,23 @@ export default function ReviewPage() {
       .filter((s) => s.id !== '__definitions')
       .map((s) => ({ sectionId: s.id, code: dominantSectionCode(cardsBySection.get(s.id)) }));
   }, [marketMode, sections, cardsBySection]);
-  const { bySection: marketStats, retry: retryMarketStats } = useSectionMarketStats(marketMode, dealId, sectionCodes);
+  const { bySection: marketStats } = useSectionMarketStats(marketMode, dealId, sectionCodes);
+  const marketSections = useMemo(
+    () => (marketMode ? sections.map((section) => resolveMarketSectionRows(section, reviewDealForTables)) : []),
+    [marketMode, sections, reviewDealForTables],
+  );
+  const marketSectionsById = useMemo(
+    () => Object.fromEntries(marketSections.map((section) => [section.sectionId, section])),
+    [marketSections],
+  );
+  const marketRequest = useMemo(
+    () => buildMarketMetricBatchRequest(marketSections, { subjectDealId: dealId }),
+    [marketSections, dealId],
+  );
+  const rowMarketStats = useRowMarketStats(
+    marketMode && Boolean(reviewDeal) && marketRequest.specs.length > 0,
+    marketRequest,
+  );
   const dealToMarket = useDealToMarket(marketMode, dealId);
   // r19 (WP-A, "off-market feed"): the unified market column's per-row
   // off-market marker (coded: differs from the corpus mode; numeric:
@@ -621,7 +645,8 @@ export default function ReviewPage() {
                   onViewInAgreement={hasAgreementText ? openSourceOverlay : null}
                   compare={compareIds.length ? compareBundle : null}
                   marketColumn={marketMode && section.id !== '__definitions' ? (marketStats[section.id] || null) : null}
-                  onMarketRetry={marketMode ? retryMarketStats : null}
+                  typedMarket={marketMode ? { section: marketSectionsById[section.id], data: rowMarketStats } : null}
+                  onMarketRetry={marketMode ? rowMarketStats.retry : null}
                 />
               ))}
             </div>

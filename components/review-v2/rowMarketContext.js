@@ -116,6 +116,134 @@ function registerBrowserContext(context) {
   registry[`${signature}|${context.marketKey || ''}`] = { ...context, registrySignature: signature };
 }
 
+function typedMetricSummary(spec, result) {
+  if (!spec || !result || result.state === 'not_comparable' || result.state === 'error') return null;
+  const kind = spec.comparison?.kind;
+  const attribute = spec.metricKey || spec.label || 'market-value';
+  const label = spec.label || attribute;
+  const coverage = result.coverage || {};
+  if (kind === 'presence') {
+    const denominator = result.prevalence?.eligibleCount ?? coverage.eligibleCount ?? null;
+    return {
+      attribute,
+      label,
+      kind: 'categorical',
+      values: [
+        { value: 'present', label: 'Present', count: coverage.presentCount ?? 0, denominator },
+        { value: 'absent', label: 'Absent', count: coverage.absentCount ?? 0, denominator },
+      ],
+    };
+  }
+  if (kind === 'categorical' || kind === 'multi_select') {
+    const distribution = result.distribution || {};
+    return {
+      attribute,
+      label,
+      kind: 'categorical',
+      values: (Array.isArray(distribution.values) ? distribution.values : []).map((item) => ({
+        ...item,
+        label: String(item?.label ?? item?.value ?? 'Not captured'),
+        denominator: distribution.denominatorCount ?? coverage.presentCount ?? null,
+      })),
+    };
+  }
+  if (kind === 'money') {
+    const subjectBasis = result?.subject?.dealValueBasis;
+    const cohort = (result?.distribution?.normalised?.cohorts || [])
+      .find((candidate) => candidate?.basis === subjectBasis);
+    const stats = cohort?.percent?.stats;
+    if (!stats) return null;
+    const basisLabel = ({
+      equity_value: 'equity value',
+      enterprise_value: 'enterprise value',
+      headline_transaction_value: 'headline deal value',
+    })[subjectBasis] || subjectBasis;
+    return {
+      attribute,
+      label: basisLabel ? `${label} (% of ${basisLabel})` : label,
+      kind: 'numeric',
+      unit: 'percent',
+      ...stats,
+      count: stats.n,
+    };
+  }
+  const distribution = result.distribution || {};
+  const cohort = Array.isArray(distribution.cohorts) ? distribution.cohorts[0] : null;
+  if (!cohort?.stats) return null;
+  return {
+    attribute,
+    label,
+    kind: 'numeric',
+    unit: cohort.semantics?.unit || spec.semantics?.unit || null,
+    ...cohort.stats,
+    count: cohort.stats.n,
+  };
+}
+
+export function buildTypedRowMarketContext(resolution, data) {
+  if (!resolution?.rowKey || data?.loading || data?.error) return null;
+  const responseRow = data?.byRow?.[resolution.rowKey];
+  if (!responseRow) return null;
+  const entries = (resolution.metrics || [])
+    .map((spec) => ({ spec, summary: typedMetricSummary(spec, responseRow.metrics?.[spec.metricKey]) }))
+    .filter((entry) => entry.summary);
+  if (!entries.length) return null;
+  const isException = (spec) => /exception/i.test(`${spec.metricKey || ''} ${spec.label || ''}`);
+  const treatments = entries
+    .filter(({ spec }) => !isException(spec)
+      && (spec.comparison?.kind === 'presence' || !['numeric', 'duration', 'money'].includes(spec.comparison?.kind)))
+    .map(({ summary }) => summary);
+  const exceptions = entries
+    .filter(({ spec }) => isException(spec))
+    .map(({ summary }) => summary);
+  const exceptionSet = new Set(exceptions);
+  const metrics = entries
+    .filter(({ spec, summary }) => ['numeric', 'duration', 'money'].includes(spec.comparison?.kind) && !exceptionSet.has(summary))
+    .map(({ summary }) => summary);
+  const results = entries.map(({ spec }) => responseRow.metrics?.[spec.metricKey]).filter(Boolean);
+  const presenceResult = entries
+    .find(({ spec }) => spec.comparison?.kind === 'presence')
+    ?.spec;
+  const presence = presenceResult ? responseRow.metrics?.[presenceResult.metricKey] : null;
+  const peerSetSize = presence?.prevalence?.eligibleCount
+    ?? presence?.coverage?.eligibleCount
+    ?? results.find((result) => Number.isFinite(result?.coverage?.eligibleCount))?.coverage.eligibleCount
+    ?? null;
+  const termDealCount = presence?.coverage?.presentCount
+    ?? results.find((result) => Number.isFinite(result?.coverage?.presentCount))?.coverage.presentCount
+    ?? null;
+  return {
+    marketKey: resolution.rowKey,
+    marketRowKey: resolution.rowKey,
+    label: resolution.label || resolution.rowKey,
+    peerSetSize,
+    termDealCount,
+    scope: 'typed-row-metric',
+    scopeNote: '',
+    treatments,
+    exceptions,
+    metrics,
+    primarySummary: treatments[0] || metrics[0] || exceptions[0] || entries[0].summary,
+    deals: [],
+    truncated: false,
+  };
+}
+
+export function registerTypedRowMarketContext(resolution, data) {
+  const context = buildTypedRowMarketContext(resolution, data);
+  if (typeof window === 'undefined' || !resolution?.rowKey) return context;
+  const registry = window.__MTX_ROW_MARKET_CONTEXTS__ || (window.__MTX_ROW_MARKET_CONTEXTS__ = {});
+  const key = `typed-row:${resolution.rowKey}`;
+  if (context) registry[key] = context;
+  else delete registry[key];
+  return context;
+}
+
+export function exactMarketContextForRowKey(contexts, rowKey) {
+  if (!rowKey || !Array.isArray(contexts)) return null;
+  return contexts.find((context) => String(context?.marketRowKey || '') === String(rowKey)) || null;
+}
+
 export function buildRowMarketContext(row, marketColumn) {
   if (!marketColumn || !marketColumn.stats) return null;
   const stats = marketColumn.stats || {};

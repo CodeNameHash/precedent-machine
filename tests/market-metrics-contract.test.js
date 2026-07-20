@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 
 import {
   MARKET_METRIC_CONTRACT_VERSION,
+  assignMarketRowKeys,
   assertMarketMetricCoverage,
   buildMarketMetricBatchRequest,
   comparableMetric,
@@ -159,10 +160,12 @@ test('material-contract rows use stable bucket keys and conditional money metric
     label: 'Customer contracts',
     threshold: '$7,500,000 per year',
   });
-  assert.equal(one.rowKey, 'material-contracts:customer:annual');
-  assert.equal(two.rowKey, 'material-contracts:customer:aggregate');
-  assert.equal(three.rowKey, one.rowKey);
+  assert.equal(one.rowKey, 'material-contracts:customer:annual:10-000-000-per-annum');
+  assert.equal(two.rowKey, 'material-contracts:customer:aggregate:5-000-000');
+  assert.equal(three.rowKey, 'material-contracts:customer:annual:7-500-000-per-year');
+  assert.notEqual(three.rowKey, one.rowKey);
   assert.notEqual(two.metrics[0].metricKey, one.metrics[0].metricKey);
+  assert.notEqual(three.metrics[0].metricKey, one.metrics[0].metricKey);
   assert.equal(one.resolution, 'manifest');
   assert.deepEqual(one.metrics.map((metric) => metric.comparison.kind), ['presence', 'money']);
   assert.equal(one.metrics[1].observation.presence.itemCode, 'CUSTOMER');
@@ -171,6 +174,79 @@ test('material-contract rows use stable bucket keys and conditional money metric
   assert.equal(one.metrics[1].semantics.cadence, 'annual');
   assert.equal(one.metrics[1].semantics.normalisation.basisPolicy, 'stratify_by_basis');
   assert.equal(one.metrics[1].denominator.conditionalOn.metricKey, one.metrics[0].metricKey);
+});
+
+test('visible-row keys stay deterministic and unique when ids or semantic labels repeat', () => {
+  const rows = [
+    { id: 'employee-benefits-severance', label: 'Severance' },
+    { id: 'employee-benefits-severance', label: 'Severance' },
+    { id: 'representations-qualifiers-11111111-1111-4111-8111-111111111111', label: 'Material Contracts' },
+    { id: 'representations-qualifiers-22222222-2222-4222-8222-222222222222', label: 'Material Contracts' },
+  ];
+  const context = { sectionId: 'employee-benefits', configId: 'employee-benefits' };
+  const firstPass = assignMarketRowKeys(rows, context);
+  const secondPass = assignMarketRowKeys(rows.map((row) => ({ ...row })), context);
+
+  assert.deepEqual(secondPass, firstPass);
+  assert.equal(new Set(firstPass).size, rows.length);
+  assert.equal(firstPass[1], `${firstPass[0]}~1`);
+  assert.equal(firstPass[3], `${firstPass[2]}~1`);
+});
+
+test('QXO-style duplicate material-contract rows retain one row and metric contract each', () => {
+  const visibleRows = [
+    {
+      id: 'material-contracts-AGGREGATE_PAYMENTS-1',
+      code: 'AGGREGATE_PAYMENTS',
+      label: 'Contracts above an aggregate-payments threshold',
+      threshold: '$10,000,000',
+      evidence: 'Expenditures or receipts of more than $10,000,000 in 2025.',
+    },
+    {
+      id: 'material-contracts-AGGREGATE_PAYMENTS-4',
+      code: 'AGGREGATE_PAYMENTS',
+      label: 'Contracts above an aggregate-payments threshold',
+      threshold: '$10,000,000 per annum',
+      evidence: 'Services or goods in excess of $10,000,000 per annum.',
+    },
+    {
+      id: 'material-contracts-OTHER-3',
+      code: 'OTHER',
+      label: 'Other material contracts',
+      threshold: 'Any',
+    },
+    {
+      id: 'material-contracts-OTHER-16',
+      code: 'OTHER',
+      label: 'Other material contracts',
+      threshold: 'Any',
+    },
+  ];
+  const section = resolveMarketSectionRows({
+    id: 'material-contracts',
+    title: 'Material Contracts',
+    config: { id: 'material-contracts', selectRows: () => visibleRows },
+  }, { cards: [] });
+  const uiKeys = assignMarketRowKeys(visibleRows, { sectionId: 'material-contracts', configId: 'material-contracts' });
+  const request = buildMarketMetricBatchRequest(section);
+  const expectedMetricCount = section.rows.reduce((count, row) => count + row.metrics.length, 0);
+  const available = new Set(request.specs.map((spec) => spec.metricKey));
+
+  assert.equal(section.rowCount, visibleRows.length);
+  assert.deepEqual(section.rows.map((row) => row.rowKey), uiKeys);
+  assert.equal(new Set(section.rows.map((row) => row.rowKey)).size, visibleRows.length);
+  assert.notEqual(section.rows[0].rowKey, section.rows[1].rowKey);
+  assert.match(section.rows[0].rowKey, /:specified-year:/);
+  assert.match(section.rows[1].rowKey, /:annual:/);
+  assert.equal(section.rows[0].metrics[1].semantics.cadence, 'specified_year');
+  assert.equal(section.rows[1].metrics[1].semantics.cadence, 'annual');
+  assert.equal(section.rows[3].rowKey, `${section.rows[2].rowKey}~1`);
+  assert.equal(request.specs.length, expectedMetricCount);
+  assert.equal(available.size, expectedMetricCount);
+  for (const spec of request.specs) {
+    const dependency = spec.denominator?.conditionalOn?.metricKey;
+    if (dependency) assert.equal(available.has(dependency), true, `missing ${dependency}`);
+  }
 });
 
 test('affirmative IOC limbs key by semantic label and expose conditional scope and efforts metrics', () => {
@@ -411,6 +487,40 @@ test('large market requests split on row boundaries and merge without coverage l
   assert.equal(merged.rowOrder.length, 384);
   assert.equal(Object.keys(merged.byRow).length, 384);
   assert.equal(merged.cohort.subjectDealId, 'subject');
+});
+
+test('large market requests keep cross-row conditional dependencies in one batch', () => {
+  const makeSpec = (metricKey, rowKey, dependency = null) => ({
+    rowKey,
+    metricKey,
+    ...(dependency ? { denominator: { conditionalOn: { metricKey: dependency, state: 'present' } } } : {}),
+  });
+  const specs = [makeSpec('parent', 'parent-row')];
+  for (let index = 0; index < 399; index += 1) {
+    specs.push(makeSpec(`filler-${index}`, `filler-row-${index}`));
+  }
+  specs.push(makeSpec('child', 'child-row', 'parent'));
+
+  const batches = splitMarketMetricBatchRequest({ contractVersion: 1, specs }, 400);
+  assert.equal(batches.every((batch) => batch.specs.length <= 400), true);
+  assert.equal(batches.flatMap((batch) => batch.specs).length, specs.length);
+  const dependencyBatch = batches.find((batch) => batch.specs.some((spec) => spec.metricKey === 'child'));
+  assert.equal(dependencyBatch.specs.some((spec) => spec.metricKey === 'parent'), true);
+});
+
+test('batch splitting fails only when one dependency component exceeds the limit', () => {
+  const specs = Array.from({ length: 401 }, (_, index) => ({
+    rowKey: `row-${index}`,
+    metricKey: `metric-${index}`,
+    ...(index ? {
+      denominator: { conditionalOn: { metricKey: `metric-${index - 1}`, state: 'present' } },
+    } : {}),
+  }));
+
+  assert.throws(
+    () => splitMarketMetricBatchRequest({ contractVersion: 1, specs }, 400),
+    /dependency component.*exceeds the batch limit/,
+  );
 });
 
 test('batch metric keys are unique across dynamic IOC rows and conditional dependencies are included', () => {

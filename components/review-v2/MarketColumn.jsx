@@ -15,6 +15,7 @@ const { prettifyEnumValue } = require('../review/shared');
 import {
   roundNum, formatMoney, formatNumericValueForUnit, formatNumericMarketSummary,
 } from './marketNumericFormat';
+import { registerTypedRowMarketContext } from './rowMarketContext';
 
 export { formatNumericValueForUnit, formatNumericMarketSummary };
 
@@ -294,6 +295,32 @@ function MetricResult({ spec, result, showLabel }) {
   );
 }
 
+export function MarketMetricCell({ resolution, data, onRetry = null }) {
+  registerTypedRowMarketContext(resolution, data);
+  if (!resolution) return <p className="text-[10px] text-[#8A8782]">Market metric not configured.</p>;
+  if (data?.loading) return <p className="text-[10px] text-[#8A8782]">Loading comparison…</p>;
+  if (data?.error) return <ErrorNote onRetry={onRetry}>Market comparison unavailable</ErrorNote>;
+  const responseRow = data?.byRow?.[resolution.rowKey];
+  return (
+    <div
+      className="space-y-2"
+      data-testid="market-cell"
+      data-market-row-key={resolution.rowKey}
+      data-market-provision-codes={resolution.metrics[0]?.cohort?.provisionCodes?.join(',') || undefined}
+    >
+      {resolution.metrics.map((spec) => (
+        <MetricResult
+          key={spec.metricKey}
+          spec={spec}
+          result={responseRow?.metrics?.[spec.metricKey]}
+          showLabel={resolution.metrics.length > 1}
+        />
+      ))}
+      {resolution.errors?.length ? <p className="text-[9px] text-[#B14E63]">Metric contract needs attention.</p> : null}
+    </div>
+  );
+}
+
 export function MarketRowsColumn({ section, data, onRetry }) {
   const rows = section?.rows || [];
   const resolvedCount = rows.filter((row) => data?.byRow?.[row.rowKey]).length;
@@ -308,33 +335,15 @@ export function MarketRowsColumn({ section, data, onRetry }) {
       {data?.error ? <ErrorNote onRetry={onRetry}>Market comparison unavailable: {data.error}</ErrorNote> : null}
       {!rows.length ? <StatusNote>No extracted rows require a market comparison.</StatusNote> : null}
       <div>
-        {rows.map((row) => {
-          const responseRow = data?.byRow?.[row.rowKey];
-          return (
+        {rows.map((row) => (
             <div
               key={row.rowKey}
               className="px-3 py-3 border-b border-[#EDEDEC] last:border-b-0"
-              data-market-row-key={row.rowKey}
-              data-market-provision-codes={row.metrics[0]?.cohort?.provisionCodes?.join(',') || undefined}
             >
               <p className="text-[10.5px] font-bold text-[#1F1F1F] mb-1.5">{row.label}</p>
-              {data?.loading ? <p className="text-[10px] text-[#8A8782]">Loading comparison…</p> : null}
-              {!data?.loading && !data?.error ? (
-                <div className="space-y-2">
-                  {row.metrics.map((spec) => (
-                    <MetricResult
-                      key={spec.metricKey}
-                      spec={spec}
-                      result={responseRow?.metrics?.[spec.metricKey]}
-                      showLabel={row.metrics.length > 1}
-                    />
-                  ))}
-                </div>
-              ) : null}
-              {row.errors?.length ? <p className="mt-1 text-[9px] text-[#B14E63]">Metric contract needs attention.</p> : null}
+              <MarketMetricCell resolution={row} data={data} onRetry={onRetry} />
             </div>
-          );
-        })}
+        ))}
       </div>
     </div>
   );

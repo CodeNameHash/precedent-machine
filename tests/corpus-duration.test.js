@@ -33,6 +33,31 @@ test('normalizeDurationClaim preserves business, calendar and elapsed clocks', (
   });
 });
 
+test('a parsed verbatim duration fails closed when evidence supplies a different clock', () => {
+  const conflicting = {
+    ...claim('a', 'NOSOL-INTERVENING', 4, 'four (4) calendar days prior notice'),
+    verbatim: 'four (4) business days',
+  };
+  assert.equal(normalizeDurationClaim(conflicting), null);
+});
+
+test('a parsed verbatim duration survives agreeing primary, structured and linked evidence', () => {
+  const consistent = {
+    ...claim('a', 'NOSOL-INTERVENING', 4, 'four (4) business days prior notice'),
+    verbatim: 'four (4) business days',
+    provenance: {
+      code: 'NOSOL-INTERVENING',
+      value: 4,
+      unit: 'business_days',
+      feature_value: { value: 4, unit: 'business_days' },
+    },
+  };
+  assert.deepEqual(
+    normalizeDurationClaim(consistent, 'Parent receives four (4) business days prior written notice.'),
+    { value: 4, unit: 'business_days' },
+  );
+});
+
 test('normalizeDurationClaim can use the linked card quote when a rematerialized claim lost its evidence', () => {
   const qxo = claim('qxo', 'NOSOL-INTERVENING', 4, null, 'qxo-intervening');
   const linked = 'The Company has given Parent at least four (4) business days prior written notice and a new four (4)-business day period applies to each change.';

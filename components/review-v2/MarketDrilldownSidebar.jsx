@@ -88,7 +88,7 @@ function DistributionSection({ title, summaries, denominator }) {
 export default function MarketDrilldownSidebar({ context, onClose }) {
   if (!context) {
     return (
-      <aside className="hidden lg:block w-[340px] shrink-0 border-l border-border bg-white sticky top-[var(--mtx-head-h,72px)] h-[calc(100vh-var(--mtx-head-h,72px))]">
+      <aside className="hidden lg:block w-[340px] shrink-0 border-l border-border bg-white sticky top-[var(--mtx-head-h,72px)] h-[calc(100vh-var(--mtx-head-h,72px))]" data-testid="market-drilldown-sidebar">
         <div className="p-5">
           <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-ink">Market detail</div>
           <p className="mt-3 text-[11px] leading-5 text-inkLight">Select a market cell to see every captured treatment, exception, and underlying deal.</p>

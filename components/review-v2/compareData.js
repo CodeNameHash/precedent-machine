@@ -100,7 +100,7 @@ async function fetchJson(url, { signal, timeoutMs = FETCH_TIMEOUT_MS, ...request
   }
 }
 
-// One typed batch for every visible review row. `request` is produced by
+// Typed batches for every visible review row. `request` is produced by
 // buildMarketMetricBatchRequest() and contains the row contract, not display
 // data, so the server can apply one denominator and unit policy consistently.
 export function useRowMarketStats(enabled, request) {

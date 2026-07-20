@@ -56,6 +56,7 @@ const taxonomy = require('../../lib/taxonomy');
 // builder in corpus-stats-core (CJS, unit-tested directly there).
 const { isRelativePeriodField } = require('../../lib/query/relative-periods');
 const { buildFeaturesForCard } = require('../../lib/queries/claims-adapter');
+const { selectDurationCohort } = require('../../lib/queries/corpus-duration');
 // r19 (WP-A, numeric market cells): the SAME percentile primitive
 // corpus-stats-core.js's featureSummary numeric entries use — reused here so
 // rowContext's numeric distribution and featureSummary never disagree.
@@ -93,6 +94,13 @@ const {
   isNumericAttribute,
   numericAttributeUnit,
 } = require('../../lib/queries/corpus-stats-core');
+
+const DURATION_UNITS = new Set(['hours', 'elapsed_hours', 'days', 'calendar_days', 'business_days', 'months', 'years']);
+
+function isDurationAttribute(attribute) {
+  if (DURATION_UNITS.has(String(numericAttributeUnit(attribute) || '').toLowerCase())) return true;
+  return /(?:period|deadline|duration|window|days|hours|months|years)$/i.test(String(attribute || ''));
+}
 
 // The claims fetch filters on provenance->>code — an expression Postgres has
 // no index for, so a cold (uncached) call scans the claims table. When the
@@ -133,7 +141,7 @@ function median(sortedNums) {
 // counting (always DEALS, never claims). `presentDealEntries` is only
 // meaningful at 'subtype' scope (see the handler) — it powers the explicit
 // "none captured" bucket in buildCategoricalDealDistribution.
-function buildFeatureDistribution(attribute, peerClaims, subjectDealId, dealsById, cardIdByKey, dealMetaById, presentDealEntries) {
+function buildFeatureDistribution(attribute, peerClaims, subjectDealId, dealsById, cardIdByKey, dealMetaById, presentDealEntries, options = {}) {
   const label = attributeLabel(attribute);
   // r14: deal-relative look-back fields distribute over months-before-
   // signing, never over raw anchor dates — see the registry module header.
@@ -143,7 +151,7 @@ function buildFeatureDistribution(attribute, peerClaims, subjectDealId, dealsByI
   if (isNumericAttribute(attribute, peerClaims)) {
     const byDeal = new Map();
     const claimByDeal = new Map();
-    let unit = (FEATURES[attribute] && FEATURES[attribute].unit) || null;
+    let unit = numericAttributeUnit(attribute);
     let strictDurationCohort = null;
 
     if (isDurationAttribute(attribute)) {
@@ -195,7 +203,7 @@ function buildFeatureDistribution(attribute, peerClaims, subjectDealId, dealsByI
       attribute,
       label,
       kind: 'numeric',
-      unit: numericAttributeUnit(attribute),
+      unit,
       min: nums[0],
       // r19: additive percentiles alongside min/median/max, via the same
       // quantile() primitive featureSummary's numeric entries use.
@@ -426,7 +434,13 @@ export default async function handler(req, res) {
         // a family/corpus fallback means the universe is broader than one
         // code, so presentDealEntries would misrepresent it.
         const presentDealEntries = new Map();
+        const evidenceByCardKey = new Map();
         for (const c of cards || []) {
+          if (c.excerpt_id) {
+            const evidence = c.primary_quote || c.region_full_text || '';
+            const key = `${c.deal_id}|${c.excerpt_id}`;
+            if (evidence && evidence.length > (evidenceByCardKey.get(key) || '').length) evidenceByCardKey.set(key, evidence);
+          }
           if (!peerIds.has(c.deal_id) || presentDealEntries.has(c.deal_id)) continue;
           const d = dealsById.get(c.deal_id);
           presentDealEntries.set(c.deal_id, { id: c.deal_id, name: d ? d.name : c.deal_id, cardId: c.id || null });
@@ -445,6 +459,7 @@ export default async function handler(req, res) {
             const dist = buildFeatureDistribution(
               attribute, scopedClaims, subjectDealId, dealsById, cardIdByKey, dealMetaById,
               scope === 'subtype' ? presentDealEntries : null,
+              { requestedCode: code, evidenceByCardKey },
             );
             return dist ? { ...dist, scope, scopeNote } : null;
           })
