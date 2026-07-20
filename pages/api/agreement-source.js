@@ -1,5 +1,9 @@
 import { getServiceSupabase } from '../../lib/supabase';
 
+// Cap runaway executions: when Supabase stalls, uncapped functions run the
+// full 300s each holding a DB connection (2026-07-19 pile-up).
+export const config = { maxDuration: 60 };
+
 export default async function handler(req, res) {
   const sb = getServiceSupabase();
   if (!sb) return res.status(500).json({ error: 'Supabase not configured' });

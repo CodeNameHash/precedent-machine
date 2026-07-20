@@ -55,6 +55,14 @@ const { buildFeaturesForCard } = require('../../lib/queries/claims-adapter');
 
 const CACHE = 's-maxage=3600, stale-while-revalidate=86400';
 
+// The claims fetch filters on provenance->>code — an expression Postgres has
+// no index for, so a cold (uncached) call scans the claims table. When the
+// DB is degraded those scans stall; without a cap Vercel lets the function
+// run 300s, each one holding a Postgres connection the whole time (observed
+// 2026-07-19: 24 five-minute zombies compounding into a 522 pile-up). Fail
+// in 60s instead — the client already has its own abort + retry.
+export const config = { maxDuration: 60 };
+
 function num(v) {
   const n = Number(v);
   return Number.isFinite(n) ? n : null;

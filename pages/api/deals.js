@@ -1,4 +1,9 @@
 import { getServiceSupabase } from '../../lib/supabase';
+
+// Cap runaway executions: when Supabase stalls, uncapped functions run the
+// full 300s each holding a DB connection (2026-07-19 pile-up). 60s is far
+// above any healthy response time for this route.
+export const config = { maxDuration: 60 };
 const { QUALITY_METRICS_TABLE } = require('../../lib/deal-quality-metrics');
 const { DEAL_HEADER_SELECT, headerRowToDeal } = require('../../lib/queries/deal-header');
 

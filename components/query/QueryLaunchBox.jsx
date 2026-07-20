@@ -19,7 +19,9 @@
 // and 390px via a temporary pages/query/_launch-box-preview.js harness,
 // removed after the work-package screenshots were captured).
 
-import { useEffect, useMemo, useState } from 'react';
+import {
+  useEffect, useMemo, useRef, useState,
+} from 'react';
 import { useRouter } from 'next/router';
 import {
   ProvisionTypeSelect, FilterRow, coerceFilterForPayload, KindTabs,
@@ -100,7 +102,28 @@ export default function QueryLaunchBox({
     onRequestDealPick(PICK_MODE_KINDS.has(kind) ? kind : null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [kind]);
-  useEffect(() => () => { if (onRequestDealPick) onRequestDealPick(null); }, [onRequestDealPick]);
+  // Bug fix (Ben, wave-3 QA -- Deal compare / Deal to market pick mode never
+  // armed): this used to be `useEffect(() => () => onRequestDealPick(null),
+  // [onRequestDealPick])`. If the CALLER ever hands this component a
+  // freshly-identitied callback on every render (pages/index.js did, before
+  // its own fix), React treats that as "the dependency changed" and runs the
+  // cleanup from the PREVIOUS effect instance immediately, before re-running
+  // the effect -- so `onRequestDealPick(null)` fired on every parent
+  // re-render, cancelling pick-mode a moment after it was armed. The real
+  // fix is stabilizing the callback on the caller's side (done in
+  // pages/index.js via useCallback), but this effect is made resilient to
+  // caller identity churn too -- defense in depth, since any future caller
+  // that forgets useCallback would silently reintroduce the same bug. Keep
+  // the latest callback in a ref (always current, never a dependency) and
+  // register the unmount-only cleanup with an EMPTY dependency array so it
+  // only runs once, on this component's real unmount -- never on a parent
+  // re-render.
+  const onRequestDealPickRef = useRef(onRequestDealPick);
+  onRequestDealPickRef.current = onRequestDealPick;
+  useEffect(() => () => {
+    if (onRequestDealPickRef.current) onRequestDealPickRef.current(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // MARKET_RANGE's field picker: a real dropdown of NUMERIC fields for the
   // chosen provision type (Ben: no free-text field-path box). Reuses the

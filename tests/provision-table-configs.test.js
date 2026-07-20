@@ -1677,6 +1677,48 @@ test('formatMoney recovers the figure from a verbatim-only claim (Metsera 5.01(d
   assert.equal(iocMod.formatMoney('shall not exceed $2,000,000 in the aggregate'), '$2,000,000');
 });
 
+// Bug fix (Ben, wave-3 QA -- live report on Heinz/Kraft's "Settlement of
+// Claims" IOC card): a threshold carrying TWO dollar amounts used to fall
+// into the old bare-Number() coercion, which strips every non-digit
+// (including the space between the figures) and CONCATENATES them into one
+// fabricated number -- "$10,000,000 individually or $25,000,000 in the
+// aggregate" rendered as "Trigger: $1,000,000,025,000,000". A money pill
+// must never fabricate a number.
+test('formatMoney renders a two-amount individually/aggregate threshold as both amounts with their roles, never a concatenated number (Heinz/Kraft)', () => {
+  const result = iocMod.formatMoney('$10,000,000 individually or $25,000,000 in the aggregate');
+  assert.equal(result, '$10,000,000 individually / $25,000,000 in aggregate');
+  assert.ok(!result.includes('1,000,000,025,000,000'), 'must never concatenate the two figures into one fabricated numeral');
+  assert.ok(result.includes('$10,000,000'));
+  assert.ok(result.includes('$25,000,000'));
+});
+
+// Bug fix (Ben, wave-3 QA -- live report on QXO/TopBuild): a single-amount
+// threshold immediately followed by the sentence's own comma ("Below
+// $10,000,000, if ...") used to have that comma swept INTO the match by the
+// old `[\d,]+` regex, rendering "Below $10,000,000," with a dangling comma.
+test('formatMoney strips a trailing comma that belongs to the sentence, not the number (QXO)', () => {
+  assert.equal(iocMod.formatMoney('Below $10,000,000, the Company need not seek consent'), '$10,000,000');
+  assert.equal(iocMod.formatMoney('$10,000,000,'), '$10,000,000');
+});
+
+// Plain single-amount case: unchanged behavior -- clean currency, no
+// trailing punctuation, no role-splitting logic engaged.
+test('formatMoney formats a plain single dollar amount unchanged', () => {
+  assert.equal(iocMod.formatMoney('$5,000,000'), '$5,000,000');
+  assert.equal(iocMod.formatMoney(5000000), '$5,000,000');
+  assert.equal(iocMod.formatMoney('5000000'), '$5,000,000');
+});
+
+// Two+ amounts without a parseable individually/aggregate role: falls back
+// to the quoted phrase as-is (trimmed), never a concatenated/fabricated
+// number.
+test('formatMoney falls back to the trimmed quoted phrase when two amounts carry no resolvable role', () => {
+  const result = iocMod.formatMoney('an amount between $1,000,000 and $2,000,000.');
+  assert.ok(!/^\$[\d,]+$/.test(result), 'must not collapse to a single bare numeral');
+  assert.ok(!result.includes('1,000,000,2,000,000') && !result.includes('1,000,0002,000,000'));
+  assert.equal(result, 'an amount between $1,000,000 and $2,000,000');
+});
+
 test('ioc-exceptions config groups repeated cards sharing a canonical code into ONE negative-covenant row (Metsera: 3 IOC-MERGE cards)', () => {
   const cards = [
     { id: 'merge-1', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-MERGE', short_title: 'Mergers / Acquisitions / Dispositions', features: { restrictionComponents: ['ASSET_SALES_LICENSES'], permittedExceptions: [{ code: 'ORDINARY_COURSE', label: 'Ordinary course', text: 'ordinary course of business' }], mainObligation: 'The Company may not sell material assets.' } },
