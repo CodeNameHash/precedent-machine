@@ -111,6 +111,10 @@ test('typed duration context is registered under its exact market row key', () =
   };
   const coverage = { cohortCount: 40, eligibleCount: 40, presentCount: 13, absentCount: 27 };
   const data = {
+    dealDirectory: {
+      'peer-1': { dealId: 'peer-1', dealName: 'Buyer One / Target One' },
+      'peer-2': { dealId: 'peer-2', dealName: 'Buyer Two / Target Two' },
+    },
     byRow: {
       [resolution.rowKey]: {
         metrics: {
@@ -137,7 +141,48 @@ test('typed duration context is registered under its exact market row key', () =
   );
 });
 
-test('typed money context exposes only the subject deal\'s same-basis percentage cohort', () => {
+test('typed duration context never substitutes a different legal-clock cohort', () => {
+  const resolution = {
+    rowKey: 'sec-meeting:proxy-filing-deadline',
+    label: 'Proxy filing deadline',
+    metrics: [{
+      metricKey: 'proxy.deadline',
+      label: 'Proxy filing deadline',
+      comparison: { kind: 'duration' },
+      semantics: { unit: 'days_equivalent' },
+    }],
+  };
+  const data = {
+    byRow: {
+      [resolution.rowKey]: {
+        metrics: {
+          'proxy.deadline': {
+            state: 'unique',
+            coverage: { eligibleCount: 2, presentCount: 2, comparableCount: 2 },
+            subject: {
+              value: 10,
+              semantics: { unit: 'days_equivalent', calendarBasis: 'mixed', trigger: 'SIGNING' },
+            },
+            distribution: {
+              cohorts: [{
+                semantics: { unit: 'days_equivalent', calendarBasis: 'mixed', trigger: 'EFFECTIVENESS' },
+                stats: { n: 2, min: 4, median: 5, max: 6 },
+              }],
+            },
+          },
+        },
+      },
+    },
+  };
+
+  const context = mod.buildTypedRowMarketContext(resolution, data);
+  assert.equal(context.metrics[0].comparisonUnavailable, true);
+  assert.equal(context.metrics[0].median, undefined);
+  assert.equal(context.metrics[0].subjectValue, 10);
+  assert.match(context.metrics[0].comparisonUnavailableReason, /same unit, calendar basis, trigger, and cadence/);
+});
+
+test('typed money context exposes only the subject deal\'s same-basis and same-cadence percentage cohort', () => {
   const resolution = {
     rowKey: 'material-contracts:aggregate-payments:annual',
     label: 'Aggregate payments',
@@ -146,19 +191,29 @@ test('typed money context exposes only the subject deal\'s same-basis percentage
     ],
   };
   const data = {
+    dealDirectory: {
+      'enterprise-peer': { dealId: 'enterprise-peer', dealName: 'Enterprise Buyer / Target' },
+      'equity-annual-peer': { dealId: 'equity-annual-peer', dealName: 'Annual Buyer / Target' },
+      'equity-peer': { dealId: 'equity-peer', dealName: 'Equity Buyer / Target' },
+    },
     byRow: {
       [resolution.rowKey]: {
         metrics: {
           'material.threshold': {
             state: 'ready',
             coverage: { cohortCount: 40, presentCount: 13 },
-            subject: { dealValueBasis: 'equity_value' },
+            subject: {
+              dealValueBasis: 'equity_value',
+              semantics: { unit: 'usd', cadence: 'specified_year' },
+              percentOfDealValue: 0.08,
+            },
             distribution: {
               raw: { unit: 'usd', stats: { n: 13, median: 10000000 } },
               normalised: {
                 cohorts: [
-                  { basis: 'enterprise_value', percent: { stats: { n: 8, min: 0.1, median: 0.2, max: 0.3 } } },
-                  { basis: 'equity_value', percent: { stats: { n: 5, min: 0.05, p25: 0.08, median: 0.1, p75: 0.12, max: 0.2 } } },
+                  { basis: 'enterprise_value', semantics: { unit: 'usd', cadence: 'specified_year' }, percent: { stats: { n: 8, min: 0.1, median: 0.2, max: 0.3 } }, dealIds: ['enterprise-peer'] },
+                  { basis: 'equity_value', semantics: { unit: 'usd', cadence: 'annual' }, percent: { stats: { n: 6, min: 0.1, median: 0.4, max: 0.8 } }, dealIds: ['equity-annual-peer'] },
+                  { basis: 'equity_value', semantics: { unit: 'usd', cadence: 'specified_year' }, percent: { stats: { n: 5, min: 0.05, p25: 0.08, median: 0.1, p75: 0.12, max: 0.2 } }, dealIds: ['equity-peer'] },
                 ],
               },
             },
@@ -173,7 +228,101 @@ test('typed money context exposes only the subject deal\'s same-basis percentage
   assert.equal(context.metrics[0].unit, 'percent');
   assert.equal(context.metrics[0].median, 0.1);
   assert.match(context.metrics[0].label, /equity value/);
+  assert.match(context.metrics[0].label, /specified year/i);
   assert.notEqual(context.metrics[0].median, 10000000);
+  assert.equal(context.metrics[0].comparisonCohorts.length, 3);
+  assert.deepEqual(context.deals, [data.dealDirectory['equity-peer']]);
+});
+
+test('typed money context states when no peer shares both basis and cadence', () => {
+  const resolution = {
+    rowKey: 'material-contracts:aggregate-payments:specified-year',
+    label: 'Aggregate payments',
+    metrics: [{
+      metricKey: 'material.threshold',
+      label: 'Threshold',
+      comparison: { kind: 'money' },
+      semantics: { stratifyDimensions: ['cadence'] },
+    }],
+  };
+  const data = {
+    byRow: {
+      [resolution.rowKey]: {
+        metrics: {
+          'material.threshold': {
+            state: 'unique',
+            coverage: { presentCount: 1 },
+            subject: {
+              dealValueBasis: 'equity_value',
+              semantics: { unit: 'usd', cadence: 'specified_year' },
+              percentOfDealValue: 0.08,
+            },
+            distribution: {
+              normalised: {
+                cohorts: [{
+                  basis: 'equity_value',
+                  semantics: { unit: 'usd', cadence: 'annual' },
+                  percent: { stats: { n: 1, median: 0.4 } },
+                }],
+              },
+            },
+          },
+        },
+      },
+    },
+  };
+
+  const context = mod.buildTypedRowMarketContext(resolution, data);
+  assert.equal(context.metrics[0].comparisonUnavailable, true);
+  assert.equal(context.metrics[0].subjectValue, 0.08);
+  assert.match(context.metrics[0].comparisonUnavailableReason, /same deal-value basis and cadence/);
+  assert.equal(context.metrics[0].comparisonCohorts[0].selected, false);
+});
+
+test('typed rep bring-down context uses reviewer-facing labels for every applicable tier', () => {
+  const resolution = {
+    rowKey: 'parent-representations-qualifiers:capitalization',
+    label: 'Capitalization',
+    metrics: [{
+      metricKey: 'rep.capitalization.bring-down',
+      label: 'Bring-down standard',
+      comparison: { kind: 'multi_select' },
+      presentation: { role: 'treatment' },
+    }],
+  };
+  const data = {
+    byRow: {
+      [resolution.rowKey]: {
+        metrics: {
+          'rep.capitalization.bring-down': {
+            state: 'ready',
+            coverage: { presentCount: 20 },
+            subject: {
+              values: ['MAT_ALL_RESPECTS_DE_MINIMIS', 'MAT_MATERIALITY_SCRAPE'],
+            },
+            distribution: {
+              kind: 'multi_select',
+              denominatorCount: 20,
+              values: [
+                { value: 'MAT_ALL_RESPECTS_DE_MINIMIS', count: 8 },
+                { value: 'MAT_MATERIALITY_SCRAPE', count: 12 },
+              ],
+            },
+          },
+        },
+      },
+    },
+  };
+
+  const context = mod.buildTypedRowMarketContext(resolution, data);
+  assert.deepEqual(context.treatments[0].values.map((entry) => entry.label), [
+    'True except for de minimis inaccuracies',
+    'Materiality qualifiers disregarded',
+  ]);
+  assert.equal(
+    context.treatments[0].subjectLabel,
+    'True except for de minimis inaccuracies, Materiality qualifiers disregarded',
+  );
 });
 
 test('typed row context prioritises substantive term detail and excludes prevalence from treatments', () => {
@@ -187,6 +336,10 @@ test('typed row context prioritises substantive term detail and excludes prevale
   };
   const coverage = { cohortCount: 40, eligibleCount: 40, presentCount: 30, absentCount: 10 };
   const data = {
+    dealDirectory: {
+      'peer-1': { dealId: 'peer-1', dealName: 'Buyer One / Target One' },
+      'peer-2': { dealId: 'peer-2', dealName: 'Buyer Two / Target Two' },
+    },
     byRow: {
       [resolution.rowKey]: {
         metrics: {
@@ -194,9 +347,10 @@ test('typed row context prioritises substantive term detail and excludes prevale
           'ioc.standard': {
             state: 'ready',
             coverage,
+            dealIdsByStatus: { present: ['peer-1', 'peer-2'] },
             distribution: {
               denominatorCount: 30,
-              values: [{ value: 'ORDINARY_COURSE', count: 22, rate: 22 / 30 }],
+              values: [{ value: 'ORDINARY_COURSE', count: 22, rate: 22 / 30, dealIds: ['peer-1'] }],
             },
           },
         },
@@ -210,6 +364,67 @@ test('typed row context prioritises substantive term detail and excludes prevale
   assert.equal(context.primarySummary.attribute, 'ioc.standard');
   assert.equal(context.treatments.some((summary) => summary.attribute === 'ioc.presence'), false);
   assert.equal(context.termDealCount, 30);
+  assert.deepEqual(context.treatments[0].values[0].deals, [data.dealDirectory['peer-1']]);
+  assert.deepEqual(context.deals, [data.dealDirectory['peer-1']]);
+});
+
+test('typed row context attaches exact supporting cards and upgrades deal-only prevalence links', () => {
+  const resolution = {
+    rowKey: 'term:exact-support',
+    label: 'Exact support',
+    metrics: [
+      { metricKey: 'term.presence', label: 'Prevalence', comparison: { kind: 'presence' } },
+      { metricKey: 'term.treatment', label: 'Treatment', comparison: { kind: 'categorical' } },
+    ],
+  };
+  const coverage = { eligibleCount: 2, presentCount: 1, absentCount: 1 };
+  const dealDirectory = {
+    peer: { dealId: 'peer', dealName: 'Buyer / Target' },
+    absent: { dealId: 'absent', dealName: 'Other Buyer / Other Target' },
+  };
+  const data = {
+    dealDirectory,
+    byRow: {
+      [resolution.rowKey]: {
+        metrics: {
+          'term.presence': {
+            state: 'unique',
+            coverage,
+            prevalence: coverage,
+            dealIdsByStatus: { present: ['peer'], absent: ['absent'], unknown: [], not_applicable: [] },
+            dealRefsByStatus: {
+              present: [{ dealId: 'peer' }],
+              absent: [{ dealId: 'absent' }],
+              unknown: [],
+              not_applicable: [],
+            },
+          },
+          'term.treatment': {
+            state: 'unique',
+            coverage,
+            distribution: {
+              denominatorCount: 1,
+              values: [{
+                value: 'EXACT',
+                count: 1,
+                dealIds: ['peer'],
+                dealRefs: [{ dealId: 'peer', cardId: 'card-exact' }],
+              }],
+            },
+          },
+        },
+      },
+    },
+  };
+
+  const context = mod.buildTypedRowMarketContext(resolution, data);
+  assert.deepEqual(context.treatments[0].values[0].deals, [
+    { ...dealDirectory.peer, cardId: 'card-exact' },
+  ]);
+  assert.deepEqual(context.deals.find((deal) => deal.dealId === 'peer'), {
+    ...dealDirectory.peer,
+    cardId: 'card-exact',
+  });
 });
 
 test('typed row context uses the legacy term distribution when the contract only has prevalence', () => {
@@ -231,4 +446,67 @@ test('typed row context uses the legacy term distribution when the contract only
   assert.equal(context.primarySummary.attribute, 'materialityQualifier');
   assert.equal(context.treatments[0].values[0].label, 'No materiality qualifier');
   assert.equal(context.termDealCount, 36);
+});
+
+test('typed row context retains a legacy term distribution when the typed batch fails', () => {
+  const resolution = {
+    rowKey: 'rep:capitalisation',
+    label: 'Capitalisation',
+    metrics: [{ metricKey: 'rep.presence', label: 'Prevalence', comparison: { kind: 'presence' } }],
+  };
+  const fallback = {
+    attribute: 'knowledgeQualifier',
+    label: 'Knowledge qualifier',
+    kind: 'categorical',
+    values: [{ value: 'NONE', label: 'No knowledge qualifier', count: 31, denominator: 40 }],
+  };
+
+  const context = mod.buildTypedRowMarketContext(resolution, { error: 'Timed out', byRow: {} }, fallback);
+  assert.equal(context.primarySummary.attribute, 'knowledgeQualifier');
+  assert.equal(context.treatments[0].values[0].label, 'No knowledge qualifier');
+});
+
+test('typed presence subterms remain substantive while prevalence stays metadata during progressive loading', () => {
+  const resolution = {
+    rowKey: 'equity-awards:stock-options',
+    label: 'Stock Options',
+    metrics: [
+      { metricKey: 'equity.options.presence', label: 'Stock Options prevalence', comparison: { kind: 'presence' }, presentation: { role: 'prevalence' } },
+      { metricKey: 'equity.options.cvr', label: 'CVR entitlement', comparison: { kind: 'presence' }, presentation: { role: 'treatment' } },
+    ],
+  };
+  const data = {
+    loading: true,
+    dealDirectory: {
+      'peer-cvr': { dealId: 'peer-cvr', dealName: 'Buyer / CVR Target' },
+      'peer-no-cvr': { dealId: 'peer-no-cvr', dealName: 'Buyer / Cash Target' },
+    },
+    byRow: {
+      [resolution.rowKey]: {
+        metrics: {
+          'equity.options.presence': {
+            state: 'ready',
+            coverage: { eligibleCount: 40, presentCount: 22, absentCount: 18 },
+            prevalence: { eligibleCount: 40, presentCount: 22 },
+          },
+          'equity.options.cvr': {
+            state: 'ready',
+            coverage: { eligibleCount: 22, presentCount: 8, absentCount: 14 },
+            prevalence: { eligibleCount: 22, presentCount: 8 },
+            subject: { status: 'present', present: true },
+            dealIdsByStatus: { present: ['peer-cvr'], absent: ['peer-no-cvr'] },
+          },
+        },
+      },
+    },
+  };
+
+  const context = mod.buildTypedRowMarketContext(resolution, data);
+  assert.equal(context.treatments.length, 1);
+  assert.equal(context.treatments[0].attribute, 'equity.options.cvr');
+  assert.equal(context.termDealCount, 22);
+  assert.equal(context.primarySummary.attribute, 'equity.options.cvr');
+  assert.deepEqual(context.treatments[0].subjectValues, ['present']);
+  assert.equal(context.treatments[0].values[0].deals[0].dealId, 'peer-cvr');
+  assert.equal(context.treatments[0].values[1].deals[0].dealId, 'peer-no-cvr');
 });

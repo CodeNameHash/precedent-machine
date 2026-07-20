@@ -18,6 +18,96 @@ import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
+const THIRD_PARTY_MARKET_SUBTERMS = [
+  {
+    key: 'named-beneficiaries',
+    label: 'Named beneficiaries',
+    featureKeys: ['thirdPartyBeneficiaries'],
+    kind: 'multi_select',
+    role: 'treatment',
+    value: {
+      strategy: 'feature_value',
+      featureKeys: ['thirdPartyBeneficiaries'],
+      normalizer: 'third_party_beneficiary_types',
+    },
+  },
+  {
+    key: 'beneficiary-exceptions',
+    label: 'Enforceable rights / carve-outs',
+    featureKeys: ['thirdPartyBeneficiaryExceptions'],
+    kind: 'multi_select',
+    role: 'exception',
+    value: {
+      strategy: 'feature_value',
+      featureKeys: ['thirdPartyBeneficiaryExceptions'],
+      normalizer: 'third_party_enforceable_rights',
+    },
+  },
+];
+
+const FEE_EXPENSE_MARKET_SUBTERMS = [
+  {
+    key: 'allocation',
+    label: 'Allocation terms',
+    featureKeys: ['feeExpenseAllocation', 'expensesAllocation'],
+    kind: 'multi_select',
+    role: 'treatment',
+    value: {
+      strategy: 'feature_value',
+      featureKeys: ['feeExpenseAllocation', 'expensesAllocation'],
+      normalizer: 'fee_expense_allocation',
+    },
+  },
+];
+
+const ASSIGNMENT_MARKET_SUBTERMS = [
+  {
+    key: 'restrictions',
+    label: 'Assignment restrictions',
+    featureKeys: ['assignmentRestrictions'],
+    kind: 'multi_select',
+    role: 'treatment',
+    value: {
+      strategy: 'feature_value',
+      featureKeys: ['assignmentRestrictions'],
+      normalizer: 'assignment_restrictions',
+    },
+  },
+  {
+    key: 'permitted-assignments',
+    label: 'Permitted assignees / conditions',
+    featureKeys: ['parentAssignmentConditions'],
+    kind: 'multi_select',
+    role: 'treatment',
+  },
+  {
+    key: 'consent',
+    label: 'Consent required',
+    featureKeys: ['companyConsentForAssignment'],
+    kind: 'categorical',
+    role: 'treatment',
+  },
+  {
+    key: 'exceptions',
+    label: 'Assignment exceptions',
+    featureKeys: ['assignmentExceptions'],
+    kind: 'multi_select',
+    role: 'exception',
+    value: {
+      strategy: 'feature_value',
+      featureKeys: ['assignmentExceptions'],
+      normalizer: 'assignment_exceptions',
+    },
+  },
+  {
+    key: 'provisos',
+    label: 'Assignment conditions / provisos',
+    featureKeys: ['assignmentProvisos'],
+    kind: 'multi_select',
+    role: 'exception',
+  },
+];
+
 // Ben (round 6): "Advisers / Fees / Expenses" is folded INTO this Misc table
 // (it was one thin fee/expense-allocation row). The base rule ("Each party
 // bears its own expenses, except:") moves to the TOP of the Provision cell,
@@ -27,7 +117,14 @@ function buildFeeExpenseRow(reviewDeal) {
   const feeCards = allCards.filter(isAdvisersFeesCard);
   const row = buildExpenseExceptionsRow(feeCards, allCards);
   if (!row) return null;
-  return { ...row, id: 'misc-boilerplate-fee-expense', kind: 'Boilerplate', baseRule: row.detail, detail: null };
+  return {
+    ...row,
+    id: 'misc-boilerplate-fee-expense',
+    kind: 'Boilerplate',
+    baseRule: row.detail,
+    detail: null,
+    marketSubterms: FEE_EXPENSE_MARKET_SUBTERMS,
+  };
 }
 
 // REBUILD-SPECS.md section 13: forum / governing-law selection does not
@@ -199,7 +296,18 @@ function buildAssignmentRow(cards) {
   if (restriction) signals.push({ id: 'misc-assign-restrict', label: "Otherwise, no assignment without the other party's prior written consent", value: 'no-assign', tone: 'neutral', evidence, source: card });
   signals.push(...assignmentProvisoSignals(cards, evidence, card));
   if (!signals.length) return null;
-  return { id: 'misc-boilerplate-assignment', label: 'Assignment', kind: 'Boilerplate', detail: null, evidence, source: labelOf(card), sourceCard: card, present: true, signals };
+  return {
+    id: 'misc-boilerplate-assignment',
+    label: 'Assignment',
+    kind: 'Boilerplate',
+    detail: null,
+    evidence,
+    source: labelOf(card),
+    sourceCard: card,
+    present: true,
+    signals,
+    marketSubterms: ASSIGNMENT_MARKET_SUBTERMS,
+  };
 }
 
 // --- Third-party beneficiaries: person(s) + the provision they benefit
@@ -391,6 +499,7 @@ function buildThirdPartyBeneficiaryRow(cards, allCards) {
     source: labelOf(primaryCard),
     sourceCard: primaryCard,
     present: true,
+    marketSubterms: THIRD_PARTY_MARKET_SUBTERMS,
     signals: facts.map((fact) => ({
       id: fact.id,
       label: factLabel(fact),

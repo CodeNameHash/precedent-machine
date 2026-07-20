@@ -76,3 +76,55 @@ test('money cohorts require an exact subject deal-value basis', () => {
   assert.equal(mod.matchingMoneyCohort(distribution, 'headline_transaction_value'), null);
   assert.equal(mod.matchingMoneyCohort(distribution, null), null);
 });
+
+test('money cohorts require the subject cadence as well as its deal-value basis', () => {
+  const distribution = {
+    normalised: {
+      cohorts: [
+        { basis: 'equity_value', semantics: { unit: 'usd', cadence: 'annual' }, percent: { stats: { median: 0.8 } } },
+        { basis: 'equity_value', semantics: { unit: 'usd', cadence: 'specified_year' }, percent: { stats: { median: 0.3 } } },
+      ],
+    },
+  };
+
+  assert.equal(
+    mod.matchingMoneyCohort(distribution, 'equity_value', { unit: 'usd', cadence: 'specified_year' }).percent.stats.median,
+    0.3,
+  );
+  assert.equal(mod.matchingMoneyCohort(distribution, 'equity_value', { unit: 'usd', cadence: 'per_event' }), null);
+});
+
+test('numeric cohort selection follows the subject legal clock instead of array order', () => {
+  const distribution = {
+    cohorts: [
+      { semantics: { unit: 'days_equivalent', calendarBasis: 'mixed', trigger: 'AGREEMENT_DATE' }, stats: { median: 30 } },
+      { semantics: { unit: 'days_equivalent', calendarBasis: 'mixed', trigger: 'EFFECTIVENESS' }, stats: { median: 5 } },
+    ],
+  };
+  const subject = { unit: 'days_equivalent', calendarBasis: 'mixed', trigger: 'EFFECTIVENESS' };
+
+  assert.equal(mod.matchingSemanticCohort(distribution, subject).stats.median, 5);
+  assert.equal(mod.matchingSemanticCohort(distribution, null).stats.median, 30);
+  assert.equal(
+    mod.matchingSemanticCohort(distribution, {
+      unit: 'days_equivalent',
+      calendarBasis: 'mixed',
+      trigger: 'SIGNING',
+    }),
+    null,
+  );
+  assert.equal(mod.matchingSemanticCohort({ cohorts: [] }, subject), null);
+});
+
+test('structured market values render as concise legal terms instead of JSON', () => {
+  assert.equal(
+    mod.formatStructuredMarketValue(JSON.stringify({
+      base: 'such overdue amount',
+      rate: 'the prime rate set forth in The Wall Street Journal plus 2%',
+    })),
+    'WSJ prime rate + 2% on overdue amount',
+  );
+  assert.equal(mod.formatStructuredMarketValue('PRIME_WSJ'), 'WSJ prime rate');
+  assert.equal(mod.formatStructuredMarketValue({ standard: 'ACTUAL_KNOWLEDGE' }), 'Actual knowledge');
+  assert.equal(mod.formatStructuredMarketValue('ordinary text'), null);
+});

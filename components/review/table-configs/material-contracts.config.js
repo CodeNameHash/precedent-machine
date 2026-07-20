@@ -199,9 +199,14 @@ function formatThresholdDisplay(text) {
 // "Any" contract of that type triggers disclosure, never a bare "see text".
 function resolveThreshold(structuredThreshold, evidenceText, fullText, meta) {
   if (structuredThreshold) return formatThresholdDisplay(structuredThreshold);
-  const mined = mineThresholdFromText(evidenceText, meta) || mineThresholdFromText(fullText, meta);
+  const evidence = String(evidenceText || '').trim();
+  const full = String(fullText || '').trim();
+  const hasBucketSpecificEvidence = Boolean(evidence && full && evidence !== full);
+  const mined = mineThresholdFromText(evidence, meta)
+    || (!hasBucketSpecificEvidence ? mineThresholdFromText(full, meta) : null);
   if (mined) return formatThresholdDisplay(mined);
-  const nonDollar = mineNonDollarTest(evidenceText, meta) || mineNonDollarTest(fullText, meta);
+  const nonDollar = mineNonDollarTest(evidence, meta)
+    || (!hasBucketSpecificEvidence ? mineNonDollarTest(full, meta) : null);
   return nonDollar || ANY_LABEL;
 }
 function thresholdsByCode(features) {

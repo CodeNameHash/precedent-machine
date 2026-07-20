@@ -177,6 +177,33 @@ const PARENT_ADOPTION_MECHANISM_TEXT = {
   BOARD_ONLY: 'by Parent board resolution only; no Parent stockholder approval required',
 };
 
+const PARENT_APPROVAL_MARKET_SUBTERMS = [
+  {
+    key: 'mechanism',
+    label: 'Approval mechanism',
+    featureKeys: ['parentAdoptionMechanism', 'mainConcept'],
+    kind: 'multi_select',
+    role: 'treatment',
+    value: {
+      strategy: 'feature_value',
+      featureKeys: ['parentAdoptionMechanism', 'mainConcept'],
+      normalizer: 'parent_approval_mechanism',
+    },
+  },
+  {
+    key: 'timing',
+    label: 'Approval timing',
+    featureKeys: ['parentAdoptionTiming', 'mainConcept'],
+    kind: 'categorical',
+    role: 'treatment',
+    value: {
+      strategy: 'feature_value',
+      featureKeys: ['parentAdoptionTiming', 'mainConcept'],
+      normalizer: 'parent_approval_timing',
+    },
+  },
+];
+
 function findParentApprovalCard(reviewDeal) {
   const cards = reviewDeal?.cards || [];
   return cards.find((card) => cardCode(card) === 'COV-SHAPRV-PARENT') || null;
@@ -311,7 +338,10 @@ function buildRows(reviewDeal) {
   if (approvalDefRow) {
     rows.push({
       id: 'votes-approvals-meeting-approval-definition', label: 'Company stockholder approval', kind: 'vote-standard',
-      text: approvalDefRow.detail, evidence: approvalDefRow.evidence, source: approvalDefRow.source,
+      text: approvalDefRow.detail, evidence: approvalDefRow.evidence, source: approvalDefRow.sourceCard,
+      sourceCard: approvalDefRow.sourceCard,
+      featureKey: approvalDefRow.featureKey,
+      featureKeys: [approvalDefRow.featureKey].filter(Boolean),
     });
   }
   if (voteThresholdRow) {
@@ -326,14 +356,24 @@ function buildRows(reviewDeal) {
     if (thresholdStd && thresholdStd !== approvalStd) {
       rows.push({
         id: 'votes-approvals-meeting-vote-threshold', label: 'Company vote threshold', kind: 'vote-standard',
-        text: voteThresholdRow.detail, evidence: voteThresholdRow.evidence, source: voteThresholdRow.source,
+        text: voteThresholdRow.detail, evidence: voteThresholdRow.evidence, source: voteThresholdRow.sourceCard,
+        sourceCard: voteThresholdRow.sourceCard,
+        featureKey: voteThresholdRow.featureKey,
+        featureKeys: [voteThresholdRow.featureKey].filter(Boolean),
       });
     }
   }
   if (parentApprovalCard) {
+    const parentFeatures = cardFeatures(parentApprovalCard);
+    const parentFeatureKeys = ['parentAdoptionMechanism', 'parentAdoptionTiming']
+      .filter((key) => valueText(parentFeatures[key]));
+    if (!parentFeatureKeys.length && valueText(parentFeatures.mainConcept)) parentFeatureKeys.push('mainConcept');
     rows.push({
       id: 'votes-approvals-meeting-parent-approval', label: 'Parent / Merger Sub approvals', kind: 'parent-approval',
       card: parentApprovalCard,
+      sourceCard: parentApprovalCard,
+      featureKeys: parentFeatureKeys,
+      marketSubterms: PARENT_APPROVAL_MARKET_SUBTERMS,
     });
   } else {
     // Explicit "Not specified" rather than silently omitting the Parent side.
@@ -346,24 +386,29 @@ function buildRows(reviewDeal) {
     rows.push({
       id: 'votes-approvals-meeting-proxy-filing', label: proxyRow.label, kind: 'deadline',
       deadline: proxyRow.deadline, evidence: proxyRow.evidence, source: proxyRow.sourceCard,
+      sourceCard: proxyRow.sourceCard, featureKeys: proxyRow.featureKeys, marketSubterms: proxyRow.marketSubterms,
     });
   }
   if (mailingRow) {
     rows.push({
       id: 'votes-approvals-meeting-mailing', label: 'Mailing', kind: 'deadline',
       deadline: mailingRow.deadline, evidence: mailingRow.evidence, source: mailingRow.sourceCard,
+      sourceCard: mailingRow.sourceCard, featureKeys: mailingRow.featureKeys, marketSubterms: mailingRow.marketSubterms,
     });
   }
   if (meetingRow) {
     rows.push({
       id: 'votes-approvals-meeting-meeting', label: 'Meeting', kind: 'deadline',
       deadline: meetingRow.deadline, evidence: meetingRow.evidence, source: meetingRow.sourceCard,
+      sourceCard: meetingRow.sourceCard, featureKeys: meetingRow.featureKeys, marketSubterms: meetingRow.marketSubterms,
     });
   }
   adjournmentRowList.forEach((row, index) => {
     rows.push({
       id: `votes-approvals-meeting-adjournment-${index}`, label: 'Adjournment rights', kind: 'adjournment',
       adjournment: row.adjournment, evidence: row.evidence, source: row.sourceCard,
+      sourceCard: row.sourceCard, featureKeys: row.featureKeys, marketPresence: row.marketPresence,
+      marketSubterms: row.marketSubterms,
     });
   });
   return rows;

@@ -2,7 +2,7 @@ import React from 'react';
 import taxonomy from '../../../lib/taxonomy.js';
 import { knowledgeQualifierDisplay, normalizeQualifierScope, sortByAgreementOrder, withScopeParens } from '../table-logic.js';
 import { standardColorKey } from './standard-colors.js';
-import { buildRepBringDownMap, normRepName } from './conditions.config.js';
+import { buildRepBringDownMap, hasRecoverableBringDownContext, normRepName } from './conditions.config.js';
 import { cardCode, cardFeatures, cardType, firstFeature, labelOf, selectCards, textOf, valueText } from './card-utils.js';
 import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
 import { resolveRowFocus } from '../../review-v2/provisionIndexHelpers.js';
@@ -556,15 +556,48 @@ function buildKnowledgeSummaryRow(reviewDeal, idPrefix, cards) {
   // "no DEF-KNOWLEDGE card" doesn't mean "no click affordance".
   const standardHit = firstFeature(searchCards, ['knowledgeStandard']);
   const personsHit = firstFeature(searchCards, ['knowledgePersons']);
+  const marketPresence = {
+    strategy: 'feature_non_empty',
+    featureKeys: ['knowledgeStandard', 'knowledgePersons'],
+    missingState: 'unknown',
+  };
   return {
     id: `${idPrefix}-knowledge-summary`,
     kind: 'knowledge-summary',
     present: true,
     label: 'Knowledge',
+    value: [standard, persons].filter(Boolean).join(' · ') || 'Definition captured',
     knowledgeStandard: standard,
     knowledgePersons: persons,
     knowledgePersonsEntries: personsEntries,
     knowledgeScope: scope,
+    featureKeys: ['knowledgeStandard', 'knowledgePersons'],
+    marketProvisionCodes: ['DEF-KNOWLEDGE'],
+    marketPresence,
+    marketSubterms: [
+      {
+        key: 'standard',
+        label: 'Knowledge standard',
+        featureKeys: ['knowledgeStandard'],
+        kind: 'categorical',
+        presence: {
+          strategy: 'feature_non_empty',
+          featureKeys: ['knowledgeStandard'],
+          missingState: 'unknown',
+        },
+      },
+      {
+        key: 'persons',
+        label: 'Persons included',
+        featureKeys: ['knowledgePersons'],
+        kind: 'multi_select',
+        presence: {
+          strategy: 'feature_non_empty',
+          featureKeys: ['knowledgePersons'],
+          missingState: 'unknown',
+        },
+      },
+    ],
     sourceCard: defCard,
     standardCard: (standardHit && standardHit.card) || defCard || null,
     personsCard: (personsHit && personsHit.card) || defCard || null,
@@ -1169,6 +1202,66 @@ const REP_COLUMNS = [
   { id: 'lookback', header: 'Lookback', renderCell: renderLookback },
 ];
 
+function repMarketSubterms({ card, term, materiality, knowledge, lookback, bringDown, bringDownCode }) {
+  const subterms = [];
+  if (materiality) {
+    subterms.push({
+      key: 'materiality',
+      label: 'Materiality qualifier',
+      featureKeys: ['materialityQualifier'],
+      kind: 'categorical',
+    });
+  }
+  if (knowledge) {
+    subterms.push({
+      key: 'knowledge',
+      label: 'Knowledge qualifier',
+      featureKeys: ['knowledgeQualifier'],
+      kind: 'categorical',
+    });
+  }
+  if (lookback) {
+    subterms.push({
+      key: 'lookback',
+      label: 'Lookback period',
+      featureKeys: ['lookbackDateISO'],
+      kind: 'duration',
+      role: 'metric',
+      value: {
+        strategy: 'feature_value',
+        featureKeys: ['lookbackDateISO'],
+        normalizer: 'relative_period_months',
+      },
+      semantics: {
+        unit: 'months',
+        calendarBasis: 'elapsed',
+        trigger: 'signing_date',
+        requiredDimensions: ['unit', 'calendarBasis'],
+        normalisation: { type: 'relative_period_to_months' },
+      },
+    });
+  }
+  if (bringDown) {
+    subterms.push({
+      key: 'bring-down',
+      label: 'Bring-down standard',
+      featureKeys: ['bringDownTiers'],
+      kind: 'multi_select',
+      provisionCodes: [bringDownCode],
+      value: {
+        strategy: 'feature_value',
+        featureKeys: ['bringDownTiers'],
+        normalizer: 'bring_down_for_rep',
+        repLabel: term.label,
+        repCode: cardCode(card),
+        repSection: cardFeatures(card).sectionNumber
+          || String(card?.section_number || card?.section_ref || '').split('|')[0].trim(),
+      },
+    });
+  }
+  return subterms;
+}
+
 // R5: builds ONE party's reps table (General Exceptions + Knowledge +
 // per-rep rows), parametrized by that party's card-code prefix and preamble
 // code rather than duplicating the selection/assembly logic per party.
@@ -1185,9 +1278,8 @@ function buildRepresentationsConfig({ id, title, partyPrefix, preambleCode }) {
       const knowledgeSummaryRow = buildKnowledgeSummaryRow(reviewDeal, id, cards);
       if (knowledgeSummaryRow) rows.push(knowledgeSummaryRow);
       const bringDownMap = buildRepBringDownMap(reviewDeal);
-      const hasBringDownContext = (reviewDeal?.cards || []).some((card) => (
-        Array.isArray(card?.features?.bringDownTiers) && card.features.bringDownTiers.length > 0
-      ));
+      const bringDownCode = partyPrefix === 'REP-B-' ? 'COND-S-REP' : 'COND-B-REP';
+      const hasBringDownContext = hasRecoverableBringDownContext(reviewDeal);
       for (const card of cards) {
         const term = resolveTerm(card);
         const materiality = resolveMateriality(card);
@@ -1212,6 +1304,7 @@ function buildRepresentationsConfig({ id, title, partyPrefix, preambleCode }) {
           bringDown,
           featureKeys,
           itemCode: featureKeys.length ? cardCode(card) : null,
+          marketSubterms: repMarketSubterms({ card, term, materiality, knowledge, lookback, bringDown, bringDownCode }),
           currentTreatments: bringDown ? [{
             label: 'Bringdown',
             value: bringDown.label.replace(/^Bringdown:\s*/, ''),

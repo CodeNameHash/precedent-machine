@@ -259,6 +259,36 @@ function formatInterestBasis(cards) {
   return spread ? `${label} + ${spread}` : label;
 }
 
+const INTEREST_MARKET_CODES = ['TERMF-TARGET', 'TERMF-REVERSE'];
+const INTEREST_MARKET_KEYS = ['interestOnLatePayment', 'interestRateBasis'];
+
+function interestMarketSubterms() {
+  return [
+    {
+      key: 'rate-basis',
+      label: 'Reference rate',
+      featureKeys: INTEREST_MARKET_KEYS,
+      kind: 'categorical',
+      value: { strategy: 'feature_value', featureKeys: INTEREST_MARKET_KEYS, normalizer: 'late_payment_rate_basis' },
+    },
+    {
+      key: 'spread',
+      label: 'Spread over reference rate',
+      featureKeys: ['interestOnLatePayment'],
+      kind: 'numeric',
+      value: { strategy: 'feature_value', featureKeys: ['interestOnLatePayment'], normalizer: 'late_payment_spread_percent' },
+      semantics: { unit: 'percent' },
+    },
+    {
+      key: 'interest-base',
+      label: 'Interest base',
+      featureKeys: ['interestOnLatePayment'],
+      kind: 'categorical',
+      value: { strategy: 'feature_value', featureKeys: ['interestOnLatePayment'], normalizer: 'late_payment_interest_base' },
+    },
+  ];
+}
+
 // A boolean-shaped scalar (soleRemedy, willfulBreachException, feeRequired,
 // nakedNoVoteFeePresent) renders as an affirmative "Yes" pill (present/
 // green) or a "No" pill (missing/grey) so those read the same as every other
@@ -285,6 +315,16 @@ function scalarRows(cards) {
         ...row,
         detail,
         sourceCard: hit.card,
+        ...(id === 'interest' ? {
+          featureKeys: INTEREST_MARKET_KEYS,
+          marketProvisionCodes: INTEREST_MARKET_CODES,
+          marketPresence: {
+            strategy: 'feature_non_empty',
+            featureKeys: INTEREST_MARKET_KEYS,
+            missingState: 'absent',
+          },
+          marketSubterms: interestMarketSubterms(),
+        } : {}),
         // Bare value only -- the Term column already names this row.
         signals: [{
           id: `${row.id}-signal`,

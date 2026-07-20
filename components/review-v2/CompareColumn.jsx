@@ -10,7 +10,14 @@ import { Fragment, useMemo, useState } from 'react';
 import Link from 'next/link';
 import ProvisionTable, { FULL_TEXT_COLUMNS } from '../review/ProvisionTable';
 import * as ProvisionTablePrimitives from '../review/primitives/ProvisionTablePrimitives';
-import { buildCardIndex, resolveRowCard, resolveRowFocus, isFragmentDefinedTerm } from './provisionIndexHelpers.js';
+import {
+  buildCardIndex,
+  definitionSummaryForDisplay,
+  definitionTextForDisplay,
+  resolveRowCard,
+  resolveRowFocus,
+  isFragmentDefinedTerm,
+} from './provisionIndexHelpers.js';
 import { getCitableValue, isCitableValue } from '../../lib/citable.js';
 import MaeSection from './MaeSection';
 import ElectionCard from './ElectionCard';
@@ -550,6 +557,7 @@ export function UnifiedDefinitionsSection({
   typedMarket = null,
   onMarketRetry = null,
 }) {
+  const [expandedDefinition, setExpandedDefinition] = useState(null);
   const deals = useMemo(() => [
     {
       key: 'primary',
@@ -637,9 +645,34 @@ export function UnifiedDefinitionsSection({
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {entries.map((entry) => (
-              <tr key={entry.key} className="align-top">
-                <td className="px-3 py-2 align-top font-medium text-ink">{entry.term}</td>
+            {entries.map((entry) => {
+              const provisionLinks = deals
+                .map((deal, index) => {
+                  if (deal.isMarket || deal.loading || deal.error) return null;
+                  const definition = entry.defs[index];
+                  const provision = definitionTextForDisplay(definition);
+                  if (!definition || !provision) return null;
+                  return { deal, provision, key: `${entry.key}:${deal.key}` };
+                })
+                .filter(Boolean);
+              const expanded = provisionLinks.find((link) => link.key === expandedDefinition) || null;
+              return (
+                <Fragment key={entry.key}>
+              <tr className="align-top">
+                <td className="px-3 py-2 align-top font-medium text-ink">
+                  <div>{entry.term}</div>
+                  {provisionLinks.map((link) => (
+                    <button
+                      key={link.key}
+                      type="button"
+                      className="term-cell-seetext block"
+                      aria-expanded={expandedDefinition === link.key}
+                      onClick={() => setExpandedDefinition(expandedDefinition === link.key ? null : link.key)}
+                    >
+                      {provisionLinks.length === 1 ? 'See provision' : `See ${link.deal.name} provision`}
+                    </button>
+                  ))}
+                </td>
                 {deals.map((d, i) => {
                   if (d.isMarket) {
                     const rowKey = stableMarketRowKey(
@@ -657,22 +690,25 @@ export function UnifiedDefinitionsSection({
                   if (d.error) return <td key={d.key} className="px-3 py-2"><Muted>—</Muted></td>;
                   const def = entry.defs[i];
                   if (!def) return <td key={d.key} className="px-3 py-2"><NotExtractedCell /></td>;
-                  const full = def.region_full_text || def.primary_quote || '';
-                  const summary = def.defined_value || '';
+                  const summary = definitionSummaryForDisplay(def);
                   return (
                     <td key={d.key} className="px-3 py-2 align-top text-ink">
                       <span className="whitespace-pre-wrap break-words">{summary}</span>
-                      {full && full !== summary ? (
-                        <details className="mt-1">
-                          <summary className="term-cell-seetext" style={{ listStyle: 'none' }}>full text</summary>
-                          <div className="mt-1 whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight">{full}</div>
-                        </details>
-                      ) : null}
                     </td>
                   );
                 })}
               </tr>
-            ))}
+                  {expanded ? (
+                    <tr className="bg-bg/20" data-testid="unified-definition-full-text-row">
+                      <td colSpan={deals.length + 1} className="px-3 py-2 whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight">
+                        {provisionLinks.length > 1 ? <div className="mb-1 font-semibold text-ink">{expanded.deal.name}</div> : null}
+                        {expanded.provision}
+                      </td>
+                    </tr>
+                  ) : null}
+                </Fragment>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -857,6 +893,10 @@ export function UnifiedCompareSection({
     return unifiedFallbackEvidence(row);
   }
 
+  function groupedExpansionContent(row) {
+    return row?.seeTextContent || unifiedFallbackEvidence(row);
+  }
+
   function flatLabelNode(entry) {
     // r16 ROW_FAMILY canonicalization (compareRowUnion.js): a handful of
     // taxonomy-split code pairs union onto one shared key with a fixed
@@ -882,7 +922,18 @@ export function UnifiedCompareSection({
   function flatBody() {
     const entries = unionRows(deals.map((d) => d.rows));
     const assignMarketRowKey = createMarketRowKeyAssigner({ sectionId: section?.id, configId: config?.id || section?.id });
-    return entries.map((entry) => (
+    return entries.map((entry) => {
+      const visibleRow = entry.rows.find(Boolean) || null;
+      if (visibleRow?.kind === 'divider') {
+        return (
+          <tr key={entry.key}>
+            <td colSpan={colSpan} className="px-3 py-1.5 bg-bg/60 border-t border-border text-[10px] font-medium uppercase tracking-wider text-inkFaint">
+              {visibleRow.label || visibleRow.benefit || entry.key}
+            </td>
+          </tr>
+        );
+      }
+      return (
       <Fragment key={entry.key}>
         <tr className="align-top">
           <td className="px-3 py-2 whitespace-normal break-words text-ink font-medium">{flatLabelNode(entry)}</td>
@@ -933,7 +984,8 @@ export function UnifiedCompareSection({
           return <Fragment key={`${d.key}-x`}>{expansionTr(expandKey, d.name, flatExpansionContent(row, d.ctx))}</Fragment>;
         })}
       </Fragment>
-    ));
+      );
+    });
   }
 
   // ── Grouped sections (GroupedSubRows configs) ──
@@ -981,6 +1033,7 @@ export function UnifiedCompareSection({
                     if (status) return <td key={d.key} className="px-3 py-2">{status}</td>;
                     if (!row) return <td key={d.key} className="px-3 py-2"><NotExtractedCell /></td>;
                     const expandKey = `${ge.key}|${entry.key}|${d.key}`;
+                    const expansionContent = groupedExpansionContent(row);
                     const click = primaryClickProps(d, row);
                     // r19 item 2 ("grouped rows get the marker too"): r18
                     // only flagged flat rows, reasoning the grouped WRAPPER
@@ -999,17 +1052,18 @@ export function UnifiedCompareSection({
                       >
                         {row.children || textValueLocal(row.value) || row.detail || <Muted>Not captured</Muted>}
                         {offMarket ? <OffMarketBadge /> : null}
-                        {row.seeTextContent ? seeProvisionToggle(expandKey) : (row.seeText || null)}
+                        {expansionContent ? seeProvisionToggle(expandKey) : (row.seeText || null)}
                       </td>
                     );
                   })}
                 </tr>
                 {deals.map((d, i) => {
                   const row = entry.rows[i];
-                  if (!row || !row.seeTextContent) return null;
+                  const expansionContent = groupedExpansionContent(row);
+                  if (!row || !expansionContent) return null;
                   const expandKey = `${ge.key}|${entry.key}|${d.key}`;
                   if (expanded !== expandKey) return null;
-                  return <Fragment key={`${d.key}-x`}>{expansionTr(expandKey, d.name, row.seeTextContent)}</Fragment>;
+                  return <Fragment key={`${d.key}-x`}>{expansionTr(expandKey, d.name, expansionContent)}</Fragment>;
                 })}
               </Fragment>
             );

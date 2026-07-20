@@ -173,14 +173,14 @@ export function ClampedWithSeeText({ text, evidence, source, lines = 3, classNam
     );
   }
   return (
-    <span className={className}>
-      <EvidenceHoverSource evidence={evidence || value} source={source} as="p">
-        <p
+    <div className={className}>
+      <EvidenceHoverSource evidence={evidence || value} source={source} as="div">
+        <div
           className="whitespace-pre-wrap break-words"
           style={{ display: '-webkit-box', WebkitLineClamp: lines, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
         >
           {value}
-        </p>
+        </div>
       </EvidenceHoverSource>
       <details className="mt-1">
         <summary className="term-cell-seetext" style={{ listStyle: 'none' }}>
@@ -190,7 +190,7 @@ export function ClampedWithSeeText({ text, evidence, source, lines = 3, classNam
           {value}
         </div>
       </details>
-    </span>
+    </div>
   );
 }
 
@@ -254,7 +254,18 @@ export function GroupedSubRows({ groups = [], emptyCopy = 'No grouped rows captu
               const rowCardKey = rowCard ? (rowCard.id || rowCard.provision_instance_id) : null;
               const isSelectedRow = Boolean(rowCardKey) && selectedCardId === rowCardKey;
               const rowKey = row.id || row.label || rowIndex;
-              const hasFullWidthExpansion = Boolean(row.seeTextContent);
+              const objectSource = row.source && typeof row.source === 'object' ? row.source : null;
+              const source = objectSource || row.card || row.sourceCard || rowCard
+                || (Array.isArray(row.sourceCards) ? row.sourceCards[0] : null);
+              const fallbackProvisionText = typeof row.evidence === 'string' && row.evidence.trim()
+                ? row.evidence.trim()
+                : (source?.primary_quote || source?.region_full_text || null);
+              // Grouped rows should follow the same universal contract as
+              // ProvisionTable's flat rows. A source-backed substantive row
+              // always exposes its clause, even when its config only supplied
+              // evidence/card metadata and no bespoke seeTextContent node.
+              const expansionContent = row.seeTextContent || fallbackProvisionText;
+              const hasFullWidthExpansion = Boolean(expansionContent);
               const isExpanded = hasFullWidthExpansion && expandedRowId === rowKey;
               return (
                 <div key={rowKey}>
@@ -294,7 +305,7 @@ export function GroupedSubRows({ groups = [], emptyCopy = 'No grouped rows captu
                   {isExpanded ? (
                     <div className="mtx-provision-expansion-row border-t border-dashed border-border bg-bg/20 px-2 py-2">
                       <div className="whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight">
-                        {row.seeTextContent}
+                        {expansionContent}
                       </div>
                     </div>
                   ) : null}
@@ -378,4 +389,3 @@ export {
   MATERIAL_CONTRACT_BUCKET_CODES,
   MATERIAL_CONTRACT_BUCKET_META,
 };
-

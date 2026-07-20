@@ -22,3 +22,9 @@ test('query results expose reusable refinements and fee-side switching', () => {
   assert.match(page, /showSearch/);
   assert.match(page, /reverseFeePctOfDealValue/);
 });
+
+test('ad hoc result loading is gated by route parameters rather than router readiness', () => {
+  const page = source('pages/query/[kind]/[id].js');
+  assert.doesNotMatch(page, /if \(!router\.isReady \|\| !kind\) return/);
+  assert.match(page, /if \(!kind \|\| !id \|\| \(id === 'adhoc' && !payload\)\) return/);
+});

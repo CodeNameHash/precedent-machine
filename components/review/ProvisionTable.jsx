@@ -130,9 +130,12 @@ function PortionExcludedNote({ label = 'Portion excluded', text }) {
 function textOfSourceCard(card) {
   return String(card?.primary_quote || card?.region_full_text || '').trim();
 }
-function fallbackEvidenceText(row) {
+function fallbackEvidenceText(row, resolvedCard = null) {
   if (typeof row?.evidence === 'string' && row.evidence.trim()) return row.evidence.trim();
-  return textOfSourceCard(row?.sourceCard) || null;
+  const objectSource = row?.source && typeof row.source === 'object' ? row.source : null;
+  const source = resolvedCard || row?.sourceCard || objectSource || row?.card
+    || (Array.isArray(row?.sourceCards) ? row.sourceCards[0] : null);
+  return textOfSourceCard(source) || null;
 }
 
 export default function ProvisionTable({ config, reviewDeal, isEdit = false, sectionCards = null, onSelectCard = null, selectedCardId = null }) {
@@ -284,16 +287,19 @@ export default function ProvisionTable({ config, reviewDeal, isEdit = false, sec
           ) : null}
           <tbody className="divide-y divide-border">
             {rows.map((row) => {
+              // Resolve first so rows using the compact `source` shape (and
+              // rows whose source only exists in sectionCards) get both the
+              // drilldown click and the universal provision-text fallback.
+              const rowCard = resolveCard(row);
               const fullTextNodes = fullTextColumns
                 .map((column) => (column.renderCell ? column.renderCell(row, ctx) : null))
                 .filter(Boolean);
-              const fallbackText = fullTextNodes.length === 0 ? fallbackEvidenceText(row) : null;
+              const fallbackText = fullTextNodes.length === 0 ? fallbackEvidenceText(row, rowCard) : null;
               // Item 17 (r4): reuse the same source-card resolution
               // ProvisionIndex's "see provision" path uses -- a row only
               // becomes clickable when it resolves to an actual card, so
               // rows with no identifiable source (cross-card rollups,
               // computed-only values) never get a dead cursor-pointer.
-              const rowCard = resolveCard(row);
               const rowCardKey = rowCard ? (rowCard.id || rowCard.provision_instance_id) : null;
               const isSelectedRow = Boolean(rowCardKey) && selectedCardId === rowCardKey;
               const baseRowClass = row.present ? 'align-top hover:bg-bg/40' : 'align-top bg-bg/30 text-inkFaint';

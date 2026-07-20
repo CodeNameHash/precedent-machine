@@ -14,6 +14,66 @@ function normalizeUnit(unit) {
   return value.replaceAll('_', ' ');
 }
 
+function humanizeStructuredKey(key) {
+  return String(key || '')
+    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+    .replace(/[_-]+/g, ' ')
+    .trim()
+    .toLowerCase();
+}
+
+function conciseStructuredText(value) {
+  const text = String(value ?? '').trim();
+  if (!text) return null;
+  if (text === 'PRIME_WSJ') return 'WSJ prime rate';
+  if (/^[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)+$/.test(text)) {
+    const words = text.replaceAll('_', ' ').toLowerCase();
+    return words.charAt(0).toUpperCase() + words.slice(1);
+  }
+  return text
+    .replace(/^the prime rate set forth in The Wall Street Journal\b/i, 'WSJ prime rate')
+    .replace(/\bplus\s+(\d+(?:\.\d+)?%)/i, '+ $1')
+    .replace(/^such overdue amount$/i, 'overdue amount');
+}
+
+export function formatStructuredMarketValue(raw) {
+  let value = raw;
+  if (typeof value === 'string' && /^[\[{]/.test(value.trim())) {
+    try {
+      value = JSON.parse(value);
+    } catch {
+      return null;
+    }
+  }
+
+  if (typeof value === 'string') {
+    return value === 'PRIME_WSJ' ? 'WSJ prime rate' : null;
+  }
+  if (!value || typeof value !== 'object') return null;
+
+  if (Array.isArray(value)) {
+    const items = value
+      .map((item) => formatStructuredMarketValue(item) || conciseStructuredText(item))
+      .filter(Boolean);
+    return items.length ? items.join(', ') : null;
+  }
+
+  const rate = conciseStructuredText(value.rate);
+  const base = conciseStructuredText(value.base);
+  if (rate) return base ? `${rate} on ${base}` : rate;
+
+  for (const key of ['label', 'text', 'name', 'standard', 'value']) {
+    const rendered = conciseStructuredText(value[key]);
+    if (rendered) return rendered;
+  }
+
+  const parts = Object.entries(value)
+    .filter(([, item]) => ['string', 'number', 'boolean'].includes(typeof item))
+    .slice(0, 3)
+    .map(([key, item]) => `${humanizeStructuredKey(key)}: ${conciseStructuredText(item)}`);
+  return parts.length ? parts.join('; ') : null;
+}
+
 export function normalizeFeatureSummary(raw) {
   if (!raw || typeof raw !== 'object') return null;
   const attribute = String(raw.attribute || '').trim();
@@ -84,10 +144,26 @@ export function isDurationFeatureSummaryUnit(unit) {
   return new Set(['hours', 'elapsed hours', 'days', 'calendar days', 'business days', 'months', 'years']).has(normalizedUnit);
 }
 
-export function matchingMoneyCohort(distribution, subjectBasis) {
+export function matchingMoneyCohort(distribution, subjectBasis, subjectSemantics = null) {
   if (typeof subjectBasis !== 'string' || !subjectBasis.trim()) return null;
   const cohorts = Array.isArray(distribution?.normalised?.cohorts)
     ? distribution.normalised.cohorts
     : [];
-  return cohorts.find((cohort) => cohort?.basis === subjectBasis) || null;
+  const sameBasis = cohorts.filter((cohort) => cohort?.basis === subjectBasis);
+  const dimensions = ['unit', 'calendarBasis', 'trigger', 'cadence']
+    .filter((key) => subjectSemantics?.[key]);
+  if (!dimensions.length) return sameBasis[0] || null;
+  return sameBasis.find((cohort) => dimensions
+    .every((key) => cohort?.semantics?.[key] === subjectSemantics[key])) || null;
+}
+
+export function matchingSemanticCohort(distribution, subjectSemantics) {
+  const cohorts = Array.isArray(distribution?.cohorts) ? distribution.cohorts : [];
+  if (!cohorts.length) return null;
+  if (!subjectSemantics || typeof subjectSemantics !== 'object') return cohorts[0];
+  const dimensions = ['unit', 'calendarBasis', 'trigger', 'cadence']
+    .filter((key) => subjectSemantics[key]);
+  if (!dimensions.length) return cohorts[0];
+  return cohorts.find((cohort) => dimensions
+    .every((key) => cohort?.semantics?.[key] === subjectSemantics[key])) || null;
 }

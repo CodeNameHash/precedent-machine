@@ -4,11 +4,8 @@ import { useRouter } from 'next/router';
 import MarketDrilldownSidebar from './MarketDrilldownSidebar';
 import { formatNumericMarketSummary } from './marketNumericFormat';
 import { exactMarketContextForRowKey } from './rowMarketContext';
+import { encodeMarketPayload } from './marketPayload';
 import { whatsMarketPayload } from '../../lib/query/whats-market';
-
-function encodePayload(payload) {
-  return btoa(JSON.stringify(payload)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-}
 
 function plainText(value, fallback = '') {
   if (value === null || value === undefined) return fallback;
@@ -122,8 +119,14 @@ class MarketSidebarBoundary extends Component {
   render() {
     if (this.state.failed) {
       return (
-        <aside className="hidden lg:block w-[340px] border-l border-border bg-white p-5 text-[11px] text-inkLight">
-          Market detail could not be displayed for this row. Select another row or refresh the page.
+        <aside className="hidden lg:block w-56 xl:w-[280px] shrink-0 border-l border-border bg-white p-5 text-[11px] text-inkLight sticky top-[var(--mtx-head-h,72px)] h-[calc(100vh-var(--mtx-head-h,72px))]">
+          <button
+            type="button"
+            aria-label="Close market detail"
+            className="float-right text-[10px] font-bold uppercase tracking-[0.1em] text-ink hover:text-black"
+            onClick={this.props.onClose}
+          >Close</button>
+          <p className="clear-both pt-4">Market detail could not be displayed for this row. Select another row or refresh the page.</p>
         </aside>
       );
     }
@@ -136,6 +139,7 @@ export default function GlobalMarketBridge() {
   const [mounted, setMounted] = useState(false);
   const [marketContext, setMarketContext] = useState(null);
   const [sidebarHidden, setSidebarHidden] = useState(false);
+  const [sidebarHost, setSidebarHost] = useState(null);
   const [launcherHost, setLauncherHost] = useState(null);
   const [question, setQuestion] = useState('');
 
@@ -145,6 +149,44 @@ export default function GlobalMarketBridge() {
   );
 
   useEffect(() => setMounted(true), []);
+
+  useEffect(() => {
+    setMarketContext(null);
+    setSidebarHidden(false);
+  }, [marketMode, router.asPath]);
+
+  useEffect(() => {
+    if (!mounted || !marketMode) return undefined;
+    const refreshSelectedContext = (event) => {
+      const rowKey = plainText(event?.detail?.rowKey);
+      const next = event?.detail?.context;
+      if (!rowKey || !next) return;
+      setMarketContext((current) => {
+        if (!current || current.marketRowKey !== rowKey) return current;
+        return sanitizeContext(next, current.label) || current;
+      });
+    };
+    window.addEventListener('mtx:row-market-context-updated', refreshSelectedContext);
+    return () => window.removeEventListener('mtx:row-market-context-updated', refreshSelectedContext);
+  }, [mounted, marketMode]);
+
+  useEffect(() => {
+    if (!mounted || !marketMode) {
+      setSidebarHost(null);
+      return undefined;
+    }
+    const findHost = () => {
+      const host = document.querySelector('[data-global-market-sidebar-host]');
+      setSidebarHost((current) => (current === host ? current : host));
+      return Boolean(host);
+    };
+    if (findHost()) return undefined;
+    const observer = new MutationObserver(() => {
+      if (findHost()) observer.disconnect();
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    return () => observer.disconnect();
+  }, [mounted, marketMode, router.asPath]);
 
   useEffect(() => {
     if (!mounted || router.pathname !== '/') {
@@ -170,37 +212,44 @@ export default function GlobalMarketBridge() {
   useEffect(() => {
     if (!mounted || !marketMode) return undefined;
     const handlers = new Map();
-    const hiddenAsides = new Map();
 
     const enhance = () => {
-      document.querySelectorAll('aside').forEach((aside) => {
-        if (aside.getAttribute('data-testid') === 'market-drilldown-sidebar') return;
-        if (!hiddenAsides.has(aside)) hiddenAsides.set(aside, aside.style.display);
-        aside.style.display = 'none';
-      });
-
       document.querySelectorAll('[data-testid="market-cell"]').forEach((cell) => {
         const td = cell.closest('td');
-        if (!td || handlers.has(td)) return;
+        if (!td) return;
         td.style.cursor = 'pointer';
         td.setAttribute('data-market-drilldown-cell', 'true');
-        if (!td.querySelector('[data-market-drilldown-cta]')) {
-          const cta = document.createElement('div');
+        let cta = td.querySelector('[data-market-drilldown-cta]');
+        if (!cta) {
+          cta = document.createElement('div');
           cta.setAttribute('data-market-drilldown-cta', 'true');
+          cta.className = 'hidden lg:block';
           cta.textContent = 'See all treatments & deals →';
-          cta.style.marginTop = '4px';
-          cta.style.fontSize = '9px';
+          cta.style.width = '100%';
+          cta.style.marginTop = '7px';
+          cta.style.paddingTop = '5px';
+          cta.style.borderTop = '1px solid #EDEDEC';
+          cta.style.fontSize = '8.5px';
+          cta.style.lineHeight = '1.35';
           cta.style.fontWeight = '600';
           cta.style.textTransform = 'uppercase';
           cta.style.letterSpacing = '.08em';
           cta.style.color = '#2F6DB5';
-          td.appendChild(cta);
         }
+        // React owns the market cell and can reinsert its controlled child
+        // after this bridge-owned node. Move the CTA back to the final DOM
+        // position on every enhancement pass, including passes for cells
+        // whose click handler is already registered.
+        if (cell.lastElementChild !== cta) cell.appendChild(cta);
+        if (handlers.has(td)) return;
         const handler = () => {
           try {
-            const text = cell.textContent || '';
+            if (window.innerWidth < 1024) return;
+            const currentCell = td.querySelector('[data-testid="market-cell"]');
+            if (!currentCell) return;
+            const text = currentCell.textContent || '';
             const contexts = registryContexts();
-            const rowKey = cell.getAttribute('data-market-row-key');
+            const rowKey = currentCell.getAttribute('data-market-row-key');
             const match = exactMarketContextForRowKey(contexts, rowKey)
               || contexts.find((context) => contextMatchesCell(context, text));
             if (!match) return;
@@ -226,14 +275,13 @@ export default function GlobalMarketBridge() {
     return () => {
       observer.disconnect();
       handlers.forEach((handler, td) => td.removeEventListener('click', handler));
-      hiddenAsides.forEach((display, aside) => { aside.style.display = display; });
       document.querySelectorAll('[data-market-drilldown-cta]').forEach((node) => node.remove());
     };
-  }, [mounted, marketMode]);
+  }, [mounted, marketMode, router.asPath]);
 
   const runWhatsMarket = () => {
     const payload = { ...whatsMarketPayload(question), deal_ids: collectDealIds() };
-    router.push(`/query/whats-market/adhoc?payload=${encodePayload(payload)}`);
+    router.push(`/query/whats-market/adhoc?payload=${encodeMarketPayload(payload)}`);
   };
 
   if (!mounted) return null;
@@ -251,23 +299,31 @@ export default function GlobalMarketBridge() {
         </div>,
         launcherHost,
       ) : null}
-      {marketMode ? createPortal(
+      {marketMode && sidebarHost ? createPortal(
         sidebarHidden ? (
-          <button
-            type="button"
-            onClick={() => setSidebarHidden(false)}
-            aria-label="Show market detail"
-            style={{ position: 'fixed', right: 0, top: '50%', zIndex: 40, transform: 'translateY(-50%)', writingMode: 'vertical-rl', padding: '12px 8px', border: '1px solid #9A9A9A', borderRight: 0, background: '#fff', color: '#1F1F1F', fontSize: 9, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', cursor: 'pointer' }}
-            data-testid="market-sidebar-show"
-          >Market detail</button>
-        ) : (
-          <div style={{ position: 'fixed', right: 0, top: 'var(--mtx-head-h,72px)', zIndex: 40 }}>
-            <MarketSidebarBoundary resetKey={marketContext && marketContext.marketKey}>
-              <MarketDrilldownSidebar context={marketContext} onClose={() => setSidebarHidden(true)} />
-            </MarketSidebarBoundary>
+          <div
+            className="hidden lg:flex w-8 shrink-0 sticky items-center justify-center border-l border-border bg-white"
+            style={{ top: 'var(--mtx-head-h,72px)', height: 'calc(100vh - var(--mtx-head-h,72px))' }}
+            data-testid="market-sidebar-rail"
+          >
+            <button
+              type="button"
+              onClick={() => setSidebarHidden(false)}
+              aria-label="Show market detail"
+              className="h-full w-full text-[9px] font-bold uppercase tracking-[0.12em] text-ink hover:bg-bg"
+              style={{ writingMode: 'vertical-rl' }}
+              data-testid="market-sidebar-show"
+            >Market detail</button>
           </div>
+        ) : (
+          <MarketSidebarBoundary
+            resetKey={`${router.asPath}:${marketContext && marketContext.marketKey}`}
+            onClose={() => setSidebarHidden(true)}
+          >
+            <MarketDrilldownSidebar context={marketContext} onClose={() => setSidebarHidden(true)} />
+          </MarketSidebarBoundary>
         ),
-        document.body,
+        sidebarHost,
       ) : null}
     </>
   );

@@ -125,11 +125,21 @@ function buildRowsForCards(cards, sidePrefix) {
       const rowId = sidePrefix ? `${sidePrefix.toLowerCase()}-${id}` : id;
       const row = makeRow('mae-definitions', rowId, rowLabel, kind, hit);
       if (!row) return null;
+      const scopedSide = sidePrefix || maeSide(hit.card);
       return {
         ...row,
         value: hit.value,
         featureKey: hit.key,
         sourceCard: hit.card,
+        marketProvisionCodes: [cardCode(hit.card) || 'DEF-MAE'],
+        ...(scopedSide ? { marketObservationScope: { definedTermIncludes: scopedSide.toLowerCase() } } : {}),
+        marketSubterms: [{
+          key: id,
+          label,
+          featureKeys: keys,
+          kind: id === 'limbs' ? 'categorical' : 'multi_select',
+          role: id === 'exceptions' ? 'exception' : 'treatment',
+        }],
         // Which side (Company / Parent) this row belongs to, or null for a
         // single-party MAE definition. Drives the two-table split in
         // renderBody() below; the row's `label`/`id` keep their existing

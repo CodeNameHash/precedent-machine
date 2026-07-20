@@ -45,7 +45,7 @@ function card(overrides = {}) {
 function fakeSupabase(rows, claims = []) {
   return {
     from(table) {
-      assert.ok(table === 'provision_cards' || table === 'claims', `unexpected table: ${table}`);
+      assert.ok(['provision_cards', 'claims', 'transaction_steps', 'deals'].includes(table), `unexpected table: ${table}`);
       return {
         select(columns) {
           if (table === 'provision_cards') {
@@ -55,6 +55,25 @@ function fakeSupabase(rows, claims = []) {
                 assert.equal(column, 'deal_id');
                 assert.equal(value, 'deal-1');
                 return Promise.resolve({ data: rows, error: null });
+              },
+            };
+          }
+          if (table === 'transaction_steps') {
+            return {
+              eq(column, value) {
+                assert.equal(column, 'deal_id');
+                assert.equal(value, 'deal-1');
+                return { order: () => Promise.resolve({ data: [], error: null }) };
+              },
+            };
+          }
+          if (table === 'deals') {
+            assert.equal(columns, 'value_usd');
+            return {
+              eq(column, value) {
+                assert.equal(column, 'id');
+                assert.equal(value, 'deal-1');
+                return { maybeSingle: () => Promise.resolve({ data: { value_usd: null }, error: null }) };
               },
             };
           }
@@ -113,6 +132,85 @@ test('shapeReviewDealRows groups cards by section and expands definition referen
   const expanded = shaped.cards.find((item) => item.provision_instance_id === 'ioc-mae');
   assert.equal(expanded.resolvedReferences[0].defined_term, 'Company Material Adverse Effect');
   assert.deepEqual(expanded.unresolvedReferences, ['missing-def']);
+});
+
+test('shapeReviewDealRows maps claims-backed definition fields and repairs legacy adjacent-definition spillover', () => {
+  const acting = card({
+    id: 'acting',
+    provision_instance_id: 'acting',
+    kind: 'definition',
+    defined_term: 'Acting Holders',
+    defined_value: 'set forth in the CVR Register.\n\n"Assignee" has the meaning set forth in Section 6.3(a).',
+    primary_quote: '"Acting Holders" means Holders of 25% of outstanding CVRs.\n\n"Assignee" has the meaning set forth in Section 6.3(a).',
+    region_full_text: '"Acting Holders" means Holders of 25% of outstanding CVRs.\n\n"Assignee" has the meaning set forth in Section 6.3(a).',
+  });
+  const assignee = card({
+    id: 'assignee',
+    provision_instance_id: 'assignee',
+    kind: 'definition',
+    defined_term: 'Assignee',
+    defined_value: 'set forth in Section 6.3(a).',
+    primary_quote: '"Assignee" has the meaning set forth in Section 6.3(a).',
+    region_full_text: '"Assignee" has the meaning set forth in Section 6.3(a).',
+  });
+  const change = card({
+    id: 'change',
+    provision_instance_id: 'change',
+    kind: 'definition',
+    defined_term: 'Change of Control',
+    defined_value: 'a sale of substantially all assets.\n\n"Commercially Reasonable Efforts" means customary efforts.',
+    primary_quote: '"Change of Control" means a sale of substantially all assets.\n\n"Commercially Reasonable Efforts" means customary efforts.',
+    region_full_text: '"Change of Control" means a sale of substantially all assets.\n\n"Commercially Reasonable Efforts" means customary efforts.',
+  });
+  const claims = [
+    { id: 'c1', excerpt_id: acting.excerpt_id, attribute: 'canonicalTerm', canonical: null, verbatim: 'Acting Holders', evidence_quote: null, provenance: { feature_value: 'Acting Holders' } },
+    { id: 'c2', excerpt_id: acting.excerpt_id, attribute: 'definitionText', canonical: null, verbatim: 'Holders of 25% of outstanding CVRs.', evidence_quote: null, provenance: { feature_value: 'Holders of 25% of outstanding CVRs.' } },
+  ];
+  const shaped = shapeReviewDealRows('deal-1', [acting, assignee, change], { claims });
+  const repaired = shaped.definitions.find((definition) => definition.defined_term === 'Acting Holders');
+  assert.equal(repaired.defined_value, 'Holders of 25% of outstanding CVRs.');
+  assert.equal(repaired.primary_quote, '"Acting Holders" means Holders of 25% of outstanding CVRs.');
+  assert.equal(repaired.region_full_text, repaired.primary_quote);
+  const repairedChange = shaped.definitions.find((definition) => definition.defined_term === 'Change of Control');
+  assert.equal(repairedChange.primary_quote, '"Change of Control" means a sale of substantially all assets.');
+});
+
+test('definition boundary repair preserves an inline nested definition that is not its own card', () => {
+  const text = '"Affiliate" means a Person controlled by another Person; "control" means the power to direct management.';
+  const shaped = shapeReviewDealRows('deal-1', [card({
+    kind: 'definition',
+    type: 'DEF',
+    defined_term: 'Affiliate',
+    defined_value: text,
+    primary_quote: text,
+    region_full_text: text,
+  })]);
+
+  assert.equal(shaped.definitions[0].primary_quote, text);
+});
+
+test('definition boundary repair recognizes a wrapped quoted term header', () => {
+  const patents = card({
+    id: 'patents',
+    provision_instance_id: 'patents',
+    kind: 'definition',
+    defined_term: 'Relevant Patents',
+    defined_value: 'the listed patent rights.\n\n"Rights\nAgent" means the appointed rights agent.',
+    primary_quote: '"Relevant Patents" means the listed patent rights.\n\n"Rights\nAgent" means the appointed rights agent.',
+    region_full_text: '"Relevant Patents" means the listed patent rights.\n\n"Rights\nAgent" means the appointed rights agent.',
+  });
+  const rightsAgent = card({
+    id: 'rights-agent',
+    provision_instance_id: 'rights-agent',
+    kind: 'definition',
+    defined_term: 'Rights Agent',
+    defined_value: 'the appointed rights agent.',
+    primary_quote: '"Rights\nAgent" means the appointed rights agent.',
+    region_full_text: '"Rights\nAgent" means the appointed rights agent.',
+  });
+
+  const shaped = shapeReviewDealRows('deal-1', [patents, rightsAgent]);
+  assert.equal(shaped.definitions.find((definition) => definition.defined_term === 'Relevant Patents').primary_quote, '"Relevant Patents" means the listed patent rights.');
 });
 
 test('fetchReviewDealCards reads provision_cards and returns grouped shape', async () => {

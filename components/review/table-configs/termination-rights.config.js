@@ -397,21 +397,125 @@ function keyTermsNode(key, card, PillCell) {
   );
 }
 
+function durationSubterm(key, label, featureKeys, unit, trigger, normalizer = 'deadline_duration', missingState = null) {
+  const semantics = unit === 'months' || unit === 'years'
+    ? { unit, calendarBasis: 'elapsed', trigger, requiredDimensions: ['unit'] }
+    : {
+      unit: 'days_equivalent',
+      calendarBasis: 'mixed',
+      trigger,
+      requiredDimensions: ['unit', 'calendarBasis'],
+      normalisation: { type: 'duration_to_days', hoursPerDay: 24 },
+    };
+  return {
+    key,
+    label,
+    featureKeys,
+    kind: 'duration',
+    role: 'metric',
+    value: {
+      strategy: 'feature_value',
+      featureKeys,
+      normalizer,
+      unit,
+      trigger,
+    },
+    semantics,
+    ...(missingState ? { missingState } : {}),
+  };
+}
+
+function categoricalSubterm(key, label, featureKeys, kind = 'categorical') {
+  return { key, label, featureKeys, kind };
+}
+
+function stockholderVoteSubterm() {
+  return {
+    key: 'vote-threshold',
+    label: 'Required vote',
+    featureKeys: ['definitionText'],
+    kind: 'multi_select',
+    provisionCodes: [],
+    cohort: {
+      scope: 'provision_family',
+      provisionFamily: 'DEFINITION',
+      eligibility: 'family_present',
+    },
+    observationScope: { definedTermIncludes: 'stockholder approval' },
+    value: {
+      strategy: 'feature_value',
+      featureKeys: ['definitionText'],
+      normalizer: 'stockholder_vote_standard',
+    },
+  };
+}
+
+function marketSubtermsForRight(key) {
+  const entries = {
+    mutual: [categoricalSubterm('execution-method', 'Execution method', ['executionMethod'])],
+    outside: [
+      durationSubterm(
+        'outside-date',
+        'Outside date from signing',
+        ['outsideDateMonthsPostSigning', 'outsideDateMonths', 'outsideDate', 'outsideDateISO'],
+        'months',
+        'signing_date',
+        'forward_period_months',
+      ),
+      categoricalSubterm('exercised-by', 'Exercised by', ['partyWhoCanTerminate']),
+      categoricalSubterm('fault-exclusion', 'Fault-based exclusion', ['faultBasedExclusion']),
+      categoricalSubterm('extension-available', 'Extension available', ['extensionAvailable']),
+      durationSubterm('extension-length', 'Extension length', ['extensionMonths', 'extensionPeriod'], 'months', 'outside_date', 'period_months', 'absent'),
+    ],
+    legal: [categoricalSubterm('finality', 'Finality standard', ['restraintFinality'])],
+    vote: [stockholderVoteSubterm()],
+    breachT: [
+      durationSubterm('cure-period', 'Cure period', ['curePeriod'], 'days', 'breach_notice'),
+      categoricalSubterm('breach-standard', 'Breach standard', ['breachStandard', 'materialityStandard']),
+      categoricalSubterm('fault-exclusion', 'Fault-based exclusion', ['faultBasedExclusion']),
+    ],
+    breachB: [
+      durationSubterm('cure-period', 'Cure period', ['curePeriod'], 'days', 'breach_notice'),
+      categoricalSubterm('breach-standard', 'Breach standard', ['breachStandard', 'materialityStandard']),
+      categoricalSubterm('fault-exclusion', 'Fault-based exclusion', ['faultBasedExclusion']),
+    ],
+    recommend: [
+      categoricalSubterm('trigger-events', 'Trigger events', ['triggerEvents', 'recommendationChangeTermination'], 'multi_select'),
+      {
+        key: 'pre-vote-only',
+        label: 'Available only before the vote',
+        featureKeys: ['preVoteOnlyWindow', 'mainConcept'],
+        kind: 'categorical',
+        value: {
+          strategy: 'feature_value',
+          featureKeys: ['preVoteOnlyWindow', 'mainConcept'],
+          normalizer: 'pre_vote_only',
+        },
+      },
+    ],
+  };
+  return entries[key] || [];
+}
+
 function rowForSpec(spec, cards, PillCell) {
   const card = cardForCodes(cards, spec.codes);
   const terms = keyTermsForRight(spec.key, card);
+  const sourceText = card ? textOf(card) : null;
   return {
     id: `termination-rights-${spec.key}`,
     spec,
     label: spec.label,
     value: terms,
-    evidence: card ? textOf(card) : null,
+    evidence: sourceText,
+    seeTextContent: sourceText,
     source: card,
     // Item 2 (r5): resolveRowCard reads card/sourceCard/sourceCards --
     // `source` above is the HoverSource-popover contract, this is the
     // ClauseSidebar click-through one.
     sourceCard: card,
     present: Boolean(card),
+    marketProvisionCodes: spec.codes,
+    marketSubterms: marketSubtermsForRight(spec.key),
     // r13: see TERMR_CANONICAL's comment -- only threaded for specs whose
     // row is actually defined by one registry attribute.
     featureKeys: spec.featureKeys || null,
@@ -448,12 +552,14 @@ function crossCuttingRow(id, label, allCards, keys, PillCell) {
   const detail = readableValue(hit.key, hit.raw);
   const terms = detail ? [detail] : [];
   const truthy = isTruthy(hit.raw);
-  const chip = detail ? { label: truthy ? 'Yes' : detail, tone: truthy ? 'present' : 'neutral', evidence: textOf(hit.card) } : null;
+  const sourceText = textOf(hit.card);
+  const chip = detail ? { label: truthy ? 'Yes' : detail, tone: truthy ? 'present' : 'neutral', evidence: sourceText } : null;
   return {
     id: `termination-rights-${id}`,
     label,
     value: terms,
-    evidence: textOf(hit.card),
+    evidence: sourceText,
+    seeTextContent: sourceText,
     source: hit.card,
     sourceCard: hit.card,
     present: true,

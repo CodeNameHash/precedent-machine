@@ -116,7 +116,69 @@ function registerBrowserContext(context) {
   registry[`${signature}|${context.marketKey || ''}`] = { ...context, registrySignature: signature };
 }
 
-function typedMetricSummary(spec, result) {
+function dealsForIds(dealDirectory, dealIds) {
+  if (!dealDirectory || !Array.isArray(dealIds)) return [];
+  return dealIds.map((dealId) => dealDirectory[dealId]).filter(Boolean);
+}
+
+function dealsForRefs(dealDirectory, dealRefs, dealIds) {
+  if (!Array.isArray(dealRefs)) return dealsForIds(dealDirectory, dealIds);
+  return dealRefs.map((ref) => {
+    const dealId = ref?.dealId;
+    const deal = dealId && dealDirectory?.[dealId];
+    if (!deal) return null;
+    return ref.cardId ? { ...deal, cardId: ref.cardId } : deal;
+  }).filter(Boolean);
+}
+
+const LEGAL_VALUE_LABELS = Object.freeze({
+  ALL_RESPECTS: 'True in all respects',
+  MAT_ALL_RESPECTS: 'True in all respects',
+  MAT_ALL_RESPECTS_DE_MINIMIS: 'True except for de minimis inaccuracies',
+  DE_MINIMIS: 'True except for de minimis inaccuracies',
+  MAT_ALL_MATERIAL: 'True in all material respects',
+  MAT_MAE_QUALIFIED: 'True except where failure would not cause an MAE',
+  MAE_QUALIFIED: 'True except where failure would not cause an MAE',
+  MAT_MAE_AGGREGATE: 'Failure would not cause an MAE, individually or in the aggregate',
+  MAT_MATERIALITY_SCRAPE: 'Materiality qualifiers disregarded',
+});
+
+function typedValueLabel(value) {
+  if (typeof value === 'boolean') return value ? 'Yes' : 'No';
+  const raw = String(value ?? 'Not captured');
+  if (LEGAL_VALUE_LABELS[raw]) return LEGAL_VALUE_LABELS[raw];
+  if (!/^[A-Z][A-Z0-9_ -]*$/.test(raw)) return raw;
+  const label = raw.toLowerCase().replace(/[_-]+/g, ' ').replace(/\s+/g, ' ').trim();
+  return `${label.charAt(0).toUpperCase()}${label.slice(1)}`
+    .replace(/\bmae\b/gi, 'MAE')
+    .replace(/\bcvr\b/gi, 'CVR')
+    .replace(/\bpsu\b/gi, 'PSU')
+    .replace(/\brsu\b/gi, 'RSU');
+}
+
+function sameSemanticCohort(candidate, subject) {
+  if (!subject) return false;
+  return ['unit', 'calendarBasis', 'trigger', 'cadence']
+    .every((key) => !subject[key] || candidate?.[key] === subject[key]);
+}
+
+function uniqueDeals(summaries) {
+  const byId = new Map();
+  for (const summary of summaries) {
+    const deals = [
+      ...(Array.isArray(summary?.deals) ? summary.deals : []),
+      ...(summary?.values || []).flatMap((value) => (Array.isArray(value?.deals) ? value.deals : [])),
+    ];
+    for (const deal of deals) {
+      const id = deal?.dealId || deal?.deal_id || deal?.id;
+      const existing = id ? byId.get(id) : null;
+      if (id && (!existing || (!existing.cardId && deal.cardId))) byId.set(id, deal);
+    }
+  }
+  return [...byId.values()];
+}
+
+function typedMetricSummary(spec, result, dealDirectory) {
   if (!spec || !result || result.state === 'not_comparable' || result.state === 'error') return null;
   const kind = spec.comparison?.kind;
   const attribute = spec.metricKey || spec.label || 'market-value';
@@ -124,14 +186,56 @@ function typedMetricSummary(spec, result) {
   const coverage = result.coverage || {};
   if (kind === 'presence') {
     const denominator = result.prevalence?.eligibleCount ?? coverage.eligibleCount ?? null;
+    const subjectValue = result?.subject?.status === 'present'
+      ? 'present'
+      : result?.subject?.status === 'absent'
+        ? 'absent'
+        : result?.subject?.status === 'unknown' ? 'unknown' : null;
+    const values = [
+      {
+        value: 'present',
+        label: 'Present',
+        count: coverage.presentCount ?? 0,
+        denominator,
+        deals: dealsForRefs(
+          dealDirectory,
+          result?.dealRefsByStatus?.present,
+          result?.dealIdsByStatus?.present,
+        ),
+      },
+      {
+        value: 'absent',
+        label: 'Absent',
+        count: coverage.absentCount ?? 0,
+        denominator,
+        deals: dealsForRefs(
+          dealDirectory,
+          result?.dealRefsByStatus?.absent,
+          result?.dealIdsByStatus?.absent,
+        ),
+      },
+    ];
+    if (coverage.unknownCount) {
+      values.push({
+        value: 'unknown',
+        label: 'Not classified',
+        count: coverage.unknownCount,
+        denominator,
+        deals: dealsForRefs(
+          dealDirectory,
+          result?.dealRefsByStatus?.unknown,
+          result?.dealIdsByStatus?.unknown,
+        ),
+      });
+    }
     return {
       attribute,
       label,
       kind: 'categorical',
-      values: [
-        { value: 'present', label: 'Present', count: coverage.presentCount ?? 0, denominator },
-        { value: 'absent', label: 'Absent', count: coverage.absentCount ?? 0, denominator },
-      ],
+      values,
+      coverage,
+      subjectValues: subjectValue ? [subjectValue] : [],
+      subjectLabel: subjectValue ? typedValueLabel(subjectValue) : null,
     };
   }
   if (kind === 'categorical' || kind === 'multi_select') {
@@ -139,45 +243,80 @@ function typedMetricSummary(spec, result) {
     const subjectValues = kind === 'multi_select'
       ? (Array.isArray(result?.subject?.values) ? result.subject.values : [])
       : (result?.subject?.value == null ? [] : [result.subject.value]);
+    const values = (Array.isArray(distribution.values) ? distribution.values : []).map((item) => ({
+      ...item,
+      label: typedValueLabel(item?.label ?? item?.value ?? 'Not captured'),
+      denominator: distribution.denominatorCount ?? coverage.presentCount ?? null,
+      deals: dealsForRefs(dealDirectory, item?.dealRefs, item?.dealIds),
+    }));
+    if (!values.length && !subjectValues.length) return null;
     return {
       attribute,
       label,
       kind: 'categorical',
-      values: (Array.isArray(distribution.values) ? distribution.values : []).map((item) => ({
-        ...item,
-        label: String(item?.label ?? item?.value ?? 'Not captured'),
-        denominator: distribution.denominatorCount ?? coverage.presentCount ?? null,
-      })),
+      values,
+      coverage,
       subjectValues,
-      subjectLabel: subjectValues.map((value) => String(value)).join(', ') || null,
+      subjectLabel: subjectValues.map(typedValueLabel).join(', ') || null,
     };
   }
   if (kind === 'money') {
     const subjectBasis = result?.subject?.dealValueBasis;
-    const cohort = (result?.distribution?.normalised?.cohorts || [])
-      .find((candidate) => candidate?.basis === subjectBasis);
+    const subjectSemantics = result?.subject?.semantics;
+    const cohorts = result?.distribution?.normalised?.cohorts || [];
+    const cohort = cohorts.find((candidate) => candidate?.basis === subjectBasis
+      && (!subjectSemantics || sameSemanticCohort(candidate?.semantics, subjectSemantics)));
     const stats = cohort?.percent?.stats;
-    if (!stats) return null;
+    const subjectPercent = Number.isFinite(result?.subject?.percentOfDealValue)
+      ? result.subject.percentOfDealValue
+      : null;
     const basisLabel = ({
       equity_value: 'equity value',
       enterprise_value: 'enterprise value',
       headline_transaction_value: 'headline deal value',
     })[subjectBasis] || subjectBasis;
+    const cadence = subjectSemantics?.cadence;
+    const cadenceLabel = cadence ? typedValueLabel(String(cadence).toUpperCase()) : null;
+    const comparisonCohorts = cohorts.map((candidate) => ({
+      basis: candidate?.basis || null,
+      semantics: candidate?.semantics || null,
+      count: candidate?.percent?.stats?.n || 0,
+      median: candidate?.percent?.stats?.median ?? null,
+      deals: dealsForRefs(dealDirectory, candidate?.dealRefs, candidate?.dealIds),
+      selected: candidate === cohort,
+    }));
     return {
       attribute,
-      label: basisLabel ? `${label} (% of ${basisLabel})` : label,
+      label: basisLabel
+        ? `${label} (% of ${basisLabel}${cadenceLabel ? `, ${cadenceLabel.toLowerCase()}` : ''})`
+        : label,
       kind: 'numeric',
       unit: 'percent',
-      ...stats,
-      count: stats.n,
-      subjectValue: Number.isFinite(result?.subject?.percentOfDealValue) ? result.subject.percentOfDealValue : null,
-      subjectLabel: Number.isFinite(result?.subject?.percentOfDealValue) ? `${result.subject.percentOfDealValue}%` : null,
+      ...(stats || {}),
+      count: stats?.n || 0,
+      coverage,
+      deals: dealsForRefs(dealDirectory, cohort?.dealRefs, cohort?.dealIds),
+      subjectValue: subjectPercent,
+      subjectLabel: subjectPercent === null ? 'Relative value unavailable' : `${subjectPercent}%`,
+      comparisonUnavailable: !stats,
+      comparisonUnavailableReason: !stats
+        ? (cadence
+          ? 'No peer percentage cohort with the same deal-value basis and cadence is available.'
+          : 'No same-basis peer percentage cohort is available.')
+        : null,
+      comparisonCohorts,
     };
   }
   const distribution = result.distribution || {};
-  const cohort = Array.isArray(distribution.cohorts) ? distribution.cohorts[0] : null;
-  if (!cohort?.stats) return null;
-  const unit = cohort.semantics?.unit || spec.semantics?.unit || null;
+  const cohorts = Array.isArray(distribution.cohorts) ? distribution.cohorts : [];
+  const subjectSemantics = result?.subject?.semantics;
+  const subjectDimensions = ['unit', 'calendarBasis', 'trigger', 'cadence']
+    .filter((key) => subjectSemantics?.[key]);
+  const cohort = subjectDimensions.length
+    ? cohorts.find((candidate) => sameSemanticCohort(candidate?.semantics, subjectSemantics)) || null
+    : cohorts[0] || null;
+  const stats = cohort?.stats;
+  const unit = cohort?.semantics?.unit || subjectSemantics?.unit || spec.semantics?.unit || null;
   const subjectValue = Number.isFinite(result?.subject?.value) ? result.subject.value : null;
   const unitLabel = unit === 'days_equivalent' ? (Math.abs(subjectValue) === 1 ? 'day' : 'days')
     : unit === 'business_days' ? (Math.abs(subjectValue) === 1 ? 'business day' : 'business days')
@@ -190,20 +329,35 @@ function typedMetricSummary(spec, result) {
     label,
     kind: 'numeric',
     unit,
-    ...cohort.stats,
-    count: cohort.stats.n,
+    ...(stats || {}),
+    count: stats?.n || 0,
+    coverage,
+    deals: dealsForRefs(dealDirectory, cohort?.dealRefs, cohort?.dealIds),
     subjectValue,
     subjectLabel: subjectValue === null ? null : (unitLabel === '%' ? `${subjectValue}%` : `${subjectValue}${unitLabel ? ` ${unitLabel}` : ''}`),
+    comparisonUnavailable: !stats,
+    comparisonUnavailableReason: !stats
+      ? 'No peer cohort with the same unit, calendar basis, trigger, and cadence is available.'
+      : null,
   };
 }
 
+function presentationRole(spec) {
+  if (spec?.presentation?.role) return spec.presentation.role;
+  if (spec?.comparison?.kind === 'presence') return 'prevalence';
+  if (/exception/i.test(`${spec?.metricKey || ''} ${spec?.label || ''}`)) return 'exception';
+  if (['numeric', 'duration', 'money'].includes(spec?.comparison?.kind)) return 'metric';
+  return 'treatment';
+}
+
 export function buildTypedRowMarketContext(resolution, data, fallbackSummary = null) {
-  if (!resolution?.rowKey || data?.loading || data?.error) return null;
+  if (!resolution?.rowKey) return null;
   const responseRow = data?.byRow?.[resolution.rowKey];
+  if ((data?.loading || data?.error) && !responseRow && !fallbackSummary) return null;
   const entries = (resolution.metrics || [])
-    .map((spec) => ({ spec, summary: typedMetricSummary(spec, responseRow?.metrics?.[spec.metricKey]) }))
+    .map((spec) => ({ spec, summary: typedMetricSummary(spec, responseRow?.metrics?.[spec.metricKey], data?.dealDirectory) }))
     .filter((entry) => entry.summary);
-  const hasSubstantiveTyped = entries.some(({ spec }) => spec.comparison?.kind !== 'presence');
+  const hasSubstantiveTyped = entries.some(({ spec }) => presentationRole(spec) !== 'prevalence');
   if (!hasSubstantiveTyped && fallbackSummary) {
     entries.unshift({
       spec: { comparison: { kind: fallbackSummary.kind === 'numeric' ? 'numeric' : 'categorical' }, label: fallbackSummary.label },
@@ -211,22 +365,18 @@ export function buildTypedRowMarketContext(resolution, data, fallbackSummary = n
     });
   }
   if (!entries.length) return null;
-  const isException = (spec) => /exception/i.test(`${spec.metricKey || ''} ${spec.label || ''}`);
   const treatments = entries
-    .filter(({ spec }) => !isException(spec)
-      && spec.comparison?.kind !== 'presence'
-      && !['numeric', 'duration', 'money'].includes(spec.comparison?.kind))
+    .filter(({ spec }) => presentationRole(spec) === 'treatment')
     .map(({ summary }) => summary);
   const exceptions = entries
-    .filter(({ spec }) => isException(spec))
+    .filter(({ spec }) => presentationRole(spec) === 'exception')
     .map(({ summary }) => summary);
-  const exceptionSet = new Set(exceptions);
   const metrics = entries
-    .filter(({ spec, summary }) => ['numeric', 'duration', 'money'].includes(spec.comparison?.kind) && !exceptionSet.has(summary))
+    .filter(({ spec }) => presentationRole(spec) === 'metric')
     .map(({ summary }) => summary);
   const results = entries.map(({ spec }) => responseRow?.metrics?.[spec.metricKey]).filter(Boolean);
   const presenceResult = entries
-    .find(({ spec }) => spec.comparison?.kind === 'presence')
+    .find(({ spec }) => presentationRole(spec) === 'prevalence')
     ?.spec;
   const presence = presenceResult ? responseRow?.metrics?.[presenceResult.metricKey] : null;
   const peerSetSize = presence?.prevalence?.eligibleCount
@@ -236,6 +386,23 @@ export function buildTypedRowMarketContext(resolution, data, fallbackSummary = n
   const termDealCount = presence?.coverage?.presentCount
     ?? results.find((result) => Number.isFinite(result?.coverage?.presentCount))?.coverage.presentCount
     ?? null;
+  const substantiveSpecs = entries
+    .filter(({ spec }) => presentationRole(spec) !== 'prevalence')
+    .map(({ spec }) => spec);
+  const scopeNotes = [];
+  if (substantiveSpecs.some((spec) => spec.observation?.value?.normalizer === 'relative_period_months')) {
+    scopeNotes.push('Lookback periods are compared as months before signing.');
+  }
+  if (substantiveSpecs.some((spec) => spec.observation?.value?.normalizer === 'forward_period_months')) {
+    scopeNotes.push('Outside dates are compared as months after signing.');
+  }
+  if (metrics.some((summary) => summary.unit === 'days_equivalent')) {
+    scopeNotes.push('Hours are converted at 24 hours per day so notice periods share one day scale.');
+  }
+  if (substantiveSpecs.some((spec) => spec.comparison?.kind === 'money'
+    && spec.semantics?.stratifyDimensions?.includes('cadence'))) {
+    scopeNotes.push('Dollar thresholds are percentages of deal value; peer cohorts are separated by deal-value basis and cadence.');
+  }
   return {
     marketKey: resolution.rowKey,
     marketRowKey: resolution.rowKey,
@@ -243,14 +410,12 @@ export function buildTypedRowMarketContext(resolution, data, fallbackSummary = n
     peerSetSize,
     termDealCount,
     scope: 'typed-row-metric',
-    scopeNote: metrics.some((summary) => summary.unit === 'days_equivalent')
-      ? 'Hours are converted at 24 hours per day so notice periods can be compared on one day scale.'
-      : '',
+    scopeNote: scopeNotes.join(' '),
     treatments,
     exceptions,
     metrics,
     primarySummary: metrics[0] || treatments[0] || exceptions[0] || entries[0].summary,
-    deals: [],
+    deals: uniqueDeals(entries.map(({ summary }) => summary)),
     truncated: false,
   };
 }
@@ -262,6 +427,9 @@ export function registerTypedRowMarketContext(resolution, data, fallbackSummary 
   const key = `typed-row:${resolution.rowKey}`;
   if (context) registry[key] = context;
   else delete registry[key];
+  window.dispatchEvent(new CustomEvent('mtx:row-market-context-updated', {
+    detail: { rowKey: resolution.rowKey, context },
+  }));
   return context;
 }
 

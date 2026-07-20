@@ -35,3 +35,19 @@ test('parenthetical definition text stays verbatim (matchable back to source)', 
   // The captured text is a contiguous substring of the source.
   assert.ok(text.includes(mc.text) || text.replace(/\s+/g, ' ').includes(mc.text.replace(/\s+/g, ' ')));
 });
+
+test('adjacent Verve-style definitions are bounded at the next defined-term header', () => {
+  const text = '"Acting Holders" means Holders of not less than twenty-five percent (25%) of outstanding CVRs as set forth in the CVR Register.\n\n'
+    + ' "Agreement" has the meaning set forth in the preamble hereto.\n\n'
+    + '"Assignee" has the meaning set forth in Section 6.3(a).\n\n'
+    + '"Change of Control" means a sale of substantially all assets of Parent or a merger in which Parent is not the surviving entity.';
+  const defs = findInlineDefinitions(text);
+  const acting = defs.find((definition) => definition.term === 'Acting Holders');
+  const assignee = defs.find((definition) => definition.term === 'Assignee');
+  assert.ok(acting);
+  assert.ok(assignee);
+  assert.match(acting.text, /outstanding CVRs/);
+  assert.doesNotMatch(acting.text, /Agreement|Assignee|Change of Control/);
+  assert.match(assignee.text, /Section 6\.3\(a\)/);
+  assert.doesNotMatch(assignee.text, /Change of Control/);
+});

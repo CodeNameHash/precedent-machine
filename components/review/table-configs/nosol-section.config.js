@@ -71,7 +71,7 @@ function rowNode(row, ctx, source) {
   // what's already inline in the pill -- still shown today in the standalone
   // tables via the same "see text" affordance, so kept for parity; only
   // skipped here if renderDetail returned nothing at all.
-  return { signal, seeTextContent: detail || null };
+  return { signal, seeTextContent: detail || row.seeTextContent || null };
 }
 
 function byId(rows) {
@@ -381,6 +381,39 @@ function buildAcquisitionProposalGroup(reviewDeal, ctx) {
       seeDefinitionLink(baseText, ctx),
     ) : null,
     card: baseCard,
+    featureKeys: ['acquisitionTransactionDefinition', 'acquisitionTransactionPctThreshold'],
+    marketProvisionCodes: [String(baseCard?.provision_subtype || '').trim().toUpperCase() || 'NOSOL-ACQPROPOSAL'],
+    marketSubterms: [
+      {
+        key: 'transaction-types',
+        label: 'Covered transaction types',
+        featureKeys: ['acquisitionTransactionDefinition'],
+        kind: 'multi_select',
+        value: {
+          strategy: 'feature_value',
+          featureKeys: ['acquisitionTransactionDefinition'],
+          normalizer: 'acquisition_transaction_types',
+        },
+      },
+      {
+        key: 'threshold',
+        label: 'Acquisition threshold',
+        featureKeys: ['acquisitionTransactionPctThreshold'],
+        kind: 'numeric',
+        semantics: { unit: 'percent' },
+      },
+      {
+        key: 'transactions-exclusion',
+        label: 'Agreement transactions excluded',
+        featureKeys: ['acquisitionTransactionDefinition'],
+        kind: 'categorical',
+        value: {
+          strategy: 'feature_value',
+          featureKeys: ['acquisitionTransactionDefinition'],
+          normalizer: 'transactions_exclusion',
+        },
+      },
+    ],
   }];
 
   if (qualifyingCard) {
@@ -410,6 +443,84 @@ function goShopValue(hit) {
   const v = valueText(hit.value !== undefined ? hit.value : hit);
   return v || null;
 }
+
+const GO_SHOP_MARKET_CODES = [
+  'NOSOL-ACQPROPOSAL', 'NOSOL-B', 'NOSOL-CEASE', 'NOSOL-CEASE-DISC',
+  'NOSOL-CHANGEREC', 'NOSOL-CONFID', 'NOSOL-COR', 'NOSOL-DATA-ROOM',
+  'NOSOL-DISCLOSE', 'NOSOL-ENFORCE', 'NOSOL-EXCEPT', 'NOSOL-EXCEPTION',
+  'NOSOL-EXCEPTIONS', 'NOSOL-FIDUCIARY', 'NOSOL-GOSHOP', 'NOSOL-INFORMATION',
+  'NOSOL-INTERVENING', 'NOSOL-M', 'NOSOL-MATCH', 'NOSOL-NEGOTIATE',
+  'NOSOL-NOTICE', 'NOSOL-OTHER', 'NOSOL-PROHIBIT', 'NOSOL-RECOMMEND',
+  'NOSOL-REMATCH', 'NOSOL-STANDSTILL-WAIVER', 'NOSOL-SUPERIOR', 'NOSOL-T',
+  'NOSOL-WAIVER', 'NOSOL-WINDOW',
+];
+const GO_SHOP_PRESENCE_KEYS = ['goShopPresent', 'goShopPeriodDays', 'goShopWindow', 'extendedNegotiatingPeriodDays'];
+const GO_SHOP_MARKET_PRESENCE = {
+  strategy: 'feature_non_empty',
+  featureKeys: GO_SHOP_PRESENCE_KEYS,
+  absentValues: ['FALSE', 'NO', 'NONE', 'NOT_PRESENT'],
+  missingState: 'absent',
+};
+const GO_SHOP_VALUE_COHORT = {
+  scope: 'provision_codes',
+  provisionCodes: GO_SHOP_MARKET_CODES,
+  eligibility: 'family_present',
+  provisionFamily: 'NOSOL',
+};
+
+function goShopAvailabilitySubterm() {
+  const featureKeys = [...GO_SHOP_PRESENCE_KEYS, 'mainConcept'];
+  return {
+    key: 'availability',
+    label: 'Go-shop availability',
+    featureKeys,
+    kind: 'categorical',
+    cohort: GO_SHOP_VALUE_COHORT,
+    observationScope: { provisionCodes: GO_SHOP_MARKET_CODES },
+    presence: { strategy: 'card_exists', provisionCodes: GO_SHOP_MARKET_CODES, missingState: 'absent' },
+    value: { strategy: 'feature_value', featureKeys, normalizer: 'go_shop_availability' },
+    conditionalOnPresence: false,
+  };
+}
+
+function goShopTimingSubterm(key, label, featureKeys, trigger) {
+  return {
+    key,
+    label,
+    featureKeys,
+    kind: 'duration',
+    value: { strategy: 'feature_value', featureKeys, normalizer: 'deadline_duration', trigger },
+    semantics: {
+      unit: 'days_equivalent',
+      calendarBasis: 'mixed',
+      trigger,
+      requiredDimensions: ['unit', 'calendarBasis'],
+      normalisation: { type: 'duration_to_days', hoursPerDay: 24 },
+    },
+  };
+}
+
+function goShopExcludedPartySubterm() {
+  const featureKeys = ['goShopExcludedParties', 'mainConcept'];
+  return {
+    key: 'excluded-party-treatment',
+    label: 'Excluded-party treatment',
+    featureKeys,
+    kind: 'categorical',
+    value: { strategy: 'feature_value', featureKeys, normalizer: 'go_shop_excluded_party_treatment' },
+  };
+}
+
+function withGoShopMarket(row, marketSubterms) {
+  return {
+    ...row,
+    featureKeys: [...new Set(marketSubterms.flatMap((subterm) => subterm.featureKeys || []))],
+    marketProvisionCodes: GO_SHOP_MARKET_CODES,
+    marketPresence: GO_SHOP_MARKET_PRESENCE,
+    marketSubterms,
+  };
+}
+
 function buildGoShopGroup(reviewDeal, ctx) {
   const cards = reviewDeal?.cards || [];
   const period = firstFeature(cards, ['goShopPeriodDays', 'goShopWindow']);
@@ -421,17 +532,38 @@ function buildGoShopGroup(reviewDeal, ctx) {
   const PillCell = ctx?.primitives?.PillCell;
   const pill = (label, tone = 'neutral') => (ctx ? (PillCell ? React.createElement(PillCell, { label, tone }) : label) : null);
   if (!hasGoShop) {
-    return { id: 'nosol-go-shop', label: 'Go-Shop', rows: [{ id: 'nosol-go-shop-none', label: 'Go-shop', children: pill('None', 'missing') }] };
+    return {
+      id: 'nosol-go-shop',
+      label: 'Go-Shop',
+      rows: [withGoShopMarket(
+        { id: 'nosol-go-shop-none', label: 'Go-shop', children: pill('None', 'missing') },
+        [
+          goShopAvailabilitySubterm(),
+          goShopTimingSubterm('period', 'Go-shop period', ['goShopPeriodDays', 'goShopWindow'], 'signing'),
+          goShopExcludedPartySubterm(),
+          goShopTimingSubterm('extended-period', 'Extended negotiating period', ['extendedNegotiatingPeriodDays'], 'go_shop_period_expiry'),
+        ],
+      )],
+    };
   }
   const rows = [];
-  const add = (id, label, hit, unit) => {
+  const add = (id, label, hit, unit, marketSubterms) => {
     const v = goShopValue(hit);
     if (!v) return;
-    rows.push({ id, label, children: pill(unit && /^\d+$/.test(v) ? `${v} ${unit}` : v), card: hit?.card || null });
+    rows.push(withGoShopMarket({
+      id,
+      label,
+      children: pill(unit && /^\d+$/.test(v) ? `${v} ${unit}` : v),
+      card: hit?.card || null,
+    }, marketSubterms));
   };
-  add('nosol-go-shop-period', 'Go-shop period', period, 'business days');
-  add('nosol-go-shop-excluded', 'Excluded parties', excluded);
-  add('nosol-go-shop-extended', 'Extended negotiating period', extended, 'business days');
+  add('nosol-go-shop-period', 'Go-shop period', period, 'days', [
+    goShopTimingSubterm('timing', 'Go-shop period', ['goShopPeriodDays', 'goShopWindow'], 'signing'),
+  ]);
+  add('nosol-go-shop-excluded', 'Excluded parties', excluded, null, [goShopExcludedPartySubterm()]);
+  add('nosol-go-shop-extended', 'Extended negotiating period', extended, 'days', [
+    goShopTimingSubterm('timing', 'Extended negotiating period', ['extendedNegotiatingPeriodDays'], 'go_shop_period_expiry'),
+  ]);
   return { id: 'nosol-go-shop', label: 'Go-Shop', rows };
 }
 
@@ -464,6 +596,12 @@ function buildGroups(reviewDeal, ctx) {
           // scoping and the prohibited-act/exception drill-down were
           // silently dropped for every grouped nosol row.
           featureKeys: row.featureKeys || null,
+          marketSubterms: row.marketSubterms || null,
+          marketProvisionCodes: row.marketProvisionCodes || null,
+          marketPresence: row.marketPresence || null,
+          marketPrevalenceCohort: row.marketPrevalenceCohort || null,
+          marketObservationScope: row.marketObservationScope || null,
+          marketMetrics: row.marketMetrics || null,
           items: row.acts || row.exceptionItems || null,
           evidence: row.evidence || null,
         };
@@ -545,4 +683,4 @@ const nosolSectionConfig = {
   empty: { copy: 'No no-solicitation provisions found.' },
 };
 
-export { buildGroups, extractPctTriggers, nosolSectionConfig };
+export { buildAcquisitionProposalGroup, buildGroups, extractPctTriggers, nosolSectionConfig };

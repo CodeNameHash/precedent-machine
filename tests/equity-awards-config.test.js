@@ -124,6 +124,34 @@ test('CVR Entitlement (#7): only the Stock Options row carries it, and it reads 
   assert.equal(rsa.cvrEntitlement, null);
 });
 
+test('equity instruments expose consideration and vesting, while CVR entitlement is options-only', () => {
+  const rows = mod.equityAwardRows([metseraStyleCard()]).filter((row) => !row.isLongText);
+  assert.ok(rows.length > 0);
+  for (const row of rows) {
+    const expectedLabels = [
+      'Consideration',
+      'Vesting treatment',
+      ...(row.instrumentCode === 'STOCK_OPTIONS' ? ['CVR entitlement'] : []),
+    ];
+    assert.deepEqual(row.marketSubterms.map((subterm) => subterm.label), expectedLabels);
+    assert.equal(row.marketPresence.strategy, 'instrument_item');
+    assert.equal(row.marketPresence.instrumentCode, row.instrumentCode);
+    assert.equal(row.marketSubterms[0].kind, 'multi_select');
+    assert.equal(row.marketSubterms[1].kind, 'multi_select');
+    const cvr = row.marketSubterms.find((subterm) => subterm.key === 'cvr-entitlement');
+    if (row.instrumentCode === 'STOCK_OPTIONS') {
+      assert.equal(cvr.kind, 'presence');
+      assert.equal(cvr.cohort.eligibility, 'instrument_present');
+      assert.equal(cvr.cohort.instrumentCode, 'STOCK_OPTIONS');
+      assert.equal(cvr.presence.missingState, 'absent');
+      assert.ok(row.marketPresence.featureKeys.includes('optionsCvrEarnIn'));
+    } else {
+      assert.equal(cvr, undefined, `${row.instrumentCode} must not inherit optionsCvrEarnIn`);
+      assert.ok(!row.marketPresence.featureKeys.includes('optionsCvrEarnIn'));
+    }
+  }
+});
+
 test('no row carries an "approximate" flag any more (#4) -- the field is gone entirely', () => {
   const rows = mod.equityAwardRows([metseraStyleCard()]);
   assert.ok(rows.every((row) => !('approximate' in row)));

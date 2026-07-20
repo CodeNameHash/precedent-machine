@@ -143,6 +143,7 @@ test('ClampedWithSeeText primitive is exported, CSS-line-clamps rather than char
   assert.match(body, /term-cell-seetext/);
   assert.match(body, /See provision/);
   assert.match(body, /<details/);
+  assert.doesNotMatch(body, /as="p">\s*<p/, 'line-clamped evidence must not create nested paragraphs');
 });
 
 // -- Category-2 config files wire the new primitive into their compact column -
