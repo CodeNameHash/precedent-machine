@@ -106,7 +106,10 @@ test('EQ1: the cutoffTreatment catch-all row still renders after ESPP -- it is a
   };
   const rows = mod.equityAwardRows([card]);
   assert.equal(rows.length, 3);
-  assert.equal(rows[2].instrument, 'Award / contribution cutoff treatment');
+  // r16 (Ben, Skechers item 2): row retitled in the table's voice -- it is
+  // the grant-date cutoff for NEW awards, distinct from the consideration
+  // column (see tests/r16-skechers-structured-voice.test.js).
+  assert.equal(rows[2].instrument, 'New grants / contributions after signing');
   assert.match(rows[1].instrument, /ESPP/);
 });
 
@@ -201,7 +204,8 @@ test('cutoffTreatment (e.g. ESPP contribution cutoff) still renders as its own l
     },
   }];
   const rows = mod.equityAwardRows(cards);
-  const cutoff = rows.find((row) => row.instrument === 'Award / contribution cutoff treatment');
+  // r16 (Ben, Skechers item 2): retitled -- see the comment on the EQ1 test.
+  const cutoff = rows.find((row) => row.instrument === 'New grants / contributions after signing');
   assert.ok(cutoff, 'cutoffTreatment should render a row');
   assert.match(cutoff.considerationLabel, /Company RSU/);
   assert.equal(cutoff.isLongText, true);

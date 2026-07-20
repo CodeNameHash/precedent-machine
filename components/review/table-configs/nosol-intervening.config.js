@@ -104,6 +104,34 @@ function yesNo(detail) {
   if (t === 'false') return 'No';
   return detail;
 }
+// Ben (Skechers r16, item 4): the Definition row surfaced a 90-char clause
+// fragment (collapsed prose preview) -- convert to a structured headline
+// derived deterministically from the definition's clause shape, with the
+// full stored definition kept behind the same "See provision" affordance.
+// The corpus shape is highly uniform (validated against every deck carrying
+// interveningEventDefinition -- 12 decks): "[material] event / development /
+// change ... not [actually] known to, or reasonably foreseeable/expected
+// by, the [Special Committee /] Board as of the date hereof", optionally
+// carving out Acquisition Proposals and meeting/exceeding projections. When
+// the knowledge-gate shape doesn't match, returns null and the row keeps
+// its prior collapsed-prose rendering -- never a fabricated summary.
+function summarizeInterveningDefinition(text) {
+  const t = String(text || '');
+  if (!t) return null;
+  const known = /not\s+(?:actually\s+)?known|the\s+consequences\s+of\s+which\s+were\s+not\s+reasonably\s+foreseeable|unknown\s+to/i.test(t);
+  if (!known) return null;
+  const material = /\bmaterial\b/i.test(t.slice(0, 160));
+  const foreseeable = /reasonably\s+(?:foreseeable|expected)/i.test(t);
+  const committee = /Special\s+Committee/i.test(t);
+  const who = committee ? 'the Special Committee / Board' : 'the Board';
+  const atSigning = /date\s+(?:hereof|of\s+this\s+Agreement)|execution\s+and\s+delivery/i.test(t);
+  let line = `${material ? 'Material' : 'Any'} event, development or change not known${foreseeable ? ' (or reasonably foreseeable)' : ''} to ${who}${atSigning ? ' at signing' : ''}`;
+  const carveouts = [];
+  if (/(?:Acquisition|Takeover)\s+Proposal/i.test(t)) carveouts.push('Acquisition Proposal-related events');
+  if (/meets\s+or\s+exceeds[\s\S]{0,120}?(?:projections|forecasts|estimates|predictions)/i.test(t)) carveouts.push('meeting/exceeding projections');
+  if (carveouts.length) line += `; excludes ${carveouts.join(' and ')}`;
+  return `${line}.`;
+}
 function rowForSpec(spec, cards) {
   const evidence = cards.map(textOf).filter(Boolean).join('\n\n');
   // E (truncation sweep, stored-data case): definitionFromText/exceptionsFromText/
@@ -116,7 +144,7 @@ function rowForSpec(spec, cards) {
   // never the underlying data.
   const detail = stripEdgeEllipsis(yesNo(firstFeature(cards, spec.keys) || spec.fallback(evidence)));
   if (!detail) return null;
-  return {
+  const row = {
     id: `nosol-intervening-${spec.id}`,
     label: spec.label,
     party: [...new Set(cards.map(partySide))].join(', ') || 'Target / Company',
@@ -125,6 +153,11 @@ function rowForSpec(spec, cards) {
     sourceCards: cards,
     present: true,
   };
+  // Item 4 (Skechers r16): structured headline for the Definition row; the
+  // full definition text stays reachable via "See provision" (renderSignals
+  // below) and the row-level FULL_TEXT_COLUMNS expander.
+  if (spec.id === 'definition') row.summary = summarizeInterveningDefinition(detail);
+  return row;
 }
 
 // ── New-row synthesis (short codes -> friendly labels) ─────────────────────
@@ -212,6 +245,31 @@ function collapsedTextNode(text) {
   );
 }
 function renderSignals(row, ctx) {
+  // Item 4 (Skechers r16): the Definition row's structured headline renders
+  // as a pill (concise, derived from the clause shape), with the FULL
+  // stored definition behind the same "See provision" <details> affordance
+  // collapsedTextNode uses -- never the old raw 90-char clause fragment.
+  if (row.summary) {
+    const PillCell = ctx?.primitives?.PillCell;
+    const headline = PillCell
+      ? React.createElement(PillCell, { label: row.summary, tone: 'neutral', evidence: row.detail, source: row.sourceCards?.[0], wrap: true })
+      : React.createElement('span', { className: 'text-[11px] text-ink' }, row.summary);
+    return React.createElement(
+      'span',
+      null,
+      headline,
+      React.createElement(
+        'details',
+        { className: 'mt-1' },
+        React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, 'See provision'),
+        React.createElement(
+          'div',
+          { className: 'mt-1 max-w-[36rem] whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight' },
+          row.detail,
+        ),
+      ),
+    );
+  }
   const signal = rowSignal(row);
   if (!signal) return '';
   if (String(signal.label).length > 90) return collapsedTextNode(signal.label);
@@ -260,4 +318,4 @@ const nosolInterveningConfig = {
   empty: { copy: 'No Intervening Event mechanics found.' },
 };
 
-export { nosolInterveningConfig, renderDetail, renderSignals, rowSignal };
+export { nosolInterveningConfig, renderDetail, renderSignals, rowSignal, summarizeInterveningDefinition };

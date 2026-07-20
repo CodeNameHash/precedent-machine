@@ -133,6 +133,12 @@ P3 — Recurring fold-in pattern (proxy-in-meeting, jury-in-jurisdiction,
 P3 — ENDRA metadata check: source parties are ENDRA Life Sciences /
      Noble Africa LLC (Parent: ASP Isotopes); display says "ENDRA /
      Renergen". TERMR-OUTSIDE slot holds a definition-shaped card.
+P2 — Skechers stored-quote truncations (r16 structured-voice round):
+     fiduciaryFinalStandard stored as a headless mid-clause fragment
+     (truncated at the START); DEF-SUPERIOR card mislabeled (titled
+     "Superior Proposal", contains the Notice Period definition) with
+     primary_quote hard-truncated at 164 chars mid-word. Both need the
+     re-extract quote-capture fix; render side is already gated.
 
 ## Deferred / backlog (unchanged priorities)
 

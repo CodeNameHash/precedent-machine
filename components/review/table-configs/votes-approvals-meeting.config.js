@@ -57,6 +57,30 @@ function deadlinePillNode(deadline, ctx, evidence, source) {
     }
     return React.createElement('div', { className: 'flex flex-wrap items-center gap-1' }, nodes);
   }
+  // Ben (Skechers r16, item 4 "approvals rows"): deals whose proxy-filing /
+  // mailing obligation has no numeric deadline (days: null) fell back to a
+  // raw clause preview. The overwhelmingly standard phrasing for those is
+  // "as promptly/soon as (reasonably) practicable" -- corpus survey: 28 of
+  // the 31 null-days deadline rows across the cached decks carry exactly
+  // that phrase. Render it in the SAME pill grammar as numeric deadlines
+  // ("As promptly as practicable" after [trigger]); the three
+  // non-conforming decks keep the see-text prose fallback.
+  if (deadline.text && /as\s+(?:promptly|soon)\s+as\s+(?:reasonably\s+)?practicable/i.test(deadline.text)) {
+    const nodes = [];
+    if (PillCell) {
+      nodes.push(React.createElement(PillCell, {
+        key: 'prompt', label: 'As promptly as practicable', tone: 'neutral', evidence: deadline.text || evidence, source,
+      }));
+      if (deadline.trigger) {
+        nodes.push(React.createElement('span', { key: 'after', className: 'text-[11px] text-inkFaint' }, 'after'));
+        nodes.push(React.createElement(PillCell, {
+          key: 'ref', label: enumLabel(deadline.trigger), tone: 'info', evidence: deadline.text || evidence, source,
+        }));
+      }
+      return React.createElement('div', { className: 'flex flex-wrap items-center gap-1' }, nodes);
+    }
+    return `As promptly as practicable${deadline.trigger ? ` after ${enumLabel(deadline.trigger)}` : ''}`;
+  }
   if (!deadline.text) return null;
   return TruncatedWithSeeText
     ? React.createElement(TruncatedWithSeeText, { text: deadline.text, evidence: evidence || deadline.text, source })
@@ -177,6 +201,20 @@ function parentApprovalText(card) {
     return immediate
       ? 'Parent adopts as sole stockholder of Merger Sub (immediately after signing)'
       : 'Parent adopts as sole stockholder of Merger Sub';
+  }
+  // Ben (Skechers r16, item 4 "approvals rows"): Skechers' §6.17 phrasing --
+  // "Parent will cause the sole stockholder of Merger Sub to execute and
+  // deliver ... a written consent approving the Merger" -- names the sole
+  // stockholder as the CONSENTING party but Parent as the causing party, so
+  // neither existing branch matched and the row dumped the whole clause
+  // preview. Same deterministic derivation discipline as the branches
+  // around it: unambiguous wording only, everything else stays on see-text.
+  if (/cause\s+the\s+sole\s+stockholder\s+of\s+Merger\s+Sub\s+to\s+execute[\s\S]{0,120}?written\s+consent/i.test(clause)
+    && /\b(?:adopt|approv)/i.test(clause)) {
+    const immediate = /immediately\s+(?:following|after)\s+(?:the\s+)?execution/i.test(clause);
+    return immediate
+      ? "Merger Sub's sole stockholder adopts by written consent (immediately after signing)"
+      : "Merger Sub's sole stockholder adopts by written consent";
   }
   // (Item 7, QXO) "sole stockholder" phrasing doesn't cover the
   // written-consent-by-all-record-holders mechanic QXO's §4.15 uses --
