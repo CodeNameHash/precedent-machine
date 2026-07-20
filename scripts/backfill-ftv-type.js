@@ -42,6 +42,22 @@ const { getServiceSupabase } = require('../lib/supabase');
 const APPLY = process.argv.includes('--apply');
 const norm = (s) => String(s || '').replace(/\s+/g, ' ').trim();
 
+
+// Supabase caps every query at 1000 rows by default -- a multi-deal
+// provisions fetch silently truncates past that (the bug that made this
+// script report "no NOSOL provisions" for deals whose rows fell beyond the
+// cap). Page through with .range() until a short page.
+async function fetchAllRows(query) {
+  const PAGE = 1000;
+  const out = [];
+  for (let from = 0; ; from += PAGE) {
+    const { data, error } = await query.range(from, from + PAGE - 1);
+    if (error) throw new Error(error.message);
+    out.push(...(data || []));
+    if (!data || data.length < PAGE) return out;
+  }
+}
+
 async function main() {
   const sb = getServiceSupabase();
   if (!sb) { console.error('Supabase not configured (need .env.local)'); process.exit(1); }
@@ -65,11 +81,12 @@ async function main() {
   }
   console.log(`deals with forceTheVoteType claims: ${[...byDeal.values()].filter((s) => s.type).length}`);
 
-  const { data: provisions, error: pErr } = await sb
+  const provisions = await fetchAllRows(sb
     .from('provisions')
     .select('id, deal_id, type, category, full_text, ai_metadata')
-    .in('deal_id', [...byDeal.keys()]);
-  if (pErr) throw new Error(pErr.message);
+    .in('deal_id', [...byDeal.keys()])
+    .order('id'));
+  console.log(`provisions loaded: ${provisions.length}`);
 
   const NOSOL_RE = /no[\s_-]*sol|NOSOL|COVENANT_NO_SOLICITATION/i;
   const plan = [];
