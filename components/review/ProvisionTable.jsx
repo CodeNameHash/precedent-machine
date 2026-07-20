@@ -22,7 +22,10 @@ Config shape:
 // dc46bef "see text" affordance. Keyed by (config.id -> [column.id]) so we
 // never touch the legitimate short feature/pill columns that happen to share
 // a column id (e.g. 'detail') across families.
-const FULL_TEXT_COLUMNS = {
+// Exported for compare mode's unified section table (CompareColumn.jsx),
+// which applies the SAME relocation so per-deal answer cells match what
+// each deal's own table would have shown inline.
+export const FULL_TEXT_COLUMNS = {
   'conditions-m': ['provision'],
   'conditions-b': ['provision'],
   'conditions-s': ['provision'],

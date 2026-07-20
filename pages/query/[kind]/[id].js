@@ -3,7 +3,12 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import MergertraceStyles from '../../../components/review-v2/MergertraceStyles';
-import AppHeader from '../../../components/chrome/AppHeader';
+// r14 (Ben): the results page must carry the SAME top banner/masthead
+// chrome as the review page, including the "Return to Index" affordance —
+// that's the site Layout's TopBar (components/chrome/TopBar.jsx, extracted
+// out of components/Layout.js so both surfaces share one implementation),
+// not the generic Corpus/Query/Library AppHeader this page used before.
+import TopBar from '../../../components/chrome/TopBar';
 const { toCsv, resultToCsvRows, csvFilename } = require('../../../lib/query/csv');
 const { humanizeKey } = require('../../../lib/query/filter-labels');
 // E5 (2026-07-19 pre-demo audit): the review page's own "same label path"
@@ -60,6 +65,38 @@ function decodePayloadSafe(value) {
     err.isInvalidLink = true;
     throw err;
   }
+}
+
+// r14 (Ben): the title header band must read in SENTENCE CASE ("Deals with
+// force the vote"). resultTitle() already sentence-cases the FILTER_THEN_LIST/
+// MARKET_RANGE/DEAL_TO_MARKET phrasing it builds, but PROVISION_CROSS_CUT
+// borrows provisionTypeLabel()'s legal-English overrides (e.g. "No
+// Solicitation"), which are deliberately Title Case for use as a standalone
+// term (dropdowns, filter chips) — wrong once that term leads a full
+// sentence ("No Solicitation across deals"). Fixed here at render, not in
+// lib/query/result-title.js, so the lib's own tests (which pin the Title
+// Case provisionTypeLabel output) stay green and every other caller of that
+// label keeps its Title Case. DEAL_COMPARE/DEAL_TO_MARKET titles carry
+// verbatim deal names (proper nouns) and must not be touched.
+const NO_SENTENCE_CASE_KINDS = new Set(['DEAL_COMPARE', 'DEAL_TO_MARKET']);
+function sentenceCaseTitle(kind, title) {
+  if (!title || NO_SENTENCE_CASE_KINDS.has(kind)) return title;
+  // Protect quoted spans (free-text filter values, e.g. `contains "Metsera"`)
+  // from being lowercased — those are verbatim user/deal text, not phrasing.
+  const parts = String(title).split(/("[^"]*")/);
+  let seenFirstWord = false;
+  return parts.map((part, i) => {
+    if (i % 2 === 1) return part; // quoted span, leave untouched
+    return part.replace(/[A-Za-z]+/g, (word) => {
+      // All-caps acronyms (CVR, SEC, ...) stay as-is.
+      if (word.length > 1 && word === word.toUpperCase()) return word;
+      if (!seenFirstWord) {
+        seenFirstWord = true;
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+      }
+      return word.toLowerCase();
+    });
+  }).join('');
 }
 
 function downloadCsv(result) {
@@ -155,59 +192,57 @@ export default function QueryPage() {
         <title>{`${title} · Corpus`}</title>
       </Head>
       <MergertraceStyles />
+      {/* r14 item 1: same top banner/masthead chrome as the review page,
+          "Return to Index" affordance included — see TopBar.jsx. This page
+          stays noLayout (it needs to control its own body width), so it
+          renders the site's shared banner directly rather than a second
+          bespoke header. */}
+      <TopBar />
       <div className="mtx qp">
-        <AppHeader
-          active="query"
-          center={(
-            <div className="pageTitle">
-              <h1>{title}</h1>
-              <p className="mtx-meta-label">{id === 'adhoc' ? 'Ad hoc query — not saved yet.' : 'Saved query.'}</p>
+        {/* r14 item 2: a header band styled like the review page's section
+            headers (SectionBlock's bold title over a 2px black rule) —
+            title in sentence case, with the Share/Export/Save/Duplicate
+            toolbar right-aligned INSIDE this band rather than a separate
+            strip above it. */}
+        <div className="titleBand">
+          <div className="titleBandInner">
+            <div className="titleText">
+              <h1>{sentenceCaseTitle(result?.kind, title)}</h1>
+              <p className="mtx-meta-label titleMeta">{id === 'adhoc' ? 'Ad hoc query — not saved yet.' : 'Saved query.'}</p>
             </div>
-          )}
-        />
-        <div className="actions">
-          <div className="actionsInner">
-            <button type="button" className="mtx-btn" onClick={() => navigator.clipboard?.writeText(window.location.href)}>Share</button>
-            <button type="button" className="mtx-btn" disabled={!result} onClick={() => downloadCsv(result)}>Export CSV</button>
-            <button type="button" className="mtx-btn" disabled={!canPersist || saving || id !== 'adhoc'} onClick={() => saveQuery(false)}>{saving ? 'Saving…' : 'Save'}</button>
-            <button type="button" className="mtx-btn mtx-btn-primary" disabled={!canPersist || saving} onClick={() => saveQuery(true)}>Duplicate</button>
+            <div className="titleActions">
+              <button type="button" className="mtx-btn" onClick={() => navigator.clipboard?.writeText(window.location.href)}>Share</button>
+              <button type="button" className="mtx-btn" disabled={!result} onClick={() => downloadCsv(result)}>Export CSV</button>
+              <button type="button" className="mtx-btn" disabled={!canPersist || saving || id !== 'adhoc'} onClick={() => saveQuery(false)}>{saving ? 'Saving…' : 'Save'}</button>
+              <button type="button" className="mtx-btn mtx-btn-primary" disabled={!canPersist || saving} onClick={() => saveQuery(true)}>Duplicate</button>
+            </div>
           </div>
         </div>
-        <main>
+        <div className="body">
           <div className="wrap">
             {error ? <div className="empty">{error}</div> : !result ? <div className="empty">Loading query…</div> : <ResultView result={result} onOpen={setActive} />}
           </div>
-        </main>
+        </div>
         {active && <Drilldown item={active} onClose={() => setActive(null)} />}
       </div>
       <style jsx>{`
         .qp { min-height: 100vh; background: var(--paper); color: var(--ink); font-family: var(--mtx-sans); }
-        /* Same pageTitle voice as /query's own AppHeader center slot: 18px
-           650-weight Inter h1 (the DealHeader identity block's h1 sits in
-           the same 16-18px bold range), with the subtitle riding the
-           app's meta-label voice (9px uppercase, 0.14em tracking, grey) —
-           the same treatment DealHeader gives its "ACQUIRED BY" eyebrow —
-           rather than a plain lowercase sentence. */
-        .pageTitle h1 { margin: 0; font-size: 18px; font-family: var(--mtx-sans); font-weight: 650; color: var(--ink); }
-        .pageTitle p { margin: 4px 0 0; font-size: 9px; letter-spacing: 0.14em; }
-        .actions { border-bottom: 1px solid var(--line); background: var(--paper); }
-        /* A (toolbar regression): this bar used to double up as both
-           ".wrap" (the page's max-width-centering/column-stack class also
-           used by <main>'s results wrapper) AND ".actionsInner" -- two
-           same-specificity classes on one element, so ".wrap"'s
-           flex-direction: column/gap: 4px (meant for the results content
-           area) silently won over ".actionsInner"'s row layout, stretching
-           every button to the full content width (100%) and stacking them
-           -- the "Duplicate" primary button read as a giant black banner.
-           Give the toolbar its own centering here instead of sharing the
-           class, so nothing but this rule controls its layout. */
-        .actionsInner { max-width: 1280px; margin: 0 auto; display: flex; flex-direction: row; align-items: center; justify-content: flex-end; gap: 10px; padding: 12px 34px; }
-        .actionsInner .mtx-btn { flex: 0 0 auto; width: auto; }
-        main { padding: 0; }
+        /* r14 item 2: a review-page SECTION header band (SectionBlock's
+           2px black rule under a bold title — components/review-v2/
+           sectionList.js's rendering in pages/review/[id].js), not a
+           standalone strip: title left, Share/Export/Save/Duplicate
+           right-aligned in the same band. */
+        .titleBand { border-bottom: 2px solid #000; background: var(--paper); }
+        .titleBandInner { max-width: 1280px; margin: 0 auto; padding: 16px 34px 12px; display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 12px 20px; }
+        .titleText h1 { margin: 0; font-size: 18px; font-family: var(--mtx-sans); font-weight: 700; letter-spacing: -0.01em; color: var(--ink); }
+        .titleMeta { margin: 4px 0 0; font-size: 9px; letter-spacing: 0.14em; }
+        .titleActions { display: flex; flex-direction: row; align-items: center; gap: 10px; padding-bottom: 2px; }
+        .titleActions .mtx-btn { flex: 0 0 auto; width: auto; }
+        .body { padding: 0; }
         .wrap { max-width: 1280px; margin: 0 auto; padding: 32px 34px; display: flex; flex-direction: column; gap: 4px; }
         .empty { border: 1px solid var(--line); background: var(--paper); padding: 24px; color: var(--ink-light); font-family: var(--mtx-sans); }
         @media (max-width: 900px) {
-          .actionsInner { padding: 12px 16px; flex-wrap: wrap; }
+          .titleBandInner { padding: 12px 16px 10px; }
           .wrap { padding: 16px; }
         }
       `}</style>
@@ -305,12 +340,12 @@ function CrossCut({ result, onOpen }) {
             <table className="mtx-table">
               <thead><tr><th>Deal</th><th>Signing</th>{group.columns.map((col) => <th key={col.field}>{col.label}</th>)}</tr></thead>
               <tbody>{result.rows.map((row) => <tr key={row.deal_id}>
-                <td>{row.deal_name}</td><td className="mtx-mono">{row.signing_date || '-'}</td>
+                <td>{row.deal_name}</td><td>{row.signing_date || '-'}</td>
                 {group.columns.map((col) => {
                   const i = columnIndex.get(col.field);
                   const cell = row.cells[i] || {};
                   return (
-                    <td key={col.field} className="mtx-mono mtx-prov-cell" title={cell.verbatim_quote || ''} onClick={() => onOpen({ ...cell, card_id: row.card_id, deal_id: row.deal_id })}>
+                    <td key={col.field} className="mtx-prov-cell" title={cell.verbatim_quote || ''} onClick={() => onOpen({ ...cell, card_id: row.card_id, deal_id: row.deal_id })}>
                       {formatValue(cell.value, col.field)}{cell._prov && <ProvBadge prov={cell._prov} />}
                     </td>
                   );
@@ -327,12 +362,15 @@ function CrossCut({ result, onOpen }) {
 // R (2026-07-19 query-results overhaul): item 2 — the min/median/max stat
 // strip now reads as review-page fact tiles (DealHeader's metric-column
 // voice: 9px uppercase label over a bold value, divided by a 1px rule)
-// instead of the old bordered pill-per-stat row.
+// instead of the old bordered pill-per-stat row. r14 item 4: DealHeader's
+// own metric values (deal value, per share, ...) render in the site's plain
+// sans (no mono) — this tile carried a stray mtx-mono that made it drift
+// from the component it's explicitly modeled on. Dropped.
 function FactTile({ label, value }) {
   return (
     <div className="factTile">
       <p className="factLabel">{label}</p>
-      <p className="factValue mtx-mono">{value}</p>
+      <p className="factValue">{value}</p>
     </div>
   );
 }
@@ -390,7 +428,7 @@ function MarketRange({ result, onOpen }) {
                   <button type="button" style={{ height: `${height}px` }} title={rangeLabel}>
                     <span>{bucket.count}</span>
                   </button>
-                  <p className="chartBarLabel mtx-mono" title={rangeLabel}>{rangeLabel}</p>
+                  <p className="chartBarLabel" title={rangeLabel}>{rangeLabel}</p>
                 </div>
               );
             })}
@@ -444,9 +482,9 @@ function MarketRange({ result, onOpen }) {
               {result.deal_points.map((point) => (
                 <tr key={`${point.deal_id}-${point.card_id}`} onClick={() => onOpen(point)}>
                   <td>{point.deal_name}</td>
-                  <td className="mtx-mono mtx-prov-cell">{formatValue(point.value, result.field_path)}{point._prov && <ProvBadge prov={point._prov} />}</td>
+                  <td className="mtx-prov-cell">{formatValue(point.value, result.field_path)}{point._prov && <ProvBadge prov={point._prov} />}</td>
                   <td className="mtx-mono">{point.quote_section_ref || '-'}</td>
-                  {result.percentStats && <td className="mtx-mono">{point.percent == null ? '—' : formatPercentStat(point.percent)}</td>}
+                  {result.percentStats && <td>{point.percent == null ? '—' : formatPercentStat(point.percent)}</td>}
                 </tr>
               ))}
             </tbody>
@@ -464,10 +502,16 @@ function MarketRange({ result, onOpen }) {
 // shape, so this deliberately does NOT reuse lib/deals-index-columns'
 // accessors). 'consideration_type' is a base column even though it lives
 // inside row.columns (the query builder always requests it for display).
+// r14 item 4: Signing/Value used to force mtx-mono (IBM Plex Mono) — the
+// review page only reserves that face for citation-style codes (section
+// refs), never for ordinary deal-table cells; its own metric values (e.g.
+// DealHeader's date/deal-value columns) render in the standard sans. No
+// `mono` flag here anymore so these cells fall through to the table's
+// default sans.
 const FILTER_LIST_BASE_COLUMNS = [
   { key: 'deal_name', label: 'Deal', locked: true },
-  { key: 'signing_date', label: 'Signing', mono: true },
-  { key: 'total_deal_value', label: 'Value', mono: true },
+  { key: 'signing_date', label: 'Signing' },
+  { key: 'total_deal_value', label: 'Value' },
   { key: 'consideration_type', label: 'Consideration' },
 ];
 const FILTER_LIST_BASE_KEYS = new Set(FILTER_LIST_BASE_COLUMNS.map((col) => col.key));
@@ -600,17 +644,33 @@ function FilterList({ result }) {
                 {isOpen && hits.length > 0 && (
                   <tr className="hitsRow">
                     <td colSpan={visibleColumns.length + 1}>
-                      {hits.map((hit, i) => (
-                        <div key={i} className="hitBlock">
-                          <div className="hitLabel"><b>{humanizeKey(hit.field)}</b><span className="mtx-mono">{formatValue(hit.value, hit.field)}</span></div>
-                          {/* r10c: the standard is a property of an obligation —
-                              say what it attaches to, never just that the words
-                              occur somewhere in the family. */}
-                          {hit.attaches_to && <div className="hitAttach">Attaches to: {hit.attaches_to}</div>}
-                          {hit.quote?.text && <blockquote className="mtx-serif">{hit.quote.text}</blockquote>}
-                          {hit.quote?.section_ref && <div className="hitSection mtx-mono">{hit.quote.section_ref}</div>}
-                        </div>
-                      ))}
+                      {hits.map((hit, i) => {
+                        // r15 item 5: show-all hits (mode:'all' — see
+                        // showAllHit() in lib/query/executors/filter-then-list.js)
+                        // carry a `has` flag instead of always being a match.
+                        // State reads in legal English ("Force the vote: Yes —
+                        // Hard"), never a machine code: valueLabel/gradeLabel
+                        // arrive pre-humanized off the executor's taxonomy
+                        // lookup, so this only falls back to formatValue() when
+                        // no taxonomy label exists (e.g. a plain boolean with no
+                        // graded sibling).
+                        const isShowAll = Object.prototype.hasOwnProperty.call(hit, 'has');
+                        const stateLabel = isShowAll
+                          ? (hit.has ? (hit.valueLabel || formatValue(hit.value, hit.field)) : 'None found')
+                          : formatValue(hit.value, hit.field);
+                        const gradeSuffix = isShowAll && hit.has && hit.gradeLabel ? ` — ${hit.gradeLabel}` : '';
+                        return (
+                          <div key={i} className="hitBlock">
+                            <div className="hitLabel"><b>{humanizeKey(hit.field)}</b><span>{stateLabel}{gradeSuffix}</span></div>
+                            {/* r10c: the standard is a property of an obligation —
+                                say what it attaches to, never just that the words
+                                occur somewhere in the family. */}
+                            {hit.attaches_to && <div className="hitAttach">Attaches to: {hit.attaches_to}</div>}
+                            {hit.quote?.text && <blockquote>{hit.quote.text}</blockquote>}
+                            {hit.quote?.section_ref && <div className="hitSection mtx-mono">{hit.quote.section_ref}</div>}
+                          </div>
+                        );
+                      })}
                     </td>
                   </tr>
                 )}
@@ -733,14 +793,17 @@ function Panel({ title, children }) {
        "see text" affordance the review page uses (.term-cell-seetext), and
        the quote itself now takes the review page's exact clause-block
        treatment (ClauseSidebar.jsx: border-l-2 border-[#1F1F1F]
-       bg-[#F6F6F6] px-2.5 py-2) rather than a one-off tint. */
+       bg-[#F6F6F6] px-2.5 py-2) rather than a one-off tint. r14 item 4:
+       ClauseSidebar's own clause block carries no font-serif override — it
+       renders in the page's default sans — so this quote block dropped its
+       var(--mtx-serif) override to match instead of reading in Tinos. */
     .mtx.qp .mtx-table td.expandCol { cursor: default; }
     .mtx.qp .hitsRow td { cursor: default; padding: 0; background: var(--paper); }
     .mtx.qp .hitBlock { padding: 12px 18px; border-top: 1px solid var(--line); }
     .mtx.qp .hitBlock:first-child { border-top: none; }
     .mtx.qp .hitLabel { display: flex; justify-content: space-between; gap: 12px; font-family: var(--mtx-sans); font-size: 12px; color: var(--ink); margin-bottom: 6px; }
     .mtx.qp .hitAttach { font-family: var(--mtx-sans); font-size: 11px; color: var(--ink-light); margin: -2px 0 6px; }
-    .mtx.qp .hitBlock blockquote { margin: 0 0 6px; padding: 8px 10px; border-left: 2px solid var(--ink); background: var(--paper-2); font-family: var(--mtx-serif); font-size: 13px; line-height: 1.5; color: var(--ink); }
+    .mtx.qp .hitBlock blockquote { margin: 0 0 6px; padding: 8px 10px; border-left: 2px solid var(--ink); background: var(--paper-2); font-family: var(--mtx-sans); font-size: 13px; line-height: 1.5; color: var(--ink); }
     .mtx.qp .hitSection { font-size: 11px; color: var(--ink-light); }
   `}</style>
     </div>
@@ -755,10 +818,12 @@ function Drilldown({ item, onClose }) {
         <button type="button" className="mtx-btn" onClick={onClose}>Close</button>
         <h2>Provision card</h2>
         {item.card_id && item.deal_id && <Link href={`/review/${item.deal_id}`} className="mtx-btn">Open deal review</Link>}
-        <pre className="mtx-serif">{item.primary_quote?.text || item.verbatim_quote || JSON.stringify(item, null, 2)}</pre>
+        <pre>{item.primary_quote?.text || item.verbatim_quote || JSON.stringify(item, null, 2)}</pre>
         <style jsx>{`
           h2 { margin: 14px 0 14px; font-size: 15px; font-family: var(--mtx-sans); }
-          pre { white-space: pre-wrap; line-height: 1.5; color: var(--ink); margin-top: 12px; }
+          /* r14 item 4: same fix as the hitBlock quote below — no serif
+             override, inherit the page's default sans. */
+          pre { white-space: pre-wrap; line-height: 1.5; color: var(--ink); margin-top: 12px; font-family: var(--mtx-sans); }
         `}</style>
       </aside>
     </>
