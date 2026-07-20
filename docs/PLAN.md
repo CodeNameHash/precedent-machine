@@ -82,18 +82,19 @@ should stand alone. Never include secrets (.env.local values) in any prompt.
       query vocabulary.
 - [x] `pages/query/whats-market/adhoc.js` provides the full provision-family
       overview and routes users into the existing cross-deal treatment pages.
-- [ ] Follow-up MKT-1: enrich `corpus-stats-batch` with per-value deal/card lists
-      for every requested row. The market sidebar already renders those lists,
-      but compact batch responses can currently show counts without deal names.
-- [ ] Follow-up MKT-2: replace section-level `dominantSectionCode()` selection
-      with per-row provision-code requests. Stable row keys and one resolver are
-      in place, but heterogeneous sections can still inherit the section modal
-      subtype until this request layer is completed.
-- [ ] Follow-up MKT-3: replace the temporary global UI bridge with direct props
-      in `CompareColumn.jsx`, `pages/review/[id].js`, and `QueryLaunchBox.jsx`
-      when a normal checked-out worktree is available. The bridge exists because
-      the connector only permits whole-file writes for those large files; keep
-      behavior tests around the shared resolver before removing it.
+
+**Market follow-ups (not active checked work packages):**
+
+- MKT-1: enrich `corpus-stats-batch` with per-value deal/card lists for every
+  requested row. The market sidebar already renders those lists, but compact
+  batch responses can currently show counts without deal names.
+- MKT-2: replace section-level `dominantSectionCode()` selection with per-row
+  provision-code requests. Stable row keys and one resolver are in place, but
+  heterogeneous sections can still inherit the section modal subtype.
+- MKT-3: replace the temporary global UI bridge with direct props in
+  `CompareColumn.jsx`, `pages/review/[id].js`, and `QueryLaunchBox.jsx` when a
+  normal checked-out worktree is available. Keep the shared resolver tests
+  around the direct integration.
 
 ## Ben runbook (his machine; all dry-run first)
 
