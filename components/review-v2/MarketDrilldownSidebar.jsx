@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { formatNumericMarketSummary } from './marketNumericFormat';
 
+const SIDEBAR_CLASS = 'hidden lg:block w-56 xl:w-[280px] shrink-0 border-l border-border bg-white sticky top-[var(--mtx-head-h,72px)] h-[calc(100vh-var(--mtx-head-h,72px))] overflow-y-auto';
+
 function pct(count, denominator) {
   if (!Number.isFinite(count) || !Number.isFinite(denominator) || denominator <= 0) return null;
   return `${Math.round((count / denominator) * 100)}%`;
@@ -26,6 +28,16 @@ function DealLink({ deal }) {
   return <Link href={href} className="hover:underline">{name}</Link>;
 }
 
+function CapturedCoverageNote({ summary }) {
+  const coverage = summary?.coverage;
+  if (!coverage) return null;
+  const notes = [];
+  if (coverage.valueUnknownCount) notes.push(`${coverage.valueUnknownCount} present deal${coverage.valueUnknownCount === 1 ? '' : 's'} not captured`);
+  if (coverage.excludedCount) notes.push(`${coverage.excludedCount} excluded as non-comparable`);
+  if (!notes.length) return null;
+  return <p className="mt-2 text-[9px] leading-4 text-inkFaint">{notes.join(' · ')}</p>;
+}
+
 function CategoricalDistribution({ summary, defaultDenominator }) {
   const values = Array.isArray(summary.values) ? summary.values : [];
   if (!values.length) return <p className="text-[11px] italic text-inkFaint">No treatments captured.</p>;
@@ -35,7 +47,7 @@ function CategoricalDistribution({ summary, defaultDenominator }) {
         const denominator = Number.isFinite(value.denominator) ? value.denominator : defaultDenominator;
         const deals = Array.isArray(value.deals) ? value.deals : [];
         return (
-          <details key={`${summary.attribute || 'value'}-${value.value || value.label || index}`} className="py-2" open={index === 0}>
+          <details key={`${summary.attribute || 'value'}-${value.value || value.label || index}`} className="py-2">
             <summary className="cursor-pointer list-none">
               <div className="flex items-start justify-between gap-3">
                 <span className="text-[11px] font-medium text-ink">
@@ -53,6 +65,7 @@ function CategoricalDistribution({ summary, defaultDenominator }) {
           </details>
         );
       })}
+      <CapturedCoverageNote summary={summary} />
     </div>
   );
 }
@@ -106,12 +119,23 @@ function NumericRangeScale({ summary, formatted }) {
 
 function NumericDistribution({ summary }) {
   const formatted = formatNumericMarketSummary(summary);
-  if (!formatted) return <p className="text-[11px] italic text-inkFaint">No numeric market data captured.</p>;
+  if (!formatted) {
+    return (
+      <div className="border border-border bg-paper2 px-3 py-3">
+        {summary.subjectLabel ? <div className="text-[11px] font-semibold text-[#2F6DB5]">Current deal · {summary.subjectLabel}</div> : null}
+        <p className="mt-1 text-[10px] text-inkFaint">
+          {summary.comparisonUnavailableReason || 'No same-basis peer percentage cohort is available.'}
+        </p>
+        <CapturedCoverageNote summary={summary} />
+      </div>
+    );
+  }
   return (
     <div className="border border-border bg-paper2 px-3 py-3">
       <div className="text-sm font-semibold text-ink">{formatted.headline}</div>
       <NumericRangeScale summary={summary} formatted={formatted} />
       {Number.isFinite(summary.count) ? <div className="mt-1 text-[9px] uppercase tracking-wider text-inkFaint">{summary.count} deals with a captured value</div> : null}
+      <CapturedCoverageNote summary={summary} />
     </div>
   );
 }
@@ -138,9 +162,12 @@ function DistributionSection({ title, summaries, denominator }) {
 export default function MarketDrilldownSidebar({ context, onClose }) {
   if (!context) {
     return (
-      <aside className="hidden lg:block w-[340px] shrink-0 border-l border-border bg-white sticky top-[var(--mtx-head-h,72px)] h-[calc(100vh-var(--mtx-head-h,72px))]" data-testid="market-drilldown-sidebar">
+      <aside className={SIDEBAR_CLASS} data-testid="market-drilldown-sidebar">
         <div className="p-5">
-          <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-ink">Market detail</div>
+          <div className="flex items-start justify-between gap-3">
+            <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-ink">Market detail</div>
+            {onClose ? <button type="button" onClick={onClose} aria-label="Close market detail" className="text-lg leading-none text-inkLight hover:text-ink">×</button> : null}
+          </div>
           <p className="mt-3 text-[11px] leading-5 text-inkLight">Select a market cell to see every captured treatment, exception, and underlying deal.</p>
         </div>
       </aside>
@@ -149,7 +176,7 @@ export default function MarketDrilldownSidebar({ context, onClose }) {
 
   const termDenominator = Number.isFinite(context.termDealCount) ? context.termDealCount : context.peerSetSize;
   return (
-    <aside className="hidden lg:block w-[340px] shrink-0 border-l border-border bg-white sticky top-[var(--mtx-head-h,72px)] h-[calc(100vh-var(--mtx-head-h,72px))] overflow-y-auto" data-testid="market-drilldown-sidebar">
+    <aside className={SIDEBAR_CLASS} data-testid="market-drilldown-sidebar">
       <div className="p-5 space-y-4">
         <div className="flex items-start justify-between gap-3">
           <div>
@@ -172,12 +199,14 @@ export default function MarketDrilldownSidebar({ context, onClose }) {
         </div>
 
         {Array.isArray(context.deals) && context.deals.length ? (
-          <section className="border-t border-border pt-4">
-            <h3 className="text-[10px] font-bold uppercase tracking-[0.12em] text-ink mb-2">All supporting deals</h3>
-            <div className="space-y-1 text-[10px] text-inkLight">
+          <details className="border-t border-border pt-4">
+            <summary className="cursor-pointer list-none text-[9px] font-bold uppercase tracking-[0.1em] text-inkLight">
+              Supporting deals ({context.deals.length})
+            </summary>
+            <div className="mt-2 space-y-1 text-[10px] text-inkLight">
               {context.deals.map((deal, index) => <div key={deal.dealId || deal.deal_id || deal.id || index}><DealLink deal={deal} /></div>)}
             </div>
-          </section>
+          </details>
         ) : null}
       </div>
     </aside>

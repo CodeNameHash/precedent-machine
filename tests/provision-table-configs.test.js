@@ -18,6 +18,7 @@ let miscBoilerplateMod;
 let nosolFiduciaryMod;
 let nosolInterveningMod;
 let nosolNoshopMod;
+let nosolSectionMod;
 let nosolSuperiorMod;
 let noOtherRepsFraudMod;
 let representationsQualifiersMod;
@@ -43,6 +44,7 @@ test.before(async () => {
   nosolFiduciaryMod = await import(path.join('..', 'components', 'review', 'table-configs', 'nosol-fiduciary.config.js'));
   nosolInterveningMod = await import(path.join('..', 'components', 'review', 'table-configs', 'nosol-intervening.config.js'));
   nosolNoshopMod = await import(path.join('..', 'components', 'review', 'table-configs', 'nosol-noshop.config.js'));
+  nosolSectionMod = await import(path.join('..', 'components', 'review', 'table-configs', 'nosol-section.config.js'));
   nosolSuperiorMod = await import(path.join('..', 'components', 'review', 'table-configs', 'nosol-superior.config.js'));
   noOtherRepsFraudMod = await import(path.join('..', 'components', 'review', 'table-configs', 'no-other-reps-fraud.config.js'));
   representationsQualifiersMod = await import(path.join('..', 'components', 'review', 'table-configs', 'representations-qualifiers.config.js'));
@@ -439,6 +441,10 @@ test('representations-qualifiers config resolves taxonomy-coded materiality/know
   assert.equal(row.materiality.evidence, 'would not have an MAE');
   assert.equal(row.knowledge.label, 'Knowledge-qualified (partial)');
   assert.deepEqual(row.featureKeys, ['materialityQualifier', 'knowledgeQualifier']);
+  assert.deepEqual(row.marketSubterms.map((subterm) => subterm.label), [
+    'Materiality qualifier',
+    'Knowledge qualifier',
+  ]);
   assert.ok(!row.featureKeys.includes('lookbackDateISO'));
   // R4: the Knowledge standard is no longer a section headerNote -- it's a
   // "Standard" row in the Knowledge sub-table (see renderBody tests below).
@@ -519,6 +525,10 @@ test('representations-qualifiers carries the current rep bringdown treatment wit
   assert.deepEqual(row.currentTreatments.map(({ label, value }) => ({ label, value })), [
     { label: 'Bringdown', value: 'In all material respects' },
   ]);
+  const bringDownMarket = row.marketSubterms.find((subterm) => subterm.key === 'bring-down');
+  assert.equal(bringDownMarket.value.normalizer, 'bring_down_for_rep');
+  assert.equal(bringDownMarket.kind, 'multi_select');
+  assert.deepEqual(bringDownMarket.provisionCodes, ['COND-B-REP']);
 });
 
 // R1 (FEEDBACK-3-PUNCHLIST.md): General Exceptions renders as its OWN
@@ -718,6 +728,11 @@ test('representations-qualifiers config surfaces Knowledge Standard/Persons/Scop
   assert.ok(knowledgeSummary, 'knowledge-summary row should render from knowledgeStandard/knowledgePersons/knowledgeScope data');
   assert.equal(knowledgeSummary.knowledgeStandard, 'Actual knowledge');
   assert.equal(knowledgeSummary.knowledgePersons, 'Executive officers');
+  assert.equal(knowledgeSummary.marketSkip, undefined);
+  assert.deepEqual(
+    knowledgeSummary.marketSubterms.map((term) => [term.key, term.kind]),
+    [['standard', 'categorical'], ['persons', 'multi_select']],
+  );
   assert.match(knowledgeSummary.knowledgeScope, /executive officers/);
   // The per-rep row still resolves its own knowledge qualifier data (it just
   // no longer renders as a table column -- see representations-qualifiers
@@ -777,6 +792,9 @@ test('representations-qualifiers config normalizes lookback to a formatted date 
   const withInconsistentDays = rows.find((row) => row.id === 'representations-qualifiers-rep-with-inconsistent-days');
   const daysOnly = rows.find((row) => row.id === 'representations-qualifiers-rep-days-only');
   assert.equal(withDate.lookback.label, 'Since Jan 1, 2023');
+  const lookbackMetric = withDate.marketSubterms.find((subterm) => subterm.key === 'lookback');
+  assert.equal(lookbackMetric.value.normalizer, 'relative_period_months');
+  assert.equal(lookbackMetric.semantics.unit, 'months');
   // Same anchor date, different (unreliable) day counts -- both rows must
   // resolve to the SAME formatted date, never the raw day-count.
   assert.equal(withInconsistentDays.lookback.label, 'Since Jan 1, 2023');
@@ -816,6 +834,9 @@ test('mae-definitions config exposes carve-out and definition signals with hover
   assert.equal(rows.find((row) => row.id === 'mae-definitions-prevent-delay'), undefined);
   assert.deepEqual(limbs.signals.map((item) => item.label), ['TWO_LIMB']);
   assert.deepEqual(carveouts.signals.map((item) => item.label), ['General economic conditions']);
+  assert.equal(limbs.marketSubterms[0].kind, 'categorical');
+  assert.equal(carveouts.marketSubterms[0].kind, 'multi_select');
+  assert.deepEqual(carveouts.marketSubterms[0].featureKeys, ['carveouts', 'maeCarveouts']);
   const primitives = {
     PillCell: ({ label }) => React.createElement('span', { className: 'pill' }, label),
     EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
@@ -1117,6 +1138,43 @@ test('structure-mechanics config exposes transaction-form signals and hover deta
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(section251h, { primitives }))), /data-evidence="The merger shall be a reverse triangular merger/);
 });
 
+test('structure-mechanics keeps distinct merger forms in one multi-value row', () => {
+  const rows = structureMechanicsMod.structureMechanicsConfig.selectRows({
+    cards: [
+      {
+        id: 'first-merger',
+        provision_type: 'STRUCTURE_MECHANICS',
+        provision_subtype: 'STRUCT-MERGER',
+        short_title: 'First Merger',
+        primary_quote: 'Merger Sub merges into the Company, with the Company surviving.',
+        features: {
+          mergerForm: { code: 'REVERSE_TRIANGULAR_MERGER', label: 'Reverse triangular merger' },
+        },
+      },
+      {
+        id: 'second-merger',
+        provision_type: 'STRUCTURE_MECHANICS',
+        provision_subtype: 'STRUCT-MERGER',
+        short_title: 'Second Merger',
+        primary_quote: 'The surviving corporation merges into LLC Sub, with LLC Sub surviving.',
+        features: {
+          mergerForm: { code: 'FORWARD_TRIANGULAR_MERGER', label: 'Forward triangular merger' },
+        },
+      },
+    ],
+  });
+
+  const mergerForm = rows.find((row) => row.id === 'structure-mechanics-merger-form');
+  assert.deepEqual(mergerForm.signals.map((signal) => signal.label), [
+    'Reverse triangular merger',
+    'Forward triangular merger',
+  ]);
+  assert.deepEqual(mergerForm.sourceCards.map((card) => card.id), ['first-merger', 'second-merger']);
+  assert.match(mergerForm.evidence, /Merger Sub merges into the Company/);
+  assert.match(mergerForm.evidence, /surviving corporation merges into LLC Sub/);
+  assert.equal(mergerForm.marketSubterms[0].kind, 'multi_select');
+});
+
 // Regression: effectiveTimeShort is corrupted on some backfilled cards and
 // renders "Names the Company as the surviving corporation..." instead of the
 // filing mechanic. The config must never surface that sentence as the
@@ -1265,6 +1323,10 @@ test('termination-rights config consolidates into ONE row whose groups are keyed
   });
   assert.equal(rows.length, 1, 'termination rights render as ONE table, not one row per concept');
   assert.ok(Array.isArray(rows[0].groups), 'the single row carries the family groups for GroupedSubRows to render');
+  const outside = rows[0].groups.flatMap((group) => group.rows).find((row) => row.spec?.key === 'outside');
+  const extension = outside.marketSubterms.find((subterm) => subterm.key === 'extension-length');
+  assert.equal(extension.missingState, 'absent');
+  assert.equal(extension.value.normalizer, 'period_months');
 });
 
 // WS-G T6: TERMR-SUPERIOR is no longer one of the canonical termination-rights
@@ -1289,10 +1351,15 @@ test('termination-rights familyGroups() groups canonical rights under Mutual / B
   const outsideRow = mutual.rows.find((r) => r.spec.key === 'outside');
   const mutualConsentRow = mutual.rows.find((r) => r.spec.key === 'mutual');
   assert.ok(outsideRow.present, 'Outside Date right has a matching card');
+  assert.equal(outsideRow.seeTextContent, 'Outside date text.');
   assert.ok(!mutualConsentRow.present, 'Mutual consent right has no matching card and should render as not-present');
   assert.match(outsideRow.value.join(' '), /June 30, 2026/);
+  const outsideMetric = outsideRow.marketSubterms.find((subterm) => subterm.key === 'outside-date');
+  assert.deepEqual(outsideMetric.featureKeys, ['outsideDateMonthsPostSigning', 'outsideDateMonths', 'outsideDate', 'outsideDateISO']);
+  assert.equal(outsideMetric.value.normalizer, 'forward_period_months');
   const breachRow = buyer.rows.find((r) => r.spec.key === 'breachT');
   assert.match(breachRow.value.join(' '), /30 days/);
+  assert.equal(breachRow.seeTextContent, 'Target breach text.');
   const breachBRow = target.rows.find((r) => r.spec.key === 'breachB');
   assert.match(breachBRow.value.join(' '), /45 days/);
   const superiorRow = target.rows.find((r) => r.spec.key === 'superior');
@@ -1375,9 +1442,25 @@ test('sec-meeting config exposes proxy and offer signals with hover details', ()
   const proxy = rows.find((row) => row.id === 'sec-meeting-proxy-filing');
   const adjournment = rows.find((row) => row.id === 'sec-meeting-adjournment-0');
   const schedule14d9 = rows.find((row) => row.id === 'sec-meeting-schedule14D9Filing');
+  assert.equal(proxy.sourceCard.id, 'proxy');
+  assert.equal(adjournment.sourceCard.id, 'proxy');
+  assert.deepEqual(adjournment.featureKeys, ['adjournmentRights']);
+  assert.deepEqual(adjournment.marketSubterms.map((subterm) => subterm.label), [
+    'Permitted reasons',
+    'Party controlling adjournment',
+    'Maximum adjournments',
+    'Maximum days per adjournment',
+    'Maximum aggregate adjournment period',
+  ]);
+  assert.equal(proxy.evidence, 'The Company shall file the proxy statement within 10 business days and Parent may require one adjournment.');
   assert.match(proxy.signals[0].label, /Proxy \/ meeting: 10 business days after signing/);
   assert.match(adjournment.signals[0].label, /Solicit votes/);
   assert.match(schedule14d9.signals[0].label, /SEC \/ offer: Company files Schedule 14D-9/);
+  assert.deepEqual(proxy.marketSubterms.map((subterm) => subterm.label), ['Timing', 'Measured from']);
+  assert.equal(proxy.marketSubterms[0].value.normalizer, 'deadline_duration');
+  assert.equal(proxy.marketSubterms[0].semantics.trigger, undefined);
+  assert.deepEqual(proxy.marketSubterms[0].semantics.requiredDimensions, ['unit', 'calendarBasis', 'trigger']);
+  assert.equal(proxy.marketSubterms[1].value.normalizer, 'deadline_trigger');
   const primitives = {
     PillCell: ({ label }) => React.createElement('span', { className: 'pill' }, label),
     EvidenceHoverSource: ({ children, evidence }) => React.createElement('span', { 'data-evidence': evidence }, children),
@@ -1386,6 +1469,69 @@ test('sec-meeting config exposes proxy and offer signals with hover details', ()
   const detailColumn = secMeetingMod.secMeetingConfig.columns.find((column) => column.id === 'detail');
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, signalColumn.renderCell(proxy, { primitives }))), /10 business days after signing/);
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(schedule14d9, { primitives }))), /data-evidence="The Company shall file the proxy statement/);
+});
+
+test('sec-meeting adjournment rows bind every market subterm to the displayed party item', () => {
+  const rows = secMeetingMod.secMeetingConfig.selectRows({
+    cards: [{
+      id: 'two-party-meeting',
+      provision_subtype: 'COV-MEETING',
+      primary_quote: 'Each party has separate adjournment rights.',
+      features: {
+        adjournmentRights: [
+          {
+            party: 'COMPANY',
+            reasons: [{ code: 'QUORUM_ABSENT', label: 'Quorum absent' }],
+            maxAdjournments: 3,
+            maxDaysPerAdjournment: 10,
+          },
+          {
+            party: 'PARENT',
+            reasons: [{ code: 'SUPPLEMENTAL_DISCLOSURE', label: 'Supplemental disclosure' }],
+            maxAdjournments: 1,
+            maxDaysPerAdjournment: 5,
+          },
+        ],
+      },
+    }],
+  }).filter((row) => row.id.startsWith('sec-meeting-adjournment-'));
+
+  assert.equal(rows.length, 2);
+  assert.deepEqual(rows.map((row) => row.marketPresence.itemIdentity), [
+    'ADJOURNMENT_PARTY:COMPANY',
+    'ADJOURNMENT_PARTY:PARENT',
+  ]);
+  for (const row of rows) {
+    assert.equal(row.marketPresence.strategy, 'list_item');
+    assert.ok(row.marketSubterms.every((subterm) => subterm.value.strategy === 'list_item_field'));
+    assert.ok(row.marketSubterms.every((subterm) => subterm.value.itemIdentity === row.marketPresence.itemIdentity));
+  }
+});
+
+test('votes / approvals / meeting deadline rows retain their source cards for row drilldown', () => {
+  const proxyCard = {
+    id: 'qxo-proxy-source',
+    provision_subtype: 'COV-PROXY',
+    primary_quote: 'The Company shall file, mail and hold the meeting within the specified periods.',
+    features: {
+      proxyFilingDeadline: { days: 4, unit: 'BUSINESS_DAYS', trigger: 'SIGNING', text: 'file within four business days after signing' },
+      mailingDeadline: { days: 3, unit: 'BUSINESS_DAYS', trigger: 'SEC_CLEARANCE', text: 'mail within three business days after SEC clearance' },
+      meetingDeadline: { days: 40, unit: 'CALENDAR_DAYS', trigger: 'MAILING', text: 'hold the meeting within forty days after mailing' },
+    },
+  };
+  const rows = votesApprovalsMeetingMod.votesApprovalsMeetingConfig.selectRows({ cards: [proxyCard] });
+  for (const id of [
+    'votes-approvals-meeting-proxy-filing',
+    'votes-approvals-meeting-mailing',
+    'votes-approvals-meeting-meeting',
+  ]) {
+    const row = rows.find((candidate) => candidate.id === id);
+    assert.ok(row, `${id} should render`);
+    assert.equal(row.source, proxyCard, `${id} should drill into its source provision`);
+    assert.equal(row.evidence, proxyCard.primary_quote, `${id} should expose the full clause behind See provision`);
+    assert.equal(row.featureKeys.length, 1, `${id} should retain its exact comparable feature`);
+    assert.deepEqual(row.marketSubterms.map((subterm) => subterm.label), ['Timing', 'Measured from']);
+  }
 });
 
 test('general-covenants config excludes IOC content entirely (REBUILD-SPECS.md section 6: owned by ioc-exceptions.config.js)', () => {
@@ -1475,6 +1621,104 @@ test('general-covenants config renders one row PER genuine COVENANT_OTHER clause
   assert.equal(maintain, undefined, 'the IOC card must not appear here -- ioc-exceptions.config.js owns it');
 });
 
+test('general-covenants link rows retain code-scoped treatment metrics when structured terms exist', () => {
+  const rows = generalCovenantsMod.generalCovenantsConfig.selectRows({
+    cards: [
+      {
+        id: 'do',
+        provision_type: 'COVENANT_OTHER',
+        provision_subtype: 'COV-DO',
+        short_title: 'D&O Insurance',
+        features: { indemnificationPeriod: 6, insuranceCap: '300% of current annual premium', advancementOfExpenses: true },
+      },
+      {
+        id: 'publicity',
+        provision_type: 'COVENANT_OTHER',
+        provision_subtype: 'COV-PUBLICITY',
+        short_title: 'Public Statements',
+        features: { publicStatementsJointApproval: false, publicStatementsCarveoutCompany: true, publicStatementsCarveoutParent: true },
+      },
+      {
+        id: 'access',
+        provision_type: 'COVENANT_OTHER',
+        provision_subtype: 'COV-ACCESS',
+        short_title: 'Access',
+        features: { accessScope: { code: 'broad-access', label: 'Broad Access' } },
+      },
+    ],
+  });
+  const insurance = rows.find((row) => row.sourceCard?.id === 'do');
+  assert.deepEqual(insurance.marketSubterms.map((subterm) => subterm.label), [
+    'D&O protection period',
+    'Tail premium cap',
+    'Advancement of expenses',
+  ]);
+  assert.equal(insurance.marketSubterms[1].value.normalizer, 'insurance_cap_multiplier');
+  assert.equal(insurance.marketSubterms[1].semantics.unit, 'multiplier');
+  const publicity = rows.find((row) => row.sourceCard?.id === 'publicity');
+  assert.equal(publicity.marketSubterms.length, 3);
+  assert.ok(publicity.marketSubterms.every((subterm) => subterm.kind === 'presence'));
+  const access = rows.find((row) => row.sourceCard?.id === 'access');
+  assert.equal(access.marketSubterms[0].kind, 'categorical');
+  assert.deepEqual(access.marketProvisionCodes, ['COV-ACCESS']);
+});
+
+test('uncoded control and board-appointment covenants use title-scoped treatment comparisons', () => {
+  const rows = generalCovenantsMod.generalCovenantsConfig.selectRows({
+    cards: [
+      {
+        id: 'control',
+        provision_type: 'COVENANT_OTHER',
+        short_title: 'Consultation; Control of Operations',
+        features: { mainConcept: 'Regular updates while the Company retains pre-closing control.' },
+      },
+      {
+        id: 'board',
+        provision_type: 'COVENANT_OTHER',
+        short_title: 'Parent Board Appointment',
+        features: { mainConcept: 'One mutually agreed Company director joins the Parent board at closing.' },
+      },
+    ],
+  });
+  const control = rows.find((row) => row.sourceCard?.id === 'control');
+  const board = rows.find((row) => row.sourceCard?.id === 'board');
+
+  assert.equal(control.marketObservationScope.shortTitleIncludes, 'Control of Operations');
+  assert.deepEqual(control.marketProvisionCodes, []);
+  assert.equal(control.marketProvisionFamily, 'COV');
+  assert.equal(control.marketRowKey, 'general-covenants-control-of-operations');
+  assert.equal(control.marketPresence.strategy, 'card_exists');
+  assert.equal(control.marketSubterms[0].value.profile, 'controlOperations');
+  assert.equal(board.marketObservationScope.shortTitleIncludes, 'Board Appointment');
+  assert.equal(board.marketRowKey, 'general-covenants-parent-board-appointment');
+  assert.equal(board.marketSubterms[0].value.profile, 'boardAppointment');
+});
+
+test('Company Takeover Proposal compares transaction types, threshold and express Transactions exclusion', () => {
+  const group = nosolSectionMod.buildAcquisitionProposalGroup({
+    cards: [{
+      id: 'acq',
+      provision_type: 'COVENANT_NO_SOLICITATION',
+      provision_subtype: 'NOSOL-ACQPROPOSAL',
+      short_title: 'Acquisition Proposal Definition',
+      primary_quote: 'A proposal for 20% or more of assets, voting power, a merger or tender offer, other than the Transactions.',
+      features: {
+        acquisitionTransactionDefinition: 'A proposal for assets, voting power, a merger or tender offer, other than the Transactions.',
+        acquisitionTransactionPctThreshold: 20,
+      },
+    }],
+  });
+  const row = group.rows[0];
+  assert.deepEqual(row.marketSubterms.map((subterm) => subterm.label), [
+    'Covered transaction types',
+    'Acquisition threshold',
+    'Agreement transactions excluded',
+  ]);
+  assert.equal(row.marketSubterms[0].value.normalizer, 'acquisition_transaction_types');
+  assert.equal(row.marketSubterms[1].semantics.unit, 'percent');
+  assert.equal(row.marketSubterms[2].value.normalizer, 'transactions_exclusion');
+});
+
 // FEEDBACK-2-PUNCHLIST.md #13/#31: Parent's adoption of the merger
 // agreement moved OUT of General Covenants entirely -- it now renders only
 // on votes-approvals-meeting.config.js (see the dedicated test below).
@@ -1513,6 +1757,8 @@ test('votes-approvals-meeting config renders a Parent / Merger Sub approvals row
   const row = rows.find((entry) => entry.id === 'votes-approvals-meeting-parent-approval');
   assert.ok(row, 'expected a Parent / Merger Sub approvals row');
   assert.equal(row.label, 'Parent / Merger Sub approvals');
+  assert.deepEqual(row.marketSubterms.map((subterm) => subterm.label), ['Approval mechanism', 'Approval timing']);
+  assert.equal(row.marketSubterms[0].value.normalizer, 'parent_approval_mechanism');
   const primitives = { PillCell: ({ label }) => React.createElement('span', null, label) };
   const provisionColumn = votesApprovalsMeetingMod.votesApprovalsMeetingConfig.columns.find((c) => c.id === 'provision');
   const html = renderToStaticMarkup(React.createElement(React.Fragment, null, provisionColumn.renderCell(row, { primitives })));
@@ -1582,6 +1828,8 @@ test('votes-approvals-meeting config renders adjournment rights as three labelle
   });
   const row = rows.find((entry) => entry.kind === 'adjournment');
   assert.ok(row, 'expected an adjournment row');
+  assert.deepEqual(row.featureKeys, ['adjournmentRights']);
+  assert.match(row.marketSubterms.map((subterm) => subterm.label).join(' | '), /Permitted reasons.*Party controlling adjournment.*Maximum aggregate adjournment period/);
   const primitives = { PillCell: ({ label }) => React.createElement('span', null, label) };
   const provisionColumn = votesApprovalsMeetingMod.votesApprovalsMeetingConfig.columns.find((c) => c.id === 'provision');
   const html = renderToStaticMarkup(React.createElement(React.Fragment, null, provisionColumn.renderCell(row, { primitives })));
@@ -2332,6 +2580,32 @@ test('material-contracts config (MC3): a bucket whose own clause carries NO $ fi
   assert.ok(debtRow);
   assert.equal(jvRow.threshold, 'Any');
   assert.equal(debtRow.threshold, '$2,000,000');
+});
+
+test('QXO material-contract items do not borrow the neighbouring $10 million threshold', () => {
+  const rows = materialContractsMod.materialContractsConfig.selectRows({
+    cards: [{
+      id: 'qxo-material-contracts',
+      provision_type: 'REPRESENTATION',
+      provision_subtype: 'REP-T-MATERIAL-CONTRACTS',
+      short_title: 'Material Contracts',
+      primary_quote: '(A) indebtedness in excess of $10,000,000; (G) any joint venture or partnership material to the Company; (I) any right of first refusal material to the Company; (R) any contract deemed material under Item 601(b)(10).',
+      features: {
+        materialContractsBuckets: [
+          { code: 'INDEBTEDNESS', text: '(A) indebtedness in excess of $10,000,000;', threshold: '$10,000,000' },
+          { code: 'JV_PARTNERSHIPS', text: '(G) any joint venture or partnership material to the Company;', threshold: null },
+          { code: 'ROFR_ROFN', text: '(I) any right of first refusal material to the Company;', threshold: null },
+          { code: 'SEC_ITEM_601', text: '(R) any contract deemed material under Item 601(b)(10).', threshold: null },
+        ],
+      },
+    }],
+  });
+  const thresholds = Object.fromEntries(rows.map((row) => [row.code, row.threshold]));
+
+  assert.equal(thresholds.INDEBTEDNESS, '$10,000,000');
+  assert.equal(thresholds.JV_PARTNERSHIPS, 'Any');
+  assert.equal(thresholds.ROFR_ROFN, 'Any');
+  assert.equal(thresholds.SEC_ITEM_601, 'Any');
 });
 
 test('material-contracts config (MC1, data-grounded): mines per-bucket $ thresholds from a Metsera-shaped numbered "Specified Contract" list, matching the live card\'s clause structure', () => {
@@ -3102,6 +3376,27 @@ test('Item 6: change-of-recommendation items carried on two cards (with/without 
   assert.deepEqual(row.items.map((i) => i.letter), ['A', 'B'], 'the lettered entry must win the dedup so A-E ordering is preserved');
 });
 
+test('change-of-recommendation rows keep only the cards that supplied their extracted limbs', () => {
+  const rows = nosolFiduciaryMod.nosolFiduciaryConfig.selectRows({
+    cards: [{
+      id: 'recommend-source',
+      provision_type: 'COVENANT_NO_SOLICITATION',
+      provision_subtype: 'NOSOL-RECOMMEND',
+      primary_quote: 'The Board shall not withdraw or modify its recommendation.',
+      features: { changeOfRecommendationItems: ['withdraw or modify the Board Recommendation in a manner adverse to Parent'] },
+    }, {
+      id: 'unrelated-notice',
+      provision_type: 'COVENANT_NO_SOLICITATION',
+      provision_subtype: 'NOSOL-NOTICE',
+      primary_quote: 'A long unrelated notice and matching-right provision.',
+      features: { noticePeriod: 'four Business Days' },
+    }],
+  });
+  const row = rows.find((candidate) => candidate.id === 'nosol-fiduciary-change-of-rec-items');
+  assert.deepEqual(row.sourceCards.map((source) => source.id), ['recommend-source']);
+  assert.equal(row.evidence, 'The Board shall not withdraw or modify its recommendation.');
+});
+
 // Item 15 (round 3, Theravance NOSOL-RECOMMEND): notChangeOfRecommendationItems
 // has THREE genuinely distinct verbatims; items 1 ("stop-look-and-listen ...
 // Rule 14d-9(f)") and 3 ("a position contemplated by Rule 14d-9, Rule
@@ -3216,6 +3511,35 @@ test('employee-benefits config maps structured compensation items', () => {
   assert.match(rows[0].standard, /No less favourable/);
   assert.match(rows[0].detail, /Exceptions: equity awards/);
   assert.match(rows[0].detail, /Bundling: aggregate/);
+  assert.equal(rows[0].marketPresence.strategy, 'list_item');
+  assert.equal(rows[0].marketPresence.itemCode, 'BASE_SALARY');
+  assert.deepEqual(rows[0].marketSubterms.map((subterm) => subterm.label), [
+    'Protection standard',
+    'Reference group',
+    'Protection period',
+  ]);
+  assert.equal(rows[0].marketSubterms[0].value.strategy, 'list_item_field');
+  assert.equal(rows[0].marketSubterms[2].value.normalizer, 'employee_benefit_period');
+});
+
+test('employee-benefits protection rows compare adoption rather than covenant-card presence', () => {
+  const rows = employeeBenefitsMod.employeeBenefitsConfig.selectRows({
+    cards: [{
+      id: 'employee-benefits',
+      provision_subtype: 'COV-EMPLOYEE',
+      features: {
+        continued401k: 'Company plan terminated and rolled into Parent plan.',
+        continuedService: true,
+        eligibilityWaiver: true,
+        severanceProtection: 'Double-trigger severance protection.',
+      },
+    }],
+  });
+  for (const row of rows.filter((item) => item.kind === 'checklist')) {
+    assert.equal(row.marketSubterms[0].kind, 'presence');
+    assert.equal(row.marketSubterms[0].presence.missingState, 'absent');
+    assert.deepEqual(row.marketProvisionCodes, ['COV-EMPLOYEE']);
+  }
 });
 
 test('employee-benefits config falls back to legacy flat standards', () => {
@@ -3314,6 +3638,16 @@ test('no-other-reps fraud config maps Abry four-question summary', () => {
   // above, not a distinct fact worth its own row.
   assert.equal(rows.find((row) => row.id === 'no-other-reps-fraud-extra-contractual'), undefined);
   assert.match(rows.find((row) => row.id === 'no-other-reps-fraud-willful-breach').detail, /intentional and material breach/);
+  const buyerNonReliance = rows.find((row) => row.id === 'no-other-reps-fraud-q1');
+  assert.equal(buyerNonReliance.marketPresence.strategy, 'feature_matches');
+  assert.deepEqual(buyerNonReliance.marketPresence.values, ['COMPANY', 'BOTH']);
+  assert.deepEqual(buyerNonReliance.marketSubterms.map((subterm) => subterm.label), [
+    'Non-reliance scope',
+    'Express extra-contractual disclaimer',
+  ]);
+  const fraud = rows.find((row) => row.id === 'no-other-reps-fraud-fraud');
+  assert.equal(fraud.marketPresence.strategy, 'feature_non_empty');
+  assert.equal(fraud.marketSubterms[0].value.normalizer, 'fraud_carveout_scope');
 });
 
 test('no-other-reps fraud config renders fraud silence as a meaningful row', () => {

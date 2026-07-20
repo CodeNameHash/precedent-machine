@@ -47,6 +47,20 @@ function firstFeature(cards, key) {
   }
   return null;
 }
+function firstCardWithFeature(cards, key, derivedValue = null) {
+  const derivedText = String(derivedValue?.text || '').trim();
+  if (derivedText) {
+    const exact = cards.find((card) => textOf(card).includes(derivedText));
+    if (exact) return exact;
+  }
+  return cards.find((card) => {
+    const raw = cardFeatures(card)[key];
+    if (raw === null || raw === undefined || raw === '') return false;
+    if (Array.isArray(raw)) return raw.length > 0;
+    if (typeof raw === 'object') return Object.keys(raw).length > 0;
+    return Boolean(String(raw).trim());
+  }) || null;
+}
 function hasSecSignal(card) {
   const code = cardCode(card);
   if (['COV-PROXY', 'COV-MEETING', 'STRUCT-OFFER'].includes(code)) return true;
@@ -55,7 +69,7 @@ function hasSecSignal(card) {
   if (['proxyFilingDeadline', 'mailingDeadline', 'meetingDeadline', 'adjournmentRights', 'meetingControlNotes'].some((key) => valueText(features[key]))) return true;
   return /proxy|stockholder|shareholder|Schedule\s+(?:TO|14D-9)|tender\s+offer|adjourn/i.test(`${card?.short_title || ''} ${textOf(card)}`);
 }
-function deadlineRow(id, label, deadline) {
+function deadlineRow(id, label, deadline, featureKey, sourceCard = null) {
   if (!deadline) return null;
   // `deadline` (the normalised { text, days, unit, trigger } object) rides
   // along on the row -- not just its formatted string -- so a consumer that
@@ -63,20 +77,145 @@ function deadlineRow(id, label, deadline) {
   // reference pill) instead of a single flattened string has the pieces
   // without re-parsing formatDeadline()'s output. See
   // votes-approvals-meeting.config.js, the only current consumer of this.
-  const row = { id: `sec-meeting-${id}`, label, subject: 'Proxy / meeting', detail: formatDeadline(deadline), evidence: deadline.text || formatDeadline(deadline), present: true, deadline };
+  const row = {
+    id: `sec-meeting-${id}`,
+    label,
+    subject: 'Proxy / meeting',
+    detail: formatDeadline(deadline),
+    evidence: textOf(sourceCard) || deadline.text || formatDeadline(deadline),
+    sourceCard,
+    present: true,
+    deadline,
+    featureKeys: [featureKey],
+    marketSubterms: [
+      {
+        key: 'timing',
+        label: 'Timing',
+        featureKeys: [featureKey],
+        kind: 'duration',
+        role: 'metric',
+        value: {
+          strategy: 'feature_value',
+          featureKeys: [featureKey],
+          normalizer: 'deadline_duration',
+        },
+        semantics: {
+          unit: 'days_equivalent',
+          calendarBasis: 'mixed',
+          requiredDimensions: ['unit', 'calendarBasis', 'trigger'],
+          normalisation: { type: 'duration_to_days', hoursPerDay: 24 },
+        },
+      },
+      {
+        key: 'trigger',
+        label: 'Measured from',
+        featureKeys: [featureKey],
+        kind: 'categorical',
+        value: {
+          strategy: 'feature_value',
+          featureKeys: [featureKey],
+          normalizer: 'deadline_trigger',
+        },
+      },
+    ],
+  };
   return withSignal(row);
 }
-function adjournmentRows(rights) {
+function adjournmentPartyIdentity(right) {
+  const party = String(right?.party || 'UNSPECIFIED').trim().toUpperCase().replace(/[^A-Z0-9]+/g, '_');
+  return `ADJOURNMENT_PARTY:${party || 'UNSPECIFIED'}`;
+}
+function adjournmentRows(rights, sourceCard = null) {
   return (rights || []).map((right, idx) => {
     const reasons = (right.reasons || []).map((reason) => valueText(reason)).filter(Boolean).join('; ');
     const limits = formatAdjournmentLimits(right).join('; ');
+    const itemMatch = {
+      itemIdentity: adjournmentPartyIdentity(right),
+      identityKind: 'adjournment_party',
+    };
     return withSignal({
       id: `sec-meeting-adjournment-${idx}`,
       label: 'Adjournment rights',
       subject: right.party ? enumLabel(right.party) : 'Meeting',
       detail: [reasons, limits, right.text].filter(Boolean).join('\n'),
-      evidence: right.text || reasons || limits,
+      evidence: textOf(sourceCard) || right.text || reasons || limits,
+      sourceCard,
       present: true,
+      featureKeys: ['adjournmentRights'],
+      marketPresence: {
+        strategy: 'list_item',
+        featureKeys: ['adjournmentRights'],
+        ...itemMatch,
+        missingState: 'absent',
+      },
+      marketSubterms: [
+        {
+          key: 'reasons',
+          label: 'Permitted reasons',
+          featureKeys: ['adjournmentRights'],
+          kind: 'multi_select',
+          value: { strategy: 'list_item_field', featureKeys: ['adjournmentRights'], ...itemMatch, path: 'reasons' },
+        },
+        {
+          key: 'party',
+          label: 'Party controlling adjournment',
+          featureKeys: ['adjournmentRights'],
+          kind: 'categorical',
+          value: { strategy: 'list_item_field', featureKeys: ['adjournmentRights'], ...itemMatch, path: 'party' },
+        },
+        {
+          key: 'maximum-adjournments',
+          label: 'Maximum adjournments',
+          featureKeys: ['adjournmentRights'],
+          kind: 'numeric',
+          role: 'metric',
+          value: { strategy: 'list_item_field', featureKeys: ['adjournmentRights'], ...itemMatch, path: 'maxAdjournments' },
+        },
+        {
+          key: 'maximum-days-each',
+          label: 'Maximum days per adjournment',
+          featureKeys: ['adjournmentRights'],
+          kind: 'duration',
+          role: 'metric',
+          value: {
+            strategy: 'list_item_field',
+            featureKeys: ['adjournmentRights'],
+            ...itemMatch,
+            path: 'maxDaysPerAdjournment',
+            normalizer: 'adjournment_duration',
+            trigger: 'meeting_adjournment',
+          },
+          semantics: {
+            unit: 'days_equivalent',
+            calendarBasis: 'mixed',
+            trigger: 'meeting_adjournment',
+            requiredDimensions: ['unit', 'calendarBasis'],
+            normalisation: { type: 'duration_to_days', hoursPerDay: 24 },
+          },
+        },
+        {
+          key: 'maximum-days-total',
+          label: 'Maximum aggregate adjournment period',
+          featureKeys: ['adjournmentRights'],
+          kind: 'duration',
+          role: 'metric',
+          value: {
+            strategy: 'list_item_field',
+            featureKeys: ['adjournmentRights'],
+            ...itemMatch,
+            path: 'maxDaysTotal',
+            normalizer: 'adjournment_duration',
+            trigger: 'meeting_adjournment',
+          },
+          semantics: {
+            unit: 'days_equivalent',
+            calendarBasis: 'mixed',
+            trigger: 'meeting_adjournment',
+            requiredDimensions: ['unit', 'calendarBasis'],
+            normalisation: { type: 'duration_to_days', hoursPerDay: 24 },
+          },
+        },
+      ],
       // Normalised { party, reasons, maxAdjournments, maxDaysPerAdjournment,
       // maxDaysTotal, text } -- see deadlineRow()'s `deadline` field above
       // for why the structured value rides along unflattened.
@@ -96,6 +235,7 @@ function directRows(cards) {
       detail: hit.text,
       evidence: textOf(hit.card),
       sourceCard: hit.card,
+      featureKeys: [key],
       present: true,
     }));
   }
@@ -141,12 +281,17 @@ const secMeetingConfig = {
     const cards = (reviewDeal?.cards || []).filter(hasSecSignal);
     if (!cards.length) return [];
     const summary = deriveSecMeetingSummary(cards.map(pseudoProvision));
+    const proxyCard = firstCardWithFeature(cards, 'proxyFilingDeadline', summary.proxyFilingDeadline);
+    const mailingCard = firstCardWithFeature(cards, 'mailingDeadline', summary.mailingDeadline);
+    const meetingCard = firstCardWithFeature(cards, 'meetingDeadline', summary.meetingDeadline);
+    const adjournmentCard = firstCardWithFeature(cards, 'adjournmentRights');
+    const controlCard = firstCardWithFeature(cards, 'meetingControlNotes');
     return [
-      deadlineRow('proxy-filing', summary.proxyFilingDeadline?.term || 'Proxy filing deadline', summary.proxyFilingDeadline),
-      deadlineRow('mailing', summary.mailingDeadline?.term || 'Proxy mailing', summary.mailingDeadline),
-      deadlineRow('meeting', summary.meetingDeadline?.term || 'Shareholder meeting', summary.meetingDeadline),
-      ...adjournmentRows(summary.adjournmentRights),
-      summary.meetingControlNotes ? withSignal({ id: 'sec-meeting-control', label: 'Meeting control notes', subject: 'Meeting', detail: summary.meetingControlNotes, evidence: summary.meetingControlNotes, present: true }) : null,
+      deadlineRow('proxy-filing', summary.proxyFilingDeadline?.term || 'Proxy filing deadline', summary.proxyFilingDeadline, 'proxyFilingDeadline', proxyCard),
+      deadlineRow('mailing', summary.mailingDeadline?.term || 'Proxy mailing', summary.mailingDeadline, 'mailingDeadline', mailingCard),
+      deadlineRow('meeting', summary.meetingDeadline?.term || 'Shareholder meeting', summary.meetingDeadline, 'meetingDeadline', meetingCard),
+      ...adjournmentRows(summary.adjournmentRights, adjournmentCard),
+      summary.meetingControlNotes ? withSignal({ id: 'sec-meeting-control', label: 'Meeting control notes', subject: 'Meeting', detail: summary.meetingControlNotes, evidence: textOf(controlCard) || summary.meetingControlNotes, sourceCard: controlCard, featureKeys: ['meetingControlNotes'], present: true }) : null,
       ...directRows(cards),
     ].filter(Boolean);
   },

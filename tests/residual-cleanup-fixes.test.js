@@ -318,6 +318,8 @@ test('termination-rights config surfaces willfulBreachException and specificPerf
   const specPerf = remedies.rows.find((r) => r.present && /specific performance/i.test(r.label));
   assert.ok(willful, 'willful-breach exception row renders');
   assert.ok(specPerf, 'specific performance mutual row renders');
+  assert.match(willful.seeTextContent, /sole and exclusive remedy/);
+  assert.match(specPerf.seeTextContent, /specific performance/);
 });
 
 test('termination-rights crossCuttingGroup returns null when neither attribute is present anywhere in the deal', () => {

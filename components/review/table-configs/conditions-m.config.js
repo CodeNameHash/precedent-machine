@@ -8,10 +8,12 @@ import {
   conditionRowMatches,
 } from '../../../lib/canonical-conditions.js';
 import taxonomy from '../../../lib/taxonomy.js';
+import bringDownTiers from '../../../lib/bring-down-tiers.js';
 import { cardFeatures } from './card-utils.js';
 import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
+const { recoverBringDownFromCard } = bringDownTiers;
 
 function cardCode(card) {
   return String(card?.provision_subtype || card?.canonical_code || card?.provision_code || '').trim().toUpperCase();
@@ -24,6 +26,7 @@ function textOf(card) {
 function cardToProvision(card) {
   const code = cardCode(card);
   const features = cardFeatures(card);
+  const recovered = recoverBringDownFromCard({ ...card, features });
   return {
     id: card.id || card.provision_instance_id,
     type: code.startsWith('COND-') ? code.split('-').slice(0, 2).join('-') : 'COND-M',
@@ -32,6 +35,7 @@ function cardToProvision(card) {
     sourceCard: card,
     features: {
       ...features,
+      ...(recovered.tiers.length ? { bringDownTiers: recovered.tiers } : {}),
       canonicalCode: code,
       // Ben: "see text" (and every other mainCondition consumer -- the
       // covenant-standard sniff, conditionDetailLines' "Condition:" line)
@@ -45,6 +49,24 @@ function cardToProvision(card) {
       sectionNumber: features.sectionNumber || card.section_ref || '',
     },
   };
+}
+
+function cardToConditionProvisions(card) {
+  const provision = cardToProvision(card);
+  const recovered = recoverBringDownFromCard({ ...card, features: provision.features });
+  if (!recovered.provisionCode || recovered.provisionCode === provision.features.canonicalCode) return [provision];
+  return [
+    provision,
+    {
+      ...provision,
+      id: `${provision.id}:recovered-${recovered.provisionCode}`,
+      features: {
+        ...provision.features,
+        canonicalCode: recovered.provisionCode,
+        bringDownTiers: recovered.tiers,
+      },
+    },
+  ];
 }
 
 function detailText(matches) {
@@ -165,7 +187,7 @@ function createConditionsConfig({ id, title, rows: canonicalRows, empty }) {
   function selectRows(reviewDeal) {
     const conditionCards = (reviewDeal?.cards || [])
       .filter((card) => card?.provision_type === 'CLOSING_CONDITION')
-      .map(cardToProvision);
+      .flatMap(cardToConditionProvisions);
     if (!conditionCards.length) return [];
 
     return canonicalRows
@@ -240,4 +262,4 @@ const conditionsSConfig = createConditionsConfig({
   empty: 'No seller closing-condition cards found.',
 });
 
-export { cardToProvision, conditionSignals, conditionsBConfig, conditionsMConfig, conditionsSConfig, createConditionsConfig, renderDetail, renderSignals };
+export { cardToConditionProvisions, cardToProvision, conditionSignals, conditionsBConfig, conditionsMConfig, conditionsSConfig, createConditionsConfig, renderDetail, renderSignals };

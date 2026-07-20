@@ -40,6 +40,161 @@ function clauseLabel(card) {
   return card?.short_title || card?.defined_term || cardCode(card) || 'Covenant';
 }
 
+function trueFeature(key, label) {
+  return {
+    key,
+    label,
+    featureKeys: [key],
+    kind: 'presence',
+    presence: { strategy: 'feature_matches', featureKeys: [key], values: [true], missingState: 'absent' },
+  };
+}
+
+function covenantTreatments(profile, featureKeys = ['mainConcept']) {
+  return {
+    key: 'treatments',
+    label: 'Provision treatments',
+    featureKeys,
+    kind: 'multi_select',
+    value: { strategy: 'feature_value', featureKeys, normalizer: 'covenant_treatments', profile },
+  };
+}
+
+function generalCovenantMarket(card) {
+  const code = cardCode(card);
+  const features = cardFeatures(card);
+  const title = String(card?.short_title || '');
+  const uncodedProfile = !code && /control of operations/i.test(title)
+    ? { profile: 'controlOperations', rowKey: 'general-covenants-control-of-operations', shortTitleIncludes: 'Control of Operations' }
+    : !code && /board appointment/i.test(title)
+      ? { profile: 'boardAppointment', rowKey: 'general-covenants-parent-board-appointment', shortTitleIncludes: 'Board Appointment' }
+      : null;
+  let subterms = [];
+  if (code === 'COV-DO') {
+    subterms = [
+      {
+        key: 'tail-period',
+        label: 'D&O protection period',
+        featureKeys: ['indemnificationPeriod'],
+        kind: 'duration',
+        value: { strategy: 'feature_value', featureKeys: ['indemnificationPeriod'], normalizer: 'deadline_duration', unit: 'years', trigger: 'closing' },
+        semantics: { unit: 'years', calendarBasis: 'elapsed', trigger: 'closing', requiredDimensions: ['unit'] },
+      },
+      {
+        key: 'insurance-cap',
+        label: 'Tail premium cap',
+        featureKeys: ['insuranceCap'],
+        kind: 'numeric',
+        value: { strategy: 'feature_value', featureKeys: ['insuranceCap'], normalizer: 'insurance_cap_multiplier' },
+        semantics: { unit: 'multiplier' },
+      },
+      trueFeature('advancementOfExpenses', 'Advancement of expenses'),
+    ];
+  } else if (code === 'COV-FINANCING') {
+    subterms = [
+      trueFeature('financingCooperationPresent', 'Financing cooperation required'),
+      {
+        key: 'scope',
+        label: 'Financing cooperation scope',
+        featureKeys: ['financingCooperationScope', 'mainConcept'],
+        kind: 'multi_select',
+        value: { strategy: 'feature_value', featureKeys: ['financingCooperationScope', 'mainConcept'], normalizer: 'financing_scope' },
+      },
+      trueFeature('financingCooperationBreachIsCondition', 'Breach is a closing condition'),
+    ];
+  } else if (code === 'COV-PUBLICITY') {
+    subterms = [
+      trueFeature('publicStatementsJointApproval', 'Joint approval required'),
+      trueFeature('publicStatementsCarveoutCompany', 'Company announcement carve-out'),
+      trueFeature('publicStatementsCarveoutParent', 'Parent announcement carve-out'),
+    ];
+  } else if (code === 'COV-EMPLOYEE') {
+    const periodKeys = ['protectionPeriodMonths', 'employeeBenefitPeriod', 'protectionPeriod'];
+    subterms = [
+      {
+        key: 'protection-period',
+        label: 'Protection period',
+        featureKeys: periodKeys,
+        kind: 'duration',
+        value: { strategy: 'feature_value', featureKeys: periodKeys, normalizer: 'employee_benefit_period' },
+        semantics: { unit: 'months', calendarBasis: 'elapsed', trigger: 'closing', requiredDimensions: ['unit'] },
+      },
+      trueFeature('continuedService', 'Continued service credit'),
+      trueFeature('eligibilityWaiver', 'Eligibility waiver'),
+      {
+        key: '401k-treatment',
+        label: '401(k) treatment included',
+        featureKeys: ['continued401k'],
+        kind: 'presence',
+        presence: { strategy: 'feature_non_empty', featureKeys: ['continued401k'], missingState: 'absent' },
+      },
+      {
+        key: 'severance-protection',
+        label: 'Severance protection included',
+        featureKeys: ['severanceProtection'],
+        kind: 'presence',
+        presence: { strategy: 'feature_non_empty', featureKeys: ['severanceProtection'], missingState: 'absent' },
+      },
+    ];
+  } else if (code === 'COV-ACCESS') {
+    subterms = [{
+      key: 'scope',
+      label: 'Access scope',
+      featureKeys: ['accessScope'],
+      kind: 'categorical',
+    }];
+  } else if (uncodedProfile) {
+    subterms = [covenantTreatments(uncodedProfile.profile)];
+  } else {
+    const profiles = {
+      'COV-TAKEOVER': 'takeover',
+      'COV-LITNOTIFY': 'litigation',
+      'COV-16B': 'section16',
+      'COV-FURTHER': 'further',
+      'COV-NOTIFY': 'notification',
+      'COV-TAXMATTERS': 'tax',
+      'COV-DELIST': 'delisting',
+      'COV-LIST': 'listing',
+    };
+    if (profiles[code]) subterms = [covenantTreatments(profiles[code])];
+  }
+  const usedKeys = new Set(subterms.flatMap((subterm) => subterm.featureKeys || []));
+  const addStructured = (key, label, kind = 'categorical') => {
+    if (!Object.prototype.hasOwnProperty.call(features, key) || usedKeys.has(key)) return;
+    subterms.unshift(kind === 'presence' ? trueFeature(key, label) : {
+      key,
+      label,
+      featureKeys: [key],
+      kind,
+    });
+    usedKeys.add(key);
+  };
+  addStructured('effortsStandard', 'Efforts standard');
+  addStructured('reasonableBestEfforts', 'Reasonable-best-efforts obligation', 'presence');
+  addStructured('accessRights', 'Access rights');
+  addStructured('informationAccess', 'Information access');
+  addStructured('publicStatements', 'Public-statement treatment');
+  addStructured('publicStatementExceptions', 'Public-statement exceptions', 'multi_select');
+  addStructured('doInsurance', 'D&O insurance required', 'presence');
+  if ((!code && !uncodedProfile) || !subterms.length) return {};
+  return {
+    featureKeys: [...new Set(subterms.flatMap((subterm) => subterm.featureKeys || []))],
+    ...(code ? { marketProvisionCodes: [code] } : {
+      marketProvisionCodes: [],
+      marketProvisionFamily: 'COV',
+      marketRowKey: uncodedProfile.rowKey,
+      marketObservationScope: { shortTitleIncludes: uncodedProfile.shortTitleIncludes },
+      marketPresence: {
+        strategy: 'card_exists',
+        shortTitleIncludes: uncodedProfile.shortTitleIncludes,
+        missingState: 'absent',
+      },
+      marketPrevalenceCohort: { scope: 'all_deals', eligibility: 'all_deals' },
+    }),
+    marketSubterms: subterms,
+  };
+}
+
 // FEEDBACK-2-PUNCHLIST.md #30/#33 (Ben: "I don't know why you've got this
 // signals one here, it's weird"): General Covenants is a grab-bag of
 // unrelated clause types (efforts standard, access rights, public
@@ -67,6 +222,7 @@ function linkRow(idSuffix, label, card, evidenceOverride) {
     evidence: textOf(card) || evidenceOverride || '',
     sourceCard: card,
     present: true,
+    ...generalCovenantMarket(card),
   };
 }
 

@@ -220,6 +220,7 @@ export default function ReviewPage() {
       return undefined;
     }
     let cancelled = false;
+    setReviewDeal(null);
     setCardsLoading(true);
     setCardsError(null);
     fetch(`/api/review/${encodeURIComponent(dealId)}/cards`)
@@ -297,7 +298,6 @@ export default function ReviewPage() {
       .filter((s) => s.id !== '__definitions')
       .map((s) => ({ sectionId: s.id, code: dominantSectionCode(cardsBySection.get(s.id)) }));
   }, [marketMode, sections, cardsBySection]);
-  const { bySection: marketStats } = useSectionMarketStats(marketMode, dealId, sectionCodes);
   const marketSections = useMemo(
     () => (marketMode ? sections.map((section) => resolveMarketSectionRows(section, reviewDealForTables)) : []),
     [marketMode, sections, reviewDealForTables],
@@ -310,11 +310,27 @@ export default function ReviewPage() {
     () => buildMarketMetricBatchRequest(marketSections, { subjectDealId: dealId }),
     [marketSections, dealId],
   );
+  const typedMarketEnabled = marketMode && Boolean(reviewDeal) && marketRequest.specs.length > 0;
   const rowMarketStats = useRowMarketStats(
-    marketMode && Boolean(reviewDeal) && marketRequest.specs.length > 0,
+    typedMarketEnabled,
     marketRequest,
   );
-  const dealToMarket = useDealToMarket(marketMode, dealId);
+  // The typed row contract is the primary market source. Let it finish before
+  // starting the legacy section summary, then let that finish before the
+  // DEAL_TO_MARKET off-market feed. These endpoints each read broad slices of
+  // the same corpus; mounting all three together can overwhelm a degraded data
+  // source and turn one failure into a page-wide partial result.
+  const typedMarketSettled = !typedMarketEnabled
+    || (rowMarketStats.attempted && !rowMarketStats.loading);
+  const legacyMarketEnabled = marketMode && Boolean(reviewDeal) && typedMarketSettled;
+  const sectionMarketStats = useSectionMarketStats(legacyMarketEnabled, dealId, sectionCodes);
+  const marketStats = sectionMarketStats.bySection;
+  const legacyMarketSettled = !sectionCodes.some((section) => section.code)
+    || (sectionMarketStats.attempted && !sectionMarketStats.loading);
+  const dealToMarket = useDealToMarket(
+    legacyMarketEnabled && legacyMarketSettled,
+    dealId,
+  );
   // r19 (WP-A, "off-market feed"): the unified market column's per-row
   // off-market marker (coded: differs from the corpus mode; numeric:
   // outside p25-p75 — CompareColumn.jsx's isOffMarketRow) used to mark
@@ -416,8 +432,11 @@ export default function ReviewPage() {
     apply();
     const ro = new ResizeObserver(apply);
     ro.observe(el);
-    return () => ro.disconnect();
-  }, [view]);
+    return () => {
+      ro.disconnect();
+      document.documentElement.style.removeProperty('--mtx-head-h');
+    };
+  }, [view, wideLayout, marketMode, dealId, compareIds.length]);
 
   // r18 item 3 (Ben, compare/market horizontal scroll): every unified
   // section table (compare and/or market columns push it wider than the
@@ -517,23 +536,43 @@ export default function ReviewPage() {
 
   const sourceOverlayLoading = Boolean(overlayCard) && !fullText && (sourceLoading || !sourceAttempted);
 
+  const openedRouteCardRef = useRef(null);
+  useEffect(() => {
+    openedRouteCardRef.current = null;
+    setOverlayCard(null);
+    setSelection({ card: null, rowFocus: null });
+    warnedCardIdsRef.current.clear();
+    setUnresolvedCount(0);
+  }, [dealId]);
+
   /* ── Deep-link: /review/[id]?card=<card_id> opens the overlay directly
      (fetches the agreement source on-demand — deep links are explicit
      intent, don't wait on idle/fullText to arrive first). ── */
-  const openedFromQueryRef = useRef(false);
   useEffect(() => {
-    if (!router.isReady || openedFromQueryRef.current) return;
-    const cardParam = router.query.card;
-    if (!cardParam || !reviewDeal) return;
+    if (!router.isReady) return;
+    const cardParam = Array.isArray(router.query.card) ? router.query.card[0] : router.query.card;
+    const routeCardKey = dealId && cardParam ? `${dealId}:${String(cardParam)}` : null;
+    if (!routeCardKey) {
+      if (openedRouteCardRef.current) {
+        openedRouteCardRef.current = null;
+        setOverlayCard(null);
+      }
+      return;
+    }
+    if (!reviewDeal || openedRouteCardRef.current === routeCardKey) return;
+    const reviewDealId = reviewDeal.dealId || reviewDeal.deal_id;
+    if (reviewDealId && String(reviewDealId) !== String(dealId)) return;
     const target = String(cardParam);
     const match = (reviewDeal.cards || []).find(
       (c) => String(c.id || c.provision_instance_id) === target,
     );
+    openedRouteCardRef.current = routeCardKey;
     if (match) {
-      openedFromQueryRef.current = true;
       openSourceOverlay(match);
+    } else {
+      setOverlayCard(null);
     }
-  }, [router.isReady, router.query.card, reviewDeal, openSourceOverlay]);
+  }, [router.isReady, router.query.card, dealId, reviewDeal, openSourceOverlay]);
 
   const setAllSections = useCallback((open) => {
     document.querySelectorAll('details.mtx-section').forEach((d) => { d.open = open; });
@@ -608,7 +647,7 @@ export default function ReviewPage() {
         </div>
       ) : (
         <div className="flex flex-1 min-h-0">
-          <ProvisionNav sections={sections} activeId={activeId} onJump={jump} />
+          <ProvisionNav sections={sections} activeId={activeId} onJump={jump} marketMode={marketMode} />
           <main className="relative flex-1 min-w-0 px-5 lg:px-9 pt-6 pb-7">
             {/* Collapse/expand all — absolutely positioned top-right so the
                 main content doesn't move down (Ben round 2). */}
@@ -631,7 +670,7 @@ export default function ReviewPage() {
               </p>
             ) : null}
 
-            <div className={wideLayout ? 'space-y-10 max-w-5xl' : 'space-y-10 max-w-3xl mx-auto'}>
+            <div className={wideLayout ? 'space-y-10 max-w-5xl w-full mx-auto' : 'space-y-10 max-w-3xl mx-auto'}>
               {marketMode ? <OffMarketSection data={offMarketData} /> : null}
               {sections.map((section) => (
                 <SectionBlock
@@ -660,6 +699,14 @@ export default function ReviewPage() {
               </p>
             </footer>
           </main>
+          {marketMode ? (
+            <div
+              className="hidden lg:block shrink-0 self-stretch"
+              data-global-market-sidebar-host
+              data-testid="market-sidebar-host"
+            />
+          ) : (
+            <>
           {/* r11 / r18 (Ben, "make it clearly discoverable"): mid-height
               arrow to hide/show the corpus sidebar, in both the normal
               review view and compare mode (this block sits outside the
@@ -699,6 +746,8 @@ export default function ReviewPage() {
               onClose={clearSelection}
               onViewInAgreement={hasAgreementText ? openSourceOverlay : null}
             />
+          )}
+            </>
           )}
         </div>
       )}

@@ -136,7 +136,11 @@ export default function QueryPage() {
   }, []);
 
   useEffect(() => {
-    if (!router.isReady || !kind) return;
+    // Automatically optimised dynamic pages can expose all route parameters
+    // while `isReady` remains false on a query-string URL. The parameters are
+    // the real fetch gate: ad hoc queries need their encoded payload, while a
+    // saved query only needs its id.
+    if (!kind || !id || (id === 'adhoc' && !payload)) return;
     setResult(null);
     setSavedQuery(null);
     setCurrentPayload(null);
@@ -169,7 +173,7 @@ export default function QueryPage() {
         setCurrentPayload(json.saved_query?.query_payload || (payload ? decodePayloadSafe(payload) : null));
       })
       .catch((err) => setError(sanitizeQueryError(err.message)));
-  }, [router.isReady, kind, id, payload]);
+  }, [kind, id, payload]);
 
   const title = useMemo(() => savedQuery?.title || (result ? resultTitle(result) : kindLabel(kind)), [savedQuery, result, kind]);
   const canPersist = !!(result && currentPayload);

@@ -93,6 +93,23 @@ test('request parser accepts rows as a compatibility alias but rejects ambiguous
   );
 });
 
+test('request parser permits exact title-scoped card presence but rejects an unscoped all-deals card query', () => {
+  const titleScoped = metric('title-scoped');
+  titleScoped.observation.presence = {
+    strategy: 'card_exists',
+    shortTitleIncludes: 'Board Appointment',
+    missingState: 'absent',
+  };
+  assert.equal(parseMarketStatsRequest({ contractVersion: 1, specs: [titleScoped] }, validateSpec).specs.length, 1);
+
+  const unscoped = metric('unscoped');
+  unscoped.observation.presence = { strategy: 'card_exists', missingState: 'absent' };
+  assert.throws(
+    () => parseMarketStatsRequest({ contractVersion: 1, specs: [unscoped] }, validateSpec),
+    (error) => error.code === 'UNSUPPORTED_METRIC_SPEC',
+  );
+});
+
 test('request parser preserves one-page batching headroom while enforcing a finite ceiling', () => {
   const specs = Array.from({ length: MAX_BATCH_METRICS }, (_, index) => metric(`metric-${index}`, `row-${index}`));
   assert.equal(parseMarketStatsRequest({ contractVersion: 1, specs }, validateSpec).specs.length, MAX_BATCH_METRICS);

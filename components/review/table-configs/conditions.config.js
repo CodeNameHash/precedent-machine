@@ -3,6 +3,9 @@ import { conditionsBConfig, conditionsMConfig, conditionsSConfig } from './condi
 import { splitForCell, triggerThresholdLabel, valueText } from './card-utils.js';
 import { STANDARD_TEXT, standardColorKey } from './standard-colors.js';
 import { voteStandard } from './vote-standard.js';
+import bringDownTiers from '../../../lib/bring-down-tiers.js';
+
+const { bringDownTreatmentCodes, recoverBringDownFromCard } = bringDownTiers;
 
 // Consolidates the three party-scoped condition tables (Mutual / Buyer /
 // Seller) into the ONE grouped table the legacy pre-schema page showed,
@@ -129,8 +132,18 @@ const BRINGDOWN_STANDARDS = {
   MAT_ALL_RESPECTS_DE_MINIMIS: { label: 'True except for de minimis inaccuracies', tone: 'neutral', rank: 1 },
   ALL_MATERIAL: { label: 'True in all material respects', tone: 'info', rank: 2 },
   MAT_ALL_MATERIAL: { label: 'True in all material respects', tone: 'info', rank: 2 },
+  MATERIALITY_SCRAPE: { label: 'Materiality qualifiers disregarded', tone: 'warning', rank: 2.5 },
+  MAT_MATERIALITY_SCRAPE: { label: 'Materiality qualifiers disregarded', tone: 'warning', rank: 2.5 },
   MAE_QUALIFIED: { label: 'True except where failure would not cause an MAE', tone: 'warning', rank: 3 },
   MAT_MAE_QUALIFIED: { label: 'True except where failure would not cause an MAE', tone: 'warning', rank: 3 },
+};
+
+const BRINGDOWN_CODES_BY_RANK = {
+  0: ['ALL_RESPECTS', 'MAT_ALL_RESPECTS'],
+  1: ['DE_MINIMIS', 'ALL_RESPECTS_DE_MINIMIS', 'MAT_ALL_RESPECTS_DE_MINIMIS'],
+  2: ['ALL_MATERIAL', 'MAT_ALL_MATERIAL'],
+  2.5: ['MATERIALITY_SCRAPE', 'MAT_MATERIALITY_SCRAPE'],
+  3: ['MAE_QUALIFIED', 'MAT_MAE_QUALIFIED'],
 };
 
 function tierCode(tier) {
@@ -140,6 +153,168 @@ function tierCode(tier) {
 function tierMeta(tier) {
   return BRINGDOWN_STANDARDS[tierCode(tier)]
     || { label: taggedLabel(tier) || 'Bring-down standard', tone: 'info', rank: 9 };
+}
+
+function accuracyMarketSubterms(matches) {
+  const byRank = new Map();
+  for (const provision of matches || []) {
+    for (const tier of Array.isArray(provision?.features?.bringDownTiers) ? provision.features.bringDownTiers : []) {
+      for (const code of bringDownTreatmentCodes(tier)) {
+        const meta = tierMeta({ standard: code });
+        const key = meta.rank === 9 ? `${meta.rank}:${code}` : String(meta.rank);
+        if (!byRank.has(key)) {
+          byRank.set(key, {
+            meta,
+            rank: meta.rank,
+            codes: new Set(BRINGDOWN_CODES_BY_RANK[meta.rank] || [code]),
+          });
+        }
+        byRank.get(key).codes.add(code);
+      }
+    }
+  }
+  return [...byRank.entries()]
+    .sort(([, left], [, right]) => left.rank - right.rank)
+    .map(([key, { rank, meta, codes }]) => ({
+      key: `bring-down-${key}`,
+      label: meta.label,
+      featureKeys: ['bringDownTiers'],
+      kind: 'presence',
+      role: 'treatment',
+      presence: {
+        strategy: 'list_item',
+        featureKeys: ['bringDownTiers'],
+        itemCodes: [...codes],
+        missingState: 'absent',
+      },
+    }));
+}
+
+const CONDITION_DEAL_VALUE_NORMALISATION = {
+  type: 'percent_of_deal_value',
+  denominator: 'deal_value_usd',
+  basisPolicy: 'stratify_by_basis',
+  missingPolicy: 'exclude',
+};
+
+function conditionTermSubterm(key, label, featureKeys, conditionFamily) {
+  return {
+    key,
+    label,
+    featureKeys,
+    kind: 'categorical',
+    value: {
+      strategy: 'feature_value',
+      featureKeys,
+      normalizer: 'condition_term',
+      conditionFamily,
+    },
+  };
+}
+
+function conditionMarketSubterms(family, matches) {
+  let subterms = [];
+  if (family === 'REP') return accuracyMarketSubterms(matches);
+  if (family === 'COV') {
+    subterms = [conditionTermSubterm(
+      'compliance-standard',
+      'Compliance standard',
+      ['covenantComplianceStandard'],
+      'COV',
+    )];
+  } else if (family === 'REG') {
+    subterms = [
+      {
+        key: 'required-approvals',
+        label: 'Required approvals',
+        featureKeys: ['antitrustApprovals'],
+        kind: 'multi_select',
+      },
+      {
+        key: 'hsr-condition',
+        label: 'HSR clearance condition',
+        featureKeys: ['hsrClearance'],
+        kind: 'categorical',
+      },
+    ];
+  } else if (family === 'STOCKHOLDER') {
+    subterms = [
+      conditionTermSubterm('approval-standard', 'Approval standard', ['approvalDefinition'], 'STOCKHOLDER_STANDARD'),
+      conditionTermSubterm('approval-scope', 'Approvals required', ['mainCondition'], 'STOCKHOLDER_SCOPE'),
+    ];
+  } else if (family === 'LEGAL') {
+    subterms = [
+      conditionTermSubterm('restraint-type', 'Legal-restraint formulation', ['absenceOfEnjoiningOrderDetails'], 'LEGAL'),
+      {
+        key: 'restraint-condition',
+        label: 'Absence of restraint required',
+        featureKeys: ['absenceOfEnjoiningOrderPresent'],
+        kind: 'categorical',
+      },
+    ];
+  } else if (family === 'MAE') {
+    subterms = [
+      {
+        key: 'continuing',
+        label: 'MAE must be continuing at closing',
+        featureKeys: ['continuingRequirement'],
+        kind: 'categorical',
+      },
+      {
+        key: 'standalone',
+        label: 'Standalone MAE condition',
+        featureKeys: ['maeConditionStandalone'],
+        kind: 'categorical',
+      },
+    ];
+  } else if (family === 'CERT') {
+    subterms = [
+      conditionTermSubterm('certificate-scope', 'Certificate scope', ['mainCondition'], 'CERT'),
+      {
+        key: 'certificate-required',
+        label: "Officer's certificate required",
+        featureKeys: ['certificationRequired'],
+        kind: 'categorical',
+      },
+    ];
+  } else if (family === 'S4') {
+    subterms = [conditionTermSubterm('s4-formulation', 'S-4 condition', ['mainCondition'], 'S4')];
+  } else if (family === 'LISTING') {
+    subterms = [conditionTermSubterm('listing-formulation', 'Listing condition', ['mainCondition'], 'LISTING')];
+  } else if (family === 'DISSENT') {
+    subterms = [{
+      key: 'dissent-threshold',
+      label: 'Dissenting-shares threshold',
+      featureKeys: ['dissentingSharesThreshold'],
+      kind: 'numeric',
+      semantics: { unit: 'percent' },
+    }];
+  } else if (family === 'FUNDS') {
+    subterms = [
+      {
+        key: 'funds-condition',
+        label: 'Funds availability condition',
+        featureKeys: ['fundsCondition'],
+        kind: 'categorical',
+      },
+      conditionTermSubterm('funds-formulation', 'Funds condition formulation', ['mainCondition'], 'FUNDS'),
+    ];
+  }
+
+  if (firstDefined(matches, 'dollarThreshold') !== undefined) {
+    subterms.push({
+      key: 'dollar-threshold',
+      label: 'Dollar threshold',
+      featureKeys: ['dollarThreshold'],
+      kind: 'money',
+      semantics: {
+        unit: 'usd',
+        cadence: 'one_time',
+        normalisation: CONDITION_DEAL_VALUE_NORMALISATION,
+      },
+    });
+  }
+  return subterms;
 }
 
 // The officer's-certificate row certifies the OTHER substantive conditions in
@@ -271,7 +446,14 @@ function normRepName(name) {
 // is intentionally NOT mapped -- any rep absent from the map defaults to MAE.
 function buildRepBringDownMap(reviewDeal) {
   const cards = reviewDeal?.cards || [];
-  const matches = cards.filter((card) => Array.isArray(card?.features?.bringDownTiers) && card.features.bringDownTiers.length);
+  const matches = cards
+    .map((card) => {
+      const recovered = recoverBringDownFromCard(card);
+      return recovered.tiers.length
+        ? { ...card, features: { ...(card.features || {}), bringDownTiers: recovered.tiers } }
+        : null;
+    })
+    .filter(Boolean);
   const map = new Map();
   if (!matches.length) return map;
   const nameBySec = repNameBySection(matches);
@@ -292,6 +474,10 @@ function buildRepBringDownMap(reviewDeal) {
     }
   }
   return map;
+}
+
+function hasRecoverableBringDownContext(reviewDeal) {
+  return (reviewDeal?.cards || []).some((card) => recoverBringDownFromCard(card).tiers.length > 0);
 }
 
 // Rep bring-down rendered as Ben's grouped structure: each standard is a
@@ -336,6 +522,9 @@ function bringDownNode(matches, PillCell) {
         { key: `bd-${index}`, className: 'space-y-1' },
         React.createElement('div', { className: `text-[11px] font-semibold uppercase tracking-wide ${(colorKey && STANDARD_TEXT[colorKey]) || 'text-inkFaint'}` }, meta.label),
         repsNode,
+        bringDownTreatmentCodes(tier).includes('MAT_MATERIALITY_SCRAPE')
+          ? React.createElement('div', { className: 'text-[10px] font-medium text-amber-700' }, 'Materiality qualifiers disregarded')
+          : null,
       );
     }),
   );
@@ -505,6 +694,7 @@ function buildStandardDetail(row, family, ctx, bandFamilies) {
   // CERT's cross-referenced bandFamilies pills) get none -- see per-branch
   // comments below.
   let featureKeys = null;
+  let marketSubterms = null;
 
   if (family === 'REP') {
     // Rep bring-down: grouped by standard, lowest-materiality-first, reps under
@@ -512,6 +702,7 @@ function buildStandardDetail(row, family, ctx, bandFamilies) {
     mainNode = bringDownNode(matches, PillCell);
     if (mainNode) {
       featureKeys = ['bringDownTiers'];
+      marketSubterms = accuracyMarketSubterms(matches);
     } else {
       const ccs = firstDefined(matches, 'covenantComplianceStandard');
       if (ccs) {
@@ -610,6 +801,8 @@ function buildStandardDetail(row, family, ctx, bandFamilies) {
     if (generic.keys.length === 1) featureKeys = [generic.keys[0]];
   }
 
+  if (!marketSubterms) marketSubterms = conditionMarketSubterms(family, matches);
+
   // AC #9: the "see text" affordance follows ONE rule for every family/band --
   // present iff this row has clause text (mainCondition, falling back to
   // mainConcept/raw quote text in cardToProvision), absent otherwise. This is
@@ -643,6 +836,7 @@ function buildStandardDetail(row, family, ctx, bandFamilies) {
     card: primary?.sourceCard || null,
     evidence: mainConditionText || primary?.full_text || null,
     featureKeys,
+    marketSubterms: marketSubterms?.length ? marketSubterms : null,
   };
 }
 
@@ -683,6 +877,8 @@ function conditionGroups(reviewDeal, ctx) {
         // r13: see buildStandardDetail's featureKeys comment -- null for
         // families whose row value is synthesized from more than one field.
         featureKeys: detail.featureKeys,
+        marketSubterms: detail.marketSubterms,
+        marketProvisionCodes: code ? [code] : undefined,
       };
     });
     return { id: spec.id, label: spec.label, rows, allRows, presentRows };
@@ -750,4 +946,4 @@ const conditionsConfig = {
   renderFooter: renderConditionsFooter,
 };
 
-export { CONDITION_FAMILY_LABELS, buildRepBringDownMap, conditionGroups, conditionsConfig, deriveFamily, normRepName };
+export { CONDITION_FAMILY_LABELS, buildRepBringDownMap, conditionGroups, conditionsConfig, deriveFamily, hasRecoverableBringDownContext, normRepName };

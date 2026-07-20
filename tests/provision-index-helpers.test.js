@@ -45,6 +45,42 @@ test('isFragmentDefinedTerm: a genuine Capitalized or ALL-CAPS defined term is N
   assert.equal(mod.isFragmentDefinedTerm('Company Disclosure Letter'), false);
 });
 
+test('definitionTextForDisplay keeps complete standalone definitions and avoids parenthetical source-clause spill', () => {
+  const standalone = '"Material Adverse Effect" means any event that has a material adverse effect; provided that market changes are excluded.';
+  assert.equal(mod.definitionTextForDisplay({
+    defined_term: 'Material Adverse Effect',
+    defined_value: 'any event that has a material adverse effect',
+    primary_quote: standalone,
+  }), standalone);
+
+  assert.equal(mod.definitionTextForDisplay({
+    defined_term: 'Mailing Date',
+    defined_value: 'not fewer than thirty days before the election deadline',
+    primary_quote: 'Not fewer than thirty days before the election deadline (the "Mailing Date"), the Company shall cause the materials to be mailed t',
+  }), 'not fewer than thirty days before the election deadline');
+
+  assert.equal(mod.definitionTextForDisplay({
+    defined_term: 'Relevant Patents',
+    defined_value: 'the patents reasonably necessary to develop the product',
+    primary_quote: `"Relevant Patents" means ${'captured text '.repeat(95)}trunc`,
+  }), 'the patents reasonably necessary to develop the product');
+});
+
+test('definition display bounds hard-capped captures without ending mid-token', () => {
+  const capped = `${'A complete captured sentence. '.repeat(45)}a broken tai`;
+  const definition = {
+    defined_term: 'Employee Plan',
+    defined_value: capped,
+    primary_quote: capped,
+  };
+  const provision = mod.definitionTextForDisplay(definition);
+  const summary = mod.definitionSummaryForDisplay(definition);
+  assert.match(provision, /…$/);
+  assert.match(summary, /…$/);
+  assert.ok(summary.length <= 651);
+  assert.doesNotMatch(provision, /broken tai…$/);
+});
+
 test('dedupeBySectionAndTitle: two cards for the SAME (section_ref, short_title) collapse to one, keeping the longer text (Theravance 6.1 Information to Regulators)', () => {
   const cards = [
     { id: '5eea8833', section_ref: '6.1 | Information to Regulators | abc', short_title: 'Information to Regulators', primary_quote: 'Short version.' },
@@ -89,6 +125,19 @@ test('resolveRowCard prefers an exact singular source over a broader fallback so
   const cardsById = mod.buildCardIndex([unrelated, exact]);
   const resolved = mod.resolveRowCard({ sourceCard: exact, sourceCards: [unrelated, exact] }, cardsById);
   assert.equal(resolved, exact);
+});
+
+test('resolveRowCard accepts the compact source shape used by composite review rows', () => {
+  const source = { id: 'qxo-proxy', provision_subtype: 'COV-PROXY' };
+  const indexed = { ...source, primary_quote: 'The Company shall file and mail the proxy statement.' };
+  const cardsById = mod.buildCardIndex([indexed]);
+  assert.equal(mod.resolveRowCard({ label: 'Proxy filing', source }, cardsById), indexed);
+});
+
+test('resolveRowCard ignores a display-only source label and keeps the source-card fallback', () => {
+  const sourceCard = { id: 'qxo-meeting', provision_subtype: 'COV-MEETING' };
+  const cardsById = mod.buildCardIndex([sourceCard]);
+  assert.equal(mod.resolveRowCard({ source: 'Section 6.04', sourceCards: [sourceCard] }, cardsById), sourceCard);
 });
 
 test('resolveRowFocus preserves the exact feature key attached by the table row', () => {

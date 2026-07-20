@@ -227,6 +227,7 @@ test('nosol-section: T6 folds "Company termination for Superior Proposal" INSIDE
   assert.ok(superior);
   const terminationRow = superior.rows.find((r) => r.id === 'nosol-superior-termination');
   assert.ok(terminationRow, 'Company termination for Superior Proposal must render inside the Superior Proposal box');
+  assert.match(terminationRow.seeTextContent, /terminate this Agreement to enter into a Superior Proposal/);
   const html = renderToStaticMarkup(React.createElement(React.Fragment, null, terminationRow.children));
   // Round-6: renders the crisp "Yes — if it concurrently signs ..." summary.
   assert.match(html, /Yes — if it concurrently signs the alternative agreement/);

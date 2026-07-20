@@ -2,10 +2,11 @@
 // ProvisionNav prototype. Renders the non-empty sections with their palette
 // dot; the active row is highlighted paper-2. Hidden below md.
 
-export default function ProvisionNav({ sections, activeId, onJump }) {
+export default function ProvisionNav({ sections, activeId, onJump, marketMode = false }) {
+  const widthClass = marketMode ? 'w-56 xl:w-[280px]' : 'w-60';
   return (
     <aside
-      className="hidden md:flex flex-col w-60 shrink-0 border-r border-[#E0E0E0] sticky overflow-y-auto mtx-scrollbar-thin bg-white"
+      className={`hidden md:flex flex-col ${widthClass} shrink-0 border-r border-[#E0E0E0] sticky overflow-y-auto mtx-scrollbar-thin bg-white`}
       style={{ top: 'var(--mtx-head-h, 108px)', height: 'calc(100vh - var(--mtx-head-h, 108px))' }}
     >
       <div className="px-4 pt-6 pb-3 border-b border-[#E0E0E0] bg-white">

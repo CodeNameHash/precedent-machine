@@ -363,6 +363,7 @@ function missingInstrumentRows(card, f, coveredCodes) {
     rows.push({
       id: `equity-awards-${card.id || 'card'}-gap-${code}`,
       instrument: valueText(inst) || humanizeInstrumentKey(code),
+      instrumentCode: code,
       considerationLabel: 'No structured treatment captured for this instrument — see source',
       considerationTone: 'warning',
       vestingLabel: null,
@@ -554,10 +555,111 @@ function moveEsppToBottom(rows) {
   return [...rest, ...espp];
 }
 
+function equityMarketSubterms(row) {
+  if (row.isLongText) {
+    return [{
+      key: 'cutoff-treatment',
+      label: 'Cutoff treatment',
+      featureKeys: ['cutoffTreatment'],
+      kind: 'categorical',
+    }];
+  }
+  const instrumentCode = normalizeInstrumentCode(row.instrumentCode);
+  if (!instrumentCode) return [];
+  const instrumentFeatureKeys = [
+    'outstandingInstruments',
+    'instrumentType',
+    'equityAwardTreatment',
+    'instrumentTreatments',
+    'instrumentVesting',
+    'vestingAcceleration',
+    ...(instrumentCode === 'STOCK_OPTIONS' ? ['optionsCvrEarnIn'] : []),
+  ];
+  const cohort = {
+    scope: 'provision_codes',
+    provisionCodes: ['CONSID-EQUITY'],
+    eligibility: 'instrument_present',
+    instrumentCode,
+    instrumentFeatureKeys,
+  };
+  const instrumentPresence = (featureKeys) => ({
+    strategy: 'instrument_item',
+    featureKeys,
+    instrumentCode,
+    missingState: 'unknown',
+  });
+  const subterms = [
+    {
+      key: 'consideration',
+      label: 'Consideration',
+      featureKeys: ['equityAwardTreatment', 'instrumentTreatments'],
+      kind: 'multi_select',
+      cohort,
+      presence: instrumentPresence(['equityAwardTreatment', 'instrumentTreatments']),
+      value: {
+        strategy: 'feature_value',
+        featureKeys: ['equityAwardTreatment', 'instrumentTreatments'],
+        normalizer: 'equity_consideration',
+        instrumentCode,
+      },
+    },
+    {
+      key: 'vesting-treatment',
+      label: 'Vesting treatment',
+      featureKeys: ['equityAwardTreatment', 'instrumentVesting', 'vestingAcceleration'],
+      kind: 'multi_select',
+      cohort,
+      presence: instrumentPresence(['equityAwardTreatment', 'instrumentVesting', 'vestingAcceleration']),
+      value: {
+        strategy: 'feature_value',
+        featureKeys: ['equityAwardTreatment', 'instrumentVesting', 'vestingAcceleration'],
+        normalizer: 'equity_vesting',
+        instrumentCode,
+      },
+    },
+  ];
+  if (instrumentCode === 'STOCK_OPTIONS') {
+    subterms.push({
+      key: 'cvr-entitlement',
+      label: 'CVR entitlement',
+      featureKeys: ['optionsCvrEarnIn'],
+      kind: 'presence',
+      cohort,
+      presence: {
+        strategy: 'feature_non_empty',
+        featureKeys: ['optionsCvrEarnIn'],
+        absentValues: ['NOT_SPECIFIED', 'NONE', 'NO', 'FALSE'],
+        missingState: 'absent',
+      },
+    });
+  }
+  return subterms;
+}
+
 function equityAwardRows(cards) {
   const rows = moveEsppToBottom((cards || []).flatMap(rowsForCard));
   const cutoff = cutoffRow(cards || []);
-  return cutoff ? [...rows, cutoff] : rows;
+  return (cutoff ? [...rows, cutoff] : rows).map((row) => ({
+    ...row,
+    ...(!row.isLongText && normalizeInstrumentCode(row.instrumentCode) ? {
+      marketProvisionCodes: ['CONSID-EQUITY'],
+      marketPresence: {
+        strategy: 'instrument_item',
+        featureKeys: [
+          'outstandingInstruments',
+          'instrumentType',
+          'equityAwardTreatment',
+          'instrumentTreatments',
+          'instrumentVesting',
+          'vestingAcceleration',
+          ...(normalizeInstrumentCode(row.instrumentCode) === 'STOCK_OPTIONS' ? ['optionsCvrEarnIn'] : []),
+        ],
+        instrumentCode: normalizeInstrumentCode(row.instrumentCode),
+        missingState: 'absent',
+      },
+    } : {}),
+    marketSubterms: equityMarketSubterms(row),
+  }));
 }
 
 function cell(text, ctx, row) {

@@ -31,6 +31,49 @@ export function isFragmentDefinedTerm(term) {
   return false;
 }
 
+export function definitionTextForDisplay(definition) {
+  const full = definition?.region_full_text || definition?.primary_quote || '';
+  const summary = definition?.defined_value || '';
+  if (!full || !summary) return boundedCapturedText(full || summary);
+  const trimmedFull = full.trim();
+  if (isHardCappedCapture(trimmedFull)) return boundedCapturedText(summary, 1200);
+  const term = String(definition?.defined_term || '').trim().toLowerCase();
+  if (!term) return summary;
+  const opening = full.slice(0, 260).replace(/[“”]/g, '"').toLowerCase();
+  const quotedIndex = opening.indexOf(`"${term}"`);
+  const bareIndex = opening.indexOf(term);
+  const termIndex = quotedIndex >= 0 ? quotedIndex : bareIndex;
+  if (termIndex < 0 || termIndex > 140) return summary;
+  const tail = opening.slice(termIndex + term.length, termIndex + term.length + 100);
+  return /\b(?:means?|shall\s+mean|has\s+the\s+meaning|shall\s+have\s+the\s+meaning)\b/.test(tail)
+    ? full
+    : summary;
+}
+
+function isHardCappedCapture(value) {
+  const text = String(value || '').trim();
+  return text.length >= 1100 && !/[.!?;:)\]"'’”]$/.test(text);
+}
+
+function boundedCapturedText(value, maxLength = null) {
+  const text = String(value || '').trim();
+  const limit = Number.isFinite(maxLength) && maxLength > 0 ? maxLength : text.length;
+  if (!text || (!isHardCappedCapture(text) && text.length <= limit)) return text;
+  const candidate = text.slice(0, Math.min(text.length, limit));
+  const floor = Math.max(120, Math.floor(candidate.length * 0.55));
+  const boundaryMatches = [...candidate.matchAll(/[.;:)](?=\s|$)/g)];
+  const boundary = boundaryMatches.length ? boundaryMatches[boundaryMatches.length - 1].index + 1 : -1;
+  const safe = boundary >= floor
+    ? candidate.slice(0, boundary)
+    : candidate.replace(/\s+\S*$/, '').trim();
+  return `${safe || candidate.trim()}…`;
+}
+
+export function definitionSummaryForDisplay(definition) {
+  const summary = String(definition?.defined_value || '').trim();
+  return boundedCapturedText(summary || definitionTextForDisplay(definition), 650);
+}
+
 // Item 16.2: dedupe the per-section provision index by (section_ref
 // number, short_title) -- ingestion sometimes stores TWO cards for the
 // same provision (Theravance: two 6.1 "Information to Regulators" cards).
@@ -45,10 +88,11 @@ export function sectionRefNumber(ref) {
 // and pages/review/[id].js. Summary rows carry their source card under one of
 // a few shapes depending on which table-configs helper built the row:
 // card-utils.js's makeRows()/buildSectionSubjectResolver() set `sourceCard`
-// (singular, an object), the nosol-*.config.js allFeatures()-based builders
-// set `sourceCards` (plural array -- first element is the row's primary
-// source), and GroupedSubRows children set `card` directly once threaded
-// through by their owning config (see nosol-section.config.js's buildGroups).
+// (singular, an object), compact/composite builders commonly set `source`,
+// the nosol-*.config.js allFeatures()-based builders set `sourceCards`
+// (plural array -- first element is the row's primary source), and
+// GroupedSubRows children set `card` directly once threaded through by their
+// owning config (see nosol-section.config.js's buildGroups).
 export function cardKey(card) {
   return card ? String(card.id || card.provision_instance_id || '') : '';
 }
@@ -77,7 +121,8 @@ export function buildCardIndex(cards) {
 // buildCardIndex() above.
 export function resolveRowCard(row, cardsById) {
   if (!row) return null;
-  const candidate = row.card || row.sourceCard || (Array.isArray(row.sourceCards) ? row.sourceCards[0] : null);
+  const objectSource = row.source && typeof row.source === 'object' ? row.source : null;
+  const candidate = row.card || row.sourceCard || objectSource || (Array.isArray(row.sourceCards) ? row.sourceCards[0] : null);
   if (!candidate) return null;
   const key = cardKey(candidate);
   if (!key) return null;

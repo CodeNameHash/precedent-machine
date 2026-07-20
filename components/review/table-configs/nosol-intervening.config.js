@@ -34,6 +34,53 @@ const NEW_ROWS = [
   { id: 'matching-period', label: 'Matching period', keys: ['matchingPeriod'], format: daysLabel },
 ];
 
+const INTERVENING_MARKET_CODES = ['NOSOL-INTERVENING', 'DEF-INTERVENING'];
+
+function interveningMarketSubterms(id) {
+  if (id === 'provision') {
+    const featureKeys = ['interveningEventProvision', 'boardChangeForInterveningEvent', 'interveningEventTermination', 'definitionText', 'mainConcept'];
+    return [{
+      key: 'available-rights',
+      label: 'Rights available for an Intervening Event',
+      featureKeys,
+      kind: 'multi_select',
+      value: { strategy: 'feature_value', featureKeys, normalizer: 'intervening_event_rights' },
+    }];
+  }
+  if (id === 'scope') {
+    const featureKeys = ['interveningEventScope', 'interveningEventDefinition', 'definitionText'];
+    return [{
+      key: 'scope-categories',
+      label: 'Intervening Event scope',
+      featureKeys,
+      kind: 'multi_select',
+      value: { strategy: 'feature_value', featureKeys, normalizer: 'intervening_event_scope' },
+    }];
+  }
+  if (id === 'exceptions') {
+    const featureKeys = ['interveningEventExceptions', 'carveOuts', 'interveningEventDefinition', 'definitionText'];
+    return [{
+      key: 'excluded-events',
+      label: 'Excluded events',
+      featureKeys,
+      kind: 'multi_select',
+      role: 'exception',
+      value: { strategy: 'feature_value', featureKeys, normalizer: 'intervening_event_exceptions' },
+    }];
+  }
+  if (id === 'termination') {
+    const featureKeys = ['interveningEventTermination', 'boardChangeForInterveningEvent', 'interveningEventProvision', 'mainConcept'];
+    return [{
+      key: 'termination-treatment',
+      label: 'Termination treatment',
+      featureKeys,
+      kind: 'categorical',
+      value: { strategy: 'feature_value', featureKeys, normalizer: 'intervening_event_termination_treatment' },
+    }];
+  }
+  return null;
+}
+
 // definition -> scope -> board-change standard -> notice/match, per
 // precedent; provision/exceptions/termination (existing rows, not in the
 // spec's explicit list but genuinely substantive) keep their original
@@ -144,6 +191,7 @@ function rowForSpec(spec, cards) {
   // never the underlying data.
   const detail = stripEdgeEllipsis(yesNo(firstFeature(cards, spec.keys) || spec.fallback(evidence)));
   if (!detail) return null;
+  const marketSubterms = interveningMarketSubterms(spec.id);
   const row = {
     id: `nosol-intervening-${spec.id}`,
     label: spec.label,
@@ -152,6 +200,11 @@ function rowForSpec(spec, cards) {
     evidence,
     sourceCards: cards,
     present: true,
+    featureKeys: spec.keys,
+    ...(marketSubterms ? {
+      marketProvisionCodes: INTERVENING_MARKET_CODES,
+      marketSubterms,
+    } : {}),
   };
   // Item 4 (Skechers r16): structured headline for the Definition row; the
   // full definition text stays reachable via "See provision" (renderSignals

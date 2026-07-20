@@ -1,6 +1,6 @@
 import React from 'react';
 import taxonomy from '../../../lib/taxonomy.js';
-import { cardCode, cardFeatures, cardType, firstFeature, makeRow, selectCards, textOf, valueText } from './card-utils.js';
+import { allFeatures, cardCode, cardFeatures, cardType, firstFeature, makeRow, selectCards, textOf, valueText } from './card-utils.js';
 import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
@@ -181,6 +181,57 @@ function mergerFormClaimCount(cards) {
   }
   return count;
 }
+
+function distinctMergerFormHits(cards) {
+  const byIdentity = new Map();
+  for (const hit of allFeatures(cards, ['mergerForm'])) {
+    const identity = rowCode(hit.value) || hit.detail;
+    if (!identity || byIdentity.has(identity)) continue;
+    byIdentity.set(identity, hit);
+  }
+  return [...byIdentity.values()];
+}
+
+// A transaction can use more than one legal merger form. QXO, for example,
+// closes through a reverse-triangular first merger followed by a forward
+// merger. Treating mergerForm as a scalar made the review table silently
+// show only the first card while the market engine correctly saw both
+// claims and excluded the subject as multiple_values_for_scalar. Keep one
+// compact review row, but surface every distinct form and benchmark each
+// form as a multi-select treatment.
+function claimedMergerFormRow(cards) {
+  const hits = distinctMergerFormHits(cards);
+  if (!hits.length) return null;
+  const first = hits[0];
+  return {
+    id: 'structure-mechanics-merger-form',
+    label: 'Merger form',
+    kind: 'Transaction form',
+    detail: hits.map((hit) => hit.detail).join('\n'),
+    evidence: hits.map((hit) => textOf(hit.card)).filter(Boolean).join('\n\n'),
+    source: first.card?.short_title || 'Merger',
+    present: true,
+    value: hits.map((hit) => hit.value),
+    featureKey: 'mergerForm',
+    sourceCard: first.card,
+    sourceCards: hits.map((hit) => hit.card),
+    signals: hits.map((hit, index) => signalFor({
+      id: `structure-mechanics-merger-form-${index}`,
+      detail: hit.detail,
+      value: hit.value,
+      featureKey: hit.key,
+      sourceCard: hit.card,
+      kind: 'Transaction form',
+      evidence: textOf(hit.card),
+    })).filter(Boolean),
+    marketSubterms: [{
+      key: 'forms',
+      label: 'Merger forms used',
+      featureKeys: ['mergerForm'],
+      kind: 'multi_select',
+    }],
+  };
+}
 function stepsMergerFormRow(steps) {
   if (!Array.isArray(steps) || !steps.length) return null;
   const ordered = [...steps].sort((a, b) => (Number(a.step_order) || 0) - (Number(b.step_order) || 0));
@@ -216,6 +267,7 @@ function mappedStructureRows(cards, transactionSteps) {
       if (id === 'merger-form' && Array.isArray(transactionSteps) && transactionSteps.length > mergerFormClaimCount(cards)) {
         return stepsMergerFormRow(transactionSteps);
       }
+      if (id === 'merger-form') return claimedMergerFormRow(cards);
       const hit = id === 'effective-time' ? effectiveTimeHit(cards) : firstFeature(cards, keys || id);
       const row = makeRow('structure-mechanics', id, label, kind, hit);
       if (!row) return null;
@@ -290,6 +342,6 @@ const structureMechanicsConfig = {
 };
 
 export {
-  effectiveTimeHit, isStructure, mappedStructureRows, mergerFormClaimCount, renderDetail, renderSignals,
+  claimedMergerFormRow, distinctMergerFormHits, effectiveTimeHit, isStructure, mappedStructureRows, mergerFormClaimCount, renderDetail, renderSignals,
   signalFor, stepLine, stepMergerFormLabel, stepsMergerFormRow, structureMechanicsConfig,
 };

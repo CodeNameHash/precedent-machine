@@ -158,6 +158,88 @@ function renderSignals(row, ctx) {
   });
 }
 
+const TAIL_MARKET_KEYS = [
+  'tailProvision',
+  'tailFeeWindowMonths',
+  'tailPeriod',
+  'tailFeeThresholdPct',
+  'tailFeeActivatingClauses',
+  'tailFeeRecognitionEvent',
+  'tailFeeSameProposalRequired',
+];
+const TAIL_MARKET_PRESENCE = {
+  strategy: 'feature_non_empty',
+  featureKeys: TAIL_MARKET_KEYS,
+  missingState: 'absent',
+};
+
+function tailMarketSubterms(id) {
+  if (id === 'tail-window') {
+    const featureKeys = ['tailProvision', 'tailFeeWindowMonths', 'tailPeriod'];
+    return [{
+      key: 'window',
+      label: 'Tail window',
+      featureKeys,
+      kind: 'duration',
+      value: { strategy: 'feature_value', featureKeys, normalizer: 'tail_window_months' },
+      semantics: {
+        unit: 'months',
+        calendarBasis: 'elapsed',
+        trigger: 'qualifying_termination',
+        requiredDimensions: ['unit'],
+      },
+    }];
+  }
+  if (id === 'tail-threshold') {
+    const featureKeys = ['tailProvision', 'tailFeeThresholdPct'];
+    return [{
+      key: 'threshold',
+      label: 'Qualifying transaction threshold',
+      featureKeys,
+      kind: 'numeric',
+      value: { strategy: 'feature_value', featureKeys, normalizer: 'tail_threshold_percent' },
+      semantics: { unit: 'percent' },
+    }];
+  }
+  if (id === 'tail-arming') {
+    const featureKeys = ['tailProvision', 'tailFeeActivatingClauses'];
+    return [{
+      key: 'arming-scenarios',
+      label: 'Termination scenarios that arm the tail',
+      featureKeys,
+      kind: 'multi_select',
+      value: { strategy: 'feature_value', featureKeys, normalizer: 'tail_arming_scenarios' },
+    }];
+  }
+  if (id === 'tail-trigger-scope') {
+    const featureKeys = ['tailProvision', 'tailFeeRecognitionEvent', 'tailFeeSameProposalRequired'];
+    return [{
+      key: 'qualifying-transaction-scope',
+      label: 'Qualifying transaction scope',
+      featureKeys,
+      kind: 'multi_select',
+      value: { strategy: 'feature_value', featureKeys, normalizer: 'tail_qualifying_transaction_scope' },
+    }];
+  }
+  return [];
+}
+
+function tailRow(id, label, value, source) {
+  const marketSubterms = tailMarketSubterms(id);
+  return {
+    id,
+    label,
+    value,
+    evidence: textOf(source),
+    sourceCard: source,
+    present: true,
+    featureKeys: marketSubterms.flatMap((subterm) => subterm.featureKeys || []),
+    marketProvisionCodes: ['TERMF-TAIL'],
+    marketPresence: TAIL_MARKET_PRESENCE,
+    marketSubterms,
+  };
+}
+
 const tailFeeConfig = {
   id: 'tail-fee',
   title: 'Tail Fee Mechanics',
@@ -176,10 +258,10 @@ const tailFeeConfig = {
     ].some((value) => value !== null && value !== undefined && value !== '');
     if (!hasTail) return [];
     return [
-      { id: 'tail-window', label: 'Tail window', value: formatWindow(features.tailFeeWindowMonths), evidence: textOf(source), sourceCard: source, present: true },
-      { id: 'tail-threshold', label: 'Threshold % for Company Takeover Proposal', value: formatPct(features.tailFeeThresholdPct), evidence: textOf(source), sourceCard: source, present: true },
-      { id: 'tail-arming', label: 'Termination scenarios', value: formatClauses(features.tailFeeActivatingClauses), evidence: textOf(source), sourceCard: source, present: true },
-      { id: 'tail-trigger-scope', label: 'Qualifying transaction scope', value: formatTriggerScope(features.tailFeeRecognitionEvent), evidence: textOf(source), sourceCard: source, present: true },
+      tailRow('tail-window', 'Tail window', formatWindow(features.tailFeeWindowMonths), source),
+      tailRow('tail-threshold', 'Threshold % for Company Takeover Proposal', formatPct(features.tailFeeThresholdPct), source),
+      tailRow('tail-arming', 'Termination scenarios', formatClauses(features.tailFeeActivatingClauses), source),
+      tailRow('tail-trigger-scope', 'Qualifying transaction scope', formatTriggerScope(features.tailFeeRecognitionEvent), source),
     ];
   },
   // Tidy per REBUILD-SPECS.md §11, revised per punchlist #38: TWO columns

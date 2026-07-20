@@ -130,6 +130,103 @@ function periodFor(raw, headline) {
   const text = valueText(raw?.timePeriod || raw?.time_period);
   return text || (headline ? headline.text : null) || 'Not specified';
 }
+
+const EMPLOYEE_PROVISION_CODES = ['COV-EMPLOYEE'];
+
+function benefitPeriodSubterm() {
+  const featureKeys = ['protectionPeriodMonths', 'employeeBenefitPeriod', 'protectionPeriod'];
+  return {
+    key: 'protection-period',
+    label: 'Protection period',
+    featureKeys,
+    kind: 'duration',
+    presence: { strategy: 'feature_non_empty', featureKeys, missingState: 'unknown' },
+    value: { strategy: 'feature_value', featureKeys, normalizer: 'employee_benefit_period' },
+    semantics: {
+      unit: 'months',
+      calendarBasis: 'elapsed',
+      trigger: 'closing',
+      requiredDimensions: ['unit'],
+    },
+  };
+}
+
+function structuredItemMarket(code) {
+  const presence = {
+    strategy: 'list_item',
+    featureKeys: ['compensationItems'],
+    itemCode: code,
+    missingState: 'absent',
+  };
+  return {
+    featureKeys: ['compensationItems', 'protectionPeriodMonths', 'employeeBenefitPeriod', 'protectionPeriod'],
+    marketProvisionCodes: EMPLOYEE_PROVISION_CODES,
+    marketPresence: presence,
+    marketSubterms: [
+      {
+        key: 'standard',
+        label: 'Protection standard',
+        featureKeys: ['compensationItems'],
+        kind: 'categorical',
+        presence,
+        value: {
+          strategy: 'list_item_field',
+          featureKeys: ['compensationItems'],
+          itemCode: code,
+          path: 'standard_code',
+          paths: ['standard_code', 'standardCode', 'standard_codes', 'standardCodes'],
+        },
+      },
+      {
+        key: 'reference-group',
+        label: 'Reference group',
+        featureKeys: ['compensationItems'],
+        kind: 'categorical',
+        presence,
+        value: {
+          strategy: 'list_item_field',
+          featureKeys: ['compensationItems'],
+          itemCode: code,
+          path: 'comparison_group',
+          paths: ['comparison_group', 'comparisonGroup'],
+        },
+      },
+      benefitPeriodSubterm(),
+    ],
+  };
+}
+
+function flatBenefitMarket(featureKeys) {
+  return {
+    featureKeys: [...featureKeys, 'protectionPeriodMonths', 'employeeBenefitPeriod', 'protectionPeriod'],
+    marketProvisionCodes: EMPLOYEE_PROVISION_CODES,
+    marketSubterms: [
+      {
+        key: 'standard',
+        label: 'Protection standard',
+        featureKeys,
+        kind: 'categorical',
+      },
+      benefitPeriodSubterm(),
+    ],
+  };
+}
+
+function protectionMarket(key, label) {
+  const presence = { strategy: 'feature_non_empty', featureKeys: [key], missingState: 'absent' };
+  return {
+    featureKeys: [key],
+    marketProvisionCodes: EMPLOYEE_PROVISION_CODES,
+    marketSubterms: [{
+      key: 'included',
+      label,
+      featureKeys: [key],
+      kind: 'presence',
+      presence,
+    }],
+  };
+}
+
 function rowsFromCompensationItems(cards, headline) {
   const rows = [];
   for (const card of cards) {
@@ -153,6 +250,7 @@ function rowsFromCompensationItems(cards, headline) {
           sourceCard: card,
           present: true,
           headlineProtectionPeriod: headline?.text || null,
+          ...structuredItemMarket(type.code || itemCode(raw)),
         });
       }
     }
@@ -176,6 +274,7 @@ function fallbackRows(cards, headline) {
       sourceCard: hit.card,
       present: true,
       headlineProtectionPeriod: headline?.text || null,
+      ...flatBenefitMarket(keys),
     });
   }
   const period = firstFeature(cards, ['employeeBenefitPeriod', 'protectionPeriod', 'protectionPeriodMonths']);
@@ -192,6 +291,9 @@ function fallbackRows(cards, headline) {
       sourceCard: period.card,
       present: true,
       headlineProtectionPeriod: headline?.text || null,
+      featureKeys: ['protectionPeriodMonths', 'employeeBenefitPeriod', 'protectionPeriod'],
+      marketProvisionCodes: EMPLOYEE_PROVISION_CODES,
+      marketSubterms: [benefitPeriodSubterm()],
     });
   }
   return rows;
@@ -213,6 +315,7 @@ function checklistRows(cards, items, comparison, headline) {
       sourceCard: hit.card,
       present: true,
       headlineProtectionPeriod: headline?.text || null,
+      ...protectionMarket(key, label),
     });
   }
   return rows;
@@ -232,6 +335,7 @@ function dividerRow(headline) {
     detail: null,
     evidence: null,
     present: false,
+    marketSkip: true,
     headlineProtectionPeriod: headline?.text || null,
   };
 }

@@ -300,6 +300,15 @@ function allFeatureItems(cards, keys) {
   }
   return out;
 }
+function sourceCardsForItems(items) {
+  const byId = new Map();
+  for (const entry of items || []) {
+    const card = entry?.card;
+    const key = card && (card.id || card.provision_instance_id);
+    if (key && !byId.has(key)) byId.set(key, card);
+  }
+  return [...byId.values()];
+}
 function reaffirmDaysFor(cards) {
   const n = Number(firstFeature(cards, ['arcReaffirmDeadlineDays']));
   return Number.isFinite(n) && n > 0 ? n : null;
@@ -317,6 +326,7 @@ function corItemCodeLabel(spec, item) {
 function corItemsRow(spec, cards, specs, { reaffirm = false, tone = 'neutral' } = {}) {
   const raw = allFeatureItems(cards, spec.keys);
   if (!raw.length) return null;
+  const sourceCards = sourceCardsForItems(raw);
   const days = reaffirm ? reaffirmDaysFor(cards) : null;
   const mapped = raw.map(({ text, card, item }, index) => {
     const s = summarizeItem(text, specs);
@@ -364,8 +374,8 @@ function corItemsRow(spec, cards, specs, { reaffirm = false, tone = 'neutral' } 
     label: spec.label,
     party: [...new Set(cards.map(partySide))].join(', ') || 'Target / Company',
     items,
-    evidence: cards.map(textOf).filter(Boolean).join('\n\n'),
-    sourceCards: cards,
+    evidence: sourceCards.map(textOf).filter(Boolean).join('\n\n'),
+    sourceCards,
     present: true,
   };
 }
@@ -384,6 +394,7 @@ const NOTICE_CONTENT_VOCAB = [
 function noticeContentRow(cards) {
   const raw = allFeatureItems(cards, ['noticeContent']);
   if (!raw.length) return null;
+  const sourceCards = sourceCardsForItems(raw);
   const joined = raw.map((entry) => entry.text).join(' ');
   const items = NOTICE_CONTENT_VOCAB
     .filter((vocab) => vocab.test.test(joined))
@@ -394,8 +405,8 @@ function noticeContentRow(cards) {
     label: 'Notice content',
     party: [...new Set(cards.map(partySide))].join(', ') || 'Target / Company',
     items,
-    evidence: raw.map((entry) => entry.text).join('\n\n'),
-    sourceCards: cards,
+    evidence: sourceCards.map(textOf).filter(Boolean).join('\n\n') || raw.map((entry) => entry.text).join('\n\n'),
+    sourceCards,
     present: true,
   };
 }

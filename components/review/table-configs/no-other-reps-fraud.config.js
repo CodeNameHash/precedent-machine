@@ -18,6 +18,59 @@ const QUESTIONS = [
   ['q3', 'Seller non-reliance', 'Non-reliance'],
   ['q4', 'Buyer no-other-reps', 'No-other-reps'],
 ];
+const QUESTION_PARTIES = {
+  q1: ['COMPANY', 'BOTH'],
+  q2: ['COMPANY', 'BOTH'],
+  q3: ['PARENT', 'BOTH'],
+  q4: ['PARENT', 'BOTH'],
+};
+const ABRY_COHORT = {
+  scope: 'provision_codes',
+  provisionCodes: ABRY_CODES,
+  eligibility: 'code_present',
+};
+
+function questionMarket(key) {
+  const partyValues = QUESTION_PARTIES[key];
+  const marketPresence = {
+    strategy: 'feature_matches',
+    featureKeys: ['noOtherRepsParty'],
+    values: partyValues,
+    missingState: 'absent',
+  };
+  return {
+    featureKeys: ['noOtherRepsParty', 'nonRelianceClause', 'extraContractualClaimsWaived', 'fraudCarveout'],
+    marketProvisionCodes: ABRY_CODES,
+    marketPrevalenceCohort: ABRY_COHORT,
+    marketPresence,
+    marketSubterms: [
+      {
+        key: 'scope',
+        label: 'Non-reliance scope',
+        featureKeys: ['nonRelianceClause', 'fraudCarveout'],
+        kind: 'multi_select',
+        value: {
+          strategy: 'feature_value',
+          featureKeys: ['nonRelianceClause', 'fraudCarveout'],
+          normalizer: 'abry_scope',
+          partyValues,
+        },
+      },
+      {
+        key: 'extra-contractual-waiver',
+        label: 'Express extra-contractual disclaimer',
+        featureKeys: ['extraContractualClaimsWaived'],
+        kind: 'presence',
+        presence: {
+          strategy: 'feature_matches',
+          featureKeys: ['extraContractualClaimsWaived'],
+          values: [true],
+          missingState: 'absent',
+        },
+      },
+    ],
+  };
+}
 
 function cardCode(card) {
   return String(card?.provision_subtype || card?.canonical_code || card?.provision_code || card?.code || '').trim().toUpperCase();
@@ -85,6 +138,7 @@ function questionRow(key, label, kind, entry) {
     // card that answered it, instead of staying an inert rollup row.
     sourceCard: present ? (entry.provision || null) : null,
     present,
+    ...questionMarket(key),
   };
 }
 function fraudRow(fraud) {
@@ -98,6 +152,25 @@ function fraudRow(fraud) {
     evidence: present ? fraud.quote : '',
     sourceCard: present ? (fraud.provision || null) : null,
     present: true,
+    featureKeys: ['fraudCarveout'],
+    marketProvisionCodes: ABRY_CODES,
+    marketPrevalenceCohort: ABRY_COHORT,
+    marketPresence: {
+      strategy: 'feature_non_empty',
+      featureKeys: ['fraudCarveout'],
+      missingState: 'absent',
+    },
+    marketSubterms: [{
+      key: 'scope',
+      label: 'Fraud carve-out scope',
+      featureKeys: ['fraudCarveout'],
+      kind: 'multi_select',
+      value: {
+        strategy: 'feature_value',
+        featureKeys: ['fraudCarveout'],
+        normalizer: 'fraud_carveout_scope',
+      },
+    }],
   };
 }
 function willfulBreachRow(willfulBreach) {
@@ -111,6 +184,23 @@ function willfulBreachRow(willfulBreach) {
     evidence: willfulBreach.quote,
     sourceCard: willfulBreach.provision || null,
     present: true,
+    featureKeys: ['willfulBreachDefinition'],
+    marketPresence: {
+      strategy: 'feature_non_empty',
+      featureKeys: ['willfulBreachDefinition'],
+      missingState: 'absent',
+    },
+    marketSubterms: [{
+      key: 'defined',
+      label: 'Willful breach defined',
+      featureKeys: ['willfulBreachDefinition'],
+      kind: 'presence',
+      presence: {
+        strategy: 'feature_non_empty',
+        featureKeys: ['willfulBreachDefinition'],
+        missingState: 'absent',
+      },
+    }],
   };
 }
 const noOtherRepsFraudConfig = {

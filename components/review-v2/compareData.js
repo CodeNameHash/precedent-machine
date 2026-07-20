@@ -24,6 +24,7 @@ import { reconstructReviewDeal } from '../../lib/queries/reconstruct-review-deal
 import { getCorpusVersion } from '../../lib/client/corpus-version.js';
 import {
   mergeMarketMetricBatchResponses,
+  runMarketMetricBatchPool,
   splitMarketMetricBatchRequest,
 } from '../../lib/market-metrics';
 
@@ -65,6 +66,10 @@ export function dealDisplayName(deal) {
 // timeout so a hung backend surfaces as a retryable error instead of an
 // infinite spinner.
 const FETCH_TIMEOUT_MS = 15000;
+const MARKET_BATCH_METRIC_LIMIT = 300;
+const MARKET_BATCH_CONCURRENCY = 1;
+const MARKET_BATCH_RETRIES = 1;
+const MARKET_BATCH_TIMEOUT_MS = 45000;
 
 async function fetchJson(url, { signal, timeoutMs = FETCH_TIMEOUT_MS, ...requestInit } = {}) {
   const controller = new AbortController();
@@ -82,7 +87,9 @@ async function fetchJson(url, { signal, timeoutMs = FETCH_TIMEOUT_MS, ...request
       const message = typeof payload.error === 'string'
         ? payload.error
         : payload.error?.message || payload.message || `HTTP ${response.status}`;
-      throw new Error(message);
+      const error = new Error(message);
+      error.status = response.status;
+      throw error;
     }
     return payload;
   } catch (err) {
@@ -105,37 +112,66 @@ async function fetchJson(url, { signal, timeoutMs = FETCH_TIMEOUT_MS, ...request
 // data, so the server can apply one denominator and unit policy consistently.
 export function useRowMarketStats(enabled, request) {
   const requestKey = enabled && request?.specs?.length ? JSON.stringify(request) : '';
-  const [state, setState] = useState({ byRow: {}, rowOrder: [], cohort: null, loading: false, error: null, partialError: null });
+  const [state, setState] = useState({ byRow: {}, rowOrder: [], cohort: null, dealDirectory: {}, failedRowKeys: [], attempted: false, loading: false, error: null, partialError: null });
   const [retryNonce, setRetryNonce] = useState(0);
 
   useEffect(() => {
     if (!requestKey) {
-      setState({ byRow: {}, rowOrder: [], cohort: null, loading: false, error: null, partialError: null });
+      setState({ byRow: {}, rowOrder: [], cohort: null, dealDirectory: {}, failedRowKeys: [], attempted: false, loading: false, error: null, partialError: null });
       return undefined;
     }
     let cancelled = false;
     const controller = new AbortController();
-    setState({ byRow: {}, rowOrder: [], cohort: null, loading: true, error: null, partialError: null });
+    setState({ byRow: {}, rowOrder: [], cohort: null, dealDirectory: {}, failedRowKeys: [], attempted: true, loading: true, error: null, partialError: null });
     const fullRequest = JSON.parse(requestKey);
-    const requests = splitMarketMetricBatchRequest(fullRequest);
+    const requests = splitMarketMetricBatchRequest(fullRequest, MARKET_BATCH_METRIC_LIMIT);
     const fetchBatch = (batch) => fetchJson('/api/market-stats', {
       signal: controller.signal,
-      timeoutMs: 30000,
+      timeoutMs: MARKET_BATCH_TIMEOUT_MS,
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(batch),
     });
-    Promise.allSettled(requests.map((batch) => fetchBatch(batch).catch(() => fetchBatch(batch))))
+    runMarketMetricBatchPool(requests, fetchBatch, {
+      concurrency: MARKET_BATCH_CONCURRENCY,
+      retries: MARKET_BATCH_RETRIES,
+      onSettled: (result, index) => {
+        if (cancelled) return;
+        if (result.status === 'rejected') {
+          const failed = [...new Set((requests[index]?.specs || []).map((spec) => spec.rowKey).filter(Boolean))];
+          setState((current) => ({
+            ...current,
+            failedRowKeys: [...new Set([...current.failedRowKeys, ...failed])],
+            partialError: 'Some market rows could not be loaded.',
+          }));
+          return;
+        }
+        setState((current) => ({
+          ...current,
+          byRow: { ...current.byRow, ...(result.value?.byRow || {}) },
+          cohort: current.cohort || result.value?.cohort || null,
+          dealDirectory: { ...current.dealDirectory, ...(result.value?.dealDirectory || {}) },
+        }));
+      },
+    })
       .then((settled) => {
         if (cancelled) return;
         const payloads = settled.filter((item) => item.status === 'fulfilled').map((item) => item.value);
         const failures = settled.filter((item) => item.status === 'rejected').map((item) => item.reason);
         if (!payloads.length) throw failures[0] || new Error('Market data unavailable');
         const payload = mergeMarketMetricBatchResponses(payloads, fullRequest);
+        const failedRowKeys = [...new Set(settled.flatMap((item, index) => (
+          item.status === 'rejected'
+            ? (requests[index]?.specs || []).map((spec) => spec.rowKey).filter(Boolean)
+            : []
+        )))];
         setState({
           byRow: payload?.byRow || {},
           rowOrder: Array.isArray(payload?.rowOrder) ? payload.rowOrder : [],
           cohort: payload?.cohort || null,
+          dealDirectory: payload?.dealDirectory || {},
+          failedRowKeys,
+          attempted: true,
           loading: false,
           error: null,
           partialError: failures.length ? `${failures.length} market batch${failures.length === 1 ? '' : 'es'} could not be loaded.` : null,
@@ -143,7 +179,7 @@ export function useRowMarketStats(enabled, request) {
       })
       .catch((error) => {
         if (cancelled || error?.name === 'AbortError') return;
-        setState({ byRow: {}, rowOrder: [], cohort: null, loading: false, error: error.message || String(error), partialError: null });
+        setState({ byRow: {}, rowOrder: [], cohort: null, dealDirectory: {}, failedRowKeys: [], attempted: true, loading: false, error: error.message || String(error), partialError: null });
       });
     return () => {
       cancelled = true;
@@ -225,17 +261,33 @@ export function dominantSectionCode(cards) {
 }
 
 // Per-code fallback path (pre-batch behavior, r13): one /api/corpus-stats
-// call per distinct code. Used when /api/corpus-stats-batch errors (a stale
-// deploy without the new route, or any other batch failure) so a rollout
-// hiccup on the batch endpoint degrades to the old N-request behavior
-// instead of breaking the deal-to-market section entirely.
-function fetchPerCodeStats(codes, dealId, version, signal, onCode) {
+// call per distinct code. Used only when /api/corpus-stats-batch is absent
+// on a stale deploy. Backend 5xx responses stay as one explicit failure.
+async function fetchPerCodeStats(codes, dealId, version, signal, onCode) {
   const v = version ? `&v=${encodeURIComponent(version)}` : '';
-  codes.forEach((code) => {
-    fetchJson(`/api/corpus-stats?code=${encodeURIComponent(code)}&deal_id=${encodeURIComponent(dealId)}${v}`, { signal })
-      .then((stats) => onCode(code, { stats, loading: false, error: null }))
-      .catch((error) => onCode(code, { stats: null, loading: false, error: error.message || String(error) }));
-  });
+  const settled = new Array(codes.length);
+  let nextIndex = 0;
+  async function worker() {
+    while (nextIndex < codes.length) {
+      const index = nextIndex;
+      nextIndex += 1;
+      const code = codes[index];
+      try {
+        const stats = await fetchJson(`/api/corpus-stats?code=${encodeURIComponent(code)}&deal_id=${encodeURIComponent(dealId)}${v}`, { signal });
+        settled[index] = { status: 'fulfilled', value: stats };
+        onCode(code, { stats, loading: false, error: null });
+      } catch (error) {
+        settled[index] = { status: 'rejected', reason: error };
+        onCode(code, { stats: null, loading: false, error: error.message || String(error) });
+      }
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(2, codes.length) }, () => worker()));
+  return settled;
+}
+
+export function shouldFallbackToPerCode(error) {
+  return [404, 405, 501].includes(Number(error?.status));
 }
 
 // { [sectionId]: { code, stats, loading, error } }. ONE /api/corpus-stats-
@@ -243,13 +295,13 @@ function fetchPerCodeStats(codes, dealId, version, signal, onCode) {
 // follow-on -- this used to be one /api/corpus-stats call PER distinct code,
 // which meant a dozen-plus round trips for a review page with that many
 // distinct sections). Falls back to the old per-code path if the batch call
-// itself errors, so a stale deploy without the new route can't break the
-// section.
+// route is absent, so a stale deploy can't break the section.
 export function useSectionMarketStats(enabled, dealId, sectionCodes) {
   const key = enabled && dealId && sectionCodes.length
     ? `${dealId}|${sectionCodes.map((s) => `${s.sectionId}:${s.code || ''}`).join(',')}`
     : '';
   const [byCode, setByCode] = useState({});
+  const [loadState, setLoadState] = useState({ attempted: false, loading: false, error: null });
   // C: see useComparedDeals' retryNonce -- same manual-retry pattern.
   const [retryNonce, setRetryNonce] = useState(0);
   const codesKey = useMemo(() => {
@@ -259,12 +311,14 @@ export function useSectionMarketStats(enabled, dealId, sectionCodes) {
   useEffect(() => {
     if (!key || !codesKey) {
       setByCode({});
+      setLoadState({ attempted: false, loading: false, error: null });
       return undefined;
     }
     let cancelled = false;
     const controller = new AbortController();
     const codes = codesKey.split(',');
     setByCode(Object.fromEntries(codes.map((code) => [code, { stats: null, loading: true, error: null }])));
+    setLoadState({ attempted: true, loading: true, error: null });
     const setCode = (code, entry) => {
       if (cancelled) return;
       setByCode((cur) => ({ ...cur, [code]: entry }));
@@ -283,13 +337,30 @@ export function useSectionMarketStats(enabled, dealId, sectionCodes) {
             const entry = byCodeResult[code];
             setCode(code, entry ? { stats: entry, loading: false, error: null } : { stats: null, loading: false, error: 'No corpus stats returned for this code' });
           });
+          setLoadState({ attempted: true, loading: false, error: null });
         })
-        .catch(() => {
+        .catch((error) => {
           // Batch endpoint failed outright (network error, 404 on a stale
-          // deploy, 500, etc.) -- fall back to the per-code path rather than
-          // leaving every section stuck on "loading".
+          // deploy, etc.). Only a missing route uses the legacy per-code
+          // fallback. A 5xx means the backing corpus is unhealthy, and
+          // fanning it into one request per code makes that incident worse.
           if (cancelled) return;
-          fetchPerCodeStats(codes, dealId, version, controller.signal, setCode);
+          if (!shouldFallbackToPerCode(error)) {
+            const message = error.message || String(error);
+            codes.forEach((code) => setCode(code, { stats: null, loading: false, error: message }));
+            setLoadState({ attempted: true, loading: false, error: message });
+            return;
+          }
+          fetchPerCodeStats(codes, dealId, version, controller.signal, setCode)
+            .then((settled) => {
+              if (cancelled) return;
+              const failures = settled.filter((entry) => entry.status === 'rejected');
+              setLoadState({
+                attempted: true,
+                loading: false,
+                error: failures.length ? `${failures.length} legacy market request${failures.length === 1 ? '' : 's'} failed.` : null,
+              });
+            });
         });
     });
     return () => {
@@ -307,7 +378,7 @@ export function useSectionMarketStats(enabled, dealId, sectionCodes) {
     }
     return out;
   }, [sectionCodes, byCode]);
-  return { bySection: byCodeWithSections, retry: () => setRetryNonce((n) => n + 1) };
+  return { bySection: byCodeWithSections, ...loadState, retry: () => setRetryNonce((n) => n + 1) };
 }
 
 // base64url without Buffer (browser) — mirrors lib/query/fixtures.js's

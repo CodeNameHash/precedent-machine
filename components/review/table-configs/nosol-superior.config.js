@@ -42,6 +42,31 @@ const NEW_ROWS = [
   { id: 'board-change-standard', label: 'Board-change standard', keys: ['boardChangeStandard'], format: boardChangeStandardLabel },
 ];
 
+const SUPERIOR_MARKET_CODES = ['NOSOL-SUPERIOR', 'DEF-SUPERIOR'];
+
+function superiorMarketSubterms(id) {
+  if (id === 'threshold') {
+    return [{
+      key: 'threshold',
+      label: 'Qualifying transaction threshold',
+      featureKeys: ['superiorProposalThresholdPct', 'superiorProposalPercentage'],
+      kind: 'numeric',
+      semantics: { unit: 'percent' },
+    }];
+  }
+  if (id === 'test') {
+    const featureKeys = ['superiorProposalTest', 'definitionText', 'mainConcept'];
+    return [{
+      key: 'test-factors',
+      label: 'Superior Proposal test factors',
+      featureKeys,
+      kind: 'multi_select',
+      value: { strategy: 'feature_value', featureKeys, normalizer: 'superior_proposal_test_factors' },
+    }];
+  }
+  return null;
+}
+
 function cardCode(card) {
   return String(card?.provision_subtype || card?.canonical_code || card?.provision_code || '').trim().toUpperCase();
 }
@@ -120,12 +145,14 @@ function terminationRow(allCards) {
   // Ben (round 6): "just say yes or 'yes if it simultaneously signs up'." Kept
   // under the pill length so it renders as a pill, not a collapsed preview.
   const summary = 'Yes — if it concurrently signs the alternative agreement (§5.02(a) not breached)';
+  const sourceText = matches.map(textOf).filter(Boolean).join('\n\n');
   return {
     id: 'nosol-superior-termination',
     label: 'Company termination for Superior Proposal',
     party: partySide(card),
     detail: summary,
-    evidence: matches.map(textOf).filter(Boolean).join('\n\n'),
+    evidence: sourceText,
+    seeTextContent: sourceText,
     sourceCards: matches,
     present: true,
   };
@@ -183,6 +210,7 @@ function rowForSpec(spec, cards) {
   const detail = spec.id === 'determiner'
     ? (determinerCodeLabel(cards) || cleanDeterminer(raw))
     : spec.id === 'threshold' ? pctFmt(raw) : raw;
+  const marketSubterms = superiorMarketSubterms(spec.id);
   const row = {
     id: `nosol-superior-${spec.id}`,
     label: spec.label,
@@ -191,6 +219,11 @@ function rowForSpec(spec, cards) {
     evidence,
     sourceCards: cards,
     present: true,
+    featureKeys: spec.keys,
+    ...(marketSubterms ? {
+      marketProvisionCodes: SUPERIOR_MARKET_CODES,
+      marketSubterms,
+    } : {}),
   };
   if (spec.id === 'test') row.items = superiorTestLimbs(raw);
   return row;

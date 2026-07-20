@@ -11,7 +11,12 @@
 // 1px #E0E0E0 borders, meta-label voice) skin it like every other card.
 
 import React from 'react';
-import { dedupeBySectionAndTitle, isFragmentDefinedTerm } from './provisionIndexHelpers.js';
+import {
+  dedupeBySectionAndTitle,
+  definitionSummaryForDisplay,
+  definitionTextForDisplay,
+  isFragmentDefinedTerm,
+} from './provisionIndexHelpers.js';
 
 function sectionRefLabel(ref) {
   // section_ref shape: "1.01 | The Merger | ee3def9710d0" — show §number only.
@@ -95,6 +100,7 @@ export default function ProvisionIndex({ cards, sectionTitle, onSelect, selected
 // see the dry-run scripts/cleanup-fragment-definitions.js for the
 // data-side cleanup).
 export function DefinitionsSection({ definitions }) {
+  const [expandedId, setExpandedId] = React.useState(null);
   const list = (definitions || []).filter((d) => d && d.defined_term && !isFragmentDefinedTerm(d.defined_term));
   if (!list.length) return null;
   const sorted = [...list].sort((a, b) => String(a.defined_term).localeCompare(String(b.defined_term)));
@@ -113,21 +119,38 @@ export function DefinitionsSection({ definitions }) {
           </thead>
           <tbody className="divide-y divide-border">
             {sorted.map((def) => {
-              const full = def.region_full_text || def.primary_quote || '';
-              const summary = def.defined_value || '';
+              const rowId = def.id || def.provision_instance_id || def.defined_term;
+              const definitionText = definitionSummaryForDisplay(def);
+              const provisionText = definitionTextForDisplay(def);
+              const expanded = expandedId === rowId;
               return (
-                <tr key={def.id || def.provision_instance_id} className="align-top">
-                  <td className="px-3 py-2 align-top font-medium text-ink">{def.defined_term}</td>
-                  <td className="px-3 py-2 align-top text-ink">
-                    <span className="whitespace-pre-wrap break-words">{summary}</span>
-                    {full && full !== summary ? (
-                      <details className="mt-1">
-                        <summary className="term-cell-seetext" style={{ listStyle: 'none' }}>full text</summary>
-                        <div className="mt-1 whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight">{full}</div>
-                      </details>
-                    ) : null}
-                  </td>
-                </tr>
+                <React.Fragment key={rowId}>
+                  <tr className="align-top">
+                    <td className="px-3 py-2 align-top text-ink">
+                      <div className="font-medium text-ink">{def.defined_term}</div>
+                      {provisionText ? (
+                        <button
+                          type="button"
+                          className="term-cell-seetext"
+                          aria-expanded={expanded}
+                          onClick={() => setExpandedId(expanded ? null : rowId)}
+                        >
+                          See provision
+                        </button>
+                      ) : null}
+                    </td>
+                    <td className="px-3 py-2 align-top text-ink">
+                      <span className="whitespace-pre-wrap break-words">{definitionText}</span>
+                    </td>
+                  </tr>
+                  {expanded ? (
+                    <tr className="bg-bg/20" data-testid="definition-full-text-row">
+                      <td colSpan={2} className="px-3 py-2 whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight">
+                        {provisionText}
+                      </td>
+                    </tr>
+                  ) : null}
+                </React.Fragment>
               );
             })}
           </tbody>

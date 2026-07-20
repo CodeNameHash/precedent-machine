@@ -31,6 +31,14 @@ const HEADLINE_ROW_ID = 'consideration-hero-headline';
 const PER_SHARE_ROW_ID = 'consideration-hero-per-share';
 const APPRAISAL_ROW_ID = 'consideration-hero-appraisalRightsAvailable';
 const OTHER_PROVISIONS_ROW_ID = 'consideration-hero-other-provisions';
+const CONSIDERATION_MARKET_CODES = ['CONSID', 'CONSID-CONVERT', 'CONSID-EXCHANGE', 'CONSID-ADJUST'];
+const CVR_MARKET_CODES = ['CONSID-CVR', 'CONSID-CONVERT'];
+const DEAL_VALUE_NORMALISATION = {
+  type: 'percent_of_deal_value',
+  denominator: 'deal_value_usd',
+  basisPolicy: 'stratify_by_basis',
+  missingPolicy: 'exclude',
+};
 // Rendered as coloured PillCell chips (not run through TruncatedWithSeeText):
 // short enum/quantitative facts per the global "pills for enum/quantitative
 // signals" rule. Everything else on this card stays on the existing
@@ -225,13 +233,185 @@ function prorationEvidence(hits) {
   return chunks.filter(Boolean).join('\n\n');
 }
 
+function moneySubterm(key, label, featureKeys, provisionCodes = CONSIDERATION_MARKET_CODES, path = null) {
+  return {
+    key,
+    label,
+    featureKeys,
+    provisionCodes,
+    kind: 'money',
+    value: {
+      strategy: path ? 'object_field' : 'feature_value',
+      featureKeys,
+      ...(path ? { path } : {}),
+    },
+    semantics: {
+      unit: 'usd',
+      cadence: 'one_time',
+      normalisation: DEAL_VALUE_NORMALISATION,
+    },
+  };
+}
+
+function considerationMarketMetadata(id) {
+  const categorical = (key, label, featureKeys, extra = {}) => ({
+    key,
+    label,
+    featureKeys,
+    kind: 'categorical',
+    ...extra,
+  });
+  const configs = {
+    headline: {
+      codes: CONSIDERATION_MARKET_CODES,
+      presenceKeys: ['considerationType'],
+      subterms: [categorical('structure', 'Consideration structure', ['considerationType'])],
+    },
+    'per-share': {
+      codes: ['CONSID', 'CONSID-CONVERT'],
+      presenceKeys: ['perShareAmount', 'cashAmount'],
+      subterms: [
+        moneySubterm('cash-per-share', 'Cash per share', ['perShareAmount', 'cashAmount'], ['CONSID', 'CONSID-CONVERT']),
+        moneySubterm('cvr-maximum', 'Maximum CVR payment per share', ['maxPayment'], CVR_MARKET_CODES),
+      ],
+    },
+    exchangeRatio: {
+      codes: ['CONSID', 'CONSID-CONVERT'],
+      presenceKeys: ['exchangeRatio'],
+      subterms: [{
+        key: 'ratio',
+        label: 'Exchange ratio',
+        featureKeys: ['exchangeRatio'],
+        kind: 'numeric',
+        semantics: { unit: 'multiplier' },
+      }],
+    },
+    exchangeRatioText: {
+      codes: ['CONSID', 'CONSID-CONVERT'],
+      presenceKeys: ['exchangeRatioText'],
+      subterms: [categorical('formula', 'Exchange-ratio formula', ['exchangeRatioText'])],
+    },
+    offerConsideration: {
+      codes: ['STRUCT-OFFER'],
+      presenceKeys: ['offerConsideration'],
+      subterms: [categorical('form', 'Offer consideration form', ['offerConsideration'])],
+    },
+    offerPrice: {
+      codes: ['STRUCT-OFFER'],
+      presenceKeys: ['offerPrice'],
+      subterms: [moneySubterm('price', 'Offer price per share', ['offerPrice'], ['STRUCT-OFFER'])],
+    },
+    prorationMechanics: {
+      codes: ['CONSID', 'CONSID-CONVERT', 'CONSID-EXCHANGE'],
+      presenceKeys: ['prorationMechanics'],
+      subterms: [categorical('election-type', 'Election structure', ['prorationMechanics'], {
+        value: { strategy: 'object_field', featureKeys: ['prorationMechanics'], path: 'electionType' },
+      })],
+    },
+    electionMechanics: {
+      codes: ['CONSID', 'CONSID-CONVERT', 'CONSID-EXCHANGE'],
+      presenceKeys: ['electionMechanics'],
+      subterms: [categorical('election-type', 'Election structure', ['electionMechanics'], {
+        value: { strategy: 'object_field', featureKeys: ['electionMechanics'], path: 'electionType' },
+      })],
+    },
+    collar: {
+      codes: ['CONSID', 'CONSID-CONVERT'],
+      presenceKeys: ['collar'],
+      subterms: [
+        categorical('type', 'Collar type', ['collar'], {
+          value: { strategy: 'object_field', featureKeys: ['collar'], path: 'type' },
+        }),
+        moneySubterm('floor', 'Collar floor', ['collar'], ['CONSID', 'CONSID-CONVERT'], 'floor'),
+        moneySubterm('cap', 'Collar cap', ['collar'], ['CONSID', 'CONSID-CONVERT'], 'cap'),
+      ],
+    },
+    walkAwayRight: {
+      codes: ['CONSID', 'CONSID-CONVERT'],
+      presenceKeys: ['walkAwayRight'],
+      subterms: [
+        categorical('party', 'Walk-away right holder', ['walkAwayRight'], {
+          value: { strategy: 'object_field', featureKeys: ['walkAwayRight'], path: 'party' },
+        }),
+        categorical('trigger', 'Walk-away trigger', ['walkAwayRight'], {
+          value: { strategy: 'object_field', featureKeys: ['walkAwayRight'], path: 'trigger' },
+        }),
+        categorical('fill-or-kill', 'Fill-or-kill option', ['walkAwayRight'], {
+          value: { strategy: 'object_field', featureKeys: ['walkAwayRight'], path: 'fillOrKillOption' },
+        }),
+      ],
+    },
+    appraisalRightsAvailable: {
+      codes: ['CONSID', 'CONSID-CONVERT'],
+      presenceKeys: ['appraisalRightsAvailable'],
+      subterms: [categorical('available', 'Appraisal rights available', ['appraisalRightsAvailable'])],
+    },
+    withholdingProvision: {
+      codes: CONSIDERATION_MARKET_CODES,
+      presenceKeys: ['withholdingProvision'],
+      subterms: [categorical('included', 'Withholding provision included', ['withholdingProvision'])],
+    },
+    cvrMilestonePayments: {
+      codes: CVR_MARKET_CODES,
+      presenceKeys: ['cvrMilestonePayments'],
+      subterms: [{ key: 'milestones', label: 'Milestone payments', featureKeys: ['cvrMilestonePayments'], kind: 'multi_select' }],
+    },
+    'cvr-triggers': {
+      codes: ['CONSID-CVR'],
+      presenceKeys: ['triggers'],
+      subterms: [{ key: 'triggers', label: 'CVR triggers', featureKeys: ['triggers'], kind: 'multi_select' }],
+    },
+    'cvr-maxPayment': {
+      codes: CVR_MARKET_CODES,
+      presenceKeys: ['maxPayment'],
+      subterms: [moneySubterm('maximum-payment', 'Maximum CVR payment per share', ['maxPayment'], CVR_MARKET_CODES)],
+    },
+    'cvr-term': {
+      codes: ['CONSID-CVR'],
+      presenceKeys: ['term'],
+      subterms: [categorical('term', 'CVR term', ['term'])],
+    },
+    'cvr-transferable': {
+      codes: ['CONSID-CVR'],
+      presenceKeys: ['transferable'],
+      subterms: [categorical('transferable', 'CVRs transferable', ['transferable'])],
+    },
+    'other-provisions': {
+      codes: ['CONSID-EXCHANGE'],
+      presenceKeys: ['considerationType'],
+      subterms: [categorical('deal-form', 'Payment-mechanics deal form', ['considerationType'])],
+    },
+  };
+  const config = configs[id];
+  if (!config) return {};
+  return {
+    featureKeys: [...new Set(config.subterms.flatMap((subterm) => subterm.featureKeys || []))],
+    marketProvisionCodes: config.codes,
+    marketPresence: {
+      strategy: 'feature_non_empty',
+      featureKeys: config.presenceKeys,
+      missingState: 'absent',
+    },
+    marketSubterms: config.subterms,
+  };
+}
+
 function makeRow(id, label, kind, value, card, electionOption) {
   const detail = valueText(value);
   if (!detail) return null;
   // r9: thread the owning card so the generic table's row-click wiring
   // resolves — "why can't I click Appraisal rights and see the sidebar?"
   // Every direct row here reads off exactly one card, so this is safe.
-  const row = { id: `consideration-hero-${id}`, label, kind, detail, evidence: textOf(card), present: true, card: card || null };
+  const row = {
+    id: `consideration-hero-${id}`,
+    label,
+    kind,
+    detail,
+    evidence: textOf(card),
+    present: true,
+    card: card || null,
+    ...considerationMarketMetadata(id),
+  };
   if (electionOption) row.electionOption = electionOption;
   return row;
 }
@@ -383,6 +563,7 @@ function otherProvisionsRow(exchangeCard) {
     evidence: textOf(exchangeCard),
     sourceCard: exchangeCard,
     present: true,
+    ...considerationMarketMetadata('other-provisions'),
   };
 }
 
