@@ -5,7 +5,12 @@ const { aggregateMetric } = require('../lib/row-market-stats/aggregate');
 const { cardMatchesFamily } = require('../lib/row-market-stats/families');
 const { indexDataset } = require('../lib/row-market-stats/observations');
 const { calculateMarketStats } = require('../lib/row-market-stats/service');
-const { collectSourceRequirements, loadMarketDataset, loadPagedRows } = require('../lib/row-market-stats/source');
+const {
+  collectSourceRequirements,
+  loadMarketDataset,
+  loadPagedRows,
+  runTaskPool,
+} = require('../lib/row-market-stats/source');
 
 function deal(id, valueUsd = 1e9, basis = 'equity_value') {
   return {
@@ -51,6 +56,39 @@ test('market source pagination reads past the database default row cap', async (
   assert.deepEqual(calls, [[0, 999], [1000, 1999], [2000, 2999]]);
 });
 
+test('market source task pool bounds DB reads and preserves result order', async () => {
+  let active = 0;
+  let maxActive = 0;
+  const tasks = Array.from({ length: 7 }, (_, index) => async () => {
+    active += 1;
+    maxActive = Math.max(maxActive, active);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 5));
+      return index;
+    } finally {
+      active -= 1;
+    }
+  });
+
+  const results = await runTaskPool(tasks, 99);
+  assert.equal(maxActive, 2);
+  assert.deepEqual(results, [0, 1, 2, 3, 4, 5, 6]);
+});
+
+test('market source task pool stops scheduling queued DB reads after a failure', async () => {
+  const started = [];
+  const failure = new Error('source failed');
+  const tasks = Array.from({ length: 6 }, (_, index) => async () => {
+    started.push(index);
+    if (index === 0) throw failure;
+    await new Promise((resolve) => setTimeout(resolve, 5));
+    return index;
+  });
+
+  await assert.rejects(runTaskPool(tasks, 2), (error) => error === failure);
+  assert.deepEqual(started, [0, 1]);
+});
+
 test('market source selects the provision card id needed for exact review deep links', async () => {
   const selects = [];
   const rows = {
@@ -91,6 +129,7 @@ test('market source selects the provision card id needed for exact review deep l
 
 test('market source backfills exact cards for claim metrics with an all-deals cohort', async () => {
   const calls = [];
+  const poolCalls = [];
   const rows = {
     deals: [deal('d1')],
     provision_cards: [{ id: 'card-claim', deal_id: 'd1', excerpt_id: 'excerpt-claim' }],
@@ -111,8 +150,17 @@ test('market source backfills exact cards for claim metrics with an all-deals co
     },
   };
 
-  const dataset = await loadMarketDataset(supabase, [spec('categorical')]);
+  const dataset = await loadMarketDataset(supabase, [spec('categorical')], {
+    taskPool: async (tasks, concurrency) => {
+      poolCalls.push({ taskCount: tasks.length, concurrency });
+      return runTaskPool(tasks, concurrency);
+    },
+  });
   assert.equal(dataset.cards[0].id, 'card-claim');
+  assert.deepEqual(poolCalls, [
+    { taskCount: 2, concurrency: 2 },
+    { taskCount: 1, concurrency: 2 },
+  ]);
   assert.ok(calls.some(({ table, column, values }) => (
     table === 'provision_cards'
       && column === 'excerpt_id'

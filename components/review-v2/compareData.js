@@ -68,7 +68,7 @@ export function dealDisplayName(deal) {
 const FETCH_TIMEOUT_MS = 15000;
 const MARKET_BATCH_METRIC_LIMIT = 300;
 const MARKET_BATCH_CONCURRENCY = 1;
-const MARKET_BATCH_RETRIES = 1;
+const MARKET_BATCH_RETRIES = 0;
 const MARKET_BATCH_TIMEOUT_MS = 45000;
 
 async function fetchJson(url, { signal, timeoutMs = FETCH_TIMEOUT_MS, ...requestInit } = {}) {
