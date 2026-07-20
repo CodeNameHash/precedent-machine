@@ -43,8 +43,9 @@ import {
   useSectionMarketStats,
   useDealToMarket,
   dominantSectionCode,
+  dealDisplayName,
 } from '../../components/review-v2/compareData';
-import CompareSectionColumn, { ColumnHeaderBand } from '../../components/review-v2/CompareColumn';
+import CompareSectionColumn, { ColumnHeaderBand, UnifiedCompareSection, CompareMasthead } from '../../components/review-v2/CompareColumn';
 import { MarketSectionColumn, OffMarketSection } from '../../components/review-v2/MarketColumn';
 
 const CONSIDERATION_SECTION_ID = 'consideration-hero';
@@ -62,7 +63,7 @@ function LoadingLine({ children }) {
   );
 }
 
-function SectionBlock({ section, reviewDeal, sectionCards, onSelectCard, selectedCardId, election, onViewInAgreement, extraColumns = null }) {
+function SectionBlock({ section, reviewDeal, sectionCards, onSelectCard, selectedCardId, election, onViewInAgreement, extraColumns = null, compare = null }) {
   // Ben (Mergertrace round 1): every section collapsible. Native <details>
   // (open by default) so the scrollspy/anchor <section> wrapper and the
   // sec-<id> ids are untouched; ProvisionNav's jump() re-opens a collapsed
@@ -74,7 +75,27 @@ function SectionBlock({ section, reviewDeal, sectionCards, onSelectCard, selecte
   // column beside it, horizontal scroll when the tracks overflow. Section
   // alignment is per-section: each grid row IS one section, so the primary
   // and compared columns always sit side by side for the same section.
-  const primaryBody = (
+  // r14 (Ben): compare mode no longer renders a full table copy per deal --
+  // each section becomes ONE unified table (shared label column + one
+  // answer column per deal; see UnifiedCompareSection). The Definitions
+  // section keeps the previous side-by-side rendering (its per-deal defined
+  // terms are mostly disjoint, so a unioned label column would be a sparse
+  // wall of "Not extracted for this deal" cells) -- it flows through
+  // `extraColumns` as before.
+  const unified = compare && section.id !== '__definitions';
+  const primaryTables = unified ? (
+    <UnifiedCompareSection
+      section={section}
+      primaryName={compare.primaryName}
+      primaryReviewDeal={reviewDeal}
+      comparedColumns={compare.columns}
+      onRetry={compare.retry}
+      election={election}
+      sectionCards={sectionCards}
+      onSelectCard={onSelectCard}
+      selectedCardId={selectedCardId}
+    />
+  ) : (
     <>
       {section.id === '__definitions' ? (
         <DefinitionsSection definitions={reviewDeal.definitions} />
@@ -93,6 +114,11 @@ function SectionBlock({ section, reviewDeal, sectionCards, onSelectCard, selecte
           />
         </>
       )}
+    </>
+  );
+  const primaryBody = (
+    <>
+      {primaryTables}
       {section.id !== '__definitions' && sectionCards && sectionCards.length ? (
         <ProvisionIndex cards={sectionCards} sectionTitle={section.title} onSelect={onSelectCard} selectedId={selectedCardId} onViewInAgreement={onViewInAgreement} />
       ) : null}
@@ -268,13 +294,23 @@ export default function ReviewPage() {
   const { bySection: marketStats, retry: retryMarketStats } = useSectionMarketStats(marketMode, dealId, sectionCodes);
   const dealToMarket = useDealToMarket(marketMode, dealId);
   const extraColumnCount = comparedDeals.length + (marketMode ? 1 : 0);
+  // r14: compared deals render INSIDE the unified per-section table (one
+  // shared label column + one answer column per deal -- see
+  // UnifiedCompareSection / the `compare` prop below) instead of as extra
+  // side columns, EXCEPT the Definitions section, which keeps the old
+  // side-by-side per-deal rendering (see SectionBlock). The Market column
+  // (?market=1) keeps its previous side-column rendering unchanged.
   const buildExtraColumns = useCallback((section) => {
-    if (!extraColumnCount) return null;
-    const cols = comparedDeals.map((col, i) => ({
-      key: `cmp-${col.id}`,
-      header: <ColumnHeaderBand label={col.name || `Compared deal ${i + 1}`} href={`/review/${col.id}`} />,
-      body: <CompareSectionColumn section={section} column={col} onRetry={retryComparedDeals} />,
-    }));
+    const cols = [];
+    if (section.id === '__definitions') {
+      comparedDeals.forEach((col, i) => {
+        cols.push({
+          key: `cmp-${col.id}`,
+          header: <ColumnHeaderBand label={col.name || `Compared deal ${i + 1}`} href={`/review/${col.id}`} />,
+          body: <CompareSectionColumn section={section} column={col} onRetry={retryComparedDeals} />,
+        });
+      });
+    }
     if (marketMode) {
       cols.push({
         key: 'market',
@@ -282,8 +318,14 @@ export default function ReviewPage() {
         body: <MarketSectionColumn entry={marketStats[section.id]} onRetry={retryMarketStats} />,
       });
     }
-    return cols;
-  }, [extraColumnCount, comparedDeals, marketMode, marketStats, retryComparedDeals, retryMarketStats]);
+    return cols.length ? cols : null;
+  }, [comparedDeals, marketMode, marketStats, retryComparedDeals, retryMarketStats]);
+  const primaryDealName = useMemo(() => dealDisplayName(deal) || 'This deal', [deal]);
+  const compareBundle = useMemo(() => (
+    comparedDeals.length
+      ? { columns: comparedDeals, retry: retryComparedDeals, primaryName: primaryDealName }
+      : null
+  ), [comparedDeals, retryComparedDeals, primaryDealName]);
 
   /* ── View toggle ── */
   const [view, setView] = useState('summary');
@@ -473,13 +515,28 @@ export default function ReviewPage() {
       </Head>
       <MergertraceStyles />
 
-      <DealHeader
-        deal={deal}
-        view={view}
-        onToggleView={toggleView}
-        hasAgreementText={hasAgreementText}
-        extracted={extractedFacts}
-      />
+      {/* r15 (Ben): in compare mode the masthead just NAMES the deals being
+          compared — no metric strip (the primary deal's announced/value/
+          consideration up top reads as if it described both deals). Normal
+          review pages keep the full DealHeader unchanged. */}
+      {compareIds.length ? (
+        <CompareMasthead
+          primaryName={primaryDealName}
+          primaryHref={dealId ? `/review/${dealId}` : null}
+          comparedColumns={comparedDeals}
+          view={view}
+          onToggleView={toggleView}
+          hasAgreementText={hasAgreementText}
+        />
+      ) : (
+        <DealHeader
+          deal={deal}
+          view={view}
+          onToggleView={toggleView}
+          hasAgreementText={hasAgreementText}
+          extracted={extractedFacts}
+        />
+      )}
 
       {dealError ? (
         <LoadingLine>Failed to load deal: {String(dealError)}</LoadingLine>
@@ -527,6 +584,7 @@ export default function ReviewPage() {
                   election={section.id === CONSIDERATION_SECTION_ID ? election : null}
                   onViewInAgreement={hasAgreementText ? openSourceOverlay : null}
                   extraColumns={buildExtraColumns(section)}
+                  compare={compareBundle}
                 />
               ))}
             </div>

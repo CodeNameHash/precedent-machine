@@ -167,6 +167,12 @@ const FILE_PATTERN_EXEMPTIONS = {
     'field_path\\s*:\\s*[\'"][a-z_]+[\'"]',
     'provision_type\\s*:\\s*[\'"][A-Z_]+[\'"]\\s*,\\s*field_path',
   ],
+  // Same class: the relative-periods MARKET_RANGE fixture carries a literal
+  // payload field_path to exercise the executor end to end.
+  'tests/query/relative-periods.test.js': [
+    'field_path\\s*:\\s*[\'"][a-z_]+[\'"]',
+    'provision_type\\s*:\\s*[\'"][A-Z_]+[\'"]\\s*,\\s*field_path',
+  ],
   'lib/taxonomy.js': ['Must defend \\(incl\\. appeals/final judgment\\)'],
   // Same false-positive class: Sidebar.js renders "(applies to Parent and
   // Company)" GATED on group.maeAppliesToBoth (data-driven, correct since

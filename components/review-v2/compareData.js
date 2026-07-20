@@ -41,7 +41,9 @@ export function parseCompareIds(raw, primaryId) {
   return out;
 }
 
-function dealDisplayName(deal) {
+// Exported for the compare-mode unified table's primary-deal column header
+// (pages/review/[id].js) — same display-name rule the compared columns use.
+export function dealDisplayName(deal) {
   if (!deal) return null;
   const meta = deal.metadata || {};
   const target = meta.target_display || deal.target || null;
