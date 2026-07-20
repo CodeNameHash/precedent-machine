@@ -1,0 +1,160 @@
+name: Codex market integration
+
+on:
+  push:
+    branches: [codex/shared-row-market-context]
+    paths: [.github/workflows/codex-integrate-market.yml]
+
+permissions:
+  contents: write
+
+jobs:
+  integrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/shared-row-market-context
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Wire market drill-down and launcher
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          def replace(path, old, new, count=None):
+              p = Path(path)
+              text = p.read_text()
+              actual = text.count(old)
+              if count is not None and actual != count:
+                  raise SystemExit(f'{path}: expected {count} occurrences, found {actual}: {old[:80]!r}')
+              if actual == 0:
+                  raise SystemExit(f'{path}: pattern not found: {old[:80]!r}')
+              p.write_text(text.replace(old, new))
+
+          # Compare cells open one canonical row-market context in the sidebar.
+          replace(
+              'components/review-v2/CompareColumn.jsx',
+              "import { marketSummaryForRow, isRowOffMarket } from './marketOffMarket';\n",
+              "import { marketSummaryForRow, isRowOffMarket } from './marketOffMarket';\nimport { buildRowMarketContext } from './rowMarketContext';\n",
+              1,
+          )
+          replace(
+              'components/review-v2/CompareColumn.jsx',
+              "  marketColumn = null,\n  onMarketRetry = null,\n}) {",
+              "  marketColumn = null,\n  onMarketRetry = null,\n  onSelectMarketRow = null,\n}) {",
+              1,
+          )
+          old_market_td = """                <td key={d.key} className=\"px-3 py-2 align-top\">\n                  <MarketCell row={refRow} marketColumn={marketColumn} />\n                </td>"""
+          new_market_td = """                <td\n                  key={d.key}\n                  className={`px-3 py-2 align-top ${onSelectMarketRow ? 'cursor-pointer hover:bg-bg/40' : ''}`.trim()}\n                  onClick={() => {\n                    if (!onSelectMarketRow || !refRow) return;\n                    const context = buildRowMarketContext(refRow, marketColumn);\n                    if (context) onSelectMarketRow(refRow, context);\n                  }}\n                  data-testid=\"market-cell-drilldown\"\n                >\n                  <MarketCell row={refRow} marketColumn={marketColumn} />\n                  {onSelectMarketRow ? <div className=\"mt-1 text-[9px] font-medium uppercase tracking-wider text-[#2F6DB5]\">See all treatments &amp; deals →</div> : null}\n                </td>"""
+          replace('components/review-v2/CompareColumn.jsx', old_market_td, new_market_td, 2)
+
+          # Review page uses market sidebar in market mode; normal clause sidebar otherwise.
+          replace(
+              'pages/review/[id].js',
+              "import ClauseSidebar from '../../components/review-v2/ClauseSidebar';\n",
+              "import ClauseSidebar from '../../components/review-v2/ClauseSidebar';\nimport MarketDrilldownSidebar from '../../components/review-v2/MarketDrilldownSidebar';\n",
+              1,
+          )
+          replace(
+              'pages/review/[id].js',
+              "  compare = null, marketColumn = null, onMarketRetry = null,\n}) {",
+              "  compare = null, marketColumn = null, onMarketRetry = null, onSelectMarketRow = null,\n}) {",
+              1,
+          )
+          replace(
+              'pages/review/[id].js',
+              "        onMarketRetry={onMarketRetry}\n",
+              "        onMarketRetry={onMarketRetry}\n        onSelectMarketRow={onSelectMarketRow}\n",
+              1,
+          )
+          replace(
+              'pages/review/[id].js',
+              "  const [selection, setSelection] = useState({ card: null, rowFocus: null });\n",
+              "  const [selection, setSelection] = useState({ card: null, rowFocus: null });\n  const [marketSelection, setMarketSelection] = useState(null);\n",
+              1,
+          )
+          replace(
+              'pages/review/[id].js',
+              "  const clearSelection = useCallback(() => {\n    setSelection({ card: null, rowFocus: null });\n  }, []);\n",
+              "  const clearSelection = useCallback(() => {\n    setSelection({ card: null, rowFocus: null });\n  }, []);\n  const selectMarketRow = useCallback((_row, context) => {\n    setMarketSelection(context || null);\n    setSidebarHidden(false);\n  }, []);\n  const clearMarketSelection = useCallback(() => setMarketSelection(null), []);\n",
+              1,
+          )
+          replace(
+              'pages/review/[id].js',
+              "                  onMarketRetry={marketMode ? retryMarketStats : null}\n",
+              "                  onMarketRetry={marketMode ? retryMarketStats : null}\n                  onSelectMarketRow={marketMode ? selectMarketRow : null}\n",
+              1,
+          )
+          old_sidebar = """            <ClauseSidebar\n              card={selectedCard}\n              rowFocus={selectedRowFocus}\n              dealId={dealId}\n              dealSector={deal ? deal.sector : null}\n              onClose={clearSelection}\n              onViewInAgreement={hasAgreementText ? openSourceOverlay : null}\n            />"""
+          new_sidebar = """            marketMode ? (\n              <MarketDrilldownSidebar context={marketSelection} onClose={clearMarketSelection} />\n            ) : (\n              <ClauseSidebar\n                card={selectedCard}\n                rowFocus={selectedRowFocus}\n                dealId={dealId}\n                dealSector={deal ? deal.sector : null}\n                onClose={clearSelection}\n                onViewInAgreement={hasAgreementText ? openSourceOverlay : null}\n              />\n            )"""
+          replace('pages/review/[id].js', old_sidebar, new_sidebar, 1)
+
+          # Add a first-class What's market? question entry above the existing tabs.
+          replace(
+              'components/query/QueryLaunchBox.jsx',
+              "import { KIND_LABELS, KIND_DESCRIPTIONS } from '../../lib/query/filter-labels';\n",
+              "import { KIND_LABELS, KIND_DESCRIPTIONS } from '../../lib/query/filter-labels';\nimport { whatsMarketPayload } from '../../lib/query/whats-market';\n",
+              1,
+          )
+          replace(
+              'components/query/QueryLaunchBox.jsx',
+              "  const [error, setError] = useState(null);\n",
+              "  const [error, setError] = useState(null);\n  const [marketQuestion, setMarketQuestion] = useState('');\n",
+              1,
+          )
+          replace(
+              'components/query/QueryLaunchBox.jsx',
+              "  const collapsedHint = 'Find deals with a provision, benchmark a term, or compare precedents — pick a question to start.';\n\n  return (",
+              """  const collapsedHint = 'Find deals with a provision, benchmark a term, or compare precedents — pick a question to start.';\n\n  const runWhatsMarket = () => {\n    const intent = whatsMarketPayload(marketQuestion, dealFilter);\n    const payload = {\n      ...intent,\n      deal_ids: (deals || []).map((d) => d.id),\n    };\n    if (intent.provision_type) {\n      const crossCut = {\n        provision_type: intent.provision_type,\n        provision_subtype: null,\n        deal_ids: payload.deal_ids,\n        columns: intent.field ? [intent.field] : [],\n        sort_by: 'deal_signing_date_desc',\n        market_question: intent.question,\n        ...(intent.deal_filter ? { deal_filter: intent.deal_filter } : {}),\n      };\n      router.push(`/query/provision-cross-cut/adhoc?payload=${encodePayloadClient(crossCut)}`);\n      return;\n    }\n    router.push(`/query/whats-market/adhoc?payload=${encodePayloadClient(payload)}`);\n  };\n\n  return (""",
+              1,
+          )
+          replace(
+              'components/query/QueryLaunchBox.jsx',
+              """        <div className=\"qlbTabsRow\" role=\"tablist\">""",
+              """        <div className=\"qlbMarketRow\">\n          <div className=\"qlbMarketCopy\">\n            <strong>What’s market?</strong>\n            <span>Ask about a specific term, or leave blank for a full M&amp;A overview.</span>\n          </div>\n          <input\n            className=\"mtx-input qlbMarketInput\"\n            value={marketQuestion}\n            placeholder=\"e.g. ordinary-course exceptions, matching rights…\"\n            onChange={(e) => setMarketQuestion(e.target.value)}\n            onKeyDown={(e) => { if (e.key === 'Enter') runWhatsMarket(); }}\n            aria-label=\"What’s market question\"\n          />\n          <button type=\"button\" className=\"mtx-btn mtx-btn-primary qlbMarketButton\" onClick={runWhatsMarket}>\n            What’s market? →\n          </button>\n        </div>\n\n        <div className=\"qlbTabsRow\" role=\"tablist\">""",
+              1,
+          )
+          replace(
+              'components/query/QueryLaunchBox.jsx',
+              "        .qlbTabsRow { padding: 10px 14px 0; }\n",
+              """        .qlbMarketRow { display: grid; grid-template-columns: minmax(180px, 1fr) minmax(240px, 1.5fr) auto; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--line-soft, #EEEEEE); background: #fff; }\n        .qlbMarketCopy { display: flex; flex-direction: column; gap: 2px; font-family: var(--mtx-sans); }\n        .qlbMarketCopy strong { font-size: 12px; color: var(--ink, #1F1F1F); }\n        .qlbMarketCopy span { font-size: 10px; color: var(--ink-light, #6B6B6B); }\n        .qlbMarketInput { min-width: 0; width: 100%; }\n        .qlbMarketButton { white-space: nowrap; }\n        .qlbTabsRow { padding: 10px 14px 0; }\n""",
+              1,
+          )
+          replace(
+              'components/query/QueryLaunchBox.jsx',
+              "        @media (max-width: 680px) {\n",
+              "        @media (max-width: 680px) {\n          .qlbMarketRow { grid-template-columns: 1fr; align-items: stretch; }\n          .qlbMarketButton { width: 100%; }\n",
+              1,
+          )
+
+          # Record the completed work and honest remaining depth-data follow-up.
+          plan = Path('docs/PLAN.md')
+          text = plan.read_text()
+          text = text.replace(
+              'Last update: 2026-07-20, post PR #301 + the r19 build round.',
+              'Last update: 2026-07-20, PR #303 row-level market context and market drill-down integration.',
+              1,
+          )
+          marker = '## Ben runbook (his machine; all dry-run first)\n'
+          section = '''## r20 row-by-row market round — PR #303 (2026-07-20)\n\n- [x] One dependency-light `rowMarketContext` resolver now defines the row-level\n      market result consumed by compact compare cells and the detailed market\n      drill-down. Multi-feature rows resolve in declared row order, with explicit\n      treatment / exception / metric roles and stable market keys.\n- [x] Batch categorical summaries count distinct deals rather than claims; no\n      displayed value bucket can exceed the peer-set size. The payload carries a\n      market-stats schema version so response-semantics changes do not hide behind\n      a corpus-only cache version.\n- [x] Compare-to-market cells expose “See all treatments & deals” and open a\n      dedicated right-hand market sidebar. Market mode no longer duplicates the\n      ordinary clause sidebar. The drill-down separates treatments, exceptions,\n      market ranges and underlying deals; exception prevalence uses deals containing\n      the selected term as its denominator.\n- [x] The index query box has a first-class “What’s market?” input. Recognized\n      provision/feature questions route into the existing corpus query surface;\n      blank or open-ended questions route to the market-overview landing page.\n- [ ] Follow-up: enrich the batch endpoint with per-value deal/card lists for every\n      row, not only counts. The sidebar already renders those lists when present;\n      current compact batch responses may show counts without expandable deal names.\n- [ ] Follow-up: replace remaining section-level `dominantSectionCode()` selection\n      with per-row provision-code requests. Stable row keys and the shared resolver\n      are in place, but heterogeneous sections can still inherit the section's modal\n      subtype until this request layer is completed.\n\n'''
+          if section not in text:
+              text = text.replace(marker, section + marker, 1)
+          plan.write_text(text)
+          PY
+      - name: Install dependencies
+        run: npm ci
+      - name: Test
+        run: npm test
+      - name: Build
+        run: npm run build
+      - name: Commit integration
+        run: |
+          rm .github/workflows/codex-integrate-market.yml
+          git config user.name "codex-market-integration"
+          git config user.email "actions@users.noreply.github.com"
+          git add components/review-v2/CompareColumn.jsx pages/review/'[id].js' components/query/QueryLaunchBox.jsx docs/PLAN.md .github/workflows/codex-integrate-market.yml
+          git commit -m "Integrate market drill-down and What's market launcher"
+          git push origin HEAD:codex/shared-row-market-context
