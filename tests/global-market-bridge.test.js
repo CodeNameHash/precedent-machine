@@ -30,8 +30,9 @@ test('exact-card deep links follow deal and card route changes without retaining
   assert.match(REVIEW_PAGE, /openedRouteCardRef\.current = routeCardKey;[\s\S]*openSourceOverlay\(match\)/);
 });
 
-test('typed market cells resolve their exact row key before the legacy text fallback', () => {
-  const exact = BRIDGE.indexOf('exactMarketContextForRowKey(contexts, rowKey)');
+test('typed market cells resolve their attached exact context before the legacy text fallback', () => {
+  assert.match(MARKET_COLUMN, /attachTypedRowMarketContext\(node, resolution, data, fallbackSummary\)/);
+  const exact = BRIDGE.indexOf('exactMarketContextForCell(currentCell, contexts, rowKey)');
   const fallback = BRIDGE.indexOf('contexts.find((context) => contextMatchesCell(context, text))');
   assert.ok(exact >= 0);
   assert.ok(fallback > exact);

@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { useRouter } from 'next/router';
 import MarketDrilldownSidebar from './MarketDrilldownSidebar';
 import { formatNumericMarketSummary } from './marketNumericFormat';
-import { exactMarketContextForRowKey } from './rowMarketContext';
+import { exactMarketContextForCell } from './rowMarketContext';
 import { encodeMarketPayload } from './marketPayload';
 import { whatsMarketPayload } from '../../lib/query/whats-market';
 
@@ -250,7 +250,7 @@ export default function GlobalMarketBridge() {
             const text = currentCell.textContent || '';
             const contexts = registryContexts();
             const rowKey = currentCell.getAttribute('data-market-row-key');
-            const match = exactMarketContextForRowKey(contexts, rowKey)
+            const match = exactMarketContextForCell(currentCell, contexts, rowKey)
               || contexts.find((context) => contextMatchesCell(context, text));
             if (!match) return;
             const row = td.closest('tr');

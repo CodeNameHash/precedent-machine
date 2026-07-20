@@ -139,6 +139,14 @@ test('typed duration context is registered under its exact market row key', () =
     mod.exactMarketContextForRowKey([{ marketRowKey: 'wrong' }, context], resolution.rowKey),
     context,
   );
+  const cell = {};
+  const attached = mod.attachTypedRowMarketContext(cell, resolution, data);
+  const staleRegistryContext = { ...context, label: 'Stale registry context' };
+  assert.equal(
+    mod.exactMarketContextForCell(cell, [staleRegistryContext], resolution.rowKey),
+    attached,
+    'the rendered cell owns the exact current context even when the global registry is stale',
+  );
 });
 
 test('typed duration context never substitutes a different legal-clock cohort', () => {

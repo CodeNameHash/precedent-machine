@@ -16,6 +16,8 @@ const METRIC_FEATURES = new Set([
   'reverseTerminationFee',
 ]);
 
+const TYPED_ROW_CONTEXT_PROPERTY = '__MTX_TYPED_ROW_MARKET_CONTEXT__';
+
 function featureKeysForRow(row) {
   if (!row) return [];
   if (Array.isArray(row.featureKeys)) return row.featureKeys.filter(Boolean);
@@ -433,9 +435,23 @@ export function registerTypedRowMarketContext(resolution, data, fallbackSummary 
   return context;
 }
 
+export function attachTypedRowMarketContext(node, resolution, data, fallbackSummary = null) {
+  if (!node || typeof node !== 'object') return null;
+  const context = buildTypedRowMarketContext(resolution, data, fallbackSummary);
+  if (context) node[TYPED_ROW_CONTEXT_PROPERTY] = context;
+  else delete node[TYPED_ROW_CONTEXT_PROPERTY];
+  return context;
+}
+
 export function exactMarketContextForRowKey(contexts, rowKey) {
   if (!rowKey || !Array.isArray(contexts)) return null;
   return contexts.find((context) => String(context?.marketRowKey || '') === String(rowKey)) || null;
+}
+
+export function exactMarketContextForCell(cell, contexts, rowKey) {
+  const attached = cell?.[TYPED_ROW_CONTEXT_PROPERTY];
+  if (attached && String(attached.marketRowKey || '') === String(rowKey || '')) return attached;
+  return exactMarketContextForRowKey(contexts, rowKey);
 }
 
 export function buildRowMarketContext(row, marketColumn) {
