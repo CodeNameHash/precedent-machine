@@ -18,12 +18,23 @@ jobs:
           set +e
           npm test > test-output.txt 2>&1
           status=$?
-          tail -n 300 test-output.txt > test-tail.txt
+          python - <<'PY'
+          from pathlib import Path
+          lines = Path('test-output.txt').read_text(errors='replace').splitlines()
+          hits = [i for i, line in enumerate(lines) if line.startswith('not ok ') or 'failureType:' in line or 'ERR_ASSERTION' in line]
+          out = []
+          for i in hits:
+              start = max(0, i - 25)
+              end = min(len(lines), i + 55)
+              out.extend(lines[start:end])
+              out.append('\n--- FAILURE BLOCK ---\n')
+          Path('test-failure.txt').write_text('\n'.join(out) if out else '\n'.join(lines[-500:]))
+          PY
           echo "$status" > test-status.txt
           exit 0
       - uses: actions/upload-artifact@v4
         with:
           name: pr303-test-diagnostics
           path: |
-            test-tail.txt
+            test-failure.txt
             test-status.txt
