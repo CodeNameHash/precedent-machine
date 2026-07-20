@@ -2090,6 +2090,49 @@ test('I8: an unmapped 5.01 sub-clause letter falls back to a quote-mined title, 
   assert.match(resolved, /new line of business/i);
 });
 
+// r18 item 4 (Ben, dfaa71fa §5.2(b)-(e) bare "Other restrictions" rows):
+// dfaa71fa's real cards (scratchpad/corpus-cards/cards-dfaa71fa-*.json,
+// 2026-07-20 investigation) carry the BARE "Unclassified" short_title, not
+// the bracketed "[PROPOSED] Unclassified" sentinel the I8 tests above use --
+// a corpus-wide sweep found this is now the ONLY spelling ingestion
+// produces (475/475 unclassified-ish cards checked). Before the r18 fix,
+// section501SubclauseTitle/resolveFragmentName's exact `===` guard never
+// matched these cards at all, so buildOtherRestrictionsRows fell through to
+// the bare "§5.2(x)" section-number label with no real name -- exactly
+// Ben's reported symptom. section501SubclauseTitle's own 5.01-letter map
+// and sniffFragmentName's keyword patterns correctly stay null for these
+// (5.2 lettering, non-tax/contract/insurance content), so this deal's
+// fragments must resolve through firstQuotePhrase -- confirming the fix
+// unlocks the fallback rather than fabricating a specific title.
+test('r18: bare "Unclassified" short_title (dfaa71fa\'s real spelling, not the bracketed sentinel) still resolves via section501SubclauseTitle/resolveFragmentName', () => {
+  const dividendCard = {
+    id: '69b80fcc', provision_type: 'COVENANT_INTERIM_OPERATING', short_title: 'Unclassified',
+    section_ref: '5.2(b) | [PROPOSED] Unclassified | ca6257f74d5f',
+    primary_quote: '(b) (i) split, combine or reclassify any of their respective capital stock, partnership interests or other equity interests...',
+    features: {},
+  };
+  const mergeCard = {
+    id: 'bd512bbb', provision_type: 'COVENANT_INTERIM_OPERATING', short_title: 'Unclassified',
+    section_ref: '5.2(d) | [PROPOSED] Unclassified | f3033f3adf06',
+    primary_quote: '(d) adopt or effect a plan of complete or partial liquidation, dissolution, merger, consolidation, conversion, restructuring, recapitalization or other reorganization; or',
+    features: { restrictionComponents: ['MERGE_DISSOLVE_RECAP'] },
+  };
+  // Not a 5.01 letter, no keyword hit -- both correctly fall through the
+  // deterministic map/sniff stages exactly as they did before this fix.
+  assert.equal(iocMod.section501SubclauseTitle(dividendCard), null);
+  assert.equal(iocMod.sniffFragmentName(dividendCard), null);
+  const dividendName = iocMod.resolveFragmentName(dividendCard);
+  assert.ok(dividendName, 'a real name is resolved instead of falling through to a bare section-number label');
+  assert.notEqual(dividendName, 'Unclassified');
+  assert.match(dividendName, /split/i);
+
+  const rows = iocMod.buildOtherRestrictionsRows([dividendCard, mergeCard], { primitives: iocPrimitives });
+  assert.equal(rows.length, 2);
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, rows.map((r, i) => React.createElement('div', { key: i }, r.label, r.children))));
+  assert.doesNotMatch(html, /^Unclassified$|>Unclassified</, 'no row renders the bare "Unclassified" short_title as its name');
+  assert.doesNotMatch(html, /§5\.2\(b\)$|>§5\.2\(b\)</, 'the dividend/split fragment gets a real name, not a bare section-number label');
+});
+
 test('material-contracts config maps hydrated buckets and thresholds, one row per contract type, no mid-table coverage row', () => {
   const rows = materialContractsMod.materialContractsConfig.selectRows({
     cards: [{

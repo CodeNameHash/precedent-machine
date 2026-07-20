@@ -666,6 +666,12 @@ function renderNegativeRow(entry, ctx) {
 
   return {
     id: entry.id,
+    // r18 item 1 (Ben, compare identity): the row's own canonical
+    // restriction code, band dropped -- compareRowUnion.js's
+    // iocNegativeCodeKey() unions same-code negative covenants across
+    // deals by this field regardless of which section band (§5.2/§4.1/...)
+    // either deal's deck happens to number them under.
+    code: entry.code,
     label: covenantLabelNode(label, entry.code),
     children: React.createElement(
       'div',
@@ -735,6 +741,35 @@ function sniffFragmentName(card) {
 // quote (see the class comment above FRAGMENT_NAME_PATTERNS for the tax/
 // Specified-Contract/insurance ones -- (i)/(ii)/(j)/(m)/(n) are new here).
 const UNCLASSIFIED_SHORT_TITLE = '[PROPOSED] Unclassified';
+// r18 item 4 (Ben, dfaa71fa/QXO §5.2(b)-(e) bare "Other restrictions" rows):
+// this whole naming chain (section501SubclauseTitle below, and
+// resolveFragmentName's firstQuotePhrase fallback) was built to fire on an
+// EXACT match against the bracketed sentinel above -- but a corpus-wide
+// sweep of the cached review payloads (scratchpad/corpus-cards/cards-*.json,
+// 2026-07-20) found 475 cards carrying an "Unclassified"-ish short_title,
+// and every single one is the BARE "Unclassified" string ingestion now
+// stamps, never the bracketed "[PROPOSED] Unclassified" form -- so the
+// exact `===` check below has matched zero real cards for some time, and
+// the entire fallback chain (deterministic section-ref map -> keyword sniff
+// -> quote-mined phrase; I8 test coverage) has been dead code, not just for
+// this deal's §5.2(b)-(e). dfaa71fa's four bare rows are this bug's most
+// visible IOC symptom: no code, no keyword hit, and (pre-fix) no fallback
+// either, so buildOtherRestrictionsRows had nothing left but the bare
+// "§5.2(x)" section-number label. Broadened to accept either spelling,
+// case-insensitively, so the EXISTING validated fallback chain runs again --
+// this changes which short_title STRINGS route into that chain, not what
+// the chain does with them (section501SubclauseTitle's 5.01-letter map and
+// sniffFragmentName's keyword patterns are unchanged and still correctly
+// return null for dfaa71fa's §5.2 lettering/content, so this can't misfire
+// a wrong title onto them -- see the item-4 deliverable notes for the full
+// per-card check). The short_title-sentinel drift itself is an ingestion-
+// side issue (whatever now stamps "Unclassified" instead of the documented
+// "[PROPOSED] Unclassified" marker) outside this file's remit -- flagged
+// for the PLAN punchlist as a corpus-wide data-gap finding, not fixed here.
+const UNCLASSIFIED_SHORT_TITLE_RE = /^(?:\[proposed\]\s*)?unclassified$/i;
+function isUnclassifiedShortTitle(shortTitle) {
+  return typeof shortTitle === 'string' && UNCLASSIFIED_SHORT_TITLE_RE.test(shortTitle.trim());
+}
 const SECTION_501_SUBCLAUSE_TITLES = {
   i: 'Indebtedness',
   ii: 'Debt securities issuance',
@@ -748,7 +783,7 @@ const SECTION_501_SUBCLAUSE_TITLES = {
 const SECTION_501_SUBCLAUSE_RE = /5\.01\s*\(([a-z]+)\)/i;
 
 function section501SubclauseTitle(card) {
-  if (card?.short_title !== UNCLASSIFIED_SHORT_TITLE) return null;
+  if (!isUnclassifiedShortTitle(card?.short_title)) return null;
   const match = SECTION_501_SUBCLAUSE_RE.exec(String(card?.section_ref || ''));
   if (!match) return null;
   return SECTION_501_SUBCLAUSE_TITLES[match[1].toLowerCase()] || null;
@@ -774,7 +809,7 @@ function firstQuotePhrase(text) {
 function resolveFragmentName(card) {
   return section501SubclauseTitle(card)
     || sniffFragmentName(card)
-    || (card?.short_title === UNCLASSIFIED_SHORT_TITLE ? firstQuotePhrase(textOf(card)) : null);
+    || (isUnclassifiedShortTitle(card?.short_title) ? firstQuotePhrase(textOf(card)) : null);
 }
 
 // Ben (r6): no more "§5.01(i)–5.01(o) (8 fragments)" bundle row — every
@@ -805,6 +840,13 @@ function buildOtherRestrictionsRows(fragments, ctx) {
     const clause = textOf(card);
     return {
       id: `ioc-frag-${card.id || index}`,
+      // r18 item 1 (Ben, compare identity): these fragments carry no
+      // taxonomy code -- `name` (the resolved title, before the "· §n"
+      // section suffix folded into `label` above) is the durable cross-deal
+      // signal compareRowUnion.js's titleTextKey() matches on, so e.g. two
+      // deals' "Tax matters" fragment union onto one row even though their
+      // section lettering differs.
+      titleText: name,
       label: covenantLabelNode(label, null),
       children: React.createElement(
         'div',
@@ -950,6 +992,16 @@ function affirmativeRows(cards, ctx) {
       const rowTitle = genericTitle
         ? (limbShortTitle(limb) || `Ordinary course & preservation${limbs.length > 1 ? ` (${limbIndex + 1})` : ''}`)
         : (card.short_title || card.defined_term || 'Affirmative covenant');
+      // r18 item 1 (Ben, compare identity): the DISPLAYED title above stays
+      // whatever the card's own short_title says (deal-specific paraphrase
+      // text on non-chapeau decks) -- but the cross-deal MATCH key always
+      // runs the deterministic IOC_LIMB_TITLE_RUBRIC against the limb's own
+      // obligation text, regardless of whether this card happens to be a
+      // chapeau. Two deals' "conduct business in the ordinary course" limbs
+      // land on the same rubric title even when their cards' short_titles
+      // read differently ("Ordinary Course of Business" vs "Conduct of the
+      // Business") -- rowTitle alone would leave those two one-sided.
+      const matchTitle = limbShortTitle(limb) || rowTitle;
       const scopeEntries = exceptionEntries(limb?.appliesTo, IOC_AFFIRMATIVE_SCOPE_CODES, card);
       const carveout = features.ordinaryCourseCarveout === true || limb?.ordinaryCourseCarveout === true;
       const obligationText = valueText(limb?.obligation) || textOf(card);
@@ -962,6 +1014,11 @@ function affirmativeRows(cards, ctx) {
       ].filter(Boolean);
       rows.push({
         id: `ioc-aff-${card.id || code}-${limbIndex}`,
+        // r18 item 1 (Ben, compare identity): affirmative limbs carry no
+        // taxonomy code -- `matchTitle` (always the IOC_LIMB_TITLE_RUBRIC
+        // result when it fires, see above) is the signal
+        // compareRowUnion.js's titleTextKey() matches on across deals.
+        titleText: matchTitle,
         label: covenantLabelNode(rowTitle, code),
         card,
         evidence: obligationText || null,

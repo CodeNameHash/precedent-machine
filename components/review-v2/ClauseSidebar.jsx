@@ -38,6 +38,7 @@ import Link from 'next/link';
 import { useViewMode } from '../ViewModeContext';
 import { cardFeatureQuote } from './provisionIndexHelpers.js';
 import { getCorpusVersion } from '../../lib/client/corpus-version.js';
+import { FEATURES } from '../../lib/schema/features.js';
 
 function fmtValue(raw) {
   const n = Number(raw);
@@ -275,18 +276,6 @@ function rowIdentityLabel(rowFocus, card) {
   return rowFocus.label || (card && (card.short_title || card.defined_term)) || 'Provision';
 }
 
-// "This deal" lead line (sidebar r6, Ben: "clearer on what this deal's
-// treatment is, as compared to alternatives") -- a bold, left-accented block
-// that always sits above the peer-set distribution, distinct from it.
-function ThisDealLead({ children }) {
-  if (!children) return null;
-  return (
-    <div className="mb-2 pl-2 border-l-2 border-[#1F1F1F]" data-testid="this-deal-lead">
-      {children}
-    </div>
-  );
-}
-
 // One deal row inside an expanded option -- deal name + two quiet links.
 // "See provision →" only renders when a cardId resolved server-side (not
 // every claim has one -- see pages/api/corpus-stats.js's cardIdForClaim).
@@ -332,9 +321,11 @@ function OptionRow({ label, count, isThisDeal, deals, open, onToggle }) {
         className={`w-full flex items-center justify-between gap-2 text-left py-0.5 ${hasDeals ? 'cursor-pointer hover:bg-[#F6F6F6]' : 'cursor-default'}`}
         data-testid="distribution-option-row"
       >
-        <span className={`${BODY} ${isThisDeal ? 'font-bold' : ''} text-[#1F1F1F]`}>
+        {/* Sidebar redesign C.3: this deal's own variant is subtly bolded
+            in the list -- the ThisDealPill above already states it clearly,
+            so no redundant "This deal" tag repeats it here. */}
+        <span className={`${BODY} ${isThisDeal ? 'font-semibold' : ''} text-[#1F1F1F]`}>
           {label} — {count}
-          {isThisDeal ? <span className="text-[9px] text-[#2F6DB5] font-bold uppercase ml-1">This deal</span> : null}
         </span>
         {hasDeals ? (
           <span
@@ -361,12 +352,201 @@ function useOpenOptions() {
   return [openKeys, toggle];
 }
 
+// Sidebar redesign r18 (Ben, item 2): block headers ("Materiality
+// qualifier", "Knowledge qualifier", "Look-back period") render in the SAME
+// visual language as the main body's section headers ("Representations &
+// Warranties — Parent" — see pages/review/[id].js's SectionBlock: a colored
+// dot + bold black title + a black bottom border), just sized down for the
+// 320px sidebar rail.
+function BlockHeader({ children }) {
+  return (
+    <div className="flex items-center gap-1.5 pb-1.5 mb-2 border-b-2 border-black">
+      <span className="w-1.5 h-1.5 rounded-full bg-[#1F1F1F] shrink-0" aria-hidden="true" />
+      <h3 className="text-[12.5px] font-bold tracking-tight text-[#1F1F1F] leading-tight">{children}</h3>
+    </div>
+  );
+}
+
+// registry.js's generated FEATURES carry a label per attribute, but they're
+// written for the review TABLE ("Materiality Qualifier (section-wide)",
+// "Look-back date") not this block header's exact wording -- Ben specified
+// the header text verbatim ("Materiality qualifier", "Knowledge qualifier",
+// "Look-back period"). Override just those three; anything else falls back
+// to the server-resolved feature.label (attributeLabel() in corpus-stats.js
+// already strips registry parentheticals).
+const BLOCK_HEADER_OVERRIDES = {
+  materialityQualifier: 'Materiality qualifier',
+  knowledgeQualifier: 'Knowledge qualifier',
+  lookbackDateISO: 'Look-back period',
+};
+function blockHeaderLabel(feature) {
+  return BLOCK_HEADER_OVERRIDES[feature.attribute] || feature.label;
+}
+
+// -- favorability ordering (sidebar redesign C.3, Ben's exact spec) --------
+//
+// TARGET-REP (REP-T-*) materiality qualifier -- the buyer wants the
+// Company's reps STRICT (fewer escape hatches = more buyer-favorable):
+//   tier 1 (most buyer-favorable)  -- No materiality qualifier at all
+//   tier 2                         -- In all material respects
+//   tier 3                         -- Materiality inline within the rep
+//   tier 4                         -- Materiality to the Company (whole rep)
+//   tier 5 (least buyer-favorable) -- MAE-qualified variants (weakest)
+// On REP-B-* (Parent/Buyer) rows the ordering INVERTS: a weak PARENT rep is
+// the one that favors the buyer (nothing for the buyer's own reps to trip up
+// on), so tier 5 sorts first there instead of tier 1 -- see invertForRepB().
+// Live-corpus spot-check (Zymeworks/Theravance, REP-B-ORG) surfaced three
+// taxonomy codes (lib/taxonomy.js's MATERIALITY_CODES) this table's first
+// draft missed entirely -- MAT_NO_QUALIFIER (the literal "No materiality
+// qualifier" tier the spec names), plus MAT_MATERIALITY_SCRAPE/MAT_KNOWLEDGE/
+// MAT_WILLFUL_BREACH/MAT_INTENTIONAL_BREACH, which aren't in Ben's 5-tier
+// spec at all (they're a different axis -- breach standard / bring-down
+// treatment, not a materiality-strictness rung) but still need SOME tier so
+// they sort predictably rather than defaulting to the middle for every
+// value. Best-effort placement: MATERIALITY_SCRAPE (materiality disregarded
+// at bring-down -- no cushion survives) sits with the strictest tier;
+// KNOWLEDGE/WILLFUL_BREACH/INTENTIONAL_BREACH (extra outs stacked on top of
+// materiality) sit with the weakest.
+const MATERIALITY_FAVORABILITY_TIER = {
+  MAT_NO_QUALIFIER: 1,
+  MAT_ALL_RESPECTS: 1,
+  MAT_ALL_RESPECTS_DE_MINIMIS: 1,
+  MAT_DE_MINIMIS: 1,
+  MAT_MATERIALITY_SCRAPE: 1,
+  MAT_ALL_MATERIAL: 2,
+  MAT_MATERIAL_INLINE: 3,
+  MAT_MATERIAL_TO_COMPANY: 4,
+  MAT_MAE_QUALIFIED: 5,
+  MAT_MAE_AGGREGATE: 5,
+  MAT_KNOWLEDGE: 5,
+  MAT_WILLFUL_BREACH: 5,
+  MAT_INTENTIONAL_BREACH: 5,
+};
+// Knowledge qualifier: same directional logic (unqualified is stricter, so
+// more buyer-favorable on a target rep) but coarser -- the registry carries
+// no favorabilityDirection/Rule for this field (see lib/schema/features.js,
+// checked first below and currently null/0/null corpus-wide), so this is a
+// best-effort two-tier model rather than a fully-specified table.
+const KNOWLEDGE_FAVORABILITY_TIER = {
+  KNOWLEDGE_QUALIFIED: 2,
+};
+const KNOWLEDGE_FAVORABILITY_DEFAULT = 1;
+
+function invertForRepB(tier, isBuyerRep) {
+  return isBuyerRep ? 6 - tier : tier;
+}
+
+// Registry-first per spec ("use registry favorability fields where
+// present"): lib/schema/features.js's favorabilityRule, when populated, is
+// expected to carry an explicit best-to-worst code order (`{ order: [...] }`)
+// -- consulted before the hardcoded tables above. Every attribute in the
+// generated registry currently ships favorabilityRule: null, so this branch
+// is a no-op today and the hardcoded tables do the real work; it's wired so
+// a future registry fill-in (Fable/Opus judgment call, per CLAUDE.md) is
+// picked up automatically with no sidebar code change.
+function registryTier(attribute, value) {
+  const entry = FEATURES[attribute];
+  const order = entry && entry.favorabilityRule && Array.isArray(entry.favorabilityRule.order)
+    ? entry.favorabilityRule.order
+    : null;
+  if (!order) return null;
+  const idx = order.indexOf(value);
+  return idx === -1 ? null : idx + 1;
+}
+
+// Returns a sortable tier (1 = most buyer-favorable) for one distribution
+// value, or null when this attribute has no favorability model at all (the
+// caller falls back to the existing most-common-first ordering).
+function favorabilityTier(attribute, value, isBuyerRep) {
+  const fromRegistry = registryTier(attribute, value);
+  if (fromRegistry !== null) return invertForRepB(fromRegistry, isBuyerRep);
+  if (attribute === 'materialityQualifier') {
+    const tier = MATERIALITY_FAVORABILITY_TIER[value] ?? 3;
+    return invertForRepB(tier, isBuyerRep);
+  }
+  if (attribute === 'knowledgeQualifier') {
+    const tier = KNOWLEDGE_FAVORABILITY_TIER[value] ?? KNOWLEDGE_FAVORABILITY_DEFAULT;
+    return invertForRepB(tier, isBuyerRep);
+  }
+  return null;
+}
+
+// itemCode is the clicked card's own provenance code ("REP-T-SANCTIONS" /
+// "REP-B-CAP") -- REP-B-* is a Parent/Buyer rep, everything else (including
+// non-rep codes, where favorability doesn't apply) defaults to target-side.
+function isBuyerRepCode(itemCode) {
+  return /^REP-B-/.test(String(itemCode || ''));
+}
+
+// Re-orders a categorical distribution's values most -> least buyer-
+// favorable when a favorability model exists for this attribute; ties break
+// by deal count (most common first), same as the pre-r18 default. Returns
+// { values, hasFavorabilityOrder } so the caller can show the "ordered most
+// → least buyer-favorable" caption only when the reorder actually applied.
+function orderedByFavorability(feature, itemCode) {
+  const values = feature.values || [];
+  const isBuyerRep = isBuyerRepCode(itemCode);
+  const tiers = values.map((v) => favorabilityTier(feature.attribute, v.value, isBuyerRep));
+  const hasFavorabilityOrder = tiers.some((t) => t !== null);
+  if (!hasFavorabilityOrder) return { values, hasFavorabilityOrder: false };
+  const withTiers = values.map((v, i) => ({ v, tier: tiers[i] ?? 99 }));
+  withTiers.sort((a, b) => (a.tier - b.tier) || (b.v.count - a.v.count));
+  return { values: withTiers.map((x) => x.v), hasFavorabilityOrder: true };
+}
+
+// Item 4 (sidebar redesign, Ben): compact visual scale for numeric/time/$/%
+// blocks -- a horizontal track, min/median/max ticks, and this deal's own
+// marker. Pure CSS (percentage-positioned divs), no chart library, matches
+// the panel's flat black/white/gray site voice. Renders nothing (rather
+// than a degenerate single-point scale) when min===max.
+function NumericScale({ min, median, max, value }) {
+  if (min === null || min === undefined || max === null || max === undefined || min === max) return null;
+  const pct = (v) => Math.max(0, Math.min(100, ((v - min) / (max - min)) * 100));
+  const ticks = [{ at: min, key: 'min' }];
+  if (median !== null && median !== undefined && median > min && median < max) ticks.push({ at: median, key: 'median' });
+  ticks.push({ at: max, key: 'max' });
+  return (
+    <div className="relative h-4 mt-1.5 mb-1" data-testid="numeric-scale">
+      <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[2px] bg-[#E0E0E0]" />
+      {ticks.map((t) => (
+        <div key={t.key} className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2" style={{ left: `${pct(t.at)}%` }}>
+          <div className="w-[1.5px] h-2.5 bg-[#B0B0B0]" />
+        </div>
+      ))}
+      {value !== null && value !== undefined ? (
+        <div
+          className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2"
+          style={{ left: `${pct(value)}%` }}
+          data-testid="numeric-scale-marker"
+          title="This deal"
+        >
+          <div className="w-2.5 h-2.5 rounded-full bg-[#1F1F1F] ring-2 ring-white shadow" />
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+// A clear pill stating THIS deal's own value (sidebar redesign, item 3) --
+// distinct from (and above) the peer-set list, never just a bold text line.
+function ThisDealPill({ value }) {
+  if (value === null || value === undefined || value === '') return null;
+  return (
+    <div className="inline-flex items-center gap-1.5 mb-2 max-w-full px-2 py-1 bg-[#1F1F1F] text-white" data-testid="this-deal-pill">
+      <span className="text-[8px] font-bold uppercase tracking-[0.12em] opacity-70 shrink-0">This deal</span>
+      <span className="text-[11.5px] font-bold truncate">{value}</span>
+    </div>
+  );
+}
+
 // (b) CORPUS CONTEXT — one categorical or numeric feature's distribution
-// across the peer set, from /api/corpus-stats' rowContext.features[]. This
-// deal's own treatment leads as a bold, left-accented line; the distribution
-// itself sits under an "Across the peer set" micro-label, and every option
-// is now a clickable row that expands to the deals behind it (sidebar r6).
-function FeatureDistribution({ feature }) {
+// across the peer set, from /api/corpus-stats' rowContext.features[]. Layout
+// per block (sidebar redesign r18): BlockHeader -> ThisDealPill -> ordered
+// variant list (most -> least buyer-favorable when a favorability model
+// exists) or the numeric min/median/max + NumericScale -- see the module
+// header above for the exact ordering table and the "Across the peer set"/
+// "Corpus context" label removal (Ben, "dead words").
+function FeatureDistribution({ feature, itemCode }) {
   const [openKeys, toggle] = useOpenOptions();
   if (!feature) return null;
   if (feature.kind === 'numeric') {
@@ -381,23 +561,23 @@ function FeatureDistribution({ feature }) {
       ? feature.values.map((v) => ({ id: v.dealId, name: v.dealName, cardId: v.cardId, value: fmtN(v.value) }))
       : [];
     return (
-      <div className="mb-3" data-testid="feature-distribution-numeric">
+      <div className="mb-4" data-testid="feature-distribution-numeric">
+        <BlockHeader>{blockHeaderLabel(feature)}</BlockHeader>
         {feature.thisDealValue !== null && feature.thisDealValue !== undefined ? (
-          <ThisDealLead>
-            <div className="text-[13px] font-bold text-[#1F1F1F]">This deal: {fmtN(feature.thisDealValue)}</div>
-            {feature.thisDealRank !== null && feature.count > 1 ? (
-              <div className="text-[10px] text-[#6B6B6B]">
-                higher than {Math.max(0, feature.thisDealRank - 1)} of {feature.count - 1} other peers
-              </div>
-            ) : null}
-          </ThisDealLead>
+          <ThisDealPill value={fmtN(feature.thisDealValue)} />
         ) : null}
-        <div className={LAB_SM}>Across the peer set</div>
-        <div className="text-[10px] text-[#6B6B6B] mb-1 mt-1">{feature.label}</div>
+        <NumericScale min={feature.min} median={feature.median} max={feature.max} value={feature.thisDealValue} />
         <div className={`${BODY} text-[#1F1F1F]`}>
           Min {fmtN(feature.min)} <span className="text-[#B0B0B0]">·</span> Median {fmtN(feature.median)} <span className="text-[#B0B0B0]">·</span> Max {fmtN(feature.max)}
         </div>
-        <div className="text-[9px] text-[#9A9A9A] mt-0.5 mb-1">{feature.count} peer deals with a captured value</div>
+        {feature.thisDealRank !== null && feature.thisDealRank !== undefined && feature.count > 1 ? (
+          <div className="text-[10px] text-[#6B6B6B] mt-0.5">
+            higher than {Math.max(0, feature.thisDealRank - 1)} of {feature.count - 1} other peers
+          </div>
+        ) : null}
+        <div className="text-[9px] text-[#9A9A9A] mt-0.5 mb-1">
+          {feature.count} peer deals with a captured value{feature.scopeNote ? ` — ${feature.scopeNote}` : ''}
+        </div>
         {hasValues ? (
           <OptionRow
             label="All data points"
@@ -412,16 +592,20 @@ function FeatureDistribution({ feature }) {
     );
   }
   if (!feature.values || !feature.values.length) return null;
-  const shown = feature.values.slice(0, 6);
+  // Sidebar redesign C.3: ALL variants list most -> least buyer-favorable
+  // (with a caption saying so) when a favorability model exists for this
+  // attribute; otherwise the pre-existing most-common-first ordering.
+  const { values: orderedValues, hasFavorabilityOrder } = orderedByFavorability(feature, itemCode);
+  const shown = orderedValues.slice(0, 8);
   return (
-    <div className="mb-3" data-testid="feature-distribution-categorical">
-      {feature.thisDealValue ? (
-        <ThisDealLead>
-          <div className="text-[13px] font-bold text-[#1F1F1F]">This deal: {feature.thisDealValue}</div>
-        </ThisDealLead>
+    <div className="mb-4" data-testid="feature-distribution-categorical">
+      <BlockHeader>{blockHeaderLabel(feature)}</BlockHeader>
+      {feature.thisDealValue ? <ThisDealPill value={feature.thisDealValue} /> : null}
+      {hasFavorabilityOrder ? (
+        <div className="text-[9px] text-[#9A9A9A] mb-1" data-testid="favorability-caption">
+          ordered most → least buyer-favorable
+        </div>
       ) : null}
-      <div className={LAB_SM}>Across the peer set</div>
-      <div className="text-[10px] text-[#6B6B6B] mb-1 mt-1">{feature.label}</div>
       <div>
         {shown.map((v) => (
           <OptionRow
@@ -435,7 +619,9 @@ function FeatureDistribution({ feature }) {
           />
         ))}
       </div>
-      <div className="text-[9px] text-[#9A9A9A] mt-0.5">of {feature.total} peer deals with a captured value</div>
+      <div className="text-[9px] text-[#9A9A9A] mt-0.5">
+        of {feature.total} peer deals with a captured value{feature.scopeNote ? ` — ${feature.scopeNote}` : ''}
+      </div>
     </div>
   );
 }
@@ -469,26 +655,21 @@ function InstrumentDistribution({ instrument }) {
     </div>
   );
   const thisDeal = instrument.thisDeal;
+  const thisDealValue = thisDeal
+    ? ([thisDeal.considerationLabel, thisDeal.vestingLabel].filter(Boolean).join(' · ') || null)
+    : null;
   return (
     <div data-testid="instrument-distribution">
-      {thisDeal ? (
-        <ThisDealLead>
-          <div className="text-[13px] font-bold text-[#1F1F1F]">
-            This deal:{' '}
-            {[thisDeal.considerationLabel, thisDeal.vestingLabel].filter(Boolean).join(' · ') || '—'}
-          </div>
-        </ThisDealLead>
-      ) : null}
-      <div className={LAB_SM}>Across the peer set</div>
+      <ThisDealPill value={thisDealValue} />
       {instrument.considerationDistribution.length ? (
-        <div className="mb-2 mt-1.5">
-          <div className="text-[10px] text-[#6B6B6B] mb-1">Consideration</div>
+        <div className="mb-3">
+          <BlockHeader>Consideration</BlockHeader>
           {list(instrument.considerationDistribution, 'consid')}
         </div>
       ) : null}
       {instrument.vestingDistribution.length ? (
-        <div className="mb-2">
-          <div className="text-[10px] text-[#6B6B6B] mb-1">Vesting treatment</div>
+        <div className="mb-3">
+          <BlockHeader>Vesting treatment</BlockHeader>
           {list(instrument.vestingDistribution, 'vest')}
         </div>
       ) : null}
@@ -553,9 +734,12 @@ function RowCorpusContext({ rowFocus, rowContext, loading, error, onDrillItem })
   const hasFeatures = rowContext && Array.isArray(rowContext.features) && rowContext.features.some((f) => f);
   const hasItems = rowFocus && Array.isArray(rowFocus.items) && rowFocus.items.length > 0;
   const requested = rowRequestedCorpusContext(rowFocus);
+  // Sidebar redesign r18, item 1 (Ben, "dead words"): the "Corpus context"
+  // label that used to sit here (right under the row-identity title) is
+  // removed -- the block headers below (BlockHeader) already say exactly
+  // what each block is, so a generic label above them added nothing.
   return (
     <div className="px-3.5 py-3 border-b-2 border-[#1F1F1F]" data-testid="row-corpus-context">
-      <div className={LAB}>Corpus context</div>
       {loading ? (
         <div className="text-[11px] text-[#9A9A9A]">Loading corpus…</div>
       ) : error ? (
@@ -563,7 +747,7 @@ function RowCorpusContext({ rowFocus, rowContext, loading, error, onDrillItem })
       ) : hasInstrument || hasFeatures ? (
         <>
           {hasInstrument ? <InstrumentDistribution instrument={rowContext.instrument} /> : null}
-          {hasFeatures ? rowContext.features.filter(Boolean).map((f) => <FeatureDistribution key={f.attribute} feature={f} />) : null}
+          {hasFeatures ? rowContext.features.filter(Boolean).map((f) => <FeatureDistribution key={f.attribute} feature={f} itemCode={rowFocus && rowFocus.itemCode} />) : null}
         </>
       ) : requested ? (
         <div className="text-[11px] text-[#9A9A9A]" data-testid="row-corpus-context-empty-genuine">No corpus comparison captured for this row yet.</div>

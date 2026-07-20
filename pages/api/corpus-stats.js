@@ -75,6 +75,13 @@ const {
   buildCorpusBase,
   buildCodeStats,
   buildRelativePeriodDistribution,
+  // r18 (Ben, "327 of 666 peer deals" on a 40-deal corpus): rowContext
+  // distributions are now (a) scoped to the clicked card's provenance code
+  // (same rep across deals) with an explicit, labelled family/corpus
+  // fallback, and (b) counted in DEALS, never claims -- see the r18 block
+  // in corpus-stats-core.js for the fixed semantics.
+  scopeClaimsForContext,
+  buildCategoricalDealDistribution,
 } = require('../../lib/queries/corpus-stats-core');
 
 // The claims fetch filters on provenance->>code — an expression Postgres has
@@ -155,18 +162,20 @@ function isNumericAttribute(attribute, sampleClaims) {
 // lib/queries/corpus-stats-core.js (imported above) -- cardIdByKey itself is
 // still built locally below since it's request-scoped (keyed off THIS
 // request's `cards` fetch).
-function dealEntryForClaim(claim, dealsById, cardIdByKey) {
-  const d = dealsById.get(claim.deal_id);
-  return { id: claim.deal_id, name: d ? d.name : claim.deal_id, cardId: cardIdForClaim(claim, cardIdByKey) };
-}
-
 // One featureKey's corpus distribution: categorical value/counts (this
 // deal's own value flagged) for enum/coded attributes, or a numeric
 // min/median/max + this deal's position for number-valued ones. peerClaims
 // is already scoped to the peer set + this attribute. Each distribution
 // option/point also carries the deals behind it (sidebar redesign, item 1:
 // click an option -> expand its deals -> "See deal"/"See provision").
-function buildFeatureDistribution(attribute, peerClaims, subjectDealId, dealsById, cardIdByKey, dealMetaById) {
+// r18: `peerClaims` arrives ALREADY scoped by scopeClaimsForContext (see the
+// handler below) — subtype-scoped (same provenance code as the clicked
+// card), family-scoped, or corpus-wide, in that preference order. This
+// function no longer decides scope, only kind (numeric vs categorical) and
+// counting (always DEALS, never claims). `presentDealEntries` is only
+// meaningful at 'subtype' scope (see the handler) — it powers the explicit
+// "none captured" bucket in buildCategoricalDealDistribution.
+function buildFeatureDistribution(attribute, peerClaims, subjectDealId, dealsById, cardIdByKey, dealMetaById, presentDealEntries) {
   const label = attributeLabel(attribute);
   // r14: deal-relative look-back fields distribute over months-before-
   // signing, never over raw anchor dates — see the registry module header.
@@ -206,35 +215,12 @@ function buildFeatureDistribution(attribute, peerClaims, subjectDealId, dealsByI
       values,
     };
   }
-  const counts = new Map();
-  const dealsByValue = new Map(); // value -> Map(dealId -> {id,name,cardId})
-  let thisDealValue = null;
-  for (const cl of peerClaims) {
-    if (cl.canonical === null || cl.canonical === undefined) continue;
-    counts.set(cl.canonical, (counts.get(cl.canonical) || 0) + 1);
-    if (!dealsByValue.has(cl.canonical)) dealsByValue.set(cl.canonical, new Map());
-    const dmap = dealsByValue.get(cl.canonical);
-    if (!dmap.has(cl.deal_id)) dmap.set(cl.deal_id, dealEntryForClaim(cl, dealsById, cardIdByKey));
-    if (subjectDealId && cl.deal_id === subjectDealId && thisDealValue === null) thisDealValue = cl.canonical;
-  }
-  if (!counts.size) return null;
-  const values = [...counts.entries()]
-    .sort((a, b) => b[1] - a[1])
-    .map(([value, count]) => ({
-      value,
-      label: valueLabel(attribute, value),
-      count,
-      isThisDeal: value === thisDealValue,
-      deals: [...(dealsByValue.get(value) || new Map()).values()],
-    }));
-  return {
-    attribute,
-    label,
-    kind: 'categorical',
-    values,
-    total: values.reduce((a, v) => a + v.count, 0),
-    thisDealValue: thisDealValue !== null ? valueLabel(attribute, thisDealValue) : null,
-  };
+  // r18 (Ben, "327 of 666 peer deals" on a 40-deal corpus): categorical
+  // distributions now count DEALS, never claims — one value per deal (its
+  // best-evidenced one), via the shared core function. See
+  // lib/queries/corpus-stats-core.js's r18 block for the fixed semantics and
+  // the invariant this restores: every count/total is <= peerSetSize <= 40.
+  return buildCategoricalDealDistribution(attribute, peerClaims, subjectDealId, dealsById, cardIdByKey, { presentDealEntries });
 }
 
 // Instrument-scoped equity distribution (item 2 of the redesign): re-run the
@@ -437,10 +423,34 @@ export default async function handler(req, res) {
         // (deals.announce_date — the same field dealRow() exposes as
         // signing_date) to convert anchor dates to months-before-signing.
         const dealMetaById = new Map(base.stagingFree.map((d) => [d.id, d]));
+        // r18: peer deals KNOWN to carry this exact clicked code (the
+        // `cards` fetch above is already .eq('provision_subtype', code)) —
+        // only meaningful as the "none captured" bucket denominator when a
+        // feature's scope stays at 'subtype' (see scopeClaimsForContext);
+        // a family/corpus fallback means the universe is broader than one
+        // code, so presentDealEntries would misrepresent it.
+        const presentDealEntries = new Map();
+        for (const c of cards || []) {
+          if (!peerIds.has(c.deal_id) || presentDealEntries.has(c.deal_id)) continue;
+          const d = dealsById.get(c.deal_id);
+          presentDealEntries.set(c.deal_id, { id: c.deal_id, name: d ? d.name : c.deal_id, cardId: c.id || null });
+        }
         rowContext.features = requestedFeatureKeys
           .map((attribute) => {
-            const peerClaims = (attrClaims || []).filter((cl) => cl.attribute === attribute && peerIds.has(cl.deal_id));
-            return buildFeatureDistribution(attribute, peerClaims, subjectDealId, dealsById, cardIdByKey, dealMetaById);
+            const attrClaimsForAttribute = (attrClaims || []).filter((cl) => cl.attribute === attribute && peerIds.has(cl.deal_id));
+            // r18: scope THIS attribute's claim pool to the clicked card's
+            // provenance code first (same rep across deals) — falling back
+            // to the code family, then the full corpus, only when the
+            // narrower pool is too thin (< MIN_SCOPED_DEALS deals). Fixes
+            // the "327 of 666 peer deals" bug: materialityQualifier/
+            // knowledgeQualifier used to be pulled unscoped across every
+            // rep of every deal.
+            const { claims: scopedClaims, scope, scopeNote } = scopeClaimsForContext({ claims: attrClaimsForAttribute, code });
+            const dist = buildFeatureDistribution(
+              attribute, scopedClaims, subjectDealId, dealsById, cardIdByKey, dealMetaById,
+              scope === 'subtype' ? presentDealEntries : null,
+            );
+            return dist ? { ...dist, scope, scopeNote } : null;
           })
           .filter(Boolean);
       }

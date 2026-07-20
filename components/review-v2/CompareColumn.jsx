@@ -10,13 +10,13 @@ import { Fragment, useMemo, useState } from 'react';
 import Link from 'next/link';
 import ProvisionTable, { FULL_TEXT_COLUMNS } from '../review/ProvisionTable';
 import * as ProvisionTablePrimitives from '../review/primitives/ProvisionTablePrimitives';
-import { buildCardIndex, resolveRowCard, resolveRowFocus } from './provisionIndexHelpers.js';
+import { buildCardIndex, resolveRowCard, resolveRowFocus, isFragmentDefinedTerm } from './provisionIndexHelpers.js';
 import { getCitableValue, isCitableValue } from '../../lib/citable.js';
 import MaeSection from './MaeSection';
 import ElectionCard from './ElectionCard';
 import { DefinitionsSection } from './ProvisionIndex';
 import { deriveElectionSummary, EMPTY_REVIEW_DEAL, MAE_SECTION_ID } from './sectionList';
-import { unionRows, rowFamilyLabel } from './compareRowUnion';
+import { unionRows, rowFamilyLabel, unionDefinitions, normalizeLabelKey } from './compareRowUnion';
 
 const CONSIDERATION_SECTION_ID = 'consideration-hero';
 
@@ -284,7 +284,50 @@ function unifiedFallbackEvidence(row) {
   return text || null;
 }
 
+// r18 item 5 (Ben, "deal vs market as unified table"): the market column
+// is headed "MARKET — N deals" -- bold, uppercase, like a compared deal's
+// band -- N being the corpus peer-set size behind this section's stats
+// (never the count of deals actually carrying the code -- that's the
+// per-value denominator inside each cell, see MarketCell below).
+function marketColumnLabel(marketColumn) {
+  const n = marketColumn && marketColumn.stats && Number.isFinite(marketColumn.stats.peerSetSize)
+    ? marketColumn.stats.peerSetSize
+    : null;
+  return n !== null ? `MARKET — ${n} deals` : 'MARKET';
+}
+
 function DealNameHeader({ deal, onRetry }) {
+  if (deal.isMarket) {
+    return (
+      <th
+        className="px-3 py-2 text-left align-bottom border-b-2 border-black"
+        style={{ minWidth: 230 }}
+        data-testid="unified-compare-market-header"
+      >
+        <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-[#1F1F1F]">{deal.name}</span>
+        {deal.loading ? (
+          <div className="mtx-meta-label text-[9px] tracking-[0.14em] mt-0.5 font-normal">Loading market data…</div>
+        ) : null}
+        {deal.error ? (
+          <div className="text-[9px] font-normal text-[#B14E63] mt-0.5">
+            Market data unavailable{onRetry ? (
+              <>
+                {' — '}
+                <button
+                  type="button"
+                  onClick={onRetry}
+                  className="font-bold uppercase tracking-[0.1em] text-[#2F6DB5] hover:underline"
+                  data-testid="market-column-retry"
+                >
+                  Retry
+                </button>
+              </>
+            ) : null}
+          </div>
+        ) : null}
+      </th>
+    );
+  }
   const text = (
     <span className="text-[10px] font-bold tracking-[0.08em] text-[#1F1F1F]">{deal.name}</span>
   );
@@ -315,6 +358,205 @@ function DealNameHeader({ deal, onRetry }) {
   );
 }
 
+// r18 item 5: resolves a union row's matching corpus-stats featureSummary
+// entry via its own featureKeys -- the same per-row attribute scoping
+// several configs already thread for ClauseSidebar (e.g.
+// ioc-exceptions.config.js's renderNegativeRow/exceptionsRow). Reads ONLY
+// the existing per-SECTION corpus-stats-batch payload (useSectionMarketStats
+// in compareData.js) -- no new query. A row with no featureKeys, or whose
+// featureKeys match nothing in this section's featureSummary, resolves to
+// null -- MarketCell renders "No market data" for that case, never a guess.
+// NB the current featureSummary shape is categorical-only (top values by
+// claim count); there is no numeric median/p25-p75 in this payload, so
+// numeric-only attributes also fall through to "No market data" rather than
+// fabricating a range -- a real data-availability gap, not a rendering bug
+// (see r18 deliverable notes).
+function marketSummaryForRow(row, marketColumn) {
+  if (!row || !marketColumn || !marketColumn.stats) return null;
+  const keys = Array.isArray(row.featureKeys) ? row.featureKeys : null;
+  if (!keys || !keys.length) return null;
+  const summaries = Array.isArray(marketColumn.stats.featureSummary) ? marketColumn.stats.featureSummary : [];
+  return summaries.find((f) => keys.includes(f.attribute)) || null;
+}
+
+// Market cell: modal value as a headline pill with its count ("Superior
+// Proposal standard — 22 of 31"), up to 2 runner-ups small/muted. "No
+// market data" (muted, never a guess) when this row carries no
+// featureKeys or none resolve against the section's featureSummary.
+function MarketCell({ row, marketColumn }) {
+  if (!marketColumn) return <Muted>—</Muted>;
+  if (marketColumn.loading) return <Muted>Loading market data…</Muted>;
+  if (marketColumn.error) return <Muted>Market data unavailable</Muted>;
+  const summary = marketSummaryForRow(row, marketColumn);
+  if (!summary || !Array.isArray(summary.values) || !summary.values.length) {
+    return <Muted>No market data</Muted>;
+  }
+  const [top, ...rest] = summary.values;
+  const denom = summary.total || null;
+  return (
+    <div data-testid="market-cell">
+      <div className="font-medium text-ink text-[11px]">
+        {top.label}{denom ? ` — ${top.count} of ${denom}` : ` (${top.count})`}
+      </div>
+      {rest.length ? (
+        <div className="mt-1 flex flex-wrap gap-1.5">
+          {rest.slice(0, 2).map((v) => (
+            <span key={v.value} className="text-[9.5px] text-inkFaint">{v.label} · {v.count}</span>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+// Off-market marker (item 5): THIS deal's own headline value differs from
+// the market's modal value for the same attribute -- subtle marker on the
+// deal's own cell, never a guess (no market summary, or no captured own
+// value, never gets marked). Flat (multi-column) rows only -- grouped IOC-
+// style rows render pills off a `children` element rather than a plain
+// `row.value`, so there's no reliable single "own value" string to compare
+// there; those rows simply never get flagged, per the never-guess rule.
+function isOffMarketRow(row, marketColumn) {
+  const summary = marketSummaryForRow(row, marketColumn);
+  if (!summary || !Array.isArray(summary.values) || !summary.values.length) return false;
+  const ownText = textValueLocal(row.value);
+  if (!ownText) return false;
+  return normalizeLabelKey(ownText) !== normalizeLabelKey(summary.values[0].label);
+}
+
+function OffMarketBadge() {
+  return (
+    <span
+      title="Differs from market norm"
+      data-testid="off-market-badge"
+      className="ml-1.5 inline-block w-[7px] h-[7px] rounded-full align-middle"
+      style={{ background: '#A87A2E' }}
+    />
+  );
+}
+
+// r18 item 2 (Ben): "Definitions join the unified format (currently
+// side-by-side)". Same union-table shape as UnifiedCompareSection but keyed
+// by normalized defined term rather than a config row identity (see
+// compareRowUnion.js's unionDefinitions -- alphabetical, matched terms
+// aligned, "Not extracted for this deal" for gaps) -- Definitions has no
+// ProvisionTable config/columns to drive UnifiedCompareSection's generic
+// row-rendering path, so this is its own small component reusing the same
+// primitives (Muted / NotExtractedCell / DealNameHeader-style header).
+function filteredDefinitions(definitions) {
+  return (definitions || []).filter((d) => d && d.defined_term && !isFragmentDefinedTerm(d.defined_term));
+}
+
+export function UnifiedDefinitionsSection({
+  primaryName,
+  primaryReviewDeal,
+  comparedColumns,
+  onRetry = null,
+}) {
+  const deals = useMemo(() => [
+    {
+      key: 'primary',
+      name: primaryName || 'This deal',
+      href: null,
+      loading: false,
+      error: null,
+      reviewDeal: primaryReviewDeal || EMPTY_REVIEW_DEAL,
+      isPrimary: true,
+    },
+    ...(comparedColumns || []).map((col, i) => ({
+      key: col.id || `cmp-${i}`,
+      name: col.name || `Compared deal ${i + 1}`,
+      href: col.id ? `/review/${col.id}` : null,
+      loading: Boolean(col.loading),
+      error: col.error || null,
+      reviewDeal: col.reviewDeal || EMPTY_REVIEW_DEAL,
+      isPrimary: false,
+    })),
+  ], [primaryName, primaryReviewDeal, comparedColumns]);
+
+  const entries = useMemo(() => {
+    const lists = deals.map((d) => (d.loading || d.error ? [] : filteredDefinitions(d.reviewDeal.definitions)));
+    return unionDefinitions(lists);
+  }, [deals]);
+
+  if (!entries.length) return null;
+
+  return (
+    <section data-testid="unified-compare-definitions" className="border border-border bg-white">
+      <div className="border-b border-border bg-paper2 px-3 py-1.5">
+        <p>Defined terms ({entries.length})</p>
+      </div>
+      {/* data-scroll-sync: r18 item 3 -- horizontal scroll on this table
+          mirrors every other unified section table's scroll position (see
+          pages/review/[id].js's scroll-sync effect). */}
+      <div className="overflow-x-auto" data-scroll-sync="unified-table">
+        <table className="min-w-full text-xs font-ui">
+          <thead className="border-b border-border">
+            <tr>
+              <th className="px-3 py-2 text-left align-bottom font-medium uppercase tracking-wider text-inkFaint" style={{ width: '12rem' }}>Term</th>
+              {deals.map((d) => (
+                <th key={d.key} className="px-3 py-2 text-left align-bottom" style={{ minWidth: 230 }}>
+                  {d.href ? (
+                    <Link href={d.href} className="hover:underline text-[10px] font-bold tracking-[0.08em] text-[#1F1F1F] normal-case">{d.name}</Link>
+                  ) : (
+                    <span className="text-[10px] font-bold tracking-[0.08em] text-[#1F1F1F] normal-case">{d.name}</span>
+                  )}
+                  {d.loading ? (
+                    <div className="mtx-meta-label text-[9px] tracking-[0.14em] mt-0.5 font-normal">Loading deal…</div>
+                  ) : null}
+                  {d.error ? (
+                    <div className="text-[9px] font-normal text-[#B14E63] mt-0.5">
+                      Deal data unavailable{onRetry && !d.isPrimary ? (
+                        <>
+                          {' — '}
+                          <button
+                            type="button"
+                            onClick={onRetry}
+                            className="font-bold uppercase tracking-[0.1em] text-[#2F6DB5] hover:underline"
+                            data-testid="compare-column-retry"
+                          >
+                            Retry
+                          </button>
+                        </>
+                      ) : null}
+                    </div>
+                  ) : null}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {entries.map((entry) => (
+              <tr key={entry.key} className="align-top">
+                <td className="px-3 py-2 align-top font-medium text-ink">{entry.term}</td>
+                {deals.map((d, i) => {
+                  if (d.loading) return <td key={d.key} className="px-3 py-2"><Muted>Loading deal…</Muted></td>;
+                  if (d.error) return <td key={d.key} className="px-3 py-2"><Muted>—</Muted></td>;
+                  const def = entry.defs[i];
+                  if (!def) return <td key={d.key} className="px-3 py-2"><NotExtractedCell /></td>;
+                  const full = def.region_full_text || def.primary_quote || '';
+                  const summary = def.defined_value || '';
+                  return (
+                    <td key={d.key} className="px-3 py-2 align-top text-ink">
+                      <span className="whitespace-pre-wrap break-words">{summary}</span>
+                      {full && full !== summary ? (
+                        <details className="mt-1">
+                          <summary className="term-cell-seetext" style={{ listStyle: 'none' }}>full text</summary>
+                          <div className="mt-1 whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight">{full}</div>
+                        </details>
+                      ) : null}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+}
+
 export function UnifiedCompareSection({
   section,
   primaryName,
@@ -325,6 +567,12 @@ export function UnifiedCompareSection({
   sectionCards = null,
   onSelectCard = null,
   selectedCardId = null,
+  // r18 item 5: { code, stats, loading, error } from useSectionMarketStats,
+  // or null when market mode is off for this page. Rendered as one more
+  // synthetic column in the SAME unified table (Ben: "not this two sets of
+  // tables crap") rather than the old side-column MarketSectionColumn.
+  marketColumn = null,
+  onMarketRetry = null,
 }) {
   // One expansion open at a time, keyed `${rowKey}|${dealKey}` so each
   // deal's cell expands ITS OWN provision text (not just the primary's).
@@ -351,6 +599,19 @@ export function UnifiedCompareSection({
         reviewDeal: col.reviewDeal || EMPTY_REVIEW_DEAL,
         isPrimary: false,
       })),
+      // The market column is appended LAST, always -- it never contributes
+      // rows to the union (isMarket rows below always resolve to []), it
+      // only supplies an extra answer cell per existing union row.
+      ...(marketColumn ? [{
+        key: 'market',
+        name: marketColumnLabel(marketColumn),
+        href: null,
+        loading: Boolean(marketColumn.loading),
+        error: marketColumn.error || null,
+        reviewDeal: EMPTY_REVIEW_DEAL,
+        isPrimary: false,
+        isMarket: true,
+      }] : []),
     ];
     return list.map((d) => {
       const ctx = {
@@ -364,10 +625,10 @@ export function UnifiedCompareSection({
         onSelectCard: d.isPrimary ? onSelectCard : null,
         selectedCardId: d.isPrimary ? selectedCardId : null,
       };
-      const rows = !config || d.loading || d.error ? [] : safeRows(config, d.reviewDeal);
+      const rows = !config || d.loading || d.error || d.isMarket ? [] : safeRows(config, d.reviewDeal);
       return { ...d, ctx, rows };
     });
-  }, [primaryName, primaryReviewDeal, comparedColumns, config, cardsById, onSelectCard, selectedCardId]);
+  }, [primaryName, primaryReviewDeal, comparedColumns, config, cardsById, onSelectCard, selectedCardId, marketColumn]);
 
   if (!config) return null;
 
@@ -491,6 +752,14 @@ export function UnifiedCompareSection({
         <tr className="align-top">
           <td className="px-3 py-2 whitespace-normal break-words text-ink font-medium">{flatLabelNode(entry)}</td>
           {deals.map((d, i) => {
+            if (d.isMarket) {
+              const refRow = entry.rows.find(Boolean) || null;
+              return (
+                <td key={d.key} className="px-3 py-2 align-top">
+                  <MarketCell row={refRow} marketColumn={marketColumn} />
+                </td>
+              );
+            }
             const row = entry.rows[i];
             const status = statusCellContent(d);
             if (status) return <td key={d.key} className="px-3 py-2">{status}</td>;
@@ -498,6 +767,8 @@ export function UnifiedCompareSection({
             const expandKey = `${entry.key}|${d.key}`;
             const expandable = Boolean(flatExpansionContent(row, d.ctx));
             const click = primaryClickProps(d, row);
+            const offMarket = Boolean(marketColumn) && !marketColumn.loading && !marketColumn.error
+              && isOffMarketRow(row, marketColumn);
             return (
               <td
                 key={d.key}
@@ -506,6 +777,7 @@ export function UnifiedCompareSection({
                 style={click.style}
               >
                 {flatAnswerContent(row, d.ctx)}
+                {offMarket ? <OffMarketBadge /> : null}
                 {expandable ? seeProvisionToggle(expandKey) : null}
               </td>
             );
@@ -546,6 +818,14 @@ export function UnifiedCompareSection({
                     <span className="text-[11px] font-medium text-ink">{labelRow ? labelRow.label : entry.key}</span>
                   </td>
                   {deals.map((d, i) => {
+                    if (d.isMarket) {
+                      const refRow = entry.rows.find(Boolean) || null;
+                      return (
+                        <td key={d.key} className="px-3 py-2 align-top">
+                          <MarketCell row={refRow} marketColumn={marketColumn} />
+                        </td>
+                      );
+                    }
                     const row = entry.rows[i];
                     const status = statusCellContent(d);
                     if (status) return <td key={d.key} className="px-3 py-2">{status}</td>;
@@ -609,6 +889,7 @@ export function UnifiedCompareSection({
       <section
         className="rounded border border-border bg-white shadow-sm overflow-x-auto"
         data-testid={`provision-table-unified-${config.id}`}
+        data-scroll-sync="unified-table"
       >
         <table className="min-w-full text-xs font-ui">
           <thead>
@@ -618,7 +899,9 @@ export function UnifiedCompareSection({
                   {labelCol && labelCol.header ? labelCol.header : 'Term'}
                 </span>
               </th>
-              {deals.map((d) => <DealNameHeader key={d.key} deal={d} onRetry={d.isPrimary ? null : onRetry} />)}
+              {deals.map((d) => (
+                <DealNameHeader key={d.key} deal={d} onRetry={d.isMarket ? onMarketRetry : (d.isPrimary ? null : onRetry)} />
+              ))}
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
