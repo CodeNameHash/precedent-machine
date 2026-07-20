@@ -16,7 +16,14 @@ import MaeSection from './MaeSection';
 import ElectionCard from './ElectionCard';
 import { DefinitionsSection } from './ProvisionIndex';
 import { deriveElectionSummary, EMPTY_REVIEW_DEAL, MAE_SECTION_ID } from './sectionList';
-import { unionRows, rowFamilyLabel, unionDefinitions, normalizeLabelKey } from './compareRowUnion';
+import { unionRows, rowFamilyLabel, unionDefinitions } from './compareRowUnion';
+// r19 (WP-A, numeric market cells + off-market feed): marketSummaryForRow/
+// isRowOffMarket moved to their own dependency-light module (no React, no
+// fetches) so the off-market classification rule has real behavioral test
+// coverage under node:test (see tests/market-off-market.test.js) — this
+// file just calls in, it no longer holds the decision logic itself.
+import { marketSummaryForRow, isRowOffMarket } from './marketOffMarket';
+import { formatNumericMarketSummary, formatNumericValueForUnit } from './marketNumericFormat';
 
 const CONSIDERATION_SECTION_ID = 'consideration-hero';
 
@@ -358,37 +365,59 @@ function DealNameHeader({ deal, onRetry }) {
   );
 }
 
-// r18 item 5: resolves a union row's matching corpus-stats featureSummary
-// entry via its own featureKeys -- the same per-row attribute scoping
-// several configs already thread for ClauseSidebar (e.g.
-// ioc-exceptions.config.js's renderNegativeRow/exceptionsRow). Reads ONLY
-// the existing per-SECTION corpus-stats-batch payload (useSectionMarketStats
-// in compareData.js) -- no new query. A row with no featureKeys, or whose
-// featureKeys match nothing in this section's featureSummary, resolves to
-// null -- MarketCell renders "No market data" for that case, never a guess.
-// NB the current featureSummary shape is categorical-only (top values by
-// claim count); there is no numeric median/p25-p75 in this payload, so
-// numeric-only attributes also fall through to "No market data" rather than
-// fabricating a range -- a real data-availability gap, not a rendering bug
-// (see r18 deliverable notes).
-function marketSummaryForRow(row, marketColumn) {
-  if (!row || !marketColumn || !marketColumn.stats) return null;
-  const keys = Array.isArray(row.featureKeys) ? row.featureKeys : null;
-  if (!keys || !keys.length) return null;
-  const summaries = Array.isArray(marketColumn.stats.featureSummary) ? marketColumn.stats.featureSummary : [];
-  return summaries.find((f) => keys.includes(f.attribute)) || null;
+// marketSummaryForRow: moved to marketOffMarket.js (imported above) — r18
+// item 5's original resolution rule, unchanged: a union row's matching
+// corpus-stats featureSummary entry via its own featureKeys, the same
+// per-row attribute scoping several configs already thread for
+// ClauseSidebar (e.g. ioc-exceptions.config.js's renderNegativeRow/
+// exceptionsRow). Reads ONLY the existing per-SECTION corpus-stats-batch
+// payload (useSectionMarketStats in compareData.js) -- no new query.
+
+// r19 (WP-A, numeric market cells): row.value's numeric extraction --
+// mirrors textValueLocal's citable-unwrap but returns a finite number
+// (from a plain number, or a rich amount-object's .amount/.value) rather
+// than text. Returns null (never a guess) for anything else, so a
+// non-numeric/uncitable value simply never resolves a numeric market cell
+// or off-market flag.
+function numericValueLocal(value) {
+  const inner = isCitableValue(value) ? getCitableValue(value) : value;
+  if (typeof inner === 'number' && Number.isFinite(inner)) return inner;
+  if (inner && typeof inner === 'object' && !Array.isArray(inner) && !inner.$$typeof) {
+    for (const key of ['amount', 'value']) {
+      const raw = inner[key];
+      if (typeof raw === 'number' && Number.isFinite(raw)) return raw;
+    }
+  }
+  return null;
 }
 
-// Market cell: modal value as a headline pill with its count ("Superior
-// Proposal standard — 22 of 31"), up to 2 runner-ups small/muted. "No
-// market data" (muted, never a guess) when this row carries no
-// featureKeys or none resolve against the section's featureSummary.
+// Market cell (r19 extends r18 item 5 to numeric attributes): categorical
+// -> modal value as a headline pill with its count ("Superior Proposal
+// standard — 22 of 31"), up to 2 runner-ups small/muted; numeric -> median
+// headline ("$45M", "· 3.1% of deal value" suffix when a percent-of-deal
+// distribution exists, "N months before signing" for deal-relative
+// look-back fields) with the min–max range muted beneath (see
+// MarketColumn.jsx's formatNumericMarketSummary). "No market data" (muted,
+// never a guess) when this row carries no featureKeys, none resolve
+// against the section's featureSummary, or the resolved numeric summary
+// has no median (an empty numeric pool).
 function MarketCell({ row, marketColumn }) {
   if (!marketColumn) return <Muted>—</Muted>;
   if (marketColumn.loading) return <Muted>Loading market data…</Muted>;
   if (marketColumn.error) return <Muted>Market data unavailable</Muted>;
   const summary = marketSummaryForRow(row, marketColumn);
-  if (!summary || !Array.isArray(summary.values) || !summary.values.length) {
+  if (!summary) return <Muted>No market data</Muted>;
+  if (summary.kind === 'numeric') {
+    const cell = formatNumericMarketSummary(summary);
+    if (!cell) return <Muted>No market data</Muted>;
+    return (
+      <div data-testid="market-cell">
+        <div className="font-medium text-ink text-[11px]">{cell.headline}</div>
+        {cell.range ? <div className="mt-1 text-[9.5px] text-inkFaint">{cell.range}</div> : null}
+      </div>
+    );
+  }
+  if (!Array.isArray(summary.values) || !summary.values.length) {
     return <Muted>No market data</Muted>;
   }
   const [top, ...rest] = summary.values;
@@ -409,19 +438,21 @@ function MarketCell({ row, marketColumn }) {
   );
 }
 
-// Off-market marker (item 5): THIS deal's own headline value differs from
-// the market's modal value for the same attribute -- subtle marker on the
-// deal's own cell, never a guess (no market summary, or no captured own
-// value, never gets marked). Flat (multi-column) rows only -- grouped IOC-
-// style rows render pills off a `children` element rather than a plain
-// `row.value`, so there's no reliable single "own value" string to compare
-// there; those rows simply never get flagged, per the never-guess rule.
+// Off-market marker (r18 item 5, extended r19 to numeric rows AND grouped
+// rows): THIS deal's own headline value differs from the market's modal
+// value (coded) or falls outside the corpus p25–p75 band (numeric) --
+// subtle marker on the deal's own cell, never a guess (no market summary,
+// or no captured own value, never gets marked). r19 also flags grouped
+// (IOC-style) sub-rows: those carry a plain `row.value`/featureKeys same as
+// flat rows once unpacked to the sub-row level (see groupedBody below) --
+// r18's "grouped rows never get flagged" limitation was about the WRAPPER
+// row (whose single `children` element has no single own value), not the
+// sub-rows themselves.
 function isOffMarketRow(row, marketColumn) {
   const summary = marketSummaryForRow(row, marketColumn);
-  if (!summary || !Array.isArray(summary.values) || !summary.values.length) return false;
-  const ownText = textValueLocal(row.value);
-  if (!ownText) return false;
-  return normalizeLabelKey(ownText) !== normalizeLabelKey(summary.values[0].label);
+  if (!summary) return false;
+  if (summary.kind === 'numeric') return isRowOffMarket({ summary, ownNum: numericValueLocal(row.value) });
+  return isRowOffMarket({ summary, ownText: textValueLocal(row.value) });
 }
 
 function OffMarketBadge() {
@@ -433,6 +464,58 @@ function OffMarketBadge() {
       style={{ background: '#A87A2E' }}
     />
   );
+}
+
+// r19 (WP-A, "off-market feed"): aggregates the PRIMARY deal's own rows for
+// one section (flat + grouped sub-rows, same off-market rule the market
+// cell's badge uses) into candidate entries for the "Off-market terms" top
+// section (pages/review/[id].js's OffMarketSection wiring) — the badge and
+// the feed must never diverge on which rows count as off-market, so this
+// reuses isOffMarketRow/marketSummaryForRow rather than a second rule.
+// Returns entries shaped for OffMarketSection's table (field_path/
+// field_label/deal_value/baseline_stats/status/provision_type) — callers
+// apply compareData.js's isCommercialField exclusion themselves (kept
+// exactly as-is per the r19 spec; this function does not pre-filter it so
+// that exclusion stays the single source of truth in one place).
+export function collectOffMarketEntries(section, reviewDeal, marketColumn) {
+  if (!section || !section.config || !marketColumn || marketColumn.loading || marketColumn.error || !marketColumn.stats) return [];
+  const config = section.config;
+  const rows = safeRows(config, reviewDeal);
+  if (!rows.length) return [];
+  const ctx = {
+    reviewDeal, config, primitives: ProvisionTablePrimitives, isEdit: false,
+    resolveCard: () => null, onSelectCard: null, selectedCardId: null,
+  };
+  const groups = rows.length === 1 ? extractGroupsForDeal(config, rows, ctx) : null;
+  const candidateRows = Array.isArray(groups)
+    ? groups.flatMap((g) => (g && Array.isArray(g.rows) ? g.rows : []))
+    : rows;
+  const isConsideration = section.id === CONSIDERATION_SECTION_ID;
+  const entries = [];
+  for (const row of candidateRows) {
+    if (!row) continue;
+    const summary = marketSummaryForRow(row, marketColumn);
+    if (!summary) continue;
+    const isNumeric = summary.kind === 'numeric';
+    const ownNum = isNumeric ? numericValueLocal(row.value) : null;
+    const ownText = isNumeric ? null : textValueLocal(row.value);
+    if (!isRowOffMarket({ summary, ownNum, ownText })) continue;
+    const label = (typeof row.label === 'string' && row.label.trim()) ? row.label : summary.label;
+    const fieldPath = (Array.isArray(row.featureKeys) && row.featureKeys[0]) || summary.attribute;
+    const dealValue = isNumeric ? formatNumericValueForUnit(ownNum, summary.unit) : ownText;
+    const baselineStats = isNumeric
+      ? { p25: summary.p25, p75: summary.p75, unit: summary.unit }
+      : { distribution: [{ value: summary.values[0].value, count: summary.values[0].count }], n: summary.total };
+    entries.push({
+      field_path: fieldPath,
+      field_label: label,
+      deal_value: dealValue,
+      baseline_stats: baselineStats,
+      status: 'OFF_MARKET',
+      provision_type: isConsideration ? 'CONSIDERATION' : undefined,
+    });
+  }
+  return entries;
 }
 
 // r18 item 2 (Ben): "Definitions join the unified format (currently
@@ -832,6 +915,14 @@ export function UnifiedCompareSection({
                     if (!row) return <td key={d.key} className="px-3 py-2"><NotExtractedCell /></td>;
                     const expandKey = `${ge.key}|${entry.key}|${d.key}`;
                     const click = primaryClickProps(d, row);
+                    // r19 item 2 ("grouped rows get the marker too"): r18
+                    // only flagged flat rows, reasoning the grouped WRAPPER
+                    // row's single `children` element had no reliable own
+                    // value to compare -- but the SUB-rows here (one per
+                    // group entry) carry the same featureKeys/value shape
+                    // flat rows do, so the same off-market check applies.
+                    const offMarket = Boolean(marketColumn) && !marketColumn.loading && !marketColumn.error
+                      && isOffMarketRow(row, marketColumn);
                     return (
                       <td
                         key={d.key}
@@ -840,6 +931,7 @@ export function UnifiedCompareSection({
                         style={click.style}
                       >
                         {row.children || textValueLocal(row.value) || row.detail || <Muted>Not captured</Muted>}
+                        {offMarket ? <OffMarketBadge /> : null}
                         {row.seeTextContent ? seeProvisionToggle(expandKey) : (row.seeText || null)}
                       </td>
                     );

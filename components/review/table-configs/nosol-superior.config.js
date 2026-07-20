@@ -11,7 +11,7 @@ const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 // Rebuilt per REBUILD-SPECS.md §7. The five original rows (threshold, test,
 // determiner, engage, final) keep their exact ids/keys/fallback-regex/detail
 // synthesis -- unchanged data, so existing tests keep passing. Two rows are
-// new: Fiduciary-out standard and Board-change standard (spec's explicit
+// new: Engagement standard (coded) and Board-change standard (spec's explicit
 // field list for this table), sourced from the WIDER no-solicitation family
 // (they live on NOSOL-EXCEPT/NOSOL-RECOMMEND/NOSOL-MATCH cards, not the
 // narrower Superior-Proposal-only card set `cards` below is filtered to).
@@ -32,7 +32,13 @@ const ROWS = [
 // New rows (spec: fiduciaryOutStandard, boardChangeStandard). Structured-key
 // lookup only -- these are always short codes on real deals, never prose.
 const NEW_ROWS = [
-  { id: 'fiduciary-standard', label: 'Fiduciary-out standard', keys: ['fiduciaryOutStandard'], format: fiduciaryStandardSummary },
+  // Ben decision r16 label clarification: fiduciaryOutStandard is the CODED
+  // enum for the EARLIER engagement-stage threshold only -- the structured
+  // counterpart to the verbatim 'engage' row above, not a standalone/overall
+  // standard. A bare "Fiduciary-out standard" label sitting next to "Final
+  // determination standard" reads as ambiguous about which stage it covers;
+  // "(coded)" pairs it explicitly with 'Engagement standard' above.
+  { id: 'fiduciary-standard', label: 'Engagement standard (coded)', keys: ['fiduciaryOutStandard'], format: fiduciaryStandardSummary },
   { id: 'board-change-standard', label: 'Board-change standard', keys: ['boardChangeStandard'], format: boardChangeStandardLabel },
 ];
 

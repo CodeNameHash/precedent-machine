@@ -7,7 +7,7 @@
     "lib/vocab/ioc-categories.js"
   ],
   "generated_at": "2026-07-06T20:11:24.931Z",
-  "field_count": 1329,
+  "field_count": 1330,
   "fields": [
     {
       "key": "absenceOfChangesExceptions",
@@ -35490,6 +35490,41 @@
       "resolver_notes": "Written Consent Required (vs. oral)",
       "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
       "origin": "schema-features"
+    },
+    {
+      "key": "appraisalRightsStatus",
+      "label": "Appraisal rights status (AVAILABLE / NOT_AVAILABLE / SILENT)",
+      "data_type": "ENUM",
+      "applies_to": "CONSID",
+      "party_scope": "DEAL_LEVEL",
+      "structural_patterns": [
+        "THREE_STATE"
+      ],
+      "states": [
+        "AVAILABLE",
+        "NOT_AVAILABLE",
+        "SILENT"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "appraisalRightsStatus",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve appraisalRightsStatus from lib/schema/features.js; tagged {code,label,text} object — normalise to the APPRAISAL_RIGHTS_STATUS code (lib/taxonomy.js) before activation."
+      },
+      "resolver_notes": "What the AGREEMENT says about appraisal/dissenters rights on the deal CONSID-DISSENT provision (or the CONSID-CONVERT/CONSID-EXCHANGE provision carrying that text where drafted inline, e.g. Heinz/Kraft Sec. 2.01(c)): AVAILABLE (affirmative provision-for language), NOT_AVAILABLE (express no-appraisal-rights statement), or SILENT (no appraisal/dissent language found anywhere in the agreement). Captures the agreement text, not the statutory answer — Delaware Sec. 262(b)(2) market-out can eliminate STATUTORY appraisal independent of this field.",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features",
+      "merged_from": [],
+      "also_matches_provision_codes": [
+        "CONSID"
+      ],
+      "provenance": {
+        "source_of_truth": "schema-features",
+        "absorbed_from": []
+      },
+      "status": "PENDING_REVIEW"
     }
   ]
 }

@@ -4307,6 +4307,31 @@
         ]
       },
       {
+        "family": "APPRAISAL_RIGHTS_STATUS",
+        "kind": "string_map",
+        "size": 3,
+        "codes": [
+          {
+            "code": "AVAILABLE",
+            "label": "Appraisal rights available",
+            "description": null,
+            "line": 1335
+          },
+          {
+            "code": "NOT_AVAILABLE",
+            "label": "Agreement states no appraisal rights",
+            "description": null,
+            "line": 1336
+          },
+          {
+            "code": "SILENT",
+            "label": "Agreement silent — statutory default governs",
+            "description": null,
+            "line": 227
+          }
+        ]
+      },
+      {
         "family": "ASSIGNMENT_PARENT_EXCEPTION",
         "kind": "string_map",
         "size": 3,
@@ -4315,19 +4340,19 @@
             "code": "AFFILIATE_SUBSIDIARY",
             "label": "Parent may assign to a wholly-owned subsidiary / affiliate",
             "description": null,
-            "line": 1304
+            "line": 1341
           },
           {
             "code": "FINANCING_SOURCE_PLEDGE",
             "label": "Parent may collaterally assign / pledge to financing sources",
             "description": null,
-            "line": 1305
+            "line": 1342
           },
           {
             "code": "POST_CLOSING_SUCCESSOR",
             "label": "Assignment permitted from and after the Effective Time (successor)",
             "description": null,
-            "line": 1306
+            "line": 1343
           }
         ]
       },
@@ -4340,13 +4365,13 @@
             "code": "NO_RELEASE",
             "label": "Assignment does not relieve Parent of its obligations",
             "description": null,
-            "line": 1309
+            "line": 1346
           },
           {
             "code": "NO_DELAY_IMPEDE",
             "label": "Assignment must not prevent / impede / delay the closing",
             "description": null,
-            "line": 1310
+            "line": 1347
           }
         ]
       },
@@ -8136,6 +8161,12 @@
         ]
       },
       {
+        "key": "appraisalRightsStatus",
+        "families": [
+          "APPRAISAL_RIGHTS_STATUS"
+        ]
+      },
+      {
         "key": "parentAssignmentConditions",
         "families": [
           "ASSIGNMENT_PARENT_EXCEPTION"
@@ -9884,7 +9915,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 25,
+            "line": 24,
             "kind": "keys_array"
           }
         ]
@@ -9954,7 +9985,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/nosol-fiduciary.config.js",
-            "line": 21,
+            "line": 20,
             "kind": "keys_array"
           }
         ]
@@ -10269,7 +10300,7 @@
           },
           {
             "file": "components/review/table-configs/nosol-noshop.config.js",
-            "line": 23,
+            "line": 22,
             "kind": "keys_array"
           }
         ]
@@ -10544,7 +10575,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/ioc-exceptions.config.js",
-            "line": 448,
+            "line": 453,
             "kind": "features_property"
           }
         ]
@@ -10719,7 +10750,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/ioc-exceptions.config.js",
-            "line": 429,
+            "line": 435,
             "kind": "features_property"
           },
           {

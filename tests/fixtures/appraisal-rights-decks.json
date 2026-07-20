@@ -1,0 +1,146 @@
+{
+  "comment": "Snapshot of the 2026-07-20 Fable corpus pass over stored CONSID-DISSENT (and, where the appraisal clause is drafted inline into the share-conversion/exchange mechanics, CONSID-CONVERT/CONSID-EXCHANGE) provisions for the appraisal-rights codebook (appraisalRightsStatus). classified lists every deck the pass could code with confidence (the CODING table in scripts/code-appraisal-rights.js must cover exactly these, with exactly these status values); unresolved lists every deck the pass could not classify -- either no appraisal/dissent language was found anywhere in stored provisions for a deal whose structure makes appraisal near-certain (a merger, not an asset purchase, of a public company at scale), a stored-data gap never guessed into SILENT, or no cached provisions exist for the deal at all. Adding a deck to either side means re-running the corpus pass and updating BOTH this fixture and the script table.",
+  "classified": {
+    "00d49e6a-3a99-4164-8417-76bf2713a3ec": {
+      "dealName": "Verizon / Frontier Communications",
+      "appraisalRightsStatus": "AVAILABLE"
+    },
+    "0a043659-68fb-4d20-98e6-b926aa758799": {
+      "dealName": "Silver Lake / Endeavor",
+      "appraisalRightsStatus": "AVAILABLE"
+    },
+    "0d38cc1f-2f49-47ee-bc21-de68d7884b90": {
+      "dealName": "Zymeworks / Theravance Biopharma",
+      "appraisalRightsStatus": "AVAILABLE"
+    },
+    "13894e33-b5b6-4412-96bb-940b841d5130": {
+      "dealName": "IonQ / SkyWater Technology",
+      "appraisalRightsStatus": "AVAILABLE"
+    },
+    "1e4b7102-7890-451a-b8d0-8357120fc371": {
+      "dealName": "Sekisui House / MDC Holdings",
+      "appraisalRightsStatus": "AVAILABLE"
+    },
+    "1f80bec7-294b-4590-b861-2c156e75aadc": {
+      "dealName": "Bain Capital / Envestnet",
+      "appraisalRightsStatus": "AVAILABLE"
+    },
+    "320a3899-0d74-42d6-a412-3a962997d6ca": {
+      "dealName": "Eli Lilly / Verve",
+      "appraisalRightsStatus": "AVAILABLE"
+    },
+    "448e524f-19b0-4b5c-837b-7d5cabbc0fb0": {
+      "dealName": "Shire / Dyax",
+      "appraisalRightsStatus": "AVAILABLE"
+    },
+    "4f015417-0845-406a-b6ea-e606faf37e46": {
+      "dealName": "LabCorp / Covance",
+      "appraisalRightsStatus": "AVAILABLE"
+    },
+    "667447f0-ff25-4de2-a1b5-e5f099ecd366": {
+      "dealName": "Oaktree-led lender group / Superior Industries",
+      "appraisalRightsStatus": "AVAILABLE"
+    },
+    "86a01770-f565-47c5-8e7d-2a75a66b5e8b": {
+      "dealName": "General Atlantic / European Wax Center",
+      "appraisalRightsStatus": "AVAILABLE"
+    },
+    "885edae5-49e8-464a-9f33-edd229119d7c": {
+      "dealName": "Pfizer / Metsera",
+      "appraisalRightsStatus": "AVAILABLE"
+    },
+    "aad132ee-8a43-436d-b6a8-5604b7dfee01": {
+      "dealName": "Stanley Martin Homes / United Homes Group",
+      "appraisalRightsStatus": "AVAILABLE"
+    },
+    "bb5f062d-2818-4f9f-b968-ad9980445b6f": {
+      "dealName": "Novo Holdings A/S / Catalent",
+      "appraisalRightsStatus": "AVAILABLE"
+    },
+    "bf31d586-c0bc-4ed2-8d46-e69451a05756": {
+      "dealName": "Sophos / SecureWorks",
+      "appraisalRightsStatus": "AVAILABLE"
+    },
+    "c34415ed-44f7-432f-8d7c-6464b0310239": {
+      "dealName": "AbbVie / Landos Biopharma",
+      "appraisalRightsStatus": "AVAILABLE"
+    },
+    "ce061fd0-a437-4d20-8a84-fdd6296aa5a0": {
+      "dealName": "Restaurant Brands International / Carrols Restaurant Group",
+      "appraisalRightsStatus": "AVAILABLE"
+    },
+    "cf32899a-37c6-4147-8350-4a2e132a30db": {
+      "dealName": "Goodyear / Cooper Tire",
+      "appraisalRightsStatus": "AVAILABLE"
+    },
+    "dc042001-b987-404f-bd02-41e1939fb914": {
+      "dealName": "Chevron / Anadarko",
+      "appraisalRightsStatus": "AVAILABLE"
+    },
+    "13211d88-4f16-4730-bb70-fb1ef6ab3735": {
+      "dealName": "General Atlantic & Stone Point / HireRight",
+      "appraisalRightsStatus": "AVAILABLE"
+    },
+    "a1b07312-5ab1-4d6e-b173-6eccb5173d36": {
+      "dealName": "Hewlett Packard Enterprise / Juniper Networks",
+      "appraisalRightsStatus": "AVAILABLE"
+    },
+    "eee4f270-4f7b-48b8-a66d-4d1a0ddc82d7": {
+      "dealName": "Merck / Prometheus",
+      "appraisalRightsStatus": "AVAILABLE"
+    },
+    "2b9a6571-6fe7-4aac-931d-a96ab227ea43": {
+      "dealName": "IBM / Red Hat",
+      "appraisalRightsStatus": "AVAILABLE"
+    },
+    "555579a6-6a11-45b3-9da9-43e1b49a6e89": {
+      "dealName": "Sanofi / Bioverativ",
+      "appraisalRightsStatus": "AVAILABLE"
+    },
+    "2c143f44-6aa9-40d9-a92f-30d48aa603fd": {
+      "dealName": "Amazon / Whole Foods Market",
+      "appraisalRightsStatus": "AVAILABLE"
+    },
+    "7dc3a05f-b170-4d59-a255-b7103cca16e1": {
+      "dealName": "QXO / TopBuild",
+      "appraisalRightsStatus": "AVAILABLE"
+    },
+    "af4940e1-a645-437c-acfa-4a53e8d9f7ac": {
+      "dealName": "3G Capital / Skechers",
+      "appraisalRightsStatus": "AVAILABLE"
+    },
+    "fc03e7e3-e9ca-4936-bb9a-282a6276783a": {
+      "dealName": "Quikrete / Summit Materials",
+      "appraisalRightsStatus": "AVAILABLE"
+    },
+    "65a3e3c8-91e6-4075-bad0-4e3c4d1b43b9": {
+      "dealName": "ENDRA Life Sciences / Renergen",
+      "appraisalRightsStatus": "NOT_AVAILABLE"
+    },
+    "a267309a-fc22-4160-a652-1144fc64e9cf": {
+      "dealName": "ConocoPhillips / Concho Resources",
+      "appraisalRightsStatus": "NOT_AVAILABLE"
+    },
+    "dfaa71fa-9723-4794-825d-bd5024aa0b5d": {
+      "dealName": "Global Net Lease / Modiv",
+      "appraisalRightsStatus": "NOT_AVAILABLE"
+    },
+    "f9c61065-a935-42a3-bc90-2f5a76670191": {
+      "dealName": "Brookfield Asset Management / Forest City",
+      "appraisalRightsStatus": "NOT_AVAILABLE"
+    },
+    "c7c16365-c9cf-4bfb-93a6-1575084d717c": {
+      "dealName": "Heinz / Kraft",
+      "appraisalRightsStatus": "NOT_AVAILABLE"
+    }
+  },
+  "unresolved": [
+    "c750afb9-73fc-4043-a9d7-269506a6e00e",
+    "df393645-86f4-4ae2-861e-35777e93583e",
+    "8cd0787f-4ca0-40fe-aebf-6f88c0b101da",
+    "b57d0d65-d9d6-4e77-8e2e-08da4eb58f81",
+    "1dfb11d5-99d3-4f2b-8229-6e61e8af2eea",
+    "6369cc9c-3cb7-40b6-9227-2b9b0361c2a3",
+    "ad35e712-a0c1-4fd4-a1fe-9aac5ce13e56"
+  ]
+}

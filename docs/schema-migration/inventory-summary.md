@@ -1,24 +1,24 @@
 # WP-SCHEMA P1 Inventory Summary
 
-Generated: 2026-07-20T12:47:25.653Z
+Generated: 2026-07-20T14:04:25.403Z
 
 ## Counts
 
-- Distinct feature-like keys: 524
+- Distinct feature-like keys: 525
 - Keys in 2 or more source families: 474
-- Keys in only 1 source family: 50
+- Keys in only 1 source family: 51
 - Cross-source type mismatches: 6
 - Schema shape mismatches: 33
 - Provision types in rubric: 22
 - Canonical codes in rubric: 276
-- Taxonomy families exported: 66
+- Taxonomy families exported: 67
 - Curated expected-set codes: 38
 
 ## Naming Distribution
 
 | Convention |Count |
 | --- |--- |
-| camelCase |493 |
+| camelCase |494 |
 | lowercase |24 |
 | snake_case |7 |
 
@@ -30,7 +30,7 @@ Generated: 2026-07-20T12:47:25.653Z
 | expected_sets_js |195 |
 | feature_validation_js |483 |
 | rubric_js |471 |
-| taxonomy_js |66 |
+| taxonomy_js |67 |
 | ui |184 |
 
 ## Top 20 Highest-Appearance Keys
@@ -118,6 +118,7 @@ Keys in only one source family. These are candidates for dead-code review, not a
 | alsoSurfacedAs |ui |2 |
 | amendmentsRequirement |category_summary_features_js |1 |
 | appliesTo |taxonomy_js |1 |
+| appraisalRightsStatus |taxonomy_js |1 |
 | baseSalaryStandard |category_summary_features_js |1 |
 | benefitsStandard |category_summary_features_js |1 |
 | bidderIdentity |taxonomy_js |1 |
