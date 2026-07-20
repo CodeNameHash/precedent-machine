@@ -1,0 +1,15 @@
+{
+  "phase": "WP-MARKET-SIDEBAR-HOTFIX",
+  "allowed": [
+    ".github/phase-allowlists/wp-market-sidebar-hotfix.json",
+    "components/review-v2/GlobalMarketBridge.jsx",
+    "components/review-v2/MarketDrilldownSidebar.jsx",
+    "tests/market-sidebar-sanitize.test.js"
+  ],
+  "denied": [
+    "lib/schema/**",
+    "lib/rubric.js",
+    "scripts/ingest/**",
+    "supabase/**"
+  ]
+}
