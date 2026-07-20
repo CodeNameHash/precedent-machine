@@ -1,5 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
 
 const { MarketStatsError } = require('../lib/row-market-stats/errors');
 const { createMarketStatsHandler } = require('../lib/row-market-stats/handler');
@@ -51,10 +52,137 @@ function responseRecorder() {
   };
 }
 
+function minimalDataset() {
+  return {
+    deals: [{ id: 'd1', value_usd: 1e9, metadata: {} }],
+    cards: [],
+    claims: [],
+  };
+}
+
+test('market-stats production route is hard-closed in code', () => {
+  const route = fs.readFileSync('pages/api/market-stats.js', 'utf8');
+  assert.match(route, /enabled: false/);
+  assert.doesNotMatch(route, /MARKET_STATS_ENABLED|process\.env/);
+  assert.match(route, /maxConcurrent: 1/);
+});
+
+test('default-closed handler rejects before parsing, Supabase initialisation or DB work', async () => {
+  let supabaseCalls = 0;
+  let loadCalls = 0;
+  const handler = createMarketStatsHandler({
+    getSupabase: () => { supabaseCalls += 1; return {}; },
+    validateMetricSpec: validateSpec,
+    validateMetricResult: validateResult,
+    loadDataset: async () => { loadCalls += 1; return minimalDataset(); },
+  });
+  const res = responseRecorder();
+  await handler({ method: 'POST', body: { invalid: true } }, res);
+
+  assert.equal(res.statusCode, 503);
+  assert.equal(res.body.error.code, 'MARKET_STATS_DISABLED');
+  assert.equal(res.headers['Retry-After'], '30');
+  assert.equal(res.headers['Cache-Control'], 'private, no-store');
+  assert.equal(supabaseCalls, 0);
+  assert.equal(loadCalls, 0);
+});
+
+test('handler rejects excess concurrent work without starting another DB read', async () => {
+  let loadCalls = 0;
+  let markStarted;
+  let releaseLoad;
+  const started = new Promise((resolve) => { markStarted = resolve; });
+  const blocked = new Promise((resolve) => { releaseLoad = resolve; });
+  const handler = createMarketStatsHandler({
+    enabled: true,
+    maxConcurrent: 1,
+    getSupabase: () => ({}),
+    validateMetricSpec: validateSpec,
+    validateMetricResult: validateResult,
+    loadDataset: async () => {
+      loadCalls += 1;
+      markStarted();
+      await blocked;
+      return minimalDataset();
+    },
+  });
+  const firstRes = responseRecorder();
+  const firstRequest = handler({
+    method: 'POST', body: { contractVersion: 1, specs: [metric('first')] },
+  }, firstRes);
+  await started;
+
+  const secondRes = responseRecorder();
+  await handler({
+    method: 'POST', body: { contractVersion: 1, specs: [metric('second')] },
+  }, secondRes);
+  assert.equal(secondRes.statusCode, 503);
+  assert.equal(secondRes.body.error.code, 'MARKET_STATS_BUSY');
+  assert.equal(secondRes.headers['Retry-After'], '5');
+  assert.equal(loadCalls, 1);
+
+  releaseLoad();
+  await firstRequest;
+  assert.equal(firstRes.statusCode, 200);
+});
+
+test('handler opens a bounded circuit after repeated source failures and recovers after cooldown', async () => {
+  let clock = 1_000;
+  let loadCalls = 0;
+  let sourceHealthy = false;
+  const handler = createMarketStatsHandler({
+    enabled: true,
+    failureThreshold: 2,
+    circuitCooldownMs: 10_000,
+    now: () => clock,
+    getSupabase: () => ({}),
+    validateMetricSpec: validateSpec,
+    validateMetricResult: validateResult,
+    loadDataset: async () => {
+      loadCalls += 1;
+      if (!sourceHealthy) throw new MarketStatsError('DATA_SOURCE_ERROR', 'Unavailable.');
+      return minimalDataset();
+    },
+  });
+  const request = { method: 'POST', body: { contractVersion: 1, specs: [metric('row.presence')] } };
+
+  const first = responseRecorder();
+  await handler(request, first);
+  const second = responseRecorder();
+  await handler(request, second);
+  const blocked = responseRecorder();
+  await handler(request, blocked);
+
+  assert.equal(first.body.error.code, 'DATA_SOURCE_ERROR');
+  assert.equal(second.body.error.code, 'DATA_SOURCE_ERROR');
+  assert.equal(second.headers['Retry-After'], '10');
+  assert.equal(blocked.statusCode, 503);
+  assert.equal(blocked.body.error.code, 'MARKET_STATS_CIRCUIT_OPEN');
+  assert.equal(blocked.headers['Retry-After'], '10');
+  assert.equal(loadCalls, 2);
+
+  clock += 10_000;
+  const failedProbe = responseRecorder();
+  await handler(request, failedProbe);
+  const reblocked = responseRecorder();
+  await handler(request, reblocked);
+  assert.equal(failedProbe.body.error.code, 'DATA_SOURCE_ERROR');
+  assert.equal(reblocked.body.error.code, 'MARKET_STATS_CIRCUIT_OPEN');
+  assert.equal(loadCalls, 3);
+
+  clock += 10_000;
+  sourceHealthy = true;
+  const recovered = responseRecorder();
+  await handler(request, recovered);
+  assert.equal(recovered.statusCode, 200);
+  assert.equal(loadCalls, 4);
+});
+
 test('POST /api/market-stats loads one dataset for a batch and groups metrics by row', async () => {
   let loadCalls = 0;
   const specs = [metric('row.presence'), metric('row.second')];
   const handler = createMarketStatsHandler({
+    enabled: true,
     getSupabase: () => ({ configured: true }),
     validateMetricSpec: validateSpec,
     validateMetricResult: validateResult,
@@ -122,6 +250,7 @@ test('request parser preserves one-page batching headroom while enforcing a fini
 test('API returns typed validation, method, configuration and source errors', async (t) => {
   await t.test('method', async () => {
     const handler = createMarketStatsHandler({
+      enabled: true,
       getSupabase: () => ({}), validateMetricSpec: validateSpec, validateMetricResult: validateResult,
     });
     const res = responseRecorder();
@@ -133,6 +262,7 @@ test('API returns typed validation, method, configuration and source errors', as
 
   await t.test('invalid metric', async () => {
     const handler = createMarketStatsHandler({
+      enabled: true,
       getSupabase: () => ({}), validateMetricSpec: validateSpec, validateMetricResult: validateResult,
     });
     const res = responseRecorder();
@@ -144,6 +274,7 @@ test('API returns typed validation, method, configuration and source errors', as
 
   await t.test('not configured', async () => {
     const handler = createMarketStatsHandler({
+      enabled: true,
       getSupabase: () => null, validateMetricSpec: validateSpec, validateMetricResult: validateResult,
     });
     const res = responseRecorder();
@@ -154,6 +285,7 @@ test('API returns typed validation, method, configuration and source errors', as
 
   await t.test('source failure', async () => {
     const handler = createMarketStatsHandler({
+      enabled: true,
       getSupabase: () => ({}),
       validateMetricSpec: validateSpec,
       validateMetricResult: validateResult,

@@ -9,6 +9,8 @@ const { createMarketStatsHandler } = require('../../lib/row-market-stats/handler
 export const config = { maxDuration: 60 };
 
 export default createMarketStatsHandler({
+  enabled: false,
+  maxConcurrent: 1,
   getSupabase: getServiceSupabase,
   validateMetricSpec: validateMarketMetricSpec,
   validateMetricResult: validateMarketMetricResult,

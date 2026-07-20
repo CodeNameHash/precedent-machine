@@ -1,0 +1,23 @@
+{
+  "phase": "WP-P0-MARKET-STATS-CONTAINMENT",
+  "allowed": [
+    ".github/phase-allowlists/wp-p0-market-stats-containment.json",
+    "components/review-v2/compareData.js",
+    "lib/row-market-stats/errors.js",
+    "lib/row-market-stats/handler.js",
+    "lib/row-market-stats/observations.js",
+    "lib/row-market-stats/source.js",
+    "pages/api/cron/edgar-watch.js",
+    "pages/api/market-stats.js",
+    "tests/edgar-watch-cron-auth.test.js",
+    "tests/global-market-bridge.test.js",
+    "tests/market-stats-api.test.js",
+    "tests/market-stats-canonical-numeric.test.js",
+    "tests/row-market-stats.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "lib/schema/**",
+    "supabase/migrations/**"
+  ]
+}
