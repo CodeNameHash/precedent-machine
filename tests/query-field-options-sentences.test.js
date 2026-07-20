@@ -37,6 +37,10 @@ test('fieldsForProvisionType is static metadata: real fields, typed, deduped, no
   assert.ok(fee, 'companyTerminationFee is offered');
   assert.equal(fee.numeric, true);
   assert.equal(fee.unit, '$');
+  const feePct = fields.find((f) => f.key === 'feePctOfDealValue');
+  assert.ok(feePct, 'query-time derived rows are offered');
+  assert.equal(feePct.numeric, true);
+  assert.equal(feePct.unit, '%');
   // Sorted alphabetically by label so the dropdown reads as a list, not
   // registry order.
   const labels = fields.map((f) => f.label);

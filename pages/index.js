@@ -23,7 +23,8 @@ export async function getStaticProps() {
 
 HomePage.noLayout = true;
 
-const COLUMNS_STORAGE_KEY = 'deals_index_columns_v1';
+const COLUMNS_STORAGE_KEY = 'deals_index_columns_v2';
+const LEGACY_COLUMNS_STORAGE_KEY = 'deals_index_columns_v1';
 const VALUE_BANDS = ['<$1B', '$1B-$10B', '>$10B'];
 
 function encodePayload(payload) {
@@ -50,33 +51,6 @@ function fmtFullDate(date) {
 
 function queryHref(kind, payload) {
   return `/query/${kind}/adhoc?payload=${encodePayload(payload)}`;
-}
-
-// Ben: "if someone types a type of provision it should load a query page
-// that summarizes how that term operates across the corpus" — not a
-// per-deal hit. A small vocabulary of provision-type synonyms; the first
-// match against the typed search string wins. `label`/`plural` drive the
-// "How <label> operate(s) across the corpus" sentence below.
-const PROVISION_VOCAB = [
-  { type: 'MATERIAL_CONTRACT', patterns: [/material contracts?/], label: 'material contracts', plural: true },
-  { type: 'TERMINATION_FEE', patterns: [/termination fees?/], label: 'termination fees', plural: true },
-  { type: 'COVENANT_NO_SOLICITATION', patterns: [/no.shop/, /no.solicitation/, /\bnosol\b/], label: 'no-shop / no-solicitation covenants', plural: true },
-  { type: 'REPRESENTATION', patterns: [/^reps$/, /representations?/], label: 'representations', plural: true },
-  { type: 'MAE', patterns: [/\bmae\b/, /material adverse effect/], label: 'the MAE standard', plural: false },
-  { type: 'COVENANT_INTERIM_OPERATING', patterns: [/interim operating/, /\bioc\b/], label: 'interim operating covenants', plural: true },
-  { type: 'ANTITRUST_REGULATORY', patterns: [/antitrust/, /regulatory approval/], label: 'antitrust / regulatory provisions', plural: true },
-  { type: 'CLOSING_CONDITION', patterns: [/closing conditions?/, /^conditions?$/], label: 'closing conditions', plural: true },
-  { type: 'TERMINATION_RIGHT', patterns: [/termination rights?/], label: 'termination rights', plural: true },
-  { type: 'CONSIDERATION', patterns: [/consideration/], label: 'consideration', plural: false },
-];
-
-function matchProvisionVocab(query) {
-  const q = query.trim().toLowerCase();
-  if (q.length < 3) return null;
-  for (const entry of PROVISION_VOCAB) {
-    if (entry.patterns.some((re) => re.test(q))) return entry;
-  }
-  return null;
 }
 
 // Ben r15, item 8: typing a specific FEATURE term ("force the vote") should
@@ -106,26 +80,18 @@ function matchFeatureVocab(query) {
   return null;
 }
 
-// Module-scope so repeated searches for the same provision type share one
-// fetch instead of re-hitting /api/query/field-options every keystroke.
-const crossCutColumnsCache = new Map();
-function fieldsForCrossCut(provisionType) {
-  if (!crossCutColumnsCache.has(provisionType)) {
-    crossCutColumnsCache.set(provisionType, fetch(`/api/query/field-options?provision_type=${encodeURIComponent(provisionType)}`)
-      .then((r) => r.json())
-      .then((json) => (json.fields || []).slice(0, 4).map((f) => f.key))
-      .catch(() => []));
-  }
-  return crossCutColumnsCache.get(provisionType);
-}
-
 function readColumnsFromStorage() {
   if (typeof window === 'undefined') return null;
   try {
-    const raw = window.localStorage.getItem(COLUMNS_STORAGE_KEY);
+    const current = window.localStorage.getItem(COLUMNS_STORAGE_KEY);
+    const legacy = window.localStorage.getItem(LEGACY_COLUMNS_STORAGE_KEY);
+    const raw = current || legacy;
     if (!raw) return null;
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) && parsed.length ? parsed : null;
+    if (!Array.isArray(parsed) || !parsed.length) return null;
+    const valid = parsed.filter((key) => getColumn(key));
+    if (!current && !valid.includes('structure')) valid.push('structure');
+    return valid.length ? valid : null;
   } catch {
     return null;
   }
@@ -147,7 +113,7 @@ function renderCell(col, deal) {
     }
     return <span className="numCell">-</span>;
   }
-  if (['law_firm_buyer', 'law_firm_target', 'lawyers_buyer', 'lawyers_target', 'reverse_fee', 'go_shop'].includes(col.key)) {
+  if (['law_firm_buyer', 'law_firm_target', 'lawyers_buyer', 'lawyers_target'].includes(col.key)) {
     const value = col.accessor(deal);
     if (value) return value;
     return <span className="muted" title="not extracted for this deal">&mdash;</span>;
@@ -164,7 +130,6 @@ function ColumnHeaderPopover({ col, sort, onSort, activeFilters, options, onTogg
       <div className="thWrap">
         <button type="button" className="thBtn" onClick={(e) => { e.stopPropagation(); onToggleOpen(col.key); }}>
           <span>{col.label}</span>
-          {col.coverage ? <span className="coverage">{col.coverage}</span> : null}
           {activeSort ? <span className="marker">{sort.dir === 'asc' ? '▲' : '▼'}</span> : null}
           {filterCount ? <span className="funnel" title={`${filterCount} filter${filterCount > 1 ? 's' : ''} active`}>&#9660;</span> : null}
         </button>
@@ -224,7 +189,6 @@ export default function HomePage({ initialData }) {
   // for DEAL_COMPARE (DEAL_TO_MARKET fires immediately on the first click).
   const [pickMode, setPickMode] = useState(null);
   const [pickSelection, setPickSelection] = useState([]);
-  const [crossCutRunning, setCrossCutRunning] = useState(false);
 
   // Esc / Cancel clears the running selection (Ben r15, item 4). Pick-mode
   // itself stays armed while the launch box is open on a deal-picking tab —
@@ -360,13 +324,9 @@ export default function HomePage({ initialData }) {
       .slice(0, 15);
   }, [search, data]);
 
-  // Ben: typing a provision type (e.g. "material contracts") shouldn't just
-  // surface one deal that happens to mention it — it should offer a
-  // corpus-wide summary of how that term operates. r15 item 8 adds an even
-  // more specific first hit: a FEATURE term ("force the vote") offers
-  // "<Feature> across all deals →", the SHOW_ALL listing. Order in the
-  // dropdown: feature show-all, provision cross-cut, then per-deal hits.
-  const crossCutMatch = useMemo(() => matchProvisionVocab(search), [search]);
+  // Preserve r15's specific-feature shortcut while leaving broad provision
+  // families to the natural-language query box, where they can be narrowed
+  // to a comparable metric.
   const showAllMatch = useMemo(() => matchFeatureVocab(search), [search]);
 
   function runShowAll(entry) {
@@ -380,25 +340,10 @@ export default function HomePage({ initialData }) {
     router.push(queryHref('filter-then-list', payload));
   }
 
-  function runCrossCutTerm(entry) {
-    if (!entry || crossCutRunning) return;
-    setCrossCutRunning(true);
-    fieldsForCrossCut(entry.type).then((columns) => {
-      const payload = {
-        provision_type: entry.type,
-        provision_subtype: null,
-        deal_ids: deals.map((d) => d.id),
-        columns,
-        sort_by: 'deal_signing_date_desc',
-      };
-      router.push(queryHref('provision-cross-cut', payload));
-    }).finally(() => setCrossCutRunning(false));
-  }
-
   // r15 item 4: the floating "Compare N deals →" action for table-picked
-  // deals (the secondary picker; the box's typeahead is the primary one).
+  // deals.
   const pickCompareHref = queryHref('deal-compare', {
-    deal_ids: pickSelection,
+    deal_ids: pickSelection.slice(0, 4),
     provision_types: ['CONSIDERATION', 'TERMINATION_FEE', 'COVENANT_NO_SOLICITATION'],
     highlight_deltas: true,
     included_field_groups: ['primary', 'qualifiers'],
@@ -407,7 +352,6 @@ export default function HomePage({ initialData }) {
   function submitSearch(e) {
     e.preventDefault();
     if (showAllMatch) { runShowAll(showAllMatch); return; }
-    if (crossCutMatch) { runCrossCutTerm(crossCutMatch); return; }
     const first = suggestions[0];
     if (first) router.push(first.href);
   }
@@ -446,18 +390,12 @@ export default function HomePage({ initialData }) {
           <Link href="/" className="brand"><span />Corpus</Link>
           <form className="search" onSubmit={submitSearch} onClick={(e) => e.stopPropagation()}>
             <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search deals, provisions, defined terms" />
-            {(showAllMatch || crossCutMatch || suggestions.length > 0) && (
+            {(showAllMatch || suggestions.length > 0) && (
               <div className="suggestions">
                 {showAllMatch && (
                   <button type="button" className="crossCutHit" onClick={() => runShowAll(showAllMatch)}>
                     <b>{showAllMatch.label} across all deals →</b>
                     <small>every deal, has / hasn&rsquo;t &middot; with the term as written</small>
-                  </button>
-                )}
-                {crossCutMatch && (
-                  <button type="button" className="crossCutHit" disabled={crossCutRunning} onClick={() => runCrossCutTerm(crossCutMatch)}>
-                    <b>How {crossCutMatch.label} {crossCutMatch.plural ? 'operate' : 'operates'} across the corpus →</b>
-                    <small>how a provision works across deals &middot; every deal in the corpus</small>
                   </button>
                 )}
                 {suggestions.map((hit, index) => (
@@ -484,20 +422,18 @@ export default function HomePage({ initialData }) {
                     from the deal list below (Ben r15, item 6). */}
                 <div className="querySurface">
                   <QueryLaunchBox
-                    showTitle
                     bordered={false}
                     deals={deals}
                     dealFilterValues={dealFilterValues}
                     onDealFilterValuesChange={setDealFilterValues}
                     onRequestDealPick={handleRequestDealPick}
                     pickSelection={pickSelection}
-                    onPickSelectionChange={setPickSelection}
                   />
                   {pickMode && (
                     <div className="pickBanner" onClick={(e) => e.stopPropagation()}>
                       <span>
-                        {pickMode === 'DEAL_TO_MARKET' && 'Click a deal in the list below to test it against the market.'}
-                        {pickMode === 'DEAL_COMPARE' && `Tick deals in the list below to compare${pickSelection.length ? ` — ${pickSelection.length} picked` : ''}.`}
+                        {pickMode === 'DEAL_TO_MARKET' && 'Pick a deal below to run deal-to-market for it.'}
+                        {pickMode === 'DEAL_COMPARE' && `Click deals below to compare${pickSelection.length ? `, ${pickSelection.length} selected` : ''}.`}
                       </span>
                       <button type="button" className="pickCancel" onClick={cancelPick}>Clear (Esc)</button>
                     </div>
@@ -522,7 +458,6 @@ export default function HomePage({ initialData }) {
                             <label key={col.key}>
                               <input type="checkbox" checked={visibleCols.includes(col.key)} onChange={() => toggleColumn(col.key)} />
                               <span>{col.label}</span>
-                              {col.coverage ? <small>{col.coverage}</small> : null}
                             </label>
                           ))}
                         </div>
@@ -562,7 +497,10 @@ export default function HomePage({ initialData }) {
                               return;
                             }
                             if (pickMode === 'DEAL_COMPARE') {
-                              setPickSelection((prev) => (prev.includes(deal.id) ? prev.filter((id) => id !== deal.id) : [...prev, deal.id]));
+                              setPickSelection((prev) => {
+                                if (prev.includes(deal.id)) return prev.filter((id) => id !== deal.id);
+                                return prev.length < 4 ? [...prev, deal.id] : prev;
+                              });
                               return;
                             }
                             router.push(`/review/${deal.id}`);
@@ -601,9 +539,7 @@ export default function HomePage({ initialData }) {
                   </div>
                 </div>
 
-                {/* r15 item 4: floating action for table-picked deals — both
-                    of Ben's instincts honored (typeahead in the box AND a
-                    Compare button that appears when rows are ticked). */}
+                {/* r15 item 4: floating action for table-picked deals. */}
                 {pickMode === 'DEAL_COMPARE' && pickSelection.length >= 1 && (
                   <div className="floatCompare" onClick={(e) => e.stopPropagation()}>
                     {pickSelection.length >= 2 ? (
@@ -659,7 +595,6 @@ export default function HomePage({ initialData }) {
         .picker { position: absolute; right: 0; top: 38px; width: 240px; background: #fff; border: 1px solid var(--line); border-radius: 0; box-shadow: 0 12px 32px rgba(0,0,0,.10); z-index: 40; padding: 6px 0; max-height: 340px; overflow-y: auto; }
         .picker label { display: flex; align-items: center; gap: 8px; padding: 7px 12px; font-size: 12px; cursor: pointer; }
         .picker label:hover { background: var(--paper-2); }
-        .picker small { margin-left: auto; color: var(--ink-faint); font-family: var(--mtx-mono); font-size: 10px; }
         .tableShell { border: none; border-radius: 0; overflow: auto; background: #fff; }
         .rowPicked { background: rgba(31, 31, 31, 0.05); }
         .rowPicked:hover { background: rgba(31, 31, 31, 0.08); }
@@ -680,7 +615,6 @@ export default function HomePage({ initialData }) {
         .thWrap { position: relative; }
         .thBtn { display: flex; align-items: center; gap: 6px; border: 0; background: transparent; cursor: pointer; padding: 0; font: inherit; text-transform: inherit; letter-spacing: inherit; color: inherit; font-family: var(--mtx-sans); }
         th.active .thBtn { color: var(--ink); }
-        .thBtn .coverage { font-family: var(--mtx-mono); font-size: 9px; color: var(--ink-faint); text-transform: none; letter-spacing: normal; }
         .thBtn .marker, .thBtn .funnel { font-size: 8px; }
         .popover { position: absolute; top: 100%; left: 0; margin-top: 6px; width: 220px; background: #fff; border: 1px solid var(--line); border-radius: 0; box-shadow: 0 12px 32px rgba(0,0,0,.12); z-index: 40; padding: 6px 0; text-transform: none; letter-spacing: normal; font-weight: 400; }
         .popSort { display: flex; flex-direction: column; border-bottom: 1px solid var(--line-soft); padding-bottom: 4px; margin-bottom: 4px; }
