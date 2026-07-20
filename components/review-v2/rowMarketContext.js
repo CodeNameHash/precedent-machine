@@ -31,9 +31,6 @@ function summariesForRow(row, marketColumn) {
     ? marketColumn.stats.featureSummary
     : [];
   const byAttribute = new Map(summaries.filter(Boolean).map((summary) => [summary.attribute, summary]));
-  // Row order is intentional: compact cells, drill-downs and query answers
-  // must all choose the same primary treatment rather than depending on the
-  // aggregator's frequency-sorted featureSummary order.
   return orderedKeys.map((key) => byAttribute.get(key)).filter(Boolean);
 }
 
@@ -73,9 +70,6 @@ function normalizeCategorical(summary, peerSetSize, termDealCount, role) {
     ...summary,
     values: values.map((value) => ({
       ...value,
-      // Exception prevalence answers "how common among deals containing this
-      // term?". A summary.total is often only the number of captured values,
-      // so it must not silently replace the term-level denominator.
       denominator: Number.isFinite(value.denominator)
         ? value.denominator
         : (Number.isFinite(summary.denominator)
@@ -106,16 +100,28 @@ function sidebarEntries(stats, row) {
   }));
 }
 
+function registrySignature(context) {
+  const summary = context && context.primarySummary;
+  if (!summary) return null;
+  if (summary.kind === 'numeric') return `numeric:${summary.attribute || ''}:${summary.median ?? ''}`;
+  const top = Array.isArray(summary.values) ? summary.values[0] : null;
+  return top ? `categorical:${String(top.label || top.value || '').toLowerCase()}:${top.count ?? ''}` : null;
+}
+
+function registerBrowserContext(context) {
+  if (typeof window === 'undefined' || !context) return;
+  const signature = registrySignature(context);
+  if (!signature) return;
+  const registry = window.__MTX_ROW_MARKET_CONTEXTS__ || (window.__MTX_ROW_MARKET_CONTEXTS__ = {});
+  registry[`${signature}|${context.marketKey || ''}`] = { ...context, registrySignature: signature };
+}
+
 export function buildRowMarketContext(row, marketColumn) {
   if (!marketColumn || !marketColumn.stats) return null;
   const stats = marketColumn.stats || {};
   const peerSetSize = Number.isFinite(stats.peerSetSize) ? stats.peerSetSize : null;
   const termDealCount = Number.isFinite(stats.dealsWithCode) ? stats.dealsWithCode : null;
 
-  // Sidebar rowContext is the richer and safer source: it is subtype/family
-  // scoped, deal-counted and carries underlying deals. Prefer it whenever the
-  // API supplied it; compact featureSummary remains a backwards-compatible
-  // fallback for the existing batch endpoint.
   let entries = sidebarEntries(stats, row);
   if (!entries.length) {
     entries = summariesForRow(row, marketColumn).map((summary, index) => ({
@@ -127,12 +133,7 @@ export function buildRowMarketContext(row, marketColumn) {
 
   entries = entries.map((entry) => ({
     ...entry,
-    summary: normalizeSidebarDistribution(
-      entry.summary,
-      entry.role,
-      peerSetSize,
-      termDealCount,
-    ),
+    summary: normalizeSidebarDistribution(entry.summary, entry.role, peerSetSize, termDealCount),
   }));
 
   const treatments = entries.filter((entry) => entry.role === 'treatment').map((entry) => entry.summary);
@@ -140,7 +141,7 @@ export function buildRowMarketContext(row, marketColumn) {
   const metrics = entries.filter((entry) => entry.role === 'metric').map((entry) => entry.summary);
   const primarySummary = treatments[0] || metrics[0] || exceptions[0] || entries[0].summary;
 
-  return {
+  const context = {
     marketKey: stableMarketKeyForRow(row),
     label: row.label || row.titleText || row.itemLabel || null,
     peerSetSize,
@@ -155,9 +156,13 @@ export function buildRowMarketContext(row, marketColumn) {
     deals: (stats.rowContext && stats.rowContext.deals) || [],
     truncated: Boolean(stats.truncated),
   };
+  registerBrowserContext(context);
+  return context;
 }
 
 export function marketSummaryForRowContext(row, marketColumn) {
   const context = buildRowMarketContext(row, marketColumn);
   return context ? context.primarySummary : null;
 }
+
+export { registrySignature };
