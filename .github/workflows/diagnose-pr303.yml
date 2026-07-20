@@ -1,0 +1,29 @@
+name: PR 303 test diagnostics
+
+on:
+  pull_request:
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Capture unit test output
+        run: |
+          set +e
+          npm test > test-output.txt 2>&1
+          status=$?
+          tail -n 300 test-output.txt > test-tail.txt
+          echo "$status" > test-status.txt
+          exit 0
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pr303-test-diagnostics
+          path: |
+            test-tail.txt
+            test-status.txt
