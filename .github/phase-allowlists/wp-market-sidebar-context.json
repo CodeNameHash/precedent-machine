@@ -1,0 +1,16 @@
+{
+  "phase": "WP-MARKET-SIDEBAR-CONTEXT",
+  "allowed": [
+    ".github/phase-allowlists/wp-market-sidebar-context.json",
+    "components/review-v2/GlobalMarketBridge.jsx",
+    "components/review-v2/MarketColumn.jsx",
+    "components/review-v2/rowMarketContext.js",
+    "tests/global-market-bridge.test.js",
+    "tests/row-market-context.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "lib/schema/**",
+    "supabase/migrations/**"
+  ]
+}
