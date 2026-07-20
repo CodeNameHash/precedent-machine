@@ -103,7 +103,10 @@ function SectionBlock({ section, reviewDeal, sectionCards, onSelectCard, selecte
         <MaeSection config={section.config} reviewDeal={reviewDeal} onSelectCard={onSelectCard} selectedCardId={selectedCardId} />
       ) : (
         <>
-          {section.id === CONSIDERATION_SECTION_ID && election ? <ElectionCard election={election} /> : null}
+          {/* r17: mechanics rows are normal table rows now — thread the same
+              card-click wiring ProvisionTable's rows get so clicking a row
+              opens the owning card in the ClauseSidebar. */}
+          {section.id === CONSIDERATION_SECTION_ID && election ? <ElectionCard election={election} onSelectCard={onSelectCard} selectedCardId={selectedCardId} /> : null}
           <ProvisionTable
             config={section.config}
             reviewDeal={reviewDeal}

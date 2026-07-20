@@ -26,6 +26,7 @@ import { miscBoilerplateConfig } from '../review/table-configs/misc-boilerplate.
 import { noOtherRepsFraudConfig } from '../review/table-configs/no-other-reps-fraud.config';
 import { generalCovenantsConfig } from '../review/table-configs/general-covenants.config';
 import { decorateConfigForV2 } from './configDecorations';
+import { pickElectionDeadline, pickOversubscription } from './electionRows';
 
 export const REVIEW_V2_CONFIGS = [
   structureMechanicsConfig,
@@ -425,8 +426,14 @@ export function deriveElectionSummary(reviewDeal) {
     // oversubscription treatment -- mined off this same card so ElectionCard
     // can render more than the bare "subject to proration" flag.
     caps: deriveProrationCaps(pm.text || fullText),
-    electionDeadline: pm.electionDeadline || null,
-    oversubscriptionTreatment: pm.oversubscriptionTreatment || null,
+    // r17: the deadline and oversubscription clause routinely live on a
+    // DIFFERENT card's mechanics object than the picked election card
+    // (Skechers: the picked CONSID-CONVERT card carries the bare term
+    // "Election Deadline" and no oversubscription clause; the real §2.9
+    // values sit on the CONSID-EXCHANGE card). Merge across every CONSID
+    // card's mechanics, picked card first so it wins when informative.
+    electionDeadline: pickElectionDeadline([pm, ...considCards.filter((c) => c !== electionCard).map(pmOf)]),
+    oversubscriptionTreatment: pickOversubscription([pm, ...considCards.filter((c) => c !== electionCard).map(pmOf)]),
     evidence: electionCard.primary_quote || electionCard.region_full_text || null,
     sourceCard: electionCard,
   };
