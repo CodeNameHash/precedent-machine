@@ -1,23 +1,28 @@
-// Compact query launcher — a single clean .mtx panel meant to sit at the
-// top of the deals index page (pages/index.js), above the deal table, under
-// a "Launch Query" heading. NOT the full builder (pages/query/index.js's
-// BuilderSection): one deal-type filter, one kind-specific parameter row,
-// Run. Anything more elaborate (multi-deal compare/cross-cut pickers) links
-// out to the full builder instead of trying to fit in this box.
+// Query launcher — the panel at the top of the deals index (pages/index.js).
+// Complete redesign per Ben r15 ("please please please try a complete UI
+// redesign of that box — HUMAN interaction is key"):
 //
-// Embed usage (index.js integration — left to a follow-up pass per Ben's
-// note, this worktree only builds + exports the component):
-//
-//   import QueryLaunchBox from '../components/query/QueryLaunchBox';
-//   ...
-//   <h2>Launch Query</h2>
-//   <QueryLaunchBox deals={deals} />
-//
-// `deals` is optional — pass the same array the index page already has
-// (from /api/home) to avoid a second fetch; omitted, the box fetches
-// /api/deals itself so it also works standalone (screenshotted at 1440px
-// and 390px via a temporary pages/query/_launch-box-preview.js harness,
-// removed after the work-package screenshots were captured).
+//   - COLLAPSED BY DEFAULT: renders as a one-line invitation (title bar +
+//     the five question tabs). Clicking the bar or any tab expands it; the
+//     expanded state survives tab switching, and the expanded height always
+//     fits its content exactly — no internal scrollbars, ever.
+//   - SENTENCE-STYLE BUILDERS: each tab's body reads as the question a
+//     lawyer is asking ("Find deals where [No Solicitation] [Force the
+//     vote] [Has …]"), with a single clear primary Run button.
+//   - PLAIN-ENGLISH KIND NAMES: tabs use lib/query/filter-labels.js's
+//     KIND_LABELS ("Find deals with a provision", "Benchmark a term",
+//     "Compare deals", "Market check on a provision", "Deal vs market") —
+//     machine keys never surface. A one-line description of the active
+//     question sits under the tabs.
+//   - DEAL PICKING IN THE BOX: Compare deals / Deal vs market get a
+//     typeahead — type a party name, tick matching deals right there,
+//     picked deals show as removable chips. The main table below stays a
+//     SECONDARY picker (row clicks sync with the chips via the lifted
+//     pickSelection state owned by pages/index.js).
+//   - SHOW ALL: boolean/coded conditions have a third state ("Show all")
+//     that lists every deal annotated has/hasn't + value. Payload shape
+//     agreed with the engine: filters carry { provision_type, field,
+//     mode: 'all' } — see coerceFilterForPayload.
 
 import {
   useEffect, useMemo, useRef, useState,
@@ -28,28 +33,13 @@ import {
   DealFiltersBlock, buildDealFilterPayload, describeDealFilters,
   useFieldsForProvisionType,
 } from './QueryFilterControls';
+import { KIND_LABELS, KIND_DESCRIPTIONS } from '../../lib/query/filter-labels';
 
-const KIND_LABELS = {
-  FILTER_THEN_LIST: 'Filter then list',
-  MARKET_RANGE: 'Market range',
-  DEAL_COMPARE: 'Deal compare',
-  PROVISION_CROSS_CUT: 'Provision cross-cut',
-  DEAL_TO_MARKET: 'Deal to market',
-};
-
-// Kinds this box can fully build a payload for inline. DEAL_COMPARE joined
-// this list once its deal picker moved out of the box and onto the main
-// table (row clicks -> `pickSelection`, owned by the parent index page) —
-// the box just needs 2+ picked deals to enable its Run button. PROVISION_CROSS_CUT
-// still hands off to the full builder (no owner ask to bring that one inline).
-const INLINE_KINDS = new Set(['FILTER_THEN_LIST', 'MARKET_RANGE', 'DEAL_COMPARE']);
-
-// Kinds whose deal picker lives in the main table below the box (Ben:
-// "deal to market and market range suck — they should just use the main
-// deal list below as the picker, not suggest another picker"). The box
-// tells the parent page (via onRequestDealPick) which kind is active so the
-// page can put the table into pick-mode; MARKET_RANGE dropped off this list
-// entirely since it needs no deal picker at all (deal_filter covers it).
+// Kinds whose deal picker also lives in the main table below the box: the
+// box tells the parent page (via onRequestDealPick) which kind is active so
+// the page can put the table into pick-mode. The typeahead inside the box is
+// the PRIMARY picker; table row clicks are the secondary one and sync with
+// the chips through the shared pickSelection state.
 const PICK_MODE_KINDS = new Set(['DEAL_TO_MARKET', 'DEAL_COMPARE']);
 
 function encodePayloadClient(payload) {
@@ -57,84 +47,171 @@ function encodePayloadClient(payload) {
   return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
+function dealName(deal) {
+  const buyer = deal.buyer_display || deal.acquirer_display || deal.acquirer || 'Buyer';
+  const target = deal.target_display || deal.target_entity || deal.target || 'Target';
+  return `${buyer} / ${target}`;
+}
+
+// ── Typeahead deal picker (Ben r15, item 4) ────────────────────────────────
+// "I'd just have a box where you can type party names and select them with a
+// tick box." Type ≥2 chars of either party's name; matching deals appear as
+// tickable rows directly under the input; ticked deals become removable
+// chips. Esc clears the query. `single` mode (Deal vs market) replaces the
+// selection instead of accumulating.
+function DealPicker({
+  deals, selection, onChange, single = false, placeholder,
+}) {
+  const [q, setQ] = useState('');
+  const query = q.trim().toLowerCase();
+  const matches = useMemo(() => {
+    if (query.length < 2) return [];
+    return (deals || []).filter((d) => dealName(d).toLowerCase().includes(query)).slice(0, 8);
+  }, [deals, query]);
+  const selectedDeals = (selection || [])
+    .map((id) => (deals || []).find((d) => d.id === id))
+    .filter(Boolean);
+  const toggle = (id) => {
+    if (single) {
+      onChange(selection.includes(id) ? [] : [id]);
+      setQ('');
+      return;
+    }
+    onChange(selection.includes(id) ? selection.filter((x) => x !== id) : [...selection, id]);
+  };
+  return (
+    <div className="dp">
+      {selectedDeals.length > 0 && (
+        <div className="dpChips">
+          {selectedDeals.map((d) => (
+            <span key={d.id} className="dpChip">
+              {dealName(d)}
+              <button type="button" aria-label={`Remove ${dealName(d)}`} onClick={() => onChange(selection.filter((x) => x !== d.id))}>×</button>
+            </span>
+          ))}
+        </div>
+      )}
+      <input
+        className="mtx-input dpInput"
+        value={q}
+        placeholder={placeholder}
+        onChange={(e) => setQ(e.target.value)}
+        onKeyDown={(e) => { if (e.key === 'Escape') setQ(''); }}
+      />
+      {matches.length > 0 && (
+        <div className="dpList">
+          {matches.map((d) => {
+            const on = (selection || []).includes(d.id);
+            return (
+              <button key={d.id} type="button" className={`dpRow${on ? ' dpRowOn' : ''}`} onClick={() => toggle(d.id)}>
+                <span className={`dpTick${on ? ' dpTickOn' : ''}`}>{on ? '✓' : ''}</span>
+                <span className="dpName">{dealName(d)}</span>
+                <span className="dpMeta">{String(d.signing_date || d.announce_date || '').slice(0, 4)}</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+      {query.length >= 2 && matches.length === 0 && (
+        <p className="dpEmpty">No deals match &ldquo;{q}&rdquo;.</p>
+      )}
+      <style jsx>{`
+        .dp { display: flex; flex-direction: column; gap: 6px; min-width: 260px; flex: 1; }
+        .dpChips { display: flex; flex-wrap: wrap; gap: 6px; }
+        .dpChip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--ink, #1F1F1F); background: var(--ink, #1F1F1F); color: #fff; font-family: var(--mtx-sans); font-size: 11px; font-weight: 600; padding: 3px 6px 3px 9px; }
+        .dpChip button { border: 0; background: transparent; color: #fff; font-size: 13px; line-height: 1; cursor: pointer; padding: 0 2px; }
+        .dpChip button:hover { color: #E0E0E0; }
+        .dpInput { max-width: min(420px, 100%); }
+        .dpList { display: flex; flex-direction: column; border: 1px solid var(--line, #E0E0E0); background: #fff; max-width: min(420px, 100%); }
+        .dpRow { display: flex; align-items: center; gap: 8px; border: 0; border-bottom: 1px solid var(--line-soft, #EEEEEE); background: #fff; padding: 6px 9px; cursor: pointer; text-align: left; font-family: var(--mtx-sans); font-size: 12px; color: var(--ink, #1F1F1F); }
+        .dpRow:last-child { border-bottom: 0; }
+        .dpRow:hover { background: var(--paper-2, #F6F6F6); }
+        .dpRowOn { background: var(--paper-2, #F6F6F6); }
+        .dpTick { display: inline-flex; align-items: center; justify-content: center; width: 14px; height: 14px; border: 1px solid var(--line, #E0E0E0); font-size: 10px; font-weight: 700; flex: 0 0 auto; }
+        .dpTickOn { background: var(--ink, #1F1F1F); border-color: var(--ink, #1F1F1F); color: #fff; }
+        .dpName { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .dpMeta { color: var(--ink-faint, #9A9A9A); font-size: 10px; font-variant-numeric: tabular-nums; }
+        .dpEmpty { margin: 0; font-size: 11px; color: var(--ink-light, #6B6B6B); font-family: var(--mtx-sans); }
+      `}</style>
+    </div>
+  );
+}
+
 export default function QueryLaunchBox({
   deals: dealsProp,
   showTitle = true,
   defaultKind = 'FILTER_THEN_LIST',
   bordered = true,
-  // Controlled deal-filter state — the parent page (pages/index.js) lifts
-  // this up so a DEAL_TO_MARKET row-pick can read the same deal_filter the
-  // box's own inline kinds use. Falls back to internal state so the box
-  // still works if a caller doesn't wire these up.
+  // Controlled deal-filter state — pages/index.js lifts this up so a
+  // DEAL_TO_MARKET table-row pick can read the same deal_filter the box's
+  // inline kinds use. Falls back to internal state when unwired.
   dealFilterValues: dealFilterValuesProp,
   onDealFilterValuesChange,
-  // Pick-mode plumbing (Ben: DEAL_TO_MARKET/DEAL_COMPARE should use the main
-  // deal table as the picker, not a second picker in this box). The box
-  // tells the parent which kind wants pick-mode; the parent owns row clicks
-  // and hands the running selection back via `pickSelection`.
+  // Pick-mode plumbing: the box tells the parent which kind wants the table
+  // in pick-mode; the parent owns row clicks and shares the selection (and
+  // its setter) so typeahead chips and table ticks stay in sync.
   onRequestDealPick,
   pickSelection = [],
+  onPickSelectionChange,
 }) {
   const router = useRouter();
   const [deals, setDeals] = useState(dealsProp || null);
   const [kind, setKind] = useState(defaultKind);
+  const [open, setOpen] = useState(false);
   const [internalDealFilterValues, setInternalDealFilterValues] = useState({ consideration_type: '', buyer: '', law_firm: '', sector: '', signing_year: '' });
   const dealFilterValues = dealFilterValuesProp || internalDealFilterValues;
   const setDealFilterValues = onDealFilterValuesChange || setInternalDealFilterValues;
+  const [internalPickSelection, setInternalPickSelection] = useState([]);
+  const selection = onPickSelectionChange ? pickSelection : internalPickSelection;
+  const setSelection = onPickSelectionChange || setInternalPickSelection;
   const [filters, setFilters] = useState([{ provision_type: 'COVENANT_NO_SOLICITATION', field: 'forceTheVote', op: 'eq', value: 'true' }]);
   const [mrProvisionType, setMrProvisionType] = useState('TERMINATION_FEE');
   const [mrField, setMrField] = useState('companyTerminationFee');
+  const [ccProvisionType, setCcProvisionType] = useState('COVENANT_NO_SOLICITATION');
   const [running, setRunning] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    // A supplied deals array (even an empty one while the parent's fetch is
+    // in flight) means the parent owns the list — keeps the typeahead in
+    // lockstep with the table below. Only self-fetch when truly standalone.
     if (dealsProp) { setDeals(dealsProp); return; }
     fetch('/api/deals').then((r) => r.json()).then((json) => setDeals(json.deals || json.rows || [])).catch(() => setDeals([]));
   }, [dealsProp]);
 
   const dealFilter = useMemo(() => buildDealFilterPayload(dealFilterValues), [dealFilterValues]);
 
-  // Tell the parent page whenever the active kind enters/leaves pick-mode,
-  // and cancel pick-mode on unmount so a stale highlight bar never lingers
-  // above the table.
+  // Arm/disarm the table's pick-mode: only while the box is open on a
+  // deal-picking kind. Collapsing the box or switching kinds disarms.
   useEffect(() => {
     if (!onRequestDealPick) return;
-    onRequestDealPick(PICK_MODE_KINDS.has(kind) ? kind : null);
+    onRequestDealPick(open && PICK_MODE_KINDS.has(kind) ? kind : null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [kind]);
-  // Bug fix (Ben, wave-3 QA -- Deal compare / Deal to market pick mode never
-  // armed): this used to be `useEffect(() => () => onRequestDealPick(null),
-  // [onRequestDealPick])`. If the CALLER ever hands this component a
-  // freshly-identitied callback on every render (pages/index.js did, before
-  // its own fix), React treats that as "the dependency changed" and runs the
-  // cleanup from the PREVIOUS effect instance immediately, before re-running
-  // the effect -- so `onRequestDealPick(null)` fired on every parent
-  // re-render, cancelling pick-mode a moment after it was armed. The real
-  // fix is stabilizing the callback on the caller's side (done in
-  // pages/index.js via useCallback), but this effect is made resilient to
-  // caller identity churn too -- defense in depth, since any future caller
-  // that forgets useCallback would silently reintroduce the same bug. Keep
-  // the latest callback in a ref (always current, never a dependency) and
-  // register the unmount-only cleanup with an EMPTY dependency array so it
-  // only runs once, on this component's real unmount -- never on a parent
-  // re-render.
+  }, [kind, open]);
+  // Unmount-only cleanup via a ref so caller identity churn can never
+  // disarm pick-mode mid-flight (see the wave-3 QA bug history in git).
   const onRequestDealPickRef = useRef(onRequestDealPick);
   onRequestDealPickRef.current = onRequestDealPick;
   useEffect(() => () => {
     if (onRequestDealPickRef.current) onRequestDealPickRef.current(null);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // MARKET_RANGE's field picker: a real dropdown of NUMERIC fields for the
-  // chosen provision type (Ben: no free-text field-path box). Reuses the
-  // same field-options fetch the full builder's FilterRow uses.
+  // Benchmark a term: numeric fields only for the chosen provision type.
   const mrFields = useFieldsForProvisionType(mrProvisionType).filter((f) => f.numeric);
   useEffect(() => {
     if (mrFields.length && !mrFields.some((f) => f.key === mrField)) setMrField(mrFields[0].key);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mrFields]);
 
+  // Market check on a provision: runs inline (no hand-off to the full
+  // builder) — every deal, first four fields of the chosen provision type
+  // as columns, same payload pages/index.js's search shortcut builds.
+  const ccFields = useFieldsForProvisionType(ccProvisionType);
+
   const update = (i, patch) => setFilters(filters.map((f, idx) => (idx === i ? { ...f, ...patch } : f)));
+
+  const expand = () => setOpen(true);
+  const selectKind = (k) => { setKind(k); setError(null); expand(); };
 
   const buildPayload = () => {
     if (kind === 'FILTER_THEN_LIST') {
@@ -150,25 +227,45 @@ export default function QueryLaunchBox({
     }
     if (kind === 'DEAL_COMPARE') {
       return {
-        deal_ids: pickSelection,
+        deal_ids: selection,
         provision_types: ['CONSIDERATION', 'TERMINATION_FEE', 'COVENANT_NO_SOLICITATION'],
         highlight_deltas: true,
         included_field_groups: ['primary', 'qualifiers'],
       };
     }
+    if (kind === 'PROVISION_CROSS_CUT') {
+      return {
+        provision_type: ccProvisionType,
+        provision_subtype: null,
+        deal_ids: (deals || []).map((d) => d.id),
+        columns: ccFields.slice(0, 4).map((f) => f.key),
+        sort_by: 'deal_signing_date_desc',
+      };
+    }
+    if (kind === 'DEAL_TO_MARKET') {
+      return { deal_id: selection[0], comparison_set_filter: dealFilter, provision_types: null };
+    }
     return null;
   };
 
-  const openFullBuilder = () => {
-    router.push({ pathname: '/query', query: { kind } });
+  const navigateToResult = (payload) => {
+    const slug = kind.toLowerCase().replace(/_/g, '-');
+    router.push(`/query/${slug}/adhoc?payload=${encodePayloadClient(payload)}`);
   };
 
   const run = async () => {
-    if (kind === 'DEAL_TO_MARKET') return; // runs from a table row click instead
-    if (kind === 'DEAL_COMPARE' && pickSelection.length < 2) return;
-    if (!INLINE_KINDS.has(kind)) { openFullBuilder(); return; }
+    if (runDisabled) return;
     setError(null);
     const payload = buildPayload();
+    if (!payload) return;
+    // Compare / market-check / deal-vs-market navigate straight to the
+    // result page (same as a table-row pick); the two filter-driven kinds
+    // validate against the engine first so a bad combination errors inline
+    // instead of on a fresh page.
+    if (kind !== 'FILTER_THEN_LIST' && kind !== 'MARKET_RANGE') {
+      navigateToResult(payload);
+      return;
+    }
     setRunning(true);
     try {
       const res = await fetch('/api/query/run', {
@@ -178,8 +275,7 @@ export default function QueryLaunchBox({
       });
       const json = await res.json();
       if (json.error) throw new Error(json.error);
-      const slug = kind.toLowerCase().replace(/_/g, '-');
-      router.push(`/query/${slug}/adhoc?payload=${encodePayloadClient(payload)}`);
+      navigateToResult(payload);
     } catch (err) {
       setError(err.message || 'That combination of fields isn’t valid — check the values above and try again.');
     } finally {
@@ -187,128 +283,179 @@ export default function QueryLaunchBox({
     }
   };
 
-  const runDisabled = running || kind === 'DEAL_TO_MARKET' || (kind === 'DEAL_COMPARE' && pickSelection.length < 2);
+  const runDisabled = running
+    || (kind === 'DEAL_COMPARE' && selection.length < 2)
+    || (kind === 'DEAL_TO_MARKET' && selection.length < 1)
+    || (kind === 'PROVISION_CROSS_CUT' && !ccFields.length);
+
   const runLabel = running ? 'Running…'
-    : kind === 'DEAL_TO_MARKET' ? 'Pick a deal below ↓'
-    : kind === 'DEAL_COMPARE' ? (pickSelection.length >= 2 ? `Compare ${pickSelection.length} deals` : 'Select 2+ deals below ↓')
-    : INLINE_KINDS.has(kind) ? 'Run query' : 'Open full builder →';
+    : kind === 'FILTER_THEN_LIST' ? 'Find deals'
+    : kind === 'MARKET_RANGE' ? 'Run benchmark'
+    : kind === 'DEAL_COMPARE' ? (selection.length >= 2 ? `Compare ${selection.length} deals` : 'Compare deals')
+    : kind === 'PROVISION_CROSS_CUT' ? 'Run market check'
+    : 'Run deal vs market';
+
+  const runHint = kind === 'DEAL_COMPARE' && selection.length < 2
+    ? (selection.length === 1 ? 'Pick at least one more deal' : 'Pick two or more deals')
+    : kind === 'DEAL_TO_MARKET' && selection.length < 1
+    ? 'Pick a deal to test'
+    : null;
+
+  const collapsedHint = 'Find deals with a provision, benchmark a term, or compare precedents — pick a question to start.';
 
   return (
     <div className="mtx">
       <div className={`qlb${bordered ? '' : ' qlbFlush'}`}>
         {showTitle && (
-          <div className="qlbTitleBar">
-            <span>Launch Query</span>
-            <span className="qlbTitleSub">Pick a query type, filter the deals, go.</span>
-          </div>
-        )}
-
-        <div className="qlbTabsRow">
-          <KindTabs kinds={Object.keys(KIND_LABELS)} labels={KIND_LABELS} value={kind} onChange={setKind} />
-          <button type="button" className="mtx-btn mtx-btn-primary qlbRun" disabled={runDisabled} onClick={run}>
-            {runLabel}
+          <button type="button" className="qlbTitleBar" onClick={() => setOpen((v) => !v)} aria-expanded={open}>
+            <span className="qlbTitleMain">Query the corpus</span>
+            <span className="qlbTitleSub">{open ? KIND_LABELS[kind] : collapsedHint}</span>
+            <span className="qlbChevron" aria-hidden>{open ? '▾' : '▸'}</span>
           </button>
+        )}
+
+        <div className="qlbTabsRow" role="tablist">
+          <KindTabs kinds={Object.keys(KIND_LABELS)} labels={KIND_LABELS} value={open ? kind : null} onChange={selectKind} />
         </div>
 
-        {/* Deal-type filter — available at this first stage, not buried
-            below provision-level fields (Ben's explicit ask). Works for
-            every kind since it narrows deal_filter, which every inline
-            kind here reads the same way (lib/query/executors/shared.js
-            comparisonDeals()). */}
-        <DealFiltersBlock deals={deals || []} values={dealFilterValues} onChange={setDealFilterValues} />
+        {open && (
+          <div className="qlbOpenArea">
+            <p className="qlbKindDesc">{KIND_DESCRIPTIONS[kind]}</p>
 
-        {/* One stable height across every tab, no scrollbar (Ben: "the
-            query box shouldn't have a scroll bar — make it the right size
-            by better layout"). Each kind body is a single compact row;
-            min-height is sized to the tallest one (FILTER_THEN_LIST, which
-            has a filter block + add-filter link) so shorter bodies just pad
-            instead of the box resizing when tabs are flicked. */}
-        <div className="qlbStage">
-        {kind === 'FILTER_THEN_LIST' && (
-          <div className="qlbFilters">
-            {/* Ben r7: each refinement is its own bordered BLOCK, with a
-                "+" to add more filters and a per-block remove. */}
-            {filters.map((f, i) => (
-              <div className="qlbBlock" key={i}>
-                <FilterRow
-                  filter={f}
-                  onChange={(patch) => update(i, patch)}
-                  onRemove={filters.length > 1 ? () => setFilters(filters.filter((_, idx) => idx !== i)) : null}
-                  showPreview={false}
-                />
+            {kind === 'FILTER_THEN_LIST' && (
+              <div className="qlbFilters">
+                {filters.map((f, i) => (
+                  <div className="qlbSentenceRow" key={i}>
+                    <span className="qlbLead">{i === 0 ? 'Find deals where' : 'and'}</span>
+                    <div className="qlbSentenceControls">
+                      <FilterRow
+                        filter={f}
+                        onChange={(patch) => update(i, patch)}
+                        onRemove={filters.length > 1 ? () => setFilters(filters.filter((_, idx) => idx !== i)) : null}
+                        showPreview
+                      />
+                    </div>
+                  </div>
+                ))}
+                <button type="button" className="qlbAddFilter" onClick={() => setFilters([...filters, { provision_type: filters[filters.length - 1]?.provision_type || 'COVENANT_NO_SOLICITATION', field: '', op: null, value: '' }])}>
+                  + and another condition
+                </button>
               </div>
-            ))}
-            <button type="button" className="qlbAddFilter" onClick={() => setFilters([...filters, { provision_type: filters[filters.length - 1]?.provision_type || 'COVENANT_NO_SOLICITATION', field: '', op: null, value: '' }])}>
-              + Add a filter
-            </button>
+            )}
+
+            {kind === 'MARKET_RANGE' && (
+              <div className="qlbSentenceRow">
+                <span className="qlbLead">Benchmark</span>
+                <div className="qlbSentenceControls qlbInlineRow">
+                  <ProvisionTypeSelect value={mrProvisionType} onChange={setMrProvisionType} />
+                  <select className="mtx-select" value={mrField} title={(mrFields.find((f) => f.key === mrField) || {}).label} onChange={(e) => setMrField(e.target.value)} disabled={!mrFields.length}>
+                    {!mrFields.length && <option value="">No numeric terms for this provision</option>}
+                    {mrFields.map((f) => <option key={f.key} value={f.key}>{f.label}</option>)}
+                  </select>
+                  <span className="qlbLead qlbTrail">across the corpus</span>
+                </div>
+              </div>
+            )}
+
+            {kind === 'DEAL_COMPARE' && (
+              <div className="qlbSentenceRow qlbSentenceRowTop">
+                <span className="qlbLead">Compare</span>
+                <div className="qlbSentenceControls">
+                  <DealPicker
+                    deals={deals || []}
+                    selection={selection}
+                    onChange={setSelection}
+                    placeholder="Type a party name — e.g. Metsera, Pfizer…"
+                  />
+                  <p className="qlbSecondaryHint">…or click deal rows in the list below. Esc cancels.</p>
+                </div>
+              </div>
+            )}
+
+            {kind === 'PROVISION_CROSS_CUT' && (
+              <div className="qlbSentenceRow">
+                <span className="qlbLead">Market check</span>
+                <div className="qlbSentenceControls qlbInlineRow">
+                  <ProvisionTypeSelect value={ccProvisionType} onChange={setCcProvisionType} />
+                  <span className="qlbLead qlbTrail">across every deal</span>
+                </div>
+              </div>
+            )}
+
+            {kind === 'DEAL_TO_MARKET' && (
+              <div className="qlbSentenceRow qlbSentenceRowTop">
+                <span className="qlbLead">Test</span>
+                <div className="qlbSentenceControls">
+                  <DealPicker
+                    deals={deals || []}
+                    selection={selection}
+                    onChange={setSelection}
+                    single
+                    placeholder="Type a party name to pick the deal…"
+                  />
+                  <p className="qlbSecondaryHint">
+                    …or click a deal row in the list below. It runs against {describeDealFilters(dealFilterValues).length ? 'the deal filters here' : 'the whole corpus'}.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            <DealFiltersBlock deals={deals || []} values={dealFilterValues} onChange={setDealFilterValues} />
+
+            <div className="qlbFooter">
+              <span className={`qlbFooterHint${error ? ' qlbFooterErr' : ''}`}>{error || runHint || ''}</span>
+              <button type="button" className="mtx-btn mtx-btn-primary qlbRun" disabled={runDisabled} onClick={run}>
+                {runLabel} →
+              </button>
+            </div>
           </div>
         )}
-
-        {kind === 'MARKET_RANGE' && (
-          <div className="qlbRow">
-            <ProvisionTypeSelect value={mrProvisionType} onChange={setMrProvisionType} />
-            <select className="mtx-select" value={mrField} onChange={(e) => setMrField(e.target.value)} disabled={!mrFields.length}>
-              {!mrFields.length && <option value="">No numeric fields</option>}
-              {mrFields.map((f) => <option key={f.key} value={f.key}>{f.label}</option>)}
-            </select>
-          </div>
-        )}
-
-        {kind === 'DEAL_TO_MARKET' && (
-          <p className="qlbMuted">Pick a deal in the table below — it runs deal-to-market for that deal against {describeDealFilters(dealFilterValues).length ? 'the deal filters above' : 'the whole corpus'}.</p>
-        )}
-
-        {kind === 'DEAL_COMPARE' && (
-          <p className="qlbMuted">
-            {pickSelection.length === 0 && 'Click 2 or more rows in the table below to select deals to compare.'}
-            {pickSelection.length === 1 && '1 deal selected — pick at least 1 more in the table below.'}
-            {pickSelection.length >= 2 && `${pickSelection.length} deals selected — hit Run, or keep clicking rows below to change the set.`}
-          </p>
-        )}
-
-        {kind === 'PROVISION_CROSS_CUT' && (
-          <p className="qlbMuted">Provision cross-cut needs a deal picker — running it opens the full builder with your deal filters carried over.</p>
-        )}
-        </div>
-
-        {error && <div className="qlbErr">{error}</div>}
-
-
       </div>
       <style jsx>{`
-        .qlb { border: 1px solid var(--line, #E0E0E0); background: #fff; display: flex; flex-direction: column; gap: 7px; font-family: var(--mtx-sans); padding: 0 0 9px; }
-        /* Embedded mode (pages/index.js): the parent supplies ONE outer
-           border around the box + table together (Ben: "read as one
-           surface, no double borders/gaps") — this box contributes no
-           border of its own. */
+        .qlb { border: 1px solid var(--line, #E0E0E0); background: #fff; display: flex; flex-direction: column; font-family: var(--mtx-sans); }
+        /* Embedded mode (pages/index.js): the parent supplies the outer
+           border — this box contributes none of its own. */
         .qlbFlush { border: none; }
-        .qlb > :global(*) { margin-left: 14px; margin-right: 14px; }
-        .qlbTitleBar { display: flex; align-items: baseline; gap: 10px; margin: 0 !important; padding: 6px 14px; border-bottom: 1px solid var(--line, #E0E0E0); background: var(--paper-2, #F6F6F6); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink, #1F1F1F); }
-        .qlbTitleSub { font-weight: 400; text-transform: none; letter-spacing: 0; font-size: 11px; color: var(--ink-light, #6B6B6B); }
-        .qlbTabsRow { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 8px !important; }
-        .qlbRun { flex: 0 0 auto; }
-        /* No overflow/scroll — every kind body below is a single compact
-           row, and min-height (not height) keeps the box from jumping size
-           when tabs change without ever clipping content. */
-        .qlbStage { min-height: 46px; display: flex; flex-direction: column; justify-content: center; gap: 6px; }
-        .qlbBlock { position: relative; border: 1px solid var(--line, #E0E0E0); background: var(--paper-2, #FAFAFA); padding: 5px 7px; }
-        .qlbAddFilter { align-self: flex-start; border: 1px dashed var(--line, #E0E0E0); background: #fff; color: var(--ink, #1F1F1F); font-family: var(--mtx-sans); font-size: 11px; padding: 4px 10px; cursor: pointer; }
+        .qlbTitleBar { display: flex; align-items: baseline; gap: 10px; margin: 0; padding: 7px 14px; border: 0; border-bottom: 1px solid var(--line, #E0E0E0); background: var(--paper-2, #F6F6F6); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink, #1F1F1F); font-family: var(--mtx-sans); cursor: pointer; text-align: left; width: 100%; }
+        .qlbTitleBar:hover { background: #F0F0F0; }
+        .qlbTitleMain { flex: 0 0 auto; }
+        .qlbTitleSub { flex: 1; font-weight: 400; text-transform: none; letter-spacing: 0; font-size: 11px; color: var(--ink-light, #6B6B6B); }
+        .qlbChevron { flex: 0 0 auto; font-size: 10px; color: var(--ink-light, #6B6B6B); text-transform: none; letter-spacing: 0; }
+        .qlbTabsRow { padding: 10px 14px 0; }
+        .qlbOpenArea { display: flex; flex-direction: column; gap: 12px; padding: 10px 14px 12px; }
+        .qlbKindDesc { margin: 0; font-size: 12px; line-height: 1.45; color: var(--ink-light, #6B6B6B); font-family: var(--mtx-sans); max-width: 720px; }
+        .qlbFilters { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+        .qlbSentenceRow { display: flex; align-items: center; gap: 10px; width: 100%; }
+        .qlbSentenceRowTop { align-items: flex-start; }
+        .qlbSentenceRowTop .qlbLead { margin-top: 5px; }
+        .qlbLead { flex: 0 0 auto; font-size: 13px; font-weight: 600; color: var(--ink, #1F1F1F); font-family: var(--mtx-sans); min-width: 108px; text-align: right; }
+        .qlbSentenceRow:first-child .qlbLead { min-width: 108px; }
+        .qlbTrail { min-width: 0; font-weight: 400; color: var(--ink-light, #6B6B6B); text-align: left; }
+        .qlbSentenceControls { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+        .qlbInlineRow { flex-direction: row; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .qlbAddFilter { margin-left: 118px; border: 1px dashed var(--line, #E0E0E0); background: #fff; color: var(--ink, #1F1F1F); font-family: var(--mtx-sans); font-size: 11px; padding: 4px 10px; cursor: pointer; }
         .qlbAddFilter:hover { background: var(--paper-2, #F6F6F6); border-color: var(--ink-light, #6B6B6B); }
-        .qlbFilters { display: flex; flex-direction: column; gap: 5px; }
-        .qlbRow { display: grid; grid-template-columns: 1.3fr 1fr; gap: 8px; align-items: center; }
-        .qlbMuted { margin: 0; font-size: 11px; color: var(--ink-light, #6B6B6B); font-family: var(--mtx-sans); line-height: 1.4; }
-        .qlbErr { border: 1px solid rgba(177, 78, 99, 0.3); background: rgba(177, 78, 99, 0.06); padding: 6px 9px; color: #B14E63; font-size: 11px; font-family: var(--mtx-sans); }
-        /* Nothing in the box larger than 12px except the Run button (Ben's
-           info-hierarchy note) — override the global 13px/36px .mtx-select
-           and .mtx-input for every control rendered inside this box,
-           including the ones FilterRow/DealFiltersBlock own. */
-        .qlb :global(.mtx-select), .qlb :global(.mtx-input) { font-size: 11px; height: 26px; padding: 0 7px; }
+        .qlbSecondaryHint { margin: 0; font-size: 11px; color: var(--ink-faint, #9A9A9A); font-family: var(--mtx-sans); }
+        .qlbFooter { display: flex; align-items: center; justify-content: flex-end; gap: 12px; border-top: 1px solid var(--line-soft, #EEEEEE); padding-top: 10px; }
+        .qlbFooterHint { font-size: 11px; color: var(--ink-light, #6B6B6B); font-family: var(--mtx-sans); }
+        .qlbFooterErr { color: #B14E63; }
+        .qlbRun { flex: 0 0 auto; }
+        /* Info hierarchy: nothing inside the box larger than 12px except the
+           lead-in words and the Run button — override the global 13px/36px
+           .mtx-select/.mtx-input for every control rendered inside. */
+        .qlb :global(.mtx-select), .qlb :global(.mtx-input) { font-size: 11px; height: 26px; padding: 0 7px; max-width: 100%; min-width: 0; text-overflow: ellipsis; }
+        /* Mobile (Ben r15 addendum): the box must never force horizontal
+           page scroll — every flex child can shrink, closed controls clip
+           their own label. */
+        .qlb, .qlbOpenArea, .qlbSentenceControls, .qlbInlineRow, .qlbFilters { min-width: 0; max-width: 100%; }
         .qlb :global(.filterControls) { gap: 6px; }
-        .qlb :global(.boolBtn), .qlb :global(.numUnit), .qlb :global(.numAnd) { font-size: 11px; }
-        .qlb :global(.qkTab) { font-size: 12px; padding: 6px 12px; }
+        .qlb :global(.boolBtn), .qlb :global(.numUnit), .qlb :global(.numAnd), .qlb :global(.codedAllHint) { font-size: 11px; }
+        .qlb :global(.boolBtn) { padding: 4px 9px; }
         .qlb :global(.mtx-btn:not(.qlbRun)) { font-size: 11px; height: 26px; padding: 0 8px; }
-        @media (max-width: 640px) {
-          .qlbRow { grid-template-columns: 1fr; }
+        @media (max-width: 720px) {
+          .qlbLead { min-width: 0; text-align: left; }
+          .qlbSentenceRow { flex-direction: column; align-items: flex-start; gap: 6px; }
+          .qlbAddFilter { margin-left: 0; }
         }
       `}</style>
     </div>

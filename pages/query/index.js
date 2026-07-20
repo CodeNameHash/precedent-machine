@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import MergertraceStyles from '../../components/review-v2/MergertraceStyles';
 import AppHeader from '../../components/chrome/AppHeader';
-import { humanizeKey } from '../../lib/query/filter-labels';
+import { humanizeKey, KIND_LABELS } from '../../lib/query/filter-labels';
 import {
   PROVISION_TYPES, ProvisionTypeSelect, FilterRow, coerceFilterForPayload, KindTabs,
   DealFiltersBlock, buildDealFilterPayload,
@@ -12,13 +12,9 @@ import {
 
 QueryIndexPage.noLayout = true;
 
-const KIND_LABELS = {
-  DEAL_COMPARE: 'Deal compare',
-  PROVISION_CROSS_CUT: 'Provision cross-cut',
-  MARKET_RANGE: 'Market range',
-  FILTER_THEN_LIST: 'Filter then list',
-  DEAL_TO_MARKET: 'Deal to market',
-};
+// r15 item 1: plain-English kind names come from the shared label layer
+// (lib/query/filter-labels.js KIND_LABELS) so this page, the launch box,
+// and result titles can never drift.
 
 // requiredFieldSentence: "filters, sort_by, columns" -> "the filters, the
 // sort order, and the columns to show" — item 4's ask to replace the terse

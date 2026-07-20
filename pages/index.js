@@ -79,6 +79,33 @@ function matchProvisionVocab(query) {
   return null;
 }
 
+// Ben r15, item 8: typing a specific FEATURE term ("force the vote") should
+// FIRST offer "<Feature> across all deals →" — a SHOW_ALL query listing
+// every deal with has/hasn't + value (payload: filters carry
+// { provision_type, field, mode: 'all' }). Verified field keys from
+// lib/query/field-meta.js fieldsForProvisionType().
+const FEATURE_VOCAB = [
+  { provision_type: 'COVENANT_NO_SOLICITATION', field: 'forceTheVote', label: 'Force the vote', patterns: [/force.the.vote/, /\bftv\b/] },
+  { provision_type: 'COVENANT_NO_SOLICITATION', field: 'goShopPresent', label: 'Go-shop', patterns: [/go.shop/] },
+  { provision_type: 'COVENANT_NO_SOLICITATION', field: 'dontAskDontWaive', label: 'Don’t-ask-don’t-waive', patterns: [/don.?t.ask.don.?t.waive/, /\bdadw\b/] },
+  { provision_type: 'COVENANT_NO_SOLICITATION', field: 'interveningEventProvision', label: 'Intervening event provision', patterns: [/intervening event/] },
+  { provision_type: 'REPRESENTATION', field: 'materialityScrape', label: 'Materiality scrape', patterns: [/materiality scrape/] },
+  { provision_type: 'ANTITRUST_REGULATORY', field: 'hellOrHighWater', label: 'Hell-or-high-water', patterns: [/hell.or.high.water/, /\bhohw\b/] },
+  { provision_type: 'MISC_BOILERPLATE', field: 'specificPerformance', label: 'Specific performance', patterns: [/specific performance/] },
+  { provision_type: 'TERMINATION_FEE', field: 'nakedNoVoteFee', label: 'Naked no-vote fee', patterns: [/naked no.vote/] },
+  { provision_type: 'CONSIDERATION', field: 'appraisalRightsAvailable', label: 'Appraisal rights', patterns: [/appraisal rights?/] },
+  { provision_type: 'MISC_BOILERPLATE', field: 'juryWaiver', label: 'Jury trial waiver', patterns: [/jury (trial )?waiver/] },
+];
+
+function matchFeatureVocab(query) {
+  const q = query.trim().toLowerCase();
+  if (q.length < 3) return null;
+  for (const entry of FEATURE_VOCAB) {
+    if (entry.patterns.some((re) => re.test(q))) return entry;
+  }
+  return null;
+}
+
 // Module-scope so repeated searches for the same provision type share one
 // fetch instead of re-hitting /api/query/field-options every keystroke.
 const crossCutColumnsCache = new Map();
@@ -177,7 +204,6 @@ export default function HomePage({ initialData }) {
   // that's already showing snapshot data.
   const [data, setData] = useState(() => initialData || null);
   const [error, setError] = useState(null);
-  const [selected, setSelected] = useState(() => new Set());
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState({ key: 'signed', dir: 'desc' });
   const [filters, setFilters] = useState({});
@@ -200,7 +226,10 @@ export default function HomePage({ initialData }) {
   const [pickSelection, setPickSelection] = useState([]);
   const [crossCutRunning, setCrossCutRunning] = useState(false);
 
-  const cancelPick = () => { setPickMode(null); setPickSelection([]); };
+  // Esc / Cancel clears the running selection (Ben r15, item 4). Pick-mode
+  // itself stays armed while the launch box is open on a deal-picking tab —
+  // the box disarms it when the tab changes or the box collapses.
+  const cancelPick = () => { setPickSelection([]); };
   // Bug fix (Ben, wave-3 QA -- Deal compare / Deal to market pick mode never
   // armed): this handler used to be a plain inline function, so it got a
   // NEW identity every render. QueryLaunchBox's cleanup effect depends on
@@ -278,7 +307,9 @@ export default function HomePage({ initialData }) {
     if (!same) router.replace({ pathname: '/', query }, undefined, { shallow: true });
   }, [filters, sort, router.isReady]);
 
-  const deals = data?.deals || [];
+  // Stable identity (not a fresh [] every render) — this array is passed to
+  // QueryLaunchBox, whose deals effect keys on it.
+  const deals = useMemo(() => data?.deals || [], [data]);
 
   const columnOptions = useMemo(() => {
     const map = {};
@@ -331,9 +362,23 @@ export default function HomePage({ initialData }) {
 
   // Ben: typing a provision type (e.g. "material contracts") shouldn't just
   // surface one deal that happens to mention it — it should offer a
-  // corpus-wide summary of how that term operates. This is the FIRST
-  // suggestion row when it matches; per-deal hits still follow below it.
+  // corpus-wide summary of how that term operates. r15 item 8 adds an even
+  // more specific first hit: a FEATURE term ("force the vote") offers
+  // "<Feature> across all deals →", the SHOW_ALL listing. Order in the
+  // dropdown: feature show-all, provision cross-cut, then per-deal hits.
   const crossCutMatch = useMemo(() => matchProvisionVocab(search), [search]);
+  const showAllMatch = useMemo(() => matchFeatureVocab(search), [search]);
+
+  function runShowAll(entry) {
+    if (!entry) return;
+    const payload = {
+      filters: [{ provision_type: entry.provision_type, field: entry.field, mode: 'all' }],
+      deal_filter: {},
+      sort_by: 'deal_signing_date_desc',
+      columns: ['deal_name', 'signing_date', 'consideration_type', 'total_deal_value'],
+    };
+    router.push(queryHref('filter-then-list', payload));
+  }
 
   function runCrossCutTerm(entry) {
     if (!entry || crossCutRunning) return;
@@ -350,23 +395,18 @@ export default function HomePage({ initialData }) {
     }).finally(() => setCrossCutRunning(false));
   }
 
-  const selectedIds = [...selected].filter((id) => deals.some((deal) => deal.id === id));
-  const compareHref = queryHref('deal-compare', {
-    deal_ids: selectedIds.slice(0, 4),
-    provision_types: ['CONSIDERATION', 'COVENANT_NO_SOLICITATION', 'TERMINATION_FEE', 'TERMINATION_RIGHT'],
+  // r15 item 4: the floating "Compare N deals →" action for table-picked
+  // deals (the secondary picker; the box's typeahead is the primary one).
+  const pickCompareHref = queryHref('deal-compare', {
+    deal_ids: pickSelection,
+    provision_types: ['CONSIDERATION', 'TERMINATION_FEE', 'COVENANT_NO_SOLICITATION'],
     highlight_deltas: true,
     included_field_groups: ['primary', 'qualifiers'],
-  });
-  const crossCutHref = queryHref('provision-cross-cut', {
-    provision_type: 'COVENANT_NO_SOLICITATION',
-    provision_subtype: null,
-    deal_ids: selectedIds,
-    columns: ['no_shop_type', 'fiduciary_out', 'go_shop', 'matching_rights_days'],
-    sort_by: 'deal_signing_date_desc',
   });
 
   function submitSearch(e) {
     e.preventDefault();
+    if (showAllMatch) { runShowAll(showAllMatch); return; }
     if (crossCutMatch) { runCrossCutTerm(crossCutMatch); return; }
     const first = suggestions[0];
     if (first) router.push(first.href);
@@ -406,8 +446,14 @@ export default function HomePage({ initialData }) {
           <Link href="/" className="brand"><span />Corpus</Link>
           <form className="search" onSubmit={submitSearch} onClick={(e) => e.stopPropagation()}>
             <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search deals, provisions, defined terms" />
-            {(crossCutMatch || suggestions.length > 0) && (
+            {(showAllMatch || crossCutMatch || suggestions.length > 0) && (
               <div className="suggestions">
+                {showAllMatch && (
+                  <button type="button" className="crossCutHit" onClick={() => runShowAll(showAllMatch)}>
+                    <b>{showAllMatch.label} across all deals →</b>
+                    <small>every deal, has / hasn&rsquo;t &middot; with the term as written</small>
+                  </button>
+                )}
                 {crossCutMatch && (
                   <button type="button" className="crossCutHit" disabled={crossCutRunning} onClick={() => runCrossCutTerm(crossCutMatch)}>
                     <b>How {crossCutMatch.label} {crossCutMatch.plural ? 'operate' : 'operates'} across the corpus →</b>
@@ -434,27 +480,38 @@ export default function HomePage({ initialData }) {
           <main>
             <section className="operational">
               <div className="wrap">
-                <div className="corpusSurface">
+                {/* Query surface — its own bordered panel, clearly separate
+                    from the deal list below (Ben r15, item 6). */}
+                <div className="querySurface">
                   <QueryLaunchBox
                     showTitle
                     bordered={false}
+                    deals={deals}
                     dealFilterValues={dealFilterValues}
                     onDealFilterValuesChange={setDealFilterValues}
                     onRequestDealPick={handleRequestDealPick}
                     pickSelection={pickSelection}
+                    onPickSelectionChange={setPickSelection}
                   />
                   {pickMode && (
                     <div className="pickBanner" onClick={(e) => e.stopPropagation()}>
                       <span>
-                        {pickMode === 'DEAL_TO_MARKET' && 'Pick a deal below to run deal-to-market for it.'}
-                        {pickMode === 'DEAL_COMPARE' && `Click deals below to compare${pickSelection.length ? ` — ${pickSelection.length} selected` : ''}.`}
+                        {pickMode === 'DEAL_TO_MARKET' && 'Click a deal in the list below to test it against the market.'}
+                        {pickMode === 'DEAL_COMPARE' && `Tick deals in the list below to compare${pickSelection.length ? ` — ${pickSelection.length} picked` : ''}.`}
                       </span>
-                      <button type="button" className="pickCancel" onClick={cancelPick}>Cancel (Esc)</button>
+                      <button type="button" className="pickCancel" onClick={cancelPick}>Clear (Esc)</button>
                     </div>
                   )}
-                  <div className="opsHead">
-                    <div />
+                </div>
 
+                {/* Deal list — its own surface with its own header band, in
+                    the same voice as the review page's grey title bars. */}
+                <div className="listSurface">
+                  <div className="listTitleBar">
+                    <span className="listTitleMain">Deal list</span>
+                    <span className="listTitleSub">
+                      {data ? `${visibleDeals.length === deals.length ? deals.length : `${visibleDeals.length} of ${deals.length}`} deals — click a row to open its agreement` : 'Loading…'}
+                    </span>
                     <div className="opsActions" onClick={(e) => e.stopPropagation()}>
                       <button type="button" className="gearBtn" onClick={() => setPickerOpen((v) => !v)} title="Choose columns">
                         Columns
@@ -473,18 +530,11 @@ export default function HomePage({ initialData }) {
                     </div>
                   </div>
 
-                  {selectedIds.length >= 2 && (
-                    <div className="bulk">
-                      <Link href={compareHref}>+ Compare selected deals</Link>
-                      <Link href={crossCutHref}>+ How a provision works across selected deals</Link>
-                    </div>
-                  )}
-
                   <div className="tableShell">
                     <table>
                       <thead>
                         <tr onClick={(e) => e.stopPropagation()}>
-                          <th className="checkCol" />
+                          {pickMode === 'DEAL_COMPARE' && <th className="checkCol" />}
                           {activeColumns.map((col) => (
                             <ColumnHeaderPopover
                               key={col.key}
@@ -502,7 +552,7 @@ export default function HomePage({ initialData }) {
                         </tr>
                       </thead>
                       <tbody>
-                        {!data ? Array.from({ length: 6 }).map((_, i) => <tr key={i}><td colSpan={activeColumns.length + 1} className="rowLoading" /></tr>) : visibleDeals.map((deal) => {
+                        {!data ? Array.from({ length: 6 }).map((_, i) => <tr key={i}><td colSpan={activeColumns.length + (pickMode === 'DEAL_COMPARE' ? 1 : 0)} className="rowLoading" /></tr>) : visibleDeals.map((deal) => {
                           const picked = pickMode === 'DEAL_COMPARE' && pickSelection.includes(deal.id);
                           const rowAction = () => {
                             if (pickMode === 'DEAL_TO_MARKET') {
@@ -532,18 +582,14 @@ export default function HomePage({ initialData }) {
                             }
                           }}
                         >
-                          <td className="checkCol" onClick={(e) => e.stopPropagation()}>
-                            {pickMode === 'DEAL_COMPARE' ? (
+                          {/* r15 item 4: no permanent checkbox column ("get
+                              rid of all the tick boxes") — ticks appear only
+                              while Compare deals is picking. */}
+                          {pickMode === 'DEAL_COMPARE' && (
+                            <td className="checkCol">
                               <span className={`pickMark${picked ? ' pickMarkOn' : ''}`}>{picked ? '✓' : ''}</span>
-                            ) : (
-                              <input type="checkbox" checked={selected.has(deal.id)} onChange={() => setSelected((prev) => {
-                                const next = new Set(prev);
-                                if (next.has(deal.id)) next.delete(deal.id);
-                                else next.add(deal.id);
-                                return next;
-                              })} />
-                            )}
-                          </td>
+                            </td>
+                          )}
                           {activeColumns.map((col) => (
                             <td key={col.key}>{renderCell(col, deal)}</td>
                           ))}
@@ -554,6 +600,19 @@ export default function HomePage({ initialData }) {
                     </table>
                   </div>
                 </div>
+
+                {/* r15 item 4: floating action for table-picked deals — both
+                    of Ben's instincts honored (typeahead in the box AND a
+                    Compare button that appears when rows are ticked). */}
+                {pickMode === 'DEAL_COMPARE' && pickSelection.length >= 1 && (
+                  <div className="floatCompare" onClick={(e) => e.stopPropagation()}>
+                    {pickSelection.length >= 2 ? (
+                      <Link href={pickCompareHref} className="floatCompareBtn">Compare {pickSelection.length} deals →</Link>
+                    ) : (
+                      <span className="floatCompareHint">1 deal ticked — pick at least one more</span>
+                    )}
+                  </div>
+                )}
               </div>
             </section>
           </main>
@@ -576,15 +635,22 @@ export default function HomePage({ initialData }) {
         .login { color: var(--ink-light); }
         .wrap { max-width: 1280px; margin: 0 auto; padding: 0 34px; }
         .operational { padding: 34px 0 80px; }
-        /* Launch box + table read as ONE surface (Ben: "this needs to be
-           way better integrated with the site as a whole") — a single
-           outer border with quiet 1px dividers between sections instead of
-           separate bordered blocks with gaps between them. */
-        .corpusSurface { border: 1px solid var(--line); background: #fff; }
+        /* r15 item 6: the query box and the deal list are two clearly
+           separate surfaces — each its own bordered panel with its own grey
+           title band, with clear air between them (Ben: "need a better
+           visual separation into the deal list"). */
+        .querySurface { border: 1px solid var(--line); background: #fff; }
+        .listSurface { border: 1px solid var(--line); background: #fff; margin-top: 26px; }
+        .listTitleBar { display: flex; align-items: baseline; gap: 10px; padding: 7px 14px; border-bottom: 1px solid var(--line); background: var(--paper-2, #F6F6F6); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink); font-family: var(--mtx-sans); }
+        .listTitleMain { flex: 0 0 auto; }
+        .listTitleSub { flex: 1; font-weight: 400; text-transform: none; letter-spacing: 0; font-size: 11px; color: var(--ink-light); }
         .pickBanner { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 16px; background: var(--paper-2, #F6F6F6); border-top: 1px solid var(--line); font-size: 12px; color: var(--ink); font-family: var(--mtx-sans); }
         .pickCancel { border: 1px solid var(--line); background: #fff; font-size: 11px; font-weight: 600; padding: 4px 10px; cursor: pointer; font-family: var(--mtx-sans); color: var(--ink-light); }
         .pickCancel:hover { color: var(--ink); border-color: var(--ink-light); }
-        .opsHead { display: flex; align-items: flex-end; justify-content: space-between; gap: 22px; margin: 0; padding: 12px 16px; border-top: 1px solid var(--line); }
+        .floatCompare { position: fixed; bottom: 28px; right: 36px; z-index: 60; }
+        .floatCompareBtn { display: inline-block; background: var(--ink); color: #fff; border: 1px solid var(--ink); padding: 11px 18px; font-size: 13px; font-weight: 650; text-decoration: none; font-family: var(--mtx-sans); box-shadow: 0 8px 24px rgba(0,0,0,.18); }
+        .floatCompareBtn:hover { background: #000; }
+        .floatCompareHint { display: inline-block; background: #fff; color: var(--ink-light); border: 1px solid var(--line); padding: 11px 18px; font-size: 12px; font-family: var(--mtx-sans); box-shadow: 0 8px 24px rgba(0,0,0,.12); }
         h2 { font-size: 22px; line-height: 1.1; margin: 0; font-weight: 650; font-family: var(--mtx-sans); }
         p { margin: 5px 0 0; color: var(--ink-light); font-size: 13px; }
         .opsActions { position: relative; }
@@ -594,9 +660,7 @@ export default function HomePage({ initialData }) {
         .picker label { display: flex; align-items: center; gap: 8px; padding: 7px 12px; font-size: 12px; cursor: pointer; }
         .picker label:hover { background: var(--paper-2); }
         .picker small { margin-left: auto; color: var(--ink-faint); font-family: var(--mtx-mono); font-size: 10px; }
-        .bulk { display: flex; gap: 10px; margin: 0; padding: 0 16px 12px; }
-        .bulk a { border: 1px solid var(--accent); color: var(--accent-deep); background: #fff; border-radius: 0; padding: 8px 11px; text-decoration: none; font-size: 13px; font-weight: 600; }
-        .tableShell { border: none; border-top: 1px solid var(--line); border-radius: 0; overflow: auto; background: #fff; }
+        .tableShell { border: none; border-radius: 0; overflow: auto; background: #fff; }
         .rowPicked { background: rgba(31, 31, 31, 0.05); }
         .rowPicked:hover { background: rgba(31, 31, 31, 0.08); }
         .pickMark { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border: 1px solid var(--line); color: var(--ink); font-size: 11px; font-weight: 700; }
@@ -630,7 +694,7 @@ export default function HomePage({ initialData }) {
         .popClear:hover { color: var(--ink); }
         @media (max-width: 820px) {
           .top { grid-template-columns: 1fr; height: auto; padding: 14px; }
-          .opsHead { align-items: flex-start; flex-direction: column; }
+          .listTitleBar { flex-wrap: wrap; }
           .wrap { padding: 0 16px; }
         }
       `}</style>
