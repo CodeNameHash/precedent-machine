@@ -20,6 +20,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { reconstructReviewDeal } from '../../lib/queries/reconstruct-review-deal';
+import { getCorpusVersion } from '../../lib/client/corpus-version.js';
 
 const UUID_RE = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
 const MAX_COMPARED = 3;
@@ -157,8 +158,27 @@ export function dominantSectionCode(cards) {
   return best;
 }
 
-// { [sectionId]: { code, stats, loading, error } }. One corpus-stats fetch
-// per DISTINCT code (sections sharing a code share the response), batched.
+// Per-code fallback path (pre-batch behavior, r13): one /api/corpus-stats
+// call per distinct code. Used when /api/corpus-stats-batch errors (a stale
+// deploy without the new route, or any other batch failure) so a rollout
+// hiccup on the batch endpoint degrades to the old N-request behavior
+// instead of breaking the deal-to-market section entirely.
+function fetchPerCodeStats(codes, dealId, version, signal, onCode) {
+  const v = version ? `&v=${encodeURIComponent(version)}` : '';
+  codes.forEach((code) => {
+    fetchJson(`/api/corpus-stats?code=${encodeURIComponent(code)}&deal_id=${encodeURIComponent(dealId)}${v}`, { signal })
+      .then((stats) => onCode(code, { stats, loading: false, error: null }))
+      .catch((error) => onCode(code, { stats: null, loading: false, error: error.message || String(error) }));
+  });
+}
+
+// { [sectionId]: { code, stats, loading, error } }. ONE /api/corpus-stats-
+// batch call for every distinct code on the page (r13, deal-to-market perf
+// follow-on -- this used to be one /api/corpus-stats call PER distinct code,
+// which meant a dozen-plus round trips for a review page with that many
+// distinct sections). Falls back to the old per-code path if the batch call
+// itself errors, so a stale deploy without the new route can't break the
+// section.
 export function useSectionMarketStats(enabled, dealId, sectionCodes) {
   const key = enabled && dealId && sectionCodes.length
     ? `${dealId}|${sectionCodes.map((s) => `${s.sectionId}:${s.code || ''}`).join(',')}`
@@ -179,15 +199,31 @@ export function useSectionMarketStats(enabled, dealId, sectionCodes) {
     const controller = new AbortController();
     const codes = codesKey.split(',');
     setByCode(Object.fromEntries(codes.map((code) => [code, { stats: null, loading: true, error: null }])));
-    codes.forEach((code) => {
-      fetchJson(`/api/corpus-stats?code=${encodeURIComponent(code)}&deal_id=${encodeURIComponent(dealId)}`, { signal: controller.signal })
-        .then((stats) => {
+    const setCode = (code, entry) => {
+      if (cancelled) return;
+      setByCode((cur) => ({ ...cur, [code]: entry }));
+    };
+    // r13 (corpus-version cache token): never block on the version probe --
+    // getCorpusVersion() always resolves within its own ~2s cap (null on
+    // failure/timeout), same pattern as ClauseSidebar.jsx.
+    getCorpusVersion().then((version) => {
+      if (cancelled) return;
+      const v = version ? `&v=${encodeURIComponent(version)}` : '';
+      fetchJson(`/api/corpus-stats-batch?codes=${encodeURIComponent(codes.join(','))}&deal_id=${encodeURIComponent(dealId)}${v}`, { signal: controller.signal })
+        .then((payload) => {
           if (cancelled) return;
-          setByCode((cur) => ({ ...cur, [code]: { stats, loading: false, error: null } }));
+          const byCodeResult = (payload && payload.byCode) || {};
+          codes.forEach((code) => {
+            const entry = byCodeResult[code];
+            setCode(code, entry ? { stats: entry, loading: false, error: null } : { stats: null, loading: false, error: 'No corpus stats returned for this code' });
+          });
         })
-        .catch((error) => {
+        .catch(() => {
+          // Batch endpoint failed outright (network error, 404 on a stale
+          // deploy, 500, etc.) -- fall back to the per-code path rather than
+          // leaving every section stuck on "loading".
           if (cancelled) return;
-          setByCode((cur) => ({ ...cur, [code]: { stats: null, loading: false, error: error.message || String(error) } }));
+          fetchPerCodeStats(codes, dealId, version, controller.signal, setCode);
         });
     });
     return () => {

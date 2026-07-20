@@ -10,14 +10,25 @@ const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 // which side may exercise the right (Mutual / Buyer / Target), each row a
 // canonical termination right with a short bullet list of its key negotiated
 // terms -- not a flat concept-by-concept grid with a redundant Kind column.
+// r13 (featureKey threading parity): each spec's `featureKeys` names the ONE
+// registry attribute that actually DEFINES the row -- not every field
+// keyTermsForRight() happens to append as a secondary annotation. 'outside'
+// pulls outsideDate/extension/months/conditions into one prose block, but
+// outsideDate is the row's own headline field (the others are qualifiers on
+// it); same logic for curePeriod on the breach rows. 'superior' and
+// 'recommend' get none: their key facts are genuinely derived/multi-source
+// (a boolean-driven sentence, a trigger drawn from either of two attribute
+// names) with no single field that IS the row -- per the sidebar's rule,
+// those get the quieter "doesn't map to a single comparable feature" state
+// rather than a misleading single-field comparison.
 const TERMR_CANONICAL = [
-  { key: 'mutual', label: 'Mutual consent', codes: ['TERMR-MUTUAL'], family: 'mutual' },
-  { key: 'outside', label: 'Outside / End Date', codes: ['TERMR-OUTSIDE', 'TERMR-EXTENSION'], family: 'mutual' },
-  { key: 'legal', label: 'Legal restraint / order', codes: ['TERMR-LEGAL'], family: 'mutual' },
-  { key: 'vote', label: 'Stockholder vote not obtained', codes: ['TERMR-VOTE'], family: 'mutual' },
-  { key: 'breachT', label: 'Company (Target) breach', codes: ['TERMR-BREACH-T'], family: 'buyer' },
+  { key: 'mutual', label: 'Mutual consent', codes: ['TERMR-MUTUAL'], family: 'mutual', featureKeys: ['executionMethod'] },
+  { key: 'outside', label: 'Outside / End Date', codes: ['TERMR-OUTSIDE', 'TERMR-EXTENSION'], family: 'mutual', featureKeys: ['outsideDate'] },
+  { key: 'legal', label: 'Legal restraint / order', codes: ['TERMR-LEGAL'], family: 'mutual', featureKeys: ['restraintFinality'] },
+  { key: 'vote', label: 'Stockholder vote not obtained', codes: ['TERMR-VOTE'], family: 'mutual', featureKeys: ['voteThreshold'] },
+  { key: 'breachT', label: 'Company (Target) breach', codes: ['TERMR-BREACH-T'], family: 'buyer', featureKeys: ['curePeriod'] },
   { key: 'recommend', label: 'Change of Recommendation', codes: ['TERMR-RECOMMEND'], family: 'buyer' },
-  { key: 'breachB', label: 'Parent (Buyer) breach', codes: ['TERMR-BREACH-B'], family: 'target' },
+  { key: 'breachB', label: 'Parent (Buyer) breach', codes: ['TERMR-BREACH-B'], family: 'target', featureKeys: ['curePeriod'] },
   // WS-G T6: the Company's right to terminate for a Superior Proposal
   // (TERMR-SUPERIOR) no longer renders as its own standalone row here -- it
   // now renders INSIDE the Superior Proposal box in the No-Solicitation
@@ -401,6 +412,9 @@ function rowForSpec(spec, cards, PillCell) {
     // ClauseSidebar click-through one.
     sourceCard: card,
     present: Boolean(card),
+    // r13: see TERMR_CANONICAL's comment -- only threaded for specs whose
+    // row is actually defined by one registry attribute.
+    featureKeys: spec.featureKeys || null,
     children: keyTermsNode(spec.key, card, PillCell),
   };
 }
@@ -443,6 +457,12 @@ function crossCuttingRow(id, label, allCards, keys, PillCell) {
     source: hit.card,
     sourceCard: hit.card,
     present: true,
+    // r13: CROSS_CUTTING_ROWS' `keys` arg is a single-attribute lookup list
+    // (willfulBreachException / specificPerformanceMutual) -- hit.key is
+    // exactly the one registry attribute this row IS, so it's always a
+    // clean 1:1 thread (unlike the family rows above, which need per-spec
+    // curation).
+    featureKeys: [hit.key],
     children: pillRow(PillCell, [chip]) || React.createElement('span', { className: 'italic text-inkFaint' }, 'Present, detail not extracted'),
   };
 }

@@ -52,13 +52,24 @@ import { rowsForCard as equityRowsForCard } from '../../components/review/table-
 const { FEATURES } = require('../../lib/schema/features');
 const taxonomy = require('../../lib/taxonomy');
 const { buildFeaturesForCard } = require('../../lib/queries/claims-adapter');
-
-const CACHE = 's-maxage=3600, stale-while-revalidate=86400';
-// Version-keyed requests (`&v=<corpus version>` from /api/corpus-version)
-// are immutable: the version is part of the edge-cache key, and any corpus
-// change mints a new version — so these can cache for a week with no
-// staleness risk beyond corpus-version's own 60s probe window.
-const VERSIONED_CACHE = 's-maxage=604800, stale-while-revalidate=604800';
+// r13 (batch endpoint follow-on): the peer-set/featureSummary/peers/options
+// computation below is now shared with pages/api/corpus-stats-batch.js via
+// lib/queries/corpus-stats-core.js -- see that module's header comment for
+// the base/per-code split. Everything from the CACHE constants through
+// buildCodeStats' equivalent inline logic used to live directly in this
+// file; it's unchanged, just moved so both endpoints run the identical
+// computation instead of a second copy drifting.
+const {
+  CACHE,
+  VERSIONED_CACHE,
+  num,
+  humanizeKey,
+  attributeLabel,
+  valueLabel,
+  cardIdForClaim,
+  buildCorpusBase,
+  buildCodeStats,
+} = require('../../lib/queries/corpus-stats-core');
 
 // The claims fetch filters on provenance->>code — an expression Postgres has
 // no index for, so a cold (uncached) call scans the claims table. When the
@@ -67,99 +78,6 @@ const VERSIONED_CACHE = 's-maxage=604800, stale-while-revalidate=604800';
 // 2026-07-19: 24 five-minute zombies compounding into a 522 pile-up). Fail
 // in 60s instead — the client already has its own abort + retry.
 export const config = { maxDuration: 60 };
-
-function num(v) {
-  const n = Number(v);
-  return Number.isFinite(n) ? n : null;
-}
-
-// "superiorProposalDeterminer" → "Superior proposal determiner";
-// "BOARD_LEGAL_AND_FINANCIAL" → "Board legal and financial".
-function humanizeKey(raw) {
-  const spaced = String(raw || '')
-    .replace(/[_-]+/g, ' ')
-    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
-    .toLowerCase()
-    .trim();
-  return spaced ? spaced.charAt(0).toUpperCase() + spaced.slice(1) : String(raw || '');
-}
-
-// Registry labels can carry long parentheticals/em-dash tails — keep the head.
-function attributeLabel(attribute) {
-  const entry = FEATURES[attribute];
-  const label = entry && entry.label ? String(entry.label) : null;
-  if (!label) return humanizeKey(attribute);
-  return label.split(' — ')[0].split(' (')[0].trim() || humanizeKey(attribute);
-}
-
-function valueLabel(attribute, code) {
-  try {
-    const dict = taxonomy.taxonomyForFeatureKey(attribute);
-    const label = dict ? taxonomy.labelForCode(String(code), dict) : null;
-    if (label) return String(label).split(' — ')[0].trim();
-  } catch { /* fall through */ }
-  return humanizeKey(code);
-}
-
-// Normalize a firm string to its short common name ("Skadden, Arps, Slate…"
-// → "Skadden"); good enough for filtering/labels across 40 deals.
-function firmShort(raw) {
-  const head = String(raw || '').split(',')[0].trim();
-  return head.replace(/\s+LLP$|\s+LLC$|\s+L\.L\.P\.$/i, '').trim() || null;
-}
-
-function dealFirms(deal) {
-  const adv = deal.metadata && deal.metadata.advisors_v2;
-  if (!adv) return [];
-  const firms = new Set();
-  for (const key of ['buyer_firm', 'seller_firm']) {
-    const short = firmShort(adv[key]);
-    if (short) firms.add(short);
-  }
-  for (const key of ['buyer_firms', 'seller_firms']) {
-    for (const f of adv[key] || []) {
-      const short = firmShort(typeof f === 'string' ? f : f && f.firm_raw);
-      if (short) firms.add(short);
-    }
-  }
-  const blocks = (adv.raw && adv.raw.blocks) || [];
-  for (const b of blocks) {
-    for (const f of b.firms || []) {
-      const short = firmShort(f && f.firm_raw);
-      if (short) firms.add(short);
-    }
-  }
-  return [...firms];
-}
-
-function dealPassesFilters(deal, f, firmsByDeal) {
-  if (f.sector && String(deal.sector || '') !== f.sector) return false;
-  const year = deal.announce_date ? Number(String(deal.announce_date).slice(0, 4)) : null;
-  if (f.yearFrom && (!year || year < f.yearFrom)) return false;
-  if (f.yearTo && (!year || year > f.yearTo)) return false;
-  const value = num(deal.value_usd);
-  if (f.minValue && (!value || value < f.minValue)) return false;
-  if (f.maxValue && (!value || value > f.maxValue)) return false;
-  if (f.buyer && String(deal.acquirer || '') !== f.buyer) return false;
-  if (f.form && String((deal.metadata && deal.metadata.merger_form) || '') !== f.form) return false;
-  if (f.lawFirm && !(firmsByDeal.get(deal.id) || []).includes(f.lawFirm)) return false;
-  return true;
-}
-
-// Similarity rank for the comparable-deal list: same sector first, then
-// size proximity (within 3x), then recency. Not a guess dressed as science —
-// just a stable, explainable ordering.
-function similarity(deal, subject) {
-  let score = 0;
-  if (subject && deal.sector && deal.sector === subject.sector) score += 4;
-  const a = num(deal.value_usd); const b = subject && num(subject.value_usd);
-  if (a && b) {
-    const ratio = a > b ? a / b : b / a;
-    if (ratio <= 3) score += 2;
-    else if (ratio <= 10) score += 1;
-  }
-  return score;
-}
 
 // -- rowContext helpers (sidebar redesign) ---------------------------------
 
@@ -227,35 +145,10 @@ function isNumericAttribute(attribute, sampleClaims) {
   return false;
 }
 
-// "<acquirer_display||acquirer> / <target_display||target>" — same flat
-// metadata fields pages/api/deals.js and lib/home-data.js already read
-// (metadata.acquirer_display / metadata.target_display), not the deeper
-// deal_facts.parties resolution lib/deal-display.js does for the main
-// review header -- this is a compact peer-list label, not the canonical
-// display name, so the simple flat fallback is enough.
-function dealLabel(deal) {
-  const meta = (deal && deal.metadata) || {};
-  const acquirer = meta.acquirer_display || deal.acquirer;
-  const target = meta.target_display || deal.target;
-  return [acquirer, target].filter(Boolean).join(' / ') || deal.id;
-}
-
-function buildDealsById(deals) {
-  const map = new Map();
-  for (const d of deals) map.set(d.id, { id: d.id, name: dealLabel(d) });
-  return map;
-}
-
-// provision_cards.id (the id `?card=` deep-links expect) is NOT what claims
-// carry directly -- claims reference provision_cards.excerpt_id (the
-// re-ingest-stable anchor), not the card's uuid primary key. cardIdByKey is
-// built once per request from the SAME provision_cards fetch already used
-// for dealsWithCode, keyed `${deal_id}|${excerpt_id}` -> card id.
-function cardIdForClaim(claim, cardIdByKey) {
-  if (!claim || !claim.excerpt_id) return null;
-  return cardIdByKey.get(`${claim.deal_id}|${claim.excerpt_id}`) || null;
-}
-
+// dealLabel/buildDealsById/cardIdForClaim now live in
+// lib/queries/corpus-stats-core.js (imported above) -- cardIdByKey itself is
+// still built locally below since it's request-scoped (keyed off THIS
+// request's `cards` fetch).
 function dealEntryForClaim(claim, dealsById, cardIdByKey) {
   const d = dealsById.get(claim.deal_id);
   return { id: claim.deal_id, name: d ? d.name : claim.deal_id, cardId: cardIdForClaim(claim, cardIdByKey) };
@@ -466,18 +359,14 @@ export default async function handler(req, res) {
     if (dealsErr) throw new Error(dealsErr.message);
     if (cardsErr) throw new Error(cardsErr.message);
 
-    const stagingFree = (deals || []).filter((d) => !(d.metadata && d.metadata.ingest_status === 'staging'));
-    const firmsByDeal = new Map(stagingFree.map((d) => [d.id, dealFirms(d)]));
-    const subject = subjectDealId ? stagingFree.find((d) => d.id === subjectDealId) : null;
-    const dealsById = buildDealsById(stagingFree);
-    const cardIdByKey = new Map();
-    for (const c of cards || []) {
-      if (c.excerpt_id) cardIdByKey.set(`${c.deal_id}|${c.excerpt_id}`, c.id);
-    }
-
-    const peerSet = stagingFree.filter((d) => dealPassesFilters(d, filters, firmsByDeal));
-    const peerIds = new Set(peerSet.map((d) => d.id));
-    const dealsWithCode = new Set((cards || []).map((c) => c.deal_id).filter((id) => peerIds.has(id)));
+    // r13: base is the code-INDEPENDENT half of the computation (deals fetch
+    // already scoped `code` doesn't affect: staging filter, firm resolution,
+    // peer-set membership, filter option lists) -- shared verbatim with
+    // pages/api/corpus-stats-batch.js. See lib/queries/corpus-stats-core.js.
+    const base = buildCorpusBase({ deals, cards, subjectDealId, filters });
+    const {
+      firmsByDeal, dealsById, cardIdByKey, subject, peerSet, peerIds, options,
+    } = base;
 
     // One claims fetch serves BOTH the legacy featureSummary/peers logic
     // below (which only ever wanted coded/canonical values) AND the new
@@ -498,52 +387,14 @@ export default async function handler(req, res) {
       .limit(4000);
     if (claimsErr) throw new Error(claimsErr.message);
 
-    const byAttribute = new Map();
-    for (const cl of claims || []) {
-      if (!peerIds.has(cl.deal_id)) continue;
-      if (cl.canonical === null || cl.canonical === undefined) continue;
-      if (!byAttribute.has(cl.attribute)) byAttribute.set(cl.attribute, new Map());
-      const values = byAttribute.get(cl.attribute);
-      values.set(cl.canonical, (values.get(cl.canonical) || 0) + 1);
-    }
-    const featureSummary = [...byAttribute.entries()]
-      .map(([attribute, values]) => ({
-        attribute,
-        label: attributeLabel(attribute),
-        values: [...values.entries()]
-          .sort((a, b) => b[1] - a[1])
-          .slice(0, 6)
-          .map(([value, count]) => ({ value, label: valueLabel(attribute, value), count })),
-        total: [...values.values()].reduce((a, b) => a + b, 0),
-      }))
-      .sort((a, b) => b.total - a.total)
-      .slice(0, 8);
-
-    const peers = peerSet
-      .filter((d) => dealsWithCode.has(d.id) && d.id !== subjectDealId)
-      .sort((a, b) => (similarity(b, subject) - similarity(a, subject))
-        || String(b.announce_date || '').localeCompare(String(a.announce_date || '')))
-      .slice(0, 8)
-      .map((d) => ({
-        deal_id: d.id,
-        acquirer: d.acquirer,
-        target: d.target,
-        sector: d.sector,
-        value_usd: d.value_usd,
-        announce_date: d.announce_date,
-        law_firms: firmsByDeal.get(d.id) || [],
-      }));
-
-    // Filter option lists come from the WHOLE corpus (not the filtered set)
-    // so a chosen filter never hides the other options.
-    const options = {
-      sectors: [...new Set(stagingFree.map((d) => d.sector).filter(Boolean))].sort(),
-      buyers: [...new Set(stagingFree.map((d) => d.acquirer).filter(Boolean))].sort(),
-      lawFirms: [...new Set([...firmsByDeal.values()].flat())].sort(),
-      forms: [...new Set(stagingFree.map((d) => d.metadata && d.metadata.merger_form).filter(Boolean))].sort()
-        .map((f) => ({ value: f, label: humanizeKey(f) })),
-      lawFirmCoverage: [...firmsByDeal.values()].filter((f) => f.length).length,
-    };
+    // r13: code-scoped half -- same computation as batch's per-code pass,
+    // just against this single request's cards/claims (already .eq()-scoped
+    // to `code`, so no in-memory partitioning needed here).
+    const {
+      peerSetSize, dealsWithCode, featureSummary, peers,
+    } = buildCodeStats({
+      code, cardsForCode: cards, claimsForCode: claims, subjectDealId, subject, peerSet, peerIds, firmsByDeal,
+    });
 
     // rowContext: scoped corpus context for the specific row/item clicked in
     // the sidebar, built off the SAME `claims` fetch above (no extra query).
@@ -600,8 +451,8 @@ export default async function handler(req, res) {
     res.setHeader('Cache-Control', req.query.v ? VERSIONED_CACHE : CACHE);
     return res.status(200).json({
       code,
-      peerSetSize: peerSet.length,
-      dealsWithCode: dealsWithCode.size,
+      peerSetSize,
+      dealsWithCode,
       featureSummary,
       peers,
       options,

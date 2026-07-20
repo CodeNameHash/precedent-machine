@@ -3638,3 +3638,132 @@ test('r13: QXO/Metsera fragmentCards output is unaffected by the General/Preambl
   }));
   assert.deepEqual(iocMod.fragmentCards(metseraCards).map((c) => c.id), ['frag-i', 'frag-j', 'frag-k']);
 });
+
+// -- r13: featureKey threading parity (sidebar corpus context) ------------
+// makeRows() already carried value/featureKey/sourceCard so ClauseSidebar
+// could send `featureKeys` to /api/corpus-stats for a clicked row; makeRow()
+// (the single-hit sibling, used by approvals-votes.config.js via
+// mappedRows()) never did, so those rows got the sidebar's quieter "doesn't
+// map to a single comparable feature" state even though the underlying data
+// is exactly as single-attribute as makeRows' rows are.
+test('r13: card-utils makeRow() threads featureKey/value/sourceCard, matching makeRows() -- approvals-votes rows now carry it', () => {
+  const { makeRow, mappedRows } = cardUtilsMod;
+  const card = {
+    id: 'approvals-card',
+    provision_type: 'SEC_FILING_MEETING',
+    short_title: 'Vote Threshold',
+    primary_quote: 'A majority of outstanding shares must approve.',
+    features: { voteThreshold: 'Majority of outstanding shares' },
+  };
+  const rows = mappedRows('approvals-votes', [card], [
+    ['vote-threshold', 'Vote threshold', 'Vote', ['voteThreshold', 'requiredVote']],
+  ]);
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0].featureKey, 'voteThreshold', 'makeRow() now threads the resolved feature key, same as makeRows()');
+  assert.equal(rows[0].value, 'Majority of outstanding shares');
+  assert.equal(rows[0].sourceCard, card);
+
+  // Direct makeRow() call (no hit) still returns null -- unchanged contract.
+  assert.equal(makeRow('x', 'y', 'z', 'k', null), null);
+});
+
+test('r13: termination-rights cross-cutting rows (willfulBreachException / specificPerformanceMutual) thread featureKeys 1:1', () => {
+  const cards = [
+    { id: 'wb', provision_type: 'TERMINATION_FEE', provision_subtype: 'TERMF-COMPANY', primary_quote: 'Willful breach carve-out applies.', features: { willfulBreachException: 'Yes, fraud and willful breach excluded.' } },
+    { id: 'sp', provision_type: 'MISC', provision_subtype: 'MISC-REMEDIES', primary_quote: 'Specific performance available to either party.', features: { specificPerformanceMutual: 'true' } },
+  ];
+  const groups = terminationRightsMod.crossCuttingGroup({ cards });
+  const willfulRow = groups.rows.find((r) => r.id === 'termination-rights-willful-breach');
+  const specPerfRow = groups.rows.find((r) => r.id === 'termination-rights-specific-performance-mutual');
+  assert.deepEqual(willfulRow.featureKeys, ['willfulBreachException']);
+  assert.deepEqual(specPerfRow.featureKeys, ['specificPerformanceMutual']);
+});
+
+test('r13: termination-rights family rows thread featureKeys for their headline field (outside/legal/vote/breach/mutual), but NOT for the genuinely compound recommend row', () => {
+  const outsideSpec = terminationRightsMod.TERMR_CANONICAL.find((s) => s.key === 'outside');
+  const legalSpec = terminationRightsMod.TERMR_CANONICAL.find((s) => s.key === 'legal');
+  const voteSpec = terminationRightsMod.TERMR_CANONICAL.find((s) => s.key === 'vote');
+  const breachTSpec = terminationRightsMod.TERMR_CANONICAL.find((s) => s.key === 'breachT');
+  const mutualSpec = terminationRightsMod.TERMR_CANONICAL.find((s) => s.key === 'mutual');
+  const recommendSpec = terminationRightsMod.TERMR_CANONICAL.find((s) => s.key === 'recommend');
+  assert.deepEqual(outsideSpec.featureKeys, ['outsideDate']);
+  assert.deepEqual(legalSpec.featureKeys, ['restraintFinality']);
+  assert.deepEqual(voteSpec.featureKeys, ['voteThreshold']);
+  assert.deepEqual(breachTSpec.featureKeys, ['curePeriod']);
+  assert.deepEqual(mutualSpec.featureKeys, ['executionMethod']);
+  assert.equal(recommendSpec.featureKeys, undefined, 'recommend\'s key fact is derived from either of two attribute names -- no single field IS the row');
+
+  const outsideCard = { id: 'o', provision_type: 'TERMINATION_RIGHT', provision_subtype: 'TERMR-OUTSIDE', primary_quote: 'Outside date text.', features: { outsideDate: 'June 30, 2026' } };
+  const row = terminationRightsMod.rowForSpec(outsideSpec, [outsideCard]);
+  assert.deepEqual(row.featureKeys, ['outsideDate'], 'rowForSpec threads the spec\'s featureKeys onto the built row');
+
+  const recommendRow = terminationRightsMod.rowForSpec(recommendSpec, []);
+  assert.equal(recommendRow.featureKeys, null);
+});
+
+test('r13: conditions.config.js threads featureKeys for single-attribute families (MAE/LEGAL) and withholds them for the compound REG multi-approval list', async () => {
+  const conditionsMod = await import(path.join('..', 'components', 'review', 'table-configs', 'conditions.config.js'));
+  // MAE is a Buyer('B')-band canonical code (CANONICAL_CONDITIONS_B's
+  // COND-B-MAE) -- LEGAL/REG are Mutual('M')-band codes. Matched via
+  // cardToProvision's derived canonicalCode (from provision_subtype), not
+  // the features object directly -- see conditions-m.config.js.
+  const maeCard = {
+    id: 'mae', provision_type: 'CLOSING_CONDITION', provision_subtype: 'COND-B-MAE',
+    primary_quote: 'No Material Adverse Effect shall have occurred and be continuing.',
+    features: { continuingRequirement: true, mainCondition: 'No MAE.' },
+  };
+  const legalCard = {
+    id: 'legal', provision_type: 'CLOSING_CONDITION', provision_subtype: 'COND-M-LEGAL',
+    primary_quote: 'No legal restraint in effect.',
+    features: { absenceOfEnjoiningOrderPresent: true },
+  };
+  const regCard = {
+    id: 'reg', provision_type: 'CLOSING_CONDITION', provision_subtype: 'COND-M-REG',
+    primary_quote: 'HSR and scheduled approvals obtained.',
+    features: {
+      antitrustApprovals: [{ code: 'HSR' }, { code: 'SCHEDULED_APPROVALS' }],
+    },
+  };
+  const reviewDeal = { cards: [maeCard, legalCard, regCard] };
+  const groups = conditionsMod.conditionGroups(reviewDeal, {});
+  const mutualGroup = groups.find((g) => g.id === 'mutual');
+  const buyerGroup = groups.find((g) => g.id === 'buyer');
+  // Row ids are `conditions-<band>-<canonical label>` (from the underlying
+  // conditionsMConfig/conditionsBConfig row, not the card id) -- look up by
+  // card via evidence text instead of guessing the id string.
+  const maeRow = buyerGroup.rows.find((r) => r.card === maeCard);
+  const legalRow = mutualGroup.rows.find((r) => r.card === legalCard);
+  const regRow = mutualGroup.rows.find((r) => r.card === regCard);
+  assert.ok(maeRow, 'MAE row matched under the buyer band');
+  assert.ok(legalRow, 'LEGAL row matched under the mutual band');
+  assert.ok(regRow, 'REG row matched under the mutual band');
+  assert.deepEqual(maeRow.featureKeys, ['continuingRequirement']);
+  assert.deepEqual(legalRow.featureKeys, ['absenceOfEnjoiningOrderPresent']);
+  assert.equal(regRow.featureKeys, null, 'REG\'s multi-approval list has no single comparable feature');
+});
+
+test('r13: conditions.config.js generic (S4/LISTING/DISSENT/FUNDS-style) rows thread featureKeys ONLY when exactly one field fired', async () => {
+  const conditionsMod = await import(path.join('..', 'components', 'review', 'table-configs', 'conditions.config.js'));
+  const singleFieldCard = {
+    id: 'single', provision_type: 'CLOSING_CONDITION', provision_subtype: 'COND-M-LISTING',
+    primary_quote: 'Cure period of 10 business days applies.',
+    features: { cureDays: 10 },
+  };
+  // COND-M-S4 (S-4/proxy effective, no bespoke synthesis) also falls to the
+  // generic branch -- used here (not COND-M-DISSENT, which is a Buyer-band
+  // code) so both fixtures stay in the same 'mutual' band.
+  const multiFieldCard = {
+    id: 'multi', provision_type: 'CLOSING_CONDITION', provision_subtype: 'COND-M-S4',
+    primary_quote: 'Threshold of $5,000,000 with a 10-day cure period.',
+    features: { dollarThreshold: '$5,000,000', cureDays: 10 },
+  };
+  const reviewDeal = { cards: [singleFieldCard, multiFieldCard] };
+  const groups = conditionsMod.conditionGroups(reviewDeal, {});
+  const mutualGroup = groups.find((g) => g.id === 'mutual');
+  const singleRow = mutualGroup.rows.find((r) => r.card === singleFieldCard);
+  const multiRow = mutualGroup.rows.find((r) => r.card === multiFieldCard);
+  assert.ok(singleRow, 'LISTING row matched');
+  assert.ok(multiRow, 'S4 row matched');
+  assert.deepEqual(singleRow.featureKeys, ['cureDays'], 'exactly one generic field fired -- 1:1, threaded');
+  assert.equal(multiRow.featureKeys, null, 'two generic fields fired (dollarThreshold + cureDays) -- no single comparable feature');
+});
