@@ -270,11 +270,9 @@ export default function ReviewPage() {
   /* ── Compare / market modes ──
      ?compare=<dealId>[,<dealId2>]: one narrow column per compared deal
      beside each section (same configs, same components, read-only).
-     ?market=1: a "Market" column per section (corpus-stats for the
-     section's dominant subtype) + an "Off-market terms" section on top
-     (DEAL_TO_MARKET executor output, commercial fields excluded). The
-     provisions nav, scrollspy and corpus sidebar all keep operating on the
-     PRIMARY deal only. */
+     ?market=1: a typed market result for every visible row, fetched in one
+     page-level batch. The provisions nav, scrollspy and corpus sidebar all
+     keep operating on the PRIMARY deal only. */
   const compareIds = useMemo(
     () => (router.isReady ? parseCompareIds(router.query.compare, dealId) : []),
     [router.isReady, router.query.compare, dealId],

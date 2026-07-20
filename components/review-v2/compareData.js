@@ -1,11 +1,12 @@
-// Review page compare/market data layer (Ben: "deal compare / deal to
-// market should look EXACTLY like the main review page"). Client-side hooks
-// powering /review/[id]?compare=<dealId>[,<dealId2>] and ?market=1:
+// Review page compare/market data layer. Client-side hooks powering
+// /review/[id]?compare=<dealId>[,<dealId2>] and ?market=1:
 //
 //   - useComparedDeals(ids)      -> per-compared-deal { name, reviewDeal }
 //                                   via the SAME /api/deals?view=header +
 //                                   /api/review/<id>/cards fetches the page
 //                                   already uses for the primary deal.
+//   - useRowMarketStats(...)     -> one typed POST covering every visible
+//                                   review row.
 //   - useSectionMarketStats(...) -> one GET /api/corpus-stats per section
 //                                   (keyed by the section's dominant
 //                                   provision_subtype), Promise-batched on
@@ -21,6 +22,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { reconstructReviewDeal } from '../../lib/queries/reconstruct-review-deal';
 import { getCorpusVersion } from '../../lib/client/corpus-version.js';
+import {
+  mergeMarketMetricBatchResponses,
+  splitMarketMetricBatchRequest,
+} from '../../lib/market-metrics';
 
 const UUID_RE = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
 const MAX_COMPARED = 3;
@@ -61,9 +66,9 @@ export function dealDisplayName(deal) {
 // infinite spinner.
 const FETCH_TIMEOUT_MS = 15000;
 
-async function fetchJson(url, { signal } = {}) {
+async function fetchJson(url, { signal, timeoutMs = FETCH_TIMEOUT_MS, ...requestInit } = {}) {
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
   // Let an external (effect-cleanup) abort also cancel this fetch.
   const onExternalAbort = () => controller.abort();
   if (signal) {
@@ -71,9 +76,14 @@ async function fetchJson(url, { signal } = {}) {
     else signal.addEventListener('abort', onExternalAbort);
   }
   try {
-    const response = await fetch(url, { signal: controller.signal });
+    const response = await fetch(url, { ...requestInit, signal: controller.signal });
     const payload = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(payload.error || `HTTP ${response.status}`);
+    if (!response.ok) {
+      const message = typeof payload.error === 'string'
+        ? payload.error
+        : payload.error?.message || payload.message || `HTTP ${response.status}`;
+      throw new Error(message);
+    }
     return payload;
   } catch (err) {
     if (err && err.name === 'AbortError') {
@@ -88,6 +98,55 @@ async function fetchJson(url, { signal } = {}) {
     clearTimeout(timeoutId);
     if (signal) signal.removeEventListener('abort', onExternalAbort);
   }
+}
+
+// One typed batch for every visible review row. `request` is produced by
+// buildMarketMetricBatchRequest() and contains the row contract, not display
+// data, so the server can apply one denominator and unit policy consistently.
+export function useRowMarketStats(enabled, request) {
+  const requestKey = enabled && request?.specs?.length ? JSON.stringify(request) : '';
+  const [state, setState] = useState({ byRow: {}, rowOrder: [], cohort: null, loading: false, error: null });
+  const [retryNonce, setRetryNonce] = useState(0);
+
+  useEffect(() => {
+    if (!requestKey) {
+      setState({ byRow: {}, rowOrder: [], cohort: null, loading: false, error: null });
+      return undefined;
+    }
+    let cancelled = false;
+    const controller = new AbortController();
+    setState({ byRow: {}, rowOrder: [], cohort: null, loading: true, error: null });
+    const fullRequest = JSON.parse(requestKey);
+    const requests = splitMarketMetricBatchRequest(fullRequest);
+    Promise.all(requests.map((batch) => fetchJson('/api/market-stats', {
+      signal: controller.signal,
+      timeoutMs: 30000,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(batch),
+    })))
+      .then((payloads) => {
+        if (cancelled) return;
+        const payload = mergeMarketMetricBatchResponses(payloads, fullRequest);
+        setState({
+          byRow: payload?.byRow || {},
+          rowOrder: Array.isArray(payload?.rowOrder) ? payload.rowOrder : [],
+          cohort: payload?.cohort || null,
+          loading: false,
+          error: null,
+        });
+      })
+      .catch((error) => {
+        if (cancelled || error?.name === 'AbortError') return;
+        setState({ byRow: {}, rowOrder: [], cohort: null, loading: false, error: error.message || String(error) });
+      });
+    return () => {
+      cancelled = true;
+      controller.abort();
+    };
+  }, [requestKey, retryNonce]);
+
+  return { ...state, retry: () => setRetryNonce((n) => n + 1) };
 }
 
 // One column per compared deal: { id, name, reviewDeal, loading, error }.

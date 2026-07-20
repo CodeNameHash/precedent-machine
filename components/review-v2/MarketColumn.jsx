@@ -1,20 +1,8 @@
-// Review page market mode (?market=1). Two pieces:
-//
-//   - MarketSectionColumn — the per-section "Market" column beside each
-//     primary section: prevalence ("N of M deals carry this provision") +
-//     the corpus's common values for the section's dominant subtype, from
-//     one edge-cached GET /api/corpus-stats per section (see
-//     useSectionMarketStats in compareData.js). The chip treatment mirrors
-//     ClauseSidebar's "Common values across the peer set" block —
-//     ClauseSidebar keeps its own inline copy (its internals aren't
-//     exported and that file is owned elsewhere), the DATA path is shared:
-//     both consume the same corpus-stats featureSummary shape.
-//
-//   - OffMarketSection — the "Off-market terms" section pinned above the
-//     section list: the DEAL_TO_MARKET executor's off-market/unusual rows
-//     (commercial fields excluded — see compareData.js), rendered as a
-//     review-style section: field label + this deal's value + market norm.
-//     Hidden entirely when there are no rows.
+// Review page market mode (?market=1). MarketRowsColumn renders the typed,
+// row-level batch response. The older section and off-market exports remain
+// for callers outside the main review page.
+
+import { matchingMoneyCohort } from './marketSummaryHelpers';
 
 const { prettifyEnumValue } = require('../review/shared');
 // r19 (WP-A, numeric market cells): unit-aware formatting moved to its own
@@ -85,13 +73,6 @@ function StatusNote({ children }) {
   );
 }
 
-// C (deal-to-market/compare robustness, Supabase-degraded incident): a
-// failed/timed-out corpus-stats fetch used to leave "Loading market data…"
-// on screen forever, or (once compareData.js's fetch DID reject) a dead-end
-// error with no retry. compareData.js's fetchJson now bounds every request
-// with a 15s AbortController timeout, and useSectionMarketStats/
-// useDealToMarket both expose retry() -- this renders the friendly,
-// retryable error state for both.
 function ErrorNote({ onRetry, children }) {
   return (
     <div className="border border-[#E0E0E0] bg-white px-3 py-4 flex items-center justify-between gap-2">
@@ -113,11 +94,11 @@ function ErrorNote({ onRetry, children }) {
 // Per-section market cell. `entry` from useSectionMarketStats:
 // { code, stats, loading, error }.
 export function MarketSectionColumn({ entry, onRetry }) {
-  if (!entry || !entry.code) return <StatusNote>No market data for this section.</StatusNote>;
+  if (!entry || !entry.code) return <StatusNote>No market metric is configured for this section.</StatusNote>;
   if (entry.loading) return <StatusNote>Loading market data…</StatusNote>;
   if (entry.error) return <ErrorNote onRetry={onRetry}>Market data unavailable right now — retry</ErrorNote>;
   const stats = entry.stats;
-  if (!stats) return <StatusNote>No market data for this section.</StatusNote>;
+  if (!stats) return <StatusNote>The market metric returned no result.</StatusNote>;
   const featureSummary = Array.isArray(stats.featureSummary) ? stats.featureSummary : [];
   return (
     <div className="border border-[#E0E0E0] bg-white px-3 py-3" style={{ fontFamily: 'var(--mtx-sans)' }} data-testid="market-section-column">
@@ -150,6 +131,211 @@ export function MarketSectionColumn({ entry, onRetry }) {
       ) : (
         <p className="text-[10px] text-[#9A9A9A]">No common-value summary captured for this provision type.</p>
       )}
+    </div>
+  );
+}
+
+function formatPercent(value, { proportion = false } = {}) {
+  if (value === null || value === undefined || value === '') return null;
+  const number = Number(value);
+  if (!Number.isFinite(number)) return null;
+  const percent = proportion ? number * 100 : number;
+  const digits = Math.abs(percent) < 0.1 ? 2 : Math.abs(percent) < 10 ? 1 : 0;
+  return `${percent.toFixed(digits)}%`;
+}
+
+function formatUnit(unit, value) {
+  const singular = Math.abs(Number(value)) === 1;
+  const labels = {
+    elapsed_hours: singular ? 'hour' : 'hours',
+    business_days: singular ? 'business day' : 'business days',
+    calendar_days: singular ? 'calendar day' : 'calendar days',
+    months: singular ? 'month' : 'months',
+    years: singular ? 'year' : 'years',
+    percent: '%',
+    multiplier: '×',
+  };
+  return labels[unit] || unit || '';
+}
+
+function formatNumeric(value, unit) {
+  if (!Number.isFinite(Number(value))) return '—';
+  const number = roundNum(value);
+  const label = formatUnit(unit, value);
+  if (label === '%' || label === '×') return `${number}${label}`;
+  return label ? `${number} ${label}` : number;
+}
+
+function formatBasis(basis) {
+  return ({
+    equity_value: 'equity value',
+    enterprise_value: 'enterprise value',
+    headline_transaction_value: 'headline deal value',
+  })[basis] || humanizeCode(basis);
+}
+
+function coverageNote(result) {
+  const coverage = result?.coverage;
+  if (!coverage) return null;
+  const notes = [];
+  if (coverage.unknownCount) notes.push(`${coverage.unknownCount} unclassified`);
+  if (coverage.valueUnknownCount) notes.push(`${coverage.valueUnknownCount} value${coverage.valueUnknownCount === 1 ? '' : 's'} not extracted`);
+  if (coverage.excludedCount) notes.push(`${coverage.excludedCount} excluded as non-comparable`);
+  return notes.length ? notes.join(' · ') : null;
+}
+
+function subjectText(result, kind) {
+  const subject = result?.subject;
+  if (!subject) return null;
+  if (subject.status === 'unknown') return 'This deal: not extracted';
+  if (subject.status === 'absent') return 'This deal: absent';
+  if (subject.status !== 'present') return null;
+  if (kind === 'presence') return 'This deal: present';
+  if (kind === 'money') {
+    if (!Number.isFinite(subject.rawUsd)) return 'This deal: value not extracted';
+    const relative = Number.isFinite(subject.percentOfDealValue)
+      ? ` · ${formatPercent(subject.percentOfDealValue)} of ${formatBasis(subject.dealValueBasis)}`
+      : ' · relative value unavailable';
+    return `This deal: ${formatMoney(subject.rawUsd)}${relative}`;
+  }
+  if (kind === 'categorical') return subject.value == null ? 'This deal: value not extracted' : `This deal: ${formatMarketValue(subject.value)}`;
+  if (kind === 'multi_select') {
+    const values = Array.isArray(subject.values) ? subject.values : [];
+    return values.length ? `This deal: ${values.map((value) => formatMarketValue(value)).join(', ')}` : 'This deal: value not extracted';
+  }
+  if (kind === 'numeric' || kind === 'duration') {
+    return Number.isFinite(subject.value)
+      ? `This deal: ${formatNumeric(subject.value, subject.semantics?.unit)}`
+      : 'This deal: value not extracted';
+  }
+  return null;
+}
+
+function PresenceResult({ result }) {
+  const present = result?.prevalence?.presentCount ?? result?.coverage?.presentCount ?? 0;
+  const eligible = result?.prevalence?.eligibleCount ?? result?.coverage?.eligibleCount ?? 0;
+  const rate = formatPercent(result?.prevalence?.rate, { proportion: true });
+  return (
+    <>
+      <p className="text-[11px] font-bold text-[#1F1F1F]" style={{ fontVariantNumeric: 'tabular-nums' }}>
+        Observed in {present} of {eligible} peer deals{rate ? ` · ${rate}` : ''}
+      </p>
+      {coverageNote(result) ? <p className="mt-1 text-[9px] text-[#8A8782]">{coverageNote(result)}</p> : null}
+    </>
+  );
+}
+
+function ValuesResult({ result, kind }) {
+  const distribution = result?.distribution;
+  if (!distribution) return <p className="text-[10px] text-[#8A8782]">Value distribution unavailable.</p>;
+
+  if (kind === 'categorical' || kind === 'multi_select') {
+    const values = Array.isArray(distribution.values) ? distribution.values.slice(0, 4) : [];
+    return values.length ? (
+      <div className="flex flex-wrap gap-1">
+        {values.map((item) => (
+          <span key={`${String(item.value)}-${item.count}`} className="border border-[#D8E2EF] bg-[#F3F7FB] px-1.5 py-0.5 text-[8.5px] text-[#2F6DB5]">
+            {formatMarketValue(item.value)} · {item.count}/{distribution.denominatorCount}
+          </span>
+        ))}
+      </div>
+    ) : <p className="text-[10px] text-[#8A8782]">Values not yet structured.</p>;
+  }
+
+  if (kind === 'money') {
+    const subjectBasis = result?.subject?.dealValueBasis;
+    const cohort = matchingMoneyCohort(distribution, subjectBasis);
+    const relative = cohort?.percent?.stats;
+    const raw = distribution.raw?.stats;
+    return (
+      <div className="space-y-0.5 text-[10px] text-[#1F1F1F]">
+        {relative ? (
+          <p>
+            Peer median {formatPercent(relative.median)} of {formatBasis(cohort.basis)}
+            {' · '}IQR {formatPercent(relative.p25)}–{formatPercent(relative.p75)} · n={relative.n}
+          </p>
+        ) : <p className="text-[#8A8782]">No same-basis percentage cohort yet.</p>}
+        {raw ? <p className="text-[#6B6B6B]">Raw median {formatMoney(raw.median)} · n={raw.n}</p> : null}
+      </div>
+    );
+  }
+
+  const cohort = Array.isArray(distribution.cohorts) ? distribution.cohorts[0] : null;
+  const stats = cohort?.stats;
+  if (!stats) return <p className="text-[10px] text-[#8A8782]">Comparable values not yet extracted.</p>;
+  const unit = cohort.semantics?.unit;
+  return (
+    <p className="text-[10px] text-[#1F1F1F]">
+      Peer median {formatNumeric(stats.median, unit)} · IQR {formatNumeric(stats.p25, unit)}–{formatNumeric(stats.p75, unit)} · n={stats.n}
+    </p>
+  );
+}
+
+function MetricResult({ spec, result, showLabel }) {
+  if (!result) return <p className="text-[10px] text-[#8A8782]">Awaiting a typed market result.</p>;
+  if (result.state === 'not_comparable') {
+    return (
+      <div>
+        {showLabel ? <p className="text-[9px] font-bold text-[#6B6B6B] mb-0.5">{spec.label}</p> : null}
+        <p className="text-[10px] text-[#8A642E]">Not comparable: {result.reason?.detail || 'no safe denominator is defined.'}</p>
+      </div>
+    );
+  }
+  if (result.state === 'error') return <p className="text-[10px] text-[#B14E63]">Metric failed: {result.error?.message || 'unknown error'}</p>;
+  const kind = spec?.comparison?.kind || result.distribution?.kind;
+  const subject = subjectText(result, kind);
+  return (
+    <div>
+      {showLabel ? <p className="text-[9px] font-bold text-[#6B6B6B] mb-0.5">{spec.label}</p> : null}
+      {subject ? <p className="text-[9.5px] text-[#2F6DB5] mb-0.5">{subject}</p> : null}
+      {kind === 'presence' ? <PresenceResult result={result} /> : <ValuesResult result={result} kind={kind} />}
+      {kind !== 'presence' && coverageNote(result) ? <p className="mt-1 text-[9px] text-[#8A8782]">{coverageNote(result)}</p> : null}
+    </div>
+  );
+}
+
+export function MarketRowsColumn({ section, data, onRetry }) {
+  const rows = section?.rows || [];
+  const resolvedCount = rows.filter((row) => data?.byRow?.[row.rowKey]).length;
+  return (
+    <div className="border border-[#E0E0E0] bg-white" style={{ fontFamily: 'var(--mtx-sans)' }} data-testid="market-rows-column">
+      <div className="px-3 py-2 border-b border-[#E0E0E0] flex items-center justify-between gap-2">
+        <span className="text-[9px] font-bold uppercase tracking-[0.12em] text-[#6B6B6B]">Row coverage</span>
+        <span className="text-[9px] text-[#6B6B6B]" style={{ fontVariantNumeric: 'tabular-nums' }}>
+          {data?.loading ? `${rows.length} rows loading` : `${resolvedCount}/${rows.length} resolved`}
+        </span>
+      </div>
+      {data?.error ? <ErrorNote onRetry={onRetry}>Market comparison unavailable: {data.error}</ErrorNote> : null}
+      {!rows.length ? <StatusNote>No extracted rows require a market comparison.</StatusNote> : null}
+      <div>
+        {rows.map((row) => {
+          const responseRow = data?.byRow?.[row.rowKey];
+          return (
+            <div
+              key={row.rowKey}
+              className="px-3 py-3 border-b border-[#EDEDEC] last:border-b-0"
+              data-market-row-key={row.rowKey}
+              data-market-provision-codes={row.metrics[0]?.cohort?.provisionCodes?.join(',') || undefined}
+            >
+              <p className="text-[10.5px] font-bold text-[#1F1F1F] mb-1.5">{row.label}</p>
+              {data?.loading ? <p className="text-[10px] text-[#8A8782]">Loading comparison…</p> : null}
+              {!data?.loading && !data?.error ? (
+                <div className="space-y-2">
+                  {row.metrics.map((spec) => (
+                    <MetricResult
+                      key={spec.metricKey}
+                      spec={spec}
+                      result={responseRow?.metrics?.[spec.metricKey]}
+                      showLabel={row.metrics.length > 1}
+                    />
+                  ))}
+                </div>
+              ) : null}
+              {row.errors?.length ? <p className="mt-1 text-[9px] text-[#B14E63]">Metric contract needs attention.</p> : null}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

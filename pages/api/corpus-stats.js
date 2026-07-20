@@ -143,10 +143,34 @@ function buildFeatureDistribution(attribute, peerClaims, subjectDealId, dealsByI
   if (isNumericAttribute(attribute, peerClaims)) {
     const byDeal = new Map();
     const claimByDeal = new Map();
-    for (const cl of peerClaims) {
-      if (byDeal.has(cl.deal_id)) continue; // one value per deal
-      const n = extractNumeric(cl);
-      if (n !== null) { byDeal.set(cl.deal_id, n); claimByDeal.set(cl.deal_id, cl); }
+    let unit = (FEATURES[attribute] && FEATURES[attribute].unit) || null;
+    let strictDurationCohort = null;
+
+    if (isDurationAttribute(attribute)) {
+      const { cohort } = selectDurationCohort({
+        claims: peerClaims,
+        subjectDealId,
+        requestedCode: options.requestedCode,
+        evidenceByCardKey: options.evidenceByCardKey,
+      });
+      if (!cohort) return null;
+      unit = cohort.unit;
+      strictDurationCohort = {
+        unit: cohort.unit,
+        triggerScoped: true,
+        eligibleDealCount: cohort.eligibleDealCount,
+        excludedDealCount: cohort.excludedDealCount,
+      };
+      for (const entry of cohort.entries) {
+        byDeal.set(entry.claim.deal_id, entry.duration.value);
+        claimByDeal.set(entry.claim.deal_id, entry.claim);
+      }
+    } else {
+      for (const cl of peerClaims) {
+        if (byDeal.has(cl.deal_id)) continue; // one value per deal
+        const n = extractNumeric(cl);
+        if (n !== null) { byDeal.set(cl.deal_id, n); claimByDeal.set(cl.deal_id, cl); }
+      }
     }
     const nums = [...byDeal.values()].sort((a, b) => a - b);
     if (!nums.length) return null;
@@ -184,6 +208,7 @@ function buildFeatureDistribution(attribute, peerClaims, subjectDealId, dealsByI
       thisDealValue,
       thisDealRank: rank,
       values,
+      ...(strictDurationCohort ? { strictDurationCohort } : {}),
     };
   }
   // r18 (Ben, "327 of 666 peer deals" on a 40-deal corpus): categorical
@@ -322,7 +347,7 @@ export default async function handler(req, res) {
       // provision_subtype select, needed to resolve claims.excerpt_id ->
       // provision_cards.id (the card uuid `?card=` deep-links expect) --
       // see cardIdByKey below. Still the one query, still scoped to `code`.
-      sb.from('provision_cards').select('deal_id, provision_subtype, id, excerpt_id').eq('provision_subtype', code),
+      sb.from('provision_cards').select('deal_id, provision_subtype, id, excerpt_id, primary_quote, region_full_text').eq('provision_subtype', code),
     ]);
     if (dealsErr) throw new Error(dealsErr.message);
     if (cardsErr) throw new Error(cardsErr.message);
