@@ -45,17 +45,20 @@ alone. Never include secrets (.env.local values) in any prompt.
   `/api/deals`) — prior sessions cached these as
   `cards-<dealId>.json` files; the cache is session-local, rebuild it.
 
-## In flight (r19 round, agent-side — tick when landed)
+## r19 round — LANDED (2026-07-20)
 
-- [ ] WP-A: numeric percentile data in /api/corpus-stats-batch + numeric
-      market-column cells + off-market rows feeding OffMarketSection
-      (keeping its commercial-terms exclusion).
-- [ ] WP-B: nosol table configs' hardcoded row labels audited against
-      the clarified registry semantics (engagement vs final
-      determination; initial vs subsequent match period).
-- [ ] WP-C: appraisal-rights codebook (AVAILABLE / NOT_AVAILABLE /
-      SILENT) on the standard delivery-script pattern, per-deal table
-      for Ben review.
+- [x] WP-A: numeric featureSummary entries (min/p25/median/p75/max +
+      percentOfDeal + relative-period basis) in both corpus-stats
+      endpoints; numeric market cells render median headlines; off-
+      market rows (coded ≠ mode; numeric outside p25–p75) feed
+      OffMarketSection with the commercial exclusion intact.
+- [x] WP-B: nosol labels audited; the coded engagement-standard rows
+      disambiguated ("Engagement standard (coded)"), contextually
+      correct labels kept.
+- [x] WP-C: appraisal-rights codebook shipped — 28 AVAILABLE, 5 express
+      NOT_AVAILABLE, 7 UNRESOLVED-as-data-gaps, none forced SILENT;
+      `scripts/code-appraisal-rights.js` awaits Ben review + --apply
+      (step 7 of the runbook).
 
 ## Ben runbook (his machine; all dry-run first)
 

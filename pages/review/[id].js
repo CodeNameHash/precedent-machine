@@ -44,8 +44,9 @@ import {
   useDealToMarket,
   dominantSectionCode,
   dealDisplayName,
+  isCommercialField,
 } from '../../components/review-v2/compareData';
-import { UnifiedCompareSection, UnifiedDefinitionsSection, CompareMasthead } from '../../components/review-v2/CompareColumn';
+import { UnifiedCompareSection, UnifiedDefinitionsSection, CompareMasthead, collectOffMarketEntries } from '../../components/review-v2/CompareColumn';
 import { OffMarketSection } from '../../components/review-v2/MarketColumn';
 
 const CONSIDERATION_SECTION_ID = 'consideration-hero';
@@ -292,6 +293,39 @@ export default function ReviewPage() {
   }, [marketMode, sections, cardsBySection]);
   const { bySection: marketStats, retry: retryMarketStats } = useSectionMarketStats(marketMode, dealId, sectionCodes);
   const dealToMarket = useDealToMarket(marketMode, dealId);
+  // r19 (WP-A, "off-market feed"): the unified market column's per-row
+  // off-market marker (coded: differs from the corpus mode; numeric:
+  // outside p25-p75 — CompareColumn.jsx's isOffMarketRow) used to mark
+  // cells but never fed the "Off-market terms" top section, which only
+  // ever showed the separate DEAL_TO_MARKET executor's scorecard rows.
+  // Wire it: scan every section's PRIMARY-deal rows (flat + grouped) for
+  // the SAME off-market flag, excluding commercial fields via
+  // compareData.js's isCommercialField -- kept exactly as the DEAL_TO_
+  // MARKET-driven rows already do -- and merge the result into the section
+  // alongside those rows (de-duped so a field flagged by both surfaces
+  // doesn't render twice).
+  const marketOffMarketRows = useMemo(() => {
+    if (!marketMode) return [];
+    const seen = new Set();
+    const out = [];
+    for (const section of sections) {
+      if (section.id === '__definitions') continue;
+      const marketColumn = marketStats[section.id] || null;
+      const entries = collectOffMarketEntries(section, reviewDealForTables, marketColumn);
+      for (const entry of entries) {
+        if (isCommercialField(entry)) continue;
+        const key = `${entry.provision_type || ''}|${entry.field_path}|${entry.field_label}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        out.push(entry);
+      }
+    }
+    return out;
+  }, [marketMode, sections, reviewDealForTables, marketStats]);
+  const offMarketData = useMemo(() => ({
+    ...dealToMarket,
+    rows: [...(dealToMarket.rows || []), ...marketOffMarketRows],
+  }), [dealToMarket, marketOffMarketRows]);
   // r18 item 5 (Ben, "not this two sets of tables crap"): both compared
   // deals AND the market column now render as extra answer columns INSIDE
   // the same unified per-section table (UnifiedCompareSection /
@@ -576,7 +610,7 @@ export default function ReviewPage() {
             ) : null}
 
             <div className={wideLayout ? 'space-y-10' : 'space-y-10 max-w-3xl mx-auto'}>
-              {marketMode ? <OffMarketSection data={dealToMarket} /> : null}
+              {marketMode ? <OffMarketSection data={offMarketData} /> : null}
               {sections.map((section) => (
                 <SectionBlock
                   key={section.id}

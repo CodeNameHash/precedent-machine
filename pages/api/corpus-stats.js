@@ -49,7 +49,6 @@
 import { getServiceSupabase } from '../../lib/supabase';
 import { rowsForCard as equityRowsForCard } from '../../components/review/table-configs/equity-awards.config.js';
 
-const { FEATURES } = require('../../lib/schema/features');
 const taxonomy = require('../../lib/taxonomy');
 // r14 (Ben, "compare look-back LENGTHS, not dates"): registry of deal-
 // relative anchor fields (lib/query/relative-periods.js — audited field
@@ -57,6 +56,10 @@ const taxonomy = require('../../lib/taxonomy');
 // builder in corpus-stats-core (CJS, unit-tested directly there).
 const { isRelativePeriodField } = require('../../lib/query/relative-periods');
 const { buildFeaturesForCard } = require('../../lib/queries/claims-adapter');
+// r19 (WP-A, numeric market cells): the SAME percentile primitive
+// corpus-stats-core.js's featureSummary numeric entries use — reused here so
+// rowContext's numeric distribution and featureSummary never disagree.
+const { quantile } = require('../../lib/query/market-baseline');
 // r13 (batch endpoint follow-on): the peer-set/featureSummary/peers/options
 // computation below is now shared with pages/api/corpus-stats-batch.js via
 // lib/queries/corpus-stats-core.js -- see that module's header comment for
@@ -82,6 +85,13 @@ const {
   // in corpus-stats-core.js for the fixed semantics.
   scopeClaimsForContext,
   buildCategoricalDealDistribution,
+  // r19 (WP-A, numeric market cells): moved to corpus-stats-core.js so this
+  // endpoint's rowContext numeric distribution and the batch endpoint's
+  // featureSummary numeric entries share the exact same extraction — no
+  // more local copy here to drift.
+  extractNumeric,
+  isNumericAttribute,
+  numericAttributeUnit,
 } = require('../../lib/queries/corpus-stats-core');
 
 // The claims fetch filters on provenance->>code — an expression Postgres has
@@ -94,68 +104,16 @@ export const config = { maxDuration: 60 };
 
 // -- rowContext helpers (sidebar redesign) ---------------------------------
 
-// Best-effort numeric extraction for a claim: canonical first (many number
-// attributes DO carry a parseable canonical), then a nested numeric field
-// off the rich provenance.feature_value (e.g. companyTerminationFee's
-// `{ amount, percentage_of_equity, ... }`), then a $/,-stripped scan of the
-// raw verbatim text. Returns null rather than a guess when nothing parses.
-function looksLikeJsonVerbatim(verbatim) {
-  const trimmed = verbatim.trim();
-  return trimmed.startsWith('{') && trimmed.endsWith('}');
-}
-
-function extractNumeric(claim) {
-  if (claim.canonical !== null && claim.canonical !== undefined) {
-    const n = Number(claim.canonical);
-    if (Number.isFinite(n)) return n;
-  }
-  const fv = claim.provenance && typeof claim.provenance === 'object' ? claim.provenance.feature_value : null;
-  const payload = fv && typeof fv === 'object' && fv.value && typeof fv.value === 'object' ? fv.value : fv;
-  if (payload && typeof payload === 'object') {
-    // ONLY 'amount'/'value' -- these are the field's headline dollar/day
-    // figure. Deliberately NOT 'percentage_of_equity'/'days'/'months' here:
-    // those are real fields on the SAME object but a different unit (e.g.
-    // companyTerminationFee.percentage_of_equity is a percent, not a
-    // dollar amount) — falling through to them mixed units into one
-    // min/median/max and produced a bogus $7.01 "minimum fee" that was
-    // actually a 7.01% figure from a claim with no `amount` set.
-    for (const key of ['amount', 'value']) {
-      const raw = payload[key];
-      if (typeof raw === 'number' && Number.isFinite(raw)) return raw;
-      if (typeof raw === 'string') {
-        const m = raw.replace(/[$,]/g, '').match(/-?\d+(\.\d+)?/);
-        if (m) return Number(m[0]);
-      }
-    }
-  }
-  // Free-text verbatim (prose, or a bare number/code) only -- NOT a
-  // JSON-encoded blob. A JSON verbatim already had its shot via the
-  // `payload` branch above; scanning its raw text for "the first digit
-  // run" picks up whatever field happens to sort first in the JSON (e.g.
-  // percentage_of_equity's "7.01%" ahead of a later `amount` field),
-  // producing a bogus outlier completely unrelated to the headline figure.
-  if (typeof claim.verbatim === 'string' && !looksLikeJsonVerbatim(claim.verbatim)) {
-    const m = claim.verbatim.replace(/[$,]/g, '').match(/-?\d+(\.\d+)?/);
-    if (m) return Number(m[0]);
-  }
-  return null;
-}
-
+// r19 (WP-A, numeric market cells): extractNumeric/isNumericAttribute moved
+// to lib/queries/corpus-stats-core.js (imported above) so this endpoint's
+// rowContext numeric distribution and the batch endpoint's featureSummary
+// numeric entries share the exact same extraction rules instead of two
+// copies drifting. See that module for the fallback order (canonical ->
+// feature_value.amount/value -> $/,-stripped verbatim scan).
 function median(sortedNums) {
   if (!sortedNums.length) return null;
   const mid = Math.floor(sortedNums.length / 2);
   return sortedNums.length % 2 ? sortedNums[mid] : (sortedNums[mid - 1] + sortedNums[mid]) / 2;
-}
-
-function isNumericAttribute(attribute, sampleClaims) {
-  const entry = FEATURES[attribute];
-  if (entry && entry.valueType === 'number') return true;
-  if (entry && entry.valueType === 'object') {
-    // e.g. companyTerminationFee: an 'object' attribute whose canonical is
-    // always null but whose feature_value carries a numeric `amount`.
-    return sampleClaims.some((cl) => extractNumeric(cl) !== null && !cl.canonical);
-  }
-  return false;
 }
 
 // dealLabel/buildDealsById/cardIdForClaim now live in
@@ -192,6 +150,14 @@ function buildFeatureDistribution(attribute, peerClaims, subjectDealId, dealsByI
     }
     const nums = [...byDeal.values()].sort((a, b) => a - b);
     if (!nums.length) return null;
+    // r19 (WP-A, numeric market cells): excludedCount -- deals that carried
+    // a claim for this attribute but whose value never resolved to a number
+    // (same "attempted vs resolved" accounting corpus-stats-core.js's
+    // buildNumericAttributeSummary/buildRelativePeriodAttributeSummary use
+    // for featureSummary) -- reported honestly rather than silently folded
+    // into `count`.
+    const attemptedDeals = new Set(peerClaims.map((cl) => cl.deal_id)).size;
+    const excludedCount = attemptedDeals - nums.length;
     const thisDealValue = subjectDealId && byDeal.has(subjectDealId) ? byDeal.get(subjectDealId) : null;
     const rank = thisDealValue !== null ? nums.filter((n) => n <= thisDealValue).length : null;
     const values = [...byDeal.entries()]
@@ -205,11 +171,16 @@ function buildFeatureDistribution(attribute, peerClaims, subjectDealId, dealsByI
       attribute,
       label,
       kind: 'numeric',
-      unit: (FEATURES[attribute] && FEATURES[attribute].unit) || null,
+      unit: numericAttributeUnit(attribute),
       min: nums[0],
+      // r19: additive percentiles alongside min/median/max, via the same
+      // quantile() primitive featureSummary's numeric entries use.
+      p25: quantile(nums, 0.25),
       median: median(nums),
+      p75: quantile(nums, 0.75),
       max: nums[nums.length - 1],
       count: nums.length,
+      excludedCount,
       thisDealValue,
       thisDealRank: rank,
       values,

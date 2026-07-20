@@ -17,21 +17,20 @@
 //     Hidden entirely when there are no rows.
 
 const { prettifyEnumValue } = require('../review/shared');
+// r19 (WP-A, numeric market cells): unit-aware formatting moved to its own
+// dependency-light module (no React, no fetches — mirrors compareRowUnion.
+// js/marketOffMarket.js's rule) so it has real behavioral test coverage
+// under node:test (this file mixes in JSX and can't be dynamically
+// imported there — see tests/mae-section-item-quote.test.js's header
+// comment). Re-exported below for MarketColumn.jsx's own existing callers
+// and for CompareColumn.jsx's market-cell rendering.
+import {
+  roundNum, formatMoney, formatNumericValueForUnit, formatNumericMarketSummary,
+} from './marketNumericFormat';
+
+export { formatNumericValueForUnit, formatNumericMarketSummary };
 
 const LAB = 'text-[9px] font-bold uppercase tracking-[0.14em] text-[#9A9A9A] mb-1.5';
-
-function roundNum(value) {
-  const n = Number(value);
-  if (!Number.isFinite(n)) return '-';
-  return n.toFixed(2).replace(/\.00$/, '').replace(/(\.\d)0$/, '$1');
-}
-
-function formatMoney(n) {
-  const sign = n < 0 ? '-' : '';
-  const abs = Math.abs(n);
-  if (abs >= 1e9) return `${sign}$${(abs / 1e9).toFixed(1).replace(/\.0$/, '')}B`;
-  return `${sign}$${(abs / 1e6).toFixed(1).replace(/\.0$/, '')}M`;
-}
 
 const RAW_CODE_RE = /^[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)*$/;
 
@@ -55,10 +54,20 @@ export function formatMarketValue(value, fieldPath) {
   return pretty;
 }
 
-// "Market norm" text off a DEAL_TO_MARKET row's baseline_stats: numeric ->
-// p25–p75 band; categorical -> the modal value.
+// "Market norm" text off a baseline_stats object: numeric -> p25–p75 band;
+// categorical -> the modal value. r19 (WP-A, off-market feed): `stats.unit`
+// is a NEW, additive field the market-column-driven off-market entries
+// carry (see CompareColumn.jsx's collectOffMarketEntries) -- when present,
+// the band is unit-aware ("$20M–$60M" / "5–15 days") instead of bare
+// numbers. The DEAL_TO_MARKET executor's own baseline_stats never carries
+// `.unit`, so this is fully backward compatible with the pre-existing rows.
 export function baselineText(stats, fieldPath) {
   if (!stats) return '—';
+  if (stats.unit && (stats.p25 != null || stats.p75 != null)) {
+    const lo = formatNumericValueForUnit(stats.p25, stats.unit);
+    const hi = formatNumericValueForUnit(stats.p75, stats.unit);
+    if (lo !== null && hi !== null) return `${lo}–${hi}`;
+  }
   if (stats.p25 != null || stats.p75 != null) return `${roundNum(stats.p25)}–${roundNum(stats.p75)}`;
   if (Array.isArray(stats.distribution) && stats.distribution[0]) {
     const top = stats.distribution[0];
