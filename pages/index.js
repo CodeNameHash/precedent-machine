@@ -411,7 +411,7 @@ export default function HomePage({ initialData }) {
                 {crossCutMatch && (
                   <button type="button" className="crossCutHit" disabled={crossCutRunning} onClick={() => runCrossCutTerm(crossCutMatch)}>
                     <b>How {crossCutMatch.label} {crossCutMatch.plural ? 'operate' : 'operates'} across the corpus →</b>
-                    <small>provision cross-cut &middot; every deal in the corpus</small>
+                    <small>how a provision works across deals &middot; every deal in the corpus</small>
                   </button>
                 )}
                 {suggestions.map((hit, index) => (
@@ -476,7 +476,7 @@ export default function HomePage({ initialData }) {
                   {selectedIds.length >= 2 && (
                     <div className="bulk">
                       <Link href={compareHref}>+ Compare selected deals</Link>
-                      <Link href={crossCutHref}>+ Cross-cut selected deals</Link>
+                      <Link href={crossCutHref}>+ How a provision works across selected deals</Link>
                     </div>
                   )}
 
