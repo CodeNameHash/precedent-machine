@@ -20,7 +20,7 @@ const { prettifyEnumValue } = require('../review/shared');
 import {
   roundNum, formatMoney, formatNumericValueForUnit, formatNumericMarketSummary,
 } from './marketNumericFormat';
-import { registerTypedRowMarketContext } from './rowMarketContext';
+import { attachTypedRowMarketContext, registerTypedRowMarketContext } from './rowMarketContext';
 
 export { formatNumericValueForUnit, formatNumericMarketSummary };
 
@@ -435,6 +435,7 @@ export function MarketMetricCell({ resolution, data, onRetry = null, fallbackSum
   const availablePrevalence = prevalence.filter((spec) => hasUsableMetricResult(spec, responseRow?.metrics?.[spec.metricKey]));
   return (
     <div
+      ref={(node) => attachTypedRowMarketContext(node, resolution, data, fallbackSummary)}
       className="space-y-2"
       data-testid="market-cell"
       data-market-row-key={resolution.rowKey}
