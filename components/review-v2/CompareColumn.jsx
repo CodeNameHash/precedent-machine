@@ -16,7 +16,7 @@ import MaeSection from './MaeSection';
 import ElectionCard from './ElectionCard';
 import { DefinitionsSection } from './ProvisionIndex';
 import { deriveElectionSummary, EMPTY_REVIEW_DEAL, MAE_SECTION_ID } from './sectionList';
-import { unionRows } from './compareRowUnion';
+import { unionRows, rowFamilyLabel } from './compareRowUnion';
 
 const CONSIDERATION_SECTION_ID = 'consideration-hero';
 
@@ -463,6 +463,13 @@ export function UnifiedCompareSection({
   }
 
   function flatLabelNode(entry) {
+    // r16 ROW_FAMILY canonicalization (compareRowUnion.js): a handful of
+    // taxonomy-split code pairs union onto one shared key with a fixed
+    // surviving label -- render that label rather than whichever deal's
+    // own row.label happened to be first (that's still deal-specific card
+    // title text, not the canonical concept name).
+    const familyLabel = rowFamilyLabel(entry.key);
+    if (familyLabel) return familyLabel;
     const firstIdx = entry.rows.findIndex(Boolean);
     if (firstIdx < 0) return null;
     const row = entry.rows[firstIdx];

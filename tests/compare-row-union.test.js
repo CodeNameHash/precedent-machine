@@ -112,6 +112,68 @@ test('unionRows: rows with no identity never match across deals', () => {
   assert.equal(union[1].rows[0], null);
 });
 
+// r16 ROW_FAMILY step (docs/PLAN.md P3): taxonomy-split code pairs whose
+// per-deal labels differ (each is that deal's own card.short_title/
+// defined_term, not a fixed taxonomy label) must still union into ONE
+// compare row, keyed off the underlying provision code rather than id/label.
+test('rowIdentityKey: ROW_FAMILY canonicalizes REP-T-CONTRACTS / REP-T-MATERIAL-CONTRACTS to the same key', () => {
+  const a = mod.rowIdentityKey({
+    id: 'representations-qualifiers-11111111-2222-3333-4444-555555555555',
+    label: 'Material Contracts; No Breach',
+    card: { provision_subtype: 'REP-T-CONTRACTS' },
+  });
+  const b = mod.rowIdentityKey({
+    id: 'representations-qualifiers-aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
+    label: 'Contracts and Agreements',
+    card: { provision_subtype: 'REP-T-MATERIAL-CONTRACTS' },
+  });
+  assert.equal(a, b);
+  assert.equal(mod.rowFamilyLabel(a), 'Material contracts');
+});
+
+test('rowFamilyLabel: null for a non-family key', () => {
+  assert.equal(mod.rowFamilyLabel('id:closing'), null);
+  assert.equal(mod.rowFamilyLabel(null), null);
+});
+
+test('unionRows: a ROW_FAMILY pair that previously produced two one-sided rows now yields one row with both deals\' cells', () => {
+  const primary = [
+    { id: 'general-covenants-clause-11111111-2222-3333-4444-555555555555', label: 'Payment Agent', sourceCard: { provision_subtype: 'COV-PAYAGENT' }, cell: 'primary-payagent' },
+  ];
+  const compared = [
+    { id: 'consideration-hero-clause-aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee', label: 'Exchange of Certificates', sourceCard: { provision_subtype: 'CONSID-EXCHANGE' }, cell: 'compared-exchange' },
+  ];
+  const union = mod.unionRows([primary, compared]);
+  assert.equal(union.length, 1);
+  const [entry] = union;
+  assert.equal(mod.rowFamilyLabel(entry.key), 'Payment & exchange mechanics');
+  assert.equal(entry.rows[0], primary[0]);
+  assert.equal(entry.rows[1], compared[0]);
+});
+
+test('unionRows: ROW_FAMILY pairs for the other five mapped groups also collapse to one row', () => {
+  const groups = [
+    ['REP-T-CONSENT', 'REP-T-NOCONFLICT', 'No conflict; consents & approvals'],
+    ['REP-T-SANCTIONS', 'REP-T-ANTICORR', 'Anti-corruption & sanctions'],
+    ['MISC-JURY', 'MISC-JURISD', 'Jurisdiction & jury waiver'],
+    ['COV-PROXY', 'COV-MEETING', 'Stockholder meeting & proxy'],
+  ];
+  for (const [codeA, codeB, label] of groups) {
+    const primary = [{ id: `sec-1${Math.random()}`, label: 'Some Deal-Specific Title A', card: { provision_subtype: codeA } }];
+    const compared = [{ id: `sec-2${Math.random()}`, label: 'Some Deal-Specific Title B', card: { provision_subtype: codeB } }];
+    const union = mod.unionRows([primary, compared]);
+    assert.equal(union.length, 1, `${codeA} / ${codeB} should union to one row`);
+    assert.equal(mod.rowFamilyLabel(union[0].key), label);
+  }
+});
+
+test('unionRows: non-family rows with genuinely different codes still stay one-sided', () => {
+  const primary = [{ id: 'a-11111111-2222-3333-4444-555555555555', label: 'Unrelated A', card: { provision_subtype: 'REP-T-CAPITALIZATION' } }];
+  const compared = [{ id: 'b-aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee', label: 'Unrelated B', card: { provision_subtype: 'REP-T-ORGANIZATION' } }];
+  const union = mod.unionRows([primary, compared]);
+  assert.equal(union.length, 2);
+});
+
 test('unionRows: three deals -- compared deals contribute in URL order', () => {
   const primary = [{ id: 'a', label: 'A' }];
   const cmp1 = [{ id: 'b', label: 'B' }];

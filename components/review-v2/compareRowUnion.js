@@ -11,8 +11,78 @@
 // normalized label ('Capitalization' matches 'Capitalization' across
 // deals). Rows with neither a stable id nor a string label never match
 // across deals (anon key) — they render in their own deal only.
+//
+// r16 ROW_FAMILY step (docs/PLAN.md P3, Ben decision 1 = option B):
+// taxonomy splits put the SAME real-world clause under two different
+// provision-subtype codes depending on the deal (e.g. one deal's payment
+// agent covenant classifies REP-T-CONTRACTS, another's the same concept
+// classifies REP-T-MATERIAL-CONTRACTS). Because each deal's row.label comes
+// straight off that card's own short_title/defined_term (card-utils.js
+// labelOf()), the two rows' labels rarely match verbatim, so the normal
+// id/label fallback above renders TWO mutually one-sided rows for what is
+// really one comparison. ROW_FAMILY_CODE_TO_KEY canonicalizes by the row's
+// own underlying provision code (checked BEFORE the id/label fallback,
+// since it's the strongest signal available) so both codes' rows collapse
+// onto one shared key; ROW_FAMILY_LABEL_BY_KEY carries the surviving label
+// for that canonical row (rowFamilyLabel(), consumed by CompareColumn.jsx's
+// flatLabelNode() instead of picking one deal's own row.label at random).
+// Each deal's ANSWER cell still renders from that deal's own row/card —
+// only the shared LABEL is canonicalized. SEC-rep fold-ins (NOLIAB/
+// CONTROLS folding into REP-T-SEC) are deliberately excluded — those are a
+// feature-level fold, not a row-identity split.
 
 const DEAL_SPECIFIC_ID_RE = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}|\d{5,}/;
+
+const ROW_FAMILY_GROUPS = [
+  { label: 'Material contracts', codes: ['REP-T-CONTRACTS', 'REP-T-MATERIAL-CONTRACTS'] },
+  { label: 'Payment & exchange mechanics', codes: ['COV-PAYAGENT', 'CONSID-EXCHANGE'] },
+  { label: 'No conflict; consents & approvals', codes: ['REP-T-CONSENT', 'REP-T-NOCONFLICT'] },
+  { label: 'Anti-corruption & sanctions', codes: ['REP-T-SANCTIONS', 'REP-T-ANTICORR'] },
+  { label: 'Jurisdiction & jury waiver', codes: ['MISC-JURY', 'MISC-JURISD'] },
+  { label: 'Stockholder meeting & proxy', codes: ['COV-PROXY', 'COV-MEETING'] },
+];
+
+const ROW_FAMILY_CODE_TO_KEY = new Map();
+const ROW_FAMILY_LABEL_BY_KEY = new Map();
+ROW_FAMILY_GROUPS.forEach(({ label, codes }, index) => {
+  const key = `family:${index}`;
+  ROW_FAMILY_LABEL_BY_KEY.set(key, label);
+  codes.forEach((code) => ROW_FAMILY_CODE_TO_KEY.set(code, key));
+});
+
+// Reads the row's own underlying provision code off whichever field the
+// producing config attached it under — `row.code` (material-contracts
+// bucket rows), `row.card` (reps rows), or `row.sourceCard`/`row.source`
+// (link-style covenant/consideration/misc rows) — mirroring the same
+// `provision_subtype || canonical_code || provision_code || code` priority
+// card-utils.js's cardCode() uses everywhere else in the review layer.
+function rowFamilyCode(row) {
+  if (!row || typeof row !== 'object') return null;
+  const cards = [row.card, row.sourceCard, row.source];
+  const candidates = [row.code];
+  for (const card of cards) {
+    if (card && typeof card === 'object') {
+      candidates.push(card.provision_subtype, card.canonical_code, card.provision_code, card.code);
+    }
+  }
+  for (const candidate of candidates) {
+    if (typeof candidate === 'string' && candidate.trim()) return candidate.trim().toUpperCase();
+  }
+  return null;
+}
+
+function rowFamilyKey(row) {
+  const code = rowFamilyCode(row);
+  return (code && ROW_FAMILY_CODE_TO_KEY.get(code)) || null;
+}
+
+// The surviving display label for a ROW_FAMILY canonical key (e.g.
+// 'family:0'), or null when `key` isn't a family key — used by
+// CompareColumn.jsx to render the shared label instead of one deal's own
+// row.label for these rows.
+export function rowFamilyLabel(key) {
+  return (typeof key === 'string' && ROW_FAMILY_LABEL_BY_KEY.get(key)) || null;
+}
 
 export function normalizeLabelKey(label) {
   if (typeof label !== 'string') return null;
@@ -22,6 +92,8 @@ export function normalizeLabelKey(label) {
 
 export function rowIdentityKey(row) {
   if (!row || typeof row !== 'object') return null;
+  const familyKey = rowFamilyKey(row);
+  if (familyKey) return familyKey;
   const id = row.id !== null && row.id !== undefined ? String(row.id) : '';
   if (id && !DEAL_SPECIFIC_ID_RE.test(id)) return `id:${id}`;
   const label = normalizeLabelKey(row.label);
