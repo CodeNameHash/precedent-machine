@@ -1,24 +1,24 @@
 # WP-SCHEMA P1 Inventory Summary
 
-Generated: 2026-07-18T18:41:20.695Z
+Generated: 2026-07-20T12:27:11.723Z
 
 ## Counts
 
-- Distinct feature-like keys: 517
-- Keys in 2 or more source families: 473
-- Keys in only 1 source family: 44
+- Distinct feature-like keys: 519
+- Keys in 2 or more source families: 474
+- Keys in only 1 source family: 45
 - Cross-source type mismatches: 6
 - Schema shape mismatches: 33
 - Provision types in rubric: 22
 - Canonical codes in rubric: 276
-- Taxonomy families exported: 58
+- Taxonomy families exported: 61
 - Curated expected-set codes: 38
 
 ## Naming Distribution
 
 | Convention |Count |
 | --- |--- |
-| camelCase |486 |
+| camelCase |488 |
 | lowercase |24 |
 | snake_case |7 |
 
@@ -30,8 +30,8 @@ Generated: 2026-07-18T18:41:20.695Z
 | expected_sets_js |195 |
 | feature_validation_js |483 |
 | rubric_js |471 |
-| taxonomy_js |59 |
-| ui |182 |
+| taxonomy_js |61 |
+| ui |184 |
 
 ## Top 20 Highest-Appearance Keys
 
@@ -131,6 +131,7 @@ Keys in only one source family. These are candidates for dead-code review, not a
 | extensionTrigger |category_summary_features_js |2 |
 | healthWelfareStandard |category_summary_features_js |1 |
 | inlineDefinition |feature_validation_js |1 |
+| interveningEventType |taxonomy_js |1 |
 | iocAffirmativeScope |taxonomy_js |1 |
 | iocAffirmativeStandard |taxonomy_js |1 |
 | isNewCode |feature_validation_js |1 |

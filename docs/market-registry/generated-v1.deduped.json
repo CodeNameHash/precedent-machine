@@ -15365,6 +15365,42 @@
       "status": "PENDING_REVIEW"
     },
     {
+      "key": "interveningEventType",
+      "label": "Intervening Event — grade code (IE_POSITIVE_ONLY / IE_POSITIVE_OR_NEGATIVE / IE_NONE)",
+      "data_type": "ENUM",
+      "applies_to": "NOSOL",
+      "party_scope": "PER_PARTY",
+      "structural_patterns": [
+        "THREE_STATE",
+        "CONDITIONAL_TRIGGERED"
+      ],
+      "states": [
+        "IE_POSITIVE_ONLY",
+        "IE_POSITIVE_OR_NEGATIVE",
+        "IE_NONE"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "interveningEventType",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve interveningEventType from lib/schema/features.js; tagged {code,label,text} object — normalise to the INTERVENING_EVENT_TYPE code (lib/taxonomy.js) before activation."
+      },
+      "resolver_notes": "Ben-decided intervening-event grade: is the definition limited to positive developments (IE_POSITIVE_ONLY), direction-neutral (IE_POSITIVE_OR_NEGATIVE), or absent (IE_NONE). Excluded-event carve-outs ride interveningEventExceptions.",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features",
+      "merged_from": [],
+      "also_matches_provision_codes": [
+        "NOSOL"
+      ],
+      "provenance": {
+        "source_of_truth": "schema-features",
+        "absorbed_from": []
+      },
+      "status": "PENDING_REVIEW"
+    },
+    {
       "key": "interveningEventProvision",
       "label": "Intervening Event Provision Exists",
       "data_type": "BOOLEAN",
