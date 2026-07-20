@@ -193,6 +193,15 @@ test('getHomeStaticProps: fails soft to empty props + revalidate when the Supaba
   assert.deepEqual(result, { props: { initialData: null }, revalidate: 300 });
 });
 
+test('getHomeStaticProps: fails soft when the Supabase snapshot stalls', async () => {
+  const { getHomeStaticProps } = require('../lib/home-static-props');
+  const result = await getHomeStaticProps(
+    () => ({}),
+    { timeoutMs: 5, fetcher: () => new Promise(() => {}) },
+  );
+  assert.deepEqual(result, { props: { initialData: null }, revalidate: 300 });
+});
+
 test('lib/supabase.js getServiceSupabase(): returns null when env vars are absent (build-time / CI fail-soft contract)', async () => {
   const prevUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const prevSupabaseUrl = process.env.SUPABASE_URL;
