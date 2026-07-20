@@ -37,6 +37,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useViewMode } from '../ViewModeContext';
 import { cardFeatureQuote } from './provisionIndexHelpers.js';
+import { getCorpusVersion } from '../../lib/client/corpus-version.js';
 
 function fmtValue(raw) {
   const n = Number(raw);
@@ -768,7 +769,12 @@ export default function ClauseSidebar({ card, rowFocus = null, dealId, dealSecto
     const timeoutId = setTimeout(() => controller.abort(), CORPUS_STATS_TIMEOUT_MS);
     setLoading(true);
     setError(null);
-    fetch(`/api/corpus-stats?${query}`, { signal: controller.signal })
+    // r13 (corpus-version cache token): never block this fetch on the
+    // version probe -- getCorpusVersion() itself always resolves within its
+    // own ~2s cap (null on failure/timeout), so awaiting it here adds at
+    // most that cap, then proceeds tokenless exactly like before.
+    getCorpusVersion()
+      .then((version) => fetch(`/api/corpus-stats?${query}${version ? `&v=${encodeURIComponent(version)}` : ''}`, { signal: controller.signal }))
       .then(async (r) => {
         const payload = await r.json().catch(() => ({}));
         if (!r.ok) throw new Error(payload.error || `HTTP ${r.status}`);

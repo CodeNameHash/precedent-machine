@@ -107,6 +107,20 @@ function makeRow(prefix, id, label, kind, hit) {
     evidence: textOf(hit.card),
     source: labelOf(hit.card),
     present: true,
+    // Sidebar corpus-context threading (r13 featureKey parity): makeRows()
+    // (the multi-instance sibling below) already carries value/featureKey/
+    // sourceCard so ClauseSidebar can send `featureKeys` to /api/corpus-stats
+    // for a clicked row -- makeRow() (the single-hit path) never did, so
+    // every table built on it (approvals-votes.config.js via mappedRows(),
+    // plus advisers-fees-expenses/consideration-hero/mae-definitions/
+    // misc-boilerplate/structure-mechanics/termination-fees, which already
+    // re-derive featureKey themselves via `{ ...row, featureKey: hit.key }`
+    // and simply overwrite this) got a quieter "doesn't map to a single
+    // comparable feature" sidebar state instead of real corpus context.
+    // Matches makeRows' shape exactly so no consumer needs new plumbing.
+    value: hit.value,
+    featureKey: hit.key,
+    sourceCard: hit.card,
   };
 }
 

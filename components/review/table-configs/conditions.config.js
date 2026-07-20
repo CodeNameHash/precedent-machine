@@ -460,19 +460,31 @@ const GENERIC_FIELDS = [
 // gets the shared triggerThresholdLabel() ("Trigger: $X") rather than this
 // generic loop's own "Threshold: $X" wording, so it reads identically to
 // every other config's trigger-amount pill (ioc-exceptions.config.js).
+// r13 (featureKey threading): also returns which registry attribute(s) fed
+// the chips actually pushed, so buildStandardDetail can thread featureKeys
+// ONLY when exactly one field fired -- a generic S4/LISTING/DISSENT/FUNDS
+// row is genuinely single-attribute most of the time (e.g. just cureDays),
+// but the loop CAN combine dollarThreshold + cureDays + scheduleReference on
+// the same row, and a multi-field row has no single comparable feature to
+// send the sidebar.
 function genericChips(PillCell, matches, primary) {
   const chips = [];
+  const keys = [];
   const dollarRaw = firstDefined(matches, 'dollarThreshold');
   const dollarText = dollarRaw === undefined ? null : valueText(dollarRaw);
-  if (dollarText) chips.push(mkChip(PillCell, 'generic-dollarThreshold', triggerThresholdLabel(dollarText), 'neutral', primary));
+  if (dollarText) {
+    chips.push(mkChip(PillCell, 'generic-dollarThreshold', triggerThresholdLabel(dollarText), 'neutral', primary));
+    keys.push('dollarThreshold');
+  }
   for (const [key, label] of GENERIC_FIELDS) {
     const raw = firstDefined(matches, key);
     if (raw === undefined) continue;
     const text = valueText(raw);
     if (!text) continue;
     chips.push(mkChip(PillCell, `generic-${key}`, `${label}: ${text}`, 'neutral', primary));
+    keys.push(key);
   }
-  return chips;
+  return { chips, keys };
 }
 
 // Standard/Detail column synthesis, keyed by canonical family. `bandFamilies`
@@ -484,20 +496,37 @@ function buildStandardDetail(row, family, ctx, bandFamilies) {
   const primary = matches[0];
   const chips = [];
   let mainNode = null;
+  // r13 (featureKey threading parity): the registry attribute(s) that
+  // actually define THIS row's rendered value -- threaded onto the row so
+  // ClauseSidebar can request a real corpus distribution instead of the
+  // quieter "doesn't map to a single comparable feature" state. Only set
+  // when the row's value traces to one attribute; families whose value is
+  // synthesized from several fields at once (REG's multi-approval list,
+  // CERT's cross-referenced bandFamilies pills) get none -- see per-branch
+  // comments below.
+  let featureKeys = null;
 
   if (family === 'REP') {
     // Rep bring-down: grouped by standard, lowest-materiality-first, reps under
     // each as chips (see bringDownNode). Covenant-compliance falls to a chip.
     mainNode = bringDownNode(matches, PillCell);
-    if (!mainNode) {
+    if (mainNode) {
+      featureKeys = ['bringDownTiers'];
+    } else {
       const ccs = firstDefined(matches, 'covenantComplianceStandard');
-      if (ccs) chips.push(mkChip(PillCell, 'covenant-standard', prettyMaterialityLabel(taggedLabel(ccs) || valueText(ccs)), 'info', primary, taggedEvidence(ccs, primary), standardColorKey(taggedLabel(ccs) || valueText(ccs))));
+      if (ccs) {
+        chips.push(mkChip(PillCell, 'covenant-standard', prettyMaterialityLabel(taggedLabel(ccs) || valueText(ccs)), 'info', primary, taggedEvidence(ccs, primary), standardColorKey(taggedLabel(ccs) || valueText(ccs))));
+        featureKeys = ['covenantComplianceStandard'];
+      }
     }
   } else if (family === 'COV') {
     const ccs = firstDefined(matches, 'covenantComplianceStandard');
     if (ccs) {
       chips.push(mkChip(PillCell, 'covenant-standard', prettyMaterialityLabel(taggedLabel(ccs) || valueText(ccs)), 'info', primary, taggedEvidence(ccs, primary), standardColorKey(taggedLabel(ccs) || valueText(ccs))));
+      featureKeys = ['covenantComplianceStandard'];
     } else {
+      // Sniffed from mainCondition prose, not a registry attribute of its
+      // own -- no clean feature to compare against the peer set.
       const sniffed = covenantStandardFromText(firstDefined(matches, 'mainCondition'));
       if (sniffed) chips.push(mkChip(PillCell, 'covenant-standard-sniff', sniffed, 'info', primary, firstDefined(matches, 'mainCondition'), standardColorKey(sniffed)));
     }
@@ -511,6 +540,9 @@ function buildStandardDetail(row, family, ctx, bandFamilies) {
     ));
     const sectionRef = firstDefined(matches, 'sectionNumber');
     if (approvals.length) {
+      // Multiple approvals compound into one list -- not a single comparable
+      // value (and antitrustApprovals' own distribution wouldn't read as
+      // "this row's value" the way a scalar attribute's does).
       approvals.forEach(({ approval, provision }, index) => {
         const code = String((approval && (approval.code || approval.standard || approval.label)) || '').toUpperCase();
         let label = taggedLabel(approval) || valueText(approval);
@@ -522,6 +554,7 @@ function buildStandardDetail(row, family, ctx, bandFamilies) {
       const hsr = firstDefined(matches, 'hsrClearance');
       if (typeof hsr === 'boolean') {
         chips.push(mkChip(PillCell, 'hsr-clearance', hsr ? 'HSR waiting period expired or terminated' : 'No HSR clearance condition', hsr ? 'present' : 'missing', primary));
+        featureKeys = ['hsrClearance'];
       }
     }
   } else if (family === 'STOCKHOLDER') {
@@ -529,15 +562,19 @@ function buildStandardDetail(row, family, ctx, bandFamilies) {
     // generic "Approval required"; the full definition stays in the collapse.
     const def = firstDefined(matches, 'approvalDefinition');
     const std = voteStandard(def);
-    if (std) chips.push(mkChip(PillCell, 'vote-std', std, 'present', primary, def ? String(def) : undefined));
-    else if (firstDefined(matches, 'stockholderApprovalRequired') === true) {
+    if (std) {
+      chips.push(mkChip(PillCell, 'vote-std', std, 'present', primary, def ? String(def) : undefined));
+      featureKeys = ['approvalDefinition'];
+    } else if (firstDefined(matches, 'stockholderApprovalRequired') === true) {
       chips.push(mkChip(PillCell, 'vote-req', 'Stockholder approval required', 'present', primary));
+      featureKeys = ['stockholderApprovalRequired'];
     }
   } else if (family === 'LEGAL') {
     const present = firstDefined(matches, 'absenceOfEnjoiningOrderPresent');
     if (typeof present === 'boolean') {
       const details = firstDefined(matches, 'absenceOfEnjoiningOrderDetails');
       chips.push(mkChip(PillCell, 'legal-restraint', present ? 'No legal restraint' : 'No legal restraint (absent)', present ? 'present' : 'missing', primary, details));
+      featureKeys = ['absenceOfEnjoiningOrderPresent'];
     }
   } else if (family === 'MAE') {
     // The condition name ("No Material Adverse Effect") is already the TERM
@@ -551,17 +588,26 @@ function buildStandardDetail(row, family, ctx, bandFamilies) {
       primary,
       firstDefined(matches, 'mainCondition'),
     ));
+    featureKeys = ['continuingRequirement'];
   } else if (family === 'CERT') {
     // One pill per condition the officer's certificate certifies (the other
-    // substantive families present in this same band).
+    // substantive families present in this same band) -- derived from
+    // bandFamilies, not a single registry attribute, so no featureKeys there.
     const uniq = [...new Set((bandFamilies || []).filter((f) => CERT_CERTIFIES[f]).map((f) => CERT_CERTIFIES[f]))];
     if (uniq.length) {
       uniq.forEach((label, index) => chips.push(mkChip(PillCell, `cert-${index}`, label, 'present', primary, firstDefined(matches, 'mainCondition'))));
     } else if (firstDefined(matches, 'certificationRequired') === true) {
       chips.push(mkChip(PillCell, 'cert-req', "Officer's certificate required", 'present', primary));
+      featureKeys = ['certificationRequired'];
     }
   } else {
-    chips.push(...genericChips(PillCell, matches, primary));
+    // S4 / LISTING / DISSENT / FUNDS (no bespoke synthesis): thread the one
+    // field this row's chips came from ONLY when exactly one fired -- e.g. a
+    // cureDays-only row is genuinely 1:1, but a row combining
+    // dollarThreshold + cureDays has no single comparable feature.
+    const generic = genericChips(PillCell, matches, primary);
+    chips.push(...generic.chips);
+    if (generic.keys.length === 1) featureKeys = [generic.keys[0]];
   }
 
   // AC #9: the "see text" affordance follows ONE rule for every family/band --
@@ -591,7 +637,13 @@ function buildStandardDetail(row, family, ctx, bandFamilies) {
   // <details> node (clauseSeeText stays defined/used elsewhere in this file
   // for the smaller nested Defined-term / Reps-covered expanders, which are
   // not the row-level "whole column squeezed" defect this fixes).
-  return { node, seeTextContent: mainConditionText, card: primary?.sourceCard || null, evidence: mainConditionText || primary?.full_text || null };
+  return {
+    node,
+    seeTextContent: mainConditionText,
+    card: primary?.sourceCard || null,
+    evidence: mainConditionText || primary?.full_text || null,
+    featureKeys,
+  };
 }
 
 // Splits each party band's full canonical row list (present + absent, as
@@ -628,6 +680,9 @@ function conditionGroups(reviewDeal, ctx) {
         // see GroupedSubRows in ProvisionTablePrimitives.jsx.
         card: detail.card,
         evidence: detail.evidence,
+        // r13: see buildStandardDetail's featureKeys comment -- null for
+        // families whose row value is synthesized from more than one field.
+        featureKeys: detail.featureKeys,
       };
     });
     return { id: spec.id, label: spec.label, rows, allRows, presentRows };
