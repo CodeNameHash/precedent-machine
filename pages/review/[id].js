@@ -45,8 +45,8 @@ import {
   dominantSectionCode,
   dealDisplayName,
 } from '../../components/review-v2/compareData';
-import CompareSectionColumn, { ColumnHeaderBand, UnifiedCompareSection, CompareMasthead } from '../../components/review-v2/CompareColumn';
-import { MarketSectionColumn, OffMarketSection } from '../../components/review-v2/MarketColumn';
+import { UnifiedCompareSection, UnifiedDefinitionsSection, CompareMasthead } from '../../components/review-v2/CompareColumn';
+import { OffMarketSection } from '../../components/review-v2/MarketColumn';
 
 const CONSIDERATION_SECTION_ID = 'consideration-hero';
 
@@ -63,38 +63,52 @@ function LoadingLine({ children }) {
   );
 }
 
-function SectionBlock({ section, reviewDeal, sectionCards, onSelectCard, selectedCardId, election, onViewInAgreement, extraColumns = null, compare = null }) {
+function SectionBlock({
+  section, reviewDeal, sectionCards, onSelectCard, selectedCardId, election, onViewInAgreement,
+  compare = null, marketColumn = null, onMarketRetry = null,
+}) {
   // Ben (Mergertrace round 1): every section collapsible. Native <details>
   // (open by default) so the scrollspy/anchor <section> wrapper and the
   // sec-<id> ids are untouched; ProvisionNav's jump() re-opens a collapsed
   // section before scrolling.
   //
-  // Compare/market modes: `extraColumns` ([{ key, header, body }]) renders
-  // a per-section CSS grid — the primary deal's body exactly as today in a
-  // wide first track, one narrow (340px) track per compared-deal/Market
-  // column beside it, horizontal scroll when the tracks overflow. Section
-  // alignment is per-section: each grid row IS one section, so the primary
-  // and compared columns always sit side by side for the same section.
-  // r14 (Ben): compare mode no longer renders a full table copy per deal --
-  // each section becomes ONE unified table (shared label column + one
-  // answer column per deal; see UnifiedCompareSection). The Definitions
-  // section keeps the previous side-by-side rendering (its per-deal defined
-  // terms are mostly disjoint, so a unioned label column would be a sparse
-  // wall of "Not extracted for this deal" cells) -- it flows through
-  // `extraColumns` as before.
-  const unified = compare && section.id !== '__definitions';
+  // r14 (Ben): compare mode renders each section as ONE unified table
+  // (shared label column + one answer column per deal; see
+  // UnifiedCompareSection). r18 item 2 (Ben, "Definitions join the unified
+  // format"): the Definitions section now goes through the same unified
+  // shape too (UnifiedDefinitionsSection — union by normalized defined
+  // term, see compareRowUnion.js), instead of the old side-by-side grid.
+  // r18 item 5 (Ben, "deal vs market as unified table, not two sets of
+  // tables"): ?market=1 also renders through this same unified path now —
+  // `marketColumn` (this section's { code, stats, loading, error } from
+  // useSectionMarketStats) becomes one more synthetic column inside the
+  // SAME table, headed "MARKET — N deals", rather than a side column next
+  // to a second copy of the table. `compare` and `marketColumn` are
+  // independent — either, both, or neither can be active for a section.
+  const unified = Boolean(compare) || Boolean(marketColumn);
   const primaryTables = unified ? (
-    <UnifiedCompareSection
-      section={section}
-      primaryName={compare.primaryName}
-      primaryReviewDeal={reviewDeal}
-      comparedColumns={compare.columns}
-      onRetry={compare.retry}
-      election={election}
-      sectionCards={sectionCards}
-      onSelectCard={onSelectCard}
-      selectedCardId={selectedCardId}
-    />
+    section.id === '__definitions' ? (
+      <UnifiedDefinitionsSection
+        primaryName={compare ? compare.primaryName : null}
+        primaryReviewDeal={reviewDeal}
+        comparedColumns={compare ? compare.columns : []}
+        onRetry={compare ? compare.retry : null}
+      />
+    ) : (
+      <UnifiedCompareSection
+        section={section}
+        primaryName={compare ? compare.primaryName : null}
+        primaryReviewDeal={reviewDeal}
+        comparedColumns={compare ? compare.columns : []}
+        onRetry={compare ? compare.retry : null}
+        election={election}
+        sectionCards={sectionCards}
+        onSelectCard={onSelectCard}
+        selectedCardId={selectedCardId}
+        marketColumn={marketColumn}
+        onMarketRetry={onMarketRetry}
+      />
+    )
   ) : (
     <>
       {section.id === '__definitions' ? (
@@ -138,25 +152,7 @@ function SectionBlock({ section, reviewDeal, sectionCards, onSelectCard, selecte
           <h2 className="text-base font-bold tracking-tight text-[#1F1F1F]">{section.title}</h2>
           <span aria-hidden="true" className="mtx-section-caret ml-auto text-[10px] text-[#6B6B6B]">▾</span>
         </summary>
-        {extraColumns && extraColumns.length ? (
-          <div className="mt-4 overflow-x-auto">
-            <div
-              className="grid gap-6 items-start"
-              style={{ gridTemplateColumns: `minmax(420px, 1fr) repeat(${extraColumns.length}, 340px)` }}
-              data-testid={`compare-grid-${section.id}`}
-            >
-              <div className="min-w-0">{primaryBody}</div>
-              {extraColumns.map((col) => (
-                <div key={col.key} className="min-w-0">
-                  {col.header}
-                  {col.body}
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div className="mt-4">{primaryBody}</div>
-        )}
+        <div className="mt-4">{primaryBody}</div>
       </details>
     </section>
   );
@@ -296,39 +292,19 @@ export default function ReviewPage() {
   }, [marketMode, sections, cardsBySection]);
   const { bySection: marketStats, retry: retryMarketStats } = useSectionMarketStats(marketMode, dealId, sectionCodes);
   const dealToMarket = useDealToMarket(marketMode, dealId);
-  const extraColumnCount = comparedDeals.length + (marketMode ? 1 : 0);
-  // r14: compared deals render INSIDE the unified per-section table (one
-  // shared label column + one answer column per deal -- see
-  // UnifiedCompareSection / the `compare` prop below) instead of as extra
-  // side columns, EXCEPT the Definitions section, which keeps the old
-  // side-by-side per-deal rendering (see SectionBlock). The Market column
-  // (?market=1) keeps its previous side-column rendering unchanged.
-  const buildExtraColumns = useCallback((section) => {
-    const cols = [];
-    if (section.id === '__definitions') {
-      comparedDeals.forEach((col, i) => {
-        cols.push({
-          key: `cmp-${col.id}`,
-          header: <ColumnHeaderBand label={col.name || `Compared deal ${i + 1}`} href={`/review/${col.id}`} />,
-          body: <CompareSectionColumn section={section} column={col} onRetry={retryComparedDeals} />,
-        });
-      });
-    }
-    if (marketMode) {
-      cols.push({
-        key: 'market',
-        header: <ColumnHeaderBand label="Market" uppercase />,
-        body: <MarketSectionColumn entry={marketStats[section.id]} onRetry={retryMarketStats} />,
-      });
-    }
-    return cols.length ? cols : null;
-  }, [comparedDeals, marketMode, marketStats, retryComparedDeals, retryMarketStats]);
+  // r18 item 5 (Ben, "not this two sets of tables crap"): both compared
+  // deals AND the market column now render as extra answer columns INSIDE
+  // the same unified per-section table (UnifiedCompareSection /
+  // UnifiedDefinitionsSection — the `compare` and `marketColumn` props
+  // below), never as a second side-by-side table. `compareBundle` is
+  // always the same shape regardless of whether any deals are actually
+  // compared — SectionBlock decides per-section whether to render unified
+  // at all (compare OR marketColumn truthy).
   const primaryDealName = useMemo(() => dealDisplayName(deal) || 'This deal', [deal]);
-  const compareBundle = useMemo(() => (
-    comparedDeals.length
-      ? { columns: comparedDeals, retry: retryComparedDeals, primaryName: primaryDealName }
-      : null
-  ), [comparedDeals, retryComparedDeals, primaryDealName]);
+  const compareBundle = useMemo(() => ({
+    columns: comparedDeals, retry: retryComparedDeals, primaryName: primaryDealName,
+  }), [comparedDeals, retryComparedDeals, primaryDealName]);
+  const wideLayout = compareIds.length > 0 || marketMode;
 
   /* ── View toggle ── */
   const [view, setView] = useState('summary');
@@ -386,6 +362,31 @@ export default function ReviewPage() {
     ro.observe(el);
     return () => ro.disconnect();
   }, [view]);
+
+  // r18 item 3 (Ben, compare/market horizontal scroll): every unified
+  // section table (compare and/or market columns push it wider than the
+  // viewport) scrolls independently by default -- scrolling one loses your
+  // place in every other section's table. Every such table's own
+  // horizontally-scrolling wrapper carries `data-scroll-sync="unified-table"`
+  // (UnifiedCompareSection / UnifiedDefinitionsSection in CompareColumn.jsx);
+  // this mirrors one's scrollLeft onto all the others. Guarded with
+  // `el.scrollLeft !== left` before writing so mirroring the write-back never
+  // re-fires its own scroll handler (no feedback loop). Re-binds whenever
+  // the section list or compare/market mode changes, since those change
+  // which/how many scroll containers exist.
+  useEffect(() => {
+    if (typeof window === 'undefined' || !wideLayout) return undefined;
+    const getEls = () => Array.from(document.querySelectorAll('[data-scroll-sync="unified-table"]'));
+    const onScroll = (e) => {
+      const left = e.target.scrollLeft;
+      getEls().forEach((el) => {
+        if (el !== e.target && el.scrollLeft !== left) el.scrollLeft = left;
+      });
+    };
+    const els = getEls();
+    els.forEach((el) => el.addEventListener('scroll', onScroll, { passive: true }));
+    return () => els.forEach((el) => el.removeEventListener('scroll', onScroll));
+  }, [wideLayout, sectionKey, comparedDeals.length, marketMode]);
 
   /* ── Clause sidebar selection (reader mode) ──
      Sidebar feedback package (Ben, r5), item 1: selection now carries an
@@ -574,7 +575,7 @@ export default function ReviewPage() {
               </p>
             ) : null}
 
-            <div className={extraColumnCount ? 'space-y-10' : 'space-y-10 max-w-3xl mx-auto'}>
+            <div className={wideLayout ? 'space-y-10' : 'space-y-10 max-w-3xl mx-auto'}>
               {marketMode ? <OffMarketSection data={dealToMarket} /> : null}
               {sections.map((section) => (
                 <SectionBlock
@@ -586,8 +587,9 @@ export default function ReviewPage() {
                   selectedCardId={selectedCard ? (selectedCard.id || selectedCard.provision_instance_id) : null}
                   election={section.id === CONSIDERATION_SECTION_ID ? election : null}
                   onViewInAgreement={hasAgreementText ? openSourceOverlay : null}
-                  extraColumns={buildExtraColumns(section)}
-                  compare={compareBundle}
+                  compare={compareIds.length ? compareBundle : null}
+                  marketColumn={marketMode && section.id !== '__definitions' ? (marketStats[section.id] || null) : null}
+                  onMarketRetry={marketMode ? retryMarketStats : null}
                 />
               ))}
             </div>
@@ -601,16 +603,34 @@ export default function ReviewPage() {
               </p>
             </footer>
           </main>
-          {/* r11: mid-height arrow to hide/show the corpus sidebar. */}
-          <div className="relative hidden lg:block">
+          {/* r11 / r18 (Ben, "make it clearly discoverable"): mid-height
+              arrow to hide/show the corpus sidebar, in both the normal
+              review view and compare mode (this block sits outside the
+              compareIds branch above, so it renders in either). Widened,
+              darker border + a small always-visible "Corpus" label (only
+              legible while collapsed, where the affordance most needs to
+              be found) replace the old bare 6px chevron, which was easy to
+              miss entirely.
+              r18 fix: the wrapper used to be plain `relative`, so its
+              `top-1/2` button centered on the height of this flex row's
+              tallest sibling -- the full-length <main> provision list, often
+              10-20k px tall on a real deal -- putting the button many
+              screens below the fold on anything but a very short deal. The
+              sidebar itself already solves this with `sticky`; the toggle
+              needs the same fix so it tracks the VIEWPORT's center, not the
+              document's. */}
+          <div className="sticky hidden lg:block z-20" style={{ top: 'calc(50vh - 28px)', height: 0 }}>
             <button
               type="button"
               aria-label={sidebarHidden ? 'Show corpus sidebar' : 'Hide corpus sidebar'}
               onClick={() => setSidebarHidden((v) => !v)}
-              className="absolute top-1/2 -translate-y-1/2 -left-3 z-20 w-6 h-10 border border-[#E0E0E0] bg-white text-[#6B6B6B] hover:text-[#1F1F1F] text-[11px] leading-none"
+              className="absolute -left-4 w-8 h-14 flex flex-col items-center justify-center gap-1 border border-[#9A9A9A] bg-white text-[#6B6B6B] hover:text-[#1F1F1F] hover:border-[#1F1F1F] shadow-sm text-[13px] leading-none"
               data-testid="corpus-sidebar-toggle"
             >
-              {sidebarHidden ? '‹' : '›'}
+              <span aria-hidden="true">{sidebarHidden ? '‹' : '›'}</span>
+              {sidebarHidden ? (
+                <span className="text-[7px] font-bold uppercase tracking-[0.1em]" style={{ writingMode: 'vertical-rl' }}>Corpus</span>
+              ) : null}
             </button>
           </div>
           {!sidebarHidden && (

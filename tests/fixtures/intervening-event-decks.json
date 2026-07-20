@@ -1,0 +1,33 @@
+{
+  "comment": "Snapshot of the 2026-07-20 Fable corpus pass over stored interveningEventDefinition texts. CLASSIFIED lists every deck whose definition was graded (the CODING table in scripts/code-intervening-event.js must cover exactly these); UNRESOLVED lists every deck with an intervening-event provision but no gradeable stored definition (the script must skip exactly these). Adding a deck to either side means re-running the corpus pass and updating BOTH this fixture and the script table.",
+  "classified": {
+    "0d38cc1f-2f49-47ee-bc21-de68d7884b90": { "dealName": "Zymeworks / Theravance Biopharma", "grade": "IE_POSITIVE_OR_NEGATIVE", "exceptions": ["ACQUISITION_PROPOSAL_RELATED"] },
+    "13211d88-4f16-4730-bb70-fb1ef6ab3735": { "dealName": "General Atlantic & Stone Point / HireRight", "grade": "IE_POSITIVE_ONLY", "exceptions": ["ACQUISITION_PROPOSAL_RELATED", "MEETS_EXCEEDS_PROJECTIONS", "STOCK_PRICE_CHANGE", "CREDIT_RATING_CHANGE"] },
+    "1f80bec7-294b-4590-b861-2c156e75aadc": { "dealName": "Bain Capital / Envestnet", "grade": "IE_POSITIVE_OR_NEGATIVE", "exceptions": ["ACQUISITION_PROPOSAL_RELATED", "MEETS_EXCEEDS_PROJECTIONS", "STOCK_PRICE_CHANGE", "CREDIT_RATING_CHANGE"] },
+    "2b9a6571-6fe7-4aac-931d-a96ab227ea43": { "dealName": "IBM / Red Hat", "grade": "IE_POSITIVE_OR_NEGATIVE", "exceptions": ["ACQUISITION_PROPOSAL_RELATED", "STOCK_PRICE_CHANGE"] },
+    "2c143f44-6aa9-40d9-a92f-30d48aa603fd": { "dealName": "Amazon / Whole Foods Market", "grade": "IE_POSITIVE_OR_NEGATIVE", "exceptions": ["ACQUISITION_PROPOSAL_RELATED", "STOCK_PRICE_CHANGE"] },
+    "7dc3a05f-b170-4d59-a255-b7103cca16e1": { "dealName": "QXO / TopBuild", "grade": "IE_POSITIVE_OR_NEGATIVE", "exceptions": ["ACQUISITION_PROPOSAL_RELATED", "AGREEMENT_COMPLIANCE_ACTIONS"] },
+    "86a01770-f565-47c5-8e7d-2a75a66b5e8b": { "dealName": "General Atlantic / European Wax Center", "grade": "IE_POSITIVE_ONLY", "exceptions": ["ACQUISITION_PROPOSAL_RELATED", "MEETS_EXCEEDS_PROJECTIONS", "STOCK_PRICE_CHANGE", "CREDIT_RATING_CHANGE"] },
+    "885edae5-49e8-464a-9f33-edd229119d7c": { "dealName": "Pfizer / Metsera", "grade": "IE_POSITIVE_OR_NEGATIVE", "exceptions": ["ACQUISITION_PROPOSAL_RELATED", "MEETS_EXCEEDS_PROJECTIONS", "STOCK_PRICE_CHANGE"] },
+    "af4940e1-a645-437c-acfa-4a53e8d9f7ac": { "dealName": "3G Capital / Skechers", "grade": "IE_POSITIVE_OR_NEGATIVE", "exceptions": ["ACQUISITION_PROPOSAL_RELATED", "MEETS_EXCEEDS_PROJECTIONS", "STOCK_PRICE_CHANGE", "CREDIT_RATING_CHANGE"] },
+    "ce061fd0-a437-4d20-8a84-fdd6296aa5a0": { "dealName": "Restaurant Brands International / Carrols Restaurant Group", "grade": "IE_POSITIVE_OR_NEGATIVE", "exceptions": ["ACQUISITION_PROPOSAL_RELATED", "MEETS_EXCEEDS_PROJECTIONS", "STOCK_PRICE_CHANGE", "CREDIT_RATING_CHANGE"] },
+    "cf32899a-37c6-4147-8350-4a2e132a30db": { "dealName": "Goodyear / Cooper Tire", "grade": "IE_POSITIVE_OR_NEGATIVE", "exceptions": ["ACQUISITION_PROPOSAL_RELATED"] }
+  },
+  "unresolved": [
+    "0a043659-68fb-4d20-98e6-b926aa758799",
+    "1dfb11d5-99d3-4f2b-8229-6e61e8af2eea",
+    "1e4b7102-7890-451a-b8d0-8357120fc371",
+    "320a3899-0d74-42d6-a412-3a962997d6ca",
+    "555579a6-6a11-45b3-9da9-43e1b49a6e89",
+    "667447f0-ff25-4de2-a1b5-e5f099ecd366",
+    "a267309a-fc22-4160-a652-1144fc64e9cf",
+    "aad132ee-8a43-436d-b6a8-5604b7dfee01",
+    "b57d0d65-d9d6-4e77-8e2e-08da4eb58f81",
+    "bb5f062d-2818-4f9f-b968-ad9980445b6f",
+    "c34415ed-44f7-432f-8d7c-6464b0310239",
+    "c750afb9-73fc-4043-a9d7-269506a6e00e",
+    "df393645-86f4-4ae2-861e-35777e93583e",
+    "dfaa71fa-9723-4794-825d-bd5024aa0b5d",
+    "f9c61065-a935-42a3-bc90-2f5a76670191"
+  ]
+}

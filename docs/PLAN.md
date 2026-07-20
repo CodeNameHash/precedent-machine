@@ -139,6 +139,16 @@ P3 — Recurring fold-in pattern (proxy-in-meeting, jury-in-jurisdiction,
 P3 — ENDRA metadata check: source parties are ENDRA Life Sciences /
      Noble Africa LLC (Parent: ASP Isotopes); display says "ENDRA /
      Renergen". TERMR-OUTSIDE slot holds a definition-shaped card.
+P1 — short_title sentinel drift, corpus-wide (r18 find): 475/475
+     "Unclassified"-ish cards store bare 'Unclassified' while code guards
+     expected '[PROPOSED] Unclassified' — render side now accepts both,
+     but ingestion should standardize the sentinel (spans IOC, 10.16,
+     IV-INTRO, 9.1(f), etc.).
+P2 — Market-column numeric cells: /api/corpus-stats-batch carries no
+     numeric percentile data, so numeric rows in the unified market
+     column show "No market data"; extend the batch payload with the
+     numeric distributions (corpus-stats-core already computes them) and
+     wire the off-market markers into the OffMarketSection feed.
 P2 — Skechers stored-quote truncations (r16 structured-voice round):
      fiduciaryFinalStandard stored as a headless mid-clause fragment
      (truncated at the START); DEF-SUPERIOR card mislabeled (titled

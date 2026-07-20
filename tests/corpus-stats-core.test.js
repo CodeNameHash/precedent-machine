@@ -14,6 +14,9 @@ const {
   partitionByCode,
   DEFAULT_PER_CODE_CLAIMS_LIMIT,
   DEFAULT_PER_CODE_CARDS_LIMIT,
+  scopeClaimsForContext,
+  buildCategoricalDealDistribution,
+  MIN_SCOPED_DEALS,
 } = require('../lib/queries/corpus-stats-core');
 
 function deal(id, overrides = {}) {
@@ -153,4 +156,145 @@ test('a chunk whose returned row count equals its limit is detectable as truncat
   const partialRows = fullRows.slice(0, chunk.limit - 1);
   assert.ok(fullRows.length >= chunk.limit, 'exactly-at-limit rows must trip the truncation flag');
   assert.ok(partialRows.length < chunk.limit, 'under-limit rows must NOT trip the truncation flag');
+});
+
+// r18 -- rowContext scoping + deal counting -------------------------------
+// Ben's bug report: "Would not have MAE -- 327 ... of 666 peer deals" on a
+// 40-deal corpus. Root cause: materialityQualifier claims were pulled
+// UNSCOPED across every rep of every deal (the attribute exists on ~27
+// reps per deal) and counted per-CLAIM, not per-deal. These tests cover the
+// two fixed semantics (scopeClaimsForContext, buildCategoricalDealDistribution)
+// directly against fixtures, independent of any live corpus.
+
+function claim(dealId, attribute, canonical, code, overrides = {}) {
+  return {
+    deal_id: dealId,
+    attribute,
+    canonical,
+    verbatim: null,
+    evidence_quote: null,
+    provenance: { code },
+    id: `${dealId}-${attribute}-${code}`,
+    created_at: '2026-01-01T00:00:00Z',
+    excerpt_id: null,
+    ...overrides,
+  };
+}
+
+test('scopeClaimsForContext narrows to the clicked card\'s own provenance code when that pool has >= MIN_SCOPED_DEALS deals', () => {
+  const claims = [
+    claim('d1', 'materialityQualifier', 'MAT_MAE_AGGREGATE', 'REP-T-SANCTIONS'),
+    claim('d2', 'materialityQualifier', 'MAT_ALL_MATERIAL', 'REP-T-SANCTIONS'),
+    claim('d3', 'materialityQualifier', 'MAT_MAE_AGGREGATE', 'REP-T-SANCTIONS'),
+    // Same attribute, DIFFERENT rep -- must not leak into the SANCTIONS pool.
+    claim('d4', 'materialityQualifier', 'MAT_ALL_RESPECTS', 'REP-T-TAX'),
+  ];
+  const { claims: scoped, scope, scopeNote } = scopeClaimsForContext({ claims, code: 'REP-T-SANCTIONS' });
+  assert.equal(scope, 'subtype');
+  assert.equal(scopeNote, null, 'the expected universe (this rep across deals) needs no disclaimer');
+  assert.deepEqual(scoped.map((c) => c.deal_id).sort(), ['d1', 'd2', 'd3']);
+});
+
+test('scopeClaimsForContext falls back to the code FAMILY when the subtype pool is thinner than MIN_SCOPED_DEALS, and labels the fallback', () => {
+  assert.equal(MIN_SCOPED_DEALS, 3);
+  const claims = [
+    claim('d1', 'materialityQualifier', 'MAT_MAE_AGGREGATE', 'REP-T-SANCTIONS'), // subtype pool: 1 deal only
+    claim('d2', 'materialityQualifier', 'MAT_ALL_MATERIAL', 'REP-T-TAX'),
+    claim('d3', 'materialityQualifier', 'MAT_ALL_RESPECTS', 'REP-T-ORG'),
+  ];
+  const { claims: scoped, scope, scopeNote } = scopeClaimsForContext({ claims, code: 'REP-T-SANCTIONS' });
+  assert.equal(scope, 'family');
+  assert.equal(scopeNote, 'across all target reps');
+  assert.deepEqual(scoped.map((c) => c.deal_id).sort(), ['d1', 'd2', 'd3'], 'family pool covers every REP-T-* deal');
+});
+
+test('scopeClaimsForContext falls back all the way to corpus scope, labelled, when even the family pool is too thin', () => {
+  const claims = [
+    claim('d1', 'someRareAttr', 'X', 'REP-T-SANCTIONS'), // only deal with this code or family
+  ];
+  const { claims: scoped, scope, scopeNote } = scopeClaimsForContext({ claims, code: 'REP-T-SANCTIONS' });
+  assert.equal(scope, 'corpus');
+  assert.equal(scopeNote, 'across all deals');
+  assert.equal(scoped.length, 1);
+});
+
+test('scopeClaimsForContext REP-B family fallback labels "across all parent reps", not target reps', () => {
+  const claims = [
+    claim('d1', 'materialityQualifier', 'MAT_MAE_AGGREGATE', 'REP-B-CAP'),
+    claim('d2', 'materialityQualifier', 'MAT_ALL_MATERIAL', 'REP-B-ORG'),
+    claim('d3', 'materialityQualifier', 'MAT_ALL_RESPECTS', 'REP-B-TAX'),
+  ];
+  const { scope, scopeNote } = scopeClaimsForContext({ claims, code: 'REP-B-CAP' });
+  assert.equal(scope, 'family');
+  assert.equal(scopeNote, 'across all parent reps');
+});
+
+function dealsByIdFixture(ids) {
+  return new Map(ids.map((id) => [id, { id, name: `Deal ${id}` }]));
+}
+
+test('buildCategoricalDealDistribution counts DEALS, never claims -- a deal with 3 claims for the same value contributes 1, not 3', () => {
+  const claims = [
+    claim('d1', 'materialityQualifier', 'MAT_MAE_AGGREGATE', 'REP-T-SANCTIONS'),
+    claim('d1', 'materialityQualifier', 'MAT_MAE_AGGREGATE', 'REP-T-SANCTIONS'),
+    claim('d1', 'materialityQualifier', 'MAT_MAE_AGGREGATE', 'REP-T-SANCTIONS'),
+    claim('d2', 'materialityQualifier', 'MAT_ALL_MATERIAL', 'REP-T-SANCTIONS'),
+  ];
+  const dist = buildCategoricalDealDistribution('materialityQualifier', claims, 'd1', dealsByIdFixture(['d1', 'd2']), new Map());
+  assert.equal(dist.counting, 'deals');
+  assert.equal(dist.total, 2, 'two DEALS, not four claims');
+  const maeValue = dist.values.find((v) => v.value === 'MAT_MAE_AGGREGATE');
+  assert.equal(maeValue.count, 1, 'd1 contributes exactly one count despite three claims');
+});
+
+test('buildCategoricalDealDistribution picks the best-evidenced value per deal when a deal has conflicting claims', () => {
+  const claims = [
+    // d1: two claims for value A, one for value B, A wins by count.
+    claim('d1', 'materialityQualifier', 'MAT_MAE_AGGREGATE', 'REP-T-SANCTIONS'),
+    claim('d1', 'materialityQualifier', 'MAT_MAE_AGGREGATE', 'REP-T-SANCTIONS'),
+    claim('d1', 'materialityQualifier', 'MAT_ALL_MATERIAL', 'REP-T-SANCTIONS'),
+  ];
+  const dist = buildCategoricalDealDistribution('materialityQualifier', claims, 'd1', dealsByIdFixture(['d1']), new Map());
+  assert.equal(dist.total, 1, 'exactly one deal, one chosen value');
+  assert.equal(dist.values.length, 1);
+  assert.equal(dist.values[0].value, 'MAT_MAE_AGGREGATE', 'the value backed by more claims (2 vs 1) wins');
+  assert.equal(dist.thisDealValue, dist.values[0].label);
+});
+
+test('buildCategoricalDealDistribution never exceeds the peer-set size -- the <= 40 invariant', () => {
+  const PEER_SET_SIZE = 40;
+  const dealIds = Array.from({ length: PEER_SET_SIZE }, (_, i) => `d${i}`);
+  // Simulate the OLD bug shape: several claims per deal (as if every rep in
+  // a deal carried the attribute) -- the fix must still cap the total at
+  // the number of DEALS, not the number of claims (which would be > 40).
+  const claims = [];
+  for (const id of dealIds) {
+    for (let i = 0; i < 5; i += 1) {
+      claims.push(claim(id, 'materialityQualifier', i % 2 === 0 ? 'MAT_MAE_AGGREGATE' : 'MAT_ALL_MATERIAL', 'REP-T-SANCTIONS', { id: `${id}-${i}` }));
+    }
+  }
+  assert.equal(claims.length, PEER_SET_SIZE * 5, 'sanity: far more claims than deals, like the pre-fix corpus');
+  const dist = buildCategoricalDealDistribution('materialityQualifier', claims, null, dealsByIdFixture(dealIds), new Map());
+  assert.ok(dist.total <= PEER_SET_SIZE, `total (${dist.total}) must be <= peer set size (${PEER_SET_SIZE})`);
+  for (const v of dist.values) {
+    assert.ok(v.count <= PEER_SET_SIZE, `value count (${v.count}) must be <= peer set size (${PEER_SET_SIZE})`);
+  }
+});
+
+test('buildCategoricalDealDistribution surfaces an explicit "none captured" bucket for present-but-uncaptured deals, without inflating other buckets', () => {
+  const claims = [
+    claim('d1', 'materialityQualifier', 'MAT_MAE_AGGREGATE', 'REP-T-SANCTIONS'),
+  ];
+  // d2 is known to carry the SAME provision (subtype-scoped provision_cards)
+  // but has no captured materialityQualifier claim at all.
+  const presentDealEntries = new Map([
+    ['d1', { id: 'd1', name: 'Deal d1', cardId: null }],
+    ['d2', { id: 'd2', name: 'Deal d2', cardId: null }],
+  ]);
+  const dist = buildCategoricalDealDistribution('materialityQualifier', claims, null, dealsByIdFixture(['d1', 'd2']), new Map(), { presentDealEntries });
+  assert.equal(dist.total, 2, 'both deals counted -- one captured, one honestly labelled none-captured');
+  const noneBucket = dist.values.find((v) => v.label.startsWith('None captured'));
+  assert.ok(noneBucket, 'the none-captured bucket renders rather than silently shrinking the denominator');
+  assert.equal(noneBucket.count, 1);
+  assert.deepEqual(noneBucket.deals.map((d) => d.id), ['d2']);
 });

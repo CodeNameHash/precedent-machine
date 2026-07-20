@@ -1,24 +1,24 @@
 # WP-SCHEMA P1 Inventory Summary
 
-Generated: 2026-07-18T18:41:20.695Z
+Generated: 2026-07-20T12:47:25.653Z
 
 ## Counts
 
-- Distinct feature-like keys: 517
-- Keys in 2 or more source families: 473
-- Keys in only 1 source family: 44
+- Distinct feature-like keys: 524
+- Keys in 2 or more source families: 474
+- Keys in only 1 source family: 50
 - Cross-source type mismatches: 6
 - Schema shape mismatches: 33
 - Provision types in rubric: 22
 - Canonical codes in rubric: 276
-- Taxonomy families exported: 58
+- Taxonomy families exported: 66
 - Curated expected-set codes: 38
 
 ## Naming Distribution
 
 | Convention |Count |
 | --- |--- |
-| camelCase |486 |
+| camelCase |493 |
 | lowercase |24 |
 | snake_case |7 |
 
@@ -30,8 +30,8 @@ Generated: 2026-07-18T18:41:20.695Z
 | expected_sets_js |195 |
 | feature_validation_js |483 |
 | rubric_js |471 |
-| taxonomy_js |59 |
-| ui |182 |
+| taxonomy_js |66 |
+| ui |184 |
 
 ## Top 20 Highest-Appearance Keys
 
@@ -120,17 +120,22 @@ Keys in only one source family. These are candidates for dead-code review, not a
 | appliesTo |taxonomy_js |1 |
 | baseSalaryStandard |category_summary_features_js |1 |
 | benefitsStandard |category_summary_features_js |1 |
+| bidderIdentity |taxonomy_js |1 |
 | bonusStandard |category_summary_features_js |1 |
 | cashAmount |ui |1 |
 | chapeauProviso |ui |1 |
 | closingConditionsPrecedent |category_summary_features_js |1 |
 | closingDeadline |ui |1 |
+| copiesScope |taxonomy_js |1 |
 | curePeriod |category_summary_features_js |4 |
+| engagementNotice |taxonomy_js |1 |
 | extensionAvailable |category_summary_features_js |2 |
 | extensionConsentParty |category_summary_features_js |2 |
 | extensionTrigger |category_summary_features_js |2 |
 | healthWelfareStandard |category_summary_features_js |1 |
+| informationSharing |taxonomy_js |1 |
 | inlineDefinition |feature_validation_js |1 |
+| interveningEventType |taxonomy_js |1 |
 | iocAffirmativeScope |taxonomy_js |1 |
 | iocAffirmativeStandard |taxonomy_js |1 |
 | isNewCode |feature_validation_js |1 |
@@ -139,6 +144,7 @@ Keys in only one source family. These are candidates for dead-code review, not a
 | ltiStandard |category_summary_features_js |1 |
 | maeStandaloneCondition |category_summary_features_js |2 |
 | materialityQualifiers |taxonomy_js |1 |
+| ongoingUpdates |taxonomy_js |1 |
 | partOfRep |ui |1 |
 | proposedCode |feature_validation_js |1 |
 | proposedLabel |feature_validation_js |1 |
