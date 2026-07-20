@@ -12,7 +12,7 @@ const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 // tested content (kept byte-for-byte: same ids, same detail synthesis, same
 // rowSignal/renderSignals/renderDetail pipeline) and MECHANIC_ROWS is the
 // new pill strip Ben asked for -- Matching period, Notice, Superior- and
-// Acquisition-proposal thresholds, Fiduciary-out standard, Change-of-
+// Acquisition-proposal thresholds, Engagement standard (coded), Change-of-
 // Recommendation item count (+ collapsed list), Subsequent match period,
 // plus the Acquisition Proposal definition collapsed underneath its
 // threshold. Mechanic rows render first (the "core mechanics" lede); the
@@ -45,7 +45,15 @@ const MECHANIC_ROWS = [
   { id: 'notice-hours', label: 'Notice', keys: ['discussionInitiationNoticeHours'], format: (raw) => hoursLabel(raw) },
   { id: 'superior-threshold', label: 'Superior-proposal threshold', keys: ['superiorProposalThresholdPct', 'superiorProposalPercentage'], format: (raw) => pctLabel(raw) },
   { id: 'acquisition-threshold', label: 'Acquisition-proposal threshold', keys: ['acquisitionTransactionPctThreshold'], format: (raw) => pctLabel(raw) },
-  { id: 'fiduciary-standard', label: 'Fiduciary-out standard', keys: ['fiduciaryOutStandard'], format: (raw) => fiduciaryStandardSummary(raw) },
+  // Ben decision r16 label clarification: fiduciaryOutStandard is the CODED
+  // enum for the EARLIER engagement-stage threshold only (lib/schema/
+  // features.js), not the later final-determination standard, and this
+  // table (unlike nosol-fiduciary/nosol-superior) has no adjacent
+  // 'Engagement standard' / 'Final determination standard' row for context
+  // -- a bare "Fiduciary-out standard" label here was the highest-risk
+  // ambiguity (could be misread as the overall/final gate). "(coded)" names
+  // the stage explicitly.
+  { id: 'fiduciary-standard', label: 'Engagement standard (coded)', keys: ['fiduciaryOutStandard'], format: (raw) => fiduciaryStandardSummary(raw) },
   { id: 'subsequent-match', label: 'Subsequent match period', keys: ['subsequentMatchPeriodDays'], format: daysLabel },
   { id: 'acquisition-definition', label: 'Acquisition Proposal — definition', keys: ['acquisitionTransactionDefinition'], format: (raw) => valueText(raw) },
 ];

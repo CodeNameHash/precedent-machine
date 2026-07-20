@@ -12,7 +12,7 @@ const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 // exact ids/keys/fallback regexes/detail synthesis unchanged (existing
 // tests assert on array order and individual `.detail` values). New rows
 // (spec's explicit field list for this table): Superior-proposal threshold,
-// Superior Proposal test (collapsed), Fiduciary-out standard, Board-change
+// Superior Proposal test (collapsed), Engagement standard (coded), Board-change
 // standard, plus the Acceptable Confidentiality Agreement definition
 // (collapsed) -- all structured-key lookups across the wider no-solicitation
 // family, since these live on NOSOL-SUPERIOR/NOSOL-EXCEPT/NOSOL-RECOMMEND/
@@ -45,7 +45,14 @@ const ROWS = [
 const NEW_ROWS = [
   { id: 'superior-threshold', label: 'Superior-proposal threshold', keys: ['superiorProposalThresholdPct', 'superiorProposalPercentage'], format: pctLabel },
   { id: 'superior-test', label: 'Superior Proposal test', keys: ['superiorProposalTest'], format: (raw) => valueText(raw) },
-  { id: 'fiduciary-standard', label: 'Fiduciary-out standard', keys: ['fiduciaryOutStandard'], format: fiduciaryStandardSummary },
+  // Ben decision r16 label clarification: fiduciaryOutStandard is the CODED
+  // enum for the EARLIER engagement-stage threshold only (see
+  // lib/schema/features.js's description) -- the structured counterpart to
+  // the verbatim 'engage' row above, not a standalone/overall standard. A
+  // bare "Fiduciary-out standard" label sitting next to "Final determination
+  // standard" reads as ambiguous about which stage it covers; "(coded)"
+  // pairs it explicitly with 'Engagement standard' above.
+  { id: 'fiduciary-standard', label: 'Engagement standard (coded)', keys: ['fiduciaryOutStandard'], format: fiduciaryStandardSummary },
   { id: 'board-change-standard', label: 'Board-change standard', keys: ['boardChangeStandard'], format: boardChangeStandardLabel },
   { id: 'acceptable-confidentiality', label: 'Acceptable Confidentiality Agreement — definition', keys: ['acceptableConfidentialityAgreementDefinition'], format: (raw) => valueText(raw) },
 ];
