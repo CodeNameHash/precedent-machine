@@ -162,7 +162,7 @@ export function buildRowMarketContext(row, marketColumn) {
 
 export function marketSummaryForRowContext(row, marketColumn) {
   const context = buildRowMarketContext(row, marketColumn);
-  return context ? context.primarySummary : null;
+  return context ? (context.summaries[0] || context.primarySummary) : null;
 }
 
 export { registrySignature };
