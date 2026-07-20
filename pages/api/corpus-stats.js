@@ -56,6 +56,7 @@ const taxonomy = require('../../lib/taxonomy');
 // builder in corpus-stats-core (CJS, unit-tested directly there).
 const { isRelativePeriodField } = require('../../lib/query/relative-periods');
 const { buildFeaturesForCard } = require('../../lib/queries/claims-adapter');
+const { selectDurationCohort } = require('../../lib/queries/corpus-duration');
 // r19 (WP-A, numeric market cells): the SAME percentile primitive
 // corpus-stats-core.js's featureSummary numeric entries use — reused here so
 // rowContext's numeric distribution and featureSummary never disagree.
@@ -93,6 +94,13 @@ const {
   isNumericAttribute,
   numericAttributeUnit,
 } = require('../../lib/queries/corpus-stats-core');
+
+const DURATION_UNITS = new Set(['hours', 'elapsed_hours', 'days', 'calendar_days', 'business_days', 'months', 'years']);
+
+function isDurationAttribute(attribute) {
+  if (DURATION_UNITS.has(String(numericAttributeUnit(attribute) || '').toLowerCase())) return true;
+  return /(?:period|deadline|duration|window|days|hours|months|years)$/i.test(String(attribute || ''));
+}
 
 // The claims fetch filters on provenance->>code — an expression Postgres has
 // no index for, so a cold (uncached) call scans the claims table. When the
@@ -133,7 +141,7 @@ function median(sortedNums) {
 // counting (always DEALS, never claims). `presentDealEntries` is only
 // meaningful at 'subtype' scope (see the handler) — it powers the explicit
 // "none captured" bucket in buildCategoricalDealDistribution.
-function buildFeatureDistribution(attribute, peerClaims, subjectDealId, dealsById, cardIdByKey, dealMetaById, presentDealEntries) {
+function buildFeatureDistribution(attribute, peerClaims, subjectDealId, dealsById, cardIdByKey, dealMetaById, presentDealEntries, options = {}) {
   const label = attributeLabel(attribute);
   // r14: deal-relative look-back fields distribute over months-before-
   // signing, never over raw anchor dates — see the registry module header.
@@ -143,10 +151,34 @@ function buildFeatureDistribution(attribute, peerClaims, subjectDealId, dealsByI
   if (isNumericAttribute(attribute, peerClaims)) {
     const byDeal = new Map();
     const claimByDeal = new Map();
-    for (const cl of peerClaims) {
-      if (byDeal.has(cl.deal_id)) continue; // one value per deal
-      const n = extractNumeric(cl);
-      if (n !== null) { byDeal.set(cl.deal_id, n); claimByDeal.set(cl.deal_id, cl); }
+    let unit = numericAttributeUnit(attribute);
+    let strictDurationCohort = null;
+
+    if (isDurationAttribute(attribute)) {
+      const { cohort } = selectDurationCohort({
+        claims: peerClaims,
+        subjectDealId,
+        requestedCode: options.requestedCode,
+        evidenceByCardKey: options.evidenceByCardKey,
+      });
+      if (!cohort) return null;
+      unit = cohort.unit;
+      strictDurationCohort = {
+        unit: cohort.unit,
+        triggerScoped: true,
+        eligibleDealCount: cohort.eligibleDealCount,
+        excludedDealCount: cohort.excludedDealCount,
+      };
+      for (const entry of cohort.entries) {
+        byDeal.set(entry.claim.deal_id, entry.duration.value);
+        claimByDeal.set(entry.claim.deal_id, entry.claim);
+      }
+    } else {
+      for (const cl of peerClaims) {
+        if (byDeal.has(cl.deal_id)) continue; // one value per deal
+        const n = extractNumeric(cl);
+        if (n !== null) { byDeal.set(cl.deal_id, n); claimByDeal.set(cl.deal_id, cl); }
+      }
     }
     const nums = [...byDeal.values()].sort((a, b) => a - b);
     if (!nums.length) return null;
@@ -171,7 +203,7 @@ function buildFeatureDistribution(attribute, peerClaims, subjectDealId, dealsByI
       attribute,
       label,
       kind: 'numeric',
-      unit: numericAttributeUnit(attribute),
+      unit,
       min: nums[0],
       // r19: additive percentiles alongside min/median/max, via the same
       // quantile() primitive featureSummary's numeric entries use.
@@ -184,6 +216,7 @@ function buildFeatureDistribution(attribute, peerClaims, subjectDealId, dealsByI
       thisDealValue,
       thisDealRank: rank,
       values,
+      ...(strictDurationCohort ? { strictDurationCohort } : {}),
     };
   }
   // r18 (Ben, "327 of 666 peer deals" on a 40-deal corpus): categorical
@@ -322,7 +355,7 @@ export default async function handler(req, res) {
       // provision_subtype select, needed to resolve claims.excerpt_id ->
       // provision_cards.id (the card uuid `?card=` deep-links expect) --
       // see cardIdByKey below. Still the one query, still scoped to `code`.
-      sb.from('provision_cards').select('deal_id, provision_subtype, id, excerpt_id').eq('provision_subtype', code),
+      sb.from('provision_cards').select('deal_id, provision_subtype, id, excerpt_id, primary_quote, region_full_text').eq('provision_subtype', code),
     ]);
     if (dealsErr) throw new Error(dealsErr.message);
     if (cardsErr) throw new Error(cardsErr.message);
@@ -401,7 +434,13 @@ export default async function handler(req, res) {
         // a family/corpus fallback means the universe is broader than one
         // code, so presentDealEntries would misrepresent it.
         const presentDealEntries = new Map();
+        const evidenceByCardKey = new Map();
         for (const c of cards || []) {
+          if (c.excerpt_id) {
+            const evidence = c.primary_quote || c.region_full_text || '';
+            const key = `${c.deal_id}|${c.excerpt_id}`;
+            if (evidence && evidence.length > (evidenceByCardKey.get(key) || '').length) evidenceByCardKey.set(key, evidence);
+          }
           if (!peerIds.has(c.deal_id) || presentDealEntries.has(c.deal_id)) continue;
           const d = dealsById.get(c.deal_id);
           presentDealEntries.set(c.deal_id, { id: c.deal_id, name: d ? d.name : c.deal_id, cardId: c.id || null });
@@ -420,6 +459,7 @@ export default async function handler(req, res) {
             const dist = buildFeatureDistribution(
               attribute, scopedClaims, subjectDealId, dealsById, cardIdByKey, dealMetaById,
               scope === 'subtype' ? presentDealEntries : null,
+              { requestedCode: code, evidenceByCardKey },
             );
             return dist ? { ...dist, scope, scopeNote } : null;
           })

@@ -1,5 +1,5 @@
 import React from 'react';
-import { cardFeatures, partySide, splitForCell, textOf, valueText } from './card-utils.js';
+import { cardFeatures, firstFeature as firstFeatureHit, partySide, splitForCell, textOf, valueText } from './card-utils.js';
 import { standardColorKey } from './standard-colors.js';
 import { BOARD_CHANGE_STANDARD_LABELS } from './board-change-standard.js';
 import { FIDUCIARY_STANDARD_LABELS } from './fiduciary-standard-labels.js';
@@ -93,12 +93,14 @@ function isNosolFamilyCard(card) {
 // text that already matched the label. card-utils.js's version prioritizes
 // label/code and suppresses a `.text` that's a literal echo.
 function firstFeature(cards, keys) {
+  return firstFeatureHit(cards, keys)?.detail || null;
+}
+function firstFallback(cards, fallback) {
   for (const card of cards) {
-    const features = cardFeatures(card);
-    for (const key of keys) {
-      const text = valueText(features[key]);
-      if (text) return text;
-    }
+    const evidence = textOf(card);
+    if (!evidence) continue;
+    const detail = fallback(evidence);
+    if (detail) return { card, detail, evidence };
   }
   return null;
 }
@@ -167,18 +169,22 @@ const ROW_CLEANERS = {
   'subsequent-match': withBusinessDays,
 };
 function rowForSpec(spec, cards) {
-  const evidence = cards.map(textOf).filter(Boolean).join('\n\n');
-  const raw = firstFeature(cards, spec.keys) || spec.fallback(evidence);
-  if (!raw) return null;
+  const featureHit = firstFeatureHit(cards, spec.keys);
+  const fallbackHit = featureHit ? null : firstFallback(cards, spec.fallback);
+  if (!featureHit && !fallbackHit) return null;
+  const sourceCard = featureHit?.card || fallbackHit.card;
+  const raw = featureHit?.detail || fallbackHit.detail;
   const cleaner = ROW_CLEANERS[spec.id];
   const detail = cleaner ? cleaner(raw) : raw;
   return {
     id: `nosol-fiduciary-${spec.id}`,
     label: spec.label,
-    party: [...new Set(cards.map(partySide))].join(', ') || 'Target / Company',
+    party: partySide(sourceCard),
     detail,
-    evidence,
-    sourceCards: cards,
+    evidence: textOf(sourceCard),
+    featureKeys: featureHit ? [featureHit.key] : spec.keys,
+    sourceCard,
+    sourceCards: [sourceCard],
     present: true,
   };
 }
@@ -221,16 +227,8 @@ function boardChangeStandardLabel(raw) {
   return BOARD_CHANGE_STANDARD_LABELS[text.trim().toUpperCase()] || prettifyCode(text);
 }
 function firstHit(cards, keys) {
-  for (const card of cards) {
-    const features = cardFeatures(card);
-    for (const key of keys) {
-      const raw = features[key];
-      if (raw === null || raw === undefined || raw === '' || raw === false) continue;
-      if (Array.isArray(raw) && raw.length === 0) continue;
-      return { card, raw };
-    }
-  }
-  return null;
+  const hit = firstFeatureHit(cards, keys);
+  return hit ? { card: hit.card, key: hit.key, raw: hit.value } : null;
 }
 function newRow(spec, familyCards) {
   const hit = firstHit(familyCards, spec.keys);
@@ -243,6 +241,8 @@ function newRow(spec, familyCards) {
     party: partySide(hit.card),
     detail: formatted,
     evidence: textOf(hit.card),
+    featureKeys: [hit.key],
+    sourceCard: hit.card,
     sourceCards: [hit.card],
     present: true,
   };

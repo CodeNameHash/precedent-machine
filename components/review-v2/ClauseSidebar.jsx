@@ -33,10 +33,16 @@
 // now ALSO carrying featureKeys/itemCode/itemLabel for the focused row, so a
 // row click still costs exactly one request (see the `query` useMemo).
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { Component, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useViewMode } from '../ViewModeContext';
 import { cardFeatureQuote } from './provisionIndexHelpers.js';
+import {
+  formatFeatureSummaryNumber,
+  formatFeatureSummaryUnit,
+  isDurationFeatureSummaryUnit,
+  normalizeFeatureSummary,
+} from './marketSummaryHelpers.js';
 import { getCorpusVersion } from '../../lib/client/corpus-version.js';
 import { FEATURES } from '../../lib/schema/features.js';
 
@@ -553,8 +559,8 @@ function FeatureDistribution({ feature, itemCode }) {
     if (feature.min === null || feature.min === undefined) return null;
     const fmtN = (n) => {
       if (n === null || n === undefined) return '—';
-      if (feature.unit) return `${Math.round(n).toLocaleString('en-US')} ${feature.unit}`;
-      return fmtValue(n) || Math.round(n).toLocaleString('en-US');
+      if (feature.unit) return formatFeatureSummaryNumber(n, feature.unit);
+      return fmtValue(n) || Number(n).toLocaleString('en-US', { maximumFractionDigits: 2 });
     };
     const hasValues = Array.isArray(feature.values) && feature.values.length > 0;
     const allPointsDeals = hasValues
@@ -867,6 +873,47 @@ function CorpusContextStatus({ loading, error, onRetry }) {
   return null;
 }
 
+function CommonFeatureSummary({ feature }) {
+  if (!feature) return null;
+  if (feature.kind === 'numeric') {
+    const hasRange = [feature.min, feature.median, feature.max].some((value) => value !== null);
+    if (!hasRange) return null;
+    const format = (value) => formatFeatureSummaryNumber(value, feature.unit);
+    return (
+      <div className="mb-2" data-testid="common-feature-summary-numeric">
+        <div className="text-[9px] text-[#6B6B6B] mb-1">{feature.label}</div>
+        <div className="text-[9px] text-[#1F1F1F]">
+          Min {format(feature.min)} <span className="text-[#B0B0B0]">·</span> Median {format(feature.median)} <span className="text-[#B0B0B0]">·</span> Max {format(feature.max)}
+        </div>
+        {feature.p25 !== null && feature.p75 !== null ? (
+          <div className="text-[8.5px] text-[#6B6B6B] mt-0.5">Middle 50%: {format(feature.p25)}–{format(feature.p75)}</div>
+        ) : null}
+        {feature.count !== null ? (
+          <div className="text-[8.5px] text-[#9A9A9A] mt-0.5">{feature.count} peer deals with a captured value</div>
+        ) : null}
+      </div>
+    );
+  }
+
+  if (!feature.values.length) return null;
+  return (
+    <div className="mb-2" data-testid="common-feature-summary-categorical">
+      <div className="text-[9px] text-[#6B6B6B] mb-1">{feature.label}</div>
+      <div className="flex flex-wrap gap-1">
+        {feature.values.slice(0, 4).map((value, index) => (
+          <span
+            key={`${String(value.value)}-${index}`}
+            className="border px-1.5 py-0.5 text-[8.5px]"
+            style={{ color: '#2F6DB5', borderColor: 'rgba(47,109,181,.25)', background: 'rgba(47,109,181,.08)' }}
+          >
+            {value.label}{value.count !== null ? ` · ${value.count}` : ''}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // Sidebar feedback package (Ben, r5), item 3: quiet .mtx empty state shown
 // while the panel is open but nothing is selected -- the panel itself is
 // always mounted (pages/review/[id].js no longer conditionally renders
@@ -882,7 +929,7 @@ function EmptyState() {
   );
 }
 
-export default function ClauseSidebar({ card, rowFocus = null, dealId, dealSector, onClose, onViewInAgreement }) {
+function ClauseSidebarContent({ card, rowFocus = null, dealId, dealSector, onClose, onViewInAgreement }) {
   const { isEdit } = useViewMode();
   const [tab, setTab] = useState('context');
   const [filters, setFilters] = useState({ sector: '', yearFrom: '', size: '', lawFirm: '', buyer: '', form: '' });
@@ -996,6 +1043,16 @@ export default function ClauseSidebar({ card, rowFocus = null, dealId, dealSecto
   // (e.g. CONSID-EQUITY) never renders; the section ref may, small and quiet.
   const sectionRefText = card ? sectionRefLabel(card.section_ref) : '';
   const rowContext = stats && stats.rowContext;
+  const strictDurationActive = Boolean(rowContext?.features?.some((feature) => feature?.strictDurationCohort));
+  const commonFeatureSummary = Array.isArray(stats?.featureSummary)
+    ? stats.featureSummary
+      .map(normalizeFeatureSummary)
+      .filter((feature) => feature && (feature.kind === 'numeric'
+        ? [feature.min, feature.median, feature.max].some((value) => value !== null)
+        : feature.values.length > 0))
+      .filter((feature) => !(strictDurationActive && feature.kind === 'numeric' && isDurationFeatureSummaryUnit(feature.unit)))
+      .slice(0, 4)
+    : [];
 
   // Item 3 (r5): the panel is always mounted now (pages/review/[id].js keeps
   // ClauseSidebar rendered unconditionally) so selecting/clearing a row swaps
@@ -1084,20 +1141,11 @@ export default function ClauseSidebar({ card, rowFocus = null, dealId, dealSecto
               ) : null}
             </div>
 
-            {stats && stats.featureSummary && stats.featureSummary.length ? (
+            {commonFeatureSummary.length ? (
               <div className="px-3.5 py-3 border-t border-[#E0E0E0]">
                 <div className={LAB}>Common values across the peer set</div>
-                {stats.featureSummary.slice(0, 4).map((f) => (
-                  <div key={f.attribute} className="mb-2">
-                    <div className="text-[9px] text-[#6B6B6B] mb-1">{f.label}</div>
-                    <div className="flex flex-wrap gap-1">
-                      {f.values.slice(0, 4).map((v) => (
-                        <span key={v.value} className="border px-1.5 py-0.5 text-[8.5px]" style={{ color: '#2F6DB5', borderColor: 'rgba(47,109,181,.25)', background: 'rgba(47,109,181,.08)' }}>
-                          {v.label} · {v.count}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
+                {commonFeatureSummary.map((feature, index) => (
+                  <CommonFeatureSummary key={`${feature.attribute}-${index}`} feature={feature} />
                 ))}
               </div>
             ) : null}
@@ -1166,5 +1214,48 @@ export default function ClauseSidebar({ card, rowFocus = null, dealId, dealSecto
 
       {card ? fullBody : <EmptyState />}
     </aside>
+  );
+}
+
+class ClauseSidebarErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { failed: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+
+  render() {
+    if (!this.state.failed) return this.props.children;
+    return (
+      <aside
+        className="hidden lg:flex flex-col w-[320px] shrink-0 border-l border-[#E0E0E0] bg-white sticky overflow-y-auto mtx-scrollbar-thin"
+        style={{ top: 'var(--mtx-head-h, 108px)', height: 'calc(100vh - var(--mtx-head-h, 108px))', fontFamily: 'var(--mtx-sans)' }}
+        data-testid="clause-sidebar-render-error"
+      >
+        <div className="border-b border-[#E0E0E0] px-3.5 py-2 flex items-center justify-between">
+          <span className="text-[8.5px] font-bold uppercase tracking-[0.14em] text-[#9A9A9A]">Corpus context</span>
+          <button type="button" onClick={this.props.onClose} aria-label="Close sidebar" className="px-1 text-[#9A9A9A] hover:text-[#1F1F1F] text-xs">✕</button>
+        </div>
+        <div className="px-3.5 py-4 text-[11px] leading-5 text-[#B14E63]">
+          Corpus context could not be displayed for this row. The rest of the review is still available.
+        </div>
+      </aside>
+    );
+  }
+}
+
+export default function ClauseSidebar(props) {
+  const cardKey = props.card ? (props.card.id || props.card.provision_instance_id || '') : '';
+  const featureKeys = Array.isArray(props.rowFocus?.featureKeys) ? props.rowFocus.featureKeys : [];
+  const rowKey = props.rowFocus
+    ? [props.rowFocus.label, props.rowFocus.itemCode, ...featureKeys].filter(Boolean).join('|')
+    : '';
+  return (
+    <ClauseSidebarErrorBoundary key={`${cardKey}|${rowKey}`} onClose={props.onClose}>
+      <ClauseSidebarContent {...props} />
+    </ClauseSidebarErrorBoundary>
   );
 }

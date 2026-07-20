@@ -34,15 +34,14 @@
      - tailProvision: valueType "object" { period_months, ... } — the month
        count is already a JSON number, taken directly (no text parsing
        needed / no ambiguity to introduce).
-     - initialMatchPeriodDays, subsequentMatchPeriodDays, matchingPeriod,
-       noticePeriod, arcReaffirmDeadlineDays, superiorProposalThresholdPct,
-       outsideDateMonthsPostSigning: verbatim is a bare digit string with NO
-       unit words at all ("5", "24", "50") — the unit is fixed by the
-       feature's own registry entry (lib/schema/features.js unit field), not
-       inferred from the text. See extractBareNumberWithUnit().
-     - discussionInitiationNoticeHours: registry unit is null ("hours" is
-       not in the v1 closed unit vocabulary per spec) — converted to whole
-       days only when evenly divisible by 24, else left null and counted.
+     - noticePeriod, matchingPeriod, initialMatchPeriodDays,
+       subsequentMatchPeriodDays, arcReaffirmDeadlineDays: bare values are
+       accepted only when evidence/provenance supplies one unambiguous clock.
+       Hours, calendar days and business days remain separate.
+     - discussionInitiationNoticeHours: the attribute itself fixes the unit
+       as elapsed_hours. It is never converted to generic days.
+     - superiorProposalThresholdPct, outsideDateMonthsPostSigning: the unit
+       is fixed by the attribute's explicit semantic suffix.
      - repsSurvivalDuration: the real, populated attribute for the "reps
        survival period" concept (spec's placeholder name
        "survivalPeriodMonths" does not exist in claims.attribute). Unlike
@@ -68,7 +67,13 @@
 
 const fs = require('fs');
 const path = require('path');
-const { parseNumeric, classifyNullReason, CLOSED_UNITS } = require('../../lib/normalize-numeric');
+const {
+  parseNumeric,
+  parseDuration,
+  classifyNullReason,
+  wordsToNumber,
+  CLOSED_UNITS,
+} = require('../../lib/normalize-numeric');
 
 const REPO_ROOT = path.resolve(__dirname, '..', '..');
 const MIGRATION_PATH = path.join(REPO_ROOT, 'supabase', 'claims-canonical-numeric.sql');
@@ -80,12 +85,12 @@ const ATTRIBUTES = {
   reverseTerminationFee: { strategy: 'json-field-text', field: 'amount', unit: 'USD' },
   expenseReimbursement: { strategy: 'json-field-text', field: 'amount_cap', unit: 'USD' },
   tailProvision: { strategy: 'json-field-number', field: 'period_months', unit: 'months' },
-  initialMatchPeriodDays: { strategy: 'bare-number', unit: 'days' },
-  subsequentMatchPeriodDays: { strategy: 'bare-number', unit: 'days' },
-  matchingPeriod: { strategy: 'bare-number', unit: 'days' },
-  noticePeriod: { strategy: 'bare-number', unit: 'days' },
-  arcReaffirmDeadlineDays: { strategy: 'bare-number', unit: 'days' },
-  discussionInitiationNoticeHours: { strategy: 'hours-to-days' },
+  initialMatchPeriodDays: { strategy: 'contextual-duration' },
+  subsequentMatchPeriodDays: { strategy: 'contextual-duration' },
+  matchingPeriod: { strategy: 'contextual-duration' },
+  noticePeriod: { strategy: 'contextual-duration' },
+  arcReaffirmDeadlineDays: { strategy: 'contextual-duration' },
+  discussionInitiationNoticeHours: { strategy: 'bare-number', unit: 'elapsed_hours' },
   superiorProposalThresholdPct: { strategy: 'bare-number', unit: 'percent' },
   outsideDateMonthsPostSigning: { strategy: 'bare-number', unit: 'months' },
   repsSurvivalDuration: { strategy: 'text' },
@@ -94,15 +99,6 @@ const ATTRIBUTES = {
 const ALLOWLISTED_ATTRIBUTES = Object.keys(ATTRIBUTES);
 
 /* ── pure extraction (no DB, no network) ─────────────────────────────────── */
-
-function extractHoursToDays(verbatim) {
-  if (typeof verbatim !== 'string') return { result: null, reason: 'null-ambiguous' };
-  const trimmed = verbatim.trim();
-  if (!/^-?\d+$/.test(trimmed)) return { result: null, reason: classifyNullReason(verbatim) };
-  const hours = parseInt(trimmed, 10);
-  if (hours % 24 !== 0) return { result: null, reason: 'null-unit' }; // "hours" is not in the v1 closed unit vocabulary
-  return { result: { value: hours / 24, unit: 'days' }, reason: 'parsed' };
-}
 
 // Bare-number fields: verbatim is normally just a digit string with no unit
 // words at all ("5", "24", "50"). The unit is fixed by the attribute's own
@@ -122,6 +118,89 @@ function extractBareNumberWithUnit(verbatim, unit) {
     return { result: { value: Number(trimmed), unit }, reason: 'parsed' };
   }
   return { result: null, reason: classifyNullReason(verbatim) };
+}
+
+const DURATION_UNIT_RE = /\b(?:business[\s-]+days?|calendar[\s-]+days?|hours?|days?|months?|years?)\b/i;
+
+function scalarNumber(value) {
+  if (typeof value === 'number' && Number.isFinite(value)) return value;
+  if (typeof value !== 'string') return null;
+  const trimmed = value.trim();
+  if (/^-?\d+(?:\.\d+)?$/.test(trimmed)) return Number(trimmed);
+  return wordsToNumber(trimmed);
+}
+
+function canonicalDurationUnit(unit) {
+  const raw = String(unit || '').trim().toLowerCase().replace(/[_-]+/g, ' ');
+  if (/^(?:elapsed )?hours?$/.test(raw)) return 'elapsed_hours';
+  if (/^business days?$/.test(raw) || raw === 'business') return 'business_days';
+  if (/^(?:calendar )?days?$/.test(raw) || raw === 'calendar') return 'calendar_days';
+  if (/^months?$/.test(raw)) return 'months';
+  if (/^years?$/.test(raw)) return 'years';
+  return null;
+}
+
+function contextTexts(context) {
+  const provenance = context?.provenance && typeof context.provenance === 'object' ? context.provenance : {};
+  const featureValue = provenance.feature_value && typeof provenance.feature_value === 'object'
+    ? provenance.feature_value
+    : {};
+  return [
+    context?.evidence_quote,
+    context?.evidenceQuote,
+    context?.quote,
+    provenance.evidence_quote,
+    provenance.quote,
+    provenance.verbatim,
+    featureValue.text,
+    featureValue.verbatim,
+    ...(Array.isArray(featureValue.quotes) ? featureValue.quotes : []),
+  ].filter((value) => typeof value === 'string' && value.trim());
+}
+
+function structuredDurationCandidates(context) {
+  const provenance = context?.provenance && typeof context.provenance === 'object' ? context.provenance : {};
+  const featureValue = provenance.feature_value && typeof provenance.feature_value === 'object'
+    ? provenance.feature_value
+    : null;
+  const candidates = [
+    { value: provenance.value, unit: provenance.unit || provenance.time_unit || provenance.calendar_basis },
+    featureValue ? {
+      value: featureValue.value,
+      unit: featureValue.unit || featureValue.time_unit || featureValue.calendar_basis,
+    } : null,
+  ].filter(Boolean);
+  return candidates
+    .map((candidate) => ({ value: scalarNumber(candidate.value), unit: canonicalDurationUnit(candidate.unit) }))
+    .filter((candidate) => candidate.value !== null && candidate.unit);
+}
+
+function extractContextualDuration(verbatim, context = {}) {
+  const direct = parseDuration(verbatim);
+  if (direct) return { result: direct, reason: 'parsed' };
+
+  const value = scalarNumber(verbatim);
+  if (value === null) return { result: null, reason: classifyNullReason(verbatim) };
+
+  const texts = contextTexts(context);
+  const parsedFromText = [];
+  let ambiguousDurationText = false;
+  for (const text of texts) {
+    const parsed = parseDuration(text);
+    if (parsed) parsedFromText.push(parsed);
+    else if (DURATION_UNIT_RE.test(text)) ambiguousDurationText = true;
+  }
+
+  const candidates = [...parsedFromText, ...structuredDurationCandidates(context)];
+  if (ambiguousDurationText) return { result: null, reason: 'null-ambiguous' };
+  if (!candidates.length) return { result: null, reason: 'null-unit' };
+  if (candidates.some((candidate) => candidate.value !== value)) {
+    return { result: null, reason: 'null-ambiguous' };
+  }
+
+  const units = new Set(candidates.map((candidate) => candidate.unit));
+  if (units.size !== 1) return { result: null, reason: 'null-ambiguous' };
+  return { result: { value, unit: [...units][0] }, reason: 'parsed' };
 }
 
 function extractText(verbatim) {
@@ -170,14 +249,14 @@ function extractJsonFieldNumber(verbatim, field, unit) {
 
 // Dispatches to the right extractor for one claims row's attribute. Pure —
 // no DB, no network. Returns { result: {value,unit}|null, reason }.
-function extractCandidate(attribute, verbatim) {
+function extractCandidate(attribute, verbatim, context = {}) {
   const config = ATTRIBUTES[attribute];
   if (!config) return { result: null, reason: 'skip-unknown-attribute' };
   switch (config.strategy) {
-    case 'hours-to-days':
-      return extractHoursToDays(verbatim);
     case 'bare-number':
       return extractBareNumberWithUnit(verbatim, config.unit);
+    case 'contextual-duration':
+      return extractContextualDuration(verbatim, context);
     case 'text':
       return extractText(verbatim);
     case 'json-field-text':
@@ -197,7 +276,7 @@ function sameCanonicalNumeric(a, b) {
 // Plans a single claims row. Never touches the network.
 // row: { id, attribute, verbatim, canonical_numeric }
 function decideRow(row) {
-  const { result, reason } = extractCandidate(row.attribute, row.verbatim);
+  const { result, reason } = extractCandidate(row.attribute, row.verbatim, row);
   const base = { id: row.id, dealId: row.deal_id || null, attribute: row.attribute, verbatim: row.verbatim };
 
   if (!result) {
@@ -342,7 +421,7 @@ async function fetchAllowlistedClaims(sb, dealIds) {
   for (;;) {
     let query = sb
       .from('claims')
-      .select('id, deal_id, attribute, verbatim, canonical_numeric')
+      .select('id, deal_id, attribute, verbatim, evidence_quote, provenance, canonical_numeric')
       .in('attribute', ALLOWLISTED_ATTRIBUTES)
       .range(from, from + PAGE - 1);
     if (dealIds && dealIds.length > 0) query = query.in('deal_id', dealIds);
@@ -433,6 +512,7 @@ module.exports = {
   ATTRIBUTES,
   ALLOWLISTED_ATTRIBUTES,
   extractCandidate,
+  extractContextualDuration,
   decideRow,
   buildBackfillPlan,
   formatPlanReport,

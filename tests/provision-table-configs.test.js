@@ -2985,6 +2985,39 @@ test('nosol-fiduciary config maps fiduciary-out features', () => {
   assert.equal(rows.find((row) => row.id === 'nosol-fiduciary-notice-period').detail, 'four Business Days');
 });
 
+test('QXO notice period keeps the exact source card and feature key used by the row', () => {
+  const recommendCard = {
+    id: 'qxo-recommend',
+    provision_type: 'COVENANT_NO_SOLICITATION',
+    provision_subtype: 'NOSOL-RECOMMEND',
+    primary_quote: 'The Board may make a Change of Recommendation in accordance with this Section.',
+    features: { forceTheVote: true },
+  };
+  const noticeCard = {
+    id: 'qxo-intervening',
+    provision_type: 'COVENANT_NO_SOLICITATION',
+    provision_subtype: 'NOSOL-INTERVENING',
+    short_title: 'Notice period',
+    primary_quote: 'The Company shall provide four business days notice before taking such action.',
+    features: { noticePeriod: 4 },
+  };
+  const matchCard = {
+    id: 'qxo-match',
+    provision_type: 'COVENANT_NO_SOLICITATION',
+    provision_subtype: 'NOSOL-MATCH',
+    primary_quote: 'Parent has matching rights for four business days.',
+    features: { initialMatchPeriodDays: 4 },
+  };
+
+  const rows = nosolFiduciaryMod.nosolFiduciaryConfig.selectRows({ cards: [recommendCard, noticeCard, matchCard] });
+  const noticeRow = rows.find((row) => row.id === 'nosol-fiduciary-notice-period');
+  assert.equal(noticeRow.detail, '4 business days');
+  assert.equal(noticeRow.sourceCard, noticeCard);
+  assert.deepEqual(noticeRow.sourceCards, [noticeCard]);
+  assert.deepEqual(noticeRow.featureKeys, ['noticePeriod']);
+  assert.equal(noticeRow.evidence, noticeCard.primary_quote);
+});
+
 test('nosol-fiduciary config falls back to fiduciary quote text', () => {
   const rows = nosolFiduciaryMod.nosolFiduciaryConfig.selectRows({
     cards: [{

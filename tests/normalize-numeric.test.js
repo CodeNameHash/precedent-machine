@@ -1,7 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 
-const { parseNumeric, classifyNullReason, wordsToNumber, CLOSED_UNITS } = require('../lib/normalize-numeric');
+const { parseNumeric, parseDuration, classifyNullReason, wordsToNumber, CLOSED_UNITS } = require('../lib/normalize-numeric');
 const {
   ATTRIBUTES,
   ALLOWLISTED_ATTRIBUTES,
@@ -47,7 +47,17 @@ test('parseNumeric: unit-word casing does not matter ("three (3) Business Days")
 });
 
 test('parseNumeric: plain "45 days"', () => {
-  assert.deepEqual(parseNumeric('45 days'), { value: 45, unit: 'days' });
+  assert.deepEqual(parseNumeric('45 days'), { value: 45, unit: 'calendar_days' });
+});
+
+test('parseNumeric: explicit calendar days and elapsed hours retain different clocks', () => {
+  assert.deepEqual(parseNumeric('four (4) calendar days'), { value: 4, unit: 'calendar_days' });
+  assert.deepEqual(parseNumeric('ninety-six (96) hours'), { value: 96, unit: 'elapsed_hours' });
+});
+
+test('parseDuration: legal ordinal and hyphenated business-day forms remain business days', () => {
+  assert.deepEqual(parseDuration('the third (3rd) Business Day following delivery'), { value: 3, unit: 'business_days' });
+  assert.deepEqual(parseDuration('during the five (5)-Business-Day period'), { value: 5, unit: 'business_days' });
 });
 
 test('parseNumeric: "2.5%"', () => {
@@ -59,11 +69,11 @@ test('parseNumeric: spelled + parenthetical percent in agreement ("two percent (
 });
 
 test('parseNumeric: spelled tens word alone with a unit ("thirty days")', () => {
-  assert.deepEqual(parseNumeric('thirty days'), { value: 30, unit: 'days' });
+  assert.deepEqual(parseNumeric('thirty days'), { value: 30, unit: 'calendar_days' });
 });
 
 test('parseNumeric: spelled compound tens+ones with a unit ("forty-five days")', () => {
-  assert.deepEqual(parseNumeric('forty-five days'), { value: 45, unit: 'days' });
+  assert.deepEqual(parseNumeric('forty-five days'), { value: 45, unit: 'calendar_days' });
 });
 
 test('parseNumeric: parenthetical-numeral CONFLICT with spelled word -> null ("twenty (24) months")', () => {
@@ -119,10 +129,10 @@ test('wordsToNumber: rejects a phrase containing a non-number word', () => {
   assert.equal(wordsToNumber('twenty banana'), null);
 });
 
-test('CLOSED_UNITS: exactly the seven-unit closed vocabulary', () => {
+test('CLOSED_UNITS: time clocks are explicit and generic days is not canonical', () => {
   assert.deepEqual(
     [...CLOSED_UNITS].sort(),
-    ['USD', 'business_days', 'days', 'months', 'percent', 'shares', 'years'].sort(),
+    ['USD', 'business_days', 'calendar_days', 'elapsed_hours', 'months', 'percent', 'shares', 'years'].sort(),
   );
 });
 
@@ -227,20 +237,54 @@ test('extractCandidate: malformed JSON verbatim on an object-shaped attribute ne
   assert.deepEqual(extractCandidate('companyTerminationFee', 'not valid json{{'), { result: null, reason: 'null-ambiguous' });
 });
 
-test('extractCandidate: bare-number fields (no unit words in the text at all) apply the attribute\'s fixed known unit', () => {
-  assert.deepEqual(extractCandidate('initialMatchPeriodDays', '5'), { result: { value: 5, unit: 'days' }, reason: 'parsed' });
-  assert.deepEqual(extractCandidate('subsequentMatchPeriodDays', '3'), { result: { value: 3, unit: 'days' }, reason: 'parsed' });
-  assert.deepEqual(extractCandidate('matchingPeriod', '4'), { result: { value: 4, unit: 'days' }, reason: 'parsed' });
-  assert.deepEqual(extractCandidate('noticePeriod', '5'), { result: { value: 5, unit: 'days' }, reason: 'parsed' });
-  assert.deepEqual(extractCandidate('arcReaffirmDeadlineDays', '10'), { result: { value: 10, unit: 'days' }, reason: 'parsed' });
+test('extractCandidate: bare notice and match values fail closed without an explicit clock', () => {
+  assert.deepEqual(extractCandidate('matchingPeriod', '4'), { result: null, reason: 'null-unit' });
+  assert.deepEqual(extractCandidate('noticePeriod', '5'), { result: null, reason: 'null-unit' });
+  assert.deepEqual(extractCandidate('noticePeriod', '4', {
+    evidence_quote: null,
+    provenance: { code: 'NOSOL-NEGOTIATE', feature_key: 'noticePeriod', feature_value: 4 },
+  }), { result: null, reason: 'null-unit' });
+});
+
+test('extractCandidate: evidence preserves business-day, calendar-day and elapsed-hour clocks', () => {
+  assert.deepEqual(
+    extractCandidate('initialMatchPeriodDays', '5', { evidence_quote: 'during the five (5) Business Day period' }),
+    { result: { value: 5, unit: 'business_days' }, reason: 'parsed' },
+  );
+  assert.deepEqual(
+    extractCandidate('matchingPeriod', '4', { evidence_quote: 'at least four calendar days prior written notice' }),
+    { result: { value: 4, unit: 'calendar_days' }, reason: 'parsed' },
+  );
+  assert.deepEqual(
+    extractCandidate('noticePeriod', '96', { evidence_quote: 'at least 96 hours written notice' }),
+    { result: { value: 96, unit: 'elapsed_hours' }, reason: 'parsed' },
+  );
+});
+
+test('extractCandidate: structured provenance can supply a clock, but conflicting context fails closed', () => {
+  const businessProvenance = { provenance: { feature_value: { value: 4, unit: 'business_days' } } };
+  assert.deepEqual(
+    extractCandidate('noticePeriod', '4', businessProvenance),
+    { result: { value: 4, unit: 'business_days' }, reason: 'parsed' },
+  );
+  assert.deepEqual(
+    extractCandidate('noticePeriod', '4', {
+      evidence_quote: 'four Business Days prior notice',
+      provenance: { feature_value: { value: 4, unit: 'calendar_days' } },
+    }),
+    { result: null, reason: 'null-ambiguous' },
+  );
+});
+
+test('extractCandidate: fixed non-clock attributes retain their explicit units', () => {
   assert.deepEqual(extractCandidate('superiorProposalThresholdPct', '50'), { result: { value: 50, unit: 'percent' }, reason: 'parsed' });
   assert.deepEqual(extractCandidate('outsideDateMonthsPostSigning', '6'), { result: { value: 6, unit: 'months' }, reason: 'parsed' });
 });
 
-test('extractCandidate: discussionInitiationNoticeHours converts to whole days only when evenly divisible by 24', () => {
-  assert.deepEqual(extractCandidate('discussionInitiationNoticeHours', '24'), { result: { value: 1, unit: 'days' }, reason: 'parsed' });
-  assert.deepEqual(extractCandidate('discussionInitiationNoticeHours', '48'), { result: { value: 2, unit: 'days' }, reason: 'parsed' });
-  assert.deepEqual(extractCandidate('discussionInitiationNoticeHours', '10'), { result: null, reason: 'null-unit' });
+test('extractCandidate: discussionInitiationNoticeHours remains elapsed hours without lossy conversion', () => {
+  assert.deepEqual(extractCandidate('discussionInitiationNoticeHours', '24'), { result: { value: 24, unit: 'elapsed_hours' }, reason: 'parsed' });
+  assert.deepEqual(extractCandidate('discussionInitiationNoticeHours', '36'), { result: { value: 36, unit: 'elapsed_hours' }, reason: 'parsed' });
+  assert.deepEqual(extractCandidate('discussionInitiationNoticeHours', '48 hours'), { result: { value: 48, unit: 'elapsed_hours' }, reason: 'parsed' });
 });
 
 test('extractCandidate: repsSurvivalDuration runs the generic free-text parser and correctly nulls multi-clause values', () => {
@@ -272,6 +316,8 @@ function row(overrides = {}) {
     deal_id: 'deal-a',
     attribute: 'initialMatchPeriodDays',
     verbatim: '5',
+    evidence_quote: 'during the five (5) Business Day period',
+    provenance: null,
     canonical_numeric: null,
     ...overrides,
   };
@@ -280,25 +326,25 @@ function row(overrides = {}) {
 test('decideRow: fresh parse with no existing value -> planned write, status parsed', () => {
   const r = decideRow(row());
   assert.equal(r.status, 'parsed');
-  assert.deepEqual(r.write, { value: 5, unit: 'days' });
+  assert.deepEqual(r.write, { value: 5, unit: 'business_days' });
 });
 
 test('decideRow: idempotent — identical existing value -> no write planned, still counted parsed', () => {
-  const r = decideRow(row({ canonical_numeric: { value: 5, unit: 'days' } }));
+  const r = decideRow(row({ canonical_numeric: { value: 5, unit: 'business_days' } }));
   assert.equal(r.status, 'parsed');
   assert.equal(r.write, null);
   assert.equal(r.note, 'idempotent-already-set');
 });
 
 test('decideRow: never overwrites a DIFFERING existing value — reported as skipped-existing, no write', () => {
-  const r = decideRow(row({ canonical_numeric: { value: 4, unit: 'days' } }));
+  const r = decideRow(row({ canonical_numeric: { value: 4, unit: 'business_days' } }));
   assert.equal(r.status, 'skipped-existing');
   assert.equal(r.write, null);
-  assert.deepEqual(r.conflict, { existing: { value: 4, unit: 'days' }, parsed: { value: 5, unit: 'days' } });
+  assert.deepEqual(r.conflict, { existing: { value: 4, unit: 'business_days' }, parsed: { value: 5, unit: 'business_days' } });
 });
 
 test('decideRow: a value that fails to parse never touches an existing value, regardless of what it is', () => {
-  const r = decideRow(row({ verbatim: 'promptly', canonical_numeric: { value: 4, unit: 'days' } }));
+  const r = decideRow(row({ verbatim: 'promptly', canonical_numeric: { value: 4, unit: 'business_days' } }));
   assert.equal(r.status, 'null-ambiguous');
   assert.equal(r.write, null);
 });
@@ -307,8 +353,8 @@ test('buildBackfillPlan: aggregates per-attribute counters across a batch and ne
   const rows = [
     row({ id: 'c1', verbatim: '5' }), // parsed
     row({ id: 'c2', verbatim: 'promptly' }), // null-ambiguous
-    row({ id: 'c3', verbatim: '45', attribute: 'discussionInitiationNoticeHours' }), // null-unit (45 % 24 != 0)
-    row({ id: 'c4', verbatim: '5', canonical_numeric: { value: 4, unit: 'days' } }), // skipped-existing
+    row({ id: 'c3', verbatim: '45', evidence_quote: null, attribute: 'matchingPeriod' }), // null-unit
+    row({ id: 'c4', verbatim: '5', canonical_numeric: { value: 4, unit: 'business_days' } }), // skipped-existing
   ];
   const snapshot = JSON.parse(JSON.stringify(rows));
   const plan = buildBackfillPlan(rows);
@@ -318,7 +364,7 @@ test('buildBackfillPlan: aggregates per-attribute counters across a batch and ne
   assert.equal(plan.counters.initialMatchPeriodDays.parsed, 1);
   assert.equal(plan.counters.initialMatchPeriodDays['null-ambiguous'], 1);
   assert.equal(plan.counters.initialMatchPeriodDays['skipped-existing'], 1);
-  assert.equal(plan.counters.discussionInitiationNoticeHours['null-unit'], 1);
+  assert.equal(plan.counters.matchingPeriod['null-unit'], 1);
 
   assert.equal(plan.toWrite.length, 1);
   assert.equal(plan.toWrite[0].id, 'c1');
@@ -375,12 +421,12 @@ test('applyWrites: writes are scoped to .is("canonical_numeric", null) — belt-
       }),
     }),
   };
-  const toWrite = [{ id: 'c1', write: { value: 5, unit: 'days' } }];
+  const toWrite = [{ id: 'c1', write: { value: 5, unit: 'business_days' } }];
   const result = await applyWrites(sb, toWrite);
   assert.deepEqual(result, { applied: 1, failed: 0 });
   assert.equal(calls.length, 1);
   assert.equal(calls[0].table, 'claims');
-  assert.deepEqual(calls[0].patch, { canonical_numeric: { value: 5, unit: 'days' } });
+  assert.deepEqual(calls[0].patch, { canonical_numeric: { value: 5, unit: 'business_days' } });
   assert.deepEqual(calls[0].guard, ['canonical_numeric', null]);
 });
 
@@ -394,7 +440,7 @@ test('applyWrites: a failed write is counted, not thrown', async () => {
       }),
     }),
   };
-  const result = await applyWrites(sb, [{ id: 'c1', write: { value: 5, unit: 'days' } }]);
+  const result = await applyWrites(sb, [{ id: 'c1', write: { value: 5, unit: 'business_days' } }]);
   assert.deepEqual(result, { applied: 0, failed: 1 });
 });
 
@@ -417,7 +463,7 @@ test('parseArgs: --all and --apply and --json flags', () => {
 });
 
 test('ATTRIBUTES config: every allowlisted attribute has a known extraction strategy', () => {
-  const knownStrategies = new Set(['hours-to-days', 'bare-number', 'text', 'json-field-text', 'json-field-number']);
+  const knownStrategies = new Set(['bare-number', 'contextual-duration', 'text', 'json-field-text', 'json-field-number']);
   for (const attr of ALLOWLISTED_ATTRIBUTES) {
     assert.ok(knownStrategies.has(ATTRIBUTES[attr].strategy), `${attr} has an unknown strategy`);
   }

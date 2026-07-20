@@ -24,6 +24,8 @@ import { unionRows, rowFamilyLabel, unionDefinitions } from './compareRowUnion';
 // file just calls in, it no longer holds the decision logic itself.
 import { marketSummaryForRow, isRowOffMarket } from './marketOffMarket';
 import { formatNumericMarketSummary, formatNumericValueForUnit } from './marketNumericFormat';
+import { MarketMetricCell } from './MarketColumn';
+import { createMarketRowKeyAssigner, stableMarketRowKey } from '../../lib/market-metrics';
 
 const CONSIDERATION_SECTION_ID = 'consideration-hero';
 
@@ -401,7 +403,10 @@ function numericValueLocal(value) {
 // never a guess) when this row carries no featureKeys, none resolve
 // against the section's featureSummary, or the resolved numeric summary
 // has no median (an empty numeric pool).
-function MarketCell({ row, marketColumn }) {
+function MarketCell({ row, marketColumn, typedMarket, resolution, onRetry }) {
+  if (typedMarket) {
+    return <MarketMetricCell resolution={resolution} data={typedMarket.data} onRetry={onRetry} />;
+  }
   if (!marketColumn) return <Muted>—</Muted>;
   if (marketColumn.loading) return <Muted>Loading market data…</Muted>;
   if (marketColumn.error) return <Muted>Market data unavailable</Muted>;
@@ -535,6 +540,8 @@ export function UnifiedDefinitionsSection({
   primaryReviewDeal,
   comparedColumns,
   onRetry = null,
+  typedMarket = null,
+  onMarketRetry = null,
 }) {
   const deals = useMemo(() => [
     {
@@ -555,10 +562,20 @@ export function UnifiedDefinitionsSection({
       reviewDeal: col.reviewDeal || EMPTY_REVIEW_DEAL,
       isPrimary: false,
     })),
-  ], [primaryName, primaryReviewDeal, comparedColumns]);
+    ...(typedMarket ? [{
+      key: 'market',
+      name: 'MARKET',
+      href: null,
+      loading: Boolean(typedMarket.data?.loading),
+      error: typedMarket.data?.error || null,
+      reviewDeal: EMPTY_REVIEW_DEAL,
+      isPrimary: false,
+      isMarket: true,
+    }] : []),
+  ], [primaryName, primaryReviewDeal, comparedColumns, typedMarket]);
 
   const entries = useMemo(() => {
-    const lists = deals.map((d) => (d.loading || d.error ? [] : filteredDefinitions(d.reviewDeal.definitions)));
+    const lists = deals.map((d) => (d.loading || d.error || d.isMarket ? [] : filteredDefinitions(d.reviewDeal.definitions)));
     return unionDefinitions(lists);
   }, [deals]);
 
@@ -579,22 +596,26 @@ export function UnifiedDefinitionsSection({
               <th className="px-3 py-2 text-left align-bottom font-medium uppercase tracking-wider text-inkFaint" style={{ width: '12rem' }}>Term</th>
               {deals.map((d) => (
                 <th key={d.key} className="px-3 py-2 text-left align-bottom" style={{ minWidth: 230 }}>
-                  {d.href ? (
+                  {d.isMarket ? (
+                    <span className="text-[10px] font-bold tracking-[0.14em] text-[#1F1F1F] uppercase">{d.name}</span>
+                  ) : d.href ? (
                     <Link href={d.href} className="hover:underline text-[10px] font-bold tracking-[0.08em] text-[#1F1F1F] normal-case">{d.name}</Link>
                   ) : (
                     <span className="text-[10px] font-bold tracking-[0.08em] text-[#1F1F1F] normal-case">{d.name}</span>
                   )}
                   {d.loading ? (
-                    <div className="mtx-meta-label text-[9px] tracking-[0.14em] mt-0.5 font-normal">Loading deal…</div>
+                    <div className="mtx-meta-label text-[9px] tracking-[0.14em] mt-0.5 font-normal">
+                      {d.isMarket ? 'Loading market data…' : 'Loading deal…'}
+                    </div>
                   ) : null}
                   {d.error ? (
                     <div className="text-[9px] font-normal text-[#B14E63] mt-0.5">
-                      Deal data unavailable{onRetry && !d.isPrimary ? (
+                      {d.isMarket ? 'Market data unavailable' : 'Deal data unavailable'}{(d.isMarket ? onMarketRetry : (onRetry && !d.isPrimary ? onRetry : null)) ? (
                         <>
                           {' — '}
                           <button
                             type="button"
-                            onClick={onRetry}
+                            onClick={d.isMarket ? onMarketRetry : onRetry}
                             className="font-bold uppercase tracking-[0.1em] text-[#2F6DB5] hover:underline"
                             data-testid="compare-column-retry"
                           >
@@ -613,6 +634,18 @@ export function UnifiedDefinitionsSection({
               <tr key={entry.key} className="align-top">
                 <td className="px-3 py-2 align-top font-medium text-ink">{entry.term}</td>
                 {deals.map((d, i) => {
+                  if (d.isMarket) {
+                    const rowKey = stableMarketRowKey(
+                      { defined_term: entry.term, label: entry.term },
+                      { sectionId: '__definitions', configId: '__definitions' },
+                    );
+                    const resolution = typedMarket?.section?.rows?.find((candidate) => candidate.rowKey === rowKey) || null;
+                    return (
+                      <td key={d.key} className="px-3 py-2 align-top">
+                        <MarketMetricCell resolution={resolution} data={typedMarket.data} onRetry={onMarketRetry} />
+                      </td>
+                    );
+                  }
                   if (d.loading) return <td key={d.key} className="px-3 py-2"><Muted>Loading deal…</Muted></td>;
                   if (d.error) return <td key={d.key} className="px-3 py-2"><Muted>—</Muted></td>;
                   const def = entry.defs[i];
@@ -655,6 +688,7 @@ export function UnifiedCompareSection({
   // synthetic column in the SAME unified table (Ben: "not this two sets of
   // tables crap") rather than the old side-column MarketSectionColumn.
   marketColumn = null,
+  typedMarket = null,
   onMarketRetry = null,
 }) {
   // One expansion open at a time, keyed `${rowKey}|${dealKey}` so each
@@ -685,12 +719,12 @@ export function UnifiedCompareSection({
       // The market column is appended LAST, always -- it never contributes
       // rows to the union (isMarket rows below always resolve to []), it
       // only supplies an extra answer cell per existing union row.
-      ...(marketColumn ? [{
+      ...(marketColumn || typedMarket ? [{
         key: 'market',
         name: marketColumnLabel(marketColumn),
         href: null,
-        loading: Boolean(marketColumn.loading),
-        error: marketColumn.error || null,
+        loading: Boolean(typedMarket ? typedMarket.data?.loading : marketColumn.loading),
+        error: (typedMarket ? typedMarket.data?.error : marketColumn.error) || null,
         reviewDeal: EMPTY_REVIEW_DEAL,
         isPrimary: false,
         isMarket: true,
@@ -711,7 +745,17 @@ export function UnifiedCompareSection({
       const rows = !config || d.loading || d.error || d.isMarket ? [] : safeRows(config, d.reviewDeal);
       return { ...d, ctx, rows };
     });
-  }, [primaryName, primaryReviewDeal, comparedColumns, config, cardsById, onSelectCard, selectedCardId, marketColumn]);
+  }, [primaryName, primaryReviewDeal, comparedColumns, config, cardsById, onSelectCard, selectedCardId, marketColumn, typedMarket]);
+
+  const typedRowsByKey = useMemo(
+    () => new Map((typedMarket?.section?.rows || []).map((resolution) => [resolution.rowKey, resolution])),
+    [typedMarket?.section],
+  );
+  const typedResolutionForRow = (row, assignRowKey) => {
+    if (!row || !typedMarket) return null;
+    const rowKey = assignRowKey(row);
+    return typedRowsByKey.get(rowKey) || null;
+  };
 
   if (!config) return null;
 
@@ -830,16 +874,24 @@ export function UnifiedCompareSection({
 
   function flatBody() {
     const entries = unionRows(deals.map((d) => d.rows));
+    const assignMarketRowKey = createMarketRowKeyAssigner({ sectionId: section?.id, configId: config?.id || section?.id });
     return entries.map((entry) => (
       <Fragment key={entry.key}>
         <tr className="align-top">
           <td className="px-3 py-2 whitespace-normal break-words text-ink font-medium">{flatLabelNode(entry)}</td>
           {deals.map((d, i) => {
             if (d.isMarket) {
-              const refRow = entry.rows.find(Boolean) || null;
+              const primaryRow = entry.rows[0] || null;
+              const refRow = primaryRow || entry.rows.find(Boolean) || null;
               return (
                 <td key={d.key} className="px-3 py-2 align-top">
-                  <MarketCell row={refRow} marketColumn={marketColumn} />
+                  <MarketCell
+                    row={refRow}
+                    marketColumn={marketColumn}
+                    typedMarket={typedMarket}
+                    resolution={primaryRow ? typedResolutionForRow(primaryRow, assignMarketRowKey) : null}
+                    onRetry={onMarketRetry}
+                  />
                 </td>
               );
             }
@@ -880,6 +932,7 @@ export function UnifiedCompareSection({
   // ── Grouped sections (GroupedSubRows configs) ──
   function groupedBody() {
     const groupEntries = unionRows(groupsPerDeal.map((g) => (Array.isArray(g) ? g : [])));
+    const assignMarketRowKey = createMarketRowKeyAssigner({ sectionId: section?.id, configId: config?.id || section?.id });
     return groupEntries.map((ge) => {
       const firstIdx = ge.rows.findIndex(Boolean);
       const groupLabel = firstIdx >= 0 ? ge.rows[firstIdx].label : ge.key;
@@ -902,10 +955,17 @@ export function UnifiedCompareSection({
                   </td>
                   {deals.map((d, i) => {
                     if (d.isMarket) {
-                      const refRow = entry.rows.find(Boolean) || null;
+                      const primaryRow = entry.rows[0] || null;
+                      const refRow = primaryRow || entry.rows.find(Boolean) || null;
                       return (
                         <td key={d.key} className="px-3 py-2 align-top">
-                          <MarketCell row={refRow} marketColumn={marketColumn} />
+                          <MarketCell
+                            row={refRow}
+                            marketColumn={marketColumn}
+                            typedMarket={typedMarket}
+                            resolution={primaryRow ? typedResolutionForRow(primaryRow, assignMarketRowKey) : null}
+                            onRetry={onMarketRetry}
+                          />
                         </td>
                       );
                     }

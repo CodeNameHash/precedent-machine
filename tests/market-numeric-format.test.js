@@ -20,9 +20,12 @@ test('formatNumericValueForUnit: usd formats via formatMoney ($ short form)', ()
   assert.equal(mod.formatNumericValueForUnit(1_200_000_000, 'usd'), '$1.2B');
 });
 
-test('formatNumericValueForUnit: days/business_days/months/percent get their unit suffix', () => {
+test('formatNumericValueForUnit preserves duration clocks and unit suffixes', () => {
   assert.equal(mod.formatNumericValueForUnit(10, 'days'), '10 days');
-  assert.equal(mod.formatNumericValueForUnit(5, 'business_days'), '5 days');
+  assert.equal(mod.formatNumericValueForUnit(5, 'business_days'), '5 business days');
+  assert.equal(mod.formatNumericValueForUnit(1, 'business_days'), '1 business day');
+  assert.equal(mod.formatNumericValueForUnit(4, 'calendar_days'), '4 calendar days');
+  assert.equal(mod.formatNumericValueForUnit(24, 'elapsed_hours'), '24 hours');
   assert.equal(mod.formatNumericValueForUnit(6, 'months'), '6 months');
   assert.equal(mod.formatNumericValueForUnit(3.1, 'percent'), '3.1%');
 });

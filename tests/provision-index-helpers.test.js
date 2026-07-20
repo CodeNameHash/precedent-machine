@@ -82,3 +82,22 @@ test('dedupeBySectionAndTitle: cards with no short_title (e.g. defined-term-only
   const deduped = mod.dedupeBySectionAndTitle(cards);
   assert.equal(deduped.length, 2);
 });
+
+test('resolveRowCard prefers an exact singular source over a broader fallback source list', () => {
+  const exact = { id: 'qxo-notice', provision_subtype: 'NOSOL-INTERVENING' };
+  const unrelated = { id: 'qxo-recommend', provision_subtype: 'NOSOL-RECOMMEND' };
+  const cardsById = mod.buildCardIndex([unrelated, exact]);
+  const resolved = mod.resolveRowCard({ sourceCard: exact, sourceCards: [unrelated, exact] }, cardsById);
+  assert.equal(resolved, exact);
+});
+
+test('resolveRowFocus preserves the exact feature key attached by the table row', () => {
+  const focus = mod.resolveRowFocus({
+    label: 'Notice period',
+    featureKeys: ['noticePeriod'],
+    evidence: 'The Company shall provide four business days notice.',
+  });
+  assert.deepEqual(focus.featureKeys, ['noticePeriod']);
+  assert.equal(focus.itemCode, null);
+  assert.match(focus.quote, /four business days/);
+});

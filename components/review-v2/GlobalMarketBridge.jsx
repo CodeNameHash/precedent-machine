@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { useRouter } from 'next/router';
 import MarketDrilldownSidebar from './MarketDrilldownSidebar';
 import { formatNumericMarketSummary } from './marketNumericFormat';
+import { exactMarketContextForRowKey } from './rowMarketContext';
 import { whatsMarketPayload } from '../../lib/query/whats-market';
 
 function encodePayload(payload) {
@@ -57,6 +58,7 @@ function sanitizeContext(context, labelOverride = null) {
   if (!primarySummary) return null;
   return {
     marketKey: plainText(context.marketKey),
+    marketRowKey: plainText(context.marketRowKey),
     label: plainText(labelOverride || context.label, 'Selected term'),
     peerSetSize: Number.isFinite(Number(context.peerSetSize)) ? Number(context.peerSetSize) : null,
     termDealCount: Number.isFinite(Number(context.termDealCount)) ? Number(context.termDealCount) : null,
@@ -196,7 +198,10 @@ export default function GlobalMarketBridge() {
         const handler = () => {
           try {
             const text = cell.textContent || '';
-            const match = registryContexts().find((context) => contextMatchesCell(context, text));
+            const contexts = registryContexts();
+            const rowKey = cell.getAttribute('data-market-row-key');
+            const match = exactMarketContextForRowKey(contexts, rowKey)
+              || contexts.find((context) => contextMatchesCell(context, text));
             if (!match) return;
             const row = td.closest('tr');
             const labelCell = row && row.querySelector('td:first-child');
