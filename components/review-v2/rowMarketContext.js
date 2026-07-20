@@ -73,11 +73,14 @@ function normalizeCategorical(summary, peerSetSize, termDealCount, role) {
     ...summary,
     values: values.map((value) => ({
       ...value,
+      // Exception prevalence answers "how common among deals containing this
+      // term?". A summary.total is often only the number of captured values,
+      // so it must not silently replace the term-level denominator.
       denominator: Number.isFinite(value.denominator)
         ? value.denominator
         : (Number.isFinite(summary.denominator)
           ? summary.denominator
-          : (Number.isFinite(summary.total) ? summary.total : roleDefault)),
+          : (Number.isFinite(roleDefault) ? roleDefault : summary.total)),
     })),
   };
 }
