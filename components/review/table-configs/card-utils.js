@@ -170,8 +170,24 @@ function selectCards(reviewDeal, predicate) {
 // primitive itself lives in a .jsx file the test runner can't import
 // directly — see tests/review/provision-table-compact-columns.spec.js).
 // Word-boundary-trims the preview so it never cuts mid-word.
-function splitForCell(text, max = 160) {
+// E (truncation sweep, stored-data case): a handful of stored
+// evidence_quote/definition strings are themselves excerpts captured with a
+// leading and/or trailing bare "…" already baked in by the extractor (e.g.
+// an Intervening Event definition stored as "…means a material event, …").
+// That's a source-data issue, not a rendering one -- we don't fabricate the
+// missing text -- but per Ben's "never show '…'" rule we still shouldn't
+// echo the raw ellipsis character back out wherever a row's full value is
+// reachable another way (its own "See provision"/hover-evidence
+// affordance). Strips only a BARE leading/trailing "…" (optionally with
+// surrounding whitespace) -- never touches mid-string ellipses, which are
+// legitimate prose.
+function stripEdgeEllipsis(text) {
   const value = text === null || text === undefined ? '' : String(text);
+  return value.replace(/^\s*…\s*/, '').replace(/\s*…\s*$/, '');
+}
+
+function splitForCell(text, max = 160) {
+  const value = stripEdgeEllipsis(text === null || text === undefined ? '' : String(text));
   if (!value) return { value: '', short: '', truncated: false };
   if (value.length <= max) return { value, short: value, truncated: false };
   const cut = value.slice(0, max);
@@ -348,6 +364,7 @@ export {
   partySide,
   selectCards,
   splitForCell,
+  stripEdgeEllipsis,
   stripProposedTitle,
   textOf,
   triggerThresholdLabel,

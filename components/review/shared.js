@@ -70,7 +70,10 @@ export function EvidenceQuote({ text, quotes, dense }) {
   // Single-quote: render exactly as before for backwards compatibility.
   if (list.length === 1) {
     const q = list[0];
-    const display = q.length > 240 ? q.slice(0, 237) + '…' : q;
+    // E (truncation sweep): drop the literal "…" -- the quote is already
+    // click-to-view-in-document (showEvidence) and carries the full text in
+    // its `title` tooltip, so a clean cut needs no ellipsis marker.
+    const display = q.length > 240 ? q.slice(0, 237).trim() : q;
     return (
       <span
         className={baseCls}
@@ -98,7 +101,10 @@ export function EvidenceQuote({ text, quotes, dense }) {
       {expanded && (
         <span className="block mt-1 space-y-1">
           {list.map((q, i) => {
-            const display = q.length > 240 ? q.slice(0, 237) + '…' : q;
+            // E (truncation sweep): drop the literal "…" -- the quote is already
+    // click-to-view-in-document (showEvidence) and carries the full text in
+    // its `title` tooltip, so a clean cut needs no ellipsis marker.
+    const display = q.length > 240 ? q.slice(0, 237).trim() : q;
             return (
               <span
                 key={i}

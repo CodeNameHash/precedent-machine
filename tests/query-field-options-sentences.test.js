@@ -123,13 +123,16 @@ test('valueOptionsForField shapes boolean/numeric/coded responses for the client
 test('boolean filters phrase as presence, never Yes/No or equals', () => {
   const meta = { type: 'boolean', label: 'Force the vote', unit: null, options: [] };
   const f = { provision_type: 'COVENANT_NO_SOLICITATION', field: 'forceTheVote', op: 'eq' };
-  assert.equal(sentenceForFilter({ ...f, value: true }, meta), 'Covenant no solicitation: Has force the vote');
-  assert.equal(sentenceForFilter({ ...f, value: false }, meta), 'Covenant no solicitation: Does not have force the vote');
+  // r13 item 2: provision_type labels go through provisionTypeLabel() now,
+  // which renders COVENANT_NO_SOLICITATION as legal-English "No Solicitation"
+  // rather than the humanized-key "Covenant no solicitation".
+  assert.equal(sentenceForFilter({ ...f, value: true }, meta), 'No Solicitation: Has force the vote');
+  assert.equal(sentenceForFilter({ ...f, value: false }, meta), 'No Solicitation: Does not have force the vote');
   // neq inverts the presence phrasing rather than saying "is not true".
-  assert.equal(sentenceForFilter({ ...f, op: 'neq', value: true }, meta), 'Covenant no solicitation: Does not have force the vote');
+  assert.equal(sentenceForFilter({ ...f, op: 'neq', value: true }, meta), 'No Solicitation: Does not have force the vote');
   // Fallback with no fieldMeta (result-page chips): string 'true' still
   // reads as presence.
-  assert.equal(sentenceForFilter({ ...f, value: 'true' }), 'Covenant no solicitation: Has force the vote');
+  assert.equal(sentenceForFilter({ ...f, value: 'true' }), 'No Solicitation: Has force the vote');
 });
 
 test('numeric filters phrase as quantifiers with unit-aware values, including between', () => {

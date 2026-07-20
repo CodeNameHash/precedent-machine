@@ -77,8 +77,13 @@ function simplifyScenario(raw, max = 70) {
   if (bracket && bracket[1].trim()) return bracket[1].trim();
   const stripped = text.replace(/^\s*(?:§|Section)\s*[\w.()-]+[:\-]?\s*/i, '').trim() || text;
   if (stripped.length <= max) return stripped;
+  // E (truncation sweep, QXO tail-fee): this used to append a literal "…"
+  // with no on-pill affordance to see the rest -- the pill already carries
+  // the full clause as hover evidence (see formatClauses' caller wiring the
+  // scenario through pillCell/PillCell with `evidence`), so cut cleanly with
+  // no ellipsis rather than showing a dangling "…".
   const cut = stripped.slice(0, max).replace(/\s+\S*$/, '').trim();
-  return `${cut || stripped.slice(0, max)}…`;
+  return cut || stripped.slice(0, max);
 }
 
 function formatClauses(value) {

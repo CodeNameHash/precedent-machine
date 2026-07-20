@@ -54,8 +54,10 @@ test('resultTitle: DEAL_COMPARE joins deal names with " vs "', () => {
 });
 
 test('resultTitle: PROVISION_CROSS_CUT', () => {
+  // r13 item 2: provision_type labels use provisionTypeLabel(), which renders
+  // COVENANT_NO_SOLICITATION as legal-English "No Solicitation".
   const result = { kind: 'PROVISION_CROSS_CUT', provision_type: 'COVENANT_NO_SOLICITATION' };
-  assert.equal(resultTitle(result), 'Covenant no solicitation across deals');
+  assert.equal(resultTitle(result), 'No Solicitation across deals');
 });
 
 test('resultTitle: DEAL_TO_MARKET', () => {

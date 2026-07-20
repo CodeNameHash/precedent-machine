@@ -267,7 +267,9 @@ function summarizeItem(text, specs) {
   const t = String(text || '');
   const letter = (t.match(/^\(([A-Za-z0-9]+)\)/) || [])[1];
   const spec = specs.find((s) => s.test.test(t));
-  return { letter: letter ? letter.toUpperCase() : null, label: spec ? spec.label : `${splitForCell(t, 70).short}…` };
+  // E (truncation sweep): drop the literal "…" -- this label renders as a
+  // PillCell with the full item text as hover evidence.
+  return { letter: letter ? letter.toUpperCase() : null, label: spec ? spec.label : splitForCell(t, 70).short };
 }
 function allFeatureItems(cards, keys) {
   const out = [];
@@ -445,7 +447,9 @@ function collapsedTextNode(text) {
   return React.createElement(
     'span',
     null,
-    React.createElement('span', { className: 'text-[11px] text-ink' }, `${short}…`),
+    // E (truncation sweep): drop the literal "…" -- the details/"See
+    // provision" affordance right below is the tail-hiding mechanism.
+    React.createElement('span', { className: 'text-[11px] text-ink' }, short),
     React.createElement(
       'details',
       { className: 'mt-1' },

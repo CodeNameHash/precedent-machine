@@ -76,12 +76,37 @@ function StatusNote({ children }) {
   );
 }
 
+// C (deal-to-market/compare robustness, Supabase-degraded incident): a
+// failed/timed-out corpus-stats fetch used to leave "Loading market data…"
+// on screen forever, or (once compareData.js's fetch DID reject) a dead-end
+// error with no retry. compareData.js's fetchJson now bounds every request
+// with a 15s AbortController timeout, and useSectionMarketStats/
+// useDealToMarket both expose retry() -- this renders the friendly,
+// retryable error state for both.
+function ErrorNote({ onRetry, children }) {
+  return (
+    <div className="border border-[#E0E0E0] bg-white px-3 py-4 flex items-center justify-between gap-2">
+      <p className="mtx-meta-label text-[9px] tracking-[0.14em] text-[#B14E63]">{children}</p>
+      {onRetry ? (
+        <button
+          type="button"
+          onClick={onRetry}
+          className="text-[9px] font-bold uppercase tracking-[0.1em] text-[#2F6DB5] hover:underline shrink-0"
+          data-testid="market-column-retry"
+        >
+          Retry
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
 // Per-section market cell. `entry` from useSectionMarketStats:
 // { code, stats, loading, error }.
-export function MarketSectionColumn({ entry }) {
+export function MarketSectionColumn({ entry, onRetry }) {
   if (!entry || !entry.code) return <StatusNote>No market data for this section.</StatusNote>;
   if (entry.loading) return <StatusNote>Loading market data…</StatusNote>;
-  if (entry.error) return <StatusNote>Market data unavailable: {entry.error}</StatusNote>;
+  if (entry.error) return <ErrorNote onRetry={onRetry}>Market data unavailable right now — retry</ErrorNote>;
   const stats = entry.stats;
   if (!stats) return <StatusNote>No market data for this section.</StatusNote>;
   const featureSummary = Array.isArray(stats.featureSummary) ? stats.featureSummary : [];
@@ -142,7 +167,7 @@ export function OffMarketSection({ data }) {
           {loading ? (
             <StatusNote>Comparing this deal to the market…</StatusNote>
           ) : error ? (
-            <StatusNote>Market comparison unavailable: {error}</StatusNote>
+            <ErrorNote onRetry={data.retry}>Market data unavailable right now — retry</ErrorNote>
           ) : (
             <div className="rounded border border-border bg-white shadow-sm overflow-x-auto">
               <table className="w-full text-xs" style={{ fontFamily: 'var(--mtx-sans)' }}>

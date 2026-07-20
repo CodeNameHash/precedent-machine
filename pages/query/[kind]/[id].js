@@ -23,13 +23,34 @@ const { considerationTypeDisplay } = require('../../../lib/deals-index-columns')
 // into a plain-Node module (lib/query/result-title.js) rather than defined
 // inline, so the title logic can be unit-tested without a JSX/Next runtime.
 const { resultTitle, kindLabel } = require('../../../lib/query/result-title');
+const { sanitizeQueryError } = require('../../../lib/query/error-sanitize');
 
 QueryPage.noLayout = true;
 
+// D (query error surfaces): a garbage ?payload= (hand-edited URL, a stale/
+// truncated share link) used to throw a raw JSON.parse SyntaxError straight
+// out of this function and into the effect below's .catch, which rendered
+// the bare technical message ("Unexpected token '�', ...") as the entire
+// page body. decodePayload itself stays a pure decode -- callers decide how
+// to present a failure -- but it's wrapped everywhere it's called so a bad
+// link can never throw uncaught.
 function decodePayload(value) {
   if (!value) return null;
   const padded = String(value).replace(/-/g, '+').replace(/_/g, '/').padEnd(Math.ceil(String(value).length / 4) * 4, '=');
   return JSON.parse(atob(padded));
+}
+
+// Thin wrapper: any decode failure (bad base64, truncated JSON, garbage
+// bytes) becomes the same friendly "invalid link" message the API route
+// (pages/api/query/run.js) now also returns for the same failure mode.
+function decodePayloadSafe(value) {
+  try {
+    return decodePayload(value);
+  } catch {
+    const err = new Error('This query link is invalid.');
+    err.isInvalidLink = true;
+    throw err;
+  }
 }
 
 function downloadCsv(result) {
@@ -66,14 +87,30 @@ export default function QueryPage() {
     if (id && id !== 'adhoc') params.set('id', String(id));
     if (payload) params.set('payload', String(payload));
     fetch(`/api/query/run?${params.toString()}`)
-      .then((res) => res.json())
+      .then(async (res) => {
+        // D (query error surfaces): a degraded Supabase can make the API
+        // route itself unreachable at the platform edge (e.g. a Cloudflare
+        // 522), in which case the response body is an HTML error page, not
+        // JSON — res.json() throwing here used to surface as a raw
+        // SyntaxError with a chunk of that HTML markup pasted into the
+        // message. Read as text first and parse ourselves so a non-JSON
+        // body gets the friendly sanitizer treatment below instead.
+        const text = await res.text();
+        try {
+          return JSON.parse(text);
+        } catch {
+          const err = new Error(text);
+          err.isNonJsonBody = true;
+          throw err;
+        }
+      })
       .then((json) => {
         if (json.error) throw new Error(json.error);
         setResult(json.result);
         setSavedQuery(json.saved_query || null);
-        setCurrentPayload(json.saved_query?.query_payload || (payload ? decodePayload(payload) : null));
+        setCurrentPayload(json.saved_query?.query_payload || (payload ? decodePayloadSafe(payload) : null));
       })
-      .catch((err) => setError(err.message));
+      .catch((err) => setError(sanitizeQueryError(err.message)));
   }, [router.isReady, kind, id, payload]);
 
   const title = useMemo(() => savedQuery?.title || (result ? resultTitle(result) : kindLabel(kind)), [savedQuery, result, kind]);
@@ -120,7 +157,7 @@ export default function QueryPage() {
           )}
         />
         <div className="actions">
-          <div className="wrap actionsInner">
+          <div className="actionsInner">
             <button type="button" className="mtx-btn" onClick={() => navigator.clipboard?.writeText(window.location.href)}>Share</button>
             <button type="button" className="mtx-btn" disabled={!result} onClick={() => downloadCsv(result)}>Export CSV</button>
             <button type="button" className="mtx-btn" disabled={!canPersist || saving || id !== 'adhoc'} onClick={() => saveQuery(false)}>{saving ? 'Saving…' : 'Save'}</button>
@@ -145,7 +182,18 @@ export default function QueryPage() {
         .pageTitle h1 { margin: 0; font-size: 18px; font-family: var(--mtx-sans); font-weight: 650; color: var(--ink); }
         .pageTitle p { margin: 4px 0 0; font-size: 9px; letter-spacing: 0.14em; }
         .actions { border-bottom: 1px solid var(--line); background: var(--paper); }
-        .actionsInner { display: flex; justify-content: flex-end; gap: 10px; padding: 12px 34px; }
+        /* A (toolbar regression): this bar used to double up as both
+           ".wrap" (the page's max-width-centering/column-stack class also
+           used by <main>'s results wrapper) AND ".actionsInner" -- two
+           same-specificity classes on one element, so ".wrap"'s
+           flex-direction: column/gap: 4px (meant for the results content
+           area) silently won over ".actionsInner"'s row layout, stretching
+           every button to the full content width (100%) and stacking them
+           -- the "Duplicate" primary button read as a giant black banner.
+           Give the toolbar its own centering here instead of sharing the
+           class, so nothing but this rule controls its layout. */
+        .actionsInner { max-width: 1280px; margin: 0 auto; display: flex; flex-direction: row; align-items: center; justify-content: flex-end; gap: 10px; padding: 12px 34px; }
+        .actionsInner .mtx-btn { flex: 0 0 auto; width: auto; }
         main { padding: 0; }
         .wrap { max-width: 1280px; margin: 0 auto; padding: 32px 34px; display: flex; flex-direction: column; gap: 4px; }
         .empty { border: 1px solid var(--line); background: var(--paper); padding: 24px; color: var(--ink-light); font-family: var(--mtx-sans); }
@@ -251,30 +299,69 @@ function FactTile({ label, value }) {
   );
 }
 
+// B (market-range QA): the stat tiles ("MEDIAN 288500000", "P25
+// 51573958.07") and the histogram bucket titles used to print the raw
+// numeric stat with no formatting at all, even though the deal rows right
+// below already humanize the same field via formatValue()/formatMoney().
+// `result.field_kind` is the registry's field type ('usd', 'percent',
+// 'number', ...) -- reuse it to pick the right unit instead of assuming
+// every numeric stat is money. Also rounds float dust (51573958.07 -> a
+// clean money figure) the same way row values already do.
+function formatStat(value, fieldKind) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return '-';
+  if (fieldKind === 'usd') return formatMoney(n);
+  if (fieldKind === 'percent') return `${round(n)}%`;
+  return round(n);
+}
+
 function MarketRange({ result, onOpen }) {
   const counts = result.distribution.map((x) => x.count);
   const max = Math.max(1, ...counts);
+  const fieldKind = result.field_kind;
   return (
     <>
       <Panel title="Distribution">
         <div className="panelPad">
           <div className="chart">
-            {(result.distribution || []).map((bucket, i) => <button key={i} type="button" style={{ height: `${Math.max(12, (bucket.count / max) * 170)}px` }} title={bucket.value || `${bucket.bucket_min} to ${bucket.bucket_max}`}>
-              <span>{bucket.count}</span>
-            </button>)}
+            {(result.distribution || []).map((bucket, i) => {
+              // Min bar height only applies to buckets that actually have
+              // deals in them -- a genuinely empty bucket (count 0) used to
+              // get the same 12px floor as a 1-count bucket, reading as a
+              // real (if small) result. Give it a hairline instead so
+              // "empty" and "small" are visually distinguishable.
+              const height = bucket.count > 0 ? Math.max(12, (bucket.count / max) * 170) : 2;
+              const rangeLabel = bucket.value
+                || (bucket.bucket_min !== undefined && bucket.bucket_max !== undefined
+                  ? `${formatStat(bucket.bucket_min, fieldKind)}–${formatStat(bucket.bucket_max, fieldKind)}`
+                  : '');
+              return (
+                <div key={i} className="chartBar">
+                  <button type="button" style={{ height: `${height}px` }} title={rangeLabel}>
+                    <span>{bucket.count}</span>
+                  </button>
+                  <p className="chartBarLabel mtx-mono" title={rangeLabel}>{rangeLabel}</p>
+                </div>
+              );
+            })}
           </div>
           <div className="factTiles">
             <FactTile label="N" value={result.n} />
             {result.stats && <>
-              <FactTile label="Median" value={round(result.stats.median)} />
-              <FactTile label="P25" value={round(result.stats.p25)} />
-              <FactTile label="P75" value={round(result.stats.p75)} />
-              <FactTile label="Range" value={`${round(result.stats.min)}–${round(result.stats.max)}`} />
+              <FactTile label="Median" value={formatStat(result.stats.median, fieldKind)} />
+              <FactTile label="P25" value={formatStat(result.stats.p25, fieldKind)} />
+              <FactTile label="P75" value={formatStat(result.stats.p75, fieldKind)} />
+              <FactTile label="Range" value={`${formatStat(result.stats.min, fieldKind)}–${formatStat(result.stats.max, fieldKind)}`} />
             </>}
           </div>
         </div>
       </Panel>
-      <details className="subPanel">
+      {/* B: "Underlying deals — 29" used to be a collapsed <details> with no
+          visual hint that it was a disclosure at all -- it read as a
+          missing deal list, not a control. Expanded by default now (Ben's
+          bar: don't hide detail without a clear affordance); still a real
+          <details> so it CAN be collapsed once seen. */}
+      <details className="subPanel" open>
         <summary className="subPanelTitleBar">{`Underlying deals — ${result.deal_points.length}`}</summary>
         <div className="subPanelBody">
           <table className="mtx-table"><tbody>{result.deal_points.map((point) => <tr key={`${point.deal_id}-${point.card_id}`} onClick={() => onOpen(point)}><td>{point.deal_name}</td><td className="mtx-mono mtx-prov-cell">{formatValue(point.value, result.field_path)}{point._prov && <ProvBadge prov={point._prov} />}</td><td className="mtx-mono">{point.quote_section_ref || '-'}</td></tr>)}</tbody></table>
@@ -508,8 +595,14 @@ function Panel({ title, children }) {
     .mtx.qp .minor, .mtx.qp .off_market { background: rgba(168, 122, 46, 0.08); }
     .mtx.qp .trivial, .mtx.qp .market { background: var(--paper); }
     .mtx.qp .missing { background: rgba(31, 31, 31, 0.05); }
-    .mtx.qp .chart { height: 210px; display: flex; align-items: flex-end; gap: 8px; border-bottom: 1px solid var(--line); padding: 12px 0; }
-    .mtx.qp .chart button { flex: 1; min-width: 20px; border: 0; background: var(--ink); color: var(--paper); border-radius: 0; cursor: pointer; }
+    /* B (market-range QA): the bars used to be direct flex children with no
+       room for a range label underneath -- each bar is now wrapped in
+       .chartBar (bar + label stacked), and the chart's own height grew a
+       little to fit the label row without shrinking the bars themselves. */
+    .mtx.qp .chart { height: 240px; display: flex; align-items: flex-end; gap: 8px; border-bottom: 1px solid var(--line); padding: 12px 0 0; }
+    .mtx.qp .chartBar { flex: 1; min-width: 20px; display: flex; flex-direction: column; align-items: stretch; justify-content: flex-end; height: 100%; }
+    .mtx.qp .chartBar button { border: 0; background: var(--ink); color: var(--paper); border-radius: 0; cursor: pointer; width: 100%; }
+    .mtx.qp .chartBarLabel { margin: 4px 0 0; font-size: 8.5px; line-height: 1.3; color: var(--ink-light); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: clip; }
     .mtx.qp .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
     .mtx.qp h2 { font-size: 13px; margin: 22px 0 8px; font-family: var(--mtx-sans); text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-light); }
 

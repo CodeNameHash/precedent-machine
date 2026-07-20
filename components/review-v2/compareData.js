@@ -49,11 +49,42 @@ function dealDisplayName(deal) {
   return target || acquirer || null;
 }
 
-async function fetchJson(url) {
-  const response = await fetch(url);
-  const payload = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(payload.error || `HTTP ${response.status}`);
-  return payload;
+// C (deal-to-market/compare robustness, Supabase-degraded incident): every
+// fetch in this module used to run with no timeout at all -- when the DB is
+// slow/hung, the request just never resolves and the calling column sits on
+// "LOADING…" forever with no way out. Mirrors ClauseSidebar.jsx's own fix
+// for the same incident: bound every request with an AbortController
+// timeout so a hung backend surfaces as a retryable error instead of an
+// infinite spinner.
+const FETCH_TIMEOUT_MS = 15000;
+
+async function fetchJson(url, { signal } = {}) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  // Let an external (effect-cleanup) abort also cancel this fetch.
+  const onExternalAbort = () => controller.abort();
+  if (signal) {
+    if (signal.aborted) controller.abort();
+    else signal.addEventListener('abort', onExternalAbort);
+  }
+  try {
+    const response = await fetch(url, { signal: controller.signal });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(payload.error || `HTTP ${response.status}`);
+    return payload;
+  } catch (err) {
+    if (err && err.name === 'AbortError') {
+      // Distinguish "the caller (effect cleanup) cancelled this" -- which
+      // should silently drop, not surface as an error -- from an actual
+      // timeout, which should.
+      if (signal && signal.aborted) throw err;
+      throw new Error('Timed out');
+    }
+    throw err;
+  } finally {
+    clearTimeout(timeoutId);
+    if (signal) signal.removeEventListener('abort', onExternalAbort);
+  }
 }
 
 // One column per compared deal: { id, name, reviewDeal, loading, error }.
@@ -62,6 +93,10 @@ async function fetchJson(url) {
 export function useComparedDeals(ids) {
   const key = (ids || []).join(',');
   const [columns, setColumns] = useState([]);
+  // C: bumped by retry() below to force a re-fetch of every compared column
+  // after a failure -- same "explicit retry, bypass nothing cached" pattern
+  // ClauseSidebar.jsx uses for /api/corpus-stats.
+  const [retryNonce, setRetryNonce] = useState(0);
   useEffect(() => {
     if (!key) {
       setColumns([]);
@@ -69,11 +104,12 @@ export function useComparedDeals(ids) {
     }
     const list = key.split(',');
     let cancelled = false;
+    const controller = new AbortController();
     setColumns(list.map((id) => ({ id, name: null, reviewDeal: null, loading: true, error: null })));
     list.forEach((id, index) => {
       Promise.all([
-        fetchJson(`/api/deals?id=${encodeURIComponent(id)}&view=header`).catch(() => null),
-        fetchJson(`/api/review/${encodeURIComponent(id)}/cards`),
+        fetchJson(`/api/deals?id=${encodeURIComponent(id)}&view=header`, { signal: controller.signal }).catch(() => null),
+        fetchJson(`/api/review/${encodeURIComponent(id)}/cards`, { signal: controller.signal }),
       ])
         .then(([dealPayload, cardsPayload]) => {
           if (cancelled) return;
@@ -94,9 +130,10 @@ export function useComparedDeals(ids) {
     });
     return () => {
       cancelled = true;
+      controller.abort();
     };
-  }, [key]);
-  return columns;
+  }, [key, retryNonce]);
+  return { columns, retry: () => setRetryNonce((n) => n + 1) };
 }
 
 // The section's dominant provision_subtype — the same `code` ClauseSidebar
@@ -127,6 +164,8 @@ export function useSectionMarketStats(enabled, dealId, sectionCodes) {
     ? `${dealId}|${sectionCodes.map((s) => `${s.sectionId}:${s.code || ''}`).join(',')}`
     : '';
   const [byCode, setByCode] = useState({});
+  // C: see useComparedDeals' retryNonce -- same manual-retry pattern.
+  const [retryNonce, setRetryNonce] = useState(0);
   const codesKey = useMemo(() => {
     const distinct = [...new Set(sectionCodes.map((s) => s.code).filter(Boolean))];
     return distinct.join(',');
@@ -137,10 +176,11 @@ export function useSectionMarketStats(enabled, dealId, sectionCodes) {
       return undefined;
     }
     let cancelled = false;
+    const controller = new AbortController();
     const codes = codesKey.split(',');
     setByCode(Object.fromEntries(codes.map((code) => [code, { stats: null, loading: true, error: null }])));
     codes.forEach((code) => {
-      fetchJson(`/api/corpus-stats?code=${encodeURIComponent(code)}&deal_id=${encodeURIComponent(dealId)}`)
+      fetchJson(`/api/corpus-stats?code=${encodeURIComponent(code)}&deal_id=${encodeURIComponent(dealId)}`, { signal: controller.signal })
         .then((stats) => {
           if (cancelled) return;
           setByCode((cur) => ({ ...cur, [code]: { stats, loading: false, error: null } }));
@@ -152,10 +192,11 @@ export function useSectionMarketStats(enabled, dealId, sectionCodes) {
     });
     return () => {
       cancelled = true;
+      controller.abort();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [key, codesKey, dealId]);
-  return useMemo(() => {
+  }, [key, codesKey, dealId, retryNonce]);
+  const byCodeWithSections = useMemo(() => {
     const out = {};
     for (const { sectionId, code } of sectionCodes) {
       out[sectionId] = code
@@ -164,6 +205,7 @@ export function useSectionMarketStats(enabled, dealId, sectionCodes) {
     }
     return out;
   }, [sectionCodes, byCode]);
+  return { bySection: byCodeWithSections, retry: () => setRetryNonce((n) => n + 1) };
 }
 
 // base64url without Buffer (browser) — mirrors lib/query/fixtures.js's
@@ -202,15 +244,18 @@ export function offMarketRows(scorecard) {
 // section entirely (per spec).
 export function useDealToMarket(enabled, dealId) {
   const [state, setState] = useState({ rows: [], loading: false, error: null });
+  // C: see useComparedDeals' retryNonce -- same manual-retry pattern.
+  const [retryNonce, setRetryNonce] = useState(0);
   useEffect(() => {
     if (!enabled || !dealId) {
       setState({ rows: [], loading: false, error: null });
       return undefined;
     }
     let cancelled = false;
+    const controller = new AbortController();
     setState({ rows: [], loading: true, error: null });
     const payload = encodePayload({ deal_id: dealId, comparison_set_filter: {}, provision_types: null });
-    fetchJson(`/api/query/run?kind=DEAL_TO_MARKET&payload=${payload}`)
+    fetchJson(`/api/query/run?kind=DEAL_TO_MARKET&payload=${payload}`, { signal: controller.signal })
       .then((json) => {
         if (cancelled) return;
         const scorecard = json && json.result ? json.result.scorecard : null;
@@ -222,7 +267,8 @@ export function useDealToMarket(enabled, dealId) {
       });
     return () => {
       cancelled = true;
+      controller.abort();
     };
-  }, [enabled, dealId]);
-  return state;
+  }, [enabled, dealId, retryNonce]);
+  return { ...state, retry: () => setRetryNonce((n) => n + 1) };
 }

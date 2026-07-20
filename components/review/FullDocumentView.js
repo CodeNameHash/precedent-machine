@@ -948,7 +948,10 @@ export function FullDocumentView({
                     title={p.full_text || ''}
                   >
                     <span className="text-ink">{p.category || 'General'}</span>
-                    {preview && <span className="text-inkFaint"> — {preview}{preview.length === 100 ? '…' : ''}</span>}
+                    {/* E (truncation sweep): drop the literal "…" -- the
+                        button's `title` already carries the full text, and
+                        clicking opens the provision for editing. */}
+                    {preview && <span className="text-inkFaint"> — {preview}</span>}
                   </button>
                 </li>
               );
