@@ -238,8 +238,13 @@ function dividerRow(headline) {
 
 function shortStandard(text) {
   if (!text) return null;
-  const { short, truncated } = splitForCell(text, 42);
-  return truncated ? `${short}…` : short;
+  // E (truncation sweep, Cox "Comparable to similarly situated buyer…"):
+  // this appended a literal "…" to fit the fixed-width Standard column, with
+  // no way to see the rest -- pillCell() below wires `evidence`/`source`
+  // into PillCell, whose EvidenceHoverSource already surfaces the full
+  // standard text on hover/click. Cut cleanly, no ellipsis.
+  const { short } = splitForCell(text, 42);
+  return short;
 }
 
 function textCell(text, row, ctx) {

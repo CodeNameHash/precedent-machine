@@ -254,14 +254,18 @@ export default function ReviewPage() {
     [router.isReady, router.query.compare, dealId],
   );
   const marketMode = router.isReady && ['1', 'true'].includes(String(router.query.market || ''));
-  const comparedDeals = useComparedDeals(compareIds);
+  // C (deal-to-market/compare robustness): each hook now returns its data
+  // alongside a retry() -- see compareData.js's fetchJson timeout/retry
+  // fix -- so a hung/degraded corpus-stats or compared-deal fetch surfaces
+  // a real error state with a working retry instead of spinning forever.
+  const { columns: comparedDeals, retry: retryComparedDeals } = useComparedDeals(compareIds);
   const sectionCodes = useMemo(() => {
     if (!marketMode) return [];
     return sections
       .filter((s) => s.id !== '__definitions')
       .map((s) => ({ sectionId: s.id, code: dominantSectionCode(cardsBySection.get(s.id)) }));
   }, [marketMode, sections, cardsBySection]);
-  const marketStats = useSectionMarketStats(marketMode, dealId, sectionCodes);
+  const { bySection: marketStats, retry: retryMarketStats } = useSectionMarketStats(marketMode, dealId, sectionCodes);
   const dealToMarket = useDealToMarket(marketMode, dealId);
   const extraColumnCount = comparedDeals.length + (marketMode ? 1 : 0);
   const buildExtraColumns = useCallback((section) => {
@@ -269,17 +273,17 @@ export default function ReviewPage() {
     const cols = comparedDeals.map((col, i) => ({
       key: `cmp-${col.id}`,
       header: <ColumnHeaderBand label={col.name || `Compared deal ${i + 1}`} href={`/review/${col.id}`} />,
-      body: <CompareSectionColumn section={section} column={col} />,
+      body: <CompareSectionColumn section={section} column={col} onRetry={retryComparedDeals} />,
     }));
     if (marketMode) {
       cols.push({
         key: 'market',
         header: <ColumnHeaderBand label="Market" uppercase />,
-        body: <MarketSectionColumn entry={marketStats[section.id]} />,
+        body: <MarketSectionColumn entry={marketStats[section.id]} onRetry={retryMarketStats} />,
       });
     }
     return cols;
-  }, [extraColumnCount, comparedDeals, marketMode, marketStats]);
+  }, [extraColumnCount, comparedDeals, marketMode, marketStats, retryComparedDeals, retryMarketStats]);
 
   /* ── View toggle ── */
   const [view, setView] = useState('summary');

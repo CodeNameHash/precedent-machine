@@ -488,8 +488,12 @@ export function bringdownStandardHeadline(tier) {
   if (/all\s+material\s+respects|material\s+respects/.test(raw)) return 'In all material respects';
   if (/mae|material\s+adverse/.test(raw)) return 'MAE standard';
   if (/all\s+respects/.test(raw)) return 'In all respects';
+  // E (truncation sweep): drop the literal "…" -- there's no expansion for
+  // this headline fallback, so cut cleanly rather than showing a dangling
+  // ellipsis; this branch only fires for an unrecognized standard label
+  // (the common cases resolve above without truncation at all).
   const s = String(tier.standard_label || tier.standardLabel || tier.standard || tier.standardCode || '(unspecified)');
-  return s.length > 60 ? `${s.slice(0, 59)}…` : s;
+  return s.length > 60 ? s.slice(0, 59).trim() : s;
 }
 
 /** Replace "Section X.YZ(a)(i)" cites in a reps_covered description with the
@@ -1697,7 +1701,8 @@ export function compactDoValue(featureKey, raw) {
     if (capName) return capName[1];
     const dollars = s.match(/\$\s?[\d,]+(?:\.\d+)?(?:\s*(?:million|billion|thousand))?/i);
     if (dollars) return dollars[0];
-    return s.length > 90 ? `${s.slice(0, 89).trim()}...` : s;
+    // E (truncation sweep): drop the literal "..." fallback marker.
+    return s.length > 90 ? s.slice(0, 89).trim() : s;
   }
   return null;
 }

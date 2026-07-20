@@ -1,5 +1,5 @@
 import React from 'react';
-import { cardFeatures, partySide, splitForCell, textOf, valueText } from './card-utils.js';
+import { cardFeatures, partySide, splitForCell, stripEdgeEllipsis, textOf, valueText } from './card-utils.js';
 import { standardColorKey } from './standard-colors.js';
 import { BOARD_CHANGE_STANDARD_LABELS } from './board-change-standard.js';
 import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
@@ -106,7 +106,15 @@ function yesNo(detail) {
 }
 function rowForSpec(spec, cards) {
   const evidence = cards.map(textOf).filter(Boolean).join('\n\n');
-  const detail = yesNo(firstFeature(cards, spec.keys) || spec.fallback(evidence));
+  // E (truncation sweep, stored-data case): definitionFromText/exceptionsFromText/
+  // terminationFromText regex-match straight off the raw stored evidence, so a
+  // source quote captured with a leading/trailing bare "…" (extractor
+  // artifact, not a rendering choice -- see stripEdgeEllipsis's comment)
+  // flows straight into `detail`. This row's evidence/`sourceCards` still
+  // carry the raw text for the "View clause"/hover-evidence affordance, so
+  // stripping the edge ellipsis here only affects the displayed label/pill,
+  // never the underlying data.
+  const detail = stripEdgeEllipsis(yesNo(firstFeature(cards, spec.keys) || spec.fallback(evidence)));
   if (!detail) return null;
   return {
     id: `nosol-intervening-${spec.id}`,
@@ -184,7 +192,13 @@ function collapsedTextNode(text) {
   return React.createElement(
     'span',
     null,
-    React.createElement('span', { className: 'text-[11px] text-ink' }, `${short}…`),
+    // E (truncation sweep): drop the literal "…" -- the details/"See
+    // provision" affordance right below is the tail-hiding mechanism. Note:
+    // some stored evidence_quote/definition text for this row already
+    // starts with a bare "…" from the SOURCE extraction (e.g. "…means a
+    // material event, …") -- that's stored-data ellipsis, stripped
+    // separately at render (see stripEdgeEllipsis below).
+    React.createElement('span', { className: 'text-[11px] text-ink' }, short),
     React.createElement(
       'details',
       { className: 'mt-1' },

@@ -109,7 +109,10 @@ function summarizeProhibitedAct(text) {
   // verbatim clause limbs get summarized.
   if (t.length <= 45) return t;
   const spec = PROHIBIT_ACT_SUMMARY.find((s) => s.test.test(t));
-  return spec ? spec.label : `${splitForCell(t, 60).short}…`;
+  // E (truncation sweep, nosol grouped-sub-row): drop the literal "…" --
+  // this label renders as a PillCell with the full clause as hover
+  // evidence.
+  return spec ? spec.label : splitForCell(t, 60).short;
 }
 // Canonical layer: an item's `.code` (assigned by extraction against the
 // SOLICITATION_ACT vocabulary) resolves to a stable, cross-deal-identical
@@ -410,9 +413,13 @@ function countListNode(row, ctx) {
 // behind two "see text" disclosures on the same row (Metsera: Cease
 // discussions / standstill enforcement).
 function collapsedTextNode(text) {
-  const { short, truncated } = splitForCell(text, 90);
+  // E (truncation sweep): drop the literal "…" -- the full text is always
+  // also reachable behind the row's own single "see text" expander
+  // elsewhere on the page (see comment above), so this preview doesn't need
+  // its own ellipsis indicator.
+  const { short } = splitForCell(text, 90);
   if (!short) return null;
-  return React.createElement('span', { className: 'text-[11px] text-ink' }, truncated ? `${short}…` : short);
+  return React.createElement('span', { className: 'text-[11px] text-ink' }, short);
 }
 // Each prohibited act (or plain-language exception) renders as its own
 // PillCell in a wrapping row, rather than one pill with a semicolon-joined

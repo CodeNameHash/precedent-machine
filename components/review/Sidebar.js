@@ -16,7 +16,10 @@ function sideClauseSubLabel(p, i) {
   const secRef = text.match(/^\s*(Section\s+\d+\.\d+[A-Za-z()]*|Article\s+[IVXLC]+)/i);
   if (secRef) return secRef[1].replace(/\s+/g, ' ').trim();
   const words = text.replace(/\[\[[^\]]*\]\]/g, ' ').replace(/\s+/g, ' ').trim().split(' ').slice(0, 6).join(' ');
-  if (words) return words.length > 40 ? `${words.slice(0, 39)}…` : words;
+  // E (truncation sweep): drop the literal "…" -- this is just a short
+  // disambiguating sidebar label, the full clause is what the row itself
+  // shows; cut cleanly rather than dangle an ellipsis.
+  if (words) return words.length > 40 ? words.slice(0, 39).trim() : words;
   return `Clause ${i + 1}`;
 }
 

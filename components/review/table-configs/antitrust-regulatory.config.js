@@ -49,8 +49,10 @@ function mainConceptOf(card) {
 
 function shortText(text, max = 70) {
   if (!text) return null;
-  const { short, truncated } = splitForCell(text, max);
-  return truncated ? `${short}…` : short;
+  // E (truncation sweep): drop the literal "…" -- callers wire this
+  // through PillCell with evidence, which already exposes the full text.
+  const { short } = splitForCell(text, max);
+  return short;
 }
 
 // Generic code -> friendly-label resolver via the shared taxonomy dict for a

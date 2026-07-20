@@ -3,6 +3,7 @@ const { runQuery } = require('../../../lib/query/engine');
 const { decodePayload } = require('../../../lib/query/fixtures');
 const { slugToKind } = require('../../../lib/query/types');
 const { attachExtractionVersions } = require('../../../lib/query/prov');
+const { sanitizeQueryError } = require('../../../lib/query/error-sanitize');
 // Module-level (deals, provisions) cache — shared with
 // pages/api/query/field-options.js so both routes warm the same cache
 // within a serverless instance instead of each paying their own
@@ -49,6 +50,13 @@ export default async function handler(req, res) {
     }
     return res.status(200).json({ result, saved_query: savedQuery });
   } catch (err) {
-    return res.status(400).json({ error: err.message || 'query failed' });
+    // D (query error surfaces): a corrupted ?payload= throws a raw
+    // JSON.parse SyntaxError here (decodePayload above), and a degraded
+    // Supabase can throw with an HTML error-page body baked into the
+    // message (e.g. a proxied Cloudflare 522) -- sanitizeQueryError()
+    // turns either into a message that's actually meant for a human;
+    // everything else (real validation errors like "field_path does not
+    // resolve: …") passes through unchanged.
+    return res.status(400).json({ error: sanitizeQueryError(err.message || 'query failed') });
   }
 }

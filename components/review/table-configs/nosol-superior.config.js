@@ -255,7 +255,9 @@ function collapsedTextNode(text) {
   return React.createElement(
     'span',
     null,
-    React.createElement('span', { className: 'text-[11px] text-ink' }, `${short}…`),
+    // E (truncation sweep): drop the literal "…" -- the details/"See
+    // provision" affordance right below is the tail-hiding mechanism.
+    React.createElement('span', { className: 'text-[11px] text-ink' }, short),
     React.createElement(
       'details',
       { className: 'mt-1' },

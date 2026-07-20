@@ -252,8 +252,10 @@ function normalizeBeneficiaryCore(name) {
 
 function shortLabel(text, max = 60) {
   if (!text) return text;
-  const { short, truncated } = splitForCell(String(text), max);
-  return truncated ? `${short}…` : short;
+  // E (truncation sweep): drop the literal "…" -- callers wire this
+  // through PillCell with evidence, which already exposes the full text.
+  const { short } = splitForCell(String(text), max);
+  return short;
 }
 
 function shortenPerson(name) {

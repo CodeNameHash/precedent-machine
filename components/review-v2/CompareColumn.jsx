@@ -43,6 +43,29 @@ function EmptyBox({ children }) {
   );
 }
 
+// C (deal-to-market/compare robustness, Supabase-degraded incident): a
+// failed compared-deal fetch used to be a dead end -- "Deal unavailable: …"
+// with no way to try again short of reloading the whole review page. Now
+// that compareData.js's useComparedDeals bounds the fetch with a timeout
+// and exposes retry(), give the column a working retry affordance.
+function ErrorBox({ onRetry, children }) {
+  return (
+    <div className="border border-[#E0E0E0] bg-white px-3 py-4">
+      <p className="mtx-meta-label text-[9px] tracking-[0.14em] text-[#B14E63] mb-1.5">{children}</p>
+      {onRetry ? (
+        <button
+          type="button"
+          onClick={onRetry}
+          className="text-[9px] font-bold uppercase tracking-[0.1em] text-[#2F6DB5] hover:underline"
+          data-testid="compare-column-retry"
+        >
+          Retry
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
 function sectionRowCount(section, reviewDeal) {
   if (!section || !reviewDeal) return 0;
   if (section.id === '__definitions') return (reviewDeal.definitions || []).length;
@@ -57,10 +80,10 @@ function sectionRowCount(section, reviewDeal) {
 
 // One compared-deal cell for one section. `column` comes straight from
 // useComparedDeals: { id, name, reviewDeal, loading, error }.
-export default function CompareSectionColumn({ section, column }) {
+export default function CompareSectionColumn({ section, column, onRetry }) {
   if (!column) return null;
   if (column.loading) return <EmptyBox>Loading deal…</EmptyBox>;
-  if (column.error) return <EmptyBox>Deal unavailable: {column.error}</EmptyBox>;
+  if (column.error) return <ErrorBox onRetry={onRetry}>Deal data unavailable right now — retry</ErrorBox>;
   const reviewDeal = column.reviewDeal || EMPTY_REVIEW_DEAL;
   if (sectionRowCount(section, reviewDeal) === 0) {
     // Standard empty state: the section box exists (alignment holds) but
