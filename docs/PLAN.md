@@ -91,6 +91,12 @@ re-extract session's context.
 4. Backfill section_ref repair for the Heinz/Kraft §5.02/§5.03 chapeau
    cards mislabeled "1.01 | General / Preamble" (display-side exclusion
    already shipped; the stored refs are still wrong).
+5. Mid-quote elision ("A ... B" stored excerpts) in mechanics capture
+   (QXO prorationMechanics.oversubscriptionTreatment elides the operative
+   proration formulas) — widen/complete capture on next re-extract;
+   render-side unelide (lib/unelide-quote.js via lib/queries/
+   review-deal.js) now reconstructs from provision full_text where
+   anchors resolve.
 
 ### r16 deal-compare gap audit (2026-07-20, verified against sources)
 
