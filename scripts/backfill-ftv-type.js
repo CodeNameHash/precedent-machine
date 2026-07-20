@@ -105,6 +105,22 @@ async function main() {
       });
       via = target ? 'forceTheVote-flag' : null;
     }
+    // Tier 3 (r14): forceTheVoteType is a DEAL-LEVEL codebook — one value
+    // per deal describing the no-shop's meeting obligation. When neither
+    // the claim's own quote nor the boolean flag anchors it, the family's
+    // head clause is the conventional home: the "Solicitation Prohibition"
+    // provision (present under exactly that category on every corpus deck
+    // checked). Tier 4 last resort: the longest NOSOL provision. Both are
+    // deterministic and logged, so the dry run shows which tier placed
+    // each deal.
+    if (!target) {
+      target = dealProvisions.find((p) => /solicitation prohibition/i.test(String(p.category || '')));
+      via = target ? 'prohibition-head' : null;
+    }
+    if (!target) {
+      target = dealProvisions.reduce((a, b) => (String(b.full_text || '').length > String(a.full_text || '').length ? b : a));
+      via = 'longest-family';
+    }
     if (!target) { console.warn(`SKIP ${dealId}: no placement (no details containment, no forceTheVote flag)`); continue; }
     plan.push({ dealId, provisionId: target.id, via, code: slot.type.code, details: slot.details ? `${norm(slot.details).slice(0, 60)}…` : null });
   }
