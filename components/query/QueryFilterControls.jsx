@@ -25,7 +25,7 @@ import { useEffect, useState } from 'react';
 import { getDisplayAdvisors } from '../../lib/canonical-advisors';
 import { considerationTypeDisplay } from '../../lib/deals-index-columns';
 import {
-  OPERATOR_LABELS, NUMERIC_TYPES, humanizeKey, lowerFirst, sentenceForFilter,
+  OPERATOR_LABELS, NUMERIC_TYPES, humanizeKey, provisionTypeLabel, lowerFirst, sentenceForFilter,
 } from '../../lib/query/filter-labels';
 
 // Kept in sync with lib/query/types.js PROVISION_CARD_TYPES — duplicated
@@ -52,7 +52,7 @@ export function OpSelect({ value, onChange, className = 'mtx-select' }) {
 export function ProvisionTypeSelect({ value, onChange, className = 'mtx-select', types = PROVISION_TYPES }) {
   return (
     <select className={className} value={value} onChange={(e) => onChange(e.target.value)}>
-      {types.map((t) => <option key={t} value={t}>{humanizeKey(t)}</option>)}
+      {types.map((t) => <option key={t} value={t}>{provisionTypeLabel(t)}</option>)}
     </select>
   );
 }
@@ -222,7 +222,16 @@ function NumericControl({ filter, onChange, unit }) {
   );
 }
 
-function CodedControl({ filter, onChange, options }) {
+// `loading` (item 1, r13): the field's TYPE is known synchronously from the
+// already-fetched field list (fieldsForProvisionType's `coded: true`), so the
+// dropdown SHELL — the is/is not selector and a disabled value select —
+// renders on first paint. Only the option VALUES (corpus-observed codes,
+// counts) depend on the async /api/query/field-options?field= fetch, so
+// while that's in flight the value select shows a single disabled "Loading
+// options…" placeholder instead of sitting empty or flashing a free-text box.
+function CodedControl({
+  filter, onChange, options, loading = false,
+}) {
   const negated = filter.op === 'neq';
   return (
     <div className="codedRow">
@@ -230,9 +239,15 @@ function CodedControl({ filter, onChange, options }) {
         <option value="is">is</option>
         <option value="is not">is not</option>
       </select>
-      <select className="mtx-select" value={filter.value === null || filter.value === undefined ? '' : String(filter.value)} onChange={(e) => onChange({ value: e.target.value })}>
-        {options.map((o) => <option key={o.code} value={o.code} title={o.description || undefined}>{o.label}</option>)}
-      </select>
+      {loading ? (
+        <select className="mtx-select" value="" disabled>
+          <option value="">Loading options…</option>
+        </select>
+      ) : (
+        <select className="mtx-select" value={filter.value === null || filter.value === undefined ? '' : String(filter.value)} onChange={(e) => onChange({ value: e.target.value })}>
+          {options.map((o) => <option key={o.code} value={o.code} title={o.description || undefined}>{o.label}</option>)}
+        </select>
+      )}
       <style jsx>{`
         .codedRow { display: flex; gap: 6px; }
       `}</style>
@@ -253,7 +268,25 @@ function FreeTextControl({ filter, onChange }) {
 export function FilterRow({ filter, onChange, onRemove, provisionTypes = PROVISION_TYPES, showPreview = true }) {
   const fields = useFieldsForProvisionType(filter.provision_type);
   const fieldMeta = useFieldMeta(filter.provision_type, filter.field);
-  const meta = fieldMeta || { type: null, unit: null, options: [], label: humanizeKey(filter.field) };
+  // Item 1 (Ben r13): the field's TYPE (boolean/numeric/coded) is knowable
+  // the instant a field is selected — the field list fetched above already
+  // carries type/unit/coded/boolean/numeric per field (lib/query/field-meta.js
+  // fieldsForProvisionType). Seed `meta` from THAT entry first so the correct
+  // control shape renders on first paint; the async per-field fetch
+  // (fieldMeta, /api/query/field-options?field=) only ever fills in the
+  // option VALUES (corpus-observed codes/counts) for coded fields once it
+  // resolves — it never changes which control shape is shown.
+  const fieldEntry = fields.find((f) => f.key === filter.field) || null;
+  const meta = fieldMeta || (fieldEntry
+    ? {
+      type: fieldEntry.type, unit: fieldEntry.unit, options: [], label: fieldEntry.label,
+    }
+    : { type: null, unit: null, options: [], label: humanizeKey(filter.field) });
+  // Coded fields render their dropdown SHELL immediately (from fieldEntry
+  // above) but need the async fetch to fill in real option values — while
+  // that's in flight, show a loading placeholder instead of an empty select
+  // or a free-text fallback.
+  const loadingCodedOptions = !fieldMeta && !!(fieldEntry && fieldEntry.coded);
 
   // Once this provision_type's field list resolves, default an empty (or no
   // longer valid, e.g. after switching provision type) field selection to
@@ -305,6 +338,8 @@ export function FilterRow({ filter, onChange, onRemove, provisionTypes = PROVISI
           <BooleanControl filter={filter} onChange={onChange} fieldLabel={meta.label} />
         ) : meta.type && NUMERIC_TYPES.has(meta.type) ? (
           <NumericControl filter={filter} onChange={onChange} unit={meta.unit} />
+        ) : loadingCodedOptions ? (
+          <CodedControl filter={filter} onChange={onChange} options={[]} loading />
         ) : meta.options && meta.options.length ? (
           <CodedControl filter={filter} onChange={onChange} options={meta.options} />
         ) : (

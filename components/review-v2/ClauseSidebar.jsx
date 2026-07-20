@@ -524,6 +524,24 @@ function DrillItemsList({ items, onDrillItem }) {
   );
 }
 
+// r13 (Ben, "No corpus comparison captured" investigation): a row only ever
+// gets a rowContext.features/instrument answer when it actually ASKED for
+// one -- resolveRowFocus (provisionIndexHelpers.js) only sends featureKeys/
+// itemCode to /api/corpus-stats when the row carries them. Some row shapes
+// (a bundled negative-covenant row spanning several taxonomy attributes,
+// GroupedSubRows fragment rows sniffed from deal-specific quote text) never
+// carry either -- for those, "no corpus comparison" was never really TRUE or
+// FALSE, the question was simply never asked. Distinguishing that from a row
+// that DID ask and came back empty (a genuine, honest gap -- e.g. an
+// attribute with fewer than 2 peer deals of coverage) matters: the former is
+// a quieter, lower-alarm line; the latter keeps the original wording.
+function rowRequestedCorpusContext(rowFocus) {
+  if (!rowFocus) return false;
+  if (Array.isArray(rowFocus.featureKeys) && rowFocus.featureKeys.length) return true;
+  if (rowFocus.itemCode) return true;
+  return false;
+}
+
 // (b) full corpus-context block: instrument distribution (if any) + each
 // requested feature's distribution (if any) + clickable drill-down items
 // (if any). Distinct loading/error/empty states so a row that genuinely has
@@ -533,6 +551,7 @@ function RowCorpusContext({ rowFocus, rowContext, loading, error, onDrillItem })
   const hasInstrument = rowContext && rowContext.instrument && rowContext.instrument.dealsWithInstrument > 0;
   const hasFeatures = rowContext && Array.isArray(rowContext.features) && rowContext.features.some((f) => f);
   const hasItems = rowFocus && Array.isArray(rowFocus.items) && rowFocus.items.length > 0;
+  const requested = rowRequestedCorpusContext(rowFocus);
   return (
     <div className="px-3.5 py-3 border-b-2 border-[#1F1F1F]" data-testid="row-corpus-context">
       <div className={LAB}>Corpus context</div>
@@ -545,8 +564,10 @@ function RowCorpusContext({ rowFocus, rowContext, loading, error, onDrillItem })
           {hasInstrument ? <InstrumentDistribution instrument={rowContext.instrument} /> : null}
           {hasFeatures ? rowContext.features.filter(Boolean).map((f) => <FeatureDistribution key={f.attribute} feature={f} />) : null}
         </>
+      ) : requested ? (
+        <div className="text-[11px] text-[#9A9A9A]" data-testid="row-corpus-context-empty-genuine">No corpus comparison captured for this row yet.</div>
       ) : (
-        <div className="text-[11px] text-[#9A9A9A]">No corpus comparison captured for this row yet.</div>
+        <div className="text-[10px] text-[#B0B0B0]" data-testid="row-corpus-context-empty-uncomparable">This row doesn&apos;t map to a single comparable feature.</div>
       )}
       {hasItems ? <div className="mt-1"><DrillItemsList items={rowFocus.items} onDrillItem={onDrillItem} /></div> : null}
     </div>
@@ -614,8 +635,13 @@ function ViewClauseExpander({ quote, usingParentFallback, onViewInAgreement, car
         {usingParentFallback ? (
           <div className="text-[9.5px] text-[#9A9A9A] mb-1">Parent provision text (row-specific quote unavailable)</div>
         ) : null}
+        {/* E (truncation sweep): this box already scrolls (max-h-56
+            overflow-y-auto) so slicing the quote at 1600 chars and
+            appending a literal "…" both hid text AND showed the banned
+            ellipsis for no reason -- the scroll affordance already lets a
+            long quote be read in full. Render the whole quote. */}
         <div className="text-[11px] leading-5 text-[#1F1F1F] whitespace-pre-wrap break-words border-l-2 border-[#1F1F1F] bg-[#F6F6F6] px-2.5 py-2 max-h-56 overflow-y-auto mtx-scrollbar-thin">
-          {quote.slice(0, 1600)}{quote.length > 1600 ? '…' : ''}
+          {quote}
         </div>
       </div>
     </details>

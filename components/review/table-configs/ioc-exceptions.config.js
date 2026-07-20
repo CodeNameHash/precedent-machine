@@ -504,6 +504,16 @@ function negativeCovenantGroups(cards) {
   return order.map((key) => byKey.get(key));
 }
 
+// A card's `section_ref` carries the region's own descriptive marker as its
+// middle pipe-segment ("1.01 | General / Preamble | <hash>",
+// "5.01(i) | [PROPOSED] Unclassified | <hash>"). "General / Preamble" names
+// the section's own CHAPEAU region -- the lead-in sentence that introduces
+// the covenant, never a restriction in its own right.
+const GENERAL_PREAMBLE_REGION_RE = /\bgeneral\s*\/\s*preamble\b/i;
+function isGeneralPreambleRegion(card) {
+  return GENERAL_PREAMBLE_REGION_RE.test(String(card?.section_ref || ''));
+}
+
 // The "[PROPOSED] Unclassified" 5.01(i)-(o) fragments: no provision_subtype
 // was ever assigned, so there is no covenant name to hang a row on. Some
 // carry a deterministically-stamped restrictionComponents tag, most carry
@@ -516,6 +526,15 @@ function fragmentCards(cards) {
     // covenants (QXO's chapeau cards) — affirmativeRows renders them; they
     // are not unclassified fragments.
     if (asList(cardFeatures(card).positiveObligations).length) return false;
+    // Heinz/Kraft: the §5.02/§5.03 "Heinz/Kraft Forbearances" CHAPEAU cards
+    // carry no positiveObligations (unlike QXO's) but are still mislabeled
+    // by an old backfill with section_ref "1.01 | General / Preamble | ..."
+    // -- a preamble/chapeau card is never itself an "other restriction",
+    // regardless of whether it happens to carry positiveObligations. Real
+    // unclassified fragments (Metsera's 5.01(i)-(o), etc.) are always
+    // region-marked "[PROPOSED] Unclassified" or a real section title, never
+    // "General / Preamble", so this never drops a legitimate fragment row.
+    if (isGeneralPreambleRegion(card)) return false;
     return !code || code === 'IOC';
   });
 }
@@ -540,7 +559,17 @@ function buildNegativeRow(group) {
 // already -- see GroupedSubRows in ProvisionTablePrimitives.jsx). Together
 // the three pieces (label column + these two sub-columns) are the real
 // General category | Specific restrictions | Exceptions table I6 asks for.
+//
+// `emptyCopy === null` means "suppress this column entirely when empty"
+// (no heading, no placeholder) rather than showing a "Not specified"-style
+// line -- used for the Specific-restrictions column now that
+// restrictionComponents classification is precision-first (extract.js):
+// many rows legitimately carry no cross-family tags, and a placeholder line
+// on every such row reads as a data gap that isn't one. Columns that still
+// want the old always-render behaviour (Exceptions: "None specified") pass
+// a real string.
 function negativeCovenantColumn(keyId, heading, pills, emptyCopy) {
+  if (!pills.length && emptyCopy === null) return null;
   return React.createElement(
     'div',
     { key: keyId, className: 'min-w-0' },
@@ -644,7 +673,7 @@ function renderNegativeRow(entry, ctx) {
       React.createElement(
         'div',
         { className: 'grid grid-cols-1 gap-2 sm:grid-cols-2', 'data-testid': 'ioc-negative-columns' },
-        negativeCovenantColumn(`${entry.code}-restrictions`, 'Specific restrictions', restrictionPills, 'Not specified'),
+        negativeCovenantColumn(`${entry.code}-restrictions`, 'Specific restrictions', restrictionPills, null),
         negativeCovenantColumn(`${entry.code}-exceptions`, 'Exceptions', exceptionPills, 'None specified'),
       ),
     ),
@@ -657,6 +686,17 @@ function renderNegativeRow(entry, ctx) {
     card: primary || null,
     evidence: obligations[0] || null,
     band: entry.band || null,
+    // r13 (Ben, ClauseSidebar "No corpus comparison captured" investigation):
+    // negative-covenant rows never threaded featureKeys, so ClauseSidebar's
+    // resolveRowFocus() (components/review-v2/provisionIndexHelpers.js) had
+    // nothing to hand /api/corpus-stats -- every IOC negative-covenant row
+    // hit the empty state regardless of real corpus coverage. These three
+    // attributes are exactly what this row's own pills are built from
+    // (restrictionEntries/thresholdEntries/permittedEntries above), so the
+    // sidebar can compare this row's restriction category, dollar trigger,
+    // and permitted-exception set against the corpus the same way the table
+    // itself renders them.
+    featureKeys: ['restrictionComponents', 'permittedExceptions', 'dollarThreshold'],
   };
 }
 
@@ -957,12 +997,37 @@ function exceptionsRow(id, label, entries, ctx) {
   const pills = entries
     .map((e, i) => pillFor(PillCell, `${id}-${i}`, e.label, 'present', e.evidence, e.source, undefined, true))
     .filter(Boolean);
+  // Ben (r13): every other IOC row (negative covenants, other-restrictions
+  // fragments) threads seeTextContent so GroupedSubRows renders a "See
+  // provision" toggle in the left column + a full-width expansion row with
+  // the clause text (the established contract -- see renderNegativeRow /
+  // buildOtherRestrictionsRows above). The Exceptions band rows never did
+  // this, so the general-exceptions preamble had no way to show its own
+  // clause. Expansion is the DISTINCT set of source clauses backing this
+  // row's pills (the exception codes here can be drawn from more than one
+  // card -- e.g. Metsera's shared-set row merges the affirmative AND
+  // negative preambles -- so dedupe by exact text, not just by entry).
+  const seenEvidence = new Set();
+  const clauses = [];
+  for (const e of entries) {
+    const text = e.evidence && String(e.evidence).trim();
+    if (!text || seenEvidence.has(text)) continue;
+    seenEvidence.add(text);
+    clauses.push(text);
+  }
   return {
     id,
     label: covenantLabelNode(label, null),
     children: pills.length
       ? React.createElement('div', { className: 'flex flex-wrap gap-1' }, pills)
       : React.createElement('span', { className: 'text-[11px] italic text-inkFaint' }, 'None specified'),
+    seeTextContent: clauses.length ? clauses.join('\n\n') : null,
+    card: entries[0]?.source || null,
+    evidence: clauses[0] || null,
+    // r13: same corpus-context gap as renderNegativeRow above -- this row's
+    // own pills ARE the deal's permittedExceptions set, so that's the
+    // attribute the sidebar should request.
+    featureKeys: ['permittedExceptions'],
   };
 }
 
@@ -1123,6 +1188,7 @@ export {
   fragmentCards,
   formatMoney,
   iocExceptionsConfig,
+  isGeneralPreambleRegion,
   isIocCard,
   materialRespectsPillFor,
   negativeBandLabel,

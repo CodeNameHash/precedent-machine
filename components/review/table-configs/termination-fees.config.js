@@ -3,6 +3,7 @@ import { buildTerminationFees, normalizeTermfFeatures } from '../../../lib/termf
 import { cardCode, cardFeatures, cardType, firstFeature, makeRow, selectCards, textOf } from './card-utils.js';
 import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
 import taxonomy from '../../../lib/taxonomy.js';
+import { formatPercentOfDeal } from '../../../lib/percent-of-deal.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
@@ -83,14 +84,65 @@ function findSourceCard(cards, sourceKey) {
   return (wantCode && cards.find((card) => cardCode(card) === wantCode)) || cards[0];
 }
 
+// r13 (Ben, "% of deal value" feature): scope is FEES ONLY, and only the
+// company/parent termination fee amounts render as a scalar fee row in this
+// table (expense-reimbursement caps aren't rendered here at all — see the
+// Punchlist #37 comment above isVisibleFeeType — and naked-no-vote/tail fee
+// are mechanics variants, not the headline fee, so they're left out of this
+// list deliberately).
+const FEE_TYPES_ELIGIBLE_FOR_DEAL_PERCENT = new Set(['COMPANY_TERMINATION_FEE', 'REVERSE_TERMINATION_FEE']);
+
+// A fee `amount` arrives pre-formatted with its `$` sign and thousands
+// separators (e.g. "$332,000,000") — parse it back to a plain number so it
+// can be divided by the deal's value_usd. Never guesses: anything that
+// doesn't contain a clean dollar figure resolves to null.
+function parseFeeAmountUsd(amount) {
+  if (typeof amount === 'number') return Number.isFinite(amount) ? amount : null;
+  const str = String(amount || '').replace(/,/g, '');
+  const match = str.match(/-?\d+(?:\.\d+)?/);
+  if (!match) return null;
+  let n = Number(match[0]);
+  if (!Number.isFinite(n)) return null;
+  // Word-scaled amounts ("$10 million", "$1.2 billion"): scale the numeral
+  // by the word that immediately follows it, or bail if a scale word
+  // appears anywhere else in the string (a bare `10` divided into a
+  // billion-dollar deal value would render an absurd near-zero percent
+  // that reads as authoritative).
+  const tail = str.slice(match.index + match[0].length);
+  if (/^\s*million\b/i.test(tail)) n *= 1e6;
+  else if (/^\s*billion\b/i.test(tail)) n *= 1e9;
+  else if (/\b(?:million|billion)\b/i.test(str)) return null;
+  return n;
+}
+
+// The agreement's own extracted percentage (feeRow.percentEquityValue) wins
+// over anything we compute — it's the deal's own stated number, not a
+// derived one. Only fall back to a computed % of deal value when no
+// extracted percent exists AND the deal's value_usd is on the review
+// payload (see lib/queries/review-deal.js#fetchDealValueUsd). Returns null
+// (render nothing) when neither is available, or when the fee type is
+// outside this feature's scope (price/consideration/deal-value fields are
+// explicitly excluded — see FEE_TYPES_ELIGIBLE_FOR_DEAL_PERCENT above).
+function dealPercentText(feeRow, dealValueUsd) {
+  if (feeRow.percentEquityValue) return null; // extracted figure wins; see formatFeeDetail/feeAmountSignal
+  if (!FEE_TYPES_ELIGIBLE_FOR_DEAL_PERCENT.has(feeRow.feeType)) return null;
+  const amountUsd = parseFeeAmountUsd(feeRow.amount);
+  return formatPercentOfDeal(amountUsd, dealValueUsd);
+}
+
 // Renders the structured fee row (amount, % of equity, payer/payee,
 // deadline, sole-remedy flag) as a short readable line instead of the raw
 // { amount, triggers, payment_deadline, ... } object the claims-adapter
 // hands back.
-function formatFeeDetail(feeRow) {
+function formatFeeDetail(feeRow, dealValueUsd) {
   const parts = [];
   if (feeRow.amount) parts.push(String(feeRow.amount));
-  if (feeRow.percentEquityValue) parts.push(`${feeRow.percentEquityValue} of equity value`);
+  if (feeRow.percentEquityValue) {
+    parts.push(`${feeRow.percentEquityValue} of equity value`);
+  } else {
+    const computed = dealPercentText(feeRow, dealValueUsd);
+    if (computed) parts.push(computed);
+  }
   if (feeRow.payableBy && feeRow.payableTo) {
     parts.push(`Payable by ${PARTY_LABELS[feeRow.payableBy] || feeRow.payableBy} to ${PARTY_LABELS[feeRow.payableTo] || feeRow.payableTo}`);
   }
@@ -103,10 +155,17 @@ function formatFeeDetail(feeRow) {
 // [$ amount pill]") -- the quantitative fact a reader scans for first, ahead
 // of the trigger pills. `amount` already arrives pre-formatted with its `$`
 // sign from the claims data, so this stays a straight pass-through, not a
-// re-derivation.
-function feeAmountSignal(feeRow) {
+// re-derivation. The parenthetical secondary text prefers the agreement's
+// own extracted % of equity value; when the deal doesn't carry one, it falls
+// back to the computed % of deal value (r13) using the SAME parenthetical
+// idiom so no new visual language is introduced. If value_usd isn't
+// available either, the amount renders alone exactly as before.
+function feeAmountSignal(feeRow, dealValueUsd) {
   if (!feeRow.amount) return null;
-  const pctSuffix = feeRow.percentEquityValue ? ` (${feeRow.percentEquityValue} of equity value)` : '';
+  const pctText = feeRow.percentEquityValue
+    ? `${feeRow.percentEquityValue} of equity value`
+    : dealPercentText(feeRow, dealValueUsd);
+  const pctSuffix = pctText ? ` (${pctText})` : '';
   return {
     id: `${feeRow.feeType}-amount`,
     label: `${feeRow.amount}${pctSuffix}`,
@@ -128,11 +187,11 @@ function feeTriggerSignals(feeRow) {
   }));
 }
 
-function feeSignals(feeRow) {
-  return [feeAmountSignal(feeRow), ...feeTriggerSignals(feeRow)].filter(Boolean);
+function feeSignals(feeRow, dealValueUsd) {
+  return [feeAmountSignal(feeRow, dealValueUsd), ...feeTriggerSignals(feeRow)].filter(Boolean);
 }
 
-function feeTableRows(cards) {
+function feeTableRows(cards, dealValueUsd) {
   const combined = combineTermfFeatures(cards);
   return buildTerminationFees(combined).filter(isVisibleFeeType).map((feeRow) => {
     const sourceCard = findSourceCard(cards, feeRow.sourceKey);
@@ -140,11 +199,11 @@ function feeTableRows(cards) {
       id: `termination-fees-${feeRow.feeType}`,
       label: FEE_TYPE_LABELS[feeRow.feeType] || feeRow.feeType,
       kind: 'Amount',
-      detail: formatFeeDetail(feeRow),
+      detail: formatFeeDetail(feeRow, dealValueUsd),
       evidence: textOf(sourceCard),
       sourceCard,
       present: true,
-      signals: feeSignals(feeRow),
+      signals: feeSignals(feeRow, dealValueUsd),
     };
   });
 }
@@ -264,7 +323,15 @@ const terminationFeesConfig = {
   selectRows(reviewDeal) {
     const cards = selectCards(reviewDeal, isTerminationFee);
     if (!cards.length) return [];
-    return [...feeTableRows(cards), ...scalarRows(cards)];
+    // r13: reviewDeal.value_usd is attached server-side by
+    // lib/queries/review-deal.js#fetchDealValueUsd (deals.value_usd, the
+    // deal's equity value at announcement) and survives the wire trim (see
+    // lib/queries/review-deal-wire.js) — null when not on file, in which
+    // case fee rows render exactly as they did before this feature.
+    const dealValueUsd = reviewDeal && typeof reviewDeal.value_usd === 'number' && Number.isFinite(reviewDeal.value_usd)
+      ? reviewDeal.value_usd
+      : null;
+    return [...feeTableRows(cards, dealValueUsd), ...scalarRows(cards)];
   },
   fixedLayout: true,
   columns: [
@@ -275,8 +342,11 @@ const terminationFeesConfig = {
 
 export {
   combineTermfFeatures,
+  dealPercentText,
+  feeAmountSignal,
   feeTableRows,
   formatFeeDetail,
+  parseFeeAmountUsd,
   renderSignals,
   scalarRows,
   terminationFeesConfig,

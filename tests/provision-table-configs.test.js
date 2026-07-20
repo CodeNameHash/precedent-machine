@@ -3487,3 +3487,154 @@ test('r10: scope-materiality pill fires on object-scope qualifiers, not performa
   const plain = mk('preserve their business organizations, assets and lines of business intact');
   assert.doesNotMatch(renderToStaticMarkup(React.createElement('div', null, plain.children)), /Material items only/, 'unqualified limbs get no scope pill');
 });
+
+// r13 (Ben): the "Exceptions" band rows (general-exceptions preamble) never
+// threaded seeTextContent, so unlike every other IOC row (negative
+// covenants, other-restrictions fragments) they rendered with no "See
+// provision" toggle / full-width expansion in GroupedSubRows. Wire it the
+// same way -- the expansion shows the exception clause(s)' own quote text.
+test('r13: ioc-exceptions Exceptions-band rows carry seeTextContent so "See provision" renders (single-side row)', () => {
+  const cards = [
+    { id: 'ge', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-GENERAL-EXCEPTIONS', features: {
+      permittedExceptions: [
+        { code: 'COMPANY_DISCLOSURE_LETTER', label: 'As disclosed', text: 'except as set forth in the Company Disclosure Letter' },
+        { code: 'REQUIRED_BY_LAW', label: 'As required by law', text: 'as required by applicable Law' },
+      ],
+    } },
+  ];
+  const rows = iocMod.buildIocExceptionsRows(cards, { primitives: iocPrimitives });
+  assert.equal(rows.length, 1);
+  assert.ok(rows[0].seeTextContent, 'row carries seeTextContent for the GroupedSubRows "See provision" contract');
+  assert.match(rows[0].seeTextContent, /Company Disclosure Letter/);
+  assert.match(rows[0].seeTextContent, /applicable Law/);
+  assert.deepEqual(rows[0].featureKeys, ['permittedExceptions'], 'threads featureKeys so ClauseSidebar can request corpus context for this row (r13 item 2)');
+});
+
+test('r13: ioc-exceptions shared Exceptions row (Metsera-shape) merges affirmative+negative clause text into seeTextContent, deduped', () => {
+  const cards = [
+    { id: 'ge', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-GENERAL-EXCEPTIONS', features: {
+      permittedExceptions: [
+        { code: 'REQUIRED_BY_LAW', label: 'As required by law', text: 'required by applicable Law' },
+      ],
+    } },
+    { id: 'neg-pre', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-NEGATIVE-PREAMBLE', features: {
+      permittedExceptions: [
+        { code: 'REQUIRED_BY_LAW', label: 'As required by law', text: 'required by applicable Law' },
+      ],
+    } },
+  ];
+  const rows = iocMod.buildIocExceptionsRows(cards, { primitives: iocPrimitives });
+  assert.equal(rows.length, 1, 'same code set on both sides collapses to one shared row');
+  assert.ok(rows[0].seeTextContent, 'shared row still carries seeTextContent');
+  const occurrences = rows[0].seeTextContent.split('required by applicable Law').length - 1;
+  assert.equal(occurrences, 1, 'identical evidence text across both sides is deduped, not repeated');
+});
+
+test('r13: ioc-exceptions Exceptions-band row with no evidence text renders no seeTextContent (never a fake "See provision")', () => {
+  const cards = [
+    { id: 'ge', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-GENERAL-EXCEPTIONS', features: {
+      permittedExceptions: [{ code: 'REQUIRED_BY_LAW', label: 'As required by law' }],
+    } },
+  ];
+  const rows = iocMod.buildIocExceptionsRows(cards, { primitives: iocPrimitives });
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0].seeTextContent, null, 'no evidence text on any entry -> no expansion, no dangling toggle');
+});
+
+// r13 (data-engineering follow-up): the restrictionComponents classifier is
+// now precision-first, so many negative-covenant rows legitimately carry no
+// cross-family restriction tags. A "Specific restrictions: Not specified"
+// placeholder on every such row reads as a data gap that isn't one -- the
+// column should render NOTHING (no heading, no placeholder) when empty,
+// while the Exceptions sub-column keeps its honest "None specified" state.
+test('r13: negative-covenant row suppresses the Specific-restrictions column entirely when restrictionComponents is empty', () => {
+  const cards = [
+    { id: 'tax-1', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-TAX', short_title: 'Tax Elections and Filings', features: {
+      permittedExceptions: [{ code: 'OTHER', label: 'Other specific exception (see text)', text: 'except upon the request of a Tax Authority' }],
+      mainObligation: 'The Company may not make tax elections.',
+    } },
+  ];
+  const [group] = iocMod.negativeCovenantGroups(cards);
+  const row = iocMod.renderNegativeRow({ id: 'ioc-neg-IOC-TAX', code: group.code, cards: group.cards }, { primitives: iocPrimitives });
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, row.children));
+  assert.doesNotMatch(html, /Specific restrictions/, 'no restrictionComponents/threshold data -> the column heading itself is suppressed');
+  assert.doesNotMatch(html, /Not specified/, 'never shows a placeholder line for a legitimately-empty precision-first classification');
+  assert.match(html, /Exceptions/, 'the Exceptions sub-column still renders (it has real pills here)');
+  assert.match(html, /Other specific exception/);
+});
+
+test('r13: negative-covenant row still renders the Specific-restrictions column normally when it has real tags', () => {
+  const cards = [
+    { id: 'merge-1', provision_type: 'COVENANT_INTERIM_OPERATING', provision_subtype: 'IOC-MERGE', short_title: 'Mergers / Acquisitions / Dispositions', features: {
+      restrictionComponents: ['ASSET_SALES_LICENSES'],
+      mainObligation: 'The Company may not sell material assets.',
+    } },
+  ];
+  const [group] = iocMod.negativeCovenantGroups(cards);
+  const row = iocMod.renderNegativeRow({ id: 'ioc-neg-IOC-MERGE', code: group.code, cards: group.cards }, { primitives: iocPrimitives });
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, row.children));
+  assert.match(html, /Specific restrictions/, 'heading still renders when there are real tags');
+  assert.match(html, /Asset sales/);
+  assert.deepEqual(row.featureKeys, ['restrictionComponents', 'permittedExceptions', 'dollarThreshold'], 'threads featureKeys so ClauseSidebar can request corpus context for this row (r13 item 2)');
+});
+
+// r13 (data-engineering follow-up): Heinz/Kraft's §5.02/§5.03 "Heinz/Kraft
+// Forbearances" CHAPEAU cards carry no positiveObligations (unlike QXO's
+// chapeaus) but ARE still mislabeled by an old backfill with section_ref
+// "1.01 | General / Preamble | ..." -- a preamble/chapeau card is never
+// itself an "other restriction" and must never surface as a bare "§1.01"
+// row in the Other-restrictions band.
+test('r13: fragmentCards excludes chapeau cards region-marked "General / Preamble" even without positiveObligations (Heinz/Kraft)', () => {
+  const cards = [
+    {
+      id: 'heinz-chapeau', provision_type: 'COVENANT_INTERIM_OPERATING', short_title: 'General / Preamble',
+      section_ref: '1.01 | General / Preamble | h1',
+      primary_quote: 'SECTION 5.02. Heinz Forbearances. During the period from the date of this Agreement to the Effective Time, except as required by Law...',
+      features: {},
+    },
+    {
+      id: 'kraft-chapeau', provision_type: 'COVENANT_INTERIM_OPERATING', short_title: 'General / Preamble',
+      section_ref: '1.01 | General / Preamble | h2',
+      primary_quote: 'SECTION 5.03. Kraft Forbearances. During the period from the date of this Agreement to the Effective Time, except as required by Law...',
+      features: {},
+    },
+    {
+      id: 'real-fragment', provision_type: 'COVENANT_INTERIM_OPERATING', short_title: '[PROPOSED] Unclassified',
+      section_ref: '5.01(k) | [PROPOSED] Unclassified | h3',
+      primary_quote: '(k) make any material tax election',
+      features: {},
+    },
+  ];
+  const fragments = iocMod.fragmentCards(cards);
+  assert.deepEqual(fragments.map((c) => c.id), ['real-fragment'], 'the two mislabeled chapeau cards are excluded; the real unclassified fragment is kept');
+});
+
+test('r13: isGeneralPreambleRegion detects the "General / Preamble" region marker regardless of spacing/case', () => {
+  assert.equal(iocMod.isGeneralPreambleRegion({ section_ref: '1.01 | General / Preamble | h1' }), true);
+  assert.equal(iocMod.isGeneralPreambleRegion({ section_ref: '4.1 | general/preamble | h1' }), true);
+  assert.equal(iocMod.isGeneralPreambleRegion({ section_ref: '5.01(k) | [PROPOSED] Unclassified | h3' }), false);
+  assert.equal(iocMod.isGeneralPreambleRegion({ section_ref: '' }), false);
+  assert.equal(iocMod.isGeneralPreambleRegion({}), false);
+});
+
+test('r13: QXO/Metsera fragmentCards output is unaffected by the General/Preamble exclusion (no legitimate other-restriction rows lost)', () => {
+  // QXO: chapeau already excluded via positiveObligations; confirms the new
+  // check doesn't change that outcome or drop anything else.
+  const qxoCards = [
+    {
+      id: 'ch-t', provision_type: 'COVENANT_INTERIM_OPERATING', short_title: 'General / Preamble', section_ref: '4.1 | General / Preamble | h1',
+      primary_quote: '4.1 Interim Operations of the Company.',
+      features: { positiveObligations: [{ text: '{"appliesTo":["PROPERTIES"],"obligation":"maintain all leases"}' }] },
+    },
+    { id: 'consult', provision_type: 'COVENANT_INTERIM_OPERATING', short_title: '[PROPOSED] Consultation; Control of Operations', section_ref: '4.20 | [PROPOSED] Consultation; Control of Operations | h2', primary_quote: 'the Company shall consult with Parent', features: {} },
+  ];
+  assert.deepEqual(iocMod.fragmentCards(qxoCards).map((c) => c.id), ['consult']);
+
+  // Metsera: real 5.01(i)-(o) fragments are region-marked "[PROPOSED]
+  // Unclassified", never "General / Preamble" -- none are dropped.
+  const metseraCards = ['i', 'j', 'k'].map((letter) => ({
+    id: `frag-${letter}`, provision_type: 'COVENANT_INTERIM_OPERATING', short_title: '[PROPOSED] Unclassified',
+    section_ref: `5.01(${letter}) | [PROPOSED] Unclassified | h`, primary_quote: `(${letter}) some restriction`, features: {},
+  }));
+  assert.deepEqual(iocMod.fragmentCards(metseraCards).map((c) => c.id), ['frag-i', 'frag-j', 'frag-k']);
+});
