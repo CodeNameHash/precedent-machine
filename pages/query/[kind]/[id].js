@@ -24,6 +24,15 @@ const { considerationTypeDisplay } = require('../../../lib/deals-index-columns')
 // inline, so the title logic can be unit-tested without a JSX/Next runtime.
 const { resultTitle, kindLabel } = require('../../../lib/query/result-title');
 const { sanitizeQueryError } = require('../../../lib/query/error-sanitize');
+// r13 item 1: the market-range executor now carries a parallel percent-of-
+// deal-value distribution (percentStats + per-deal-point `.percent`) for
+// money fields. formatPercentValue is the single shared rounding rule (one
+// decimal, two below 1%) also used by the review page's per-deal display —
+// reused here rather than reinvented so the two surfaces never drift.
+const { formatPercentValue } = require('../../../lib/percent-of-deal');
+// r13 item 2: NOSOL field-grouping spec for PROVISION_CROSS_CUT — see
+// GROUP_SPECS below.
+const { groupColumnsForCrossCut } = require('../../../lib/query/cross-cut-groups');
 
 QueryPage.noLayout = true;
 
@@ -270,19 +279,48 @@ function DealCompare({ result }) {
   return <Panel>Opening review comparison…</Panel>;
 }
 
+// r13 item 2 (Ben: "all intervening event matters together"): for the
+// no-solicitation family, split the single wide field-per-column table into
+// several, one per ordered Ben-facing group heading (lib/query/
+// cross-cut-groups.js's GROUP_SPECS) — same per-field cell rendering, just
+// bucketed instead of one flat wall of columns. Any provision type without a
+// group spec gets back groupColumnsForCrossCut's single `heading: null`
+// group, i.e. exactly today's flat rendering (title unchanged).
 function CrossCut({ result, onOpen }) {
+  const groups = useMemo(
+    () => groupColumnsForCrossCut(result.provision_type, result.columns),
+    [result.provision_type, result.columns],
+  );
+  const columnIndex = useMemo(
+    () => new Map((result.columns || []).map((col, i) => [col.field, i])),
+    [result.columns],
+  );
+  const grouped = groups.length > 0 && groups[0].heading !== null;
   return (
-    <Panel title={`Provision cross-cut — ${pluralize(result.rows.length, 'deal')}`}>
-      <div className="scroll">
-        <table className="mtx-table">
-          <thead><tr><th>Deal</th><th>Signing</th>{result.columns.map((col) => <th key={col.field}>{col.label}</th>)}</tr></thead>
-          <tbody>{result.rows.map((row) => <tr key={row.deal_id}>
-            <td>{row.deal_name}</td><td className="mtx-mono">{row.signing_date || '-'}</td>
-            {row.cells.map((cell, i) => <td key={i} className="mtx-mono mtx-prov-cell" title={cell.verbatim_quote || ''} onClick={() => onOpen({ ...cell, card_id: row.card_id, deal_id: row.deal_id })}>{formatValue(cell.value, result.columns[i] && result.columns[i].field)}{cell._prov && <ProvBadge prov={cell._prov} />}</td>)}
-          </tr>)}</tbody>
-        </table>
-      </div>
-    </Panel>
+    <>
+      {grouped && <p className="mtx-meta-label crossCutMeta">{pluralize(result.rows.length, 'deal')}</p>}
+      {groups.map((group, gi) => (
+        <Panel key={group.heading || gi} title={group.heading || `Provision cross-cut — ${pluralize(result.rows.length, 'deal')}`}>
+          <div className="scroll">
+            <table className="mtx-table">
+              <thead><tr><th>Deal</th><th>Signing</th>{group.columns.map((col) => <th key={col.field}>{col.label}</th>)}</tr></thead>
+              <tbody>{result.rows.map((row) => <tr key={row.deal_id}>
+                <td>{row.deal_name}</td><td className="mtx-mono">{row.signing_date || '-'}</td>
+                {group.columns.map((col) => {
+                  const i = columnIndex.get(col.field);
+                  const cell = row.cells[i] || {};
+                  return (
+                    <td key={col.field} className="mtx-mono mtx-prov-cell" title={cell.verbatim_quote || ''} onClick={() => onOpen({ ...cell, card_id: row.card_id, deal_id: row.deal_id })}>
+                      {formatValue(cell.value, col.field)}{cell._prov && <ProvBadge prov={cell._prov} />}
+                    </td>
+                  );
+                })}
+              </tr>)}</tbody>
+            </table>
+          </div>
+        </Panel>
+      ))}
+    </>
   );
 }
 
@@ -313,6 +351,18 @@ function formatStat(value, fieldKind) {
   if (fieldKind === 'usd') return formatMoney(n);
   if (fieldKind === 'percent') return `${round(n)}%`;
   return round(n);
+}
+
+// r13 item 1 (Ben, "% of deal value" — "is how we compare across deals"):
+// percentStats carries the SAME stat shape as result.stats (n/min/p25/
+// median/p75/max/mean/stddev) but on a percent-of-deal-value basis, plus
+// excludedCount (deals with no usable value_usd). formatPercentValue is the
+// one shared rounding rule (lib/percent-of-deal.js) — no second rounding
+// rule invented here.
+function formatPercentStat(value) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return '-';
+  return formatPercentValue(n) || '-';
 }
 
 function MarketRange({ result, onOpen }) {
@@ -354,6 +404,30 @@ function MarketRange({ result, onOpen }) {
               <FactTile label="Range" value={`${formatStat(result.stats.min, fieldKind)}–${formatStat(result.stats.max, fieldKind)}`} />
             </>}
           </div>
+          {/* r13 item 1: the percent-of-deal-value basis "is how we compare
+              across deals" (Ben) — render as a peer stat-tile row right
+              below the dollar tiles, not a footnote. Only present at all
+              for money fields (percentStats is null for everything else,
+              e.g. day-counts, percent-typed fields already a ratio). */}
+          {result.percentStats && (
+            <div className="percentBand">
+              <p className="percentCaption">
+                As % of each deal&apos;s value
+                {result.percentStats.excludedCount > 0 && (
+                  <span className="percentExcluded">
+                    {` (${result.percentStats.n} of ${result.n} deals; ${result.percentStats.excludedCount} excluded — no deal value)`}
+                  </span>
+                )}
+              </p>
+              <div className="factTiles">
+                <FactTile label="N" value={result.percentStats.n} />
+                <FactTile label="Median" value={formatPercentStat(result.percentStats.median)} />
+                <FactTile label="P25" value={formatPercentStat(result.percentStats.p25)} />
+                <FactTile label="P75" value={formatPercentStat(result.percentStats.p75)} />
+                <FactTile label="Range" value={`${formatPercentStat(result.percentStats.min)}–${formatPercentStat(result.percentStats.max)}`} />
+              </div>
+            </div>
+          )}
         </div>
       </Panel>
       {/* B: "Underlying deals — 29" used to be a collapsed <details> with no
@@ -364,7 +438,19 @@ function MarketRange({ result, onOpen }) {
       <details className="subPanel" open>
         <summary className="subPanelTitleBar">{`Underlying deals — ${result.deal_points.length}`}</summary>
         <div className="subPanelBody">
-          <table className="mtx-table"><tbody>{result.deal_points.map((point) => <tr key={`${point.deal_id}-${point.card_id}`} onClick={() => onOpen(point)}><td>{point.deal_name}</td><td className="mtx-mono mtx-prov-cell">{formatValue(point.value, result.field_path)}{point._prov && <ProvBadge prov={point._prov} />}</td><td className="mtx-mono">{point.quote_section_ref || '-'}</td></tr>)}</tbody></table>
+          <table className="mtx-table">
+            {result.percentStats && <thead><tr><th>Deal</th><th>Value</th><th>Section</th><th>% of deal value</th></tr></thead>}
+            <tbody>
+              {result.deal_points.map((point) => (
+                <tr key={`${point.deal_id}-${point.card_id}`} onClick={() => onOpen(point)}>
+                  <td>{point.deal_name}</td>
+                  <td className="mtx-mono mtx-prov-cell">{formatValue(point.value, result.field_path)}{point._prov && <ProvBadge prov={point._prov} />}</td>
+                  <td className="mtx-mono">{point.quote_section_ref || '-'}</td>
+                  {result.percentStats && <td className="mtx-mono">{point.percent == null ? '—' : formatPercentStat(point.percent)}</td>}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </details>
     </>
@@ -605,6 +691,11 @@ function Panel({ title, children }) {
     .mtx.qp .chartBarLabel { margin: 4px 0 0; font-size: 8.5px; line-height: 1.3; color: var(--ink-light); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: clip; }
     .mtx.qp .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
     .mtx.qp h2 { font-size: 13px; margin: 22px 0 8px; font-family: var(--mtx-sans); text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-light); }
+    /* item 2 — grouped cross-cut: the deal count used to live in the single
+       panel's title ("Provision cross-cut — 29 deals"); once that title is
+       replaced by per-group headings, surface the count once above the
+       group panels instead of dropping it. */
+    .mtx.qp .crossCutMeta { margin: 0 0 8px; }
 
     /* item 2 — market-range stat strip as review-page fact tiles: 9px
        uppercase label over a bold value, DealHeader's metric-column voice. */
@@ -614,6 +705,14 @@ function Panel({ title, children }) {
     .mtx.qp .factTile + .factTile { border-left: 1px solid var(--line); }
     .mtx.qp .factLabel { margin: 0; font-family: var(--mtx-sans); font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-light); }
     .mtx.qp .factValue { margin: 4px 0 0; font-size: 15px; font-weight: 700; color: var(--ink); }
+
+    /* r13 item 1 — percent-of-deal-value stat row: a peer of the dollar
+       tiles (Ben: "is how we compare across deals"), not a footnote, so it
+       gets the same factTiles treatment one row down, under a small caption
+       that names the basis and (only when relevant) the exclusion count. */
+    .mtx.qp .percentBand { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); }
+    .mtx.qp .percentCaption { margin: 0; font-family: var(--mtx-sans); font-size: 11px; color: var(--ink-light); }
+    .mtx.qp .percentExcluded { color: var(--ink-light); }
 
     /* Underlying-deals disclosure — same grey title-bar voice as a Panel,
        via native <details>/<summary> so it stays collapsed by default. */

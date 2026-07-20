@@ -1,7 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 
-const { percentOfDealValue, formatPercentOfDeal } = require('../lib/percent-of-deal');
+const { percentOfDealValue, formatPercentOfDeal, formatPercentValue } = require('../lib/percent-of-deal');
 
 test('percentOfDealValue computes a plain percentage', () => {
   assert.equal(percentOfDealValue(30000000, 1000000000), 3);
@@ -37,4 +37,24 @@ test('formatPercentOfDeal is null when not computable', () => {
   assert.equal(formatPercentOfDeal(null, 1000000000), null);
   assert.equal(formatPercentOfDeal(30000000, null), null);
   assert.equal(formatPercentOfDeal(30000000, 0), null);
+});
+
+// r13 item 1: formatPercentValue is the raw-percent-number formatter the
+// market-range executor's percentStats/deal_points[i].percent consumers use
+// (they already have a computed percent, not an amount/deal-value pair) —
+// same one-decimal / two-below-1% rounding rule formatPercentOfDeal uses,
+// asserted independently so the two can never silently drift.
+test('formatPercentValue renders one decimal at/above 1%, two below', () => {
+  assert.equal(formatPercentValue(3), '3.0%');
+  assert.equal(formatPercentValue(3.14), '3.1%');
+  assert.equal(formatPercentValue(20), '20.0%');
+  assert.equal(formatPercentValue(0.42), '0.42%');
+  assert.equal(formatPercentValue(0.1), '0.10%');
+});
+
+test('formatPercentValue is null-safe', () => {
+  assert.equal(formatPercentValue(null), null);
+  assert.equal(formatPercentValue(undefined), null);
+  assert.equal(formatPercentValue(NaN), null);
+  assert.equal(formatPercentValue('3'), null);
 });

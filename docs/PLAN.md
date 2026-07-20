@@ -1,114 +1,112 @@
 # PLAN — single source of truth for what happens next
 
-Maintained by Fable; updated as items land. Last update: 2026-07-19
-(post PR #261: WP-2 query UI + review-feedback r3 + span-accounting
-report layer merged to main). Corpus program (Phases 0–5) is COMPLETE —
-see docs/reports/PHASE-5-REPORT-2026-07-18.md.
+Maintained by Fable; updated as items land. Last update: 2026-07-20
+(post PR #286: wave-3 QA fixes + r13 round merged and deployed).
+Historical program detail lives in the docs it shipped with
+(docs/reports/PHASE-5-REPORT-2026-07-18.md for the corpus program;
+HANDOFF-REEXTRACT.md for the coordinated re-extract). This file is the
+live state: where we are, what finalizes the current push, and whose
+move each item is.
 
-## Merged to main (this program)
+## Where we are (shipped and live)
 
-- PR #258 — Mergertrace route swap (+ r1/r2 polish).
-- PR #259 — Package A (deals index perf: 31.7MB→95.6KB payload,
-  1000-row-cap fix, staging filter, cache headers) — urgent post
-  Supabase Disk IO incident.
-- PR #260 — Package B (deal-metadata persistence: shared ingest prompt,
-  shell-buyer resolution SPV-only, PR value ladder, backfill 72 rows,
-  ingest-qa gates) + WP-1 (20 demo queries green).
-- PR #261 — WP-2 (query UI on .mtx primitives, CSV export, demo tiles),
-  review-feedback r3 (all 16 items, screenshot-verified 1440+390px),
-  span accounting Parts 1–3 (report-only), scoped TOOLTIP_MAX lint
-  exemption (legacy /review-v1 only importer).
-- PR #262 — WP-5 (full-doc overlay: SourceOverlay + resolve-source-span,
-  ?card= deep-link; 5/5 verbatim gate, 10/400 unresolved = pre-existing
-  Redfin/Noble elision defects) + WP-6 (run_reports writer fail-soft,
-  /admin/reports UI, ingest-qa --json; review-caught fix: ingest-worker
-  handleQa boolean-return QA-gate bypass). KEY FINDING: primary_quote
-  offsets are region-relative, not absolute — plan doc was wrong;
-  resolver validates before trusting.
-- PR #263 — WP-4 (decided_by actor, claim_ids linkage, _meta.version
-  bump on every reconcile decision) + WP-3 (normalizer _prov badges on
-  query cells; alias fixture; CSV isolation). KEY FINDING: no reliable
-  provisions→provision_cards join exists (region_id spaces disjoint,
-  hash join matches nothing) — extraction_version renders "—" until
-  #12 lands.
+- Corpus program Phases 0–5 COMPLETE (40 deals, claims layer, canonical
+  cards, QA gates). Demo of 2026-07-20 shipped on PRs #258–#283.
+- 2026-07-19/20 session (PRs #284–#286 + branch commits through
+  c828ac1), all merged to main and deployed:
+  - IOC party attribution is evidence-only (Heinz/Kraft inversion,
+    Zymeworks mutual band, ENDRA fixed); band-order guessing removed.
+  - NOSOL title rule guarded against employee/proxy solicitation titles.
+  - IOC restrictionComponents tagger rewritten precision-first
+    (exception-tail + false-friend false positives; ~214 bad tags across
+    27 decks identified). CODE fixed; DATA restamp pending (Ben, below).
+  - Query surface: correct control shapes on first paint; "No
+    Solicitation" legal-English labels; results toolbar/stat formatting;
+    NOSOL cross-cut grouped under legal headings; % of deal value on
+    market-range (percent-basis distribution + per-deal column);
+    pick-a-deal flow fixed for compare/deal-to-market.
+  - Review page: See provision on IOC exception rows; empty "Specific
+    restrictions" suppressed; mislabeled §1.01 chapeau rows excluded;
+    sidebar distinguishes uncomparable rows from genuine coverage gaps;
+    fee rows show % of deal value (extracted percent wins);
+    expense-reimbursement rows show when they carry a real cap.
+  - "…" truncation removed corpus-wide (full text stays reachable via
+    See provision / hover); bare stored edge-ellipses stripped at render.
+  - Robustness: 15s fetch timeouts + retry on market/compare; friendly
+    errors for bad links and upstream 522s; maxDuration caps on heavy
+    API routes; /api/corpus-version content-fingerprint endpoint with
+    week-long version-keyed edge caching on corpus-stats.
 
-## Demo-night ledger (2026-07-19/20, demo 9am ET)
+## In flight (agent-side, this session)
 
-SHIPPED to main tonight: PR #265 (query redesign + LaunchBox + r4 fixes),
-#266 (WP-7 dry-run gate + matcher fix), #267 (row-scoped sidebar +
-party-scope + columns pkg), #268 (NOSOL classifier fix; Frontier 0->16,
-SecureWorks 0->14 cards), #269 (review-page perf: payloads -72%, fonts
-self-hosted, Cox 1.4-2.5s), #270 (Catalent buyer + shell-regex parity,
-law firms 40/40 + advisors 23/23 applied, column signals fix).
-IN FLIGHT: wave-4 Fable adversarial audit (GO/NO-GO due before freeze
-~7:30am ET). DEFERRED post-demo: render-parity audit tool merge; Summit
-NOSOL prune flips (substantive-richness reading, Fable sign-off); zero
-source_doc_offset_start backfill; ingest-mints-cards pipeline fix (#22);
-QXO COND-B tiers (#10); #12/#13/#14 structural items.
+- [ ] Corpus-stats batch endpoint (one claims fetch for all section
+      codes — kills deal-to-market's N-scan fan-out), `&v=` cache-token
+      client wiring, featureKeys threading for termination-rights/
+      conditions rows. Under review; merges as the next PR.
 
-## (superseded) Roadmap to demo-ready
+## Ben gates — what finalizes this push (in priority order)
 
-Wave 1 — in flight now (each: agent → Fable review → merge → deploy):
-1. r4 render fixes (9 items: material contracts, MAE labels, fonts,
-   election/proration, equity shapes, knowledge dedupe, IOC thresholds,
-   NOSOL pills, two-step merger from transaction_steps).
-2. Query redesign (chrome parity, section order, natural-language
-   filters, fonts, perf) + QueryLaunchBox component.
-3. Render-parity audit tool (Class A wrong-card / Class B
-   structured-but-unrendered; calibrated on 4 known bugs).
-4. Review-page speed investigation (Fable): measure → quick wins vs
-   structural (deferred provision payloads, ISR like the index).
-5. WP-7 green run #2 → final review → PR with matcher fix.
+- [ ] **Restamp IOC restriction pills** (5 min, deterministic, no AI):
+      `node scripts/restamp-ioc-restrictions.js` (dry run, prints the
+      per-deal diff) then `--apply`. Fixes the wrong "Specific
+      restrictions" pills stored by the old tagger. Note: a full
+      `reprocess.js --types IOC` is NOT needed and wouldn't overwrite
+      existing tags anyway.
+- [ ] **Supabase SQL block** (dashboard, one-time): two claims indexes
+      (kills the corpus-stats full scans behind the 10x compute spike),
+      created_at probe indexes, and updated_at touch-triggers so
+      in-place corrections bump the cache version. Full statements in
+      pages/api/corpus-version.js's header comment.
+- [ ] **Claims sync** (dry-run-gated): `node
+      scripts/sync-claims-to-provisions.js` — makes ~10 claims-layer
+      fields queryable (forceTheVoteType hard/soft/none, fiduciary-out
+      standard, matching period, cure days, …). Check
+      reports/query-field-conflicts.md before extending the field list.
+- [ ] Per-deal data corrections from reports/query-field-conflicts.md
+      (antitrust effortsStandard 10 deals, governingLaw 11 deals).
+- [ ] Class-4 boolean codebook decisions: interveningEvent,
+      informationSharing, appraisalRights — which get graded codebooks
+      (like FTV hard/soft/none) vs stay boolean. Legal-judgment call.
+- [ ] Key-alias decisions: fiduciaryOutStandard vs
+      fiduciaryEngageStandard / matchingPeriod vs
+      subsequentMatchingPeriod — semantically distinct or alias?
+- [ ] Feedback rounds on deployed production as batches land.
 
-Wave 2 — sequenced behind wave 1 merges:
-6. Index integration: QueryLaunchBox embed + drop "Deals (40)/visible".
-7. Sidebar row-granularity: rowFocus (click PSU row → PSU-only sidebar),
-   wire reps/MAE/IOC/conditions families, empty-state sidebar on load,
-   see-provision as full-width colspan row.
-8. Columns package: law firms (ingest prompt + gate + backfill),
-   natural-language merger form, drop Provisions, add termF $/%, RTF,
-   outside date, go-shop.
-9. Review-page perf implementation per investigation.
+## Next re-extract punchlist (fold into the next corpus write)
 
-Wave 3 — data quality (pipeline runs, QA-gated):
-10. NOSOL re-extraction cohort (9 deals; Frontier has zero NOSOL cards)
-    + QXO COND-B tiers (#10) + optional equity summary-shape deals.
-11. Data hygiene: orphaned election_mechanisms rows, Skechers
-    is_prorated=false, zero source_doc_offset_start backfill. NOTE:
-    corpus writes may be classifier-blocked → may become Ben-run SQL.
-12. Render-parity audit findings triage → fix batch.
+Canonical copy here; HANDOFF-REEXTRACT.md carries the same list for the
+re-extract session's context.
 
-Wave 4 — pre-demo: full corpus visual sweep + Fable adversarial audit
-(standing rule 6), deploy, live verification.
+1. Intervening-event quote-capture window: stored
+   interveningEventDefinition/scope/exceptions/termination quotes are
+   fixed-length excerpts with literal edge "…" — widen the window so
+   full definitions are stored (render layer already strips the edge
+   ellipsis, but the text is genuinely truncated).
+2. IOC taxonomy gap: IOC_CATEGORY_META has no DIVIDENDS/ISSUANCE/
+   SPLITS/CHARTER families, so those rows carry no self-family tag
+   (safe but uninformative post-restamp). Decide: extend the taxonomy
+   with self-family codes, or accept suppressed pills. Fable-tier call.
+3. Cosmetic (optional): IOC limb-title rubric ranks retain-officers
+   above preserve-organization — 5 compound limbs title by their
+   secondary duty.
+4. Backfill section_ref repair for the Heinz/Kraft §5.02/§5.03 chapeau
+   cards mislabeled "1.01 | General / Preamble" (display-side exclusion
+   already shipped; the stored refs are still wrong).
 
-## Ben gates (his side, in priority order)
+## Deferred / backlog (unchanged priorities)
 
-- [ ] Run supabase/schema-06-run-reports.sql (2 min — /admin/reports and
-      demo-dryrun report rows silently skip until then)
-- [ ] B-env decision: make WP-7 CI job required? (currently non-required,
-      prod+staging-tag)
-- [ ] Possible SQL approvals for wave-3 data-hygiene writes if the
-      permission layer blocks agent-side writes again
-- [ ] What/when is the demo — affects polish vs data-depth prioritization
-- [ ] Endeavor curation session (112 codes; data quality, not blocking)
-- [ ] Deployed-site feedback rounds as waves land
-
-## Security close-out (2026-07-18/19)
-
-- RLS lockdown: DONE — Ben ran supabase/rls-lockdown-2026-07.sql;
-  service-role access verified (12,403 cards readable).
-- JWT rotation: MOOT — legacy JWT keys were platform-disabled
-  2026-04-20; production runs on sb_publishable_/sb_secret_ keys.
-  Do NOT replace Vercel env vars with JWT-format keys.
-- Compute upgrade: deferred by Ben.
-
-## Ben's open items (his side)
-
-- [ ] Feedback on deployed production (post-#261 deploy)
-- [ ] Run the run_reports migration SQL when WP-6 delivers it
-- [ ] Endeavor proposed-codes curation session (~30 min, 112 codes +
-      hellOrHighWater claims-vs-features disagreement)
-- [ ] Compute upgrade (deferred, his call on timing)
+- Deal-to-market saved-search persistence (query_cache table) — needs a
+  small Ben-side migration; edge caching + batching land first, then
+  judge whether it's still needed.
+- Scope-granular cache invalidation (per-buyer/sector version probes) —
+  only if ingestion becomes daily-or-faster; global version is enough
+  at current corpus-change frequency.
+- Security client-auth story (branch wp/api-auth-middleware — Ben picks
+  Vercel-protection / session / BFF); numeric backfill (blocked on
+  Ben's canonical_numeric column); Endeavor proposed-codes curation
+  (112 codes); render-parity audit tool merge; #12 structured-claims
+  store rework; #13 enforcement phase; #14 party-token lint.
+- Compute upgrade: deferred by Ben (indexes above likely make it moot).
 
 ## Standing rules
 
@@ -116,10 +114,8 @@ Wave 4 — pre-demo: full corpus visual sweep + Fable adversarial audit
   mechanical gates (tests/build/ingest-qa/eval) → live verification.
 - Never merge unreviewed delegate output. Data fixes must persist at
   ingest, not just backfill. Dry-run before every corpus write.
-- DB concurrency 1 for agent sweeps (post Disk IO incident).
-- Treat agent completion notifications as claims, not facts — verify
-  state (DB/git) before acting on them.
-- Deferred/not-planned: M5-04 admin-queue polish; #12 structured-claims
-  store rework (layers on span accounting; includes moving full_text
-  out of deals.metadata for Disk IO); #13 enforcement phase; #14
-  party-token lint; coverage-gate tightening until span baseline clean.
+- Fingerprint-lint caveat: INVARIANT-4 diffs HEAD^1..HEAD, so it is
+  BLIND to uncommitted files — run scripts/lint/forbidden-patterns.sh
+  after committing (or expect the exemption-table dance post-commit).
+- DB concurrency 1 for agent sweeps; treat agent completion
+  notifications as claims, not facts — verify state before acting.

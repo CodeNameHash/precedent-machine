@@ -128,3 +128,37 @@ carve-out apply (7 genuine); staging-deal re-ingest subset. All await Ben's deci
 UI; performance pass on pages/review/[id].js (the largest component); docs reconciliation
 (docs/ARCHITECTURE.md ↔ the party model + classification changes). Rotate the leaked service_role
 JWT before any external demo.
+
+---
+
+## Next re-extract / next DB-write punchlist (added 2026-07-20, wave-3 audit round)
+
+Items to fold into whichever comes first — the next coordinated re-extract or the next
+Ben-side DB-write session (`.env.local` required; the remote session container has no
+Supabase credentials):
+
+1. **IOC restrictionComponents restamp (READY NOW — cheap, deterministic, no AI).**
+   The tagger was rewritten precision-first (lib/parser-v2/extract.js, merged in PR #286)
+   after the wave-3 audit found ~214 false family tags across 27 of 39 decks (exception-tail
+   boilerplate + false friends: "Voting Debt", "Cashless Settlements", "except for
+   acquisitions ... of Company Shares"). The field is never LLM-produced, so a per-type IOC
+   refresh restamps it cleanly: `node scripts/reprocess.js` per-type IOC run. The UI already
+   suppresses the empty "Specific restrictions" line, so pre-restamp rows degrade safely.
+2. **Intervening-event quote-capture window (NEXT RE-EXTRACT).** The stored
+   `interveningEventDefinition` / scope / exceptions / termination evidence quotes for the
+   NOSOL intervening-event family are captured as fixed-length excerpts with literal edge
+   "…" baked in ("…means a material event,…"). The render layer now strips bare edge
+   ellipses (card-utils.js stripEdgeEllipsis), but the underlying quotes are genuinely
+   truncated — widen the extractor's quote-capture window for this provision family on the
+   next re-extract so the full definition is stored.
+3. **Claims sync for invisible query fields (READY NOW, dry-run-gated).**
+   `node scripts/sync-claims-to-provisions.js` (defaults: forceTheVoteType/Details,
+   fiduciaryOutStandard, matchingPeriod, cureDays, willfulBreachException,
+   materialityStandard, interestRateBasis, outsideDate, triggerEvents, bringDownTiers) —
+   makes ~10 claims-layer fields queryable. Review reports/query-field-conflicts.md before
+   adding further fields (majority-vote reconciliation caveat).
+4. **Supabase-side SQL (dashboard, one-time).** The two claims indexes
+   (`(provenance->>'code')`, `(attribute)`) that turn corpus-stats full scans into index
+   scans, plus `updated_at` columns + touch-triggers on deals/provisions/claims so in-place
+   corrections bump /api/corpus-version's cache fingerprint. Full statements in
+   pages/api/corpus-version.js's header comment.

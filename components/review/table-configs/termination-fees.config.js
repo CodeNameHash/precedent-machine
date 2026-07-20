@@ -41,14 +41,18 @@ const FEE_TYPE_LABELS = {
 // a TAIL_FEE row from the same TERMF-TAIL card this table also reads, so it
 // is dropped here to avoid showing the same mechanics twice.
 //
-// Punchlist #37: EXPENSE_REIMBURSEMENT is also dropped. "Expense
-// reimbursement" as a term reads like a naked-no-vote expense-reimbursement
-// fee (a distinct, real deal term already covered by its own row above) --
-// but this row's actual underlying fact is just "the termination fee is
-// repayable," which is trivially true of every termination fee and adds
-// nothing a reader doesn't already know.
+// Punchlist #37, amended r13 (Ben): EXPENSE_REIMBURSEMENT used to be
+// dropped wholesale because its usual underlying fact is just "the
+// termination fee is repayable" — trivially true, adds nothing. But some
+// deals carry a REAL expense-reimbursement cap with its own dollar amount
+// (expenseReimbursement.amount_cap / legacy expenseReimbursementCap — see
+// lib/termf.js), and Ben wants those shown with the % of deal value
+// treatment. Amended rule: the row shows ONLY when it carries its own
+// amount; the contentless "repayable" variant stays hidden per #37.
 function isVisibleFeeType(feeRow) {
-  return feeRow.feeType !== 'TAIL_FEE' && feeRow.feeType !== 'EXPENSE_REIMBURSEMENT';
+  if (feeRow.feeType === 'TAIL_FEE') return false;
+  if (feeRow.feeType === 'EXPENSE_REIMBURSEMENT') return Boolean(feeRow.amount);
+  return true;
 }
 
 const PARTY_LABELS = { TARGET: 'Company / Target', BUYER: 'Parent / Buyer' };
@@ -84,13 +88,12 @@ function findSourceCard(cards, sourceKey) {
   return (wantCode && cards.find((card) => cardCode(card) === wantCode)) || cards[0];
 }
 
-// r13 (Ben, "% of deal value" feature): scope is FEES ONLY, and only the
-// company/parent termination fee amounts render as a scalar fee row in this
-// table (expense-reimbursement caps aren't rendered here at all — see the
-// Punchlist #37 comment above isVisibleFeeType — and naked-no-vote/tail fee
-// are mechanics variants, not the headline fee, so they're left out of this
-// list deliberately).
-const FEE_TYPES_ELIGIBLE_FOR_DEAL_PERCENT = new Set(['COMPANY_TERMINATION_FEE', 'REVERSE_TERMINATION_FEE']);
+// r13 (Ben, "% of deal value" feature): scope is FEES ONLY — company/parent
+// termination fees plus expense-reimbursement caps that carry a real amount
+// (see the amended Punchlist #37 rule above isVisibleFeeType). Naked-no-
+// vote/tail fee are mechanics variants, not the headline fee, so they're
+// left out deliberately.
+const FEE_TYPES_ELIGIBLE_FOR_DEAL_PERCENT = new Set(['COMPANY_TERMINATION_FEE', 'REVERSE_TERMINATION_FEE', 'EXPENSE_REIMBURSEMENT']);
 
 // A fee `amount` arrives pre-formatted with its `$` sign and thousands
 // separators (e.g. "$332,000,000") — parse it back to a plain number so it
