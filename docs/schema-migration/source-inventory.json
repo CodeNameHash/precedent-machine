@@ -4176,6 +4176,137 @@
         ]
       },
       {
+        "family": "INFORMATION_SHARING_GRADE",
+        "kind": "string_map",
+        "size": 3,
+        "codes": [
+          {
+            "code": "TERMS_AND_COPIES",
+            "label": "Terms + copies of bid documents",
+            "description": null,
+            "line": 1271
+          },
+          {
+            "code": "TERMS_ONLY",
+            "label": "Material terms described, no documents",
+            "description": null,
+            "line": 1272
+          },
+          {
+            "code": "NOTICE_ONLY",
+            "label": "Bare notice a proposal arrived",
+            "description": null,
+            "line": 1273
+          }
+        ]
+      },
+      {
+        "family": "COPIES_SCOPE",
+        "kind": "string_map",
+        "size": 3,
+        "codes": [
+          {
+            "code": "UNREDACTED",
+            "label": "Unredacted copies",
+            "description": null,
+            "line": 1277
+          },
+          {
+            "code": "UNSPECIFIED",
+            "label": "Copies (redaction silent)",
+            "description": null,
+            "line": 1278
+          },
+          {
+            "code": "REDACTION_PERMITTED",
+            "label": "Copies, bidder-confidential redactions allowed",
+            "description": null,
+            "line": 1279
+          }
+        ]
+      },
+      {
+        "family": "BIDDER_IDENTITY_REQUIREMENT",
+        "kind": "string_map",
+        "size": 3,
+        "codes": [
+          {
+            "code": "REQUIRED",
+            "label": "Identity required",
+            "description": null,
+            "line": 162
+          },
+          {
+            "code": "CARVEOUT",
+            "label": "Identity unless pre-signing NDA blocks",
+            "description": null,
+            "line": 242
+          },
+          {
+            "code": "NOT_REQUIRED",
+            "label": "Identity not required at receipt",
+            "description": null,
+            "line": 1285
+          }
+        ]
+      },
+      {
+        "family": "ONGOING_UPDATES_STANDARD",
+        "kind": "string_map",
+        "size": 4,
+        "codes": [
+          {
+            "code": "DEADLINE",
+            "label": "Updates due within a fixed deadline of each material development",
+            "description": null,
+            "line": 1291
+          },
+          {
+            "code": "REASONABLY_INFORMED",
+            "label": "Company must keep Parent reasonably informed on a current basis",
+            "description": null,
+            "line": 1292
+          },
+          {
+            "code": "ON_REQUEST",
+            "label": "Updates provided upon Parent's request",
+            "description": null,
+            "line": 1293
+          },
+          {
+            "code": "NONE",
+            "label": "No ongoing-update obligation",
+            "description": null,
+            "line": 261
+          }
+        ]
+      },
+      {
+        "family": "ENGAGEMENT_NOTICE_TIMING",
+        "kind": "string_map",
+        "size": 3,
+        "codes": [
+          {
+            "code": "ADVANCE",
+            "label": "Advance notice required before the Company begins providing information or engaging with the bidder",
+            "description": null,
+            "line": 1298
+          },
+          {
+            "code": "PROMPT_AFTER",
+            "label": "Notice required promptly (typically within 24-48 hours) after the Company has already begun engaging",
+            "description": null,
+            "line": 1299
+          },
+          {
+            "code": "NONE",
+            "label": "No separate notice of the decision to engage",
+            "description": null,
+            "line": 261
+          }
+        ]
+      },
+      {
         "family": "ASSIGNMENT_PARENT_EXCEPTION",
         "kind": "string_map",
         "size": 3,
@@ -4184,19 +4315,19 @@
             "code": "AFFILIATE_SUBSIDIARY",
             "label": "Parent may assign to a wholly-owned subsidiary / affiliate",
             "description": null,
-            "line": 1249
+            "line": 1304
           },
           {
             "code": "FINANCING_SOURCE_PLEDGE",
             "label": "Parent may collaterally assign / pledge to financing sources",
             "description": null,
-            "line": 1250
+            "line": 1305
           },
           {
             "code": "POST_CLOSING_SUCCESSOR",
             "label": "Assignment permitted from and after the Effective Time (successor)",
             "description": null,
-            "line": 1251
+            "line": 1306
           }
         ]
       },
@@ -4209,13 +4340,13 @@
             "code": "NO_RELEASE",
             "label": "Assignment does not relieve Parent of its obligations",
             "description": null,
-            "line": 1254
+            "line": 1309
           },
           {
             "code": "NO_DELAY_IMPEDE",
             "label": "Assignment must not prevent / impede / delay the closing",
             "description": null,
-            "line": 1255
+            "line": 1310
           }
         ]
       },
@@ -7975,6 +8106,36 @@
         ]
       },
       {
+        "key": "informationSharing",
+        "families": [
+          "INFORMATION_SHARING_GRADE"
+        ]
+      },
+      {
+        "key": "copiesScope",
+        "families": [
+          "COPIES_SCOPE"
+        ]
+      },
+      {
+        "key": "bidderIdentity",
+        "families": [
+          "BIDDER_IDENTITY_REQUIREMENT"
+        ]
+      },
+      {
+        "key": "ongoingUpdates",
+        "families": [
+          "ONGOING_UPDATES_STANDARD"
+        ]
+      },
+      {
+        "key": "engagementNotice",
+        "families": [
+          "ENGAGEMENT_NOTICE_TIMING"
+        ]
+      },
+      {
         "key": "parentAssignmentConditions",
         "families": [
           "ASSIGNMENT_PARENT_EXCEPTION"
@@ -10383,7 +10544,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/ioc-exceptions.config.js",
-            "line": 446,
+            "line": 448,
             "kind": "features_property"
           }
         ]
@@ -10558,7 +10719,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/ioc-exceptions.config.js",
-            "line": 427,
+            "line": 429,
             "kind": "features_property"
           },
           {

@@ -2,8 +2,8 @@
 
 ## Executive Finding
 
-The current codebase has 519 feature-like keys across rubric schemas, taxonomy feature mappings, expected-set helpers, summary table specs, validation infrastructure, and review UI references.
-Of those, 474 appear in at least two source families, while 45 appear in only one source family and need drift review before deletion.
+The current codebase has 524 feature-like keys across rubric schemas, taxonomy feature mappings, expected-set helpers, summary table specs, validation infrastructure, and review UI references.
+Of those, 474 appear in at least two source families, while 50 appear in only one source family and need drift review before deletion.
 
 ## Drift Signals
 
@@ -17,7 +17,7 @@ Of those, 474 appear in at least two source families, while 45 appear in only on
 
 | Convention |Count |
 | --- |--- |
-| camelCase |488 |
+| camelCase |493 |
 | lowercase |24 |
 | snake_case |7 |
 
