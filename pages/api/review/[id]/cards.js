@@ -2,6 +2,10 @@ import { getServiceSupabase } from '../../../../lib/supabase';
 import { fetchReviewDealCards } from '../../../../lib/queries/review-deal';
 import { trimReviewDealForWire } from '../../../../lib/queries/review-deal-wire';
 
+// Cap runaway executions: when Supabase stalls, uncapped functions run the
+// full 300s each holding a DB connection (2026-07-19 pile-up).
+export const config = { maxDuration: 60 };
+
 function fail(res, status, error) {
   return res.status(status).json({ error });
 }

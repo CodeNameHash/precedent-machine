@@ -188,6 +188,11 @@ const FILE_PATTERN_EXEMPTIONS = {
   // fragments that share it. Genuine taxonomy fixture, not the past
   // duplicated-label regression this pattern fingerprints.
   'tests/audit-fix-batch-ui.test.js': ['Mergers,\\s*Acquisitions,\\s*Dispositions'],
+  // Same class once more: the IOC party-attribution audit fixtures (Zymeworks
+  // mutual band, ENDRA neutral band) pin rows whose short_title is IOC-MERGE's
+  // real taxonomy fallback label. Genuine fixture, not the duplicated-label
+  // regression this pattern fingerprints.
+  'tests/provision-table-configs.test.js': ['Mergers,\\s*Acquisitions,\\s*Dispositions'],
 };
 
 const failures = [];

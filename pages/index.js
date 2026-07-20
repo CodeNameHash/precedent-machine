@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -201,7 +201,16 @@ export default function HomePage({ initialData }) {
   const [crossCutRunning, setCrossCutRunning] = useState(false);
 
   const cancelPick = () => { setPickMode(null); setPickSelection([]); };
-  const handleRequestDealPick = (kind) => { setPickMode(kind); setPickSelection([]); };
+  // Bug fix (Ben, wave-3 QA -- Deal compare / Deal to market pick mode never
+  // armed): this handler used to be a plain inline function, so it got a
+  // NEW identity every render. QueryLaunchBox's cleanup effect depends on
+  // this identity (`[onRequestDealPick]`), so every parent re-render fired
+  // the OLD cleanup (onRequestDealPick(null)) an instant after the click
+  // that armed pick-mode set it -- the .pickBanner never had a chance to
+  // paint and a deal-row click just fell through to the plain navigate
+  // branch. useCallback with an empty dep array keeps this handler's
+  // identity stable across every re-render.
+  const handleRequestDealPick = useCallback((kind) => { setPickMode(kind); setPickSelection([]); }, []);
 
   useEffect(() => {
     if (!pickMode) return undefined;

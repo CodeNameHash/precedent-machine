@@ -138,6 +138,27 @@ function dedupeEntries(entries) {
 // figure only ever landed in the claim's verbatim capture). Always renders
 // as currency, never a bare numeral (parity with the IOC threshold fix
 // elsewhere in the app -- table-logic.js's formatIocThresholdAmount).
+//
+// Bug fix (Heinz/Kraft "Settlement of Claims" live report, Ben): thresholds
+// that carry TWO dollar amounts -- "$10,000,000 individually or
+// $25,000,000 in the aggregate" -- used to fall into the old bare-Number()
+// coercion below, which strips every non-digit character (including the
+// space between the two figures) and CONCATENATES the two numerals into one
+// fabricated number: "$1,000,000,025,000,000". A money pill must never
+// fabricate a number. The numeral group in MONEY_RE is deliberately anchored
+// digit...digit (\d(?:[\d,]*\d)?) rather than \d[\d,]* so a trailing comma
+// right after the figure (QXO: "Below $10,000,000," -- the sentence's own
+// comma, not part of the number) is never swept into the match.
+const MONEY_RE = /\$\s?\d(?:[\d,]*\d)?(?:\.\d+)?\s*(?:million|billion)?/gi;
+
+function normalizeMoneyMatch(text) {
+  return String(text).replace(/\s+/g, ' ').trim().replace(/[,.;:]+$/, '');
+}
+
+function stripTrailingPunctuation(text) {
+  return String(text).trim().replace(/[,.;:]+$/, '');
+}
+
 function formatMoney(raw) {
   if (raw === null || raw === undefined || raw === '') return null;
   if (typeof raw === 'object') {
@@ -151,20 +172,51 @@ function formatMoney(raw) {
     }
     return formatMoney(raw.value ?? raw.amount ?? raw.threshold ?? raw.text ?? null);
   }
-  const num = typeof raw === 'number' ? raw : Number(String(raw).replace(/[^0-9.-]/g, ''));
-  if (Number.isFinite(num) && num > 0) return `$${num.toLocaleString('en-US')}`;
-  // The claims-adapter (lib/queries/claims-adapter.js's buildRawValue) already
-  // falls back to `claim.verbatim` when `claim.canonical` is null, so most
-  // verbatim-only numbers arrive here as a clean numeral string and are
-  // caught above. This is the last-resort path for the rare case a longer
-  // verbatim sentence slips through uncoerced ("...not to exceed $2,000,000
-  // in the aggregate...") -- pull the first dollar figure out of it directly
-  // instead of dropping the pill.
-  if (typeof raw === 'string') {
-    const match = raw.match(/\$\s?[\d,]+(?:\.\d+)?/);
-    if (match) return match[0].replace(/\s+/g, '');
+  if (typeof raw === 'number') {
+    return Number.isFinite(raw) && raw > 0 ? `$${raw.toLocaleString('en-US')}` : null;
   }
-  return typeof raw === 'string' && raw.trim() ? raw.trim() : null;
+  const str = String(raw).trim();
+  if (!str) return null;
+
+  const matches = str.match(MONEY_RE);
+  if (!matches || !matches.length) {
+    // No `$` figure anywhere in the string -- the claims-adapter
+    // (lib/queries/claims-adapter.js's buildRawValue) already falls back to
+    // `claim.verbatim` when `claim.canonical` is null, so most verbatim-only
+    // numbers arrive here as a clean bare numeral string ("2000000"); coerce
+    // that the same way the old numeric path did.
+    const num = Number(str.replace(/[^0-9.-]/g, ''));
+    if (Number.isFinite(num) && num > 0) return `$${num.toLocaleString('en-US')}`;
+    return null;
+  }
+  if (matches.length === 1) return normalizeMoneyMatch(matches[0]);
+
+  // Two dollar amounts: never concatenate them into one numeral. If the
+  // surrounding text names each amount's role ("... individually or ... in
+  // the aggregate"), render both amounts with plain-English roles -- Ben-
+  // facing legal English, not a coder-speak dump of raw digits.
+  if (matches.length === 2) {
+    const individuallyIdx = str.search(/\bindividually\b/i);
+    const aggregateIdx = str.search(/\bin the aggregate\b|\baggregate\b/i);
+    if (individuallyIdx !== -1 && aggregateIdx !== -1) {
+      const positions = [];
+      const re = new RegExp(MONEY_RE.source, MONEY_RE.flags);
+      let m;
+      while ((m = re.exec(str))) positions.push({ text: m[0], index: m.index });
+      const closestTo = (idx) => positions.reduce(
+        (best, p) => (Math.abs(p.index - idx) < Math.abs(best.index - idx) ? p : best),
+      );
+      const indiv = closestTo(individuallyIdx);
+      const agg = closestTo(aggregateIdx);
+      if (indiv.index !== agg.index) {
+        return `${normalizeMoneyMatch(indiv.text)} individually / ${normalizeMoneyMatch(agg.text)} in aggregate`;
+      }
+    }
+  }
+
+  // Two+ amounts with no resolvable role (or a role tie): fall back to the
+  // quoted phrase itself, trimmed -- never a fabricated concatenated number.
+  return stripTrailingPunctuation(str);
 }
 
 // `color` (a standard-colours.js palette key) is optional and additive to
