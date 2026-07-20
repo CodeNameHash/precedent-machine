@@ -4,6 +4,7 @@ import { UserProvider } from '../lib/useUser';
 import { ToastProvider } from '../lib/useToast';
 import { ViewModeProvider } from '../components/ViewModeContext';
 import Layout from '../components/Layout';
+import GlobalMarketBridge from '../components/review-v2/GlobalMarketBridge';
 import { useEffect } from 'react';
 
 function CorpusApp({ Component, pageProps }) {
@@ -31,6 +32,7 @@ function CorpusApp({ Component, pageProps }) {
               <Component {...pageProps} />
             </Layout>
           )}
+          <GlobalMarketBridge />
         </ViewModeProvider>
       </ToastProvider>
     </UserProvider>

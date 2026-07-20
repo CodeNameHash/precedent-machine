@@ -1,41 +1,6 @@
-// GET /api/corpus-stats-batch — the SAME corpus-wide context /api/corpus-
-// stats.js computes, for MULTIPLE provision codes in one request (r13, deal-
-// to-market perf follow-on: components/review-v2/compareData.js's
-// useSectionMarketStats used to fire one /api/corpus-stats call per distinct
-// section code on the page -- a review page with a dozen-plus sections meant
-// a dozen-plus round trips for what's fundamentally the same corpus query
-// repeated with a different `code` filter).
-//
-// Params: codes=CSV (required), deal_id, sector, yearFrom, yearTo, minValue,
-// maxValue, buyer, form, lawFirm (same deal-fact filter vocabulary as
-// corpus-stats.js), v (corpus-version cache token, same VERSIONED_CACHE
-// contract as corpus-stats.js -- see pages/api/corpus-version.js).
-//
-// Response: { byCode: { CODE: <same shape as a single corpus-stats response,
-// minus rowContext -- this endpoint never takes featureKeys/itemCode/
-// itemLabel since useSectionMarketStats never sends them> } }.
-//
-// Efficiency: deals is fetched ONCE for the whole batch (not once per code --
-// see lib/queries/corpus-stats-core.js's buildCorpusBase, which is the
-// code-INDEPENDENT half of corpus-stats.js's own computation, extracted so
-// both endpoints run the identical logic). cards/claims are each fetched
-// with `.in()` over ALL requested codes, chunked into a handful of queries
-// (chunkCodesForQuery) so no single query risks a silent PostgREST page-size
-// truncation as codes.length grows, then partitioned by code IN MEMORY
-// (partitionByCode) -- N codes costs a small constant number of queries, not
-// N queries and not N full claims-table scans.
-//
-// Truncation guard: claims is the table this matters for (~70k rows,
-// filtered by an unindexed `provenance->>code` expression) -- if a chunk's
-// query comes back at exactly its row cap, every code in that chunk is
-// flagged `truncated: true` in its response entry (we can't tell WHICH code
-// inside the chunk got cut off, so every code in it gets the honest flag
-// rather than one silently under-counting). Same treatment for cards, whose
-// per-code counts are normally tiny but get the same guard for symmetry.
-//
-// Same 15s abort/retry contract as the client already has for corpus-stats
-// (components/review-v2/compareData.js) -- this endpoint changes nothing
-// about that, only how many round trips it takes.
+// GET /api/corpus-stats-batch — corpus-wide context for multiple provision
+// codes in one request. The endpoint fetches the code-independent peer set
+// once, then partitions cards/claims in memory and builds one result per code.
 import { getServiceSupabase } from '../../lib/supabase';
 
 const {
@@ -47,17 +12,15 @@ const {
   partitionByCode,
   DEFAULT_PER_CODE_CLAIMS_LIMIT,
   DEFAULT_PER_CODE_CARDS_LIMIT,
+  valueLabel,
 } = require('../../lib/queries/corpus-stats-core');
 
-// Same DB-degraded-incident rationale as corpus-stats.js's maxDuration: fail
-// fast instead of holding a Postgres connection for 300s.
 export const config = { maxDuration: 60 };
 
-// A review page has, in practice, a few dozen distinct section codes at
-// most -- this bounds the batch endpoint's own worst case (and the number of
-// chunked queries it fires) rather than trusting an arbitrary client-sent
-// CSV.
 const MAX_CODES = 60;
+// Increment whenever the response semantics change without a corpus mutation.
+// Clients include this in their own cache identity and can reject stale shapes.
+export const MARKET_STATS_SCHEMA_VERSION = 2;
 
 function num(v) {
   const n = Number(v);
@@ -71,6 +34,65 @@ function codeOfClaim(claim) {
 
 function codeOfCard(card) {
   return card && card.provision_subtype ? String(card.provision_subtype).toUpperCase() : null;
+}
+
+function canonicalKey(value) {
+  if (value === null || value === undefined) return null;
+  if (typeof value === 'object') {
+    const code = value.code ?? value.value ?? value.label;
+    return code === null || code === undefined ? null : String(code);
+  }
+  return String(value);
+}
+
+function canonicalValues(value) {
+  const list = Array.isArray(value) ? value : [value];
+  return list.map(canonicalKey).filter(Boolean);
+}
+
+// buildCodeStats historically counted categorical CLAIMS. That produced values
+// in the hundreds on a 40-deal corpus, especially for repeated rep/IOC claims.
+// The compare page's unit is a deal: each deal contributes at most once to a
+// particular categorical value. List-valued features may legitimately place a
+// deal in several value buckets, but no individual bucket can exceed the peer
+// set and `total` is the number of distinct deals with any captured value.
+function normalizeCategoricalDealCounts(stats, claimsForCode, peerIds) {
+  if (!stats || !Array.isArray(stats.featureSummary)) return stats;
+  const claimsByAttribute = new Map();
+  for (const claim of claimsForCode || []) {
+    if (!peerIds.has(claim.deal_id)) continue;
+    if (!claimsByAttribute.has(claim.attribute)) claimsByAttribute.set(claim.attribute, []);
+    claimsByAttribute.get(claim.attribute).push(claim);
+  }
+
+  const featureSummary = stats.featureSummary.map((summary) => {
+    if (!summary || summary.kind === 'numeric') return summary;
+    const byValue = new Map();
+    const dealsWithValue = new Set();
+    for (const claim of claimsByAttribute.get(summary.attribute) || []) {
+      for (const value of canonicalValues(claim.canonical)) {
+        dealsWithValue.add(claim.deal_id);
+        if (!byValue.has(value)) byValue.set(value, new Set());
+        byValue.get(value).add(claim.deal_id);
+      }
+    }
+    if (!byValue.size) return summary;
+    return {
+      ...summary,
+      values: [...byValue.entries()]
+        .map(([value, dealIds]) => ({
+          value,
+          label: valueLabel(summary.attribute, value),
+          count: dealIds.size,
+          denominator: dealsWithValue.size,
+        }))
+        .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label))
+        .slice(0, 20),
+      total: dealsWithValue.size,
+      countUnit: 'deals',
+    };
+  });
+  return { ...stats, featureSummary };
 }
 
 export default async function handler(req, res) {
@@ -102,8 +124,6 @@ export default async function handler(req, res) {
   if (!sb) return res.status(500).json({ error: 'Supabase not configured' });
 
   try {
-    // Cards: chunked `.in('provision_subtype', ...)` -- same truncation
-    // guard as claims below, sized for cards' much smaller per-code counts.
     const cardChunks = chunkCodesForQuery(codes, DEFAULT_PER_CODE_CARDS_LIMIT);
     const truncatedCodes = new Set();
 
@@ -121,7 +141,7 @@ export default async function handler(req, res) {
       if (result.error) throw new Error(result.error.message);
       const rows = result.data || [];
       if (rows.length >= cardChunks[i].limit) {
-        for (const c of cardChunks[i].codes) truncatedCodes.add(c);
+        for (const code of cardChunks[i].codes) truncatedCodes.add(code);
       }
       cards.push(...rows);
     });
@@ -131,8 +151,6 @@ export default async function handler(req, res) {
       peerSet, peerIds, subject, firmsByDeal, options,
     } = base;
 
-    // Claims: same chunked-`.in()` pattern, sized for claims' much larger
-    // per-code counts (see DEFAULT_PER_CODE_CLAIMS_LIMIT).
     const claimChunks = chunkCodesForQuery(codes, DEFAULT_PER_CODE_CLAIMS_LIMIT);
     const claimChunkResults = await Promise.all(claimChunks.map((chunk) => sb
       .from('claims')
@@ -144,7 +162,7 @@ export default async function handler(req, res) {
       if (result.error) throw new Error(result.error.message);
       const rows = result.data || [];
       if (rows.length >= claimChunks[i].limit) {
-        for (const c of claimChunks[i].codes) truncatedCodes.add(c);
+        for (const code of claimChunks[i].codes) truncatedCodes.add(code);
       }
       claims.push(...rows);
     });
@@ -154,29 +172,29 @@ export default async function handler(req, res) {
 
     const byCode = {};
     for (const code of codes) {
-      const stats = buildCodeStats({
+      const codeClaims = claimsByCode.get(code) || [];
+      const rawStats = buildCodeStats({
         code,
         cardsForCode: cardsByCode.get(code) || [],
-        claimsForCode: claimsByCode.get(code) || [],
+        claimsForCode: codeClaims,
         subjectDealId,
         subject,
         peerSet,
         peerIds,
         firmsByDeal,
       });
+      const stats = normalizeCategoricalDealCounts(rawStats, codeClaims, peerIds);
       byCode[code] = {
         ...stats,
         options,
-        // Never populated -- this endpoint doesn't take featureKeys/
-        // itemCode/itemLabel (useSectionMarketStats, the sole caller, never
-        // sends them). Kept for response-shape parity with corpus-stats.js.
         rowContext: null,
+        schemaVersion: MARKET_STATS_SCHEMA_VERSION,
         ...(truncatedCodes.has(code) ? { truncated: true } : {}),
       };
     }
 
     res.setHeader('Cache-Control', req.query.v ? VERSIONED_CACHE : CACHE);
-    return res.status(200).json({ byCode });
+    return res.status(200).json({ schemaVersion: MARKET_STATS_SCHEMA_VERSION, byCode });
   } catch (error) {
     return res.status(500).json({ error: error.message || String(error) });
   }

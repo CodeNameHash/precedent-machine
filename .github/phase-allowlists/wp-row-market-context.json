@@ -1,0 +1,22 @@
+{
+  "phase": "WP-ROW-MARKET-CONTEXT",
+  "allowed": [
+    ".github/phase-allowlists/wp-row-market-context.json",
+    "components/review-v2/GlobalMarketBridge.jsx",
+    "components/review-v2/MarketDrilldownSidebar.jsx",
+    "components/review-v2/marketOffMarket.js",
+    "components/review-v2/rowMarketContext.js",
+    "docs/PLAN.md",
+    "lib/query/whats-market.js",
+    "pages/_app.js",
+    "pages/api/corpus-stats-batch.js",
+    "pages/query/whats-market/adhoc.js",
+    "tests/row-market-context.test.js",
+    "tests/whats-market.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "supabase/migrations/**",
+    "scripts/reprocess.js"
+  ]
+}
