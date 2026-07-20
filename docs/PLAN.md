@@ -39,10 +39,9 @@ move each item is.
 
 ## In flight (agent-side, this session)
 
-- [ ] Corpus-stats batch endpoint (one claims fetch for all section
-      codes — kills deal-to-market's N-scan fan-out), `&v=` cache-token
-      client wiring, featureKeys threading for termination-rights/
-      conditions rows. Under review; merges as the next PR.
+- [x] Corpus-stats batch endpoint, `&v=` cache-token client wiring, and
+      featureKeys threading for termination-rights/conditions rows —
+      SHIPPED (PR #288, 2026-07-20). Nothing agent-side in flight.
 
 ## Ben gates — what finalizes this push (in priority order)
 
