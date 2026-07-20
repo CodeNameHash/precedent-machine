@@ -168,6 +168,13 @@ const FILE_PATTERN_EXEMPTIONS = {
     'provision_type\\s*:\\s*[\'"][A-Z_]+[\'"]\\s*,\\s*field_path',
   ],
   'lib/taxonomy.js': ['Must defend \\(incl\\. appeals/final judgment\\)'],
+  // Same false-positive class: Sidebar.js renders "(applies to Parent and
+  // Company)" GATED on group.maeAppliesToBoth (data-driven, correct since
+  // 0e20f4c) — the fingerprint targets the past regression of stamping that
+  // phrase unconditionally elsewhere. An unrelated edit (the r13 ellipsis
+  // sweep) put the file in the diff and tripped it against its own
+  // pre-existing, legitimate conditional.
+  'components/review/Sidebar.js': ['applies to Parent and Company', 'maeAppliesToBoth'],
   // Same situation as taxonomy.js: this canonical-dictionary PIN test
   // legitimately asserts `LITIGATION_OBLIGATION.MANDATORY_DEFEND`'s exact label
   // to catch accidental label drift. Editing an UNRELATED pin in the same file
