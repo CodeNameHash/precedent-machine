@@ -22,8 +22,21 @@ test('picker-only columns are advisers and detailed merger form', () => {
   const pickerOnly = COLUMNS.filter((c) => !c.defaultVisible).map((c) => c.key);
   assert.deepEqual(
     pickerOnly.sort(),
-    ['law_firm_buyer', 'law_firm_target', 'lawyers_buyer', 'lawyers_target', 'merger_form'].sort(),
+    ['buyer', 'law_firm', 'lawyer', 'law_firm_buyer', 'law_firm_target', 'lawyers_buyer', 'lawyers_target', 'merger_form'].sort(),
   );
+});
+
+test('buyer and either-party adviser columns are sortable and filter on individual values', () => {
+  const deal = {
+    buyer_display: 'Buyer One',
+    advisors: {
+      buyer_firms: ['Wachtell'], seller_firms: ['Skadden'],
+      buyer_lawyers: ['Jane Buyer'], seller_lawyers: ['John Target'],
+    },
+  };
+  assert.equal(getColumn('buyer').accessor(deal), 'Buyer One');
+  assert.deepEqual(getColumn('law_firm').filterValues(deal), ['Wachtell', 'Skadden']);
+  assert.deepEqual(getColumn('lawyer').filterValues(deal), ['Jane Buyer', 'John Target']);
 });
 
 test('provision terms and stale coverage badges are absent from the column registry', () => {

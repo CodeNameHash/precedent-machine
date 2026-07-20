@@ -10,7 +10,7 @@
 // row needs, alongside the unchanged "Refine the peer set" summary below:
 //   - featureKeys=csv  -> per-key value distributions (categorical, this
 //                          deal's own value flagged) OR a numeric
-//                          min/median/max + this deal's position, for
+//                          six-stat range + this deal's position, for
 //                          attributes whose registry valueType is 'number'
 //                          (or that carry a nested numeric field, e.g.
 //                          companyTerminationFee.amount).
@@ -48,6 +48,7 @@
 // `sb.from('claims')` call total) -- see the perf note in the handler below.
 import { getServiceSupabase } from '../../lib/supabase';
 import { rowsForCard as equityRowsForCard } from '../../components/review/table-configs/equity-awards.config.js';
+const { classifyDealValueBasis } = require('../../lib/deal-value-basis');
 
 const taxonomy = require('../../lib/taxonomy');
 // r14 (Ben, "compare look-back LENGTHS, not dates"): registry of deal-
@@ -75,6 +76,7 @@ const {
   humanizeKey,
   attributeLabel,
   valueLabel,
+  dealLabel,
   cardIdForClaim,
   buildCorpusBase,
   buildCodeStats,
@@ -96,6 +98,15 @@ const {
 } = require('../../lib/queries/corpus-stats-core');
 
 const DURATION_UNITS = new Set(['hours', 'elapsed_hours', 'days', 'calendar_days', 'business_days', 'months', 'years']);
+const EQUITY_INSTRUMENT_FEATURE_KEYS = new Set([
+  'equityAwardTreatment',
+  'outstandingInstruments',
+  'instrumentTreatments',
+  'instrumentVesting',
+  'instrumentType',
+  'vestingAcceleration',
+  'optionsCvrEarnIn',
+]);
 
 function isDurationAttribute(attribute) {
   if (DURATION_UNITS.has(String(numericAttributeUnit(attribute) || '').toLowerCase())) return true;
@@ -130,7 +141,7 @@ function median(sortedNums) {
 // request's `cards` fetch).
 // One featureKey's corpus distribution: categorical value/counts (this
 // deal's own value flagged) for enum/coded attributes, or a numeric
-// min/median/max + this deal's position for number-valued ones. peerClaims
+// six-stat range + this deal's position for number-valued ones. peerClaims
 // is already scoped to the peer set + this attribute. Each distribution
 // option/point also carries the deals behind it (sidebar redesign, item 1:
 // click an option -> expand its deals -> "See deal"/"See provision").
@@ -209,6 +220,7 @@ function buildFeatureDistribution(attribute, peerClaims, subjectDealId, dealsByI
       // quantile() primitive featureSummary's numeric entries use.
       p25: quantile(nums, 0.25),
       median: median(nums),
+      mean: nums.reduce((sum, value) => sum + value, 0) / nums.length,
       p75: quantile(nums, 0.75),
       max: nums[nums.length - 1],
       count: nums.length,
@@ -235,6 +247,7 @@ function buildInstrumentDistribution(itemCode, peerClaims, peerIds, dealsById, c
   const claimsByDeal = new Map();
   for (const cl of peerClaims) {
     if (!peerIds.has(cl.deal_id)) continue;
+    if (!EQUITY_INSTRUMENT_FEATURE_KEYS.has(cl.attribute)) continue;
     if (!claimsByDeal.has(cl.deal_id)) claimsByDeal.set(cl.deal_id, []);
     claimsByDeal.get(cl.deal_id).push(cl);
   }
@@ -322,7 +335,112 @@ function buildItemFrequency(listAttribute, itemLabel, itemCode, peerClaims, peer
     const candidateLabels = [resolvedLabel, cl.verbatim].filter(Boolean).map((s) => String(s).trim().toLowerCase());
     if (wantLabel && candidateLabels.includes(wantLabel)) dealsWithItem.add(cl.deal_id);
   }
-  return { label: itemLabel, count: dealsWithItem.size, peerSetSize };
+  return {
+    label: itemLabel || (itemCode ? valueLabel(listAttribute, itemCode) : null) || itemCode,
+    count: dealsWithItem.size,
+    peerSetSize,
+  };
+}
+
+function parseMoneyAmount(raw) {
+  if (typeof raw === 'number') return Number.isFinite(raw) && raw > 0 ? raw : null;
+  if (raw && typeof raw === 'object' && !Array.isArray(raw)) {
+    return parseMoneyAmount(raw.threshold ?? raw.amount ?? raw.value ?? raw.qualifier);
+  }
+  const text = String(raw || '');
+  const matches = [...text.matchAll(/\$\s*([\d,]+(?:\.\d+)?)\s*(million|billion|m|bn|b)?\b/gi)].map((match) => {
+    const base = Number(match[1].replace(/,/g, ''));
+    const suffix = String(match[2] || '').toLowerCase();
+    const multiplier = suffix === 'million' || suffix === 'm' ? 1e6 : suffix === 'billion' || suffix === 'bn' || suffix === 'b' ? 1e9 : 1;
+    return base * multiplier;
+  }).filter((value) => Number.isFinite(value) && value > 0);
+  const unique = [...new Set(matches)];
+  return unique.length === 1 ? unique[0] : null;
+}
+
+function featureValue(claim) {
+  const provenance = claim?.provenance && typeof claim.provenance === 'object' ? claim.provenance : {};
+  let value = provenance.feature_value;
+  if (value && typeof value === 'object' && !Array.isArray(value) && 'value' in value && !('code' in value)) value = value.value;
+  return value;
+}
+
+function cadenceFromText(text) {
+  const value = String(text || '');
+  if (/\b(?:per\s+annum|per\s+year|annual(?:ly)?)\b/i.test(value)) return 'annual';
+  if (/\bin\s+(?:19|20)\d{2}\b/i.test(value)) return 'specified year';
+  if (/\baggregate\b/i.test(value)) return 'aggregate';
+  return null;
+}
+
+function buildMaterialContractThresholdDistribution({ itemCode, itemLabel, claims, peerIds, deals, subjectDealId, cardIdByKey }) {
+  const wanted = String(itemCode || '').toUpperCase();
+  if (!wanted) return null;
+  const rawDeals = new Map((deals || []).map((deal) => [deal.id, deal]));
+  const byDeal = new Map();
+  for (const claim of claims || []) {
+    if (!peerIds.has(claim.deal_id) || claim.attribute !== 'materialContractsBuckets' || byDeal.has(claim.deal_id)) continue;
+    const payload = featureValue(claim);
+    const items = Array.isArray(payload) ? payload : [payload];
+    const item = items.find((candidate) => {
+      const code = candidate && typeof candidate === 'object' ? (candidate.code || candidate.bucket || candidate.itemCode) : claim.canonical;
+      return String(code || claim.canonical || '').toUpperCase() === wanted;
+    });
+    if (!item) continue;
+    const itemText = [
+      item?.quote,
+      item?.evidence,
+      ...(Array.isArray(item?.quotes) ? item.quotes : []),
+      item?.text,
+      claim.evidence_quote,
+      claim.verbatim,
+    ].filter(Boolean).join(' ');
+    const amount = parseMoneyAmount(item?.threshold ?? item?.qualifier) ?? parseMoneyAmount(itemText);
+    const deal = rawDeals.get(claim.deal_id);
+    const dealValue = Number(deal?.value_usd);
+    if (!amount || !Number.isFinite(dealValue) || dealValue <= 0) continue;
+    byDeal.set(claim.deal_id, {
+      value: (amount / dealValue) * 100,
+      cadence: cadenceFromText(itemText),
+      basis: classifyDealValueBasis(deal),
+      claim,
+    });
+  }
+  const subject = subjectDealId ? byDeal.get(subjectDealId) : null;
+  const entries = [...byDeal.entries()].filter(([, entry]) => {
+    if (subject?.cadence && entry.cadence && entry.cadence !== subject.cadence) return false;
+    if (subject?.basis && subject.basis !== 'unknown' && entry.basis !== subject.basis) return false;
+    return true;
+  });
+  const nums = entries.map(([, entry]) => entry.value).sort((a, b) => a - b);
+  if (!nums.length) return null;
+  const basisLabel = ({
+    equity_value: 'equity value',
+    enterprise_value: 'enterprise value',
+    headline_transaction_value: 'headline deal value',
+  })[subject?.basis] || 'stated deal value';
+  return {
+    attribute: `materialContractsBuckets.${wanted}.thresholdPercent`,
+    label: `${itemLabel || valueLabel('materialContractsBuckets', wanted) || wanted} threshold`,
+    kind: 'numeric',
+    unit: 'percent',
+    min: nums[0],
+    p25: quantile(nums, 0.25),
+    median: median(nums),
+    mean: nums.reduce((sum, value) => sum + value, 0) / nums.length,
+    p75: quantile(nums, 0.75),
+    max: nums[nums.length - 1],
+    count: nums.length,
+    thisDealValue: subject?.value ?? null,
+    thisDealRank: subject ? nums.filter((value) => value <= subject.value).length : null,
+    scopeNote: `% of ${basisLabel}${subject?.cadence ? ` · ${subject.cadence} thresholds only` : ''}`,
+    values: entries.slice(0, 40).map(([dealId, entry]) => ({
+      value: entry.value,
+      dealId,
+      dealName: rawDeals.get(dealId) ? dealLabel(rawDeals.get(dealId)) : dealId,
+      cardId: cardIdForClaim(entry.claim, cardIdByKey),
+    })),
+  };
 }
 
 export default async function handler(req, res) {
@@ -445,7 +563,9 @@ export default async function handler(req, res) {
           const d = dealsById.get(c.deal_id);
           presentDealEntries.set(c.deal_id, { id: c.deal_id, name: d ? d.name : c.deal_id, cardId: c.id || null });
         }
+        const materialContractItemContext = itemCode && requestedFeatureKeys.includes('materialContractsBuckets');
         rowContext.features = requestedFeatureKeys
+          .filter((attribute) => !(materialContractItemContext && attribute === 'materialContractsBuckets'))
           .map((attribute) => {
             const attrClaimsForAttribute = (attrClaims || []).filter((cl) => cl.attribute === attribute && peerIds.has(cl.deal_id));
             // r18: scope THIS attribute's claim pool to the clicked card's
@@ -464,8 +584,29 @@ export default async function handler(req, res) {
             return dist ? { ...dist, scope, scopeNote } : null;
           })
           .filter(Boolean);
+        if (materialContractItemContext) {
+          rowContext.itemFrequency = buildItemFrequency(
+            'materialContractsBuckets',
+            itemLabel,
+            itemCode,
+            attrClaims || [],
+            peerIds,
+            peerSet.length,
+          );
+          const thresholdDistribution = buildMaterialContractThresholdDistribution({
+            itemCode,
+            itemLabel: rowContext.itemFrequency?.label,
+            claims: attrClaims || [],
+            peerIds,
+            deals,
+            subjectDealId,
+            cardIdByKey,
+          });
+          if (thresholdDistribution) rowContext.features.push(thresholdDistribution);
+        }
       }
-      if (itemCode && !itemLabel) {
+      const equityInstrumentContext = /^CONSID-EQUITY(?:-|$)/.test(code);
+      if (itemCode && !itemLabel && equityInstrumentContext) {
         // ALL claims for this code (not just equityAwardTreatment) --
         // buildFeaturesForCard needs outstandingInstruments/
         // instrumentTreatments/instrumentVesting/instrumentType/
@@ -476,7 +617,7 @@ export default async function handler(req, res) {
         // deal that hadn't been re-extracted onto the keyed-map shape.
         rowContext.instrument = buildInstrumentDistribution(itemCode, claims || [], peerIds, dealsById, cardIdByKey, subjectDealId);
       }
-      if (itemLabel) {
+      if (itemLabel && !rowContext.itemFrequency) {
         const listAttribute = requestedFeatureKeys[0] || null;
         if (listAttribute) {
           rowContext.itemFrequency = buildItemFrequency(listAttribute, itemLabel, itemCode, claims || [], peerIds, peerSet.length);

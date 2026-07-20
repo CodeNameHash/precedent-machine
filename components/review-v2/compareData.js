@@ -105,28 +105,32 @@ async function fetchJson(url, { signal, timeoutMs = FETCH_TIMEOUT_MS, ...request
 // data, so the server can apply one denominator and unit policy consistently.
 export function useRowMarketStats(enabled, request) {
   const requestKey = enabled && request?.specs?.length ? JSON.stringify(request) : '';
-  const [state, setState] = useState({ byRow: {}, rowOrder: [], cohort: null, loading: false, error: null });
+  const [state, setState] = useState({ byRow: {}, rowOrder: [], cohort: null, loading: false, error: null, partialError: null });
   const [retryNonce, setRetryNonce] = useState(0);
 
   useEffect(() => {
     if (!requestKey) {
-      setState({ byRow: {}, rowOrder: [], cohort: null, loading: false, error: null });
+      setState({ byRow: {}, rowOrder: [], cohort: null, loading: false, error: null, partialError: null });
       return undefined;
     }
     let cancelled = false;
     const controller = new AbortController();
-    setState({ byRow: {}, rowOrder: [], cohort: null, loading: true, error: null });
+    setState({ byRow: {}, rowOrder: [], cohort: null, loading: true, error: null, partialError: null });
     const fullRequest = JSON.parse(requestKey);
     const requests = splitMarketMetricBatchRequest(fullRequest);
-    Promise.all(requests.map((batch) => fetchJson('/api/market-stats', {
+    const fetchBatch = (batch) => fetchJson('/api/market-stats', {
       signal: controller.signal,
       timeoutMs: 30000,
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(batch),
-    })))
-      .then((payloads) => {
+    });
+    Promise.allSettled(requests.map((batch) => fetchBatch(batch).catch(() => fetchBatch(batch))))
+      .then((settled) => {
         if (cancelled) return;
+        const payloads = settled.filter((item) => item.status === 'fulfilled').map((item) => item.value);
+        const failures = settled.filter((item) => item.status === 'rejected').map((item) => item.reason);
+        if (!payloads.length) throw failures[0] || new Error('Market data unavailable');
         const payload = mergeMarketMetricBatchResponses(payloads, fullRequest);
         setState({
           byRow: payload?.byRow || {},
@@ -134,11 +138,12 @@ export function useRowMarketStats(enabled, request) {
           cohort: payload?.cohort || null,
           loading: false,
           error: null,
+          partialError: failures.length ? `${failures.length} market batch${failures.length === 1 ? '' : 'es'} could not be loaded.` : null,
         });
       })
       .catch((error) => {
         if (cancelled || error?.name === 'AbortError') return;
-        setState({ byRow: {}, rowOrder: [], cohort: null, loading: false, error: error.message || String(error) });
+        setState({ byRow: {}, rowOrder: [], cohort: null, loading: false, error: error.message || String(error), partialError: null });
       });
     return () => {
       cancelled = true;

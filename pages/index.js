@@ -113,7 +113,7 @@ function renderCell(col, deal) {
     }
     return <span className="numCell">-</span>;
   }
-  if (['law_firm_buyer', 'law_firm_target', 'lawyers_buyer', 'lawyers_target'].includes(col.key)) {
+  if (['law_firm', 'lawyer', 'law_firm_buyer', 'law_firm_target', 'lawyers_buyer', 'lawyers_target'].includes(col.key)) {
     const value = col.accessor(deal);
     if (value) return value;
     return <span className="muted" title="not extracted for this deal">&mdash;</span>;
@@ -284,8 +284,11 @@ export default function HomePage({ initialData }) {
         map[col.key] = [...new Set(deals.map(signedYear).filter(Boolean))].sort().reverse();
         continue;
       }
-      const getter = col.filterValue || col.accessor;
-      map[col.key] = [...new Set(deals.map((deal) => getter(deal)).filter(Boolean))].sort();
+      const getter = col.filterValues || col.filterValue || col.accessor;
+      map[col.key] = [...new Set(deals.flatMap((deal) => {
+        const value = getter(deal);
+        return Array.isArray(value) ? value : [value];
+      }).filter(Boolean))].sort();
     }
     return map;
   }, [deals]);
@@ -296,8 +299,10 @@ export default function HomePage({ initialData }) {
         if (!Array.isArray(allowed) || !allowed.length) continue;
         const col = getColumn(key);
         if (!col) continue;
-        const getter = col.filterValue || col.accessor;
-        if (!allowed.includes(getter(deal))) return false;
+        const getter = col.filterValues || col.filterValue || col.accessor;
+        const value = getter(deal);
+        const values = Array.isArray(value) ? value : [value];
+        if (!allowed.some((option) => values.includes(option))) return false;
       }
       return true;
     });

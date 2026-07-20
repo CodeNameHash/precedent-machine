@@ -139,13 +139,13 @@ function dealPercentText(feeRow, dealValueUsd) {
 // hands back.
 function formatFeeDetail(feeRow, dealValueUsd) {
   const parts = [];
-  if (feeRow.amount) parts.push(String(feeRow.amount));
   if (feeRow.percentEquityValue) {
     parts.push(`${feeRow.percentEquityValue} of equity value`);
   } else {
     const computed = dealPercentText(feeRow, dealValueUsd);
     if (computed) parts.push(computed);
   }
+  if (feeRow.amount) parts.push(`${String(feeRow.amount)} raw amount`);
   if (feeRow.payableBy && feeRow.payableTo) {
     parts.push(`Payable by ${PARTY_LABELS[feeRow.payableBy] || feeRow.payableBy} to ${PARTY_LABELS[feeRow.payableTo] || feeRow.payableTo}`);
   }
@@ -168,10 +168,9 @@ function feeAmountSignal(feeRow, dealValueUsd) {
   const pctText = feeRow.percentEquityValue
     ? `${feeRow.percentEquityValue} of equity value`
     : dealPercentText(feeRow, dealValueUsd);
-  const pctSuffix = pctText ? ` (${pctText})` : '';
   return {
     id: `${feeRow.feeType}-amount`,
-    label: `${feeRow.amount}${pctSuffix}`,
+    label: pctText ? `${pctText} (${feeRow.amount})` : String(feeRow.amount),
     value: feeRow.amount,
     tone: 'present',
   };

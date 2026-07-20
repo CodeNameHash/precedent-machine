@@ -37,6 +37,7 @@ export function formatNumericValueForUnit(n, unit) {
   if (unit === 'elapsed_hours') return `${roundNum(n)} ${singular ? 'hour' : 'hours'}`;
   if (unit === 'business_days') return `${roundNum(n)} ${singular ? 'business day' : 'business days'}`;
   if (unit === 'calendar_days') return `${roundNum(n)} ${singular ? 'calendar day' : 'calendar days'}`;
+  if (unit === 'days_equivalent') return `${roundNum(n)} ${singular ? 'day' : 'days'}`;
   if (unit === 'days') return `${roundNum(n)} ${singular ? 'day' : 'days'}`;
   if (unit === 'months') return `${roundNum(n)} ${singular ? 'month' : 'months'}`;
   if (unit === 'years') return `${roundNum(n)} ${singular ? 'year' : 'years'}`;

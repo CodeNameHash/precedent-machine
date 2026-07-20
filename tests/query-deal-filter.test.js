@@ -6,7 +6,7 @@
 const test = require('node:test');
 const assert = require('node:assert');
 
-const { comparisonDeals, dealLawFirms } = require('../lib/query/executors/shared.js');
+const { comparisonDeals, dealColumn, dealLawFirms } = require('../lib/query/executors/shared.js');
 
 const DEALS = [
   {
@@ -16,7 +16,8 @@ const DEALS = [
     announce_date: '2025-11-07',
     metadata: {
       acquirer_display: 'Pfizer',
-      advisors_v2: { buyer_firm: 'Wachtell, Lipton, Rosen & Katz', seller_firm: 'Skadden, Arps, Slate, Meagher & Flom LLP' },
+      merger_form: 'REVERSE_TRIANGULAR_MERGER',
+      advisors_v2: { buyer_firm: 'Wachtell, Lipton, Rosen & Katz', seller_firm: 'Skadden, Arps, Slate, Meagher & Flom LLP', buyer_lawyers: ['JANE BUYER'] },
     },
   },
   {
@@ -47,4 +48,20 @@ test('deal_filter.law_firm matches canonical display firm forms on either side',
 test('empty deal_filter keeps every deal (unchanged behavior)', () => {
   assert.equal(comparisonDeals(DEALS, {}).length, 2);
   assert.equal(comparisonDeals(DEALS, { buyer: [], law_firm: [] }).length, 2);
+});
+
+test('search, lawyer and merger-form refinements compose', () => {
+  const result = comparisonDeals(DEALS, {
+    search: 'pfizer', lawyer: ['Jane Buyer'], merger_form: ['REVERSE_TRIANGULAR_MERGER'],
+  });
+  assert.deepEqual(result.map((deal) => deal.id), ['d1']);
+});
+
+test('query deal columns carry reusable refinement metadata', () => {
+  const column = dealColumn(DEALS[0]);
+  assert.equal(column.buyer, 'Pfizer');
+  assert.equal(column.sector, 'Biopharma');
+  assert.equal(column.merger_form, 'REVERSE_TRIANGULAR_MERGER');
+  assert.ok(column.law_firm.includes('Skadden'));
+  assert.ok(column.lawyer.includes('Jane Buyer'));
 });

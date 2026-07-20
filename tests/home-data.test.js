@@ -145,6 +145,16 @@ test('computeDealStructures unwraps tagged/citable values and prefers a specific
   assert.equal(structures.get('deal-2'), 'TWO_STEP_TENDER_OFFER');
 });
 
+test('fetchHomeData falls back to a provision merger form when deal metadata is blank', async () => {
+  const { fetchHomeData } = require('../lib/home-data');
+  const provisions = [{
+    id: 'p-form', deal_id: 'deal-1', type: 'STRUCT', category: 'The Merger',
+    ai_metadata: { features: { mergerForm: { code: 'REVERSE_TRIANGULAR_MERGER' } } },
+  }];
+  const payload = await fetchHomeData(fakeSupabase({ deals: [sampleDealRow()], provisions }));
+  assert.equal(payload.deals[0].merger_form, 'REVERSE_TRIANGULAR_MERGER');
+});
+
 test('pages/api/home.js and getStaticProps both build the payload via fetchHomeData (single source of truth)', async () => {
   // Both pages/api/home.js and lib/home-static-props.js require lib/home-data
   // — assert they resolve to the exact same file (Node's require cache

@@ -438,6 +438,8 @@ test('representations-qualifiers config resolves taxonomy-coded materiality/know
   assert.equal(row.materiality.color, 'amber');
   assert.equal(row.materiality.evidence, 'would not have an MAE');
   assert.equal(row.knowledge.label, 'Knowledge-qualified (partial)');
+  assert.deepEqual(row.featureKeys, ['materialityQualifier', 'knowledgeQualifier']);
+  assert.ok(!row.featureKeys.includes('lookbackDateISO'));
   // R4: the Knowledge standard is no longer a section headerNote -- it's a
   // "Standard" row in the Knowledge sub-table (see renderBody tests below).
   assert.equal(representationsQualifiersMod.representationsQualifiersConfig.deriveHeaderNote, undefined);
@@ -487,8 +489,36 @@ test('representations-qualifiers config renders ONE row per rep card, each resol
   assert.equal(org.materiality.label, 'material respects');
   assert.equal(cap.materiality.label, 'MAE qualified');
   assert.equal(cap.knowledge, null, 'Capitalization has no knowledge qualifier of its own -- must not inherit Organization\'s');
+  assert.deepEqual(cap.featureKeys, ['materialityQualifier']);
   assert.equal(lit.knowledge.label, 'to the knowledge of Parent');
   assert.equal(lit.materiality, null, 'Litigation has no materiality qualifier of its own -- must not inherit Capitalization\'s');
+});
+
+test('representations-qualifiers carries the current rep bringdown treatment without creating a peer feature key', () => {
+  const rows = representationsQualifiersMod.representationsQualifiersConfig.selectRows({
+    cards: [
+      {
+        id: 'rep-org',
+        provision_type: 'REPRESENTATION',
+        provision_subtype: 'REP-T-ORG',
+        short_title: 'Organization',
+        primary_quote: 'Organization representation.',
+        features: {},
+      },
+      {
+        id: 'condition-reps',
+        provision_type: 'CLOSING_CONDITION',
+        provision_subtype: 'COND-B-REP',
+        features: { bringDownTiers: [{ standard: 'MAT_ALL_MATERIAL', reps_covered: 'Organization' }] },
+      },
+    ],
+  });
+  const row = rows.find((candidate) => candidate.kind === 'rep');
+  assert.deepEqual(row.featureKeys, []);
+  assert.equal(row.itemCode, null);
+  assert.deepEqual(row.currentTreatments.map(({ label, value }) => ({ label, value })), [
+    { label: 'Bringdown', value: 'In all material respects' },
+  ]);
 });
 
 // R1 (FEEDBACK-3-PUNCHLIST.md): General Exceptions renders as its OWN
@@ -2158,6 +2188,8 @@ test('material-contracts config maps hydrated buckets and thresholds, one row pe
     'Indebtedness contracts',
   ]);
   assert.deepEqual(rows.map((row) => row.threshold), ['$25,000,000', '$5,000,000']);
+  assert.ok(rows.every((row) => row.featureKeys.length === 1 && row.featureKeys[0] === 'materialContractsBuckets'));
+  assert.deepEqual(rows.map((row) => row.itemCode), ['AGGREGATE_PAYMENTS', 'INDEBTEDNESS']);
 });
 
 test('material-contracts config falls back to canonical bucket synonyms in card text; each detected bucket is exactly one row (no cross-listing)', () => {

@@ -9,6 +9,7 @@ import {
   PROVISION_TYPES, ProvisionTypeSelect, FilterRow, coerceFilterForPayload, KindTabs,
   DealFiltersBlock, buildDealFilterPayload,
 } from '../../components/query/QueryFilterControls';
+import DealPicker, { dealPickerLabel } from '../../components/query/DealPicker';
 
 QueryIndexPage.noLayout = true;
 
@@ -48,7 +49,7 @@ function requiredFieldsSentence(fields) {
 }
 
 function dealLabel(deal) {
-  return `${deal.acquirer || 'Buyer'} / ${deal.target || 'Target'}`;
+  return dealPickerLabel(deal);
 }
 
 function encodePayloadClient(payload) {
@@ -229,7 +230,7 @@ function SavedSection({ rows }) {
 
 function BuilderSection({ deals, schemas, router }) {
   const [kind, setKind] = useState('FILTER_THEN_LIST');
-  const [dealFilterValues, setDealFilterValues] = useState({ consideration_type: '', buyer: '', law_firm: '', sector: '', signing_year: '' });
+  const [dealFilterValues, setDealFilterValues] = useState({ consideration_type: '', buyer: '', law_firm: '', lawyer: '', merger_form: '', sector: '', signing_year: '', search: '' });
   const [error, setError] = useState(null);
   const [running, setRunning] = useState(false);
 
@@ -276,7 +277,7 @@ function BuilderSection({ deals, schemas, router }) {
       return { deal_ids: dcDealIds, provision_types: dcProvisionTypes, highlight_deltas: true, included_field_groups: ['primary', 'qualifiers'] };
     }
     if (kind === 'DEAL_TO_MARKET') {
-      return { deal_id: dtmDealId, comparison_set_filter: {}, provision_types: null };
+      return { deal_id: dtmDealId, comparison_set_filter: buildDealFilterPayload(dealFilterValues), provision_types: null };
     }
     return {};
   };
@@ -365,12 +366,7 @@ function BuilderSection({ deals, schemas, router }) {
 
         {kind === 'DEAL_TO_MARKET' && (
           <div className="row">
-            <label className="mtx-meta-label">Deal
-              <select className="mtx-select" value={dtmDealId} onChange={(e) => setDtmDealId(e.target.value)}>
-                <option value="">{deals === null ? 'Loading deals…' : 'Select a deal…'}</option>
-                {(deals || []).slice().sort((a, b) => dealLabel(a).localeCompare(dealLabel(b))).map((d) => <option key={d.id} value={d.id}>{dealLabel(d)}</option>)}
-              </select>
-            </label>
+            <DealPicker deals={deals} value={dtmDealId} onChange={setDtmDealId} label="Deal" />
           </div>
         )}
         </div>
@@ -380,7 +376,7 @@ function BuilderSection({ deals, schemas, router }) {
         <button type="button" className="mtx-btn mtx-btn-primary" disabled={running} onClick={run}>{running ? 'Running…' : 'Build & run'}</button>
       </div>
       <style jsx>{`
-        .builder { border: 1px solid var(--line); background: #fff; padding: 20px; display: flex; flex-direction: column; gap: 14px; max-width: 720px; font-family: var(--mtx-sans); }
+        .builder { border: 1px solid var(--line); border-top: 2px solid var(--ink); background: #fff; padding: 22px; display: flex; flex-direction: column; gap: 14px; max-width: 920px; font-family: var(--mtx-sans); }
         .stage { min-height: 340px; display: flex; flex-direction: column; gap: 14px; align-items: stretch; }
         .builder > label { max-width: 320px; font-family: var(--mtx-sans); }
         .builder select, .builder input { width: 100%; margin-top: 6px; }

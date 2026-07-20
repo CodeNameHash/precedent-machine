@@ -189,6 +189,34 @@ test('elapsed-hour values remain in an elapsed-hour cohort', () => {
   assert.equal(result.distribution.cohorts[0].stats.median, 96);
 });
 
+test('day-equivalent duration policy converts 24 hours to one day before aggregation', () => {
+  const duration = spec('duration', {
+    semantics: {
+      unit: 'days_equivalent',
+      calendarBasis: 'mixed',
+      trigger: 'notice_period',
+      requiredDimensions: ['unit', 'calendarBasis'],
+      normalisation: { type: 'duration_to_days', hoursPerDay: 24 },
+    },
+  });
+  const result = aggregateMetric(duration, [
+    entry(deal('hours'), 'present', [{ value: 24, unit: 'elapsed_hours', calendarBasis: 'elapsed', trigger: 'notice_period' }]),
+    entry(deal('business-day'), 'present', [{ value: 1, unit: 'business_days', calendarBasis: 'business', trigger: 'notice_period' }]),
+    entry(deal('calendar-days'), 'present', [{ value: 2, unit: 'calendar_days', calendarBasis: 'calendar', trigger: 'notice_period' }]),
+  ]);
+
+  assert.equal(result.coverage.comparableCount, 3);
+  assert.deepEqual(result.distribution.cohorts[0].semantics, {
+    unit: 'days_equivalent',
+    calendarBasis: 'mixed',
+    trigger: 'notice_period',
+    cadence: null,
+  });
+  assert.deepEqual(result.distribution.cohorts[0].stats, {
+    n: 3, min: 1, p25: 1, median: 1, p75: 1.5, max: 2, mean: 4 / 3,
+  });
+});
+
 test('bare numeric values inherit an explicitly declared percent unit', () => {
   const percentage = spec('numeric', {
     metricKey: 'threshold.percent',
@@ -323,6 +351,40 @@ test('material-contract bucket thresholds use their own structured threshold and
   assert.equal(cohort.percent.stats.median, 0.05);
   assert.equal(cohort.percent.stats.n, 1);
   assert.deepEqual(result.distribution.normalised.exclusions, [{ reason: 'incompatible_cadence', count: 1 }]);
+});
+
+test('material-contract bucket thresholds recover one isolated dollar amount from the bucket quote', () => {
+  const threshold = spec('money', {
+    rowKey: 'material-contracts:customer',
+    metricKey: 'material-contracts.bucket.customer.threshold',
+    observation: {
+      presence: { strategy: 'list_item', featureKeys: ['materialContractsBuckets'], itemCode: 'CUSTOMER', missingState: 'unknown' },
+      value: { strategy: 'list_item_field', featureKeys: ['materialContractsBuckets'], itemCode: 'CUSTOMER', path: 'threshold' },
+    },
+    semantics: {
+      unit: 'usd', cadence: 'annual', requiredDimensions: ['cadence'],
+      normalisation: { type: 'percent_of_deal_value', denominator: 'deal_value_usd', basisPolicy: 'stratify_by_basis', missingPolicy: 'exclude' },
+    },
+  });
+  const subject = deal('qxo', 10e9, 'headline_transaction_value');
+  const peer = deal('peer', 5e9, 'headline_transaction_value');
+  const dataset = {
+    deals: [subject, peer], cards: [], claims: [
+      {
+        id: 'qxo-customer', deal_id: subject.id, attribute: 'materialContractsBuckets', canonical: 'CUSTOMER',
+        provenance: { feature_value: { code: 'CUSTOMER', quotes: ['payments in excess of $10,000,000 per annum'] } },
+      },
+      {
+        id: 'peer-customer', deal_id: peer.id, attribute: 'materialContractsBuckets', canonical: 'CUSTOMER',
+        provenance: { feature_value: { code: 'CUSTOMER', quotes: ['payments in excess of $5 million per annum'] } },
+      },
+    ],
+  };
+  const result = calculateMarketStats({ contractVersion: 1, subjectDealId: subject.id, filters: {}, specs: [threshold] }, dataset)
+    .byRow['material-contracts:customer'].metrics[threshold.metricKey];
+
+  assert.equal(result.subject.rawUsd, 10e6);
+  assert.equal(result.distribution.normalised.cohorts[0].percent.stats.median, 0.1);
 });
 
 test('one row can carry presence plus a conditional value metric without overwrite', () => {

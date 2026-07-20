@@ -141,8 +141,23 @@ export function resolveRowFocus(row) {
   const itemCode = row.itemCode || row.code || row.instrumentCode || null;
   const quote = (typeof row.evidence === 'string' && row.evidence.trim()) ? row.evidence.trim() : null;
   const items = normalizeRowItems(row);
-  if (!label && !featureKeys && !itemCode && !quote && !items) return null;
-  return { label, featureKeys, itemCode, quote, items };
+  const currentTreatments = Array.isArray(row.currentTreatments)
+    ? row.currentTreatments
+      .map((item) => {
+        if (!item || typeof item !== 'object') return null;
+        const treatmentLabel = typeof item.label === 'string' ? item.label.trim() : '';
+        const value = typeof item.value === 'string' ? item.value.trim() : '';
+        if (!treatmentLabel || !value) return null;
+        return {
+          label: treatmentLabel,
+          value,
+          quote: typeof item.quote === 'string' && item.quote.trim() ? item.quote.trim() : null,
+        };
+      })
+      .filter(Boolean)
+    : [];
+  if (!label && !featureKeys && !itemCode && !quote && !items && !currentTreatments.length) return null;
+  return { label, featureKeys, itemCode, quote, items, currentTreatments };
 }
 
 // Pulls the row-specific verbatim quote(s) for a set of featureKeys off a

@@ -405,7 +405,14 @@ function numericValueLocal(value) {
 // has no median (an empty numeric pool).
 function MarketCell({ row, marketColumn, typedMarket, resolution, onRetry }) {
   if (typedMarket) {
-    return <MarketMetricCell resolution={resolution} data={typedMarket.data} onRetry={onRetry} />;
+    return (
+      <MarketMetricCell
+        resolution={resolution}
+        data={typedMarket.data}
+        onRetry={onRetry}
+        fallbackSummary={marketSummaryForRow(row, marketColumn)}
+      />
+    );
   }
   if (!marketColumn) return <Muted>—</Muted>;
   if (marketColumn.loading) return <Muted>Loading market data…</Muted>;
@@ -590,7 +597,7 @@ export function UnifiedDefinitionsSection({
           mirrors every other unified section table's scroll position (see
           pages/review/[id].js's scroll-sync effect). */}
       <div className="overflow-x-auto" data-scroll-sync="unified-table">
-        <table className="min-w-full text-xs font-ui">
+        <table className="w-full table-fixed text-xs font-ui">
           <thead className="border-b border-border">
             <tr>
               <th className="px-3 py-2 text-left align-bottom font-medium uppercase tracking-wider text-inkFaint" style={{ width: '12rem' }}>Term</th>
@@ -1043,7 +1050,7 @@ export function UnifiedCompareSection({
         data-testid={`provision-table-unified-${config.id}`}
         data-scroll-sync="unified-table"
       >
-        <table className="min-w-full text-xs font-ui">
+        <table className="w-full table-fixed text-xs font-ui">
           <thead>
             <tr>
               <th className="px-3 py-2 text-left align-bottom border-b-2 border-black" style={{ width: 220, minWidth: 170 }}>

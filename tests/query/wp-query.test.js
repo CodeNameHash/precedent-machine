@@ -138,6 +138,33 @@ test('PROVISION_CROSS_CUT returns rows and evidence for populated columns', asyn
   assert.ok(result.rows.some((row) => row.cells.some((cell) => cell.verbatim_quote)));
 });
 
+test('PROVISION_CROSS_CUT resolves each fee column from its own card and retains the card id', async () => {
+  const feeContext = {
+    deals: [{ id: 'fee-deal', acquirer: 'Buyer', target: 'Target', value_usd: 1_000_000_000 }],
+    provisions: [
+      { id: 'company-card', deal_id: 'fee-deal', type: 'TERMF', ai_metadata: { features: { companyTerminationFee: { amount: '$30,000,000' } } } },
+      { id: 'reverse-card', deal_id: 'fee-deal', type: 'TERMF', ai_metadata: { features: { reverseTerminationFee: { amount: '$60,000,000' } } } },
+    ],
+  };
+  const result = await runQuery('PROVISION_CROSS_CUT', {
+    provision_type: 'TERMINATION_FEE', deal_ids: ['fee-deal'],
+    columns: ['feePctOfDealValue', 'reverseFeePctOfDealValue'], sort_by: 'deal_signing_date_desc',
+  }, { context: feeContext });
+  assert.deepEqual(result.rows[0].cells.map((cell) => cell.value), [3, 6]);
+  assert.deepEqual(result.rows[0].cells.map((cell) => cell.card_id), ['company-card', 'reverse-card']);
+});
+
+test('PROVISION_CROSS_CUT uses deal metadata when merger form is absent from cards', async () => {
+  const structureContext = {
+    deals: [{ id: 'structure-deal', acquirer: 'Buyer', target: 'Target', metadata: { merger_form: 'DOUBLE_DUMMY' } }],
+    provisions: [{ id: 'structure-card', deal_id: 'structure-deal', type: 'STRUCT', ai_metadata: { features: { dealStructure: 'ONE_STEP_MERGER' } } }],
+  };
+  const result = await runQuery('PROVISION_CROSS_CUT', {
+    provision_type: 'STRUCTURE_MECHANICS', deal_ids: ['structure-deal'], columns: ['mergerForm'], sort_by: 'deal_signing_date_desc',
+  }, { context: structureContext });
+  assert.equal(result.rows[0].cells[0].value, 'DOUBLE_DUMMY');
+});
+
 test('MARKET_RANGE returns a well-formed histogram whose counts match n', async () => {
   const result = await runQuery('MARKET_RANGE', {
     provision_type: 'TERMINATION_RIGHT',

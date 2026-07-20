@@ -434,6 +434,8 @@ export function dealFilterOptions(deals) {
   const considerations = new Set();
   const buyers = new Set();
   const lawFirms = new Set();
+  const lawyers = new Set();
+  const mergerForms = new Set();
   const sectors = new Set();
   const years = new Set();
   for (const deal of deals || []) {
@@ -444,10 +446,14 @@ export function dealFilterOptions(deals) {
     if (buyer) buyers.add(buyer);
     if (deal.advisors && typeof deal.advisors === 'object') {
       for (const f of [...(deal.advisors.buyer_firms || []), ...(deal.advisors.seller_firms || [])]) lawFirms.add(f);
+      for (const lawyer of [...(deal.advisors.buyer_lawyers || []), ...(deal.advisors.seller_lawyers || [])]) lawyers.add(lawyer);
     } else if (meta.advisors_v2) {
       const adv = getDisplayAdvisors(meta);
       for (const f of [...(adv.buyerFirms || []), ...(adv.sellerFirms || [])]) lawFirms.add(f);
+      for (const lawyer of [...(adv.buyerLawyers || []), ...(adv.sellerLawyers || [])]) lawyers.add(lawyer);
     }
+    const mergerForm = deal.merger_form || meta.merger_form;
+    if (mergerForm) mergerForms.add(mergerForm);
     if (deal.sector) sectors.add(deal.sector);
     const date = deal.signing_date || deal.announce_date;
     if (date) years.add(Number(String(date).slice(0, 4)));
@@ -457,6 +463,8 @@ export function dealFilterOptions(deals) {
     consideration_type: sorted(considerations),
     buyer: sorted(buyers),
     law_firm: sorted(lawFirms),
+    lawyer: sorted(lawyers),
+    merger_form: sorted(mergerForms),
     sector: sorted(sectors),
     signing_year: [...years].filter(Boolean).sort((a, b) => b - a),
   };
@@ -466,6 +474,8 @@ const DEAL_FACETS = [
   { key: 'consideration_type', label: 'Consideration type', display: (v) => considerationTypeDisplay(v) || humanizeKey(v) },
   { key: 'buyer', label: 'Buyer', display: (v) => v },
   { key: 'law_firm', label: 'Law firm', display: (v) => v },
+  { key: 'lawyer', label: 'Lawyer', display: (v) => v },
+  { key: 'merger_form', label: 'Merger form', display: (v) => humanizeKey(v) },
   { key: 'sector', label: 'Sector', display: (v) => v },
   { key: 'signing_year', label: 'Signing year', display: (v) => String(v) },
 ];
@@ -473,6 +483,8 @@ const BASE_FACETS = ['consideration_type', 'buyer', 'law_firm'];
 
 export function buildDealFilterPayload(values) {
   const out = {};
+  const search = String(values.search || '').trim();
+  if (search) out.search = search;
   for (const facet of DEAL_FACETS) {
     const v = values[facet.key];
     if (v === '' || v === null || v === undefined) continue;
@@ -493,9 +505,23 @@ export function dealMatchesDealFilter(deal, filter = {}) {
       const resolved = getDisplayAdvisors(meta);
       return [...(resolved.buyerFirms || []), ...(resolved.sellerFirms || [])];
     })();
+  const lawyers = deal.advisors && typeof deal.advisors === 'object'
+    ? [...(deal.advisors.buyer_lawyers || []), ...(deal.advisors.seller_lawyers || [])]
+    : (() => {
+      const resolved = getDisplayAdvisors(meta);
+      return [...(resolved.buyerLawyers || []), ...(resolved.sellerLawyers || [])];
+    })();
+  const mergerForm = deal.merger_form || meta.merger_form || null;
+  const search = String(Array.isArray(filter.search) ? filter.search[0] : (filter.search || '')).trim().toLowerCase();
+  if (search) {
+    const dealName = deal.deal_name || `${buyer || deal.acquirer || 'Buyer'} / ${deal.target_display || meta.target_display || deal.target || 'Target'}`;
+    if (![dealName, buyer, deal.target_display, meta.target_display, deal.target, deal.sector].filter(Boolean).join(' ').toLowerCase().includes(search)) return false;
+  }
   if (filter.consideration_type?.length && !filter.consideration_type.includes(consideration)) return false;
   if (filter.buyer?.length && !filter.buyer.includes(buyer)) return false;
   if (filter.law_firm?.length && !filter.law_firm.some((firm) => advisors.includes(firm))) return false;
+  if (filter.lawyer?.length && !filter.lawyer.some((lawyer) => lawyers.includes(lawyer))) return false;
+  if (filter.merger_form?.length && !filter.merger_form.includes(mergerForm)) return false;
   if (filter.sector?.length && !filter.sector.includes(deal.sector)) return false;
   if (filter.signing_year?.length && !filter.signing_year.includes(year)) return false;
   return true;
@@ -503,6 +529,7 @@ export function dealMatchesDealFilter(deal, filter = {}) {
 
 export function describeDealFilters(values) {
   const parts = [];
+  if (String(values.search || '').trim()) parts.push(`search contains “${String(values.search).trim()}”`);
   for (const facet of DEAL_FACETS) {
     const v = values[facet.key];
     if (v === '' || v === null || v === undefined) continue;
@@ -516,15 +543,24 @@ export function describeDealFilters(values) {
 // must read as visually SECONDARY to them — smaller labels, compact
 // selects (overriding the global 13px/36px .mtx-select via :global()), and
 // a quieter section label than the tabs' bold uppercase treatment.
-export function DealFiltersBlock({ deals, values, onChange }) {
+export function DealFiltersBlock({
+  deals, values, onChange, facetKeys = null, showSearch = false, expandAll = false,
+}) {
   const options = dealFilterOptions(deals);
   const [extraFacets, setExtraFacets] = useState([]);
-  const visible = DEAL_FACETS.filter((f) => BASE_FACETS.includes(f.key) || extraFacets.includes(f.key) || values[f.key]);
-  const hidden = DEAL_FACETS.filter((f) => !visible.includes(f));
+  const eligible = facetKeys ? DEAL_FACETS.filter((facet) => facetKeys.includes(facet.key)) : DEAL_FACETS;
+  const visible = eligible.filter((f) => expandAll || facetKeys || BASE_FACETS.includes(f.key) || extraFacets.includes(f.key) || values[f.key]);
+  const hidden = eligible.filter((f) => !visible.includes(f));
   return (
     <div className="dfb">
       <span className="dfbSectionLabel">Deal filters <em className="dfbOptional">· optional — narrow which deals count</em></span>
       <div className="dfbRow">
+        {showSearch && (
+          <label className="dfbFacet dfbSearch">
+            <span className="dfbLabel">Search</span>
+            <input className="mtx-input" value={values.search || ''} placeholder="Buyer, target or deal" onChange={(e) => onChange({ ...values, search: e.target.value })} />
+          </label>
+        )}
         {visible.map((facet) => (
           <label key={facet.key} className="dfbFacet">
             <span className="dfbLabel">{facet.label}</span>
@@ -558,12 +594,14 @@ export function DealFiltersBlock({ deals, values, onChange }) {
         .dfbRow { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end; min-width: 0; max-width: 100%; }
         .dfbFacet { display: flex; flex-direction: column; gap: 2px; min-width: 0; max-width: 100%; }
         .dfbFacet :global(select.mtx-select) { max-width: 100%; text-overflow: ellipsis; }
+        .dfbSearch { min-width: 180px; }
         .dfbLabel { font-size: 8px; text-transform: uppercase; letter-spacing: 0.08em; color: #9A9A9A; font-family: var(--mtx-sans); }
         .dfbAdd { width: 26px; height: 24px; border: 1px dashed #E0E0E0; background: #fff; color: #6B6B6B; font-size: 13px; line-height: 1; cursor: pointer; font-family: var(--mtx-sans); }
         .dfbAdd:hover { color: #1F1F1F; border-color: #6B6B6B; background: #F6F6F6; }
         /* Compact selects — this block is secondary to the query-type tabs
            above it, so it must not compete on size. */
         .dfbRow :global(select.mtx-select) { font-size: 11px; height: 24px; padding: 0 6px; min-width: 0; }
+        .dfbRow :global(input.mtx-input) { font-size: 11px; height: 24px; min-height: 24px; padding: 0 6px; min-width: 0; }
       `}</style>
     </div>
   );

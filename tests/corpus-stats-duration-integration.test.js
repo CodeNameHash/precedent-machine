@@ -11,3 +11,10 @@ test('corpus-stats duration rows use strict claim cohorts without requiring cano
   assert.match(SOURCE, /primary_quote, region_full_text/);
   assert.doesNotMatch(SOURCE, /\.select\([^)]*canonical_numeric/);
 });
+
+test('corpus-stats exposes means, material-contract item frequency, and equity-only instrument classification', () => {
+  assert.match(SOURCE, /mean:\s*nums\.reduce/);
+  assert.match(SOURCE, /materialContractsBuckets/);
+  assert.match(SOURCE, /EQUITY_INSTRUMENT_FEATURE_KEYS/);
+  assert.match(SOURCE, /equityInstrumentContext/);
+});

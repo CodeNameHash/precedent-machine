@@ -407,13 +407,15 @@ test('definitions are compared by canonical defined-term identity', () => {
   assert.equal(resolved.metrics[0].observation.presence.term, 'Company Material Adverse Effect');
 });
 
-test('no-sol notice clocks remain split by trigger and unit', () => {
+test('no-sol notice periods use the explicit day-equivalent policy while triggers remain split', () => {
   const notice = resolveMarketMetricRow({ id: 'nosol-fiduciary-notice-period', label: 'Notice period' });
   const initial = resolveMarketMetricRow({ id: 'nosol-fiduciary-initial-match', label: 'Initial match period' });
   const hours = resolveMarketMetricRow({ id: 'nosol-noshop-notice-hours', label: 'Notice' });
   const intervening = resolveMarketMetricRow({ id: 'nosol-intervening-notice-period', label: 'Notice period' });
 
-  assert.equal(notice.metrics[1].semantics.unit, 'business_days');
+  assert.equal(notice.metrics[1].semantics.unit, 'days_equivalent');
+  assert.equal(notice.metrics[1].semantics.calendarBasis, 'mixed');
+  assert.deepEqual(notice.metrics[1].semantics.normalisation, { type: 'duration_to_days', hoursPerDay: 24 });
   assert.equal(hours.metrics[1].semantics.unit, 'elapsed_hours');
   assert.notEqual(notice.metrics[1].semantics.trigger, initial.metrics[1].semantics.trigger);
   assert.notEqual(notice.metrics[1].semantics.trigger, intervening.metrics[1].semantics.trigger);

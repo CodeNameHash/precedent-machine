@@ -631,7 +631,7 @@ export default function ReviewPage() {
               </p>
             ) : null}
 
-            <div className={wideLayout ? 'space-y-10' : 'space-y-10 max-w-3xl mx-auto'}>
+            <div className={wideLayout ? 'space-y-10 max-w-5xl' : 'space-y-10 max-w-3xl mx-auto'}>
               {marketMode ? <OffMarketSection data={offMarketData} /> : null}
               {sections.map((section) => (
                 <SectionBlock

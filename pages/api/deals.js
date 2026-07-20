@@ -32,6 +32,7 @@ const DEAL_LIST_SELECT = [
   'headline_consideration_type:metadata->>headline_consideration_type',
   'considerationType:metadata->>considerationType',
   'consideration_type:metadata->>consideration_type',
+  'merger_form:metadata->>merger_form',
 ].join(', ');
 
 // Q3 (perf quick-wins, Jul 2026): /api/deals?id=<id> did select('*'), which
@@ -72,6 +73,7 @@ function listRowToDeal(row, provisionCounts) {
     ...(row.headline_consideration_type ? { headline_consideration_type: row.headline_consideration_type } : {}),
     ...(row.considerationType ? { considerationType: row.considerationType } : {}),
     ...(row.consideration_type ? { consideration_type: row.consideration_type } : {}),
+    ...(row.merger_form ? { merger_form: row.merger_form } : {}),
   };
 
   return {

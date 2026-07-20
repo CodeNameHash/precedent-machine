@@ -175,3 +175,60 @@ test('typed money context exposes only the subject deal\'s same-basis percentage
   assert.match(context.metrics[0].label, /equity value/);
   assert.notEqual(context.metrics[0].median, 10000000);
 });
+
+test('typed row context prioritises substantive term detail and excludes prevalence from treatments', () => {
+  const resolution = {
+    rowKey: 'ioc:ordinary-course',
+    label: 'Ordinary-course covenant',
+    metrics: [
+      { metricKey: 'ioc.presence', label: 'Ordinary-course prevalence', comparison: { kind: 'presence' } },
+      { metricKey: 'ioc.standard', label: 'Ordinary-course standard', comparison: { kind: 'categorical' } },
+    ],
+  };
+  const coverage = { cohortCount: 40, eligibleCount: 40, presentCount: 30, absentCount: 10 };
+  const data = {
+    byRow: {
+      [resolution.rowKey]: {
+        metrics: {
+          'ioc.presence': { state: 'ready', coverage, prevalence: { eligibleCount: 40, presentCount: 30 } },
+          'ioc.standard': {
+            state: 'ready',
+            coverage,
+            distribution: {
+              denominatorCount: 30,
+              values: [{ value: 'ORDINARY_COURSE', count: 22, rate: 22 / 30 }],
+            },
+          },
+        },
+      },
+    },
+  };
+
+  const context = mod.buildTypedRowMarketContext(resolution, data);
+  assert.equal(context.treatments.length, 1);
+  assert.equal(context.treatments[0].attribute, 'ioc.standard');
+  assert.equal(context.primarySummary.attribute, 'ioc.standard');
+  assert.equal(context.treatments.some((summary) => summary.attribute === 'ioc.presence'), false);
+  assert.equal(context.termDealCount, 30);
+});
+
+test('typed row context uses the legacy term distribution when the contract only has prevalence', () => {
+  const resolution = {
+    rowKey: 'rep:capitalisation',
+    label: 'Capitalisation',
+    metrics: [{ metricKey: 'rep.presence', label: 'Prevalence', comparison: { kind: 'presence' } }],
+  };
+  const coverage = { eligibleCount: 40, presentCount: 36, absentCount: 4 };
+  const data = { byRow: { [resolution.rowKey]: { metrics: { 'rep.presence': { coverage, prevalence: coverage } } } } };
+  const fallback = {
+    attribute: 'materialityQualifier',
+    label: 'Materiality qualifier',
+    kind: 'categorical',
+    values: [{ value: 'MAT_NO_QUALIFIER', label: 'No materiality qualifier', count: 20 }],
+  };
+
+  const context = mod.buildTypedRowMarketContext(resolution, data, fallback);
+  assert.equal(context.primarySummary.attribute, 'materialityQualifier');
+  assert.equal(context.treatments[0].values[0].label, 'No materiality qualifier');
+  assert.equal(context.termDealCount, 36);
+});
