@@ -3,7 +3,7 @@ import taxonomy from '../../../lib/taxonomy.js';
 import { knowledgeQualifierDisplay, normalizeQualifierScope, sortByAgreementOrder, withScopeParens } from '../table-logic.js';
 import { standardColorKey } from './standard-colors.js';
 import { buildRepBringDownMap, normRepName } from './conditions.config.js';
-import { cardCode, cardType, firstFeature, labelOf, selectCards, textOf, valueText } from './card-utils.js';
+import { cardCode, cardFeatures, cardType, firstFeature, labelOf, selectCards, textOf, valueText } from './card-utils.js';
 import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
 import { resolveRowFocus } from '../../review-v2/provisionIndexHelpers.js';
 
@@ -315,11 +315,98 @@ function partySuffixFor(item) {
   if (/\b(parent|buyer|acquiror|acquirer)\b/i.test(text)) return 'Parent';
   return null;
 }
-function knowledgePersonsLabel(cards) {
+// Ben (Skechers r16, item 3): "EVERY named person gets their own pill --
+// never 'other named person(s)' grouping." knowledgePersons items are bare
+// taxonomy codes; the OTHER code resolves through the dict to the generic
+// "Other named person", so a deal naming several individuals (Apollo/Bridge:
+// six people, six OTHER items) collapsed into ONE generic pill. The actual
+// names/roles live in the Knowledge DEFINITION's own text on the same card
+// the feature came from -- extract them deterministically from the two
+// clause shapes the corpus uses:
+//   (a) a numbered role list -- "(i) the Company's Chief Financial Officer
+//       or General Counsel, (ii) Director, Tax or (iii) Senior Vice
+//       President, Global Controller" (Skechers);
+//   (b) a personal-name list after "knowledge ... of (each of)" -- "of each
+//       of Robert Morse, Jonathan Slager, ..." (Apollo/Bridge, AbbVie/
+//       Landos).
+// Extracted candidates fill the OTHER slots in order; when extraction
+// cannot supply a candidate, each remaining OTHER item still renders as its
+// OWN pill (per-item, never merged). Corpus-validated against every deck
+// whose knowledgePersons carries OTHER (Verizon/Frontier, Apollo/Bridge,
+// Skechers, AbbVie/Landos).
+const NAME_STOPWORDS = new Set(['company', 'parent', 'merger', 'sub', 'board', 'disclosure', 'letter', 'schedule', 'schedules', 'section', 'agreement', 'committee', 'person', 'persons', 'stockholder', 'stockholders', 'officer', 'officers', 'director', 'directors', 'knowledge', 'entity', 'subsidiaries', 'affiliates', 'business', 'days', 'effective', 'time',
+  // Title words: "Global Controller" / "Vice President" etc. are ROLE
+  // fragments, not personal names -- they may only enter via the numbered
+  // role-list branch, never the name-shaped-chunk branch.
+  'chief', 'executive', 'financial', 'operating', 'general', 'counsel', 'president', 'vice', 'senior', 'global', 'controller', 'treasurer', 'secretary', 'tax', 'legal']);
+const TITLE_CODE_RES = {
+  CEO: /chief\s+executive\s+officer/i,
+  CFO: /chief\s+financial\s+officer/i,
+  GENERAL_COUNSEL: /general\s+counsel/i,
+  COO: /chief\s+operating\s+officer/i,
+};
+function looksLikePersonName(chunk) {
+  const words = chunk.split(/\s+/);
+  if (words.length < 2 || words.length > 4) return false;
+  return words.every((w) => /^[A-Z][\w'’.-]*$/.test(w) && !NAME_STOPWORDS.has(w.toLowerCase().replace(/[^a-z]/g, '')));
+}
+function extractKnowledgeNamedPersons(defText) {
+  const text = String(defText || '');
+  if (!text) return [];
+  const candidates = [];
+  const push = (raw) => {
+    const cleaned = String(raw || '')
+      .replace(/^\s*(?:the\s+Company[’']s\s+|the\s+|its\s+|any\s+of\s+the\s+|each\s+of\s+)/i, '')
+      .replace(/\s*(?:,|;|\bor\b|\band\b)\s*$/i, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+    if (cleaned && cleaned.length <= 60 && !candidates.some((c) => c.toLowerCase() === cleaned.toLowerCase())) candidates.push(cleaned);
+  };
+  // Shape (a): numbered role list. Split on the (i)/(ii)/(A)/(1) markers and
+  // stop each segment before the next marker or a boilerplate tail.
+  const markerRe = /\((?:i{1,3}|iv|v|vi{0,3})\)\s*/g;
+  const windowStartRe = /knowledge[^.;]{0,120}?\bof\b\s+(?:each\s+of\s+)?/gi;
+  let start;
+  while ((start = windowStartRe.exec(text))) {
+    const rest = text.slice(start.index + start[0].length);
+    // The window ends at boilerplate tails, sentence punctuation, or the
+    // NEXT per-party limb marker (", and (ii) with respect to Parent ...").
+    const endMatch = rest.match(/,?\s*(?:in each case|after (?:due|reasonable)|solely with respect|as of the date|set forth|listed|identified|described)\b|,?\s*and\s*\(|[.;]/);
+    const window = endMatch ? rest.slice(0, endMatch.index) : rest;
+    if (/^\s*\((?:i{1,3}|iv|v|vi{0,3})\)/.test(window)) {
+      // Shape (a): the enumerated list follows "knowledge of" DIRECTLY --
+      // each numbered segment is one person/role.
+      markerRe.lastIndex = 0;
+      const segments = window.split(markerRe).slice(1);
+      for (const segment of segments) push(segment);
+    } else {
+      const chunks = window.split(/\s*,\s*(?:and\s+)?|\s+and\s+/);
+      let namedAny = false;
+      for (const chunk of chunks) {
+        if (looksLikePersonName(chunk.trim())) { push(chunk.trim()); namedAny = true; }
+      }
+      // Generic-group phrasing ("any of the officers or directors of
+      // Parent") -- an honest descriptive label straight off the clause.
+      if (!namedAny && /officers?\s+or\s+directors?/i.test(window)) {
+        push('Officers or directors');
+      }
+    }
+  }
+  return candidates;
+}
+// Definition text backing the persons feature: the card's own quote first
+// (verbatim, complete), falling back to the structured definitionText.
+function knowledgeDefinitionTextOf(card) {
+  if (!card) return '';
+  const features = cardFeatures(card);
+  return `${textOfValue(features.definitionText) || ''}\n${textOf(card)}`;
+}
+function knowledgePersonsEntries(cards) {
   const hit = firstFeature(cards, ['knowledgePersons']);
   if (!hit) return null;
   const items = Array.isArray(hit.value) ? hit.value : [hit.value];
   const dict = taxonomyForFeatureKey('knowledgePersons');
+  const defText = knowledgeDefinitionTextOf(hit.card);
   const resolved = items
     .map((item) => {
       const code = typeof item === 'string' ? item : codeOf(item);
@@ -329,23 +416,42 @@ function knowledgePersonsLabel(cards) {
         const dictLabel = labelForCode(code, dict);
         label = dictLabel || (/^[A-Z0-9_]+$/.test(code) ? humanizeCode(code) : code);
       }
-      return label ? { label, suffix: partySuffixFor(item) } : null;
+      return label ? { code: code || null, label, suffix: partySuffixFor(item) } : null;
     })
     .filter(Boolean);
-  // Dedupe by (label, suffix) pair -- two items that resolve to the same
-  // label but distinguish by party both survive as "Label (Company)" /
-  // "Label (Parent)"; two items with the same label and no distinguishing
-  // verbatim collapse to one plain "Label" entry.
+  // Named-person queue for the OTHER slots: extracted candidates that are
+  // not already represented by a title-coded item (e.g. Skechers' segment
+  // "(i) ... Chief Financial Officer or General Counsel" duplicates the
+  // CFO / GENERAL_COUNSEL codes and must not also claim an OTHER slot).
+  const titleCoveredRes = resolved
+    .map((r) => r.code && TITLE_CODE_RES[r.code])
+    .filter(Boolean);
+  const queue = extractKnowledgeNamedPersons(defText)
+    .filter((candidate) => !titleCoveredRes.some((re) => re.test(candidate)));
+  // Dedupe by (label, suffix) for coded/titled items (two per-party
+  // NAMED_SCHEDULE_LIST claims resolving to the identical label still
+  // collapse) -- but OTHER items always resolve per-item: a name off the
+  // queue when available, else the generic label kept as its OWN pill.
   const seen = new Set();
-  const labels = [];
-  for (const { label, suffix } of resolved) {
+  const entries = [];
+  for (const { code, label, suffix } of resolved) {
+    if (code === 'OTHER') {
+      const name = queue.shift();
+      const display = name || (suffix ? `${label} (${suffix})` : label);
+      entries.push({ label: name ? (suffix ? `${name} (${suffix})` : name) : display, evidence: defText.trim() || null });
+      continue;
+    }
     const display = suffix ? `${label} (${suffix})` : label;
     const key = `${label}::${suffix || ''}`;
     if (seen.has(key)) continue;
     seen.add(key);
-    labels.push(display);
+    entries.push({ label: display, evidence: defText.trim() || null });
   }
-  return labels.length ? labels.join(', ') : null;
+  return entries.length ? entries : null;
+}
+function knowledgePersonsLabel(cards) {
+  const entries = knowledgePersonsEntries(cards);
+  return entries ? entries.map((entry) => entry.label).join(', ') : null;
 }
 
 // `knowledgeScope` is the verbatim core of the deal's "Knowledge" defined
@@ -438,7 +544,8 @@ function buildKnowledgeSummaryRow(reviewDeal, idPrefix, cards) {
   const defCard = findKnowledgeDefinitionCard(reviewDeal, cards);
   const searchCards = [defCard, ...cards].filter(Boolean);
   const standard = knowledgeStandardNote(searchCards);
-  const persons = knowledgePersonsLabel(searchCards);
+  const personsEntries = knowledgePersonsEntries(searchCards);
+  const persons = personsEntries ? personsEntries.map((entry) => entry.label).join(', ') : null;
   const scope = knowledgeScopeTextAcross(reviewDeal, cards);
   if (!standard && !persons && !scope) return null;
   // Item 2 (r5): most decks have no standalone DEF-KNOWLEDGE card (Standard/
@@ -456,6 +563,7 @@ function buildKnowledgeSummaryRow(reviewDeal, idPrefix, cards) {
     label: 'Knowledge',
     knowledgeStandard: standard,
     knowledgePersons: persons,
+    knowledgePersonsEntries: personsEntries,
     knowledgeScope: scope,
     sourceCard: defCard,
     standardCard: (standardHit && standardHit.card) || defCard || null,
@@ -897,8 +1005,17 @@ function knowledgeTableNode(knowledgeSummaryRow, repRows, ctx) {
       items.push({ key: 'standard', term: 'Standard', node, card: knowledgeSummaryRow.standardCard, quote: knowledgeSummaryRow.knowledgeScope, fullText: knowledgeSummaryRow.knowledgeScope });
     }
     if (knowledgeSummaryRow.knowledgePersons) {
+      // Ben (Skechers r16, item 3): one pill PER person/role, never a single
+      // joined pill (and never an "Other named person(s)" grouping) --
+      // knowledgePersonsEntries resolves each item individually, with the
+      // actual names extracted from the Knowledge definition where the item
+      // codes are the generic OTHER. pillList's flex-wrap container lets a
+      // long list (Apollo/Bridge: six names) wrap across lines.
+      const entries = Array.isArray(knowledgeSummaryRow.knowledgePersonsEntries) && knowledgeSummaryRow.knowledgePersonsEntries.length
+        ? knowledgeSummaryRow.knowledgePersonsEntries.map((entry) => ({ label: entry.label, evidence: entry.evidence || knowledgeSummaryRow.knowledgeScope }))
+        : [{ label: knowledgeSummaryRow.knowledgePersons, evidence: knowledgeSummaryRow.knowledgeScope }];
       const node = PillCell
-        ? React.createElement(PillCell, { label: knowledgeSummaryRow.knowledgePersons, tone: 'info', evidence: knowledgeSummaryRow.knowledgeScope })
+        ? pillList(PillCell, entries, knowledgeSummaryRow.knowledgeScope, 'knowledge-person', 'info')
         : knowledgeSummaryRow.knowledgePersons;
       items.push({ key: 'persons', term: 'Persons', node, card: knowledgeSummaryRow.personsCard, quote: knowledgeSummaryRow.knowledgeScope, fullText: knowledgeSummaryRow.knowledgeScope });
     }
@@ -1088,7 +1205,9 @@ const parentRepresentationsConfig = buildRepresentationsConfig({
 });
 
 export {
+  extractKnowledgeNamedPersons,
   isRepresentationCard,
+  knowledgePersonsEntries,
   parentRepresentationsConfig,
   renderBody,
   renderKnowledgePill,

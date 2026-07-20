@@ -482,25 +482,56 @@ function rowsForCard(card) {
   });
 }
 
+// Ben (Skechers r16, item 2): "Award / contribution cutoff treatment --
+// does this duplicate the consideration column?" Verdict: DISTINCT.
+// cutoffTreatment is about the grant-date CUTOFF -- how awards granted (or
+// ESPP contributions changed) AFTER signing are treated, which the
+// per-instrument rows above never cover (they describe awards outstanding
+// at closing). On Skechers the stored value opens by restating the RSU
+// cash-out (which IS the duplicate half) before the operative cutoff
+// sentence ("each Company RSU ... granted after the date of this Agreement
+// shall be treated as set forth in Section 5.2(l) of the Company
+// Disclosure Letter"). extractCutoffSummary keeps only the sentence(s)
+// carrying the actual cutoff signal, so the row reads in the table's own
+// voice; the full stored clause stays behind the row's see-text/hover
+// affordance. Deterministic sentence selection -- validated against every
+// corpus deck carrying cutoffTreatment (Verizon/Frontier, HireRight,
+// IBM/Red Hat, Amazon/Whole Foods, ConocoPhillips/Concho, Goodyear/Cooper,
+// Skechers); decks whose text carries no cutoff-shaped sentence keep the
+// full text (still gated, never dumped inline).
+const CUTOFF_SIGNAL_RE = /(?:grant|award|issu)\w*[^.]{0,60}(?:on\s+or\s+)?(?:after|following)\s+the\s+date\s+(?:of\s+th(?:is|e)\s+Agreement|hereof)|first\s+granted|participants?\s+on\s+the\s+date\s+of\s+this\s+Agreement|in\s+effect\s+on\s+the\s+date\s+of\s+this\s+Agr/i;
+function extractCutoffSummary(text) {
+  const sentences = String(text || '').split(/(?<=\.)\s+(?=[A-Z(])/);
+  const picked = sentences.filter((s) => CUTOFF_SIGNAL_RE.test(s));
+  if (!picked.length) return null;
+  return picked.join(' ').trim();
+}
 function cutoffRow(cards) {
   for (const card of cards) {
     const f = cardFeatures(card);
     const cutoff = valueText(f.cutoffTreatment);
     if (cutoff) {
+      const summary = extractCutoffSummary(cutoff);
       return {
         id: `equity-awards-cutoff-${card.id || 'card'}`,
-        instrument: 'Award / contribution cutoff treatment',
-        considerationLabel: cutoff,
+        // Retitled in the table's voice (Ben r16 item 2): this row is about
+        // NEW grants / contribution changes after signing, not another
+        // instrument's consideration.
+        instrument: 'New grants / contributions after signing',
+        considerationLabel: summary || cutoff,
         considerationTone: 'neutral',
         vestingLabel: null,
         vestingTone: 'neutral',
         cvrEntitlement: null,
-        evidence: textOf(card),
+        // Evidence keeps the FULL stored cutoff clause (plus card quote) so
+        // the truncation affordance / hover always reaches the whole text.
+        evidence: cutoff.length > (summary || '').length ? cutoff : textOf(card),
         sourceCard: card,
         present: true,
         // Cutoff clauses are full sentences, not short enum-style facts --
-        // keep this one row on the plain-text cell (still evidence-linked)
-        // instead of squeezing prose into a truncating pill.
+        // rendered through the shared see-text truncation (below), never
+        // inline (r16 raw-dump sweep: this row was one of the two genuine
+        // inline-dump sites corpus-wide).
         isLongText: true,
       };
     }
@@ -553,6 +584,19 @@ function renderInstrument(row, ctx) {
   return cell(row.instrument, ctx, row);
 }
 
+// r16 raw-dump sweep: long-prose cells (the cutoff row) must route through
+// the shared truncate-with-"See provision" primitive, never render the full
+// clause inline. equity-awards is NOT in ProvisionTable's FULL_TEXT_COLUMNS
+// relocation list, so unlike most detail columns this cell really does
+// render inline -- it was one of the two genuine inline-dump sites found by
+// the corpus sweep (IBM/Red Hat + Skechers).
+function longTextCell(text, ctx, row) {
+  if (!text) return cell(null, ctx, row);
+  const TruncatedWithSeeText = ctx?.primitives?.TruncatedWithSeeText;
+  if (!TruncatedWithSeeText) return cell(text, ctx, row);
+  return React.createElement(TruncatedWithSeeText, { text, evidence: row.evidence, source: row.sourceCard });
+}
+
 const equityAwardsConfig = {
   id: 'equity-awards',
   title: 'Equity Awards',
@@ -572,13 +616,13 @@ const equityAwardsConfig = {
       id: 'consideration',
       header: 'Consideration',
       width: '24%',
-      renderCell: (row, ctx) => (row.isLongText ? cell(row.considerationLabel, ctx, row) : pill(row.considerationLabel, row.considerationTone, ctx, row)),
+      renderCell: (row, ctx) => (row.isLongText ? longTextCell(row.considerationLabel, ctx, row) : pill(row.considerationLabel, row.considerationTone, ctx, row)),
     },
     {
       id: 'vestingTreatment',
       header: 'Vesting Treatment',
       width: '24%',
-      renderCell: (row, ctx) => (row.isLongText ? cell(row.vestingLabel, ctx, row) : pill(row.vestingLabel, row.vestingTone, ctx, row)),
+      renderCell: (row, ctx) => (row.isLongText ? longTextCell(row.vestingLabel, ctx, row) : pill(row.vestingLabel, row.vestingTone, ctx, row)),
     },
     // (#7) "Must be in the money at closing" instead of the raw "ITM" code.
     { id: 'cvrEntitlement', header: 'CVR Entitlement', width: '22%', renderCell: (row, ctx) => cell(row.cvrEntitlement, ctx, row) },
@@ -592,6 +636,7 @@ export {
   cvrEntitlementFor,
   equityAwardRows,
   equityAwardsConfig,
+  extractCutoffSummary,
   instrumentMetaForKey,
   instrumentTreatmentEntries,
   isEquityAward,

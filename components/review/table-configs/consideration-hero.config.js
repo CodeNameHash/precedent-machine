@@ -90,6 +90,74 @@ function hasConsiderationSignal(card) {
   if (['considerationType', 'perShareAmount', 'cashAmount', 'exchangeRatio', 'offerConsideration', 'offerPrice'].some((key) => valueText(features[key]))) return true;
   return /\bconsideration|per share|exchange ratio|CVR|offer price/i.test(`${card?.short_title || ''} ${textOf(card)}`);
 }
+// Ben (Skechers r16, item 1): "for all deals with proration, add how it
+// works." The prorationMechanics row used to surface only the FIRST card's
+// mechanics object -- on Skechers that's the CONSID-CONVERT card, whose
+// `.text` is the non-election default and whose oversubscriptionTreatment
+// is null, so the row said THAT an election exists but not the proration
+// mechanism (which lives on the CONSID-EXCHANGE card's mechanics object).
+// Mirrors review-v2/ElectionCard.jsx's summarizeOversubscription approach:
+// the mechanism line is derived DETERMINISTICALLY from the clause shape
+// (which side's elections exceed which cap), never paraphrased by a model.
+// Corpus-validated against every deck carrying prorationMechanics
+// (QXO/TopBuild and 3G/Skechers -- the only true proration deals in the
+// cached corpus; SkyWater affirmatively has no proration and carries no
+// mechanics object). When no shape matches, returns null and the row keeps
+// its prior rendering -- never a raw dump, never a guess.
+function allProrationMechanics(cards) {
+  const hits = [];
+  for (const card of cards) {
+    for (const key of ['prorationMechanics', 'electionMechanics']) {
+      const value = cardFeatures(card)[key];
+      if (value && typeof value === 'object' && !Array.isArray(value)) hits.push({ value, card });
+    }
+  }
+  return hits;
+}
+function summarizeProrationMechanism(mechanicsList) {
+  const list = (mechanicsList || []).filter(Boolean);
+  if (!list.length) return null;
+  const overs = list.map((m) => String(m.oversubscriptionTreatment || '')).join('\n');
+  const texts = list.map((m) => String(m.text || '')).join('\n');
+  const all = `${overs}\n${texts}`;
+  const parts = [];
+  // -- oversubscription / cut-back shape (same detection family as
+  // review-v2 ElectionCard's summarizeOversubscription) --
+  const cashOver = /Cash Election Shares exceeds the Maximum Cash/i.test(overs);
+  const stockOver = /Stock Election Shares exceeds the Maximum Stock/i.test(overs);
+  const mixedOver = /Mixed Election Shares exceeds the Maximum (?:Equity|Mixed)[\w ]*?(?:Cap|Number)/i.test(overs);
+  if (cashOver && stockOver) {
+    parts.push('If either side is oversubscribed, the other side receives its chosen form in full and the oversubscribed elections are prorated back to the cap (balance paid in the other form).');
+  } else if (cashOver) {
+    parts.push('If cash elections exceed the cap, stock elections are honored in full and cash elections are prorated back to the cap (balance paid in stock).');
+  } else if (stockOver) {
+    parts.push('If stock elections exceed the cap, cash elections are honored in full and stock elections are prorated back to the cap (balance paid in cash).');
+  } else if (mixedOver) {
+    const remainderCash = /remaining[\s\S]{0,120}?Cash (?:Election )?Consideration/i.test(overs);
+    parts.push(`If mixed (cash + stock) elections exceed the equity election cap, each holder's mixed elections are prorated back to the cap pro rata${remainderCash ? ', with the remainder paid as the cash election consideration' : ''}.`);
+  }
+  if (!parts.length) return null; // no confident mechanism -> show nothing new
+  // -- election caps, when the clause states them as percentages --
+  const capCash = all.match(/\((\d{1,2}(?:\.\d+)?)%\)[^"“]{0,220}?["“]Maximum Cash Election/i);
+  const capStock = all.match(/\((\d{1,2}(?:\.\d+)?)%\)[^"“]{0,320}?["“]Maximum Stock Election/i);
+  if (capCash && capStock) parts.unshift(`Caps: ${capCash[1]}% cash / ${capStock[1]}% stock.`);
+  // -- non-election default, read off the clause's own "Non-Election
+  // Shares ... right to receive the X Consideration" shape --
+  const nonElection = all.match(/Non-Election Shares[\s\S]{0,220}?right to receive (?:the )?([A-Z][\w -]*?Consideration)/);
+  if (nonElection) parts.push(`Shares with no valid election receive the ${nonElection[1]}.`);
+  return parts.join(' ');
+}
+// Full source language backing the mechanism line: every mechanics object's
+// own text + oversubscription clause, plus the owning cards' quotes.
+function prorationEvidence(hits) {
+  const chunks = [];
+  for (const { value } of hits) {
+    if (value.text) chunks.push(String(value.text));
+    if (value.oversubscriptionTreatment) chunks.push(String(value.oversubscriptionTreatment));
+  }
+  return chunks.filter(Boolean).join('\n\n');
+}
+
 function makeRow(id, label, kind, value, card, electionOption) {
   const detail = valueText(value);
   if (!detail) return null;
@@ -329,9 +397,38 @@ function renderElectionAttributionBadge(row, ctx) {
   return React.createElement(PillCell, { label, tone: 'info', evidence: row.evidence });
 }
 
+// Item 1 (Skechers r16): concise derived mechanism line, with the FULL
+// proration/election clause behind the same "See provision" <details>
+// affordance the shared primitives use -- the summary is short, so
+// ClampedWithSeeText alone would render it with no expansion at all and the
+// source language would be reachable only via hover.
+function renderProrationSummary(row, ctx) {
+  const EvidenceHoverSource = ctx?.primitives?.EvidenceHoverSource;
+  const summaryNode = EvidenceHoverSource
+    ? React.createElement(EvidenceHoverSource, { evidence: row.evidence, source: row.sourceCard || row.card, as: 'span' }, row.detail)
+    : row.detail;
+  if (!row.evidence) return summaryNode;
+  return React.createElement(
+    'span',
+    null,
+    summaryNode,
+    React.createElement(
+      'details',
+      { className: 'mt-1' },
+      React.createElement('summary', { className: 'term-cell-seetext', style: { listStyle: 'none' } }, 'See provision'),
+      React.createElement(
+        'div',
+        { className: 'mt-1 max-w-[42rem] whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight' },
+        row.evidence,
+      ),
+    ),
+  );
+}
+
 function renderDetail(row, ctx) {
 let base;
   if (row.isLink) base = renderLinkDetail(row, ctx);
+  else if (row.prorationSummary) base = renderProrationSummary(row, ctx);
   else if (row.id === PER_SHARE_ROW_ID && Array.isArray(row.parts)) base = renderPerShareDetail(row, ctx);
   else if (PILL_DETAIL_IDS.has(row.id)) base = renderPillDetail(row, ctx);
   else {
@@ -395,6 +492,26 @@ const considerationHeroConfig = {
     for (const [key, label, kind] of DIRECT_ROWS) {
       const hit = firstFeature(cards, key);
       if (!hit) continue;
+      // Item 1 (Skechers r16): the proration row surfaces the derived
+      // MECHANISM line (merged across every card carrying mechanics -- the
+      // oversubscription clause often lives on a different card than the
+      // election/default text), with the full source language behind the
+      // row's "See provision" affordance. Falls through to the ordinary
+      // rendering when no mechanism can be confidently derived.
+      if (key === 'prorationMechanics') {
+        const hits = allProrationMechanics(cards);
+        const summary = summarizeProrationMechanism(hits.map((h) => h.value));
+        if (summary) {
+          const row = makeRow(key, label, kind, summary, hits[0]?.card || hit.card, electionAttributionLabel(electionMechanism, key, hit.value));
+          if (row) {
+            row.detail = summary;
+            row.prorationSummary = true;
+            row.evidence = prorationEvidence(hits) || row.evidence;
+            rows.push(row);
+          }
+          continue;
+        }
+      }
       if (key === 'cvrMilestonePayments') {
         const items = meaningfulCvrMilestones(hit.value);
         if (items.length) rows.push(makeRow(key, label, kind, items, hit.card));
@@ -425,4 +542,4 @@ const considerationHeroConfig = {
   ],
 };
 
-export { considerationHeroConfig, renderDetail };
+export { considerationHeroConfig, renderDetail, summarizeProrationMechanism };

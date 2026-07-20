@@ -223,7 +223,18 @@ function renderSignals(row, ctx) {
   }));
 }
 
+// r16 raw-dump sweep: 'advisers-fees-expenses' is NOT in ProvisionTable's
+// FULL_TEXT_COLUMNS relocation list, so this detail cell really does render
+// inline -- it was one of the two genuine inline-dump sites found by the
+// corpus sweep (Marriott/Starwood's 536-char fee-allocation clause and four
+// others rendered as unbounded prose). Long values now route through the
+// shared TruncatedWithSeeText primitive (short values still render inline,
+// hover-linked, exactly as before).
 function renderDetail(row, ctx) {
+  const TruncatedWithSeeText = ctx?.primitives?.TruncatedWithSeeText;
+  if (TruncatedWithSeeText) {
+    return React.createElement(TruncatedWithSeeText, { text: row.detail, evidence: row.evidence, source: row.sourceCard });
+  }
   const EvidenceHoverSource = ctx?.primitives?.EvidenceHoverSource;
   if (!EvidenceHoverSource || !row.evidence) return row.detail;
   return React.createElement(EvidenceHoverSource, { evidence: row.evidence, source: row.sourceCard, as: 'span' }, row.detail);

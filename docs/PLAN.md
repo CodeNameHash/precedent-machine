@@ -92,6 +92,54 @@ re-extract session's context.
    cards mislabeled "1.01 | General / Preamble" (display-side exclusion
    already shipped; the stored refs are still wrong).
 
+### r16 deal-compare gap audit (2026-07-20, verified against sources)
+
+P0 — Re-run subtype classification for four mass-null deals from
+     m2-00-corpus-backfill-v1 (cards + quotes exist; provision_subtype
+     is null so every compare/table row falsely reads "Not extracted"):
+     fc03e7e3 Quikrete/Summit 254/286 null (89%); bb5f062d
+     Novo/Catalent 225/286 (79%); a1b07312 HPE/Juniper 191/244 (78%);
+     65a3e3c8 ENDRA/Renergen 168/333 (50%). Per-deal
+     scripts/reprocess.js --classify-only run should suffice — no
+     re-ingest. This one fix eliminates the bulk of false one-sided
+     compare rows corpus-wide.
+P0 — Quikrete/Summit fee economics: the TERMINATION_FEE card has
+     features:{} and quotes §10.02 only; source §11.04(b) carries the
+     $279,000,000 Company Termination Fee, its Superior-Proposal/CoR
+     triggers, a 12-month tail, and sole-remedy language. None
+     extracted.
+P1 — Heinz/Kraft equity-award treatment (§6.04 Kraft Stock Plan:
+     option adjustment, unvested conversion, ESPP termination) captured
+     only as generic COV-EMPLOYEE — equity-awards table empty on a $46B
+     deal.
+P1 — ENDRA change-of-recommendation + match right: §7.2(b) has the full
+     CoR machinery (5-BD Superior Proposal Notice, last-look) folded
+     into COV-MEETING; no NOSOL-RECOMMEND/-MATCH/-NOTICE cards.
+P2 — Appraisal rows: Heinz/Kraft §2.01(c) "No appraisal rights…" inside
+     CONSID-CONVERT with no CONSID-DISSENT row; ENDRA §3.5 same concept,
+     card exists but appraisalRightsAvailable flag unpopulated.
+P2 — Mis-familied cards: ENDRA §7.3 regulatory matters filed as
+     COV-FURTHER; Heinz/Kraft shareholder-litigation + listing covenants
+     under ANTITRUST_REGULATORY/null; Publicity §9.13 null-subtyped.
+P3 — Taxonomy splits creating false one-sided compare rows (fix by
+     canonicalizing codes, Fable-tier): REP-T-CONTRACTS vs
+     REP-T-MATERIAL-CONTRACTS; REP-T-CONSENT vs REP-T-NOCONFLICT;
+     REP-T-SANCTIONS vs REP-T-ANTICORR; SEC-rep fold-ins (NOLIAB,
+     CONTROLS); MISC-JURY into MISC-JURISD; COV-PAYAGENT vs
+     CONSID-EXCHANGE; COV-PROXY into COV-MEETING.
+P3 — Recurring fold-in pattern (proxy-in-meeting, jury-in-jurisdiction,
+     appraisal-in-conversion): systematic prompt/post-pass issue for the
+     next extraction-prompt revision, not deal-specific fixes.
+P3 — ENDRA metadata check: source parties are ENDRA Life Sciences /
+     Noble Africa LLC (Parent: ASP Isotopes); display says "ENDRA /
+     Renergen". TERMR-OUTSIDE slot holds a definition-shaped card.
+P2 — Skechers stored-quote truncations (r16 structured-voice round):
+     fiduciaryFinalStandard stored as a headless mid-clause fragment
+     (truncated at the START); DEF-SUPERIOR card mislabeled (titled
+     "Superior Proposal", contains the Notice Period definition) with
+     primary_quote hard-truncated at 164 chars mid-word. Both need the
+     re-extract quote-capture fix; render side is already gated.
+
 ## Deferred / backlog (unchanged priorities)
 
 - Deal-to-market saved-search persistence (query_cache table) — needs a
