@@ -51,6 +51,11 @@ import { rowsForCard as equityRowsForCard } from '../../components/review/table-
 
 const { FEATURES } = require('../../lib/schema/features');
 const taxonomy = require('../../lib/taxonomy');
+// r14 (Ben, "compare look-back LENGTHS, not dates"): registry of deal-
+// relative anchor fields (lib/query/relative-periods.js — audited field
+// list, rounding rule, never-guess contract) + the shared distribution
+// builder in corpus-stats-core (CJS, unit-tested directly there).
+const { isRelativePeriodField } = require('../../lib/query/relative-periods');
 const { buildFeaturesForCard } = require('../../lib/queries/claims-adapter');
 // r13 (batch endpoint follow-on): the peer-set/featureSummary/peers/options
 // computation below is now shared with pages/api/corpus-stats-batch.js via
@@ -69,6 +74,7 @@ const {
   cardIdForClaim,
   buildCorpusBase,
   buildCodeStats,
+  buildRelativePeriodDistribution,
 } = require('../../lib/queries/corpus-stats-core');
 
 // The claims fetch filters on provenance->>code — an expression Postgres has
@@ -160,8 +166,13 @@ function dealEntryForClaim(claim, dealsById, cardIdByKey) {
 // is already scoped to the peer set + this attribute. Each distribution
 // option/point also carries the deals behind it (sidebar redesign, item 1:
 // click an option -> expand its deals -> "See deal"/"See provision").
-function buildFeatureDistribution(attribute, peerClaims, subjectDealId, dealsById, cardIdByKey) {
+function buildFeatureDistribution(attribute, peerClaims, subjectDealId, dealsById, cardIdByKey, dealMetaById) {
   const label = attributeLabel(attribute);
+  // r14: deal-relative look-back fields distribute over months-before-
+  // signing, never over raw anchor dates — see the registry module header.
+  if (isRelativePeriodField(attribute)) {
+    return buildRelativePeriodDistribution(attribute, peerClaims, subjectDealId, dealsById, cardIdByKey, dealMetaById);
+  }
   if (isNumericAttribute(attribute, peerClaims)) {
     const byDeal = new Map();
     const claimByDeal = new Map();
@@ -422,10 +433,14 @@ export default async function handler(req, res) {
           .in('attribute', requestedFeatureKeys)
           .limit(4000);
         if (attrErr) throw new Error(attrErr.message);
+        // r14: the relative-period path needs each deal's signing date
+        // (deals.announce_date — the same field dealRow() exposes as
+        // signing_date) to convert anchor dates to months-before-signing.
+        const dealMetaById = new Map(base.stagingFree.map((d) => [d.id, d]));
         rowContext.features = requestedFeatureKeys
           .map((attribute) => {
             const peerClaims = (attrClaims || []).filter((cl) => cl.attribute === attribute && peerIds.has(cl.deal_id));
-            return buildFeatureDistribution(attribute, peerClaims, subjectDealId, dealsById, cardIdByKey);
+            return buildFeatureDistribution(attribute, peerClaims, subjectDealId, dealsById, cardIdByKey, dealMetaById);
           })
           .filter(Boolean);
       }
