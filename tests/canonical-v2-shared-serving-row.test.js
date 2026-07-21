@@ -7,7 +7,11 @@ const {
   prepareSharedRowsForRendering,
   validateSharedServingRow,
 } = require('../lib/canonical-v2/shared-serving-row');
-const { adaptSharedServingRow, SURFACES } = require('../lib/canonical-v2/shared-row-adapter');
+const {
+  adaptSharedServingRow,
+  adaptSharedServingRows,
+  SURFACES,
+} = require('../lib/canonical-v2/shared-row-adapter');
 const { buildCompleteServingFixture } = require('./helpers/canonical-v2-serving-fixture');
 
 let rowMarketContext;
@@ -134,6 +138,22 @@ test('a later adapter failure is isolated and duplicate row keys are rejected lo
 
   const duplicates = prepareSharedRowsForRendering([first, first]);
   assert.deepEqual(duplicates.map((item) => item.render_kind), ['ROW', 'ROW_RENDER_FAILED']);
+});
+
+test('the shared adapter returns renderable siblings around an unrecognised provision', () => {
+  const first = buildCompleteServingFixture().row;
+  const second = buildCompleteServingFixture({ release: 'candidate-b' }).row;
+  const prepared = adaptSharedServingRows([
+    first,
+    { row_kind: 'UNRECOGNISED_PROVISION_CANDIDATE' },
+    second,
+  ]);
+
+  assert.deepEqual(prepared.map((item) => item.render_kind), ['ROW', 'ROW_RENDER_FAILED', 'ROW']);
+  assert.equal(prepared[1].reason_code, 'INVALID_SHARED_SERVING_ROW');
+  assert.equal(prepared[0].prepared.row_key, first.row_serving_key);
+  assert.equal(prepared[2].prepared.row_key, second.row_serving_key);
+  assert.equal(Object.hasOwn(prepared[0], 'row'), false);
 });
 
 test('Review, Corpus Context, Compare and Query consume one typed row contract', () => {

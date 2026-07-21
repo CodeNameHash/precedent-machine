@@ -12,21 +12,25 @@ export async function getServerSideProps(context) {
   const { buildLandosReviewedServingFixture } = require('../../__fixtures__/canonical-v2/landos-reviewed-row');
   const { buildLandosIocCapexServingFixture } = require('../../__fixtures__/canonical-v2/landos-ioc-capex-row');
   const { buildLandosNoShopServingFixture } = require('../../__fixtures__/canonical-v2/landos-no-shop-rows');
-  const { adaptSharedServingRow } = require('../../lib/canonical-v2/shared-row-adapter');
+  const { adaptSharedServingRows } = require('../../lib/canonical-v2/shared-row-adapter');
   const fixture = buildLandosReviewedServingFixture();
   const iocFixture = buildLandosIocCapexServingFixture();
   const noShopFixture = buildLandosNoShopServingFixture();
-  const adapted = adaptSharedServingRow(fixture.row);
-  const adaptedIoc = adaptSharedServingRow(iocFixture.row);
-  const adaptedNoShop = noShopFixture.rows.map(adaptSharedServingRow);
+  const [reviewedRow, unrecognisedRow, iocRow, ...noShopRows] = adaptSharedServingRows([
+    fixture.row,
+    { row_kind: 'UNRECOGNISED_PROVISION_CANDIDATE' },
+    iocFixture.row,
+    ...noShopFixture.rows,
+  ]);
   return {
     props: {
-      adapted: JSON.parse(JSON.stringify(adapted)),
-      ioc_capex_row: JSON.parse(JSON.stringify(adaptedIoc)),
+      reviewed_row: JSON.parse(JSON.stringify(reviewedRow)),
+      unrecognised_row: JSON.parse(JSON.stringify(unrecognisedRow)),
+      ioc_capex_row: JSON.parse(JSON.stringify(iocRow)),
       ioc_capex_source_text: iocFixture.detailPackage.detail_payloads[0].response_body.excerpt.exact_text,
-      no_shop_rows: JSON.parse(JSON.stringify(adaptedNoShop)),
-      no_shop_source_text_by_row: Object.fromEntries(adaptedNoShop.map((row, index) => [
-        row.row_key,
+      no_shop_rows: JSON.parse(JSON.stringify(noShopRows)),
+      no_shop_source_text_by_row: Object.fromEntries(noShopFixture.rows.map((row, index) => [
+        row.row_serving_key,
         noShopFixture.detailPackages[index].detail_payloads[0].response_body.excerpt.exact_text,
       ])),
       exact_source_text: fixture.exactDetail.detail_payloads[0].response_body.excerpt.exact_text,
@@ -34,6 +38,26 @@ export async function getServerSideProps(context) {
       preview_environment: context?.req?.headers?.host || 'local',
     },
   };
+}
+
+function RowFailure({ item, label = 'Provision needs review' }) {
+  return (
+    <div
+      className="border border-[#D8B56A] bg-[#FFF9EC] px-4 py-3"
+      data-row-result="failed"
+      data-reason-code={item?.reason_code || 'INVALID_SHARED_SERVING_ROW'}
+    >
+      <div className="text-[9px] font-bold uppercase tracking-[0.12em] text-[#8A6417]">{label}</div>
+      <p className="mt-1 text-[10px] leading-4 text-[#5F4A1E]">
+        This provision could not be mapped safely. It is isolated for review while every valid sibling row remains available.
+      </p>
+    </div>
+  );
+}
+
+function RowBoundary({ item, label, children }) {
+  if (item?.render_kind !== 'ROW') return <RowFailure item={item} label={label} />;
+  return children(item.prepared);
 }
 
 function Surface({ name, rowKey, children }) {
@@ -117,15 +141,21 @@ function NoShopRows({ rows, sourceTextByRow }) {
         </p>
       </header>
       <div className="divide-y divide-[#E6E4DF]">
-        {rows.map((row) => (
-          <div key={row.row_key} className="grid grid-cols-[minmax(260px,1fr)_minmax(260px,0.9fr)] gap-5 px-4 py-4">
-            <div>
-              <div className="mb-2 text-[10px] font-bold text-[#1F1F1F]">{row.resolution.label}</div>
-              <SubjectTreatment adapted={row} sourceText={sourceTextByRow[row.row_key]} />
-            </div>
-            <div className="border-l border-[#E6E4DF] pl-5">
-              <MarketMetricCell resolution={row.resolution} data={row.data} />
-            </div>
+        {rows.map((item) => (
+          <div key={item.key} className="px-4 py-4">
+            <RowBoundary item={item} label="No-shop provision needs review">
+              {(row) => (
+                <div className="grid grid-cols-[minmax(260px,1fr)_minmax(260px,0.9fr)] gap-5" data-row-result="ready">
+                  <div>
+                    <div className="mb-2 text-[10px] font-bold text-[#1F1F1F]">{row.resolution.label}</div>
+                    <SubjectTreatment adapted={row} sourceText={sourceTextByRow[row.row_key]} />
+                  </div>
+                  <div className="border-l border-[#E6E4DF] pl-5">
+                    <MarketMetricCell resolution={row.resolution} data={row.data} />
+                  </div>
+                </div>
+              )}
+            </RowBoundary>
           </div>
         ))}
       </div>
@@ -133,7 +163,7 @@ function NoShopRows({ rows, sourceTextByRow }) {
   );
 }
 
-function IocCapexRow({ row, sourceText }) {
+function IocCapexRow({ item, sourceText }) {
   return (
     <section className="mt-5 border border-[#D9D7D2] bg-white">
       <header className="border-b border-[#E6E4DF] bg-[#F7F5F0] px-4 py-3">
@@ -143,28 +173,47 @@ function IocCapexRow({ row, sourceText }) {
           Raw dollars remain visible. The market comparison uses percentage of the source-backed closing deal value.
         </p>
       </header>
-      <div className="grid grid-cols-[minmax(260px,1fr)_minmax(260px,0.9fr)] gap-5 px-4 py-4">
-        <SubjectTreatment adapted={row} sourceText={sourceText} />
-        <div className="border-l border-[#E6E4DF] pl-5">
-          <MarketMetricCell resolution={row.resolution} data={row.data} />
-        </div>
+      <div className="px-4 py-4">
+        <RowBoundary item={item} label="Capital-expenditure provision needs review">
+          {(row) => (
+            <div className="grid grid-cols-[minmax(260px,1fr)_minmax(260px,0.9fr)] gap-5" data-row-result="ready">
+              <SubjectTreatment adapted={row} sourceText={sourceText} />
+              <div className="border-l border-[#E6E4DF] pl-5">
+                <MarketMetricCell resolution={row.resolution} data={row.data} />
+              </div>
+            </div>
+          )}
+        </RowBoundary>
       </div>
     </section>
   );
 }
 
+function RowIsolationProof({ item }) {
+  return (
+    <section className="mt-5 border border-[#D9D7D2] bg-white px-4 py-4" data-isolation-proof="true">
+      <div className="mb-3 text-[9px] font-bold uppercase tracking-[0.14em] text-[#77736C]">Row isolation proof</div>
+      <RowBoundary item={item} label="Unrecognised provision">
+        {() => null}
+      </RowBoundary>
+    </section>
+  );
+}
+
 export default function CanonicalV2DesignFixture({
-  adapted,
+  reviewed_row: reviewedRow,
   exact_source_text: exactSourceText,
   ioc_capex_row: iocCapexRow,
   ioc_capex_source_text: iocCapexSourceText,
   no_shop_rows: noShopRows,
   no_shop_source_text_by_row: noShopSourceTextByRow,
+  unrecognised_row: unrecognisedRow,
   reviewed_mapping_id: reviewedMappingId,
   preview_environment: previewEnvironment,
 }) {
-  const context = buildTypedRowMarketContext(adapted.resolution, adapted.data);
-  const rowKey = adapted.row_key;
+  const adapted = reviewedRow.render_kind === 'ROW' ? reviewedRow.prepared : null;
+  const context = adapted ? buildTypedRowMarketContext(adapted.resolution, adapted.data) : null;
+  const rowKey = reviewedRow.key;
   return (
     <>
       <Head><title>Canonical v2 cross-surface fixture</title></Head>
@@ -188,27 +237,41 @@ export default function CanonicalV2DesignFixture({
 
           <div className="grid gap-5 xl:grid-cols-2">
             <Surface name="Review" rowKey={rowKey}>
-              <div className="grid grid-cols-[minmax(180px,0.8fr)_minmax(240px,1.2fr)] gap-5">
-                <SubjectTreatment adapted={adapted} sourceText={exactSourceText} />
-                <MarketMetricCell resolution={adapted.resolution} data={adapted.data} />
-              </div>
+              <RowBoundary item={reviewedRow} label="Capitalisation result needs review">
+                {(row) => (
+                  <div className="grid grid-cols-[minmax(180px,0.8fr)_minmax(240px,1.2fr)] gap-5" data-row-result="ready">
+                    <SubjectTreatment adapted={row} sourceText={exactSourceText} />
+                    <MarketMetricCell resolution={row.resolution} data={row.data} />
+                  </div>
+                )}
+              </RowBoundary>
             </Surface>
 
             <Surface name="Compare" rowKey={rowKey}>
-              <div className="grid grid-cols-[minmax(180px,0.8fr)_minmax(240px,1.2fr)] gap-5">
-                <SubjectTreatment adapted={adapted} sourceText={exactSourceText} />
-                <MarketMetricCell resolution={adapted.resolution} data={adapted.data} />
-              </div>
+              <RowBoundary item={reviewedRow} label="Capitalisation result needs review">
+                {(row) => (
+                  <div className="grid grid-cols-[minmax(180px,0.8fr)_minmax(240px,1.2fr)] gap-5" data-row-result="ready">
+                    <SubjectTreatment adapted={row} sourceText={exactSourceText} />
+                    <MarketMetricCell resolution={row.resolution} data={row.data} />
+                  </div>
+                )}
+              </RowBoundary>
             </Surface>
 
             <Surface name="Corpus Context" rowKey={rowKey}>
-              <div className="min-h-[420px] overflow-hidden border border-[#E6E4DF] [&>aside]:!block [&>aside]:!static [&>aside]:!h-auto [&>aside]:!w-full [&>aside]:!border-l-0">
-                <MarketDrilldownSidebar context={context} />
-              </div>
+              <RowBoundary item={reviewedRow} label="Capitalisation result needs review">
+                {() => (
+                  <div className="min-h-[420px] overflow-hidden border border-[#E6E4DF] [&>aside]:!block [&>aside]:!static [&>aside]:!h-auto [&>aside]:!w-full [&>aside]:!border-l-0" data-row-result="ready">
+                    <MarketDrilldownSidebar context={context} />
+                  </div>
+                )}
+              </RowBoundary>
             </Surface>
 
             <Surface name="Query" rowKey={rowKey}>
-              <QueryResult adapted={adapted} sourceText={exactSourceText} />
+              <RowBoundary item={reviewedRow} label="Capitalisation result needs review">
+                {(row) => <QueryResult adapted={row} sourceText={exactSourceText} />}
+              </RowBoundary>
             </Surface>
           </div>
 
@@ -217,7 +280,8 @@ export default function CanonicalV2DesignFixture({
             <div className="mt-2 font-mono text-[10px] leading-5 text-[#1F1F1F]">{exactSourceText}</div>
           </section>
 
-          <IocCapexRow row={iocCapexRow} sourceText={iocCapexSourceText} />
+          <RowIsolationProof item={unrecognisedRow} />
+          <IocCapexRow item={iocCapexRow} sourceText={iocCapexSourceText} />
           <NoShopRows rows={noShopRows} sourceTextByRow={noShopSourceTextByRow} />
         </div>
       </main>

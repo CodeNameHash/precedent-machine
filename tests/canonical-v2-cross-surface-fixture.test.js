@@ -49,6 +49,9 @@ test('the canonical design fixture is production-gated and performs no runtime d
   assert.match(page, /buildLandosNoShopServingFixture/);
   assert.match(page, /No-shop \/ non-solicit terms/);
   assert.match(page, /Interim operating covenant, capital expenditures/);
+  assert.match(page, /Row isolation proof/);
+  assert.match(page, /This provision could not be mapped safely/);
+  assert.match(page, /adaptSharedServingRows/);
   assert.match(page, /Exact source evidence/);
   assert.match(page, /CanonicalV2DesignFixture\.noLayout = true/);
   assert.doesNotMatch(page, /fetch\s*\(/);
