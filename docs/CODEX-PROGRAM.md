@@ -1,10 +1,14 @@
 # Canonical corpus v2: governing architecture and certification programme
 
 2026-07-20. Status: GOVERNING SPECIFICATION, EXECUTION BLOCKED. The prior
-architecture at commit `9af34c5` was rejected by adversarial review. Programme
-status derives only from the registry and generated status artefact below.
-Prose cannot satisfy, waive or change a gate. Missing, stale, malformed or
-unverifiable evidence is `OPEN` and blocks the affected work.
+specification at commit `1f4f72f` passed adversarial architecture review but was
+rejected by legal-semantic review for under-inclusive absence scope,
+incomplete relationship-effect semantics and incomplete serving lineage. This
+revision addresses those findings and remains unapproved until its exact digest
+passes the gates below. Programme status derives only from the registry and
+generated status artefact. Prose cannot satisfy, waive or change a gate.
+Missing, stale, malformed or unverifiable evidence is `OPEN` and blocks the
+affected work.
 
 ```yaml
 programme_gate_registry:
@@ -144,7 +148,7 @@ programme_gate_registry:
       evidence_contract: render-parity-certification/v1
     - id: P9_STRUCTURED_CLAIMS
       phase: 9
-      evidence_contract: claims-validation-persistence-enforcement/v1
+      evidence_contract: claims-and-relationship-effects-validation-persistence-enforcement/v1
     - id: P9_PARTY_LINT
       phase: 9
       evidence_contract: party-token-lint/v1
@@ -320,19 +324,23 @@ as separate objects and combines them by typed reference.
 
 - `lib/schema/canonical/contract-v2/manifest.json` and its closed, digest-listed
   file set form `CanonicalContractBundle`, the sole editable authority for legal
-  concepts, parties, claim, relationship, result and metric definitions,
-  correction slots, source-admission rules, units, normalisers, dependency DAGs,
-  query schemas, serving-row schemas and certification-policy schemas. It has
-  one versioned root manifest, a closed file set and one content fingerprint.
+  concepts, parties, claim and claim-scope definitions, relationship and
+  relationship-effect definitions, result and metric definitions, result-input
+  lineage schemas, correction slots, source-admission rules, units,
+  normalisers, dependency DAGs, query schemas, serving-row schemas and
+  certification-policy schemas. It has one versioned root manifest, a closed
+  file set and one content fingerprint.
 - Code, database constraints, generated types, query schemas, UI catalogues,
   compatibility registries and migration-map schemas and validators are
   generated one-way from that bundle. They are never reconciled back into it,
   and generated artefacts cannot be hand-edited. Legacy differences create
   reviewed proposals only.
-- Instance-specific source-admission, deal, anchor, supersession and correction
-  mappings are content-addressed governed data conforming to those generated
-  schemas. They require the specified review and approval, are never generated
-  merely because a legacy row exists and cannot define taxonomy or codebooks.
+- Instance-specific source-admission, deal, anchor, supersession, scope
+  dependency, ClaimScopeClosure, relationship-effect, ResultInputLineage and
+  correction records are content-addressed governed data conforming to those
+  generated schemas. They require the specified review and approval, are never
+  generated merely because a legacy row exists and cannot define taxonomy or
+  codebooks.
 - Immutable governed configuration instances have disjoint authority.
   `CacheBudgetManifest` alone owns deployed cache TTLs, entries, bytes, release
   retention, fill quotas and rates. `CapacityManifest` alone owns fleet and
@@ -510,11 +518,12 @@ as separate objects and combines them by typed reference.
 - A `ScopeAssessmentOccurrence` gives a whole-concept assessment a stable
   non-fabricated subject identity derived from its governed source occurrence or
   DealAdmissionManifest subject, assessment definition and version, concept,
-  governed party and the complete intended admitted-scope interval set. Every
-  interval-set member is `(canonical_text_id, start, end)`, so a deal-level
-  assessment may cover several admitted documents without mixing coordinate
-  systems. Examination progress is revision content and never changes this
-  logical occurrence ID.
+  governed party and the ordered `ClaimScopeClosure` IDs for its expected claim
+  slots. A closure uses occurrence-independent subject inputs, so this does not
+  create an identity cycle. Every interval-set member inside those closures is
+  `(canonical_text_id, start, end)`, so a deal-level assessment may cover
+  several admitted documents without mixing coordinate systems. Examination
+  progress is revision content and never changes this logical occurrence ID.
 - Any change to a source-anchor tuple, including a same-text boundary correction,
   requires an explicit reviewed anchor-migration map. Any change to a semantic
   or component identity creates a recorded superseding identity. Neither may be
@@ -523,6 +532,88 @@ as separate objects and combines them by typed reference.
 ### 3. Typed claims, evidence and explicit states
 
 - Every extracted answer is a typed claim governed by a `ClaimDefinition`.
+  Every ClaimDefinition references exactly one versioned
+  `ClaimScopeDefinition`. It declares the governed base-subject rule, permitted
+  document roles, party and capacity, temporal scope, proposition
+  quantification, conclusive-witness rule, legal-dependency traversal rules,
+  accepted dependency states and bounded closure cardinalities. A subject-only
+  scope is valid only when independent dependency enumeration proves that the
+  complete dependency set is empty. An extractor or contract author's bare
+  assertion that there is no external dependency is not proof.
+- Before candidate claim extraction, the expectation enumerator reads only the
+  CanonicalContractBundle, admitted source structure, reviewed definition and
+  legal-mechanism discovery, exact defined-term-use and cross-reference
+  candidates, source and deal admission manifests and pre-approved exclusions.
+  It creates one `ClaimScopeDependencyExpectation` for every definition,
+  governing chapeau, proviso, exception, cross-reference, incorporated schedule
+  or document, applicability rule or other semantic object that the
+  ClaimScopeDefinition requires to determine the proposition. It never reads
+  candidate claims, candidate relationship states or serving rows.
+- `claim_scope_dependency_expectation_id` is the domain-separated content hash
+  of the governed subject tuple, expected-claim-slot key, ClaimDefinition and
+  ClaimScopeDefinition keys and versions, dependency-rule slot,
+  RelationshipDefinition and RelationshipEffectSchema keys and versions,
+  direction, exact expected source and target semantic occurrence IDs and
+  endpoint roles, party and capacity, temporal scope, conditionality,
+  precedence and conflict constraints, permitted legal operation and affected
+  target-selection rule, source-backed evidence interval set and source-order
+  ordinal. Those required effect constraints form a canonical
+  `dependency_effect_constraint_digest`. The expectation is frozen scope data.
+  It is not a canonical assertion that the relationship is present and cannot
+  become an alternate relationship truth.
+- A `ClaimScopeClosure` is the immutable pre-extraction compilation of one
+  governed subject, expected claim slot and ClaimScopeDefinition. Its ID hashes
+  schema version, contract fingerprint, governed subject tuple,
+  ClaimDefinition and ClaimScopeDefinition keys and versions,
+  DealAdmissionManifest and ordered SourceAdmissionManifest IDs, ordered base
+  semantic occurrence IDs, ordered ClaimScopeDependencyExpectation IDs, the
+  complete required-examination interval set, ordered approved exclusion IDs,
+  ordered applicable CorrectionApplication IDs and closure-compiler version. It
+  contains no candidate ClaimRevision or RelationshipRevision ID.
+- Closure traversal proceeds to a fixed point over the governed dependency
+  rules. It includes applicable parent and child mechanisms, governing
+  chapeaux and provisos, inline and nested definitions, definitions used by
+  several provisions, cross-references, incorporated schedules or documents,
+  exceptions, overrides, party scope and temporal scope. Overlapping semantic
+  objects remain separate dependency occurrences, while underlying structural
+  leaves and coverage atoms are deduplicated so the same source interval is
+  examined once. A dependency cycle is traversed to a deterministic
+  deduplicated fixed point. An unresolved endpoint, unadmitted required source,
+  unexplained relevant discovery residual, bound breach or conflicting rule
+  fails closure and enters quarantine.
+- Each relationship capable of discharging a scope dependency has
+  `build_phase=PRE_CLAIM_SCOPE`. During candidate extraction every
+  ClaimScopeDependencyExpectation must be discharged by exactly one selected
+  RelationshipRevision that names the exact expectation ID and matches its
+  RelationshipDefinition, RelationshipEffectSchema, direction, endpoint roles,
+  resolved target occurrence set, party and capacity, temporal scope,
+  conditionality, precedence, legal operation, affected-target rule and
+  evidence scope. The ClaimScopeDefinition declares the terminal relationship
+  states permitted for that dependency slot. A permitted non-`PRESENT` state
+  must satisfy that state's exact independently frozen scope and proof rules; a
+  schema-valid but mismatched effect cannot discharge the slot.
+  `NOT_EXAMINED`, `FAILED`, a missing revision, unresolved target, partial
+  assessment or multiplicity never discharges it.
+- A ClaimRevision selects its exact ClaimScopeClosure and the ordered
+  RelationshipRevision IDs that discharge that closure's dependency
+  expectations. A ScopeAssessmentRevision selects the ordered closures for its
+  expected claims and the same dependency revisions. A changed dependency
+  expectation, interval, expected endpoint, admission, exclusion or closure rule
+  changes the closure. A changed selected endpoint, relationship state or effect
+  changes the discharging RelationshipRevision. Either change produces a new
+  ClaimRevision and every transitive dependant.
+- `ABSENT` is valid only when the selected ClaimScopeClosure compiled
+  successfully before extraction, every dependency expectation is discharged
+  in a state permitted by its ClaimScopeDefinition, examined intervals equal
+  the complete required-examination interval set, every coverage proof passes
+  and no qualifying present witness exists. Examination of only the base
+  provision, component or candidate-selected anchors cannot support absence
+  when the closure contains another dependency. Applicability cannot narrow a
+  frozen closure after extraction starts. An approved corpus exclusion is not
+  examined evidence. An excluded, unresolved, partially examined or failed
+  required dependency produces `NOT_EXAMINED`, `FAILED` or a source-backed
+  `NOT_APPLICABLE` as the state contract requires, never `ABSENT`.
+- Each expected claim has a stable occurrence:
   `claim_occurrence_id` derives from subject type and stable subject occurrence
   ID, claim-definition key and version and a deterministic source-order ordinal
   for governed repeatable claims. It means “this expected assertion here”, not
@@ -531,17 +622,19 @@ as separate objects and combines them by typed reference.
 - Each answer is an immutable `ClaimRevision`. Its ID is the
   domain-separated content hash of claim occurrence, exact
   ScopeAssessmentRevision ID when its owner is a ScopeAssessmentOccurrence,
-  state, raw and canonical values, unit, day basis, denominator, intended
-  admitted scope, examination coverage, ordered
+  exact ClaimScopeClosure ID, ordered dependency-discharging
+  RelationshipRevision IDs, expected-claim-slot key, state, raw and canonical
+  values, unit, day basis, denominator, intended admitted scope, examination
+  coverage, ordered
   `ClaimEvidence` edge IDs, applicability or failure payload and every
   extraction, normalisation and derivation version, plus ordered applied
   CorrectionApplication IDs. Run ID, timestamps and reviewer metadata remain
   provenance outside identity. Any change to state, value, scope, evidence or
   derivation produces a new revision ID.
 - Claim state is exactly one of `PRESENT`, `ABSENT`, `NOT_APPLICABLE`,
-  `NOT_EXAMINED` or `FAILED`. `ABSENT` is valid only when the complete
-  applicable scope has been examined. Missing data is never silently treated
-  as absence.
+  `NOT_EXAMINED` or `FAILED`. `ABSENT` is valid only under the complete frozen
+  ClaimScopeClosure rules above. Missing data is never silently treated as
+  absence.
 - Every claim occurrence is owned by exactly one `ProvisionInstance`,
   `ProvisionComponent` or `ScopeAssessmentOccurrence`. Cross-provision facts
   remain separate revisions and combine only in a `DerivedResult`.
@@ -556,8 +649,10 @@ as separate objects and combines them by typed reference.
 - Evidence ordinals sort by the excerpt's governed document-role and source
   order, earliest start, final end, governed role and excerpt ID. Model,
   insertion and database iteration order never enter them.
-- Every `PRESENT` or `ABSENT` claim records the examined scope. Every `PRESENT`
-  claim has exact evidence. `ABSENT` instead requires non-empty examined scope,
+- Every `PRESENT` or `ABSENT` claim records the examined scope and exact
+  ClaimScopeClosure. Every `PRESENT` claim has exact evidence. `ABSENT` instead
+  requires non-empty examined scope equal to the closure's complete
+  required-examination interval set, dependency-discharge proof,
   scope-coverage proof and extractor/version provenance; it does not require a
   fabricated positive quote. Missing evidence on a `PRESENT` claim, evidence
   outside the admitted scope, invalid taxonomy codes and unknown attributes
@@ -567,16 +662,19 @@ as separate objects and combines them by typed reference.
   `ProvisionComponent`; a whole-concept state attaches to its
   `ScopeAssessmentOccurrence`. The presence of a parent provision never reparents a
   component claim. An `ABSENT` claim does not fabricate a provision span.
-- `ScopeAssessmentRevision` ID hashes its occurrence ID, coverage status,
-  examined interval-set key, coverage-proof digest, assessor contract version,
-  ordered source Excerpt IDs and state-specific applicability or failure inputs. Coverage status
-  is `NOT_STARTED`, `PARTIAL`, `COMPLETE` or `FAILED`, independently of claim
-  state. Examined intervals must be contained in intended scope and duplicate
+- `ScopeAssessmentRevision` ID hashes its occurrence ID, ordered
+  ClaimScopeClosure IDs, ordered dependency-discharging RelationshipRevision
+  IDs, coverage status, examined interval-set key, coverage-proof digest,
+  assessor contract version, ordered source Excerpt IDs and state-specific
+  applicability or failure inputs. Coverage status is `NOT_STARTED`, `PARTIAL`,
+  `COMPLETE` or `FAILED`, independently of claim state. Examined intervals must
+  be contained in the deduplicated union of the selected closures and duplicate
   leaf coverage is invalid.
 - `NOT_STARTED` has an empty examined set. `PARTIAL` has a strict non-empty
-  subset of intended applicable leaves. `COMPLETE` covers every intended
-  applicable leaf exactly once. `FAILED` records attempted coverage, canonical
-  failure code and assessor version. A scope-owned `ABSENT` ClaimRevision also
+  subset of that required applicable union. `COMPLETE` covers every required
+  applicable leaf or coverage atom in the union exactly once. `FAILED` records
+  attempted coverage, canonical failure code and assessor version. A
+  scope-owned `ABSENT` ClaimRevision also
   requires no qualifying present witness. A `PRESENT` existential claim may use
   partial coverage only when its ClaimDefinition declares one exact witness
   conclusive; a universal claim may not.
@@ -599,35 +697,97 @@ as separate objects and combines them by typed reference.
 
 - `RelationshipDefinition` governs typed edges including `CONTAINED_IN`,
   `USES_DEFINITION`, `APPLIES_TO`, `BRINGS_DOWN`, `EXCEPTED_BY`, `GOVERNS`,
-  `ENFORCED_BY`, `TRIGGERS_REMEDY` and `MIRRORS`. Vocabulary changes pass the
-  Freeze Gate.
-- It declares permitted source and target object types, cardinality, required
-  evidence roles, state rules and whether targets may be components or claims.
-  `relationship_occurrence_id` derives from definition and version, typed
-  `source_endpoint_occurrence_id`, governed target type and role, complete
-  intended-scope interval set and source-order ordinal. Every state requires
-  non-empty intended scope; a relationship without it is quarantined.
+  `ENFORCED_BY`, `TRIGGERS_REMEDY` and `MIRRORS`. Vocabulary and effect-schema
+  changes pass the Freeze Gate.
+- Every RelationshipDefinition selects exactly one closed, versioned
+  `RelationshipEffectSchema` and one effect mode: `TYPED_LEGAL_EFFECT` or
+  `NON_SEMANTIC`. The schema declares effect kind, direction, permitted source
+  and target occurrence or revision types, endpoint semantic roles, party and
+  capacity roles, affected-target selection and cardinality, conditionality,
+  temporal scope, precedence and conflict rules, legal operation, propagation
+  or non-propagation rules, required raw-scope representation, deterministic
+  scope-resolution rule, evidence roles and build phase. Missing fields,
+  unknown codes or a payload outside that closed schema fail compilation.
+  There is no effectless generic semantic relationship.
+- Build phase is `PRE_CLAIM_SCOPE` or `POST_CLAIM`. A pre-claim relationship may
+  use only immutable semantic, component, scope-dependency or claim occurrence
+  IDs and source-backed evidence that exist before the dependent ClaimRevision;
+  it may encode an exact conditional predicate by occurrence reference without
+  claiming that the condition is factually satisfied. It may discharge a
+  ClaimScopeDependencyExpectation. A contract that makes it depend on the
+  ClaimRevision whose scope it controls is cyclic and fails compilation. A
+  post-claim relationship may depend on exact earlier ClaimRevision or
+  RelationshipRevision IDs only through the compiled dependency DAG.
+- `CONTAINED_IN` is `NON_SEMANTIC` with legal operation `GEOMETRIC_ONLY`. It
+  establishes source geometry and no automatic inheritance of concept, party,
+  qualifier, exception, definition, claim, evidence or legal effect. A separate
+  effect-bearing relationship is required for semantic use. `MIRRORS` is
+  `NON_SEMANTIC` with legal operation `DISPLAY_SIMILARITY_ONLY`; it may support
+  explicitly labelled navigation or display but cannot transfer a party,
+  state, claim, value, evidence or effect or satisfy a legal result, metric,
+  normaliser or predicate.
+- `USES_DEFINITION` identifies the exact defined-term-use span, definition
+  occurrence, governed term and sense, affected semantic objects, components
+  or claim fields, application scope, recursive dependencies and applicable
+  override or precedence rule. Containment alone cannot substitute for it.
+- `BRINGS_DOWN` identifies the closing-condition occurrence, exact
+  representation and limb targets, representation maker, condition obligor,
+  beneficiary or right holder, measurement dates, accuracy standard,
+  materiality or MAE scrape, exceptions and deterministic expansion of the raw
+  contractual scope expression. A free-text list of cited representations
+  cannot publish.
+- `APPLIES_TO`, `GOVERNS` and `ENFORCED_BY` identify the exact affected
+  occurrence or component set, party and capacity, governing standard,
+  conditions, temporal reach and precedence. They do not propagate an
+  attribute to a parent, sibling or reciprocal party unless the effect payload
+  names that target.
+- `EXCEPTED_BY` identifies the exact affected target set, conditions,
+  precedence and whether it narrows, overrides, suspends or supplies an
+  alternative. An exception threshold applies only to the targets named by its
+  effect payload.
+- `TRIGGERS_REMEDY` identifies the complete trigger predicate, remedy or
+  termination right, fee payor, payee or right holder, beneficiary, temporal
+  and tail conditions, exclusivity or cumulative effect and every condition
+  necessary to activate the remedy.
+- A RelationshipDefinition also declares permitted source and target object
+  types, cardinality, state rules and whether targets may be components or
+  claims. `relationship_occurrence_id` derives from definition and effect-schema
+  versions, effect-slot key, typed source-endpoint occurrence ID, governed
+  target type and role, complete intended-scope interval set and source-order
+  ordinal. Every state requires non-empty intended scope. For a relationship
+  that permits `ABSENT`, the expectation enumerator freezes its complete
+  potential-endpoint and interval universe from source and discovery rather
+  than candidate matches; candidate-selected scope cannot support absence.
 - `RelationshipEvidence` is a deterministic edge with ID derived from
   `(relationship_occurrence_id, evidence_role, excerpt_id, ordinal)`. Its
-  definition governs permitted roles, and the universal compiled ordinal rule
-  applies. Relationship evidence is not an untyped excerpt array.
+  effect schema governs permitted roles, and the universal compiled ordinal
+  rule applies. Relationship evidence is not an untyped excerpt array.
 - Each immutable `RelationshipRevision` hashes the occurrence ID, state,
   canonical raw scope, the exact source endpoint revision ID when that endpoint
   type is revisioned, ordered resolved target occurrence IDs and, for revisioned
-  target types, their exact selected revision IDs, ordered RelationshipEvidence
-  edge IDs, state-specific coverage, applicability or failure payload, resolver
-  version and ordered applied CorrectionApplication IDs. `PRESENT` requires
-  exact evidence and resolved endpoints. `ABSENT` requires coverage proof. `NOT_APPLICABLE`,
-  `NOT_EXAMINED` and `FAILED` follow the same state invariants as claims. No
-  unresolved target receives a fabricated object ID. Exact revisions collapse;
-  conflicting revisions from one run are quarantined.
-- `EXCEPTED_BY` is not legally self-explanatory. Its definition must also state
-  governed legal effect, affected target component set, conditionality,
-  precedence and whether the relationship narrows, overrides, suspends or
-  supplies an alternative. A generic exception edge without those fields
-  cannot publish.
-- Fuzzy text matching may propose a relationship for review. It may not write
-  a canonical edge or transfer claims between objects.
+  target types, their exact selected revision IDs, RelationshipEffectSchema key
+  and version, canonical effect payload and effect-payload digest, ordered
+  ClaimScopeDependencyExpectation IDs it discharges, condition and precedence
+  input occurrence or revision IDs, ordered RelationshipEvidence edge IDs,
+  state-specific coverage, applicability or failure payload, resolver version
+  and ordered applied CorrectionApplication IDs. A `PRESENT` revision requires
+  exact effect-supporting evidence, resolved endpoints and a schema-valid effect
+  payload whose affected targets equal its resolved target set and whose effect
+  fields match every named dependency expectation. A `NON_SEMANTIC` revision
+  carries only its governed non-propagating operation. A non-`PRESENT` revision
+  carries no asserted legal effect. `ABSENT` requires complete independently
+  frozen coverage proof.
+  `NOT_APPLICABLE`, `NOT_EXAMINED` and `FAILED` follow the claim-state
+  invariants. An unresolved endpoint or condition expression, target-set
+  mismatch, missing effect field or conflicting precedence blocks publication.
+  A pre-claim conditional predicate is complete when its source-backed
+  expression and occurrence references are resolved; it is not treated as a
+  factual condition outcome. No unresolved target receives a fabricated object
+  ID. Exact revisions collapse; conflicting revisions from one run are
+  quarantined.
+- Fuzzy text matching may propose a relationship and effect payload for review.
+  It may not write a canonical edge, discharge a scope dependency or transfer
+  claims, parties, evidence or effects.
 - `ResultDefinition` specifies a versioned lawyer-facing answer: its required
   and optional component claims, permitted relationships, ordering,
   normalisation rules and failure behaviour. It fixes maximum inline component,
@@ -635,19 +795,42 @@ as separate objects and combines them by typed reference.
   slot and per row. A governed repeatable slot may use a bounded cursor-backed
   child collection with an exact total; required content may never be silently
   truncated. Exceeding an undeclared or hard cardinality is a contract failure.
+- Every ResultDefinition declares exact relationship slots and a bounded
+  lawyer-facing projection for each permitted RelationshipEffectSchema. The
+  projection includes every effect field necessary to answer the result's legal
+  question. Each slot declares accepted relationship states and state-specific
+  failure behaviour; `FAILED`, `NOT_EXAMINED`, missing or conflicting required
+  relationship truth blocks publication. A `NON_SEMANTIC` relationship cannot
+  satisfy an effect-bearing slot. A ResultDefinition may not replace an
+  effect-bearing relationship with a display label or infer its effect from
+  concept, section, containment or party similarity.
 - `derived_result_occurrence_id` derives from `(governed_deal_key,
   deal_admission_manifest_id, result_key, result_version, party_role,
   party_value, ordinal)`. A `DerivedResultRevision` then hashes that occurrence
   ID, composer version and ordered component-slot keys, ClaimRevision IDs,
-  RelationshipRevision IDs and accepted component states. Exact revisions
-  collapse and conflicting revisions are quarantined. It does not store a
-  corpus release or snapshot ID; later manifests select it.
+  RelationshipRevision IDs, `ResultInputLineage` digests and accepted component
+  states. Exact revisions collapse and conflicting revisions are quarantined.
+  It does not store a corpus release or snapshot ID; later manifests select it.
 - Each governed slot has a stable `result_component_occurrence_id` from
-  `(derived_result_occurrence_id, component_key)` and an immutable component
-  revision hashing that occurrence ID, parent result revision, exact input
-  revision IDs, component state and canonical component value. The result keeps provision,
-  component, claim-revision, relationship-revision and evidence references. It
-  has no fabricated source span and owns no copied source facts.
+  `(derived_result_occurrence_id, component_key)`.
+- Each result component has one ordered `ResultInputLineage` payload. Its digest
+  is a domain-separated hash over its schema version, result-component
+  occurrence, component-slot key, ResultDefinition key and version, exact
+  semantic-owner occurrence IDs, ClaimScopeClosure IDs, ClaimRevision IDs,
+  RelationshipRevision IDs, relationship-definition and effect-schema versions,
+  effect-payload digests, source and target party and capacity, affected
+  provision and component IDs, evidence-edge IDs and source actions. Ordering
+  follows ResultDefinition slot order and then each input definition's compiled
+  total comparator; undeclared duplicates are invalid. It is generated only
+  from the selected canonical revisions and is not independently editable. A
+  changed closure, relationship, effect, endpoint, party, condition, precedence
+  rule or evidence reference changes the lineage digest even when the displayed
+  value is textually identical.
+- An immutable result-component revision hashes its occurrence ID, parent
+  result revision, exact input revision IDs, ResultInputLineage digest,
+  component state and canonical component value. The result keeps provision,
+  component, claim-revision, relationship-revision, effect and evidence
+  references. It has no fabricated source span and owns no copied source facts.
 - Any expected component that is `FAILED` or `NOT_EXAMINED` blocks publication,
   whether the ResultDefinition labels it required or optional, unless its exact
   occurrence was excluded in the frozen scope manifest before extraction.
@@ -676,6 +859,9 @@ as separate objects and combines them by typed reference.
 - Valid containment includes a provision containing an inline definition and
   a definition containing a second definition. Parent and child retain their
   own identities and are joined by `CONTAINED_IN` and semantic-use edges.
+  `CONTAINED_IN` proves geometry only. Claim-scope closure traverses
+  `USES_DEFINITION` or another expressly permitted effect-bearing relationship;
+  it never infers semantic inheritance from nesting.
 - The same bytes may support several claims or semantic objects when their
   concepts or parties differ. Each use is explicit. Exact duplicate objects
   remain prohibited.
@@ -733,10 +919,11 @@ as separate objects and combines them by typed reference.
 - `canonical_write(operation=DEAL_RUN)` accepts one schema-valid deal envelope,
   expected base snapshot and idempotency key in one `SERIALIZABLE` transaction.
   It locks the governed deal key, validates expected prior state
-  and writes the complete source, semantic, revision, evidence, relationship,
-  correction and manifest unit atomically. Sequential Supabase `.from()` calls
-  cannot satisfy this contract. Failure at any injection point leaves zero
-  partial canonical rows and no snapshot or release membership change.
+  and writes the complete source, semantic, scope-dependency, ClaimScopeClosure,
+  revision, evidence, relationship-effect, ResultInputLineage, correction and
+  manifest unit atomically. Sequential Supabase `.from()` calls cannot satisfy
+  this contract. Failure at any injection point leaves zero partial canonical
+  rows and no snapshot or release membership change.
 - The RPC records an immutable writer-attempt envelope, then performs canonical
   writes inside a caught PostgreSQL subtransaction. Success writes one receipt
   and outbox event in the outer transaction. A caught validation or constraint
@@ -760,8 +947,11 @@ as separate objects and combines them by typed reference.
   through a specified `SourceClassificationSlot`.
   Anchor-only replacement is prohibited because one anchor may support several
   semantic objects. A component correction supersedes the exact immutable
-  component occurrence and expected object digest. Scope, claim and relationship
-  corrections target their exact occurrence and prior revision IDs.
+  component occurrence and expected object digest. Scope-dependency, closure,
+  claim, relationship-effect and relationship corrections target their exact
+  governed slot, occurrence or prior revision IDs. A correction that changes a
+  dependency expectation or frozen closure creates a new scope manifest and
+  invalidates candidate work; it cannot patch scope after extraction.
 - A correction ID is the content hash of its governed target tuple, expected
   prior revision or object digest, canonical patch payload, correction-rule
   version, correction-slot key and ordered
@@ -787,21 +977,32 @@ as separate objects and combines them by typed reference.
   No legacy row may be carried forward by fuzzy text, current UUID resemblance
   or best effort.
 - The canonical contract generates an acyclic ownership and dependency graph
-  rooted in SourceContent and canonical-text occurrences, source and deal
-  admission manifests, structural and classification outputs, scope slices,
-  the contract fingerprint, CorrectionApplications and prerequisite family
-  sets. It continues through ClaimRevisions, RelationshipRevisions,
-  DerivedResultRevisions, normalisations, observations, aggregates and
-  projections. Each materialised object stores its ordered direct input
-  occurrence, revision and manifest IDs and dependency digest. Contract
-  compilation rejects any extractor, normaliser, resolver, composer or
-  projector read that is not a declared dependency edge.
+  beginning with the contract fingerprint, SourceContent and canonical-text
+  occurrences, source and deal admission manifests and structural and
+  classification outputs. CorrectionApplications interleave only after their
+  exact targets as the identity order permits. The graph then continues through
+  discovery coverage, ClaimScopeDependencyExpectations, ClaimScopeClosures,
+  assessment, claim, relationship, derived-result and result-component
+  occurrences, operational and certification policy, scope slices and
+  CorpusScopeManifest, pre-claim RelationshipRevisions, ClaimRevisions,
+  post-claim RelationshipRevisions, ResultInputLineage, DerivedResultRevisions,
+  family sets, snapshots, releases, normalisations, observations, aggregates
+  and projections. Prerequisite-family inputs enter
+  only in the order authorised by the compiled acyclic family DAG; they are not
+  roots. Each materialised object stores its ordered direct input occurrence,
+  revision and manifest IDs and dependency digest. Contract compilation rejects
+  any closure compiler, extractor, normaliser, resolver, composer or projector
+  read that is not a declared dependency edge.
   Any changed input invalidates every transitive dependent. Carry-forward is
   permitted only when both contract fingerprint and complete dependency-input
   digest are identical; referential closure alone is insufficient.
-- Semantic relationships may be reciprocal or otherwise cyclic. They are data,
-  not build-dependency edges. A relationship is built only after every permitted
-  endpoint type exists, and a cross-family result belongs to a declared result
+- Semantic endpoint relationships may be reciprocal or otherwise cyclic as
+  data, but their build dependencies are always acyclic. A pre-claim
+  RelationshipRevision depends only on already-created semantic occurrences,
+  frozen scope expectations and source evidence. A post-claim relationship is
+  built only after every permitted endpoint revision exists. A fixed-point
+  scope traversal deduplicates cyclic endpoint occurrences without creating a
+  revision dependency cycle. A cross-family result belongs to a declared result
   family whose prerequisite closure includes every contributing family.
 - Each extraction writes immutable objects under an `extraction_run_id`. A
   complete `DealSnapshot` manifest selects the DealIdentityManifest,
@@ -813,10 +1014,12 @@ as separate objects and combines them by typed reference.
   only when that fingerprint and dependency digest are certified identical;
   otherwise the family and all transitive dependants are rematerialised.
   Closure and freshness validation prove that every selected deal and source
-  admission manifest, span, excerpt, provision, component, assessment revision,
+  admission manifest, span, excerpt, provision, component,
+  ClaimScopeDependencyExpectation, ClaimScopeClosure, assessment revision,
   ClaimEvidence edge, ClaimRevision, RelationshipEvidence edge,
-  RelationshipRevision, result revision, correction and CorrectionApplication
-  resolves inside the snapshot and matches its declared inputs.
+  RelationshipRevision and effect payload, ResultInputLineage, result revision,
+  correction and CorrectionApplication resolves inside the snapshot and
+  matches its declared inputs.
 - Every family set records direct source-admission, deal-admission, scope-slice,
   contract, CorrectionApplication and prerequisite-family-set IDs. Freshness
   certification recomputes the complete transitive input digest rather than
@@ -862,31 +1065,49 @@ as separate objects and combines them by typed reference.
   occurrence, source, deal-identity and deal-admission manifest, governed deal,
   admitted structural leaf, classification slot, coverage edge and disposition,
   required `(deal, family)` unit and scope slice, active correction, discovered
-  semantic and component occurrence, expected assessment, claim, relationship,
-  result and result-component occurrence, contract object, registry entry,
-  route, internal or export job, request and result schema, cache policy, route
-  budget, database index, RPC, materialised view, discovered test and approved
-  exclusion.
+  semantic and component occurrence, ClaimScopeDependencyExpectation,
+  ClaimScopeClosure, expected assessment, claim, relationship,
+  relationship-effect, result, result-component and ResultInputLineage slots,
+  contract object including every ClaimScopeDefinition and
+  RelationshipEffectSchema, registry entry, route, internal or export job,
+  request and result schema, cache policy, route budget, database index, RPC,
+  materialised view, discovered test and approved exclusion. Scope inventories
+  contain expected effect and lineage slots, never post-extraction effect
+  payloads or ResultInputLineage digests.
 - `corpus_scope_manifest_id` hashes the contract fingerprint, discovery and
   enumerator versions, OperationalPolicySet and CertificationPolicyManifest IDs
   and every complete ordered stable-ID inventory and approved exclusion above.
   For each required `(deal, family)` unit, a
   `scope_slice_id` hashes its schema version, contract fingerprint, governed
   deal key, family key and the exact ordered source, admission, leaf, coverage,
-  semantic, expected-slot, active-correction and exclusion IDs relevant to the
-  unit. The parent manifest contains the exact unit-to-slice mapping. An
+  semantic, ClaimScopeDependencyExpectation, ClaimScopeClosure, expected-slot,
+  expected relationship-effect-slot, expected ResultInputLineage-slot,
+  active-correction and exclusion IDs relevant to the unit. Each expected claim
+  entry binds its ClaimDefinition and ClaimScopeDefinition versions, exact
+  closure ID, complete potential-witness interval set and expected dependency
+  slots. The parent manifest contains the exact unit-to-slice mapping. An
   unrelated route inventory change can therefore change the parent scope and
   release without needlessly changing an identical family slice, while a family
   cannot select or infer a different scope.
 - The expectation enumerator reads frozen source structure, reviewed discovery
-  output and the contract, never candidate claim rows. The observation
-  enumerator reads the completed candidate, built routes, generated schemas and
-  collected test IDs, never the expected sets. For each inventory, `U` is the
-  independently discovered universe, `X` the pre-approved exclusions and `A`
-  the candidate's admitted set. Certification requires `X` to be a subset of
-  `U`, `A = U - X`, `A` and `X` to be disjoint, zero duplicate IDs, zero
-  unrecognised extras and an exact traceability row for every member of `U`.
-  Equal counts cannot satisfy set equality.
+  output, source-backed use and cross-reference candidates and the contract,
+  never candidate ClaimRevisions, RelationshipRevisions or serving rows. It
+  independently recomputes every dependency expectation, closure and
+  potential-witness interval set rather than copying the manifest's declared
+  sets. The manifest builder and certification enumerator are separate
+  implementations, derive their universes from source and reviewed discovery
+  and cannot call, import or read each other's inventory output. Exact equality
+  between them is required. The observation enumerator reads the completed candidate, built routes,
+  generated schemas and collected test IDs, never the expected sets. For each
+  inventory, `U` is the independently discovered universe, `X` the pre-approved
+  exclusions and `A` the candidate's admitted set. Certification requires `X`
+  to be a subset of `U`, `A = U - X`, `A` and `X` to be disjoint, zero duplicate
+  IDs, zero unrecognised extras and an exact traceability row for every member
+  of `U`. Equal counts cannot satisfy set equality. Candidate closure also
+  proves that every `ABSENT` ClaimRevision selects the frozen expected closure,
+  its examined intervals exactly equal that closure's required-examination
+  interval set and every dependency slot is discharged by the exact selected
+  permitted RelationshipRevision.
 - Every exclusion identifies the stable ID, governed reason, evidence and Ben
   approval before candidate extraction. A missing deal or family, omitted
   expected claim, `NOT_EXAMINED`, `FAILED` or newly discovered registry entry
@@ -911,14 +1132,19 @@ as separate objects and combines them by typed reference.
   SourceContent and source occurrence; CanonicalTextContent and occurrence;
   source admission, deal identity and deal admission; structural and semantic
   spans and excerpts; provision, component and classification-slot occurrences;
-  assessment, claim, relationship, derived-result and result-component
-  occurrences; discovery coverage; CacheBudget, Capacity and RouteBudget
-  manifests; OperationalPolicySet; CertificationPolicyManifest; scope slices;
-  CorpusScopeManifest;
-  assessment revisions and ClaimEvidence; ClaimRevisions;
-  RelationshipEvidence and RelationshipRevisions; derived-result and
-  result-component revisions; family sets; deal snapshots; corpus releases;
-  observations and aggregates. Each revision selects only earlier IDs.
+  discovery coverage, approved exclusions and
+  ClaimScopeDependencyExpectations; ClaimScopeClosures; assessment, claim,
+  relationship, derived-result and result-component occurrences; CacheBudget,
+  Capacity and RouteBudget manifests; OperationalPolicySet;
+  CertificationPolicyManifest; scope slices; CorpusScopeManifest;
+  `PRE_CLAIM_SCOPE` RelationshipEvidence and RelationshipRevisions; assessment
+  revisions, ClaimEvidence and ClaimRevisions; `POST_CLAIM`
+  RelationshipEvidence and RelationshipRevisions; ResultInputLineage;
+  derived-result and result-component revisions; family sets; deal snapshots;
+  corpus releases; observations and aggregates. Every node may select only
+  earlier identity or revision inputs declared by the compiled dependency DAG.
+  A scope-bearing relationship that depends on its dependent ClaimRevision, or
+  any other identity cycle, fails before persistence.
   CorrectionApplication nodes may interleave only after their exact prior target
   and before the corrected revision or superseding occurrence; every correction
   edge points backwards and a cycle fails compilation. In particular, evidence
@@ -953,10 +1179,24 @@ as separate objects and combines them by typed reference.
   rule or is quarantined. Exact duplicate observations collapse before
   numbering, unexplained collisions are quarantined, and `value_ordinal` is
   assigned from zero in that order.
-- Every observation carries state. Raw and normalised observations remain
-  linked to ClaimRevision and evidence IDs, units, denominators and
-  derivation versions. Serving never reconstructs provenance through a runtime
-  text-hash join.
+- Every MetricDefinition declares `owner_lineage_mode=CLAIM_ONLY` or
+  `RESULT_RELATIONSHIP`. `CLAIM_ONLY` is permitted only when the complete legal
+  meaning, eligibility, value and normalisation derive from one ClaimRevision,
+  its ClaimScopeClosure and its dependency-discharging pre-claim relationships.
+  Any metric that depends on a post-claim relationship, cross-provision result,
+  trigger, remedy, bring-down, exception treatment or other relationship effect
+  must use `RESULT_RELATIONSHIP` and be owned by the exact
+  ResultComponentRevision carrying that ResultInputLineage. Compilation and
+  candidate certification reject a relationship-dependent claim-owned
+  observation.
+- Every observation carries state. An observation owned by a ClaimRevision
+  carries that revision's ClaimScopeClosure ID, ordered dependency-discharging
+  RelationshipRevision IDs and direct evidence lineage. An observation owned
+  by a result-component revision carries its ResultInputLineage digest and
+  exact result-component revision ID. Raw and normalised observations remain
+  linked to exact revision and evidence IDs, units, denominators and derivation
+  versions. Serving never reconstructs provenance through a runtime text-hash
+  join.
 - Every `MetricDefinition` fixes its observation unit, permitted multiplicity,
   per-deal roll-up, weighting and compatible cohort strata. Aggregates report
   both subject count and distinct-deal count. A deal contributes once to a
@@ -990,25 +1230,59 @@ as separate objects and combines them by typed reference.
 - Common aggregates are materialised. Arbitrary refined cohorts use one
   indexed, set-based SQL/RPC and a release-aware cache. A request never loads
   broad cards and claims into Node or makes corpus-proportional database calls.
+- Every aggregate carries its MetricDefinition ID, cohort digest and an
+  input-set digest over the ordered contributing observation identities and
+  canonical payload digests. It does not inline a corpus-sized lineage list in
+  an interactive response.
 - A compact release-keyed `result_serving_row` projection materialises each
-  result's bounded inline slots, state counts, source-action references and
-  refinable dimensions. Repeatable overflow slots use a separately indexed
-  child projection keyed by release, result occurrence, component key and
-  stable child cursor. The one serving RPC joins these projections set-wise;
-  neither initial rows nor child pages perform per-component queries.
+  result's bounded inline slots, state counts, ResultInputLineage,
+  relationship-effect projections, source-action references and refinable
+  dimensions. Every row records an exact relationship total and a
+  `relationship_set_digest`, the domain-separated hash of its schema version,
+  ResultDefinition version, ordered RelationshipRevision IDs, states,
+  effect-schema versions and payload digests, endpoint roles, evidence
+  references, exact total and child-collection identity. Bounded inline
+  relationship records carry
+  RelationshipRevision ID, definition and effect-schema versions, state,
+  endpoint IDs, affected party and component roles, effect-payload digest, the
+  effect fields required to interpret the result and evidence or source
+  actions. Repeatable overflow slots use separately indexed component and
+  relationship child projections keyed by release, result occurrence, slot key
+  and stable child cursor. The one serving RPC joins these projections set-wise;
+  neither initial rows nor child pages perform per-component or
+  per-relationship queries.
+- Every result row and child row carries the exact result and result-component
+  revision IDs, ordered ClaimRevision IDs, ordered RelationshipRevision IDs,
+  ClaimScopeClosure IDs, relationship-definition and effect-schema versions,
+  effect-payload digests, affected endpoint and party roles, evidence references
+  and source actions required by its ResultDefinition. Full canonical
+  relationship detail may load lazily by exact RelationshipRevision ID, but no
+  legal effect required to interpret the row may be omitted from its bounded
+  effect projection.
 - Every result row, child row, market observation and aggregate has a canonical
-  payload digest covering state, raw and canonical values, party, component and
-  evidence references, cohort and denominator counts, refinable dimensions and
-  derivation lineage. Release manifests inventory ordered
-  `(serving_key, canonical_payload_digest)` pairs, never keys or counts alone.
-- Review, Corpus Context, Compare, Query and Admin consume one shared row
-  contract produced from `ResultDefinition`. Components do not reconstruct
-  legal relationships or metric definitions independently.
+  payload digest covering state, raw and canonical values, party, exact
+  occurrence and revision lineage, ClaimScopeClosure IDs,
+  RelationshipRevision IDs, relationship states, relationship-set and
+  effect-payload digests, affected endpoints, exact relationship total, child
+  collection identity, component and evidence references, source actions,
+  cohort and denominator counts, refinable dimensions and derivation lineage.
+  Any relationship or effect revision changes the digest even when the display
+  text and serving key remain unchanged. Release manifests inventory ordered
+  `(serving_key, canonical_payload_digest)` pairs for initial and child
+  projections, never keys or counts alone.
+- Review, Corpus Context, Compare, Query, Admin and exports consume one shared
+  row contract generated from `ResultDefinition`. Components and clients do not
+  reconstruct legal relationships, scope closure or metric definitions
+  independently.
 - The row contract carries release, deal, result, concept and party identity;
-  result and component state; raw and canonical display values; evidence and
-  source actions; market observations; cohort and denominator; refinable
-  dimensions; and provenance. A component remains individually inspectable
-  even when several components form one row.
+  result and component state; exact ClaimRevision, RelationshipRevision,
+  ClaimScopeClosure and ResultInputLineage references; bounded relationship
+  effects; raw and canonical display values; evidence and source actions;
+  market observations; cohort and denominator; refinable dimensions; and
+  provenance. A component remains individually inspectable even when several
+  components form one row. An omitted, duplicated, stale, schema-invalid or
+  impermissibly reordered lineage member fails server validation before cache
+  insertion or rendering.
 - Presence prevalence is secondary context. The primary comparison is the
   treatment of each applicable claim, using the examined and applicable cohort
   as its denominator.
@@ -1026,6 +1300,12 @@ as separate objects and combines them by typed reference.
   result and metric keys, component scope, party and legal context, cohort
   filters, selected dimensions, predicates, groupings, sort, cursor and page
   size. Ambiguity produces a refinement request, not an invented field.
+- Every relationship-effect field that a QueryPlan may select, filter, group or
+  sort is declared by ResultDefinition, materialised as a bounded typed serving
+  dimension and covered by a governed index or materialised aggregate. An
+  interactive request never recursively traverses the canonical relationship
+  graph or loads relationship revisions into Node to evaluate a predicate.
+  Undeclared or unindexed effect traversal is rejected at compilation.
 - The predicate AST distinguishes the quantified universe from the predicate
   target. A selector returns typed deal, result, provision, component or claim
   occurrences; predicates may address that occurrence or a governed linked
@@ -1104,14 +1384,18 @@ as separate objects and combines them by typed reference.
   They do not create a sixth extraction or aggregation path. The canonical
   example “termination fees market check” returns percentage of the identified
   deal-value basis as the primary metric, raw dollars as source context,
-  company/Target versus reverse/Buyer fee role, triggers, evidence, exclusions
-  and refinable deal dimensions.
+  company/Target versus reverse/Buyer fee role and exact `TRIGGERS_REMEDY`
+  effect projections for trigger predicate, remedy, payor, payee or right
+  holder, tail, conditions and exclusivity or cumulative effect, plus evidence,
+  exclusions and refinable deal dimensions. None of those fields is inferred
+  from the fee label or neighbouring text at query time.
 - Every request and result has a generated JSON schema and contract version.
   Every output carries the release ID, normalised query plan, total and page
   counts, stable cursor, columns, shared rows, component states, cohort and
   denominator counts, selected quantifier universe and cardinality, all five
   state counts, excluded and unknown counts with reasons, source-deal references
-  and provenance. CSV and other exports derive from that result contract.
+  and exact scope, relationship-effect and ResultInputLineage provenance. CSV
+  and other exports derive from that result contract.
 - The server validates the result schema before cache insertion or response; an
   invalid result fails closed and enters operational quarantine rather than
   reaching a renderer. Clients use generated types, reject incompatible
@@ -1238,40 +1522,55 @@ earlier stage.
    operative provision and child mechanism, assign concept and party, and
    anchor it to exact offsets. One section may yield several provisions. Two
    reciprocal obligations yield two party-specific provisions.
-5. **Unpack expected claims.** The concept's `ClaimDefinition` expectation set
-   states what must be tested. Extraction evaluates every definition in that
-   set, creates the stable ClaimOccurrence and emits one immutable ClaimRevision
-   in exactly one of the five states. Applicability is an outcome,
-   not a pre-filter that permits omission. Raw wording and value, canonical
-   value, scope and party travel together with exact evidence or examined-scope
-   proof, as the emitted state requires.
-6. **Link, do not flatten.** Create reviewed typed relationships among
-   provisions, definitions, exceptions, conditions and remedies. Multi-span
-   claims cite each contributing span. Cross-provision results keep component
-   identities rather than copying their facts into one feature bag.
-7. **Validate and quarantine.** Reproduce every quote from stored offsets,
-   check concept, party, codebook, type, unit, scope, relationship and expected
-   claim completeness and dependency freshness. Retain every unknown or invalid
-   observation as a residual. Any unresolved residual, `FAILED` or
-   `NOT_EXAMINED` expected slot blocks publication unless the frozen scope
-   manifest contains an approved prior exclusion.
-8. **Write once, transactionally.** Every semantic entry point submits one
-   complete `DEAL_RUN` envelope to `canonical_write`. Its caught PostgreSQL subtransaction
-   writes the canonical unit or rolls it all back while the outer transaction
-   writes one correlated outcome receipt and outbox event. No application
-   sequence of table calls can substitute for it.
-9. **Compose lawyer-facing results.** A versioned `ResultDefinition` selects
-   and orders exact claim and relationship revisions. It produces an immutable
-   result revision and the shared row contract. The result has no invented
-   source span; clicking a component returns to that component's evidence.
-10. **Build the market projection.** Candidate-release jobs materialise compact
-    observations and common aggregates from certified claims and results. The
-    serving path reads this release-keyed projection through bounded set-based
-    queries and a release-aware cache.
-11. **Compile and serve queries.** Every query surface creates a governed plan,
-    executes one bounded projection operation and returns the versioned shared
-    row contract with stable pagination. Evidence detail is lazy, and each
-    result remains traceable to its component claims and source.
+5. **Compile and freeze legal scope.** Expand every expected claim from its
+   ClaimDefinition and ClaimScopeDefinition. Independently enumerate all
+   governing chapeaux, provisos, definitions, cross-references, schedules,
+   exceptions, overrides, parties and temporal dependencies. Compile each
+   ClaimScopeClosure to a fixed point and freeze its exact expectations and
+   required-examination intervals in the CorpusScopeManifest before candidate
+   extraction.
+6. **Resolve pre-claim relationships.** Build only the relationships declared
+   `PRE_CLAIM_SCOPE` from immutable semantic occurrences and source evidence.
+   Discharge every ClaimScopeDependencyExpectation with exactly one permitted
+   relationship revision. A missing, partial, conflicting or failed dependency
+   blocks the claim; it cannot be ignored to create absence.
+7. **Unpack expected claims.** Extraction evaluates every expected slot, creates
+   the stable ClaimOccurrence and emits one immutable ClaimRevision in exactly
+   one of the five states. Applicability is an outcome, not a pre-filter that
+   permits omission. Raw wording and value, canonical value, scope, party,
+   closure and dependency revisions travel together with exact evidence or
+   complete examined-scope proof, as the emitted state requires.
+8. **Resolve post-claim relationships, do not flatten.** Build reviewed typed
+   effects among provisions, claims, definitions, exceptions, conditions and
+   remedies only after their declared inputs exist. Multi-span claims cite each
+   contributing span. Cross-provision results keep component identities and
+   effect-bearing relationship revisions rather than copying facts into one
+   feature bag.
+9. **Compose lawyer-facing results.** A versioned ResultDefinition selects and
+   orders exact claims, relationships and effect projections. Each component
+   records ResultInputLineage. The immutable result has no invented source span;
+   clicking a component returns to that component's own evidence.
+10. **Validate and quarantine.** Reproduce every quote from stored offsets and
+    check concept, party, codebook, type, unit, closure, relationship effect,
+    expected-slot completeness, result lineage and dependency freshness.
+    Retain every unknown or invalid observation as a residual. Any unresolved
+    residual, failed closure, `FAILED` or `NOT_EXAMINED` expected slot blocks
+    publication unless the frozen scope manifest contains an approved prior
+    exclusion.
+11. **Write once, transactionally.** Every semantic entry point submits one
+    complete `DEAL_RUN` envelope to `canonical_write`. Its caught PostgreSQL
+    subtransaction writes the complete canonical unit or rolls it all back
+    while the outer transaction writes one correlated outcome receipt and
+    outbox event. No application sequence of table calls can substitute for it.
+12. **Build the market projection.** Candidate-release jobs materialise compact
+    observations, relationship-aware shared rows and common aggregates from
+    certified claims and results. The serving path reads this release-keyed
+    projection through bounded set-based queries and a release-aware cache.
+13. **Compile and serve queries.** Every query surface creates one governed
+    plan, executes one bounded projection operation and returns the versioned
+    shared row contract with stable pagination. Evidence detail is lazy, and
+    every result remains traceable through exact claim, relationship, closure
+    and source lineage.
 
 ## QXO acceptance examples for the architecture
 
@@ -1287,6 +1586,11 @@ These are binding golden cases, not one-off display patches.
   the Company group. That threshold must not render as a general rep qualifier.
 - Knowledge qualifier and retrospective lookback are `ABSENT` after full-scope
   examination. April 17, 2026 is a measurement date, not a lookback.
+- Each of those absence claims selects its independently frozen
+  ClaimScopeClosure. The closure includes every applicable signing-representation
+  chapeau, limb, proviso, defined-term use and cross-reference, records the exact
+  party and temporal scope and cannot be narrowed to text selected because it
+  lacks the searched phrase.
 - The bring-down is a separate closing-condition instance at section
   5.2(a)(ii). Tier B applies to sections 3.1(b)(i) and (iii), true except for
   De Minimis Inaccuracies. Tier C applies to sections 3.1(b)(ii), (iv) and (v),
@@ -1294,12 +1598,16 @@ These are binding golden cases, not one-off display patches.
   disregarded.
 - The tier relationships preserve the raw contractual scope expression and its
   deterministic expansion to the exact limb `ProvisionComponent` IDs. They do
-  not store the expansion as unverified free text.
+  not store the expansion as unverified free text. Each `BRINGS_DOWN` effect
+  payload also fixes maker, condition obligor, beneficiary or right holder,
+  measurement date, accuracy tier, scrape, exception and precedence.
 - `De Minimis Inaccuracies` is a definition nested inside the closing-condition
   span. It retains its own identity and evidence.
 - The lawyer-facing Capitalisation result combines the signing claims,
-  bring-down tier claims and nested definition. It must never collapse those
-  tiers to one MAE, de-minimis or material-respects pill.
+  bring-down tier claims and nested definition. Its ResultInputLineage and
+  serving payload retain the exact ClaimScopeClosure, `USES_DEFINITION` and
+  `BRINGS_DOWN` revisions and effect digests. It must never collapse those tiers
+  to one MAE, de-minimis or material-respects pill.
 
 ### No-shop / non-solicit restriction
 
@@ -1316,10 +1624,14 @@ These are binding golden cases, not one-off display patches.
 - The chapeau's representative-control standard explicitly governs the cleanup
   and ongoing mechanisms. Fiduciary engagement, standstill, notice, matching,
   recommendation and Acquisition Proposal definition objects remain separate
-  and are linked by typed relationships.
+  and are linked by typed relationships. Each `GOVERNS`, `APPLIES_TO`,
+  `EXCEPTED_BY` and `USES_DEFINITION` effect names its exact party, target
+  components, conditions, temporal reach and precedence; containment or section
+  proximity cannot supply that meaning.
 - The lawyer-facing Target No-shop result composes those components without
   copying cleanup claims into the ongoing restriction. Market output compares
-  each act and treatment separately, by party.
+  each act and treatment separately, by party, and carries the exact effect and
+  ResultInputLineage digest for every treatment.
 - The Buyer No-shop result is composed from the Buyer provision and its own
   linked components. It may mirror the Target result for display, but it never
   borrows Target claims or evidence.
@@ -1341,8 +1653,10 @@ These are binding golden cases, not one-off display patches.
 - Disclosure-schedule, agreement-required, law, ordinary-course, budget and
   Buyer-consent treatments are separate components or relationships. Buyer
   consent is an override mechanism, not evidence that the prohibition is absent.
-  Every exception relationship declares legal effect, target components,
-  conditionality and precedence.
+  Every exception relationship declares legal operation, target components,
+  party and capacity, conditionality, temporal scope and precedence. Those
+  effect fields and exact RelationshipRevision survive into ResultInputLineage
+  and the shared serving payload.
 - Nested exceptions and inline definitions retain their own spans and evidence.
   A single IOC answer may therefore combine the chapeau, one enumerated act, a
   distant consent standard and a nested definition without copying any fact.
@@ -1487,8 +1801,9 @@ the universe. The Phase 0 inventory of existing normalisers seeds the work.
 ### Phase 1: One governed canonical contract
 
 Create the single `CanonicalContractBundle` authority defined in Section 0.
-It governs `ProvisionConcept`, `ClaimDefinition`, `RelationshipDefinition`,
-`ResultDefinition`, `MetricDefinition`, `CorrectionSlotDefinition`, source
+It governs `ProvisionConcept`, `ClaimDefinition`, `ClaimScopeDefinition`,
+`RelationshipDefinition`, `RelationshipEffectSchema`, `ResultDefinition`,
+`ResultInputLineage`, `MetricDefinition`, `CorrectionSlotDefinition`, source
 admission, state rules, dependencies, QueryPlan and row contracts. Compile it
 twice and require byte-identical outputs and fingerprint.
 
@@ -1505,38 +1820,50 @@ taxonomy and codebooks after Fable or Claude 5.6 Sonnet review.
 Implement SourceContent, source and canonical-text occurrences,
 SourceAdmissionManifest, DealIdentityManifest, DealAdmissionManifest, half-open
 structural and semantic spans, excerpts, source anchors, provision instances,
-components, discovery coverage and scope manifests, assessment, claim and
-relationship occurrences and revisions, ClaimEvidence and RelationshipEvidence.
+components, discovery coverage, ClaimScopeDependencyExpectations,
+ClaimScopeClosures and scope manifests, assessment, claim and relationship
+occurrences and revisions, ClaimEvidence, RelationshipEvidence and
+ResultInputLineage.
 Replace the provisions-to-cards `spanHash` join with
 explicit occurrence and revision lineage. Pin every algorithm, serialisation and
 ordering rule. Fuzzy rematching is prohibited.
 
-Exact reruns reproduce occurrence and revision IDs. A changed source receipt or
-converter occurrence remains separately traceable even when canonical content
-matches. A changed claim state, value, scope, evidence, correction or derivation
-preserves its logical occurrence ID but must create a different ClaimRevision
-and every dependent result, family, snapshot and release ID. Conflicting shadow
-revisions are reconciled before certification, never treated as harmless
-identity stability. Tests cover legacy source admission, one-byte boundary
-changes, anchor migration, concept and party supersession, nested definitions,
-multi-span evidence, assessment coverage, invalid crossing overlaps and
+Exact reruns reproduce occurrence, closure, lineage and revision IDs. A changed
+source receipt or converter occurrence remains separately traceable even when
+canonical content matches. A changed scope definition, dependency expectation
+or expected endpoint creates a new closure; a changed claim state, value,
+evidence, selected relationship effect, correction or derivation creates a new
+revision. A ProvisionInstance- or ProvisionComponent-owned claim retains its
+logical occurrence while that governed subject is unchanged. A
+ScopeAssessmentOccurrence changes when its identity-bearing closure set changes.
+Every change rekeys its declared dependants through result, family, snapshot and
+release. Conflicting shadow revisions are reconciled before certification,
+never treated as harmless identity stability. Tests cover legacy source
+admission, one-byte boundary changes, anchor migration, concept and party
+supersession, nested and reused definitions, multi-span evidence, assessment
+and dependency coverage, relationship effects, invalid crossing overlaps and
 reciprocal party obligations.
 
 ### Phase 3: Definitions-first classification and typed extraction
 
-Implement the execution path in order: definitions, legal mechanisms and
-parties, expected typed claims, explicit states, relationships, validation and
-quarantine. Enable residual capture. Unknown attributes, invalid taxonomy
-codes, missing required claims and evidence failures remain visible and block
-publication rather than being skipped or rendered plausibly.
+Implement the execution path in order: definitions; legal mechanisms and
+parties; expected claim and relationship slots; ClaimScopeDependencyExpectation
+and ClaimScopeClosure compilation; pre-claim relationship effects; typed claims
+and explicit states; post-claim relationship effects; result lineage;
+validation; quarantine. Enable residual capture. Unknown attributes, invalid
+taxonomy codes, incomplete closure, missing or conflicting dependencies,
+missing required claims or effect fields and evidence failures remain visible
+and block publication rather than being skipped or rendered plausibly.
 
 Repair concept-aware deduplication, absolute quote offsets, party values at
 write time, per-family reprocessing and contract-declared cross-family builds.
 Fuzzy matches
 may populate a review queue but cannot write canonical edges or move claims.
-Bring-downs, exceptions, definitions, triggers and remedies become typed
-relationships with exact legal effect. The compiled dependency DAG owns every
-cross-family read and invalidates transitive dependants on any revision change.
+Bring-downs, exceptions, definition uses, governing chapeaux, triggers and
+remedies become typed relationships with exact legal effect, endpoint, party,
+condition, temporal and precedence payloads. The compiled dependency DAG owns
+every cross-family read and invalidates transitive dependants on any scope,
+endpoint, effect or revision change.
 Existing WP-R3, WP-R4, WP-R6, WP-R7 and WP-R8 work folds here.
 Extend the existing evaluation harness with golden cases for every family,
 including the QXO representation and no-shop examples above.
@@ -1546,8 +1873,9 @@ including the QXO representation and no-shop examples above.
 Store raw and normalised observations together. Each observation carries unit,
 day basis, denominator, derivation version and source lineage. Its full lineage
 includes release, deal, result, concept, metric, party role and value, legal
-trigger or context, exact claim and result revision IDs, evidence IDs,
-canonical-text occurrence and offsets.
+trigger or context, exact ClaimScopeClosure, claim, relationship,
+result-component and result revision IDs, ResultInputLineage and effect-payload
+digests, evidence IDs, canonical-text occurrence and offsets.
 Normalisation occurs only after those semantic dimensions are resolved. A raw
 alias such as `noticePeriod` or `matchingPeriod` never defines a cohort. QXO's
 inbound notice, superior-proposal initial match and intervening-event period are
@@ -1577,7 +1905,9 @@ every exclusion remains visible.
 Each metric fixes whether the statistical unit is deal, provision, claim or
 result component and how multiple values within one deal roll up. Published
 statistics report both subject and distinct-deal denominators and never apply an
-implicit first, minimum, maximum or majority rule.
+implicit first, minimum, maximum or majority rule. A metric whose meaning or
+eligibility depends on a relationship effect is result-component-owned and
+retains ResultInputLineage; it cannot publish as a claim-owned shortcut.
 
 Versioned normalisers belong to the claim or metric contract. Existing
 table-config reconstruction moves into extraction or governed normalisers as each
@@ -1592,17 +1922,19 @@ party blocks publication and comparison rather than triggering text inference.
 Make every ingest, full extraction, per-family reprocess and correction flow
 call `canonical_write(operation=DEAL_RUN)`. Application
 roles have no direct canonical-object-table write grant. Validate the complete envelope,
-expected base snapshot, idempotency key, revision closure and dependency
-freshness before the snapshot becomes visible. Fault injection after every
-write step must leave zero partial canonical rows and one correlated terminal
-writer receipt. Compatibility projections, including
+expected base snapshot, idempotency key, claim-scope closure, relationship
+effects, result lineage, revision closure and dependency freshness before the
+snapshot becomes visible. Fault injection after every write step must leave
+zero partial canonical rows and one correlated terminal writer receipt.
+Compatibility projections, including
 `provisions.ai_metadata.features`, are asynchronous one-way outbox sinks.
 
 Disposition every legacy correction before rebuilding, then apply governed
 corrections before revision hashing and validation. Every flow emits a complete
 closure- and freshness-validated `DealSnapshot`. Per-family work carries
 forward immutable family sets only when contract and full dependency-input
-digests match; a changed input invalidates every transitive dependant.
+digests match; a changed scope dependency, closure, endpoint, relationship
+effect or other input invalidates every transitive dependant.
 
 Apply human corrections before candidate certification. Build releases offline
 in staging and never partially mutate the live corpus. Run staged candidate
@@ -1619,7 +1951,10 @@ production never reruns the candidate transformations.
 Build the compact `market_observation` projection with the full identity from
 Section 7: release, governed deal key, concept, metric, party, result key and
 version, non-null owner revision ID, non-null scope occurrence ID and
-deterministic value ordinal. Materialise common aggregates. Serve arbitrary
+deterministic value ordinal. Each owner retains its ClaimScopeClosure or
+ResultInputLineage, exact RelationshipRevision and effect digests and source
+evidence. Materialise common aggregates whose input-set digests cover the
+contributing observation payloads. Serve arbitrary
 refined cohorts through one indexed, set-based SQL/RPC and a release-aware
 cache. The number of database calls and rows returned to Node is bounded by
 request shape, not corpus size. The database may perform an indexed set
@@ -1627,7 +1962,8 @@ aggregation over the selected cohort, but it may not return broad cards or
 claims for application-side calculation.
 
 Complete MKT-1, MKT-2 and MKT-3 on this path: provide source occurrence,
-provision, claim/result revision and evidence lineage for every value, resolve
+provision, claim, relationship, result revision, closure, effect and evidence
+lineage for every value, resolve
 provision codes per row rather than by a section-wide dominant code, and pass
 context through direct props rather than a global UI bridge. A legacy card link
 is optional compatibility navigation,
@@ -1657,20 +1993,21 @@ responses are safely cacheable and the Phase 9 database load gate passes.
 ### Phase 7: Shared results and row contract across every surface
 
 Implement the versioned result composer and one shared row contract for Review,
-Corpus Context, Compare, Query and Admin. A row may combine multiple provisions
-through typed relationships, including a representation plus bring-down or a
-fee plus triggers, while preserving each component's state, party and evidence.
-Nested definitions remain independently inspectable.
+Corpus Context, Compare, Query, Admin and exports. A row may combine multiple
+provisions through typed relationships, including a representation plus
+bring-down or a fee plus triggers, while preserving each component's state,
+party, ClaimScopeClosure, exact relationship effect, ResultInputLineage and
+evidence. Nested definitions remain independently inspectable.
 
 All surfaces render explicit `ABSENT`, `NOT_APPLICABLE`, `NOT_EXAMINED` and
 `FAILED` states instead of blanket “No market data”. They use the same raw and
-canonical values, market observations, denominator labels, source roles and
-refinable dimensions. Display and sidebar components may arrange the contract
-differently, but cannot reinterpret it. Existing active index filters and
-result-specific columns remain available to refine output. The Query surface
-must additionally expose the plan's columns, cohort, counts, exclusions,
-pagination and source actions rather than reducing a result to a chart or
-presence count.
+canonical values, bounded relationship-effect projections, market observations,
+denominator labels, source roles and refinable dimensions. Display and sidebar
+components may arrange the contract differently, but cannot reinterpret it or
+reconstruct a missing effect. Existing active index filters and result-specific
+columns remain available to refine output. The Query surface must additionally
+expose the plan's columns, cohort, counts, exclusions, pagination and source
+actions rather than reducing a result to a chart or presence count.
 
 Natural-language, manual and saved forms of the same request must compile to
 the same plan and return semantically identical rows. Golden query tests include
@@ -1691,10 +2028,12 @@ current from target stages, and show candidate certification, active release,
 correction application and rollback state.
 
 Create one machine-readable traceability matrix covering every active route,
-row, concept, extraction rule, claim, normaliser, metric, cohort, component,
-query-plan operator, request and result schema, index or materialised view,
-cache policy, corpus-coverage result and every test case and suite. Test coverage
-includes extraction goldens, identity stability, contract enforcement,
+row, concept, extraction rule, claim, ClaimScopeDefinition, dependency
+expectation, ClaimScopeClosure, relationship effect, ResultInputLineage,
+normaliser, metric, cohort, component, query-plan operator, request and result
+schema, index or materialised view, cache policy, corpus-coverage result and
+every test case and suite. Test coverage includes extraction goldens, identity
+stability, contract enforcement,
 cross-view browser acceptance, visual regression, accessibility, security,
 backup restoration, rollback, performance and database load or soak tests.
 Contract generation and CI update or reject that matrix; it is not a manually
@@ -1704,13 +2043,17 @@ Independent enumerators discover source and deal manifests, contract objects,
 framework routes and jobs, database RPCs and indexes, test-runner cases and
 candidate release objects. Pre-extraction universes require exact bidirectional
 stable-ID set equality between independent discovery, the corresponding
-CorpusScopeManifest inventory and the traceability matrix. Candidate closure
-separately requires: selected revision occurrences exactly equal the expected
-scope occurrences; the inactive namespace object set exactly equals the
-CandidateReleaseManifest object set; and independently derived serving and
-aggregate key-and-payload-digest pairs exactly equal the materialised pairs.
-Every mapping is traced. A self-declared inventory, matching count or omitted
-failed object cannot pass.
+CorpusScopeManifest inventory and the traceability matrix, including every
+ClaimScopeDependencyExpectation, ClaimScopeClosure, expected relationship
+effect and ResultInputLineage slot. Candidate closure separately requires:
+selected revision occurrences exactly equal the expected scope occurrences;
+every closure dependency is discharged by the exact selected relationship
+revision; every relationship effect and ResultInputLineage validates; the
+inactive namespace object set exactly equals the CandidateReleaseManifest
+object set; and independently derived serving and aggregate
+key-and-payload-digest pairs exactly equal the materialised pairs. Every mapping
+is traced. A self-declared inventory, matching count or omitted failed object
+cannot pass.
 
 Add the existing eleven invariants to CI and release certification. Recovery
 usage may only decrease. Identity drift, silent semantic changes, unrecognised
@@ -1732,8 +2075,9 @@ The following adversarial closure tests are mandatory traceability entries:
 
 - `GATE-01`: absent, stale, malformed or mismatched gate evidence leaves work
   blocked; prose cannot change the result.
-- `ID-CLAIM-01`: changing only claim state, value, evidence, scope, derivation or
-  correction preserves occurrence ID, changes revision and rekeys every
+- `ID-CLAIM-01`: changing only claim state, value, evidence, selected closure,
+  dependency-discharge revision, derivation or correction preserves occurrence
+  ID where the governed subject is unchanged, changes revision and rekeys every
   dependant through release.
 - `ID-SOURCE-01`: distinct receipts or converters producing identical text keep
   distinct source actions and cannot cross-serve evidence.
@@ -1744,19 +2088,77 @@ The following adversarial closure tests are mandatory traceability entries:
   snapshots and releases reproduce across databases with different UUIDs and
   insertion order.
 - `ID-TOPOLOGY-01`: construction in a fresh database proves every identity and
-  manifest reference already has its final digest; a forward reference or
+  manifest reference already has its final digest; a forward reference, a
+  pre-claim relationship depending on its dependent ClaimRevision or any other
   identity cycle fails before persistence.
 - `ADMISSION-01`: every historical source has a terminal admission disposition;
   missing bytes, mapping, converter proof or one admitted leaf blocks release.
-- `ASSESSMENT-01`: all five states over one intended scope preserve assessment
-  occurrence, create exact revisions and reject an asserted stored scalar
-  payload on a non-present claim.
+- `ASSESSMENT-01`: all five states over one frozen ClaimScopeClosure preserve
+  assessment occurrence, create exact revisions and reject an asserted stored
+  scalar payload on a non-present claim. Complete coverage must equal the
+  closure's required-examination interval set and exact discharged dependency
+  revisions.
+- `SCOPE-CLOSURE-01`: one fixture places the only relevant qualifier, exception
+  or applicability fact respectively in a governing chapeau, inline definition,
+  definition nested inside another definition, cross-referenced provision,
+  proviso and incorporated schedule. Complete examination of the base provision
+  alone cannot produce `ABSENT`. Removing each dependency in turn, including
+  while preserving counts by adding an irrelevant interval, fails scope freeze
+  or candidate closure.
+- `SCOPE-CLOSURE-MULTIUSE-01`: one definition governs three operative
+  provisions and contains a nested definition. Each ClaimScopeClosure references
+  the same exact definition occurrences without copying them, counts each
+  structural leaf once and remains identity-stable under input reordering.
+  Changing either definition, one use endpoint or precedence rule changes every
+  affected closure and no unaffected closure.
+- `SCOPE-CLOSURE-STATE-01`: a dependency expectation is tested with one
+  permitted `PRESENT` revision, permitted source-backed `NOT_APPLICABLE`,
+  `ABSENT`, `NOT_EXAMINED`, `FAILED`, missing and duplicate revisions. Only
+  states expressly accepted by ClaimScopeDefinition discharge the slot. No
+  partial, failed, missing or conflicting dependency can support `ABSENT`.
+  Substituting the wrong expectation ID, party, capacity, temporal scope,
+  condition, precedence, legal operation, affected target or evidence scope
+  also fails discharge even when the RelationshipRevision is otherwise
+  schema-valid.
+- `SCOPE-CLOSURE-FREEZE-01`: the closure enumerator reads no candidate claim or
+  relationship state. Adding, removing or changing a dependency expectation,
+  interval, source admission or exclusion after freeze changes the scope
+  manifest and invalidates the candidate. A corpus exclusion can never count as
+  examined evidence.
 - `WRITER-01`: fault injection after every writer stage leaves zero partial
   canonical rows and one correlated outcome; idempotent replay duplicates none.
 - `CORRECTION-01`: every legacy correction is dispositioned, and one shared
   anchor cannot cause an anchor-only correction to alter two semantic objects.
-- `DAG-01`: changing a REP revision invalidates its dependent bring-down,
-  result, observation and aggregate while leaving unrelated families identical.
+- `DAG-01`: changing a REP revision or selected relationship effect invalidates
+  its dependent claim, bring-down, result, observation and aggregate. Changing a
+  definition-use dependency expectation additionally changes the affected
+  closure. Unrelated families remain identical.
+- `DAG-SCOPE-01`: a `PRE_CLAIM_SCOPE` relationship depending on its dependent
+  ClaimRevision fails compilation. A definition-use expectation change
+  invalidates the ClaimScopeClosure and all dependants. A selected
+  relationship-effect change preserves an otherwise identical closure but
+  changes the RelationshipRevision, ClaimRevision, DerivedResult, observation
+  and aggregate. Unrelated families remain identical.
+- `REL-EFFECT-SCHEMA-01`: for every active RelationshipDefinition, deleting each
+  required effect field in turn, using an unknown effect code, supplying an
+  impermissible endpoint, mismatching affected and resolved target sets,
+  omitting evidence or leaving a condition or precedence input unresolved fails
+  validation and publication.
+- `REL-NO-INHERITANCE-01`: `CONTAINED_IN` alone transfers no definition,
+  qualifier, exception, party, claim or evidence. `MIRRORS` alone transfers no
+  party-specific fact or evidence. Adding the exact required semantic edge
+  enables only its declared targets.
+- `REL-QXO-01`: QXO Capitalisation preserves the Target signing limbs, Tier B
+  and Tier C targets, dates, materiality scrape, De Minimis Inaccuracies and
+  condition parties through exact `BRINGS_DOWN` and `USES_DEFINITION` effect
+  payloads. Swapping one limb, tier, party, date or scrape fails even when the
+  rendered pill is unchanged.
+- `REL-NOSHOP-IOC-FEE-01`: QXO Company and Parent cleanup, ongoing restrictions,
+  representative control, fiduciary engagement, notice, matching and
+  Acquisition Proposal definitions retain separate effect payloads and parties;
+  IOC consent remains an override rather than absence; termination-fee triggers
+  retain exact payor, payee or right holder, tail and remedy effect. Any party,
+  target, precedence or legal-operation swap fails.
 - `LEGACY-01`: QXO cleanup, ongoing restrictions, reciprocal obligations and
   bring-down tiers coexist despite legacy uniqueness constraints; poisoning a
   compatibility row changes no canonical output.
@@ -1768,6 +2170,12 @@ The following adversarial closure tests are mandatory traceability entries:
 - `METRIC-01`: 24 elapsed hours compares with one elapsed day; business days,
   months, ranges and qualitative clocks remain separate unless exact governed
   conversion exists; subject and deal denominators are both correct.
+- `METRIC-LINEAGE-01`: a claim-only scalar may publish from its ClaimRevision,
+  closure and pre-claim dependency lineage. Adding a termination-fee trigger,
+  bring-down, exception treatment or any post-claim relationship dependency
+  forces `RESULT_RELATIONSHIP` ownership and exact ResultInputLineage. A
+  relationship-dependent claim-owned observation fails compilation and
+  candidate certification.
 - `QUERY-STATE-01`: executable goldens cover every state, `NOT`, `EXISTS`,
   `NONE`, `ALL`, nested Boolean and same-component versus same-deal scope,
   including absent-only, failed-only, not-applicable-only,
@@ -1777,13 +2185,38 @@ The following adversarial closure tests are mandatory traceability entries:
   plus one with zero corpus calls, and cannot be bypassed through direct RPC.
 - `QUERY-EXEC-01`: browser and RPC instrumentation record one execution from
   launch through rendered result.
+- `QUERY-REL-EFFECT-01`: filters and groupings over termination-fee trigger,
+  no-shop exception and bring-down effect fields use the governed typed
+  projection and one indexed set-based RPC. Query plans that require recursive
+  graph traversal, application-side relationship hydration or an unindexed
+  effect field fail compilation before a corpus read.
 - `RESULT-CARDINALITY-01`: every inline and repeatable slot passes at its exact
-  maximum; maximum plus one either uses its declared child cursor or fails the
-  contract, never truncates; initial and child pages remain within byte limits
-  and use one set-based RPC with zero N+1 calls.
+  maximum, including relationship-effect and ResultInputLineage slots; maximum
+  plus one either uses its declared child cursor or fails the contract, never
+  truncates; initial and child pages remain within byte limits and use one
+  set-based RPC with zero per-component or per-relationship calls.
+- `RESULT-LINEAGE-01`: changing only a ClaimScopeClosure,
+  RelationshipRevision, effect payload, endpoint, party, precedence rule or
+  evidence changes ResultInputLineage, result-component and DerivedResult
+  revision IDs. Canonically reordered identical inputs reproduce the same IDs.
 - `SERVING-PAYLOAD-01`: changing one projected state, canonical value,
-  denominator or evidence reference without changing its serving key fails
-  independent key-and-payload-digest certification and import parity.
+  denominator, ClaimScopeClosure, relationship revision, effect or evidence
+  reference without changing its serving key fails independent
+  key-and-payload-digest certification and import parity.
+- `SERVING-LINEAGE-01`: changing a relationship effect while preserving the
+  serving key and visible display text changes the result-row, child-row,
+  observation and aggregate payload digests. Independent key-and-payload
+  certification and production import parity reject the stale payload.
+- `ROW-LINEAGE-OMISSION-01`: removing, duplicating or impermissibly reordering
+  one ClaimRevision, RelationshipRevision, ClaimScopeClosure, effect digest or
+  evidence reference fails server result-schema validation before cache or
+  rendering. Review, Corpus Context, Compare, Query, Admin and CSV expose
+  identical lineage for the same component.
+- `ROW-LINEAGE-CARDINALITY-01`: relationship-effect and ResultInputLineage slots
+  pass at the exact inline maximum, use the declared child cursor at the
+  repeatable maximum and fail above an undeclared hard maximum. Initial and
+  child rows use one set-based RPC with zero per-relationship queries and no
+  truncation.
 - `ERR-CURSOR-CACHE-01`: injected validation, auth, admission, circuit, timeout
   and result-contract failures use the exact error contract; cursor tampering,
   cross-scope replay and expiry fail; cache cannot cross auth, contract or
@@ -1813,12 +2246,15 @@ The following adversarial closure tests are mandatory traceability entries:
   controller outage produces zero checkout and half-open state permits exactly
   one probe.
 - `SCOPE-OMISSION-01`: separately omitting or adding one source, deal, family,
-  claim, result, registry entry, route, schema, test or released row fails exact
-  bidirectional set equality even when counts remain equal.
+  ClaimScopeDependencyExpectation, ClaimScopeClosure, claim, relationship
+  effect, ResultInputLineage slot, result, registry entry, route, schema, test or
+  released row fails exact bidirectional set equality even when counts remain
+  equal.
 - `SCOPE-EXCLUSION-01`: inserting or changing an exclusion after scope freeze
   invalidates the candidate; `FAILED` or `NOT_EXAMINED` in any expected optional
   or required slot blocks; and moving a failed deal, family or slot into
-  exclusions without pre-freeze evidence and Ben approval cannot pass.
+  exclusions without pre-freeze evidence and Ben approval cannot pass. An
+  exclusion never discharges a dependency or counts as examined evidence.
 - `DEPLOY-CUTOVER-01`: changing any certified executable input blocks
   promotion; concurrent or partially failed activation yields one complete old
   or new generation; authorisation replay fails; smoke failure rolls back and
@@ -1852,9 +2288,10 @@ The chain is:
 
 `CandidateReleaseManifest` selects the exact OperationalPolicySet, certification
 policy, contract and scope digests, CorpusRelease, ordered snapshots, canonical
-objects and source payloads and the ordered serving-key and
-canonical-payload-digest pairs for result rows, child rows, observations and
-aggregates, plus bundle-file checksums.
+objects and source payloads, including ClaimScopeDependencyExpectations,
+ClaimScopeClosures, relationship-effect payloads and ResultInputLineage, and the
+ordered serving-key and canonical-payload-digest pairs for result rows, child
+rows, observations and aggregates, plus bundle-file checksums.
 `PreCutoverCertification` records every
 gate required transitively by the `production_import` work class, candidate
 release, OperationalPolicySet, policy, scope and deployment digests, code and
@@ -1895,13 +2332,17 @@ The pre-cutover gates are:
 
 - both independent CorpusScopeManifest enumerators prove exact set equality for
   every source, deal, family, discovered semantic and expected assessment,
-  claim, relationship and result occurrence, contract object, registry entry,
-  route and job, schema, governed database object, test and traceability row;
+  ClaimScopeDependencyExpectation, ClaimScopeClosure, claim, relationship,
+  relationship-effect slot, ResultInputLineage slot and result occurrence,
+  contract object, registry entry, route and job, schema, governed database
+  object, test and traceability row. Post-extraction effect payloads and lineage
+  digests are candidate-closure universes, not scope universes;
 - candidate-closure enumerators prove that selected revision occurrences equal
-  those scope expectations, namespace objects equal CandidateReleaseManifest
-  objects and independently recomposed serving and aggregate
-  key-and-payload-digest pairs equal materialised pairs, with empty differences
-  in both directions;
+  those scope expectations, every closure dependency is discharged, every
+  effect and lineage payload validates, namespace objects equal
+  CandidateReleaseManifest objects and independently recomposed serving and
+  aggregate key-and-payload-digest pairs equal materialised pairs, with empty
+  differences in both directions;
 - every entry in the frozen registry digest has one passing terminal
   disposition: `ADOPTED_CANONICAL`, `MAPPED_ALIAS`, an acyclic `MERGED_INTO`
   chain ending in an adopted entry, `REJECTED_INVALID` or
@@ -1913,7 +2354,8 @@ The pre-cutover gates are:
 - every outstanding item in the Ben runbook is complete;
 - canonical numeric schema migration and backfill are complete;
 - render-parity tooling is complete and green;
-- structured-claims validation and persistence enforcement are active;
+- structured-claim and relationship-effect validation and persistence
+  enforcement are active;
 - party-token lint is green;
 - the security and client-auth decision is implemented, including recorded
   completion of the credential actions in Phase 0 without recording secrets;
@@ -1922,10 +2364,11 @@ The pre-cutover gates are:
   resolved by majority vote: it requires human adjudication, any necessary
   contract or extractor revision and a fresh confirming run for every affected
   unit;
-- logical occurrence identity is exactly stable, identical payloads reproduce
-  identical revision IDs, every identity-bearing payload difference produces a
-  different revision ID, silent semantic drift is zero, unresolved residuals
-  are zero and active compatibility-recovery counters are zero;
+- logical occurrence identity is exactly stable, identical closure, effect,
+  lineage and revision payloads reproduce identical IDs or digests, every
+  identity-bearing payload difference produces a different downstream identity
+  or digest, silent semantic drift is zero, unresolved residuals are zero and
+  active compatibility-recovery counters are zero;
 - full cross-view browser acceptance and visual regression have zero
   unexplained differences, accessibility has zero serious or critical
   violations, and the Section 8 API and browser performance budgets are green;
@@ -1984,11 +2427,14 @@ The pre-cutover gates are:
   restores latency budgets, and one market request performs only its declared
   bounded calls. Indexed set aggregation inside Postgres remains permitted;
 - backup restoration and active-corpus rollback are rehearsed successfully;
-- independently discovered route, contract, source, deal, expected occurrence
-  and test sets exactly equal their scope and traceability sets; selected
-  released-object sets exactly equal CandidateReleaseManifest and traceability
-  sets; and the released occurrence projection exactly equals scope, with zero
-  unmanifested or untraced IDs; and
+- independently discovered route, contract, source, deal, scope dependency,
+  closure, expected occurrence, expected relationship-effect slot, expected
+  ResultInputLineage slot and test sets exactly equal their scope and
+  traceability sets; selected released-object, actual relationship-effect
+  payload and ResultInputLineage digest sets exactly equal CandidateReleaseManifest
+  and traceability sets; and the released occurrence projection exactly equals
+  scope while released payload-digest projections exactly equal the candidate
+  manifest, with zero unmanifested or untraced IDs; and
 - the exact DeploymentManifest is certified for the executable production
   system.
 
@@ -2014,9 +2460,10 @@ performs no extraction, normalisation, correction replay or semantic
 transformation. `ProductionImportAttestation` records the bundle, scope,
 certification and deployment digests, namespace, exact expected and imported
 stable-ID and source-payload sets, empty set differences in both directions,
-payload and object checksums, production BlobAvailabilityReceipt generations
-and exact serving-key and payload-digest pairs, importer commit and Ben's apply
-evidence. Count-only or key-only parity cannot pass, and the active release state
+closure, relationship-effect, ResultInputLineage, payload and object checksums,
+production BlobAvailabilityReceipt generations and exact serving-key and
+payload-digest pairs, importer commit and Ben's apply evidence. Count-only,
+key-only or display-value-only parity cannot pass, and the active release state
 must remain unchanged.
 
 Ben then issues one immutable, expiring, one-use `CutoverAuthorisation`. It
