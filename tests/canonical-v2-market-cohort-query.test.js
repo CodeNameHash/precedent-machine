@@ -52,6 +52,7 @@ function resultFor(params) {
       examined_deals: 38,
       present_deals: 38,
       comparable_deals: 37,
+      distribution_deals: 37,
       observation_slots: 37,
       excluded_slots: 2,
     },

@@ -286,9 +286,15 @@ BEGIN
     SELECT
       count(DISTINCT governed_deal_key) FILTER (WHERE eligibility_state = 'ELIGIBLE')::integer AS eligible_deals,
       count(DISTINCT governed_deal_key) FILTER (WHERE eligibility_state = 'ELIGIBLE' AND applicability_state = 'APPLICABLE')::integer AS applicable_deals,
-      count(DISTINCT governed_deal_key) FILTER (WHERE examination_state = 'EXAMINED')::integer AS examined_deals,
-      count(DISTINCT governed_deal_key) FILTER (WHERE claim_state = 'PRESENT' AND examination_state = 'EXAMINED')::integer AS present_deals,
+      count(DISTINCT governed_deal_key) FILTER (
+        WHERE eligibility_state = 'ELIGIBLE' AND applicability_state = 'APPLICABLE' AND examination_state = 'EXAMINED'
+      )::integer AS examined_deals,
+      count(DISTINCT governed_deal_key) FILTER (
+        WHERE eligibility_state = 'ELIGIBLE' AND applicability_state = 'APPLICABLE'
+          AND examination_state = 'EXAMINED' AND claim_state = 'PRESENT'
+      )::integer AS present_deals,
       count(DISTINCT governed_deal_key) FILTER (WHERE comparable)::integer AS comparable_deals,
+      count(DISTINCT governed_deal_key) FILTER (WHERE comparable AND claim_state = 'PRESENT')::integer AS distribution_deals,
       count(*) FILTER (WHERE NOT excluded)::integer AS observation_slots,
       count(*) FILTER (WHERE excluded)::integer AS excluded_slots
     FROM slot_states
@@ -342,6 +348,7 @@ BEGIN
       'examined_deals', counts.examined_deals,
       'present_deals', counts.present_deals,
       'comparable_deals', counts.comparable_deals,
+      'distribution_deals', counts.distribution_deals,
       'observation_slots', counts.observation_slots,
       'excluded_slots', counts.excluded_slots
     ),

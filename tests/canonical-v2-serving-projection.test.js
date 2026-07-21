@@ -11,6 +11,7 @@ const {
   buildFixtureResultComponent,
   projectMarketMetricSlot,
 } = require('../lib/canonical-v2/serving-projection');
+const { buildCanonicalResultServingRow } = require('../lib/canonical-v2/shared-serving-row');
 const { buildImmutableSource, buildSemanticSpan } = require('../lib/canonical-v2/source-structure');
 
 const contractBundle = compileFixtureContract();
@@ -234,6 +235,11 @@ test('the exact QXO Section 5.2 tier is excluded while its Section 3.1 relations
   assert.equal(output.exclusion.aggregate_authority, 'NO_AGGREGATE_AUTHORITY');
   assert.equal(output.exclusion.unresolved_basis.missing_source_section, '3.1');
   assertMetricSlotPartition([output]);
+  assert.throws(() => buildCanonicalResultServingRow({
+    contract_bundle: contractBundle,
+    frozen_pair_id: id('FROZEN_PAIR', 'fixture'),
+    projection_output: output,
+  }), /only a comparable market observation/);
 });
 
 test('unrecognised values and malformed dimensions cannot become plausible market observations', () => {
