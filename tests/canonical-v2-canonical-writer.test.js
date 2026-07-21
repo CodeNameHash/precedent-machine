@@ -1,0 +1,297 @@
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+
+const { contentId, utf8ByteLength } = require('../lib/canonical-v2/canonical-bytes');
+const { buildClaimRevision, buildRelationshipRevision } = require('../lib/canonical-v2/claims-relationships');
+const { compileFixtureContract } = require('../lib/canonical-v2/contract-bundle');
+const {
+  InMemoryCanonicalRepository,
+  createCanonicalWriter,
+} = require('../lib/canonical-v2/canonical-writer');
+const {
+  buildImmutableSource,
+  buildProvisionInstance,
+  buildSemanticSpan,
+} = require('../lib/canonical-v2/source-structure');
+
+const contractBundle = compileFixtureContract();
+const id = (value) => contentId('WRITER_TEST_ID/V1', value);
+
+function fixtureWriteSet() {
+  const repClosure = id('closure:rep');
+  const conditionClosure = id('closure:condition');
+  const sourceText = 'Capitalisation representation. Closing condition.';
+  const source = buildImmutableSource({ sourceBytes: sourceText, sourceOccurrenceKey: 'writer-foundation-fixture' });
+  const repSpan = buildSemanticSpan(source, 0, utf8ByteLength('Capitalisation representation.'));
+  const conditionSpan = buildSemanticSpan(
+    source,
+    utf8ByteLength('Capitalisation representation. '),
+    utf8ByteLength(sourceText),
+  );
+  const evidenceFor = (sourceSpan, evidenceRole = 'OPERATIVE_TEXT') => ({
+    evidence_role: evidenceRole,
+    excerpt_id: sourceSpan.semantic_span_id,
+    document_ordinal: 0,
+    absolute_start: sourceSpan.absolute_start,
+    absolute_end: sourceSpan.absolute_end,
+  });
+  const repProvision = buildProvisionInstance({
+    source,
+    span: repSpan,
+    conceptKey: 'REP-T-CAP',
+    party: { role: 'REPRESENTATION_MAKER', value: 'COMPANY', capacity: 'TARGET' },
+    ordinal: 1,
+  });
+  const conditionProvision = buildProvisionInstance({
+    source,
+    span: conditionSpan,
+    conceptKey: 'COND-B-REP',
+    party: { role: 'CONDITION_OBLIGOR', value: 'COMPANY', capacity: 'TARGET' },
+    ordinal: 1,
+  });
+  const repClaim = buildClaimRevision({
+    subject_occurrence_id: repProvision.provision_instance_id,
+    claim_definition_key: 'KNOWLEDGE_QUALIFIER',
+    state: 'ABSENT',
+    scope: {
+      scope_closure_id: id('scope:rep'),
+      coverage_status: 'COMPLETE',
+      required_interval_ids: [repSpan.semantic_span_id],
+      examined_interval_ids: [repSpan.semantic_span_id],
+    },
+  });
+  const conditionClaim = buildClaimRevision({
+    subject_occurrence_id: conditionProvision.provision_instance_id,
+    claim_definition_key: 'REPRESENTATION_ACCURACY_STANDARD',
+    state: 'PRESENT',
+    raw_value: 'in all material respects',
+    canonical_value: 'MAT_ALL_MATERIAL',
+    evidence: [evidenceFor(conditionSpan)],
+  });
+  const repRelationship = buildRelationshipRevision({
+    source_occurrence_id: repProvision.provision_instance_id,
+    relationship_definition_key: 'CONTAINED_IN',
+    state: 'PRESENT',
+    target_occurrence_ids: [repProvision.provision_instance_id],
+    effect: { effect_mode: 'NON_SEMANTIC', legal_operation: 'GEOMETRIC_ONLY' },
+    evidence: [evidenceFor(repSpan)],
+  });
+  const conditionRelationship = buildRelationshipRevision({
+    source_occurrence_id: conditionProvision.provision_instance_id,
+    relationship_definition_key: 'CONTAINED_IN',
+    state: 'PRESENT',
+    target_occurrence_ids: [conditionProvision.provision_instance_id],
+    effect: { effect_mode: 'NON_SEMANTIC', legal_operation: 'GEOMETRIC_ONLY' },
+    evidence: [evidenceFor(conditionSpan)],
+  });
+  return {
+    deal: { deal_key: 'deal:qxo', document_hash: source.document_hash },
+    excerpts: [
+      { ...repSpan, excerpt_id: repSpan.semantic_span_id, closure_id: repClosure },
+      { ...conditionSpan, excerpt_id: conditionSpan.semantic_span_id, closure_id: conditionClosure },
+    ],
+    provisions: [
+      { ...repProvision, closure_id: repClosure },
+      { ...conditionProvision, closure_id: conditionClosure },
+    ],
+    claims: [
+      { ...repClaim, closure_id: repClosure },
+      { ...conditionClaim, closure_id: conditionClosure },
+    ],
+    relationships: [
+      { ...repRelationship, closure_id: repClosure },
+      { ...conditionRelationship, closure_id: conditionClosure },
+    ],
+  };
+}
+
+function setup() {
+  const repository = new InMemoryCanonicalRepository();
+  const writer = createCanonicalWriter({ repository, contractBundle });
+  return { repository, writer };
+}
+
+test('dry run validates and partitions without opening a transaction', async () => {
+  const { repository, writer } = setup();
+  const result = await writer.write({
+    operation: 'FIXTURE_DEAL_EXTRACTION_RUN', idempotencyKey: 'dry-1', dryRun: true, writeSet: fixtureWriteSet(),
+  });
+  assert.equal(result.dryRun, true);
+  assert.equal(result.validation.counts.publishable, 8);
+  assert.equal(repository.transactionCount, 0);
+  assert.deepEqual(repository.snapshot().receipts, []);
+});
+
+test('one write uses one transaction and exact replay returns the same receipt without another transaction', async () => {
+  const { repository, writer } = setup();
+  const input = { operation: 'FIXTURE_DEAL_EXTRACTION_RUN', idempotencyKey: 'run-1', writeSet: fixtureWriteSet() };
+  const first = await writer.write(input);
+  const replay = await writer.write(input);
+  assert.equal(repository.transactionCount, 1);
+  assert.equal(first.receipt.receiptId, replay.receipt.receiptId);
+  assert.equal(replay.replayed, true);
+  assert.equal(repository.snapshot().claims.length, 2);
+});
+
+test('conflicting replay performs zero additional writes', async () => {
+  const { repository, writer } = setup();
+  const input = { operation: 'FIXTURE_DEAL_EXTRACTION_RUN', idempotencyKey: 'run-2', writeSet: fixtureWriteSet() };
+  await writer.write(input);
+  const before = repository.snapshot();
+  const changed = fixtureWriteSet();
+  changed.claims[0].state = 'NOT_EXAMINED';
+  await assert.rejects(writer.write({ ...input, writeSet: changed }), (error) => error.code === 'IDEMPOTENCY_CONFLICT');
+  assert.deepEqual(repository.snapshot(), before);
+  assert.equal(repository.transactionCount, 1);
+});
+
+test('unknown attributes and invalid codes are retained and quarantine only their closure', async () => {
+  const { repository, writer } = setup();
+  const writeSet = fixtureWriteSet();
+  writeSet.claims[0].claim_definition_key = 'UNFAMILIAR_REP_SUBJECT';
+  writeSet.provisions[0].concept_key = 'REP-T-INVENTED';
+  const result = await writer.write({
+    operation: 'FIXTURE_DEAL_EXTRACTION_RUN', idempotencyKey: 'run-3', writeSet,
+  });
+  const state = repository.snapshot();
+  assert.deepEqual(result.validation.quarantinedClosureIds, [id('closure:rep')]);
+  assert.ok(state.residuals.some((row) => row.reason_code === 'INVALID_TAXONOMY_CODE'));
+  assert.ok(state.residuals.some((row) => row.reason_code === 'UNKNOWN_ATTRIBUTE'));
+  assert.ok(state.residuals.some((row) => row.reason_code === 'CANONICAL_IDENTITY_MISMATCH'));
+  assert.equal(state.quarantines.length, 1);
+  assert.deepEqual(state.provisions.map((row) => row.provision_instance_id), [writeSet.provisions[1].provision_instance_id]);
+  assert.deepEqual(state.claims.map((row) => row.claim_revision_id), [writeSet.claims[1].claim_revision_id]);
+  assert.deepEqual(state.relationships.map((row) => row.relationship_revision_id), [writeSet.relationships[1].relationship_revision_id]);
+  assert.deepEqual(state.excerpts.map((row) => row.excerpt_id), [writeSet.excerpts[1].excerpt_id]);
+});
+
+test('the writer independently quarantines unsupported PRESENT and ABSENT assertions', async () => {
+  const { repository, writer } = setup();
+  const writeSet = fixtureWriteSet();
+  writeSet.claims[0].scope = null;
+  writeSet.claims[1].evidence = [];
+  const result = await writer.write({
+    operation: 'FIXTURE_DEAL_EXTRACTION_RUN', idempotencyKey: 'invalid-state-evidence', writeSet,
+  });
+  assert.ok(result.validation.residuals.some((row) => row.reason_code === 'ABSENT_WITHOUT_COMPLETE_SCOPE'));
+  assert.ok(result.validation.residuals.some((row) => row.reason_code === 'PRESENT_WITHOUT_EVIDENCE'));
+  assert.ok(result.validation.residuals.some((row) => row.reason_code === 'CANONICAL_IDENTITY_MISMATCH'));
+  assert.equal(result.validation.counts.quarantinedClosures, 2);
+  assert.deepEqual(repository.snapshot().claims, []);
+});
+
+test('a canonical claim cannot publish an invented comparable value or unresolved evidence', async () => {
+  const { writer } = setup();
+  const writeSet = fixtureWriteSet();
+  writeSet.claims[1].canonical_value = 'NEAREST_PLAUSIBLE_TIER';
+  writeSet.claims[1].evidence[0] = {
+    ...writeSet.claims[1].evidence[0],
+    excerpt_id: id('missing-excerpt'),
+  };
+  const result = await writer.write({
+    operation: 'FIXTURE_DEAL_EXTRACTION_RUN', idempotencyKey: 'invented-value', dryRun: true, writeSet,
+  });
+  const reasons = result.validation.residuals.map((row) => row.reason_code);
+  assert.ok(reasons.includes('INVALID_CANONICAL_VALUE'));
+  assert.ok(reasons.includes('CANONICAL_IDENTITY_MISMATCH'));
+  assert.ok(reasons.includes('EVIDENCE_REFERENCE_UNRESOLVED'));
+  assert.deepEqual(result.validation.quarantinedClosureIds, [id('closure:condition')]);
+});
+
+test('a quarantined closure cannot publish later under a new idempotency key', async () => {
+  const { repository, writer } = setup();
+  const bad = fixtureWriteSet();
+  bad.claims[0].claim_definition_key = 'UNFAMILIAR_REP_SUBJECT';
+  await writer.write({
+    operation: 'FIXTURE_DEAL_EXTRACTION_RUN', idempotencyKey: 'quarantine-first', writeSet: bad,
+  });
+  const before = repository.snapshot();
+  await assert.rejects(writer.write({
+    operation: 'FIXTURE_DEAL_EXTRACTION_RUN', idempotencyKey: 'publish-later', writeSet: fixtureWriteSet(),
+  }), (error) => error.code === 'QUARANTINED_CLOSURE_CONFLICT');
+  assert.deepEqual(repository.snapshot(), before);
+});
+
+test('an injected failure rolls back every staged object and receipt', async () => {
+  const { repository, writer } = setup();
+  repository.injectFailureOnce('claims');
+  await assert.rejects(writer.write({
+    operation: 'FIXTURE_DEAL_EXTRACTION_RUN', idempotencyKey: 'run-4', writeSet: fixtureWriteSet(),
+  }), (error) => error.code === 'INJECTED_REPOSITORY_FAILURE');
+  assert.deepEqual(repository.snapshot(), {
+    deals: [], excerpts: [], provisions: [], claims: [], relationships: [], residuals: [], quarantines: [], receipts: [],
+  });
+  assert.equal(repository.transactionCount, 1);
+});
+
+test('the actual semantic builders pass through the same frozen contract and writer', async () => {
+  const source = buildImmutableSource({
+    sourceBytes: 'Capitalisation shall be accurate in all material respects.',
+    sourceOccurrenceKey: 'writer-integration-fixture',
+  });
+  const span = buildSemanticSpan(source, 0, utf8ByteLength(source.canonical_text.text));
+  const provision = buildProvisionInstance({
+    source,
+    span,
+    conceptKey: 'REP-T-CAP',
+    party: { role: 'REPRESENTATION_MAKER', value: 'COMPANY', capacity: 'TARGET' },
+    ordinal: 1,
+  });
+  const claim = buildClaimRevision({
+    subject_occurrence_id: provision.provision_instance_id,
+    claim_definition_key: 'REPRESENTATION_ACCURACY_STANDARD',
+    state: 'PRESENT',
+    raw_value: 'in all material respects',
+    canonical_value: 'MAT_ALL_MATERIAL',
+    evidence: [{
+      evidence_role: 'OPERATIVE_TEXT',
+      excerpt_id: span.semantic_span_id,
+      document_ordinal: 0,
+      absolute_start: span.absolute_start,
+      absolute_end: span.absolute_end,
+    }],
+  });
+  const relationship = buildRelationshipRevision({
+    source_occurrence_id: provision.provision_instance_id,
+    relationship_definition_key: 'CONTAINED_IN',
+    state: 'PRESENT',
+    target_occurrence_ids: [provision.provision_instance_id],
+    effect: { effect_mode: 'NON_SEMANTIC', legal_operation: 'GEOMETRIC_ONLY' },
+    evidence: [{
+      evidence_role: 'OPERATIVE_TEXT',
+      excerpt_id: span.semantic_span_id,
+      document_ordinal: 0,
+      absolute_start: span.absolute_start,
+      absolute_end: span.absolute_end,
+    }],
+  });
+  const closureId = id('actual-builder-closure');
+  const writeSet = {
+    deal: { deal_key: 'deal:actual-builder', document_hash: source.document_hash },
+    excerpts: [{ ...span, excerpt_id: span.semantic_span_id, closure_id: closureId }],
+    provisions: [{ ...provision, closure_id: closureId }],
+    claims: [{ ...claim, closure_id: closureId }],
+    relationships: [{ ...relationship, closure_id: closureId }],
+  };
+  const { repository, writer } = setup();
+  const result = await writer.write({
+    operation: 'FIXTURE_DEAL_EXTRACTION_RUN', idempotencyKey: 'actual-builder', writeSet,
+  });
+  assert.equal(result.validation.counts.publishable, 4);
+  assert.equal(result.validation.counts.residuals, 0);
+  assert.equal(repository.snapshot().claims[0].claim_revision_id, claim.claim_revision_id);
+});
+
+test('the SQL authority is staging-only, transactional and denies direct app-role DML', () => {
+  const sql = fs.readFileSync('supabase/canonical-v2-foundation.sql', 'utf8');
+  assert.match(sql, /CREATE SCHEMA IF NOT EXISTS canonical_v2_staging/);
+  assert.match(sql, /CREATE OR REPLACE FUNCTION public\.canonical_v2_write/);
+  assert.match(sql, /p_environment IS DISTINCT FROM 'staging'/);
+  assert.match(sql, /pg_advisory_xact_lock/);
+  assert.match(sql, /CREATE ROLE canonical_v2_writer NOLOGIN/);
+  assert.match(sql, /REVOKE ALL ON ALL TABLES IN SCHEMA canonical_v2_staging[\s\S]*service_role, canonical_v2_writer/);
+  assert.match(sql, /REVOKE ALL ON FUNCTION public\.canonical_v2_write[\s\S]*service_role/);
+  assert.match(sql, /GRANT EXECUTE ON FUNCTION public\.canonical_v2_write[\s\S]*TO canonical_v2_writer/);
+  assert.doesNotMatch(sql, /COMMIT|START TRANSACTION/);
+});

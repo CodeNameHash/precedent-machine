@@ -1,0 +1,63 @@
+{
+  "fixture_version": "QXO_5_2_FOUNDATION/V1",
+  "scope": "FOUNDATION_ONLY",
+  "source": {
+    "deal_id": "7dc3a05f-b170-4d59-a255-b7103cca16e1",
+    "section": "5.2",
+    "expected_text_length": 3148
+  },
+  "definition": {
+    "raw_term": "De Minimis Inaccuracies",
+    "syntactic_role": "NESTED_INLINE",
+    "term_span": [2569, 2592],
+    "body_spans": [[2600, 2772]],
+    "use_spans": [
+      { "span": [1048, 1071], "role": "OPERATIVE_REFERENCE" },
+      { "span": [2569, 2592], "role": "DECLARATION_REFERENCE" }
+    ]
+  },
+  "tiers": [
+    {
+      "key": "A",
+      "span": [500, 774],
+      "standard": "MAT_ALL_RESPECTS",
+      "raw_scope": "Section 3.1(f)(i)(B) (Absence of Certain Changes)",
+      "target_endpoint_keys": ["QXO:SECTION_3.1(f)(i)(B)"],
+      "materiality_scrape": false,
+      "exception": null
+    },
+    {
+      "key": "B",
+      "span": [776, 1071],
+      "standard": "MAT_ALL_RESPECTS_DE_MINIMIS",
+      "raw_scope": "Section 3.1(b)(i) and Section 3.1(b)(iii) (Capital Structure)",
+      "target_endpoint_keys": ["QXO:SECTION_3.1(b)(i)", "QXO:SECTION_3.1(b)(iii)"],
+      "materiality_scrape": false,
+      "exception": "De Minimis Inaccuracies"
+    },
+    {
+      "key": "C",
+      "span": [1073, 1668],
+      "standard": "MAT_ALL_MATERIAL",
+      "raw_scope": "Sections 3.1(a), 3.1(b) other than 3.1(b)(i) and (iii), 3.1(c), and 3.1(s)",
+      "target_endpoint_keys": ["QXO:SECTION_3.1(a)", "QXO:SECTION_3.1(b)(ii)", "QXO:SECTION_3.1(b)(iv)", "QXO:SECTION_3.1(b)(v)", "QXO:SECTION_3.1(c)", "QXO:SECTION_3.1(s)"],
+      "materiality_scrape": true,
+      "exception": null
+    },
+    {
+      "key": "D",
+      "span": [1673, 2247],
+      "standard": "MAT_MAE_QUALIFIED",
+      "raw_scope": "All other Company representations other than clauses (A), (B), and (C)",
+      "target_endpoint_keys": ["QXO:OTHER_COMPANY_REPRESENTATIONS"],
+      "materiality_scrape": true,
+      "exception": "Failure would not reasonably be expected to have a Company Material Adverse Effect"
+    }
+  ],
+  "relationship_kinds": ["BRINGS_DOWN", "CONTAINED_IN", "USES_DEFINITION"],
+  "multi_span_evidence": [[776, 1071], [2536, 2772]],
+  "limitations": [
+    "The referenced Section 3.1 source is not part of this fixture.",
+    "This fixture does not establish the complete vertical slice or a releasable corpus result."
+  ]
+}
