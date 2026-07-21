@@ -13,10 +13,15 @@ const {
   validateContractBundle,
 } = require('../lib/canonical-v2/contract-bundle');
 const {
+  FIXTURE_EXCERPT_DEFINITION,
+  buildExcerpt,
+  buildFixtureSourceAdmission,
   buildImmutableSource,
   buildSemanticSpan,
   buildProvisionInstance,
   buildProvisionComponent,
+  validateExcerpt,
+  validateFixtureSourceAdmission,
 } = require('../lib/canonical-v2/source-structure');
 
 const PARTY = Object.freeze({
@@ -71,6 +76,67 @@ test('semantic spans use exact half-open UTF-8 byte offsets', () => {
   assert.equal(utf8Slice(text, span.absolute_start, span.absolute_end), '£10');
   assert.match(span.semantic_span_id, /^[a-f0-9]{64}$/);
   assert.throws(() => utf8Slice(text, start + 1, end), /code-point boundaries/);
+});
+
+test('an excerpt is a distinct, source-backed serving object admitted under the frozen contract', () => {
+  const contract = compileFixtureContract();
+  const source = sourceFor('The representations are true in all material respects.');
+  const start = utf8ByteLength('The representations are ');
+  const end = utf8ByteLength(source.canonical_text.text);
+  const span = buildSemanticSpan(source, start, end);
+  const excerpt = buildExcerpt({ source, span });
+  const admission = buildFixtureSourceAdmission({
+    source,
+    dealKey: 'deal:qxo',
+    dealAdmissionId: contentId('DEAL_ADMISSION/V1', 'qxo'),
+    contractFingerprint: contract.fingerprint,
+  });
+
+  assert.notEqual(excerpt.excerpt_id, span.semantic_span_id);
+  assert.equal(excerpt.excerpt_definition_id, FIXTURE_EXCERPT_DEFINITION.excerpt_definition_id);
+  assert.equal(excerpt.exact_text, 'true in all material respects.');
+  assert.equal(validateExcerpt({ source, excerpt }), true);
+  assert.equal(validateFixtureSourceAdmission({
+    source,
+    admission,
+    dealKey: 'deal:qxo',
+    dealAdmissionId: contentId('DEAL_ADMISSION/V1', 'qxo'),
+    contractFingerprint: contract.fingerprint,
+  }), true);
+
+  const badText = { ...excerpt, exact_text: 'true in all respects.' };
+  assert.throws(() => validateExcerpt({ source, excerpt: badText }), /exact source bytes/);
+  const badOffset = { ...excerpt, absolute_start: 0 };
+  assert.throws(() => validateExcerpt({ source, excerpt: badOffset }), /identity|source bytes/);
+  assert.throws(() => validateExcerpt({
+    source,
+    excerpt: { ...excerpt, excerpt_id: span.semantic_span_id },
+  }), /identity/);
+});
+
+test('a changed admitted source rekeys its excerpt and manifest', () => {
+  const contract = compileFixtureContract();
+  const first = sourceFor('True in all material respects.');
+  const second = sourceFor('True in all respects.');
+  const firstSpan = buildSemanticSpan(first, 0, utf8ByteLength(first.canonical_text.text));
+  const secondSpan = buildSemanticSpan(second, 0, utf8ByteLength(second.canonical_text.text));
+  const firstExcerpt = buildExcerpt({ source: first, span: firstSpan });
+  const secondExcerpt = buildExcerpt({ source: second, span: secondSpan });
+  const firstAdmission = buildFixtureSourceAdmission({
+    source: first,
+    dealKey: 'deal:qxo',
+    dealAdmissionId: contentId('DEAL_ADMISSION/V1', 'qxo'),
+    contractFingerprint: contract.fingerprint,
+  });
+  const secondAdmission = buildFixtureSourceAdmission({
+    source: second,
+    dealKey: 'deal:qxo',
+    dealAdmissionId: contentId('DEAL_ADMISSION/V1', 'qxo'),
+    contractFingerprint: contract.fingerprint,
+  });
+
+  assert.notEqual(firstExcerpt.excerpt_id, secondExcerpt.excerpt_id);
+  assert.notEqual(firstAdmission.source_admission_manifest_id, secondAdmission.source_admission_manifest_id);
 });
 
 test('provision identity binds document hash, byte offsets, concept, complete party tuple and ordinal', () => {

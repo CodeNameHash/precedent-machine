@@ -1,9 +1,15 @@
-const { contentId } = require('../../lib/canonical-v2/canonical-bytes');
+const { contentId, utf8ByteLength } = require('../../lib/canonical-v2/canonical-bytes');
 const { buildClaimRevision, buildRelationshipRevision } = require('../../lib/canonical-v2/claims-relationships');
 const { compileFixtureContract } = require('../../lib/canonical-v2/contract-bundle');
 const { compileMarketCohortRequest } = require('../../lib/canonical-v2/market-cohort-query');
 const { buildFixtureResultComponent, projectMarketMetricSlot } = require('../../lib/canonical-v2/serving-projection');
 const { buildCanonicalResultServingRow } = require('../../lib/canonical-v2/shared-serving-row');
+const {
+  buildExcerpt,
+  buildFixtureSourceAdmission,
+  buildImmutableSource,
+  buildSemanticSpan,
+} = require('../../lib/canonical-v2/source-structure');
 
 const id = (domain, value) => contentId(`${domain}/V1`, value);
 
@@ -13,19 +19,32 @@ function buildCompleteServingFixture({
   counts = {},
 } = {}) {
   const contract = compileFixtureContract();
+  const sourceText = 'The representations are true in all material respects. At closing, this tier tests the Capitalization representation.';
+  const source = buildImmutableSource({
+    sourceBytes: Buffer.from(sourceText, 'utf8'),
+    sourceOccurrenceKey: 'qxo-complete-serving-fixture',
+  });
+  const claimStart = utf8ByteLength('The representations are ');
+  const claimEnd = utf8ByteLength('The representations are true in all material respects.');
+  const relationshipStart = utf8ByteLength('The representations are true in all material respects. ');
+  const relationshipEnd = utf8ByteLength(sourceText);
+  const claimSpan = buildSemanticSpan(source, claimStart, claimEnd);
+  const relationshipSpan = buildSemanticSpan(source, relationshipStart, relationshipEnd);
+  const claimExcerpt = buildExcerpt({ source, span: claimSpan });
+  const relationshipExcerpt = buildExcerpt({ source, span: relationshipSpan });
   const claimEvidence = {
     evidence_role: 'OPERATIVE_TEXT',
-    excerpt_id: id('EXCERPT', 'complete-accuracy-claim'),
+    excerpt_id: claimExcerpt.excerpt_id,
     document_ordinal: 0,
-    absolute_start: 0,
-    absolute_end: 24,
+    absolute_start: claimExcerpt.absolute_start,
+    absolute_end: claimExcerpt.absolute_end,
   };
   const relationshipEvidence = {
     evidence_role: 'CROSS_REFERENCE',
-    excerpt_id: id('EXCERPT', 'complete-bring-down-relationship'),
+    excerpt_id: relationshipExcerpt.excerpt_id,
     document_ordinal: 0,
-    absolute_start: 25,
-    absolute_end: 49,
+    absolute_start: relationshipExcerpt.absolute_start,
+    absolute_end: relationshipExcerpt.absolute_end,
   };
   const subjectOccurrenceId = id('CONDITION_TIER_OCCURRENCE', 'complete-tier');
   const claim = buildClaimRevision({
@@ -69,6 +88,12 @@ function buildCompleteServingFixture({
       deal_value_usd: '5000000000',
     },
   };
+  const sourceAdmission = buildFixtureSourceAdmission({
+    source,
+    dealKey: deal.deal_key,
+    dealAdmissionId: deal.deal_admission_id,
+    contractFingerprint: contract.fingerprint,
+  });
   const party = { role: 'CONDITION_BENEFICIARY', value: 'BUYER', capacity: 'ACQUIRER' };
   const result = buildFixtureResultComponent({
     deal_admission_id: deal.deal_admission_id,
@@ -148,7 +173,21 @@ function buildCompleteServingFixture({
     cohort_request: cohortRequest,
     cohort_result: cohortResult,
   });
-  return { contract, cohortRequest, cohortResult, projection, row };
+  return {
+    contract,
+    cohortRequest,
+    cohortResult,
+    projection,
+    row,
+    source,
+    sourceAdmission,
+    claimSpan,
+    claimExcerpt,
+    relationshipSpan,
+    relationshipExcerpt,
+    claim,
+    relationship,
+  };
 }
 
 module.exports = { buildCompleteServingFixture, id };
