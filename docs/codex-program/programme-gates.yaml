@@ -1,0 +1,476 @@
+programme_gate_registry:
+  schema: canonical-programme-gates/v1
+  specification_identity: DOMAIN_SEPARATED_SPECIFICATION_ROOT_DIGEST
+  specification_manifest: docs/codex-program/specification-manifest.json
+  status_artifact: docs/certification/programme-gate-status.json
+  status_source: GENERATED_STATUS_ARTEFACT_WITH_TERMINAL_PAIR_FOR_COMPLETION
+  absent_status_effect: ALL_GATES_OPEN
+  evidence_directory: docs/certification/evidence
+  default_state: OPEN
+  invalid_or_missing_evidence_state: OPEN
+  default_permits_not_applicable: false
+  allowed_states: [OPEN, PASS, FAIL, NOT_APPLICABLE]
+  normally_satisfying_states: [PASS]
+  work_class_references: TRANSITIVE_ALL_OF
+
+  gate_evidence_validation:
+    schema: programme-gate-evidence-envelope/v2
+    contract_identifier_semantics: CLOSED_SCHEMA_ID_NOT_OPAQUE_LABEL
+    acceptance_definition_schema: programme-gate-acceptance-definition/v1
+    acceptance_definition_resolution: UNIQUE_CONTENT_ADDRESSED_DEFINITION_FOR_EVIDENCE_CONTRACT
+    acceptance_definition_binding: EXACT_SPECIFICATION_ROOT_AND_WHERE_APPLICABLE_FROZEN_CONTRACT_PAIR
+    acceptance_definition_required_fields:
+      - definition_id
+      - definition_digest
+      - evidence_object_json_schema_digest
+      - evidence_subject_type
+      - evidence_subject_identity_fields
+      - immutable_member_universe_definition
+      - immutable_member_json_schema_set_digest
+      - member_enumerator_executable_digest
+      - member_enumerator_configuration_digest
+      - ordered_claim_predicate_definitions
+    claim_predicate_required_fields:
+      - claim_key
+      - result_type
+      - exact_input_member_types_and_paths
+      - measurement_executable_digest
+      - measurement_configuration_digest
+      - comparison_operator
+      - expected_typed_value
+    unresolved_ambiguous_or_unbound_acceptance_definition_effect: OPEN
+    required_fields:
+      - gate_id
+      - evidence_contract
+      - acceptance_definition_id
+      - acceptance_definition_digest
+      - specification_root
+      - code_commit
+      - environment
+      - evidence_subject_type
+      - evidence_subject_id
+      - evidence_subject_payload_digest
+      - required_evidence_object_type
+      - exact_acceptance_claims
+      - immutable_member_root
+      - validator_executable_digest
+      - validator_configuration_digest
+      - validator_key_id
+      - terminal_state
+      - signature
+    acceptance_predicate:
+      evidence_contract_selects_exact_schema: true
+      acceptance_definition_is_unique_root_bound_and_content_addressed: true
+      required_object_type_matches_gate: true
+      subject_type_identity_and_payload_match_definition: true
+      member_universe_and_member_schemas_match_definition: true
+      acceptance_claim_keys_equal_gate_claims: true
+      every_claim_uses_its_exact_typed_predicate: true
+      recompute_member_universe_and_measurements_from_immutable_members: true
+      specification_code_environment_and_subject_match: true
+      validator_executable_and_configuration_are_allowlisted: true
+      verify_signature_and_trust_chain: true
+      required_adversarial_tests_are_terminal_pass: true
+      terminal_state_must_equal: PASS
+    schema_or_predicate_unregistered_effect: OPEN
+    unknown_extra_or_missing_claim_effect: OPEN
+    request_supplied_result_effect: OPEN
+    status_projection: RECOMPUTED_FROM_VALIDATED_EVIDENCE_ONLY
+
+  reviewer_eligibility:
+    formal_legal_semantic_reviewer: Fable or an independent 5.6 Sol reviewer using extra-high reasoning.
+    accepted_reviewer_classes:
+      - FABLE_ELIGIBLE
+      - SOL_5_6_EXTRA_HIGH_ELIGIBLE
+    sol_provider_model_id: gpt-5.6-sol
+    sol_provider_reasoning_value: xhigh
+    sol_canonical_reasoning_label: extra-high
+    provider_evidence_schema: reviewer-provider-evidence/dsse-v1
+    provider_evidence_source: AUTHENTICATED_PROVIDER_REVIEW_RECORD_API
+    provider_evidence_retrieval: VALIDATOR_FETCH_BY_IMMUTABLE_SESSION_AND_REVIEW_ID
+    provider_trust_root_set: reviewer-provider-trust-roots/v1
+    provider_signature_verification: DSSE_OR_JWS_SIGNATURE_AND_CERTIFICATE_CHAIN_TO_TRUST_ROOT
+    provider_transport: MUTUALLY_AUTHENTICATED_TLS
+    provider_attestation_required_fields:
+      - provider
+      - exact_model_id_or_build
+      - provider_reasoning_value
+      - immutable_session_id
+      - immutable_review_id
+      - input_specification_root
+      - prompt_digest
+      - output_evidence_digest
+      - root_before_review
+      - root_after_review
+      - reviewer_edit_set
+      - issued_at
+      - nonce
+      - signing_key_id
+      - signature
+    provider_profiles:
+      FABLE_ELIGIBLE:
+        provider_id: FABLE
+        exact_build_rule: PROVIDER_ATTESTED_FABLE_ELIGIBLE_BUILD
+        trust_root_set: fable-review-provider-trust-roots/v1
+      SOL_5_6_EXTRA_HIGH_ELIGIBLE:
+        provider_id: OPENAI
+        exact_build_rule: gpt-5.6-sol
+        exact_reasoning_value: xhigh
+        trust_root_set: openai-review-provider-trust-roots/v1
+    provider_verification_predicate:
+      fetch_record_from_provider_not_evidence_file: true
+      verify_signature_and_trust_chain: true
+      verify_nonce_is_single_use: true
+      verify_all_payload_fields_against_review_set: true
+      reject_user_or_reviewer_supplied_substitute: true
+    provider_record_unavailable_or_unverifiable_effect: INELIGIBLE
+    local_cli_or_transcript_only_effect: ADVISORY_ONLY
+    independence_predicate:
+      reviewer_did_not_author_or_modify_input_root: true
+      reviewer_received_prior_conclusions: false
+      reviewer_edit_set_must_be_empty: true
+    independence_evidence_schema: reviewer-independence-attestation/v1
+    independence_evidence_source: STATUS_VALIDATOR_RECOMPUTED_FROM_AUTHORSHIP_RECEIPTS_AND_PROVIDER_SESSION_GRAPH
+    independence_universe_contract:
+      authorship_membership: EVERY_SIGNED_COMMIT_OR_INTEGRATION_OWNER_WORKSPACE_CHANGE_RECEIPT_CONTRIBUTING_A_BYTE_TO_THE_EXACT_REVIEWED_ROOT
+      review_input_membership: EVERY_PROVIDER_RECORDED_INPUT_OR_MESSAGE_DELIVERED_TO_THE_IMMUTABLE_REVIEW_SESSION
+      allowed_review_input: EXACT_REVIEWED_ROOT_BYTES_PLUS_ONE_REGISTERED_LANE_SPECIFIC_COLD_PROMPT
+      cold_prompt_constraint: ROOT_BOUND_PROMPT_DIGEST_WITH_ZERO_PRIOR_REVIEW_FINDING_OR_CONCLUSION_CONTENT
+      prior_conclusion_membership: EVERY_REVIEW_INPUT_OUTSIDE_THE_ALLOWED_REVIEW_INPUT_PLUS_EVERY_PROVIDER_LINKED_PRIOR_REVIEW_OUTPUT
+      cutoff: ROOT_FREEZE_PRECEDES_REVIEW_SESSION_CREATION_AND_PROVIDER_INPUT_CUTOFF_EQUALS_REVIEW_START
+      authorship_write_authority: APPEND_ONLY_SIGNED_INTEGRATION_OWNER_OR_SOURCE_CONTROL_PROVIDER_RECEIPT
+      prior_conclusion_write_authority: AUTHENTICATED_PROVIDER_SESSION_RECORD_API_ONLY
+      completeness_proof: VALIDATOR_REBUILDS_AUTHORSHIP_FROM_COMPLETE_COMMIT_DAG_AND_WORKSPACE_CHANGE_LEDGER_AND_REVIEW_INPUTS_AND_LINKED_OUTPUTS_FROM_COMPLETE_PROVIDER_SESSION_GRAPH
+      missing_unsigned_unattributed_or_unenumerable_event_effect: INELIGIBLE
+    independence_required_fields:
+      - reviewer_principal_id
+      - immutable_session_id
+      - session_parent_or_genesis
+      - exact_input_context_digest
+      - authoring_event_intersection_root
+      - prior_conclusion_intersection_root
+      - reviewer_edit_set_root
+      - validator_executable_digest
+      - validator_configuration_digest
+      - validator_key_id
+      - signature
+    independence_acceptance:
+      session_parent_must_be: GENESIS
+      authoring_event_intersection_root_must_be: EMPTY
+      prior_conclusion_intersection_root_must_be: EMPTY
+      reviewer_edit_set_root_must_be: EMPTY
+      validator_must_recompute_not_accept_assertion: true
+    self_asserted_metadata_effect: INELIGIBLE
+    ordinary_sol_effect: ADVISORY_ONLY
+
+  work_classes:
+    specification_review:
+      all_of: []
+    emergency_containment:
+      all_of: []
+    implementation_planning:
+      all_of:
+        - G0_EXACT_DIGEST_REVIEW_SET
+        - G0_BEN_SPEC_APPROVAL
+    isolation_boundary_setup:
+      all_of:
+        - G0_ZAYO_DISPOSITION
+        - G0_CLAUDE_CREDENTIAL_ROTATION
+        - G0_SUPABASE_SECRET_DISPOSITION
+    snapshot_restore_and_preview:
+      all_of:
+        - isolation_boundary_setup
+        - G0_STAGING_SUPABASE_ISOLATED
+        - G0_STAGING_VERCEL_ISOLATED
+        - G0_STAGING_ACCESS_PROTECTED
+    canonical_work_start:
+      all_of:
+        - snapshot_restore_and_preview
+        - G0_MARKET_STATS_CONTAINED
+        - G0_BROAD_CORPUS_ROUTES_CONTAINED
+        - G0_EXACT_DIGEST_REVIEW_SET
+        - G0_BEN_SPEC_APPROVAL
+    vertical_slice_execution:
+      all_of:
+        - canonical_work_start
+        - P1_CONTRACT_FREEZE_ATTESTED
+    candidate_scope_and_extraction:
+      all_of:
+        - vertical_slice_execution
+        - P1_VERTICAL_SLICE_PASS
+    production_import:
+      all_of:
+        - candidate_scope_and_extraction
+        - P9_SCOPE_EXACT
+        - P9_REGISTRY_DISPOSITIONS
+        - P9_MKT_WORK
+        - P9_BEN_RUNBOOK
+        - P9_NUMERIC
+        - P9_RENDER_PARITY
+        - P9_STRUCTURED_CLAIMS
+        - P9_PARTY_LINT
+        - P9_SECURITY_AUTH
+        - P9_SHADOW_REEXTRACTION
+        - P9_IDENTITY_AND_DRIFT
+        - P9_BROWSER_A11Y_PERFORMANCE
+        - P9_STAGING_SMOKE_AND_ROLLBACK
+        - P9_DATABASE_SOAK
+        - P9_BACKUP_RESTORE
+        - P9_PREIMPORT_TRACEABILITY
+        - P9_DEPLOYMENT_PARITY
+    cutover_authorisation_issue:
+      all_of:
+        - production_import
+        - P9_IMPORT_PARITY
+        - P9_PROMOTION_ELIGIBILITY
+    production_cutover:
+      all_of:
+        - cutover_authorisation_issue
+        - P9_CUTOVER_AUTHORISATION
+    programme_complete:
+      all_of:
+        - production_cutover
+        - P9_POSTCUTOVER_SMOKE
+        - P9_TRACEABILITY
+        - P9_PROGRAMME_COMPLETION_ATTESTATION
+      terminal_pair_required: true
+      terminal_pair_contract: PROPOSED_STATUS_PLUS_POST_COMPLETION_TRACE/V1
+
+  terminal_completion_binding:
+    proposed_status_gates:
+      - P9_TRACEABILITY
+      - P9_PROGRAMME_COMPLETION_ATTESTATION
+    required_trace_phase: POST_COMPLETION
+    required_trace_variant: PASS_PHASE
+    forbidden_trace_variant: FAILURE_TERMINAL
+    publication: ATOMIC_SINGLETON_PAIR_CAS
+    partial_pair_effect: OPEN
+    later_untraced_status_effect: OPEN
+
+  gates:
+    - id: G0_MARKET_STATS_CONTAINED
+      phase: 0
+      permits_not_applicable: false
+      evidence_contract: route-disabled-code-test-live-response/v1
+      required_evidence_object_type: MarketStatsContainmentAttestation
+      acceptance_claims: [feature_gate_off, live_route_zero_corpus_reads, containment_test_pass]
+      required_adversarial_tests: [P0-ROUTE-01]
+    - id: G0_BROAD_CORPUS_ROUTES_CONTAINED
+      phase: 0
+      permits_not_applicable: false
+      evidence_contract: broad-route-inventory-and-containment/v1
+      required_evidence_object_type: BroadRouteContainmentAttestation
+      acceptance_claims: [source_built_and_runtime_route_inventories_equal, every_broad_route_contained, zero_broad_node_fallback]
+      required_adversarial_tests: [P0-ROUTE-01]
+    - id: G0_ZAYO_DISPOSITION
+      phase: 0
+      permits_not_applicable: false
+      evidence_contract: non-secret-owner-purpose-disposition/v1
+      required_evidence_object_type: ZayoTrafficDisposition
+      acceptance_claims: [owner_and_purpose_recorded_without_secret, recognised_or_rotation_required]
+      required_adversarial_tests: [GATE-01]
+    - id: G0_CLAUDE_CREDENTIAL_ROTATION
+      phase: 0
+      permits_not_applicable: false
+      evidence_contract: non-secret-rotation-completion/v1
+      required_evidence_object_type: ClaudeCredentialRotationReceipt
+      acceptance_claims: [compromised_credentials_revoked, replacement_activation_verified, no_secret_in_evidence]
+      required_adversarial_tests: [GATE-01]
+    - id: G0_SUPABASE_SECRET_DISPOSITION
+      phase: 0
+      permits_not_applicable: true
+      not_applicable_only_if:
+        gate: G0_ZAYO_DISPOSITION
+        fact: recognised_authorised_traffic
+        ben_approval_required: true
+      evidence_contract: non-secret-rotation-or-approved-na/v1
+      required_evidence_object_type: SupabaseSecretDisposition
+      acceptance_claims: [rotation_verified_or_recognised_traffic_na_with_ben_approval, no_secret_in_evidence]
+      required_adversarial_tests: [GATE-01]
+    - id: G0_STAGING_SUPABASE_ISOLATED
+      phase: environment
+      permits_not_applicable: false
+      evidence_contract: staging-project-credential-isolation/v1
+      required_evidence_object_type: StagingSupabaseIsolationAttestation
+      acceptance_claims: [distinct_project_and_credentials, production_dml_denied, snapshot_restore_only]
+      required_adversarial_tests: [DEPLOY-CUTOVER-01]
+    - id: G0_STAGING_VERCEL_ISOLATED
+      phase: environment
+      permits_not_applicable: false
+      evidence_contract: preview-project-credential-isolation/v1
+      required_evidence_object_type: StagingVercelIsolationAttestation
+      acceptance_claims: [branch_preview_uses_staging_only_credentials, production_alias_unchanged]
+      required_adversarial_tests: [DEPLOY-CUTOVER-01]
+    - id: G0_STAGING_ACCESS_PROTECTED
+      phase: environment
+      permits_not_applicable: false
+      evidence_contract: default-deny-preview-access-test/v1
+      required_evidence_object_type: StagingAccessProtectionAttestation
+      acceptance_claims: [unauthenticated_access_denied, authorised_test_access_pass]
+      required_adversarial_tests: [GATE-01]
+    - id: G0_EXACT_DIGEST_REVIEW_SET
+      phase: governance
+      permits_not_applicable: false
+      evidence_contract: five-lane-provider-attested-exact-specification-root-review-set/v3
+      required_evidence_object_type: ExactDigestReviewSetAttestation
+      acceptance_claims: [five_named_lanes_pass_same_root, eligible_legal_reviewer, reviewer_independence_recomputed, root_unchanged_before_and_after]
+      required_adversarial_tests: [GATE-01]
+    - id: G0_BEN_SPEC_APPROVAL
+      phase: governance
+      permits_not_applicable: false
+      evidence_contract: ben-approved-reviewed-specification-root/v3
+      required_evidence_object_type: BenSpecificationApproval
+      acceptance_claims: [approved_root_equals_passing_review_root, ben_identity_and_signature_valid, approval_unconditional]
+      required_adversarial_tests: [GATE-01]
+    - id: P1_CONTRACT_FREEZE_ATTESTED
+      phase: 1
+      permits_not_applicable: false
+      evidence_contract: exact-contract-freeze-attestation-and-status-generation/v7
+      required_evidence_object_type: ContractFreezeAttestation
+      acceptance_claims: [bundle_compiles, semantic_and_identity_diff_reviewed, freeze_gate_approved, status_generation_matches]
+      required_adversarial_tests: [CONTRACT-01]
+    - id: P1_VERTICAL_SLICE_PASS
+      phase: vertical-slice
+      permits_not_applicable: false
+      evidence_contract: source-to-shared-row-and-bounded-query-vertical-slice/v1
+      required_evidence_object_type: VerticalSliceAttestation
+      acceptance_claims: [all_fixture_cases_pass, authoritative_writer_only, bounded_query_pass, sibling_render_isolation_pass]
+      required_adversarial_tests: [VERTICAL-SLICE-01]
+    - id: P9_SCOPE_EXACT
+      phase: 9
+      evidence_contract: corpus-intake-source-open-world-semantic-composition-exactness/v9
+      required_evidence_object_type: ScopeExactnessAttestation
+      acceptance_claims: [intake_and_source_universes_exact, open_world_and_residual_partitions_total, semantic_and_composition_reconciliations_pass]
+      required_adversarial_tests: [SCOPE-OMISSION-01, OPEN-WORLD-DISPOSITION-TOTALITY-01, RESIDUAL-TOTALITY-01]
+    - id: P9_REGISTRY_DISPOSITIONS
+      phase: 9
+      evidence_contract: frozen-registry-full-disposition/v1
+      required_evidence_object_type: RegistryDispositionAttestation
+      acceptance_claims: [registry_universe_frozen, every_entry_has_one_final_disposition, review_queue_empty]
+      required_adversarial_tests: [GATE-01]
+    - id: P9_MKT_WORK
+      phase: 9
+      evidence_contract: mkt-1-2-3-completion/v1
+      required_evidence_object_type: MarketWorkCompletionAttestation
+      acceptance_claims: [mkt_1_pass, mkt_2_pass, mkt_3_pass]
+      required_adversarial_tests: [GATE-01]
+    - id: P9_BEN_RUNBOOK
+      phase: 9
+      evidence_contract: ben-runbook-completion/v1
+      required_evidence_object_type: BenRunbookCompletionAttestation
+      acceptance_claims: [runbook_item_universe_frozen, every_item_terminal, ben_signoff_valid]
+      required_adversarial_tests: [GATE-01]
+    - id: P9_NUMERIC
+      phase: 9
+      evidence_contract: numeric-schema-backfill-certification/v1
+      required_evidence_object_type: CanonicalNumericBackfillAttestation
+      acceptance_claims: [migration_applied_in_staging, backfill_complete, denominator_and_unit_lineage_valid, no_error_probe_path]
+      required_adversarial_tests: [OPEN-WORLD-BASIS-01]
+    - id: P9_RENDER_PARITY
+      phase: 9
+      evidence_contract: source-fidelity-and-cross-view-render-parity-certification/v3
+      required_evidence_object_type: RenderParityAttestation
+      acceptance_claims: [source_fidelity_pass, shared_row_contract_equal_across_views, visual_and_browser_parity_pass]
+      required_adversarial_tests: [OPEN-WORLD-UI-ISOLATION-01]
+    - id: P9_STRUCTURED_CLAIMS
+      phase: 9
+      evidence_contract: claims-and-relationship-effects-validation-persistence-enforcement/v2
+      required_evidence_object_type: StructuredClaimsEnforcementAttestation
+      acceptance_claims: [typed_claims_only, relationship_effects_validated, invalid_payload_quarantined, persistence_constraints_enforced]
+      required_adversarial_tests: [CONTRACT-01]
+    - id: P9_PARTY_LINT
+      phase: 9
+      evidence_contract: party-token-lint/v1
+      required_evidence_object_type: PartyTokenLintAttestation
+      acceptance_claims: [party_token_universe_complete, unknown_tokens_block, zero_lint_failures]
+      required_adversarial_tests: [OPEN-WORLD-PARTY-01]
+    - id: P9_SECURITY_AUTH
+      phase: 9
+      evidence_contract: route-action-auth-security/v1
+      required_evidence_object_type: RouteActionSecurityAttestation
+      acceptance_claims: [route_action_matrix_complete, client_auth_decision_enforced, unauthorised_actions_denied]
+      required_adversarial_tests: [GATE-01]
+    - id: P9_SHADOW_REEXTRACTION
+      phase: 9
+      evidence_contract: candidate-bound-repeated-shadow-extraction/v2
+      required_evidence_object_type: ShadowReextractionAttestation
+      acceptance_claims: [attestation_subject_equals_import_candidate, two_full_runs_complete, disagreements_receive_third_run, high_risk_families_receive_third_run, every_disagreement_human_adjudicated, every_affected_unit_has_fresh_confirming_run, candidate_and_confirmed_shadow_semantics_equal, zero_unresolved_or_postconfirmation_change]
+      required_adversarial_tests: [SHADOW-REEXTRACTION-01, OPEN-WORLD-RELEASE-IMMUTABILITY-01]
+    - id: P9_IDENTITY_AND_DRIFT
+      phase: 9
+      evidence_contract: identity-open-world-residual-recovery-drift/v5
+      required_evidence_object_type: IdentityAndDriftAttestation
+      acceptance_claims: [exact_identity_stable, zero_silent_semantic_drift, residual_queue_empty, recovery_counters_zero]
+      required_adversarial_tests: [RESIDUAL-TOTALITY-01, OPEN-WORLD-RELEASE-PROPAGATION-01]
+    - id: P9_BROWSER_A11Y_PERFORMANCE
+      phase: 9
+      evidence_contract: browser-row-isolation-a11y-performance/v3
+      required_evidence_object_type: BrowserAcceptanceAttestation
+      acceptance_claims: [all_views_pass, row_failure_isolated, accessibility_pass, performance_budget_pass]
+      required_adversarial_tests: [OPEN-WORLD-UI-ISOLATION-01]
+    - id: P9_STAGING_SMOKE_AND_ROLLBACK
+      phase: 9
+      evidence_contract: first-cutover-legacy-and-advanced-head-historical-reactivation/v6
+      required_evidence_object_type: StagingSmokeRollbackAttestation
+      acceptance_claims: [staging_smoke_pass, first_cutover_rollback_pass, advanced_head_reactivation_pass]
+      required_adversarial_tests: [DEPLOY-CUTOVER-01, RELEASE-STATE-V3-01]
+    - id: P9_DATABASE_SOAK
+      phase: 9
+      evidence_contract: sixty-connection-load-soak/v1
+      required_evidence_object_type: DatabaseLoadSoakAttestation
+      acceptance_claims: [micro_pool_not_exhausted, fixed_call_and_statement_budgets_hold, n_and_ten_n_invariance_pass]
+      required_adversarial_tests: [CAPACITY-LOAD-01]
+    - id: P9_BACKUP_RESTORE
+      phase: 9
+      evidence_contract: backup-restore-legacy-genesis-and-canonical-rollback/v5
+      required_evidence_object_type: BackupRestoreAttestation
+      acceptance_claims: [backup_restores, legacy_genesis_rollback_rehearsed, canonical_rollback_rehearsed]
+      required_adversarial_tests: [DEPLOY-CUTOVER-01]
+    - id: P9_PREIMPORT_TRACEABILITY
+      phase: 9
+      evidence_contract: preimport-open-world-trace-prefix-set-equality/v4
+      required_evidence_object_type: PreImportTraceabilityAttestation
+      acceptance_claims: [required_object_and_trace_sets_equal, open_world_and_residual_lineage_complete, no_untraced_preimport_object]
+      required_adversarial_tests: [TRACE-PHASE-COVERAGE-01, RESIDUAL-TOTALITY-01]
+    - id: P9_IMPORT_PARITY
+      phase: 9
+      evidence_contract: inactive-production-semantic-import-parity/v6
+      required_evidence_object_type: ProductionImportAttestation
+      acceptance_claims: [inactive_namespace_only, logical_and_physical_sets_equal, semantic_and_market_parity_pass]
+      required_adversarial_tests: [IMPORT-SEMANTIC-PARITY-01, IMPORT-MARKET-PARITY-01]
+    - id: P9_PROMOTION_ELIGIBILITY
+      phase: 9
+      evidence_contract: current-candidate-or-historical-reactivation-eligibility/v2
+      required_evidence_object_type: PromotionEligibilityProof
+      acceptance_claims: [candidate_or_historical_branch_exclusive, currentness_rechecked, promotion_fence_held]
+      required_adversarial_tests: [PROMOTION-EVIDENCE-01]
+    - id: P9_DEPLOYMENT_PARITY
+      phase: 9
+      evidence_contract: certified-executable-and-live-readiness-parity/v6
+      required_evidence_object_type: DeploymentParityAttestation
+      acceptance_claims: [certified_and_deployed_builds_equal, runtime_configuration_equal, readiness_tuple_equal]
+      required_adversarial_tests: [DEPLOY-CUTOVER-01]
+    - id: P9_CUTOVER_AUTHORISATION
+      phase: 9
+      evidence_contract: one-use-ben-authorisation-readiness-successor/v6
+      required_evidence_object_type: CutoverAuthorisation
+      acceptance_claims: [ben_authorisation_valid_and_single_use, readiness_predecessor_exact, proposed_successor_exact]
+      required_adversarial_tests: [CUTOVER-STATUS-TOPOLOGY-01]
+    - id: P9_POSTCUTOVER_SMOKE
+      phase: 9
+      evidence_contract: readiness-bound-postcutover-smoke-attestation/v6
+      required_evidence_object_type: PostCutoverSmokeAttestation
+      acceptance_claims: [smoke_bound_to_active_readiness_tuple, live_suite_pass, failure_controller_not_triggered]
+      required_adversarial_tests: [POST-ACTIVATION-CONTROLLER-01]
+    - id: P9_TRACEABILITY
+      phase: 9
+      evidence_contract: preterminal-bidirectional-trace-set-equality/v6
+      required_evidence_object_type: TraceabilityAttestation
+      acceptance_claims: [required_objects_equal_trace_rows, forward_and_reverse_links_complete, failure_and_pass_topologies_valid]
+      required_adversarial_tests: [TRACE-EXTENSION-01, TRACE-PHASE-COVERAGE-01]
+    - id: P9_PROGRAMME_COMPLETION_ATTESTATION
+      phase: 9
+      evidence_contract: preterminal-programme-completion-attestation/v6
+      required_evidence_object_type: ProgrammeCompletionAttestation
+      acceptance_claims: [all_preterminal_required_gates_pass, postcutover_smoke_pass, completion_context_ready]
+      required_adversarial_tests: [PROGRAMME-COMPLETE-01]

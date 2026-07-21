@@ -1,0 +1,53 @@
+{
+  "schema": "codex-program-specification-manifest/v1",
+  "domain_separator": "CODEX_PROGRAM_SPECIFICATION_ROOT_V1",
+  "root_input_encoding": "UTF-8 domain separator plus LF, then exact manifest bytes as ordered member 1 followed by each declared content file as ordered members 2 through 5; every member record is path plus NUL, decimal byte length plus NUL, lowercase SHA-256 plus LF",
+  "root_membership": "EXACT_MANIFEST_BYTES_THEN_DECLARED_CONTENT_FILES",
+  "files": [
+    {
+      "order": 2,
+      "path": "docs/CODEX-PROGRAM.md",
+      "byte_length": 148470,
+      "sha256": "782ab483606367932db8e4df259fd34f17d8564a7e8b5f81c0af958ada7456a7"
+    },
+    {
+      "order": 3,
+      "path": "docs/codex-program/programme-gates.yaml",
+      "byte_length": 23646,
+      "sha256": "5cbdaa60100c0f1acee2a0b5b68f470a140bf928abc90ca67ea7674b6dd5a7f8"
+    },
+    {
+      "order": 4,
+      "path": "docs/codex-program/canonical-contracts.md",
+      "byte_length": 898834,
+      "sha256": "0da889ecd1e1975c7cf86b55a339390a2107e02c9a52f9f87b9090ccdf1af1df"
+    },
+    {
+      "order": 5,
+      "path": "docs/codex-program/adversarial-tests.md",
+      "byte_length": 186460,
+      "sha256": "2dab3377841c6ba11d5222836ddbae21e5cfa8da79f2be99dc3089390512bf1a"
+    }
+  ],
+  "baseline_identifier_continuity": {
+    "schema": "codex-program-baseline-identifier-continuity/v1",
+    "scope": "IDENTIFIER_CONTINUITY_ONLY_NOT_HISTORICAL_BYTE_EQUIVALENCE",
+    "baseline_gate_ids": {
+      "count": 34,
+      "ordered_id_list_sha256": "93ef3d6a1f8bc7790e2b3589e94a26d4dee7a96e8e61f86455ff4e391256e5d5"
+    },
+    "baseline_work_classes": {
+      "count": 11,
+      "ordered_name_list_sha256": "391af1223a5732ba3e28b34955e6fff8060f29e4b29ab7e695051371b020dd7c"
+    },
+    "baseline_adversarial_test_ids": {
+      "count": 276,
+      "ordered_id_list_sha256": "c4d52483beb08c1feacac9222e4ab24b7156173dea8c2e6599fe3c11d575fe1c"
+    },
+    "current_gate_count": 35,
+    "current_gate_ordered_id_list_sha256": "5d107d8889326538adc021370f17df0bd1e2799292ef81072bcb7a5ed0c1c182",
+    "current_work_class_count": 12,
+    "current_work_class_ordered_name_list_sha256": "7d87cf8e9060a134677564cbc106f667650be01a259fabec39450d9e2cc08c67",
+    "current_adversarial_definition_block_sha256": "7e2f7e12f9aab999d2fc9cedd5aee5dc4b07d5a1482b3a2fdd305685f9c7d6e8"
+  }
+}
