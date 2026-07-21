@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
 const { buildLandosReviewedServingFixture } = require('../__fixtures__/canonical-v2/landos-reviewed-row');
+const { buildLandosIocCapexServingFixture } = require('../__fixtures__/canonical-v2/landos-ioc-capex-row');
 const { buildLandosNoShopServingFixture } = require('../__fixtures__/canonical-v2/landos-no-shop-rows');
 const { adaptSharedServingRow, SURFACES } = require('../lib/canonical-v2/shared-row-adapter');
 
@@ -44,12 +45,29 @@ test('the canonical design fixture is production-gated and performs no runtime d
   assert.match(page, /MarketMetricCell/);
   assert.match(page, /MarketDrilldownSidebar/);
   assert.match(page, /buildLandosReviewedServingFixture/);
+  assert.match(page, /buildLandosIocCapexServingFixture/);
   assert.match(page, /buildLandosNoShopServingFixture/);
   assert.match(page, /No-shop \/ non-solicit terms/);
+  assert.match(page, /Interim operating covenant, capital expenditures/);
   assert.match(page, /Exact source evidence/);
   assert.match(page, /CanonicalV2DesignFixture\.noLayout = true/);
   assert.doesNotMatch(page, /fetch\s*\(/);
   assert.doesNotMatch(page, /\/api\//);
+});
+
+test('the real IOC capex fixture exposes source-backed relative value through all four surfaces', () => {
+  const fixture = buildLandosIocCapexServingFixture();
+  const adapted = adaptSharedServingRow(fixture.row);
+  const metric = adapted.data.byRow[adapted.row_key].metrics.IOC_CAPEX_THRESHOLD_PERCENT_OF_DEAL_VALUE;
+  assert.equal(metric.subject.rawAmount, '$100,000');
+  assert.equal(metric.subject.percentOfDealValue, 0.07272727);
+  assert.equal(metric.subject.denominator.value, '137500000');
+  assert.match(metric.subject.legalTerms.find((term) => term.key === 'exceptions').value, /Parent written consent/);
+  for (const surface of SURFACES) {
+    assert.equal(adapted.surface_bindings[surface].row_key, adapted.row_key);
+    assert.equal(adapted.surface_bindings[surface].typed_market, adapted.typed_market);
+  }
+  assert.doesNotMatch(JSON.stringify(adapted), /No market data/);
 });
 
 test('the real no-shop fixture exposes every result through the same four surface bindings', () => {

@@ -9,14 +9,17 @@ export async function getServerSideProps(context) {
   const guard = designPreviewServerSideProps();
   if (guard.notFound) return guard;
   const { buildLandosReviewedServingFixture } = require('../../__fixtures__/canonical-v2/landos-reviewed-row');
+  const { buildLandosIocCapexServingFixture } = require('../../__fixtures__/canonical-v2/landos-ioc-capex-row');
   const { buildLandosNoShopServingFixture } = require('../../__fixtures__/canonical-v2/landos-no-shop-rows');
   const { adaptSharedServingRow } = require('../../lib/canonical-v2/shared-row-adapter');
   const fixture = buildLandosReviewedServingFixture();
+  const iocFixture = buildLandosIocCapexServingFixture();
   const noShopFixture = buildLandosNoShopServingFixture();
   const adapted = adaptSharedServingRow(fixture.row);
   return {
     props: {
       adapted: JSON.parse(JSON.stringify(adapted)),
+      ioc_capex_row: JSON.parse(JSON.stringify(adaptSharedServingRow(iocFixture.row))),
       no_shop_rows: JSON.parse(JSON.stringify(noShopFixture.rows.map(adaptSharedServingRow))),
       exact_source_text: fixture.exactDetail.detail_payloads[0].response_body.excerpt.exact_text,
       reviewed_mapping_id: fixture.reviewed_mapping.reviewed_mapping_id,
@@ -105,9 +108,30 @@ function NoShopRows({ rows }) {
   );
 }
 
+function IocCapexRow({ row }) {
+  return (
+    <section className="mt-5 border border-[#D9D7D2] bg-white">
+      <header className="border-b border-[#E6E4DF] bg-[#F7F5F0] px-4 py-3">
+        <div className="text-[9px] font-bold uppercase tracking-[0.14em] text-[#77736C]">Real Section 5.2 result</div>
+        <h2 className="mt-1 text-sm font-bold text-[#1F1F1F]">Interim operating covenant, capital expenditures</h2>
+        <p className="mt-1 text-[10px] text-[#77736C]">
+          Raw dollars remain visible. The market comparison uses percentage of the source-backed closing deal value.
+        </p>
+      </header>
+      <div className="grid grid-cols-[minmax(260px,1fr)_minmax(260px,0.9fr)] gap-5 px-4 py-4">
+        <SubjectTreatment adapted={row} />
+        <div className="border-l border-[#E6E4DF] pl-5">
+          <MarketMetricCell resolution={row.resolution} data={row.data} />
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function CanonicalV2DesignFixture({
   adapted,
   exact_source_text: exactSourceText,
+  ioc_capex_row: iocCapexRow,
   no_shop_rows: noShopRows,
   reviewed_mapping_id: reviewedMappingId,
   preview_environment: previewEnvironment,
@@ -166,6 +190,7 @@ export default function CanonicalV2DesignFixture({
             <div className="mt-2 font-mono text-[10px] leading-5 text-[#1F1F1F]">{exactSourceText}</div>
           </section>
 
+          <IocCapexRow row={iocCapexRow} />
           <NoShopRows rows={noShopRows} />
         </div>
       </main>
