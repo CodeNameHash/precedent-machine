@@ -3,6 +3,10 @@ const path = require('node:path');
 
 const { compileFixtureContract } = require('../../lib/canonical-v2/contract-bundle');
 const {
+  buildFixtureClaimEvidenceDetailPackage,
+  GENERAL_ACTION_SLOT_KEY,
+} = require('../../lib/canonical-v2/exact-detail');
+const {
   buildReviewedIocCapexServingRow,
   buildReviewedIocCapexSlice,
 } = require('../../lib/canonical-v2/reviewed-ioc-capex-slice');
@@ -18,8 +22,18 @@ function buildLandosIocCapexServingFixture() {
     'utf8',
   );
   const slice = buildReviewedIocCapexSlice({ agreementText, dealValueSourceText, contractBundle: contract });
-  const row = buildReviewedIocCapexServingRow({ slice, contractBundle: contract });
-  return Object.freeze({ ...slice, contract, row });
+  const baseRow = buildReviewedIocCapexServingRow({ slice, contractBundle: contract });
+  const detailPackage = buildFixtureClaimEvidenceDetailPackage({
+    contract_bundle: contract,
+    row: baseRow,
+    source: slice.agreementSource,
+    source_admission: slice.agreementAdmission,
+    excerpt: slice.excerpts.threshold,
+    claim: slice.thresholdClaim,
+    action_slot_key: GENERAL_ACTION_SLOT_KEY,
+    evidence_ordinal: 0,
+  });
+  return Object.freeze({ ...slice, contract, detailPackage, row: detailPackage.row });
 }
 
 module.exports = { buildLandosIocCapexServingFixture };

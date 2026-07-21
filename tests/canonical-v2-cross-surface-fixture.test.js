@@ -67,6 +67,9 @@ test('the real IOC capex fixture exposes source-backed relative value through al
     assert.equal(adapted.surface_bindings[surface].row_key, adapted.row_key);
     assert.equal(adapted.surface_bindings[surface].typed_market, adapted.typed_market);
   }
+  assert.equal(fixture.row.source_actions.length, 1);
+  assert.equal(fixture.row.canonical_result.source_detail_state.state, 'AVAILABLE');
+  assert.equal(fixture.detailPackage.detail_payloads[0].response_body.excerpt.exact_text, '$100,000');
   assert.doesNotMatch(JSON.stringify(adapted), /No market data/);
 });
 
@@ -80,6 +83,11 @@ test('the real no-shop fixture exposes every result through the same four surfac
       assert.equal(adapted.surface_bindings[surface].typed_market, adapted.typed_market);
     }
   }
+  assert.equal(fixture.detailPackages.length, 8);
+  fixture.rows.forEach((row) => {
+    assert.equal(row.source_actions.length, 1);
+    assert.equal(row.canonical_result.source_detail_state.state, 'AVAILABLE');
+  });
   assert.equal(adaptedRows.filter(
     (row) => row.resolution.metrics[0].metricKey === 'NO_SHOP_PROHIBITED_ACTION',
   ).length, 5);

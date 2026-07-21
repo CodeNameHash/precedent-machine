@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import { useState } from 'react';
 import MergertraceStyles from '../../components/review-v2/MergertraceStyles';
 import { MarketMetricCell } from '../../components/review-v2/MarketColumn';
 import MarketDrilldownSidebar from '../../components/review-v2/MarketDrilldownSidebar';
@@ -16,11 +17,18 @@ export async function getServerSideProps(context) {
   const iocFixture = buildLandosIocCapexServingFixture();
   const noShopFixture = buildLandosNoShopServingFixture();
   const adapted = adaptSharedServingRow(fixture.row);
+  const adaptedIoc = adaptSharedServingRow(iocFixture.row);
+  const adaptedNoShop = noShopFixture.rows.map(adaptSharedServingRow);
   return {
     props: {
       adapted: JSON.parse(JSON.stringify(adapted)),
-      ioc_capex_row: JSON.parse(JSON.stringify(adaptSharedServingRow(iocFixture.row))),
-      no_shop_rows: JSON.parse(JSON.stringify(noShopFixture.rows.map(adaptSharedServingRow))),
+      ioc_capex_row: JSON.parse(JSON.stringify(adaptedIoc)),
+      ioc_capex_source_text: iocFixture.detailPackage.detail_payloads[0].response_body.excerpt.exact_text,
+      no_shop_rows: JSON.parse(JSON.stringify(adaptedNoShop)),
+      no_shop_source_text_by_row: Object.fromEntries(adaptedNoShop.map((row, index) => [
+        row.row_key,
+        noShopFixture.detailPackages[index].detail_payloads[0].response_body.excerpt.exact_text,
+      ])),
       exact_source_text: fixture.exactDetail.detail_payloads[0].response_body.excerpt.exact_text,
       reviewed_mapping_id: fixture.reviewed_mapping.reviewed_mapping_id,
       preview_environment: context?.req?.headers?.host || 'local',
@@ -40,7 +48,8 @@ function Surface({ name, rowKey, children }) {
   );
 }
 
-function SubjectTreatment({ adapted }) {
+function SubjectTreatment({ adapted, sourceText = null }) {
+  const [sourceOpen, setSourceOpen] = useState(false);
   const metricKey = adapted.resolution.metrics[0].metricKey;
   const metric = adapted.data.byRow[adapted.row_key].metrics[metricKey];
   return (
@@ -60,11 +69,27 @@ function SubjectTreatment({ adapted }) {
           ? 'No fixture observations excluded'
           : `${metric.coverage.excludedCount} peer slots excluded with a typed reason`}
       </div>
+      {metric.source?.state === 'available' && sourceText ? (
+        <div className="mt-3 border-t border-[#E6E4DF] pt-2">
+          <button
+            type="button"
+            onClick={() => setSourceOpen((open) => !open)}
+            className="text-[9px] font-bold uppercase tracking-[0.1em] text-[#2F6DB5] hover:underline"
+          >
+            {sourceOpen ? 'Hide provision' : 'See provision'}
+          </button>
+          {sourceOpen ? (
+            <div className="mt-2 border-l-2 border-[#2F6DB5] bg-[#F7F9FC] px-3 py-2 font-mono text-[9px] leading-4 text-[#1F1F1F]">
+              {sourceText}
+            </div>
+          ) : null}
+        </div>
+      ) : null}
     </div>
   );
 }
 
-function QueryResult({ adapted }) {
+function QueryResult({ adapted, sourceText }) {
   return (
     <div className="overflow-hidden border border-[#E6E4DF]">
       <div className="grid grid-cols-[minmax(160px,0.8fr)_minmax(220px,1.2fr)] border-b border-[#E6E4DF] bg-[#F7F5F0] text-[9px] font-bold uppercase tracking-[0.1em] text-[#77736C]">
@@ -72,7 +97,7 @@ function QueryResult({ adapted }) {
         <div className="border-l border-[#E6E4DF] px-3 py-2">Market terms</div>
       </div>
       <div className="grid grid-cols-[minmax(160px,0.8fr)_minmax(220px,1.2fr)]">
-        <div className="px-3 py-3"><SubjectTreatment adapted={adapted} /></div>
+        <div className="px-3 py-3"><SubjectTreatment adapted={adapted} sourceText={sourceText} /></div>
         <div className="border-l border-[#E6E4DF] px-3 py-3">
           <MarketMetricCell resolution={adapted.resolution} data={adapted.data} />
         </div>
@@ -81,7 +106,7 @@ function QueryResult({ adapted }) {
   );
 }
 
-function NoShopRows({ rows }) {
+function NoShopRows({ rows, sourceTextByRow }) {
   return (
     <section className="mt-5 border border-[#D9D7D2] bg-white">
       <header className="border-b border-[#E6E4DF] bg-[#F7F5F0] px-4 py-3">
@@ -96,7 +121,7 @@ function NoShopRows({ rows }) {
           <div key={row.row_key} className="grid grid-cols-[minmax(260px,1fr)_minmax(260px,0.9fr)] gap-5 px-4 py-4">
             <div>
               <div className="mb-2 text-[10px] font-bold text-[#1F1F1F]">{row.resolution.label}</div>
-              <SubjectTreatment adapted={row} />
+              <SubjectTreatment adapted={row} sourceText={sourceTextByRow[row.row_key]} />
             </div>
             <div className="border-l border-[#E6E4DF] pl-5">
               <MarketMetricCell resolution={row.resolution} data={row.data} />
@@ -108,7 +133,7 @@ function NoShopRows({ rows }) {
   );
 }
 
-function IocCapexRow({ row }) {
+function IocCapexRow({ row, sourceText }) {
   return (
     <section className="mt-5 border border-[#D9D7D2] bg-white">
       <header className="border-b border-[#E6E4DF] bg-[#F7F5F0] px-4 py-3">
@@ -119,7 +144,7 @@ function IocCapexRow({ row }) {
         </p>
       </header>
       <div className="grid grid-cols-[minmax(260px,1fr)_minmax(260px,0.9fr)] gap-5 px-4 py-4">
-        <SubjectTreatment adapted={row} />
+        <SubjectTreatment adapted={row} sourceText={sourceText} />
         <div className="border-l border-[#E6E4DF] pl-5">
           <MarketMetricCell resolution={row.resolution} data={row.data} />
         </div>
@@ -132,7 +157,9 @@ export default function CanonicalV2DesignFixture({
   adapted,
   exact_source_text: exactSourceText,
   ioc_capex_row: iocCapexRow,
+  ioc_capex_source_text: iocCapexSourceText,
   no_shop_rows: noShopRows,
+  no_shop_source_text_by_row: noShopSourceTextByRow,
   reviewed_mapping_id: reviewedMappingId,
   preview_environment: previewEnvironment,
 }) {
@@ -162,14 +189,14 @@ export default function CanonicalV2DesignFixture({
           <div className="grid gap-5 xl:grid-cols-2">
             <Surface name="Review" rowKey={rowKey}>
               <div className="grid grid-cols-[minmax(180px,0.8fr)_minmax(240px,1.2fr)] gap-5">
-                <SubjectTreatment adapted={adapted} />
+                <SubjectTreatment adapted={adapted} sourceText={exactSourceText} />
                 <MarketMetricCell resolution={adapted.resolution} data={adapted.data} />
               </div>
             </Surface>
 
             <Surface name="Compare" rowKey={rowKey}>
               <div className="grid grid-cols-[minmax(180px,0.8fr)_minmax(240px,1.2fr)] gap-5">
-                <SubjectTreatment adapted={adapted} />
+                <SubjectTreatment adapted={adapted} sourceText={exactSourceText} />
                 <MarketMetricCell resolution={adapted.resolution} data={adapted.data} />
               </div>
             </Surface>
@@ -181,7 +208,7 @@ export default function CanonicalV2DesignFixture({
             </Surface>
 
             <Surface name="Query" rowKey={rowKey}>
-              <QueryResult adapted={adapted} />
+              <QueryResult adapted={adapted} sourceText={exactSourceText} />
             </Surface>
           </div>
 
@@ -190,8 +217,8 @@ export default function CanonicalV2DesignFixture({
             <div className="mt-2 font-mono text-[10px] leading-5 text-[#1F1F1F]">{exactSourceText}</div>
           </section>
 
-          <IocCapexRow row={iocCapexRow} />
-          <NoShopRows rows={noShopRows} />
+          <IocCapexRow row={iocCapexRow} sourceText={iocCapexSourceText} />
+          <NoShopRows rows={noShopRows} sourceTextByRow={noShopSourceTextByRow} />
         </div>
       </main>
     </>

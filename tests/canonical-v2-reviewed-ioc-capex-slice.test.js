@@ -6,6 +6,11 @@ const { canonicalJson } = require('../lib/canonical-v2/canonical-bytes');
 const { compileFixtureContract } = require('../lib/canonical-v2/contract-bundle');
 const { InMemoryCanonicalRepository, createCanonicalWriter } = require('../lib/canonical-v2/canonical-writer');
 const {
+  buildFixtureClaimEvidenceDetailPackage,
+  GENERAL_ACTION_SLOT_KEY,
+  validateFixtureExactDetailPackage,
+} = require('../lib/canonical-v2/exact-detail');
+const {
   buildReviewedIocCapexServingRow,
   buildReviewedIocCapexSlice,
 } = require('../lib/canonical-v2/reviewed-ioc-capex-slice');
@@ -142,6 +147,46 @@ test('the percentage, raw dollars, denominator and legal terms reach every share
   assert.equal(metric.distribution.normalised.cohorts[0].basis, 'headline_transaction_value');
   for (const surface of SURFACES) {
     assert.equal(adapted.surface_bindings[surface].typed_market, adapted.typed_market);
+  }
+});
+
+test('the generic row action resolves either exact evidence source without broad document access', () => {
+  const slice = build();
+  const row = buildReviewedIocCapexServingRow({ slice, contractBundle });
+  const inputs = [
+    {
+      source: slice.agreementSource,
+      source_admission: slice.agreementAdmission,
+      excerpt: slice.excerpts.threshold,
+      evidence_ordinal: 0,
+      exact_text: '$100,000',
+    },
+    {
+      source: slice.dealValueSource,
+      source_admission: slice.dealValueAdmission,
+      excerpt: slice.excerpts.deal_value,
+      evidence_ordinal: 1,
+      exact_text: 'representing a total transaction value of approximately $137.5 million at the closing',
+    },
+  ];
+  for (const input of inputs) {
+    const detailPackage = buildFixtureClaimEvidenceDetailPackage({
+      contract_bundle: contractBundle,
+      row,
+      claim: slice.thresholdClaim,
+      action_slot_key: GENERAL_ACTION_SLOT_KEY,
+      ...input,
+    });
+    assert.equal(detailPackage.detail_payloads[0].response_body.excerpt.exact_text, input.exact_text);
+    assert.equal(validateFixtureExactDetailPackage({
+      package: detailPackage,
+      contract_bundle: contractBundle,
+      source: input.source,
+      source_admission: input.source_admission,
+      excerpt: input.excerpt,
+      claim: slice.thresholdClaim,
+    }), true);
+    assert.equal(detailPackage.row.source_actions[0].action_slot_key, GENERAL_ACTION_SLOT_KEY);
   }
 });
 

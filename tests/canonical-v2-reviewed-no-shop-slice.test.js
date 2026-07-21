@@ -6,6 +6,11 @@ const { canonicalJson } = require('../lib/canonical-v2/canonical-bytes');
 const { compileFixtureContract } = require('../lib/canonical-v2/contract-bundle');
 const { InMemoryCanonicalRepository, createCanonicalWriter } = require('../lib/canonical-v2/canonical-writer');
 const {
+  buildFixtureClaimEvidenceDetailPackage,
+  GENERAL_ACTION_SLOT_KEY,
+  validateFixtureExactDetailPackage,
+} = require('../lib/canonical-v2/exact-detail');
+const {
   buildReviewedNoShopServingRows,
   buildReviewedNoShopSlice,
 } = require('../lib/canonical-v2/reviewed-no-shop-slice');
@@ -186,6 +191,37 @@ test('the shared adapter exposes terms and exceptions consistently across every 
     calendarBasis: 'elapsed',
     trigger: 'RECEIPT_OF_COMPETING_PROPOSAL',
   });
+});
+
+test('every no-shop result can attach one bounded exact-evidence action', () => {
+  const slice = build();
+  const rows = buildReviewedNoShopServingRows({ slice, contractBundle });
+  const excerptsById = new Map(Object.values(slice.excerpts).map((excerpt) => [excerpt.excerpt_id, excerpt]));
+  for (const row of rows) {
+    const claimRevisionId = row.canonical_result.components[0].claim_revision_id;
+    const result = slice.results.find((item) => item.claim.claim_revision_id === claimRevisionId);
+    const excerpt = excerptsById.get(result.claim.evidence[0].excerpt_id);
+    const detailPackage = buildFixtureClaimEvidenceDetailPackage({
+      contract_bundle: contractBundle,
+      row,
+      source: slice.source,
+      source_admission: slice.sourceAdmission,
+      excerpt,
+      claim: result.claim,
+      action_slot_key: GENERAL_ACTION_SLOT_KEY,
+      evidence_ordinal: 0,
+    });
+    assert.equal(validateFixtureExactDetailPackage({
+      package: detailPackage,
+      contract_bundle: contractBundle,
+      source: slice.source,
+      source_admission: slice.sourceAdmission,
+      excerpt,
+      claim: result.claim,
+    }), true);
+    assert.equal(detailPackage.row.source_actions.length, 1);
+    assert.equal(detailPackage.row.canonical_result.source_detail_state.state, 'AVAILABLE');
+  }
 });
 
 test('the reviewed no-shop mapping fails closed on source drift', () => {
