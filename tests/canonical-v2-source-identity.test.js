@@ -165,7 +165,7 @@ test('provision identity binds document hash, byte offsets, concept, complete pa
     source,
     parentProvision: base,
     span: repSpan,
-    componentKey: 'fixture-capitalisation-limb',
+    componentKey: 'REPRESENTATION_LIMB',
     ordinal: 1,
   });
   assert.match(component.provision_component_id, /^[a-f0-9]{64}$/);

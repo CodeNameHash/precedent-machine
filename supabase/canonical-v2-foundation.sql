@@ -52,6 +52,13 @@ CREATE TABLE IF NOT EXISTS canonical_v2_staging.provision_instances (
   canonical_payload_digest text GENERATED ALWAYS AS (canonical_v2_staging.payload_digest(canonical_payload)) STORED
 );
 
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.provision_components (
+  provision_component_id text PRIMARY KEY,
+  closure_id text NOT NULL,
+  canonical_payload jsonb NOT NULL,
+  canonical_payload_digest text GENERATED ALWAYS AS (canonical_v2_staging.payload_digest(canonical_payload)) STORED
+);
+
 CREATE TABLE IF NOT EXISTS canonical_v2_staging.claim_revisions (
   claim_revision_id text PRIMARY KEY,
   closure_id text NOT NULL,
@@ -80,7 +87,8 @@ CREATE TABLE IF NOT EXISTS canonical_v2_staging.residuals (
     'STATE_DETAIL_REQUIRED',
     'INVALID_CANONICAL_VALUE',
     'CANONICAL_IDENTITY_MISMATCH',
-    'EVIDENCE_REFERENCE_UNRESOLVED'
+    'EVIDENCE_REFERENCE_UNRESOLVED',
+    'SEMANTIC_REFERENCE_UNRESOLVED'
   )),
   canonical_payload jsonb NOT NULL,
   canonical_payload_digest text GENERATED ALWAYS AS (canonical_v2_staging.payload_digest(canonical_payload)) STORED
@@ -108,6 +116,8 @@ CREATE INDEX IF NOT EXISTS canonical_v2_excerpts_closure_idx
   ON canonical_v2_staging.excerpts(closure_id);
 CREATE INDEX IF NOT EXISTS canonical_v2_provisions_closure_idx
   ON canonical_v2_staging.provision_instances(closure_id);
+CREATE INDEX IF NOT EXISTS canonical_v2_components_closure_idx
+  ON canonical_v2_staging.provision_components(closure_id);
 CREATE INDEX IF NOT EXISTS canonical_v2_claims_closure_idx
   ON canonical_v2_staging.claim_revisions(closure_id);
 CREATE INDEX IF NOT EXISTS canonical_v2_relationships_closure_idx
@@ -122,6 +132,7 @@ ALTER TABLE canonical_v2_staging.immutable_source_documents ENABLE ROW LEVEL SEC
 ALTER TABLE canonical_v2_staging.source_admission_manifests ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.excerpts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.provision_instances ENABLE ROW LEVEL SECURITY;
+ALTER TABLE canonical_v2_staging.provision_components ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.claim_revisions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.relationship_revisions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.residuals ENABLE ROW LEVEL SECURITY;
@@ -176,6 +187,7 @@ BEGIN
     FROM jsonb_array_elements(
       coalesce(p_write_set->'excerpts', '[]'::jsonb)
       || coalesce(p_write_set->'provisions', '[]'::jsonb)
+      || coalesce(p_write_set->'components', '[]'::jsonb)
       || coalesce(p_write_set->'claims', '[]'::jsonb)
       || coalesce(p_write_set->'relationships', '[]'::jsonb)
     ) AS publishable(item)
@@ -231,6 +243,14 @@ BEGIN
     IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN RAISE EXCEPTION 'canonical provision identity conflict' USING ERRCODE = '23505'; END IF;
     INSERT INTO canonical_v2_staging.provision_instances(provision_instance_id, closure_id, canonical_payload)
     VALUES (item_id, item->>'closure_id', item) ON CONFLICT (provision_instance_id) DO NOTHING;
+  END LOOP;
+
+  FOR item IN SELECT value FROM jsonb_array_elements(coalesce(p_write_set->'components', '[]'::jsonb)) LOOP
+    item_id := item->>'provision_component_id';
+    SELECT canonical_payload_digest INTO existing_digest FROM canonical_v2_staging.provision_components WHERE provision_component_id = item_id;
+    IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN RAISE EXCEPTION 'canonical component identity conflict' USING ERRCODE = '23505'; END IF;
+    INSERT INTO canonical_v2_staging.provision_components(provision_component_id, closure_id, canonical_payload)
+    VALUES (item_id, item->>'closure_id', item) ON CONFLICT (provision_component_id) DO NOTHING;
   END LOOP;
 
   FOR item IN SELECT value FROM jsonb_array_elements(coalesce(p_write_set->'claims', '[]'::jsonb)) LOOP

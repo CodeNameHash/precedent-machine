@@ -274,7 +274,7 @@ test('an injected failure rolls back every staged object and receipt', async () 
     operation: 'FIXTURE_DEAL_EXTRACTION_RUN', idempotencyKey: 'run-4', writeSet: fixtureWriteSet(),
   }), (error) => error.code === 'INJECTED_REPOSITORY_FAILURE');
   assert.deepEqual(repository.snapshot(), {
-    sources: [], sourceAdmissions: [], deals: [], excerpts: [], provisions: [], claims: [], relationships: [], residuals: [], quarantines: [], receipts: [],
+    sources: [], sourceAdmissions: [], deals: [], excerpts: [], provisions: [], components: [], claims: [], relationships: [], residuals: [], quarantines: [], receipts: [],
   });
   assert.equal(repository.transactionCount, 1);
 });
@@ -347,6 +347,27 @@ test('the actual semantic builders pass through the same frozen contract and wri
   assert.equal(repository.snapshot().claims[0].claim_revision_id, claim.claim_revision_id);
 });
 
+test('claims and relationships cannot publish against unresolved semantic occurrences', async () => {
+  const writeSet = fixtureWriteSet();
+  const original = writeSet.claims[0];
+  const orphan = buildClaimRevision({
+    subject_occurrence_id: id('missing-semantic-occurrence'),
+    claim_definition_key: original.claim_definition_key,
+    state: 'ABSENT',
+    scope: original.scope,
+  });
+  writeSet.claims[0] = { ...orphan, closure_id: writeSet.claims[0].closure_id };
+  const { writer } = setup();
+  const result = await writer.write({
+    operation: 'FIXTURE_DEAL_EXTRACTION_RUN',
+    idempotencyKey: 'orphan-semantic-reference',
+    dryRun: true,
+    writeSet,
+  });
+  assert.ok(result.validation.residuals.some((row) => row.reason_code === 'SEMANTIC_REFERENCE_UNRESOLVED'));
+  assert.deepEqual(result.validation.quarantinedClosureIds, [id('closure:rep')]);
+});
+
 test('the SQL authority is staging-only, transactional and denies direct app-role DML', () => {
   const sql = fs.readFileSync('supabase/canonical-v2-foundation.sql', 'utf8');
   assert.match(sql, /CREATE SCHEMA IF NOT EXISTS canonical_v2_staging/);
@@ -356,8 +377,10 @@ test('the SQL authority is staging-only, transactional and denies direct app-rol
   assert.match(sql, /CREATE ROLE canonical_v2_writer NOLOGIN/);
   assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.immutable_source_documents/);
   assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.source_admission_manifests/);
+  assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.provision_components/);
   assert.match(sql, /INSERT INTO canonical_v2_staging\.immutable_source_documents/);
   assert.match(sql, /INSERT INTO canonical_v2_staging\.source_admission_manifests/);
+  assert.match(sql, /INSERT INTO canonical_v2_staging\.provision_components/);
   assert.match(sql, /REVOKE ALL ON ALL TABLES IN SCHEMA canonical_v2_staging[\s\S]*service_role, canonical_v2_writer/);
   assert.match(sql, /REVOKE ALL ON FUNCTION public\.canonical_v2_write[\s\S]*service_role/);
   assert.match(sql, /GRANT EXECUTE ON FUNCTION public\.canonical_v2_write[\s\S]*TO canonical_v2_writer/);

@@ -32,7 +32,7 @@ test('real Landos source becomes one deterministic reviewed capitalisation bring
   assert.equal(first.reviewed_mapping.structural_section_proposal_ids.length, 2);
   assert.equal(first.accuracyClaim.canonical_value, 'MAT_ALL_RESPECTS_DE_MINIMIS');
   assert.equal(first.exceptionClaim.canonical_value, 'DE_MINIMIS_INACCURACIES');
-  assert.equal(first.knowledgeClaim.state, 'ABSENT');
+  assert.deepEqual(first.knowledgeClaims.map((claim) => claim.state), ['ABSENT', 'ABSENT']);
   assert.equal(first.relationship.effect.legal_operation, 'TEST_ACCURACY_AT_SIGNING_AND_CLOSING');
   assert.deepEqual(first.relationship.effect.time_points, [
     'SIGNING',
@@ -46,9 +46,13 @@ test('the result composes the condition with two non-contiguous representation l
   const repA = slice.excerpts.rep_a;
   const repC = slice.excerpts.rep_c_first_sentence;
   assert.ok(repA.absolute_end < repC.absolute_start);
+  assert.deepEqual(slice.knowledgeClaims.map((claim) => claim.scope.required_interval_ids), [
+    [repA.excerpt_id],
+    [repC.excerpt_id],
+  ]);
   assert.deepEqual(
-    slice.knowledgeClaim.scope.required_interval_ids,
-    [repA.excerpt_id, repC.excerpt_id].sort(),
+    slice.relationship.target_occurrence_ids,
+    slice.representationComponents.map((component) => component.provision_component_id),
   );
   assert.deepEqual(
     slice.relationship.scope.target_interval_ids,
@@ -76,7 +80,7 @@ test('the real legal slice dry-runs and commits through the one authoritative wr
     dryRun: true,
     writeSet: slice.canonicalWriteSet,
   });
-  assert.equal(dryRun.validation.counts.publishable, 11);
+  assert.equal(dryRun.validation.counts.publishable, 14);
   assert.equal(dryRun.validation.counts.residuals, 0);
   assert.equal(repository.transactionCount, 0);
 
@@ -87,7 +91,8 @@ test('the real legal slice dry-runs and commits through the one authoritative wr
   });
   assert.equal(committed.receipt.status, 'COMMITTED');
   assert.equal(repository.transactionCount, 1);
-  assert.equal(repository.snapshot().claims.length, 3);
+  assert.equal(repository.snapshot().components.length, 2);
+  assert.equal(repository.snapshot().claims.length, 4);
   assert.equal(repository.snapshot().relationships.length, 1);
 });
 
