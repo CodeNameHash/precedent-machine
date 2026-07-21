@@ -198,27 +198,39 @@ BEGIN
       USING ERRCODE = '23514';
   END IF;
 
-  item := p_write_set->'source';
-  item_id := item->>'immutable_source_document_id';
-  SELECT canonical_payload_digest INTO existing_digest
-  FROM canonical_v2_staging.immutable_source_documents
-  WHERE immutable_source_document_id = item_id;
-  IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN
-    RAISE EXCEPTION 'canonical immutable source identity conflict' USING ERRCODE = '23505';
-  END IF;
-  INSERT INTO canonical_v2_staging.immutable_source_documents(immutable_source_document_id, canonical_payload)
-  VALUES (item_id, item) ON CONFLICT (immutable_source_document_id) DO NOTHING;
+  FOR item IN SELECT value FROM jsonb_array_elements(
+    CASE WHEN p_write_set ? 'sources'
+      THEN p_write_set->'sources'
+      ELSE jsonb_build_array(p_write_set->'source')
+    END
+  ) LOOP
+    item_id := item->>'immutable_source_document_id';
+    SELECT canonical_payload_digest INTO existing_digest
+    FROM canonical_v2_staging.immutable_source_documents
+    WHERE immutable_source_document_id = item_id;
+    IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN
+      RAISE EXCEPTION 'canonical immutable source identity conflict' USING ERRCODE = '23505';
+    END IF;
+    INSERT INTO canonical_v2_staging.immutable_source_documents(immutable_source_document_id, canonical_payload)
+    VALUES (item_id, item) ON CONFLICT (immutable_source_document_id) DO NOTHING;
+  END LOOP;
 
-  item := p_write_set->'source_admission';
-  item_id := item->>'source_admission_manifest_id';
-  SELECT canonical_payload_digest INTO existing_digest
-  FROM canonical_v2_staging.source_admission_manifests
-  WHERE source_admission_manifest_id = item_id;
-  IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN
-    RAISE EXCEPTION 'canonical source admission identity conflict' USING ERRCODE = '23505';
-  END IF;
-  INSERT INTO canonical_v2_staging.source_admission_manifests(source_admission_manifest_id, canonical_payload)
-  VALUES (item_id, item) ON CONFLICT (source_admission_manifest_id) DO NOTHING;
+  FOR item IN SELECT value FROM jsonb_array_elements(
+    CASE WHEN p_write_set ? 'source_admissions'
+      THEN p_write_set->'source_admissions'
+      ELSE jsonb_build_array(p_write_set->'source_admission')
+    END
+  ) LOOP
+    item_id := item->>'source_admission_manifest_id';
+    SELECT canonical_payload_digest INTO existing_digest
+    FROM canonical_v2_staging.source_admission_manifests
+    WHERE source_admission_manifest_id = item_id;
+    IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN
+      RAISE EXCEPTION 'canonical source admission identity conflict' USING ERRCODE = '23505';
+    END IF;
+    INSERT INTO canonical_v2_staging.source_admission_manifests(source_admission_manifest_id, canonical_payload)
+    VALUES (item_id, item) ON CONFLICT (source_admission_manifest_id) DO NOTHING;
+  END LOOP;
 
   item := p_write_set->'deal';
   item_id := item->>'deal_key';

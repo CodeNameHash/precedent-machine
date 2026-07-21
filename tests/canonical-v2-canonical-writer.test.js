@@ -149,6 +149,79 @@ test('one write uses one transaction and exact replay returns the same receipt w
   assert.equal(repository.snapshot().claims.length, 2);
 });
 
+test('one canonical transaction admits multiple exact sources and their governed lineage', async () => {
+  const { repository, writer } = setup();
+  const writeSet = fixtureWriteSet();
+  const metadataSource = buildImmutableSource({
+    sourceBytes: 'The total transaction value is approximately $137.5 million.',
+    sourceOccurrenceKey: 'writer-foundation-deal-value-source',
+  });
+  const metadataAdmission = buildFixtureSourceAdmission({
+    source: metadataSource,
+    dealKey: writeSet.deal.deal_key,
+    dealAdmissionId: writeSet.deal.deal_admission_id,
+    contractFingerprint: contractBundle.fingerprint,
+    sourceOrdinal: 1,
+  });
+  writeSet.sources = [writeSet.source, metadataSource];
+  writeSet.source_admissions = [writeSet.source_admission, metadataAdmission];
+  delete writeSet.source;
+  delete writeSet.source_admission;
+
+  const result = await writer.write({
+    operation: 'FIXTURE_DEAL_EXTRACTION_RUN',
+    idempotencyKey: 'multi-source-run',
+    writeSet,
+  });
+  assert.equal(result.validation.counts.residuals, 0);
+  assert.equal(repository.transactionCount, 1);
+  assert.deepEqual(
+    repository.snapshot().sources.map((row) => row.immutable_source_document_id),
+    writeSet.sources.map((row) => row.immutable_source_document_id),
+  );
+  assert.deepEqual(
+    repository.snapshot().sourceAdmissions.map((row) => row.source_admission_manifest_id),
+    writeSet.source_admissions.map((row) => row.source_admission_manifest_id),
+  );
+});
+
+test('multi-source admission rejects an unadmitted source or duplicate governed ordinal', async () => {
+  const { repository, writer } = setup();
+  const writeSet = fixtureWriteSet();
+  const metadataSource = buildImmutableSource({
+    sourceBytes: 'The total transaction value is approximately $137.5 million.',
+    sourceOccurrenceKey: 'writer-foundation-invalid-lineage',
+  });
+  const metadataAdmission = buildFixtureSourceAdmission({
+    source: metadataSource,
+    dealKey: writeSet.deal.deal_key,
+    dealAdmissionId: writeSet.deal.deal_admission_id,
+    contractFingerprint: contractBundle.fingerprint,
+    sourceOrdinal: 0,
+  });
+  writeSet.sources = [writeSet.source, metadataSource];
+  writeSet.source_admissions = [writeSet.source_admission, metadataAdmission];
+  delete writeSet.source;
+  delete writeSet.source_admission;
+  await assert.rejects(writer.write({
+    operation: 'FIXTURE_DEAL_EXTRACTION_RUN',
+    idempotencyKey: 'duplicate-source-ordinal',
+    writeSet,
+  }), /unique governed source ordinals/);
+
+  writeSet.source_admissions[1] = {
+    ...metadataAdmission,
+    source_ordinal: 1,
+    immutable_source_document_id: id('unadmitted-source'),
+  };
+  await assert.rejects(writer.write({
+    operation: 'FIXTURE_DEAL_EXTRACTION_RUN',
+    idempotencyKey: 'unadmitted-source',
+    writeSet,
+  }), /does not name an immutable source/);
+  assert.equal(repository.transactionCount, 0);
+});
+
 test('the writer rejects the old span-as-excerpt compatibility identity', async () => {
   const { repository, writer } = setup();
   const writeSet = fixtureWriteSet();
@@ -380,6 +453,8 @@ test('the SQL authority is staging-only, transactional and denies direct app-rol
   assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.provision_components/);
   assert.match(sql, /INSERT INTO canonical_v2_staging\.immutable_source_documents/);
   assert.match(sql, /INSERT INTO canonical_v2_staging\.source_admission_manifests/);
+  assert.match(sql, /p_write_set \? 'sources'/);
+  assert.match(sql, /p_write_set \? 'source_admissions'/);
   assert.match(sql, /INSERT INTO canonical_v2_staging\.provision_components/);
   assert.match(sql, /REVOKE ALL ON ALL TABLES IN SCHEMA canonical_v2_staging[\s\S]*service_role, canonical_v2_writer/);
   assert.match(sql, /REVOKE ALL ON FUNCTION public\.canonical_v2_write[\s\S]*service_role/);
