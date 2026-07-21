@@ -8,6 +8,7 @@ const {
   buildExcerpt,
   buildFixtureSourceAdmission,
   buildImmutableSource,
+  buildProvisionInstance,
   buildSemanticSpan,
 } = require('../../lib/canonical-v2/source-structure');
 
@@ -30,8 +31,25 @@ function buildCompleteServingFixture({
   const relationshipEnd = utf8ByteLength(sourceText);
   const claimSpan = buildSemanticSpan(source, claimStart, claimEnd);
   const relationshipSpan = buildSemanticSpan(source, relationshipStart, relationshipEnd);
+  const conditionSpan = buildSemanticSpan(source, 0, relationshipEnd);
+  const representationStart = utf8ByteLength('The representations are true in all material respects. At closing, this tier tests the ');
+  const representationSpan = buildSemanticSpan(source, representationStart, relationshipEnd);
   const claimExcerpt = buildExcerpt({ source, span: claimSpan });
   const relationshipExcerpt = buildExcerpt({ source, span: relationshipSpan });
+  const conditionProvision = buildProvisionInstance({
+    source,
+    span: conditionSpan,
+    conceptKey: 'COND-B-REP',
+    party: { role: 'CONDITION_OBLIGOR', value: 'COMPANY', capacity: 'TARGET' },
+    ordinal: 1,
+  });
+  const representationProvision = buildProvisionInstance({
+    source,
+    span: representationSpan,
+    conceptKey: 'REP-T-CAP',
+    party: { role: 'REPRESENTATION_MAKER', value: 'COMPANY', capacity: 'TARGET' },
+    ordinal: 1,
+  });
   const claimEvidence = {
     evidence_role: 'OPERATIVE_TEXT',
     excerpt_id: claimExcerpt.excerpt_id,
@@ -46,9 +64,8 @@ function buildCompleteServingFixture({
     absolute_start: relationshipExcerpt.absolute_start,
     absolute_end: relationshipExcerpt.absolute_end,
   };
-  const subjectOccurrenceId = id('CONDITION_TIER_OCCURRENCE', 'complete-tier');
   const claim = buildClaimRevision({
-    subject_occurrence_id: subjectOccurrenceId,
+    subject_occurrence_id: conditionProvision.provision_instance_id,
     claim_definition_key: 'REPRESENTATION_ACCURACY_STANDARD',
     state: 'PRESENT',
     raw_value: rawValue,
@@ -64,10 +81,10 @@ function buildCompleteServingFixture({
     },
   });
   const relationship = buildRelationshipRevision({
-    source_occurrence_id: subjectOccurrenceId,
+    source_occurrence_id: conditionProvision.provision_instance_id,
     relationship_definition_key: 'BRINGS_DOWN',
     state: 'PRESENT',
-    target_occurrence_ids: [id('PROVISION_INSTANCE', 'capitalisation-representation')],
+    target_occurrence_ids: [representationProvision.provision_instance_id],
     effect: {
       effect_mode: 'TYPED_LEGAL_EFFECT',
       legal_operation: 'TEST_ACCURACY_AT_CLOSING',
@@ -94,6 +111,25 @@ function buildCompleteServingFixture({
     dealAdmissionId: deal.deal_admission_id,
     contractFingerprint: contract.fingerprint,
   });
+  const closureId = id('SEMANTIC_CLOSURE', 'qxo-complete-serving-fixture');
+  const canonicalWriteSet = {
+    source,
+    source_admission: sourceAdmission,
+    deal: {
+      ...deal,
+      document_hash: source.document_hash,
+    },
+    excerpts: [
+      { ...claimExcerpt, closure_id: closureId },
+      { ...relationshipExcerpt, closure_id: closureId },
+    ],
+    provisions: [
+      { ...conditionProvision, closure_id: closureId },
+      { ...representationProvision, closure_id: closureId },
+    ],
+    claims: [{ ...claim, closure_id: closureId }],
+    relationships: [{ ...relationship, closure_id: closureId }],
+  };
   const party = { role: 'CONDITION_BENEFICIARY', value: 'BUYER', capacity: 'ACQUIRER' };
   const result = buildFixtureResultComponent({
     deal_admission_id: deal.deal_admission_id,
@@ -185,8 +221,11 @@ function buildCompleteServingFixture({
     claimExcerpt,
     relationshipSpan,
     relationshipExcerpt,
+    conditionProvision,
+    representationProvision,
     claim,
     relationship,
+    canonicalWriteSet,
   };
 }
 

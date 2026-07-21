@@ -26,6 +26,18 @@ CREATE TABLE IF NOT EXISTS canonical_v2_staging.deals (
   canonical_payload_digest text GENERATED ALWAYS AS (canonical_v2_staging.payload_digest(canonical_payload)) STORED
 );
 
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.immutable_source_documents (
+  immutable_source_document_id text PRIMARY KEY,
+  canonical_payload jsonb NOT NULL,
+  canonical_payload_digest text GENERATED ALWAYS AS (canonical_v2_staging.payload_digest(canonical_payload)) STORED
+);
+
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.source_admission_manifests (
+  source_admission_manifest_id text PRIMARY KEY,
+  canonical_payload jsonb NOT NULL,
+  canonical_payload_digest text GENERATED ALWAYS AS (canonical_v2_staging.payload_digest(canonical_payload)) STORED
+);
+
 CREATE TABLE IF NOT EXISTS canonical_v2_staging.excerpts (
   excerpt_id text PRIMARY KEY,
   closure_id text NOT NULL,
@@ -106,6 +118,8 @@ CREATE UNIQUE INDEX IF NOT EXISTS canonical_v2_quarantines_closure_unique
   ON canonical_v2_staging.quarantines(closure_id);
 
 ALTER TABLE canonical_v2_staging.deals ENABLE ROW LEVEL SECURITY;
+ALTER TABLE canonical_v2_staging.immutable_source_documents ENABLE ROW LEVEL SECURITY;
+ALTER TABLE canonical_v2_staging.source_admission_manifests ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.excerpts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.provision_instances ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.claim_revisions ENABLE ROW LEVEL SECURITY;
@@ -171,6 +185,28 @@ BEGIN
     RAISE EXCEPTION 'quarantined semantic closure cannot publish under the same identity'
       USING ERRCODE = '23514';
   END IF;
+
+  item := p_write_set->'source';
+  item_id := item->>'immutable_source_document_id';
+  SELECT canonical_payload_digest INTO existing_digest
+  FROM canonical_v2_staging.immutable_source_documents
+  WHERE immutable_source_document_id = item_id;
+  IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN
+    RAISE EXCEPTION 'canonical immutable source identity conflict' USING ERRCODE = '23505';
+  END IF;
+  INSERT INTO canonical_v2_staging.immutable_source_documents(immutable_source_document_id, canonical_payload)
+  VALUES (item_id, item) ON CONFLICT (immutable_source_document_id) DO NOTHING;
+
+  item := p_write_set->'source_admission';
+  item_id := item->>'source_admission_manifest_id';
+  SELECT canonical_payload_digest INTO existing_digest
+  FROM canonical_v2_staging.source_admission_manifests
+  WHERE source_admission_manifest_id = item_id;
+  IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN
+    RAISE EXCEPTION 'canonical source admission identity conflict' USING ERRCODE = '23505';
+  END IF;
+  INSERT INTO canonical_v2_staging.source_admission_manifests(source_admission_manifest_id, canonical_payload)
+  VALUES (item_id, item) ON CONFLICT (source_admission_manifest_id) DO NOTHING;
 
   item := p_write_set->'deal';
   item_id := item->>'deal_key';

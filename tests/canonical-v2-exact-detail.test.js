@@ -3,6 +3,10 @@ const assert = require('node:assert/strict');
 
 const { contentId } = require('../lib/canonical-v2/canonical-bytes');
 const {
+  InMemoryCanonicalRepository,
+  createCanonicalWriter,
+} = require('../lib/canonical-v2/canonical-writer');
+const {
   buildFixtureClaimEvidenceDetailPackage,
   validateFixtureExactDetailPackage,
 } = require('../lib/canonical-v2/exact-detail');
@@ -61,6 +65,25 @@ test('one result component publishes one atomic, source-backed claim-evidence ac
     ],
   );
   assert.notEqual(fixture.claimExcerpt.excerpt_id, fixture.claimSpan.semantic_span_id);
+});
+
+test('the exact-detail source graph is admitted through the same authoritative writer', async () => {
+  const fixture = buildPackage();
+  const repository = new InMemoryCanonicalRepository();
+  const writer = createCanonicalWriter({ repository, contractBundle: fixture.contract });
+  const result = await writer.write({
+    operation: 'FIXTURE_DEAL_EXTRACTION_RUN',
+    idempotencyKey: 'complete-serving-fixture',
+    writeSet: fixture.canonicalWriteSet,
+  });
+
+  assert.equal(result.validation.counts.residuals, 0);
+  assert.equal(result.validation.counts.publishable, 6);
+  assert.equal(repository.snapshot().sources[0].immutable_source_document_id, fixture.source.immutable_source_document_id);
+  assert.equal(repository.snapshot().sourceAdmissions[0].source_admission_manifest_id, fixture.sourceAdmission.source_admission_manifest_id);
+  assert.equal(repository.snapshot().excerpts[0].excerpt_id, fixture.claimExcerpt.excerpt_id);
+  assert.equal(repository.snapshot().claims[0].claim_revision_id, fixture.claim.claim_revision_id);
+  assert.equal(validate(fixture), true);
 });
 
 test('release identity rekeys the detail graph while row payload-only changes do not', () => {
