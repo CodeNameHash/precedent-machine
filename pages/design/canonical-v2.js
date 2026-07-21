@@ -8,13 +8,15 @@ import { designPreviewServerSideProps } from '../../lib/design/route-guard';
 export async function getServerSideProps(context) {
   const guard = designPreviewServerSideProps();
   if (guard.notFound) return guard;
-  const { buildCompleteServingFixture } = require('../../__fixtures__/canonical-v2/shared-serving-row');
+  const { buildLandosReviewedServingFixture } = require('../../__fixtures__/canonical-v2/landos-reviewed-row');
   const { adaptSharedServingRow } = require('../../lib/canonical-v2/shared-row-adapter');
-  const fixture = buildCompleteServingFixture();
+  const fixture = buildLandosReviewedServingFixture();
   const adapted = adaptSharedServingRow(fixture.row);
   return {
     props: {
       adapted: JSON.parse(JSON.stringify(adapted)),
+      exact_source_text: fixture.exactDetail.detail_payloads[0].response_body.excerpt.exact_text,
+      reviewed_mapping_id: fixture.reviewed_mapping.reviewed_mapping_id,
       preview_environment: context?.req?.headers?.host || 'local',
     },
   };
@@ -38,8 +40,20 @@ function SubjectTreatment({ adapted }) {
   return (
     <div>
       <div className="text-[9px] font-bold uppercase tracking-[0.12em] text-[#77736C]">This deal</div>
-      <div className="mt-1 text-xs font-semibold text-[#1F1F1F]">True in all material respects</div>
-      <div className="mt-1 text-[9px] text-[#77736C]">{metric.coverage.excludedCount} peer slots excluded with a typed reason</div>
+      <div className="mt-1 text-xs font-semibold text-[#1F1F1F]">{metric.subject.label}</div>
+      <dl className="mt-3 space-y-2 border-t border-[#E6E4DF] pt-3">
+        {metric.subject.legalTerms.map((term) => (
+          <div key={term.key} className="grid grid-cols-[92px_1fr] gap-3 text-[10px] leading-4">
+            <dt className="font-bold text-[#77736C]">{term.label}</dt>
+            <dd className="text-[#1F1F1F]">{term.value}</dd>
+          </div>
+        ))}
+      </dl>
+      <div className="mt-3 text-[9px] text-[#77736C]">
+        {metric.coverage.excludedCount === 0
+          ? 'No fixture observations excluded'
+          : `${metric.coverage.excludedCount} peer slots excluded with a typed reason`}
+      </div>
     </div>
   );
 }
@@ -61,7 +75,12 @@ function QueryResult({ adapted }) {
   );
 }
 
-export default function CanonicalV2DesignFixture({ adapted, preview_environment: previewEnvironment }) {
+export default function CanonicalV2DesignFixture({
+  adapted,
+  exact_source_text: exactSourceText,
+  reviewed_mapping_id: reviewedMappingId,
+  preview_environment: previewEnvironment,
+}) {
   const context = buildTypedRowMarketContext(adapted.resolution, adapted.data);
   const rowKey = adapted.row_key;
   return (
@@ -75,12 +94,13 @@ export default function CanonicalV2DesignFixture({ adapted, preview_environment:
               <div className="text-[9px] font-bold uppercase tracking-[0.16em] text-[#77736C]">Preview-only, in-memory fixture</div>
               <h1 className="mt-1 text-2xl font-bold tracking-tight text-[#1F1F1F]">One row contract across four surfaces</h1>
               <p className="mt-2 max-w-3xl text-[11px] leading-5 text-[#66625C]">
-                Accuracy of representations. The peer cohort excludes the selected QXO deal and performs no runtime data request.
+                Landos / AbbVie capitalisation bring-down. Built from the exact agreement, with no runtime data request.
               </p>
             </div>
             <div className="text-right text-[9px] text-[#77736C]">
               <div className="font-bold uppercase tracking-[0.1em]">{previewEnvironment}</div>
               <div className="mt-1 font-mono">{rowKey.slice(0, 12)}…</div>
+              <div className="mt-1 font-mono">map {reviewedMappingId.slice(0, 12)}…</div>
             </div>
           </header>
 
@@ -109,6 +129,11 @@ export default function CanonicalV2DesignFixture({ adapted, preview_environment:
               <QueryResult adapted={adapted} />
             </Surface>
           </div>
+
+          <section className="mt-5 border border-[#D9D7D2] bg-white px-4 py-3">
+            <div className="text-[9px] font-bold uppercase tracking-[0.12em] text-[#77736C]">Exact source evidence</div>
+            <div className="mt-2 font-mono text-[10px] leading-5 text-[#1F1F1F]">{exactSourceText}</div>
+          </section>
         </div>
       </main>
     </>
