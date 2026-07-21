@@ -9,12 +9,15 @@ export async function getServerSideProps(context) {
   const guard = designPreviewServerSideProps();
   if (guard.notFound) return guard;
   const { buildLandosReviewedServingFixture } = require('../../__fixtures__/canonical-v2/landos-reviewed-row');
+  const { buildLandosNoShopServingFixture } = require('../../__fixtures__/canonical-v2/landos-no-shop-rows');
   const { adaptSharedServingRow } = require('../../lib/canonical-v2/shared-row-adapter');
   const fixture = buildLandosReviewedServingFixture();
+  const noShopFixture = buildLandosNoShopServingFixture();
   const adapted = adaptSharedServingRow(fixture.row);
   return {
     props: {
       adapted: JSON.parse(JSON.stringify(adapted)),
+      no_shop_rows: JSON.parse(JSON.stringify(noShopFixture.rows.map(adaptSharedServingRow))),
       exact_source_text: fixture.exactDetail.detail_payloads[0].response_body.excerpt.exact_text,
       reviewed_mapping_id: fixture.reviewed_mapping.reviewed_mapping_id,
       preview_environment: context?.req?.headers?.host || 'local',
@@ -75,9 +78,37 @@ function QueryResult({ adapted }) {
   );
 }
 
+function NoShopRows({ rows }) {
+  return (
+    <section className="mt-5 border border-[#D9D7D2] bg-white">
+      <header className="border-b border-[#E6E4DF] bg-[#F7F5F0] px-4 py-3">
+        <div className="text-[9px] font-bold uppercase tracking-[0.14em] text-[#77736C]">Real Section 5.3 result set</div>
+        <h2 className="mt-1 text-sm font-bold text-[#1F1F1F]">No-shop / non-solicit terms</h2>
+        <p className="mt-1 text-[10px] text-[#77736C]">
+          Each subrow is independently comparable. Exceptions stay attached only to the actions they legally qualify.
+        </p>
+      </header>
+      <div className="divide-y divide-[#E6E4DF]">
+        {rows.map((row) => (
+          <div key={row.row_key} className="grid grid-cols-[minmax(260px,1fr)_minmax(260px,0.9fr)] gap-5 px-4 py-4">
+            <div>
+              <div className="mb-2 text-[10px] font-bold text-[#1F1F1F]">{row.resolution.label}</div>
+              <SubjectTreatment adapted={row} />
+            </div>
+            <div className="border-l border-[#E6E4DF] pl-5">
+              <MarketMetricCell resolution={row.resolution} data={row.data} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export default function CanonicalV2DesignFixture({
   adapted,
   exact_source_text: exactSourceText,
+  no_shop_rows: noShopRows,
   reviewed_mapping_id: reviewedMappingId,
   preview_environment: previewEnvironment,
 }) {
@@ -134,6 +165,8 @@ export default function CanonicalV2DesignFixture({
             <div className="text-[9px] font-bold uppercase tracking-[0.12em] text-[#77736C]">Exact source evidence</div>
             <div className="mt-2 font-mono text-[10px] leading-5 text-[#1F1F1F]">{exactSourceText}</div>
           </section>
+
+          <NoShopRows rows={noShopRows} />
         </div>
       </main>
     </>

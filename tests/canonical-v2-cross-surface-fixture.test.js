@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
 const { buildLandosReviewedServingFixture } = require('../__fixtures__/canonical-v2/landos-reviewed-row');
+const { buildLandosNoShopServingFixture } = require('../__fixtures__/canonical-v2/landos-no-shop-rows');
 const { adaptSharedServingRow, SURFACES } = require('../lib/canonical-v2/shared-row-adapter');
 
 test('the real reviewed preview fixture binds the same complete market row to all four surfaces', () => {
@@ -43,8 +44,26 @@ test('the canonical design fixture is production-gated and performs no runtime d
   assert.match(page, /MarketMetricCell/);
   assert.match(page, /MarketDrilldownSidebar/);
   assert.match(page, /buildLandosReviewedServingFixture/);
+  assert.match(page, /buildLandosNoShopServingFixture/);
+  assert.match(page, /No-shop \/ non-solicit terms/);
   assert.match(page, /Exact source evidence/);
   assert.match(page, /CanonicalV2DesignFixture\.noLayout = true/);
   assert.doesNotMatch(page, /fetch\s*\(/);
   assert.doesNotMatch(page, /\/api\//);
+});
+
+test('the real no-shop fixture exposes every result through the same four surface bindings', () => {
+  const fixture = buildLandosNoShopServingFixture();
+  const adaptedRows = fixture.rows.map(adaptSharedServingRow);
+  assert.equal(adaptedRows.length, 8);
+  for (const adapted of adaptedRows) {
+    for (const surface of SURFACES) {
+      assert.equal(adapted.surface_bindings[surface].row_key, adapted.row_key);
+      assert.equal(adapted.surface_bindings[surface].typed_market, adapted.typed_market);
+    }
+  }
+  assert.equal(adaptedRows.filter(
+    (row) => row.resolution.metrics[0].metricKey === 'NO_SHOP_PROHIBITED_ACTION',
+  ).length, 5);
+  assert.doesNotMatch(JSON.stringify(adaptedRows), /No market data/);
 });
