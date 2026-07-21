@@ -53,6 +53,7 @@ function resultFor(params) {
       present_deals: 38,
       comparable_deals: 37,
       distribution_deals: 37,
+      excluded_deals: 2,
       observation_slots: 37,
       excluded_slots: 2,
     },
@@ -115,11 +116,16 @@ test('release, party capacity and either-side adviser filters are identity-beari
   const adviser = compileMarketCohortRequest(request({
     filters: { ...request().filters, adviser_either: 'Paul Weiss' },
   }));
+  const namespace = compileMarketCohortRequest(request({
+    serving_namespace_id: id('SERVING_NAMESPACE', 'other-physical-carrier'),
+  }));
 
   assert.notEqual(base.cohort_digest, release.cohort_digest);
   assert.notEqual(base.cache_key, release.cache_key);
   assert.notEqual(base.cohort_digest, capacity.cohort_digest);
   assert.notEqual(base.cohort_digest, adviser.cohort_digest);
+  assert.equal(base.cohort_digest, namespace.cohort_digest);
+  assert.notEqual(base.cache_key, namespace.cache_key);
 });
 
 test('request and response contracts reject corpus payloads, unknown filters and broad rows', async () => {
@@ -143,6 +149,18 @@ test('request and response contracts reject corpus payloads, unknown filters and
   await assert.rejects(
     queryMarketCohort({ client, request: request() }),
     (error) => error.code === 'INVALID_RESPONSE' && /broad rows/.test(error.message),
+  );
+
+  const impossibleClient = {
+    rpc(name, params) {
+      const result = resultFor(params);
+      result.counts.applicable_deals = 50;
+      return Promise.resolve({ data: result, error: null });
+    },
+  };
+  await assert.rejects(
+    queryMarketCohort({ client: impossibleClient, request: request() }),
+    (error) => error.code === 'INVALID_RESPONSE' && /denominator ordering/.test(error.message),
   );
 });
 
@@ -172,6 +190,9 @@ test('the staging SQL uses one set-based RPC, fixed dimensions and no direct app
   assert.match(sql, /SET search_path = pg_catalog, canonical_v2_staging/);
   assert.match(sql, /SET statement_timeout = '2500ms'/);
   assert.match(sql, /p_environment IS DISTINCT FROM 'staging'/);
+  assert.match(sql, /current_setting\('app\.canonical_v2_environment', true\) IS DISTINCT FROM 'staging'/);
+  assert.match(sql, /enforce_market_metric_slot_partition/);
+  assert.match(sql, /pg_advisory_xact_lock/);
   assert.match(sql, /count\(DISTINCT governed_deal_key\)/);
   assert.match(sql, /p_adviser_either = ANY\(observation\.adviser_firms\)/);
   assert.match(sql, /p_lawyer_either = ANY\(observation\.lawyers\)/);

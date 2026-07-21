@@ -69,21 +69,71 @@ test('lineage mismatches, forged relationship sets and forbidden payloads fail c
   badRelationships.canonical_result.components[0].relationship_set_digest = '0'.repeat(64);
   assert.throws(() => validateSharedServingRow(resign(badRelationships)), /relationship set/);
 
+  const wrongEffectOwner = structuredClone(row);
+  wrongEffectOwner.canonical_result.components[0].bounded_relationship_effects[0].relationship_revision_id = '0'.repeat(64);
+  assert.throws(() => validateSharedServingRow(resign(wrongEffectOwner)), /do not match/);
+
   const forbidden = structuredClone(row);
   forbidden.canonical_result.source_detail_state.url = null;
   assert.throws(() => validateSharedServingRow(resign(forbidden)), /fields do not match|forbidden/);
+
+  const leakedDimensions = structuredClone(row);
+  leakedDimensions.canonical_result.refinable_dimensions.full_source_document = 'leak';
+  assert.throws(() => validateSharedServingRow(resign(leakedDimensions)), /unsupported serving dimension/);
+
+  const leakedRawValue = structuredClone(row);
+  leakedRawValue.canonical_result.components[0].raw_value = { source_text: 'leak' };
+  assert.throws(() => validateSharedServingRow(resign(leakedRawValue)), /bounded source string/);
+
+  const forgedMetricSlot = structuredClone(row);
+  forgedMetricSlot.canonical_result.market_context.subject_observation.metric_slot_key = '0'.repeat(64);
+  forgedMetricSlot.provenance.metric_slot_key = '0'.repeat(64);
+  assert.throws(() => validateSharedServingRow(resign(forgedMetricSlot)), /metric slot identity/);
+
+  const mismatchedValue = structuredClone(row);
+  mismatchedValue.canonical_result.components[0].canonical_value = 'MAT_MAE_QUALIFIED';
+  assert.throws(() => validateSharedServingRow(resign(mismatchedValue)), /metric fields/);
+});
+
+test('impossible count hierarchies and mixed-unit exclusion counts fail closed', () => {
+  const { row } = buildCompleteServingFixture();
+  const impossible = structuredClone(row);
+  impossible.canonical_result.market_context.cohort.counts.applicable_deals = 50;
+  assert.throws(() => validateSharedServingRow(resign(impossible)), /denominator ordering/);
+
+  const impossibleDistribution = structuredClone(row);
+  impossibleDistribution.canonical_result.market_context.cohort.distribution[0].deal_count = 38;
+  assert.throws(() => validateSharedServingRow(resign(impossibleDistribution)), /distribution count/);
 });
 
 test('one malformed row becomes a local failure and does not suppress valid siblings', () => {
   const { row } = buildCompleteServingFixture();
+  const otherRow = buildCompleteServingFixture({ release: 'candidate-b' }).row;
   const bad = structuredClone(row);
   bad.canonical_payload_digest = '0'.repeat(64);
-  const prepared = prepareSharedRowsForRendering([row, bad, row]);
+  const prepared = prepareSharedRowsForRendering([row, bad, otherRow], (validRow) => {
+    if (validRow === bad) throw new Error('unreachable');
+    return adaptSharedServingRow(validRow);
+  });
 
   assert.deepEqual(prepared.map((item) => item.render_kind), ['ROW', 'ROW_RENDER_FAILED', 'ROW']);
   assert.equal(prepared.length, 3);
   assert.equal(prepared[0].key, row.row_serving_key);
-  assert.equal(prepared[2].key, row.row_serving_key);
+  assert.equal(prepared[2].key, otherRow.row_serving_key);
+  assert.equal(prepared[2].prepared.row_key, otherRow.row_serving_key);
+});
+
+test('a later adapter failure is isolated and duplicate row keys are rejected locally', () => {
+  const first = buildCompleteServingFixture().row;
+  const second = buildCompleteServingFixture({ release: 'candidate-b' }).row;
+  const prepared = prepareSharedRowsForRendering([first, second], (row) => {
+    if (row.row_serving_key === first.row_serving_key) throw new Error('fixture adapter failure');
+    return adaptSharedServingRow(row);
+  });
+  assert.deepEqual(prepared.map((item) => item.render_kind), ['ROW_RENDER_FAILED', 'ROW']);
+
+  const duplicates = prepareSharedRowsForRendering([first, first]);
+  assert.deepEqual(duplicates.map((item) => item.render_kind), ['ROW', 'ROW_RENDER_FAILED']);
 });
 
 test('Review, Corpus Context, Compare and Query consume one typed row contract', () => {

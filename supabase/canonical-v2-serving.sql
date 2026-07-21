@@ -136,6 +136,51 @@ CREATE INDEX IF NOT EXISTS canonical_v2_market_exclusion_advisers_idx
 CREATE INDEX IF NOT EXISTS canonical_v2_market_exclusion_lawyers_idx
   ON canonical_v2_staging.market_metric_slot_exclusions USING gin (lawyers);
 
+CREATE OR REPLACE FUNCTION canonical_v2_staging.enforce_market_metric_slot_partition()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = pg_catalog, canonical_v2_staging
+AS $$
+BEGIN
+  PERFORM pg_advisory_xact_lock(hashtextextended(
+    NEW.serving_namespace_id || E'\u0000' || NEW.corpus_release_id || E'\u0000' || NEW.metric_slot_key,
+    0
+  ));
+  IF TG_TABLE_NAME = 'market_observations' AND EXISTS (
+    SELECT 1 FROM canonical_v2_staging.market_metric_slot_exclusions exclusion
+    WHERE exclusion.serving_namespace_id = NEW.serving_namespace_id
+      AND exclusion.corpus_release_id = NEW.corpus_release_id
+      AND exclusion.metric_slot_key = NEW.metric_slot_key
+  ) THEN
+    RAISE EXCEPTION 'market metric slot already has an exclusion' USING ERRCODE = '23505';
+  END IF;
+  IF TG_TABLE_NAME = 'market_metric_slot_exclusions' AND EXISTS (
+    SELECT 1 FROM canonical_v2_staging.market_observations observation
+    WHERE observation.serving_namespace_id = NEW.serving_namespace_id
+      AND observation.corpus_release_id = NEW.corpus_release_id
+      AND observation.metric_slot_key = NEW.metric_slot_key
+  ) THEN
+    RAISE EXCEPTION 'market metric slot already has an observation' USING ERRCODE = '23505';
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS canonical_v2_market_observation_partition_guard
+  ON canonical_v2_staging.market_observations;
+CREATE TRIGGER canonical_v2_market_observation_partition_guard
+BEFORE INSERT OR UPDATE OF serving_namespace_id, corpus_release_id, metric_slot_key
+ON canonical_v2_staging.market_observations
+FOR EACH ROW EXECUTE FUNCTION canonical_v2_staging.enforce_market_metric_slot_partition();
+
+DROP TRIGGER IF EXISTS canonical_v2_market_exclusion_partition_guard
+  ON canonical_v2_staging.market_metric_slot_exclusions;
+CREATE TRIGGER canonical_v2_market_exclusion_partition_guard
+BEFORE INSERT OR UPDATE OF serving_namespace_id, corpus_release_id, metric_slot_key
+ON canonical_v2_staging.market_metric_slot_exclusions
+FOR EACH ROW EXECUTE FUNCTION canonical_v2_staging.enforce_market_metric_slot_partition();
+
 ALTER TABLE canonical_v2_staging.fixture_corpus_releases ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.market_observations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.market_metric_slot_exclusions ENABLE ROW LEVEL SECURITY;
@@ -174,7 +219,8 @@ AS $$
 DECLARE
   result jsonb;
 BEGIN
-  IF p_environment IS DISTINCT FROM 'staging' THEN
+  IF current_setting('app.canonical_v2_environment', true) IS DISTINCT FROM 'staging'
+    OR p_environment IS DISTINCT FROM 'staging' THEN
     RAISE EXCEPTION 'canonical_v2_market_cohort is staging-only' USING ERRCODE = '42501';
   END IF;
   IF p_serving_namespace_id !~ '^[a-f0-9]{64}$'
@@ -295,6 +341,7 @@ BEGIN
       )::integer AS present_deals,
       count(DISTINCT governed_deal_key) FILTER (WHERE comparable)::integer AS comparable_deals,
       count(DISTINCT governed_deal_key) FILTER (WHERE comparable AND claim_state = 'PRESENT')::integer AS distribution_deals,
+      count(DISTINCT governed_deal_key) FILTER (WHERE excluded)::integer AS excluded_deals,
       count(*) FILTER (WHERE NOT excluded)::integer AS observation_slots,
       count(*) FILTER (WHERE excluded)::integer AS excluded_slots
     FROM slot_states
@@ -349,6 +396,7 @@ BEGIN
       'present_deals', counts.present_deals,
       'comparable_deals', counts.comparable_deals,
       'distribution_deals', counts.distribution_deals,
+      'excluded_deals', counts.excluded_deals,
       'observation_slots', counts.observation_slots,
       'excluded_slots', counts.excluded_slots
     ),
@@ -366,6 +414,8 @@ REVOKE ALL ON TABLE canonical_v2_staging.fixture_corpus_releases
 REVOKE ALL ON TABLE canonical_v2_staging.market_observations
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving;
 REVOKE ALL ON TABLE canonical_v2_staging.market_metric_slot_exclusions
+  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving;
+REVOKE ALL ON FUNCTION canonical_v2_staging.enforce_market_metric_slot_partition()
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving;
 REVOKE ALL ON FUNCTION public.canonical_v2_market_cohort(
   text, text, text, text, text, text, integer, text, text, text, text, text,

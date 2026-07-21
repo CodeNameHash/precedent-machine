@@ -221,7 +221,9 @@ function subjectText(result, kind, role = null) {
     if (!Number.isFinite(subject.rawUsd)) return 'This deal: value not extracted';
     return 'This deal: relative value unavailable';
   }
-  if (kind === 'categorical') return subject.value == null ? 'This deal: value not extracted' : `This deal: ${formatMarketValue(subject.value)}`;
+  if (kind === 'categorical') return subject.value == null
+    ? 'This deal: value not extracted'
+    : `This deal: ${subject.label || formatMarketValue(subject.value)}`;
   if (kind === 'multi_select') {
     const values = Array.isArray(subject.values) ? subject.values : [];
     return values.length ? `This deal: ${values.map((value) => formatMarketValue(value)).join(', ')}` : 'This deal: value not extracted';
@@ -258,7 +260,7 @@ function ValuesResult({ result, kind }) {
       <div className="flex flex-wrap gap-1">
         {values.map((item) => (
           <span key={`${String(item.value)}-${item.count}`} className="border border-[#D8E2EF] bg-[#F3F7FB] px-1.5 py-0.5 text-[8.5px] text-[#2F6DB5]">
-            {formatMarketValue(item.value)} · {item.count}/{distribution.denominatorCount}
+            {item.label || formatMarketValue(item.value)} · {item.count}/{distribution.denominatorCount}
           </span>
         ))}
       </div>
