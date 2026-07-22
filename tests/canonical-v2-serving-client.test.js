@@ -3,6 +3,8 @@ const assert = require('node:assert/strict');
 
 const {
   createPostgresServingClient,
+  MAX_EXACT_DETAIL_RESULT_BYTES,
+  MAX_REVIEW_RESULT_ROWS,
   validateConnectionString,
 } = require('../lib/canonical-v2/serving-client');
 
@@ -19,7 +21,7 @@ class FakePool {
 
   query(command) {
     this.calls.push(command);
-    return Promise.resolve({ rowCount: 1, rows: [{ data: { ok: true } }] });
+    return Promise.resolve({ rowCount: 1, rows: [{ data: { ok: true, rows: [] } }] });
   }
 }
 
@@ -45,7 +47,7 @@ test('one Review request executes one typed SQL function call through a one-conn
   const response = await client.rpc('canonical_v2_active_review_context', params);
   const pool = FakePool.instances[0];
 
-  assert.deepEqual(response, { data: { ok: true }, error: null });
+  assert.deepEqual(response, { data: { ok: true, rows: [] }, error: null });
   assert.equal(pool.options.max, 1);
   assert.equal(pool.options.connectionTimeoutMillis, 1000);
   assert.equal(pool.options.query_timeout, 3000);
@@ -53,6 +55,99 @@ test('one Review request executes one typed SQL function call through a one-conn
   assert.equal(pool.calls.length, 1);
   assert.match(pool.calls[0].text, /^SELECT public\.canonical_v2_active_review_context\(/);
   assert.deepEqual(pool.calls[0].values, Object.values(params));
+});
+
+test('Review RPC work remains one set-based call when corpus metadata grows', async () => {
+  const params = {
+    p_environment: 'staging',
+    p_contract_fingerprint: 'a'.repeat(64),
+    p_request_digest: 'b'.repeat(64),
+    p_application_deal_id: '7dc3a05f-b170-4d59-a255-b7103cca16e1',
+    p_page_size: 100,
+    p_after_row_serving_key: null,
+  };
+
+  for (const totalCount of [1, 1_000_000]) {
+    class CorpusSizedPool extends FakePool {
+      query(command) {
+        this.calls.push(command);
+        return Promise.resolve({
+          rowCount: 1,
+          rows: [{ data: { total_count: totalCount, rows: [] } }],
+        });
+      }
+    }
+    const client = createPostgresServingClient({ connectionString: CONNECTION, PoolClass: CorpusSizedPool });
+    const response = await client.rpc('canonical_v2_active_review_context', params);
+    const pool = FakePool.instances.at(-1);
+
+    assert.equal(response.error, null);
+    assert.equal(response.data.total_count, totalCount);
+    assert.equal(pool.calls.length, 1);
+    assert.match(pool.calls[0].text, /^SELECT public\.canonical_v2_active_review_context\(/);
+  }
+});
+
+test('serving client fails closed when SQL-row, payload-row, or byte ceilings are exceeded', async () => {
+  const reviewParams = {
+    p_environment: 'staging',
+    p_contract_fingerprint: 'a'.repeat(64),
+    p_request_digest: 'b'.repeat(64),
+    p_application_deal_id: '7dc3a05f-b170-4d59-a255-b7103cca16e1',
+    p_page_size: 100,
+    p_after_row_serving_key: null,
+  };
+  const exactParams = {
+    p_environment: 'staging',
+    p_serving_namespace_id: 'a'.repeat(64),
+    p_corpus_release_id: 'b'.repeat(64),
+    p_contract_fingerprint: 'c'.repeat(64),
+    p_application_deal_id: '7dc3a05f-b170-4d59-a255-b7103cca16e1',
+    p_row_serving_key: 'd'.repeat(64),
+    p_source_detail_reference_id: 'e'.repeat(64),
+  };
+  const cases = [
+    {
+      name: 'SQL rows',
+      rpc: 'canonical_v2_active_review_context',
+      params: reviewParams,
+      result: { rowCount: 2, rows: [{ data: { rows: [] } }, { data: { rows: [] } }] },
+    },
+    {
+      name: 'payload rows',
+      rpc: 'canonical_v2_active_review_context',
+      params: reviewParams,
+      result: {
+        rowCount: 1,
+        rows: [{ data: { rows: Array.from({ length: MAX_REVIEW_RESULT_ROWS + 1 }, () => ({})) } }],
+      },
+    },
+    {
+      name: 'payload bytes',
+      rpc: 'canonical_v2_exact_detail',
+      params: exactParams,
+      result: {
+        rowCount: 1,
+        rows: [{ data: { payload: 'x'.repeat(MAX_EXACT_DETAIL_RESULT_BYTES) } }],
+      },
+    },
+  ];
+
+  for (const entry of cases) {
+    class OversizedPool extends FakePool {
+      query(command) {
+        this.calls.push(command);
+        return Promise.resolve(entry.result);
+      }
+    }
+    const client = createPostgresServingClient({ connectionString: CONNECTION, PoolClass: OversizedPool });
+    const response = await client.rpc(entry.rpc, entry.params);
+    const pool = FakePool.instances.at(-1);
+
+    assert.equal(response.data, null, entry.name);
+    assert.match(response.error.message, /exceeded its bounds/, entry.name);
+    assert.equal(pool.calls.length, 1, entry.name);
+  }
 });
 
 test('unknown RPCs and parameter drift fail before a database call', async () => {
