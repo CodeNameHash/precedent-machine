@@ -10,6 +10,7 @@ const {
   GENERAL_ACTION_SLOT_KEY,
   validateFixtureExactDetailPackage,
 } = require('../lib/canonical-v2/exact-detail');
+const { buildReviewedCapitalisationSlice } = require('../lib/canonical-v2/reviewed-capitalisation-slice');
 const {
   buildReviewedNoShopServingRows,
   buildReviewedNoShopSlice,
@@ -29,7 +30,22 @@ test('the real Landos no-shop becomes deterministic provisions, subterms and exa
   const first = build();
   const second = build();
   assert.equal(canonicalJson(first), canonicalJson(second));
+  assert.equal(first.proposalBatch.schema_version, 'SOURCE_BACKED_PROVISION_PROPOSAL_BATCH/V1');
+  assert.equal(first.proposalBatch.proposals.length, 1);
+  assert.equal(first.proposalBatch.quarantined_proposals.length, 0);
+  assert.equal(
+    first.reviewed_mapping.proposal_batch_id,
+    first.proposalBatch.proposal_batch_id,
+  );
+  assert.deepEqual(first.reviewed_mapping.source_backed_provision_proposal_ids, [
+    first.section.source_backed_provision_proposal_id,
+  ]);
   assert.equal(first.section.section_number, '5.3');
+  for (const span of Object.values(first.spans)) {
+    assert.equal(span.canonical_text_id, first.section.evidence_anchor.canonical_text_id);
+    assert.ok(span.absolute_start >= first.section.evidence_anchor.absolute_start);
+    assert.ok(span.absolute_end <= first.section.evidence_anchor.absolute_end);
+  }
   assert.equal(first.actionComponents.length, 5);
   assert.deepEqual(first.actionClaims.map((claim) => claim.canonical_value), [
     'SOLICIT_ASSIST_INITIATE_ENCOURAGE_OR_FACILITATE',
@@ -231,5 +247,44 @@ test('the reviewed no-shop mapping fails closed on source drift', () => {
       contractBundle,
     }),
     /source hash mismatch/,
+  );
+});
+
+test('proposal batch identity and exact admission lineage drift block the no-shop family', () => {
+  const proposalBatch = structuredClone(build().proposalBatch);
+  proposalBatch.source_admission_manifest_payload_digest = '0'.repeat(64);
+  assert.throws(
+    () => buildReviewedNoShopSlice({ sourceText, contractBundle, proposalBatch }),
+    /proposal batch identity or exact source mapping mismatch/,
+  );
+});
+
+test('a proposal moved away from reviewed Section 5.3 cannot feed the no-shop family', () => {
+  const proposalBatch = structuredClone(build().proposalBatch);
+  proposalBatch.proposals[0].section_number = '5.4';
+  assert.throws(
+    () => buildReviewedNoShopSlice({ sourceText, contractBundle, proposalBatch }),
+    /proposal batch identity or exact source mapping mismatch/,
+  );
+});
+
+test('a quarantined sibling blocks this family invocation without poisoning deterministic replay', () => {
+  const baseline = build();
+  const independentBefore = buildReviewedCapitalisationSlice({ sourceText, contractBundle });
+  const proposalBatch = structuredClone(baseline.proposalBatch);
+  proposalBatch.quarantined_proposals.push({
+    schema_version: 'QUARANTINED_PARSER_PROPOSAL/V1',
+    reason_code: 'EXACT_EVIDENCE_UNRESOLVED',
+  });
+  proposalBatch.diagnostics.quarantined_proposal_count = 1;
+  proposalBatch.diagnostics.publication_blocked = true;
+  assert.throws(
+    () => buildReviewedNoShopSlice({ sourceText, contractBundle, proposalBatch }),
+    /proposal batch contains quarantined input/,
+  );
+  assert.equal(canonicalJson(build()), canonicalJson(baseline));
+  assert.equal(
+    canonicalJson(buildReviewedCapitalisationSlice({ sourceText, contractBundle })),
+    canonicalJson(independentBefore),
   );
 });

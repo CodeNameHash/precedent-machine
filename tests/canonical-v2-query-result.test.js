@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const { buildLandosMaterialContractsServingFixture } = require('../__fixtures__/canonical-v2/landos-material-contracts-row');
 const { buildLandosIocCapexServingFixture } = require('../__fixtures__/canonical-v2/landos-ioc-capex-row');
 const { buildLandosTerminationFeeServingFixture } = require('../__fixtures__/canonical-v2/landos-termination-fee-row');
+const { buildMultiDealCandidateReleaseFixture } = require('../__fixtures__/canonical-v2/multi-deal-candidate-release');
 const { contentId } = require('../lib/canonical-v2/canonical-bytes');
 const {
   compileCanonicalQueryRequest,
@@ -157,6 +158,77 @@ test('Material Contracts query exposes the governed criterion primitives and rel
     request.selected_columns,
   );
   assert.ok(response.result.refinements.some((item) => item.column_key === 'measurement_period'));
+});
+
+test('no-shop notice query returns comparable days without discarding the source hours in one bounded cached request', async () => {
+  const fixture = buildMultiDealCandidateReleaseFixture();
+  const rows = fixture.release.shared_rows
+    .filter((row) => row.row_kind === 'CANONICAL_RESULT'
+      && row.canonical_result.market_context.metric_key === 'NO_SHOP_NOTICE_PERIOD_DAYS')
+    .sort((left, right) => left.governed_deal_key.localeCompare(right.governed_deal_key));
+  const request = requestFor(rows[0]);
+  const calls = [];
+  const client = {
+    rpc(name, params) {
+      calls.push({ name, params });
+      return Promise.resolve({ data: resultFor(params, rows), error: null });
+    },
+  };
+  const cache = new MemoryCache();
+  const first = await queryCanonicalResultPage({ client, cache, request });
+  const second = await queryCanonicalResultPage({ client, cache, request });
+
+  assert.equal(first.cache, 'MISS');
+  assert.equal(second.cache, 'HIT');
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].name, 'canonical_v2_query_page');
+  assert.equal(calls[0].params.p_corpus_release_id, fixture.corpusReleaseId);
+  assert.equal(calls[0].params.p_metric_key, 'NO_SHOP_NOTICE_PERIOD_DAYS');
+  assert.equal(calls[0].params.p_basis_key, 'DAYS:ELAPSED:RECEIPT_OF_COMPETING_PROPOSAL');
+  assert.equal(calls[0].params.p_party_role, 'COVENANT_OBLIGOR');
+  assert.equal(calls[0].params.p_party_value, 'COMPANY');
+  assert.equal(calls[0].params.p_party_capacity, 'TARGET');
+  assert.deepEqual(
+    first.result.columns.map((column) => column.column_key),
+    ['deal', 'buyer', 'party', 'duration', 'day_basis', 'trigger', 'source'],
+  );
+  assert.deepEqual(first.result.rows.map((row) => row.cells.buyer), ['AbbVie', 'QXO']);
+  for (const row of first.result.rows) {
+    assert.equal(row.cells.duration.canonical_value, '1');
+    assert.equal(row.cells.duration.canonical_unit, 'DAYS');
+    assert.equal(row.cells.duration.raw_magnitude, '24');
+    assert.equal(row.cells.duration.raw_unit, 'HOURS');
+    assert.match(row.cells.duration.raw_value, /twenty-four \(24\) hours/i);
+    assert.deepEqual(row.cells.day_basis, { code: 'ELAPSED', label: 'Elapsed days' });
+    assert.deepEqual(row.cells.trigger, {
+      code: 'RECEIPT_OF_COMPETING_PROPOSAL',
+      label: 'Receipt of competing proposal',
+    });
+    assert.deepEqual(row.cells.party, {
+      role: 'COVENANT_OBLIGOR',
+      value: 'COMPANY',
+      capacity: 'TARGET',
+    });
+    assert.equal(row.cells.source.detail_kind, 'CLAIM_EVIDENCE');
+  }
+  assert.equal(first.result.refinements.some((item) => item.column_key === 'duration'), false);
+});
+
+test('no-shop notice query refuses percentage-only columns and refinements', () => {
+  const fixture = buildMultiDealCandidateReleaseFixture();
+  const row = fixture.release.shared_rows.find((candidate) => candidate.row_kind === 'CANONICAL_RESULT'
+    && candidate.canonical_result.market_context.metric_key === 'NO_SHOP_NOTICE_PERIOD_DAYS');
+
+  assert.throws(
+    () => compileCanonicalQueryRequest(requestFor(row, { selected_columns: ['deal', 'percent_of_deal_value'] })),
+    /not governed/,
+  );
+  assert.throws(
+    () => compileCanonicalQueryRequest(requestFor(row, {
+      column_filters: { min_percent_of_deal_value: '0.5' },
+    })),
+    /percentage refinements require/,
+  );
 });
 
 test('the offline release projection produces the exact typed physical query records', () => {
