@@ -11,7 +11,7 @@ const APPLICATION_DEALS = Object.freeze({
 
 function buildMultiDealCandidateReleaseFixture() {
   const contract = compileFixtureContract();
-  const corpusReleaseId = contentId('CORPUS_RELEASE/V1', 'qxo-landos-shared-fixture-candidate-contract-v2');
+  const corpusReleaseId = contentId('CORPUS_RELEASE/V1', 'qxo-landos-shared-fixture-candidate-contract-v3-result-components');
   const servingNamespaceId = contentId('SERVING_NAMESPACE/V1', 'qxo-landos-shared-fixture');
   const fixtureOptions = { contractBundle: contract, corpusReleaseId, servingNamespaceId };
   const landos = buildLandosCandidateReleaseFixture(fixtureOptions);

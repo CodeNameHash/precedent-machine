@@ -12,7 +12,10 @@ const {
 
 function requestAndResult() {
   const fixture = buildLandosCandidateReleaseFixture();
-  const detailPackage = fixture.release.exact_detail_packages[0];
+  const detailPackage = fixture.release.exact_detail_packages.find((item) => (
+    item.row.row_serving_key === fixture.reviewed.row.row_serving_key
+  ));
+  assert.ok(detailPackage, 'reviewed capitalisation detail package must be released');
   const reference = detailPackage.references[0];
   const request = compileServingExactDetailRequest({
     serving_namespace_id: fixture.servingNamespaceId,

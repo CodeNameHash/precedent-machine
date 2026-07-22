@@ -47,6 +47,18 @@ test('twelve comparable results and one reviewed source-specific proposition fre
   assert.equal(first.release.source_specific_serving_records.length, 1);
   assert.equal(first.release.exact_detail_packages.length, 13);
   assert.equal(first.release.query_records.length, 12);
+  const representation = first.release.query_records.find(
+    (row) => row.metric_key === 'REPRESENTATION_ACCURACY_STANDARD',
+  );
+  assert.deepEqual(representation.canonical_payload.canonical_result.components.map((component) => ({
+    slot: component.component_slot_key,
+    state: component.component_state,
+  })), [
+    { slot: 'ACCURACY_TIER_A', state: 'PRESENT' },
+    { slot: 'ACCURACY_EXCEPTION', state: 'PRESENT' },
+    { slot: 'KNOWLEDGE_QUALIFIER_1', state: 'ABSENT' },
+    { slot: 'KNOWLEDGE_QUALIFIER_2', state: 'ABSENT' },
+  ]);
   assert.equal(first.release.query_records.some((row) => (
     row.row_serving_key === first.release.reviewed_source_specific_rows[0].row_serving_key
   )), false);

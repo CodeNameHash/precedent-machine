@@ -26,6 +26,8 @@ test('the real reviewed preview fixture binds the same complete market row to al
     ['Accuracy standard', 'True in all respects, except de minimis inaccuracies'],
     ['Exception', 'De minimis inaccuracies'],
     ['Tested when', 'Signing and closing; specified earlier date where applicable'],
+    ['Capitalization, Section 3.3(a)', 'No knowledge qualifier'],
+    ['Capitalization, Section 3.3(c), first sentence', 'No knowledge qualifier'],
   ]);
   assert.deepEqual(metric.distribution.values.map((item) => [item.value, item.count]), [
     ['MAT_ALL_RESPECTS_DE_MINIMIS', 1],

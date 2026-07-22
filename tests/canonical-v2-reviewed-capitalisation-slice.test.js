@@ -14,6 +14,7 @@ const {
   buildReviewedCapitalisationSlice,
 } = require('../lib/canonical-v2/reviewed-capitalisation-slice');
 const { validateProjectedMetricSlotOutput } = require('../lib/canonical-v2/serving-projection');
+const { adaptSharedServingRow } = require('../lib/canonical-v2/shared-row-adapter');
 const { validateSharedServingRow } = require('../lib/canonical-v2/shared-serving-row');
 
 const sourceText = fs.readFileSync('__fixtures__/demo-deal/landos-abbvie-agreement.txt', 'utf8');
@@ -104,6 +105,26 @@ test('the real claim produces a comparable market observation, shared row and ex
 
   const serving = buildReviewedCapitalisationServingRow({ slice, contractBundle });
   assert.equal(validateSharedServingRow(serving.row), true);
+  assert.deepEqual(serving.row.canonical_result.components.map((component) => ({
+    slot: component.component_slot_key,
+    state: component.component_state,
+  })), [
+    { slot: 'ACCURACY_TIER_A', state: 'PRESENT' },
+    { slot: 'ACCURACY_EXCEPTION', state: 'PRESENT' },
+    { slot: 'KNOWLEDGE_QUALIFIER_1', state: 'ABSENT' },
+    { slot: 'KNOWLEDGE_QUALIFIER_2', state: 'ABSENT' },
+  ]);
+  const legalTerms = adaptSharedServingRow(serving.row)
+    .data.byRow[serving.row.row_serving_key]
+    .metrics.REPRESENTATION_ACCURACY_STANDARD.subject.legalTerms;
+  assert.ok(legalTerms.some((term) => term.key === 'exception' && term.value === 'De minimis inaccuracies'));
+  assert.deepEqual(legalTerms.filter((term) => term.key.startsWith('knowledge_qualifier_')).map((term) => ({
+    label: term.label,
+    value: term.value,
+  })), [
+    { label: 'Capitalization, Section 3.3(a)', value: 'No knowledge qualifier' },
+    { label: 'Capitalization, Section 3.3(c), first sentence', value: 'No knowledge qualifier' },
+  ]);
   assert.deepEqual(serving.cohortResult.distribution, [{
     canonical_value: 'MAT_ALL_RESPECTS_DE_MINIMIS',
     subject_count: 1,
@@ -129,4 +150,23 @@ test('the real claim produces a comparable market observation, shared row and ex
     excerpt: slice.excerpts.accuracy_standard,
     claim: slice.accuracyClaim,
   }), true);
+});
+
+test('component order, identities and scoped absence fail closed independently of the market subject', () => {
+  const slice = build();
+  const { row } = buildReviewedCapitalisationServingRow({ slice, contractBundle });
+  const reordered = JSON.parse(JSON.stringify(row));
+  [reordered.canonical_result.components[1], reordered.canonical_result.components[2]] = [
+    reordered.canonical_result.components[2],
+    reordered.canonical_result.components[1],
+  ];
+  assert.throws(() => validateSharedServingRow(reordered), /unique governed sequence/);
+
+  const unscoped = JSON.parse(JSON.stringify(row));
+  unscoped.canonical_result.components[2].claim_scope.coverage_status = 'PARTIAL';
+  assert.throws(() => validateSharedServingRow(unscoped), /complete exact scope/);
+
+  const drifted = JSON.parse(JSON.stringify(row));
+  drifted.canonical_result.components[3].component_revision_id = '0'.repeat(64);
+  assert.throws(() => validateSharedServingRow(drifted), /component revision identity/);
 });
