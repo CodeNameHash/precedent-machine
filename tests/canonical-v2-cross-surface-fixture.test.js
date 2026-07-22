@@ -4,6 +4,7 @@ const fs = require('node:fs');
 
 const { buildLandosReviewedServingFixture } = require('../__fixtures__/canonical-v2/landos-reviewed-row');
 const { buildLandosIocCapexServingFixture } = require('../__fixtures__/canonical-v2/landos-ioc-capex-row');
+const { buildLandosMaterialContractsServingFixture } = require('../__fixtures__/canonical-v2/landos-material-contracts-row');
 const { buildLandosNoShopServingFixture } = require('../__fixtures__/canonical-v2/landos-no-shop-rows');
 const { buildLandosTerminationFeeServingFixture } = require('../__fixtures__/canonical-v2/landos-termination-fee-row');
 const { adaptSharedServingRow, SURFACES } = require('../lib/canonical-v2/shared-row-adapter');
@@ -47,10 +48,12 @@ test('the canonical design fixture is production-gated and performs no runtime d
   assert.match(page, /MarketDrilldownSidebar/);
   assert.match(page, /buildLandosReviewedServingFixture/);
   assert.match(page, /buildLandosIocCapexServingFixture/);
+  assert.match(page, /buildLandosMaterialContractsServingFixture/);
   assert.match(page, /buildLandosNoShopServingFixture/);
   assert.match(page, /buildLandosTerminationFeeServingFixture/);
   assert.match(page, /No-shop \/ non-solicit terms/);
   assert.match(page, /Interim operating covenant, capital expenditures/);
+  assert.match(page, /Material Contracts cash-flow threshold/);
   assert.match(page, /Seller termination fee and triggers/);
   assert.match(page, /Row isolation proof/);
   assert.match(page, /This provision could not be mapped safely/);
@@ -59,6 +62,21 @@ test('the canonical design fixture is production-gated and performs no runtime d
   assert.match(page, /CanonicalV2DesignFixture\.noLayout = true/);
   assert.doesNotMatch(page, /fetch\s*\(/);
   assert.doesNotMatch(page, /\/api\//);
+});
+
+test('the real Material Contracts fixture exposes its relative threshold and criterion everywhere', () => {
+  const fixture = buildLandosMaterialContractsServingFixture();
+  const adapted = adaptSharedServingRow(fixture.row);
+  const metric = adapted.data.byRow[adapted.row_key]
+    .metrics.MATERIAL_CONTRACT_CASH_FLOW_THRESHOLD_PERCENT_OF_DEAL_VALUE;
+  assert.equal(metric.subject.rawAmount, '$100,000');
+  assert.equal(metric.subject.percentOfDealValue, 0.07272727);
+  assert.match(metric.subject.legalTerms.find((term) => term.key === 'criterion').value, /Payments by or to/);
+  for (const surface of SURFACES) {
+    assert.equal(adapted.surface_bindings[surface].typed_market, adapted.typed_market);
+  }
+  assert.match(fixture.detailPackage.detail_payloads[0].response_body.excerpt.exact_text, /single fiscal year thereafter/);
+  assert.doesNotMatch(JSON.stringify(adapted), /No market data/);
 });
 
 test('the real seller fee fixture exposes percentage, side and triggers through all four surfaces', () => {

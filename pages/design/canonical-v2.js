@@ -11,17 +11,20 @@ export async function getServerSideProps(context) {
   if (guard.notFound) return guard;
   const { buildLandosReviewedServingFixture } = require('../../__fixtures__/canonical-v2/landos-reviewed-row');
   const { buildLandosIocCapexServingFixture } = require('../../__fixtures__/canonical-v2/landos-ioc-capex-row');
+  const { buildLandosMaterialContractsServingFixture } = require('../../__fixtures__/canonical-v2/landos-material-contracts-row');
   const { buildLandosNoShopServingFixture } = require('../../__fixtures__/canonical-v2/landos-no-shop-rows');
   const { buildLandosTerminationFeeServingFixture } = require('../../__fixtures__/canonical-v2/landos-termination-fee-row');
   const { adaptSharedServingRows } = require('../../lib/canonical-v2/shared-row-adapter');
   const fixture = buildLandosReviewedServingFixture();
   const iocFixture = buildLandosIocCapexServingFixture();
+  const materialContractsFixture = buildLandosMaterialContractsServingFixture();
   const noShopFixture = buildLandosNoShopServingFixture();
   const terminationFeeFixture = buildLandosTerminationFeeServingFixture();
-  const [reviewedRow, unrecognisedRow, iocRow, terminationFeeRow, ...noShopRows] = adaptSharedServingRows([
+  const [reviewedRow, unrecognisedRow, iocRow, materialContractsRow, terminationFeeRow, ...noShopRows] = adaptSharedServingRows([
     fixture.row,
     { row_kind: 'UNRECOGNISED_PROVISION_CANDIDATE' },
     iocFixture.row,
+    materialContractsFixture.row,
     terminationFeeFixture.row,
     ...noShopFixture.rows,
   ]);
@@ -31,6 +34,8 @@ export async function getServerSideProps(context) {
       unrecognised_row: JSON.parse(JSON.stringify(unrecognisedRow)),
       ioc_capex_row: JSON.parse(JSON.stringify(iocRow)),
       ioc_capex_source_text: iocFixture.detailPackage.detail_payloads[0].response_body.excerpt.exact_text,
+      material_contracts_row: JSON.parse(JSON.stringify(materialContractsRow)),
+      material_contracts_source_text: materialContractsFixture.detailPackage.detail_payloads[0].response_body.excerpt.exact_text,
       termination_fee_row: JSON.parse(JSON.stringify(terminationFeeRow)),
       termination_fee_source_text: terminationFeeFixture.detailPackage.detail_payloads[0].response_body.excerpt.exact_text,
       no_shop_rows: JSON.parse(JSON.stringify(noShopRows)),
@@ -220,6 +225,32 @@ function TerminationFeeRow({ item, sourceText }) {
   );
 }
 
+function MaterialContractsRow({ item, sourceText }) {
+  return (
+    <section className="mt-5 border border-[#D9D7D2] bg-white">
+      <header className="border-b border-[#E6E4DF] bg-[#F7F5F0] px-4 py-3">
+        <div className="text-[9px] font-bold uppercase tracking-[0.14em] text-[#77736C]">Real Section 3.13 result</div>
+        <h2 className="mt-1 text-sm font-bold text-[#1F1F1F]">Material Contracts cash-flow threshold</h2>
+        <p className="mt-1 text-[10px] text-[#77736C]">
+          The raw threshold remains visible. The comparison uses percentage of the source-backed closing transaction value and preserves the criterion and measurement period.
+        </p>
+      </header>
+      <div className="px-4 py-4">
+        <RowBoundary item={item} label="Material Contracts provision needs review">
+          {(row) => (
+            <div className="grid grid-cols-[minmax(260px,1fr)_minmax(260px,0.9fr)] gap-5" data-row-result="ready">
+              <SubjectTreatment adapted={row} sourceText={sourceText} />
+              <div className="border-l border-[#E6E4DF] pl-5">
+                <MarketMetricCell resolution={row.resolution} data={row.data} />
+              </div>
+            </div>
+          )}
+        </RowBoundary>
+      </div>
+    </section>
+  );
+}
+
 function RowIsolationProof({ item }) {
   return (
     <section className="mt-5 border border-[#D9D7D2] bg-white px-4 py-4" data-isolation-proof="true">
@@ -236,6 +267,8 @@ export default function CanonicalV2DesignFixture({
   exact_source_text: exactSourceText,
   ioc_capex_row: iocCapexRow,
   ioc_capex_source_text: iocCapexSourceText,
+  material_contracts_row: materialContractsRow,
+  material_contracts_source_text: materialContractsSourceText,
   no_shop_rows: noShopRows,
   no_shop_source_text_by_row: noShopSourceTextByRow,
   termination_fee_row: terminationFeeRow,
@@ -315,6 +348,7 @@ export default function CanonicalV2DesignFixture({
 
           <RowIsolationProof item={unrecognisedRow} />
           <IocCapexRow item={iocCapexRow} sourceText={iocCapexSourceText} />
+          <MaterialContractsRow item={materialContractsRow} sourceText={materialContractsSourceText} />
           <TerminationFeeRow item={terminationFeeRow} sourceText={terminationFeeSourceText} />
           <NoShopRows rows={noShopRows} sourceTextByRow={noShopSourceTextByRow} />
         </div>
