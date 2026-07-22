@@ -20,7 +20,7 @@ test('PH0C-D: reconcile page exposes queue and decision API logs one row', () =>
   assert.match(decide, /reconciliation-log\.jsonl/);
   assert.match(decide, /failAfterPrepare/);
   assert.match(decide, /applyResolution/);
-  assert.match(decide, /process\.env\.VERCEL/);
+  assert.match(decide, /blockVercelRepositoryArtifactRoute/);
   assert.match(decide, /reconcile-decide/);
   assert.match(decideLib, /field_key/);
   assert.match(decideLib, /raw_value/);

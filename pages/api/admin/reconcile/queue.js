@@ -1,5 +1,7 @@
 import fs from 'fs';
 
+const { blockVercelRepositoryArtifactRoute } = require('../../../../lib/admin/repository-artifact-access');
+
 const QUEUE_FILE = 'docs/schema-shape/reconciliation-queue.json';
 const NORMALIZED_FILE = 'docs/schema-shape/normalized-v1.json';
 const DEFAULT_LIMIT = 100;
@@ -127,5 +129,6 @@ export function readQueueSlice(query = {}) {
 export { groupRawEntries as groupEntries, groupFieldEntries };
 
 export default function handler(req, res) {
+  if (blockVercelRepositoryArtifactRoute(res)) return;
   return res.status(200).json(readQueueSlice(req.query || {}));
 }

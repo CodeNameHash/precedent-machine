@@ -27,6 +27,7 @@ export default function AuditPage({ matrix }) {
 }
 
 export async function getStaticProps() {
+  if (process.env.VERCEL) return { notFound: true };
   const { buildAuditMatrix } = await import('../../api/admin/audit/matrix');
   return { props: { matrix: await withBuildTimeout(buildAuditMatrix()) } };
 }

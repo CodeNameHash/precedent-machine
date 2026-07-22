@@ -3,10 +3,6 @@ const nextConfig = {
   reactStrictMode: true,
   experimental: {
     outputFileTracingIncludes: {
-      '/api/admin/reconcile/queue': [
-        './docs/schema-shape/reconciliation-queue.json',
-        './docs/schema-shape/normalized-v1.json',
-      ],
       '/api/admin/review-queue': [
         './docs/review-queue/*.json',
       ],

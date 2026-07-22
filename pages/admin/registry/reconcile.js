@@ -142,6 +142,7 @@ export default function ReconcilePage({ queue }) {
 }
 
 export async function getStaticProps() {
+  if (process.env.VERCEL) return { notFound: true };
   const { readQueueSlice } = await import('../../api/admin/reconcile/queue');
   return { props: { queue: readQueueSlice({ limit: 100, group: 'field_key', status: 'NEW' }) } };
 }

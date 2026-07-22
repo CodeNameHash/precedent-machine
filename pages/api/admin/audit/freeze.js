@@ -1,6 +1,8 @@
 import fs from 'fs';
 import { buildAuditMatrix } from './matrix.js';
 
+const { blockVercelRepositoryArtifactRoute } = require('../../../../lib/admin/repository-artifact-access');
+
 const STATE_FILE = 'docs/schema-shape/audit-state.json';
 const MARKER_FILE = 'docs/schema-shape/phase-0-C.frozen';
 const NORMALIZED_FILE = 'docs/schema-shape/normalized-v1.json';
@@ -32,6 +34,7 @@ async function freezePreconditions() {
 }
 
 export default async function handler(req, res) {
+  if (blockVercelRepositoryArtifactRoute(res)) return;
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
   const state = JSON.parse(fs.readFileSync(STATE_FILE, 'utf8'));
   const unresolved = (state.decisions || []).filter((decision) => decision.status === 'red' && !decision.resolution);

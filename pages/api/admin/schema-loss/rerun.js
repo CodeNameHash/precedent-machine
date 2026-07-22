@@ -1,5 +1,7 @@
 import { execFileSync } from 'child_process';
 
+const { blockVercelRepositoryArtifactRoute } = require('../../../../lib/admin/repository-artifact-access');
+
 const DIMENSIONS = new Set(['A', 'B', 'C', 'both']);
 
 function runScript(script) {
@@ -30,6 +32,7 @@ export function rerunSchemaLossAudit(dimension = 'both') {
 }
 
 export default function handler(req, res) {
+  if (blockVercelRepositoryArtifactRoute(res)) return;
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
   try {
     const dimension = String(req.query.dimension || req.body?.dimension || 'both');

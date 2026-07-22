@@ -2,6 +2,8 @@ import fs from 'fs';
 import { getServiceSupabase } from '../../../../lib/supabase.js';
 import { getDisplayAcquirer, getDisplayTarget } from '../../../../lib/deal-display.js';
 
+const { blockVercelRepositoryArtifactRoute } = require('../../../../lib/admin/repository-artifact-access');
+
 const NORMALIZED_FILE = 'docs/schema-shape/normalized-v1.json';
 const QUEUE_FILE = 'docs/schema-shape/reconciliation-queue.json';
 const DEFAULT_COLUMN_LIMIT = 16;
@@ -121,5 +123,6 @@ export async function buildAuditMatrix({ deal_id: dealId, limit = DEFAULT_COLUMN
 }
 
 export default async function handler(req, res) {
+  if (blockVercelRepositoryArtifactRoute(res)) return;
   res.status(200).json(await buildAuditMatrix(req.query || {}));
 }

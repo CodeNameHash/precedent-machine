@@ -1,6 +1,7 @@
 import fs from 'fs';
 
 const { applyResolution, selectedEntries, resolveDecidedBy } = require('../../../../lib/schema-shape/reconcile-decide');
+const { blockVercelRepositoryArtifactRoute } = require('../../../../lib/admin/repository-artifact-access');
 
 const QUEUE_FILE = 'docs/schema-shape/reconciliation-queue.json';
 const LOG_FILE = 'docs/schema-shape/reconciliation-log.jsonl';
@@ -13,10 +14,8 @@ const NORMALIZED_FILE = 'docs/schema-shape/normalized-v1.json';
 // docs/handoffs/M4-M5-RECONCILED-PLAN-2026-07-18.md §5 (WP-4 delta) and
 // docs/schema-shape/README-reconciliation.md.
 export default function handler(req, res) {
+  if (blockVercelRepositoryArtifactRoute(res)) return;
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
-  if (process.env.VERCEL) {
-    return res.status(409).json({ error: 'Reconciliation writes must run locally so repo JSON artifacts can be committed.' });
-  }
   const queue = JSON.parse(fs.readFileSync(QUEUE_FILE, 'utf8'));
   const normalized = JSON.parse(fs.readFileSync(NORMALIZED_FILE, 'utf8'));
   const logBefore = fs.existsSync(LOG_FILE) ? fs.readFileSync(LOG_FILE, 'utf8') : '';
