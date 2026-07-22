@@ -14,12 +14,44 @@ export async function getServerSideProps(context) {
   const { buildLandosMaterialContractsServingFixture } = require('../../__fixtures__/canonical-v2/landos-material-contracts-row');
   const { buildLandosNoShopServingFixture } = require('../../__fixtures__/canonical-v2/landos-no-shop-rows');
   const { buildLandosTerminationFeeServingFixture } = require('../../__fixtures__/canonical-v2/landos-termination-fee-row');
+  const { contentId } = require('../../lib/canonical-v2/canonical-bytes');
+  const {
+    buildCanonicalQueryResultView,
+    compileCanonicalQueryRequest,
+  } = require('../../lib/canonical-v2/query-result');
   const { adaptSharedServingRows } = require('../../lib/canonical-v2/shared-row-adapter');
   const fixture = buildLandosReviewedServingFixture();
   const iocFixture = buildLandosIocCapexServingFixture();
   const materialContractsFixture = buildLandosMaterialContractsServingFixture();
   const noShopFixture = buildLandosNoShopServingFixture();
   const terminationFeeFixture = buildLandosTerminationFeeServingFixture();
+  const terminationFeeMarket = terminationFeeFixture.row.canonical_result.market_context;
+  const queryRequest = compileCanonicalQueryRequest({
+    serving_namespace_id: contentId('SERVING_NAMESPACE/V1', 'landos-reviewed-fixture'),
+    corpus_release_id: terminationFeeFixture.row.corpus_release_id,
+    contract_fingerprint: terminationFeeFixture.row.provenance.contract_fingerprint,
+    intent: 'MARKET_RANGE',
+    metric_key: terminationFeeMarket.metric_key,
+    metric_version: terminationFeeMarket.metric_version,
+    concept_key: terminationFeeFixture.row.canonical_result.concept_key,
+    party: terminationFeeFixture.row.canonical_result.party,
+    filters: {},
+    selected_columns: null,
+    column_filters: {},
+    page_size: 25,
+    cursor: null,
+  });
+  const queryView = buildCanonicalQueryResultView({
+    schema_version: 'CANONICAL_QUERY_PAGE_RESULT/V1',
+    serving_namespace_id: queryRequest.serving_namespace_id,
+    corpus_release_id: queryRequest.corpus_release_id,
+    contract_fingerprint: queryRequest.contract_fingerprint,
+    query_semantics_digest: queryRequest.query_semantics_digest,
+    total_count: 1,
+    page_count: 1,
+    rows: [terminationFeeFixture.row],
+    next_cursor: null,
+  }, queryRequest);
   const [reviewedRow, unrecognisedRow, iocRow, materialContractsRow, terminationFeeRow, ...noShopRows] = adaptSharedServingRows([
     fixture.row,
     { row_kind: 'UNRECOGNISED_PROVISION_CANDIDATE' },
@@ -38,6 +70,7 @@ export async function getServerSideProps(context) {
       material_contracts_source_text: materialContractsFixture.detailPackage.detail_payloads[0].response_body.excerpt.exact_text,
       termination_fee_row: JSON.parse(JSON.stringify(terminationFeeRow)),
       termination_fee_source_text: terminationFeeFixture.detailPackage.detail_payloads[0].response_body.excerpt.exact_text,
+      query_view: JSON.parse(JSON.stringify(queryView)),
       no_shop_rows: JSON.parse(JSON.stringify(noShopRows)),
       no_shop_source_text_by_row: Object.fromEntries(noShopFixture.rows.map((row, index) => [
         row.row_serving_key,
@@ -251,6 +284,66 @@ function MaterialContractsRow({ item, sourceText }) {
   );
 }
 
+function QueryContractPreview({ view }) {
+  const result = view.rows[0];
+  const cells = result.cells;
+  const visible = view.columns.filter((column) => !['triggers', 'source'].includes(column.column_key));
+  return (
+    <section className="mt-5 overflow-hidden border border-[#D9D7D2] bg-white" data-query-contract-preview="true">
+      <header className="border-b border-[#E6E4DF] bg-[#F7F5F0] px-4 py-3">
+        <div className="text-[9px] font-bold uppercase tracking-[0.14em] text-[#77736C]">Canonical query result</div>
+        <div className="mt-1 flex flex-wrap items-baseline justify-between gap-3">
+          <h2 className="text-sm font-bold text-[#1F1F1F]">Termination fees market check</h2>
+          <div className="text-[9px] text-[#77736C]">{view.total_count} matching deal</div>
+        </div>
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          {view.refinements.map((refinement) => (
+            <span key={refinement.column_key} className="border border-[#D9D7D2] bg-white px-2 py-1 text-[8px] font-bold uppercase tracking-[0.08em] text-[#66625C]">
+              Refine by {refinement.column_key.replaceAll('_', ' ')}
+            </span>
+          ))}
+        </div>
+      </header>
+      <div className="p-4">
+        <div className="grid gap-px border border-[#E6E4DF] bg-[#E6E4DF] sm:grid-cols-2 xl:grid-cols-4">
+          {visible.map((column) => {
+            const value = cells[column.column_key];
+            const display = column.column_key === 'percent_of_deal_value'
+              ? `${value}%`
+              : value?.label
+              || (value?.value && value?.capacity ? `${value.value} (${value.capacity.toLowerCase()})` : null)
+              || String(value ?? 'Not captured');
+            return (
+              <div key={column.column_key} className="min-w-0 bg-white px-3 py-3">
+                <div className="text-[8px] font-bold uppercase tracking-[0.1em] text-[#77736C]">{column.label}</div>
+                <div className="mt-1 break-words text-[10px] font-semibold text-[#1F1F1F]">{display}</div>
+              </div>
+            );
+          })}
+        </div>
+        <div className="mt-3 grid gap-3 lg:grid-cols-[1fr_180px]">
+          <div className="border border-[#E6E4DF] px-3 py-3">
+            <div className="text-[8px] font-bold uppercase tracking-[0.1em] text-[#77736C]">Triggers and payment timing</div>
+            <ul className="mt-2 grid gap-2 text-[10px] leading-4 text-[#1F1F1F] lg:grid-cols-3">
+              {cells.triggers.map((trigger) => (
+                <li key={trigger.trigger_code} className="border-l-2 border-[#2F6DB5] pl-2">
+                  <div className="font-semibold">{trigger.trigger_code.replaceAll('_', ' ')}</div>
+                  <div className="mt-1 text-[9px] text-[#77736C]">{trigger.payment_timing.replaceAll('_', ' ')}</div>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="border border-[#E6E4DF] px-3 py-3">
+            <div className="text-[8px] font-bold uppercase tracking-[0.1em] text-[#77736C]">Source</div>
+            <div className="mt-2 text-[10px] font-semibold text-[#2F6DB5]">Exact claim evidence</div>
+            <div className="mt-1 font-mono text-[8px] text-[#77736C]">{cells.source.source_detail_reference_id.slice(0, 12)}…</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function RowIsolationProof({ item }) {
   return (
     <section className="mt-5 border border-[#D9D7D2] bg-white px-4 py-4" data-isolation-proof="true">
@@ -273,6 +366,7 @@ export default function CanonicalV2DesignFixture({
   no_shop_source_text_by_row: noShopSourceTextByRow,
   termination_fee_row: terminationFeeRow,
   termination_fee_source_text: terminationFeeSourceText,
+  query_view: queryView,
   unrecognised_row: unrecognisedRow,
   reviewed_mapping_id: reviewedMappingId,
   preview_environment: previewEnvironment,
@@ -346,6 +440,7 @@ export default function CanonicalV2DesignFixture({
             <div className="mt-2 font-mono text-[10px] leading-5 text-[#1F1F1F]">{exactSourceText}</div>
           </section>
 
+          <QueryContractPreview view={queryView} />
           <RowIsolationProof item={unrecognisedRow} />
           <IocCapexRow item={iocCapexRow} sourceText={iocCapexSourceText} />
           <MaterialContractsRow item={materialContractsRow} sourceText={materialContractsSourceText} />

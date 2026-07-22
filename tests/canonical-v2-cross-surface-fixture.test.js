@@ -55,6 +55,10 @@ test('the canonical design fixture is production-gated and performs no runtime d
   assert.match(page, /Interim operating covenant, capital expenditures/);
   assert.match(page, /Material Contracts cash-flow threshold/);
   assert.match(page, /Seller termination fee and triggers/);
+  assert.match(page, /Canonical query result/);
+  assert.match(page, /Termination fees market check/);
+  assert.match(page, /Refine by/);
+  assert.match(page, /buildCanonicalQueryResultView/);
   assert.match(page, /Row isolation proof/);
   assert.match(page, /This provision could not be mapped safely/);
   assert.match(page, /adaptSharedServingRows/);

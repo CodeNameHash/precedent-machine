@@ -101,6 +101,41 @@ CREATE TABLE IF NOT EXISTS canonical_v2_staging.market_metric_slot_exclusions (
   UNIQUE (serving_namespace_id, corpus_release_id, exclusion_serving_key)
 );
 
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.shared_serving_rows (
+  serving_namespace_id text NOT NULL CHECK (serving_namespace_id ~ '^[a-f0-9]{64}$'),
+  corpus_release_id text NOT NULL REFERENCES canonical_v2_staging.fixture_corpus_releases(corpus_release_id),
+  row_serving_key text NOT NULL CHECK (row_serving_key ~ '^[a-f0-9]{64}$'),
+  contract_fingerprint text NOT NULL CHECK (contract_fingerprint ~ '^[a-f0-9]{64}$'),
+  governed_deal_key text NOT NULL,
+  concept_key text NOT NULL,
+  metric_key text NOT NULL,
+  metric_version integer NOT NULL CHECK (metric_version > 0),
+  party_role text NOT NULL,
+  party_value text NOT NULL,
+  party_capacity text NOT NULL,
+  basis_key text NOT NULL,
+  sector text,
+  buyer text,
+  merger_form text,
+  adviser_firms text[] NOT NULL DEFAULT '{}',
+  lawyers text[] NOT NULL DEFAULT '{}',
+  announce_year integer CHECK (announce_year IS NULL OR announce_year BETWEEN 1900 AND 2200),
+  deal_value_usd numeric CHECK (deal_value_usd IS NULL OR deal_value_usd >= 0),
+  canonical_numeric_value numeric CHECK (canonical_numeric_value IS NULL OR canonical_numeric_value >= 0),
+  fee_side text,
+  payer_capacity text,
+  payee_capacity text,
+  trigger_codes text[] NOT NULL DEFAULT '{}',
+  criterion_code text,
+  contract_scope_code text,
+  cash_flow_direction_code text,
+  measurement_period_code text,
+  comparison_operator text,
+  canonical_payload jsonb NOT NULL,
+  canonical_payload_digest text NOT NULL CHECK (canonical_payload_digest ~ '^[a-f0-9]{64}$'),
+  PRIMARY KEY (serving_namespace_id, corpus_release_id, row_serving_key)
+);
+
 CREATE INDEX IF NOT EXISTS canonical_v2_market_observation_cohort_idx
   ON canonical_v2_staging.market_observations (
     serving_namespace_id,
@@ -135,6 +170,50 @@ CREATE INDEX IF NOT EXISTS canonical_v2_market_exclusion_advisers_idx
   ON canonical_v2_staging.market_metric_slot_exclusions USING gin (adviser_firms);
 CREATE INDEX IF NOT EXISTS canonical_v2_market_exclusion_lawyers_idx
   ON canonical_v2_staging.market_metric_slot_exclusions USING gin (lawyers);
+CREATE INDEX IF NOT EXISTS canonical_v2_shared_rows_query_idx
+  ON canonical_v2_staging.shared_serving_rows (
+    serving_namespace_id,
+    corpus_release_id,
+    contract_fingerprint,
+    concept_key,
+    metric_key,
+    metric_version,
+    party_role,
+    party_value,
+    party_capacity,
+    basis_key,
+    governed_deal_key,
+    row_serving_key
+  );
+CREATE INDEX IF NOT EXISTS canonical_v2_shared_rows_numeric_idx
+  ON canonical_v2_staging.shared_serving_rows (
+    serving_namespace_id,
+    corpus_release_id,
+    metric_key,
+    canonical_numeric_value,
+    governed_deal_key,
+    row_serving_key
+  );
+CREATE INDEX IF NOT EXISTS canonical_v2_shared_rows_attributes_idx
+  ON canonical_v2_staging.shared_serving_rows (
+    serving_namespace_id,
+    corpus_release_id,
+    metric_key,
+    fee_side,
+    payer_capacity,
+    payee_capacity,
+    criterion_code,
+    contract_scope_code,
+    cash_flow_direction_code,
+    measurement_period_code,
+    comparison_operator
+  );
+CREATE INDEX IF NOT EXISTS canonical_v2_shared_rows_advisers_idx
+  ON canonical_v2_staging.shared_serving_rows USING gin (adviser_firms);
+CREATE INDEX IF NOT EXISTS canonical_v2_shared_rows_lawyers_idx
+  ON canonical_v2_staging.shared_serving_rows USING gin (lawyers);
+CREATE INDEX IF NOT EXISTS canonical_v2_shared_rows_triggers_idx
+  ON canonical_v2_staging.shared_serving_rows USING gin (trigger_codes);
 
 CREATE OR REPLACE FUNCTION canonical_v2_staging.enforce_market_metric_slot_partition()
 RETURNS trigger
@@ -184,6 +263,7 @@ FOR EACH ROW EXECUTE FUNCTION canonical_v2_staging.enforce_market_metric_slot_pa
 ALTER TABLE canonical_v2_staging.fixture_corpus_releases ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.market_observations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.market_metric_slot_exclusions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE canonical_v2_staging.shared_serving_rows ENABLE ROW LEVEL SECURITY;
 
 CREATE OR REPLACE FUNCTION public.canonical_v2_market_cohort(
   p_environment text,
@@ -409,11 +489,182 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION public.canonical_v2_query_page(
+  p_environment text,
+  p_serving_namespace_id text,
+  p_corpus_release_id text,
+  p_contract_fingerprint text,
+  p_query_semantics_digest text,
+  p_metric_key text,
+  p_metric_version integer,
+  p_concept_key text,
+  p_party_role text,
+  p_party_value text,
+  p_party_capacity text,
+  p_basis_key text,
+  p_sector text DEFAULT NULL,
+  p_buyer text DEFAULT NULL,
+  p_merger_form text DEFAULT NULL,
+  p_adviser_either text DEFAULT NULL,
+  p_lawyer_either text DEFAULT NULL,
+  p_year_from integer DEFAULT NULL,
+  p_year_to integer DEFAULT NULL,
+  p_min_value_usd numeric DEFAULT NULL,
+  p_max_value_usd numeric DEFAULT NULL,
+  p_min_canonical_value numeric DEFAULT NULL,
+  p_max_canonical_value numeric DEFAULT NULL,
+  p_fee_side text DEFAULT NULL,
+  p_payer_capacity text DEFAULT NULL,
+  p_payee_capacity text DEFAULT NULL,
+  p_trigger_code text DEFAULT NULL,
+  p_criterion_code text DEFAULT NULL,
+  p_contract_scope_code text DEFAULT NULL,
+  p_cash_flow_direction_code text DEFAULT NULL,
+  p_measurement_period_code text DEFAULT NULL,
+  p_comparison_operator text DEFAULT NULL,
+  p_page_size integer DEFAULT 25,
+  p_after_governed_deal_key text DEFAULT NULL,
+  p_after_row_serving_key text DEFAULT NULL
+)
+RETURNS jsonb
+LANGUAGE plpgsql
+STABLE
+SECURITY DEFINER
+SET search_path = pg_catalog, canonical_v2_staging
+SET statement_timeout = '2500ms'
+AS $$
+DECLARE
+  result jsonb;
+BEGIN
+  IF current_setting('app.canonical_v2_environment', true) IS DISTINCT FROM 'staging'
+    OR p_environment IS DISTINCT FROM 'staging' THEN
+    RAISE EXCEPTION 'canonical_v2_query_page is staging-only' USING ERRCODE = '42501';
+  END IF;
+  IF p_serving_namespace_id !~ '^[a-f0-9]{64}$'
+    OR p_corpus_release_id !~ '^[a-f0-9]{64}$'
+    OR p_contract_fingerprint !~ '^[a-f0-9]{64}$'
+    OR p_query_semantics_digest !~ '^[a-f0-9]{64}$'
+    OR coalesce(length(trim(p_metric_key)), 0) = 0
+    OR p_metric_version < 1
+    OR coalesce(length(trim(p_concept_key)), 0) = 0
+    OR coalesce(length(trim(p_party_role)), 0) = 0
+    OR coalesce(length(trim(p_party_value)), 0) = 0
+    OR coalesce(length(trim(p_party_capacity)), 0) = 0
+    OR coalesce(length(trim(p_basis_key)), 0) = 0
+    OR p_page_size < 1
+    OR p_page_size > 50
+    OR ((p_after_governed_deal_key IS NULL) <> (p_after_row_serving_key IS NULL))
+    OR (p_after_row_serving_key IS NOT NULL AND p_after_row_serving_key !~ '^[a-f0-9]{64}$') THEN
+    RAISE EXCEPTION 'invalid canonical query page request' USING ERRCODE = '22023';
+  END IF;
+  IF p_year_from IS NOT NULL AND p_year_to IS NOT NULL AND p_year_from > p_year_to THEN
+    RAISE EXCEPTION 'invalid year range' USING ERRCODE = '22023';
+  END IF;
+  IF p_min_value_usd IS NOT NULL AND p_max_value_usd IS NOT NULL AND p_min_value_usd > p_max_value_usd THEN
+    RAISE EXCEPTION 'invalid value range' USING ERRCODE = '22023';
+  END IF;
+  IF p_min_canonical_value IS NOT NULL
+    AND p_max_canonical_value IS NOT NULL
+    AND p_min_canonical_value > p_max_canonical_value THEN
+    RAISE EXCEPTION 'invalid canonical value range' USING ERRCODE = '22023';
+  END IF;
+  IF NOT EXISTS (
+    SELECT 1
+    FROM canonical_v2_staging.fixture_corpus_releases release
+    WHERE release.corpus_release_id = p_corpus_release_id
+      AND release.contract_fingerprint = p_contract_fingerprint
+  ) THEN
+    RAISE EXCEPTION 'unknown fixture corpus release' USING ERRCODE = '22023';
+  END IF;
+
+  WITH matching_rows AS MATERIALIZED (
+    SELECT row.*
+    FROM canonical_v2_staging.shared_serving_rows row
+    WHERE row.serving_namespace_id = p_serving_namespace_id
+      AND row.corpus_release_id = p_corpus_release_id
+      AND row.contract_fingerprint = p_contract_fingerprint
+      AND row.metric_key = p_metric_key
+      AND row.metric_version = p_metric_version
+      AND row.concept_key = p_concept_key
+      AND row.party_role = p_party_role
+      AND row.party_value = p_party_value
+      AND row.party_capacity = p_party_capacity
+      AND row.basis_key = p_basis_key
+      AND (p_sector IS NULL OR row.sector = p_sector)
+      AND (p_buyer IS NULL OR row.buyer = p_buyer)
+      AND (p_merger_form IS NULL OR row.merger_form = p_merger_form)
+      AND (p_adviser_either IS NULL OR p_adviser_either = ANY(row.adviser_firms))
+      AND (p_lawyer_either IS NULL OR p_lawyer_either = ANY(row.lawyers))
+      AND (p_year_from IS NULL OR row.announce_year >= p_year_from)
+      AND (p_year_to IS NULL OR row.announce_year <= p_year_to)
+      AND (p_min_value_usd IS NULL OR row.deal_value_usd >= p_min_value_usd)
+      AND (p_max_value_usd IS NULL OR row.deal_value_usd <= p_max_value_usd)
+      AND (p_min_canonical_value IS NULL OR row.canonical_numeric_value >= p_min_canonical_value)
+      AND (p_max_canonical_value IS NULL OR row.canonical_numeric_value <= p_max_canonical_value)
+      AND (p_fee_side IS NULL OR row.fee_side = p_fee_side)
+      AND (p_payer_capacity IS NULL OR row.payer_capacity = p_payer_capacity)
+      AND (p_payee_capacity IS NULL OR row.payee_capacity = p_payee_capacity)
+      AND (p_trigger_code IS NULL OR p_trigger_code = ANY(row.trigger_codes))
+      AND (p_criterion_code IS NULL OR row.criterion_code = p_criterion_code)
+      AND (p_contract_scope_code IS NULL OR row.contract_scope_code = p_contract_scope_code)
+      AND (p_cash_flow_direction_code IS NULL OR row.cash_flow_direction_code = p_cash_flow_direction_code)
+      AND (p_measurement_period_code IS NULL OR row.measurement_period_code = p_measurement_period_code)
+      AND (p_comparison_operator IS NULL OR row.comparison_operator = p_comparison_operator)
+  ), page_candidates AS MATERIALIZED (
+    SELECT row.*
+    FROM matching_rows row
+    WHERE p_after_governed_deal_key IS NULL
+      OR (row.governed_deal_key, row.row_serving_key) > (p_after_governed_deal_key, p_after_row_serving_key)
+    ORDER BY row.governed_deal_key, row.row_serving_key
+    LIMIT p_page_size + 1
+  ), page_rows AS MATERIALIZED (
+    SELECT row.*
+    FROM page_candidates row
+    ORDER BY row.governed_deal_key, row.row_serving_key
+    LIMIT p_page_size
+  ), page_payload AS (
+    SELECT
+      count(*)::integer AS page_count,
+      coalesce(jsonb_agg(row.canonical_payload ORDER BY row.governed_deal_key, row.row_serving_key), '[]'::jsonb) AS rows
+    FROM page_rows row
+  ), last_row AS (
+    SELECT row.governed_deal_key, row.row_serving_key
+    FROM page_rows row
+    ORDER BY row.governed_deal_key DESC, row.row_serving_key DESC
+    LIMIT 1
+  )
+  SELECT jsonb_build_object(
+    'schema_version', 'CANONICAL_QUERY_PAGE_RESULT/V1',
+    'serving_namespace_id', p_serving_namespace_id,
+    'corpus_release_id', p_corpus_release_id,
+    'contract_fingerprint', p_contract_fingerprint,
+    'query_semantics_digest', p_query_semantics_digest,
+    'total_count', (SELECT count(*)::integer FROM matching_rows),
+    'page_count', page_payload.page_count,
+    'rows', page_payload.rows,
+    'next_cursor', CASE
+      WHEN (SELECT count(*) FROM page_candidates) > p_page_size THEN (
+        SELECT jsonb_build_object(
+          'governed_deal_key', last_row.governed_deal_key,
+          'row_serving_key', last_row.row_serving_key
+        ) FROM last_row
+      )
+      ELSE NULL
+    END
+  ) INTO result
+  FROM page_payload;
+
+  RETURN result;
+END;
+$$;
+
 REVOKE ALL ON TABLE canonical_v2_staging.fixture_corpus_releases
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving;
 REVOKE ALL ON TABLE canonical_v2_staging.market_observations
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving;
 REVOKE ALL ON TABLE canonical_v2_staging.market_metric_slot_exclusions
+  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving;
+REVOKE ALL ON TABLE canonical_v2_staging.shared_serving_rows
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving;
 REVOKE ALL ON FUNCTION canonical_v2_staging.enforce_market_metric_slot_partition()
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving;
@@ -424,4 +675,14 @@ REVOKE ALL ON FUNCTION public.canonical_v2_market_cohort(
 GRANT EXECUTE ON FUNCTION public.canonical_v2_market_cohort(
   text, text, text, text, text, text, integer, text, text, text, text, text,
   text, text, text, text, text, text, integer, integer, numeric, numeric
+) TO canonical_v2_serving;
+REVOKE ALL ON FUNCTION public.canonical_v2_query_page(
+  text, text, text, text, text, text, integer, text, text, text, text, text,
+  text, text, text, text, text, integer, integer, numeric, numeric, numeric, numeric,
+  text, text, text, text, text, text, text, text, text, integer, text, text
+) FROM PUBLIC, anon, authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.canonical_v2_query_page(
+  text, text, text, text, text, text, integer, text, text, text, text, text,
+  text, text, text, text, text, integer, integer, numeric, numeric, numeric, numeric,
+  text, text, text, text, text, text, text, text, text, integer, text, text
 ) TO canonical_v2_serving;

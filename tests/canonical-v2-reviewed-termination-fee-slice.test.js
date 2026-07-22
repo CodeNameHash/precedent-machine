@@ -115,6 +115,7 @@ test('all three triggers survive the release projection and one shared row', () 
   assert.equal(metric.subject.percentOfDealValue, 5.09090909);
   assert.deepEqual(metric.subject.legalTerms.map((term) => term.label), [
     'Fee amount',
+    'Fee side',
     'Payer',
     'Payee',
     'Deal-value basis',
@@ -122,9 +123,10 @@ test('all three triggers survive the release projection and one shared row', () 
     '',
     '',
   ]);
-  assert.match(metric.subject.legalTerms[4].value, /Superior Proposal/);
-  assert.match(metric.subject.legalTerms[5].value, /Change in Recommendation/);
-  assert.match(metric.subject.legalTerms[6].value, /within 12 months/);
+  const triggers = metric.subject.legalTerms.filter((term) => term.key.startsWith('trigger_'));
+  assert.match(triggers[0].value, /Superior Proposal/);
+  assert.match(triggers[1].value, /Change in Recommendation/);
+  assert.match(triggers[2].value, /within 12 months/);
   for (const surface of SURFACES) {
     assert.equal(adapted.surface_bindings[surface].typed_market, adapted.typed_market);
   }

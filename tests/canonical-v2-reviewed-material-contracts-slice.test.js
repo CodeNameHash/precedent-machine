@@ -82,12 +82,14 @@ test('the raw dollars, percentage and governing criterion reach every shared sur
   assert.deepEqual(metric.subject.legalTerms.map((term) => term.label), [
     'Cash-flow threshold',
     'Criterion',
+    'Contract scope',
+    'Cash flow',
     'Measured over',
     'Threshold rule',
     'Deal-value basis',
   ]);
   assert.match(metric.subject.legalTerms[1].value, /Payments by or to the Company/);
-  assert.match(metric.subject.legalTerms[2].value, /single fiscal year thereafter/);
+  assert.match(metric.subject.legalTerms.find((term) => term.key === 'period').value, /single fiscal year thereafter/);
   for (const surface of SURFACES) {
     assert.equal(adapted.surface_bindings[surface].typed_market, adapted.typed_market);
   }
