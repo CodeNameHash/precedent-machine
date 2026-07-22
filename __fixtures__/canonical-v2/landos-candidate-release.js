@@ -10,7 +10,7 @@ const { compileFixtureContract } = require('../../lib/canonical-v2/contract-bund
 
 function buildLandosCandidateReleaseFixture({
   contractBundle = compileFixtureContract(),
-  corpusReleaseId = contentId('CORPUS_RELEASE/V1', 'landos-reviewed-fixture-candidate-contract-v5-correction-input-seal'),
+  corpusReleaseId = contentId('CORPUS_RELEASE/V1', 'landos-reviewed-fixture-candidate-contract-v6-exact-detail-package-binding'),
   servingNamespaceId = contentId('SERVING_NAMESPACE/V1', 'landos-reviewed-fixture'),
 } = {}) {
   const fixtureOptions = { contractBundle, corpusReleaseId };

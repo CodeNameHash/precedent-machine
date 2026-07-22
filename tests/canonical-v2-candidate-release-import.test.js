@@ -64,6 +64,10 @@ test('one certified release becomes one deterministic atomic import plan across 
   assert.equal(first.source_specific_records[0].canonical_payload.row_kind, 'REVIEWED_SOURCE_SPECIFIC');
   assert.equal(first.source_specific_records[0].market_cohort_eligible, false);
   assert.equal(first.exact_detail_packages.length, first.query_records.length + first.source_specific_records.length);
+  assert.equal(
+    first.exact_detail_packages[0].exact_detail_package_digest,
+    contentId('EXACT_DETAIL_ATOMIC_PACKAGE/V1', first.exact_detail_packages[0].canonical_payload),
+  );
   assert.equal(first.validated_semantic_graph_records[0].governed_deal_key, 'deal:landos-abbvie');
   assert.equal(first.validated_semantic_graph_records[0].definition_cue_count, 1);
   assert.equal(first.validated_semantic_graph_records[0].definition_use_cue_count, 2);
@@ -103,6 +107,21 @@ test('bundle or physical projection drift blocks the import plan before any data
   rootDrift.release_record.correction_input_root = '0'.repeat(64);
   rekeyPlan(rootDrift);
   assert.throws(() => validateCandidateReleaseImportPlan(rootDrift), /does not close over its certified manifest/);
+
+  const rehashedDetailDrift = clone(buildCandidateReleaseImportPlan({ release }));
+  const detailRecord = rehashedDetailDrift.exact_detail_packages[0];
+  detailRecord.canonical_payload.detail_payloads[0].response_body.detail_kind = 'FABRICATED_DETAIL';
+  const driftedPackageDigest = contentId(
+    'EXACT_DETAIL_ATOMIC_PACKAGE/V1',
+    detailRecord.canonical_payload,
+  );
+  detailRecord.exact_detail_package_digest = driftedPackageDigest;
+  detailRecord.canonical_payload_digest = driftedPackageDigest;
+  rekeyPlan(rehashedDetailDrift);
+  assert.throws(
+    () => validateCandidateReleaseImportPlan(rehashedDetailDrift),
+    /do not equal the certified release package set/,
+  );
 });
 
 test('release import performs one writer RPC, validates the complete receipt and never retries failures', async () => {

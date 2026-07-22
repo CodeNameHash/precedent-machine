@@ -15,7 +15,7 @@ const {
 
 function buildQxoNoShopReleaseFixture({
   contractBundle = compileFixtureContract(),
-  corpusReleaseId = contentId('CORPUS_RELEASE/V1', 'qxo-reviewed-notice-fixture-candidate-contract-v5-correction-input-seal'),
+  corpusReleaseId = contentId('CORPUS_RELEASE/V1', 'qxo-reviewed-notice-fixture-candidate-contract-v6-exact-detail-package-binding'),
   servingNamespaceId = contentId('SERVING_NAMESPACE/V1', 'qxo-reviewed-notice-fixture'),
 } = {}) {
   const contract = contractBundle;

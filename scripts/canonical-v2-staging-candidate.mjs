@@ -28,12 +28,12 @@ const EXPECTED_PROJECT = Object.freeze({
 });
 const EXPECTED_CANDIDATE = Object.freeze({
   contract_fingerprint: '56da82bee06331793ba2ed8b78ef4186361407e60733595091e5951853e7d41d',
-  corpus_release_id: 'fda4083648dcc7fabaf5c2fe8f14a2c01486e4ca23de6305c250dda84bf2c44c',
-  candidate_manifest_id: 'c6f47aefdf8106a1d1d576b03d4f4d42d91f2b670b11bd42c99a31a97fe793bc',
+  corpus_release_id: 'b9dcc82ea59a82af3b04719b8e0b9d55609ebf058013d86d54bf82bf3caed6ee',
+  candidate_manifest_id: 'c2247c4367fafe321ff27e2b5a8db02809463ea2af000e92cd91a6a5d9867092',
   correction_input_seal_id: '0aaf9b2198e82bba4dc45b36100bb322b1091a70634f2cac5693f536e3c8b754',
   correction_input_root: 'b63df4508e533baff18392ac451ba05db01d4517fdd73f015dcbb2c56f5f9ab3',
   serving_namespace_id: '9270602408312e80a65c0ce46b895fa2c8f07d1c676aef5bd171029edd209b68',
-  import_plan_id: '1ecc4224d475ea8eb445b657bd5ba8c2cc30545aeb4343b8df1c23bf54a05cd4',
+  import_plan_id: '35a9b1413736021fcde56eac68b096f061ad2618b365b842725163704a7db6ee',
 });
 const EXPECTED_COUNTS = Object.freeze({
   correction_input_seal_records: 1,
@@ -47,28 +47,30 @@ const EXPECTED_COUNTS = Object.freeze({
   validated_semantic_graph_records: 1,
 });
 const EXPECTED_PRIOR_POINTER = Object.freeze({
-  schema_version: 'FIXTURE_ACTIVE_RELEASE_POINTER/V1',
+  schema_version: 'FIXTURE_ACTIVE_RELEASE_POINTER/V2',
   environment: 'staging',
-  generation: 5,
-  corpus_release_id: '1f27637eb0399f35c4e9208a6d4ff5417b8ac18f266d659e0e8bcfafd2e581dd',
+  generation: 6,
+  corpus_release_id: 'fda4083648dcc7fabaf5c2fe8f14a2c01486e4ca23de6305c250dda84bf2c44c',
   serving_namespace_id: '9270602408312e80a65c0ce46b895fa2c8f07d1c676aef5bd171029edd209b68',
-  candidate_release_manifest_id: '942983b4d81894efaaad6d01cb88f994224c5ddf6c0e539985151eef59cf6a00',
-  previous_pointer_id: '736be39f3bff400ce3d694eaa89ee12b925c5251eac9ca1d275482191179d6fd',
-  pointer_id: '4c5919a74ec9c4c3d6e0e50e985f8f36ccfe6e8f39d47bd5d56f8f093705c6d5',
-  canonical_payload_digest: '8b7ec7f40ec0a9ad296888f3211dd0b952a280da9613d5b01e29dc07c5c6828f',
+  candidate_release_manifest_id: 'c6f47aefdf8106a1d1d576b03d4f4d42d91f2b670b11bd42c99a31a97fe793bc',
+  correction_input_seal_id: '0aaf9b2198e82bba4dc45b36100bb322b1091a70634f2cac5693f536e3c8b754',
+  correction_input_root: 'b63df4508e533baff18392ac451ba05db01d4517fdd73f015dcbb2c56f5f9ab3',
+  previous_pointer_id: '4c5919a74ec9c4c3d6e0e50e985f8f36ccfe6e8f39d47bd5d56f8f093705c6d5',
+  pointer_id: '398c6210a6a0358fc2c735c457a1c6c485ce04694154d7807fad920519f4e715',
+  canonical_payload_digest: '880e3f6e2706bd34f11904784c4f105d494b14f2adc972072431bac0884112d0',
 });
 const EXPECTED_ACTIVE_POINTER = Object.freeze({
   schema_version: 'FIXTURE_ACTIVE_RELEASE_POINTER/V2',
   environment: 'staging',
-  generation: 6,
+  generation: 7,
   corpus_release_id: EXPECTED_CANDIDATE.corpus_release_id,
   serving_namespace_id: EXPECTED_CANDIDATE.serving_namespace_id,
   candidate_release_manifest_id: EXPECTED_CANDIDATE.candidate_manifest_id,
   correction_input_seal_id: EXPECTED_CANDIDATE.correction_input_seal_id,
   correction_input_root: EXPECTED_CANDIDATE.correction_input_root,
   previous_pointer_id: EXPECTED_PRIOR_POINTER.pointer_id,
-  pointer_id: '398c6210a6a0358fc2c735c457a1c6c485ce04694154d7807fad920519f4e715',
-  canonical_payload_digest: '880e3f6e2706bd34f11904784c4f105d494b14f2adc972072431bac0884112d0',
+  pointer_id: '15a0e13f45ad596d468b9cfa2878a456ac56c3b84d15a185c0a96dca5ef022a1',
+  canonical_payload_digest: 'cd48ef76f1e6055380d404fbd8bc179fb728452819d8b7d5b0f55d1c123bcc43',
 });
 
 function fail(message) {

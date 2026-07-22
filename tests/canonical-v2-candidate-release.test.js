@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 
 const { buildLandosCandidateReleaseFixture } = require('../__fixtures__/canonical-v2/landos-candidate-release');
 const { buildQxoNoShopReleaseFixture } = require('../__fixtures__/canonical-v2/qxo-no-shop-release');
+const { canonicalJson, contentId } = require('../lib/canonical-v2/canonical-bytes');
 const {
   buildFixtureCandidateRelease,
   buildInitialActiveReleasePointer,
@@ -14,6 +15,32 @@ const {
 
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
+}
+
+function resignContentObject(value, { idKey, idDomain, digestKey, digestDomain }) {
+  const body = clone(value);
+  delete body[idKey];
+  delete body[digestKey];
+  value[idKey] = contentId(idDomain, body);
+  value[digestKey] = contentId(digestDomain, body);
+}
+
+function resignManifest(manifest) {
+  const body = clone(manifest);
+  delete body.candidate_release_manifest_id;
+  delete body.canonical_payload_digest;
+  manifest.candidate_release_manifest_id = contentId('FIXTURE_CANDIDATE_RELEASE_MANIFEST/V1', body);
+  manifest.canonical_payload_digest = contentId('FIXTURE_CANDIDATE_RELEASE_MANIFEST_PAYLOAD/V1', body);
+}
+
+function exactDetailRootEntries(packages) {
+  return packages.map((detailPackage) => ({
+    row_serving_key: detailPackage.row.row_serving_key,
+    source_detail_reference_id: detailPackage.references[0].source_detail_reference_id,
+    source_detail_payload_id: detailPackage.detail_payloads[0].source_detail_payload_id,
+    parent_edge_id: detailPackage.parent_edges[0].parent_edge_id,
+    exact_detail_package_digest: contentId('EXACT_DETAIL_ATOMIC_PACKAGE/V1', detailPackage),
+  }));
 }
 
 test('twelve comparable results and one reviewed source-specific proposition freeze into one deterministic release', () => {
@@ -178,6 +205,94 @@ test('full release validation rejects payload drift behind an otherwise valid ma
   const missingGraph = clone(release);
   missingGraph.validated_semantic_graphs.pop();
   assert.throws(() => validateCandidateReleaseBundle(missingGraph), /count does not match/);
+});
+
+test('the certified exact-detail root binds every byte of uncorrected row, source and detail packages', () => {
+  const { release } = buildLandosCandidateReleaseFixture();
+  const packageIndex = release.exact_detail_packages.findIndex((detailPackage) => (
+    detailPackage.row.row_kind === 'CANONICAL_RESULT'
+      && detailPackage.detail_payloads[0].response_body.source_lineage
+  ));
+  assert.ok(packageIndex >= 0);
+
+  const sourceDrift = clone(release);
+  const sourcePayload = sourceDrift.exact_detail_packages[packageIndex].detail_payloads[0];
+  sourcePayload.response_body.source_lineage.document_hash = '0'.repeat(64);
+  sourcePayload.response_body_digest = contentId(
+    'SERVING_EXACT_DETAIL_RESPONSE_BODY/V1',
+    sourcePayload.response_body,
+  );
+  sourcePayload.source_lineage_digest = contentId(
+    'SERVING_EXACT_DETAIL_SOURCE_LINEAGE/V1',
+    sourcePayload.response_body.source_lineage,
+  );
+  sourcePayload.encoded_byte_length = Buffer.byteLength(canonicalJson(sourcePayload.response_body), 'utf8');
+  resignContentObject(sourcePayload, {
+    idKey: 'source_detail_payload_id',
+    idDomain: 'SERVING_EXACT_DETAIL_PAYLOAD/V1',
+    digestKey: 'canonical_payload_digest',
+    digestDomain: 'SERVING_EXACT_DETAIL_PAYLOAD_BODY/V1',
+  });
+  assert.throws(() => validateCandidateReleaseBundle(sourceDrift), /certified roots/);
+
+  const detailDrift = clone(release);
+  const detailPayload = detailDrift.exact_detail_packages[packageIndex].detail_payloads[0];
+  const excerpt = detailPayload.response_body.excerpt || detailPayload.response_body.excerpts[0];
+  excerpt.exact_text = `${excerpt.exact_text} fabricated`;
+  detailPayload.response_body_digest = contentId(
+    'SERVING_EXACT_DETAIL_RESPONSE_BODY/V1',
+    detailPayload.response_body,
+  );
+  detailPayload.encoded_byte_length = Buffer.byteLength(canonicalJson(detailPayload.response_body), 'utf8');
+  resignContentObject(detailPayload, {
+    idKey: 'source_detail_payload_id',
+    idDomain: 'SERVING_EXACT_DETAIL_PAYLOAD/V1',
+    digestKey: 'canonical_payload_digest',
+    digestDomain: 'SERVING_EXACT_DETAIL_PAYLOAD_BODY/V1',
+  });
+  assert.throws(() => validateCandidateReleaseBundle(detailDrift), /certified roots/);
+
+  const referenceDrift = clone(release);
+  const reference = referenceDrift.exact_detail_packages[packageIndex].references[0];
+  reference.ordered_path[0].object_payload_digest = 'f'.repeat(64);
+  resignContentObject(reference, {
+    idKey: 'source_detail_reference_id',
+    idDomain: 'SERVING_EXACT_DETAIL_REFERENCE/V1',
+    digestKey: 'canonical_payload_digest',
+    digestDomain: 'SERVING_EXACT_DETAIL_REFERENCE_BODY/V1',
+  });
+  assert.throws(() => validateCandidateReleaseBundle(referenceDrift), /certified roots/);
+
+  const edgeDrift = clone(release);
+  const edge = edgeDrift.exact_detail_packages[packageIndex].parent_edges[0];
+  edge.governed_ordinal = 1;
+  resignContentObject(edge, {
+    idKey: 'parent_edge_id',
+    idDomain: 'RESULT_ROW_SOURCE_DETAIL_EDGE/V1',
+    digestKey: 'canonical_payload_digest',
+    digestDomain: 'RESULT_ROW_SOURCE_DETAIL_EDGE_BODY/V1',
+  });
+  assert.throws(() => validateCandidateReleaseBundle(edgeDrift), /certified roots/);
+});
+
+test('re-signing a release cannot substitute a different package row for its stable occurrence', () => {
+  const { release } = buildLandosCandidateReleaseFixture();
+  const drift = clone(release);
+  const packageRow = drift.exact_detail_packages[0].row;
+  packageRow.canonical_result.refinable_dimensions.buyer = 'Fabricated Buyer';
+  const rowBody = clone(packageRow);
+  delete rowBody.canonical_payload_digest;
+  packageRow.canonical_payload_digest = contentId('SHARED_SERVING_ROW_PAYLOAD/V1', rowBody);
+  drift.manifest.roots.exact_detail_root = contentId(
+    'FIXTURE_RELEASE_EXACT_DETAILS/V1',
+    exactDetailRootEntries(drift.exact_detail_packages),
+  );
+  resignManifest(drift.manifest);
+
+  assert.throws(
+    () => validateCandidateReleaseBundle(drift),
+    /not its independently certified shared row/,
+  );
 });
 
 test('candidate release rejects graphs outside its admitted source and deal inventory', () => {
