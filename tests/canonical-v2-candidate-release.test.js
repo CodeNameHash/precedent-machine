@@ -226,12 +226,30 @@ test('active release movement is an immutable compare-and-swap plan over one cer
 
   assert.equal(JSON.stringify(current), currentBytes);
   assert.equal(validateActiveReleasePointer(current), true);
+  assert.equal(current.schema_version, 'FIXTURE_ACTIVE_RELEASE_POINTER/V1');
+  assert.equal(current.pointer_id, 'c361a7d6c5aea6dbe9df028e8b67c81ab2151ccc8598b66c7a45fbb0a4df332b');
+  assert.equal(current.canonical_payload_digest, '91485640b280dfa07b4a1d201a4a34b0c154867a2dd37471d873d0f039b117cd');
   assert.equal(validateActiveReleasePointer(swap.next_pointer), true);
+  assert.equal(swap.schema_version, 'FIXTURE_ACTIVE_RELEASE_POINTER_SWAP/V2');
+  assert.equal(swap.next_pointer.schema_version, 'FIXTURE_ACTIVE_RELEASE_POINTER/V2');
   assert.equal(swap.next_pointer.generation, 1);
   assert.equal(swap.next_pointer.previous_pointer_id, current.pointer_id);
   assert.equal(swap.next_pointer.corpus_release_id, release.manifest.corpus_release_id);
   assert.equal(swap.next_pointer.serving_namespace_id, release.manifest.serving_namespace_id);
   assert.equal(swap.next_pointer.candidate_release_manifest_id, release.manifest.candidate_release_manifest_id);
+  assert.equal(swap.next_pointer.correction_input_seal_id, release.manifest.correction_input_seal_id);
+  assert.equal(swap.next_pointer.correction_input_root, release.manifest.roots.correction_input_root);
+  const successor = planActiveReleasePointerSwap({
+    current_pointer: swap.next_pointer,
+    expected_current_pointer_id: swap.next_pointer.pointer_id,
+    candidate_manifest: release.manifest,
+  });
+  assert.equal(successor.next_pointer.schema_version, 'FIXTURE_ACTIVE_RELEASE_POINTER/V2');
+  assert.equal(successor.next_pointer.generation, 2);
+
+  const tamperedPointer = clone(swap.next_pointer);
+  tamperedPointer.correction_input_root = '0'.repeat(64);
+  assert.throws(() => validateActiveReleasePointer(tamperedPointer), /identity is invalid/);
   assert.throws(
     () => planActiveReleasePointerSwap({
       current_pointer: current,

@@ -18,7 +18,7 @@ const EXPECTED_PROJECT = Object.freeze({
 });
 const EXPECTED_DIGESTS = Object.freeze({
   'canonical-v2-foundation.sql': 'c54dff9b96fbb5db17e45cddba8e58ea93b605902b08a6eecead2408a45a455e',
-  'canonical-v2-serving.sql': 'eb7070885075ddd2076a03d41d9b99ae84c321a1cf01ede57999f56e83b39250',
+  'canonical-v2-serving.sql': 'b48801373000d4ba9af3ad5072454117cc23a5fbe7f6632d05cd47a206200808',
 });
 const SCRIPT_ROOT = dirname(fileURLToPath(import.meta.url));
 const REPOSITORY_ROOT = resolve(SCRIPT_ROOT, '..');
@@ -78,6 +78,20 @@ function verifyAppliedSchema() {
       to_regnamespace('canonical_v2_staging') is not null as canonical_schema_exists,
       to_regclass('canonical_v2_staging.validated_semantic_graphs') is not null as semantic_graph_table_exists,
       to_regclass('canonical_v2_staging.candidate_release_semantic_graphs') is not null as release_semantic_graph_table_exists,
+      to_regclass('canonical_v2_staging.candidate_release_correction_input_seals') is not null as correction_seal_table_exists,
+      to_regclass('canonical_v2_staging.candidate_release_correction_discharges') is not null as correction_discharge_table_exists,
+      exists (
+        select 1 from information_schema.columns
+        where table_schema = 'canonical_v2_staging'
+          and table_name = 'candidate_release_import_receipts'
+          and column_name = 'correction_input_seal_id'
+      ) as receipt_correction_seal_exists,
+      exists (
+        select 1 from information_schema.columns
+        where table_schema = 'canonical_v2_staging'
+          and table_name = 'active_corpus_release_pointers'
+          and column_name = 'correction_input_root'
+      ) as active_pointer_correction_root_exists,
       to_regprocedure('public.canonical_v2_write(text,text,text,text,jsonb,jsonb,jsonb,jsonb)') is not null as writer_exists,
       to_regprocedure('public.canonical_v2_market_cohort(text,text,text,text,text,text,integer,text,text,text,text,text,text,text,text,text,text,text,integer,integer,numeric,numeric)') is not null as market_rpc_exists,
       to_regprocedure('public.canonical_v2_active_review_context(text,text,text,uuid,integer,text)') is not null as review_rpc_exists,
@@ -88,7 +102,9 @@ function verifyAppliedSchema() {
       has_function_privilege('anon', 'public.canonical_v2_active_review_context(text,text,text,uuid,integer,text)', 'EXECUTE') = false as anon_review_denied,
       has_function_privilege('service_role', 'public.canonical_v2_active_review_context(text,text,text,uuid,integer,text)', 'EXECUTE') = false as service_role_review_denied,
       has_function_privilege('canonical_v2_serving', 'public.canonical_v2_active_review_context(text,text,text,uuid,integer,text)', 'EXECUTE') as serving_review_allowed,
-      has_table_privilege('canonical_v2_serving', 'canonical_v2_staging.candidate_release_semantic_graphs', 'SELECT') = false as serving_semantic_graph_table_denied;
+      has_table_privilege('canonical_v2_serving', 'canonical_v2_staging.candidate_release_semantic_graphs', 'SELECT') = false as serving_semantic_graph_table_denied,
+      has_table_privilege('canonical_v2_serving', 'canonical_v2_staging.candidate_release_correction_input_seals', 'SELECT') = false as serving_correction_seal_table_denied,
+      has_table_privilege('canonical_v2_serving', 'canonical_v2_staging.candidate_release_correction_discharges', 'SELECT') = false as serving_correction_discharge_table_denied;
   `;
   return spawnSync(
     'supabase',

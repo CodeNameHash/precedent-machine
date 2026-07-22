@@ -72,9 +72,6 @@ function applyCorrection(writeSet, claim, patch) {
 
 function noticeCorrection(slice) {
   return applyCorrection(slice.canonicalWriteSet, slice.durationClaims.notice, {
-    raw_value: 'within thirty-six (36) hours',
-    canonical_value: '1.5',
-    normalisation_version: 'reviewed-correction/v1',
     derivation_version: 'reviewed-correction/v1',
   });
 }
@@ -126,7 +123,7 @@ test('one approved Landos notice correction deterministically rebuilds lineage, 
   const next = first.result_spec;
   assert.equal(next.claim.claim_occurrence_id, originalResult.claim.claim_occurrence_id);
   assert.notEqual(next.claim.claim_revision_id, originalResult.claim.claim_revision_id);
-  assert.equal(next.claim.canonical_value, '1.5');
+  assert.equal(next.claim.canonical_value, '1');
   assert.equal(next.result.component_occurrence_id, originalResult.result.component_occurrence_id);
   assert.notEqual(next.result.input_lineage_digest, originalResult.result.input_lineage_digest);
   assert.notEqual(next.result.component_revision_id, originalResult.result.component_revision_id);
@@ -137,7 +134,7 @@ test('one approved Landos notice correction deterministically rebuilds lineage, 
   assert.equal(nextObservation.metric_observation_occurrence_id, priorObservation.metric_observation_occurrence_id);
   assert.equal(nextObservation.market_observation_serving_key, priorObservation.market_observation_serving_key);
   assert.notEqual(nextObservation.canonical_payload_digest, priorObservation.canonical_payload_digest);
-  assert.equal(nextObservation.canonical_value, '1.5');
+  assert.equal(nextObservation.canonical_value, '1');
 
   assert.equal(first.shared_row.row_serving_key, originalRow.row_serving_key);
   assert.equal(
@@ -151,7 +148,7 @@ test('one approved Landos notice correction deterministically rebuilds lineage, 
   assert.notEqual(first.shared_row.canonical_payload_digest, originalRow.canonical_payload_digest);
   assert.equal(
     first.shared_row.canonical_result.market_context.subject_observation.canonical_value,
-    '1.5',
+    '1',
   );
 });
 
@@ -196,7 +193,7 @@ test('stale result lineage and corrections targeting another result fail closed'
   const secondCorrection = applyCorrection(
     firstCorrection.corrected_write_set,
     firstCorrection.successor_claim_revision,
-    { canonical_value: '2', derivation_version: 'reviewed-correction/v2' },
+    { derivation_version: 'reviewed-correction/v2' },
   );
   const base = {
     result_spec: originalResult,

@@ -29,6 +29,10 @@ test('staging schema verification checks writer, serving RPCs and denied broad r
   assert.match(source, /canonical_v2_write/);
   assert.match(source, /canonical_v2_staging\.validated_semantic_graphs/);
   assert.match(source, /canonical_v2_staging\.candidate_release_semantic_graphs/);
+  assert.match(source, /canonical_v2_staging\.candidate_release_correction_input_seals/);
+  assert.match(source, /canonical_v2_staging\.candidate_release_correction_discharges/);
+  assert.match(source, /receipt_correction_seal_exists/);
+  assert.match(source, /active_pointer_correction_root_exists/);
   assert.match(source, /market_rpc_exists/);
   assert.match(source, /anon_market_denied/);
   assert.match(source, /service_role_market_denied/);
@@ -39,6 +43,8 @@ test('staging schema verification checks writer, serving RPCs and denied broad r
   assert.match(source, /has_function_privilege\('service_role'/);
   assert.match(source, /has_function_privilege\('canonical_v2_serving'/);
   assert.match(source, /has_table_privilege\('canonical_v2_serving'.*candidate_release_semantic_graphs/);
+  assert.match(source, /has_table_privilege\('canonical_v2_serving'.*candidate_release_correction_input_seals/);
+  assert.match(source, /has_table_privilege\('canonical_v2_serving'.*candidate_release_correction_discharges/);
 });
 
 test('governed schema uses valid collision-safe advisory lock identities', () => {

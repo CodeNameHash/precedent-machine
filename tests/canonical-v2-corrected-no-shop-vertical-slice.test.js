@@ -7,8 +7,13 @@ const {
   buildFixtureCandidateRelease,
   validateCandidateReleaseBundle,
 } = require('../lib/canonical-v2/candidate-release');
+const {
+  buildCandidateReleaseImportPlan,
+  validateCandidateReleaseImportPlan,
+} = require('../lib/canonical-v2/candidate-release-import');
 const { canonicalJson, contentId } = require('../lib/canonical-v2/canonical-bytes');
 const { InMemoryCanonicalRepository, createCanonicalWriter } = require('../lib/canonical-v2/canonical-writer');
+const { buildClaimRevision } = require('../lib/canonical-v2/claims-relationships');
 const { compileFixtureContract } = require('../lib/canonical-v2/contract-bundle');
 const {
   buildFixtureClaimEvidenceDetailPackage,
@@ -29,6 +34,7 @@ const {
   buildReviewedNoShopServingRows,
   buildReviewedNoShopSlice,
 } = require('../lib/canonical-v2/reviewed-no-shop-slice');
+const { buildFixtureResultComponent, projectMarketMetricSlot } = require('../lib/canonical-v2/serving-projection');
 const { adaptSharedServingRow } = require('../lib/canonical-v2/shared-row-adapter');
 const {
   buildFixtureSourceAdmission,
@@ -67,6 +73,7 @@ function buildCorrection(slice) {
       expected_claim_payload_digest: claimPayloadDigest(claim),
     },
     patch: {
+      canonical_value: '1',
       derivation_version: 'LANDOS_NO_SHOP_LEGAL_REVIEWED/V2',
     },
   });
@@ -79,6 +86,87 @@ function buildCorrection(slice) {
     reason_digest: digest('source-consistent-derivation-review'),
   });
   return { correction, approval };
+}
+
+function rebuildClaim(claim, patch = {}) {
+  const field = (key) => (Object.hasOwn(patch, key) ? patch[key] : claim[key]);
+  const taxonomyCodes = structuredClone(claim.taxonomy_codes || {});
+  const built = buildClaimRevision({
+    subject_occurrence_id: claim.subject_occurrence_id,
+    claim_definition_key: claim.claim_definition_key,
+    claim_definition_version: claim.claim_definition_version,
+    ordinal: claim.ordinal,
+    state: claim.state,
+    raw_value: field('raw_value'),
+    canonical_value: field('canonical_value'),
+    unit: field('unit'),
+    day_basis: field('day_basis'),
+    denominator: field('denominator'),
+    scope: structuredClone(claim.scope),
+    applicability: structuredClone(claim.applicability),
+    not_examined: structuredClone(claim.not_examined),
+    failure: structuredClone(claim.failure),
+    evidence: claim.evidence.map((edge) => ({
+      evidence_role: edge.evidence_role,
+      excerpt_id: edge.excerpt_id,
+      document_ordinal: edge.document_ordinal,
+      absolute_start: edge.absolute_start,
+      absolute_end: edge.absolute_end,
+    })),
+    attributes: structuredClone(claim.attributes || {}),
+    allowed_attributes: Object.keys(claim.attributes || {}),
+    taxonomy_codes: taxonomyCodes,
+    codebooks: Object.fromEntries(Object.entries(taxonomyCodes).map(([key, value]) => [key, [value]])),
+    extraction_version: claim.extraction_version,
+    normalisation_version: field('normalisation_version'),
+    derivation_version: field('derivation_version'),
+  });
+  return { ...built, ...(claim.closure_id === undefined ? {} : { closure_id: claim.closure_id }) };
+}
+
+function writeSetWithClaim(writeSet, predecessor, successor) {
+  return {
+    ...structuredClone(writeSet),
+    claims: writeSet.claims.map((claim) => (
+      claim.claim_revision_id === predecessor.claim_revision_id ? successor : structuredClone(claim)
+    )),
+  };
+}
+
+function resultSpecWithClaim({ spec, claim, slice, contract, corpusReleaseId }) {
+  const compositionScopeClosureId = contentId('COMPOSITION_SCOPE_CLOSURE/V1', {
+    claim_revision_id: claim.claim_revision_id,
+    relationship_revision_ids: spec.relationships.map((row) => row.relationship_revision_id).sort(),
+  });
+  const result = buildFixtureResultComponent({
+    deal_admission_id: slice.canonicalWriteSet.deal.deal_admission_id,
+    result_key: spec.result_key,
+    result_version: 1,
+    concept_key: spec.concept_key,
+    party: spec.party,
+    value_slot_key: spec.value_slot_key,
+    ordinal: spec.ordinal,
+    claim,
+    relationships: spec.relationships,
+    composition_scope_closure_id: compositionScopeClosureId,
+    completeness: 'COMPLETE',
+    comparability: 'COMPARABLE',
+  });
+  const projection = projectMarketMetricSlot({
+    contract_bundle: contract,
+    release_state: 'CANDIDATE_CERTIFIED',
+    corpus_release_id: corpusReleaseId,
+    deal: slice.canonicalWriteSet.deal,
+    concept_key: spec.concept_key,
+    metric_key: spec.metric_key,
+    party: spec.party,
+    result,
+    claim,
+    relationships: spec.relationships,
+    value_slot_key: spec.value_slot_key,
+    ordinal: spec.ordinal,
+  });
+  return Object.freeze({ ...spec, claim, result, projection });
 }
 
 function cohortRequestFor(row, servingNamespaceId, contract) {
@@ -125,12 +213,37 @@ test('one corrected no-shop claim closes from admitted source through writer, re
     publication_blocked: false,
   });
 
-  const slice = buildReviewedNoShopSlice({
+  const reviewedSlice = buildReviewedNoShopSlice({
     sourceText,
     contractBundle: contract,
     corpusReleaseId,
     proposalBatch,
   });
+  const extractedNoticeClaim = reviewedSlice.canonicalWriteSet.claims.find((claim) => (
+    claim.claim_revision_id === reviewedSlice.durationClaims.notice.claim_revision_id
+  ));
+  const badNoticeClaim = rebuildClaim(extractedNoticeClaim, { canonical_value: '2' });
+  const badNoticeSpec = noticeResult(reviewedSlice.results);
+  const slice = {
+    ...reviewedSlice,
+    canonicalWriteSet: writeSetWithClaim(
+      reviewedSlice.canonicalWriteSet,
+      extractedNoticeClaim,
+      badNoticeClaim,
+    ),
+    durationClaims: { ...reviewedSlice.durationClaims, notice: badNoticeClaim },
+    results: reviewedSlice.results.map((spec) => (
+      spec.metric_key === NOTICE_METRIC
+        ? resultSpecWithClaim({
+          spec: badNoticeSpec,
+          claim: badNoticeClaim,
+          slice: reviewedSlice,
+          contract,
+          corpusReleaseId,
+        })
+        : spec
+    )),
+  };
   assert.equal(slice.proposalBatch, proposalBatch);
   assert.deepEqual(slice.reviewed_mapping.source_backed_provision_proposal_ids, [
     proposalBatch.proposals[0].source_backed_provision_proposal_id,
@@ -256,15 +369,43 @@ test('one corrected no-shop claim closes from admitted source through writer, re
   );
   assert.equal(release.candidate_correction_input_seal.status, 'PASS');
   assert.equal(release.correction_discharges.length, 1);
+  const [releaseDischarge] = release.correction_discharges;
   assert.deepEqual(
-    release.correction_discharges[0].ordered_consistency_output_refs.map((ref) => ref.logical_type).sort(),
+    releaseDischarge.correction_value_evidence_proof,
+    correctionOutput.value_evidence_proof,
+  );
+  assert.deepEqual(
+    releaseDischarge.ordered_consistency_output_refs.map((ref) => ref.logical_type).sort(),
     [
+      'CORRECTION_VALUE_EVIDENCE_PROOF',
       'EXACT_DETAIL_PACKAGE',
       'MARKET_OBSERVATION',
       'QUERY_PROJECTION_RECORD',
       'RESULT_COMPONENT_REVISION',
       'SHARED_SERVING_ROW',
     ],
+  );
+  const releaseProofRef = releaseDischarge.ordered_consistency_output_refs.find(
+    (ref) => ref.logical_type === 'CORRECTION_VALUE_EVIDENCE_PROOF',
+  );
+  assert.equal(
+    releaseProofRef.immutable_id,
+    correctionOutput.value_evidence_proof.correction_value_evidence_proof_id,
+  );
+  assert.equal(
+    releaseProofRef.canonical_payload_digest,
+    correctionOutput.value_evidence_proof.canonical_payload_digest,
+  );
+  const importPlan = buildCandidateReleaseImportPlan({ release });
+  assert.equal(validateCandidateReleaseImportPlan(importPlan), true);
+  assert.equal(importPlan.expected_counts.correction_discharge_records, 1);
+  assert.deepEqual(
+    importPlan.correction_discharge_records[0].canonical_payload.correction_value_evidence_proof,
+    correctionOutput.value_evidence_proof,
+  );
+  assert.deepEqual(
+    importPlan.correction_discharge_records[0].canonical_payload.ordered_consistency_output_refs,
+    releaseDischarge.ordered_consistency_output_refs,
   );
   assert.deepEqual(release.manifest.counts, {
     deals: 2,

@@ -16,6 +16,8 @@ $$;
 CREATE TABLE IF NOT EXISTS canonical_v2_staging.fixture_corpus_releases (
   corpus_release_id text PRIMARY KEY CHECK (corpus_release_id ~ '^[a-f0-9]{64}$'),
   candidate_manifest_id text NOT NULL UNIQUE CHECK (candidate_manifest_id ~ '^[a-f0-9]{64}$'),
+  correction_input_seal_id text CHECK (correction_input_seal_id IS NULL OR correction_input_seal_id ~ '^[a-f0-9]{64}$'),
+  correction_input_root text CHECK (correction_input_root IS NULL OR correction_input_root ~ '^[a-f0-9]{64}$'),
   frozen_pair_root_id text NOT NULL CHECK (frozen_pair_root_id ~ '^[a-f0-9]{64}$'),
   contract_fingerprint text NOT NULL CHECK (contract_fingerprint ~ '^[a-f0-9]{64}$'),
   projection_version text NOT NULL CHECK (projection_version = 'canonical-v2-serving/v1'),
@@ -205,10 +207,36 @@ CREATE TABLE IF NOT EXISTS canonical_v2_staging.candidate_release_semantic_graph
   PRIMARY KEY (serving_namespace_id, corpus_release_id, validated_semantic_graph_id)
 );
 
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.candidate_release_correction_input_seals (
+  serving_namespace_id text NOT NULL CHECK (serving_namespace_id ~ '^[a-f0-9]{64}$'),
+  corpus_release_id text NOT NULL REFERENCES canonical_v2_staging.fixture_corpus_releases(corpus_release_id),
+  contract_fingerprint text NOT NULL CHECK (contract_fingerprint ~ '^[a-f0-9]{64}$'),
+  correction_input_seal_id text NOT NULL CHECK (correction_input_seal_id ~ '^[a-f0-9]{64}$'),
+  correction_input_root text NOT NULL CHECK (correction_input_root ~ '^[a-f0-9]{64}$'),
+  canonical_payload jsonb NOT NULL,
+  canonical_payload_digest text NOT NULL CHECK (canonical_payload_digest ~ '^[a-f0-9]{64}$'),
+  PRIMARY KEY (serving_namespace_id, corpus_release_id),
+  UNIQUE (serving_namespace_id, corpus_release_id, correction_input_seal_id)
+);
+
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.candidate_release_correction_discharges (
+  serving_namespace_id text NOT NULL CHECK (serving_namespace_id ~ '^[a-f0-9]{64}$'),
+  corpus_release_id text NOT NULL REFERENCES canonical_v2_staging.fixture_corpus_releases(corpus_release_id),
+  contract_fingerprint text NOT NULL CHECK (contract_fingerprint ~ '^[a-f0-9]{64}$'),
+  correction_application_id text NOT NULL CHECK (correction_application_id ~ '^[a-f0-9]{64}$'),
+  correction_discharge_id text NOT NULL CHECK (correction_discharge_id ~ '^[a-f0-9]{64}$'),
+  canonical_payload jsonb NOT NULL,
+  canonical_payload_digest text NOT NULL CHECK (canonical_payload_digest ~ '^[a-f0-9]{64}$'),
+  PRIMARY KEY (serving_namespace_id, corpus_release_id, correction_application_id),
+  UNIQUE (serving_namespace_id, corpus_release_id, correction_discharge_id)
+);
+
 CREATE TABLE IF NOT EXISTS canonical_v2_staging.candidate_release_import_receipts (
   candidate_manifest_id text PRIMARY KEY CHECK (candidate_manifest_id ~ '^[a-f0-9]{64}$'),
   corpus_release_id text NOT NULL UNIQUE REFERENCES canonical_v2_staging.fixture_corpus_releases(corpus_release_id),
   serving_namespace_id text NOT NULL CHECK (serving_namespace_id ~ '^[a-f0-9]{64}$'),
+  correction_input_seal_id text CHECK (correction_input_seal_id IS NULL OR correction_input_seal_id ~ '^[a-f0-9]{64}$'),
+  correction_input_root text CHECK (correction_input_root IS NULL OR correction_input_root ~ '^[a-f0-9]{64}$'),
   candidate_release_import_plan_id text NOT NULL UNIQUE CHECK (candidate_release_import_plan_id ~ '^[a-f0-9]{64}$'),
   import_state text NOT NULL CHECK (import_state = 'IMPORTED_COMPLETE'),
   expected_counts jsonb NOT NULL,
@@ -222,6 +250,8 @@ CREATE TABLE IF NOT EXISTS canonical_v2_staging.active_corpus_release_pointer_hi
   corpus_release_id text NOT NULL REFERENCES canonical_v2_staging.fixture_corpus_releases(corpus_release_id),
   serving_namespace_id text NOT NULL CHECK (serving_namespace_id ~ '^[a-f0-9]{64}$'),
   candidate_manifest_id text NOT NULL REFERENCES canonical_v2_staging.candidate_release_import_receipts(candidate_manifest_id),
+  correction_input_seal_id text CHECK (correction_input_seal_id IS NULL OR correction_input_seal_id ~ '^[a-f0-9]{64}$'),
+  correction_input_root text CHECK (correction_input_root IS NULL OR correction_input_root ~ '^[a-f0-9]{64}$'),
   candidate_release_import_plan_id text NOT NULL REFERENCES canonical_v2_staging.candidate_release_import_receipts(candidate_release_import_plan_id),
   previous_pointer_id text NOT NULL CHECK (previous_pointer_id ~ '^[a-f0-9]{64}$'),
   canonical_payload jsonb NOT NULL,
@@ -236,12 +266,35 @@ CREATE TABLE IF NOT EXISTS canonical_v2_staging.active_corpus_release_pointers (
   corpus_release_id text NOT NULL REFERENCES canonical_v2_staging.fixture_corpus_releases(corpus_release_id),
   serving_namespace_id text NOT NULL CHECK (serving_namespace_id ~ '^[a-f0-9]{64}$'),
   candidate_manifest_id text NOT NULL REFERENCES canonical_v2_staging.candidate_release_import_receipts(candidate_manifest_id),
+  correction_input_seal_id text CHECK (correction_input_seal_id IS NULL OR correction_input_seal_id ~ '^[a-f0-9]{64}$'),
+  correction_input_root text CHECK (correction_input_root IS NULL OR correction_input_root ~ '^[a-f0-9]{64}$'),
   candidate_release_import_plan_id text NOT NULL REFERENCES canonical_v2_staging.candidate_release_import_receipts(candidate_release_import_plan_id),
   previous_pointer_id text NOT NULL CHECK (previous_pointer_id ~ '^[a-f0-9]{64}$'),
   canonical_payload jsonb NOT NULL,
   canonical_payload_digest text NOT NULL CHECK (canonical_payload_digest ~ '^[a-f0-9]{64}$'),
   activated_at timestamptz NOT NULL DEFAULT transaction_timestamp()
 );
+
+ALTER TABLE canonical_v2_staging.fixture_corpus_releases
+  ADD COLUMN IF NOT EXISTS correction_input_seal_id text
+    CHECK (correction_input_seal_id IS NULL OR correction_input_seal_id ~ '^[a-f0-9]{64}$'),
+  ADD COLUMN IF NOT EXISTS correction_input_root text
+    CHECK (correction_input_root IS NULL OR correction_input_root ~ '^[a-f0-9]{64}$');
+ALTER TABLE canonical_v2_staging.candidate_release_import_receipts
+  ADD COLUMN IF NOT EXISTS correction_input_seal_id text
+    CHECK (correction_input_seal_id IS NULL OR correction_input_seal_id ~ '^[a-f0-9]{64}$'),
+  ADD COLUMN IF NOT EXISTS correction_input_root text
+    CHECK (correction_input_root IS NULL OR correction_input_root ~ '^[a-f0-9]{64}$');
+ALTER TABLE canonical_v2_staging.active_corpus_release_pointer_history
+  ADD COLUMN IF NOT EXISTS correction_input_seal_id text
+    CHECK (correction_input_seal_id IS NULL OR correction_input_seal_id ~ '^[a-f0-9]{64}$'),
+  ADD COLUMN IF NOT EXISTS correction_input_root text
+    CHECK (correction_input_root IS NULL OR correction_input_root ~ '^[a-f0-9]{64}$');
+ALTER TABLE canonical_v2_staging.active_corpus_release_pointers
+  ADD COLUMN IF NOT EXISTS correction_input_seal_id text
+    CHECK (correction_input_seal_id IS NULL OR correction_input_seal_id ~ '^[a-f0-9]{64}$'),
+  ADD COLUMN IF NOT EXISTS correction_input_root text
+    CHECK (correction_input_root IS NULL OR correction_input_root ~ '^[a-f0-9]{64}$');
 
 CREATE INDEX IF NOT EXISTS canonical_v2_market_observation_cohort_idx
   ON canonical_v2_staging.market_observations (
@@ -412,6 +465,8 @@ ALTER TABLE canonical_v2_staging.shared_serving_rows ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.reviewed_source_specific_serving_rows ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.exact_detail_serving_packages ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.candidate_release_semantic_graphs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE canonical_v2_staging.candidate_release_correction_input_seals ENABLE ROW LEVEL SECURITY;
+ALTER TABLE canonical_v2_staging.candidate_release_correction_discharges ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.candidate_release_import_receipts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.active_corpus_release_pointer_history ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.active_corpus_release_pointers ENABLE ROW LEVEL SECURITY;
@@ -433,40 +488,70 @@ DECLARE
   namespace_id text := release_record->'canonical_payload'->>'serving_namespace_id';
   contract_id text := release_record->>'contract_fingerprint';
   manifest_id text := release_record->>'candidate_manifest_id';
+  correction_seal_id text := release_record->>'correction_input_seal_id';
+  correction_input_root_id text := release_record->>'correction_input_root';
   import_plan_id text := p_import_plan->>'candidate_release_import_plan_id';
   existing_plan_id text;
+  existing_release_id text;
+  existing_namespace_id text;
+  existing_correction_seal_id text;
+  existing_correction_input_root_id text;
+  existing_expected_counts jsonb;
   imported_at_value timestamptz;
 BEGIN
   IF p_environment IS DISTINCT FROM 'staging'
     OR p_import_plan->>'environment' IS DISTINCT FROM 'staging' THEN
     RAISE EXCEPTION 'canonical_v2_import_candidate_release is staging-only' USING ERRCODE = '42501';
   END IF;
-  IF p_import_plan->>'schema_version' IS DISTINCT FROM 'CANDIDATE_RELEASE_IMPORT_PLAN/V2'
+  IF p_import_plan->>'schema_version' IS DISTINCT FROM 'CANDIDATE_RELEASE_IMPORT_PLAN/V3'
     OR jsonb_typeof(release_record) IS DISTINCT FROM 'object'
     OR jsonb_typeof(expected) IS DISTINCT FROM 'object'
     OR release_id !~ '^[a-f0-9]{64}$'
     OR namespace_id !~ '^[a-f0-9]{64}$'
     OR contract_id !~ '^[a-f0-9]{64}$'
     OR manifest_id !~ '^[a-f0-9]{64}$'
+    OR correction_seal_id !~ '^[a-f0-9]{64}$'
+    OR correction_input_root_id !~ '^[a-f0-9]{64}$'
     OR import_plan_id !~ '^[a-f0-9]{64}$' THEN
     RAISE EXCEPTION 'invalid candidate release import plan' USING ERRCODE = '22023';
   END IF;
 
   PERFORM pg_advisory_xact_lock(hashtextextended(manifest_id, 0));
 
-  SELECT receipt.candidate_release_import_plan_id, receipt.imported_at
-  INTO existing_plan_id, imported_at_value
+  SELECT
+    receipt.candidate_release_import_plan_id,
+    receipt.corpus_release_id,
+    receipt.serving_namespace_id,
+    receipt.correction_input_seal_id,
+    receipt.correction_input_root,
+    receipt.expected_counts,
+    receipt.imported_at
+  INTO
+    existing_plan_id,
+    existing_release_id,
+    existing_namespace_id,
+    existing_correction_seal_id,
+    existing_correction_input_root_id,
+    existing_expected_counts,
+    imported_at_value
   FROM canonical_v2_staging.candidate_release_import_receipts receipt
   WHERE receipt.candidate_manifest_id = manifest_id;
   IF existing_plan_id IS NOT NULL THEN
-    IF existing_plan_id IS DISTINCT FROM import_plan_id THEN
+    IF existing_plan_id IS DISTINCT FROM import_plan_id
+      OR existing_release_id IS DISTINCT FROM release_id
+      OR existing_namespace_id IS DISTINCT FROM namespace_id
+      OR existing_correction_seal_id IS DISTINCT FROM correction_seal_id
+      OR existing_correction_input_root_id IS DISTINCT FROM correction_input_root_id
+      OR existing_expected_counts IS DISTINCT FROM expected THEN
       RAISE EXCEPTION 'candidate manifest already imported under different content' USING ERRCODE = '23505';
     END IF;
     RETURN jsonb_build_object(
-      'schema_version', 'CANDIDATE_RELEASE_IMPORT_RECEIPT/V2',
+      'schema_version', 'CANDIDATE_RELEASE_IMPORT_RECEIPT/V3',
       'import_state', 'IMPORTED_COMPLETE',
       'replayed', true,
       'candidate_manifest_id', manifest_id,
+      'correction_input_seal_id', correction_seal_id,
+      'correction_input_root', correction_input_root_id,
       'corpus_release_id', release_id,
       'serving_namespace_id', namespace_id,
       'candidate_release_import_plan_id', import_plan_id,
@@ -475,13 +560,18 @@ BEGIN
     );
   END IF;
 
-  IF jsonb_typeof(p_import_plan->'deal_directory_records') IS DISTINCT FROM 'array'
+  IF jsonb_typeof(p_import_plan->'correction_input_seal_record') IS DISTINCT FROM 'object'
+    OR jsonb_typeof(p_import_plan->'correction_discharge_records') IS DISTINCT FROM 'array'
+    OR jsonb_typeof(p_import_plan->'deal_directory_records') IS DISTINCT FROM 'array'
     OR jsonb_typeof(p_import_plan->'market_observations') IS DISTINCT FROM 'array'
     OR jsonb_typeof(p_import_plan->'market_exclusions') IS DISTINCT FROM 'array'
     OR jsonb_typeof(p_import_plan->'query_records') IS DISTINCT FROM 'array'
     OR jsonb_typeof(p_import_plan->'source_specific_records') IS DISTINCT FROM 'array'
     OR jsonb_typeof(p_import_plan->'exact_detail_packages') IS DISTINCT FROM 'array'
     OR jsonb_typeof(p_import_plan->'validated_semantic_graph_records') IS DISTINCT FROM 'array'
+    OR (expected->>'correction_input_seal_records')::integer IS DISTINCT FROM 1
+    OR jsonb_array_length(p_import_plan->'correction_discharge_records')
+      IS DISTINCT FROM (expected->>'correction_discharge_records')::integer
     OR jsonb_array_length(p_import_plan->'deal_directory_records')
       IS DISTINCT FROM (expected->>'deal_directory_records')::integer
     OR jsonb_array_length(p_import_plan->'market_observations')
@@ -498,7 +588,11 @@ BEGIN
       IS DISTINCT FROM (expected->>'validated_semantic_graph_records')::integer THEN
     RAISE EXCEPTION 'candidate release import counts do not match the plan' USING ERRCODE = '22023';
   END IF;
-  IF (expected->>'deal_directory_records')::integer
+  IF (expected->>'correction_discharge_records')::integer
+      IS DISTINCT FROM (release_record->'canonical_payload'->'counts'->>'correction_discharges')::integer
+    OR correction_seal_id IS DISTINCT FROM release_record->'canonical_payload'->>'correction_input_seal_id'
+    OR correction_input_root_id IS DISTINCT FROM release_record->'canonical_payload'->'roots'->>'correction_input_root'
+    OR (expected->>'deal_directory_records')::integer
       IS DISTINCT FROM (release_record->'canonical_payload'->'counts'->>'deal_directory_records')::integer
     OR (expected->>'market_observations')::integer
       IS DISTINCT FROM (release_record->'canonical_payload'->'counts'->>'observations')::integer
@@ -515,10 +609,50 @@ BEGIN
     RAISE EXCEPTION 'candidate release import counts do not match the certified manifest' USING ERRCODE = '22023';
   END IF;
 
+  IF p_import_plan->'correction_input_seal_record'->>'serving_namespace_id' IS DISTINCT FROM namespace_id
+    OR p_import_plan->'correction_input_seal_record'->>'corpus_release_id' IS DISTINCT FROM release_id
+    OR p_import_plan->'correction_input_seal_record'->>'contract_fingerprint' IS DISTINCT FROM contract_id
+    OR p_import_plan->'correction_input_seal_record'->>'correction_input_seal_id' IS DISTINCT FROM correction_seal_id
+    OR p_import_plan->'correction_input_seal_record'->>'correction_input_root' IS DISTINCT FROM correction_input_root_id
+    OR p_import_plan->'correction_input_seal_record'->>'canonical_payload_digest'
+      IS DISTINCT FROM p_import_plan->'correction_input_seal_record'->'canonical_payload'->>'canonical_payload_digest'
+    OR p_import_plan->'correction_input_seal_record'->'canonical_payload'->>'candidate_correction_input_seal_id'
+      IS DISTINCT FROM correction_seal_id
+    OR p_import_plan->'correction_input_seal_record'->'canonical_payload'->>'contract_fingerprint'
+      IS DISTINCT FROM contract_id
+    OR (p_import_plan->'correction_input_seal_record'->'canonical_payload'->'counts'->>'expected_active_applications')::integer
+      IS DISTINCT FROM (release_record->'canonical_payload'->'counts'->>'correction_applications')::integer
+    OR (p_import_plan->'correction_input_seal_record'->'canonical_payload'->'counts'->>'correction_discharges')::integer
+      IS DISTINCT FROM (expected->>'correction_discharge_records')::integer THEN
+    RAISE EXCEPTION 'candidate correction input seal does not close over the certified manifest' USING ERRCODE = '22023';
+  END IF;
+
+  IF (
+    SELECT coalesce(jsonb_agg(jsonb_build_object(
+      'correction_application_id', entry->>'correction_application_id',
+      'correction_discharge_id', entry->>'correction_discharge_id',
+      'canonical_payload_digest', entry->>'correction_discharge_payload_digest'
+    ) ORDER BY entry->>'correction_application_id'), '[]'::jsonb)
+    FROM jsonb_array_elements(
+      p_import_plan->'correction_input_seal_record'->'canonical_payload'->'correction_entries'
+    ) entry
+  ) IS DISTINCT FROM (
+    SELECT coalesce(jsonb_agg(jsonb_build_object(
+      'correction_application_id', discharge->>'correction_application_id',
+      'correction_discharge_id', discharge->>'correction_discharge_id',
+      'canonical_payload_digest', discharge->>'canonical_payload_digest'
+    ) ORDER BY discharge->>'correction_application_id'), '[]'::jsonb)
+    FROM jsonb_array_elements(p_import_plan->'correction_discharge_records') discharge
+  ) THEN
+    RAISE EXCEPTION 'candidate correction discharge import set does not equal its seal' USING ERRCODE = '23514';
+  END IF;
+
   IF EXISTS (
     SELECT 1
     FROM (
-      SELECT value FROM jsonb_array_elements(p_import_plan->'deal_directory_records')
+      SELECT p_import_plan->'correction_input_seal_record' AS value
+      UNION ALL SELECT value FROM jsonb_array_elements(p_import_plan->'correction_discharge_records')
+      UNION ALL SELECT value FROM jsonb_array_elements(p_import_plan->'deal_directory_records')
       UNION ALL SELECT value FROM jsonb_array_elements(p_import_plan->'market_observations')
       UNION ALL SELECT value FROM jsonb_array_elements(p_import_plan->'market_exclusions')
       UNION ALL SELECT value FROM jsonb_array_elements(p_import_plan->'query_records')
@@ -540,6 +674,19 @@ BEGIN
     FROM jsonb_array_elements(p_import_plan->'market_exclusions') item
   ) THEN
     RAISE EXCEPTION 'candidate release metric slot has both observation and exclusion' USING ERRCODE = '23505';
+  END IF;
+  IF EXISTS (
+    SELECT 1
+    FROM jsonb_array_elements(p_import_plan->'correction_discharge_records') discharge
+    WHERE discharge->>'correction_application_id'
+        IS DISTINCT FROM discharge->'canonical_payload'->>'correction_application_id'
+      OR discharge->>'correction_discharge_id'
+        IS DISTINCT FROM discharge->'canonical_payload'->>'correction_discharge_id'
+      OR discharge->'canonical_payload'->>'contract_fingerprint' IS DISTINCT FROM contract_id
+      OR discharge->>'canonical_payload_digest'
+        IS DISTINCT FROM discharge->'canonical_payload'->>'canonical_payload_digest'
+  ) THEN
+    RAISE EXCEPTION 'candidate correction discharge projection is invalid' USING ERRCODE = '22023';
   END IF;
   IF EXISTS (
     SELECT 1
@@ -578,7 +725,11 @@ BEGIN
   ) THEN
     RAISE EXCEPTION 'candidate release semantic graph lineage is invalid' USING ERRCODE = '22023';
   END IF;
-  IF (SELECT count(DISTINCT item->>'application_deal_id') FROM jsonb_array_elements(p_import_plan->'deal_directory_records') item)
+  IF (SELECT count(DISTINCT item->>'correction_application_id') FROM jsonb_array_elements(p_import_plan->'correction_discharge_records') item)
+      IS DISTINCT FROM (expected->>'correction_discharge_records')::integer
+    OR (SELECT count(DISTINCT item->>'correction_discharge_id') FROM jsonb_array_elements(p_import_plan->'correction_discharge_records') item)
+      IS DISTINCT FROM (expected->>'correction_discharge_records')::integer
+    OR (SELECT count(DISTINCT item->>'application_deal_id') FROM jsonb_array_elements(p_import_plan->'deal_directory_records') item)
       IS DISTINCT FROM (expected->>'deal_directory_records')::integer
     OR (SELECT count(DISTINCT item->>'governed_deal_key') FROM jsonb_array_elements(p_import_plan->'deal_directory_records') item)
       IS DISTINCT FROM (expected->>'deal_directory_records')::integer
@@ -600,7 +751,31 @@ BEGIN
   IF EXISTS (
     SELECT 1 FROM canonical_v2_staging.fixture_corpus_releases release
     WHERE release.corpus_release_id = release_id
-      AND release.canonical_payload_digest IS DISTINCT FROM release_record->>'canonical_payload_digest'
+      AND (
+        release.correction_input_seal_id IS DISTINCT FROM correction_seal_id
+        OR release.correction_input_root IS DISTINCT FROM correction_input_root_id
+        OR release.canonical_payload_digest IS DISTINCT FROM release_record->>'canonical_payload_digest'
+      )
+  ) OR EXISTS (
+    SELECT 1
+    FROM canonical_v2_staging.candidate_release_correction_input_seals existing
+    WHERE existing.serving_namespace_id = namespace_id
+      AND existing.corpus_release_id = release_id
+      AND (
+        existing.correction_input_seal_id IS DISTINCT FROM correction_seal_id
+        OR existing.correction_input_root IS DISTINCT FROM correction_input_root_id
+        OR existing.canonical_payload_digest
+          IS DISTINCT FROM p_import_plan->'correction_input_seal_record'->>'canonical_payload_digest'
+      )
+  ) OR EXISTS (
+    SELECT 1
+    FROM jsonb_array_elements(p_import_plan->'correction_discharge_records') item
+    JOIN canonical_v2_staging.candidate_release_correction_discharges existing
+      ON existing.serving_namespace_id = namespace_id
+      AND existing.corpus_release_id = release_id
+      AND existing.correction_application_id = item->>'correction_application_id'
+    WHERE existing.correction_discharge_id IS DISTINCT FROM item->>'correction_discharge_id'
+      OR existing.canonical_payload_digest IS DISTINCT FROM item->>'canonical_payload_digest'
   ) OR EXISTS (
     SELECT 1
     FROM jsonb_array_elements(p_import_plan->'deal_directory_records') item
@@ -664,6 +839,16 @@ BEGIN
   INSERT INTO canonical_v2_staging.fixture_corpus_releases
   SELECT * FROM jsonb_populate_record(NULL::canonical_v2_staging.fixture_corpus_releases, release_record)
   ON CONFLICT (corpus_release_id) DO NOTHING;
+  INSERT INTO canonical_v2_staging.candidate_release_correction_input_seals
+  SELECT * FROM jsonb_populate_record(
+    NULL::canonical_v2_staging.candidate_release_correction_input_seals,
+    p_import_plan->'correction_input_seal_record'
+  ) ON CONFLICT (serving_namespace_id, corpus_release_id) DO NOTHING;
+  INSERT INTO canonical_v2_staging.candidate_release_correction_discharges
+  SELECT * FROM jsonb_populate_recordset(
+    NULL::canonical_v2_staging.candidate_release_correction_discharges,
+    p_import_plan->'correction_discharge_records'
+  ) ON CONFLICT (serving_namespace_id, corpus_release_id, correction_application_id) DO NOTHING;
   INSERT INTO canonical_v2_staging.deal_serving_directory
   SELECT * FROM jsonb_populate_recordset(
     NULL::canonical_v2_staging.deal_serving_directory,
@@ -700,7 +885,13 @@ BEGIN
     p_import_plan->'validated_semantic_graph_records'
   ) ON CONFLICT (serving_namespace_id, corpus_release_id, validated_semantic_graph_id) DO NOTHING;
 
-  IF (SELECT count(*) FROM canonical_v2_staging.deal_serving_directory row
+  IF (SELECT count(*) FROM canonical_v2_staging.candidate_release_correction_input_seals row
+      WHERE row.serving_namespace_id = namespace_id AND row.corpus_release_id = release_id)
+      IS DISTINCT FROM 1
+    OR (SELECT count(*) FROM canonical_v2_staging.candidate_release_correction_discharges row
+      WHERE row.serving_namespace_id = namespace_id AND row.corpus_release_id = release_id)
+      IS DISTINCT FROM (expected->>'correction_discharge_records')::integer
+    OR (SELECT count(*) FROM canonical_v2_staging.deal_serving_directory row
       WHERE row.serving_namespace_id = namespace_id AND row.corpus_release_id = release_id)
       IS DISTINCT FROM (expected->>'deal_directory_records')::integer
     OR (SELECT count(*) FROM canonical_v2_staging.market_observations row
@@ -728,6 +919,8 @@ BEGIN
     candidate_manifest_id,
     corpus_release_id,
     serving_namespace_id,
+    correction_input_seal_id,
+    correction_input_root,
     candidate_release_import_plan_id,
     import_state,
     expected_counts
@@ -735,6 +928,8 @@ BEGIN
     manifest_id,
     release_id,
     namespace_id,
+    correction_seal_id,
+    correction_input_root_id,
     import_plan_id,
     'IMPORTED_COMPLETE',
     expected
@@ -742,10 +937,12 @@ BEGIN
   RETURNING imported_at INTO imported_at_value;
 
   RETURN jsonb_build_object(
-    'schema_version', 'CANDIDATE_RELEASE_IMPORT_RECEIPT/V2',
+    'schema_version', 'CANDIDATE_RELEASE_IMPORT_RECEIPT/V3',
     'import_state', 'IMPORTED_COMPLETE',
     'replayed', false,
     'candidate_manifest_id', manifest_id,
+    'correction_input_seal_id', correction_seal_id,
+    'correction_input_root', correction_input_root_id,
     'corpus_release_id', release_id,
     'serving_namespace_id', namespace_id,
     'candidate_release_import_plan_id', import_plan_id,
@@ -769,21 +966,35 @@ AS $$
 DECLARE
   stored_pointer jsonb;
   imported_plan_id text;
+  imported_correction_seal_id text;
+  imported_correction_input_root_id text;
 BEGIN
   IF p_environment IS DISTINCT FROM 'staging'
     OR p_expected_current_pointer->>'environment' IS DISTINCT FROM 'staging'
     OR p_next_pointer->>'environment' IS DISTINCT FROM 'staging' THEN
     RAISE EXCEPTION 'canonical_v2_activate_candidate_release is staging-only' USING ERRCODE = '42501';
   END IF;
-  IF p_expected_current_pointer->>'schema_version' IS DISTINCT FROM 'FIXTURE_ACTIVE_RELEASE_POINTER/V1'
-    OR p_next_pointer->>'schema_version' IS DISTINCT FROM 'FIXTURE_ACTIVE_RELEASE_POINTER/V1'
+  IF p_expected_current_pointer->>'schema_version' NOT IN (
+      'FIXTURE_ACTIVE_RELEASE_POINTER/V1',
+      'FIXTURE_ACTIVE_RELEASE_POINTER/V2'
+    )
+    OR p_next_pointer->>'schema_version' IS DISTINCT FROM 'FIXTURE_ACTIVE_RELEASE_POINTER/V2'
     OR p_expected_current_pointer->>'pointer_id' !~ '^[a-f0-9]{64}$'
     OR p_next_pointer->>'pointer_id' !~ '^[a-f0-9]{64}$'
     OR p_next_pointer->>'canonical_payload_digest' !~ '^[a-f0-9]{64}$'
     OR p_next_pointer->>'corpus_release_id' !~ '^[a-f0-9]{64}$'
     OR p_next_pointer->>'serving_namespace_id' !~ '^[a-f0-9]{64}$'
     OR p_next_pointer->>'candidate_release_manifest_id' !~ '^[a-f0-9]{64}$'
+    OR p_next_pointer->>'correction_input_seal_id' !~ '^[a-f0-9]{64}$'
+    OR p_next_pointer->>'correction_input_root' !~ '^[a-f0-9]{64}$'
     OR p_next_pointer->>'previous_pointer_id' !~ '^[a-f0-9]{64}$'
+    OR (
+      p_expected_current_pointer->>'schema_version' = 'FIXTURE_ACTIVE_RELEASE_POINTER/V2'
+      AND (
+        p_expected_current_pointer->>'correction_input_seal_id' !~ '^[a-f0-9]{64}$'
+        OR p_expected_current_pointer->>'correction_input_root' !~ '^[a-f0-9]{64}$'
+      )
+    )
     OR (p_next_pointer->>'generation')::integer
       IS DISTINCT FROM (p_expected_current_pointer->>'generation')::integer + 1
     OR p_next_pointer->>'previous_pointer_id' IS DISTINCT FROM p_expected_current_pointer->>'pointer_id' THEN
@@ -807,8 +1018,11 @@ BEGIN
     RAISE EXCEPTION 'active release pointer changed before compare-and-swap' USING ERRCODE = '40001';
   END IF;
 
-  SELECT receipt.candidate_release_import_plan_id
-  INTO imported_plan_id
+  SELECT
+    receipt.candidate_release_import_plan_id,
+    receipt.correction_input_seal_id,
+    receipt.correction_input_root
+  INTO imported_plan_id, imported_correction_seal_id, imported_correction_input_root_id
   FROM canonical_v2_staging.candidate_release_import_receipts receipt
   WHERE receipt.import_state = 'IMPORTED_COMPLETE'
     AND receipt.candidate_manifest_id = p_next_pointer->>'candidate_release_manifest_id'
@@ -816,6 +1030,10 @@ BEGIN
     AND receipt.serving_namespace_id = p_next_pointer->>'serving_namespace_id';
   IF imported_plan_id IS NULL THEN
     RAISE EXCEPTION 'candidate release has no complete import receipt' USING ERRCODE = '23514';
+  END IF;
+  IF imported_correction_seal_id IS DISTINCT FROM p_next_pointer->>'correction_input_seal_id'
+    OR imported_correction_input_root_id IS DISTINCT FROM p_next_pointer->>'correction_input_root' THEN
+    RAISE EXCEPTION 'active release pointer does not match the imported correction seal' USING ERRCODE = '23514';
   END IF;
 
   IF EXISTS (
@@ -833,6 +1051,8 @@ BEGIN
     corpus_release_id,
     serving_namespace_id,
     candidate_manifest_id,
+    correction_input_seal_id,
+    correction_input_root,
     candidate_release_import_plan_id,
     previous_pointer_id,
     canonical_payload,
@@ -844,6 +1064,8 @@ BEGIN
     p_next_pointer->>'corpus_release_id',
     p_next_pointer->>'serving_namespace_id',
     p_next_pointer->>'candidate_release_manifest_id',
+    p_next_pointer->>'correction_input_seal_id',
+    p_next_pointer->>'correction_input_root',
     imported_plan_id,
     p_next_pointer->>'previous_pointer_id',
     p_next_pointer,
@@ -857,6 +1079,8 @@ BEGIN
     corpus_release_id,
     serving_namespace_id,
     candidate_manifest_id,
+    correction_input_seal_id,
+    correction_input_root,
     candidate_release_import_plan_id,
     previous_pointer_id,
     canonical_payload,
@@ -868,6 +1092,8 @@ BEGIN
     p_next_pointer->>'corpus_release_id',
     p_next_pointer->>'serving_namespace_id',
     p_next_pointer->>'candidate_release_manifest_id',
+    p_next_pointer->>'correction_input_seal_id',
+    p_next_pointer->>'correction_input_root',
     imported_plan_id,
     p_next_pointer->>'previous_pointer_id',
     p_next_pointer,
@@ -879,6 +1105,8 @@ BEGIN
     corpus_release_id = EXCLUDED.corpus_release_id,
     serving_namespace_id = EXCLUDED.serving_namespace_id,
     candidate_manifest_id = EXCLUDED.candidate_manifest_id,
+    correction_input_seal_id = EXCLUDED.correction_input_seal_id,
+    correction_input_root = EXCLUDED.correction_input_root,
     candidate_release_import_plan_id = EXCLUDED.candidate_release_import_plan_id,
     previous_pointer_id = EXCLUDED.previous_pointer_id,
     canonical_payload = EXCLUDED.canonical_payload,
@@ -1581,6 +1809,10 @@ REVOKE ALL ON TABLE canonical_v2_staging.reviewed_source_specific_serving_rows
 REVOKE ALL ON TABLE canonical_v2_staging.exact_detail_serving_packages
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;
 REVOKE ALL ON TABLE canonical_v2_staging.candidate_release_semantic_graphs
+  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;
+REVOKE ALL ON TABLE canonical_v2_staging.candidate_release_correction_input_seals
+  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;
+REVOKE ALL ON TABLE canonical_v2_staging.candidate_release_correction_discharges
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;
 REVOKE ALL ON TABLE canonical_v2_staging.candidate_release_import_receipts
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;

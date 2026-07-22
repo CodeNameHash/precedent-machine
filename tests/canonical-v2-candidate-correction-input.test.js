@@ -10,6 +10,7 @@ const {
   validateCorrectionDischarge,
 } = require('../lib/canonical-v2/candidate-correction-input');
 const { canonicalJson, contentId } = require('../lib/canonical-v2/canonical-bytes');
+const { buildClaimRevision } = require('../lib/canonical-v2/claims-relationships');
 const { compileFixtureContract } = require('../lib/canonical-v2/contract-bundle');
 const {
   applyApprovedPostScopeClaimCorrection,
@@ -88,6 +89,56 @@ function firstCorrection(slice = fixture()) {
   });
 }
 
+function sourceBackedValueCorrection(slice = fixture()) {
+  const reviewedClaim = slice.durationClaims.notice;
+  const extractedClaim = slice.canonicalWriteSet.claims.find((claim) => (
+    claim.claim_revision_id === reviewedClaim.claim_revision_id
+  ));
+  const badPredecessor = {
+    ...buildClaimRevision({
+      subject_occurrence_id: extractedClaim.subject_occurrence_id,
+      claim_definition_key: extractedClaim.claim_definition_key,
+      claim_definition_version: extractedClaim.claim_definition_version,
+      ordinal: extractedClaim.ordinal,
+      state: extractedClaim.state,
+      raw_value: extractedClaim.raw_value,
+      canonical_value: '2',
+      unit: extractedClaim.unit,
+      day_basis: extractedClaim.day_basis,
+      denominator: extractedClaim.denominator,
+      scope: structuredClone(extractedClaim.scope),
+      evidence: extractedClaim.evidence.map((edge) => ({
+        evidence_role: edge.evidence_role,
+        excerpt_id: edge.excerpt_id,
+        document_ordinal: edge.document_ordinal,
+        absolute_start: edge.absolute_start,
+        absolute_end: edge.absolute_end,
+      })),
+      attributes: structuredClone(extractedClaim.attributes),
+      allowed_attributes: Object.keys(extractedClaim.attributes),
+      taxonomy_codes: {},
+      codebooks: {},
+      extraction_version: extractedClaim.extraction_version,
+      normalisation_version: extractedClaim.normalisation_version,
+      derivation_version: extractedClaim.derivation_version,
+    }),
+    closure_id: extractedClaim.closure_id,
+  };
+  const writeSet = {
+    ...structuredClone(slice.canonicalWriteSet),
+    claims: slice.canonicalWriteSet.claims.map((claim) => (
+      claim.claim_revision_id === extractedClaim.claim_revision_id
+        ? badPredecessor
+        : structuredClone(claim)
+    )),
+  };
+  return applyCorrection({
+    writeSet,
+    claim: badPredecessor,
+    patch: { canonical_value: '1' },
+  });
+}
+
 function materialise(correctionOutput, consistencyOutputRefs = []) {
   const discharge = buildCorrectionDischarge({
     correction_output: correctionOutput,
@@ -153,6 +204,55 @@ test('one active correction binds exact approval, application, lineage, successo
   assert.equal(entry.predecessor_claim_revision_id, correctionOutput.predecessor_claim_revision.claim_revision_id);
   assert.equal(entry.successor_claim_revision_id, correctionOutput.successor_claim_revision.claim_revision_id);
   assert.deepEqual(entry.consistency_output_ref_ids, [consistencyRef.correction_output_ref_id]);
+});
+
+test('a value-changing correction proof is a bound discharge consistency output', () => {
+  const correctionOutput = sourceBackedValueCorrection();
+  const materialisation = materialise(correctionOutput);
+  const [proofRef] = materialisation.correction_discharge.ordered_consistency_output_refs;
+
+  assert.equal(correctionOutput.value_evidence_proof.status, 'PASS');
+  assert.deepEqual(
+    materialisation.correction_discharge.correction_value_evidence_proof,
+    correctionOutput.value_evidence_proof,
+  );
+  assert.equal(proofRef.logical_type, 'CORRECTION_VALUE_EVIDENCE_PROOF');
+  assert.equal(
+    proofRef.immutable_id,
+    correctionOutput.value_evidence_proof.correction_value_evidence_proof_id,
+  );
+  assert.equal(
+    proofRef.canonical_payload_digest,
+    correctionOutput.value_evidence_proof.canonical_payload_digest,
+  );
+  assert.equal(validateCorrectionDischarge({
+    discharge: materialisation.correction_discharge,
+    correction_output: correctionOutput,
+    contract_bundle: contractBundle,
+  }), true);
+
+  const omittedProof = structuredClone(correctionOutput);
+  omittedProof.value_evidence_proof = null;
+  assert.throws(() => buildCorrectionDischarge({
+    correction_output: omittedProof,
+    contract_bundle: contractBundle,
+  }), (error) => error.code === 'STALE_CORRECTION_INPUT');
+
+  const omittedProofRef = structuredClone(materialisation.correction_discharge);
+  omittedProofRef.ordered_consistency_output_refs = [];
+  assert.throws(() => validateCorrectionDischarge({
+    discharge: omittedProofRef,
+    correction_output: correctionOutput,
+    contract_bundle: contractBundle,
+  }), (error) => error.code === 'INVALID_CORRECTION_DISCHARGE');
+
+  const tamperedEmbeddedProof = structuredClone(materialisation.correction_discharge);
+  tamperedEmbeddedProof.correction_value_evidence_proof.duration_witness.magnitude = '35';
+  assert.throws(() => validateCorrectionDischarge({
+    discharge: tamperedEmbeddedProof,
+    correction_output: correctionOutput,
+    contract_bundle: contractBundle,
+  }), (error) => error.code === 'INVALID_CORRECTION_DISCHARGE');
 });
 
 test('a fresh deterministic extraction reproduces the same correction discharge and candidate seal', () => {

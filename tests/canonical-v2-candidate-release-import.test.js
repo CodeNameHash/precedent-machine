@@ -18,16 +18,24 @@ function clone(value) {
 
 function receiptFor(plan, replayed = false) {
   return {
-    schema_version: 'CANDIDATE_RELEASE_IMPORT_RECEIPT/V2',
+    schema_version: 'CANDIDATE_RELEASE_IMPORT_RECEIPT/V3',
     import_state: 'IMPORTED_COMPLETE',
     replayed,
     candidate_manifest_id: plan.release_record.candidate_manifest_id,
+    correction_input_seal_id: plan.release_record.correction_input_seal_id,
+    correction_input_root: plan.release_record.correction_input_root,
     corpus_release_id: plan.release_record.corpus_release_id,
     serving_namespace_id: plan.release_record.canonical_payload.serving_namespace_id,
     candidate_release_import_plan_id: plan.candidate_release_import_plan_id,
     expected_counts: plan.expected_counts,
     imported_at: '2026-07-21T12:00:00.000Z',
   };
+}
+
+function rekeyPlan(plan) {
+  const { candidate_release_import_plan_id: ignored, ...body } = plan;
+  plan.candidate_release_import_plan_id = contentId('CANDIDATE_RELEASE_IMPORT_PLAN/V3', body);
+  return plan;
 }
 
 test('one certified release becomes one deterministic atomic import plan across every serving partition', () => {
@@ -38,6 +46,8 @@ test('one certified release becomes one deterministic atomic import plan across 
   assert.deepEqual(first, second);
   assert.equal(validateCandidateReleaseImportPlan(first), true);
   assert.deepEqual(first.expected_counts, {
+    correction_input_seal_records: 1,
+    correction_discharge_records: 0,
     deal_directory_records: 1,
     market_observations: 12,
     market_exclusions: 0,
@@ -46,6 +56,10 @@ test('one certified release becomes one deterministic atomic import plan across 
     exact_detail_packages: 13,
     validated_semantic_graph_records: 1,
   });
+  assert.equal(first.release_record.correction_input_seal_id, release.manifest.correction_input_seal_id);
+  assert.equal(first.release_record.correction_input_root, release.manifest.roots.correction_input_root);
+  assert.equal(first.correction_input_seal_record.correction_input_seal_id, release.manifest.correction_input_seal_id);
+  assert.deepEqual(first.correction_discharge_records, []);
   assert.equal(first.query_records.some((row) => row.canonical_payload.row_kind !== 'CANONICAL_RESULT'), false);
   assert.equal(first.source_specific_records[0].canonical_payload.row_kind, 'REVIEWED_SOURCE_SPECIFIC');
   assert.equal(first.source_specific_records[0].market_cohort_eligible, false);
@@ -77,12 +91,18 @@ test('bundle or physical projection drift blocks the import plan before any data
 
   const graphDrift = clone(buildCandidateReleaseImportPlan({ release }));
   graphDrift.validated_semantic_graph_records[0].governed_deal_key = 'WRONG-DEAL';
-  const { candidate_release_import_plan_id: ignored, ...graphDriftBody } = graphDrift;
-  graphDrift.candidate_release_import_plan_id = contentId(
-    'CANDIDATE_RELEASE_IMPORT_PLAN/V2',
-    graphDriftBody,
-  );
+  rekeyPlan(graphDrift);
   assert.throws(() => validateCandidateReleaseImportPlan(graphDrift), /semantic graph import record drift/);
+
+  const missingSeal = clone(buildCandidateReleaseImportPlan({ release }));
+  delete missingSeal.correction_input_seal_record;
+  rekeyPlan(missingSeal);
+  assert.throws(() => validateCandidateReleaseImportPlan(missingSeal), /import contract/);
+
+  const rootDrift = clone(buildCandidateReleaseImportPlan({ release }));
+  rootDrift.release_record.correction_input_root = '0'.repeat(64);
+  rekeyPlan(rootDrift);
+  assert.throws(() => validateCandidateReleaseImportPlan(rootDrift), /does not close over its certified manifest/);
 });
 
 test('release import performs one writer RPC, validates the complete receipt and never retries failures', async () => {
@@ -103,6 +123,8 @@ test('release import performs one writer RPC, validates the complete receipt and
   assert.equal(calls[0].params.p_environment, 'staging');
   assert.equal(imported.receipt.import_state, 'IMPORTED_COMPLETE');
   assert.equal(imported.receipt.replayed, false);
+  assert.equal(imported.receipt.correction_input_seal_id, release.manifest.correction_input_seal_id);
+  assert.equal(imported.receipt.correction_input_root, release.manifest.roots.correction_input_root);
 
   let failedCalls = 0;
   await assert.rejects(importCandidateRelease({
@@ -136,7 +158,10 @@ test('active release movement is one exact compare-and-swap RPC over a completel
   assert.equal(calls[0].name, 'canonical_v2_activate_candidate_release');
   assert.deepEqual(calls[0].params.p_expected_current_pointer, currentPointer);
   assert.equal(activated.pointer.generation, 1);
+  assert.equal(activated.pointer.schema_version, 'FIXTURE_ACTIVE_RELEASE_POINTER/V2');
   assert.equal(activated.pointer.corpus_release_id, release.manifest.corpus_release_id);
+  assert.equal(activated.pointer.correction_input_seal_id, release.manifest.correction_input_seal_id);
+  assert.equal(activated.pointer.correction_input_root, release.manifest.roots.correction_input_root);
   assert.equal(activated.pointer.previous_pointer_id, currentPointer.pointer_id);
 
   await assert.rejects(activateCandidateRelease({
@@ -157,12 +182,17 @@ test('staging import is set-based, transactional and withholds completion until 
   assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.deal_serving_directory/);
   assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.candidate_release_import_receipts/);
   assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.candidate_release_semantic_graphs/);
+  assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.candidate_release_correction_input_seals/);
+  assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.candidate_release_correction_discharges/);
   assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.active_corpus_release_pointer_history/);
   assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.active_corpus_release_pointers/);
   assert.match(importer, /SET statement_timeout = '15000ms'/);
   assert.match(importer, /pg_advisory_xact_lock\(hashtextextended\(manifest_id, 0\)\)/);
   assert.match(importer, /jsonb_populate_recordset/);
-  assert.match(importer, /deal_serving_directory[\s\S]*market_observations[\s\S]*market_metric_slot_exclusions[\s\S]*shared_serving_rows[\s\S]*reviewed_source_specific_serving_rows[\s\S]*exact_detail_serving_packages[\s\S]*candidate_release_semantic_graphs/);
+  assert.match(importer, /candidate_release_correction_input_seals[\s\S]*candidate_release_correction_discharges[\s\S]*deal_serving_directory[\s\S]*market_observations[\s\S]*market_metric_slot_exclusions[\s\S]*shared_serving_rows[\s\S]*reviewed_source_specific_serving_rows[\s\S]*exact_detail_serving_packages[\s\S]*candidate_release_semantic_graphs/);
+  assert.match(importer, /candidate correction discharge import set does not equal its seal/);
+  assert.match(importer, /candidate_release_correction_input_seals[\s\S]*candidate_release_correction_discharges[\s\S]*did not close over every certified serving object/);
+  assert.match(importer, /CANDIDATE_RELEASE_IMPORT_RECEIPT\/V3/);
   assert.match(importer, /did not close over every certified serving object[\s\S]*INSERT INTO canonical_v2_staging\.candidate_release_import_receipts/);
   assert.doesNotMatch(importer, /\bLOOP\b/i);
   assert.doesNotMatch(importer, /\bOFFSET\b/i);
@@ -178,6 +208,8 @@ test('staging import is set-based, transactional and withholds completion until 
   assert.match(activation, /pg_advisory_xact_lock/);
   assert.match(activation, /active release pointer changed before compare-and-swap/);
   assert.match(activation, /receipt\.import_state = 'IMPORTED_COMPLETE'/);
+  assert.match(activation, /active release pointer does not match the imported correction seal/);
+  assert.match(activation, /FIXTURE_ACTIVE_RELEASE_POINTER\/V2/);
   assert.match(activation, /candidate release has no complete import receipt/);
   assert.match(activation, /INSERT INTO canonical_v2_staging\.active_corpus_release_pointer_history[\s\S]*INSERT INTO canonical_v2_staging\.active_corpus_release_pointers/);
   assert.match(sql, /GRANT EXECUTE ON FUNCTION public\.canonical_v2_activate_candidate_release\(text, jsonb, jsonb\)[\s\S]*TO canonical_v2_writer/);

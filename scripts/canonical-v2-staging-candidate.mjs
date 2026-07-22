@@ -33,9 +33,11 @@ const EXPECTED_CANDIDATE = Object.freeze({
   correction_input_seal_id: '0aaf9b2198e82bba4dc45b36100bb322b1091a70634f2cac5693f536e3c8b754',
   correction_input_root: 'b63df4508e533baff18392ac451ba05db01d4517fdd73f015dcbb2c56f5f9ab3',
   serving_namespace_id: '9270602408312e80a65c0ce46b895fa2c8f07d1c676aef5bd171029edd209b68',
-  import_plan_id: '38da7760626b68f8fce91b06be1c431517781e6ed81b85d6334129468208efba',
+  import_plan_id: '1ecc4224d475ea8eb445b657bd5ba8c2cc30545aeb4343b8df1c23bf54a05cd4',
 });
 const EXPECTED_COUNTS = Object.freeze({
+  correction_input_seal_records: 1,
+  correction_discharge_records: 0,
   deal_directory_records: 2,
   market_observations: 14,
   market_exclusions: 0,
@@ -47,24 +49,26 @@ const EXPECTED_COUNTS = Object.freeze({
 const EXPECTED_PRIOR_POINTER = Object.freeze({
   schema_version: 'FIXTURE_ACTIVE_RELEASE_POINTER/V1',
   environment: 'staging',
-  generation: 4,
-  corpus_release_id: '87ca3f3cd4122d61bcc1c4d4fc2de856de07f99b09f093c6b5f7106dcd0bcc2d',
+  generation: 5,
+  corpus_release_id: '1f27637eb0399f35c4e9208a6d4ff5417b8ac18f266d659e0e8bcfafd2e581dd',
   serving_namespace_id: '9270602408312e80a65c0ce46b895fa2c8f07d1c676aef5bd171029edd209b68',
-  candidate_release_manifest_id: '651dd66a9372a0720a4e464b93cbc3286520f9a5c84dac696a639149a946822d',
-  previous_pointer_id: '1e58cc335c0dbc4bd09ef47af623a7f867d18a47ecc9fb8898d921dc15c2aa6e',
-  pointer_id: '736be39f3bff400ce3d694eaa89ee12b925c5251eac9ca1d275482191179d6fd',
-  canonical_payload_digest: '3d2224d555a49b36d160dec652a8e65230001b84b44fb6e18c35a61acd84eb2b',
+  candidate_release_manifest_id: '942983b4d81894efaaad6d01cb88f994224c5ddf6c0e539985151eef59cf6a00',
+  previous_pointer_id: '736be39f3bff400ce3d694eaa89ee12b925c5251eac9ca1d275482191179d6fd',
+  pointer_id: '4c5919a74ec9c4c3d6e0e50e985f8f36ccfe6e8f39d47bd5d56f8f093705c6d5',
+  canonical_payload_digest: '8b7ec7f40ec0a9ad296888f3211dd0b952a280da9613d5b01e29dc07c5c6828f',
 });
 const EXPECTED_ACTIVE_POINTER = Object.freeze({
-  schema_version: 'FIXTURE_ACTIVE_RELEASE_POINTER/V1',
+  schema_version: 'FIXTURE_ACTIVE_RELEASE_POINTER/V2',
   environment: 'staging',
-  generation: 5,
+  generation: 6,
   corpus_release_id: EXPECTED_CANDIDATE.corpus_release_id,
   serving_namespace_id: EXPECTED_CANDIDATE.serving_namespace_id,
   candidate_release_manifest_id: EXPECTED_CANDIDATE.candidate_manifest_id,
+  correction_input_seal_id: EXPECTED_CANDIDATE.correction_input_seal_id,
+  correction_input_root: EXPECTED_CANDIDATE.correction_input_root,
   previous_pointer_id: EXPECTED_PRIOR_POINTER.pointer_id,
-  pointer_id: 'd4f8cd27fabbda76bbddd280bfc7a3b90d2c3bf226bb042409748dc2b8febfb2',
-  canonical_payload_digest: 'bac7da0f3fd407012d53478bd57095de8a81812fc71ba79b5dcaded474356c06',
+  pointer_id: '398c6210a6a0358fc2c735c457a1c6c485ce04694154d7807fad920519f4e715',
+  canonical_payload_digest: '880e3f6e2706bd34f11904784c4f105d494b14f2adc972072431bac0884112d0',
 });
 
 function fail(message) {
@@ -160,6 +164,12 @@ function readState() {
   const rows = runSql(`
     SELECT jsonb_build_object(
       'release_records', (SELECT count(*) FROM canonical_v2_staging.fixture_corpus_releases WHERE corpus_release_id = '${EXPECTED_CANDIDATE.corpus_release_id}'),
+      'release_correction_input_seal_id', (SELECT correction_input_seal_id FROM canonical_v2_staging.fixture_corpus_releases WHERE corpus_release_id = '${EXPECTED_CANDIDATE.corpus_release_id}'),
+      'release_correction_input_root', (SELECT correction_input_root FROM canonical_v2_staging.fixture_corpus_releases WHERE corpus_release_id = '${EXPECTED_CANDIDATE.corpus_release_id}'),
+      'correction_input_seal_records', (SELECT count(*) FROM canonical_v2_staging.candidate_release_correction_input_seals WHERE corpus_release_id = '${EXPECTED_CANDIDATE.corpus_release_id}'),
+      'stored_correction_input_seal_id', (SELECT correction_input_seal_id FROM canonical_v2_staging.candidate_release_correction_input_seals WHERE corpus_release_id = '${EXPECTED_CANDIDATE.corpus_release_id}'),
+      'stored_correction_input_root', (SELECT correction_input_root FROM canonical_v2_staging.candidate_release_correction_input_seals WHERE corpus_release_id = '${EXPECTED_CANDIDATE.corpus_release_id}'),
+      'correction_discharge_records', (SELECT count(*) FROM canonical_v2_staging.candidate_release_correction_discharges WHERE corpus_release_id = '${EXPECTED_CANDIDATE.corpus_release_id}'),
       'deal_directory_records', (SELECT count(*) FROM canonical_v2_staging.deal_serving_directory WHERE corpus_release_id = '${EXPECTED_CANDIDATE.corpus_release_id}'),
       'market_observations', (SELECT count(*) FROM canonical_v2_staging.market_observations WHERE corpus_release_id = '${EXPECTED_CANDIDATE.corpus_release_id}'),
       'market_exclusions', (SELECT count(*) FROM canonical_v2_staging.market_metric_slot_exclusions WHERE corpus_release_id = '${EXPECTED_CANDIDATE.corpus_release_id}'),
@@ -168,6 +178,8 @@ function readState() {
       'exact_detail_packages', (SELECT count(*) FROM canonical_v2_staging.exact_detail_serving_packages WHERE corpus_release_id = '${EXPECTED_CANDIDATE.corpus_release_id}'),
       'validated_semantic_graph_records', (SELECT count(*) FROM canonical_v2_staging.candidate_release_semantic_graphs WHERE corpus_release_id = '${EXPECTED_CANDIDATE.corpus_release_id}'),
       'complete_receipts', (SELECT count(*) FROM canonical_v2_staging.candidate_release_import_receipts WHERE corpus_release_id = '${EXPECTED_CANDIDATE.corpus_release_id}' AND import_state = 'IMPORTED_COMPLETE'),
+      'receipt_correction_input_seal_id', (SELECT correction_input_seal_id FROM canonical_v2_staging.candidate_release_import_receipts WHERE corpus_release_id = '${EXPECTED_CANDIDATE.corpus_release_id}' AND import_state = 'IMPORTED_COMPLETE'),
+      'receipt_correction_input_root', (SELECT correction_input_root FROM canonical_v2_staging.candidate_release_import_receipts WHERE corpus_release_id = '${EXPECTED_CANDIDATE.corpus_release_id}' AND import_state = 'IMPORTED_COMPLETE'),
       'active_pointer', (SELECT canonical_payload FROM canonical_v2_staging.active_corpus_release_pointers WHERE environment = 'staging')
     ) AS state;
   `);
@@ -183,6 +195,24 @@ function assertImported(state) {
   };
   for (const [key, count] of Object.entries(expected)) {
     if (Number(state[key]) !== count) throw new Error(`Canonical staging ${key} count is ${state[key]}, expected ${count}.`);
+  }
+  for (const key of [
+    'release_correction_input_seal_id',
+    'stored_correction_input_seal_id',
+    'receipt_correction_input_seal_id',
+  ]) {
+    if (state[key] !== EXPECTED_CANDIDATE.correction_input_seal_id) {
+      throw new Error(`Canonical staging ${key} does not match the reviewed correction seal.`);
+    }
+  }
+  for (const key of [
+    'release_correction_input_root',
+    'stored_correction_input_root',
+    'receipt_correction_input_root',
+  ]) {
+    if (state[key] !== EXPECTED_CANDIDATE.correction_input_root) {
+      throw new Error(`Canonical staging ${key} does not match the reviewed correction root.`);
+    }
   }
 }
 

@@ -11,6 +11,10 @@ test('candidate runner is fixed to the isolated project and reviewed multi-deal 
   assert.match(source, /deal-corpus-canonical-v2-staging/);
   assert.match(source, /buildMultiDealCandidateReleaseFixture/);
   assert.match(source, /EXPECTED_CANDIDATE/);
+  assert.match(source, /correction_input_seal_id/);
+  assert.match(source, /correction_input_root/);
+  assert.match(source, /correction_input_seal_records/);
+  assert.match(source, /correction_discharge_records/);
   assert.match(source, /Refusing to import because the reviewed multi-deal candidate identity has drifted/);
   assert.doesNotMatch(source, /tzulhdasmioeechxapdy|precedent-machine['"]/);
 });
@@ -28,6 +32,7 @@ test('candidate activation is a guarded compare-and-swap and will not replace an
   assert.match(source, /activateCandidateRelease/);
   assert.match(source, /EXPECTED_PRIOR_POINTER/);
   assert.match(source, /EXPECTED_ACTIVE_POINTER/);
+  assert.match(source, /FIXTURE_ACTIVE_RELEASE_POINTER\/V2/);
   assert.match(source, /Refusing to activate without the pinned prior release/);
   assert.match(source, /Refusing to replace an unexpected active staging release/);
   assert.match(source, /public\.canonical_v2_activate_candidate_release/);
