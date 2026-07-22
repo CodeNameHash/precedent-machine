@@ -8,8 +8,11 @@ const {
   buildReviewedTerminationFeeSlice,
 } = require('../../lib/canonical-v2/reviewed-termination-fee-slice');
 
-function buildLandosTerminationFeeServingFixture() {
-  const contract = compileFixtureContract();
+function buildLandosTerminationFeeServingFixture({
+  contractBundle = compileFixtureContract(),
+  corpusReleaseId,
+} = {}) {
+  const contract = contractBundle;
   const agreementText = fs.readFileSync(
     path.join(process.cwd(), '__fixtures__', 'demo-deal', 'landos-abbvie-agreement.txt'),
     'utf8',
@@ -18,7 +21,12 @@ function buildLandosTerminationFeeServingFixture() {
     path.join(process.cwd(), '__fixtures__', 'canonical-v2', 'landos-deal-value-sec-excerpt.txt'),
     'utf8',
   );
-  const slice = buildReviewedTerminationFeeSlice({ agreementText, dealValueSourceText, contractBundle: contract });
+  const slice = buildReviewedTerminationFeeSlice({
+    agreementText,
+    dealValueSourceText,
+    contractBundle: contract,
+    corpusReleaseId,
+  });
   const serving = buildReviewedTerminationFeeServingRow({ slice, contractBundle: contract });
   const detailPackage = buildFixtureClaimEvidenceDetailPackage({
     contract_bundle: contract,

@@ -11,8 +11,11 @@ const {
   buildReviewedIocCapexSlice,
 } = require('../../lib/canonical-v2/reviewed-ioc-capex-slice');
 
-function buildLandosIocCapexServingFixture() {
-  const contract = compileFixtureContract();
+function buildLandosIocCapexServingFixture({
+  contractBundle = compileFixtureContract(),
+  corpusReleaseId,
+} = {}) {
+  const contract = contractBundle;
   const agreementText = fs.readFileSync(
     path.join(process.cwd(), '__fixtures__', 'demo-deal', 'landos-abbvie-agreement.txt'),
     'utf8',
@@ -21,7 +24,12 @@ function buildLandosIocCapexServingFixture() {
     path.join(process.cwd(), '__fixtures__', 'canonical-v2', 'landos-deal-value-sec-excerpt.txt'),
     'utf8',
   );
-  const slice = buildReviewedIocCapexSlice({ agreementText, dealValueSourceText, contractBundle: contract });
+  const slice = buildReviewedIocCapexSlice({
+    agreementText,
+    dealValueSourceText,
+    contractBundle: contract,
+    corpusReleaseId,
+  });
   const baseRow = buildReviewedIocCapexServingRow({ slice, contractBundle: contract });
   const detailPackage = buildFixtureClaimEvidenceDetailPackage({
     contract_bundle: contract,

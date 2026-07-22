@@ -6,17 +6,21 @@ const { buildLandosTerminationFeeServingFixture } = require('./landos-terminatio
 const { buildLandosSourceSpecificServingFixture } = require('./landos-source-specific-row');
 const { contentId } = require('../../lib/canonical-v2/canonical-bytes');
 const { buildFixtureCandidateRelease } = require('../../lib/canonical-v2/candidate-release');
+const { compileFixtureContract } = require('../../lib/canonical-v2/contract-bundle');
 
-function buildLandosCandidateReleaseFixture() {
-  const ioc = buildLandosIocCapexServingFixture();
-  const materialContracts = buildLandosMaterialContractsServingFixture();
-  const noShop = buildLandosNoShopServingFixture();
-  const reviewed = buildLandosReviewedServingFixture();
-  const terminationFee = buildLandosTerminationFeeServingFixture();
-  const sourceSpecific = buildLandosSourceSpecificServingFixture();
-  const contract = ioc.contract;
-  const corpusReleaseId = ioc.row.corpus_release_id;
-  const servingNamespaceId = contentId('SERVING_NAMESPACE/V1', 'landos-reviewed-fixture');
+function buildLandosCandidateReleaseFixture({
+  contractBundle = compileFixtureContract(),
+  corpusReleaseId = contentId('CORPUS_RELEASE/V1', 'landos-reviewed-fixture'),
+  servingNamespaceId = contentId('SERVING_NAMESPACE/V1', 'landos-reviewed-fixture'),
+} = {}) {
+  const fixtureOptions = { contractBundle, corpusReleaseId };
+  const ioc = buildLandosIocCapexServingFixture(fixtureOptions);
+  const materialContracts = buildLandosMaterialContractsServingFixture(fixtureOptions);
+  const noShop = buildLandosNoShopServingFixture(fixtureOptions);
+  const reviewed = buildLandosReviewedServingFixture(fixtureOptions);
+  const terminationFee = buildLandosTerminationFeeServingFixture(fixtureOptions);
+  const sourceSpecific = buildLandosSourceSpecificServingFixture(fixtureOptions);
+  const contract = contractBundle;
   const members = [
     {
       projection_output: reviewed.projection,
@@ -112,6 +116,19 @@ function buildLandosCandidateReleaseFixture() {
     terminationFee,
     sourceSpecific,
     members,
+    sourceSpecificMembers: Object.freeze([{
+      shared_row: sourceSpecific.row,
+      exact_detail: {
+        package: sourceSpecific.exactDetail,
+        source: sourceSpecific.source,
+        source_admission: sourceSpecific.sourceAdmission,
+        excerpts: Object.values(sourceSpecific.excerpts),
+      },
+    }]),
+    dealDirectoryEntries: Object.freeze([{
+      application_deal_id: 'c34415ed-44f7-432f-8d7c-6464b0310239',
+      governed_deal_key: 'deal:landos-abbvie',
+    }]),
     release,
   });
 }

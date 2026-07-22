@@ -8,13 +8,20 @@ const {
   buildReviewedSourceSpecificWriteSet,
 } = require('../../lib/canonical-v2/reviewed-source-specific');
 
-function buildLandosSourceSpecificServingFixture() {
-  const contract = compileFixtureContract();
+function buildLandosSourceSpecificServingFixture({
+  contractBundle = compileFixtureContract(),
+  corpusReleaseId,
+} = {}) {
+  const contract = contractBundle;
   const sourceText = fs.readFileSync(
     path.join(process.cwd(), '__fixtures__', 'demo-deal', 'landos-abbvie-agreement.txt'),
     'utf8',
   );
-  const slice = buildReviewedSourceSpecificSlice({ sourceText, contractBundle: contract });
+  const slice = buildReviewedSourceSpecificSlice({
+    sourceText,
+    contractBundle: contract,
+    corpusReleaseId,
+  });
   const exactDetail = buildFixtureOpenWorldEvidenceDetailPackage({
     contract_bundle: contract,
     row: slice.row,

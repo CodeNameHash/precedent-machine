@@ -9,14 +9,13 @@ import { createRequire } from 'node:module';
 import { spawnSync } from 'node:child_process';
 
 const require = createRequire(import.meta.url);
-const { buildQxoNoShopReleaseFixture } = require('../__fixtures__/canonical-v2/qxo-no-shop-release');
+const { buildMultiDealCandidateReleaseFixture } = require('../__fixtures__/canonical-v2/multi-deal-candidate-release');
 const {
   activateCandidateRelease,
   buildCandidateReleaseImportPlan,
   importCandidateRelease,
 } = require('../lib/canonical-v2/candidate-release-import');
 const {
-  buildInitialActiveReleasePointer,
   validateActiveReleasePointer,
 } = require('../lib/canonical-v2/candidate-release');
 const { canonicalJson } = require('../lib/canonical-v2/canonical-bytes');
@@ -29,18 +28,40 @@ const EXPECTED_PROJECT = Object.freeze({
 });
 const EXPECTED_CANDIDATE = Object.freeze({
   contract_fingerprint: '7a869d03bbfd0adc9992f61b2c579fb6d82506755bcf4e8d5116442c4462aa50',
-  corpus_release_id: 'f01e2bf271d3f7c39c8d21a1963b5cea7c90860777b0a5cdc91e0e159d1fca4a',
-  candidate_manifest_id: '2771bdb52e4bca497813c17b514944fea4391a33cc4a0b817ba8d65daede962d',
-  serving_namespace_id: '4821737ed1dd7c703ce29bf8c87f1709bb08b102c1da993c5e40aee0ea8fbc03',
-  import_plan_id: '5bf7b1722435096b0b493ba4e18e89efd388d3f713992eda7416fc7cec5f885c',
+  corpus_release_id: '5631bf87ec67cc7f8d5c726497e77adb77a3d672834772fd41dd8c46b87e4a8d',
+  candidate_manifest_id: '9a189ab66a0e266a9ee0fb99dc9c65e30ca99fa39166f508c91cb482bc7a5e52',
+  serving_namespace_id: '9270602408312e80a65c0ce46b895fa2c8f07d1c676aef5bd171029edd209b68',
+  import_plan_id: '605b2733e901483d137c31e3a81c9c394275be509d47e72b7e04c97362800a3c',
 });
 const EXPECTED_COUNTS = Object.freeze({
-  deal_directory_records: 1,
-  market_observations: 2,
+  deal_directory_records: 2,
+  market_observations: 14,
   market_exclusions: 0,
-  query_records: 2,
-  source_specific_records: 0,
-  exact_detail_packages: 2,
+  query_records: 14,
+  source_specific_records: 1,
+  exact_detail_packages: 15,
+});
+const EXPECTED_PRIOR_POINTER = Object.freeze({
+  schema_version: 'FIXTURE_ACTIVE_RELEASE_POINTER/V1',
+  environment: 'staging',
+  generation: 1,
+  corpus_release_id: 'f01e2bf271d3f7c39c8d21a1963b5cea7c90860777b0a5cdc91e0e159d1fca4a',
+  serving_namespace_id: '4821737ed1dd7c703ce29bf8c87f1709bb08b102c1da993c5e40aee0ea8fbc03',
+  candidate_release_manifest_id: '2771bdb52e4bca497813c17b514944fea4391a33cc4a0b817ba8d65daede962d',
+  previous_pointer_id: 'c361a7d6c5aea6dbe9df028e8b67c81ab2151ccc8598b66c7a45fbb0a4df332b',
+  pointer_id: 'b9366081fd3e7df5fe9284a2967db8716f09cfbdaddd2ecca8a133f7c233f607',
+  canonical_payload_digest: 'd8e36a4b811499eaa4e661dce800cb5739bce90750667a344cd80a9996650441',
+});
+const EXPECTED_ACTIVE_POINTER = Object.freeze({
+  schema_version: 'FIXTURE_ACTIVE_RELEASE_POINTER/V1',
+  environment: 'staging',
+  generation: 2,
+  corpus_release_id: EXPECTED_CANDIDATE.corpus_release_id,
+  serving_namespace_id: EXPECTED_CANDIDATE.serving_namespace_id,
+  candidate_release_manifest_id: EXPECTED_CANDIDATE.candidate_manifest_id,
+  previous_pointer_id: EXPECTED_PRIOR_POINTER.pointer_id,
+  pointer_id: 'ac09fb72eb306394c8bbcaec978fb827229e279aa5490a80de01c9491146628a',
+  canonical_payload_digest: 'd9195858e38b3cf81a20cab37597484c0d9dbb73e7f4836df9f04fedd8f57cad',
 });
 
 function fail(message) {
@@ -66,7 +87,7 @@ function readLinkedProject() {
 }
 
 function buildPinnedCandidate() {
-  const fixture = buildQxoNoShopReleaseFixture();
+  const fixture = buildMultiDealCandidateReleaseFixture();
   const plan = buildCandidateReleaseImportPlan({ release: fixture.release });
   const actual = {
     contract_fingerprint: fixture.release.manifest.contract_fingerprint,
@@ -77,7 +98,7 @@ function buildPinnedCandidate() {
   };
   if (canonicalJson(actual) !== canonicalJson(EXPECTED_CANDIDATE)
     || canonicalJson(plan.expected_counts) !== canonicalJson(EXPECTED_COUNTS)) {
-    fail('Refusing to import because the reviewed QXO candidate identity has drifted.');
+    fail('Refusing to import because the reviewed multi-deal candidate identity has drifted.');
   }
   return { fixture, plan };
 }
@@ -187,14 +208,14 @@ async function dryRun(release) {
   if (canonicalJson(before) !== canonicalJson(after)) {
     throw new Error('Dry-run changed canonical staging state.');
   }
-  process.stdout.write(`Dry-run validated and rolled back QXO candidate ${result.plan.candidate_release_import_plan_id}.\n`);
+  process.stdout.write(`Dry-run validated and rolled back multi-deal candidate ${result.plan.candidate_release_import_plan_id}.\n`);
 }
 
 async function importRelease(release) {
   const result = await importCandidateRelease({ client: sqlRpcClient({ commit: true }), release });
   const state = readState();
   assertImported(state);
-  process.stdout.write(`Imported QXO candidate ${result.receipt.corpus_release_id}; complete receipt verified.\n`);
+  process.stdout.write(`Imported multi-deal candidate ${result.receipt.corpus_release_id}; complete receipt verified.\n`);
 }
 
 async function activateRelease(release) {
@@ -202,29 +223,36 @@ async function activateRelease(release) {
   assertImported(state);
   if (state.active_pointer) {
     validateActiveReleasePointer(state.active_pointer);
-    if (state.active_pointer.corpus_release_id === EXPECTED_CANDIDATE.corpus_release_id
-      && state.active_pointer.candidate_release_manifest_id === EXPECTED_CANDIDATE.candidate_manifest_id) {
-      process.stdout.write(`QXO candidate is already active at generation ${state.active_pointer.generation}.\n`);
+    if (canonicalJson(state.active_pointer) === canonicalJson(EXPECTED_ACTIVE_POINTER)) {
+      process.stdout.write(`Multi-deal candidate is already active at generation ${state.active_pointer.generation}.\n`);
       return;
     }
-    throw new Error('Refusing to replace an unexpected active staging release.');
+    if (canonicalJson(state.active_pointer) !== canonicalJson(EXPECTED_PRIOR_POINTER)) {
+      throw new Error('Refusing to replace an unexpected active staging release.');
+    }
+  } else {
+    throw new Error('Refusing to activate without the pinned QXO predecessor.');
   }
   const activated = await activateCandidateRelease({
     client: sqlRpcClient({ commit: true }),
-    currentPointer: buildInitialActiveReleasePointer(),
+    currentPointer: EXPECTED_PRIOR_POINTER,
     release,
   });
   const after = readState();
-  if (canonicalJson(after.active_pointer) !== canonicalJson(activated.pointer)) {
+  if (canonicalJson(activated.pointer) !== canonicalJson(EXPECTED_ACTIVE_POINTER)
+    || canonicalJson(after.active_pointer) !== canonicalJson(EXPECTED_ACTIVE_POINTER)) {
     throw new Error('Active staging pointer did not persist exactly.');
   }
-  process.stdout.write(`Activated QXO candidate at staging generation ${activated.pointer.generation}.\n`);
+  process.stdout.write(`Activated multi-deal candidate at staging generation ${activated.pointer.generation}.\n`);
 }
 
 function verifyState() {
   const state = readState();
   assertImported(state);
-  if (state.active_pointer) validateActiveReleasePointer(state.active_pointer);
+  validateActiveReleasePointer(state.active_pointer);
+  if (canonicalJson(state.active_pointer) !== canonicalJson(EXPECTED_ACTIVE_POINTER)) {
+    throw new Error('Canonical staging pointer is not the pinned multi-deal successor.');
+  }
   process.stdout.write(`${JSON.stringify(state, null, 2)}\n`);
 }
 

@@ -444,6 +444,64 @@ test('claims and relationships cannot publish against unresolved semantic occurr
   assert.deepEqual(result.validation.quarantinedClosureIds, [id('closure:rep')]);
 });
 
+test('valid evidence and semantic relationships may cross publication closures', async () => {
+  const writeSet = fixtureWriteSet();
+  const evidenceClosure = id('closure:shared-evidence');
+  writeSet.excerpts[1] = { ...writeSet.excerpts[1], closure_id: evidenceClosure };
+  const conditionRelationship = buildRelationshipRevision({
+    source_occurrence_id: writeSet.provisions[1].provision_instance_id,
+    relationship_definition_key: 'CONTAINED_IN',
+    state: 'PRESENT',
+    target_occurrence_ids: [writeSet.provisions[0].provision_instance_id],
+    effect: { effect_mode: 'NON_SEMANTIC', legal_operation: 'GEOMETRIC_ONLY' },
+    evidence: [{
+      evidence_role: 'OPERATIVE_TEXT',
+      excerpt_id: writeSet.excerpts[1].excerpt_id,
+      document_ordinal: 0,
+      absolute_start: writeSet.excerpts[1].absolute_start,
+      absolute_end: writeSet.excerpts[1].absolute_end,
+    }],
+  });
+  writeSet.relationships[1] = {
+    ...conditionRelationship,
+    closure_id: id('closure:condition'),
+  };
+  const { writer } = setup();
+  const result = await writer.write({
+    operation: 'FIXTURE_DEAL_EXTRACTION_RUN',
+    idempotencyKey: 'cross-closure-references',
+    dryRun: true,
+    writeSet,
+  });
+  assert.equal(result.validation.counts.residuals, 0);
+  assert.equal(result.validation.counts.quarantinedClosures, 0);
+});
+
+test('a quarantined dependency propagates to the referencing closure', async () => {
+  const writeSet = fixtureWriteSet();
+  const evidenceClosure = id('closure:shared-evidence');
+  writeSet.excerpts[1] = {
+    ...writeSet.excerpts[1],
+    exact_bytes_digest: '0'.repeat(64),
+    closure_id: evidenceClosure,
+  };
+  const { writer } = setup();
+  const result = await writer.write({
+    operation: 'FIXTURE_DEAL_EXTRACTION_RUN',
+    idempotencyKey: 'cross-closure-quarantine-propagation',
+    dryRun: true,
+    writeSet,
+  });
+  assert.ok(result.validation.residuals.some((row) => (
+    row.closure_id === id('closure:condition')
+      && row.reason_code === 'EVIDENCE_REFERENCE_UNRESOLVED'
+  )));
+  assert.deepEqual(result.validation.quarantinedClosureIds, [
+    id('closure:condition'),
+    evidenceClosure,
+  ].sort());
+});
+
 test('the SQL authority is staging-only, transactional and denies direct app-role DML', () => {
   const sql = fs.readFileSync('supabase/canonical-v2-foundation.sql', 'utf8');
   assert.match(sql, /CREATE SCHEMA IF NOT EXISTS canonical_v2_staging/);

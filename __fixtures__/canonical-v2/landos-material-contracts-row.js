@@ -11,8 +11,11 @@ const {
   buildReviewedMaterialContractsSlice,
 } = require('../../lib/canonical-v2/reviewed-material-contracts-slice');
 
-function buildLandosMaterialContractsServingFixture() {
-  const contract = compileFixtureContract();
+function buildLandosMaterialContractsServingFixture({
+  contractBundle = compileFixtureContract(),
+  corpusReleaseId,
+} = {}) {
+  const contract = contractBundle;
   const agreementText = fs.readFileSync(
     path.join(process.cwd(), '__fixtures__', 'demo-deal', 'landos-abbvie-agreement.txt'),
     'utf8',
@@ -21,7 +24,12 @@ function buildLandosMaterialContractsServingFixture() {
     path.join(process.cwd(), '__fixtures__', 'canonical-v2', 'landos-deal-value-sec-excerpt.txt'),
     'utf8',
   );
-  const slice = buildReviewedMaterialContractsSlice({ agreementText, dealValueSourceText, contractBundle: contract });
+  const slice = buildReviewedMaterialContractsSlice({
+    agreementText,
+    dealValueSourceText,
+    contractBundle: contract,
+    corpusReleaseId,
+  });
   const serving = buildReviewedMaterialContractsServingRow({ slice, contractBundle: contract });
   const detailPackage = buildFixtureClaimEvidenceDetailPackage({
     contract_bundle: contract,

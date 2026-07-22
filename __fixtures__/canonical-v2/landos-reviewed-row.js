@@ -8,13 +8,20 @@ const {
   buildReviewedCapitalisationSlice,
 } = require('../../lib/canonical-v2/reviewed-capitalisation-slice');
 
-function buildLandosReviewedServingFixture() {
-  const contract = compileFixtureContract();
+function buildLandosReviewedServingFixture({
+  contractBundle = compileFixtureContract(),
+  corpusReleaseId,
+} = {}) {
+  const contract = contractBundle;
   const sourceText = fs.readFileSync(
     path.join(process.cwd(), '__fixtures__', 'demo-deal', 'landos-abbvie-agreement.txt'),
     'utf8',
   );
-  const slice = buildReviewedCapitalisationSlice({ sourceText, contractBundle: contract });
+  const slice = buildReviewedCapitalisationSlice({
+    sourceText,
+    contractBundle: contract,
+    corpusReleaseId,
+  });
   const serving = buildReviewedCapitalisationServingRow({ slice, contractBundle: contract });
   const exactDetail = buildFixtureClaimEvidenceDetailPackage({
     contract_bundle: contract,

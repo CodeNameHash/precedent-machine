@@ -11,13 +11,20 @@ const {
   buildReviewedNoShopSlice,
 } = require('../../lib/canonical-v2/reviewed-no-shop-slice');
 
-function buildLandosNoShopServingFixture() {
-  const contract = compileFixtureContract();
+function buildLandosNoShopServingFixture({
+  contractBundle = compileFixtureContract(),
+  corpusReleaseId,
+} = {}) {
+  const contract = contractBundle;
   const sourceText = fs.readFileSync(
     path.join(process.cwd(), '__fixtures__', 'demo-deal', 'landos-abbvie-agreement.txt'),
     'utf8',
   );
-  const slice = buildReviewedNoShopSlice({ sourceText, contractBundle: contract });
+  const slice = buildReviewedNoShopSlice({
+    sourceText,
+    contractBundle: contract,
+    corpusReleaseId,
+  });
   const baseRows = buildReviewedNoShopServingRows({ slice, contractBundle: contract });
   const excerptsById = new Map(Object.values(slice.excerpts).map((excerpt) => [excerpt.excerpt_id, excerpt]));
   const detailPackages = baseRows.map((row) => {

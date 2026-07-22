@@ -13,14 +13,16 @@ const {
   buildQxoNoShopServingRows,
 } = require('../../lib/canonical-v2/reviewed-qxo-no-shop-slice');
 
-function buildQxoNoShopReleaseFixture() {
-  const contract = compileFixtureContract();
+function buildQxoNoShopReleaseFixture({
+  contractBundle = compileFixtureContract(),
+  corpusReleaseId = contentId('CORPUS_RELEASE/V1', 'qxo-reviewed-notice-fixture'),
+  servingNamespaceId = contentId('SERVING_NAMESPACE/V1', 'qxo-reviewed-notice-fixture'),
+} = {}) {
+  const contract = contractBundle;
   const sourceText = fs.readFileSync(
     path.join(process.cwd(), '__fixtures__', 'canonical-v2', 'qxo-no-shop-reviewed-excerpts.txt'),
     'utf8',
   );
-  const corpusReleaseId = contentId('CORPUS_RELEASE/V1', 'qxo-reviewed-notice-fixture');
-  const servingNamespaceId = contentId('SERVING_NAMESPACE/V1', 'qxo-reviewed-notice-fixture');
   const slice = buildQxoNoShopNoticeSlice({ sourceText, contractBundle: contract, corpusReleaseId });
   const baseRows = buildQxoNoShopServingRows({ slice, contractBundle: contract, servingNamespaceId });
   const detailPackages = baseRows.map((row) => {
@@ -67,6 +69,11 @@ function buildQxoNoShopReleaseFixture() {
     detailPackages: Object.freeze(detailPackages),
     rows: Object.freeze(detailPackages.map((detailPackage) => detailPackage.row)),
     members: Object.freeze(members),
+    sourceSpecificMembers: Object.freeze([]),
+    dealDirectoryEntries: Object.freeze([{
+      application_deal_id: '7dc3a05f-b170-4d59-a255-b7103cca16e1',
+      governed_deal_key: 'deal:qxo-topbuild',
+    }]),
     release,
   });
 }

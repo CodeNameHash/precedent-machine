@@ -156,6 +156,17 @@ test('the shared adapter returns renderable siblings around an unrecognised prov
   assert.equal(Object.hasOwn(prepared[0], 'row'), false);
 });
 
+test('adapter failure keys cannot collide with a valid row or another rejected duplicate', () => {
+  const row = buildCompleteServingFixture().row;
+  const prepared = adaptSharedServingRows([row, row, row]);
+
+  assert.deepEqual(prepared.map((item) => item.render_kind), ['ROW', 'ROW_RENDER_FAILED', 'ROW_RENDER_FAILED']);
+  assert.equal(new Set(prepared.map((item) => item.key)).size, 3);
+  assert.equal(prepared[0].key, row.row_serving_key);
+  assert.notEqual(prepared[1].key, row.row_serving_key);
+  assert.notEqual(prepared[2].key, row.row_serving_key);
+});
+
 test('Review, Corpus Context, Compare and Query consume one typed row contract', () => {
   const { row } = buildCompleteServingFixture();
   const adapted = adaptSharedServingRow(row);

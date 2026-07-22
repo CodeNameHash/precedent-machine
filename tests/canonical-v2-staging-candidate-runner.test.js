@@ -5,13 +5,13 @@ const { spawnSync } = require('node:child_process');
 
 const RUNNER = 'scripts/canonical-v2-staging-candidate.mjs';
 
-test('candidate runner is fixed to the isolated project and reviewed QXO candidate', () => {
+test('candidate runner is fixed to the isolated project and reviewed multi-deal candidate', () => {
   const source = fs.readFileSync(RUNNER, 'utf8');
   assert.match(source, /sjumbznveyyiizhwvixj/);
   assert.match(source, /deal-corpus-canonical-v2-staging/);
-  assert.match(source, /buildQxoNoShopReleaseFixture/);
+  assert.match(source, /buildMultiDealCandidateReleaseFixture/);
   assert.match(source, /EXPECTED_CANDIDATE/);
-  assert.match(source, /Refusing to import because the reviewed QXO candidate identity has drifted/);
+  assert.match(source, /Refusing to import because the reviewed multi-deal candidate identity has drifted/);
   assert.doesNotMatch(source, /tzulhdasmioeechxapdy|precedent-machine['"]/);
 });
 
@@ -26,7 +26,9 @@ test('candidate dry-run rolls back and import uses one authoritative RPC', () =>
 test('candidate activation is a guarded compare-and-swap and will not replace an unexpected release', () => {
   const source = fs.readFileSync(RUNNER, 'utf8');
   assert.match(source, /activateCandidateRelease/);
-  assert.match(source, /buildInitialActiveReleasePointer/);
+  assert.match(source, /EXPECTED_PRIOR_POINTER/);
+  assert.match(source, /EXPECTED_ACTIVE_POINTER/);
+  assert.match(source, /Refusing to activate without the pinned QXO predecessor/);
   assert.match(source, /Refusing to replace an unexpected active staging release/);
   assert.match(source, /public\.canonical_v2_activate_candidate_release/);
 });
@@ -38,5 +40,5 @@ test('candidate runner rejects ambiguous invocation before database work', () =>
   });
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /Usage:/);
-  assert.doesNotMatch(result.stdout, /Imported QXO candidate/);
+  assert.doesNotMatch(result.stdout, /Imported multi-deal candidate/);
 });
