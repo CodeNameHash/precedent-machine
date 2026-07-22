@@ -57,6 +57,108 @@ CREATE TABLE IF NOT EXISTS canonical_v2_staging.intake_capture_receipts (
   ) STORED
 );
 
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.source_artifact_manifests (
+  artifact_manifest_id text PRIMARY KEY
+    CHECK (artifact_manifest_id ~ '^[0-9a-f]{64}$'),
+  artifact_kind text NOT NULL
+    CHECK (artifact_kind = 'SEC_HTML_CANONICAL_TEXT_CONVERSION/V2'),
+  payload_encoding text NOT NULL
+    CHECK (payload_encoding = 'CANONICAL_JSON_UTF8/V1'),
+  payload_byte_length bigint NOT NULL CHECK (payload_byte_length > 0),
+  payload_sha256 text NOT NULL CHECK (payload_sha256 ~ '^[0-9a-f]{64}$'),
+  chunk_count integer NOT NULL CHECK (chunk_count > 0),
+  chunk_max_byte_length integer NOT NULL
+    CHECK (chunk_max_byte_length = 196608),
+  ordered_chunk_sha256 jsonb NOT NULL,
+  canonical_payload jsonb NOT NULL,
+  canonical_payload_storage_digest text GENERATED ALWAYS AS (
+    canonical_v2_staging.payload_digest(canonical_payload)
+  ) STORED,
+  CHECK (jsonb_typeof(ordered_chunk_sha256) = 'array'),
+  CHECK (jsonb_array_length(ordered_chunk_sha256) = chunk_count),
+  CHECK (payload_byte_length > (chunk_count::bigint - 1) * chunk_max_byte_length),
+  CHECK (payload_byte_length <= chunk_count::bigint * chunk_max_byte_length)
+);
+
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.source_artifact_chunks (
+  artifact_manifest_id text NOT NULL
+    REFERENCES canonical_v2_staging.source_artifact_manifests(artifact_manifest_id),
+  chunk_ordinal integer NOT NULL CHECK (chunk_ordinal >= 0),
+  artifact_kind text NOT NULL
+    CHECK (artifact_kind = 'SEC_HTML_CANONICAL_TEXT_CONVERSION/V2'),
+  chunk_byte_length integer NOT NULL
+    CHECK (chunk_byte_length BETWEEN 1 AND 196608),
+  chunk_sha256 text NOT NULL CHECK (chunk_sha256 ~ '^[0-9a-f]{64}$'),
+  chunk_id text NOT NULL UNIQUE CHECK (chunk_id ~ '^[0-9a-f]{64}$'),
+  chunk_payload bytea NOT NULL,
+  canonical_payload jsonb NOT NULL,
+  canonical_payload_storage_digest text GENERATED ALWAYS AS (
+    canonical_v2_staging.payload_digest(canonical_payload)
+  ) STORED,
+  PRIMARY KEY (artifact_manifest_id, chunk_ordinal),
+  CHECK (octet_length(chunk_payload) = chunk_byte_length),
+  CHECK (
+    encode(extensions.digest(chunk_payload, 'sha256'::text), 'hex') = chunk_sha256
+  )
+);
+
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.canonical_text_conversions (
+  canonical_text_id text PRIMARY KEY CHECK (canonical_text_id ~ '^[0-9a-f]{64}$'),
+  intake_capture_receipt_id text NOT NULL
+    REFERENCES canonical_v2_staging.intake_capture_receipts(intake_capture_receipt_id),
+  source_response_content_id text NOT NULL CHECK (source_response_content_id ~ '^[0-9a-f]{64}$'),
+  canonical_text_sha256 text NOT NULL CHECK (canonical_text_sha256 ~ '^[0-9a-f]{64}$'),
+  canonical_text_byte_length bigint NOT NULL CHECK (canonical_text_byte_length > 0),
+  canonical_payload jsonb NOT NULL,
+  canonical_payload_storage_digest text GENERATED ALWAYS AS (
+    canonical_v2_staging.payload_digest(canonical_payload)
+  ) STORED
+);
+
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.canonical_text_verification_manifests (
+  verification_manifest_id text PRIMARY KEY CHECK (verification_manifest_id ~ '^[0-9a-f]{64}$'),
+  canonical_text_id text NOT NULL
+    REFERENCES canonical_v2_staging.canonical_text_conversions(canonical_text_id),
+  intake_capture_receipt_id text NOT NULL
+    REFERENCES canonical_v2_staging.intake_capture_receipts(intake_capture_receipt_id),
+  canonical_payload jsonb NOT NULL,
+  canonical_payload_storage_digest text GENERATED ALWAYS AS (
+    canonical_v2_staging.payload_digest(canonical_payload)
+  ) STORED
+);
+
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.source_admission_preparation_receipts (
+  source_admission_preparation_receipt_id text PRIMARY KEY
+    CHECK (source_admission_preparation_receipt_id ~ '^[0-9a-f]{64}$'),
+  immutable_source_document_id text NOT NULL
+    REFERENCES canonical_v2_staging.immutable_source_documents(immutable_source_document_id),
+  source_admission_manifest_id text NOT NULL
+    REFERENCES canonical_v2_staging.source_admission_manifests(source_admission_manifest_id),
+  verification_manifest_id text NOT NULL
+    REFERENCES canonical_v2_staging.canonical_text_verification_manifests(verification_manifest_id),
+  canonical_payload jsonb NOT NULL,
+  canonical_payload_storage_digest text GENERATED ALWAYS AS (
+    canonical_v2_staging.payload_digest(canonical_payload)
+  ) STORED
+);
+
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.semantic_extraction_input_envelopes (
+  semantic_extraction_input_envelope_id text PRIMARY KEY
+    CHECK (semantic_extraction_input_envelope_id ~ '^[0-9a-f]{64}$'),
+  immutable_source_document_id text NOT NULL
+    REFERENCES canonical_v2_staging.immutable_source_documents(immutable_source_document_id),
+  source_admission_manifest_id text NOT NULL
+    REFERENCES canonical_v2_staging.source_admission_manifests(source_admission_manifest_id),
+  verification_manifest_id text NOT NULL
+    REFERENCES canonical_v2_staging.canonical_text_verification_manifests(verification_manifest_id),
+  canonical_text_id text NOT NULL
+    REFERENCES canonical_v2_staging.canonical_text_conversions(canonical_text_id),
+  canonical_payload jsonb NOT NULL,
+  canonical_payload_storage_digest text GENERATED ALWAYS AS (
+    canonical_v2_staging.payload_digest(canonical_payload)
+  ) STORED
+);
+
 CREATE TABLE IF NOT EXISTS canonical_v2_staging.validated_semantic_graphs (
   validated_semantic_graph_id text PRIMARY KEY,
   closure_id text NOT NULL,
@@ -300,7 +402,9 @@ CREATE TABLE IF NOT EXISTS canonical_v2_staging.write_receipts (
   operation text NOT NULL CHECK (operation IN (
     'FIXTURE_DEAL_EXTRACTION_RUN',
     'FIXTURE_CORRECTION_AUTHORITY',
-    'INTAKE_CAPTURE'
+    'INTAKE_CAPTURE',
+    'STAGE_SOURCE_ARTIFACT_CHUNK',
+    'PREPARE_SOURCE_ADMISSION'
   )),
   idempotency_key text NOT NULL,
   input_digest text NOT NULL,
@@ -316,7 +420,9 @@ ALTER TABLE canonical_v2_staging.write_receipts
   ADD CONSTRAINT write_receipts_operation_check CHECK (operation IN (
     'FIXTURE_DEAL_EXTRACTION_RUN',
     'FIXTURE_CORRECTION_AUTHORITY',
-    'INTAKE_CAPTURE'
+    'INTAKE_CAPTURE',
+    'STAGE_SOURCE_ARTIFACT_CHUNK',
+    'PREPARE_SOURCE_ADMISSION'
   ));
 
 CREATE INDEX IF NOT EXISTS canonical_v2_excerpts_closure_idx
@@ -356,6 +462,12 @@ ALTER TABLE canonical_v2_staging.deals ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.immutable_source_documents ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.source_admission_manifests ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.intake_capture_receipts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE canonical_v2_staging.source_artifact_manifests ENABLE ROW LEVEL SECURITY;
+ALTER TABLE canonical_v2_staging.source_artifact_chunks ENABLE ROW LEVEL SECURITY;
+ALTER TABLE canonical_v2_staging.canonical_text_conversions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE canonical_v2_staging.canonical_text_verification_manifests ENABLE ROW LEVEL SECURITY;
+ALTER TABLE canonical_v2_staging.source_admission_preparation_receipts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE canonical_v2_staging.semantic_extraction_input_envelopes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.validated_semantic_graphs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.excerpts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.provision_instances ENABLE ROW LEVEL SECURITY;
@@ -410,6 +522,21 @@ DECLARE
   correction_materialisation_count integer;
   correction_map_entry_count integer;
   affected_rows integer;
+  capture jsonb;
+  capture_reference jsonb;
+  artifact_manifest jsonb;
+  staged_artifact_manifest jsonb;
+  artifact_chunk jsonb;
+  assembled_artifact bytea;
+  assembled_chunk_count integer;
+  assembled_chunk_sha256 jsonb;
+  conversion jsonb;
+  verification jsonb;
+  source_admission_bundle jsonb;
+  immutable_source jsonb;
+  source_admission jsonb;
+  preparation_receipt jsonb;
+  semantic_input jsonb;
 BEGIN
   IF p_environment IS DISTINCT FROM 'staging' THEN
     RAISE EXCEPTION 'canonical_v2_write is staging-only' USING ERRCODE = '42501';
@@ -417,7 +544,9 @@ BEGIN
   IF p_operation NOT IN (
     'FIXTURE_DEAL_EXTRACTION_RUN',
     'FIXTURE_CORRECTION_AUTHORITY',
-    'INTAKE_CAPTURE'
+    'INTAKE_CAPTURE',
+    'STAGE_SOURCE_ARTIFACT_CHUNK',
+    'PREPARE_SOURCE_ADMISSION'
   ) THEN
     RAISE EXCEPTION 'unsupported canonical operation' USING ERRCODE = '22023';
   END IF;
@@ -632,6 +761,792 @@ BEGIN
       p_input_digest,
       p_receipt->>'receiptId',
       p_receipt
+    );
+    RETURN p_receipt || jsonb_build_object('replayed', false);
+  END IF;
+
+  IF p_operation = 'STAGE_SOURCE_ARTIFACT_CHUNK' THEN
+    IF jsonb_typeof(p_write_set) IS DISTINCT FROM 'object'
+      OR NOT (p_write_set ?& ARRAY['source_artifact_manifest', 'source_artifact_chunk'])
+      OR p_write_set - ARRAY[
+        'source_artifact_manifest', 'source_artifact_chunk'
+      ]::text[] <> '{}'::jsonb
+      OR jsonb_typeof(p_write_set->'source_artifact_manifest') IS DISTINCT FROM 'object'
+      OR jsonb_typeof(p_write_set->'source_artifact_chunk') IS DISTINCT FROM 'object' THEN
+      RAISE EXCEPTION 'invalid source artifact chunk staging write set'
+        USING ERRCODE = '22023';
+    END IF;
+    IF p_residuals IS DISTINCT FROM '[]'::jsonb
+      OR p_quarantines IS DISTINCT FROM '[]'::jsonb THEN
+      RAISE EXCEPTION 'source artifact chunk staging does not accept residuals or quarantines'
+        USING ERRCODE = '22023';
+    END IF;
+
+    artifact_manifest := p_write_set->'source_artifact_manifest';
+    artifact_chunk := p_write_set->'source_artifact_chunk';
+    IF NOT (artifact_manifest ?& ARRAY[
+        'schema_version', 'artifact_kind', 'payload_encoding', 'payload_byte_length',
+        'payload_sha256', 'chunk_count', 'chunk_max_byte_length',
+        'ordered_chunk_sha256', 'artifact_manifest_id'
+      ])
+      OR artifact_manifest - ARRAY[
+        'schema_version', 'artifact_kind', 'payload_encoding', 'payload_byte_length',
+        'payload_sha256', 'chunk_count', 'chunk_max_byte_length',
+        'ordered_chunk_sha256', 'artifact_manifest_id'
+      ]::text[] <> '{}'::jsonb
+      OR artifact_manifest->>'schema_version' IS DISTINCT FROM 'SOURCE_ARTIFACT_MANIFEST/V1'
+      OR artifact_manifest->>'artifact_kind'
+        IS DISTINCT FROM 'SEC_HTML_CANONICAL_TEXT_CONVERSION/V2'
+      OR artifact_manifest->>'payload_encoding' IS DISTINCT FROM 'CANONICAL_JSON_UTF8/V1'
+      OR jsonb_typeof(artifact_manifest->'payload_byte_length') IS DISTINCT FROM 'number'
+      OR jsonb_typeof(artifact_manifest->'chunk_count') IS DISTINCT FROM 'number'
+      OR jsonb_typeof(artifact_manifest->'chunk_max_byte_length') IS DISTINCT FROM 'number'
+      OR jsonb_typeof(artifact_manifest->'ordered_chunk_sha256') IS DISTINCT FROM 'array'
+      OR EXISTS (
+        SELECT 1
+        FROM jsonb_each(artifact_manifest) AS manifest_field(key, value)
+        WHERE manifest_field.key = ANY(ARRAY[
+          'schema_version', 'artifact_kind', 'payload_encoding', 'payload_sha256',
+          'artifact_manifest_id'
+        ])
+          AND jsonb_typeof(manifest_field.value) IS DISTINCT FROM 'string'
+      )
+      OR artifact_manifest->>'payload_byte_length' !~ '^[1-9][0-9]{0,8}$'
+      OR (artifact_manifest->>'payload_byte_length')::bigint > 134217728
+      OR artifact_manifest->>'chunk_count' !~ '^[1-9][0-9]{0,3}$'
+      OR (artifact_manifest->>'chunk_count')::integer > 683
+      OR artifact_manifest->>'chunk_max_byte_length' IS DISTINCT FROM '196608'
+      OR (artifact_manifest->>'payload_byte_length')::bigint
+        <= ((artifact_manifest->>'chunk_count')::bigint - 1) * 196608
+      OR (artifact_manifest->>'payload_byte_length')::bigint
+        > (artifact_manifest->>'chunk_count')::bigint * 196608
+      OR artifact_manifest->>'payload_sha256' !~ '^[0-9a-f]{64}$'
+      OR artifact_manifest->>'artifact_manifest_id' !~ '^[0-9a-f]{64}$'
+      OR jsonb_array_length(artifact_manifest->'ordered_chunk_sha256')
+        <> (artifact_manifest->>'chunk_count')::integer
+      OR EXISTS (
+        SELECT 1
+        FROM jsonb_array_elements(artifact_manifest->'ordered_chunk_sha256') AS chunk_digest(value)
+        WHERE jsonb_typeof(chunk_digest.value) IS DISTINCT FROM 'string'
+          OR chunk_digest.value #>> '{}' !~ '^[0-9a-f]{64}$'
+      ) THEN
+      RAISE EXCEPTION 'source artifact manifest does not match its closed contract'
+        USING ERRCODE = '23514';
+    END IF;
+
+    IF NOT (artifact_chunk ?& ARRAY[
+        'schema_version', 'artifact_manifest_id', 'artifact_kind', 'chunk_ordinal',
+        'chunk_byte_length', 'chunk_sha256', 'chunk_payload_base64', 'chunk_id'
+      ])
+      OR artifact_chunk - ARRAY[
+        'schema_version', 'artifact_manifest_id', 'artifact_kind', 'chunk_ordinal',
+        'chunk_byte_length', 'chunk_sha256', 'chunk_payload_base64', 'chunk_id'
+      ]::text[] <> '{}'::jsonb
+      OR artifact_chunk->>'schema_version' IS DISTINCT FROM 'SOURCE_ARTIFACT_CHUNK/V1'
+      OR artifact_chunk->>'artifact_manifest_id'
+        IS DISTINCT FROM artifact_manifest->>'artifact_manifest_id'
+      OR artifact_chunk->>'artifact_kind' IS DISTINCT FROM artifact_manifest->>'artifact_kind'
+      OR jsonb_typeof(artifact_chunk->'chunk_ordinal') IS DISTINCT FROM 'number'
+      OR jsonb_typeof(artifact_chunk->'chunk_byte_length') IS DISTINCT FROM 'number'
+      OR jsonb_typeof(artifact_chunk->'chunk_payload_base64') IS DISTINCT FROM 'string'
+      OR EXISTS (
+        SELECT 1
+        FROM jsonb_each(artifact_chunk) AS chunk_field(key, value)
+        WHERE chunk_field.key = ANY(ARRAY[
+          'schema_version', 'artifact_manifest_id', 'artifact_kind', 'chunk_sha256',
+          'chunk_payload_base64', 'chunk_id'
+        ])
+          AND jsonb_typeof(chunk_field.value) IS DISTINCT FROM 'string'
+      )
+      OR artifact_chunk->>'chunk_ordinal' !~ '^(0|[1-9][0-9]{0,3})$'
+      OR (artifact_chunk->>'chunk_ordinal')::integer
+        >= (artifact_manifest->>'chunk_count')::integer
+      OR artifact_chunk->>'chunk_byte_length' !~ '^[1-9][0-9]{0,5}$'
+      OR (artifact_chunk->>'chunk_byte_length')::integer > 196608
+      OR (artifact_chunk->>'chunk_byte_length')::integer IS DISTINCT FROM (CASE
+        WHEN (artifact_chunk->>'chunk_ordinal')::integer
+          < ((artifact_manifest->>'chunk_count')::integer - 1) THEN 196608
+        ELSE (
+          (artifact_manifest->>'payload_byte_length')::bigint
+          - ((artifact_manifest->>'chunk_count')::bigint - 1) * 196608
+        )::integer
+      END)
+      OR artifact_chunk->>'chunk_sha256' !~ '^[0-9a-f]{64}$'
+      OR artifact_chunk->>'chunk_id' !~ '^[0-9a-f]{64}$'
+      OR artifact_manifest->'ordered_chunk_sha256'
+          ->> (artifact_chunk->>'chunk_ordinal')::integer
+        IS DISTINCT FROM artifact_chunk->>'chunk_sha256'
+      OR replace(encode(
+          decode(artifact_chunk->>'chunk_payload_base64', 'base64'), 'base64'
+        ), E'\n', '') IS DISTINCT FROM artifact_chunk->>'chunk_payload_base64'
+      OR octet_length(decode(artifact_chunk->>'chunk_payload_base64', 'base64'))
+        <> (artifact_chunk->>'chunk_byte_length')::integer
+      OR encode(extensions.digest(
+          decode(artifact_chunk->>'chunk_payload_base64', 'base64'), 'sha256'::text
+        ), 'hex') IS DISTINCT FROM artifact_chunk->>'chunk_sha256' THEN
+      RAISE EXCEPTION 'source artifact chunk does not match its closed contract'
+        USING ERRCODE = '23514';
+    END IF;
+
+    IF p_input_digest !~ '^[0-9a-f]{64}$'
+      OR jsonb_typeof(p_receipt) IS DISTINCT FROM 'object'
+      OR NOT (p_receipt ?& ARRAY[
+        'receiptId', 'operation', 'idempotencyKey', 'inputDigest', 'status',
+        'publishableObjectCount', 'residualCount', 'quarantinedClosureCount'
+      ])
+      OR p_receipt - ARRAY[
+        'receiptId', 'operation', 'idempotencyKey', 'inputDigest', 'status',
+        'publishableObjectCount', 'residualCount', 'quarantinedClosureCount'
+      ]::text[] <> '{}'::jsonb
+      OR p_receipt->>'receiptId' !~ '^[0-9a-f]{64}$'
+      OR p_receipt->>'operation' IS DISTINCT FROM p_operation
+      OR p_receipt->>'idempotencyKey' IS DISTINCT FROM p_idempotency_key
+      OR p_receipt->>'inputDigest' IS DISTINCT FROM p_input_digest
+      OR p_receipt->>'status' IS DISTINCT FROM 'COMMITTED'
+      OR p_receipt->>'publishableObjectCount' IS DISTINCT FROM '2'
+      OR p_receipt->>'residualCount' IS DISTINCT FROM '0'
+      OR p_receipt->>'quarantinedClosureCount' IS DISTINCT FROM '0' THEN
+      RAISE EXCEPTION 'invalid source artifact chunk staging receipt'
+        USING ERRCODE = '23514';
+    END IF;
+
+    item_id := artifact_manifest->>'artifact_manifest_id';
+    SELECT canonical_payload_storage_digest INTO existing_digest
+    FROM canonical_v2_staging.source_artifact_manifests
+    WHERE artifact_manifest_id = item_id;
+    IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(artifact_manifest) THEN
+      RAISE EXCEPTION 'source artifact manifest identity conflict' USING ERRCODE = '23505';
+    END IF;
+    INSERT INTO canonical_v2_staging.source_artifact_manifests(
+      artifact_manifest_id, artifact_kind, payload_encoding, payload_byte_length,
+      payload_sha256, chunk_count, chunk_max_byte_length, ordered_chunk_sha256,
+      canonical_payload
+    ) VALUES (
+      item_id, artifact_manifest->>'artifact_kind', artifact_manifest->>'payload_encoding',
+      (artifact_manifest->>'payload_byte_length')::bigint,
+      artifact_manifest->>'payload_sha256', (artifact_manifest->>'chunk_count')::integer,
+      (artifact_manifest->>'chunk_max_byte_length')::integer,
+      artifact_manifest->'ordered_chunk_sha256', artifact_manifest
+    ) ON CONFLICT (artifact_manifest_id) DO NOTHING;
+
+    SELECT canonical_payload_storage_digest INTO existing_digest
+    FROM canonical_v2_staging.source_artifact_chunks
+    WHERE artifact_manifest_id = item_id
+      AND chunk_ordinal = (artifact_chunk->>'chunk_ordinal')::integer;
+    IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(artifact_chunk) THEN
+      RAISE EXCEPTION 'source artifact chunk ordinal identity conflict' USING ERRCODE = '23505';
+    END IF;
+    INSERT INTO canonical_v2_staging.source_artifact_chunks(
+      artifact_manifest_id, chunk_ordinal, artifact_kind, chunk_byte_length,
+      chunk_sha256, chunk_id, chunk_payload, canonical_payload
+    ) VALUES (
+      item_id, (artifact_chunk->>'chunk_ordinal')::integer,
+      artifact_chunk->>'artifact_kind', (artifact_chunk->>'chunk_byte_length')::integer,
+      artifact_chunk->>'chunk_sha256', artifact_chunk->>'chunk_id',
+      decode(artifact_chunk->>'chunk_payload_base64', 'base64'), artifact_chunk
+    ) ON CONFLICT (artifact_manifest_id, chunk_ordinal) DO NOTHING;
+
+    INSERT INTO canonical_v2_staging.write_receipts(
+      operation, idempotency_key, input_digest, receipt_id, canonical_payload
+    ) VALUES (
+      p_operation, p_idempotency_key, p_input_digest, p_receipt->>'receiptId', p_receipt
+    );
+    RETURN p_receipt || jsonb_build_object('replayed', false);
+  END IF;
+
+  IF p_operation = 'PREPARE_SOURCE_ADMISSION' THEN
+    IF jsonb_typeof(p_write_set) IS DISTINCT FROM 'object'
+      OR NOT (p_write_set ?& ARRAY[
+        'capture_reference', 'conversion_artifact_manifest',
+        'verification', 'source_admission_bundle'
+      ])
+      OR p_write_set - ARRAY[
+        'capture_reference', 'conversion_artifact_manifest',
+        'verification', 'source_admission_bundle'
+      ]::text[] <> '{}'::jsonb THEN
+      RAISE EXCEPTION 'invalid source admission preparation write set'
+        USING ERRCODE = '22023';
+    END IF;
+    IF p_residuals IS DISTINCT FROM '[]'::jsonb
+      OR p_quarantines IS DISTINCT FROM '[]'::jsonb THEN
+      RAISE EXCEPTION 'source admission preparation does not accept residuals or quarantines'
+        USING ERRCODE = '22023';
+    END IF;
+
+    capture_reference := p_write_set->'capture_reference';
+    artifact_manifest := p_write_set->'conversion_artifact_manifest';
+    verification := p_write_set->'verification';
+    source_admission_bundle := p_write_set->'source_admission_bundle';
+    IF jsonb_typeof(capture_reference) IS DISTINCT FROM 'object'
+      OR jsonb_typeof(artifact_manifest) IS DISTINCT FROM 'object'
+      OR jsonb_typeof(verification) IS DISTINCT FROM 'object'
+      OR jsonb_typeof(source_admission_bundle) IS DISTINCT FROM 'object' THEN
+      RAISE EXCEPTION 'source admission preparation objects are required'
+        USING ERRCODE = '22023';
+    END IF;
+
+    IF NOT (capture_reference ?& ARRAY[
+        'schema_version', 'intake_capture_receipt_id', 'source_response_content_id'
+      ])
+      OR capture_reference - ARRAY[
+        'schema_version', 'intake_capture_receipt_id', 'source_response_content_id'
+      ]::text[] <> '{}'::jsonb
+      OR capture_reference->>'schema_version' IS DISTINCT FROM 'INTAKE_CAPTURE_REFERENCE/V1'
+      OR capture_reference->>'intake_capture_receipt_id' !~ '^[0-9a-f]{64}$'
+      OR capture_reference->>'source_response_content_id' !~ '^[0-9a-f]{64}$' THEN
+      RAISE EXCEPTION 'intake capture reference does not match its closed contract'
+        USING ERRCODE = '23514';
+    END IF;
+
+    SELECT canonical_payload INTO capture
+    FROM canonical_v2_staging.intake_capture_receipts
+    WHERE intake_capture_receipt_id = capture_reference->>'intake_capture_receipt_id';
+    IF NOT FOUND THEN
+      RAISE EXCEPTION 'source admission capture was not written by INTAKE_CAPTURE'
+        USING ERRCODE = '23503';
+    END IF;
+    IF capture->>'source_response_content_id'
+        IS DISTINCT FROM capture_reference->>'source_response_content_id' THEN
+      RAISE EXCEPTION 'stored intake capture does not match the supplied reference'
+        USING ERRCODE = '23514';
+    END IF;
+
+    SELECT canonical_payload INTO staged_artifact_manifest
+    FROM canonical_v2_staging.source_artifact_manifests
+    WHERE artifact_manifest_id = artifact_manifest->>'artifact_manifest_id';
+    IF NOT FOUND THEN
+      RAISE EXCEPTION 'conversion artifact manifest was not staged'
+        USING ERRCODE = '23503';
+    END IF;
+    IF staged_artifact_manifest IS DISTINCT FROM artifact_manifest THEN
+      RAISE EXCEPTION 'staged conversion artifact manifest does not match the supplied manifest'
+        USING ERRCODE = '23514';
+    END IF;
+    IF artifact_manifest->>'schema_version' IS DISTINCT FROM 'SOURCE_ARTIFACT_MANIFEST/V1'
+      OR artifact_manifest->>'artifact_kind'
+        IS DISTINCT FROM 'SEC_HTML_CANONICAL_TEXT_CONVERSION/V2'
+      OR artifact_manifest->>'payload_encoding' IS DISTINCT FROM 'CANONICAL_JSON_UTF8/V1'
+      OR artifact_manifest->>'chunk_max_byte_length' IS DISTINCT FROM '196608' THEN
+      RAISE EXCEPTION 'conversion artifact manifest has invalid kind or encoding'
+        USING ERRCODE = '23514';
+    END IF;
+
+    SELECT
+      count(*)::integer,
+      jsonb_agg(to_jsonb(staged_chunk.chunk_sha256) ORDER BY staged_chunk.chunk_ordinal),
+      decode(
+        string_agg(encode(staged_chunk.chunk_payload, 'hex'), '' ORDER BY staged_chunk.chunk_ordinal),
+        'hex'
+      )
+    INTO assembled_chunk_count, assembled_chunk_sha256, assembled_artifact
+    FROM canonical_v2_staging.source_artifact_chunks AS staged_chunk
+    WHERE staged_chunk.artifact_manifest_id = artifact_manifest->>'artifact_manifest_id'
+      AND staged_chunk.artifact_kind = artifact_manifest->>'artifact_kind';
+
+    IF assembled_chunk_count IS DISTINCT FROM (artifact_manifest->>'chunk_count')::integer
+      OR assembled_chunk_sha256 IS DISTINCT FROM artifact_manifest->'ordered_chunk_sha256'
+      OR assembled_artifact IS NULL
+      OR octet_length(assembled_artifact)
+        <> (artifact_manifest->>'payload_byte_length')::bigint
+      OR encode(extensions.digest(assembled_artifact, 'sha256'::text), 'hex')
+        IS DISTINCT FROM artifact_manifest->>'payload_sha256' THEN
+      RAISE EXCEPTION 'staged conversion artifact is missing, extra, mixed or tampered'
+        USING ERRCODE = '23514';
+    END IF;
+
+    conversion := convert_from(assembled_artifact, 'UTF8')::jsonb;
+    IF jsonb_typeof(conversion) IS DISTINCT FROM 'object' THEN
+      RAISE EXCEPTION 'assembled conversion artifact is not one canonical JSON object'
+        USING ERRCODE = '23514';
+    END IF;
+
+    IF NOT (conversion ?& ARRAY[
+        'schema_version', 'conversion_stage', 'verification_status',
+        'source_admission_status', 'source_response_content_id',
+        'intake_capture_receipt_id', 'converter_digest', 'converter_config_digest',
+        'canonical_text', 'canonical_text_sha256', 'canonical_text_byte_length',
+        'source_map_encoding', 'source_map_payload_base64',
+        'source_map_compressed_sha256', 'source_map_uncompressed_byte_length',
+        'input_region_count', 'output_mapping_count', 'source_map_digest',
+        'canonical_text_id'
+      ])
+      OR conversion - ARRAY[
+        'schema_version', 'conversion_stage', 'verification_status',
+        'source_admission_status', 'source_response_content_id',
+        'intake_capture_receipt_id', 'converter_digest', 'converter_config_digest',
+        'canonical_text', 'canonical_text_sha256', 'canonical_text_byte_length',
+        'source_map_encoding', 'source_map_payload_base64',
+        'source_map_compressed_sha256', 'source_map_uncompressed_byte_length',
+        'input_region_count', 'output_mapping_count', 'source_map_digest',
+        'canonical_text_id'
+      ]::text[] <> '{}'::jsonb
+      OR conversion->>'schema_version' IS DISTINCT FROM 'SEC_HTML_CANONICAL_TEXT_CONVERSION/V2'
+      OR conversion->>'conversion_stage' IS DISTINCT FROM 'CONVERSION_ONLY'
+      OR conversion->>'verification_status' IS DISTINCT FROM 'NOT_ATTEMPTED'
+      OR conversion->>'source_admission_status' IS DISTINCT FROM 'NOT_ATTEMPTED'
+      OR conversion->>'source_map_encoding'
+        IS DISTINCT FROM 'DEFLATE_RAW_CANONICAL_JSON_TUPLES/V1'
+      OR jsonb_typeof(conversion->'canonical_text') IS DISTINCT FROM 'string'
+      OR jsonb_typeof(conversion->'source_map_payload_base64') IS DISTINCT FROM 'string'
+      OR jsonb_typeof(conversion->'canonical_text_byte_length') IS DISTINCT FROM 'number'
+      OR jsonb_typeof(conversion->'source_map_uncompressed_byte_length')
+        IS DISTINCT FROM 'number'
+      OR jsonb_typeof(conversion->'input_region_count') IS DISTINCT FROM 'number'
+      OR jsonb_typeof(conversion->'output_mapping_count') IS DISTINCT FROM 'number'
+      OR conversion->>'canonical_text_byte_length' !~ '^[1-9][0-9]{0,18}$'
+      OR conversion->>'source_map_uncompressed_byte_length' !~ '^[1-9][0-9]{0,7}$'
+      OR (conversion->>'source_map_uncompressed_byte_length')::bigint > 67108864
+      OR conversion->>'input_region_count' !~ '^(0|[1-9][0-9]{0,7})$'
+      OR conversion->>'output_mapping_count' !~ '^(0|[1-9][0-9]{0,7})$'
+      OR octet_length(convert_to(conversion->>'canonical_text', 'UTF8'))
+        <> (conversion->>'canonical_text_byte_length')::bigint
+      OR encode(extensions.digest(
+          convert_to(conversion->>'canonical_text', 'UTF8'), 'sha256'::text
+        ), 'hex') IS DISTINCT FROM conversion->>'canonical_text_sha256'
+      OR replace(encode(
+          decode(conversion->>'source_map_payload_base64', 'base64'), 'base64'
+        ), E'\n', '') IS DISTINCT FROM conversion->>'source_map_payload_base64'
+      OR octet_length(decode(conversion->>'source_map_payload_base64', 'base64'))
+        NOT BETWEEN 1 AND 67108864
+      OR encode(extensions.digest(
+          decode(conversion->>'source_map_payload_base64', 'base64'), 'sha256'::text
+        ), 'hex') IS DISTINCT FROM conversion->>'source_map_compressed_sha256'
+      OR conversion->>'source_response_content_id'
+        IS DISTINCT FROM capture->>'source_response_content_id'
+      OR conversion->>'intake_capture_receipt_id'
+        IS DISTINCT FROM capture->>'intake_capture_receipt_id'
+      OR EXISTS (
+        SELECT 1 FROM jsonb_each(conversion) AS conversion_field(key, value)
+        WHERE conversion_field.key = ANY(ARRAY[
+          'schema_version', 'conversion_stage', 'verification_status',
+          'source_admission_status', 'source_response_content_id',
+          'intake_capture_receipt_id', 'converter_digest', 'converter_config_digest',
+          'canonical_text', 'canonical_text_sha256', 'source_map_encoding',
+          'source_map_payload_base64', 'source_map_compressed_sha256',
+          'source_map_digest', 'canonical_text_id'
+        ]) AND jsonb_typeof(conversion_field.value) IS DISTINCT FROM 'string'
+      )
+      OR EXISTS (
+        SELECT 1 FROM unnest(ARRAY[
+          conversion->>'source_response_content_id', conversion->>'intake_capture_receipt_id',
+          conversion->>'converter_digest', conversion->>'converter_config_digest',
+          conversion->>'canonical_text_sha256', conversion->>'source_map_compressed_sha256',
+          conversion->>'source_map_digest', conversion->>'canonical_text_id'
+        ]) AS digest(value) WHERE digest.value !~ '^[0-9a-f]{64}$'
+      ) THEN
+      RAISE EXCEPTION 'conversion does not match the closed canonical text contract'
+        USING ERRCODE = '23514';
+    END IF;
+
+    IF NOT (verification ?& ARRAY[
+        'schema_version', 'verification_stage', 'verification_status',
+        'source_admission_status', 'source_response_content_id',
+        'intake_capture_receipt_id', 'canonical_text_id', 'converter_digest',
+        'converter_config_digest', 'verifier_digest', 'canonical_text_sha256',
+        'canonical_text_byte_length', 'source_map_digest', 'input_region_count',
+        'output_mapping_count', 'verification_manifest_id'
+      ])
+      OR verification - ARRAY[
+        'schema_version', 'verification_stage', 'verification_status',
+        'source_admission_status', 'source_response_content_id',
+        'intake_capture_receipt_id', 'canonical_text_id', 'converter_digest',
+        'converter_config_digest', 'verifier_digest', 'canonical_text_sha256',
+        'canonical_text_byte_length', 'source_map_digest', 'input_region_count',
+        'output_mapping_count', 'verification_manifest_id'
+      ]::text[] <> '{}'::jsonb
+      OR verification->>'schema_version'
+        IS DISTINCT FROM 'CANONICAL_TEXT_VERIFICATION_MANIFEST/V1'
+      OR verification->>'verification_stage'
+        IS DISTINCT FROM 'INDEPENDENT_CANONICAL_TEXT_VERIFICATION'
+      OR verification->>'verification_status' IS DISTINCT FROM 'PASS'
+      OR verification->>'source_admission_status' IS DISTINCT FROM 'NOT_ATTEMPTED'
+      OR jsonb_typeof(verification->'canonical_text_byte_length') IS DISTINCT FROM 'number'
+      OR jsonb_typeof(verification->'input_region_count') IS DISTINCT FROM 'number'
+      OR jsonb_typeof(verification->'output_mapping_count') IS DISTINCT FROM 'number'
+      OR verification->>'canonical_text_byte_length'
+        IS DISTINCT FROM conversion->>'canonical_text_byte_length'
+      OR verification->>'input_region_count'
+        IS DISTINCT FROM conversion->>'input_region_count'
+      OR verification->>'output_mapping_count'
+        IS DISTINCT FROM conversion->>'output_mapping_count'
+      OR EXISTS (
+        SELECT 1 FROM unnest(ARRAY[
+          verification->>'source_response_content_id', verification->>'intake_capture_receipt_id',
+          verification->>'canonical_text_id', verification->>'converter_digest',
+          verification->>'converter_config_digest', verification->>'verifier_digest',
+          verification->>'canonical_text_sha256', verification->>'source_map_digest',
+          verification->>'verification_manifest_id'
+        ]) AS digest(value) WHERE digest.value !~ '^[0-9a-f]{64}$'
+      )
+      OR verification->>'source_response_content_id'
+        IS DISTINCT FROM conversion->>'source_response_content_id'
+      OR verification->>'intake_capture_receipt_id'
+        IS DISTINCT FROM conversion->>'intake_capture_receipt_id'
+      OR verification->>'canonical_text_id' IS DISTINCT FROM conversion->>'canonical_text_id'
+      OR verification->>'converter_digest' IS DISTINCT FROM conversion->>'converter_digest'
+      OR verification->>'converter_config_digest'
+        IS DISTINCT FROM conversion->>'converter_config_digest'
+      OR verification->>'canonical_text_sha256'
+        IS DISTINCT FROM conversion->>'canonical_text_sha256'
+      OR verification->>'source_map_digest' IS DISTINCT FROM conversion->>'source_map_digest' THEN
+      RAISE EXCEPTION 'verification does not match the closed PASS manifest contract'
+        USING ERRCODE = '23514';
+    END IF;
+
+    IF NOT (source_admission_bundle ?& ARRAY[
+        'schema_version', 'immutable_source_document', 'source_admission_manifest',
+        'source_admission_preparation_receipt', 'semantic_extraction_input_envelope',
+        'verified_sec_source_admission_bundle_id'
+      ])
+      OR source_admission_bundle - ARRAY[
+        'schema_version', 'immutable_source_document', 'source_admission_manifest',
+        'source_admission_preparation_receipt', 'semantic_extraction_input_envelope',
+        'verified_sec_source_admission_bundle_id'
+      ]::text[] <> '{}'::jsonb
+      OR source_admission_bundle->>'schema_version'
+        IS DISTINCT FROM 'VERIFIED_SEC_SOURCE_ADMISSION_BUNDLE/V1'
+      OR source_admission_bundle->>'verified_sec_source_admission_bundle_id'
+        !~ '^[0-9a-f]{64}$' THEN
+      RAISE EXCEPTION 'source admission bundle does not match its closed contract'
+        USING ERRCODE = '23514';
+    END IF;
+
+    immutable_source := source_admission_bundle->'immutable_source_document';
+    source_admission := source_admission_bundle->'source_admission_manifest';
+    preparation_receipt := source_admission_bundle->'source_admission_preparation_receipt';
+    semantic_input := source_admission_bundle->'semantic_extraction_input_envelope';
+    IF jsonb_typeof(immutable_source) IS DISTINCT FROM 'object'
+      OR NOT (immutable_source ?& ARRAY[
+        'schema_version', 'source_kind', 'authority_representation',
+        'source_response_content_id', 'intake_capture_receipt_id', 'response_content_type',
+        'response_bytes_sha256', 'response_byte_length', 'canonical_text_id',
+        'canonical_text_sha256', 'canonical_text_byte_length', 'converter_digest',
+        'converter_config_digest', 'source_map_encoding', 'source_map_compressed_sha256',
+        'source_map_uncompressed_byte_length', 'input_region_count',
+        'output_mapping_count', 'source_map_digest', 'verifier_digest',
+        'verification_manifest_id', 'immutable_source_document_id'
+      ])
+      OR immutable_source - ARRAY[
+        'schema_version', 'source_kind', 'authority_representation',
+        'source_response_content_id', 'intake_capture_receipt_id', 'response_content_type',
+        'response_bytes_sha256', 'response_byte_length', 'canonical_text_id',
+        'canonical_text_sha256', 'canonical_text_byte_length', 'converter_digest',
+        'converter_config_digest', 'source_map_encoding', 'source_map_compressed_sha256',
+        'source_map_uncompressed_byte_length', 'input_region_count',
+        'output_mapping_count', 'source_map_digest', 'verifier_digest',
+        'verification_manifest_id', 'immutable_source_document_id'
+      ]::text[] <> '{}'::jsonb
+      OR immutable_source->>'schema_version' IS DISTINCT FROM 'IMMUTABLE_SOURCE_DOCUMENT/V2'
+      OR immutable_source->>'source_kind' IS DISTINCT FROM 'ORIGINAL_BYTES'
+      OR immutable_source->>'authority_representation'
+        IS DISTINCT FROM 'ORIGINAL_HTTP_RESPONSE_BYTES'
+      OR immutable_source->>'response_content_type' IS DISTINCT FROM 'text/html'
+      OR immutable_source->>'source_response_content_id'
+        IS DISTINCT FROM capture->>'source_response_content_id'
+      OR immutable_source->>'intake_capture_receipt_id'
+        IS DISTINCT FROM capture->>'intake_capture_receipt_id'
+      OR immutable_source->>'response_bytes_sha256'
+        IS DISTINCT FROM capture->>'response_bytes_sha256'
+      OR immutable_source->>'response_byte_length'
+        IS DISTINCT FROM capture->>'response_byte_length'
+      OR immutable_source->>'canonical_text_id' IS DISTINCT FROM conversion->>'canonical_text_id'
+      OR immutable_source->>'canonical_text_sha256'
+        IS DISTINCT FROM conversion->>'canonical_text_sha256'
+      OR immutable_source->>'canonical_text_byte_length'
+        IS DISTINCT FROM conversion->>'canonical_text_byte_length'
+      OR immutable_source->>'converter_digest' IS DISTINCT FROM conversion->>'converter_digest'
+      OR immutable_source->>'converter_config_digest'
+        IS DISTINCT FROM conversion->>'converter_config_digest'
+      OR immutable_source->'source_map_encoding'
+        IS DISTINCT FROM conversion->'source_map_encoding'
+      OR immutable_source->'source_map_compressed_sha256'
+        IS DISTINCT FROM conversion->'source_map_compressed_sha256'
+      OR immutable_source->'source_map_uncompressed_byte_length'
+        IS DISTINCT FROM conversion->'source_map_uncompressed_byte_length'
+      OR immutable_source->'input_region_count'
+        IS DISTINCT FROM conversion->'input_region_count'
+      OR immutable_source->'output_mapping_count'
+        IS DISTINCT FROM conversion->'output_mapping_count'
+      OR immutable_source->'source_map_digest' IS DISTINCT FROM conversion->'source_map_digest'
+      OR immutable_source->>'verifier_digest' IS DISTINCT FROM verification->>'verifier_digest'
+      OR immutable_source->>'verification_manifest_id'
+        IS DISTINCT FROM verification->>'verification_manifest_id'
+      OR EXISTS (
+        SELECT 1 FROM unnest(ARRAY[
+          immutable_source->>'source_response_content_id',
+          immutable_source->>'intake_capture_receipt_id',
+          immutable_source->>'response_bytes_sha256', immutable_source->>'canonical_text_id',
+          immutable_source->>'canonical_text_sha256', immutable_source->>'converter_digest',
+          immutable_source->>'converter_config_digest',
+          immutable_source->>'source_map_compressed_sha256', immutable_source->>'source_map_digest',
+          immutable_source->>'verifier_digest', immutable_source->>'verification_manifest_id',
+          immutable_source->>'immutable_source_document_id'
+        ]) AS digest(value) WHERE digest.value !~ '^[0-9a-f]{64}$'
+      ) THEN
+      RAISE EXCEPTION 'immutable source does not match verified source lineage'
+        USING ERRCODE = '23514';
+    END IF;
+
+    IF jsonb_typeof(source_admission) IS DISTINCT FROM 'object'
+      OR NOT (source_admission ?& ARRAY[
+        'schema_version', 'admission_state', 'source_kind', 'immutable_source_document_id',
+        'source_response_content_id', 'canonical_text_id', 'verification_manifest_id',
+        'admitted_intervals', 'excluded_intervals', 'conversion_loss_residual_ids',
+        'discrepancy_count', 'blocking_discrepancy_count', 'coverage_proof_digest',
+        'source_admission_manifest_id'
+      ])
+      OR source_admission - ARRAY[
+        'schema_version', 'admission_state', 'source_kind', 'immutable_source_document_id',
+        'source_response_content_id', 'canonical_text_id', 'verification_manifest_id',
+        'admitted_intervals', 'excluded_intervals', 'conversion_loss_residual_ids',
+        'discrepancy_count', 'blocking_discrepancy_count', 'coverage_proof_digest',
+        'source_admission_manifest_id'
+      ]::text[] <> '{}'::jsonb
+      OR source_admission->>'schema_version' IS DISTINCT FROM 'SOURCE_ADMISSION_MANIFEST/V2'
+      OR source_admission->>'admission_state' IS DISTINCT FROM 'VERIFIED'
+      OR source_admission->>'source_kind' IS DISTINCT FROM 'ORIGINAL_BYTES'
+      OR source_admission->>'immutable_source_document_id'
+        IS DISTINCT FROM immutable_source->>'immutable_source_document_id'
+      OR source_admission->>'source_response_content_id'
+        IS DISTINCT FROM capture->>'source_response_content_id'
+      OR source_admission->>'canonical_text_id' IS DISTINCT FROM conversion->>'canonical_text_id'
+      OR source_admission->>'verification_manifest_id'
+        IS DISTINCT FROM verification->>'verification_manifest_id'
+      OR source_admission->'admitted_intervals' IS DISTINCT FROM jsonb_build_array(
+        jsonb_build_object('start', 0, 'end', conversion->'canonical_text_byte_length')
+      )
+      OR source_admission->'excluded_intervals' IS DISTINCT FROM '[]'::jsonb
+      OR source_admission->'conversion_loss_residual_ids' IS DISTINCT FROM '[]'::jsonb
+      OR source_admission->>'discrepancy_count' IS DISTINCT FROM '0'
+      OR source_admission->>'blocking_discrepancy_count' IS DISTINCT FROM '0'
+      OR EXISTS (
+        SELECT 1 FROM unnest(ARRAY[
+          source_admission->>'immutable_source_document_id',
+          source_admission->>'source_response_content_id', source_admission->>'canonical_text_id',
+          source_admission->>'verification_manifest_id', source_admission->>'coverage_proof_digest',
+          source_admission->>'source_admission_manifest_id'
+        ]) AS digest(value) WHERE digest.value !~ '^[0-9a-f]{64}$'
+      ) THEN
+      RAISE EXCEPTION 'source admission must be VERIFIED with complete zero-discrepancy coverage'
+        USING ERRCODE = '23514';
+    END IF;
+
+    IF jsonb_typeof(preparation_receipt) IS DISTINCT FROM 'object'
+      OR NOT (preparation_receipt ?& ARRAY[
+        'schema_version', 'operation', 'action', 'preparation_slot_id',
+        'immutable_source_document_id', 'canonical_text_id', 'verification_manifest_id',
+        'source_admission_manifest_id', 'semantic_extraction_status', 'terminal_status',
+        'source_admission_preparation_receipt_id'
+      ])
+      OR preparation_receipt - ARRAY[
+        'schema_version', 'operation', 'action', 'preparation_slot_id',
+        'immutable_source_document_id', 'canonical_text_id', 'verification_manifest_id',
+        'source_admission_manifest_id', 'semantic_extraction_status', 'terminal_status',
+        'source_admission_preparation_receipt_id'
+      ]::text[] <> '{}'::jsonb
+      OR preparation_receipt->>'schema_version'
+        IS DISTINCT FROM 'SOURCE_ADMISSION_PREPARATION_RECEIPT/V1'
+      OR preparation_receipt->>'operation' IS DISTINCT FROM 'DEAL_SCOPE_RUN'
+      OR preparation_receipt->>'action' IS DISTINCT FROM 'PREPARE_SOURCE_ADMISSION'
+      OR preparation_receipt->>'semantic_extraction_status' IS DISTINCT FROM 'NOT_ATTEMPTED'
+      OR preparation_receipt->>'terminal_status' IS DISTINCT FROM 'PASS'
+      OR preparation_receipt->>'immutable_source_document_id'
+        IS DISTINCT FROM immutable_source->>'immutable_source_document_id'
+      OR preparation_receipt->>'canonical_text_id' IS DISTINCT FROM conversion->>'canonical_text_id'
+      OR preparation_receipt->>'verification_manifest_id'
+        IS DISTINCT FROM verification->>'verification_manifest_id'
+      OR preparation_receipt->>'source_admission_manifest_id'
+        IS DISTINCT FROM source_admission->>'source_admission_manifest_id'
+      OR EXISTS (
+        SELECT 1 FROM unnest(ARRAY[
+          preparation_receipt->>'preparation_slot_id',
+          preparation_receipt->>'immutable_source_document_id',
+          preparation_receipt->>'canonical_text_id', preparation_receipt->>'verification_manifest_id',
+          preparation_receipt->>'source_admission_manifest_id',
+          preparation_receipt->>'source_admission_preparation_receipt_id'
+        ]) AS digest(value) WHERE digest.value !~ '^[0-9a-f]{64}$'
+      ) THEN
+      RAISE EXCEPTION 'source admission preparation receipt has invalid lineage or status'
+        USING ERRCODE = '23514';
+    END IF;
+
+    IF jsonb_typeof(semantic_input) IS DISTINCT FROM 'object'
+      OR NOT (semantic_input ?& ARRAY[
+        'schema_version', 'input_status', 'coordinate_system', 'immutable_source_document_id',
+        'source_admission_manifest_id', 'canonical_text_id', 'canonical_text_sha256',
+        'canonical_text_byte_length', 'source_map_encoding', 'source_map_compressed_sha256',
+        'source_map_uncompressed_byte_length', 'input_region_count',
+        'output_mapping_count', 'source_map_digest', 'verification_manifest_id',
+        'admitted_intervals', 'excluded_intervals', 'semantic_extraction_status',
+        'semantic_extraction_input_envelope_id'
+      ])
+      OR semantic_input - ARRAY[
+        'schema_version', 'input_status', 'coordinate_system', 'immutable_source_document_id',
+        'source_admission_manifest_id', 'canonical_text_id', 'canonical_text_sha256',
+        'canonical_text_byte_length', 'source_map_encoding', 'source_map_compressed_sha256',
+        'source_map_uncompressed_byte_length', 'input_region_count',
+        'output_mapping_count', 'source_map_digest', 'verification_manifest_id',
+        'admitted_intervals', 'excluded_intervals', 'semantic_extraction_status',
+        'semantic_extraction_input_envelope_id'
+      ]::text[] <> '{}'::jsonb
+      OR semantic_input->>'schema_version'
+        IS DISTINCT FROM 'SEMANTIC_EXTRACTION_INPUT_ENVELOPE/V1'
+      OR semantic_input->>'input_status' IS DISTINCT FROM 'READY_FOR_OFFLINE_PROPOSAL'
+      OR semantic_input->>'coordinate_system' IS DISTINCT FROM 'UTF8_CANONICAL_TEXT_HALF_OPEN'
+      OR semantic_input->>'semantic_extraction_status' IS DISTINCT FROM 'NOT_ATTEMPTED'
+      OR semantic_input->>'immutable_source_document_id'
+        IS DISTINCT FROM immutable_source->>'immutable_source_document_id'
+      OR semantic_input->>'source_admission_manifest_id'
+        IS DISTINCT FROM source_admission->>'source_admission_manifest_id'
+      OR semantic_input->>'canonical_text_id' IS DISTINCT FROM conversion->>'canonical_text_id'
+      OR semantic_input->>'canonical_text_sha256'
+        IS DISTINCT FROM conversion->>'canonical_text_sha256'
+      OR semantic_input->>'canonical_text_byte_length'
+        IS DISTINCT FROM conversion->>'canonical_text_byte_length'
+      OR semantic_input->'source_map_encoding'
+        IS DISTINCT FROM conversion->'source_map_encoding'
+      OR semantic_input->'source_map_compressed_sha256'
+        IS DISTINCT FROM conversion->'source_map_compressed_sha256'
+      OR semantic_input->'source_map_uncompressed_byte_length'
+        IS DISTINCT FROM conversion->'source_map_uncompressed_byte_length'
+      OR semantic_input->'input_region_count'
+        IS DISTINCT FROM conversion->'input_region_count'
+      OR semantic_input->'output_mapping_count'
+        IS DISTINCT FROM conversion->'output_mapping_count'
+      OR semantic_input->'source_map_digest' IS DISTINCT FROM conversion->'source_map_digest'
+      OR semantic_input->>'verification_manifest_id'
+        IS DISTINCT FROM verification->>'verification_manifest_id'
+      OR semantic_input->'admitted_intervals'
+        IS DISTINCT FROM source_admission->'admitted_intervals'
+      OR semantic_input->'excluded_intervals' IS DISTINCT FROM '[]'::jsonb
+      OR EXISTS (
+        SELECT 1 FROM unnest(ARRAY[
+          semantic_input->>'immutable_source_document_id',
+          semantic_input->>'source_admission_manifest_id', semantic_input->>'canonical_text_id',
+          semantic_input->>'canonical_text_sha256',
+          semantic_input->>'source_map_compressed_sha256', semantic_input->>'source_map_digest',
+          semantic_input->>'verification_manifest_id',
+          semantic_input->>'semantic_extraction_input_envelope_id'
+        ]) AS digest(value) WHERE digest.value !~ '^[0-9a-f]{64}$'
+      ) THEN
+      RAISE EXCEPTION 'semantic extraction input is not the exact admitted source envelope'
+        USING ERRCODE = '23514';
+    END IF;
+
+    IF p_input_digest !~ '^[0-9a-f]{64}$'
+      OR jsonb_typeof(p_receipt) IS DISTINCT FROM 'object'
+      OR NOT (p_receipt ?& ARRAY[
+        'receiptId', 'operation', 'idempotencyKey', 'inputDigest', 'status',
+        'publishableObjectCount', 'residualCount', 'quarantinedClosureCount'
+      ])
+      OR p_receipt - ARRAY[
+        'receiptId', 'operation', 'idempotencyKey', 'inputDigest', 'status',
+        'publishableObjectCount', 'residualCount', 'quarantinedClosureCount'
+      ]::text[] <> '{}'::jsonb
+      OR p_receipt->>'receiptId' !~ '^[0-9a-f]{64}$'
+      OR p_receipt->>'operation' IS DISTINCT FROM p_operation
+      OR p_receipt->>'idempotencyKey' IS DISTINCT FROM p_idempotency_key
+      OR p_receipt->>'inputDigest' IS DISTINCT FROM p_input_digest
+      OR p_receipt->>'status' IS DISTINCT FROM 'COMMITTED'
+      OR p_receipt->>'publishableObjectCount' IS DISTINCT FROM '6'
+      OR p_receipt->>'residualCount' IS DISTINCT FROM '0'
+      OR p_receipt->>'quarantinedClosureCount' IS DISTINCT FROM '0' THEN
+      RAISE EXCEPTION 'invalid source admission preparation write receipt'
+        USING ERRCODE = '23514';
+    END IF;
+
+    item_id := conversion->>'canonical_text_id';
+    SELECT canonical_payload_storage_digest INTO existing_digest
+    FROM canonical_v2_staging.canonical_text_conversions WHERE canonical_text_id = item_id;
+    IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(conversion) THEN
+      RAISE EXCEPTION 'canonical text conversion identity conflict' USING ERRCODE = '23505';
+    END IF;
+    INSERT INTO canonical_v2_staging.canonical_text_conversions(
+      canonical_text_id, intake_capture_receipt_id, source_response_content_id,
+      canonical_text_sha256, canonical_text_byte_length, canonical_payload
+    ) VALUES (
+      item_id, conversion->>'intake_capture_receipt_id',
+      conversion->>'source_response_content_id', conversion->>'canonical_text_sha256',
+      (conversion->>'canonical_text_byte_length')::bigint, conversion
+    ) ON CONFLICT (canonical_text_id) DO NOTHING;
+
+    item_id := verification->>'verification_manifest_id';
+    SELECT canonical_payload_storage_digest INTO existing_digest
+    FROM canonical_v2_staging.canonical_text_verification_manifests
+    WHERE verification_manifest_id = item_id;
+    IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(verification) THEN
+      RAISE EXCEPTION 'canonical text verification identity conflict' USING ERRCODE = '23505';
+    END IF;
+    INSERT INTO canonical_v2_staging.canonical_text_verification_manifests(
+      verification_manifest_id, canonical_text_id, intake_capture_receipt_id, canonical_payload
+    ) VALUES (
+      item_id, verification->>'canonical_text_id', verification->>'intake_capture_receipt_id',
+      verification
+    ) ON CONFLICT (verification_manifest_id) DO NOTHING;
+
+    item_id := immutable_source->>'immutable_source_document_id';
+    SELECT canonical_payload_digest INTO existing_digest
+    FROM canonical_v2_staging.immutable_source_documents
+    WHERE immutable_source_document_id = item_id;
+    IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(immutable_source) THEN
+      RAISE EXCEPTION 'canonical immutable source identity conflict' USING ERRCODE = '23505';
+    END IF;
+    INSERT INTO canonical_v2_staging.immutable_source_documents(
+      immutable_source_document_id, canonical_payload
+    ) VALUES (item_id, immutable_source)
+    ON CONFLICT (immutable_source_document_id) DO NOTHING;
+
+    item_id := source_admission->>'source_admission_manifest_id';
+    SELECT canonical_payload_digest INTO existing_digest
+    FROM canonical_v2_staging.source_admission_manifests
+    WHERE source_admission_manifest_id = item_id;
+    IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(source_admission) THEN
+      RAISE EXCEPTION 'canonical source admission identity conflict' USING ERRCODE = '23505';
+    END IF;
+    INSERT INTO canonical_v2_staging.source_admission_manifests(
+      source_admission_manifest_id, canonical_payload
+    ) VALUES (item_id, source_admission)
+    ON CONFLICT (source_admission_manifest_id) DO NOTHING;
+
+    item_id := preparation_receipt->>'source_admission_preparation_receipt_id';
+    SELECT canonical_payload_storage_digest INTO existing_digest
+    FROM canonical_v2_staging.source_admission_preparation_receipts
+    WHERE source_admission_preparation_receipt_id = item_id;
+    IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(preparation_receipt) THEN
+      RAISE EXCEPTION 'source admission preparation receipt identity conflict'
+        USING ERRCODE = '23505';
+    END IF;
+    INSERT INTO canonical_v2_staging.source_admission_preparation_receipts(
+      source_admission_preparation_receipt_id, immutable_source_document_id,
+      source_admission_manifest_id, verification_manifest_id, canonical_payload
+    ) VALUES (
+      item_id, preparation_receipt->>'immutable_source_document_id',
+      preparation_receipt->>'source_admission_manifest_id',
+      preparation_receipt->>'verification_manifest_id', preparation_receipt
+    ) ON CONFLICT (source_admission_preparation_receipt_id) DO NOTHING;
+
+    item_id := semantic_input->>'semantic_extraction_input_envelope_id';
+    SELECT canonical_payload_storage_digest INTO existing_digest
+    FROM canonical_v2_staging.semantic_extraction_input_envelopes
+    WHERE semantic_extraction_input_envelope_id = item_id;
+    IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(semantic_input) THEN
+      RAISE EXCEPTION 'semantic extraction input envelope identity conflict'
+        USING ERRCODE = '23505';
+    END IF;
+    INSERT INTO canonical_v2_staging.semantic_extraction_input_envelopes(
+      semantic_extraction_input_envelope_id, immutable_source_document_id,
+      source_admission_manifest_id, verification_manifest_id, canonical_text_id,
+      canonical_payload
+    ) VALUES (
+      item_id, semantic_input->>'immutable_source_document_id',
+      semantic_input->>'source_admission_manifest_id', semantic_input->>'verification_manifest_id',
+      semantic_input->>'canonical_text_id', semantic_input
+    ) ON CONFLICT (semantic_extraction_input_envelope_id) DO NOTHING;
+
+    INSERT INTO canonical_v2_staging.write_receipts(
+      operation, idempotency_key, input_digest, receipt_id, canonical_payload
+    ) VALUES (
+      p_operation, p_idempotency_key, p_input_digest, p_receipt->>'receiptId', p_receipt
     );
     RETURN p_receipt || jsonb_build_object('replayed', false);
   END IF;

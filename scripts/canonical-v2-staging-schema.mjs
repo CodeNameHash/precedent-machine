@@ -17,7 +17,7 @@ const EXPECTED_PROJECT = Object.freeze({
   name: 'deal-corpus-canonical-v2-staging',
 });
 const EXPECTED_DIGESTS = Object.freeze({
-  'canonical-v2-foundation.sql': '6b90d2364462efc4d596ac981646f19fc54b4905155440e67f2efba061179c6b',
+  'canonical-v2-foundation.sql': 'ebe5421a973ed7a68233f200680ba5fa362eb1c583377e86b52c5cf9e05f906e',
   'canonical-v2-serving.sql': '0f606b9975b8ebd78abf961b72ee58e9c04b6dd23476cbd9c1cc3151c0633e77',
 });
 const SCRIPT_ROOT = dirname(fileURLToPath(import.meta.url));
@@ -78,6 +78,12 @@ function verifyAppliedSchema() {
       to_regnamespace('canonical_v2_staging') is not null as canonical_schema_exists,
       to_regclass('canonical_v2_staging.validated_semantic_graphs') is not null as semantic_graph_table_exists,
       to_regclass('canonical_v2_staging.intake_capture_receipts') is not null as intake_capture_receipt_table_exists,
+      to_regclass('canonical_v2_staging.source_artifact_manifests') is not null as source_artifact_manifest_table_exists,
+      to_regclass('canonical_v2_staging.source_artifact_chunks') is not null as source_artifact_chunk_table_exists,
+      to_regclass('canonical_v2_staging.canonical_text_conversions') is not null as canonical_text_conversion_table_exists,
+      to_regclass('canonical_v2_staging.canonical_text_verification_manifests') is not null as canonical_text_verification_table_exists,
+      to_regclass('canonical_v2_staging.source_admission_preparation_receipts') is not null as source_admission_preparation_table_exists,
+      to_regclass('canonical_v2_staging.semantic_extraction_input_envelopes') is not null as semantic_extraction_input_table_exists,
       to_regclass('canonical_v2_staging.candidate_release_semantic_graphs') is not null as release_semantic_graph_table_exists,
       to_regclass('canonical_v2_staging.candidate_release_correction_input_seals') is not null as correction_seal_table_exists,
       to_regclass('canonical_v2_staging.candidate_release_correction_discharges') is not null as correction_discharge_table_exists,
@@ -144,7 +150,15 @@ function verifyAppliedSchema() {
       (has_table_privilege('canonical_v2_writer', 'canonical_v2_staging.intake_capture_receipts', 'SELECT') = false
         and has_table_privilege('canonical_v2_writer', 'canonical_v2_staging.intake_capture_receipts', 'INSERT') = false
         and has_table_privilege('canonical_v2_writer', 'canonical_v2_staging.intake_capture_receipts', 'UPDATE') = false
-        and has_table_privilege('canonical_v2_writer', 'canonical_v2_staging.intake_capture_receipts', 'DELETE') = false) as writer_intake_capture_table_denied;
+        and has_table_privilege('canonical_v2_writer', 'canonical_v2_staging.intake_capture_receipts', 'DELETE') = false) as writer_intake_capture_table_denied,
+      (has_table_privilege('service_role', 'canonical_v2_staging.source_artifact_manifests', 'SELECT') = false
+        and has_table_privilege('canonical_v2_serving', 'canonical_v2_staging.source_artifact_chunks', 'SELECT') = false
+        and has_table_privilege('canonical_v2_writer', 'canonical_v2_staging.source_artifact_manifests', 'INSERT') = false
+        and has_table_privilege('canonical_v2_writer', 'canonical_v2_staging.source_artifact_chunks', 'INSERT') = false) as source_artifact_tables_denied,
+      (has_table_privilege('service_role', 'canonical_v2_staging.canonical_text_conversions', 'SELECT') = false
+        and has_table_privilege('canonical_v2_serving', 'canonical_v2_staging.canonical_text_verification_manifests', 'SELECT') = false
+        and has_table_privilege('canonical_v2_writer', 'canonical_v2_staging.source_admission_preparation_receipts', 'SELECT') = false
+        and has_table_privilege('canonical_v2_writer', 'canonical_v2_staging.semantic_extraction_input_envelopes', 'INSERT') = false) as source_admission_tables_denied;
   `;
   return spawnSync(
     'supabase',

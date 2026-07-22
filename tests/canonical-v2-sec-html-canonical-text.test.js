@@ -8,7 +8,9 @@ const { sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
 const {
   CONFIG_DIGEST,
   CONVERTER_DIGEST,
+  SOURCE_MAP_ENCODING,
   convertSecHtmlToCanonicalText,
+  decodeSecHtmlCanonicalTextSourceMap,
   validateSecHtmlCanonicalTextConversion,
 } = require('../lib/canonical-v2/sec-html-canonical-text');
 
@@ -27,8 +29,9 @@ function capture(html) {
 }
 
 function assertCoverage(result, inputLength) {
+  const sourceMap = decodeSecHtmlCanonicalTextSourceMap(result);
   let cursor = 0;
-  for (const region of result.input_regions) {
+  for (const region of sourceMap.input_regions) {
     assert.equal(region.input_start, cursor);
     assert.ok(region.input_end > region.input_start);
     cursor = region.input_end;
@@ -36,7 +39,7 @@ function assertCoverage(result, inputLength) {
   assert.equal(cursor, inputLength);
 
   cursor = 0;
-  for (const mapping of result.output_mappings) {
+  for (const mapping of sourceMap.output_mappings) {
     assert.equal(mapping.output_start, cursor);
     assert.ok(mapping.output_end > mapping.output_start);
     assert.ok(mapping.input_start >= 0 && mapping.input_end > mapping.input_start);
@@ -60,6 +63,10 @@ test('converts quoted tags, structural whitespace and entities deterministically
   assert.equal(first.converter_config_digest, CONFIG_DIGEST);
   assert.match(first.canonical_text_sha256, /^[a-f0-9]{64}$/);
   assert.match(first.canonical_text_id, /^[a-f0-9]{64}$/);
+  assert.equal(first.schema_version, 'SEC_HTML_CANONICAL_TEXT_CONVERSION/V2');
+  assert.equal(first.source_map_encoding, SOURCE_MAP_ENCODING);
+  assert.equal(Object.hasOwn(first, 'input_regions'), false);
+  assert.equal(Object.hasOwn(first, 'output_mappings'), false);
   assertCoverage(first, Buffer.byteLength(html));
 });
 
@@ -69,9 +76,10 @@ test('suppresses comments, script and style while retaining explicit input linea
   const result = convertSecHtmlToCanonicalText(capture(html));
 
   assert.equal(result.canonical_text, 'BeforeAfter\nEnd');
-  assert.ok(result.input_regions.some((region) => region.region_kind === 'COMMENT'));
-  assert.ok(result.input_regions.some((region) => region.region_kind === 'SUPPRESSED_SCRIPT'));
-  assert.ok(result.input_regions.some((region) => region.region_kind === 'SUPPRESSED_STYLE'));
+  const sourceMap = decodeSecHtmlCanonicalTextSourceMap(result);
+  assert.ok(sourceMap.input_regions.some((region) => region.region_kind === 'COMMENT'));
+  assert.ok(sourceMap.input_regions.some((region) => region.region_kind === 'SUPPRESSED_SCRIPT'));
+  assert.ok(sourceMap.input_regions.some((region) => region.region_kind === 'SUPPRESSED_STYLE'));
   assertCoverage(result, Buffer.byteLength(html));
 });
 
@@ -79,7 +87,8 @@ test('accounts for markup declarations and processing instructions without emitt
   const html = '<?xml version="1.0"?><!DOCTYPE html><html><body>Agreement.</body></html>';
   const result = convertSecHtmlToCanonicalText(capture(html));
   assert.equal(result.canonical_text, 'Agreement.');
-  assert.equal(result.input_regions.filter((region) => region.region_kind === 'MARKUP').length, 2);
+  const sourceMap = decodeSecHtmlCanonicalTextSourceMap(result);
+  assert.equal(sourceMap.input_regions.filter((region) => region.region_kind === 'MARKUP').length, 2);
   assertCoverage(result, Buffer.byteLength(html));
 });
 
@@ -90,7 +99,8 @@ test('maps multibyte UTF-8 and decoded entity output to exact source byte ranges
   const entityEnd = entityStart + Buffer.byteLength('&#x2014;');
 
   assert.equal(result.canonical_text, '£ “QXO” — done');
-  assert.ok(result.output_mappings.some((mapping) => mapping.mapping_kind === 'DECODED_ENTITY'
+  const sourceMap = decodeSecHtmlCanonicalTextSourceMap(result);
+  assert.ok(sourceMap.output_mappings.some((mapping) => mapping.mapping_kind === 'DECODED_ENTITY'
     && mapping.input_start === entityStart && mapping.input_end === entityEnd));
   assertCoverage(result, Buffer.byteLength(html));
 });
@@ -138,9 +148,7 @@ test('binds executable source bytes and the complete source map into conversion 
   assert.match(result.source_map_digest, /^[a-f0-9]{64}$/);
   const changedMap = {
     ...result,
-    output_mappings: result.output_mappings.map((mapping, index) => (
-      index === 0 ? { ...mapping, input_end: mapping.input_end + 1 } : mapping
-    )),
+    source_map_digest: 'f'.repeat(64),
   };
   assert.throws(() => validateSecHtmlCanonicalTextConversion({
     capture: capture('<p>Mapped.</p>'),
@@ -163,5 +171,28 @@ test('converts repeated SEC-style regions without per-region full-document scans
 
   assert.ok(result.canonical_text.startsWith('Section 5.2 Four 4 days £10.'));
   assertCoverage(result, Buffer.byteLength(html));
+  const compressedLength = Buffer.from(result.source_map_payload_base64, 'base64').length;
+  assert.ok(compressedLength < result.source_map_uncompressed_byte_length / 4,
+    `${compressedLength} compressed bytes are not materially smaller than ${result.source_map_uncompressed_byte_length}`);
   assert.ok(elapsed < 3000, `repeated-region conversion took ${elapsed}ms`);
+});
+
+test('bounded source-map decoder rejects payload, hash, count and digest tampering', () => {
+  const result = convertSecHtmlToCanonicalText(capture('<p>Mapped.</p>'));
+  assert.throws(() => decodeSecHtmlCanonicalTextSourceMap({
+    ...result,
+    source_map_compressed_sha256: '0'.repeat(64),
+  }), (error) => error.code === 'INVALID_SOURCE_MAP');
+  assert.throws(() => decodeSecHtmlCanonicalTextSourceMap({
+    ...result,
+    input_region_count: result.input_region_count + 1,
+  }), (error) => error.code === 'INVALID_SOURCE_MAP');
+  assert.throws(() => decodeSecHtmlCanonicalTextSourceMap({
+    ...result,
+    source_map_digest: '0'.repeat(64),
+  }), (error) => error.code === 'INVALID_SOURCE_MAP');
+  assert.throws(() => decodeSecHtmlCanonicalTextSourceMap({
+    ...result,
+    source_map_uncompressed_byte_length: 64 * 1024 * 1024 + 1,
+  }), (error) => error.code === 'SOURCE_MAP_LIMIT_EXCEEDED');
 });

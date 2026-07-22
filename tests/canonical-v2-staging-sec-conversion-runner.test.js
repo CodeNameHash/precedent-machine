@@ -24,6 +24,8 @@ test('staging SEC conversion attestation excludes source text, bytes and credent
   assert.match(body, /source_map_digest/);
   assert.match(body, /verification_manifest_id/);
   assert.match(body, /independent_verification_status/);
+  assert.match(body, /prepared_source_admission/);
+  assert.match(body, /persistence_status: 'NOT_WRITTEN'/);
   assert.match(body, /qxo_anchor_offsets/);
   assert.match(body, /qxo_governed_spans/);
   assert.match(body, /sha256Hex/);

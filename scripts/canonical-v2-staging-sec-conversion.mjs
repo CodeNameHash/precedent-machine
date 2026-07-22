@@ -17,6 +17,10 @@ const {
 const {
   verifySecHtmlCanonicalText,
 } = require('../lib/canonical-v2/sec-html-canonical-text-verifier');
+const {
+  buildVerifiedSecSourceAdmission,
+  validateVerifiedSecSourceAdmission,
+} = require('../lib/canonical-v2/sec-source-admission');
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const PROJECT = Object.freeze({ ref: 'sjumbznveyyiizhwvixj', name: 'deal-corpus-canonical-v2-staging' });
@@ -80,7 +84,7 @@ function byteOffsets(text, pattern) {
   return offsets;
 }
 
-function attest(conversion, verification) {
+function attest(conversion, verification, admissionBundle) {
   const capitalisationOffsets = byteOffsets(conversion.canonical_text, /\(b\)\s*Capital Structure\./g);
   const capitalisationEndOffsets = byteOffsets(
     conversion.canonical_text,
@@ -118,8 +122,13 @@ function attest(conversion, verification) {
     converter_config_digest: conversion.converter_config_digest,
     verification_manifest_id: verification.verification_manifest_id,
     verifier_digest: verification.verifier_digest,
-    input_region_count: conversion.input_regions.length,
-    output_mapping_count: conversion.output_mappings.length,
+    input_region_count: conversion.input_region_count,
+    output_mapping_count: conversion.output_mapping_count,
+    source_map_compressed_byte_length: Buffer.from(
+      conversion.source_map_payload_base64,
+      'base64',
+    ).byteLength,
+    conversion_payload_byte_length: Buffer.byteLength(JSON.stringify(conversion), 'utf8'),
     qxo_anchor_offsets: {
       capital_structure_all: capitalisationOffsets,
       section_5_2: bringdownOffsets[0],
@@ -130,7 +139,20 @@ function attest(conversion, verification) {
     },
     conversion_stage: conversion.conversion_stage,
     independent_verification_status: verification.verification_status,
-    source_admission_status: verification.source_admission_status,
+    persisted_source_admission_status: verification.source_admission_status,
+    prepared_source_admission: {
+      admission_state: admissionBundle.source_admission_manifest.admission_state,
+      immutable_source_document_id:
+        admissionBundle.immutable_source_document.immutable_source_document_id,
+      source_admission_manifest_id:
+        admissionBundle.source_admission_manifest.source_admission_manifest_id,
+      source_admission_preparation_receipt_id:
+        admissionBundle.source_admission_preparation_receipt
+          .source_admission_preparation_receipt_id,
+      semantic_extraction_input_envelope_id:
+        admissionBundle.semantic_extraction_input_envelope.semantic_extraction_input_envelope_id,
+      persistence_status: 'NOT_WRITTEN',
+    },
     database_transaction: 'READ_ONLY',
   };
 }
@@ -146,7 +168,9 @@ try {
   const conversion = convertSecHtmlToCanonicalText(capture);
   validateSecHtmlCanonicalTextConversion({ capture, conversion });
   const verification = verifySecHtmlCanonicalText({ capture, conversion });
-  process.stdout.write(`${canonicalJson(attest(conversion, verification))}\n`);
+  const admissionBundle = buildVerifiedSecSourceAdmission({ capture, conversion, verification });
+  validateVerifiedSecSourceAdmission({ capture, conversion, verification, bundle: admissionBundle });
+  process.stdout.write(`${canonicalJson(attest(conversion, verification, admissionBundle))}\n`);
 } catch (error) {
   fail(error instanceof Error ? error.message : 'Canonical staging conversion failed.');
 }
