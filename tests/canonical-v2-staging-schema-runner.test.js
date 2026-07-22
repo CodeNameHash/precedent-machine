@@ -29,6 +29,10 @@ test('staging schema verification checks writer, serving RPCs and denied broad r
   assert.match(source, /canonical_v2_write/);
   assert.match(source, /canonical_v2_staging\.validated_semantic_graphs/);
   assert.match(source, /canonical_v2_staging\.candidate_release_semantic_graphs/);
+  assert.match(source, /market_rpc_exists/);
+  assert.match(source, /anon_market_denied/);
+  assert.match(source, /service_role_market_denied/);
+  assert.match(source, /serving_market_allowed/);
   assert.match(source, /canonical_v2_active_review_context/);
   assert.match(source, /canonical_v2_exact_detail/);
   assert.match(source, /has_function_privilege\('anon'/);

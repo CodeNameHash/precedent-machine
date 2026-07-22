@@ -8,9 +8,15 @@ const {
   compileMarketCohortRequest,
   queryMarketCohort,
 } = require('../lib/canonical-v2/market-cohort-query');
+const {
+  createPostgresServingClient,
+  MAX_MARKET_RESULT_BYTES,
+  RPC_SPECS,
+} = require('../lib/canonical-v2/serving-client');
 
 const contract = compileFixtureContract();
 const id = (domain, value) => contentId(`${domain}/V1`, value);
+const CONNECTION = 'postgresql://canonical_v2_preview.sjumbznveyyiizhwvixj:secret@aws-1-us-west-2.pooler.supabase.com:6543/postgres?sslmode=require&uselibpqcompat=true';
 
 function request(overrides = {}) {
   return {
@@ -105,6 +111,70 @@ test('one market request executes exactly one bounded RPC and a release-aware ca
   assert.equal(cache.writes.length, 1);
   assert.equal(cache.writes[0].ttl, 3600);
   assert.equal(first.result.counts.comparable_deals, 37);
+});
+
+test('real serving boundary executes one SQL call independent of corpus size and fails closed on overflow', async () => {
+  const spec = RPC_SPECS.canonical_v2_market_cohort;
+  const instances = [];
+
+  for (const corpusSize of [1, 1_000_000]) {
+    class CorpusPool {
+      constructor() {
+        this.calls = [];
+        instances.push(this);
+      }
+
+      query(command) {
+        this.calls.push(command);
+        const params = Object.fromEntries(spec.params.map(([name], index) => [name, command.values[index]]));
+        const result = resultFor(params);
+        result.counts = {
+          eligible_deals: corpusSize,
+          applicable_deals: corpusSize,
+          examined_deals: corpusSize,
+          present_deals: corpusSize,
+          comparable_deals: corpusSize,
+          distribution_deals: corpusSize,
+          excluded_deals: 0,
+          observation_slots: corpusSize,
+          excluded_slots: 0,
+        };
+        result.distribution = [{ canonical_value: 'MAT_ALL_MATERIAL', subject_count: corpusSize, deal_count: corpusSize }];
+        result.exclusions = [];
+        return Promise.resolve({ rowCount: 1, rows: [{ data: result }] });
+      }
+    }
+
+    const client = createPostgresServingClient({ connectionString: CONNECTION, PoolClass: CorpusPool });
+    const queried = await queryMarketCohort({ client, request: request() });
+    const pool = instances.at(-1);
+
+    assert.equal(queried.result.counts.eligible_deals, corpusSize);
+    assert.equal(pool.calls.length, 1);
+    assert.match(pool.calls[0].text, /^SELECT public\.canonical_v2_market_cohort\(/);
+    assert.equal(pool.calls[0].values.length, 22);
+  }
+
+  class OversizedPool {
+    constructor() {
+      this.calls = [];
+      instances.push(this);
+    }
+
+    query(command) {
+      this.calls.push(command);
+      return Promise.resolve({
+        rowCount: 1,
+        rows: [{ data: { payload: 'x'.repeat(MAX_MARKET_RESULT_BYTES) } }],
+      });
+    }
+  }
+  const oversizedClient = createPostgresServingClient({ connectionString: CONNECTION, PoolClass: OversizedPool });
+  await assert.rejects(
+    queryMarketCohort({ client: oversizedClient, request: request() }),
+    (error) => error.code === 'DATA_SOURCE_ERROR',
+  );
+  assert.equal(instances.at(-1).calls.length, 1);
 });
 
 test('release, party capacity and either-side adviser filters are identity-bearing', () => {
