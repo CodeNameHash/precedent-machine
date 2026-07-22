@@ -41,6 +41,22 @@ CREATE TABLE IF NOT EXISTS canonical_v2_staging.source_admission_manifests (
   canonical_payload_digest text GENERATED ALWAYS AS (canonical_v2_staging.payload_digest(canonical_payload)) STORED
 );
 
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.intake_capture_receipts (
+  intake_capture_receipt_id text PRIMARY KEY
+    CHECK (intake_capture_receipt_id ~ '^[0-9a-f]{64}$'),
+  retrieval_url_sha256 text NOT NULL
+    CHECK (retrieval_url_sha256 ~ '^[0-9a-f]{64}$'),
+  response_bytes_sha256 text NOT NULL
+    CHECK (response_bytes_sha256 ~ '^[0-9a-f]{64}$'),
+  response_byte_length bigint NOT NULL CHECK (response_byte_length > 0),
+  source_response_content_id text NOT NULL
+    CHECK (source_response_content_id ~ '^[0-9a-f]{64}$'),
+  canonical_payload jsonb NOT NULL,
+  canonical_payload_storage_digest text GENERATED ALWAYS AS (
+    canonical_v2_staging.payload_digest(canonical_payload)
+  ) STORED
+);
+
 CREATE TABLE IF NOT EXISTS canonical_v2_staging.validated_semantic_graphs (
   validated_semantic_graph_id text PRIMARY KEY,
   closure_id text NOT NULL,
@@ -283,7 +299,8 @@ CREATE TABLE IF NOT EXISTS canonical_v2_staging.candidate_input_heads (
 CREATE TABLE IF NOT EXISTS canonical_v2_staging.write_receipts (
   operation text NOT NULL CHECK (operation IN (
     'FIXTURE_DEAL_EXTRACTION_RUN',
-    'FIXTURE_CORRECTION_AUTHORITY'
+    'FIXTURE_CORRECTION_AUTHORITY',
+    'INTAKE_CAPTURE'
   )),
   idempotency_key text NOT NULL,
   input_digest text NOT NULL,
@@ -298,7 +315,8 @@ ALTER TABLE canonical_v2_staging.write_receipts
 ALTER TABLE canonical_v2_staging.write_receipts
   ADD CONSTRAINT write_receipts_operation_check CHECK (operation IN (
     'FIXTURE_DEAL_EXTRACTION_RUN',
-    'FIXTURE_CORRECTION_AUTHORITY'
+    'FIXTURE_CORRECTION_AUTHORITY',
+    'INTAKE_CAPTURE'
   ));
 
 CREATE INDEX IF NOT EXISTS canonical_v2_excerpts_closure_idx
@@ -337,6 +355,7 @@ CREATE INDEX IF NOT EXISTS canonical_v2_correction_map_entries_materialisation_i
 ALTER TABLE canonical_v2_staging.deals ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.immutable_source_documents ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.source_admission_manifests ENABLE ROW LEVEL SECURITY;
+ALTER TABLE canonical_v2_staging.intake_capture_receipts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.validated_semantic_graphs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.excerpts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.provision_instances ENABLE ROW LEVEL SECURITY;
@@ -395,7 +414,11 @@ BEGIN
   IF p_environment IS DISTINCT FROM 'staging' THEN
     RAISE EXCEPTION 'canonical_v2_write is staging-only' USING ERRCODE = '42501';
   END IF;
-  IF p_operation NOT IN ('FIXTURE_DEAL_EXTRACTION_RUN', 'FIXTURE_CORRECTION_AUTHORITY') THEN
+  IF p_operation NOT IN (
+    'FIXTURE_DEAL_EXTRACTION_RUN',
+    'FIXTURE_CORRECTION_AUTHORITY',
+    'INTAKE_CAPTURE'
+  ) THEN
     RAISE EXCEPTION 'unsupported canonical operation' USING ERRCODE = '22023';
   END IF;
   IF coalesce(length(trim(p_idempotency_key)), 0) = 0 OR coalesce(length(trim(p_input_digest)), 0) = 0 THEN
@@ -416,6 +439,201 @@ BEGIN
       RAISE EXCEPTION 'idempotency key already names different canonical input' USING ERRCODE = '23505';
     END IF;
     RETURN existing_receipt.canonical_payload || jsonb_build_object('replayed', true);
+  END IF;
+
+  IF p_operation = 'INTAKE_CAPTURE' THEN
+    IF jsonb_typeof(p_write_set) IS DISTINCT FROM 'object'
+      OR NOT (p_write_set ? 'intake_capture')
+      OR p_write_set - 'intake_capture' <> '{}'::jsonb
+      OR jsonb_typeof(p_write_set->'intake_capture') IS DISTINCT FROM 'object' THEN
+      RAISE EXCEPTION 'invalid intake capture write set' USING ERRCODE = '22023';
+    END IF;
+    IF p_residuals IS DISTINCT FROM '[]'::jsonb
+      OR p_quarantines IS DISTINCT FROM '[]'::jsonb THEN
+      RAISE EXCEPTION 'intake capture does not accept residuals or quarantines'
+        USING ERRCODE = '22023';
+    END IF;
+
+    item := p_write_set->'intake_capture';
+    IF NOT (item ?& ARRAY[
+        'schema_version',
+        'receipt_stage',
+        'authority_representation',
+        'source_host',
+        'retrieval_url_sha256',
+        'retrieved_at',
+        'retrieval_policy_digest',
+        'http_status',
+        'response_content_type',
+        'redirect_count',
+        'response_bytes_sha256',
+        'response_byte_length',
+        'response_bytes_base64',
+        'source_response_content_id',
+        'canonical_text_status',
+        'source_admission_status',
+        'intake_capture_receipt_id'
+      ])
+      OR item - ARRAY[
+        'schema_version',
+        'receipt_stage',
+        'authority_representation',
+        'source_host',
+        'retrieval_url_sha256',
+        'retrieved_at',
+        'retrieval_policy_digest',
+        'http_status',
+        'response_content_type',
+        'redirect_count',
+        'response_bytes_sha256',
+        'response_byte_length',
+        'response_bytes_base64',
+        'source_response_content_id',
+        'canonical_text_status',
+        'source_admission_status',
+        'intake_capture_receipt_id'
+      ]::text[] <> '{}'::jsonb
+      OR item->>'schema_version' IS DISTINCT FROM 'SEC_EDGAR_INTAKE_CAPTURE/V1'
+      OR item->>'receipt_stage' IS DISTINCT FROM 'INTAKE_CAPTURE'
+      OR item->>'authority_representation' IS DISTINCT FROM 'ORIGINAL_HTTP_RESPONSE_BYTES'
+      OR item->>'source_host' IS DISTINCT FROM 'www.sec.gov'
+      OR item->>'http_status' IS DISTINCT FROM '200'
+      OR item->>'response_content_type' IS DISTINCT FROM 'text/html'
+      OR item->>'redirect_count' IS DISTINCT FROM '0'
+      OR item->>'canonical_text_status' IS DISTINCT FROM 'NOT_CREATED'
+      OR item->>'source_admission_status' IS DISTINCT FROM 'NOT_ATTEMPTED'
+      OR EXISTS (
+        SELECT 1
+        FROM jsonb_each(item) AS capture_field(key, value)
+        WHERE capture_field.key = ANY(ARRAY[
+          'schema_version',
+          'receipt_stage',
+          'authority_representation',
+          'source_host',
+          'retrieval_url_sha256',
+          'retrieved_at',
+          'retrieval_policy_digest',
+          'response_content_type',
+          'response_bytes_sha256',
+          'response_bytes_base64',
+          'source_response_content_id',
+          'canonical_text_status',
+          'source_admission_status',
+          'intake_capture_receipt_id'
+        ])
+          AND jsonb_typeof(capture_field.value) IS DISTINCT FROM 'string'
+      )
+      OR jsonb_typeof(item->'http_status') IS DISTINCT FROM 'number'
+      OR jsonb_typeof(item->'redirect_count') IS DISTINCT FROM 'number'
+      OR jsonb_typeof(item->'response_byte_length') IS DISTINCT FROM 'number'
+      OR item->>'retrieval_url_sha256' !~ '^[0-9a-f]{64}$'
+      OR item->>'retrieval_policy_digest' !~ '^[0-9a-f]{64}$'
+      OR item->>'response_bytes_sha256' !~ '^[0-9a-f]{64}$'
+      OR item->>'source_response_content_id' !~ '^[0-9a-f]{64}$'
+      OR item->>'intake_capture_receipt_id' !~ '^[0-9a-f]{64}$'
+      OR item->>'retrieved_at'
+        !~ '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$'
+      OR item->>'response_byte_length' !~ '^[1-9][0-9]{0,18}$'
+    THEN
+      RAISE EXCEPTION 'intake capture fields do not match the closed receipt contract'
+        USING ERRCODE = '23514';
+    END IF;
+    PERFORM (item->>'retrieved_at')::timestamptz;
+    IF replace(encode(decode(item->>'response_bytes_base64', 'base64'), 'base64'), E'\n', '')
+        IS DISTINCT FROM item->>'response_bytes_base64'
+      OR octet_length(decode(item->>'response_bytes_base64', 'base64'))
+        <> (item->>'response_byte_length')::bigint
+      OR encode(extensions.digest(
+          decode(item->>'response_bytes_base64', 'base64'),
+          'sha256'::text
+        ), 'hex') IS DISTINCT FROM item->>'response_bytes_sha256' THEN
+      RAISE EXCEPTION 'intake capture bytes, length and digest do not agree'
+        USING ERRCODE = '23514';
+    END IF;
+    IF p_input_digest !~ '^[0-9a-f]{64}$'
+      OR jsonb_typeof(p_receipt) IS DISTINCT FROM 'object'
+      OR NOT (p_receipt ?& ARRAY[
+        'receiptId',
+        'operation',
+        'idempotencyKey',
+        'inputDigest',
+        'status',
+        'publishableObjectCount',
+        'residualCount',
+        'quarantinedClosureCount'
+      ])
+      OR p_receipt - ARRAY[
+        'receiptId',
+        'operation',
+        'idempotencyKey',
+        'inputDigest',
+        'status',
+        'publishableObjectCount',
+        'residualCount',
+        'quarantinedClosureCount'
+      ]::text[] <> '{}'::jsonb
+      OR EXISTS (
+        SELECT 1
+        FROM jsonb_each(p_receipt) AS receipt_field(key, value)
+        WHERE receipt_field.key = ANY(ARRAY[
+          'receiptId',
+          'operation',
+          'idempotencyKey',
+          'inputDigest',
+          'status'
+        ])
+          AND jsonb_typeof(receipt_field.value) IS DISTINCT FROM 'string'
+      )
+      OR jsonb_typeof(p_receipt->'publishableObjectCount') IS DISTINCT FROM 'number'
+      OR jsonb_typeof(p_receipt->'residualCount') IS DISTINCT FROM 'number'
+      OR jsonb_typeof(p_receipt->'quarantinedClosureCount') IS DISTINCT FROM 'number'
+      OR p_receipt->>'receiptId' !~ '^[0-9a-f]{64}$'
+      OR p_receipt->>'operation' IS DISTINCT FROM p_operation
+      OR p_receipt->>'idempotencyKey' IS DISTINCT FROM p_idempotency_key
+      OR p_receipt->>'inputDigest' IS DISTINCT FROM p_input_digest
+      OR p_receipt->>'status' IS DISTINCT FROM 'COMMITTED'
+      OR p_receipt->>'publishableObjectCount' IS DISTINCT FROM '1'
+      OR p_receipt->>'residualCount' IS DISTINCT FROM '0'
+      OR p_receipt->>'quarantinedClosureCount' IS DISTINCT FROM '0' THEN
+      RAISE EXCEPTION 'invalid intake capture write receipt' USING ERRCODE = '23514';
+    END IF;
+
+    item_id := item->>'intake_capture_receipt_id';
+    SELECT canonical_payload_storage_digest INTO existing_digest
+    FROM canonical_v2_staging.intake_capture_receipts
+    WHERE intake_capture_receipt_id = item_id;
+    IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN
+      RAISE EXCEPTION 'intake capture receipt identity conflict' USING ERRCODE = '23505';
+    END IF;
+    INSERT INTO canonical_v2_staging.intake_capture_receipts(
+      intake_capture_receipt_id,
+      retrieval_url_sha256,
+      response_bytes_sha256,
+      response_byte_length,
+      source_response_content_id,
+      canonical_payload
+    ) VALUES (
+      item_id,
+      item->>'retrieval_url_sha256',
+      item->>'response_bytes_sha256',
+      (item->>'response_byte_length')::bigint,
+      item->>'source_response_content_id',
+      item
+    ) ON CONFLICT (intake_capture_receipt_id) DO NOTHING;
+    INSERT INTO canonical_v2_staging.write_receipts(
+      operation,
+      idempotency_key,
+      input_digest,
+      receipt_id,
+      canonical_payload
+    ) VALUES (
+      p_operation,
+      p_idempotency_key,
+      p_input_digest,
+      p_receipt->>'receiptId',
+      p_receipt
+    );
+    RETURN p_receipt || jsonb_build_object('replayed', false);
   END IF;
 
   IF p_operation = 'FIXTURE_CORRECTION_AUTHORITY' THEN

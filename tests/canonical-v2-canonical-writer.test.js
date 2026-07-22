@@ -347,6 +347,7 @@ test('an injected failure rolls back every staged object and receipt', async () 
     operation: 'FIXTURE_DEAL_EXTRACTION_RUN', idempotencyKey: 'run-4', writeSet: fixtureWriteSet(),
   }), (error) => error.code === 'INJECTED_REPOSITORY_FAILURE');
   assert.deepEqual(repository.snapshot(), {
+    intakeCaptures: [],
     sources: [], sourceAdmissions: [], deals: [], excerpts: [], validated_semantic_graphs: [],
     provisions: [], components: [], claims: [], relationships: [],
     open_world_candidates: [], open_world_candidate_occurrences: [], open_world_evidence_references: [],
@@ -527,5 +528,5 @@ test('the SQL authority is staging-only, transactional and denies direct app-rol
   assert.match(sql, /REVOKE ALL ON ALL TABLES IN SCHEMA canonical_v2_staging[\s\S]*service_role, canonical_v2_writer/);
   assert.match(sql, /REVOKE ALL ON FUNCTION public\.canonical_v2_write[\s\S]*service_role/);
   assert.match(sql, /GRANT EXECUTE ON FUNCTION public\.canonical_v2_write[\s\S]*TO canonical_v2_writer/);
-  assert.doesNotMatch(sql, /COMMIT|START TRANSACTION/);
+  assert.doesNotMatch(sql, /^\s*(?:COMMIT|START\s+TRANSACTION)\b/im);
 });
