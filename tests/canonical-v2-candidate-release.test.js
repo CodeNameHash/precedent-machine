@@ -14,7 +14,7 @@ function clone(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
-test('all twelve real legal results freeze into one deterministic offline candidate release', () => {
+test('twelve comparable results and one reviewed source-specific proposition freeze into one deterministic release', () => {
   const first = buildLandosCandidateReleaseFixture();
   const second = buildLandosCandidateReleaseFixture();
 
@@ -25,8 +25,9 @@ test('all twelve real legal results freeze into one deterministic offline candid
     metric_slots: 12,
     observations: 12,
     exclusions: 0,
-    shared_rows: 12,
-    exact_detail_packages: 12,
+    shared_rows: 13,
+    source_specific_rows: 1,
+    exact_detail_packages: 13,
     query_records: 12,
     unresolved: 0,
     failed: 0,
@@ -34,10 +35,14 @@ test('all twelve real legal results freeze into one deterministic offline candid
   });
   assert.deepEqual(first.release.manifest.deal_keys, ['deal:landos-abbvie']);
   assert.equal(first.release.market_observations.length, 12);
-  assert.equal(first.release.shared_rows.length, 12);
-  assert.equal(first.release.exact_detail_packages.length, 12);
+  assert.equal(first.release.shared_rows.length, 13);
+  assert.equal(first.release.reviewed_source_specific_rows.length, 1);
+  assert.equal(first.release.exact_detail_packages.length, 13);
   assert.equal(first.release.query_records.length, 12);
-  assert.equal(new Set(Object.values(first.release.manifest.roots)).size, 5);
+  assert.equal(first.release.query_records.some((row) => (
+    row.row_serving_key === first.release.reviewed_source_specific_rows[0].row_serving_key
+  )), false);
+  assert.equal(new Set(Object.values(first.release.manifest.roots)).size, 6);
 });
 
 test('candidate release carries raw and normalised money with exact legal query dimensions', () => {
@@ -72,6 +77,23 @@ test('duplicate, mismatched, unresolved or source-less members block the whole c
   assert.throws(
     () => buildFixtureCandidateRelease({ ...args, members: [...fixture.members, fixture.members[0]] }),
     /duplicate market metric slot/,
+  );
+  const sourceSpecificMember = {
+    shared_row: fixture.sourceSpecific.row,
+    exact_detail: {
+      package: fixture.sourceSpecific.exactDetail,
+      source: fixture.sourceSpecific.source,
+      source_admission: fixture.sourceSpecific.sourceAdmission,
+      excerpts: Object.values(fixture.sourceSpecific.excerpts),
+    },
+  };
+  assert.throws(
+    () => buildFixtureCandidateRelease({
+      ...args,
+      members: fixture.members,
+      source_specific_members: [sourceSpecificMember, sourceSpecificMember],
+    }),
+    /duplicate shared or source-specific row/,
   );
 
   const sourceLess = clone(fixture.members);

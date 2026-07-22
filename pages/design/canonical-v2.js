@@ -14,6 +14,7 @@ export async function getServerSideProps(context) {
   const { buildLandosMaterialContractsServingFixture } = require('../../__fixtures__/canonical-v2/landos-material-contracts-row');
   const { buildLandosNoShopServingFixture } = require('../../__fixtures__/canonical-v2/landos-no-shop-rows');
   const { buildLandosTerminationFeeServingFixture } = require('../../__fixtures__/canonical-v2/landos-termination-fee-row');
+  const { buildLandosSourceSpecificServingFixture } = require('../../__fixtures__/canonical-v2/landos-source-specific-row');
   const { contentId } = require('../../lib/canonical-v2/canonical-bytes');
   const {
     buildCanonicalQueryResultView,
@@ -25,6 +26,7 @@ export async function getServerSideProps(context) {
   const materialContractsFixture = buildLandosMaterialContractsServingFixture();
   const noShopFixture = buildLandosNoShopServingFixture();
   const terminationFeeFixture = buildLandosTerminationFeeServingFixture();
+  const sourceSpecificFixture = buildLandosSourceSpecificServingFixture();
   const terminationFeeMarket = terminationFeeFixture.row.canonical_result.market_context;
   const queryRequest = compileCanonicalQueryRequest({
     serving_namespace_id: contentId('SERVING_NAMESPACE/V1', 'landos-reviewed-fixture'),
@@ -52,9 +54,10 @@ export async function getServerSideProps(context) {
     rows: [terminationFeeFixture.row],
     next_cursor: null,
   }, queryRequest);
-  const [reviewedRow, unrecognisedRow, iocRow, materialContractsRow, terminationFeeRow, ...noShopRows] = adaptSharedServingRows([
+  const [reviewedRow, unrecognisedRow, sourceSpecificRow, iocRow, materialContractsRow, terminationFeeRow, ...noShopRows] = adaptSharedServingRows([
     fixture.row,
     { row_kind: 'UNRECOGNISED_PROVISION_CANDIDATE' },
+    sourceSpecificFixture.row,
     iocFixture.row,
     materialContractsFixture.row,
     terminationFeeFixture.row,
@@ -64,6 +67,8 @@ export async function getServerSideProps(context) {
     props: {
       reviewed_row: JSON.parse(JSON.stringify(reviewedRow)),
       unrecognised_row: JSON.parse(JSON.stringify(unrecognisedRow)),
+      source_specific_row: JSON.parse(JSON.stringify(sourceSpecificRow)),
+      source_specific_excerpts: sourceSpecificFixture.exactDetail.detail_payloads[0].response_body.exact_excerpts,
       ioc_capex_row: JSON.parse(JSON.stringify(iocRow)),
       ioc_capex_source_text: iocFixture.detailPackage.detail_payloads[0].response_body.excerpt.exact_text,
       material_contracts_row: JSON.parse(JSON.stringify(materialContractsRow)),
@@ -355,6 +360,65 @@ function RowIsolationProof({ item }) {
   );
 }
 
+function SourceSpecificRow({ item, sourceExcerpts }) {
+  const [sourceOpen, setSourceOpen] = useState(false);
+  return (
+    <section className="mt-5 border border-[#D9D7D2] bg-white" data-source-specific-proof="true">
+      <header className="border-b border-[#E6E4DF] bg-[#F7F5F0] px-4 py-3">
+        <div className="text-[9px] font-bold uppercase tracking-[0.14em] text-[#77736C]">Reviewed unfamiliar proposition</div>
+        <h2 className="mt-1 text-sm font-bold text-[#1F1F1F]">Source-specific treatment without invented comparability</h2>
+      </header>
+      <div className="px-4 py-4">
+        <RowBoundary item={item} label="Source-specific proposition needs review">
+          {(row) => {
+            const sourceSpecific = row.resolution.sourceSpecific;
+            return (
+              <div data-row-result="ready" data-market-cohort-eligible="false">
+                <div className="grid gap-5 lg:grid-cols-[minmax(240px,0.8fr)_minmax(300px,1.2fr)]">
+                  <div>
+                    <div className="text-xs font-bold text-[#1F1F1F]">{sourceSpecific.displayLabel}</div>
+                    <div className="mt-2 text-[10px] leading-4 text-[#66625C]">{sourceSpecific.nonComparableReason}</div>
+                    <div className="mt-3 text-[9px] font-bold uppercase tracking-[0.1em] text-[#77736C]">
+                      Observed party: {sourceSpecific.observedPartyTokens.join(', ')}
+                    </div>
+                  </div>
+                  <dl className="grid gap-2 sm:grid-cols-2">
+                    {sourceSpecific.primitives.map((primitive) => (
+                      <div key={primitive.key} className="border-l-2 border-[#2F6DB5] pl-3 text-[10px] leading-4">
+                        <dt className="text-[8px] font-bold uppercase tracking-[0.1em] text-[#77736C]">{primitive.kind.replaceAll('_', ' ')}</dt>
+                        <dd className="mt-1 font-semibold text-[#1F1F1F]">{primitive.interpretedValue}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
+                <div className="mt-4 border-t border-[#E6E4DF] pt-3">
+                  <button
+                    type="button"
+                    onClick={() => setSourceOpen((open) => !open)}
+                    className="text-[9px] font-bold uppercase tracking-[0.1em] text-[#2F6DB5] hover:underline"
+                  >
+                    {sourceOpen ? 'Hide exact evidence' : 'See exact evidence'}
+                  </button>
+                  {sourceOpen ? (
+                    <div className="mt-2 grid gap-2">
+                      {sourceExcerpts.map((excerpt) => (
+                        <div key={excerpt.evidence_reference_id} className="border-l-2 border-[#2F6DB5] bg-[#F7F9FC] px-3 py-2">
+                          <div className="text-[8px] font-bold uppercase tracking-[0.1em] text-[#77736C]">{excerpt.evidence_role.replaceAll('_', ' ')}</div>
+                          <div className="mt-1 font-mono text-[9px] leading-4 text-[#1F1F1F]">{excerpt.exact_text}</div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+            );
+          }}
+        </RowBoundary>
+      </div>
+    </section>
+  );
+}
+
 export default function CanonicalV2DesignFixture({
   reviewed_row: reviewedRow,
   exact_source_text: exactSourceText,
@@ -368,6 +432,8 @@ export default function CanonicalV2DesignFixture({
   termination_fee_source_text: terminationFeeSourceText,
   query_view: queryView,
   unrecognised_row: unrecognisedRow,
+  source_specific_row: sourceSpecificRow,
+  source_specific_excerpts: sourceSpecificExcerpts,
   reviewed_mapping_id: reviewedMappingId,
   preview_environment: previewEnvironment,
 }) {
@@ -442,6 +508,7 @@ export default function CanonicalV2DesignFixture({
 
           <QueryContractPreview view={queryView} />
           <RowIsolationProof item={unrecognisedRow} />
+          <SourceSpecificRow item={sourceSpecificRow} sourceExcerpts={sourceSpecificExcerpts} />
           <IocCapexRow item={iocCapexRow} sourceText={iocCapexSourceText} />
           <MaterialContractsRow item={materialContractsRow} sourceText={materialContractsSourceText} />
           <TerminationFeeRow item={terminationFeeRow} sourceText={terminationFeeSourceText} />

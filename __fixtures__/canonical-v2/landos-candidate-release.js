@@ -3,6 +3,7 @@ const { buildLandosMaterialContractsServingFixture } = require('./landos-materia
 const { buildLandosNoShopServingFixture } = require('./landos-no-shop-rows');
 const { buildLandosReviewedServingFixture } = require('./landos-reviewed-row');
 const { buildLandosTerminationFeeServingFixture } = require('./landos-termination-fee-row');
+const { buildLandosSourceSpecificServingFixture } = require('./landos-source-specific-row');
 const { contentId } = require('../../lib/canonical-v2/canonical-bytes');
 const { buildFixtureCandidateRelease } = require('../../lib/canonical-v2/candidate-release');
 
@@ -12,6 +13,7 @@ function buildLandosCandidateReleaseFixture() {
   const noShop = buildLandosNoShopServingFixture();
   const reviewed = buildLandosReviewedServingFixture();
   const terminationFee = buildLandosTerminationFeeServingFixture();
+  const sourceSpecific = buildLandosSourceSpecificServingFixture();
   const contract = ioc.contract;
   const corpusReleaseId = ioc.row.corpus_release_id;
   const servingNamespaceId = contentId('SERVING_NAMESPACE/V1', 'landos-reviewed-fixture');
@@ -85,6 +87,15 @@ function buildLandosCandidateReleaseFixture() {
     serving_namespace_id: servingNamespaceId,
     corpus_release_id: corpusReleaseId,
     members,
+    source_specific_members: [{
+      shared_row: sourceSpecific.row,
+      exact_detail: {
+        package: sourceSpecific.exactDetail,
+        source: sourceSpecific.source,
+        source_admission: sourceSpecific.sourceAdmission,
+        excerpts: Object.values(sourceSpecific.excerpts),
+      },
+    }],
   });
   return Object.freeze({
     contract,
@@ -95,6 +106,7 @@ function buildLandosCandidateReleaseFixture() {
     noShop,
     reviewed,
     terminationFee,
+    sourceSpecific,
     members,
     release,
   });

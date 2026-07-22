@@ -26,7 +26,7 @@ function resign(row) {
   return copy;
 }
 
-test('the shared row matrix is closed while only the certified canonical fixture has a producer', () => {
+test('the shared row matrix is closed while certified canonical and source-specific fixtures have producers', () => {
   assert.deepEqual(Object.keys(SHARED_ROW_VARIANTS), [
     'CANONICAL_RESULT',
     'INCOMPLETE_CANONICAL_RESULT',
@@ -34,7 +34,7 @@ test('the shared row matrix is closed while only the certified canonical fixture
   ]);
   assert.equal(SHARED_ROW_VARIANTS.CANONICAL_RESULT.producer_status, 'IMPLEMENTED_FIXTURE');
   assert.equal(SHARED_ROW_VARIANTS.INCOMPLETE_CANONICAL_RESULT.producer_status, 'NOT_IMPLEMENTED');
-  assert.equal(SHARED_ROW_VARIANTS.REVIEWED_SOURCE_SPECIFIC.producer_status, 'NOT_IMPLEMENTED');
+  assert.equal(SHARED_ROW_VARIANTS.REVIEWED_SOURCE_SPECIFIC.producer_status, 'IMPLEMENTED_FIXTURE');
 });
 
 test('one complete result produces a release-keyed row with bounded effects and explicit denominators', () => {
