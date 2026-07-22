@@ -1,0 +1,103 @@
+const { buildLandosIocCapexServingFixture } = require('./landos-ioc-capex-row');
+const { buildLandosMaterialContractsServingFixture } = require('./landos-material-contracts-row');
+const { buildLandosNoShopServingFixture } = require('./landos-no-shop-rows');
+const { buildLandosReviewedServingFixture } = require('./landos-reviewed-row');
+const { buildLandosTerminationFeeServingFixture } = require('./landos-termination-fee-row');
+const { contentId } = require('../../lib/canonical-v2/canonical-bytes');
+const { buildFixtureCandidateRelease } = require('../../lib/canonical-v2/candidate-release');
+
+function buildLandosCandidateReleaseFixture() {
+  const ioc = buildLandosIocCapexServingFixture();
+  const materialContracts = buildLandosMaterialContractsServingFixture();
+  const noShop = buildLandosNoShopServingFixture();
+  const reviewed = buildLandosReviewedServingFixture();
+  const terminationFee = buildLandosTerminationFeeServingFixture();
+  const contract = ioc.contract;
+  const corpusReleaseId = ioc.row.corpus_release_id;
+  const servingNamespaceId = contentId('SERVING_NAMESPACE/V1', 'landos-reviewed-fixture');
+  const members = [
+    {
+      projection_output: reviewed.projection,
+      shared_row: reviewed.row,
+      exact_detail: {
+        package: reviewed.exactDetail,
+        source: reviewed.source,
+        source_admission: reviewed.sourceAdmission,
+        excerpt: reviewed.excerpts.accuracy_standard,
+        claim: reviewed.accuracyClaim,
+      },
+    },
+    {
+      projection_output: ioc.projection,
+      shared_row: ioc.row,
+      exact_detail: {
+        package: ioc.detailPackage,
+        source: ioc.agreementSource,
+        source_admission: ioc.agreementAdmission,
+        excerpt: ioc.excerpts.threshold,
+        claim: ioc.thresholdClaim,
+      },
+    },
+    {
+      projection_output: materialContracts.projection,
+      shared_row: materialContracts.row,
+      exact_detail: {
+        package: materialContracts.detailPackage,
+        source: materialContracts.agreementSource,
+        source_admission: materialContracts.agreementAdmission,
+        excerpt: materialContracts.excerpts.criterion,
+        claim: materialContracts.thresholdClaim,
+      },
+    },
+    {
+      projection_output: terminationFee.projection,
+      shared_row: terminationFee.row,
+      exact_detail: {
+        package: terminationFee.detailPackage,
+        source: terminationFee.agreementSource,
+        source_admission: terminationFee.agreementAdmission,
+        excerpt: terminationFee.excerpts.fee_amount,
+        claim: terminationFee.feeClaim,
+      },
+    },
+    ...noShop.rows.map((row, index) => {
+      const claimRevisionId = row.canonical_result.components[0].claim_revision_id;
+      const result = noShop.results.find((item) => item.claim.claim_revision_id === claimRevisionId);
+      const excerpt = Object.values(noShop.excerpts).find(
+        (item) => item.excerpt_id === result?.claim.evidence[0]?.excerpt_id,
+      );
+      if (!result || !excerpt) throw new TypeError('no-shop release member has no exact claim evidence');
+      return {
+        projection_output: result.projection,
+        shared_row: row,
+        exact_detail: {
+          package: noShop.detailPackages[index],
+          source: noShop.source,
+          source_admission: noShop.sourceAdmission,
+          excerpt,
+          claim: result.claim,
+        },
+      };
+    }),
+  ];
+  const release = buildFixtureCandidateRelease({
+    contract_bundle: contract,
+    serving_namespace_id: servingNamespaceId,
+    corpus_release_id: corpusReleaseId,
+    members,
+  });
+  return Object.freeze({
+    contract,
+    corpusReleaseId,
+    servingNamespaceId,
+    ioc,
+    materialContracts,
+    noShop,
+    reviewed,
+    terminationFee,
+    members,
+    release,
+  });
+}
+
+module.exports = { buildLandosCandidateReleaseFixture };
