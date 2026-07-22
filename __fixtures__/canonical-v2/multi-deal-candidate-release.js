@@ -3,17 +3,26 @@ const { buildQxoNoShopReleaseFixture } = require('./qxo-no-shop-release');
 const { contentId } = require('../../lib/canonical-v2/canonical-bytes');
 const { buildFixtureCandidateRelease } = require('../../lib/canonical-v2/candidate-release');
 const { compileFixtureContract } = require('../../lib/canonical-v2/contract-bundle');
+const { buildFixtureCandidateInputAuthority } = require('./candidate-input-authority');
 
 const APPLICATION_DEALS = Object.freeze({
   LANDOS: 'c34415ed-44f7-432f-8d7c-6464b0310239',
   QXO: '7dc3a05f-b170-4d59-a255-b7103cca16e1',
 });
 
-function buildMultiDealCandidateReleaseFixture() {
+function buildMultiDealCandidateReleaseFixture({ correctionAuthoritySelection } = {}) {
   const contract = compileFixtureContract();
-  const corpusReleaseId = contentId('CORPUS_RELEASE/V1', 'qxo-landos-shared-fixture-candidate-contract-v6-exact-detail-package-binding');
+  const corpusReleaseId = contentId('CORPUS_RELEASE/V1', 'qxo-landos-shared-fixture-candidate-contract-v7-correction-authority');
   const servingNamespaceId = contentId('SERVING_NAMESPACE/V1', 'qxo-landos-shared-fixture');
-  const fixtureOptions = { contractBundle: contract, corpusReleaseId, servingNamespaceId };
+  const authoritySelection = correctionAuthoritySelection || buildFixtureCandidateInputAuthority({
+    contractBundle: contract,
+  });
+  const fixtureOptions = {
+    contractBundle: contract,
+    corpusReleaseId,
+    servingNamespaceId,
+    correctionAuthoritySelection: authoritySelection,
+  };
   const landos = buildLandosCandidateReleaseFixture(fixtureOptions);
   const qxo = buildQxoNoShopReleaseFixture(fixtureOptions);
   const members = Object.freeze([...landos.members, ...qxo.members]);
@@ -28,14 +37,8 @@ function buildMultiDealCandidateReleaseFixture() {
   const validatedSemanticGraphs = Object.freeze([
     ...landos.validatedSemanticGraphs,
   ]);
-  const expectedActiveCorrectionApplicationIds = Object.freeze([
-    ...landos.expectedActiveCorrectionApplicationIds,
-    ...qxo.expectedActiveCorrectionApplicationIds,
-  ]);
-  const correctionMaterialisations = Object.freeze([
-    ...landos.correctionMaterialisations,
-    ...qxo.correctionMaterialisations,
-  ]);
+  const expectedActiveCorrectionApplicationIds = authoritySelection.active_correction_application_ids;
+  const correctionMaterialisations = authoritySelection.correction_materialisations;
 
   if (members.length !== 14 || sourceSpecificMembers.length !== 1 || dealDirectoryEntries.length !== 2) {
     throw new TypeError('multi-deal fixture inventory has drifted outside its bounded contract');
@@ -48,8 +51,7 @@ function buildMultiDealCandidateReleaseFixture() {
     members,
     source_specific_members: sourceSpecificMembers,
     validated_semantic_graphs: validatedSemanticGraphs,
-    expected_active_correction_application_ids: expectedActiveCorrectionApplicationIds,
-    correction_materialisations: correctionMaterialisations,
+    correction_authority_selection: authoritySelection,
     deal_directory_entries: dealDirectoryEntries,
   });
 
@@ -64,6 +66,7 @@ function buildMultiDealCandidateReleaseFixture() {
     validatedSemanticGraphs,
     expectedActiveCorrectionApplicationIds,
     correctionMaterialisations,
+    correctionAuthoritySelection: authoritySelection,
     dealDirectoryEntries,
     release,
   });

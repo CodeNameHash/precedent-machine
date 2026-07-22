@@ -17,8 +17,8 @@ const EXPECTED_PROJECT = Object.freeze({
   name: 'deal-corpus-canonical-v2-staging',
 });
 const EXPECTED_DIGESTS = Object.freeze({
-  'canonical-v2-foundation.sql': 'c54dff9b96fbb5db17e45cddba8e58ea93b605902b08a6eecead2408a45a455e',
-  'canonical-v2-serving.sql': 'b48801373000d4ba9af3ad5072454117cc23a5fbe7f6632d05cd47a206200808',
+  'canonical-v2-foundation.sql': 'f7964d20355f60fd0277c4debd01a3a231ad45370397a818e9690911f8a1f045',
+  'canonical-v2-serving.sql': '0f606b9975b8ebd78abf961b72ee58e9c04b6dd23476cbd9c1cc3151c0633e77',
 });
 const SCRIPT_ROOT = dirname(fileURLToPath(import.meta.url));
 const REPOSITORY_ROOT = resolve(SCRIPT_ROOT, '..');
@@ -80,6 +80,11 @@ function verifyAppliedSchema() {
       to_regclass('canonical_v2_staging.candidate_release_semantic_graphs') is not null as release_semantic_graph_table_exists,
       to_regclass('canonical_v2_staging.candidate_release_correction_input_seals') is not null as correction_seal_table_exists,
       to_regclass('canonical_v2_staging.candidate_release_correction_discharges') is not null as correction_discharge_table_exists,
+      to_regclass('canonical_v2_staging.correction_authority_materialisations') is not null as correction_authority_materialisation_table_exists,
+      to_regclass('canonical_v2_staging.correction_discharge_maps') is not null as correction_discharge_map_table_exists,
+      to_regclass('canonical_v2_staging.candidate_input_events') is not null as candidate_input_event_table_exists,
+      to_regclass('canonical_v2_staging.candidate_input_head_versions') is not null as candidate_input_head_version_table_exists,
+      to_regclass('canonical_v2_staging.candidate_input_heads') is not null as candidate_input_head_pointer_table_exists,
       exists (
         select 1 from information_schema.columns
         where table_schema = 'canonical_v2_staging'
@@ -89,10 +94,24 @@ function verifyAppliedSchema() {
       exists (
         select 1 from information_schema.columns
         where table_schema = 'canonical_v2_staging'
+          and table_name = 'candidate_release_import_receipts'
+          and column_name = 'candidate_input_head_id'
+      ) as receipt_candidate_input_head_exists,
+      exists (
+        select 1 from information_schema.columns
+        where table_schema = 'canonical_v2_staging'
+          and table_name = 'candidate_release_import_receipts'
+          and column_name = 'correction_discharge_map_id'
+      ) as receipt_correction_discharge_map_exists,
+      exists (
+        select 1 from information_schema.columns
+        where table_schema = 'canonical_v2_staging'
           and table_name = 'active_corpus_release_pointers'
           and column_name = 'correction_input_root'
       ) as active_pointer_correction_root_exists,
       to_regprocedure('public.canonical_v2_write(text,text,text,text,jsonb,jsonb,jsonb,jsonb)') is not null as writer_exists,
+      to_regprocedure('public.canonical_v2_select_candidate_inputs(text,text)') is not null as candidate_input_selector_exists,
+      to_regprocedure('public.canonical_v2_recheck_candidate_input_head(text,text,text,text)') is not null as candidate_input_recheck_exists,
       to_regprocedure('public.canonical_v2_market_cohort(text,text,text,text,text,text,integer,text,text,text,text,text,text,text,text,text,text,text,integer,integer,numeric,numeric)') is not null as market_rpc_exists,
       to_regprocedure('public.canonical_v2_active_review_context(text,text,text,uuid,integer,text)') is not null as review_rpc_exists,
       to_regprocedure('public.canonical_v2_exact_detail(text,text,text,text,uuid,text,text)') is not null as exact_detail_rpc_exists,
@@ -102,9 +121,17 @@ function verifyAppliedSchema() {
       has_function_privilege('anon', 'public.canonical_v2_active_review_context(text,text,text,uuid,integer,text)', 'EXECUTE') = false as anon_review_denied,
       has_function_privilege('service_role', 'public.canonical_v2_active_review_context(text,text,text,uuid,integer,text)', 'EXECUTE') = false as service_role_review_denied,
       has_function_privilege('canonical_v2_serving', 'public.canonical_v2_active_review_context(text,text,text,uuid,integer,text)', 'EXECUTE') as serving_review_allowed,
+      has_function_privilege('service_role', 'public.canonical_v2_select_candidate_inputs(text,text)', 'EXECUTE') = false as service_role_candidate_input_selector_denied,
+      has_function_privilege('canonical_v2_serving', 'public.canonical_v2_select_candidate_inputs(text,text)', 'EXECUTE') = false as serving_candidate_input_selector_denied,
+      has_function_privilege('canonical_v2_writer', 'public.canonical_v2_select_candidate_inputs(text,text)', 'EXECUTE') as writer_candidate_input_selector_allowed,
+      has_function_privilege('service_role', 'public.canonical_v2_recheck_candidate_input_head(text,text,text,text)', 'EXECUTE') = false as service_role_candidate_input_recheck_denied,
+      has_function_privilege('canonical_v2_serving', 'public.canonical_v2_recheck_candidate_input_head(text,text,text,text)', 'EXECUTE') = false as serving_candidate_input_recheck_denied,
+      has_function_privilege('canonical_v2_writer', 'public.canonical_v2_recheck_candidate_input_head(text,text,text,text)', 'EXECUTE') as writer_candidate_input_recheck_allowed,
       has_table_privilege('canonical_v2_serving', 'canonical_v2_staging.candidate_release_semantic_graphs', 'SELECT') = false as serving_semantic_graph_table_denied,
       has_table_privilege('canonical_v2_serving', 'canonical_v2_staging.candidate_release_correction_input_seals', 'SELECT') = false as serving_correction_seal_table_denied,
-      has_table_privilege('canonical_v2_serving', 'canonical_v2_staging.candidate_release_correction_discharges', 'SELECT') = false as serving_correction_discharge_table_denied;
+      has_table_privilege('canonical_v2_serving', 'canonical_v2_staging.candidate_release_correction_discharges', 'SELECT') = false as serving_correction_discharge_table_denied,
+      has_table_privilege('canonical_v2_writer', 'canonical_v2_staging.candidate_input_heads', 'SELECT') = false as writer_candidate_input_head_table_denied,
+      has_table_privilege('canonical_v2_serving', 'canonical_v2_staging.candidate_input_heads', 'SELECT') = false as serving_candidate_input_head_table_denied;
   `;
   return spawnSync(
     'supabase',

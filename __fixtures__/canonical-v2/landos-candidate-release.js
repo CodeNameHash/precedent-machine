@@ -4,14 +4,16 @@ const { buildLandosNoShopServingFixture } = require('./landos-no-shop-rows');
 const { buildLandosReviewedServingFixture } = require('./landos-reviewed-row');
 const { buildLandosTerminationFeeServingFixture } = require('./landos-termination-fee-row');
 const { buildLandosSourceSpecificServingFixture } = require('./landos-source-specific-row');
+const { buildFixtureCandidateInputAuthority } = require('./candidate-input-authority');
 const { contentId } = require('../../lib/canonical-v2/canonical-bytes');
 const { buildFixtureCandidateRelease } = require('../../lib/canonical-v2/candidate-release');
 const { compileFixtureContract } = require('../../lib/canonical-v2/contract-bundle');
 
 function buildLandosCandidateReleaseFixture({
   contractBundle = compileFixtureContract(),
-  corpusReleaseId = contentId('CORPUS_RELEASE/V1', 'landos-reviewed-fixture-candidate-contract-v6-exact-detail-package-binding'),
+  corpusReleaseId = contentId('CORPUS_RELEASE/V1', 'landos-reviewed-fixture-candidate-contract-v7-correction-authority'),
   servingNamespaceId = contentId('SERVING_NAMESPACE/V1', 'landos-reviewed-fixture'),
+  correctionAuthoritySelection,
 } = {}) {
   const fixtureOptions = { contractBundle, corpusReleaseId };
   const ioc = buildLandosIocCapexServingFixture(fixtureOptions);
@@ -22,8 +24,11 @@ function buildLandosCandidateReleaseFixture({
   const sourceSpecific = buildLandosSourceSpecificServingFixture(fixtureOptions);
   const validatedSemanticGraphs = Object.freeze([sourceSpecific.validatedSemanticGraph]);
   const contract = contractBundle;
-  const expectedActiveCorrectionApplicationIds = Object.freeze([]);
-  const correctionMaterialisations = Object.freeze([]);
+  const authoritySelection = correctionAuthoritySelection || buildFixtureCandidateInputAuthority({
+    contractBundle: contract,
+  });
+  const expectedActiveCorrectionApplicationIds = authoritySelection.active_correction_application_ids;
+  const correctionMaterialisations = authoritySelection.correction_materialisations;
   const members = [
     {
       projection_output: reviewed.projection,
@@ -105,8 +110,7 @@ function buildLandosCandidateReleaseFixture({
       },
     }],
     validated_semantic_graphs: validatedSemanticGraphs,
-    expected_active_correction_application_ids: expectedActiveCorrectionApplicationIds,
-    correction_materialisations: correctionMaterialisations,
+    correction_authority_selection: authoritySelection,
     deal_directory_entries: [{
       application_deal_id: 'c34415ed-44f7-432f-8d7c-6464b0310239',
       governed_deal_key: 'deal:landos-abbvie',
@@ -135,6 +139,7 @@ function buildLandosCandidateReleaseFixture({
     validatedSemanticGraphs,
     expectedActiveCorrectionApplicationIds,
     correctionMaterialisations,
+    correctionAuthoritySelection: authoritySelection,
     dealDirectoryEntries: Object.freeze([{
       application_deal_id: 'c34415ed-44f7-432f-8d7c-6464b0310239',
       governed_deal_key: 'deal:landos-abbvie',

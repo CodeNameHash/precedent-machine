@@ -3,8 +3,10 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
 const { buildQxoNoShopReleaseFixture } = require('../__fixtures__/canonical-v2/qxo-no-shop-release');
+const { buildFixtureCandidateInputAuthority } = require('../__fixtures__/canonical-v2/candidate-input-authority');
 const {
   buildFixtureCandidateRelease,
+  buildReleaseCorrectionMaterialisations,
   validateCandidateReleaseBundle,
 } = require('../lib/canonical-v2/candidate-release');
 const {
@@ -350,13 +352,23 @@ test('one corrected no-shop claim closes from admitted source through writer, re
       claim: successorClaim,
     },
   }, qxo.members[qxoNoticeIndex]];
+  const correctionMaterialisations = buildReleaseCorrectionMaterialisations({
+    contract_bundle: contract,
+    serving_namespace_id: servingNamespaceId,
+    corpus_release_id: corpusReleaseId,
+    members,
+    correction_outputs: [correctionOutput],
+  });
+  const correctionAuthoritySelection = buildFixtureCandidateInputAuthority({
+    contractBundle: contract,
+    correctionMaterialisations,
+  });
   const release = buildFixtureCandidateRelease({
     contract_bundle: contract,
     serving_namespace_id: servingNamespaceId,
     corpus_release_id: corpusReleaseId,
     members,
-    expected_active_correction_application_ids: [correctionOutput.application.correction_application_id],
-    correction_materialisations: [{ correction_output: correctionOutput }],
+    correction_authority_selection: correctionAuthoritySelection,
     deal_directory_entries: [
       { application_deal_id: LANDOS_APPLICATION_DEAL_ID, governed_deal_key: LANDOS_DEAL_KEY },
       { application_deal_id: QXO_APPLICATION_DEAL_ID, governed_deal_key: 'deal:qxo-topbuild' },
@@ -558,26 +570,26 @@ test('one corrected no-shop claim closes from admitted source through writer, re
     serving_namespace_id: servingNamespaceId,
     corpus_release_id: corpusReleaseId,
     members: [staleMember, members[1]],
-    expected_active_correction_application_ids: [correctionOutput.application.correction_application_id],
-    correction_materialisations: [{ correction_output: correctionOutput }],
+    correction_authority_selection: correctionAuthoritySelection,
     deal_directory_entries: [
       { application_deal_id: LANDOS_APPLICATION_DEAL_ID, governed_deal_key: LANDOS_DEAL_KEY },
       { application_deal_id: QXO_APPLICATION_DEAL_ID, governed_deal_key: 'deal:qxo-topbuild' },
     ],
   }), /does not close over its market observation|semantics do not match|not the same release member|not a closed atomic graph/);
 
+  const incompleteCorrectionAuthoritySelection = structuredClone(correctionAuthoritySelection);
+  incompleteCorrectionAuthoritySelection.correction_materialisations = [];
   assert.throws(() => buildFixtureCandidateRelease({
     contract_bundle: contract,
     serving_namespace_id: servingNamespaceId,
     corpus_release_id: corpusReleaseId,
     members,
-    expected_active_correction_application_ids: [correctionOutput.application.correction_application_id],
-    correction_materialisations: [],
+    correction_authority_selection: incompleteCorrectionAuthoritySelection,
     deal_directory_entries: [
       { application_deal_id: LANDOS_APPLICATION_DEAL_ID, governed_deal_key: LANDOS_DEAL_KEY },
       { application_deal_id: QXO_APPLICATION_DEAL_ID, governed_deal_key: 'deal:qxo-topbuild' },
     ],
-  }), /Correction materialisations do not equal the expected active application set/);
+  }), /does not exactly contain the materialisations|Authority selection/i);
 
   const predecessorProjectionMember = structuredClone(members[0]);
   predecessorProjectionMember.projection_output = predecessorResult.projection;
@@ -586,8 +598,7 @@ test('one corrected no-shop claim closes from admitted source through writer, re
     serving_namespace_id: servingNamespaceId,
     corpus_release_id: corpusReleaseId,
     members: [predecessorProjectionMember, members[1]],
-    expected_active_correction_application_ids: [correctionOutput.application.correction_application_id],
-    correction_materialisations: [{ correction_output: correctionOutput }],
+    correction_authority_selection: correctionAuthoritySelection,
     deal_directory_entries: [
       { application_deal_id: LANDOS_APPLICATION_DEAL_ID, governed_deal_key: LANDOS_DEAL_KEY },
       { application_deal_id: QXO_APPLICATION_DEAL_ID, governed_deal_key: 'deal:qxo-topbuild' },
@@ -611,8 +622,7 @@ test('one corrected no-shop claim closes from admitted source through writer, re
     serving_namespace_id: servingNamespaceId,
     corpus_release_id: corpusReleaseId,
     members: [semanticallyStaleObservationMember, members[1]],
-    expected_active_correction_application_ids: [correctionOutput.application.correction_application_id],
-    correction_materialisations: [{ correction_output: correctionOutput }],
+    correction_authority_selection: correctionAuthoritySelection,
     deal_directory_entries: [
       { application_deal_id: LANDOS_APPLICATION_DEAL_ID, governed_deal_key: LANDOS_DEAL_KEY },
       { application_deal_id: QXO_APPLICATION_DEAL_ID, governed_deal_key: 'deal:qxo-topbuild' },
@@ -624,8 +634,7 @@ test('one corrected no-shop claim closes from admitted source through writer, re
     serving_namespace_id: servingNamespaceId,
     corpus_release_id: corpusReleaseId,
     members: [members[0], members[0], members[1]],
-    expected_active_correction_application_ids: [correctionOutput.application.correction_application_id],
-    correction_materialisations: [{ correction_output: correctionOutput }],
+    correction_authority_selection: correctionAuthoritySelection,
     deal_directory_entries: [
       { application_deal_id: LANDOS_APPLICATION_DEAL_ID, governed_deal_key: LANDOS_DEAL_KEY },
       { application_deal_id: QXO_APPLICATION_DEAL_ID, governed_deal_key: 'deal:qxo-topbuild' },
@@ -639,8 +648,7 @@ test('one corrected no-shop claim closes from admitted source through writer, re
     serving_namespace_id: servingNamespaceId,
     corpus_release_id: corpusReleaseId,
     members: [fabricatedDetailMember, members[1]],
-    expected_active_correction_application_ids: [correctionOutput.application.correction_application_id],
-    correction_materialisations: [{ correction_output: correctionOutput }],
+    correction_authority_selection: correctionAuthoritySelection,
     deal_directory_entries: [
       { application_deal_id: LANDOS_APPLICATION_DEAL_ID, governed_deal_key: LANDOS_DEAL_KEY },
       { application_deal_id: QXO_APPLICATION_DEAL_ID, governed_deal_key: 'deal:qxo-topbuild' },

@@ -18,10 +18,11 @@ function clone(value) {
 
 function receiptFor(plan, replayed = false) {
   return {
-    schema_version: 'CANDIDATE_RELEASE_IMPORT_RECEIPT/V3',
+    schema_version: 'CANDIDATE_RELEASE_IMPORT_RECEIPT/V4',
     import_state: 'IMPORTED_COMPLETE',
     replayed,
     candidate_manifest_id: plan.release_record.candidate_manifest_id,
+    candidate_input_authority: plan.candidate_input_authority,
     correction_input_seal_id: plan.release_record.correction_input_seal_id,
     correction_input_root: plan.release_record.correction_input_root,
     corpus_release_id: plan.release_record.corpus_release_id,
@@ -34,7 +35,7 @@ function receiptFor(plan, replayed = false) {
 
 function rekeyPlan(plan) {
   const { candidate_release_import_plan_id: ignored, ...body } = plan;
-  plan.candidate_release_import_plan_id = contentId('CANDIDATE_RELEASE_IMPORT_PLAN/V3', body);
+  plan.candidate_release_import_plan_id = contentId('CANDIDATE_RELEASE_IMPORT_PLAN/V4', body);
   return plan;
 }
 
@@ -59,6 +60,15 @@ test('one certified release becomes one deterministic atomic import plan across 
   assert.equal(first.release_record.correction_input_seal_id, release.manifest.correction_input_seal_id);
   assert.equal(first.release_record.correction_input_root, release.manifest.roots.correction_input_root);
   assert.equal(first.correction_input_seal_record.correction_input_seal_id, release.manifest.correction_input_seal_id);
+  assert.deepEqual(first.candidate_input_authority, {
+    contract_fingerprint: release.candidate_correction_input_seal.contract_fingerprint,
+    candidate_input_head_id: release.candidate_correction_input_seal.candidate_input_head_id,
+    candidate_input_head_payload_digest:
+      release.candidate_correction_input_seal.candidate_input_head_payload_digest,
+    correction_discharge_map_id: release.candidate_correction_input_seal.correction_discharge_map_id,
+    correction_discharge_map_payload_digest:
+      release.candidate_correction_input_seal.correction_discharge_map_payload_digest,
+  });
   assert.deepEqual(first.correction_discharge_records, []);
   assert.equal(first.query_records.some((row) => row.canonical_payload.row_kind !== 'CANONICAL_RESULT'), false);
   assert.equal(first.source_specific_records[0].canonical_payload.row_kind, 'REVIEWED_SOURCE_SPECIFIC');
@@ -108,6 +118,14 @@ test('bundle or physical projection drift blocks the import plan before any data
   rekeyPlan(rootDrift);
   assert.throws(() => validateCandidateReleaseImportPlan(rootDrift), /does not close over its certified manifest/);
 
+  const staleAuthority = clone(buildCandidateReleaseImportPlan({ release }));
+  staleAuthority.candidate_input_authority.candidate_input_head_id = '0'.repeat(64);
+  rekeyPlan(staleAuthority);
+  assert.throws(
+    () => validateCandidateReleaseImportPlan(staleAuthority),
+    /candidate input authority does not equal its certified correction seal/,
+  );
+
   const rehashedDetailDrift = clone(buildCandidateReleaseImportPlan({ release }));
   const detailRecord = rehashedDetailDrift.exact_detail_packages[0];
   detailRecord.canonical_payload.detail_payloads[0].response_body.detail_kind = 'FABRICATED_DETAIL';
@@ -144,6 +162,7 @@ test('release import performs one writer RPC, validates the complete receipt and
   assert.equal(imported.receipt.replayed, false);
   assert.equal(imported.receipt.correction_input_seal_id, release.manifest.correction_input_seal_id);
   assert.equal(imported.receipt.correction_input_root, release.manifest.roots.correction_input_root);
+  assert.deepEqual(imported.receipt.candidate_input_authority, imported.plan.candidate_input_authority);
 
   let failedCalls = 0;
   await assert.rejects(importCandidateRelease({
@@ -211,7 +230,19 @@ test('staging import is set-based, transactional and withholds completion until 
   assert.match(importer, /candidate_release_correction_input_seals[\s\S]*candidate_release_correction_discharges[\s\S]*deal_serving_directory[\s\S]*market_observations[\s\S]*market_metric_slot_exclusions[\s\S]*shared_serving_rows[\s\S]*reviewed_source_specific_serving_rows[\s\S]*exact_detail_serving_packages[\s\S]*candidate_release_semantic_graphs/);
   assert.match(importer, /candidate correction discharge import set does not equal its seal/);
   assert.match(importer, /candidate_release_correction_input_seals[\s\S]*candidate_release_correction_discharges[\s\S]*did not close over every certified serving object/);
-  assert.match(importer, /CANDIDATE_RELEASE_IMPORT_RECEIPT\/V3/);
+  assert.match(importer, /CANDIDATE_RELEASE_IMPORT_RECEIPT\/V4/);
+  const inputHeadLock = importer.indexOf('FROM canonical_v2_staging.candidate_input_heads current_head');
+  const replayLookup = importer.indexOf('FROM canonical_v2_staging.candidate_release_import_receipts receipt');
+  const firstReleaseInsert = importer.indexOf('INSERT INTO canonical_v2_staging.fixture_corpus_releases');
+  assert.ok(inputHeadLock >= 0 && inputHeadLock < replayLookup && replayLookup < firstReleaseInsert);
+  assert.match(importer, /current_head\.singleton_key = 'CURRENT'/);
+  assert.match(importer, /FOR SHARE OF current_head/);
+  assert.match(importer, /current_input_contract_fingerprint IS DISTINCT FROM contract_id/);
+  assert.match(importer, /current_input_head_id IS DISTINCT FROM input_head_id/);
+  assert.match(importer, /current_input_head_payload_digest IS DISTINCT FROM input_head_payload_digest/);
+  assert.match(importer, /current_discharge_map_id IS DISTINCT FROM discharge_map_id/);
+  assert.match(importer, /current_discharge_map_payload_digest IS DISTINCT FROM discharge_map_payload_digest/);
+  assert.match(importer, /candidate input authority changed before release import/);
   assert.match(importer, /did not close over every certified serving object[\s\S]*INSERT INTO canonical_v2_staging\.candidate_release_import_receipts/);
   assert.doesNotMatch(importer, /\bLOOP\b/i);
   assert.doesNotMatch(importer, /\bOFFSET\b/i);
@@ -228,6 +259,28 @@ test('staging import is set-based, transactional and withholds completion until 
   assert.match(activation, /active release pointer changed before compare-and-swap/);
   assert.match(activation, /receipt\.import_state = 'IMPORTED_COMPLETE'/);
   assert.match(activation, /active release pointer does not match the imported correction seal/);
+  const activationReceiptLookup = activation.indexOf(
+    'FROM canonical_v2_staging.candidate_release_import_receipts receipt',
+  );
+  const activationHeadLock = activation.indexOf(
+    'FROM canonical_v2_staging.candidate_input_heads current_head',
+  );
+  const activationHistoryInsert = activation.indexOf(
+    'INSERT INTO canonical_v2_staging.active_corpus_release_pointer_history',
+  );
+  assert.ok(
+    activationReceiptLookup >= 0
+      && activationReceiptLookup < activationHeadLock
+      && activationHeadLock < activationHistoryInsert,
+  );
+  assert.match(activation, /current_head\.singleton_key = 'CURRENT'/);
+  assert.match(activation, /FOR SHARE OF current_head/);
+  assert.match(activation, /current_input_contract_fingerprint IS DISTINCT FROM imported_input_contract_fingerprint/);
+  assert.match(activation, /current_input_head_id IS DISTINCT FROM imported_input_head_id/);
+  assert.match(activation, /current_input_head_payload_digest IS DISTINCT FROM imported_input_head_payload_digest/);
+  assert.match(activation, /current_discharge_map_id IS DISTINCT FROM imported_discharge_map_id/);
+  assert.match(activation, /current_discharge_map_payload_digest IS DISTINCT FROM imported_discharge_map_payload_digest/);
+  assert.match(activation, /candidate input authority changed before active release activation/);
   assert.match(activation, /FIXTURE_ACTIVE_RELEASE_POINTER\/V2/);
   assert.match(activation, /candidate release has no complete import receipt/);
   assert.match(activation, /INSERT INTO canonical_v2_staging\.active_corpus_release_pointer_history[\s\S]*INSERT INTO canonical_v2_staging\.active_corpus_release_pointers/);

@@ -124,8 +124,7 @@ test('release bytes are deterministic regardless of caller member and directory 
     members: [...fixture.members].reverse(),
     source_specific_members: [...fixture.sourceSpecificMembers].reverse(),
     validated_semantic_graphs: [...fixture.validatedSemanticGraphs].reverse(),
-    expected_active_correction_application_ids: [...fixture.expectedActiveCorrectionApplicationIds].reverse(),
-    correction_materialisations: [...fixture.correctionMaterialisations].reverse(),
+    correction_authority_selection: fixture.correctionAuthoritySelection,
     deal_directory_entries: [...fixture.dealDirectoryEntries].reverse(),
   });
   const fresh = buildMultiDealCandidateReleaseFixture();
@@ -150,8 +149,7 @@ test('cross-deal exact-detail substitution and incomplete directory coverage fai
     corpus_release_id: fixture.corpusReleaseId,
     members: crossedMembers,
     source_specific_members: fixture.sourceSpecificMembers,
-    expected_active_correction_application_ids: fixture.expectedActiveCorrectionApplicationIds,
-    correction_materialisations: fixture.correctionMaterialisations,
+    correction_authority_selection: fixture.correctionAuthoritySelection,
     deal_directory_entries: fixture.dealDirectoryEntries,
   }), /fields do not match|closed atomic graph|not the same release member/);
 
@@ -161,8 +159,7 @@ test('cross-deal exact-detail substitution and incomplete directory coverage fai
     corpus_release_id: fixture.corpusReleaseId,
     members: fixture.members,
     source_specific_members: fixture.sourceSpecificMembers,
-    expected_active_correction_application_ids: fixture.expectedActiveCorrectionApplicationIds,
-    correction_materialisations: fixture.correctionMaterialisations,
+    correction_authority_selection: fixture.correctionAuthoritySelection,
     deal_directory_entries: [fixture.dealDirectoryEntries[0]],
   }), /cover every release deal exactly once/);
 });

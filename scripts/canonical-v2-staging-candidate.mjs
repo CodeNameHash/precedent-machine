@@ -18,7 +18,12 @@ const {
 const {
   validateActiveReleasePointer,
 } = require('../lib/canonical-v2/candidate-release');
+const {
+  recheckCandidateInputHead,
+  selectTrustedCandidateInputs,
+} = require('../lib/canonical-v2/candidate-input-authority');
 const { canonicalJson } = require('../lib/canonical-v2/canonical-bytes');
+const { compileFixtureContract } = require('../lib/canonical-v2/contract-bundle');
 
 const SCRIPT_ROOT = dirname(fileURLToPath(import.meta.url));
 const REPOSITORY_ROOT = resolve(SCRIPT_ROOT, '..');
@@ -28,12 +33,16 @@ const EXPECTED_PROJECT = Object.freeze({
 });
 const EXPECTED_CANDIDATE = Object.freeze({
   contract_fingerprint: '56da82bee06331793ba2ed8b78ef4186361407e60733595091e5951853e7d41d',
-  corpus_release_id: 'b9dcc82ea59a82af3b04719b8e0b9d55609ebf058013d86d54bf82bf3caed6ee',
-  candidate_manifest_id: 'c2247c4367fafe321ff27e2b5a8db02809463ea2af000e92cd91a6a5d9867092',
-  correction_input_seal_id: '0aaf9b2198e82bba4dc45b36100bb322b1091a70634f2cac5693f536e3c8b754',
-  correction_input_root: 'b63df4508e533baff18392ac451ba05db01d4517fdd73f015dcbb2c56f5f9ab3',
+  candidate_input_head_id: '47e58bdccc8712e52538e001d69237cbe0d5c1d3ab4a8bdd5fcfac57439220bf',
+  candidate_input_head_payload_digest: '6235cfd8f97babed44c1a4666008c239aec08983eb2d186bb00ad527a4f95c47',
+  correction_discharge_map_id: '3adb162bbf57c85be369b8b819c81f7f2a42e9afa06b13f048e2dd01085af5d9',
+  correction_discharge_map_payload_digest: 'c365c50625e6dc02d044b51087a7cb86d7c92477ff64c51477d948cdce7f180c',
+  corpus_release_id: 'c9c19dc1ad92496953ee04f52b4a8dc575ea21ab9502acfd449a9299055817d3',
+  candidate_manifest_id: '4e955c415bcb4c4e32e818bad11f82e48e247c3e12efee9a5e120d927a6ecf98',
+  correction_input_seal_id: '7fe908d2a5e359f8f87bb8f72e204a90fa4e25a73da4f8588be1350f6ba2a8bd',
+  correction_input_root: 'aa260ffdf873a51a93b23f6f85173de1a1183e21ade0668aa5a45977cb0f8012',
   serving_namespace_id: '9270602408312e80a65c0ce46b895fa2c8f07d1c676aef5bd171029edd209b68',
-  import_plan_id: '35a9b1413736021fcde56eac68b096f061ad2618b365b842725163704a7db6ee',
+  import_plan_id: '4e6187aef580c1c083ed19cc6511af2586da7e028393a74dc34c60c7985898b5',
 });
 const EXPECTED_COUNTS = Object.freeze({
   correction_input_seal_records: 1,
@@ -49,28 +58,28 @@ const EXPECTED_COUNTS = Object.freeze({
 const EXPECTED_PRIOR_POINTER = Object.freeze({
   schema_version: 'FIXTURE_ACTIVE_RELEASE_POINTER/V2',
   environment: 'staging',
-  generation: 6,
-  corpus_release_id: 'fda4083648dcc7fabaf5c2fe8f14a2c01486e4ca23de6305c250dda84bf2c44c',
+  generation: 7,
+  corpus_release_id: 'b9dcc82ea59a82af3b04719b8e0b9d55609ebf058013d86d54bf82bf3caed6ee',
   serving_namespace_id: '9270602408312e80a65c0ce46b895fa2c8f07d1c676aef5bd171029edd209b68',
-  candidate_release_manifest_id: 'c6f47aefdf8106a1d1d576b03d4f4d42d91f2b670b11bd42c99a31a97fe793bc',
+  candidate_release_manifest_id: 'c2247c4367fafe321ff27e2b5a8db02809463ea2af000e92cd91a6a5d9867092',
   correction_input_seal_id: '0aaf9b2198e82bba4dc45b36100bb322b1091a70634f2cac5693f536e3c8b754',
   correction_input_root: 'b63df4508e533baff18392ac451ba05db01d4517fdd73f015dcbb2c56f5f9ab3',
-  previous_pointer_id: '4c5919a74ec9c4c3d6e0e50e985f8f36ccfe6e8f39d47bd5d56f8f093705c6d5',
-  pointer_id: '398c6210a6a0358fc2c735c457a1c6c485ce04694154d7807fad920519f4e715',
-  canonical_payload_digest: '880e3f6e2706bd34f11904784c4f105d494b14f2adc972072431bac0884112d0',
+  previous_pointer_id: '398c6210a6a0358fc2c735c457a1c6c485ce04694154d7807fad920519f4e715',
+  pointer_id: '15a0e13f45ad596d468b9cfa2878a456ac56c3b84d15a185c0a96dca5ef022a1',
+  canonical_payload_digest: 'cd48ef76f1e6055380d404fbd8bc179fb728452819d8b7d5b0f55d1c123bcc43',
 });
 const EXPECTED_ACTIVE_POINTER = Object.freeze({
   schema_version: 'FIXTURE_ACTIVE_RELEASE_POINTER/V2',
   environment: 'staging',
-  generation: 7,
+  generation: 8,
   corpus_release_id: EXPECTED_CANDIDATE.corpus_release_id,
   serving_namespace_id: EXPECTED_CANDIDATE.serving_namespace_id,
   candidate_release_manifest_id: EXPECTED_CANDIDATE.candidate_manifest_id,
   correction_input_seal_id: EXPECTED_CANDIDATE.correction_input_seal_id,
   correction_input_root: EXPECTED_CANDIDATE.correction_input_root,
   previous_pointer_id: EXPECTED_PRIOR_POINTER.pointer_id,
-  pointer_id: '15a0e13f45ad596d468b9cfa2878a456ac56c3b84d15a185c0a96dca5ef022a1',
-  canonical_payload_digest: 'cd48ef76f1e6055380d404fbd8bc179fb728452819d8b7d5b0f55d1c123bcc43',
+  pointer_id: 'eda01d9851522edada42a76f1bb1afebd8061528166523124bed3a20c9babf8b',
+  canonical_payload_digest: '08e39195cf12156204fa9d129e438ae5dd89a27b35024f91645c9937b4105c69',
 });
 
 function fail(message) {
@@ -95,11 +104,19 @@ function readLinkedProject() {
   }
 }
 
-function buildPinnedCandidate() {
-  const fixture = buildMultiDealCandidateReleaseFixture();
+function buildPinnedCandidate(correctionAuthoritySelection) {
+  const fixture = buildMultiDealCandidateReleaseFixture({
+    correctionAuthoritySelection,
+  });
   const plan = buildCandidateReleaseImportPlan({ release: fixture.release });
   const actual = {
     contract_fingerprint: fixture.release.manifest.contract_fingerprint,
+    candidate_input_head_id: plan.candidate_input_authority.candidate_input_head_id,
+    candidate_input_head_payload_digest:
+      plan.candidate_input_authority.candidate_input_head_payload_digest,
+    correction_discharge_map_id: plan.candidate_input_authority.correction_discharge_map_id,
+    correction_discharge_map_payload_digest:
+      plan.candidate_input_authority.correction_discharge_map_payload_digest,
     corpus_release_id: fixture.release.manifest.corpus_release_id,
     candidate_manifest_id: fixture.release.manifest.candidate_release_manifest_id,
     correction_input_seal_id: fixture.release.manifest.correction_input_seal_id,
@@ -119,6 +136,10 @@ function asSqlJson(value) {
   const tag = `$canonical_${sha256(json).slice(0, 16)}$`;
   if (json.includes(tag)) fail('Unable to construct a safe canonical JSON literal.');
   return `${tag}${json}${tag}::jsonb`;
+}
+
+function asSqlText(value) {
+  return `'${String(value).replaceAll("'", "''")}'`;
 }
 
 function parseQueryResult(stdout) {
@@ -150,6 +171,7 @@ function runSql(sql, { commit = false } = {}) {
         cwd: REPOSITORY_ROOT,
         encoding: 'utf8',
         maxBuffer: 64 * 1024 * 1024,
+        timeout: 30000,
       },
     );
     if (result.status !== 0) {
@@ -218,7 +240,7 @@ function assertImported(state) {
   }
 }
 
-function sqlRpcClient({ commit }) {
+function sqlRpcClient({ commit = false } = {}) {
   return {
     rpc(name, params) {
       let call;
@@ -226,6 +248,10 @@ function sqlRpcClient({ commit }) {
         call = `public.canonical_v2_import_candidate_release('staging', ${asSqlJson(params.p_import_plan)})`;
       } else if (name === 'canonical_v2_activate_candidate_release') {
         call = `public.canonical_v2_activate_candidate_release('staging', ${asSqlJson(params.p_expected_current_pointer)}, ${asSqlJson(params.p_next_pointer)})`;
+      } else if (name === 'canonical_v2_select_candidate_inputs') {
+        call = `public.canonical_v2_select_candidate_inputs(${asSqlText(params.p_environment)}, ${asSqlText(params.p_contract_fingerprint)})`;
+      } else if (name === 'canonical_v2_recheck_candidate_input_head') {
+        call = `public.canonical_v2_recheck_candidate_input_head(${asSqlText(params.p_environment)}, ${asSqlText(params.p_contract_fingerprint)}, ${asSqlText(params.p_expected_candidate_input_head_id)}, ${asSqlText(params.p_expected_candidate_input_head_payload_digest)})`;
       } else {
         return Promise.resolve({ data: null, error: { message: 'Unsupported canonical RPC.' } });
       }
@@ -239,8 +265,16 @@ function sqlRpcClient({ commit }) {
   };
 }
 
-async function dryRun(release) {
+async function recheckAuthorityBeforeImport(correctionAuthoritySelection) {
+  await recheckCandidateInputHead({
+    client: sqlRpcClient(),
+    candidate_input_head: correctionAuthoritySelection.candidate_input_head,
+  });
+}
+
+async function dryRun(release, correctionAuthoritySelection) {
   const before = readState();
+  await recheckAuthorityBeforeImport(correctionAuthoritySelection);
   const result = await importCandidateRelease({ client: sqlRpcClient({ commit: false }), release });
   const after = readState();
   if (canonicalJson(before) !== canonicalJson(after)) {
@@ -249,7 +283,8 @@ async function dryRun(release) {
   process.stdout.write(`Dry-run validated and rolled back multi-deal candidate ${result.plan.candidate_release_import_plan_id}.\n`);
 }
 
-async function importRelease(release) {
+async function importRelease(release, correctionAuthoritySelection) {
+  await recheckAuthorityBeforeImport(correctionAuthoritySelection);
   const result = await importCandidateRelease({ client: sqlRpcClient({ commit: true }), release });
   const state = readState();
   assertImported(state);
@@ -299,11 +334,19 @@ if (!['--dry-run', '--import', '--activate', '--verify'].includes(mode) || proce
   fail('Usage: node scripts/canonical-v2-staging-candidate.mjs [--dry-run|--import|--activate|--verify]');
 }
 readLinkedProject();
-const { fixture } = buildPinnedCandidate();
 
 try {
-  if (mode === '--dry-run') await dryRun(fixture.release);
-  if (mode === '--import') await importRelease(fixture.release);
+  const contractBundle = compileFixtureContract();
+  if (contractBundle.fingerprint !== EXPECTED_CANDIDATE.contract_fingerprint) {
+    throw new Error('Refusing to select candidate inputs for a drifted contract bundle.');
+  }
+  const correctionAuthoritySelection = await selectTrustedCandidateInputs({
+    client: sqlRpcClient(),
+    contract_bundle: contractBundle,
+  });
+  const { fixture } = buildPinnedCandidate(correctionAuthoritySelection);
+  if (mode === '--dry-run') await dryRun(fixture.release, correctionAuthoritySelection);
+  if (mode === '--import') await importRelease(fixture.release, correctionAuthoritySelection);
   if (mode === '--activate') await activateRelease(fixture.release);
   if (mode === '--verify') verifyState();
 } catch (error) {

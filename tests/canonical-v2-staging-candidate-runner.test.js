@@ -10,6 +10,8 @@ test('candidate runner is fixed to the isolated project and reviewed multi-deal 
   assert.match(source, /sjumbznveyyiizhwvixj/);
   assert.match(source, /deal-corpus-canonical-v2-staging/);
   assert.match(source, /buildMultiDealCandidateReleaseFixture/);
+  assert.match(source, /selectTrustedCandidateInputs/);
+  assert.match(source, /recheckCandidateInputHead/);
   assert.match(source, /EXPECTED_CANDIDATE/);
   assert.match(source, /correction_input_seal_id/);
   assert.match(source, /correction_input_root/);
@@ -25,6 +27,27 @@ test('candidate dry-run rolls back and import uses one authoritative RPC', () =>
   assert.match(source, /importCandidateRelease\(\{ client: sqlRpcClient\(\{ commit: false \}\), release \}\)/);
   assert.match(source, /public\.canonical_v2_import_candidate_release/);
   assert.doesNotMatch(source, /INSERT INTO canonical_v2_staging/);
+});
+
+test('candidate construction uses one current database authority selection and no local fallback', () => {
+  const source = fs.readFileSync(RUNNER, 'utf8');
+  assert.equal((source.match(/await selectTrustedCandidateInputs\(/g) || []).length, 1);
+  assert.match(source, /buildMultiDealCandidateReleaseFixture\(\{[\s\S]*correctionAuthoritySelection/);
+  assert.match(source, /public\.canonical_v2_select_candidate_inputs/);
+  assert.match(source, /candidate_input_head_id/);
+  assert.match(source, /correction_discharge_map_id/);
+  assert.doesNotMatch(source, /buildFixtureCandidateInputAuthority|correction_materialisations: \[\]|buildCandidateInputHead|buildCorrectionDischargeMap/);
+});
+
+test('the exact selected head is rechecked immediately before either import path', () => {
+  const source = fs.readFileSync(RUNNER, 'utf8');
+  assert.match(source, /async function recheckAuthorityBeforeImport[\s\S]*recheckCandidateInputHead/);
+  assert.match(source, /async function dryRun[\s\S]*await recheckAuthorityBeforeImport\(correctionAuthoritySelection\);\n  const result = await importCandidateRelease/);
+  assert.match(source, /async function importRelease[\s\S]*await recheckAuthorityBeforeImport\(correctionAuthoritySelection\);\n  const result = await importCandidateRelease/);
+  assert.match(source, /public\.canonical_v2_recheck_candidate_input_head/);
+  assert.match(source, /public\.canonical_v2_import_candidate_release/);
+  assert.match(source, /timeout: 30000/);
+  assert.doesNotMatch(source, /retry|setInterval/);
 });
 
 test('candidate activation is a guarded compare-and-swap and will not replace an unexpected release', () => {

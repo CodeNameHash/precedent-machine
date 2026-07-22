@@ -132,13 +132,12 @@ test('duplicate, mismatched, unresolved or source-less members block the whole c
     corpus_release_id: fixture.corpusReleaseId,
     members: fixture.members,
     deal_directory_entries: fixture.dealDirectoryEntries,
-  }), /expected_active_correction_application_ids is mandatory/);
+  }), /candidate input authority selection must be an object/);
   const args = {
     contract_bundle: fixture.contract,
     serving_namespace_id: fixture.servingNamespaceId,
     corpus_release_id: fixture.corpusReleaseId,
-    expected_active_correction_application_ids: fixture.expectedActiveCorrectionApplicationIds,
-    correction_materialisations: fixture.correctionMaterialisations,
+    correction_authority_selection: fixture.correctionAuthoritySelection,
   };
   assert.throws(
     () => buildFixtureCandidateRelease({ ...args, members: [...fixture.members, fixture.members[0]] }),
@@ -307,8 +306,7 @@ test('candidate release rejects graphs outside its admitted source and deal inve
       fixture.sourceSpecific.validatedSemanticGraph,
       fixture.sourceSpecific.validatedSemanticGraph,
     ],
-    expected_active_correction_application_ids: fixture.expectedActiveCorrectionApplicationIds,
-    correction_materialisations: fixture.correctionMaterialisations,
+    correction_authority_selection: fixture.correctionAuthoritySelection,
     deal_directory_entries: fixture.dealDirectoryEntries,
   }), /duplicate validated semantic graph/);
 
@@ -323,8 +321,7 @@ test('candidate release rejects graphs outside its admitted source and deal inve
     corpus_release_id: fixture.corpusReleaseId,
     members: qxo.members,
     validated_semantic_graphs: [fixture.sourceSpecific.validatedSemanticGraph],
-    expected_active_correction_application_ids: qxo.expectedActiveCorrectionApplicationIds,
-    correction_materialisations: qxo.correctionMaterialisations,
+    correction_authority_selection: qxo.correctionAuthoritySelection,
     deal_directory_entries: qxo.dealDirectoryEntries,
   }), /no admitted release source lineage/);
 });
