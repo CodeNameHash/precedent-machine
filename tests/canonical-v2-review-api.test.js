@@ -159,7 +159,8 @@ test('runtime routes use staging-only credentials and remain behind both server 
   const client = fs.readFileSync('lib/canonical-v2/serving-client.js', 'utf8');
   assert.match(reviewRoute, /isCanonicalV2ReviewEnabled/);
   assert.match(exactRoute, /isCanonicalV2ReviewEnabled/);
-  assert.match(client, /CANONICAL_V2_STAGING_SUPABASE_URL/);
-  assert.match(client, /CANONICAL_V2_STAGING_SERVING_KEY/);
+  assert.match(client, /CANONICAL_V2_STAGING_DATABASE_URL/);
+  assert.match(client, /max: 1/);
+  assert.match(client, /statement_timeout: 2500/);
   assert.doesNotMatch(client, /SUPABASE_SERVICE_ROLE_KEY|NEXT_PUBLIC_SUPABASE/);
 });
