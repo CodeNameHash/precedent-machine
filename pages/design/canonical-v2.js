@@ -12,14 +12,17 @@ export async function getServerSideProps(context) {
   const { buildLandosReviewedServingFixture } = require('../../__fixtures__/canonical-v2/landos-reviewed-row');
   const { buildLandosIocCapexServingFixture } = require('../../__fixtures__/canonical-v2/landos-ioc-capex-row');
   const { buildLandosNoShopServingFixture } = require('../../__fixtures__/canonical-v2/landos-no-shop-rows');
+  const { buildLandosTerminationFeeServingFixture } = require('../../__fixtures__/canonical-v2/landos-termination-fee-row');
   const { adaptSharedServingRows } = require('../../lib/canonical-v2/shared-row-adapter');
   const fixture = buildLandosReviewedServingFixture();
   const iocFixture = buildLandosIocCapexServingFixture();
   const noShopFixture = buildLandosNoShopServingFixture();
-  const [reviewedRow, unrecognisedRow, iocRow, ...noShopRows] = adaptSharedServingRows([
+  const terminationFeeFixture = buildLandosTerminationFeeServingFixture();
+  const [reviewedRow, unrecognisedRow, iocRow, terminationFeeRow, ...noShopRows] = adaptSharedServingRows([
     fixture.row,
     { row_kind: 'UNRECOGNISED_PROVISION_CANDIDATE' },
     iocFixture.row,
+    terminationFeeFixture.row,
     ...noShopFixture.rows,
   ]);
   return {
@@ -28,6 +31,8 @@ export async function getServerSideProps(context) {
       unrecognised_row: JSON.parse(JSON.stringify(unrecognisedRow)),
       ioc_capex_row: JSON.parse(JSON.stringify(iocRow)),
       ioc_capex_source_text: iocFixture.detailPackage.detail_payloads[0].response_body.excerpt.exact_text,
+      termination_fee_row: JSON.parse(JSON.stringify(terminationFeeRow)),
+      termination_fee_source_text: terminationFeeFixture.detailPackage.detail_payloads[0].response_body.excerpt.exact_text,
       no_shop_rows: JSON.parse(JSON.stringify(noShopRows)),
       no_shop_source_text_by_row: Object.fromEntries(noShopFixture.rows.map((row, index) => [
         row.row_serving_key,
@@ -189,6 +194,32 @@ function IocCapexRow({ item, sourceText }) {
   );
 }
 
+function TerminationFeeRow({ item, sourceText }) {
+  return (
+    <section className="mt-5 border border-[#D9D7D2] bg-white">
+      <header className="border-b border-[#E6E4DF] bg-[#F7F5F0] px-4 py-3">
+        <div className="text-[9px] font-bold uppercase tracking-[0.14em] text-[#77736C]">Real Sections 7.1 and 7.3 result</div>
+        <h2 className="mt-1 text-sm font-bold text-[#1F1F1F]">Seller termination fee and triggers</h2>
+        <p className="mt-1 text-[10px] text-[#77736C]">
+          The fee is normalised against the closing transaction value. Payer, payee and all three payment triggers remain explicit.
+        </p>
+      </header>
+      <div className="px-4 py-4">
+        <RowBoundary item={item} label="Seller termination-fee provision needs review">
+          {(row) => (
+            <div className="grid grid-cols-[minmax(260px,1fr)_minmax(260px,0.9fr)] gap-5" data-row-result="ready">
+              <SubjectTreatment adapted={row} sourceText={sourceText} />
+              <div className="border-l border-[#E6E4DF] pl-5">
+                <MarketMetricCell resolution={row.resolution} data={row.data} />
+              </div>
+            </div>
+          )}
+        </RowBoundary>
+      </div>
+    </section>
+  );
+}
+
 function RowIsolationProof({ item }) {
   return (
     <section className="mt-5 border border-[#D9D7D2] bg-white px-4 py-4" data-isolation-proof="true">
@@ -207,6 +238,8 @@ export default function CanonicalV2DesignFixture({
   ioc_capex_source_text: iocCapexSourceText,
   no_shop_rows: noShopRows,
   no_shop_source_text_by_row: noShopSourceTextByRow,
+  termination_fee_row: terminationFeeRow,
+  termination_fee_source_text: terminationFeeSourceText,
   unrecognised_row: unrecognisedRow,
   reviewed_mapping_id: reviewedMappingId,
   preview_environment: previewEnvironment,
@@ -282,6 +315,7 @@ export default function CanonicalV2DesignFixture({
 
           <RowIsolationProof item={unrecognisedRow} />
           <IocCapexRow item={iocCapexRow} sourceText={iocCapexSourceText} />
+          <TerminationFeeRow item={terminationFeeRow} sourceText={terminationFeeSourceText} />
           <NoShopRows rows={noShopRows} sourceTextByRow={noShopSourceTextByRow} />
         </div>
       </main>

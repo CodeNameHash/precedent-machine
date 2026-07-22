@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const { buildLandosReviewedServingFixture } = require('../__fixtures__/canonical-v2/landos-reviewed-row');
 const { buildLandosIocCapexServingFixture } = require('../__fixtures__/canonical-v2/landos-ioc-capex-row');
 const { buildLandosNoShopServingFixture } = require('../__fixtures__/canonical-v2/landos-no-shop-rows');
+const { buildLandosTerminationFeeServingFixture } = require('../__fixtures__/canonical-v2/landos-termination-fee-row');
 const { adaptSharedServingRow, SURFACES } = require('../lib/canonical-v2/shared-row-adapter');
 
 test('the real reviewed preview fixture binds the same complete market row to all four surfaces', () => {
@@ -47,8 +48,10 @@ test('the canonical design fixture is production-gated and performs no runtime d
   assert.match(page, /buildLandosReviewedServingFixture/);
   assert.match(page, /buildLandosIocCapexServingFixture/);
   assert.match(page, /buildLandosNoShopServingFixture/);
+  assert.match(page, /buildLandosTerminationFeeServingFixture/);
   assert.match(page, /No-shop \/ non-solicit terms/);
   assert.match(page, /Interim operating covenant, capital expenditures/);
+  assert.match(page, /Seller termination fee and triggers/);
   assert.match(page, /Row isolation proof/);
   assert.match(page, /This provision could not be mapped safely/);
   assert.match(page, /adaptSharedServingRows/);
@@ -56,6 +59,23 @@ test('the canonical design fixture is production-gated and performs no runtime d
   assert.match(page, /CanonicalV2DesignFixture\.noLayout = true/);
   assert.doesNotMatch(page, /fetch\s*\(/);
   assert.doesNotMatch(page, /\/api\//);
+});
+
+test('the real seller fee fixture exposes percentage, side and triggers through all four surfaces', () => {
+  const fixture = buildLandosTerminationFeeServingFixture();
+  const adapted = adaptSharedServingRow(fixture.row);
+  const metric = adapted.data.byRow[adapted.row_key]
+    .metrics.SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE;
+  assert.equal(metric.subject.rawAmount, '$7,000,000');
+  assert.equal(metric.subject.percentOfDealValue, 5.09090909);
+  assert.equal(metric.subject.legalTerms.find((term) => term.key === 'payer').value, 'Company (target)');
+  assert.equal(metric.subject.legalTerms.find((term) => term.key === 'payee').value, 'Parent (buyer)');
+  assert.equal(metric.subject.legalTerms.filter((term) => term.key.startsWith('trigger_')).length, 3);
+  for (const surface of SURFACES) {
+    assert.equal(adapted.surface_bindings[surface].typed_market, adapted.typed_market);
+  }
+  assert.equal(fixture.detailPackage.detail_payloads[0].response_body.excerpt.exact_text, '$7,000,000');
+  assert.doesNotMatch(JSON.stringify(adapted), /No market data/);
 });
 
 test('the real IOC capex fixture exposes source-backed relative value through all four surfaces', () => {
