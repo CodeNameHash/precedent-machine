@@ -188,6 +188,23 @@ CREATE TABLE IF NOT EXISTS canonical_v2_staging.exact_detail_serving_packages (
   UNIQUE (serving_namespace_id, corpus_release_id, exact_detail_package_digest)
 );
 
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.candidate_release_semantic_graphs (
+  serving_namespace_id text NOT NULL CHECK (serving_namespace_id ~ '^[a-f0-9]{64}$'),
+  corpus_release_id text NOT NULL REFERENCES canonical_v2_staging.fixture_corpus_releases(corpus_release_id),
+  contract_fingerprint text NOT NULL CHECK (contract_fingerprint ~ '^[a-f0-9]{64}$'),
+  validated_semantic_graph_id text NOT NULL CHECK (validated_semantic_graph_id ~ '^[a-f0-9]{64}$'),
+  governed_deal_key text NOT NULL,
+  deal_admission_id text NOT NULL CHECK (deal_admission_id ~ '^[a-f0-9]{64}$'),
+  source_admission_manifest_id text NOT NULL CHECK (source_admission_manifest_id ~ '^[a-f0-9]{64}$'),
+  document_hash text NOT NULL CHECK (document_hash ~ '^[a-f0-9]{64}$'),
+  canonical_text_id text NOT NULL CHECK (canonical_text_id ~ '^[a-f0-9]{64}$'),
+  definition_cue_count integer NOT NULL CHECK (definition_cue_count >= 0),
+  definition_use_cue_count integer NOT NULL CHECK (definition_use_cue_count >= 0),
+  canonical_payload jsonb NOT NULL,
+  canonical_payload_digest text NOT NULL CHECK (canonical_payload_digest ~ '^[a-f0-9]{64}$'),
+  PRIMARY KEY (serving_namespace_id, corpus_release_id, validated_semantic_graph_id)
+);
+
 CREATE TABLE IF NOT EXISTS canonical_v2_staging.candidate_release_import_receipts (
   candidate_manifest_id text PRIMARY KEY CHECK (candidate_manifest_id ~ '^[a-f0-9]{64}$'),
   corpus_release_id text NOT NULL UNIQUE REFERENCES canonical_v2_staging.fixture_corpus_releases(corpus_release_id),
@@ -330,6 +347,15 @@ CREATE INDEX IF NOT EXISTS canonical_v2_exact_detail_deal_idx
   );
 CREATE INDEX IF NOT EXISTS canonical_v2_exact_detail_reference_idx
   ON canonical_v2_staging.exact_detail_serving_packages USING gin (source_detail_reference_ids);
+CREATE INDEX IF NOT EXISTS canonical_v2_candidate_release_semantic_graph_lineage_idx
+  ON canonical_v2_staging.candidate_release_semantic_graphs (
+    serving_namespace_id,
+    corpus_release_id,
+    contract_fingerprint,
+    governed_deal_key,
+    document_hash,
+    canonical_text_id
+  );
 
 CREATE OR REPLACE FUNCTION canonical_v2_staging.enforce_market_metric_slot_partition()
 RETURNS trigger
@@ -385,6 +411,7 @@ ALTER TABLE canonical_v2_staging.market_metric_slot_exclusions ENABLE ROW LEVEL 
 ALTER TABLE canonical_v2_staging.shared_serving_rows ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.reviewed_source_specific_serving_rows ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.exact_detail_serving_packages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE canonical_v2_staging.candidate_release_semantic_graphs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.candidate_release_import_receipts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.active_corpus_release_pointer_history ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.active_corpus_release_pointers ENABLE ROW LEVEL SECURITY;
@@ -414,7 +441,7 @@ BEGIN
     OR p_import_plan->>'environment' IS DISTINCT FROM 'staging' THEN
     RAISE EXCEPTION 'canonical_v2_import_candidate_release is staging-only' USING ERRCODE = '42501';
   END IF;
-  IF p_import_plan->>'schema_version' IS DISTINCT FROM 'CANDIDATE_RELEASE_IMPORT_PLAN/V1'
+  IF p_import_plan->>'schema_version' IS DISTINCT FROM 'CANDIDATE_RELEASE_IMPORT_PLAN/V2'
     OR jsonb_typeof(release_record) IS DISTINCT FROM 'object'
     OR jsonb_typeof(expected) IS DISTINCT FROM 'object'
     OR release_id !~ '^[a-f0-9]{64}$'
@@ -436,7 +463,7 @@ BEGIN
       RAISE EXCEPTION 'candidate manifest already imported under different content' USING ERRCODE = '23505';
     END IF;
     RETURN jsonb_build_object(
-      'schema_version', 'CANDIDATE_RELEASE_IMPORT_RECEIPT/V1',
+      'schema_version', 'CANDIDATE_RELEASE_IMPORT_RECEIPT/V2',
       'import_state', 'IMPORTED_COMPLETE',
       'replayed', true,
       'candidate_manifest_id', manifest_id,
@@ -454,6 +481,7 @@ BEGIN
     OR jsonb_typeof(p_import_plan->'query_records') IS DISTINCT FROM 'array'
     OR jsonb_typeof(p_import_plan->'source_specific_records') IS DISTINCT FROM 'array'
     OR jsonb_typeof(p_import_plan->'exact_detail_packages') IS DISTINCT FROM 'array'
+    OR jsonb_typeof(p_import_plan->'validated_semantic_graph_records') IS DISTINCT FROM 'array'
     OR jsonb_array_length(p_import_plan->'deal_directory_records')
       IS DISTINCT FROM (expected->>'deal_directory_records')::integer
     OR jsonb_array_length(p_import_plan->'market_observations')
@@ -465,7 +493,9 @@ BEGIN
     OR jsonb_array_length(p_import_plan->'source_specific_records')
       IS DISTINCT FROM (expected->>'source_specific_records')::integer
     OR jsonb_array_length(p_import_plan->'exact_detail_packages')
-      IS DISTINCT FROM (expected->>'exact_detail_packages')::integer THEN
+      IS DISTINCT FROM (expected->>'exact_detail_packages')::integer
+    OR jsonb_array_length(p_import_plan->'validated_semantic_graph_records')
+      IS DISTINCT FROM (expected->>'validated_semantic_graph_records')::integer THEN
     RAISE EXCEPTION 'candidate release import counts do not match the plan' USING ERRCODE = '22023';
   END IF;
   IF (expected->>'deal_directory_records')::integer
@@ -479,7 +509,9 @@ BEGIN
     OR (expected->>'source_specific_records')::integer
       IS DISTINCT FROM (release_record->'canonical_payload'->'counts'->>'source_specific_serving_records')::integer
     OR (expected->>'exact_detail_packages')::integer
-      IS DISTINCT FROM (release_record->'canonical_payload'->'counts'->>'exact_detail_packages')::integer THEN
+      IS DISTINCT FROM (release_record->'canonical_payload'->'counts'->>'exact_detail_packages')::integer
+    OR (expected->>'validated_semantic_graph_records')::integer
+      IS DISTINCT FROM (release_record->'canonical_payload'->'counts'->>'validated_semantic_graphs')::integer THEN
     RAISE EXCEPTION 'candidate release import counts do not match the certified manifest' USING ERRCODE = '22023';
   END IF;
 
@@ -492,6 +524,7 @@ BEGIN
       UNION ALL SELECT value FROM jsonb_array_elements(p_import_plan->'query_records')
       UNION ALL SELECT value FROM jsonb_array_elements(p_import_plan->'source_specific_records')
       UNION ALL SELECT value FROM jsonb_array_elements(p_import_plan->'exact_detail_packages')
+      UNION ALL SELECT value FROM jsonb_array_elements(p_import_plan->'validated_semantic_graph_records')
     ) item
     WHERE item.value->>'serving_namespace_id' IS DISTINCT FROM namespace_id
       OR item.value->>'corpus_release_id' IS DISTINCT FROM release_id
@@ -508,6 +541,43 @@ BEGIN
   ) THEN
     RAISE EXCEPTION 'candidate release metric slot has both observation and exclusion' USING ERRCODE = '23505';
   END IF;
+  IF EXISTS (
+    SELECT 1
+    FROM jsonb_array_elements(p_import_plan->'validated_semantic_graph_records') graph
+    WHERE graph->>'validated_semantic_graph_id'
+        IS DISTINCT FROM graph->'canonical_payload'->>'validated_semantic_graph_id'
+      OR graph->>'document_hash' IS DISTINCT FROM graph->'canonical_payload'->>'document_hash'
+      OR graph->>'canonical_text_id' IS DISTINCT FROM graph->'canonical_payload'->>'canonical_text_id'
+      OR (graph->>'definition_cue_count')::integer
+        IS DISTINCT FROM jsonb_array_length(graph->'canonical_payload'->'definition_cues')
+      OR (graph->>'definition_use_cue_count')::integer
+        IS DISTINCT FROM jsonb_array_length(graph->'canonical_payload'->'definition_use_cues')
+      OR NOT EXISTS (
+        SELECT 1
+        FROM jsonb_array_elements(p_import_plan->'deal_directory_records') deal
+        WHERE deal->>'governed_deal_key' = graph->>'governed_deal_key'
+          AND deal->>'deal_admission_id' = graph->>'deal_admission_id'
+      )
+      OR NOT EXISTS (
+        SELECT 1
+        FROM jsonb_array_elements(p_import_plan->'exact_detail_packages') package
+        CROSS JOIN LATERAL jsonb_array_elements(
+          coalesce(package->'canonical_payload'->'detail_payloads', '[]'::jsonb)
+        ) detail
+        WHERE package->'canonical_payload'->'row'->>'governed_deal_key'
+            = graph->>'governed_deal_key'
+          AND package->'canonical_payload'->'row'->>'deal_admission_id'
+            = graph->>'deal_admission_id'
+          AND detail->'response_body'->'source_lineage'->>'source_admission_manifest_id'
+            = graph->>'source_admission_manifest_id'
+          AND detail->'response_body'->'source_lineage'->>'document_hash'
+            = graph->>'document_hash'
+          AND detail->'response_body'->'source_lineage'->>'canonical_text_id'
+            = graph->>'canonical_text_id'
+      )
+  ) THEN
+    RAISE EXCEPTION 'candidate release semantic graph lineage is invalid' USING ERRCODE = '22023';
+  END IF;
   IF (SELECT count(DISTINCT item->>'application_deal_id') FROM jsonb_array_elements(p_import_plan->'deal_directory_records') item)
       IS DISTINCT FROM (expected->>'deal_directory_records')::integer
     OR (SELECT count(DISTINCT item->>'governed_deal_key') FROM jsonb_array_elements(p_import_plan->'deal_directory_records') item)
@@ -521,7 +591,9 @@ BEGIN
     OR (SELECT count(DISTINCT item->>'row_serving_key') FROM jsonb_array_elements(p_import_plan->'source_specific_records') item)
       IS DISTINCT FROM (expected->>'source_specific_records')::integer
     OR (SELECT count(DISTINCT item->>'row_serving_key') FROM jsonb_array_elements(p_import_plan->'exact_detail_packages') item)
-      IS DISTINCT FROM (expected->>'exact_detail_packages')::integer THEN
+      IS DISTINCT FROM (expected->>'exact_detail_packages')::integer
+    OR (SELECT count(DISTINCT item->>'validated_semantic_graph_id') FROM jsonb_array_elements(p_import_plan->'validated_semantic_graph_records') item)
+      IS DISTINCT FROM (expected->>'validated_semantic_graph_records')::integer THEN
     RAISE EXCEPTION 'candidate release import contains duplicate identities' USING ERRCODE = '23505';
   END IF;
 
@@ -577,6 +649,14 @@ BEGIN
       AND existing.corpus_release_id = release_id
       AND existing.row_serving_key = item->>'row_serving_key'
     WHERE existing.canonical_payload_digest IS DISTINCT FROM item->>'canonical_payload_digest'
+  ) OR EXISTS (
+    SELECT 1
+    FROM jsonb_array_elements(p_import_plan->'validated_semantic_graph_records') item
+    JOIN canonical_v2_staging.candidate_release_semantic_graphs existing
+      ON existing.serving_namespace_id = namespace_id
+      AND existing.corpus_release_id = release_id
+      AND existing.validated_semantic_graph_id = item->>'validated_semantic_graph_id'
+    WHERE existing.canonical_payload_digest IS DISTINCT FROM item->>'canonical_payload_digest'
   ) THEN
     RAISE EXCEPTION 'candidate release import identity conflicts with different content' USING ERRCODE = '23505';
   END IF;
@@ -614,6 +694,11 @@ BEGIN
     NULL::canonical_v2_staging.exact_detail_serving_packages,
     p_import_plan->'exact_detail_packages'
   ) ON CONFLICT (serving_namespace_id, corpus_release_id, row_serving_key) DO NOTHING;
+  INSERT INTO canonical_v2_staging.candidate_release_semantic_graphs
+  SELECT * FROM jsonb_populate_recordset(
+    NULL::canonical_v2_staging.candidate_release_semantic_graphs,
+    p_import_plan->'validated_semantic_graph_records'
+  ) ON CONFLICT (serving_namespace_id, corpus_release_id, validated_semantic_graph_id) DO NOTHING;
 
   IF (SELECT count(*) FROM canonical_v2_staging.deal_serving_directory row
       WHERE row.serving_namespace_id = namespace_id AND row.corpus_release_id = release_id)
@@ -632,7 +717,10 @@ BEGIN
       IS DISTINCT FROM (expected->>'source_specific_records')::integer
     OR (SELECT count(*) FROM canonical_v2_staging.exact_detail_serving_packages row
       WHERE row.serving_namespace_id = namespace_id AND row.corpus_release_id = release_id)
-      IS DISTINCT FROM (expected->>'exact_detail_packages')::integer THEN
+      IS DISTINCT FROM (expected->>'exact_detail_packages')::integer
+    OR (SELECT count(*) FROM canonical_v2_staging.candidate_release_semantic_graphs row
+      WHERE row.serving_namespace_id = namespace_id AND row.corpus_release_id = release_id)
+      IS DISTINCT FROM (expected->>'validated_semantic_graph_records')::integer THEN
     RAISE EXCEPTION 'candidate release import did not close over every certified serving object' USING ERRCODE = '23514';
   END IF;
 
@@ -654,7 +742,7 @@ BEGIN
   RETURNING imported_at INTO imported_at_value;
 
   RETURN jsonb_build_object(
-    'schema_version', 'CANDIDATE_RELEASE_IMPORT_RECEIPT/V1',
+    'schema_version', 'CANDIDATE_RELEASE_IMPORT_RECEIPT/V2',
     'import_state', 'IMPORTED_COMPLETE',
     'replayed', false,
     'candidate_manifest_id', manifest_id,
@@ -1491,6 +1579,8 @@ REVOKE ALL ON TABLE canonical_v2_staging.shared_serving_rows
 REVOKE ALL ON TABLE canonical_v2_staging.reviewed_source_specific_serving_rows
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;
 REVOKE ALL ON TABLE canonical_v2_staging.exact_detail_serving_packages
+  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;
+REVOKE ALL ON TABLE canonical_v2_staging.candidate_release_semantic_graphs
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;
 REVOKE ALL ON TABLE canonical_v2_staging.candidate_release_import_receipts
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;

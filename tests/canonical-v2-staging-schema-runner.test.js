@@ -27,11 +27,14 @@ test('staging schema runner rejects ambiguous invocation before database work', 
 test('staging schema verification checks writer, serving RPCs and denied broad roles', () => {
   const source = fs.readFileSync(RUNNER, 'utf8');
   assert.match(source, /canonical_v2_write/);
+  assert.match(source, /canonical_v2_staging\.validated_semantic_graphs/);
+  assert.match(source, /canonical_v2_staging\.candidate_release_semantic_graphs/);
   assert.match(source, /canonical_v2_active_review_context/);
   assert.match(source, /canonical_v2_exact_detail/);
   assert.match(source, /has_function_privilege\('anon'/);
   assert.match(source, /has_function_privilege\('service_role'/);
   assert.match(source, /has_function_privilege\('canonical_v2_serving'/);
+  assert.match(source, /has_table_privilege\('canonical_v2_serving'.*candidate_release_semantic_graphs/);
 });
 
 test('governed schema uses valid collision-safe advisory lock identities', () => {

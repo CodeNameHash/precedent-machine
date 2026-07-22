@@ -38,6 +38,13 @@ CREATE TABLE IF NOT EXISTS canonical_v2_staging.source_admission_manifests (
   canonical_payload_digest text GENERATED ALWAYS AS (canonical_v2_staging.payload_digest(canonical_payload)) STORED
 );
 
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.validated_semantic_graphs (
+  validated_semantic_graph_id text PRIMARY KEY,
+  closure_id text NOT NULL,
+  canonical_payload jsonb NOT NULL,
+  canonical_payload_digest text GENERATED ALWAYS AS (canonical_v2_staging.payload_digest(canonical_payload)) STORED
+);
+
 CREATE TABLE IF NOT EXISTS canonical_v2_staging.excerpts (
   excerpt_id text PRIMARY KEY,
   closure_id text NOT NULL,
@@ -163,6 +170,8 @@ CREATE TABLE IF NOT EXISTS canonical_v2_staging.write_receipts (
 
 CREATE INDEX IF NOT EXISTS canonical_v2_excerpts_closure_idx
   ON canonical_v2_staging.excerpts(closure_id);
+CREATE INDEX IF NOT EXISTS canonical_v2_validated_semantic_graphs_closure_idx
+  ON canonical_v2_staging.validated_semantic_graphs(closure_id);
 CREATE INDEX IF NOT EXISTS canonical_v2_provisions_closure_idx
   ON canonical_v2_staging.provision_instances(closure_id);
 CREATE INDEX IF NOT EXISTS canonical_v2_components_closure_idx
@@ -193,6 +202,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS canonical_v2_quarantines_closure_unique
 ALTER TABLE canonical_v2_staging.deals ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.immutable_source_documents ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.source_admission_manifests ENABLE ROW LEVEL SECURITY;
+ALTER TABLE canonical_v2_staging.validated_semantic_graphs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.excerpts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.provision_instances ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.provision_components ENABLE ROW LEVEL SECURITY;
@@ -260,6 +270,7 @@ BEGIN
     SELECT 1
     FROM jsonb_array_elements(
       coalesce(p_write_set->'excerpts', '[]'::jsonb)
+      || coalesce(p_write_set->'validated_semantic_graphs', '[]'::jsonb)
       || coalesce(p_write_set->'provisions', '[]'::jsonb)
       || coalesce(p_write_set->'components', '[]'::jsonb)
       || coalesce(p_write_set->'claims', '[]'::jsonb)
@@ -321,6 +332,18 @@ BEGIN
   END IF;
   INSERT INTO canonical_v2_staging.deals(deal_key, canonical_payload)
   VALUES (item_id, item) ON CONFLICT (deal_key) DO NOTHING;
+
+  FOR item IN SELECT value FROM jsonb_array_elements(coalesce(p_write_set->'validated_semantic_graphs', '[]'::jsonb)) LOOP
+    item_id := item->>'validated_semantic_graph_id';
+    SELECT canonical_payload_digest INTO existing_digest
+    FROM canonical_v2_staging.validated_semantic_graphs
+    WHERE validated_semantic_graph_id = item_id;
+    IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN
+      RAISE EXCEPTION 'validated semantic graph identity conflict' USING ERRCODE = '23505';
+    END IF;
+    INSERT INTO canonical_v2_staging.validated_semantic_graphs(validated_semantic_graph_id, closure_id, canonical_payload)
+    VALUES (item_id, item->>'closure_id', item) ON CONFLICT (validated_semantic_graph_id) DO NOTHING;
+  END LOOP;
 
   FOR item IN SELECT value FROM jsonb_array_elements(coalesce(p_write_set->'excerpts', '[]'::jsonb)) LOOP
     item_id := item->>'excerpt_id';

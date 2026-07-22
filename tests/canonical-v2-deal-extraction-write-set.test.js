@@ -36,6 +36,7 @@ test('all reviewed Landos families compose into one deterministic deal-run write
   assert.equal(first.deal.dimensions.deal_value_usd, '137500000');
   assert.ok(first.provisions.length > 10);
   assert.ok(first.claims.length > 20);
+  assert.equal(first.validated_semantic_graphs.length, 1);
   assert.equal(first.open_world_candidates.length, 1);
   assert.equal(first.reviewed_source_specific_rows.length, 1);
 });
@@ -77,5 +78,14 @@ test('composition fails on semantic conflicts instead of choosing plausible valu
   assert.throws(
     () => composeDealExtractionWriteSet({ writeSets: conflictingWriteSets, deal }),
     /claims .* conflicting canonical content/,
+  );
+
+  const conflictingGraphs = structuredClone(writeSets);
+  const graph = conflictingGraphs.find((writeSet) => writeSet.validated_semantic_graphs?.length)
+    .validated_semantic_graphs[0];
+  conflictingGraphs[0].validated_semantic_graphs = [{ ...graph, document_hash: '0'.repeat(64) }];
+  assert.throws(
+    () => composeDealExtractionWriteSet({ writeSets: conflictingGraphs, deal }),
+    /validated_semantic_graphs .* conflicting canonical content/,
   );
 });

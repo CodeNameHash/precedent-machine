@@ -49,6 +49,12 @@ test('a real unfamiliar proposition preserves non-contiguous evidence and its ne
   assert.equal(Object.hasOwn(body, 'metric_key'), false);
   assert.equal(Object.hasOwn(body, 'party'), false);
   assert.equal(Object.hasOwn(body, 'unit'), false);
+  assert.equal(fixture.validatedSemanticGraph.definition_cues.length, 1);
+  assert.equal(fixture.validatedSemanticGraph.definition_cues[0].raw_term, 'Major Supplier');
+  assert.deepEqual(fixture.validatedSemanticGraph.definition_use_cues.map((cue) => cue.use_role), [
+    'OPERATIVE_REFERENCE',
+    'DECLARATION_REFERENCE',
+  ]);
 });
 
 test('open-world source detail closes over the exact two-span proposition and nested Major Supplier definition', () => {
@@ -116,7 +122,7 @@ test('the authoritative writer commits the complete reviewed open-world graph in
   });
   const state = repository.snapshot();
 
-  assert.equal(result.validation.counts.publishable, 16);
+  assert.equal(result.validation.counts.publishable, 17);
   assert.equal(result.validation.counts.residuals, 0);
   assert.equal(repository.transactionCount, 1);
   assert.equal(state.open_world_candidates.length, 1);
@@ -125,6 +131,11 @@ test('the authoritative writer commits the complete reviewed open-world graph in
   assert.equal(state.open_world_candidate_dispositions.length, 1);
   assert.equal(state.open_world_primitives.length, 5);
   assert.equal(state.semantic_impact_closures.length, 1);
+  assert.equal(state.validated_semantic_graphs.length, 1);
+  assert.equal(
+    state.validated_semantic_graphs[0].validated_semantic_graph_id,
+    fixture.validatedSemanticGraph.validated_semantic_graph_id,
+  );
   assert.equal(state.reviewed_source_specific_rows.length, 1);
   assert.equal(
     state.reviewed_source_specific_rows[0].shared_serving_row.row_serving_key,
@@ -144,6 +155,7 @@ test('an invalid open-world disposition quarantines only its closure and leaves 
     'open_world_primitives',
     'semantic_impact_closures',
     'reviewed_source_specific_rows',
+    'validated_semantic_graphs',
   ]) writeSet[key] = structuredClone(sourceSpecific.canonicalWriteSet[key]);
   writeSet.excerpts.push(...structuredClone(sourceSpecific.canonicalWriteSet.excerpts));
   writeSet.open_world_candidate_dispositions[0].review_state = 'UNRESOLVED';
@@ -161,7 +173,65 @@ test('an invalid open-world disposition quarantines only its closure and leaves 
   assert.equal(result.validation.residuals[0].reason_code, 'CANONICAL_IDENTITY_MISMATCH');
   assert.equal(state.open_world_candidates.length, 0);
   assert.equal(state.reviewed_source_specific_rows.length, 0);
+  assert.equal(state.validated_semantic_graphs.length, 0);
   assert.ok(state.claims.length > 0);
   assert.ok(state.relationships.length > 0);
   assert.ok(state.excerpts.some((row) => row.closure_id !== sourceSpecific.closureId));
+});
+
+test('an invalid nested-definition graph quarantines only its source-specific closure', async () => {
+  const sourceSpecific = buildLandosSourceSpecificServingFixture();
+  const familiar = buildLandosReviewedServingFixture();
+  const writeSet = structuredClone(familiar.canonicalWriteSet);
+  for (const key of [
+    'open_world_candidates',
+    'open_world_candidate_occurrences',
+    'open_world_evidence_references',
+    'open_world_candidate_dispositions',
+    'open_world_primitives',
+    'semantic_impact_closures',
+    'reviewed_source_specific_rows',
+    'validated_semantic_graphs',
+  ]) writeSet[key] = structuredClone(sourceSpecific.canonicalWriteSet[key]);
+  writeSet.excerpts.push(...structuredClone(sourceSpecific.canonicalWriteSet.excerpts));
+  writeSet.validated_semantic_graphs[0].definition_use_cues[0].definition_cue_id = contentId(
+    'UNKNOWN_DEFINITION_CUE/V1',
+    'not-in-graph',
+  );
+
+  const repository = new InMemoryCanonicalRepository();
+  const writer = createCanonicalWriter({ repository, contractBundle: sourceSpecific.contract });
+  const result = await writer.write({
+    operation: 'FIXTURE_DEAL_EXTRACTION_RUN',
+    idempotencyKey: 'landos-invalid-definition-graph',
+    writeSet,
+  });
+  const state = repository.snapshot();
+
+  assert.deepEqual(result.validation.quarantinedClosureIds, [sourceSpecific.closureId]);
+  assert.equal(state.validated_semantic_graphs.length, 0);
+  assert.equal(state.open_world_candidates.length, 0);
+  assert.ok(state.claims.length > 0);
+  assert.ok(state.relationships.length > 0);
+});
+
+test('duplicate or conflicting graph identity cannot enter the canonical collection', async () => {
+  const fixture = buildLandosSourceSpecificServingFixture();
+  const writeSet = structuredClone(fixture.canonicalWriteSet);
+  const conflicting = structuredClone(writeSet.validated_semantic_graphs[0]);
+  conflicting.definition_cue_ids = [];
+  writeSet.validated_semantic_graphs.push(conflicting);
+  const repository = new InMemoryCanonicalRepository();
+  const writer = createCanonicalWriter({ repository, contractBundle: fixture.contract });
+  const result = await writer.write({
+    operation: 'FIXTURE_DEAL_EXTRACTION_RUN',
+    idempotencyKey: 'landos-conflicting-definition-graph',
+    writeSet,
+  });
+
+  assert.deepEqual(result.validation.quarantinedClosureIds, [fixture.closureId]);
+  assert.equal(repository.snapshot().validated_semantic_graphs.length, 0);
+  assert.ok(result.validation.residuals.every((residual) => (
+    residual.reason_code === 'CANONICAL_IDENTITY_MISMATCH'
+  )));
 });

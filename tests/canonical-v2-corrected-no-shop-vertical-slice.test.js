@@ -259,6 +259,7 @@ test('one corrected no-shop claim closes from admitted source through writer, re
     source_specific_serving_records: 0,
     exact_detail_packages: 2,
     query_records: 2,
+    validated_semantic_graphs: 0,
     unresolved: 0,
     failed: 0,
     duplicates: 0,

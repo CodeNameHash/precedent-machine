@@ -4,6 +4,7 @@ const fs = require('node:fs');
 
 const { buildLandosCandidateReleaseFixture } = require('../__fixtures__/canonical-v2/landos-candidate-release');
 const { buildInitialActiveReleasePointer } = require('../lib/canonical-v2/candidate-release');
+const { contentId } = require('../lib/canonical-v2/canonical-bytes');
 const {
   activateCandidateRelease,
   buildCandidateReleaseImportPlan,
@@ -17,7 +18,7 @@ function clone(value) {
 
 function receiptFor(plan, replayed = false) {
   return {
-    schema_version: 'CANDIDATE_RELEASE_IMPORT_RECEIPT/V1',
+    schema_version: 'CANDIDATE_RELEASE_IMPORT_RECEIPT/V2',
     import_state: 'IMPORTED_COMPLETE',
     replayed,
     candidate_manifest_id: plan.release_record.candidate_manifest_id,
@@ -43,11 +44,15 @@ test('one certified release becomes one deterministic atomic import plan across 
     query_records: 12,
     source_specific_records: 1,
     exact_detail_packages: 13,
+    validated_semantic_graph_records: 1,
   });
   assert.equal(first.query_records.some((row) => row.canonical_payload.row_kind !== 'CANONICAL_RESULT'), false);
   assert.equal(first.source_specific_records[0].canonical_payload.row_kind, 'REVIEWED_SOURCE_SPECIFIC');
   assert.equal(first.source_specific_records[0].market_cohort_eligible, false);
   assert.equal(first.exact_detail_packages.length, first.query_records.length + first.source_specific_records.length);
+  assert.equal(first.validated_semantic_graph_records[0].governed_deal_key, 'deal:landos-abbvie');
+  assert.equal(first.validated_semantic_graph_records[0].definition_cue_count, 1);
+  assert.equal(first.validated_semantic_graph_records[0].definition_use_cue_count, 2);
 });
 
 test('bundle or physical projection drift blocks the import plan before any database call', async () => {
@@ -69,6 +74,15 @@ test('bundle or physical projection drift blocks the import plan before any data
   const plan = clone(buildCandidateReleaseImportPlan({ release }));
   plan.source_specific_records[0].market_cohort_eligible = true;
   assert.throws(() => validateCandidateReleaseImportPlan(plan), /identity mismatch|market_cohort_eligible|projection/);
+
+  const graphDrift = clone(buildCandidateReleaseImportPlan({ release }));
+  graphDrift.validated_semantic_graph_records[0].governed_deal_key = 'WRONG-DEAL';
+  const { candidate_release_import_plan_id: ignored, ...graphDriftBody } = graphDrift;
+  graphDrift.candidate_release_import_plan_id = contentId(
+    'CANDIDATE_RELEASE_IMPORT_PLAN/V2',
+    graphDriftBody,
+  );
+  assert.throws(() => validateCandidateReleaseImportPlan(graphDrift), /semantic graph import record drift/);
 });
 
 test('release import performs one writer RPC, validates the complete receipt and never retries failures', async () => {
@@ -142,18 +156,20 @@ test('staging import is set-based, transactional and withholds completion until 
   assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.exact_detail_serving_packages/);
   assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.deal_serving_directory/);
   assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.candidate_release_import_receipts/);
+  assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.candidate_release_semantic_graphs/);
   assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.active_corpus_release_pointer_history/);
   assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.active_corpus_release_pointers/);
   assert.match(importer, /SET statement_timeout = '15000ms'/);
   assert.match(importer, /pg_advisory_xact_lock\(hashtextextended\(manifest_id, 0\)\)/);
   assert.match(importer, /jsonb_populate_recordset/);
-  assert.match(importer, /deal_serving_directory[\s\S]*market_observations[\s\S]*market_metric_slot_exclusions[\s\S]*shared_serving_rows[\s\S]*reviewed_source_specific_serving_rows[\s\S]*exact_detail_serving_packages/);
+  assert.match(importer, /deal_serving_directory[\s\S]*market_observations[\s\S]*market_metric_slot_exclusions[\s\S]*shared_serving_rows[\s\S]*reviewed_source_specific_serving_rows[\s\S]*exact_detail_serving_packages[\s\S]*candidate_release_semantic_graphs/);
   assert.match(importer, /did not close over every certified serving object[\s\S]*INSERT INTO canonical_v2_staging\.candidate_release_import_receipts/);
   assert.doesNotMatch(importer, /\bLOOP\b/i);
   assert.doesNotMatch(importer, /\bOFFSET\b/i);
   assert.match(sql, /GRANT EXECUTE ON FUNCTION public\.canonical_v2_import_candidate_release\(text, jsonb\)[\s\S]*TO canonical_v2_writer/);
   assert.doesNotMatch(sql, /GRANT EXECUTE ON FUNCTION public\.canonical_v2_import_candidate_release\(text, jsonb\)\s+TO canonical_v2_serving/);
   assert.doesNotMatch(sql, /GRANT SELECT[\s\S]*TO (anon|authenticated|service_role|canonical_v2_serving|canonical_v2_writer)/);
+  assert.doesNotMatch(sql, /GRANT SELECT ON (?:TABLE )?canonical_v2_staging\.candidate_release_semantic_graphs/);
 
   const activationStart = sql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_activate_candidate_release');
   const activationEnd = sql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_active_release');

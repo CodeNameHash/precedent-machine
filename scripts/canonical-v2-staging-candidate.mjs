@@ -28,10 +28,10 @@ const EXPECTED_PROJECT = Object.freeze({
 });
 const EXPECTED_CANDIDATE = Object.freeze({
   contract_fingerprint: '7a869d03bbfd0adc9992f61b2c579fb6d82506755bcf4e8d5116442c4462aa50',
-  corpus_release_id: '5631bf87ec67cc7f8d5c726497e77adb77a3d672834772fd41dd8c46b87e4a8d',
-  candidate_manifest_id: '9a189ab66a0e266a9ee0fb99dc9c65e30ca99fa39166f508c91cb482bc7a5e52',
+  corpus_release_id: 'c742c053756c5f4591a414e52e176eb1018d7dafb0d82b134f5d00047ea37463',
+  candidate_manifest_id: 'bc113b3d44438c650236fa9c30ff5bd4af49c428c6486bfb28f6cadf32d92463',
   serving_namespace_id: '9270602408312e80a65c0ce46b895fa2c8f07d1c676aef5bd171029edd209b68',
-  import_plan_id: '605b2733e901483d137c31e3a81c9c394275be509d47e72b7e04c97362800a3c',
+  import_plan_id: '4385c3318424699fe01fbca2e3576620df4feb9ee3624dd3ca542dffc4847ab2',
 });
 const EXPECTED_COUNTS = Object.freeze({
   deal_directory_records: 2,
@@ -40,28 +40,29 @@ const EXPECTED_COUNTS = Object.freeze({
   query_records: 14,
   source_specific_records: 1,
   exact_detail_packages: 15,
+  validated_semantic_graph_records: 1,
 });
 const EXPECTED_PRIOR_POINTER = Object.freeze({
   schema_version: 'FIXTURE_ACTIVE_RELEASE_POINTER/V1',
   environment: 'staging',
-  generation: 1,
-  corpus_release_id: 'f01e2bf271d3f7c39c8d21a1963b5cea7c90860777b0a5cdc91e0e159d1fca4a',
-  serving_namespace_id: '4821737ed1dd7c703ce29bf8c87f1709bb08b102c1da993c5e40aee0ea8fbc03',
-  candidate_release_manifest_id: '2771bdb52e4bca497813c17b514944fea4391a33cc4a0b817ba8d65daede962d',
-  previous_pointer_id: 'c361a7d6c5aea6dbe9df028e8b67c81ab2151ccc8598b66c7a45fbb0a4df332b',
-  pointer_id: 'b9366081fd3e7df5fe9284a2967db8716f09cfbdaddd2ecca8a133f7c233f607',
-  canonical_payload_digest: 'd8e36a4b811499eaa4e661dce800cb5739bce90750667a344cd80a9996650441',
+  generation: 2,
+  corpus_release_id: '5631bf87ec67cc7f8d5c726497e77adb77a3d672834772fd41dd8c46b87e4a8d',
+  serving_namespace_id: '9270602408312e80a65c0ce46b895fa2c8f07d1c676aef5bd171029edd209b68',
+  candidate_release_manifest_id: '9a189ab66a0e266a9ee0fb99dc9c65e30ca99fa39166f508c91cb482bc7a5e52',
+  previous_pointer_id: 'b9366081fd3e7df5fe9284a2967db8716f09cfbdaddd2ecca8a133f7c233f607',
+  pointer_id: 'ac09fb72eb306394c8bbcaec978fb827229e279aa5490a80de01c9491146628a',
+  canonical_payload_digest: 'd9195858e38b3cf81a20cab37597484c0d9dbb73e7f4836df9f04fedd8f57cad',
 });
 const EXPECTED_ACTIVE_POINTER = Object.freeze({
   schema_version: 'FIXTURE_ACTIVE_RELEASE_POINTER/V1',
   environment: 'staging',
-  generation: 2,
+  generation: 3,
   corpus_release_id: EXPECTED_CANDIDATE.corpus_release_id,
   serving_namespace_id: EXPECTED_CANDIDATE.serving_namespace_id,
   candidate_release_manifest_id: EXPECTED_CANDIDATE.candidate_manifest_id,
   previous_pointer_id: EXPECTED_PRIOR_POINTER.pointer_id,
-  pointer_id: 'ac09fb72eb306394c8bbcaec978fb827229e279aa5490a80de01c9491146628a',
-  canonical_payload_digest: 'd9195858e38b3cf81a20cab37597484c0d9dbb73e7f4836df9f04fedd8f57cad',
+  pointer_id: '1e58cc335c0dbc4bd09ef47af623a7f867d18a47ecc9fb8898d921dc15c2aa6e',
+  canonical_payload_digest: '36f4cc0c88787fcfc07dc6d51e4f2e11230f9990f0d3c980111d4c0c29d5a8e2',
 });
 
 function fail(message) {
@@ -161,6 +162,7 @@ function readState() {
       'query_records', (SELECT count(*) FROM canonical_v2_staging.shared_serving_rows WHERE corpus_release_id = '${EXPECTED_CANDIDATE.corpus_release_id}'),
       'source_specific_records', (SELECT count(*) FROM canonical_v2_staging.reviewed_source_specific_serving_rows WHERE corpus_release_id = '${EXPECTED_CANDIDATE.corpus_release_id}'),
       'exact_detail_packages', (SELECT count(*) FROM canonical_v2_staging.exact_detail_serving_packages WHERE corpus_release_id = '${EXPECTED_CANDIDATE.corpus_release_id}'),
+      'validated_semantic_graph_records', (SELECT count(*) FROM canonical_v2_staging.candidate_release_semantic_graphs WHERE corpus_release_id = '${EXPECTED_CANDIDATE.corpus_release_id}'),
       'complete_receipts', (SELECT count(*) FROM canonical_v2_staging.candidate_release_import_receipts WHERE corpus_release_id = '${EXPECTED_CANDIDATE.corpus_release_id}' AND import_state = 'IMPORTED_COMPLETE'),
       'active_pointer', (SELECT canonical_payload FROM canonical_v2_staging.active_corpus_release_pointers WHERE environment = 'staging')
     ) AS state;
@@ -231,7 +233,7 @@ async function activateRelease(release) {
       throw new Error('Refusing to replace an unexpected active staging release.');
     }
   } else {
-    throw new Error('Refusing to activate without the pinned QXO predecessor.');
+    throw new Error('Refusing to activate without the pinned prior release.');
   }
   const activated = await activateCandidateRelease({
     client: sqlRpcClient({ commit: true }),

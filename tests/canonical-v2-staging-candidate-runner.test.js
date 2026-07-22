@@ -28,7 +28,7 @@ test('candidate activation is a guarded compare-and-swap and will not replace an
   assert.match(source, /activateCandidateRelease/);
   assert.match(source, /EXPECTED_PRIOR_POINTER/);
   assert.match(source, /EXPECTED_ACTIVE_POINTER/);
-  assert.match(source, /Refusing to activate without the pinned QXO predecessor/);
+  assert.match(source, /Refusing to activate without the pinned prior release/);
   assert.match(source, /Refusing to replace an unexpected active staging release/);
   assert.match(source, /public\.canonical_v2_activate_candidate_release/);
 });

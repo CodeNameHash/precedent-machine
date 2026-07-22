@@ -9,6 +9,8 @@ const {
   buildDefinitionCue,
   buildDefinitionUseCue,
   buildValidatedDefinitionGraph,
+  validateValidatedDefinitionGraph,
+  validateValidatedDefinitionGraphIdentity,
 } = require('../lib/canonical-v2/definition-graph');
 const {
   CLAIM_STATES,
@@ -122,6 +124,90 @@ test('definition cues reject mismatched term bytes and spans from another immuta
     rawTerm: reviewed.definition.raw_term,
     syntacticRole: reviewed.definition.syntactic_role,
   }), /must follow the term/);
+});
+
+test('validated graphs rebuild from admitted bytes and reject drift, unknown uses and duplicates', () => {
+  const cue = buildDefinitionCue({
+    source,
+    termSpan: span(reviewed.definition.term_span),
+    bodySpans: reviewed.definition.body_spans.map(span),
+    rawTerm: reviewed.definition.raw_term,
+    syntacticRole: reviewed.definition.syntactic_role,
+  });
+  const use = buildDefinitionUseCue({
+    source,
+    definitionCue: cue,
+    useSpan: span(reviewed.definition.use_spans[0].span),
+    useRole: reviewed.definition.use_spans[0].role,
+  });
+  const graph = buildValidatedDefinitionGraph({
+    source,
+    definitionCues: [cue],
+    definitionUseCues: [use],
+  });
+  assert.equal(validateValidatedDefinitionGraph({ source, graph }), true);
+  assert.equal(validateValidatedDefinitionGraphIdentity({ graph }), true);
+
+  const drifted = structuredClone(graph);
+  drifted.definition_cues[0].term_span.exact_bytes_digest = occurrenceId('DRIFT', 'term');
+  assert.throws(
+    () => validateValidatedDefinitionGraph({ source, graph: drifted }),
+    /exact source bytes|identity/,
+  );
+  const resignedDrift = structuredClone(graph);
+  resignedDrift.definition_cues[0].raw_term = 'Invented term';
+  resignedDrift.definition_cues[0].raw_term_digest = contentId('RAW_DEFINITION_TERM/V1', 'Invented term');
+  resignedDrift.definition_cues[0].definition_cue_id = contentId('DEFINITION_CUE/V1', {
+    document_hash: resignedDrift.definition_cues[0].document_hash,
+    canonical_text_id: resignedDrift.definition_cues[0].canonical_text_id,
+    source_anchor_id: resignedDrift.definition_cues[0].source_anchor_id,
+    term_span_id: resignedDrift.definition_cues[0].term_span_id,
+    body_span_ids: resignedDrift.definition_cues[0].body_span_ids,
+    raw_term_digest: resignedDrift.definition_cues[0].raw_term_digest,
+    syntactic_role: resignedDrift.definition_cues[0].syntactic_role,
+    source_order_ordinal: resignedDrift.definition_cues[0].source_order_ordinal,
+  });
+  assert.throws(
+    () => validateValidatedDefinitionGraphIdentity({ graph: resignedDrift }),
+    /identity|children/,
+  );
+  assert.throws(() => buildValidatedDefinitionGraph({
+    source,
+    definitionCues: [cue],
+    definitionUseCues: [{ ...use, definition_cue_id: occurrenceId('DEFINITION_CUE', 'unknown') }],
+  }), /unknown DefinitionCue/);
+  assert.throws(() => buildValidatedDefinitionGraph({
+    source,
+    definitionCues: [cue],
+    definitionUseCues: [use, use],
+  }), /duplicate DefinitionUseCue/);
+  assert.throws(() => buildValidatedDefinitionGraph({
+    source,
+    definitionCues: [cue, cue],
+    definitionUseCues: [use],
+  }), /duplicate DefinitionCue/);
+  assert.throws(() => buildDefinitionUseCue({
+    source,
+    definitionCue: cue,
+    useSpan: span(reviewed.definition.use_spans[0].span),
+    useRole: 'INVENTED_USE_ROLE',
+  }), /useRole/);
+  assert.throws(() => buildDefinitionCue({
+    source,
+    termSpan: span(reviewed.definition.term_span),
+    bodySpans: reviewed.definition.body_spans.map(span),
+    rawTerm: reviewed.definition.raw_term,
+    syntacticRole: 'INVENTED_CUE_ROLE',
+  }), /syntacticRole/);
+
+  const otherSource = buildImmutableSource({
+    sourceBytes: `${sourceText} changed`,
+    sourceOccurrenceKey: 'DRIFTED_DEFINITION_SOURCE',
+  });
+  assert.throws(
+    () => validateValidatedDefinitionGraph({ source: otherSource, graph }),
+    /another canonical text|another immutable source|admitted source|identity/,
+  );
 });
 
 test('four reviewed QXO tiers become typed claims and unresolved BRINGS_DOWN relationships without fabricating Section 3.1 source', () => {

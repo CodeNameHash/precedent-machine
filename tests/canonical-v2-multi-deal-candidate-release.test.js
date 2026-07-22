@@ -48,6 +48,7 @@ test('QXO and Landos freeze into one bounded shared release and namespace', () =
     source_specific_serving_records: 1,
     exact_detail_packages: 15,
     query_records: 14,
+    validated_semantic_graphs: 1,
     unresolved: 0,
     failed: 0,
     duplicates: 0,
@@ -120,6 +121,7 @@ test('release bytes are deterministic regardless of caller member and directory 
     corpus_release_id: fixture.corpusReleaseId,
     members: [...fixture.members].reverse(),
     source_specific_members: [...fixture.sourceSpecificMembers].reverse(),
+    validated_semantic_graphs: [...fixture.validatedSemanticGraphs].reverse(),
     deal_directory_entries: [...fixture.dealDirectoryEntries].reverse(),
   });
   const fresh = buildMultiDealCandidateReleaseFixture();

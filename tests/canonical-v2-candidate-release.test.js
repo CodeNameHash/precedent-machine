@@ -2,6 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 
 const { buildLandosCandidateReleaseFixture } = require('../__fixtures__/canonical-v2/landos-candidate-release');
+const { buildQxoNoShopReleaseFixture } = require('../__fixtures__/canonical-v2/qxo-no-shop-release');
 const {
   buildFixtureCandidateRelease,
   buildInitialActiveReleasePointer,
@@ -33,6 +34,7 @@ test('twelve comparable results and one reviewed source-specific proposition fre
     source_specific_serving_records: 1,
     exact_detail_packages: 13,
     query_records: 12,
+    validated_semantic_graphs: 1,
     unresolved: 0,
     failed: 0,
     duplicates: 0,
@@ -48,7 +50,12 @@ test('twelve comparable results and one reviewed source-specific proposition fre
   assert.equal(first.release.query_records.some((row) => (
     row.row_serving_key === first.release.reviewed_source_specific_rows[0].row_serving_key
   )), false);
-  assert.equal(new Set(Object.values(first.release.manifest.roots)).size, 8);
+  assert.equal(first.release.validated_semantic_graphs.length, 1);
+  assert.equal(
+    first.release.validated_semantic_graphs[0].validated_semantic_graph_id,
+    first.sourceSpecific.validatedSemanticGraph.validated_semantic_graph_id,
+  );
+  assert.equal(new Set(Object.values(first.release.manifest.roots)).size, 9);
 });
 
 test('candidate release carries raw and normalised money with exact legal query dimensions', () => {
@@ -137,6 +144,44 @@ test('full release validation rejects payload drift behind an otherwise valid ma
   const missingDetail = clone(release);
   missingDetail.exact_detail_packages.pop();
   assert.throws(() => validateCandidateReleaseBundle(missingDetail), /count does not match/);
+
+  const graphDrift = clone(release);
+  graphDrift.validated_semantic_graphs[0].definition_cues[0].raw_term = 'Different Supplier';
+  assert.throws(() => validateCandidateReleaseBundle(graphDrift), /DefinitionCue|certified roots|semantic graph/i);
+
+  const missingGraph = clone(release);
+  missingGraph.validated_semantic_graphs.pop();
+  assert.throws(() => validateCandidateReleaseBundle(missingGraph), /count does not match/);
+});
+
+test('candidate release rejects graphs outside its admitted source and deal inventory', () => {
+  const fixture = buildLandosCandidateReleaseFixture();
+  assert.throws(() => buildFixtureCandidateRelease({
+    contract_bundle: fixture.contract,
+    serving_namespace_id: fixture.servingNamespaceId,
+    corpus_release_id: fixture.corpusReleaseId,
+    members: fixture.members,
+    source_specific_members: fixture.sourceSpecificMembers,
+    validated_semantic_graphs: [
+      fixture.sourceSpecific.validatedSemanticGraph,
+      fixture.sourceSpecific.validatedSemanticGraph,
+    ],
+    deal_directory_entries: fixture.dealDirectoryEntries,
+  }), /duplicate validated semantic graph/);
+
+  const qxo = buildQxoNoShopReleaseFixture({
+    contractBundle: fixture.contract,
+    corpusReleaseId: fixture.corpusReleaseId,
+    servingNamespaceId: fixture.servingNamespaceId,
+  });
+  assert.throws(() => buildFixtureCandidateRelease({
+    contract_bundle: fixture.contract,
+    serving_namespace_id: fixture.servingNamespaceId,
+    corpus_release_id: fixture.corpusReleaseId,
+    members: qxo.members,
+    validated_semantic_graphs: [fixture.sourceSpecific.validatedSemanticGraph],
+    deal_directory_entries: qxo.dealDirectoryEntries,
+  }), /no admitted release source lineage/);
 });
 
 test('active release movement is an immutable compare-and-swap plan over one certified manifest', () => {

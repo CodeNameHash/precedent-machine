@@ -15,7 +15,7 @@ const {
 
 function buildQxoNoShopReleaseFixture({
   contractBundle = compileFixtureContract(),
-  corpusReleaseId = contentId('CORPUS_RELEASE/V1', 'qxo-reviewed-notice-fixture'),
+  corpusReleaseId = contentId('CORPUS_RELEASE/V1', 'qxo-reviewed-notice-fixture-candidate-contract-v2'),
   servingNamespaceId = contentId('SERVING_NAMESPACE/V1', 'qxo-reviewed-notice-fixture'),
 } = {}) {
   const contract = contractBundle;
@@ -70,6 +70,7 @@ function buildQxoNoShopReleaseFixture({
     rows: Object.freeze(detailPackages.map((detailPackage) => detailPackage.row)),
     members: Object.freeze(members),
     sourceSpecificMembers: Object.freeze([]),
+    validatedSemanticGraphs: Object.freeze([]),
     dealDirectoryEntries: Object.freeze([{
       application_deal_id: '7dc3a05f-b170-4d59-a255-b7103cca16e1',
       governed_deal_key: 'deal:qxo-topbuild',

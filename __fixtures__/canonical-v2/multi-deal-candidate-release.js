@@ -11,7 +11,7 @@ const APPLICATION_DEALS = Object.freeze({
 
 function buildMultiDealCandidateReleaseFixture() {
   const contract = compileFixtureContract();
-  const corpusReleaseId = contentId('CORPUS_RELEASE/V1', 'qxo-landos-shared-fixture');
+  const corpusReleaseId = contentId('CORPUS_RELEASE/V1', 'qxo-landos-shared-fixture-candidate-contract-v2');
   const servingNamespaceId = contentId('SERVING_NAMESPACE/V1', 'qxo-landos-shared-fixture');
   const fixtureOptions = { contractBundle: contract, corpusReleaseId, servingNamespaceId };
   const landos = buildLandosCandidateReleaseFixture(fixtureOptions);
@@ -25,6 +25,9 @@ function buildMultiDealCandidateReleaseFixture() {
     ...landos.dealDirectoryEntries,
     ...qxo.dealDirectoryEntries,
   ]);
+  const validatedSemanticGraphs = Object.freeze([
+    ...landos.validatedSemanticGraphs,
+  ]);
 
   if (members.length !== 14 || sourceSpecificMembers.length !== 1 || dealDirectoryEntries.length !== 2) {
     throw new TypeError('multi-deal fixture inventory has drifted outside its bounded contract');
@@ -36,6 +39,7 @@ function buildMultiDealCandidateReleaseFixture() {
     corpus_release_id: corpusReleaseId,
     members,
     source_specific_members: sourceSpecificMembers,
+    validated_semantic_graphs: validatedSemanticGraphs,
     deal_directory_entries: dealDirectoryEntries,
   });
 
@@ -47,6 +51,7 @@ function buildMultiDealCandidateReleaseFixture() {
     qxo,
     members,
     sourceSpecificMembers,
+    validatedSemanticGraphs,
     dealDirectoryEntries,
     release,
   });
