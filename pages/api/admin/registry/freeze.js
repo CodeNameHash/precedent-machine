@@ -1,6 +1,8 @@
 import fs from 'fs/promises';
 import path from 'path';
 
+const { blockVercelRepositoryArtifactRoute } = require('../../../../lib/admin/repository-artifact-access');
+
 const REGISTRY_FILE = path.join(process.cwd(), 'docs/market-registry/generated-v1.deduped.json');
 const STATE_FILE = path.join(process.cwd(), 'docs/market-registry/reviewer-state.json');
 const FROZEN_FILE = path.join(process.cwd(), 'docs/market-registry/FROZEN-v1.json');
@@ -30,6 +32,7 @@ function frozenField(field, decision, frozenAt) {
 }
 
 export default async function handler(req, res) {
+  if (blockVercelRepositoryArtifactRoute(res)) return;
   if (req.method !== 'POST') return fail(res, 405, 'method_not_allowed');
 
   try {

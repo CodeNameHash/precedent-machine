@@ -1,6 +1,8 @@
 const { resolveEntry } = require('../../../../../lib/review-queue/resolve');
+const { blockVercelRepositoryArtifactRoute } = require('../../../../../lib/admin/repository-artifact-access');
 
 function handler(req, res) {
+  if (blockVercelRepositoryArtifactRoute(res)) return;
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
   try {
     const id = req.query && req.query.id;

@@ -1,6 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 
+const { blockVercelRepositoryArtifactRoute } = require('../../../../lib/admin/repository-artifact-access');
+
 const REJECTIONS_FILE = 'docs/schema-shape/unmapped-rejections.jsonl';
 const DECISIONS_FILE = 'docs/schema-shape/claim-integrity-decisions.jsonl';
 const HANDOFFS_FILE = 'docs/learn/loss-audit-handoffs.jsonl';
@@ -60,6 +62,7 @@ export function buildDecisionRecord(input = {}) {
 }
 
 export default function handler(req, res) {
+  if (blockVercelRepositoryArtifactRoute(res)) return;
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
   try {
     const route = routeDecision(req.body || {});

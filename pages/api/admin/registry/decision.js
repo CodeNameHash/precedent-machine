@@ -1,6 +1,8 @@
 import fs from 'fs/promises';
 import path from 'path';
 
+const { blockVercelRepositoryArtifactRoute } = require('../../../../lib/admin/repository-artifact-access');
+
 const STATE_FILE = path.join(process.cwd(), 'docs/market-registry/reviewer-state.json');
 const VALID_DECISIONS = new Set(['approve', 'reject', 'merge', 'rename', 'defer']);
 
@@ -28,6 +30,7 @@ function fail(res, status, error) {
 }
 
 export default async function handler(req, res) {
+  if (blockVercelRepositoryArtifactRoute(res)) return;
   if (req.method !== 'POST') return fail(res, 405, 'method_not_allowed');
 
   const { key, decision, merge_into, rename_to, defer_to_phase } = req.body || {};

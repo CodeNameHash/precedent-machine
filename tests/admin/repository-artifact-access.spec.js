@@ -38,8 +38,13 @@ test('all routes that require excluded deployment inputs use the Vercel gate', (
   const routes = [
     'pages/api/admin/audit/freeze.js',
     'pages/api/admin/audit/matrix.js',
+    'pages/api/admin/audit/decision.js',
     'pages/api/admin/reconcile/decide.js',
     'pages/api/admin/reconcile/queue.js',
+    'pages/api/admin/registry/decision.js',
+    'pages/api/admin/registry/freeze.js',
+    'pages/api/admin/review-queue/[id]/resolve.js',
+    'pages/api/admin/schema-loss/decide.js',
     'pages/api/admin/schema-loss/rerun.js',
   ];
   for (const route of routes) {
