@@ -8,6 +8,7 @@ const MARKET_COLUMN = fs.readFileSync('components/review-v2/MarketColumn.jsx', '
 const COMPARE_COLUMN = fs.readFileSync('components/review-v2/CompareColumn.jsx', 'utf8');
 const REVIEW_PAGE = fs.readFileSync('pages/review/[id].js', 'utf8');
 const COMPARE_DATA = fs.readFileSync('components/review-v2/compareData.js', 'utf8');
+const CANONICAL_REVIEW = fs.readFileSync('components/review-v2/CanonicalReviewSection.jsx', 'utf8');
 
 test('market drilldown renders both its empty and selected states as the right review column', () => {
   assert.equal((SIDEBAR.match(/data-testid="market-drilldown-sidebar"/g) || []).length, 2);
@@ -36,6 +37,28 @@ test('typed market cells resolve their attached exact context before the legacy 
   const fallback = BRIDGE.indexOf('contexts.find((context) => contextMatchesCell(context, text))');
   assert.ok(exact >= 0);
   assert.ok(fallback > exact);
+});
+
+test('production canonical rows use the standard typed cell and select the real right sidebar', () => {
+  assert.match(CANONICAL_REVIEW, /<MarketMetricCell resolution=\{adapted\.resolution\} data=\{adapted\.data\}/);
+  assert.match(CANONICAL_REVIEW, /data-canonical-row-key=\{adapted\.row_key\}/);
+  assert.match(CANONICAL_REVIEW, /canonicalSidebarContext\(adapted\)/);
+  assert.match(CANONICAL_REVIEW, /REVIEWED_SOURCE_SPECIFIC/);
+  assert.match(REVIEW_PAGE, /setCanonicalSelection\(null\);[\s\S]*setSelection\(\(cur\)/);
+  assert.match(REVIEW_PAGE, /setSelection\(\{ card: null, rowFocus: null \}\);[\s\S]*setCanonicalSelection\(\{ context, rowKey \}\)/);
+  assert.match(REVIEW_PAGE, /canonicalSelection \? \([\s\S]*<MarketDrilldownSidebar context=\{canonicalSelection\.context\}/);
+  assert.match(BRIDGE, /mtx:canonical-market-context-selected/);
+  assert.match(BRIDGE, /!primarySummary && !currentDealTerms\.length/);
+  assert.match(CANONICAL_REVIEW, /data-canonical-context-select/);
+  assert.doesNotMatch(CANONICAL_REVIEW, /role: 'button'/);
+  assert.doesNotMatch(CANONICAL_REVIEW, /tabIndex: 0/);
+});
+
+test('legacy market selection clears stale canonical highlighting without treating canonical cells as legacy', () => {
+  assert.match(BRIDGE, /!td\.closest\('\[data-canonical-row-key\]'\)/);
+  assert.match(BRIDGE, /mtx:legacy-market-context-selected/);
+  assert.match(REVIEW_PAGE, /addEventListener\('mtx:legacy-market-context-selected', clearCanonicalSelection\)/);
+  assert.match(REVIEW_PAGE, /const clearCanonicalSelection = \(\) => setCanonicalSelection\(null\)/);
 });
 
 test('market cells render substantive term detail before fallback and prevalence', () => {

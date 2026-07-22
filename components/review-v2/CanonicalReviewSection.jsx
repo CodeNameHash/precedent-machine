@@ -1,4 +1,6 @@
 import { Component, useCallback, useEffect, useMemo, useState } from 'react';
+import { MarketMetricCell } from './MarketColumn';
+import { buildTypedRowMarketContext } from './rowMarketContext';
 
 const ENABLED = ['1', 'true', 'on', 'yes'].includes(
   String(process.env.NEXT_PUBLIC_CANONICAL_V2_REVIEW_ENABLED || '').toLowerCase(),
@@ -79,7 +81,7 @@ function SourceDetail({ envelope, rowKey, sourceAction }) {
     <div className="mt-2 border-t border-[#E6E4DF] pt-2">
       <button
         type="button"
-        onClick={toggle}
+        onClick={(event) => { event.stopPropagation(); toggle(); }}
         className="text-[9px] font-bold uppercase tracking-[0.1em] text-[#2F6DB5] hover:underline"
         aria-expanded={state.open}
       >
@@ -96,28 +98,91 @@ function SourceDetail({ envelope, rowKey, sourceAction }) {
   );
 }
 
-function CanonicalResult({ item, envelope }) {
+function canonicalSidebarContext(prepared) {
+  if (prepared?.resolution?.rowKind === 'REVIEWED_SOURCE_SPECIFIC') {
+    const sourceSpecific = prepared.resolution.sourceSpecific;
+    const currentDealTerms = sourceSpecific.primitives.map((primitive) => ({
+      key: primitive.key,
+      label: primitive.kind.replaceAll('_', ' ').toLowerCase(),
+      value: String(primitive.interpretedValue ?? primitive.rawValue),
+    }));
+    return {
+      marketKey: prepared.row_key,
+      marketRowKey: prepared.row_key,
+      label: sourceSpecific.displayLabel,
+      peerSetSize: null,
+      termDealCount: null,
+      scope: 'reviewed-source-specific',
+      scopeNote: sourceSpecific.nonComparableReason,
+      treatments: [],
+      exceptions: [],
+      metrics: [],
+      currentDealTerms,
+      primarySummary: null,
+      deals: [],
+      truncated: false,
+    };
+  }
+  return buildTypedRowMarketContext(prepared?.resolution, prepared?.data);
+}
+
+function canonicalRowInteraction(item, context, onSelectCanonicalContext) {
+  if (!context || !onSelectCanonicalContext) return { onClick: null, select: null };
+  const select = () => onSelectCanonicalContext(context, item.prepared.row_key);
+  return { onClick: select, select };
+}
+
+function CanonicalContextButton({ select, selected, sourceSpecific = false }) {
+  if (!select) return null;
+  return (
+    <button
+      type="button"
+      onClick={(event) => { event.stopPropagation(); select(); }}
+      className="mt-2 text-[9px] font-bold uppercase tracking-[0.1em] text-[#2F6DB5] hover:underline"
+      aria-pressed={selected}
+      data-canonical-context-select
+    >
+      {selected ? 'Context selected' : (sourceSpecific ? 'View deal context' : 'Compare terms')}
+    </button>
+  );
+}
+
+function CanonicalResult({ item, envelope, selected, onSelectCanonicalContext }) {
   const adapted = item.prepared;
   const metricKey = adapted.resolution.metrics[0].metricKey;
   const metric = adapted.data.byRow[adapted.row_key].metrics[metricKey];
+  const context = canonicalSidebarContext(adapted);
+  const interaction = canonicalRowInteraction(item, context, onSelectCanonicalContext);
+  const comparableCount = metric.coverage?.comparableCount;
   return (
-    <div className="grid grid-cols-1 border border-[#E6E4DF] bg-white md:grid-cols-[minmax(180px,0.75fr)_minmax(260px,1.25fr)]">
-      <div className="border-b border-[#E6E4DF] px-3 py-3 md:border-b-0 md:border-r">
-        <div className="text-[10px] font-bold text-[#1F1F1F]">{adapted.resolution.label}</div>
-        <div className="mt-1 text-[11px] font-semibold text-[#2F6DB5]">{metric.subject.label}</div>
-        <div className="mt-2 text-[9px] text-[#77736C]">
-          {metric.coverage.comparableCount} comparable deal{metric.coverage.comparableCount === 1 ? '' : 's'}
-        </div>
-      </div>
-      <div className="px-3 py-3">
-        <dl className="space-y-1.5">
-          {metric.subject.legalTerms.map((term) => (
-            <div key={term.key} className="grid grid-cols-[96px_1fr] gap-3 text-[10px] leading-4">
-              <dt className="font-bold text-[#77736C]">{term.label}</dt>
-              <dd className="text-[#1F1F1F]">{term.value}</dd>
-            </div>
-          ))}
-        </dl>
+    <div
+      onClick={interaction.onClick || undefined}
+      className={`border bg-white ${selected ? 'border-[#2F6DB5] shadow-[inset_2px_0_0_#2F6DB5]' : 'border-[#E6E4DF]'} ${interaction.onClick ? 'cursor-pointer' : ''}`}
+      data-canonical-row-key={adapted.row_key}
+      data-canonical-row-kind={adapted.resolution.rowKind}
+    >
+      <table className="w-full table-fixed text-xs font-ui">
+        <tbody>
+          <tr className="align-top">
+            <td className="w-[36%] border-b border-[#E6E4DF] px-3 py-3 md:border-b-0 md:border-r">
+              <div className="text-[10px] font-bold text-[#1F1F1F]">{adapted.resolution.label}</div>
+              <div className="mt-1 text-[11px] font-semibold text-[#2F6DB5]">{metric.subject.label}</div>
+              {Number.isFinite(comparableCount) ? (
+                <div className="mt-2 text-[9px] text-[#77736C]">
+                  {comparableCount} comparable deal{comparableCount === 1 ? '' : 's'}
+                </div>
+              ) : (
+                <div className="mt-2 text-[9px] text-[#8A642E]">Selected-deal context only</div>
+              )}
+              <CanonicalContextButton select={interaction.select} selected={selected} />
+            </td>
+            <td className="px-3 py-3">
+              <MarketMetricCell resolution={adapted.resolution} data={adapted.data} />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div className="px-3 pb-3">
         {metric.source?.state === 'available' ? (
           <SourceDetail envelope={envelope} rowKey={adapted.row_key} sourceAction={metric.source.action} />
         ) : null}
@@ -126,13 +191,21 @@ function CanonicalResult({ item, envelope }) {
   );
 }
 
-function SourceSpecificResult({ item, envelope }) {
+function SourceSpecificResult({ item, envelope, selected, onSelectCanonicalContext }) {
   const adapted = item.prepared;
   const context = adapted.resolution.sourceSpecific;
+  const sidebarContext = canonicalSidebarContext(adapted);
+  const interaction = canonicalRowInteraction(item, sidebarContext, onSelectCanonicalContext);
   return (
-    <div className="border border-[#D8B56A] bg-[#FFFCF4] px-3 py-3">
+    <div
+      onClick={interaction.onClick || undefined}
+      className={`border bg-[#FFFCF4] px-3 py-3 ${selected ? 'border-[#2F6DB5] shadow-[inset_2px_0_0_#2F6DB5]' : 'border-[#D8B56A]'} ${interaction.onClick ? 'cursor-pointer' : ''}`}
+      data-canonical-row-key={adapted.row_key}
+      data-canonical-row-kind={adapted.resolution.rowKind}
+    >
       <div className="text-[10px] font-bold text-[#1F1F1F]">{context.displayLabel}</div>
       <p className="mt-1 text-[10px] leading-4 text-[#6B5630]">{context.nonComparableReason}</p>
+      <CanonicalContextButton select={interaction.select} selected={selected} sourceSpecific />
       {context.primitives.length ? (
         <dl className="mt-2 space-y-1.5 border-t border-[#E8D9B8] pt-2">
           {context.primitives.map((primitive) => (
@@ -150,15 +223,33 @@ function SourceSpecificResult({ item, envelope }) {
   );
 }
 
-function CanonicalRow({ item, envelope }) {
+function CanonicalRow({ item, envelope, selected, onSelectCanonicalContext }) {
   if (item.render_kind !== 'ROW') return <RowFailure item={item} />;
   if (item.prepared.resolution.rowKind === 'REVIEWED_SOURCE_SPECIFIC') {
-    return <SourceSpecificResult item={item} envelope={envelope} />;
+    return (
+      <SourceSpecificResult
+        item={item}
+        envelope={envelope}
+        selected={selected}
+        onSelectCanonicalContext={onSelectCanonicalContext}
+      />
+    );
   }
-  return <CanonicalResult item={item} envelope={envelope} />;
+  return (
+    <CanonicalResult
+      item={item}
+      envelope={envelope}
+      selected={selected}
+      onSelectCanonicalContext={onSelectCanonicalContext}
+    />
+  );
 }
 
-export default function CanonicalReviewSection({ dealId }) {
+export default function CanonicalReviewSection({
+  dealId,
+  onSelectCanonicalContext = null,
+  selectedCanonicalRowKey = null,
+}) {
   const [state, setState] = useState({ loading: false, error: null, envelope: null, items: [] });
   useEffect(() => {
     if (!ENABLED || !dealId) return undefined;
@@ -205,7 +296,12 @@ export default function CanonicalReviewSection({ dealId }) {
         <div className="mt-4 space-y-2">
           {state.items.map((item) => (
             <CanonicalRowErrorBoundary key={item.key} item={item}>
-              <CanonicalRow item={item} envelope={state.envelope} />
+              <CanonicalRow
+                item={item}
+                envelope={state.envelope}
+                selected={item.render_kind === 'ROW' && item.prepared.row_key === selectedCanonicalRowKey}
+                onSelectCanonicalContext={onSelectCanonicalContext}
+              />
             </CanonicalRowErrorBoundary>
           ))}
         </div>
@@ -214,4 +310,4 @@ export default function CanonicalReviewSection({ dealId }) {
   );
 }
 
-export { exactText };
+export { canonicalSidebarContext, exactText };

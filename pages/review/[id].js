@@ -24,6 +24,7 @@ import ElectionCard from '../../components/review-v2/ElectionCard';
 import ProvisionIndex, { DefinitionsSection } from '../../components/review-v2/ProvisionIndex';
 import ClauseSidebar from '../../components/review-v2/ClauseSidebar';
 import CanonicalReviewSection from '../../components/review-v2/CanonicalReviewSection';
+import MarketDrilldownSidebar from '../../components/review-v2/MarketDrilldownSidebar';
 import SourceOverlay from '../../components/review-v2/SourceOverlay';
 import { resolveCardSourceSpan } from '../../lib/parser-v2/resolve-source-span';
 import {
@@ -474,11 +475,14 @@ export default function ReviewPage() {
      back to the sidebar's own empty state instead of unmounting, so there's
      no layout jump. */
   const [selection, setSelection] = useState({ card: null, rowFocus: null });
+  const [canonicalSelection, setCanonicalSelection] = useState(null);
   // r11: corpus sidebar can be tucked away via the mid-height arrow.
   const [sidebarHidden, setSidebarHidden] = useState(false);
   const selectedCard = selection.card;
   const selectedRowFocus = selection.rowFocus;
   const selectCard = useCallback((card, rowFocus = null) => {
+    setCanonicalSelection(null);
+    setSidebarHidden(false);
     setSelection((cur) => {
       const curKey = cur.card ? (cur.card.id || cur.card.provision_instance_id) : null;
       const nextKey = card ? (card.id || card.provision_instance_id) : null;
@@ -488,9 +492,27 @@ export default function ReviewPage() {
       return { card, rowFocus: rowFocus || null };
     });
   }, []);
+  const selectCanonicalContext = useCallback((context, rowKey) => {
+    if (!context || !rowKey) return;
+    setSelection({ card: null, rowFocus: null });
+    setCanonicalSelection({ context, rowKey });
+    setSidebarHidden(false);
+    if (marketMode && typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('mtx:canonical-market-context-selected', {
+        detail: { context, rowKey },
+      }));
+    }
+  }, [marketMode]);
   const clearSelection = useCallback(() => {
     setSelection({ card: null, rowFocus: null });
+    setCanonicalSelection(null);
   }, []);
+  useEffect(() => {
+    if (!marketMode || typeof window === 'undefined') return undefined;
+    const clearCanonicalSelection = () => setCanonicalSelection(null);
+    window.addEventListener('mtx:legacy-market-context-selected', clearCanonicalSelection);
+    return () => window.removeEventListener('mtx:legacy-market-context-selected', clearCanonicalSelection);
+  }, [marketMode]);
   useEffect(() => {
     const onKey = (e) => { if (e.key === 'Escape') clearSelection(); };
     window.addEventListener('keydown', onKey);
@@ -542,6 +564,7 @@ export default function ReviewPage() {
     openedRouteCardRef.current = null;
     setOverlayCard(null);
     setSelection({ card: null, rowFocus: null });
+    setCanonicalSelection(null);
     warnedCardIdsRef.current.clear();
     setUnresolvedCount(0);
   }, [dealId]);
@@ -672,7 +695,10 @@ export default function ReviewPage() {
             ) : null}
 
             <div className={wideLayout ? 'space-y-10 max-w-5xl w-full mx-auto' : 'space-y-10 max-w-3xl mx-auto'}>
-              <CanonicalReviewSection dealId={dealId} />
+              <CanonicalReviewSection dealId={dealId}
+                onSelectCanonicalContext={selectCanonicalContext}
+                selectedCanonicalRowKey={canonicalSelection?.rowKey || null}
+              />
               {marketMode ? <OffMarketSection data={offMarketData} /> : null}
               {sections.map((section) => (
                 <SectionBlock
@@ -740,14 +766,18 @@ export default function ReviewPage() {
             </button>
           </div>
           {!sidebarHidden && (
-            <ClauseSidebar
-              card={selectedCard}
-              rowFocus={selectedRowFocus}
-              dealId={dealId}
-              dealSector={deal ? deal.sector : null}
-              onClose={clearSelection}
-              onViewInAgreement={hasAgreementText ? openSourceOverlay : null}
-            />
+            canonicalSelection ? (
+              <MarketDrilldownSidebar context={canonicalSelection.context} onClose={clearSelection} />
+            ) : (
+              <ClauseSidebar
+                card={selectedCard}
+                rowFocus={selectedRowFocus}
+                dealId={dealId}
+                dealSector={deal ? deal.sector : null}
+                onClose={clearSelection}
+                onViewInAgreement={hasAgreementText ? openSourceOverlay : null}
+              />
+            )
           )}
             </>
           )}

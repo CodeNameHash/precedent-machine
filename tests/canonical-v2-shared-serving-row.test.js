@@ -173,6 +173,9 @@ test('Review, Corpus Context, Compare and Query consume one typed row contract',
   const context = rowMarketContext.buildTypedRowMarketContext(adapted.resolution, adapted.data);
 
   assert.deepEqual(Object.keys(adapted.surface_bindings), SURFACES);
+  assert.equal(adapted.resolution.rowKind, 'CANONICAL_RESULT');
+  assert.equal(adapted.resolution.selectedDealContextOnly, false);
+  assert.equal(adapted.resolution.marketCohortEligible, true);
   for (const surface of SURFACES) {
     assert.equal(adapted.surface_bindings[surface].row_key, row.row_serving_key);
     assert.equal(adapted.surface_bindings[surface].typed_market, adapted.typed_market);

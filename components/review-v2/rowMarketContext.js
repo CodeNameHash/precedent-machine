@@ -302,9 +302,9 @@ function typedMetricSummary(spec, result, dealDirectory) {
       subjectLabel: subjectPercent === null ? 'Relative value unavailable' : `${subjectPercent}%`,
       comparisonUnavailable: !stats,
       comparisonUnavailableReason: !stats
-        ? (cadence
+        ? (result?.comparability?.message || (cadence
           ? 'No peer percentage cohort with the same deal-value basis and cadence is available.'
-          : 'No same-basis peer percentage cohort is available.')
+          : 'No same-basis peer percentage cohort is available.'))
         : null,
       comparisonCohorts,
     };
@@ -339,7 +339,7 @@ function typedMetricSummary(spec, result, dealDirectory) {
     subjectLabel: subjectValue === null ? null : (unitLabel === '%' ? `${subjectValue}%` : `${subjectValue}${unitLabel ? ` ${unitLabel}` : ''}`),
     comparisonUnavailable: !stats,
     comparisonUnavailableReason: !stats
-      ? 'No peer cohort with the same unit, calendar basis, trigger, and cadence is available.'
+      ? (result?.comparability?.message || 'No peer cohort with the same unit, calendar basis, trigger, and cadence is available.')
       : null,
   };
 }

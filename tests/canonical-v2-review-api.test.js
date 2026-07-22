@@ -84,6 +84,12 @@ test('Review API adapts all valid rows and isolates one malformed sibling', asyn
   assert.equal(res.body.items.length, 13);
   assert.equal(res.body.items.filter((item) => item.render_kind === 'ROW').length, 12);
   assert.equal(res.body.items.filter((item) => item.render_kind === 'ROW_RENDER_FAILED').length, 1);
+  const prepared = res.body.items.find((item) => item.render_kind === 'ROW').prepared;
+  const metricKey = prepared.resolution.metrics[0].metricKey;
+  const metric = prepared.data.byRow[prepared.row_key].metrics[metricKey];
+  assert.equal(prepared.resolution.rowKey, prepared.row_key);
+  assert.ok(metric.subject.legalTerms.length > 0);
+  assert.equal(prepared.typed_market.data, prepared.data);
   assert.match(res.headers['Cache-Control'], /s-maxage=60/);
 });
 

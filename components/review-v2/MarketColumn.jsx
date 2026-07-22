@@ -338,6 +338,19 @@ function MetricResult({ spec, result, displayLabel = null }) {
       </div>
     );
   }
+  if (result.state === 'not_certified') {
+    const subject = subjectText(result, spec?.comparison?.kind, spec?.presentation?.role);
+    return (
+      <div>
+        {displayLabel ? <p className="text-[9px] font-bold text-[#6B6B6B] mb-0.5">{displayLabel}</p> : null}
+        {subject ? <p className="text-[9.5px] text-[#2F6DB5] mb-0.5">{subject}</p> : null}
+        <p className="text-[10px] leading-4 text-[#8A642E]">
+          Not comparable: {result.comparability?.message || 'the selected-deal result is not certified for a market cohort.'}
+        </p>
+        <SubjectLegalTerms result={result} />
+      </div>
+    );
+  }
   if (result.state === 'error') return <p className="text-[10px] text-[#B14E63]">Metric failed: {result.error?.message || 'unknown error'}</p>;
   const kind = spec?.comparison?.kind || result.distribution?.kind;
   const subject = subjectText(result, kind, spec?.presentation?.role);
@@ -374,6 +387,7 @@ function metricDisplayLabel(spec, rowLabel) {
 
 function hasUsableMetricResult(spec, result) {
   if (!result || result.state === 'error' || result.state === 'not_comparable') return false;
+  if (result.state === 'not_certified') return result?.subject?.status === 'present';
   if (result?.subject?.status === 'absent') return true;
   const kind = spec?.comparison?.kind || result?.distribution?.kind;
   if (kind === 'presence') {

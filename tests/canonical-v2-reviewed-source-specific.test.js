@@ -91,6 +91,7 @@ test('all four surfaces render the reviewed proposition as selected-deal context
     assert.equal(adapted.surface_bindings[surface].market_cohort_eligible, false);
   }
   assert.doesNotMatch(JSON.stringify(adapted), /No market data|not examined/i);
+  assert.equal(adapted.resolution.rowKey, adapted.row_key);
   assert.equal(Object.hasOwn(adapted.resolution.sourceSpecific, 'claimState'), false);
 });
 

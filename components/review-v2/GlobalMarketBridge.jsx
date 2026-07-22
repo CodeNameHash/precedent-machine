@@ -60,7 +60,7 @@ function sanitizeContext(context, labelOverride = null) {
     }))
     .filter((term) => term.value);
   const primarySummary = sanitizeSummary(context.primarySummary) || treatments[0] || metrics[0] || exceptions[0] || null;
-  if (!primarySummary) return null;
+  if (!primarySummary && !currentDealTerms.length) return null;
   return {
     marketKey: plainText(context.marketKey),
     marketRowKey: plainText(context.marketRowKey),
@@ -180,6 +180,18 @@ export default function GlobalMarketBridge() {
   }, [mounted, marketMode]);
 
   useEffect(() => {
+    if (!mounted || !marketMode) return undefined;
+    const selectCanonicalContext = (event) => {
+      const context = sanitizeContext(event?.detail?.context);
+      if (!context) return;
+      setMarketContext(context);
+      setSidebarHidden(false);
+    };
+    window.addEventListener('mtx:canonical-market-context-selected', selectCanonicalContext);
+    return () => window.removeEventListener('mtx:canonical-market-context-selected', selectCanonicalContext);
+  }, [mounted, marketMode]);
+
+  useEffect(() => {
     if (!mounted || !marketMode) {
       setSidebarHost(null);
       return undefined;
@@ -267,6 +279,11 @@ export default function GlobalMarketBridge() {
             const label = labelCell ? plainText(labelCell.textContent && labelCell.textContent.trim()) : null;
             setMarketContext(sanitizeContext(match, label));
             setSidebarHidden(false);
+            if (!td.closest('[data-canonical-row-key]')) {
+              window.dispatchEvent(new CustomEvent('mtx:legacy-market-context-selected', {
+                detail: { rowKey },
+              }));
+            }
           } catch (error) {
             // eslint-disable-next-line no-console
             console.error('[GlobalMarketBridge] row click failed', error);

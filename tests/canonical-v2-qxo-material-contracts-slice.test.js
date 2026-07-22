@@ -186,7 +186,7 @@ test('QXO keeps the exact $10m threshold and $17bn denominator while excluding t
   assert.equal(candidate.projection.exclusion.aggregate_authority, 'NO_AGGREGATE_AUTHORITY');
 });
 
-test('QXO incomplete row binds the attribute candidate and remains useful in Review without claiming market data', () => {
+test('QXO incomplete row binds the attribute candidate and remains useful in Review without claiming market data', async () => {
   const { candidate } = build();
   const row = candidate.incomplete_shared_row;
   assert.equal(validateSharedServingRow(row), true);
@@ -207,16 +207,26 @@ test('QXO incomplete row binds the attribute candidate and remains useful in Rev
   );
 
   const adapted = adaptSharedServingRow(row);
+  assert.equal(adapted.resolution.rowKey, row.row_serving_key);
   const metric = adapted.data.byRow[row.row_serving_key].metrics
     .MATERIAL_CONTRACT_CASH_FLOW_THRESHOLD_PERCENT_OF_DEAL_VALUE;
   assert.equal(adapted.resolution.marketCohortEligible, false);
   assert.equal(metric.state, 'not_certified');
   assert.equal(metric.subject.percentOfDealValue, 0.05882353);
+  assert.equal(
+    metric.subject.legalTerms.find((term) => term.key === 'raw_amount').value,
+    '$10,000,000',
+  );
   assert.match(
     metric.subject.legalTerms.find((term) => term.key === 'period').value,
     /2025.*2026/,
   );
   assert.equal(metric.distribution, null);
+  const { buildTypedRowMarketContext } = await import('../components/review-v2/rowMarketContext.js');
+  const context = buildTypedRowMarketContext(adapted.resolution, adapted.data);
+  assert.equal(context.metrics[0].subjectValue, 0.05882353);
+  assert.match(context.metrics[0].comparisonUnavailableReason, /measurement period is not mapped/i);
+  assert.equal(context.currentDealTerms.find((term) => term.key === 'raw_amount').value, '$10,000,000');
 });
 
 test('QXO semantic write set retains the canonical claim and complete open-world authority chain', () => {
