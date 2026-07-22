@@ -17,8 +17,8 @@ const EXPECTED_PROJECT = Object.freeze({
   name: 'deal-corpus-canonical-v2-staging',
 });
 const EXPECTED_DIGESTS = Object.freeze({
-  'canonical-v2-foundation.sql': 'a6d1337792d1929b175692133a222b5db6ee1010f8a50ba4584d79573328cfab',
-  'canonical-v2-serving.sql': '0cc018538748d7e28f9a07f963385216ffd1eada4f1686b11900e63631b157dc',
+  'canonical-v2-foundation.sql': '33a3b5a8e2a70ec97e48422d22222fda7eb3628eb466fcdec2fd615d4034e8d6',
+  'canonical-v2-serving.sql': '3f838015c3836e86e9b8aedeada522e847055b6050cb8141938bf548e3b7956e',
 });
 const SCRIPT_ROOT = dirname(fileURLToPath(import.meta.url));
 const REPOSITORY_ROOT = resolve(SCRIPT_ROOT, '..');
@@ -84,6 +84,7 @@ function verifyAppliedSchema() {
       to_regclass('canonical_v2_staging.canonical_text_verification_manifests') is not null as canonical_text_verification_table_exists,
       to_regclass('canonical_v2_staging.source_admission_preparation_receipts') is not null as source_admission_preparation_table_exists,
       to_regclass('canonical_v2_staging.semantic_extraction_input_envelopes') is not null as semantic_extraction_input_table_exists,
+      to_regclass('canonical_v2_staging.incomplete_canonical_result_rows') is not null as incomplete_canonical_result_table_exists,
       to_regclass('canonical_v2_staging.candidate_release_semantic_graphs') is not null as release_semantic_graph_table_exists,
       to_regclass('canonical_v2_staging.candidate_release_correction_input_seals') is not null as correction_seal_table_exists,
       to_regclass('canonical_v2_staging.candidate_release_correction_discharges') is not null as correction_discharge_table_exists,
@@ -159,6 +160,9 @@ function verifyAppliedSchema() {
         and has_table_privilege('canonical_v2_serving', 'canonical_v2_staging.source_artifact_chunks', 'SELECT') = false
         and has_table_privilege('canonical_v2_writer', 'canonical_v2_staging.source_artifact_manifests', 'INSERT') = false
         and has_table_privilege('canonical_v2_writer', 'canonical_v2_staging.source_artifact_chunks', 'INSERT') = false) as source_artifact_tables_denied,
+      (has_table_privilege('service_role', 'canonical_v2_staging.incomplete_canonical_result_rows', 'SELECT') = false
+        and has_table_privilege('canonical_v2_serving', 'canonical_v2_staging.incomplete_canonical_result_rows', 'SELECT') = false
+        and has_table_privilege('canonical_v2_writer', 'canonical_v2_staging.incomplete_canonical_result_rows', 'INSERT') = false) as incomplete_canonical_result_table_denied,
       (has_table_privilege('service_role', 'canonical_v2_staging.canonical_text_conversions', 'SELECT') = false
         and has_table_privilege('canonical_v2_serving', 'canonical_v2_staging.canonical_text_verification_manifests', 'SELECT') = false
         and has_table_privilege('canonical_v2_writer', 'canonical_v2_staging.source_admission_preparation_receipts', 'SELECT') = false

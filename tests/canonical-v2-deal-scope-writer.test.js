@@ -131,6 +131,7 @@ function semanticWriteSet(context) {
     open_world_primitives: [],
     semantic_impact_closures: [],
     reviewed_source_specific_rows: [],
+    incomplete_canonical_result_rows: [],
   };
 }
 
@@ -161,9 +162,9 @@ test('DEAL_SCOPE_RUN dry-run resolves stored admission and accepts reference-onl
     'claims', 'components', 'deal', 'excerpts', 'open_world_candidate_dispositions',
     'open_world_candidate_occurrences', 'open_world_candidates',
     'open_world_evidence_references', 'open_world_primitives', 'provisions',
-    'relationships', 'reviewed_source_specific_rows', 'semantic_impact_closures',
+    'relationships', 'reviewed_source_specific_rows', 'incomplete_canonical_result_rows', 'semantic_impact_closures',
     'source_references', 'validated_semantic_graphs',
-  ]);
+  ].sort());
 });
 
 test('DEAL_SCOPE_RUN commits one semantic transaction and exact replay is idempotent', async () => {

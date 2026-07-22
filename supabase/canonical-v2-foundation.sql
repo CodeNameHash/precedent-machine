@@ -250,6 +250,13 @@ CREATE TABLE IF NOT EXISTS canonical_v2_staging.reviewed_source_specific_rows (
   canonical_payload_digest text GENERATED ALWAYS AS (canonical_v2_staging.payload_digest(canonical_payload)) STORED
 );
 
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.incomplete_canonical_result_rows (
+  incomplete_result_review_row_serving_key text PRIMARY KEY,
+  closure_id text NOT NULL,
+  canonical_payload jsonb NOT NULL,
+  canonical_payload_digest text GENERATED ALWAYS AS (canonical_v2_staging.payload_digest(canonical_payload)) STORED
+);
+
 CREATE TABLE IF NOT EXISTS canonical_v2_staging.residuals (
   residual_id text PRIMARY KEY,
   closure_id text NOT NULL,
@@ -453,6 +460,8 @@ CREATE INDEX IF NOT EXISTS canonical_v2_semantic_impact_closures_closure_idx
   ON canonical_v2_staging.semantic_impact_closures(closure_id);
 CREATE INDEX IF NOT EXISTS canonical_v2_reviewed_source_specific_rows_closure_idx
   ON canonical_v2_staging.reviewed_source_specific_rows(closure_id);
+CREATE INDEX IF NOT EXISTS canonical_v2_incomplete_canonical_result_rows_closure_idx
+  ON canonical_v2_staging.incomplete_canonical_result_rows(closure_id);
 CREATE INDEX IF NOT EXISTS canonical_v2_residuals_closure_idx
   ON canonical_v2_staging.residuals(closure_id);
 CREATE UNIQUE INDEX IF NOT EXISTS canonical_v2_quarantines_closure_unique
@@ -483,6 +492,7 @@ ALTER TABLE canonical_v2_staging.open_world_candidate_dispositions ENABLE ROW LE
 ALTER TABLE canonical_v2_staging.open_world_primitives ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.semantic_impact_closures ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.reviewed_source_specific_rows ENABLE ROW LEVEL SECURITY;
+ALTER TABLE canonical_v2_staging.incomplete_canonical_result_rows ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.residuals ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.quarantines ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.correction_authority_materialisations ENABLE ROW LEVEL SECURITY;
@@ -1574,7 +1584,7 @@ BEGIN
         'open_world_candidates', 'open_world_candidate_occurrences',
         'open_world_evidence_references', 'open_world_candidate_dispositions',
         'open_world_primitives', 'semantic_impact_closures',
-        'reviewed_source_specific_rows'
+        'reviewed_source_specific_rows', 'incomplete_canonical_result_rows'
       ])
       OR p_write_set - ARRAY[
         'source_references', 'deal', 'excerpts', 'validated_semantic_graphs',
@@ -1582,7 +1592,7 @@ BEGIN
         'open_world_candidates', 'open_world_candidate_occurrences',
         'open_world_evidence_references', 'open_world_candidate_dispositions',
         'open_world_primitives', 'semantic_impact_closures',
-        'reviewed_source_specific_rows'
+        'reviewed_source_specific_rows', 'incomplete_canonical_result_rows'
       ]::text[] <> '{}'::jsonb
       OR jsonb_typeof(p_write_set->'source_references') IS DISTINCT FROM 'array'
       OR jsonb_typeof(p_write_set->'deal') IS DISTINCT FROM 'object'
@@ -1802,6 +1812,8 @@ BEGIN
             WHEN 'semantic_impact_closures' THEN object.value->>'semantic_impact_closure_id'
             WHEN 'reviewed_source_specific_rows'
               THEN object.value->>'reviewed_source_specific_row_serving_key'
+            WHEN 'incomplete_canonical_result_rows'
+              THEN object.value->>'incomplete_result_review_row_serving_key'
           END) !~ '^[0-9a-f]{64}$'
         )
     ) OR EXISTS (
@@ -1828,6 +1840,8 @@ BEGIN
         WHEN 'semantic_impact_closures' THEN object.value->>'semantic_impact_closure_id'
         WHEN 'reviewed_source_specific_rows'
           THEN object.value->>'reviewed_source_specific_row_serving_key'
+        WHEN 'incomplete_canonical_result_rows'
+          THEN object.value->>'incomplete_result_review_row_serving_key'
       END
       HAVING count(*) > 1
     ) THEN
@@ -2504,6 +2518,7 @@ BEGIN
       || coalesce(p_write_set->'open_world_primitives', '[]'::jsonb)
       || coalesce(p_write_set->'semantic_impact_closures', '[]'::jsonb)
       || coalesce(p_write_set->'reviewed_source_specific_rows', '[]'::jsonb)
+      || coalesce(p_write_set->'incomplete_canonical_result_rows', '[]'::jsonb)
     ) AS publishable(item)
     JOIN canonical_v2_staging.quarantines quarantine
       ON quarantine.closure_id = publishable.item->>'closure_id'
@@ -2663,6 +2678,14 @@ BEGIN
     IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN RAISE EXCEPTION 'reviewed source-specific row identity conflict' USING ERRCODE = '23505'; END IF;
     INSERT INTO canonical_v2_staging.reviewed_source_specific_rows(reviewed_source_specific_row_serving_key, closure_id, canonical_payload)
     VALUES (item_id, item->>'closure_id', item) ON CONFLICT (reviewed_source_specific_row_serving_key) DO NOTHING;
+  END LOOP;
+
+  FOR item IN SELECT value FROM jsonb_array_elements(coalesce(p_write_set->'incomplete_canonical_result_rows', '[]'::jsonb)) LOOP
+    item_id := item->>'incomplete_result_review_row_serving_key';
+    SELECT canonical_payload_digest INTO existing_digest FROM canonical_v2_staging.incomplete_canonical_result_rows WHERE incomplete_result_review_row_serving_key = item_id;
+    IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN RAISE EXCEPTION 'incomplete canonical result row identity conflict' USING ERRCODE = '23505'; END IF;
+    INSERT INTO canonical_v2_staging.incomplete_canonical_result_rows(incomplete_result_review_row_serving_key, closure_id, canonical_payload)
+    VALUES (item_id, item->>'closure_id', item) ON CONFLICT (incomplete_result_review_row_serving_key) DO NOTHING;
   END LOOP;
 
   FOR item IN SELECT value FROM jsonb_array_elements(coalesce(p_residuals, '[]'::jsonb)) LOOP

@@ -194,6 +194,7 @@ async function buildWrite() {
     open_world_primitives: [],
     semantic_impact_closures: [],
     reviewed_source_specific_rows: [],
+    incomplete_canonical_result_rows: [],
   };
 
   const repository = new InMemoryCanonicalRepository();

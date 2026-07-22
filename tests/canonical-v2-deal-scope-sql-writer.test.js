@@ -19,6 +19,7 @@ test('DEAL_SCOPE_RUN is a closed reference-only writer operation', () => {
     'open_world_candidate_occurrences', 'open_world_evidence_references',
     'open_world_candidate_dispositions', 'open_world_primitives',
     'semantic_impact_closures', 'reviewed_source_specific_rows',
+    'incomplete_canonical_result_rows',
   ]) assert.match(validationBlock, new RegExp(`'${key}'`));
   assert.doesNotMatch(validationBlock, /p_write_set->'(?:source|sources|source_admission|source_admissions|conversion)'/);
   assert.match(sql, /IF p_operation <> 'DEAL_SCOPE_RUN' THEN[\s\S]*p_write_set \? 'sources'/);

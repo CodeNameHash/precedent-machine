@@ -19,6 +19,15 @@ const { buildQxoCapitalisationServingSlice } = require('../lib/canonical-v2/qxo-
 const { buildQxoNoShopActionsServingSlice } = require('../lib/canonical-v2/qxo-no-shop-actions-serving-slice');
 const { buildQxoNoShopRematchServingSlice } = require('../lib/canonical-v2/qxo-no-shop-rematch-serving-slice');
 const { buildQxoNoShopServingSlice } = require('../lib/canonical-v2/qxo-no-shop-serving-slice');
+const { buildQxoMaterialContractsSlice } = require('../lib/canonical-v2/qxo-material-contracts-slice');
+const {
+  PROVISIONAL_CORPUS_RELEASE_ID,
+  PROVISIONAL_CORPUS_RELEASE_SEED_DIGEST,
+  QXO_MATERIAL_COMBINED_CANDIDATE_SEED,
+  QXO_MATERIAL_SOURCE_ADMISSION_MANIFEST_IDS,
+  buildQxoMaterialCombinedCandidateSeed,
+  qxoMaterialCombinedCandidateReleaseId,
+} = require('../lib/canonical-v2/qxo-material-candidate-identity');
 const { buildQxoReviewedCapitalisationSlice } = require('../lib/canonical-v2/reviewed-qxo-capitalisation-slice');
 const { buildQxoAdmittedNoShopActionsSlice } = require('../lib/canonical-v2/reviewed-qxo-admitted-no-shop-actions-slice');
 const { buildQxoAdmittedNoShopRematchSlice } = require('../lib/canonical-v2/reviewed-qxo-admitted-no-shop-rematch-slice');
@@ -29,11 +38,15 @@ const PROJECT = Object.freeze({ ref: 'sjumbznveyyiizhwvixj', name: 'deal-corpus-
 const APPLICATION_DEAL_ID = '7dc3a05f-b170-4d59-a255-b7103cca16e1';
 const DEAL_KEY = 'deal:qxo-topbuild';
 const SOURCE_ADMISSION_ID = 'f31cad8c3813ededa01c644891b0b2e14c6a475d868ba89f6b60b597f0e1d819';
+const DEAL_VALUE_SOURCE_ADMISSION_ID = '8f34cf68078f669f9abac88ce5d5ac5cd1c331803beead14c55ec72a5bb3398c';
 const DEAL_ADMISSION_ID = '62b8b828c534273c68dcd48cec3fbbcb4f912ac3f477dbdc377de5ac47954c8f';
 const CAPITALISATION_CLOSURE_ID = 'cbb678180ec9951f12741a77a58f7ec03a6bebffbdc6e5d9fbea6add9beea596';
 const NO_SHOP_CLOSURE_ID = '944c18cb24c5684c04eb3d2c9cae57f932c144790492bc1619ccd566d57a8a3e';
 const ACTIONS_CLOSURE_ID = '89683e5ff72a570948bfadda123254719d848310b5c50ad3720645e2cbd6291b';
 const REMATCH_CLOSURE_ID = 'dd232aa8077fd0d4158cd19c7fa5e8b439fceb8d97b578682c41936889808af8';
+const MATERIAL_CLOSURE_ID = 'a08b15c095464e265205ffd87ec380a85e37e9867c9701551b7b59759ed0cab5';
+const MATERIAL_METRIC_KEY = 'MATERIAL_CONTRACT_CASH_FLOW_THRESHOLD_PERCENT_OF_DEAL_VALUE';
+const MATERIAL_INCOMPLETE_ROW_SERVING_KEY = '45a7c43499e9a8429f1b0a19871c0e952c85cb3e684e222cbd506259c15f2500';
 const RELEASE_CONFIGS = Object.freeze({
   BASE: Object.freeze({
     corpusReleaseId: 'fa2aa0154c5f0024b088fc5fcf7281adb56cbac12d0d48438fefa1765b83dd36',
@@ -50,19 +63,29 @@ const RELEASE_CONFIGS = Object.freeze({
     candidateManifestId: 'a9cbb8810053d13ad76efcffc769ddf83ed22d1cb446493967f281489182d0b2',
     servingNamespaceId: 'efa8f7c2643448ad9380a4a16556d76f09879809c1d21e49f479e8cf070f204d',
   }),
+  MATERIAL: Object.freeze({
+    corpusReleaseId: PROVISIONAL_CORPUS_RELEASE_ID,
+    candidateManifestId: '6e12a944361efe8c487e735c47cf6e9a9b25e98a49b85e31d7c80ba3fd05a78d',
+    servingNamespaceId: 'c4ffea588143bc28d079fb1aa7d0226259ab38f2011f2c3a9ea8436174173499',
+  }),
 });
 const MAX_GRAPH_READ_BYTES = 4 * 1024 * 1024;
 let currentStage = 'STARTUP';
 
 function includesActions() {
-  return mode.startsWith('--actions-') || mode.startsWith('--rematch-');
+  return mode.startsWith('--actions-') || mode.startsWith('--rematch-') || mode.startsWith('--material-');
 }
 
 function includesRematch() {
-  return mode.startsWith('--rematch-');
+  return mode.startsWith('--rematch-') || mode.startsWith('--material-');
+}
+
+function includesMaterial() {
+  return mode.startsWith('--material-');
 }
 
 function releaseConfig() {
+  if (includesMaterial()) return RELEASE_CONFIGS.MATERIAL;
   if (includesRematch()) return RELEASE_CONFIGS.REMATCH;
   return includesActions() ? RELEASE_CONFIGS.ACTIONS : RELEASE_CONFIGS.BASE;
 }
@@ -170,6 +193,21 @@ function readGraph() {
   'source_admission_manifest', admission.canonical_payload,
   'semantic_extraction_input_envelope', envelope.canonical_payload,
   'conversion', conversion.canonical_payload,
+  'deal_value_source', (SELECT jsonb_build_object(
+    'immutable_source_document', deal_value_immutable.canonical_payload,
+    'source_admission_manifest', deal_value_admission.canonical_payload,
+    'semantic_extraction_input_envelope', deal_value_envelope.canonical_payload,
+    'conversion', deal_value_conversion.canonical_payload
+  )
+    FROM canonical_v2_staging.source_admission_manifests deal_value_admission
+    JOIN canonical_v2_staging.immutable_source_documents deal_value_immutable
+      ON deal_value_immutable.immutable_source_document_id=
+        deal_value_admission.canonical_payload->>'immutable_source_document_id'
+    JOIN canonical_v2_staging.semantic_extraction_input_envelopes deal_value_envelope
+      ON deal_value_envelope.source_admission_manifest_id=deal_value_admission.source_admission_manifest_id
+    JOIN canonical_v2_staging.canonical_text_conversions deal_value_conversion
+      ON deal_value_conversion.canonical_text_id=deal_value_admission.canonical_payload->>'canonical_text_id'
+    WHERE deal_value_admission.source_admission_manifest_id='${DEAL_VALUE_SOURCE_ADMISSION_ID}'),
   'deal', deal.canonical_payload,
   'capitalisation', jsonb_build_object(
     'excerpts', ${graphCollection(CAPITALISATION_CLOSURE_ID, 'excerpts', 'excerpt_id')},
@@ -206,6 +244,23 @@ function readGraph() {
     'relationships', ${graphCollection(REMATCH_CLOSURE_ID, 'relationship_revisions', 'relationship_revision_id')},
     'receipt', (SELECT canonical_payload FROM canonical_v2_staging.write_receipts
       WHERE operation='DEAL_SCOPE_RUN' AND idempotency_key='QXO_NO_SHOP_REMATCH_DEAL_SCOPE_V1')
+  ),
+  'material', jsonb_build_object(
+    'excerpts', ${graphCollection(MATERIAL_CLOSURE_ID, 'excerpts', 'excerpt_id')},
+    'provisions', ${graphCollection(MATERIAL_CLOSURE_ID, 'provision_instances', 'provision_instance_id')},
+    'components', ${graphCollection(MATERIAL_CLOSURE_ID, 'provision_components', 'provision_component_id')},
+    'claims', ${graphCollection(MATERIAL_CLOSURE_ID, 'claim_revisions', 'claim_revision_id')},
+    'relationships', ${graphCollection(MATERIAL_CLOSURE_ID, 'relationship_revisions', 'relationship_revision_id')},
+    'open_world_candidates', ${graphCollection(MATERIAL_CLOSURE_ID, 'open_world_candidates', 'candidate_id')},
+    'open_world_candidate_occurrences', ${graphCollection(MATERIAL_CLOSURE_ID, 'open_world_candidate_occurrences', 'open_world_candidate_occurrence_id')},
+    'open_world_evidence_references', ${graphCollection(MATERIAL_CLOSURE_ID, 'open_world_evidence_references', 'evidence_reference_id')},
+    'open_world_candidate_dispositions', ${graphCollection(MATERIAL_CLOSURE_ID, 'open_world_candidate_dispositions', 'final_disposition_id')},
+    'open_world_primitives', ${graphCollection(MATERIAL_CLOSURE_ID, 'open_world_primitives', 'primitive_id')},
+    'semantic_impact_closures', ${graphCollection(MATERIAL_CLOSURE_ID, 'semantic_impact_closures', 'semantic_impact_closure_id')},
+    'reviewed_source_specific_rows', ${graphCollection(MATERIAL_CLOSURE_ID, 'reviewed_source_specific_rows', 'reviewed_source_specific_row_serving_key')},
+    'incomplete_canonical_result_rows', ${graphCollection(MATERIAL_CLOSURE_ID, 'incomplete_canonical_result_rows', 'incomplete_result_review_row_serving_key')},
+    'receipt', (SELECT canonical_payload FROM canonical_v2_staging.write_receipts
+      WHERE operation='DEAL_SCOPE_RUN' AND idempotency_key='QXO_MATERIAL_CONTRACTS_DEAL_SCOPE_V1')
   ),
   'active_pointer', (SELECT canonical_payload FROM canonical_v2_staging.active_corpus_release_pointers
     WHERE environment='staging')
@@ -250,7 +305,67 @@ function assertFamilyParity({ graph, slice, closureId, label }) {
   }
 }
 
-function releaseIds({ contractBundle, capitalisationSlice, noShopSlice, actionsSlice, rematchSlice }) {
+function assertMaterialParity({ graph, slice }) {
+  const collections = Object.freeze({
+    excerpts: 'excerpt_id',
+    provisions: 'provision_instance_id',
+    components: 'provision_component_id',
+    claims: 'claim_revision_id',
+    relationships: 'relationship_revision_id',
+    open_world_candidates: 'candidate_id',
+    open_world_candidate_occurrences: 'open_world_candidate_occurrence_id',
+    open_world_evidence_references: 'evidence_reference_id',
+    open_world_candidate_dispositions: 'final_disposition_id',
+    open_world_primitives: 'primitive_id',
+    semantic_impact_closures: 'semantic_impact_closure_id',
+    reviewed_source_specific_rows: 'reviewed_source_specific_row_serving_key',
+    incomplete_canonical_result_rows: 'incomplete_result_review_row_serving_key',
+  });
+  let publishableCount = 0;
+  for (const [key, identity] of Object.entries(collections)) {
+    const expected = sortBy(slice.semantic_write_set[key], identity);
+    publishableCount += expected.length;
+    if (canonicalJson(graph[key]) !== canonicalJson(expected)) {
+      throw new Error(`Stored QXO material-contract ${key} do not match the reviewed multi-source graph.`);
+    }
+  }
+  if (graph.receipt?.status !== 'COMMITTED'
+    || graph.receipt?.operation !== 'DEAL_SCOPE_RUN'
+    || graph.receipt?.publishableObjectCount !== publishableCount) {
+    throw new Error('Stored QXO material-contract semantic receipt is incomplete.');
+  }
+}
+
+function releaseIds({
+  contractBundle,
+  capitalisationSlice,
+  noShopSlice,
+  actionsSlice,
+  rematchSlice,
+  materialSlice,
+}) {
+  if (includesMaterial()) {
+    const candidateSeed = buildQxoMaterialCombinedCandidateSeed({
+      contractFingerprint: contractBundle.fingerprint,
+      materialReviewedMappingId: materialSlice.reviewed_mapping.reviewed_mapping_id,
+    });
+    const corpusReleaseId = qxoMaterialCombinedCandidateReleaseId(candidateSeed);
+    if (canonicalJson(candidateSeed) !== canonicalJson(QXO_MATERIAL_COMBINED_CANDIDATE_SEED)
+      || contentId('QXO_MATERIAL_COMBINED_CANDIDATE_SEED/V1', candidateSeed)
+        !== PROVISIONAL_CORPUS_RELEASE_SEED_DIGEST
+      || corpusReleaseId !== PROVISIONAL_CORPUS_RELEASE_ID) {
+      throw new Error('QXO material combined candidate seed identity has drifted.');
+    }
+    return {
+      corpusReleaseId,
+      servingNamespaceId: contentId('SERVING_NAMESPACE/V1', {
+        schema_version: 'QXO_MATERIAL_COMBINED_SERVING_NAMESPACE/V1',
+        governed_deal_key: DEAL_KEY,
+        corpus_release_id: corpusReleaseId,
+        candidate_seed_digest: PROVISIONAL_CORPUS_RELEASE_SEED_DIGEST,
+      }),
+    };
+  }
   const actionMappings = includesActions() ? [actionsSlice.reviewed_mapping.reviewed_mapping_id] : [];
   const actionClosures = includesActions() ? [ACTIONS_CLOSURE_ID] : [];
   const rematchMappings = includesRematch() ? [rematchSlice.reviewed_mapping.reviewed_mapping_id] : [];
@@ -307,6 +422,22 @@ async function buildCandidate() {
     deal_admission_id: DEAL_ADMISSION_ID,
     source_ordinal: 0,
   });
+  if (!graph.deal_value_source) throw new Error('The exact admitted QXO deal-value source chain is missing.');
+  const dealValueSourceContext = buildAdmittedSemanticSourceContext({
+    immutable_source_document: graph.deal_value_source.immutable_source_document,
+    source_admission_manifest: graph.deal_value_source.source_admission_manifest,
+    semantic_extraction_input_envelope: graph.deal_value_source.semantic_extraction_input_envelope,
+    conversion: graph.deal_value_source.conversion,
+    governed_deal_key: DEAL_KEY,
+    deal_admission_id: DEAL_ADMISSION_ID,
+    source_ordinal: 1,
+  });
+  if (canonicalJson([
+    sourceContext.source_admission_manifest_id,
+    dealValueSourceContext.source_admission_manifest_id,
+  ]) !== canonicalJson(QXO_MATERIAL_SOURCE_ADMISSION_MANIFEST_IDS)) {
+    throw new Error('The two admitted QXO source chains do not match the pinned material candidate seed.');
+  }
   const deal = {
     deal_key: DEAL_KEY,
     deal_admission_id: DEAL_ADMISSION_ID,
@@ -318,6 +449,14 @@ async function buildCandidate() {
   const noShopSlice = buildQxoAdmittedNoShopNoticeSlice({ sourceContext, contractBundle });
   const actionsSlice = buildQxoAdmittedNoShopActionsSlice({ sourceContext, contractBundle });
   const rematchSlice = buildQxoAdmittedNoShopRematchSlice({ sourceContext, contractBundle });
+  const materialProbe = includesMaterial() ? buildQxoMaterialContractsSlice({
+    agreementSourceContext: sourceContext,
+    agreementSourceAdmission: graph.source_admission_manifest,
+    dealValueSourceContext,
+    dealValueSourceAdmission: graph.deal_value_source.source_admission_manifest,
+    contractBundle,
+    corpusReleaseId: PROVISIONAL_CORPUS_RELEASE_ID,
+  }) : null;
   currentStage = 'VERIFY_GRAPH_PARITY';
   assertFamilyParity({ graph: graph.capitalisation, slice: capitalisationSlice, closureId: CAPITALISATION_CLOSURE_ID, label: 'capitalisation' });
   assertFamilyParity({ graph: graph.no_shop, slice: noShopSlice, closureId: NO_SHOP_CLOSURE_ID, label: 'no-shop' });
@@ -327,6 +466,7 @@ async function buildCandidate() {
   if (includesRematch()) {
     assertFamilyParity({ graph: graph.rematch, slice: rematchSlice, closureId: REMATCH_CLOSURE_ID, label: 'no-shop subsequent match' });
   }
+  if (materialProbe) assertMaterialParity({ graph: graph.material, slice: materialProbe });
   currentStage = 'BUILD_RELEASE_IDENTITIES';
   const { corpusReleaseId, servingNamespaceId } = releaseIds({
     contractBundle,
@@ -334,6 +474,7 @@ async function buildCandidate() {
     noShopSlice,
     actionsSlice,
     rematchSlice,
+    materialSlice: materialProbe,
   });
   currentStage = 'BUILD_SERVING_SLICES';
   const dealDimensions = {
@@ -381,6 +522,18 @@ async function buildCandidate() {
     servingNamespaceId,
     dealDimensions,
   }) : null;
+  const materialSlice = includesMaterial() ? buildQxoMaterialContractsSlice({
+    agreementSourceContext: sourceContext,
+    agreementSourceAdmission: graph.source_admission_manifest,
+    dealValueSourceContext,
+    dealValueSourceAdmission: graph.deal_value_source.source_admission_manifest,
+    contractBundle,
+    corpusReleaseId,
+  }) : null;
+  if (materialProbe && materialSlice.reviewed_mapping.reviewed_mapping_id
+      !== materialProbe.reviewed_mapping.reviewed_mapping_id) {
+    throw new Error('QXO material reviewed mapping depends on its release identity.');
+  }
   if (capitalisationServing.release_readiness.status !== 'READY_FOR_CANDIDATE_RELEASE'
     || noShopServing.release_readiness.status !== 'READY_FOR_CANDIDATE_RELEASE'
     || (actionsServing && actionsServing.release_readiness.status !== 'READY_FOR_CANDIDATE_RELEASE')
@@ -402,18 +555,37 @@ async function buildCandidate() {
       ...noShopServing.candidate_release_members,
       ...(actionsServing?.candidate_release_members || []),
       ...(rematchServing?.candidate_release_members || []),
+      ...(materialSlice ? [materialSlice.candidate_release_member] : []),
     ],
     correction_authority_selection: authoritySelection,
     deal_directory_entries: [{ application_deal_id: APPLICATION_DEAL_ID, governed_deal_key: DEAL_KEY }],
   });
   currentStage = 'VALIDATE_CANDIDATE_RELEASE';
   validateCandidateReleaseBundle(release);
+  if (includesMaterial()) {
+    const materialRowKey = materialSlice.incomplete_shared_row.row_serving_key;
+    if (release.market_observations.length !== 8
+      || release.market_exclusions.length !== 2
+      || release.shared_rows.length !== 9
+      || release.incomplete_canonical_rows?.length !== 1
+      || release.query_records.length !== 8
+      || release.exact_detail_packages.length !== 9
+      || materialRowKey !== MATERIAL_INCOMPLETE_ROW_SERVING_KEY
+      || release.query_records.some((record) => record.row_serving_key === materialRowKey)
+      || release.market_observations.some((observation) => observation.metric_key === MATERIAL_METRIC_KEY)
+      || release.market_exclusions.filter((exclusion) => exclusion.metric_key === MATERIAL_METRIC_KEY).length !== 1) {
+      throw new Error('QXO material candidate release partitions are not exact.');
+    }
+  }
   const expected = releaseConfig();
-  if (expected.corpusReleaseId !== null && (
-    release.manifest.corpus_release_id !== expected.corpusReleaseId
-    || release.manifest.candidate_release_manifest_id !== expected.candidateManifestId
-    || release.manifest.serving_namespace_id !== expected.servingNamespaceId
-  )) throw new Error('QXO combined candidate release identity has drifted.');
+  if ((expected.corpusReleaseId !== null
+      && release.manifest.corpus_release_id !== expected.corpusReleaseId)
+    || (expected.candidateManifestId !== null
+      && release.manifest.candidate_release_manifest_id !== expected.candidateManifestId)
+    || (expected.servingNamespaceId !== null
+      && release.manifest.serving_namespace_id !== expected.servingNamespaceId)) {
+    throw new Error('QXO combined candidate release identity has drifted.');
+  }
   return {
     contractBundle,
     graph,
@@ -422,6 +594,8 @@ async function buildCandidate() {
     noShopSlice,
     actionsSlice,
     rematchSlice,
+    materialSlice,
+    dealValueSourceContext,
     capitalisationServing,
     noShopServing,
     actionsServing,
@@ -440,7 +614,31 @@ function readCandidateState(release) {
   'deal_directory_records', (SELECT count(*) FROM canonical_v2_staging.deal_serving_directory WHERE corpus_release_id='${id}'),
   'market_observations', (SELECT count(*) FROM canonical_v2_staging.market_observations WHERE corpus_release_id='${id}'),
   'market_exclusions', (SELECT count(*) FROM canonical_v2_staging.market_metric_slot_exclusions WHERE corpus_release_id='${id}'),
-  'query_records', (SELECT count(*) FROM canonical_v2_staging.shared_serving_rows WHERE corpus_release_id='${id}'),
+  'shared_rows', (SELECT count(*) FROM canonical_v2_staging.shared_serving_rows WHERE corpus_release_id='${id}'),
+  'query_records', (SELECT count(*) FROM canonical_v2_staging.shared_serving_rows
+    WHERE corpus_release_id='${id}' AND canonical_payload->>'row_kind'='CANONICAL_RESULT'),
+  'incomplete_canonical_records', (SELECT count(*) FROM canonical_v2_staging.shared_serving_rows
+    WHERE corpus_release_id='${id}' AND canonical_payload->>'row_kind'='INCOMPLETE_CANONICAL_RESULT'),
+  'selected_deal_shared_rows', (SELECT count(*)
+    FROM canonical_v2_staging.deal_serving_directory directory
+    JOIN canonical_v2_staging.shared_serving_rows row
+      ON row.corpus_release_id=directory.corpus_release_id
+      AND row.governed_deal_key=directory.governed_deal_key
+    WHERE directory.corpus_release_id='${id}' AND directory.application_deal_id='${APPLICATION_DEAL_ID}'),
+  'material_query_records', (SELECT count(*) FROM canonical_v2_staging.shared_serving_rows
+    WHERE corpus_release_id='${id}' AND metric_key='${MATERIAL_METRIC_KEY}'
+      AND canonical_payload->>'row_kind'='CANONICAL_RESULT'),
+  'material_incomplete_records', (SELECT count(*) FROM canonical_v2_staging.shared_serving_rows
+    WHERE corpus_release_id='${id}' AND metric_key='${MATERIAL_METRIC_KEY}'
+      AND canonical_payload->>'row_kind'='INCOMPLETE_CANONICAL_RESULT'),
+  'material_review_row_keys', (SELECT coalesce(jsonb_agg(row_serving_key ORDER BY row_serving_key), '[]'::jsonb)
+    FROM canonical_v2_staging.shared_serving_rows
+    WHERE corpus_release_id='${id}' AND metric_key='${MATERIAL_METRIC_KEY}'
+      AND canonical_payload->>'row_kind'='INCOMPLETE_CANONICAL_RESULT'),
+  'material_market_observations', (SELECT count(*) FROM canonical_v2_staging.market_observations
+    WHERE corpus_release_id='${id}' AND metric_key='${MATERIAL_METRIC_KEY}'),
+  'material_market_exclusions', (SELECT count(*) FROM canonical_v2_staging.market_metric_slot_exclusions
+    WHERE corpus_release_id='${id}' AND metric_key='${MATERIAL_METRIC_KEY}'),
   'exact_detail_packages', (SELECT count(*) FROM canonical_v2_staging.exact_detail_serving_packages WHERE corpus_release_id='${id}'),
   'complete_receipts', (SELECT count(*) FROM canonical_v2_staging.candidate_release_import_receipts
     WHERE corpus_release_id='${id}' AND import_state='IMPORTED_COMPLETE'),
@@ -459,13 +657,23 @@ function assertImported(state, release) {
     deal_directory_records: release.deal_directory_records.length,
     market_observations: release.market_observations.length,
     market_exclusions: release.market_exclusions.length,
+    shared_rows: release.shared_rows.length,
     query_records: release.query_records.length,
+    incomplete_canonical_records: release.incomplete_canonical_rows?.length || 0,
     exact_detail_packages: release.exact_detail_packages.length,
     complete_receipts: 1,
   };
   for (const [key, value] of Object.entries(expected)) {
     if (Number(state[key]) !== value) throw new Error(`QXO combined candidate ${key} is ${state[key]}, expected ${value}.`);
   }
+  if (includesMaterial() && (
+    Number(state.selected_deal_shared_rows) !== 9
+    || Number(state.material_query_records) !== 0
+    || Number(state.material_incomplete_records) !== 1
+    || canonicalJson(state.material_review_row_keys) !== canonicalJson([MATERIAL_INCOMPLETE_ROW_SERVING_KEY])
+    || Number(state.material_market_observations) !== 0
+    || Number(state.material_market_exclusions) !== 1
+  )) throw new Error('QXO material selected-deal Review or market-query exclusion has drifted.');
 }
 
 function assertAbsent(state) {
@@ -476,7 +684,9 @@ function assertAbsent(state) {
     'deal_directory_records',
     'market_observations',
     'market_exclusions',
+    'shared_rows',
     'query_records',
+    'incomplete_canonical_records',
     'exact_detail_packages',
     'complete_receipts',
   ]) if (Number(state[key]) !== 0) throw new Error(`QXO combined candidate ${key} remains after rollback.`);
@@ -498,9 +708,15 @@ function attestation(candidate, mode, rollbackRehearsed = false) {
   const rematchMappings = includesRematch()
     ? [candidate.rematchSlice.reviewed_mapping.reviewed_mapping_id]
     : [];
+  const materialClosures = includesMaterial() ? [MATERIAL_CLOSURE_ID] : [];
+  const materialMappings = includesMaterial()
+    ? [candidate.materialSlice.reviewed_mapping.reviewed_mapping_id]
+    : [];
   return {
-    schema_version: includesRematch()
-      ? 'QXO_COMBINED_REMATCH_CANDIDATE_STAGING_ATTESTATION/V1'
+    schema_version: includesMaterial()
+      ? 'QXO_MATERIAL_COMBINED_CANDIDATE_STAGING_ATTESTATION/V1'
+      : includesRematch()
+        ? 'QXO_COMBINED_REMATCH_CANDIDATE_STAGING_ATTESTATION/V1'
       : includesActions()
         ? 'QXO_COMBINED_ACTIONS_CANDIDATE_STAGING_ATTESTATION/V1'
         : 'QXO_COMBINED_CANDIDATE_STAGING_ATTESTATION/V1',
@@ -510,21 +726,28 @@ function attestation(candidate, mode, rollbackRehearsed = false) {
     candidate_release_manifest_id: candidate.release.manifest.candidate_release_manifest_id,
     serving_namespace_id: candidate.release.manifest.serving_namespace_id,
     source_admission_manifest_id: candidate.sourceContext.source_admission_manifest_id,
+    source_admission_manifest_ids: includesMaterial()
+      ? QXO_MATERIAL_SOURCE_ADMISSION_MANIFEST_IDS
+      : [candidate.sourceContext.source_admission_manifest_id],
     semantic_closure_ids: [
       CAPITALISATION_CLOSURE_ID,
       NO_SHOP_CLOSURE_ID,
       ...actionClosures,
       ...rematchClosures,
+      ...materialClosures,
     ].sort(),
     reviewed_mapping_ids: [
       candidate.capitalisationSlice.reviewed_mapping.reviewed_mapping_id,
       candidate.noShopSlice.reviewed_mapping.reviewed_mapping_id,
       ...actionMappings,
       ...rematchMappings,
+      ...materialMappings,
     ].sort(),
     observations: candidate.release.market_observations.length,
     exclusions: candidate.release.market_exclusions.length,
     shared_rows: candidate.release.shared_rows.length,
+    incomplete_canonical_rows: candidate.release.incomplete_canonical_rows?.length || 0,
+    query_records: candidate.release.query_records.length,
     exact_detail_packages: candidate.release.exact_detail_packages.length,
     active_pointer_unchanged: true,
     rollback_rehearsed: rollbackRehearsed,
@@ -545,15 +768,23 @@ const invocation = Object.freeze({
   '--rematch-import': 'IMPORT',
   '--rematch-verify': 'VERIFY',
   '--rematch-rehearse-rollback': 'REHEARSE_ROLLBACK',
+  '--material-dry-run': 'DRY_RUN',
+  '--material-import': 'IMPORT',
+  '--material-verify': 'VERIFY',
+  '--material-rehearse-rollback': 'REHEARSE_ROLLBACK',
 });
 if (!invocation[mode] || process.argv.length !== 3) {
-  fail('Usage: node scripts/canonical-v2-staging-qxo-combined-candidate.mjs --dry-run|--import|--verify|--rehearse-rollback|--actions-dry-run|--actions-import|--actions-verify|--actions-rehearse-rollback|--rematch-dry-run|--rematch-import|--rematch-verify|--rematch-rehearse-rollback');
+  fail('Usage: node scripts/canonical-v2-staging-qxo-combined-candidate.mjs --dry-run|--import|--verify|--rehearse-rollback|--actions-dry-run|--actions-import|--actions-verify|--actions-rehearse-rollback|--rematch-dry-run|--rematch-import|--rematch-verify|--rematch-rehearse-rollback|--material-dry-run|--material-import|--material-verify|--material-rehearse-rollback');
 }
 
 try {
   currentStage = 'GUARD_PROJECT';
   guardProject();
-  if (releaseConfig().corpusReleaseId === null && invocation[mode] !== 'DRY_RUN') {
+  if ([
+    releaseConfig().corpusReleaseId,
+    releaseConfig().candidateManifestId,
+    releaseConfig().servingNamespaceId,
+  ].some((identity) => identity === null) && invocation[mode] !== 'DRY_RUN') {
     throw new Error('The combined candidate identities must be pinned before staging mutation.');
   }
   const candidate = await buildCandidate();

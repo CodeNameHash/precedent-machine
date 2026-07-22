@@ -516,6 +516,12 @@ DECLARE
   discharge_map_id text := input_authority->>'correction_discharge_map_id';
   discharge_map_payload_digest text := input_authority->>'correction_discharge_map_payload_digest';
   import_plan_id text := p_import_plan->>'candidate_release_import_plan_id';
+  is_v5 boolean := p_import_plan->>'schema_version' = 'CANDIDATE_RELEASE_IMPORT_PLAN/V5';
+  receipt_schema text := CASE
+    WHEN p_import_plan->>'schema_version' = 'CANDIDATE_RELEASE_IMPORT_PLAN/V5'
+      THEN 'CANDIDATE_RELEASE_IMPORT_RECEIPT/V5'
+    ELSE 'CANDIDATE_RELEASE_IMPORT_RECEIPT/V4'
+  END;
   existing_plan_id text;
   existing_release_id text;
   existing_namespace_id text;
@@ -538,7 +544,10 @@ BEGIN
     OR p_import_plan->>'environment' IS DISTINCT FROM 'staging' THEN
     RAISE EXCEPTION 'canonical_v2_import_candidate_release is staging-only' USING ERRCODE = '42501';
   END IF;
-  IF p_import_plan->>'schema_version' IS DISTINCT FROM 'CANDIDATE_RELEASE_IMPORT_PLAN/V4'
+  IF p_import_plan->>'schema_version' NOT IN (
+      'CANDIDATE_RELEASE_IMPORT_PLAN/V4',
+      'CANDIDATE_RELEASE_IMPORT_PLAN/V5'
+    )
     OR jsonb_typeof(release_record) IS DISTINCT FROM 'object'
     OR jsonb_typeof(expected) IS DISTINCT FROM 'object'
     OR jsonb_typeof(input_authority) IS DISTINCT FROM 'object'
@@ -664,7 +673,7 @@ BEGIN
       RAISE EXCEPTION 'candidate manifest already imported under different content' USING ERRCODE = '23505';
     END IF;
     RETURN jsonb_build_object(
-      'schema_version', 'CANDIDATE_RELEASE_IMPORT_RECEIPT/V4',
+      'schema_version', receipt_schema,
       'import_state', 'IMPORTED_COMPLETE',
       'replayed', true,
       'candidate_manifest_id', manifest_id,
@@ -685,6 +694,8 @@ BEGIN
     OR jsonb_typeof(p_import_plan->'market_observations') IS DISTINCT FROM 'array'
     OR jsonb_typeof(p_import_plan->'market_exclusions') IS DISTINCT FROM 'array'
     OR jsonb_typeof(p_import_plan->'query_records') IS DISTINCT FROM 'array'
+    OR (is_v5 AND jsonb_typeof(p_import_plan->'incomplete_canonical_records') IS DISTINCT FROM 'array')
+    OR (NOT is_v5 AND p_import_plan ? 'incomplete_canonical_records')
     OR jsonb_typeof(p_import_plan->'source_specific_records') IS DISTINCT FROM 'array'
     OR jsonb_typeof(p_import_plan->'exact_detail_packages') IS DISTINCT FROM 'array'
     OR jsonb_typeof(p_import_plan->'validated_semantic_graph_records') IS DISTINCT FROM 'array'
@@ -699,6 +710,9 @@ BEGIN
       IS DISTINCT FROM (expected->>'market_exclusions')::integer
     OR jsonb_array_length(p_import_plan->'query_records')
       IS DISTINCT FROM (expected->>'query_records')::integer
+    OR (is_v5 AND jsonb_array_length(p_import_plan->'incomplete_canonical_records')
+      IS DISTINCT FROM (expected->>'incomplete_canonical_records')::integer)
+    OR (NOT is_v5 AND expected ? 'incomplete_canonical_records')
     OR jsonb_array_length(p_import_plan->'source_specific_records')
       IS DISTINCT FROM (expected->>'source_specific_records')::integer
     OR jsonb_array_length(p_import_plan->'exact_detail_packages')
@@ -719,6 +733,12 @@ BEGIN
       IS DISTINCT FROM (release_record->'canonical_payload'->'counts'->>'exclusions')::integer
     OR (expected->>'query_records')::integer
       IS DISTINCT FROM (release_record->'canonical_payload'->'counts'->>'query_records')::integer
+    OR (is_v5 AND (expected->>'incomplete_canonical_records')::integer
+      IS DISTINCT FROM (release_record->'canonical_payload'->'counts'->>'incomplete_canonical_rows')::integer)
+    OR (is_v5 AND release_record->'canonical_payload'->>'schema_version'
+      IS DISTINCT FROM 'FIXTURE_CANDIDATE_RELEASE_MANIFEST/V2')
+    OR (NOT is_v5 AND release_record->'canonical_payload'->>'schema_version'
+      IS DISTINCT FROM 'FIXTURE_CANDIDATE_RELEASE_MANIFEST/V1')
     OR (expected->>'source_specific_records')::integer
       IS DISTINCT FROM (release_record->'canonical_payload'->'counts'->>'source_specific_serving_records')::integer
     OR (expected->>'exact_detail_packages')::integer
@@ -775,6 +795,9 @@ BEGIN
       UNION ALL SELECT value FROM jsonb_array_elements(p_import_plan->'market_observations')
       UNION ALL SELECT value FROM jsonb_array_elements(p_import_plan->'market_exclusions')
       UNION ALL SELECT value FROM jsonb_array_elements(p_import_plan->'query_records')
+      UNION ALL SELECT value FROM jsonb_array_elements(
+        coalesce(p_import_plan->'incomplete_canonical_records', '[]'::jsonb)
+      )
       UNION ALL SELECT value FROM jsonb_array_elements(p_import_plan->'source_specific_records')
       UNION ALL SELECT value FROM jsonb_array_elements(p_import_plan->'exact_detail_packages')
       UNION ALL SELECT value FROM jsonb_array_elements(p_import_plan->'validated_semantic_graph_records')
@@ -793,6 +816,74 @@ BEGIN
     FROM jsonb_array_elements(p_import_plan->'market_exclusions') item
   ) THEN
     RAISE EXCEPTION 'candidate release metric slot has both observation and exclusion' USING ERRCODE = '23505';
+  END IF;
+  IF is_v5 AND (
+    EXISTS (
+      SELECT 1
+      FROM jsonb_array_elements(p_import_plan->'incomplete_canonical_records') item
+      WHERE item->'canonical_payload'->>'row_kind' IS DISTINCT FROM 'INCOMPLETE_CANONICAL_RESULT'
+        OR item->>'row_serving_key'
+          IS DISTINCT FROM item->'canonical_payload'->>'row_serving_key'
+        OR item->>'canonical_payload_digest'
+          IS DISTINCT FROM item->'canonical_payload'->>'canonical_payload_digest'
+        OR item->'canonical_payload' ? 'canonical_result'
+        OR item->'canonical_payload' ? 'reviewed_source_specific'
+        OR item->'canonical_payload'->'incomplete_canonical_result'->>'market_comparability'
+          IS DISTINCT FROM 'NOT_CERTIFIED'
+        OR item->>'metric_key' IS DISTINCT FROM
+          item->'canonical_payload'->'incomplete_canonical_result'->'metric_exclusion'->>'metric_key'
+        OR (item->>'metric_version')::integer IS DISTINCT FROM
+          (item->'canonical_payload'->'incomplete_canonical_result'->'metric_exclusion'->>'metric_version')::integer
+        OR item->'canonical_payload'->'incomplete_canonical_result'->'metric_exclusion'->>'cohort_membership'
+          IS DISTINCT FROM 'NO_COHORT_MEMBERSHIP'
+        OR item->'canonical_payload'->'incomplete_canonical_result'->'metric_exclusion'->>'aggregate_authority'
+          IS DISTINCT FROM 'NO_AGGREGATE_AUTHORITY'
+        OR item->'canonical_payload'->'incomplete_canonical_result' ? 'market_context'
+        OR NOT EXISTS (
+          SELECT 1
+          FROM jsonb_array_elements(p_import_plan->'market_exclusions') exclusion
+          WHERE exclusion->>'governed_deal_key' = item->>'governed_deal_key'
+            AND exclusion->>'deal_admission_id'
+              = item->'canonical_payload'->>'deal_admission_id'
+            AND exclusion->>'concept_key' = item->>'concept_key'
+            AND exclusion->>'metric_key' = item->>'metric_key'
+            AND (exclusion->>'metric_version')::integer = (item->>'metric_version')::integer
+            AND exclusion->>'party_role' = item->>'party_role'
+            AND exclusion->>'party_value' = item->>'party_value'
+            AND exclusion->>'party_capacity' = item->>'party_capacity'
+            AND exclusion->>'basis_key' = item->>'basis_key'
+            AND exclusion->>'comparability_state' = 'NOT_CERTIFIED'
+        )
+        OR EXISTS (
+          SELECT 1
+          FROM jsonb_array_elements(p_import_plan->'market_observations') observation
+          WHERE observation->>'governed_deal_key' = item->>'governed_deal_key'
+            AND observation->>'concept_key' = item->>'concept_key'
+            AND observation->>'metric_key' = item->>'metric_key'
+            AND (observation->>'metric_version')::integer = (item->>'metric_version')::integer
+            AND observation->>'party_role' = item->>'party_role'
+            AND observation->>'party_value' = item->>'party_value'
+            AND observation->>'party_capacity' = item->>'party_capacity'
+            AND observation->>'basis_key' = item->>'basis_key'
+        )
+    )
+    OR EXISTS (
+      SELECT item->>'row_serving_key'
+      FROM jsonb_array_elements(p_import_plan->'incomplete_canonical_records') item
+      INTERSECT
+      SELECT item->>'row_serving_key'
+      FROM jsonb_array_elements(p_import_plan->'query_records') item
+    )
+    OR EXISTS (
+      SELECT item->>'row_serving_key'
+      FROM jsonb_array_elements(p_import_plan->'incomplete_canonical_records') item
+      INTERSECT
+      SELECT item->>'row_serving_key'
+      FROM jsonb_array_elements(p_import_plan->'source_specific_records') item
+    )
+  ) THEN
+    RAISE EXCEPTION 'incomplete canonical records cannot receive market cohort access'
+      USING ERRCODE = '23514';
   END IF;
   IF EXISTS (
     SELECT 1
@@ -858,6 +949,9 @@ BEGIN
       IS DISTINCT FROM (expected->>'market_exclusions')::integer
     OR (SELECT count(DISTINCT item->>'row_serving_key') FROM jsonb_array_elements(p_import_plan->'query_records') item)
       IS DISTINCT FROM (expected->>'query_records')::integer
+    OR (is_v5 AND (SELECT count(DISTINCT item->>'row_serving_key')
+      FROM jsonb_array_elements(p_import_plan->'incomplete_canonical_records') item)
+      IS DISTINCT FROM (expected->>'incomplete_canonical_records')::integer)
     OR (SELECT count(DISTINCT item->>'row_serving_key') FROM jsonb_array_elements(p_import_plan->'source_specific_records') item)
       IS DISTINCT FROM (expected->>'source_specific_records')::integer
     OR (SELECT count(DISTINCT item->>'row_serving_key') FROM jsonb_array_elements(p_import_plan->'exact_detail_packages') item)
@@ -929,6 +1023,14 @@ BEGIN
     WHERE existing.canonical_payload_digest IS DISTINCT FROM item->>'canonical_payload_digest'
   ) OR EXISTS (
     SELECT 1
+    FROM jsonb_array_elements(coalesce(p_import_plan->'incomplete_canonical_records', '[]'::jsonb)) item
+    JOIN canonical_v2_staging.shared_serving_rows existing
+      ON existing.serving_namespace_id = namespace_id
+      AND existing.corpus_release_id = release_id
+      AND existing.row_serving_key = item->>'row_serving_key'
+    WHERE existing.canonical_payload_digest IS DISTINCT FROM item->>'canonical_payload_digest'
+  ) OR EXISTS (
+    SELECT 1
     FROM jsonb_array_elements(p_import_plan->'source_specific_records') item
     JOIN canonical_v2_staging.reviewed_source_specific_serving_rows existing
       ON existing.serving_namespace_id = namespace_id
@@ -988,6 +1090,11 @@ BEGIN
     NULL::canonical_v2_staging.shared_serving_rows,
     p_import_plan->'query_records'
   ) ON CONFLICT (serving_namespace_id, corpus_release_id, row_serving_key) DO NOTHING;
+  INSERT INTO canonical_v2_staging.shared_serving_rows
+  SELECT * FROM jsonb_populate_recordset(
+    NULL::canonical_v2_staging.shared_serving_rows,
+    coalesce(p_import_plan->'incomplete_canonical_records', '[]'::jsonb)
+  ) ON CONFLICT (serving_namespace_id, corpus_release_id, row_serving_key) DO NOTHING;
   INSERT INTO canonical_v2_staging.reviewed_source_specific_serving_rows
   SELECT * FROM jsonb_populate_recordset(
     NULL::canonical_v2_staging.reviewed_source_specific_serving_rows,
@@ -1022,6 +1129,7 @@ BEGIN
     OR (SELECT count(*) FROM canonical_v2_staging.shared_serving_rows row
       WHERE row.serving_namespace_id = namespace_id AND row.corpus_release_id = release_id)
       IS DISTINCT FROM (expected->>'query_records')::integer
+        + coalesce((expected->>'incomplete_canonical_records')::integer, 0)
     OR (SELECT count(*) FROM canonical_v2_staging.reviewed_source_specific_serving_rows row
       WHERE row.serving_namespace_id = namespace_id AND row.corpus_release_id = release_id)
       IS DISTINCT FROM (expected->>'source_specific_records')::integer
@@ -1066,7 +1174,7 @@ BEGIN
   RETURNING imported_at INTO imported_at_value;
 
   RETURN jsonb_build_object(
-    'schema_version', 'CANDIDATE_RELEASE_IMPORT_RECEIPT/V4',
+    'schema_version', receipt_schema,
     'import_state', 'IMPORTED_COMPLETE',
     'replayed', false,
     'candidate_manifest_id', manifest_id,
@@ -1100,6 +1208,8 @@ DECLARE
   active_pointer_id_before text;
   active_pointer_id_after text;
   deleted_count integer;
+  deleted_query_count integer;
+  deleted_incomplete_count integer;
   deleted_counts jsonb := '{}'::jsonb;
   rolled_back_at_value timestamptz := transaction_timestamp();
 BEGIN
@@ -1194,11 +1304,31 @@ BEGIN
   GET DIAGNOSTICS deleted_count = ROW_COUNT;
   deleted_counts := deleted_counts || jsonb_build_object('market_exclusions', deleted_count);
 
+  SELECT
+    count(*) FILTER (WHERE row.canonical_payload->>'row_kind' = 'CANONICAL_RESULT'),
+    count(*) FILTER (WHERE row.canonical_payload->>'row_kind' = 'INCOMPLETE_CANONICAL_RESULT')
+  INTO deleted_query_count, deleted_incomplete_count
+  FROM canonical_v2_staging.shared_serving_rows row
+  WHERE row.serving_namespace_id = p_serving_namespace_id
+    AND row.corpus_release_id = p_corpus_release_id;
+
   DELETE FROM canonical_v2_staging.shared_serving_rows row
   WHERE row.serving_namespace_id = p_serving_namespace_id
     AND row.corpus_release_id = p_corpus_release_id;
   GET DIAGNOSTICS deleted_count = ROW_COUNT;
-  deleted_counts := deleted_counts || jsonb_build_object('query_records', deleted_count);
+  IF deleted_count IS DISTINCT FROM deleted_query_count + deleted_incomplete_count THEN
+    RAISE EXCEPTION 'inactive candidate rollback found an unknown shared-row variant'
+      USING ERRCODE = '23514';
+  END IF;
+  deleted_counts := deleted_counts || jsonb_build_object('query_records', deleted_query_count);
+  IF expected ? 'incomplete_canonical_records' THEN
+    deleted_counts := deleted_counts || jsonb_build_object(
+      'incomplete_canonical_records', deleted_incomplete_count
+    );
+  ELSIF deleted_incomplete_count <> 0 THEN
+    RAISE EXCEPTION 'legacy candidate rollback found incomplete canonical rows'
+      USING ERRCODE = '23514';
+  END IF;
 
   DELETE FROM canonical_v2_staging.reviewed_source_specific_serving_rows row
   WHERE row.serving_namespace_id = p_serving_namespace_id
@@ -1244,6 +1374,9 @@ BEGIN
       IS DISTINCT FROM (expected->>'market_exclusions')::integer
     OR (deleted_counts->>'query_records')::integer
       IS DISTINCT FROM (expected->>'query_records')::integer
+    OR (expected ? 'incomplete_canonical_records' AND
+      (deleted_counts->>'incomplete_canonical_records')::integer
+        IS DISTINCT FROM (expected->>'incomplete_canonical_records')::integer)
     OR (deleted_counts->>'source_specific_records')::integer
       IS DISTINCT FROM (expected->>'source_specific_records')::integer
     OR (deleted_counts->>'exact_detail_packages')::integer
@@ -1832,6 +1965,7 @@ BEGIN
     WHERE row.serving_namespace_id = p_serving_namespace_id
       AND row.corpus_release_id = p_corpus_release_id
       AND row.contract_fingerprint = p_contract_fingerprint
+      AND row.canonical_payload->>'row_kind' = 'CANONICAL_RESULT'
       AND row.metric_key = p_metric_key
       AND row.metric_version = p_metric_version
       AND row.concept_key = p_concept_key

@@ -33,7 +33,7 @@ test('the shared row matrix is closed while certified canonical and source-speci
     'REVIEWED_SOURCE_SPECIFIC',
   ]);
   assert.equal(SHARED_ROW_VARIANTS.CANONICAL_RESULT.producer_status, 'IMPLEMENTED_FIXTURE');
-  assert.equal(SHARED_ROW_VARIANTS.INCOMPLETE_CANONICAL_RESULT.producer_status, 'NOT_IMPLEMENTED');
+  assert.equal(SHARED_ROW_VARIANTS.INCOMPLETE_CANONICAL_RESULT.producer_status, 'IMPLEMENTED_FIXTURE');
   assert.equal(SHARED_ROW_VARIANTS.REVIEWED_SOURCE_SPECIFIC.producer_status, 'IMPLEMENTED_FIXTURE');
 });
 

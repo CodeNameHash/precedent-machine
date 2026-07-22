@@ -45,6 +45,54 @@ test('combined QXO rematch candidate extends the action release without mutating
   assert.match(source, /rematchServing\?\.candidate_release_members/);
 });
 
+test('combined QXO material candidate closes over both admitted sources and the exact incomplete semantic graph', () => {
+  const source = fs.readFileSync(RUNNER, 'utf8');
+  assert.match(source, /QXO_MATERIAL_SOURCE_ADMISSION_MANIFEST_IDS/);
+  assert.match(source, /DEAL_VALUE_SOURCE_ADMISSION_ID/);
+  assert.match(source, /deal_value_source/);
+  assert.match(source, /source_ordinal: 1/);
+  assert.match(source, /MATERIAL_CLOSURE_ID/);
+  assert.match(source, /assertMaterialParity/);
+  assert.match(source, /open_world_candidate_occurrences/);
+  assert.match(source, /open_world_candidate_dispositions/);
+  assert.match(source, /semantic_impact_closures/);
+  assert.match(source, /incomplete_canonical_result_rows/);
+  assert.match(source, /QXO_MATERIAL_CONTRACTS_DEAL_SCOPE_V1/);
+});
+
+test('combined QXO material mode imports the governed seed and keeps its incomplete result out of market query authority', () => {
+  const source = fs.readFileSync(RUNNER, 'utf8');
+  assert.match(source, /buildQxoMaterialCombinedCandidateSeed/);
+  assert.match(source, /qxoMaterialCombinedCandidateReleaseId/);
+  assert.match(source, /PROVISIONAL_CORPUS_RELEASE_ID/);
+  assert.match(source, /PROVISIONAL_CORPUS_RELEASE_SEED_DIGEST/);
+  assert.match(source, /6e12a944361efe8c487e735c47cf6e9a9b25e98a49b85e31d7c80ba3fd05a78d/);
+  assert.match(source, /c4ffea588143bc28d079fb1aa7d0226259ab38f2011f2c3a9ea8436174173499/);
+  assert.match(source, /materialSlice\.candidate_release_member/);
+  assert.match(source, /release\.market_observations\.length !== 8/);
+  assert.match(source, /release\.market_exclusions\.length !== 2/);
+  assert.match(source, /release\.shared_rows\.length !== 9/);
+  assert.match(source, /release\.incomplete_canonical_rows\?\.length !== 1/);
+  assert.match(source, /release\.query_records\.length !== 8/);
+  assert.match(source, /release\.exact_detail_packages\.length !== 9/);
+  assert.match(source, /material_market_observations/);
+  assert.match(source, /material_market_exclusions/);
+  assert.match(source, /material_query_records/);
+  assert.match(source, /selected_deal_shared_rows/);
+});
+
+test('combined QXO material mode supports rollback-first inactive release lifecycle without activation', () => {
+  const source = fs.readFileSync(RUNNER, 'utf8');
+  assert.match(source, /--material-dry-run/);
+  assert.match(source, /--material-import/);
+  assert.match(source, /--material-verify/);
+  assert.match(source, /--material-rehearse-rollback/);
+  assert.match(source, /QXO_MATERIAL_COMBINED_CANDIDATE_STAGING_ATTESTATION\/V1/);
+  assert.match(source, /The combined candidate identities must be pinned before staging mutation/);
+  assert.match(source, /active_pointer_unchanged: true/);
+  assert.doesNotMatch(source, /activateCandidateRelease|canonical_v2_activate/);
+});
+
 test('combined QXO action candidate is an explicit inactive mode with pinned graph parity', () => {
   const source = fs.readFileSync(RUNNER, 'utf8');
   assert.match(source, /--actions-dry-run/);
