@@ -28,10 +28,12 @@ const EXPECTED_PROJECT = Object.freeze({
 });
 const EXPECTED_CANDIDATE = Object.freeze({
   contract_fingerprint: '56da82bee06331793ba2ed8b78ef4186361407e60733595091e5951853e7d41d',
-  corpus_release_id: '1f27637eb0399f35c4e9208a6d4ff5417b8ac18f266d659e0e8bcfafd2e581dd',
-  candidate_manifest_id: '942983b4d81894efaaad6d01cb88f994224c5ddf6c0e539985151eef59cf6a00',
+  corpus_release_id: 'fda4083648dcc7fabaf5c2fe8f14a2c01486e4ca23de6305c250dda84bf2c44c',
+  candidate_manifest_id: 'c6f47aefdf8106a1d1d576b03d4f4d42d91f2b670b11bd42c99a31a97fe793bc',
+  correction_input_seal_id: '0aaf9b2198e82bba4dc45b36100bb322b1091a70634f2cac5693f536e3c8b754',
+  correction_input_root: 'b63df4508e533baff18392ac451ba05db01d4517fdd73f015dcbb2c56f5f9ab3',
   serving_namespace_id: '9270602408312e80a65c0ce46b895fa2c8f07d1c676aef5bd171029edd209b68',
-  import_plan_id: '8d65813b127cd4abc7004e9f9c6cd154c9b5f7b94abcd6adbea85d35b5340eca',
+  import_plan_id: '38da7760626b68f8fce91b06be1c431517781e6ed81b85d6334129468208efba',
 });
 const EXPECTED_COUNTS = Object.freeze({
   deal_directory_records: 2,
@@ -61,8 +63,8 @@ const EXPECTED_ACTIVE_POINTER = Object.freeze({
   serving_namespace_id: EXPECTED_CANDIDATE.serving_namespace_id,
   candidate_release_manifest_id: EXPECTED_CANDIDATE.candidate_manifest_id,
   previous_pointer_id: EXPECTED_PRIOR_POINTER.pointer_id,
-  pointer_id: '4c5919a74ec9c4c3d6e0e50e985f8f36ccfe6e8f39d47bd5d56f8f093705c6d5',
-  canonical_payload_digest: '8b7ec7f40ec0a9ad296888f3211dd0b952a280da9613d5b01e29dc07c5c6828f',
+  pointer_id: 'd4f8cd27fabbda76bbddd280bfc7a3b90d2c3bf226bb042409748dc2b8febfb2',
+  canonical_payload_digest: 'bac7da0f3fd407012d53478bd57095de8a81812fc71ba79b5dcaded474356c06',
 });
 
 function fail(message) {
@@ -94,6 +96,8 @@ function buildPinnedCandidate() {
     contract_fingerprint: fixture.release.manifest.contract_fingerprint,
     corpus_release_id: fixture.release.manifest.corpus_release_id,
     candidate_manifest_id: fixture.release.manifest.candidate_release_manifest_id,
+    correction_input_seal_id: fixture.release.manifest.correction_input_seal_id,
+    correction_input_root: fixture.release.manifest.roots.correction_input_root,
     serving_namespace_id: fixture.release.manifest.serving_namespace_id,
     import_plan_id: plan.candidate_release_import_plan_id,
   };

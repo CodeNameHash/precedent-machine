@@ -15,10 +15,12 @@ const {
 
 function buildQxoNoShopReleaseFixture({
   contractBundle = compileFixtureContract(),
-  corpusReleaseId = contentId('CORPUS_RELEASE/V1', 'qxo-reviewed-notice-fixture-candidate-contract-v4-composition-evidence'),
+  corpusReleaseId = contentId('CORPUS_RELEASE/V1', 'qxo-reviewed-notice-fixture-candidate-contract-v5-correction-input-seal'),
   servingNamespaceId = contentId('SERVING_NAMESPACE/V1', 'qxo-reviewed-notice-fixture'),
 } = {}) {
   const contract = contractBundle;
+  const expectedActiveCorrectionApplicationIds = Object.freeze([]);
+  const correctionMaterialisations = Object.freeze([]);
   const sourceText = fs.readFileSync(
     path.join(process.cwd(), '__fixtures__', 'canonical-v2', 'qxo-no-shop-reviewed-excerpts.txt'),
     'utf8',
@@ -56,6 +58,8 @@ function buildQxoNoShopReleaseFixture({
     serving_namespace_id: servingNamespaceId,
     corpus_release_id: corpusReleaseId,
     members,
+    expected_active_correction_application_ids: expectedActiveCorrectionApplicationIds,
+    correction_materialisations: correctionMaterialisations,
     deal_directory_entries: [{
       application_deal_id: '7dc3a05f-b170-4d59-a255-b7103cca16e1',
       governed_deal_key: 'deal:qxo-topbuild',
@@ -71,6 +75,8 @@ function buildQxoNoShopReleaseFixture({
     members: Object.freeze(members),
     sourceSpecificMembers: Object.freeze([]),
     validatedSemanticGraphs: Object.freeze([]),
+    expectedActiveCorrectionApplicationIds,
+    correctionMaterialisations,
     dealDirectoryEntries: Object.freeze([{
       application_deal_id: '7dc3a05f-b170-4d59-a255-b7103cca16e1',
       governed_deal_key: 'deal:qxo-topbuild',

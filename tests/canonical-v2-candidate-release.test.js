@@ -35,6 +35,8 @@ test('twelve comparable results and one reviewed source-specific proposition fre
     exact_detail_packages: 13,
     query_records: 12,
     validated_semantic_graphs: 1,
+    correction_applications: 0,
+    correction_discharges: 0,
     unresolved: 0,
     failed: 0,
     duplicates: 0,
@@ -67,7 +69,10 @@ test('twelve comparable results and one reviewed source-specific proposition fre
     first.release.validated_semantic_graphs[0].validated_semantic_graph_id,
     first.sourceSpecific.validatedSemanticGraph.validated_semantic_graph_id,
   );
-  assert.equal(new Set(Object.values(first.release.manifest.roots)).size, 9);
+  assert.equal(new Set(Object.values(first.release.manifest.roots)).size, 10);
+  assert.match(first.release.manifest.correction_input_seal_id, /^[a-f0-9]{64}$/);
+  assert.equal(first.release.candidate_correction_input_seal.counts.expected_active_applications, 0);
+  assert.match(first.release.manifest.roots.correction_input_root, /^[a-f0-9]{64}$/);
 });
 
 test('candidate release carries raw and normalised money with exact legal query dimensions', () => {
@@ -94,10 +99,19 @@ test('candidate release carries raw and normalised money with exact legal query 
 
 test('duplicate, mismatched, unresolved or source-less members block the whole candidate release', () => {
   const fixture = buildLandosCandidateReleaseFixture();
+  assert.throws(() => buildFixtureCandidateRelease({
+    contract_bundle: fixture.contract,
+    serving_namespace_id: fixture.servingNamespaceId,
+    corpus_release_id: fixture.corpusReleaseId,
+    members: fixture.members,
+    deal_directory_entries: fixture.dealDirectoryEntries,
+  }), /expected_active_correction_application_ids is mandatory/);
   const args = {
     contract_bundle: fixture.contract,
     serving_namespace_id: fixture.servingNamespaceId,
     corpus_release_id: fixture.corpusReleaseId,
+    expected_active_correction_application_ids: fixture.expectedActiveCorrectionApplicationIds,
+    correction_materialisations: fixture.correctionMaterialisations,
   };
   assert.throws(
     () => buildFixtureCandidateRelease({ ...args, members: [...fixture.members, fixture.members[0]] }),
@@ -178,6 +192,8 @@ test('candidate release rejects graphs outside its admitted source and deal inve
       fixture.sourceSpecific.validatedSemanticGraph,
       fixture.sourceSpecific.validatedSemanticGraph,
     ],
+    expected_active_correction_application_ids: fixture.expectedActiveCorrectionApplicationIds,
+    correction_materialisations: fixture.correctionMaterialisations,
     deal_directory_entries: fixture.dealDirectoryEntries,
   }), /duplicate validated semantic graph/);
 
@@ -192,6 +208,8 @@ test('candidate release rejects graphs outside its admitted source and deal inve
     corpus_release_id: fixture.corpusReleaseId,
     members: qxo.members,
     validated_semantic_graphs: [fixture.sourceSpecific.validatedSemanticGraph],
+    expected_active_correction_application_ids: qxo.expectedActiveCorrectionApplicationIds,
+    correction_materialisations: qxo.correctionMaterialisations,
     deal_directory_entries: qxo.dealDirectoryEntries,
   }), /no admitted release source lineage/);
 });

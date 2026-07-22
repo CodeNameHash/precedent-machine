@@ -89,8 +89,17 @@ test('Review API adapts all valid rows and isolates one malformed sibling', asyn
 
 test('exact-detail API returns the selected response body, not the unbounded source graph', async () => {
   const fixture = buildLandosCandidateReleaseFixture();
-  const detailPackage = fixture.release.exact_detail_packages[0];
-  const reference = detailPackage.references[0];
+  const detailPackage = fixture.release.exact_detail_packages.find((candidate) => (
+    candidate.detail_payloads.some((payload) => (
+      payload.response_body.excerpt?.exact_text || payload.response_body.exact_excerpts?.length
+    ))
+  ));
+  const selectedPayload = detailPackage.detail_payloads.find((payload) => (
+    payload.response_body.excerpt?.exact_text || payload.response_body.exact_excerpts?.length
+  ));
+  const reference = detailPackage.references.find((candidate) => (
+    candidate.source_detail_payload_id === selectedPayload.source_detail_payload_id
+  ));
   const directory = fixture.release.deal_directory_records[0];
   const result = {
     schema_version: 'SERVING_EXACT_DETAIL_RESULT/V1',

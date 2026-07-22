@@ -11,7 +11,7 @@ const APPLICATION_DEALS = Object.freeze({
 
 function buildMultiDealCandidateReleaseFixture() {
   const contract = compileFixtureContract();
-  const corpusReleaseId = contentId('CORPUS_RELEASE/V1', 'qxo-landos-shared-fixture-candidate-contract-v4-composition-evidence');
+  const corpusReleaseId = contentId('CORPUS_RELEASE/V1', 'qxo-landos-shared-fixture-candidate-contract-v5-correction-input-seal');
   const servingNamespaceId = contentId('SERVING_NAMESPACE/V1', 'qxo-landos-shared-fixture');
   const fixtureOptions = { contractBundle: contract, corpusReleaseId, servingNamespaceId };
   const landos = buildLandosCandidateReleaseFixture(fixtureOptions);
@@ -28,6 +28,14 @@ function buildMultiDealCandidateReleaseFixture() {
   const validatedSemanticGraphs = Object.freeze([
     ...landos.validatedSemanticGraphs,
   ]);
+  const expectedActiveCorrectionApplicationIds = Object.freeze([
+    ...landos.expectedActiveCorrectionApplicationIds,
+    ...qxo.expectedActiveCorrectionApplicationIds,
+  ]);
+  const correctionMaterialisations = Object.freeze([
+    ...landos.correctionMaterialisations,
+    ...qxo.correctionMaterialisations,
+  ]);
 
   if (members.length !== 14 || sourceSpecificMembers.length !== 1 || dealDirectoryEntries.length !== 2) {
     throw new TypeError('multi-deal fixture inventory has drifted outside its bounded contract');
@@ -40,6 +48,8 @@ function buildMultiDealCandidateReleaseFixture() {
     members,
     source_specific_members: sourceSpecificMembers,
     validated_semantic_graphs: validatedSemanticGraphs,
+    expected_active_correction_application_ids: expectedActiveCorrectionApplicationIds,
+    correction_materialisations: correctionMaterialisations,
     deal_directory_entries: dealDirectoryEntries,
   });
 
@@ -52,6 +62,8 @@ function buildMultiDealCandidateReleaseFixture() {
     members,
     sourceSpecificMembers,
     validatedSemanticGraphs,
+    expectedActiveCorrectionApplicationIds,
+    correctionMaterialisations,
     dealDirectoryEntries,
     release,
   });

@@ -242,12 +242,30 @@ test('one corrected no-shop claim closes from admitted source through writer, re
     serving_namespace_id: servingNamespaceId,
     corpus_release_id: corpusReleaseId,
     members,
+    expected_active_correction_application_ids: [correctionOutput.application.correction_application_id],
+    correction_materialisations: [{ correction_output: correctionOutput }],
     deal_directory_entries: [
       { application_deal_id: LANDOS_APPLICATION_DEAL_ID, governed_deal_key: LANDOS_DEAL_KEY },
       { application_deal_id: QXO_APPLICATION_DEAL_ID, governed_deal_key: 'deal:qxo-topbuild' },
     ],
   });
   assert.equal(validateCandidateReleaseBundle(release), true);
+  assert.equal(
+    release.manifest.correction_input_seal_id,
+    release.candidate_correction_input_seal.candidate_correction_input_seal_id,
+  );
+  assert.equal(release.candidate_correction_input_seal.status, 'PASS');
+  assert.equal(release.correction_discharges.length, 1);
+  assert.deepEqual(
+    release.correction_discharges[0].ordered_consistency_output_refs.map((ref) => ref.logical_type).sort(),
+    [
+      'EXACT_DETAIL_PACKAGE',
+      'MARKET_OBSERVATION',
+      'QUERY_PROJECTION_RECORD',
+      'RESULT_COMPONENT_REVISION',
+      'SHARED_SERVING_ROW',
+    ],
+  );
   assert.deepEqual(release.manifest.counts, {
     deals: 2,
     deal_directory_records: 2,
@@ -260,6 +278,8 @@ test('one corrected no-shop claim closes from admitted source through writer, re
     exact_detail_packages: 2,
     query_records: 2,
     validated_semantic_graphs: 0,
+    correction_applications: 1,
+    correction_discharges: 1,
     unresolved: 0,
     failed: 0,
     duplicates: 0,
@@ -362,9 +382,24 @@ test('one corrected no-shop claim closes from admitted source through writer, re
   assert.equal(queriedLandosRow.cells.duration.canonical_value, '1');
   assert.equal(queriedLandosRow.cells.duration.raw_unit, 'HOURS');
 
-  const releasedBytes = canonicalJson(release);
-  assert.equal(releasedBytes.includes(successorClaim.claim_revision_id), true);
-  assert.equal(releasedBytes.includes(predecessorClaim.claim_revision_id), false);
+  const servingBytes = canonicalJson({
+    market_observations: release.market_observations,
+    shared_rows: release.shared_rows,
+    query_records: release.query_records,
+    exact_detail_packages: release.exact_detail_packages,
+  });
+  assert.equal(servingBytes.includes(successorClaim.claim_revision_id), true);
+  assert.equal(servingBytes.includes(predecessorClaim.claim_revision_id), false);
+
+  const fabricatedReleasedDetail = structuredClone(release);
+  const releasedDetail = fabricatedReleasedDetail.exact_detail_packages.find(
+    (detailPackage) => detailPackage.row.governed_deal_key === LANDOS_DEAL_KEY,
+  );
+  releasedDetail.detail_payloads[0].response_body.raw_value = 'fabricated';
+  assert.throws(
+    () => validateCandidateReleaseBundle(fabricatedReleasedDetail),
+    /bind the corrected result, row and exact detail/,
+  );
 
   const driftedProposalBatch = structuredClone(proposalBatch);
   driftedProposalBatch.proposals[0].evidence_anchor.absolute_end -= 1;
@@ -382,9 +417,92 @@ test('one corrected no-shop claim closes from admitted source through writer, re
     serving_namespace_id: servingNamespaceId,
     corpus_release_id: corpusReleaseId,
     members: [staleMember, members[1]],
+    expected_active_correction_application_ids: [correctionOutput.application.correction_application_id],
+    correction_materialisations: [{ correction_output: correctionOutput }],
     deal_directory_entries: [
       { application_deal_id: LANDOS_APPLICATION_DEAL_ID, governed_deal_key: LANDOS_DEAL_KEY },
       { application_deal_id: QXO_APPLICATION_DEAL_ID, governed_deal_key: 'deal:qxo-topbuild' },
     ],
-  }), /does not close over its market observation|not the same release member|not a closed atomic graph/);
+  }), /does not close over its market observation|semantics do not match|not the same release member|not a closed atomic graph/);
+
+  assert.throws(() => buildFixtureCandidateRelease({
+    contract_bundle: contract,
+    serving_namespace_id: servingNamespaceId,
+    corpus_release_id: corpusReleaseId,
+    members,
+    expected_active_correction_application_ids: [correctionOutput.application.correction_application_id],
+    correction_materialisations: [],
+    deal_directory_entries: [
+      { application_deal_id: LANDOS_APPLICATION_DEAL_ID, governed_deal_key: LANDOS_DEAL_KEY },
+      { application_deal_id: QXO_APPLICATION_DEAL_ID, governed_deal_key: 'deal:qxo-topbuild' },
+    ],
+  }), /Correction materialisations do not equal the expected active application set/);
+
+  const predecessorProjectionMember = structuredClone(members[0]);
+  predecessorProjectionMember.projection_output = predecessorResult.projection;
+  assert.throws(() => buildFixtureCandidateRelease({
+    contract_bundle: contract,
+    serving_namespace_id: servingNamespaceId,
+    corpus_release_id: corpusReleaseId,
+    members: [predecessorProjectionMember, members[1]],
+    expected_active_correction_application_ids: [correctionOutput.application.correction_application_id],
+    correction_materialisations: [{ correction_output: correctionOutput }],
+    deal_directory_entries: [
+      { application_deal_id: LANDOS_APPLICATION_DEAL_ID, governed_deal_key: LANDOS_DEAL_KEY },
+      { application_deal_id: QXO_APPLICATION_DEAL_ID, governed_deal_key: 'deal:qxo-topbuild' },
+    ],
+  }), /observation does not select exactly one successor|semantics do not match/);
+
+  const semanticallyStaleObservationMember = structuredClone(members[0]);
+  const semanticallyStaleObservation = semanticallyStaleObservationMember.projection_output.observation;
+  semanticallyStaleObservation.canonical_value = '2';
+  const {
+    market_observation_serving_key: ignoredServingKey,
+    canonical_payload_digest: ignoredPayloadDigest,
+    ...semanticallyStaleObservationBody
+  } = semanticallyStaleObservation;
+  semanticallyStaleObservation.canonical_payload_digest = contentId(
+    'MARKET_OBSERVATION_PAYLOAD/V1',
+    semanticallyStaleObservationBody,
+  );
+  assert.throws(() => buildFixtureCandidateRelease({
+    contract_bundle: contract,
+    serving_namespace_id: servingNamespaceId,
+    corpus_release_id: corpusReleaseId,
+    members: [semanticallyStaleObservationMember, members[1]],
+    expected_active_correction_application_ids: [correctionOutput.application.correction_application_id],
+    correction_materialisations: [{ correction_output: correctionOutput }],
+    deal_directory_entries: [
+      { application_deal_id: LANDOS_APPLICATION_DEAL_ID, governed_deal_key: LANDOS_DEAL_KEY },
+      { application_deal_id: QXO_APPLICATION_DEAL_ID, governed_deal_key: 'deal:qxo-topbuild' },
+    ],
+  }), /market observation semantics do not match the canonical result row/);
+
+  assert.throws(() => buildFixtureCandidateRelease({
+    contract_bundle: contract,
+    serving_namespace_id: servingNamespaceId,
+    corpus_release_id: corpusReleaseId,
+    members: [members[0], members[0], members[1]],
+    expected_active_correction_application_ids: [correctionOutput.application.correction_application_id],
+    correction_materialisations: [{ correction_output: correctionOutput }],
+    deal_directory_entries: [
+      { application_deal_id: LANDOS_APPLICATION_DEAL_ID, governed_deal_key: LANDOS_DEAL_KEY },
+      { application_deal_id: QXO_APPLICATION_DEAL_ID, governed_deal_key: 'deal:qxo-topbuild' },
+    ],
+  }), /duplicate market metric slot|successor is omitted, duplicated/);
+
+  const fabricatedDetailMember = structuredClone(members[0]);
+  fabricatedDetailMember.exact_detail.package.detail_payloads[0].response_body.raw_value = 'fabricated';
+  assert.throws(() => buildFixtureCandidateRelease({
+    contract_bundle: contract,
+    serving_namespace_id: servingNamespaceId,
+    corpus_release_id: corpusReleaseId,
+    members: [fabricatedDetailMember, members[1]],
+    expected_active_correction_application_ids: [correctionOutput.application.correction_application_id],
+    correction_materialisations: [{ correction_output: correctionOutput }],
+    deal_directory_entries: [
+      { application_deal_id: LANDOS_APPLICATION_DEAL_ID, governed_deal_key: LANDOS_DEAL_KEY },
+      { application_deal_id: QXO_APPLICATION_DEAL_ID, governed_deal_key: 'deal:qxo-topbuild' },
+    ],
+  }), /closed atomic graph|payload|exact-detail/i);
 });

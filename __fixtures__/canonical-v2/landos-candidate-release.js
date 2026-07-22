@@ -10,7 +10,7 @@ const { compileFixtureContract } = require('../../lib/canonical-v2/contract-bund
 
 function buildLandosCandidateReleaseFixture({
   contractBundle = compileFixtureContract(),
-  corpusReleaseId = contentId('CORPUS_RELEASE/V1', 'landos-reviewed-fixture-candidate-contract-v4-composition-evidence'),
+  corpusReleaseId = contentId('CORPUS_RELEASE/V1', 'landos-reviewed-fixture-candidate-contract-v5-correction-input-seal'),
   servingNamespaceId = contentId('SERVING_NAMESPACE/V1', 'landos-reviewed-fixture'),
 } = {}) {
   const fixtureOptions = { contractBundle, corpusReleaseId };
@@ -22,6 +22,8 @@ function buildLandosCandidateReleaseFixture({
   const sourceSpecific = buildLandosSourceSpecificServingFixture(fixtureOptions);
   const validatedSemanticGraphs = Object.freeze([sourceSpecific.validatedSemanticGraph]);
   const contract = contractBundle;
+  const expectedActiveCorrectionApplicationIds = Object.freeze([]);
+  const correctionMaterialisations = Object.freeze([]);
   const members = [
     {
       projection_output: reviewed.projection,
@@ -103,6 +105,8 @@ function buildLandosCandidateReleaseFixture({
       },
     }],
     validated_semantic_graphs: validatedSemanticGraphs,
+    expected_active_correction_application_ids: expectedActiveCorrectionApplicationIds,
+    correction_materialisations: correctionMaterialisations,
     deal_directory_entries: [{
       application_deal_id: 'c34415ed-44f7-432f-8d7c-6464b0310239',
       governed_deal_key: 'deal:landos-abbvie',
@@ -129,6 +133,8 @@ function buildLandosCandidateReleaseFixture({
       },
     }]),
     validatedSemanticGraphs,
+    expectedActiveCorrectionApplicationIds,
+    correctionMaterialisations,
     dealDirectoryEntries: Object.freeze([{
       application_deal_id: 'c34415ed-44f7-432f-8d7c-6464b0310239',
       governed_deal_key: 'deal:landos-abbvie',
