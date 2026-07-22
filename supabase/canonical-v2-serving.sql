@@ -136,6 +136,25 @@ CREATE TABLE IF NOT EXISTS canonical_v2_staging.shared_serving_rows (
   PRIMARY KEY (serving_namespace_id, corpus_release_id, row_serving_key)
 );
 
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.reviewed_source_specific_serving_rows (
+  serving_namespace_id text NOT NULL CHECK (serving_namespace_id ~ '^[a-f0-9]{64}$'),
+  corpus_release_id text NOT NULL REFERENCES canonical_v2_staging.fixture_corpus_releases(corpus_release_id),
+  reviewed_source_specific_serving_key text NOT NULL CHECK (reviewed_source_specific_serving_key ~ '^[a-f0-9]{64}$'),
+  row_serving_key text NOT NULL CHECK (row_serving_key ~ '^[a-f0-9]{64}$'),
+  contract_fingerprint text NOT NULL CHECK (contract_fingerprint ~ '^[a-f0-9]{64}$'),
+  governed_deal_key text NOT NULL,
+  open_world_candidate_occurrence_id text NOT NULL CHECK (open_world_candidate_occurrence_id ~ '^[a-f0-9]{64}$'),
+  final_disposition_id text NOT NULL CHECK (final_disposition_id ~ '^[a-f0-9]{64}$'),
+  disposition_code text NOT NULL CHECK (disposition_code = 'REVIEWED_SOURCE_SPECIFIC'),
+  market_cohort_eligible boolean NOT NULL CHECK (market_cohort_eligible = false),
+  aggregate_authority text NOT NULL CHECK (aggregate_authority = 'NO_AGGREGATE_AUTHORITY'),
+  canonical_payload jsonb NOT NULL,
+  canonical_payload_digest text NOT NULL CHECK (canonical_payload_digest ~ '^[a-f0-9]{64}$'),
+  PRIMARY KEY (serving_namespace_id, corpus_release_id, row_serving_key),
+  UNIQUE (serving_namespace_id, corpus_release_id, reviewed_source_specific_serving_key),
+  UNIQUE (serving_namespace_id, corpus_release_id, open_world_candidate_occurrence_id)
+);
+
 CREATE INDEX IF NOT EXISTS canonical_v2_market_observation_cohort_idx
   ON canonical_v2_staging.market_observations (
     serving_namespace_id,
@@ -214,6 +233,14 @@ CREATE INDEX IF NOT EXISTS canonical_v2_shared_rows_lawyers_idx
   ON canonical_v2_staging.shared_serving_rows USING gin (lawyers);
 CREATE INDEX IF NOT EXISTS canonical_v2_shared_rows_triggers_idx
   ON canonical_v2_staging.shared_serving_rows USING gin (trigger_codes);
+CREATE INDEX IF NOT EXISTS canonical_v2_reviewed_source_specific_deal_idx
+  ON canonical_v2_staging.reviewed_source_specific_serving_rows (
+    serving_namespace_id,
+    corpus_release_id,
+    contract_fingerprint,
+    governed_deal_key,
+    row_serving_key
+  );
 
 CREATE OR REPLACE FUNCTION canonical_v2_staging.enforce_market_metric_slot_partition()
 RETURNS trigger
@@ -264,6 +291,7 @@ ALTER TABLE canonical_v2_staging.fixture_corpus_releases ENABLE ROW LEVEL SECURI
 ALTER TABLE canonical_v2_staging.market_observations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.market_metric_slot_exclusions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.shared_serving_rows ENABLE ROW LEVEL SECURITY;
+ALTER TABLE canonical_v2_staging.reviewed_source_specific_serving_rows ENABLE ROW LEVEL SECURITY;
 
 CREATE OR REPLACE FUNCTION public.canonical_v2_market_cohort(
   p_environment text,
@@ -658,6 +686,103 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION public.canonical_v2_reviewed_deal_context(
+  p_environment text,
+  p_serving_namespace_id text,
+  p_corpus_release_id text,
+  p_contract_fingerprint text,
+  p_request_digest text,
+  p_governed_deal_key text,
+  p_page_size integer DEFAULT 25,
+  p_after_row_serving_key text DEFAULT NULL
+)
+RETURNS jsonb
+LANGUAGE plpgsql
+STABLE
+SECURITY DEFINER
+SET search_path = pg_catalog, canonical_v2_staging
+SET statement_timeout = '2500ms'
+AS $$
+DECLARE
+  result jsonb;
+BEGIN
+  IF current_setting('app.canonical_v2_environment', true) IS DISTINCT FROM 'staging'
+    OR p_environment IS DISTINCT FROM 'staging' THEN
+    RAISE EXCEPTION 'canonical_v2_reviewed_deal_context is staging-only' USING ERRCODE = '42501';
+  END IF;
+  IF p_serving_namespace_id !~ '^[a-f0-9]{64}$'
+    OR p_corpus_release_id !~ '^[a-f0-9]{64}$'
+    OR p_contract_fingerprint !~ '^[a-f0-9]{64}$'
+    OR p_request_digest !~ '^[a-f0-9]{64}$'
+    OR coalesce(length(trim(p_governed_deal_key)), 0) = 0
+    OR p_page_size < 1
+    OR p_page_size > 50
+    OR (p_after_row_serving_key IS NOT NULL AND p_after_row_serving_key !~ '^[a-f0-9]{64}$') THEN
+    RAISE EXCEPTION 'invalid reviewed-deal context request' USING ERRCODE = '22023';
+  END IF;
+  IF NOT EXISTS (
+    SELECT 1
+    FROM canonical_v2_staging.fixture_corpus_releases release
+    WHERE release.corpus_release_id = p_corpus_release_id
+      AND release.contract_fingerprint = p_contract_fingerprint
+  ) THEN
+    RAISE EXCEPTION 'unknown fixture corpus release' USING ERRCODE = '22023';
+  END IF;
+
+  WITH matching_rows AS MATERIALIZED (
+    SELECT row.row_serving_key, row.canonical_payload
+    FROM canonical_v2_staging.reviewed_source_specific_serving_rows row
+    WHERE row.serving_namespace_id = p_serving_namespace_id
+      AND row.corpus_release_id = p_corpus_release_id
+      AND row.contract_fingerprint = p_contract_fingerprint
+      AND row.governed_deal_key = p_governed_deal_key
+      AND row.disposition_code = 'REVIEWED_SOURCE_SPECIFIC'
+      AND row.market_cohort_eligible = false
+      AND row.aggregate_authority = 'NO_AGGREGATE_AUTHORITY'
+  ), page_candidates AS MATERIALIZED (
+    SELECT row.row_serving_key, row.canonical_payload
+    FROM matching_rows row
+    WHERE p_after_row_serving_key IS NULL OR row.row_serving_key > p_after_row_serving_key
+    ORDER BY row.row_serving_key
+    LIMIT p_page_size + 1
+  ), page_rows AS MATERIALIZED (
+    SELECT row.row_serving_key, row.canonical_payload
+    FROM page_candidates row
+    ORDER BY row.row_serving_key
+    LIMIT p_page_size
+  ), page_payload AS (
+    SELECT
+      count(*)::integer AS page_count,
+      coalesce(jsonb_agg(row.canonical_payload ORDER BY row.row_serving_key), '[]'::jsonb) AS rows
+    FROM page_rows row
+  ), last_row AS (
+    SELECT row.row_serving_key
+    FROM page_rows row
+    ORDER BY row.row_serving_key DESC
+    LIMIT 1
+  )
+  SELECT jsonb_build_object(
+    'schema_version', 'REVIEWED_DEAL_CONTEXT_RESULT/V1',
+    'serving_namespace_id', p_serving_namespace_id,
+    'corpus_release_id', p_corpus_release_id,
+    'contract_fingerprint', p_contract_fingerprint,
+    'request_digest', p_request_digest,
+    'governed_deal_key', p_governed_deal_key,
+    'total_count', (SELECT count(*)::integer FROM matching_rows),
+    'page_count', page_payload.page_count,
+    'rows', page_payload.rows,
+    'next_cursor', CASE
+      WHEN (SELECT count(*) FROM page_candidates) > p_page_size
+      THEN (SELECT last_row.row_serving_key FROM last_row)
+      ELSE NULL
+    END
+  ) INTO result
+  FROM page_payload;
+
+  RETURN result;
+END;
+$$;
+
 REVOKE ALL ON TABLE canonical_v2_staging.fixture_corpus_releases
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving;
 REVOKE ALL ON TABLE canonical_v2_staging.market_observations
@@ -665,6 +790,8 @@ REVOKE ALL ON TABLE canonical_v2_staging.market_observations
 REVOKE ALL ON TABLE canonical_v2_staging.market_metric_slot_exclusions
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving;
 REVOKE ALL ON TABLE canonical_v2_staging.shared_serving_rows
+  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving;
+REVOKE ALL ON TABLE canonical_v2_staging.reviewed_source_specific_serving_rows
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving;
 REVOKE ALL ON FUNCTION canonical_v2_staging.enforce_market_metric_slot_partition()
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving;
@@ -685,4 +812,10 @@ GRANT EXECUTE ON FUNCTION public.canonical_v2_query_page(
   text, text, text, text, text, text, integer, text, text, text, text, text,
   text, text, text, text, text, integer, integer, numeric, numeric, numeric, numeric,
   text, text, text, text, text, text, text, text, text, integer, text, text
+) TO canonical_v2_serving;
+REVOKE ALL ON FUNCTION public.canonical_v2_reviewed_deal_context(
+  text, text, text, text, text, text, integer, text
+) FROM PUBLIC, anon, authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.canonical_v2_reviewed_deal_context(
+  text, text, text, text, text, text, integer, text
 ) TO canonical_v2_serving;

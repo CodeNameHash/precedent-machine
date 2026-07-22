@@ -27,6 +27,7 @@ test('twelve comparable results and one reviewed source-specific proposition fre
     exclusions: 0,
     shared_rows: 13,
     source_specific_rows: 1,
+    source_specific_serving_records: 1,
     exact_detail_packages: 13,
     query_records: 12,
     unresolved: 0,
@@ -37,12 +38,13 @@ test('twelve comparable results and one reviewed source-specific proposition fre
   assert.equal(first.release.market_observations.length, 12);
   assert.equal(first.release.shared_rows.length, 13);
   assert.equal(first.release.reviewed_source_specific_rows.length, 1);
+  assert.equal(first.release.source_specific_serving_records.length, 1);
   assert.equal(first.release.exact_detail_packages.length, 13);
   assert.equal(first.release.query_records.length, 12);
   assert.equal(first.release.query_records.some((row) => (
     row.row_serving_key === first.release.reviewed_source_specific_rows[0].row_serving_key
   )), false);
-  assert.equal(new Set(Object.values(first.release.manifest.roots)).size, 6);
+  assert.equal(new Set(Object.values(first.release.manifest.roots)).size, 7);
 });
 
 test('candidate release carries raw and normalised money with exact legal query dimensions', () => {
